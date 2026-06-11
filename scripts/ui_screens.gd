@@ -133,6 +133,14 @@ func _show_character_select() -> void:
 	game.current_shop_purchased.clear()
 	var box := _create_menu_box("Выбор героя", "Выбери стиль боя для этого забега.")
 
+	# Расширяем панель под 2-колоночную сетку 9 героев (2×600 + 14 sep + 56 margins = ~1310px).
+	var panel := box.get_parent() as PanelContainer
+	if panel != null:
+		panel.offset_left = -680.0
+		panel.offset_right = 680.0
+		panel.offset_top = -420.0
+		panel.offset_bottom = 420.0
+
 	# 9 классов: скроллируемая сетка 2 колонки, карточки целиком кликабельны.
 	var cards_scroll := ScrollContainer.new()
 	cards_scroll.name = "CharacterCardsScroll"
