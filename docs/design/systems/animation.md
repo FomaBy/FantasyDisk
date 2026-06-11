@@ -1,0 +1,38 @@
+# Animation
+
+Обновлено: 2026-06-11
+
+Animator ownership описан в `docs/process/agent_role_boundaries_and_handoffs.md`. Back-end должен не полировать motion, а предоставлять стабильные states/API.
+
+## Architecture
+
+- Игровые сущности используют polished full-art sprites как видимый слой.
+- `scripts/cutout_rig_2d.gd` собирает rig/cutout parts для движения, squash, socket, hit/action timing.
+- Source PNG остаются меню/fallback-изображениями.
+- `scripts/sliced_rig_manifest.gd` хранит данные нарезки.
+
+## Player Motion
+
+- Movement facing — отдельно от attack targeting.
+- Attack direction приходит из weapon targeting и не перетирается velocity.
+- `WeaponSocket` используется для attached weapons и должен оставаться совместимым с анимацией.
+- Player cutout rig использует per-character `walk_blend_rate` / `direction_blend_rate`: `berserk` двигается тяжелее, `dark_mage` мягче и с меньшим robe/body lean, `guitarist` быстрее.
+- Berserk attack pose получает animation variant из текущего `weapon_id`: `sword` = forward thrust, `axe` = wide arc, `hammer` = overhead slam. Это только motion layer; damage shape/window остаются в weapon/backend конфигурации.
+
+## Enemy Motion
+
+- Враги/элитки/боссы используют cutout rig и base facing.
+- Мобы не должны двигаться спиной вперед: facing sign учитывает `base_facing`.
+- Elite active attacks имеют внешние фазы `windup/strike/recover/idle`.
+- `enemy.gd` передает elite phases в rig как animation variant `<elite_behavior>:<elite_attack_id>:<phase>` вместе с backend duration. `cutout_rig_2d.gd` держит pose layer для `iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`; VFX и damage остаются в backend/effects layer.
+
+## Pause Behavior
+
+- Gameplay animations/effects должны уважать паузу.
+- UI может работать в `PROCESS_MODE_ALWAYS`, gameplay tweens/effects — node-bound и pause-aware.
+
+## Handoffs
+
+- Новые sprite redraw / visual style issues -> Design.
+- Walk/attack/cast/death motion polish -> Animator.
+- Кодовые hooks, lifecycle, cleanup, state signals -> Back-end.

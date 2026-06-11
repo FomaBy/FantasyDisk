@@ -343,14 +343,14 @@ Debug-режим карты: клавиша `F12` переключает `route_
 Магазин показывает четыре случайных предложения inline поверх `screen_shop_background.png` в центральной свободной области фона и позволяет купить несколько предметов за один визит, если хватает денег. Предметы показывают иконку и цену; название, описание, цену, class restriction и причину недоступности игрок видит только в hover tooltip. Купленные предметы получают overlay-состояние и становятся недоступными.
 
 Design visual kit/spec для всех артефактов, shop-only предметов и курсора описан в `docs/design/artifact_shop_cursor_visual_kit.md`:
-- 46 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, transparent, dark-fantasy item art);
+- 52 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, epic dark fantasy transparent item icons);
 - 7 shop-only icons: `assets/sprites/ui/icons/shop/shop_<shop_item_id>.png`;
 - полный mapping: `docs/design/artifact_shop_cursor_visual_kit.md`;
-- artifact icon generator: `tools/generate_dark_fantasy_artifact_icons.py`;
+- artifact icon pipeline: `tools/final_redesign_artifact_icons.py`; older deterministic/concept-sheet generators are kept only as superseded tooling/reference;
 - shop/cursor generator: `tools/generate_artifact_shop_cursor_assets.py`;
-- preview: `assets/sprites/ui/icons/artifact_shop_cursor_preview.png`.
+- preview: `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png` (`artifact_generated_concept_40px_preview.png` and `artifact_dark_artifacts_40px_preview.png` are updated as legacy preview paths).
 
-После пользовательского фидбэка 2026-06-11 artifact icons заменены на `256x256` dark-fantasy предметные PNG без собственной рамки: предмет крупно по центру, глубокие тени, приглушенная палитра, верхне-левый свет, painterly material texture, потертости/царапины/сколы, тонкая темная окантовка и прозрачный фон без белесого glow. Shop/cursor assets остаются в FantasyDisk fantasy-medallion / dagger-quill style.
+После пользовательского фидбэка 2026-06-11 artifact icons заменены на `256x256` PNG с прозрачным фоном: крупные мрачные предметы с черненым металлом, костью/камнем, темной кожей, проклятой бумагой, кристаллами, рунами, трещинами/царапинами и яркими магическими акцентами по смыслу предмета. Предыдущие generated/vector-like, glossy и concept-sheet tile направления заменены. Shop/cursor assets остаются в FantasyDisk fantasy-medallion / dagger-quill style.
 
 Back-end integration complete: `scripts/ui_screens.gd` сначала ищет финальные PNG по mapping из visual kit, а если их нет, временно использует осмысленный fallback через `scripts/ui_icon_registry.gd` по эффекту предмета. На 2026-06-11 фактические artifact/shop/cursor PNG готовы и импортированы, поэтому fallback остается только fail-safe.
 
@@ -476,7 +476,7 @@ Sprite quality audit 2026-06-10: активные UI/gameplay элементы �
 Базовый скрипт врагов: `scripts/enemy.gd`.
 
 Общие возможности:
-- полоса HP над каждым врагом (моб/элитка/босс): дешевый `_draw`-нод `scripts/enemy_health_bar.gd`, ширина пропорциональна видимому размеру спрайта, перерисовка только при изменении здоровья;
+- полоса HP над каждым врагом (моб/элитка/босс/призванный полноценный враг): дешевый `_draw`-нод `scripts/enemy_health_bar.gd`, ширина пропорциональна видимому размеру спрайта, значение всегда синхронизируется как `health / max_health` через `refresh_health_bar()` после runtime-скейлинга и после получения урона;
 - contact_range автоматически подгоняется под фактический видимый размер спрайта (`_fit_contact_range_to_sprite`): радиус врага + радиус игрока, экспортное значение сцены остается минимумом;
 - движение к игроку;
 - ranged behavior с удержанием дистанции;

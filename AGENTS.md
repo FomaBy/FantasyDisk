@@ -9,6 +9,7 @@ Before making gameplay, balance, character, enemy, UI, or progression changes, r
 - `docs/design/current_game_state.md` for the implemented game state.
 - `docs/design/content_registry.md` for canonical entity IDs and names.
 - `docs/process/agent_role_boundaries_and_handoffs.md` for Design/Back-end/Animator ownership and cross-chat handoff rules.
+- `docs/process/versioning_and_branching.md` for the active version/branch policy.
 
 Autonomy and approval:
 - The user pre-approves all in-scope project changes requested in task files or direct prompts.
@@ -24,6 +25,12 @@ Role boundaries:
 - If a task needs another discipline, create/update a `.md` handoff task in `docs/tasks/` and send it to the correct chat instead of doing that specialist's work directly.
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
 - When taking a task, set `Статус: in_progress` in its file; when finishing, set `done` (or `review`) and append a short result summary so the PM can sync the task board.
+
+Versioning:
+- `main` is the stable `0.1` line.
+- `dev` is the active `0.2` development line.
+- All new development tasks should be done on `dev` unless a task explicitly says otherwise.
+- Check the current branch before making changes; do not do ordinary feature work directly on `main`.
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.

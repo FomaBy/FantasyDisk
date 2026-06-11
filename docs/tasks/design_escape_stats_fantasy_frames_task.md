@@ -1,5 +1,6 @@
 # Задача Для Design-Агента: Fantasy Frames И Compact Style Для Escape Stats Menu
 
+Статус: done
 Дата: 2026-06-10
 
 ## Autonomy / Approval

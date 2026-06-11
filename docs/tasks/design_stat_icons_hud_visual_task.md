@@ -1,5 +1,6 @@
 # Задача Для Design-Агента: Иконки Характеристик И Красивый In-Game HUD
 
+Статус: done
 Дата: 2026-06-10
 
 ## Autonomy / Approval
@@ -190,3 +191,9 @@ hud_money.png
 - `docs/design/fantasydisk_design_brief.md` - обновить раздел UI/art direction.
 
 Если какие-то ID отличаются от списка выше, явно указать почему.
+
+## Результат (2026-06-11, Design)
+
+- Создан полный icon pack: 8 базовых stat icons в `assets/sprites/ui/icons/stats/`, 20 derived attribute icons в `assets/sprites/ui/icons/derived/`, HUD icons `hud_hp.png`, `hud_xp.png`, `hud_money.png` в `assets/sprites/ui/hud/`. Проверка `sips`: stat/HUD icons 64x64; derived-набор содержит 20 PNG.
+- Документация и registry описывают каноническое подключение через `scripts/ui_icon_registry.gd`, чтобы Escape stats menu, level-up, tooltips, rewards и HUD не использовали emoji/default placeholders.
+- Боевой HUD остается минимальным: HP, XP, деньги. Подробные характеристики остаются в Escape stats menu/level-up/tooltips.

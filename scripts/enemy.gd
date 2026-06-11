@@ -681,13 +681,21 @@ func _create_health_bar() -> void:
 	bar.setup(max_health, sprite_size.x * 0.72)
 
 
+func refresh_health_bar() -> void:
+	if get_node_or_null("HealthBar") == null:
+		_create_health_bar()
+	_update_health_bar()
+
+
 func _update_health_bar() -> void:
 	var bar := get_node_or_null("HealthBar")
 	if bar == null:
 		return
-	if bar.has_method("setup") and float(bar.get("max_value")) != max_health and health >= max_health:
-		bar.setup(max_health, float(bar.get("bar_width")))
-	if bar.has_method("set_value"):
+	var sprite_size := _visible_sprite_size()
+	bar.position = Vector2(0.0, -sprite_size.y * 0.5 - 14.0)
+	if bar.has_method("configure"):
+		bar.configure(max_health, health, sprite_size.x * 0.72)
+	elif bar.has_method("set_value"):
 		bar.set_value(health)
 
 

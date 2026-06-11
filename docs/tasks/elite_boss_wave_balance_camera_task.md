@@ -1,5 +1,7 @@
 # Задача для агента: элитки, боссы, волны, плотность монстров, камера и масштаб игрока
 
+Статус: done 2026-06-11. Результат: требования закрыты набором backend-пакетов `backend_map_2k_camera_zoom_task.md`, `backend_elite_overhaul_size_unique_attacks_task.md`, `backend_combat_feedback_hp_bars_hitbox_hammer_nerf_task.md`, `backend_berserk_weapon_identity_rebalance_task.md`, `backend_mage_buff_guitarist_rework_task.md` и performance pass. Арена 2560x1440, camera zoom/bounds, уменьшенный player visual scale, редкие/сильные элитки с уникальными атаками, 2 босса, wave/spawn pacing, HP/скорость/active cap и smoke checks реализованы. Runtime smoke test проходит.
+
 Autonomy / Approval:
 - Пользователь заранее одобрил все изменения в рамках этой задачи.
 - Не спрашивай подтверждение на реализацию: сделай изменения, обнови тесты, запусти проверки и обнови документацию.

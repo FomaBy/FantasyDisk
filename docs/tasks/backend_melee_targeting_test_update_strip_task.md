@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Обновить melee_weapon_targeting_test Под Новую Форму Меча "strip"
 
-Статус: new
+Статус: done 2026-06-11. Закрыта PM при сверке доски: tests/melee_weapon_targeting_test.gd уже обновлен под форму strip и проходит (проверено headless-прогоном 2026-06-11, exit 0). Handoff устарел — проблема была устранена в рамках backend-работ по оружию/ревью без обновления этого файла.
 Создано: 2026-06-11
 Автор: Design (handoff из sprite quality audit)
 

@@ -2,6 +2,8 @@
 
 Дата: 2026-06-10
 
+Статус: done 2026-06-11. Результат: создана доменная структура `docs/design/systems/` с файлами `combat.md`, `route_map.md`, `menus_ui.md`, `characters_weapons.md`, `enemies_bosses.md`, `progression_balance.md`, `visual_style_assets.md`, `animation.md`, `technical_architecture.md`; overview-документы `fantasydisk_design_brief.md`, `current_game_state.md`, `mechanics_extract.md` получили ссылки на domain docs. Task board синхронизирован с фактическими done backend-задачами. Дополнительно обновлен устаревший `tests/melee_weapon_targeting_test.gd` под новую sword strip identity. Проверки: runtime, animation, attack VFX, meta progression и melee targeting smoke tests проходят.
+
 ## Autonomy / Approval
 
 Пользователь заранее одобрил все изменения в рамках этой задачи. Не спрашивай подтверждение: обнови документацию, разнеси ее по областям игры, проверь ссылки и зафиксируй актуальное состояние проекта. Спрашивать нужно только при реальном блокере, обязательной sandbox/security эскалации или потенциально разрушительном действии вне scope.

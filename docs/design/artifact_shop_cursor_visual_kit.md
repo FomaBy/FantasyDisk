@@ -6,17 +6,17 @@
 
 Back-end audit follow-up resolved 2026-06-11: фактические PNG из разделов Artifact Icon Mapping, Shop-Only Icon Mapping, Shop Visual Assets и Cursor Assets добавлены в текущий checkout и импортированы в Godot. Fallback через `scripts/ui_icon_registry.gd` остается только fail-safe.
 
-User feedback rework 2026-06-11: artifact icons заменены на `256x256` dark-fantasy item art без собственной рамки: один крупный предмет, верхне-левый свет, глубокие тени, приглушенные материалы, цветное магическое свечение и прозрачный фон. Shop-only icons, frames and cursor variants keep the richer FantasyDisk fantasy-medallion / dagger-quill treatment.
+User feedback rework 2026-06-11: artifact icons полностью заменены на `256x256` final epic dark fantasy transparent item icons: отдельные мрачные предметы без встроенной UI-рамки, черненый металл, кость/камень, темная кожа, проклятая бумага, кристаллы, руны, трещины/царапины и яркие магические акценты. Предыдущие generated/vector-like, glossy и concept-sheet tile направления superseded. Shop-only icons, frames and cursor variants keep the richer FantasyDisk fantasy-medallion / dagger-quill treatment.
 
 ## Summary
 
-- Artifact icons: `46` unique PNG, `256x256`, transparent background.
+- Artifact icons: `52` unique PNG, `256x256`, final epic dark fantasy transparent item icons.
 - Shop-only icons: `7` unique PNG, `128x128`, transparent background.
 - Shop frame assets: slot, hover, price badge, purchased/unavailable overlay, tooltip frame.
 - Cursor assets: normal, hover and attack variants, `48x48`, transparent background.
-- Artifact generator: `tools/generate_dark_fantasy_artifact_icons.py`.
+- Artifact pipeline: `tools/final_redesign_artifact_icons.py`; older deterministic/concept-sheet generators are superseded reference tooling.
 - Shop/cursor generator: `tools/generate_artifact_shop_cursor_assets.py`.
-- Preview: `assets/sprites/ui/icons/artifact_shop_cursor_preview.png`.
+- Preview: `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png`; legacy preview paths `artifact_generated_concept_40px_preview.png` and `artifact_dark_artifacts_40px_preview.png` are updated to the same active icon set.
 
 ## Artifact Icon Mapping
 
@@ -68,6 +68,12 @@ User feedback rework 2026-06-11: artifact icons заменены на `256x256` 
 | `burning_shard` | Горящий осколок | `assets/sprites/ui/icons/artifacts/artifact_burning_shard.png` |
 | `golden_route_mark` | Золотая метка пути | `assets/sprites/ui/icons/artifacts/artifact_golden_route_mark.png` |
 | `glass_edge` | Стеклянная кромка | `assets/sprites/ui/icons/artifacts/artifact_glass_edge.png` |
+| `echo_core` | Эхо Разлома | `assets/sprites/ui/icons/artifacts/artifact_echo_core.png` |
+| `split_core` | Ядро Расщепления | `assets/sprites/ui/icons/artifacts/artifact_split_core.png` |
+| `blood_pact` | Кровавый Рубеж | `assets/sprites/ui/icons/artifacts/artifact_blood_pact.png` |
+| `leech_heart` | Сердце Пиявки | `assets/sprites/ui/icons/artifacts/artifact_leech_heart.png` |
+| `thorn_pact` | Договор Шипов | `assets/sprites/ui/icons/artifacts/artifact_thorn_pact.png` |
+| `phantom_step` | Призрачный Шаг | `assets/sprites/ui/icons/artifacts/artifact_phantom_step.png` |
 
 ## Shop-Only Icon Mapping
 
