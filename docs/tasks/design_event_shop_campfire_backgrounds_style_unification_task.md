@@ -1,5 +1,6 @@
 # Задача Для Design-Агента: Фоны Event/Shop/Campfire И Единый Стиль Игровых Элементов
 
+Статус: done
 Дата: 2026-06-10
 
 ## Autonomy / Approval
@@ -217,3 +218,10 @@ assets/sprites/ui/screens/screen_campfire_background.png
 - `docs/design/fantasydisk_design_brief.md`.
 
 Если какой-то элемент пока оставлен старым, явно написать почему и что с ним делать позже.
+
+## Результат (2026-06-11, Design)
+
+- Подготовлены и подключены к документации 3 небоевых фона в 2560x1440: `assets/sprites/ui/screens/screen_event_background.png`, `assets/sprites/ui/screens/screen_shop_background.png`, `assets/sprites/ui/screens/screen_campfire_background.png`. Все три файла проверены `sips`: 2560x1440.
+- Визуальный аудит игровых элементов зафиксирован в `docs/design/current_game_state.md` и `docs/design/content_registry.md`: route map icons/nodes, HUD, stat icons, pickups, projectiles, VFX, reward/level-up, pause stats, shop и базовые UI controls приведены к единому FantasyDisk fantasy style или имеют backend hooks для подключения.
+- Активные visible placeholder-слои для pickups/projectiles заменены PNG-ассетами: `hud_xp.png`, `hud_money.png`, `player_projectile_spark_64.png`, `enemy_projectile_magic_64.png`.
+- Back-end интеграционные пути: `scripts/main.gd::SCREEN_BACKGROUNDS`, `scripts/ui_screens.gd`, `scripts/ui_icon_registry.gd`; отдельного нового Design-handoff не требуется, потому что пути уже задокументированы и подключены.

@@ -19,18 +19,23 @@ func _ready() -> void:
 
 
 func setup(new_max_value: float, width: float) -> void:
-	max_value = maxf(new_max_value, 0.001)
-	value = max_value
-	bar_width = clampf(width, 30.0, 150.0)
+	configure(new_max_value, new_max_value, width)
+
+
+func configure(new_max_value: float, new_value: float, width: float = -1.0) -> void:
+	var next_max := maxf(new_max_value, 0.001)
+	var next_value := clampf(new_value, 0.0, next_max)
+	var next_width := bar_width if width < 0.0 else clampf(width, 30.0, 150.0)
+	if absf(next_max - max_value) < 0.001 and absf(next_value - value) < 0.001 and absf(next_width - bar_width) < 0.001:
+		return
+	max_value = next_max
+	value = next_value
+	bar_width = next_width
 	queue_redraw()
 
 
 func set_value(new_value: float) -> void:
-	var clamped := clampf(new_value, 0.0, max_value)
-	if absf(clamped - value) < 0.001:
-		return
-	value = clamped
-	queue_redraw()
+	configure(max_value, new_value, bar_width)
 
 
 func _draw() -> void:

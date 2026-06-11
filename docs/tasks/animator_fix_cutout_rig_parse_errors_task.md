@@ -1,5 +1,6 @@
 # Задача Для Animator-Агента: Исправить Parse Errors В Cutout Rig
 
+Статус: done 2026-06-11. Результат: исправлены GDScript type inference/indentation parse errors в `scripts/cutout_rig_2d.gd`, сохранена HeroFull/cutout architecture, `Player.gd` загружается, death ghost работает до первого process-frame. `tests/animation_smoke_test.gd` и `tests/runtime_smoke_test.gd` проходят.
 Дата: 2026-06-10
 
 ## Autonomy / Approval

@@ -67,3 +67,10 @@ docs/process/agent_role_boundaries_and_handoffs.md.
 - Таймер: `timer_frame.png` + `timer_frame_alarm.png` (300x90). РЕШЕНИЕ ДЛЯ BACK-END: два ассета, тревога = смена текстуры на `timer_frame_alarm.png` (красное свечение/самоцветы уже в ассете), программная подсветка не требуется. Превью с цифрами: `build/rig_debug/timer_check2.png`.
 - Генератор: `tools/restyle_artifact_icons.py` (идемпотентен, оригиналы в `build/bg_backup/artifacts/`).
 - `docs/design/content_registry.md` обновлен. Headless-тесты зеленые.
+
+## Примечание PM (2026-06-11, после done)
+Задача принята. Сразу после нее пользователь сменил арт-направление иконок:
+вместо мультяшного — **дарк-фэнтези**. Перегенерацию выполняет Codex
+(`codex_design_artifact_icons_dark_fantasy_task.md`), текущие медальонные
+версии будут заменены. Ассеты таймера остаются в силе как есть.
+За Claude-Designer — ревью результата Codex (отдельное поручение придет от PM).

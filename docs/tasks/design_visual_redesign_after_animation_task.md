@@ -1,5 +1,6 @@
 # Задача Для Design-Агента: Перерисовать Персонажей, Монстров, Элиток И Боссов Под Новую Анимацию
 
+Статус: done
 Дата: 2026-06-10
 
 ## Autonomy / Approval
@@ -327,3 +328,10 @@ assets/sprites/bosses/rig_parts/
   - если новые ассеты требуют другой animation architecture.
 
 Если какие-то старые спрайты заменены окончательно, явно отметить это в документации.
+
+## Результат (2026-06-11, Design)
+
+- Активный visual set персонажей, стандартных монстров, элиток и боссов переведен на polished cartoon fantasy full-art + cutout rig parts: source PNG остаются в `assets/sprites/characters/`, `assets/sprites/enemies/`, `assets/sprites/elites/`, `assets/sprites/bosses/`; runtime-части лежат в `assets/sprites/*/cutout/`.
+- `scripts/sliced_rig_manifest.gd` ссылается на актуальные source sprites и cutout parts для Берсерка, Темного мага, Гитариста, 11 стандартных монстров, 4 элиток и 2 боссов. Берсерк остается без оружия в базовом спрайте; оружие крепится отдельно через `WeaponSocket`.
+- Последующие уточнения по персонажам закрыты отдельной задачей `design_cartoon_character_style_fix_task.md`; дополнительный sprite QA 2026-06-11 убрал грязные пиксели и «летающие» куски текстур из cutout-конечностей.
+- Актуальное состояние и запрет на возврат к blocky/placeholder visual layer зафиксированы в `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/fantasydisk_design_brief.md`.

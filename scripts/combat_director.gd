@@ -90,7 +90,13 @@ func _end_combat(victory: bool) -> void:
 		else:
 			game.route_stage += 1
 			game.current_combat_type = "battle"
-			game.route._show_battle_map()
+			# Победный флоу: затемнение + «Победа» -> докачка атрибутов -> карта.
+			# Новый бой = новое окно докачки: набор и rerolls легально сбрасываются.
+			game.attribute_offer = []
+			game.attribute_rerolls_left = game.ui.ATTRIBUTE_REROLLS_PER_WINDOW
+			game.ui._show_victory_banner(func() -> void:
+				game.ui._show_attribute_shop(game.route._show_battle_map)
+			)
 	else:
 		game.ui._show_death_screen()
 
@@ -257,6 +263,7 @@ func _scale_enemy_for_current_wave(enemy: Node) -> void:
 		enemy.set("projectile_damage", float(enemy.get("projectile_damage")) * damage_multiplier)
 	if enemy.get("reward_xp") != null:
 		enemy.set("reward_xp", maxi(1, int(ceil(float(enemy.get("reward_xp")) * (1.0 + stage_scale * 0.15)))))
+	_refresh_enemy_health_bar(enemy)
 
 
 func _enemy_balance_for_node(enemy: Node) -> Dictionary:
@@ -363,6 +370,7 @@ func _apply_elite_modifier(enemy: Node2D) -> void:
 	if body != null:
 		body.modulate = Color(1.0, 0.70, 0.22, 1.0)
 		body.scale *= 1.22
+	_refresh_enemy_health_bar(enemy)
 
 
 func _scale_elite_enemy(elite: Node2D) -> void:
@@ -400,6 +408,7 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 		elite.set("reward_xp", maxi(8, int(ceil(float(elite.get("reward_xp")) * 1.45))))
 	if elite.get("reward_money") != null:
 		elite.set("reward_money", maxi(6, int(ceil(float(elite.get("reward_money")) * 1.35))))
+	_refresh_enemy_health_bar(elite)
 
 
 func _scale_boss_for_run(boss: Node2D) -> void:
@@ -417,6 +426,12 @@ func _scale_boss_for_run(boss: Node2D) -> void:
 		boss.set("contact_damage", float(boss.get("contact_damage")) * damage_multiplier)
 	if boss.get("projectile_damage") != null:
 		boss.set("projectile_damage", float(boss.get("projectile_damage")) * damage_multiplier)
+	_refresh_enemy_health_bar(boss)
+
+
+func _refresh_enemy_health_bar(enemy: Node) -> void:
+	if enemy != null and enemy.has_method("refresh_health_bar"):
+		enemy.refresh_health_bar()
 
 
 func _connect_enemy_rewards(enemy: Node) -> void:
@@ -425,6 +440,11 @@ func _connect_enemy_rewards(enemy: Node) -> void:
 
 
 func _on_enemy_died(enemy: Node2D) -> void:
+	# «Сердце Пиявки» (tier 3): убийство лечит процент max HP.
+	if game.current_player != null and is_instance_valid(game.current_player):
+		var heal_percent := float((game.current_player.get("run_modifiers") as Dictionary).get("kill_heal_percent", 0.0))
+		if heal_percent > 0.0 and game.current_player.has_method("heal_percent"):
+			game.current_player.heal_percent(heal_percent)
 	_spawn_pickup("xp", int(enemy.get("reward_xp")), enemy.global_position + Vector2(-10.0, 0.0))
 	var money_chance := 1.0 if enemy.is_in_group("elite_enemies") else 0.75
 	if game.rng.randf() < money_chance:

@@ -26,12 +26,31 @@ func _show_battle_map() -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
 
-	var background := ColorRect.new()
-	background.name = "RouteMapBackground"
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.color = Color(0.025, 0.032, 0.050, 0.98)
-	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(background)
+	var backdrop_path := "res://assets/backgrounds/route_map_backdrop.png"
+	if ResourceLoader.exists(backdrop_path):
+		var backdrop := TextureRect.new()
+		backdrop.name = "RouteMapBackdrop"
+		backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
+		backdrop.texture = game._cached_texture(backdrop_path)
+		backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(backdrop)
+		# Затемнение, чтобы узлы и линии читались поверх арта.
+		var backdrop_shade := ColorRect.new()
+		backdrop_shade.name = "RouteMapBackdropShade"
+		backdrop_shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+		backdrop_shade.color = Color(0.012, 0.016, 0.030, 0.62)
+		backdrop_shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(backdrop_shade)
+	else:
+		# Fallback: текущий однотонный фон, пока Codex не положил backdrop PNG.
+		var background := ColorRect.new()
+		background.name = "RouteMapBackground"
+		background.set_anchors_preset(Control.PRESET_FULL_RECT)
+		background.color = Color(0.025, 0.032, 0.050, 0.98)
+		background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(background)
 
 	var grid_shade := ColorRect.new()
 	grid_shade.name = "RouteMapTopShade"
@@ -124,6 +143,7 @@ func _show_battle_map() -> void:
 	_draw_map_connections(map_area, node_positions)
 	_draw_route_nodes(map_area, node_positions)
 	game.ui._create_resource_hud_panel(root, Vector2(game.ROUTE_MAP_SCREEN_MARGIN, game.ROUTE_MAP_HEADER_HEIGHT + 8.0))
+	game.ui._create_upgrade_fab(root, _show_battle_map)
 	game.ui._update_hud()
 	game.route_map_pan_active = false
 	game.route_map_drag_distance = 0.0

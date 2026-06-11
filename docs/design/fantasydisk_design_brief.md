@@ -11,7 +11,17 @@
 - `docs/design/mechanics_extract.md` - выгрузка таблицы механик и актуальный слой реализации.
 - `docs/design/current_game_state.md` - инвентарь текущей игры по системам, сценам, ассетам и тестам.
 - `docs/design/content_registry.md` - канонические ID и игровые названия сущностей.
+- `docs/design/systems/combat.md` - бой, арена, камера, атаки, спавн, пауза.
+- `docs/design/systems/route_map.md` - маршрутная карта, узлы, scroll/pan, переходы.
+- `docs/design/systems/menus_ui.md` - меню, HUD, магазин, события, курсор и UI rules.
+- `docs/design/systems/characters_weapons.md` - персонажи, 9 оружий, targeting и cleanup.
+- `docs/design/systems/enemies_bosses.md` - обычные враги, элитки и боссы.
+- `docs/design/systems/progression_balance.md` - характеристики, награды, артефакты, магазин, ascension.
+- `docs/design/systems/visual_style_assets.md` - визуальный стиль, asset folders и naming.
+- `docs/design/systems/animation.md` - rig/cutout animation architecture и handoff rules.
+- `docs/design/systems/technical_architecture.md` - модули, lifecycle, cleanup, performance, tests.
 - `docs/process/agent_role_boundaries_and_handoffs.md` - границы ответственности `Design`, `Back-end`, `Animator` и правила передачи задач.
+- `docs/process/versioning_and_branching.md` - правила версионности и веток `main`/`dev`.
 - `docs/tasks/documentation_post_changes_domain_split_task.md` - финальная задача на обновление и разделение документации после крупных изменений.
 - `source_docs/FantasyDisk_GDD.txt` - сырой источник GDD, если он присутствует в рабочей копии.
 - `source_docs/FantasyDisk_Mechanics.xlsx` - сырой источник таблицы механик, если он присутствует в рабочей копии.
@@ -27,6 +37,11 @@
 ## Направление Игры
 
 FantasyDisk - 2D top-down loot-action survival roguelite с RPG-билдкрафтом. Темп и читаемость могут напоминать Vampire Survivors и Brotato, но персонажи, механики, названия, баланс, визуальная идентичность и прогрессия должны быть оригинальными.
+
+Версионность:
+- `main` хранит стабильную линию `0.1`;
+- `dev` является активной веткой разработки `0.2`;
+- все новые задачи по умолчанию выполняются в `dev`.
 
 Текущая цель проекта - не минимальный MVP, а демонстрационная версия, которую не стыдно показать друзьям: понятный выбор персонажа, разное оружие, маршрутная карта, читаемые бои, элитки, боссы, магазин, события, отдых, прокачка, видимые HP/XP/деньги и стабильная пауза.
 
@@ -240,7 +255,7 @@ HP, XP и деньги должны быть видны не только в б�
 
 Магазин показывает четыре предмета inline на shop background: постоянно видны только иконка и цена, а название/описание/эффект/class restriction/причина недоступности появляются в hover tooltip. Магазин не должен возвращаться к большой modal/card panel, закрывающей фон.
 
-Все артефакты из `ProgressionData.ARTIFACTS` и shop-only items из `ProgressionData.SHOP_ITEMS` имеют unique stylized fantasy cartoon PNG icons. После фидбэка пользователя 2026-06-11 они перерисованы в более богатый fantasy-medallion style: золотые орнаментальные рамки, темный металл, gem anchors, рунические искры, glow и painted grain. Канонический mapping и shop/cursor visual kit описаны в `docs/design/artifact_shop_cursor_visual_kit.md`; ассеты лежат в `assets/sprites/ui/icons/artifacts/`, `assets/sprites/ui/icons/shop/`, `assets/sprites/ui/shop/` и `assets/sprites/ui/cursor/`. Backend hooks могут подхватывать эти PNG вместо fallback через `scripts/ui_icon_registry.gd`.
+Все артефакты из `ProgressionData.ARTIFACTS` и shop-only items из `ProgressionData.SHOP_ITEMS` имеют unique stylized fantasy PNG icons. После фидбэка пользователя 2026-06-11 активные artifact icons заменены на final epic dark fantasy transparent item icons: каждый предмет крупно по центру, без встроенной UI-рамки, с эпичным светом, черненым металлом, кристаллами, рунами, трещинами и магическими акцентами. Shop-only items сохраняют fantasy-medallion treatment. Канонический mapping и shop/cursor visual kit описаны в `docs/design/artifact_shop_cursor_visual_kit.md`; ассеты лежат в `assets/sprites/ui/icons/artifacts/`, `assets/sprites/ui/icons/shop/`, `assets/sprites/ui/shop/` и `assets/sprites/ui/cursor/`. Backend hooks подхватывают эти PNG вместо fallback через `scripts/ui_icon_registry.gd`.
 
 У игры есть уникальный курсор FantasyDisk: `assets/sprites/ui/cursor/game_cursor.png`, hover variant и attack variant, hotspot `(5, 4)`. Это fantasy dagger/quill pointer с сильным outline, gem-деталью и state glow; Back-end hook через `Input.set_custom_mouse_cursor` уже подключен.
 

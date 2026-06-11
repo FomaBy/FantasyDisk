@@ -2,6 +2,8 @@
 
 Дата: 2026-06-10
 
+Статус: done 2026-06-11. Результат: event/question node кликается на full-screen route map после scroll/drag, hover tooltip и hit areas работают, event screen открывается и после выбора возвращает маршрут к следующему ряду; event/shop/campfire screens используют полноэкранные background PNG через `SCREEN_BACKGROUND_PATHS`. Runtime smoke test покрывает route event click, backgrounds и non-combat flow, проходит.
+
 ## Autonomy / Approval
 
 Пользователь заранее одобрил все изменения в рамках этой задачи. Не спрашивай подтверждение: исправь баг, интегрируй ассеты, обнови тесты и документацию. Спрашивать нужно только при реальном блокере, обязательной sandbox/security эскалации или потенциально разрушительном действии вне scope.

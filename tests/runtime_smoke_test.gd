@@ -26,8 +26,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var main_menu_actions := main.find_child("MainMenuActions", true, false) as VBoxContainer
-	if main_menu_actions == null or main_menu_actions.get_child_count() != 3:
-		push_error("Expected main menu to expose exactly three action buttons.")
+	if main_menu_actions == null or main_menu_actions.get_child_count() != 4:
+		push_error("Expected main menu to expose four action buttons (start, settings, codex, exit).")
 		quit(1)
 		return
 	if main_menu_actions.global_position.x > 140.0:
@@ -39,8 +39,8 @@ func _initialize() -> void:
 		var button := child as Button
 		if button != null:
 			main_menu_button_texts.append(button.text)
-	if main_menu_button_texts != ["Начать новую игру", "Настройки", "Выйти из игры"]:
-		push_error("Expected main menu buttons to be start/settings/exit only.")
+	if main_menu_button_texts != ["Начать новую игру", "Настройки", "Кодекс", "Выйти из игры"]:
+		push_error("Expected main menu buttons to be start/settings/codex/exit.")
 		quit(1)
 		return
 
@@ -493,9 +493,17 @@ func _initialize() -> void:
 		push_error("Expected enemies to carry an overhead health bar node.")
 		quit(1)
 		return
+	if absf(float(enemy_health_bar.get("max_value")) - float(contact_enemy.get("max_health"))) > 0.01:
+		push_error("Expected enemy health bar max value to match scaled enemy max health.")
+		quit(1)
+		return
 	contact_enemy.call("take_damage", 1.0)
 	if float(enemy_health_bar.get("value")) >= float(enemy_health_bar.get("max_value")):
 		push_error("Expected enemy health bar to track damage.")
+		quit(1)
+		return
+	if absf(float(enemy_health_bar.get("value")) - float(contact_enemy.get("health"))) > 0.01:
+		push_error("Expected enemy health bar value to match current enemy health after damage.")
 		quit(1)
 		return
 	if float(ProgressionData.weapon("berserk", "hammer").get("aoe_radius", 0.0)) != 100.0 or float(ProgressionData.weapon("berserk", "hammer").get("attack_range", 0.0)) != 100.0:
@@ -836,6 +844,54 @@ func _initialize() -> void:
 		push_error("Expected route stage to advance after normal victory.")
 		quit(1)
 		return
+	# Новый победный флоу: баннер «Победа» -> окно докачки атрибутов -> карта.
+	var victory_banner := main.find_child("VictoryBanner", true, false) as Button
+	if victory_banner == null:
+		push_error("Expected the victory banner overlay after a won battle.")
+		quit(1)
+		return
+	# Пополняем кошелек снапшота: проверяем механику покупки, а не экономику дропа.
+	var run_snapshot: Dictionary = main.get("run_player_snapshot")
+	run_snapshot["money"] = int(run_snapshot.get("money", 0)) + 200
+	victory_banner.pressed.emit()
+	await process_frame
+	var attribute_panel := main.find_child("AttributeShopPanel", true, false)
+	if attribute_panel == null:
+		push_error("Expected the attribute purchase window after the victory banner.")
+		quit(1)
+		return
+	var attribute_offers := main.find_child("AttributeOffers", true, false) as VBoxContainer
+	if attribute_offers == null or attribute_offers.get_child_count() != 2:
+		push_error("Expected exactly two attribute offers in the post-battle window.")
+		quit(1)
+		return
+	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
+	if reroll_button == null:
+		push_error("Expected the attribute window to include a reroll button.")
+		quit(1)
+		return
+	# Покупка: стат растет, деньги списываются.
+	var snapshot: Dictionary = main.get("run_player_snapshot")
+	var stats_before: Dictionary = (snapshot.get("stats", {}) as Dictionary).duplicate(true)
+	var attr_money_before := int(main.ui._run_money())
+	var first_offer := attribute_offers.get_child(0) as Button
+	var offered_stat := str(first_offer.name).replace("AttributeOffer_", "")
+	if first_offer.disabled:
+		push_error("Expected the attribute offer to be affordable in the test run (money %d)." % attr_money_before)
+		quit(1)
+		return
+	first_offer.pressed.emit()
+	await process_frame
+	snapshot = main.get("run_player_snapshot")
+	var stats_after: Dictionary = snapshot.get("stats", {})
+	if float(stats_after.get(offered_stat, 0.0)) != float(stats_before.get(offered_stat, 0.0)) + 1.0:
+		push_error("Expected buying an attribute to raise %s by 1." % offered_stat)
+		quit(1)
+		return
+	if int(main.ui._run_money()) >= attr_money_before:
+		push_error("Expected the attribute purchase to spend money.")
+		quit(1)
+		return
 	if abs(float(main.call("_current_round_duration")) - 33.0) > 0.01:
 		push_error("Expected next round duration to increase by 3 seconds per stage.")
 		quit(1)
@@ -862,6 +918,10 @@ func _initialize() -> void:
 	await _test_victory_flow(main)
 	await _test_elite_flow(main_scene)
 	await _test_debug_free_pick(main_scene)
+	await _test_codex_screen(main_scene)
+	await _test_escape_navigation(main_scene)
+	await _test_economy_tiers_and_fab(main_scene)
+	await _test_class_relevance_and_offer_fixation(main_scene)
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1439,6 +1499,26 @@ func _test_victory_flow(main: Node) -> void:
 		push_error("Expected boss to expose shield and dodge mechanics.")
 		quit(1)
 		return
+	var boss_health_bar := boss.get_node_or_null("HealthBar")
+	if boss_health_bar == null:
+		push_error("Expected boss to carry an overhead health bar node.")
+		quit(1)
+		return
+	if absf(float(boss_health_bar.get("max_value")) - float(boss.get("max_health"))) > 0.01:
+		push_error("Expected boss health bar max value to match scaled boss max health.")
+		quit(1)
+		return
+	boss.set("dodge_chance", 0.0)
+	boss.set("shield_active", false)
+	boss.take_damage(25.0)
+	if float(boss_health_bar.get("value")) >= float(boss_health_bar.get("max_value")):
+		push_error("Expected boss health bar to decrease after damage.")
+		quit(1)
+		return
+	if absf(float(boss_health_bar.get("value")) - float(boss.get("health"))) > 0.01:
+		push_error("Expected boss health bar value to match current boss health after damage.")
+		quit(1)
+		return
 	boss.take_damage(99999.0)
 	await process_frame
 	await process_frame
@@ -1476,6 +1556,24 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		return
 	if float(elite_enemy.get("max_health")) <= 70.0:
 		push_error("Expected elite enemy to be roughly an order of magnitude tougher than normal enemies.")
+		quit(1)
+		return
+	var elite_health_bar := elite_enemy.get_node_or_null("HealthBar")
+	if elite_health_bar == null:
+		push_error("Expected elite enemies to carry an overhead health bar node.")
+		quit(1)
+		return
+	if absf(float(elite_health_bar.get("max_value")) - float(elite_enemy.get("max_health"))) > 0.01:
+		push_error("Expected elite health bar max value to match scaled elite max health.")
+		quit(1)
+		return
+	elite_enemy.call("take_damage", 10.0)
+	if float(elite_health_bar.get("value")) >= float(elite_health_bar.get("max_value")):
+		push_error("Expected elite health bar to decrease after damage.")
+		quit(1)
+		return
+	if absf(float(elite_health_bar.get("value")) - float(elite_enemy.get("health"))) > 0.01:
+		push_error("Expected elite health bar value to match current elite health after damage.")
 		quit(1)
 		return
 	var elite_body := elite_enemy.get_node_or_null("Body") as Sprite2D
@@ -1657,6 +1755,303 @@ func _test_weapon_aiming() -> void:
 
 	holder.queue_free()
 	current_scene = null
+	await process_frame
+
+
+func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
+	# 1. Релевантность: нерелевантный стат не дает прироста своего урона класса.
+	if ProgressionData.is_stat_relevant("intelligence", "berserk") or ProgressionData.is_stat_relevant("strength", "dark_mage") or ProgressionData.is_stat_relevant("energy", "berserk"):
+		_fail("Expected damage-only stats to be irrelevant for foreign classes.")
+		return
+	var mage_stats: Dictionary = ProgressionData.base_stats("dark_mage")
+	var mage_weapon: Dictionary = ProgressionData.weapon("dark_mage", "dark_wand")
+	var before: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
+	mage_stats["strength"] = mage_stats["strength"] + 10.0
+	var after: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
+	if float(after.get("magic_damage", 0.0)) != float(before.get("magic_damage", 0.0)):
+		_fail("Expected +10 strength to leave dark mage magic damage unchanged.")
+		return
+
+	# 2. Пулы: магу не предлагают силу, берсерку — интеллект/энергию и magic focus.
+	for reward in ProgressionData.level_up_rewards("berserk"):
+		if str(reward.get("id")) == "magic_focus_up":
+			_fail("Expected magic focus upgrade to be hidden from the berserk pool.")
+			return
+	for reward in ProgressionData.reward_pool("dark_mage"):
+		if str(reward.get("kind")) == "stat" and (reward.get("stats", {}) as Dictionary).has("strength"):
+			_fail("Expected strength stat rewards to be hidden from the dark mage pool.")
+			return
+
+	var fix_main := main_scene.instantiate()
+	root.add_child(fix_main)
+	await process_frame
+	fix_main.set("selected_character_id", "dark_mage")
+	fix_main.set("selected_weapon_id", "dark_wand")
+
+	# 3. Превью урона показывает классовый параметр.
+	var preview: String = fix_main.ui._level_up_reward_preview({"kind": "upgrade", "mods": {"damage_multiplier": 1.15}})
+	if not preview.contains("Маг. урон"):
+		_fail("Expected the damage preview for dark mage to reference magic damage, got: %s" % preview)
+		return
+
+	# 4. Фиксация набора level-up при переоткрытии.
+	fix_main.set("pending_level_ups", 1)
+	fix_main.ui._show_level_up_screen(true)
+	await process_frame
+	var first_offer: Array = (fix_main.get("level_up_offer") as Array).duplicate(true)
+	if first_offer.size() != 3:
+		_fail("Expected a fixed set of three level-up rewards.")
+		return
+	fix_main.call("_clear_ui")
+	fix_main.ui._show_level_up_screen(true)
+	await process_frame
+	var second_offer: Array = fix_main.get("level_up_offer")
+	for offer_index in range(3):
+		if str((first_offer[offer_index] as Dictionary).get("id")) != str((second_offer[offer_index] as Dictionary).get("id")):
+			_fail("Expected reopening the level-up window to keep the same reward set.")
+			return
+
+	# 5. Фиксация пары атрибутов: переоткрытие окна докачки не реролит бесплатно.
+	var fix_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	root.add_child(fix_player)
+	fix_player.call("configure_character", "dark_mage", "dark_wand")
+	fix_player.set("money", 500)
+	fix_main.call("_store_player_snapshot", fix_player)
+	fix_player.queue_free()
+	fix_main.set("attribute_offer", [])
+	fix_main.set("attribute_rerolls_left", 2)
+	fix_main.ui._show_attribute_shop(Callable())
+	await process_frame
+	var pair_before: Array = (fix_main.get("attribute_offer") as Array).duplicate()
+	fix_main.call("_clear_ui")
+	fix_main.ui._show_attribute_shop(Callable())
+	await process_frame
+	var pair_after: Array = fix_main.get("attribute_offer")
+	if pair_before != pair_after:
+		_fail("Expected reopening the attribute window to keep the same stat pair.")
+		return
+	# Платный reroll меняет пару и тратит счетчик.
+	var reroll := fix_main.find_child("AttributeRerollButton", true, false) as Button
+	reroll.pressed.emit()
+	await process_frame
+	if int(fix_main.get("attribute_rerolls_left")) != 1:
+		_fail("Expected the paid reroll to consume one reroll charge.")
+		return
+	fix_main.queue_free()
+	await process_frame
+
+
+func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
+	# Данные: у всех артефактов tier и class_affinity; tier 3 — 5-8 штук.
+	var tier3_count := 0
+	for artifact in ProgressionData.ARTIFACTS:
+		var tier := int(artifact.get("tier", 0))
+		if tier < 1 or tier > 3 or not artifact.has("class_affinity"):
+			_fail("Expected artifact %s to declare tier 1-3 and class_affinity." % artifact.get("id"))
+			return
+		if tier == 3:
+			tier3_count += 1
+	if tier3_count < 5 or tier3_count > 8:
+		_fail("Expected 5-8 tier-3 artifacts, got %d." % tier3_count)
+		return
+	# Цены магазина x3-4.
+	for item in ProgressionData.SHOP_ITEMS:
+		if str(item.get("id")) == "shop_damage" and int(item.get("cost", 0)) != 42:
+			_fail("Expected shop_damage cost to be 42 after the x3.5 economy pass.")
+			return
+
+	var econ_main := main_scene.instantiate()
+	root.add_child(econ_main)
+	await process_frame
+	econ_main.set("selected_character_id", "berserk")
+
+	# Аффинити-пометки: красная / желтая / отсутствует.
+	var red_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("split_core"))
+	var yellow_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("void_ink"))
+	var none_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("warrior_charm"))
+	if str(red_note.get("text", "")) != "Не работает на текущем классе":
+		_fail("Expected a red affinity note for a foreign-class-only artifact.")
+		return
+	if str(yellow_note.get("text", "")) != "Работает вполсилы":
+		_fail("Expected a yellow affinity note for a mixed-mods artifact.")
+		return
+	if not none_note.is_empty():
+		_fail("Expected no affinity note for a universal artifact.")
+		return
+
+	# Механики tier 3: Кровавый Рубеж (low HP -> +урон) и Договор Шипов (отражение).
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	var t3_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	holder.add_child(t3_player)
+	await process_frame
+	t3_player.call("configure_character", "berserk", "sword")
+	t3_player.call("apply_reward", ProgressionData.artifact_definition("blood_pact"))
+	var damage_before := float((t3_player.get("derived_parameters") as Dictionary).get("damage", 0.0))
+	t3_player.set("health", float(t3_player.get("max_health")) * 0.1)
+	t3_player.call("_update_low_hp_state")
+	var damage_low := float((t3_player.get("derived_parameters") as Dictionary).get("damage", 0.0))
+	if damage_low < damage_before * 1.4:
+		_fail("Expected Blood Pact to boost damage below 30%% HP (%f -> %f)." % [damage_before, damage_low])
+		return
+
+	t3_player.call("apply_reward", ProgressionData.artifact_definition("thorn_pact"))
+	var thorn_enemy := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate()
+	holder.add_child(thorn_enemy)
+	thorn_enemy.set("max_health", 100000.0)
+	thorn_enemy.global_position = t3_player.global_position + Vector2(80, 0)
+	await process_frame
+	var enemy_hp_before := float(thorn_enemy.get("health"))
+	var derived: Dictionary = t3_player.get("derived_parameters")
+	derived["dodge"] = 0.0
+	t3_player.set("derived_parameters", derived)
+	t3_player.set("_damage_invulnerability_left", 0.0)
+	t3_player.call("take_damage", 10.0)
+	if float(thorn_enemy.get("health")) >= enemy_hp_before:
+		_fail("Expected Thorn Pact to reflect damage to nearby enemies.")
+		return
+	holder.queue_free()
+	current_scene = null
+
+	# FAB прокачки на карте с бейджем.
+	econ_main.set("pending_level_ups", 2)
+	econ_main.call("_show_battle_map")
+	await process_frame
+	var fab := econ_main.find_child("UpgradeFabButton", true, false) as Button
+	var badge := econ_main.find_child("UpgradeFabBadge", true, false) as Label
+	if fab == null or badge == null or badge.text != "2":
+		_fail("Expected the route map upgrade FAB with a pending-levels badge of 2.")
+		return
+	econ_main.queue_free()
+	await process_frame
+
+
+func _test_escape_navigation(main_scene: PackedScene) -> void:
+	var nav_main := main_scene.instantiate()
+	root.add_child(nav_main)
+	await process_frame
+
+	var escape_event := InputEventKey.new()
+	escape_event.keycode = KEY_ESCAPE
+	escape_event.pressed = true
+
+	# Настройки -> Esc -> меню.
+	nav_main.call("_show_settings_menu")
+	await process_frame
+	nav_main.call("_input", escape_event)
+	await process_frame
+	if nav_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected Escape on settings to return to the main menu.")
+		return
+
+	# Выбор персонажа -> Esc -> меню.
+	nav_main.call("_show_character_select")
+	await process_frame
+	nav_main.call("_input", escape_event)
+	await process_frame
+	if nav_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected Escape on character select to return to the main menu.")
+		return
+
+	# Выбор оружия -> Esc -> выбор персонажа.
+	nav_main.set("selected_character_id", "berserk")
+	nav_main.call("_show_weapon_select")
+	await process_frame
+	nav_main.call("_input", escape_event)
+	await process_frame
+	if nav_main.find_child("CharacterCard_berserk", true, false) == null:
+		_fail("Expected Escape on weapon select to return to character select.")
+		return
+
+	# Кодекс -> Esc -> меню.
+	nav_main.ui._show_codex_screen()
+	await process_frame
+	nav_main.call("_input", escape_event)
+	await process_frame
+	if nav_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected Escape on codex to return to the main menu.")
+		return
+
+	# Карточка персонажа кликабельна целиком (Button) и с hover-стилем.
+	nav_main.call("_show_character_select")
+	await process_frame
+	var card := nav_main.find_child("CharacterCard_berserk", true, false) as Button
+	if card == null:
+		_fail("Expected the whole character card to be a clickable Button.")
+		return
+	if not card.has_theme_stylebox_override("hover"):
+		_fail("Expected the character card to carry a hover highlight style.")
+		return
+	card.pressed.emit()
+	await process_frame
+	if nav_main.find_child("CharacterCard_berserk", true, false) != null:
+		_fail("Expected clicking the character card body to advance to weapon select.")
+		return
+
+	nav_main.queue_free()
+	await process_frame
+
+
+func _test_codex_screen(main_scene: PackedScene) -> void:
+	var codex_main := main_scene.instantiate()
+	root.add_child(codex_main)
+	await process_frame
+
+	var codex_button := codex_main.find_child("MainMenuCodexButton", true, false) as Button
+	if codex_button == null:
+		_fail("Expected the main menu to include the Codex button.")
+		return
+	codex_button.pressed.emit()
+	await process_frame
+	if codex_main.find_child("CodexScreen", true, false) == null:
+		_fail("Expected the Codex screen to open from the main menu.")
+		return
+
+	# Полнота данных кодекса.
+	var codex_data := load("res://scripts/codex_data.gd")
+	var monsters: Array = codex_data.monsters()
+	if monsters.size() != 17:
+		_fail("Expected codex to list all 17 monsters (11 standard + 4 elites + 2 bosses), got %d." % monsters.size())
+		return
+	for monster in monsters:
+		var abilities: Array = monster.get("abilities", [])
+		if abilities.is_empty():
+			_fail("Expected codex monster %s to have named abilities." % monster.get("id"))
+			return
+		for ability in abilities:
+			if str(ability.get("title", "")) == "" or str(ability.get("id", "")) == "":
+				_fail("Expected codex ability of %s to carry canonical id and title." % monster.get("id"))
+				return
+	var artifacts: Array = codex_data.artifacts()
+	var expected_artifacts: int = ProgressionData.ARTIFACTS.size() + ProgressionData.SHOP_ITEMS.size()
+	if artifacts.size() != expected_artifacts:
+		_fail("Expected codex artifacts (%d) to match progression data (%d)." % [artifacts.size(), expected_artifacts])
+		return
+	if codex_data.characters().size() != 3 or codex_data.stats().size() < 20:
+		_fail("Expected codex to cover 3 characters and the stat definitions.")
+		return
+
+	# Все разделы открываются.
+	for section_id in ["monsters", "artifacts", "stats", "characters"]:
+		var tab := codex_main.find_child("CodexTab_%s" % section_id, true, false) as Button
+		if tab == null:
+			_fail("Expected codex tab %s." % section_id)
+			return
+		tab.pressed.emit()
+		await process_frame
+		var section := codex_main.find_child("CodexSection_%s" % section_id, true, false)
+		if section == null or not (section as Control).visible:
+			_fail("Expected codex section %s to build and become visible." % section_id)
+			return
+
+	var back_button := codex_main.find_child("CodexBackButton", true, false) as Button
+	back_button.pressed.emit()
+	await process_frame
+	if codex_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected the codex back button to return to the main menu.")
+		return
+	codex_main.queue_free()
 	await process_frame
 
 

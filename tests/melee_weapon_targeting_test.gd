@@ -33,15 +33,15 @@ func _initialize() -> void:
 
 	var close_side_probe := enemy_scene.instantiate()
 	root.add_child(close_side_probe)
-	close_side_probe.global_position = Vector2(365, 300)
+	close_side_probe.global_position = Vector2(355, 300)
 
 	var far_enemy := enemy_scene.instantiate()
 	root.add_child(far_enemy)
-	far_enemy.global_position = Vector2(300, -280)
+	far_enemy.global_position = Vector2(300, -180)
 
 	var outside_range_enemy := enemy_scene.instantiate()
 	root.add_child(outside_range_enemy)
-	outside_range_enemy.global_position = Vector2(300, -340)
+	outside_range_enemy.global_position = Vector2(300, -240)
 
 	await process_frame
 	close_enemy.set_physics_process(false)
@@ -56,9 +56,9 @@ func _initialize() -> void:
 	outside_range_enemy.add_to_group("enemies")
 	close_enemy.global_position = Vector2(300, 250)
 	side_enemy.global_position = Vector2(480, 300)
-	close_side_probe.global_position = Vector2(365, 300)
-	far_enemy.global_position = Vector2(300, -280)
-	outside_range_enemy.global_position = Vector2(300, -340)
+	close_side_probe.global_position = Vector2(355, 300)
+	far_enemy.global_position = Vector2(300, -180)
+	outside_range_enemy.global_position = Vector2(300, -240)
 	close_enemy.set("health", close_enemy.get("max_health"))
 	side_enemy.set("health", side_enemy.get("max_health"))
 	close_side_probe.set("health", close_side_probe.get("max_health"))
@@ -75,43 +75,43 @@ func _initialize() -> void:
 	weapon.call("_attack")
 
 	if float(close_enemy.get("health")) >= float(close_enemy.get("max_health")):
-		push_error("Expected sword truncated cone to aim at and damage the closest enemy.")
+		push_error("Expected sword strip to aim at and damage the closest enemy.")
 		quit(1)
 		return
 
 	if float(side_enemy.get("health")) < float(side_enemy.get("max_health")):
-		push_error("Expected sword truncated cone to avoid enemies outside the wide base.")
+		push_error("Expected sword strip to avoid enemies far outside its narrow width.")
 		quit(1)
 		return
 
 	if float(close_side_probe.get("health")) >= float(close_side_probe.get("max_health")):
-		push_error("Expected sword truncated cone base to damage nearby enemies beside Berserk.")
+		push_error("Expected sword strip width to damage enemies within 120px lane beside Berserk.")
 		quit(1)
 		return
 
 	if float(far_enemy.get("health")) >= float(far_enemy.get("max_health")):
-		push_error("Expected sword truncated cone to reach enemies close to 600 radius.")
+		push_error("Expected sword strip to reach enemies close to 500 length.")
 		quit(1)
 		return
 
 	if float(outside_range_enemy.get("health")) < float(outside_range_enemy.get("max_health")):
-		push_error("Expected sword truncated cone to avoid enemies beyond its radius.")
+		push_error("Expected sword strip to avoid enemies beyond its 500 length.")
 		quit(1)
 		return
 
 	var edge_probe := enemy_scene.instantiate()
 	root.add_child(edge_probe)
-	edge_probe.global_position = Vector2(724, -124)
+	edge_probe.global_position = Vector2(360, -190)
 	if not bool(weapon.call("_is_enemy_inside_attack", player, edge_probe, Vector2.UP)):
-		push_error("Expected sword truncated cone to include enemies inside the wide outer arc.")
+		push_error("Expected sword strip to include enemies inside the 120px lane.")
 		quit(1)
 		return
 
 	var outside_angle_probe := enemy_scene.instantiate()
 	root.add_child(outside_angle_probe)
-	outside_angle_probe.global_position = Vector2(760, -86)
+	outside_angle_probe.global_position = Vector2(371, -190)
 	if bool(weapon.call("_is_enemy_inside_attack", player, outside_angle_probe, Vector2.UP)):
-		push_error("Expected sword truncated cone to reject enemies outside the outer width.")
+		push_error("Expected sword strip to reject enemies outside the 120px lane.")
 		quit(1)
 		return
 

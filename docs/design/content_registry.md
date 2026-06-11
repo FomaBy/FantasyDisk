@@ -1,6 +1,6 @@
 # FantasyDisk Content Registry
 
-Обновлено: 2026-06-10
+Обновлено: 2026-06-11
 
 Этот документ задает правило для всех будущих задач: любая игровая сущность должна иметь понятное имя, стабильный ID и место в документации. Рандом в игре может выбирать только из заранее определенных сущностей, а не создавать безымянный контент, на который потом невозможно сослаться.
 
@@ -126,7 +126,7 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `sound_wave.png` | Звуковая волна электрогитары | Реализовано |
 | `music_note.png` | Ноты гитарных атак | Реализовано |
 
-Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (46 шт., 128x128, прозрачный фон) перерисованы 2026-06-11 в единый фэнтези-стиль: золотой медальон с заклепками и объемной светотенью, внутренний диск с предметом (цветокоррекция, виньетка, верхний свет), акцентное свечение в цвет предмета, тень для светлых фонов. Генератор: `tools/restyle_artifact_icons.py` (оригиналы в `build/bg_backup/artifacts/`). Читаемость проверена при 40px на пергаменте магазина и темном фоне.
+Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (52 шт., 256x256). Финальный Design pass 2026-06-11: все активные артефакты переведены в high-quality epic dark fantasy artifact icons с прозрачным фоном, крупным центральным предметом, усиленной светотенью, яркими магическими акцентами, черненым металлом, костью/камнем, кожей, древней бумагой, кристаллами, рунами, трещинами и царапинами. Пайплайн: `tools/final_redesign_artifact_icons.py`; 40px QA preview: `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass) superseded.
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
 
@@ -184,6 +184,42 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `shard_marshal` | Маршал Осколков | `scenes/EliteCommander.tscn` | Командир толпы | `assets/sprites/elites/shard_marshal.png` | Пассив: одноразовая аура усиления ближайших врагов. Уникальная атака `shard_fan`: веер из 5 кристальных снарядов в сторону игрока после замаха 0.5с, кулдаун 6с | Реализовано |
 
 Все уникальные атаки элиток: параметры лежат в `scripts/enemy.gd::ELITE_ATTACK_CONFIG` (data-driven), фазы `windup/strike/recover/idle` доступны Animator через сигнал `elite_attack_phase_changed` и meta `elite_attack_phase`; урон атаки ограничен 25% max HP игрока. VFX: `elite_telegraph_circle.png`, `elite_shockwave_ring.png`, `elite_shadow_trail.png`, `elite_poison_lob.png`, `elite_crystal_shard.png` в `assets/sprites/effects/`.
+
+## Умения Монстров (Канонические Имена Кодекса)
+
+Зарегистрированы задачей «Кодекс» 2026-06-11. Это ссылочные имена: задачи и обсуждения
+ссылаются на них. Источник данных кодекса: `scripts/codex_data.gd::MONSTERS`.
+
+| ID умения | Игровое имя | Носитель | Что делает |
+| --- | --- | --- | --- |
+| `ragged_lunge` | Рваный Выпад | Рубака Разлома | Контактный удар с замахом (windup) |
+| `ash_shot` | Пепельный Выстрел | Пепельный Стрелок | Одиночный снаряд по герою |
+| `spark_rush` | Искровой Натиск | Искровой Беглец | Быстрое сближение с героем |
+| `stone_press` | Каменный Напор | Каменный Громила | Тяжелый контактный удар, высокий HP |
+| `bone_call` | Зов Костей | Костяной Зовущий | Призыв малых кусателей |
+| `void_bolt` | Сгусток Пустоты | Маг Пустоты | Магический снаряд |
+| `venom_spit` | Ядовитый Плевок | Ядовитый Плеватель | Дальнобойный плевок |
+| `rift_wall` | Стена Разлома | Щитоносец Разлома | Повышенная живучесть передней линии |
+| `swarm_bite` | Укус Стаи | Малый Кусатель | Частые слабые укусы, сила в числе |
+| `bone_rite` | Костяной Ритуал | Костяной Шаман | Ритуальный призыв свиты |
+| `spark_dive` | Пикирование Искры | Крылатая Искра | Hover-полет и заход поверх толпы |
+| `iron_shield` | Железный Щит | Железный Оплот | Пассив: периодический щит (снижение урона) |
+| `quaking_slam` | Сотрясающий Удар | Железный Оплот | Slam-волна: замах, кольцо 260, урон + отбрасывание |
+| `predator_dash` | Хищный Рывок | Ночной Сталкер | Пассив: рывок к игроку |
+| `shadow_strike` | Теневой Удар | Ночной Сталкер | Уход в тень, телепорт за спину, удар |
+| `rot_omen` | Гнилое Знамение | Чумной Пророк | Пассив: отложенный ядовитый взрыв зоны |
+| `venom_volley` | Ядовитый Залп | Чумной Пророк | 3 lob-снаряда, ядовитые лужи |
+| `shard_aura` | Аура Осколков | Маршал Осколков | Пассив: разовое усиление обычных монстров |
+| `shard_fan` | Веер Осколков | Маршал Осколков | Веер из 5 кристальных снарядов |
+| `rift_volley` | Залп Разлома | Страж Разлома | Веерный залп снарядов |
+| `rift_zone` | Зона Разлома | Страж Разлома | Отложенный взрыв размеченной зоны |
+| `riftling_call` | Призыв Осколышей | Страж Разлома | Призыв свиты тройками |
+| `warden_shield` | Щит Стража | Страж Разлома | Периодический щит |
+| `flicker_step` | Мерцающий Уход | Страж Разлома | Шанс полного уворота от удара |
+| `devourer_dash` | Рывок Пожирателя | Пожиратель Диска | Бросок через арену |
+| `disk_slam` | Удар Диска | Пожиратель Диска | Круговая зона удара |
+| `radial_burst` | Радиальный Взрыв | Пожиратель Диска | Кольцо снарядов во все стороны |
+| `devourer_frenzy` | Ярость Пожирателя | Пожиратель Диска | Энрейдж на низком HP |
 
 ## Боссы
 
@@ -264,12 +300,14 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `screen_event_background` | Фон экрана события | `assets/sprites/ui/screens/screen_event_background.png` | Активный фон Event, battle reward, upgrade, victory/death fallback screens |
 | `screen_shop_background` | Фон магазина | `assets/sprites/ui/screens/screen_shop_background.png` | Активный фон Shop screen |
 | `screen_campfire_background` | Фон костра | `assets/sprites/ui/screens/screen_campfire_background.png` | Активный фон Rest/Campfire screen |
+| `route_map_backdrop` | Жутковатый фон маршрутной карты | `assets/backgrounds/route_map_backdrop.png` | Низкоконтрастный dark fantasy фон full-screen route map, спокойная центральная зона под узлы и линии |
 | `stone_garden` | Каменный Сад | `assets/backgrounds/field_stone_garden.png` | Базовый фон |
 | `marsh` | Топь | `assets/backgrounds/field_marsh.png` | Болотный фон |
 | `dry_road` | Сухая Дорога | `assets/backgrounds/field_dry_road.png` | Дорожный фон |
 | `meadow` | Луг | `assets/backgrounds/field_meadow.png` | Зеленый фон |
 
 Все 4 боевых фона перерисованы в нативном разрешении 2560x1440 (2026-06-11): 1:1 к арене, без runtime-апскейла, с равномерными наземными ориентирами по всей площади (генератор `tools/redraw_arena_backgrounds.py`, бэкап оригиналов в `build/bg_backup/`).
+`route_map_backdrop` добавлен 2026-06-11 как отдельный 2560x1440 фон для маршрутной карты: мрачная пустошь/туманное предгорье, детали вынесены к краям, центр приглушен для читаемости узлов.
 
 ## Препятствия
 
@@ -406,6 +444,25 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | `golden_route_mark` | Золотая метка пути | +15% XP gain и money gain |
 | `glass_edge` | Стеклянная кромка | +20% crit damage, -8 max HP |
 
+## Тиры Артефактов
+
+Поле `tier` (1-3) есть у всех артефактов в `ProgressionData.ARTIFACTS` — третья арт-итерация рисует иконки «круче = сильнее» по этому полю. Поле `class_affinity` задает классовую привязку (пустой список = универсальный).
+
+- **Tier 2 (редкие, 16 шт.)**: `heavy_totem`, `blood_sigil`, `void_ink`, `echo_pick`, `cracked_shield`, `heavy_grip`, `warriors_rage`, `ash_page`, `ink_candle`, `bass_cable`, `cursed_crown`, `fragile_heart`, `greedy_purse`, `burning_shard`, `golden_route_mark`, `glass_edge`.
+- **Tier 3 (легендарные, билдообразующие)**:
+
+| ID | Игровое имя | Механика |
+| --- | --- | --- |
+| `echo_core` | Эхо Разлома | Каждый 5-й удар — взрыв 80% урона по области вокруг цели |
+| `split_core` | Ядро Расщепления | Темный маг/Гитарист: +1 снаряд и луч всем атакам |
+| `blood_pact` | Кровавый Рубеж | HP ниже 30% — +50% урона |
+| `leech_heart` | Сердце Пиявки | Убийство возвращает 2% максимального HP |
+| `thorn_pact` | Договор Шипов | Полученный урон отражается x2 во врагов рядом |
+| `phantom_step` | Призрачный Шаг | Уворот дает +40% скорости движения на 2с |
+
+- Остальные артефакты — Tier 1 (эффекты усилены x2.5 от прежних).
+- Иконки новых tier-3 — временные копии тематически близких (до арт-итерации Codex по тирам).
+
 ## Магазинные Предметы
 
 | ID | Игровое имя | Эффект |
@@ -424,7 +481,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 
 | Группа | ID / naming | Каноническая папка / файл | Статус |
 | --- | --- | --- | --- |
-| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS` | `assets/sprites/ui/icons/artifacts/` | Реализовано |
+| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 256x256 epic dark fantasy transparent item icons | `assets/sprites/ui/icons/artifacts/` | Реализовано (final redesign 2026-06-11) |
 | Shop-only item icons | `shop_<shop_item_id>.png` для всех `ProgressionData.SHOP_ITEMS` | `assets/sprites/ui/icons/shop/` | Реализовано |
 | Shop slot normal | `ui_shop_artifact_slot_frame` | `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png` | Реализовано |
 | Shop slot hover | `ui_shop_artifact_slot_hover` | `assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png` | Реализовано |
@@ -435,7 +492,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | Game cursor hover | `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png`, hotspot `(5, 4)` | Реализовано |
 | Game cursor attack | `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png`, hotspot `(5, 4)` | Реализовано |
 
-Artifact/shop icons имеют прозрачный фон, размер `128x128`, stylized fantasy cartoon style и не используют текст/emoji/default placeholders. Shop item filenames намеренно следуют схеме `shop_<shop_item_id>.png`, поэтому для `shop_damage` путь выглядит как `assets/sprites/ui/icons/shop/shop_shop_damage.png`. Фактические PNG и `.import` файлы готовы в текущем checkout; backend hooks могут подхватывать эти файлы вместо fallback.
+Shop-only icons имеют прозрачный фон, размер `128x128`, stylized fantasy cartoon style и не используют текст/emoji/default placeholders. Artifact icons находятся в final epic dark fantasy pass 256x256 выше. Shop item filenames намеренно следуют схеме `shop_<shop_item_id>.png`, поэтому для `shop_damage` путь выглядит как `assets/sprites/ui/icons/shop/shop_shop_damage.png`. Фактические PNG и `.import` файлы готовы в текущем checkout; backend hooks могут подхватывать эти файлы вместо fallback.
 
 ## Уровни Возвышения (Метапрогрессия)
 

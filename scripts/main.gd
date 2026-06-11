@@ -281,6 +281,13 @@ var ui
 var route
 var combat
 var meta_state := {}
+# Единый Escape-назад: текущий экран регистрирует действие возврата;
+# сбрасывается при каждой очистке UI. В бою Escape обрабатывается отдельно (пауза).
+var ui_escape_action := Callable()
+# Фиксация наборов предложений (анти-реролл): набор живет до легального сброса.
+var level_up_offer := []
+var attribute_offer := []
+var attribute_rerolls_left := 0
 
 
 func _init() -> void:
@@ -349,6 +356,8 @@ func _input(event: InputEvent) -> void:
 				ui._resume_game()
 			elif not _has_pause_reason("escape_menu"):
 				ui._show_pause_menu()
+		elif ui_escape_action.is_valid():
+			ui_escape_action.call()
 
 
 func _process(delta: float) -> void:
@@ -482,6 +491,7 @@ func _clear_world() -> void:
 
 
 func _clear_ui() -> void:
+	ui_escape_action = Callable()
 	if ui_layer != null and is_instance_valid(ui_layer):
 		ui_layer.queue_free()
 	ui_layer = null

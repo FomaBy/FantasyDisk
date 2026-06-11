@@ -86,6 +86,9 @@ var _action_tween: Tween = null
 var _hit_flash_tween: Tween = null
 var _facing_direction := Vector2.RIGHT
 var _damage_invulnerability_left := 0.0
+var _echo_hit_counter := 0
+var _dodge_rush_tween: Tween = null
+var _low_hp_active := false
 
 
 func _ready() -> void:
@@ -251,6 +254,7 @@ func _physics_process(_delta: float) -> void:
 	velocity = direction.normalized() * speed
 	move_and_slide()
 	_update_movement_animation(_delta)
+	_update_low_hp_state()
 
 
 func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void:
@@ -259,7 +263,8 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void
 		_update_sprite_facing(_facing_direction)
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_action"):
-		rig.play_action(action_id, _facing_direction)
+		var animation_variant: String = weapon_id if action_id == "attack" else character_id
+		rig.play_action(action_id, _facing_direction, animation_variant)
 
 	if _action_tween != null and _action_tween.is_valid():
 		_action_tween.kill()
@@ -313,14 +318,17 @@ func take_damage(amount: float, _source := "") -> bool:
 	if randf() < clampf(float(derived_parameters.get("dodge", 0.0)), 0.0, 0.8):
 		_show_dodge_popup()
 		_play_sfx("dodge")
+		_trigger_dodge_rush()
 		return false
 
 	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, 0.95)
-	health = max(health - amount * (1.0 - defense), 0.0)
+	var final_damage := amount * (1.0 - defense)
+	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
 	_play_hit_feedback()
 	_play_sfx("player_hit")
 	damaged.emit(amount)
+	_trigger_thorn_reflect(final_damage)
 
 	if health <= 0.0:
 		var rig := _cutout_rig()
@@ -331,6 +339,45 @@ func take_damage(amount: float, _source := "") -> bool:
 	return true
 
 
+func _trigger_thorn_reflect(received_damage: float) -> void:
+	var reflect := float(run_modifiers.get("thorn_reflect_multiplier", 0.0))
+	if reflect <= 0.0 or received_damage <= 0.0 or not is_inside_tree():
+		return
+	var reflected := received_damage * reflect
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		if global_position.distance_squared_to(enemy_node.global_position) <= 200.0 * 200.0 and enemy_node.has_method("take_damage"):
+			enemy_node.take_damage(reflected)
+
+
+func _trigger_dodge_rush() -> void:
+	if float(run_modifiers.get("dodge_rush_bonus", 0.0)) <= 0.0:
+		return
+	run_modifiers["dodge_rush_active"] = 1.0
+	_apply_stat_scaling(false, max_health)
+	if _dodge_rush_tween != null and _dodge_rush_tween.is_valid():
+		_dodge_rush_tween.kill()
+	_dodge_rush_tween = create_tween()
+	_dodge_rush_tween.tween_interval(2.0)
+	_dodge_rush_tween.tween_callback(func() -> void:
+		run_modifiers["dodge_rush_active"] = 0.0
+		_apply_stat_scaling(false, max_health)
+	)
+
+
+func _update_low_hp_state() -> void:
+	if float(run_modifiers.get("low_hp_damage_bonus", 0.0)) <= 0.0:
+		return
+	var active := health < max_health * 0.3
+	if active == _low_hp_active:
+		return
+	_low_hp_active = active
+	run_modifiers["low_hp_active"] = 1.0 if active else 0.0
+	_apply_stat_scaling(false, max_health)
+
+
 func apply_reward(reward: Dictionary) -> void:
 	var old_max_health := max_health
 
@@ -339,11 +386,12 @@ func apply_reward(reward: Dictionary) -> void:
 			stats[stat_id] = float(stats.get(stat_id, 0.0)) + float(reward["stats"][stat_id])
 
 	if reward.has("mods"):
-		for modifier_id in reward["mods"].keys():
-			if modifier_id.ends_with("_multiplier"):
-				run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 1.0)) * float(reward["mods"][modifier_id])
-			else:
-				run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 0.0)) + float(reward["mods"][modifier_id])
+		_apply_reward_mods(reward["mods"])
+	# Классовая часть артефакта применяется только совпадающему классу (честный расчет).
+	if reward.has("affinity_mods"):
+		var affinity: Array = reward.get("class_affinity", [])
+		if affinity.is_empty() or affinity.has(character_id):
+			_apply_reward_mods(reward["affinity_mods"])
 
 	if reward.get("kind", "") == "artifact":
 		# Храним id и title: id нужен для иконок HUD/паузы, title — для текстов.
@@ -356,6 +404,37 @@ func apply_reward(reward: Dictionary) -> void:
 
 	for weapon in _equipped_weapons():
 		_apply_weapon_scaling(weapon)
+
+
+func _apply_reward_mods(mods: Dictionary) -> void:
+	for modifier_id in mods.keys():
+		if modifier_id.ends_with("_multiplier"):
+			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 1.0)) * float(mods[modifier_id])
+		else:
+			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 0.0)) + float(mods[modifier_id])
+
+
+func on_weapon_hit(enemy: Node2D) -> void:
+	# «Эхо Разлома» (tier 3): каждый N-й удар — взрыв по области вокруг цели.
+	var every := int(run_modifiers.get("echo_blast_every", 0.0))
+	if every <= 0 or enemy == null or not is_instance_valid(enemy):
+		return
+	_echo_hit_counter += 1
+	if _echo_hit_counter < every:
+		return
+	_echo_hit_counter = 0
+	var blast_position := enemy.global_position
+	var blast_damage := float(derived_parameters.get("damage", 10.0)) * 0.8
+	var scene := get_tree().current_scene
+	if scene == null:
+		scene = get_tree().root
+	AttackVfx.orb_burst(scene, blast_position, 140.0, Color(1.0, 0.82, 0.30, 0.5))
+	for other in get_tree().get_nodes_in_group("enemies"):
+		var other_node := other as Node2D
+		if other_node == null or not is_instance_valid(other_node):
+			continue
+		if other_node.global_position.distance_squared_to(blast_position) <= 140.0 * 140.0 and other_node.has_method("take_damage"):
+			other_node.take_damage(blast_damage)
 
 
 func gain_xp(amount: int) -> void:
