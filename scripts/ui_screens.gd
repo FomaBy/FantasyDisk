@@ -658,16 +658,42 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 
 
 func _show_settings_menu() -> void:
-	var box := _create_menu_box("Settings", "Video and controls")
+	var box := _create_menu_box("Настройки", "Экран, звук и управление")
 
-	var resolution_label := _make_section_label("Resolution")
-	box.add_child(resolution_label)
+	box.add_child(_make_section_label("— Экран —"))
 
+	var screen_count := DisplayServer.get_screen_count()
+	if screen_count > 1:
+		box.add_child(_make_section_label("Монитор"))
+		var screen_options := OptionButton.new()
+		screen_options.name = "SettingsScreenOption"
+		screen_options.custom_minimum_size = Vector2(420, 48)
+		_style_button_control(screen_options)
+		for screen_index in range(screen_count):
+			var size := DisplayServer.screen_get_size(screen_index)
+			screen_options.add_item("Экран %d (%dx%d)" % [screen_index + 1, size.x, size.y])
+		screen_options.selected = clampi(game.selected_screen_index, 0, screen_count - 1)
+		screen_options.item_selected.connect(func(index: int) -> void:
+			game.selected_screen_index = index
+			_apply_video_settings()
+			_show_settings_menu()
+		)
+		box.add_child(screen_options)
+
+	box.add_child(_make_section_label("Разрешение (оконный режим)"))
 	var resolution_options := OptionButton.new()
+	resolution_options.name = "SettingsResolutionOption"
 	resolution_options.custom_minimum_size = Vector2(420, 48)
 	_style_button_control(resolution_options)
-	for resolution in game.RESOLUTION_OPTIONS:
+	var usable_size := Vector2i(99999, 99999)
+	if DisplayServer.get_name() != "headless":
+		usable_size = DisplayServer.screen_get_usable_rect(clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))).size
+	for option_index in range(game.RESOLUTION_OPTIONS.size()):
+		var resolution: Vector2i = game.RESOLUTION_OPTIONS[option_index]
 		resolution_options.add_item("%dx%d" % [resolution.x, resolution.y])
+		# Разрешения больше выбранного монитора недоступны.
+		if resolution.x > usable_size.x or resolution.y > usable_size.y:
+			resolution_options.set_item_disabled(option_index, true)
 	resolution_options.selected = game.selected_resolution_index
 	resolution_options.item_selected.connect(func(index: int) -> void:
 		game.selected_resolution_index = index
@@ -675,9 +701,7 @@ func _show_settings_menu() -> void:
 	)
 	box.add_child(resolution_options)
 
-	var mode_label := _make_section_label("Window Mode")
-	box.add_child(mode_label)
-
+	box.add_child(_make_section_label("Режим окна"))
 	var mode_options := OptionButton.new()
 	mode_options.custom_minimum_size = Vector2(420, 48)
 	_style_button_control(mode_options)
@@ -690,13 +714,12 @@ func _show_settings_menu() -> void:
 	)
 	box.add_child(mode_options)
 
-	var apply_button := _make_button("Apply")
-	apply_button.pressed.connect(_apply_video_settings)
-	box.add_child(apply_button)
+	box.add_child(_make_section_label("— Звук —"))
+	_add_volume_row(box, "Общая", "master_volume", "")
+	_add_volume_row(box, "Музыка", "music_volume", "music_enabled")
+	_add_volume_row(box, "Эффекты", "sfx_volume", "sfx_enabled")
 
-	var controls_label := _make_section_label("Key Bindings")
-	box.add_child(controls_label)
-
+	box.add_child(_make_section_label("— Управление —"))
 	for input_action in game.INPUT_ACTIONS:
 		var action_name: String = input_action["action"]
 		var row := HBoxContainer.new()
@@ -719,7 +742,7 @@ func _show_settings_menu() -> void:
 		row.add_child(bind_button)
 
 	var hint_label := Label.new()
-	hint_label.text = "Click a binding, then press a key. Esc cancels rebinding."
+	hint_label.text = "Клик по биндингу, затем нажми клавишу. Esc отменяет."
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_label.add_theme_font_size_override("font_size", 14)
 	hint_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.82, 1.0))
@@ -734,6 +757,59 @@ func _show_settings_menu() -> void:
 	back_button.pressed.connect(settings_back)
 	box.add_child(back_button)
 	game.ui_escape_action = settings_back
+
+
+func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enabled_key: String) -> void:
+	var row := HBoxContainer.new()
+	row.name = "VolumeRow_%s" % volume_key
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 12)
+	box.add_child(row)
+
+	var label := Label.new()
+	label.text = title
+	label.custom_minimum_size = Vector2(110, 36)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_color_override("font_color", Color(0.86, 0.9, 0.95, 1.0))
+	row.add_child(label)
+
+	var slider := HSlider.new()
+	slider.name = "VolumeSlider_%s" % volume_key
+	slider.min_value = 0.0
+	slider.max_value = 100.0
+	slider.step = 5.0
+	slider.custom_minimum_size = Vector2(240, 36)
+	slider.value = float(game.audio_settings.get(volume_key, 1.0)) * 100.0
+	slider.value_changed.connect(func(value: float) -> void:
+		game.audio_settings[volume_key] = value / 100.0
+		game._apply_audio_settings()
+		game.save_game_settings()
+	)
+	row.add_child(slider)
+
+	var value_label := Label.new()
+	value_label.custom_minimum_size = Vector2(54, 36)
+	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	value_label.text = "%d%%" % int(slider.value)
+	value_label.add_theme_color_override("font_color", Color(0.95, 0.86, 0.45, 1.0))
+	slider.value_changed.connect(func(value: float) -> void:
+		value_label.text = "%d%%" % int(value)
+	)
+	row.add_child(value_label)
+
+	if enabled_key != "":
+		var toggle := CheckBox.new()
+		toggle.name = "VolumeToggle_%s" % enabled_key
+		toggle.text = "вкл"
+		toggle.button_pressed = bool(game.audio_settings.get(enabled_key, true))
+		slider.editable = toggle.button_pressed
+		toggle.toggled.connect(func(pressed: bool) -> void:
+			game.audio_settings[enabled_key] = pressed
+			slider.editable = pressed
+			game._apply_audio_settings()
+			game.save_game_settings()
+		)
+		row.add_child(toggle)
 
 
 func _show_pause_menu() -> void:
@@ -1874,25 +1950,39 @@ func _action_label(action_name: String) -> String:
 func _apply_video_settings() -> void:
 	game.selected_resolution_index = clampi(game.selected_resolution_index, 0, game.RESOLUTION_OPTIONS.size() - 1)
 	game.selected_window_mode_index = clampi(game.selected_window_mode_index, 0, game.WINDOW_MODE_OPTIONS.size() - 1)
+	if DisplayServer.get_name() == "headless":
+		game.save_game_settings()
+		return
 
-	var resolution: Vector2i = game.RESOLUTION_OPTIONS[game.selected_resolution_index]
-	DisplayServer.window_set_size(resolution)
+	var screen_count := DisplayServer.get_screen_count()
+	game.selected_screen_index = clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))
+	var screen: int = game.selected_screen_index
+	# usable rect учитывает масштаб ОС, док и меню-бар: окно не вылезет за экран.
+	var usable := DisplayServer.screen_get_usable_rect(screen)
 
 	match game.selected_window_mode_index:
 		1:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
+			DisplayServer.window_set_current_screen(screen)
+			DisplayServer.window_set_position(usable.position)
+			DisplayServer.window_set_size(usable.size)
 		2:
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+			DisplayServer.window_set_current_screen(screen)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		_:
+			var resolution: Vector2i = game.RESOLUTION_OPTIONS[game.selected_resolution_index]
+			resolution.x = mini(resolution.x, usable.size.x)
+			resolution.y = mini(resolution.y, usable.size.y)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+			DisplayServer.window_set_current_screen(screen)
+			DisplayServer.window_set_size(resolution)
+			# Центр выбранного монитора: позиция считается от origin его usable rect.
+			DisplayServer.window_set_position(usable.position + (usable.size - resolution) / 2)
 
-	if game.selected_window_mode_index != 2:
-		var screen_id := DisplayServer.window_get_current_screen()
-		var screen_size := DisplayServer.screen_get_size(screen_id)
-		DisplayServer.window_set_position((screen_size - resolution) / 2)
+	game.save_game_settings()
 
 
 func _create_menu_box(title: String, subtitle: String, screen_background_id := "") -> VBoxContainer:

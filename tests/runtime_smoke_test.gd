@@ -922,6 +922,7 @@ func _initialize() -> void:
 	await _test_escape_navigation(main_scene)
 	await _test_economy_tiers_and_fab(main_scene)
 	await _test_class_relevance_and_offer_fixation(main_scene)
+	_test_settings_persistence_and_audio()
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1756,6 +1757,46 @@ func _test_weapon_aiming() -> void:
 	holder.queue_free()
 	current_scene = null
 	await process_frame
+
+
+func _test_settings_persistence_and_audio() -> void:
+	# Save/load roundtrip настроек.
+	var game_settings := load("res://scripts/game_settings.gd")
+	var saved := {
+		"resolution_index": 2, "window_mode_index": 1, "screen_index": 1,
+		"master_volume": 0.85, "music_volume": 0.4, "sfx_volume": 0.65,
+		"music_enabled": false, "sfx_enabled": true,
+	}
+	game_settings.save_settings(saved)
+	var loaded: Dictionary = game_settings.load_settings()
+	for key in saved.keys():
+		if typeof(loaded[key]) == TYPE_FLOAT:
+			if absf(float(loaded[key]) - float(saved[key])) > 0.001:
+				_fail("Expected settings key %s to survive the save/load roundtrip." % key)
+				return
+		elif loaded[key] != saved[key]:
+			_fail("Expected settings key %s to survive the save/load roundtrip." % key)
+			return
+	# Вернуть дефолты, чтобы не влиять на следующие запуски тестов.
+	game_settings.save_settings(game_settings.DEFAULTS.duplicate(true))
+
+	# Аудио-шины созданы и реагируют на настройки.
+	var audio := root.get_node_or_null("/root/AudioManager")
+	if audio == null:
+		_fail("Expected the AudioManager autoload to exist.")
+		return
+	if AudioServer.get_bus_index("Music") == -1 or AudioServer.get_bus_index("SFX") == -1:
+		_fail("Expected Music and SFX audio buses to be created.")
+		return
+	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 0.5, "sfx_volume": 1.0, "music_enabled": false, "sfx_enabled": true})
+	var music_bus := AudioServer.get_bus_index("Music")
+	if not AudioServer.is_bus_mute(music_bus):
+		_fail("Expected the music toggle to mute the Music bus.")
+		return
+	if absf(AudioServer.get_bus_volume_db(music_bus) - linear_to_db(0.5)) > 0.1:
+		_fail("Expected the music slider to set bus volume (value preserved while muted).")
+		return
+	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 1.0, "sfx_volume": 1.0, "music_enabled": true, "sfx_enabled": true})
 
 
 func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
