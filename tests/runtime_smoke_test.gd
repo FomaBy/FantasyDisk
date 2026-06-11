@@ -26,8 +26,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var main_menu_actions := main.find_child("MainMenuActions", true, false) as VBoxContainer
-	if main_menu_actions == null or main_menu_actions.get_child_count() != 3:
-		push_error("Expected main menu to expose exactly three action buttons.")
+	if main_menu_actions == null or main_menu_actions.get_child_count() != 4:
+		push_error("Expected main menu to expose four action buttons (start, settings, codex, exit).")
 		quit(1)
 		return
 	if main_menu_actions.global_position.x > 140.0:
@@ -39,8 +39,8 @@ func _initialize() -> void:
 		var button := child as Button
 		if button != null:
 			main_menu_button_texts.append(button.text)
-	if main_menu_button_texts != ["Начать новую игру", "Настройки", "Выйти из игры"]:
-		push_error("Expected main menu buttons to be start/settings/exit only.")
+	if main_menu_button_texts != ["Начать новую игру", "Настройки", "Кодекс", "Выйти из игры"]:
+		push_error("Expected main menu buttons to be start/settings/codex/exit.")
 		quit(1)
 		return
 
@@ -862,6 +862,7 @@ func _initialize() -> void:
 	await _test_victory_flow(main)
 	await _test_elite_flow(main_scene)
 	await _test_debug_free_pick(main_scene)
+	await _test_codex_screen(main_scene)
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1657,6 +1658,68 @@ func _test_weapon_aiming() -> void:
 
 	holder.queue_free()
 	current_scene = null
+	await process_frame
+
+
+func _test_codex_screen(main_scene: PackedScene) -> void:
+	var codex_main := main_scene.instantiate()
+	root.add_child(codex_main)
+	await process_frame
+
+	var codex_button := codex_main.find_child("MainMenuCodexButton", true, false) as Button
+	if codex_button == null:
+		_fail("Expected the main menu to include the Codex button.")
+		return
+	codex_button.pressed.emit()
+	await process_frame
+	if codex_main.find_child("CodexScreen", true, false) == null:
+		_fail("Expected the Codex screen to open from the main menu.")
+		return
+
+	# Полнота данных кодекса.
+	var codex_data := load("res://scripts/codex_data.gd")
+	var monsters: Array = codex_data.monsters()
+	if monsters.size() != 17:
+		_fail("Expected codex to list all 17 monsters (11 standard + 4 elites + 2 bosses), got %d." % monsters.size())
+		return
+	for monster in monsters:
+		var abilities: Array = monster.get("abilities", [])
+		if abilities.is_empty():
+			_fail("Expected codex monster %s to have named abilities." % monster.get("id"))
+			return
+		for ability in abilities:
+			if str(ability.get("title", "")) == "" or str(ability.get("id", "")) == "":
+				_fail("Expected codex ability of %s to carry canonical id and title." % monster.get("id"))
+				return
+	var artifacts: Array = codex_data.artifacts()
+	var expected_artifacts: int = ProgressionData.ARTIFACTS.size() + ProgressionData.SHOP_ITEMS.size()
+	if artifacts.size() != expected_artifacts:
+		_fail("Expected codex artifacts (%d) to match progression data (%d)." % [artifacts.size(), expected_artifacts])
+		return
+	if codex_data.characters().size() != 3 or codex_data.stats().size() < 20:
+		_fail("Expected codex to cover 3 characters and the stat definitions.")
+		return
+
+	# Все разделы открываются.
+	for section_id in ["monsters", "artifacts", "stats", "characters"]:
+		var tab := codex_main.find_child("CodexTab_%s" % section_id, true, false) as Button
+		if tab == null:
+			_fail("Expected codex tab %s." % section_id)
+			return
+		tab.pressed.emit()
+		await process_frame
+		var section := codex_main.find_child("CodexSection_%s" % section_id, true, false)
+		if section == null or not (section as Control).visible:
+			_fail("Expected codex section %s to build and become visible." % section_id)
+			return
+
+	var back_button := codex_main.find_child("CodexBackButton", true, false) as Button
+	back_button.pressed.emit()
+	await process_frame
+	if codex_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected the codex back button to return to the main menu.")
+		return
+	codex_main.queue_free()
 	await process_frame
 
 

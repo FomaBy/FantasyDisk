@@ -6,6 +6,17 @@
 
 Канонические ID и игровые названия всех сущностей находятся в `docs/design/content_registry.md`. Любая новая сущность должна появляться там в той же задаче, в которой она добавляется в игру.
 
+Domain docs для подробностей по областям:
+- `docs/design/systems/combat.md`;
+- `docs/design/systems/route_map.md`;
+- `docs/design/systems/menus_ui.md`;
+- `docs/design/systems/characters_weapons.md`;
+- `docs/design/systems/enemies_bosses.md`;
+- `docs/design/systems/progression_balance.md`;
+- `docs/design/systems/visual_style_assets.md`;
+- `docs/design/systems/animation.md`;
+- `docs/design/systems/technical_architecture.md`.
+
 ## Проект
 
 - Движок: Godot 4.
@@ -351,6 +362,12 @@ Back-end integration complete: `scripts/ui_screens.gd` сначала ищет �
 - В headless-режиме (smoke tests) аудио полностью отключено, чтобы не оставлять висячие AudioStreamPlayback при выходе.
 - Громкость: музыка -8 dB, SFX -4 dB, шина Master.
 
+## Кодекс (Энциклопедия)
+
+Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»).
+
+Разделы: Персонажи (3 класса, стиль игры, сильные/слабые стороны, оружие), Монстры (11 обычных + 4 элитки + 2 босса, поведение и названные умения), Артефакты (все из ARTIFACTS + SHOP_ITEMS с иконками), Характеристики (8 базовых + производные из STAT_DEFINITIONS с влияниями). Разделы строятся лениво при первом открытии вкладки и кэшируются — меню не фризит.
+
 ## Пауза
 
 Система паузы реализована через причины паузы. Основные причины:
@@ -568,6 +585,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 - В покое сборка пиксельно идентична исходному full-art PNG; зоны конечностей стерты из торса только за пределами силуэта тела (внутренние дырки заполнены инпейнтом), поэтому при взмахах нет дыр.
 - Разворот в сторону движения — зеркалирование `Pelvis.scale.x`; вертикальное движение сохраняет горизонтальный facing. Манифест хранит `base_facing` (куда смотрит исходный арт): герои нарисованы вправо (+1), все мобы/элитки/боссы — влево (-1), поэтому моб, идущий вправо, зеркалится и не двигается спиной вперед. Итоговый знак: `facing_sign * base_facing`.
 - Per-style профили движения: humanoid, heavy/guard, beast/stalker, robed, robed_walker, floating_robed, flyer, blob, colossus.
+- Player polish 2026-06-11: `walk_blend_rate` и `direction_blend_rate` задаются профилем движения. `berserk`, `dark_mage` и `guitarist` имеют отдельные motion profiles, чтобы старт/остановка, разворот, weight shift и шаг не выглядели одинаково.
 
 Игрок:
 - `scenes/Player.tscn` сохраняет `VisualRoot/Body` как скрытый `AnimatedSprite2D` fallback и источник кадров.
@@ -575,7 +593,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 - `WeaponSocket` остается в `VisualRoot` для совместимости с оружием, но его позиция и вращение следуют за `WeaponSocketMount` (закреплен на руке атаки в `Torso`).
 - Берсерк, Темный маг и Гитарист переведены на общий нарезанный rig.
 - Берсерк по-прежнему имеет `berserk_walk_sheet_v2.png` как fallback/resource animation sheet.
-- Движение: сглаженный `walk_blend`, противофазные ноги с подъемом стопы, маховые руки, body bob, наклон в сторону движения, idle breathing.
+- Движение: сглаженный `walk_blend`, противофазные ноги с подъемом стопы, маховые руки, body bob, наклон в сторону движения, idle breathing. У Темного мага отдельный более спокойный walk profile с меньшим bob/lean и читаемым переносом веса после rework ног.
 
 Канонические состояния игрока:
 - `idle`
@@ -599,8 +617,10 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
 Специальные движения атак (видимые жесты конечностей):
 - `attack`: замах руки атаки назад (anticipation) и широкий удар вперед с выпадом корпуса и squash; у существ без конечностей (Disk Devourer, Venom Spitter) — лансж со squash-snap;
+- `attack` Берсерка получает animation variant из текущего `weapon_id`: `sword` читается как короткий линейный thrust вперед, `axe` как широкая горизонтальная arc-поза, `hammer` как overhead lift + downward slam. Это визуальный слой rig-а; damage shapes, fire interval и active windows остаются в weapon/backend конфигурации.
 - `shoot`: отдача корпуса и оружия/руки назад-вверх;
 - `cast`: подъем обеих рук/посоха/черепа с подъемом корпуса и удержанием позы;
+- Уникальные атаки элиток получают animation variant из backend-фазы `<elite_behavior>:<elite_attack_id>:<phase>` и используют длительность `windup/strike/recover` из `ELITE_ATTACK_CONFIG`: Iron Bastion поднимается в slam windup и резко проседает на strike; Night Stalker сжимается в crouch и делает forward lunge; Plague Prophet делает ritual arm raise/throw; Shard Marshal разводит руки и затем жестом выбрасывает shard fan.
 - `hit`: красная вспышка и короткая тряска;
 - `death`: при гибели враг оставляет `DeathGhostRig` (копию рига), которая падает, сминается и растворяется (`spawn_death_ghost` в `scripts/cutout_rig_2d.gd`).
 

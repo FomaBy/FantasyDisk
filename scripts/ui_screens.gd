@@ -92,6 +92,12 @@ func _show_main_menu() -> void:
 	settings_button.pressed.connect(_show_settings_menu)
 	action_box.add_child(settings_button)
 
+	var codex_button := _make_button("Кодекс")
+	codex_button.name = "MainMenuCodexButton"
+	codex_button.custom_minimum_size = Vector2(380, 62)
+	codex_button.pressed.connect(_show_codex_screen)
+	action_box.add_child(codex_button)
+
 	var exit_button := _make_button("Выйти из игры")
 	exit_button.name = "MainMenuExitButton"
 	exit_button.custom_minimum_size = Vector2(380, 62)
@@ -128,6 +134,226 @@ func _show_character_select() -> void:
 	var back_button := _make_button("Назад")
 	back_button.pressed.connect(_show_main_menu)
 	box.add_child(back_button)
+
+
+const CODEX_DATA := preload("res://scripts/codex_data.gd")
+const CODEX_SECTIONS := [
+	{"id": "characters", "title": "Персонажи"},
+	{"id": "monsters", "title": "Монстры"},
+	{"id": "artifacts", "title": "Артефакты"},
+	{"id": "stats", "title": "Характеристики"},
+]
+
+
+func _show_codex_screen() -> void:
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "CodexScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.ui_layer.add_child(root)
+
+	var background := ColorRect.new()
+	background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	background.color = Color(0.030, 0.034, 0.055, 0.985)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(background)
+
+	var layout := VBoxContainer.new()
+	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layout.offset_left = 48.0
+	layout.offset_top = 26.0
+	layout.offset_right = -48.0
+	layout.offset_bottom = -26.0
+	layout.add_theme_constant_override("separation", 14)
+	root.add_child(layout)
+
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 18)
+	layout.add_child(header)
+
+	var title := Label.new()
+	title.text = "Кодекс"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	header.add_child(title)
+
+	var back_button := _make_button("Назад в меню")
+	back_button.name = "CodexBackButton"
+	back_button.custom_minimum_size = Vector2(240, 54)
+	back_button.pressed.connect(_show_main_menu)
+	header.add_child(back_button)
+
+	var tabs_row := HBoxContainer.new()
+	tabs_row.name = "CodexTabs"
+	tabs_row.add_theme_constant_override("separation", 10)
+	layout.add_child(tabs_row)
+
+	var content := PanelContainer.new()
+	content.name = "CodexContent"
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_theme_stylebox_override("panel", _panel_style())
+	layout.add_child(content)
+
+	for section in CODEX_SECTIONS:
+		var section_id := str(section["id"])
+		var tab_button := _make_button(str(section["title"]))
+		tab_button.name = "CodexTab_%s" % section_id
+		tab_button.custom_minimum_size = Vector2(220, 50)
+		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
+		tabs_row.add_child(tab_button)
+
+	_show_codex_section(content, "characters")
+
+
+func _show_codex_section(content: PanelContainer, section_id: String) -> void:
+	# Ленивое построение: раздел собирается при первом открытии и кэшируется
+	# внутри экрана, остальные скрываются — меню не фризит на старте.
+	if content == null or not is_instance_valid(content):
+		return
+	for child in content.get_children():
+		child.visible = false
+	var existing := content.get_node_or_null("CodexSection_%s" % section_id)
+	if existing != null:
+		existing.visible = true
+		return
+
+	var scroll := ScrollContainer.new()
+	scroll.name = "CodexSection_%s" % section_id
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.add_child(scroll)
+
+	var list := VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 12)
+	scroll.add_child(list)
+
+	match section_id:
+		"characters":
+			_build_codex_characters(list)
+		"monsters":
+			_build_codex_monsters(list)
+		"artifacts":
+			_build_codex_artifacts(list)
+		"stats":
+			_build_codex_stats(list)
+
+
+func _codex_entry_panel(list: VBoxContainer) -> HBoxContainer:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", _character_card_style())
+	list.add_child(panel)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	panel.add_child(row)
+	return row
+
+
+func _codex_portrait(row: HBoxContainer, sprite_path: String, size: Vector2) -> void:
+	var portrait := TextureRect.new()
+	portrait.custom_minimum_size = size
+	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	if sprite_path != "" and ResourceLoader.exists(sprite_path):
+		portrait.texture = game._cached_texture(sprite_path)
+	row.add_child(portrait)
+
+
+func _codex_label(parent: Control, text: String, font_size: int, color: Color) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
+	parent.add_child(label)
+	return label
+
+
+func _build_codex_characters(list: VBoxContainer) -> void:
+	for character in CODEX_DATA.characters():
+		var row := _codex_entry_panel(list)
+		_codex_portrait(row, str(character["sprite"]), Vector2(110, 110))
+		var text_box := VBoxContainer.new()
+		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		text_box.add_theme_constant_override("separation", 4)
+		row.add_child(text_box)
+		_codex_label(text_box, str(character["title"]), 24, Color(0.96, 0.88, 0.40, 1.0))
+		_codex_label(text_box, str(character["playstyle"]), 15, Color(0.88, 0.92, 0.96, 1.0))
+		_codex_label(text_box, "Сильное: %s" % character["strengths"], 14, Color(0.62, 0.88, 0.58, 1.0))
+		_codex_label(text_box, "Слабое: %s" % character["weaknesses"], 14, Color(0.92, 0.62, 0.52, 1.0))
+		for weapon in character["weapons"]:
+			_codex_label(text_box, "• %s — %s" % [weapon["title"], weapon["description"]], 13, Color(0.78, 0.84, 0.92, 1.0))
+
+
+func _build_codex_monsters(list: VBoxContainer) -> void:
+	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "boss": "Боссы"}
+	for kind in ["standard", "elite", "boss"]:
+		_codex_label(list, str(kind_titles[kind]), 26, Color(0.96, 0.90, 0.68, 1.0))
+		for monster in CODEX_DATA.monsters():
+			if str(monster["kind"]) != kind:
+				continue
+			var row := _codex_entry_panel(list)
+			_codex_portrait(row, str(monster["sprite"]), Vector2(96, 96))
+			var text_box := VBoxContainer.new()
+			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			text_box.add_theme_constant_override("separation", 3)
+			row.add_child(text_box)
+			_codex_label(text_box, "%s   (%s)" % [monster["title"], monster["id"]], 21, Color(0.96, 0.88, 0.40, 1.0))
+			_codex_label(text_box, str(monster["behavior"]), 14, Color(0.88, 0.92, 0.96, 1.0))
+			for ability in monster["abilities"]:
+				_codex_label(text_box, "✦ %s — %s" % [ability["title"], ability["description"]], 13, Color(0.80, 0.68, 1.0, 1.0))
+
+
+func _build_codex_artifacts(list: VBoxContainer) -> void:
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 10)
+	list.add_child(grid)
+	for artifact in CODEX_DATA.artifacts():
+		var panel := PanelContainer.new()
+		panel.add_theme_stylebox_override("panel", _character_card_style())
+		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		grid.add_child(panel)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 10)
+		panel.add_child(row)
+		var icon := TextureRect.new()
+		icon.custom_minimum_size = Vector2(40, 40)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture = _artifact_icon_texture(str(artifact["id"]))
+		row.add_child(icon)
+		var text_box := VBoxContainer.new()
+		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(text_box)
+		_codex_label(text_box, str(artifact["title"]), 16, Color(0.96, 0.88, 0.40, 1.0))
+		_codex_label(text_box, str(artifact["description"]), 13, Color(0.84, 0.88, 0.94, 1.0))
+
+
+func _build_codex_stats(list: VBoxContainer) -> void:
+	var type_titles := {"base": "Базовые Характеристики", "derived": "Производные Параметры"}
+	for stat_type in ["base", "derived"]:
+		_codex_label(list, str(type_titles.get(stat_type, stat_type)), 26, Color(0.96, 0.90, 0.68, 1.0))
+		for stat in CODEX_DATA.stats():
+			if str(stat["type"]) != stat_type:
+				continue
+			var row := _codex_entry_panel(list)
+			var icon_control: Control = game.UIIconRegistry.make_icon(str(stat["id"]), Vector2(36, 36))
+			row.add_child(icon_control)
+			var text_box := VBoxContainer.new()
+			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_child(text_box)
+			_codex_label(text_box, str(stat["title"]), 17, Color(0.96, 0.88, 0.40, 1.0))
+			_codex_label(text_box, str(stat["description"]), 13, Color(0.86, 0.90, 0.95, 1.0))
+			if str(stat["influences"]) != "":
+				_codex_label(text_box, "Влияет на: %s" % stat["influences"], 12, Color(0.70, 0.78, 0.88, 1.0))
 
 
 func _show_settings_menu() -> void:
