@@ -14,6 +14,9 @@
 !define APP_NAME "FantasyDisk"
 !define UNINSTALL_KEY "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\${APP_NAME}"
 
+Unicode true
+CRCCheck on
+
 Name "${APP_NAME} ${VERSION}"
 OutFile "${OUT_FILE}"
 InstallDir "$PROGRAMFILES64\\${APP_NAME}"
