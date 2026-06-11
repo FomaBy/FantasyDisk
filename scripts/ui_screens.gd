@@ -92,6 +92,23 @@ func _show_main_menu() -> void:
 	settings_button.pressed.connect(_show_settings_menu)
 	action_box.add_child(settings_button)
 
+	var version_label := Label.new()
+	version_label.name = "MainMenuVersionLabel"
+	version_label.text = "v%s" % str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
+	version_label.anchor_left = 1.0
+	version_label.anchor_top = 1.0
+	version_label.anchor_right = 1.0
+	version_label.anchor_bottom = 1.0
+	version_label.offset_left = -120.0
+	version_label.offset_top = -34.0
+	version_label.offset_right = -16.0
+	version_label.offset_bottom = -10.0
+	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	version_label.add_theme_font_size_override("font_size", 13)
+	version_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.72, 0.85))
+	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(version_label)
+
 	var codex_button := _make_button("Кодекс")
 	codex_button.name = "MainMenuCodexButton"
 	codex_button.custom_minimum_size = Vector2(380, 62)
