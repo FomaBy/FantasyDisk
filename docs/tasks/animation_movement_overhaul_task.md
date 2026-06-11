@@ -1,5 +1,6 @@
 # Задача Для Агента-Аниматора: Полный Редизайн Анимации Движения
 
+Статус: done 2026-06-11. Результат: canonical movement layer переведен на `scripts/cutout_rig_2d.gd` + `scripts/sliced_rig_manifest.gd`: игроки, стандартные враги, элитки и боссы используют cutout-части, pivot-based limbs, per-style motion profiles, facing/base_facing, action states, death ghost и `WeaponSocketMount`. Дополнительный polish 2026-06-11 добавил per-character smoothing и разные Berserk attack poses. `tests/animation_smoke_test.gd` и `tests/runtime_smoke_test.gd` проходят.
 Дата: 2026-06-10
 
 ## Autonomy / Approval

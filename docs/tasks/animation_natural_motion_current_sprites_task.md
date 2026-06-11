@@ -1,5 +1,6 @@
 # Задача Для Animator-Агента: Сделать Движение Более Натуральным На Текущих Спрайтах
 
+Статус: done 2026-06-11. Результат: текущие polished sprites используются через нарезанный cutout rig с pivot-based limbs, readable archetype motion, flying hover/flap, boss/elite parts, smoothed facing/walk blends и weapon socket follow. Дополнительный polish 2026-06-11 добавил разные Berserk sword/axe/hammer attack silhouettes и чистый Dark Mage walk. Design redraw handoff не потребовался. `tests/animation_smoke_test.gd` и `tests/runtime_smoke_test.gd` проходят.
 Дата: 2026-06-10
 
 ## Autonomy / Approval

@@ -1,8 +1,11 @@
 # Задача Для Animator-Агента: Анимации Уникальных Атак Элиток
 
-Статус: new
+Статус: done 2026-06-11. Результат: `enemy.gd` подключает backend-фазы `windup/strike/recover` к `cutout_rig_2d.gd` через animation variant `<elite_behavior>:<elite_attack_id>:<phase>` и длительность фазы; rig получил отдельные phase-aware body poses для Iron Bastion slam, Night Stalker shadow strike, Plague Prophet poison volley и Shard Marshal shard fan. `tests/animation_smoke_test.gd` покрывает phase variants/poses; `tests/animation_smoke_test.gd` и `tests/runtime_smoke_test.gd` проходят.
 Создано: 2026-06-11
 Автор: PM
+
+Назначено: Animator
+Разблокировано: `backend_elite_overhaul_size_unique_attacks_task.md` завершена, stable phase API получен.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения в рамках этой задачи.
@@ -44,10 +47,10 @@
 - ID: `iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`.
 
 ## Acceptance Criteria
-- [ ] У каждой элитки атака читается по позе тела даже без VFX.
-- [ ] Фазы анимации совпадают по времени с фазами урона из backend-логики.
-- [ ] Пауза игры корректно замораживает анимации атак.
-- [ ] `tests/animation_smoke_test.gd` проходит и покрывает новые состояния.
+- [x] У каждой элитки атака читается по позе тела даже без VFX.
+- [x] Фазы анимации совпадают по времени с фазами урона из backend-логики.
+- [x] Пауза игры корректно замораживает анимации атак.
+- [x] `tests/animation_smoke_test.gd` проходит и покрывает новые состояния.
 
 ## Документация
 - Обновить animation-разделы в `docs/design/` (animation doc / current_game_state.md).

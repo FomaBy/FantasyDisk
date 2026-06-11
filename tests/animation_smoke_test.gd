@@ -7,6 +7,7 @@ func _initialize() -> void:
 	_test_enemy_sprite_paths()
 	_test_enemy_animation()
 	_test_flying_elite_boss_rigs()
+	_test_elite_attack_phase_animation()
 	_test_death_ghost()
 	print("Animation smoke test passed.")
 	quit()
@@ -65,6 +66,18 @@ func _test_player_animation() -> void:
 	if weapon_socket.position.x <= 8.0:
 		_fail("Expected melee attack to keep the WeaponSocket on the weapon hand.")
 
+	var sword_pose: Dictionary = _sample_berserk_attack_pose(player, "sword", 0.12)
+	var axe_pose: Dictionary = _sample_berserk_attack_pose(player, "axe", 0.12)
+	var hammer_pose: Dictionary = _sample_berserk_attack_pose(player, "hammer", 0.13)
+	if sword_pose["variant"] != "sword" or axe_pose["variant"] != "axe" or hammer_pose["variant"] != "hammer":
+		_fail("Expected Berserk attack rig to receive the equipped weapon animation variant.")
+	if float(sword_pose["arm_r_x"]) <= float(axe_pose["arm_r_x"]) + 3.0:
+		_fail("Expected sword attack pose to read as a forward thrust compared with axe arc.")
+	if float(axe_pose["arm_r_rot"]) <= float(sword_pose["arm_r_rot"]) + 0.03:
+		_fail("Expected axe attack pose to use a wider arm arc than sword thrust.")
+	if float(hammer_pose["arm_r_y"]) >= float(sword_pose["arm_r_y"]) - 3.0 or float(hammer_pose["pelvis_y"]) >= float(sword_pose["pelvis_y"]) - 2.0:
+		_fail("Expected hammer attack pose to lift into an overhead slam silhouette.")
+
 	player.configure_character("guitarist")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "guitarist")
 	player.call("play_action_animation", "shoot", Vector2.RIGHT)
@@ -75,6 +88,18 @@ func _test_player_animation() -> void:
 
 	player.configure_character("dark_mage")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "dark mage")
+	player.set("velocity", Vector2(100, 0))
+	player.call("_update_movement_animation", 0.18)
+	var mage_pelvis := player.get_node("VisualRoot/RigRoot/Pelvis") as Node2D
+	var mage_leg_l := player.get_node("VisualRoot/RigRoot/Pelvis/Figure/LegL") as Node2D
+	var mage_leg_r := player.get_node("VisualRoot/RigRoot/Pelvis/Figure/LegR") as Node2D
+	if abs(mage_leg_l.rotation - mage_leg_r.rotation) <= 0.04:
+		_fail("Expected Dark Mage walk to use readable alternating leg motion.")
+	if abs(mage_leg_l.position.y - mage_leg_r.position.y) <= 0.02:
+		_fail("Expected Dark Mage walk to show foot contact through subtle lift.")
+	if abs(mage_pelvis.rotation) >= 0.08:
+		_fail("Expected Dark Mage walk to keep a controlled robe/body lean.")
+	player.set("velocity", Vector2.ZERO)
 	player.call("play_action_animation", "cast", Vector2.UP)
 	player.call("_update_movement_animation", 0.15)
 	var mage_arm_l := player.get_node("VisualRoot/RigRoot/Pelvis/Figure/Torso/ArmL") as Node2D
@@ -82,6 +107,23 @@ func _test_player_animation() -> void:
 	if abs(mage_arm_l.rotation - mage_arm_r.rotation) <= 0.25:
 		_fail("Expected cast action animation to raise the rig arms.")
 	player.queue_free()
+
+
+func _sample_berserk_attack_pose(player: Node, weapon_id: String, elapsed: float) -> Dictionary:
+	player.configure_character("berserk", weapon_id)
+	player.set("velocity", Vector2.ZERO)
+	player.call("play_action_animation", "attack", Vector2.RIGHT)
+	player.call("_update_movement_animation", elapsed)
+	var rig := player.get_node("VisualRoot/RigRoot") as Node2D
+	var pelvis := rig.get_node("Pelvis") as Node2D
+	var arm_r := rig.get_node("Pelvis/Figure/Torso/ArmR") as Node2D
+	return {
+		"variant": str(rig.get("action_variant")),
+		"arm_r_rot": arm_r.rotation,
+		"arm_r_x": arm_r.position.x,
+		"arm_r_y": arm_r.position.y,
+		"pelvis_y": pelvis.position.y,
+	}
 
 
 func _assert_sliced_rig(root_node: Node, rig_path: String, texture_fragment: String, torso_parts: Array, figure_parts: Array, label: String) -> void:
@@ -255,6 +297,56 @@ func _test_flying_elite_boss_rigs() -> void:
 	if abs(boss_arm_l.rotation - boss_arm_r.rotation) <= 0.2:
 		_fail("Expected boss cast to raise both fists.")
 	boss.queue_free()
+
+
+func _test_elite_attack_phase_animation() -> void:
+	var elite_scenes := {
+		"iron_bastion": {"path": "res://scenes/EliteArmored.tscn", "attack": "slam_wave"},
+		"night_stalker": {"path": "res://scenes/EliteStalker.tscn", "attack": "shadow_strike"},
+		"plague_prophet": {"path": "res://scenes/ElitePoisoned.tscn", "attack": "poison_volley"},
+		"shard_marshal": {"path": "res://scenes/EliteCommander.tscn", "attack": "shard_fan"},
+	}
+
+	for behavior_id in elite_scenes.keys():
+		var info: Dictionary = elite_scenes[behavior_id]
+		var elite := (load(str(info["path"])) as PackedScene).instantiate()
+		root.add_child(elite)
+		elite.call("_set_elite_attack_phase", "windup", 0.6)
+		elite.call("_update_movement_animation", 0.3)
+		var rig := elite.get_node("RigRoot") as Node2D
+		var expected_variant := "%s:%s:windup" % [behavior_id, str(info["attack"])]
+		if str(rig.get("action_variant")) != expected_variant:
+			_fail("Expected %s windup to drive rig variant %s, got %s." % [behavior_id, expected_variant, str(rig.get("action_variant"))])
+		var windup_pelvis := rig.get_node("Pelvis") as Node2D
+		var windup_arm_r := rig.get_node_or_null("Pelvis/Figure/Torso/ArmR") as Node2D
+		var windup_arm_l := rig.get_node_or_null("Pelvis/Figure/Torso/ArmL") as Node2D
+
+		match behavior_id:
+			"iron_bastion":
+				if windup_pelvis.position.y >= -1.0 or windup_arm_r == null or windup_arm_r.position.y >= -2.0:
+					_fail("Expected Iron Bastion windup to lift into a slam pose.")
+			"night_stalker":
+				if windup_pelvis.position.y <= 2.0 or windup_pelvis.scale.y >= 0.94:
+					_fail("Expected Night Stalker windup to crouch before shadow strike.")
+			"plague_prophet":
+				if windup_arm_l == null or windup_arm_r == null or abs(windup_arm_l.rotation - windup_arm_r.rotation) <= 0.6:
+					_fail("Expected Plague Prophet windup to read as a ritual arm raise.")
+			"shard_marshal":
+				if windup_arm_l == null or windup_arm_r == null or abs(windup_arm_l.position.x - windup_arm_r.position.x) <= 6.0:
+					_fail("Expected Shard Marshal windup to spread both arms.")
+
+		elite.call("_set_elite_attack_phase", "strike", 0.25)
+		elite.call("_update_movement_animation", 0.125)
+		var strike_variant := "%s:%s:strike" % [behavior_id, str(info["attack"])]
+		if str(rig.get("action_variant")) != strike_variant:
+			_fail("Expected %s strike to drive rig variant %s, got %s." % [behavior_id, strike_variant, str(rig.get("action_variant"))])
+		var strike_pelvis := rig.get_node("Pelvis") as Node2D
+		if behavior_id == "iron_bastion":
+			if strike_pelvis.position.y <= 2.0:
+				_fail("Expected Iron Bastion strike to drop into the slam.")
+		elif behavior_id != "plague_prophet" and strike_pelvis.position.x <= 1.0:
+			_fail("Expected %s strike to lunge/gesture forward." % behavior_id)
+		elite.queue_free()
 
 
 func _test_death_ghost() -> void:

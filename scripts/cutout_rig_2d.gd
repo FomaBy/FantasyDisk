@@ -40,6 +40,7 @@ var is_boss_rig := false
 var facing_sign := 1.0
 var animation_time := 0.0
 var action_id := ""
+var action_variant := ""
 var action_time_left := 0.0
 var action_duration := 0.001
 var hit_time_left := 0.0
@@ -80,6 +81,7 @@ func configure(texture: Texture2D, visual_scale: Vector2, new_profile_id: String
 	_death_started = false
 	state = "idle"
 	action_id = ""
+	action_variant = ""
 	action_time_left = 0.0
 	hit_time_left = 0.0
 
@@ -97,15 +99,16 @@ func set_state(new_state: String) -> void:
 	state = new_state
 
 
-func play_action(new_action_id: String, direction := Vector2.ZERO) -> void:
+func play_action(new_action_id: String, direction := Vector2.ZERO, variant := "", duration := 0.0) -> void:
 	if state == "death":
 		return
 	action_id = new_action_id
+	action_variant = variant
 	if direction.length_squared() > 0.0:
 		if abs(direction.x) > 0.05:
 			facing_sign = signf(direction.x)
 		_direction_pose = direction.normalized()
-	action_duration = _action_duration(new_action_id)
+	action_duration = duration if duration > 0.0 else _action_duration(new_action_id)
 	action_time_left = action_duration
 	set_state(new_action_id)
 
@@ -182,16 +185,18 @@ func update_animation(delta: float, movement_velocity: Vector2, desired_facing :
 
 	if state != "death" and desired_facing.length_squared() > 0.0:
 		var desired_direction := desired_facing.normalized()
-		_direction_pose = _direction_pose.lerp(desired_direction, clamp(delta * 8.0, 0.0, 1.0)).normalized()
+		var direction_blend_rate: float = float(_motion_profile().get("direction_blend_rate", 8.0))
+		_direction_pose = _direction_pose.lerp(desired_direction, clamp(delta * direction_blend_rate, 0.0, 1.0)).normalized()
 		if abs(desired_direction.x) > 0.05:
 			facing_sign = signf(desired_direction.x)
 
 	var moving := movement_velocity.length_squared() > 0.01
-	_walk_blend = lerpf(_walk_blend, 1.0 if moving else 0.0, clamp(delta * 7.5, 0.0, 1.0))
+	var profile := _motion_profile()
+	var walk_blend_rate: float = float(profile.get("walk_blend_rate", 6.4))
+	_walk_blend = lerpf(_walk_blend, 1.0 if moving else 0.0, clamp(delta * walk_blend_rate, 0.0, 1.0))
 	if state not in ACTION_STATES and state != "hit":
 		state = "walk" if moving else "idle"
 
-	var profile := _motion_profile()
 	var speed_factor: float = clamp(movement_velocity.length() / float(profile.get("speed_reference", 120.0)), 0.35, 1.8)
 	var frequency: float = lerpf(float(profile.get("idle_frequency", 1.6)), float(profile.get("walk_frequency", 8.0)) * speed_factor, _walk_blend)
 	animation_time += delta * frequency
@@ -202,6 +207,7 @@ func update_animation(delta: float, movement_velocity: Vector2, desired_facing :
 		if state == "death":
 			return
 		action_id = ""
+		action_variant = ""
 		state = "walk" if moving else "idle"
 	if hit_time_left <= 0.0 and state == "hit":
 		state = "walk" if moving else "idle"
@@ -471,31 +477,71 @@ func _action_pose() -> Dictionary:
 	if action_time_left <= 0.0 or state == "death" or action_id == "":
 		return pose
 	var p: float = 1.0 - action_time_left / maxf(action_duration, 0.001)
+	if is_elite_rig and action_variant.contains(":"):
+		var elite_pose: Dictionary = _elite_action_pose(p)
+		if not elite_pose.is_empty():
+			return elite_pose
 
 	match action_id:
 		"attack":
 			var windup: float = sin(minf(p / 0.3, 1.0) * PI)
 			var swing: float = sin(maxf((p - 0.3) / 0.7, 0.0) * PI)
-			pose["push_x"] = -3.0 * windup + 11.0 * swing
-			pose["body_rot"] = -0.05 * windup + 0.12 * swing
-			pose["squash_x"] = 1.0 + 0.06 * swing
-			pose["squash_y"] = 1.0 - 0.05 * swing
-			if _style == "colossus":
-				# Кулаки колосса бьют выпадом-слэмом, а не широким вращением.
-				for fist in ["arm_l", "arm_r"]:
-					if _parts.has(fist):
-						pose["parts"][fist] = {
-							"rotation": -0.18 * windup + 0.35 * swing,
-							"position": Vector2(10.0 * swing, -6.0 * windup + 9.0 * swing),
+			var variant: String = action_variant.to_lower()
+			if is_player_rig and profile_id == "berserk" and _is_thrust_variant(variant):
+				var thrust: float = sin(p * PI)
+				pose["push_x"] = -1.5 * windup + 12.0 * thrust
+				pose["body_rot"] = -0.02 * windup + 0.045 * thrust
+				pose["squash_x"] = 1.0 + 0.035 * thrust
+				pose["squash_y"] = 1.0 - 0.025 * thrust
+				if _parts.has("arm_r"):
+					pose["parts"]["arm_r"] = {
+						"rotation": -0.10 * windup + 0.34 * thrust,
+						"position": Vector2(11.0 * thrust, -1.0 * windup),
+					}
+				if _parts.has("arm_l"):
+					pose["parts"]["arm_l"] = {
+						"rotation": 0.18 * windup - 0.12 * thrust,
+						"position": Vector2(2.0 * thrust, -1.5 * windup),
+					}
+			elif is_player_rig and profile_id == "berserk" and _is_slam_variant(variant):
+				var lift: float = sin(minf(p / 0.38, 1.0) * PI * 0.5)
+				var slam: float = sin(maxf((p - 0.38) / 0.62, 0.0) * PI)
+				pose["push_x"] = -2.0 * lift + 5.0 * slam
+				pose["push_y"] = -5.5 * lift + 7.0 * slam
+				pose["body_rot"] = -0.035 * lift + 0.07 * slam
+				pose["squash_x"] = 1.0 + 0.08 * slam
+				pose["squash_y"] = 1.0 - 0.09 * slam
+				for arm_name in ["arm_l", "arm_r"]:
+					if _parts.has(arm_name):
+						pose["parts"][arm_name] = {
+							"rotation": -0.90 * lift + 0.52 * slam,
+							"position": Vector2(3.0 * slam, -7.0 * lift + 8.0 * slam),
 						}
-			elif _attack_part_name != "" and _parts.has(_attack_part_name):
-				pose["parts"][_attack_part_name] = {"rotation": -0.65 * windup + 1.55 * swing}
-				var off_arm := "arm_l" if _attack_part_name == "arm_r" else "arm_r"
-				if _parts.has(off_arm):
-					pose["parts"][off_arm] = {"rotation": 0.30 * windup - 0.55 * swing}
 			else:
-				pose["squash_x"] = 1.0 + 0.14 * swing
-				pose["squash_y"] = 1.0 - 0.12 * swing
+				var arc_scale: float = 1.18 if is_player_rig and profile_id == "berserk" and _is_arc_variant(variant) else 1.0
+				pose["push_x"] = -3.0 * windup + 11.0 * swing
+				pose["body_rot"] = -0.05 * windup + 0.12 * swing * arc_scale
+				pose["squash_x"] = 1.0 + 0.06 * swing
+				pose["squash_y"] = 1.0 - 0.05 * swing
+				if _style == "colossus":
+					# Кулаки колосса бьют выпадом-слэмом, а не широким вращением.
+					for fist in ["arm_l", "arm_r"]:
+						if _parts.has(fist):
+							pose["parts"][fist] = {
+								"rotation": -0.18 * windup + 0.35 * swing,
+								"position": Vector2(10.0 * swing, -6.0 * windup + 9.0 * swing),
+							}
+				elif _attack_part_name != "" and _parts.has(_attack_part_name):
+					pose["parts"][_attack_part_name] = {
+						"rotation": -0.65 * windup + 1.55 * swing * arc_scale,
+						"position": Vector2(2.0 * swing * arc_scale, -1.5 * windup),
+					}
+					var off_arm := "arm_l" if _attack_part_name == "arm_r" else "arm_r"
+					if _parts.has(off_arm):
+						pose["parts"][off_arm] = {"rotation": 0.30 * windup - 0.55 * swing * arc_scale}
+				else:
+					pose["squash_x"] = 1.0 + 0.14 * swing
+					pose["squash_y"] = 1.0 - 0.12 * swing
 		"shoot":
 			var recoil: float = sin(p * PI)
 			pose["push_x"] = -6.0 * recoil
@@ -521,6 +567,110 @@ func _action_pose() -> Dictionary:
 				pose["parts"]["vortex"] = {"rotation": 0.6 * amp}
 		_:
 			pass
+	return pose
+
+
+func _elite_action_pose(p: float) -> Dictionary:
+	var fields := action_variant.split(":")
+	if fields.size() < 3:
+		return {}
+	var behavior: String = fields[0]
+	var phase: String = fields[2]
+	var pose := {"parts": {}}
+	var parts: Dictionary = pose["parts"]
+	var windup: float = sin(minf(p, 1.0) * PI * 0.5)
+	var strike: float = sin(p * PI)
+	var settle: float = 1.0 - p
+
+	match behavior:
+		"iron_bastion":
+			match phase:
+				"windup":
+					pose["push_y"] = -5.0 * windup
+					pose["body_rot"] = -0.05 * windup
+					pose["squash_x"] = 1.0 - 0.03 * windup
+					pose["squash_y"] = 1.0 + 0.04 * windup
+					if _parts.has("arm_r"):
+						parts["arm_r"] = {"rotation": -0.95 * windup, "position": Vector2(-2.0 * windup, -8.0 * windup)}
+					if _parts.has("shield"):
+						parts["shield"] = {"rotation": -0.30 * windup, "position": Vector2(-2.0 * windup, -5.0 * windup)}
+				"strike":
+					pose["push_y"] = 8.0 * strike
+					pose["push_x"] = 4.0 * strike
+					pose["body_rot"] = 0.08 * strike
+					pose["squash_x"] = 1.0 + 0.10 * strike
+					pose["squash_y"] = 1.0 - 0.12 * strike
+					if _parts.has("arm_r"):
+						parts["arm_r"] = {"rotation": 0.65 * strike, "position": Vector2(7.0 * strike, 9.0 * strike)}
+					if _parts.has("shield"):
+						parts["shield"] = {"rotation": 0.24 * strike, "position": Vector2(2.0 * strike, 5.0 * strike)}
+				"recover":
+					pose["push_y"] = 2.0 * settle
+					pose["body_rot"] = 0.03 * settle
+		"night_stalker":
+			match phase:
+				"windup":
+					pose["push_y"] = 5.0 * windup
+					pose["push_x"] = -4.0 * windup
+					pose["squash_x"] = 1.0 + 0.12 * windup
+					pose["squash_y"] = 1.0 - 0.16 * windup
+					if _parts.has("arm_l"):
+						parts["arm_l"] = {"rotation": 0.55 * windup, "position": Vector2(-4.0 * windup, 3.0 * windup)}
+					if _parts.has("arm_r"):
+						parts["arm_r"] = {"rotation": -0.55 * windup, "position": Vector2(-5.0 * windup, 3.0 * windup)}
+				"strike":
+					pose["push_x"] = 16.0 * strike
+					pose["body_rot"] = 0.14 * strike
+					pose["squash_x"] = 1.0 + 0.08 * strike
+					pose["squash_y"] = 1.0 - 0.05 * strike
+					if _parts.has("arm_r"):
+						parts["arm_r"] = {"rotation": 0.80 * strike, "position": Vector2(10.0 * strike, -1.0 * strike)}
+					if _parts.has("arm_l"):
+						parts["arm_l"] = {"rotation": -0.35 * strike, "position": Vector2(4.0 * strike, 2.0 * strike)}
+				"recover":
+					pose["push_x"] = -5.0 * settle
+					pose["push_y"] = 2.0 * settle
+		"plague_prophet":
+			match phase:
+				"windup":
+					pose["push_y"] = -3.0 * windup
+					pose["torso_rot"] = -0.06 * windup
+					if _parts.has("arm_l"):
+						parts["arm_l"] = {"rotation": -0.95 * windup, "position": Vector2(-2.0 * windup, -5.0 * windup)}
+					if _parts.has("arm_r"):
+						parts["arm_r"] = {"rotation": 0.65 * windup, "position": Vector2(3.0 * windup, -4.0 * windup)}
+				"strike":
+					pose["push_x"] = 7.0 * strike
+					pose["body_rot"] = 0.09 * strike
+					if _parts.has("arm_l"):
+						parts["arm_l"] = {"rotation": -0.25 * strike, "position": Vector2(4.0 * strike, 1.0 * strike)}
+					if _parts.has("arm_r"):
+						parts["arm_r"] = {"rotation": 1.05 * strike, "position": Vector2(9.0 * strike, -2.0 * strike)}
+				"recover":
+					pose["torso_rot"] = sin(p * TAU) * 0.035 * settle
+					pose["push_y"] = -1.5 * settle
+		"shard_marshal":
+			match phase:
+				"windup":
+					pose["push_y"] = -2.5 * windup
+					pose["squash_x"] = 1.0 + 0.04 * windup
+					pose["squash_y"] = 1.0 - 0.03 * windup
+					if _parts.has("arm_l"):
+						parts["arm_l"] = {"rotation": -1.05 * windup, "position": Vector2(-7.0 * windup, -2.0 * windup)}
+					if _parts.has("arm_r"):
+						parts["arm_r"] = {"rotation": 1.05 * windup, "position": Vector2(7.0 * windup, -2.0 * windup)}
+				"strike":
+					pose["push_x"] = 8.0 * strike
+					pose["body_rot"] = 0.08 * strike
+					if _parts.has("arm_l"):
+						parts["arm_l"] = {"rotation": -0.35 * strike, "position": Vector2(7.0 * strike, -1.0 * strike)}
+					if _parts.has("arm_r"):
+						parts["arm_r"] = {"rotation": 0.35 * strike, "position": Vector2(9.0 * strike, -1.0 * strike)}
+				"recover":
+					pose["push_y"] = -1.0 * settle
+					pose["body_rot"] = -0.02 * settle
+		_:
+			return {}
 	return pose
 
 
@@ -584,6 +734,18 @@ func _attack_part() -> Node2D:
 	return _parts.get("arm_r")
 
 
+func _is_thrust_variant(variant: String) -> bool:
+	return variant.contains("sword") or variant == "strip" or variant == "thrust"
+
+
+func _is_arc_variant(variant: String) -> bool:
+	return variant.contains("axe") or variant == "frustum" or variant == "arc"
+
+
+func _is_slam_variant(variant: String) -> bool:
+	return variant.contains("hammer") or variant == "circle" or variant == "slam"
+
+
 func _node_name_for_part(part_name: String) -> String:
 	match part_name:
 		"torso":
@@ -619,16 +781,18 @@ func _motion_profile() -> Dictionary:
 		"idle_breath": 1.0,
 		"squash_x": 0.010,
 		"squash_y": 0.008,
+		"walk_blend_rate": 6.4,
+		"direction_blend_rate": 8.0,
 	}
 	match _style:
 		"heavy", "guard":
-			profile.merge({"walk_frequency": 4.8, "bob": 3.6, "stride": 0.30, "arm_swing": 0.18, "foot_lift": 3.2, "squash_x": 0.018, "squash_y": 0.015, "speed_reference": 90.0}, true)
+			profile.merge({"walk_frequency": 4.8, "bob": 3.6, "stride": 0.30, "arm_swing": 0.18, "foot_lift": 3.2, "squash_x": 0.018, "squash_y": 0.015, "speed_reference": 90.0, "walk_blend_rate": 5.2}, true)
 		"beast", "stalker":
 			profile.merge({"walk_frequency": 12.0, "bob": 1.8, "stride": 0.50, "arm_swing": 0.42, "foot_lift": 2.2, "speed_reference": 170.0}, true)
 		"robed":
-			profile.merge({"walk_frequency": 5.0, "bob": 3.0, "stride": 0.0, "arm_swing": 0.14, "idle_breath": 1.3}, true)
+			profile.merge({"walk_frequency": 5.0, "bob": 3.0, "stride": 0.0, "arm_swing": 0.14, "idle_breath": 1.3, "walk_blend_rate": 5.0, "direction_blend_rate": 6.0}, true)
 		"robed_walker":
-			profile.merge({"walk_frequency": 6.6, "bob": 2.6, "stride": 0.28, "arm_swing": 0.20}, true)
+			profile.merge({"walk_frequency": 6.6, "bob": 2.6, "stride": 0.28, "arm_swing": 0.20, "walk_blend_rate": 5.4, "direction_blend_rate": 6.8}, true)
 		"floating_robed":
 			profile.merge({"walk_frequency": 4.2, "idle_frequency": 2.4, "bob": 4.0, "stride": 0.0, "arm_swing": 0.12, "idle_breath": 1.4}, true)
 		"flyer":
@@ -637,6 +801,13 @@ func _motion_profile() -> Dictionary:
 			profile.merge({"walk_frequency": 8.6, "bob": 4.2, "stride": 0.22, "arm_swing": 0.0, "speed_reference": 100.0}, true)
 		"colossus":
 			profile.merge({"walk_frequency": 3.6, "idle_frequency": 1.8, "bob": 4.5, "stride": 0.0, "arm_swing": 0.10, "speed_reference": 70.0}, true)
+	match profile_id:
+		"berserk":
+			profile.merge({"walk_frequency": 6.2, "bob": 2.9, "stride": 0.34, "arm_swing": 0.23, "foot_lift": 2.4, "weight_shift": 0.85, "body_counter": 0.045, "walk_blend_rate": 5.4, "direction_blend_rate": 6.2}, true)
+		"dark_mage":
+			profile.merge({"walk_frequency": 5.3, "bob": 1.7, "stride": 0.20, "arm_swing": 0.12, "foot_lift": 1.45, "weight_shift": 0.42, "idle_breath": 1.25, "sway": 0.035, "walk_blend_rate": 4.8, "direction_blend_rate": 5.6}, true)
+		"guitarist":
+			profile.merge({"walk_frequency": 7.1, "bob": 1.9, "stride": 0.32, "arm_swing": 0.28, "foot_lift": 2.0, "weight_shift": 0.55, "walk_blend_rate": 6.2, "direction_blend_rate": 7.2}, true)
 	if is_elite_rig:
 		profile["bob"] = float(profile["bob"]) * 1.12
 		profile["arm_swing"] = float(profile["arm_swing"]) * 1.12

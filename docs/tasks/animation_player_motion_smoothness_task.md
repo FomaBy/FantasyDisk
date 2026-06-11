@@ -1,8 +1,11 @@
 # Задача Для Animator-Агента: Плавность Движения Персонажей И Анимации Оружия
 
-Статус: new
+Статус: done 2026-06-11. Результат: player cutout rig получил сглаженные per-character motion profiles, weapon animation variant от `weapon_id`, разные Berserk attack silhouettes для sword thrust / axe arc / hammer overhead slam, и smoke-проверки на новые позы + Dark Mage walk. `tests/animation_smoke_test.gd` и `tests/runtime_smoke_test.gd` проходят.
 Создано: 2026-06-11
 Автор: PM
+
+Назначено: Animator
+Старт: 2026-06-11
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения в рамках этой задачи.
@@ -43,11 +46,11 @@ Handoff по правилам docs/process/agent_role_boundaries_and_handoffs.md
 - ID персонажей: `berserk`, `dark_mage`, `guitarist`.
 
 ## Acceptance Criteria
-- [ ] Движение персонажей плавное: нет рывков при старте/остановке/развороте.
-- [ ] Три оружия Берсерка анимационно различимы и соответствуют формам урона.
-- [ ] Walk Мага читается чисто после нового спрайта.
-- [ ] Пауза корректно замораживает все новые анимации.
-- [ ] `tests/animation_smoke_test.gd` проходит.
+- [x] Движение персонажей плавное: нет рывков при старте/остановке/развороте.
+- [x] Три оружия Берсерка анимационно различимы и соответствуют формам урона.
+- [x] Walk Мага читается чисто после нового спрайта.
+- [x] Пауза корректно замораживает все новые анимации.
+- [x] `tests/animation_smoke_test.gd` проходит.
 
 ## Документация
 - Animation-разделы в `docs/design/` (current_game_state.md / animation doc).

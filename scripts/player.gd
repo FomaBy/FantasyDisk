@@ -259,7 +259,8 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void
 		_update_sprite_facing(_facing_direction)
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_action"):
-		rig.play_action(action_id, _facing_direction)
+		var animation_variant: String = weapon_id if action_id == "attack" else character_id
+		rig.play_action(action_id, _facing_direction, animation_variant)
 
 	if _action_tween != null and _action_tween.is_valid():
 		_action_tween.kill()

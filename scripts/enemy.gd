@@ -373,7 +373,34 @@ func _set_elite_attack_phase(phase: String, duration: float) -> void:
 	elite_attack_state = phase
 	_elite_attack_phase_left = duration
 	set_meta("elite_attack_phase", phase)
+	_play_elite_attack_phase_animation(phase, duration)
 	elite_attack_phase_changed.emit(elite_attack_id, phase)
+
+
+func _play_elite_attack_phase_animation(phase: String, duration: float) -> void:
+	if elite_attack_id == "" and ELITE_ATTACK_CONFIG.has(elite_behavior):
+		var config: Dictionary = ELITE_ATTACK_CONFIG[elite_behavior]
+		elite_attack_id = str(config.get("attack_id", ""))
+	var rig := _cutout_rig()
+	if rig == null:
+		_configure_enemy_rig()
+		rig = _cutout_rig()
+	if rig == null or not rig.has_method("play_action"):
+		return
+	var action_name := "attack"
+	match elite_behavior:
+		"iron_bastion":
+			action_name = "attack"
+		"night_stalker":
+			action_name = "attack" if phase == "strike" else "cast"
+		"plague_prophet":
+			action_name = "shoot" if phase == "strike" else "cast"
+		"shard_marshal":
+			action_name = "shoot"
+		_:
+			action_name = "attack"
+	var variant := "%s:%s:%s" % [elite_behavior, elite_attack_id, phase]
+	rig.play_action(action_name, _elite_attack_direction, variant, duration)
 
 
 func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
@@ -385,10 +412,8 @@ func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 
 	match elite_behavior:
 		"iron_bastion":
-			_play_rig_action("attack", _elite_attack_direction)
 			_spawn_elite_telegraph(global_position, float(config["radius"]), float(config["windup"]))
 		"night_stalker":
-			_play_rig_action("cast", _elite_attack_direction)
 			var behind := player.global_position + _elite_attack_direction * float(config["behind_offset"])
 			_elite_attack_targets.append(_clamp_to_arena(behind))
 			_spawn_elite_telegraph(_elite_attack_targets[0], float(config["radius"]), float(config["windup"]))
@@ -405,7 +430,6 @@ func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 				_elite_attack_targets.append(target)
 				_spawn_elite_telegraph(target, float(config["radius"]), float(config["windup"]) + float(config["lob_travel_time"]))
 		"shard_marshal":
-			_play_rig_action("shoot", _elite_attack_direction)
 			_spawn_elite_telegraph(global_position + _elite_attack_direction * 120.0, 64.0, float(config["windup"]))
 
 
