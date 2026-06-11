@@ -1795,6 +1795,10 @@ func _test_full_attribute_wiring() -> void:
 	await process_frame
 	wiring_player.call("configure_character", "berserk", "sword")
 	wiring_player.call("apply_reward", {"mods": {"vampiric_chance_flat": 1.0, "vampiric_amount_flat": 5.0}})
+	# Шанс капится на 0.6 — для детерминизма теста форсируем гарантированный прок.
+	var wiring_derived: Dictionary = wiring_player.get("derived_parameters")
+	wiring_derived["vampiric_chance"] = 1.0
+	wiring_player.set("derived_parameters", wiring_derived)
 	wiring_player.set("health", float(wiring_player.get("max_health")) * 0.5)
 	var hp_before_vamp := float(wiring_player.get("health"))
 	wiring_player.call("on_weapon_hit", wiring_player, 10.0)
