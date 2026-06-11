@@ -97,6 +97,16 @@ Executor-треду `019eb656-4e6f-7a51-95b4-2900eee92c25` отправлены 
 
 ## Результат Второго Прохода / 2026-06-11
 
-Design review remarks addressed. Все 46 artifact icons перегенерированы повторно без смены путей/ID: добавлен painterly material pass с легкой ручной деформацией силуэта, rough edge bevel, clipped scratches, потертости, сколы, трещины, стежки, грани кристаллов, leather/metal/stone/wood/paper texture и более приглушенная dark-fantasy aura/shadow. Особо подтянуты простые иконки из review remarks (`banner_seed`, `bass_cable`, `blood_sigil`, `broken_pick`, `copper_string`, `dark_crystal`, `fast_boots`, `fox_boots`, `heavy_grip`, `living_root`, `quickstring`, `splinter_gloves`, `sturdy_amulet`, `summoners_bell`, `war_belt`, `warrior_charm`, `wide_sigil`).
+Design review remarks addressed. Все 46 artifact icons перегенерированы повторно без смены путей/ID: внешний белесый/цветной glow удален, фон остается прозрачным, вокруг предметов оставлена только тонкая темная окантовка/тень. Добавлен painterly material pass с легкой ручной деформацией силуэта, rough edge bevel, clipped scratches, потертости, сколы, трещины, стежки, грани кристаллов и leather/metal/stone/wood/paper texture. Особо подтянуты простые иконки из review remarks (`banner_seed`, `bass_cable`, `blood_sigil`, `broken_pick`, `copper_string`, `dark_crystal`, `fast_boots`, `fox_boots`, `heavy_grip`, `living_root`, `quickstring`, `splinter_gloves`, `sturdy_amulet`, `summoners_bell`, `war_belt`, `warrior_charm`, `wide_sigil`).
 
 Проверки второго прохода: `sips -g pixelWidth -g pixelHeight assets/sprites/ui/icons/artifacts/artifact_*.png` подтвердил 256x256 для всех 46 файлов; PIL alpha check подтвердил прозрачные углы и непустой alpha для всех 46; 40px preview обновлен в `assets/sprites/ui/icons/artifact_dark_fantasy_40px_preview.png`; `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` завершился успешно: `Runtime smoke test passed.`
+
+
+## Финальное Design Review / 2026-06-11 — ПРИНЯТО
+
+Проверка по Acceptance Criteria:
+- [x] Все 46 файлов на месте, пути/имена не менялись, 256x256, прозрачный фон (проверено программно).
+- [x] Стиль единый dark-fantasy: живописная фактура, потертости/сколы/стежки, приглушенная палитра с акцентами, согласован с элитками/боссами; белесые ореолы отсутствуют.
+- [x] Узнаваемость: выборочно просмотрены все 46 на крупных листах — 43 читались сразу; 3 слабых доработаны точечно поверх фактуры исполнителя (`tools/touchup_artifact_icons.py`): `old_codex` (панель -> закрытая книга: корешок со стежками, блок страниц, застежка, руна на обложке), `ink_candle` (добавлено видимое пламя со свечением), `summoners_bell` (блик купола, язычок). Весь набор не перегенерировался.
+- [x] Читаемость 40px: сетки всех 46 на пергаменте стены магазина и на темном фоне (`build/rig_debug/codex2_40px_wall.png`, `codex2_40px_dark.png`) — контур держит форму на светлом, акценты на темном.
+- [x] `runtime_smoke_test.gd` зеленый; коммит в dev выполнен Design-чатом (Codex не имеет записи в .git); `content_registry.md` и `CHANGELOG.md` обновлены.

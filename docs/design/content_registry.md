@@ -126,7 +126,7 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `sound_wave.png` | Звуковая волна электрогитары | Реализовано |
 | `music_note.png` | Ноты гитарных атак | Реализовано |
 
-Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (46 шт., 256x256, прозрачный фон) перегенерированы 2026-06-11 как technical pass dark-fantasy набора: один узнаваемый предмет по центру, прозрачный фон, без рамки, текста, watermark и белых ореолов. Генератор: `tools/generate_dark_fantasy_artifact_icons.py`. Читаемость проверена при 40px на темном preview sheet. Design review 2026-06-11: changes requested — текущий набор слишком flat/vector-like и требует более живописной material work, глубокой светотени и dark-fantasy детализации перед финальным art approval.
+Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (46 шт., 256x256, прозрачный фон) перегенерированы 2026-06-11 как dark-fantasy набор: один узнаваемый предмет по центру, painterly material pass, глубокие тени, приглушенная палитра, потертости/царапины/сколы, тонкая темная окантовка, без рамки, текста, watermark и белесых ореолов. Генератор: `tools/generate_dark_fantasy_artifact_icons.py`. Читаемость проверена при 40px на темном preview sheet. Статус: принят финальным Design review 2026-06-11 (второй pass + точечные доработки `tools/touchup_artifact_icons.py`: old_codex переведен в читаемую закрытую книгу с корешком/страницами/застежкой, ink_candle получил видимое пламя со свечением, summoners_bell — блик купола и язычок).
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
 
@@ -462,7 +462,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 
 | Группа | ID / naming | Каноническая папка / файл | Статус |
 | --- | --- | --- | --- |
-| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 256x256 dark-fantasy PNG, прозрачный фон | `assets/sprites/ui/icons/artifacts/` | Review: changes requested |
+| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 256x256 dark-fantasy PNG, прозрачный фон | `assets/sprites/ui/icons/artifacts/` | Принято (Design review 2026-06-11) |
 | Shop-only item icons | `shop_<shop_item_id>.png` для всех `ProgressionData.SHOP_ITEMS` | `assets/sprites/ui/icons/shop/` | Реализовано |
 | Shop slot normal | `ui_shop_artifact_slot_frame` | `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png` | Реализовано |
 | Shop slot hover | `ui_shop_artifact_slot_hover` | `assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png` | Реализовано |
