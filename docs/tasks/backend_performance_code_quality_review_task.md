@@ -1,6 +1,16 @@
 # Задача Для Back-end-Агента: Полный Performance И Code Quality Review
 
-Статус: in_progress
+Статус: done 2026-06-11. Итог ревью финального кода пакета:
+
+ДЕБАГ-ОШИБКИ: headless-запуск игры (--quit-after) и все 3 smoke-теста — консоль чистая, ошибок/warnings/parse-проблем не обнаружено (все ранее найденные — утечки AudioStream в headless, parse-ошибки рига max()->maxf(), строковый call_deferred на перенесенный метод, недетерминированность тестов из-за dodge — были закрыты в предыдущих задачах пакета; это зафиксировано в их статусах).
+
+PERFORMANCE-ФИКСЫ: (1) enemy.gd кэширует Body-спрайт, RigRoot и AudioManager — убраны get_node_or_null из _update_movement_animation (каждый кадр на каждого врага) и take_damage (каждое попадание при толпе); (2) player.gd кэширует AudioManager; (3) HUD-снапшот считает артефакты дешевым счетчиком без поэлементной нормализации каждый кадр.
+
+МЕРТВЫЙ КОД: удалены (в build/unused_assets_backup/) MeleeWeapon.tscn+melee_weapon.gd и Weapon.tscn+weapon.gd — не инстанцировались ниоткуда; удалены константы ROUTE_MAP_CANVAS_SIZE, ACTIVE_ENEMY_CAP_BASE/PER_STAGE/BOSS (дублировали WAVE_SETTINGS), SHOP_INLINE_AREA_SIZE. Отладочных print не найдено. SummonerWeapon/AllyMinion сохранены как заготовка summon-механики (summon_amount в данных) — отмечено в current_game_state.
+
+ПРОВЕРЕНО БЕЗ ЗАМЕЧАНИЙ: cleanup-группы (player_weapon_effects, enemy_hazards, deployed_sound_amps), отсутствие load() в hot paths (texture cache + preload повсеместно), HUD обновляется только по изменению снапшота, route map строится один раз за открытие, SceneTreeTimer-ов в gameplay-коде нет (всё на node-bound tween).
+
+ОСТАВШИЕСЯ РИСКИ (некритичные): ui_screens.gd вырос до ~1800 строк — при дальнейшем росте стоит выделить shop/level-up в отдельные модули; _update_pickups сканирует группу pickups каждый кадр (приемлемо при текущих объемах); точный баланс маг-vs-берсерк ждет ручного плейтеста. Все 3 smoke-теста зеленые.
 Дата: 2026-06-10
 Перевыдана PM: 2026-06-11 (см. раздел «Дополнение PM 2026-06-11» в конце)
 
