@@ -1,6 +1,6 @@
 # FantasyDisk Content Registry
 
-Обновлено: 2026-06-10
+Обновлено: 2026-06-11
 
 Этот документ задает правило для всех будущих задач: любая игровая сущность должна иметь понятное имя, стабильный ID и место в документации. Рандом в игре может выбирать только из заранее определенных сущностей, а не создавать безымянный контент, на который потом невозможно сослаться.
 
@@ -126,7 +126,7 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `sound_wave.png` | Звуковая волна электрогитары | Реализовано |
 | `music_note.png` | Ноты гитарных атак | Реализовано |
 
-Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (46 шт., 128x128, прозрачный фон) перерисованы 2026-06-11 в единый фэнтези-стиль: золотой медальон с заклепками и объемной светотенью, внутренний диск с предметом (цветокоррекция, виньетка, верхний свет), акцентное свечение в цвет предмета, тень для светлых фонов. Генератор: `tools/restyle_artifact_icons.py` (оригиналы в `build/bg_backup/artifacts/`). Читаемость проверена при 40px на пергаменте магазина и темном фоне.
+Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (46 шт., 256x256, прозрачный фон) перегенерированы 2026-06-11 как technical pass dark-fantasy набора: один узнаваемый предмет по центру, прозрачный фон, без рамки, текста, watermark и белых ореолов. Генератор: `tools/generate_dark_fantasy_artifact_icons.py`. Читаемость проверена при 40px на темном preview sheet. Design review 2026-06-11: changes requested — текущий набор слишком flat/vector-like и требует более живописной material work, глубокой светотени и dark-fantasy детализации перед финальным art approval.
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
 
@@ -462,7 +462,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 
 | Группа | ID / naming | Каноническая папка / файл | Статус |
 | --- | --- | --- | --- |
-| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS` | `assets/sprites/ui/icons/artifacts/` | Реализовано |
+| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 256x256 dark-fantasy PNG, прозрачный фон | `assets/sprites/ui/icons/artifacts/` | Review: changes requested |
 | Shop-only item icons | `shop_<shop_item_id>.png` для всех `ProgressionData.SHOP_ITEMS` | `assets/sprites/ui/icons/shop/` | Реализовано |
 | Shop slot normal | `ui_shop_artifact_slot_frame` | `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png` | Реализовано |
 | Shop slot hover | `ui_shop_artifact_slot_hover` | `assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png` | Реализовано |
@@ -473,7 +473,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | Game cursor hover | `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png`, hotspot `(5, 4)` | Реализовано |
 | Game cursor attack | `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png`, hotspot `(5, 4)` | Реализовано |
 
-Artifact/shop icons имеют прозрачный фон, размер `128x128`, stylized fantasy cartoon style и не используют текст/emoji/default placeholders. Shop item filenames намеренно следуют схеме `shop_<shop_item_id>.png`, поэтому для `shop_damage` путь выглядит как `assets/sprites/ui/icons/shop/shop_shop_damage.png`. Фактические PNG и `.import` файлы готовы в текущем checkout; backend hooks могут подхватывать эти файлы вместо fallback.
+Shop-only icons имеют прозрачный фон, размер `128x128`, stylized fantasy cartoon style и не используют текст/emoji/default placeholders. Artifact icons находятся в отдельном dark-fantasy review pass 256x256 выше. Shop item filenames намеренно следуют схеме `shop_<shop_item_id>.png`, поэтому для `shop_damage` путь выглядит как `assets/sprites/ui/icons/shop/shop_shop_damage.png`. Фактические PNG и `.import` файлы готовы в текущем checkout; backend hooks могут подхватывать эти файлы вместо fallback.
 
 ## Уровни Возвышения (Метапрогрессия)
 

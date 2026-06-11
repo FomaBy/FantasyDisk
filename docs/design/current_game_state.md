@@ -343,13 +343,14 @@ Debug-режим карты: клавиша `F12` переключает `route_
 Магазин показывает четыре случайных предложения inline поверх `screen_shop_background.png` в центральной свободной области фона и позволяет купить несколько предметов за один визит, если хватает денег. Предметы показывают иконку и цену; название, описание, цену, class restriction и причину недоступности игрок видит только в hover tooltip. Купленные предметы получают overlay-состояние и становятся недоступными.
 
 Design visual kit/spec для всех артефактов, shop-only предметов и курсора описан в `docs/design/artifact_shop_cursor_visual_kit.md`:
-- 46 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png`;
+- 46 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, transparent, dark-fantasy item art);
 - 7 shop-only icons: `assets/sprites/ui/icons/shop/shop_<shop_item_id>.png`;
 - полный mapping: `docs/design/artifact_shop_cursor_visual_kit.md`;
-- generator: `tools/generate_artifact_shop_cursor_assets.py`;
+- artifact icon generator: `tools/generate_dark_fantasy_artifact_icons.py`;
+- shop/cursor generator: `tools/generate_artifact_shop_cursor_assets.py`;
 - preview: `assets/sprites/ui/icons/artifact_shop_cursor_preview.png`.
 
-После пользовательского фидбэка 2026-06-11 artifact/shop/cursor assets перерисованы из простых плоских пиктограмм в более богатый FantasyDisk fantasy-medallion style: орнаментальные золотые рамки, темный металл, gem anchors, рунические искры, glow, painted grain и fantasy dagger/quill курсор.
+После пользовательского фидбэка 2026-06-11 artifact icons заменены на `256x256` dark-fantasy предметные PNG без собственной рамки: предмет крупно по центру, глубокие тени, приглушенная палитра, верхне-левый свет, цветное магическое свечение и прозрачный фон. Shop/cursor assets остаются в FantasyDisk fantasy-medallion / dagger-quill style.
 
 Back-end integration complete: `scripts/ui_screens.gd` сначала ищет финальные PNG по mapping из visual kit, а если их нет, временно использует осмысленный fallback через `scripts/ui_icon_registry.gd` по эффекту предмета. На 2026-06-11 фактические artifact/shop/cursor PNG готовы и импортированы, поэтому fallback остается только fail-safe.
 

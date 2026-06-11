@@ -6,15 +6,16 @@
 
 Back-end audit follow-up resolved 2026-06-11: фактические PNG из разделов Artifact Icon Mapping, Shop-Only Icon Mapping, Shop Visual Assets и Cursor Assets добавлены в текущий checkout и импортированы в Godot. Fallback через `scripts/ui_icon_registry.gd` остается только fail-safe.
 
-User feedback rework 2026-06-11: набор перерисован из плоских пиктограмм в более богатый FantasyDisk fantasy-medallion style: орнаментальные золотые рамки, темный металлический силуэт, gem anchors, рунические искры, более сильный outline, glow, painted grain и высокий контраст материалов. Cursor variants теперь выглядят как fantasy dagger/quill pointer, а не как простой системный указатель.
+User feedback rework 2026-06-11: artifact icons заменены на `256x256` dark-fantasy item art без собственной рамки: один крупный предмет, верхне-левый свет, глубокие тени, приглушенные материалы, цветное магическое свечение и прозрачный фон. Shop-only icons, frames and cursor variants keep the richer FantasyDisk fantasy-medallion / dagger-quill treatment.
 
 ## Summary
 
-- Artifact icons: `46` unique PNG, `128x128`, transparent background.
+- Artifact icons: `46` unique PNG, `256x256`, transparent background.
 - Shop-only icons: `7` unique PNG, `128x128`, transparent background.
 - Shop frame assets: slot, hover, price badge, purchased/unavailable overlay, tooltip frame.
 - Cursor assets: normal, hover and attack variants, `48x48`, transparent background.
-- Generator: `tools/generate_artifact_shop_cursor_assets.py`.
+- Artifact generator: `tools/generate_dark_fantasy_artifact_icons.py`.
+- Shop/cursor generator: `tools/generate_artifact_shop_cursor_assets.py`.
 - Preview: `assets/sprites/ui/icons/artifact_shop_cursor_preview.png`.
 
 ## Artifact Icon Mapping
