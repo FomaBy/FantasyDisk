@@ -277,7 +277,7 @@ func _refresh_artifacts() -> void:
 		var artifact: Dictionary = entry if entry is Dictionary else {"id": "", "title": str(entry)}
 		var artifact_id := str(artifact.get("id", ""))
 		var icon := TextureRect.new()
-		icon.custom_minimum_size = Vector2(40, 40)
+		icon.custom_minimum_size = Vector2(56, 56)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		var icon_path := "res://assets/sprites/ui/icons/artifacts/artifact_%s.png" % artifact_id

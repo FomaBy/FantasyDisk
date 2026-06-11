@@ -12,8 +12,8 @@ const SHOP_SLOT_HOVER_PATH := "res://assets/sprites/ui/shop/ui_shop_artifact_slo
 const SHOP_PRICE_BADGE_PATH := "res://assets/sprites/ui/shop/ui_shop_price_badge.png"
 const SHOP_PURCHASED_OVERLAY_PATH := "res://assets/sprites/ui/shop/ui_shop_purchased_overlay.png"
 const SHOP_TOOLTIP_FRAME_PATH := "res://assets/sprites/ui/shop/ui_shop_tooltip_frame.png"
-const SHOP_INLINE_SLOT_SIZE := Vector2(148, 168)
-const SHOP_INLINE_ICON_SIZE := Vector2(82, 82)
+const SHOP_INLINE_SLOT_SIZE := Vector2(164, 186)
+const SHOP_INLINE_ICON_SIZE := Vector2(100, 100)
 const SHOP_CURSOR_VARIANTS := {
 	"arrow": "res://assets/sprites/ui/cursor/game_cursor.png",
 	"pointing_hand": "res://assets/sprites/ui/cursor/game_cursor_hover.png",
@@ -134,6 +134,7 @@ func _show_character_select() -> void:
 	var back_button := _make_button("Назад")
 	back_button.pressed.connect(_show_main_menu)
 	box.add_child(back_button)
+	game.ui_escape_action = _show_main_menu
 
 
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
@@ -187,6 +188,7 @@ func _show_codex_screen() -> void:
 	back_button.custom_minimum_size = Vector2(240, 54)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
+	game.ui_escape_action = _show_main_menu
 
 	var tabs_row := HBoxContainer.new()
 	tabs_row.name = "CodexTabs"
@@ -278,7 +280,7 @@ func _codex_label(parent: Control, text: String, font_size: int, color: Color) -
 func _build_codex_characters(list: VBoxContainer) -> void:
 	for character in CODEX_DATA.characters():
 		var row := _codex_entry_panel(list)
-		_codex_portrait(row, str(character["sprite"]), Vector2(110, 110))
+		_codex_portrait(row, str(character["sprite"]), Vector2(176, 176))
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.add_theme_constant_override("separation", 4)
@@ -299,7 +301,7 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 			if str(monster["kind"]) != kind:
 				continue
 			var row := _codex_entry_panel(list)
-			_codex_portrait(row, str(monster["sprite"]), Vector2(96, 96))
+			_codex_portrait(row, str(monster["sprite"]), Vector2(150, 150))
 			var text_box := VBoxContainer.new()
 			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			text_box.add_theme_constant_override("separation", 3)
@@ -325,7 +327,7 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 		row.add_theme_constant_override("separation", 10)
 		panel.add_child(row)
 		var icon := TextureRect.new()
-		icon.custom_minimum_size = Vector2(40, 40)
+		icon.custom_minimum_size = Vector2(96, 96)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.texture = _artifact_icon_texture(str(artifact["id"]))
@@ -424,14 +426,15 @@ func _show_settings_menu() -> void:
 	hint_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.82, 1.0))
 	box.add_child(hint_label)
 
-	var back_button := _make_button("Back")
-	back_button.pressed.connect(func() -> void:
+	var settings_back := func() -> void:
 		if game._is_gameplay_paused() and game.combat_active:
 			_show_pause_menu()
 		else:
 			_show_main_menu()
-	)
+	var back_button := _make_button("Назад")
+	back_button.pressed.connect(settings_back)
 	box.add_child(back_button)
+	game.ui_escape_action = settings_back
 
 
 func _show_pause_menu() -> void:
@@ -492,26 +495,43 @@ func _end_current_run_by_player() -> void:
 
 func _add_character_button(box: VBoxContainer, title: String, description: String, character_id: String) -> void:
 	var config = game.PROGRESSION_DATA.character_config(character_id)
-	var card := PanelContainer.new()
+	# Вся карточка — одна кнопка: клик в любом месте, hover подсвечивает рамку.
+	var card := Button.new()
 	card.name = "CharacterCard_%s" % character_id
 	card.custom_minimum_size = Vector2(760, 150)
-	card.add_theme_stylebox_override("panel", _character_card_style())
+	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	card.add_theme_stylebox_override("normal", _character_card_style())
+	card.add_theme_stylebox_override("hover", _card_hover_style())
+	card.add_theme_stylebox_override("pressed", _card_hover_style())
+	card.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	card.pressed.connect(func() -> void:
+		game.selected_character_id = character_id
+		_show_weapon_select()
+	)
 	box.add_child(card)
 
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 18)
+	row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 14.0
+	row.offset_top = 10.0
+	row.offset_right = -14.0
+	row.offset_bottom = -10.0
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(row)
 
 	var portrait := TextureRect.new()
 	portrait.name = "CharacterPortrait_%s" % character_id
 	portrait.texture = game._cached_texture(str(config.get("sprite_path", "")))
-	portrait.custom_minimum_size = Vector2(112, 112)
+	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	portrait.custom_minimum_size = Vector2(128, 128)
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	row.add_child(portrait)
 
 	var text_box := VBoxContainer.new()
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_theme_constant_override("separation", 4)
 	row.add_child(text_box)
 
@@ -537,13 +557,13 @@ func _add_character_button(box: VBoxContainer, title: String, description: Strin
 		ascension_label.add_theme_color_override("font_color", Color(0.78, 0.58, 1.0, 1.0))
 		text_box.add_child(ascension_label)
 
-	var button := _make_button("Выбрать")
-	button.custom_minimum_size = Vector2(128, 112)
-	button.pressed.connect(func() -> void:
-		game.selected_character_id = character_id
-		_show_weapon_select()
-	)
-	row.add_child(button)
+	var select_hint := Label.new()
+	select_hint.text = "▶"
+	select_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	select_hint.add_theme_font_size_override("font_size", 30)
+	select_hint.add_theme_color_override("font_color", Color(0.95, 0.78, 0.32, 0.9))
+	select_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(select_hint)
 
 
 func _show_weapon_select() -> void:
@@ -568,6 +588,7 @@ func _show_weapon_select() -> void:
 	var back_button := _make_button("Назад")
 	back_button.pressed.connect(_show_character_select)
 	box.add_child(back_button)
+	game.ui_escape_action = _show_character_select
 
 
 func _show_reward_screen() -> void:
@@ -772,11 +793,12 @@ func _show_shop_screen() -> void:
 	skip_button.offset_right = 170.0
 	skip_button.offset_bottom = -58.0
 	skip_button.custom_minimum_size = Vector2(340, 58)
-	skip_button.pressed.connect(func() -> void:
+	var leave_shop := func() -> void:
 		game.current_shop_items.clear()
 		game.current_shop_purchased.clear()
 		game.route._advance_route_after_noncombat()
-	)
+	skip_button.pressed.connect(leave_shop)
+	game.ui_escape_action = leave_shop
 	root.add_child(skip_button)
 
 
@@ -1019,6 +1041,8 @@ func _shop_texture_style(path: String, margin: Vector2) -> StyleBoxTexture:
 func _show_rest_screen() -> void:
 	var box := _create_menu_box("Костер", "Восстановись или подготовься перед следующим боем.", "campfire")
 	_create_menu_run_hud()
+	# Escape = уйти от костра без бонуса (последовательно с пропуском магазина).
+	game.ui_escape_action = game.route._advance_route_after_noncombat
 	var heal_button := _make_button("Передышка\nВосстановить 35% максимального HP.")
 	heal_button.name = "RestHealButton"
 	heal_button.pressed.connect(func() -> void:
@@ -1074,15 +1098,16 @@ func _show_victory_screen() -> void:
 	if ascension_level <= 0:
 		ascension_text = "Возвышение еще не открыто."
 	var box = _create_menu_box("Победа", "Финальный босс повержен. Meta points: %d. %s" % [game.meta_points, ascension_text], "event")
-	var restart_button := _make_button("Новый забег")
-	restart_button.pressed.connect(func() -> void:
+	var finish_run := func() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
 		game.route_selected_indices.clear()
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
-	)
+	var restart_button := _make_button("Новый забег")
+	restart_button.pressed.connect(finish_run)
 	box.add_child(restart_button)
+	game.ui_escape_action = finish_run
 
 
 func _show_death_screen(reason := "") -> void:
@@ -1090,15 +1115,16 @@ func _show_death_screen(reason := "") -> void:
 	if subtitle == "":
 		subtitle = "Забег завершен на этапе маршрута %d." % [game.route_stage + 1]
 	var box := _create_menu_box("Поражение", subtitle, "event")
-	var retry_button := _make_button("Начать заново")
-	retry_button.pressed.connect(func() -> void:
+	var back_to_menu := func() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
 		game.route_selected_indices.clear()
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
-	)
+	var retry_button := _make_button("Начать заново")
+	retry_button.pressed.connect(back_to_menu)
 	box.add_child(retry_button)
+	game.ui_escape_action = back_to_menu
 
 
 func _random_event_choices() -> Array:
@@ -1831,6 +1857,7 @@ func _make_button(text: String) -> Button:
 	button.text = text
 	button.custom_minimum_size = Vector2(420, 54)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_style_button_control(button)
 	return button
 
@@ -1948,6 +1975,14 @@ func _hero_portrait_style() -> StyleBoxFlat:
 	style.content_margin_top = 8
 	style.content_margin_right = 8
 	style.content_margin_bottom = 8
+	return style
+
+
+func _card_hover_style() -> StyleBoxFlat:
+	var style := _character_card_style()
+	style.border_color = Color(1.0, 0.86, 0.28, 1.0)
+	style.bg_color = style.bg_color.lightened(0.06)
+	style.set_border_width_all(3)
 	return style
 
 
@@ -2084,7 +2119,7 @@ func _refresh_artifact_hud_row() -> void:
 	for artifact in _player_artifacts():
 		var artifact_id := str(artifact.get("id", ""))
 		var icon := TextureRect.new()
-		icon.custom_minimum_size = Vector2(40, 40)
+		icon.custom_minimum_size = Vector2(48, 48)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.texture = _artifact_icon_texture(artifact_id)

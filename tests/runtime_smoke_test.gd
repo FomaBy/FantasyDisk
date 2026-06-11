@@ -863,6 +863,7 @@ func _initialize() -> void:
 	await _test_elite_flow(main_scene)
 	await _test_debug_free_pick(main_scene)
 	await _test_codex_screen(main_scene)
+	await _test_escape_navigation(main_scene)
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1658,6 +1659,72 @@ func _test_weapon_aiming() -> void:
 
 	holder.queue_free()
 	current_scene = null
+	await process_frame
+
+
+func _test_escape_navigation(main_scene: PackedScene) -> void:
+	var nav_main := main_scene.instantiate()
+	root.add_child(nav_main)
+	await process_frame
+
+	var escape_event := InputEventKey.new()
+	escape_event.keycode = KEY_ESCAPE
+	escape_event.pressed = true
+
+	# Настройки -> Esc -> меню.
+	nav_main.call("_show_settings_menu")
+	await process_frame
+	nav_main.call("_input", escape_event)
+	await process_frame
+	if nav_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected Escape on settings to return to the main menu.")
+		return
+
+	# Выбор персонажа -> Esc -> меню.
+	nav_main.call("_show_character_select")
+	await process_frame
+	nav_main.call("_input", escape_event)
+	await process_frame
+	if nav_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected Escape on character select to return to the main menu.")
+		return
+
+	# Выбор оружия -> Esc -> выбор персонажа.
+	nav_main.set("selected_character_id", "berserk")
+	nav_main.call("_show_weapon_select")
+	await process_frame
+	nav_main.call("_input", escape_event)
+	await process_frame
+	if nav_main.find_child("CharacterCard_berserk", true, false) == null:
+		_fail("Expected Escape on weapon select to return to character select.")
+		return
+
+	# Кодекс -> Esc -> меню.
+	nav_main.ui._show_codex_screen()
+	await process_frame
+	nav_main.call("_input", escape_event)
+	await process_frame
+	if nav_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected Escape on codex to return to the main menu.")
+		return
+
+	# Карточка персонажа кликабельна целиком (Button) и с hover-стилем.
+	nav_main.call("_show_character_select")
+	await process_frame
+	var card := nav_main.find_child("CharacterCard_berserk", true, false) as Button
+	if card == null:
+		_fail("Expected the whole character card to be a clickable Button.")
+		return
+	if not card.has_theme_stylebox_override("hover"):
+		_fail("Expected the character card to carry a hover highlight style.")
+		return
+	card.pressed.emit()
+	await process_frame
+	if nav_main.find_child("CharacterCard_berserk", true, false) != null:
+		_fail("Expected clicking the character card body to advance to weapon select.")
+		return
+
+	nav_main.queue_free()
 	await process_frame
 
 
