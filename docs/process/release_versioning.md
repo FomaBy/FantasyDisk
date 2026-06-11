@@ -78,3 +78,24 @@ dev  — основная ветка разработки. Все чаты (Back
    не включать Metal/DirectX-специфику).
 5. Каждый релиз тестируется на обеих платформах до публикации.
 6. `.godot/`, `build/`, `releases/` не коммитятся.
+
+
+## Фактические Нюансы Сборки (выявлено при v0.1.0)
+
+- Сборка из тега идет через **отдельный git worktree** (`git worktree add --detach /tmp/... vX.Y.Z`),
+  а не checkout в рабочем каталоге: в каталоге параллельно работают другие агенты,
+  переключение ветки под ними недопустимо. Реализовано в `tools/build_release.sh`.
+- Свежая сборочная инфраструктура (export_presets.cfg, assets/icon.ico) копируется
+  в worktree поверх тега — старые теги могли не содержать Windows-пресет.
+- **Export templates**: проверка `~/Library/Application Support/Godot/export_templates/<версия>/`;
+  Windows-шаблоны ставятся из официального tpz (godotengine releases), распаковать
+  `windows_release_x86_64.exe` / `windows_debug_x86_64.exe` в каталог шаблонов.
+- **makensis (NSIS, brew install makensis) требует UTF-8 локали**: в локали `C`
+  iconv-конверсия `wchar_t` падает на не-ASCII символах NSIS-констант с фиктивным
+  `std::bad_alloc` (ломается даже бандловый пример). `tools/build_release.sh`
+  выставляет `LC_ALL=en_US.UTF-8` сам; при ручном запуске makensis — не забывать.
+- `assets/icon.ico` (16-256) сгенерирован из `icon.svg`: `qlmanage -t -s 256` -> PNG -> Pillow.
+- macOS dmg подписывается ad-hoc; GL-ошибки "Texture leaked" при выходе релизной
+  сборки с `--quit-after` — известный безвредный артефакт принудительного выхода
+  в gl_compatibility, не считать регрессией.
+- Windows-бинарь и инсталлер на Mac не запускаются — финальный тест на Windows-машине делает пользователь.
