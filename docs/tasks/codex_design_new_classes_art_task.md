@@ -1,6 +1,6 @@
 # Задача Для Codex (Design): Арт Шести Новых Классов — Персонажи И Оружие
 
-Статус: in_progress
+Статус: done 2026-06-11
 Создано: 2026-06-11
 Автор: PM
 Исполнитель: Codex (генерация изображений). Ревью, нарезка cutout и интеграция: Claude-Designer.
@@ -60,7 +60,36 @@ Dispatch 2026-06-11: передано в Design Codex-тред `019eabf1-6d54-75
 3. Статус review + резюме (что сгенерировано, какие отступления).
 
 ## Acceptance Criteria (Claude-Designer)
-- [ ] 12 файлов по точным путям, размеры/прозрачность соблюдены.
-- [ ] Стиль един с текущими персонажами; силуэты и ноги пригодны для rig.
-- [ ] После ревью: Designer нарезает cutout-части, регистрирует в content_registry,
+- [x] 12 файлов по точным путям, размеры/прозрачность соблюдены.
+- [x] Стиль един с текущими персонажами; силуэты и ноги пригодны для rig.
+- [x] После ревью: Designer нарезает cutout-части, регистрирует в content_registry,
       коммитит и передает Backend для подключения вместо placeholder-ов.
+
+## Designer Review / 2026-06-11
+
+Ревью пройдено. Все 12 PNG приняты: 6 персонажей (512x512 RGBA) и 6 оружий (256x256 RGBA) выдержаны в dark fantasy full-art стиле, читаемые силуэты, ноги разделены.
+
+Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` — 6 новых entity добавлены в CONFIG (humanoid/robed_walker, arm_l/arm_r/leg_l/leg_r). Манифест `scripts/sliced_rig_manifest.gd` перегенерирован — все 6 новых персонажей в DATA. Debug sheets проверены визуально (reassembled view пиксель-в-пиксель совпадает с оригиналом). Smoke test зелёный.
+
+Зарегистрировано в `docs/design/content_registry.md`: персонажи добавлены в таблицу с путями к cutout, rig-профили обновлены. CHANGELOG обновлён. Backend может подключать новые классы к sliced_rig_manifest вместо placeholder-ов.
+
+## Результат Codex / 2026-06-11
+
+Сгенерированы и сохранены 12 PNG по точным путям:
+
+- персонажи `512x512`: `assets/sprites/characters/assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png`;
+- оружие `256x256`: `assets/sprites/weapons/chakrams.png`, `moon_crossbow.png`, `restore_potion.png`, `blast_powder.png`, `long_spear.png`, `summon_amulet.png`.
+
+Постобработка:
+
+- chroma-key фон удален, PNG имеют alpha;
+- персонажи auto-fit внутри 512 с безопасным padding;
+- мелкие оторванные alpha-островки у персонажей удалены;
+- оружие auto-trim/fit в 256;
+- проверены размеры, transparent corners и непустой bbox для всех 12 файлов.
+
+Отступления/заметки для Claude-Designer review:
+
+- персонажи являются full-art sprites, еще не нарезаны на cutout parts;
+- ноги читаются и разделены, но финальные pivots/cutout slicing остаются за Claude-Designer;
+- код/сцены/баланс/интеграция не трогались, smoke-тест не запускался по условию задачи.

@@ -62,24 +62,32 @@
 
 | ID | Игровое имя | Роль | Источник | Ассет | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/berserk_walk_sheet_v2.png`, `assets/sprites/characters/rig_parts/berserk_*.png` | Реализовано |
-| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/rig_parts/dark_mage_*.png` | Реализовано |
-| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/rig_parts/guitarist_*.png` | Реализовано |
+| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано |
+| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/cutout/dark_mage_*.png` | Реализовано |
+| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/cutout/guitarist_*.png` | Реализовано |
+| `assassin` | Ассасин | Быстрый крит-мили, чакрамы, яд | `scripts/progression_data.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано (art 2026-06-11) |
+| `ranger` | Рейнджер | Дальний точный контроль, арбалет, ловушки | `scripts/progression_data.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано (art 2026-06-11) |
+| `doctor` | Доктор | Выживание через урон, зелья, чума | `scripts/progression_data.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано (art 2026-06-11) |
+| `chemist` | Химик | AoE и DoT-зоны, взрывы, кислота | `scripts/progression_data.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано (art 2026-06-11) |
+| `knight` | Рыцарь | Танк и тяжелый контроль, копье, щит | `scripts/progression_data.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано (art 2026-06-11) |
+| `druid` | Друид | Призыв и природные зоны, тотемы | `scripts/progression_data.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано (art 2026-06-11) |
 
 ## Новые Классы 0.2 (Фундамент, 2026-06-11)
 
-Спрайты всех шести — **placeholder** (перекрашенные копии ближайшего архетипа, `*_placeholder.png`), финальный арт — `codex_design_new_classes_art_task.md`. Оружейные визуалы тоже временные (переиспользованы существующие weapon PNG).
+Спрайты всех шести прошли Design art-review (2026-06-11) и приняты как polished dark fantasy full-art (512x512, RGBA). Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и лежат в `assets/sprites/characters/cutout/` (torso, arm_l, arm_r, leg_l, leg_r для каждого). Манифест обновлён в `scripts/sliced_rig_manifest.gd`. Первые 9 weapon PNG для новых классов (chakrams, moon_crossbow, restore_potion, blast_powder, long_spear, summon_amulet — 6 штук готово; остальные shadow_daggers, venom_wire, storm_longbow, hunter_trap, plague_syringe, bone_saw, acid_flask, homunculus_vial, tower_shield, holy_flail, briar_staff, raven_totem) сгенерированы частично Codex — fallback-текстуры используются пока не все 18 PNG готовы.
 
-| ID | Имя | Архетип | Сигнатурное оружие | «Свой» урон |
+| ID | Имя | Архетип | 3 стартовых оружия | «Свой» урон |
 | --- | --- | --- | --- | --- |
-| `assassin` | Ассасин | Быстрый крит-мили | `chakrams` Чакрамы (boomerang: коридор туда-обратно, 2 прохода урона) | damage |
-| `ranger` | Рейнджер | Дальний точный | `moon_crossbow` Лунный арбалет (узкий луч 900, 1 пробой, x1.55) | damage |
-| `doctor` | Доктор | Выживание через урон | `restore_potion` Зелье восстановления (AoE-взрыв + 2.5% max HP себе за бросок) | magic_damage |
-| `chemist` | Химик | AoE + DoT зоны | `blast_powder` Взрывная пыль (взрыв + ядовитое облако: тики dot_damage 3с) | magic_damage |
-| `knight` | Рыцарь | Танк/копье | `long_spear` Копье (strip 90x540, медленный тяжелый выпад, пассив +5% защиты) | damage |
-| `druid` | Друид | Призыватель | `summon_amulet` Амулет призыва (звери AllyMinion, лимит от Лидерства, урон зверя = 55% sound_wave_damage) | sound_wave_damage |
+| `assassin` | Ассасин | Быстрый крит-мили | `chakrams`, `shadow_daggers`, `venom_wire` | damage |
+| `ranger` | Рейнджер | Дальний точный | `moon_crossbow`, `storm_longbow`, `hunter_trap` | damage |
+| `doctor` | Доктор | Выживание через урон | `restore_potion`, `plague_syringe`, `bone_saw` | magic_damage |
+| `chemist` | Химик | AoE + DoT зоны | `blast_powder`, `acid_flask`, `homunculus_vial` | magic_damage |
+| `knight` | Рыцарь | Танк/копье | `long_spear`, `tower_shield`, `holy_flail` | damage |
+| `druid` | Друид | Призыватель | `summon_amulet`, `briar_staff`, `raven_totem` | sound_wave_damage |
 
 Релевантность атрибутов расширена: strength -> berserk/assassin/ranger/knight; intelligence -> dark_mage/doctor/chemist; energy -> dark_mage/guitarist/doctor/chemist/druid. Вознесение: по 10 уровней на каждый новый класс (ID `<класс>_asc_1..10`, тематические имена в ASCENSION_LEVELS).
+
+Канонические character PNG для новых классов: `assets/sprites/characters/assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png` (`512x512`, transparent). Канонические weapon PNG для новых 18 вариантов: `chakrams.png`, `shadow_daggers.png`, `venom_wire.png`, `moon_crossbow.png`, `storm_longbow.png`, `hunter_trap.png`, `restore_potion.png`, `plague_syringe.png`, `bone_saw.png`, `blast_powder.png`, `acid_flask.png`, `homunculus_vial.png`, `long_spear.png`, `tower_shield.png`, `holy_flail.png`, `summon_amulet.png`, `briar_staff.png`, `raven_totem.png` (`256x256`, transparent). Первые 9 weapon PNG для Berserk/Dark Mage/Guitarist остаются активными по существующим путям.
 
 ## Анимации И Rig-Профили
 
@@ -101,7 +109,7 @@
 | `wing_flap` | Motion layer | `winged_spark` и будущие flying-существа | Зеркальный flap вместо walking legs | Реализовано |
 
 Rig-профили выбираются по ID/имени сущности:
-- `berserk`, `dark_mage`, `guitarist` - игроки с `VisualRoot/RigRoot` и `WeaponSocketMount`.
+- `berserk`, `dark_mage`, `guitarist`, `assassin`, `ranger`, `doctor`, `chemist`, `knight`, `druid` - игроки с `VisualRoot/RigRoot` и `WeaponSocketMount`.
 - `runner`, `biter`, `stalker`, `spark` - быстрый низкий stride.
 - `shooter`, `marksman`, `mage`, `spitter` - осторожная малая амплитуда.
 - `bruiser`, `shield`, `armored`, `bastion` - тяжелый медленный sway.
@@ -168,6 +176,24 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `electric_guitar` | Электрогитара | Гитарист | Звуковая волна вперед | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `bass_guitar` | Бас-гитара | Гитарист | Частый слабый контроль-пульс с сильным отталкиванием | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `sound_amp` | Звуковой усилитель | Гитарист | Деплойный усилитель: живет ~7с, лимит 1 + floor(Лидерство/4) | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
+| `chakrams` | Чакрамы | Ассасин | Boomerang-коридор туда и обратно, crit-friendly | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `moon_crossbow` | Лунный арбалет | Рейнджер | Дальний точный piercing shot | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `storm_longbow` | Грозовой длинный лук | Рейнджер | Три дальних грозовых луча веером | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `hunter_trap` | Охотничий капкан | Рейнджер | Deploy trap: burst + knockback при входе врага | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `restore_potion` | Зелье восстановления | Доктор | AoE throw + self heal | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
+| `plague_syringe` | Чумной шприц | Доктор | Poison injection + sustain | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
+| `bone_saw` | Костяная пила | Доктор | Ближний saw arc/flurry, DoT и small heal | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
+| `blast_powder` | Взрывная пыль | Химик | AoE explosion + poison cloud | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
+| `acid_flask` | Кислотная колба | Химик | Большая acid pool / DoT-zone | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
+| `homunculus_vial` | Склянка гомункула | Химик | Temporary minion scaling from magic damage | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
+| `long_spear` | Копье | Рыцарь | Длинный точечный strip, defense passive | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `tower_shield` | Башенный щит | Рыцарь | Shield bash / frontal control, tank identity | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `holy_flail` | Освященный кистень | Рыцарь | Medium circular heavy swing | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `summon_amulet` | Амулет призыва | Друид | Beast pack scaling from Leadership | `ProgressionData.DRUID_WEAPONS` | Реализовано |
+| `briar_staff` | Посох терний | Друид | Thorn zone, AoE DoT, crowd control | `ProgressionData.DRUID_WEAPONS` | Реализовано |
+| `raven_totem` | Вороний тотем | Друид | Totem pulses, Leadership-scaled deploy limit | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 
 Временные visuals классового оружия регистрируются в runtime-группе `player_weapon_effects` и должны удаляться при смене оружия/персонажа, смерти, завершении забега и очистке world state.
 
