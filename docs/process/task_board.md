@@ -53,7 +53,23 @@
 | [codex_design_artifact_icons_reference_dark_artifacts_redraw_task.md](../tasks/codex_design_artifact_icons_reference_dark_artifacts_redraw_task.md) | Design (Codex) | done | Superseded by 2026-06-11 concept-sheet pass: 52 active artifact icons, 256x256, 40px preview/smoke green |
 | Финальная нарезка пользовательского concept-sheet (без отдельного task-файла) | PM (по прямому поручению пользователя, без Codex) | done | Исторический pass 2026-06-11; superseded задачей `design_artifact_icons_final_redesign_task.md` для всех 52 active artifact icons |
 | [design_artifact_icons_final_redesign_task.md](../tasks/design_artifact_icons_final_redesign_task.md) | Design | done | Закрыта 2026-06-11: 52 epic dark fantasy transparent artifact icons, `tools/final_redesign_artifact_icons.py`, 40px QA, smoke green |
-| [backend_class_attribute_relevance_levelup_reroll_fix_task.md](../tasks/backend_class_attribute_relevance_levelup_reroll_fix_task.md) | Back-end | new | Классовая релевантность атрибутов урона (берсерк=физ, маг=magic, гитарист=sound) + честные превью; фикс эксплойта реролла окна уровня |
+| [backend_class_attribute_relevance_levelup_reroll_fix_task.md](../tasks/backend_class_attribute_relevance_levelup_reroll_fix_task.md) | Back-end | done | Закрыта 2026-06-11 (e5c6ea0): релевантность статов по классам, честные превью, анти-реролл |
+
+## Релиз (выдано PM 2026-06-11)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_release_v0_1_1_merge_main_builds_task.md](../tasks/backend_release_v0_1_1_merge_main_builds_task.md) | Back-end | done | Закрыта 2026-06-11: v0.1.1 в main с тегом, артефакты в releases/v0.1.1/ + SHA256SUMS. Windows-тест за пользователем |
+| [backend_fix_windows_installer_integrity_task.md](../tasks/backend_fix_windows_installer_integrity_task.md) | Back-end | done | Закрыта 2026-06-11: makensis на macOS писал битый CRC32 в хвост — пост-фикс CRC + самопроверка в build_release.sh, артефакты пересобраны |
+
+## Новые (выданы PM 2026-06-11, пакет «настройки + все атрибуты + 6 новых классов»)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_settings_display_audio_task.md](../tasks/backend_settings_display_audio_task.md) | Back-end | new | Выбор монитора, починка оконных разрешений, громкость общая/музыка/эффекты + mute. Блокер снят — релиз закрыт |
+| [backend_full_attributes_wiring_audit_task.md](../tasks/backend_full_attributes_wiring_audit_task.md) | Back-end | new | Аудит и подключение ВСЕХ производных параметров по mechanics_extract. Перед новыми классами. Блокер снят |
+| [backend_new_classes_foundation_task.md](../tasks/backend_new_classes_foundation_task.md) | Back-end | new | 6 новых классов (assassin/ranger/doctor/chemist/knight/druid) + сигнатурное оружие, баланс, выбор, вознесение, кодекс. Брать ПОСЛЕ задачи атрибутов |
+| [codex_design_new_classes_art_task.md](../tasks/codex_design_new_classes_art_task.md) | Design (Codex) | in_progress | Dispatch 2026-06-11: передано в Design Codex-тред `019eabf1-6d54-7561-8af9-ce25cdf483a9`; без коммита, финальное ревью у Claude-Designer |
 | [backend_melee_targeting_test_update_strip_task.md](../tasks/backend_melee_targeting_test_update_strip_task.md) | Back-end | done | Закрыта PM 2026-06-11: handoff устарел — тест уже обновлен под strip и проходит (проверено прогоном) |
 | [design_artifact_icons_shop_cursor_task.md](../tasks/design_artifact_icons_shop_cursor_task.md) | Design | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |
 | [backend_shop_inline_artifact_icons_cursor_integration_task.md](../tasks/backend_shop_inline_artifact_icons_cursor_integration_task.md) | Back-end | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |
