@@ -205,6 +205,8 @@ static func artifacts() -> Array:
 			"id": str(artifact.get("id", "")),
 			"title": str(artifact.get("title", "")),
 			"description": str(artifact.get("description", "")),
+			"tier": int(artifact.get("tier", 1)),
+			"class_affinity": artifact.get("class_affinity", []),
 			"source": "artifact",
 		})
 	for item in PROGRESSION_DATA.SHOP_ITEMS:

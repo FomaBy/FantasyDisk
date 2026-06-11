@@ -143,6 +143,7 @@ func _show_battle_map() -> void:
 	_draw_map_connections(map_area, node_positions)
 	_draw_route_nodes(map_area, node_positions)
 	game.ui._create_resource_hud_panel(root, Vector2(game.ROUTE_MAP_SCREEN_MARGIN, game.ROUTE_MAP_HEADER_HEIGHT + 8.0))
+	game.ui._create_upgrade_fab(root, _show_battle_map)
 	game.ui._update_hud()
 	game.route_map_pan_active = false
 	game.route_map_drag_distance = 0.0

@@ -125,7 +125,7 @@ func _attack() -> void:
 
 
 func _fire_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	var targets := _find_closest_enemies(owner_node, maxi(projectile_count, 1))
+	var targets := _find_closest_enemies(owner_node, maxi(projectile_count + _extra_projectiles(), 1))
 	if targets.is_empty():
 		_launch_aoe_projectile(owner_node, null, direction)
 		return
@@ -196,7 +196,8 @@ func _fire_curse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void
 
 func _fire_beam(owner_node: Node2D, direction: Vector2) -> void:
 	# Веер из beam_count лучей с шагом beam_fan_degrees, центрированный на цели.
-	var count := maxi(beam_count, 1)
+	# «Ядро Расщепления» (tier 3): extra_projectile добавляет луч/снаряд.
+	var count := maxi(beam_count + _extra_projectiles(), 1)
 	for beam_index in range(count):
 		var fan_offset := 0.0
 		if count > 1:
@@ -311,6 +312,16 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 	_fire_pulse(owner_node, amp.global_position)
 
 
+func _extra_projectiles() -> int:
+	var owner_node := _owner_node()
+	if owner_node == null:
+		return 0
+	var mods = owner_node.get("run_modifiers")
+	if not (mods is Dictionary):
+		return 0
+	return int(mods.get("extra_projectile", 0.0))
+
+
 func _find_closest_enemy(owner_node: Node2D, range_limit := -1.0) -> Node2D:
 	var closest_enemy: Node2D = null
 	var closest_distance := attack_range * attack_range if range_limit < 0.0 else range_limit
@@ -339,6 +350,9 @@ func _is_enemy_inside_wave(origin: Vector2, enemy_position: Vector2, direction: 
 func _damage_enemy(enemy: Node, amount: float) -> void:
 	if enemy != null and is_instance_valid(enemy) and enemy.has_method("take_damage"):
 		enemy.take_damage(amount)
+		var owner_node := _owner_node()
+		if owner_node != null and owner_node.has_method("on_weapon_hit"):
+			owner_node.on_weapon_hit(enemy)
 
 
 func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2D) -> void:

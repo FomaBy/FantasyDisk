@@ -288,7 +288,13 @@ func _refresh_artifacts() -> void:
 		var definition: Dictionary = ProgressionData.artifact_definition(artifact_id)
 		var description := str(definition.get("description", ""))
 		var title := str(artifact.get("title", ""))
-		icon.tooltip_text = title if description == "" else "%s\n%s" % [title, description]
+		var tier_text := "Tier %d" % int(definition.get("tier", 1))
+		icon.tooltip_text = title if description == "" else "%s (%s)\n%s" % [title, tier_text, description]
+		var pause_affinity: Array = definition.get("class_affinity", [])
+		if not pause_affinity.is_empty() and _player != null and not pause_affinity.has(str(_player.get("character_id"))):
+			var partial: bool = not (definition.get("mods", {}) as Dictionary).is_empty() or not (definition.get("stats", {}) as Dictionary).is_empty()
+			icon.tooltip_text += "\n[%s]" % ("Работает вполсилы" if partial else "Не работает на текущем классе")
+			icon.modulate = Color(1.0, 0.85, 0.55, 1.0) if partial else Color(1.0, 0.55, 0.50, 1.0)
 		icon.mouse_filter = Control.MOUSE_FILTER_PASS
 		_artifacts_container.add_child(icon)
 

@@ -836,6 +836,54 @@ func _initialize() -> void:
 		push_error("Expected route stage to advance after normal victory.")
 		quit(1)
 		return
+	# Новый победный флоу: баннер «Победа» -> окно докачки атрибутов -> карта.
+	var victory_banner := main.find_child("VictoryBanner", true, false) as Button
+	if victory_banner == null:
+		push_error("Expected the victory banner overlay after a won battle.")
+		quit(1)
+		return
+	# Пополняем кошелек снапшота: проверяем механику покупки, а не экономику дропа.
+	var run_snapshot: Dictionary = main.get("run_player_snapshot")
+	run_snapshot["money"] = int(run_snapshot.get("money", 0)) + 200
+	victory_banner.pressed.emit()
+	await process_frame
+	var attribute_panel := main.find_child("AttributeShopPanel", true, false)
+	if attribute_panel == null:
+		push_error("Expected the attribute purchase window after the victory banner.")
+		quit(1)
+		return
+	var attribute_offers := main.find_child("AttributeOffers", true, false) as VBoxContainer
+	if attribute_offers == null or attribute_offers.get_child_count() != 2:
+		push_error("Expected exactly two attribute offers in the post-battle window.")
+		quit(1)
+		return
+	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
+	if reroll_button == null:
+		push_error("Expected the attribute window to include a reroll button.")
+		quit(1)
+		return
+	# Покупка: стат растет, деньги списываются.
+	var snapshot: Dictionary = main.get("run_player_snapshot")
+	var stats_before: Dictionary = (snapshot.get("stats", {}) as Dictionary).duplicate(true)
+	var attr_money_before := int(main.ui._run_money())
+	var first_offer := attribute_offers.get_child(0) as Button
+	var offered_stat := str(first_offer.name).replace("AttributeOffer_", "")
+	if first_offer.disabled:
+		push_error("Expected the attribute offer to be affordable in the test run (money %d)." % attr_money_before)
+		quit(1)
+		return
+	first_offer.pressed.emit()
+	await process_frame
+	snapshot = main.get("run_player_snapshot")
+	var stats_after: Dictionary = snapshot.get("stats", {})
+	if float(stats_after.get(offered_stat, 0.0)) != float(stats_before.get(offered_stat, 0.0)) + 1.0:
+		push_error("Expected buying an attribute to raise %s by 1." % offered_stat)
+		quit(1)
+		return
+	if int(main.ui._run_money()) >= attr_money_before:
+		push_error("Expected the attribute purchase to spend money.")
+		quit(1)
+		return
 	if abs(float(main.call("_current_round_duration")) - 33.0) > 0.01:
 		push_error("Expected next round duration to increase by 3 seconds per stage.")
 		quit(1)
@@ -864,6 +912,7 @@ func _initialize() -> void:
 	await _test_debug_free_pick(main_scene)
 	await _test_codex_screen(main_scene)
 	await _test_escape_navigation(main_scene)
+	await _test_economy_tiers_and_fab(main_scene)
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1659,6 +1708,92 @@ func _test_weapon_aiming() -> void:
 
 	holder.queue_free()
 	current_scene = null
+	await process_frame
+
+
+func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
+	# Данные: у всех артефактов tier и class_affinity; tier 3 — 5-8 штук.
+	var tier3_count := 0
+	for artifact in ProgressionData.ARTIFACTS:
+		var tier := int(artifact.get("tier", 0))
+		if tier < 1 or tier > 3 or not artifact.has("class_affinity"):
+			_fail("Expected artifact %s to declare tier 1-3 and class_affinity." % artifact.get("id"))
+			return
+		if tier == 3:
+			tier3_count += 1
+	if tier3_count < 5 or tier3_count > 8:
+		_fail("Expected 5-8 tier-3 artifacts, got %d." % tier3_count)
+		return
+	# Цены магазина x3-4.
+	for item in ProgressionData.SHOP_ITEMS:
+		if str(item.get("id")) == "shop_damage" and int(item.get("cost", 0)) != 42:
+			_fail("Expected shop_damage cost to be 42 after the x3.5 economy pass.")
+			return
+
+	var econ_main := main_scene.instantiate()
+	root.add_child(econ_main)
+	await process_frame
+	econ_main.set("selected_character_id", "berserk")
+
+	# Аффинити-пометки: красная / желтая / отсутствует.
+	var red_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("split_core"))
+	var yellow_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("void_ink"))
+	var none_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("warrior_charm"))
+	if str(red_note.get("text", "")) != "Не работает на текущем классе":
+		_fail("Expected a red affinity note for a foreign-class-only artifact.")
+		return
+	if str(yellow_note.get("text", "")) != "Работает вполсилы":
+		_fail("Expected a yellow affinity note for a mixed-mods artifact.")
+		return
+	if not none_note.is_empty():
+		_fail("Expected no affinity note for a universal artifact.")
+		return
+
+	# Механики tier 3: Кровавый Рубеж (low HP -> +урон) и Договор Шипов (отражение).
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	var t3_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	holder.add_child(t3_player)
+	await process_frame
+	t3_player.call("configure_character", "berserk", "sword")
+	t3_player.call("apply_reward", ProgressionData.artifact_definition("blood_pact"))
+	var damage_before := float((t3_player.get("derived_parameters") as Dictionary).get("damage", 0.0))
+	t3_player.set("health", float(t3_player.get("max_health")) * 0.1)
+	t3_player.call("_update_low_hp_state")
+	var damage_low := float((t3_player.get("derived_parameters") as Dictionary).get("damage", 0.0))
+	if damage_low < damage_before * 1.4:
+		_fail("Expected Blood Pact to boost damage below 30%% HP (%f -> %f)." % [damage_before, damage_low])
+		return
+
+	t3_player.call("apply_reward", ProgressionData.artifact_definition("thorn_pact"))
+	var thorn_enemy := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate()
+	holder.add_child(thorn_enemy)
+	thorn_enemy.set("max_health", 100000.0)
+	thorn_enemy.global_position = t3_player.global_position + Vector2(80, 0)
+	await process_frame
+	var enemy_hp_before := float(thorn_enemy.get("health"))
+	var derived: Dictionary = t3_player.get("derived_parameters")
+	derived["dodge"] = 0.0
+	t3_player.set("derived_parameters", derived)
+	t3_player.set("_damage_invulnerability_left", 0.0)
+	t3_player.call("take_damage", 10.0)
+	if float(thorn_enemy.get("health")) >= enemy_hp_before:
+		_fail("Expected Thorn Pact to reflect damage to nearby enemies.")
+		return
+	holder.queue_free()
+	current_scene = null
+
+	# FAB прокачки на карте с бейджем.
+	econ_main.set("pending_level_ups", 2)
+	econ_main.call("_show_battle_map")
+	await process_frame
+	var fab := econ_main.find_child("UpgradeFabButton", true, false) as Button
+	var badge := econ_main.find_child("UpgradeFabBadge", true, false) as Label
+	if fab == null or badge == null or badge.text != "2":
+		_fail("Expected the route map upgrade FAB with a pending-levels badge of 2.")
+		return
+	econ_main.queue_free()
 	await process_frame
 
 

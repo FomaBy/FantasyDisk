@@ -90,7 +90,10 @@ func _end_combat(victory: bool) -> void:
 		else:
 			game.route_stage += 1
 			game.current_combat_type = "battle"
-			game.route._show_battle_map()
+			# Победный флоу: затемнение + «Победа» -> докачка атрибутов -> карта.
+			game.ui._show_victory_banner(func() -> void:
+				game.ui._show_attribute_shop(game.route._show_battle_map)
+			)
 	else:
 		game.ui._show_death_screen()
 
@@ -425,6 +428,11 @@ func _connect_enemy_rewards(enemy: Node) -> void:
 
 
 func _on_enemy_died(enemy: Node2D) -> void:
+	# «Сердце Пиявки» (tier 3): убийство лечит процент max HP.
+	if game.current_player != null and is_instance_valid(game.current_player):
+		var heal_percent := float((game.current_player.get("run_modifiers") as Dictionary).get("kill_heal_percent", 0.0))
+		if heal_percent > 0.0 and game.current_player.has_method("heal_percent"):
+			game.current_player.heal_percent(heal_percent)
 	_spawn_pickup("xp", int(enemy.get("reward_xp")), enemy.global_position + Vector2(-10.0, 0.0))
 	var money_chance := 1.0 if enemy.is_in_group("elite_enemies") else 0.75
 	if game.rng.randf() < money_chance:

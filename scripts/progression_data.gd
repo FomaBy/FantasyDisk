@@ -294,52 +294,58 @@ const STAT_REWARDS := [
 ]
 
 const ARTIFACTS := [
-	{"id": "warrior_charm", "title": "Warrior Charm", "description": "+2 Сила.", "stats": {"strength": 2.0}},
-	{"id": "fox_boots", "title": "Fox Boots", "description": "+2 Ловкость.", "stats": {"agility": 2.0}},
-	{"id": "glass_orb", "title": "Glass Orb", "description": "+2 Интеллект.", "stats": {"intelligence": 2.0}},
-	{"id": "hawk_lens", "title": "Hawk Lens", "description": "+2 Восприятие.", "stats": {"perception": 2.0}},
-	{"id": "ember_core", "title": "Ember Core", "description": "+2 Энергия.", "stats": {"energy": 2.0}},
-	{"id": "old_codex", "title": "Old Codex", "description": "+2 Знание.", "stats": {"knowledge": 2.0}},
-	{"id": "stone_heart", "title": "Stone Heart", "description": "+2 Выносливость.", "stats": {"endurance": 2.0}},
-	{"id": "banner_seed", "title": "Banner Seed", "description": "+2 Лидерство.", "stats": {"leadership": 2.0}},
-	{"id": "red_whetstone", "title": "Red Whetstone", "description": "+1 Сила, +1 Ловкость.", "stats": {"strength": 1.0, "agility": 1.0}},
-	{"id": "star_compass", "title": "Star Compass", "description": "+1 Восприятие, +1 Знание.", "stats": {"perception": 1.0, "knowledge": 1.0}},
-	{"id": "living_root", "title": "Living Root", "description": "+1 Выносливость, +1 Энергия.", "stats": {"endurance": 1.0, "energy": 1.0}},
-	{"id": "captains_coin", "title": "Captain's Coin", "description": "+1 Лидерство, +1 Сила.", "stats": {"leadership": 1.0, "strength": 1.0}},
-	{"id": "quickstring", "title": "Quickstring", "description": "+15% attack speed.", "mods": {"attack_speed_multiplier": 1.15}},
-	{"id": "heavy_totem", "title": "Heavy Totem", "description": "+25% max HP, -5% move speed.", "mods": {"max_health_multiplier": 1.25, "move_speed_multiplier": 0.95}},
-	{"id": "splinter_gloves", "title": "Splinter Gloves", "description": "+20% damage.", "mods": {"damage_multiplier": 1.2}},
-	{"id": "wide_sigil", "title": "Wide Sigil", "description": "+20% attack range.", "mods": {"range_multiplier": 1.2}},
-	{"id": "swift_ink", "title": "Swift Ink", "description": "+12% move speed.", "mods": {"move_speed_multiplier": 1.12}},
-	{"id": "summoners_bell", "title": "Summoner's Bell", "description": "+1 maximum summon.", "mods": {"summon_bonus": 1.0}},
-	{"id": "blood_sigil", "title": "Кровавая печать", "description": "Берсерк: +18% damage, +8 max HP.", "classes": ["berserk"], "mods": {"damage_multiplier": 1.18, "max_health_flat": 8.0}},
-	{"id": "void_ink", "title": "Чернила пустоты", "description": "Темный маг: +20% magic damage and AoE.", "classes": ["dark_mage"], "mods": {"damage_multiplier": 1.20, "aoe_radius_multiplier": 1.20}},
-	{"id": "echo_pick", "title": "Медиатор эха", "description": "Гитарист: +18% attack speed and knockback.", "classes": ["guitarist"], "mods": {"attack_speed_multiplier": 1.18, "knockback_multiplier": 1.16}},
-	{"id": "sturdy_amulet", "title": "Крепкий амулет", "description": "+24 Max HP.", "mods": {"max_health_flat": 24.0}},
-	{"id": "fast_boots", "title": "Быстрые сапоги", "description": "+10% Move Speed.", "mods": {"move_speed_multiplier": 1.10}},
-	{"id": "magnetic_buckle", "title": "Магнитная пряжка", "description": "+55 Pickup Radius.", "mods": {"pickup_radius_flat": 55.0}},
-	{"id": "silver_coin", "title": "Серебряная монета", "description": "+25% Money Gain.", "mods": {"money_gain_multiplier": 1.25}},
-	{"id": "survival_manual", "title": "Учебник выживания", "description": "+22% XP Gain.", "mods": {"xp_gain_multiplier": 1.22}},
-	{"id": "cracked_shield", "title": "Треснувший щит", "description": "+12% Defense, -6% Move Speed.", "mods": {"defense_flat": 0.12, "move_speed_multiplier": 0.94}},
-	{"id": "sharp_talisman", "title": "Острый талисман", "description": "+8% Crit Chance.", "mods": {"crit_chance_flat": 0.08}},
-	{"id": "jagged_blade", "title": "Зазубренное лезвие", "description": "Берсерк: +18% melee damage.", "classes": ["berserk"], "mods": {"damage_multiplier": 1.18}},
-	{"id": "heavy_grip", "title": "Тяжелая рукоять", "description": "Берсерк: +24% Knockback, -8% Attack Speed.", "classes": ["berserk"], "mods": {"knockback_multiplier": 1.24, "attack_speed_multiplier": 0.92}},
-	{"id": "war_belt", "title": "Боевой ремень", "description": "Берсерк: +22% AoE Radius.", "classes": ["berserk"], "mods": {"aoe_radius_multiplier": 1.22}},
-	{"id": "warriors_rage", "title": "Ярость воина", "description": "Берсерк: +20% damage, -10% Max HP.", "classes": ["berserk"], "mods": {"damage_multiplier": 1.20, "max_health_multiplier": 0.90}},
-	{"id": "dark_crystal", "title": "Темный кристалл", "description": "Темный маг: +18% magic damage.", "classes": ["dark_mage"], "mods": {"damage_multiplier": 1.18}},
-	{"id": "ash_page", "title": "Пепельная страница", "description": "Темный маг: +18% AoE Radius and +10% damage.", "classes": ["dark_mage"], "mods": {"aoe_radius_multiplier": 1.18, "damage_multiplier": 1.10}},
-	{"id": "skull_resonator", "title": "Черепной резонатор", "description": "Темный маг: +20% Attack Range.", "classes": ["dark_mage"], "mods": {"range_multiplier": 1.20}},
-	{"id": "ink_candle", "title": "Чернильная свеча", "description": "Темный маг: +22% damage, -6% Move Speed.", "classes": ["dark_mage"], "mods": {"damage_multiplier": 1.22, "move_speed_multiplier": 0.94}},
-	{"id": "copper_string", "title": "Медная струна", "description": "Гитарист: +18% sound damage.", "classes": ["guitarist"], "mods": {"damage_multiplier": 1.18}},
-	{"id": "broken_pick", "title": "Сломанный медиатор", "description": "Гитарист: +12% Crit Chance.", "classes": ["guitarist"], "mods": {"crit_chance_flat": 0.12}},
-	{"id": "loud_amp", "title": "Громкий усилитель", "description": "Гитарист: +20% Aura/AoE Radius.", "classes": ["guitarist"], "mods": {"aoe_radius_multiplier": 1.20}},
-	{"id": "bass_cable", "title": "Басовый кабель", "description": "Гитарист: +18% Knockback and +10% AoE.", "classes": ["guitarist"], "mods": {"knockback_multiplier": 1.18, "aoe_radius_multiplier": 1.10}},
-	{"id": "cursed_crown", "title": "Проклятая корона", "description": "+30% Damage, -18% Max HP.", "mods": {"damage_multiplier": 1.30, "max_health_multiplier": 0.82}},
-	{"id": "fragile_heart", "title": "Хрупкое сердце", "description": "+25% Attack Speed, -10% Defense.", "mods": {"attack_speed_multiplier": 1.25, "defense_flat": -0.10}},
-	{"id": "greedy_purse", "title": "Жадный кошелек", "description": "+45% Money Gain, enemies have +15% HP.", "mods": {"money_gain_multiplier": 1.45, "enemy_health_multiplier": 1.15}},
-	{"id": "burning_shard", "title": "Горящий осколок", "description": "+20% AoE Radius, -20% healing.", "mods": {"aoe_radius_multiplier": 1.20, "healing_multiplier": 0.80}},
-	{"id": "golden_route_mark", "title": "Золотая метка пути", "description": "+15% XP Gain and +15% Money Gain.", "mods": {"xp_gain_multiplier": 1.15, "money_gain_multiplier": 1.15}},
-	{"id": "glass_edge", "title": "Стеклянная кромка", "description": "+20% Crit Damage, -8 Max HP.", "mods": {"crit_damage_flat": 0.20, "max_health_flat": -8.0}},
+	{"id": "warrior_charm", "title": "Warrior Charm", "tier": 1, "cost": 30, "class_affinity": [], "description": "+5 Сила.", "stats": {"strength": 5.0}},
+	{"id": "fox_boots", "title": "Fox Boots", "tier": 1, "cost": 30, "class_affinity": [], "description": "+5 Ловкость.", "stats": {"agility": 5.0}},
+	{"id": "glass_orb", "title": "Glass Orb", "tier": 1, "cost": 30, "class_affinity": [], "description": "+5 Интеллект.", "stats": {"intelligence": 5.0}},
+	{"id": "hawk_lens", "title": "Hawk Lens", "tier": 1, "cost": 30, "class_affinity": [], "description": "+5 Восприятие.", "stats": {"perception": 5.0}},
+	{"id": "ember_core", "title": "Ember Core", "tier": 1, "cost": 30, "class_affinity": [], "description": "+5 Энергия.", "stats": {"energy": 5.0}},
+	{"id": "old_codex", "title": "Old Codex", "tier": 1, "cost": 30, "class_affinity": [], "description": "+5 Знание.", "stats": {"knowledge": 5.0}},
+	{"id": "stone_heart", "title": "Stone Heart", "tier": 1, "cost": 30, "class_affinity": [], "description": "+5 Выносливость.", "stats": {"endurance": 5.0}},
+	{"id": "banner_seed", "title": "Banner Seed", "tier": 1, "cost": 30, "class_affinity": [], "description": "+5 Лидерство.", "stats": {"leadership": 5.0}},
+	{"id": "red_whetstone", "title": "Red Whetstone", "tier": 1, "cost": 30, "class_affinity": [], "description": "+3 Сила, +3 Ловкость.", "stats": {"strength": 3.0, "agility": 3.0}},
+	{"id": "star_compass", "title": "Star Compass", "tier": 1, "cost": 30, "class_affinity": [], "description": "+3 Восприятие, +3 Знание.", "stats": {"perception": 3.0, "knowledge": 3.0}},
+	{"id": "living_root", "title": "Living Root", "tier": 1, "cost": 30, "class_affinity": [], "description": "+3 Выносливость, +3 Энергия.", "stats": {"endurance": 3.0, "energy": 3.0}},
+	{"id": "captains_coin", "title": "Captain's Coin", "tier": 1, "cost": 30, "class_affinity": [], "description": "+3 Лидерство, +3 Сила.", "stats": {"leadership": 3.0, "strength": 3.0}},
+	{"id": "quickstring", "title": "Quickstring", "tier": 1, "cost": 30, "class_affinity": [], "description": "+37% скорости атаки.", "mods": {"attack_speed_multiplier": 1.37}},
+	{"id": "heavy_totem", "title": "Heavy Totem", "tier": 2, "cost": 55, "class_affinity": [], "description": "+62% максимального HP, -5% скорости движения.", "mods": {"max_health_multiplier": 1.62, "move_speed_multiplier": 0.95}},
+	{"id": "splinter_gloves", "title": "Splinter Gloves", "tier": 1, "cost": 30, "class_affinity": [], "description": "+50% урона.", "mods": {"damage_multiplier": 1.5}},
+	{"id": "wide_sigil", "title": "Wide Sigil", "tier": 1, "cost": 30, "class_affinity": [], "description": "+50% дальности атаки.", "mods": {"range_multiplier": 1.5}},
+	{"id": "swift_ink", "title": "Swift Ink", "tier": 1, "cost": 30, "class_affinity": [], "description": "+30% скорости движения.", "mods": {"move_speed_multiplier": 1.3}},
+	{"id": "summoners_bell", "title": "Summoner's Bell", "tier": 1, "cost": 30, "class_affinity": [], "description": "+2 призыв.", "mods": {"summon_bonus": 2.5}},
+	{"id": "blood_sigil", "title": "Кровавая печать", "tier": 2, "cost": 55, "class_affinity": ["berserk"], "description": "+20 max HP. Берсерк: +45% урона.", "mods": {"max_health_flat": 20.0}, "affinity_mods": {"damage_multiplier": 1.45}},
+	{"id": "void_ink", "title": "Чернила пустоты", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "description": "+50% радиуса AoE. Темный маг: +50% урона.", "mods": {"aoe_radius_multiplier": 1.5}, "affinity_mods": {"damage_multiplier": 1.5}},
+	{"id": "echo_pick", "title": "Медиатор эха", "tier": 2, "cost": 55, "class_affinity": ["guitarist"], "description": "+40% отталкивания. Гитарист: +45% скорости атаки.", "mods": {"knockback_multiplier": 1.4}, "affinity_mods": {"attack_speed_multiplier": 1.45}},
+	{"id": "sturdy_amulet", "title": "Крепкий амулет", "tier": 1, "cost": 30, "class_affinity": [], "description": "+60 max HP.", "mods": {"max_health_flat": 60.0}},
+	{"id": "fast_boots", "title": "Быстрые сапоги", "tier": 1, "cost": 30, "class_affinity": [], "description": "+25% скорости движения.", "mods": {"move_speed_multiplier": 1.25}},
+	{"id": "magnetic_buckle", "title": "Магнитная пряжка", "tier": 1, "cost": 30, "class_affinity": [], "description": "+138 радиуса подбора.", "mods": {"pickup_radius_flat": 137.5}},
+	{"id": "silver_coin", "title": "Серебряная монета", "tier": 1, "cost": 30, "class_affinity": [], "description": "+62% золота.", "mods": {"money_gain_multiplier": 1.62}},
+	{"id": "survival_manual", "title": "Учебник выживания", "tier": 1, "cost": 30, "class_affinity": [], "description": "+55% опыта.", "mods": {"xp_gain_multiplier": 1.55}},
+	{"id": "cracked_shield", "title": "Треснувший щит", "tier": 2, "cost": 55, "class_affinity": [], "description": "+30% защиты, -6% скорости движения.", "mods": {"defense_flat": 0.3, "move_speed_multiplier": 0.94}},
+	{"id": "sharp_talisman", "title": "Острый талисман", "tier": 1, "cost": 30, "class_affinity": [], "description": "+20% шанса крита.", "mods": {"crit_chance_flat": 0.2}},
+	{"id": "jagged_blade", "title": "Зазубренное лезвие", "tier": 1, "cost": 30, "class_affinity": ["berserk"], "description": "Берсерк: +45% урона.", "affinity_mods": {"damage_multiplier": 1.45}},
+	{"id": "heavy_grip", "title": "Тяжелая рукоять", "tier": 2, "cost": 55, "class_affinity": ["berserk"], "description": "-8% скорости атаки. Берсерк: +60% отталкивания.", "mods": {"attack_speed_multiplier": 0.92}, "affinity_mods": {"knockback_multiplier": 1.6}},
+	{"id": "war_belt", "title": "Боевой ремень", "tier": 1, "cost": 30, "class_affinity": ["berserk"], "description": "Берсерк: +55% радиуса AoE.", "affinity_mods": {"aoe_radius_multiplier": 1.55}},
+	{"id": "warriors_rage", "title": "Ярость воина", "tier": 2, "cost": 55, "class_affinity": ["berserk"], "description": "-10% максимального HP. Берсерк: +50% урона.", "mods": {"max_health_multiplier": 0.9}, "affinity_mods": {"damage_multiplier": 1.5}},
+	{"id": "dark_crystal", "title": "Темный кристалл", "tier": 1, "cost": 30, "class_affinity": ["dark_mage"], "description": "Темный маг: +45% урона.", "affinity_mods": {"damage_multiplier": 1.45}},
+	{"id": "ash_page", "title": "Пепельная страница", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "description": "+25% урона. Темный маг: +45% радиуса AoE.", "mods": {"damage_multiplier": 1.25}, "affinity_mods": {"aoe_radius_multiplier": 1.45}},
+	{"id": "skull_resonator", "title": "Черепной резонатор", "tier": 1, "cost": 30, "class_affinity": ["dark_mage"], "description": "Темный маг: +50% дальности атаки.", "affinity_mods": {"range_multiplier": 1.5}},
+	{"id": "ink_candle", "title": "Чернильная свеча", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "description": "-6% скорости движения. Темный маг: +55% урона.", "mods": {"move_speed_multiplier": 0.94}, "affinity_mods": {"damage_multiplier": 1.55}},
+	{"id": "copper_string", "title": "Медная струна", "tier": 1, "cost": 30, "class_affinity": ["guitarist"], "description": "Гитарист: +45% урона.", "affinity_mods": {"damage_multiplier": 1.45}},
+	{"id": "broken_pick", "title": "Сломанный медиатор", "tier": 1, "cost": 30, "class_affinity": ["guitarist"], "description": "Гитарист: +30% шанса крита.", "affinity_mods": {"crit_chance_flat": 0.3}},
+	{"id": "loud_amp", "title": "Громкий усилитель", "tier": 1, "cost": 30, "class_affinity": ["guitarist"], "description": "Гитарист: +50% радиуса AoE.", "affinity_mods": {"aoe_radius_multiplier": 1.5}},
+	{"id": "bass_cable", "title": "Басовый кабель", "tier": 2, "cost": 55, "class_affinity": ["guitarist"], "description": "+25% радиуса AoE. Гитарист: +45% отталкивания.", "mods": {"aoe_radius_multiplier": 1.25}, "affinity_mods": {"knockback_multiplier": 1.45}},
+	{"id": "cursed_crown", "title": "Проклятая корона", "tier": 2, "cost": 55, "class_affinity": [], "description": "+75% урона, -18% максимального HP.", "mods": {"damage_multiplier": 1.75, "max_health_multiplier": 0.82}},
+	{"id": "fragile_heart", "title": "Хрупкое сердце", "tier": 2, "cost": 55, "class_affinity": [], "description": "+62% скорости атаки, -10% защиты.", "mods": {"attack_speed_multiplier": 1.62, "defense_flat": -0.1}},
+	{"id": "greedy_purse", "title": "Жадный кошелек", "tier": 2, "cost": 55, "class_affinity": [], "description": "+112% золота, враги: +37% HP.", "mods": {"money_gain_multiplier": 2.12, "enemy_health_multiplier": 1.37}},
+	{"id": "burning_shard", "title": "Горящий осколок", "tier": 2, "cost": 55, "class_affinity": [], "description": "+50% радиуса AoE, -20% лечения.", "mods": {"aoe_radius_multiplier": 1.5, "healing_multiplier": 0.8}},
+	{"id": "golden_route_mark", "title": "Золотая метка пути", "tier": 2, "cost": 55, "class_affinity": [], "description": "+37% опыта, +37% золота.", "mods": {"xp_gain_multiplier": 1.37, "money_gain_multiplier": 1.37}},
+	{"id": "glass_edge", "title": "Стеклянная кромка", "tier": 2, "cost": 55, "class_affinity": [], "description": "+50% урона крита, -8 max HP.", "mods": {"crit_damage_flat": 0.5, "max_health_flat": -8.0}},
+	{"id": "echo_core", "title": "Эхо Разлома", "tier": 3, "cost": 95, "class_affinity": [], "description": "Каждый 5-й удар по врагу вызывает взрыв эха: 80% урона по области вокруг цели.", "mods": {"echo_blast_every": 5.0}},
+	{"id": "split_core", "title": "Ядро Расщепления", "tier": 3, "cost": 95, "class_affinity": ["dark_mage", "guitarist"], "description": "Темный маг/Гитарист: +1 снаряд и луч всем атакам.", "affinity_mods": {"extra_projectile": 1.0}},
+	{"id": "blood_pact", "title": "Кровавый Рубеж", "tier": 3, "cost": 95, "class_affinity": [], "description": "Пока здоровье ниже 30% — +50% урона. Риск, достойный награды.", "mods": {"low_hp_damage_bonus": 0.5}},
+	{"id": "leech_heart", "title": "Сердце Пиявки", "tier": 3, "cost": 95, "class_affinity": [], "description": "Каждое убийство возвращает 2% максимального здоровья.", "mods": {"kill_heal_percent": 0.02}},
+	{"id": "thorn_pact", "title": "Договор Шипов", "tier": 3, "cost": 95, "class_affinity": [], "description": "Получив урон, выплескиваешь 200% этого урона на всех врагов рядом.", "mods": {"thorn_reflect_multiplier": 2.0}},
+	{"id": "phantom_step", "title": "Призрачный Шаг", "tier": 3, "cost": 95, "class_affinity": [], "description": "Успешный уворот дает +40% скорости движения на 2 секунды.", "mods": {"dodge_rush_bonus": 0.4}},
 ]
 
 const LEVEL_UP_REWARDS := [
@@ -353,6 +359,11 @@ const LEVEL_UP_REWARDS := [
 	{"id": "magic_focus_up", "title": "+Magic Focus", "description": "+14% magic/sound damage.", "kind": "upgrade", "mods": {"damage_multiplier": 1.14}},
 	{"id": "knockback_up", "title": "+Knockback", "description": "+18% knockback and pulse control.", "kind": "upgrade", "mods": {"knockback_multiplier": 1.18}},
 ]
+
+# Базовая цена артефакта в магазине по тиру (редкость и сила растут вместе).
+const COST_BY_TIER := {1: 30, 2: 55, 3: 95}
+# Вес появления артефакта в наградах/магазине по тиру (выше тир — реже).
+const TIER_WEIGHTS := {1: 1.0, 2: 0.45, 3: 0.12}
 
 const ASCENSION_LEVELS := {
 	"berserk": [
@@ -394,13 +405,13 @@ const ASCENSION_LEVELS := {
 }
 
 const SHOP_ITEMS := [
-	{"id": "shop_damage", "title": "Точильный камень", "description": "+10% damage.", "cost": 12, "mods": {"damage_multiplier": 1.10}},
-	{"id": "shop_heal", "title": "Полевой бинт", "description": "Восстановить 35% максимального HP.", "cost": 8, "heal_percent": 0.35},
-	{"id": "shop_pickup", "title": "Магнитный талисман", "description": "+35 pickup radius.", "cost": 10, "mods": {"pickup_radius_flat": 35.0}},
-	{"id": "shop_speed", "title": "Легкие сапоги", "description": "+8% move speed.", "cost": 10, "mods": {"move_speed_multiplier": 1.08}},
-	{"id": "shop_weapon_cooldown", "title": "Масло темпа", "description": "+10% attack speed.", "cost": 13, "mods": {"attack_speed_multiplier": 1.10}},
-	{"id": "shop_range", "title": "Линза охоты", "description": "+12% attack range.", "cost": 12, "mods": {"range_multiplier": 1.12}},
-	{"id": "shop_artifact", "title": "Пыльный артефакт", "description": "+1 случайная характеристика через Восприятие.", "cost": 15, "stats": {"perception": 1.0}},
+	{"id": "shop_damage", "title": "Точильный камень", "description": "+10% damage.", "cost": 42, "mods": {"damage_multiplier": 1.10}},
+	{"id": "shop_heal", "title": "Полевой бинт", "description": "Восстановить 35% максимального HP.", "cost": 28, "heal_percent": 0.35},
+	{"id": "shop_pickup", "title": "Магнитный талисман", "description": "+35 pickup radius.", "cost": 35, "mods": {"pickup_radius_flat": 35.0}},
+	{"id": "shop_speed", "title": "Легкие сапоги", "description": "+8% move speed.", "cost": 35, "mods": {"move_speed_multiplier": 1.08}},
+	{"id": "shop_weapon_cooldown", "title": "Масло темпа", "description": "+10% attack speed.", "cost": 46, "mods": {"attack_speed_multiplier": 1.10}},
+	{"id": "shop_range", "title": "Линза охоты", "description": "+12% attack range.", "cost": 42, "mods": {"range_multiplier": 1.12}},
+	{"id": "shop_artifact", "title": "Пыльный артефакт", "description": "+1 случайная характеристика через Восприятие.", "cost": 52, "stats": {"perception": 1.0}},
 ]
 
 
@@ -480,8 +491,12 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var upgrade_damage_exponent := float(weapon_config.get("upgrade_damage_exponent", 1.0))
 	var upgrade_aoe_exponent := float(weapon_config.get("upgrade_aoe_exponent", 1.0))
 	var damage_multiplier := pow(float(run_modifiers.get("damage_multiplier", 1.0)), upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
+	# «Кровавый Рубеж» (tier 3): бонус урона активен, пока HP ниже порога (low_hp_active ставит player).
+	damage_multiplier *= 1.0 + float(run_modifiers.get("low_hp_damage_bonus", 0.0)) * float(run_modifiers.get("low_hp_active", 0.0))
 	var attack_speed_multiplier := float(run_modifiers.get("attack_speed_multiplier", 1.0)) * float(passive_mods.get("attack_speed_multiplier", 1.0))
 	var move_speed_multiplier := float(run_modifiers.get("move_speed_multiplier", 1.0)) * float(passive_mods.get("move_speed_multiplier", 1.0))
+	# «Призрачный Шаг» (tier 3): рывок скорости после уворота (dodge_rush_active ставит player).
+	move_speed_multiplier *= 1.0 + float(run_modifiers.get("dodge_rush_bonus", 0.0)) * float(run_modifiers.get("dodge_rush_active", 0.0))
 	var max_health_multiplier := float(run_modifiers.get("max_health_multiplier", 1.0)) * float(passive_mods.get("max_health_multiplier", 1.0))
 	var range_multiplier := float(run_modifiers.get("range_multiplier", 1.0)) * float(passive_mods.get("range_multiplier", 1.0))
 	var aoe_radius_multiplier := pow(float(run_modifiers.get("aoe_radius_multiplier", 1.0)), upgrade_aoe_exponent) * float(passive_mods.get("aoe_radius_multiplier", 1.0))
@@ -523,6 +538,7 @@ static func reward_pool() -> Array:
 	for artifact in ARTIFACTS:
 		var artifact_reward: Dictionary = artifact.duplicate(true)
 		artifact_reward["kind"] = "artifact"
+		artifact_reward["weight"] = TIER_WEIGHTS.get(int(artifact.get("tier", 1)), 1.0)
 		rewards.append(artifact_reward)
 	return rewards
 
@@ -540,8 +556,9 @@ static func shop_items() -> Array:
 		items.append(item.duplicate(true))
 	for artifact in ARTIFACTS:
 		var shop_artifact: Dictionary = artifact.duplicate(true)
-		shop_artifact["cost"] = int(shop_artifact.get("cost", 16))
+		shop_artifact["cost"] = int(shop_artifact.get("cost", COST_BY_TIER.get(int(shop_artifact.get("tier", 1)), 30)))
 		shop_artifact["kind"] = "artifact"
+		shop_artifact["weight"] = TIER_WEIGHTS.get(int(shop_artifact.get("tier", 1)), 1.0)
 		items.append(shop_artifact)
 	return items
 

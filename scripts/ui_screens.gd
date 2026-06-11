@@ -146,6 +146,271 @@ const CODEX_SECTIONS := [
 ]
 
 
+const ATTRIBUTE_BUY_BASE_COST := 18
+const ATTRIBUTE_BUY_STAGE_COST := 6
+const ATTRIBUTE_REROLL_BASE_COST := 6
+const ATTRIBUTE_REROLL_STAGE_COST := 2
+const ATTRIBUTE_REROLLS_PER_WINDOW := 2
+
+
+func _attribute_buy_cost() -> int:
+	return ATTRIBUTE_BUY_BASE_COST + ATTRIBUTE_BUY_STAGE_COST * game.route_stage
+
+
+func _attribute_reroll_cost() -> int:
+	return ATTRIBUTE_REROLL_BASE_COST + ATTRIBUTE_REROLL_STAGE_COST * game.route_stage
+
+
+func _show_victory_banner(on_continue: Callable) -> void:
+	# Затемнение + крупная «Победа»; продолжение по клику или через 1.3с.
+	var banner_layer := CanvasLayer.new()
+	banner_layer.name = "VictoryBannerLayer"
+	banner_layer.layer = 80
+	banner_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(banner_layer)
+
+	var continue_once := func() -> void:
+		if is_instance_valid(banner_layer):
+			banner_layer.queue_free()
+			if on_continue.is_valid():
+				on_continue.call()
+
+	var click_catcher := Button.new()
+	click_catcher.name = "VictoryBanner"
+	click_catcher.flat = true
+	click_catcher.set_anchors_preset(Control.PRESET_FULL_RECT)
+	click_catcher.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+	click_catcher.add_theme_stylebox_override("hover", StyleBoxEmpty.new())
+	click_catcher.add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
+	click_catcher.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	click_catcher.pressed.connect(continue_once)
+	banner_layer.add_child(click_catcher)
+
+	var shade := ColorRect.new()
+	shade.color = Color(0.01, 0.012, 0.02, 0.0)
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	click_catcher.add_child(shade)
+
+	var label := Label.new()
+	label.name = "VictoryBannerLabel"
+	label.text = "ПОБЕДА"
+	label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 96)
+	label.add_theme_color_override("font_color", Color(0.98, 0.84, 0.30, 1.0))
+	label.add_theme_color_override("font_outline_color", Color(0.10, 0.05, 0.02, 1.0))
+	label.add_theme_constant_override("outline_size", 10)
+	label.modulate.a = 0.0
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	click_catcher.add_child(label)
+
+	var tween := banner_layer.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(shade, "color:a", 0.66, 0.30)
+	tween.tween_property(label, "modulate:a", 1.0, 0.35)
+	tween.chain().tween_interval(1.3)
+	tween.chain().tween_callback(continue_once)
+
+	game._play_sfx("level_up")
+
+
+func _random_attribute_pair() -> Array:
+	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	var pair := []
+	for _pick in range(2):
+		var index: int = game.rng.randi_range(0, pool.size() - 1)
+		pair.append(pool[index])
+		pool.remove_at(index)
+	return pair
+
+
+func _show_attribute_shop(on_done: Callable) -> void:
+	# Окно докачки после боя: 1 из 2 характеристик за деньги, reroll x2, пропуск.
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "AttributeShopScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.ui_layer.add_child(root)
+
+	var shade := ColorRect.new()
+	shade.color = Color(0.02, 0.025, 0.045, 0.92)
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(shade)
+
+	var panel := PanelContainer.new()
+	panel.name = "AttributeShopPanel"
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -340.0
+	panel.offset_top = -260.0
+	panel.offset_right = 340.0
+	panel.offset_bottom = 260.0
+	panel.add_theme_stylebox_override("panel", _panel_style())
+	root.add_child(panel)
+
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 12)
+	panel.add_child(box)
+
+	var title := Label.new()
+	title.text = "Докачка"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	box.add_child(title)
+
+	var money_label := Label.new()
+	money_label.name = "AttributeShopMoney"
+	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	money_label.add_theme_font_size_override("font_size", 18)
+	money_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.30, 1.0))
+	box.add_child(money_label)
+
+	var offers_box := VBoxContainer.new()
+	offers_box.name = "AttributeOffers"
+	offers_box.add_theme_constant_override("separation", 10)
+	box.add_child(offers_box)
+
+	var reroll_button := _make_button("")
+	reroll_button.name = "AttributeRerollButton"
+	box.add_child(reroll_button)
+
+	var skip_button := _make_button("Пропустить")
+	skip_button.name = "AttributeSkipButton"
+	box.add_child(skip_button)
+
+	root.set_meta("rerolls_left", ATTRIBUTE_REROLLS_PER_WINDOW)
+	skip_button.pressed.connect(func() -> void:
+		if on_done.is_valid():
+			on_done.call()
+	)
+	reroll_button.pressed.connect(func() -> void:
+		var left := int(root.get_meta("rerolls_left", 0))
+		if left <= 0 or not _spend_run_money(_attribute_reroll_cost()):
+			return
+		root.set_meta("rerolls_left", left - 1)
+		_refresh_attribute_shop(root, on_done)
+	)
+	game.ui_escape_action = skip_button.pressed.emit
+	_refresh_attribute_shop(root, on_done)
+
+
+func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var offers_box := root.find_child("AttributeOffers", true, false) as VBoxContainer
+	var money_label := root.find_child("AttributeShopMoney", true, false) as Label
+	var reroll_button := root.find_child("AttributeRerollButton", true, false) as Button
+	for child in offers_box.get_children():
+		child.queue_free()
+
+	var buy_cost := _attribute_buy_cost()
+	var money := _run_money()
+	money_label.text = "Золото: %d   |   +1 к характеристике: %d зол." % [money, buy_cost]
+	var rerolls_left := int(root.get_meta("rerolls_left", 0))
+	reroll_button.text = "Обновить (%d зол.) — осталось %d" % [_attribute_reroll_cost(), rerolls_left]
+	reroll_button.disabled = rerolls_left <= 0 or money < _attribute_reroll_cost()
+
+	for stat_id in _random_attribute_pair():
+		var stat_title := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
+		var offer_button := _make_button("%s +1   (%d зол.)" % [stat_title, buy_cost])
+		offer_button.name = "AttributeOffer_%s" % stat_id
+		offer_button.custom_minimum_size = Vector2(560, 64)
+		offer_button.disabled = money < buy_cost
+		var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(36, 36))
+		icon_control.position = Vector2(14, 14)
+		icon_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		offer_button.add_child(icon_control)
+		offer_button.pressed.connect(func() -> void:
+			if not _spend_run_money(buy_cost):
+				return
+			_apply_reward_to_run({"stats": {stat_id: 1.0}})
+			if on_done.is_valid():
+				on_done.call()
+		)
+		offers_box.add_child(offer_button)
+
+
+func _spend_run_money(amount: int) -> bool:
+	if game.current_player != null and is_instance_valid(game.current_player):
+		return game.current_player.spend_money(amount)
+	var temp_player = game.combat._snapshot_player_for_menu()
+	if temp_player == null:
+		return false
+	if not temp_player.spend_money(amount):
+		temp_player.queue_free()
+		return false
+	game.combat._store_player_snapshot(temp_player)
+	temp_player.queue_free()
+	return true
+
+
+func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute_shop := true) -> void:
+	# Желтая стрелка прокачки: level-up при непотраченных выборах, иначе докачка за деньги.
+	var fab := _make_button("⬆")
+	fab.name = "UpgradeFabButton"
+	fab.custom_minimum_size = Vector2(64, 64)
+	fab.anchor_left = 1.0
+	fab.anchor_top = 1.0
+	fab.anchor_right = 1.0
+	fab.anchor_bottom = 1.0
+	fab.offset_left = -88.0
+	fab.offset_top = -88.0
+	fab.offset_right = -24.0
+	fab.offset_bottom = -24.0
+	fab.add_theme_font_size_override("font_size", 30)
+	_apply_fantasy_button_theme(fab, "level_up")
+	fab.tooltip_text = "Прокачка: непотраченные уровни или докачка характеристик за золото"
+	if not allow_attribute_shop and game.pending_level_ups <= 0:
+		fab.disabled = true
+		fab.tooltip_text = "Нет непотраченных уровней"
+	fab.pressed.connect(func() -> void:
+		if game.pending_level_ups > 0:
+			game.level_up_return_to_map = false
+			game.push_pause("level_up")
+			_show_level_up_screen(false)
+		elif allow_attribute_shop:
+			_show_attribute_shop(return_action)
+	)
+	root.add_child(fab)
+
+	if game.pending_level_ups > 0:
+		var badge := Label.new()
+		badge.name = "UpgradeFabBadge"
+		badge.text = str(game.pending_level_ups)
+		badge.add_theme_font_size_override("font_size", 16)
+		badge.add_theme_color_override("font_color", Color(0.08, 0.05, 0.02, 1.0))
+		var badge_panel := PanelContainer.new()
+		badge_panel.name = "UpgradeFabBadgePanel"
+		badge_panel.anchor_left = 1.0
+		badge_panel.anchor_top = 1.0
+		badge_panel.anchor_right = 1.0
+		badge_panel.anchor_bottom = 1.0
+		badge_panel.offset_left = -36.0
+		badge_panel.offset_top = -104.0
+		badge_panel.offset_right = -10.0
+		badge_panel.offset_bottom = -78.0
+		var badge_style := StyleBoxFlat.new()
+		badge_style.bg_color = Color(1.0, 0.84, 0.22, 1.0)
+		badge_style.set_corner_radius_all(12)
+		badge_panel.add_theme_stylebox_override("panel", badge_style)
+		badge_panel.add_child(badge)
+		root.add_child(badge_panel)
+		var pulse := badge_panel.create_tween().set_loops()
+		pulse.tween_property(badge_panel, "scale", Vector2(1.12, 1.12), 0.45).set_trans(Tween.TRANS_SINE)
+		pulse.tween_property(badge_panel, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_SINE)
+		badge_panel.pivot_offset = Vector2(13, 13)
+
+
 func _show_codex_screen() -> void:
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
@@ -335,8 +600,18 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(text_box)
-		_codex_label(text_box, str(artifact["title"]), 16, Color(0.96, 0.88, 0.40, 1.0))
+		var artifact_definition: Dictionary = game.PROGRESSION_DATA.artifact_definition(str(artifact["id"]))
+		_codex_label(text_box, "%s   [%s]" % [artifact["title"], _artifact_tier_text(artifact_definition)], 16, Color(0.96, 0.88, 0.40, 1.0))
 		_codex_label(text_box, str(artifact["description"]), 13, Color(0.84, 0.88, 0.94, 1.0))
+		var codex_note := _artifact_affinity_note(artifact_definition)
+		if not codex_note.is_empty():
+			_codex_label(text_box, str(codex_note["text"]), 12, codex_note["color"])
+		var affinity_list: Array = artifact_definition.get("class_affinity", [])
+		if not affinity_list.is_empty():
+			var class_names := []
+			for class_id in affinity_list:
+				class_names.append(str(CLASS_RU.get(class_id, class_id)))
+			_codex_label(text_box, "Классы: %s" % ", ".join(class_names), 12, Color(0.70, 0.78, 0.88, 1.0))
 
 
 func _build_codex_stats(list: VBoxContainer) -> void:
@@ -731,6 +1006,7 @@ func _show_shop_screen() -> void:
 
 	_add_screen_background(root, "shop")
 	_create_menu_run_hud()
+	_create_upgrade_fab(root, _show_shop_screen)
 
 	var title_box := VBoxContainer.new()
 	title_box.name = "ShopHeader"
@@ -813,6 +1089,22 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.text = ""
 	button.tooltip_text = _shop_item_tooltip(item, purchased, affordable)
+	if str(item.get("kind", "")) == "artifact":
+		button.tooltip_text += "\n%s" % _artifact_tier_text(item)
+		var affinity_note := _artifact_affinity_note(item)
+		if not affinity_note.is_empty():
+			button.tooltip_text += "\n[%s]" % affinity_note["text"]
+			var note_label := Label.new()
+			note_label.name = "ShopAffinityNote"
+			note_label.text = "!"
+			note_label.tooltip_text = str(affinity_note["text"])
+			note_label.add_theme_font_size_override("font_size", 22)
+			note_label.add_theme_color_override("font_color", affinity_note["color"])
+			note_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+			note_label.offset_left = -26.0
+			note_label.offset_top = 4.0
+			note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			button.add_child(note_label)
 	button.add_theme_stylebox_override("normal", _shop_slot_style(false))
 	button.add_theme_stylebox_override("hover", _shop_slot_style(true))
 	button.add_theme_stylebox_override("pressed", _shop_slot_style(true))
@@ -1043,6 +1335,7 @@ func _show_rest_screen() -> void:
 	_create_menu_run_hud()
 	# Escape = уйти от костра без бонуса (последовательно с пропуском магазина).
 	game.ui_escape_action = game.route._advance_route_after_noncombat
+	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, _show_rest_screen)
 	var heal_button := _make_button("Передышка\nВосстановить 35% максимального HP.")
 	heal_button.name = "RestHealButton"
 	heal_button.pressed.connect(func() -> void:
@@ -1076,6 +1369,8 @@ func _show_upgrade_screen() -> void:
 func _show_event_screen(route_node: Dictionary) -> void:
 	var box := _create_menu_box(route_node["name"], "Странная возможность на дороге: риск, награда или оба сразу.", "event")
 	_create_menu_run_hud()
+	# На событии докачка недоступна: повторный вход перегенерировал бы выборы события.
+	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, Callable(), false)
 	var event_choices := _random_event_choices()
 	var index := 0
 	for event_choice in event_choices:
@@ -1174,13 +1469,26 @@ func _apply_event_choice(event_choice: Dictionary) -> void:
 
 
 func _random_rewards(count: int) -> Array:
-	var pool: Array = game.PROGRESSION_DATA.reward_pool()
-	var rewards := []
-	while rewards.size() < count and not pool.is_empty():
-		var index = game.rng.randi_range(0, pool.size() - 1)
-		rewards.append(pool[index])
+	return _weighted_sample(game.PROGRESSION_DATA.reward_pool(), count)
+
+
+func _weighted_sample(pool: Array, count: int) -> Array:
+	# Выбор без возврата с учетом weight (редкость артефактов растет с тиром).
+	var picked := []
+	while picked.size() < count and not pool.is_empty():
+		var total := 0.0
+		for entry in pool:
+			total += float(entry.get("weight", 1.0))
+		var roll: float = game.rng.randf() * total
+		var index := 0
+		for entry_index in range(pool.size()):
+			roll -= float(pool[entry_index].get("weight", 1.0))
+			if roll <= 0.0:
+				index = entry_index
+				break
+		picked.append(pool[index])
 		pool.remove_at(index)
-	return rewards
+	return picked
 
 
 func _random_level_up_rewards(count: int) -> Array:
@@ -1194,13 +1502,7 @@ func _random_level_up_rewards(count: int) -> Array:
 
 
 func _random_shop_items(count: int) -> Array:
-	var pool: Array = game.PROGRESSION_DATA.shop_items()
-	var items := []
-	while items.size() < count and not pool.is_empty():
-		var index = game.rng.randi_range(0, pool.size() - 1)
-		items.append(pool[index])
-		pool.remove_at(index)
-	return items
+	return _weighted_sample(game.PROGRESSION_DATA.shop_items(), count)
 
 
 func _on_player_leveled_up() -> void:
@@ -1278,6 +1580,12 @@ func _update_level_up_button() -> void:
 		game.hud_layer.add_child(game.level_up_button)
 
 	game.level_up_button.text = "+" if game.pending_level_ups == 1 else "+%d" % game.pending_level_ups
+
+
+func _level_up_affinity_suffix(reward: Dictionary) -> String:
+	if str(reward.get("kind", "")) != "artifact":
+		return ""
+	return _artifact_affinity_suffix(reward)
 
 
 func _format_level_up_reward_text(reward: Dictionary) -> String:
@@ -2158,6 +2466,35 @@ func _artifact_icon_texture(artifact_id: String) -> Texture2D:
 	return game.UIIconRegistry.texture_for("buff_power")
 
 
+const TIER_LABELS := {1: "Tier 1", 2: "Tier 2 — редкий", 3: "Tier 3 — легендарный"}
+const CLASS_RU := {"berserk": "Берсерк", "dark_mage": "Темный маг", "guitarist": "Гитарист"}
+
+
+func _artifact_affinity_note(definition: Dictionary) -> Dictionary:
+	# Честная пометка: красная — весь эффект классовый и класс чужой;
+	# желтая — классовая часть пропадает, универсальная работает; пусто — полный эффект.
+	var affinity: Array = definition.get("class_affinity", definition.get("classes", []))
+	if affinity.is_empty() or affinity.has(game.selected_character_id):
+		return {}
+	var has_universal: bool = not (definition.get("mods", {}) as Dictionary).is_empty() \
+		or not (definition.get("stats", {}) as Dictionary).is_empty()
+	if has_universal:
+		return {"text": "Работает вполсилы", "color": Color(0.95, 0.82, 0.25, 1.0)}
+	return {"text": "Не работает на текущем классе", "color": Color(0.95, 0.30, 0.24, 1.0)}
+
+
+func _artifact_affinity_suffix(definition: Dictionary) -> String:
+	var note := _artifact_affinity_note(definition)
+	if note.is_empty():
+		return ""
+	return "
+[%s]" % note["text"]
+
+
+func _artifact_tier_text(definition: Dictionary) -> String:
+	return str(TIER_LABELS.get(int(definition.get("tier", 1)), "Tier 1"))
+
+
 func _artifact_tooltip(artifact: Dictionary) -> String:
 	var artifact_id := str(artifact.get("id", ""))
 	var title := str(artifact.get("title", ""))
@@ -2165,8 +2502,8 @@ func _artifact_tooltip(artifact: Dictionary) -> String:
 	var description := str(definition.get("description", ""))
 	if description == "":
 		return title
-	return "%s
-%s" % [title, description]
+	return "%s (%s)
+%s%s" % [title, _artifact_tier_text(definition), description, _artifact_affinity_suffix(definition)]
 
 
 func _create_damage_flash_overlay(root: Control) -> void:
