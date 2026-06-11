@@ -23,6 +23,10 @@ const SOUND_AMP_TEXTURE := preload("res://assets/sprites/weapons/sound_amp.png")
 @export var amp_lifetime := 7.0
 @export var amp_pulse_interval := 1.1
 @export var max_summons := 0
+@export var heal_percent_on_attack := 0.0
+@export var leaves_pool := false
+@export var pool_duration := 3.0
+@export var pool_tick_interval := 0.6
 @export var visual_color := Color(0.5, 0.8, 1.0, 0.35)
 
 var _cooldown := 0.0
@@ -71,6 +75,10 @@ func configure_weapon(config: Dictionary) -> void:
 	amp_lifetime = float(config.get("amp_lifetime", amp_lifetime))
 	amp_pulse_interval = float(config.get("amp_pulse_interval", amp_pulse_interval))
 	max_summons = int(config.get("max_summons", max_summons))
+	heal_percent_on_attack = float(config.get("heal_percent_on_attack", heal_percent_on_attack))
+	leaves_pool = bool(config.get("leaves_pool", leaves_pool))
+	pool_duration = float(config.get("pool_duration", pool_duration))
+	pool_tick_interval = float(config.get("pool_tick_interval", pool_tick_interval))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
 
@@ -107,9 +115,14 @@ func _attack() -> void:
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("cast" if attack_mode in ["aoe_projectile", "homing_curse", "beam"] else "shoot", direction)
 
+	if heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent"):
+		owner_node.heal_percent(heal_percent_on_attack)
+
 	match attack_mode:
 		"aoe_projectile":
 			_fire_aoe_projectile(owner_node, target, direction)
+		"boomerang":
+			_fire_boomerang(owner_node, direction)
 		"homing_curse":
 			_fire_curse(owner_node, target, direction)
 		"beam":
@@ -133,6 +146,70 @@ func _fire_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2
 		var to_target: Vector2 = target_node.global_position - owner_node.global_position
 		var aim := direction if to_target.length_squared() <= 0.001 else to_target.normalized()
 		_launch_aoe_projectile(owner_node, target_node, aim)
+
+
+func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
+	# Чакрамы: урон по коридору к цели сразу и повторно на «возврате» через 0.25с.
+	var origin := owner_node.global_position
+	_damage_enemies_in_corridor(origin, direction, _rolled_damage(owner_node))
+	var orb := AttackVfx.orb_projectile(_projectile_parent(), origin + direction * 24.0, visual_color)
+	_register_effect(orb)
+	var far_point := origin + direction * attack_range
+	var orb_tween := create_tween()
+	orb_tween.tween_property(orb, "global_position", far_point, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	orb_tween.tween_property(orb, "global_position", origin, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	orb_tween.tween_callback(func() -> void:
+		if is_instance_valid(self) and is_instance_valid(owner_node):
+			_damage_enemies_in_corridor(owner_node.global_position, direction, _rolled_damage(owner_node))
+		_release_effect(orb)
+	)
+
+
+func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: float) -> void:
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		var to_enemy := enemy_node.global_position - origin
+		var forward := to_enemy.dot(direction)
+		if forward < 0.0 or forward > attack_range:
+			continue
+		var side: float = abs(to_enemy.dot(Vector2(-direction.y, direction.x)))
+		if side <= beam_width * 0.5:
+			_damage_enemy(enemy_node, amount)
+
+
+func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
+	# Ядовитое облако химика: тики по врагам в радиусе, группа player_weapon_effects.
+	var pool := Node2D.new()
+	pool.name = "ChemistPoisonPool"
+	_register_effect(pool)
+	pool.z_index = 5
+	var visual := Polygon2D.new()
+	visual.color = Color(visual_color.r, visual_color.g, visual_color.b, 0.30)
+	var points := PackedVector2Array()
+	for point_index in range(24):
+		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 24.0) * aoe_radius * 0.7)
+	visual.polygon = points
+	pool.add_child(visual)
+	_projectile_parent().add_child(pool)
+	pool.global_position = pool_position
+
+	var tick_count := int(floor(pool_duration / maxf(pool_tick_interval, 0.2)))
+	var pool_tween := pool.create_tween()
+	for tick_index in range(tick_count):
+		pool_tween.tween_interval(pool_tick_interval)
+		pool_tween.tween_callback(func() -> void:
+			if is_instance_valid(self):
+				_damage_enemies_in_circle(pool.global_position, aoe_radius * 0.7, tick_damage)
+		)
+	pool_tween.tween_property(visual, "color:a", 0.0, 0.2)
+	pool_tween.tween_callback(func() -> void:
+		if is_instance_valid(self):
+			_release_effect(pool)
+		elif is_instance_valid(pool):
+			pool.queue_free()
+	)
 
 
 func _find_closest_enemies(owner_node: Node2D, count: int) -> Array:
@@ -167,8 +244,15 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 	tween.tween_property(projectile, "global_position", target_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(func() -> void:
 		if is_instance_valid(self):
-			_damage_enemies_in_circle(target_position, aoe_radius, _rolled_damage(owner_node))
+			var explosion_damage := damage if not is_instance_valid(owner_node) else _rolled_damage(owner_node)
+			_damage_enemies_in_circle(target_position, aoe_radius, explosion_damage)
 			AttackVfx.orb_burst(_projectile_parent(), target_position, aoe_radius, visual_color)
+			if leaves_pool:
+				var parameters_raw = owner_node.get("derived_parameters") if is_instance_valid(owner_node) else null
+				var tick_damage := 2.0
+				if parameters_raw is Dictionary:
+					tick_damage = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)), 1.0)
+				_spawn_damage_pool(target_position, tick_damage)
 		_release_effect(projectile)
 	)
 

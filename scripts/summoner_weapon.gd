@@ -4,7 +4,17 @@ extends Node2D
 @export var summon_interval := 4.0
 @export var max_summons := 2
 
+var weapon_id := "summon_amulet"
+var damage := 6.0
+var fire_interval := 3.0
+
 var _cooldown := 0.0
+
+
+func configure_weapon(config: Dictionary) -> void:
+	weapon_id = str(config.get("id", weapon_id))
+	summon_interval = float(config.get("fire_interval", summon_interval))
+	max_summons = int(config.get("max_summons", max_summons))
 
 
 func _ready() -> void:
@@ -39,8 +49,13 @@ func _summon() -> void:
 		parent = get_tree().root
 
 	parent.add_child(ally)
+	ally.add_to_group("player_weapon_effects")
 	var angle := randf() * TAU
 	ally.global_position = owner_node.global_position + Vector2.RIGHT.rotated(angle) * 48.0
+	# Урон зверя масштабируется от звукового урона друида (формула Per/Energy/Lead).
+	var parameters_raw = owner_node.get("derived_parameters")
+	if parameters_raw is Dictionary and ally.get("damage") != null:
+		ally.set("damage", maxf(float((parameters_raw as Dictionary).get("sound_wave_damage", 6.0)) * 0.55, 1.0))
 
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("cast", ally.global_position - owner_node.global_position)

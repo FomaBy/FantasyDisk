@@ -12,6 +12,12 @@ const BERSERK_SPRITE := preload("res://assets/sprites/characters/berserk_unarmed
 const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berserk_walk_sheet_v2.png")
 const DARK_MAGE_SPRITE := preload("res://assets/sprites/characters/dark_mage.png")
 const GUITARIST_SPRITE := preload("res://assets/sprites/characters/guitarist.png")
+const ASSASSIN_SPRITE := preload("res://assets/sprites/characters/assassin_placeholder.png")
+const RANGER_SPRITE := preload("res://assets/sprites/characters/ranger_placeholder.png")
+const DOCTOR_SPRITE := preload("res://assets/sprites/characters/doctor_placeholder.png")
+const CHEMIST_SPRITE := preload("res://assets/sprites/characters/chemist_placeholder.png")
+const KNIGHT_SPRITE := preload("res://assets/sprites/characters/knight_placeholder.png")
+const DRUID_SPRITE := preload("res://assets/sprites/characters/druid_placeholder.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
@@ -39,6 +45,12 @@ const CHARACTER_CONFIGS := {
 		"speed": 268.0,
 		"sprite": GUITARIST_SPRITE,
 	},
+	"assassin": {"display_name": "Ассасин", "color": Color(0.66, 0.30, 0.95, 1.0), "max_health": 52.0, "speed": 285.0, "sprite": ASSASSIN_SPRITE},
+	"ranger": {"display_name": "Рейнджер", "color": Color(0.40, 0.78, 0.42, 1.0), "max_health": 58.0, "speed": 262.0, "sprite": RANGER_SPRITE},
+	"doctor": {"display_name": "Доктор", "color": Color(0.92, 0.94, 0.98, 1.0), "max_health": 64.0, "speed": 248.0, "sprite": DOCTOR_SPRITE},
+	"chemist": {"display_name": "Химик", "color": Color(0.70, 0.95, 0.25, 1.0), "max_health": 50.0, "speed": 252.0, "sprite": CHEMIST_SPRITE},
+	"knight": {"display_name": "Рыцарь", "color": Color(0.62, 0.70, 0.85, 1.0), "max_health": 95.0, "speed": 225.0, "sprite": KNIGHT_SPRITE},
+	"druid": {"display_name": "Друид", "color": Color(0.52, 0.72, 0.34, 1.0), "max_health": 66.0, "speed": 255.0, "sprite": DRUID_SPRITE},
 }
 
 var health := 0.0

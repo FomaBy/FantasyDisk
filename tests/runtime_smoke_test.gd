@@ -924,6 +924,7 @@ func _initialize() -> void:
 	await _test_class_relevance_and_offer_fixation(main_scene)
 	_test_settings_persistence_and_audio()
 	await _test_full_attribute_wiring()
+	await _test_all_nine_classes()
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1760,6 +1761,69 @@ func _test_weapon_aiming() -> void:
 	await process_frame
 
 
+func _test_all_nine_classes() -> void:
+	# Каждый из 9 классов экипирует сигнатурное оружие и наносит урон (друид — призывает).
+	var signature := {
+		"berserk": "sword", "dark_mage": "dark_wand", "guitarist": "electric_guitar",
+		"assassin": "chakrams", "ranger": "moon_crossbow", "doctor": "restore_potion",
+		"chemist": "blast_powder", "knight": "long_spear", "druid": "summon_amulet",
+	}
+	if ProgressionData.character_ids().size() != 9:
+		_fail("Expected nine playable classes in the data.")
+		return
+	for class_id in signature.keys():
+		if ProgressionData.ascension_levels(class_id).size() != 10:
+			_fail("Expected 10 ascension levels for %s." % class_id)
+			return
+
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	for class_id in signature.keys():
+		var class_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+		holder.add_child(class_player)
+		class_player.global_position = Vector2(700, 700)
+		await process_frame
+		class_player.call("configure_character", class_id, signature[class_id])
+		var weapon: Node = class_player.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected %s to equip its signature weapon %s." % [class_id, signature[class_id]])
+			return
+		weapon.set_process(false)
+
+		if class_id == "druid":
+			weapon.call("_summon")
+			await process_frame
+			if get_nodes_in_group("allies").is_empty():
+				_fail("Expected the druid amulet to summon a beast.")
+				return
+			for ally in get_nodes_in_group("allies"):
+				ally.queue_free()
+		else:
+			var class_enemy := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate()
+			holder.add_child(class_enemy)
+			class_enemy.set("max_health", 100000.0)
+			class_enemy.set("health", 100000.0)
+			class_enemy.global_position = class_player.global_position + Vector2(180, 0)
+			await process_frame
+			var enemy_hp := float(class_enemy.get("health"))
+			if weapon.has_method("_start_swing"):
+				weapon.call("_start_swing", true)
+			else:
+				weapon.call("_attack")
+			# Снарядным оружиям (зелье/пыль) нужно время полета до взрыва.
+			await create_timer(0.7).timeout
+			if float(class_enemy.get("health")) >= enemy_hp:
+				_fail("Expected %s signature weapon to damage an enemy." % class_id)
+				return
+			class_enemy.queue_free()
+		class_player.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
 func _test_full_attribute_wiring() -> void:
 	# Каждый подключенный параметр присутствует и реагирует на свой стат/награду.
 	var stats: Dictionary = ProgressionData.base_stats("berserk")
@@ -2125,8 +2189,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if artifacts.size() != expected_artifacts:
 		_fail("Expected codex artifacts (%d) to match progression data (%d)." % [artifacts.size(), expected_artifacts])
 		return
-	if codex_data.characters().size() != 3 or codex_data.stats().size() < 20:
-		_fail("Expected codex to cover 3 characters and the stat definitions.")
+	if codex_data.characters().size() != 9 or codex_data.stats().size() < 20:
+		_fail("Expected codex to cover all 9 characters and the stat definitions.")
 		return
 
 	# Все разделы открываются.

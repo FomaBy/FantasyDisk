@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/summoner_weapon.gd" id="1_summoner_weapon_script"]
+[ext_resource type="PackedScene" path="res://scenes/AllyMinion.tscn" id="2_ally_minion"]
+
+[node name="SummonAmulet" type="Node2D" groups=["player_weapons"]]
+script = ExtResource("1_summoner_weapon_script")
+ally_scene = ExtResource("2_ally_minion")
+summon_interval = 3.0
+max_summons = 2

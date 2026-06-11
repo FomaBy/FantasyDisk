@@ -43,6 +43,12 @@ const BASE_STATS := {
 		"endurance": 4.0,
 		"leadership": 7.0,
 	},
+	"assassin": {"strength": 6.0, "agility": 10.0, "intelligence": 2.0, "perception": 6.0, "energy": 3.0, "knowledge": 4.0, "endurance": 5.0, "leadership": 4.0},
+	"ranger": {"strength": 7.0, "agility": 7.0, "intelligence": 2.0, "perception": 9.0, "energy": 4.0, "knowledge": 4.0, "endurance": 4.0, "leadership": 3.0},
+	"doctor": {"strength": 2.0, "agility": 4.0, "intelligence": 8.0, "perception": 5.0, "energy": 6.0, "knowledge": 8.0, "endurance": 5.0, "leadership": 2.0},
+	"chemist": {"strength": 2.0, "agility": 4.0, "intelligence": 9.0, "perception": 6.0, "energy": 7.0, "knowledge": 7.0, "endurance": 3.0, "leadership": 2.0},
+	"knight": {"strength": 8.0, "agility": 3.0, "intelligence": 2.0, "perception": 4.0, "energy": 3.0, "knowledge": 4.0, "endurance": 10.0, "leadership": 6.0},
+	"druid": {"strength": 3.0, "agility": 4.0, "intelligence": 4.0, "perception": 7.0, "energy": 6.0, "knowledge": 5.0, "endurance": 5.0, "leadership": 9.0},
 }
 
 const CHARACTER_CONFIGS := {
@@ -69,6 +75,48 @@ const CHARACTER_CONFIGS := {
 		"strengths": "Контроль толпы, knockback, стабильный AoE ритм.",
 		"weaknesses": "Средний урон по одиночной жирной цели без усилений.",
 		"sprite_path": "res://assets/sprites/characters/guitarist.png",
+	},
+	"assassin": {
+		"id": "assassin", "title": "Ассасин",
+		"description": "Быстрый крит-мили: чакрамы режут туда и обратно.",
+		"strengths": "Высокая скорость, криты, уворот.",
+		"weaknesses": "Мало HP, требует постоянного движения.",
+		"sprite_path": "res://assets/sprites/characters/assassin_placeholder.png",
+	},
+	"ranger": {
+		"id": "ranger", "title": "Рейнджер",
+		"description": "Дальний точный урон: лунный арбалет пробивает линию.",
+		"strengths": "Дистанция, точность, высокий разовый урон.",
+		"weaknesses": "Уязвим вблизи, медленный темп выстрелов.",
+		"sprite_path": "res://assets/sprites/characters/ranger_placeholder.png",
+	},
+	"doctor": {
+		"id": "doctor", "title": "Доктор",
+		"description": "Выживание через урон: зелья жгут врагов и лечат его.",
+		"strengths": "Самолечение, стабильность, регенерация от Знания.",
+		"weaknesses": "Скромный пиковый урон, зависит от попаданий.",
+		"sprite_path": "res://assets/sprites/characters/doctor_placeholder.png",
+	},
+	"chemist": {
+		"id": "chemist", "title": "Химик",
+		"description": "AoE и DoT: взрывная пыль оставляет ядовитые облака.",
+		"strengths": "Контроль зоны, урон по площади со временем.",
+		"weaknesses": "Хрупкий, слабый мгновенный урон.",
+		"sprite_path": "res://assets/sprites/characters/chemist_placeholder.png",
+	},
+	"knight": {
+		"id": "knight", "title": "Рыцарь",
+		"description": "Танк с копьем: длинный точечный удар и крепкая броня.",
+		"strengths": "Максимум HP и защиты, поглощение урона.",
+		"weaknesses": "Медленный, низкая скорость атаки.",
+		"sprite_path": "res://assets/sprites/characters/knight_placeholder.png",
+	},
+	"druid": {
+		"id": "druid", "title": "Друид",
+		"description": "Призыватель: амулет зовет зверей, стая дерется за него.",
+		"strengths": "Звери-саммоны от Лидерства, безопасная дистанция.",
+		"weaknesses": "Слаб сам по себе, звери смертны.",
+		"sprite_path": "res://assets/sprites/characters/druid_placeholder.png",
 	},
 }
 
@@ -236,10 +284,100 @@ const GUITARIST_WEAPONS := {
 	},
 }
 
+const ASSASSIN_WEAPONS := {
+	"chakrams": {
+		"id": "chakrams", "title": "Чакрамы",
+		"description": "Возвращающиеся клинки: режут коридор до цели и обратно (два прохода урона).",
+		"scene_path": "res://scenes/Chakrams.tscn",
+		"attack_mode": "boomerang", "damage_parameter": "damage",
+		"damage_multiplier": 0.45, "fire_interval": 0.62,
+		"attack_range": 460.0, "aoe_radius": 60.0, "beam_width": 56.0,
+		"projectile_speed": 760.0,
+		"visual_color": Color(0.72, 0.30, 1.0, 0.40),
+		"passive_mods": {"crit_chance_flat": 0.06},
+	},
+}
+
+const RANGER_WEAPONS := {
+	"moon_crossbow": {
+		"id": "moon_crossbow", "title": "Лунный арбалет",
+		"description": "Точный болт на всю линию: один пробой, высокий урон.",
+		"scene_path": "res://scenes/MoonCrossbow.tscn",
+		"attack_mode": "beam", "damage_parameter": "damage",
+		"damage_multiplier": 1.55, "fire_interval": 0.95,
+		"attack_range": 900.0, "aoe_radius": 40.0, "beam_width": 26.0,
+		"beam_count": 1, "pierce_count": 1,
+		"visual_color": Color(0.75, 0.85, 1.0, 0.50),
+		"passive_mods": {"range_multiplier": 1.10},
+	},
+}
+
+const DOCTOR_WEAPONS := {
+	"restore_potion": {
+		"id": "restore_potion", "title": "Зелье восстановления",
+		"description": "Метательное зелье: взрыв по врагам, 2.5% max HP лечения себе за бросок.",
+		"scene_path": "res://scenes/RestorePotion.tscn",
+		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
+		"damage_multiplier": 1.0, "fire_interval": 1.05,
+		"attack_range": 560.0, "aoe_radius": 150.0, "projectile_speed": 540.0,
+		"heal_percent_on_attack": 0.025,
+		"visual_color": Color(0.35, 0.95, 0.55, 0.42),
+		"passive_mods": {"max_health_multiplier": 1.10},
+	},
+}
+
+const CHEMIST_WEAPONS := {
+	"blast_powder": {
+		"id": "blast_powder", "title": "Взрывная пыль",
+		"description": "Взрыв по области и ядовитое облако: тики DoT 3 секунды.",
+		"scene_path": "res://scenes/BlastPowder.tscn",
+		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.8, "fire_interval": 1.25,
+		"attack_range": 580.0, "aoe_radius": 170.0, "projectile_speed": 500.0,
+		"leaves_pool": true, "pool_duration": 3.0, "pool_tick_interval": 0.6,
+		"visual_color": Color(0.62, 0.95, 0.18, 0.42),
+		"passive_mods": {"aoe_radius_multiplier": 1.12},
+	},
+}
+
+const KNIGHT_WEAPONS := {
+	"long_spear": {
+		"id": "long_spear", "title": "Копье",
+		"description": "Длинный точечный выпад: узкая полоса 90 x 540, медленно и тяжело. Пассив: +5% защиты.",
+		"scene_path": "res://scenes/LongSpear.tscn",
+		"attack_shape": "strip", "cone_degrees": 24.0,
+		"attack_range": 540.0, "start_distance": 0.0,
+		"inner_width": 90.0, "outer_width": 90.0, "aoe_radius": 540.0,
+		"sweep_degrees": 24.0, "damage_multiplier": 3.0, "fire_interval": 1.0,
+		"visual_color": Color(0.80, 0.86, 0.95, 0.36),
+		"passive_mods": {"defense_flat": 0.05},
+	},
+}
+
+const DRUID_WEAPONS := {
+	"summon_amulet": {
+		"id": "summon_amulet", "title": "Амулет призыва",
+		"description": "Зовет зверей: стая бьется за друида, размер растет от Лидерства.",
+		"scene_path": "res://scenes/SummonAmulet.tscn",
+		"damage_parameter": "sound_wave_damage",
+		"damage_multiplier": 1.0, "fire_interval": 3.0,
+		"attack_range": 420.0, "aoe_radius": 60.0,
+		"max_summons": 2,
+		"visual_color": Color(0.45, 0.80, 0.35, 0.42),
+		"passive_mods": {"buff_power_note": 0.0},
+	},
+}
+
 const WEAPONS_BY_CLASS := {
 	"berserk": BERSERK_WEAPONS,
 	"dark_mage": DARK_MAGE_WEAPONS,
 	"guitarist": GUITARIST_WEAPONS,
+	"assassin": ASSASSIN_WEAPONS,
+	"ranger": RANGER_WEAPONS,
+	"doctor": DOCTOR_WEAPONS,
+	"chemist": CHEMIST_WEAPONS,
+	"knight": KNIGHT_WEAPONS,
+	"druid": DRUID_WEAPONS,
 }
 
 const STAT_REWARDS := [
@@ -366,14 +504,20 @@ const CLASS_DAMAGE_PARAMETER := {
 	"berserk": "damage",
 	"dark_mage": "magic_damage",
 	"guitarist": "sound_wave_damage",
+	"assassin": "damage",
+	"ranger": "damage",
+	"knight": "damage",
+	"doctor": "magic_damage",
+	"chemist": "magic_damage",
+	"druid": "sound_wave_damage",
 }
 # Атрибуты, дающие силу только перечисленным классам (по формулам derived_parameters):
 # strength питает только физический урон, intelligence — только магический,
 # energy — магический и звуковой. Отсутствие в карте = атрибут универсален.
 const STAT_CLASS_RELEVANCE := {
-	"strength": ["berserk"],
-	"intelligence": ["dark_mage"],
-	"energy": ["dark_mage", "guitarist"],
+	"strength": ["berserk", "assassin", "ranger", "knight"],
+	"intelligence": ["dark_mage", "doctor", "chemist"],
+	"energy": ["dark_mage", "guitarist", "doctor", "chemist", "druid"],
 }
 
 # Базовая цена артефакта в магазине по тиру (редкость и сила растут вместе).
@@ -417,6 +561,78 @@ const ASCENSION_LEVELS := {
 		{"id": "guitarist_asc_8", "title": "Глубокий бас", "mods": {"aoe_radius_multiplier": 1.06}},
 		{"id": "guitarist_asc_9", "title": "Кураж толпы", "mods": {"max_health_flat": 11.0}},
 		{"id": "guitarist_asc_10", "title": "Легенда сцены", "mods": {"damage_multiplier": 1.10, "knockback_multiplier": 1.10}},
+	],
+	"assassin": [
+		{"id": "assassin_asc_1", "title": "Первая Кровь", "mods": {"damage_multiplier": 1.05}},
+		{"id": "assassin_asc_2", "title": "Тихий Шаг", "mods": {"max_health_flat": 8.0}},
+		{"id": "assassin_asc_3", "title": "Острие Ночи", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "assassin_asc_4", "title": "Холодный Расчет", "mods": {"defense_flat": 0.02}},
+		{"id": "assassin_asc_5", "title": "Двойной Росчерк", "mods": {"damage_multiplier": 1.07}},
+		{"id": "assassin_asc_6", "title": "Тень Клинка", "mods": {"max_health_flat": 12.0}},
+		{"id": "assassin_asc_7", "title": "Хватка Ужаса", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "assassin_asc_8", "title": "Безупречный Срез", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "assassin_asc_9", "title": "Глаз Бури", "mods": {"defense_flat": 0.03}},
+		{"id": "assassin_asc_10", "title": "Властелин Теней", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"ranger": [
+		{"id": "ranger_asc_1", "title": "Верный Прицел", "mods": {"damage_multiplier": 1.05}},
+		{"id": "ranger_asc_2", "title": "Длинный Выдох", "mods": {"max_health_flat": 8.0}},
+		{"id": "ranger_asc_3", "title": "Лунная Тетива", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "ranger_asc_4", "title": "Зоркость", "mods": {"defense_flat": 0.02}},
+		{"id": "ranger_asc_5", "title": "Тяжелый Болт", "mods": {"damage_multiplier": 1.07}},
+		{"id": "ranger_asc_6", "title": "Ветер Чащи", "mods": {"max_health_flat": 12.0}},
+		{"id": "ranger_asc_7", "title": "Хищный Расчет", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "ranger_asc_8", "title": "Серебряный След", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "ranger_asc_9", "title": "Сердце Леса", "mods": {"defense_flat": 0.03}},
+		{"id": "ranger_asc_10", "title": "Лунный Страж", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"doctor": [
+		{"id": "doctor_asc_1", "title": "Полевые Швы", "mods": {"damage_multiplier": 1.05}},
+		{"id": "doctor_asc_2", "title": "Крепкий Настой", "mods": {"max_health_flat": 8.0}},
+		{"id": "doctor_asc_3", "title": "Чистые Руки", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "doctor_asc_4", "title": "Горький Тоник", "mods": {"defense_flat": 0.02}},
+		{"id": "doctor_asc_5", "title": "Вторая Доза", "mods": {"damage_multiplier": 1.07}},
+		{"id": "doctor_asc_6", "title": "Стальные Нервы", "mods": {"max_health_flat": 12.0}},
+		{"id": "doctor_asc_7", "title": "Эликсир Стойкости", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "doctor_asc_8", "title": "Точная Инъекция", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "doctor_asc_9", "title": "Клятва Жизни", "mods": {"defense_flat": 0.03}},
+		{"id": "doctor_asc_10", "title": "Архилекарь", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"chemist": [
+		{"id": "chemist_asc_1", "title": "Едкая Смесь", "mods": {"damage_multiplier": 1.05}},
+		{"id": "chemist_asc_2", "title": "Колба Праха", "mods": {"max_health_flat": 8.0}},
+		{"id": "chemist_asc_3", "title": "Летучий Реагент", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "chemist_asc_4", "title": "Кислотный След", "mods": {"defense_flat": 0.02}},
+		{"id": "chemist_asc_5", "title": "Нестабильный Состав", "mods": {"damage_multiplier": 1.07}},
+		{"id": "chemist_asc_6", "title": "Пары Гнили", "mods": {"max_health_flat": 12.0}},
+		{"id": "chemist_asc_7", "title": "Катализатор", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "chemist_asc_8", "title": "Цепная Реакция", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "chemist_asc_9", "title": "Формула Распада", "mods": {"defense_flat": 0.03}},
+		{"id": "chemist_asc_10", "title": "Алхимия Конца", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"knight": [
+		{"id": "knight_asc_1", "title": "Крепкий Щит", "mods": {"damage_multiplier": 1.05}},
+		{"id": "knight_asc_2", "title": "Тяжелый Шаг", "mods": {"max_health_flat": 8.0}},
+		{"id": "knight_asc_3", "title": "Несгибаемость", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "knight_asc_4", "title": "Клятва Стали", "mods": {"defense_flat": 0.02}},
+		{"id": "knight_asc_5", "title": "Башня", "mods": {"damage_multiplier": 1.07}},
+		{"id": "knight_asc_6", "title": "Сталь и Кровь", "mods": {"max_health_flat": 12.0}},
+		{"id": "knight_asc_7", "title": "Бастион", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "knight_asc_8", "title": "Железная Воля", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "knight_asc_9", "title": "Страж Рубежа", "mods": {"defense_flat": 0.03}},
+		{"id": "knight_asc_10", "title": "Паладин Разлома", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"druid": [
+		{"id": "druid_asc_1", "title": "Зов Чащи", "mods": {"damage_multiplier": 1.05}},
+		{"id": "druid_asc_2", "title": "Первый Зверь", "mods": {"max_health_flat": 8.0}},
+		{"id": "druid_asc_3", "title": "Дикий Союз", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "druid_asc_4", "title": "Корни Силы", "mods": {"defense_flat": 0.02}},
+		{"id": "druid_asc_5", "title": "Стая", "mods": {"damage_multiplier": 1.07}},
+		{"id": "druid_asc_6", "title": "Шепот Леса", "mods": {"max_health_flat": 12.0}},
+		{"id": "druid_asc_7", "title": "Когти и Клыки", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "druid_asc_8", "title": "Вожак", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "druid_asc_9", "title": "Сердце Чащи", "mods": {"defense_flat": 0.03}},
+		{"id": "druid_asc_10", "title": "Аватар Природы", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
 	],
 }
 

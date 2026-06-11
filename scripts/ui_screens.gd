@@ -133,11 +133,24 @@ func _show_character_select() -> void:
 	game.current_shop_purchased.clear()
 	var box := _create_menu_box("Выбор героя", "Выбери стиль боя для этого забега.")
 
+	# 9 классов: скроллируемая сетка 2 колонки, карточки целиком кликабельны.
+	var cards_scroll := ScrollContainer.new()
+	cards_scroll.name = "CharacterCardsScroll"
+	cards_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	cards_scroll.custom_minimum_size = Vector2(1240, 560)
+	box.add_child(cards_scroll)
+	var cards_grid := GridContainer.new()
+	cards_grid.name = "CharacterCardsGrid"
+	cards_grid.columns = 2
+	cards_grid.add_theme_constant_override("h_separation", 14)
+	cards_grid.add_theme_constant_override("v_separation", 12)
+	cards_scroll.add_child(cards_grid)
+
 	for character_id in game.PROGRESSION_DATA.character_ids():
 		var config = game.PROGRESSION_DATA.character_config(str(character_id))
 		var stats = game.PROGRESSION_DATA.base_stats(str(character_id))
 		_add_character_button(
-			box,
+			cards_grid,
 			str(config["title"]),
 			"%s\nСильные: %s\nСлабые: %s\n%s" % [
 				str(config["description"]),
@@ -868,12 +881,12 @@ func _end_current_run_by_player() -> void:
 	_show_death_screen("Забег завершен игроком.")
 
 
-func _add_character_button(box: VBoxContainer, title: String, description: String, character_id: String) -> void:
+func _add_character_button(box: Container, title: String, description: String, character_id: String) -> void:
 	var config = game.PROGRESSION_DATA.character_config(character_id)
 	# Вся карточка — одна кнопка: клик в любом месте, hover подсвечивает рамку.
 	var card := Button.new()
 	card.name = "CharacterCard_%s" % character_id
-	card.custom_minimum_size = Vector2(760, 150)
+	card.custom_minimum_size = Vector2(600, 140)
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	card.add_theme_stylebox_override("normal", _character_card_style())
 	card.add_theme_stylebox_override("hover", _card_hover_style())

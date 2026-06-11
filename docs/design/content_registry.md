@@ -66,6 +66,21 @@
 | `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/rig_parts/dark_mage_*.png` | Реализовано |
 | `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/rig_parts/guitarist_*.png` | Реализовано |
 
+## Новые Классы 0.2 (Фундамент, 2026-06-11)
+
+Спрайты всех шести — **placeholder** (перекрашенные копии ближайшего архетипа, `*_placeholder.png`), финальный арт — `codex_design_new_classes_art_task.md`. Оружейные визуалы тоже временные (переиспользованы существующие weapon PNG).
+
+| ID | Имя | Архетип | Сигнатурное оружие | «Свой» урон |
+| --- | --- | --- | --- | --- |
+| `assassin` | Ассасин | Быстрый крит-мили | `chakrams` Чакрамы (boomerang: коридор туда-обратно, 2 прохода урона) | damage |
+| `ranger` | Рейнджер | Дальний точный | `moon_crossbow` Лунный арбалет (узкий луч 900, 1 пробой, x1.55) | damage |
+| `doctor` | Доктор | Выживание через урон | `restore_potion` Зелье восстановления (AoE-взрыв + 2.5% max HP себе за бросок) | magic_damage |
+| `chemist` | Химик | AoE + DoT зоны | `blast_powder` Взрывная пыль (взрыв + ядовитое облако: тики dot_damage 3с) | magic_damage |
+| `knight` | Рыцарь | Танк/копье | `long_spear` Копье (strip 90x540, медленный тяжелый выпад, пассив +5% защиты) | damage |
+| `druid` | Друид | Призыватель | `summon_amulet` Амулет призыва (звери AllyMinion, лимит от Лидерства, урон зверя = 55% sound_wave_damage) | sound_wave_damage |
+
+Релевантность атрибутов расширена: strength -> berserk/assassin/ranger/knight; intelligence -> dark_mage/doctor/chemist; energy -> dark_mage/guitarist/doctor/chemist/druid. Вознесение: по 10 уровней на каждый новый класс (ID `<класс>_asc_1..10`, тематические имена в ASCENSION_LEVELS).
+
 ## Анимации И Rig-Профили
 
 Канонический контроллер cutout-анимации: `scripts/cutout_rig_2d.gd`.
