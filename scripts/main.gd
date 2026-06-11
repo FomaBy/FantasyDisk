@@ -284,6 +284,10 @@ var meta_state := {}
 # Единый Escape-назад: текущий экран регистрирует действие возврата;
 # сбрасывается при каждой очистке UI. В бою Escape обрабатывается отдельно (пауза).
 var ui_escape_action := Callable()
+# Фиксация наборов предложений (анти-реролл): набор живет до легального сброса.
+var level_up_offer := []
+var attribute_offer := []
+var attribute_rerolls_left := 0
 
 
 func _init() -> void:

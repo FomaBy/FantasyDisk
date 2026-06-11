@@ -217,7 +217,11 @@ func _show_victory_banner(on_continue: Callable) -> void:
 
 
 func _random_attribute_pair() -> Array:
-	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	# Нерелевантные классу атрибуты урона (см. STAT_CLASS_RELEVANCE) не предлагаются.
+	var pool := []
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		if game.PROGRESSION_DATA.is_stat_relevant(stat_id, game.selected_character_id):
+			pool.append(stat_id)
 	var pair := []
 	for _pick in range(2):
 		var index: int = game.rng.randi_range(0, pool.size() - 1)
@@ -288,16 +292,19 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	skip_button.name = "AttributeSkipButton"
 	box.add_child(skip_button)
 
-	root.set_meta("rerolls_left", ATTRIBUTE_REROLLS_PER_WINDOW)
+	# Набор и счетчик rerolls живут в game-state: переоткрытие окна (FAB)
+	# не дает бесплатного реролла; сброс — только в победном флоу нового боя.
+	if game.attribute_offer.is_empty():
+		game.attribute_offer = _random_attribute_pair()
 	skip_button.pressed.connect(func() -> void:
 		if on_done.is_valid():
 			on_done.call()
 	)
 	reroll_button.pressed.connect(func() -> void:
-		var left := int(root.get_meta("rerolls_left", 0))
-		if left <= 0 or not _spend_run_money(_attribute_reroll_cost()):
+		if game.attribute_rerolls_left <= 0 or not _spend_run_money(_attribute_reroll_cost()):
 			return
-		root.set_meta("rerolls_left", left - 1)
+		game.attribute_rerolls_left -= 1
+		game.attribute_offer = _random_attribute_pair()
 		_refresh_attribute_shop(root, on_done)
 	)
 	game.ui_escape_action = skip_button.pressed.emit
@@ -316,11 +323,10 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	var buy_cost := _attribute_buy_cost()
 	var money := _run_money()
 	money_label.text = "Золото: %d   |   +1 к характеристике: %d зол." % [money, buy_cost]
-	var rerolls_left := int(root.get_meta("rerolls_left", 0))
-	reroll_button.text = "Обновить (%d зол.) — осталось %d" % [_attribute_reroll_cost(), rerolls_left]
-	reroll_button.disabled = rerolls_left <= 0 or money < _attribute_reroll_cost()
+	reroll_button.text = "Обновить (%d зол.) — осталось %d" % [_attribute_reroll_cost(), game.attribute_rerolls_left]
+	reroll_button.disabled = game.attribute_rerolls_left <= 0 or money < _attribute_reroll_cost()
 
-	for stat_id in _random_attribute_pair():
+	for stat_id in game.attribute_offer:
 		var stat_title := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
 		var offer_button := _make_button("%s +1   (%d зол.)" % [stat_title, buy_cost])
 		offer_button.name = "AttributeOffer_%s" % stat_id
@@ -334,6 +340,7 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 			if not _spend_run_money(buy_cost):
 				return
 			_apply_reward_to_run({"stats": {stat_id: 1.0}})
+			game.attribute_offer = []
 			if on_done.is_valid():
 				on_done.call()
 		)
@@ -893,12 +900,16 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	rewards_row.add_theme_constant_override("separation", 18)
 	box.add_child(rewards_row)
 
+	# Набор фиксируется на полученный уровень: переоткрытие окна показывает то же.
+	if game.level_up_offer.is_empty():
+		game.level_up_offer = _random_level_up_rewards(3)
 	var reward_buttons: Array[Button] = []
-	for reward in _random_level_up_rewards(3):
+	for reward in game.level_up_offer:
 		var button := _make_level_up_reward_button(reward)
 		button.name = "LevelUpRewardButton%d" % reward_buttons.size()
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_active_run(reward)
+			game.level_up_offer = []
 			game.pending_level_ups = maxi(game.pending_level_ups - 1, 0)
 			_update_level_up_button()
 			if game.pending_level_ups > 0:
@@ -1469,7 +1480,7 @@ func _apply_event_choice(event_choice: Dictionary) -> void:
 
 
 func _random_rewards(count: int) -> Array:
-	return _weighted_sample(game.PROGRESSION_DATA.reward_pool(), count)
+	return _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id), count)
 
 
 func _weighted_sample(pool: Array, count: int) -> Array:
@@ -1492,7 +1503,7 @@ func _weighted_sample(pool: Array, count: int) -> Array:
 
 
 func _random_level_up_rewards(count: int) -> Array:
-	var pool: Array = game.PROGRESSION_DATA.level_up_rewards()
+	var pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
 	var rewards := []
 	while rewards.size() < count and not pool.is_empty():
 		var index = game.rng.randi_range(0, pool.size() - 1)
@@ -1645,6 +1656,9 @@ func _level_up_reward_preview(reward: Dictionary) -> String:
 	if not modifier_keys.is_empty():
 		var modifier_id := str(modifier_keys[0])
 		var parameter_id = str(game.LEVEL_UP_MOD_DISPLAY.get(modifier_id, modifier_id))
+		# Превью урона честное: показываем «свой» damage-параметр класса.
+		if parameter_id == "damage":
+			parameter_id = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
 		var weapon_config = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id)
 		var before_parameters: Dictionary = game.PROGRESSION_DATA.derived_parameters(before_stats, before_mods, weapon_config)
 		var after_parameters: Dictionary = game.PROGRESSION_DATA.derived_parameters(after_stats, after_mods, weapon_config)
@@ -1678,6 +1692,10 @@ func _level_up_parameter_label(parameter_id: String) -> String:
 	match parameter_id:
 		"damage":
 			return "Урон"
+		"magic_damage":
+			return "Маг. урон"
+		"sound_wave_damage":
+			return "Звуковой урон"
 		"attack_speed":
 			return "Скорость атаки"
 		"health_point":

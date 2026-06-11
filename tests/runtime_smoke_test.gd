@@ -493,9 +493,17 @@ func _initialize() -> void:
 		push_error("Expected enemies to carry an overhead health bar node.")
 		quit(1)
 		return
+	if absf(float(enemy_health_bar.get("max_value")) - float(contact_enemy.get("max_health"))) > 0.01:
+		push_error("Expected enemy health bar max value to match scaled enemy max health.")
+		quit(1)
+		return
 	contact_enemy.call("take_damage", 1.0)
 	if float(enemy_health_bar.get("value")) >= float(enemy_health_bar.get("max_value")):
 		push_error("Expected enemy health bar to track damage.")
+		quit(1)
+		return
+	if absf(float(enemy_health_bar.get("value")) - float(contact_enemy.get("health"))) > 0.01:
+		push_error("Expected enemy health bar value to match current enemy health after damage.")
 		quit(1)
 		return
 	if float(ProgressionData.weapon("berserk", "hammer").get("aoe_radius", 0.0)) != 100.0 or float(ProgressionData.weapon("berserk", "hammer").get("attack_range", 0.0)) != 100.0:
@@ -913,6 +921,7 @@ func _initialize() -> void:
 	await _test_codex_screen(main_scene)
 	await _test_escape_navigation(main_scene)
 	await _test_economy_tiers_and_fab(main_scene)
+	await _test_class_relevance_and_offer_fixation(main_scene)
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1490,6 +1499,26 @@ func _test_victory_flow(main: Node) -> void:
 		push_error("Expected boss to expose shield and dodge mechanics.")
 		quit(1)
 		return
+	var boss_health_bar := boss.get_node_or_null("HealthBar")
+	if boss_health_bar == null:
+		push_error("Expected boss to carry an overhead health bar node.")
+		quit(1)
+		return
+	if absf(float(boss_health_bar.get("max_value")) - float(boss.get("max_health"))) > 0.01:
+		push_error("Expected boss health bar max value to match scaled boss max health.")
+		quit(1)
+		return
+	boss.set("dodge_chance", 0.0)
+	boss.set("shield_active", false)
+	boss.take_damage(25.0)
+	if float(boss_health_bar.get("value")) >= float(boss_health_bar.get("max_value")):
+		push_error("Expected boss health bar to decrease after damage.")
+		quit(1)
+		return
+	if absf(float(boss_health_bar.get("value")) - float(boss.get("health"))) > 0.01:
+		push_error("Expected boss health bar value to match current boss health after damage.")
+		quit(1)
+		return
 	boss.take_damage(99999.0)
 	await process_frame
 	await process_frame
@@ -1527,6 +1556,24 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		return
 	if float(elite_enemy.get("max_health")) <= 70.0:
 		push_error("Expected elite enemy to be roughly an order of magnitude tougher than normal enemies.")
+		quit(1)
+		return
+	var elite_health_bar := elite_enemy.get_node_or_null("HealthBar")
+	if elite_health_bar == null:
+		push_error("Expected elite enemies to carry an overhead health bar node.")
+		quit(1)
+		return
+	if absf(float(elite_health_bar.get("max_value")) - float(elite_enemy.get("max_health"))) > 0.01:
+		push_error("Expected elite health bar max value to match scaled elite max health.")
+		quit(1)
+		return
+	elite_enemy.call("take_damage", 10.0)
+	if float(elite_health_bar.get("value")) >= float(elite_health_bar.get("max_value")):
+		push_error("Expected elite health bar to decrease after damage.")
+		quit(1)
+		return
+	if absf(float(elite_health_bar.get("value")) - float(elite_enemy.get("health"))) > 0.01:
+		push_error("Expected elite health bar value to match current elite health after damage.")
 		quit(1)
 		return
 	var elite_body := elite_enemy.get_node_or_null("Body") as Sprite2D
@@ -1708,6 +1755,89 @@ func _test_weapon_aiming() -> void:
 
 	holder.queue_free()
 	current_scene = null
+	await process_frame
+
+
+func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
+	# 1. Релевантность: нерелевантный стат не дает прироста своего урона класса.
+	if ProgressionData.is_stat_relevant("intelligence", "berserk") or ProgressionData.is_stat_relevant("strength", "dark_mage") or ProgressionData.is_stat_relevant("energy", "berserk"):
+		_fail("Expected damage-only stats to be irrelevant for foreign classes.")
+		return
+	var mage_stats: Dictionary = ProgressionData.base_stats("dark_mage")
+	var mage_weapon: Dictionary = ProgressionData.weapon("dark_mage", "dark_wand")
+	var before: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
+	mage_stats["strength"] = mage_stats["strength"] + 10.0
+	var after: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
+	if float(after.get("magic_damage", 0.0)) != float(before.get("magic_damage", 0.0)):
+		_fail("Expected +10 strength to leave dark mage magic damage unchanged.")
+		return
+
+	# 2. Пулы: магу не предлагают силу, берсерку — интеллект/энергию и magic focus.
+	for reward in ProgressionData.level_up_rewards("berserk"):
+		if str(reward.get("id")) == "magic_focus_up":
+			_fail("Expected magic focus upgrade to be hidden from the berserk pool.")
+			return
+	for reward in ProgressionData.reward_pool("dark_mage"):
+		if str(reward.get("kind")) == "stat" and (reward.get("stats", {}) as Dictionary).has("strength"):
+			_fail("Expected strength stat rewards to be hidden from the dark mage pool.")
+			return
+
+	var fix_main := main_scene.instantiate()
+	root.add_child(fix_main)
+	await process_frame
+	fix_main.set("selected_character_id", "dark_mage")
+	fix_main.set("selected_weapon_id", "dark_wand")
+
+	# 3. Превью урона показывает классовый параметр.
+	var preview: String = fix_main.ui._level_up_reward_preview({"kind": "upgrade", "mods": {"damage_multiplier": 1.15}})
+	if not preview.contains("Маг. урон"):
+		_fail("Expected the damage preview for dark mage to reference magic damage, got: %s" % preview)
+		return
+
+	# 4. Фиксация набора level-up при переоткрытии.
+	fix_main.set("pending_level_ups", 1)
+	fix_main.ui._show_level_up_screen(true)
+	await process_frame
+	var first_offer: Array = (fix_main.get("level_up_offer") as Array).duplicate(true)
+	if first_offer.size() != 3:
+		_fail("Expected a fixed set of three level-up rewards.")
+		return
+	fix_main.call("_clear_ui")
+	fix_main.ui._show_level_up_screen(true)
+	await process_frame
+	var second_offer: Array = fix_main.get("level_up_offer")
+	for offer_index in range(3):
+		if str((first_offer[offer_index] as Dictionary).get("id")) != str((second_offer[offer_index] as Dictionary).get("id")):
+			_fail("Expected reopening the level-up window to keep the same reward set.")
+			return
+
+	# 5. Фиксация пары атрибутов: переоткрытие окна докачки не реролит бесплатно.
+	var fix_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	root.add_child(fix_player)
+	fix_player.call("configure_character", "dark_mage", "dark_wand")
+	fix_player.set("money", 500)
+	fix_main.call("_store_player_snapshot", fix_player)
+	fix_player.queue_free()
+	fix_main.set("attribute_offer", [])
+	fix_main.set("attribute_rerolls_left", 2)
+	fix_main.ui._show_attribute_shop(Callable())
+	await process_frame
+	var pair_before: Array = (fix_main.get("attribute_offer") as Array).duplicate()
+	fix_main.call("_clear_ui")
+	fix_main.ui._show_attribute_shop(Callable())
+	await process_frame
+	var pair_after: Array = fix_main.get("attribute_offer")
+	if pair_before != pair_after:
+		_fail("Expected reopening the attribute window to keep the same stat pair.")
+		return
+	# Платный reroll меняет пару и тратит счетчик.
+	var reroll := fix_main.find_child("AttributeRerollButton", true, false) as Button
+	reroll.pressed.emit()
+	await process_frame
+	if int(fix_main.get("attribute_rerolls_left")) != 1:
+		_fail("Expected the paid reroll to consume one reroll charge.")
+		return
+	fix_main.queue_free()
 	await process_frame
 
 

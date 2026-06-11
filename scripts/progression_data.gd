@@ -356,9 +356,24 @@ const LEVEL_UP_REWARDS := [
 	{"id": "aoe_radius_up", "title": "+AoE Radius", "description": "+15% cone/radius coverage.", "kind": "upgrade", "mods": {"aoe_radius_multiplier": 1.15, "range_multiplier": 1.08}},
 	{"id": "pickup_radius_up", "title": "+Pickup Radius", "description": "+45 pickup radius.", "kind": "upgrade", "mods": {"pickup_radius_flat": 45.0}},
 	{"id": "defense_up", "title": "+Defense", "description": "+8% damage reduction.", "kind": "upgrade", "mods": {"defense_flat": 0.08}},
-	{"id": "magic_focus_up", "title": "+Magic Focus", "description": "+14% magic/sound damage.", "kind": "upgrade", "mods": {"damage_multiplier": 1.14}},
+	{"id": "magic_focus_up", "title": "+Magic Focus", "description": "+14% magic/sound damage.", "kind": "upgrade", "relevant_classes": ["dark_mage", "guitarist"], "mods": {"damage_multiplier": 1.14}},
 	{"id": "knockback_up", "title": "+Knockback", "description": "+18% knockback and pulse control.", "kind": "upgrade", "mods": {"knockback_multiplier": 1.18}},
 ]
+
+# Классовая релевантность урона: какой derived-параметр является «своим» уроном класса.
+const CLASS_DAMAGE_PARAMETER := {
+	"berserk": "damage",
+	"dark_mage": "magic_damage",
+	"guitarist": "sound_wave_damage",
+}
+# Атрибуты, дающие силу только перечисленным классам (по формулам derived_parameters):
+# strength питает только физический урон, intelligence — только магический,
+# energy — магический и звуковой. Отсутствие в карте = атрибут универсален.
+const STAT_CLASS_RELEVANCE := {
+	"strength": ["berserk"],
+	"intelligence": ["dark_mage"],
+	"energy": ["dark_mage", "guitarist"],
+}
 
 # Базовая цена артефакта в магазине по тиру (редкость и сила растут вместе).
 const COST_BY_TIER := {1: 30, 2: 55, 3: 95}
@@ -423,6 +438,25 @@ static func artifact_definition(artifact_id: String) -> Dictionary:
 		if str(item.get("id", "")) == artifact_id:
 			return item
 	return {}
+
+
+static func damage_parameter_for(character_id: String) -> String:
+	return str(CLASS_DAMAGE_PARAMETER.get(character_id, "damage"))
+
+
+static func is_stat_relevant(stat_id: String, character_id: String) -> bool:
+	var relevant: Array = STAT_CLASS_RELEVANCE.get(stat_id, [])
+	return relevant.is_empty() or relevant.has(character_id)
+
+
+static func is_reward_relevant(reward: Dictionary, character_id: String) -> bool:
+	var relevant_classes: Array = reward.get("relevant_classes", [])
+	if not relevant_classes.is_empty() and not relevant_classes.has(character_id):
+		return false
+	for stat_id in (reward.get("stats", {}) as Dictionary).keys():
+		if not is_stat_relevant(str(stat_id), character_id):
+			return false
+	return true
 
 
 static func base_stats(character_id: String) -> Dictionary:
@@ -529,9 +563,11 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	}
 
 
-static func reward_pool() -> Array:
+static func reward_pool(character_id := "") -> Array:
 	var rewards := []
 	for reward in STAT_REWARDS:
+		if character_id != "" and not is_reward_relevant(reward, character_id):
+			continue
 		var stat_reward: Dictionary = reward.duplicate(true)
 		stat_reward["kind"] = "stat"
 		rewards.append(stat_reward)
@@ -543,9 +579,11 @@ static func reward_pool() -> Array:
 	return rewards
 
 
-static func level_up_rewards() -> Array:
+static func level_up_rewards(character_id := "") -> Array:
 	var rewards := []
 	for reward in LEVEL_UP_REWARDS:
+		if character_id != "" and not is_reward_relevant(reward, character_id):
+			continue
 		rewards.append(reward.duplicate(true))
 	return rewards
 
