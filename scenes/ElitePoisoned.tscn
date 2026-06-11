@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_enemy_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/plague_prophet.png" id="2_enemy_texture"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyProjectile.tscn" id="3_enemy_projectile"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
+radius = 48.5
+
+[node name="ElitePoisoned" type="CharacterBody2D" groups=["enemies", "elite_enemies"]]
+script = ExtResource("1_enemy_script")
+enemy_type_name = "Plague Prophet"
+max_health = 18.0
+move_speed = 82.0
+can_shoot = true
+projectile_scene = ExtResource("3_enemy_projectile")
+fire_interval = 1.05
+projectile_damage = 3.2
+projectile_speed = 245.0
+desired_shooting_distance = 265.0
+contact_damage = 1.4
+contact_range = 46.0
+reward_xp = 8
+reward_money = 6
+elite_behavior = "plague_prophet"
+elite_hazard_damage = 2.8
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("2_enemy_texture")
+scale = Vector2(0.50, 0.50)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_enemy")

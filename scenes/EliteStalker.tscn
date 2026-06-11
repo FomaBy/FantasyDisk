@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_enemy_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/night_stalker.png" id="2_enemy_texture"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
+radius = 40.5
+
+[node name="EliteStalker" type="CharacterBody2D" groups=["enemies", "elite_enemies"]]
+script = ExtResource("1_enemy_script")
+enemy_type_name = "Night Stalker"
+max_health = 12.0
+move_speed = 235.0
+contact_damage = 1.9
+contact_range = 42.0
+contact_interval = 0.38
+reward_xp = 7
+reward_money = 5
+elite_behavior = "night_stalker"
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("2_enemy_texture")
+scale = Vector2(0.50, 0.50)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_enemy")

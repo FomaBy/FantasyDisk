@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/boss.gd" id="1_boss_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/boss_disk_devourer.png" id="2_boss_texture"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyProjectile.tscn" id="3_enemy_projectile"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boss"]
+radius = 76.0
+
+[node name="BossDiskDevourer" type="CharacterBody2D" groups=["enemies", "bosses"]]
+script = ExtResource("1_boss_script")
+enemy_type_name = "Disk Devourer"
+boss_behavior = "disk_devourer"
+max_health = 380.0
+move_speed = 78.0
+can_shoot = true
+projectile_scene = ExtResource("3_enemy_projectile")
+fire_interval = 1.35
+projectile_damage = 3.0
+projectile_speed = 280.0
+contact_damage = 3.2
+contact_range = 82.0
+desired_shooting_distance = 245.0
+burst_projectile_count = 16
+burst_interval = 4.8
+dash_interval = 4.2
+dash_speed = 455.0
+dash_duration = 0.58
+slam_interval = 5.0
+enrage_health_ratio = 0.38
+shield_interval = 7.2
+shield_duration = 1.2
+shield_damage_reduction = 0.58
+dodge_chance = 0.06
+reward_xp = 12
+reward_money = 8
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_boss_texture")
+scale = Vector2(0.52, 0.52)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_boss")

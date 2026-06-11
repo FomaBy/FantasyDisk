@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/dark_wand.png" id="2_weapon_texture"]
+
+[node name="DarkWand" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_class_weapon")
+weapon_id = "dark_wand"
+display_name = "Темная палочка"
+attack_mode = "beam"
+damage_parameter = "magic_damage"
+fire_interval = 0.96
+damage = 14.0
+attack_range = 720.0
+aoe_radius = 70.0
+projectile_speed = 600.0
+beam_width = 56.0
+pierce_count = 5
+visual_color = Color(0.28, 0.95, 1, 0.45)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 9
+texture = ExtResource("2_weapon_texture")
+position = Vector2(42, -18)
+rotation = -0.45
+scale = Vector2(0.50, 0.50)

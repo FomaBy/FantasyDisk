@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_enemy_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/enemy_bone_shaman.png" id="2_enemy_texture"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyBiter.tscn" id="3_biter_enemy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
+radius = 24.0
+
+[node name="EnemyBoneShaman" type="CharacterBody2D" groups=["enemies"]]
+script = ExtResource("1_enemy_script")
+enemy_type_name = "Bone Shaman"
+max_health = 4.5
+move_speed = 65.0
+can_summon = true
+summoned_enemy_scene = ExtResource("3_biter_enemy")
+summon_interval = 3.0
+desired_summoning_distance = 260.0
+max_active_summons = 3
+reward_xp = 2
+reward_money = 2
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("2_enemy_texture")
+scale = Vector2(0.48, 0.48)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_enemy")

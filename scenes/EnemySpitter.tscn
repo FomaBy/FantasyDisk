@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_enemy_script"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyProjectile.tscn" id="2_enemy_projectile"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/enemy_venom_spitter.png" id="3_enemy_texture"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
+radius = 22.0
+
+[node name="EnemySpitter" type="CharacterBody2D" groups=["enemies"]]
+script = ExtResource("1_enemy_script")
+enemy_type_name = "Venom Spitter"
+max_health = 2.0
+move_speed = 80.0
+can_shoot = true
+projectile_scene = ExtResource("2_enemy_projectile")
+fire_interval = 1.6
+projectile_damage = 2.6
+projectile_speed = 280.0
+desired_shooting_distance = 245.0
+reward_xp = 2
+reward_money = 1
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("3_enemy_texture")
+scale = Vector2(0.46, 0.46)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_enemy")

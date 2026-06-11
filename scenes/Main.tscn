@@ -1,0 +1,44 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/Enemy.tscn" id="3_enemy"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyShooter.tscn" id="4_shooter"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyBruiser.tscn" id="5_bruiser"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyRunner.tscn" id="6_runner"]
+[ext_resource type="PackedScene" path="res://scenes/BossWarden.tscn" id="7_boss"]
+[ext_resource type="PackedScene" path="res://scenes/EnemySummoner.tscn" id="8_summoner"]
+[ext_resource type="PackedScene" path="res://scenes/Pickup.tscn" id="9_pickup"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyMage.tscn" id="10_mage"]
+[ext_resource type="PackedScene" path="res://scenes/EnemySpitter.tscn" id="11_spitter"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyShield.tscn" id="12_shield"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyBiter.tscn" id="13_biter"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyBoneShaman.tscn" id="14_bone_shaman"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyFlyingRunner.tscn" id="15_flying_runner"]
+[ext_resource type="PackedScene" path="res://scenes/BossDiskDevourer.tscn" id="16_disk_devourer"]
+[ext_resource type="PackedScene" path="res://scenes/EliteArmored.tscn" id="17_elite_armored"]
+[ext_resource type="PackedScene" path="res://scenes/EliteStalker.tscn" id="18_elite_stalker"]
+[ext_resource type="PackedScene" path="res://scenes/ElitePoisoned.tscn" id="19_elite_poisoned"]
+[ext_resource type="PackedScene" path="res://scenes/EliteCommander.tscn" id="20_elite_commander"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+player_scene = ExtResource("2_player")
+enemy_scene = ExtResource("3_enemy")
+shooter_enemy_scene = ExtResource("4_shooter")
+bruiser_enemy_scene = ExtResource("5_bruiser")
+runner_enemy_scene = ExtResource("6_runner")
+boss_scene = ExtResource("7_boss")
+disk_devourer_boss_scene = ExtResource("16_disk_devourer")
+summoner_enemy_scene = ExtResource("8_summoner")
+mage_enemy_scene = ExtResource("10_mage")
+spitter_enemy_scene = ExtResource("11_spitter")
+shield_enemy_scene = ExtResource("12_shield")
+biter_enemy_scene = ExtResource("13_biter")
+bone_shaman_enemy_scene = ExtResource("14_bone_shaman")
+flying_enemy_scene = ExtResource("15_flying_runner")
+elite_armored_scene = ExtResource("17_elite_armored")
+elite_stalker_scene = ExtResource("18_elite_stalker")
+elite_poisoned_scene = ExtResource("19_elite_poisoned")
+elite_commander_scene = ExtResource("20_elite_commander")
+pickup_scene = ExtResource("9_pickup")

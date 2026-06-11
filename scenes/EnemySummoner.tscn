@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_enemy_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/enemy_summoner.png" id="2_enemy_texture"]
+[ext_resource type="PackedScene" path="res://scenes/Enemy.tscn" id="3_melee_enemy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
+radius = 24.0
+
+[node name="EnemySummoner" type="CharacterBody2D" groups=["enemies"]]
+script = ExtResource("1_enemy_script")
+enemy_type_name = "Bone Caller"
+max_health = 5.0
+move_speed = 70.0
+can_summon = true
+summoned_enemy_scene = ExtResource("3_melee_enemy")
+summon_interval = 3.2
+desired_summoning_distance = 250.0
+max_active_summons = 4
+reward_xp = 2
+reward_money = 2
+contact_range = 36.0
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("2_enemy_texture")
+scale = Vector2(0.48, 0.48)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_enemy")

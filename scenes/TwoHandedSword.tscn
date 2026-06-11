@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/berserk_weapon.gd" id="1_berserk_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/two_handed_sword.png" id="2_weapon_texture"]
+
+[node name="TwoHandedSword" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_berserk_weapon")
+weapon_id = "sword"
+display_name = "Двуручный меч"
+attack_shape = "frustum"
+fire_interval = 0.58
+damage = 12.0
+attack_range = 600.0
+start_distance = 0.0
+inner_width = 150.0
+outer_width = 1200.0
+aoe_radius = 600.0
+sweep_degrees = 90.0
+visual_color = Color(0.62, 0.82, 1, 0.34)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 8
+texture = ExtResource("2_weapon_texture")
+position = Vector2(74, -10)
+rotation = -0.62
+scale = Vector2(0.78, 0.78)

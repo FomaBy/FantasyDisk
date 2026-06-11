@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="18" y1="10" x2="112" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#17101f"/>
+      <stop offset="0.48" stop-color="#241338"/>
+      <stop offset="1" stop-color="#070911"/>
+    </linearGradient>
+    <radialGradient id="disk" cx="58" cy="48" r="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff3b0"/>
+      <stop offset="0.22" stop-color="#f5b84e"/>
+      <stop offset="0.66" stop-color="#8a4a22"/>
+      <stop offset="1" stop-color="#2b1720"/>
+    </radialGradient>
+    <radialGradient id="rift" cx="64" cy="64" r="31" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f8d7ff"/>
+      <stop offset="0.23" stop-color="#c044ff"/>
+      <stop offset="0.58" stop-color="#5b18bf"/>
+      <stop offset="1" stop-color="#15051f"/>
+    </radialGradient>
+    <linearGradient id="steel" x1="30" y1="26" x2="98" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f6f1e8"/>
+      <stop offset="0.35" stop-color="#8c94a5"/>
+      <stop offset="1" stop-color="#2c3344"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="23" y1="21" x2="109" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff1a8"/>
+      <stop offset="0.3" stop-color="#f1bf46"/>
+      <stop offset="0.72" stop-color="#a56425"/>
+      <stop offset="1" stop-color="#5b2d18"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="128" height="128" rx="24" fill="url(#bg)"/>
+  <path d="M13 64 C13 35 35 13 64 13 C93 13 115 35 115 64 C115 93 93 115 64 115 C35 115 13 93 13 64Z" fill="#05060b"/>
+  <path d="M17 64 C17 37 37 17 64 17 C91 17 111 37 111 64 C111 91 91 111 64 111 C37 111 17 91 17 64Z" fill="url(#gold)"/>
+  <path d="M23 64 C23 41 41 23 64 23 C87 23 105 41 105 64 C105 87 87 105 64 105 C41 105 23 87 23 64Z" fill="#190e21"/>
+  <path d="M29 64 C29 44 44 29 64 29 C84 29 99 44 99 64 C99 84 84 99 64 99 C44 99 29 84 29 64Z" fill="url(#disk)"/>
+
+  <path d="M28 72 L39 55 L50 68 L42 78 Z" fill="#422417" opacity="0.45"/>
+  <path d="M88 34 L100 50 L88 61 L80 47 Z" fill="#fff0b8" opacity="0.18"/>
+  <path d="M35 42 L52 30 L61 41 L46 55 Z" fill="#fff6c7" opacity="0.2"/>
+  <path d="M73 91 L92 75 L99 85 L82 98 Z" fill="#2b1720" opacity="0.35"/>
+
+  <path d="M63 18 L69 46 L94 31 L79 56 L110 62 L79 70 L95 97 L69 82 L64 112 L58 82 L32 97 L49 70 L18 64 L49 57 L33 31 L58 46Z" fill="#07060a" opacity="0.72"/>
+  <path d="M64 23 L69 49 L91 38 L80 59 L104 64 L80 69 L91 90 L69 79 L64 105 L59 79 L37 90 L48 69 L24 64 L48 59 L37 38 L59 49Z" fill="url(#steel)"/>
+  <path d="M64 31 L68 53 L86 44 L77 61 L97 64 L77 67 L86 84 L68 75 L64 97 L60 75 L42 84 L51 67 L31 64 L51 61 L42 44 L60 53Z" fill="#151015"/>
+
+  <circle cx="64" cy="64" r="28" fill="#07060d"/>
+  <circle cx="64" cy="64" r="24" fill="url(#rift)"/>
+  <path d="M64 40 C72 47 75 56 70 65 C66 73 69 82 78 89 C62 86 51 78 53 66 C54 57 60 52 64 40Z" fill="#2a0751"/>
+  <path d="M64 42 C56 51 56 61 65 68 C71 73 70 81 61 89 C79 82 84 69 75 58 C70 52 67 48 64 42Z" fill="#e15cff" opacity="0.78"/>
+  <path d="M49 64 C55 57 62 54 70 57 C77 60 80 66 78 74 C73 66 62 65 49 64Z" fill="#fff4ff" opacity="0.35"/>
+  <circle cx="64" cy="64" r="8" fill="#09040e"/>
+  <circle cx="64" cy="64" r="4" fill="#f7d9ff"/>
+
+  <path d="M24 65 L35 60 L36 68 Z" fill="#f5c84f"/>
+  <path d="M104 65 L93 60 L92 68 Z" fill="#f5c84f"/>
+  <path d="M62 24 L68 24 L65 35 Z" fill="#f5c84f"/>
+  <path d="M62 104 L68 104 L65 93 Z" fill="#f5c84f"/>
+
+  <path d="M23 28 C35 19 50 14 64 14 C78 14 93 19 105 28" fill="none" stroke="#fff1aa" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+  <path d="M20 82 C28 103 45 116 64 116 C83 116 100 103 108 82" fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+</svg>

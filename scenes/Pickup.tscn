@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/pickup.gd" id="1_pickup_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/hud/hud_xp.png" id="2_xp_texture"]
+
+[node name="Pickup" type="Node2D" groups=["pickups"]]
+script = ExtResource("1_pickup_script")
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("2_xp_texture")
+scale = Vector2(0.44, 0.44)

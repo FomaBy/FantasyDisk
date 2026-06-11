@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_enemy_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/shard_marshal.png" id="2_enemy_texture"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyBiter.tscn" id="3_biter_enemy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
+radius = 51.0
+
+[node name="EliteCommander" type="CharacterBody2D" groups=["enemies", "elite_enemies"]]
+script = ExtResource("1_enemy_script")
+enemy_type_name = "Shard Marshal"
+max_health = 20.0
+move_speed = 72.0
+can_summon = true
+summoned_enemy_scene = ExtResource("3_biter_enemy")
+summon_interval = 2.4
+desired_summoning_distance = 285.0
+max_active_summons = 6
+contact_damage = 1.5
+contact_range = 48.0
+reward_xp = 9
+reward_money = 6
+elite_behavior = "shard_marshal"
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("2_enemy_texture")
+scale = Vector2(0.50, 0.50)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_enemy")

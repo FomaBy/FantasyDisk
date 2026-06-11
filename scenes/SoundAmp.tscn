@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/sound_amp.png" id="2_weapon_texture"]
+
+[node name="SoundAmp" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_class_weapon")
+weapon_id = "sound_amp"
+display_name = "Звуковой усилитель"
+attack_mode = "amp"
+damage_parameter = "sound_wave_damage"
+fire_interval = 1.0
+damage = 8.0
+attack_range = 520.0
+aoe_radius = 235.0
+knockback = 130.0
+visual_color = Color(1, 0.35, 0.72, 0.35)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 9
+texture = ExtResource("2_weapon_texture")
+position = Vector2(36, 14)
+scale = Vector2(0.46, 0.46)
