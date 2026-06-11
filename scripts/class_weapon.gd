@@ -352,7 +352,7 @@ func _damage_enemy(enemy: Node, amount: float) -> void:
 		enemy.take_damage(amount)
 		var owner_node := _owner_node()
 		if owner_node != null and owner_node.has_method("on_weapon_hit"):
-			owner_node.on_weapon_hit(enemy)
+			owner_node.on_weapon_hit(enemy, amount)
 
 
 func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2D) -> void:

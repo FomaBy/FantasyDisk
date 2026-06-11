@@ -255,6 +255,7 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 	_update_movement_animation(_delta)
 	_update_low_hp_state()
+	_apply_regeneration(_delta)
 
 
 func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void:
@@ -322,7 +323,10 @@ func take_damage(amount: float, _source := "") -> bool:
 		return false
 
 	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, 0.95)
-	var final_damage := amount * (1.0 - defense)
+	# Поглощение: плоско срезает часть удара до защиты, но не ниже 20% урона.
+	var absorb := float(derived_parameters.get("absorb", 0.0))
+	var absorbed_amount: float = maxf(amount - absorb, amount * 0.2)
+	var final_damage := absorbed_amount * (1.0 - defense)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
 	_play_hit_feedback()
@@ -414,7 +418,23 @@ func _apply_reward_mods(mods: Dictionary) -> void:
 			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 0.0)) + float(mods[modifier_id])
 
 
-func on_weapon_hit(enemy: Node2D) -> void:
+func _apply_regeneration(delta: float) -> void:
+	var regeneration := float(derived_parameters.get("regeneration", 0.0))
+	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
+		return
+	health = minf(health + regeneration * delta, max_health)
+
+
+func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
+	# Вампиризм: с шансом vampiric_chance лечит vampiric_amount + половину урона.
+	var vampiric_chance := float(derived_parameters.get("vampiric_chance", 0.0))
+	if vampiric_chance > 0.0 and dealt_damage > 0.0 and randf() < vampiric_chance:
+		var vampiric_heal := float(derived_parameters.get("vampiric_amount", 0.0)) + dealt_damage * 0.5
+		health = minf(health + vampiric_heal, max_health)
+	_on_weapon_hit_echo(enemy)
+
+
+func _on_weapon_hit_echo(enemy: Node2D) -> void:
 	# «Эхо Разлома» (tier 3): каждый N-й удар — взрыв по области вокруг цели.
 	var every := int(run_modifiers.get("echo_blast_every", 0.0))
 	if every <= 0 or enemy == null or not is_instance_valid(enemy):

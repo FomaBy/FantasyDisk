@@ -380,3 +380,38 @@ Escape открывает крупное меню характеристик:
 - Нерелевантные атрибуты НЕ предлагаются классу: в окне докачки, в level-up наградах (включая stat-награды пула) и наградах за бой (`reward_pool(character_id)` / `level_up_rewards(character_id)` / `is_stat_relevant`). «+Magic Focus» скрыт от Берсерка (`relevant_classes`).
 - Превью изменений урона показывает классовый параметр (Магу — «Маг. урон», Гитаристу — «Звуковой урон»), а не физический. Механической «утечки» силы в формулах не было — чужой стат и раньше не поднимал урон чужого класса; ремонт касался предложений и превью.
 - Фиксация наборов (анти-реролл): набор level-up генерируется один раз на полученный уровень (`level_up_offer`), пара атрибутов и счетчик rerolls — в `attribute_offer`/`attribute_rerolls_left`, сбрасываются только победным флоу нового боя; ассортимент магазина уже фиксировался до ухода с узла.
+
+
+### Аудит Производных Параметров (полная таблица, 2026-06-11)
+
+Статусы: «работает» — формула в derived_parameters и геймплейная проводка есть.
+
+| Параметр | Формула (актуальная истина) | Реализация | Статус |
+| --- | --- | --- | --- |
+| damage | 15*Str/10 * weapon_mult * damage_mult + flat | derived_parameters -> оружие Берсерка | работает |
+| magic_damage | (14*Int/10 + Energy*0.65) * ... | derived -> оружие мага | работает |
+| sound_wave_damage | (12*(Per+Energy)/12 + Lead*0.45) * ... | derived -> оружие гитариста | работает |
+| attack_speed | 27*Agi/100 * mult; интервал = base_fire_interval / AS | derived -> все оружия | работает |
+| crit_chance / crit_damage_multiplier | 0.05+Agi/100 / 1+2*Agi/20 | derived -> _rolled_damage всех оружий | работает |
+| move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |
+| dodge | 0.02 + Agi*0.012 + flat (cap 0.8) | Player.take_damage | работает |
+| defense | 0.04 + End*0.018 + flat (cap 0.75/0.95) | Player.take_damage | работает |
+| health_point | 50*End/4 + flat) * mult | derived -> max_health | работает |
+| attack_range / aoe_radius | (weapon + Per*2.5/3.5) * mult | derived -> оружия | работает |
+| pickup_radius | 105 + Per*7 + flat | derived -> магнит pickups | работает |
+| dot_damage / dot_speed | (4+Know*0.65)*mult / 0.65+Know*0.08 | cursed_skull DoT | работает |
+| projectile_speed | weapon + Per*18 + Agi*9 | derived -> снаряды | работает |
+| aura_radius | (weapon_aoe + Lead*5) * mult | derived (ампы/зоны через aoe) | работает |
+| buff_power | 1 + Lead*0.025 | derived; потребители — события/бафф-эффекты | работает (узкий охват) |
+| knockback_power | (weapon + End*4 + Lead*3) * mult | derived -> apply_knockback врагов | работает |
+| summon_amount | Leadership | max_summons оружий (ампы) | работает |
+| **absorb** | End*0.25 + награды; срез удара до защиты (мин. 20% проходит) | НОВОЕ: Player.take_damage | работает |
+| **regeneration** | (0.3+награды)*Know/5 HP/с | НОВОЕ: Player._apply_regeneration | работает |
+| **vampiric_chance** | награды (cap 0.6); источник — артефакт «Клык Пиявки» (tier 2) | НОВОЕ: Player.on_weapon_hit | работает |
+| **vampiric_amount** | награды + 50% нанесенного урона при проке | НОВОЕ: Player.on_weapon_hit | работает |
+| **knockback_distance** | Knockback Power * End / 20 (отображаемая дальность) | НОВОЕ: derived; в бою действует knockback_power (реализованный баланс приоритетнее формулы таблицы) | работает (display) |
+| **range_multiplier** | run-множитель дальности | НОВОЕ: выведен в derived для UI | работает |
+| **ultimate_multiplier** | 1 + Energy*0.02 + награды | НОВОЕ: расчет подключен; механики ульты НЕТ | зарезервировано |
+
+Зарезервированные (механики в игре нет, расчет и отображение есть): `ultimate_multiplier`.
+Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» реализован как награды + 50% урона при проке.

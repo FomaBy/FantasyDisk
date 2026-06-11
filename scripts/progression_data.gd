@@ -346,6 +346,7 @@ const ARTIFACTS := [
 	{"id": "leech_heart", "title": "Сердце Пиявки", "tier": 3, "cost": 95, "class_affinity": [], "description": "Каждое убийство возвращает 2% максимального здоровья.", "mods": {"kill_heal_percent": 0.02}},
 	{"id": "thorn_pact", "title": "Договор Шипов", "tier": 3, "cost": 95, "class_affinity": [], "description": "Получив урон, выплескиваешь 200% этого урона на всех врагов рядом.", "mods": {"thorn_reflect_multiplier": 2.0}},
 	{"id": "phantom_step", "title": "Призрачный Шаг", "tier": 3, "cost": 95, "class_affinity": [], "description": "Успешный уворот дает +40% скорости движения на 2 секунды.", "mods": {"dodge_rush_bonus": 0.4}},
+	{"id": "leech_fang", "title": "Клык Пиявки", "tier": 2, "cost": 55, "class_affinity": [], "description": "+25% шанса вампиризма, +2 к силе вампиризма (лечение при ударе).", "mods": {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}},
 ]
 
 const LEVEL_UP_REWARDS := [
@@ -560,6 +561,15 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"buff_power": 1.0 + leadership * 0.025,
 		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier,
 		"summon_amount": leadership,
+		# Подключение полного набора атрибутов (аудит 2026-06-11):
+		"absorb": endurance * 0.25 + float(run_modifiers.get("absorb_flat", 0.0)),
+		"regeneration": (0.3 + float(run_modifiers.get("regeneration_flat", 0.0))) * knowledge / 5.0,
+		"vampiric_chance": clampf(float(run_modifiers.get("vampiric_chance_flat", 0.0)), 0.0, 0.6),
+		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)),
+		"knockback_distance": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier * endurance / 20.0,
+		"range_multiplier": range_multiplier,
+		# Зарезервировано: ультимейтов в игре пока нет, параметр считается для UI/будущих механик.
+		"ultimate_multiplier": 1.0 + energy * 0.02 + float(run_modifiers.get("ultimate_flat", 0.0)),
 	}
 
 

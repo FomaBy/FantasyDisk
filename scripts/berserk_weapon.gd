@@ -157,9 +157,10 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 			continue
 		if enemy_node.has_method("take_damage"):
 			_hit_targets.append(enemy_node)
-			enemy_node.take_damage(_rolled_damage(owner_node))
+			var dealt := _rolled_damage(owner_node)
+			enemy_node.take_damage(dealt)
 			if owner_node.has_method("on_weapon_hit"):
-				owner_node.on_weapon_hit(enemy_node)
+				owner_node.on_weapon_hit(enemy_node, dealt)
 
 
 func _target_direction(owner_node: Node2D) -> Vector2:

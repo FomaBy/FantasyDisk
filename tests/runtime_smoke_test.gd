@@ -923,6 +923,7 @@ func _initialize() -> void:
 	await _test_economy_tiers_and_fab(main_scene)
 	await _test_class_relevance_and_offer_fixation(main_scene)
 	_test_settings_persistence_and_audio()
+	await _test_full_attribute_wiring()
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1754,6 +1755,57 @@ func _test_weapon_aiming() -> void:
 		aim_player.queue_free()
 		await process_frame
 
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_full_attribute_wiring() -> void:
+	# Каждый подключенный параметр присутствует и реагирует на свой стат/награду.
+	var stats: Dictionary = ProgressionData.base_stats("berserk")
+	var weapon: Dictionary = ProgressionData.weapon("berserk", "sword")
+	var base: Dictionary = ProgressionData.derived_parameters(stats, {}, weapon)
+	for parameter_id in ["absorb", "regeneration", "vampiric_chance", "vampiric_amount", "knockback_distance", "range_multiplier", "ultimate_multiplier"]:
+		if not base.has(parameter_id):
+			_fail("Expected derived parameters to include %s." % parameter_id)
+			return
+	var boosted_stats: Dictionary = stats.duplicate(true)
+	boosted_stats["endurance"] = boosted_stats["endurance"] + 4.0
+	boosted_stats["knowledge"] = boosted_stats["knowledge"] + 5.0
+	boosted_stats["energy"] = boosted_stats["energy"] + 5.0
+	var boosted: Dictionary = ProgressionData.derived_parameters(boosted_stats, {}, weapon)
+	if boosted["absorb"] <= base["absorb"] or boosted["regeneration"] <= base["regeneration"]:
+		_fail("Expected endurance/knowledge to raise absorb and regeneration.")
+		return
+	if boosted["knockback_distance"] <= base["knockback_distance"] or boosted["ultimate_multiplier"] <= base["ultimate_multiplier"]:
+		_fail("Expected endurance/energy to raise knockback distance and ultimate multiplier.")
+		return
+	var vamp_mods := {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}
+	var vamp: Dictionary = ProgressionData.derived_parameters(stats, vamp_mods, weapon)
+	if absf(float(vamp["vampiric_chance"]) - 0.25) > 0.001 or absf(float(vamp["vampiric_amount"]) - 2.0) > 0.001:
+		_fail("Expected vampiric rewards to feed the vampiric parameters.")
+		return
+
+	# Геймплейная проводка: вампиризм лечит, регенерация тикает, absorb режет урон.
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	var wiring_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	holder.add_child(wiring_player)
+	await process_frame
+	wiring_player.call("configure_character", "berserk", "sword")
+	wiring_player.call("apply_reward", {"mods": {"vampiric_chance_flat": 1.0, "vampiric_amount_flat": 5.0}})
+	wiring_player.set("health", float(wiring_player.get("max_health")) * 0.5)
+	var hp_before_vamp := float(wiring_player.get("health"))
+	wiring_player.call("on_weapon_hit", wiring_player, 10.0)
+	if float(wiring_player.get("health")) <= hp_before_vamp:
+		_fail("Expected a guaranteed vampiric hit to heal the player.")
+		return
+	var hp_before_regen := float(wiring_player.get("health"))
+	wiring_player.call("_apply_regeneration", 5.0)
+	if float(wiring_player.get("health")) <= hp_before_regen:
+		_fail("Expected regeneration to heal over time.")
+		return
 	holder.queue_free()
 	current_scene = null
 	await process_frame
