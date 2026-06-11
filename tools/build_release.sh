@@ -57,9 +57,28 @@ makensis -DVERSION="${VERSION}" \
   -DOUT_FILE="${RELEASE_DIR}/FantasyDisk-${VERSION}-windows-setup.exe" \
   "${REPO_DIR}/tools/windows_installer.nsi"
 
+echo "==> Проверка и починка NSIS CRC (makensis на macOS пишет неверный CRC32)"
+python3 - "$RELEASE_DIR/FantasyDisk-${VERSION}-windows-setup.exe" <<'PYCRC'
+import sys, zlib, struct
+path = sys.argv[1]
+data = bytearray(open(path, "rb").read())
+stored = struct.unpack("<I", data[-4:])[0]
+computed = zlib.crc32(bytes(data[:-4])) & 0xFFFFFFFF
+if stored != computed:
+    print("CRC mismatch (%08x -> %08x), исправляю" % (stored, computed))
+    data[-4:] = struct.pack("<I", computed)
+    open(path, "wb").write(bytes(data))
+verify = bytes(open(path, "rb").read())
+assert struct.unpack("<I", verify[-4:])[0] == (zlib.crc32(verify[:-4]) & 0xFFFFFFFF), "CRC still broken"
+print("NSIS CRC OK")
+PYCRC
+
 echo "==> Zip-запаска Windows"
 (cd "${WORKTREE_DIR}/build" && cp FantasyDisk-Windows.exe "FantasyDisk-${VERSION}.exe" \
   && zip -q "${RELEASE_DIR}/FantasyDisk-${VERSION}-windows.zip" "FantasyDisk-${VERSION}.exe")
+
+echo "==> SHA256SUMS.txt (контроль порчи при передаче файлов)"
+(cd "${RELEASE_DIR}" && shasum -a 256 FantasyDisk-* > SHA256SUMS.txt && cat SHA256SUMS.txt)
 
 echo "==> Готово:"
 ls -lh "${RELEASE_DIR}"
