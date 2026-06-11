@@ -29,6 +29,7 @@
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [design_artifact_icons_fantasy_restyle_task.md](../tasks/design_artifact_icons_fantasy_restyle_task.md) | Design | new | 46 иконок артефактов в фэнтези-мультяшном стиле + ассеты таймера |
+| [codex_design_route_map_background_task.md](../tasks/codex_design_route_map_background_task.md) | Design owner + Codex image executor | done | Закрыта 2026-06-11: `assets/backgrounds/route_map_backdrop.png` готов, 2560x1440, low-contrast center; интеграция — через готовый Backend hook |
 | [backend_artifact_ui_timer_shop_wall_task.md](../tasks/backend_artifact_ui_timer_shop_wall_task.md) | Back-end | new | Артефакты иконками в HUD/паузе, магазин на «стене», таймер сверху по центру, красный при <=5с |
 | [backend_unused_assets_cleanup_task.md](../tasks/backend_unused_assets_cleanup_task.md) | Back-end | new | Карта использования ассетов, неиспользуемые — в backup с отчетом |
 | [backend_performance_code_quality_review_task.md](../tasks/backend_performance_code_quality_review_task.md) | Back-end | new | Перевыдана с расширением: + закрыть все debug-ошибки, удалить мертвый код. Выполнять последней |

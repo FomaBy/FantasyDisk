@@ -84,6 +84,7 @@ Domain docs для подробностей по областям:
 | Event Screen | `assets/sprites/ui/screens/screen_event_background.png` |
 | Shop Screen | `assets/sprites/ui/screens/screen_shop_background.png` |
 | Campfire Screen | `assets/sprites/ui/screens/screen_campfire_background.png` |
+| Route Map Backdrop | `assets/backgrounds/route_map_backdrop.png` |
 | Stone Garden | `assets/backgrounds/field_stone_garden.png` |
 | Marsh | `assets/backgrounds/field_marsh.png` |
 | Dry Road | `assets/backgrounds/field_dry_road.png` |
@@ -93,6 +94,7 @@ Domain docs для подробностей по областям:
 
 Все 4 боевых фона (`field_stone_garden`, `field_marsh`, `field_dry_road`, `field_meadow`) нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. По всей площади равномерно распределены наземные ориентиры (камни, кочки, трава, мусор), чтобы перемещение персонажа и врагов читалось естественно; контраст ориентиров ниже контраста геймплейных объектов. Перегенерация: `tools/redraw_arena_backgrounds.py`.
 `main_menu_epic_battle.png` используется стартовым экраном. `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` используются небоевыми экранами поверх читаемого затемнения.
+`route_map_backdrop.png` используется full-screen route map hook-ом: это темный низкоконтрастный фон пустоши с туманным спокойным центром под узлы и линиями, а детали/силуэты вынесены к краям.
 
 ## Брендинг
 
