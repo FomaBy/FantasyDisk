@@ -66,10 +66,12 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [backend_settings_display_audio_task.md](../tasks/backend_settings_display_audio_task.md) | Back-end | new | Выбор монитора, починка оконных разрешений, громкость общая/музыка/эффекты + mute. Блокер снят — релиз закрыт |
-| [backend_full_attributes_wiring_audit_task.md](../tasks/backend_full_attributes_wiring_audit_task.md) | Back-end | new | Аудит и подключение ВСЕХ производных параметров по mechanics_extract. Перед новыми классами. Блокер снят |
-| [backend_new_classes_foundation_task.md](../tasks/backend_new_classes_foundation_task.md) | Back-end | new | 6 новых классов (assassin/ranger/doctor/chemist/knight/druid) + сигнатурное оружие, баланс, выбор, вознесение, кодекс. Брать ПОСЛЕ задачи атрибутов |
-| [codex_design_new_classes_art_task.md](../tasks/codex_design_new_classes_art_task.md) | Design (Codex) | in_progress | Dispatch 2026-06-11: передано в Design Codex-тред `019eabf1-6d54-7561-8af9-ce25cdf483a9`; без коммита, финальное ревью у Claude-Designer |
+| [backend_settings_display_audio_task.md](../tasks/backend_settings_display_audio_task.md) | Back-end | done | Закрыта 2026-06-11: монитор-дропдаун, оконные разрешения с клампингом, 3 аудио-шины/слайдеры/mute, settings.cfg, smoke green |
+| [backend_full_attributes_wiring_audit_task.md](../tasks/backend_full_attributes_wiring_audit_task.md) | Back-end | done | Закрыта 2026-06-11: аудит 27 производных, 6 новых подключены (absorb/regen/vampiric/knockback/range_mult), таблица в mechanics_extract, smoke green |
+| [backend_new_classes_foundation_task.md](../tasks/backend_new_classes_foundation_task.md) | Back-end | done | Закрыта 2026-06-11: 6 новых классов data-driven, 6 сигнатурных механик (boomerang/beam/heal/dot-pool/spear/summon), 9 карточек, smoke green |
+| [codex_design_new_classes_art_task.md](../tasks/codex_design_new_classes_art_task.md) | Design (Codex) | review | 12 PNG сгенерированы: 6 персонажей 512x512 + 6 оружий 256x256, transparent alpha проверена; финальное ревью/cutout/integration у Claude-Designer |
+| [design_all_classes_three_weapons_visual_upgrade_task.md](../tasks/design_all_classes_three_weapons_visual_upgrade_task.md) | Design | done | Закрыта 2026-06-11: новые 6 героев art-approved, полный visual set 27 weapon PNG готов, Back-end handoff со socket/scale notes заполнен |
+| [backend_all_classes_three_weapons_gameplay_task.md](../tasks/backend_all_classes_three_weapons_gameplay_task.md) | Back-end | done | Закрыта 2026-06-11: 9 классов x 3 weapon variants, 27 IDs, новые backend modes, documented visual fallback до Design, runtime smoke green |
 | [backend_melee_targeting_test_update_strip_task.md](../tasks/backend_melee_targeting_test_update_strip_task.md) | Back-end | done | Закрыта PM 2026-06-11: handoff устарел — тест уже обновлен под strip и проходит (проверено прогоном) |
 | [design_artifact_icons_shop_cursor_task.md](../tasks/design_artifact_icons_shop_cursor_task.md) | Design | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |
 | [backend_shop_inline_artifact_icons_cursor_integration_task.md](../tasks/backend_shop_inline_artifact_icons_cursor_integration_task.md) | Back-end | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |
