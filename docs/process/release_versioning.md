@@ -98,6 +98,6 @@ dev  — основная ветка разработки. Все чаты (Back
 - macOS dmg подписывается ad-hoc; GL-ошибки "Texture leaked" при выходе релизной
   сборки с `--quit-after` — известный безвредный артефакт принудительного выхода
   в gl_compatibility, не считать регрессией.
-- **makensis на macOS пишет неверный NSIS CRC32** (данные целы, но Windows-инсталлер падает с «Installer integrity check has failed»). `tools/build_release.sh` чинит CRC пост-шагом (пересчет + перезапись последних 4 байт + самопроверка) — шаг обязателен.
+- **NSIS CRC**: алгоритм exehead — crc32 файла с байта 512 до поля CRC (firstheader + length_of_all_following_data - 4); makensis на macOS пишет его корректно. `build_release.sh` делает verify-only проверку по этому алгоритму (НЕ перезаписывать хвост файла — формула crc32(file[:-4]) неверна и портит инсталлер). Компрессор — zlib: solid-lzma поток кросс-собранного makensis подозревается в «integrity check failed» на реальной Windows.
 - `SHA256SUMS.txt` генерируется в каталоге релиза; пользователь сверяет на Windows через `certutil -hashfile <файл> SHA256`.
 - Windows-бинарь и инсталлер на Mac не запускаются — финальный тест на Windows-машине делает пользователь.

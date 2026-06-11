@@ -21,7 +21,9 @@ Name "${APP_NAME} ${VERSION}"
 OutFile "${OUT_FILE}"
 InstallDir "$PROGRAMFILES64\\${APP_NAME}"
 RequestExecutionLevel admin
-SetCompressor /SOLID lzma
+; solid lzma от кросс-собранного makensis (Rosetta) — подозреваемый в
+; «integrity check failed» на реальной Windows; zlib-поток проще и надежнее.
+SetCompressor zlib
 
 Page directory
 Page instfiles

@@ -57,20 +57,25 @@ makensis -DVERSION="${VERSION}" \
   -DOUT_FILE="${RELEASE_DIR}/FantasyDisk-${VERSION}-windows-setup.exe" \
   "${REPO_DIR}/tools/windows_installer.nsi"
 
-echo "==> Проверка и починка NSIS CRC (makensis на macOS пишет неверный CRC32)"
+echo "==> Верификация NSIS CRC (точный алгоритм exehead: crc32 файла с байта 512 до поля CRC)"
 python3 - "$RELEASE_DIR/FantasyDisk-${VERSION}-windows-setup.exe" <<'PYCRC'
 import sys, zlib, struct
 path = sys.argv[1]
-data = bytearray(open(path, "rb").read())
-stored = struct.unpack("<I", data[-4:])[0]
-computed = zlib.crc32(bytes(data[:-4])) & 0xFFFFFFFF
-if stored != computed:
-    print("CRC mismatch (%08x -> %08x), исправляю" % (stored, computed))
-    data[-4:] = struct.pack("<I", computed)
-    open(path, "wb").write(bytes(data))
-verify = bytes(open(path, "rb").read())
-assert struct.unpack("<I", verify[-4:])[0] == (zlib.crc32(verify[:-4]) & 0xFFFFFFFF), "CRC still broken"
-print("NSIS CRC OK")
+data = open(path, "rb").read()
+FH_SIG, I1, I2, I3 = 0xDEADBEEF, 0x6C6C754E, 0x74666F73, 0x74736E49
+fh_off = None
+for off in range(0, len(data) - 28, 512):
+    flags, sig, a, b, c = struct.unpack_from("<5I", data, off)
+    if sig == FH_SIG and (a, b, c) == (I1, I2, I3):
+        fh_off = off
+        break
+assert fh_off is not None, "NSIS firstheader не найден"
+length_following = struct.unpack_from("<I", data, fh_off + 24)[0]
+crc_off = fh_off + length_following - 4
+stored = struct.unpack_from("<I", data, crc_off)[0]
+computed = zlib.crc32(data[512:crc_off]) & 0xFFFFFFFF
+assert stored == computed, "NSIS CRC битый: stored %08x != computed %08x" % (stored, computed)
+print("NSIS CRC OK (firstheader @ %d, crc @ %d)" % (fh_off, crc_off))
 PYCRC
 
 echo "==> Zip-запаска Windows"
