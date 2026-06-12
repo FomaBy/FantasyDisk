@@ -498,5 +498,9 @@
  "backend_victory_screen_player_facing_text_task.md": {
   "key": "SCRUM-148",
   "status": "К выполнению"
+ },
+ "backend_survivability_rebalance_vampirism_nerf_weighted_levelup_task.md": {
+  "key": "SCRUM-149",
+  "status": "К выполнению"
  }
 }
