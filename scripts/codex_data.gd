@@ -195,6 +195,7 @@ static func characters() -> Array:
 			"playstyle": str(CHARACTER_PLAYSTYLE.get(character_id, "")),
 			"strengths": str(config.get("strengths", "")),
 			"weaknesses": str(config.get("weaknesses", "")),
+			"ultimate": PROGRESSION_DATA.ultimate_config(character_id),
 			"weapons": weapons,
 		})
 	return result

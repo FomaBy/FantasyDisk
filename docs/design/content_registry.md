@@ -329,8 +329,25 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `hp` | HP | `assets/sprites/ui/hud/hud_hp.png` |
 | `xp` | Опыт | `assets/sprites/ui/hud/hud_xp.png` |
 | `money` | Деньги | `assets/sprites/ui/hud/hud_money.png` |
+| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_buff_power.png` fallback via `UIIconRegistry` |
 
 `scripts/ui_icon_registry.gd` кэширует загруженные Texture2D по пути; новые UI места должны брать иконки через registry, а не делать отдельный `load()`.
+
+## Ультимейты Классов
+
+Источник данных: `scripts/progression_data.gd::ULTIMATE_CONFIGS`. Все ульты активируются через InputMap action `ultimate` и отображаются в HUD как `ULT`.
+
+| Class ID | Ultimate ID/Title | Status |
+| --- | --- | --- |
+| `berserk` | Неистовство | Реализовано |
+| `dark_mage` | Темная буря | Реализовано |
+| `guitarist` | Соло | Реализовано |
+| `assassin` | Танец клинков | Реализовано |
+| `ranger` | Лунный залп | Реализовано |
+| `doctor` | Переливание | Реализовано |
+| `chemist` | Цепная реакция | Реализовано |
+| `knight` | Бастион | Реализовано |
+| `druid` | Зов стаи | Реализовано |
 
 ## UI Visual Kit 2026-06-12
 

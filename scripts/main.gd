@@ -212,27 +212,39 @@ const LEVEL_UP_MOD_DISPLAY := {
 const INPUT_ACTIONS := [
 	{
 		"action": "move_up",
-		"label": "Move Up",
+		"label": "Вверх",
 		"default_key": KEY_W,
 		"alternate_key": KEY_UP,
 	},
 	{
 		"action": "move_down",
-		"label": "Move Down",
+		"label": "Вниз",
 		"default_key": KEY_S,
 		"alternate_key": KEY_DOWN,
 	},
 	{
 		"action": "move_left",
-		"label": "Move Left",
+		"label": "Влево",
 		"default_key": KEY_A,
 		"alternate_key": KEY_LEFT,
 	},
 	{
 		"action": "move_right",
-		"label": "Move Right",
+		"label": "Вправо",
 		"default_key": KEY_D,
 		"alternate_key": KEY_RIGHT,
+	},
+	{
+		"action": "pause",
+		"label": "Пауза",
+		"default_key": KEY_ESCAPE,
+		"alternate_key": 0,
+	},
+	{
+		"action": "ultimate",
+		"label": "Ультимейт",
+		"default_key": KEY_R,
+		"alternate_key": 0,
 	},
 ]
 
@@ -254,6 +266,8 @@ var health_label: Label = null
 var xp_bar: ProgressBar = null
 var xp_label: Label = null
 var money_label: Label = null
+var ultimate_bar: ProgressBar = null
+var ultimate_label: Label = null
 var artifact_label: Label = null
 var level_up_button: Button = null
 var pause_stats_menu: Control = null
@@ -310,6 +324,7 @@ var audio_settings := {
 	"music_enabled": true,
 	"sfx_enabled": true,
 }
+var input_bindings := {}
 
 
 func _init() -> void:
@@ -335,6 +350,7 @@ func _load_game_settings() -> void:
 	selected_screen_index = int(settings["screen_index"])
 	for key in audio_settings.keys():
 		audio_settings[key] = settings[key]
+	input_bindings = (settings.get("input_bindings", {}) as Dictionary).duplicate(true)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
 		ui._apply_video_settings()
@@ -348,6 +364,10 @@ func save_game_settings() -> void:
 	}
 	for key in audio_settings.keys():
 		settings[key] = audio_settings[key]
+	if ui != null:
+		settings["input_bindings"] = ui._current_input_bindings()
+	else:
+		settings["input_bindings"] = input_bindings.duplicate(true)
 	GAME_SETTINGS.save_settings(settings)
 
 
@@ -400,7 +420,7 @@ func _input(event: InputEvent) -> void:
 			route._show_battle_map()
 		return
 
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
 		if combat_active:
 			if _has_pause_reason("level_up"):
 				return

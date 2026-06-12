@@ -14,6 +14,7 @@ const DEFAULTS := {
 	"sfx_volume": 1.0,
 	"music_enabled": true,
 	"sfx_enabled": true,
+	"input_bindings": {},
 }
 
 
@@ -32,6 +33,8 @@ static func load_settings() -> Dictionary:
 	settings["sfx_volume"] = clampf(float(settings["sfx_volume"]), 0.0, 1.0)
 	settings["music_enabled"] = bool(settings["music_enabled"])
 	settings["sfx_enabled"] = bool(settings["sfx_enabled"])
+	if not (settings["input_bindings"] is Dictionary):
+		settings["input_bindings"] = {}
 	return settings
 
 

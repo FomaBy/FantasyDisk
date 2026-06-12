@@ -97,11 +97,11 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [backend_class_dps_survivability_budget_task.md](../tasks/backend_class_dps_survivability_budget_task.md) | Back-end | new | ПЕРВАЯ: измерительный харнесс DPS (1 цель / 5 целей / EHP), профили solo/aoe/balanced, компенсация выживаемости уроном, ребаланс 27 оружий ±10% |
-| [backend_enemy_scaling_elite_boss_difficulty_task.md](../tasks/backend_enemy_scaling_elite_boss_difficulty_task.md) | Back-end | new | После бюджета: монстры сильнее, плавная кривая stage_scale (сила и цены из одного источника), элитки-ЧЕЛЛЕНДЖ с фазой 50% и наградой 1-из-3 артефактов, убер-босс 3+ фазы |
-| [backend_random_events_ten_scenarios_task.md](../tasks/backend_random_events_ten_scenarios_task.md) | Back-end | new | 10+ новых событий: истории с выбором, засады, отдых, чеки атрибутов; 12 идей PM в задаче, креатив приветствуется |
-| [design_weapon_art_v2_proportions_knight_task.md](../tasks/design_weapon_art_v2_proportions_knight_task.md) | Design | new | ПРИОРИТЕТ: оружие Рыцаря переделать полностью; все 27 спрайтов до планки; оружие меньше в пропорции (50-65% высоты), не перекрывает персонажа |
-| [design_weapon_attack_vfx_animations_polish_task.md](../tasks/design_weapon_attack_vfx_animations_polish_task.md) | Design | new | После оружия v2: красивые анимации атак всех 27 оружий + аудит и оформление всех «голых» эффектов (лужи яда, зоны, ауры, ульты) |
+| [backend_class_dps_survivability_budget_task.md](../tasks/backend_class_dps_survivability_budget_task.md) | Back-end | in_progress | Dispatch 2026-06-12 -> существующий Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2`; ПЕРВАЯ: харнесс DPS/EHP, профили, ребаланс 27 оружий ±10% |
+| [backend_enemy_scaling_elite_boss_difficulty_task.md](../tasks/backend_enemy_scaling_elite_boss_difficulty_task.md) | Back-end | in_progress | Dispatch 2026-06-12 -> Back-end; после бюджета: stage_scale, сильные монстры, элитки-челлендж, reward 1-из-3, убер-босс 3+ фазы |
+| [backend_random_events_ten_scenarios_task.md](../tasks/backend_random_events_ten_scenarios_task.md) | Back-end | in_progress | Dispatch 2026-06-12 -> Back-end; 10+ событий: истории с выбором, засады, отдых, чеки атрибутов |
+| [design_weapon_art_v2_proportions_knight_task.md](../tasks/design_weapon_art_v2_proportions_knight_task.md) | Design | in_progress | Dispatch 2026-06-12 -> существующий Design `019eabf1-6d54-7561-8af9-ce25cdf483a9`; ПРИОРИТЕТ: оружие Рыцаря и пропорции всех 27 |
+| [design_weapon_attack_vfx_animations_polish_task.md](../tasks/design_weapon_attack_vfx_animations_polish_task.md) | Design | in_progress | Dispatch 2026-06-12 -> Design; после оружия v2: атаки 27 оружий + аудит/полировка всех голых VFX |
 
 ## Активные / Неподтвержденные
 

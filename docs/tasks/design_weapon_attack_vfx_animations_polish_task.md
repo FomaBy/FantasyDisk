@@ -1,8 +1,9 @@
 # Задача Для Claude-Designer: Анимации Атак Оружия И VFX-Полировка Всех «Голых» Эффектов
 
-Статус: new
+Статус: in_progress
 Создано: 2026-06-12
 Автор: PM
+Dispatch: отправлено в существующий Design чат `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-12; выполнять после `design_weapon_art_v2_proportions_knight_task.md`.
 Координация: выполнять ПОСЛЕ `design_weapon_art_v2_proportions_knight_task.md`
 (анимировать финальные спрайты оружия, не промежуточные).
 

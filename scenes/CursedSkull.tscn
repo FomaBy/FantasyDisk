@@ -22,4 +22,4 @@ visual_color = Color(0.78, 0.16, 1, 0.42)
 z_index = 9
 texture = ExtResource("2_weapon_texture")
 position = Vector2(36, -24)
-scale = Vector2(0.46, 0.46)
+scale = Vector2(0.38, 0.38)

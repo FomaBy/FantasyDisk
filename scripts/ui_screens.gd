@@ -688,6 +688,9 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 		_codex_label(text_box, str(character["playstyle"]), 15, Color(0.94, 0.90, 0.81, 1.0))
 		_codex_label(text_box, "Сильное: %s" % character["strengths"], 14, Color(0.62, 0.88, 0.58, 1.0))
 		_codex_label(text_box, "Слабое: %s" % character["weaknesses"], 14, Color(0.92, 0.62, 0.52, 1.0))
+		var ultimate: Dictionary = character.get("ultimate", {})
+		if not ultimate.is_empty():
+			_codex_label(text_box, "Ульта: %s — %s" % [ultimate.get("title", ""), ultimate.get("description", "")], 14, Color(1.0, 0.78, 0.96, 1.0))
 		for weapon in character["weapons"]:
 			_codex_label(text_box, "• %s — %s" % [weapon["title"], weapon["description"]], 13, Color(0.78, 0.84, 0.92, 1.0))
 
@@ -769,15 +772,28 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 
 func _show_settings_menu() -> void:
 	var box := _create_menu_box("Настройки", "Экран, звук и управление")
+	box.alignment = BoxContainer.ALIGNMENT_BEGIN
 
-	box.add_child(_make_section_label("— Экран —"))
+	var tabs := TabContainer.new()
+	tabs.name = "SettingsTabs"
+	tabs.custom_minimum_size = Vector2(1000, 430)
+	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	tabs.add_theme_font_size_override("font_size", 17)
+	tabs.add_theme_color_override("font_selected_color", Color(0.98, 0.90, 0.50, 1.0))
+	tabs.add_theme_color_override("font_unselected_color", Color(0.73, 0.78, 0.84, 1.0))
+	box.add_child(tabs)
+
+	var screen_tab := _make_settings_tab("Экран")
+	var screen_box := screen_tab.get_child(0) as VBoxContainer
+	tabs.add_child(screen_tab)
 
 	var screen_count := DisplayServer.get_screen_count()
 	if screen_count > 1:
-		box.add_child(_make_section_label("Монитор"))
 		var screen_options := OptionButton.new()
 		screen_options.name = "SettingsScreenOption"
-		screen_options.custom_minimum_size = Vector2(420, 48)
+		screen_options.custom_minimum_size = Vector2(520, 46)
+		screen_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_style_button_control(screen_options)
 		for screen_index in range(screen_count):
 			var size := DisplayServer.screen_get_size(screen_index)
@@ -788,12 +804,12 @@ func _show_settings_menu() -> void:
 			_apply_video_settings()
 			_show_settings_menu()
 		)
-		box.add_child(screen_options)
+		_add_settings_control_row(screen_box, "Монитор", screen_options)
 
-	box.add_child(_make_section_label("Разрешение (оконный режим)"))
 	var resolution_options := OptionButton.new()
 	resolution_options.name = "SettingsResolutionOption"
-	resolution_options.custom_minimum_size = Vector2(420, 48)
+	resolution_options.custom_minimum_size = Vector2(520, 46)
+	resolution_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_style_button_control(resolution_options)
 	var usable_size := Vector2i(99999, 99999)
 	if DisplayServer.get_name() != "headless":
@@ -809,11 +825,12 @@ func _show_settings_menu() -> void:
 		game.selected_resolution_index = index
 		_apply_video_settings()
 	)
-	box.add_child(resolution_options)
+	_add_settings_control_row(screen_box, "Разрешение", resolution_options)
 
-	box.add_child(_make_section_label("Режим окна"))
 	var mode_options := OptionButton.new()
-	mode_options.custom_minimum_size = Vector2(420, 48)
+	mode_options.name = "SettingsWindowModeOption"
+	mode_options.custom_minimum_size = Vector2(520, 46)
+	mode_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_style_button_control(mode_options)
 	for mode_name in game.WINDOW_MODE_OPTIONS:
 		mode_options.add_item(mode_name)
@@ -822,30 +839,44 @@ func _show_settings_menu() -> void:
 		game.selected_window_mode_index = index
 		_apply_video_settings()
 	)
-	box.add_child(mode_options)
+	_add_settings_control_row(screen_box, "Режим окна", mode_options)
 
-	box.add_child(_make_section_label("— Звук —"))
-	_add_volume_row(box, "Общая", "master_volume", "")
-	_add_volume_row(box, "Музыка", "music_volume", "music_enabled")
-	_add_volume_row(box, "Эффекты", "sfx_volume", "sfx_enabled")
+	var screen_hint := Label.new()
+	screen_hint.text = "Оконные разрешения автоматически ограничиваются выбранным монитором."
+	screen_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	screen_hint.add_theme_font_size_override("font_size", 14)
+	screen_hint.add_theme_color_override("font_color", Color(0.70, 0.76, 0.82, 1.0))
+	screen_box.add_child(screen_hint)
 
-	box.add_child(_make_section_label("— Управление —"))
+	var audio_tab := _make_settings_tab("Звук")
+	var audio_box := audio_tab.get_child(0) as VBoxContainer
+	tabs.add_child(audio_tab)
+	_add_volume_row(audio_box, "Общая громкость", "master_volume", "")
+	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled")
+	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled")
+
+	var controls_tab := _make_settings_tab("Управление")
+	var controls_box := controls_tab.get_child(0) as VBoxContainer
+	tabs.add_child(controls_tab)
 	for input_action in game.INPUT_ACTIONS:
 		var action_name: String = input_action["action"]
 		var row := HBoxContainer.new()
-		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.name = "BindingRow_%s" % action_name
+		row.alignment = BoxContainer.ALIGNMENT_BEGIN
 		row.add_theme_constant_override("separation", 12)
-		box.add_child(row)
+		controls_box.add_child(row)
 
 		var label := Label.new()
 		label.text = input_action["label"]
-		label.custom_minimum_size = Vector2(150, 36)
+		label.custom_minimum_size = Vector2(170, 38)
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 		row.add_child(label)
 
 		var bind_button := _make_button(_binding_text(action_name))
-		bind_button.custom_minimum_size = Vector2(240, 42)
+		bind_button.name = "BindingButton_%s" % action_name
+		bind_button.custom_minimum_size = Vector2(420, 38)
+		bind_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		bind_button.pressed.connect(func() -> void:
 			_begin_rebind(action_name)
 		)
@@ -853,10 +884,19 @@ func _show_settings_menu() -> void:
 
 	var hint_label := Label.new()
 	hint_label.text = "Клик по биндингу, затем нажми клавишу. Esc отменяет."
-	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	hint_label.add_theme_font_size_override("font_size", 14)
 	hint_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.82, 1.0))
-	box.add_child(hint_label)
+	controls_box.add_child(hint_label)
+
+	var reset_button := _make_button("Сбросить управление по умолчанию")
+	reset_button.name = "SettingsResetBindingsButton"
+	reset_button.custom_minimum_size = Vector2(360, 42)
+	reset_button.pressed.connect(func() -> void:
+		_reset_input_bindings_to_defaults()
+		_show_settings_menu()
+	)
+	controls_box.add_child(reset_button)
 
 	var settings_back := func() -> void:
 		if game._is_gameplay_paused() and game.combat_active:
@@ -869,16 +909,51 @@ func _show_settings_menu() -> void:
 	game.ui_escape_action = settings_back
 
 
+func _make_settings_tab(tab_name: String) -> MarginContainer:
+	var margin := MarginContainer.new()
+	margin.name = tab_name
+	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_top", 18)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	var page := VBoxContainer.new()
+	page.name = "%sContent" % tab_name
+	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	page.add_theme_constant_override("separation", 14)
+	margin.add_child(page)
+	return margin
+
+
+func _add_settings_control_row(parent: VBoxContainer, title: String, control: Control) -> void:
+	var row := HBoxContainer.new()
+	row.name = "SettingsRow_%s" % title.replace(" ", "_")
+	row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	row.add_theme_constant_override("separation", 14)
+	parent.add_child(row)
+
+	var label := Label.new()
+	label.text = title
+	label.custom_minimum_size = Vector2(180, 46)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
+	row.add_child(label)
+	row.add_child(control)
+
+
 func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enabled_key: String) -> void:
 	var row := HBoxContainer.new()
 	row.name = "VolumeRow_%s" % volume_key
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 12)
+	row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 14)
 	box.add_child(row)
 
 	var label := Label.new()
 	label.text = title
-	label.custom_minimum_size = Vector2(110, 36)
+	label.custom_minimum_size = Vector2(170, 42)
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	row.add_child(label)
@@ -888,7 +963,8 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	slider.min_value = 0.0
 	slider.max_value = 100.0
 	slider.step = 5.0
-	slider.custom_minimum_size = Vector2(240, 36)
+	slider.custom_minimum_size = Vector2(560, 42)
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_style_slider(slider)
 	slider.value = float(game.audio_settings.get(volume_key, 1.0)) * 100.0
 	slider.value_changed.connect(func(value: float) -> void:
@@ -899,7 +975,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	row.add_child(slider)
 
 	var value_label := Label.new()
-	value_label.custom_minimum_size = Vector2(54, 36)
+	value_label.custom_minimum_size = Vector2(58, 42)
 	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	value_label.text = "%d%%" % int(slider.value)
 	value_label.add_theme_color_override("font_color", Color(0.95, 0.86, 0.45, 1.0))
@@ -911,7 +987,8 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	if enabled_key != "":
 		var toggle := CheckBox.new()
 		toggle.name = "VolumeToggle_%s" % enabled_key
-		toggle.text = "вкл"
+		toggle.text = "звук"
+		toggle.custom_minimum_size = Vector2(96, 42)
 		toggle.button_pressed = bool(game.audio_settings.get(enabled_key, true))
 		_style_checkbox(toggle)
 		slider.editable = toggle.button_pressed
@@ -2065,13 +2142,56 @@ func _setup_default_input_actions() -> void:
 			InputMap.add_action(action_name)
 
 		if InputMap.action_get_events(action_name).is_empty():
-			var default_event := InputEventKey.new()
-			default_event.keycode = input_action["default_key"]
-			InputMap.action_add_event(action_name, default_event)
+			_apply_keycodes_to_action(action_name, _default_keycodes_for_action(input_action))
+	_apply_saved_input_bindings()
 
-			var alternate_event := InputEventKey.new()
-			alternate_event.keycode = input_action["alternate_key"]
-			InputMap.action_add_event(action_name, alternate_event)
+
+func _apply_saved_input_bindings() -> void:
+	var saved_bindings: Dictionary = game.input_bindings
+	for input_action in game.INPUT_ACTIONS:
+		var action_name: String = input_action["action"]
+		var saved_keys: Array = saved_bindings.get(action_name, [])
+		if saved_keys.is_empty():
+			continue
+		_apply_keycodes_to_action(action_name, saved_keys)
+
+
+func _default_keycodes_for_action(input_action: Dictionary) -> Array:
+	var keys := []
+	var default_key := int(input_action.get("default_key", 0))
+	var alternate_key := int(input_action.get("alternate_key", 0))
+	if default_key != 0:
+		keys.append(default_key)
+	if alternate_key != 0 and alternate_key != default_key:
+		keys.append(alternate_key)
+	return keys
+
+
+func _apply_keycodes_to_action(action_name: String, keycodes: Array) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name)
+	InputMap.action_erase_events(action_name)
+	for keycode_value in keycodes:
+		var keycode := int(keycode_value)
+		if keycode == 0:
+			continue
+		var event := InputEventKey.new()
+		event.keycode = keycode
+		InputMap.action_add_event(action_name, event)
+
+
+func _current_input_bindings() -> Dictionary:
+	var result := {}
+	for input_action in game.INPUT_ACTIONS:
+		var action_name: String = input_action["action"]
+		var keys := []
+		for event in InputMap.action_get_events(action_name):
+			if event is InputEventKey:
+				var keycode: int = int(event.keycode if event.keycode != 0 else event.physical_keycode)
+				if keycode != 0:
+					keys.append(keycode)
+		result[action_name] = keys
+	return result
 
 
 func _apply_game_cursor() -> void:
@@ -2092,9 +2212,9 @@ func _apply_game_cursor() -> void:
 func _begin_rebind(action_name: String) -> void:
 	game.pending_rebind_action = action_name
 	var label := _action_label(action_name)
-	var box := _create_menu_box("Rebind %s" % label, "Press a key. Esc cancels.")
+	var box := _create_menu_box("Клавиша: %s" % label, "Нажми новую клавишу. Esc отменяет.")
 
-	var cancel_button := _make_button("Cancel")
+	var cancel_button := _make_button("Отмена")
 	cancel_button.pressed.connect(func() -> void:
 		game.pending_rebind_action = ""
 		_show_settings_menu()
@@ -2111,26 +2231,75 @@ func _handle_rebind_input(event: InputEvent) -> void:
 		_show_settings_menu()
 		return
 
+	var keycode: int = int(event.keycode if event.keycode != 0 else event.physical_keycode)
+	var conflict_action := _binding_conflict_action(game.pending_rebind_action, keycode)
+	if conflict_action != "":
+		_show_rebind_conflict(game.pending_rebind_action, keycode, conflict_action)
+		return
+
 	InputMap.action_erase_events(game.pending_rebind_action)
 	var new_event := InputEventKey.new()
-	new_event.keycode = event.keycode
+	new_event.keycode = keycode
 	new_event.physical_keycode = event.physical_keycode
 	InputMap.action_add_event(game.pending_rebind_action, new_event)
 
+	game.input_bindings = _current_input_bindings()
+	game.save_game_settings()
 	game.pending_rebind_action = ""
 	_show_settings_menu()
+
+
+func _binding_conflict_action(target_action: String, keycode: int) -> String:
+	for input_action in game.INPUT_ACTIONS:
+		var action_name: String = input_action["action"]
+		if action_name == target_action:
+			continue
+		for existing_event in InputMap.action_get_events(action_name):
+			if existing_event is InputEventKey:
+				var existing_key: int = int(existing_event.keycode if existing_event.keycode != 0 else existing_event.physical_keycode)
+				if existing_key == keycode:
+					return action_name
+	return ""
+
+
+func _show_rebind_conflict(target_action: String, keycode: int, conflict_action: String) -> void:
+	var target_label := _action_label(target_action)
+	var conflict_label := _action_label(conflict_action)
+	var key_name := OS.get_keycode_string(keycode)
+	var box := _create_menu_box("Клавиша занята", "%s уже используется для «%s». Выбери другую клавишу для «%s»." % [key_name, conflict_label, target_label])
+	var retry_button := _make_button("Выбрать другую")
+	retry_button.pressed.connect(func() -> void:
+		_begin_rebind(target_action)
+	)
+	box.add_child(retry_button)
+	var back_button := _make_button("Назад к настройкам")
+	back_button.pressed.connect(func() -> void:
+		game.pending_rebind_action = ""
+		_show_settings_menu()
+	)
+	box.add_child(back_button)
+
+
+func _reset_input_bindings_to_defaults() -> void:
+	for input_action in game.INPUT_ACTIONS:
+		_apply_keycodes_to_action(str(input_action["action"]), _default_keycodes_for_action(input_action))
+	game.input_bindings = _current_input_bindings()
+	game.save_game_settings()
 
 
 func _binding_text(action_name: String) -> String:
 	var events := InputMap.action_get_events(action_name)
 	if events.is_empty():
-		return "Unbound"
+		return "Не назначено"
 
-	var event := events[0]
-	if event is InputEventKey:
-		return OS.get_keycode_string(event.keycode)
-
-	return event.as_text()
+	var labels := []
+	for event in events:
+		if event is InputEventKey:
+			var keycode: int = int(event.keycode if event.keycode != 0 else event.physical_keycode)
+			labels.append(OS.get_keycode_string(keycode))
+		else:
+			labels.append(event.as_text())
+	return " / ".join(labels)
 
 
 func _action_label(action_name: String) -> String:
@@ -2862,7 +3031,7 @@ func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
 	var panel := PanelContainer.new()
 	panel.name = "RunResourceHud"
 	panel.position = position
-	panel.custom_minimum_size = Vector2(560, 78)
+	panel.custom_minimum_size = Vector2(750, 78)
 	panel.add_theme_stylebox_override("panel", _hud_panel_style())
 	parent.add_child(panel)
 
@@ -2873,6 +3042,7 @@ func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
 	game.health_bar = _add_hud_resource_card(row, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
 	game.xp_bar = _add_hud_resource_card(row, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
 	_add_hud_money_card(row)
+	game.ultimate_bar = _add_hud_resource_card(row, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
 
 
 func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: String, fill_color: Color) -> ProgressBar:
@@ -2901,6 +3071,8 @@ func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: 
 		game.health_label = value_label
 	elif icon_id == "xp":
 		game.xp_label = value_label
+	elif icon_id == "ultimate_multiplier":
+		game.ultimate_label = value_label
 
 	var bar := ProgressBar.new()
 	bar.name = "Hud%sBar" % label_text
@@ -2946,18 +3118,24 @@ func _run_resource_values() -> Dictionary:
 	var xp = int(game.run_player_snapshot.get("xp", 0))
 	var xp_to_next = int(game.run_player_snapshot.get("xp_to_next", 5))
 	var money := _run_money()
+	var ultimate_charge := 0.0
+	var ultimate_max := 100.0
 	if game.current_player != null and is_instance_valid(game.current_player):
 		hp = float(game.current_player.get("health"))
 		max_hp = float(game.current_player.get("max_health"))
 		xp = int(game.current_player.get("xp"))
 		xp_to_next = int(game.current_player.get("xp_to_next"))
 		money = int(game.current_player.get("money"))
+		ultimate_charge = float(game.current_player.get("ultimate_charge"))
+		ultimate_max = float(game.current_player.get("ultimate_max_charge"))
 	return {
 		"hp": hp,
 		"max_hp": max_hp,
 		"xp": xp,
 		"xp_to_next": xp_to_next,
 		"money": money,
+		"ultimate_charge": ultimate_charge,
+		"ultimate_max": ultimate_max,
 	}
 
 
@@ -2977,6 +3155,8 @@ func _update_hud() -> void:
 	var xp_to_next: int = max(int(values["xp_to_next"]), 1)
 	var xp: int = clamp(int(values["xp"]), 0, xp_to_next)
 	var money: int = int(values["money"])
+	var ultimate_max: float = maxf(float(values.get("ultimate_max", 100.0)), 1.0)
+	var ultimate_charge: float = clampf(float(values.get("ultimate_charge", 0.0)), 0.0, ultimate_max)
 	var timer_seconds := -1
 	if game.combat_active and not game.boss_combat_active:
 		timer_seconds = maxi(int(ceil(game.round_time_left)), 0)
@@ -2986,6 +3166,8 @@ func _update_hud() -> void:
 		"xp": xp,
 		"xp_to_next": xp_to_next,
 		"money": money,
+		"ultimate": int(floor(ultimate_charge)),
+		"ultimate_max": int(floor(ultimate_max)),
 		"timer": timer_seconds,
 		"artifact_count": _player_artifact_count(),
 	}
@@ -3008,6 +3190,14 @@ func _update_hud() -> void:
 
 	if game.money_label != null:
 		game.money_label.text = "%dg" % money
+
+	if game.ultimate_bar != null and game.ultimate_label != null:
+		game.ultimate_bar.max_value = ultimate_max
+		game.ultimate_bar.value = ultimate_charge
+		var ready := ultimate_charge >= ultimate_max
+		game.ultimate_label.text = "ULT %d%%" % int(floor(ultimate_charge / ultimate_max * 100.0))
+		game.ultimate_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.36, 1.0) if ready else Color(0.98, 0.96, 0.86, 1.0))
+		game.ultimate_bar.tooltip_text = "Ультимейт (%s): %s" % [_binding_text("ultimate"), "готов" if ready else "заряжается от урона"]
 
 
 func _update_combat_timer(timer_seconds: int) -> void:

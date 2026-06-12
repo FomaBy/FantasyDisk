@@ -215,6 +215,7 @@ func _initialize() -> void:
 
 	main.call("_show_settings_menu")
 	await process_frame
+	await _test_settings_tabs_and_rebind(main)
 	main.set("selected_resolution_index", 0)
 	main.set("selected_window_mode_index", 1)
 	main.call("_apply_video_settings")
@@ -954,6 +955,8 @@ func _initialize() -> void:
 	await _test_class_weapon_rework()
 	await _test_unique_class_identity_patterns()
 	await _test_universal_attribute_interpretations()
+	_test_class_budget_profiles()
+	await _test_ultimate_framework()
 	await _test_death_flow(main_scene)
 
 	print("Runtime smoke test passed.")
@@ -1263,7 +1266,7 @@ func _test_noncombat_nodes(main: Node) -> void:
 	var shop_player := player_scene.instantiate()
 	root.add_child(shop_player)
 	shop_player.configure_character("berserk", "sword")
-	shop_player.set("money", 120)
+	shop_player.set("money", 300)
 	main.call("_store_player_snapshot", shop_player)
 	shop_player.queue_free()
 	main.call("_show_shop_screen")
@@ -1867,6 +1870,9 @@ func _test_unique_class_identity_patterns() -> void:
 	knight.global_position = Vector2(1300, 700)
 	await process_frame
 	knight.call("configure_character", "knight", "long_spear")
+	var knight_parameters: Dictionary = knight.get("derived_parameters")
+	knight_parameters["dodge"] = 0.0
+	knight.set("derived_parameters", knight_parameters)
 	var knight_enemy := enemy_scene.instantiate()
 	holder.add_child(knight_enemy)
 	knight_enemy.set("max_health", 100000.0)
@@ -2004,6 +2010,98 @@ func _test_universal_attribute_interpretations() -> void:
 			_fail("Expected derived attribute %s to resolve to an icon texture." % icon_id)
 			return
 
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_class_budget_profiles() -> void:
+	var checked := 0
+	for character_id in ProgressionData.character_ids():
+		var profile: Dictionary = ProgressionData.class_budget_profile(character_id)
+		if str(profile.get("profile", "")) == "":
+			_fail("Expected class %s to have a balance profile." % character_id)
+			return
+		for weapon_id in ProgressionData.weapon_ids(character_id):
+			var weapon: Dictionary = ProgressionData.weapon(character_id, weapon_id)
+			var tuning: Dictionary = weapon.get("budget_tuning", {})
+			if tuning.is_empty():
+				_fail("Expected %s/%s to expose budget tuning." % [character_id, weapon_id])
+				return
+			var metrics: Dictionary = ProgressionData.estimate_weapon_budget(character_id, weapon, true)
+			var solo_target := float(tuning.get("solo_target", 0.0))
+			var aoe_target := float(tuning.get("aoe_target", 0.0))
+			var solo_dev := absf(float(metrics.get("solo_dps", 0.0)) / maxf(solo_target, 0.001) - 1.0)
+			var aoe_dev := absf(float(metrics.get("aoe_dps", 0.0)) / maxf(aoe_target, 0.001) - 1.0)
+			if solo_dev > 0.10 or aoe_dev > 0.10:
+				_fail("Expected %s/%s budget deviation <=10%%, got solo %.1f%% and 5T %.1f%%." % [character_id, weapon_id, solo_dev * 100.0, aoe_dev * 100.0])
+				return
+			checked += 1
+	if checked != 27:
+		_fail("Expected balance budget coverage for 27 class+weapon pairs, got %d." % checked)
+		return
+
+
+func _test_ultimate_framework() -> void:
+	var holder := Node2D.new()
+	holder.name = "UltimateFrameworkScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for character_id in ProgressionData.character_ids():
+		var player := player_scene.instantiate()
+		holder.add_child(player)
+		player.global_position = Vector2(900, 700)
+		await process_frame
+		var weapon_ids := ProgressionData.weapon_ids(character_id)
+		player.call("configure_character", character_id, str(weapon_ids[0]))
+		var parameters: Dictionary = player.get("derived_parameters")
+		parameters["ultimate_multiplier"] = 1.5
+		player.set("derived_parameters", parameters)
+		var enemies := []
+		for index in range(3):
+			var enemy := enemy_scene.instantiate()
+			holder.add_child(enemy)
+			enemy.add_to_group("enemies")
+			enemy.set("max_health", 100000.0)
+			enemy.set("health", 100000.0)
+			enemy.global_position = player.global_position + Vector2(110 + index * 45, 0)
+			enemies.append(enemy)
+		await process_frame
+		var hp_before := 0.0
+		for enemy in enemies:
+			hp_before += float(enemy.get("health"))
+		player.set("ultimate_charge", 100.0)
+		if not bool(player.call("ultimate_ready")):
+			_fail("Expected %s ultimate to be ready at full charge." % character_id)
+			return
+		if not bool(player.call("activate_ultimate")):
+			_fail("Expected %s ultimate activation to succeed." % character_id)
+			return
+		if float(player.get("ultimate_charge")) > 0.01:
+			_fail("Expected %s ultimate to reset charge after activation." % character_id)
+			return
+		await process_frame
+		if character_id == "berserk":
+			player.call("on_weapon_hit", enemies[0], 20.0)
+			await process_frame
+		var hp_after := 0.0
+		for enemy in enemies:
+			if is_instance_valid(enemy):
+				hp_after += float(enemy.get("health"))
+		if character_id == "druid":
+			if get_nodes_in_group("allies").is_empty():
+				_fail("Expected Druid ultimate to summon temporary allies.")
+				return
+		elif hp_after >= hp_before:
+			_fail("Expected %s ultimate to have a measurable combat effect." % character_id)
+			return
+		player.queue_free()
+		for enemy in enemies:
+			if is_instance_valid(enemy):
+				enemy.queue_free()
+		await process_frame
 	holder.queue_free()
 	current_scene = null
 	await process_frame
@@ -2227,6 +2325,62 @@ func _test_settings_persistence_and_audio() -> void:
 		_fail("Expected the music slider to set bus volume (value preserved while muted).")
 		return
 	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 1.0, "sfx_volume": 1.0, "music_enabled": true, "sfx_enabled": true})
+
+
+func _test_settings_tabs_and_rebind(main: Node) -> void:
+	var tabs := main.find_child("SettingsTabs", true, false) as TabContainer
+	if tabs == null or tabs.get_child_count() != 3:
+		_fail("Expected settings screen to use three tabs.")
+		return
+	for tab_name in ["Экран", "Звук", "Управление"]:
+		if tabs.get_node_or_null(tab_name) == null:
+			_fail("Expected settings tab %s to exist." % tab_name)
+			return
+	for slider_id in ["master_volume", "music_volume", "sfx_volume"]:
+		var slider := main.find_child("VolumeSlider_%s" % slider_id, true, false) as HSlider
+		if slider == null or not slider.visible or slider.max_value != 100.0:
+			_fail("Expected visible 0-100 settings slider for %s." % slider_id)
+			return
+		if not bool(slider.size_flags_horizontal & Control.SIZE_EXPAND_FILL):
+			_fail("Expected %s slider to expand across the audio tab." % slider_id)
+			return
+	if not InputMap.has_action("ultimate"):
+		_fail("Expected InputMap action 'ultimate' to exist.")
+		return
+	var ui = main.get("ui")
+	if ui == null:
+		_fail("Expected main UI helper to be available for settings tests.")
+		return
+	if str(ui.call("_binding_conflict_action", "ultimate", KEY_W)) != "move_up":
+		_fail("Expected rebinding ultimate to W to report a move_up conflict.")
+		return
+	main.set("pending_rebind_action", "ultimate")
+	var rebind_event := InputEventKey.new()
+	rebind_event.keycode = KEY_T
+	rebind_event.pressed = true
+	ui.call("_handle_rebind_input", rebind_event)
+	var ultimate_events := InputMap.action_get_events("ultimate")
+	if ultimate_events.is_empty() or not (ultimate_events[0] is InputEventKey) or (ultimate_events[0] as InputEventKey).keycode != KEY_T:
+		_fail("Expected ultimate rebind to apply the new key.")
+		return
+	var game_settings := load("res://scripts/game_settings.gd")
+	var loaded: Dictionary = game_settings.load_settings()
+	var bindings: Dictionary = loaded.get("input_bindings", {})
+	if not bindings.has("ultimate") or not (KEY_T in (bindings["ultimate"] as Array)):
+		_fail("Expected ultimate rebind to persist in settings.cfg.")
+		return
+	ui.call("_reset_input_bindings_to_defaults")
+	if not (KEY_R in _keycodes_for_action("ultimate")):
+		_fail("Expected reset defaults to restore ultimate to R.")
+		return
+
+
+func _keycodes_for_action(action_name: String) -> Array:
+	var keys := []
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventKey:
+			keys.append((event as InputEventKey).keycode)
+	return keys
 
 
 func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:

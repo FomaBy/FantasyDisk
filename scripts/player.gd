@@ -20,6 +20,7 @@ const KNIGHT_SPRITE := preload("res://assets/sprites/characters/knight_placehold
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid_placeholder.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
+const ALLY_MINION_SCENE := preload("res://scenes/AllyMinion.tscn")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
 const BASE_SPRITE_SCALE := Vector2(0.28, 0.28)
 
@@ -106,6 +107,10 @@ var _low_hp_active := false
 var _assassin_dash_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
+var ultimate_charge := 0.0
+var ultimate_max_charge := 100.0
+var _ultimate_active := false
+var _ultimate_tween: Tween = null
 
 
 func _ready() -> void:
@@ -148,6 +153,8 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	xp_to_next = 5
 	level = 1
 	money = 0
+	ultimate_charge = 0.0
+	_ultimate_active = false
 	_apply_stat_scaling(true)
 
 	var visual_root := _visual_root()
@@ -270,6 +277,8 @@ func _physics_process(_delta: float) -> void:
 		direction.y -= 1.0
 	if Input.is_action_pressed("move_down"):
 		direction.y += 1.0
+	if Input.is_action_just_pressed("ultimate"):
+		activate_ultimate()
 
 	velocity = direction.normalized() * speed
 	move_and_slide()
@@ -336,6 +345,11 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void
 func take_damage(amount: float, _source := "") -> bool:
 	if _damage_invulnerability_left > 0.0:
 		return false
+	if _ultimate_active and character_id == "knight":
+		_gain_ultimate_charge(amount * float(_ultimate_config().get("taken_charge_rate", 1.0)) * 0.25)
+		_play_sfx("dodge")
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 170.0, Color(0.90, 0.95, 1.0, 0.40), false)
+		return true
 
 	if randf() < clampf(float(derived_parameters.get("dodge", 0.0)), 0.0, 0.8):
 		_show_dodge_popup()
@@ -354,6 +368,7 @@ func take_damage(amount: float, _source := "") -> bool:
 	_play_hit_feedback()
 	_play_sfx("player_hit")
 	damaged.emit(amount)
+	_gain_ultimate_charge(final_damage * float(_ultimate_config().get("taken_charge_rate", 1.0)))
 	_trigger_thorn_reflect(final_damage)
 
 	if health <= 0.0:
@@ -489,6 +504,7 @@ func _apply_regeneration(delta: float) -> void:
 
 
 func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
+	_gain_ultimate_charge(maxf(dealt_damage, 0.0) * float(_ultimate_config().get("damage_charge_rate", 0.03)))
 	# Вампиризм: с шансом vampiric_chance лечит vampiric_amount + половину урона.
 	var vampiric_chance := float(derived_parameters.get("vampiric_chance", 0.0))
 	if vampiric_chance > 0.0 and dealt_damage > 0.0 and randf() < vampiric_chance:
@@ -497,7 +513,211 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
 	_trigger_magic_enchant(enemy)
 	_trigger_universal_dot(enemy)
 	_trigger_leadership_echo(enemy)
+	_trigger_berserk_ultimate_echo(enemy)
 	_on_weapon_hit_echo(enemy)
+
+
+func _ultimate_config() -> Dictionary:
+	return PROGRESSION_DATA.ultimate_config(character_id)
+
+
+func _gain_ultimate_charge(amount: float) -> void:
+	if amount <= 0.0 or _ultimate_active:
+		return
+	var energy_scale := 1.0 + float(stats.get("energy", 0.0)) * 0.025
+	ultimate_charge = clampf(ultimate_charge + amount * energy_scale, 0.0, ultimate_max_charge)
+
+
+func ultimate_ready() -> bool:
+	return ultimate_charge >= ultimate_max_charge
+
+
+func activate_ultimate() -> bool:
+	if not ultimate_ready() or _ultimate_active or not is_inside_tree():
+		return false
+	var config := _ultimate_config()
+	var multiplier := float(derived_parameters.get("ultimate_multiplier", 1.0))
+	ultimate_charge = 0.0
+	_play_sfx("level_up")
+	match character_id:
+		"berserk":
+			_activate_berserk_ultimate(config, multiplier)
+		"dark_mage":
+			_activate_dark_mage_ultimate(config, multiplier)
+		"guitarist":
+			_activate_guitarist_ultimate(config, multiplier)
+		"assassin":
+			_activate_assassin_ultimate(config, multiplier)
+		"ranger":
+			_activate_ranger_ultimate(config, multiplier)
+		"doctor":
+			_activate_doctor_ultimate(config, multiplier)
+		"chemist":
+			_activate_chemist_ultimate(config, multiplier)
+		"knight":
+			_activate_knight_ultimate(config, multiplier)
+		"druid":
+			_activate_druid_ultimate(config, multiplier)
+		_:
+			_activate_dark_mage_ultimate(config, multiplier)
+	return true
+
+
+func _activate_timed_ultimate(duration: float) -> void:
+	_ultimate_active = true
+	if _ultimate_tween != null and _ultimate_tween.is_valid():
+		_ultimate_tween.kill()
+	_ultimate_tween = create_tween()
+	_ultimate_tween.tween_interval(maxf(duration, 0.1))
+	_ultimate_tween.tween_callback(func() -> void:
+		_ultimate_active = false
+		_apply_stat_scaling(false, max_health)
+	)
+
+
+func _activate_berserk_ultimate(config: Dictionary, multiplier: float) -> void:
+	var duration := float(config.get("duration", 5.0)) * clampf(multiplier, 0.8, 2.2)
+	run_modifiers["ultimate_berserk_active"] = 1.0
+	run_modifiers["attack_speed_multiplier"] = float(run_modifiers.get("attack_speed_multiplier", 1.0)) * 1.35
+	run_modifiers["move_speed_multiplier"] = float(run_modifiers.get("move_speed_multiplier", 1.0)) * 1.18
+	_apply_stat_scaling(false, max_health)
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, float(config.get("radius", 180.0)), Color(0.95, 0.20, 0.10, 0.42), false)
+	_activate_timed_ultimate(duration)
+	_ultimate_tween.tween_callback(func() -> void:
+		run_modifiers["attack_speed_multiplier"] = float(run_modifiers.get("attack_speed_multiplier", 1.0)) / 1.35
+		run_modifiers["move_speed_multiplier"] = float(run_modifiers.get("move_speed_multiplier", 1.0)) / 1.18
+		run_modifiers["ultimate_berserk_active"] = 0.0
+		_apply_stat_scaling(false, max_health)
+	)
+
+
+func _trigger_berserk_ultimate_echo(enemy: Node2D) -> void:
+	if not _ultimate_active or character_id != "berserk" or enemy == null or not is_instance_valid(enemy):
+		return
+	var config := _ultimate_config()
+	var radius := float(config.get("radius", 180.0))
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 0.75)) * float(derived_parameters.get("ultimate_multiplier", 1.0))
+	AttackVfx.ring_pulse(_vfx_parent(), enemy.global_position, radius, Color(1.0, 0.26, 0.12, 0.34), false)
+	_damage_enemies_in_radius(enemy.global_position, radius, damage_amount)
+
+
+func _activate_dark_mage_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 360.0)) * clampf(multiplier, 0.8, 1.8)
+	var damage_amount := float(derived_parameters.get("magic_damage", 12.0)) * float(config.get("damage", 1.35)) * multiplier
+	AttackVfx.orb_burst(_vfx_parent(), global_position, radius, Color(0.42, 0.18, 1.0, 0.46))
+	_damage_enemies_in_radius(global_position, radius, damage_amount)
+
+
+func _activate_guitarist_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 430.0)) * clampf(multiplier, 0.8, 1.6)
+	var damage_amount := float(derived_parameters.get("sound_wave_damage", 10.0)) * float(config.get("damage", 1.15)) * multiplier
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.25, 0.85, 1.0, 0.50), true)
+	for enemy in _enemies_in_radius(global_position, radius):
+		var away: Vector2 = enemy.global_position - global_position
+		if enemy.has_method("apply_knockback") and away.length_squared() > 0.001:
+			enemy.apply_knockback(away.normalized() * 650.0)
+		_apply_ultimate_damage(enemy, damage_amount)
+
+
+func _activate_assassin_ultimate(config: Dictionary, multiplier: float) -> void:
+	var count := int(config.get("target_count", 7)) + int(floor(multiplier))
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 1.05)) * multiplier
+	for enemy in _nearest_enemies(int(count), float(config.get("radius", 520.0))):
+		AttackVfx.slash(_vfx_parent(), (enemy.global_position - global_position).normalized(), 120.0, Color(0.72, 0.22, 1.0, 0.42)).global_position = enemy.global_position
+		_apply_ultimate_damage(enemy, damage_amount * float(derived_parameters.get("crit_damage_multiplier", 1.5)))
+
+
+func _activate_ranger_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 480.0)) * clampf(multiplier, 0.8, 1.6)
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 1.18)) * multiplier
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.62, 0.88, 1.0, 0.35), false)
+	for enemy in _nearest_enemies(int(config.get("target_count", 14)), radius):
+		AttackVfx.beam(_vfx_parent(), global_position + Vector2(0, -radius * 0.55), enemy.global_position, 34.0, Color(0.70, 0.90, 1.0, 0.46))
+		_apply_ultimate_damage(enemy, damage_amount)
+
+
+func _activate_doctor_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 360.0)) * clampf(multiplier, 0.8, 1.6)
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(config.get("damage", 0.95)) * multiplier
+	var healed := 0.0
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.86, 1.0, 0.92, 0.42), false)
+	for enemy in _enemies_in_radius(global_position, radius):
+		_apply_ultimate_damage(enemy, damage_amount)
+		healed += damage_amount * 0.45
+	var before := health
+	health = minf(max_health, health + healed)
+	var overflow := maxf((before + healed) - max_health, 0.0)
+	if overflow > 0.0:
+		run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + overflow * 0.08
+		_apply_stat_scaling(false, max_health)
+
+
+func _activate_chemist_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 420.0)) * clampf(multiplier, 0.8, 1.7)
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(config.get("damage", 1.25)) * multiplier
+	AttackVfx.orb_burst(_vfx_parent(), global_position, radius, Color(0.55, 1.0, 0.18, 0.42))
+	_damage_enemies_in_radius(global_position, radius, damage_amount)
+
+
+func _activate_knight_ultimate(config: Dictionary, multiplier: float) -> void:
+	var duration := float(config.get("duration", 5.0)) * clampf(multiplier, 0.8, 2.0)
+	var radius := float(config.get("radius", 260.0))
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.92, 0.95, 1.0, 0.50), false)
+	_damage_enemies_in_radius(global_position, radius, float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 0.7)) * multiplier)
+	_activate_timed_ultimate(duration)
+
+
+func _activate_druid_ultimate(config: Dictionary, multiplier: float) -> void:
+	var count := int(config.get("target_count", 4)) + int(floor(multiplier))
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, float(config.get("radius", 260.0)), Color(0.45, 0.95, 0.38, 0.42), false)
+	for index in range(count):
+		var ally := ALLY_MINION_SCENE.instantiate() as Node2D
+		_vfx_parent().add_child(ally)
+		ally.add_to_group("player_weapon_effects")
+		ally.set("owner_node", self)
+		ally.set("damage", float(derived_parameters.get("sound_wave_damage", derived_parameters.get("damage", 8.0))) * float(config.get("damage", 0.8)) * multiplier)
+		ally.global_position = global_position + Vector2.RIGHT.rotated(TAU * float(index) / maxf(count, 1.0)) * 72.0
+		var life_tween := ally.create_tween()
+		life_tween.tween_interval(float(config.get("duration", 6.0)) * clampf(multiplier, 0.8, 1.7))
+		life_tween.tween_callback(ally.queue_free)
+
+
+func _damage_enemies_in_radius(center: Vector2, radius: float, damage_amount: float) -> void:
+	for enemy in _enemies_in_radius(center, radius):
+		_apply_ultimate_damage(enemy, damage_amount)
+
+
+func _enemies_in_radius(center: Vector2, radius: float) -> Array:
+	var result := []
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		if enemy_node.global_position.distance_squared_to(center) <= radius * radius:
+			result.append(enemy_node)
+	return result
+
+
+func _nearest_enemies(count: int, radius: float) -> Array:
+	var result := _enemies_in_radius(global_position, radius)
+	result.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return global_position.distance_squared_to(a.global_position) < global_position.distance_squared_to(b.global_position)
+	)
+	return result.slice(0, mini(count, result.size()))
+
+
+func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
+	if enemy == null or not is_instance_valid(enemy) or not enemy.has_method("take_damage"):
+		return
+	var final_amount := maxf(amount, 0.0)
+	if enemy.is_in_group("bosses") and enemy.get("max_health") != null:
+		final_amount = minf(final_amount, float(enemy.get("max_health")) * float(_ultimate_config().get("boss_cap", 0.1)))
+	enemy.take_damage(final_amount)
+
+
+func _vfx_parent() -> Node:
+	var scene := get_tree().current_scene
+	return scene if scene != null else get_tree().root
 
 
 func _trigger_magic_enchant(enemy: Node2D) -> void:

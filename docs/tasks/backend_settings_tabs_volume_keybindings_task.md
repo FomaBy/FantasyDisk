@@ -1,9 +1,10 @@
 # Задача Для Back-end-Агента: Переделка Настроек — Вкладки, Полные Слайдеры Громкости, Биндинги Клавиш
 
-Статус: new
+Статус: done
 Создано: 2026-06-12
 Автор: PM
 Приоритет: высокий (пользователь видит сломанный экран настроек прямо сейчас).
+Dispatch note: 2026-06-12 routed by dispatcher to Back-end Codex thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения.
@@ -56,11 +57,26 @@
   убедиться, что идет через InputMap-экшены, а не хардкод клавиш).
 
 ## Acceptance Criteria
-- [ ] Настройки: 3 вкладки, каждая влезает в окно на всех разрешениях вплоть до 1280x720.
-- [ ] Слайдеры громкости видны, на всю ширину, работают мышью и клавиатурой, применяются сразу.
-- [ ] Вкладка «Управление»: ребиндинг движения/паузы/ультимейта с конфликт-чеком и сбросом.
-- [ ] Все сохраняется и восстанавливается при перезапуске.
-- [ ] Причина регрессии описана в отчете; smoke зеленые + тест переключения вкладок и ребиндинга.
+- [x] Настройки: 3 вкладки, каждая влезает в окно на всех разрешениях вплоть до 1280x720.
+- [x] Слайдеры громкости видны, на всю ширину, работают мышью и клавиатурой, применяются сразу.
+- [x] Вкладка «Управление»: ребиндинг движения/паузы/ультимейта с конфликт-чеком и сбросом.
+- [x] Все сохраняется и восстанавливается при перезапуске.
+- [x] Причина регрессии описана в отчете; smoke зеленые + тест переключения вкладок и ребиндинга.
 
 ## Документация
 - current_game_state (настройки/управление), CHANGELOG (Unreleased).
+
+## Результат 2026-06-12
+
+Back-end implementation complete:
+- Settings screen rebuilt into `TabContainer` tabs: «Экран», «Звук», «Управление».
+- Audio tab now has full-width 0-100 sliders for master/music/sfx with live percent labels; music/sfx mute checkboxes preserve slider value and apply immediately through `AudioManager`.
+- Controls tab now supports movement, pause and `ultimate`; `ultimate` InputMap action defaults to `R`.
+- Rebinding captures key input, rejects conflicts with another action, persists to `user://settings.cfg`, and reset defaults restores WASD+arrows, Escape and R.
+- Runtime smoke expanded with settings tabs / sliders / ultimate rebind / conflict / persistence checks.
+
+Root cause: the previous settings screen was a single centered vertical menu. After the global UI texture-frame redesign increased panel/content margins and control heights, the combined Screen + Audio + Controls sections exceeded the fixed 1120x660 menu panel at 1280x720. The audio rows were implemented, but pushed below the visible area. Splitting the same content into tabs fixes the overflow without adding vertical scroll.
+
+Checks:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+- Result: passed.
