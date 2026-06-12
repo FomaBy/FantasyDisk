@@ -102,3 +102,35 @@ static func detonate(parent: Node2D, radius: float, color: Color, kind := "") ->
 	tween.tween_property(ring, "modulate:a", 0.0, 0.3).set_delay(0.06)
 	tween.tween_property(flash, "scale", flash.scale * 1.7, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(flash, "modulate:a", 0.0, 0.18)
+
+
+## Friendly buff wave (e.g. commander aura): a ring + soft flash expanding once
+## from the source out to `radius`. Attach to the caster so it follows/pauses.
+static func aura_pulse(parent: Node2D, radius: float, color: Color) -> void:
+	if not is_instance_valid(parent) or not parent.is_inside_tree():
+		return
+	var holder := Node2D.new()
+	holder.name = "AuraPulseVfx"
+	holder.z_index = -1
+	parent.add_child(holder)
+
+	var glow := _additive(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.7))
+	glow.scale = Vector2.ONE * (radius / 200.0)
+	holder.add_child(glow)
+
+	var ring := _additive(RING_TEXTURE, Color(color.r, color.g, color.b, 0.85))
+	ring.scale = Vector2.ONE * (radius * 0.2 / RING_RADIUS)
+	holder.add_child(ring)
+
+	var ring2 := _additive(RING_TEXTURE, Color(color.r, color.g, color.b, 0.5))
+	ring2.scale = Vector2.ONE * (radius * 0.2 / RING_RADIUS)
+	holder.add_child(ring2)
+
+	var tween := holder.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(ring, "scale", Vector2.ONE * (radius / RING_RADIUS), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(ring, "modulate:a", 0.0, 0.45).set_delay(0.1)
+	tween.tween_property(ring2, "scale", Vector2.ONE * (radius * 0.7 / RING_RADIUS), 0.42).set_delay(0.08).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(ring2, "modulate:a", 0.0, 0.4).set_delay(0.12)
+	tween.tween_property(glow, "modulate:a", 0.0, 0.4)
+	tween.chain().tween_callback(holder.queue_free)

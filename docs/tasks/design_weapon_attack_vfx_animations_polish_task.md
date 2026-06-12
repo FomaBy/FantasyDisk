@@ -165,3 +165,11 @@ Validation:
 
 Остаётся в задаче: ауры командира, ульты 9 классов, щиты/лечение/баффы/DoT,
 level-up примитивы, финальный перф-чек — заведены отдельными подзадачами.
+
+### 2026-06-12 — Phase 4 / VFX ауры командира (Claude-Designer)
+
+- `HazardVfx.aura_pulse()` — дружественная волна баффа: золотое расходящееся
+  двойное кольцо + мягкая вспышка из источника до radius, pause-aware, self-clean.
+- `enemy.gd::_update_elite_aura` теперь вызывает `aura_pulse(self, 210, gold)` при
+  бафе соседей (раньше был только body-tint без визуала). Геймплей не тронут.
+- In-game проверка: `build/rig_debug/aura_pulse.png`. hazard smoke зелёный.

@@ -304,6 +304,7 @@ func _update_elite_aura(delta: float) -> void:
 		return
 	_elite_aura_cooldown = 5.2
 	_play_rig_action("cast", Vector2.UP)
+	HazardVfx.aura_pulse(self, 210.0, Color(1.0, 0.82, 0.36, 1.0))
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or enemy_node == self or enemy_node.is_in_group("elite_enemies"):
