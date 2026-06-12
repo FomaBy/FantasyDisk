@@ -24,13 +24,22 @@ const SOUND_AMP_TEXTURE := preload("res://assets/sprites/weapons/sound_amp.png")
 @export var amp_pulse_interval := 1.1
 @export var max_summons := 0
 @export var heal_percent_on_attack := 0.0
+@export var heal_percent_of_damage := 0.0
 @export var leaves_pool := false
+@export var pool_element := ""
+@export var combo_clouds := false
 @export var pool_duration := 3.0
 @export var pool_tick_interval := 0.6
+@export var charge_seconds := 0.0
+@export var charge_max_multiplier := 1.0
+@export var dash_on_crit_distance := 0.0
 @export var visual_color := Color(0.5, 0.8, 1.0, 0.35)
 
 var _cooldown := 0.0
 var _last_direction := Vector2.RIGHT
+var _last_attack_crit := false
+var _charge_time := 0.0
+var _current_charge_multiplier := 1.0
 var _deployed_amps: Array[Node] = []
 var _spawned_effects: Array[Node] = []
 
@@ -76,9 +85,15 @@ func configure_weapon(config: Dictionary) -> void:
 	amp_pulse_interval = float(config.get("amp_pulse_interval", amp_pulse_interval))
 	max_summons = int(config.get("max_summons", max_summons))
 	heal_percent_on_attack = float(config.get("heal_percent_on_attack", heal_percent_on_attack))
+	heal_percent_of_damage = float(config.get("heal_percent_of_damage", heal_percent_of_damage))
 	leaves_pool = bool(config.get("leaves_pool", leaves_pool))
+	pool_element = str(config.get("pool_element", pool_element))
+	combo_clouds = bool(config.get("combo_clouds", combo_clouds))
 	pool_duration = float(config.get("pool_duration", pool_duration))
 	pool_tick_interval = float(config.get("pool_tick_interval", pool_tick_interval))
+	charge_seconds = float(config.get("charge_seconds", charge_seconds))
+	charge_max_multiplier = float(config.get("charge_max_multiplier", charge_max_multiplier))
+	dash_on_crit_distance = float(config.get("dash_on_crit_distance", dash_on_crit_distance))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
 
@@ -86,6 +101,7 @@ func configure_weapon(config: Dictionary) -> void:
 func _process(delta: float) -> void:
 	# Направление атаки задает только ближайший враг; движение влияет
 	# только на walk-анимацию персонажа.
+	_update_charge(delta)
 	_cooldown -= delta
 	if _cooldown > 0.0:
 		return
@@ -113,28 +129,40 @@ func _attack() -> void:
 	_cooldown = fire_interval
 
 	if owner_node.has_method("play_action_animation"):
-		owner_node.play_action_animation("cast" if attack_mode in ["aoe_projectile", "homing_curse", "beam"] else "shoot", direction)
+		owner_node.play_action_animation("cast" if attack_mode in ["aoe_projectile", "homing_curse", "beam", "drain_link"] else "shoot", direction)
 
 	if heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(heal_percent_on_attack)
 
+	_current_charge_multiplier = _charge_multiplier()
 	match attack_mode:
 		"aoe_projectile":
 			_fire_aoe_projectile(owner_node, target, direction)
 		"boomerang":
 			_fire_boomerang(owner_node, direction)
+		"stab_flurry":
+			_fire_stab_flurry(owner_node, direction)
+		"dot_beam":
+			_fire_dot_beam(owner_node, direction)
 		"homing_curse":
 			_fire_curse(owner_node, target, direction)
 		"beam":
 			_fire_beam(owner_node, direction)
+		"drain_link":
+			_fire_drain_link(owner_node, target, direction)
 		"sound_wave":
 			_fire_sound_wave(owner_node, direction)
 		"pulse":
 			_fire_pulse(owner_node, owner_node.global_position)
 		"amp":
 			_fire_amp(owner_node, direction)
+		"trap":
+			_fire_trap(owner_node, direction)
 		_:
 			_fire_sound_wave(owner_node, direction)
+	if charge_seconds > 0.0:
+		_charge_time = 0.0
+	_current_charge_multiplier = 1.0
 
 
 func _fire_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -165,6 +193,38 @@ func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
 	)
 
 
+func _fire_stab_flurry(owner_node: Node2D, direction: Vector2) -> void:
+	# Быстрый ближний веер: несколько целей в короткой зоне перед персонажем.
+	var slash := AttackVfx.slash(owner_node, direction, attack_range, visual_color)
+	_register_effect(slash)
+	var candidates := []
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		if not _is_enemy_inside_wave(owner_node.global_position, enemy_node.global_position, direction):
+			continue
+		candidates.append({
+			"node": enemy_node,
+			"distance": owner_node.global_position.distance_squared_to(enemy_node.global_position),
+		})
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return float(a["distance"]) < float(b["distance"])
+	)
+	var damage_value := _rolled_damage(owner_node)
+	var hit_limit := maxi(projectile_count, 1)
+	var hit_count := 0
+	for candidate in candidates:
+		if hit_count >= hit_limit:
+			break
+		var enemy_node := candidate["node"] as Node2D
+		if dot_ticks > 0:
+			_damage_enemy_with_dot(enemy_node, damage_value, owner_node)
+		else:
+			_damage_enemy(enemy_node, damage_value)
+		hit_count += 1
+
+
 func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: float) -> void:
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		var enemy_node := enemy as Node2D
@@ -181,9 +241,13 @@ func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: fl
 
 func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	# Ядовитое облако химика: тики по врагам в радиусе, группа player_weapon_effects.
+	var combo_target := _find_combo_cloud(pool_position)
 	var pool := Node2D.new()
 	pool.name = "ChemistPoisonPool"
 	_register_effect(pool)
+	pool.add_to_group("chemist_clouds")
+	if pool_element != "":
+		pool.set_meta("pool_element", pool_element)
 	pool.z_index = 5
 	var visual := Polygon2D.new()
 	visual.color = Color(visual_color.r, visual_color.g, visual_color.b, 0.30)
@@ -194,6 +258,8 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	pool.add_child(visual)
 	_projectile_parent().add_child(pool)
 	pool.global_position = pool_position
+	if combo_target != null:
+		_trigger_chemist_combo(pool, combo_target, tick_damage)
 
 	var tick_count := int(floor(pool_duration / maxf(pool_tick_interval, 0.2)))
 	var pool_tween := pool.create_tween()
@@ -206,10 +272,34 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	pool_tween.tween_property(visual, "color:a", 0.0, 0.2)
 	pool_tween.tween_callback(func() -> void:
 		if is_instance_valid(self):
+			pool.remove_from_group("chemist_clouds")
 			_release_effect(pool)
 		elif is_instance_valid(pool):
 			pool.queue_free()
 	)
+
+
+func _find_combo_cloud(pool_position: Vector2) -> Node2D:
+	if not combo_clouds:
+		return null
+	for cloud in get_tree().get_nodes_in_group("chemist_clouds"):
+		var cloud_node := cloud as Node2D
+		if cloud_node == null or not is_instance_valid(cloud_node):
+			continue
+		var cloud_element := str(cloud_node.get_meta("pool_element", ""))
+		if pool_element != "" and cloud_element == pool_element:
+			continue
+		if cloud_node.global_position.distance_squared_to(pool_position) <= pow(aoe_radius * 0.95, 2.0):
+			return cloud_node
+	return null
+
+
+func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: float) -> void:
+	var combo_position := (new_cloud.global_position + old_cloud.global_position) * 0.5
+	var combo_radius := aoe_radius * 1.05
+	var combo_damage := maxf(damage, tick_damage * 5.5)
+	AttackVfx.orb_burst(_projectile_parent(), combo_position, combo_radius, Color(1.0, 0.75, 0.16, 0.50))
+	_damage_enemies_in_circle(combo_position, combo_radius, combo_damage)
 
 
 func _find_closest_enemies(owner_node: Node2D, count: int) -> Array:
@@ -289,6 +379,15 @@ func _fire_beam(owner_node: Node2D, direction: Vector2) -> void:
 		_fire_single_beam(owner_node, direction.rotated(fan_offset))
 
 
+func _fire_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
+	var count := maxi(beam_count + _extra_projectiles(), 1)
+	for beam_index in range(count):
+		var fan_offset := 0.0
+		if count > 1:
+			fan_offset = deg_to_rad(beam_fan_degrees) * (float(beam_index) - float(count - 1) * 0.5)
+		_fire_single_dot_beam(owner_node, direction.rotated(fan_offset))
+
+
 func _fire_single_beam(owner_node: Node2D, direction: Vector2) -> void:
 	var start := owner_node.global_position + direction * 26.0
 	var finish := owner_node.global_position + direction * attack_range
@@ -319,6 +418,64 @@ func _fire_single_beam(owner_node: Node2D, direction: Vector2) -> void:
 			break
 		_damage_enemy(hit["node"], damage_value)
 		hit_count += 1
+
+
+func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
+	var start := owner_node.global_position + direction * 26.0
+	var finish := owner_node.global_position + direction * attack_range
+	var beam_visual := AttackVfx.beam(_projectile_parent(), start, finish, beam_width, visual_color)
+	_register_effect(beam_visual)
+
+	var hits := []
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		var to_enemy := enemy_node.global_position - start
+		var forward := to_enemy.dot(direction)
+		if forward < 0.0 or forward > attack_range:
+			continue
+		var closest_point := start + direction * forward
+		if enemy_node.global_position.distance_to(closest_point) <= beam_width * 0.5:
+			hits.append({"node": enemy_node, "forward": forward})
+
+	hits.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return float(a["forward"]) < float(b["forward"])
+	)
+
+	var damage_value := _rolled_damage(owner_node)
+	var hit_count := 0
+	for hit in hits:
+		if hit_count >= pierce_count:
+			break
+		_damage_enemy_with_dot(hit["node"], damage_value, owner_node)
+		hit_count += 1
+
+
+func _fire_drain_link(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var finish: Vector2 = owner_node.global_position + direction * min(attack_range, 520.0)
+	if target != null:
+		finish = target.global_position
+	var start := owner_node.global_position + direction * 24.0
+	var link_visual := AttackVfx.beam(_projectile_parent(), start, finish, beam_width, visual_color)
+	_register_effect(link_visual)
+	if target == null:
+		return
+
+	var damage_value := _rolled_damage(owner_node)
+	if dot_ticks > 0:
+		_damage_enemy_with_dot(target, damage_value, owner_node)
+	else:
+		_damage_enemy(target, damage_value)
+
+
+func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
+	if heal_percent_of_damage <= 0.0 or owner_node == null or not is_instance_valid(owner_node):
+		return
+	if owner_node.get("health") == null or owner_node.get("max_health") == null:
+		return
+	var heal_amount := dealt_damage * heal_percent_of_damage
+	owner_node.set("health", minf(float(owner_node.get("health")) + heal_amount, float(owner_node.get("max_health"))))
 
 
 func _fire_sound_wave(owner_node: Node2D, direction: Vector2) -> void:
@@ -364,7 +521,7 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 	_register_effect(amp)
 	amp.z_index = 5
 	var amp_visual := Sprite2D.new()
-	amp_visual.texture = SOUND_AMP_TEXTURE
+	amp_visual.texture = _weapon_visual_texture()
 	amp_visual.scale = Vector2(0.42, 0.42)
 	amp.add_child(amp_visual)
 	_projectile_parent().add_child(amp)
@@ -394,6 +551,50 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 
 	# Первый пульс сразу при установке.
 	_fire_pulse(owner_node, amp.global_position)
+
+
+func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
+	var trap := Node2D.new()
+	trap.name = "WeaponTrapNode"
+	_register_effect(trap)
+	trap.z_index = 5
+	var trap_visual := Sprite2D.new()
+	trap_visual.texture = _weapon_visual_texture()
+	trap_visual.scale = Vector2(0.34, 0.34)
+	trap.add_child(trap_visual)
+	_projectile_parent().add_child(trap)
+	trap.global_position = owner_node.global_position + direction * min(attack_range, 180.0)
+
+	var state := {"triggered": false}
+	var check_interval := maxf(pool_tick_interval, 0.15)
+	var check_count := maxi(int(floor(pool_duration / check_interval)), 1)
+	var trap_tween := trap.create_tween()
+	for check_index in range(check_count):
+		trap_tween.tween_interval(check_interval)
+		trap_tween.tween_callback(func() -> void:
+			if not is_instance_valid(self) or bool(state["triggered"]):
+				return
+			if not _has_enemy_in_circle(trap.global_position, aoe_radius):
+				return
+			state["triggered"] = true
+			var trap_damage := _rolled_damage(owner_node) if is_instance_valid(owner_node) else damage
+			_damage_enemies_in_circle(trap.global_position, aoe_radius, trap_damage)
+			AttackVfx.ring_pulse(_projectile_parent(), trap.global_position, aoe_radius, visual_color, false)
+			for enemy in get_tree().get_nodes_in_group("enemies"):
+				var enemy_node := enemy as Node2D
+				if enemy_node == null or not is_instance_valid(enemy_node):
+					continue
+				var away := enemy_node.global_position - trap.global_position
+				if away.length_squared() > 0.001 and away.length() <= aoe_radius:
+					_push_enemy(enemy_node, away.normalized())
+			_release_effect(trap)
+		)
+	trap_tween.tween_callback(func() -> void:
+		if is_instance_valid(self) and not bool(state["triggered"]):
+			_release_effect(trap)
+		elif is_instance_valid(trap):
+			trap.queue_free()
+	)
 
 
 func _extra_projectiles() -> int:
@@ -437,6 +638,9 @@ func _damage_enemy(enemy: Node, amount: float) -> void:
 		var owner_node := _owner_node()
 		if owner_node != null and owner_node.has_method("on_weapon_hit"):
 			owner_node.on_weapon_hit(enemy, amount)
+		_heal_owner_from_damage(owner_node, amount)
+		if _last_attack_crit and dash_on_crit_distance > 0.0 and owner_node != null and owner_node.has_method("trigger_assassin_dash"):
+			owner_node.trigger_assassin_dash(enemy, dash_on_crit_distance)
 
 
 func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2D) -> void:
@@ -465,6 +669,16 @@ func _damage_enemies_in_circle(origin: Vector2, radius: float, amount: float) ->
 			_damage_enemy(enemy_node, amount)
 
 
+func _has_enemy_in_circle(origin: Vector2, radius: float) -> bool:
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		if origin.distance_squared_to(enemy_node.global_position) <= radius * radius:
+			return true
+	return false
+
+
 func _push_enemy(enemy: Node2D, direction: Vector2) -> void:
 	if direction.length_squared() <= 0.001:
 		return
@@ -481,9 +695,36 @@ func _rolled_damage(owner_node: Node2D) -> float:
 
 	var parameters: Dictionary = raw_parameters
 	var result := float(parameters.get(damage_parameter, damage))
+	_last_attack_crit = false
 	if randf() < float(parameters.get("crit_chance", 0.0)):
 		result *= float(parameters.get("crit_damage_multiplier", 1.0))
+		_last_attack_crit = true
+	if charge_seconds > 0.0:
+		result *= _current_charge_multiplier
 	return result
+
+
+func _update_charge(delta: float) -> void:
+	if charge_seconds <= 0.0:
+		return
+	var owner_node := _owner_node()
+	if owner_node == null:
+		return
+	var owner_velocity := Vector2.ZERO
+	var raw_velocity = owner_node.get("velocity")
+	if raw_velocity is Vector2:
+		owner_velocity = raw_velocity
+	if owner_velocity.length_squared() <= 4.0:
+		_charge_time = minf(_charge_time + delta, charge_seconds)
+	else:
+		_charge_time = maxf(_charge_time - delta * 2.5, 0.0)
+
+
+func _charge_multiplier() -> float:
+	if charge_seconds <= 0.0:
+		return 1.0
+	var charge_ratio := clampf(_charge_time / maxf(charge_seconds, 0.01), 0.0, 1.0)
+	return lerpf(1.0, maxf(charge_max_multiplier, 1.0), charge_ratio)
 
 
 func _owner_node() -> CharacterBody2D:
@@ -500,6 +741,13 @@ func _projectile_parent() -> Node:
 	if parent == null:
 		parent = get_tree().root
 	return parent
+
+
+func _weapon_visual_texture() -> Texture2D:
+	var visual := get_node_or_null("WeaponVisual") as Sprite2D
+	if visual != null and visual.texture != null:
+		return visual.texture
+	return SOUND_AMP_TEXTURE
 
 
 func _register_effect(effect: Node) -> void:

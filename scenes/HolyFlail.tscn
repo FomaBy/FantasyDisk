@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/berserk_weapon.gd" id="1_berserk_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/two_handed_hammer.png" id="2_weapon_texture"]
+
+[node name="HolyFlail" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_berserk_weapon")
+weapon_id = "holy_flail"
+display_name = "Освященный кистень"
+attack_shape = "circle"
+fire_interval = 1.18
+damage = 11.0
+attack_range = 235.0
+start_distance = 0.0
+inner_width = 180.0
+outer_width = 360.0
+aoe_radius = 235.0
+sweep_degrees = 360.0
+visual_color = Color(1.0, 0.84, 0.32, 0.34)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 8
+texture = ExtResource("2_weapon_texture")
+position = Vector2(52, -8)
+rotation = 0.72
+scale = Vector2(0.30, 0.30)

@@ -100,7 +100,10 @@ var _facing_direction := Vector2.RIGHT
 var _damage_invulnerability_left := 0.0
 var _echo_hit_counter := 0
 var _dodge_rush_tween: Tween = null
+var _assassin_dash_tween: Tween = null
 var _low_hp_active := false
+var _assassin_dash_cooldown_left := 0.0
+var _knight_counter_cooldown_left := 0.0
 
 
 func _ready() -> void:
@@ -252,6 +255,8 @@ func _weapon_socket() -> Node2D:
 
 func _physics_process(_delta: float) -> void:
 	_damage_invulnerability_left = max(_damage_invulnerability_left - _delta, 0.0)
+	_assassin_dash_cooldown_left = max(_assassin_dash_cooldown_left - _delta, 0.0)
+	_knight_counter_cooldown_left = max(_knight_counter_cooldown_left - _delta, 0.0)
 	var direction := Vector2.ZERO
 
 	if Input.is_action_pressed("move_left"):
@@ -334,10 +339,11 @@ func take_damage(amount: float, _source := "") -> bool:
 		_trigger_dodge_rush()
 		return false
 
+	var defended_amount := _try_knight_counter(amount)
 	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, 0.95)
 	# Поглощение: плоско срезает часть удара до защиты, но не ниже 20% урона.
 	var absorb := float(derived_parameters.get("absorb", 0.0))
-	var absorbed_amount: float = maxf(amount - absorb, amount * 0.2)
+	var absorbed_amount: float = maxf(defended_amount - absorb, defended_amount * 0.2)
 	var final_damage := absorbed_amount * (1.0 - defense)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
@@ -353,6 +359,46 @@ func take_damage(amount: float, _source := "") -> bool:
 		died.emit()
 		queue_free()
 	return true
+
+
+func trigger_assassin_dash(target: Node2D, dash_distance: float) -> void:
+	if character_id != "assassin" or target == null or not is_instance_valid(target):
+		return
+	if _assassin_dash_cooldown_left > 0.0 or dash_distance <= 0.0:
+		return
+	var to_target := target.global_position - global_position
+	if to_target.length_squared() <= 16.0:
+		return
+	_assassin_dash_cooldown_left = 0.55
+	var dash_direction := to_target.normalized()
+	var dash_target := global_position + dash_direction * minf(dash_distance, maxf(to_target.length() - 28.0, 0.0))
+	if _assassin_dash_tween != null and _assassin_dash_tween.is_valid():
+		_assassin_dash_tween.kill()
+	_assassin_dash_tween = create_tween()
+	_assassin_dash_tween.tween_property(self, "global_position", dash_target, 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	AttackVfx.ring_pulse(get_tree().current_scene if get_tree().current_scene != null else get_tree().root, global_position, 58.0, Color(0.70, 0.20, 1.0, 0.38), false)
+
+
+func _try_knight_counter(incoming_amount: float) -> float:
+	if character_id != "knight" or _knight_counter_cooldown_left > 0.0:
+		return incoming_amount
+	var passive_mods: Dictionary = weapon_config.get("passive_mods", {})
+	var block_reduction := float(passive_mods.get("block_reduction", 0.0))
+	var counter_multiplier := float(passive_mods.get("counter_damage_multiplier", 0.0))
+	if block_reduction <= 0.0 and counter_multiplier <= 0.0:
+		return incoming_amount
+	_knight_counter_cooldown_left = maxf(float(passive_mods.get("counter_cooldown", 2.4)), 0.2)
+	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
+	AttackVfx.ring_pulse(parent, global_position, 150.0, Color(0.92, 0.96, 1.0, 0.45), true)
+	if counter_multiplier > 0.0:
+		var counter_damage := float(derived_parameters.get("damage", 10.0)) * counter_multiplier
+		for enemy in get_tree().get_nodes_in_group("enemies"):
+			var enemy_node := enemy as Node2D
+			if enemy_node == null or not is_instance_valid(enemy_node):
+				continue
+			if global_position.distance_squared_to(enemy_node.global_position) <= 170.0 * 170.0 and enemy_node.has_method("take_damage"):
+				enemy_node.take_damage(counter_damage)
+	return incoming_amount * clampf(1.0 - block_reduction, 0.15, 1.0)
 
 
 func _trigger_thorn_reflect(received_damage: float) -> void:

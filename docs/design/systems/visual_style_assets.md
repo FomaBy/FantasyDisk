@@ -37,6 +37,14 @@ Visual rules:
 
 Shop frame assets live in `assets/sprites/ui/shop/`. Cursor assets live in `assets/sprites/ui/cursor/`. Back-end hooks are already ready; these PNGs are the active Design target and fallback should remain fail-safe only.
 
+## Characters And Weapons
+
+The 0.2 class weapon visual set was completed on 2026-06-11 for all 9 classes and 27 starting weapons. New class full-art PNGs live in `assets/sprites/characters/` (`assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png`) at `512x512` with transparent background and separated readable legs for future cutout/walk rig work.
+
+All weapon visuals live in `assets/sprites/weapons/` at `256x256` with transparent background. The active style target is polished cartoon dark fantasy: strong black silhouette, readable object shape at `40x40`, compact controlled glow, material detail, and no text/watermark/built-in UI frame. The 12 final additions for the full 3-weapons-per-class set are `shadow_daggers.png`, `venom_wire.png`, `storm_longbow.png`, `hunter_trap.png`, `plague_syringe.png`, `bone_saw.png`, `acid_flask.png`, `homunculus_vial.png`, `tower_shield.png`, `holy_flail.png`, `briar_staff.png`, and `raven_totem.png`.
+
+Per-weapon socket/display notes are tracked in `docs/design/systems/characters_weapons.md` and the Design handoff task `docs/tasks/design_all_classes_three_weapons_visual_upgrade_task.md`.
+
 ## Screen And Map Backgrounds
 
 - `assets/backgrounds/route_map_backdrop.png` - 2560x1440 eerie neutral route map background. It should stay darker and calmer than combat arenas, with low-contrast fog in the central route column and heavier silhouettes pushed to the edges.

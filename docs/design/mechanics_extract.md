@@ -89,12 +89,31 @@
 | Гитарист | Электрогитара | `electric_guitar` | `sound_wave` | Широкая волна и knockback; пассив +15% attack speed |
 | Гитарист | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: x0.30 урона, interval 0.85, сильный knockback |
 | Гитарист | Усилитель | `sound_amp` | `amp` | Деплой на ~7с, самостоятельные пульсы каждые 1.1с, лимит 1 + floor(Лидерство/4) |
+| Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор туда/обратно; crit-friendly, критовые попадания дают рывок к цели |
+| Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые короткие multi-stabs по ближайшим целям, высокий crit + mobility hook |
+| Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия/гаррота с DoT и критовым рывком |
+| Рейнджер | Лунный арбалет | `moon_crossbow` | `beam` | Заряжаемый piercing shot: неподвижная стойка повышает урон |
+| Рейнджер | Грозовой длинный лук | `storm_longbow` | `beam` | Заряжаемый веер дальних лучей, line control |
+| Рейнджер | Охотничий капкан | `hunter_trap` | `trap` | Deploy trap: burst + knockback; stance charge усиливает подготовку |
+| Доктор | Зелье восстановления | `restore_potion` | `drain_link` | Drain-связь к цели; часть нанесенного урона лечит Доктора |
+| Доктор | Чумной шприц | `plague_syringe` | `drain_link` | Тонкая чумная связь, poison DoT + lifesteal |
+| Доктор | Костяная пила | `bone_saw` | `stab_flurry` | Ближний saw/flurry, bleed-like DoT, lifesteal от урона |
+| Химик | Взрывная пыль | `blast_powder` | `aoe_projectile` | AoE explosion + spark cloud; разные cloud elements дают combo explosion |
+| Химик | Кислотная колба | `acid_flask` | `aoe_projectile` | Poison/acid pool, большая DoT-zone, combo с другим элементом |
+| Химик | Склянка гомункула | `homunculus_vial` | `summon` | Temporary minion scaling from magic damage |
+| Рыцарь | Копье | `long_spear` | `strip` | Длинный точечный strip, block/counter passive |
+| Рыцарь | Башенный щит | `tower_shield` | `sweep` | Shield bash / frontal control, самый сильный block reduction |
+| Рыцарь | Освященный кистень | `holy_flail` | `circle` | Medium circular heavy swing, сильнее counter damage |
+| Друид | Амулет призыва | `summon_amulet` | `summon` | Beast pack scaling from Leadership; pets получают команды attack_target/guard |
+| Друид | Посох терний | `briar_staff` | `aoe_projectile` | Thorn zone, AoE DoT, crowd control |
+| Друид | Вороний тотем | `raven_totem` | `amp` | Totem pulses, Leadership-scaled deploy limit |
 
 ### Runtime-Требования К Оружию
 
 - Временные visuals классового оружия регистрируются в группе `player_weapon_effects`.
 - При смене оружия, персонажа, смерти, выходе из забега и world cleanup старые weapon effects должны удаляться.
 - `sound_amp` не должен оставлять объект усилителя или pulse-текстуры после перехода на другого персонажа/оружие.
+- Deployables новых классов (`hunter_trap`, `raven_totem`) используют тот же cleanup contract через `player_weapon_effects`.
 - Новые UI/icon uses должны идти через `scripts/ui_icon_registry.gd`, потому что registry кэширует Texture2D.
 
 ### Группы Производных Параметров В Escape Menu

@@ -5,8 +5,11 @@ extends CharacterBody2D
 @export var attack_range := 24.0
 @export var attack_interval := 0.45
 @export var lifetime := 12.0
+@export var command_mode := "attack_target"
 
 var _attack_cooldown := 0.0
+var owner_node: Node2D = null
+var command_target: Node2D = null
 
 
 func _ready() -> void:
@@ -21,9 +24,9 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		return
 
-	var target := _find_closest_enemy()
+	var target := _commanded_target()
 	if target == null:
-		velocity = Vector2.ZERO
+		_follow_guard_position()
 		move_and_slide()
 		return
 
@@ -52,6 +55,44 @@ func _find_closest_enemy() -> Node2D:
 			closest_enemy = enemy_node
 
 	return closest_enemy
+
+
+func _commanded_target() -> Node2D:
+	if command_mode == "guard_owner" and owner_node != null and is_instance_valid(owner_node):
+		var local_target := _find_closest_enemy_near(owner_node.global_position, 320.0)
+		if local_target != null:
+			return local_target
+		return null
+	if command_target != null and is_instance_valid(command_target):
+		return command_target
+	return _find_closest_enemy()
+
+
+func _find_closest_enemy_near(origin: Vector2, max_distance: float) -> Node2D:
+	var closest_enemy: Node2D = null
+	var closest_distance := max_distance * max_distance
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		var distance := origin.distance_squared_to(enemy_node.global_position)
+		if distance < closest_distance:
+			closest_distance = distance
+			closest_enemy = enemy_node
+	return closest_enemy
+
+
+func _follow_guard_position() -> void:
+	if owner_node == null or not is_instance_valid(owner_node):
+		velocity = Vector2.ZERO
+		return
+	var guard_offset := Vector2(56.0, 0.0).rotated(float(get_instance_id() % 360) * PI / 180.0)
+	var guard_position := owner_node.global_position + guard_offset
+	var to_guard := guard_position - global_position
+	if to_guard.length() <= 18.0:
+		velocity = Vector2.ZERO
+	else:
+		velocity = to_guard.normalized() * move_speed
 
 
 func _try_attack(target: Node2D) -> void:

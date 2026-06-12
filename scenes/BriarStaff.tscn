@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/summon_amulet.png" id="2_weapon_texture"]
+
+[node name="BriarStaff" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_class_weapon")
+weapon_id = "briar_staff"
+display_name = "Посох терний"
+attack_mode = "aoe_projectile"
+damage_parameter = "sound_wave_damage"
+fire_interval = 1.20
+damage = 10.0
+attack_range = 560.0
+aoe_radius = 190.0
+projectile_speed = 500.0
+leaves_pool = true
+pool_duration = 3.6
+pool_tick_interval = 0.55
+visual_color = Color(0.32, 0.78, 0.28, 0.44)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 9
+texture = ExtResource("2_weapon_texture")
+position = Vector2(42, -18)
+rotation = -0.18
+scale = Vector2(0.36, 0.36)
