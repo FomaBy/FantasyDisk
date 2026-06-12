@@ -1,6 +1,6 @@
 # Task Board — FantasyDisk
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 Ведет: PM-чат. Статусы: `new` | `in_progress` | `review` | `done` | `blocked` | `unknown`.
 
 `unknown` — задача создана до введения доски, статус в файле не указан; уточняется при следующем контакте с исполнителем.
@@ -59,6 +59,7 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [backend_release_v0_1_2_merge_main_builds_task.md](../tasks/backend_release_v0_1_2_merge_main_builds_task.md) | Back-end | in_progress | Выдано 2026-06-12: собрать v0.1.2, merge dev -> main, тег, Windows/macOS артефакты; dispatch -> Back-end `019ebadd-c0f8-7100-b33a-2887ad5a9561` |
 | [backend_release_v0_1_1_merge_main_builds_task.md](../tasks/backend_release_v0_1_1_merge_main_builds_task.md) | Back-end | done | Закрыта 2026-06-11: v0.1.1 в main с тегом, артефакты в releases/v0.1.1/ + SHA256SUMS. Windows-тест за пользователем |
 | [backend_fix_windows_installer_integrity_task.md](../tasks/backend_fix_windows_installer_integrity_task.md) | Back-end | done | Закрыта 2026-06-11: makensis на macOS писал битый CRC32 в хвост — пост-фикс CRC + самопроверка в build_release.sh, артефакты пересобраны |
 
