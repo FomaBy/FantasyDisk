@@ -12,7 +12,8 @@ func _init(game_ref) -> void:
 
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game.reset_run_ascension()
-	game._play_music("combat")
+	# Босс-бой — тёмная струнная вариация; обычный бой — минстрельский эмбиент.
+	game._play_music("boss" if is_boss_fight else "combat")
 	game._clear_ui()
 	game._clear_world()
 	_setup_arena_world(is_boss_fight)
