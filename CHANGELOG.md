@@ -4,13 +4,17 @@
 
 ## [Unreleased] — ветка dev
 
-Пока нет изменений.
+- Боевые фоны: переотрисованы в живую плоскую top-down фактуру с мелкими камешками и травинками (равномерно, низкий контраст) вместо тусклых однотонных полей; 2560x1440, без крупных камней/ложной перспективы.
+
+- Баланс классов: добавлен Godot budget harness `tools/balance_harness.gd`, отчет `build/balance_report.md`, профили solo/aoe/balanced+tank для 27 пар класс+оружие, auto budget tuning и smoke-проверка отклонения ≤ ±10% по solo и 5-target DPS.
 
 ## [0.1.2] — 2026-06-12
 
 - UI: тёплый рестайл интерфейса под D&D-таверну — рамки/панели/кнопки/окна из тёмного дерева и кожи с латунной окантовкой и заклёпками, системные иконки в тёплом золоте, без циановых самоцветов; светлый текст сохранён читаемым.
 
 - Артефакты: старый pictogram/пентаграммный набор заменен на 53 realistic epic D&D/tabletop raster magic item PNG (`256x256`, RGBA, transparent), с предметами по смыслу каждого artifact ID и QA-превью `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`.
+
+- Оружие v2: перерисованы `long_spear`, `tower_shield`, `holy_flail`, Рыцарь переведен на unarmed base sprite без встроенного копья/щита, все 27 weapon scenes теперь используют matching PNG и уменьшенный visual scale для лучшей читаемости персонажей.
 
 - Design overhaul: добавлен reusable fantasy UI texture kit (`assets/sprites/ui/frames/global/`, system icons), основные панели/кнопки/HUD/level-up/route nodes переведены на texture frames; 4 боевых фона заменены на плоские top-down 2560x1440 ground textures; добавлены отдельные motion profiles для 6 новых классов.
 
