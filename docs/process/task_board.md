@@ -83,7 +83,7 @@
 | [design_artifact_icons_realistic_dnd_reference_redraw_task.md](../tasks/design_artifact_icons_realistic_dnd_reference_redraw_task.md) | Design | done | Закрыта 2026-06-12: 53 artifact PNG заменены на realistic epic D&D/tabletop raster magic items, preview `artifact_realistic_dnd_preview.png`, старые пентаграммы/pictograms superseded |
 | [design_ui_overhaul_flat_battle_bg_motion_polish_task.md](../tasks/design_ui_overhaul_flat_battle_bg_motion_polish_task.md) | Design (Claude) | done | Закрыта 2026-06-12: fantasy UI texture kit, system icons, flat 2K battle backgrounds, 6 новых motion profiles, smoke green; melee targeting extra-test передан Back-end |
 | [backend_melee_targeting_test_regression_task.md](../tasks/backend_melee_targeting_test_regression_task.md) | Back-end | done | Закрыта 2026-06-12: outdated sword strip test/data обновлены под frustum 90°/600, melee + runtime smoke green |
-| [codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/codex_design_new_classes_restyle_to_starter_style_task.md) | Design (Codex → ревью Claude-Designer) | in_progress | Синхронизировано 2026-06-12: task-файл уже `in_progress`; не переотправлять |
+| [codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/codex_design_new_classes_restyle_to_starter_style_task.md) | Design (Codex → ревью Claude-Designer) | done | Синхронизировано 2026-06-12: task-файл уже `in_progress`; не переотправлять | -> Design review ПРИНЯТО 2026-06-12: 6 классов+18 оружий в стиле эталона, cutout синхронен (пиксель-в-пиксель), animation smoke green; готово к QA
 | [backend_secondary_attributes_universal_usefulness_task.md](../tasks/backend_secondary_attributes_universal_usefulness_task.md) | Back-end | done | Закрыта 2026-06-12: вторичные атрибуты видимы/универсальны, class interpretations + runtime hooks, smoke green |
 | [backend_settings_tabs_volume_keybindings_task.md](../tasks/backend_settings_tabs_volume_keybindings_task.md) | Back-end | done | Закрыта 2026-06-12: settings tabs, full-width audio sliders, persisted movement/pause/ultimate keybindings, smoke green |
 | [backend_ultimate_ability_framework_task.md](../tasks/backend_ultimate_ability_framework_task.md) | Back-end | done | Закрыта 2026-06-12: ultimate charge/HUD/action, 9 class ultimates, boss cap, Codex/docs/tests; runtime smoke green |
@@ -113,10 +113,11 @@
 
 | Баг | Приоритет | Роль | Статус | Источник | Примечание |
 | --- | --- | --- | --- | --- | --- |
-| [bug_ascension_mini_elite_chance_dead_task.md](../tasks/bug_ascension_mini_elite_chance_dead_task.md) | high | Back-end | new | Возвышения 2.0 | `mini_elite_chance` нигде не потребляется → Возвышение 7 «Эхо бездны» = полный no-op |
-| [bug_ascension_elite_instant_phase_dead_task.md](../tasks/bug_ascension_elite_instant_phase_dead_task.md) | high | Back-end | new | Возвышения 2.0 | мета `ascension_instant_phase` ставится, но не читается → Возвышение 4 «фаза сразу» не работает |
-| [bug_ascension_selector_not_clamped_task.md](../tasks/bug_ascension_selector_not_clamped_task.md) | normal | Back-end | new | Возвышения 2.0 | кнопка «+» в селекторе клампится к жёстким 10, не к selectable_max → можно стартовать на закрытом уровне |
-| [bug_boss_phase_hazard_naked_circle_task.md](../tasks/bug_boss_phase_hazard_naked_circle_task.md) | normal | Design/Back-end | new | VFX-полировка | `boss.gd:314` зона смены фазы босса — голый красный Polygon2D-круг, не переведён на HazardVfx; доки overclaim |
+| [bug_ascension_mini_elite_chance_dead_task.md](../tasks/bug_ascension_mini_elite_chance_dead_task.md) | high | Back-end | in_progress | Возвышения 2.0 | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)`; Codex handoff отменен, чтобы не было дубля |
+| [bug_ascension_elite_instant_phase_dead_task.md](../tasks/bug_ascension_elite_instant_phase_dead_task.md) | high | Back-end | in_progress | Возвышения 2.0 | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)` |
+| [bug_ascension_selector_not_clamped_task.md](../tasks/bug_ascension_selector_not_clamped_task.md) | normal | Back-end | in_progress | Возвышения 2.0 | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)` |
+| [bug_boss_phase_hazard_naked_circle_task.md](../tasks/bug_boss_phase_hazard_naked_circle_task.md) | normal | Design/Back-end | in_progress | VFX-полировка | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)`; зона рендера во время боя |
+| [bug_cleanup_artifact_iteration_previews_left_in_assets_task.md](../tasks/bug_cleanup_artifact_iteration_previews_left_in_assets_task.md) | normal | Back-end | new | Чистка проекта | ~9 `artifact_*_preview.png` итераций остались в assets/ (аудит считает ссылку из tools/-генератора за usage); категория #2 не закрыта |
 
 ## QA / Review (создано dispatcher 2026-06-12)
 
@@ -126,7 +127,11 @@
 | [qa_review_design_weapon_attack_vfx_animations_polish_task.md](../tasks/qa_review_design_weapon_attack_vfx_animations_polish_task.md) | QA (Claude) | done | QA: failed 2026-06-12 — вердикт в исходном файле, 1 баг (голый круг hazard'а смены фазы босса). Остальной VFX-проход качественный, smoke зелёные |
 | [qa_review_codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/qa_review_codex_design_new_classes_restyle_to_starter_style_task.md) | QA (Claude) | blocked | Ждет `codex_design_new_classes_restyle_to_starter_style_task.md` -> review/done |
 | [qa_review_codex_design_effects_sprites_dnd_restyle_task.md](../tasks/qa_review_codex_design_effects_sprites_dnd_restyle_task.md) | QA (Claude) | done | QA: passed 2026-06-12 — 19 PNG, размеры/alpha сохранены, 0% пересвета/неона (объективно), тинтуемые нейтральны, smoke зелёные. Багов нет |
-| [qa_review_backend_project_folder_cleanup_unused_files_task.md](../tasks/qa_review_backend_project_folder_cleanup_unused_files_task.md) | QA (Claude) | new | Back-end cleanup done 2026-06-12; готово к QA-review отчета, backup и smoke/windowed результатов |
+| [qa_review_backend_project_folder_cleanup_unused_files_task.md](../tasks/qa_review_backend_project_folder_cleanup_unused_files_task.md) | QA (Claude) | done | QA: failed 2026-06-12 — чистка БЕЗОПАСНА (бэкап цел, 0 осиротевших .import/.uid, защищённые папки целы, фоны восстановлены), но категория #2 не закрыта: ~9 artifact-preview итераций остались в assets/. 1 баг. Рантайм-перепроверка отложена (параллельные правки main.gd) |
+| [qa_review_bug_ascension_mini_elite_chance_dead_task.md](../tasks/qa_review_bug_ascension_mini_elite_chance_dead_task.md) | QA (Claude) | blocked | Ждет `bug_ascension_mini_elite_chance_dead_task.md` -> review/done |
+| [qa_review_bug_ascension_elite_instant_phase_dead_task.md](../tasks/qa_review_bug_ascension_elite_instant_phase_dead_task.md) | QA (Claude) | blocked | Ждет `bug_ascension_elite_instant_phase_dead_task.md` -> review/done |
+| [qa_review_bug_ascension_selector_not_clamped_task.md](../tasks/qa_review_bug_ascension_selector_not_clamped_task.md) | QA (Claude) | blocked | Ждет `bug_ascension_selector_not_clamped_task.md` -> review/done |
+| [qa_review_bug_boss_phase_hazard_naked_circle_task.md](../tasks/qa_review_bug_boss_phase_hazard_naked_circle_task.md) | QA (Claude) | blocked | Ждет `bug_boss_phase_hazard_naked_circle_task.md` -> review/done |
 
 ## Активные / Неподтвержденные
 
