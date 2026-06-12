@@ -110,10 +110,12 @@ def parse_task(path: str) -> dict:
         role, itype = "animation", "Задача"
     else:
         role, itype = "backend", "Задача"
+    next_version = bool(re.search(r"^Версия:\s*0\.1\.4", text, re.M))
     excerpt = text[:4500]
     return {"file": name, "title": title[:250], "status": status,
             "role": role, "itype": itype, "excerpt": excerpt,
-            "blocked": raw_status.startswith("blocked")}
+            "blocked": raw_status.startswith("blocked"),
+            "next_version": next_version and not name.startswith("bug_")}
 
 
 def adf(text: str) -> dict:
@@ -149,7 +151,8 @@ def main():
             mapping[t["file"]] = {"key": key, "status": "К выполнению"}
             entry = mapping[t["file"]]
             created += 1
-            sprint_queue.append(key)
+            if not t["next_version"]:
+                sprint_queue.append(key)  # фичи 0.1.4 остаются в бэклоге (feature freeze)
             print(f"created {key}: {t['file']}")
         if entry.get("status") == "Готово":
             continue  # финальное состояние: из «Готово» не понижаем

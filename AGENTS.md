@@ -19,12 +19,19 @@ Autonomy and approval:
 - For every future task that changes functionality, balance, content, UI, progression, visuals, or animation, update the relevant documentation in the same task.
 - After large multi-agent change batches, run the documentation split/update task in `docs/tasks/documentation_post_changes_domain_split_task.md` and keep domain docs under `docs/design/systems/` up to date.
 
+
+FEATURE FREEZE (active, set 2026-06-12 by user):
+- Sprint 0.1.3 is feature-frozen. New feature/change requests (anything that is NOT a bug fix) go to version 0.1.4: task file must include the line `Версия: 0.1.4`, the issue stays in the Jira BACKLOG (not the active sprint).
+- Bug fixes (bug_*.md) and finishing already-started sprint 0.1.3 tasks continue as usual in the active sprint.
+- Executors: do not pick up `Версия: 0.1.4` tasks while the freeze is active unless the sprint queue is empty of 0.1.3 work.
+
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`, task statuses are tracked in `docs/process/task_board.md`.
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
 - If a task needs another discipline, create/update a `.md` handoff task in `docs/tasks/` and send it to the correct chat instead of doing that specialist's work directly.
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
 - When taking a task, set `Статус: in_progress` in its file; when finishing, set `done` (or `review`) and append a short result summary so the PM can sync the task board.
+- Jira is mandatory for task tracking. Follow `docs/process/jira_sync.md`: every task must have a `Jira: SCRUM-*` link, current sprint membership, and Jira status/comment updates matching `.md` status changes. Never store Jira API tokens in the repository.
 
 Versioning:
 - `main` is the stable `0.1` line.
