@@ -93,3 +93,56 @@ Remaining in this task:
 - Full 27-weapon attack animation polish/audit.
 - Full review of ultimates, auras, shields, telegraphs, hazard zones and healing VFX.
 - Performance/FPS check with many active effects after the broader VFX pass.
+
+### 2026-06-12 — Phase 2 / Hazard-zone VFX audit + conversion (Claude-Designer)
+
+Полный аудит-список боевых эффектов с вердиктами (артефакт приёмки). Категории:
+DESIGNED = оформленный raster/tween VFX; NAKED = голый программный примитив,
+который видит игрок; OK = примитив допустим (UI/grounding/служебное).
+
+Игрок (оружие):
+- AttackVfx (`slash_arc`, `impact_ring`, `impact_flash`, `dust_puff_*`, `void_orb`,
+  `beam_strip`, `sound_wave`, `music_note`, `curse_skull`) — DESIGNED.
+- `class_weapon.gd` persistent pools (poison/spark/briar) — DESIGNED (Phase 1).
+- `berserk_weapon.gd::_show_exact_zone_overlay` — тонкий контур точной зоны урона
+  поверх художественного слэша — OK (намеренный readability-aid, не голый круг).
+
+Враги / босс (этот проход, Phase 2 — было NAKED, стало DESIGNED):
+- `boss.gd::_spawn_rift_zone` — был фиолетовый `Polygon2D`-круг → HazardVfx
+  телеграф (растущее ведьмино-кольцо с насечками + пульс) → детонация (shockwave
+  ring + flash). Геймплей (radius/timing/damage) не тронут.
+- `boss.gd::_spawn_disk_slam` — был оранжевый `Polygon2D`-круг → HazardVfx
+  телеграф+детонация (оранжевый).
+- `enemy.gd::_spawn_elite_hazard` — был зелёный `Polygon2D`-warning → HazardVfx
+  телеграф → poison-детонация (shockwave + бурлящая `poison_pool` лужа).
+- `enemy.gd::_spawn_poison_puddle` (ElitePoisonPuddle) — был зелёный `Polygon2D`
+  → оформленная бурлящая `poison_pool` лужа (fade-in + непрерывный «bubble»
+  scale-pulse + fade-out). Приоритетный пример пользователя «лужа яда» закрыт.
+
+OK / служебные (не attack VFX, оставлены):
+- `cutout_rig_2d.gd` ground shadows (`Polygon2D`) — grounding-тень под существом.
+- `enemy_health_bar.gd::_draw` — процедурный HP-бар (UI).
+
+Остаётся NAKED / не оформлено (следующие фазы этой задачи):
+- `enemy.gd::_update_elite_aura` (commander) — только body-tint, нет визуального
+  кольца ауры → нужен оформленный пульс ауры.
+- Ульты 9 классов, щиты, лечение, DoT-тики на врагах, эхо-удары, боевой клич,
+  зачарование — требуют отдельного прохода (найти точки рендера и оформить).
+- `level_up_effect.gd` / `level_up_toast.gd` (`Polygon2D`/`ColorRect`) — level-up
+  слой, отдельный visual polish.
+- Полная полировка анимаций атак всех 27 оружий (anticipation/follow-through,
+  трейлы, отдача в сокете) — основной оставшийся блок.
+
+Added this phase:
+- `assets/sprites/effects/hazard_zone.png` — тинтуемая текстура опасной зоны
+  (яркий обод + насечки + мягкая заливка, центр полупрозрачный — видно ноги).
+- `scripts/hazard_vfx.gd` (class `HazardVfx`) — `telegraph()` + `detonate()`,
+  pause-aware (node-bound tweens), self-cleaning. Отдельный файл от `attack_vfx.gd`.
+- `tests/hazard_vfx_smoke_test.gd` — проверяет текстурные спрайты и burst-узел.
+
+Validation:
+- `hazard_vfx_smoke_test`, `attack_vfx_smoke_test`, `animation_smoke_test` — passed.
+- `runtime_smoke_test` — по-прежнему blocked сторонней Back-end ошибкой
+  `combat_director.gd` (xp/money type inference), не связано с этим проходом.
+- In-game визуальная проверка телеграфов/детонаций/луж: `build/rig_debug/`
+  `hazard_ingame.png`, `pool_check.png`.

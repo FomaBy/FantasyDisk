@@ -136,6 +136,8 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 
 Папка: `assets/sprites/effects/`. Генераторы: `tools/generate_attack_vfx.py` (оружие игрока), `tools/generate_elite_vfx.py` (уникальные атаки элиток). Все PNG с прозрачным фоном.
 
+Опасные зоны врагов/босса (2026-06-12) оформлены через `scripts/hazard_vfx.gd` (`HazardVfx.telegraph`/`detonate`): тинтуемая текстура `hazard_zone.png` (ведьмино-кольцо опасности с насечками и мягкой заливкой) на windup, затем `impact_ring`+`impact_flash` детонация, для яда — бурлящая `poison_pool` лужа. Заменены голые `Polygon2D`-круги боссовских зон (rift zone, disk slam) и элитного яда (hazard zone + persistent puddle).
+
 Оружие игрока (используются `scripts/attack_vfx.gd`):
 
 | Файл | Назначение | Статус |
@@ -407,8 +409,14 @@ Radical UI pass заменяет основные StyleBoxFlat-плоскост�
 | `marsh` | Топь | `assets/backgrounds/field_marsh.png` | Болотный фон |
 | `dry_road` | Сухая Дорога | `assets/backgrounds/field_dry_road.png` | Дорожный фон |
 | `meadow` | Луг | `assets/backgrounds/field_meadow.png` | Зеленый фон |
+| `ruined_courtyard` | Руинный Двор | `assets/backgrounds/field_ruined_courtyard.png` | D&D top-down руинная каменная арена |
+| `misty_marsh` | Туманная Топь | `assets/backgrounds/field_misty_marsh.png` | D&D top-down болотный грунт с лужами и мхом |
+| `dusty_badlands` | Пыльные Пустоши | `assets/backgrounds/field_dusty_badlands.png` | D&D top-down сухая земля/дорога |
+| `enchanted_meadow` | Зачарованный Луг | `assets/backgrounds/field_enchanted_meadow.png` | D&D top-down травяная поляна с мелкими цветами |
+| `ashen_rift` | Пепельный Разлом | `assets/backgrounds/field_ashen_rift.png` | D&D top-down вулканический пепел с тонкими трещинами |
+| `cursed_grove` | Проклятая Роща | `assets/backgrounds/field_cursed_grove.png` | D&D top-down сине-серый зачарованный лесной грунт |
 
-Все 4 боевых фона перерисованы в нативном разрешении 2560x1440. Pass 2026-06-12 заменил их на строго плоские top-down ground textures без высоких объектов, ложной перспективы и объемных камней/кустов: только низкоконтрастная почва, мох, трещины, трава, дорожные следы и мелкая наземная фактура. Генератор: `tools/generate_ui_overhaul_visual_assets.py`; предыдущий upscale pass `tools/redraw_arena_backgrounds.py` superseded для активных файлов.
+Все активные боевые фоны — нативные 2560x1440. Pass 2026-06-12 заменил первые 4 на строго плоские top-down ground textures без высоких объектов, ложной перспективы и объемных камней/кустов: только низкоконтрастная почва, мох, трещины, трава, дорожные следы и мелкая наземная фактура. Expansion pass 2026-06-12 добавил еще 6 D&D battlemap-фонов с тем же gameplay-readable правилом: антуражно и красиво, но без крупных камней/кустов и объектов, которые читаются как препятствия. QA preview: `docs/design/previews/arena_backgrounds_6_dnd_contact.png`.
 `route_map_backdrop` добавлен 2026-06-11 как отдельный 2560x1440 фон для маршрутной карты: мрачная пустошь/туманное предгорье, детали вынесены к краям, центр приглушен для читаемости узлов.
 
 ## Препятствия

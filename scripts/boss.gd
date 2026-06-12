@@ -196,19 +196,14 @@ func _spawn_rift_zone(target_position: Vector2) -> void:
 	zone.global_position = _clamp_to_arena(target_position, 92.0)
 	zone.z_index = 9
 	parent.add_child(zone)
-	var visual := Polygon2D.new()
-	visual.color = Color(0.45, 0.22, 1.0, 0.24)
-	var points := PackedVector2Array()
-	for point_index in range(32):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 32.0) * (92.0 + float(boss_phase - 1) * 16.0))
-	visual.polygon = points
-	zone.add_child(visual)
+	var radius := 92.0 + float(boss_phase - 1) * 16.0
+	var zone_color := Color(0.64, 0.34, 1.0, 1.0)
+	HazardVfx.telegraph(zone, radius, zone_color, 0.65)
 	var zone_tween := zone.create_tween()
 	zone_tween.tween_interval(0.65)
 	zone_tween.tween_callback(func() -> void:
-		visual.color = Color(0.62, 0.30, 1.0, 0.52)
+		HazardVfx.detonate(zone, radius, zone_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
-		var radius := 92.0 + float(boss_phase - 1) * 16.0
 		if player != null and player.global_position.distance_to(zone.global_position) <= radius and player.has_method("take_damage"):
 			player.take_damage(zone_damage, "rift_zone")
 	)
@@ -228,19 +223,14 @@ func _spawn_disk_slam() -> void:
 	slam.global_position = _clamp_to_arena(global_position, 132.0)
 	slam.z_index = 9
 	parent.add_child(slam)
-	var visual := Polygon2D.new()
-	visual.color = Color(1.0, 0.36, 0.16, 0.24)
-	var points := PackedVector2Array()
-	for point_index in range(36):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 36.0) * (132.0 + float(boss_phase - 1) * 18.0))
-	visual.polygon = points
-	slam.add_child(visual)
+	var radius := 132.0 + float(boss_phase - 1) * 18.0
+	var slam_color := Color(1.0, 0.42, 0.18, 1.0)
+	HazardVfx.telegraph(slam, radius, slam_color, 0.48)
 	var slam_tween := slam.create_tween()
 	slam_tween.tween_interval(0.48)
 	slam_tween.tween_callback(func() -> void:
-		visual.color = Color(1.0, 0.28, 0.12, 0.55)
+		HazardVfx.detonate(slam, radius, slam_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
-		var radius := 132.0 + float(boss_phase - 1) * 18.0
 		if player != null and player.global_position.distance_to(slam.global_position) <= radius and player.has_method("take_damage"):
 			player.take_damage(slam_damage, "disk_slam")
 	)

@@ -68,6 +68,7 @@ const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
 const ENEMY_PROJECTILE_SCENE := preload("res://scenes/EnemyProjectile.tscn")
 const ELITE_TELEGRAPH_TEXTURE := preload("res://assets/sprites/effects/elite_telegraph_circle.png")
+const POISON_POOL_TEXTURE := preload("res://assets/sprites/effects/poison_pool.png")
 const ELITE_SHOCKWAVE_TEXTURE := preload("res://assets/sprites/effects/elite_shockwave_ring.png")
 const ELITE_SHADOW_TRAIL_TEXTURE := preload("res://assets/sprites/effects/elite_shadow_trail.png")
 const ELITE_POISON_LOB_TEXTURE := preload("res://assets/sprites/effects/elite_poison_lob.png")
@@ -281,19 +282,14 @@ func _spawn_elite_hazard(target_position: Vector2) -> void:
 	hazard.z_index = 8
 	parent.add_child(hazard)
 
-	var warning := Polygon2D.new()
-	warning.color = Color(0.45, 0.95, 0.18, 0.22)
-	var points := PackedVector2Array()
-	for point_index in range(28):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 28.0) * 72.0)
-	warning.polygon = points
-	hazard.add_child(warning)
+	var hazard_color := Color(0.55, 0.95, 0.30, 1.0)
+	HazardVfx.telegraph(hazard, 72.0, hazard_color, 0.55)
 
 	# Tween на hazard замораживается вместе с паузой дерева, в отличие от SceneTreeTimer.
 	var hazard_tween := hazard.create_tween()
 	hazard_tween.tween_interval(0.55)
 	hazard_tween.tween_callback(func() -> void:
-		warning.color = Color(0.42, 0.85, 0.14, 0.48)
+		HazardVfx.detonate(hazard, 72.0, hazard_color, "poison")
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(hazard.global_position) <= 72.0 and player.has_method("take_damage"):
 			player.take_damage(hazard_damage, "poison_zone")
@@ -619,13 +615,19 @@ func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: 
 	puddle.global_position = puddle_position
 	var radius := float(config["radius"])
 
-	var visual := Polygon2D.new()
-	visual.color = Color(0.42, 0.85, 0.16, 0.42)
-	var points := PackedVector2Array()
-	for point_index in range(24):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 24.0) * radius)
-	visual.polygon = points
+	# Оформленная бурлящая лужа яда (raster pool) вместо голого Polygon2D-круга.
+	var visual := Sprite2D.new()
+	visual.texture = POISON_POOL_TEXTURE
+	visual.scale = Vector2.ONE * (radius * 2.0 / float(POISON_POOL_TEXTURE.get_width()))
+	visual.modulate = Color(1.0, 1.0, 1.0, 0.0)
 	puddle.add_child(visual)
+	# появление + непрерывное «бульканье» (pause-aware, привязан к ноде)
+	var appear := puddle.create_tween()
+	appear.tween_property(visual, "modulate:a", 0.92, 0.18)
+	var bubble := puddle.create_tween()
+	bubble.set_loops()
+	bubble.tween_property(visual, "scale", visual.scale * 1.06, 0.7).set_trans(Tween.TRANS_SINE)
+	bubble.tween_property(visual, "scale", visual.scale, 0.7).set_trans(Tween.TRANS_SINE)
 
 	var duration := float(config["puddle_duration"])
 	var tick_interval := float(config["tick_interval"])
@@ -638,7 +640,7 @@ func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: 
 			if player != null and player.global_position.distance_to(puddle.global_position) <= radius and player.has_method("take_damage"):
 				player.take_damage(tick_damage, "elite_poison_puddle")
 		)
-	tween.tween_property(visual, "color:a", 0.0, 0.25)
+	tween.tween_property(visual, "modulate:a", 0.0, 0.3)
 	tween.tween_callback(puddle.queue_free)
 
 
