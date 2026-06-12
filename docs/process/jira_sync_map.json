@@ -1,0 +1,434 @@
+{
+ "animation_elite_unique_attacks_task.md": {
+  "key": "SCRUM-1",
+  "status": "Контроль качества"
+ },
+ "animation_movement_overhaul_task.md": {
+  "key": "SCRUM-2",
+  "status": "Контроль качества"
+ },
+ "animation_natural_motion_current_sprites_task.md": {
+  "key": "SCRUM-3",
+  "status": "Контроль качества"
+ },
+ "animation_player_motion_smoothness_task.md": {
+  "key": "SCRUM-4",
+  "status": "Контроль качества"
+ },
+ "animation_smoke_test_sliced_rig_update_task.md": {
+  "key": "SCRUM-5",
+  "status": "Контроль качества"
+ },
+ "animator_fix_cutout_rig_parse_errors_task.md": {
+  "key": "SCRUM-6",
+  "status": "Контроль качества"
+ },
+ "backend_all_classes_three_weapons_gameplay_task.md": {
+  "key": "SCRUM-7",
+  "status": "Контроль качества"
+ },
+ "backend_animation_smoke_ultimate_inputmap_warning_task.md": {
+  "key": "SCRUM-8",
+  "status": "Контроль качества"
+ },
+ "backend_artifact_ui_timer_shop_wall_task.md": {
+  "key": "SCRUM-9",
+  "status": "Контроль качества"
+ },
+ "backend_ascension_difficulty_ladder_task.md": {
+  "key": "SCRUM-10",
+  "status": "Контроль качества"
+ },
+ "backend_attack_aim_nearest_enemy_fix_task.md": {
+  "key": "SCRUM-11",
+  "status": "Контроль качества"
+ },
+ "backend_berserk_weapon_identity_rebalance_task.md": {
+  "key": "SCRUM-12",
+  "status": "Контроль качества"
+ },
+ "backend_class_attribute_relevance_levelup_reroll_fix_task.md": {
+  "key": "SCRUM-13",
+  "status": "Контроль качества"
+ },
+ "backend_class_dps_survivability_budget_task.md": {
+  "key": "SCRUM-14",
+  "status": "Контроль качества"
+ },
+ "backend_class_identity_unique_patterns_task.md": {
+  "key": "SCRUM-15",
+  "status": "Контроль качества"
+ },
+ "backend_codex_encyclopedia_menu_task.md": {
+  "key": "SCRUM-16",
+  "status": "Контроль качества"
+ },
+ "backend_combat_feedback_hp_bars_hitbox_hammer_nerf_task.md": {
+  "key": "SCRUM-17",
+  "status": "Контроль качества"
+ },
+ "backend_contextual_ui_frame_theme_integration_task.md": {
+  "key": "SCRUM-18",
+  "status": "К выполнению"
+ },
+ "backend_dark_mage_guitarist_balance_amp_cleanup_task.md": {
+  "key": "SCRUM-19",
+  "status": "Контроль качества"
+ },
+ "backend_economy_artifact_power_class_affinity_task.md": {
+  "key": "SCRUM-20",
+  "status": "Контроль качества"
+ },
+ "backend_elite_boss_size_epic_terror_task.md": {
+  "key": "SCRUM-21",
+  "status": "К выполнению"
+ },
+ "backend_elite_overhaul_size_unique_attacks_task.md": {
+  "key": "SCRUM-22",
+  "status": "Контроль качества"
+ },
+ "backend_elite_reward_center_screen_task.md": {
+  "key": "SCRUM-23",
+  "status": "Контроль качества"
+ },
+ "backend_enemy_scaling_elite_boss_difficulty_task.md": {
+  "key": "SCRUM-24",
+  "status": "Контроль качества"
+ },
+ "backend_escape_stats_compact_grouped_layout_task.md": {
+  "key": "SCRUM-25",
+  "status": "Контроль качества"
+ },
+ "backend_event_node_click_and_screen_art_integration_task.md": {
+  "key": "SCRUM-26",
+  "status": "Контроль качества"
+ },
+ "backend_fix_windows_installer_integrity_task.md": {
+  "key": "SCRUM-27",
+  "status": "Контроль качества"
+ },
+ "backend_full_attributes_wiring_audit_task.md": {
+  "key": "SCRUM-28",
+  "status": "Контроль качества"
+ },
+ "backend_hero_select_fullscreen_grid_task.md": {
+  "key": "SCRUM-29",
+  "status": "Контроль качества"
+ },
+ "backend_hero_select_portrait_left_radar_task.md": {
+  "key": "SCRUM-30",
+  "status": "Контроль качества"
+ },
+ "backend_integrate_stat_icons_hud_remove_obstacles_task.md": {
+  "key": "SCRUM-31",
+  "status": "Контроль качества"
+ },
+ "backend_levelup_rework_five_options_task.md": {
+  "key": "SCRUM-32",
+  "status": "Контроль качества"
+ },
+ "backend_mage_buff_guitarist_rework_task.md": {
+  "key": "SCRUM-33",
+  "status": "Контроль качества"
+ },
+ "backend_main_gd_module_split_task.md": {
+  "key": "SCRUM-34",
+  "status": "Контроль качества"
+ },
+ "backend_map_2k_camera_zoom_task.md": {
+  "key": "SCRUM-35",
+  "status": "Контроль качества"
+ },
+ "backend_melee_targeting_test_regression_task.md": {
+  "key": "SCRUM-36",
+  "status": "Контроль качества"
+ },
+ "backend_melee_targeting_test_update_strip_task.md": {
+  "key": "SCRUM-37",
+  "status": "Контроль качества"
+ },
+ "backend_meta_ascension_levels_task.md": {
+  "key": "SCRUM-38",
+  "status": "Контроль качества"
+ },
+ "backend_new_classes_foundation_task.md": {
+  "key": "SCRUM-39",
+  "status": "Контроль качества"
+ },
+ "backend_performance_code_quality_review_task.md": {
+  "key": "SCRUM-40",
+  "status": "Контроль качества"
+ },
+ "backend_project_folder_cleanup_unused_files_task.md": {
+  "key": "SCRUM-41",
+  "status": "Контроль качества"
+ },
+ "backend_random_events_ten_scenarios_task.md": {
+  "key": "SCRUM-42",
+  "status": "Контроль качества"
+ },
+ "backend_release_builds_windows_macos_task.md": {
+  "key": "SCRUM-43",
+  "status": "Контроль качества"
+ },
+ "backend_release_v0_1_1_merge_main_builds_task.md": {
+  "key": "SCRUM-44",
+  "status": "Контроль качества"
+ },
+ "backend_release_v0_1_2_merge_main_builds_task.md": {
+  "key": "SCRUM-45",
+  "status": "Контроль качества"
+ },
+ "backend_review_codex_animation_task.md": {
+  "key": "SCRUM-46",
+  "status": "Контроль качества"
+ },
+ "backend_review_codex_hero_select_class_identity_task.md": {
+  "key": "SCRUM-47",
+  "status": "Контроль качества"
+ },
+ "backend_route_map_start_selection_scroll_task.md": {
+  "key": "SCRUM-48",
+  "status": "Контроль качества"
+ },
+ "backend_run_flow_victory_attribute_shop_levelup_button_task.md": {
+  "key": "SCRUM-49",
+  "status": "Контроль качества"
+ },
+ "backend_runtime_smoke_combat_director_type_inference_task.md": {
+  "key": "SCRUM-50",
+  "status": "Контроль качества"
+ },
+ "backend_runtime_smoke_knight_block_counter_failure_task.md": {
+  "key": "SCRUM-51",
+  "status": "Контроль качества"
+ },
+ "backend_secondary_attributes_universal_usefulness_task.md": {
+  "key": "SCRUM-52",
+  "status": "Контроль качества"
+ },
+ "backend_settings_display_audio_task.md": {
+  "key": "SCRUM-53",
+  "status": "Контроль качества"
+ },
+ "backend_settings_tabs_volume_keybindings_task.md": {
+  "key": "SCRUM-54",
+  "status": "Контроль качества"
+ },
+ "backend_shop_inline_artifact_icons_cursor_integration_task.md": {
+  "key": "SCRUM-55",
+  "status": "Контроль качества"
+ },
+ "backend_ultimate_ability_framework_task.md": {
+  "key": "SCRUM-56",
+  "status": "Контроль качества"
+ },
+ "backend_unused_assets_cleanup_task.md": {
+  "key": "SCRUM-57",
+  "status": "Контроль качества"
+ },
+ "backend_ux_improvements_navigation_codex_images_task.md": {
+  "key": "SCRUM-58",
+  "status": "Контроль качества"
+ },
+ "bug_ascension_elite_instant_phase_dead_task.md": {
+  "key": "SCRUM-59",
+  "status": "Контроль качества"
+ },
+ "bug_ascension_mini_elite_chance_dead_task.md": {
+  "key": "SCRUM-60",
+  "status": "Контроль качества"
+ },
+ "bug_ascension_selector_not_clamped_task.md": {
+  "key": "SCRUM-61",
+  "status": "Контроль качества"
+ },
+ "bug_boss_phase_hazard_naked_circle_task.md": {
+  "key": "SCRUM-62",
+  "status": "Контроль качества"
+ },
+ "bug_cleanup_artifact_iteration_previews_left_in_assets_task.md": {
+  "key": "SCRUM-63",
+  "status": "Контроль качества"
+ },
+ "codex_design_artifact_icons_dark_fantasy_task.md": {
+  "key": "SCRUM-64",
+  "status": "Контроль качества"
+ },
+ "codex_design_artifact_icons_per_item_regen_task.md": {
+  "key": "SCRUM-65",
+  "status": "Контроль качества"
+ },
+ "codex_design_artifact_icons_reference_dark_artifacts_redraw_task.md": {
+  "key": "SCRUM-66",
+  "status": "Контроль качества"
+ },
+ "codex_design_artifact_icons_rpg_item_style_task.md": {
+  "key": "SCRUM-67",
+  "status": "Контроль качества"
+ },
+ "codex_design_contextual_ui_frame_kits_generation_task.md": {
+  "key": "SCRUM-68",
+  "status": "К выполнению"
+ },
+ "codex_design_effects_sprites_dnd_restyle_task.md": {
+  "key": "SCRUM-69",
+  "status": "Готово"
+ },
+ "codex_design_new_classes_art_task.md": {
+  "key": "SCRUM-70",
+  "status": "Контроль качества"
+ },
+ "codex_design_new_classes_restyle_to_starter_style_task.md": {
+  "key": "SCRUM-71",
+  "status": "Готово"
+ },
+ "codex_design_route_map_background_task.md": {
+  "key": "SCRUM-72",
+  "status": "Контроль качества"
+ },
+ "design_all_classes_three_weapons_visual_upgrade_task.md": {
+  "key": "SCRUM-73",
+  "status": "Контроль качества"
+ },
+ "design_arena_backgrounds_2k_dnd_expansion_task.md": {
+  "key": "SCRUM-74",
+  "status": "Контроль качества"
+ },
+ "design_arena_backgrounds_2k_native_task.md": {
+  "key": "SCRUM-75",
+  "status": "Контроль качества"
+ },
+ "design_artifact_icons_fantasy_restyle_task.md": {
+  "key": "SCRUM-76",
+  "status": "Контроль качества"
+ },
+ "design_artifact_icons_final_redesign_task.md": {
+  "key": "SCRUM-77",
+  "status": "Контроль качества"
+ },
+ "design_artifact_icons_realistic_dnd_reference_redraw_task.md": {
+  "key": "SCRUM-78",
+  "status": "Контроль качества"
+ },
+ "design_artifact_icons_shop_cursor_task.md": {
+  "key": "SCRUM-79",
+  "status": "Контроль качества"
+ },
+ "design_cartoon_character_style_fix_task.md": {
+  "key": "SCRUM-80",
+  "status": "Контроль качества"
+ },
+ "design_contextual_ui_frames_rethink_task.md": {
+  "key": "SCRUM-81",
+  "status": "В работе"
+ },
+ "design_dark_mage_sprite_legs_rework_task.md": {
+  "key": "SCRUM-82",
+  "status": "Контроль качества"
+ },
+ "design_elite_sprites_upsize_attack_vfx_task.md": {
+  "key": "SCRUM-83",
+  "status": "Контроль качества"
+ },
+ "design_escape_stats_fantasy_frames_task.md": {
+  "key": "SCRUM-84",
+  "status": "Контроль качества"
+ },
+ "design_event_shop_campfire_backgrounds_style_unification_task.md": {
+  "key": "SCRUM-85",
+  "status": "Контроль качества"
+ },
+ "design_sprite_quality_audit_cleanup_task.md": {
+  "key": "SCRUM-86",
+  "status": "Контроль качества"
+ },
+ "design_stat_icons_hud_visual_task.md": {
+  "key": "SCRUM-87",
+  "status": "Контроль качества"
+ },
+ "design_ui_overhaul_flat_battle_bg_motion_polish_task.md": {
+  "key": "SCRUM-88",
+  "status": "Контроль качества"
+ },
+ "design_visual_redesign_after_animation_task.md": {
+  "key": "SCRUM-89",
+  "status": "Контроль качества"
+ },
+ "design_weapon_art_v2_proportions_knight_task.md": {
+  "key": "SCRUM-90",
+  "status": "Контроль качества"
+ },
+ "design_weapon_attack_vfx_animations_polish_task.md": {
+  "key": "SCRUM-91",
+  "status": "Контроль качества"
+ },
+ "documentation_post_changes_domain_split_task.md": {
+  "key": "SCRUM-92",
+  "status": "Контроль качества"
+ },
+ "elite_boss_wave_balance_camera_task.md": {
+  "key": "SCRUM-93",
+  "status": "Контроль качества"
+ },
+ "qa_review_backend_ascension_difficulty_ladder_task.md": {
+  "key": "SCRUM-94",
+  "status": "К выполнению"
+ },
+ "qa_review_backend_elite_reward_center_screen_task.md": {
+  "key": "SCRUM-95",
+  "status": "К выполнению"
+ },
+ "qa_review_backend_hero_select_portrait_left_radar_task.md": {
+  "key": "SCRUM-96",
+  "status": "К выполнению"
+ },
+ "qa_review_backend_levelup_rework_five_options_task.md": {
+  "key": "SCRUM-97",
+  "status": "К выполнению"
+ },
+ "qa_review_backend_project_folder_cleanup_unused_files_task.md": {
+  "key": "SCRUM-98",
+  "status": "К выполнению"
+ },
+ "qa_review_bug_ascension_elite_instant_phase_dead_task.md": {
+  "key": "SCRUM-99",
+  "status": "Контроль качества"
+ },
+ "qa_review_bug_ascension_mini_elite_chance_dead_task.md": {
+  "key": "SCRUM-100",
+  "status": "Контроль качества"
+ },
+ "qa_review_bug_ascension_selector_not_clamped_task.md": {
+  "key": "SCRUM-101",
+  "status": "Контроль качества"
+ },
+ "qa_review_bug_boss_phase_hazard_naked_circle_task.md": {
+  "key": "SCRUM-102",
+  "status": "Контроль качества"
+ },
+ "qa_review_codex_design_effects_sprites_dnd_restyle_task.md": {
+  "key": "SCRUM-103",
+  "status": "К выполнению"
+ },
+ "qa_review_codex_design_new_classes_restyle_to_starter_style_task.md": {
+  "key": "SCRUM-104",
+  "status": "Контроль качества"
+ },
+ "qa_review_design_contextual_ui_frames_rethink_task.md": {
+  "key": "SCRUM-105",
+  "status": "К выполнению"
+ },
+ "qa_review_design_weapon_attack_vfx_animations_polish_task.md": {
+  "key": "SCRUM-106",
+  "status": "К выполнению"
+ },
+ "qa_review_test_mini_elite_spawn_behavioral_coverage_task.md": {
+  "key": "SCRUM-107",
+  "status": "К выполнению"
+ },
+ "test_mini_elite_spawn_behavioral_coverage_task.md": {
+  "key": "SCRUM-108",
+  "status": "Контроль качества"
+ }
+}
