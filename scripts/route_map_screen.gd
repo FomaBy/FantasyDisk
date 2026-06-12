@@ -612,17 +612,19 @@ func _style_route_node_button(button: Button, node_type: String, state: String) 
 	button.add_theme_font_size_override("font_size", 34)
 
 
-func _map_node_button_style(background: Color, border: Color) -> StyleBoxFlat:
+func _map_node_button_style(background: Color, _border: Color) -> StyleBox:
+	var tint := background.lightened(0.48)
+	tint.a = 1.0
+	if game.ui != null and game.ui.has_method("_global_texture_style"):
+		return game.ui._global_texture_style(
+			"res://assets/sprites/ui/frames/global/ui_card_frame.png",
+			Vector4(30, 30, 30, 30),
+			tint,
+			Vector4.ZERO
+		)
 	var style := StyleBoxFlat.new()
 	style.bg_color = background
-	style.border_color = border
+	style.border_color = _border
 	style.set_border_width_all(3)
-	style.set_corner_radius_all(int(game.MAP_NODE_SIZE.x * 0.5))
-	style.content_margin_left = 0
-	style.content_margin_top = 0
-	style.content_margin_right = 0
-	style.content_margin_bottom = 0
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.35)
-	style.shadow_size = 10
-	style.shadow_offset = Vector2(0.0, 5.0)
+	style.set_corner_radius_all(8)
 	return style

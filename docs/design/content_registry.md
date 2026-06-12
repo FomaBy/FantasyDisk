@@ -1,6 +1,6 @@
 # FantasyDisk Content Registry
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 
 Этот документ задает правило для всех будущих задач: любая игровая сущность должна иметь понятное имя, стабильный ID и место в документации. Рандом в игре может выбирать только из заранее определенных сущностей, а не создавать безымянный контент, на который потом невозможно сослаться.
 
@@ -62,9 +62,32 @@
 
 | ID | Игровое имя | Роль | Источник | Ассет | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/berserk_walk_sheet_v2.png`, `assets/sprites/characters/rig_parts/berserk_*.png` | Реализовано |
-| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/rig_parts/dark_mage_*.png` | Реализовано |
-| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/rig_parts/guitarist_*.png` | Реализовано |
+| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано |
+| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/cutout/dark_mage_*.png` | Реализовано |
+| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/cutout/guitarist_*.png` | Реализовано |
+| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано |
+| `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано |
+| `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
+| `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
+| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано |
+| `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
+
+## Новые Классы 0.2 (Фундамент, 2026-06-11)
+
+Спрайты всех шести прошли Design art-review (2026-06-11) и приняты как polished dark fantasy full-art (512x512, RGBA). Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и лежат в `assets/sprites/characters/cutout/` (torso, arm_l, arm_r, leg_l, leg_r для каждого). Манифест обновлён в `scripts/sliced_rig_manifest.gd`. Первые 9 weapon PNG для новых классов (chakrams, moon_crossbow, restore_potion, blast_powder, long_spear, summon_amulet — 6 штук готово; остальные shadow_daggers, venom_wire, storm_longbow, hunter_trap, plague_syringe, bone_saw, acid_flask, homunculus_vial, tower_shield, holy_flail, briar_staff, raven_totem) сгенерированы частично Codex — fallback-текстуры используются пока не все 18 PNG готовы.
+
+| ID | Имя | Архетип | 3 стартовых оружия | «Свой» урон |
+| --- | --- | --- | --- | --- |
+| `assassin` | Ассасин | Быстрый крит-мили | `chakrams`, `shadow_daggers`, `venom_wire` | damage |
+| `ranger` | Рейнджер | Дальний точный | `moon_crossbow`, `storm_longbow`, `hunter_trap` | damage |
+| `doctor` | Доктор | Выживание через урон | `restore_potion`, `plague_syringe`, `bone_saw` | magic_damage |
+| `chemist` | Химик | AoE + DoT зоны | `blast_powder`, `acid_flask`, `homunculus_vial` | magic_damage |
+| `knight` | Рыцарь | Танк/копье | `long_spear`, `tower_shield`, `holy_flail` | damage |
+| `druid` | Друид | Призыватель | `summon_amulet`, `briar_staff`, `raven_totem` | sound_wave_damage |
+
+Релевантность атрибутов расширена: strength -> berserk/assassin/ranger/knight; intelligence -> dark_mage/doctor/chemist; energy -> dark_mage/guitarist/doctor/chemist/druid. Вознесение: по 10 уровней на каждый новый класс (ID `<класс>_asc_1..10`, тематические имена в ASCENSION_LEVELS).
+
+Канонические character PNG для новых классов: `assets/sprites/characters/assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png` (`512x512`, transparent). Канонические weapon PNG для новых 18 вариантов: `chakrams.png`, `shadow_daggers.png`, `venom_wire.png`, `moon_crossbow.png`, `storm_longbow.png`, `hunter_trap.png`, `restore_potion.png`, `plague_syringe.png`, `bone_saw.png`, `blast_powder.png`, `acid_flask.png`, `homunculus_vial.png`, `long_spear.png`, `tower_shield.png`, `holy_flail.png`, `summon_amulet.png`, `briar_staff.png`, `raven_totem.png` (`256x256`, transparent). Первые 9 weapon PNG для Berserk/Dark Mage/Guitarist остаются активными по существующим путям.
 
 ## Анимации И Rig-Профили
 
@@ -86,7 +109,7 @@
 | `wing_flap` | Motion layer | `winged_spark` и будущие flying-существа | Зеркальный flap вместо walking legs | Реализовано |
 
 Rig-профили выбираются по ID/имени сущности:
-- `berserk`, `dark_mage`, `guitarist` - игроки с `VisualRoot/RigRoot` и `WeaponSocketMount`.
+- `berserk`, `dark_mage`, `guitarist`, `assassin`, `ranger`, `doctor`, `chemist`, `knight`, `druid` - игроки с `VisualRoot/RigRoot` и `WeaponSocketMount`.
 - `runner`, `biter`, `stalker`, `spark` - быстрый низкий stride.
 - `shooter`, `marksman`, `mage`, `spitter` - осторожная малая амплитуда.
 - `bruiser`, `shield`, `armored`, `bastion` - тяжелый медленный sway.
@@ -126,7 +149,7 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `sound_wave.png` | Звуковая волна электрогитары | Реализовано |
 | `music_note.png` | Ноты гитарных атак | Реализовано |
 
-Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (52 шт., 256x256). Финальный Design pass 2026-06-11: все активные артефакты переведены в high-quality epic dark fantasy artifact icons с прозрачным фоном, крупным центральным предметом, усиленной светотенью, яркими магическими акцентами, черненым металлом, костью/камнем, кожей, древней бумагой, кристаллами, рунами, трещинами и царапинами. Пайплайн: `tools/final_redesign_artifact_icons.py`; 40px QA preview: `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass) superseded.
+Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (53 шт., 256x256). Финальный Design pass 2026-06-12: все активные артефакты заменены на realistic epic D&D/tabletop fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Пайплайн вырезки из raster source sheets: `tools/extract_realistic_dnd_artifact_icons.py`; QA preview: `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass) superseded.
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
 
@@ -144,7 +167,7 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 
 | ID | Игровое имя | Класс | Роль | Источник | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `sword` | Двуручный меч | Берсерк | Узкая длинная полоса 120x500, быстрый и точный | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
+| `sword` | Двуручный меч | Берсерк | Усеченный замах 90 градусов, радиус 600, base width 150 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
 | `axe` | Двуручный топор | Берсерк | Широкая дуга 140 градусов радиуса 320 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
 | `hammer` | Двуручный молот | Берсерк | Круговой AoE: слабый старт, усиленный рост от апгрейдов | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
 | `dark_book` | Книга тьмы | Темный маг | Два AoE-снаряда в две ближайшие цели | `ProgressionData.DARK_MAGE_WEAPONS` | Реализовано |
@@ -153,6 +176,24 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `electric_guitar` | Электрогитара | Гитарист | Звуковая волна вперед | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `bass_guitar` | Бас-гитара | Гитарист | Частый слабый контроль-пульс с сильным отталкиванием | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `sound_amp` | Звуковой усилитель | Гитарист | Деплойный усилитель: живет ~7с, лимит 1 + floor(Лидерство/4) | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
+| `chakrams` | Чакрамы | Ассасин | Boomerang-коридор туда и обратно; критовые попадания дают рывок | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне + crit dash hook | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT + crit dash hook | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `moon_crossbow` | Лунный арбалет | Рейнджер | Stance-charged piercing shot | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `storm_longbow` | Грозовой длинный лук | Рейнджер | Stance-charged веер грозовых лучей | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `hunter_trap` | Охотничий капкан | Рейнджер | Deploy trap: burst + knockback; stance charge усиливает | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `restore_potion` | Зелье восстановления | Доктор | Drain/lifesteal-связь к цели | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
+| `plague_syringe` | Чумной шприц | Доктор | Drain-связь с poison DoT и sustain | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
+| `bone_saw` | Костяная пила | Доктор | Ближний saw arc/flurry, DoT и lifesteal от урона | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
+| `blast_powder` | Взрывная пыль | Химик | AoE explosion + spark cloud; combo с другим элементом | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
+| `acid_flask` | Кислотная колба | Химик | Большая poison/acid pool; combo explosion с другим элементом | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
+| `homunculus_vial` | Склянка гомункула | Химик | Temporary minion scaling from magic damage | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
+| `long_spear` | Копье | Рыцарь | Длинный точечный strip + block/counter passive | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `tower_shield` | Башенный щит | Рыцарь | Shield bash / frontal control + сильный block/counter | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `holy_flail` | Освященный кистень | Рыцарь | Medium circular heavy swing + сильнее counter damage | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `summon_amulet` | Амулет призыва | Друид | Командуемая beast pack, scaling from Leadership | `ProgressionData.DRUID_WEAPONS` | Реализовано |
+| `briar_staff` | Посох терний | Друид | Thorn zone, AoE DoT, crowd control | `ProgressionData.DRUID_WEAPONS` | Реализовано |
+| `raven_totem` | Вороний тотем | Друид | Totem pulses, Leadership-scaled deploy limit | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 
 Временные visuals классового оружия регистрируются в runtime-группе `player_weapon_effects` и должны удаляться при смене оружия/персонажа, смерти, завершении забега и очистке world state.
 
@@ -291,6 +332,24 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 
 `scripts/ui_icon_registry.gd` кэширует загруженные Texture2D по пути; новые UI места должны брать иконки через registry, а не делать отдельный `load()`.
 
+## UI Visual Kit 2026-06-12
+
+Radical UI pass заменяет основные StyleBoxFlat-плоскости на reusable fantasy texture frames. Генератор: `tools/generate_ui_overhaul_visual_assets.py`. Источник истины для рамок и системных иконок: `tools/generate_ui_tavern_theme.py` (часть в `generate_ui_overhaul_visual_assets.py` устарела — не перегенерировать ею).
+
+Стиль UI (рестайл 2026-06-12): тёплая D&D-таверна — тёмное дерево/кожа, латунная окантовка с заклёпками, свечной янтарь, без циановых самоцветов; панели тёмные ради читаемости светлого текста, кнопки на тёплой коричневой базе, системные иконки в золоте/янтаре.
+
+| ID | Ассет | Роль |
+| --- | --- | --- |
+| `ui_panel_frame` | `assets/sprites/ui/frames/global/ui_panel_frame.png` | Базовые большие панели меню/событий/кодекса |
+| `ui_button_frame` | `assets/sprites/ui/frames/global/ui_button_frame.png` | Кнопки normal/hover/pressed/danger/level-up через tint |
+| `ui_card_frame` | `assets/sprites/ui/frames/global/ui_card_frame.png` | Карточки персонажей, route node buttons, compact panels |
+| `ui_level_panel_frame` | `assets/sprites/ui/frames/global/ui_level_panel_frame.png` | Level-up / reward panel |
+| `ui_hud_panel_frame` | `assets/sprites/ui/frames/global/ui_hud_panel_frame.png` | Боевой HUD panel |
+| `ui_hud_card_frame` | `assets/sprites/ui/frames/global/ui_hud_card_frame.png` | HP/XP/money HUD cards |
+| `ui_tooltip_frame` | `assets/sprites/ui/frames/global/ui_tooltip_frame.png` | Generic tooltip/system panel frame |
+
+Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
+
 ## Фоны И Карты
 
 | ID | Игровое имя | Ассет | Роль |
@@ -306,7 +365,7 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `dry_road` | Сухая Дорога | `assets/backgrounds/field_dry_road.png` | Дорожный фон |
 | `meadow` | Луг | `assets/backgrounds/field_meadow.png` | Зеленый фон |
 
-Все 4 боевых фона перерисованы в нативном разрешении 2560x1440 (2026-06-11): 1:1 к арене, без runtime-апскейла, с равномерными наземными ориентирами по всей площади (генератор `tools/redraw_arena_backgrounds.py`, бэкап оригиналов в `build/bg_backup/`).
+Все 4 боевых фона перерисованы в нативном разрешении 2560x1440. Pass 2026-06-12 заменил их на строго плоские top-down ground textures без высоких объектов, ложной перспективы и объемных камней/кустов: только низкоконтрастная почва, мох, трещины, трава, дорожные следы и мелкая наземная фактура. Генератор: `tools/generate_ui_overhaul_visual_assets.py`; предыдущий upscale pass `tools/redraw_arena_backgrounds.py` superseded для активных файлов.
 `route_map_backdrop` добавлен 2026-06-11 как отдельный 2560x1440 фон для маршрутной карты: мрачная пустошь/туманное предгорье, детали вынесены к краям, центр приглушен для читаемости узлов.
 
 ## Препятствия
@@ -460,6 +519,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | `thorn_pact` | Договор Шипов | Полученный урон отражается x2 во врагов рядом |
 | `phantom_step` | Призрачный Шаг | Уворот дает +40% скорости движения на 2с |
 
+- `leech_fang` (Клык Пиявки) — Tier 2: +25% шанса вампиризма, +2 к силе вампиризма (источник vampiric-атрибутов).
 - Остальные артефакты — Tier 1 (эффекты усилены x2.5 от прежних).
 - Иконки новых tier-3 — временные копии тематически близких (до арт-итерации Codex по тирам).
 
@@ -481,7 +541,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 
 | Группа | ID / naming | Каноническая папка / файл | Статус |
 | --- | --- | --- | --- |
-| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 256x256 epic dark fantasy transparent item icons | `assets/sprites/ui/icons/artifacts/` | Реализовано (final redesign 2026-06-11) |
+| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 53 шт., 256x256 RGBA, transparent realistic epic D&D/tabletop fantasy raster magic items; QA preview `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (realistic D&D raster redraw 2026-06-12) |
 | Shop-only item icons | `shop_<shop_item_id>.png` для всех `ProgressionData.SHOP_ITEMS` | `assets/sprites/ui/icons/shop/` | Реализовано |
 | Shop slot normal | `ui_shop_artifact_slot_frame` | `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png` | Реализовано |
 | Shop slot hover | `ui_shop_artifact_slot_hover` | `assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png` | Реализовано |
@@ -492,7 +552,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | Game cursor hover | `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png`, hotspot `(5, 4)` | Реализовано |
 | Game cursor attack | `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png`, hotspot `(5, 4)` | Реализовано |
 
-Shop-only icons имеют прозрачный фон, размер `128x128`, stylized fantasy cartoon style и не используют текст/emoji/default placeholders. Artifact icons находятся в final epic dark fantasy pass 256x256 выше. Shop item filenames намеренно следуют схеме `shop_<shop_item_id>.png`, поэтому для `shop_damage` путь выглядит как `assets/sprites/ui/icons/shop/shop_shop_damage.png`. Фактические PNG и `.import` файлы готовы в текущем checkout; backend hooks могут подхватывать эти файлы вместо fallback.
+Shop-only icons имеют прозрачный фон, размер `128x128`, stylized fantasy cartoon style и не используют текст/emoji/default placeholders. Artifact icons находятся в realistic D&D raster redraw pass 2026-06-12: каждый активный артефакт — отдельная законченная painted magic item-картинка без фона, пьедестала, текста и мусора, с технической проверкой размера, alpha, bbox и 40px-читаемости. Shop item filenames намеренно следуют схеме `shop_<shop_item_id>.png`, поэтому для `shop_damage` путь выглядит как `assets/sprites/ui/icons/shop/shop_shop_damage.png`. Фактические PNG и `.import` файлы готовы в текущем checkout; backend hooks могут подхватывать эти файлы вместо fallback.
 
 ## Уровни Возвышения (Метапрогрессия)
 

@@ -106,6 +106,28 @@ func _test_player_animation() -> void:
 	var mage_arm_r := player.get_node("VisualRoot/RigRoot/Pelvis/Figure/Torso/ArmR") as Node2D
 	if abs(mage_arm_l.rotation - mage_arm_r.rotation) <= 0.25:
 		_fail("Expected cast action animation to raise the rig arms.")
+
+	var new_class_profiles := {
+		"assassin": 0.08,
+		"ranger": 0.06,
+		"doctor": 0.035,
+		"chemist": 0.045,
+		"knight": 0.035,
+		"druid": 0.035,
+	}
+	for character_id in new_class_profiles.keys():
+		player.configure_character(character_id)
+		_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], character_id)
+		player.set("velocity", Vector2(120, 0))
+		player.call("_update_movement_animation", 0.20)
+		var class_rig := player.get_node("VisualRoot/RigRoot") as Node2D
+		var class_pelvis := class_rig.get_node("Pelvis") as Node2D
+		var class_leg_l := class_rig.get_node("Pelvis/Figure/LegL") as Node2D
+		var class_leg_r := class_rig.get_node("Pelvis/Figure/LegR") as Node2D
+		if abs(class_pelvis.position.y) <= 0.01:
+			_fail("Expected %s movement profile to move the pelvis." % character_id)
+		if abs(class_leg_l.rotation - class_leg_r.rotation) <= float(new_class_profiles[character_id]):
+			_fail("Expected %s to use a distinct readable walk profile." % character_id)
 	player.queue_free()
 
 

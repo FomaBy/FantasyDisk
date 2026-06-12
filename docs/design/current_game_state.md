@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-06-11 (релиз v0.1.1)
+Обновлено: 2026-06-12 (release 0.1.2 / dev snapshot)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -21,6 +21,7 @@ Domain docs для подробностей по областям:
 
 - Движок: Godot 4.
 - Жанр: 2D top-down loot-action survival roguelite с RPG-билдкрафтом.
+- Текущий релизный срез: `v0.1.2` от 2026-06-12; версия проекта в `project.godot` — `0.1.2`.
 - Основная рабочая платформа: macOS. Релизные платформы: macOS (dmg) и Windows (x86_64 exe c embed_pck + NSIS-инсталлер).
 - Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
 - Основная сцена: `scenes/Main.tscn`.
@@ -48,6 +49,13 @@ Domain docs для подробностей по областям:
 Бой длится по таймеру `30 + 3 * route_stage` секунд (максимум 60), кроме босс-файтов, где бой идет до победы или смерти.
 
 ## Разрешения И Окно
+
+Обновление 2026-06-11 (настройки v2):
+- **Мониторы**: при 2+ экранах в настройках появляется дропдаун выбора монитора (номер + разрешение); окно переезжает на выбранный экран во всех режимах. При одном экране опция скрыта.
+- **Оконные разрешения** применяются честно: размер клампится по `screen_get_usable_rect` выбранного монитора (учет масштаба ОС/дока/меню-бара), окно центрируется от origin usable rect (раньше центрирование игнорировало origin — на втором мониторе окно уезжало); разрешения больше монитора задизейблены в списке. Borderless занимает usable rect экрана.
+- **Звук**: слайдеры Общая/Музыка/Эффекты (0-100%, шаг 5) + чекбоксы вкл/выкл музыки и эффектов; работают мгновенно через громкость шин AudioServer (Master/Music/SFX — шины Music и SFX создаются программно в AudioManager); mute не теряет значение слайдера.
+- **Персистенс**: дисплей и звук сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте.
+- Экран настроек локализован (RU) и разделен на секции «Экран» / «Звук» / «Управление».
 
 В настройках доступны:
 
@@ -92,7 +100,7 @@ Domain docs для подробностей по областям:
 
 Фон арены выбирается случайно из доступного набора и может зависеть от типа узла карты.
 
-Все 4 боевых фона (`field_stone_garden`, `field_marsh`, `field_dry_road`, `field_meadow`) нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. По всей площади равномерно распределены наземные ориентиры (камни, кочки, трава, мусор), чтобы перемещение персонажа и врагов читалось естественно; контраст ориентиров ниже контраста геймплейных объектов. Перегенерация: `tools/redraw_arena_backgrounds.py`.
+Все 4 боевых фона (`field_stone_garden`, `field_marsh`, `field_dry_road`, `field_meadow`) нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. Pass 2026-06-12 заменил их на плоские top-down ground textures без объемных объектов и ложной перспективы: только низкоконтрастная почва, мох, трещины, трава, сухие дорожные следы и мелкая наземная фактура. Перегенерация: `tools/generate_ui_overhaul_visual_assets.py`.
 `main_menu_epic_battle.png` используется стартовым экраном. `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` используются небоевыми экранами поверх читаемого затемнения.
 `route_map_backdrop.png` используется full-screen route map hook-ом: это темный низкоконтрастный фон пустоши с туманным спокойным центром под узлы и линиями, а детали/силуэты вынесены к краям.
 
@@ -101,6 +109,12 @@ Domain docs для подробностей по областям:
 | Ассет | Путь | Использование |
 | --- | --- | --- |
 | FantasyDisk App Icon | `icon.svg` | Project/application icon через `project.godot` |
+
+## UI Visual Style
+
+Основной UI pass 2026-06-12 использует reusable fantasy texture frames вместо дефолтных серых Godot/простых плоских панелей. Общие рамки лежат в `assets/sprites/ui/frames/global/` и подключены через helper `_global_texture_style()` в `scripts/ui_screens.gd`: большие панели, кнопки, карточки, HUD, route node buttons, level-up panel и hero/portrait frames используют единый dark wood/metal/bone/gold visual language. Escape stats menu продолжает использовать свой compact frame kit в `assets/sprites/ui/frames/escape/`.
+
+Settings controls получили системные fantasy assets из `assets/sprites/ui/icons/system/`: checkbox checked/unchecked, slider track/grabber, arrows/back/settings/close icons. Иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_*`.
 
 ## Препятствия
 
@@ -168,7 +182,7 @@ Debug-режим карты: клавиша `F12` переключает `route_
 
 ## Персонажи
 
-Все три игровых персонажа используют polished stylized cartoon fantasy full hero sprites без квадратных placeholder-форм и без вида минимальных технических болванок. В бою `scripts/cutout_rig_2d.gd` собирает видимую фигуру из нарезанных кусков того же polished-арта (torso, arm_l/arm_r, leg_l/leg_r): в покое сборка пиксельно совпадает с исходным PNG, в движении конечности реально двигаются. Нарезка генерируется инструментом `tools/slice_rig_cutouts.py` в `assets/sprites/characters/cutout/`, метаданные частей — в сгенерированном `scripts/sliced_rig_manifest.gd`. Source PNG в `assets/sprites/characters/` используются меню и выбором персонажа и являются исходником нарезки. Берсерк остается без оружия в базовом спрайте, а оружие крепится отдельно через `WeaponSocket`.
+Первые три игровых персонажа используют polished stylized cartoon fantasy full hero sprites без квадратных placeholder-форм и без вида минимальных технических болванок. Новые шесть классов доступны в 0.2 foundation и прошли Design art-review как polished cartoon dark fantasy full-art. В бою `scripts/cutout_rig_2d.gd` собирает видимую фигуру из нарезанных кусков того же polished-арта (torso, arm_l/arm_r, leg_l/leg_r): в покое сборка пиксельно совпадает с исходным PNG, в движении конечности реально двигаются. Нарезка генерируется инструментом `tools/slice_rig_cutouts.py` в `assets/sprites/characters/cutout/`, метаданные частей — в сгенерированном `scripts/sliced_rig_manifest.gd`. Source PNG в `assets/sprites/characters/` используются меню и выбором персонажа и являются исходником нарезки. Берсерк остается без оружия в базовом спрайте, а оружие крепится отдельно через `WeaponSocket`.
 
 Текущие character sprites сделаны в стиле референса пользователя: Берсерк имеет бороду, плетеные волосы, массивное тело, мех, ремни, металлические браслеты, плечо со шипами, красную боевую разметку и skull-belt без встроенного оружия; Темный маг имеет капюшон, маску, мантию, черепа, кристаллы и фиолетовые spell-orbs; Гитарист имеет сине-золотой сценический костюм, музыкальные значки, ремни, перчатки и медиаторный амулет без встроенной гитары.
 
@@ -238,13 +252,26 @@ Debug-режим карты: клавиша `F12` переключает `route_
 | Выносливость | 4 |
 | Лидерство | 7 |
 
+### Новые Классы 0.2
+
+Foundation новых классов уже включен в выбор персонажа, выбор оружия, кодекс, формулы характеристик, ascension и smoke tests. Design visual set для новых персонажей и полного набора оружия 9 классов готов: новые герои art-approved, все 27 weapon PNG существуют по каноническим путям; gameplay/backend-сцены могут подключать их без documented visual fallback.
+
+| ID | Имя | Роль | Базовые характеристики |
+| --- | --- | --- | --- |
+| `assassin` | Ассасин | Быстрый крит-мили/линии | Str 6, Agi 10, Int 2, Per 6, Energy 3, Know 4, End 5, Lead 4 |
+| `ranger` | Рейнджер | Дальний точный контроль | Str 7, Agi 7, Int 2, Per 9, Energy 4, Know 4, End 4, Lead 3 |
+| `doctor` | Доктор | Sustain через урон и яд | Str 2, Agi 4, Int 8, Per 5, Energy 6, Know 8, End 5, Lead 2 |
+| `chemist` | Химик | AoE/DoT зоны и алхимический summon | Str 2, Agi 4, Int 9, Per 6, Energy 7, Know 7, End 3, Lead 2 |
+| `knight` | Рыцарь | Танк и тяжелый melee-control | Str 8, Agi 3, Int 2, Per 4, Energy 3, Know 4, End 10, Lead 6 |
+| `druid` | Друид | Призыв, тернии, тотемы | Str 3, Agi 4, Int 4, Per 7, Energy 6, Know 5, End 5, Lead 9 |
+
 ## Оружие Берсерка
 
 Берсерк использует отдельный скрипт `scripts/berserk_weapon.gd`. Урон наносится только в активное окно удара, синхронизированное с анимацией. Оружие показывает область поражения и не бьет одну цель несколько раз за один swing.
 
 | Оружие | ID | Форма | Основной стиль | Сцена |
 | --- | --- | --- | --- | --- |
-| Двуручный меч | `berserk_sword` | Полоса (`strip`) | Быстрый точный удар по линии, высокий урон | `scenes/TwoHandedSword.tscn` |
+| Двуручный меч | `berserk_sword` | Усеченный конус (`frustum`) | Широкий замах 90 градусов, радиус 600, высокий урон и надежное попадание по врагам рядом | `scenes/TwoHandedSword.tscn` |
 | Двуручный топор | `berserk_axe` | Дуга (`sweep`) | Широкий контроль окружения вблизи, урон ниже меча | `scenes/TwoHandedAxe.tscn` |
 | Двуручный молот | `berserk_hammer` | Круг | Слабый старт, усиленный рост от апгрейдов | `scenes/TwoHandedHammer.tscn` |
 
@@ -278,13 +305,40 @@ Debug-режим карты: клавиша `F12` переключает `route_
 | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: damage x0.30, interval 0.85, сильный knockback, пассив +10% attack speed |
 | Усилитель | `sound_amp` | `amp` | Деплой: усилитель стоит на земле ~7с и пульсирует сам (тик 1.1с); одновременно 1 + floor(Лидерство/4) ампов, старший исчезает при превышении; группа `deployed_sound_amps`, чистится со сменой оружия/персонажа/забега |
 
+## Оружие Новых Классов 0.2
+
+Все 9 классов теперь имеют ровно 3 selectable weapon variants в `ProgressionData.WEAPONS_BY_CLASS`; smoke test проверяет загрузку и экипировку всех 27 вариантов.
+
+| Класс | Оружие | ID | Режим | Механика |
+| --- | --- | --- | --- | --- |
+| Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор до цели и обратно; критовые попадания запускают короткий рывок к цели |
+| Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые short-range multi-stabs с критовыми рывками |
+| Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия с DoT и mobility hook на крите |
+| Рейнджер | Лунный арбалет | `moon_crossbow` | `beam` | Заряжаемый piercing shot: неподвижная стойка повышает урон |
+| Рейнджер | Грозовой длинный лук | `storm_longbow` | `beam` | Заряжаемый веер дальних лучей |
+| Рейнджер | Охотничий капкан | `hunter_trap` | `trap` | Deploy trap: burst + knockback; стойка усиливает подготовку |
+| Доктор | Зелье восстановления | `restore_potion` | `drain_link` | Drain-связь к ближайшей цели, часть нанесенного урона лечит Доктора |
+| Доктор | Чумной шприц | `plague_syringe` | `drain_link` | Тонкая чумная связь с DoT и lifesteal |
+| Доктор | Костяная пила | `bone_saw` | `stab_flurry` | Ближний saw/flurry, DoT и lifesteal от нанесенного урона |
+| Химик | Взрывная пыль | `blast_powder` | `aoe_projectile` | Spark cloud + взрыв; облака разных элементов дают combo explosion |
+| Химик | Кислотная колба | `acid_flask` | `aoe_projectile` | Poison/acid pool; пересечение с другим элементом взрывает комбо |
+| Химик | Склянка гомункула | `homunculus_vial` | `summon` | Temporary minion от magic damage |
+| Рыцарь | Копье | `long_spear` | `strip` | Длинный точечный strip; блок раз в cooldown снижает удар и контратакует рядом |
+| Рыцарь | Башенный щит | `tower_shield` | `sweep` | Frontal bash/control; самый надежный block/counter вариант |
+| Рыцарь | Освященный кистень | `holy_flail` | `circle` | Medium circular heavy swing; более сильная контратака, но длиннее cooldown |
+| Друид | Амулет призыва | `summon_amulet` | `summon` | Beast pack scaling from Leadership; питомцы получают команду attack_target |
+| Друид | Посох терний | `briar_staff` | `aoe_projectile` | Thorn zone, AoE DoT |
+| Друид | Вороний тотем | `raven_totem` | `amp` | Totem pulses, Leadership-scaled deploy limit |
+
+Новые backend modes/hooks: `stab_flurry`, `dot_beam`, `trap`, `drain_link`, ranger stance charge (`charge_seconds`/`charge_max_multiplier`), assassin crit dash (`dash_on_crit_distance`), chemist cloud combos (`pool_element`/`combo_clouds`), knight block/counter (`block_reduction`/`counter_damage_multiplier`) и druid pet commands (`command_mode`, `command_target`). Deploy/trap/totem/cloud visuals используют `WeaponVisual` или `AttackVfx`, регистрируются в `player_weapon_effects` для cleanup; химические облака дополнительно временно входят в `chemist_clouds`.
+
 ## Боевые Эффекты (Attack VFX)
 
 Все зоны атак и снаряды игрока рисуются текстурными спрайтами через общий модуль `scripts/attack_vfx.gd` (класс `AttackVfx`); плоские полупрозрачные Polygon2D-зоны убраны из активного боевого визуала. Текстуры эффектов лежат в `assets/sprites/effects/` и генерируются `tools/generate_attack_vfx.py` (тонируемые white-спрайты + прецветные элементы в стиле основного арта: темный контур, объемная заливка).
 
 | Эффект | Текстуры | Где используется |
 | --- | --- | --- |
-| Дуга-слэш | `slash_arc.png` (+ непрозрачный подслой для контраста) | Меч/топор берсерка (strip/sweep); дуга вылетает из героя вдоль направления удара и заполняет зону поражения за ~0.18с |
+| Дуга-слэш | `slash_arc.png` (+ непрозрачный подслой для контраста) | Меч/топор берсерка (frustum/sweep); дуга вылетает из героя вдоль направления удара и заполняет зону поражения за ~0.18с |
 | Удар молота | `impact_flash.png`, `impact_ring.png`, `dust_puff_0..2.png` | Молот: оружие замахивается вверх и с ускорением падает в землю (`_animate_hammer_slam`), затем вспышка, расходящееся кольцо и 8 клубов пыли разлетаются по радиусу AoE |
 | Вой-орб | `void_orb.png` + трейл из затухающих копий | `dark_book` (aoe_projectile): пульсирующий снаряд, на взрыве — `orb_burst` (кольцо+вспышка+вой-дымки) |
 | Проклятый череп | `weapons/cursed_skull.png` + glow и трейл | `cursed_skull`: череп летит к цели ~0.2с, урон и splash наносятся в момент попадания |
@@ -292,7 +346,7 @@ Debug-режим карты: клавиша `F12` переключает `route_
 | Звуковая волна | `sound_wave.png` + `music_note.png` | `electric_guitar` (sound_wave): волна `)))` расширяется по направлению, вылетают ноты |
 | Кольцевой импульс | `impact_ring.png` + ноты (для гитариста) | `bass_guitar` (pulse), `sound_amp` (amp) |
 
-Правила: эффекты самоочищаются tween-ами, классовое оружие дополнительно регистрирует их в `player_weapon_effects` (мертвые ссылки фильтруются в `_register_effect`/`cleanup_effects`). Smoke-тест: `tests/attack_vfx_smoke_test.gd` (все хелперы + выстрел каждым из 9 оружий). Скриншоты для ручной проверки: `tools/capture_vfx_preview.gd` (windowed) -> `build/vfx_preview/`.
+Правила: эффекты самоочищаются tween-ами, классовое оружие дополнительно регистрирует их в `player_weapon_effects` (мертвые ссылки фильтруются в `_register_effect`/`cleanup_effects`). Runtime smoke проверяет экипировку всех 27 weapon variants; VFX smoke остается профильным тестом основных хелперов. Скриншоты для ручной проверки: `tools/capture_vfx_preview.gd` (windowed) -> `build/vfx_preview/`.
 
 ## Характеристики
 
@@ -316,8 +370,15 @@ Debug-режим карты: клавиша `F12` переключает `route_
 - `move_speed`
 - `dodge`
 - `defense`
+- `absorb`
 - `health_point`
+- `knockback_distance`
+- `summon_amount`
 - `attack_range`
+- `range_multiplier`
+- `regeneration`
+- `vampiric_amount`
+- `vampiric_chance`
 - `aoe_radius`
 - `pickup_radius`
 - `dot_damage`
@@ -326,9 +387,13 @@ Debug-режим карты: клавиша `F12` переключает `route_
 - `aura_radius`
 - `buff_power`
 - `knockback_power`
-- `summon_amount`
+- `ultimate_multiplier`
 
 Формулы и описания для UI характеристик находятся в `scripts/stat_formulas.gd`. Конфиги классов, оружия, наград, артефактов и магазина находятся в `scripts/progression_data.gd`.
+
+Актуальная философия прокачки: все базовые и производные атрибуты полезны каждому классу. Старая фильтрация «нерелевантных» статов отключена; `STAT_CLASS_RELEVANCE` оставлен пустым для совместимости, а reward pools не скрывают чужие параметры. Для тематически чужих эффектов UI показывает классовую интерпретацию: магический урон становится зачарованием оружия, Лидерство — эхо-оружием/фантомом/соколом/фамильяром, звуковой урон — боевым кличем, DoT — малым bleed/burn/poison, Energy — ускорением уникальной механики.
+
+Runtime hooks уже подключены в `scripts/player.gd` и `scripts/class_weapon.gd`: оружейные попадания могут запускать magic enchant splash, малый DoT, leadership echo-hit и battle shout; Energy ускоряет dash Ассасина, counter Рыцаря и charge Рейнджера.
 
 ## Награды И Артефакты
 
@@ -343,16 +408,18 @@ Debug-режим карты: клавиша `F12` переключает `route_
 Магазин показывает четыре случайных предложения inline поверх `screen_shop_background.png` в центральной свободной области фона и позволяет купить несколько предметов за один визит, если хватает денег. Предметы показывают иконку и цену; название, описание, цену, class restriction и причину недоступности игрок видит только в hover tooltip. Купленные предметы получают overlay-состояние и становятся недоступными.
 
 Design visual kit/spec для всех артефактов, shop-only предметов и курсора описан в `docs/design/artifact_shop_cursor_visual_kit.md`:
-- 52 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, epic dark fantasy transparent item icons);
+- 53 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, transparent realistic epic D&D/tabletop fantasy raster magic items);
 - 7 shop-only icons: `assets/sprites/ui/icons/shop/shop_<shop_item_id>.png`;
 - полный mapping: `docs/design/artifact_shop_cursor_visual_kit.md`;
-- artifact icon pipeline: `tools/final_redesign_artifact_icons.py`; older deterministic/concept-sheet generators are kept only as superseded tooling/reference;
+- artifact icon raster extraction pipeline: `tools/extract_realistic_dnd_artifact_icons.py`;
 - shop/cursor generator: `tools/generate_artifact_shop_cursor_assets.py`;
-- preview: `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png` (`artifact_generated_concept_40px_preview.png` and `artifact_dark_artifacts_40px_preview.png` are updated as legacy preview paths).
+- active QA preview: `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png` (large and 40px checks for every active artifact).
 
-После пользовательского фидбэка 2026-06-11 artifact icons заменены на `256x256` PNG с прозрачным фоном: крупные мрачные предметы с черненым металлом, костью/камнем, темной кожей, проклятой бумагой, кристаллами, рунами, трещинами/царапинами и яркими магическими акцентами по смыслу предмета. Предыдущие generated/vector-like, glossy и concept-sheet tile направления заменены. Shop/cursor assets остаются в FantasyDisk fantasy-medallion / dagger-quill style.
+После пользовательского фидбэка 2026-06-12 artifact icons заменены как красивые растровые предметы, а не пентаграммы/плоские символы: один законченный D&D-style magic item на файл, bbox с запасом от краев, без пьедесталов, фоновых тайлов, осколков, частиц и текста. Образ каждого предмета привязан к названию и эффекту из `ProgressionData.ARTIFACTS`; предыдущие generated/vector-like, glossy, concept-sheet tile и per-item pictogram направления заменены. Shop/cursor assets остаются в FantasyDisk fantasy-medallion / dagger-quill style.
 
 Back-end integration complete: `scripts/ui_screens.gd` сначала ищет финальные PNG по mapping из visual kit, а если их нет, временно использует осмысленный fallback через `scripts/ui_icon_registry.gd` по эффекту предмета. На 2026-06-11 фактические artifact/shop/cursor PNG готовы и импортированы, поэтому fallback остается только fail-safe.
+
+Level-up и докачка атрибутов показывают иконки через `UIIconRegistry` и добавляют текст «Интерпретация» для выбранного героя. Артефакты с `class_affinity` больше не считаются нерабочими для чужого класса: affinity теперь описывает тематику, а `affinity_mods` применяются через интерпретацию текущего героя.
 
 ## Звук
 
@@ -374,7 +441,7 @@ Back-end integration complete: `scripts/ui_screens.gd` сначала ищет �
 ## Навигация И UX
 
 - Escape = назад на всех небоевых экранах через единый стек: каждый экран регистрирует действие возврата в `main.ui_escape_action` (сбрасывается в `_clear_ui`). Цепочки: настройки/кодекс/выбор персонажа -> меню; выбор оружия -> выбор персонажа; магазин/костер -> уйти с узла (как кнопка); победа/смерть -> меню. Событие — выбор обязателен, Escape отключен. В бою Escape — пауза (как раньше).
-- Карточки выбора персонажа — целиком кликабельные Button с hover-подсветкой рамки и pointer-курсором; отдельной кнопки «Выбрать» нет. Все кнопки игры используют pointer-курсор.
+- Экран выбора героя — fullscreen `HeroSelectScreen`: 9 классов видны одновременно сеткой 3x3 без ScrollContainer. Карточки выбора персонажа — целиком кликабельные Button с hover-подсветкой рамки и pointer-курсором; портрет занимает основную часть карточки, на карточке только имя/короткий стиль/сильные/слабые, полные базовые характеристики доступны в tooltip и нижней `HeroSelectInfoPanel`. Отдельной кнопки «Выбрать» нет. Все кнопки игры используют pointer-курсор.
 - Размеры изображений: кодекс — персонажи 176px, монстры 150px, артефакты 96px; HUD-артефакты 48px; пауза-артефакты 56px; иконки магазина 100px (слот 164x186).
 - Фон маршрутной карты: если существует `assets/backgrounds/route_map_backdrop.png`, он подключается с cover-растяжением и затемнением 0.62 для читаемости узлов; иначе — прежний однотонный фон (graceful fallback до выхода арта).
 
@@ -445,7 +512,7 @@ Game cursor asset-ready:
 - hotspot: `(5, 4)`.
 - style: fantasy dagger/quill pointer with gem detail and gold/cyan/red state accents.
 
-Централизованный mapping UI-иконок находится в `scripts/ui_icon_registry.gd`. Он покрывает 8 базовых характеристик, 20 производных параметров и HUD-ресурсы `hp`, `xp`, `money`. Финальные polished stylized fantasy cartoon PNG лежат в `assets/sprites/ui/icons/stats/`, `assets/sprites/ui/icons/derived/` и `assets/sprites/ui/hud/`; registry автоматически подхватывает реальные текстуры для боевого HUD, level-up reward cards, Escape stats menu и stat/reward/tooltips. Shop item icons дополнительно разрешаются через реальные `artifact_<artifact_id>.png` / `shop_<shop_item_id>.png`; fallback в этот registry остается только fail-safe, если asset временно отсутствует. Emoji/default placeholders для этих сущностей не используются.
+Централизованный mapping UI-иконок находится в `scripts/ui_icon_registry.gd`. Он покрывает 8 базовых характеристик, все активные производные параметры из Escape stats menu и HUD-ресурсы `hp`, `xp`, `money`. Финальные polished stylized fantasy cartoon PNG лежат в `assets/sprites/ui/icons/stats/`, `assets/sprites/ui/icons/derived/` и `assets/sprites/ui/hud/`; registry автоматически подхватывает реальные текстуры для боевого HUD, level-up reward cards, Escape stats menu, Кодекса и stat/reward/tooltips. Для производных параметров, у которых пока нет отдельного Design PNG (`absorb`, `regeneration`, `vampiric_*`, `range_multiplier`, `knockback_distance`, `ultimate_multiplier`), registry использует ближайшую существующую derived-иконку как backend fallback, без emoji/default placeholders. Shop item icons дополнительно разрешаются через реальные `artifact_<artifact_id>.png` / `shop_<shop_item_id>.png`; fallback в этот registry остается только fail-safe, если asset временно отсутствует.
 
 Escape stats menu layout:
 - `RunControls` слева содержит кнопки управления (`Продолжить`, `Настройки`, `Завершить забег`, `Выйти в главное меню`).
@@ -601,7 +668,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 - В покое сборка пиксельно идентична исходному full-art PNG; зоны конечностей стерты из торса только за пределами силуэта тела (внутренние дырки заполнены инпейнтом), поэтому при взмахах нет дыр.
 - Разворот в сторону движения — зеркалирование `Pelvis.scale.x`; вертикальное движение сохраняет горизонтальный facing. Манифест хранит `base_facing` (куда смотрит исходный арт): герои нарисованы вправо (+1), все мобы/элитки/боссы — влево (-1), поэтому моб, идущий вправо, зеркалится и не двигается спиной вперед. Итоговый знак: `facing_sign * base_facing`.
 - Per-style профили движения: humanoid, heavy/guard, beast/stalker, robed, robed_walker, floating_robed, flyer, blob, colossus.
-- Player polish 2026-06-11: `walk_blend_rate` и `direction_blend_rate` задаются профилем движения. `berserk`, `dark_mage` и `guitarist` имеют отдельные motion profiles, чтобы старт/остановка, разворот, weight shift и шаг не выглядели одинаково.
+- Player polish 2026-06-11/12: `walk_blend_rate` и `direction_blend_rate` задаются профилем движения. `berserk`, `dark_mage`, `guitarist`, `assassin`, `ranger`, `doctor`, `chemist`, `knight`, `druid` имеют отдельные motion profiles, чтобы старт/остановка, разворот, weight shift и шаг не выглядели одинаково. Новые 6 профилей 2026-06-12: assassin быстрый/резкий, ranger собранный, doctor тяжелее и спокойнее, chemist чуть нервнее, knight тяжелый инертный, druid мягкий ритуальный.
 
 Игрок:
 - `scenes/Player.tscn` сохраняет `VisualRoot/Body` как скрытый `AnimatedSprite2D` fallback и источник кадров.
@@ -688,7 +755,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
 - Уворот игрока работает: `dodge` из `derived_parameters` проверяется в `Player.take_damage`, при успехе показывается всплывающий текст «Промах!» и звук уворота; урон и invulnerability window не применяются. Защита дополнительно ограничена 95%.
 - Скорость атаки оружия считается как `base_fire_interval / attack_speed` (минимум 0.18с): базовый `fire_interval` каждого оружия из `progression_data.gd` снова значим, оружия одного класса различаются темпом.
-- Ребаланс 2026-06-10: базовые `fire_interval` всех 9 оружий увеличены в 1.6 раза, чтобы итоговый темп после фикса формулы остался близким к прежнему ощущению, но с различиями между оружиями.
+- Ребаланс 2026-06-10: базовые `fire_interval` первых 9 оружий увеличены в 1.6 раза, чтобы итоговый темп после фикса формулы остался близким к прежнему ощущению, но с различиями между оружиями; 18 новых оружий 0.2 балансируются в своих конфигах.
 - Pulse-режим бас-гитары и усилителя использует `_rolled_damage` (учитывает `damage_parameter` и криты), как остальные режимы классового оружия.
 - Все отложенные боевые эффекты (ядовитые зоны элиток, rift zone, disk slam, DoT-тики, окна урона свинга берсерка, очистка визуалов) используют tween-таймлайны, привязанные к нодам, а не `SceneTreeTimer`. Они замораживаются вместе с паузой и не наносят урон в level-up/Escape паузе.
 - Аура Маршала Осколков усиливает каждого обычного врага не более одного раза (meta `commander_aura_buffed`), без бесконечного мультипликативного стака.

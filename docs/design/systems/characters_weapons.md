@@ -1,44 +1,71 @@
 # Characters And Weapons
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 
-Канонические данные персонажей/оружия находятся в `scripts/progression_data.gd`. Этот файл описывает игровые роли и текущую идентичность.
+Канонические данные персонажей и оружия находятся в `scripts/progression_data.gd`. Этот файл описывает игровую идентичность, сцены и текущие backend-режимы.
 
 ## Characters
 
-| Character | Role |
+| Character ID | Role |
 | --- | --- |
-| Берсерк | melee AoE/cone/strip fighter, высокий риск рядом с толпой |
-| Темный маг | caster: AoE, beams, DoT, дистанционный wave clear |
-| Гитарист | sound/control: waves, knockback, deployable amp |
+| `berserk` | melee AoE/frustum fighter, высокий риск рядом с толпой |
+| `dark_mage` | caster: AoE, beams, DoT, дистанционный wave clear |
+| `guitarist` | sound/control: waves, knockback, deployable amp |
+| `assassin` | быстрый crit melee/ranged hybrid: boomerang, flurry, poison line |
+| `ranger` | дальний точный контроль: piercing shots, fan beams, trap |
+| `doctor` | self-sustain через урон: potion, poison injection, melee saw |
+| `chemist` | AoE + DoT zones: explosions, acid pools, homunculus summon |
+| `knight` | tank/control melee: spear strip, shield bash, circular flail |
+| `druid` | summon/nature control: beast pack, thorn zones, raven totem |
 
-## Berserk Weapons
+## Weapon Matrix
 
-| Weapon | Shape | Current Role |
-| --- | --- | --- |
-| Двуручный меч | `strip` 120x500 | быстрый точный удар по линии, высокий урон |
-| Двуручный топор | `sweep` 140°, radius 320 | широкая ближняя дуга, ниже урон, лучше по толпе |
-| Двуручный молот | `circle`, radius 100 | слабый старт, damage x0.55, сильный рост от upgrade exponents |
+У каждого класса ровно 3 выбираемых стартовых оружия. Все варианты выбираются через `ProgressionData.WEAPONS_BY_CLASS` и передаются в `Player.configure_character(character_id, weapon_id)`.
 
-Молот использует усиленное масштабирование от run-upgrade multipliers (`upgrade_aoe_exponent`, `upgrade_damage_exponent`), но его passive отдельно не разгоняется экспонентами.
+| Class | Weapon ID | Name | Scene | Backend Mode | Gameplay Identity |
+| --- | --- | --- | --- | --- | --- |
+| `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `frustum` | Широкий усеченный замах 90 градусов, радиус 600, надежно достает врагов рядом |
+| `berserk` | `axe` | Двуручный топор | `TwoHandedAxe.tscn` | `sweep` | Широкая дуга, контроль ближней толпы |
+| `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Малый стартовый круг, сильный late-game AoE scaling |
+| `dark_mage` | `dark_book` | Книга тьмы | `DarkBook.tscn` | `aoe_projectile` | 2 AoE-снаряда по ближайшим целям |
+| `dark_mage` | `cursed_skull` | Проклятый череп | `CursedSkull.tscn` | `homing_curse` | Самонаведение, DoT и splash |
+| `dark_mage` | `dark_wand` | Темная палочка | `DarkWand.tscn` | `beam` | 2 pierce-луча веером |
+| `guitarist` | `electric_guitar` | Электрогитара | `ElectricGuitar.tscn` | `sound_wave` | Направленная звуковая волна |
+| `guitarist` | `bass_guitar` | Бас-гитара | `BassGuitar.tscn` | `pulse` | Частый круговой pulse/knockback |
+| `guitarist` | `sound_amp` | Звуковой усилитель | `SoundAmp.tscn` | `amp` | Deploy amp, autonomous pulses, cleanup |
+| `assassin` | `chakrams` | Чакрамы | `Chakrams.tscn` | `boomerang` | Коридор урона туда и обратно, crit-friendly |
+| `assassin` | `shadow_daggers` | Теневые кинжалы | `ShadowDaggers.tscn` | `stab_flurry` | Быстрые короткие multi-stabs по ближайшим целям |
+| `assassin` | `venom_wire` | Ядовитая струна | `VenomWire.tscn` | `dot_beam` | Тонкая poison-линия с DoT |
+| `ranger` | `moon_crossbow` | Лунный арбалет | `MoonCrossbow.tscn` | `beam` | Дальний точный piercing shot |
+| `ranger` | `storm_longbow` | Грозовой длинный лук | `StormLongbow.tscn` | `beam` | 3 дальних луча веером |
+| `ranger` | `hunter_trap` | Охотничий капкан | `HunterTrap.tscn` | `trap` | Deploy trap: burst + knockback при входе врага |
+| `doctor` | `restore_potion` | Зелье восстановления | `RestorePotion.tscn` | `aoe_projectile` | AoE throw + self heal |
+| `doctor` | `plague_syringe` | Чумной шприц | `PlagueSyringe.tscn` | `homing_curse` | Poison injection + sustain |
+| `doctor` | `bone_saw` | Костяная пила | `BoneSaw.tscn` | `stab_flurry` | Ближний риск, bleed-like DoT, small heal |
+| `chemist` | `blast_powder` | Взрывная пыль | `BlastPowder.tscn` | `aoe_projectile` | Взрыв + poison cloud |
+| `chemist` | `acid_flask` | Кислотная колба | `AcidFlask.tscn` | `aoe_projectile` | Большая acid pool / stacking DoT feeling |
+| `chemist` | `homunculus_vial` | Склянка гомункула | `HomunculusVial.tscn` | `summon` | Temporary minion scaling from magic damage |
+| `knight` | `long_spear` | Копье | `LongSpear.tscn` | `strip` | Длинный точечный выпад, defense passive |
+| `knight` | `tower_shield` | Башенный щит | `TowerShield.tscn` | `sweep` | Shield bash / frontal control, tank identity |
+| `knight` | `holy_flail` | Освященный кистень | `HolyFlail.tscn` | `circle` | Medium circular heavy swing |
+| `druid` | `summon_amulet` | Амулет призыва | `SummonAmulet.tscn` | `summon` | Beast pack scaling from Leadership |
+| `druid` | `briar_staff` | Посох терний | `BriarStaff.tscn` | `aoe_projectile` | Thorn zone, AoE DoT, crowd control |
+| `druid` | `raven_totem` | Вороний тотем | `RavenTotem.tscn` | `amp` | Totem pulses, Leadership-scaled deploy limit |
 
-## Dark Mage Weapons
+## Backend Modes
 
-| Weapon | Mode | Current Role |
-| --- | --- | --- |
-| Книга тьмы | `aoe_projectile` | два снаряда в ближайшие цели, AoE-взрывы |
-| Проклятый череп | `dot_projectile` | DoT, полезен по плотным и живучим целям |
-| Темный жезл | `beam` | два pierce-луча веером, line clear |
+- `scripts/berserk_weapon.gd`: `frustum`, `strip`, `sweep`, `circle`; melee damage window is synced with swing timing.
+- `scripts/class_weapon.gd`: `aoe_projectile`, `homing_curse`, `beam`, `dot_beam`, `sound_wave`, `pulse`, `amp`, `trap`, `boomerang`, `stab_flurry`.
+- `scripts/summoner_weapon.gd`: summon weapon wrapper for Druid and Chemist minion styles.
 
-## Guitarist Weapons
+`stab_flurry` hits several nearest enemies inside a short wave-shaped melee zone. `dot_beam` is a pierce line that applies DoT. `trap` deploys a node that triggers burst damage and knockback when an enemy enters its radius. Deploy visuals reuse each weapon's `WeaponVisual` texture.
 
-| Weapon | Mode | Current Role |
-| --- | --- | --- |
-| Электрогитара | `sound_wave` | быстрое направленное звуковое оружие |
-| Бас-гитара | `pulse` | частый слабый пульс-контроль с knockback |
-| Звуковой усилитель | `amp` | деплойный объект на земле, живет ~7с и пульсирует сам |
+## Visual Asset Status
 
-`sound_amp` имеет лимит: `1 + floor(Leadership / 4)`. При превышении удаляется старейший усилитель. Cleanup groups: `deployed_sound_amps`, `player_weapon_effects`.
+Design visual set is complete for 9 classes and 27 weapons as of 2026-06-11. New class full-art PNGs are art-approved at `assets/sprites/characters/assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png` (`512x512`, transparent). All weapon PNGs in the matrix above exist at their canonical `assets/sprites/weapons/*.png` paths (`256x256`, transparent), including the 12 formerly fallback weapons:
+`shadow_daggers`, `venom_wire`, `storm_longbow`, `hunter_trap`, `plague_syringe`, `bone_saw`, `acid_flask`, `homunculus_vial`, `tower_shield`, `holy_flail`, `briar_staff`, `raven_totem`.
+
+Socket/display notes for integration: `storm_longbow`, `long_spear`, `holy_flail`, and `briar_staff` are elongated and may need per-weapon hand rotation/scale tuning; `venom_wire` is intentionally thin and best paired with a separate line/VFX during attacks; `hunter_trap`, `sound_amp`, `tower_shield`, `raven_totem`, `summon_amulet`, and `homunculus_vial` can also serve as deployable/world sprite bases.
 
 ## Targeting Rule
 
@@ -47,4 +74,5 @@
 ## Cleanup Rules
 
 - При смене персонажа/оружия/забега/смерти/возврате в меню временные weapon effects очищаются.
+- Deployables/traps/totems/summons должны быть в `player_weapon_effects` и не оставаться на карте после cleanup.
 - Class-specific leftovers не должны оставаться на карте.

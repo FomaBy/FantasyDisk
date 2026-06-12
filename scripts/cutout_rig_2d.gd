@@ -803,11 +803,23 @@ func _motion_profile() -> Dictionary:
 			profile.merge({"walk_frequency": 3.6, "idle_frequency": 1.8, "bob": 4.5, "stride": 0.0, "arm_swing": 0.10, "speed_reference": 70.0}, true)
 	match profile_id:
 		"berserk":
-			profile.merge({"walk_frequency": 6.2, "bob": 2.9, "stride": 0.34, "arm_swing": 0.23, "foot_lift": 2.4, "weight_shift": 0.85, "body_counter": 0.045, "walk_blend_rate": 5.4, "direction_blend_rate": 6.2}, true)
+			profile.merge({"walk_frequency": 5.9, "bob": 3.1, "stride": 0.32, "arm_swing": 0.21, "foot_lift": 2.55, "weight_shift": 0.95, "body_counter": 0.050, "walk_blend_rate": 4.9, "direction_blend_rate": 5.7}, true)
 		"dark_mage":
-			profile.merge({"walk_frequency": 5.3, "bob": 1.7, "stride": 0.20, "arm_swing": 0.12, "foot_lift": 1.45, "weight_shift": 0.42, "idle_breath": 1.25, "sway": 0.035, "walk_blend_rate": 4.8, "direction_blend_rate": 5.6}, true)
+			profile.merge({"walk_frequency": 5.0, "bob": 1.55, "stride": 0.18, "arm_swing": 0.11, "foot_lift": 1.35, "weight_shift": 0.38, "idle_breath": 1.28, "sway": 0.032, "walk_blend_rate": 4.4, "direction_blend_rate": 5.1}, true)
 		"guitarist":
-			profile.merge({"walk_frequency": 7.1, "bob": 1.9, "stride": 0.32, "arm_swing": 0.28, "foot_lift": 2.0, "weight_shift": 0.55, "walk_blend_rate": 6.2, "direction_blend_rate": 7.2}, true)
+			profile.merge({"walk_frequency": 7.4, "bob": 1.85, "stride": 0.34, "arm_swing": 0.30, "foot_lift": 1.95, "weight_shift": 0.58, "walk_blend_rate": 6.8, "direction_blend_rate": 7.6}, true)
+		"assassin":
+			profile.merge({"walk_frequency": 9.2, "bob": 1.45, "stride": 0.46, "arm_swing": 0.39, "foot_lift": 2.15, "weight_shift": 0.48, "body_counter": 0.055, "sway": 0.075, "walk_blend_rate": 8.0, "direction_blend_rate": 9.2}, true)
+		"ranger":
+			profile.merge({"walk_frequency": 6.9, "bob": 1.75, "stride": 0.39, "arm_swing": 0.24, "foot_lift": 1.85, "weight_shift": 0.52, "body_counter": 0.035, "sway": 0.045, "walk_blend_rate": 6.2, "direction_blend_rate": 7.4}, true)
+		"doctor":
+			profile.merge({"walk_frequency": 5.4, "bob": 1.65, "stride": 0.22, "arm_swing": 0.16, "foot_lift": 1.55, "weight_shift": 0.36, "idle_breath": 1.34, "sway": 0.030, "walk_blend_rate": 4.7, "direction_blend_rate": 5.6}, true)
+		"chemist":
+			profile.merge({"walk_frequency": 6.4, "bob": 2.15, "stride": 0.29, "arm_swing": 0.22, "foot_lift": 1.90, "weight_shift": 0.50, "idle_breath": 1.22, "sway": 0.046, "walk_blend_rate": 5.9, "direction_blend_rate": 6.6}, true)
+		"knight":
+			profile.merge({"walk_frequency": 4.4, "bob": 3.45, "stride": 0.25, "arm_swing": 0.14, "foot_lift": 3.05, "weight_shift": 0.88, "body_counter": 0.040, "squash_x": 0.016, "squash_y": 0.013, "speed_reference": 92.0, "walk_blend_rate": 4.4, "direction_blend_rate": 4.9}, true)
+		"druid":
+			profile.merge({"walk_frequency": 5.8, "bob": 2.05, "stride": 0.24, "arm_swing": 0.18, "foot_lift": 1.75, "weight_shift": 0.44, "idle_breath": 1.42, "sway": 0.040, "walk_blend_rate": 5.2, "direction_blend_rate": 6.0}, true)
 	if is_elite_rig:
 		profile["bob"] = float(profile["bob"]) * 1.12
 		profile["arm_swing"] = float(profile["arm_swing"]) * 1.12

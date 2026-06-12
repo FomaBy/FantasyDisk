@@ -1,6 +1,6 @@
 # Task Board — FantasyDisk
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 Ведет: PM-чат. Статусы: `new` | `in_progress` | `review` | `done` | `blocked` | `unknown`.
 
 `unknown` — задача создана до введения доски, статус в файле не указан; уточняется при следующем контакте с исполнителем.
@@ -53,7 +53,40 @@
 | [codex_design_artifact_icons_reference_dark_artifacts_redraw_task.md](../tasks/codex_design_artifact_icons_reference_dark_artifacts_redraw_task.md) | Design (Codex) | done | Superseded by 2026-06-11 concept-sheet pass: 52 active artifact icons, 256x256, 40px preview/smoke green |
 | Финальная нарезка пользовательского concept-sheet (без отдельного task-файла) | PM (по прямому поручению пользователя, без Codex) | done | Исторический pass 2026-06-11; superseded задачей `design_artifact_icons_final_redesign_task.md` для всех 52 active artifact icons |
 | [design_artifact_icons_final_redesign_task.md](../tasks/design_artifact_icons_final_redesign_task.md) | Design | done | Закрыта 2026-06-11: 52 epic dark fantasy transparent artifact icons, `tools/final_redesign_artifact_icons.py`, 40px QA, smoke green |
-| [backend_class_attribute_relevance_levelup_reroll_fix_task.md](../tasks/backend_class_attribute_relevance_levelup_reroll_fix_task.md) | Back-end | new | Классовая релевантность атрибутов урона (берсерк=физ, маг=magic, гитарист=sound) + честные превью; фикс эксплойта реролла окна уровня |
+| [backend_class_attribute_relevance_levelup_reroll_fix_task.md](../tasks/backend_class_attribute_relevance_levelup_reroll_fix_task.md) | Back-end | done | Закрыта 2026-06-11 (e5c6ea0): релевантность статов по классам, честные превью, анти-реролл |
+
+## Релиз (выдано PM 2026-06-11)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_release_v0_1_2_merge_main_builds_task.md](../tasks/backend_release_v0_1_2_merge_main_builds_task.md) | Back-end | in_progress | Выдано 2026-06-12: собрать v0.1.2, merge dev -> main, тег, Windows/macOS артефакты; dispatch -> Back-end `019ebadd-c0f8-7100-b33a-2887ad5a9561` |
+| [backend_release_v0_1_1_merge_main_builds_task.md](../tasks/backend_release_v0_1_1_merge_main_builds_task.md) | Back-end | done | Закрыта 2026-06-11: v0.1.1 в main с тегом, артефакты в releases/v0.1.1/ + SHA256SUMS. Windows-тест за пользователем |
+| [backend_fix_windows_installer_integrity_task.md](../tasks/backend_fix_windows_installer_integrity_task.md) | Back-end | done | Закрыта 2026-06-11: makensis на macOS писал битый CRC32 в хвост — пост-фикс CRC + самопроверка в build_release.sh, артефакты пересобраны |
+
+## Новые (выданы PM 2026-06-11, пакет «настройки + все атрибуты + 6 новых классов»)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_settings_display_audio_task.md](../tasks/backend_settings_display_audio_task.md) | Back-end | done | Закрыта 2026-06-11: монитор-дропдаун, оконные разрешения с клампингом, 3 аудио-шины/слайдеры/mute, settings.cfg, smoke green |
+| [backend_full_attributes_wiring_audit_task.md](../tasks/backend_full_attributes_wiring_audit_task.md) | Back-end | done | Закрыта 2026-06-11: аудит 27 производных, 6 новых подключены (absorb/regen/vampiric/knockback/range_mult), таблица в mechanics_extract, smoke green |
+| [backend_new_classes_foundation_task.md](../tasks/backend_new_classes_foundation_task.md) | Back-end | done | Закрыта 2026-06-11: 6 новых классов data-driven, 6 сигнатурных механик (boomerang/beam/heal/dot-pool/spear/summon), 9 карточек, smoke green |
+| [codex_design_new_classes_art_task.md](../tasks/codex_design_new_classes_art_task.md) | Design (Codex) | done | Закрыта 2026-06-11: 6 персонажей + 6 оружий art-approved, cutout rig-части нарезаны, манифест обновлён, smoke зелёный |
+
+## Новые (выданы PM 2026-06-12, пакет «выбор героя + уникальность классов»)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_hero_select_fullscreen_grid_task.md](../tasks/backend_hero_select_fullscreen_grid_task.md) | Back-end | done | Закрыта 2026-06-12: fullscreen hero select, 3x3 grid без скролла, stats tooltip/info panel, runtime smoke green |
+| [backend_class_identity_unique_patterns_task.md](../tasks/backend_class_identity_unique_patterns_task.md) | Back-end | done | Закрыта 2026-06-12: 9 уникальных паттернов, ranger charge, doctor drain, chemist combos, knight counter, druid commands, smoke green |
+| [backend_review_codex_hero_select_class_identity_task.md](../tasks/backend_review_codex_hero_select_class_identity_task.md) | Back-end (ревью за Codex) | done | Синхронизировано 2026-06-12: task-файл уже `done`, Claude-Backend принял обе Codex-работы и закоммитил |
+| [codex_design_artifact_icons_per_item_regen_task.md](../tasks/codex_design_artifact_icons_per_item_regen_task.md) | Design (Codex) | done | Superseded 2026-06-12: procedural/per-item pictogram pass заменен realistic D&D raster redraw |
+| [design_artifact_icons_realistic_dnd_reference_redraw_task.md](../tasks/design_artifact_icons_realistic_dnd_reference_redraw_task.md) | Design | done | Закрыта 2026-06-12: 53 artifact PNG заменены на realistic epic D&D/tabletop raster magic items, preview `artifact_realistic_dnd_preview.png`, старые пентаграммы/pictograms superseded |
+| [design_ui_overhaul_flat_battle_bg_motion_polish_task.md](../tasks/design_ui_overhaul_flat_battle_bg_motion_polish_task.md) | Design (Claude) | done | Закрыта 2026-06-12: fantasy UI texture kit, system icons, flat 2K battle backgrounds, 6 новых motion profiles, smoke green; melee targeting extra-test передан Back-end |
+| [backend_melee_targeting_test_regression_task.md](../tasks/backend_melee_targeting_test_regression_task.md) | Back-end | done | Закрыта 2026-06-12: outdated sword strip test/data обновлены под frustum 90°/600, melee + runtime smoke green |
+| [codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/codex_design_new_classes_restyle_to_starter_style_task.md) | Design (Codex → ревью Claude-Designer) | in_progress | Синхронизировано 2026-06-12: task-файл уже `in_progress`; не переотправлять |
+| [backend_secondary_attributes_universal_usefulness_task.md](../tasks/backend_secondary_attributes_universal_usefulness_task.md) | Back-end | done | Закрыта 2026-06-12: вторичные атрибуты видимы/универсальны, class interpretations + runtime hooks, smoke green |
+| [design_all_classes_three_weapons_visual_upgrade_task.md](../tasks/design_all_classes_three_weapons_visual_upgrade_task.md) | Design | done | Закрыта 2026-06-11: новые 6 героев art-approved, полный visual set 27 weapon PNG готов, Back-end handoff со socket/scale notes заполнен |
+| [backend_all_classes_three_weapons_gameplay_task.md](../tasks/backend_all_classes_three_weapons_gameplay_task.md) | Back-end | done | Закрыта 2026-06-11: 9 классов x 3 weapon variants, 27 IDs, новые backend modes; Design visual set позже закрыт, runtime smoke green |
 | [backend_melee_targeting_test_update_strip_task.md](../tasks/backend_melee_targeting_test_update_strip_task.md) | Back-end | done | Закрыта PM 2026-06-11: handoff устарел — тест уже обновлен под strip и проходит (проверено прогоном) |
 | [design_artifact_icons_shop_cursor_task.md](../tasks/design_artifact_icons_shop_cursor_task.md) | Design | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |
 | [backend_shop_inline_artifact_icons_cursor_integration_task.md](../tasks/backend_shop_inline_artifact_icons_cursor_integration_task.md) | Back-end | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |

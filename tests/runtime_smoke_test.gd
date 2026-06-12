@@ -225,7 +225,30 @@ func _initialize() -> void:
 
 	main.call("_show_character_select")
 	await process_frame
-	for character_id in ["berserk", "dark_mage", "guitarist"]:
+	var hero_screen := main.find_child("HeroSelectScreen", true, false) as Control
+	if hero_screen == null:
+		push_error("Expected character select to use a fullscreen hero select root.")
+		quit(1)
+		return
+	if main.find_child("CharacterCardsScroll", true, false) != null:
+		push_error("Expected fullscreen hero select to show all 9 cards without a scroll container.")
+		quit(1)
+		return
+	var hero_grid := main.find_child("CharacterCardsGrid", true, false) as GridContainer
+	if hero_grid == null or hero_grid.columns != 3:
+		push_error("Expected character select to use a 3x3 hero grid.")
+		quit(1)
+		return
+	if hero_grid.get_child_count() != 9:
+		push_error("Expected character select to show 9 hero cards at once.")
+		quit(1)
+		return
+	for character_id in ProgressionData.character_ids():
+		var card := main.find_child("CharacterCard_%s" % character_id, true, false) as Button
+		if card == null or card.tooltip_text == "":
+			push_error("Expected character card with stats tooltip for %s." % character_id)
+			quit(1)
+			return
 		var portrait := main.find_child("CharacterPortrait_%s" % character_id, true, false) as TextureRect
 		if portrait == null or portrait.texture == null:
 			push_error("Expected character select to show portrait for %s." % character_id)
@@ -270,7 +293,7 @@ func _initialize() -> void:
 			push_error("Expected shop/cursor UI asset to exist: %s" % ui_asset_path)
 			quit(1)
 			return
-	for character_id in ["berserk", "dark_mage", "guitarist"]:
+	for character_id in ProgressionData.character_ids():
 		if not ProgressionData.character_ids().has(character_id):
 			push_error("Expected playable character %s in progression data." % character_id)
 			quit(1)
@@ -426,8 +449,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var sword_config: Dictionary = ProgressionData.weapon("berserk", "sword")
-	if str(sword_config.get("attack_shape")) != "strip" or float(sword_config.get("inner_width")) != 120.0 or float(sword_config.get("attack_range")) != 500.0 or float(sword_config.get("damage_multiplier")) != 1.15:
-		push_error("Expected sword to be a narrow 120x500 strip with 1.15 damage.")
+	if str(sword_config.get("attack_shape")) != "frustum" or float(sword_config.get("inner_width")) != 150.0 or float(sword_config.get("outer_width")) != 1200.0 or float(sword_config.get("attack_range")) != 600.0 or float(sword_config.get("damage_multiplier")) != 1.15:
+		push_error("Expected sword to be a 90-degree 600px frustum with 150px base and 1.15 damage.")
 		quit(1)
 		return
 	var hammer_config: Dictionary = ProgressionData.weapon("berserk", "hammer")
@@ -914,6 +937,7 @@ func _initialize() -> void:
 	_test_stat_artifact_recording()
 	_test_berserk_weapon_configs()
 	_test_class_weapon_configs()
+	_test_all_weapon_variants_equip()
 	await _test_weapon_effect_cleanup()
 	await _test_victory_flow(main)
 	await _test_elite_flow(main_scene)
@@ -922,9 +946,14 @@ func _initialize() -> void:
 	await _test_escape_navigation(main_scene)
 	await _test_economy_tiers_and_fab(main_scene)
 	await _test_class_relevance_and_offer_fixation(main_scene)
+	_test_settings_persistence_and_audio()
+	await _test_full_attribute_wiring()
+	await _test_all_nine_classes()
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
+	await _test_unique_class_identity_patterns()
+	await _test_universal_attribute_interpretations()
 	await _test_death_flow(main_scene)
 
 	print("Runtime smoke test passed.")
@@ -1360,7 +1389,7 @@ func _test_stat_artifact_recording() -> void:
 func _test_berserk_weapon_configs() -> void:
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var expected := {
-		"sword": {"shape": "strip", "scene": "TwoHandedSword", "sprite": "res://assets/sprites/weapons/two_handed_sword.png"},
+		"sword": {"shape": "frustum", "scene": "TwoHandedSword", "sprite": "res://assets/sprites/weapons/two_handed_sword.png"},
 		"axe": {"shape": "sweep", "scene": "TwoHandedAxe", "sprite": "res://assets/sprites/weapons/two_handed_axe.png"},
 		"hammer": {"shape": "circle", "scene": "TwoHandedHammer", "sprite": "res://assets/sprites/weapons/two_handed_hammer.png"},
 	}
@@ -1438,6 +1467,55 @@ func _test_class_weapon_configs() -> void:
 			if weapon_visual == null or weapon_visual.texture == null or weapon_visual.texture.resource_path != weapon_expected["sprite"]:
 				push_error("Expected %s to use its weapon sprite." % weapon_id)
 				quit(1)
+				return
+			player.queue_free()
+
+
+func _test_all_weapon_variants_equip() -> void:
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var expected_weapon_ids := {
+		"berserk": ["sword", "axe", "hammer"],
+		"dark_mage": ["dark_book", "cursed_skull", "dark_wand"],
+		"guitarist": ["electric_guitar", "bass_guitar", "sound_amp"],
+		"assassin": ["chakrams", "shadow_daggers", "venom_wire"],
+		"ranger": ["moon_crossbow", "storm_longbow", "hunter_trap"],
+		"doctor": ["restore_potion", "plague_syringe", "bone_saw"],
+		"chemist": ["blast_powder", "acid_flask", "homunculus_vial"],
+		"knight": ["long_spear", "tower_shield", "holy_flail"],
+		"druid": ["summon_amulet", "briar_staff", "raven_totem"],
+	}
+	for character_id in expected_weapon_ids.keys():
+		var weapon_ids: Array = ProgressionData.weapon_ids(character_id)
+		if weapon_ids.size() != 3:
+			_fail("Expected %s to have exactly 3 selectable weapons." % character_id)
+			return
+		for expected_id in expected_weapon_ids[character_id]:
+			if not weapon_ids.has(expected_id):
+				_fail("Expected %s to expose weapon %s." % [character_id, expected_id])
+				return
+			var config: Dictionary = ProgressionData.weapon(character_id, expected_id)
+			if str(config.get("scene_path", "")) == "" or not ResourceLoader.exists(str(config["scene_path"])):
+				_fail("Expected %s/%s scene_path to exist." % [character_id, expected_id])
+				return
+			var player := player_scene.instantiate()
+			root.add_child(player)
+			player.configure_character(character_id, expected_id)
+			var weapon := _find_player_weapon(player)
+			if weapon == null:
+				_fail("Expected %s/%s to equip a weapon node." % [character_id, expected_id])
+				return
+			if str(weapon.get("weapon_id")) != expected_id:
+				_fail("Expected equipped weapon_id %s, got %s." % [expected_id, str(weapon.get("weapon_id"))])
+				return
+			if config.has("attack_mode") and weapon.get("attack_mode") != null and str(weapon.get("attack_mode")) != str(config["attack_mode"]):
+				_fail("Expected %s attack_mode to match config." % expected_id)
+				return
+			if config.has("attack_shape") and weapon.get("attack_shape") != null and str(weapon.get("attack_shape")) != str(config["attack_shape"]):
+				_fail("Expected %s attack_shape to match config." % expected_id)
+				return
+			var weapon_visual := weapon.get_node_or_null("WeaponVisual") as Sprite2D
+			if weapon_visual == null or weapon_visual.texture == null:
+				_fail("Expected %s/%s to have a visible WeaponVisual texture." % [character_id, expected_id])
 				return
 			player.queue_free()
 
@@ -1696,6 +1774,241 @@ func _test_class_weapon_rework() -> void:
 	await process_frame
 
 
+func _test_unique_class_identity_patterns() -> void:
+	if ProgressionData.weapon("doctor", "restore_potion").get("attack_mode", "") != "drain_link":
+		_fail("Expected Doctor restore potion slot to use the drain/lifesteal link pattern.")
+		return
+	if float(ProgressionData.weapon("ranger", "moon_crossbow").get("charge_seconds", 0.0)) <= 0.0:
+		_fail("Expected Ranger moon crossbow to expose stance charge seconds.")
+		return
+	if not bool(ProgressionData.weapon("chemist", "blast_powder").get("combo_clouds", false)):
+		_fail("Expected Chemist clouds to support combo explosions.")
+		return
+	if float(ProgressionData.weapon("knight", "long_spear").get("passive_mods", {}).get("block_reduction", 0.0)) <= 0.0:
+		_fail("Expected Knight weapons to carry block/counter passive data.")
+		return
+	if ProgressionData.weapon("druid", "summon_amulet").get("command_mode", "") != "attack_target":
+		_fail("Expected Druid summon amulet to command pets toward a target.")
+		return
+
+	var holder := Node2D.new()
+	holder.name = "UniqueClassIdentityScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+
+	var ranger := player_scene.instantiate()
+	holder.add_child(ranger)
+	ranger.global_position = Vector2(700, 700)
+	await process_frame
+	ranger.call("configure_character", "ranger", "moon_crossbow")
+	var ranger_weapon: Node = ranger.get("equipped_weapon")
+	ranger_weapon.set_process(false)
+	var ranger_params: Dictionary = ranger.get("derived_parameters")
+	ranger_params["crit_chance"] = 0.0
+	ranger.set("derived_parameters", ranger_params)
+	ranger_weapon.set("_charge_time", 0.0)
+	ranger_weapon.set("_current_charge_multiplier", 1.0)
+	var base_shot := float(ranger_weapon.call("_rolled_damage", ranger))
+	ranger_weapon.set("_charge_time", float(ranger_weapon.get("charge_seconds")))
+	ranger_weapon.set("_current_charge_multiplier", float(ranger_weapon.call("_charge_multiplier")))
+	var charged_shot := float(ranger_weapon.call("_rolled_damage", ranger))
+	if charged_shot <= base_shot * 1.2:
+		_fail("Expected Ranger charged stance shot to deal meaningfully more damage.")
+		return
+
+	var doctor := player_scene.instantiate()
+	holder.add_child(doctor)
+	doctor.global_position = Vector2(900, 700)
+	await process_frame
+	doctor.call("configure_character", "doctor", "restore_potion")
+	var doctor_weapon: Node = doctor.get("equipped_weapon")
+	doctor_weapon.set_process(false)
+	doctor.set("health", float(doctor.get("max_health")) * 0.5)
+	var doctor_enemy := enemy_scene.instantiate()
+	holder.add_child(doctor_enemy)
+	doctor_enemy.set("max_health", 100000.0)
+	doctor_enemy.set("health", 100000.0)
+	doctor_enemy.global_position = doctor.global_position + Vector2(220, 0)
+	await process_frame
+	var doctor_health_before := float(doctor.get("health"))
+	doctor_weapon.call("_attack")
+	await process_frame
+	if float(doctor.get("health")) <= doctor_health_before:
+		_fail("Expected Doctor drain link to heal from dealt damage.")
+		return
+
+	var chemist := player_scene.instantiate()
+	holder.add_child(chemist)
+	chemist.global_position = Vector2(1100, 700)
+	await process_frame
+	chemist.call("configure_character", "chemist", "blast_powder")
+	var chemist_weapon: Node = chemist.get("equipped_weapon")
+	chemist_weapon.set_process(false)
+	var chemist_enemy := enemy_scene.instantiate()
+	holder.add_child(chemist_enemy)
+	chemist_enemy.set("max_health", 100000.0)
+	chemist_enemy.set("health", 100000.0)
+	chemist_enemy.global_position = chemist.global_position + Vector2(40, 0)
+	await process_frame
+	var chemist_hp_before := float(chemist_enemy.get("health"))
+	chemist_weapon.set("pool_element", "spark")
+	chemist_weapon.call("_spawn_damage_pool", chemist_enemy.global_position, 1.0)
+	chemist_weapon.set("pool_element", "poison")
+	chemist_weapon.call("_spawn_damage_pool", chemist_enemy.global_position + Vector2(18, 0), 1.0)
+	await process_frame
+	if float(chemist_enemy.get("health")) >= chemist_hp_before:
+		_fail("Expected Chemist overlapping cloud elements to trigger combo damage.")
+		return
+
+	var knight := player_scene.instantiate()
+	holder.add_child(knight)
+	knight.global_position = Vector2(1300, 700)
+	await process_frame
+	knight.call("configure_character", "knight", "long_spear")
+	var knight_enemy := enemy_scene.instantiate()
+	holder.add_child(knight_enemy)
+	knight_enemy.set("max_health", 100000.0)
+	knight_enemy.set("health", 100000.0)
+	knight_enemy.global_position = knight.global_position + Vector2(80, 0)
+	await process_frame
+	var knight_hp_before := float(knight.get("health"))
+	var knight_enemy_hp_before := float(knight_enemy.get("health"))
+	knight.call("take_damage", 20.0, "test_counter")
+	await process_frame
+	var knight_damage_taken := knight_hp_before - float(knight.get("health"))
+	if knight_damage_taken >= 20.0 or float(knight_enemy.get("health")) >= knight_enemy_hp_before:
+		_fail("Expected Knight block to reduce damage and counter nearby enemies.")
+		return
+
+	var druid := player_scene.instantiate()
+	holder.add_child(druid)
+	druid.global_position = Vector2(1500, 700)
+	await process_frame
+	druid.call("configure_character", "druid", "summon_amulet")
+	var druid_enemy := enemy_scene.instantiate()
+	holder.add_child(druid_enemy)
+	druid_enemy.global_position = druid.global_position + Vector2(240, 0)
+	var druid_weapon: Node = druid.get("equipped_weapon")
+	druid_weapon.set_process(false)
+	druid_weapon.call("_summon")
+	await process_frame
+	var commanded := false
+	for ally in get_nodes_in_group("allies"):
+		var ally_target = ally.get("command_target")
+		if ally.get("owner_node") == druid and ally_target != null and is_instance_valid(ally_target) and ally.get("command_mode") == "attack_target":
+			commanded = true
+	if not commanded:
+		_fail("Expected Druid pets to receive an attack-target command.")
+		return
+
+	var assassin := player_scene.instantiate()
+	holder.add_child(assassin)
+	assassin.global_position = Vector2(1700, 700)
+	await process_frame
+	assassin.call("configure_character", "assassin", "chakrams")
+	var assassin_enemy := enemy_scene.instantiate()
+	holder.add_child(assassin_enemy)
+	assassin_enemy.global_position = assassin.global_position + Vector2(220, 0)
+	var assassin_start: Vector2 = assassin.global_position
+	assassin.call("trigger_assassin_dash", assassin_enemy, 100.0)
+	await create_timer(0.15).timeout
+	if assassin.global_position.distance_to(assassin_start) < 40.0:
+		_fail("Expected Assassin critical mobility hook to dash toward a target.")
+		return
+
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_universal_attribute_interpretations() -> void:
+	var holder := Node2D.new()
+	holder.name = "UniversalAttributeInterpretationScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+
+	var universal_player := player_scene.instantiate()
+	holder.add_child(universal_player)
+	universal_player.global_position = Vector2(900, 700)
+	await process_frame
+	universal_player.call("configure_character", "berserk", "sword")
+	var boosted: Dictionary = universal_player.get("derived_parameters")
+	boosted["magic_damage"] = 80.0
+	boosted["dot_damage"] = 40.0
+	boosted["dot_speed"] = 4.0
+	boosted["summon_amount"] = 18.0
+	boosted["sound_wave_damage"] = 34.0
+	boosted["aura_radius"] = 220.0
+	universal_player.set("derived_parameters", boosted)
+
+	var enemy := enemy_scene.instantiate()
+	holder.add_child(enemy)
+	enemy.set("max_health", 100000.0)
+	enemy.set("health", 100000.0)
+	enemy.global_position = universal_player.global_position + Vector2(90, 0)
+	await process_frame
+	var hp_before := float(enemy.get("health"))
+	universal_player.call("on_weapon_hit", enemy, 12.0)
+	await create_timer(0.65).timeout
+	if float(enemy.get("health")) >= hp_before:
+		_fail("Expected universal magic/DoT interpretations to damage the hit target.")
+		return
+
+	var leadership_hp_before := float(enemy.get("health"))
+	for hit_index in range(6):
+		universal_player.call("on_weapon_hit", enemy, 12.0)
+		await process_frame
+	if float(enemy.get("health")) >= leadership_hp_before:
+		_fail("Expected leadership interpretation to trigger echo weapon damage.")
+		return
+
+	var shout_enemy := enemy_scene.instantiate()
+	holder.add_child(shout_enemy)
+	shout_enemy.global_position = universal_player.global_position + Vector2(60, 0)
+	await process_frame
+	universal_player.call("_update_battle_shout")
+	if float(universal_player.get("_battle_shout_cooldown_left")) <= 0.0:
+		_fail("Expected sound damage interpretation to trigger a battle shout cooldown.")
+		return
+
+	var rewards := ProgressionData.level_up_rewards("berserk")
+	var derived_icons_seen := {}
+	var mod_display := {
+		"dot_damage_flat": "dot_damage",
+		"dot_speed_flat": "dot_speed",
+		"projectile_speed_flat": "projectile_speed",
+		"aura_radius_flat": "aura_radius",
+		"buff_power_flat": "buff_power",
+		"summon_bonus": "summon_amount",
+		"absorb_flat": "absorb",
+		"regeneration_flat": "regeneration",
+		"vampiric_amount_flat": "vampiric_amount",
+		"vampiric_chance_flat": "vampiric_chance",
+		"ultimate_flat": "ultimate_multiplier",
+	}
+	for reward in rewards:
+		var mods: Dictionary = reward.get("mods", {})
+		for modifier_id in mods.keys():
+			var icon_id := str(mod_display.get(str(modifier_id), ""))
+			if icon_id != "":
+				derived_icons_seen[icon_id] = true
+	for icon_id in ["dot_damage", "dot_speed", "projectile_speed", "aura_radius", "buff_power", "summon_amount", "absorb", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
+		if not derived_icons_seen.has(icon_id):
+			_fail("Expected level-up pool to expose derived attribute reward %s." % icon_id)
+			return
+		if not UIIconRegistry.has_texture(icon_id):
+			_fail("Expected derived attribute %s to resolve to an icon texture." % icon_id)
+			return
+
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
 func _test_weapon_aiming() -> void:
 	var holder := Node2D.new()
 	holder.name = "AimTestScene"
@@ -1758,10 +2071,173 @@ func _test_weapon_aiming() -> void:
 	await process_frame
 
 
+func _test_all_nine_classes() -> void:
+	# Каждый из 9 классов экипирует сигнатурное оружие и наносит урон (друид — призывает).
+	var signature := {
+		"berserk": "sword", "dark_mage": "dark_wand", "guitarist": "electric_guitar",
+		"assassin": "chakrams", "ranger": "moon_crossbow", "doctor": "restore_potion",
+		"chemist": "blast_powder", "knight": "long_spear", "druid": "summon_amulet",
+	}
+	if ProgressionData.character_ids().size() != 9:
+		_fail("Expected nine playable classes in the data.")
+		return
+	for class_id in signature.keys():
+		if ProgressionData.ascension_levels(class_id).size() != 10:
+			_fail("Expected 10 ascension levels for %s." % class_id)
+			return
+
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	for class_id in signature.keys():
+		var class_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+		holder.add_child(class_player)
+		class_player.global_position = Vector2(700, 700)
+		await process_frame
+		class_player.call("configure_character", class_id, signature[class_id])
+		var weapon: Node = class_player.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected %s to equip its signature weapon %s." % [class_id, signature[class_id]])
+			return
+		weapon.set_process(false)
+
+		if class_id == "druid":
+			weapon.call("_summon")
+			await process_frame
+			if get_nodes_in_group("allies").is_empty():
+				_fail("Expected the druid amulet to summon a beast.")
+				return
+			for ally in get_nodes_in_group("allies"):
+				ally.queue_free()
+		else:
+			var class_enemy := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate()
+			holder.add_child(class_enemy)
+			class_enemy.set("max_health", 100000.0)
+			class_enemy.set("health", 100000.0)
+			class_enemy.global_position = class_player.global_position + Vector2(180, 0)
+			await process_frame
+			var enemy_hp := float(class_enemy.get("health"))
+			if weapon.has_method("_start_swing"):
+				weapon.call("_start_swing", true)
+			else:
+				weapon.call("_attack")
+			# Снарядным оружиям (зелье/пыль) нужно время полета до взрыва.
+			await create_timer(0.7).timeout
+			if float(class_enemy.get("health")) >= enemy_hp:
+				_fail("Expected %s signature weapon to damage an enemy." % class_id)
+				return
+			class_enemy.queue_free()
+		class_player.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_full_attribute_wiring() -> void:
+	# Каждый подключенный параметр присутствует и реагирует на свой стат/награду.
+	var stats: Dictionary = ProgressionData.base_stats("berserk")
+	var weapon: Dictionary = ProgressionData.weapon("berserk", "sword")
+	var base: Dictionary = ProgressionData.derived_parameters(stats, {}, weapon)
+	for parameter_id in ["absorb", "regeneration", "vampiric_chance", "vampiric_amount", "knockback_distance", "range_multiplier", "ultimate_multiplier"]:
+		if not base.has(parameter_id):
+			_fail("Expected derived parameters to include %s." % parameter_id)
+			return
+	var boosted_stats: Dictionary = stats.duplicate(true)
+	boosted_stats["endurance"] = boosted_stats["endurance"] + 4.0
+	boosted_stats["knowledge"] = boosted_stats["knowledge"] + 5.0
+	boosted_stats["energy"] = boosted_stats["energy"] + 5.0
+	var boosted: Dictionary = ProgressionData.derived_parameters(boosted_stats, {}, weapon)
+	if boosted["absorb"] <= base["absorb"] or boosted["regeneration"] <= base["regeneration"]:
+		_fail("Expected endurance/knowledge to raise absorb and regeneration.")
+		return
+	if boosted["knockback_distance"] <= base["knockback_distance"] or boosted["ultimate_multiplier"] <= base["ultimate_multiplier"]:
+		_fail("Expected endurance/energy to raise knockback distance and ultimate multiplier.")
+		return
+	var vamp_mods := {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}
+	var vamp: Dictionary = ProgressionData.derived_parameters(stats, vamp_mods, weapon)
+	if absf(float(vamp["vampiric_chance"]) - 0.25) > 0.001 or absf(float(vamp["vampiric_amount"]) - 2.0) > 0.001:
+		_fail("Expected vampiric rewards to feed the vampiric parameters.")
+		return
+
+	# Геймплейная проводка: вампиризм лечит, регенерация тикает, absorb режет урон.
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	var wiring_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	holder.add_child(wiring_player)
+	await process_frame
+	wiring_player.call("configure_character", "berserk", "sword")
+	wiring_player.call("apply_reward", {"mods": {"vampiric_chance_flat": 1.0, "vampiric_amount_flat": 5.0}})
+	# Шанс капится на 0.6 — для детерминизма теста форсируем гарантированный прок.
+	var wiring_derived: Dictionary = wiring_player.get("derived_parameters")
+	wiring_derived["vampiric_chance"] = 1.0
+	wiring_player.set("derived_parameters", wiring_derived)
+	wiring_player.set("health", float(wiring_player.get("max_health")) * 0.5)
+	var hp_before_vamp := float(wiring_player.get("health"))
+	wiring_player.call("on_weapon_hit", wiring_player, 10.0)
+	if float(wiring_player.get("health")) <= hp_before_vamp:
+		_fail("Expected a guaranteed vampiric hit to heal the player.")
+		return
+	var hp_before_regen := float(wiring_player.get("health"))
+	wiring_player.call("_apply_regeneration", 5.0)
+	if float(wiring_player.get("health")) <= hp_before_regen:
+		_fail("Expected regeneration to heal over time.")
+		return
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_settings_persistence_and_audio() -> void:
+	# Save/load roundtrip настроек.
+	var game_settings := load("res://scripts/game_settings.gd")
+	var saved := {
+		"resolution_index": 2, "window_mode_index": 1, "screen_index": 1,
+		"master_volume": 0.85, "music_volume": 0.4, "sfx_volume": 0.65,
+		"music_enabled": false, "sfx_enabled": true,
+	}
+	game_settings.save_settings(saved)
+	var loaded: Dictionary = game_settings.load_settings()
+	for key in saved.keys():
+		if typeof(loaded[key]) == TYPE_FLOAT:
+			if absf(float(loaded[key]) - float(saved[key])) > 0.001:
+				_fail("Expected settings key %s to survive the save/load roundtrip." % key)
+				return
+		elif loaded[key] != saved[key]:
+			_fail("Expected settings key %s to survive the save/load roundtrip." % key)
+			return
+	# Вернуть дефолты, чтобы не влиять на следующие запуски тестов.
+	game_settings.save_settings(game_settings.DEFAULTS.duplicate(true))
+
+	# Аудио-шины созданы и реагируют на настройки.
+	var audio := root.get_node_or_null("/root/AudioManager")
+	if audio == null:
+		_fail("Expected the AudioManager autoload to exist.")
+		return
+	if AudioServer.get_bus_index("Music") == -1 or AudioServer.get_bus_index("SFX") == -1:
+		_fail("Expected Music and SFX audio buses to be created.")
+		return
+	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 0.5, "sfx_volume": 1.0, "music_enabled": false, "sfx_enabled": true})
+	var music_bus := AudioServer.get_bus_index("Music")
+	if not AudioServer.is_bus_mute(music_bus):
+		_fail("Expected the music toggle to mute the Music bus.")
+		return
+	if absf(AudioServer.get_bus_volume_db(music_bus) - linear_to_db(0.5)) > 0.1:
+		_fail("Expected the music slider to set bus volume (value preserved while muted).")
+		return
+	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 1.0, "sfx_volume": 1.0, "music_enabled": true, "sfx_enabled": true})
+
+
 func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
-	# 1. Релевантность: нерелевантный стат не дает прироста своего урона класса.
-	if ProgressionData.is_stat_relevant("intelligence", "berserk") or ProgressionData.is_stat_relevant("strength", "dark_mage") or ProgressionData.is_stat_relevant("energy", "berserk"):
-		_fail("Expected damage-only stats to be irrelevant for foreign classes.")
+	# 1. Новая философия: все базовые атрибуты доступны всем классам.
+	for stat_id in UIIconRegistry.BASE_STAT_IDS:
+		for class_id in ProgressionData.character_ids():
+			if not ProgressionData.is_stat_relevant(stat_id, class_id):
+				_fail("Expected stat %s to be universally relevant for %s." % [stat_id, class_id])
+				return
+	if ProgressionData.class_interpretation_text("berserk", "intelligence") == "" or ProgressionData.class_interpretation_text("dark_mage", "strength") == "":
+		_fail("Expected foreign stats to expose class interpretation text.")
 		return
 	var mage_stats: Dictionary = ProgressionData.base_stats("dark_mage")
 	var mage_weapon: Dictionary = ProgressionData.weapon("dark_mage", "dark_wand")
@@ -1772,15 +2248,21 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		_fail("Expected +10 strength to leave dark mage magic damage unchanged.")
 		return
 
-	# 2. Пулы: магу не предлагают силу, берсерку — интеллект/энергию и magic focus.
+	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.
+	var berserk_has_magic_focus := false
 	for reward in ProgressionData.level_up_rewards("berserk"):
 		if str(reward.get("id")) == "magic_focus_up":
-			_fail("Expected magic focus upgrade to be hidden from the berserk pool.")
-			return
+			berserk_has_magic_focus = true
+	if not berserk_has_magic_focus:
+		_fail("Expected magic focus upgrade to be available to berserk as weapon enchantment.")
+		return
+	var mage_has_strength := false
 	for reward in ProgressionData.reward_pool("dark_mage"):
 		if str(reward.get("kind")) == "stat" and (reward.get("stats", {}) as Dictionary).has("strength"):
-			_fail("Expected strength stat rewards to be hidden from the dark mage pool.")
-			return
+			mage_has_strength = true
+	if not mage_has_strength:
+		_fail("Expected strength stat rewards to remain available to dark mage via interpretation.")
+		return
 
 	var fix_main := main_scene.instantiate()
 	root.add_child(fix_main)
@@ -1865,15 +2347,15 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	await process_frame
 	econ_main.set("selected_character_id", "berserk")
 
-	# Аффинити-пометки: красная / желтая / отсутствует.
-	var red_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("split_core"))
-	var yellow_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("void_ink"))
+	# Аффинити-пометки: больше не красные/желтые запреты, а текст интерпретации.
+	var split_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("split_core"))
+	var void_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("void_ink"))
 	var none_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("warrior_charm"))
-	if str(red_note.get("text", "")) != "Не работает на текущем классе":
-		_fail("Expected a red affinity note for a foreign-class-only artifact.")
+	if not str(split_note.get("text", "")).begins_with("Интерпретация:"):
+		_fail("Expected a class interpretation note for a foreign affinity artifact.")
 		return
-	if str(yellow_note.get("text", "")) != "Работает вполсилы":
-		_fail("Expected a yellow affinity note for a mixed-mods artifact.")
+	if not str(void_note.get("text", "")).begins_with("Интерпретация:"):
+		_fail("Expected a class interpretation note for a mixed affinity artifact.")
 		return
 	if not none_note.is_empty():
 		_fail("Expected no affinity note for a universal artifact.")
@@ -2028,8 +2510,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if artifacts.size() != expected_artifacts:
 		_fail("Expected codex artifacts (%d) to match progression data (%d)." % [artifacts.size(), expected_artifacts])
 		return
-	if codex_data.characters().size() != 3 or codex_data.stats().size() < 20:
-		_fail("Expected codex to cover 3 characters and the stat definitions.")
+	if codex_data.characters().size() != 9 or codex_data.stats().size() < 20:
+		_fail("Expected codex to cover all 9 characters and the stat definitions.")
 		return
 
 	# Все разделы открываются.

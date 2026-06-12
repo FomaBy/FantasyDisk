@@ -1,6 +1,6 @@
 # Progression And Balance
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 
 Source of truth для чисел: `scripts/progression_data.gd`, `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`.
 
@@ -38,6 +38,20 @@ Source of truth для чисел: `scripts/progression_data.gd`, `scripts/stat_
 
 Формулы могут быть упрощены относительно исходной таблицы, но направление влияния должно совпадать с `mechanics_extract.md`.
 
+## Universal Attribute Usefulness
+
+С 2026-06-12 старая модель скрытия «нерелевантных» атрибутов отключена. `ProgressionData.is_stat_relevant()` и `is_reward_relevant()` возвращают `true`, поэтому level-up, докачка за золото, артефакты, магазин, кодекс и Escape stats могут показывать любой stat/derived parameter любому классу.
+
+Если эффект тематически «чужой», он применяется через class interpretation:
+- Intelligence / Magic Damage: зачарование оружия, магический splash или резонанс;
+- Leadership / Summon Amount: эхо-оружие, фантом, сокол, знаменосец, фамильяр или прямые pet-команды;
+- Sound Wave Damage / Aura Radius: боевой клич и ближний контроль пространства;
+- Knowledge / DoT Damage / DoT Speed: малый bleed/burn/poison след на ударах;
+- Energy / Ultimate Power: ускорение уникального class mechanic cooldown/charge;
+- Strength / Damage: физическая весомость, knockback и прямой урон.
+
+UI обязан показывать эти интерпретации текстом в level-up cards, attribute-upgrade tooltips, artifact notes, shop/HUD/pause tooltips и кодексе. Старые пометки «Не работает на текущем классе» и «Работает вполсилы» больше не используются.
+
 ## XP, Money And Pickups
 
 - Враги могут дропать XP и money pickups.
@@ -50,6 +64,7 @@ Source of truth для чисел: `scripts/progression_data.gd`, `scripts/stat_
 - Бой ставится на паузу до выбора.
 - Rewards меняют производные параметры сразу.
 - Level-up UI использует icon mapping через `UIIconRegistry`.
+- Level-up pool включает прямые карточки для основных derived parameters: crit, dodge, range, DoT, projectile speed, aura, buff, summon, absorb, regeneration, vampirism и ultimate scaling.
 
 ## Artifacts
 
@@ -57,6 +72,7 @@ Source of truth для чисел: `scripts/progression_data.gd`, `scripts/stat_
 - HUD показывает artifact icons в `ArtifactHudRow`.
 - Pause stats menu имеет отдельный блок «Артефакты».
 - Artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png`.
+- `class_affinity` теперь означает тематику/источник артефакта, а не запрет. `affinity_mods` применяются любому классу через интерпретацию текущего героя.
 
 ## Shop
 

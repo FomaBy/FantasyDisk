@@ -43,32 +43,80 @@ const BASE_STATS := {
 		"endurance": 4.0,
 		"leadership": 7.0,
 	},
+	"assassin": {"strength": 6.0, "agility": 10.0, "intelligence": 2.0, "perception": 6.0, "energy": 3.0, "knowledge": 4.0, "endurance": 5.0, "leadership": 4.0},
+	"ranger": {"strength": 7.0, "agility": 7.0, "intelligence": 2.0, "perception": 9.0, "energy": 4.0, "knowledge": 4.0, "endurance": 4.0, "leadership": 3.0},
+	"doctor": {"strength": 2.0, "agility": 4.0, "intelligence": 8.0, "perception": 5.0, "energy": 6.0, "knowledge": 8.0, "endurance": 5.0, "leadership": 2.0},
+	"chemist": {"strength": 2.0, "agility": 4.0, "intelligence": 9.0, "perception": 6.0, "energy": 7.0, "knowledge": 7.0, "endurance": 3.0, "leadership": 2.0},
+	"knight": {"strength": 8.0, "agility": 3.0, "intelligence": 2.0, "perception": 4.0, "energy": 3.0, "knowledge": 4.0, "endurance": 10.0, "leadership": 6.0},
+	"druid": {"strength": 3.0, "agility": 4.0, "intelligence": 4.0, "perception": 7.0, "energy": 6.0, "knowledge": 5.0, "endurance": 5.0, "leadership": 9.0},
 }
 
 const CHARACTER_CONFIGS := {
 	"berserk": {
 		"id": "berserk",
 		"title": "Берсерк",
-		"description": "Ближний бой, cone/AoE контроль толпы, высокий HP.",
-		"strengths": "Сильный melee урон, выживаемость, понятная позиционка.",
-		"weaknesses": "Нужно подходить близко, плохо прощает окружение стрелками.",
+		"description": "Мили-AoE и высокий риск.",
+		"strengths": "урон, HP, толпа.",
+		"weaknesses": "нужна близость.",
 		"sprite_path": "res://assets/sprites/characters/berserk_unarmed.png",
 	},
 	"dark_mage": {
 		"id": "dark_mage",
 		"title": "Темный маг",
-		"description": "AoE, DoT, лучи и контроль пространства при низком HP.",
-		"strengths": "Магический burst, урон по площади, pierce/DoT.",
-		"weaknesses": "Хрупкий, зависит от дистанции и времени каста.",
+		"description": "AoE, лучи и проклятия.",
+		"strengths": "площадь, DoT, pierce.",
+		"weaknesses": "хрупкий.",
 		"sprite_path": "res://assets/sprites/characters/dark_mage.png",
 	},
 	"guitarist": {
 		"id": "guitarist",
 		"title": "Гитарист",
-		"description": "Звуковые волны, пульсы, отталкивание и ауры.",
-		"strengths": "Контроль толпы, knockback, стабильный AoE ритм.",
-		"weaknesses": "Средний урон по одиночной жирной цели без усилений.",
+		"description": "Ритм, волны и контроль.",
+		"strengths": "knockback, AoE, темп.",
+		"weaknesses": "слабее по боссам.",
 		"sprite_path": "res://assets/sprites/characters/guitarist.png",
+	},
+	"assassin": {
+		"id": "assassin", "title": "Ассасин",
+		"description": "Криты, скорость и яд.",
+		"strengths": "криты, уворот, темп.",
+		"weaknesses": "мало HP.",
+		"sprite_path": "res://assets/sprites/characters/assassin.png",
+	},
+	"ranger": {
+		"id": "ranger", "title": "Рейнджер",
+		"description": "Дальние линии и ловушки.",
+		"strengths": "дальность, pierce.",
+		"weaknesses": "плох вблизи.",
+		"sprite_path": "res://assets/sprites/characters/ranger.png",
+	},
+	"doctor": {
+		"id": "doctor", "title": "Доктор",
+		"description": "Лечение через урон.",
+		"strengths": "sustain, яд, стабильность.",
+		"weaknesses": "низкий burst.",
+		"sprite_path": "res://assets/sprites/characters/doctor.png",
+	},
+	"chemist": {
+		"id": "chemist", "title": "Химик",
+		"description": "Взрывы и ядовитые зоны.",
+		"strengths": "зоны, DoT, AoE.",
+		"weaknesses": "хрупкий.",
+		"sprite_path": "res://assets/sprites/characters/chemist.png",
+	},
+	"knight": {
+		"id": "knight", "title": "Рыцарь",
+		"description": "Танк, копье и щит.",
+		"strengths": "HP, защита, контроль.",
+		"weaknesses": "медленный.",
+		"sprite_path": "res://assets/sprites/characters/knight.png",
+	},
+	"druid": {
+		"id": "druid", "title": "Друид",
+		"description": "Стая, тернии и тотемы.",
+		"strengths": "призывы, зоны.",
+		"weaknesses": "слаб один.",
+		"sprite_path": "res://assets/sprites/characters/druid.png",
 	},
 }
 
@@ -76,19 +124,19 @@ const BERSERK_WEAPONS := {
 	"sword": {
 		"id": "sword",
 		"title": "Двуручный меч",
-		"description": "Узкая длинная полоса 120x500: быстрый точный удар по линии с высоким уроном. Passive: +10% damage.",
+		"description": "Широкий усеченный замах 90 градусов, радиус 600: надежно достает врагов рядом и впереди. Passive: +10% damage.",
 		"scene_path": "res://scenes/TwoHandedSword.tscn",
-		"attack_shape": "strip",
-		"cone_degrees": 36.0,
-		"attack_range": 500.0,
+		"attack_shape": "frustum",
+		"cone_degrees": 90.0,
+		"attack_range": 600.0,
 		"start_distance": 0.0,
-		"inner_width": 120.0,
-		"outer_width": 120.0,
-		"aoe_radius": 500.0,
-		"sweep_degrees": 36.0,
+		"inner_width": 150.0,
+		"outer_width": 1200.0,
+		"aoe_radius": 600.0,
+		"sweep_degrees": 90.0,
 		"damage_multiplier": 1.15,
 		"passive_mods": {"damage_multiplier": 1.10},
-		"fire_interval": 0.70,
+		"fire_interval": 0.58,
 		"visual_color": Color(0.62, 0.82, 1.0, 0.34),
 	},
 	"axe": {
@@ -236,10 +284,241 @@ const GUITARIST_WEAPONS := {
 	},
 }
 
+const ASSASSIN_WEAPONS := {
+	"chakrams": {
+		"id": "chakrams", "title": "Чакрамы",
+		"description": "Возвращающиеся клинки: режут коридор до цели и обратно (два прохода урона).",
+		"scene_path": "res://scenes/Chakrams.tscn",
+		"attack_mode": "boomerang", "damage_parameter": "damage",
+		"damage_multiplier": 0.45, "fire_interval": 0.62,
+		"attack_range": 460.0, "aoe_radius": 60.0, "beam_width": 56.0,
+		"projectile_speed": 760.0,
+		"dash_on_crit_distance": 115.0,
+		"visual_color": Color(0.72, 0.30, 1.0, 0.40),
+		"passive_mods": {"crit_chance_flat": 0.06},
+	},
+	"shadow_daggers": {
+		"id": "shadow_daggers", "title": "Теневые кинжалы",
+		"description": "Серия быстрых коротких выпадов по ближайшим целям в узкой зоне. Критовый мили-стиль Ассасина.",
+		"scene_path": "res://scenes/ShadowDaggers.tscn",
+		"attack_mode": "stab_flurry", "damage_parameter": "damage",
+		"damage_multiplier": 0.54, "fire_interval": 0.38,
+		"attack_range": 230.0, "aoe_radius": 82.0, "wave_width": 190.0,
+		"projectile_count": 3, "knockback": 35.0,
+		"dash_on_crit_distance": 78.0,
+		"visual_color": Color(0.55, 0.18, 0.88, 0.42),
+		"passive_mods": {"crit_chance_flat": 0.10, "attack_speed_multiplier": 1.08},
+	},
+	"venom_wire": {
+		"id": "venom_wire", "title": "Ядовитая струна",
+		"description": "Тонкая ядовитая линия-гаррота: пробивает ряд врагов и оставляет poison DoT.",
+		"scene_path": "res://scenes/VenomWire.tscn",
+		"attack_mode": "dot_beam", "damage_parameter": "damage",
+		"damage_multiplier": 0.68, "fire_interval": 0.78,
+		"attack_range": 520.0, "aoe_radius": 75.0, "beam_width": 32.0,
+		"pierce_count": 4, "dot_ticks": 4,
+		"dash_on_crit_distance": 92.0,
+		"visual_color": Color(0.32, 0.95, 0.28, 0.46),
+		"passive_mods": {"crit_chance_flat": 0.04},
+	},
+}
+
+const RANGER_WEAPONS := {
+	"moon_crossbow": {
+		"id": "moon_crossbow", "title": "Лунный арбалет",
+		"description": "Заряжаемый болт: чем дольше Рейнджер стоит на месте, тем сильнее пробивающий выстрел.",
+		"scene_path": "res://scenes/MoonCrossbow.tscn",
+		"attack_mode": "beam", "damage_parameter": "damage",
+		"damage_multiplier": 1.55, "fire_interval": 0.95,
+		"attack_range": 900.0, "aoe_radius": 40.0, "beam_width": 26.0,
+		"beam_count": 1, "pierce_count": 1,
+		"charge_seconds": 1.25, "charge_max_multiplier": 1.70,
+		"visual_color": Color(0.75, 0.85, 1.0, 0.50),
+		"passive_mods": {"range_multiplier": 1.10},
+	},
+	"storm_longbow": {
+		"id": "storm_longbow", "title": "Грозовой длинный лук",
+		"description": "Заряжаемый грозовой веер: стойка усиливает дальние линии и пробивание.",
+		"scene_path": "res://scenes/StormLongbow.tscn",
+		"attack_mode": "beam", "damage_parameter": "damage",
+		"damage_multiplier": 0.88, "fire_interval": 1.05,
+		"attack_range": 780.0, "aoe_radius": 72.0, "beam_width": 34.0,
+		"beam_count": 3, "beam_fan_degrees": 16.0, "pierce_count": 3,
+		"charge_seconds": 1.45, "charge_max_multiplier": 1.55,
+		"visual_color": Color(0.28, 0.72, 1.0, 0.48),
+		"passive_mods": {"range_multiplier": 1.06, "attack_speed_multiplier": 0.96},
+	},
+	"hunter_trap": {
+		"id": "hunter_trap", "title": "Охотничий капкан",
+		"description": "Ставит ловушку перед Рейнджером: стойка ускоряет подготовку, первый враг запускает взрыв и отбрасывание.",
+		"scene_path": "res://scenes/HunterTrap.tscn",
+		"attack_mode": "trap", "damage_parameter": "damage",
+		"damage_multiplier": 1.18, "fire_interval": 1.65,
+		"attack_range": 380.0, "aoe_radius": 150.0, "pool_duration": 4.0,
+		"pool_tick_interval": 0.20, "knockback": 150.0,
+		"charge_seconds": 1.15, "charge_max_multiplier": 1.35,
+		"visual_color": Color(0.86, 0.62, 0.22, 0.42),
+		"passive_mods": {"pickup_radius_flat": 18.0},
+	},
+}
+
+const DOCTOR_WEAPONS := {
+	"restore_potion": {
+		"id": "restore_potion", "title": "Зелье восстановления",
+		"description": "Дренажная связь: вытягивает жизнь из ближайшей цели и лечит Доктора от нанесенного урона.",
+		"scene_path": "res://scenes/RestorePotion.tscn",
+		"attack_mode": "drain_link", "damage_parameter": "magic_damage",
+		"damage_multiplier": 1.0, "fire_interval": 1.05,
+		"attack_range": 560.0, "aoe_radius": 150.0, "beam_width": 46.0,
+		"heal_percent_of_damage": 0.34,
+		"visual_color": Color(0.35, 0.95, 0.55, 0.42),
+		"passive_mods": {"max_health_multiplier": 1.10},
+	},
+	"plague_syringe": {
+		"id": "plague_syringe", "title": "Чумной шприц",
+		"description": "Тонкая чумная связь: одиночная цель получает яд, часть урона возвращается лечением.",
+		"scene_path": "res://scenes/PlagueSyringe.tscn",
+		"attack_mode": "drain_link", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.64, "fire_interval": 0.78,
+		"attack_range": 590.0, "aoe_radius": 80.0, "beam_width": 30.0, "dot_ticks": 6,
+		"projectile_speed": 700.0, "heal_percent_of_damage": 0.26,
+		"visual_color": Color(0.36, 0.95, 0.42, 0.46),
+		"passive_mods": {"max_health_multiplier": 1.04},
+	},
+	"bone_saw": {
+		"id": "bone_saw", "title": "Костяная пила",
+		"description": "Короткий кровавый arc: ближний риск, частые удары и малое лечение за атаку.",
+		"scene_path": "res://scenes/BoneSaw.tscn",
+		"attack_mode": "stab_flurry", "damage_parameter": "damage",
+		"damage_multiplier": 0.82, "fire_interval": 0.58,
+		"attack_range": 190.0, "aoe_radius": 70.0, "wave_width": 220.0,
+		"projectile_count": 2, "dot_ticks": 3, "heal_percent_of_damage": 0.18,
+		"visual_color": Color(0.88, 0.22, 0.18, 0.42),
+		"passive_mods": {"defense_flat": 0.02},
+	},
+}
+
+const CHEMIST_WEAPONS := {
+	"blast_powder": {
+		"id": "blast_powder", "title": "Взрывная пыль",
+		"description": "Взрыв по области и ядовитое облако: тики DoT 3 секунды.",
+		"scene_path": "res://scenes/BlastPowder.tscn",
+		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.8, "fire_interval": 1.25,
+		"attack_range": 580.0, "aoe_radius": 170.0, "projectile_speed": 500.0,
+		"leaves_pool": true, "pool_element": "spark", "combo_clouds": true, "pool_duration": 3.0, "pool_tick_interval": 0.6,
+		"visual_color": Color(0.62, 0.95, 0.18, 0.42),
+		"passive_mods": {"aoe_radius_multiplier": 1.12},
+	},
+	"acid_flask": {
+		"id": "acid_flask", "title": "Кислотная колба",
+		"description": "Кислотный бросок: слабый взрыв, но большая едкая лужа с частыми DoT-тиками.",
+		"scene_path": "res://scenes/AcidFlask.tscn",
+		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.58, "fire_interval": 1.08,
+		"attack_range": 600.0, "aoe_radius": 215.0, "projectile_speed": 520.0,
+		"leaves_pool": true, "pool_element": "poison", "combo_clouds": true, "pool_duration": 4.2, "pool_tick_interval": 0.48,
+		"visual_color": Color(0.22, 0.95, 0.26, 0.44),
+		"passive_mods": {"aoe_radius_multiplier": 1.08},
+	},
+	"homunculus_vial": {
+		"id": "homunculus_vial", "title": "Склянка гомункула",
+		"description": "Временный алхимический приспешник: лимит небольшой, урон растет от магического урона.",
+		"scene_path": "res://scenes/HomunculusVial.tscn",
+		"damage_parameter": "magic_damage",
+		"summon_damage_multiplier": 0.42,
+		"damage_multiplier": 0.90, "fire_interval": 4.0,
+		"attack_range": 420.0, "aoe_radius": 70.0,
+		"max_summons": 1,
+		"visual_color": Color(0.54, 0.96, 0.48, 0.42),
+		"passive_mods": {"max_health_flat": 6.0},
+	},
+}
+
+const KNIGHT_WEAPONS := {
+	"long_spear": {
+		"id": "long_spear", "title": "Копье",
+		"description": "Длинный точечный выпад: узкая полоса 90 x 540, медленно и тяжело. Пассив: +5% защиты.",
+		"scene_path": "res://scenes/LongSpear.tscn",
+		"attack_shape": "strip", "cone_degrees": 24.0,
+		"attack_range": 540.0, "start_distance": 0.0,
+		"inner_width": 90.0, "outer_width": 90.0, "aoe_radius": 540.0,
+		"sweep_degrees": 24.0, "damage_multiplier": 3.0, "fire_interval": 1.0,
+		"visual_color": Color(0.80, 0.86, 0.95, 0.36),
+		"passive_mods": {"defense_flat": 0.05, "block_reduction": 0.45, "counter_damage_multiplier": 0.55, "counter_cooldown": 2.6},
+	},
+	"tower_shield": {
+		"id": "tower_shield", "title": "Башенный щит",
+		"description": "Короткий фронтальный bash: меньше урона, сильная защита и отбрасывающая зона перед Рыцарем.",
+		"scene_path": "res://scenes/TowerShield.tscn",
+		"attack_shape": "sweep", "cone_degrees": 95.0,
+		"attack_range": 215.0, "start_distance": 0.0,
+		"inner_width": 150.0, "outer_width": 290.0, "aoe_radius": 215.0,
+		"sweep_degrees": 95.0, "damage_multiplier": 0.72, "fire_interval": 0.82,
+		"visual_color": Color(0.74, 0.78, 0.92, 0.36),
+		"passive_mods": {"defense_flat": 0.08, "max_health_multiplier": 1.08, "block_reduction": 0.58, "counter_damage_multiplier": 0.42, "counter_cooldown": 2.2},
+	},
+	"holy_flail": {
+		"id": "holy_flail", "title": "Освященный кистень",
+		"description": "Тяжелый круговой замах средней дальности: медленнее щита, но лучше чистит толпу вокруг.",
+		"scene_path": "res://scenes/HolyFlail.tscn",
+		"attack_shape": "circle", "cone_degrees": 360.0,
+		"attack_range": 235.0, "start_distance": 0.0,
+		"inner_width": 180.0, "outer_width": 360.0, "aoe_radius": 235.0,
+		"sweep_degrees": 360.0, "damage_multiplier": 0.86, "fire_interval": 1.18,
+		"visual_color": Color(1.0, 0.84, 0.32, 0.34),
+		"passive_mods": {"knockback_multiplier": 1.20, "block_reduction": 0.34, "counter_damage_multiplier": 0.72, "counter_cooldown": 2.9},
+	},
+}
+
+const DRUID_WEAPONS := {
+	"summon_amulet": {
+		"id": "summon_amulet", "title": "Амулет призыва",
+		"description": "Зовет зверей: стая бьется за друида, размер растет от Лидерства.",
+		"scene_path": "res://scenes/SummonAmulet.tscn",
+		"damage_parameter": "sound_wave_damage",
+		"damage_multiplier": 1.0, "fire_interval": 3.0,
+		"attack_range": 420.0, "aoe_radius": 60.0,
+		"max_summons": 2,
+		"command_mode": "attack_target",
+		"visual_color": Color(0.45, 0.80, 0.35, 0.42),
+		"passive_mods": {"buff_power_note": 0.0},
+	},
+	"briar_staff": {
+		"id": "briar_staff", "title": "Посох терний",
+		"description": "Бросок семени-терновника: зона шипов наносит DoT и держит толпу на дистанции.",
+		"scene_path": "res://scenes/BriarStaff.tscn",
+		"attack_mode": "aoe_projectile", "damage_parameter": "sound_wave_damage",
+		"damage_multiplier": 0.70, "fire_interval": 1.20,
+		"attack_range": 560.0, "aoe_radius": 190.0, "projectile_speed": 500.0,
+		"leaves_pool": true, "pool_duration": 3.6, "pool_tick_interval": 0.55,
+		"pool_element": "briar",
+		"visual_color": Color(0.32, 0.78, 0.28, 0.44),
+		"passive_mods": {"aoe_radius_multiplier": 1.08},
+	},
+	"raven_totem": {
+		"id": "raven_totem", "title": "Вороний тотем",
+		"description": "Ставит тотем воронов: автономные пульсы зоны, лимит растет от Лидерства.",
+		"scene_path": "res://scenes/RavenTotem.tscn",
+		"attack_mode": "amp", "damage_parameter": "sound_wave_damage",
+		"damage_multiplier": 0.66, "fire_interval": 2.35,
+		"attack_range": 470.0, "aoe_radius": 255.0, "knockback": 70.0,
+		"amp_lifetime": 6.5, "amp_pulse_interval": 0.95, "max_summons": 1,
+		"visual_color": Color(0.20, 0.72, 0.42, 0.40),
+		"passive_mods": {"pickup_radius_flat": 20.0},
+	},
+}
+
 const WEAPONS_BY_CLASS := {
 	"berserk": BERSERK_WEAPONS,
 	"dark_mage": DARK_MAGE_WEAPONS,
 	"guitarist": GUITARIST_WEAPONS,
+	"assassin": ASSASSIN_WEAPONS,
+	"ranger": RANGER_WEAPONS,
+	"doctor": DOCTOR_WEAPONS,
+	"chemist": CHEMIST_WEAPONS,
+	"knight": KNIGHT_WEAPONS,
+	"druid": DRUID_WEAPONS,
 }
 
 const STAT_REWARDS := [
@@ -346,6 +625,7 @@ const ARTIFACTS := [
 	{"id": "leech_heart", "title": "Сердце Пиявки", "tier": 3, "cost": 95, "class_affinity": [], "description": "Каждое убийство возвращает 2% максимального здоровья.", "mods": {"kill_heal_percent": 0.02}},
 	{"id": "thorn_pact", "title": "Договор Шипов", "tier": 3, "cost": 95, "class_affinity": [], "description": "Получив урон, выплескиваешь 200% этого урона на всех врагов рядом.", "mods": {"thorn_reflect_multiplier": 2.0}},
 	{"id": "phantom_step", "title": "Призрачный Шаг", "tier": 3, "cost": 95, "class_affinity": [], "description": "Успешный уворот дает +40% скорости движения на 2 секунды.", "mods": {"dodge_rush_bonus": 0.4}},
+	{"id": "leech_fang", "title": "Клык Пиявки", "tier": 2, "cost": 55, "class_affinity": [], "description": "+25% шанса вампиризма, +2 к силе вампиризма (лечение при ударе).", "mods": {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}},
 ]
 
 const LEVEL_UP_REWARDS := [
@@ -356,8 +636,23 @@ const LEVEL_UP_REWARDS := [
 	{"id": "aoe_radius_up", "title": "+AoE Radius", "description": "+15% cone/radius coverage.", "kind": "upgrade", "mods": {"aoe_radius_multiplier": 1.15, "range_multiplier": 1.08}},
 	{"id": "pickup_radius_up", "title": "+Pickup Radius", "description": "+45 pickup radius.", "kind": "upgrade", "mods": {"pickup_radius_flat": 45.0}},
 	{"id": "defense_up", "title": "+Defense", "description": "+8% damage reduction.", "kind": "upgrade", "mods": {"defense_flat": 0.08}},
-	{"id": "magic_focus_up", "title": "+Magic Focus", "description": "+14% magic/sound damage.", "kind": "upgrade", "relevant_classes": ["dark_mage", "guitarist"], "mods": {"damage_multiplier": 1.14}},
+	{"id": "magic_focus_up", "title": "+Magic Focus", "description": "+14% magic/sound damage or weapon enchantment.", "kind": "upgrade", "mods": {"damage_multiplier": 1.14}},
 	{"id": "knockback_up", "title": "+Knockback", "description": "+18% knockback and pulse control.", "kind": "upgrade", "mods": {"knockback_multiplier": 1.18}},
+	{"id": "crit_chance_up", "title": "+Crit Chance", "description": "+7% crit chance.", "kind": "upgrade", "mods": {"crit_chance_flat": 0.07}},
+	{"id": "crit_damage_up", "title": "+Crit Damage", "description": "+35% critical damage multiplier.", "kind": "upgrade", "mods": {"crit_damage_flat": 0.35}},
+	{"id": "dodge_up", "title": "+Dodge", "description": "+6% dodge chance.", "kind": "upgrade", "mods": {"dodge_flat": 0.06}},
+	{"id": "range_up", "title": "+Attack Range", "description": "+12% attack range.", "kind": "upgrade", "mods": {"range_multiplier": 1.12}},
+	{"id": "dot_damage_up", "title": "+DoT Damage", "description": "+3 periodic damage. Non-DoT classes add small bleed/burn.", "kind": "upgrade", "mods": {"dot_damage_flat": 3.0}},
+	{"id": "dot_speed_up", "title": "+DoT Speed", "description": "+0.25 DoT ticks per second.", "kind": "upgrade", "mods": {"dot_speed_flat": 0.25}},
+	{"id": "projectile_speed_up", "title": "+Projectile Speed", "description": "+90 projectile speed and projectile weight.", "kind": "upgrade", "mods": {"projectile_speed_flat": 90.0}},
+	{"id": "aura_radius_up", "title": "+Aura Radius", "description": "+55 aura radius. Non-aura classes gain stronger close battle-shout space.", "kind": "upgrade", "mods": {"aura_radius_flat": 55.0}},
+	{"id": "buff_power_up", "title": "+Buff Power", "description": "+0.18 support/buff power.", "kind": "upgrade", "mods": {"buff_power_flat": 0.18}},
+	{"id": "summon_amount_up", "title": "+Summon Amount", "description": "+2 summon power. Non-summoners trigger echo weapons/companions.", "kind": "upgrade", "mods": {"summon_bonus": 2.0}},
+	{"id": "absorb_up", "title": "+Absorb", "description": "+4 flat damage absorption.", "kind": "upgrade", "mods": {"absorb_flat": 4.0}},
+	{"id": "regeneration_up", "title": "+Regeneration", "description": "+0.8 regeneration base.", "kind": "upgrade", "mods": {"regeneration_flat": 0.8}},
+	{"id": "vampiric_amount_up", "title": "+Vampiric Heal", "description": "+2 heal on vampiric hits.", "kind": "upgrade", "mods": {"vampiric_amount_flat": 2.0}},
+	{"id": "vampiric_chance_up", "title": "+Vampiric Chance", "description": "+8% chance to heal on hit.", "kind": "upgrade", "mods": {"vampiric_chance_flat": 0.08}},
+	{"id": "ultimate_power_up", "title": "+Ultimate Power", "description": "+0.12 reserved unique-mechanic power.", "kind": "upgrade", "mods": {"ultimate_flat": 0.12}},
 ]
 
 # Классовая релевантность урона: какой derived-параметр является «своим» уроном класса.
@@ -365,14 +660,75 @@ const CLASS_DAMAGE_PARAMETER := {
 	"berserk": "damage",
 	"dark_mage": "magic_damage",
 	"guitarist": "sound_wave_damage",
+	"assassin": "damage",
+	"ranger": "damage",
+	"knight": "damage",
+	"doctor": "magic_damage",
+	"chemist": "magic_damage",
+	"druid": "sound_wave_damage",
 }
 # Атрибуты, дающие силу только перечисленным классам (по формулам derived_parameters):
 # strength питает только физический урон, intelligence — только магический,
 # energy — магический и звуковой. Отсутствие в карте = атрибут универсален.
-const STAT_CLASS_RELEVANCE := {
-	"strength": ["berserk"],
-	"intelligence": ["dark_mage"],
-	"energy": ["dark_mage", "guitarist"],
+const STAT_CLASS_RELEVANCE := {}
+
+const CLASS_INTERPRETATIONS := {
+	"berserk": {
+		"strength": "Прямо усиливает двуручное оружие.",
+		"intelligence": "Зачаровывает удары: часть магической силы взрывается искрой вокруг цели.",
+		"energy": "Ускоряет темп уникальных срабатываний и усиливает магическое зачарование.",
+		"leadership": "Каждые несколько ударов вызывает призрачное эхо-оружие.",
+		"magic_damage": "Работает как зачарование физического удара.",
+		"sound_wave_damage": "Дает боевой клич: периодическая волна отталкивания вокруг Берсерка.",
+		"dot_damage": "Добавляет малое кровотечение к ударам.",
+		"summon_amount": "Повышает частоту эхо-оружия.",
+	},
+	"dark_mage": {
+		"strength": "Придает вес снарядам: больше knockback и физическая устойчивость.",
+		"leadership": "Усиливает фамильярные эхо-касты и поддержку.",
+		"sound_wave_damage": "Проявляется как разломный клич, отталкивающий ближайших врагов.",
+		"summon_amount": "Учащает вспомогательные эхо-срабатывания.",
+	},
+	"guitarist": {
+		"strength": "Делает волны тяжелее и сильнее отталкивает.",
+		"intelligence": "Добавляет магический резонанс к звуку.",
+		"dot_damage": "Добавляет жгучий feedback-DoT.",
+		"summon_amount": "Увеличивает сценические deploy/echo-срабатывания.",
+	},
+	"assassin": {
+		"intelligence": "Зачаровывает лезвия фиолетовой искрой по области.",
+		"sound_wave_damage": "Дает тихий боевой клич-рывок контроля вокруг себя.",
+		"leadership": "Фантом-двойник периодически повторяет удар.",
+		"summon_amount": "Повышает частоту фантомного повторного удара.",
+	},
+	"ranger": {
+		"intelligence": "Зачаровывает болты магическим splash.",
+		"energy": "Быстрее заряжает стойку охотника.",
+		"sound_wave_damage": "Боевой окрик отталкивает врагов, если подпустили близко.",
+		"leadership": "Сокол-метка периодически повторяет урон по цели.",
+	},
+	"doctor": {
+		"strength": "Утяжеляет инструменты и повышает контроль ближней пилы.",
+		"sound_wave_damage": "Командный окрик раздвигает толпу вокруг пациента.",
+		"leadership": "Санитарная команда усиливает эхо-лечение/повтор ударов.",
+	},
+	"chemist": {
+		"strength": "Утяжеляет колбы и повышает knockback.",
+		"sound_wave_damage": "Хлопок реагентов отталкивает врагов рядом.",
+		"leadership": "Автономный помощник/эхо-реакция чаще повторяет удар.",
+	},
+	"knight": {
+		"intelligence": "Зачаровывает сталь магическим splash.",
+		"energy": "Сокращает cooldown контратаки.",
+		"sound_wave_damage": "Боевой клич щита отталкивает врагов вокруг.",
+		"leadership": "Знаменосец-аура чаще вызывает эхо-контроль.",
+	},
+	"druid": {
+		"strength": "Усиливает когти/тернии и knockback.",
+		"magic_damage": "Подпитывает природные заклинания и зачарованные зоны.",
+		"sound_wave_damage": "Зов стаи работает как контрольная волна.",
+		"energy": "Ускоряет природные циклы и уникальные cooldown.",
+	},
 }
 
 # Базовая цена артефакта в магазине по тиру (редкость и сила растут вместе).
@@ -417,6 +773,78 @@ const ASCENSION_LEVELS := {
 		{"id": "guitarist_asc_9", "title": "Кураж толпы", "mods": {"max_health_flat": 11.0}},
 		{"id": "guitarist_asc_10", "title": "Легенда сцены", "mods": {"damage_multiplier": 1.10, "knockback_multiplier": 1.10}},
 	],
+	"assassin": [
+		{"id": "assassin_asc_1", "title": "Первая Кровь", "mods": {"damage_multiplier": 1.05}},
+		{"id": "assassin_asc_2", "title": "Тихий Шаг", "mods": {"max_health_flat": 8.0}},
+		{"id": "assassin_asc_3", "title": "Острие Ночи", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "assassin_asc_4", "title": "Холодный Расчет", "mods": {"defense_flat": 0.02}},
+		{"id": "assassin_asc_5", "title": "Двойной Росчерк", "mods": {"damage_multiplier": 1.07}},
+		{"id": "assassin_asc_6", "title": "Тень Клинка", "mods": {"max_health_flat": 12.0}},
+		{"id": "assassin_asc_7", "title": "Хватка Ужаса", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "assassin_asc_8", "title": "Безупречный Срез", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "assassin_asc_9", "title": "Глаз Бури", "mods": {"defense_flat": 0.03}},
+		{"id": "assassin_asc_10", "title": "Властелин Теней", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"ranger": [
+		{"id": "ranger_asc_1", "title": "Верный Прицел", "mods": {"damage_multiplier": 1.05}},
+		{"id": "ranger_asc_2", "title": "Длинный Выдох", "mods": {"max_health_flat": 8.0}},
+		{"id": "ranger_asc_3", "title": "Лунная Тетива", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "ranger_asc_4", "title": "Зоркость", "mods": {"defense_flat": 0.02}},
+		{"id": "ranger_asc_5", "title": "Тяжелый Болт", "mods": {"damage_multiplier": 1.07}},
+		{"id": "ranger_asc_6", "title": "Ветер Чащи", "mods": {"max_health_flat": 12.0}},
+		{"id": "ranger_asc_7", "title": "Хищный Расчет", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "ranger_asc_8", "title": "Серебряный След", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "ranger_asc_9", "title": "Сердце Леса", "mods": {"defense_flat": 0.03}},
+		{"id": "ranger_asc_10", "title": "Лунный Страж", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"doctor": [
+		{"id": "doctor_asc_1", "title": "Полевые Швы", "mods": {"damage_multiplier": 1.05}},
+		{"id": "doctor_asc_2", "title": "Крепкий Настой", "mods": {"max_health_flat": 8.0}},
+		{"id": "doctor_asc_3", "title": "Чистые Руки", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "doctor_asc_4", "title": "Горький Тоник", "mods": {"defense_flat": 0.02}},
+		{"id": "doctor_asc_5", "title": "Вторая Доза", "mods": {"damage_multiplier": 1.07}},
+		{"id": "doctor_asc_6", "title": "Стальные Нервы", "mods": {"max_health_flat": 12.0}},
+		{"id": "doctor_asc_7", "title": "Эликсир Стойкости", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "doctor_asc_8", "title": "Точная Инъекция", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "doctor_asc_9", "title": "Клятва Жизни", "mods": {"defense_flat": 0.03}},
+		{"id": "doctor_asc_10", "title": "Архилекарь", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"chemist": [
+		{"id": "chemist_asc_1", "title": "Едкая Смесь", "mods": {"damage_multiplier": 1.05}},
+		{"id": "chemist_asc_2", "title": "Колба Праха", "mods": {"max_health_flat": 8.0}},
+		{"id": "chemist_asc_3", "title": "Летучий Реагент", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "chemist_asc_4", "title": "Кислотный След", "mods": {"defense_flat": 0.02}},
+		{"id": "chemist_asc_5", "title": "Нестабильный Состав", "mods": {"damage_multiplier": 1.07}},
+		{"id": "chemist_asc_6", "title": "Пары Гнили", "mods": {"max_health_flat": 12.0}},
+		{"id": "chemist_asc_7", "title": "Катализатор", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "chemist_asc_8", "title": "Цепная Реакция", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "chemist_asc_9", "title": "Формула Распада", "mods": {"defense_flat": 0.03}},
+		{"id": "chemist_asc_10", "title": "Алхимия Конца", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"knight": [
+		{"id": "knight_asc_1", "title": "Крепкий Щит", "mods": {"damage_multiplier": 1.05}},
+		{"id": "knight_asc_2", "title": "Тяжелый Шаг", "mods": {"max_health_flat": 8.0}},
+		{"id": "knight_asc_3", "title": "Несгибаемость", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "knight_asc_4", "title": "Клятва Стали", "mods": {"defense_flat": 0.02}},
+		{"id": "knight_asc_5", "title": "Башня", "mods": {"damage_multiplier": 1.07}},
+		{"id": "knight_asc_6", "title": "Сталь и Кровь", "mods": {"max_health_flat": 12.0}},
+		{"id": "knight_asc_7", "title": "Бастион", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "knight_asc_8", "title": "Железная Воля", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "knight_asc_9", "title": "Страж Рубежа", "mods": {"defense_flat": 0.03}},
+		{"id": "knight_asc_10", "title": "Паладин Разлома", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"druid": [
+		{"id": "druid_asc_1", "title": "Зов Чащи", "mods": {"damage_multiplier": 1.05}},
+		{"id": "druid_asc_2", "title": "Первый Зверь", "mods": {"max_health_flat": 8.0}},
+		{"id": "druid_asc_3", "title": "Дикий Союз", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "druid_asc_4", "title": "Корни Силы", "mods": {"defense_flat": 0.02}},
+		{"id": "druid_asc_5", "title": "Стая", "mods": {"damage_multiplier": 1.07}},
+		{"id": "druid_asc_6", "title": "Шепот Леса", "mods": {"max_health_flat": 12.0}},
+		{"id": "druid_asc_7", "title": "Когти и Клыки", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "druid_asc_8", "title": "Вожак", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "druid_asc_9", "title": "Сердце Чащи", "mods": {"defense_flat": 0.03}},
+		{"id": "druid_asc_10", "title": "Аватар Природы", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
 }
 
 const SHOP_ITEMS := [
@@ -445,18 +873,33 @@ static func damage_parameter_for(character_id: String) -> String:
 
 
 static func is_stat_relevant(stat_id: String, character_id: String) -> bool:
-	var relevant: Array = STAT_CLASS_RELEVANCE.get(stat_id, [])
-	return relevant.is_empty() or relevant.has(character_id)
+	return true
 
 
 static func is_reward_relevant(reward: Dictionary, character_id: String) -> bool:
-	var relevant_classes: Array = reward.get("relevant_classes", [])
-	if not relevant_classes.is_empty() and not relevant_classes.has(character_id):
-		return false
-	for stat_id in (reward.get("stats", {}) as Dictionary).keys():
-		if not is_stat_relevant(str(stat_id), character_id):
-			return false
 	return true
+
+
+static func class_interpretation_text(character_id: String, stat_or_parameter_id: String) -> String:
+	var class_map: Dictionary = CLASS_INTERPRETATIONS.get(character_id, {})
+	var direct := str(class_map.get(stat_or_parameter_id, ""))
+	if direct != "":
+		return direct
+	match stat_or_parameter_id:
+		"leadership", "summon_amount":
+			return "Для этого класса работает как частота вспомогательных эхо-эффектов и поддержки."
+		"intelligence", "magic_damage":
+			return "Для этого класса работает как зачарование оружия или магический splash."
+		"sound_wave_damage", "aura_radius":
+			return "Для этого класса работает как боевой клич и ближний контроль пространства."
+		"knowledge", "dot_damage", "dot_speed":
+			return "Для этого класса добавляет малый bleed/burn/poison след к ударам."
+		"energy", "ultimate_multiplier":
+			return "Ускоряет уникальную механику класса и усиливает reserved ultimate-scaling."
+		"strength", "damage":
+			return "Дает физическую весомость атакам, knockback и прямой урон."
+		_:
+			return "Универсально полезно через формулы персонажа и текущий class kit."
 
 
 static func base_stats(character_id: String) -> Dictionary:
@@ -538,6 +981,11 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var defense_flat := float(run_modifiers.get("defense_flat", 0.0)) + float(passive_mods.get("defense_flat", 0.0))
 	var pickup_radius_flat := float(run_modifiers.get("pickup_radius_flat", 0.0)) + float(passive_mods.get("pickup_radius_flat", 0.0))
 	var max_health_flat := float(run_modifiers.get("max_health_flat", 0.0)) + float(passive_mods.get("max_health_flat", 0.0))
+	var projectile_speed_flat := float(run_modifiers.get("projectile_speed_flat", 0.0)) + float(passive_mods.get("projectile_speed_flat", 0.0))
+	var aura_radius_flat := float(run_modifiers.get("aura_radius_flat", 0.0)) + float(passive_mods.get("aura_radius_flat", 0.0))
+	var buff_power_flat := float(run_modifiers.get("buff_power_flat", 0.0)) + float(passive_mods.get("buff_power_flat", 0.0))
+	var dot_damage_flat := float(run_modifiers.get("dot_damage_flat", 0.0)) + float(passive_mods.get("dot_damage_flat", 0.0))
+	var dot_speed_flat := float(run_modifiers.get("dot_speed_flat", 0.0)) + float(passive_mods.get("dot_speed_flat", 0.0))
 
 	return {
 		"damage": (15.0 * strength / 10.0) * weapon_damage_multiplier * damage_multiplier + float(run_modifiers.get("damage_flat", 0.0)),
@@ -553,13 +1001,22 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + perception * 2.5) * range_multiplier,
 		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + perception * 3.5) * aoe_radius_multiplier,
 		"pickup_radius": 105.0 + perception * 7.0 + pickup_radius_flat,
-		"dot_damage": max(1.0, (4.0 + knowledge * 0.65) * damage_multiplier),
-		"dot_speed": max(0.45, 0.65 + knowledge * 0.08),
-		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0,
-		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0) * aoe_radius_multiplier,
-		"buff_power": 1.0 + leadership * 0.025,
+		"dot_damage": max(1.0, (4.0 + knowledge * 0.65 + dot_damage_flat) * damage_multiplier),
+		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + dot_speed_flat),
+		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + projectile_speed_flat,
+		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + aura_radius_flat) * aoe_radius_multiplier,
+		"buff_power": 1.0 + leadership * 0.025 + buff_power_flat,
 		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier,
 		"summon_amount": leadership,
+		# Подключение полного набора атрибутов (аудит 2026-06-11):
+		"absorb": endurance * 0.25 + float(run_modifiers.get("absorb_flat", 0.0)),
+		"regeneration": (0.3 + float(run_modifiers.get("regeneration_flat", 0.0))) * knowledge / 5.0,
+		"vampiric_chance": clampf(float(run_modifiers.get("vampiric_chance_flat", 0.0)), 0.0, 0.6),
+		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)),
+		"knockback_distance": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier * endurance / 20.0,
+		"range_multiplier": range_multiplier,
+		# Зарезервировано: ультимейтов в игре пока нет, параметр считается для UI/будущих механик.
+		"ultimate_multiplier": 1.0 + energy * 0.02 + float(run_modifiers.get("ultimate_flat", 0.0)),
 	}
 
 

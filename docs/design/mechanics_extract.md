@@ -2,7 +2,7 @@
 
 ## Актуальный Слой Реализации
 
-Обновлено: 2026-06-10
+Обновлено: 2026-06-12
 
 Ниже сохранена выгрузка исходной таблицы механик. Этот верхний раздел фиксирует, какие механики уже перенесены в игру и как они называются в коде. Для точного текущего состояния также см. `docs/design/current_game_state.md`.
 
@@ -80,7 +80,7 @@
 
 | Класс | Оружие | ID | Тип атаки | Ключевая механика |
 | --- | --- | --- | --- | --- |
-| Берсерк | Двуручный меч | `berserk_sword` | `strip` | Узкая полоса 120x500, interval 0.70, damage x1.15 |
+| Берсерк | Двуручный меч | `berserk_sword` | `frustum` | Усеченный замах 90°, радиус 600, base width 150, outer width 1200, interval 0.58, damage x1.15 |
 | Берсерк | Двуручный топор | `berserk_axe` | `sweep` | Дуга 140 градусов радиуса 320, damage x0.85 |
 | Берсерк | Двуручный молот | `berserk_hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.8 (AoE) / 1.45 (damage) — слабый старт, мощный потолок |
 | Темный маг | Темная книга | `dark_book` | `aoe_projectile` | 2 снаряда в две ближайшие цели, взрыв по области |
@@ -89,12 +89,31 @@
 | Гитарист | Электрогитара | `electric_guitar` | `sound_wave` | Широкая волна и knockback; пассив +15% attack speed |
 | Гитарист | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: x0.30 урона, interval 0.85, сильный knockback |
 | Гитарист | Усилитель | `sound_amp` | `amp` | Деплой на ~7с, самостоятельные пульсы каждые 1.1с, лимит 1 + floor(Лидерство/4) |
+| Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор туда/обратно; crit-friendly, критовые попадания дают рывок к цели |
+| Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые короткие multi-stabs по ближайшим целям, высокий crit + mobility hook |
+| Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия/гаррота с DoT и критовым рывком |
+| Рейнджер | Лунный арбалет | `moon_crossbow` | `beam` | Заряжаемый piercing shot: неподвижная стойка повышает урон |
+| Рейнджер | Грозовой длинный лук | `storm_longbow` | `beam` | Заряжаемый веер дальних лучей, line control |
+| Рейнджер | Охотничий капкан | `hunter_trap` | `trap` | Deploy trap: burst + knockback; stance charge усиливает подготовку |
+| Доктор | Зелье восстановления | `restore_potion` | `drain_link` | Drain-связь к цели; часть нанесенного урона лечит Доктора |
+| Доктор | Чумной шприц | `plague_syringe` | `drain_link` | Тонкая чумная связь, poison DoT + lifesteal |
+| Доктор | Костяная пила | `bone_saw` | `stab_flurry` | Ближний saw/flurry, bleed-like DoT, lifesteal от урона |
+| Химик | Взрывная пыль | `blast_powder` | `aoe_projectile` | AoE explosion + spark cloud; разные cloud elements дают combo explosion |
+| Химик | Кислотная колба | `acid_flask` | `aoe_projectile` | Poison/acid pool, большая DoT-zone, combo с другим элементом |
+| Химик | Склянка гомункула | `homunculus_vial` | `summon` | Temporary minion scaling from magic damage |
+| Рыцарь | Копье | `long_spear` | `strip` | Длинный точечный strip, block/counter passive |
+| Рыцарь | Башенный щит | `tower_shield` | `sweep` | Shield bash / frontal control, самый сильный block reduction |
+| Рыцарь | Освященный кистень | `holy_flail` | `circle` | Medium circular heavy swing, сильнее counter damage |
+| Друид | Амулет призыва | `summon_amulet` | `summon` | Beast pack scaling from Leadership; pets получают команды attack_target/guard |
+| Друид | Посох терний | `briar_staff` | `aoe_projectile` | Thorn zone, AoE DoT, crowd control |
+| Друид | Вороний тотем | `raven_totem` | `amp` | Totem pulses, Leadership-scaled deploy limit |
 
 ### Runtime-Требования К Оружию
 
 - Временные visuals классового оружия регистрируются в группе `player_weapon_effects`.
 - При смене оружия, персонажа, смерти, выходе из забега и world cleanup старые weapon effects должны удаляться.
 - `sound_amp` не должен оставлять объект усилителя или pulse-текстуры после перехода на другого персонажа/оружие.
+- Deployables новых классов (`hunter_trap`, `raven_totem`) используют тот же cleanup contract через `player_weapon_effects`.
 - Новые UI/icon uses должны идти через `scripts/ui_icon_registry.gd`, потому что registry кэширует Texture2D.
 
 ### Группы Производных Параметров В Escape Menu
@@ -370,13 +389,79 @@ Escape открывает крупное меню характеристик:
 - **Редкость**: вес появления в наградах/магазине по тиру — 1.0 / 0.45 / 0.12 (`TIER_WEIGHTS`, weighted-выбор без возврата).
 - **Окно докачки после боя**: +1 к характеристике за `18 + 6 * route_stage` золота; reroll пары предложений за `6 + 2 * route_stage`, максимум 2 раза за окно; «Пропустить» — бесплатно.
 - **Сила артефактов**: tier 1 усилен x2.5 от прежних значений (например +2 к стату -> +5, +20% урона -> +50%); даунсайды НЕ усилены. Tier 2 — двойные эффекты (усилены так же). Tier 3 (6 шт.) — билдообразующие механики: `echo_blast_every`, `extra_projectile`, `low_hp_damage_bonus`, `kill_heal_percent`, `thorn_reflect_multiplier`, `dodge_rush_bonus` (реализованы в player/class_weapon/combat_director/derived_parameters).
-- **class_affinity**: классовая часть эффекта лежит в `affinity_mods` и применяется только классам из `class_affinity` (Player.apply_reward). UI-пометки честные: только классовые моды у чужого класса — красная «Не работает на текущем классе»; смешанные — желтая «Работает вполсилы».
+- **class_affinity**: с 2026-06-12 это тематика/исходная фантазия артефакта, а не запрет. `affinity_mods` применяются любому классу через class interpretation text; UI больше не показывает «Не работает»/«Работает вполсилы», а объясняет, как текущий класс использует эффект.
 
 
-### Классовая Релевантность Атрибутов (2026-06-11)
+### Универсальная Полезность Атрибутов (2026-06-12)
 
 - Карта «своего» урона класса: `CLASS_DAMAGE_PARAMETER` (berserk -> damage, dark_mage -> magic_damage, guitarist -> sound_wave_damage).
-- Карта релевантности атрибутов: `STAT_CLASS_RELEVANCE` — strength питает только физический урон (релевантна только Берсерку), intelligence — только магический (только Магу), energy — магический и звуковой (Маг и Гитарист). Остальные атрибуты универсальны.
-- Нерелевантные атрибуты НЕ предлагаются классу: в окне докачки, в level-up наградах (включая stat-награды пула) и наградах за бой (`reward_pool(character_id)` / `level_up_rewards(character_id)` / `is_stat_relevant`). «+Magic Focus» скрыт от Берсерка (`relevant_classes`).
-- Превью изменений урона показывает классовый параметр (Магу — «Маг. урон», Гитаристу — «Звуковой урон»), а не физический. Механической «утечки» силы в формулах не было — чужой стат и раньше не поднимал урон чужого класса; ремонт касался предложений и превью.
+- Старая карта скрытия `STAT_CLASS_RELEVANCE` отключена: `is_stat_relevant()` возвращает `true`, `reward_pool(character_id)` и `level_up_rewards(character_id)` больше не фильтруют «чужие» статы/награды.
+- Все базовые и производные параметры могут появляться у любого класса. Если параметр не является «родным» для текущего оружия, он получает runtime-интерпретацию через `ProgressionData.CLASS_INTERPRETATIONS` и hooks в `Player`/`ClassWeapon`.
+- Превью изменений урона по-прежнему показывает классовый параметр (Магу — «Маг. урон», Гитаристу — «Звуковой урон»), но tooltip добавляет строку «Интерпретация», чтобы игрок понимал пользу чужого атрибута.
 - Фиксация наборов (анти-реролл): набор level-up генерируется один раз на полученный уровень (`level_up_offer`), пара атрибутов и счетчик rerolls — в `attribute_offer`/`attribute_rerolls_left`, сбрасываются только победным флоу нового боя; ассортимент магазина уже фиксировался до ухода с узла.
+
+Матрица runtime-интерпретаций:
+
+| Атрибут / параметр | Универсальная интерпретация |
+| --- | --- |
+| `intelligence` / `magic_damage` | Физические классы получают зачарование удара: часть магического урона повторяется splash-взрывом вокруг цели. |
+| `sound_wave_damage` / `aura_radius` | Не-гитаристы получают боевой клич: периодическая волна отталкивания рядом с героем; радиус и сила берутся из sound/aura параметров. |
+| `knowledge` / `dot_damage` / `dot_speed` | Не-DoT классы добавляют малое bleed/burn/poison послевкусие к обычным ударам. |
+| `leadership` / `summon_amount` | Не-саммонеры получают эхо-оружие/фантом/сокол/знамя: каждые несколько ударов происходит повторный echo hit. Друид продолжает скейлить питомцев напрямую. |
+| `energy` / `ultimate_multiplier` | Ускоряет уникальные class cooldown/циклы: charge рейнджера, crit dash ассасина, block/counter рыцаря, battle shout и будущие ultimates. |
+| `strength` / `damage` | Магам/контроллерам дает физическую весомость: прямой урон, knockback и устойчивость снарядов/ударов. |
+| `perception` / `attack_range` / `aoe_radius` / `pickup_radius` | Универсально расширяет дистанцию, зоны, magnet и читаемость buildcraft. |
+| `endurance` / `defense` / `absorb` / `health_point` | Универсальная выживаемость; блоки и контратаки дополнительно используют эти значения у танковых билдов. |
+
+
+### Аудит Производных Параметров (полная таблица, 2026-06-11)
+
+Статусы: «работает» — формула в derived_parameters и геймплейная проводка есть.
+
+| Параметр | Формула (актуальная истина) | Реализация | Статус |
+| --- | --- | --- | --- |
+| damage | 15*Str/10 * weapon_mult * damage_mult + flat | derived_parameters -> оружие Берсерка | работает |
+| magic_damage | (14*Int/10 + Energy*0.65) * ... | derived -> оружие мага | работает |
+| sound_wave_damage | (12*(Per+Energy)/12 + Lead*0.45) * ... | derived -> оружие гитариста | работает |
+| attack_speed | 27*Agi/100 * mult; интервал = base_fire_interval / AS | derived -> все оружия | работает |
+| crit_chance / crit_damage_multiplier | 0.05+Agi/100 / 1+2*Agi/20 | derived -> _rolled_damage всех оружий | работает |
+| move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |
+| dodge | 0.02 + Agi*0.012 + flat (cap 0.8) | Player.take_damage | работает |
+| defense | 0.04 + End*0.018 + flat (cap 0.75/0.95) | Player.take_damage | работает |
+| health_point | 50*End/4 + flat) * mult | derived -> max_health | работает |
+| attack_range / aoe_radius | (weapon + Per*2.5/3.5) * mult | derived -> оружия | работает |
+| pickup_radius | 105 + Per*7 + flat | derived -> магнит pickups | работает |
+| dot_damage / dot_speed | (4+Know*0.65)*mult / 0.65+Know*0.08 | cursed_skull DoT | работает |
+| projectile_speed | weapon + Per*18 + Agi*9 | derived -> снаряды | работает |
+| aura_radius | (weapon_aoe + Lead*5) * mult | derived (ампы/зоны через aoe) | работает |
+| buff_power | 1 + Lead*0.025 | derived; потребители — события/бафф-эффекты | работает (узкий охват) |
+| knockback_power | (weapon + End*4 + Lead*3) * mult | derived -> apply_knockback врагов | работает |
+| summon_amount | Leadership | max_summons оружий (ампы) | работает |
+| **absorb** | End*0.25 + награды; срез удара до защиты (мин. 20% проходит) | НОВОЕ: Player.take_damage | работает |
+| **regeneration** | (0.3+награды)*Know/5 HP/с | НОВОЕ: Player._apply_regeneration | работает |
+| **vampiric_chance** | награды (cap 0.6); источник — артефакт «Клык Пиявки» (tier 2) | НОВОЕ: Player.on_weapon_hit | работает |
+| **vampiric_amount** | награды + 50% нанесенного урона при проке | НОВОЕ: Player.on_weapon_hit | работает |
+| **knockback_distance** | Knockback Power * End / 20 (отображаемая дальность) | НОВОЕ: derived; в бою действует knockback_power (реализованный баланс приоритетнее формулы таблицы) | работает (display) |
+| **range_multiplier** | run-множитель дальности | НОВОЕ: выведен в derived для UI | работает |
+| **ultimate_multiplier** | 1 + Energy*0.02 + награды | НОВОЕ: расчет подключен; механики ульты НЕТ | зарезервировано |
+
+Зарезервированные (механики в игре нет, расчет и отображение есть): `ultimate_multiplier`.
+Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» реализован как награды + 50% урона при проке.
+
+
+### Новые Классы 0.2 — Статы И Баланс (2026-06-11)
+
+| Класс | Str | Agi | Int | Per | Energy | Know | End | Lead | HP | Speed |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Ассасин | 6 | 10 | 2 | 6 | 3 | 4 | 5 | 4 | 52 | 285 |
+| Рейнджер | 7 | 7 | 2 | 9 | 4 | 4 | 4 | 3 | 58 | 262 |
+| Доктор | 2 | 4 | 8 | 5 | 6 | 8 | 5 | 2 | 64 | 248 |
+| Химик | 2 | 4 | 9 | 6 | 7 | 7 | 3 | 2 | 50 | 252 |
+| Рыцарь | 8 | 3 | 2 | 4 | 3 | 4 | 10 | 6 | 95 | 225 |
+| Друид | 3 | 4 | 4 | 7 | 6 | 5 | 5 | 9 | 66 | 255 |
+
+Баланс ±20% от Берсерка (расчетные DPS на стартовых статах; референс — меч Берсерка ~36.6 ед/с по линии):
+ассасин ~35 (чакрамы x0.45, два прохода, частые криты), рейнджер ~32.5 (одиночная цель, дальность),
+рыцарь ~29 (копье x3.0 при медленном темпе + танковость), доктор ~15.6 одиночный / ~45 по волне 3 целей + самолечение,
+химик ~12 мгновенно + DoT-облака (волна ~40), друид ~41 (2 зверя по 55% sound_wave). Методика: melee/точные — одиночная цель,
+AoE/DoT/саммоны — зачистка волны; точные замеры — плейтест.

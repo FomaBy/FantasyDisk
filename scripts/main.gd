@@ -195,6 +195,19 @@ const LEVEL_UP_MOD_DISPLAY := {
 	"crit_chance_flat": "crit_chance",
 	"crit_damage_flat": "crit_damage_multiplier",
 	"knockback_multiplier": "knockback_power",
+	"dodge_flat": "dodge",
+	"dot_damage_flat": "dot_damage",
+	"dot_speed_flat": "dot_speed",
+	"projectile_speed_flat": "projectile_speed",
+	"aura_radius_flat": "aura_radius",
+	"buff_power_flat": "buff_power",
+	"summon_bonus": "summon_amount",
+	"extra_projectile": "summon_amount",
+	"absorb_flat": "absorb",
+	"regeneration_flat": "regeneration",
+	"vampiric_amount_flat": "vampiric_amount",
+	"vampiric_chance_flat": "vampiric_chance",
+	"ultimate_flat": "ultimate_multiplier",
 }
 const INPUT_ACTIONS := [
 	{
@@ -276,6 +289,7 @@ const UI_SCREENS_SCRIPT := preload("res://scripts/ui_screens.gd")
 const ROUTE_MAP_SCRIPT := preload("res://scripts/route_map_screen.gd")
 const COMBAT_DIRECTOR_SCRIPT := preload("res://scripts/combat_director.gd")
 const META_PROGRESSION := preload("res://scripts/meta_progression.gd")
+const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
 
 var ui
 var route
@@ -288,6 +302,14 @@ var ui_escape_action := Callable()
 var level_up_offer := []
 var attribute_offer := []
 var attribute_rerolls_left := 0
+var selected_screen_index := 0
+var audio_settings := {
+	"master_volume": 1.0,
+	"music_volume": 1.0,
+	"sfx_volume": 1.0,
+	"music_enabled": true,
+	"sfx_enabled": true,
+}
 
 
 func _init() -> void:
@@ -300,9 +322,39 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	rng.randomize()
 	_load_meta_progression()
+	_load_game_settings()
 	ui._setup_default_input_actions()
 	ui._apply_game_cursor()
 	ui._show_main_menu()
+
+
+func _load_game_settings() -> void:
+	var settings: Dictionary = GAME_SETTINGS.load_settings()
+	selected_resolution_index = int(settings["resolution_index"])
+	selected_window_mode_index = int(settings["window_mode_index"])
+	selected_screen_index = int(settings["screen_index"])
+	for key in audio_settings.keys():
+		audio_settings[key] = settings[key]
+	_apply_audio_settings()
+	if DisplayServer.get_name() != "headless":
+		ui._apply_video_settings()
+
+
+func save_game_settings() -> void:
+	var settings := {
+		"resolution_index": selected_resolution_index,
+		"window_mode_index": selected_window_mode_index,
+		"screen_index": selected_screen_index,
+	}
+	for key in audio_settings.keys():
+		settings[key] = audio_settings[key]
+	GAME_SETTINGS.save_settings(settings)
+
+
+func _apply_audio_settings() -> void:
+	var audio := get_node_or_null("/root/AudioManager")
+	if audio != null and audio.has_method("apply_volume_settings"):
+		audio.apply_volume_settings(audio_settings)
 
 
 func _load_meta_progression() -> void:

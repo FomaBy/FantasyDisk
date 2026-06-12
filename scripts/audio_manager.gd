@@ -33,6 +33,7 @@ var _disabled := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_ensure_audio_buses()
 	# В headless (smoke tests) звук не микшируется и оставляет висячие
 	# AudioStreamPlayback при выходе, поэтому аудио полностью отключается.
 	if DisplayServer.get_name() == "headless":
@@ -53,13 +54,13 @@ func _ready() -> void:
 
 	for index in range(SFX_POOL_SIZE):
 		var player := AudioStreamPlayer.new()
-		player.bus = "Master"
+		player.bus = "SFX"
 		player.volume_db = SFX_VOLUME_DB
 		add_child(player)
 		_sfx_players.append(player)
 
 	_music_player = AudioStreamPlayer.new()
-	_music_player.bus = "Master"
+	_music_player.bus = "Music"
 	_music_player.volume_db = MUSIC_VOLUME_DB
 	add_child(_music_player)
 
@@ -75,6 +76,32 @@ func _exit_tree() -> void:
 		_music_player.stream = null
 	_sfx_streams.clear()
 	_music_streams.clear()
+
+
+func _ensure_audio_buses() -> void:
+	# Шины Music/SFX создаются программно (default bus layout содержит только Master).
+	for bus_name in ["Music", "SFX"]:
+		if AudioServer.get_bus_index(bus_name) == -1:
+			var bus_index := AudioServer.bus_count
+			AudioServer.add_bus(bus_index)
+			AudioServer.set_bus_name(bus_index, bus_name)
+			AudioServer.set_bus_send(bus_index, "Master")
+
+
+func apply_volume_settings(settings: Dictionary) -> void:
+	# Мгновенное применение: громкость шин меняется у уже играющих стримов.
+	_set_bus_volume("Master", float(settings.get("master_volume", 1.0)), true)
+	_set_bus_volume("Music", float(settings.get("music_volume", 1.0)), bool(settings.get("music_enabled", true)))
+	_set_bus_volume("SFX", float(settings.get("sfx_volume", 1.0)), bool(settings.get("sfx_enabled", true)))
+
+
+func _set_bus_volume(bus_name: String, linear_volume: float, enabled: bool) -> void:
+	var bus_index := AudioServer.get_bus_index(bus_name)
+	if bus_index == -1:
+		return
+	var volume := clampf(linear_volume, 0.0, 1.0)
+	AudioServer.set_bus_volume_db(bus_index, linear_to_db(maxf(volume, 0.0001)))
+	AudioServer.set_bus_mute(bus_index, not enabled or volume <= 0.0)
 
 
 func play_sfx(sfx_id: String) -> void:

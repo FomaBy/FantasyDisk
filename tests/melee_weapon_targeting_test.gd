@@ -29,19 +29,19 @@ func _initialize() -> void:
 
 	var side_enemy := enemy_scene.instantiate()
 	root.add_child(side_enemy)
-	side_enemy.global_position = Vector2(480, 300)
+	side_enemy.global_position = Vector2(386, 300)
 
 	var close_side_probe := enemy_scene.instantiate()
 	root.add_child(close_side_probe)
-	close_side_probe.global_position = Vector2(355, 300)
+	close_side_probe.global_position = Vector2(360, 300)
 
 	var far_enemy := enemy_scene.instantiate()
 	root.add_child(far_enemy)
-	far_enemy.global_position = Vector2(300, -180)
+	far_enemy.global_position = Vector2(870, -270)
 
 	var outside_range_enemy := enemy_scene.instantiate()
 	root.add_child(outside_range_enemy)
-	outside_range_enemy.global_position = Vector2(300, -240)
+	outside_range_enemy.global_position = Vector2(300, -320)
 
 	await process_frame
 	close_enemy.set_physics_process(false)
@@ -55,15 +55,23 @@ func _initialize() -> void:
 	far_enemy.add_to_group("enemies")
 	outside_range_enemy.add_to_group("enemies")
 	close_enemy.global_position = Vector2(300, 250)
-	side_enemy.global_position = Vector2(480, 300)
-	close_side_probe.global_position = Vector2(355, 300)
-	far_enemy.global_position = Vector2(300, -180)
-	outside_range_enemy.global_position = Vector2(300, -240)
+	side_enemy.global_position = Vector2(386, 300)
+	close_side_probe.global_position = Vector2(360, 300)
+	far_enemy.global_position = Vector2(870, -270)
+	outside_range_enemy.global_position = Vector2(300, -320)
 	close_enemy.set("health", close_enemy.get("max_health"))
 	side_enemy.set("health", side_enemy.get("max_health"))
 	close_side_probe.set("health", close_side_probe.get("max_health"))
 	far_enemy.set("health", far_enemy.get("max_health"))
 	outside_range_enemy.set("health", outside_range_enemy.get("max_health"))
+	var isolated_parameters: Dictionary = player.get("derived_parameters")
+	isolated_parameters["magic_damage"] = 0.0
+	isolated_parameters["dot_damage"] = 0.0
+	isolated_parameters["dot_speed"] = 0.0
+	isolated_parameters["summon_amount"] = 0.0
+	isolated_parameters["sound_wave_damage"] = 0.0
+	isolated_parameters["aura_radius"] = 0.0
+	player.set("derived_parameters", isolated_parameters)
 
 	var target = weapon.call("_find_closest_enemy", player)
 	if target != close_enemy:
@@ -75,43 +83,43 @@ func _initialize() -> void:
 	weapon.call("_attack")
 
 	if float(close_enemy.get("health")) >= float(close_enemy.get("max_health")):
-		push_error("Expected sword strip to aim at and damage the closest enemy.")
+		push_error("Expected sword frustum to aim at and damage the closest enemy.")
 		quit(1)
 		return
 
 	if float(side_enemy.get("health")) < float(side_enemy.get("max_health")):
-		push_error("Expected sword strip to avoid enemies far outside its narrow width.")
+		push_error("Expected sword frustum to avoid enemies outside its 150px base width.")
 		quit(1)
 		return
 
 	if float(close_side_probe.get("health")) >= float(close_side_probe.get("max_health")):
-		push_error("Expected sword strip width to damage enemies within 120px lane beside Berserk.")
+		push_error("Expected sword frustum base width to damage enemies close beside Berserk.")
 		quit(1)
 		return
 
 	if float(far_enemy.get("health")) >= float(far_enemy.get("max_health")):
-		push_error("Expected sword strip to reach enemies close to 500 length.")
+		push_error("Expected sword frustum to reach enemies inside its wide 600px outer edge.")
 		quit(1)
 		return
 
 	if float(outside_range_enemy.get("health")) < float(outside_range_enemy.get("max_health")):
-		push_error("Expected sword strip to avoid enemies beyond its 500 length.")
+		push_error("Expected sword frustum to avoid enemies beyond its 600px range.")
 		quit(1)
 		return
 
 	var edge_probe := enemy_scene.instantiate()
 	root.add_child(edge_probe)
-	edge_probe.global_position = Vector2(360, -190)
+	edge_probe.global_position = Vector2(870, -270)
 	if not bool(weapon.call("_is_enemy_inside_attack", player, edge_probe, Vector2.UP)):
-		push_error("Expected sword strip to include enemies inside the 120px lane.")
+		push_error("Expected sword frustum to include enemies inside its 90-degree outer edge.")
 		quit(1)
 		return
 
 	var outside_angle_probe := enemy_scene.instantiate()
 	root.add_child(outside_angle_probe)
-	outside_angle_probe.global_position = Vector2(371, -190)
+	outside_angle_probe.global_position = Vector2(920, -270)
 	if bool(weapon.call("_is_enemy_inside_attack", player, outside_angle_probe, Vector2.UP)):
-		push_error("Expected sword strip to reject enemies outside the 120px lane.")
+		push_error("Expected sword frustum to reject enemies outside its 90-degree outer edge.")
 		quit(1)
 		return
 

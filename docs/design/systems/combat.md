@@ -39,8 +39,9 @@
 ## Weapons And Effects
 
 - Берсерк использует melee shapes: `strip`, `sweep`, `circle`.
-- Темный маг использует AoE projectile, DoT и beam.
-- Гитарист использует sound wave / pulse / deployable amp.
+- Class weapons используют reusable modes: `aoe_projectile`, `homing_curse`, `beam`, `dot_beam`, `sound_wave`, `pulse`, `amp`, `trap`, `boomerang`, `stab_flurry`.
+- Темный маг использует AoE projectile, DoT и beam; новые caster/control классы переиспользуют эти режимы с другими параметрами.
+- Гитарист и Друид используют sound wave / pulse / deployable amp/totem; Рейнджер использует deploy trap.
 - Временные эффекты оружия добавляются в cleanup groups (`player_weapon_effects`, `deployed_sound_amps`, projectiles/hazards).
 - Gameplay effects не должны использовать `SceneTreeTimer`; текущие длительные эффекты привязаны к node-bound tweens и уважают паузу.
 

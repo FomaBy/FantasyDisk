@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/long_spear.png" id="2_weapon_texture"]
+
+[node name="BoneSaw" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_class_weapon")
+weapon_id = "bone_saw"
+display_name = "Костяная пила"
+attack_mode = "stab_flurry"
+damage_parameter = "damage"
+fire_interval = 0.58
+damage = 11.0
+attack_range = 190.0
+aoe_radius = 70.0
+wave_width = 220.0
+projectile_count = 2
+dot_ticks = 3
+heal_percent_on_attack = 0.01
+visual_color = Color(0.88, 0.22, 0.18, 0.42)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 9
+texture = ExtResource("2_weapon_texture")
+position = Vector2(46, -10)
+rotation = 0.76
+scale = Vector2(0.30, 0.24)

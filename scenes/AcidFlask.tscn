@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/blast_powder.png" id="2_weapon_texture"]
+
+[node name="AcidFlask" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_class_weapon")
+weapon_id = "acid_flask"
+display_name = "Кислотная колба"
+attack_mode = "aoe_projectile"
+damage_parameter = "magic_damage"
+fire_interval = 1.08
+damage = 11.0
+attack_range = 600.0
+aoe_radius = 215.0
+projectile_speed = 520.0
+leaves_pool = true
+pool_duration = 4.2
+pool_tick_interval = 0.48
+visual_color = Color(0.22, 0.95, 0.26, 0.44)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 9
+texture = ExtResource("2_weapon_texture")
+position = Vector2(36, -18)
+rotation = -0.22
+scale = Vector2(0.34, 0.34)

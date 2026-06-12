@@ -292,9 +292,14 @@ func _refresh_artifacts() -> void:
 		icon.tooltip_text = title if description == "" else "%s (%s)\n%s" % [title, tier_text, description]
 		var pause_affinity: Array = definition.get("class_affinity", [])
 		if not pause_affinity.is_empty() and _player != null and not pause_affinity.has(str(_player.get("character_id"))):
-			var partial: bool = not (definition.get("mods", {}) as Dictionary).is_empty() or not (definition.get("stats", {}) as Dictionary).is_empty()
-			icon.tooltip_text += "\n[%s]" % ("Работает вполсилы" if partial else "Не работает на текущем классе")
-			icon.modulate = Color(1.0, 0.85, 0.55, 1.0) if partial else Color(1.0, 0.55, 0.50, 1.0)
+			var interpreted_parameter := ""
+			for key in (definition.get("affinity_mods", {}) as Dictionary).keys():
+				interpreted_parameter = str(key)
+				break
+			if interpreted_parameter == "":
+				interpreted_parameter = "summon_amount"
+			icon.tooltip_text += "\n[Интерпретация: %s]" % ProgressionData.class_interpretation_text(str(_player.get("character_id")), interpreted_parameter)
+			icon.modulate = Color(0.78, 0.95, 1.0, 1.0)
 		icon.mouse_filter = Control.MOUSE_FILTER_PASS
 		_artifacts_container.add_child(icon)
 
@@ -556,9 +561,10 @@ func _make_button(text: String) -> Button:
 
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
-	var normal_bg := Color(0.075, 0.095, 0.13, 0.97)
-	var hover_bg := Color(0.13, 0.17, 0.22, 1.0)
-	var pressed_bg := Color(0.045, 0.060, 0.085, 1.0)
+	# Тёплое дерево/латунь (D&D-таверна) — единая база с ui_screens.
+	var normal_bg := Color(0.16, 0.115, 0.075, 0.97)
+	var hover_bg := Color(0.24, 0.17, 0.10, 1.0)
+	var pressed_bg := Color(0.11, 0.075, 0.05, 1.0)
 	var border := Color(0.68, 0.52, 0.22, 0.92)
 	var hover_border := Color(1.0, 0.82, 0.26, 1.0)
 	var pressed_border := Color(0.95, 0.62, 0.18, 1.0)
