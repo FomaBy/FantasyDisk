@@ -3,6 +3,7 @@
 Статус: done 2026-06-12. Фикс: кнопка «+» в селекторе клампит к максимуму selectable среди всех героев (ui_screens), плюс защитный кламп в main.reset_run_ascension к ascension_selectable_max выбранного героя — даже если уровень выставлен программно, забег не стартует на закрытом уровне. Тест: reset_run_ascension режет уровень 9 до selectable_max берсерка. Прогрессия не затрагивалась (и не была сломана). Smoke зелёный.
 Приоритет: normal
 Роль: Back-end
+Jira: SCRUM-61
 Найдено QA при тестировании: `docs/tasks/qa_review_backend_ascension_difficulty_ladder_task.md`
 (исходная фича: `docs/tasks/backend_ascension_difficulty_ladder_task.md`)
 

@@ -3,6 +3,7 @@
 Статус: done 2026-06-12. Фикс: combat_director._maybe_spawn_mini_elite читает game.ascension_difficulty()[mini_elite_chance] и с этим шансом в обычной волне спавнит мини-элитку (реальная elite-сцена, HP x0.55 от волнового elite-скейла — убиваемая) + свита 1-2 обычных врага. Вызов в начале _spawn_enemy_wave для не-боссовых/не-элитных боёв, учитывает remaining_slots. Тест: уровень 7 даёт mini_elite_chance>0. Smoke зелёный.
 Приоритет: high
 Роль: Back-end
+Jira: SCRUM-60
 Найдено QA при тестировании: `docs/tasks/qa_review_backend_ascension_difficulty_ladder_task.md`
 (исходная фича: `docs/tasks/backend_ascension_difficulty_ladder_task.md`)
 

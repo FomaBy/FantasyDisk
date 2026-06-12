@@ -1,10 +1,13 @@
 # BUG: Окно награды элитки НЕ по центру — уезжает в правый нижний угол
 
-Статус: new
+Статус: done
 Приоритет: critical
 Роль: Back-end (UI)
 Создано: 2026-06-12
 Автор: PM (отчет пользователя со скриншотом)
+Jira: SCRUM-144
+
+Dispatch: отправлено в существующий Back-end чат `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-12.
 
 ## Контекст
 Задача backend_elite_reward_center_screen помечена done, автотест ассертит
@@ -48,3 +51,28 @@ PRESET_CENTER/якоря — но РЕАЛЬНЫЙ рендер (скриншо�
 ## Окружение
 dev, после backend_elite_reward_center_screen_task; скриншот пользователя
 (окно из редактора ~1469x908).
+
+## Результат
+
+Done 2026-06-12.
+
+- `EliteArtifactRewardPanel` больше не центрируется через `PRESET_CENTER` до расчета размера. Панель теперь лежит внутри full-rect `CenterContainer` (`EliteArtifactRewardCenter`), поэтому фактический `global_rect` центрируется layout-системой на любом размере viewport.
+- `tests/runtime_smoke_test.gd` расширен regression-проверкой фактического `panel.get_global_rect().get_center()` против `viewport_size / 2` для `1280x720`, `1469x908` и `2560x1440` через изолированные `SubViewport`; также проверяется, что панель целиком остается внутри viewport.
+- Другие модалки проверены на этот паттерн: `AttributeShopPanel`, `LevelUpPanel` и generic `_create_menu_box` используют явные `0.5` anchors + симметричные offsets, а не сломанный `PRESET_CENTER` + deferred min-size подход.
+- Headless screenshot в окружении не снимался; вместо него оставлен числовой QA-log: `build/qa/elite_reward_window_offcenter_rect_log.md`.
+
+QA rect log:
+
+```text
+requested=(1280, 720) rect=[P: (70.0, 70.0), S: (1140.0, 580.0)] center=(640.0, 360.0) viewport_center=(640.0, 360.0) delta=(0.0, 0.0)
+requested=(1469, 908) rect=[P: (164.0, 164.0), S: (1140.0, 580.0)] center=(734.0, 454.0) viewport_center=(734.5, 454.0) delta=(-0.5, 0.0)
+requested=(2560, 1440) rect=[P: (710.0, 430.0), S: (1140.0, 580.0)] center=(1280.0, 720.0) viewport_center=(1280.0, 720.0) delta=(0.0, 0.0)
+```
+
+Проверки:
+
+```bash
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
+```
+
+Результат: passed.

@@ -395,7 +395,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 	# HUD артефактов: подбор артефакта добавляет иконку с tooltip.
-	var hud_player := get_first_node_in_group("player")
+	var hud_player: Node = main.get("current_player")
 	hud_player.call("apply_reward", {"kind": "artifact", "id": "cracked_shield", "title": "Треснувший щит", "mods": {"defense_flat": 0.12}})
 	main.set("_last_hud_snapshot", {})
 	main.ui._update_hud()
@@ -415,7 +415,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	var player := get_first_node_in_group("player")
+	var player: Node = main.get("current_player")
 	if player == null:
 		push_error("Expected selected player to spawn.")
 		quit(1)
@@ -1025,6 +1025,7 @@ func _initialize() -> void:
 	await _test_elite_phase2_escalation()
 	await _test_boss_zone_wave_safe_corridor()
 	await _test_elite_boss_presentation(main_scene)
+	await _test_boss_hud_omits_timer(main_scene)
 
 	print("Runtime smoke test passed.")
 	quit()
@@ -2047,9 +2048,15 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		push_error("Expected elite victory reward to offer exactly 3 artifact choices.")
 		quit(1)
 		return
-	# Центрирование: панель присутствует (анкор CENTER на любом разрешении).
-	if elite_main.find_child("EliteArtifactRewardPanel", true, false) == null:
-		push_error("Expected centered elite reward panel.")
+	var elite_reward_panel := elite_main.find_child("EliteArtifactRewardPanel", true, false) as Control
+	if elite_reward_panel == null:
+		push_error("Expected elite reward panel.")
+		quit(1)
+		return
+	if not _control_center_matches_viewport(elite_reward_panel, 2.0):
+		var panel_rect := elite_reward_panel.get_global_rect()
+		var viewport_center := root.get_visible_rect().size * 0.5
+		push_error("Expected elite reward panel global center %s to match viewport center %s." % [panel_rect.get_center(), viewport_center])
 		quit(1)
 		return
 	# Клавиатура/геймпад: первая карточка получает фокус.
@@ -2514,6 +2521,9 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 		return
 	scaling_main.queue_free()
 	await process_frame
+
+	for viewport_size in [Vector2i(1280, 720), Vector2i(1469, 908), Vector2i(2560, 1440)]:
+		await _assert_elite_reward_panel_centered(main_scene, viewport_size)
 
 
 func _test_ultimate_framework() -> void:
@@ -3470,9 +3480,95 @@ func _test_elite_unique_attacks() -> void:
 	await process_frame
 
 
+func _assert_elite_reward_panel_centered(main_scene: PackedScene, viewport_size: Vector2i) -> void:
+	var viewport := SubViewport.new()
+	viewport.size = viewport_size
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	await process_frame
+	await process_frame
+
+	var modal_main := main_scene.instantiate()
+	viewport.add_child(modal_main)
+	await process_frame
+	modal_main.set("route_stage", 6)
+	modal_main.ui._show_elite_artifact_reward(Callable())
+	await process_frame
+	await process_frame
+
+	var panel := modal_main.find_child("EliteArtifactRewardPanel", true, false) as Control
+	if panel == null:
+		_fail("Expected elite reward panel at viewport %s." % viewport_size)
+		return
+	if not _control_center_matches_viewport_size(panel, Vector2(viewport_size), 2.0):
+		var rect := panel.get_global_rect()
+		_fail("Expected elite reward panel global center %s to match viewport center %s at viewport %s." % [rect.get_center(), Vector2(viewport_size) * 0.5, viewport_size])
+		return
+	var rect := panel.get_global_rect()
+	var visible_size := Vector2(viewport_size)
+	if rect.position.x < -2.0 or rect.position.y < -2.0 or rect.end.x > visible_size.x + 2.0 or rect.end.y > visible_size.y + 2.0:
+		_fail("Expected elite reward panel rect %s to stay inside viewport %s." % [rect, visible_size])
+		return
+
+	viewport.queue_free()
+	await process_frame
+
+
+func _control_center_matches_viewport(control: Control, tolerance_px := 2.0) -> bool:
+	return _control_center_matches_viewport_size(control, root.get_visible_rect().size, tolerance_px)
+
+
+func _control_center_matches_viewport_size(control: Control, viewport_size: Vector2, tolerance_px := 2.0) -> bool:
+	var rect := control.get_global_rect()
+	var viewport_center := viewport_size * 0.5
+	return absf(rect.get_center().x - viewport_center.x) <= tolerance_px and absf(rect.get_center().y - viewport_center.y) <= tolerance_px
+
+
 func _fail(message: String) -> void:
 	push_error(message)
 	quit(1)
+
+
+func _test_boss_hud_omits_timer(main_scene: PackedScene) -> void:
+	var boss_main := main_scene.instantiate()
+	root.add_child(boss_main)
+	await process_frame
+	boss_main.set("selected_character_id", "berserk")
+	boss_main.set("selected_weapon_id", "axe")
+	boss_main.call("_start_combat", true)
+	await process_frame
+	if boss_main.find_child("CombatTimerPanel", true, false) != null or boss_main.get("timer_label") != null:
+		_fail("Expected boss combat HUD to omit CombatTimerPanel and timer_label.")
+		return
+	boss_main.set("_last_hud_snapshot", {})
+	boss_main.ui._update_hud()
+	if boss_main.find_child("CombatTimerPanel", true, false) != null or boss_main.get("timer_label") != null:
+		_fail("Expected boss combat HUD update not to recreate CombatTimerPanel.")
+		return
+	boss_main.queue_free()
+	await process_frame
+
+	var battle_main := main_scene.instantiate()
+	root.add_child(battle_main)
+	await process_frame
+	battle_main.set("selected_character_id", "berserk")
+	battle_main.set("selected_weapon_id", "axe")
+	battle_main.call("_start_combat", false)
+	await process_frame
+	var timer_panel := battle_main.find_child("CombatTimerPanel", true, false) as PanelContainer
+	var timer_label := battle_main.get("timer_label") as Label
+	if timer_panel == null or timer_label == null:
+		_fail("Expected normal combat HUD to create CombatTimerPanel and timer_label.")
+		return
+	var timer_before := str(timer_label.text)
+	battle_main.set("round_time_left", 12.0)
+	battle_main.set("_last_hud_snapshot", {})
+	battle_main.ui._update_hud()
+	if timer_label.text == timer_before:
+		_fail("Expected normal combat timer text to update.")
+		return
+	battle_main.queue_free()
+	await process_frame
 
 
 func _test_death_flow(main_scene: PackedScene) -> void:

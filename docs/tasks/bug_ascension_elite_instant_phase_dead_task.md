@@ -3,6 +3,7 @@
 Статус: done 2026-06-12. Фикс: enemy.gd потребляет мету ascension_instant_phase (lazy в _update_elite_attack, ordering-proof — мета ставится combat_director после _ready): при true один раз обнуляет стартовый кулдаун элитки, боевая фаза (спец-атака) открывается сразу. Тест: элитка с метой на первом физтике не остаётся idle с большим кулдауном. Smoke зелёный.
 Приоритет: high
 Роль: Back-end
+Jira: SCRUM-59
 Найдено QA при тестировании: `docs/tasks/qa_review_backend_ascension_difficulty_ladder_task.md`
 (исходная фича: `docs/tasks/backend_ascension_difficulty_ladder_task.md`)
 

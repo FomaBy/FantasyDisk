@@ -56,7 +56,8 @@ Atlassian и создать новый.
 
 ## Правила Создания И Обновления
 
-1. При создании нового `.md` task-файла создать Jira issue в проекте `SCRUM`.
+1. Новые `.md` task-файлы и Jira issues создает PM/другая LLM, не Codex
+   Documentation dispatcher.
 2. Во время feature block добавлять в активный спринт `Спринт 0.1.3` только
    bugfix/regression/QA defect/release blocker задачи. Новые не-баговые задачи
    создавать в Jira backlog с target `0.1.4` (label `target-0.1.4`, Fix Version
@@ -91,12 +92,32 @@ Atlassian и создать новый.
 Каждый агент, который берет задачу в работу или завершает ее, обязан:
 
 1. Проверить наличие `Jira: SCRUM-*` в task-файле.
-2. Если Jira key отсутствует — создать issue или передать PM/dispatcher задачу на
-   создание issue до начала работы.
+2. Если Jira key отсутствует — передать PM/owner задачу на создание issue до
+   начала работы. Codex Documentation dispatcher сам issue не создает.
 3. При изменении `.md` статуса обновить Jira status/comment.
 4. Если задача переносится, блокируется или требует handoff — отразить это и в
    `.md`, и в Jira comment/status.
 5. Не закрывать задачу полностью без синхронизации Jira.
+6. Закрывать только свои задачи или задачи своего ревью-контура. Dispatcher/PM
+   не закрывает задачу за исполнителя; он синхронизирует Jira только после того,
+   как исполнитель записал результат в task-файл/board или QA добавил verdict.
+7. Codex Documentation dispatcher не создает новые Jira issues и `.md` task-файлы.
+   Его допустимые действия: route уже существующих задач, update existing status,
+   Jira comments/status sync, duplicate/superseded marking.
+
+## Проверка Дубликатов
+
+Dispatcher при регулярной сверке обязан искать дубли в `.md` board и Jira:
+
+- одинаковый task-файл или source task path;
+- одинаковый Jira summary/почти одинаковая формулировка проблемы;
+- две активные задачи на одни и те же файлы, ассеты, экран или баг;
+- backlog-задача `0.1.4`, случайно продублированная в активном sprint.
+
+Если найден дубль, dispatcher не раздает его исполнителю. Нужно оставить один
+source of truth, а остальные пометить `duplicate` или `superseded`, добавить
+ссылку на основной `.md`/Jira issue и комментарий в Jira. Если непонятно, какая
+задача главная, оставить обе без dispatch и эскалировать PM.
 
 ## Feature Block Обязательство
 
@@ -105,7 +126,9 @@ Atlassian и создать новый.
 1. Проверять тип задачи перед dispatch.
 2. Не начинать новые не-баговые задачи.
 3. Для новых не-баговых задач создавать/оставлять Jira issue в backlog с target
-   `0.1.4`, без sprint assignment.
+   `0.1.4`, без sprint assignment. Для Codex Documentation dispatcher это
+   означает: не создавать самому, а проверить/сообщить, что PM/owner должен
+   оформить backlog-задачу.
 4. Для багов текущего scope использовать текущий sprint `0.1.3` и обычный QA flow.
 
 ## Jira Description Минимум

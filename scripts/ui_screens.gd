@@ -1619,14 +1619,20 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	shade.color = Color(0.02, 0.015, 0.025, 0.76)
 	root.add_child(shade)
 
+	var center := CenterContainer.new()
+	center.name = "EliteArtifactRewardCenter"
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(center)
+
 	var panel := PanelContainer.new()
 	panel.name = "EliteArtifactRewardPanel"
-	panel.set_anchors_preset(Control.PRESET_CENTER)
 	panel.custom_minimum_size = Vector2(1140, 560)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
-	root.add_child(panel)
+	center.add_child(panel)
 
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER

@@ -1,11 +1,13 @@
 # BUG: В бою с боссом сверху висит панель таймера — таймер не нужен, место очистить
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Создано: 2026-06-12
 Автор: PM (отчет пользователя со скриншотом босс-боя)
 Jira: SCRUM-145
+
+Dispatch: отправлено в существующий Back-end чат `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-12.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения в рамках этой задачи.
@@ -67,3 +69,20 @@ Jira: SCRUM-145
 ## Окружение
 dev; скриншот пользователя из редактора Godot, босс «Пожиратель Дисков»,
 панель таймера видна справа от ULT-панели.
+
+## Результат
+
+Done 2026-06-12.
+
+- В `combat_director._start_combat()` порядок инициализации исправлен: `combat_active`, `boss_combat_active` и `current_combat_type` выставляются до `game.ui._create_hud()`.
+- Guard в `ui_screens.gd::_create_combat_timer_panel()` теперь видит boss-state при создании HUD, поэтому в босс-бою не создаются ни `CombatTimerPanel`, ни `timer_label`.
+- `tests/runtime_smoke_test.gd` расширен проверкой фактического дерева HUD: в boss combat `CombatTimerPanel` отсутствует и не возвращается после `_update_hud()`, в normal combat `CombatTimerPanel` и `timer_label` присутствуют, а текст таймера обновляется.
+- QA-log дерева HUD: `build/qa/boss_fight_timer_panel_tree_log.md`. Headless screenshot не снимался; пиксельная сверка верхнего центра остается за плейтестом/QA.
+
+Проверка:
+
+```bash
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
+```
+
+Результат: passed.

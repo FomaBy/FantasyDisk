@@ -3,6 +3,7 @@
 Статус: done 2026-06-12
 Приоритет: low
 Роль: Back-end
+Jira: SCRUM-108
 Создано: 2026-06-12 (QA-агент, при независимой перепроверке фикса
 `bug_ascension_mini_elite_chance_dead_task.md`)
 

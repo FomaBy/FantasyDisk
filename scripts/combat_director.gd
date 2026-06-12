@@ -16,7 +16,6 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game._clear_ui()
 	game._clear_world()
 	_setup_arena_world(is_boss_fight)
-	game.ui._create_hud()
 
 	game.round_time_left = _current_round_duration()
 	game.spawn_cooldown = 0.0
@@ -25,6 +24,7 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game.combat_active = true
 	game.boss_combat_active = is_boss_fight
 	game.current_combat_type = "boss" if is_boss_fight else combat_type
+	game.ui._create_hud()
 
 	game.current_player = game.player_scene.instantiate() as Node2D
 	game.add_child(game.current_player)

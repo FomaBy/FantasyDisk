@@ -3,6 +3,7 @@
 Статус: done 2026-06-12 (fixed Claude-Designer)
 Приоритет: normal
 Роль: Design (Claude-Designer) / Back-end (зона — рендер во время боя)
+Jira: SCRUM-62
 Найдено QA при тестировании: `docs/tasks/qa_review_design_weapon_attack_vfx_animations_polish_task.md`
 (исходная фича: `docs/tasks/design_weapon_attack_vfx_animations_polish_task.md`)
 

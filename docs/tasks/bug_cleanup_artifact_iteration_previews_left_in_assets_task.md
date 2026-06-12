@@ -3,6 +3,7 @@
 Статус: done 2026-06-12. Вынесено 10 preview/concept файлов арт-итераций (+ парные .import, 0 runtime-ссылок) в build/cleanup_backup_2026_06_12/. Починена логика аудита (tools/audit_unused_assets.py): для preview/_source/contact/concept ссылка из tools/-генератора (output-путь) больше не считается runtime-usage — проверяется отдельный collect_runtime_source_text() без tools/. escape_stats_visual_kit_preview оставлен осознанно (документированный design-reference, whitelist), berserk_walk_sheet_v2 не трогался (живой ассет). Отчёт project_cleanup_report_2026_06_12.md дополнен разделом расхождений (вынесенное + оставленное + остаточный риск повторной генерации). Проверка: повторный аудит флагает только .DS_Store, import+runtime smoke зелёные.
 Приоритет: normal
 Роль: Back-end
+Jira: SCRUM-63
 Найдено QA при тестировании: `docs/tasks/qa_review_backend_project_folder_cleanup_unused_files_task.md`
 (исходная фича: `docs/tasks/backend_project_folder_cleanup_unused_files_task.md`)
 
