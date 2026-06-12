@@ -16,7 +16,7 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [design_codex_elite_boss_sprite_resolution_upscale_task.md](../tasks/design_codex_elite_boss_sprite_resolution_upscale_task.md) | Design (Codex) → Claude-Designer | new | Анти-мыло: перерисовать 4 элиток + 2 боссов 256→512px (поза 1:1), перенарезать cutout-риг. Мыло подтверждено: боссы x1.11 уже на боевом зуме, до x2 на Retina; элитки x1.3–1.5 на QHD/Retina. Пруф: docs/design/previews/elite_boss_blur_proof.png. PM-развилка: 0.1.4 vs release blocker 0.1.3 |
+| [design_codex_elite_boss_sprite_resolution_upscale_task.md](../tasks/design_codex_elite_boss_sprite_resolution_upscale_task.md) | Design (Codex) → Claude-Designer | blocked | Jira: SCRUM-135; backlog `0.1.4` по feature block, не dispatch в Design без отдельного решения PM/пользователя поднять как release blocker `0.1.3`. Анти-мыло: 4 элитки + 2 босса 256→512px (поза 1:1), пруф `docs/design/previews/elite_boss_blur_proof.png` |
 
 ## Process / Release Control
 
@@ -157,9 +157,9 @@
 | [qa_review_test_mini_elite_spawn_behavioral_coverage_task.md](../tasks/qa_review_test_mini_elite_spawn_behavioral_coverage_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-113) — тест реально поведенческий (путь потребления ловит мёртвую версию + прямой вызов: 1 мини-элитка, слоты, HP×0.55). Багов нет |
 | [qa_review_backend_levelup_rework_five_options_task.md](../tasks/qa_review_backend_levelup_rework_five_options_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-114) — 5 вариантов/1 пик, rare ~13% помечены, отложенный выбор, очередь, карточки. Low-замечание: дубль FAB+нижняя кнопка (req#3) → `ux_levelup_fab_return_button_dedup_task.md` |
 | [qa_review_backend_hero_select_portrait_left_radar_task.md](../tasks/qa_review_backend_hero_select_portrait_left_radar_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-115) — портрет слева/досье справа, лента 9, радар 8 статов с ГЛОБАЛЬНОЙ нормировкой, радар инвариантен к возвышению, регрессия clamp НЕ вернулась. Багов нет |
-| [qa_review_design_contextual_ui_frames_rethink_task.md](../tasks/qa_review_design_contextual_ui_frames_rethink_task.md) | QA (Claude) | blocked | Jira: SCRUM-116; ждет `design_contextual_ui_frames_rethink_task.md` -> review/done |
+| [qa_review_design_contextual_ui_frames_rethink_task.md](../tasks/qa_review_design_contextual_ui_frames_rethink_task.md) | QA (Claude) | done | Jira: SCRUM-116; закрыта PM как процессный дубликат — QA идет автоматическим QA-воркером по `docs/process/qa_protocol.md`, отдельный файл-пара не нужен |
 | [qa_review_codex_design_contextual_ui_frame_kits_generation_task.md](../tasks/qa_review_codex_design_contextual_ui_frame_kits_generation_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-120) — 17 рамок точные размеры/RGBA, центры чистые, 4 кита различимы и по концепту, орнамент на краях, без watermark, import чист. Багов нет (ждут коммита Designer) |
-| [qa_review_backend_contextual_ui_frame_theme_integration_task.md](../tasks/qa_review_backend_contextual_ui_frame_theme_integration_task.md) | QA (Claude) | blocked | Jira: SCRUM-121; ждет `backend_contextual_ui_frame_theme_integration_task.md` -> review/done |
+| [qa_review_backend_contextual_ui_frame_theme_integration_task.md](../tasks/qa_review_backend_contextual_ui_frame_theme_integration_task.md) | QA (Claude) | done | Jira: SCRUM-121; закрыта PM как процессный дубликат — QA идет автоматическим QA-воркером по `docs/process/qa_protocol.md`, отдельный файл-пара не нужен |
 | [qa_review_backend_elite_boss_size_epic_terror_task.md](../tasks/qa_review_backend_elite_boss_size_epic_terror_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-122) — масштаб 1.4/1.9 тянет хитбоксы, фаза-2 эскалация, +1 паттерн босса, safe-corridor держится, hit-stop/тряска/баннеры pause-aware, TTK не менялся. False-positive по лужам разобран (no-op). Багов нет |
 | [qa_review_ux_levelup_fab_return_button_dedup_task.md](../tasks/qa_review_ux_levelup_fab_return_button_dedup_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-124) — вариант A: при pending>0 FAB скрыт, единственный вход — нижняя кнопка с бейджем; докачка через FAB при pending==0. Тест покрывает оба. Багов нет |
 
@@ -172,8 +172,14 @@
 | [backend_hero_select_portrait_left_radar_task.md](../tasks/backend_hero_select_portrait_left_radar_task.md) | Back-end | done | Done 2026-06-12; портрет слева, досье справа, радар 8 статов, smoke passed |
 | [design_contextual_ui_frames_rethink_task.md](../tasks/design_contextual_ui_frames_rethink_task.md) | Design (Claude, концепт+ресёрч; генерация Codex) | in_progress | Jira: SCRUM-111; Phase 1 done 2026-06-12: `ui_contextual_concept.md`, audit sheet, 4 context kits spec; Codex generation + blocked Back-end integration handoffs созданы |
 | [codex_design_contextual_ui_frame_kits_generation_task.md](../tasks/codex_design_contextual_ui_frame_kits_generation_task.md) | Design (Codex) | review | Jira: SCRUM-117; 17 contextual UI frame PNG + preview generated in `assets/sprites/ui/frames/contextual/`; reworked after feedback into richer D&D/tabletop raster style using project refs; dimensions/alpha validated, Godot import passed |
-| [backend_contextual_ui_frame_theme_integration_task.md](../tasks/backend_contextual_ui_frame_theme_integration_task.md) | Back-end | blocked | Jira: SCRUM-118; ждет context kit PNG + Design review; затем подключить theme selection в ui_screens/route map с fallback |
+| [backend_contextual_ui_frame_theme_integration_task.md](../tasks/backend_contextual_ui_frame_theme_integration_task.md) | Back-end | blocked | Jira: SCRUM-118; backlog `0.1.4` по feature freeze, не dispatch в Back-end без отдельного решения PM/пользователя поднять как release blocker `0.1.3`; прогресс concept/frame kits сохранён |
 | [backend_elite_boss_size_epic_terror_task.md](../tasks/backend_elite_boss_size_epic_terror_task.md) | Back-end | done | Jira: SCRUM-119; Done 2026-06-12: A(размер/хитбокс 9898e99) + B(скиллы/коридор 9997744) + C(подача: баннеры/тряска+тумблер/hit-stop 4a6e3f2). 6 smoke зелёные. Минор: виньетка смены фаз опц.; апскейл спрайтов — чип при мыле |
+
+## Баги от пользователя (2026-06-12, спринт 0.1.3)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [bug_hero_select_carousel_radar_name_layout_task.md](../tasks/bug_hero_select_carousel_radar_name_layout_task.md) | Back-end (UI) | new | Выбор героя: карусель только картинки (убрать названия), роза ветров в правый верхний угол, имя только на досье (убрать дубль под портретом) |
 
 ## Активные / Неподтвержденные
 

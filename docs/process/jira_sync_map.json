@@ -470,5 +470,9 @@
  "qa_recheck_design_weapon_attack_vfx_animations_polish_task.md": {
   "key": "SCRUM-138",
   "status": "Готово"
+ },
+ "bug_hero_select_carousel_radar_name_layout_task.md": {
+  "key": "SCRUM-139",
+  "status": "К выполнению"
  }
 }
