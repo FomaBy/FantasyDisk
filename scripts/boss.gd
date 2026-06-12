@@ -323,18 +323,14 @@ func _spawn_phase_transition_hazard() -> void:
 	parent.add_child(zone)
 
 	var radius := 178.0 + float(boss_phase - 2) * 46.0
-	var visual := Polygon2D.new()
-	visual.color = Color(1.0, 0.28, 0.16, 0.22)
-	var points := PackedVector2Array()
-	for point_index in range(48):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 48.0) * radius)
-	visual.polygon = points
-	zone.add_child(visual)
+	var phase_color := Color(1.0, 0.32, 0.18, 1.0)
+	var windup := _ascension_telegraph(0.55)
+	HazardVfx.telegraph(zone, radius, phase_color, windup)
 
 	var tween := zone.create_tween()
-	tween.tween_interval(0.55)
+	tween.tween_interval(windup)
 	tween.tween_callback(func() -> void:
-		visual.color = Color(1.0, 0.18, 0.12, 0.58)
+		HazardVfx.detonate(zone, radius, phase_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(zone.global_position) <= radius and player.has_method("take_damage"):
 			player.take_damage(projectile_damage * (1.35 + float(boss_phase - 1) * 0.25), "boss_phase")

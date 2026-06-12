@@ -4,6 +4,8 @@
 
 ## [Unreleased] — ветка dev
 
+- VFX: боссовский hazard смены фазы переведён с голого красного круга на оформленный HazardVfx (баг QA); 19 эффект-спрайтов перерисованы в приглушённый D&D-стиль (без неона).
+
 - Чистка проекта: обновлен conservative audit `tools/audit_unused_assets.py`, из `assets/` вынесены obsolete preview/source PNG и временные `.DS_Store`/swap в `build/cleanup_backup_2026_06_12/`; активные фоновые ресурсы `field_dry_road`/`field_stone_garden` восстановлены после missing-resource проверки.
 
 - VFX: DoT-тики на врагах получили искру-маркер; level-up эффект и баннер переведены с программных Polygon2D/ColorRect на текстурные спрайты (вспышка/кольцо/искры); перф на 120 врагах с зонами в норме.
