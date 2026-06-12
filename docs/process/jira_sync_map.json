@@ -486,5 +486,9 @@
  "bug_boss_fight_timer_panel_visible_task.md": {
   "key": "SCRUM-145",
   "status": "К выполнению"
+ },
+ "backend_escape_pause_character_overview_anywhere_task.md": {
+  "key": "SCRUM-146",
+  "status": "К выполнению"
  }
 }

@@ -16,6 +16,7 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [backend_escape_pause_character_overview_anywhere_task.md](../tasks/backend_escape_pause_character_overview_anywhere_task.md) | Back-end (UI/UX) | new (backlog) | Jira: SCRUM-146; backlog `0.1.4` по feature freeze, не dispatch до релиза 0.1.3. Переосмысление Escape: досье персонажа с выделенными приоритетными атрибутами класса (данные согласовать с derived_parameters/CLASS_INTERPRETATIONS), доступно поверх магазина/level-up/события/награды/route map без поломки их состояния |
 | [design_codex_elite_boss_sprite_resolution_upscale_task.md](../tasks/design_codex_elite_boss_sprite_resolution_upscale_task.md) | Design (Codex) → Claude-Designer | blocked | Jira: SCRUM-135; backlog `0.1.4` по feature block, не dispatch в Design без отдельного решения PM/пользователя поднять как release blocker `0.1.3`. Анти-мыло: 4 элитки + 2 босса 256→512px (поза 1:1), пруф `docs/design/previews/elite_boss_blur_proof.png` |
 
 ## Process / Release Control
