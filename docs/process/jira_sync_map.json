@@ -509,7 +509,7 @@
  },
  "backend_settings_volume_slider_ux_task.md": {
   "key": "SCRUM-151",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_codex_summon_allies_sprites_task.md": {
   "key": "SCRUM-152",
@@ -541,6 +541,14 @@
  },
  "backend_ingame_patch_notes_task.md": {
   "key": "SCRUM-159",
+  "status": "К выполнению"
+ },
+ "backend_shop_wall_artifacts_frameless_task.md": {
+  "key": "SCRUM-160",
+  "status": "К выполнению"
+ },
+ "bug_hud_elements_overlap_task.md": {
+  "key": "SCRUM-161",
   "status": "К выполнению"
  }
 }
