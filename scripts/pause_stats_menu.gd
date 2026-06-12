@@ -561,9 +561,10 @@ func _make_button(text: String) -> Button:
 
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
-	var normal_bg := Color(0.075, 0.095, 0.13, 0.97)
-	var hover_bg := Color(0.13, 0.17, 0.22, 1.0)
-	var pressed_bg := Color(0.045, 0.060, 0.085, 1.0)
+	# Тёплое дерево/латунь (D&D-таверна) — единая база с ui_screens.
+	var normal_bg := Color(0.16, 0.115, 0.075, 0.97)
+	var hover_bg := Color(0.24, 0.17, 0.10, 1.0)
+	var pressed_bg := Color(0.11, 0.075, 0.05, 1.0)
 	var border := Color(0.68, 0.52, 0.22, 0.92)
 	var hover_border := Color(1.0, 0.82, 0.26, 1.0)
 	var pressed_border := Color(0.95, 0.62, 0.18, 1.0)

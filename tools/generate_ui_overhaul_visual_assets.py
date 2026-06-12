@@ -1,3 +1,8 @@
+# NOTE (2026-06-12): the frame + system-icon portion of this file is SUPERSEDED by
+# tools/generate_ui_tavern_theme.py (warm D&D tavern theme). Do not regenerate
+# frames/icons here - it would overwrite the warm theme with the old cold one.
+# This tool is kept for the flat battle-background generation only.
+
 from __future__ import annotations
 
 import math

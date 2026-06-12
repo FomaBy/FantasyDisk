@@ -205,7 +205,7 @@ func _show_character_select() -> void:
 	var subtitle_label := Label.new()
 	subtitle_label.text = "9 классов видны сразу. Наведи на героя, чтобы увидеть характеристики."
 	subtitle_label.add_theme_font_size_override("font_size", 15)
-	subtitle_label.add_theme_color_override("font_color", Color(0.82, 0.88, 0.94, 0.92))
+	subtitle_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78, 0.92))
 	title_box.add_child(subtitle_label)
 
 	var back_button := _make_button("Назад")
@@ -244,7 +244,7 @@ func _show_character_select() -> void:
 	info_desc.name = "HeroSelectInfoDescription"
 	info_desc.text = "В нижней панели появятся роль, сильные стороны, слабости и базовые характеристики."
 	info_desc.add_theme_font_size_override("font_size", 13)
-	info_desc.add_theme_color_override("font_color", Color(0.86, 0.9, 0.95, 1.0))
+	info_desc.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	info_desc.clip_text = true
 	info_box.add_child(info_desc)
 
@@ -252,7 +252,7 @@ func _show_character_select() -> void:
 	info_stats.name = "HeroSelectInfoStats"
 	info_stats.text = ""
 	info_stats.add_theme_font_size_override("font_size", 12)
-	info_stats.add_theme_color_override("font_color", Color(0.72, 0.80, 0.88, 0.96))
+	info_stats.add_theme_color_override("font_color", Color(0.84, 0.78, 0.66, 0.96))
 	info_stats.clip_text = true
 	info_box.add_child(info_stats)
 
@@ -685,7 +685,7 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 		text_box.add_theme_constant_override("separation", 4)
 		row.add_child(text_box)
 		_codex_label(text_box, str(character["title"]), 24, Color(0.96, 0.88, 0.40, 1.0))
-		_codex_label(text_box, str(character["playstyle"]), 15, Color(0.88, 0.92, 0.96, 1.0))
+		_codex_label(text_box, str(character["playstyle"]), 15, Color(0.94, 0.90, 0.81, 1.0))
 		_codex_label(text_box, "Сильное: %s" % character["strengths"], 14, Color(0.62, 0.88, 0.58, 1.0))
 		_codex_label(text_box, "Слабое: %s" % character["weaknesses"], 14, Color(0.92, 0.62, 0.52, 1.0))
 		for weapon in character["weapons"]:
@@ -706,7 +706,7 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 			text_box.add_theme_constant_override("separation", 3)
 			row.add_child(text_box)
 			_codex_label(text_box, "%s   (%s)" % [monster["title"], monster["id"]], 21, Color(0.96, 0.88, 0.40, 1.0))
-			_codex_label(text_box, str(monster["behavior"]), 14, Color(0.88, 0.92, 0.96, 1.0))
+			_codex_label(text_box, str(monster["behavior"]), 14, Color(0.94, 0.90, 0.81, 1.0))
 			for ability in monster["abilities"]:
 				_codex_label(text_box, "✦ %s — %s" % [ability["title"], ability["description"]], 13, Color(0.80, 0.68, 1.0, 1.0))
 
@@ -736,7 +736,7 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 		row.add_child(text_box)
 		var artifact_definition: Dictionary = game.PROGRESSION_DATA.artifact_definition(str(artifact["id"]))
 		_codex_label(text_box, "%s   [%s]" % [artifact["title"], _artifact_tier_text(artifact_definition)], 16, Color(0.96, 0.88, 0.40, 1.0))
-		_codex_label(text_box, str(artifact["description"]), 13, Color(0.84, 0.88, 0.94, 1.0))
+		_codex_label(text_box, str(artifact["description"]), 13, Color(0.92, 0.88, 0.79, 1.0))
 		var codex_note := _artifact_affinity_note(artifact_definition)
 		if not codex_note.is_empty():
 			_codex_label(text_box, str(codex_note["text"]), 12, codex_note["color"])
@@ -762,7 +762,7 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(text_box)
 			_codex_label(text_box, str(stat["title"]), 17, Color(0.96, 0.88, 0.40, 1.0))
-			_codex_label(text_box, str(stat["description"]), 13, Color(0.86, 0.90, 0.95, 1.0))
+			_codex_label(text_box, str(stat["description"]), 13, Color(0.93, 0.89, 0.80, 1.0))
 			if str(stat["influences"]) != "":
 				_codex_label(text_box, "Влияет на: %s" % stat["influences"], 12, Color(0.70, 0.78, 0.88, 1.0))
 
@@ -841,7 +841,7 @@ func _show_settings_menu() -> void:
 		label.text = input_action["label"]
 		label.custom_minimum_size = Vector2(150, 36)
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.add_theme_color_override("font_color", Color(0.86, 0.9, 0.95, 1.0))
+		label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 		row.add_child(label)
 
 		var bind_button := _make_button(_binding_text(action_name))
@@ -880,7 +880,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	label.text = title
 	label.custom_minimum_size = Vector2(110, 36)
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_color_override("font_color", Color(0.86, 0.9, 0.95, 1.0))
+	label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	row.add_child(label)
 
 	var slider := HSlider.new()
@@ -1045,7 +1045,7 @@ func _add_character_button(box: Container, character_id: String, info_labels: Di
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(title_label)
 
-	var style_line := _hero_card_line(description, 13, Color(0.88, 0.92, 0.96, 1.0))
+	var style_line := _hero_card_line(description, 13, Color(0.94, 0.90, 0.81, 1.0))
 	style_line.name = "CharacterStyle_%s" % character_id
 	column.add_child(style_line)
 
@@ -2223,7 +2223,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.add_theme_font_size_override("font_size", 17)
-	subtitle_label.add_theme_color_override("font_color", Color(0.86, 0.9, 0.95, 1.0))
+	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	box.add_child(subtitle_label)
 
 	return box
@@ -2495,9 +2495,11 @@ func _style_button_control(button: Button) -> void:
 
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
-	var normal_bg := Color(0.075, 0.095, 0.13, 0.97)
-	var hover_bg := Color(0.13, 0.17, 0.22, 1.0)
-	var pressed_bg := Color(0.045, 0.060, 0.085, 1.0)
+	# Тёплое дерево/латунь (D&D-таверна): база кнопок коричневая, не сине-серая,
+	# чтобы tint текстуры рамки читался как дерево при свечах.
+	var normal_bg := Color(0.16, 0.115, 0.075, 0.97)
+	var hover_bg := Color(0.24, 0.17, 0.10, 1.0)
+	var pressed_bg := Color(0.11, 0.075, 0.05, 1.0)
 	var border := Color(0.68, 0.52, 0.22, 0.92)
 	var hover_border := Color(1.0, 0.82, 0.26, 1.0)
 	var pressed_border := Color(0.95, 0.62, 0.18, 1.0)
