@@ -1010,9 +1010,84 @@ func _initialize() -> void:
 	await _test_ultimate_framework()
 	await _test_death_flow(main_scene)
 	await _test_epic_elite_boss_scale_hitbox()
+	await _test_elite_phase2_escalation()
+	await _test_boss_zone_wave_safe_corridor()
 
 	print("Runtime smoke test passed.")
 	quit()
+
+
+func _test_boss_zone_wave_safe_corridor() -> void:
+	# +1 боссовый паттерн (волна зон) всегда оставляет безопасный коридор, и
+	# _safe_radius капит любой хазард ниже полувысоты арены.
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+	var boss := (load("res://scenes/BossDiskDevourer.tscn") as PackedScene).instantiate() as Node2D
+	holder.add_child(boss)
+	await process_frame
+	# safe_radius капит огромный радиус (коридор гарантирован даже на В4+).
+	if float(boss.call("_safe_radius", 9999.0)) > 1440.0 * 0.34 + 0.5:
+		_fail("Expected _safe_radius to cap hazard radius for a safe corridor.")
+		return
+	# Волна зон: кольцо с двумя пропущенными секторами -> проход всегда есть.
+	boss.call("_spawn_zone_wave", boss.global_position)
+	await process_frame
+	var zone_count := holder.find_children("BossRiftZone", "Node2D", true, false).size()
+	if zone_count <= 0 or zone_count >= 8:
+		_fail("Expected boss zone wave to leave a safe corridor (got %d of 8 sectors)." % zone_count)
+		return
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_elite_phase2_escalation() -> void:
+	# Фаза 2 (HP ≤ порога): уникальные атаки получают второе применение.
+	# Проверяем на shard_marshal: фаза 1 — веер; фаза 2 — веер + кольцо осколков.
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+	var elite := (load("res://scenes/EliteArmored.tscn") as PackedScene).instantiate() as Node2D
+	holder.add_child(elite)
+	await process_frame
+	elite.set("elite_behavior", "shard_marshal")
+	elite.set("_elite_attack_direction", Vector2.RIGHT)
+	elite.set("max_health", 100.0)
+	var player := (load("res://scenes/Player.tscn") as PackedScene).instantiate() as Node2D
+	holder.add_child(player)
+	player.global_position = elite.global_position + Vector2(400, 0)
+	await process_frame
+	var config := {"shard_count": 5, "spread_degrees": 60.0, "shard_speed": 430.0, "damage_factor": 1.0, "radius": 0.0}
+
+	# Фаза 1: полное HP -> только веер.
+	elite.set("health", 100.0)
+	if bool(elite.call("_elite_in_phase2")):
+		_fail("Expected full-HP elite to be in phase 1.")
+		return
+	var before_fan := holder.get_child_count()
+	elite.call("_strike_shard_fan", config, player)
+	await process_frame
+	var fan_count := holder.get_child_count() - before_fan
+
+	# Фаза 2: низкое HP -> веер + кольцо (второе применение).
+	elite.set("health", 30.0)
+	if not bool(elite.call("_elite_in_phase2")):
+		_fail("Expected low-HP elite to enter phase 2.")
+		return
+	var before_ring := holder.get_child_count()
+	elite.call("_strike_shard_fan", config, player)
+	await process_frame
+	var phase2_count := holder.get_child_count() - before_ring
+	if phase2_count <= fan_count:
+		_fail("Expected phase-2 shard_marshal to add a ring (fan %d vs phase2 %d)." % [fan_count, phase2_count])
+		return
+
+	holder.queue_free()
+	current_scene = null
+	await process_frame
 
 
 func _test_epic_elite_boss_scale_hitbox() -> void:
@@ -3125,14 +3200,26 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	holder.queue_free()
 	current_scene = null
 
-	# FAB прокачки на карте с бейджем.
+	# При pending level-up не должно быть двух входов одновременно:
+	# нижняя кнопка с бейджем остается единственным входом, FAB сохраняется для докачки при pending=0.
 	econ_main.set("pending_level_ups", 2)
 	econ_main.call("_show_battle_map")
 	await process_frame
 	var fab := econ_main.find_child("UpgradeFabButton", true, false) as Button
-	var badge := econ_main.find_child("UpgradeFabBadge", true, false) as Label
-	if fab == null or badge == null or badge.text != "2":
-		_fail("Expected the route map upgrade FAB with a pending-levels badge of 2.")
+	if fab != null:
+		_fail("Expected route map to hide UpgradeFabButton while pending level-up return button is visible.")
+		return
+	var level_return := econ_main.find_child("LevelUpPlusButton", true, false) as Button
+	var level_badge := econ_main.find_child("LevelUpPlusBadge", true, false) as Label
+	if level_return == null or level_badge == null or level_badge.text != "2":
+		_fail("Expected the bottom level-up return button with a pending-levels badge of 2.")
+		return
+	econ_main.set("pending_level_ups", 0)
+	econ_main.call("_show_battle_map")
+	await process_frame
+	fab = econ_main.find_child("UpgradeFabButton", true, false) as Button
+	if fab == null or fab.disabled:
+		_fail("Expected the attribute upgrade FAB to remain available when no level-up is pending.")
 		return
 	econ_main.queue_free()
 	await process_frame

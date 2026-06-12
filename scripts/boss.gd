@@ -14,6 +14,7 @@ extends "res://scripts/enemy.gd"
 @export var boss_summon_interval := 8.0
 @export var rift_zone_interval := 5.3
 @export var slam_interval := 5.8
+@export var zone_wave_interval := 9.0
 @export var enrage_health_ratio := 0.35
 
 const BOSS_PHASE_MARKERS := [0.66, 0.33]
@@ -27,6 +28,7 @@ var _shield_time_left := 0.0
 var _boss_summon_cooldown := 5.0
 var _rift_zone_cooldown := 3.4
 var _slam_cooldown := 4.2
+var _zone_wave_cooldown := 6.0
 var shield_active := false
 var _enraged := false
 var boss_phase := 1
@@ -102,6 +104,26 @@ func _update_boss_attacks(delta: float) -> void:
 		if _boss_summon_cooldown <= 0.0:
 			_summon_riftlings()
 			_boss_summon_cooldown = boss_summon_interval * _phase_interval_multiplier()
+
+	# +1 опасный паттерн (независим от фаз, оба босса): волна зон по периметру с
+	# гарантированным проходом — короче окно безопасности, но коридор всегда есть.
+	_zone_wave_cooldown -= delta
+	if _zone_wave_cooldown <= 0.0:
+		_spawn_zone_wave(player.global_position)
+		_zone_wave_cooldown = zone_wave_interval * _phase_interval_multiplier()
+
+
+func _spawn_zone_wave(center: Vector2) -> void:
+	# Кольцо зон вокруг игрока с двумя смежными пропущенными секторами —
+	# гарантированный безопасный коридор (safe corridor, req В4+).
+	var count := 8
+	var ring_radius := 360.0
+	var gap_index := randi() % count
+	for i in range(count):
+		if i == gap_index or i == (gap_index + 1) % count:
+			continue
+		var angle := TAU * float(i) / float(count)
+		_spawn_rift_zone(_clamp_to_arena(center + Vector2.RIGHT.rotated(angle) * ring_radius, 92.0))
 
 
 func _start_dash_toward(player: Node2D) -> void:
@@ -196,16 +218,20 @@ func _spawn_rift_zone(target_position: Vector2) -> void:
 	zone.global_position = _clamp_to_arena(target_position, 92.0)
 	zone.z_index = 9
 	parent.add_child(zone)
-	var radius := 92.0 + float(boss_phase - 1) * 16.0
+	var radius := _safe_radius(92.0 + float(boss_phase - 1) * 16.0)
 	var zone_color := Color(0.64, 0.34, 1.0, 1.0)
 	var zone_telegraph := _ascension_telegraph(0.65)
 	HazardVfx.telegraph(zone, radius, zone_color, zone_telegraph)
+	var zone_ref: WeakRef = weakref(zone)
 	var zone_tween := zone.create_tween()
 	zone_tween.tween_interval(zone_telegraph)
 	zone_tween.tween_callback(func() -> void:
-		HazardVfx.detonate(zone, radius, zone_color)
+		var z: Node2D = zone_ref.get_ref()
+		if z == null:
+			return
+		HazardVfx.detonate(z, radius, zone_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
-		if player != null and player.global_position.distance_to(zone.global_position) <= radius and player.has_method("take_damage"):
+		if player != null and player.global_position.distance_to(z.global_position) <= radius and player.has_method("take_damage"):
 			player.take_damage(zone_damage, "rift_zone")
 	)
 	zone_tween.tween_interval(1.45)
@@ -224,16 +250,20 @@ func _spawn_disk_slam() -> void:
 	slam.global_position = _clamp_to_arena(global_position, 132.0)
 	slam.z_index = 9
 	parent.add_child(slam)
-	var radius := 132.0 + float(boss_phase - 1) * 18.0
+	var radius := _safe_radius(132.0 + float(boss_phase - 1) * 18.0)
 	var slam_color := Color(1.0, 0.42, 0.18, 1.0)
 	var slam_telegraph := _ascension_telegraph(0.48)
 	HazardVfx.telegraph(slam, radius, slam_color, slam_telegraph)
+	var slam_ref: WeakRef = weakref(slam)
 	var slam_tween := slam.create_tween()
 	slam_tween.tween_interval(slam_telegraph)
 	slam_tween.tween_callback(func() -> void:
-		HazardVfx.detonate(slam, radius, slam_color)
+		var s: Node2D = slam_ref.get_ref()
+		if s == null:
+			return
+		HazardVfx.detonate(s, radius, slam_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
-		if player != null and player.global_position.distance_to(slam.global_position) <= radius and player.has_method("take_damage"):
+		if player != null and player.global_position.distance_to(s.global_position) <= radius and player.has_method("take_damage"):
 			player.take_damage(slam_damage, "disk_slam")
 	)
 	slam_tween.tween_interval(0.62)
@@ -322,17 +352,21 @@ func _spawn_phase_transition_hazard() -> void:
 	zone.z_index = 10
 	parent.add_child(zone)
 
-	var radius := 178.0 + float(boss_phase - 2) * 46.0
+	var radius := _safe_radius(178.0 + float(boss_phase - 2) * 46.0)
 	var phase_color := Color(1.0, 0.32, 0.18, 1.0)
 	var windup := _ascension_telegraph(0.55)
 	HazardVfx.telegraph(zone, radius, phase_color, windup)
 
+	var zone_ref: WeakRef = weakref(zone)
 	var tween := zone.create_tween()
 	tween.tween_interval(windup)
 	tween.tween_callback(func() -> void:
-		HazardVfx.detonate(zone, radius, phase_color)
+		var z: Node2D = zone_ref.get_ref()
+		if z == null:
+			return
+		HazardVfx.detonate(z, radius, phase_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
-		if player != null and player.global_position.distance_to(zone.global_position) <= radius and player.has_method("take_damage"):
+		if player != null and player.global_position.distance_to(z.global_position) <= radius and player.has_method("take_damage"):
 			player.take_damage(projectile_damage * (1.35 + float(boss_phase - 1) * 0.25), "boss_phase")
 	)
 	tween.tween_interval(0.70)

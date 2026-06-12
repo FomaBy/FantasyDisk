@@ -392,7 +392,8 @@ func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool
 				_set_body_alpha(1.0)
 		"recover":
 			elite_attack_state = "idle"
-			_elite_attack_cooldown = float(config["cooldown"])
+			# Фаза 2 (HP ≤ порога): ротация уникальных атак ускоряется (~-20%).
+			_elite_attack_cooldown = float(config["cooldown"]) * (0.8 if _elite_in_phase2() else 1.0)
 			elite_attack_phase_changed.emit(elite_attack_id, "idle")
 			set_meta("elite_attack_phase", "idle")
 	return elite_attack_state != "idle"
@@ -439,9 +440,11 @@ func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 	if to_player.length_squared() > 0.001:
 		_elite_attack_direction = to_player.normalized()
 
+	var phase2 := _elite_in_phase2()
 	match elite_behavior:
 		"iron_bastion":
-			_spawn_elite_telegraph(global_position, float(config["radius"]), float(config["windup"]))
+			# Телеграф совпадает с фаза-2 расширением волны (честное окно уворота).
+			_spawn_elite_telegraph(global_position, _safe_radius(float(config["radius"]) * (1.3 if phase2 else 1.0)), float(config["windup"]))
 		"night_stalker":
 			var behind := player.global_position + _elite_attack_direction * float(config["behind_offset"])
 			_elite_attack_targets.append(_clamp_to_arena(behind))
@@ -451,7 +454,8 @@ func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 		"plague_prophet":
 			_play_rig_action("cast", _elite_attack_direction)
 			var spread := float(config["lob_spread"])
-			for lob_index in range(int(config["lob_count"])):
+			# Фаза 2: больше луж яда (второе применение) — +2 лоба.
+			for lob_index in range(int(config["lob_count"]) + (2 if phase2 else 0)):
 				var offset := Vector2.ZERO
 				if lob_index > 0:
 					offset = Vector2.RIGHT.rotated(randf() * TAU) * randf_range(spread * 0.35, spread)
@@ -474,6 +478,20 @@ func _execute_elite_strike(config: Dictionary, player: Node2D) -> void:
 			_strike_shard_fan(config, player)
 
 
+func _elite_in_phase2() -> bool:
+	# Боевая фаза 2 элитки: ниже порога HP (elite_phase_threshold, по умолч. 0.50).
+	if max_health <= 0.0:
+		return false
+	var threshold := float(get_meta("elite_phase_threshold", 0.5))
+	return health / max_health <= threshold
+
+
+func _safe_radius(radius: float) -> float:
+	# Safe corridor: ни один хазард не перекрывает арену целиком — даже две
+	# одновременные зоны оставляют проходимый коридор (cap < полувысоты арены).
+	return minf(radius, ARENA_SIZE.y * 0.34)
+
+
 func _elite_attack_damage(config: Dictionary, player: Node2D) -> float:
 	var damage := contact_damage * float(config["damage_factor"])
 	var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
@@ -483,15 +501,20 @@ func _elite_attack_damage(config: Dictionary, player: Node2D) -> float:
 
 
 func _strike_slam_wave(config: Dictionary, player: Node2D) -> void:
-	var radius := float(config["radius"])
+	var phase2 := _elite_in_phase2()
+	# Фаза 2: «двойная волна» — шире и сильнее, но в пределах безопасного коридора.
+	var radius := _safe_radius(float(config["radius"]) * (1.3 if phase2 else 1.0))
+	var knockback := float(config["knockback"]) * (1.3 if phase2 else 1.0)
 	_spawn_shockwave_ring(global_position, radius)
+	if phase2:
+		_spawn_shockwave_ring(global_position, radius * 0.6)
 	if player.global_position.distance_to(global_position) > radius:
 		return
 	if player.has_method("take_damage") and player.take_damage(_elite_attack_damage(config, player), "elite_slam_wave"):
 		var push_direction := (player.global_position - global_position).normalized()
 		if push_direction.length_squared() <= 0.001:
 			push_direction = Vector2.RIGHT
-		player.global_position = _clamp_to_arena(player.global_position + push_direction * float(config["knockback"]))
+		player.global_position = _clamp_to_arena(player.global_position + push_direction * knockback)
 
 
 func _strike_shadow_strike(config: Dictionary, player: Node2D) -> void:
@@ -505,6 +528,15 @@ func _strike_shadow_strike(config: Dictionary, player: Node2D) -> void:
 	if player.global_position.distance_to(global_position) <= float(config["radius"]):
 		if player.has_method("take_damage"):
 			player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
+	# Фаза 2: серия из двух ударов из тени — второй заход с другой стороны.
+	if _elite_in_phase2():
+		var second := _clamp_to_arena(player.global_position - _elite_attack_direction * float(config["behind_offset"]))
+		_spawn_shadow_trail(global_position, second, 0.18)
+		global_position = second
+		_play_rig_action("attack", player.global_position - global_position)
+		if player.global_position.distance_to(global_position) <= float(config["radius"]):
+			if player.has_method("take_damage"):
+				player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
 
 
 func _strike_poison_volley(config: Dictionary, player: Node2D) -> void:
@@ -517,23 +549,33 @@ func _strike_shard_fan(config: Dictionary, player: Node2D) -> void:
 	var shard_count := int(config["shard_count"])
 	var spread := deg_to_rad(float(config["spread_degrees"]))
 	var damage := _elite_attack_damage(config, player)
-	var parent := get_tree().current_scene
-	if parent == null:
-		parent = get_tree().root
 	for shard_index in range(shard_count):
 		var t := 0.0 if shard_count == 1 else float(shard_index) / float(shard_count - 1)
 		var angle := lerpf(-spread * 0.5, spread * 0.5, t)
-		var direction := _elite_attack_direction.rotated(angle)
-		var projectile := ENEMY_PROJECTILE_SCENE.instantiate()
-		parent.add_child(projectile)
-		var shard_sprite := projectile.get_node_or_null("Sprite2D") as Sprite2D
-		if shard_sprite == null:
-			shard_sprite = projectile.get_node_or_null("Body") as Sprite2D
-		if shard_sprite != null:
-			shard_sprite.texture = ELITE_CRYSTAL_SHARD_TEXTURE
-			shard_sprite.rotation = direction.angle()
-		if projectile.has_method("setup"):
-			projectile.setup(global_position, global_position + direction * 200.0, damage, float(config["shard_speed"]))
+		_spawn_shard(_elite_attack_direction.rotated(angle), damage, config)
+	# Фаза 2: второе применение — кольцо осколков вдобавок к вееру (всегда есть
+	# проход: кольцо разрежено, между лучами можно проскользнуть).
+	if _elite_in_phase2():
+		var ring_count := 8
+		for ring_index in range(ring_count):
+			var ring_angle := TAU * float(ring_index) / float(ring_count)
+			_spawn_shard(Vector2.RIGHT.rotated(ring_angle), damage, config)
+
+
+func _spawn_shard(direction: Vector2, damage: float, config: Dictionary) -> void:
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	var projectile := ENEMY_PROJECTILE_SCENE.instantiate()
+	parent.add_child(projectile)
+	var shard_sprite := projectile.get_node_or_null("Sprite2D") as Sprite2D
+	if shard_sprite == null:
+		shard_sprite = projectile.get_node_or_null("Body") as Sprite2D
+	if shard_sprite != null:
+		shard_sprite.texture = ELITE_CRYSTAL_SHARD_TEXTURE
+		shard_sprite.rotation = direction.angle()
+	if projectile.has_method("setup"):
+		projectile.setup(global_position, global_position + direction * 200.0, damage, float(config["shard_speed"]))
 
 
 func _spawn_elite_telegraph(target_position: Vector2, radius: float, duration: float) -> void:
