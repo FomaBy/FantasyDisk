@@ -68,8 +68,8 @@
   "status": "Готово"
  },
  "backend_contextual_ui_frame_theme_integration_task.md": {
-  "key": "SCRUM-18",
-  "status": "К выполнению"
+  "key": "SCRUM-118",
+  "status": "Готово"
  },
  "backend_dark_mage_guitarist_balance_amp_cleanup_task.md": {
   "key": "SCRUM-19",
@@ -80,7 +80,7 @@
   "status": "Готово"
  },
  "backend_elite_boss_size_epic_terror_task.md": {
-  "key": "SCRUM-21",
+  "key": "SCRUM-119",
   "status": "Готово"
  },
  "backend_elite_overhaul_size_unique_attacks_task.md": {
@@ -116,7 +116,7 @@
   "status": "Готово"
  },
  "backend_hero_select_portrait_left_radar_task.md": {
-  "key": "SCRUM-30",
+  "key": "SCRUM-110",
   "status": "Готово"
  },
  "backend_integrate_stat_icons_hud_remove_obstacles_task.md": {
@@ -124,7 +124,7 @@
   "status": "Готово"
  },
  "backend_levelup_rework_five_options_task.md": {
-  "key": "SCRUM-32",
+  "key": "SCRUM-109",
   "status": "Готово"
  },
  "backend_mage_buff_guitarist_rework_task.md": {
@@ -268,7 +268,7 @@
   "status": "Готово"
  },
  "codex_design_contextual_ui_frame_kits_generation_task.md": {
-  "key": "SCRUM-68",
+  "key": "SCRUM-117",
   "status": "Готово"
  },
  "codex_design_effects_sprites_dnd_restyle_task.md": {
@@ -320,8 +320,8 @@
   "status": "Готово"
  },
  "design_contextual_ui_frames_rethink_task.md": {
-  "key": "SCRUM-81",
-  "status": "В работе"
+  "key": "SCRUM-111",
+  "status": "Готово"
  },
  "design_dark_mage_sprite_legs_rework_task.md": {
   "key": "SCRUM-82",
@@ -372,23 +372,23 @@
   "status": "Готово"
  },
  "qa_review_backend_ascension_difficulty_ladder_task.md": {
-  "key": "SCRUM-94",
+  "key": "SCRUM-125",
   "status": "Готово"
  },
  "qa_review_backend_elite_reward_center_screen_task.md": {
-  "key": "SCRUM-95",
+  "key": "SCRUM-112",
   "status": "Готово"
  },
  "qa_review_backend_hero_select_portrait_left_radar_task.md": {
-  "key": "SCRUM-96",
+  "key": "SCRUM-115",
   "status": "Готово"
  },
  "qa_review_backend_levelup_rework_five_options_task.md": {
-  "key": "SCRUM-97",
+  "key": "SCRUM-114",
   "status": "Готово"
  },
  "qa_review_backend_project_folder_cleanup_unused_files_task.md": {
-  "key": "SCRUM-98",
+  "key": "SCRUM-127",
   "status": "Готово"
  },
  "qa_review_bug_ascension_elite_instant_phase_dead_task.md": {
@@ -416,15 +416,15 @@
   "status": "Готово"
  },
  "qa_review_design_contextual_ui_frames_rethink_task.md": {
-  "key": "SCRUM-105",
+  "key": "SCRUM-116",
   "status": "Готово"
  },
  "qa_review_design_weapon_attack_vfx_animations_polish_task.md": {
-  "key": "SCRUM-106",
+  "key": "SCRUM-126",
   "status": "Готово"
  },
  "qa_review_test_mini_elite_spawn_behavioral_coverage_task.md": {
-  "key": "SCRUM-107",
+  "key": "SCRUM-113",
   "status": "Готово"
  },
  "test_mini_elite_spawn_behavioral_coverage_task.md": {
@@ -432,27 +432,27 @@
   "status": "Готово"
  },
  "process_feature_block_0_1_3_task.md": {
-  "key": "SCRUM-129",
+  "key": "SCRUM-128",
   "status": "Готово"
  },
  "qa_review_backend_contextual_ui_frame_theme_integration_task.md": {
-  "key": "SCRUM-130",
+  "key": "SCRUM-121",
   "status": "Готово"
  },
  "qa_review_backend_elite_boss_size_epic_terror_task.md": {
-  "key": "SCRUM-131",
+  "key": "SCRUM-122",
   "status": "Готово"
  },
  "qa_review_codex_design_contextual_ui_frame_kits_generation_task.md": {
-  "key": "SCRUM-132",
+  "key": "SCRUM-120",
   "status": "Готово"
  },
  "qa_review_ux_levelup_fab_return_button_dedup_task.md": {
-  "key": "SCRUM-133",
+  "key": "SCRUM-124",
   "status": "Готово"
  },
  "ux_levelup_fab_return_button_dedup_task.md": {
-  "key": "SCRUM-134",
+  "key": "SCRUM-123",
   "status": "Готово"
  },
  "design_codex_elite_boss_sprite_resolution_upscale_task.md": {
@@ -472,23 +472,27 @@
   "status": "Готово"
  },
  "bug_hero_select_carousel_radar_name_layout_task.md": {
-  "key": "SCRUM-139",
+  "key": "SCRUM-140",
   "status": "Готово"
  },
  "bug_elite_reward_window_offcenter_task.md": {
-  "key": "SCRUM-142",
-  "status": "Контроль качества"
+  "key": "SCRUM-144",
+  "status": "Готово"
  },
  "qa_review_bug_hero_select_carousel_radar_name_layout_task.md": {
-  "key": "SCRUM-143",
+  "key": "SCRUM-141",
   "status": "Готово"
  },
  "bug_boss_fight_timer_panel_visible_task.md": {
   "key": "SCRUM-145",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "backend_escape_pause_character_overview_anywhere_task.md": {
   "key": "SCRUM-146",
+  "status": "К выполнению"
+ },
+ "design_codex_ui_dark_fantasy_restyle_task.md": {
+  "key": "SCRUM-147",
   "status": "К выполнению"
  }
 }
