@@ -1,3 +1,5 @@
+# SUPERSEDED 2026-06-12 by tools/generate_dnd_battlemaps.py (user rejected the
+# flat circle-pebble look as amateurish). Kept for reference only.
 """Redraw the 4 combat backgrounds as lively flat top-down ground.
 
 User feedback (2026-06-12): the current flat backgrounds are dull (almost
