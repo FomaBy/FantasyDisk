@@ -269,7 +269,7 @@
  },
  "codex_design_contextual_ui_frame_kits_generation_task.md": {
   "key": "SCRUM-68",
-  "status": "В работе"
+  "status": "Готово"
  },
  "codex_design_effects_sprites_dnd_restyle_task.md": {
   "key": "SCRUM-69",
@@ -473,6 +473,14 @@
  },
  "bug_hero_select_carousel_radar_name_layout_task.md": {
   "key": "SCRUM-139",
+  "status": "Готово"
+ },
+ "bug_elite_reward_window_offcenter_task.md": {
+  "key": "SCRUM-142",
+  "status": "К выполнению"
+ },
+ "qa_review_bug_hero_select_carousel_radar_name_layout_task.md": {
+  "key": "SCRUM-143",
   "status": "К выполнению"
  }
 }

@@ -180,7 +180,8 @@
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [bug_hero_select_carousel_radar_name_layout_task.md](../tasks/bug_hero_select_carousel_radar_name_layout_task.md) | Back-end (UI) | done | Jira: SCRUM-140; Done 2026-06-12: карусель только миниатюры (без текста), роза ветров — плавающий виджет в правый верхний угол root, дубль имени под портретом убран (имя только в досье). Тест-ассерты обновлены, 6 smoke зелёные. QA разблокирован |
-| [qa_review_bug_hero_select_carousel_radar_name_layout_task.md](../tasks/qa_review_bug_hero_select_carousel_radar_name_layout_task.md) | QA (Claude) | blocked | Jira: SCRUM-141; ждет `bug_hero_select_carousel_radar_name_layout_task.md` -> review/done |
+| [bug_elite_reward_window_offcenter_task.md](../tasks/bug_elite_reward_window_offcenter_task.md) | Back-end (UI) | new | КРИТИЧЕСКИЙ: окно «Трофей элитки» уезжает в правый нижний угол за экран (скриншот пользователя). Тест должен ассертить фактический global_rect-центр, не пресет; проверить остальные модалки |
+| [qa_review_bug_hero_select_carousel_radar_name_layout_task.md](../tasks/qa_review_bug_hero_select_carousel_radar_name_layout_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-141) — все 3 дефекта исправлены, подтверждено РЕАЛЬНЫМ рендер-скриншотом 1280×720 (build/qa/): карусель без текста, роза top-right не перекрывает текст досье, имя только в досье. Багов нет |
 
 ## Активные / Неподтвержденные
 
