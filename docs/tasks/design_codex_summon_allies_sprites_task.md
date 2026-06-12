@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Спрайты призывных миньонов Друида и всех призывных союзников (D&D-канон)
 
-Статус: review
+Статус: done (Design review approved 2026-06-12)
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя)
@@ -114,3 +114,16 @@ Jira: SCRUM-152
 - Создан Back-end handoff для runtime source mapping: `docs/tasks/backend_summon_allies_source_sprite_integration_task.md`.
 - Godot import: passed.
 - Runtime smoke: blocked by unrelated current worktree weapon-effect cleanup regression, not by ally sprite assets. Current failure: `Expected switching Guitarist weapons to clean up amp/effect nodes. Leftover: SoundWaveVfx` at `tests/runtime_smoke_test.gd:1979`.
+
+
+## Design Review / 2026-06-12 — ПРИНЯТО (Claude-Designer)
+- 6 союзных/deployable PNG (ally_druid_beast/pack_spirit, ally_homunculus,
+  ally_leadership_echo, deploy_raven_totem_field, deploy_sound_amp_field):
+  256x256, D&D-канон, качество на уровне персонажей, «свой/чужой» читается
+  (тёплые/золотые тона vs тёмно-фиолетовые враги).
+- Тех: bbox не у краёв, аудит без грязи/ореолов, не пустые.
+- `AllyMinion.tscn` получил raster-спрайт (ally_druid_beast) — раньше был без визуала.
+- Per-type привязка (гомункул/эхо/амп/тотем → свои спрайты) — Back-end handoff
+  `backend_summon_allies_source_sprite_integration_task.md`.
+- import green; runtime smoke заблокирован внешним SoundWaveVfx cleanup (не этот таск).
+Готово к QA.
