@@ -72,7 +72,7 @@ Generated assets:
 - preview sheet: `assets/sprites/ui/frames/contextual/contextual_ui_kits_preview.png`.
 - reference contact sheet used for the rework: `docs/design/previews/contextual_ui_dnd_reference_contact.png`.
 
-Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md` is in review. Back-end integration handoff: `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md`.
+Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md` is done after Design owner review and QA SCRUM-120. Back-end integration handoff: `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md` / SCRUM-118 remains backlog `0.1.4` under the 0.1.3 feature block.
 
 ## Characters And Weapons
 

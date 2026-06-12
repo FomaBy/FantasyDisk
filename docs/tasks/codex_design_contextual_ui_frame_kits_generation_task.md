@@ -1,6 +1,6 @@
 # Задача Для Codex Design: Сгенерировать Контекстные UI Frame Kits
 
-Статус: review
+Статус: done
 Создано: 2026-06-12
 Версия: 0.1.4
 Перенесено PM 2026-06-12: feature freeze — незавершённая фича уходит в следующий релиз; прогресс (концепт, сгенерированные киты) сохранён.
@@ -158,6 +158,14 @@ Validation:
 - Godot headless import completed successfully.
 
 Next owner: Claude-Designer art review, then Back-end integration via `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md`.
+
+## Design Owner Review 2026-06-12
+
+Статус: accepted / done.
+
+Final art review passed after QA SCRUM-120. The realistic D&D/tabletop pass is accepted as a practical contextual UI frame kit: four themes are distinct, center wells remain usable for text and 9-patch/StyleBoxTexture stretch, and edge motifs are meaningful for their target screens rather than generic decoration. No further Design-owned asset edits are required for SCRUM-117.
+
+Back-end integration remains out of scope for this task and stays in `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md` / SCRUM-118 as backlog `0.1.4` under the 0.1.3 feature block.
 
 ## QA-Вердикт (2026-06-12)
 Статус: PASSED

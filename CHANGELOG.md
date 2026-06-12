@@ -18,7 +18,7 @@
 
 - UI direction: подготовлен концепт контекстных D&D-рамок (`ui_contextual_concept.md`) — Wild/Grave/Laurel/Parchment kits, аудит бессмысленного декора и handoff-задачи на генерацию/интеграцию.
 
-- UI art: сгенерирован review-набор из 17 contextual frame PNG для Wild/Grave/Laurel/Parchment kits (`assets/sprites/ui/frames/contextual/`) плюс preview sheet; после фидбэка первый плоский pass заменён на более реалистичный D&D/tabletop raster rework с материалами из текущих ассетов проекта; размеры/alpha проверены, Godot import прошел.
+- UI art: принят Design-owner review набор из 17 contextual frame PNG для Wild/Grave/Laurel/Parchment kits (`assets/sprites/ui/frames/contextual/`) плюс preview sheet; после фидбэка первый плоский pass заменён на более реалистичный D&D/tabletop raster rework с материалами из текущих ассетов проекта; размеры/alpha проверены, Godot import прошел.
 
 - Чистка проекта: обновлен conservative audit `tools/audit_unused_assets.py`, из `assets/` вынесены obsolete preview/source PNG и временные `.DS_Store`/swap в `build/cleanup_backup_2026_06_12/`; активные фоновые ресурсы `field_dry_road`/`field_stone_garden` восстановлены после missing-resource проверки.
 

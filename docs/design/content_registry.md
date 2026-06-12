@@ -401,10 +401,10 @@ Contextual UI direction 2026-06-12: `docs/design/ui_contextual_concept.md` defin
 
 | ID | Ассет | Роль | Статус |
 | --- | --- | --- | --- |
-| `ui_wild_*_frame` | `assets/sprites/ui/frames/contextual/ui_wild_panel_frame.png`, `ui_wild_button_frame.png`, `ui_wild_card_frame.png`, `ui_wild_tooltip_frame.png` | Main menu, character select, weapon select: living wood/vines/leaves | Review |
-| `ui_grave_*_frame` | `assets/sprites/ui/frames/contextual/ui_grave_panel_frame.png`, `ui_grave_button_frame.png`, `ui_grave_card_frame.png`, `ui_grave_tooltip_frame.png` | Defeat/death/danger confirmations: cracked bone, ash, grave-stone edge | Review |
-| `ui_laurel_*_frame` | `assets/sprites/ui/frames/contextual/ui_laurel_panel_frame.png`, `ui_laurel_button_frame.png`, `ui_laurel_card_frame.png`, `ui_laurel_tooltip_frame.png` | Victory, level-up, rewards, artifact selection: laurel/gold/parchment | Review |
-| `ui_parchment_*_frame` | `assets/sprites/ui/frames/contextual/ui_parchment_panel_frame.png`, `ui_parchment_button_frame.png`, `ui_parchment_card_frame.png`, `ui_parchment_tooltip_frame.png`, `ui_parchment_tab_frame.png` | Codex, route map, event text: parchment/book/map edge | Review |
+| `ui_wild_*_frame` | `assets/sprites/ui/frames/contextual/ui_wild_panel_frame.png`, `ui_wild_button_frame.png`, `ui_wild_card_frame.png`, `ui_wild_tooltip_frame.png` | Main menu, character select, weapon select: living wood/vines/leaves | Done |
+| `ui_grave_*_frame` | `assets/sprites/ui/frames/contextual/ui_grave_panel_frame.png`, `ui_grave_button_frame.png`, `ui_grave_card_frame.png`, `ui_grave_tooltip_frame.png` | Defeat/death/danger confirmations: cracked bone, ash, grave-stone edge | Done |
+| `ui_laurel_*_frame` | `assets/sprites/ui/frames/contextual/ui_laurel_panel_frame.png`, `ui_laurel_button_frame.png`, `ui_laurel_card_frame.png`, `ui_laurel_tooltip_frame.png` | Victory, level-up, rewards, artifact selection: laurel/gold/parchment | Done |
+| `ui_parchment_*_frame` | `assets/sprites/ui/frames/contextual/ui_parchment_panel_frame.png`, `ui_parchment_button_frame.png`, `ui_parchment_card_frame.png`, `ui_parchment_tooltip_frame.png`, `ui_parchment_tab_frame.png` | Codex, route map, event text: parchment/book/map edge | Done |
 
 ## Фоны И Карты
 
