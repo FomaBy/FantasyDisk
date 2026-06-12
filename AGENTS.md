@@ -25,12 +25,24 @@ Role boundaries:
 - If a task needs another discipline, create/update a `.md` handoff task in `docs/tasks/` and send it to the correct chat instead of doing that specialist's work directly.
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
 - When taking a task, set `Статус: in_progress` in its file; when finishing, set `done` (or `review`) and append a short result summary so the PM can sync the task board.
+- Jira is mandatory for task tracking. Follow `docs/process/jira_sync.md`: every task must have a `Jira: SCRUM-*` link, current sprint membership, and Jira status/comment updates matching `.md` status changes. Never store Jira API tokens in the repository.
 
 Versioning:
 - `main` is the stable `0.1` line.
-- `dev` is the active `0.2` development line.
-- All new development tasks should be done on `dev` unless a task explicitly says otherwise.
+- `dev` is the active working branch for the current `0.1.x` line.
+- All implementation tasks should be done on `dev` unless a task explicitly says otherwise.
 - Check the current branch before making changes; do not do ordinary feature work directly on `main`.
+
+Feature block:
+- As of 2026-06-12, the project is in a feature block for the current `0.1.3`
+  stabilization/release line.
+- Only bugs, QA defects, release blockers, and regression fixes may be routed into
+  the current sprint/release.
+- Any new request or change that is not a bug must be created as backlog work for
+  version `0.1.4`; task files should include `Версия: 0.1.4`; do not start it,
+  dispatch it, or add it to the current sprint.
+- If a request is ambiguous, classify it conservatively as backlog `0.1.4` unless
+  it clearly fixes a broken existing requirement.
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.

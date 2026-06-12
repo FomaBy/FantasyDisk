@@ -133,7 +133,9 @@
 
 ### Награды За Уровень
 
-Текущая система выдает 3 варианта награды. В пуле есть:
+Текущая система выдает 5 вариантов награды. Один полученный уровень дает ровно один выбор; при нескольких накопленных уровнях игрок получает несколько последовательных окон. Набор из 5 вариантов фиксируется в `level_up_offer` и не рероллится при закрытии/повторном открытии окна. Окно можно закрыть через Escape/«Позже» без потери выбора; нижняя кнопка «Повышение уровня (N)» возвращает к тому же набору и является единственной level-up точкой входа при `pending_level_ups > 0`. FAB докачки в этом состоянии скрыт и возвращается только для докачки атрибутов за золото при отсутствии pending-уровней.
+
+В пуле есть:
 - прямой урон;
 - скорость атаки;
 - максимальное HP;
@@ -144,7 +146,7 @@
 - защита;
 - магический фокус;
 - отталкивание;
-- базовые характеристики;
+- редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с шансом около 13% на слот и визуальной rare-пометкой;
 - артефакты.
 
 При открытии level-up окна игра должна полностью ставиться на паузу.
@@ -186,6 +188,8 @@
 
 Элитные враги должны быть случайными, заметно жирнее и опаснее обычных.
 
+Обновление 2026-06-12: элитки используют общий `ProgressionData.stage_scale(route_stage)`, получают больший HP-бюджет, усиленный урон, более частые уникальные атаки и meta-флаг второй фазы на 50% HP. Победа над элиткой открывает экран выбора 1 из 3 артефактов; шанс tier-2/tier-3 растет с глубиной акта.
+
 ### Боссы
 
 | Босс | Паттерны |
@@ -194,6 +198,8 @@
 | Disk Devourer | Dash, disk slam AoE, radial burst, enrage |
 
 Финальный boss-node выбирает одного из двух боссов. Босс-файт не ограничен обычным combat timer.
+
+Обновление 2026-06-12: боссы имеют 3 фазы по HP (`100-66%`, `66-33%`, `33-0%`), фазовые метки для HP-бара, ускорение паттернов на каждой фазе и danger-zone при переходе фазы. Победа над боссом гарантирует tier-3 артефакт и золото, масштабированное stage scale.
 
 ### Спавн И Плотность
 
@@ -213,6 +219,29 @@
 - spawn edge padding: 72 пикселя;
 - spawn safe radius around player: 340 пикселей;
 - projectile cleanup bounds: 2560x1440 плюс margin 180 пикселей.
+
+### Stage Scale / Difficulty Economy (2026-06-12)
+
+Data source: `ProgressionData.stage_scale(route_stage)`.
+
+Единая кривая сложности и экономики:
+
+`stage_scale = pow(1.18, route_stage) + 0.075 * route_stage`
+
+Этот множитель используется в HP/уроне/скорости/плотности обычных волн, HP/уроне элиток и боссов, стоимости магазина/докачки/reroll, tier-weight выбора артефактов после элитки и золоте за победу над боссом.
+
+TTK-таблица из `build/balance_report.md` после прогона `tools/balance_harness.gd`:
+
+| Route Stage | Stage Scale | Ordinary Wave TTK | Elite TTK | Boss TTK | Shop Cost x |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 1.000 | 6.5s | 51.4s | 74.8s | 1.00x |
+| 2 | 1.542 | 10.1s | 55.3s | 83.8s | 1.54x |
+| 4 | 2.239 | 14.6s | 60.2s | 95.4s | 2.24x |
+| 6 | 3.150 | 20.6s | 66.7s | 110.6s | 3.15x |
+| 8 | 4.359 | 28.5s | 75.2s | 130.7s | 4.36x |
+| 10 | 5.984 | 39.1s | 86.8s | 157.7s | 5.98x |
+
+Это budget-estimate по выровненным class+weapon профилям. Реальный бой зависит от движения, уворотов, uptime оружия, pickup-паузы, выбранных артефактов и классовой механики.
 
 ### Пауза И UI Характеристик
 
@@ -443,10 +472,64 @@ Escape открывает крупное меню характеристик:
 | **vampiric_amount** | награды + 50% нанесенного урона при проке | НОВОЕ: Player.on_weapon_hit | работает |
 | **knockback_distance** | Knockback Power * End / 20 (отображаемая дальность) | НОВОЕ: derived; в бою действует knockback_power (реализованный баланс приоритетнее формулы таблицы) | работает (display) |
 | **range_multiplier** | run-множитель дальности | НОВОЕ: выведен в derived для UI | работает |
-| **ultimate_multiplier** | 1 + Energy*0.02 + награды | НОВОЕ: расчет подключен; механики ульты НЕТ | зарезервировано |
+| **ultimate_multiplier** | 1 + Energy*0.02 + награды | НОВОЕ: усиливает class ultimate: урон, радиус, длительность или число целей | работает |
 
-Зарезервированные (механики в игре нет, расчет и отображение есть): `ultimate_multiplier`.
 Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» реализован как награды + 50% урона при проке.
+
+### Ultimate Framework (2026-06-12)
+
+Ульта заряжается от нанесенного урона и полученного урона до шкалы 100. Заряд масштабируется от Energy через `1 + Energy*0.025`. Нажатие InputMap action `ultimate` (default `R`, ребиндится в настройках) при полной шкале активирует классовую ульту и сбрасывает заряд в 0. Во время паузы заряд не копится, потому что gameplay/tweens и игрок находятся в pausable-процессе.
+
+Data source: `ProgressionData.ULTIMATE_CONFIGS`. В каждом конфиге есть `title`, `description`, `duration`, `radius`, `damage`, charge rates и `boss_cap`. Boss cap ограничивает один ultimate-hit процентом `max_health` босса, чтобы ульта решала момент, но не убивала босса одной кнопкой.
+
+| Класс | Ульта | Backend effect |
+| --- | --- | --- |
+| Берсерк | Неистовство | временный attack/move speed buff; каждый удар запускает эхо-волну |
+| Темный маг | Темная буря | большой void burst и магический урон по радиусу |
+| Гитарист | Соло | гигантский sound ring, урон и knockback |
+| Ассасин | Танец клинков | серия критических slash-hit по ближайшим целям |
+| Рейнджер | Лунный залп | залп beam-болтов по ближайшим целям в большой области |
+| Доктор | Переливание | массовый drain; overheal переходит в absorb |
+| Химик | Цепная реакция | алхимический burst по радиусу |
+| Рыцарь | Бастион | короткая неуязвимость + ring counter damage |
+| Друид | Зов стаи | временные союзники сверх лимита |
+
+### Class DPS / Survivability Budget Harness (2026-06-12)
+
+Data source: `ProgressionData.CLASS_BUDGET_PROFILES`, `ProgressionData.budget_tuning_for()`, `tools/balance_harness.gd`.
+
+Харнесс запускается одной командой:
+
+```bash
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/balance_harness.gd
+```
+
+Он пишет полный отчет в `build/balance_report.md` и считает 27 комбинаций класс+оружие: solo DPS за 30 секунд, 5-target DPS за 30 секунд и EHP. Вклад ульты учитывается как prorated contribution внутри 30-секундного окна.
+
+Формула EHP для бюджетного сравнения: `HP / (1-defense) / (1-dodge) + absorb*10 + regeneration*30 + lifesteal estimate`.
+
+Runtime применяет один безопасный `budget_damage_multiplier` в `derived_parameters`, чтобы не менять identity-параметры оружия. Для проверки обеих осей harness хранит также `budget_solo_multiplier` и `budget_aoe_multiplier` в возвращаемом weapon config и использует их только в бюджетной модели отчета.
+
+| Класс | Профиль | Survival | Damage budget | Solo target | 5-target target |
+| --- | --- | --- | ---: | ---: | ---: |
+| Берсерк | balanced | sturdy | 100% | 48.00 | 150.00 |
+| Темный маг | aoe | fragile | 115% | 38.64 | 224.25 |
+| Гитарист | aoe | control | 100% | 33.60 | 195.00 |
+| Ассасин | solo | fragile | 115% | 71.76 | 120.75 |
+| Рейнджер | solo | fragile | 115% | 71.76 | 120.75 |
+| Доктор | balanced | tank | 85% | 40.80 | 127.50 |
+| Химик | aoe | fragile | 115% | 38.64 | 224.25 |
+| Рыцарь | balanced | tank | 85% | 40.80 | 127.50 |
+| Друид | balanced | steady | 100% | 48.00 | 150.00 |
+
+Before/after summary from `build/balance_report.md`:
+
+| State | Covered pairs | Max combined deviation | Notes |
+| --- | ---: | ---: | --- |
+| Before tuning | 27 | 138.2% | Старые числа сильно выбивали DoT/deploy/summon и тяжелые melee weapons. |
+| After tuning | 27 | 0.1% | Все пары проходят проверку solo/5-target ≤ ±10% в `runtime_smoke_test.gd`. |
+
+Full before/after tables live in `build/balance_report.md` because they are generated artifacts and should be refreshed by the harness when formulas or weapon configs change.
 
 
 ### Новые Классы 0.2 — Статы И Баланс (2026-06-11)
@@ -465,3 +548,16 @@ Escape открывает крупное меню характеристик:
 рыцарь ~29 (копье x3.0 при медленном темпе + танковость), доктор ~15.6 одиночный / ~45 по волне 3 целей + самолечение,
 химик ~12 мгновенно + DoT-облака (волна ~40), друид ~41 (2 зверя по 55% sound_wave). Методика: melee/точные — одиночная цель,
 AoE/DoT/саммоны — зачистка волны; точные замеры — плейтест.
+
+
+### Возвышения 2.0 — Лестница Усложнений (2026-06-12)
+
+10 кумулятивных модификаторов в `ProgressionData.ASCENSION_MODIFIERS`; `ascension_difficulty_mods(level)` сворачивает 1..N в словарь (множители перемножаются, флаги — max). Нейтраль = `ASCENSION_DIFFICULTY_DEFAULTS` (уровень 0). Применение:
+- enemy_hp_mult/enemy_damage_mult → `combat_director._scale_enemy_for_current_wave`;
+- elite_hp_mult + elite_instant_phase (meta) → `_scale_elite_enemy`; boss_hp_mult/boss_extra_phase/boss_telegraph_mult (meta) → `_scale_boss_for_run`, читаются в `boss.gd` (4-я фаза при extra_phase, `_ascension_telegraph` укорачивает зоны);
+- spawn_count_mult/spawn_cooldown_mult + first_wave_boost → `_spawn_enemy_wave`/`_next_spawn_cooldown`;
+- round_duration_mult → `_current_round_duration`;
+- price_mult → цены магазина (при генерации) и докачки (`_ascension_price`);
+- reward_mult/healing_mult/player_max_hp_mult сворачиваются в `run_modifiers` игрока в `main.apply_ascension_bonuses` (на старте забега).
+
+Прогресс: `meta_progression.record_boss_victory(state, char, run_level)` повышает уровень только если `run_level >= completed`; `selectable_max = completed + 1` (cap 10). Наградный трек меты — старые per-class `ASCENSION_LEVELS`, применяются за пройденные уровни постоянно. Выбор уровня — селектор в hero select (клампится к `ascension_selectable_max` героя при пике), HUD-индикатор римской цифрой у таймера, кодекс-раздел «Возвышения».

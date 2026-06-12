@@ -195,6 +195,7 @@ static func characters() -> Array:
 			"playstyle": str(CHARACTER_PLAYSTYLE.get(character_id, "")),
 			"strengths": str(config.get("strengths", "")),
 			"weaknesses": str(config.get("weaknesses", "")),
+			"ultimate": PROGRESSION_DATA.ultimate_config(character_id),
 			"weapons": weapons,
 		})
 	return result
@@ -221,6 +222,18 @@ static func artifacts() -> Array:
 			"title": str(item.get("title", "")),
 			"description": str(item.get("description", "")),
 			"source": "shop",
+		})
+	return result
+
+
+static func ascensions() -> Array:
+	var result := []
+	for entry in PROGRESSION_DATA.ascension_modifiers():
+		result.append({
+			"id": str(entry.get("id", "")),
+			"level": int(entry.get("level", 0)),
+			"title": str(entry.get("title", "")),
+			"description": str(entry.get("description", "")),
 		})
 	return result
 

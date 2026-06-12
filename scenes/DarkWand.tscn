@@ -24,4 +24,4 @@ z_index = 9
 texture = ExtResource("2_weapon_texture")
 position = Vector2(42, -18)
 rotation = -0.45
-scale = Vector2(0.50, 0.50)
+scale = Vector2(0.44, 0.44)

@@ -66,11 +66,22 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	# Останавливаем и отвязываем стримы, чтобы headless-тесты не ловили
-	# "resources still in use at exit" от AudioServer.
+	_release_audio_refs()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_PREDELETE:
+		_release_audio_refs()
+
+
+func _release_audio_refs() -> void:
+	# Останавливаем и отвязываем стримы, чтобы тесты/оконный quit не ловили
+	# "resources still in use at exit" от AudioServer playback handles.
+	_current_music_id = ""
 	for player in _sfx_players:
-		player.stop()
-		player.stream = null
+		if is_instance_valid(player):
+			player.stop()
+			player.stream = null
 	if _music_player != null:
 		_music_player.stop()
 		_music_player.stream = null
@@ -139,3 +150,4 @@ func stop_music() -> void:
 	_current_music_id = ""
 	if _music_player != null:
 		_music_player.stop()
+		_music_player.stream = null

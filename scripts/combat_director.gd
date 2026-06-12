@@ -11,11 +11,11 @@ func _init(game_ref) -> void:
 
 
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
+	game.reset_run_ascension()
 	game._play_music("combat")
 	game._clear_ui()
 	game._clear_world()
 	_setup_arena_world(is_boss_fight)
-	game.ui._create_hud()
 
 	game.round_time_left = _current_round_duration()
 	game.spawn_cooldown = 0.0
@@ -24,6 +24,7 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game.combat_active = true
 	game.boss_combat_active = is_boss_fight
 	game.current_combat_type = "boss" if is_boss_fight else combat_type
+	game.ui._create_hud()
 
 	game.current_player = game.player_scene.instantiate() as Node2D
 	game.add_child(game.current_player)
@@ -69,22 +70,59 @@ func _configure_player_camera(player: Node2D) -> void:
 	camera.position_smoothing_speed = 7.0
 
 
+func _shake_camera(intensity: float, duration := 0.22) -> void:
+	# Умеренная тряска (тумблер game.screen_shake_enabled): короткие затухающие
+	# толчки смещения камеры игрока. Твин привязан к камере — гибнет вместе с ней.
+	if not game.screen_shake_enabled:
+		return
+	if game.current_player == null or not is_instance_valid(game.current_player):
+		return
+	var camera := game.current_player.get_node_or_null("Camera2D") as Camera2D
+	if camera == null:
+		return
+	var tween := camera.create_tween()
+	var steps := 6
+	for i in range(steps):
+		var falloff: float = 1.0 - float(i) / float(steps)
+		var off: Vector2 = Vector2(game.rng.randf_range(-1.0, 1.0), game.rng.randf_range(-1.0, 1.0)) * intensity * falloff
+		tween.tween_property(camera, "offset", off, duration / float(steps))
+	tween.tween_property(camera, "offset", Vector2.ZERO, duration / float(steps))
+
+
+func _hit_stop(duration := 0.3, time_scale := 0.32) -> void:
+	# Триумф на смерти элитки/босса: кратко замедляем РЕАЛЬНОЕ время, затем
+	# восстанавливаем (таймер игнорирует time_scale, переживает паузу).
+	if Engine.time_scale < 0.99:
+		return
+	Engine.time_scale = time_scale
+	var timer: SceneTreeTimer = game.get_tree().create_timer(duration, true, false, true)
+	timer.timeout.connect(_restore_time_scale)
+
+
+func _restore_time_scale() -> void:
+	Engine.time_scale = 1.0
+
+
 func _end_combat(victory: bool) -> void:
 	if not game.combat_active:
 		return
 
 	var was_boss_fight = game.boss_combat_active
+	var was_elite_fight := str(game.current_combat_type) == "elite"
+	var event_combat: Dictionary = game.pending_event_combat.duplicate(true)
 	game.combat_active = false
 	game.boss_combat_active = false
 	if victory and game.current_player != null and is_instance_valid(game.current_player):
 		if not was_boss_fight:
-			_grant_combat_completion_rewards()
+			_grant_combat_completion_rewards(event_combat)
 		_store_player_snapshot(game.current_player)
 	game._clear_world()
 	game._clear_hud()
+	game.pending_event_combat.clear()
 
 	if victory:
 		if was_boss_fight:
+			_grant_boss_completion_rewards()
 			game.record_boss_victory()
 			game.ui._show_victory_screen()
 		else:
@@ -95,7 +133,12 @@ func _end_combat(victory: bool) -> void:
 			game.attribute_offer = []
 			game.attribute_rerolls_left = game.ui.ATTRIBUTE_REROLLS_PER_WINDOW
 			game.ui._show_victory_banner(func() -> void:
-				game.ui._show_attribute_shop(game.route._show_battle_map)
+				if was_elite_fight:
+					game.ui._show_elite_artifact_reward(func() -> void:
+						game.ui._show_attribute_shop(game.route._show_battle_map)
+					)
+				else:
+					game.ui._show_attribute_shop(game.route._show_battle_map)
 			)
 	else:
 		game.ui._show_death_screen()
@@ -163,6 +206,40 @@ func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_positio
 	return enemy
 
 
+func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
+	# Возвращает число занятых слотов (0 если не спавнили).
+	var chance := float(asc.get("mini_elite_chance", 0.0))
+	if chance <= 0.0 or remaining_slots < 2 or game.rng.randf() >= chance:
+		return 0
+	var elite_scene := _random_elite_scene()
+	if elite_scene == null:
+		return 0
+	var elite := elite_scene.instantiate() as Node2D
+	elite.add_to_group("elite_enemies")
+	game.add_child(elite)
+	elite.global_position = _random_spawn_position()
+	# Мини: масштабируется как волновой враг (elite-баланс), а не полная элитка-танк.
+	_scale_enemy_for_current_wave(elite)
+	# Мини-элитка слабее обычной элитки узла: режем HP, чтобы её можно было убить в волне.
+	if elite.get("max_health") != null:
+		var mini_hp := float(elite.get("max_health")) * 0.55
+		elite.set("max_health", mini_hp)
+		elite.set("health", mini_hp)
+		_refresh_enemy_health_bar(elite)
+	_connect_enemy_rewards(elite)
+	var used := 1
+	# Свита: 1-2 обычных врага рядом.
+	var retinue := mini(game.rng.randi_range(1, 2), remaining_slots - 1)
+	for retinue_index in range(retinue):
+		var minion_scene := _random_enemy_scene()
+		if minion_scene == null:
+			break
+		var offset: Vector2 = Vector2.RIGHT.rotated(game.rng.randf() * TAU) * game.rng.randf_range(48.0, 96.0)
+		_spawn_random_enemy(minion_scene, elite.global_position + offset, true)
+		used += 1
+	return used
+
+
 func _spawn_enemy_wave() -> void:
 	var remaining_slots = _active_enemy_cap() - game.get_tree().get_nodes_in_group("enemies").size()
 	if remaining_slots <= 0:
@@ -180,7 +257,17 @@ func _spawn_enemy_wave() -> void:
 		base_count = 1
 		stage_bonus = int(floor(float(game.route_stage) * 0.5))
 		spawn_limit = int(game.WAVE_SETTINGS["elite_spawn_limit"])
-	var spawn_count: int = mini(mini(base_count + stage_bonus + wave_bonus, spawn_limit), remaining_slots)
+	var asc_spawn: Dictionary = game.ascension_difficulty()
+	# Возвышение 7 «Эхо бездны»: шанс мини-элитки со свитой в обычной волне.
+	if not game.boss_combat_active and game.current_combat_type != "elite":
+		remaining_slots -= _maybe_spawn_mini_elite(asc_spawn, remaining_slots)
+		if remaining_slots <= 0:
+			return
+	var density := float(asc_spawn["spawn_count_mult"])
+	if float(asc_spawn["first_wave_boost"]) > 0.0 and game.spawn_wave_index <= 1 and not game.boss_combat_active:
+		density *= 1.5
+	var raw_count := int(round(float(base_count + stage_bonus + wave_bonus) * density))
+	var spawn_count: int = mini(mini(raw_count, int(round(float(spawn_limit) * density))), remaining_slots)
 	for index in range(spawn_count):
 		var packed_scene := _random_enemy_scene()
 		if packed_scene == null:
@@ -201,20 +288,23 @@ func _spawn_enemy_wave() -> void:
 
 
 func _active_enemy_cap() -> int:
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
 	if game.boss_combat_active:
-		return int(game.WAVE_SETTINGS["boss_active_cap"]) + max(game.route_stage - 2, 0) * 2
+		return int(round(float(game.WAVE_SETTINGS["boss_active_cap"]) * (0.85 + stage_scale * 0.18)))
 	if game.current_combat_type == "elite":
-		return mini(int(game.WAVE_SETTINGS["elite_active_cap"]) + game.route_stage * 3, int(game.WAVE_SETTINGS["max_active_cap"]))
+		return mini(int(round(float(game.WAVE_SETTINGS["elite_active_cap"]) * (0.95 + stage_scale * 0.25))), int(game.WAVE_SETTINGS["max_active_cap"]))
 	var wave_cap_bonus = int(floor(float(game.spawn_wave_index) / 2.0)) * int(game.WAVE_SETTINGS["active_cap_per_wave_step"])
-	var cap = int(game.WAVE_SETTINGS["base_active_cap"]) + game.route_stage * int(game.WAVE_SETTINGS["active_cap_per_stage"]) + wave_cap_bonus
+	var cap = int(round(float(game.WAVE_SETTINGS["base_active_cap"]) * stage_scale)) + game.route_stage * int(game.WAVE_SETTINGS["active_cap_per_stage"]) + wave_cap_bonus
 	return mini(cap, int(game.WAVE_SETTINGS["max_active_cap"]))
 
 
 func _next_spawn_cooldown() -> float:
-	var wave_pressure: float = float(game.spawn_wave_index) * 0.035 + float(game.route_stage) * 0.06
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
+	var wave_pressure: float = float(game.spawn_wave_index) * 0.045 + (stage_scale - 1.0) * 0.42
+	var cooldown_mult := float(game.ascension_difficulty()["spawn_cooldown_mult"])
 	if game.boss_combat_active:
-		return max(1.25, game.rng.randf_range(float(game.WAVE_SETTINGS["boss_spawn_pause_min"]), float(game.WAVE_SETTINGS["boss_spawn_pause_max"])) - wave_pressure * 0.35)
-	return max(0.85, game.rng.randf_range(float(game.WAVE_SETTINGS["spawn_pause_min"]), float(game.WAVE_SETTINGS["spawn_pause_max"])) - wave_pressure)
+		return max(1.0, (game.rng.randf_range(float(game.WAVE_SETTINGS["boss_spawn_pause_min"]), float(game.WAVE_SETTINGS["boss_spawn_pause_max"])) - wave_pressure * 0.35) * cooldown_mult)
+	return max(0.6, (game.rng.randf_range(float(game.WAVE_SETTINGS["spawn_pause_min"]), float(game.WAVE_SETTINGS["spawn_pause_max"])) - wave_pressure) * cooldown_mult)
 
 
 func _choose_wave_spawn_edges() -> void:
@@ -234,12 +324,12 @@ func _choose_wave_spawn_edges() -> void:
 
 
 func _scale_enemy_for_current_wave(enemy: Node) -> void:
-	var stage_scale: float = float(game.route_stage)
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
 	var wave_scale: float = float(game.spawn_wave_index)
 	var balance := _enemy_balance_for_node(enemy)
-	var health_multiplier: float = float(balance.get("hp_multiplier", 2.8)) * (1.0 + stage_scale * 0.18 + wave_scale * 0.040)
-	var speed_multiplier: float = float(balance.get("speed_multiplier", 0.84)) * (1.0 + stage_scale * 0.035 + wave_scale * 0.006)
-	var damage_multiplier: float = float(balance.get("damage_multiplier", 1.16)) * (1.0 + stage_scale * 0.10 + wave_scale * 0.020)
+	var health_multiplier: float = float(balance.get("hp_multiplier", 2.8)) * stage_scale * (1.0 + wave_scale * 0.055)
+	var speed_multiplier: float = float(balance.get("speed_multiplier", 0.84)) * (1.0 + (stage_scale - 1.0) * 0.18 + wave_scale * 0.008)
+	var damage_multiplier: float = float(balance.get("damage_multiplier", 1.16)) * (1.0 + (stage_scale - 1.0) * 0.62 + wave_scale * 0.030)
 	if game.boss_combat_active:
 		health_multiplier *= 0.72
 		speed_multiplier *= 0.82
@@ -250,6 +340,9 @@ func _scale_enemy_for_current_wave(enemy: Node) -> void:
 		damage_multiplier *= 0.95
 
 	health_multiplier *= _run_enemy_health_multiplier()
+	var asc: Dictionary = game.ascension_difficulty()
+	health_multiplier *= float(asc["enemy_hp_mult"])
+	damage_multiplier *= float(asc["enemy_damage_mult"])
 
 	if enemy.get("max_health") != null:
 		var scaled_health: float = float(enemy.get("max_health")) * health_multiplier
@@ -299,6 +392,10 @@ func _spawn_boss() -> void:
 	boss.global_position = game.ARENA_CENTER + Vector2(0, -230)
 	_scale_boss_for_run(boss)
 	_connect_enemy_rewards(boss)
+	# Появление босса: затемнение+тряска (через камеру) и крупный титул-баннер.
+	_shake_camera(18.0, 0.5)
+	var boss_name := str(boss.get("enemy_type_name"))
+	game.ui._show_combat_title_banner(boss_name if boss_name != "" else "БОСС", Color(1.0, 0.34, 0.3), true)
 
 
 func _boss_scene_for_id(boss_id: String) -> PackedScene:
@@ -329,6 +426,9 @@ func _spawn_elite_enemy() -> void:
 	if not use_fallback_modifier:
 		_scale_elite_enemy(elite)
 	_connect_enemy_rewards(elite)
+	# Появление элитки: краткая вспышка имени над ареной.
+	var elite_name := str(elite.get("enemy_type_name"))
+	game.ui._show_combat_title_banner(elite_name if elite_name != "" else "ЭЛИТА", Color(1.0, 0.6, 0.32), false)
 
 
 func _random_elite_scene() -> PackedScene:
@@ -377,11 +477,14 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 	var elite_id := str(elite.get("enemy_type_name")).to_lower().replace(" ", "_")
 	elite.set_meta("elite_modifier", elite_id)
 	elite.set_meta("elite_behavior", elite_id)
+	elite.set_meta("elite_phase_threshold", 0.50)
+	elite.set_meta("elite_phase_reward", "artifact_choice_1_of_3")
 	if elite.get("elite_behavior") != null:
 		elite.set("elite_behavior", elite_id)
-	var health_multiplier = float(game.ENEMY_BALANCE["elite"]["hp_multiplier"]) * (2.15 + float(game.route_stage) * 0.22)
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
+	var health_multiplier = float(game.ENEMY_BALANCE["elite"]["hp_multiplier"]) * (25.0 + stage_scale * 4.0)
 	var speed_multiplier = float(game.ENEMY_BALANCE["elite"]["speed_multiplier"])
-	var damage_multiplier = float(game.ENEMY_BALANCE["elite"]["damage_multiplier"]) * (1.0 + float(game.route_stage) * 0.12)
+	var damage_multiplier = float(game.ENEMY_BALANCE["elite"]["damage_multiplier"]) * (1.0 + (stage_scale - 1.0) * 0.78)
 	if elite_id.contains("armored"):
 		health_multiplier *= 1.35
 		speed_multiplier *= 0.74
@@ -395,15 +498,19 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 		speed_multiplier *= 0.78
 
 	if elite.get("max_health") != null:
-		var scaled_health = float(elite.get("max_health")) * health_multiplier
+		var asc_elite: Dictionary = game.ascension_difficulty()
+		var scaled_health = float(elite.get("max_health")) * health_multiplier * float(asc_elite["elite_hp_mult"])
 		elite.set("max_health", scaled_health)
 		elite.set("health", scaled_health)
+		elite.set_meta("ascension_instant_phase", float(asc_elite["elite_instant_phase"]) > 0.0)
 	if elite.get("move_speed") != null:
 		elite.set("move_speed", float(elite.get("move_speed")) * speed_multiplier)
 	if elite.get("contact_damage") != null:
 		elite.set("contact_damage", float(elite.get("contact_damage")) * damage_multiplier)
 	if elite.get("projectile_damage") != null:
 		elite.set("projectile_damage", float(elite.get("projectile_damage")) * damage_multiplier)
+	if elite.get("_elite_attack_cooldown") != null:
+		elite.set("_elite_attack_cooldown", 1.15)
 	if elite.get("reward_xp") != null:
 		elite.set("reward_xp", maxi(8, int(ceil(float(elite.get("reward_xp")) * 1.45))))
 	if elite.get("reward_money") != null:
@@ -413,13 +520,17 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 
 func _scale_boss_for_run(boss: Node2D) -> void:
 	boss.set_meta("boss_id", game.current_boss_id)
-	var health_multiplier = float(game.ENEMY_BALANCE["boss"]["hp_multiplier"]) * (1.0 + float(game.route_stage) * 0.12)
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
+	var health_multiplier = float(game.ENEMY_BALANCE["boss"]["hp_multiplier"]) * (4.20 + stage_scale * 1.20)
 	var speed_multiplier = float(game.ENEMY_BALANCE["boss"]["speed_multiplier"])
-	var damage_multiplier = float(game.ENEMY_BALANCE["boss"]["damage_multiplier"]) * (1.0 + float(game.route_stage) * 0.08)
+	var damage_multiplier = float(game.ENEMY_BALANCE["boss"]["damage_multiplier"]) * (1.0 + (stage_scale - 1.0) * 0.70)
 	if boss.get("max_health") != null:
-		var scaled_health = float(boss.get("max_health")) * health_multiplier
+		var asc_boss: Dictionary = game.ascension_difficulty()
+		var scaled_health = float(boss.get("max_health")) * health_multiplier * float(asc_boss["boss_hp_mult"])
 		boss.set("max_health", scaled_health)
 		boss.set("health", scaled_health)
+		boss.set_meta("ascension_extra_phase", float(asc_boss["boss_extra_phase"]) > 0.0)
+		boss.set_meta("ascension_telegraph_mult", float(asc_boss["boss_telegraph_mult"]))
 	if boss.get("move_speed") != null:
 		boss.set("move_speed", float(boss.get("move_speed")) * speed_multiplier)
 	if boss.get("contact_damage") != null:
@@ -427,6 +538,20 @@ func _scale_boss_for_run(boss: Node2D) -> void:
 	if boss.get("projectile_damage") != null:
 		boss.set("projectile_damage", float(boss.get("projectile_damage")) * damage_multiplier)
 	_refresh_enemy_health_bar(boss)
+
+
+func _grant_boss_completion_rewards() -> void:
+	if game.current_player == null or not is_instance_valid(game.current_player):
+		return
+	var tier3 := []
+	for artifact in game.PROGRESSION_DATA.ARTIFACTS:
+		if int(artifact.get("tier", 1)) >= 3:
+			tier3.append(artifact)
+	if not tier3.is_empty():
+		var reward: Dictionary = tier3[game.rng.randi_range(0, tier3.size() - 1)].duplicate(true)
+		reward["kind"] = "artifact"
+		game.current_player.apply_reward(reward)
+	game.current_player.gain_money(int(round(120.0 * game.PROGRESSION_DATA.stage_scale(game.route_stage))))
 
 
 func _refresh_enemy_health_bar(enemy: Node) -> void:
@@ -440,6 +565,13 @@ func _connect_enemy_rewards(enemy: Node) -> void:
 
 
 func _on_enemy_died(enemy: Node2D) -> void:
+	# Подача триумфа: hit-stop + тряска на смерти элитки/босса (масштаб по рангу).
+	if enemy.is_in_group("bosses"):
+		_hit_stop(0.42, 0.26)
+		_shake_camera(22.0, 0.42)
+	elif enemy.is_in_group("elite_enemies"):
+		_hit_stop(0.3, 0.34)
+		_shake_camera(11.0, 0.26)
 	# «Сердце Пиявки» (tier 3): убийство лечит процент max HP.
 	if game.current_player != null and is_instance_valid(game.current_player):
 		var heal_percent := float((game.current_player.get("run_modifiers") as Dictionary).get("kill_heal_percent", 0.0))
@@ -629,18 +761,22 @@ func _is_shooter_scene(packed_scene: PackedScene) -> bool:
 	return path.ends_with("EnemyShooter.tscn") or path.ends_with("EnemyMage.tscn") or path.ends_with("EnemySpitter.tscn") or path.ends_with("EnemyBoneShaman.tscn")
 
 
-func _grant_combat_completion_rewards() -> void:
+func _grant_combat_completion_rewards(event_combat := {}) -> void:
 	if game.current_player == null or not is_instance_valid(game.current_player):
 		return
 	if game.current_combat_type == "elite":
 		game.current_player.gain_xp(7 + game.route_stage * 2)
 		game.current_player.gain_money(10 + game.route_stage * 4)
-		var elite_rewards = game.ui._random_rewards(1)
-		if not elite_rewards.is_empty():
-			game.current_player.apply_reward(elite_rewards[0])
 	else:
-		game.current_player.gain_xp(3 + game.route_stage)
-		game.current_player.gain_money(4 + game.route_stage * 2)
+		var xp_reward: int = 3 + game.route_stage
+		var money_reward: int = 4 + game.route_stage * 2
+		if not event_combat.is_empty():
+			xp_reward = int(round(float(xp_reward) * float(event_combat.get("xp_multiplier", 1.0))))
+			money_reward = int(round(float(money_reward) * float(event_combat.get("money_multiplier", 1.0))))
+		game.current_player.gain_xp(xp_reward)
+		game.current_player.gain_money(money_reward)
+	if not event_combat.is_empty() and event_combat.has("post_combat"):
+		game.current_player.apply_reward(event_combat["post_combat"])
 
 
 func _snapshot_player_for_menu() -> Node:
@@ -688,14 +824,16 @@ func _restore_player_snapshot(player: Node) -> void:
 
 
 func _current_round_duration() -> float:
-	return minf(game.BASE_ROUND_DURATION + game.route_stage * game.ROUND_DURATION_STEP, game.ROUND_DURATION_MAX)
+	var base: float = game.BASE_ROUND_DURATION + game.route_stage * game.ROUND_DURATION_STEP
+	return base * float(game.ascension_difficulty()["round_duration_mult"])
 
 
 func _run_enemy_health_multiplier() -> float:
+	var event_multiplier := float(game.pending_event_combat.get("enemy_health_multiplier", 1.0))
 	if game.current_player != null and is_instance_valid(game.current_player):
 		var modifiers: Dictionary = game.current_player.get("run_modifiers")
-		return float(modifiers.get("enemy_health_multiplier", 1.0))
+		return event_multiplier * float(modifiers.get("enemy_health_multiplier", 1.0))
 	if not game.run_player_snapshot.is_empty():
 		var snapshot_modifiers: Dictionary = game.run_player_snapshot.get("run_modifiers", {})
-		return float(snapshot_modifiers.get("enemy_health_multiplier", 1.0))
-	return 1.0
+		return event_multiplier * float(snapshot_modifiers.get("enemy_health_multiplier", 1.0))
+	return event_multiplier

@@ -69,12 +69,12 @@
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
 | `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
-| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано |
+| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано; v2 unarmed base без встроенного копья/щита |
 | `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
 
 ## Новые Классы 0.2 (Фундамент, 2026-06-11)
 
-Спрайты всех шести прошли Design art-review (2026-06-11) и приняты как polished dark fantasy full-art (512x512, RGBA). Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и лежат в `assets/sprites/characters/cutout/` (torso, arm_l, arm_r, leg_l, leg_r для каждого). Манифест обновлён в `scripts/sliced_rig_manifest.gd`. Первые 9 weapon PNG для новых классов (chakrams, moon_crossbow, restore_potion, blast_powder, long_spear, summon_amulet — 6 штук готово; остальные shadow_daggers, venom_wire, storm_longbow, hunter_trap, plague_syringe, bone_saw, acid_flask, homunculus_vial, tower_shield, holy_flail, briar_staff, raven_totem) сгенерированы частично Codex — fallback-текстуры используются пока не все 18 PNG готовы.
+Спрайты всех шести прошли Design art-review (2026-06-11) и приняты как polished dark fantasy full-art (512x512, RGBA). Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и лежат в `assets/sprites/characters/cutout/` (torso, arm_l, arm_r, leg_l, leg_r для каждого). Манифест обновлён в `scripts/sliced_rig_manifest.gd`. Weapon art v2 pass 2026-06-12 устранил fallback-текстуры в сценах оружия, перерисовал три оружия Рыцаря и заменил `knight.png` на unarmed base sprite без встроенного копья/щита, чтобы все три варианта реально крепились через socket.
 
 | ID | Имя | Архетип | 3 стартовых оружия | «Свой» урон |
 | --- | --- | --- | --- | --- |
@@ -124,7 +124,7 @@ Source-спрайты для rig должны сохранять читаемы�
 - `assets/sprites/elites/cutout/`
 - `assets/sprites/bosses/cutout/`
 
-Схема имен: `<entity_id>_torso.png`, `<entity_id>_arm_l.png`, `<entity_id>_arm_r.png`, `<entity_id>_leg_l.png`, `<entity_id>_leg_r.png`; по необходимости `<entity_id>_wing_l/r.png`, `<entity_id>_weapon.png`, `<entity_id>_shield.png`, `<entity_id>_tail.png`, `<entity_id>_vortex.png`. В покое сборка пиксель-в-пиксель совпадает с исходным full-art спрайтом; конечности анимируются rig-ом. Исходные PNG остаются для меню/нарезки. Старые папки `assets/sprites/*/rig_parts/` — устаревший каркас, в runtime не используются. Также устарели и не используются сценами/кодом: `assets/sprites/enemies/elite_*.png` (старые дубликаты элиток — активные версии в `assets/sprites/elites/`), `assets/sprites/characters/berserk_animated.png`, `assets/sprites/visual_redesign_preview.png`, `icon 2.svg` в корне. Их можно удалить отдельной зачисткой.
+Схема имен: `<entity_id>_torso.png`, `<entity_id>_arm_l.png`, `<entity_id>_arm_r.png`, `<entity_id>_leg_l.png`, `<entity_id>_leg_r.png`; по необходимости `<entity_id>_wing_l/r.png`, `<entity_id>_weapon.png`, `<entity_id>_shield.png`, `<entity_id>_tail.png`, `<entity_id>_vortex.png`. В покое сборка пиксель-в-пиксель совпадает с исходным full-art спрайтом; конечности анимируются rig-ом. Исходные PNG остаются для меню/нарезки. Старые папки `assets/sprites/*/rig_parts/` — устаревший каркас, в runtime не используются. Ранее устаревший `assets/sprites/visual_redesign_preview.png` вынесен в `build/cleanup_backup_2026_06_12/` чисткой 2026-06-12.
 
 Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем активным папкам спрайтов вычищены грязные полупрозрачные пиксели и невидимые островки; в cutout-конечностях 21 части устранены «летающие» обрезки соседних частей тела (фрагменты возвращены в слой торса автопостобработкой `fix_detached_fragments` в `tools/slice_rig_cutouts.py` — повторные нарезки остаются чистыми). Оторванные элементы дизайна (искры иконок, парящие орбы/руны мага) сохранены. Запрещено возвращать активный боевой визуал к квадратным blocky-заглушкам.
 
@@ -135,6 +135,8 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 ## VFX-Ассеты Эффектов
 
 Папка: `assets/sprites/effects/`. Генераторы: `tools/generate_attack_vfx.py` (оружие игрока), `tools/generate_elite_vfx.py` (уникальные атаки элиток). Все PNG с прозрачным фоном.
+
+Опасные зоны врагов/босса (2026-06-12) оформлены через `scripts/hazard_vfx.gd` (`HazardVfx.telegraph`/`detonate`): тинтуемая текстура `hazard_zone.png` (ведьмино-кольцо опасности с насечками и мягкой заливкой) на windup, затем `impact_ring`+`impact_flash` детонация, для яда — бурлящая `poison_pool` лужа. Заменены голые `Polygon2D`-круги боссовских зон (rift zone, disk slam, зона смены фазы) и элитного яда (hazard zone + persistent puddle).
 
 Оружие игрока (используются `scripts/attack_vfx.gd`):
 
@@ -148,6 +150,13 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `beam_strip.png` | Луч темного жезла | Реализовано |
 | `sound_wave.png` | Звуковая волна электрогитары | Реализовано |
 | `music_note.png` | Ноты гитарных атак | Реализовано |
+| `poison_pool.png` | Растровая пузырящаяся poison/acid pool Химика вместо программного круга | Реализовано |
+| `spark_pool.png` | Растровое spark-cloud пятно Взрывной пыли Химика вместо программного круга | Реализовано |
+| `briar_pool.png` | Растровая thorn/briar зона Друида вместо программного круга | Реализовано |
+
+VFX pass 2026-06-12: `ClassWeapon._spawn_damage_pool()` больше не рисует видимый `Polygon2D`-диск для persistent pools. Химик/Друид используют эти PNG как `Sprite2D` с мягким scale/rotation pulse; damage radius/tick timing остались из weapon config. QA preview: `docs/design/previews/vfx_pool_assets_contact.png`.
+
+D&D VFX restyle pass 2026-06-12: все 19 PNG в `assets/sprites/effects/` заменены на сдержанный tabletop fantasy style без кислотного неона и пересветов. Размеры/имена/alpha сохранены; `hazard_zone` и `elite_telegraph_circle` оставлены warm-neutral/tintable под кодовую модуляцию. Non-runtime QA preview вынесен из `assets/` в `build/cleanup_backup_2026_06_12/assets/sprites/effects/effects_dnd_preview.png`.
 
 Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (53 шт., 256x256). Финальный Design pass 2026-06-12: все активные артефакты заменены на realistic epic D&D/tabletop fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Пайплайн вырезки из raster source sheets: `tools/extract_realistic_dnd_artifact_icons.py`; QA preview: `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass) superseded.
 
@@ -194,6 +203,8 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `summon_amulet` | Амулет призыва | Друид | Командуемая beast pack, scaling from Leadership | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `briar_staff` | Посох терний | Друид | Thorn zone, AoE DoT, crowd control | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `raven_totem` | Вороний тотем | Друид | Totem pulses, Leadership-scaled deploy limit | `ProgressionData.DRUID_WEAPONS` | Реализовано |
+
+Weapon art v2 2026-06-12: все 27 сцен `WeaponVisual` используют texture path, совпадающий с weapon ID; старые fallback-ссылки (`two_handed_hammer`, `long_spear`, `summon_amulet`, `blast_powder`, `restore_potion`, `moon_crossbow`, `chakrams`) убраны из чужих сцен. `long_spear`, `tower_shield`, `holy_flail` перерисованы как noble knight equipment. Scene scales уменьшены, чтобы оружие занимало примерно 50-65% высоты персонажа и не перекрывало лицо/корпус. Контрольные листы: `docs/design/previews/weapon_v2_assets_contact.png`, `docs/design/previews/weapon_v2_socket_contact.png`.
 
 Временные visuals классового оружия регистрируются в runtime-группе `player_weapon_effects` и должны удаляться при смене оружия/персонажа, смерти, завершении забега и очистке world state.
 
@@ -280,6 +291,25 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `rest` | Костер | Лечение или защитный бонус | `assets/sprites/map_icons/map_rest_campfire.png` | Реализовано |
 | `boss` | Босс | Финальный бой акта | `map_boss_rift_warden.png` / `map_boss_disk_devourer.png` | Реализовано |
 
+## Случайные События
+
+Источник: `scripts/event_data.gd`. Event-node выбирает один сценарий из пула без повторов в рамках акта; после исчерпания пула список использованных событий сбрасывается. Тексты, выборы и последствия лежат в данных, UI только отображает сценарий и применяет outcome.
+
+| ID | Игровое имя | Типы исходов | Ключевая роль | Статус |
+| --- | --- | --- | --- | --- |
+| `wandering_bard` | Странствующий бард | цена, бафф, check Knowledge | Деньги за темп или рискованный песенный чек | Реализовано |
+| `cursed_altar` | Проклятый алтарь | HP-жертва, artifact, elite combat | Риск кровавой сделки или бой с тенью | Реализовано |
+| `road_ambush` | Засада! | combat, gold multiplier, check Agility | Внезапный усиленный бой с повышенной наградой | Реализовано |
+| `old_well` | Старый колодец | цена, heal/money/combat random, check Perception | Слепой бросок монеты или осторожное исследование | Реализовано |
+| `wounded_mercenary` | Раненый наемник | цена, summon/Leadership, money, penalty | Моральный выбор помощи или мародерства | Реализовано |
+| `goblin_lottery` | Гоблин-лотерейщик | hidden risk, artifact/junk/combat, check Perception | Мешок вслепую с мимиком как боевым риском | Реализовано |
+| `hot_spring` | Горячий источник | rest, Endurance, enemy health modifier | Сильный отдых с будущей боевой ценой | Реализовано |
+| `mirror_phantom` | Зеркальный фантом | elite combat, check Intelligence | Дуэль с отражением или изучение класса | Реализовано |
+| `stone_guardian` | Каменный страж | check Knowledge, artifact, combat | Загадка или силовой проход | Реализовано |
+| `heroes_graveyard` | Кладбище героев | hidden risk, artifact/combat, rest | Грабеж могилы или почтение павшим | Реализовано |
+| `fallen_star` | Падшая звезда | Energy, HP cost, check Intelligence | Сильный ресурсный апгрейд с ожогом | Реализовано |
+| `training_dummies` | Тренировочные манекены | check Agility/Strength, stat+mods | Испытания скорости и силы | Реализовано |
+
 ## UI Иконки Характеристик
 
 Все иконки подключаются через `scripts/ui_icon_registry.gd`; это единая backend-точка для Escape stats menu, level-up reward cards, tooltips, shop/reward descriptions и HUD. Иконки должны оставаться polished stylized fantasy cartoon PNG, без emoji/default placeholders.
@@ -329,8 +359,25 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `hp` | HP | `assets/sprites/ui/hud/hud_hp.png` |
 | `xp` | Опыт | `assets/sprites/ui/hud/hud_xp.png` |
 | `money` | Деньги | `assets/sprites/ui/hud/hud_money.png` |
+| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_buff_power.png` fallback via `UIIconRegistry` |
 
 `scripts/ui_icon_registry.gd` кэширует загруженные Texture2D по пути; новые UI места должны брать иконки через registry, а не делать отдельный `load()`.
+
+## Ультимейты Классов
+
+Источник данных: `scripts/progression_data.gd::ULTIMATE_CONFIGS`. Все ульты активируются через InputMap action `ultimate` и отображаются в HUD как `ULT`.
+
+| Class ID | Ultimate ID/Title | Status |
+| --- | --- | --- |
+| `berserk` | Неистовство | Реализовано |
+| `dark_mage` | Темная буря | Реализовано |
+| `guitarist` | Соло | Реализовано |
+| `assassin` | Танец клинков | Реализовано |
+| `ranger` | Лунный залп | Реализовано |
+| `doctor` | Переливание | Реализовано |
+| `chemist` | Цепная реакция | Реализовано |
+| `knight` | Бастион | Реализовано |
+| `druid` | Зов стаи | Реализовано |
 
 ## UI Visual Kit 2026-06-12
 
@@ -350,6 +397,15 @@ Radical UI pass заменяет основные StyleBoxFlat-плоскост�
 
 Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
 
+Contextual UI direction 2026-06-12: `docs/design/ui_contextual_concept.md` defines context kits. Current global tavern kit remains utility/shop fallback. The generated review kit lives in `assets/sprites/ui/frames/contextual/` with Wild Start, Grave Defeat, Laurel Reward and Parchment/Codex/Map variants. The first flat/simple pass was replaced after user feedback by a more realistic D&D/tabletop raster pass with material texture borrowed from existing FantasyDisk references (`docs/design/previews/contextual_ui_dnd_reference_contact.png`). Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md`; integration handoff: `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md`.
+
+| ID | Ассет | Роль | Статус |
+| --- | --- | --- | --- |
+| `ui_wild_*_frame` | `assets/sprites/ui/frames/contextual/ui_wild_panel_frame.png`, `ui_wild_button_frame.png`, `ui_wild_card_frame.png`, `ui_wild_tooltip_frame.png` | Main menu, character select, weapon select: living wood/vines/leaves | Done |
+| `ui_grave_*_frame` | `assets/sprites/ui/frames/contextual/ui_grave_panel_frame.png`, `ui_grave_button_frame.png`, `ui_grave_card_frame.png`, `ui_grave_tooltip_frame.png` | Defeat/death/danger confirmations: cracked bone, ash, grave-stone edge | Done |
+| `ui_laurel_*_frame` | `assets/sprites/ui/frames/contextual/ui_laurel_panel_frame.png`, `ui_laurel_button_frame.png`, `ui_laurel_card_frame.png`, `ui_laurel_tooltip_frame.png` | Victory, level-up, rewards, artifact selection: laurel/gold/parchment | Done |
+| `ui_parchment_*_frame` | `assets/sprites/ui/frames/contextual/ui_parchment_panel_frame.png`, `ui_parchment_button_frame.png`, `ui_parchment_card_frame.png`, `ui_parchment_tooltip_frame.png`, `ui_parchment_tab_frame.png` | Codex, route map, event text: parchment/book/map edge | Done |
+
 ## Фоны И Карты
 
 | ID | Игровое имя | Ассет | Роль |
@@ -364,8 +420,14 @@ Radical UI pass заменяет основные StyleBoxFlat-плоскост�
 | `marsh` | Топь | `assets/backgrounds/field_marsh.png` | Болотный фон |
 | `dry_road` | Сухая Дорога | `assets/backgrounds/field_dry_road.png` | Дорожный фон |
 | `meadow` | Луг | `assets/backgrounds/field_meadow.png` | Зеленый фон |
+| `ruined_courtyard` | Руинный Двор | `assets/backgrounds/field_ruined_courtyard.png` | D&D top-down руинная каменная арена |
+| `misty_marsh` | Туманная Топь | `assets/backgrounds/field_misty_marsh.png` | D&D top-down болотный грунт с лужами и мхом |
+| `dusty_badlands` | Пыльные Пустоши | `assets/backgrounds/field_dusty_badlands.png` | D&D top-down сухая земля/дорога |
+| `enchanted_meadow` | Зачарованный Луг | `assets/backgrounds/field_enchanted_meadow.png` | D&D top-down травяная поляна с мелкими цветами |
+| `ashen_rift` | Пепельный Разлом | `assets/backgrounds/field_ashen_rift.png` | D&D top-down вулканический пепел с тонкими трещинами |
+| `cursed_grove` | Проклятая Роща | `assets/backgrounds/field_cursed_grove.png` | D&D top-down сине-серый зачарованный лесной грунт |
 
-Все 4 боевых фона перерисованы в нативном разрешении 2560x1440. Pass 2026-06-12 заменил их на строго плоские top-down ground textures без высоких объектов, ложной перспективы и объемных камней/кустов: только низкоконтрастная почва, мох, трещины, трава, дорожные следы и мелкая наземная фактура. Генератор: `tools/generate_ui_overhaul_visual_assets.py`; предыдущий upscale pass `tools/redraw_arena_backgrounds.py` superseded для активных файлов.
+Все активные боевые фоны — нативные 2560x1440. Pass 2026-06-12 заменил первые 4 на строго плоские top-down ground textures без высоких объектов, ложной перспективы и объемных камней/кустов: только низкоконтрастная почва, мох, трещины, трава, дорожные следы и мелкая наземная фактура. Expansion pass 2026-06-12 добавил еще 6 D&D battlemap-фонов с тем же gameplay-readable правилом: антуражно и красиво, но без крупных камней/кустов и объектов, которые читаются как препятствия. QA preview: `docs/design/previews/arena_backgrounds_6_dnd_contact.png`.
 `route_map_backdrop` добавлен 2026-06-11 как отдельный 2560x1440 фон для маршрутной карты: мрачная пустошь/туманное предгорье, детали вынесены к краям, центр приглушен для читаемости узлов.
 
 ## Препятствия
@@ -522,6 +584,25 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 - `leech_fang` (Клык Пиявки) — Tier 2: +25% шанса вампиризма, +2 к силе вампиризма (источник vampiric-атрибутов).
 - Остальные артефакты — Tier 1 (эффекты усилены x2.5 от прежних).
 - Иконки новых tier-3 — временные копии тематически близких (до арт-итерации Codex по тирам).
+
+## Возвышения (Усложнения)
+
+Глобальные кумулятивные модификаторы сложности (`ProgressionData.ASCENSION_MODIFIERS`). Уровень N включает 1..N. Уровень 0 = обычная игра. Прогресс/разблокировка — по персонажу (`meta_progression.gd`): победа над финальным боссом на уровне N открывает N+1.
+
+| ID | Уровень | Имя | Эффект |
+| --- | --- | --- | --- |
+| `asc_hardened_foes` | 1 | Закалённые враги | Монстры +15% HP, +10% урона |
+| `asc_greedy_merchants` | 2 | Жадные торговцы | Все цены +25% |
+| `asc_swift_horde` | 3 | Быстрая орда | Спавн чаще, плотность +20% |
+| `asc_fierce_elites` | 4 | Свирепые элитки | Элитки +20% HP, боевая фаза сразу |
+| `asc_scarce_spoils` | 5 | Скудные трофеи | Золото/опыт −20% |
+| `asc_thinned_flesh` | 6 | Истончённая плоть | Всё лечение −30% |
+| `asc_abyssal_echo` | 7 | Эхо бездны | Шанс мини-элитки в обычной волне |
+| `asc_long_watch` | 8 | Длинная вахта | Таймер боя +25% |
+| `asc_warden_wrath` | 9 | Гнев стража | Босс +1 фаза, +20% HP, короче телеграфы |
+| `asc_edge_of_madness` | 10 | Грань безумия | Игрок −20% макс HP, усиленная стартовая волна |
+
+Наградный трек меты (бывшие `ASCENSION_LEVELS`, теперь per-class баффы за пройденные уровни): применяются на старте забега постоянно; мета-экран после босса — заглушка с рабочим хуком.
 
 ## Магазинные Предметы
 

@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Релиз v0.1.2 — Merge В Main И Сборки
 
-Статус: in_progress
+Статус: done
 Создано: 2026-06-12
 Автор: PM / Codex dispatcher
 Роль: Back-end
@@ -100,15 +100,44 @@ Dispatch: отправлено в Back-end чат `019ebadd-c0f8-7100-b33a-2887a
       на Windows-машине.
 
 ## Acceptance Criteria
-- [ ] Все обязательные smoke/regression тесты зеленые до merge.
-- [ ] Board проверена; активные задачи либо закрыты/включены, либо явно
+- [x] Все обязательные smoke/regression тесты зеленые до merge.
+- [x] Board проверена; активные задачи либо закрыты/включены, либо явно
       исключены из релиза с причиной.
-- [ ] Версия `0.1.2` обновлена в проекте, export presets, CHANGELOG и docs.
-- [ ] В `dev` есть release bump commit.
-- [ ] `main` содержит `Release v0.1.2`, тег `v0.1.2` создан, рабочая ветка
+- [x] Версия `0.1.2` обновлена в проекте, export presets, CHANGELOG и docs.
+- [x] В `dev` есть release bump commit.
+- [x] `main` содержит `Release v0.1.2`, тег `v0.1.2` создан, рабочая ветка
       возвращена на `dev`.
-- [ ] Артефакты Windows/macOS лежат в `releases/v0.1.2/`, есть SHA256SUMS.
-- [ ] DMG проверен запуском до меню; Windows artifacts прошли доступные
+- [x] Артефакты Windows/macOS лежат в `releases/v0.1.2/`, есть SHA256SUMS.
+- [x] DMG проверен запуском до меню; Windows artifacts прошли доступные
       локальные проверки.
-- [ ] Task-файл переведен в `done` с коротким резюме: что вошло, какие тесты
+- [x] Task-файл переведен в `done` с коротким резюме: что вошло, какие тесты
       пройдены, где лежат сборки, что нужно проверить пользователю на Windows.
+
+## Result Summary
+
+Закрыто 2026-06-12.
+
+- Board проверена: единственная нерелизная активная задача —
+  `codex_design_new_classes_restyle_to_starter_style_task.md` (`in_progress`,
+  12/24 файлов, без финального cutout/review). Она не закрывается этим релизом;
+  уже закоммиченный dev-срез не откатывался.
+- В `0.1.2` вошел текущий стабильный срез `dev`: UI D&D-таверна, realistic D&D
+  artifact icons, 9 классов/27 оружий, универсальные вторичные атрибуты,
+  fullscreen hero select, уникальные class patterns, настройки v2, обновленный
+  Berserk melee targeting и релизный bump версии.
+- Пройдены до merge и после bump: `runtime_smoke_test.gd`,
+  `animation_smoke_test.gd`, `meta_progression_smoke_test.gd`,
+  `melee_weapon_targeting_test.gd`, `attack_vfx_smoke_test.gd`.
+- Коммит в `dev`: `552fe59 release: bump version to 0.1.2`.
+- `main` содержит merge commit `76f970a Release v0.1.2`; тег `v0.1.2`
+  указывает на этот merge commit; рабочая ветка возвращена на `dev`.
+- Сборки созданы через `tools/build_release.sh 0.1.2`:
+  `releases/v0.1.2/FantasyDisk-0.1.2-macos.dmg`,
+  `releases/v0.1.2/FantasyDisk-0.1.2-windows-setup.exe`,
+  `releases/v0.1.2/FantasyDisk-0.1.2-windows.zip`,
+  `releases/v0.1.2/SHA256SUMS.txt`.
+- Проверки артефактов: DMG смонтирован, `FantasyDisk.app` запущен из DMG с
+  кодом 0, bundle `CFBundleShortVersionString`/`CFBundleVersion` = `0.1.2`;
+  Windows zip проходит `unzip -t`, файлы ненулевого размера, SHA256SUMS
+  сходятся, NSIS CRC verify в build script прошел.
+- Полноценный запуск Windows installer нужно проверить на Windows-машине.

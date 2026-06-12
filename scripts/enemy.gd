@@ -57,6 +57,7 @@ var _elite_attack_cooldown := 0.0
 var _elite_attack_phase_left := 0.0
 var _elite_attack_targets := []
 var _elite_attack_direction := Vector2.RIGHT
+var _elite_instant_phase_applied := false
 
 const COLLISION_LAYER_PLAYER := 1
 const COLLISION_LAYER_GROUND_ENEMY := 2
@@ -68,6 +69,7 @@ const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
 const ENEMY_PROJECTILE_SCENE := preload("res://scenes/EnemyProjectile.tscn")
 const ELITE_TELEGRAPH_TEXTURE := preload("res://assets/sprites/effects/elite_telegraph_circle.png")
+const POISON_POOL_TEXTURE := preload("res://assets/sprites/effects/poison_pool.png")
 const ELITE_SHOCKWAVE_TEXTURE := preload("res://assets/sprites/effects/elite_shockwave_ring.png")
 const ELITE_SHADOW_TRAIL_TEXTURE := preload("res://assets/sprites/effects/elite_shadow_trail.png")
 const ELITE_POISON_LOB_TEXTURE := preload("res://assets/sprites/effects/elite_poison_lob.png")
@@ -106,6 +108,13 @@ const ELITE_ATTACK_CONFIG := {
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
 
+# Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
+# contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
+# согласованно одним множителем. Авторские body.scale: моб 0.42, элитка/босс 0.52.
+# Элитка 0.52*1.4=0.728 ≈ 1.73x моба; босс 0.52*1.9=0.988 ≈ 2.35x моба.
+const EPIC_ELITE_SCALE := 1.4
+const EPIC_BOSS_SCALE := 1.9
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -118,12 +127,31 @@ func _ready() -> void:
 		elite_behavior = enemy_type_name.to_lower().replace(" ", "_")
 	if elite_behavior != "":
 		set_meta("elite_behavior", elite_behavior)
+	_apply_epic_scale()
 	_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
 	_create_health_bar()
 	if ELITE_ATTACK_CONFIG.has(elite_behavior):
 		elite_attack_id = str(ELITE_ATTACK_CONFIG[elite_behavior]["attack_id"])
 		_elite_attack_cooldown = randf_range(2.2, 3.6)
+
+
+func _epic_scale_factor() -> float:
+	var lname := enemy_type_name.to_lower()
+	if lname.contains("warden") or lname.contains("devourer") or is_in_group("bosses"):
+		return EPIC_BOSS_SCALE
+	if is_in_group("elite_enemies") or elite_behavior != "":
+		return EPIC_ELITE_SCALE
+	return 1.0
+
+
+func _apply_epic_scale() -> void:
+	# Элитки/боссы крупнее и страшнее: один node scale тянет визуал, хитбокс,
+	# contact_range и health-bar вместе — «урона по воздуху» по гиганту не будет.
+	var factor := _epic_scale_factor()
+	if is_equal_approx(factor, 1.0):
+		return
+	scale = Vector2(factor, factor)
 
 
 func _apply_collision_profile() -> void:
@@ -281,19 +309,14 @@ func _spawn_elite_hazard(target_position: Vector2) -> void:
 	hazard.z_index = 8
 	parent.add_child(hazard)
 
-	var warning := Polygon2D.new()
-	warning.color = Color(0.45, 0.95, 0.18, 0.22)
-	var points := PackedVector2Array()
-	for point_index in range(28):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 28.0) * 72.0)
-	warning.polygon = points
-	hazard.add_child(warning)
+	var hazard_color := Color(0.55, 0.95, 0.30, 1.0)
+	HazardVfx.telegraph(hazard, 72.0, hazard_color, 0.55)
 
 	# Tween на hazard замораживается вместе с паузой дерева, в отличие от SceneTreeTimer.
 	var hazard_tween := hazard.create_tween()
 	hazard_tween.tween_interval(0.55)
 	hazard_tween.tween_callback(func() -> void:
-		warning.color = Color(0.42, 0.85, 0.14, 0.48)
+		HazardVfx.detonate(hazard, 72.0, hazard_color, "poison")
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(hazard.global_position) <= 72.0 and player.has_method("take_damage"):
 			player.take_damage(hazard_damage, "poison_zone")
@@ -308,6 +331,7 @@ func _update_elite_aura(delta: float) -> void:
 		return
 	_elite_aura_cooldown = 5.2
 	_play_rig_action("cast", Vector2.UP)
+	HazardVfx.aura_pulse(self, 210.0, Color(1.0, 0.82, 0.36, 1.0))
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or enemy_node == self or enemy_node.is_in_group("elite_enemies"):
@@ -343,6 +367,11 @@ func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool
 		return false
 
 	if elite_attack_state == "idle":
+		# Возвышение 4 «Свирепые элитки»: боевая фаза (спец-атака) открывается сразу —
+		# обнуляем стартовый кулдаун один раз (мета ставится в combat_director после _ready).
+		if not _elite_instant_phase_applied and bool(get_meta("ascension_instant_phase", false)):
+			_elite_instant_phase_applied = true
+			_elite_attack_cooldown = 0.0
 		_elite_attack_cooldown -= delta
 		if _elite_attack_cooldown > 0.0 or distance > float(config["trigger_range"]):
 			return false
@@ -363,7 +392,8 @@ func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool
 				_set_body_alpha(1.0)
 		"recover":
 			elite_attack_state = "idle"
-			_elite_attack_cooldown = float(config["cooldown"])
+			# Фаза 2 (HP ≤ порога): ротация уникальных атак ускоряется (~-20%).
+			_elite_attack_cooldown = float(config["cooldown"]) * (0.8 if _elite_in_phase2() else 1.0)
 			elite_attack_phase_changed.emit(elite_attack_id, "idle")
 			set_meta("elite_attack_phase", "idle")
 	return elite_attack_state != "idle"
@@ -410,9 +440,11 @@ func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 	if to_player.length_squared() > 0.001:
 		_elite_attack_direction = to_player.normalized()
 
+	var phase2 := _elite_in_phase2()
 	match elite_behavior:
 		"iron_bastion":
-			_spawn_elite_telegraph(global_position, float(config["radius"]), float(config["windup"]))
+			# Телеграф совпадает с фаза-2 расширением волны (честное окно уворота).
+			_spawn_elite_telegraph(global_position, _safe_radius(float(config["radius"]) * (1.3 if phase2 else 1.0)), float(config["windup"]))
 		"night_stalker":
 			var behind := player.global_position + _elite_attack_direction * float(config["behind_offset"])
 			_elite_attack_targets.append(_clamp_to_arena(behind))
@@ -422,7 +454,8 @@ func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 		"plague_prophet":
 			_play_rig_action("cast", _elite_attack_direction)
 			var spread := float(config["lob_spread"])
-			for lob_index in range(int(config["lob_count"])):
+			# Фаза 2: больше луж яда (второе применение) — +2 лоба.
+			for lob_index in range(int(config["lob_count"]) + (2 if phase2 else 0)):
 				var offset := Vector2.ZERO
 				if lob_index > 0:
 					offset = Vector2.RIGHT.rotated(randf() * TAU) * randf_range(spread * 0.35, spread)
@@ -445,6 +478,40 @@ func _execute_elite_strike(config: Dictionary, player: Node2D) -> void:
 			_strike_shard_fan(config, player)
 
 
+func _elite_in_phase2() -> bool:
+	# Боевая фаза 2 элитки: ниже порога HP (elite_phase_threshold, по умолч. 0.50).
+	if max_health <= 0.0:
+		return false
+	var threshold := float(get_meta("elite_phase_threshold", 0.5))
+	return health / max_health <= threshold
+
+
+func _safe_radius(radius: float) -> float:
+	# Safe corridor: ни один хазард не перекрывает арену целиком — даже две
+	# одновременные зоны оставляют проходимый коридор (cap < полувысоты арены).
+	return minf(radius, ARENA_SIZE.y * 0.34)
+
+
+func _shake_player_camera(intensity: float, duration := 0.18) -> void:
+	# Тряска на slam/детонациях из скриптов врага (без ссылки на game): флаг
+	# берётся из tree-root меты, выставляемой main при загрузке настроек.
+	if not bool(get_tree().root.get_meta("screen_shake", true)):
+		return
+	var player := _player()
+	if player == null:
+		return
+	var camera := player.get_node_or_null("Camera2D") as Camera2D
+	if camera == null:
+		return
+	var tween := camera.create_tween()
+	var steps := 5
+	for i in range(steps):
+		var falloff: float = 1.0 - float(i) / float(steps)
+		var off: Vector2 = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * intensity * falloff
+		tween.tween_property(camera, "offset", off, duration / float(steps))
+	tween.tween_property(camera, "offset", Vector2.ZERO, duration / float(steps))
+
+
 func _elite_attack_damage(config: Dictionary, player: Node2D) -> float:
 	var damage := contact_damage * float(config["damage_factor"])
 	var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
@@ -454,15 +521,21 @@ func _elite_attack_damage(config: Dictionary, player: Node2D) -> float:
 
 
 func _strike_slam_wave(config: Dictionary, player: Node2D) -> void:
-	var radius := float(config["radius"])
+	var phase2 := _elite_in_phase2()
+	# Фаза 2: «двойная волна» — шире и сильнее, но в пределах безопасного коридора.
+	var radius := _safe_radius(float(config["radius"]) * (1.3 if phase2 else 1.0))
+	var knockback := float(config["knockback"]) * (1.3 if phase2 else 1.0)
 	_spawn_shockwave_ring(global_position, radius)
+	_shake_player_camera(9.0 if phase2 else 7.0, 0.2)
+	if phase2:
+		_spawn_shockwave_ring(global_position, radius * 0.6)
 	if player.global_position.distance_to(global_position) > radius:
 		return
 	if player.has_method("take_damage") and player.take_damage(_elite_attack_damage(config, player), "elite_slam_wave"):
 		var push_direction := (player.global_position - global_position).normalized()
 		if push_direction.length_squared() <= 0.001:
 			push_direction = Vector2.RIGHT
-		player.global_position = _clamp_to_arena(player.global_position + push_direction * float(config["knockback"]))
+		player.global_position = _clamp_to_arena(player.global_position + push_direction * knockback)
 
 
 func _strike_shadow_strike(config: Dictionary, player: Node2D) -> void:
@@ -476,6 +549,15 @@ func _strike_shadow_strike(config: Dictionary, player: Node2D) -> void:
 	if player.global_position.distance_to(global_position) <= float(config["radius"]):
 		if player.has_method("take_damage"):
 			player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
+	# Фаза 2: серия из двух ударов из тени — второй заход с другой стороны.
+	if _elite_in_phase2():
+		var second := _clamp_to_arena(player.global_position - _elite_attack_direction * float(config["behind_offset"]))
+		_spawn_shadow_trail(global_position, second, 0.18)
+		global_position = second
+		_play_rig_action("attack", player.global_position - global_position)
+		if player.global_position.distance_to(global_position) <= float(config["radius"]):
+			if player.has_method("take_damage"):
+				player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
 
 
 func _strike_poison_volley(config: Dictionary, player: Node2D) -> void:
@@ -488,23 +570,33 @@ func _strike_shard_fan(config: Dictionary, player: Node2D) -> void:
 	var shard_count := int(config["shard_count"])
 	var spread := deg_to_rad(float(config["spread_degrees"]))
 	var damage := _elite_attack_damage(config, player)
-	var parent := get_tree().current_scene
-	if parent == null:
-		parent = get_tree().root
 	for shard_index in range(shard_count):
 		var t := 0.0 if shard_count == 1 else float(shard_index) / float(shard_count - 1)
 		var angle := lerpf(-spread * 0.5, spread * 0.5, t)
-		var direction := _elite_attack_direction.rotated(angle)
-		var projectile := ENEMY_PROJECTILE_SCENE.instantiate()
-		parent.add_child(projectile)
-		var shard_sprite := projectile.get_node_or_null("Sprite2D") as Sprite2D
-		if shard_sprite == null:
-			shard_sprite = projectile.get_node_or_null("Body") as Sprite2D
-		if shard_sprite != null:
-			shard_sprite.texture = ELITE_CRYSTAL_SHARD_TEXTURE
-			shard_sprite.rotation = direction.angle()
-		if projectile.has_method("setup"):
-			projectile.setup(global_position, global_position + direction * 200.0, damage, float(config["shard_speed"]))
+		_spawn_shard(_elite_attack_direction.rotated(angle), damage, config)
+	# Фаза 2: второе применение — кольцо осколков вдобавок к вееру (всегда есть
+	# проход: кольцо разрежено, между лучами можно проскользнуть).
+	if _elite_in_phase2():
+		var ring_count := 8
+		for ring_index in range(ring_count):
+			var ring_angle := TAU * float(ring_index) / float(ring_count)
+			_spawn_shard(Vector2.RIGHT.rotated(ring_angle), damage, config)
+
+
+func _spawn_shard(direction: Vector2, damage: float, config: Dictionary) -> void:
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	var projectile := ENEMY_PROJECTILE_SCENE.instantiate()
+	parent.add_child(projectile)
+	var shard_sprite := projectile.get_node_or_null("Sprite2D") as Sprite2D
+	if shard_sprite == null:
+		shard_sprite = projectile.get_node_or_null("Body") as Sprite2D
+	if shard_sprite != null:
+		shard_sprite.texture = ELITE_CRYSTAL_SHARD_TEXTURE
+		shard_sprite.rotation = direction.angle()
+	if projectile.has_method("setup"):
+		projectile.setup(global_position, global_position + direction * 200.0, damage, float(config["shard_speed"]))
 
 
 func _spawn_elite_telegraph(target_position: Vector2, radius: float, duration: float) -> void:
@@ -619,13 +711,19 @@ func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: 
 	puddle.global_position = puddle_position
 	var radius := float(config["radius"])
 
-	var visual := Polygon2D.new()
-	visual.color = Color(0.42, 0.85, 0.16, 0.42)
-	var points := PackedVector2Array()
-	for point_index in range(24):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 24.0) * radius)
-	visual.polygon = points
+	# Оформленная бурлящая лужа яда (raster pool) вместо голого Polygon2D-круга.
+	var visual := Sprite2D.new()
+	visual.texture = POISON_POOL_TEXTURE
+	visual.scale = Vector2.ONE * (radius * 2.0 / float(POISON_POOL_TEXTURE.get_width()))
+	visual.modulate = Color(1.0, 1.0, 1.0, 0.0)
 	puddle.add_child(visual)
+	# появление + непрерывное «бульканье» (pause-aware, привязан к ноде)
+	var appear := puddle.create_tween()
+	appear.tween_property(visual, "modulate:a", 0.92, 0.18)
+	var bubble := puddle.create_tween()
+	bubble.set_loops()
+	bubble.tween_property(visual, "scale", visual.scale * 1.06, 0.7).set_trans(Tween.TRANS_SINE)
+	bubble.tween_property(visual, "scale", visual.scale, 0.7).set_trans(Tween.TRANS_SINE)
 
 	var duration := float(config["puddle_duration"])
 	var tick_interval := float(config["tick_interval"])
@@ -638,7 +736,7 @@ func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: 
 			if player != null and player.global_position.distance_to(puddle.global_position) <= radius and player.has_method("take_damage"):
 				player.take_damage(tick_damage, "elite_poison_puddle")
 		)
-	tween.tween_property(visual, "color:a", 0.0, 0.25)
+	tween.tween_property(visual, "modulate:a", 0.0, 0.3)
 	tween.tween_callback(puddle.queue_free)
 
 

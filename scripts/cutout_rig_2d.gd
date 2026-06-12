@@ -169,14 +169,46 @@ func weapon_socket_position() -> Vector2:
 	if _socket_mount == null or _pelvis == null:
 		return Vector2(18.0 * facing_sign, 2.0)
 	var chain := _socket_chain_transform()
-	return chain * _socket_mount.position
+	var kick := _socket_action_kick()
+	# forward (x) follows facing; vertical (y) is screen-space up/down.
+	return chain * _socket_mount.position + Vector2(kick.x * facing_sign, kick.y)
 
 
 func weapon_socket_rotation() -> float:
+	var spin := _socket_action_kick().z
 	var attack_part := _attack_part()
-	if attack_part == null:
-		return 0.0
-	return attack_part.rotation * 0.55 * _render_sign()
+	var arm_rot := 0.0 if attack_part == null else attack_part.rotation * 0.55
+	return (arm_rot + spin) * _render_sign()
+
+
+## Snappy weapon kick in the socket itself (independent of the arm) so the held
+## weapon has anticipation/thrust on melee, recoil on ranged, and a raise on
+## casts — gives ranged/caster weapons life where the arm barely moves.
+## Returns Vector3(forward, vertical, spin).
+func _socket_action_kick() -> Vector3:
+	if action_time_left <= 0.0 or state == "death" or action_id == "":
+		return Vector3.ZERO
+	var p: float = clampf(1.0 - action_time_left / maxf(action_duration, 0.001), 0.0, 1.0)
+	match action_id:
+		"attack":
+			# anticipation back, then thrust forward with a follow-through tilt
+			var windup: float = sin(minf(p / 0.3, 1.0) * PI)
+			var swing: float = sin(maxf((p - 0.3) / 0.7, 0.0) * PI)
+			return Vector3(-3.0 * windup + 8.0 * swing, -1.0 * windup, 0.22 * swing)
+		"shoot":
+			# sharp recoil back along facing + slight muzzle rise, quick return
+			var recoil: float = pow(1.0 - p, 1.6) if p < 0.5 else 0.0
+			var kick: float = sin(minf(p / 0.18, 1.0) * PI) * 0.6 + recoil * 0.4
+			return Vector3(-9.0 * kick, -3.0 * kick, -0.16 * kick)
+		"cast":
+			# raise and glow build, small forward push at release
+			var raise: float = sin(minf(p / 0.45, 1.0) * PI * 0.5)
+			var fade: float = 1.0 - maxf((p - 0.78) / 0.22, 0.0)
+			var amp: float = raise * fade
+			var release: float = sin(maxf((p - 0.7) / 0.3, 0.0) * PI)
+			return Vector3(3.0 * release, -7.0 * amp, -0.18 * amp + 0.12 * release)
+		_:
+			return Vector3.ZERO
 
 
 func update_animation(delta: float, movement_velocity: Vector2, desired_facing := Vector2.ZERO) -> void:

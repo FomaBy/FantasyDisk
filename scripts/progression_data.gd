@@ -120,6 +120,24 @@ const CHARACTER_CONFIGS := {
 	},
 }
 
+const CLASS_BUDGET_PROFILES := {
+	"berserk": {"profile": "balanced", "survival": "sturdy", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
+	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.70, "aoe_target": 1.30},
+	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 0.70, "aoe_target": 1.30},
+	"assassin": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
+	"ranger": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
+	"doctor": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
+	"chemist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.70, "aoe_target": 1.30},
+	"knight": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
+	"druid": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
+}
+
+const BALANCE_BASE_SOLO_DPS := 48.0
+const BALANCE_BASE_AOE_DPS := 150.0
+const BALANCE_WINDOW_SECONDS := 30.0
+const STAGE_SCALE_BASE := 1.18
+const STAGE_SCALE_LINEAR := 0.075
+
 const BERSERK_WEAPONS := {
 	"sword": {
 		"id": "sword",
@@ -652,8 +670,20 @@ const LEVEL_UP_REWARDS := [
 	{"id": "regeneration_up", "title": "+Regeneration", "description": "+0.8 regeneration base.", "kind": "upgrade", "mods": {"regeneration_flat": 0.8}},
 	{"id": "vampiric_amount_up", "title": "+Vampiric Heal", "description": "+2 heal on vampiric hits.", "kind": "upgrade", "mods": {"vampiric_amount_flat": 2.0}},
 	{"id": "vampiric_chance_up", "title": "+Vampiric Chance", "description": "+8% chance to heal on hit.", "kind": "upgrade", "mods": {"vampiric_chance_flat": 0.08}},
-	{"id": "ultimate_power_up", "title": "+Ultimate Power", "description": "+0.12 reserved unique-mechanic power.", "kind": "upgrade", "mods": {"ultimate_flat": 0.12}},
+	{"id": "ultimate_power_up", "title": "+Ultimate Power", "description": "+0.12 ultimate power for class ultimate effects.", "kind": "upgrade", "mods": {"ultimate_flat": 0.12}},
 ]
+
+const ULTIMATE_CONFIGS := {
+	"berserk": {"title": "Неистовство", "description": "На несколько секунд ускоряется и каждый удар поднимает эхо-волну.", "duration": 5.5, "radius": 180.0, "damage": 0.75, "damage_charge_rate": 0.030, "taken_charge_rate": 1.35, "boss_cap": 0.10},
+	"dark_mage": {"title": "Темная буря", "description": "Вихрь темной магии проклинает всех врагов вокруг.", "duration": 0.0, "radius": 360.0, "damage": 1.35, "damage_charge_rate": 0.034, "taken_charge_rate": 1.05, "boss_cap": 0.11},
+	"guitarist": {"title": "Соло", "description": "Гигантская звуковая волна отбрасывает и глушит толпу.", "duration": 0.0, "radius": 430.0, "damage": 1.15, "damage_charge_rate": 0.033, "taken_charge_rate": 1.10, "boss_cap": 0.09},
+	"assassin": {"title": "Танец клинков", "description": "Серия мгновенных рывков-ударов по ближайшим целям.", "duration": 0.0, "radius": 520.0, "damage": 1.05, "target_count": 7, "damage_charge_rate": 0.036, "taken_charge_rate": 1.05, "boss_cap": 0.08},
+	"ranger": {"title": "Лунный залп", "description": "Дождь болтов поражает большую область вокруг героя.", "duration": 0.0, "radius": 480.0, "damage": 1.18, "target_count": 14, "damage_charge_rate": 0.034, "taken_charge_rate": 1.0, "boss_cap": 0.09},
+	"doctor": {"title": "Переливание", "description": "Массовый drain врагов вокруг; избыток лечения становится щитом-поглощением.", "duration": 0.0, "radius": 360.0, "damage": 0.95, "damage_charge_rate": 0.032, "taken_charge_rate": 1.25, "boss_cap": 0.08},
+	"chemist": {"title": "Цепная реакция", "description": "Алхимический каскад детонирует ближайшие зоны и врагов.", "duration": 0.0, "radius": 420.0, "damage": 1.25, "damage_charge_rate": 0.034, "taken_charge_rate": 1.05, "boss_cap": 0.10},
+	"knight": {"title": "Бастион", "description": "Короткая непробиваемость, таунт давления и усиленная контратака.", "duration": 5.0, "radius": 260.0, "damage": 0.70, "damage_charge_rate": 0.029, "taken_charge_rate": 1.55, "boss_cap": 0.07},
+	"druid": {"title": "Зов стаи", "description": "Временно призывает сверхлимитную стаю союзников.", "duration": 6.0, "radius": 260.0, "damage": 0.80, "target_count": 4, "damage_charge_rate": 0.031, "taken_charge_rate": 1.10, "boss_cap": 0.08},
+}
 
 # Классовая релевантность урона: какой derived-параметр является «своим» уроном класса.
 const CLASS_DAMAGE_PARAMETER := {
@@ -735,6 +765,43 @@ const CLASS_INTERPRETATIONS := {
 const COST_BY_TIER := {1: 30, 2: 55, 3: 95}
 # Вес появления артефакта в наградах/магазине по тиру (выше тир — реже).
 const TIER_WEIGHTS := {1: 1.0, 2: 0.45, 3: 0.12}
+
+const ASCENSION_MODIFIERS := [
+	{"id": "asc_hardened_foes", "level": 1, "title": "Закалённые враги", "description": "Монстры: +15% HP и +10% урона.",
+		"mods": {"enemy_hp_mult": 1.15, "enemy_damage_mult": 1.10}},
+	{"id": "asc_greedy_merchants", "level": 2, "title": "Жадные торговцы", "description": "Все цены (магазин, докачка, reroll): +25%.",
+		"mods": {"price_mult": 1.25}},
+	{"id": "asc_swift_horde", "level": 3, "title": "Быстрая орда", "description": "Волны спавнятся чаще, плотность +20%.",
+		"mods": {"spawn_count_mult": 1.20, "spawn_cooldown_mult": 0.83}},
+	{"id": "asc_fierce_elites", "level": 4, "title": "Свирепые элитки", "description": "Элитки: +20% HP, боевая фаза открывается сразу.",
+		"mods": {"elite_hp_mult": 1.20, "elite_instant_phase": 1.0}},
+	{"id": "asc_scarce_spoils", "level": 5, "title": "Скудные трофеи", "description": "Золото и опыт с боёв: -20%.",
+		"mods": {"reward_mult": 0.80}},
+	{"id": "asc_thinned_flesh", "level": 6, "title": "Истончённая плоть", "description": "Всё лечение (зелья, регенерация, вампиризм, drain): -30%.",
+		"mods": {"healing_mult": 0.70}},
+	{"id": "asc_abyssal_echo", "level": 7, "title": "Эхо бездны", "description": "В обычных волнах может появиться мини-элитка со свитой.",
+		"mods": {"mini_elite_chance": 0.20}},
+	{"id": "asc_long_watch", "level": 8, "title": "Длинная вахта", "description": "Таймер боя +25%, спавн не ослабевает.",
+		"mods": {"round_duration_mult": 1.25}},
+	{"id": "asc_warden_wrath", "level": 9, "title": "Гнев стража", "description": "Босс: +1 опасная фаза, +20% HP, телеграфы короче.",
+		"mods": {"boss_hp_mult": 1.20, "boss_extra_phase": 1.0, "boss_telegraph_mult": 0.75}},
+	{"id": "asc_edge_of_madness", "level": 10, "title": "Грань безумия", "description": "Игрок: -20% макс. HP; стартовая волна каждого боя усилена.",
+		"mods": {"player_max_hp_mult": 0.80, "first_wave_boost": 1.0}},
+]
+# Нейтральные значения модификаторов сложности (уровень 0 = текущая игра).
+const ASCENSION_DIFFICULTY_DEFAULTS := {
+	"enemy_hp_mult": 1.0, "enemy_damage_mult": 1.0,
+	"price_mult": 1.0,
+	"spawn_count_mult": 1.0, "spawn_cooldown_mult": 1.0,
+	"elite_hp_mult": 1.0, "elite_instant_phase": 0.0,
+	"reward_mult": 1.0,
+	"healing_mult": 1.0,
+	"mini_elite_chance": 0.0,
+	"round_duration_mult": 1.0,
+	"boss_hp_mult": 1.0, "boss_extra_phase": 0.0, "boss_telegraph_mult": 1.0,
+	"player_max_hp_mult": 1.0, "first_wave_boost": 0.0,
+}
+
 
 const ASCENSION_LEVELS := {
 	"berserk": [
@@ -902,6 +969,10 @@ static func class_interpretation_text(character_id: String, stat_or_parameter_id
 			return "Универсально полезно через формулы персонажа и текущий class kit."
 
 
+static func ultimate_config(character_id: String) -> Dictionary:
+	return ULTIMATE_CONFIGS.get(character_id, ULTIMATE_CONFIGS["berserk"]).duplicate(true)
+
+
 static func base_stats(character_id: String) -> Dictionary:
 	return BASE_STATS.get(character_id, BASE_STATS["berserk"]).duplicate(true)
 
@@ -922,6 +993,47 @@ static func ascension_mods(character_id: String, level: int) -> Dictionary:
 			else:
 				combined[modifier_id] = float(combined.get(modifier_id, 0.0)) + float(level_mods[modifier_id])
 	return combined
+
+
+static func ascension_modifiers() -> Array:
+	return ASCENSION_MODIFIERS
+
+
+static func ascension_difficulty_mods(level: int) -> Dictionary:
+	# Кумулятивно: уровень N включает усложнения 1..N. Множители перемножаются,
+	# флаги/шансы складываются (берётся максимум для флагов через add — 0/1).
+	var combined: Dictionary = ASCENSION_DIFFICULTY_DEFAULTS.duplicate(true)
+	var clamped := clampi(level, 0, ASCENSION_MODIFIERS.size())
+	for entry in ASCENSION_MODIFIERS:
+		if int(entry.get("level", 0)) > clamped:
+			continue
+		for key in (entry.get("mods", {}) as Dictionary).keys():
+			if str(key).ends_with("_mult"):
+				combined[key] = float(combined.get(key, 1.0)) * float(entry["mods"][key])
+			elif str(key) in ["elite_instant_phase", "boss_extra_phase", "first_wave_boost"]:
+				combined[key] = maxf(float(combined.get(key, 0.0)), float(entry["mods"][key]))
+			else:
+				combined[key] = float(combined.get(key, 0.0)) + float(entry["mods"][key])
+	return combined
+
+
+static func ascension_modifier_lines(level: int) -> Array:
+	# Читаемый кумулятивный список активных усложнений для UI (1..level).
+	var lines := []
+	var clamped := clampi(level, 0, ASCENSION_MODIFIERS.size())
+	for entry in ASCENSION_MODIFIERS:
+		if int(entry.get("level", 0)) <= clamped:
+			lines.append("%s. %s — %s" % [entry["level"], entry["title"], entry["description"]])
+	return lines
+
+
+static func stage_scale(route_stage: int) -> float:
+	var stage := maxf(float(route_stage), 0.0)
+	return snappedf(pow(STAGE_SCALE_BASE, stage) + STAGE_SCALE_LINEAR * stage, 0.001)
+
+
+static func stage_scaled_cost(base_cost: int, route_stage: int) -> int:
+	return maxi(1, int(ceil(float(base_cost) * stage_scale(route_stage))))
 
 
 static func character_ids() -> Array:
@@ -945,10 +1057,178 @@ static func weapon_ids(character_id: String) -> Array:
 	return weapons.keys()
 
 
+static func class_budget_profile(character_id: String) -> Dictionary:
+	return CLASS_BUDGET_PROFILES.get(character_id, CLASS_BUDGET_PROFILES["berserk"]).duplicate(true)
+
+
+static func budget_tuning_for(character_id: String, weapon_config: Dictionary) -> Dictionary:
+	var profile := class_budget_profile(character_id)
+	var base_metrics := estimate_weapon_budget(character_id, weapon_config, false)
+	var solo_target := BALANCE_BASE_SOLO_DPS * float(profile.get("solo_target", 1.0)) * float(profile.get("damage_budget", 1.0))
+	var aoe_target := BALANCE_BASE_AOE_DPS * float(profile.get("aoe_target", 1.0)) * float(profile.get("damage_budget", 1.0))
+	var solo_dps := maxf(float(base_metrics.get("solo_dps", 0.0)), 0.001)
+	var aoe_dps := maxf(float(base_metrics.get("aoe_dps", 0.0)), 0.001)
+	var solo_scale := solo_target / solo_dps
+	var aoe_scale := aoe_target / aoe_dps
+	var damage_multiplier := clampf(sqrt(solo_scale * aoe_scale), 0.28, 2.80)
+	var scaled_config := weapon_config.duplicate(true)
+	scaled_config["budget_damage_multiplier"] = damage_multiplier
+	var scaled_metrics := estimate_weapon_budget(character_id, scaled_config, true)
+	var scaled_solo := maxf(float(scaled_metrics.get("solo_dps", solo_dps)), 0.001)
+	var scaled_aoe := maxf(float(scaled_metrics.get("aoe_dps", aoe_dps)), 0.001)
+	return {
+		"damage_multiplier": snappedf(damage_multiplier, 0.001),
+		"solo_budget_multiplier": snappedf(solo_target / scaled_solo, 0.001),
+		"aoe_budget_multiplier": snappedf(aoe_target / scaled_aoe, 0.001),
+		"solo_target": snappedf(solo_target, 0.01),
+		"aoe_target": snappedf(aoe_target, 0.01),
+		"base_solo_dps": snappedf(solo_dps, 0.01),
+		"base_aoe_dps": snappedf(aoe_dps, 0.01),
+	}
+
+
+static func estimate_weapon_budget(character_id: String, weapon_config: Dictionary, apply_budget := true) -> Dictionary:
+	var config := weapon_config.duplicate(true)
+	if not apply_budget:
+		config.erase("budget_damage_multiplier")
+		config.erase("budget_tuning")
+	var stats := base_stats(character_id)
+	var params := derived_parameters(stats, {}, config)
+	var damage_parameter := str(config.get("damage_parameter", damage_parameter_for(character_id)))
+	var base_damage := float(params.get(damage_parameter, params.get("damage", 1.0)))
+	var crit_factor := 1.0 + float(params.get("crit_chance", 0.0)) * maxf(float(params.get("crit_damage_multiplier", 1.0)) - 1.0, 0.0)
+	var interval := maxf(float(config.get("fire_interval", 1.0)) / maxf(float(params.get("attack_speed", 1.0)), 0.1), 0.18)
+	var direct_dps := base_damage * crit_factor / interval
+	var hit_model := _budget_hit_model(config)
+	var dot_dps := _budget_dot_dps(config, params, interval)
+	var pool_dps := _budget_pool_dps(config, params, interval)
+	var summon_dps := _budget_summon_dps(config, params)
+	var solo_dps := direct_dps * float(hit_model.get("solo_hits", 1.0)) + dot_dps + pool_dps + summon_dps
+	var aoe_dps := direct_dps * float(hit_model.get("five_hits", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0)) + summon_dps * float(hit_model.get("summon_targets", 1.0))
+	var ultimate := _budget_ultimate_dps(character_id, params)
+	solo_dps += float(ultimate.get("solo", 0.0))
+	aoe_dps += float(ultimate.get("aoe", 0.0))
+	if apply_budget:
+		solo_dps *= float(config.get("budget_solo_multiplier", 1.0))
+		aoe_dps *= float(config.get("budget_aoe_multiplier", 1.0))
+	return {
+		"solo_dps": snappedf(solo_dps, 0.01),
+		"aoe_dps": snappedf(aoe_dps, 0.01),
+		"ehp": snappedf(_budget_ehp(config, params), 0.01),
+		"interval": snappedf(interval, 0.001),
+		"direct_dps": snappedf(direct_dps, 0.01),
+		"hit_model": hit_model,
+	}
+
+
+static func _budget_hit_model(config: Dictionary) -> Dictionary:
+	var mode := str(config.get("attack_mode", config.get("attack_shape", "single")))
+	var attack_range := float(config.get("attack_range", 240.0))
+	var aoe_radius := float(config.get("aoe_radius", 120.0))
+	match mode:
+		"frustum":
+			var outer_width := float(config.get("outer_width", aoe_radius))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + outer_width / 290.0, 1.0, 5.0)}
+		"sweep":
+			var sweep := float(config.get("sweep_degrees", config.get("cone_degrees", 90.0)))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + (sweep / 45.0) * (attack_range / 320.0), 1.0, 5.0)}
+		"circle", "pulse":
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 72.0, 1.0, 5.0)}
+		"strip":
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("inner_width", 60.0)) / 160.0, 1.0, 2.1)}
+		"aoe_projectile":
+			var projectile_count := float(config.get("projectile_count", 1.0))
+			var blast_hits := clampf(1.0 + aoe_radius / 145.0, 1.0, 3.0)
+			return {"solo_hits": 1.0, "five_hits": clampf(projectile_count * blast_hits, 1.0, 5.0), "pool_targets": clampf(1.0 + aoe_radius / 130.0, 1.0, 4.0)}
+		"homing_curse":
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 180.0, 1.0, 2.0), "dot_targets": 1.0}
+		"beam":
+			var beam_count := float(config.get("beam_count", 1.0))
+			var pierce := float(config.get("pierce_count", 1.0))
+			return {"solo_hits": clampf(beam_count, 1.0, 2.0), "five_hits": clampf(beam_count * pierce, 1.0, 5.0)}
+		"sound_wave":
+			var wave_width := float(config.get("wave_width", 180.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + wave_width / 78.0, 1.0, 5.0)}
+		"amp":
+			var active_ratio := float(config.get("amp_lifetime", 6.0)) / maxf(float(config.get("fire_interval", 2.0)), 0.25)
+			return {"solo_hits": clampf(active_ratio / 4.0, 1.0, 2.0), "five_hits": clampf((1.0 + aoe_radius / 80.0) * active_ratio / 3.5, 1.0, 5.0)}
+		"boomerang":
+			return {"solo_hits": 2.0, "five_hits": clampf(2.0 + float(config.get("beam_width", 48.0)) / 36.0, 2.0, 4.0)}
+		"stab_flurry":
+			var targets := float(config.get("projectile_count", 1.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(targets, 1.0, 4.0), "dot_targets": clampf(targets, 1.0, 4.0)}
+		"dot_beam":
+			var pierce := float(config.get("pierce_count", 1.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(pierce, 1.0, 5.0), "dot_targets": clampf(pierce, 1.0, 5.0)}
+		"drain_link":
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("beam_width", 40.0)) / 120.0, 1.0, 1.6), "dot_targets": 1.0}
+		"trap":
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 85.0, 1.0, 4.2)}
+		_:
+			if int(config.get("max_summons", 0)) > 0:
+				return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("max_summons", 1)) * 0.8, 1.0, 3.5), "summon_targets": clampf(float(config.get("max_summons", 1)), 1.0, 4.0)}
+	return {"solo_hits": 1.0, "five_hits": 1.0}
+
+
+static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: float) -> float:
+	var ticks := float(config.get("dot_ticks", 0.0))
+	if ticks <= 0.0:
+		return 0.0
+	return float(params.get("dot_damage", 1.0)) * ticks / maxf(interval, 0.18)
+
+
+static func _budget_pool_dps(config: Dictionary, params: Dictionary, interval: float) -> float:
+	if not bool(config.get("leaves_pool", false)):
+		return 0.0
+	var tick_interval := maxf(float(config.get("pool_tick_interval", 0.6)), 0.18)
+	var uptime := minf(float(config.get("pool_duration", 3.0)) / maxf(interval, 0.18), 1.0)
+	return float(params.get("dot_damage", 1.0)) / tick_interval * uptime
+
+
+static func _budget_summon_dps(config: Dictionary, params: Dictionary) -> float:
+	if int(config.get("max_summons", 0)) <= 0 and not config.has("summon_damage_multiplier"):
+		return 0.0
+	var summon_count: float = maxf(float(config.get("max_summons", 1.0)), 1.0) + floor(float(params.get("summon_amount", 0.0)) / 4.0)
+	var summon_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) * float(config.get("summon_damage_multiplier", 0.36))
+	return summon_count * summon_damage / 0.95
+
+
+static func _budget_ultimate_dps(character_id: String, params: Dictionary) -> Dictionary:
+	var config := ultimate_config(character_id)
+	var multiplier := float(params.get("ultimate_multiplier", 1.0))
+	var base_damage := maxf(maxf(float(params.get("damage", 1.0)), float(params.get("magic_damage", 1.0))), float(params.get("sound_wave_damage", 1.0)))
+	var damage := base_damage * float(config.get("damage", 1.0)) * multiplier
+	var target_count := float(config.get("target_count", 5.0))
+	if not config.has("target_count"):
+		target_count = clampf(1.0 + float(config.get("radius", 250.0)) / 115.0, 1.0, 5.0)
+	var charge_window_factor := 0.42
+	return {
+		"solo": damage * charge_window_factor / BALANCE_WINDOW_SECONDS,
+		"aoe": damage * minf(target_count, 5.0) * charge_window_factor / BALANCE_WINDOW_SECONDS,
+	}
+
+
+static func _budget_ehp(config: Dictionary, params: Dictionary) -> float:
+	var health := float(params.get("health_point", 1.0))
+	var defense := clampf(float(params.get("defense", 0.0)), 0.0, 0.75)
+	var dodge := clampf(float(params.get("dodge", 0.0)), 0.0, 0.8)
+	var absorb := float(params.get("absorb", 0.0))
+	var regen := float(params.get("regeneration", 0.0))
+	var lifesteal := float(config.get("heal_percent_of_damage", 0.0)) * 120.0 + float(config.get("heal_percent_on_attack", 0.0)) * health * 2.0
+	return health / maxf(1.0 - defense, 0.05) / maxf(1.0 - dodge, 0.05) + absorb * 10.0 + regen * BALANCE_WINDOW_SECONDS + lifesteal
+
+
 static func weapon(character_id: String, weapon_id: String) -> Dictionary:
 	var weapons: Dictionary = WEAPONS_BY_CLASS.get(character_id, BERSERK_WEAPONS)
 	var fallback_id := str(weapons.keys()[0])
-	return weapons.get(weapon_id, weapons[fallback_id]).duplicate(true)
+	var config: Dictionary = weapons.get(weapon_id, weapons[fallback_id]).duplicate(true)
+	var tuning := budget_tuning_for(character_id, config)
+	config["budget_profile"] = class_budget_profile(character_id)
+	config["budget_damage_multiplier"] = float(tuning.get("damage_multiplier", 1.0))
+	config["budget_solo_multiplier"] = float(tuning.get("solo_budget_multiplier", 1.0))
+	config["budget_aoe_multiplier"] = float(tuning.get("aoe_budget_multiplier", 1.0))
+	config["budget_tuning"] = tuning
+	return config
 
 
 static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, weapon_config := {}) -> Dictionary:
@@ -960,7 +1240,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var knowledge := float(stats.get("knowledge", 0.0))
 	var endurance := float(stats.get("endurance", 0.0))
 	var leadership := float(stats.get("leadership", 0.0))
-	var weapon_damage_multiplier := float(weapon_config.get("damage_multiplier", 1.0))
+	var weapon_damage_multiplier := float(weapon_config.get("damage_multiplier", 1.0)) * float(weapon_config.get("budget_damage_multiplier", 1.0))
 	var passive_mods: Dictionary = weapon_config.get("passive_mods", {})
 
 	# upgrade_*_exponent (>1 у молота) усиливает рост именно от апгрейдов забега,
@@ -1015,7 +1295,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)),
 		"knockback_distance": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier * endurance / 20.0,
 		"range_multiplier": range_multiplier,
-		# Зарезервировано: ультимейтов в игре пока нет, параметр считается для UI/будущих механик.
+		# Усиливает классовую ульту: урон, радиус, длительность или число целей.
 		"ultimate_multiplier": 1.0 + energy * 0.02 + float(run_modifiers.get("ultimate_flat", 0.0)),
 	}
 
@@ -1045,17 +1325,67 @@ static func level_up_rewards(character_id := "") -> Array:
 	return rewards
 
 
-static func shop_items() -> Array:
+static func main_stat_level_up_rewards(_character_id := "") -> Array:
+	# Редкий пул level-up: рост основной характеристики на +1. Помечены rare=true
+	# для визуального выделения; классовая интерпретация считается на карточке.
+	var rewards := []
+	for stat_id in STAT_NAMES.keys():
+		rewards.append({
+			"id": "levelup_stat_%s" % stat_id,
+			"title": "%s +1" % STAT_NAMES[stat_id],
+			"description": "Редкий рост основной характеристики: +1 к параметру «%s»." % STAT_NAMES[stat_id],
+			"kind": "stat",
+			"stats": {stat_id: 1.0},
+			"rare": true,
+		})
+	return rewards
+
+
+static func shop_items(route_stage := 0) -> Array:
 	var items := []
 	for item in SHOP_ITEMS:
-		items.append(item.duplicate(true))
+		var shop_item: Dictionary = item.duplicate(true)
+		shop_item["cost"] = stage_scaled_cost(int(shop_item.get("cost", 0)), route_stage)
+		items.append(shop_item)
 	for artifact in ARTIFACTS:
 		var shop_artifact: Dictionary = artifact.duplicate(true)
-		shop_artifact["cost"] = int(shop_artifact.get("cost", COST_BY_TIER.get(int(shop_artifact.get("tier", 1)), 30)))
+		shop_artifact["cost"] = stage_scaled_cost(int(shop_artifact.get("cost", COST_BY_TIER.get(int(shop_artifact.get("tier", 1)), 30))), route_stage)
 		shop_artifact["kind"] = "artifact"
 		shop_artifact["weight"] = TIER_WEIGHTS.get(int(shop_artifact.get("tier", 1)), 1.0)
 		items.append(shop_artifact)
 	return items
+
+
+static func elite_artifact_choices(route_stage: int, count := 3) -> Array:
+	var pool := []
+	var scale := stage_scale(route_stage)
+	for artifact in ARTIFACTS:
+		var candidate: Dictionary = artifact.duplicate(true)
+		var tier := int(candidate.get("tier", 1))
+		var depth_weight := 1.0
+		if tier == 2:
+			depth_weight = 0.75 + scale * 0.25
+		elif tier == 3:
+			depth_weight = 0.22 + maxf(float(route_stage) - 2.0, 0.0) * 0.18
+		candidate["kind"] = "artifact"
+		candidate["weight"] = maxf(TIER_WEIGHTS.get(tier, 1.0) * depth_weight, 0.05)
+		pool.append(candidate)
+	var choices := []
+	while choices.size() < count and not pool.is_empty():
+		var total_weight := 0.0
+		for reward in pool:
+			total_weight += float(reward.get("weight", 1.0))
+		var roll := randf() * maxf(total_weight, 0.001)
+		var cursor := 0.0
+		var selected_index := 0
+		for index in range(pool.size()):
+			cursor += float(pool[index].get("weight", 1.0))
+			if roll <= cursor:
+				selected_index = index
+				break
+		choices.append(pool[selected_index])
+		pool.remove_at(selected_index)
+	return choices
 
 
 static func display_stats(stats: Dictionary) -> String:

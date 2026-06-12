@@ -44,11 +44,21 @@ static func ascension_level(state: Dictionary, character_id: String) -> int:
 	return clampi(int(levels.get(character_id, 0)), 0, MAX_ASCENSION_LEVEL)
 
 
-static func record_boss_victory(state: Dictionary, character_id: String) -> Dictionary:
+static func record_boss_victory(state: Dictionary, character_id: String, run_level := -1) -> Dictionary:
 	state["meta_points"] = int(state.get("meta_points", 0)) + 1
 	var levels = state.get("ascension_levels", {})
 	if not (levels is Dictionary):
 		levels = {}
-	levels[character_id] = clampi(int(levels.get(character_id, 0)) + 1, 0, MAX_ASCENSION_LEVEL)
+	var completed := clampi(int(levels.get(character_id, 0)), 0, MAX_ASCENSION_LEVEL)
+	# Разблокировка следующего уровня — только если забег прошёл на текущем максимуме
+	# (или выше). run_level < 0 = старое поведение (всегда +1, для совместимости).
+	if run_level < 0 or run_level >= completed:
+		completed = clampi(completed + 1, 0, MAX_ASCENSION_LEVEL)
+	levels[character_id] = completed
 	state["ascension_levels"] = levels
 	return state
+
+
+static func selectable_max(state: Dictionary, character_id: String) -> int:
+	# Можно выбрать 0..(пройдено+1), но не выше 10.
+	return clampi(ascension_level(state, character_id) + 1, 0, MAX_ASCENSION_LEVEL)

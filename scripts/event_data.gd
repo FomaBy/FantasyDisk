@@ -1,0 +1,144 @@
+extends RefCounted
+
+const RANDOM_EVENTS := [
+	{
+		"id": "wandering_bard",
+		"title": "Странствующий бард",
+		"story": "У развилки сидит бард с лютней, струны которой светятся как тонкие лезвия. Он знает песни о каждом герое, но за хорошую балладу просит звонкую монету.",
+		"choices": [
+			{"id": "pay_ballad", "title": "Заплатить за балладу", "description": "Цена: 18 золота. Следующий бой: +12% скорость атаки.", "cost_money": 18, "mods": {"attack_speed_multiplier": 1.12}},
+			{"id": "sing_yourself", "title": "Спеть самому", "description": "Проверка Знания 7: успех дает +1 ко всем базовым характеристикам, провал -1 Знание.", "check": {"stat": "knowledge", "difficulty": 7}, "success": {"stats": {"strength": 1, "agility": 1, "intelligence": 1, "perception": 1, "energy": 1, "knowledge": 1, "endurance": 1, "leadership": 1}}, "failure": {"stats": {"knowledge": -1}}},
+			{"id": "walk_away", "title": "Попросить припев на удачу", "description": "Без цены: +4 золота и немного вдохновения.", "money": 4, "mods": {"xp_gain_multiplier": 1.04}},
+		],
+	},
+	{
+		"id": "cursed_altar",
+		"title": "Проклятый алтарь",
+		"story": "Черный алтарь дышит теплым воздухом, хотя вокруг стелется холод. На камне видна выемка в форме ладони, и где-то под землей шевелятся цепи.",
+		"choices": [
+			{"id": "blood_price", "title": "Отдать кровь", "description": "Цена: 30% текущего HP. Получить случайный артефакт.", "health_percent_cost": 0.30, "random_artifact": true},
+			{"id": "defile", "title": "Осквернить алтарь", "description": "Риск: элитный бой с тенью-стражем. Победа ведет к обычным наградам элитки.", "risk": true, "combat": {"type": "elite", "enemy_health_multiplier": 1.12}},
+			{"id": "quiet_prayer", "title": "Тихая молитва", "description": "Получить +1 Выносливость, но потерять 10% HP.", "stats": {"endurance": 1}, "health_percent_cost": 0.10},
+		],
+	},
+	{
+		"id": "road_ambush",
+		"title": "Засада!",
+		"story": "Сначала слышен только песок под ногами. Потом дорога раскрывается множеством глаз, и из мрака вываливается подготовленная стая.",
+		"choices": [
+			{"id": "stand_ground", "title": "Принять бой", "description": "Риск: усиленный бой. Победа дает +50% золота за бой.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.18, "money_multiplier": 1.5}},
+			{"id": "break_through", "title": "Прорыв", "description": "Проверка Ловкости 8: успех +1 Ловкость, провал -18% HP.", "check": {"stat": "agility", "difficulty": 8}, "success": {"stats": {"agility": 1}}, "failure": {"health_percent_cost": 0.18}},
+		],
+	},
+	{
+		"id": "old_well",
+		"title": "Старый колодец",
+		"story": "Колодец стоит посреди дороги так, будто дорогу построили вокруг него. Из глубины пахнет дождем, монетами и чем-то, что слишком долго ждало.",
+		"choices": [
+			{"id": "throw_coin", "title": "Бросить монету", "description": "Цена: 8 золота. Случайно: лечение, золото или неприятность.", "cost_money": 8, "random_outcomes": [{"heal_percent": 0.28}, {"money": 22}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.08}}]},
+			{"id": "listen", "title": "Прислушаться", "description": "Проверка Восприятия 7: успех +1 Восприятие, провал ничего.", "check": {"stat": "perception", "difficulty": 7}, "success": {"stats": {"perception": 1}}, "failure": {}},
+		],
+	},
+	{
+		"id": "wounded_mercenary",
+		"title": "Раненый наемник",
+		"story": "У обочины лежит наемник с пробитым щитом. Он не просит жалости, только воды и обещания, что его меч еще раз увидит бой.",
+		"choices": [
+			{"id": "help", "title": "Помочь", "description": "Цена: 20 золота. Следующие бои: +1 Лидерство и +1 призыв.", "cost_money": 20, "stats": {"leadership": 1}, "mods": {"summon_bonus": 1}},
+			{"id": "loot", "title": "Обыскать сумку", "description": "Получить 25 золота, но -1 Знание.", "money": 25, "stats": {"knowledge": -1}},
+			{"id": "bind_wounds", "title": "Перевязать раны", "description": "Проверка Выносливости 7: успех +1 Защита через артефактный мод, провал -8 золота.", "check": {"stat": "endurance", "difficulty": 7}, "success": {"mods": {"defense_flat": 0.04}}, "failure": {"cost_money": 8}},
+		],
+	},
+	{
+		"id": "goblin_lottery",
+		"title": "Гоблин-лотерейщик",
+		"story": "Гоблин в цилиндре трясет мешок, из которого то звенит стекло, то шепчет чужой голос. На табличке написано: «Возвратов нет, проклятий тоже почти нет».",
+		"choices": [
+			{"id": "buy_bag", "title": "Купить мешок вслепую", "description": "Цена: 16 золота. Риск: артефакт, хлам или мимик.", "risk": true, "cost_money": 16, "random_outcomes": [{"random_artifact": true}, {"money": 3}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.20, "money_multiplier": 1.25}}]},
+			{"id": "haggle", "title": "Торговаться", "description": "Проверка Восприятия 8: успех +30 золота, провал -10 золота.", "check": {"stat": "perception", "difficulty": 8}, "success": {"money": 30}, "failure": {"cost_money": 10}},
+		],
+	},
+	{
+		"id": "hot_spring",
+		"title": "Горячий источник",
+		"story": "В каменной чаше кипит вода цвета янтаря. Пар складывается в лица прежних путников, которые выглядят слишком довольными и слишком сонными.",
+		"choices": [
+			{"id": "full_rest", "title": "Отдохнуть", "description": "Полное лечение и +1 Выносливость. Следующий бой: враги на 20% живучее.", "heal_percent": 1.0, "stats": {"endurance": 1}, "mods": {"enemy_health_multiplier": 1.20}},
+			{"id": "quick_dip", "title": "Быстро окунуться", "description": "Лечение 35% HP без побочного эффекта.", "heal_percent": 0.35},
+		],
+	},
+	{
+		"id": "mirror_phantom",
+		"title": "Зеркальный фантом",
+		"story": "На дороге висит зеркало без рамы. В отражении твой герой улыбается первым, поднимает оружие и делает шаг наружу.",
+		"choices": [
+			{"id": "duel", "title": "Разбить отражение", "description": "Риск: элитный бой против фантома. Победа дает элитную добычу.", "risk": true, "combat": {"type": "elite", "enemy_health_multiplier": 1.05}},
+			{"id": "study", "title": "Изучить отражение", "description": "Проверка Интеллекта 8: успех +1 Интеллект и +8% урон, провал -12% HP.", "check": {"stat": "intelligence", "difficulty": 8}, "success": {"stats": {"intelligence": 1}, "mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.12}},
+		],
+	},
+	{
+		"id": "stone_guardian",
+		"title": "Каменный страж",
+		"story": "Страж перегородил мост и произносит загадку голосом жернова. Каждое неправильное слово оставляет трещину не в камне, а в воздухе вокруг тебя.",
+		"choices": [
+			{"id": "answer_riddle", "title": "Ответить на загадку", "description": "Проверка Знания 8: успех сундук с артефактом, провал бой.", "check": {"stat": "knowledge", "difficulty": 8}, "success": {"random_artifact": true}, "failure": {"combat": {"type": "battle", "enemy_health_multiplier": 1.15}}},
+			{"id": "fight_guardian", "title": "Сразу в бой", "description": "Риск: тяжелый бой. Победа дает +1 Сила и +1 Выносливость.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.25}, "post_combat": {"stats": {"strength": 1, "endurance": 1}}},
+		],
+	},
+	{
+		"id": "heroes_graveyard",
+		"title": "Кладбище героев",
+		"story": "Старые клинки торчат из земли вместо крестов. На каждом имени есть свежая царапина, будто кто-то проверял, не освободилось ли место для нового.",
+		"choices": [
+			{"id": "dig", "title": "Раскопать могилу", "description": "Риск: артефакт павшего или гнев мертвеца.", "risk": true, "random_outcomes": [{"random_artifact": true}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.22, "money_multiplier": 1.35}}]},
+			{"id": "pay_respects", "title": "Почтить павших", "description": "+1 Выносливость и лечение 18% HP.", "stats": {"endurance": 1}, "heal_percent": 0.18},
+		],
+	},
+	{
+		"id": "fallen_star",
+		"title": "Падшая звезда",
+		"story": "В кратере лежит осколок неба, горячий как свежая рана. Он тянется к твоей руке, но трава вокруг уже сгорела до стекла.",
+		"choices": [
+			{"id": "take_shard", "title": "Взять осколок", "description": "+2 Энергия, но потерять 12% HP от звездного ожога.", "stats": {"energy": 2}, "health_percent_cost": 0.12},
+			{"id": "observe", "title": "Изучить кратер", "description": "Проверка Интеллекта 7: успех +1 Энергия и +1 Знание, провал -8% HP.", "check": {"stat": "intelligence", "difficulty": 7}, "success": {"stats": {"energy": 1, "knowledge": 1}}, "failure": {"health_percent_cost": 0.08}},
+		],
+	},
+	{
+		"id": "training_dummies",
+		"title": "Тренировочные манекены",
+		"story": "На поляне стоят манекены с нарисованными оскалами. Когда ты подходишь ближе, они дружно поворачивают головы и ждут первого удара.",
+		"choices": [
+			{"id": "speed_trial", "title": "Испытание скорости", "description": "Проверка Ловкости 7: успех +1 Ловкость и +8% скорость атаки, провал -10% HP.", "check": {"stat": "agility", "difficulty": 7}, "success": {"stats": {"agility": 1}, "mods": {"attack_speed_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.10}},
+			{"id": "power_trial", "title": "Испытание силы", "description": "Проверка Силы 7: успех +1 Сила и +8% урон, провал -10% HP.", "check": {"stat": "strength", "difficulty": 7}, "success": {"stats": {"strength": 1}, "mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.10}},
+		],
+	},
+]
+
+
+static func event_ids() -> Array:
+	var ids := []
+	for event in RANDOM_EVENTS:
+		ids.append(str(event.get("id", "")))
+	return ids
+
+
+static func event_by_id(event_id: String) -> Dictionary:
+	for event in RANDOM_EVENTS:
+		if str(event.get("id", "")) == event_id:
+			return event.duplicate(true)
+	return {}
+
+
+static func pick_event(used_ids: Array, rng: RandomNumberGenerator) -> Dictionary:
+	var available := []
+	for event in RANDOM_EVENTS:
+		if not used_ids.has(str(event.get("id", ""))):
+			available.append(event)
+	if available.is_empty():
+		used_ids.clear()
+		for event in RANDOM_EVENTS:
+			available.append(event)
+	var index := 0
+	if rng != null and available.size() > 1:
+		index = rng.randi_range(0, available.size() - 1)
+	return (available[index] as Dictionary).duplicate(true)

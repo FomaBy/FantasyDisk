@@ -44,15 +44,30 @@ const ARENA_BACKGROUND_OPTIONS := {
 		"res://assets/backgrounds/field_dry_road.png",
 		"res://assets/backgrounds/field_stone_garden.png",
 		"res://assets/backgrounds/field_meadow.png",
+		"res://assets/backgrounds/field_ruined_courtyard.png",
+		"res://assets/backgrounds/field_misty_marsh.png",
+		"res://assets/backgrounds/field_dusty_badlands.png",
+		"res://assets/backgrounds/field_enchanted_meadow.png",
+		"res://assets/backgrounds/field_ashen_rift.png",
+		"res://assets/backgrounds/field_cursed_grove.png",
 	],
 	"battle": [
 		"res://assets/backgrounds/field_marsh.png",
 		"res://assets/backgrounds/field_dry_road.png",
 		"res://assets/backgrounds/field_meadow.png",
+		"res://assets/backgrounds/field_ruined_courtyard.png",
+		"res://assets/backgrounds/field_misty_marsh.png",
+		"res://assets/backgrounds/field_dusty_badlands.png",
+		"res://assets/backgrounds/field_enchanted_meadow.png",
+		"res://assets/backgrounds/field_ashen_rift.png",
+		"res://assets/backgrounds/field_cursed_grove.png",
 	],
 	"boss": [
 		"res://assets/backgrounds/field_stone_garden.png",
 		"res://assets/backgrounds/field_dry_road.png",
+		"res://assets/backgrounds/field_ruined_courtyard.png",
+		"res://assets/backgrounds/field_ashen_rift.png",
+		"res://assets/backgrounds/field_cursed_grove.png",
 	],
 }
 const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle.png"
@@ -179,6 +194,7 @@ const WINDOW_MODE_OPTIONS := [
 	"Fullscreen",
 ]
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
+const EVENT_DATA := preload("res://scripts/event_data.gd")
 const PAUSE_STATS_MENU_SCENE := preload("res://scenes/PauseStatsMenu.tscn")
 const LEVEL_UP_TOAST_SCENE := preload("res://scenes/LevelUpToast.tscn")
 const LEVEL_UP_EFFECT_SCENE := preload("res://scenes/LevelUpEffect.tscn")
@@ -212,27 +228,39 @@ const LEVEL_UP_MOD_DISPLAY := {
 const INPUT_ACTIONS := [
 	{
 		"action": "move_up",
-		"label": "Move Up",
+		"label": "Вверх",
 		"default_key": KEY_W,
 		"alternate_key": KEY_UP,
 	},
 	{
 		"action": "move_down",
-		"label": "Move Down",
+		"label": "Вниз",
 		"default_key": KEY_S,
 		"alternate_key": KEY_DOWN,
 	},
 	{
 		"action": "move_left",
-		"label": "Move Left",
+		"label": "Влево",
 		"default_key": KEY_A,
 		"alternate_key": KEY_LEFT,
 	},
 	{
 		"action": "move_right",
-		"label": "Move Right",
+		"label": "Вправо",
 		"default_key": KEY_D,
 		"alternate_key": KEY_RIGHT,
+	},
+	{
+		"action": "pause",
+		"label": "Пауза",
+		"default_key": KEY_ESCAPE,
+		"alternate_key": 0,
+	},
+	{
+		"action": "ultimate",
+		"label": "Ультимейт",
+		"default_key": KEY_R,
+		"alternate_key": 0,
 	},
 ]
 
@@ -254,6 +282,8 @@ var health_label: Label = null
 var xp_bar: ProgressBar = null
 var xp_label: Label = null
 var money_label: Label = null
+var ultimate_bar: ProgressBar = null
+var ultimate_label: Label = null
 var artifact_label: Label = null
 var level_up_button: Button = null
 var pause_stats_menu: Control = null
@@ -263,6 +293,9 @@ var current_node_type := ""
 var current_combat_type := "battle"
 var current_boss_id := "rift_warden"
 var route_selected_indices := []
+var used_event_ids := []
+var current_event_definition := {}
+var pending_event_combat := {}
 var level_up_return_to_map := false
 var meta_points := 0
 var berserk_ascension_unlocked := false
@@ -295,6 +328,8 @@ var ui
 var route
 var combat
 var meta_state := {}
+# Подача боя: тряска камеры (тумблер в настройках, умеренная по умолчанию).
+var screen_shake_enabled := true
 # Единый Escape-назад: текущий экран регистрирует действие возврата;
 # сбрасывается при каждой очистке UI. В бою Escape обрабатывается отдельно (пауза).
 var ui_escape_action := Callable()
@@ -303,6 +338,8 @@ var level_up_offer := []
 var attribute_offer := []
 var attribute_rerolls_left := 0
 var selected_screen_index := 0
+var selected_ascension_level := 0
+var run_ascension_difficulty := {}
 var audio_settings := {
 	"master_volume": 1.0,
 	"music_volume": 1.0,
@@ -310,6 +347,7 @@ var audio_settings := {
 	"music_enabled": true,
 	"sfx_enabled": true,
 }
+var input_bindings := {}
 
 
 func _init() -> void:
@@ -328,6 +366,22 @@ func _ready() -> void:
 	ui._show_main_menu()
 
 
+func _exit_tree() -> void:
+	_release_runtime_texture_refs()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_PREDELETE:
+		_release_runtime_texture_refs()
+
+
+func _release_runtime_texture_refs() -> void:
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_POINTING_HAND)
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_CROSS)
+	texture_cache.clear()
+
+
 func _load_game_settings() -> void:
 	var settings: Dictionary = GAME_SETTINGS.load_settings()
 	selected_resolution_index = int(settings["resolution_index"])
@@ -335,6 +389,10 @@ func _load_game_settings() -> void:
 	selected_screen_index = int(settings["screen_index"])
 	for key in audio_settings.keys():
 		audio_settings[key] = settings[key]
+	input_bindings = (settings.get("input_bindings", {}) as Dictionary).duplicate(true)
+	screen_shake_enabled = bool(settings.get("screen_shake", true))
+	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
+	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
 		ui._apply_video_settings()
@@ -348,6 +406,11 @@ func save_game_settings() -> void:
 	}
 	for key in audio_settings.keys():
 		settings[key] = audio_settings[key]
+	settings["screen_shake"] = screen_shake_enabled
+	if ui != null:
+		settings["input_bindings"] = ui._current_input_bindings()
+	else:
+		settings["input_bindings"] = input_bindings.duplicate(true)
 	GAME_SETTINGS.save_settings(settings)
 
 
@@ -368,23 +431,50 @@ func ascension_level_for(character_id: String) -> int:
 
 
 func record_boss_victory() -> void:
-	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id)
+	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level)
 	META_PROGRESSION.save_state(meta_state)
 	meta_points = int(meta_state.get("meta_points", 0))
 	berserk_ascension_unlocked = ascension_level_for("berserk") >= 1
 
 
+func ascension_selectable_max(character_id: String) -> int:
+	return META_PROGRESSION.selectable_max(meta_state, character_id)
+
+
+func ascension_difficulty() -> Dictionary:
+	# Активные модификаторы сложности текущего забега (кэш на забег).
+	if run_ascension_difficulty.is_empty():
+		run_ascension_difficulty = PROGRESSION_DATA.ascension_difficulty_mods(selected_ascension_level)
+	return run_ascension_difficulty
+
+
+func reset_run_ascension() -> void:
+	# Подстраховка: уровень забега не выше открытого максимума выбранного героя.
+	selected_ascension_level = clampi(selected_ascension_level, 0, ascension_selectable_max(selected_character_id))
+	run_ascension_difficulty = PROGRESSION_DATA.ascension_difficulty_mods(selected_ascension_level)
+
+
 func apply_ascension_bonuses(player: Node) -> void:
 	if player == null:
 		return
-	var level := ascension_level_for(selected_character_id)
-	if level <= 0:
-		return
-	var mods: Dictionary = PROGRESSION_DATA.ascension_mods(selected_character_id, level)
-	if mods.is_empty():
-		return
-	if player.has_method("apply_reward"):
-		player.apply_reward({"mods": mods})
+	# 1) Наградный трек меты: старые per-class баффы за ПРОЙДЕННЫЕ уровни (постоянно).
+	var earned := ascension_level_for(selected_character_id)
+	if earned > 0:
+		var mods: Dictionary = PROGRESSION_DATA.ascension_mods(selected_character_id, earned)
+		if not mods.is_empty() and player.has_method("apply_reward"):
+			player.apply_reward({"mods": mods})
+	# 2) Усложнения выбранного уровня возвышения: трофеи/лечение/макс-HP сворачиваем
+	#    в run_modifiers игрока (combat_director читает остальное через ascension_difficulty()).
+	reset_run_ascension()
+	var difficulty := ascension_difficulty()
+	var run_mods = player.get("run_modifiers")
+	if run_mods is Dictionary:
+		run_mods["xp_gain_multiplier"] = float(run_mods.get("xp_gain_multiplier", 1.0)) * float(difficulty["reward_mult"])
+		run_mods["money_gain_multiplier"] = float(run_mods.get("money_gain_multiplier", 1.0)) * float(difficulty["reward_mult"])
+		run_mods["healing_multiplier"] = float(run_mods.get("healing_multiplier", 1.0)) * float(difficulty["healing_mult"])
+		run_mods["max_health_multiplier"] = float(run_mods.get("max_health_multiplier", 1.0)) * float(difficulty["player_max_hp_mult"])
+		if player.has_method("_apply_stat_scaling"):
+			player._apply_stat_scaling(true)
 
 
 func _input(event: InputEvent) -> void:
@@ -400,9 +490,12 @@ func _input(event: InputEvent) -> void:
 			route._show_battle_map()
 		return
 
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
 		if combat_active:
 			if _has_pause_reason("level_up"):
+				# Escape во время level-up = «Позже»: закрыть без траты пика.
+				if ui_escape_action.is_valid():
+					ui_escape_action.call()
 				return
 			if pause_stats_menu != null and is_instance_valid(pause_stats_menu):
 				ui._resume_game()

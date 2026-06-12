@@ -156,16 +156,18 @@ static func orb_projectile(scene: Node, start: Vector2, color: Color) -> Node2D:
 	var trail := holder.create_tween()
 	trail.set_loops()
 	trail.tween_interval(0.035)
+	var holder_id := holder.get_instance_id()
 	trail.tween_callback(func() -> void:
-		if not is_instance_valid(holder) or not holder.is_inside_tree():
+		var current_holder := instance_from_id(holder_id) as Node2D
+		if current_holder == null or not current_holder.is_inside_tree() or current_holder.get_parent() == null:
 			return
 		var ghost := Sprite2D.new()
 		ghost.texture = ORB_TEXTURE
 		ghost.modulate = Color(color.r, color.g, color.b, 0.42)
 		ghost.scale = Vector2.ONE * 0.72
 		ghost.z_index = 10
-		holder.get_parent().add_child(ghost)
-		ghost.global_position = holder.global_position
+		current_holder.get_parent().add_child(ghost)
+		ghost.global_position = current_holder.global_position
 		var ghost_tween := ghost.create_tween()
 		ghost_tween.set_parallel(true)
 		ghost_tween.tween_property(ghost, "modulate:a", 0.0, 0.22)
@@ -351,16 +353,19 @@ static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Col
 	var trail := holder.create_tween()
 	trail.set_loops()
 	trail.tween_interval(0.04)
+	var holder_id := holder.get_instance_id()
+	var skull_scale := skull.scale
 	trail.tween_callback(func() -> void:
-		if not is_instance_valid(holder) or not holder.is_inside_tree():
+		var current_holder := instance_from_id(holder_id) as Node2D
+		if current_holder == null or not current_holder.is_inside_tree() or current_holder.get_parent() == null:
 			return
 		var ghost := Sprite2D.new()
 		ghost.texture = SKULL_TEXTURE
-		ghost.scale = skull.scale * 0.85
+		ghost.scale = skull_scale * 0.85
 		ghost.modulate = Color(color.r, color.g, color.b, 0.40)
 		ghost.z_index = 10
-		holder.get_parent().add_child(ghost)
-		ghost.global_position = holder.global_position
+		current_holder.get_parent().add_child(ghost)
+		ghost.global_position = current_holder.global_position
 		var ghost_tween := ghost.create_tween()
 		ghost_tween.set_parallel(true)
 		ghost_tween.tween_property(ghost, "modulate:a", 0.0, 0.18)
@@ -370,10 +375,12 @@ static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Col
 
 	var move := holder.create_tween()
 	move.tween_property(holder, "global_position", target, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	var move_holder_id := holder.get_instance_id()
 	move.tween_callback(func() -> void:
 		if on_hit.is_valid():
 			on_hit.call()
-		if is_instance_valid(holder):
-			holder.queue_free()
+		var current_holder := instance_from_id(move_holder_id) as Node2D
+		if current_holder != null:
+			current_holder.queue_free()
 	)
 	return holder

@@ -5,6 +5,29 @@
 
 `unknown` — задача создана до введения доски, статус в файле не указан; уточняется при следующем контакте с исполнителем.
 
+## Feature Block — 0.1.3
+
+С 2026-06-12 новые не-баговые запросы не выдаются исполнителям в текущий sprint.
+В текущую стабилизацию идут только баги, QA-дефекты, регрессии и release blockers.
+Все новые фичи/улучшения/баланс/арт/UI/контент оформляются в backlog версии `0.1.4`
+и не переводятся в `in_progress` без отдельного решения PM/пользователя.
+
+## Backlog — 0.1.4
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_escape_pause_character_overview_anywhere_task.md](../tasks/backend_escape_pause_character_overview_anywhere_task.md) | Back-end (UI/UX) | new (backlog) | Jira: SCRUM-146; backlog `0.1.4` по feature freeze, не dispatch до релиза 0.1.3. Переосмысление Escape: досье персонажа с выделенными приоритетными атрибутами класса (данные согласовать с derived_parameters/CLASS_INTERPRETATIONS), доступно поверх магазина/level-up/события/награды/route map без поломки их состояния |
+| [design_codex_ui_dark_fantasy_restyle_task.md](../tasks/design_codex_ui_dark_fantasy_restyle_task.md) | Design (Claude арт-дирекшен/ревью; генерация Codex) → handoff Back-end | blocked (backlog) | Jira: SCRUM-147; Решение пользователя 2026-06-12: полный рестайл UI в dark fantasy по 5 референсам (кнопки 4-состояния → все панели/окна/HUD), старые UI-фреймы удалить. Blocked: feature freeze 0.1.3 + ждёт референсы в docs/design/references/ui_dark_fantasy_2026_06/. Supersedes SCRUM-111/118 |
+| [design_contextual_ui_frames_rethink_task.md](../tasks/design_contextual_ui_frames_rethink_task.md) | Design (Claude, концепт+ресёрч; генерация Codex) | done (superseded) | Jira: SCRUM-111; SUPERSEDED 2026-06-12 решением пользователя о новом dark fantasy UI → SCRUM-147 / design_codex_ui_dark_fantasy_restyle_task.md; контекстные киты не интегрируются |
+| [backend_contextual_ui_frame_theme_integration_task.md](../tasks/backend_contextual_ui_frame_theme_integration_task.md) | Back-end | done (superseded) | Jira: SCRUM-118; SUPERSEDED 2026-06-12 → интеграция нового стиля придёт handoff'ом из SCRUM-147 / design_codex_ui_dark_fantasy_restyle_task.md |
+| [design_codex_elite_boss_sprite_resolution_upscale_task.md](../tasks/design_codex_elite_boss_sprite_resolution_upscale_task.md) | Design (Codex) → Claude-Designer | blocked | Jira: SCRUM-135; backlog `0.1.4` по feature block, не dispatch в Design без отдельного решения PM/пользователя поднять как release blocker `0.1.3`. Анти-мыло: 4 элитки + 2 босса 256→512px (поза 1:1), пруф `docs/design/previews/elite_boss_blur_proof.png` |
+
+## Process / Release Control
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [process_feature_block_0_1_3_task.md](../tasks/process_feature_block_0_1_3_task.md) | PM / Documentation | done | Jira: SCRUM-128; feature block включен 2026-06-12: новые не-баговые запросы уходят в backlog `0.1.4`, текущий `0.1.3` принимает только bugs/QA defects/regressions/release blockers; Back-end/Design/Animator уведомлены |
+
 ## Новые (выданы PM 2026-06-11, пакет «2K фоны + усиление элиток + боевой фидбек»)
 
 | Задача | Роль | Статус | Примечание |
@@ -59,7 +82,7 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [backend_release_v0_1_2_merge_main_builds_task.md](../tasks/backend_release_v0_1_2_merge_main_builds_task.md) | Back-end | in_progress | Выдано 2026-06-12: собрать v0.1.2, merge dev -> main, тег, Windows/macOS артефакты; dispatch -> Back-end `019ebadd-c0f8-7100-b33a-2887ad5a9561` |
+| [backend_release_v0_1_2_merge_main_builds_task.md](../tasks/backend_release_v0_1_2_merge_main_builds_task.md) | Back-end | done | Закрыта 2026-06-12: v0.1.2 в main с тегом, артефакты в releases/v0.1.2/ + SHA256SUMS; Windows-тест за пользователем |
 | [backend_release_v0_1_1_merge_main_builds_task.md](../tasks/backend_release_v0_1_1_merge_main_builds_task.md) | Back-end | done | Закрыта 2026-06-11: v0.1.1 в main с тегом, артефакты в releases/v0.1.1/ + SHA256SUMS. Windows-тест за пользователем |
 | [backend_fix_windows_installer_integrity_task.md](../tasks/backend_fix_windows_installer_integrity_task.md) | Back-end | done | Закрыта 2026-06-11: makensis на macOS писал битый CRC32 в хвост — пост-фикс CRC + самопроверка в build_release.sh, артефакты пересобраны |
 
@@ -83,13 +106,85 @@
 | [design_artifact_icons_realistic_dnd_reference_redraw_task.md](../tasks/design_artifact_icons_realistic_dnd_reference_redraw_task.md) | Design | done | Закрыта 2026-06-12: 53 artifact PNG заменены на realistic epic D&D/tabletop raster magic items, preview `artifact_realistic_dnd_preview.png`, старые пентаграммы/pictograms superseded |
 | [design_ui_overhaul_flat_battle_bg_motion_polish_task.md](../tasks/design_ui_overhaul_flat_battle_bg_motion_polish_task.md) | Design (Claude) | done | Закрыта 2026-06-12: fantasy UI texture kit, system icons, flat 2K battle backgrounds, 6 новых motion profiles, smoke green; melee targeting extra-test передан Back-end |
 | [backend_melee_targeting_test_regression_task.md](../tasks/backend_melee_targeting_test_regression_task.md) | Back-end | done | Закрыта 2026-06-12: outdated sword strip test/data обновлены под frustum 90°/600, melee + runtime smoke green |
-| [codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/codex_design_new_classes_restyle_to_starter_style_task.md) | Design (Codex → ревью Claude-Designer) | in_progress | Синхронизировано 2026-06-12: task-файл уже `in_progress`; не переотправлять |
+| [codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/codex_design_new_classes_restyle_to_starter_style_task.md) | Design (Codex → ревью Claude-Designer) | done | Синхронизировано 2026-06-12: task-файл уже `in_progress`; не переотправлять | -> Design review ПРИНЯТО 2026-06-12: 6 классов+18 оружий в стиле эталона, cutout синхронен (пиксель-в-пиксель), animation smoke green; готово к QA
 | [backend_secondary_attributes_universal_usefulness_task.md](../tasks/backend_secondary_attributes_universal_usefulness_task.md) | Back-end | done | Закрыта 2026-06-12: вторичные атрибуты видимы/универсальны, class interpretations + runtime hooks, smoke green |
+| [backend_settings_tabs_volume_keybindings_task.md](../tasks/backend_settings_tabs_volume_keybindings_task.md) | Back-end | done | Закрыта 2026-06-12: settings tabs, full-width audio sliders, persisted movement/pause/ultimate keybindings, smoke green |
+| [backend_ultimate_ability_framework_task.md](../tasks/backend_ultimate_ability_framework_task.md) | Back-end | done | Закрыта 2026-06-12: ultimate charge/HUD/action, 9 class ultimates, boss cap, Codex/docs/tests; runtime smoke green |
 | [design_all_classes_three_weapons_visual_upgrade_task.md](../tasks/design_all_classes_three_weapons_visual_upgrade_task.md) | Design | done | Закрыта 2026-06-11: новые 6 героев art-approved, полный visual set 27 weapon PNG готов, Back-end handoff со socket/scale notes заполнен |
 | [backend_all_classes_three_weapons_gameplay_task.md](../tasks/backend_all_classes_three_weapons_gameplay_task.md) | Back-end | done | Закрыта 2026-06-11: 9 классов x 3 weapon variants, 27 IDs, новые backend modes; Design visual set позже закрыт, runtime smoke green |
 | [backend_melee_targeting_test_update_strip_task.md](../tasks/backend_melee_targeting_test_update_strip_task.md) | Back-end | done | Закрыта PM 2026-06-11: handoff устарел — тест уже обновлен под strip и проходит (проверено прогоном) |
 | [design_artifact_icons_shop_cursor_task.md](../tasks/design_artifact_icons_shop_cursor_task.md) | Design | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |
 | [backend_shop_inline_artifact_icons_cursor_integration_task.md](../tasks/backend_shop_inline_artifact_icons_cursor_integration_task.md) | Back-end | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |
+
+## Новые (выданы PM 2026-06-12, пакет «глобальный баланс + сложность + события + оружейный арт»)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_class_dps_survivability_budget_task.md](../tasks/backend_class_dps_survivability_budget_task.md) | Back-end | done | Закрыта 2026-06-12: `tools/balance_harness.gd`, `build/balance_report.md`, 27 class+weapon профилей/tuning, smoke green |
+| [backend_ascension_difficulty_ladder_task.md](../tasks/backend_ascension_difficulty_ladder_task.md) | Back-end | done | QA: failed (3 бага) 2026-06-12 — ядро ОК (данные/кумулятивность/unlock/нулевой уровень/мета-трек/HUD), но мод #7 `mini_elite_chance` не реализован, #4 `elite_instant_phase` мёртв, селектор «+» не клампится к selectable_max. Баги в секции «Баги от QA» |
+| [codex_design_effects_sprites_dnd_restyle_task.md](../tasks/codex_design_effects_sprites_dnd_restyle_task.md) | Design (Codex → ревью Claude-Designer) | done | Codex pass готов 2026-06-12: 19 VFX PNG заменены, `effects_dnd_preview.png`, import + attack_vfx/runtime smoke green. QA: passed 2026-06-12 (0% пересвета/неона, размеры/alpha сохранены). Ждёт интеграцию/коммит Claude-Designer | -> интегрировано и закоммичено Claude-Designer 2026-06-12 (ff0b4c7); геометрия совместима, smoke зелёные
+| [backend_project_folder_cleanup_unused_files_task.md](../tasks/backend_project_folder_cleanup_unused_files_task.md) | Back-end | done | Закрыта 2026-06-12: 19 файлов в `build/cleanup_backup_2026_06_12/`, отчет создан, активные фоны восстановлены/reimport, 5 smoke + оконный прогон green |
+| [backend_enemy_scaling_elite_boss_difficulty_task.md](../tasks/backend_enemy_scaling_elite_boss_difficulty_task.md) | Back-end | done | Закрыта 2026-06-12: stage_scale, усиление волн, elite reward 1-из-3, boss 3 phases, balance/runtime smoke green |
+| [backend_random_events_ten_scenarios_task.md](../tasks/backend_random_events_ten_scenarios_task.md) | Back-end | done | Закрыта 2026-06-12: 12 data-driven events, no-repeat, checks, combat outcomes, runtime smoke green |
+| [design_weapon_art_v2_proportions_knight_task.md](../tasks/design_weapon_art_v2_proportions_knight_task.md) | Design | done | Закрыта 2026-06-12: knight weapon trio redrawn, Knight unarmed base/cutout, 27 matching scene textures, smaller visual scale, runtime + animation smoke pass |
+| [design_weapon_attack_vfx_animations_polish_task.md](../tasks/design_weapon_attack_vfx_animations_polish_task.md) | Design | done | Phase 1 2026-06-12: poison/spark/briar pools заменены на raster VFX + pulse, attack_vfx/animation smoke green; полный 27-weapon/VFX audit продолжается | -> закрыта 2026-06-12: голых боевых примитивов не осталось (зоны/лужи/аура/лечение/DoT/level-up оформлены, ульты designed), оружие получило socket-кик+трейлы, перф на 120 врагах ок. QA: failed 2026-06-12 — 1 пропущенный голый круг (hazard смены фазы босса), см. «Баги от QA»
+| [design_arena_backgrounds_2k_dnd_expansion_task.md](../tasks/design_arena_backgrounds_2k_dnd_expansion_task.md) | Design | done | Закрыта 2026-06-12: 6 новых D&D 2560x1440 arena backgrounds без крупных камней/кустов, подключены в background pool, docs/preview обновлены |
+| [backend_animation_smoke_ultimate_inputmap_warning_task.md](../tasks/backend_animation_smoke_ultimate_inputmap_warning_task.md) | Back-end | done | Закрыта 2026-06-12: Player guards missing `ultimate` InputMap action in standalone tests; animation/runtime smoke green |
+| [backend_runtime_smoke_combat_director_type_inference_task.md](../tasks/backend_runtime_smoke_combat_director_type_inference_task.md) | Back-end | done | Закрыта 2026-06-12 как transient: type-inference ошибка была промежуточным мид-эдитом; runtime smoke 3x green |
+
+## Баги от QA
+
+| Баг | Приоритет | Роль | Статус | Источник | Примечание |
+| --- | --- | --- | --- | --- | --- |
+| [bug_ascension_mini_elite_chance_dead_task.md](../tasks/bug_ascension_mini_elite_chance_dead_task.md) | high | Back-end | done | Возвышения 2.0 | Jira: SCRUM-60; Fixed 2026-06-12 (0d184af): combat_director._maybe_spawn_mini_elite — мини-элитка (HP×0.55, убиваемая) + свита по mini_elite_chance (L7). Smoke зелёный. QA разблокирован |
+| [bug_ascension_elite_instant_phase_dead_task.md](../tasks/bug_ascension_elite_instant_phase_dead_task.md) | high | Back-end | done | Возвышения 2.0 | Jira: SCRUM-59; Fixed 2026-06-12 (0d184af): enemy.gd lazy-потребление меты ascension_instant_phase (ordering-proof) — боевая фаза элитки сразу (L4). Smoke зелёный. QA разблокирован |
+| [bug_ascension_selector_not_clamped_task.md](../tasks/bug_ascension_selector_not_clamped_task.md) | normal | Back-end | done | Возвышения 2.0 | Jira: SCRUM-61; Fixed 2026-06-12 (0d184af): кламп «+» к selectable_max + защитный кламп в reset_run_ascension. Smoke зелёный. QA разблокирован |
+| [bug_boss_phase_hazard_naked_circle_task.md](../tasks/bug_boss_phase_hazard_naked_circle_task.md) | normal | Design/Back-end | done | VFX-полировка | Jira: SCRUM-62; Fixed Design 2026-06-12 (ff0b4c7): Polygon2D -> HazardVfx; QA passed |
+| [bug_cleanup_artifact_iteration_previews_left_in_assets_task.md](../tasks/bug_cleanup_artifact_iteration_previews_left_in_assets_task.md) | normal | Back-end | done | Чистка проекта | Jira: SCRUM-63; Fixed 2026-06-12 (3b7c260): 10 preview/concept итераций (+.import) вынесены в backup; audit_unused_assets чинён (tools/-генератор как output больше не считается usage). Повторный аудит чист. Категория #2 закрыта |
+| [test_mini_elite_spawn_behavioral_coverage_task.md](../tasks/test_mini_elite_spawn_behavioral_coverage_task.md) | low | Back-end | done | Возвышения 2.0 / QA | Jira: SCRUM-108; тест-хардненинг: фикс Возвышения 7 корректен, но тест data-only (`mini_elite_chance>0`), фактический спавн не покрыт — повтор паттерна, скрывшего исходный баг. Добавить поведенческий тест спавна мини-элитки. QA passed (тест теперь поведенческий) |
+| [ux_levelup_fab_return_button_dedup_task.md](../tasks/ux_levelup_fab_return_button_dedup_task.md) | low | Back-end | done | Level-up rework / QA | Jira: SCRUM-123; done 2026-06-12: pending level-up только через нижнюю кнопку с бейджем, FAB сохранен для докачки при pending=0, smoke passed |
+
+## QA / Review (создано dispatcher 2026-06-12)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [qa_review_backend_ascension_difficulty_ladder_task.md](../tasks/qa_review_backend_ascension_difficulty_ladder_task.md) | QA (Claude) | done | Jira: SCRUM-125; QA: failed 2026-06-12 — вердикт в исходном файле, заведено 3 bug-таска (см. «Баги от QA») |
+| [qa_review_design_weapon_attack_vfx_animations_polish_task.md](../tasks/qa_review_design_weapon_attack_vfx_animations_polish_task.md) | QA (Claude) | done | Jira: SCRUM-126; QA: failed 2026-06-12 — вердикт в исходном файле, 1 баг (голый круг hazard'а смены фазы босса). Остальной VFX-проход качественный, smoke зелёные |
+| [qa_review_codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/qa_review_codex_design_new_classes_restyle_to_starter_style_task.md) | QA (Claude) | done | QA: passed 2026-06-12 — 6 персонажей + 18 оружий в стиле стартовой тройки (яркость выше эталона = не гримдарк), bbox/alpha/cutout чистые, animation+runtime smoke зелёные. Багов нет |
+| [qa_review_codex_design_effects_sprites_dnd_restyle_task.md](../tasks/qa_review_codex_design_effects_sprites_dnd_restyle_task.md) | QA (Claude) | done | QA: passed 2026-06-12 — 19 PNG, размеры/alpha сохранены, 0% пересвета/неона (объективно), тинтуемые нейтральны, smoke зелёные. Багов нет |
+| [qa_review_backend_project_folder_cleanup_unused_files_task.md](../tasks/qa_review_backend_project_folder_cleanup_unused_files_task.md) | QA (Claude) | done | Jira: SCRUM-127; QA: failed 2026-06-12 — чистка БЕЗОПАСНА (бэкап цел, 0 осиротевших .import/.uid, защищённые папки целы, фоны восстановлены), но категория #2 не закрыта: ~9 artifact-preview итераций остались в assets/. 1 баг. Рантайм-перепроверка отложена (параллельные правки main.gd) |
+| [qa_review_bug_ascension_mini_elite_chance_dead_task.md](../tasks/qa_review_bug_ascension_mini_elite_chance_dead_task.md) | QA (Claude) | done | QA passed 2026-06-12: тройная защита + helper'ы на месте, HP×0.55 убиваемая, свита ограничена слотами. Наблюдение: ролл per-wave (осознанно). Сьюты зелёные. ✅ НЕЗАВИСИМО подтверждено QA-чатом (отд. сессия). Тест только data-only → заведён `test_mini_elite_spawn_behavioral_coverage_task.md` |
+| [qa_review_bug_ascension_elite_instant_phase_dead_task.md](../tasks/qa_review_bug_ascension_elite_instant_phase_dead_task.md) | QA (Claude) | done | QA passed 2026-06-12: lazy single-shot потребление меты, ordering-proof, спец-атака открывается сразу. Сьюты зелёные. ✅ НЕЗАВИСИМО подтверждено QA-чатом (отд. сессия): код enemy.gd:343-353 + поведенческий тест runtime_smoke:2790-2805 — корректны |
+| [qa_review_bug_ascension_selector_not_clamped_task.md](../tasks/qa_review_bug_ascension_selector_not_clamped_task.md) | QA (Claude) | done | QA passed 2026-06-12: двухслойный кламп (UI «+» + reset_run_ascension), забег не стартует на закрытом уровне. Сьюты зелёные. ✅ НЕЗАВИСИМО подтверждено QA-чатом (отд. сессия): защитный кламп main.gd:447 закрывает эксплойт |
+| [qa_review_bug_boss_phase_hazard_naked_circle_task.md](../tasks/qa_review_bug_boss_phase_hazard_naked_circle_task.md) | QA (Claude) | done | Ждет `bug_boss_phase_hazard_naked_circle_task.md` -> review/done | -> QA passed 2026-06-12: голых кругов нет, все 3 зоны на HazardVfx, доки точны, smoke зелёные
+| [qa_review_backend_elite_reward_center_screen_task.md](../tasks/qa_review_backend_elite_reward_center_screen_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-112) — модалка центр 1140×560 в 1280×720, выбор обязателен, +1 артефакт, edge-case таймера (was_elite_fight до сброса), тесты реальные. Багов нет |
+| [qa_review_test_mini_elite_spawn_behavioral_coverage_task.md](../tasks/qa_review_test_mini_elite_spawn_behavioral_coverage_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-113) — тест реально поведенческий (путь потребления ловит мёртвую версию + прямой вызов: 1 мини-элитка, слоты, HP×0.55). Багов нет |
+| [qa_review_backend_levelup_rework_five_options_task.md](../tasks/qa_review_backend_levelup_rework_five_options_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-114) — 5 вариантов/1 пик, rare ~13% помечены, отложенный выбор, очередь, карточки. Low-замечание: дубль FAB+нижняя кнопка (req#3) → `ux_levelup_fab_return_button_dedup_task.md` |
+| [qa_review_backend_hero_select_portrait_left_radar_task.md](../tasks/qa_review_backend_hero_select_portrait_left_radar_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-115) — портрет слева/досье справа, лента 9, радар 8 статов с ГЛОБАЛЬНОЙ нормировкой, радар инвариантен к возвышению, регрессия clamp НЕ вернулась. Багов нет |
+| [qa_review_design_contextual_ui_frames_rethink_task.md](../tasks/qa_review_design_contextual_ui_frames_rethink_task.md) | QA (Claude) | done | Jira: SCRUM-116; закрыта PM как процессный дубликат — QA идет автоматическим QA-воркером по `docs/process/qa_protocol.md`, отдельный файл-пара не нужен |
+| [qa_review_codex_design_contextual_ui_frame_kits_generation_task.md](../tasks/qa_review_codex_design_contextual_ui_frame_kits_generation_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-120) — 17 рамок точные размеры/RGBA, центры чистые, 4 кита различимы и по концепту, орнамент на краях, без watermark, import чист. Багов нет (ждут коммита Designer) |
+| [qa_review_backend_contextual_ui_frame_theme_integration_task.md](../tasks/qa_review_backend_contextual_ui_frame_theme_integration_task.md) | QA (Claude) | done | Jira: SCRUM-121; закрыта PM как процессный дубликат — QA идет автоматическим QA-воркером по `docs/process/qa_protocol.md`, отдельный файл-пара не нужен |
+| [qa_review_backend_elite_boss_size_epic_terror_task.md](../tasks/qa_review_backend_elite_boss_size_epic_terror_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-122) — масштаб 1.4/1.9 тянет хитбоксы, фаза-2 эскалация, +1 паттерн босса, safe-corridor держится, hit-stop/тряска/баннеры pause-aware, TTK не менялся. False-positive по лужам разобран (no-op). Багов нет |
+| [qa_review_ux_levelup_fab_return_button_dedup_task.md](../tasks/qa_review_ux_levelup_fab_return_button_dedup_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-124) — вариант A: при pending>0 FAB скрыт, единственный вход — нижняя кнопка с бейджем; докачка через FAB при pending==0. Тест покрывает оба. Багов нет |
+
+## Новые (выданы PM 2026-06-12, пакет «награда элитки + level-up 5 + выбор героя v3»)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_elite_reward_center_screen_task.md](../tasks/backend_elite_reward_center_screen_task.md) | Back-end | done | Done 2026-06-12: крупные карточки (иконка 112px, тир цветом, эффект, интерпретация) по центру, выбор обязателен, навигация клавиатурой/геймпадом, краевой кейс таймера покрыт тестом. 6 smoke зелёные. Скриншоты недоступны (windowed не рендерит) — центрирование на автотесте |
+| [backend_levelup_rework_five_options_task.md](../tasks/backend_levelup_rework_five_options_task.md) | Back-end | done | Done 2026-06-12; 5 вариантов, 1 пик/уровень, отложенный выбор, smoke passed |
+| [backend_hero_select_portrait_left_radar_task.md](../tasks/backend_hero_select_portrait_left_radar_task.md) | Back-end | done | Done 2026-06-12; портрет слева, досье справа, радар 8 статов, smoke passed |
+| [codex_design_contextual_ui_frame_kits_generation_task.md](../tasks/codex_design_contextual_ui_frame_kits_generation_task.md) | Design (Codex) | done | Jira: SCRUM-117; Design owner review accepted 2026-06-12 after QA SCRUM-120 passed. 17 contextual UI frame PNG + preview in `assets/sprites/ui/frames/contextual/`; richer D&D/tabletop raster style using project refs; dimensions/alpha validated, Godot import passed. Back-end integration stays SCRUM-118 backlog `0.1.4` |
+| [backend_elite_boss_size_epic_terror_task.md](../tasks/backend_elite_boss_size_epic_terror_task.md) | Back-end | done | Jira: SCRUM-119; Done 2026-06-12: A(размер/хитбокс 9898e99) + B(скиллы/коридор 9997744) + C(подача: баннеры/тряска+тумблер/hit-stop 4a6e3f2). 6 smoke зелёные. Минор: виньетка смены фаз опц.; апскейл спрайтов — чип при мыле |
+
+## Баги от пользователя (2026-06-12, спринт 0.1.3)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [bug_hero_select_carousel_radar_name_layout_task.md](../tasks/bug_hero_select_carousel_radar_name_layout_task.md) | Back-end (UI) | done | Jira: SCRUM-140; Done 2026-06-12: карусель только миниатюры (без текста), роза ветров — плавающий виджет в правый верхний угол root, дубль имени под портретом убран (имя только в досье). Тест-ассерты обновлены, 6 smoke зелёные. QA разблокирован |
+| [bug_elite_reward_window_offcenter_task.md](../tasks/bug_elite_reward_window_offcenter_task.md) | Back-end (UI) | done | Jira: SCRUM-144; done 2026-06-12: `EliteArtifactRewardPanel` центрируется через full-rect `CenterContainer`, regression smoke проверяет фактический global_rect центр для 1280x720/1469x908/2560x1440, runtime smoke passed |
+| [bug_boss_fight_timer_panel_visible_task.md](../tasks/bug_boss_fight_timer_panel_visible_task.md) | Back-end (UI) | done | Jira: SCRUM-145; done 2026-06-12: combat flags выставляются до `_create_hud()`, в boss combat нет `CombatTimerPanel`/`timer_label`, normal combat timer сохранен, runtime smoke passed |
+| [qa_review_bug_hero_select_carousel_radar_name_layout_task.md](../tasks/qa_review_bug_hero_select_carousel_radar_name_layout_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-141) — все 3 дефекта исправлены, подтверждено РЕАЛЬНЫМ рендер-скриншотом 1280×720 (build/qa/): карусель без текста, роза top-right не перекрывает текст досье, имя только в досье. Багов нет |
 
 ## Активные / Неподтвержденные
 

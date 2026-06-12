@@ -3,7 +3,9 @@ extends SceneTree
 const EXPECTED_ARENA_SIZE := Vector2(2560, 1440)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
+const MetaProgression := preload("res://scripts/meta_progression.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const EventData := preload("res://scripts/event_data.gd")
 
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -172,6 +174,7 @@ func _initialize() -> void:
 		return
 	await _test_route_map_start_selection(main_scene)
 	await _test_event_route_node_click(main_scene)
+	await _test_random_event_data_and_outcomes(main_scene)
 	var generated_elite := false
 	var generated_disk_boss := false
 	for _attempt in range(20):
@@ -215,6 +218,7 @@ func _initialize() -> void:
 
 	main.call("_show_settings_menu")
 	await process_frame
+	await _test_settings_tabs_and_rebind(main)
 	main.set("selected_resolution_index", 0)
 	main.set("selected_window_mode_index", 1)
 	main.call("_apply_video_settings")
@@ -231,29 +235,70 @@ func _initialize() -> void:
 		quit(1)
 		return
 	if main.find_child("CharacterCardsScroll", true, false) != null:
-		push_error("Expected fullscreen hero select to show all 9 cards without a scroll container.")
+		push_error("Expected hero select v3 to avoid scroll containers.")
 		quit(1)
 		return
-	var hero_grid := main.find_child("CharacterCardsGrid", true, false) as GridContainer
-	if hero_grid == null or hero_grid.columns != 3:
-		push_error("Expected character select to use a 3x3 hero grid.")
+	var large_portrait := main.find_child("HeroSelectLargePortrait", true, false) as TextureRect
+	if large_portrait == null or large_portrait.texture == null:
+		push_error("Expected hero select v3 to show a large selected hero portrait.")
 		quit(1)
 		return
-	if hero_grid.get_child_count() != 9:
-		push_error("Expected character select to show 9 hero cards at once.")
+	var dossier := main.find_child("HeroSelectDossierPanel", true, false) as PanelContainer
+	if dossier == null:
+		push_error("Expected hero select v3 to show a dossier panel.")
+		quit(1)
+		return
+	var radar := main.find_child("HeroStatRadar", true, false) as Control
+	if radar == null or radar.custom_minimum_size.x < 300.0:
+		push_error("Expected hero select v3 to build a readable stat radar.")
+		quit(1)
+		return
+	if radar.get_parent() == dossier or radar.anchor_left < 0.99 or radar.offset_left > -280.0 or radar.offset_top < 70.0:
+		push_error("Expected hero stat radar to be a top-right floating widget, not an inline dossier block.")
+		quit(1)
+		return
+	if main.find_child("HeroSelectPortraitName", true, false) != null:
+		push_error("Expected hero name to appear only in the dossier, not below the left portrait.")
+		quit(1)
+		return
+	var thumbnail_strip := main.find_child("HeroThumbnailStrip", true, false) as HBoxContainer
+	if thumbnail_strip == null or thumbnail_strip.get_child_count() != 9:
+		push_error("Expected hero select v3 to show a 9-hero thumbnail strip.")
 		quit(1)
 		return
 	for character_id in ProgressionData.character_ids():
-		var card := main.find_child("CharacterCard_%s" % character_id, true, false) as Button
-		if card == null or card.tooltip_text == "":
-			push_error("Expected character card with stats tooltip for %s." % character_id)
+		var thumb := main.find_child("HeroThumbnail_%s" % character_id, true, false) as Button
+		if thumb == null or thumb.tooltip_text == "":
+			push_error("Expected hero thumbnail with tooltip for %s." % character_id)
 			quit(1)
 			return
-		var portrait := main.find_child("CharacterPortrait_%s" % character_id, true, false) as TextureRect
+		if thumb.find_child("HeroThumbnailTitle_%s" % character_id, true, false) != null or thumb.find_children("*", "Label", true, false).size() > 0:
+			push_error("Expected hero thumbnail carousel to contain only images, no visible text for %s." % character_id)
+			quit(1)
+			return
+		thumb.pressed.emit()
+		await process_frame
+		if str(main.get("selected_character_id")) != str(character_id):
+			push_error("Expected clicking hero thumbnail to select %s." % character_id)
+			quit(1)
+			return
+		var portrait := main.find_child("HeroSelectLargePortrait", true, false) as TextureRect
 		if portrait == null or portrait.texture == null:
-			push_error("Expected character select to show portrait for %s." % character_id)
+			push_error("Expected selected hero portrait to update for %s." % character_id)
 			quit(1)
 			return
+	var choose_button := main.find_child("HeroSelectChooseButton", true, false) as Button
+	if choose_button == null:
+		push_error("Expected hero select v3 to expose a choose button.")
+		quit(1)
+		return
+	main.set("selected_character_id", "berserk")
+	choose_button.pressed.emit()
+	await process_frame
+	if main.find_child("HeroSelectScreen", true, false) != null or main.find_child("HeroSelectChooseButton", true, false) != null:
+		push_error("Expected hero choose button to advance to weapon select.")
+		quit(1)
+		return
 	if ProgressionData.reward_pool().size() < 28:
 		push_error("Expected expanded working artifact/reward pool.")
 		quit(1)
@@ -350,7 +395,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 	# HUD артефактов: подбор артефакта добавляет иконку с tooltip.
-	var hud_player := get_first_node_in_group("player")
+	var hud_player: Node = main.get("current_player")
 	hud_player.call("apply_reward", {"kind": "artifact", "id": "cracked_shield", "title": "Треснувший щит", "mods": {"defense_flat": 0.12}})
 	main.set("_last_hud_snapshot", {})
 	main.ui._update_hud()
@@ -370,7 +415,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	var player := get_first_node_in_group("player")
+	var player: Node = main.get("current_player")
 	if player == null:
 		push_error("Expected selected player to spawn.")
 		quit(1)
@@ -685,14 +730,6 @@ func _initialize() -> void:
 		push_error("Expected enemy spawns to stop during level-up pause.")
 		quit(1)
 		return
-	var escape_during_level_up := InputEventKey.new()
-	escape_during_level_up.keycode = KEY_ESCAPE
-	escape_during_level_up.pressed = true
-	main.call("_input", escape_during_level_up)
-	if not paused or not bool(main.call("_has_pause_reason", "level_up")):
-		push_error("Expected Esc not to cancel the level-up choice pause.")
-		quit(1)
-		return
 	if main.get("ui_layer") == null:
 		push_error("Expected level-up to open a reward UI while paused.")
 		quit(1)
@@ -717,15 +754,16 @@ func _initialize() -> void:
 		push_error("Expected level-up screen to include the selected hero portrait.")
 		quit(1)
 		return
+	# Переработка: ровно 5 вариантов за уровень.
 	var level_up_buttons := level_up_overlay.find_children("LevelUpRewardButton*", "Button", true, false)
-	if level_up_buttons.size() != 3:
-		push_error("Expected level-up to animate exactly three reward buttons.")
+	if level_up_buttons.size() != 5:
+		push_error("Expected level-up to animate exactly five reward buttons.")
 		quit(1)
 		return
 	for button_index in range(level_up_buttons.size()):
 		var reward_button := level_up_buttons[button_index] as Button
 		var button_rect := reward_button.get_global_rect()
-		if button_rect.size.x < 250.0 or button_rect.size.y < 120.0:
+		if button_rect.size.x < 190.0 or button_rect.size.y < 120.0:
 			push_error("Expected level-up reward buttons to keep readable card dimensions.")
 			quit(1)
 			return
@@ -737,12 +775,36 @@ func _initialize() -> void:
 			push_error("Expected level-up reward buttons to use stylized FantasyDisk button states.")
 			quit(1)
 			return
-		for compare_index in range(button_index + 1, level_up_buttons.size()):
-			var compare_rect := (level_up_buttons[compare_index] as Button).get_global_rect()
-			if button_rect.intersects(compare_rect):
-				push_error("Expected level-up reward buttons to stay separated instead of collapsing into one stack.")
-				quit(1)
-				return
+
+	# Отложенный выбор: Escape закрывает окно БЕЗ траты пика (пик сохраняется),
+	# внизу появляется заметная кнопка возврата к тому же набору.
+	var pending_before_defer := int(main.get("pending_level_ups"))
+	var escape_during_level_up := InputEventKey.new()
+	escape_during_level_up.keycode = KEY_ESCAPE
+	escape_during_level_up.pressed = true
+	main.call("_input", escape_during_level_up)
+	await process_frame
+	if bool(main.call("_has_pause_reason", "level_up")):
+		push_error("Expected Esc to defer (close) the level-up without keeping it paused.")
+		quit(1)
+		return
+	if int(main.get("pending_level_ups")) != pending_before_defer:
+		push_error("Expected deferred level-up to preserve the unspent pick.")
+		quit(1)
+		return
+	var return_button := main.find_child("LevelUpPlusButton", true, false) as Button
+	if return_button == null or not String(return_button.text).contains("Повышение"):
+		push_error("Expected a labelled level-up return button after deferring.")
+		quit(1)
+		return
+	# Возврат к тому же зафиксированному набору.
+	main.call("_open_pending_level_up")
+	await process_frame
+	var reopened := (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay")
+	if reopened == null or reopened.find_children("LevelUpRewardButton*", "Button", true, false).size() != 5:
+		push_error("Expected the return button to reopen the same fixed set of five rewards.")
+		quit(1)
+		return
 	var loop_guard := 0
 	while int(main.get("pending_level_ups")) > 0 and loop_guard < 8:
 		var active_overlay := (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay")
@@ -945,6 +1007,7 @@ func _initialize() -> void:
 	await _test_codex_screen(main_scene)
 	await _test_escape_navigation(main_scene)
 	await _test_economy_tiers_and_fab(main_scene)
+	await _test_ascension_difficulty_ladder(main_scene)
 	await _test_class_relevance_and_offer_fixation(main_scene)
 	_test_settings_persistence_and_audio()
 	await _test_full_attribute_wiring()
@@ -954,10 +1017,172 @@ func _initialize() -> void:
 	await _test_class_weapon_rework()
 	await _test_unique_class_identity_patterns()
 	await _test_universal_attribute_interpretations()
+	_test_class_budget_profiles()
+	await _test_enemy_stage_scaling_and_elite_rewards(main_scene)
+	await _test_ultimate_framework()
 	await _test_death_flow(main_scene)
+	await _test_epic_elite_boss_scale_hitbox()
+	await _test_elite_phase2_escalation()
+	await _test_boss_zone_wave_safe_corridor()
+	await _test_elite_boss_presentation(main_scene)
+	await _test_boss_hud_omits_timer(main_scene)
 
 	print("Runtime smoke test passed.")
 	quit()
+
+
+func _test_elite_boss_presentation(main_scene: PackedScene) -> void:
+	# Подача: баннер появления элитки + hit-stop (замедление времени и возврат).
+	var pm := main_scene.instantiate()
+	root.add_child(pm)
+	await process_frame
+	pm.set("selected_character_id", "berserk")
+	pm.call("_start_combat")
+	await process_frame
+
+	pm.combat.call("_spawn_elite_enemy")
+	await process_frame
+	if pm.find_child("CombatIntroBanner", true, false) == null:
+		_fail("Expected elite spawn to flash an intro banner.")
+		return
+
+	# Hit-stop: time_scale падает, затем восстанавливается (восстанавливаем до
+	# любых ассертов, чтобы не оставить замедление следующим тестам).
+	pm.combat.call("_hit_stop", 0.3, 0.3)
+	var slowed := Engine.time_scale < 0.99
+	pm.combat.call("_restore_time_scale")
+	if not slowed:
+		_fail("Expected hit-stop to slow time scale on elite/boss death.")
+		return
+	if absf(Engine.time_scale - 1.0) > 0.001:
+		_fail("Expected time scale to restore to 1.0 after hit-stop.")
+		return
+
+	pm.queue_free()
+	await process_frame
+
+
+func _test_boss_zone_wave_safe_corridor() -> void:
+	# +1 боссовый паттерн (волна зон) всегда оставляет безопасный коридор, и
+	# _safe_radius капит любой хазард ниже полувысоты арены.
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+	var boss := (load("res://scenes/BossDiskDevourer.tscn") as PackedScene).instantiate() as Node2D
+	holder.add_child(boss)
+	await process_frame
+	# safe_radius капит огромный радиус (коридор гарантирован даже на В4+).
+	if float(boss.call("_safe_radius", 9999.0)) > 1440.0 * 0.34 + 0.5:
+		_fail("Expected _safe_radius to cap hazard radius for a safe corridor.")
+		return
+	# Волна зон: кольцо с двумя пропущенными секторами -> проход всегда есть.
+	boss.call("_spawn_zone_wave", boss.global_position)
+	await process_frame
+	var zone_count := holder.find_children("BossRiftZone", "Node2D", true, false).size()
+	if zone_count <= 0 or zone_count >= 8:
+		_fail("Expected boss zone wave to leave a safe corridor (got %d of 8 sectors)." % zone_count)
+		return
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_elite_phase2_escalation() -> void:
+	# Фаза 2 (HP ≤ порога): уникальные атаки получают второе применение.
+	# Проверяем на shard_marshal: фаза 1 — веер; фаза 2 — веер + кольцо осколков.
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+	var elite := (load("res://scenes/EliteArmored.tscn") as PackedScene).instantiate() as Node2D
+	holder.add_child(elite)
+	await process_frame
+	elite.set("elite_behavior", "shard_marshal")
+	elite.set("_elite_attack_direction", Vector2.RIGHT)
+	elite.set("max_health", 100.0)
+	var player := (load("res://scenes/Player.tscn") as PackedScene).instantiate() as Node2D
+	holder.add_child(player)
+	player.global_position = elite.global_position + Vector2(400, 0)
+	await process_frame
+	var config := {"shard_count": 5, "spread_degrees": 60.0, "shard_speed": 430.0, "damage_factor": 1.0, "radius": 0.0}
+
+	# Фаза 1: полное HP -> только веер.
+	elite.set("health", 100.0)
+	if bool(elite.call("_elite_in_phase2")):
+		_fail("Expected full-HP elite to be in phase 1.")
+		return
+	var before_fan := holder.get_child_count()
+	elite.call("_strike_shard_fan", config, player)
+	await process_frame
+	var fan_count := holder.get_child_count() - before_fan
+
+	# Фаза 2: низкое HP -> веер + кольцо (второе применение).
+	elite.set("health", 30.0)
+	if not bool(elite.call("_elite_in_phase2")):
+		_fail("Expected low-HP elite to enter phase 2.")
+		return
+	var before_ring := holder.get_child_count()
+	elite.call("_strike_shard_fan", config, player)
+	await process_frame
+	var phase2_count := holder.get_child_count() - before_ring
+	if phase2_count <= fan_count:
+		_fail("Expected phase-2 shard_marshal to add a ring (fan %d vs phase2 %d)." % [fan_count, phase2_count])
+		return
+
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_epic_elite_boss_scale_hitbox() -> void:
+	# Элитки/боссы крупнее, хитбоксы согласованы: node scale тянет визуал +
+	# CollisionShape2D + contact_range вместе. Проверяем масштаб и что collision-
+	# радиус близок к видимому силуэту (нет «урона по воздуху» и непопадания вплотную).
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+
+	# Базовый моб для эталонного contact_range.
+	var mob := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate() as Node2D
+	holder.add_child(mob)
+	await process_frame
+	var mob_contact := float(mob.get("contact_range"))
+
+	var cases := {
+		"res://scenes/EliteArmored.tscn": 1.4,
+		"res://scenes/BossDiskDevourer.tscn": 1.9,
+	}
+	for scene_path in cases.keys():
+		var expected_scale: float = cases[scene_path]
+		var unit := (load(scene_path) as PackedScene).instantiate() as Node2D
+		holder.add_child(unit)
+		await process_frame
+		if absf(unit.scale.x - expected_scale) > 0.001 or absf(unit.scale.y - expected_scale) > 0.001:
+			_fail("Expected %s epic node scale %.2f, got %.2f." % [scene_path, expected_scale, unit.scale.x])
+			return
+		# Хитбокс vs силуэт: эффективный радиус CollisionShape близок к видимому.
+		var shape_node := unit.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if shape_node == null or shape_node.shape == null:
+			_fail("Expected %s to keep a CollisionShape2D." % scene_path)
+			return
+		var effective_radius: float = float(shape_node.shape.get("radius")) * unit.scale.x
+		var body := unit.get_node_or_null("Body") as Sprite2D
+		if body == null:
+			body = unit.get_node_or_null("Sprite2D") as Sprite2D
+		var visible_radius: float = body.texture.get_size().x * body.scale.x * unit.scale.x * 0.5
+		var ratio := effective_radius / maxf(visible_radius, 1.0)
+		if ratio < 0.45 or ratio > 1.25:
+			_fail("Expected %s collision radius to match silhouette (ratio %.2f, no air/point-blank gap)." % [scene_path, ratio])
+			return
+		# Контакт-урон крупнее моба (растёт с силуэтом).
+		if float(unit.get("contact_range")) <= mob_contact:
+			_fail("Expected %s contact_range to exceed a base mob's (%.1f vs %.1f)." % [scene_path, float(unit.get("contact_range")), mob_contact])
+			return
+		unit.queue_free()
+	holder.queue_free()
+	current_scene = null
+	await process_frame
 
 
 func _find_player_weapon(player: Node) -> Node:
@@ -1062,7 +1287,7 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 	route_main.set("route_stage", 0)
 	route_main.set("route_nodes", [
 		[
-			{"type": "event", "name": "Event 1: Test Stone", "row": 0, "branch": 0, "next_branches": [0]},
+			{"type": "event", "name": "Event 1: Test Stone", "event_id": "hot_spring", "row": 0, "branch": 0, "next_branches": [0]},
 			{"type": "battle", "name": "Battle 1: Test Road", "row": 0, "branch": 1, "next_branches": [0]},
 		],
 		[
@@ -1119,6 +1344,136 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 
 	route_main.queue_free()
 	await process_frame
+
+
+func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
+	if EventData.RANDOM_EVENTS.size() < 10:
+		_fail("Expected at least 10 random event scenarios.")
+		return
+	var ids := {}
+	var combat_outcomes := 0
+	var reward_outcomes := 0
+	var rest_outcomes := 0
+	var check_outcomes := 0
+	for event in EventData.RANDOM_EVENTS:
+		var event_id := str(event.get("id", ""))
+		if event_id == "" or ids.has(event_id):
+			_fail("Expected random event ids to be non-empty and unique.")
+			return
+		ids[event_id] = true
+		if str(event.get("title", "")) == "" or str(event.get("story", "")).length() < 40:
+			_fail("Expected event %s to include title and story text." % event_id)
+			return
+		var choices: Array = event.get("choices", [])
+		if choices.size() < 2:
+			_fail("Expected event %s to include at least two choices." % event_id)
+			return
+		for choice in choices:
+			if choice.has("combat") or _choice_nested_outcome_has(choice, "combat"):
+				combat_outcomes += 1
+			if choice.has("random_artifact") or choice.has("reward") or choice.has("money") or _choice_nested_outcome_has(choice, "random_artifact"):
+				reward_outcomes += 1
+			if choice.has("heal_percent"):
+				rest_outcomes += 1
+			if choice.has("check"):
+				check_outcomes += 1
+	if combat_outcomes < 3 or reward_outcomes < 3 or rest_outcomes < 1 or check_outcomes < 2:
+		_fail("Expected random events to cover combat, reward, rest and attribute-check outcomes.")
+		return
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 41
+	var used := []
+	for _index in range(EventData.RANDOM_EVENTS.size()):
+		var picked: Dictionary = EventData.pick_event(used, rng)
+		var picked_id := str(picked.get("id", ""))
+		if used.has(picked_id):
+			_fail("Expected event picker to avoid repeats within an act.")
+			return
+		used.append(picked_id)
+
+	var event_main := main_scene.instantiate()
+	root.add_child(event_main)
+	await process_frame
+	event_main.set("selected_character_id", "berserk")
+	event_main.set("selected_weapon_id", "sword")
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var event_player := player_scene.instantiate()
+	root.add_child(event_player)
+	event_player.configure_character("berserk", "sword")
+	event_player.set("money", 500)
+	var stats: Dictionary = event_player.get("stats")
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		stats[stat_id] = 12
+	event_player.set("stats", stats)
+	event_main.combat._store_player_snapshot(event_player)
+	event_player.queue_free()
+
+	var checked_success := false
+	var checked_failure := false
+	var checked_combat := false
+	for event in EventData.RANDOM_EVENTS:
+		for choice in (event.get("choices", []) as Array):
+			if choice.has("check") and not checked_success:
+				var high_player: Node = event_main.combat._snapshot_player_for_menu()
+				var success_outcome: Dictionary = event_main.ui._resolve_event_choice_outcome(choice, high_player)
+				high_player.queue_free()
+				if not bool(success_outcome.get("check_passed", false)):
+					_fail("Expected high-stat event check to pass for %s." % choice.get("id", ""))
+					event_main.queue_free()
+					return
+				checked_success = true
+			if choice.has("check") and not checked_failure:
+				var low_player: Node = event_main.combat._snapshot_player_for_menu()
+				var low_stats: Dictionary = low_player.get("stats")
+				var check: Dictionary = choice.get("check", {})
+				low_stats[str(check.get("stat", "knowledge"))] = 0
+				low_player.set("stats", low_stats)
+				var failure_outcome: Dictionary = event_main.ui._resolve_event_choice_outcome(choice, low_player)
+				low_player.queue_free()
+				if bool(failure_outcome.get("check_passed", true)):
+					_fail("Expected low-stat event check to fail for %s." % choice.get("id", ""))
+					event_main.queue_free()
+					return
+				checked_failure = true
+			if (choice.has("combat") or _choice_nested_outcome_has(choice, "combat")) and not checked_combat:
+				var combat_choice: Dictionary = choice.duplicate(true)
+				if not combat_choice.has("combat"):
+					combat_choice["combat"] = {"type": "battle", "enemy_health_multiplier": 1.05}
+				var started_combat: bool = event_main.ui._apply_event_choice(combat_choice)
+				await process_frame
+				if not started_combat or not bool(event_main.get("combat_active")):
+					_fail("Expected combat event outcome to start combat.")
+					event_main.queue_free()
+					return
+				event_main.combat._end_combat(true)
+				await process_frame
+				if bool(event_main.get("combat_active")) or not (event_main.get("pending_event_combat") as Dictionary).is_empty():
+					_fail("Expected event combat to clean up pending combat payload after victory.")
+					event_main.queue_free()
+					return
+				checked_combat = true
+			if checked_success and checked_failure and checked_combat:
+				break
+		if checked_success and checked_failure and checked_combat:
+			break
+	if not checked_success or not checked_failure or not checked_combat:
+		_fail("Expected random event tests to exercise checks and combat outcome.")
+		event_main.queue_free()
+		return
+	event_main.queue_free()
+	await process_frame
+
+
+func _choice_nested_outcome_has(choice: Dictionary, key: String) -> bool:
+	for branch_id in ["success", "failure", "post_combat"]:
+		var branch: Dictionary = choice.get(branch_id, {})
+		if branch.has(key):
+			return true
+	for outcome in (choice.get("random_outcomes", []) as Array):
+		if (outcome as Dictionary).has(key):
+			return true
+	return false
 
 
 func _send_route_node_mouse_press(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary) -> void:
@@ -1263,7 +1618,7 @@ func _test_noncombat_nodes(main: Node) -> void:
 	var shop_player := player_scene.instantiate()
 	root.add_child(shop_player)
 	shop_player.configure_character("berserk", "sword")
-	shop_player.set("money", 120)
+	shop_player.set("money", 300)
 	main.call("_store_player_snapshot", shop_player)
 	shop_player.queue_free()
 	main.call("_show_shop_screen")
@@ -1586,6 +1941,23 @@ func _test_victory_flow(main: Node) -> void:
 		push_error("Expected boss health bar max value to match scaled boss max health.")
 		quit(1)
 		return
+	var boss_phase_markers: Array = boss.get_meta("boss_phase_markers", [])
+	if boss_phase_markers.size() < 2 or not boss_health_bar.has_meta("phase_markers"):
+		push_error("Expected boss to expose HP phase markers for the uber-boss encounter.")
+		quit(1)
+		return
+	boss.set("health", float(boss.get("max_health")) * 0.64)
+	boss.call("_update_boss_phase")
+	if int(boss.get("boss_phase")) != 2 or int(boss.get_meta("boss_phase", 0)) != 2:
+		push_error("Expected boss to enter phase 2 below 66%% HP.")
+		quit(1)
+		return
+	boss.set("health", float(boss.get("max_health")) * 0.30)
+	boss.call("_update_boss_phase")
+	if int(boss.get("boss_phase")) != 3 or int(boss.get_meta("boss_phase", 0)) != 3:
+		push_error("Expected boss to enter phase 3 below 33%% HP.")
+		quit(1)
+		return
 	boss.set("dodge_chance", 0.0)
 	boss.set("shield_active", false)
 	boss.take_damage(25.0)
@@ -1657,6 +2029,68 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	var elite_body := elite_enemy.get_node_or_null("Body") as Sprite2D
 	if elite_body == null or elite_body.texture == null or not elite_body.texture.resource_path.begins_with("res://assets/sprites/elites/"):
 		push_error("Expected elite combat to use one of the new elite monster sprites.")
+		quit(1)
+		return
+	if not elite_enemy.has_meta("elite_phase_threshold") or float(elite_enemy.get_meta("elite_phase_threshold", 0.0)) > 0.51:
+		push_error("Expected elite enemies to expose a 50%% challenge phase threshold.")
+		quit(1)
+		return
+	elite_main.set("route_stage", 4)
+	# Снимок до награды: текущее число артефактов забега.
+	var pre_player: Node = elite_main.combat._snapshot_player_for_menu()
+	var artifacts_before: int = (pre_player.get("artifacts") as Array).size()
+	pre_player.queue_free()
+
+	elite_main.ui._show_elite_artifact_reward(Callable())
+	await process_frame
+	var elite_reward_buttons := elite_main.find_children("EliteArtifactRewardButton*", "Button", true, false)
+	if elite_reward_buttons.size() != 3:
+		push_error("Expected elite victory reward to offer exactly 3 artifact choices.")
+		quit(1)
+		return
+	var elite_reward_panel := elite_main.find_child("EliteArtifactRewardPanel", true, false) as Control
+	if elite_reward_panel == null:
+		push_error("Expected elite reward panel.")
+		quit(1)
+		return
+	if not _control_center_matches_viewport(elite_reward_panel, 2.0):
+		var panel_rect := elite_reward_panel.get_global_rect()
+		var viewport_center := root.get_visible_rect().size * 0.5
+		push_error("Expected elite reward panel global center %s to match viewport center %s." % [panel_rect.get_center(), viewport_center])
+		quit(1)
+		return
+	# Клавиатура/геймпад: первая карточка получает фокус.
+	if not (elite_reward_buttons[0] as Control).has_focus():
+		push_error("Expected first elite reward card to grab keyboard focus.")
+		quit(1)
+		return
+
+	# Выбор одной карточки выдаёт РОВНО один артефакт (две другие — нет).
+	(elite_reward_buttons[0] as Button).emit_signal("pressed")
+	await process_frame
+	var post_player: Node = elite_main.combat._snapshot_player_for_menu()
+	var artifacts_after: int = (post_player.get("artifacts") as Array).size()
+	post_player.queue_free()
+	if artifacts_after != artifacts_before + 1:
+		push_error("Expected exactly one artifact granted by elite reward (%d -> %d)." % [artifacts_before, artifacts_after])
+		quit(1)
+		return
+
+	# Краевой кейс: победа в элитном бою (в т.ч. элитка пала на последней секунде
+	# таймера) -> окно награды показывается ДО экрана докачки/победы.
+	elite_main.call("_start_combat", false, "elite")
+	await process_frame
+	elite_main.combat.call("_end_combat", true)
+	await process_frame
+	var victory_banner := elite_main.find_child("VictoryBanner", true, false) as Button
+	if victory_banner == null:
+		push_error("Expected victory banner on elite victory before the reward.")
+		quit(1)
+		return
+	victory_banner.emit_signal("pressed")
+	await process_frame
+	if elite_main.find_child("EliteArtifactRewardScreen", true, false) == null:
+		push_error("Expected elite reward window to appear before the attribute shop on elite victory.")
 		quit(1)
 		return
 	elite_main.queue_free()
@@ -1867,6 +2301,9 @@ func _test_unique_class_identity_patterns() -> void:
 	knight.global_position = Vector2(1300, 700)
 	await process_frame
 	knight.call("configure_character", "knight", "long_spear")
+	var knight_parameters: Dictionary = knight.get("derived_parameters")
+	knight_parameters["dodge"] = 0.0
+	knight.set("derived_parameters", knight_parameters)
 	var knight_enemy := enemy_scene.instantiate()
 	holder.add_child(knight_enemy)
 	knight_enemy.set("max_health", 100000.0)
@@ -2004,6 +2441,151 @@ func _test_universal_attribute_interpretations() -> void:
 			_fail("Expected derived attribute %s to resolve to an icon texture." % icon_id)
 			return
 
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_class_budget_profiles() -> void:
+	var checked := 0
+	for character_id in ProgressionData.character_ids():
+		var profile: Dictionary = ProgressionData.class_budget_profile(character_id)
+		if str(profile.get("profile", "")) == "":
+			_fail("Expected class %s to have a balance profile." % character_id)
+			return
+		for weapon_id in ProgressionData.weapon_ids(character_id):
+			var weapon: Dictionary = ProgressionData.weapon(character_id, weapon_id)
+			var tuning: Dictionary = weapon.get("budget_tuning", {})
+			if tuning.is_empty():
+				_fail("Expected %s/%s to expose budget tuning." % [character_id, weapon_id])
+				return
+			var metrics: Dictionary = ProgressionData.estimate_weapon_budget(character_id, weapon, true)
+			var solo_target := float(tuning.get("solo_target", 0.0))
+			var aoe_target := float(tuning.get("aoe_target", 0.0))
+			var solo_dev := absf(float(metrics.get("solo_dps", 0.0)) / maxf(solo_target, 0.001) - 1.0)
+			var aoe_dev := absf(float(metrics.get("aoe_dps", 0.0)) / maxf(aoe_target, 0.001) - 1.0)
+			if solo_dev > 0.10 or aoe_dev > 0.10:
+				_fail("Expected %s/%s budget deviation <=10%%, got solo %.1f%% and 5T %.1f%%." % [character_id, weapon_id, solo_dev * 100.0, aoe_dev * 100.0])
+				return
+			checked += 1
+	if checked != 27:
+		_fail("Expected balance budget coverage for 27 class+weapon pairs, got %d." % checked)
+		return
+
+
+func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> void:
+	var previous_scale := 0.0
+	for stage in range(0, 9):
+		var scale := ProgressionData.stage_scale(stage)
+		if scale <= previous_scale:
+			_fail("Expected stage_scale to increase monotonically, stage %d scale %.3f after %.3f." % [stage, scale, previous_scale])
+			return
+		previous_scale = scale
+	var stage0_damage_cost := 0
+	var stage6_damage_cost := 0
+	for item in ProgressionData.shop_items(0):
+		if str(item.get("id", "")) == "shop_damage":
+			stage0_damage_cost = int(item.get("cost", 0))
+	for item in ProgressionData.shop_items(6):
+		if str(item.get("id", "")) == "shop_damage":
+			stage6_damage_cost = int(item.get("cost", 0))
+	if stage0_damage_cost <= 0 or stage6_damage_cost <= stage0_damage_cost:
+		_fail("Expected shop prices to scale with stage_scale, got %d -> %d." % [stage0_damage_cost, stage6_damage_cost])
+		return
+	var elite_choices := ProgressionData.elite_artifact_choices(6, 3)
+	if elite_choices.size() != 3:
+		_fail("Expected elite artifact reward generator to return 3 choices.")
+		return
+	var seen_ids := {}
+	for choice in elite_choices:
+		if str(choice.get("kind", "")) != "artifact" or not choice.has("tier"):
+			_fail("Expected elite reward choices to be artifact rewards.")
+			return
+		var choice_id := str(choice.get("id", ""))
+		if seen_ids.has(choice_id):
+			_fail("Expected elite reward choices to be unique artifacts.")
+			return
+		seen_ids[choice_id] = true
+
+	var scaling_main := main_scene.instantiate()
+	root.add_child(scaling_main)
+	await process_frame
+	scaling_main.set("route_stage", 6)
+	scaling_main.ui._show_elite_artifact_reward(Callable())
+	await process_frame
+	var reward_screen := scaling_main.find_child("EliteArtifactRewardScreen", true, false) as Control
+	var reward_buttons := scaling_main.find_children("EliteArtifactRewardButton*", "Button", true, false)
+	if reward_screen == null or reward_buttons.size() != 3:
+		_fail("Expected elite artifact reward screen to render 3 clickable artifact buttons.")
+		scaling_main.queue_free()
+		return
+	scaling_main.queue_free()
+	await process_frame
+
+	for viewport_size in [Vector2i(1280, 720), Vector2i(1469, 908), Vector2i(2560, 1440)]:
+		await _assert_elite_reward_panel_centered(main_scene, viewport_size)
+
+
+func _test_ultimate_framework() -> void:
+	var holder := Node2D.new()
+	holder.name = "UltimateFrameworkScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for character_id in ProgressionData.character_ids():
+		var player := player_scene.instantiate()
+		holder.add_child(player)
+		player.global_position = Vector2(900, 700)
+		await process_frame
+		var weapon_ids := ProgressionData.weapon_ids(character_id)
+		player.call("configure_character", character_id, str(weapon_ids[0]))
+		var parameters: Dictionary = player.get("derived_parameters")
+		parameters["ultimate_multiplier"] = 1.5
+		player.set("derived_parameters", parameters)
+		var enemies := []
+		for index in range(3):
+			var enemy := enemy_scene.instantiate()
+			holder.add_child(enemy)
+			enemy.add_to_group("enemies")
+			enemy.set("max_health", 100000.0)
+			enemy.set("health", 100000.0)
+			enemy.global_position = player.global_position + Vector2(110 + index * 45, 0)
+			enemies.append(enemy)
+		await process_frame
+		var hp_before := 0.0
+		for enemy in enemies:
+			hp_before += float(enemy.get("health"))
+		player.set("ultimate_charge", 100.0)
+		if not bool(player.call("ultimate_ready")):
+			_fail("Expected %s ultimate to be ready at full charge." % character_id)
+			return
+		if not bool(player.call("activate_ultimate")):
+			_fail("Expected %s ultimate activation to succeed." % character_id)
+			return
+		if float(player.get("ultimate_charge")) > 0.01:
+			_fail("Expected %s ultimate to reset charge after activation." % character_id)
+			return
+		await process_frame
+		if character_id == "berserk":
+			player.call("on_weapon_hit", enemies[0], 20.0)
+			await process_frame
+		var hp_after := 0.0
+		for enemy in enemies:
+			if is_instance_valid(enemy):
+				hp_after += float(enemy.get("health"))
+		if character_id == "druid":
+			if get_nodes_in_group("allies").is_empty():
+				_fail("Expected Druid ultimate to summon temporary allies.")
+				return
+		elif hp_after >= hp_before:
+			_fail("Expected %s ultimate to have a measurable combat effect." % character_id)
+			return
+		player.queue_free()
+		for enemy in enemies:
+			if is_instance_valid(enemy):
+				enemy.queue_free()
+		await process_frame
 	holder.queue_free()
 	current_scene = null
 	await process_frame
@@ -2229,6 +2811,62 @@ func _test_settings_persistence_and_audio() -> void:
 	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 1.0, "sfx_volume": 1.0, "music_enabled": true, "sfx_enabled": true})
 
 
+func _test_settings_tabs_and_rebind(main: Node) -> void:
+	var tabs := main.find_child("SettingsTabs", true, false) as TabContainer
+	if tabs == null or tabs.get_child_count() != 3:
+		_fail("Expected settings screen to use three tabs.")
+		return
+	for tab_name in ["Экран", "Звук", "Управление"]:
+		if tabs.get_node_or_null(tab_name) == null:
+			_fail("Expected settings tab %s to exist." % tab_name)
+			return
+	for slider_id in ["master_volume", "music_volume", "sfx_volume"]:
+		var slider := main.find_child("VolumeSlider_%s" % slider_id, true, false) as HSlider
+		if slider == null or not slider.visible or slider.max_value != 100.0:
+			_fail("Expected visible 0-100 settings slider for %s." % slider_id)
+			return
+		if not bool(slider.size_flags_horizontal & Control.SIZE_EXPAND_FILL):
+			_fail("Expected %s slider to expand across the audio tab." % slider_id)
+			return
+	if not InputMap.has_action("ultimate"):
+		_fail("Expected InputMap action 'ultimate' to exist.")
+		return
+	var ui = main.get("ui")
+	if ui == null:
+		_fail("Expected main UI helper to be available for settings tests.")
+		return
+	if str(ui.call("_binding_conflict_action", "ultimate", KEY_W)) != "move_up":
+		_fail("Expected rebinding ultimate to W to report a move_up conflict.")
+		return
+	main.set("pending_rebind_action", "ultimate")
+	var rebind_event := InputEventKey.new()
+	rebind_event.keycode = KEY_T
+	rebind_event.pressed = true
+	ui.call("_handle_rebind_input", rebind_event)
+	var ultimate_events := InputMap.action_get_events("ultimate")
+	if ultimate_events.is_empty() or not (ultimate_events[0] is InputEventKey) or (ultimate_events[0] as InputEventKey).keycode != KEY_T:
+		_fail("Expected ultimate rebind to apply the new key.")
+		return
+	var game_settings := load("res://scripts/game_settings.gd")
+	var loaded: Dictionary = game_settings.load_settings()
+	var bindings: Dictionary = loaded.get("input_bindings", {})
+	if not bindings.has("ultimate") or not (KEY_T in (bindings["ultimate"] as Array)):
+		_fail("Expected ultimate rebind to persist in settings.cfg.")
+		return
+	ui.call("_reset_input_bindings_to_defaults")
+	if not (KEY_R in _keycodes_for_action("ultimate")):
+		_fail("Expected reset defaults to restore ultimate to R.")
+		return
+
+
+func _keycodes_for_action(action_name: String) -> Array:
+	var keys := []
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventKey:
+			keys.append((event as InputEventKey).keycode)
+	return keys
+
+
 func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 	# 1. Новая философия: все базовые атрибуты доступны всем классам.
 	for stat_id in UIIconRegistry.BASE_STAT_IDS:
@@ -2281,17 +2919,47 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 	fix_main.ui._show_level_up_screen(true)
 	await process_frame
 	var first_offer: Array = (fix_main.get("level_up_offer") as Array).duplicate(true)
-	if first_offer.size() != 3:
-		_fail("Expected a fixed set of three level-up rewards.")
+	if first_offer.size() != 5:
+		_fail("Expected a fixed set of five level-up rewards.")
 		return
 	fix_main.call("_clear_ui")
 	fix_main.ui._show_level_up_screen(true)
 	await process_frame
 	var second_offer: Array = fix_main.get("level_up_offer")
-	for offer_index in range(3):
+	for offer_index in range(5):
 		if str((first_offer[offer_index] as Dictionary).get("id")) != str((second_offer[offer_index] as Dictionary).get("id")):
 			_fail("Expected reopening the level-up window to keep the same reward set.")
 			return
+
+	# 4b. Состав 5 вариантов: уникальность + РЕДКОСТЬ основной характеристики (~10-15%/слот).
+	#     Большой детерминированный сэмпл; редкие помечены rare=true + kind "stat".
+	(fix_main.get("rng") as RandomNumberGenerator).seed = 90125
+	var rare_slots := 0
+	var total_slots := 0
+	var draws := 400
+	for _draw in range(draws):
+		var offer: Array = fix_main.ui._random_level_up_rewards(5)
+		if offer.size() != 5:
+			_fail("Expected level-up generator to always return five options.")
+			return
+		var seen_ids := {}
+		for entry in offer:
+			var reward: Dictionary = entry
+			var rid := str(reward.get("id"))
+			if seen_ids.has(rid):
+				_fail("Expected level-up options within a draw to be unique.")
+				return
+			seen_ids[rid] = true
+			total_slots += 1
+			if bool(reward.get("rare", false)):
+				rare_slots += 1
+				if str(reward.get("kind")) != "stat" or not (reward.get("stats", {}) as Dictionary).size() > 0:
+					_fail("Expected rare level-up slot to be a main-characteristic stat reward.")
+					return
+	var rare_fraction := float(rare_slots) / float(total_slots)
+	if rare_fraction < 0.05 or rare_fraction > 0.25:
+		_fail("Expected rare main-characteristic frequency near 10-15%%, got %.1f%%." % (rare_fraction * 100.0))
+		return
 
 	# 5. Фиксация пары атрибутов: переоткрытие окна докачки не реролит бесплатно.
 	var fix_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
@@ -2320,6 +2988,196 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		_fail("Expected the paid reroll to consume one reroll charge.")
 		return
 	fix_main.queue_free()
+	await process_frame
+
+
+func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
+	# Данные: 10 кумулятивных усложнений, уровень 0 нейтрален, кумулятивность.
+	if ProgressionData.ascension_modifiers().size() != 10:
+		_fail("Expected 10 ascension difficulty modifiers.")
+		return
+	var level0: Dictionary = ProgressionData.ascension_difficulty_mods(0)
+	for key in level0.keys():
+		var neutral: float = 0.0 if str(key) in ["elite_instant_phase", "boss_extra_phase", "first_wave_boost", "mini_elite_chance"] else 1.0
+		if absf(float(level0[key]) - neutral) > 0.001:
+			_fail("Expected ascension level 0 modifier %s to be neutral (%f)." % [key, neutral])
+			return
+	var level3: Dictionary = ProgressionData.ascension_difficulty_mods(3)
+	# L1 enemy hp 1.15, L1 dmg 1.10, L2 price 1.25, L3 spawn density 1.20 — кумулятивно активны.
+	if absf(float(level3["enemy_hp_mult"]) - 1.15) > 0.001 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.20) > 0.001:
+		_fail("Expected level 3 to cumulatively include levels 1+2+3 modifiers.")
+		return
+	# L4+ модификаторы НЕ активны на уровне 3.
+	if float(level3["elite_instant_phase"]) > 0.0 or absf(float(level3["healing_mult"]) - 1.0) > 0.001:
+		_fail("Expected level 3 to exclude level 4+ modifiers.")
+		return
+	var level10: Dictionary = ProgressionData.ascension_difficulty_mods(10)
+	if float(level10["boss_extra_phase"]) <= 0.0 or absf(float(level10["player_max_hp_mult"]) - 0.80) > 0.001 or absf(float(level10["healing_mult"]) - 0.70) > 0.001:
+		_fail("Expected level 10 to include boss extra phase, -20%% HP and -30%% healing.")
+		return
+
+	# Разблокировка по персонажу: победа на уровне N открывает N+1.
+	var meta := MetaProgression.default_state()
+	if MetaProgression.selectable_max(meta, "berserk") != 1:
+		_fail("Expected a fresh character to be able to select up to ascension 1.")
+		return
+	meta = MetaProgression.record_boss_victory(meta, "berserk", 1)
+	if MetaProgression.ascension_level(meta, "berserk") != 1 or MetaProgression.selectable_max(meta, "berserk") != 2:
+		_fail("Expected beating ascension 1 to unlock selection up to 2.")
+		return
+	# Победа на уровне НИЖЕ максимума не разблокирует новый.
+	meta = MetaProgression.record_boss_victory(meta, "berserk", 0)
+	if MetaProgression.ascension_level(meta, "berserk") != 1:
+		_fail("Expected beating a lower ascension level not to unlock further.")
+		return
+
+	# Применение в забеге: difficulty влияет на цены и HP игрока.
+	var asc_main := main_scene.instantiate()
+	root.add_child(asc_main)
+	await process_frame
+	asc_main.set("selected_character_id", "berserk")
+	# Мета-сейв с разблокированными уровнями (selectable_max>=2), чтобы уровень 2
+	# не клампился; наградные баффы тут не влияют на цены.
+	var price_meta := MetaProgression.default_state()
+	price_meta = MetaProgression.record_boss_victory(price_meta, "berserk", 0)
+	price_meta = MetaProgression.record_boss_victory(price_meta, "berserk", 1)
+	price_meta = MetaProgression.record_boss_victory(price_meta, "berserk", 2)
+	asc_main.set("meta_state", price_meta)
+	asc_main.set("selected_ascension_level", 0)
+	asc_main.call("reset_run_ascension")
+	var price_l0: int = asc_main.ui._attribute_buy_cost()
+	asc_main.set("selected_ascension_level", 2)
+	asc_main.call("reset_run_ascension")
+	var price_l2: int = asc_main.ui._attribute_buy_cost()
+	if price_l2 <= price_l0:
+		_fail("Expected ascension 2 (greedy merchants) to raise attribute prices.")
+		return
+
+	# Уровень 10 урезает макс HP. Берсерк разблокирован до 10, сравниваем L0 vs L10
+	# при ОДНОМ мета-сейве — наградные баффы одинаковы, разница = чистый difficulty -20%.
+	var hp_meta := MetaProgression.default_state()
+	for unlock_level in range(10):
+		hp_meta = MetaProgression.record_boss_victory(hp_meta, "berserk", unlock_level)
+	asc_main.set("meta_state", hp_meta)
+	asc_main.set("selected_ascension_level", 0)
+	asc_main.call("reset_run_ascension")
+	var asc_player_l0 := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	root.add_child(asc_player_l0)
+	asc_player_l0.call("configure_character", "berserk", "sword")
+	asc_main.call("apply_ascension_bonuses", asc_player_l0)
+	var hp_l0 := float(asc_player_l0.get("max_health"))
+	asc_player_l0.queue_free()
+	asc_main.set("selected_ascension_level", 10)
+	asc_main.call("reset_run_ascension")
+	var asc_player10 := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	root.add_child(asc_player10)
+	asc_player10.call("configure_character", "berserk", "sword")
+	asc_main.call("apply_ascension_bonuses", asc_player10)
+	if float(asc_player10.get("max_health")) >= hp_l0 * 0.95:
+		_fail("Expected ascension 10 to reduce player max HP vs level 0 (%f vs %f)." % [float(asc_player10.get("max_health")), hp_l0])
+		return
+	asc_player10.queue_free()
+
+	# Багфикс 3: селектор не даёт уйти выше selectable_max — reset_run_ascension клампит.
+	asc_main.set("meta_state", MetaProgression.default_state())
+	asc_main.set("selected_character_id", "berserk")
+	asc_main.set("selected_ascension_level", 9)
+	asc_main.call("reset_run_ascension")
+	if int(asc_main.get("selected_ascension_level")) > asc_main.call("ascension_selectable_max", "berserk"):
+		_fail("Expected reset_run_ascension to clamp level to the character selectable max.")
+		return
+
+	# Багфикс 1: элитка с ascension_instant_phase открывает боевую фазу сразу (кулдаун ~0).
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	var asc_elite := (load("res://scenes/EliteArmored.tscn") as PackedScene).instantiate()
+	asc_elite.set_meta("ascension_instant_phase", true)
+	holder.add_child(asc_elite)
+	await process_frame
+	var test_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	holder.add_child(test_player)
+	test_player.global_position = asc_elite.global_position + Vector2(120, 0)
+	await process_frame
+	# Один физический тик: instant-phase обнуляет стартовый кулдаун -> элитка сразу в windup.
+	asc_elite.call("_physics_process", 0.05)
+	if float(asc_elite.get("_elite_attack_cooldown")) > 0.1 and str(asc_elite.get("elite_attack_state")) == "idle":
+		_fail("Expected ascension_instant_phase to zero the elite startup cooldown.")
+		return
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+	# Багфикс 2 (данные): на возвышении 7 mini_elite_chance > 0.
+	if float(ProgressionData.ascension_difficulty_mods(7)["mini_elite_chance"]) <= 0.0:
+		_fail("Expected ascension level 7 to expose a mini-elite chance.")
+		return
+
+	# Багфикс 2 (поведение): mini_elite_chance реально ПОТРЕБЛЯЕТСЯ — мини-элитка
+	# спавнится в обычной волне. Data-only тест ровно это и пропустил в исходном баге.
+	var mini_main := main_scene.instantiate()
+	root.add_child(mini_main)
+	await process_frame
+	mini_main.set("selected_character_id", "berserk")
+	mini_main.set("selected_ascension_level", 0)
+	mini_main.call("_start_combat")
+	await process_frame
+	# Детерминированный rng + чистая арена (как соседние ascension-тесты).
+	(mini_main.get("rng") as RandomNumberGenerator).seed = 24607
+	for stray in mini_main.get_tree().get_nodes_in_group("enemies"):
+		stray.queue_free()
+	for stray in mini_main.get_tree().get_nodes_in_group("elite_enemies"):
+		stray.queue_free()
+	await process_frame
+
+	# (A) Путь потребления: _spawn_enemy_wave при forced chance=1.0 обязан создать мини-элитку.
+	#     На «мёртвой» версии (спавн не вызывается из волны) elite_enemies не вырастет.
+	(mini_main.get("run_ascension_difficulty") as Dictionary)["mini_elite_chance"] = 1.0
+	var elites_before: int = mini_main.get_tree().get_nodes_in_group("elite_enemies").size()
+	mini_main.combat.call("_spawn_enemy_wave")
+	await process_frame
+	var elites_after: int = mini_main.get_tree().get_nodes_in_group("elite_enemies").size()
+	if elites_after <= elites_before:
+		_fail("Expected ascension mini-elite to spawn via _spawn_enemy_wave (consumption path dead).")
+		return
+
+	# (B) Прямой вызов: учёт слотов + убиваемое HP (волновой elite-скейл × 0.55).
+	for stray in mini_main.get_tree().get_nodes_in_group("enemies"):
+		stray.queue_free()
+	for stray in mini_main.get_tree().get_nodes_in_group("elite_enemies"):
+		stray.queue_free()
+	await process_frame
+	var asc_force: Dictionary = (mini_main.call("ascension_difficulty") as Dictionary).duplicate()
+	asc_force["mini_elite_chance"] = 1.0
+	var used: int = int(mini_main.combat.call("_maybe_spawn_mini_elite", asc_force, 5))
+	await process_frame
+	var spawned: Array = mini_main.get_tree().get_nodes_in_group("elite_enemies")
+	if spawned.size() != 1:
+		_fail("Expected exactly one mini-elite from _maybe_spawn_mini_elite (got %d)." % spawned.size())
+		return
+	if used < 2 or used > 5:
+		_fail("Expected mini-elite slot usage 2..5 (1 elite + 1-2 retinue), got %d." % used)
+		return
+	# Учёт слотов: группа enemies = мини-элитка (она же в enemies через _ready) + свита = used.
+	var enemies_total: int = mini_main.get_tree().get_nodes_in_group("enemies").size()
+	if enemies_total != used:
+		_fail("Expected slot accounting enemies==used (%d vs %d)." % [enemies_total, used])
+		return
+	# Убиваемая, не танк: HP = тот же волновой elite-скейл × 0.55.
+	var mini_node: Node = spawned[0]
+	var mini_hp: float = float(mini_node.get("max_health"))
+	var ref_elite: Node = (load(mini_node.scene_file_path) as PackedScene).instantiate()
+	ref_elite.add_to_group("elite_enemies")
+	mini_main.add_child(ref_elite)
+	mini_main.combat.call("_scale_enemy_for_current_wave", ref_elite)
+	var ref_hp: float = float(ref_elite.get("max_health"))
+	if ref_hp <= 0.0 or absf(mini_hp - ref_hp * 0.55) > ref_hp * 0.03:
+		_fail("Expected mini-elite HP ≈ wave elite ×0.55 (mini %f vs ref %f)." % [mini_hp, ref_hp])
+		return
+	mini_main.queue_free()
+	await process_frame
+
+	asc_main.queue_free()
 	await process_frame
 
 
@@ -2396,14 +3254,26 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	holder.queue_free()
 	current_scene = null
 
-	# FAB прокачки на карте с бейджем.
+	# При pending level-up не должно быть двух входов одновременно:
+	# нижняя кнопка с бейджем остается единственным входом, FAB сохраняется для докачки при pending=0.
 	econ_main.set("pending_level_ups", 2)
 	econ_main.call("_show_battle_map")
 	await process_frame
 	var fab := econ_main.find_child("UpgradeFabButton", true, false) as Button
-	var badge := econ_main.find_child("UpgradeFabBadge", true, false) as Label
-	if fab == null or badge == null or badge.text != "2":
-		_fail("Expected the route map upgrade FAB with a pending-levels badge of 2.")
+	if fab != null:
+		_fail("Expected route map to hide UpgradeFabButton while pending level-up return button is visible.")
+		return
+	var level_return := econ_main.find_child("LevelUpPlusButton", true, false) as Button
+	var level_badge := econ_main.find_child("LevelUpPlusBadge", true, false) as Label
+	if level_return == null or level_badge == null or level_badge.text != "2":
+		_fail("Expected the bottom level-up return button with a pending-levels badge of 2.")
+		return
+	econ_main.set("pending_level_ups", 0)
+	econ_main.call("_show_battle_map")
+	await process_frame
+	fab = econ_main.find_child("UpgradeFabButton", true, false) as Button
+	if fab == null or fab.disabled:
+		_fail("Expected the attribute upgrade FAB to remain available when no level-up is pending.")
 		return
 	econ_main.queue_free()
 	await process_frame
@@ -2455,20 +3325,29 @@ func _test_escape_navigation(main_scene: PackedScene) -> void:
 		_fail("Expected Escape on codex to return to the main menu.")
 		return
 
-	# Карточка персонажа кликабельна целиком (Button) и с hover-стилем.
+	# Hero select v3: миниатюра выбирает героя, кнопка «Выбрать» открывает оружие.
 	nav_main.call("_show_character_select")
 	await process_frame
-	var card := nav_main.find_child("CharacterCard_berserk", true, false) as Button
+	var card := nav_main.find_child("HeroThumbnail_berserk", true, false) as Button
 	if card == null:
-		_fail("Expected the whole character card to be a clickable Button.")
+		_fail("Expected hero thumbnail to be a clickable Button.")
 		return
 	if not card.has_theme_stylebox_override("hover"):
-		_fail("Expected the character card to carry a hover highlight style.")
+		_fail("Expected the hero thumbnail to carry a hover highlight style.")
 		return
 	card.pressed.emit()
 	await process_frame
-	if nav_main.find_child("CharacterCard_berserk", true, false) != null:
-		_fail("Expected clicking the character card body to advance to weapon select.")
+	if str(nav_main.get("selected_character_id")) != "berserk":
+		_fail("Expected clicking the hero thumbnail to select the hero.")
+		return
+	var choose := nav_main.find_child("HeroSelectChooseButton", true, false) as Button
+	if choose == null:
+		_fail("Expected hero select to keep a choose button.")
+		return
+	choose.pressed.emit()
+	await process_frame
+	if nav_main.find_child("HeroSelectScreen", true, false) != null:
+		_fail("Expected clicking choose to advance to weapon select.")
 		return
 
 	nav_main.queue_free()
@@ -2515,7 +3394,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 
 	# Все разделы открываются.
-	for section_id in ["monsters", "artifacts", "stats", "characters"]:
+	for section_id in ["monsters", "artifacts", "stats", "ascensions", "characters"]:
 		var tab := codex_main.find_child("CodexTab_%s" % section_id, true, false) as Button
 		if tab == null:
 			_fail("Expected codex tab %s." % section_id)
@@ -2601,9 +3480,95 @@ func _test_elite_unique_attacks() -> void:
 	await process_frame
 
 
+func _assert_elite_reward_panel_centered(main_scene: PackedScene, viewport_size: Vector2i) -> void:
+	var viewport := SubViewport.new()
+	viewport.size = viewport_size
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	await process_frame
+	await process_frame
+
+	var modal_main := main_scene.instantiate()
+	viewport.add_child(modal_main)
+	await process_frame
+	modal_main.set("route_stage", 6)
+	modal_main.ui._show_elite_artifact_reward(Callable())
+	await process_frame
+	await process_frame
+
+	var panel := modal_main.find_child("EliteArtifactRewardPanel", true, false) as Control
+	if panel == null:
+		_fail("Expected elite reward panel at viewport %s." % viewport_size)
+		return
+	if not _control_center_matches_viewport_size(panel, Vector2(viewport_size), 2.0):
+		var rect := panel.get_global_rect()
+		_fail("Expected elite reward panel global center %s to match viewport center %s at viewport %s." % [rect.get_center(), Vector2(viewport_size) * 0.5, viewport_size])
+		return
+	var rect := panel.get_global_rect()
+	var visible_size := Vector2(viewport_size)
+	if rect.position.x < -2.0 or rect.position.y < -2.0 or rect.end.x > visible_size.x + 2.0 or rect.end.y > visible_size.y + 2.0:
+		_fail("Expected elite reward panel rect %s to stay inside viewport %s." % [rect, visible_size])
+		return
+
+	viewport.queue_free()
+	await process_frame
+
+
+func _control_center_matches_viewport(control: Control, tolerance_px := 2.0) -> bool:
+	return _control_center_matches_viewport_size(control, root.get_visible_rect().size, tolerance_px)
+
+
+func _control_center_matches_viewport_size(control: Control, viewport_size: Vector2, tolerance_px := 2.0) -> bool:
+	var rect := control.get_global_rect()
+	var viewport_center := viewport_size * 0.5
+	return absf(rect.get_center().x - viewport_center.x) <= tolerance_px and absf(rect.get_center().y - viewport_center.y) <= tolerance_px
+
+
 func _fail(message: String) -> void:
 	push_error(message)
 	quit(1)
+
+
+func _test_boss_hud_omits_timer(main_scene: PackedScene) -> void:
+	var boss_main := main_scene.instantiate()
+	root.add_child(boss_main)
+	await process_frame
+	boss_main.set("selected_character_id", "berserk")
+	boss_main.set("selected_weapon_id", "axe")
+	boss_main.call("_start_combat", true)
+	await process_frame
+	if boss_main.find_child("CombatTimerPanel", true, false) != null or boss_main.get("timer_label") != null:
+		_fail("Expected boss combat HUD to omit CombatTimerPanel and timer_label.")
+		return
+	boss_main.set("_last_hud_snapshot", {})
+	boss_main.ui._update_hud()
+	if boss_main.find_child("CombatTimerPanel", true, false) != null or boss_main.get("timer_label") != null:
+		_fail("Expected boss combat HUD update not to recreate CombatTimerPanel.")
+		return
+	boss_main.queue_free()
+	await process_frame
+
+	var battle_main := main_scene.instantiate()
+	root.add_child(battle_main)
+	await process_frame
+	battle_main.set("selected_character_id", "berserk")
+	battle_main.set("selected_weapon_id", "axe")
+	battle_main.call("_start_combat", false)
+	await process_frame
+	var timer_panel := battle_main.find_child("CombatTimerPanel", true, false) as PanelContainer
+	var timer_label := battle_main.get("timer_label") as Label
+	if timer_panel == null or timer_label == null:
+		_fail("Expected normal combat HUD to create CombatTimerPanel and timer_label.")
+		return
+	var timer_before := str(timer_label.text)
+	battle_main.set("round_time_left", 12.0)
+	battle_main.set("_last_hud_snapshot", {})
+	battle_main.ui._update_hud()
+	if timer_label.text == timer_before:
+		_fail("Expected normal combat timer text to update.")
+		return
+	battle_main.queue_free()
+	await process_frame
 
 
 func _test_death_flow(main_scene: PackedScene) -> void:

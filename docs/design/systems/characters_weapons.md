@@ -62,10 +62,10 @@
 
 ## Visual Asset Status
 
-Design visual set is complete for 9 classes and 27 weapons as of 2026-06-11. New class full-art PNGs are art-approved at `assets/sprites/characters/assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png` (`512x512`, transparent). All weapon PNGs in the matrix above exist at their canonical `assets/sprites/weapons/*.png` paths (`256x256`, transparent), including the 12 formerly fallback weapons:
+Design visual set is complete for 9 classes and 27 weapons as of 2026-06-11. Weapon art v2 pass 2026-06-12 reduced oversized socket visuals, fixed scene texture fallbacks, and replaced the Knight visual stack: `assets/sprites/characters/knight.png` is now an unarmed base sprite, while `long_spear.png`, `tower_shield.png`, and `holy_flail.png` are separate polished noble knight weapons. New class full-art PNGs are art-approved at `assets/sprites/characters/assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png` (`512x512`, transparent). All weapon PNGs in the matrix above exist at their canonical `assets/sprites/weapons/*.png` paths (`256x256`, transparent), including the 12 formerly fallback weapons:
 `shadow_daggers`, `venom_wire`, `storm_longbow`, `hunter_trap`, `plague_syringe`, `bone_saw`, `acid_flask`, `homunculus_vial`, `tower_shield`, `holy_flail`, `briar_staff`, `raven_totem`.
 
-Socket/display notes for integration: `storm_longbow`, `long_spear`, `holy_flail`, and `briar_staff` are elongated and may need per-weapon hand rotation/scale tuning; `venom_wire` is intentionally thin and best paired with a separate line/VFX during attacks; `hunter_trap`, `sound_amp`, `tower_shield`, `raven_totem`, `summon_amulet`, and `homunculus_vial` can also serve as deployable/world sprite bases.
+Socket/display status: all 27 weapon scenes now point to their matching canonical PNG and use reduced `WeaponVisual.scale` for clearer body/face readability. Preview sheets: `docs/design/previews/weapon_v2_assets_contact.png` for raw PNG QA and `docs/design/previews/weapon_v2_socket_contact.png` for class/weapon visual placement. `venom_wire` is intentionally thin and best paired with a separate line/VFX during attacks; `hunter_trap`, `sound_amp`, `tower_shield`, `raven_totem`, `summon_amulet`, and `homunculus_vial` can also serve as deployable/world sprite bases.
 
 ## Targeting Rule
 

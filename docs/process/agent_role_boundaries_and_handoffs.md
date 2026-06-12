@@ -1,10 +1,17 @@
 # Agent Role Boundaries And Handoffs
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 
-Этот документ задает правило работы для всех специализированных чатов FantasyDisk: `Design`, `Back-end`, `Animator`.
+Этот документ задает правило работы для всех специализированных чатов FantasyDisk:
+`Design`, `Back-end`, `Animator`, `QA`.
 
-Задачи формирует PM-чат по регламенту `docs/process/pm_workflow.md`. Статусы всех задач отслеживаются на доске `docs/process/task_board.md`: при взятии задачи исполнитель ставит в файле задачи `Статус: in_progress`, по завершении — `done` (или `review`) с коротким резюме результата.
+Задачи формирует PM-чат/другая LLM по регламенту `docs/process/pm_workflow.md`. Codex Documentation dispatcher не создает новые `.md` task-файлы и Jira issues. Статусы всех задач отслеживаются на доске `docs/process/task_board.md`: при взятии задачи исполнитель ставит в файле задачи `Статус: in_progress`, по завершении — `done` (или `review`) с коротким резюме результата. Закрытие задачи — ответственность исполнителя/ревьюера: dispatcher не ставит `done` за агента, а только синхронизирует уже записанный результат или QA-вердикт.
+
+Все задачи также синхронизируются с Jira проектом `SCRUM` по
+`docs/process/jira_sync.md`. Любой агент, меняющий task status или создающий
+handoff/bug/QA task, обязан проверить наличие `Jira: SCRUM-*`, обновить Jira
+status/comment или явно передать это dispatcher/PM. Jira API token нельзя
+записывать в репозиторий или task-файлы.
 
 ## Главное Правило
 
@@ -120,6 +127,31 @@ Animator не должен самостоятельно делать:
 - создать handoff для `Back-end`;
 - описать, какая API/scene structure нужна.
 
+## QA
+
+QA отвечает за:
+
+- приемочное ревью задач после реализации;
+- проверку acceptance criteria из task-файлов;
+- проверку smoke/regression результатов, логов и артефактов;
+- поиск регрессий в бою, карте, меню, UI, анимациях, арте и балансе;
+- фиксацию найденных багов отдельными `backend_`, `design_` или `animation_`
+  handoff-задачами;
+- подтверждение, что документация и CHANGELOG обновлены для выполненной работы.
+
+QA не должен самостоятельно делать:
+
+- gameplay/code implementation;
+- перерисовку ассетов;
+- animation/rig правки;
+- баланс-изменения;
+- коммиты релизов или merge/tag операции.
+
+Парные qa_review-задачи НЕ создаются (упразднено PM 2026-06-12): каждая задача
+после `done` автоматически тестируется QA-воркером по `docs/process/qa_protocol.md`.
+Исключение — повторная проверка после вердикта FAILED: на нее заводится отдельная
+qa_review-задача (QA-воркер не перепроверяет файлы с уже выданным вердиктом).
+
 ## Handoff Формат
 
 Любой cross-agent handoff должен быть `.md` файлом в `docs/tasks/`.
@@ -135,6 +167,7 @@ docs/tasks/<role>_<short_task_name>.md
 - `design`
 - `backend`
 - `animation`
+- `qa`
 
 Минимальная структура:
 
@@ -164,6 +197,8 @@ docs/tasks/<role>_<short_task_name>.md
 - `Design` для визуала и ассетов;
 - `Back-end` для кода, логики, интеграции, тестов;
 - `Animator` для движения и animation systems.
+- `QA` для приемочного ревью и регрессий; если отдельного QA-чата нет, задача
+  фиксируется на доске для Claude-QA board worker.
 
 Сообщение в чат должно содержать:
 
@@ -201,5 +236,7 @@ docs/tasks/<role>_<short_task_name>.md
 - Design: `content_registry.md`, `visual_style_assets.md`, visual sections.
 - Back-end: `current_game_state.md`, system docs, mechanics/balance docs, tests.
 - Animator: `animation.md`, animation architecture, animation asset status.
+- QA: результат проверки в task-файле, найденные дефекты отдельными handoff
+  задачами; продуктовую документацию QA не переписывает вместо владельца.
 
 Если документация еще не разбита по доменам, обновить существующие документы и отметить, что после batch changes нужно выполнить `docs/tasks/documentation_post_changes_domain_split_task.md`.

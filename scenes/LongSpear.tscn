@@ -22,6 +22,6 @@ visual_color = Color(0.8, 0.86, 0.95, 0.36)
 [node name="WeaponVisual" type="Sprite2D" parent="."]
 z_index = 8
 texture = ExtResource("2_weapon_texture")
-position = Vector2(74, -10)
+position = Vector2(56, -8)
 rotation = 0.42
-scale = Vector2(0.5, 0.34)
+scale = Vector2(0.38, 0.32)

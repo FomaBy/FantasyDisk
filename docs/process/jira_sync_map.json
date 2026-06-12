@@ -1,0 +1,498 @@
+{
+ "animation_elite_unique_attacks_task.md": {
+  "key": "SCRUM-1",
+  "status": "Готово"
+ },
+ "animation_movement_overhaul_task.md": {
+  "key": "SCRUM-2",
+  "status": "Готово"
+ },
+ "animation_natural_motion_current_sprites_task.md": {
+  "key": "SCRUM-3",
+  "status": "Готово"
+ },
+ "animation_player_motion_smoothness_task.md": {
+  "key": "SCRUM-4",
+  "status": "Готово"
+ },
+ "animation_smoke_test_sliced_rig_update_task.md": {
+  "key": "SCRUM-5",
+  "status": "Готово"
+ },
+ "animator_fix_cutout_rig_parse_errors_task.md": {
+  "key": "SCRUM-6",
+  "status": "Готово"
+ },
+ "backend_all_classes_three_weapons_gameplay_task.md": {
+  "key": "SCRUM-7",
+  "status": "Готово"
+ },
+ "backend_animation_smoke_ultimate_inputmap_warning_task.md": {
+  "key": "SCRUM-8",
+  "status": "Готово"
+ },
+ "backend_artifact_ui_timer_shop_wall_task.md": {
+  "key": "SCRUM-9",
+  "status": "Готово"
+ },
+ "backend_ascension_difficulty_ladder_task.md": {
+  "key": "SCRUM-10",
+  "status": "Готово"
+ },
+ "backend_attack_aim_nearest_enemy_fix_task.md": {
+  "key": "SCRUM-11",
+  "status": "Готово"
+ },
+ "backend_berserk_weapon_identity_rebalance_task.md": {
+  "key": "SCRUM-12",
+  "status": "Готово"
+ },
+ "backend_class_attribute_relevance_levelup_reroll_fix_task.md": {
+  "key": "SCRUM-13",
+  "status": "Готово"
+ },
+ "backend_class_dps_survivability_budget_task.md": {
+  "key": "SCRUM-14",
+  "status": "Готово"
+ },
+ "backend_class_identity_unique_patterns_task.md": {
+  "key": "SCRUM-15",
+  "status": "Готово"
+ },
+ "backend_codex_encyclopedia_menu_task.md": {
+  "key": "SCRUM-16",
+  "status": "Готово"
+ },
+ "backend_combat_feedback_hp_bars_hitbox_hammer_nerf_task.md": {
+  "key": "SCRUM-17",
+  "status": "Готово"
+ },
+ "backend_contextual_ui_frame_theme_integration_task.md": {
+  "key": "SCRUM-118",
+  "status": "Готово"
+ },
+ "backend_dark_mage_guitarist_balance_amp_cleanup_task.md": {
+  "key": "SCRUM-19",
+  "status": "Готово"
+ },
+ "backend_economy_artifact_power_class_affinity_task.md": {
+  "key": "SCRUM-20",
+  "status": "Готово"
+ },
+ "backend_elite_boss_size_epic_terror_task.md": {
+  "key": "SCRUM-119",
+  "status": "Готово"
+ },
+ "backend_elite_overhaul_size_unique_attacks_task.md": {
+  "key": "SCRUM-22",
+  "status": "Готово"
+ },
+ "backend_elite_reward_center_screen_task.md": {
+  "key": "SCRUM-23",
+  "status": "Готово"
+ },
+ "backend_enemy_scaling_elite_boss_difficulty_task.md": {
+  "key": "SCRUM-24",
+  "status": "Готово"
+ },
+ "backend_escape_stats_compact_grouped_layout_task.md": {
+  "key": "SCRUM-25",
+  "status": "Готово"
+ },
+ "backend_event_node_click_and_screen_art_integration_task.md": {
+  "key": "SCRUM-26",
+  "status": "Готово"
+ },
+ "backend_fix_windows_installer_integrity_task.md": {
+  "key": "SCRUM-27",
+  "status": "Готово"
+ },
+ "backend_full_attributes_wiring_audit_task.md": {
+  "key": "SCRUM-28",
+  "status": "Готово"
+ },
+ "backend_hero_select_fullscreen_grid_task.md": {
+  "key": "SCRUM-29",
+  "status": "Готово"
+ },
+ "backend_hero_select_portrait_left_radar_task.md": {
+  "key": "SCRUM-110",
+  "status": "Готово"
+ },
+ "backend_integrate_stat_icons_hud_remove_obstacles_task.md": {
+  "key": "SCRUM-31",
+  "status": "Готово"
+ },
+ "backend_levelup_rework_five_options_task.md": {
+  "key": "SCRUM-109",
+  "status": "Готово"
+ },
+ "backend_mage_buff_guitarist_rework_task.md": {
+  "key": "SCRUM-33",
+  "status": "Готово"
+ },
+ "backend_main_gd_module_split_task.md": {
+  "key": "SCRUM-34",
+  "status": "Готово"
+ },
+ "backend_map_2k_camera_zoom_task.md": {
+  "key": "SCRUM-35",
+  "status": "Готово"
+ },
+ "backend_melee_targeting_test_regression_task.md": {
+  "key": "SCRUM-36",
+  "status": "Готово"
+ },
+ "backend_melee_targeting_test_update_strip_task.md": {
+  "key": "SCRUM-37",
+  "status": "Готово"
+ },
+ "backend_meta_ascension_levels_task.md": {
+  "key": "SCRUM-38",
+  "status": "Готово"
+ },
+ "backend_new_classes_foundation_task.md": {
+  "key": "SCRUM-39",
+  "status": "Готово"
+ },
+ "backend_performance_code_quality_review_task.md": {
+  "key": "SCRUM-40",
+  "status": "Готово"
+ },
+ "backend_project_folder_cleanup_unused_files_task.md": {
+  "key": "SCRUM-41",
+  "status": "Готово"
+ },
+ "backend_random_events_ten_scenarios_task.md": {
+  "key": "SCRUM-42",
+  "status": "Готово"
+ },
+ "backend_release_builds_windows_macos_task.md": {
+  "key": "SCRUM-43",
+  "status": "Готово"
+ },
+ "backend_release_v0_1_1_merge_main_builds_task.md": {
+  "key": "SCRUM-44",
+  "status": "Готово"
+ },
+ "backend_release_v0_1_2_merge_main_builds_task.md": {
+  "key": "SCRUM-45",
+  "status": "Готово"
+ },
+ "backend_review_codex_animation_task.md": {
+  "key": "SCRUM-46",
+  "status": "Готово"
+ },
+ "backend_review_codex_hero_select_class_identity_task.md": {
+  "key": "SCRUM-47",
+  "status": "Готово"
+ },
+ "backend_route_map_start_selection_scroll_task.md": {
+  "key": "SCRUM-48",
+  "status": "Готово"
+ },
+ "backend_run_flow_victory_attribute_shop_levelup_button_task.md": {
+  "key": "SCRUM-49",
+  "status": "Готово"
+ },
+ "backend_runtime_smoke_combat_director_type_inference_task.md": {
+  "key": "SCRUM-50",
+  "status": "Готово"
+ },
+ "backend_runtime_smoke_knight_block_counter_failure_task.md": {
+  "key": "SCRUM-51",
+  "status": "Готово"
+ },
+ "backend_secondary_attributes_universal_usefulness_task.md": {
+  "key": "SCRUM-52",
+  "status": "Готово"
+ },
+ "backend_settings_display_audio_task.md": {
+  "key": "SCRUM-53",
+  "status": "Готово"
+ },
+ "backend_settings_tabs_volume_keybindings_task.md": {
+  "key": "SCRUM-54",
+  "status": "Готово"
+ },
+ "backend_shop_inline_artifact_icons_cursor_integration_task.md": {
+  "key": "SCRUM-55",
+  "status": "Готово"
+ },
+ "backend_ultimate_ability_framework_task.md": {
+  "key": "SCRUM-56",
+  "status": "Готово"
+ },
+ "backend_unused_assets_cleanup_task.md": {
+  "key": "SCRUM-57",
+  "status": "Готово"
+ },
+ "backend_ux_improvements_navigation_codex_images_task.md": {
+  "key": "SCRUM-58",
+  "status": "Готово"
+ },
+ "bug_ascension_elite_instant_phase_dead_task.md": {
+  "key": "SCRUM-59",
+  "status": "Готово"
+ },
+ "bug_ascension_mini_elite_chance_dead_task.md": {
+  "key": "SCRUM-60",
+  "status": "Готово"
+ },
+ "bug_ascension_selector_not_clamped_task.md": {
+  "key": "SCRUM-61",
+  "status": "Готово"
+ },
+ "bug_boss_phase_hazard_naked_circle_task.md": {
+  "key": "SCRUM-62",
+  "status": "Готово"
+ },
+ "bug_cleanup_artifact_iteration_previews_left_in_assets_task.md": {
+  "key": "SCRUM-63",
+  "status": "Готово"
+ },
+ "codex_design_artifact_icons_dark_fantasy_task.md": {
+  "key": "SCRUM-64",
+  "status": "Готово"
+ },
+ "codex_design_artifact_icons_per_item_regen_task.md": {
+  "key": "SCRUM-65",
+  "status": "Готово"
+ },
+ "codex_design_artifact_icons_reference_dark_artifacts_redraw_task.md": {
+  "key": "SCRUM-66",
+  "status": "Готово"
+ },
+ "codex_design_artifact_icons_rpg_item_style_task.md": {
+  "key": "SCRUM-67",
+  "status": "Готово"
+ },
+ "codex_design_contextual_ui_frame_kits_generation_task.md": {
+  "key": "SCRUM-117",
+  "status": "Готово"
+ },
+ "codex_design_effects_sprites_dnd_restyle_task.md": {
+  "key": "SCRUM-69",
+  "status": "Готово"
+ },
+ "codex_design_new_classes_art_task.md": {
+  "key": "SCRUM-70",
+  "status": "Готово"
+ },
+ "codex_design_new_classes_restyle_to_starter_style_task.md": {
+  "key": "SCRUM-71",
+  "status": "Готово"
+ },
+ "codex_design_route_map_background_task.md": {
+  "key": "SCRUM-72",
+  "status": "Готово"
+ },
+ "design_all_classes_three_weapons_visual_upgrade_task.md": {
+  "key": "SCRUM-73",
+  "status": "Готово"
+ },
+ "design_arena_backgrounds_2k_dnd_expansion_task.md": {
+  "key": "SCRUM-74",
+  "status": "Готово"
+ },
+ "design_arena_backgrounds_2k_native_task.md": {
+  "key": "SCRUM-75",
+  "status": "Готово"
+ },
+ "design_artifact_icons_fantasy_restyle_task.md": {
+  "key": "SCRUM-76",
+  "status": "Готово"
+ },
+ "design_artifact_icons_final_redesign_task.md": {
+  "key": "SCRUM-77",
+  "status": "Готово"
+ },
+ "design_artifact_icons_realistic_dnd_reference_redraw_task.md": {
+  "key": "SCRUM-78",
+  "status": "Готово"
+ },
+ "design_artifact_icons_shop_cursor_task.md": {
+  "key": "SCRUM-79",
+  "status": "Готово"
+ },
+ "design_cartoon_character_style_fix_task.md": {
+  "key": "SCRUM-80",
+  "status": "Готово"
+ },
+ "design_contextual_ui_frames_rethink_task.md": {
+  "key": "SCRUM-111",
+  "status": "Готово"
+ },
+ "design_dark_mage_sprite_legs_rework_task.md": {
+  "key": "SCRUM-82",
+  "status": "Готово"
+ },
+ "design_elite_sprites_upsize_attack_vfx_task.md": {
+  "key": "SCRUM-83",
+  "status": "Готово"
+ },
+ "design_escape_stats_fantasy_frames_task.md": {
+  "key": "SCRUM-84",
+  "status": "Готово"
+ },
+ "design_event_shop_campfire_backgrounds_style_unification_task.md": {
+  "key": "SCRUM-85",
+  "status": "Готово"
+ },
+ "design_sprite_quality_audit_cleanup_task.md": {
+  "key": "SCRUM-86",
+  "status": "Готово"
+ },
+ "design_stat_icons_hud_visual_task.md": {
+  "key": "SCRUM-87",
+  "status": "Готово"
+ },
+ "design_ui_overhaul_flat_battle_bg_motion_polish_task.md": {
+  "key": "SCRUM-88",
+  "status": "Готово"
+ },
+ "design_visual_redesign_after_animation_task.md": {
+  "key": "SCRUM-89",
+  "status": "Готово"
+ },
+ "design_weapon_art_v2_proportions_knight_task.md": {
+  "key": "SCRUM-90",
+  "status": "Готово"
+ },
+ "design_weapon_attack_vfx_animations_polish_task.md": {
+  "key": "SCRUM-91",
+  "status": "Готово"
+ },
+ "documentation_post_changes_domain_split_task.md": {
+  "key": "SCRUM-92",
+  "status": "Готово"
+ },
+ "elite_boss_wave_balance_camera_task.md": {
+  "key": "SCRUM-93",
+  "status": "Готово"
+ },
+ "qa_review_backend_ascension_difficulty_ladder_task.md": {
+  "key": "SCRUM-125",
+  "status": "Готово"
+ },
+ "qa_review_backend_elite_reward_center_screen_task.md": {
+  "key": "SCRUM-112",
+  "status": "Готово"
+ },
+ "qa_review_backend_hero_select_portrait_left_radar_task.md": {
+  "key": "SCRUM-115",
+  "status": "Готово"
+ },
+ "qa_review_backend_levelup_rework_five_options_task.md": {
+  "key": "SCRUM-114",
+  "status": "Готово"
+ },
+ "qa_review_backend_project_folder_cleanup_unused_files_task.md": {
+  "key": "SCRUM-127",
+  "status": "Готово"
+ },
+ "qa_review_bug_ascension_elite_instant_phase_dead_task.md": {
+  "key": "SCRUM-99",
+  "status": "Готово"
+ },
+ "qa_review_bug_ascension_mini_elite_chance_dead_task.md": {
+  "key": "SCRUM-100",
+  "status": "Готово"
+ },
+ "qa_review_bug_ascension_selector_not_clamped_task.md": {
+  "key": "SCRUM-101",
+  "status": "Готово"
+ },
+ "qa_review_bug_boss_phase_hazard_naked_circle_task.md": {
+  "key": "SCRUM-102",
+  "status": "Готово"
+ },
+ "qa_review_codex_design_effects_sprites_dnd_restyle_task.md": {
+  "key": "SCRUM-103",
+  "status": "Готово"
+ },
+ "qa_review_codex_design_new_classes_restyle_to_starter_style_task.md": {
+  "key": "SCRUM-104",
+  "status": "Готово"
+ },
+ "qa_review_design_contextual_ui_frames_rethink_task.md": {
+  "key": "SCRUM-116",
+  "status": "Готово"
+ },
+ "qa_review_design_weapon_attack_vfx_animations_polish_task.md": {
+  "key": "SCRUM-126",
+  "status": "Готово"
+ },
+ "qa_review_test_mini_elite_spawn_behavioral_coverage_task.md": {
+  "key": "SCRUM-113",
+  "status": "Готово"
+ },
+ "test_mini_elite_spawn_behavioral_coverage_task.md": {
+  "key": "SCRUM-108",
+  "status": "Готово"
+ },
+ "process_feature_block_0_1_3_task.md": {
+  "key": "SCRUM-128",
+  "status": "Готово"
+ },
+ "qa_review_backend_contextual_ui_frame_theme_integration_task.md": {
+  "key": "SCRUM-121",
+  "status": "Готово"
+ },
+ "qa_review_backend_elite_boss_size_epic_terror_task.md": {
+  "key": "SCRUM-122",
+  "status": "Готово"
+ },
+ "qa_review_codex_design_contextual_ui_frame_kits_generation_task.md": {
+  "key": "SCRUM-120",
+  "status": "Готово"
+ },
+ "qa_review_ux_levelup_fab_return_button_dedup_task.md": {
+  "key": "SCRUM-124",
+  "status": "Готово"
+ },
+ "ux_levelup_fab_return_button_dedup_task.md": {
+  "key": "SCRUM-123",
+  "status": "Готово"
+ },
+ "design_codex_elite_boss_sprite_resolution_upscale_task.md": {
+  "key": "SCRUM-135",
+  "status": "К выполнению"
+ },
+ "qa_recheck_backend_ascension_difficulty_ladder_task.md": {
+  "key": "SCRUM-136",
+  "status": "Готово"
+ },
+ "qa_recheck_backend_project_folder_cleanup_unused_files_task.md": {
+  "key": "SCRUM-137",
+  "status": "Готово"
+ },
+ "qa_recheck_design_weapon_attack_vfx_animations_polish_task.md": {
+  "key": "SCRUM-138",
+  "status": "Готово"
+ },
+ "bug_hero_select_carousel_radar_name_layout_task.md": {
+  "key": "SCRUM-140",
+  "status": "Готово"
+ },
+ "bug_elite_reward_window_offcenter_task.md": {
+  "key": "SCRUM-144",
+  "status": "Готово"
+ },
+ "qa_review_bug_hero_select_carousel_radar_name_layout_task.md": {
+  "key": "SCRUM-141",
+  "status": "Готово"
+ },
+ "bug_boss_fight_timer_panel_visible_task.md": {
+  "key": "SCRUM-145",
+  "status": "Готово"
+ },
+ "backend_escape_pause_character_overview_anywhere_task.md": {
+  "key": "SCRUM-146",
+  "status": "К выполнению"
+ },
+ "design_codex_ui_dark_fantasy_restyle_task.md": {
+  "key": "SCRUM-147",
+  "status": "К выполнению"
+ }
+}
