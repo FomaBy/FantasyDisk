@@ -1,6 +1,6 @@
 # BUG: Боссовский hazard смены фазы — голый залитый красный круг (пропущен VFX-полировкой)
 
-Статус: fixed 2026-06-12 (Claude-Designer)
+Статус: done 2026-06-12 (fixed Claude-Designer)
 Приоритет: normal
 Роль: Design (Claude-Designer) / Back-end (зона — рендер во время боя)
 Найдено QA при тестировании: `docs/tasks/qa_review_design_weapon_attack_vfx_animations_polish_task.md`
