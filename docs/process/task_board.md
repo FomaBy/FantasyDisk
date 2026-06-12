@@ -85,13 +85,23 @@
 | [backend_melee_targeting_test_regression_task.md](../tasks/backend_melee_targeting_test_regression_task.md) | Back-end | done | Закрыта 2026-06-12: outdated sword strip test/data обновлены под frustum 90°/600, melee + runtime smoke green |
 | [codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/codex_design_new_classes_restyle_to_starter_style_task.md) | Design (Codex → ревью Claude-Designer) | in_progress | Синхронизировано 2026-06-12: task-файл уже `in_progress`; не переотправлять |
 | [backend_secondary_attributes_universal_usefulness_task.md](../tasks/backend_secondary_attributes_universal_usefulness_task.md) | Back-end | done | Закрыта 2026-06-12: вторичные атрибуты видимы/универсальны, class interpretations + runtime hooks, smoke green |
-| [backend_settings_tabs_volume_keybindings_task.md](../tasks/backend_settings_tabs_volume_keybindings_task.md) | Back-end | new | ПРИОРИТЕТ: настройки не влезают в окно, слайдеры громкости не видны (регрессия после UI-редизайна?) — вкладки Экран/Звук/Управление, полноширинные слайдеры, ребиндинг WASD/паузы/ультимейта |
-| [backend_ultimate_ability_framework_task.md](../tasks/backend_ultimate_ability_framework_task.md) | Back-end | new | КРУПНАЯ: фреймворк ультимейтов (заряд от боя, клавиша R, HUD-шкала, ultimate_multiplier наконец работает) + 9 уникальных ультов по классам |
+| [backend_settings_tabs_volume_keybindings_task.md](../tasks/backend_settings_tabs_volume_keybindings_task.md) | Back-end | done | Закрыта 2026-06-12: settings tabs, full-width audio sliders, persisted movement/pause/ultimate keybindings, smoke green |
+| [backend_ultimate_ability_framework_task.md](../tasks/backend_ultimate_ability_framework_task.md) | Back-end | done | Закрыта 2026-06-12: ultimate charge/HUD/action, 9 class ultimates, boss cap, Codex/docs/tests; runtime smoke green |
 | [design_all_classes_three_weapons_visual_upgrade_task.md](../tasks/design_all_classes_three_weapons_visual_upgrade_task.md) | Design | done | Закрыта 2026-06-11: новые 6 героев art-approved, полный visual set 27 weapon PNG готов, Back-end handoff со socket/scale notes заполнен |
 | [backend_all_classes_three_weapons_gameplay_task.md](../tasks/backend_all_classes_three_weapons_gameplay_task.md) | Back-end | done | Закрыта 2026-06-11: 9 классов x 3 weapon variants, 27 IDs, новые backend modes; Design visual set позже закрыт, runtime smoke green |
 | [backend_melee_targeting_test_update_strip_task.md](../tasks/backend_melee_targeting_test_update_strip_task.md) | Back-end | done | Закрыта PM 2026-06-11: handoff устарел — тест уже обновлен под strip и проходит (проверено прогоном) |
 | [design_artifact_icons_shop_cursor_task.md](../tasks/design_artifact_icons_shop_cursor_task.md) | Design | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |
 | [backend_shop_inline_artifact_icons_cursor_integration_task.md](../tasks/backend_shop_inline_artifact_icons_cursor_integration_task.md) | Back-end | done | Добавлена на доску при сверке 2026-06-11 (handoff, закрыта исполнителем) |
+
+## Новые (выданы PM 2026-06-12, пакет «глобальный баланс + сложность + события + оружейный арт»)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_class_dps_survivability_budget_task.md](../tasks/backend_class_dps_survivability_budget_task.md) | Back-end | new | ПЕРВАЯ: измерительный харнесс DPS (1 цель / 5 целей / EHP), профили solo/aoe/balanced, компенсация выживаемости уроном, ребаланс 27 оружий ±10% |
+| [backend_enemy_scaling_elite_boss_difficulty_task.md](../tasks/backend_enemy_scaling_elite_boss_difficulty_task.md) | Back-end | new | После бюджета: монстры сильнее, плавная кривая stage_scale (сила и цены из одного источника), элитки-ЧЕЛЛЕНДЖ с фазой 50% и наградой 1-из-3 артефактов, убер-босс 3+ фазы |
+| [backend_random_events_ten_scenarios_task.md](../tasks/backend_random_events_ten_scenarios_task.md) | Back-end | new | 10+ новых событий: истории с выбором, засады, отдых, чеки атрибутов; 12 идей PM в задаче, креатив приветствуется |
+| [design_weapon_art_v2_proportions_knight_task.md](../tasks/design_weapon_art_v2_proportions_knight_task.md) | Design | new | ПРИОРИТЕТ: оружие Рыцаря переделать полностью; все 27 спрайтов до планки; оружие меньше в пропорции (50-65% высоты), не перекрывает персонажа |
+| [design_weapon_attack_vfx_animations_polish_task.md](../tasks/design_weapon_attack_vfx_animations_polish_task.md) | Design | new | После оружия v2: красивые анимации атак всех 27 оружий + аудит и оформление всех «голых» эффектов (лужи яда, зоны, ауры, ульты) |
 
 ## Активные / Неподтвержденные
 
