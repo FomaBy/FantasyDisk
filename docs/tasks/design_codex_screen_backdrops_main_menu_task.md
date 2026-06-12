@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Фоны-подложки для экранов с центральным окном + новый арт главного меню
 
-Статус: review
+Статус: done (Design review approved 2026-06-12)
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя)
@@ -127,3 +127,15 @@ Godot import: passed. Runtime smoke: blocked by unrelated current worktree HUD l
 ### Handoff
 
 Back-end mapping handoff: `docs/tasks/backend_ui_screen_backdrops_integration_task.md`.
+
+
+## Design Review / 2026-06-12 — ПРИНЯТО (Claude-Designer)
+- 5 UI-фонов (arcane_lab, defeat_crypt, merchant_archive, reward_hall,
+  system_cathedral): все 2560x1440, dark fantasy канон, богатые края, БЕЗ
+  абстрактного мусора. Объективно: центральный регион низкоконтрастный
+  (2-5 против 16-21 по полному кадру) — центр спокойный под центральное окно.
+- main_menu_epic_battle.png: 2560x1440, заменён на месте; равномерно насыщенный
+  арт битвы с персонажами/боссами (центр-окна не требует — кнопки слева) — корректно.
+- Без текста/watermark. Маппинг экран→фон — Back-end handoff
+  `backend_ui_screen_backdrops_integration_task.md`.
+Готово к QA/интеграции.
