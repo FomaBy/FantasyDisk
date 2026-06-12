@@ -33,6 +33,20 @@ Versioning:
 - All implementation tasks should be done on `dev` unless a task explicitly says otherwise.
 - Check the current branch before making changes; do not do ordinary feature work directly on `main`.
 
+Full autonomy (user directive, 2026-06-12):
+- ALL agents (Claude chats, board workers, QA, Codex threads) work autonomously:
+  do NOT ask the user questions, do NOT wait for user input or confirmation.
+- The user pre-approved all in-scope changes. If a requirement is ambiguous,
+  make the most reasonable product decision yourself, implement it, and record
+  the decision + rationale in the task file report.
+- If something truly cannot proceed (missing asset, broken dependency,
+  conflicting requirement), do not stall: mark the task `blocked` with a precise
+  reason on the board, create a handoff if another role can unblock it, and move
+  to the next task. PM reviews blocked items.
+- Questions for the user are allowed ONLY for destructive/irreversible actions
+  outside the repo (deleting user files, external accounts, payments) — these
+  are out of scope for executors anyway.
+
 Feature block:
 - LIFTED 2026-06-12 with the v0.1.3 release. Current sprint is `Спринт 0.1.4`
   (Jira board 1); new tasks may be dispatched normally again.
