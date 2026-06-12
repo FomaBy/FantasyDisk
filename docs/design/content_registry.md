@@ -440,6 +440,11 @@ Contextual UI direction 2026-06-12: `docs/design/ui_contextual_concept.md` defin
 | `screen_event_background` | Фон экрана события | `assets/sprites/ui/screens/screen_event_background.png` | Активный фон Event, battle reward, upgrade, victory/death fallback screens |
 | `screen_shop_background` | Фон магазина | `assets/sprites/ui/screens/screen_shop_background.png` | Активный фон Shop screen |
 | `screen_campfire_background` | Фон костра | `assets/sprites/ui/screens/screen_campfire_background.png` | Активный фон Rest/Campfire screen |
+| `ui_backdrop_system_cathedral` | System/Codex/Settings backdrop | `assets/backgrounds/ui/ui_backdrop_system_cathedral.png` | Dark fantasy cathedral backdrop, calm center |
+| `ui_backdrop_merchant_archive` | Shop/Event merchant backdrop | `assets/backgrounds/ui/ui_backdrop_merchant_archive.png` | Dark archive/shop backdrop, calm center |
+| `ui_backdrop_arcane_lab` | Level-up/Magic/Meta backdrop | `assets/backgrounds/ui/ui_backdrop_arcane_lab.png` | Necromantic lab backdrop, calm center |
+| `ui_backdrop_reward_hall` | Reward/Victory backdrop | `assets/backgrounds/ui/ui_backdrop_reward_hall.png` | Crimson/gold reliquary hall backdrop |
+| `ui_backdrop_defeat_crypt` | Defeat/Danger backdrop | `assets/backgrounds/ui/ui_backdrop_defeat_crypt.png` | Crypt/ossuary backdrop |
 | `route_map_backdrop` | Жутковатый фон маршрутной карты | `assets/backgrounds/route_map_backdrop.png` | Низкоконтрастный dark fantasy фон full-screen route map, спокойная центральная зона под узлы и линии |
 | `stone_garden` | Каменный Сад | `assets/backgrounds/field_stone_garden.png` | Базовый фон |
 | `marsh` | Топь | `assets/backgrounds/field_marsh.png` | Болотный фон |
