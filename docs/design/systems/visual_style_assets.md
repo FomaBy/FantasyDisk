@@ -6,17 +6,19 @@
 
 ## Artifact And Shop Icons
 
-All artifacts from `ProgressionData.ARTIFACTS` and all shop-only items from `ProgressionData.SHOP_ITEMS` have unique stylized PNG icons. Artifact icons were regenerated per item on 2026-06-12 as `256x256` RGBA transparent dark fantasy item icons after direct user feedback: one finished connected artifact object per icon, no built-in UI frame, no pedestal, no background tile, no loose shards or particles, and a controlled upper-left light source. Shop-only icons keep the earlier fantasy-medallion treatment.
+All artifacts from `ProgressionData.ARTIFACTS` and all shop-only items from `ProgressionData.SHOP_ITEMS` have unique PNG assets. Artifact icons were replaced on 2026-06-12 as `256x256` RGBA transparent realistic epic D&D/tabletop fantasy raster magic items after direct user feedback: one finished painted object per icon, no pentagram-style pictograms, no built-in UI frame, no pedestal, no background tile, no loose shards or particles, and readable object lighting/materials. Shop-only icons keep the earlier fantasy-medallion treatment.
 
 Canonical folders:
 
 - `assets/sprites/ui/icons/artifacts/` - `artifact_<artifact_id>.png` (`256x256`);
 - `assets/sprites/ui/icons/shop/` - `shop_<shop_item_id>.png`;
-- `assets/sprites/ui/icons/artifact_per_item_preview.png` - active artifact QA preview sheet with 256px and 40px samples;
+- `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png` - active artifact QA preview sheet with large and 40px samples;
+- `assets/sprites/ui/icons/artifact_per_item_preview.png` - superseded per-item pictogram preview retained as legacy reference only;
 - `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png` - legacy 40px artifact preview from the previous pass;
 - `assets/sprites/ui/icons/artifact_generated_concept_40px_preview.png` - legacy preview path updated to the same active icon set;
 - `assets/sprites/ui/icons/artifact_dark_artifacts_40px_preview.png` - legacy preview path updated to the same active icon set;
-- `tools/regenerate_artifact_icons_per_item.py` - active per-item artifact icon regeneration pipeline;
+- `tools/extract_realistic_dnd_artifact_icons.py` - active raster source sheet extraction and validation pipeline;
+- `tools/regenerate_artifact_icons_per_item.py` - superseded per-item artifact icon regeneration pipeline kept for reference;
 - `tools/validate_artifact_icons.py` - artifact icon technical validation and QA preview builder;
 - `tools/final_redesign_artifact_icons.py` - superseded artifact icon polish/extraction pipeline kept for reference;
 - `tools/generate_reference_dark_artifact_icons.py` - superseded deterministic artifact icon generator kept for reference only;
@@ -33,7 +35,7 @@ Visual rules:
 - no emoji/default placeholders;
 - no text inside icons;
 - keep artifact silhouettes readable at `40x40`;
-- artifact icons use centered dark fantasy items on transparent backgrounds, with one complete connected object per icon; shop-only icons use ornate fantasy-medallion frames, strong dark outlines, fantasy-metal/gem accents, glow and transparent background;
+- artifact icons use centered realistic D&D/tabletop fantasy magic items on transparent backgrounds, with one complete painted object per icon; shop-only icons use ornate fantasy-medallion frames, strong dark outlines, fantasy-metal/gem accents, glow and transparent background;
 - avoid reusing the exact same icon with only a recolor for distinct items.
 
 ## Shop Frames And Cursor
