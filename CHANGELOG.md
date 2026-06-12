@@ -4,6 +4,8 @@
 
 ## [Unreleased] — ветка dev
 
+- UI: тёплый рестайл интерфейса под D&D-таверну — рамки/панели/кнопки/окна из тёмного дерева и кожи с латунной окантовкой и заклёпками, системные иконки в тёплом золоте, без циановых самоцветов; светлый текст сохранён читаемым.
+
 - Design overhaul: добавлен reusable fantasy UI texture kit (`assets/sprites/ui/frames/global/`, system icons), основные панели/кнопки/HUD/level-up/route nodes переведены на texture frames; 4 боевых фона заменены на плоские top-down 2560x1440 ground textures; добавлены отдельные motion profiles для 6 новых классов.
 
 - Новые классы (art pass): 6 полноценных dark fantasy full-art спрайтов персонажей (512x512 RGBA) и 6 weapon PNG (256x256 RGBA) для Ассасина/Рейнджера/Доктора/Химика/Рыцаря/Друида приняты Design-review. Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и добавлены в `assets/sprites/characters/cutout/`; манифест `scripts/sliced_rig_manifest.gd` обновлён.

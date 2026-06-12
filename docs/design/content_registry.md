@@ -334,7 +334,9 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 
 ## UI Visual Kit 2026-06-12
 
-Radical UI pass заменяет основные StyleBoxFlat-плоскости на reusable fantasy texture frames. Генератор: `tools/generate_ui_overhaul_visual_assets.py`.
+Radical UI pass заменяет основные StyleBoxFlat-плоскости на reusable fantasy texture frames. Генератор: `tools/generate_ui_overhaul_visual_assets.py`. Источник истины для рамок и системных иконок: `tools/generate_ui_tavern_theme.py` (часть в `generate_ui_overhaul_visual_assets.py` устарела — не перегенерировать ею).
+
+Стиль UI (рестайл 2026-06-12): тёплая D&D-таверна — тёмное дерево/кожа, латунная окантовка с заклёпками, свечной янтарь, без циановых самоцветов; панели тёмные ради читаемости светлого текста, кнопки на тёплой коричневой базе, системные иконки в золоте/янтаре.
 
 | ID | Ассет | Роль |
 | --- | --- | --- |
