@@ -1364,7 +1364,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	var panel := PanelContainer.new()
 	panel.name = "EliteArtifactRewardPanel"
 	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(1120, 430)
+	panel.custom_minimum_size = Vector2(1140, 560)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
@@ -1397,14 +1397,15 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	rewards_row.name = "EliteArtifactRewardRow"
 	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rewards_row.custom_minimum_size = Vector2(0.0, 180.0)
-	rewards_row.add_theme_constant_override("separation", 18)
+	rewards_row.custom_minimum_size = Vector2(0.0, 380.0)
+	rewards_row.add_theme_constant_override("separation", 22)
 	box.add_child(rewards_row)
 
 	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_stage, 3)
+	var reward_cards: Array[Button] = []
 	for reward in choices:
 		var reward_data: Dictionary = reward
-		var button := _make_level_up_reward_button(reward_data)
+		var button := _make_elite_artifact_card(reward_data)
 		button.name = "EliteArtifactRewardButton%d" % rewards_row.get_child_count()
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_run(reward_data)
@@ -1413,7 +1414,21 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 				on_done.call()
 		)
 		rewards_row.add_child(button)
+		reward_cards.append(button)
 
+	# Клавиатура/геймпад: стрелки двигают фокус по кругу, Enter/Space выбирают.
+	for index in range(reward_cards.size()):
+		var card := reward_cards[index]
+		var left := reward_cards[(index - 1 + reward_cards.size()) % reward_cards.size()]
+		var right := reward_cards[(index + 1) % reward_cards.size()]
+		card.focus_neighbor_left = left.get_path()
+		card.focus_neighbor_right = right.get_path()
+		card.focus_neighbor_top = card.get_path()
+		card.focus_neighbor_bottom = card.get_path()
+	if not reward_cards.is_empty():
+		reward_cards[0].grab_focus()
+
+	# Выбор обязателен: Escape ничего не закрывает.
 	game.ui_escape_action = Callable()
 	game._play_sfx("level_up")
 
@@ -1470,6 +1485,76 @@ func _make_level_up_reward_button(reward: Dictionary) -> Button:
 	description_label.add_theme_font_size_override("font_size", 13)
 	description_label.add_theme_color_override("font_color", Color(0.64, 0.72, 0.80, 1.0))
 	content.add_child(description_label)
+	return button
+
+
+func _make_elite_artifact_card(reward: Dictionary) -> Button:
+	# Крупная карточка трофея элитки: иконка 112px, название/тир цветом тира,
+	# эффект и классовая интерпретация. Кликается целиком, фокусируется с клавиатуры.
+	var tier_color := _artifact_tier_color(reward)
+	var button := _make_button("")
+	button.custom_minimum_size = Vector2(340, 372)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.focus_mode = Control.FOCUS_ALL
+	button.clip_text = true
+	button.tooltip_text = _format_level_up_reward_text(reward)
+	_apply_fantasy_button_theme(button, "reward")
+
+	var content := VBoxContainer.new()
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.offset_left = 18.0
+	content.offset_top = 18.0
+	content.offset_right = -18.0
+	content.offset_bottom = -18.0
+	content.alignment = BoxContainer.ALIGNMENT_CENTER
+	content.add_theme_constant_override("separation", 10)
+	button.add_child(content)
+
+	var icon_row := HBoxContainer.new()
+	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	content.add_child(icon_row)
+	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(112, 112)))
+
+	var title_label := Label.new()
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_label.text = str(reward.get("title", "Артефакт"))
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_label.add_theme_font_size_override("font_size", 22)
+	title_label.add_theme_color_override("font_color", tier_color)
+	content.add_child(title_label)
+
+	var tier_label := Label.new()
+	tier_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tier_label.text = _artifact_tier_text(reward)
+	tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tier_label.add_theme_font_size_override("font_size", 15)
+	tier_label.add_theme_color_override("font_color", tier_color)
+	content.add_child(tier_label)
+
+	var effect_label := Label.new()
+	effect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	effect_label.text = str(reward.get("description", ""))
+	effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	effect_label.add_theme_font_size_override("font_size", 15)
+	effect_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
+	content.add_child(effect_label)
+
+	var interpretation := _reward_interpretation_text(reward)
+	if interpretation != "":
+		var interp_label := Label.new()
+		interp_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		interp_label.text = interpretation
+		interp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		interp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		interp_label.add_theme_font_size_override("font_size", 13)
+		interp_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
+		content.add_child(interp_label)
+
 	return button
 
 
@@ -3204,6 +3289,11 @@ func _artifact_icon_texture(artifact_id: String) -> Texture2D:
 
 
 const TIER_LABELS := {1: "Tier 1", 2: "Tier 2 — редкий", 3: "Tier 3 — легендарный"}
+const TIER_COLORS := {
+	1: Color(0.80, 0.86, 0.94, 1.0),
+	2: Color(0.46, 0.78, 1.0, 1.0),
+	3: Color(1.0, 0.74, 0.30, 1.0),
+}
 const CLASS_RU := {
 	"berserk": "Берсерк",
 	"dark_mage": "Темный маг",
@@ -3241,6 +3331,10 @@ func _artifact_affinity_suffix(definition: Dictionary) -> String:
 
 func _artifact_tier_text(definition: Dictionary) -> String:
 	return str(TIER_LABELS.get(int(definition.get("tier", 1)), "Tier 1"))
+
+
+func _artifact_tier_color(definition: Dictionary) -> Color:
+	return TIER_COLORS.get(int(definition.get("tier", 1)), TIER_COLORS[1])
 
 
 func _artifact_tooltip(artifact: Dictionary) -> String:

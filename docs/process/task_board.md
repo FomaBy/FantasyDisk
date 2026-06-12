@@ -138,7 +138,7 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [backend_elite_reward_center_screen_task.md](../tasks/backend_elite_reward_center_screen_task.md) | Back-end | new | Награда элитки — модальное окно 3 артефактов по центру экрана, бой на паузе, выбор обязателен |
+| [backend_elite_reward_center_screen_task.md](../tasks/backend_elite_reward_center_screen_task.md) | Back-end | done | Done 2026-06-12: крупные карточки (иконка 112px, тир цветом, эффект, интерпретация) по центру, выбор обязателен, навигация клавиатурой/геймпадом, краевой кейс таймера покрыт тестом. 6 smoke зелёные. Скриншоты недоступны (windowed не рендерит) — центрирование на автотесте |
 | [backend_levelup_rework_five_options_task.md](../tasks/backend_levelup_rework_five_options_task.md) | Back-end | new | Level-up: 5 вариантов (характеристики — редко, с пометкой), ровно 1 пик за уровень, кнопка возврата внизу при закрытии, красивые карточки |
 | [backend_hero_select_portrait_left_radar_task.md](../tasks/backend_hero_select_portrait_left_radar_task.md) | Back-end | new | Выбор героя v3: портрет слева во всю высоту, досье справа, лента 9 героев, роза ветров по 8 статам с общей нормировкой. Заменяет сетку 3x3 |
 

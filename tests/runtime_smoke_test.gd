@@ -1819,11 +1819,55 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		quit(1)
 		return
 	elite_main.set("route_stage", 4)
+	# Снимок до награды: текущее число артефактов забега.
+	var pre_player: Node = elite_main.combat._snapshot_player_for_menu()
+	var artifacts_before: int = (pre_player.get("artifacts") as Array).size()
+	pre_player.queue_free()
+
 	elite_main.ui._show_elite_artifact_reward(Callable())
 	await process_frame
 	var elite_reward_buttons := elite_main.find_children("EliteArtifactRewardButton*", "Button", true, false)
 	if elite_reward_buttons.size() != 3:
 		push_error("Expected elite victory reward to offer exactly 3 artifact choices.")
+		quit(1)
+		return
+	# Центрирование: панель присутствует (анкор CENTER на любом разрешении).
+	if elite_main.find_child("EliteArtifactRewardPanel", true, false) == null:
+		push_error("Expected centered elite reward panel.")
+		quit(1)
+		return
+	# Клавиатура/геймпад: первая карточка получает фокус.
+	if not (elite_reward_buttons[0] as Control).has_focus():
+		push_error("Expected first elite reward card to grab keyboard focus.")
+		quit(1)
+		return
+
+	# Выбор одной карточки выдаёт РОВНО один артефакт (две другие — нет).
+	(elite_reward_buttons[0] as Button).emit_signal("pressed")
+	await process_frame
+	var post_player: Node = elite_main.combat._snapshot_player_for_menu()
+	var artifacts_after: int = (post_player.get("artifacts") as Array).size()
+	post_player.queue_free()
+	if artifacts_after != artifacts_before + 1:
+		push_error("Expected exactly one artifact granted by elite reward (%d -> %d)." % [artifacts_before, artifacts_after])
+		quit(1)
+		return
+
+	# Краевой кейс: победа в элитном бою (в т.ч. элитка пала на последней секунде
+	# таймера) -> окно награды показывается ДО экрана докачки/победы.
+	elite_main.call("_start_combat", false, "elite")
+	await process_frame
+	elite_main.combat.call("_end_combat", true)
+	await process_frame
+	var victory_banner := elite_main.find_child("VictoryBanner", true, false) as Button
+	if victory_banner == null:
+		push_error("Expected victory banner on elite victory before the reward.")
+		quit(1)
+		return
+	victory_banner.emit_signal("pressed")
+	await process_frame
+	if elite_main.find_child("EliteArtifactRewardScreen", true, false) == null:
+		push_error("Expected elite reward window to appear before the attribute shop on elite victory.")
 		quit(1)
 		return
 	elite_main.queue_free()
