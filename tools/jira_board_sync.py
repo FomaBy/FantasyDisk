@@ -120,7 +120,8 @@ def parse_task(path: str) -> dict:
         role, itype = "animation", "Задача"
     else:
         role, itype = "backend", "Задача"
-    next_version = bool(re.search(r"^Версия:\s*0\.1\.4", text, re.M))
+    ver_m = re.search(r"^Версия:\s*(\d+\.\d+\.\d+)", text, re.M)
+    task_version = ver_m.group(1) if ver_m else None
     # исполнитель: codex — генерация/исполнение контуром Codex; иначе claude
     is_codex = name.startswith("codex_") or bool(
         re.search(r"^(Исполнитель|Executor):.*Codex", text, re.M | re.I))
@@ -129,7 +130,7 @@ def parse_task(path: str) -> dict:
     return {"file": name, "title": title[:250], "status": status,
             "role": role, "itype": itype, "excerpt": excerpt,
             "blocked": raw_status.startswith("blocked"),
-            "next_version": next_version and not name.startswith("bug_"),
+            "task_version": task_version if not name.startswith("bug_") else None,
             "executor": executor}
 
 
@@ -149,6 +150,8 @@ def main():
     sprint_queue = []
     for path in sorted(glob.glob(TASKS_GLOB)):
         t = parse_task(path)
+        # задача будущей версии (не текущего спринта-релиза) -> бэклог без fixVersion
+        t["next_version"] = bool(t["task_version"] and fix_version and t["task_version"] != fix_version)
         target_status = STATUS_TARGET[t["status"]]
         entry = mapping.get(t["file"])
         labels = ["fantasydisk", t["role"], t["executor"]] + (["blocked"] if t["blocked"] else [])
