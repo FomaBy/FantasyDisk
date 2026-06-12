@@ -38,3 +38,5 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - Новые sprite redraw / visual style issues -> Design.
 - Walk/attack/cast/death motion polish -> Animator.
 - Кодовые hooks, lifecycle, cleanup, state signals -> Back-end.
+
+- Оружие в сокете получает собственный action-kick (`cutout_rig_2d.gd::_socket_action_kick`) поверх движения руки: anticipation/выпад на attack, отдача+подброс на shoot, подъём на cast — оживляет дальнобой/каст-оружие. Базовые снаряды (`projectile.gd`) тянут дешёвый мировой `Line2D`-трейл (кэп точек, без аллокаций нод в кадре).
