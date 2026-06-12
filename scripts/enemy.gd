@@ -492,6 +492,26 @@ func _safe_radius(radius: float) -> float:
 	return minf(radius, ARENA_SIZE.y * 0.34)
 
 
+func _shake_player_camera(intensity: float, duration := 0.18) -> void:
+	# Тряска на slam/детонациях из скриптов врага (без ссылки на game): флаг
+	# берётся из tree-root меты, выставляемой main при загрузке настроек.
+	if not bool(get_tree().root.get_meta("screen_shake", true)):
+		return
+	var player := _player()
+	if player == null:
+		return
+	var camera := player.get_node_or_null("Camera2D") as Camera2D
+	if camera == null:
+		return
+	var tween := camera.create_tween()
+	var steps := 5
+	for i in range(steps):
+		var falloff: float = 1.0 - float(i) / float(steps)
+		var off: Vector2 = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * intensity * falloff
+		tween.tween_property(camera, "offset", off, duration / float(steps))
+	tween.tween_property(camera, "offset", Vector2.ZERO, duration / float(steps))
+
+
 func _elite_attack_damage(config: Dictionary, player: Node2D) -> float:
 	var damage := contact_damage * float(config["damage_factor"])
 	var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
@@ -506,6 +526,7 @@ func _strike_slam_wave(config: Dictionary, player: Node2D) -> void:
 	var radius := _safe_radius(float(config["radius"]) * (1.3 if phase2 else 1.0))
 	var knockback := float(config["knockback"]) * (1.3 if phase2 else 1.0)
 	_spawn_shockwave_ring(global_position, radius)
+	_shake_player_camera(9.0 if phase2 else 7.0, 0.2)
 	if phase2:
 		_spawn_shockwave_ring(global_position, radius * 0.6)
 	if player.global_position.distance_to(global_position) > radius:

@@ -1012,9 +1012,41 @@ func _initialize() -> void:
 	await _test_epic_elite_boss_scale_hitbox()
 	await _test_elite_phase2_escalation()
 	await _test_boss_zone_wave_safe_corridor()
+	await _test_elite_boss_presentation(main_scene)
 
 	print("Runtime smoke test passed.")
 	quit()
+
+
+func _test_elite_boss_presentation(main_scene: PackedScene) -> void:
+	# Подача: баннер появления элитки + hit-stop (замедление времени и возврат).
+	var pm := main_scene.instantiate()
+	root.add_child(pm)
+	await process_frame
+	pm.set("selected_character_id", "berserk")
+	pm.call("_start_combat")
+	await process_frame
+
+	pm.combat.call("_spawn_elite_enemy")
+	await process_frame
+	if pm.find_child("CombatIntroBanner", true, false) == null:
+		_fail("Expected elite spawn to flash an intro banner.")
+		return
+
+	# Hit-stop: time_scale падает, затем восстанавливается (восстанавливаем до
+	# любых ассертов, чтобы не оставить замедление следующим тестам).
+	pm.combat.call("_hit_stop", 0.3, 0.3)
+	var slowed := Engine.time_scale < 0.99
+	pm.combat.call("_restore_time_scale")
+	if not slowed:
+		_fail("Expected hit-stop to slow time scale on elite/boss death.")
+		return
+	if absf(Engine.time_scale - 1.0) > 0.001:
+		_fail("Expected time scale to restore to 1.0 after hit-stop.")
+		return
+
+	pm.queue_free()
+	await process_frame
 
 
 func _test_boss_zone_wave_safe_corridor() -> void:

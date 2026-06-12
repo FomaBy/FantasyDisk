@@ -778,7 +778,13 @@ func _spend_run_money(amount: int) -> bool:
 
 
 func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute_shop := true) -> void:
-	# Желтая стрелка прокачки: level-up при непотраченных выборах, иначе докачка за деньги.
+	# При pending level-up единственная точка входа — нижняя кнопка
+	# "Повышение уровня (N)" с бейджем. FAB остается только для докачки за золото.
+	if game.pending_level_ups > 0:
+		_update_level_up_button()
+		return
+
+	# Желтая стрелка прокачки: докачка характеристик за деньги.
 	var fab := _make_button("⬆")
 	fab.name = "UpgradeFabButton"
 	fab.custom_minimum_size = Vector2(64, 64)
@@ -792,46 +798,15 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 	fab.offset_bottom = -24.0
 	fab.add_theme_font_size_override("font_size", 30)
 	_apply_fantasy_button_theme(fab, "level_up")
-	fab.tooltip_text = "Прокачка: непотраченные уровни или докачка характеристик за золото"
-	if not allow_attribute_shop and game.pending_level_ups <= 0:
+	fab.tooltip_text = "Докачка характеристик за золото"
+	if not allow_attribute_shop:
 		fab.disabled = true
-		fab.tooltip_text = "Нет непотраченных уровней"
+		fab.tooltip_text = "Докачка здесь недоступна"
 	fab.pressed.connect(func() -> void:
-		if game.pending_level_ups > 0:
-			game.level_up_return_to_map = false
-			game.push_pause("level_up")
-			_show_level_up_screen(false)
-		elif allow_attribute_shop:
+		if allow_attribute_shop:
 			_show_attribute_shop(return_action)
 	)
 	root.add_child(fab)
-
-	if game.pending_level_ups > 0:
-		var badge := Label.new()
-		badge.name = "UpgradeFabBadge"
-		badge.text = str(game.pending_level_ups)
-		badge.add_theme_font_size_override("font_size", 16)
-		badge.add_theme_color_override("font_color", Color(0.08, 0.05, 0.02, 1.0))
-		var badge_panel := PanelContainer.new()
-		badge_panel.name = "UpgradeFabBadgePanel"
-		badge_panel.anchor_left = 1.0
-		badge_panel.anchor_top = 1.0
-		badge_panel.anchor_right = 1.0
-		badge_panel.anchor_bottom = 1.0
-		badge_panel.offset_left = -36.0
-		badge_panel.offset_top = -104.0
-		badge_panel.offset_right = -10.0
-		badge_panel.offset_bottom = -78.0
-		var badge_style := StyleBoxFlat.new()
-		badge_style.bg_color = Color(1.0, 0.84, 0.22, 1.0)
-		badge_style.set_corner_radius_all(12)
-		badge_panel.add_theme_stylebox_override("panel", badge_style)
-		badge_panel.add_child(badge)
-		root.add_child(badge_panel)
-		var pulse := badge_panel.create_tween().set_loops()
-		pulse.tween_property(badge_panel, "scale", Vector2(1.12, 1.12), 0.45).set_trans(Tween.TRANS_SINE)
-		pulse.tween_property(badge_panel, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_SINE)
-		badge_panel.pivot_offset = Vector2(13, 13)
 
 
 func _show_codex_screen() -> void:
@@ -1150,6 +1125,26 @@ func _show_settings_menu() -> void:
 	screen_hint.add_theme_font_size_override("font_size", 14)
 	screen_hint.add_theme_color_override("font_color", Color(0.70, 0.76, 0.82, 1.0))
 	screen_box.add_child(screen_hint)
+
+	var shake_row := HBoxContainer.new()
+	shake_row.name = "ScreenShakeRow"
+	shake_row.add_theme_constant_override("separation", 12)
+	screen_box.add_child(shake_row)
+	var shake_label := Label.new()
+	shake_label.text = "Тряска камеры"
+	shake_label.custom_minimum_size = Vector2(220, 36)
+	shake_label.add_theme_color_override("font_color", Color(0.86, 0.90, 0.96, 1.0))
+	shake_row.add_child(shake_label)
+	var shake_toggle := CheckBox.new()
+	shake_toggle.name = "ScreenShakeToggle"
+	shake_toggle.button_pressed = game.screen_shake_enabled
+	_style_checkbox(shake_toggle)
+	shake_toggle.toggled.connect(func(pressed: bool) -> void:
+		game.screen_shake_enabled = pressed
+		game.get_tree().root.set_meta("screen_shake", pressed)
+		game.save_game_settings()
+	)
+	shake_row.add_child(shake_toggle)
 
 	var audio_tab := _make_settings_tab("Звук")
 	var audio_box := audio_tab.get_child(0) as VBoxContainer
@@ -2518,6 +2513,44 @@ func _spawn_level_up_effect() -> void:
 		effect.setup(game.current_player)
 
 
+func _show_combat_title_banner(title: String, color: Color, big := false) -> void:
+	# Баннер появления элитки/босса: имя/титул вспыхивает над ареной и гаснет,
+	# бой не ставится на паузу. Самоосвобождается; привязан к HUD-слою.
+	if game.hud_layer == null or not is_instance_valid(game.hud_layer):
+		return
+	var existing: Node = game.hud_layer.get_node_or_null("CombatIntroBanner")
+	if existing != null:
+		existing.queue_free()
+	var banner := Label.new()
+	banner.name = "CombatIntroBanner"
+	banner.process_mode = Node.PROCESS_MODE_ALWAYS
+	banner.text = title
+	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	banner.add_theme_font_size_override("font_size", 66 if big else 40)
+	banner.add_theme_color_override("font_color", color)
+	banner.add_theme_color_override("font_outline_color", Color(0.06, 0.03, 0.02, 1.0))
+	banner.add_theme_constant_override("outline_size", 9 if big else 6)
+	banner.anchor_left = 0.5
+	banner.anchor_right = 0.5
+	banner.anchor_top = 0.0
+	banner.anchor_bottom = 0.0
+	banner.offset_left = -640.0
+	banner.offset_right = 640.0
+	banner.offset_top = 120.0 if big else 92.0
+	banner.offset_bottom = banner.offset_top + (90.0 if big else 56.0)
+	banner.modulate.a = 0.0
+	banner.scale = Vector2(0.9, 0.9)
+	banner.pivot_offset = Vector2(640.0, 0.0)
+	game.hud_layer.add_child(banner)
+	var tween := banner.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(banner, "modulate:a", 1.0, 0.18)
+	tween.tween_property(banner, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_interval(1.1 if big else 0.7)
+	tween.chain().tween_property(banner, "modulate:a", 0.0, 0.4)
+	tween.chain().tween_callback(banner.queue_free)
+
+
 func _update_level_up_button() -> void:
 	if game.pending_level_ups <= 0:
 		if game.level_up_button != null and is_instance_valid(game.level_up_button):
@@ -2525,7 +2558,10 @@ func _update_level_up_button() -> void:
 		game.level_up_button = null
 		return
 
-	if game.hud_layer == null or not is_instance_valid(game.hud_layer):
+	var level_button_parent: CanvasLayer = game.hud_layer
+	if level_button_parent == null or not is_instance_valid(level_button_parent):
+		level_button_parent = game.ui_layer
+	if level_button_parent == null or not is_instance_valid(level_button_parent):
 		return
 
 	if game.level_up_button == null or not is_instance_valid(game.level_up_button):
@@ -2546,9 +2582,37 @@ func _update_level_up_button() -> void:
 		game.level_up_button.add_theme_font_size_override("font_size", 22)
 		_apply_fantasy_button_theme(game.level_up_button, "level_up")
 		game.level_up_button.pressed.connect(_open_pending_level_up)
-		game.hud_layer.add_child(game.level_up_button)
+		level_button_parent.add_child(game.level_up_button)
+
+		var badge_panel := PanelContainer.new()
+		badge_panel.name = "LevelUpPlusBadgePanel"
+		badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		badge_panel.anchor_left = 1.0
+		badge_panel.anchor_top = 0.0
+		badge_panel.anchor_right = 1.0
+		badge_panel.anchor_bottom = 0.0
+		badge_panel.offset_left = -34.0
+		badge_panel.offset_top = -10.0
+		badge_panel.offset_right = -6.0
+		badge_panel.offset_bottom = 18.0
+		var badge_style := StyleBoxFlat.new()
+		badge_style.bg_color = Color(1.0, 0.84, 0.22, 1.0)
+		badge_style.set_corner_radius_all(12)
+		badge_panel.add_theme_stylebox_override("panel", badge_style)
+		game.level_up_button.add_child(badge_panel)
+
+		var badge := Label.new()
+		badge.name = "LevelUpPlusBadge"
+		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		badge.add_theme_font_size_override("font_size", 16)
+		badge.add_theme_color_override("font_color", Color(0.08, 0.05, 0.02, 1.0))
+		badge_panel.add_child(badge)
 
 	game.level_up_button.text = "Повышение уровня (%d)" % game.pending_level_ups
+	var badge_label := game.level_up_button.find_child("LevelUpPlusBadge", true, false) as Label
+	if badge_label != null:
+		badge_label.text = str(game.pending_level_ups)
 
 
 func _level_up_affinity_suffix(reward: Dictionary) -> String:

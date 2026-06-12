@@ -70,6 +70,39 @@ func _configure_player_camera(player: Node2D) -> void:
 	camera.position_smoothing_speed = 7.0
 
 
+func _shake_camera(intensity: float, duration := 0.22) -> void:
+	# Умеренная тряска (тумблер game.screen_shake_enabled): короткие затухающие
+	# толчки смещения камеры игрока. Твин привязан к камере — гибнет вместе с ней.
+	if not game.screen_shake_enabled:
+		return
+	if game.current_player == null or not is_instance_valid(game.current_player):
+		return
+	var camera := game.current_player.get_node_or_null("Camera2D") as Camera2D
+	if camera == null:
+		return
+	var tween := camera.create_tween()
+	var steps := 6
+	for i in range(steps):
+		var falloff: float = 1.0 - float(i) / float(steps)
+		var off: Vector2 = Vector2(game.rng.randf_range(-1.0, 1.0), game.rng.randf_range(-1.0, 1.0)) * intensity * falloff
+		tween.tween_property(camera, "offset", off, duration / float(steps))
+	tween.tween_property(camera, "offset", Vector2.ZERO, duration / float(steps))
+
+
+func _hit_stop(duration := 0.3, time_scale := 0.32) -> void:
+	# Триумф на смерти элитки/босса: кратко замедляем РЕАЛЬНОЕ время, затем
+	# восстанавливаем (таймер игнорирует time_scale, переживает паузу).
+	if Engine.time_scale < 0.99:
+		return
+	Engine.time_scale = time_scale
+	var timer: SceneTreeTimer = game.get_tree().create_timer(duration, true, false, true)
+	timer.timeout.connect(_restore_time_scale)
+
+
+func _restore_time_scale() -> void:
+	Engine.time_scale = 1.0
+
+
 func _end_combat(victory: bool) -> void:
 	if not game.combat_active:
 		return
@@ -359,6 +392,10 @@ func _spawn_boss() -> void:
 	boss.global_position = game.ARENA_CENTER + Vector2(0, -230)
 	_scale_boss_for_run(boss)
 	_connect_enemy_rewards(boss)
+	# Появление босса: затемнение+тряска (через камеру) и крупный титул-баннер.
+	_shake_camera(18.0, 0.5)
+	var boss_name := str(boss.get("enemy_type_name"))
+	game.ui._show_combat_title_banner(boss_name if boss_name != "" else "БОСС", Color(1.0, 0.34, 0.3), true)
 
 
 func _boss_scene_for_id(boss_id: String) -> PackedScene:
@@ -389,6 +426,9 @@ func _spawn_elite_enemy() -> void:
 	if not use_fallback_modifier:
 		_scale_elite_enemy(elite)
 	_connect_enemy_rewards(elite)
+	# Появление элитки: краткая вспышка имени над ареной.
+	var elite_name := str(elite.get("enemy_type_name"))
+	game.ui._show_combat_title_banner(elite_name if elite_name != "" else "ЭЛИТА", Color(1.0, 0.6, 0.32), false)
 
 
 func _random_elite_scene() -> PackedScene:
@@ -525,6 +565,13 @@ func _connect_enemy_rewards(enemy: Node) -> void:
 
 
 func _on_enemy_died(enemy: Node2D) -> void:
+	# Подача триумфа: hit-stop + тряска на смерти элитки/босса (масштаб по рангу).
+	if enemy.is_in_group("bosses"):
+		_hit_stop(0.42, 0.26)
+		_shake_camera(22.0, 0.42)
+	elif enemy.is_in_group("elite_enemies"):
+		_hit_stop(0.3, 0.34)
+		_shake_camera(11.0, 0.26)
 	# «Сердце Пиявки» (tier 3): убийство лечит процент max HP.
 	if game.current_player != null and is_instance_valid(game.current_player):
 		var heal_percent := float((game.current_player.get("run_modifiers") as Dictionary).get("kill_heal_percent", 0.0))

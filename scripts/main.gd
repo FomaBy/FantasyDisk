@@ -328,6 +328,8 @@ var ui
 var route
 var combat
 var meta_state := {}
+# Подача боя: тряска камеры (тумблер в настройках, умеренная по умолчанию).
+var screen_shake_enabled := true
 # Единый Escape-назад: текущий экран регистрирует действие возврата;
 # сбрасывается при каждой очистке UI. В бою Escape обрабатывается отдельно (пауза).
 var ui_escape_action := Callable()
@@ -388,6 +390,9 @@ func _load_game_settings() -> void:
 	for key in audio_settings.keys():
 		audio_settings[key] = settings[key]
 	input_bindings = (settings.get("input_bindings", {}) as Dictionary).duplicate(true)
+	screen_shake_enabled = bool(settings.get("screen_shake", true))
+	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
+	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
 		ui._apply_video_settings()
@@ -401,6 +406,7 @@ func save_game_settings() -> void:
 	}
 	for key in audio_settings.keys():
 		settings[key] = audio_settings[key]
+	settings["screen_shake"] = screen_shake_enabled
 	if ui != null:
 		settings["input_bindings"] = ui._current_input_bindings()
 	else:

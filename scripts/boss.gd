@@ -250,6 +250,7 @@ func _spawn_disk_slam() -> void:
 	slam.global_position = _clamp_to_arena(global_position, 132.0)
 	slam.z_index = 9
 	parent.add_child(slam)
+	_shake_player_camera(10.0, 0.2)
 	var radius := _safe_radius(132.0 + float(boss_phase - 1) * 18.0)
 	var slam_color := Color(1.0, 0.42, 0.18, 1.0)
 	var slam_telegraph := _ascension_telegraph(0.48)
