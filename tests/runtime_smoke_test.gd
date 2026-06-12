@@ -2808,10 +2808,74 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	current_scene = null
 	await process_frame
 
-	# Багфикс 2: на возвышении 7 mini_elite_chance > 0 (потребляется в спавне волн).
+	# Багфикс 2 (данные): на возвышении 7 mini_elite_chance > 0.
 	if float(ProgressionData.ascension_difficulty_mods(7)["mini_elite_chance"]) <= 0.0:
 		_fail("Expected ascension level 7 to expose a mini-elite chance.")
 		return
+
+	# Багфикс 2 (поведение): mini_elite_chance реально ПОТРЕБЛЯЕТСЯ — мини-элитка
+	# спавнится в обычной волне. Data-only тест ровно это и пропустил в исходном баге.
+	var mini_main := main_scene.instantiate()
+	root.add_child(mini_main)
+	await process_frame
+	mini_main.set("selected_character_id", "berserk")
+	mini_main.set("selected_ascension_level", 0)
+	mini_main.call("_start_combat")
+	await process_frame
+	# Детерминированный rng + чистая арена (как соседние ascension-тесты).
+	(mini_main.get("rng") as RandomNumberGenerator).seed = 24607
+	for stray in mini_main.get_tree().get_nodes_in_group("enemies"):
+		stray.queue_free()
+	for stray in mini_main.get_tree().get_nodes_in_group("elite_enemies"):
+		stray.queue_free()
+	await process_frame
+
+	# (A) Путь потребления: _spawn_enemy_wave при forced chance=1.0 обязан создать мини-элитку.
+	#     На «мёртвой» версии (спавн не вызывается из волны) elite_enemies не вырастет.
+	(mini_main.get("run_ascension_difficulty") as Dictionary)["mini_elite_chance"] = 1.0
+	var elites_before: int = mini_main.get_tree().get_nodes_in_group("elite_enemies").size()
+	mini_main.combat.call("_spawn_enemy_wave")
+	await process_frame
+	var elites_after: int = mini_main.get_tree().get_nodes_in_group("elite_enemies").size()
+	if elites_after <= elites_before:
+		_fail("Expected ascension mini-elite to spawn via _spawn_enemy_wave (consumption path dead).")
+		return
+
+	# (B) Прямой вызов: учёт слотов + убиваемое HP (волновой elite-скейл × 0.55).
+	for stray in mini_main.get_tree().get_nodes_in_group("enemies"):
+		stray.queue_free()
+	for stray in mini_main.get_tree().get_nodes_in_group("elite_enemies"):
+		stray.queue_free()
+	await process_frame
+	var asc_force: Dictionary = (mini_main.call("ascension_difficulty") as Dictionary).duplicate()
+	asc_force["mini_elite_chance"] = 1.0
+	var used: int = int(mini_main.combat.call("_maybe_spawn_mini_elite", asc_force, 5))
+	await process_frame
+	var spawned: Array = mini_main.get_tree().get_nodes_in_group("elite_enemies")
+	if spawned.size() != 1:
+		_fail("Expected exactly one mini-elite from _maybe_spawn_mini_elite (got %d)." % spawned.size())
+		return
+	if used < 2 or used > 5:
+		_fail("Expected mini-elite slot usage 2..5 (1 elite + 1-2 retinue), got %d." % used)
+		return
+	# Учёт слотов: группа enemies = мини-элитка (она же в enemies через _ready) + свита = used.
+	var enemies_total: int = mini_main.get_tree().get_nodes_in_group("enemies").size()
+	if enemies_total != used:
+		_fail("Expected slot accounting enemies==used (%d vs %d)." % [enemies_total, used])
+		return
+	# Убиваемая, не танк: HP = тот же волновой elite-скейл × 0.55.
+	var mini_node: Node = spawned[0]
+	var mini_hp: float = float(mini_node.get("max_health"))
+	var ref_elite: Node = (load(mini_node.scene_file_path) as PackedScene).instantiate()
+	ref_elite.add_to_group("elite_enemies")
+	mini_main.add_child(ref_elite)
+	mini_main.combat.call("_scale_enemy_for_current_wave", ref_elite)
+	var ref_hp: float = float(ref_elite.get("max_health"))
+	if ref_hp <= 0.0 or absf(mini_hp - ref_hp * 0.55) > ref_hp * 0.03:
+		_fail("Expected mini-elite HP ≈ wave elite ×0.55 (mini %f vs ref %f)." % [mini_hp, ref_hp])
+		return
+	mini_main.queue_free()
+	await process_frame
 
 	asc_main.queue_free()
 	await process_frame

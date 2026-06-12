@@ -118,7 +118,7 @@
 | [bug_ascension_selector_not_clamped_task.md](../tasks/bug_ascension_selector_not_clamped_task.md) | normal | Back-end | done | Возвышения 2.0 | Fixed 2026-06-12 (0d184af): кламп «+» к selectable_max + защитный кламп в reset_run_ascension. Smoke зелёный. QA разблокирован |
 | [bug_boss_phase_hazard_naked_circle_task.md](../tasks/bug_boss_phase_hazard_naked_circle_task.md) | normal | Design/Back-end | done | VFX-полировка | Fixed Design 2026-06-12 (ff0b4c7): Polygon2D -> HazardVfx; QA passed |
 | [bug_cleanup_artifact_iteration_previews_left_in_assets_task.md](../tasks/bug_cleanup_artifact_iteration_previews_left_in_assets_task.md) | normal | Back-end | done | Чистка проекта | Fixed 2026-06-12 (3b7c260): 10 preview/concept итераций (+.import) вынесены в backup; audit_unused_assets чинён (tools/-генератор как output больше не считается usage). Повторный аудит чист. Категория #2 закрыта |
-| [test_mini_elite_spawn_behavioral_coverage_task.md](../tasks/test_mini_elite_spawn_behavioral_coverage_task.md) | low | Back-end | new | Возвышения 2.0 / QA | Тест-хардненинг: фикс Возвышения 7 корректен, но тест data-only (`mini_elite_chance>0`), фактический спавн не покрыт — повтор паттерна, скрывшего исходный баг. Добавить поведенческий тест спавна мини-элитки |
+| [test_mini_elite_spawn_behavioral_coverage_task.md](../tasks/test_mini_elite_spawn_behavioral_coverage_task.md) | low | Back-end | done | Возвышения 2.0 / QA | Тест-хардненинг: фикс Возвышения 7 корректен, но тест data-only (`mini_elite_chance>0`), фактический спавн не покрыт — повтор паттерна, скрывшего исходный баг. Добавить поведенческий тест спавна мини-элитки |
 
 ## QA / Review (создано dispatcher 2026-06-12)
 
