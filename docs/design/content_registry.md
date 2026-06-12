@@ -1,6 +1,6 @@
 # FantasyDisk Content Registry
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 
 Этот документ задает правило для всех будущих задач: любая игровая сущность должна иметь понятное имя, стабильный ID и место в документации. Рандом в игре может выбирать только из заранее определенных сущностей, а не создавать безымянный контент, на который потом невозможно сослаться.
 
@@ -65,12 +65,12 @@
 | `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано |
 | `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/cutout/dark_mage_*.png` | Реализовано |
 | `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/cutout/guitarist_*.png` | Реализовано |
-| `assassin` | Ассасин | Быстрый крит-мили, чакрамы, яд | `scripts/progression_data.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано (art 2026-06-11) |
-| `ranger` | Рейнджер | Дальний точный контроль, арбалет, ловушки | `scripts/progression_data.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано (art 2026-06-11) |
-| `doctor` | Доктор | Выживание через урон, зелья, чума | `scripts/progression_data.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано (art 2026-06-11) |
-| `chemist` | Химик | AoE и DoT-зоны, взрывы, кислота | `scripts/progression_data.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано (art 2026-06-11) |
-| `knight` | Рыцарь | Танк и тяжелый контроль, копье, щит | `scripts/progression_data.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано (art 2026-06-11) |
-| `druid` | Друид | Призыв и природные зоны, тотемы | `scripts/progression_data.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано (art 2026-06-11) |
+| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано |
+| `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано |
+| `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
+| `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
+| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано |
+| `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
 
 ## Новые Классы 0.2 (Фундамент, 2026-06-11)
 
@@ -176,22 +176,22 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `electric_guitar` | Электрогитара | Гитарист | Звуковая волна вперед | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `bass_guitar` | Бас-гитара | Гитарист | Частый слабый контроль-пульс с сильным отталкиванием | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `sound_amp` | Звуковой усилитель | Гитарист | Деплойный усилитель: живет ~7с, лимит 1 + floor(Лидерство/4) | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
-| `chakrams` | Чакрамы | Ассасин | Boomerang-коридор туда и обратно, crit-friendly | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
-| `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
-| `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
-| `moon_crossbow` | Лунный арбалет | Рейнджер | Дальний точный piercing shot | `ProgressionData.RANGER_WEAPONS` | Реализовано |
-| `storm_longbow` | Грозовой длинный лук | Рейнджер | Три дальних грозовых луча веером | `ProgressionData.RANGER_WEAPONS` | Реализовано |
-| `hunter_trap` | Охотничий капкан | Рейнджер | Deploy trap: burst + knockback при входе врага | `ProgressionData.RANGER_WEAPONS` | Реализовано |
-| `restore_potion` | Зелье восстановления | Доктор | AoE throw + self heal | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
-| `plague_syringe` | Чумной шприц | Доктор | Poison injection + sustain | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
-| `bone_saw` | Костяная пила | Доктор | Ближний saw arc/flurry, DoT и small heal | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
-| `blast_powder` | Взрывная пыль | Химик | AoE explosion + poison cloud | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
-| `acid_flask` | Кислотная колба | Химик | Большая acid pool / DoT-zone | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
+| `chakrams` | Чакрамы | Ассасин | Boomerang-коридор туда и обратно; критовые попадания дают рывок | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне + crit dash hook | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT + crit dash hook | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `moon_crossbow` | Лунный арбалет | Рейнджер | Stance-charged piercing shot | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `storm_longbow` | Грозовой длинный лук | Рейнджер | Stance-charged веер грозовых лучей | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `hunter_trap` | Охотничий капкан | Рейнджер | Deploy trap: burst + knockback; stance charge усиливает | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `restore_potion` | Зелье восстановления | Доктор | Drain/lifesteal-связь к цели | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
+| `plague_syringe` | Чумной шприц | Доктор | Drain-связь с poison DoT и sustain | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
+| `bone_saw` | Костяная пила | Доктор | Ближний saw arc/flurry, DoT и lifesteal от урона | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
+| `blast_powder` | Взрывная пыль | Химик | AoE explosion + spark cloud; combo с другим элементом | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
+| `acid_flask` | Кислотная колба | Химик | Большая poison/acid pool; combo explosion с другим элементом | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
 | `homunculus_vial` | Склянка гомункула | Химик | Temporary minion scaling from magic damage | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
-| `long_spear` | Копье | Рыцарь | Длинный точечный strip, defense passive | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
-| `tower_shield` | Башенный щит | Рыцарь | Shield bash / frontal control, tank identity | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
-| `holy_flail` | Освященный кистень | Рыцарь | Medium circular heavy swing | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
-| `summon_amulet` | Амулет призыва | Друид | Beast pack scaling from Leadership | `ProgressionData.DRUID_WEAPONS` | Реализовано |
+| `long_spear` | Копье | Рыцарь | Длинный точечный strip + block/counter passive | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `tower_shield` | Башенный щит | Рыцарь | Shield bash / frontal control + сильный block/counter | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `holy_flail` | Освященный кистень | Рыцарь | Medium circular heavy swing + сильнее counter damage | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `summon_amulet` | Амулет призыва | Друид | Командуемая beast pack, scaling from Leadership | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `briar_staff` | Посох терний | Друид | Thorn zone, AoE DoT, crowd control | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `raven_totem` | Вороний тотем | Друид | Totem pulses, Leadership-scaled deploy limit | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 
