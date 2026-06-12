@@ -443,6 +443,8 @@ func ascension_difficulty() -> Dictionary:
 
 
 func reset_run_ascension() -> void:
+	# Подстраховка: уровень забега не выше открытого максимума выбранного героя.
+	selected_ascension_level = clampi(selected_ascension_level, 0, ascension_selectable_max(selected_character_id))
 	run_ascension_difficulty = PROGRESSION_DATA.ascension_difficulty_mods(selected_ascension_level)
 
 

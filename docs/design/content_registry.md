@@ -136,7 +136,7 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 
 Папка: `assets/sprites/effects/`. Генераторы: `tools/generate_attack_vfx.py` (оружие игрока), `tools/generate_elite_vfx.py` (уникальные атаки элиток). Все PNG с прозрачным фоном.
 
-Опасные зоны врагов/босса (2026-06-12) оформлены через `scripts/hazard_vfx.gd` (`HazardVfx.telegraph`/`detonate`): тинтуемая текстура `hazard_zone.png` (ведьмино-кольцо опасности с насечками и мягкой заливкой) на windup, затем `impact_ring`+`impact_flash` детонация, для яда — бурлящая `poison_pool` лужа. Заменены голые `Polygon2D`-круги боссовских зон (rift zone, disk slam) и элитного яда (hazard zone + persistent puddle).
+Опасные зоны врагов/босса (2026-06-12) оформлены через `scripts/hazard_vfx.gd` (`HazardVfx.telegraph`/`detonate`): тинтуемая текстура `hazard_zone.png` (ведьмино-кольцо опасности с насечками и мягкой заливкой) на windup, затем `impact_ring`+`impact_flash` детонация, для яда — бурлящая `poison_pool` лужа. Заменены голые `Polygon2D`-круги боссовских зон (rift zone, disk slam, зона смены фазы) и элитного яда (hazard zone + persistent puddle).
 
 Оружие игрока (используются `scripts/attack_vfx.gd`):
 

@@ -57,6 +57,7 @@ var _elite_attack_cooldown := 0.0
 var _elite_attack_phase_left := 0.0
 var _elite_attack_targets := []
 var _elite_attack_direction := Vector2.RIGHT
+var _elite_instant_phase_applied := false
 
 const COLLISION_LAYER_PLAYER := 1
 const COLLISION_LAYER_GROUND_ENEMY := 2
@@ -340,6 +341,11 @@ func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool
 		return false
 
 	if elite_attack_state == "idle":
+		# Возвышение 4 «Свирепые элитки»: боевая фаза (спец-атака) открывается сразу —
+		# обнуляем стартовый кулдаун один раз (мета ставится в combat_director после _ready).
+		if not _elite_instant_phase_applied and bool(get_meta("ascension_instant_phase", false)):
+			_elite_instant_phase_applied = true
+			_elite_attack_cooldown = 0.0
 		_elite_attack_cooldown -= delta
 		if _elite_attack_cooldown > 0.0 or distance > float(config["trigger_range"]):
 			return false

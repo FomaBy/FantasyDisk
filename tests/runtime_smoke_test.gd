@@ -2736,8 +2736,13 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	root.add_child(asc_main)
 	await process_frame
 	asc_main.set("selected_character_id", "berserk")
-	# Обнуляем мета-сейв, чтобы наградные баффы не искажали проверку difficulty.
-	asc_main.set("meta_state", MetaProgression.default_state())
+	# Мета-сейв с разблокированными уровнями (selectable_max>=2), чтобы уровень 2
+	# не клампился; наградные баффы тут не влияют на цены.
+	var price_meta := MetaProgression.default_state()
+	price_meta = MetaProgression.record_boss_victory(price_meta, "berserk", 0)
+	price_meta = MetaProgression.record_boss_victory(price_meta, "berserk", 1)
+	price_meta = MetaProgression.record_boss_victory(price_meta, "berserk", 2)
+	asc_main.set("meta_state", price_meta)
 	asc_main.set("selected_ascension_level", 0)
 	asc_main.call("reset_run_ascension")
 	var price_l0: int = asc_main.ui._attribute_buy_cost()
@@ -2748,22 +2753,66 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 		_fail("Expected ascension 2 (greedy merchants) to raise attribute prices.")
 		return
 
-	# Уровень 10 урезает макс HP игрока на старте забега.
-	var asc_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
-	root.add_child(asc_player)
-	asc_player.call("configure_character", "berserk", "sword")
-	var hp_base := float(asc_player.get("max_health"))
-	asc_player.queue_free()
+	# Уровень 10 урезает макс HP. Берсерк разблокирован до 10, сравниваем L0 vs L10
+	# при ОДНОМ мета-сейве — наградные баффы одинаковы, разница = чистый difficulty -20%.
+	var hp_meta := MetaProgression.default_state()
+	for unlock_level in range(10):
+		hp_meta = MetaProgression.record_boss_victory(hp_meta, "berserk", unlock_level)
+	asc_main.set("meta_state", hp_meta)
+	asc_main.set("selected_ascension_level", 0)
+	asc_main.call("reset_run_ascension")
+	var asc_player_l0 := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	root.add_child(asc_player_l0)
+	asc_player_l0.call("configure_character", "berserk", "sword")
+	asc_main.call("apply_ascension_bonuses", asc_player_l0)
+	var hp_l0 := float(asc_player_l0.get("max_health"))
+	asc_player_l0.queue_free()
 	asc_main.set("selected_ascension_level", 10)
 	asc_main.call("reset_run_ascension")
 	var asc_player10 := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
 	root.add_child(asc_player10)
 	asc_player10.call("configure_character", "berserk", "sword")
 	asc_main.call("apply_ascension_bonuses", asc_player10)
-	if float(asc_player10.get("max_health")) >= hp_base * 0.95:
-		_fail("Expected ascension 10 to reduce player max HP (%f vs %f)." % [float(asc_player10.get("max_health")), hp_base])
+	if float(asc_player10.get("max_health")) >= hp_l0 * 0.95:
+		_fail("Expected ascension 10 to reduce player max HP vs level 0 (%f vs %f)." % [float(asc_player10.get("max_health")), hp_l0])
 		return
 	asc_player10.queue_free()
+
+	# Багфикс 3: селектор не даёт уйти выше selectable_max — reset_run_ascension клампит.
+	asc_main.set("meta_state", MetaProgression.default_state())
+	asc_main.set("selected_character_id", "berserk")
+	asc_main.set("selected_ascension_level", 9)
+	asc_main.call("reset_run_ascension")
+	if int(asc_main.get("selected_ascension_level")) > asc_main.call("ascension_selectable_max", "berserk"):
+		_fail("Expected reset_run_ascension to clamp level to the character selectable max.")
+		return
+
+	# Багфикс 1: элитка с ascension_instant_phase открывает боевую фазу сразу (кулдаун ~0).
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	var asc_elite := (load("res://scenes/EliteArmored.tscn") as PackedScene).instantiate()
+	asc_elite.set_meta("ascension_instant_phase", true)
+	holder.add_child(asc_elite)
+	await process_frame
+	var test_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	holder.add_child(test_player)
+	test_player.global_position = asc_elite.global_position + Vector2(120, 0)
+	await process_frame
+	# Один физический тик: instant-phase обнуляет стартовый кулдаун -> элитка сразу в windup.
+	asc_elite.call("_physics_process", 0.05)
+	if float(asc_elite.get("_elite_attack_cooldown")) > 0.1 and str(asc_elite.get("elite_attack_state")) == "idle":
+		_fail("Expected ascension_instant_phase to zero the elite startup cooldown.")
+		return
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+	# Багфикс 2: на возвышении 7 mini_elite_chance > 0 (потребляется в спавне волн).
+	if float(ProgressionData.ascension_difficulty_mods(7)["mini_elite_chance"]) <= 0.0:
+		_fail("Expected ascension level 7 to expose a mini-elite chance.")
+		return
+
 	asc_main.queue_free()
 	await process_frame
 

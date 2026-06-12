@@ -173,6 +173,40 @@ func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_positio
 	return enemy
 
 
+func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
+	# Возвращает число занятых слотов (0 если не спавнили).
+	var chance := float(asc.get("mini_elite_chance", 0.0))
+	if chance <= 0.0 or remaining_slots < 2 or game.rng.randf() >= chance:
+		return 0
+	var elite_scene := _random_elite_scene()
+	if elite_scene == null:
+		return 0
+	var elite := elite_scene.instantiate() as Node2D
+	elite.add_to_group("elite_enemies")
+	game.add_child(elite)
+	elite.global_position = _random_spawn_position()
+	# Мини: масштабируется как волновой враг (elite-баланс), а не полная элитка-танк.
+	_scale_enemy_for_current_wave(elite)
+	# Мини-элитка слабее обычной элитки узла: режем HP, чтобы её можно было убить в волне.
+	if elite.get("max_health") != null:
+		var mini_hp := float(elite.get("max_health")) * 0.55
+		elite.set("max_health", mini_hp)
+		elite.set("health", mini_hp)
+		_refresh_enemy_health_bar(elite)
+	_connect_enemy_rewards(elite)
+	var used := 1
+	# Свита: 1-2 обычных врага рядом.
+	var retinue := mini(game.rng.randi_range(1, 2), remaining_slots - 1)
+	for retinue_index in range(retinue):
+		var minion_scene := _random_enemy_scene()
+		if minion_scene == null:
+			break
+		var offset: Vector2 = Vector2.RIGHT.rotated(game.rng.randf() * TAU) * game.rng.randf_range(48.0, 96.0)
+		_spawn_random_enemy(minion_scene, elite.global_position + offset, true)
+		used += 1
+	return used
+
+
 func _spawn_enemy_wave() -> void:
 	var remaining_slots = _active_enemy_cap() - game.get_tree().get_nodes_in_group("enemies").size()
 	if remaining_slots <= 0:
@@ -191,6 +225,11 @@ func _spawn_enemy_wave() -> void:
 		stage_bonus = int(floor(float(game.route_stage) * 0.5))
 		spawn_limit = int(game.WAVE_SETTINGS["elite_spawn_limit"])
 	var asc_spawn: Dictionary = game.ascension_difficulty()
+	# Возвышение 7 «Эхо бездны»: шанс мини-элитки со свитой в обычной волне.
+	if not game.boss_combat_active and game.current_combat_type != "elite":
+		remaining_slots -= _maybe_spawn_mini_elite(asc_spawn, remaining_slots)
+		if remaining_slots <= 0:
+			return
 	var density := float(asc_spawn["spawn_count_mult"])
 	if float(asc_spawn["first_wave_boost"]) > 0.0 and game.spawn_wave_index <= 1 and not game.boss_combat_active:
 		density *= 1.5

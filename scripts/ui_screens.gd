@@ -300,7 +300,11 @@ func _show_character_select() -> void:
 		refresh_asc.call()
 	)
 	asc_plus.pressed.connect(func() -> void:
-		game.selected_ascension_level = mini(game.selected_ascension_level + 1, 10)
+		# Нельзя выбрать закрытый уровень: кап = максимум среди всех героев.
+		var cap := 0
+		for cid in game.PROGRESSION_DATA.character_ids():
+			cap = maxi(cap, game.ascension_selectable_max(str(cid)))
+		game.selected_ascension_level = mini(game.selected_ascension_level + 1, cap)
 		refresh_asc.call()
 	)
 	refresh_asc.call()
