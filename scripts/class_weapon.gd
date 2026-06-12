@@ -702,11 +702,14 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	if dot_ticks <= 0:
 		return
 	# Tween на оружии замораживается паузой, в отличие от SceneTreeTimer.
+	var dot_color := Color(visual_color.r, visual_color.g, visual_color.b, 1.0)
 	var dot_tween := create_tween()
 	for tick_index in range(dot_ticks):
 		dot_tween.tween_interval(1.0 / tick_speed)
 		dot_tween.tween_callback(func() -> void:
 			_damage_enemy(enemy, tick_damage)
+			if enemy is Node2D:
+				HazardVfx.dot_tick(enemy, dot_color)
 		)
 
 

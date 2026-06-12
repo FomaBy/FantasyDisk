@@ -104,6 +104,24 @@ static func detonate(parent: Node2D, radius: float, color: Color, kind := "") ->
 	tween.tween_property(flash, "modulate:a", 0.0, 0.18)
 
 
+## Small DoT/burn tick marker on an enemy: a tiny coloured spark rising off the
+## target, distinct from the normal red hit flash so damage-over-time reads.
+static func dot_tick(target: Node2D, color: Color) -> void:
+	if target == null or not is_instance_valid(target) or not target.is_inside_tree():
+		return
+	var spark := _additive(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.85))
+	spark.scale = Vector2.ONE * 0.16
+	spark.z_index = 16
+	spark.position = Vector2(randf_range(-7.0, 7.0), -14.0)
+	target.add_child(spark)
+	var tween := spark.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(spark, "position", spark.position + Vector2(0.0, -16.0), 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(spark, "scale", Vector2.ONE * 0.26, 0.4)
+	tween.tween_property(spark, "modulate:a", 0.0, 0.4)
+	tween.chain().tween_callback(spark.queue_free)
+
+
 ## Friendly buff wave (e.g. commander aura): a ring + soft flash expanding once
 ## from the source out to `radius`. Attach to the caster so it follows/pauses.
 static func aura_pulse(parent: Node2D, radius: float, color: Color) -> void:

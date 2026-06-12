@@ -2,6 +2,13 @@ extends Node2D
 
 signal finished
 
+const RING_TEXTURE := preload("res://assets/sprites/effects/impact_ring.png")
+const FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
+const RING_RADIUS := 104.0
+
+const GOLD := Color(1.0, 0.82, 0.32, 1.0)
+const CYAN := Color(0.46, 0.92, 1.0, 1.0)
+
 var _player: Node2D = null
 
 
@@ -13,91 +20,92 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("level_up_effects")
 	z_index = 80
-	_build_placeholder()
-	_play()
+	_build_visual()
 
 
-func _build_placeholder() -> void:
-	var ring := Polygon2D.new()
-	ring.name = "LevelUpEffectRing"
-	ring.color = Color(0.36, 0.88, 1.0, 0.32)
-	ring.polygon = _ring_points(34.0, 62.0, 48)
+func _additive(texture: Texture2D, color: Color) -> Sprite2D:
+	var sprite := Sprite2D.new()
+	sprite.texture = texture
+	var material := CanvasItemMaterial.new()
+	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	sprite.material = material
+	sprite.modulate = color
+	return sprite
+
+
+func _build_visual() -> void:
+	# Текстурный праздничный бурст: золотая вспышка + расходящееся кольцо +
+	# радиальные искры + поднимающаяся подпись (вместо Polygon2D/ColorRect).
+	var flash := _additive(FLASH_TEXTURE, GOLD)
+	flash.scale = Vector2.ONE * 0.5
+	add_child(flash)
+
+	var ring := _additive(RING_TEXTURE, Color(CYAN.r, CYAN.g, CYAN.b, 0.95))
+	ring.scale = Vector2.ONE * (28.0 / RING_RADIUS)
 	add_child(ring)
 
-	var burst := Polygon2D.new()
-	burst.name = "LevelUpEffectBurst"
-	burst.color = Color(1.0, 0.78, 0.22, 0.30)
-	var burst_points := PackedVector2Array()
-	for index in range(36):
-		var radius := 74.0 if index % 2 == 0 else 36.0
-		burst_points.append(Vector2.RIGHT.rotated(TAU * float(index) / 36.0) * radius)
-	burst.polygon = burst_points
-	add_child(burst)
-
 	var label := Label.new()
-	label.name = "LevelUpEffectLabel"
 	label.text = "LEVEL UP"
-	label.position = Vector2(-86, -108)
+	label.position = Vector2(-86, -104)
 	label.size = Vector2(172, 34)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", 24)
 	label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.28, 1.0))
+	label.add_theme_color_override("font_outline_color", Color(0.18, 0.10, 0.02, 1.0))
+	label.add_theme_constant_override("outline_size", 6)
 	add_child(label)
 
-	for index in range(20):
-		var spark := ColorRect.new()
-		spark.name = "LevelUpEffectSpark%d" % index
-		spark.color = Color(0.46, 0.96, 1.0, 0.92) if index % 2 == 0 else Color(1.0, 0.74, 0.18, 0.92)
-		spark.position = Vector2.ZERO
-		spark.size = Vector2(6, 6)
-		spark.pivot_offset = Vector2(3, 3)
+	var sparks: Array[Sprite2D] = []
+	for index in range(16):
+		var spark := _additive(FLASH_TEXTURE, GOLD if index % 2 == 0 else CYAN)
+		spark.scale = Vector2.ONE * 0.12
 		add_child(spark)
+		sparks.append(spark)
+
+	_play(flash, ring, label, sparks)
 
 
-func _play() -> void:
-	scale = Vector2(0.75, 0.75)
-	modulate.a = 1.0
-
+func _play(flash: Sprite2D, ring: Sprite2D, label: Label, sparks: Array[Sprite2D]) -> void:
 	var root_tween := create_tween()
 	root_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	root_tween.set_trans(Tween.TRANS_QUAD)
-	root_tween.set_ease(Tween.EASE_OUT)
-	root_tween.tween_property(self, "scale", Vector2(1.16, 1.16), 0.26)
-	root_tween.parallel().tween_property(self, "modulate:a", 0.0, 0.78).set_delay(0.28)
+	root_tween.tween_interval(0.85)
 	root_tween.tween_callback(func() -> void:
 		finished.emit()
 		queue_free()
 	)
 
-	for child in get_children():
-		if child is Polygon2D:
-			var polygon := child as Polygon2D
-			var polygon_tween := create_tween()
-			polygon_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-			polygon_tween.tween_property(polygon, "scale", Vector2(1.35, 1.35), 0.52)
-			polygon_tween.parallel().tween_property(polygon, "rotation", TAU * 0.08, 0.52)
-		elif child is ColorRect:
-			var spark := child as ColorRect
-			var index := int(str(spark.name).trim_prefix("LevelUpEffectSpark"))
-			var angle := TAU * float(index) / 20.0
-			var distance := 58.0 + float(index % 5) * 12.0
-			var spark_tween := create_tween()
-			spark_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-			spark_tween.set_trans(Tween.TRANS_QUAD)
-			spark_tween.set_ease(Tween.EASE_OUT)
-			spark_tween.tween_property(spark, "position", Vector2.RIGHT.rotated(angle) * distance, 0.34)
-			spark_tween.parallel().tween_property(spark, "color:a", 0.0, 0.58)
+	var flash_tween := flash.create_tween()
+	flash_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	flash_tween.set_parallel(true)
+	flash_tween.tween_property(flash, "scale", Vector2.ONE * 1.1, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	flash_tween.tween_property(flash, "modulate:a", 0.0, 0.4).set_delay(0.08)
+
+	var ring_tween := ring.create_tween()
+	ring_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	ring_tween.set_parallel(true)
+	ring_tween.tween_property(ring, "scale", Vector2.ONE * (96.0 / RING_RADIUS), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	ring_tween.tween_property(ring, "modulate:a", 0.0, 0.45).set_delay(0.12)
+
+	label.modulate.a = 0.0
+	var label_tween := label.create_tween()
+	label_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	label_tween.set_parallel(true)
+	label_tween.tween_property(label, "modulate:a", 1.0, 0.18)
+	label_tween.tween_property(label, "position:y", -120.0, 0.7).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	label_tween.tween_property(label, "modulate:a", 0.0, 0.3).set_delay(0.5)
+
+	for index in range(sparks.size()):
+		var spark := sparks[index]
+		var angle := TAU * float(index) / float(sparks.size())
+		var distance := 60.0 + float(index % 5) * 14.0
+		var spark_tween := spark.create_tween()
+		spark_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		spark_tween.set_parallel(true)
+		spark_tween.tween_property(spark, "position", Vector2.RIGHT.rotated(angle) * distance, 0.42).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		spark_tween.tween_property(spark, "scale", Vector2.ONE * 0.04, 0.42)
+		spark_tween.tween_property(spark, "modulate:a", 0.0, 0.5).set_delay(0.06)
 
 
 func _physics_process(_delta: float) -> void:
 	if _player != null and is_instance_valid(_player):
 		global_position = _player.global_position
-
-
-func _ring_points(inner_radius: float, outer_radius: float, segments: int) -> PackedVector2Array:
-	var points := PackedVector2Array()
-	for index in range(segments):
-		points.append(Vector2.RIGHT.rotated(TAU * float(index) / float(segments)) * outer_radius)
-	for index in range(segments - 1, -1, -1):
-		points.append(Vector2.RIGHT.rotated(TAU * float(index) / float(segments)) * inner_radius)
-	return points
