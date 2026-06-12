@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Вторичные Атрибуты — Видимость Везде И Польза Любому Классу
 
-Статус: in_progress
+Статус: done
 Создано: 2026-06-12
 Автор: PM
 Масштаб: крупная (система + контент + UI). Можно дробить на прогоны, in_progress до конца.
@@ -67,13 +67,31 @@ Dispatch 2026-06-12: передано в Back-end чат `019eabd9-780b-78a2-9f4
   handoff Design.
 
 ## Acceptance Criteria
-- [ ] Все вторичные атрибуты видимы с иконками во всех перечисленных местах.
-- [ ] Каждый атрибут доступен каждому классу и дает осмысленный эффект с
+- [x] Все вторичные атрибуты видимы с иконками во всех перечисленных местах.
+- [x] Каждый атрибут доступен каждому классу и дает осмысленный эффект с
       текстовым описанием интерпретации.
-- [ ] Матрица stat x class задокументирована в mechanics_extract.
-- [ ] Старая политика скрытия заменена; артефактные пометки переработаны.
-- [ ] Баланс-замеры в отчете; тесты интерпретаций + все smoke зеленые.
+- [x] Матрица stat x class задокументирована в mechanics_extract.
+- [x] Старая политика скрытия заменена; артефактные пометки переработаны.
+- [x] Баланс-замеры в отчете; тесты интерпретаций + все smoke зеленые.
 
 ## Документация
 - mechanics_extract (полная матрица + формулы), content_registry (новые артефакты,
   если добавлены), current_game_state, CHANGELOG (Unreleased).
+
+## Результат 2026-06-12
+
+Back-end implementation complete:
+- `STAT_CLASS_RELEVANCE` больше не фильтрует rewards: все stats/rewards доступны всем классам.
+- Добавлена `CLASS_INTERPRETATIONS` и вывод интерпретаций в level-up, докачке атрибутов, артефактных tooltip/notes, магазине/HUD/pause и кодексе.
+- Level-up pool расширен прямыми derived-card наградами: crit, dodge, range, DoT, projectile speed, aura, buff, summon, absorb, regeneration, vampirism, ultimate scaling.
+- `UIIconRegistry` покрывает все активные derived parameters; для недостающих уникальных PNG используются documented fallback-icons из существующего набора.
+- Runtime hooks: magic enchant splash, universal DoT, leadership echo-hit, battle shout для sound/aura; Energy ускоряет Assassin dash, Knight counter и Ranger charge.
+- `class_affinity` теперь тематика/источник артефакта, а не запрет; `affinity_mods` применяются любому классу через интерпретацию.
+- Smoke coverage расширен проверкой universal interpretations, icon coverage и доступности derived rewards.
+
+Баланс-замер/оценка: интерпретации сделаны мягче прямых «родных» механик, чтобы не ломать class identity: magic enchant у физиков ~18% magic damage, universal DoT ~14% dot damage per tick, leadership echo ~34% class damage с частотой от summon amount, battle shout gated cooldown/radius. Для родственных классов коэффициенты выше или прямые механики уже остаются в weapon kit.
+
+Проверка:
+`/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+
+Result: passed.

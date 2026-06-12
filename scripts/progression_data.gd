@@ -124,19 +124,19 @@ const BERSERK_WEAPONS := {
 	"sword": {
 		"id": "sword",
 		"title": "Двуручный меч",
-		"description": "Узкая длинная полоса 120x500: быстрый точный удар по линии с высоким уроном. Passive: +10% damage.",
+		"description": "Широкий усеченный замах 90 градусов, радиус 600: надежно достает врагов рядом и впереди. Passive: +10% damage.",
 		"scene_path": "res://scenes/TwoHandedSword.tscn",
-		"attack_shape": "strip",
-		"cone_degrees": 36.0,
-		"attack_range": 500.0,
+		"attack_shape": "frustum",
+		"cone_degrees": 90.0,
+		"attack_range": 600.0,
 		"start_distance": 0.0,
-		"inner_width": 120.0,
-		"outer_width": 120.0,
-		"aoe_radius": 500.0,
-		"sweep_degrees": 36.0,
+		"inner_width": 150.0,
+		"outer_width": 1200.0,
+		"aoe_radius": 600.0,
+		"sweep_degrees": 90.0,
 		"damage_multiplier": 1.15,
 		"passive_mods": {"damage_multiplier": 1.10},
-		"fire_interval": 0.70,
+		"fire_interval": 0.58,
 		"visual_color": Color(0.62, 0.82, 1.0, 0.34),
 	},
 	"axe": {
@@ -636,8 +636,23 @@ const LEVEL_UP_REWARDS := [
 	{"id": "aoe_radius_up", "title": "+AoE Radius", "description": "+15% cone/radius coverage.", "kind": "upgrade", "mods": {"aoe_radius_multiplier": 1.15, "range_multiplier": 1.08}},
 	{"id": "pickup_radius_up", "title": "+Pickup Radius", "description": "+45 pickup radius.", "kind": "upgrade", "mods": {"pickup_radius_flat": 45.0}},
 	{"id": "defense_up", "title": "+Defense", "description": "+8% damage reduction.", "kind": "upgrade", "mods": {"defense_flat": 0.08}},
-	{"id": "magic_focus_up", "title": "+Magic Focus", "description": "+14% magic/sound damage.", "kind": "upgrade", "relevant_classes": ["dark_mage", "guitarist"], "mods": {"damage_multiplier": 1.14}},
+	{"id": "magic_focus_up", "title": "+Magic Focus", "description": "+14% magic/sound damage or weapon enchantment.", "kind": "upgrade", "mods": {"damage_multiplier": 1.14}},
 	{"id": "knockback_up", "title": "+Knockback", "description": "+18% knockback and pulse control.", "kind": "upgrade", "mods": {"knockback_multiplier": 1.18}},
+	{"id": "crit_chance_up", "title": "+Crit Chance", "description": "+7% crit chance.", "kind": "upgrade", "mods": {"crit_chance_flat": 0.07}},
+	{"id": "crit_damage_up", "title": "+Crit Damage", "description": "+35% critical damage multiplier.", "kind": "upgrade", "mods": {"crit_damage_flat": 0.35}},
+	{"id": "dodge_up", "title": "+Dodge", "description": "+6% dodge chance.", "kind": "upgrade", "mods": {"dodge_flat": 0.06}},
+	{"id": "range_up", "title": "+Attack Range", "description": "+12% attack range.", "kind": "upgrade", "mods": {"range_multiplier": 1.12}},
+	{"id": "dot_damage_up", "title": "+DoT Damage", "description": "+3 periodic damage. Non-DoT classes add small bleed/burn.", "kind": "upgrade", "mods": {"dot_damage_flat": 3.0}},
+	{"id": "dot_speed_up", "title": "+DoT Speed", "description": "+0.25 DoT ticks per second.", "kind": "upgrade", "mods": {"dot_speed_flat": 0.25}},
+	{"id": "projectile_speed_up", "title": "+Projectile Speed", "description": "+90 projectile speed and projectile weight.", "kind": "upgrade", "mods": {"projectile_speed_flat": 90.0}},
+	{"id": "aura_radius_up", "title": "+Aura Radius", "description": "+55 aura radius. Non-aura classes gain stronger close battle-shout space.", "kind": "upgrade", "mods": {"aura_radius_flat": 55.0}},
+	{"id": "buff_power_up", "title": "+Buff Power", "description": "+0.18 support/buff power.", "kind": "upgrade", "mods": {"buff_power_flat": 0.18}},
+	{"id": "summon_amount_up", "title": "+Summon Amount", "description": "+2 summon power. Non-summoners trigger echo weapons/companions.", "kind": "upgrade", "mods": {"summon_bonus": 2.0}},
+	{"id": "absorb_up", "title": "+Absorb", "description": "+4 flat damage absorption.", "kind": "upgrade", "mods": {"absorb_flat": 4.0}},
+	{"id": "regeneration_up", "title": "+Regeneration", "description": "+0.8 regeneration base.", "kind": "upgrade", "mods": {"regeneration_flat": 0.8}},
+	{"id": "vampiric_amount_up", "title": "+Vampiric Heal", "description": "+2 heal on vampiric hits.", "kind": "upgrade", "mods": {"vampiric_amount_flat": 2.0}},
+	{"id": "vampiric_chance_up", "title": "+Vampiric Chance", "description": "+8% chance to heal on hit.", "kind": "upgrade", "mods": {"vampiric_chance_flat": 0.08}},
+	{"id": "ultimate_power_up", "title": "+Ultimate Power", "description": "+0.12 reserved unique-mechanic power.", "kind": "upgrade", "mods": {"ultimate_flat": 0.12}},
 ]
 
 # Классовая релевантность урона: какой derived-параметр является «своим» уроном класса.
@@ -655,10 +670,65 @@ const CLASS_DAMAGE_PARAMETER := {
 # Атрибуты, дающие силу только перечисленным классам (по формулам derived_parameters):
 # strength питает только физический урон, intelligence — только магический,
 # energy — магический и звуковой. Отсутствие в карте = атрибут универсален.
-const STAT_CLASS_RELEVANCE := {
-	"strength": ["berserk", "assassin", "ranger", "knight"],
-	"intelligence": ["dark_mage", "doctor", "chemist"],
-	"energy": ["dark_mage", "guitarist", "doctor", "chemist", "druid"],
+const STAT_CLASS_RELEVANCE := {}
+
+const CLASS_INTERPRETATIONS := {
+	"berserk": {
+		"strength": "Прямо усиливает двуручное оружие.",
+		"intelligence": "Зачаровывает удары: часть магической силы взрывается искрой вокруг цели.",
+		"energy": "Ускоряет темп уникальных срабатываний и усиливает магическое зачарование.",
+		"leadership": "Каждые несколько ударов вызывает призрачное эхо-оружие.",
+		"magic_damage": "Работает как зачарование физического удара.",
+		"sound_wave_damage": "Дает боевой клич: периодическая волна отталкивания вокруг Берсерка.",
+		"dot_damage": "Добавляет малое кровотечение к ударам.",
+		"summon_amount": "Повышает частоту эхо-оружия.",
+	},
+	"dark_mage": {
+		"strength": "Придает вес снарядам: больше knockback и физическая устойчивость.",
+		"leadership": "Усиливает фамильярные эхо-касты и поддержку.",
+		"sound_wave_damage": "Проявляется как разломный клич, отталкивающий ближайших врагов.",
+		"summon_amount": "Учащает вспомогательные эхо-срабатывания.",
+	},
+	"guitarist": {
+		"strength": "Делает волны тяжелее и сильнее отталкивает.",
+		"intelligence": "Добавляет магический резонанс к звуку.",
+		"dot_damage": "Добавляет жгучий feedback-DoT.",
+		"summon_amount": "Увеличивает сценические deploy/echo-срабатывания.",
+	},
+	"assassin": {
+		"intelligence": "Зачаровывает лезвия фиолетовой искрой по области.",
+		"sound_wave_damage": "Дает тихий боевой клич-рывок контроля вокруг себя.",
+		"leadership": "Фантом-двойник периодически повторяет удар.",
+		"summon_amount": "Повышает частоту фантомного повторного удара.",
+	},
+	"ranger": {
+		"intelligence": "Зачаровывает болты магическим splash.",
+		"energy": "Быстрее заряжает стойку охотника.",
+		"sound_wave_damage": "Боевой окрик отталкивает врагов, если подпустили близко.",
+		"leadership": "Сокол-метка периодически повторяет урон по цели.",
+	},
+	"doctor": {
+		"strength": "Утяжеляет инструменты и повышает контроль ближней пилы.",
+		"sound_wave_damage": "Командный окрик раздвигает толпу вокруг пациента.",
+		"leadership": "Санитарная команда усиливает эхо-лечение/повтор ударов.",
+	},
+	"chemist": {
+		"strength": "Утяжеляет колбы и повышает knockback.",
+		"sound_wave_damage": "Хлопок реагентов отталкивает врагов рядом.",
+		"leadership": "Автономный помощник/эхо-реакция чаще повторяет удар.",
+	},
+	"knight": {
+		"intelligence": "Зачаровывает сталь магическим splash.",
+		"energy": "Сокращает cooldown контратаки.",
+		"sound_wave_damage": "Боевой клич щита отталкивает врагов вокруг.",
+		"leadership": "Знаменосец-аура чаще вызывает эхо-контроль.",
+	},
+	"druid": {
+		"strength": "Усиливает когти/тернии и knockback.",
+		"magic_damage": "Подпитывает природные заклинания и зачарованные зоны.",
+		"sound_wave_damage": "Зов стаи работает как контрольная волна.",
+		"energy": "Ускоряет природные циклы и уникальные cooldown.",
+	},
 }
 
 # Базовая цена артефакта в магазине по тиру (редкость и сила растут вместе).
@@ -803,18 +873,33 @@ static func damage_parameter_for(character_id: String) -> String:
 
 
 static func is_stat_relevant(stat_id: String, character_id: String) -> bool:
-	var relevant: Array = STAT_CLASS_RELEVANCE.get(stat_id, [])
-	return relevant.is_empty() or relevant.has(character_id)
+	return true
 
 
 static func is_reward_relevant(reward: Dictionary, character_id: String) -> bool:
-	var relevant_classes: Array = reward.get("relevant_classes", [])
-	if not relevant_classes.is_empty() and not relevant_classes.has(character_id):
-		return false
-	for stat_id in (reward.get("stats", {}) as Dictionary).keys():
-		if not is_stat_relevant(str(stat_id), character_id):
-			return false
 	return true
+
+
+static func class_interpretation_text(character_id: String, stat_or_parameter_id: String) -> String:
+	var class_map: Dictionary = CLASS_INTERPRETATIONS.get(character_id, {})
+	var direct := str(class_map.get(stat_or_parameter_id, ""))
+	if direct != "":
+		return direct
+	match stat_or_parameter_id:
+		"leadership", "summon_amount":
+			return "Для этого класса работает как частота вспомогательных эхо-эффектов и поддержки."
+		"intelligence", "magic_damage":
+			return "Для этого класса работает как зачарование оружия или магический splash."
+		"sound_wave_damage", "aura_radius":
+			return "Для этого класса работает как боевой клич и ближний контроль пространства."
+		"knowledge", "dot_damage", "dot_speed":
+			return "Для этого класса добавляет малый bleed/burn/poison след к ударам."
+		"energy", "ultimate_multiplier":
+			return "Ускоряет уникальную механику класса и усиливает reserved ultimate-scaling."
+		"strength", "damage":
+			return "Дает физическую весомость атакам, knockback и прямой урон."
+		_:
+			return "Универсально полезно через формулы персонажа и текущий class kit."
 
 
 static func base_stats(character_id: String) -> Dictionary:
@@ -896,6 +981,11 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var defense_flat := float(run_modifiers.get("defense_flat", 0.0)) + float(passive_mods.get("defense_flat", 0.0))
 	var pickup_radius_flat := float(run_modifiers.get("pickup_radius_flat", 0.0)) + float(passive_mods.get("pickup_radius_flat", 0.0))
 	var max_health_flat := float(run_modifiers.get("max_health_flat", 0.0)) + float(passive_mods.get("max_health_flat", 0.0))
+	var projectile_speed_flat := float(run_modifiers.get("projectile_speed_flat", 0.0)) + float(passive_mods.get("projectile_speed_flat", 0.0))
+	var aura_radius_flat := float(run_modifiers.get("aura_radius_flat", 0.0)) + float(passive_mods.get("aura_radius_flat", 0.0))
+	var buff_power_flat := float(run_modifiers.get("buff_power_flat", 0.0)) + float(passive_mods.get("buff_power_flat", 0.0))
+	var dot_damage_flat := float(run_modifiers.get("dot_damage_flat", 0.0)) + float(passive_mods.get("dot_damage_flat", 0.0))
+	var dot_speed_flat := float(run_modifiers.get("dot_speed_flat", 0.0)) + float(passive_mods.get("dot_speed_flat", 0.0))
 
 	return {
 		"damage": (15.0 * strength / 10.0) * weapon_damage_multiplier * damage_multiplier + float(run_modifiers.get("damage_flat", 0.0)),
@@ -911,11 +1001,11 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + perception * 2.5) * range_multiplier,
 		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + perception * 3.5) * aoe_radius_multiplier,
 		"pickup_radius": 105.0 + perception * 7.0 + pickup_radius_flat,
-		"dot_damage": max(1.0, (4.0 + knowledge * 0.65) * damage_multiplier),
-		"dot_speed": max(0.45, 0.65 + knowledge * 0.08),
-		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0,
-		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0) * aoe_radius_multiplier,
-		"buff_power": 1.0 + leadership * 0.025,
+		"dot_damage": max(1.0, (4.0 + knowledge * 0.65 + dot_damage_flat) * damage_multiplier),
+		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + dot_speed_flat),
+		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + projectile_speed_flat,
+		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + aura_radius_flat) * aoe_radius_multiplier,
+		"buff_power": 1.0 + leadership * 0.025 + buff_power_flat,
 		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier,
 		"summon_amount": leadership,
 		# Подключение полного набора атрибутов (аудит 2026-06-11):

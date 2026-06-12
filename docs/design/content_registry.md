@@ -167,7 +167,7 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 
 | ID | Игровое имя | Класс | Роль | Источник | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `sword` | Двуручный меч | Берсерк | Узкая длинная полоса 120x500, быстрый и точный | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
+| `sword` | Двуручный меч | Берсерк | Усеченный замах 90 градусов, радиус 600, base width 150 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
 | `axe` | Двуручный топор | Берсерк | Широкая дуга 140 градусов радиуса 320 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
 | `hammer` | Двуручный молот | Берсерк | Круговой AoE: слабый старт, усиленный рост от апгрейдов | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
 | `dark_book` | Книга тьмы | Темный маг | Два AoE-снаряда в две ближайшие цели | `ProgressionData.DARK_MAGE_WEAPONS` | Реализовано |
@@ -332,6 +332,22 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 
 `scripts/ui_icon_registry.gd` кэширует загруженные Texture2D по пути; новые UI места должны брать иконки через registry, а не делать отдельный `load()`.
 
+## UI Visual Kit 2026-06-12
+
+Radical UI pass заменяет основные StyleBoxFlat-плоскости на reusable fantasy texture frames. Генератор: `tools/generate_ui_overhaul_visual_assets.py`.
+
+| ID | Ассет | Роль |
+| --- | --- | --- |
+| `ui_panel_frame` | `assets/sprites/ui/frames/global/ui_panel_frame.png` | Базовые большие панели меню/событий/кодекса |
+| `ui_button_frame` | `assets/sprites/ui/frames/global/ui_button_frame.png` | Кнопки normal/hover/pressed/danger/level-up через tint |
+| `ui_card_frame` | `assets/sprites/ui/frames/global/ui_card_frame.png` | Карточки персонажей, route node buttons, compact panels |
+| `ui_level_panel_frame` | `assets/sprites/ui/frames/global/ui_level_panel_frame.png` | Level-up / reward panel |
+| `ui_hud_panel_frame` | `assets/sprites/ui/frames/global/ui_hud_panel_frame.png` | Боевой HUD panel |
+| `ui_hud_card_frame` | `assets/sprites/ui/frames/global/ui_hud_card_frame.png` | HP/XP/money HUD cards |
+| `ui_tooltip_frame` | `assets/sprites/ui/frames/global/ui_tooltip_frame.png` | Generic tooltip/system panel frame |
+
+Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
+
 ## Фоны И Карты
 
 | ID | Игровое имя | Ассет | Роль |
@@ -347,7 +363,7 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `dry_road` | Сухая Дорога | `assets/backgrounds/field_dry_road.png` | Дорожный фон |
 | `meadow` | Луг | `assets/backgrounds/field_meadow.png` | Зеленый фон |
 
-Все 4 боевых фона перерисованы в нативном разрешении 2560x1440 (2026-06-11): 1:1 к арене, без runtime-апскейла, с равномерными наземными ориентирами по всей площади (генератор `tools/redraw_arena_backgrounds.py`, бэкап оригиналов в `build/bg_backup/`).
+Все 4 боевых фона перерисованы в нативном разрешении 2560x1440. Pass 2026-06-12 заменил их на строго плоские top-down ground textures без высоких объектов, ложной перспективы и объемных камней/кустов: только низкоконтрастная почва, мох, трещины, трава, дорожные следы и мелкая наземная фактура. Генератор: `tools/generate_ui_overhaul_visual_assets.py`; предыдущий upscale pass `tools/redraw_arena_backgrounds.py` superseded для активных файлов.
 `route_map_backdrop` добавлен 2026-06-11 как отдельный 2560x1440 фон для маршрутной карты: мрачная пустошь/туманное предгорье, детали вынесены к краям, центр приглушен для читаемости узлов.
 
 ## Препятствия

@@ -710,12 +710,17 @@ func _update_charge(delta: float) -> void:
 	var owner_node := _owner_node()
 	if owner_node == null:
 		return
+	var energy := 0.0
+	var owner_stats = owner_node.get("stats")
+	if owner_stats is Dictionary:
+		energy = float((owner_stats as Dictionary).get("energy", 0.0))
+	var effective_charge_seconds := maxf(charge_seconds / (1.0 + energy * 0.025), 0.25)
 	var owner_velocity := Vector2.ZERO
 	var raw_velocity = owner_node.get("velocity")
 	if raw_velocity is Vector2:
 		owner_velocity = raw_velocity
 	if owner_velocity.length_squared() <= 4.0:
-		_charge_time = minf(_charge_time + delta, charge_seconds)
+		_charge_time = minf(_charge_time + delta, effective_charge_seconds)
 	else:
 		_charge_time = maxf(_charge_time - delta * 2.5, 0.0)
 
@@ -723,7 +728,14 @@ func _update_charge(delta: float) -> void:
 func _charge_multiplier() -> float:
 	if charge_seconds <= 0.0:
 		return 1.0
-	var charge_ratio := clampf(_charge_time / maxf(charge_seconds, 0.01), 0.0, 1.0)
+	var owner_node := _owner_node()
+	var energy := 0.0
+	if owner_node != null:
+		var owner_stats = owner_node.get("stats")
+		if owner_stats is Dictionary:
+			energy = float((owner_stats as Dictionary).get("energy", 0.0))
+	var effective_charge_seconds := maxf(charge_seconds / (1.0 + energy * 0.025), 0.25)
+	var charge_ratio := clampf(_charge_time / maxf(effective_charge_seconds, 0.01), 0.0, 1.0)
 	return lerpf(1.0, maxf(charge_max_multiplier, 1.0), charge_ratio)
 
 

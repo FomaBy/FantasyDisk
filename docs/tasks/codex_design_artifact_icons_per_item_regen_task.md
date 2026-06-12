@@ -1,6 +1,6 @@
 # Задача Для Codex (Design): Поштучная Перегенерация Всех Иконок Артефактов
 
-Статус: in_progress
+Статус: review
 Создано: 2026-06-12
 Автор: PM
 Исполнитель: Codex (генерация изображений). Ревью и коммит: Claude-Designer.
@@ -64,3 +64,14 @@
 Прогресс: обработано 40/53.
 
 Прогресс: обработано 50/53.
+
+Прогресс: обработано 53/53.
+
+## Результат 2026-06-12
+
+- Перегенерировано 53/53 активных artifact PNG из `ProgressionData.ARTIFACTS` в `assets/sprites/ui/icons/artifacts/`. Текст задачи ожидал 52, но актуальные данные и папка содержат 53, включая `leech_fang`.
+- Имена PNG сохранены; `.import` файлы не изменялись намеренно.
+- Все финальные PNG прошли `tools/validate_artifact_icons.py`: `256x256`, RGBA, прозрачные углы/фон, bbox не касается краев, без значимых detached components.
+- Контрольный лист создан: `assets/sprites/ui/icons/artifact_per_item_preview.png` (крупный 256px и 40px sample для каждого id).
+- Повторы/правки потребовались для `heavy_totem`, `ink_candle`, `burning_shard` из-за bbox, который после glow/shadow был слишком близко к краям.
+- Runtime smoke-test запускался дважды, но падает на Back-end проверке Knight block/counter: `Expected Knight block to reduce damage and counter nearby enemies` (`tests/runtime_smoke_test.gd:1881`). Это не связано с Design PNG pass; создан handoff `docs/tasks/backend_runtime_smoke_knight_block_counter_failure_task.md`.

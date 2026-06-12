@@ -1,6 +1,6 @@
 # Characters And Weapons
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 
 Канонические данные персонажей и оружия находятся в `scripts/progression_data.gd`. Этот файл описывает игровую идентичность, сцены и текущие backend-режимы.
 
@@ -8,7 +8,7 @@
 
 | Character ID | Role |
 | --- | --- |
-| `berserk` | melee AoE/cone/strip fighter, высокий риск рядом с толпой |
+| `berserk` | melee AoE/frustum fighter, высокий риск рядом с толпой |
 | `dark_mage` | caster: AoE, beams, DoT, дистанционный wave clear |
 | `guitarist` | sound/control: waves, knockback, deployable amp |
 | `assassin` | быстрый crit melee/ranged hybrid: boomerang, flurry, poison line |
@@ -24,7 +24,7 @@
 
 | Class | Weapon ID | Name | Scene | Backend Mode | Gameplay Identity |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `strip` | Узкая длинная полоса, высокий одиночный melee damage |
+| `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `frustum` | Широкий усеченный замах 90 градусов, радиус 600, надежно достает врагов рядом |
 | `berserk` | `axe` | Двуручный топор | `TwoHandedAxe.tscn` | `sweep` | Широкая дуга, контроль ближней толпы |
 | `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Малый стартовый круг, сильный late-game AoE scaling |
 | `dark_mage` | `dark_book` | Книга тьмы | `DarkBook.tscn` | `aoe_projectile` | 2 AoE-снаряда по ближайшим целям |
@@ -54,7 +54,7 @@
 
 ## Backend Modes
 
-- `scripts/berserk_weapon.gd`: `strip`, `sweep`, `circle`; melee damage window is synced with swing timing.
+- `scripts/berserk_weapon.gd`: `frustum`, `strip`, `sweep`, `circle`; melee damage window is synced with swing timing.
 - `scripts/class_weapon.gd`: `aoe_projectile`, `homing_curse`, `beam`, `dot_beam`, `sound_wave`, `pulse`, `amp`, `trap`, `boomerang`, `stab_flurry`.
 - `scripts/summoner_weapon.gd`: summon weapon wrapper for Druid and Chemist minion styles.
 

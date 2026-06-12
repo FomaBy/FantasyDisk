@@ -195,6 +195,19 @@ const LEVEL_UP_MOD_DISPLAY := {
 	"crit_chance_flat": "crit_chance",
 	"crit_damage_flat": "crit_damage_multiplier",
 	"knockback_multiplier": "knockback_power",
+	"dodge_flat": "dodge",
+	"dot_damage_flat": "dot_damage",
+	"dot_speed_flat": "dot_speed",
+	"projectile_speed_flat": "projectile_speed",
+	"aura_radius_flat": "aura_radius",
+	"buff_power_flat": "buff_power",
+	"summon_bonus": "summon_amount",
+	"extra_projectile": "summon_amount",
+	"absorb_flat": "absorb",
+	"regeneration_flat": "regeneration",
+	"vampiric_amount_flat": "vampiric_amount",
+	"vampiric_chance_flat": "vampiric_chance",
+	"ultimate_flat": "ultimate_multiplier",
 }
 const INPUT_ACTIONS := [
 	{

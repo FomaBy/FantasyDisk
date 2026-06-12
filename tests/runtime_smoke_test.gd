@@ -449,8 +449,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var sword_config: Dictionary = ProgressionData.weapon("berserk", "sword")
-	if str(sword_config.get("attack_shape")) != "strip" or float(sword_config.get("inner_width")) != 120.0 or float(sword_config.get("attack_range")) != 500.0 or float(sword_config.get("damage_multiplier")) != 1.15:
-		push_error("Expected sword to be a narrow 120x500 strip with 1.15 damage.")
+	if str(sword_config.get("attack_shape")) != "frustum" or float(sword_config.get("inner_width")) != 150.0 or float(sword_config.get("outer_width")) != 1200.0 or float(sword_config.get("attack_range")) != 600.0 or float(sword_config.get("damage_multiplier")) != 1.15:
+		push_error("Expected sword to be a 90-degree 600px frustum with 150px base and 1.15 damage.")
 		quit(1)
 		return
 	var hammer_config: Dictionary = ProgressionData.weapon("berserk", "hammer")
@@ -953,6 +953,7 @@ func _initialize() -> void:
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
 	await _test_unique_class_identity_patterns()
+	await _test_universal_attribute_interpretations()
 	await _test_death_flow(main_scene)
 
 	print("Runtime smoke test passed.")
@@ -1388,7 +1389,7 @@ func _test_stat_artifact_recording() -> void:
 func _test_berserk_weapon_configs() -> void:
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var expected := {
-		"sword": {"shape": "strip", "scene": "TwoHandedSword", "sprite": "res://assets/sprites/weapons/two_handed_sword.png"},
+		"sword": {"shape": "frustum", "scene": "TwoHandedSword", "sprite": "res://assets/sprites/weapons/two_handed_sword.png"},
 		"axe": {"shape": "sweep", "scene": "TwoHandedAxe", "sprite": "res://assets/sprites/weapons/two_handed_axe.png"},
 		"hammer": {"shape": "circle", "scene": "TwoHandedHammer", "sprite": "res://assets/sprites/weapons/two_handed_hammer.png"},
 	}
@@ -1922,6 +1923,92 @@ func _test_unique_class_identity_patterns() -> void:
 	await process_frame
 
 
+func _test_universal_attribute_interpretations() -> void:
+	var holder := Node2D.new()
+	holder.name = "UniversalAttributeInterpretationScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+
+	var universal_player := player_scene.instantiate()
+	holder.add_child(universal_player)
+	universal_player.global_position = Vector2(900, 700)
+	await process_frame
+	universal_player.call("configure_character", "berserk", "sword")
+	var boosted: Dictionary = universal_player.get("derived_parameters")
+	boosted["magic_damage"] = 80.0
+	boosted["dot_damage"] = 40.0
+	boosted["dot_speed"] = 4.0
+	boosted["summon_amount"] = 18.0
+	boosted["sound_wave_damage"] = 34.0
+	boosted["aura_radius"] = 220.0
+	universal_player.set("derived_parameters", boosted)
+
+	var enemy := enemy_scene.instantiate()
+	holder.add_child(enemy)
+	enemy.set("max_health", 100000.0)
+	enemy.set("health", 100000.0)
+	enemy.global_position = universal_player.global_position + Vector2(90, 0)
+	await process_frame
+	var hp_before := float(enemy.get("health"))
+	universal_player.call("on_weapon_hit", enemy, 12.0)
+	await create_timer(0.65).timeout
+	if float(enemy.get("health")) >= hp_before:
+		_fail("Expected universal magic/DoT interpretations to damage the hit target.")
+		return
+
+	var leadership_hp_before := float(enemy.get("health"))
+	for hit_index in range(6):
+		universal_player.call("on_weapon_hit", enemy, 12.0)
+		await process_frame
+	if float(enemy.get("health")) >= leadership_hp_before:
+		_fail("Expected leadership interpretation to trigger echo weapon damage.")
+		return
+
+	var shout_enemy := enemy_scene.instantiate()
+	holder.add_child(shout_enemy)
+	shout_enemy.global_position = universal_player.global_position + Vector2(60, 0)
+	await process_frame
+	universal_player.call("_update_battle_shout")
+	if float(universal_player.get("_battle_shout_cooldown_left")) <= 0.0:
+		_fail("Expected sound damage interpretation to trigger a battle shout cooldown.")
+		return
+
+	var rewards := ProgressionData.level_up_rewards("berserk")
+	var derived_icons_seen := {}
+	var mod_display := {
+		"dot_damage_flat": "dot_damage",
+		"dot_speed_flat": "dot_speed",
+		"projectile_speed_flat": "projectile_speed",
+		"aura_radius_flat": "aura_radius",
+		"buff_power_flat": "buff_power",
+		"summon_bonus": "summon_amount",
+		"absorb_flat": "absorb",
+		"regeneration_flat": "regeneration",
+		"vampiric_amount_flat": "vampiric_amount",
+		"vampiric_chance_flat": "vampiric_chance",
+		"ultimate_flat": "ultimate_multiplier",
+	}
+	for reward in rewards:
+		var mods: Dictionary = reward.get("mods", {})
+		for modifier_id in mods.keys():
+			var icon_id := str(mod_display.get(str(modifier_id), ""))
+			if icon_id != "":
+				derived_icons_seen[icon_id] = true
+	for icon_id in ["dot_damage", "dot_speed", "projectile_speed", "aura_radius", "buff_power", "summon_amount", "absorb", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
+		if not derived_icons_seen.has(icon_id):
+			_fail("Expected level-up pool to expose derived attribute reward %s." % icon_id)
+			return
+		if not UIIconRegistry.has_texture(icon_id):
+			_fail("Expected derived attribute %s to resolve to an icon texture." % icon_id)
+			return
+
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
 func _test_weapon_aiming() -> void:
 	var holder := Node2D.new()
 	holder.name = "AimTestScene"
@@ -2143,9 +2230,14 @@ func _test_settings_persistence_and_audio() -> void:
 
 
 func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
-	# 1. Релевантность: нерелевантный стат не дает прироста своего урона класса.
-	if ProgressionData.is_stat_relevant("intelligence", "berserk") or ProgressionData.is_stat_relevant("strength", "dark_mage") or ProgressionData.is_stat_relevant("energy", "berserk"):
-		_fail("Expected damage-only stats to be irrelevant for foreign classes.")
+	# 1. Новая философия: все базовые атрибуты доступны всем классам.
+	for stat_id in UIIconRegistry.BASE_STAT_IDS:
+		for class_id in ProgressionData.character_ids():
+			if not ProgressionData.is_stat_relevant(stat_id, class_id):
+				_fail("Expected stat %s to be universally relevant for %s." % [stat_id, class_id])
+				return
+	if ProgressionData.class_interpretation_text("berserk", "intelligence") == "" or ProgressionData.class_interpretation_text("dark_mage", "strength") == "":
+		_fail("Expected foreign stats to expose class interpretation text.")
 		return
 	var mage_stats: Dictionary = ProgressionData.base_stats("dark_mage")
 	var mage_weapon: Dictionary = ProgressionData.weapon("dark_mage", "dark_wand")
@@ -2156,15 +2248,21 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		_fail("Expected +10 strength to leave dark mage magic damage unchanged.")
 		return
 
-	# 2. Пулы: магу не предлагают силу, берсерку — интеллект/энергию и magic focus.
+	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.
+	var berserk_has_magic_focus := false
 	for reward in ProgressionData.level_up_rewards("berserk"):
 		if str(reward.get("id")) == "magic_focus_up":
-			_fail("Expected magic focus upgrade to be hidden from the berserk pool.")
-			return
+			berserk_has_magic_focus = true
+	if not berserk_has_magic_focus:
+		_fail("Expected magic focus upgrade to be available to berserk as weapon enchantment.")
+		return
+	var mage_has_strength := false
 	for reward in ProgressionData.reward_pool("dark_mage"):
 		if str(reward.get("kind")) == "stat" and (reward.get("stats", {}) as Dictionary).has("strength"):
-			_fail("Expected strength stat rewards to be hidden from the dark mage pool.")
-			return
+			mage_has_strength = true
+	if not mage_has_strength:
+		_fail("Expected strength stat rewards to remain available to dark mage via interpretation.")
+		return
 
 	var fix_main := main_scene.instantiate()
 	root.add_child(fix_main)
@@ -2249,15 +2347,15 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	await process_frame
 	econ_main.set("selected_character_id", "berserk")
 
-	# Аффинити-пометки: красная / желтая / отсутствует.
-	var red_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("split_core"))
-	var yellow_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("void_ink"))
+	# Аффинити-пометки: больше не красные/желтые запреты, а текст интерпретации.
+	var split_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("split_core"))
+	var void_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("void_ink"))
 	var none_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("warrior_charm"))
-	if str(red_note.get("text", "")) != "Не работает на текущем классе":
-		_fail("Expected a red affinity note for a foreign-class-only artifact.")
+	if not str(split_note.get("text", "")).begins_with("Интерпретация:"):
+		_fail("Expected a class interpretation note for a foreign affinity artifact.")
 		return
-	if str(yellow_note.get("text", "")) != "Работает вполсилы":
-		_fail("Expected a yellow affinity note for a mixed-mods artifact.")
+	if not str(void_note.get("text", "")).begins_with("Интерпретация:"):
+		_fail("Expected a class interpretation note for a mixed affinity artifact.")
 		return
 	if not none_note.is_empty():
 		_fail("Expected no affinity note for a universal artifact.")

@@ -99,7 +99,7 @@ Domain docs для подробностей по областям:
 
 Фон арены выбирается случайно из доступного набора и может зависеть от типа узла карты.
 
-Все 4 боевых фона (`field_stone_garden`, `field_marsh`, `field_dry_road`, `field_meadow`) нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. По всей площади равномерно распределены наземные ориентиры (камни, кочки, трава, мусор), чтобы перемещение персонажа и врагов читалось естественно; контраст ориентиров ниже контраста геймплейных объектов. Перегенерация: `tools/redraw_arena_backgrounds.py`.
+Все 4 боевых фона (`field_stone_garden`, `field_marsh`, `field_dry_road`, `field_meadow`) нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. Pass 2026-06-12 заменил их на плоские top-down ground textures без объемных объектов и ложной перспективы: только низкоконтрастная почва, мох, трещины, трава, сухие дорожные следы и мелкая наземная фактура. Перегенерация: `tools/generate_ui_overhaul_visual_assets.py`.
 `main_menu_epic_battle.png` используется стартовым экраном. `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` используются небоевыми экранами поверх читаемого затемнения.
 `route_map_backdrop.png` используется full-screen route map hook-ом: это темный низкоконтрастный фон пустоши с туманным спокойным центром под узлы и линиями, а детали/силуэты вынесены к краям.
 
@@ -108,6 +108,12 @@ Domain docs для подробностей по областям:
 | Ассет | Путь | Использование |
 | --- | --- | --- |
 | FantasyDisk App Icon | `icon.svg` | Project/application icon через `project.godot` |
+
+## UI Visual Style
+
+Основной UI pass 2026-06-12 использует reusable fantasy texture frames вместо дефолтных серых Godot/простых плоских панелей. Общие рамки лежат в `assets/sprites/ui/frames/global/` и подключены через helper `_global_texture_style()` в `scripts/ui_screens.gd`: большие панели, кнопки, карточки, HUD, route node buttons, level-up panel и hero/portrait frames используют единый dark wood/metal/bone/gold visual language. Escape stats menu продолжает использовать свой compact frame kit в `assets/sprites/ui/frames/escape/`.
+
+Settings controls получили системные fantasy assets из `assets/sprites/ui/icons/system/`: checkbox checked/unchecked, slider track/grabber, arrows/back/settings/close icons. Иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_*`.
 
 ## Препятствия
 
@@ -264,7 +270,7 @@ Foundation новых классов уже включен в выбор пер�
 
 | Оружие | ID | Форма | Основной стиль | Сцена |
 | --- | --- | --- | --- | --- |
-| Двуручный меч | `berserk_sword` | Полоса (`strip`) | Быстрый точный удар по линии, высокий урон | `scenes/TwoHandedSword.tscn` |
+| Двуручный меч | `berserk_sword` | Усеченный конус (`frustum`) | Широкий замах 90 градусов, радиус 600, высокий урон и надежное попадание по врагам рядом | `scenes/TwoHandedSword.tscn` |
 | Двуручный топор | `berserk_axe` | Дуга (`sweep`) | Широкий контроль окружения вблизи, урон ниже меча | `scenes/TwoHandedAxe.tscn` |
 | Двуручный молот | `berserk_hammer` | Круг | Слабый старт, усиленный рост от апгрейдов | `scenes/TwoHandedHammer.tscn` |
 
@@ -331,7 +337,7 @@ Foundation новых классов уже включен в выбор пер�
 
 | Эффект | Текстуры | Где используется |
 | --- | --- | --- |
-| Дуга-слэш | `slash_arc.png` (+ непрозрачный подслой для контраста) | Меч/топор берсерка (strip/sweep); дуга вылетает из героя вдоль направления удара и заполняет зону поражения за ~0.18с |
+| Дуга-слэш | `slash_arc.png` (+ непрозрачный подслой для контраста) | Меч/топор берсерка (frustum/sweep); дуга вылетает из героя вдоль направления удара и заполняет зону поражения за ~0.18с |
 | Удар молота | `impact_flash.png`, `impact_ring.png`, `dust_puff_0..2.png` | Молот: оружие замахивается вверх и с ускорением падает в землю (`_animate_hammer_slam`), затем вспышка, расходящееся кольцо и 8 клубов пыли разлетаются по радиусу AoE |
 | Вой-орб | `void_orb.png` + трейл из затухающих копий | `dark_book` (aoe_projectile): пульсирующий снаряд, на взрыве — `orb_burst` (кольцо+вспышка+вой-дымки) |
 | Проклятый череп | `weapons/cursed_skull.png` + glow и трейл | `cursed_skull`: череп летит к цели ~0.2с, урон и splash наносятся в момент попадания |
@@ -363,8 +369,15 @@ Foundation новых классов уже включен в выбор пер�
 - `move_speed`
 - `dodge`
 - `defense`
+- `absorb`
 - `health_point`
+- `knockback_distance`
+- `summon_amount`
 - `attack_range`
+- `range_multiplier`
+- `regeneration`
+- `vampiric_amount`
+- `vampiric_chance`
 - `aoe_radius`
 - `pickup_radius`
 - `dot_damage`
@@ -373,9 +386,13 @@ Foundation новых классов уже включен в выбор пер�
 - `aura_radius`
 - `buff_power`
 - `knockback_power`
-- `summon_amount`
+- `ultimate_multiplier`
 
 Формулы и описания для UI характеристик находятся в `scripts/stat_formulas.gd`. Конфиги классов, оружия, наград, артефактов и магазина находятся в `scripts/progression_data.gd`.
+
+Актуальная философия прокачки: все базовые и производные атрибуты полезны каждому классу. Старая фильтрация «нерелевантных» статов отключена; `STAT_CLASS_RELEVANCE` оставлен пустым для совместимости, а reward pools не скрывают чужие параметры. Для тематически чужих эффектов UI показывает классовую интерпретацию: магический урон становится зачарованием оружия, Лидерство — эхо-оружием/фантомом/соколом/фамильяром, звуковой урон — боевым кличем, DoT — малым bleed/burn/poison, Energy — ускорением уникальной механики.
+
+Runtime hooks уже подключены в `scripts/player.gd` и `scripts/class_weapon.gd`: оружейные попадания могут запускать magic enchant splash, малый DoT, leadership echo-hit и battle shout; Energy ускоряет dash Ассасина, counter Рыцаря и charge Рейнджера.
 
 ## Награды И Артефакты
 
@@ -400,6 +417,8 @@ Design visual kit/spec для всех артефактов, shop-only пред�
 После пользовательского фидбэка 2026-06-12 artifact icons поштучно перегенерированы как `256x256` PNG с прозрачным фоном: один цельный законченный предмет на файл, bbox с запасом от краев, без пьедесталов, фоновых тайлов, осколков, частиц и текста. Образ каждого предмета привязан к названию и эффекту из `ProgressionData.ARTIFACTS`; предыдущие generated/vector-like, glossy и concept-sheet tile направления заменены. Shop/cursor assets остаются в FantasyDisk fantasy-medallion / dagger-quill style.
 
 Back-end integration complete: `scripts/ui_screens.gd` сначала ищет финальные PNG по mapping из visual kit, а если их нет, временно использует осмысленный fallback через `scripts/ui_icon_registry.gd` по эффекту предмета. На 2026-06-11 фактические artifact/shop/cursor PNG готовы и импортированы, поэтому fallback остается только fail-safe.
+
+Level-up и докачка атрибутов показывают иконки через `UIIconRegistry` и добавляют текст «Интерпретация» для выбранного героя. Артефакты с `class_affinity` больше не считаются нерабочими для чужого класса: affinity теперь описывает тематику, а `affinity_mods` применяются через интерпретацию текущего героя.
 
 ## Звук
 
@@ -492,7 +511,7 @@ Game cursor asset-ready:
 - hotspot: `(5, 4)`.
 - style: fantasy dagger/quill pointer with gem detail and gold/cyan/red state accents.
 
-Централизованный mapping UI-иконок находится в `scripts/ui_icon_registry.gd`. Он покрывает 8 базовых характеристик, 20 производных параметров и HUD-ресурсы `hp`, `xp`, `money`. Финальные polished stylized fantasy cartoon PNG лежат в `assets/sprites/ui/icons/stats/`, `assets/sprites/ui/icons/derived/` и `assets/sprites/ui/hud/`; registry автоматически подхватывает реальные текстуры для боевого HUD, level-up reward cards, Escape stats menu и stat/reward/tooltips. Shop item icons дополнительно разрешаются через реальные `artifact_<artifact_id>.png` / `shop_<shop_item_id>.png`; fallback в этот registry остается только fail-safe, если asset временно отсутствует. Emoji/default placeholders для этих сущностей не используются.
+Централизованный mapping UI-иконок находится в `scripts/ui_icon_registry.gd`. Он покрывает 8 базовых характеристик, все активные производные параметры из Escape stats menu и HUD-ресурсы `hp`, `xp`, `money`. Финальные polished stylized fantasy cartoon PNG лежат в `assets/sprites/ui/icons/stats/`, `assets/sprites/ui/icons/derived/` и `assets/sprites/ui/hud/`; registry автоматически подхватывает реальные текстуры для боевого HUD, level-up reward cards, Escape stats menu, Кодекса и stat/reward/tooltips. Для производных параметров, у которых пока нет отдельного Design PNG (`absorb`, `regeneration`, `vampiric_*`, `range_multiplier`, `knockback_distance`, `ultimate_multiplier`), registry использует ближайшую существующую derived-иконку как backend fallback, без emoji/default placeholders. Shop item icons дополнительно разрешаются через реальные `artifact_<artifact_id>.png` / `shop_<shop_item_id>.png`; fallback в этот registry остается только fail-safe, если asset временно отсутствует.
 
 Escape stats menu layout:
 - `RunControls` слева содержит кнопки управления (`Продолжить`, `Настройки`, `Завершить забег`, `Выйти в главное меню`).
@@ -648,7 +667,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 - В покое сборка пиксельно идентична исходному full-art PNG; зоны конечностей стерты из торса только за пределами силуэта тела (внутренние дырки заполнены инпейнтом), поэтому при взмахах нет дыр.
 - Разворот в сторону движения — зеркалирование `Pelvis.scale.x`; вертикальное движение сохраняет горизонтальный facing. Манифест хранит `base_facing` (куда смотрит исходный арт): герои нарисованы вправо (+1), все мобы/элитки/боссы — влево (-1), поэтому моб, идущий вправо, зеркалится и не двигается спиной вперед. Итоговый знак: `facing_sign * base_facing`.
 - Per-style профили движения: humanoid, heavy/guard, beast/stalker, robed, robed_walker, floating_robed, flyer, blob, colossus.
-- Player polish 2026-06-11: `walk_blend_rate` и `direction_blend_rate` задаются профилем движения. `berserk`, `dark_mage` и `guitarist` имеют отдельные motion profiles, чтобы старт/остановка, разворот, weight shift и шаг не выглядели одинаково.
+- Player polish 2026-06-11/12: `walk_blend_rate` и `direction_blend_rate` задаются профилем движения. `berserk`, `dark_mage`, `guitarist`, `assassin`, `ranger`, `doctor`, `chemist`, `knight`, `druid` имеют отдельные motion profiles, чтобы старт/остановка, разворот, weight shift и шаг не выглядели одинаково. Новые 6 профилей 2026-06-12: assassin быстрый/резкий, ranger собранный, doctor тяжелее и спокойнее, chemist чуть нервнее, knight тяжелый инертный, druid мягкий ритуальный.
 
 Игрок:
 - `scenes/Player.tscn` сохраняет `VisualRoot/Body` как скрытый `AnimatedSprite2D` fallback и источник кадров.

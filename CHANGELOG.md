@@ -4,6 +4,8 @@
 
 ## [Unreleased] — ветка dev
 
+- Design overhaul: добавлен reusable fantasy UI texture kit (`assets/sprites/ui/frames/global/`, system icons), основные панели/кнопки/HUD/level-up/route nodes переведены на texture frames; 4 боевых фона заменены на плоские top-down 2560x1440 ground textures; добавлены отдельные motion profiles для 6 новых классов.
+
 - Новые классы (art pass): 6 полноценных dark fantasy full-art спрайтов персонажей (512x512 RGBA) и 6 weapon PNG (256x256 RGBA) для Ассасина/Рейнджера/Доктора/Химика/Рыцаря/Друида приняты Design-review. Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и добавлены в `assets/sprites/characters/cutout/`; манифест `scripts/sliced_rig_manifest.gd` обновлён.
 
 - Шесть новых классов (фундамент): Ассасин, Рейнджер, Доктор, Химик, Рыцарь, Друид — статы, сигнатурное оружие с механиками архетипов, релевантность/аффинити/вознесение/кодекс; Design visual set готов: новые герои art-approved, полный набор 27 weapon PNG для 9 классов добавлен в `assets/sprites/weapons/`.
@@ -15,6 +17,10 @@
 - UX: выбор героя переведен в fullscreen 3x3 grid без скролла — все 9 классов видны сразу, портреты крупнее, статы перенесены в tooltip/нижнюю панель.
 
 - Классовая идентичность: 9 классов разведены по уникальным паттернам — crit dash Ассасина, stance charge Рейнджера, drain-link Доктора, combo clouds Химика, block/counter Рыцаря и command pets Друида; кодекс и smoke-проверки обновлены.
+
+- Прогрессия: вторичные атрибуты стали универсально полезными для всех классов — старая фильтрация «нерелевантных» статов отключена, level-up/докачка/артефакты показывают иконки и интерпретации, чужие affinity-эффекты работают через class-specific hooks (magic enchant, DoT, echo weapon, battle shout, Energy cooldown/charge scaling).
+
+- Берсерк: data-driven конфиг двуручного меча синхронизирован со сценой и актуальным геймплеем — вместо старой узкой `strip`-полосы теперь используется `frustum`-замах 90° радиусом 600; melee targeting regression test обновлен под новую геометрию.
 
 ## [0.1.1] — 2026-06-11
 

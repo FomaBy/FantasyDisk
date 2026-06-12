@@ -12,6 +12,17 @@ const SHOP_SLOT_HOVER_PATH := "res://assets/sprites/ui/shop/ui_shop_artifact_slo
 const SHOP_PRICE_BADGE_PATH := "res://assets/sprites/ui/shop/ui_shop_price_badge.png"
 const SHOP_PURCHASED_OVERLAY_PATH := "res://assets/sprites/ui/shop/ui_shop_purchased_overlay.png"
 const SHOP_TOOLTIP_FRAME_PATH := "res://assets/sprites/ui/shop/ui_shop_tooltip_frame.png"
+const GLOBAL_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_panel_frame.png"
+const GLOBAL_BUTTON_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_button_frame.png"
+const GLOBAL_CARD_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_card_frame.png"
+const GLOBAL_LEVEL_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_level_panel_frame.png"
+const GLOBAL_HUD_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_hud_panel_frame.png"
+const GLOBAL_HUD_CARD_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_hud_card_frame.png"
+const GLOBAL_TOOLTIP_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_tooltip_frame.png"
+const SYSTEM_CHECKBOX_UNCHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_unchecked.png"
+const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_checked.png"
+const SYSTEM_SLIDER_TRACK_PATH := "res://assets/sprites/ui/icons/system/ui_slider_track.png"
+const SYSTEM_SLIDER_GRABBER_PATH := "res://assets/sprites/ui/icons/system/ui_slider_grabber.png"
 const SHOP_INLINE_SLOT_SIZE := Vector2(164, 186)
 const SHOP_INLINE_ICON_SIZE := Vector2(100, 100)
 const SHOP_CURSOR_VARIANTS := {
@@ -333,11 +344,7 @@ func _show_victory_banner(on_continue: Callable) -> void:
 
 
 func _random_attribute_pair() -> Array:
-	# Нерелевантные классу атрибуты урона (см. STAT_CLASS_RELEVANCE) не предлагаются.
-	var pool := []
-	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
-		if game.PROGRESSION_DATA.is_stat_relevant(stat_id, game.selected_character_id):
-			pool.append(stat_id)
+	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
 	var pair := []
 	for _pick in range(2):
 		var index: int = game.rng.randi_range(0, pool.size() - 1)
@@ -448,6 +455,10 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		offer_button.name = "AttributeOffer_%s" % stat_id
 		offer_button.custom_minimum_size = Vector2(560, 64)
 		offer_button.disabled = money < buy_cost
+		offer_button.tooltip_text = "%s +1\n%s" % [
+			stat_title,
+			game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id),
+		]
 		var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(36, 36))
 		icon_control.position = Vector2(14, 14)
 		icon_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -734,7 +745,7 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 			var class_names := []
 			for class_id in affinity_list:
 				class_names.append(str(CLASS_RU.get(class_id, class_id)))
-			_codex_label(text_box, "Классы: %s" % ", ".join(class_names), 12, Color(0.70, 0.78, 0.88, 1.0))
+			_codex_label(text_box, "Тематика: %s" % ", ".join(class_names), 12, Color(0.70, 0.78, 0.88, 1.0))
 
 
 func _build_codex_stats(list: VBoxContainer) -> void:
@@ -878,6 +889,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	slider.max_value = 100.0
 	slider.step = 5.0
 	slider.custom_minimum_size = Vector2(240, 36)
+	_style_slider(slider)
 	slider.value = float(game.audio_settings.get(volume_key, 1.0)) * 100.0
 	slider.value_changed.connect(func(value: float) -> void:
 		game.audio_settings[volume_key] = value / 100.0
@@ -901,6 +913,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 		toggle.name = "VolumeToggle_%s" % enabled_key
 		toggle.text = "вкл"
 		toggle.button_pressed = bool(game.audio_settings.get(enabled_key, true))
+		_style_checkbox(toggle)
 		slider.editable = toggle.button_pressed
 		toggle.toggled.connect(func(pressed: bool) -> void:
 			game.audio_settings[enabled_key] = pressed
@@ -1833,10 +1846,12 @@ func _level_up_affinity_suffix(reward: Dictionary) -> String:
 
 func _format_level_up_reward_text(reward: Dictionary) -> String:
 	var preview := _level_up_reward_preview(reward)
-	return "%s\n%s\n%s" % [
+	var interpretation := _reward_interpretation_text(reward)
+	return "%s\n%s\n%s%s" % [
 		str(reward.get("title", "Upgrade")),
 		preview,
 		str(reward.get("description", "")),
+		"\n%s" % interpretation if interpretation != "" else "",
 	]
 
 
@@ -1904,6 +1919,24 @@ func _level_up_reward_preview(reward: Dictionary) -> String:
 	return kind
 
 
+func _reward_interpretation_text(reward: Dictionary) -> String:
+	var stat_keys := (reward.get("stats", {}) as Dictionary).keys()
+	if not stat_keys.is_empty():
+		return "Интерпретация: %s" % game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, str(stat_keys[0]))
+	var modifier_keys := (reward.get("mods", {}) as Dictionary).keys()
+	if not modifier_keys.is_empty():
+		var parameter_id = str(game.LEVEL_UP_MOD_DISPLAY.get(str(modifier_keys[0]), modifier_keys[0]))
+		if parameter_id == "damage":
+			parameter_id = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
+		return "Интерпретация: %s" % game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, parameter_id)
+	if reward.has("affinity_mods"):
+		var affinity_keys := (reward.get("affinity_mods", {}) as Dictionary).keys()
+		if not affinity_keys.is_empty():
+			var affinity_parameter = str(game.LEVEL_UP_MOD_DISPLAY.get(str(affinity_keys[0]), affinity_keys[0]))
+			return "Интерпретация: %s" % game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, affinity_parameter)
+	return ""
+
+
 func _active_stats_snapshot() -> Dictionary:
 	if game.current_player != null and is_instance_valid(game.current_player):
 		return (game.current_player.get("stats") as Dictionary).duplicate(true)
@@ -1948,14 +1981,36 @@ func _level_up_parameter_label(parameter_id: String) -> String:
 			return "Крит. урон"
 		"knockback_power":
 			return "Отталкивание"
+		"dot_damage":
+			return "DoT урон"
+		"dot_speed":
+			return "DoT скорость"
+		"projectile_speed":
+			return "Скорость снарядов"
+		"aura_radius":
+			return "Радиус ауры"
+		"buff_power":
+			return "Сила баффов"
+		"summon_amount":
+			return "Призывы"
+		"absorb":
+			return "Поглощение"
+		"regeneration":
+			return "Регенерация"
+		"vampiric_amount":
+			return "Вампиризм"
+		"vampiric_chance":
+			return "Шанс вампиризма"
+		"ultimate_multiplier":
+			return "Сила уник. механики"
 		_:
 			return parameter_id
 
 
 func _format_level_up_value(parameter_id: String, value: float) -> String:
-	if parameter_id in ["crit_chance", "defense", "dodge"]:
+	if parameter_id in ["crit_chance", "defense", "dodge", "vampiric_chance"]:
 		return "%.0f%%" % (value * 100.0)
-	if parameter_id in ["attack_speed", "crit_damage_multiplier"]:
+	if parameter_id in ["attack_speed", "crit_damage_multiplier", "dot_speed", "buff_power", "ultimate_multiplier"]:
 		return "%.2f" % value
 	return "%.0f" % value
 
@@ -2492,100 +2547,34 @@ func _make_section_label(text: String) -> Label:
 	return label
 
 
-func _panel_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.06, 0.08, 0.12, 0.94)
-	style.border_color = Color(0.95, 0.78, 0.32, 0.85)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 28
-	style.content_margin_top = 26
-	style.content_margin_right = 28
-	style.content_margin_bottom = 26
-	return style
+func _panel_style() -> StyleBox:
+	return _global_texture_style(GLOBAL_PANEL_FRAME_PATH, Vector4(34, 34, 34, 34), Color.WHITE, Vector4(28, 26, 28, 26))
 
 
-func _level_up_panel_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.050, 0.045, 0.085, 0.98)
-	style.border_color = Color(1.0, 0.78, 0.24, 1.0)
-	style.set_border_width_all(4)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 34
-	style.content_margin_top = 30
-	style.content_margin_right = 34
-	style.content_margin_bottom = 30
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.55)
-	style.shadow_size = 18
-	style.shadow_offset = Vector2(0.0, 10.0)
-	return style
+func _level_up_panel_style() -> StyleBox:
+	return _global_texture_style(GLOBAL_LEVEL_PANEL_FRAME_PATH, Vector4(46, 46, 46, 46), Color(1.08, 1.03, 1.10, 1.0), Vector4(34, 30, 34, 30))
 
 
-func _level_up_hero_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.04, 0.035, 0.060, 0.88)
-	style.border_color = Color(0.55, 0.96, 1.0, 0.86)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 6
-	style.content_margin_top = 6
-	style.content_margin_right = 6
-	style.content_margin_bottom = 6
-	style.shadow_color = Color(0.40, 0.18, 0.88, 0.44)
-	style.shadow_size = 12
-	style.shadow_offset = Vector2.ZERO
-	return style
+func _level_up_hero_style() -> StyleBox:
+	return _global_texture_style(GLOBAL_CARD_FRAME_PATH, Vector4(28, 28, 28, 28), Color(0.82, 1.06, 1.10, 1.0), Vector4(7, 7, 7, 7))
 
 
-func _hero_portrait_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.04, 0.07, 0.10, 0.58)
-	style.border_color = Color(1.0, 0.82, 0.24, 0.72)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 8
-	style.content_margin_top = 8
-	style.content_margin_right = 8
-	style.content_margin_bottom = 8
-	return style
+func _hero_portrait_style() -> StyleBox:
+	return _global_texture_style(GLOBAL_CARD_FRAME_PATH, Vector4(28, 28, 28, 28), Color(1.08, 0.98, 0.76, 1.0), Vector4(8, 8, 8, 8))
 
 
-func _card_hover_style() -> StyleBoxFlat:
-	var style := _character_card_style()
-	style.border_color = Color(1.0, 0.86, 0.28, 1.0)
-	style.bg_color = style.bg_color.lightened(0.06)
-	style.set_border_width_all(3)
-	return style
+func _card_hover_style() -> StyleBox:
+	return _global_texture_style(GLOBAL_CARD_FRAME_PATH, Vector4(30, 30, 30, 30), Color(1.10, 1.02, 0.74, 1.0), Vector4(16, 14, 16, 14))
 
 
-func _character_card_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.10, 0.14, 0.92)
-	style.border_color = Color(0.38, 0.62, 0.72, 0.85)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 16
-	style.content_margin_top = 14
-	style.content_margin_right = 16
-	style.content_margin_bottom = 14
-	return style
+func _character_card_style() -> StyleBox:
+	return _global_texture_style(GLOBAL_CARD_FRAME_PATH, Vector4(30, 30, 30, 30), Color.WHITE, Vector4(16, 14, 16, 14))
 
 
-func _button_style(background: Color, border: Color, shadow_alpha := 0.38, border_width := 2) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = background
-	style.border_color = border
-	style.set_border_width_all(border_width)
-	style.border_width_bottom = border_width + 2
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 18
-	style.content_margin_top = 12
-	style.content_margin_right = 18
-	style.content_margin_bottom = 14
-	style.shadow_color = Color(0.0, 0.0, 0.0, shadow_alpha)
-	style.shadow_size = 8
-	style.shadow_offset = Vector2(0.0, 4.0)
-	return style
+func _button_style(background: Color, _border: Color, _shadow_alpha := 0.38, _border_width := 2) -> StyleBox:
+	var tint := background.lightened(0.38)
+	tint.a = 1.0
+	return _global_texture_style(GLOBAL_BUTTON_FRAME_PATH, Vector4(34, 26, 34, 28), tint, Vector4(18, 12, 18, 14))
 
 
 func _bar_style(background: Color) -> StyleBoxFlat:
@@ -2593,6 +2582,60 @@ func _bar_style(background: Color) -> StyleBoxFlat:
 	style.bg_color = background
 	style.set_corner_radius_all(6)
 	return style
+
+
+func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, content := Vector4.ZERO) -> StyleBox:
+	var texture: Texture2D = game._cached_texture(path)
+	if texture == null:
+		var fallback := StyleBoxFlat.new()
+		fallback.bg_color = Color(0.06, 0.08, 0.12, 0.94)
+		fallback.border_color = Color(0.95, 0.78, 0.32, 0.85)
+		fallback.set_border_width_all(2)
+		fallback.set_corner_radius_all(8)
+		fallback.content_margin_left = content.x
+		fallback.content_margin_top = content.y
+		fallback.content_margin_right = content.z
+		fallback.content_margin_bottom = content.w
+		return fallback
+	var style := StyleBoxTexture.new()
+	style.texture = texture
+	style.texture_margin_left = margins.x
+	style.texture_margin_top = margins.y
+	style.texture_margin_right = margins.z
+	style.texture_margin_bottom = margins.w
+	style.modulate_color = tint
+	style.content_margin_left = content.x
+	style.content_margin_top = content.y
+	style.content_margin_right = content.z
+	style.content_margin_bottom = content.w
+	return style
+
+
+func _style_slider(slider: HSlider) -> void:
+	slider.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	slider.add_theme_stylebox_override("slider", _global_texture_style(SYSTEM_SLIDER_TRACK_PATH, Vector4(12, 8, 12, 8), Color.WHITE, Vector4.ZERO))
+	slider.add_theme_stylebox_override("grabber_area", _bar_style(Color(0.72, 0.55, 0.20, 0.35)))
+	slider.add_theme_stylebox_override("grabber_area_highlight", _bar_style(Color(0.86, 0.78, 0.32, 0.52)))
+	var grabber: Texture2D = game._cached_texture(SYSTEM_SLIDER_GRABBER_PATH)
+	if grabber != null:
+		slider.add_theme_icon_override("grabber", grabber)
+		slider.add_theme_icon_override("grabber_highlight", grabber)
+		slider.add_theme_icon_override("grabber_disabled", grabber)
+
+
+func _style_checkbox(toggle: CheckBox) -> void:
+	toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var unchecked: Texture2D = game._cached_texture(SYSTEM_CHECKBOX_UNCHECKED_PATH)
+	var checked: Texture2D = game._cached_texture(SYSTEM_CHECKBOX_CHECKED_PATH)
+	if unchecked != null:
+		toggle.add_theme_icon_override("unchecked", unchecked)
+		toggle.add_theme_icon_override("unchecked_disabled", unchecked)
+	if checked != null:
+		toggle.add_theme_icon_override("checked", checked)
+		toggle.add_theme_icon_override("checked_disabled", checked)
+	toggle.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	toggle.add_theme_color_override("font_hover_color", Color(1.0, 0.94, 0.54, 1.0))
+	toggle.add_theme_color_override("font_pressed_color", Color(0.70, 1.0, 0.92, 1.0))
 
 
 func _create_hud() -> void:
@@ -2645,21 +2688,9 @@ func _create_combat_timer_panel(root: Control) -> void:
 	game.timer_label = label
 
 
-func _timer_panel_style(alarm: bool) -> StyleBoxFlat:
-	# Стилизованная рамка кодом; заменить на StyleBoxTexture c timer_frame.png,
-	# когда Design выдаст ассет (design_artifact_icons_fantasy_restyle_task).
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.10, 0.07, 0.05, 0.88) if not alarm else Color(0.22, 0.05, 0.04, 0.92)
-	style.border_color = Color(0.78, 0.62, 0.28, 1.0) if not alarm else Color(1.0, 0.26, 0.20, 1.0)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(12)
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.4)
-	style.shadow_size = 6
-	style.content_margin_left = 14
-	style.content_margin_right = 14
-	style.content_margin_top = 4
-	style.content_margin_bottom = 4
-	return style
+func _timer_panel_style(alarm: bool) -> StyleBox:
+	var path := "res://assets/sprites/ui/hud/timer_frame_alarm.png" if alarm else "res://assets/sprites/ui/hud/timer_frame.png"
+	return _global_texture_style(path, Vector4(34, 24, 34, 24), Color.WHITE, Vector4(14, 4, 14, 4))
 
 
 func _create_artifact_hud_row(root: Control) -> void:
@@ -2731,20 +2762,31 @@ func _artifact_icon_texture(artifact_id: String) -> Texture2D:
 
 
 const TIER_LABELS := {1: "Tier 1", 2: "Tier 2 — редкий", 3: "Tier 3 — легендарный"}
-const CLASS_RU := {"berserk": "Берсерк", "dark_mage": "Темный маг", "guitarist": "Гитарист"}
+const CLASS_RU := {
+	"berserk": "Берсерк",
+	"dark_mage": "Темный маг",
+	"guitarist": "Гитарист",
+	"assassin": "Ассасин",
+	"ranger": "Рейнджер",
+	"doctor": "Доктор",
+	"chemist": "Химик",
+	"knight": "Рыцарь",
+	"druid": "Друид",
+}
 
 
 func _artifact_affinity_note(definition: Dictionary) -> Dictionary:
-	# Честная пометка: красная — весь эффект классовый и класс чужой;
-	# желтая — классовая часть пропадает, универсальная работает; пусто — полный эффект.
+	# С 0.2 классовая часть больше не пропадает: affinity теперь объясняет,
+	# как артефакт интерпретируется текущим классом.
 	var affinity: Array = definition.get("class_affinity", definition.get("classes", []))
 	if affinity.is_empty() or affinity.has(game.selected_character_id):
 		return {}
-	var has_universal: bool = not (definition.get("mods", {}) as Dictionary).is_empty() \
-		or not (definition.get("stats", {}) as Dictionary).is_empty()
-	if has_universal:
-		return {"text": "Работает вполсилы", "color": Color(0.95, 0.82, 0.25, 1.0)}
-	return {"text": "Не работает на текущем классе", "color": Color(0.95, 0.30, 0.24, 1.0)}
+	var affinity_keys := (definition.get("affinity_mods", {}) as Dictionary).keys()
+	var parameter_id := "buff_power"
+	if not affinity_keys.is_empty():
+		parameter_id = str(game.LEVEL_UP_MOD_DISPLAY.get(str(affinity_keys[0]), affinity_keys[0]))
+	var text := "Интерпретация: %s" % game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, parameter_id)
+	return {"text": text, "color": Color(0.55, 0.92, 1.0, 1.0)}
 
 
 func _artifact_affinity_suffix(definition: Dictionary) -> String:
@@ -2888,33 +2930,12 @@ func _add_hud_money_card(parent: HBoxContainer) -> void:
 	line.add_child(game.money_label)
 
 
-func _hud_panel_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.035, 0.045, 0.065, 0.76)
-	style.border_color = Color(0.95, 0.78, 0.32, 0.55)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 10
-	style.content_margin_top = 9
-	style.content_margin_right = 10
-	style.content_margin_bottom = 9
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.36)
-	style.shadow_size = 10
-	style.shadow_offset = Vector2(0.0, 4.0)
-	return style
+func _hud_panel_style() -> StyleBox:
+	return _global_texture_style(GLOBAL_HUD_PANEL_FRAME_PATH, Vector4(28, 22, 28, 24), Color.WHITE, Vector4(10, 9, 10, 9))
 
 
-func _hud_card_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.10, 0.13, 0.88)
-	style.border_color = Color(0.28, 0.40, 0.48, 0.58)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(7)
-	style.content_margin_left = 8
-	style.content_margin_top = 7
-	style.content_margin_right = 8
-	style.content_margin_bottom = 7
-	return style
+func _hud_card_style() -> StyleBox:
+	return _global_texture_style(GLOBAL_HUD_CARD_FRAME_PATH, Vector4(22, 18, 22, 20), Color.WHITE, Vector4(8, 7, 8, 7))
 
 
 func _run_resource_values() -> Dictionary:
