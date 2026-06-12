@@ -133,15 +133,21 @@
 | [qa_review_bug_ascension_elite_instant_phase_dead_task.md](../tasks/qa_review_bug_ascension_elite_instant_phase_dead_task.md) | QA (Claude) | done | QA passed 2026-06-12: lazy single-shot потребление меты, ordering-proof, спец-атака открывается сразу. Сьюты зелёные. ✅ НЕЗАВИСИМО подтверждено QA-чатом (отд. сессия): код enemy.gd:343-353 + поведенческий тест runtime_smoke:2790-2805 — корректны |
 | [qa_review_bug_ascension_selector_not_clamped_task.md](../tasks/qa_review_bug_ascension_selector_not_clamped_task.md) | QA (Claude) | done | QA passed 2026-06-12: двухслойный кламп (UI «+» + reset_run_ascension), забег не стартует на закрытом уровне. Сьюты зелёные. ✅ НЕЗАВИСИМО подтверждено QA-чатом (отд. сессия): защитный кламп main.gd:447 закрывает эксплойт |
 | [qa_review_bug_boss_phase_hazard_naked_circle_task.md](../tasks/qa_review_bug_boss_phase_hazard_naked_circle_task.md) | QA (Claude) | done | Ждет `bug_boss_phase_hazard_naked_circle_task.md` -> review/done | -> QA passed 2026-06-12: голых кругов нет, все 3 зоны на HazardVfx, доки точны, smoke зелёные
+| [qa_review_backend_elite_reward_center_screen_task.md](../tasks/qa_review_backend_elite_reward_center_screen_task.md) | QA (Claude) | new | Исходная `backend_elite_reward_center_screen_task.md` уже done; проверить модалку 3 артефактов, паузу, обязательный выбор и edge-case таймера |
+| [qa_review_test_mini_elite_spawn_behavioral_coverage_task.md](../tasks/qa_review_test_mini_elite_spawn_behavioral_coverage_task.md) | QA (Claude) | new | Исходная `test_mini_elite_spawn_behavioral_coverage_task.md` уже done; проверить поведенческое покрытие mini_elite_chance |
+| [qa_review_backend_levelup_rework_five_options_task.md](../tasks/qa_review_backend_levelup_rework_five_options_task.md) | QA (Claude) | blocked | Ждет `backend_levelup_rework_five_options_task.md` -> review/done |
+| [qa_review_backend_hero_select_portrait_left_radar_task.md](../tasks/qa_review_backend_hero_select_portrait_left_radar_task.md) | QA (Claude) | blocked | Ждет `backend_hero_select_portrait_left_radar_task.md` -> review/done |
+| [qa_review_design_contextual_ui_frames_rethink_task.md](../tasks/qa_review_design_contextual_ui_frames_rethink_task.md) | QA (Claude) | blocked | Ждет `design_contextual_ui_frames_rethink_task.md` -> review/done |
 
 ## Новые (выданы PM 2026-06-12, пакет «награда элитки + level-up 5 + выбор героя v3»)
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [backend_elite_reward_center_screen_task.md](../tasks/backend_elite_reward_center_screen_task.md) | Back-end | done | Done 2026-06-12: крупные карточки (иконка 112px, тир цветом, эффект, интерпретация) по центру, выбор обязателен, навигация клавиатурой/геймпадом, краевой кейс таймера покрыт тестом. 6 smoke зелёные. Скриншоты недоступны (windowed не рендерит) — центрирование на автотесте |
-| [backend_levelup_rework_five_options_task.md](../tasks/backend_levelup_rework_five_options_task.md) | Back-end | new | Level-up: 5 вариантов (характеристики — редко, с пометкой), ровно 1 пик за уровень, кнопка возврата внизу при закрытии, красивые карточки |
-| [backend_hero_select_portrait_left_radar_task.md](../tasks/backend_hero_select_portrait_left_radar_task.md) | Back-end | new | Выбор героя v3: портрет слева во всю высоту, досье справа, лента 9 героев, роза ветров по 8 статам с общей нормировкой. Заменяет сетку 3x3 |
-| [design_contextual_ui_frames_rethink_task.md](../tasks/design_contextual_ui_frames_rethink_task.md) | Design (Claude, концепт+ресёрч; генерация Codex) | new | Переосмысление рамок/кнопок/окон: контекстные D&D-обрамления (меню — лианы, смерть — кость), удаление декора без смысла, интернет-ресёрч референсов, концепт-док |
+| [backend_levelup_rework_five_options_task.md](../tasks/backend_levelup_rework_five_options_task.md) | Back-end | in_progress | Dispatch 2026-06-12 -> существующий Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2`; 5 вариантов, 1 пик/уровень, отложенный выбор |
+| [backend_hero_select_portrait_left_radar_task.md](../tasks/backend_hero_select_portrait_left_radar_task.md) | Back-end | in_progress | Dispatch 2026-06-12 -> существующий Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2`; портрет слева, досье справа, радар 8 статов |
+| [design_contextual_ui_frames_rethink_task.md](../tasks/design_contextual_ui_frames_rethink_task.md) | Design (Claude, концепт+ресёрч; генерация Codex) | in_progress | Dispatch 2026-06-12 -> существующий Design `019eabf1-6d54-7561-8af9-ce25cdf483a9`; контекстные D&D рамки/кнопки/окна |
+| [backend_elite_boss_size_epic_terror_task.md](../tasks/backend_elite_boss_size_epic_terror_task.md) | Back-end | new | Элитки x1.6-1.8 и боссы x2.2-2.5 с согласованными хитбоксами, усиленные скиллы (вторые применения, новый паттерн босса), эпичная подача: баннеры, тряска камеры, hit-stop. Гарантия безопасного коридора на В4+ |
 
 ## Активные / Неподтвержденные
 
