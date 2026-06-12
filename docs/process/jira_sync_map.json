@@ -494,5 +494,9 @@
  "design_codex_ui_dark_fantasy_restyle_task.md": {
   "key": "SCRUM-147",
   "status": "К выполнению"
+ },
+ "backend_victory_screen_player_facing_text_task.md": {
+  "key": "SCRUM-148",
+  "status": "К выполнению"
  }
 }
