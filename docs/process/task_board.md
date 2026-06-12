@@ -180,7 +180,8 @@
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [bug_hero_select_carousel_radar_name_layout_task.md](../tasks/bug_hero_select_carousel_radar_name_layout_task.md) | Back-end (UI) | done | Jira: SCRUM-140; Done 2026-06-12: карусель только миниатюры (без текста), роза ветров — плавающий виджет в правый верхний угол root, дубль имени под портретом убран (имя только в досье). Тест-ассерты обновлены, 6 smoke зелёные. QA разблокирован |
-| [bug_elite_reward_window_offcenter_task.md](../tasks/bug_elite_reward_window_offcenter_task.md) | Back-end (UI) | new | КРИТИЧЕСКИЙ: окно «Трофей элитки» уезжает в правый нижний угол за экран (скриншот пользователя). Тест должен ассертить фактический global_rect-центр, не пресет; проверить остальные модалки |
+| [bug_elite_reward_window_offcenter_task.md](../tasks/bug_elite_reward_window_offcenter_task.md) | Back-end (UI) | done | Jira: SCRUM-144; done 2026-06-12: `EliteArtifactRewardPanel` центрируется через full-rect `CenterContainer`, regression smoke проверяет фактический global_rect центр для 1280x720/1469x908/2560x1440, runtime smoke passed |
+| [bug_boss_fight_timer_panel_visible_task.md](../tasks/bug_boss_fight_timer_panel_visible_task.md) | Back-end (UI) | new | Jira: SCRUM-145; В босс-бою сверху висит панель таймера с замороженным временем (скриншот пользователя). Корень найден PM: combat_director._start_combat создает HUD (стр.19) ДО установки boss_combat_active (стр.26) → guard ui_screens.gd:3559 видит false. Тест — на фактическое дерево узлов |
 | [qa_review_bug_hero_select_carousel_radar_name_layout_task.md](../tasks/qa_review_bug_hero_select_carousel_radar_name_layout_task.md) | QA (Claude) | done | QA: passed 2026-06-12 (SCRUM-141) — все 3 дефекта исправлены, подтверждено РЕАЛЬНЫМ рендер-скриншотом 1280×720 (build/qa/): карусель без текста, роза top-right не перекрывает текст досье, имя только в досье. Багов нет |
 
 ## Активные / Неподтвержденные

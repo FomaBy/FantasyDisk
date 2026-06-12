@@ -477,10 +477,14 @@
  },
  "bug_elite_reward_window_offcenter_task.md": {
   "key": "SCRUM-142",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "qa_review_bug_hero_select_carousel_radar_name_layout_task.md": {
   "key": "SCRUM-143",
+  "status": "Готово"
+ },
+ "bug_boss_fight_timer_panel_visible_task.md": {
+  "key": "SCRUM-145",
   "status": "К выполнению"
  }
 }
