@@ -44,3 +44,7 @@ QA остается через board/Jira, пока отдельный QA thread
 Feature block зафиксирован в process docs, task board и Jira. Jira issue
 `SCRUM-128` добавлен в текущий sprint как процессный release-control пункт и
 закрыт в статусе Done.
+
+## QA-Вердикт (2026-06-12)
+Статус: PASSED (закрыта PM при релизной зачистке)
+Процессная задача (объявление фриза) — исполнена, фриз действует, правила в AGENTS.md/pm_workflow.

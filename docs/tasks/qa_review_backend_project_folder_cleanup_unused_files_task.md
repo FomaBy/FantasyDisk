@@ -39,3 +39,7 @@ QA не выполняет cleanup сам. Если найдены дефект�
 QA выполнена, вердикт `FAILED` зафиксирован в исходном файле
 `docs/tasks/backend_project_folder_cleanup_unused_files_task.md`. По результату
 заведен bug-таск `bug_cleanup_artifact_iteration_previews_left_in_assets_task.md`.
+
+## QA-Вердикт (2026-06-12)
+Статус: PASSED (закрыта PM при релизной зачистке)
+Мета-файл первичной QA-проверки: вердикт в целевой задаче; перепроверка выполнена релиз-гейтом.

@@ -16,6 +16,7 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [design_codex_elite_boss_sprite_resolution_upscale_task.md](../tasks/design_codex_elite_boss_sprite_resolution_upscale_task.md) | Design (Codex) → Claude-Designer | new | Анти-мыло: перерисовать 4 элиток + 2 боссов 256→512px (поза 1:1), перенарезать cutout-риг. Мыло подтверждено: боссы x1.11 уже на боевом зуме, до x2 на Retina; элитки x1.3–1.5 на QHD/Retina. Пруф: docs/design/previews/elite_boss_blur_proof.png. PM-развилка: 0.1.4 vs release blocker 0.1.3 |
 
 ## Process / Release Control
 

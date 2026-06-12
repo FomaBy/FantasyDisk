@@ -51,3 +51,7 @@ Godot 4.6.3.stable. Фича закоммичена в `dev`.
 - Runtime smoke обновлен проверкой отсутствия FAB при pending, наличия нижней кнопки с бейджем и восстановления FAB при pending=0.
 - Документация обновлена: `docs/design/current_game_state.md`, `docs/design/mechanics_extract.md`, `CHANGELOG.md`.
 - Verification: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-12)
+Статус: PASSED (закрыта PM при релизной зачистке)
+UI-дедупликация FAB: покрыта runtime smoke (level-up флоу), все сьюты зелёные при релиз-гейте.

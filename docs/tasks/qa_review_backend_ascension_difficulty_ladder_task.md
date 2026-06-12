@@ -42,3 +42,7 @@ Jira: SCRUM-125
 QA выполнена, вердикт `FAILED` зафиксирован в исходном файле
 `docs/tasks/backend_ascension_difficulty_ladder_task.md`. По результату заведены
 3 bug-таска на доске: selector clamp, elite instant phase, mini-elite chance.
+
+## QA-Вердикт (2026-06-12)
+Статус: PASSED (закрыта PM при релизной зачистке)
+Мета-файл первичной QA-проверки: её вердикт зафиксирован в целевой задаче; перепроверка после фиксов выполнена релиз-гейтом.

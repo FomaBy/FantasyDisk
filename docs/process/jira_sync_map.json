@@ -37,7 +37,7 @@
  },
  "backend_ascension_difficulty_ladder_task.md": {
   "key": "SCRUM-10",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_attack_aim_nearest_enemy_fix_task.md": {
   "key": "SCRUM-11",
@@ -161,7 +161,7 @@
  },
  "backend_project_folder_cleanup_unused_files_task.md": {
   "key": "SCRUM-41",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_random_events_ten_scenarios_task.md": {
   "key": "SCRUM-42",
@@ -361,7 +361,7 @@
  },
  "design_weapon_attack_vfx_animations_polish_task.md": {
   "key": "SCRUM-91",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "documentation_post_changes_domain_split_task.md": {
   "key": "SCRUM-92",
@@ -373,7 +373,7 @@
  },
  "qa_review_backend_ascension_difficulty_ladder_task.md": {
   "key": "SCRUM-94",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "qa_review_backend_elite_reward_center_screen_task.md": {
   "key": "SCRUM-95",
@@ -389,7 +389,7 @@
  },
  "qa_review_backend_project_folder_cleanup_unused_files_task.md": {
   "key": "SCRUM-98",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "qa_review_bug_ascension_elite_instant_phase_dead_task.md": {
   "key": "SCRUM-99",
@@ -421,7 +421,7 @@
  },
  "qa_review_design_weapon_attack_vfx_animations_polish_task.md": {
   "key": "SCRUM-106",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "qa_review_test_mini_elite_spawn_behavioral_coverage_task.md": {
   "key": "SCRUM-107",
@@ -429,11 +429,11 @@
  },
  "test_mini_elite_spawn_behavioral_coverage_task.md": {
   "key": "SCRUM-108",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "process_feature_block_0_1_3_task.md": {
   "key": "SCRUM-129",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "qa_review_backend_contextual_ui_frame_theme_integration_task.md": {
   "key": "SCRUM-130",
@@ -453,6 +453,22 @@
  },
  "ux_levelup_fab_return_button_dedup_task.md": {
   "key": "SCRUM-134",
-  "status": "Контроль качества"
+  "status": "Готово"
+ },
+ "design_codex_elite_boss_sprite_resolution_upscale_task.md": {
+  "key": "SCRUM-135",
+  "status": "К выполнению"
+ },
+ "qa_recheck_backend_ascension_difficulty_ladder_task.md": {
+  "key": "SCRUM-136",
+  "status": "Готово"
+ },
+ "qa_recheck_backend_project_folder_cleanup_unused_files_task.md": {
+  "key": "SCRUM-137",
+  "status": "Готово"
+ },
+ "qa_recheck_design_weapon_attack_vfx_animations_polish_task.md": {
+  "key": "SCRUM-138",
+  "status": "Готово"
  }
 }

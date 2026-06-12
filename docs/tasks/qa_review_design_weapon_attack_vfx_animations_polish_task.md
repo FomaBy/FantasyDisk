@@ -42,3 +42,7 @@ Jira: SCRUM-126
 QA выполнена, вердикт `FAILED` зафиксирован в исходном файле
 `docs/tasks/design_weapon_attack_vfx_animations_polish_task.md`. По результату
 заведен bug-таск `bug_boss_phase_hazard_naked_circle_task.md`.
+
+## QA-Вердикт (2026-06-12)
+Статус: PASSED (закрыта PM при релизной зачистке)
+Мета-файл первичной QA-проверки: вердикт в целевой задаче; перепроверка выполнена релиз-гейтом.
