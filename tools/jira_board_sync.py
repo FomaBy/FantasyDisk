@@ -63,6 +63,26 @@ def api(method: str, path: str, payload=None):
         raise
 
 
+def active_sprint_id():
+    """ID активного спринта доски 1; если нет — стартует следующий future."""
+    data = api("GET", "/rest/agile/1.0/board/1/sprint?state=active")
+    vals = data.get("values", [])
+    if vals:
+        return vals[0]["id"]
+    fut = api("GET", "/rest/agile/1.0/board/1/sprint?state=future").get("values", [])
+    if fut:
+        api("POST", f"/rest/agile/1.0/sprint/{fut[0]['id']}", {"state": "active"})
+        return fut[0]["id"]
+    return None
+
+
+def add_to_sprint(sprint_id, keys):
+    if sprint_id and keys:
+        for i in range(0, len(keys), 50):
+            api("POST", f"/rest/agile/1.0/sprint/{sprint_id}/issue",
+                {"issues": keys[i:i + 50]})
+
+
 def parse_task(path: str) -> dict:
     text = open(path, encoding="utf-8", errors="replace").read()
     name = os.path.basename(path)
@@ -107,6 +127,8 @@ def main():
     dry = "--dry-run" in sys.argv
     mapping = json.load(open(MAP_PATH)) if os.path.exists(MAP_PATH) else {}
     created = moved = 0
+    sprint_id = None if dry else active_sprint_id()
+    sprint_queue = []
     for path in sorted(glob.glob(TASKS_GLOB)):
         t = parse_task(path)
         target_status = STATUS_TARGET[t["status"]]
@@ -127,6 +149,7 @@ def main():
             mapping[t["file"]] = {"key": key, "status": "К выполнению"}
             entry = mapping[t["file"]]
             created += 1
+            sprint_queue.append(key)
             print(f"created {key}: {t['file']}")
         if entry.get("status") != target_status:
             if dry:
@@ -142,6 +165,7 @@ def main():
                 moved += 1
                 print(f"moved {entry['key']} -> {target_status}")
     if not dry:
+        add_to_sprint(sprint_id, sprint_queue)
         json.dump(mapping, open(MAP_PATH, "w"), ensure_ascii=False, indent=1)
     print(f"done: created {created}, moved {moved}, total tracked {len(mapping)}")
 
