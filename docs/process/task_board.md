@@ -118,6 +118,7 @@
 | [bug_ascension_selector_not_clamped_task.md](../tasks/bug_ascension_selector_not_clamped_task.md) | normal | Back-end | done | Возвышения 2.0 | Fixed 2026-06-12 (0d184af): кламп «+» к selectable_max + защитный кламп в reset_run_ascension. Smoke зелёный. QA разблокирован |
 | [bug_boss_phase_hazard_naked_circle_task.md](../tasks/bug_boss_phase_hazard_naked_circle_task.md) | normal | Design/Back-end | done | VFX-полировка | Fixed Design 2026-06-12 (ff0b4c7): Polygon2D -> HazardVfx; QA passed |
 | [bug_cleanup_artifact_iteration_previews_left_in_assets_task.md](../tasks/bug_cleanup_artifact_iteration_previews_left_in_assets_task.md) | normal | Back-end | done | Чистка проекта | Fixed 2026-06-12 (3b7c260): 10 preview/concept итераций (+.import) вынесены в backup; audit_unused_assets чинён (tools/-генератор как output больше не считается usage). Повторный аудит чист. Категория #2 закрыта |
+| [test_mini_elite_spawn_behavioral_coverage_task.md](../tasks/test_mini_elite_spawn_behavioral_coverage_task.md) | low | Back-end | new | Возвышения 2.0 / QA | Тест-хардненинг: фикс Возвышения 7 корректен, но тест data-only (`mini_elite_chance>0`), фактический спавн не покрыт — повтор паттерна, скрывшего исходный баг. Добавить поведенческий тест спавна мини-элитки |
 
 ## QA / Review (создано dispatcher 2026-06-12)
 
@@ -128,10 +129,18 @@
 | [qa_review_codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/qa_review_codex_design_new_classes_restyle_to_starter_style_task.md) | QA (Claude) | done | QA: passed 2026-06-12 — 6 персонажей + 18 оружий в стиле стартовой тройки (яркость выше эталона = не гримдарк), bbox/alpha/cutout чистые, animation+runtime smoke зелёные. Багов нет |
 | [qa_review_codex_design_effects_sprites_dnd_restyle_task.md](../tasks/qa_review_codex_design_effects_sprites_dnd_restyle_task.md) | QA (Claude) | done | QA: passed 2026-06-12 — 19 PNG, размеры/alpha сохранены, 0% пересвета/неона (объективно), тинтуемые нейтральны, smoke зелёные. Багов нет |
 | [qa_review_backend_project_folder_cleanup_unused_files_task.md](../tasks/qa_review_backend_project_folder_cleanup_unused_files_task.md) | QA (Claude) | done | QA: failed 2026-06-12 — чистка БЕЗОПАСНА (бэкап цел, 0 осиротевших .import/.uid, защищённые папки целы, фоны восстановлены), но категория #2 не закрыта: ~9 artifact-preview итераций остались в assets/. 1 баг. Рантайм-перепроверка отложена (параллельные правки main.gd) |
-| [qa_review_bug_ascension_mini_elite_chance_dead_task.md](../tasks/qa_review_bug_ascension_mini_elite_chance_dead_task.md) | QA (Claude) | done | QA passed 2026-06-12: тройная защита + helper'ы на месте, HP×0.55 убиваемая, свита ограничена слотами. Наблюдение: ролл per-wave (осознанно). Сьюты зелёные. ⚠ автор=рецензент (один Claude) |
-| [qa_review_bug_ascension_elite_instant_phase_dead_task.md](../tasks/qa_review_bug_ascension_elite_instant_phase_dead_task.md) | QA (Claude) | done | QA passed 2026-06-12: lazy single-shot потребление меты, ordering-proof, спец-атака открывается сразу. Сьюты зелёные. ⚠ автор=рецензент (один Claude) |
-| [qa_review_bug_ascension_selector_not_clamped_task.md](../tasks/qa_review_bug_ascension_selector_not_clamped_task.md) | QA (Claude) | done | QA passed 2026-06-12: двухслойный кламп (UI «+» + reset_run_ascension), забег не стартует на закрытом уровне. Сьюты зелёные. ⚠ автор=рецензент (один Claude) |
+| [qa_review_bug_ascension_mini_elite_chance_dead_task.md](../tasks/qa_review_bug_ascension_mini_elite_chance_dead_task.md) | QA (Claude) | done | QA passed 2026-06-12: тройная защита + helper'ы на месте, HP×0.55 убиваемая, свита ограничена слотами. Наблюдение: ролл per-wave (осознанно). Сьюты зелёные. ✅ НЕЗАВИСИМО подтверждено QA-чатом (отд. сессия). Тест только data-only → заведён `test_mini_elite_spawn_behavioral_coverage_task.md` |
+| [qa_review_bug_ascension_elite_instant_phase_dead_task.md](../tasks/qa_review_bug_ascension_elite_instant_phase_dead_task.md) | QA (Claude) | done | QA passed 2026-06-12: lazy single-shot потребление меты, ordering-proof, спец-атака открывается сразу. Сьюты зелёные. ✅ НЕЗАВИСИМО подтверждено QA-чатом (отд. сессия): код enemy.gd:343-353 + поведенческий тест runtime_smoke:2790-2805 — корректны |
+| [qa_review_bug_ascension_selector_not_clamped_task.md](../tasks/qa_review_bug_ascension_selector_not_clamped_task.md) | QA (Claude) | done | QA passed 2026-06-12: двухслойный кламп (UI «+» + reset_run_ascension), забег не стартует на закрытом уровне. Сьюты зелёные. ✅ НЕЗАВИСИМО подтверждено QA-чатом (отд. сессия): защитный кламп main.gd:447 закрывает эксплойт |
 | [qa_review_bug_boss_phase_hazard_naked_circle_task.md](../tasks/qa_review_bug_boss_phase_hazard_naked_circle_task.md) | QA (Claude) | done | Ждет `bug_boss_phase_hazard_naked_circle_task.md` -> review/done | -> QA passed 2026-06-12: голых кругов нет, все 3 зоны на HazardVfx, доки точны, smoke зелёные
+
+## Новые (выданы PM 2026-06-12, пакет «награда элитки + level-up 5 + выбор героя v3»)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_elite_reward_center_screen_task.md](../tasks/backend_elite_reward_center_screen_task.md) | Back-end | new | Награда элитки — модальное окно 3 артефактов по центру экрана, бой на паузе, выбор обязателен |
+| [backend_levelup_rework_five_options_task.md](../tasks/backend_levelup_rework_five_options_task.md) | Back-end | new | Level-up: 5 вариантов (характеристики — редко, с пометкой), ровно 1 пик за уровень, кнопка возврата внизу при закрытии, красивые карточки |
+| [backend_hero_select_portrait_left_radar_task.md](../tasks/backend_hero_select_portrait_left_radar_task.md) | Back-end | new | Выбор героя v3: портрет слева во всю высоту, досье справа, лента 9 героев, роза ветров по 8 статам с общей нормировкой. Заменяет сетку 3x3 |
 
 ## Активные / Неподтвержденные
 
