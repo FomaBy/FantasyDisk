@@ -493,7 +493,7 @@
  },
  "design_codex_ui_dark_fantasy_restyle_task.md": {
   "key": "SCRUM-147",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_victory_screen_player_facing_text_task.md": {
   "key": "SCRUM-148",
@@ -505,30 +505,38 @@
  },
  "backend_meta_skill_tree_task.md": {
   "key": "SCRUM-150",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_settings_volume_slider_ux_task.md": {
   "key": "SCRUM-151",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "design_codex_summon_allies_sprites_task.md": {
   "key": "SCRUM-152",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_drop_economy_rebalance_task.md": {
   "key": "SCRUM-153",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_music_tavern_ambient_task.md": {
   "key": "SCRUM-154",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_new_bosses_mini_elites_roster_task.md": {
   "key": "SCRUM-155",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "design_codex_new_bosses_mini_elites_sprites_task.md": {
   "key": "SCRUM-156",
+  "status": "В работе"
+ },
+ "backend_summon_allies_source_sprite_integration_task.md": {
+  "key": "SCRUM-157",
+  "status": "К выполнению"
+ },
+ "design_codex_screen_backdrops_main_menu_task.md": {
+  "key": "SCRUM-158",
   "status": "К выполнению"
  }
 }

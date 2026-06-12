@@ -1,13 +1,15 @@
 # Задача Для Design-Агента: Полный рестайл UI в Dark Fantasy (кнопки → весь интерфейс)
 
-Статус: blocked
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (решение пользователя, 5 референсов в PM-чате)
 Jira: SCRUM-147
-Blocked: референсы пользователя ещё не выложены в
-`docs/design/references/ui_dark_fantasy_2026_06/` (см. README там) — без них
-генерацию НЕ запускать. Feature freeze снят (v0.1.3 выпущен), спринт 0.1.4 активен.
+РАЗБЛОКИРОВАНО 2026-06-12: пользователь выложил референсы — 9 кнопочных китов
++ полноэкранный референс лаборатории в
+`docs/design/references/ui_dark_fantasy_2026_06/` (см. README с картой китов).
+Ожидается ещё полноэкранный мокап «Настроек» (screen_settings_full_reference.png)
+— начать с кнопочных китов, мокап подключить как появится.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения в рамках этой задачи.
@@ -21,9 +23,10 @@ Blocked: референсы пользователя ещё не выложен�
 Подключение тем/stylebox в код — handoff в Back-end.
 
 ## Контекст — смена арт-направления UI (решение пользователя 2026-06-12)
-Пользователь утвердил НОВЫЙ стиль всего интерфейса по 5 референсам кнопок
-(dark fantasy: Parchment & Wax Seal, Dragon-Scale, Obsidian & Brass Runed,
-Dwarven Stone, Necromancer — детальные описания в README папки референсов).
+Пользователь утвердил НОВЫЙ стиль всего интерфейса по референсам кнопок
+(итоговый набор — 9 китов: Obsidian&Brass, Bone&Skulls, Royal Crimson, Dragon-
+Scale, Parchment&WaxSeal, Warplate, Necromancer, Dwarven Stone, Eldritch Void —
+карта в README папки референсов) + полноэкранный референс лаборатории.
 Ключевая цитата: «Это кнопки, но я хочу все интерфейсы в таком стиле.
 Надо удалить все текущие наработки и использовать то, что в референсах».
 
@@ -40,7 +43,7 @@ Dwarven Stone, Necromancer — детальные описания в README п�
 1. **Фаза 1 — кнопки (ui button frame).** По референсам сгенерировать единый
    набор кнопок: 4 состояния (idle/hover/pressed/disabled) c консистентной
    логикой состояний (hover = свечение, pressed = затемнение/сжатие, disabled =
-   десатурация). Выбрать 2-3 кита из 5 референсов под роли: primary action,
+   десатурация). Выбрать 2-4 кита из 9 референсов под роли: primary action,
    secondary/нейтральная, опасное действие (выход/конец забега — например
    Necromancer/Dragon-Scale). Формат под 9-slice/NinePatch (тянущаяся середина,
    неискажаемые углы), размеры согласовать с текущими кнопками меню/боя.
@@ -66,7 +69,7 @@ Dwarven Stone, Necromancer — детальные описания в README п�
    блокировать всё одним гигантским PR; CHANGELOG (0.1.4) по мере интеграции.
 
 ## Files / Assets / IDs
-- Референсы: docs/design/references/ui_dark_fantasy_2026_06/ (5 листов, см. README)
+- Референсы: docs/design/references/ui_dark_fantasy_2026_06/ (9 кнопочных китов + экран лаборатории, см. README)
 - Текущие фреймы: assets/sprites/ui/frames/ (включая escape/), HUD-рамки
   assets/sprites/ui/hud/ (timer_frame и пр.)
 - scripts/pause_stats_menu.gd, scripts/ui_screens.gd (потребители styleboxes)
@@ -88,3 +91,6 @@ Dwarven Stone, Necromancer — детальные описания в README п�
 ## Самопроверка
 Визуальный контрольный лист по каждому экрану + headless smoke; сверка каждого
 кита с референсом бок-о-бок (preview-лист в docs/design/previews/).
+
+## Dispatch
+- 2026-06-12: Codex Documentation dispatcher отправил разблокированную задачу в Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`; Jira `SCRUM-147` переведена в работу. Референсы на месте: `docs/design/references/ui_dark_fantasy_2026_06/`.
