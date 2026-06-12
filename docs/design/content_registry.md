@@ -296,12 +296,19 @@ Back-end source-specific integration handoff: `docs/tasks/backend_summon_allies_
 | `radial_burst` | Радиальный Взрыв | Пожиратель Диска | Кольцо снарядов во все стороны |
 | `devourer_frenzy` | Ярость Пожирателя | Пожиратель Диска | Энрейдж на низком HP |
 
+## Мини-Элитки (Свита Возвышения L7, SCRUM-155)
+
+Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 видов): `mini_scavenger_reaper` Жнец-Падальщик, `mini_plague_bellringer` Чумной Звонарь, `mini_bone_warden` Костяной Страж, `mini_spark_wight` Искровик, `mini_rot_hound` Гнилая Гончая, `mini_shadow_devourer` Теневой Пожиратель. Каждый вид: базовая elite-сцена (placeholder до SCRUM-156), профиль hp/speed/damage, RGB-тинт различимости, поведение ближайшего elite-паттерна. Свита L7 выбирает вид случайно (`combat_director._maybe_spawn_mini_elite`); kind-мета `mini_elite_kind` на узле. Кодекс: раздел «Мини-элитки».
+
 ## Боссы
 
 | ID | Игровое имя | Текущая сцена | Роль | Ассет | Паттерны | Статус |
 | --- | --- | --- | --- | --- | --- | --- |
 | `rift_warden` | Страж Разлома | `scenes/BossWarden.tscn` | Финальный босс контроля | `assets/sprites/bosses/boss_rift_warden.png` | Залпы, зоны разлома, призыв, щит, увороты | Реализовано |
 | `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png` | Рывки, disk slam AoE, radial burst, enrage | Реализовано |
+| `bone_archon` | Костяной Архонт | `scenes/BossBoneArchon.tscn` | Финальный босс-некромант | placeholder: boss_rift_warden.png + тинт (арт — SCRUM-156) | Волны скелетов (summon), веер черепов (volley), костяная стена (волна зон с проходом) | Реализовано (механики; арт placeholder) |
+| `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | placeholder: boss_disk_devourer.png + тинт (арт — SCRUM-156) | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3 | Реализовано (механики; арт placeholder) |
+| `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | placeholder: boss_disk_devourer.png + тинт (арт — SCRUM-156) | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны) | Реализовано (механики; арт placeholder) |
 
 Обновление SCRUM-135 от 2026-06-12: оба boss source PNG заменены на native `512x512` и перенарезаны в `assets/sprites/bosses/cutout/`; `rift_warden` сохраняет отдельный `vortex` part, `disk_devourer` остается single-torso rig по текущему CONFIG. Epic boss scale не менялся.
 

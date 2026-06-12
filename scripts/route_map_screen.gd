@@ -224,6 +224,18 @@ func _random_boss_route_node() -> Dictionary:
 			"boss_id": "disk_devourer",
 			"name": "Disk Devourer",
 		},
+		{
+			"boss_id": "bone_archon",
+			"name": "Bone Archon",
+		},
+		{
+			"boss_id": "brood_mother",
+			"name": "Brood Mother",
+		},
+		{
+			"boss_id": "ashen_colossus",
+			"name": "Ashen Colossus",
+		},
 	]
 	var boss: Dictionary = boss_options[game.rng.randi_range(0, boss_options.size() - 1)]
 	return {

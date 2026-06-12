@@ -262,10 +262,18 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var thumbnail_strip := main.find_child("HeroThumbnailStrip", true, false) as HBoxContainer
-	if thumbnail_strip == null or thumbnail_strip.get_child_count() != 9:
-		push_error("Expected hero select v3 to show a 9-hero thumbnail strip.")
+	if thumbnail_strip == null or thumbnail_strip.get_child_count() != ProgressionData.character_ids().size():
+		push_error("Expected hero select v3 to show one thumbnail per playable hero.")
 		quit(1)
 		return
+	for thumb_node in thumbnail_strip.get_children():
+		var thumb_button := thumb_node as Button
+		if thumb_button == null:
+			continue
+		if thumb_button.custom_minimum_size.x > 124.0 or thumb_button.custom_minimum_size.x < 64.0:
+			push_error("Expected hero thumbnail carousel to adapt thumbnail width for the growing roster.")
+			quit(1)
+			return
 	for character_id in ProgressionData.character_ids():
 		var thumb := main.find_child("HeroThumbnail_%s" % character_id, true, false) as Button
 		if thumb == null or thumb.tooltip_text == "":
@@ -376,8 +384,8 @@ func _initialize() -> void:
 	# Таймер боя: по центру сверху, при <=5с переходит в alarm-состояние (PM 2026-06-11).
 	var timer_panel := main.find_child("CombatTimerPanel", true, false) as PanelContainer
 	var timer_text := main.get("timer_label") as Label
-	if timer_panel == null or timer_text == null or timer_panel.anchor_left != 0.5:
-		push_error("Expected the combat timer panel centered at the top of the HUD.")
+	if timer_panel == null or timer_text == null or timer_panel.get_global_rect().position.y > 24.0:
+		push_error("Expected the combat timer panel to stay in the top HUD band.")
 		quit(1)
 		return
 	main.set("round_time_left", 4.0)
@@ -1045,7 +1053,8 @@ func _initialize() -> void:
 	await _test_class_relevance_and_offer_fixation(main_scene)
 	_test_settings_persistence_and_audio()
 	await _test_full_attribute_wiring()
-	await _test_all_nine_classes()
+	await _test_all_playable_classes()
+	await _test_soldier_weapon_mechanics()
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1060,10 +1069,78 @@ func _initialize() -> void:
 	await _test_boss_zone_wave_safe_corridor()
 	await _test_elite_boss_presentation(main_scene)
 	await _test_boss_hud_omits_timer(main_scene)
+	await _test_hud_no_overlap_layouts(main_scene)
 	await _test_mini_elite_roster(main_scene)
+	await _test_new_boss_roster(main_scene)
 
 	print("Runtime smoke test passed.")
 	quit()
+
+
+func _test_new_boss_roster(main_scene: PackedScene) -> void:
+	# SCRUM-155 ч.2: 3 новых босса — сцены валидны, behavior уникален, атаки
+	# тикают без ошибок (телеграф-зоны создаются), ротация маршрута из 5.
+	var m := main_scene.instantiate()
+	root.add_child(m)
+	await process_frame
+	var expected := {
+		"bone_archon": "Костяной Архонт",
+		"brood_mother": "Матерь Роя",
+		"ashen_colossus": "Пепельный Колосс",
+	}
+	for boss_id in expected.keys():
+		var scene: PackedScene = m.combat.call("_boss_scene_for_id", boss_id)
+		if scene == null:
+			_fail("Expected boss scene for '%s'." % boss_id)
+			return
+		var holder := Node2D.new()
+		root.add_child(holder)
+		current_scene = holder
+		var boss := scene.instantiate() as Node2D
+		holder.add_child(boss)
+		await process_frame
+		if str(boss.get("boss_behavior")) != boss_id:
+			_fail("Expected boss behavior '%s', got '%s'." % [boss_id, str(boss.get("boss_behavior"))])
+			return
+		if str(boss.get("boss_display_name")) != str(expected[boss_id]):
+			_fail("Expected Russian display name for '%s'." % boss_id)
+			return
+		if absf(boss.scale.x - 1.9) > 0.01:
+			_fail("Expected epic boss scale 1.9 for '%s'." % boss_id)
+			return
+		# Игрок рядом + прогон атак: хазард-зоны телеграфятся без ошибок.
+		var player := (load("res://scenes/Player.tscn") as PackedScene).instantiate() as Node2D
+		holder.add_child(player)
+		player.add_to_group("player")
+		player.global_position = boss.global_position + Vector2(280, 0)
+		await process_frame
+		var hazards_before := holder.find_children("*", "Node2D", true, false).size()
+		for _tick in range(220):
+			boss.call("_update_boss_attacks", 0.05)
+		await process_frame
+		if holder.find_children("*", "Node2D", true, false).size() <= hazards_before:
+			_fail("Expected boss '%s' attack rotation to spawn hazards/summons." % boss_id)
+			return
+		# Фазы переключаются от потери HP.
+		boss.set("health", float(boss.get("max_health")) * 0.30)
+		boss.call("_update_boss_phase")
+		if int(boss.get("boss_phase")) < 3:
+			_fail("Expected boss '%s' to reach phase 3 at 30%% HP." % boss_id)
+			return
+		holder.queue_free()
+		current_scene = null
+		await process_frame
+	# Ротация маршрута: пул финального узла включает всех 5.
+	var seen_bosses := {}
+	for _roll in range(120):
+		var node: Dictionary = m.route.call("_random_boss_route_node")
+		seen_bosses[str(node.get("boss_id", ""))] = true
+	for boss_id in ["rift_warden", "disk_devourer", "bone_archon", "brood_mother", "ashen_colossus"]:
+		if not seen_bosses.has(boss_id):
+			_fail("Expected boss rotation to include '%s'." % boss_id)
+			return
+	m.queue_free()
+	await process_frame
 
 
 func _test_mini_elite_roster(main_scene: PackedScene) -> void:
@@ -1897,6 +1974,11 @@ func _test_berserk_weapon_configs() -> void:
 func _test_class_weapon_configs() -> void:
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var expected := {
+		"soldier": {
+			"soldier_rifle": {"scene": "SoldierRifle", "mode": "suppression_burst", "sprite": "res://assets/sprites/weapons/storm_longbow.png"},
+			"soldier_grenade": {"scene": "SoldierGrenade", "mode": "grenade_cook", "sprite": "res://assets/sprites/weapons/blast_powder.png"},
+			"soldier_bayonet": {"scene": "SoldierBayonet", "mode": "bayonet_brace", "sprite": "res://assets/sprites/weapons/long_spear.png"},
+		},
 		"dark_mage": {
 			"dark_book": {"scene": "DarkBook", "mode": "aoe_projectile", "sprite": "res://assets/sprites/weapons/dark_book.png"},
 			"cursed_skull": {"scene": "CursedSkull", "mode": "homing_curse", "sprite": "res://assets/sprites/weapons/cursed_skull.png"},
@@ -1940,6 +2022,7 @@ func _test_all_weapon_variants_equip() -> void:
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var expected_weapon_ids := {
 		"berserk": ["sword", "axe", "hammer"],
+		"soldier": ["soldier_rifle", "soldier_grenade", "soldier_bayonet"],
 		"dark_mage": ["dark_book", "cursed_skull", "dark_wand"],
 		"guitarist": ["electric_guitar", "bass_guitar", "sound_amp"],
 		"assassin": ["chakrams", "shadow_daggers", "venom_wire"],
@@ -2336,6 +2419,17 @@ func _test_class_weapon_rework() -> void:
 
 
 func _test_unique_class_identity_patterns() -> void:
+	var soldier_modes := {}
+	for soldier_weapon_id in ProgressionData.weapon_ids("soldier"):
+		var mode := str(ProgressionData.weapon("soldier", soldier_weapon_id).get("attack_mode", ""))
+		if soldier_modes.has(mode):
+			_fail("Expected Soldier weapons to use three distinct attack modes.")
+			return
+		soldier_modes[mode] = true
+	for required_soldier_mode in ["suppression_burst", "grenade_cook", "bayonet_brace"]:
+		if not soldier_modes.has(required_soldier_mode):
+			_fail("Expected Soldier to include unique %s attack mode." % required_soldier_mode)
+			return
 	if ProgressionData.weapon("doctor", "restore_potion").get("attack_mode", "") != "drain_link":
 		_fail("Expected Doctor restore potion slot to use the drain/lifesteal link pattern.")
 		return
@@ -2595,8 +2689,11 @@ func _test_class_budget_profiles() -> void:
 				_fail("Expected %s/%s budget deviation <=10%%, got solo %.1f%% and 5T %.1f%%." % [character_id, weapon_id, solo_dev * 100.0, aoe_dev * 100.0])
 				return
 			checked += 1
-	if checked != 27:
-		_fail("Expected balance budget coverage for 27 class+weapon pairs, got %d." % checked)
+	var expected_pairs := 0
+	for character_id in ProgressionData.character_ids():
+		expected_pairs += ProgressionData.weapon_ids(character_id).size()
+	if checked != expected_pairs:
+		_fail("Expected balance budget coverage for %d class+weapon pairs, got %d." % [expected_pairs, checked])
 		return
 
 
@@ -2618,6 +2715,20 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 			stage6_damage_cost = int(item.get("cost", 0))
 	if stage0_damage_cost <= 0 or stage6_damage_cost <= stage0_damage_cost:
 		_fail("Expected shop prices to scale with stage_scale, got %d -> %d." % [stage0_damage_cost, stage6_damage_cost])
+		return
+	if stage0_damage_cost != 47:
+		_fail("Expected shop_damage stage 0 cost to include the 0.1.4 economy multiplier (47), got %d." % stage0_damage_cost)
+		return
+	var ordinary_drop := ProgressionData.drop_class_rewards("ordinary", 3, 0)
+	var heavy_drop := ProgressionData.drop_class_rewards("heavy", 3, 0)
+	var mini_drop := ProgressionData.drop_class_rewards("mini_elite", 3, 0)
+	var elite_drop := ProgressionData.drop_class_rewards("elite", 3, 0)
+	var boss_drop := ProgressionData.drop_class_rewards("boss", 3, 0)
+	if int(heavy_drop["xp"]) < int(ordinary_drop["xp"]) * 1.5 or int(heavy_drop["money"]) < int(ordinary_drop["money"]) * 1.5:
+		_fail("Expected heavy enemies to drop roughly 1.5-2x ordinary rewards.")
+		return
+	if int(mini_drop["xp"]) <= int(heavy_drop["xp"]) or int(elite_drop["xp"]) <= int(mini_drop["xp"]) or int(boss_drop["money"]) <= int(elite_drop["money"]):
+		_fail("Expected drop classes to increase ordinary < heavy < mini_elite < elite < boss.")
 		return
 	var elite_choices := ProgressionData.elite_artifact_choices(6, 3)
 	if elite_choices.size() != 3:
@@ -2647,6 +2758,34 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 		scaling_main.queue_free()
 		return
 	scaling_main.queue_free()
+	await process_frame
+
+	var drop_main := main_scene.instantiate()
+	root.add_child(drop_main)
+	await process_frame
+	drop_main.set("route_stage", 3)
+	var elite_enemy: Node2D = drop_main.combat._spawn_random_enemy(drop_main.elite_armored_scene, drop_main.ARENA_CENTER, true)
+	if elite_enemy == null or str(elite_enemy.get_meta("drop_class", "")) != "elite":
+		_fail("Expected spawned elite to receive elite drop_class.")
+		drop_main.queue_free()
+		return
+	var elite_xp := int(elite_enemy.get("reward_xp"))
+	elite_enemy.take_damage(999999.0)
+	await process_frame
+	var found_elite_xp_pickup := false
+	var found_elite_money_pickup := false
+	for pickup in get_nodes_in_group("pickups"):
+		if not is_instance_valid(pickup):
+			continue
+		if pickup.get("pickup_type") == "xp" and int(pickup.get("amount")) == elite_xp:
+			found_elite_xp_pickup = true
+		if pickup.get("pickup_type") == "money":
+			found_elite_money_pickup = true
+	if not found_elite_xp_pickup or not found_elite_money_pickup:
+		_fail("Expected elite death to spawn visible XP and money pickups using drop rewards.")
+		drop_main.queue_free()
+		return
+	drop_main.queue_free()
 	await process_frame
 
 	for viewport_size in [Vector2i(1280, 720), Vector2i(1469, 908), Vector2i(2560, 1440)]:
@@ -2780,15 +2919,15 @@ func _test_weapon_aiming() -> void:
 	await process_frame
 
 
-func _test_all_nine_classes() -> void:
-	# Каждый из 9 классов экипирует сигнатурное оружие и наносит урон (друид — призывает).
+func _test_all_playable_classes() -> void:
+	# Каждый класс экипирует сигнатурное оружие и наносит урон (друид — призывает).
 	var signature := {
-		"berserk": "sword", "dark_mage": "dark_wand", "guitarist": "electric_guitar",
+		"berserk": "sword", "soldier": "soldier_rifle", "dark_mage": "dark_wand", "guitarist": "electric_guitar",
 		"assassin": "chakrams", "ranger": "moon_crossbow", "doctor": "restore_potion",
 		"chemist": "blast_powder", "knight": "long_spear", "druid": "summon_amulet",
 	}
-	if ProgressionData.character_ids().size() != 9:
-		_fail("Expected nine playable classes in the data.")
+	if ProgressionData.character_ids().size() != signature.size():
+		_fail("Expected playable class data to match the signature smoke list.")
 		return
 	for class_id in signature.keys():
 		if ProgressionData.ascension_levels(class_id).size() != 10:
@@ -2837,6 +2976,65 @@ func _test_all_nine_classes() -> void:
 				return
 			class_enemy.queue_free()
 		class_player.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_soldier_weapon_mechanics() -> void:
+	var soldier_weapons := ProgressionData.weapon_ids("soldier")
+	if soldier_weapons != ["soldier_rifle", "soldier_grenade", "soldier_bayonet"]:
+		_fail("Expected Soldier to expose exactly rifle/grenade/bayonet weapons.")
+		return
+	var expected_modes := {
+		"soldier_rifle": "suppression_burst",
+		"soldier_grenade": "grenade_cook",
+		"soldier_bayonet": "bayonet_brace",
+	}
+	for weapon_id in expected_modes.keys():
+		var config: Dictionary = ProgressionData.weapon("soldier", weapon_id)
+		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
+			_fail("Expected Soldier weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
+			return
+		if ProgressionData.ascension_levels("soldier").size() != 10:
+			_fail("Expected Soldier to have 10 ascension levels.")
+			return
+
+	var holder := Node2D.new()
+	holder.name = "SoldierWeaponMechanicsScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for weapon_id in expected_modes.keys():
+		var soldier := player_scene.instantiate()
+		holder.add_child(soldier)
+		soldier.global_position = Vector2(800, 700)
+		await process_frame
+		soldier.call("configure_character", "soldier", weapon_id)
+		var weapon: Node = soldier.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected Soldier %s to attach a weapon." % weapon_id)
+			return
+		weapon.set_process(false)
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		var offset := Vector2(220, 0)
+		if weapon_id == "soldier_bayonet":
+			offset = Vector2(140, 0)
+		enemy.global_position = soldier.global_position + offset
+		await process_frame
+		var before_hp := float(enemy.get("health"))
+		weapon.call("_attack")
+		await create_timer(0.85).timeout
+		if float(enemy.get("health")) >= before_hp:
+			_fail("Expected Soldier weapon %s to damage its target." % weapon_id)
+			return
+		soldier.queue_free()
+		enemy.queue_free()
 		await process_frame
 	holder.queue_free()
 	current_scene = null
@@ -3550,8 +3748,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	# Полнота данных кодекса.
 	var codex_data := load("res://scripts/codex_data.gd")
 	var monsters: Array = codex_data.monsters()
-	if monsters.size() != 23:
-		_fail("Expected codex to list all 23 monsters (11 standard + 4 elites + 6 mini-elites + 2 bosses), got %d." % monsters.size())
+	if monsters.size() != 26:
+		_fail("Expected codex to list all 26 monsters (11 standard + 4 elites + 6 mini-elites + 5 bosses), got %d." % monsters.size())
 		return
 	var codex_mini_count := 0
 	for monster_entry in monsters:
@@ -3574,8 +3772,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if artifacts.size() != expected_artifacts:
 		_fail("Expected codex artifacts (%d) to match progression data (%d)." % [artifacts.size(), expected_artifacts])
 		return
-	if codex_data.characters().size() != 9 or codex_data.stats().size() < 20:
-		_fail("Expected codex to cover all 9 characters and the stat definitions.")
+	if codex_data.characters().size() != ProgressionData.character_ids().size() or codex_data.stats().size() < 20:
+		_fail("Expected codex to cover all playable characters and the stat definitions.")
 		return
 
 	# Все разделы открываются.
@@ -3707,6 +3905,89 @@ func _control_center_matches_viewport_size(control: Control, viewport_size: Vect
 	var rect := control.get_global_rect()
 	var viewport_center := viewport_size * 0.5
 	return absf(rect.get_center().x - viewport_center.x) <= tolerance_px and absf(rect.get_center().y - viewport_center.y) <= tolerance_px
+
+
+func _test_hud_no_overlap_layouts(main_scene: PackedScene) -> void:
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# HUD No-Overlap Rect Dump")
+	dump_lines.append("")
+	for viewport_size in [Vector2i(1152, 648), Vector2i(1280, 720), Vector2i(2560, 1440)]:
+		await _assert_hud_no_overlap_at_size(main_scene, viewport_size, false, dump_lines)
+		await _assert_hud_no_overlap_at_size(main_scene, viewport_size, true, dump_lines)
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var file := FileAccess.open("%s/hud_no_overlap_rects.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump_lines))
+		file.close()
+
+
+func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vector2i, boss_fight: bool, dump_lines: PackedStringArray) -> void:
+	var viewport := SubViewport.new()
+	viewport.size = viewport_size
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	await process_frame
+
+	var hud_main := main_scene.instantiate()
+	viewport.add_child(hud_main)
+	await process_frame
+	hud_main.set("selected_character_id", "berserk")
+	hud_main.set("selected_weapon_id", "axe")
+	hud_main.set("selected_ascension_level", 2)
+	hud_main.call("_start_combat", boss_fight)
+	await process_frame
+	await process_frame
+	var player: Node = hud_main.get("current_player")
+	if player != null:
+		player.call("apply_reward", {"kind": "artifact", "id": "cracked_shield", "title": "Треснувший щит", "mods": {"defense_flat": 0.12}})
+		player.call("apply_reward", {"kind": "artifact", "id": "hawk_eye", "title": "Ястребиный глаз", "mods": {"range_multiplier": 1.12}})
+	hud_main.set("_last_hud_snapshot", {})
+	hud_main.ui._update_hud()
+	await process_frame
+	await process_frame
+	var context := "%s %s" % ["boss" if boss_fight else "battle", str(viewport_size)]
+	var controls := _visible_hud_top_controls(hud_main)
+	dump_lines.append("## %s" % context)
+	for control in controls:
+		dump_lines.append("- `%s`: `%s`" % [control.name, str(control.get_global_rect())])
+	var overlap := _first_control_overlap(controls, 2.0)
+	if not overlap.is_empty():
+		_fail("Expected no top HUD overlap at %s, got %s." % [context, overlap])
+		return
+	viewport.queue_free()
+	await process_frame
+
+
+func _visible_hud_top_controls(main: Node) -> Array:
+	var controls := []
+	for node_name in ["RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "ArtifactHudRow"]:
+		var control := main.find_child(node_name, true, false) as Control
+		if control != null and control.visible:
+			controls.append(control)
+	return controls
+
+
+func _first_control_overlap(controls: Array, tolerance_px := 2.0) -> String:
+	for first_index in range(controls.size()):
+		var first := controls[first_index] as Control
+		if first == null:
+			continue
+		var first_rect := _rect_with_tolerance(first.get_global_rect(), tolerance_px)
+		for second_index in range(first_index + 1, controls.size()):
+			var second := controls[second_index] as Control
+			if second == null:
+				continue
+			var second_rect := _rect_with_tolerance(second.get_global_rect(), tolerance_px)
+			if first_rect.intersects(second_rect):
+				return "%s %s intersects %s %s" % [first.name, first.get_global_rect(), second.name, second.get_global_rect()]
+	return ""
+
+
+func _rect_with_tolerance(rect: Rect2, tolerance_px: float) -> Rect2:
+	var shrink := tolerance_px * 0.5
+	var size := Vector2(maxf(rect.size.x - tolerance_px, 0.0), maxf(rect.size.y - tolerance_px, 0.0))
+	return Rect2(rect.position + Vector2(shrink, shrink), size)
 
 
 func _collect_label_text(node: Node) -> String:

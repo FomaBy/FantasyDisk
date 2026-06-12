@@ -10,6 +10,7 @@ signal damaged(amount: float)
 
 const BERSERK_SPRITE := preload("res://assets/sprites/characters/berserk_unarmed.png")
 const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berserk_walk_sheet_v2.png")
+const ProgressionData := preload("res://scripts/progression_data.gd")
 const DARK_MAGE_SPRITE := preload("res://assets/sprites/characters/dark_mage.png")
 const GUITARIST_SPRITE := preload("res://assets/sprites/characters/guitarist.png")
 const ASSASSIN_SPRITE := preload("res://assets/sprites/characters/assassin.png")
@@ -100,6 +101,9 @@ var _action_tween: Tween = null
 var _hit_flash_tween: Tween = null
 var _facing_direction := Vector2.RIGHT
 var _damage_invulnerability_left := 0.0
+# Паутинное замедление (Матерь Роя): фактор скорости до отметки времени.
+var _web_slow_until := 0.0
+var _web_slow_factor := 1.0
 var _echo_hit_counter := 0
 var _leadership_echo_hit_counter := 0
 var _dodge_rush_tween: Tween = null
@@ -287,7 +291,10 @@ func _physics_process(_delta: float) -> void:
 	if InputMap.has_action("ultimate") and Input.is_action_just_pressed("ultimate"):
 		activate_ultimate()
 
-	velocity = direction.normalized() * speed
+	var web_factor := 1.0
+	if _web_slow_until > Time.get_ticks_msec() / 1000.0:
+		web_factor = _web_slow_factor
+	velocity = direction.normalized() * speed * web_factor
 	move_and_slide()
 	_update_movement_animation(_delta)
 	_update_low_hp_state()
@@ -347,6 +354,12 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void
 	_action_tween.tween_property(self, "_action_rotation", 0.0, recover_time).set_delay(windup_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_action_tween.tween_property(self, "_action_scale", Vector2.ONE, recover_time).set_delay(windup_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_action_tween.tween_callback(_apply_sprite_transform)
+
+
+func apply_web_slow(duration: float, factor: float) -> void:
+	# Паутина: временное замедление движения (повтор продлевает, фактор общий).
+	_web_slow_until = maxf(_web_slow_until, Time.get_ticks_msec() / 1000.0 + duration)
+	_web_slow_factor = clampf(factor, 0.2, 1.0)
 
 
 func take_damage(amount: float, _source := "") -> bool:
@@ -838,7 +851,7 @@ func gain_xp(amount: int) -> void:
 	while xp >= xp_to_next:
 		xp -= xp_to_next
 		level += 1
-		xp_to_next = int(ceil(float(xp_to_next) * 1.35 + 2.0))
+		xp_to_next = ProgressionData.next_xp_requirement(xp_to_next)
 		leveled_up.emit()
 
 
@@ -937,6 +950,9 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 
 	if weapon.get("wave_width") != null and weapon.has_meta("base_wave_width"):
 		weapon.set("wave_width", float(weapon.get_meta("base_wave_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
+
+	if weapon.get("suppression_width") != null and weapon.has_meta("base_suppression_width"):
+		weapon.set("suppression_width", float(weapon.get_meta("base_suppression_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
 
 	if weapon.get("max_summons") != null:
 		var base_max_summons := int(weapon.get_meta("base_max_summons"))

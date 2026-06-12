@@ -232,6 +232,8 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 			elite.set("max_health", mini_hp)
 			elite.set("health", mini_hp)
 			_refresh_enemy_health_bar(elite)
+		elite.set_meta("drop_class", "mini_elite")
+		_apply_drop_rewards(elite, "mini_elite")
 	else:
 		_apply_mini_elite_kind(elite, kind)
 	_connect_enemy_rewards(elite)
@@ -267,6 +269,7 @@ func _apply_mini_elite_kind(elite: Node2D, kind: Dictionary) -> void:
 	# + тинт placeholder-спрайта (rig). Поведение атаки = натуральное у базовой сцены.
 	elite.set_meta("mini_elite_kind", str(kind.get("id", "")))
 	elite.set_meta("mini_elite_title", str(kind.get("title", "")))
+	elite.set_meta("drop_class", "mini_elite")
 	if elite.get("max_health") != null:
 		var hp := float(elite.get("max_health")) * float(kind.get("hp_mult", 0.55))
 		elite.set("max_health", hp)
@@ -282,6 +285,7 @@ func _apply_mini_elite_kind(elite: Node2D, kind: Dictionary) -> void:
 	var rig := elite.get_node_or_null("RigRoot") as Node2D
 	if rig != null and tint.size() >= 3:
 		rig.modulate = Color(float(tint[0]), float(tint[1]), float(tint[2]), 1.0)
+	_apply_drop_rewards(elite, "mini_elite")
 
 
 func _spawn_enemy_wave() -> void:
@@ -398,9 +402,37 @@ func _scale_enemy_for_current_wave(enemy: Node) -> void:
 		enemy.set("contact_damage", float(enemy.get("contact_damage")) * damage_multiplier)
 	if enemy.get("projectile_damage") != null:
 		enemy.set("projectile_damage", float(enemy.get("projectile_damage")) * damage_multiplier)
-	if enemy.get("reward_xp") != null:
-		enemy.set("reward_xp", maxi(1, int(ceil(float(enemy.get("reward_xp")) * (1.0 + stage_scale * 0.15)))))
+	_apply_drop_rewards(enemy, _drop_class_for_enemy(enemy))
 	_refresh_enemy_health_bar(enemy)
+
+
+func _drop_class_for_enemy(enemy: Node) -> String:
+	if enemy == null:
+		return "ordinary"
+	if enemy.has_meta("drop_class"):
+		return str(enemy.get_meta("drop_class"))
+	if enemy.is_in_group("bosses"):
+		return "boss"
+	if enemy.is_in_group("elite_enemies"):
+		return "elite"
+	var enemy_name := str(enemy.get("enemy_type_name")).to_lower()
+	if enemy_name.contains("bruiser") or enemy_name.contains("shield"):
+		return "heavy"
+	if enemy_name.contains("summoner") or enemy_name.contains("shaman") or enemy_name.contains("shooter") or enemy_name.contains("mage") or enemy_name.contains("spitter"):
+		return "complex"
+	return "ordinary"
+
+
+func _apply_drop_rewards(enemy: Node, drop_class: String) -> void:
+	if enemy == null:
+		return
+	var rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards(drop_class, game.route_stage, game.spawn_wave_index)
+	enemy.set_meta("drop_class", drop_class)
+	enemy.set_meta("reward_money_chance", float(rewards.get("money_chance", 0.75)))
+	if enemy.get("reward_xp") != null:
+		enemy.set("reward_xp", int(rewards.get("xp", 1)))
+	if enemy.get("reward_money") != null:
+		enemy.set("reward_money", int(rewards.get("money", 1)))
 
 
 func _enemy_balance_for_node(enemy: Node) -> Dictionary:
@@ -438,14 +470,27 @@ func _spawn_boss() -> void:
 	_connect_enemy_rewards(boss)
 	# Появление босса: затемнение+тряска (через камеру) и крупный титул-баннер.
 	_shake_camera(18.0, 0.5)
-	var boss_name := str(boss.get("enemy_type_name"))
+	var boss_name := str(boss.get("boss_display_name"))
+	if boss_name == "":
+		boss_name = str(boss.get("enemy_type_name"))
 	game.ui._show_combat_title_banner(boss_name if boss_name != "" else "БОСС", Color(1.0, 0.34, 0.3), true)
+
+
+const BONE_ARCHON_BOSS_SCENE := preload("res://scenes/BossBoneArchon.tscn")
+const BROOD_MOTHER_BOSS_SCENE := preload("res://scenes/BossBroodMother.tscn")
+const ASHEN_COLOSSUS_BOSS_SCENE := preload("res://scenes/BossAshenColossus.tscn")
 
 
 func _boss_scene_for_id(boss_id: String) -> PackedScene:
 	match boss_id:
 		"disk_devourer":
 			return game.disk_devourer_boss_scene if game.disk_devourer_boss_scene != null else game.boss_scene
+		"bone_archon":
+			return BONE_ARCHON_BOSS_SCENE
+		"brood_mother":
+			return BROOD_MOTHER_BOSS_SCENE
+		"ashen_colossus":
+			return ASHEN_COLOSSUS_BOSS_SCENE
 		_:
 			return game.boss_scene
 
@@ -507,6 +552,7 @@ func _apply_elite_modifier(enemy: Node2D) -> void:
 		enemy.set("reward_xp", maxi(4, int(enemy.get("reward_xp")) * 4))
 	if enemy.get("reward_money") != null:
 		enemy.set("reward_money", maxi(4, int(enemy.get("reward_money")) * 5))
+	_apply_drop_rewards(enemy, "elite")
 
 	var body := enemy.get_node_or_null("Body") as Sprite2D
 	if body == null:
@@ -555,10 +601,7 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 		elite.set("projectile_damage", float(elite.get("projectile_damage")) * damage_multiplier)
 	if elite.get("_elite_attack_cooldown") != null:
 		elite.set("_elite_attack_cooldown", 1.15)
-	if elite.get("reward_xp") != null:
-		elite.set("reward_xp", maxi(8, int(ceil(float(elite.get("reward_xp")) * 1.45))))
-	if elite.get("reward_money") != null:
-		elite.set("reward_money", maxi(6, int(ceil(float(elite.get("reward_money")) * 1.35))))
+	_apply_drop_rewards(elite, "elite")
 	_refresh_enemy_health_bar(elite)
 
 
@@ -581,6 +624,7 @@ func _scale_boss_for_run(boss: Node2D) -> void:
 		boss.set("contact_damage", float(boss.get("contact_damage")) * damage_multiplier)
 	if boss.get("projectile_damage") != null:
 		boss.set("projectile_damage", float(boss.get("projectile_damage")) * damage_multiplier)
+	_apply_drop_rewards(boss, "boss")
 	_refresh_enemy_health_bar(boss)
 
 
@@ -595,7 +639,9 @@ func _grant_boss_completion_rewards() -> void:
 		var reward: Dictionary = tier3[game.rng.randi_range(0, tier3.size() - 1)].duplicate(true)
 		reward["kind"] = "artifact"
 		game.current_player.apply_reward(reward)
-	game.current_player.gain_money(int(round(120.0 * game.PROGRESSION_DATA.stage_scale(game.route_stage))))
+	var boss_rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards("boss", game.route_stage, game.spawn_wave_index)
+	game.current_player.gain_xp(int(boss_rewards.get("xp", 1)))
+	game.current_player.gain_money(int(boss_rewards.get("money", 1)))
 
 
 func _refresh_enemy_health_bar(enemy: Node) -> void:
@@ -621,8 +667,10 @@ func _on_enemy_died(enemy: Node2D) -> void:
 		var heal_percent := float((game.current_player.get("run_modifiers") as Dictionary).get("kill_heal_percent", 0.0))
 		if heal_percent > 0.0 and game.current_player.has_method("heal_percent"):
 			game.current_player.heal_percent(heal_percent)
+	if enemy.is_in_group("bosses"):
+		return
 	_spawn_pickup("xp", int(enemy.get("reward_xp")), enemy.global_position + Vector2(-10.0, 0.0))
-	var money_chance := 1.0 if enemy.is_in_group("elite_enemies") else 0.75
+	var money_chance := float(enemy.get_meta("reward_money_chance", 1.0 if enemy.is_in_group("elite_enemies") else 0.75))
 	if game.rng.randf() < money_chance:
 		_spawn_pickup("money", int(enemy.get("reward_money")), enemy.global_position + Vector2(10.0, 0.0))
 

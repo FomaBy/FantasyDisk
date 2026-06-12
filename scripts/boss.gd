@@ -1,6 +1,8 @@
 extends "res://scripts/enemy.gd"
 
 @export var boss_behavior := ""
+# Русский титул для баннера появления (enemy_type_name остаётся системным).
+@export var boss_display_name := ""
 @export var burst_projectile_count := 10
 @export var burst_interval := 4.0
 @export var dash_interval := 5.5
@@ -80,30 +82,66 @@ func _update_boss_attacks(delta: float) -> void:
 		return
 
 	_burst_cooldown -= delta
-	if boss_behavior == "disk_devourer":
-		_dash_cooldown -= delta
-		_slam_cooldown -= delta
-		if _dash_cooldown <= 0.0:
-			_start_dash_toward(player)
-			_dash_cooldown = dash_interval * _phase_interval_multiplier(0.82 if _enraged else 1.0)
-		if _slam_cooldown <= 0.0:
-			_spawn_disk_slam()
-			_slam_cooldown = slam_interval * _phase_interval_multiplier(0.86 if _enraged else 1.0)
-		if _burst_cooldown <= 0.0:
-			_fire_radial_burst()
-			_burst_cooldown = burst_interval * _phase_interval_multiplier(0.90 if _enraged else 1.0)
-	else:
-		_boss_summon_cooldown -= delta
-		_rift_zone_cooldown -= delta
-		if _burst_cooldown <= 0.0:
-			_fire_targeted_volley(player)
-			_burst_cooldown = burst_interval * _phase_interval_multiplier()
-		if _rift_zone_cooldown <= 0.0:
-			_spawn_rift_zone(player.global_position)
-			_rift_zone_cooldown = rift_zone_interval * _phase_interval_multiplier()
-		if _boss_summon_cooldown <= 0.0:
-			_summon_riftlings()
-			_boss_summon_cooldown = boss_summon_interval * _phase_interval_multiplier()
+	match boss_behavior:
+		"disk_devourer":
+			_dash_cooldown -= delta
+			_slam_cooldown -= delta
+			if _dash_cooldown <= 0.0:
+				_start_dash_toward(player)
+				_dash_cooldown = dash_interval * _phase_interval_multiplier(0.82 if _enraged else 1.0)
+			if _slam_cooldown <= 0.0:
+				_spawn_disk_slam()
+				_slam_cooldown = slam_interval * _phase_interval_multiplier(0.86 if _enraged else 1.0)
+			if _burst_cooldown <= 0.0:
+				_fire_radial_burst()
+				_burst_cooldown = burst_interval * _phase_interval_multiplier(0.90 if _enraged else 1.0)
+		"bone_archon":
+			# Некромант: волны скелетов (summon) + черепа веером (volley);
+			# «костяная стена» — общий паттерн волны зон с проходом (чаще: интервал в сцене).
+			_boss_summon_cooldown -= delta
+			if _burst_cooldown <= 0.0:
+				_fire_targeted_volley(player)
+				_burst_cooldown = burst_interval * _phase_interval_multiplier()
+			if _boss_summon_cooldown <= 0.0:
+				_summon_riftlings()
+				_boss_summon_cooldown = boss_summon_interval * _phase_interval_multiplier(0.85 if _enraged else 1.0)
+		"brood_mother":
+			# Рой: частый выводок мелких + паутинные зоны замедления; рывок — в фазе 3.
+			_boss_summon_cooldown -= delta
+			_rift_zone_cooldown -= delta
+			if _boss_summon_cooldown <= 0.0:
+				_summon_riftlings()
+				_boss_summon_cooldown = boss_summon_interval * _phase_interval_multiplier(0.8 if _enraged else 1.0)
+			if _rift_zone_cooldown <= 0.0:
+				_spawn_web_zone(player.global_position)
+				_rift_zone_cooldown = rift_zone_interval * _phase_interval_multiplier()
+			if boss_phase >= 3:
+				_dash_cooldown -= delta
+				if _dash_cooldown <= 0.0:
+					_start_dash_toward(player)
+					_dash_cooldown = dash_interval * _phase_interval_multiplier()
+		"ashen_colossus":
+			# Медленный гигант: slam-волны с тлеющими зонами после ударов;
+			# редкий radial burst. Энрейдж <25% HP — быстрее и шире (см. _update_enrage).
+			_slam_cooldown -= delta
+			if _slam_cooldown <= 0.0:
+				_spawn_disk_slam()
+				_slam_cooldown = slam_interval * _phase_interval_multiplier(0.72 if _enraged else 1.0)
+			if _burst_cooldown <= 0.0:
+				_fire_radial_burst()
+				_burst_cooldown = burst_interval * _phase_interval_multiplier()
+		_:
+			_boss_summon_cooldown -= delta
+			_rift_zone_cooldown -= delta
+			if _burst_cooldown <= 0.0:
+				_fire_targeted_volley(player)
+				_burst_cooldown = burst_interval * _phase_interval_multiplier()
+			if _rift_zone_cooldown <= 0.0:
+				_spawn_rift_zone(player.global_position)
+				_rift_zone_cooldown = rift_zone_interval * _phase_interval_multiplier()
+			if _boss_summon_cooldown <= 0.0:
+				_summon_riftlings()
+				_boss_summon_cooldown = boss_summon_interval * _phase_interval_multiplier()
 
 	# +1 опасный паттерн (независим от фаз, оба босса): волна зон по периметру с
 	# гарантированным проходом — короче окно безопасности, но коридор всегда есть.
@@ -251,7 +289,8 @@ func _spawn_disk_slam() -> void:
 	slam.z_index = 9
 	parent.add_child(slam)
 	_shake_player_camera(10.0, 0.2)
-	var radius := _safe_radius(132.0 + float(boss_phase - 1) * 18.0)
+	# Энрейдж Колосса: волны шире (cap безопасного коридора сохраняется).
+	var radius := _safe_radius((132.0 + float(boss_phase - 1) * 18.0) * (1.18 if _enraged else 1.0))
 	var slam_color := Color(1.0, 0.42, 0.18, 1.0)
 	var slam_telegraph := _ascension_telegraph(0.48)
 	HazardVfx.telegraph(slam, radius, slam_color, slam_telegraph)
@@ -266,9 +305,78 @@ func _spawn_disk_slam() -> void:
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(s.global_position) <= radius and player.has_method("take_damage"):
 			player.take_damage(slam_damage, "disk_slam")
+		# Пепельный Колосс: после удара остаётся тлеющая зона (наказывает стояние).
+		if boss_behavior == "ashen_colossus":
+			_spawn_ember_zone(s.global_position, radius * 0.62)
 	)
 	slam_tween.tween_interval(0.62)
 	slam_tween.tween_callback(slam.queue_free)
+
+
+func _spawn_web_zone(target_position: Vector2) -> void:
+	# Матерь Роя: паутинная зона — телеграф, затем липкое поле: замедляет
+	# и слегка жалит, если герой остался внутри.
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	_play_rig_action("cast", target_position - global_position)
+	var zone := Node2D.new()
+	zone.name = "BroodWebZone"
+	zone.add_to_group("enemy_hazards")
+	zone.global_position = _clamp_to_arena(target_position, 92.0)
+	zone.z_index = 9
+	parent.add_child(zone)
+	var radius := _safe_radius(108.0 + float(boss_phase - 1) * 14.0)
+	var web_color := Color(0.84, 0.92, 0.78, 1.0)
+	var windup := _ascension_telegraph(0.6)
+	HazardVfx.telegraph(zone, radius, web_color, windup)
+	var web_damage := projectile_damage * 0.4
+	var zone_ref: WeakRef = weakref(zone)
+	var tween := zone.create_tween()
+	tween.tween_interval(windup)
+	tween.tween_callback(func() -> void:
+		var z: Node2D = zone_ref.get_ref()
+		if z == null:
+			return
+		HazardVfx.detonate(z, radius, web_color)
+		var player := get_tree().get_first_node_in_group("player") as Node2D
+		if player != null and player.global_position.distance_to(z.global_position) <= radius:
+			if player.has_method("apply_web_slow"):
+				player.apply_web_slow(2.2, 0.55)
+			if player.has_method("take_damage"):
+				player.take_damage(web_damage, "brood_web")
+	)
+	tween.tween_interval(1.1)
+	tween.tween_callback(zone.queue_free)
+
+
+func _spawn_ember_zone(origin: Vector2, radius: float) -> void:
+	# Тлеющий след Колосса: пара жгущих тиков по стоящим в зоне.
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	var zone := Node2D.new()
+	zone.name = "AshEmberZone"
+	zone.add_to_group("enemy_hazards")
+	zone.global_position = origin
+	zone.z_index = 8
+	parent.add_child(zone)
+	var ember_color := Color(1.0, 0.52, 0.22, 1.0)
+	HazardVfx.telegraph(zone, radius, ember_color, 0.25)
+	var ember_damage := contact_damage * 0.45
+	var zone_ref: WeakRef = weakref(zone)
+	var tween := zone.create_tween()
+	for _tick in range(2):
+		tween.tween_interval(0.8)
+		tween.tween_callback(func() -> void:
+			var z: Node2D = zone_ref.get_ref()
+			if z == null:
+				return
+			var player := get_tree().get_first_node_in_group("player") as Node2D
+			if player != null and player.global_position.distance_to(z.global_position) <= radius and player.has_method("take_damage"):
+				player.take_damage(ember_damage, "ash_ember")
+		)
+	tween.tween_callback(zone.queue_free)
 
 
 func _summon_riftlings() -> void:

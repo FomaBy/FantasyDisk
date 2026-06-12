@@ -34,6 +34,7 @@ const SHOP_CURSOR_VARIANTS := {
 const HERO_RADAR_STATS := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
 const HERO_CLASS_COLORS := {
 	"berserk": Color(1.00, 0.38, 0.22, 0.82),
+	"soldier": Color(0.84, 0.74, 0.46, 0.82),
 	"dark_mage": Color(0.66, 0.32, 1.00, 0.82),
 	"guitarist": Color(0.26, 0.72, 1.00, 0.82),
 	"assassin": Color(0.95, 0.22, 0.44, 0.82),
@@ -421,6 +422,7 @@ func _show_character_select() -> void:
 
 	var stat_maxima := _hero_radar_global_maxima()
 	var character_ids: Array = game.PROGRESSION_DATA.character_ids()
+	var thumbnail_size := _hero_thumbnail_size(character_ids.size())
 	if not character_ids.has(game.selected_character_id):
 		game.selected_character_id = str(character_ids[0])
 	var thumbnail_buttons: Array[Button] = []
@@ -465,7 +467,7 @@ func _show_character_select() -> void:
 	for character_id in character_ids:
 		var char_id := str(character_id)
 		var captured_id := char_id
-		var thumb := _make_hero_thumbnail_button(captured_id, select_character)
+		var thumb := _make_hero_thumbnail_button(captured_id, select_character, thumbnail_size)
 		thumbnail_strip.add_child(thumb)
 		thumbnail_buttons.append(thumb)
 		var legacy_card := Button.new()
@@ -486,14 +488,24 @@ func _show_character_select() -> void:
 	game.ui_escape_action = _show_main_menu
 
 
-func _make_hero_thumbnail_button(character_id: String, select_character: Callable) -> Button:
+func _hero_thumbnail_size(character_count: int) -> Vector2:
+	var viewport_width := maxf(get_viewport_rect().size.x, 1280.0)
+	var horizontal_margins := 48.0
+	var gap_total := maxf(float(character_count - 1), 0.0) * 8.0
+	var available_width := maxf(viewport_width - horizontal_margins - gap_total, 1.0)
+	var width := clampf(floor(available_width / maxf(float(character_count), 1.0)), 64.0, 124.0)
+	var height := clampf(width * 0.72, 64.0, 88.0)
+	return Vector2(width, height)
+
+
+func _make_hero_thumbnail_button(character_id: String, select_character: Callable, thumbnail_size := Vector2(124, 88)) -> Button:
 	var config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
 	var button := Button.new()
 	button.name = "HeroThumbnail_%s" % character_id
 	button.toggle_mode = true
 	button.set_meta("character_id", character_id)
-	button.custom_minimum_size = Vector2(124, 88)
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.custom_minimum_size = thumbnail_size
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [str(config.get("title", character_id)), str(config.get("description", ""))]
 	button.add_theme_stylebox_override("normal", _character_card_style())
@@ -2478,7 +2490,7 @@ func _resolve_event_choice_outcome(event_choice: Dictionary, temp_player: Node) 
 
 func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> void:
 	if outcome.has("cost_money"):
-		temp_player.spend_money(int(outcome["cost_money"]))
+		temp_player.spend_money(game.PROGRESSION_DATA.stage_scaled_cost(int(outcome["cost_money"]), game.route_stage))
 	if outcome.has("money"):
 		temp_player.gain_money(int(outcome["money"]))
 	if outcome.has("reward"):
@@ -3639,6 +3651,7 @@ func _create_hud() -> void:
 	game.add_child(game.hud_layer)
 
 	var root := Control.new()
+	root.name = "CombatHudRoot"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
@@ -3647,6 +3660,11 @@ func _create_hud() -> void:
 	_create_combat_timer_panel(root)
 	_create_artifact_hud_row(root)
 	_create_damage_flash_overlay(root)
+	root.resized.connect(func() -> void:
+		_layout_combat_hud(root)
+	)
+	_layout_combat_hud(root)
+	call_deferred("_layout_combat_hud", root)
 	_update_level_up_button()
 	_update_hud()
 
@@ -3659,14 +3677,9 @@ func _create_combat_timer_panel(root: Control) -> void:
 	if game.selected_ascension_level > 0:
 		var asc_badge := PanelContainer.new()
 		asc_badge.name = "AscensionHudBadge"
-		asc_badge.anchor_left = 0.5
-		asc_badge.anchor_top = 0.0
-		asc_badge.anchor_right = 0.5
-		asc_badge.anchor_bottom = 0.0
-		asc_badge.offset_left = 96.0
-		asc_badge.offset_top = 18.0
-		asc_badge.offset_right = 150.0
-		asc_badge.offset_bottom = 62.0
+		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		asc_badge.position = Vector2(0, 18)
+		asc_badge.custom_minimum_size = Vector2(54, 44)
 		asc_badge.add_theme_stylebox_override("panel", _timer_panel_style(false))
 		asc_badge.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
 		root.add_child(asc_badge)
@@ -3684,14 +3697,9 @@ func _create_combat_timer_panel(root: Control) -> void:
 		return
 	var panel := PanelContainer.new()
 	panel.name = "CombatTimerPanel"
-	panel.anchor_left = 0.5
-	panel.anchor_top = 0.0
-	panel.anchor_right = 0.5
-	panel.anchor_bottom = 0.0
-	panel.offset_left = -86.0
-	panel.offset_top = 14.0
-	panel.offset_right = 86.0
-	panel.offset_bottom = 66.0
+	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	panel.position = Vector2(0, 14)
+	panel.custom_minimum_size = Vector2(172, 52)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_theme_stylebox_override("panel", _timer_panel_style(false))
 	root.add_child(panel)
@@ -3716,19 +3724,85 @@ func _timer_panel_style(alarm: bool) -> StyleBox:
 func _create_artifact_hud_row(root: Control) -> void:
 	var row := HFlowContainer.new()
 	row.name = "ArtifactHudRow"
-	row.anchor_left = 1.0
-	row.anchor_top = 0.0
-	row.anchor_right = 1.0
-	row.anchor_bottom = 0.0
-	row.offset_left = -420.0
-	row.offset_top = 16.0
-	row.offset_right = -18.0
-	row.offset_bottom = 120.0
+	row.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	row.position = Vector2(0, 16)
+	row.custom_minimum_size = Vector2(402, 104)
 	row.alignment = FlowContainer.ALIGNMENT_END
 	row.add_theme_constant_override("h_separation", 6)
 	row.add_theme_constant_override("v_separation", 6)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(row)
+
+
+func _layout_combat_hud(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var viewport_width := maxf(root.size.x, root.get_viewport_rect().size.x)
+	if viewport_width <= 0.0:
+		viewport_width = 1280.0
+	var margin := 18.0
+	var gap := 14.0
+	var timer_size := Vector2(172, 52)
+	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
+	if resource != null:
+		var resource_width := clampf(viewport_width * 0.50, 540.0, 750.0)
+		if viewport_width <= 1280.0:
+			resource_width = minf(resource_width, 600.0)
+		resource.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		resource.position = Vector2(margin, 18.0)
+		resource.custom_minimum_size = Vector2(resource_width, 78.0)
+		resource.size = resource.custom_minimum_size
+	var resource_right := margin
+	if resource != null:
+		resource_right = resource.position.x + resource.custom_minimum_size.x
+
+	var timer_panel := root.find_child("CombatTimerPanel", true, false) as PanelContainer
+	var timer_left := viewport_width * 0.5 - timer_size.x * 0.5
+	if timer_panel != null:
+		var right_limit := viewport_width - timer_size.x - margin
+		if timer_left < resource_right + gap:
+			timer_left = minf(resource_right + gap, right_limit)
+			if timer_left < resource_right + gap:
+				var narrow_resource_width := maxf(480.0, timer_left - gap - margin)
+				if resource != null:
+					resource.custom_minimum_size.x = narrow_resource_width
+					resource.size.x = narrow_resource_width
+					resource_right = resource.position.x + resource.custom_minimum_size.x
+				timer_left = maxf(resource_right + gap, margin)
+		timer_left = minf(timer_left, right_limit)
+		timer_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		timer_panel.position = Vector2(timer_left, 14.0)
+		timer_panel.custom_minimum_size = timer_size
+		timer_panel.size = timer_size
+
+	var asc_badge := root.find_child("AscensionHudBadge", true, false) as PanelContainer
+	if asc_badge != null:
+		var anchor_left := timer_left + timer_size.x + 8.0
+		if timer_panel == null:
+			anchor_left = maxf(viewport_width * 0.5 - 27.0, resource_right + gap)
+		if anchor_left + 54.0 > viewport_width - margin:
+			anchor_left = maxf(margin, timer_left - 62.0)
+		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		asc_badge.position = Vector2(anchor_left, 18.0)
+		asc_badge.custom_minimum_size = Vector2(54, 44)
+		asc_badge.size = asc_badge.custom_minimum_size
+
+	var artifact_row := root.find_child("ArtifactHudRow", true, false) as HFlowContainer
+	if artifact_row != null:
+		var row_width := clampf(viewport_width * 0.28, 220.0, 402.0)
+		var row_left := viewport_width - row_width - margin
+		var row_top := 16.0
+		var occupied_right := resource_right
+		if timer_panel != null:
+			occupied_right = maxf(occupied_right, timer_panel.position.x + timer_size.x)
+		if asc_badge != null:
+			occupied_right = maxf(occupied_right, asc_badge.position.x + asc_badge.custom_minimum_size.x)
+		if row_left < occupied_right + gap:
+			row_top = 88.0
+		artifact_row.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		artifact_row.position = Vector2(row_left, row_top)
+		artifact_row.custom_minimum_size = Vector2(row_width, 104.0)
+		artifact_row.size = artifact_row.custom_minimum_size
 
 
 func _refresh_artifact_hud_row() -> void:
@@ -3889,12 +3963,12 @@ func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
 	var panel := PanelContainer.new()
 	panel.name = "RunResourceHud"
 	panel.position = position
-	panel.custom_minimum_size = Vector2(750, 78)
+	panel.custom_minimum_size = Vector2(650, 78)
 	panel.add_theme_stylebox_override("panel", _hud_panel_style())
 	parent.add_child(panel)
 
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 12)
+	row.add_theme_constant_override("separation", 6)
 	panel.add_child(row)
 
 	game.health_bar = _add_hud_resource_card(row, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
@@ -3906,14 +3980,14 @@ func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
 func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: String, fill_color: Color) -> ProgressBar:
 	var card := PanelContainer.new()
 	card.name = "Hud%sCard" % label_text
-	card.custom_minimum_size = Vector2(178, 54)
+	card.custom_minimum_size = Vector2(126, 54)
 	card.add_theme_stylebox_override("panel", _hud_card_style())
 	parent.add_child(card)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 8)
+	line.add_theme_constant_override("separation", 5)
 	card.add_child(line)
-	line.add_child(game.UIIconRegistry.make_icon(icon_id, Vector2(38, 38)))
+	line.add_child(game.UIIconRegistry.make_icon(icon_id, Vector2(30, 30)))
 
 	var value_box := VBoxContainer.new()
 	value_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -3934,7 +4008,7 @@ func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: 
 
 	var bar := ProgressBar.new()
 	bar.name = "Hud%sBar" % label_text
-	bar.custom_minimum_size = Vector2(112, 10)
+	bar.custom_minimum_size = Vector2(62, 10)
 	bar.show_percentage = false
 	bar.add_theme_stylebox_override("background", _bar_style(Color(0.06, 0.07, 0.09, 0.94)))
 	bar.add_theme_stylebox_override("fill", _bar_style(fill_color))
@@ -3945,14 +4019,14 @@ func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: 
 func _add_hud_money_card(parent: HBoxContainer) -> void:
 	var card := PanelContainer.new()
 	card.name = "HudMoneyCard"
-	card.custom_minimum_size = Vector2(138, 54)
+	card.custom_minimum_size = Vector2(88, 54)
 	card.add_theme_stylebox_override("panel", _hud_card_style())
 	parent.add_child(card)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 8)
+	line.add_theme_constant_override("separation", 5)
 	card.add_child(line)
-	line.add_child(game.UIIconRegistry.make_icon("money", Vector2(38, 38)))
+	line.add_child(game.UIIconRegistry.make_icon("money", Vector2(30, 30)))
 
 	game.money_label = Label.new()
 	game.money_label.name = "HudMoneyLabel"
