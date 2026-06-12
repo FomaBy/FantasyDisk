@@ -275,6 +275,7 @@ var current_player: Node2D = null
 var run_player_snapshot := {}
 var ui_layer: CanvasLayer = null
 var hud_layer: CanvasLayer = null
+var pause_overlay_layer: CanvasLayer = null
 var timer_label: Label = null
 var status_label: Label = null
 var health_bar: ProgressBar = null
@@ -491,16 +492,10 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
-		if combat_active:
-			if _has_pause_reason("level_up"):
-				# Escape во время level-up = «Позже»: закрыть без траты пика.
-				if ui_escape_action.is_valid():
-					ui_escape_action.call()
-				return
-			if pause_stats_menu != null and is_instance_valid(pause_stats_menu):
-				ui._resume_game()
-			elif not _has_pause_reason("escape_menu"):
-				ui._show_pause_menu()
+		if pause_stats_menu != null and is_instance_valid(pause_stats_menu):
+			ui._resume_game()
+		elif ui.has_method("_can_open_pause_dossier") and ui._can_open_pause_dossier():
+			ui._show_pause_menu()
 		elif ui_escape_action.is_valid():
 			ui_escape_action.call()
 
@@ -637,10 +632,13 @@ func _clear_world() -> void:
 
 func _clear_ui() -> void:
 	ui_escape_action = Callable()
+	if pause_overlay_layer != null and is_instance_valid(pause_overlay_layer):
+		pause_overlay_layer.queue_free()
+	pause_overlay_layer = null
+	pause_stats_menu = null
 	if ui_layer != null and is_instance_valid(ui_layer):
 		ui_layer.queue_free()
 	ui_layer = null
-	pause_stats_menu = null
 
 
 func _clear_hud() -> void:

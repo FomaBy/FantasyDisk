@@ -71,6 +71,7 @@ const DERIVED_GROUPS := [
 var _base_stats_container: VBoxContainer = null
 var _artifacts_container: HFlowContainer = null
 var _derived_groups_container: GridContainer = null
+var _dossier_container: HBoxContainer = null
 var _player: Node = null
 
 
@@ -83,6 +84,7 @@ func _ready() -> void:
 
 func setup(player: Node) -> void:
 	_player = player
+	_refresh_dossier()
 	_refresh_stats()
 	_refresh_artifacts()
 
@@ -120,6 +122,7 @@ func _build_layout() -> void:
 	layout.add_child(left_column)
 
 	_build_left_controls(left_column)
+	_build_dossier_header(left_column)
 	_build_base_stats_block(left_column)
 
 	var right_column := VBoxContainer.new()
@@ -161,6 +164,68 @@ func _build_layout() -> void:
 	_derived_groups_container.add_theme_constant_override("h_separation", 12)
 	_derived_groups_container.add_theme_constant_override("v_separation", 12)
 	scroll.add_child(_derived_groups_container)
+
+
+func _build_dossier_header(left_column: VBoxContainer) -> void:
+	left_column.add_child(_make_section_divider())
+	_dossier_container = HBoxContainer.new()
+	_dossier_container.name = "PauseCharacterDossier"
+	_dossier_container.add_theme_constant_override("separation", 10)
+	left_column.add_child(_dossier_container)
+
+
+func _refresh_dossier() -> void:
+	if _dossier_container == null:
+		return
+	for child in _dossier_container.get_children():
+		child.queue_free()
+	if _player == null or not is_instance_valid(_player):
+		return
+	var character_id := str(_player.get("character_id"))
+	var weapon_id := str(_player.get("weapon_id"))
+	var config: Dictionary = ProgressionData.character_config(character_id)
+	var weapon: Dictionary = ProgressionData.weapon(character_id, weapon_id)
+	var portrait := TextureRect.new()
+	portrait.name = "PauseDossierPortrait"
+	portrait.custom_minimum_size = Vector2(58, 58)
+	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var sprite_path := str(config.get("sprite_path", ""))
+	if sprite_path != "" and ResourceLoader.exists(sprite_path):
+		portrait.texture = load(sprite_path)
+	_dossier_container.add_child(portrait)
+
+	var text_box := VBoxContainer.new()
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_box.add_theme_constant_override("separation", 1)
+	_dossier_container.add_child(text_box)
+
+	var title := Label.new()
+	title.name = "PauseDossierTitle"
+	title.text = str(config.get("title", "Герой"))
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.40, 1.0))
+	text_box.add_child(title)
+
+	var details := Label.new()
+	details.name = "PauseDossierDetails"
+	details.text = "%s  |  Уровень %d  |  XP %d/%d" % [
+		str(weapon.get("title", "Оружие")),
+		int(_player.get("level")),
+		int(_player.get("xp")),
+		int(_player.get("xp_to_next")),
+	]
+	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	details.add_theme_font_size_override("font_size", 13)
+	details.add_theme_color_override("font_color", TEXT_SECONDARY)
+	text_box.add_child(details)
+
+	var asc := Label.new()
+	asc.name = "PauseDossierAscension"
+	asc.text = "Возвышение %d" % int(_player.get_parent().get("selected_ascension_level") if _player.get_parent() != null and _player.get_parent().get("selected_ascension_level") != null else 0)
+	asc.add_theme_font_size_override("font_size", 12)
+	asc.add_theme_color_override("font_color", Color(0.78, 0.88, 1.0, 1.0))
+	text_box.add_child(asc)
 
 
 func _build_left_controls(left_column: VBoxContainer) -> void:
@@ -317,7 +382,20 @@ func _refresh_stats() -> void:
 		return
 
 	var sections: Dictionary = StatFormulas.stat_sections_for_player(_player)
-	for entry in sections.get("base", []):
+	var priority_ids := ProgressionData.attribute_priorities(str(_player.get("character_id")))
+	var base_entries: Array = sections.get("base", [])
+	base_entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var ai := priority_ids.find(str(a.get("id", "")))
+		var bi := priority_ids.find(str(b.get("id", "")))
+		if ai == -1:
+			ai = 999
+		if bi == -1:
+			bi = 999
+		if ai == bi:
+			return str(a.get("name_ru", "")) < str(b.get("name_ru", ""))
+		return ai < bi
+	)
+	for entry in base_entries:
 		_base_stats_container.add_child(_make_basic_stat_row(entry))
 
 	var derived_entries_by_id := _entries_by_id(sections.get("derived", []))
@@ -334,18 +412,23 @@ func _entries_by_id(entries: Array) -> Dictionary:
 
 
 func _make_basic_stat_row(entry: Dictionary) -> Control:
+	var stat_id := str(entry.get("id", ""))
+	var character_id := str(_player.get("character_id")) if _player != null and is_instance_valid(_player) else ""
+	var is_priority := ProgressionData.attribute_priorities(character_id).has(stat_id)
 	var row := PanelContainer.new()
-	row.name = "BaseStatRow_%s" % str(entry.get("id", ""))
+	row.name = "BaseStatRow_%s" % stat_id
 	row.custom_minimum_size = Vector2(0, 36)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.mouse_filter = Control.MOUSE_FILTER_STOP
 	row.tooltip_text = _tooltip_for_entry(entry)
-	row.add_theme_stylebox_override("panel", _basic_stat_row_style(false))
+	if is_priority:
+		row.tooltip_text += "\n\n%s" % ProgressionData.attribute_priority_reason(character_id, stat_id)
+	row.add_theme_stylebox_override("panel", _basic_stat_row_style(false, is_priority))
 	row.mouse_entered.connect(func() -> void:
-		row.add_theme_stylebox_override("panel", _basic_stat_row_style(true))
+		row.add_theme_stylebox_override("panel", _basic_stat_row_style(true, is_priority))
 	)
 	row.mouse_exited.connect(func() -> void:
-		row.add_theme_stylebox_override("panel", _basic_stat_row_style(false))
+		row.add_theme_stylebox_override("panel", _basic_stat_row_style(false, is_priority))
 	)
 
 	var line := HBoxContainer.new()
@@ -357,12 +440,22 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 	line.add_child(icon)
 
 	var name_label := Label.new()
+	name_label.name = "BaseStatName_%s" % stat_id
 	name_label.text = str(entry.get("name_ru", ""))
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.add_theme_font_size_override("font_size", 15)
 	name_label.add_theme_color_override("font_color", Color(0.90, 0.94, 1.0, 1.0))
 	line.add_child(name_label)
+
+	if is_priority:
+		var badge := Label.new()
+		badge.name = "PriorityBadge_%s" % stat_id
+		badge.text = "★"
+		badge.tooltip_text = ProgressionData.attribute_priority_reason(character_id, stat_id)
+		badge.add_theme_font_size_override("font_size", 14)
+		badge.add_theme_color_override("font_color", Color(1.0, 0.82, 0.25, 1.0))
+		line.add_child(badge)
 
 	var value_label := Label.new()
 	value_label.name = "BaseStatValue_%s" % str(entry.get("id", ""))
@@ -590,8 +683,10 @@ func _panel_style() -> StyleBox:
 	return _texture_style(ESCAPE_PANEL_FRAME, 40, 40, 40, 40, Color.WHITE, Vector4(24, 24, 24, 24))
 
 
-func _basic_stat_row_style(is_hovered: bool) -> StyleBox:
+func _basic_stat_row_style(is_hovered: bool, is_priority := false) -> StyleBox:
 	var tint := Color(1.10, 1.10, 1.10, 1.0) if is_hovered else Color.WHITE
+	if is_priority:
+		tint = Color(1.18, 1.08, 0.72, 1.0) if is_hovered else Color(1.10, 1.02, 0.74, 1.0)
 	return _texture_style(STAT_BASIC_ROW_FRAME, 20, 12, 20, 14, tint, Vector4(8, 4, 8, 4))
 
 

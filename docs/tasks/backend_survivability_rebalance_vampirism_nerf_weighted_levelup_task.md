@@ -1,10 +1,12 @@
 # Задача Для Back-end-Агента: Ребаланс выживаемости — нерф вампиризма, усиление регена/брони/уклонения, взвешенные награды level-up
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя)
 Jira: SCRUM-149
+
+Dispatch: отправлено в существующий Back-end чат `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-12.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения в рамках этой задачи.
@@ -94,3 +96,9 @@ Jira: SCRUM-149
 ## Самопроверка
 6 smoke-сьютов + balance harness до/после + ручной забег с вампир-билдом
 (или харнесс-симуляция): смерть должна быть достижима.
+
+## Result 2026-06-12
+- Вампиризм переработан: heal = `vampiric_amount + dealt_damage * 0.08`, но лечение тратит `vampiric_heal_per_second_cap`; chance cap снижен до 35%, Leech Fang и vamp upgrades ослаблены/переведены на cap.
+- Регенерация, defense и dodge усилены в `ProgressionData.derived_parameters` и `stat_formulas.gd`; level-up survival rewards подняты.
+- Level-up переведен на 3 фиксированных варианта; rare main stat chance снижен до 5% на слот; обычные rewards выбираются weighted через `ProgressionData.level_up_reward_weight()` и единый `ATTRIBUTE_PRIORITIES`.
+- `tools/balance_harness.gd` обновил `build/balance_report.md`; runtime smoke passed.

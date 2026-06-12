@@ -211,21 +211,29 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 	var chance := float(asc.get("mini_elite_chance", 0.0))
 	if chance <= 0.0 or remaining_slots < 2 or game.rng.randf() >= chance:
 		return 0
-	var elite_scene := _random_elite_scene()
+	# Свита L7: вид мини-элитки выбирается случайно из data-driven ростера (6 видов).
+	var kinds: Array = game.PROGRESSION_DATA.mini_elite_kinds()
+	var kind: Dictionary = kinds[game.rng.randi_range(0, kinds.size() - 1)] if not kinds.is_empty() else {}
+	var elite_scene := _elite_scene_by_key(str(kind.get("scene", "")))
+	if elite_scene == null:
+		elite_scene = _random_elite_scene()
 	if elite_scene == null:
 		return 0
 	var elite := elite_scene.instantiate() as Node2D
 	elite.add_to_group("elite_enemies")
 	game.add_child(elite)
 	elite.global_position = _random_spawn_position()
-	# Мини: масштабируется как волновой враг (elite-баланс), а не полная элитка-танк.
+	# Мини: масштабируется как волновой враг (elite-баланс), затем профиль вида.
 	_scale_enemy_for_current_wave(elite)
-	# Мини-элитка слабее обычной элитки узла: режем HP, чтобы её можно было убить в волне.
-	if elite.get("max_health") != null:
-		var mini_hp := float(elite.get("max_health")) * 0.55
-		elite.set("max_health", mini_hp)
-		elite.set("health", mini_hp)
-		_refresh_enemy_health_bar(elite)
+	if kind.is_empty():
+		# Фолбэк (нет ростера): прежнее поведение — урезанная элитка.
+		if elite.get("max_health") != null:
+			var mini_hp := float(elite.get("max_health")) * 0.55
+			elite.set("max_health", mini_hp)
+			elite.set("health", mini_hp)
+			_refresh_enemy_health_bar(elite)
+	else:
+		_apply_mini_elite_kind(elite, kind)
 	_connect_enemy_rewards(elite)
 	var used := 1
 	# Свита: 1-2 обычных врага рядом.
@@ -238,6 +246,42 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 		_spawn_random_enemy(minion_scene, elite.global_position + offset, true)
 		used += 1
 	return used
+
+
+func _elite_scene_by_key(key: String) -> PackedScene:
+	match key:
+		"armored":
+			return game.elite_armored_scene
+		"stalker":
+			return game.elite_stalker_scene
+		"poisoned":
+			return game.elite_poisoned_scene
+		"commander":
+			return game.elite_commander_scene
+		_:
+			return null
+
+
+func _apply_mini_elite_kind(elite: Node2D, kind: Dictionary) -> void:
+	# Идентичность вида (для кодекса/HUD) + профиль статов поверх волнового скейла
+	# + тинт placeholder-спрайта (rig). Поведение атаки = натуральное у базовой сцены.
+	elite.set_meta("mini_elite_kind", str(kind.get("id", "")))
+	elite.set_meta("mini_elite_title", str(kind.get("title", "")))
+	if elite.get("max_health") != null:
+		var hp := float(elite.get("max_health")) * float(kind.get("hp_mult", 0.55))
+		elite.set("max_health", hp)
+		elite.set("health", hp)
+		_refresh_enemy_health_bar(elite)
+	if elite.get("move_speed") != null:
+		elite.set("move_speed", float(elite.get("move_speed")) * float(kind.get("speed_mult", 1.0)))
+	if elite.get("contact_damage") != null:
+		elite.set("contact_damage", float(elite.get("contact_damage")) * float(kind.get("damage_mult", 1.0)))
+	if elite.get("projectile_damage") != null:
+		elite.set("projectile_damage", float(elite.get("projectile_damage")) * float(kind.get("damage_mult", 1.0)))
+	var tint: Array = kind.get("tint", [1.0, 1.0, 1.0])
+	var rig := elite.get_node_or_null("RigRoot") as Node2D
+	if rig != null and tint.size() >= 3:
+		rig.modulate = Color(float(tint[0]), float(tint[1]), float(tint[2]), 1.0)
 
 
 func _spawn_enemy_wave() -> void:

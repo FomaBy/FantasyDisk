@@ -133,7 +133,7 @@
 
 ### Награды За Уровень
 
-Текущая система выдает 5 вариантов награды. Один полученный уровень дает ровно один выбор; при нескольких накопленных уровнях игрок получает несколько последовательных окон. Набор из 5 вариантов фиксируется в `level_up_offer` и не рероллится при закрытии/повторном открытии окна. Окно можно закрыть через Escape/«Позже» без потери выбора; нижняя кнопка «Повышение уровня (N)» возвращает к тому же набору и является единственной level-up точкой входа при `pending_level_ups > 0`. FAB докачки в этом состоянии скрыт и возвращается только для докачки атрибутов за золото при отсутствии pending-уровней.
+Текущая система выдает 3 варианта награды. Один полученный уровень дает ровно один выбор; при нескольких накопленных уровнях игрок получает несколько последовательных окон. Набор из 3 вариантов фиксируется в `level_up_offer` и не рероллится при закрытии/повторном открытии окна. Окно можно закрыть через «Позже» без потери выбора; нижняя кнопка «Повышение уровня (N)» возвращает к тому же набору и является единственной level-up точкой входа при `pending_level_ups > 0`. FAB докачки в этом состоянии скрыт и возвращается только для докачки атрибутов за золото при отсутствии pending-уровней. Вес обычных наград считается через `ProgressionData.level_up_reward_weight()`: награда получает зависимый базовый атрибут, затем умножается на значение и позицию этого атрибута в `ATTRIBUTE_PRIORITIES` класса; floor сохраняет шанс любых вариантов.
 
 В пуле есть:
 - прямой урон;
@@ -146,7 +146,7 @@
 - защита;
 - магический фокус;
 - отталкивание;
-- редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с шансом около 13% на слот и визуальной rare-пометкой;
+- редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с шансом около 5% на слот и визуальной rare-пометкой;
 - артефакты.
 
 При открытии level-up окна игра должна полностью ставиться на паузу.
@@ -455,8 +455,8 @@ Escape открывает крупное меню характеристик:
 | attack_speed | 27*Agi/100 * mult; интервал = base_fire_interval / AS | derived -> все оружия | работает |
 | crit_chance / crit_damage_multiplier | 0.05+Agi/100 / 1+2*Agi/20 | derived -> _rolled_damage всех оружий | работает |
 | move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |
-| dodge | 0.02 + Agi*0.012 + flat (cap 0.8) | Player.take_damage | работает |
-| defense | 0.04 + End*0.018 + flat (cap 0.75/0.95) | Player.take_damage | работает |
+| dodge | 0.03 + Agi*0.014 + flat (cap 0.75) | Player.take_damage | работает |
+| defense | 0.06 + End*0.022 + flat (cap 0.75/0.95 в применении) | Player.take_damage | работает |
 | health_point | 50*End/4 + flat) * mult | derived -> max_health | работает |
 | attack_range / aoe_radius | (weapon + Per*2.5/3.5) * mult | derived -> оружия | работает |
 | pickup_radius | 105 + Per*7 + flat | derived -> магнит pickups | работает |
@@ -467,14 +467,14 @@ Escape открывает крупное меню характеристик:
 | knockback_power | (weapon + End*4 + Lead*3) * mult | derived -> apply_knockback врагов | работает |
 | summon_amount | Leadership | max_summons оружий (ампы) | работает |
 | **absorb** | End*0.25 + награды; срез удара до защиты (мин. 20% проходит) | НОВОЕ: Player.take_damage | работает |
-| **regeneration** | (0.3+награды)*Know/5 HP/с | НОВОЕ: Player._apply_regeneration | работает |
-| **vampiric_chance** | награды (cap 0.6); источник — артефакт «Клык Пиявки» (tier 2) | НОВОЕ: Player.on_weapon_hit | работает |
-| **vampiric_amount** | награды + 50% нанесенного урона при проке | НОВОЕ: Player.on_weapon_hit | работает |
+| **regeneration** | (0.55+награды)*(0.65+Know/5) HP/с | Player._apply_regeneration | работает |
+| **vampiric_chance** | награды (cap 0.35); источник — артефакт «Клык Пиявки» (tier 2) | Player.on_weapon_hit | работает |
+| **vampiric_amount** | награды + 8% нанесенного урона при проке, но итоговое лечение ограничено `vampiric_heal_per_second_cap` | Player.on_weapon_hit | работает |
 | **knockback_distance** | Knockback Power * End / 20 (отображаемая дальность) | НОВОЕ: derived; в бою действует knockback_power (реализованный баланс приоритетнее формулы таблицы) | работает (display) |
 | **range_multiplier** | run-множитель дальности | НОВОЕ: выведен в derived для UI | работает |
 | **ultimate_multiplier** | 1 + Energy*0.02 + награды | НОВОЕ: усиливает class ultimate: урон, радиус, длительность или число целей | работает |
 
-Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» реализован как награды + 50% урона при проке.
+Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» сознательно заменен на малую долю урона с heal-per-second cap, чтобы вампиризм был поддержкой, а не бессмертием.
 
 ### Ultimate Framework (2026-06-12)
 

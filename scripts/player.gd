@@ -78,6 +78,7 @@ var run_modifiers := {
 	"xp_gain_multiplier": 1.0,
 	"money_gain_multiplier": 1.0,
 	"healing_multiplier": 1.0,
+	"vampiric_heal_per_second_cap": 4.0,
 	"enemy_health_multiplier": 1.0,
 	"knockback_multiplier": 1.0,
 }
@@ -107,6 +108,7 @@ var _low_hp_active := false
 var _assassin_dash_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
+var _vampiric_heal_budget := 0.0
 var ultimate_charge := 0.0
 var ultimate_max_charge := 100.0
 var _ultimate_active := false
@@ -146,6 +148,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		"xp_gain_multiplier": 1.0,
 		"money_gain_multiplier": 1.0,
 		"healing_multiplier": 1.0,
+		"vampiric_heal_per_second_cap": 4.0,
 		"enemy_health_multiplier": 1.0,
 		"knockback_multiplier": 1.0,
 	}
@@ -223,16 +226,20 @@ func _attach_weapon_scene(weapon_scene: PackedScene, config: Dictionary) -> void
 
 func _clear_equipped_weapon() -> void:
 	equipped_weapon = null
+	var had_weapon := false
 	for weapon in _equipped_weapons():
 		var weapon_node := weapon as Node
 		if weapon_node == null:
 			continue
+		had_weapon = true
 		if weapon_node.has_method("cleanup_effects"):
 			weapon_node.cleanup_effects()
 		if weapon_node.get_parent() != null:
 			weapon_node.get_parent().remove_child(weapon_node)
 		weapon_node.queue_free()
 	_clear_detached_weapon_effects()
+	if had_weapon:
+		call_deferred("_clear_detached_weapon_effects")
 
 
 func _clear_detached_weapon_effects() -> void:
@@ -497,19 +504,23 @@ func _apply_reward_mods(mods: Dictionary) -> void:
 
 
 func _apply_regeneration(delta: float) -> void:
+	var vampiric_cap := float(run_modifiers.get("vampiric_heal_per_second_cap", 4.0))
+	_vampiric_heal_budget = minf(_vampiric_heal_budget + vampiric_cap * delta, vampiric_cap)
 	var regeneration := float(derived_parameters.get("regeneration", 0.0))
 	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
 		return
-	health = minf(health + regeneration * delta, max_health)
+	health = minf(health + regeneration * float(run_modifiers.get("healing_multiplier", 1.0)) * delta, max_health)
 
 
 func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
 	_gain_ultimate_charge(maxf(dealt_damage, 0.0) * float(_ultimate_config().get("damage_charge_rate", 0.03)))
-	# Вампиризм: с шансом vampiric_chance лечит vampiric_amount + половину урона.
+	# Вампиризм теперь sustain, а не бессмертие: малая доля урона + per-second cap.
 	var vampiric_chance := float(derived_parameters.get("vampiric_chance", 0.0))
-	if vampiric_chance > 0.0 and dealt_damage > 0.0 and randf() < vampiric_chance:
-		var vampiric_heal := float(derived_parameters.get("vampiric_amount", 0.0)) + dealt_damage * 0.5
-		health = minf(health + vampiric_heal, max_health)
+	if vampiric_chance > 0.0 and dealt_damage > 0.0 and _vampiric_heal_budget > 0.0 and randf() < vampiric_chance:
+		var raw_heal := float(derived_parameters.get("vampiric_amount", 0.0)) + dealt_damage * 0.08
+		var vampiric_heal = minf(raw_heal, _vampiric_heal_budget)
+		_vampiric_heal_budget -= vampiric_heal
+		health = minf(health + vampiric_heal * float(run_modifiers.get("healing_multiplier", 1.0)), max_health)
 	_trigger_magic_enchant(enemy)
 	_trigger_universal_dot(enemy)
 	_trigger_leadership_echo(enemy)

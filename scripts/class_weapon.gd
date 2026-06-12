@@ -45,6 +45,7 @@ var _charge_time := 0.0
 var _current_charge_multiplier := 1.0
 var _deployed_amps: Array[Node] = []
 var _spawned_effects: Array[Node] = []
+var _effects_shutdown := false
 
 
 func _ready() -> void:
@@ -58,6 +59,7 @@ func _exit_tree() -> void:
 
 
 func cleanup_effects() -> void:
+	_effects_shutdown = true
 	# Самоочищающиеся VFX могли уже освободиться — отфильтровать мертвые ссылки.
 	var tracked_effects := _alive_effects()
 	_spawned_effects.clear()
@@ -549,13 +551,13 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 	var amp := Node2D.new()
 	amp.name = "SoundAmpPulseNode"
 	amp.add_to_group("deployed_sound_amps")
-	_register_effect(amp)
 	amp.z_index = 5
 	var amp_visual := Sprite2D.new()
 	amp_visual.texture = _weapon_visual_texture()
 	amp_visual.scale = Vector2(0.42, 0.42)
 	amp.add_child(amp_visual)
 	_projectile_parent().add_child(amp)
+	_register_effect(amp)
 	amp.global_position = owner_node.global_position + direction * 92.0
 	_deployed_amps.append(amp)
 
@@ -573,7 +575,7 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 		pulse_tween.tween_callback(func() -> void:
 			var current_weapon := instance_from_id(weapon_id) as Node
 			var current_amp := instance_from_id(amp_id) as Node2D
-			if current_weapon != null and current_amp != null:
+			if current_weapon != null and current_amp != null and not bool(current_weapon.get("_effects_shutdown")):
 				current_weapon.call("_fire_pulse", current_weapon.call("_owner_node"), current_amp.global_position)
 		)
 	pulse_tween.tween_callback(func() -> void:
@@ -818,6 +820,8 @@ func _weapon_visual_texture() -> Texture2D:
 func _register_effect(effect: Node) -> void:
 	if effect == null:
 		return
+	_effects_shutdown = false
+	effect.set_meta("weapon_owner_id", get_instance_id())
 	effect.add_to_group("player_weapon_effects")
 	_spawned_effects = _alive_effects()
 	_spawned_effects.append(effect)

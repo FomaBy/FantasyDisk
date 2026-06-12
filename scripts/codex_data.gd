@@ -159,6 +159,54 @@ const MONSTERS := [
 			{"id": "devourer_frenzy", "title": "Ярость Пожирателя", "description": "На последней трети здоровья ускоряется и бьет чаще."},
 		],
 	},
+	{
+		"id": "mini_scavenger_reaper", "title": "Жнец-Падальщик", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/night_stalker.png",
+		"behavior": "Свита Возвышения. Быстрый падальщик: рывками косит по дуге, добивая раненых первыми.",
+		"abilities": [
+			{"id": "reaping_dash", "title": "Косящий Рывок", "description": "Серия рывков по дуге — держи дистанцию и не подставляй спину."},
+		],
+	},
+	{
+		"id": "mini_plague_bellringer", "title": "Чумной Звонарь", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/plague_prophet.png",
+		"behavior": "Свита Возвышения. Медлительный звонарь чумы: сеет ядовитые лужи вокруг себя.",
+		"abilities": [
+			{"id": "toxic_peal", "title": "Ядовитый Звон", "description": "Оставляет расходящиеся лужи яда — не стой в зелёном."},
+		],
+	},
+	{
+		"id": "mini_bone_warden", "title": "Костяной Страж", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/iron_bastion.png",
+		"behavior": "Свита Возвышения. Костяной танк: бьёт ударной волной и держит строй, прикрывая свиту.",
+		"abilities": [
+			{"id": "warden_slam", "title": "Удар Стража", "description": "Кольцевая ударная волна с телеграфом — выйди из круга."},
+		],
+	},
+	{
+		"id": "mini_spark_wight", "title": "Искровик", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/shard_marshal.png",
+		"behavior": "Свита Возвышения. Дальнобойный дух искр: бьёт залпом веером с предупреждающим телеграфом.",
+		"abilities": [
+			{"id": "spark_volley", "title": "Залп Искр", "description": "Веер искр по направлению к герою — шагни вбок до выстрела."},
+		],
+	},
+	{
+		"id": "mini_rot_hound", "title": "Гнилая Гончая", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/night_stalker.png",
+		"behavior": "Свита Возвышения. Стайная гончая гнили: налетает рывком, оставляя кровоточащие раны.",
+		"abilities": [
+			{"id": "rabid_lunge", "title": "Бешеный Бросок", "description": "Резкий рывок в упор; опасна в стае — не давай окружить."},
+		],
+	},
+	{
+		"id": "mini_shadow_devourer", "title": "Теневой Пожиратель", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/night_stalker.png",
+		"behavior": "Свита Возвышения. Тень-пожиратель: телепортируется к жертве после короткого телеграфа.",
+		"abilities": [
+			{"id": "shadow_blink", "title": "Теневой Скачок", "description": "Метка тени показывает точку выхода — сместись до удара."},
+		],
+	},
 ]
 
 const CHARACTER_PLAYSTYLE := {

@@ -643,7 +643,7 @@ const ARTIFACTS := [
 	{"id": "leech_heart", "title": "Сердце Пиявки", "tier": 3, "cost": 95, "class_affinity": [], "description": "Каждое убийство возвращает 2% максимального здоровья.", "mods": {"kill_heal_percent": 0.02}},
 	{"id": "thorn_pact", "title": "Договор Шипов", "tier": 3, "cost": 95, "class_affinity": [], "description": "Получив урон, выплескиваешь 200% этого урона на всех врагов рядом.", "mods": {"thorn_reflect_multiplier": 2.0}},
 	{"id": "phantom_step", "title": "Призрачный Шаг", "tier": 3, "cost": 95, "class_affinity": [], "description": "Успешный уворот дает +40% скорости движения на 2 секунды.", "mods": {"dodge_rush_bonus": 0.4}},
-	{"id": "leech_fang", "title": "Клык Пиявки", "tier": 2, "cost": 55, "class_affinity": [], "description": "+25% шанса вампиризма, +2 к силе вампиризма (лечение при ударе).", "mods": {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}},
+	{"id": "leech_fang", "title": "Клык Пиявки", "tier": 2, "cost": 55, "class_affinity": [], "description": "+14% шанса вампиризма, +1 к лечению от вампиризма. Вампиризм ограничен лечением в секунду.", "mods": {"vampiric_chance_flat": 0.14, "vampiric_amount_flat": 1.0, "vampiric_heal_per_second_cap": 1.0}},
 ]
 
 const LEVEL_UP_REWARDS := [
@@ -653,12 +653,12 @@ const LEVEL_UP_REWARDS := [
 	{"id": "move_speed_up", "title": "+Move Speed", "description": "+10% move speed.", "kind": "upgrade", "mods": {"move_speed_multiplier": 1.10}},
 	{"id": "aoe_radius_up", "title": "+AoE Radius", "description": "+15% cone/radius coverage.", "kind": "upgrade", "mods": {"aoe_radius_multiplier": 1.15, "range_multiplier": 1.08}},
 	{"id": "pickup_radius_up", "title": "+Pickup Radius", "description": "+45 pickup radius.", "kind": "upgrade", "mods": {"pickup_radius_flat": 45.0}},
-	{"id": "defense_up", "title": "+Defense", "description": "+8% damage reduction.", "kind": "upgrade", "mods": {"defense_flat": 0.08}},
+	{"id": "defense_up", "title": "+Defense", "description": "+10% damage reduction.", "kind": "upgrade", "mods": {"defense_flat": 0.10}},
 	{"id": "magic_focus_up", "title": "+Magic Focus", "description": "+14% magic/sound damage or weapon enchantment.", "kind": "upgrade", "mods": {"damage_multiplier": 1.14}},
 	{"id": "knockback_up", "title": "+Knockback", "description": "+18% knockback and pulse control.", "kind": "upgrade", "mods": {"knockback_multiplier": 1.18}},
 	{"id": "crit_chance_up", "title": "+Crit Chance", "description": "+7% crit chance.", "kind": "upgrade", "mods": {"crit_chance_flat": 0.07}},
 	{"id": "crit_damage_up", "title": "+Crit Damage", "description": "+35% critical damage multiplier.", "kind": "upgrade", "mods": {"crit_damage_flat": 0.35}},
-	{"id": "dodge_up", "title": "+Dodge", "description": "+6% dodge chance.", "kind": "upgrade", "mods": {"dodge_flat": 0.06}},
+	{"id": "dodge_up", "title": "+Dodge", "description": "+8% dodge chance.", "kind": "upgrade", "mods": {"dodge_flat": 0.08}},
 	{"id": "range_up", "title": "+Attack Range", "description": "+12% attack range.", "kind": "upgrade", "mods": {"range_multiplier": 1.12}},
 	{"id": "dot_damage_up", "title": "+DoT Damage", "description": "+3 periodic damage. Non-DoT classes add small bleed/burn.", "kind": "upgrade", "mods": {"dot_damage_flat": 3.0}},
 	{"id": "dot_speed_up", "title": "+DoT Speed", "description": "+0.25 DoT ticks per second.", "kind": "upgrade", "mods": {"dot_speed_flat": 0.25}},
@@ -667,9 +667,9 @@ const LEVEL_UP_REWARDS := [
 	{"id": "buff_power_up", "title": "+Buff Power", "description": "+0.18 support/buff power.", "kind": "upgrade", "mods": {"buff_power_flat": 0.18}},
 	{"id": "summon_amount_up", "title": "+Summon Amount", "description": "+2 summon power. Non-summoners trigger echo weapons/companions.", "kind": "upgrade", "mods": {"summon_bonus": 2.0}},
 	{"id": "absorb_up", "title": "+Absorb", "description": "+4 flat damage absorption.", "kind": "upgrade", "mods": {"absorb_flat": 4.0}},
-	{"id": "regeneration_up", "title": "+Regeneration", "description": "+0.8 regeneration base.", "kind": "upgrade", "mods": {"regeneration_flat": 0.8}},
-	{"id": "vampiric_amount_up", "title": "+Vampiric Heal", "description": "+2 heal on vampiric hits.", "kind": "upgrade", "mods": {"vampiric_amount_flat": 2.0}},
-	{"id": "vampiric_chance_up", "title": "+Vampiric Chance", "description": "+8% chance to heal on hit.", "kind": "upgrade", "mods": {"vampiric_chance_flat": 0.08}},
+	{"id": "regeneration_up", "title": "+Regeneration", "description": "+1.3 regeneration base.", "kind": "upgrade", "mods": {"regeneration_flat": 1.3}},
+	{"id": "vampiric_amount_up", "title": "+Vampiric Heal", "description": "+1 heal on vampiric hits and +1 heal/sec cap.", "kind": "upgrade", "mods": {"vampiric_amount_flat": 1.0, "vampiric_heal_per_second_cap": 1.0}},
+	{"id": "vampiric_chance_up", "title": "+Vampiric Chance", "description": "+5% chance to heal on hit.", "kind": "upgrade", "mods": {"vampiric_chance_flat": 0.05}},
 	{"id": "ultimate_power_up", "title": "+Ultimate Power", "description": "+0.12 ultimate power for class ultimate effects.", "kind": "upgrade", "mods": {"ultimate_flat": 0.12}},
 ]
 
@@ -759,6 +759,29 @@ const CLASS_INTERPRETATIONS := {
 		"sound_wave_damage": "Зов стаи работает как контрольная волна.",
 		"energy": "Ускоряет природные циклы и уникальные cooldown.",
 	},
+}
+
+const ATTRIBUTE_PRIORITIES := {
+	"berserk": ["strength", "endurance", "agility", "perception", "leadership"],
+	"dark_mage": ["intelligence", "energy", "knowledge", "perception", "leadership"],
+	"guitarist": ["leadership", "perception", "energy", "agility", "knowledge"],
+	"assassin": ["agility", "strength", "perception", "energy", "leadership"],
+	"ranger": ["perception", "agility", "strength", "knowledge", "energy"],
+	"doctor": ["knowledge", "intelligence", "energy", "endurance", "perception"],
+	"chemist": ["intelligence", "knowledge", "energy", "perception", "agility"],
+	"knight": ["endurance", "strength", "leadership", "knowledge", "agility"],
+	"druid": ["leadership", "perception", "energy", "knowledge", "endurance"],
+}
+
+const ATTRIBUTE_PRIORITY_REASONS := {
+	"strength": "усиливает физический урон, контроль оружия и классовые физические интерпретации",
+	"agility": "ускоряет атаки и движение, повышает критический шанс и уворот",
+	"intelligence": "усиливает магический урон, зачарования и магические классовые механики",
+	"perception": "увеличивает дальность, радиусы, pickup и точность позиционирования",
+	"energy": "ускоряет уникальные механики, ультимейт и магический/звуковой темп",
+	"knowledge": "усиливает DoT, лечение, регенерацию и стабильность билда",
+	"endurance": "дает HP, защиту, поглощение и устойчивость под давлением",
+	"leadership": "усиливает призывы, эхо-оружие, поддержку и ауры",
 }
 
 # Базовая цена артефакта в магазине по тиру (редкость и сила растут вместе).
@@ -967,6 +990,60 @@ static func class_interpretation_text(character_id: String, stat_or_parameter_id
 			return "Дает физическую весомость атакам, knockback и прямой урон."
 		_:
 			return "Универсально полезно через формулы персонажа и текущий class kit."
+
+
+static func attribute_priorities(character_id: String) -> Array:
+	return (ATTRIBUTE_PRIORITIES.get(character_id, []) as Array).duplicate()
+
+
+static func attribute_priority_reason(character_id: String, stat_id: String) -> String:
+	var prefix := "Приоритет класса: " if attribute_priorities(character_id).has(stat_id) else ""
+	var class_text := class_interpretation_text(character_id, stat_id)
+	var base_text := str(ATTRIBUTE_PRIORITY_REASONS.get(stat_id, "универсально полезно для билда"))
+	if prefix != "":
+		return "%s%s. База: %s." % [prefix, class_text, base_text]
+	return "База: %s. %s" % [base_text, class_text]
+
+
+static func attribute_priority_weight(character_id: String, stat_id: String) -> float:
+	var stats: Dictionary = base_stats(character_id)
+	var stat_value := float(stats.get(stat_id, 4.0))
+	var priority_index := attribute_priorities(character_id).find(stat_id)
+	var priority_bonus := 1.0
+	if priority_index >= 0:
+		priority_bonus = 1.65 - float(priority_index) * 0.12
+	return maxf(0.35, (0.35 + stat_value / 10.0) * priority_bonus)
+
+
+static func reward_attribute_dependency(reward: Dictionary) -> String:
+	var stat_keys := (reward.get("stats", {}) as Dictionary).keys()
+	if not stat_keys.is_empty():
+		return str(stat_keys[0])
+	var mods: Dictionary = reward.get("mods", {})
+	for key in mods.keys():
+		match str(key):
+			"damage_multiplier", "knockback_multiplier":
+				return "strength"
+			"attack_speed_multiplier", "move_speed_multiplier", "crit_chance_flat", "crit_damage_flat", "dodge_flat", "projectile_speed_flat":
+				return "agility"
+			"aoe_radius_multiplier", "pickup_radius_flat", "range_multiplier", "aura_radius_flat":
+				return "perception"
+			"defense_flat", "max_health_flat", "max_health_multiplier", "absorb_flat":
+				return "endurance"
+			"dot_damage_flat", "dot_speed_flat", "regeneration_flat":
+				return "knowledge"
+			"ultimate_flat", "vampiric_amount_flat", "vampiric_chance_flat":
+				return "energy"
+			"buff_power_flat", "summon_bonus":
+				return "leadership"
+	return ""
+
+
+static func level_up_reward_weight(reward: Dictionary, character_id: String) -> float:
+	var dependency := reward_attribute_dependency(reward)
+	if dependency == "":
+		return float(reward.get("weight", 1.0))
+	return maxf(0.25, float(reward.get("weight", 1.0)) * attribute_priority_weight(character_id, dependency))
 
 
 static func ultimate_config(character_id: String) -> Dictionary:
@@ -1275,8 +1352,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"crit_chance": clamp(0.05 + agility / 100.0 + float(run_modifiers.get("crit_chance_flat", 0.0)), 0.0, 0.8),
 		"crit_damage_multiplier": 1.0 + 2.0 * agility / 20.0 + float(run_modifiers.get("crit_damage_flat", 0.0)),
 		"move_speed": (282.0 + agility * 6.2) * move_speed_multiplier,
-		"dodge": clamp(0.02 + agility * 0.012 + float(run_modifiers.get("dodge_flat", 0.0)), 0.0, 0.8),
-		"defense": clamp(0.04 + endurance * 0.018 + defense_flat, 0.0, 0.75),
+		"dodge": clamp(0.03 + agility * 0.014 + float(run_modifiers.get("dodge_flat", 0.0)), 0.0, 0.75),
+		"defense": clamp(0.06 + endurance * 0.022 + defense_flat, 0.0, 0.75),
 		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
 		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + perception * 2.5) * range_multiplier,
 		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + perception * 3.5) * aoe_radius_multiplier,
@@ -1290,8 +1367,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"summon_amount": leadership,
 		# Подключение полного набора атрибутов (аудит 2026-06-11):
 		"absorb": endurance * 0.25 + float(run_modifiers.get("absorb_flat", 0.0)),
-		"regeneration": (0.3 + float(run_modifiers.get("regeneration_flat", 0.0))) * knowledge / 5.0,
-		"vampiric_chance": clampf(float(run_modifiers.get("vampiric_chance_flat", 0.0)), 0.0, 0.6),
+		"regeneration": (0.55 + float(run_modifiers.get("regeneration_flat", 0.0))) * (0.65 + knowledge / 5.0),
+		"vampiric_chance": clampf(float(run_modifiers.get("vampiric_chance_flat", 0.0)), 0.0, 0.35),
 		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)),
 		"knockback_distance": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier * endurance / 20.0,
 		"range_multiplier": range_multiplier,
@@ -1339,6 +1416,34 @@ static func main_stat_level_up_rewards(_character_id := "") -> Array:
 			"rare": true,
 		})
 	return rewards
+
+
+# Виды мини-элиток (свита Возвышения L7). Data-driven: каждый вид задаёт базовую
+# elite-сцену (placeholder-арт до SCRUM-156), профиль статов и тинт-идентичность.
+# `behavior` — ближайший существующий elite-паттерн атаки (бихейвиор-полиш —
+# парный art-пасс); `tint` — RGB множитель спрайта для различимости.
+const MINI_ELITE_KINDS := [
+	{"id": "mini_scavenger_reaper", "title": "Жнец-Падальщик", "scene": "stalker", "behavior": "night_stalker", "hp_mult": 0.42, "speed_mult": 1.28, "damage_mult": 1.05, "tint": [0.86, 0.96, 0.78], "desc": "Быстрый падальщик: рывками косит по дуге, добивая раненых первыми."},
+	{"id": "mini_plague_bellringer", "title": "Чумной Звонарь", "scene": "poisoned", "behavior": "plague_prophet", "hp_mult": 0.60, "speed_mult": 0.72, "damage_mult": 0.85, "tint": [0.72, 0.96, 0.62], "desc": "Медлительный звонарь чумы: сеет ядовитые лужи вокруг себя."},
+	{"id": "mini_bone_warden", "title": "Костяной Страж", "scene": "armored", "behavior": "iron_bastion", "hp_mult": 0.86, "speed_mult": 0.66, "damage_mult": 1.0, "tint": [0.94, 0.92, 0.84], "desc": "Костяной танк: бьёт ударной волной и держит строй, прикрывая свиту."},
+	{"id": "mini_spark_wight", "title": "Искровик", "scene": "commander", "behavior": "shard_marshal", "hp_mult": 0.50, "speed_mult": 0.92, "damage_mult": 0.95, "tint": [0.72, 0.86, 1.0], "desc": "Дальнобойный дух искр: бьёт залпом веером с предупреждающим телеграфом."},
+	{"id": "mini_rot_hound", "title": "Гнилая Гончая", "scene": "stalker", "behavior": "night_stalker", "hp_mult": 0.40, "speed_mult": 1.32, "damage_mult": 1.0, "tint": [0.82, 0.70, 0.60], "desc": "Стайная гончая гнили: налетает рывком, оставляя кровоточащие раны."},
+	{"id": "mini_shadow_devourer", "title": "Теневой Пожиратель", "scene": "stalker", "behavior": "night_stalker", "hp_mult": 0.52, "speed_mult": 1.08, "damage_mult": 1.12, "tint": [0.56, 0.50, 0.76], "desc": "Тень-пожиратель: телепортируется к жертве после короткого телеграфа."},
+]
+
+
+static func mini_elite_kinds() -> Array:
+	var kinds := []
+	for kind in MINI_ELITE_KINDS:
+		kinds.append(kind.duplicate(true))
+	return kinds
+
+
+static func mini_elite_kind_by_id(kind_id: String) -> Dictionary:
+	for kind in MINI_ELITE_KINDS:
+		if str(kind.get("id", "")) == kind_id:
+			return kind.duplicate(true)
+	return {}
 
 
 static func shop_items(route_stage := 0) -> Array:

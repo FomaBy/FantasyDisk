@@ -46,7 +46,9 @@ func _summon() -> void:
 	if ally_scene == null:
 		return
 
-	var active_summons := get_tree().get_nodes_in_group("allies")
+	var active_summons := get_tree().get_nodes_in_group("allies").filter(func(ally: Node) -> bool:
+		return ally != null and is_instance_valid(ally) and not ally.is_queued_for_deletion()
+	)
 	if active_summons.size() >= max_summons:
 		return
 
@@ -55,9 +57,11 @@ func _summon() -> void:
 		return
 
 	var ally := ally_scene.instantiate() as Node2D
-	var parent := get_tree().current_scene
+	var parent := owner_node.get_tree().current_scene
+	if parent == null or not is_instance_valid(parent) or not parent.is_inside_tree():
+		parent = owner_node.get_parent()
 	if parent == null:
-		parent = get_tree().root
+		parent = owner_node.get_tree().root
 
 	parent.add_child(ally)
 	ally.add_to_group("player_weapon_effects")

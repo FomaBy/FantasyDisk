@@ -1,10 +1,12 @@
 # Задача Для Back-end-Агента: Переосмысление Escape-паузы — досье персонажа с приоритетами, доступно везде
 
-Статус: new
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя)
 Jira: SCRUM-146
+
+Dispatch: отправлено в существующий Back-end чат `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-12.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения в рамках этой задачи.
@@ -80,3 +82,8 @@ Jira: SCRUM-146
 Прогнать 6 smoke-сьютов; вручную (или offscreen-кадрами) пройти цикл:
 бой → Escape → закрыть; магазин → Escape → закрыть → покупка работает;
 level-up → Escape → закрыть → выбор работает.
+
+## Result 2026-06-12
+- Реализован `PauseDossierOverlayLayer`: Escape в активном забеге открывает досье поверх боя, route map, магазина, level-up, докачки, события и награды элитки; повторный Escape закрывает overlay без сброса подлежащего экрана.
+- `ProgressionData.ATTRIBUTE_PRIORITIES` стал единым источником приоритетных атрибутов для Escape-досье и weighted level-up; PauseStatsMenu сортирует/подсвечивает priority rows и показывает tooltip причины.
+- Runtime smoke расширен проверками level-up/shop/event overlay preservation и priority badge; результат: passed.

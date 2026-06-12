@@ -956,8 +956,8 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 
 
 func _build_codex_monsters(list: VBoxContainer) -> void:
-	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "boss": "Боссы"}
-	for kind in ["standard", "elite", "boss"]:
+	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "mini_elite": "Мини-элитки (свита Возвышения)", "boss": "Боссы"}
+	for kind in ["standard", "elite", "mini_elite", "boss"]:
 		_codex_label(list, str(kind_titles[kind]), 26, Color(0.96, 0.90, 0.68, 1.0))
 		for monster in CODEX_DATA.monsters():
 			if str(monster["kind"]) != kind:
@@ -1254,9 +1254,10 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	slider.name = "VolumeSlider_%s" % volume_key
 	slider.min_value = 0.0
 	slider.max_value = 100.0
-	slider.step = 5.0
-	slider.custom_minimum_size = Vector2(560, 42)
+	slider.step = 2.0
+	slider.custom_minimum_size = Vector2(560, 48)
 	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.focus_mode = Control.FOCUS_ALL
 	_style_slider(slider)
 	slider.value = float(game.audio_settings.get(volume_key, 1.0)) * 100.0
 	slider.value_changed.connect(func(value: float) -> void:
@@ -1279,13 +1280,14 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	if enabled_key != "":
 		var toggle := CheckBox.new()
 		toggle.name = "VolumeToggle_%s" % enabled_key
-		toggle.text = "звук"
-		toggle.custom_minimum_size = Vector2(96, 42)
+		toggle.custom_minimum_size = Vector2(108, 42)
 		toggle.button_pressed = bool(game.audio_settings.get(enabled_key, true))
+		toggle.text = "Вкл." if toggle.button_pressed else "Выкл."
 		_style_checkbox(toggle)
 		slider.editable = toggle.button_pressed
 		toggle.toggled.connect(func(pressed: bool) -> void:
 			game.audio_settings[enabled_key] = pressed
+			toggle.text = "Вкл." if pressed else "Выкл."
 			slider.editable = pressed
 			game._apply_audio_settings()
 			game.save_game_settings()
@@ -1294,29 +1296,58 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 
 
 func _show_pause_menu() -> void:
-	if not game.combat_active:
+	if not _can_open_pause_dossier():
 		return
 
 	game.push_pause("escape_menu")
-	game._clear_ui()
-	game.ui_layer = CanvasLayer.new()
-	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
-	game.add_child(game.ui_layer)
+	if game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer):
+		game.pause_overlay_layer.queue_free()
+	game.pause_overlay_layer = CanvasLayer.new()
+	game.pause_overlay_layer.name = "PauseDossierOverlayLayer"
+	game.pause_overlay_layer.layer = 120
+	game.pause_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.pause_overlay_layer)
 
 	game.pause_stats_menu = game.PAUSE_STATS_MENU_SCENE.instantiate() as Control
-	game.ui_layer.add_child(game.pause_stats_menu)
+	game.pause_overlay_layer.add_child(game.pause_stats_menu)
 	if game.pause_stats_menu.has_method("setup"):
-		game.pause_stats_menu.setup(game.current_player)
+		game.pause_stats_menu.setup(_pause_dossier_player())
 	game.pause_stats_menu.resume_requested.connect(_resume_game)
 	game.pause_stats_menu.settings_requested.connect(_show_settings_menu)
 	game.pause_stats_menu.end_run_confirmed.connect(_end_current_run_by_player)
 	game.pause_stats_menu.main_menu_requested.connect(_quit_current_run)
 
 
+func _can_open_pause_dossier() -> bool:
+	if game.combat_active:
+		return true
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	for screen_name in ["RouteMapScreen", "ShopScreen", "AttributeShopScreen", "LevelUpOverlay", "EliteArtifactRewardScreen", "EventScreen"]:
+		if game.ui_layer.find_child(screen_name, true, false) != null:
+			return true
+	return false
+
+
+func _pause_dossier_player() -> Node:
+	if game.current_player != null and is_instance_valid(game.current_player):
+		return game.current_player
+	var temp_player: Node = game.combat._snapshot_player_for_menu()
+	temp_player.set_meta("pause_dossier_temp_player", true)
+	return temp_player
+
+
 func _resume_game() -> void:
 	game.pending_rebind_action = ""
 	game.pop_pause("escape_menu")
-	game._clear_ui()
+	if game.pause_stats_menu != null and is_instance_valid(game.pause_stats_menu):
+		var temp_player := game.pause_stats_menu.get("_player") as Node
+		if temp_player != null and is_instance_valid(temp_player) and bool(temp_player.get_meta("pause_dossier_temp_player", false)):
+			temp_player.queue_free()
+	if game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer):
+		game.pause_overlay_layer.queue_free()
+	game.pause_overlay_layer = null
+	game.pause_stats_menu = null
 
 
 func _quit_current_run() -> void:
@@ -1520,11 +1551,11 @@ func _show_reward_screen() -> void:
 
 func _show_level_up_screen(return_to_map := false) -> void:
 	game.level_up_return_to_map = return_to_map
-	var box := _create_level_up_menu_box("Повышение уровня", "Выбери 1 из 5 усилений. Один выбор за уровень.")
+	var box := _create_level_up_menu_box("Повышение уровня", "Выбери 1 из 3 усилений. Один выбор за уровень.")
 	if not game.combat_active:
 		_create_menu_run_hud()
 
-	# HFlowContainer: 5 карточек в ряд на широком экране, 3+2 на узком.
+	# HFlowContainer: 3 карточки в ряд на широком экране, перенос на узком.
 	var rewards_row := HFlowContainer.new()
 	rewards_row.name = "LevelUpRewardsRow"
 	rewards_row.alignment = FlowContainer.ALIGNMENT_CENTER
@@ -1536,7 +1567,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 
 	# Набор фиксируется на полученный уровень: переоткрытие окна показывает то же.
 	if game.level_up_offer.is_empty():
-		game.level_up_offer = _random_level_up_rewards(5)
+		game.level_up_offer = _random_level_up_rewards(3)
 	var reward_buttons: Array[Button] = []
 	for reward in game.level_up_offer:
 		var button := _make_level_up_reward_button(reward)
@@ -2245,6 +2276,9 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	game.current_event_definition = event_definition.duplicate(true)
 
 	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event")
+	var event_root := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
+	if event_root != null:
+		event_root.name = "EventScreen"
 	_create_menu_run_hud()
 	# На событии докачка недоступна: повторный вход перегенерировал бы выборы события.
 	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, Callable(), false)
@@ -2266,14 +2300,18 @@ func _show_event_screen(route_node: Dictionary) -> void:
 
 
 func _show_victory_screen() -> void:
-	var ascension_level = game.ascension_level_for(game.selected_character_id)
-	var character_title = str(game.PROGRESSION_DATA.character_config(game.selected_character_id).get("title", game.selected_character_id))
+	var ascension_level: int = game.ascension_level_for(game.selected_character_id)
+	var character_config: Dictionary = game.PROGRESSION_DATA.character_config(game.selected_character_id)
+	var character_title := str(character_config.get("title", "Герой"))
+	if character_title == "" or character_title == game.selected_character_id:
+		character_title = "Герой"
 	var run_level: int = game.selected_ascension_level
-	# Мета-прогрессия (заглушка с рабочим хуком): победа на уровне N открывает N+1 и
-	# выдаёт наградный бафф <класс>_asc_N, применяемый на старте будущих забегов.
-	var meta_text := "Возвышение %d пройдено — открыт уровень %d. Награда меты: бафф %s_asc_%d (применяется на старте забега)." % [run_level, mini(run_level + 1, 10), game.selected_character_id, mini(run_level + 1, 10)] if run_level >= ascension_level - 1 else "Возвышение %d пройдено." % run_level
-	var ascension_text = "Возвышение героя %s: %d/10. %s" % [character_title, ascension_level, meta_text]
-	var box = _create_menu_box("Победа", "Финальный босс повержен. Meta points: %d. %s" % [game.meta_points, ascension_text], "event")
+	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\n%s" % [
+		character_title,
+		game.meta_points,
+		_victory_ascension_summary(game.selected_character_id, run_level, ascension_level),
+	]
+	var box = _create_menu_box("Победа", subtitle, "event")
 	var finish_run := func() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
@@ -2292,7 +2330,7 @@ func _show_victory_screen() -> void:
 func _show_death_screen(reason := "") -> void:
 	var subtitle := str(reason)
 	if subtitle == "":
-		subtitle = "Забег завершен на этапе маршрута %d." % [game.route_stage + 1]
+		subtitle = "Забег завершён на этапе маршрута %d." % [game.route_stage + 1]
 	var box := _create_menu_box("Поражение", subtitle, "event")
 	var back_to_menu := func() -> void:
 		game.route_stage = 0
@@ -2307,6 +2345,58 @@ func _show_death_screen(reason := "") -> void:
 	retry_button.pressed.connect(back_to_menu)
 	box.add_child(retry_button)
 	game.ui_escape_action = back_to_menu
+
+
+func _victory_ascension_summary(character_id: String, run_level: int, unlocked_level: int) -> String:
+	var lines := ["Текущий предел Возвышения: %d из 10." % unlocked_level]
+	if run_level >= unlocked_level - 1 and unlocked_level > 0:
+		lines.append("Открыт следующий уровень Возвышения.")
+		var reward_text := _ascension_reward_summary(character_id, unlocked_level)
+		if reward_text != "":
+			lines.append(reward_text)
+	else:
+		lines.append("Пройден уже освоенный уровень Возвышения.")
+	return "\n".join(lines)
+
+
+func _ascension_reward_summary(character_id: String, level: int) -> String:
+	var rewards: Array = game.PROGRESSION_DATA.ascension_levels(character_id)
+	var index := clampi(level - 1, 0, rewards.size() - 1)
+	if rewards.is_empty() or index < 0 or index >= rewards.size():
+		return ""
+	var reward: Dictionary = rewards[index]
+	var title := str(reward.get("title", "Новая мета-награда"))
+	var modifier_text := _modifier_summary_text(reward.get("mods", {}))
+	if modifier_text == "":
+		return "Новая награда для будущих забегов: %s." % title
+	return "Новая награда для будущих забегов: %s — %s." % [title, modifier_text]
+
+
+func _modifier_summary_text(mods_value) -> String:
+	var mods: Dictionary = mods_value if mods_value is Dictionary else {}
+	var parts := []
+	for key in mods.keys():
+		var value := float(mods[key])
+		match str(key):
+			"damage_multiplier":
+				parts.append("урон +%d%%" % int(round((value - 1.0) * 100.0)))
+			"attack_speed_multiplier":
+				parts.append("скорость атаки +%d%%" % int(round((value - 1.0) * 100.0)))
+			"move_speed_multiplier":
+				parts.append("скорость движения +%d%%" % int(round((value - 1.0) * 100.0)))
+			"aoe_radius_multiplier":
+				parts.append("радиус атак +%d%%" % int(round((value - 1.0) * 100.0)))
+			"range_multiplier":
+				parts.append("дальность атак +%d%%" % int(round((value - 1.0) * 100.0)))
+			"knockback_multiplier":
+				parts.append("отталкивание +%d%%" % int(round((value - 1.0) * 100.0)))
+			"max_health_flat":
+				parts.append("максимальное здоровье +%d" % int(round(value)))
+			"defense_flat":
+				parts.append("защита +%d%%" % int(round(value * 100.0)))
+			"crit_chance_flat":
+				parts.append("шанс крита +%d%%" % int(round(value * 100.0)))
+	return ", ".join(parts)
 
 
 func _random_event_choices() -> Array:
@@ -2435,11 +2525,11 @@ func _weighted_sample(pool: Array, count: int) -> Array:
 	return picked
 
 
-const MAIN_STAT_SLOT_CHANCE := 0.13
+const MAIN_STAT_SLOT_CHANCE := 0.05
 
 
 func _random_level_up_rewards(count: int) -> Array:
-	# Микс: улучшения оружия/класса/вторичных атрибутов + РЕДКО (~13% на слот)
+	# Микс: улучшения оружия/класса/вторичных атрибутов + РЕДКО (~5% на слот)
 	# основная характеристика. Набор уникален и фиксируется на уровень.
 	var regular_pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
 	var stat_pool: Array = game.PROGRESSION_DATA.main_stat_level_up_rewards(game.selected_character_id)
@@ -2447,10 +2537,29 @@ func _random_level_up_rewards(count: int) -> Array:
 	while rewards.size() < count and (not regular_pool.is_empty() or not stat_pool.is_empty()):
 		var want_rare: bool = not stat_pool.is_empty() and float(game.rng.randf()) < MAIN_STAT_SLOT_CHANCE
 		var source: Array = stat_pool if (want_rare or regular_pool.is_empty()) else regular_pool
-		var index: int = game.rng.randi_range(0, source.size() - 1)
+		var index: int = _weighted_level_up_index(source)
 		rewards.append(source[index])
 		source.remove_at(index)
 	return rewards
+
+
+func _weighted_level_up_index(source: Array) -> int:
+	if source.size() <= 1:
+		return 0
+	var total := 0.0
+	var weights := []
+	for reward in source:
+		var weight: float = game.PROGRESSION_DATA.level_up_reward_weight(reward, game.selected_character_id)
+		weights.append(weight)
+		total += weight
+	if total <= 0.0:
+		return game.rng.randi_range(0, source.size() - 1)
+	var roll: float = game.rng.randf() * total
+	for index in range(source.size()):
+		roll -= float(weights[index])
+		if roll <= 0.0:
+			return index
+	return source.size() - 1
 
 
 func _random_shop_items(count: int) -> Array:
@@ -3455,6 +3564,19 @@ func _bar_style(background: Color) -> StyleBoxFlat:
 	return style
 
 
+func _slider_track_style(background: Color, border := Color(0.0, 0.0, 0.0, 0.0)) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = background
+	style.border_color = border
+	style.set_border_width_all(1 if border.a > 0.0 else 0)
+	style.set_corner_radius_all(9)
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	return style
+
+
 func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, content := Vector4.ZERO) -> StyleBox:
 	var texture: Texture2D = game._cached_texture(path)
 	if texture == null:
@@ -3484,9 +3606,10 @@ func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, 
 
 func _style_slider(slider: HSlider) -> void:
 	slider.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	slider.add_theme_stylebox_override("slider", _global_texture_style(SYSTEM_SLIDER_TRACK_PATH, Vector4(12, 8, 12, 8), Color.WHITE, Vector4.ZERO))
-	slider.add_theme_stylebox_override("grabber_area", _bar_style(Color(0.72, 0.55, 0.20, 0.35)))
-	slider.add_theme_stylebox_override("grabber_area_highlight", _bar_style(Color(0.86, 0.78, 0.32, 0.52)))
+	slider.add_theme_stylebox_override("slider", _slider_track_style(Color(0.035, 0.045, 0.065, 0.96), Color(0.55, 0.42, 0.18, 0.85)))
+	slider.add_theme_stylebox_override("grabber_area", _slider_track_style(Color(0.86, 0.62, 0.20, 0.82), Color(1.0, 0.82, 0.36, 0.90)))
+	slider.add_theme_stylebox_override("grabber_area_highlight", _slider_track_style(Color(1.0, 0.76, 0.28, 0.95), Color(1.0, 0.92, 0.54, 1.0)))
+	slider.add_theme_constant_override("center_grabber", 1)
 	var grabber: Texture2D = game._cached_texture(SYSTEM_SLIDER_GRABBER_PATH)
 	if grabber != null:
 		slider.add_theme_icon_override("grabber", grabber)

@@ -754,10 +754,10 @@ func _initialize() -> void:
 		push_error("Expected level-up screen to include the selected hero portrait.")
 		quit(1)
 		return
-	# Переработка: ровно 5 вариантов за уровень.
+	# SCRUM-149: ровно 3 варианта за уровень.
 	var level_up_buttons := level_up_overlay.find_children("LevelUpRewardButton*", "Button", true, false)
-	if level_up_buttons.size() != 5:
-		push_error("Expected level-up to animate exactly five reward buttons.")
+	if level_up_buttons.size() != 3:
+		push_error("Expected level-up to animate exactly three reward buttons.")
 		quit(1)
 		return
 	for button_index in range(level_up_buttons.size()):
@@ -776,13 +776,47 @@ func _initialize() -> void:
 			quit(1)
 			return
 
-	# Отложенный выбор: Escape закрывает окно БЕЗ траты пика (пик сохраняется),
+	# Escape поверх level-up открывает досье персонажа, не разрушая выбор награды.
+	var pause_escape := InputEventKey.new()
+	pause_escape.keycode = KEY_ESCAPE
+	pause_escape.pressed = true
+	main.call("_input", pause_escape)
+	await process_frame
+	if main.find_child("PauseStatsMenuRoot", true, false) == null:
+		push_error("Expected Escape on level-up to open the character dossier overlay.")
+		quit(1)
+		return
+	if main.find_child("PriorityBadge_strength", true, false) == null:
+		push_error("Expected pause dossier to highlight Berserk priority attributes.")
+		quit(1)
+		return
+	if (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay") == null:
+		push_error("Expected level-up overlay to remain underneath the pause dossier.")
+		quit(1)
+		return
+	var pause_close := InputEventKey.new()
+	pause_close.keycode = KEY_ESCAPE
+	pause_close.pressed = true
+	main.call("_input", pause_close)
+	await process_frame
+	if main.find_child("PauseStatsMenuRoot", true, false) != null:
+		push_error("Expected second Escape to close the character dossier overlay.")
+		quit(1)
+		return
+	if (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay") == null:
+		push_error("Expected closing the dossier to preserve the level-up overlay.")
+		quit(1)
+		return
+
+	# Отложенный выбор: нижняя кнопка закрывает окно БЕЗ траты пика (пик сохраняется),
 	# внизу появляется заметная кнопка возврата к тому же набору.
 	var pending_before_defer := int(main.get("pending_level_ups"))
-	var escape_during_level_up := InputEventKey.new()
-	escape_during_level_up.keycode = KEY_ESCAPE
-	escape_during_level_up.pressed = true
-	main.call("_input", escape_during_level_up)
+	var defer_button := main.find_child("LevelUpLaterButton", true, false) as Button
+	if defer_button == null:
+		push_error("Expected level-up to expose a bottom button for deferred choice.")
+		quit(1)
+		return
+	defer_button.pressed.emit()
 	await process_frame
 	if bool(main.call("_has_pause_reason", "level_up")):
 		push_error("Expected Esc to defer (close) the level-up without keeping it paused.")
@@ -801,8 +835,8 @@ func _initialize() -> void:
 	main.call("_open_pending_level_up")
 	await process_frame
 	var reopened := (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay")
-	if reopened == null or reopened.find_children("LevelUpRewardButton*", "Button", true, false).size() != 5:
-		push_error("Expected the return button to reopen the same fixed set of five rewards.")
+	if reopened == null or reopened.find_children("LevelUpRewardButton*", "Button", true, false).size() != 3:
+		push_error("Expected the return button to reopen the same fixed set of three rewards.")
 		quit(1)
 		return
 	var loop_guard := 0
@@ -1026,9 +1060,47 @@ func _initialize() -> void:
 	await _test_boss_zone_wave_safe_corridor()
 	await _test_elite_boss_presentation(main_scene)
 	await _test_boss_hud_omits_timer(main_scene)
+	await _test_mini_elite_roster(main_scene)
 
 	print("Runtime smoke test passed.")
 	quit()
+
+
+func _test_mini_elite_roster(main_scene: PackedScene) -> void:
+	# SCRUM-155: 6 data-driven видов мини-элиток — валидные поля, маппинг сцен,
+	# HP-бюджет «мини» (0 < hp_mult < 1: убиваемы, не полная элитка).
+	var m := main_scene.instantiate()
+	root.add_child(m)
+	await process_frame
+	var kinds: Array = m.get("PROGRESSION_DATA").call("mini_elite_kinds")
+	if kinds.size() != 6:
+		_fail("Expected 6 mini-elite kinds in the roster, got %d." % kinds.size())
+		return
+	var seen := {}
+	for entry in kinds:
+		var kind: Dictionary = entry
+		for field in ["id", "title", "scene", "hp_mult", "tint", "desc"]:
+			if not kind.has(field):
+				_fail("Mini-elite kind missing field '%s'." % field)
+				return
+		var kind_id := str(kind["id"])
+		if seen.has(kind_id):
+			_fail("Duplicate mini-elite kind id '%s'." % kind_id)
+			return
+		seen[kind_id] = true
+		if m.combat.call("_elite_scene_by_key", str(kind["scene"])) == null:
+			_fail("Mini-elite kind '%s' maps to unknown scene key '%s'." % [kind_id, str(kind["scene"])])
+			return
+		var hp_mult := float(kind["hp_mult"])
+		if hp_mult <= 0.0 or hp_mult >= 1.0:
+			_fail("Expected mini-elite '%s' hp_mult in (0,1), got %f." % [kind_id, hp_mult])
+			return
+		# Тинт — RGB-триплет для различимости placeholder-спрайта.
+		if (kind["tint"] as Array).size() < 3:
+			_fail("Expected mini-elite '%s' tint to be an RGB triplet." % kind_id)
+			return
+	m.queue_free()
+	await process_frame
 
 
 func _test_elite_boss_presentation(main_scene: PackedScene) -> void:
@@ -1328,6 +1400,23 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		return
 	if not _has_screen_background(route_main, "event"):
 		push_error("Expected event screen to include an event background or fallback layer.")
+		quit(1)
+		return
+	route_main.ui._show_pause_menu()
+	await process_frame
+	if route_main.find_child("PauseStatsMenuRoot", true, false) == null:
+		push_error("Expected Escape dossier to open over an event screen.")
+		quit(1)
+		return
+	if route_main.find_child("EventScreen", true, false) == null:
+		push_error("Expected event screen to remain underneath the Escape dossier.")
+		quit(1)
+		return
+	route_main.ui._resume_game()
+	await process_frame
+	event_choice = route_main.find_child("EventChoiceButton0", true, false) as Button
+	if event_choice == null:
+		push_error("Expected closing the Escape dossier to preserve event choices.")
 		quit(1)
 		return
 
@@ -1672,6 +1761,27 @@ func _test_noncombat_nodes(main: Node) -> void:
 		push_error("Expected inline shop price badge to use the Design price frame.")
 		quit(1)
 		return
+	main.ui._show_pause_menu()
+	await process_frame
+	if main.find_child("PauseStatsMenuRoot", true, false) == null:
+		push_error("Expected Escape dossier to open over the shop screen.")
+		quit(1)
+		return
+	if main.find_child("PauseCharacterDossier", true, false) == null:
+		push_error("Expected Escape dossier to include the run character overview.")
+		quit(1)
+		return
+	if main.find_child("ShopScreen", true, false) == null:
+		push_error("Expected shop screen to remain underneath the Escape dossier.")
+		quit(1)
+		return
+	main.ui._resume_game()
+	await process_frame
+	first_shop_button = main.find_child("ShopItemButton0", true, false) as Button
+	if first_shop_button == null:
+		push_error("Expected closing the Escape dossier to preserve shop buttons.")
+		quit(1)
+		return
 	if not bool(main.call("_buy_shop_item_at", 0)):
 		push_error("Expected first shop purchase to succeed without leaving shop.")
 		quit(1)
@@ -1892,20 +2002,26 @@ func _test_weapon_effect_cleanup() -> void:
 		return
 	weapon.call("_fire_amp", player, Vector2.RIGHT)
 	await process_frame
-	if get_nodes_in_group("player_weapon_effects").is_empty():
+	var deployed_amps: Array = weapon.get("_deployed_amps")
+	if get_nodes_in_group("player_weapon_effects").is_empty() and deployed_amps.is_empty():
 		push_error("Expected sound amp to register temporary weapon effects.")
 		quit(1)
 		return
 
+	var old_weapon_id := weapon.get_instance_id()
 	player.equip_weapon("electric_guitar")
-	if not get_nodes_in_group("player_weapon_effects").is_empty():
+	await process_frame
+	var owned_leftovers := []
+	for effect in get_nodes_in_group("player_weapon_effects"):
+		if int(effect.get_meta("weapon_owner_id", 0)) == old_weapon_id:
+			owned_leftovers.append(effect)
+	if not owned_leftovers.is_empty() or not deployed_amps.filter(func(effect: Node) -> bool: return effect != null and is_instance_valid(effect)).is_empty():
 		var leftover_names := []
-		for effect in get_nodes_in_group("player_weapon_effects"):
+		for effect in owned_leftovers:
 			leftover_names.append(str(effect.name))
 		push_error("Expected switching Guitarist weapons to clean up amp/effect nodes. Leftover: %s" % ", ".join(leftover_names))
 		quit(1)
 		return
-	await process_frame
 	player.queue_free()
 	await process_frame
 
@@ -1980,6 +2096,17 @@ func _test_victory_flow(main: Node) -> void:
 		push_error("Expected boss victory to grant meta progress and Berserk Ascension 1.")
 		quit(1)
 		return
+	var victory_text := _collect_label_text(main)
+	for forbidden in ["Meta points", "asc_", "_id", "berserk_asc"]:
+		if victory_text.contains(forbidden):
+			push_error("Expected victory screen text to hide internal technical token '%s'." % forbidden)
+			quit(1)
+			return
+	for expected in ["Победа", "Финальный босс повержен", "Очки наследия", "Возвышения"]:
+		if not victory_text.contains(expected):
+			push_error("Expected victory screen text to include '%s'." % expected)
+			quit(1)
+			return
 
 
 func _test_elite_flow(main_scene: PackedScene) -> void:
@@ -2741,6 +2868,22 @@ func _test_full_attribute_wiring() -> void:
 	if absf(float(vamp["vampiric_chance"]) - 0.25) > 0.001 or absf(float(vamp["vampiric_amount"]) - 2.0) > 0.001:
 		_fail("Expected vampiric rewards to feed the vampiric parameters.")
 		return
+	var berserk_priorities: Array = ProgressionData.attribute_priorities("berserk")
+	var mage_priorities: Array = ProgressionData.attribute_priorities("dark_mage")
+	if berserk_priorities.slice(0, 3) != ["strength", "endurance", "agility"]:
+		_fail("Expected Berserk priorities to start with strength/endurance/agility.")
+		return
+	if mage_priorities.slice(0, 3) != ["intelligence", "energy", "knowledge"]:
+		_fail("Expected Dark Mage priorities to start with intelligence/energy/knowledge.")
+		return
+	var defense_reward := {"mods": {"defense_flat": 0.10}}
+	if ProgressionData.level_up_reward_weight(defense_reward, "knight") <= ProgressionData.level_up_reward_weight(defense_reward, "dark_mage"):
+		_fail("Expected weighted level-up rewards to favor defense more for Knight than Dark Mage.")
+		return
+	var off_priority_reward := {"mods": {"damage_multiplier": 1.10}}
+	if ProgressionData.level_up_reward_weight(off_priority_reward, "dark_mage") <= 0.3:
+		_fail("Expected weighted level-up rewards to keep off-priority rewards available.")
+		return
 
 	# Геймплейная проводка: вампиризм лечит, регенерация тикает, absorb режет урон.
 	var holder := Node2D.new()
@@ -2751,16 +2894,23 @@ func _test_full_attribute_wiring() -> void:
 	await process_frame
 	wiring_player.call("configure_character", "berserk", "sword")
 	wiring_player.call("apply_reward", {"mods": {"vampiric_chance_flat": 1.0, "vampiric_amount_flat": 5.0}})
-	# Шанс капится на 0.6 — для детерминизма теста форсируем гарантированный прок.
+	# Шанс капится в формулах; для детерминизма теста форсируем гарантированный прок.
 	var wiring_derived: Dictionary = wiring_player.get("derived_parameters")
 	wiring_derived["vampiric_chance"] = 1.0
+	wiring_derived["regeneration"] = 0.0
 	wiring_player.set("derived_parameters", wiring_derived)
 	wiring_player.set("health", float(wiring_player.get("max_health")) * 0.5)
 	var hp_before_vamp := float(wiring_player.get("health"))
+	wiring_player.call("_apply_regeneration", 1.0)
 	wiring_player.call("on_weapon_hit", wiring_player, 10.0)
 	if float(wiring_player.get("health")) <= hp_before_vamp:
 		_fail("Expected a guaranteed vampiric hit to heal the player.")
 		return
+	if float(wiring_player.get("health")) - hp_before_vamp > 4.1:
+		_fail("Expected vampiric healing to be capped by heal-per-second budget.")
+		return
+	wiring_derived["regeneration"] = 2.0
+	wiring_player.set("derived_parameters", wiring_derived)
 	var hp_before_regen := float(wiring_player.get("health"))
 	wiring_player.call("_apply_regeneration", 5.0)
 	if float(wiring_player.get("health")) <= hp_before_regen:
@@ -2828,6 +2978,29 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if not bool(slider.size_flags_horizontal & Control.SIZE_EXPAND_FILL):
 			_fail("Expected %s slider to expand across the audio tab." % slider_id)
 			return
+		var track := slider.get_theme_stylebox("slider")
+		var fill := slider.get_theme_stylebox("grabber_area")
+		if not (track is StyleBoxFlat) or track.content_margin_top < 8.0 or track.content_margin_bottom < 8.0:
+			_fail("Expected %s slider to have a visible non-zero-height track StyleBoxFlat." % slider_id)
+			return
+		if not (fill is StyleBoxFlat) or (fill as StyleBoxFlat).bg_color.a < 0.5:
+			_fail("Expected %s slider to have a visible filled track area." % slider_id)
+			return
+		if slider.step > 2.0 or slider.focus_mode != Control.FOCUS_ALL:
+			_fail("Expected %s slider to support fine keyboard focus adjustments." % slider_id)
+			return
+	var music_toggle := main.find_child("VolumeToggle_music_enabled", true, false) as CheckBox
+	if music_toggle == null or (music_toggle.text != "Вкл." and music_toggle.text != "Выкл."):
+		_fail("Expected music mute toggle to use clear Вкл./Выкл. text.")
+		return
+	var music_slider := main.find_child("VolumeSlider_music_volume", true, false) as HSlider
+	music_slider.value = 42.0
+	await process_frame
+	var game_settings := load("res://scripts/game_settings.gd")
+	var loaded_audio: Dictionary = game_settings.load_settings()
+	if absf(float(loaded_audio.get("music_volume", 0.0)) - 0.42) > 0.021:
+		_fail("Expected moving the music slider to persist live volume.")
+		return
 	if not InputMap.has_action("ultimate"):
 		_fail("Expected InputMap action 'ultimate' to exist.")
 		return
@@ -2847,7 +3020,6 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	if ultimate_events.is_empty() or not (ultimate_events[0] is InputEventKey) or (ultimate_events[0] as InputEventKey).keycode != KEY_T:
 		_fail("Expected ultimate rebind to apply the new key.")
 		return
-	var game_settings := load("res://scripts/game_settings.gd")
 	var loaded: Dictionary = game_settings.load_settings()
 	var bindings: Dictionary = loaded.get("input_bindings", {})
 	if not bindings.has("ultimate") or not (KEY_T in (bindings["ultimate"] as Array)):
@@ -2919,28 +3091,28 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 	fix_main.ui._show_level_up_screen(true)
 	await process_frame
 	var first_offer: Array = (fix_main.get("level_up_offer") as Array).duplicate(true)
-	if first_offer.size() != 5:
-		_fail("Expected a fixed set of five level-up rewards.")
+	if first_offer.size() != 3:
+		_fail("Expected a fixed set of three level-up rewards.")
 		return
 	fix_main.call("_clear_ui")
 	fix_main.ui._show_level_up_screen(true)
 	await process_frame
 	var second_offer: Array = fix_main.get("level_up_offer")
-	for offer_index in range(5):
+	for offer_index in range(3):
 		if str((first_offer[offer_index] as Dictionary).get("id")) != str((second_offer[offer_index] as Dictionary).get("id")):
 			_fail("Expected reopening the level-up window to keep the same reward set.")
 			return
 
-	# 4b. Состав 5 вариантов: уникальность + РЕДКОСТЬ основной характеристики (~10-15%/слот).
+	# 4b. Состав 3 вариантов: уникальность + РЕДКОСТЬ основной характеристики (~3-7%/слот).
 	#     Большой детерминированный сэмпл; редкие помечены rare=true + kind "stat".
 	(fix_main.get("rng") as RandomNumberGenerator).seed = 90125
 	var rare_slots := 0
 	var total_slots := 0
 	var draws := 400
 	for _draw in range(draws):
-		var offer: Array = fix_main.ui._random_level_up_rewards(5)
-		if offer.size() != 5:
-			_fail("Expected level-up generator to always return five options.")
+		var offer: Array = fix_main.ui._random_level_up_rewards(3)
+		if offer.size() != 3:
+			_fail("Expected level-up generator to always return three options.")
 			return
 		var seen_ids := {}
 		for entry in offer:
@@ -2957,8 +3129,8 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 					_fail("Expected rare level-up slot to be a main-characteristic stat reward.")
 					return
 	var rare_fraction := float(rare_slots) / float(total_slots)
-	if rare_fraction < 0.05 or rare_fraction > 0.25:
-		_fail("Expected rare main-characteristic frequency near 10-15%%, got %.1f%%." % (rare_fraction * 100.0))
+	if rare_fraction < 0.025 or rare_fraction > 0.085:
+		_fail("Expected rare main-characteristic frequency near 3-7%%, got %.1f%%." % (rare_fraction * 100.0))
 		return
 
 	# 5. Фиксация пары атрибутов: переоткрытие окна докачки не реролит бесплатно.
@@ -3163,16 +3335,22 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	if enemies_total != used:
 		_fail("Expected slot accounting enemies==used (%d vs %d)." % [enemies_total, used])
 		return
-	# Убиваемая, не танк: HP = тот же волновой elite-скейл × 0.55.
+	# Убиваемая, не танк: HP = тот же волновой elite-скейл × data-driven hp_mult вида.
 	var mini_node: Node = spawned[0]
 	var mini_hp: float = float(mini_node.get("max_health"))
+	var expected_hp_mult := 0.55
+	var mini_kind_id := str(mini_node.get_meta("mini_elite_kind", ""))
+	for kind in ProgressionData.mini_elite_kinds():
+		if str((kind as Dictionary).get("id", "")) == mini_kind_id:
+			expected_hp_mult = float((kind as Dictionary).get("hp_mult", expected_hp_mult))
+			break
 	var ref_elite: Node = (load(mini_node.scene_file_path) as PackedScene).instantiate()
 	ref_elite.add_to_group("elite_enemies")
 	mini_main.add_child(ref_elite)
 	mini_main.combat.call("_scale_enemy_for_current_wave", ref_elite)
 	var ref_hp: float = float(ref_elite.get("max_health"))
-	if ref_hp <= 0.0 or absf(mini_hp - ref_hp * 0.55) > ref_hp * 0.03:
-		_fail("Expected mini-elite HP ≈ wave elite ×0.55 (mini %f vs ref %f)." % [mini_hp, ref_hp])
+	if ref_hp <= 0.0 or absf(mini_hp - ref_hp * expected_hp_mult) > ref_hp * 0.03:
+		_fail("Expected mini-elite HP ≈ wave elite ×%.2f (mini %f vs ref %f)." % [expected_hp_mult, mini_hp, ref_hp])
 		return
 	mini_main.queue_free()
 	await process_frame
@@ -3372,8 +3550,15 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	# Полнота данных кодекса.
 	var codex_data := load("res://scripts/codex_data.gd")
 	var monsters: Array = codex_data.monsters()
-	if monsters.size() != 17:
-		_fail("Expected codex to list all 17 monsters (11 standard + 4 elites + 2 bosses), got %d." % monsters.size())
+	if monsters.size() != 23:
+		_fail("Expected codex to list all 23 monsters (11 standard + 4 elites + 6 mini-elites + 2 bosses), got %d." % monsters.size())
+		return
+	var codex_mini_count := 0
+	for monster_entry in monsters:
+		if str((monster_entry as Dictionary).get("kind", "")) == "mini_elite":
+			codex_mini_count += 1
+	if codex_mini_count != 6:
+		_fail("Expected 6 mini-elite codex entries, got %d." % codex_mini_count)
 		return
 	for monster in monsters:
 		var abilities: Array = monster.get("abilities", [])
@@ -3522,6 +3707,17 @@ func _control_center_matches_viewport_size(control: Control, viewport_size: Vect
 	var rect := control.get_global_rect()
 	var viewport_center := viewport_size * 0.5
 	return absf(rect.get_center().x - viewport_center.x) <= tolerance_px and absf(rect.get_center().y - viewport_center.y) <= tolerance_px
+
+
+func _collect_label_text(node: Node) -> String:
+	var parts := []
+	if node is Label:
+		parts.append((node as Label).text)
+	elif node is Button:
+		parts.append((node as Button).text)
+	for child in node.get_children():
+		parts.append(_collect_label_text(child))
+	return "\n".join(parts)
 
 
 func _fail(message: String) -> void:
