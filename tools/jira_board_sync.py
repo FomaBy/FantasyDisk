@@ -151,6 +151,8 @@ def main():
             created += 1
             sprint_queue.append(key)
             print(f"created {key}: {t['file']}")
+        if entry.get("status") == "Готово":
+            continue  # финальное состояние: из «Готово» не понижаем
         if entry.get("status") != target_status:
             if dry:
                 print(f"MOVE {entry.get('key','?')} {entry.get('status')} -> {target_status}")
