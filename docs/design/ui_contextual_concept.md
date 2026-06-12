@@ -8,6 +8,23 @@ Replace the current one-size-fits-all fantasy frame language with contextual D&D
 
 This pass is not about adding more decoration. It is about removing decoration that has no narrative job.
 
+## Hard Rule: No Visual Junk
+
+User update 2026-06-12: the interface must not contain decorative junk. Avoid
+abstract lines, circles, squares, dots, grids, generic separators, little markers
+or ornamental filler that only exists to make the UI look “busy”.
+
+Every visible frame detail must be one of two things:
+
+- a readable UI affordance, such as an edge, handle, tab, button boundary, slot,
+  divider or interaction state;
+- a believable D&D/tabletop material detail tied to the screen mood, such as
+  leather, metal, parchment folds, bone cracks, vines, leaves, straps, wax seals,
+  rope, book tabs or worn carved edges.
+
+If an element cannot be explained in those terms, it should be removed. Do not
+replace meaningless decoration with a different meaningless primitive.
+
 ## Research Notes
 
 Sources used as mood/reference logic only; do not copy layouts, logos, ornaments, icons or screenshots.
@@ -194,6 +211,8 @@ All assets must:
 - have no text, watermark, logos or copied ornaments;
 - have a clean central content well;
 - keep ornament mostly on edges/corners;
+- pass the no-visual-junk rule: no abstract decorative lines, circles, squares,
+  dots, grids or geometric filler without clear UI/material meaning;
 - remain readable at 1280x720 and 2560x1440;
 - avoid one-note purple/cyan glow;
 - preserve a stable rectangular interaction affordance.

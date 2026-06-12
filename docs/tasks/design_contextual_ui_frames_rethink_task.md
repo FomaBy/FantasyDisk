@@ -28,6 +28,20 @@ Divinity, Darkest Dungeon и т.п. — изучать ПОДХОДЫ и нас�
    - смерть — жуткое: кость, трещины, тлен, холодная гамма;
    - и так далее по экранам (фантазировать).
 
+## User Art Direction Update 2026-06-12
+
+Жесткое правило для SCRUM-111 и всех downstream задач по этому блоку:
+**никакого визуального мусора на интерфейсе**. Не добавлять декоративные линии,
+кружочки, квадратики, точки, плашки, сетки, геометрические маркеры, завитки,
+разделители или “узорчики”, если они не несут понятный UI-смысл и не работают
+на тему конкретного экрана.
+
+Допустимо только то, что выглядит как часть предметного D&D/tabletop интерфейса:
+материал, край рамки, крепление, лист/ветка, кость, трещина, пергаментный сгиб,
+кожаный ремень, металлическая окантовка, закладка, печать или другой элемент с
+понятной функцией/настроением. Любой абстрактный декоративный примитив считается
+дефектом Design review и должен быть удалён, а не “доработан”.
+
 ## Требования
 
 ### Фаза 1 — Ресёрч и концепт (артефакт приёмки)
@@ -64,6 +78,9 @@ Divinity, Darkest Dungeon и т.п. — изучать ПОДХОДЫ и нас�
 - [ ] Минимум 3 контекстных варианта обрамления реализованы (старт-лианы,
       смерть-кость + ещё один на выбор) поверх базового кита.
 - [ ] Бессмысленные вставки удалены; каждый элемент рамки оправдан настроением.
+- [ ] No-junk gate: нет абстрактных декоративных линий/кружков/квадратов/точек/
+      узоров без функции; все элементы выглядят как материал или предметная
+      часть D&D/tabletop UI.
 - [ ] Скриншоты до/после; тексты читаемы, зоны кликов не уменьшились; smoke зеленые.
 
 ## Документация
@@ -83,3 +100,11 @@ Divinity, Darkest Dungeon и т.п. — изучать ПОДХОДЫ и нас�
 - Created blocked Back-end integration handoff: `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md`.
 
 Task remains `in_progress` because actual PNG generation, integration, screenshots and smoke are still pending downstream work.
+
+2026-06-12 — User art-direction update captured.
+
+- Added strict no-junk interface rule: no abstract decorative lines, circles,
+  squares, dots, separators or geometric filler without UI meaning.
+- This rule applies to Design review and to the future SCRUM-118 integration pass.
+- Because of the 0.1.3 feature block, this stays backlog scope for `0.1.4` unless
+  PM/QA reclassifies a specific item as a bug/release blocker.

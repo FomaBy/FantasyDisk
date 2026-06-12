@@ -63,6 +63,11 @@ System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, a
 
 `docs/design/ui_contextual_concept.md` defines the next UI-frame direction: the current tavern kit becomes a utility/shop fallback, while new context kits should carry screen meaning. The generated review kit in `assets/sprites/ui/frames/contextual/` contains Wild Start (main/hero/weapon), Grave Defeat (death/danger), Laurel Reward (victory/level-up/rewards), and Parchment/Codex/Map (codex/event/route). After user feedback on the first simple pass, the active PNGs were redrawn into a richer realistic D&D/tabletop raster style using current FantasyDisk artifacts/characters/weapons/backgrounds as references for material depth, dark outline, bevels and worn fantasy surfaces. The audit found that repeated brass studs and curved corner strokes are meaningful in merchant/utility contexts but become decoration without purpose on death, victory, codex and route screens.
 
+Hard no-junk rule from the user: contextual UI work must not add abstract
+decorative lines, circles, squares, dots, grids or filler marks. Every visible
+detail must read as a UI affordance or a believable D&D/tabletop material detail;
+otherwise it is a Design review defect.
+
 Generated assets:
 
 - `ui_wild_panel_frame.png`, `ui_wild_button_frame.png`, `ui_wild_card_frame.png`, `ui_wild_tooltip_frame.png`;
