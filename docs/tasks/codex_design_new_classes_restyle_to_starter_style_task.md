@@ -60,6 +60,7 @@
 
 ## Progress Log
 - 2026-06-12: 6/24 файлов заменены и проверены: `assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png`. Проверка: 512x512 RGBA, прозрачные углы, bbox внутри canvas, дружелюбная палитра, нейтральная стойка с разделенными ногами.
+- 2026-06-12: 12/24 файлов заменены и проверены: добавлены `chakrams.png`, `shadow_daggers.png`, `venom_wire.png`, `moon_crossbow.png`, `storm_longbow.png`, `hunter_trap.png`. Проверка: 256x256 RGBA, прозрачные углы, bbox внутри canvas, крупный читаемый предмет без UI-рамки.
 
 ## Acceptance Criteria
 - [ ] 6 персонажей и все 18 оружий в стиле стартовой тройки: чисто, сочно, позитивно.

@@ -1,9 +1,13 @@
 # Задача Для Codex (Design): Поштучная Перегенерация Всех Иконок Артефактов
 
-Статус: review
+Статус: review / superseded 2026-06-12
 Создано: 2026-06-12
 Автор: PM
 Исполнитель: Codex (генерация изображений). Ревью и коммит: Claude-Designer.
+
+Superseded: пользователь сменил арт-дирекшен после этого pass. Новый источник истины:
+`design_artifact_icons_realistic_dnd_reference_redraw_task.md` — реалистичные epic
+D&D-style иконки по web/reference research, с полной заменой текущего набора.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения. Работать автономно до полного завершения.
