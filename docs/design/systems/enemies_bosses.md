@@ -1,6 +1,6 @@
 # Enemies, Elites And Bosses
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 
 Канонические enemy/boss IDs и assets находятся в `docs/design/content_registry.md`. Основная логика врагов: `scripts/enemy.gd`, боссов: `scripts/boss.gd`, спавна: `scripts/combat_director.gd`.
 
@@ -19,7 +19,7 @@ MVP поддерживает несколько архетипов:
 
 ## Elites
 
-Элитки крупнее обычных мобов примерно в 1.35x. Design sprites 256x256 дают видимый upscale, collision shapes увеличены, contact range auto-fit.
+Элитки крупнее обычных мобов примерно в 1.35x. С SCRUM-135 активные elite source sprites и cutout manifests переведены на native `512x512`, поэтому epic-scale рендер не апскейлит прежний 256px-арт на QHD/Retina. Collision shapes, contact range auto-fit и gameplay scale не менялись.
 
 | Elite | Attack | Pattern |
 | --- | --- | --- |
@@ -32,7 +32,7 @@ MVP поддерживает несколько архетипов:
 
 ## Bosses
 
-Boss node выбирает одного из доступных боссов, включая `rift_warden` и `disk_devourer`.
+Boss node выбирает одного из доступных боссов, включая `rift_warden` и `disk_devourer`. С SCRUM-135 оба активных boss source sprites и cutout parts также `512x512`; `rift_warden` сохраняет отдельный `vortex` cutout part, `disk_devourer` остается single-torso rig.
 
 Минимальные правила:
 

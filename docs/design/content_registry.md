@@ -235,6 +235,8 @@ Weapon art v2 2026-06-12: все 27 сцен `WeaponVisual` используют
 | `plague_prophet` | Чумной Пророк | `scenes/ElitePoisoned.tscn` | Зональная элитка | `assets/sprites/elites/plague_prophet.png` | Пассив: ядовитые зоны. Уникальная атака `poison_volley`: 3 lob-снаряда по дуге в telegraph-метки, в точках падения лужи на 3с (тик 0.6с), кулдаун 8с | Реализовано |
 | `shard_marshal` | Маршал Осколков | `scenes/EliteCommander.tscn` | Командир толпы | `assets/sprites/elites/shard_marshal.png` | Пассив: одноразовая аура усиления ближайших врагов. Уникальная атака `shard_fan`: веер из 5 кристальных снарядов в сторону игрока после замаха 0.5с, кулдаун 6с | Реализовано |
 
+Обновление SCRUM-135 от 2026-06-12: все 4 активные элитки используют native `512x512` source PNG и перенарезанные `assets/sprites/elites/cutout/` части под `scripts/sliced_rig_manifest.gd` `size = Vector2(512, 512)`. Поза/силуэт сохранены 1:1 относительно прежних 256px-спрайтов, чтобы epic scale оставался геометрически тем же, но без билинейного мыла на QHD/Retina.
+
 Все уникальные атаки элиток: параметры лежат в `scripts/enemy.gd::ELITE_ATTACK_CONFIG` (data-driven), фазы `windup/strike/recover/idle` доступны Animator через сигнал `elite_attack_phase_changed` и meta `elite_attack_phase`; урон атаки ограничен 25% max HP игрока. VFX: `elite_telegraph_circle.png`, `elite_shockwave_ring.png`, `elite_shadow_trail.png`, `elite_poison_lob.png`, `elite_crystal_shard.png` в `assets/sprites/effects/`.
 
 ## Умения Монстров (Канонические Имена Кодекса)
@@ -279,6 +281,8 @@ Weapon art v2 2026-06-12: все 27 сцен `WeaponVisual` используют
 | --- | --- | --- | --- | --- | --- | --- |
 | `rift_warden` | Страж Разлома | `scenes/BossWarden.tscn` | Финальный босс контроля | `assets/sprites/bosses/boss_rift_warden.png` | Залпы, зоны разлома, призыв, щит, увороты | Реализовано |
 | `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png` | Рывки, disk slam AoE, radial burst, enrage | Реализовано |
+
+Обновление SCRUM-135 от 2026-06-12: оба boss source PNG заменены на native `512x512` и перенарезаны в `assets/sprites/bosses/cutout/`; `rift_warden` сохраняет отдельный `vortex` part, `disk_devourer` остается single-torso rig по текущему CONFIG. Epic boss scale не менялся.
 
 ## Узлы Маршрутной Карты
 

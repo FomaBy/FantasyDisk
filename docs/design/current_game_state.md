@@ -638,7 +638,9 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
 Элитки выбираются случайно. Они должны быть примерно на порядок опаснее обычных врагов за счет HP, урона и паттернов. Обновление 2026-06-12: элитки используют `ProgressionData.stage_scale(route_stage)`, получают большой HP-бюджет под ~45-90с активного боя в budget estimate, имеют meta-флаг второй фазы на 50% HP и после победы открывают выбор 1 из 3 артефактов.
 
-Обновление 2026-06-11: элитки крупнее обычных мобов в ~1.35 раза — спрайты 256x256 при прежнем scale сцен дают видимый апсайз, collision shape увеличены в 1.35x, contact_range подгоняется автоматически под видимый размер. У каждой элитки есть уникальная телеграфированная активная атака со state machine `windup -> strike -> recover -> idle` (конфиг `scripts/enemy.gd::ELITE_ATTACK_CONFIG`, сигнал `elite_attack_phase_changed` для Animator). Во время атаки элитка стоит на месте; урон атаки ограничен 25% максимального HP игрока; от всех атак можно увернуться движением.
+Обновление 2026-06-11: элитки крупнее обычных мобов в ~1.35 раза — collision shape увеличены в 1.35x, contact_range подгоняется автоматически под видимый размер. У каждой элитки есть уникальная телеграфированная активная атака со state machine `windup -> strike -> recover -> idle` (конфиг `scripts/enemy.gd::ELITE_ATTACK_CONFIG`, сигнал `elite_attack_phase_changed` для Animator). Во время атаки элитка стоит на месте; урон атаки ограничен 25% максимального HP игрока; от всех атак можно увернуться движением.
+
+Обновление SCRUM-135 от 2026-06-12: активные source sprites всех 4 элиток заменены на native `512x512` и перенарезаны в `assets/sprites/elites/cutout/` с manifest `size = Vector2(512, 512)`. Поза/силуэт сохранены 1:1, поэтому хитбоксы, contact_range и epic scale остались прежними, а QHD/Retina-рендер больше не тянет 256px-арт выше native.
 
 | Элитка | Сцена | Спрайт | Уникальное поведение |
 | --- | --- | --- | --- |
@@ -657,6 +659,8 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 | Disk Devourer | `disk_devourer` | `scenes/BossDiskDevourer.tscn` | `boss_disk_devourer.png` | Рывок, slam AoE, radial burst, enrage |
 
 Боссы используют `scripts/boss.gd`, который расширяет логику обычного врага. Обновление 2026-06-12: каждый босс имеет 3 HP-фазы (`100-66%`, `66-33%`, `33-0%`), фазовые метки в meta/HP-bar, ускорение атак на фазах и danger-zone при переходе. HP/урон боссов масштабируются через ту же `stage_scale`, что и экономика.
+
+Обновление SCRUM-135 от 2026-06-12: `boss_rift_warden.png` и `boss_disk_devourer.png` теперь native `512x512`, их boss cutout parts и `scripts/sliced_rig_manifest.gd` обновлены под 512px. `rift_warden` сохраняет отдельный `vortex` part; `disk_devourer` остается single-torso rig по текущему cutout CONFIG.
 
 ## Спавн И Волны
 

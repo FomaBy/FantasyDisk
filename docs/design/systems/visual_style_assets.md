@@ -87,6 +87,16 @@ All weapon visuals live in `assets/sprites/weapons/` at `256x256` with transpare
 
 Per-weapon socket/display notes are tracked in `docs/design/systems/characters_weapons.md` and the Design handoff task `docs/tasks/design_all_classes_three_weapons_visual_upgrade_task.md`.
 
+## Elites And Bosses
+
+SCRUM-135 anti-blur pass 2026-06-12 moved the 4 active elites (`iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`) and 2 active bosses (`boss_rift_warden`, `boss_disk_devourer`) from 256px source art to native `512x512` RGBA PNGs while preserving pose, silhouette and facing 1:1. The cutout pipeline now slices these six entities in 512px coordinate space and `scripts/sliced_rig_manifest.gd` records `size = Vector2(512, 512)` for them.
+
+Review previews:
+
+- `docs/design/previews/elite_boss_upscale_before_contact.png`;
+- `docs/design/previews/elite_boss_upscale_after_contact.png`;
+- `docs/design/previews/elite_boss_upscale_rig_debug_contact.png`.
+
 ## Combat VFX Assets
 
 Attack VFX sprites live in `assets/sprites/effects/` and are transparent PNGs intended for tinted `Sprite2D`/tween-based effects, not raw Godot primitive circles. On 2026-06-12 the first weapon VFX polish block replaced the visible persistent pool placeholders with raster fantasy effects:

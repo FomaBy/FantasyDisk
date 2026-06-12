@@ -307,7 +307,7 @@ CONFIG = {
     "iron_bastion": {
         "source": "assets/sprites/elites/iron_bastion.png",
         "group": "elites",
-        "coord_scale": 256.0 / 192.0,
+        "coord_scale": 512.0 / 192.0,
         "style": "heavy",
         "attack_part": "arm_r",
         "foot_y": 180,
@@ -321,7 +321,7 @@ CONFIG = {
     "night_stalker": {
         "source": "assets/sprites/elites/night_stalker.png",
         "group": "elites",
-        "coord_scale": 256.0 / 192.0,
+        "coord_scale": 512.0 / 192.0,
         "style": "stalker",
         "attack_part": "arm_r",
         "foot_y": 178,
@@ -336,7 +336,7 @@ CONFIG = {
     "plague_prophet": {
         "source": "assets/sprites/elites/plague_prophet.png",
         "group": "elites",
-        "coord_scale": 256.0 / 192.0,
+        "coord_scale": 512.0 / 192.0,
         "style": "robed",
         "attack_part": "arm_l",
         "foot_y": 182,
@@ -349,7 +349,7 @@ CONFIG = {
     "shard_marshal": {
         "source": "assets/sprites/elites/shard_marshal.png",
         "group": "elites",
-        "coord_scale": 256.0 / 192.0,
+        "coord_scale": 512.0 / 192.0,
         "style": "heavy",
         "attack_part": "arm_l",
         "foot_y": 186,
@@ -364,6 +364,7 @@ CONFIG = {
     "rift_warden": {
         "source": "assets/sprites/bosses/boss_rift_warden.png",
         "group": "bosses",
+        "coord_scale": 2.0,
         "style": "colossus",
         "attack_part": "arm_r",
         "foot_y": 240,
@@ -377,6 +378,7 @@ CONFIG = {
     "disk_devourer": {
         "source": "assets/sprites/bosses/boss_disk_devourer.png",
         "group": "bosses",
+        "coord_scale": 2.0,
         "style": "blob",
         "attack_part": "",
         "foot_y": 236,

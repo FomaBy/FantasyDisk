@@ -2,10 +2,12 @@
 
 Дата: 2026-06-12
 
-Статус: new
+Статус: review
 
 Версия: 0.1.4
 Jira: SCRUM-135
+
+Dispatch: отправлено в существующий Design чат `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-12.
 
 Роль: Design (Codex) — генерация арта; затем Claude-Designer — интеграция в риг-пайплайн.
 
@@ -106,3 +108,26 @@ Jira: SCRUM-135
 Развилка для PM/пользователя:
 - Если мыло гигантов считать **регрессией от epic-scale фичи / release blocker для 0.1.3** — поднять в активный спринт.
 - Иначе — оставить в `0.1.4` и брать после разморозки.
+
+## Progress Log
+
+2026-06-12 — взято в работу после снятия feature block и старта спринта 0.1.4.
+
+- Подтверждена ветка `dev`.
+- Проверены target source PNG: `assets/sprites/elites/{iron_bastion,night_stalker,plague_prophet,shard_marshal}.png` и `assets/sprites/bosses/{boss_rift_warden,boss_disk_devourer}.png`.
+- Проверен текущий cutout pipeline в `tools/slice_rig_cutouts.py` и manifest `scripts/sliced_rig_manifest.gd`: все 6 target entity пока используют `size = Vector2(256, 256)`.
+
+2026-06-12 — Design/Codex pass завершен, задача передана в review.
+
+- 4 элитки и 2 босса заменены на native `512x512` RGBA PNG поверх активных путей:
+  `assets/sprites/elites/{iron_bastion,night_stalker,plague_prophet,shard_marshal}.png`,
+  `assets/sprites/bosses/{boss_rift_warden,boss_disk_devourer}.png`.
+- Поза, ориентация влево, силуэт, foot/socket пропорции и идентичность сохранены 1:1; изменения направлены на анти-мыло при epic scale, не на смену дизайна.
+- `tools/slice_rig_cutouts.py` обновлен под 512px координатное пространство target-сущностей; cutout-части перенарезаны, `scripts/sliced_rig_manifest.gd` теперь хранит `size = Vector2(512.0, 512.0)` для всех 6 target entity.
+- Debug QA previews:
+  - before: `docs/design/previews/elite_boss_upscale_before_contact.png`;
+  - after: `docs/design/previews/elite_boss_upscale_after_contact.png`;
+  - rig reassemble/exploded: `docs/design/previews/elite_boss_upscale_rig_debug_contact.png`.
+- Godot import: passed.
+- Animation smoke: passed (`tests/animation_smoke_test.gd`).
+- Runtime smoke: blocked by unrelated current worktree UI/pause changes, not by SCRUM-135. Failure: `Expected Esc to defer (close) the level-up without keeping it paused. at tests/runtime_smoke_test.gd:788`. Dirty files involved are outside Design sprite scope (`scripts/main.gd`, `scripts/ui_screens.gd` and related Escape/level-up work). No gameplay/UI logic was changed in this Design task.
