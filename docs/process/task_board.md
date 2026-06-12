@@ -70,6 +70,14 @@
 | [backend_full_attributes_wiring_audit_task.md](../tasks/backend_full_attributes_wiring_audit_task.md) | Back-end | done | Закрыта 2026-06-11: аудит 27 производных, 6 новых подключены (absorb/regen/vampiric/knockback/range_mult), таблица в mechanics_extract, smoke green |
 | [backend_new_classes_foundation_task.md](../tasks/backend_new_classes_foundation_task.md) | Back-end | done | Закрыта 2026-06-11: 6 новых классов data-driven, 6 сигнатурных механик (boomerang/beam/heal/dot-pool/spear/summon), 9 карточек, smoke green |
 | [codex_design_new_classes_art_task.md](../tasks/codex_design_new_classes_art_task.md) | Design (Codex) | done | Закрыта 2026-06-11: 6 персонажей + 6 оружий art-approved, cutout rig-части нарезаны, манифест обновлён, smoke зелёный |
+
+## Новые (выданы PM 2026-06-12, пакет «выбор героя + уникальность классов»)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_hero_select_fullscreen_grid_task.md](../tasks/backend_hero_select_fullscreen_grid_task.md) | Back-end | done | Закрыта 2026-06-12: fullscreen hero select, 3x3 grid без скролла, stats tooltip/info panel, runtime smoke green |
+| [backend_class_identity_unique_patterns_task.md](../tasks/backend_class_identity_unique_patterns_task.md) | Back-end | done | Закрыта 2026-06-12: 9 уникальных паттернов, ranger charge, doctor drain, chemist combos, knight counter, druid commands, smoke green |
+| [backend_review_codex_hero_select_class_identity_task.md](../tasks/backend_review_codex_hero_select_class_identity_task.md) | Back-end (ревью за Codex) | new | Обязательное ревью двух Codex-работ (hero select — сейчас; уникальность классов — после ее done) + коммит принятого (в дереве ~125 незакоммиченных файлов) |
 | [design_all_classes_three_weapons_visual_upgrade_task.md](../tasks/design_all_classes_three_weapons_visual_upgrade_task.md) | Design | done | Закрыта 2026-06-11: новые 6 героев art-approved, полный visual set 27 weapon PNG готов, Back-end handoff со socket/scale notes заполнен |
 | [backend_all_classes_three_weapons_gameplay_task.md](../tasks/backend_all_classes_three_weapons_gameplay_task.md) | Back-end | done | Закрыта 2026-06-11: 9 классов x 3 weapon variants, 27 IDs, новые backend modes, documented visual fallback до Design, runtime smoke green |
 | [backend_melee_targeting_test_update_strip_task.md](../tasks/backend_melee_targeting_test_update_strip_task.md) | Back-end | done | Закрыта PM 2026-06-11: handoff устарел — тест уже обновлен под strip и проходит (проверено прогоном) |
