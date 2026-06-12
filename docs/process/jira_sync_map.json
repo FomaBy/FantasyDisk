@@ -541,14 +541,50 @@
  },
  "backend_ingame_patch_notes_task.md": {
   "key": "SCRUM-159",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_shop_wall_artifacts_frameless_task.md": {
   "key": "SCRUM-160",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "bug_hud_elements_overlap_task.md": {
   "key": "SCRUM-161",
+  "status": "В работе"
+ },
+ "backend_add_character_biologist_task.md": {
+  "key": "SCRUM-162",
+  "status": "К выполнению"
+ },
+ "backend_add_character_elementalist_task.md": {
+  "key": "SCRUM-163",
+  "status": "К выполнению"
+ },
+ "backend_add_character_engineer_task.md": {
+  "key": "SCRUM-164",
+  "status": "К выполнению"
+ },
+ "backend_add_character_priest_task.md": {
+  "key": "SCRUM-165",
+  "status": "К выполнению"
+ },
+ "backend_add_character_robot_task.md": {
+  "key": "SCRUM-166",
+  "status": "К выполнению"
+ },
+ "backend_add_character_sniper_task.md": {
+  "key": "SCRUM-167",
+  "status": "К выполнению"
+ },
+ "backend_add_character_soldier_task.md": {
+  "key": "SCRUM-168",
+  "status": "К выполнению"
+ },
+ "backend_add_character_thief_task.md": {
+  "key": "SCRUM-169",
+  "status": "К выполнению"
+ },
+ "backend_ui_screen_backdrops_integration_task.md": {
+  "key": "SCRUM-170",
   "status": "К выполнению"
  }
 }
