@@ -63,17 +63,27 @@ def api(method: str, path: str, payload=None):
         raise
 
 
-def active_sprint_id():
-    """ID активного спринта доски 1; если нет — стартует следующий future."""
+def active_sprint():
+    """(id, name) активного спринта доски 1; если нет — стартует следующий future."""
     data = api("GET", "/rest/agile/1.0/board/1/sprint?state=active")
     vals = data.get("values", [])
     if vals:
-        return vals[0]["id"]
+        return vals[0]["id"], vals[0]["name"]
     fut = api("GET", "/rest/agile/1.0/board/1/sprint?state=future").get("values", [])
     if fut:
         api("POST", f"/rest/agile/1.0/sprint/{fut[0]['id']}", {"state": "active"})
-        return fut[0]["id"]
-    return None
+        return fut[0]["id"], fut[0]["name"]
+    return None, ""
+
+
+def active_sprint_id():
+    return active_sprint()[0]
+
+
+def sprint_version(sprint_name: str):
+    """Версия из имени спринта («Спринт 0.1.4» -> «0.1.4»). Спринт = релиз."""
+    m = re.search(r"(\d+\.\d+\.\d+)", sprint_name or "")
+    return m.group(1) if m else None
 
 
 def add_to_sprint(sprint_id, keys):
@@ -134,7 +144,8 @@ def main():
     dry = "--dry-run" in sys.argv
     mapping = json.load(open(MAP_PATH)) if os.path.exists(MAP_PATH) else {}
     created = moved = 0
-    sprint_id = None if dry else active_sprint_id()
+    sprint_id, sprint_name = (None, "") if dry else active_sprint()
+    fix_version = sprint_version(sprint_name)
     sprint_queue = []
     for path in sorted(glob.glob(TASKS_GLOB)):
         t = parse_task(path)
@@ -145,13 +156,16 @@ def main():
             if dry:
                 print(f"CREATE {t['file']} -> [{t['itype']}] {target_status}")
                 continue
-            issue = api("POST", "/rest/api/3/issue", {"fields": {
+            fields = {
                 "project": {"key": PROJECT},
                 "issuetype": {"name": t["itype"]},
                 "summary": t["title"],
                 "labels": labels,
                 "description": adf(f"Файл: docs/tasks/{t['file']}\n\n" + t["excerpt"]),
-            }})
+            }
+            if fix_version and not t["next_version"]:
+                fields["fixVersions"] = [{"name": fix_version}]
+            issue = api("POST", "/rest/api/3/issue", {"fields": fields})
             key = issue["key"]
             mapping[t["file"]] = {"key": key, "status": "К выполнению"}
             entry = mapping[t["file"]]

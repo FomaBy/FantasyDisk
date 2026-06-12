@@ -19,10 +19,10 @@
 - Site: `https://fantasydisk.atlassian.net`
 - Project key: `SCRUM`
 - Board: `1`
-- Current active sprint: `Спринт 0.1.3`
-- Current active sprint id: `1`
-- Feature block active for `0.1.3`: new non-bug tasks target backlog/version
-  `0.1.4` and must not be added to the active sprint.
+- Current active sprint: `Спринт 0.1.4`
+- Current active sprint id: `34`
+- Feature block: not active. It was lifted after release `v0.1.3` on 2026-06-12.
+  Existing 0.1.4 tasks may be routed normally unless they have an explicit blocker.
 
 ## Безопасность Доступа
 
@@ -54,14 +54,24 @@ Atlassian и создать новый.
 Приоритет из `.md` переносить в Jira только если безопасно и доступное поле
 приоритета уже известно. Иначе хранить приоритет в описании.
 
+## Спринт = Релиз (правило пользователя, 2026-06-12)
+
+Каждый Jira-спринт соответствует релизу: «Спринт X.Y.Z» закрывается выпуском
+версии X.Y.Z. В проекте SCRUM ведутся Jira Releases (versions): на каждую
+версию — запись с описанием (краткий ченджлог + заметки обновления; полный
+текст — releases/vX.Y.Z/CHANGELOG-X.Y.Z.md). sync-скрипт проставляет новым
+тикетам fixVersion по имени активного спринта. При релизе версия помечается
+released, создаётся следующая. Игровые патч-ноуты для игрока — экран
+«Что нового» (данные обновляются в релизном чек-листе).
+
 ## Правила Создания И Обновления
 
 1. Новые `.md` task-файлы и Jira issues создает PM/другая LLM, не Codex
    Documentation dispatcher.
-2. Во время feature block добавлять в активный спринт `Спринт 0.1.3` только
-   bugfix/regression/QA defect/release blocker задачи. Новые не-баговые задачи
-   создавать в Jira backlog с target `0.1.4` (label `target-0.1.4`, Fix Version
-   `0.1.4`, если версия заведена в Jira) и не добавлять в active sprint.
+2. Пока feature block не активен, новые синхронизированные задачи добавляются в
+   текущий активный спринт. Когда PM включает feature block перед стабилизацией,
+   в активный спринт попадают только bugfix/regression/QA defect/release blocker
+   задачи; новые не-баговые задачи остаются в backlog следующей версии.
 3. В `.md` task-файле рядом с метаданными добавить строку:
 
    ```text
@@ -121,15 +131,17 @@ source of truth, а остальные пометить `duplicate` или `supe
 
 ## Feature Block Обязательство
 
-Пока активен feature block `0.1.3`, агенты и dispatcher обязаны:
+Сейчас feature block НЕ активен: `v0.1.3` выпущен, активен `Спринт 0.1.4`.
+Когда PM снова включает feature block перед следующей стабилизацией, агенты и
+dispatcher обязаны:
 
 1. Проверять тип задачи перед dispatch.
 2. Не начинать новые не-баговые задачи.
-3. Для новых не-баговых задач создавать/оставлять Jira issue в backlog с target
-   `0.1.4`, без sprint assignment. Для Codex Documentation dispatcher это
+3. Для новых не-баговых задач создавать/оставлять Jira issue в backlog следующей
+   версии, без sprint assignment. Для Codex Documentation dispatcher это
    означает: не создавать самому, а проверить/сообщить, что PM/owner должен
    оформить backlog-задачу.
-4. Для багов текущего scope использовать текущий sprint `0.1.3` и обычный QA flow.
+4. Для багов текущего scope использовать текущий sprint и обычный QA flow.
 
 ## Jira Description Минимум
 
