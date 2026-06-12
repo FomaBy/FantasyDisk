@@ -358,6 +358,8 @@ Foundation новых классов уже включен в выбор пер�
 
 Новые backend modes/hooks: `stab_flurry`, `dot_beam`, `trap`, `drain_link`, ranger stance charge (`charge_seconds`/`charge_max_multiplier`), assassin crit dash (`dash_on_crit_distance`), chemist cloud combos (`pool_element`/`combo_clouds`), knight block/counter (`block_reduction`/`counter_damage_multiplier`) и druid pet commands (`command_mode`, `command_target`). Deploy/trap/totem/cloud visuals используют `WeaponVisual` или `AttackVfx`, регистрируются в `player_weapon_effects` для cleanup; химические облака дополнительно временно входят в `chemist_clouds`.
 
+SCRUM-152 Design pass 2026-06-12: `AllyMinion.tscn` больше не использует Polygon2D-placeholder, а показывает `assets/sprites/allies/ally_druid_beast.png` как безопасный fallback. Дополнительные союзные/deployable sprites готовы в `assets/sprites/allies/`: `ally_druid_pack_spirit.png`, `ally_homunculus.png`, `ally_leadership_echo.png`, `deploy_sound_amp_field.png`, `deploy_raven_totem_field.png`. Source-specific runtime mapping вынесен в Back-end handoff `docs/tasks/backend_summon_allies_source_sprite_integration_task.md`.
+
 ## Боевые Эффекты (Attack VFX)
 
 Все зоны атак и снаряды игрока рисуются текстурными спрайтами через общий модуль `scripts/attack_vfx.gd` (класс `AttackVfx`); плоские полупрозрачные Polygon2D-зоны убраны из активного боевого визуала. Текстуры эффектов лежат в `assets/sprites/effects/` и генерируются `tools/generate_attack_vfx.py` (тонируемые white-спрайты + прецветные элементы в стиле основного арта: темный контур, объемная заливка).

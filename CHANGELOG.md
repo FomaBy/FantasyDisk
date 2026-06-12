@@ -4,6 +4,8 @@
 
 ## [Unreleased] — ветка dev
 
+- Visual: добавлен D&D/painterly набор призывных союзников и deployable-объектов (`assets/sprites/allies/`); `AllyMinion.tscn` получил raster fallback вместо Polygon2D-placeholder, а source-specific mapping вынесен в Back-end handoff.
+
 - Visual: 4 элитки (`iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`) и 2 босса (`boss_rift_warden`, `boss_disk_devourer`) переведены на native 512x512 PNG и перенарезаны в cutout rig pipeline, чтобы убрать мыло на epic scale в QHD/Retina без изменения хитбоксов и gameplay scale.
 
 ## [0.1.3] — 2026-06-12

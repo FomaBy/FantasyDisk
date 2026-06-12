@@ -208,6 +208,27 @@ Weapon art v2 2026-06-12: все 27 сцен `WeaponVisual` используют
 
 Временные visuals классового оружия регистрируются в runtime-группе `player_weapon_effects` и должны удаляться при смене оружия/персонажа, смерти, завершении забега и очистке world state.
 
+## Призывные Союзники И Deployables
+
+SCRUM-152 Design pass 2026-06-12 добавил канонический raster-набор союзных summon/deployable ассетов в `assets/sprites/allies/`. Все PNG `256x256`, RGBA, transparent, painterly D&D style, с теплым/зеленым allied accent для отличия от врагов.
+
+| ID | Игровая роль | Ассет | Runtime status |
+| --- | --- | --- | --- |
+| `ally_druid_beast` | Базовый питомец Друида / fallback `AllyMinion` | `assets/sprites/allies/ally_druid_beast.png` | Подключен как `scenes/AllyMinion.tscn::Body` |
+| `ally_druid_pack_spirit` | Вариант стаи Друида / ultimate pack visual | `assets/sprites/allies/ally_druid_pack_spirit.png` | Готов для Back-end selector |
+| `ally_homunculus` | Химикский гомункул от `homunculus_vial` | `assets/sprites/allies/ally_homunculus.png` | Готов для Back-end selector |
+| `ally_leadership_echo` | Призрачный союзник/эхо от Leadership | `assets/sprites/allies/ally_leadership_echo.png` | Готов для Back-end selector |
+| `deploy_sound_amp_field` | Полевой объект ампа Гитариста | `assets/sprites/allies/deploy_sound_amp_field.png` | Готов для Back-end deploy texture override |
+| `deploy_raven_totem_field` | Полевой объект Вороньего тотема Друида | `assets/sprites/allies/deploy_raven_totem_field.png` | Готов для Back-end deploy texture override |
+
+Preview QA:
+
+- `docs/design/previews/summon_allies_style_references.png` - project style references used for Codex Design generation;
+- `docs/design/previews/summon_allies_asset_contact.png` - transparent asset contact sheet;
+- `docs/design/previews/summon_allies_scale_meadow_preview.png` - scale/readability check on arena background.
+
+Back-end source-specific integration handoff: `docs/tasks/backend_summon_allies_source_sprite_integration_task.md`.
+
 ## Стандартные Монстры
 
 Эти имена являются каноническими для задач. Если в коде сцена пока называется generic-именем, в задачах все равно нужно ссылаться на игровое имя из таблицы.

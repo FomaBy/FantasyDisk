@@ -87,6 +87,19 @@ All weapon visuals live in `assets/sprites/weapons/` at `256x256` with transpare
 
 Per-weapon socket/display notes are tracked in `docs/design/systems/characters_weapons.md` and the Design handoff task `docs/tasks/design_all_classes_three_weapons_visual_upgrade_task.md`.
 
+## Summoned Allies And Deployables
+
+SCRUM-152 on 2026-06-12 added the first canonical ally/deployable raster set in `assets/sprites/allies/`. These are `256x256` RGBA transparent painterly D&D sprites with warm/green allied accents:
+
+- `ally_druid_beast.png` - active fallback visual for `scenes/AllyMinion.tscn`;
+- `ally_druid_pack_spirit.png` - alternate druid pack/ultimate visual;
+- `ally_homunculus.png` - Chemist homunculus visual;
+- `ally_leadership_echo.png` - Leadership echo ally visual;
+- `deploy_sound_amp_field.png` - Guitarist sound amp field object;
+- `deploy_raven_totem_field.png` - Druid raven totem field object.
+
+Preview sheets: `docs/design/previews/summon_allies_asset_contact.png`, `docs/design/previews/summon_allies_scale_meadow_preview.png`. Source-specific runtime selection is tracked in `docs/tasks/backend_summon_allies_source_sprite_integration_task.md`.
+
 ## Elites And Bosses
 
 SCRUM-135 anti-blur pass 2026-06-12 moved the 4 active elites (`iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`) and 2 active bosses (`boss_rift_warden`, `boss_disk_devourer`) from 256px source art to native `512x512` RGBA PNGs while preserving pose, silhouette and facing 1:1. The cutout pipeline now slices these six entities in 512px coordinate space and `scripts/sliced_rig_manifest.gd` records `size = Vector2(512, 512)` for them.
