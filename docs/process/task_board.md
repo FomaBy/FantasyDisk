@@ -179,7 +179,8 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [bug_hero_select_carousel_radar_name_layout_task.md](../tasks/bug_hero_select_carousel_radar_name_layout_task.md) | Back-end (UI) | new | Выбор героя: карусель только картинки (убрать названия), роза ветров в правый верхний угол, имя только на досье (убрать дубль под портретом) |
+| [bug_hero_select_carousel_radar_name_layout_task.md](../tasks/bug_hero_select_carousel_radar_name_layout_task.md) | Back-end (UI) | done | Jira: SCRUM-140; Done 2026-06-12: карусель только миниатюры (без текста), роза ветров — плавающий виджет в правый верхний угол root, дубль имени под портретом убран (имя только в досье). Тест-ассерты обновлены, 6 smoke зелёные. QA разблокирован |
+| [qa_review_bug_hero_select_carousel_radar_name_layout_task.md](../tasks/qa_review_bug_hero_select_carousel_radar_name_layout_task.md) | QA (Claude) | blocked | Jira: SCRUM-141; ждет `bug_hero_select_carousel_radar_name_layout_task.md` -> review/done |
 
 ## Активные / Неподтвержденные
 

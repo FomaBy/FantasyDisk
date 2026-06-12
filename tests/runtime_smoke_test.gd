@@ -253,6 +253,14 @@ func _initialize() -> void:
 		push_error("Expected hero select v3 to build a readable stat radar.")
 		quit(1)
 		return
+	if radar.get_parent() == dossier or radar.anchor_left < 0.99 or radar.offset_left > -280.0 or radar.offset_top < 70.0:
+		push_error("Expected hero stat radar to be a top-right floating widget, not an inline dossier block.")
+		quit(1)
+		return
+	if main.find_child("HeroSelectPortraitName", true, false) != null:
+		push_error("Expected hero name to appear only in the dossier, not below the left portrait.")
+		quit(1)
+		return
 	var thumbnail_strip := main.find_child("HeroThumbnailStrip", true, false) as HBoxContainer
 	if thumbnail_strip == null or thumbnail_strip.get_child_count() != 9:
 		push_error("Expected hero select v3 to show a 9-hero thumbnail strip.")
@@ -262,6 +270,10 @@ func _initialize() -> void:
 		var thumb := main.find_child("HeroThumbnail_%s" % character_id, true, false) as Button
 		if thumb == null or thumb.tooltip_text == "":
 			push_error("Expected hero thumbnail with tooltip for %s." % character_id)
+			quit(1)
+			return
+		if thumb.find_child("HeroThumbnailTitle_%s" % character_id, true, false) != null or thumb.find_children("*", "Label", true, false).size() > 0:
+			push_error("Expected hero thumbnail carousel to contain only images, no visible text for %s." % character_id)
 			quit(1)
 			return
 		thumb.pressed.emit()

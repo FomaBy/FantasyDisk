@@ -312,13 +312,7 @@ func _show_character_select() -> void:
 	large_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	large_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_box.add_child(large_portrait)
-
-	var portrait_name := Label.new()
-	portrait_name.name = "HeroSelectPortraitName"
-	portrait_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	portrait_name.add_theme_font_size_override("font_size", 25)
-	portrait_name.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
-	portrait_box.add_child(portrait_name)
+	# Имя героя теперь ТОЛЬКО в досье (HeroSelectInfoTitle) — подпись под портретом убрана.
 
 	var dossier_panel := PanelContainer.new()
 	dossier_panel.name = "HeroSelectDossierPanel"
@@ -389,13 +383,6 @@ func _show_character_select() -> void:
 	asc_mods.custom_minimum_size = Vector2(0, 34)
 	dossier.add_child(asc_mods)
 
-	var radar := HeroStatRadar.new()
-	radar.name = "HeroStatRadar"
-	radar.custom_minimum_size = Vector2(350, 190)
-	radar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	radar.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dossier.add_child(radar)
-
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HeroSelectChooseButton"
 	select_button.custom_minimum_size = Vector2(320, 50)
@@ -408,6 +395,22 @@ func _show_character_select() -> void:
 	thumbnail_strip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	thumbnail_strip.add_theme_constant_override("separation", 8)
 	layout.add_child(thumbnail_strip)
+
+	# Роза ветров — плавающий виджет в ПРАВОМ ВЕРХНЕМ углу экрана (ниже шапки,
+	# над пустым верх-правым полем досье — не перекрывает текст, выровненный влево).
+	var radar := HeroStatRadar.new()
+	radar.name = "HeroStatRadar"
+	radar.custom_minimum_size = Vector2(320, 200)
+	radar.anchor_left = 1.0
+	radar.anchor_right = 1.0
+	radar.anchor_top = 0.0
+	radar.anchor_bottom = 0.0
+	radar.offset_left = -344.0
+	radar.offset_right = -24.0
+	radar.offset_top = 88.0
+	radar.offset_bottom = 288.0
+	radar.z_index = 6
+	root.add_child(radar)
 
 	var legacy_grid := GridContainer.new()
 	legacy_grid.name = "CharacterCardsGrid"
@@ -436,7 +439,6 @@ func _show_character_select() -> void:
 		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(character_id)
 		var title := str(config.get("title", character_id))
 		large_portrait.texture = game._cached_texture(str(config.get("sprite_path", "")))
-		portrait_name.text = title
 		dossier_title.text = title
 		dossier_desc.text = str(config.get("description", ""))
 		dossier_traits.text = "Сильные: %s\nСлабые: %s" % [str(config.get("strengths", "")), str(config.get("weaknesses", ""))]
@@ -508,24 +510,16 @@ func _make_hero_thumbnail_button(character_id: String, select_character: Callabl
 	content.add_theme_constant_override("separation", 6)
 	button.add_child(content)
 
+	# Карусель — ТОЛЬКО миниатюра-картинка (имя доступно в тултипе при hover).
 	var portrait := TextureRect.new()
 	portrait.name = "HeroThumbnailPortrait_%s" % character_id
 	portrait.texture = game._cached_texture(str(config.get("sprite_path", "")))
-	portrait.custom_minimum_size = Vector2(54, 72)
+	portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(portrait)
-
-	var title := Label.new()
-	title.name = "HeroThumbnailTitle_%s" % character_id
-	title.text = str(config.get("title", character_id))
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title.add_theme_font_size_override("font_size", 13)
-	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.add_child(title)
 	return button
 
 
