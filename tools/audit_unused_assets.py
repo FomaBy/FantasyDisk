@@ -103,6 +103,27 @@ def read_text(path: Path) -> str:
     return path.read_text(errors="ignore")
 
 
+ITERATION_PATTERNS = ("preview", "_source", "contact", "concept")
+
+
+def collect_runtime_source_text() -> str:
+    # Только runtime-источники (без tools/): ссылка из tools/-генератора на свой
+    # output-путь НЕ делает превью/исходник «используемым» в игре.
+    chunks: list[str] = []
+    for directory in ("scenes", "scripts", "tests"):
+        root_dir = ROOT / directory
+        if not root_dir.exists():
+            continue
+        for path in root_dir.rglob("*"):
+            if path.is_file() and path.suffix in (".gd", ".tscn", ".tres", ".cfg"):
+                chunks.append(read_text(path))
+    for filename in ("project.godot", "export_presets.cfg"):
+        path = ROOT / filename
+        if path.exists():
+            chunks.append(read_text(path))
+    return "\n".join(chunks)
+
+
 def collect_source_text() -> str:
     chunks: list[str] = []
     for directory in SOURCE_GLOBS:
@@ -159,6 +180,7 @@ def make_candidate(rel_path: str, category: str, reason: str) -> dict[str, str]:
 
 def build_candidates() -> tuple[list[dict[str, str]], dict[str, int]]:
     source_text = collect_source_text()
+    runtime_source_text = collect_runtime_source_text()
     game_ids = known_game_ids()
     candidates: list[dict[str, str]] = []
     stats = {"checked": 0, "dynamic_kept": 0, "explicit_kept": 0}
@@ -209,14 +231,16 @@ def build_candidates() -> tuple[list[dict[str, str]], dict[str, int]]:
             ))
             continue
 
-        if name in source_text or ("res://" + rel_path) in source_text:
+        # Превью/исходники/контакт-листы арт-итераций: засчитываем только
+        # runtime-ссылки (tools/-генератор ссылается на свой output — это не usage).
+        is_iteration = any(pattern in name.lower() for pattern in ITERATION_PATTERNS)
+        usage_text = runtime_source_text if is_iteration else source_text
+        if name in usage_text or ("res://" + rel_path) in usage_text:
             continue
         if rel_path.startswith("assets/"):
-            candidates.append(make_candidate(
-                rel_path,
-                "unused_asset",
-                "нет ссылок в tscn/gd/tests/tools/project.godot/export_presets",
-            ))
+            reason = "арт-итерация без runtime-ссылок (tools/-генератор не считается)" if is_iteration \
+                else "нет ссылок в tscn/gd/tests/tools/project.godot/export_presets"
+            candidates.append(make_candidate(rel_path, "art_iteration_leftover" if is_iteration else "unused_asset", reason))
 
     return candidates, stats
 
