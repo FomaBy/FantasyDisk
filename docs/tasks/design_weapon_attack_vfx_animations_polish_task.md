@@ -208,3 +208,40 @@ player), делать аккуратно по мере спокойного де
 оформлены; ульты подтверждены designed). Анимации атак оружия получили socket-кик
 и трейлы. Оставшийся опциональный polish (визуал щита босса — сейчас body-tint,
 уникальность каждого ульта) можно вести отдельным небольшим проходом.
+
+## QA-Вердикт (2026-06-12)
+Статус: FAILED (1 баг)
+
+Проверено (фактически, code-audit + headless smoke):
+- Целевые тесты: `attack_vfx_smoke`, `hazard_vfx_smoke`, `animation_smoke`,
+  `runtime_smoke` — все ✅. Регрессия: все 6 smoke зелёные.
+- Аудит «голых» примитивов по всему `scripts/` (grep Polygon2D/ColorRect/draw_*):
+  - `enemy.gd` лужа яда, boss `_spawn_rift_zone`/`_spawn_disk_slam`, аура командира,
+    лечение, DoT, level-up — оформлены (HazardVfx/AttackVfx/raster). OK.
+  - `berserk_weapon.gd:276` overlay — тонкий полупрозрачный контур точной зоны (a≤0.22,
+    fade 0.18s) поверх художественного слэша — помечен OK (readability-aid), принимаю.
+  - `cutout_rig_2d.gd` ground shadow, `enemy_health_bar.gd` draw_rect — служебные UI/
+    grounding, OK.
+  - **boss.gd:314 `_spawn_phase_transition_hazard` (BossPhaseHazard) — НЕ оформлен:
+    голый залитый красный Polygon2D-диск, виден игроку на каждой смене фазы босса
+    (фазы 2/3 в обычном забеге). Пропущенный «голый» примитив → баг.**
+- Ассеты `poison_pool/spark_pool/briar_pool/hazard_zone.png` — на диске. OK.
+- Доки: CHANGELOG + content_registry обновлены, НО overclaim — заявляют полную
+  конверсию боссовских зон, хотя зона смены фазы осталась голой (`CHANGELOG.md:19`,
+  `content_registry.md:139`). Учтено в баге.
+- Анимации 27 оружий: socket-кик/трейлы (Phase 3), покрыто animation smoke (покадрово
+  вживую для каждого из 27 не проверялось — smoke + код подтверждают наличие).
+- Пауза: массовые VFX на node-bound tween'ах → замораживаются с деревом. OK по коду.
+- Перф 100+ врагов: принято по отчёту исполнителя (Phase 6: 120 врагов + зоны ~7 ms
+  headless); QA отдельный live-capture не делал (build/qa артефакты не генерировались,
+  аудит проведён на уровне кода — для «голых примитивов» это надёжнее визуального).
+
+Краевые случаи: смена фазы босса (выявлен баг), level-up VFX, пауза (node-bound).
+
+Баги (1) — НЕ исправлялись QA:
+- `bug_boss_phase_hazard_naked_circle_task.md` (normal): голый красный Polygon2D-круг
+  hazard'а смены фазы босса; противоречит критерию «голых не осталось» и докам.
+
+Вывод: проход по VFX обширный и в целом качественный (зоны/лужи/аура/лечение/DoT/
+level-up/ульты/анимации оформлены, тесты зелёные), но один player-facing «голый»
+боевой примитив пропущен и доки его overclaim'ят. До фикса — FAILED.

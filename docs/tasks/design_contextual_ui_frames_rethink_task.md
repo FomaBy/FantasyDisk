@@ -1,10 +1,13 @@
 # Задача Для Claude-Designer: Переосмысление Рамок, Кнопок И Окон — Контекстный D&D-Стиль
 
-Статус: new
+Статус: in_progress
 Создано: 2026-06-12
 Автор: PM
+Jira: SCRUM-111
 Тип: концепт + ресёрч + арт-направление. Генерация изображений — через Codex Design
 (железное правило), мышление/ресёрч/спека/ревью/интеграция — Claude-Designer.
+
+Dispatch: отправлено в существующий Design чат `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-12.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил, явно попросил ПОФАНТАЗИРОВАТЬ и разрешил
@@ -63,3 +66,18 @@ Divinity, Darkest Dungeon и т.п. — изучать ПОДХОДЫ и нас�
 
 ## Документация
 - `docs/design/ui_contextual_concept.md` (новый), content_registry, visual_style_assets, CHANGELOG.
+
+## Progress Log
+
+2026-06-12 — Phase 1 research/spec completed.
+
+- Created concept document: `docs/design/ui_contextual_concept.md`.
+- Researched D&D/tabletop UI mood references: D&D Beyond character sheet, D&D Beyond Maps/VTT coverage, Baldur's Gate 3, Larian UI commentary, Darkest Dungeon.
+- Created current UI frame audit contact sheet: `docs/design/previews/current_ui_frames_audit_contact.png`.
+- Defined screen -> mood -> frame motif map.
+- Audited current meaningless/repeated decoration: global tavern brass/studs/curves are useful as utility/shop fallback but should not drive death, victory, codex or route map.
+- Proposed 4 context kits: Wild Start, Grave Defeat, Laurel Reward, Parchment/Codex/Map.
+- Created Codex Design generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md`.
+- Created blocked Back-end integration handoff: `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md`.
+
+Task remains `in_progress` because actual PNG generation, integration, screenshots and smoke are still pending downstream work.

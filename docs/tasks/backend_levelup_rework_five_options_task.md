@@ -3,6 +3,7 @@
 Статус: done
 Создано: 2026-06-12
 Автор: PM
+Jira: SCRUM-109
 
 Dispatch: отправлено в существующий Back-end чат `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-12.
 
@@ -67,3 +68,26 @@ Dispatch: отправлено в существующий Back-end чат `019e
 - Runtime smoke расширен проверками 5 вариантов, фиксации набора, очереди уровней, rare-частоты и кнопки возврата.
 - Документация обновлена: `docs/design/current_game_state.md`, `docs/design/mechanics_extract.md`, `CHANGELOG.md`.
 - Verification: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-12) — независимая QA-сессия
+Статус: PASSED (с low-замечанием → отдельный таск)
+
+Проверено фактически (code-audit + spot-verify + smoke):
+- Ровно 5 вариантов, ровно 1 пик: offer=`_random_level_up_rewards(5)`, при клике
+  offer очищается + pending−1 (повторный пик невозможен). Набор ФИКСИРОВАН на уровень
+  (anti-reroll: генерится только если offer пуст). VERIFIED.
+- Редкие основные характеристики: `MAIN_STAT_SLOT_CHANCE := 0.13`, помечены
+  «★ ХАРАКТЕРИСТИКА» + золотая рамка (TIER_COLORS[3]). VERIFIED. Тест — статистика
+  на 2000 слотов (5-25% коридор). VERIFIED.
+- Отложенный выбор: Escape/«Позже» не тратит пик; нижняя кнопка «Повышение уровня (N)»
+  возвращает к тому же offer, исчезает при pending==0. VERIFIED (тест на сохранение пика).
+- Очередь уровней: рекурсивный показ при pending>0, тест прогоняет очередь. VERIFIED.
+- Карточки: HFlowContainer (210×252, 5-в-ряд / 3+2 перенос), целиком кликабельны,
+  focus в кольцо, первая grab_focus. VERIFIED.
+
+Low-замечание (НЕ блокер, формальные acceptance-чекбоксы выполнены): требование #3
+«не дублировать FAB» не выполнено — при pending>0 одновременно видны FAB ⬆ с бейджем
+(top-right, ui_screens.gd:799) и нижняя кнопка. Обе ведут в одно окно. Заведён
+`ux_levelup_fab_return_button_dedup_task.md` (low). Функционально не сломано.
+
+Все 6 smoke зелёные.

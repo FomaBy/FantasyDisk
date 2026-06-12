@@ -1,11 +1,12 @@
 # Задача Для QA-Агента: Review Возвышения 2.0
 
-Статус: blocked
+Статус: done
 Создано: 2026-06-12
 Автор: Codex dispatcher
+Jira: SCRUM-125
 Роль: QA (Claude)
 Источник: `docs/tasks/backend_ascension_difficulty_ladder_task.md`
-Блокер: ждать, пока исходная Back-end задача получит `done` или `review`.
+Готово к QA: исходная Back-end задача получила `done` 2026-06-12.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил QA-проверку всех in-scope изменений. QA не чинит
@@ -36,3 +37,8 @@
 - [ ] В исходный task-файл добавлен `## QA-Вердикт` по протоколу.
 - [ ] Board обновлена пометкой `QA: passed` или `QA: failed`.
 
+## Result Summary — 2026-06-12
+
+QA выполнена, вердикт `FAILED` зафиксирован в исходном файле
+`docs/tasks/backend_ascension_difficulty_ladder_task.md`. По результату заведены
+3 bug-таска на доске: selector clamp, elite instant phase, mini-elite chance.

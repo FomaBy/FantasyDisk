@@ -81,3 +81,45 @@
 ## Документация
 - mechanics_extract (таблица возвышений и формулы), content_registry (ID),
   current_game_state (мета-цикл), CHANGELOG.
+
+## QA-Вердикт (2026-06-12)
+Статус: FAILED (3 бага)
+
+Проверено (фактически, не по отчёту):
+- Данные: `ASCENSION_MODIFIERS` — 10 кумулятивных записей, `ASCENSION_DIFFICULTY_DEFAULTS`
+  нейтральны (`progression_data.gd:769-803`). `ascension_difficulty_mods()` кумулятивна:
+  множители перемножаются, флаги берут max, шансы складываются (`:1002-1017`). OK.
+- Unlock по персонажу: `meta_progression.record_boss_victory(state, char, run_level)` —
+  +1 только при `run_level >= completed` (`:47-59`); вызов из боя передаёт
+  `selected_ascension_level` (`combat_director.gd:464` → `main.gd:427-428`). Повторная
+  победа на низком уровне не инфлейтит. OK.
+- Уровень 0 нейтрален: дефолты 1.0/0.0, все точки применения множат/ветвят → числа не
+  меняются. OK (подтверждено тестом `runtime_smoke:2699-2704`).
+- Старые asc-баффы → наградный трек: `apply_ascension_bonuses` применяет earned-баффы
+  через `apply_reward` + difficulty в run_modifiers (`main.gd:449-470`), без двойного
+  применения. OK.
+- reward_mult (L5), price_mult (L2), player_max_hp_mult (L10), healing_mult (L6),
+  enemy hp/dmg (L1), spawn (L3), round_duration (L8), boss hp/phase/telegraph (L9),
+  first_wave_boost (L10) — потребляются. OK.
+- HUD римская цифра + тултип (`ui_screens.gd:3077-3092`), кодекс-раздел, селектор −/+ —
+  присутствуют.
+
+Тесты: `meta_progression_smoke` ✅, `runtime_smoke` ✅ (целевые проверки кумулятивности,
+нулевого уровня, unlock+run_level gating, цена L2, макс-HP L10 — реальные ассерты, не
+заглушки). Регрессия: все 6 smoke зелёные.
+
+Краевые случаи: уровень 0 (нейтраль) ✅; макс открытый уровень + кнопка «+» → выявлен
+баг клампа; повторная победа на уже открытом/более низком уровне → прогресс не растёт ✅.
+
+Баги (3) — НЕ исправлялись QA, оформлены отдельными тасками:
+- `bug_ascension_selector_not_clamped_task.md` (normal): кнопка «+» не клампится к
+  selectable_max → можно стартовать на закрытом уровне. Нарушен критерий «селектор не
+  даёт выбрать закрытый уровень».
+- `bug_ascension_elite_instant_phase_dead_task.md` (high): `elite_instant_phase` мёртв —
+  «фаза элитки открывается сразу» (Возвышение 4) не реализована.
+- `bug_ascension_mini_elite_chance_dead_task.md` (high): `mini_elite_chance` нигде не
+  потребляется — Возвышение 7 «Эхо бездны» полностью no-op (мёртвая ступень лестницы).
+
+Вывод: ядро системы (данные, кумулятивность, unlock-гейтинг, нулевой уровень, мета-трек,
+HUD) работает корректно, но 2 из 10 модификаторов (#4 частично, #7 целиком) не
+реализованы, и селектор не валидирует закрытые уровни. До фикса 3 багов — FAILED.

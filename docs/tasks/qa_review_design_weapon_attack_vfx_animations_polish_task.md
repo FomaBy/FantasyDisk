@@ -1,11 +1,12 @@
 # Задача Для QA-Агента: Review Анимаций Атак Оружия И VFX-Полировки
 
-Статус: blocked
+Статус: done
 Создано: 2026-06-12
 Автор: Codex dispatcher
+Jira: SCRUM-126
 Роль: QA (Claude)
 Источник: `docs/tasks/design_weapon_attack_vfx_animations_polish_task.md`
-Блокер: ждать, пока исходная Design задача получит `done` или `review`.
+Готово к QA: исходная Design задача получила `done` 2026-06-12.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил QA-проверку всех in-scope изменений. QA не чинит
@@ -36,3 +37,8 @@
 - [ ] В исходный task-файл добавлен `## QA-Вердикт` по протоколу.
 - [ ] Board обновлена пометкой `QA: passed` или `QA: failed`.
 
+## Result Summary — 2026-06-12
+
+QA выполнена, вердикт `FAILED` зафиксирован в исходном файле
+`docs/tasks/design_weapon_attack_vfx_animations_polish_task.md`. По результату
+заведен bug-таск `bug_boss_phase_hazard_naked_circle_task.md`.

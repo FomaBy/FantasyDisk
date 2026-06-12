@@ -81,7 +81,7 @@
  },
  "backend_elite_boss_size_epic_terror_task.md": {
   "key": "SCRUM-21",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "backend_elite_overhaul_size_unique_attacks_task.md": {
   "key": "SCRUM-22",
@@ -89,7 +89,7 @@
  },
  "backend_elite_reward_center_screen_task.md": {
   "key": "SCRUM-23",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_enemy_scaling_elite_boss_difficulty_task.md": {
   "key": "SCRUM-24",
@@ -117,7 +117,7 @@
  },
  "backend_hero_select_portrait_left_radar_task.md": {
   "key": "SCRUM-30",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_integrate_stat_icons_hud_remove_obstacles_task.md": {
   "key": "SCRUM-31",
@@ -125,7 +125,7 @@
  },
  "backend_levelup_rework_five_options_task.md": {
   "key": "SCRUM-32",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_mage_buff_guitarist_rework_task.md": {
   "key": "SCRUM-33",
@@ -269,7 +269,7 @@
  },
  "codex_design_contextual_ui_frame_kits_generation_task.md": {
   "key": "SCRUM-68",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "codex_design_effects_sprites_dnd_restyle_task.md": {
   "key": "SCRUM-69",
@@ -373,23 +373,23 @@
  },
  "qa_review_backend_ascension_difficulty_ladder_task.md": {
   "key": "SCRUM-94",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "qa_review_backend_elite_reward_center_screen_task.md": {
   "key": "SCRUM-95",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "qa_review_backend_hero_select_portrait_left_radar_task.md": {
   "key": "SCRUM-96",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "qa_review_backend_levelup_rework_five_options_task.md": {
   "key": "SCRUM-97",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "qa_review_backend_project_folder_cleanup_unused_files_task.md": {
   "key": "SCRUM-98",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "qa_review_bug_ascension_elite_instant_phase_dead_task.md": {
   "key": "SCRUM-99",
@@ -417,18 +417,42 @@
  },
  "qa_review_design_contextual_ui_frames_rethink_task.md": {
   "key": "SCRUM-105",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "qa_review_design_weapon_attack_vfx_animations_polish_task.md": {
   "key": "SCRUM-106",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "qa_review_test_mini_elite_spawn_behavioral_coverage_task.md": {
   "key": "SCRUM-107",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "test_mini_elite_spawn_behavioral_coverage_task.md": {
   "key": "SCRUM-108",
+  "status": "Контроль качества"
+ },
+ "process_feature_block_0_1_3_task.md": {
+  "key": "SCRUM-129",
+  "status": "Контроль качества"
+ },
+ "qa_review_backend_contextual_ui_frame_theme_integration_task.md": {
+  "key": "SCRUM-130",
+  "status": "Готово"
+ },
+ "qa_review_backend_elite_boss_size_epic_terror_task.md": {
+  "key": "SCRUM-131",
+  "status": "Готово"
+ },
+ "qa_review_codex_design_contextual_ui_frame_kits_generation_task.md": {
+  "key": "SCRUM-132",
+  "status": "Готово"
+ },
+ "qa_review_ux_levelup_fab_return_button_dedup_task.md": {
+  "key": "SCRUM-133",
+  "status": "Готово"
+ },
+ "ux_levelup_fab_return_button_dedup_task.md": {
+  "key": "SCRUM-134",
   "status": "Контроль качества"
  }
 }

@@ -3,6 +3,7 @@
 Статус: done
 Создано: 2026-06-12
 Автор: PM
+Jira: SCRUM-110
 Примечание: осознанная смена направления пользователем — текущая сетка 3x3
 (hero_select_fullscreen_grid) заменяется компоновкой «герой слева — досье справа».
 
@@ -66,3 +67,21 @@ Dispatch: отправлено в существующий Back-end чат `019e
 - Runtime smoke обновлен проверками ленты 9 героев, радара, обновления выбранного героя и перехода к weapon select через кнопку.
 - Документация обновлена: `docs/design/current_game_state.md`, `CHANGELOG.md`.
 - Verification: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-12) — независимая QA-сессия
+Статус: PASSED
+
+Проверено фактически (code-audit + spot-verify регрессии + smoke):
+- Компоновка: портрет слева ~42% (stretch_ratio 0.42, KEEP_ASPECT, без обрезки),
+  досье справа ~58% (имя/описание/стороны/3 оружия/селектор/радар/«Выбрать»). VERIFIED.
+- Лента 9 миниатюр: клик обновляет портрет/досье/радар БЕЗ перехода к оружию;
+  тест итерирует все 9. VERIFIED.
+- Радар: программный (draw), 8 BASE_STATS, оси подписаны, заливка в цвет класса.
+  КРИТично — нормировка по ГЛОБАЛЬНОМУ максимуму на стат среди 9 героев
+  (`_hero_radar_global_maxima`) → радары сравнимы. VERIFIED.
+- Радар инвариантен к смене Возвышения (refresh_asc не зовёт radar.setup). VERIFIED.
+- РЕГРЕССИЯ (мой прошлый баг `bug_ascension_selector_not_clamped`): «+» в v3-селекторе
+  клампит к `ascension_selectable_max(selected_character)` (ui_screens.gd:456), НЕ к
+  жёстким 10; + защитный кламп main.gd:447. Баг НЕ реинтродьюснут — лично сверено. VERIFIED.
+- Тесты (runtime_smoke:230-289, 2906) — реальные функциональные циклы по 9 героям.
+Все 6 smoke зелёные. Багов нет.

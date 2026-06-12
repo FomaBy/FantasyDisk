@@ -76,6 +76,23 @@ content_registry). К каждому запуску генерации ОБЯЗ�
    и для уже активных `in_progress`/`review` задач, если QA-пары еще нет. Если
    исходная задача еще не готова, QA-задача стоит `blocked`; когда реализация
    доходит до `review`/`done`, QA-задача становится `new`.
+7. Каждая задача должна быть синхронизирована с Jira `SCRUM` по
+   `docs/process/jira_sync.md`: issue в активном спринте, `Jira: SCRUM-*` в
+   task-файле, Jira key/ссылка в `task_board.md`, status/comment updates при
+   изменениях. API token не хранить в репозитории.
+
+## Feature Block Routing — 0.1.3
+
+С 2026-06-12 новые задачи маршрутизируются с учетом feature block:
+
+- **Bug / QA defect / regression / release blocker**: можно ставить на доску
+  текущего спринта и отправлять исполнителю по обычным правилам.
+- **Feature / improvement / balance change / new art / new UI / new content**:
+  создать task-файл и Jira issue как backlog `0.1.4`, но не отправлять в
+  Back-end/Design/Animator и не добавлять в активный sprint.
+- Если неясно, баг это или улучшение, по умолчанию это backlog `0.1.4`.
+- Исполнители, получившие прямой запрос на новую фичу во время блока, должны
+  вернуть его PM/dispatcher для оформления в backlog `0.1.4`, а не брать в работу.
 
 ## Как Доставить Задачу Исполнителю
 

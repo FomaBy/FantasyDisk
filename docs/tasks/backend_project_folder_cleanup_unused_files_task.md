@@ -66,3 +66,40 @@ Dispatch: отправлено в существующий Back-end чат `019e
 Готово: обновлен `tools/audit_unused_assets.py`, создан отчет `docs/process/project_cleanup_report_2026_06_12.md`, 19 файлов перенесены в `build/cleanup_backup_2026_06_12/` с сохранением структуры, 4 tracked preview/source файла удалены через `git rm` после backup. Восстановлены активные фоновые ресурсы `field_dry_road` и `field_stone_garden`, выполнен Godot reimport. Дополнительно убран debug spam на выходе: cleanup custom cursor textures и AudioManager streams.
 
 Проверки: runtime smoke, animation smoke, attack VFX smoke, hazard VFX smoke, meta progression smoke — passed. Финальный оконный запуск Godot `--quit-after 8` — exit 0 без missing resources и texture/resource leak errors.
+
+## QA-Вердикт (2026-06-12)
+Статус: FAILED (1 баг)
+
+Чистка БЕЗОПАСНА — основные защитные критерии выполнены (проверено фактически):
+- Бэкап `build/cleanup_backup_2026_06_12/` существует, структура путей сохранена,
+  ничего не удалено безвозвратно (tracked удалены через `git rm` после копии). OK.
+- Осиротевших `.import` без исходника — 0; осиротевших `.uid` без базового файла — 0
+  (полный скан дерева). OK.
+- Защищённые папки (`docs/**`, `tools/*`, `tests/**`, `releases/**`, `.claude/**`,
+  `keep-awake.sh`, `build/qa/`) не тронуты; коммит 8913860 затронул только assets +
+  audit tool + report/docs + мелкие shutdown-правки. OK.
+- Восстановлены пропавшие фоны `field_dry_road`/`field_stone_garden` (были
+  reference-without-source) — корректное исправление. OK.
+- Сверка с content_registry в отчёте присутствует. OK.
+- Регрессия ранее в этой QA-сессии (после коммита чистки): все 6 smoke зелёные —
+  чистка рантайм НЕ ломала.
+
+Дефект (1) — НЕ исправлялся QA:
+- `bug_cleanup_artifact_iteration_previews_left_in_assets_task.md` (normal): критерий
+  «старых превью в assets/ нет» НЕ выполнен. В `assets/sprites/ui/icons/` остались ~9
+  `artifact_*_preview.png` разных проходов арта (+ `artifact_concept_sheet.png`,
+  `escape_stats_visual_kit_preview.png`) — игрой не грузятся, ссылки только из
+  `tools/`-генераторов. Корень: `audit_unused_assets.py` считает ссылку из tools/
+  (output-путь) за runtime-usage, поэтому не флагует их (текущий прогон: 3 кандидата,
+  все `.DS_Store`). Отчёт это расхождение не объясняет. Категория #2 не закрыта.
+  ВАЖНО: `berserk_walk_sheet_v2.png` корректно оставлен (живой ассет, `player.gd:12`).
+
+Примечание (НЕ дефект чистки): на момент финальной QA параллельный Back-end-воркер
+правит `main.gd`/`combat_director.gd`/`enemy.gd`/`ui_screens.gd` (чинит ascension-баги
+этой же QA-сессии), из-за чего headless-прогон ловит транзиентный compile-error и
+exit-leak warnings. Это НЕ связано с чисткой — финальная live-перепроверка
+leak-free shutdown отложена до стабилизации дерева. Безопасность чистки этим не
+затрагивается (доказано зелёными smoke ранее в сессии при уже закоммиченной чистке).
+
+Вывод: чистка выполнена безопасно и качественно по сути, но один acceptance-критерий
+(превью в assets/) объективно не закрыт → FAILED до выноса превью / фикса аудита.
