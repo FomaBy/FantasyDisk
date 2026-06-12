@@ -546,3 +546,16 @@ Full before/after tables live in `build/balance_report.md` because they are gene
 рыцарь ~29 (копье x3.0 при медленном темпе + танковость), доктор ~15.6 одиночный / ~45 по волне 3 целей + самолечение,
 химик ~12 мгновенно + DoT-облака (волна ~40), друид ~41 (2 зверя по 55% sound_wave). Методика: melee/точные — одиночная цель,
 AoE/DoT/саммоны — зачистка волны; точные замеры — плейтест.
+
+
+### Возвышения 2.0 — Лестница Усложнений (2026-06-12)
+
+10 кумулятивных модификаторов в `ProgressionData.ASCENSION_MODIFIERS`; `ascension_difficulty_mods(level)` сворачивает 1..N в словарь (множители перемножаются, флаги — max). Нейтраль = `ASCENSION_DIFFICULTY_DEFAULTS` (уровень 0). Применение:
+- enemy_hp_mult/enemy_damage_mult → `combat_director._scale_enemy_for_current_wave`;
+- elite_hp_mult + elite_instant_phase (meta) → `_scale_elite_enemy`; boss_hp_mult/boss_extra_phase/boss_telegraph_mult (meta) → `_scale_boss_for_run`, читаются в `boss.gd` (4-я фаза при extra_phase, `_ascension_telegraph` укорачивает зоны);
+- spawn_count_mult/spawn_cooldown_mult + first_wave_boost → `_spawn_enemy_wave`/`_next_spawn_cooldown`;
+- round_duration_mult → `_current_round_duration`;
+- price_mult → цены магазина (при генерации) и докачки (`_ascension_price`);
+- reward_mult/healing_mult/player_max_hp_mult сворачиваются в `run_modifiers` игрока в `main.apply_ascension_bonuses` (на старте забега).
+
+Прогресс: `meta_progression.record_boss_victory(state, char, run_level)` повышает уровень только если `run_level >= completed`; `selectable_max = completed + 1` (cap 10). Наградный трек меты — старые per-class `ASCENSION_LEVELS`, применяются за пройденные уровни постоянно. Выбор уровня — селектор в hero select (клампится к `ascension_selectable_max` героя при пике), HUD-индикатор римской цифрой у таймера, кодекс-раздел «Возвышения».

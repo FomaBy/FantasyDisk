@@ -44,15 +44,30 @@ const ARENA_BACKGROUND_OPTIONS := {
 		"res://assets/backgrounds/field_dry_road.png",
 		"res://assets/backgrounds/field_stone_garden.png",
 		"res://assets/backgrounds/field_meadow.png",
+		"res://assets/backgrounds/field_ruined_courtyard.png",
+		"res://assets/backgrounds/field_misty_marsh.png",
+		"res://assets/backgrounds/field_dusty_badlands.png",
+		"res://assets/backgrounds/field_enchanted_meadow.png",
+		"res://assets/backgrounds/field_ashen_rift.png",
+		"res://assets/backgrounds/field_cursed_grove.png",
 	],
 	"battle": [
 		"res://assets/backgrounds/field_marsh.png",
 		"res://assets/backgrounds/field_dry_road.png",
 		"res://assets/backgrounds/field_meadow.png",
+		"res://assets/backgrounds/field_ruined_courtyard.png",
+		"res://assets/backgrounds/field_misty_marsh.png",
+		"res://assets/backgrounds/field_dusty_badlands.png",
+		"res://assets/backgrounds/field_enchanted_meadow.png",
+		"res://assets/backgrounds/field_ashen_rift.png",
+		"res://assets/backgrounds/field_cursed_grove.png",
 	],
 	"boss": [
 		"res://assets/backgrounds/field_stone_garden.png",
 		"res://assets/backgrounds/field_dry_road.png",
+		"res://assets/backgrounds/field_ruined_courtyard.png",
+		"res://assets/backgrounds/field_ashen_rift.png",
+		"res://assets/backgrounds/field_cursed_grove.png",
 	],
 }
 const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle.png"
@@ -321,6 +336,8 @@ var level_up_offer := []
 var attribute_offer := []
 var attribute_rerolls_left := 0
 var selected_screen_index := 0
+var selected_ascension_level := 0
+var run_ascension_difficulty := {}
 var audio_settings := {
 	"master_volume": 1.0,
 	"music_volume": 1.0,
@@ -392,23 +409,48 @@ func ascension_level_for(character_id: String) -> int:
 
 
 func record_boss_victory() -> void:
-	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id)
+	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level)
 	META_PROGRESSION.save_state(meta_state)
 	meta_points = int(meta_state.get("meta_points", 0))
 	berserk_ascension_unlocked = ascension_level_for("berserk") >= 1
 
 
+func ascension_selectable_max(character_id: String) -> int:
+	return META_PROGRESSION.selectable_max(meta_state, character_id)
+
+
+func ascension_difficulty() -> Dictionary:
+	# Активные модификаторы сложности текущего забега (кэш на забег).
+	if run_ascension_difficulty.is_empty():
+		run_ascension_difficulty = PROGRESSION_DATA.ascension_difficulty_mods(selected_ascension_level)
+	return run_ascension_difficulty
+
+
+func reset_run_ascension() -> void:
+	run_ascension_difficulty = PROGRESSION_DATA.ascension_difficulty_mods(selected_ascension_level)
+
+
 func apply_ascension_bonuses(player: Node) -> void:
 	if player == null:
 		return
-	var level := ascension_level_for(selected_character_id)
-	if level <= 0:
-		return
-	var mods: Dictionary = PROGRESSION_DATA.ascension_mods(selected_character_id, level)
-	if mods.is_empty():
-		return
-	if player.has_method("apply_reward"):
-		player.apply_reward({"mods": mods})
+	# 1) Наградный трек меты: старые per-class баффы за ПРОЙДЕННЫЕ уровни (постоянно).
+	var earned := ascension_level_for(selected_character_id)
+	if earned > 0:
+		var mods: Dictionary = PROGRESSION_DATA.ascension_mods(selected_character_id, earned)
+		if not mods.is_empty() and player.has_method("apply_reward"):
+			player.apply_reward({"mods": mods})
+	# 2) Усложнения выбранного уровня возвышения: трофеи/лечение/макс-HP сворачиваем
+	#    в run_modifiers игрока (combat_director читает остальное через ascension_difficulty()).
+	reset_run_ascension()
+	var difficulty := ascension_difficulty()
+	var run_mods = player.get("run_modifiers")
+	if run_mods is Dictionary:
+		run_mods["xp_gain_multiplier"] = float(run_mods.get("xp_gain_multiplier", 1.0)) * float(difficulty["reward_mult"])
+		run_mods["money_gain_multiplier"] = float(run_mods.get("money_gain_multiplier", 1.0)) * float(difficulty["reward_mult"])
+		run_mods["healing_multiplier"] = float(run_mods.get("healing_multiplier", 1.0)) * float(difficulty["healing_mult"])
+		run_mods["max_health_multiplier"] = float(run_mods.get("max_health_multiplier", 1.0)) * float(difficulty["player_max_hp_mult"])
+		if player.has_method("_apply_stat_scaling"):
+			player._apply_stat_scaling(true)
 
 
 func _input(event: InputEvent) -> void:

@@ -264,6 +264,47 @@ func _show_character_select() -> void:
 
 	var info_labels := {"title": info_title, "description": info_desc, "stats": info_stats}
 
+	# Селектор уровня возвышения (усложнение). Клампится к максимуму выбранного героя при пике.
+	var asc_row := HBoxContainer.new()
+	asc_row.name = "AscensionSelectorRow"
+	asc_row.add_theme_constant_override("separation", 10)
+	info_box.add_child(asc_row)
+	var asc_minus := _make_button("−")
+	asc_minus.name = "AscensionMinusButton"
+	asc_minus.custom_minimum_size = Vector2(48, 40)
+	asc_row.add_child(asc_minus)
+	var asc_label := Label.new()
+	asc_label.name = "AscensionLevelLabel"
+	asc_label.custom_minimum_size = Vector2(200, 40)
+	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	asc_label.add_theme_font_size_override("font_size", 16)
+	asc_label.add_theme_color_override("font_color", Color(1.0, 0.78, 0.32, 1.0))
+	asc_row.add_child(asc_label)
+	var asc_plus := _make_button("+")
+	asc_plus.name = "AscensionPlusButton"
+	asc_plus.custom_minimum_size = Vector2(48, 40)
+	asc_row.add_child(asc_plus)
+	var asc_mods := Label.new()
+	asc_mods.name = "AscensionModsLabel"
+	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	asc_mods.add_theme_font_size_override("font_size", 12)
+	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
+	info_box.add_child(asc_mods)
+	var refresh_asc := func() -> void:
+		var lvl: int = game.selected_ascension_level
+		asc_label.text = "Возвышение: %d / 10" % lvl
+		var lines: Array = game.PROGRESSION_DATA.ascension_modifier_lines(lvl)
+		asc_mods.text = "Усложнения отключены (уровень 0 = обычная игра)." if lines.is_empty() else "\n".join(lines)
+	asc_minus.pressed.connect(func() -> void:
+		game.selected_ascension_level = maxi(game.selected_ascension_level - 1, 0)
+		refresh_asc.call()
+	)
+	asc_plus.pressed.connect(func() -> void:
+		game.selected_ascension_level = mini(game.selected_ascension_level + 1, 10)
+		refresh_asc.call()
+	)
+	refresh_asc.call()
+
 	for character_id in game.PROGRESSION_DATA.character_ids():
 		_add_character_button(cards_grid, str(character_id), info_labels)
 
@@ -276,6 +317,7 @@ const CODEX_SECTIONS := [
 	{"id": "monsters", "title": "Монстры"},
 	{"id": "artifacts", "title": "Артефакты"},
 	{"id": "stats", "title": "Характеристики"},
+	{"id": "ascensions", "title": "Возвышения"},
 ]
 
 
@@ -286,12 +328,16 @@ const ATTRIBUTE_REROLL_STAGE_COST := 2
 const ATTRIBUTE_REROLLS_PER_WINDOW := 2
 
 
+func _ascension_price(base: int) -> int:
+	return maxi(1, int(round(float(base) * float(game.ascension_difficulty()["price_mult"]))))
+
+
 func _attribute_buy_cost() -> int:
-	return game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_BUY_BASE_COST + ATTRIBUTE_BUY_STAGE_COST * game.route_stage, game.route_stage)
+	return _ascension_price(game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_BUY_BASE_COST + ATTRIBUTE_BUY_STAGE_COST * game.route_stage, game.route_stage))
 
 
 func _attribute_reroll_cost() -> int:
-	return game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_REROLL_BASE_COST + ATTRIBUTE_REROLL_STAGE_COST * game.route_stage, game.route_stage)
+	return _ascension_price(game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_REROLL_BASE_COST + ATTRIBUTE_REROLL_STAGE_COST * game.route_stage, game.route_stage))
 
 
 func _show_victory_banner(on_continue: Callable) -> void:
@@ -649,6 +695,8 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_build_codex_artifacts(list)
 		"stats":
 			_build_codex_stats(list)
+		"ascensions":
+			_build_codex_ascensions(list)
 
 
 func _codex_entry_panel(list: VBoxContainer) -> HBoxContainer:
@@ -755,6 +803,18 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 			for class_id in affinity_list:
 				class_names.append(str(CLASS_RU.get(class_id, class_id)))
 			_codex_label(text_box, "Тематика: %s" % ", ".join(class_names), 12, Color(0.70, 0.78, 0.88, 1.0))
+
+
+func _build_codex_ascensions(list: VBoxContainer) -> void:
+	_codex_label(list, "Возвышения — режим усложнения (10 кумулятивных уровней)", 26, Color(0.96, 0.90, 0.68, 1.0))
+	_codex_label(list, "Уровень N включает все усложнения 1..N. Повышает сложность и открывает мета-прогрессию (награда за победу над финальным боссом).", 13, Color(0.86, 0.90, 0.95, 1.0))
+	for entry in CODEX_DATA.ascensions():
+		var row := _codex_entry_panel(list)
+		var text_box := VBoxContainer.new()
+		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(text_box)
+		_codex_label(text_box, "%d. %s" % [entry["level"], entry["title"]], 18, Color(1.0, 0.74, 0.30, 1.0))
+		_codex_label(text_box, str(entry["description"]), 13, Color(0.93, 0.89, 0.80, 1.0))
 
 
 func _build_codex_stats(list: VBoxContainer) -> void:
@@ -1095,6 +1155,8 @@ func _add_character_button(box: Container, character_id: String, info_labels: Di
 	)
 	card.pressed.connect(func() -> void:
 		game.selected_character_id = character_id
+		# Уровень возвышения клампится к открытому максимуму этого героя.
+		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(character_id))
 		_show_weapon_select()
 	)
 	box.add_child(card)
@@ -1123,6 +1185,16 @@ func _add_character_button(box: Container, character_id: String, info_labels: Di
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	column.add_child(portrait)
+
+	var asc_badge := Label.new()
+	asc_badge.name = "CharacterAscension_%s" % character_id
+	var asc_unlocked: int = game.ascension_level_for(character_id)
+	asc_badge.text = ("Возвышение %d" % asc_unlocked) if asc_unlocked > 0 else "Возвышение 0"
+	asc_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	asc_badge.add_theme_font_size_override("font_size", 11)
+	asc_badge.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 0.9))
+	asc_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(asc_badge)
 
 	var title_label := Label.new()
 	title_label.name = "CharacterTitle_%s" % character_id
@@ -1821,9 +1893,11 @@ func _show_event_screen(route_node: Dictionary) -> void:
 func _show_victory_screen() -> void:
 	var ascension_level = game.ascension_level_for(game.selected_character_id)
 	var character_title = str(game.PROGRESSION_DATA.character_config(game.selected_character_id).get("title", game.selected_character_id))
-	var ascension_text = "Возвышение героя %s: %d/10." % [character_title, ascension_level]
-	if ascension_level <= 0:
-		ascension_text = "Возвышение еще не открыто."
+	var run_level: int = game.selected_ascension_level
+	# Мета-прогрессия (заглушка с рабочим хуком): победа на уровне N открывает N+1 и
+	# выдаёт наградный бафф <класс>_asc_N, применяемый на старте будущих забегов.
+	var meta_text := "Возвышение %d пройдено — открыт уровень %d. Награда меты: бафф %s_asc_%d (применяется на старте забега)." % [run_level, mini(run_level + 1, 10), game.selected_character_id, mini(run_level + 1, 10)] if run_level >= ascension_level - 1 else "Возвышение %d пройдено." % run_level
+	var ascension_text = "Возвышение героя %s: %d/10. %s" % [character_title, ascension_level, meta_text]
 	var box = _create_menu_box("Победа", "Финальный босс повержен. Meta points: %d. %s" % [game.meta_points, ascension_text], "event")
 	var finish_run := func() -> void:
 		game.route_stage = 0
@@ -1997,7 +2071,12 @@ func _random_level_up_rewards(count: int) -> Array:
 
 
 func _random_shop_items(count: int) -> Array:
-	return _weighted_sample(game.PROGRESSION_DATA.shop_items(game.route_stage), count)
+	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(game.route_stage), count)
+	var price_mult := float(game.ascension_difficulty()["price_mult"])
+	if price_mult != 1.0:
+		for item in items:
+			item["cost"] = maxi(1, int(round(float(item.get("cost", 0)) * price_mult)))
+	return items
 
 
 func _on_player_leveled_up() -> void:
@@ -2990,7 +3069,33 @@ func _create_hud() -> void:
 	_update_hud()
 
 
+const ROMAN_NUMERALS := ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
+
+
 func _create_combat_timer_panel(root: Control) -> void:
+	# Индикатор уровня возвышения (римская цифра) — поверх любого боя.
+	if game.selected_ascension_level > 0:
+		var asc_badge := PanelContainer.new()
+		asc_badge.name = "AscensionHudBadge"
+		asc_badge.anchor_left = 0.5
+		asc_badge.anchor_top = 0.0
+		asc_badge.anchor_right = 0.5
+		asc_badge.anchor_bottom = 0.0
+		asc_badge.offset_left = 96.0
+		asc_badge.offset_top = 18.0
+		asc_badge.offset_right = 150.0
+		asc_badge.offset_bottom = 62.0
+		asc_badge.add_theme_stylebox_override("panel", _timer_panel_style(false))
+		asc_badge.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
+		root.add_child(asc_badge)
+		var asc_text := Label.new()
+		asc_text.text = ROMAN_NUMERALS[clampi(game.selected_ascension_level, 0, 10)]
+		asc_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		asc_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		asc_text.add_theme_font_size_override("font_size", 24)
+		asc_text.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 1.0))
+		asc_badge.add_child(asc_text)
+
 	# На босс-файтах таймера нет — панель не создается вовсе.
 	if game.boss_combat_active:
 		game.timer_label = null

@@ -3,6 +3,7 @@ extends SceneTree
 const EXPECTED_ARENA_SIZE := Vector2(2560, 1440)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
+const MetaProgression := preload("res://scripts/meta_progression.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const EventData := preload("res://scripts/event_data.gd")
 
@@ -948,6 +949,7 @@ func _initialize() -> void:
 	await _test_codex_screen(main_scene)
 	await _test_escape_navigation(main_scene)
 	await _test_economy_tiers_and_fab(main_scene)
+	await _test_ascension_difficulty_ladder(main_scene)
 	await _test_class_relevance_and_offer_fixation(main_scene)
 	_test_settings_persistence_and_audio()
 	await _test_full_attribute_wiring()
@@ -2689,6 +2691,83 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 	await process_frame
 
 
+func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
+	# Данные: 10 кумулятивных усложнений, уровень 0 нейтрален, кумулятивность.
+	if ProgressionData.ascension_modifiers().size() != 10:
+		_fail("Expected 10 ascension difficulty modifiers.")
+		return
+	var level0: Dictionary = ProgressionData.ascension_difficulty_mods(0)
+	for key in level0.keys():
+		var neutral: float = 0.0 if str(key) in ["elite_instant_phase", "boss_extra_phase", "first_wave_boost", "mini_elite_chance"] else 1.0
+		if absf(float(level0[key]) - neutral) > 0.001:
+			_fail("Expected ascension level 0 modifier %s to be neutral (%f)." % [key, neutral])
+			return
+	var level3: Dictionary = ProgressionData.ascension_difficulty_mods(3)
+	# L1 enemy hp 1.15, L1 dmg 1.10, L2 price 1.25, L3 spawn density 1.20 — кумулятивно активны.
+	if absf(float(level3["enemy_hp_mult"]) - 1.15) > 0.001 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.20) > 0.001:
+		_fail("Expected level 3 to cumulatively include levels 1+2+3 modifiers.")
+		return
+	# L4+ модификаторы НЕ активны на уровне 3.
+	if float(level3["elite_instant_phase"]) > 0.0 or absf(float(level3["healing_mult"]) - 1.0) > 0.001:
+		_fail("Expected level 3 to exclude level 4+ modifiers.")
+		return
+	var level10: Dictionary = ProgressionData.ascension_difficulty_mods(10)
+	if float(level10["boss_extra_phase"]) <= 0.0 or absf(float(level10["player_max_hp_mult"]) - 0.80) > 0.001 or absf(float(level10["healing_mult"]) - 0.70) > 0.001:
+		_fail("Expected level 10 to include boss extra phase, -20%% HP and -30%% healing.")
+		return
+
+	# Разблокировка по персонажу: победа на уровне N открывает N+1.
+	var meta := MetaProgression.default_state()
+	if MetaProgression.selectable_max(meta, "berserk") != 1:
+		_fail("Expected a fresh character to be able to select up to ascension 1.")
+		return
+	meta = MetaProgression.record_boss_victory(meta, "berserk", 1)
+	if MetaProgression.ascension_level(meta, "berserk") != 1 or MetaProgression.selectable_max(meta, "berserk") != 2:
+		_fail("Expected beating ascension 1 to unlock selection up to 2.")
+		return
+	# Победа на уровне НИЖЕ максимума не разблокирует новый.
+	meta = MetaProgression.record_boss_victory(meta, "berserk", 0)
+	if MetaProgression.ascension_level(meta, "berserk") != 1:
+		_fail("Expected beating a lower ascension level not to unlock further.")
+		return
+
+	# Применение в забеге: difficulty влияет на цены и HP игрока.
+	var asc_main := main_scene.instantiate()
+	root.add_child(asc_main)
+	await process_frame
+	asc_main.set("selected_character_id", "berserk")
+	# Обнуляем мета-сейв, чтобы наградные баффы не искажали проверку difficulty.
+	asc_main.set("meta_state", MetaProgression.default_state())
+	asc_main.set("selected_ascension_level", 0)
+	asc_main.call("reset_run_ascension")
+	var price_l0: int = asc_main.ui._attribute_buy_cost()
+	asc_main.set("selected_ascension_level", 2)
+	asc_main.call("reset_run_ascension")
+	var price_l2: int = asc_main.ui._attribute_buy_cost()
+	if price_l2 <= price_l0:
+		_fail("Expected ascension 2 (greedy merchants) to raise attribute prices.")
+		return
+
+	# Уровень 10 урезает макс HP игрока на старте забега.
+	var asc_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	root.add_child(asc_player)
+	asc_player.call("configure_character", "berserk", "sword")
+	var hp_base := float(asc_player.get("max_health"))
+	asc_player.queue_free()
+	asc_main.set("selected_ascension_level", 10)
+	asc_main.call("reset_run_ascension")
+	var asc_player10 := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	root.add_child(asc_player10)
+	asc_player10.call("configure_character", "berserk", "sword")
+	asc_main.call("apply_ascension_bonuses", asc_player10)
+	if float(asc_player10.get("max_health")) >= hp_base * 0.95:
+		_fail("Expected ascension 10 to reduce player max HP (%f vs %f)." % [float(asc_player10.get("max_health")), hp_base])
+		return
+	asc_player10.queue_free()
+	asc_main.queue_free()
+	await process_frame
+
+
 func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	# Данные: у всех артефактов tier и class_affinity; tier 3 — 5-8 штук.
 	var tier3_count := 0
@@ -2881,7 +2960,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 
 	# Все разделы открываются.
-	for section_id in ["monsters", "artifacts", "stats", "characters"]:
+	for section_id in ["monsters", "artifacts", "stats", "ascensions", "characters"]:
 		var tab := codex_main.find_child("CodexTab_%s" % section_id, true, false) as Button
 		if tab == null:
 			_fail("Expected codex tab %s." % section_id)

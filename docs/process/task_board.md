@@ -98,14 +98,22 @@
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [backend_class_dps_survivability_budget_task.md](../tasks/backend_class_dps_survivability_budget_task.md) | Back-end | done | Закрыта 2026-06-12: `tools/balance_harness.gd`, `build/balance_report.md`, 27 class+weapon профилей/tuning, smoke green |
-| [backend_ascension_difficulty_ladder_task.md](../tasks/backend_ascension_difficulty_ladder_task.md) | Back-end | new | Возвышения 2.0: 10 кумулятивных усложнений (heat-лестница), прогресс по персонажу через финального босса, старые asc-баффы → наградный трек меты (заглушка с хуком), селектор уровня в выборе героя |
+| [backend_ascension_difficulty_ladder_task.md](../tasks/backend_ascension_difficulty_ladder_task.md) | Back-end | in_progress | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)`; Возвышения 2.0, heat-лестница, прогресс по персонажу, мета-награды, селектор уровня |
 | [backend_enemy_scaling_elite_boss_difficulty_task.md](../tasks/backend_enemy_scaling_elite_boss_difficulty_task.md) | Back-end | done | Закрыта 2026-06-12: stage_scale, усиление волн, elite reward 1-из-3, boss 3 phases, balance/runtime smoke green |
 | [backend_random_events_ten_scenarios_task.md](../tasks/backend_random_events_ten_scenarios_task.md) | Back-end | done | Закрыта 2026-06-12: 12 data-driven events, no-repeat, checks, combat outcomes, runtime smoke green |
 | [design_weapon_art_v2_proportions_knight_task.md](../tasks/design_weapon_art_v2_proportions_knight_task.md) | Design | done | Закрыта 2026-06-12: knight weapon trio redrawn, Knight unarmed base/cutout, 27 matching scene textures, smaller visual scale, runtime + animation smoke pass |
 | [design_weapon_attack_vfx_animations_polish_task.md](../tasks/design_weapon_attack_vfx_animations_polish_task.md) | Design | in_progress | Phase 1 2026-06-12: poison/spark/briar pools заменены на raster VFX + pulse, attack_vfx/animation smoke green; полный 27-weapon/VFX audit продолжается |
 | [design_arena_backgrounds_2k_dnd_expansion_task.md](../tasks/design_arena_backgrounds_2k_dnd_expansion_task.md) | Design | done | Закрыта 2026-06-12: 6 новых D&D 2560x1440 arena backgrounds без крупных камней/кустов, подключены в background pool, docs/preview обновлены |
 | [backend_animation_smoke_ultimate_inputmap_warning_task.md](../tasks/backend_animation_smoke_ultimate_inputmap_warning_task.md) | Back-end | done | Закрыта 2026-06-12: Player guards missing `ultimate` InputMap action in standalone tests; animation/runtime smoke green |
-| [backend_runtime_smoke_combat_director_type_inference_task.md](../tasks/backend_runtime_smoke_combat_director_type_inference_task.md) | Back-end | new | Handoff 2026-06-12: runtime smoke blocked by `combat_director.gd` xp/money reward type inference, unrelated to Design VFX |
+| [backend_runtime_smoke_combat_director_type_inference_task.md](../tasks/backend_runtime_smoke_combat_director_type_inference_task.md) | Back-end | done | Закрыта 2026-06-12 как transient: type-inference ошибка была промежуточным мид-эдитом; runtime smoke 3x green |
+
+## QA / Review (создано dispatcher 2026-06-12)
+
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [qa_review_backend_ascension_difficulty_ladder_task.md](../tasks/qa_review_backend_ascension_difficulty_ladder_task.md) | QA (Claude) | blocked | Ждет `backend_ascension_difficulty_ladder_task.md` -> review/done |
+| [qa_review_design_weapon_attack_vfx_animations_polish_task.md](../tasks/qa_review_design_weapon_attack_vfx_animations_polish_task.md) | QA (Claude) | blocked | Ждет `design_weapon_attack_vfx_animations_polish_task.md` -> review/done |
+| [qa_review_codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/qa_review_codex_design_new_classes_restyle_to_starter_style_task.md) | QA (Claude) | blocked | Ждет `codex_design_new_classes_restyle_to_starter_style_task.md` -> review/done |
 
 ## Активные / Неподтвержденные
 

@@ -198,9 +198,10 @@ func _spawn_rift_zone(target_position: Vector2) -> void:
 	parent.add_child(zone)
 	var radius := 92.0 + float(boss_phase - 1) * 16.0
 	var zone_color := Color(0.64, 0.34, 1.0, 1.0)
-	HazardVfx.telegraph(zone, radius, zone_color, 0.65)
+	var zone_telegraph := _ascension_telegraph(0.65)
+	HazardVfx.telegraph(zone, radius, zone_color, zone_telegraph)
 	var zone_tween := zone.create_tween()
-	zone_tween.tween_interval(0.65)
+	zone_tween.tween_interval(zone_telegraph)
 	zone_tween.tween_callback(func() -> void:
 		HazardVfx.detonate(zone, radius, zone_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
@@ -225,9 +226,10 @@ func _spawn_disk_slam() -> void:
 	parent.add_child(slam)
 	var radius := 132.0 + float(boss_phase - 1) * 18.0
 	var slam_color := Color(1.0, 0.42, 0.18, 1.0)
-	HazardVfx.telegraph(slam, radius, slam_color, 0.48)
+	var slam_telegraph := _ascension_telegraph(0.48)
+	HazardVfx.telegraph(slam, radius, slam_color, slam_telegraph)
 	var slam_tween := slam.create_tween()
-	slam_tween.tween_interval(0.48)
+	slam_tween.tween_interval(slam_telegraph)
 	slam_tween.tween_callback(func() -> void:
 		HazardVfx.detonate(slam, radius, slam_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
@@ -263,12 +265,19 @@ func _phase_interval_multiplier(extra_multiplier := 1.0) -> float:
 	return extra_multiplier * (1.0 - float(boss_phase - 1) * 0.14)
 
 
+func _ascension_telegraph(base: float) -> float:
+	return base * float(get_meta("ascension_telegraph_mult", 1.0))
+
+
 func _update_boss_phase() -> void:
 	if max_health <= 0.0:
 		return
 	var ratio := health / max_health
+	var has_extra_phase := bool(get_meta("ascension_extra_phase", false))
 	var next_phase := 1
-	if ratio <= 0.33:
+	if has_extra_phase and ratio <= 0.15:
+		next_phase = 4
+	elif ratio <= 0.33:
 		next_phase = 3
 	elif ratio <= 0.66:
 		next_phase = 2
@@ -287,11 +296,18 @@ func _update_boss_phase() -> void:
 		move_speed *= 1.08
 		dash_speed *= 1.08
 		_set_body_tint(Color(1.0, 0.82, 0.48, 1.0))
-	else:
+	elif boss_phase == 3:
 		move_speed *= 1.10
 		dash_speed *= 1.12
 		shield_duration *= 1.12
 		_set_body_tint(Color(1.0, 0.45, 0.36, 1.0))
+	else:
+		# Фаза 4 (только на возвышении 9+): гнев стража.
+		move_speed *= 1.14
+		dash_speed *= 1.16
+		shield_duration *= 1.18
+		burst_projectile_count += 4
+		_set_body_tint(Color(1.0, 0.20, 0.20, 1.0))
 	_spawn_phase_transition_hazard()
 
 

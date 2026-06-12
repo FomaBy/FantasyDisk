@@ -766,6 +766,43 @@ const COST_BY_TIER := {1: 30, 2: 55, 3: 95}
 # Вес появления артефакта в наградах/магазине по тиру (выше тир — реже).
 const TIER_WEIGHTS := {1: 1.0, 2: 0.45, 3: 0.12}
 
+const ASCENSION_MODIFIERS := [
+	{"id": "asc_hardened_foes", "level": 1, "title": "Закалённые враги", "description": "Монстры: +15% HP и +10% урона.",
+		"mods": {"enemy_hp_mult": 1.15, "enemy_damage_mult": 1.10}},
+	{"id": "asc_greedy_merchants", "level": 2, "title": "Жадные торговцы", "description": "Все цены (магазин, докачка, reroll): +25%.",
+		"mods": {"price_mult": 1.25}},
+	{"id": "asc_swift_horde", "level": 3, "title": "Быстрая орда", "description": "Волны спавнятся чаще, плотность +20%.",
+		"mods": {"spawn_count_mult": 1.20, "spawn_cooldown_mult": 0.83}},
+	{"id": "asc_fierce_elites", "level": 4, "title": "Свирепые элитки", "description": "Элитки: +20% HP, боевая фаза открывается сразу.",
+		"mods": {"elite_hp_mult": 1.20, "elite_instant_phase": 1.0}},
+	{"id": "asc_scarce_spoils", "level": 5, "title": "Скудные трофеи", "description": "Золото и опыт с боёв: -20%.",
+		"mods": {"reward_mult": 0.80}},
+	{"id": "asc_thinned_flesh", "level": 6, "title": "Истончённая плоть", "description": "Всё лечение (зелья, регенерация, вампиризм, drain): -30%.",
+		"mods": {"healing_mult": 0.70}},
+	{"id": "asc_abyssal_echo", "level": 7, "title": "Эхо бездны", "description": "В обычных волнах может появиться мини-элитка со свитой.",
+		"mods": {"mini_elite_chance": 0.20}},
+	{"id": "asc_long_watch", "level": 8, "title": "Длинная вахта", "description": "Таймер боя +25%, спавн не ослабевает.",
+		"mods": {"round_duration_mult": 1.25}},
+	{"id": "asc_warden_wrath", "level": 9, "title": "Гнев стража", "description": "Босс: +1 опасная фаза, +20% HP, телеграфы короче.",
+		"mods": {"boss_hp_mult": 1.20, "boss_extra_phase": 1.0, "boss_telegraph_mult": 0.75}},
+	{"id": "asc_edge_of_madness", "level": 10, "title": "Грань безумия", "description": "Игрок: -20% макс. HP; стартовая волна каждого боя усилена.",
+		"mods": {"player_max_hp_mult": 0.80, "first_wave_boost": 1.0}},
+]
+# Нейтральные значения модификаторов сложности (уровень 0 = текущая игра).
+const ASCENSION_DIFFICULTY_DEFAULTS := {
+	"enemy_hp_mult": 1.0, "enemy_damage_mult": 1.0,
+	"price_mult": 1.0,
+	"spawn_count_mult": 1.0, "spawn_cooldown_mult": 1.0,
+	"elite_hp_mult": 1.0, "elite_instant_phase": 0.0,
+	"reward_mult": 1.0,
+	"healing_mult": 1.0,
+	"mini_elite_chance": 0.0,
+	"round_duration_mult": 1.0,
+	"boss_hp_mult": 1.0, "boss_extra_phase": 0.0, "boss_telegraph_mult": 1.0,
+	"player_max_hp_mult": 1.0, "first_wave_boost": 0.0,
+}
+
+
 const ASCENSION_LEVELS := {
 	"berserk": [
 		{"id": "berserk_asc_1", "title": "Кровавая закалка", "mods": {"damage_multiplier": 1.05}},
@@ -956,6 +993,38 @@ static func ascension_mods(character_id: String, level: int) -> Dictionary:
 			else:
 				combined[modifier_id] = float(combined.get(modifier_id, 0.0)) + float(level_mods[modifier_id])
 	return combined
+
+
+static func ascension_modifiers() -> Array:
+	return ASCENSION_MODIFIERS
+
+
+static func ascension_difficulty_mods(level: int) -> Dictionary:
+	# Кумулятивно: уровень N включает усложнения 1..N. Множители перемножаются,
+	# флаги/шансы складываются (берётся максимум для флагов через add — 0/1).
+	var combined: Dictionary = ASCENSION_DIFFICULTY_DEFAULTS.duplicate(true)
+	var clamped := clampi(level, 0, ASCENSION_MODIFIERS.size())
+	for entry in ASCENSION_MODIFIERS:
+		if int(entry.get("level", 0)) > clamped:
+			continue
+		for key in (entry.get("mods", {}) as Dictionary).keys():
+			if str(key).ends_with("_mult"):
+				combined[key] = float(combined.get(key, 1.0)) * float(entry["mods"][key])
+			elif str(key) in ["elite_instant_phase", "boss_extra_phase", "first_wave_boost"]:
+				combined[key] = maxf(float(combined.get(key, 0.0)), float(entry["mods"][key]))
+			else:
+				combined[key] = float(combined.get(key, 0.0)) + float(entry["mods"][key])
+	return combined
+
+
+static func ascension_modifier_lines(level: int) -> Array:
+	# Читаемый кумулятивный список активных усложнений для UI (1..level).
+	var lines := []
+	var clamped := clampi(level, 0, ASCENSION_MODIFIERS.size())
+	for entry in ASCENSION_MODIFIERS:
+		if int(entry.get("level", 0)) <= clamped:
+			lines.append("%s. %s — %s" % [entry["level"], entry["title"], entry["description"]])
+	return lines
 
 
 static func stage_scale(route_stage: int) -> float:

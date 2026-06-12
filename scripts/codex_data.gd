@@ -226,6 +226,18 @@ static func artifacts() -> Array:
 	return result
 
 
+static func ascensions() -> Array:
+	var result := []
+	for entry in PROGRESSION_DATA.ascension_modifiers():
+		result.append({
+			"id": str(entry.get("id", "")),
+			"level": int(entry.get("level", 0)),
+			"title": str(entry.get("title", "")),
+			"description": str(entry.get("description", "")),
+		})
+	return result
+
+
 static func stats() -> Array:
 	var result := []
 	for stat_id in STAT_FORMULAS.STAT_DEFINITIONS.keys():

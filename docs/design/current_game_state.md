@@ -98,10 +98,16 @@ Domain docs для подробностей по областям:
 | Marsh | `assets/backgrounds/field_marsh.png` |
 | Dry Road | `assets/backgrounds/field_dry_road.png` |
 | Meadow | `assets/backgrounds/field_meadow.png` |
+| Ruined Courtyard | `assets/backgrounds/field_ruined_courtyard.png` |
+| Misty Marsh | `assets/backgrounds/field_misty_marsh.png` |
+| Dusty Badlands | `assets/backgrounds/field_dusty_badlands.png` |
+| Enchanted Meadow | `assets/backgrounds/field_enchanted_meadow.png` |
+| Ashen Rift | `assets/backgrounds/field_ashen_rift.png` |
+| Cursed Grove | `assets/backgrounds/field_cursed_grove.png` |
 
 Фон арены выбирается случайно из доступного набора и может зависеть от типа узла карты.
 
-Все 4 боевых фона (`field_stone_garden`, `field_marsh`, `field_dry_road`, `field_meadow`) нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. Pass 2026-06-12 заменил их на плоские top-down ground textures без объемных объектов и ложной перспективы: только низкоконтрастная почва, мох, трещины, трава, сухие дорожные следы и мелкая наземная фактура. Перегенерация: `tools/generate_ui_overhaul_visual_assets.py`.
+Все 10 боевых фонов нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. Pass 2026-06-12 заменил первые 4 на плоские top-down ground textures без объемных объектов и ложной перспективы: только низкоконтрастная почва, мох, трещины, трава, сухие дорожные следы и мелкая наземная фактура. Expansion pass 2026-06-12 добавил 6 новых D&D-style арен (`ruined_courtyard`, `misty_marsh`, `dusty_badlands`, `enchanted_meadow`, `ashen_rift`, `cursed_grove`) с мелким антуражем и без крупных камней/кустов; они подключены в `ARENA_BACKGROUND_OPTIONS` для обычных боев, а более драматичные варианты — для boss pool. QA preview: `docs/design/previews/arena_backgrounds_6_dnd_contact.png`.
 `main_menu_epic_battle.png` используется стартовым экраном. `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` используются небоевыми экранами поверх читаемого затемнения.
 `route_map_backdrop.png` используется full-screen route map hook-ом: это темный низкоконтрастный фон пустоши с туманным спокойным центром под узлы и линиями, а детали/силуэты вынесены к краям.
 
@@ -769,6 +775,10 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 При добавлении или замене ассетов нужно обновлять соответствующие `.tscn`, тесты и документацию.
 
 Новый визуальный набор после movement overhaul сгенерирован через `tools/generate_visual_redesign_assets.py` (исторический helper). Актуальная нарезка cutout-частей из polished full-art выполняется `tools/slice_rig_cutouts.py`: он генерирует PNG в `assets/sprites/*/cutout/`, манифест `scripts/sliced_rig_manifest.gd` и debug-листы в `build/rig_debug/`. Скрипты не используются в runtime.
+
+## Возвышения И Мета-Цикл
+
+Возвышение — режим усложнения (10 кумулятивных уровней, как heat в Hades). Уровень выбирается на старте забега в hero select (0..открытый максимум персонажа), показан римской цифрой в боевом HUD и отдельным разделом в кодексе. Усложнения данными в `ProgressionData.ASCENSION_MODIFIERS`, применяются через `game.ascension_difficulty()` в combat_director/boss и `run_modifiers` игрока. Победа над финальным боссом на уровне N открывает N+1 для этого персонажа (`meta_progression.gd`). Старые per-class asc-баффы стали наградным треком меты (применяются на старте за пройденные уровни); полноценный мета-экран — заглушка с рабочим хуком.
 
 ## Метапрогрессия
 

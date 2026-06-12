@@ -11,6 +11,7 @@ func _init(game_ref) -> void:
 
 
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
+	game.reset_run_ascension()
 	game._play_music("combat")
 	game._clear_ui()
 	game._clear_world()
@@ -189,7 +190,12 @@ func _spawn_enemy_wave() -> void:
 		base_count = 1
 		stage_bonus = int(floor(float(game.route_stage) * 0.5))
 		spawn_limit = int(game.WAVE_SETTINGS["elite_spawn_limit"])
-	var spawn_count: int = mini(mini(base_count + stage_bonus + wave_bonus, spawn_limit), remaining_slots)
+	var asc_spawn: Dictionary = game.ascension_difficulty()
+	var density := float(asc_spawn["spawn_count_mult"])
+	if float(asc_spawn["first_wave_boost"]) > 0.0 and game.spawn_wave_index <= 1 and not game.boss_combat_active:
+		density *= 1.5
+	var raw_count := int(round(float(base_count + stage_bonus + wave_bonus) * density))
+	var spawn_count: int = mini(mini(raw_count, int(round(float(spawn_limit) * density))), remaining_slots)
 	for index in range(spawn_count):
 		var packed_scene := _random_enemy_scene()
 		if packed_scene == null:
@@ -223,9 +229,10 @@ func _active_enemy_cap() -> int:
 func _next_spawn_cooldown() -> float:
 	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
 	var wave_pressure: float = float(game.spawn_wave_index) * 0.045 + (stage_scale - 1.0) * 0.42
+	var cooldown_mult := float(game.ascension_difficulty()["spawn_cooldown_mult"])
 	if game.boss_combat_active:
-		return max(1.25, game.rng.randf_range(float(game.WAVE_SETTINGS["boss_spawn_pause_min"]), float(game.WAVE_SETTINGS["boss_spawn_pause_max"])) - wave_pressure * 0.35)
-	return max(0.85, game.rng.randf_range(float(game.WAVE_SETTINGS["spawn_pause_min"]), float(game.WAVE_SETTINGS["spawn_pause_max"])) - wave_pressure)
+		return max(1.0, (game.rng.randf_range(float(game.WAVE_SETTINGS["boss_spawn_pause_min"]), float(game.WAVE_SETTINGS["boss_spawn_pause_max"])) - wave_pressure * 0.35) * cooldown_mult)
+	return max(0.6, (game.rng.randf_range(float(game.WAVE_SETTINGS["spawn_pause_min"]), float(game.WAVE_SETTINGS["spawn_pause_max"])) - wave_pressure) * cooldown_mult)
 
 
 func _choose_wave_spawn_edges() -> void:
@@ -261,6 +268,9 @@ func _scale_enemy_for_current_wave(enemy: Node) -> void:
 		damage_multiplier *= 0.95
 
 	health_multiplier *= _run_enemy_health_multiplier()
+	var asc: Dictionary = game.ascension_difficulty()
+	health_multiplier *= float(asc["enemy_hp_mult"])
+	damage_multiplier *= float(asc["enemy_damage_mult"])
 
 	if enemy.get("max_health") != null:
 		var scaled_health: float = float(enemy.get("max_health")) * health_multiplier
@@ -409,9 +419,11 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 		speed_multiplier *= 0.78
 
 	if elite.get("max_health") != null:
-		var scaled_health = float(elite.get("max_health")) * health_multiplier
+		var asc_elite: Dictionary = game.ascension_difficulty()
+		var scaled_health = float(elite.get("max_health")) * health_multiplier * float(asc_elite["elite_hp_mult"])
 		elite.set("max_health", scaled_health)
 		elite.set("health", scaled_health)
+		elite.set_meta("ascension_instant_phase", float(asc_elite["elite_instant_phase"]) > 0.0)
 	if elite.get("move_speed") != null:
 		elite.set("move_speed", float(elite.get("move_speed")) * speed_multiplier)
 	if elite.get("contact_damage") != null:
@@ -434,9 +446,12 @@ func _scale_boss_for_run(boss: Node2D) -> void:
 	var speed_multiplier = float(game.ENEMY_BALANCE["boss"]["speed_multiplier"])
 	var damage_multiplier = float(game.ENEMY_BALANCE["boss"]["damage_multiplier"]) * (1.0 + (stage_scale - 1.0) * 0.70)
 	if boss.get("max_health") != null:
-		var scaled_health = float(boss.get("max_health")) * health_multiplier
+		var asc_boss: Dictionary = game.ascension_difficulty()
+		var scaled_health = float(boss.get("max_health")) * health_multiplier * float(asc_boss["boss_hp_mult"])
 		boss.set("max_health", scaled_health)
 		boss.set("health", scaled_health)
+		boss.set_meta("ascension_extra_phase", float(asc_boss["boss_extra_phase"]) > 0.0)
+		boss.set_meta("ascension_telegraph_mult", float(asc_boss["boss_telegraph_mult"]))
 	if boss.get("move_speed") != null:
 		boss.set("move_speed", float(boss.get("move_speed")) * speed_multiplier)
 	if boss.get("contact_damage") != null:
@@ -723,7 +738,8 @@ func _restore_player_snapshot(player: Node) -> void:
 
 
 func _current_round_duration() -> float:
-	return minf(game.BASE_ROUND_DURATION + game.route_stage * game.ROUND_DURATION_STEP, game.ROUND_DURATION_MAX)
+	var base: float = game.BASE_ROUND_DURATION + game.route_stage * game.ROUND_DURATION_STEP
+	return base * float(game.ascension_difficulty()["round_duration_mult"])
 
 
 func _run_enemy_health_multiplier() -> float:

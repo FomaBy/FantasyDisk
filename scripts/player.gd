@@ -843,7 +843,37 @@ func spend_money(amount: int) -> bool:
 
 
 func heal_percent(percent: float) -> void:
+	var before := health
 	health = min(max_health, health + max_health * percent * float(run_modifiers.get("healing_multiplier", 1.0)))
+	if health > before + 0.01:
+		_show_heal_vfx()
+
+
+func _show_heal_vfx() -> void:
+	# Зелёный восстановительный отклик: мягкий пульс у ног + всплывающие искры.
+	if not is_inside_tree():
+		return
+	var parent := _vfx_parent()
+	if parent == null:
+		return
+	AttackVfx.ring_pulse(parent, global_position + Vector2(0.0, 6.0), 64.0, Color(0.40, 1.0, 0.55, 0.42), false)
+	var rng := RandomNumberGenerator.new()
+	for index in range(3):
+		var spark := Sprite2D.new()
+		spark.texture = AttackVfx.FLASH_TEXTURE
+		var material := CanvasItemMaterial.new()
+		material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		spark.material = material
+		spark.modulate = Color(0.5, 1.0, 0.6, 0.9)
+		spark.scale = Vector2.ONE * rng.randf_range(0.18, 0.28)
+		spark.z_index = 14
+		parent.add_child(spark)
+		spark.global_position = global_position + Vector2(rng.randf_range(-16.0, 16.0), rng.randf_range(-4.0, 10.0))
+		var spark_tween := spark.create_tween()
+		spark_tween.set_parallel(true)
+		spark_tween.tween_property(spark, "global_position", spark.global_position + Vector2(rng.randf_range(-6.0, 6.0), -34.0), 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		spark_tween.tween_property(spark, "modulate:a", 0.0, 0.5)
+		spark_tween.chain().tween_callback(spark.queue_free)
 
 
 func _apply_stat_scaling(full_heal := false, old_max_health := 0.0) -> void:
