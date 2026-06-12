@@ -63,3 +63,9 @@ GDScript backtrace:
 Действия: все параллельные работы закоммичены (ee74aac). На результирующем дереве `tests/runtime_smoke_test.gd` (с проверкой `_test_unique_class_identity_patterns`, строка с Knight block/counter) прогнан 3× — стабильно зелёный во всех трёх прогонах. Логика рыцаря (`Player._try_knight_counter`, `block_reduction` в passive_mods) и связь с интерпретацией Энергии в задаче вторичных атрибутов работают корректно. Правок кода/теста не потребовалось.
 
 Acceptance: smoke проходит без ошибки `Expected Knight block to reduce damage and counter nearby enemies`; gameplay-поведение рыцаря не менялось — документация без изменений.
+
+## QA-Вердикт (2026-06-12)
+Статус: PASSED (подтверждён transient)
+runtime_smoke (включает knight block/counter через _try_knight_counter) + все 6 сьютов
+зелёные стабильно на чистом дереве. Падения были от незакоммиченных параллельных
+UI-правок (_style_slider/_style_checkbox), не от рыцаря — подтверждаю transient. Багов нет.

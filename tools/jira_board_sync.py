@@ -111,11 +111,16 @@ def parse_task(path: str) -> dict:
     else:
         role, itype = "backend", "Задача"
     next_version = bool(re.search(r"^Версия:\s*0\.1\.4", text, re.M))
+    # исполнитель: codex — генерация/исполнение контуром Codex; иначе claude
+    is_codex = name.startswith("codex_") or bool(
+        re.search(r"^(Исполнитель|Executor):.*Codex", text, re.M | re.I))
+    executor = "codex" if is_codex else "claude"
     excerpt = text[:4500]
     return {"file": name, "title": title[:250], "status": status,
             "role": role, "itype": itype, "excerpt": excerpt,
             "blocked": raw_status.startswith("blocked"),
-            "next_version": next_version and not name.startswith("bug_")}
+            "next_version": next_version and not name.startswith("bug_"),
+            "executor": executor}
 
 
 def adf(text: str) -> dict:
@@ -135,7 +140,7 @@ def main():
         t = parse_task(path)
         target_status = STATUS_TARGET[t["status"]]
         entry = mapping.get(t["file"])
-        labels = ["fantasydisk", t["role"]] + (["blocked"] if t["blocked"] else [])
+        labels = ["fantasydisk", t["role"], t["executor"]] + (["blocked"] if t["blocked"] else [])
         if entry is None:
             if dry:
                 print(f"CREATE {t['file']} -> [{t['itype']}] {target_status}")

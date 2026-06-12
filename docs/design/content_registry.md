@@ -397,6 +397,15 @@ Radical UI pass заменяет основные StyleBoxFlat-плоскост�
 
 Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
 
+Contextual UI direction 2026-06-12: `docs/design/ui_contextual_concept.md` defines context kits. Current global tavern kit remains utility/shop fallback. The generated review kit lives in `assets/sprites/ui/frames/contextual/` with Wild Start, Grave Defeat, Laurel Reward and Parchment/Codex/Map variants. The first flat/simple pass was replaced after user feedback by a more realistic D&D/tabletop raster pass with material texture borrowed from existing FantasyDisk references (`docs/design/previews/contextual_ui_dnd_reference_contact.png`). Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md`; integration handoff: `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md`.
+
+| ID | Ассет | Роль | Статус |
+| --- | --- | --- | --- |
+| `ui_wild_*_frame` | `assets/sprites/ui/frames/contextual/ui_wild_panel_frame.png`, `ui_wild_button_frame.png`, `ui_wild_card_frame.png`, `ui_wild_tooltip_frame.png` | Main menu, character select, weapon select: living wood/vines/leaves | Review |
+| `ui_grave_*_frame` | `assets/sprites/ui/frames/contextual/ui_grave_panel_frame.png`, `ui_grave_button_frame.png`, `ui_grave_card_frame.png`, `ui_grave_tooltip_frame.png` | Defeat/death/danger confirmations: cracked bone, ash, grave-stone edge | Review |
+| `ui_laurel_*_frame` | `assets/sprites/ui/frames/contextual/ui_laurel_panel_frame.png`, `ui_laurel_button_frame.png`, `ui_laurel_card_frame.png`, `ui_laurel_tooltip_frame.png` | Victory, level-up, rewards, artifact selection: laurel/gold/parchment | Review |
+| `ui_parchment_*_frame` | `assets/sprites/ui/frames/contextual/ui_parchment_panel_frame.png`, `ui_parchment_button_frame.png`, `ui_parchment_card_frame.png`, `ui_parchment_tooltip_frame.png`, `ui_parchment_tab_frame.png` | Codex, route map, event text: parchment/book/map edge | Review |
+
 ## Фоны И Карты
 
 | ID | Игровое имя | Ассет | Роль |

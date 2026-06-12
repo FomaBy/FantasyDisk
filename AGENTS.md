@@ -19,12 +19,6 @@ Autonomy and approval:
 - For every future task that changes functionality, balance, content, UI, progression, visuals, or animation, update the relevant documentation in the same task.
 - After large multi-agent change batches, run the documentation split/update task in `docs/tasks/documentation_post_changes_domain_split_task.md` and keep domain docs under `docs/design/systems/` up to date.
 
-
-FEATURE FREEZE (active, set 2026-06-12 by user):
-- Sprint 0.1.3 is feature-frozen. New feature/change requests (anything that is NOT a bug fix) go to version 0.1.4: task file must include the line `Версия: 0.1.4`, the issue stays in the Jira BACKLOG (not the active sprint).
-- Bug fixes (bug_*.md) and finishing already-started sprint 0.1.3 tasks continue as usual in the active sprint.
-- Executors: do not pick up `Версия: 0.1.4` tasks while the freeze is active unless the sprint queue is empty of 0.1.3 work.
-
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`, task statuses are tracked in `docs/process/task_board.md`.
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
@@ -35,9 +29,20 @@ Role boundaries:
 
 Versioning:
 - `main` is the stable `0.1` line.
-- `dev` is the active `0.2` development line.
-- All new development tasks should be done on `dev` unless a task explicitly says otherwise.
+- `dev` is the active working branch for the current `0.1.x` line.
+- All implementation tasks should be done on `dev` unless a task explicitly says otherwise.
 - Check the current branch before making changes; do not do ordinary feature work directly on `main`.
+
+Feature block:
+- As of 2026-06-12, the project is in a feature block for the current `0.1.3`
+  stabilization/release line.
+- Only bugs, QA defects, release blockers, and regression fixes may be routed into
+  the current sprint/release.
+- Any new request or change that is not a bug must be created as backlog work for
+  version `0.1.4`; task files should include `Версия: 0.1.4`; do not start it,
+  dispatch it, or add it to the current sprint.
+- If a request is ambiguous, classify it conservatively as backlog `0.1.4` unless
+  it clearly fixes a broken existing requirement.
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.

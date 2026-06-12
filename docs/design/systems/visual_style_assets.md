@@ -59,6 +59,21 @@ Canonical assets:
 
 System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, arrows, checkbox checked/unchecked, slider track/grabber and scrollbar grabber. `scripts/ui_icon_registry.gd` exposes them as `system_*` IDs. Settings sliders and checkboxes are styled with these textures; default grey Godot controls should remain fail-safe only.
 
+## Contextual UI Direction
+
+`docs/design/ui_contextual_concept.md` defines the next UI-frame direction: the current tavern kit becomes a utility/shop fallback, while new context kits should carry screen meaning. The generated review kit in `assets/sprites/ui/frames/contextual/` contains Wild Start (main/hero/weapon), Grave Defeat (death/danger), Laurel Reward (victory/level-up/rewards), and Parchment/Codex/Map (codex/event/route). After user feedback on the first simple pass, the active PNGs were redrawn into a richer realistic D&D/tabletop raster style using current FantasyDisk artifacts/characters/weapons/backgrounds as references for material depth, dark outline, bevels and worn fantasy surfaces. The audit found that repeated brass studs and curved corner strokes are meaningful in merchant/utility contexts but become decoration without purpose on death, victory, codex and route screens.
+
+Generated assets:
+
+- `ui_wild_panel_frame.png`, `ui_wild_button_frame.png`, `ui_wild_card_frame.png`, `ui_wild_tooltip_frame.png`;
+- `ui_grave_panel_frame.png`, `ui_grave_button_frame.png`, `ui_grave_card_frame.png`, `ui_grave_tooltip_frame.png`;
+- `ui_laurel_panel_frame.png`, `ui_laurel_button_frame.png`, `ui_laurel_card_frame.png`, `ui_laurel_tooltip_frame.png`;
+- `ui_parchment_panel_frame.png`, `ui_parchment_button_frame.png`, `ui_parchment_card_frame.png`, `ui_parchment_tooltip_frame.png`, `ui_parchment_tab_frame.png`;
+- preview sheet: `assets/sprites/ui/frames/contextual/contextual_ui_kits_preview.png`.
+- reference contact sheet used for the rework: `docs/design/previews/contextual_ui_dnd_reference_contact.png`.
+
+Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md` is in review. Back-end integration handoff: `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md`.
+
 ## Characters And Weapons
 
 The 0.2 class weapon visual set was completed on 2026-06-11 for all 9 classes and 27 starting weapons. New class full-art PNGs live in `assets/sprites/characters/` (`assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png`) at `512x512` with transparent background and separated readable legs for future cutout/walk rig work.
