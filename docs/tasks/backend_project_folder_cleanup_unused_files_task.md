@@ -1,8 +1,10 @@
 # Задача Для Back-end-Агента: Чистка Папки Игры От Неиспользуемых Файлов
 
-Статус: new
+Статус: done
 Создано: 2026-06-12
 Автор: PM
+
+Dispatch: отправлено в существующий Back-end чат `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-12.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил, включая перемещение файлов в backup по безопасной
@@ -58,3 +60,9 @@
 ## Документация
 - `docs/process/project_cleanup_report_2026_06_12.md` (отчет), CHANGELOG (Unreleased),
   content_registry — пометки при расхождениях.
+
+## Результат 2026-06-12
+
+Готово: обновлен `tools/audit_unused_assets.py`, создан отчет `docs/process/project_cleanup_report_2026_06_12.md`, 19 файлов перенесены в `build/cleanup_backup_2026_06_12/` с сохранением структуры, 4 tracked preview/source файла удалены через `git rm` после backup. Восстановлены активные фоновые ресурсы `field_dry_road` и `field_stone_garden`, выполнен Godot reimport. Дополнительно убран debug spam на выходе: cleanup custom cursor textures и AudioManager streams.
+
+Проверки: runtime smoke, animation smoke, attack VFX smoke, hazard VFX smoke, meta progression smoke — passed. Финальный оконный запуск Godot `--quit-after 8` — exit 0 без missing resources и texture/resource leak errors.

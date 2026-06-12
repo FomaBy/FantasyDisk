@@ -4,6 +4,8 @@
 
 ## [Unreleased] — ветка dev
 
+- Чистка проекта: обновлен conservative audit `tools/audit_unused_assets.py`, из `assets/` вынесены obsolete preview/source PNG и временные `.DS_Store`/swap в `build/cleanup_backup_2026_06_12/`; активные фоновые ресурсы `field_dry_road`/`field_stone_garden` восстановлены после missing-resource проверки.
+
 - VFX: DoT-тики на врагах получили искру-маркер; level-up эффект и баннер переведены с программных Polygon2D/ColorRect на текстурные спрайты (вспышка/кольцо/искры); перф на 120 врагах с зонами в норме.
 
 - VFX: лечение игрока получило зелёный восстановительный отклик (пульс+искры) вместо безмолвного хила; подтверждено, что ульты 9 классов уже на оформленном VFX.
@@ -27,6 +29,8 @@
 - Debug cleanup: убран Godot debug spam `Lambda capture ... was freed` в level-up intro и weapon VFX/deploy callbacks; editor/import, runtime smoke и animation smoke проходят без красных ошибок в свежем Godot log.
 
 - VFX-полировка: persistent pools Химика/Друида больше не программные круги — добавлены растровые `poison_pool`, `spark_pool`, `briar_pool` с мягкой пульсацией/fade-out и QA preview.
+
+- VFX-арт: все 19 PNG в `assets/sprites/effects/` перерисованы в сдержанный D&D/tabletop стиль без кислотного неона и пересветов; preview-лист использовался для QA и затем вынесен из runtime assets чисткой проекта, import + attack/runtime smoke green.
 
 ## [0.1.2] — 2026-06-12
 

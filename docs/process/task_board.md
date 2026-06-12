@@ -98,9 +98,9 @@
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [backend_class_dps_survivability_budget_task.md](../tasks/backend_class_dps_survivability_budget_task.md) | Back-end | done | Закрыта 2026-06-12: `tools/balance_harness.gd`, `build/balance_report.md`, 27 class+weapon профилей/tuning, smoke green |
-| [backend_ascension_difficulty_ladder_task.md](../tasks/backend_ascension_difficulty_ladder_task.md) | Back-end | in_progress | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)`; Возвышения 2.0, heat-лестница, прогресс по персонажу, мета-награды, селектор уровня |
-| [codex_design_effects_sprites_dnd_restyle_task.md](../tasks/codex_design_effects_sprites_dnd_restyle_task.md) | Design (Codex → ревью Claude-Designer) | in_progress | Dispatch 2026-06-12 -> существующий Design `019eabf1-6d54-7561-8af9-ce25cdf483a9`; 19 VFX PNG в D&D, без неона/пересветов |
-| [backend_project_folder_cleanup_unused_files_task.md](../tasks/backend_project_folder_cleanup_unused_files_task.md) | Back-end | new | Чистка проекта: неиспользуемые ассеты (с учетом динамических путей), хвосты арт-итераций, осиротевшие .import/.uid, мусор корня; всё в backup, отчет, 4 smoke + оконный прогон |
+| [backend_ascension_difficulty_ladder_task.md](../tasks/backend_ascension_difficulty_ladder_task.md) | Back-end | done | Синхронизировано 2026-06-12: task-файл уже `done`; Возвышения 2.0, heat-лестница, прогресс по персонажу, мета-награды, селектор уровня, smoke green |
+| [codex_design_effects_sprites_dnd_restyle_task.md](../tasks/codex_design_effects_sprites_dnd_restyle_task.md) | Design (Codex → ревью Claude-Designer) | review | Codex pass готов 2026-06-12: 19 VFX PNG заменены, `effects_dnd_preview.png`, import + attack_vfx/runtime smoke green; ждет Claude-Designer/QA review |
+| [backend_project_folder_cleanup_unused_files_task.md](../tasks/backend_project_folder_cleanup_unused_files_task.md) | Back-end | done | Закрыта 2026-06-12: 19 файлов в `build/cleanup_backup_2026_06_12/`, отчет создан, активные фоны восстановлены/reimport, 5 smoke + оконный прогон green |
 | [backend_enemy_scaling_elite_boss_difficulty_task.md](../tasks/backend_enemy_scaling_elite_boss_difficulty_task.md) | Back-end | done | Закрыта 2026-06-12: stage_scale, усиление волн, elite reward 1-из-3, boss 3 phases, balance/runtime smoke green |
 | [backend_random_events_ten_scenarios_task.md](../tasks/backend_random_events_ten_scenarios_task.md) | Back-end | done | Закрыта 2026-06-12: 12 data-driven events, no-repeat, checks, combat outcomes, runtime smoke green |
 | [design_weapon_art_v2_proportions_knight_task.md](../tasks/design_weapon_art_v2_proportions_knight_task.md) | Design | done | Закрыта 2026-06-12: knight weapon trio redrawn, Knight unarmed base/cutout, 27 matching scene textures, smaller visual scale, runtime + animation smoke pass |
@@ -113,10 +113,11 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [qa_review_backend_ascension_difficulty_ladder_task.md](../tasks/qa_review_backend_ascension_difficulty_ladder_task.md) | QA (Claude) | blocked | Ждет `backend_ascension_difficulty_ladder_task.md` -> review/done |
+| [qa_review_backend_ascension_difficulty_ladder_task.md](../tasks/qa_review_backend_ascension_difficulty_ladder_task.md) | QA (Claude) | new | Разблокировано 2026-06-12: `backend_ascension_difficulty_ladder_task.md` в done |
 | [qa_review_design_weapon_attack_vfx_animations_polish_task.md](../tasks/qa_review_design_weapon_attack_vfx_animations_polish_task.md) | QA (Claude) | new | Исходная `design_weapon_attack_vfx_animations_polish_task.md` закрыта; готово к QA |
 | [qa_review_codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/qa_review_codex_design_new_classes_restyle_to_starter_style_task.md) | QA (Claude) | blocked | Ждет `codex_design_new_classes_restyle_to_starter_style_task.md` -> review/done |
-| [qa_review_codex_design_effects_sprites_dnd_restyle_task.md](../tasks/qa_review_codex_design_effects_sprites_dnd_restyle_task.md) | QA (Claude) | blocked | Ждет `codex_design_effects_sprites_dnd_restyle_task.md` -> review/done |
+| [qa_review_codex_design_effects_sprites_dnd_restyle_task.md](../tasks/qa_review_codex_design_effects_sprites_dnd_restyle_task.md) | QA (Claude) | new | Разблокировано 2026-06-12: `codex_design_effects_sprites_dnd_restyle_task.md` в review |
+| [qa_review_backend_project_folder_cleanup_unused_files_task.md](../tasks/qa_review_backend_project_folder_cleanup_unused_files_task.md) | QA (Claude) | new | Back-end cleanup done 2026-06-12; готово к QA-review отчета, backup и smoke/windowed результатов |
 
 ## Активные / Неподтвержденные
 

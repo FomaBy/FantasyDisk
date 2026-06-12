@@ -77,6 +77,8 @@ Attack VFX sprites live in `assets/sprites/effects/` and are transparent PNGs in
 
 `scripts/class_weapon.gd` now selects these by `pool_element` and animates them with pause-aware node-bound tweens. The gameplay radius, tick interval and duration stay data-driven from weapon config. QA preview: `docs/design/previews/vfx_pool_assets_contact.png`.
 
+Codex D&D VFX restyle pass 2026-06-12 replaced all 19 active PNGs in `assets/sprites/effects/` with restrained tabletop-style raster effects: muted noble palette, soft alpha glow, no acid-neon colors, no pure-white overexposure, and simpler silhouettes for fast combat readability. Tintable assets (`hazard_zone.png`, `elite_telegraph_circle.png`) remain warm-neutral so code modulation can recolor them. The non-runtime review sheet was moved out of `assets/` by the 2026-06-12 cleanup and is recoverable from `build/cleanup_backup_2026_06_12/assets/sprites/effects/effects_dnd_preview.png`.
+
 ## Screen And Map Backgrounds
 
 - `assets/backgrounds/route_map_backdrop.png` - 2560x1440 eerie neutral route map background. It should stay darker and calmer than combat arenas, with low-contrast fog in the central route column and heavier silhouettes pushed to the edges.

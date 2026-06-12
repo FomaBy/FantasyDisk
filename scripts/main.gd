@@ -364,6 +364,22 @@ func _ready() -> void:
 	ui._show_main_menu()
 
 
+func _exit_tree() -> void:
+	_release_runtime_texture_refs()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_PREDELETE:
+		_release_runtime_texture_refs()
+
+
+func _release_runtime_texture_refs() -> void:
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_POINTING_HAND)
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_CROSS)
+	texture_cache.clear()
+
+
 func _load_game_settings() -> void:
 	var settings: Dictionary = GAME_SETTINGS.load_settings()
 	selected_resolution_index = int(settings["resolution_index"])
