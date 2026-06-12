@@ -98,25 +98,34 @@
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [backend_class_dps_survivability_budget_task.md](../tasks/backend_class_dps_survivability_budget_task.md) | Back-end | done | Закрыта 2026-06-12: `tools/balance_harness.gd`, `build/balance_report.md`, 27 class+weapon профилей/tuning, smoke green |
-| [backend_ascension_difficulty_ladder_task.md](../tasks/backend_ascension_difficulty_ladder_task.md) | Back-end | done | Синхронизировано 2026-06-12: task-файл уже `done`; Возвышения 2.0, heat-лестница, прогресс по персонажу, мета-награды, селектор уровня, smoke green |
-| [codex_design_effects_sprites_dnd_restyle_task.md](../tasks/codex_design_effects_sprites_dnd_restyle_task.md) | Design (Codex → ревью Claude-Designer) | review | Codex pass готов 2026-06-12: 19 VFX PNG заменены, `effects_dnd_preview.png`, import + attack_vfx/runtime smoke green; ждет Claude-Designer/QA review |
+| [backend_ascension_difficulty_ladder_task.md](../tasks/backend_ascension_difficulty_ladder_task.md) | Back-end | done | QA: failed (3 бага) 2026-06-12 — ядро ОК (данные/кумулятивность/unlock/нулевой уровень/мета-трек/HUD), но мод #7 `mini_elite_chance` не реализован, #4 `elite_instant_phase` мёртв, селектор «+» не клампится к selectable_max. Баги в секции «Баги от QA» |
+| [codex_design_effects_sprites_dnd_restyle_task.md](../tasks/codex_design_effects_sprites_dnd_restyle_task.md) | Design (Codex → ревью Claude-Designer) | done | Codex pass готов 2026-06-12: 19 VFX PNG заменены, `effects_dnd_preview.png`, import + attack_vfx/runtime smoke green. QA: passed 2026-06-12 (0% пересвета/неона, размеры/alpha сохранены). Ждёт интеграцию/коммит Claude-Designer | -> интегрировано и закоммичено Claude-Designer 2026-06-12 (ff0b4c7); геометрия совместима, smoke зелёные
 | [backend_project_folder_cleanup_unused_files_task.md](../tasks/backend_project_folder_cleanup_unused_files_task.md) | Back-end | done | Закрыта 2026-06-12: 19 файлов в `build/cleanup_backup_2026_06_12/`, отчет создан, активные фоны восстановлены/reimport, 5 smoke + оконный прогон green |
 | [backend_enemy_scaling_elite_boss_difficulty_task.md](../tasks/backend_enemy_scaling_elite_boss_difficulty_task.md) | Back-end | done | Закрыта 2026-06-12: stage_scale, усиление волн, elite reward 1-из-3, boss 3 phases, balance/runtime smoke green |
 | [backend_random_events_ten_scenarios_task.md](../tasks/backend_random_events_ten_scenarios_task.md) | Back-end | done | Закрыта 2026-06-12: 12 data-driven events, no-repeat, checks, combat outcomes, runtime smoke green |
 | [design_weapon_art_v2_proportions_knight_task.md](../tasks/design_weapon_art_v2_proportions_knight_task.md) | Design | done | Закрыта 2026-06-12: knight weapon trio redrawn, Knight unarmed base/cutout, 27 matching scene textures, smaller visual scale, runtime + animation smoke pass |
-| [design_weapon_attack_vfx_animations_polish_task.md](../tasks/design_weapon_attack_vfx_animations_polish_task.md) | Design | done | Phase 1 2026-06-12: poison/spark/briar pools заменены на raster VFX + pulse, attack_vfx/animation smoke green; полный 27-weapon/VFX audit продолжается | -> закрыта 2026-06-12: голых боевых примитивов не осталось (зоны/лужи/аура/лечение/DoT/level-up оформлены, ульты designed), оружие получило socket-кик+трейлы, перф на 120 врагах ок
+| [design_weapon_attack_vfx_animations_polish_task.md](../tasks/design_weapon_attack_vfx_animations_polish_task.md) | Design | done | Phase 1 2026-06-12: poison/spark/briar pools заменены на raster VFX + pulse, attack_vfx/animation smoke green; полный 27-weapon/VFX audit продолжается | -> закрыта 2026-06-12: голых боевых примитивов не осталось (зоны/лужи/аура/лечение/DoT/level-up оформлены, ульты designed), оружие получило socket-кик+трейлы, перф на 120 врагах ок. QA: failed 2026-06-12 — 1 пропущенный голый круг (hazard смены фазы босса), см. «Баги от QA»
 | [design_arena_backgrounds_2k_dnd_expansion_task.md](../tasks/design_arena_backgrounds_2k_dnd_expansion_task.md) | Design | done | Закрыта 2026-06-12: 6 новых D&D 2560x1440 arena backgrounds без крупных камней/кустов, подключены в background pool, docs/preview обновлены |
 | [backend_animation_smoke_ultimate_inputmap_warning_task.md](../tasks/backend_animation_smoke_ultimate_inputmap_warning_task.md) | Back-end | done | Закрыта 2026-06-12: Player guards missing `ultimate` InputMap action in standalone tests; animation/runtime smoke green |
 | [backend_runtime_smoke_combat_director_type_inference_task.md](../tasks/backend_runtime_smoke_combat_director_type_inference_task.md) | Back-end | done | Закрыта 2026-06-12 как transient: type-inference ошибка была промежуточным мид-эдитом; runtime smoke 3x green |
+
+## Баги от QA
+
+| Баг | Приоритет | Роль | Статус | Источник | Примечание |
+| --- | --- | --- | --- | --- | --- |
+| [bug_ascension_mini_elite_chance_dead_task.md](../tasks/bug_ascension_mini_elite_chance_dead_task.md) | high | Back-end | new | Возвышения 2.0 | `mini_elite_chance` нигде не потребляется → Возвышение 7 «Эхо бездны» = полный no-op |
+| [bug_ascension_elite_instant_phase_dead_task.md](../tasks/bug_ascension_elite_instant_phase_dead_task.md) | high | Back-end | new | Возвышения 2.0 | мета `ascension_instant_phase` ставится, но не читается → Возвышение 4 «фаза сразу» не работает |
+| [bug_ascension_selector_not_clamped_task.md](../tasks/bug_ascension_selector_not_clamped_task.md) | normal | Back-end | new | Возвышения 2.0 | кнопка «+» в селекторе клампится к жёстким 10, не к selectable_max → можно стартовать на закрытом уровне |
+| [bug_boss_phase_hazard_naked_circle_task.md](../tasks/bug_boss_phase_hazard_naked_circle_task.md) | normal | Design/Back-end | new | VFX-полировка | `boss.gd:314` зона смены фазы босса — голый красный Polygon2D-круг, не переведён на HazardVfx; доки overclaim |
 
 ## QA / Review (создано dispatcher 2026-06-12)
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [qa_review_backend_ascension_difficulty_ladder_task.md](../tasks/qa_review_backend_ascension_difficulty_ladder_task.md) | QA (Claude) | new | Разблокировано 2026-06-12: `backend_ascension_difficulty_ladder_task.md` в done |
-| [qa_review_design_weapon_attack_vfx_animations_polish_task.md](../tasks/qa_review_design_weapon_attack_vfx_animations_polish_task.md) | QA (Claude) | new | Исходная `design_weapon_attack_vfx_animations_polish_task.md` закрыта; готово к QA |
+| [qa_review_backend_ascension_difficulty_ladder_task.md](../tasks/qa_review_backend_ascension_difficulty_ladder_task.md) | QA (Claude) | done | QA: failed 2026-06-12 — вердикт в исходном файле, заведено 3 bug-таска (см. «Баги от QA») |
+| [qa_review_design_weapon_attack_vfx_animations_polish_task.md](../tasks/qa_review_design_weapon_attack_vfx_animations_polish_task.md) | QA (Claude) | done | QA: failed 2026-06-12 — вердикт в исходном файле, 1 баг (голый круг hazard'а смены фазы босса). Остальной VFX-проход качественный, smoke зелёные |
 | [qa_review_codex_design_new_classes_restyle_to_starter_style_task.md](../tasks/qa_review_codex_design_new_classes_restyle_to_starter_style_task.md) | QA (Claude) | blocked | Ждет `codex_design_new_classes_restyle_to_starter_style_task.md` -> review/done |
-| [qa_review_codex_design_effects_sprites_dnd_restyle_task.md](../tasks/qa_review_codex_design_effects_sprites_dnd_restyle_task.md) | QA (Claude) | new | Разблокировано 2026-06-12: `codex_design_effects_sprites_dnd_restyle_task.md` в review |
+| [qa_review_codex_design_effects_sprites_dnd_restyle_task.md](../tasks/qa_review_codex_design_effects_sprites_dnd_restyle_task.md) | QA (Claude) | done | QA: passed 2026-06-12 — 19 PNG, размеры/alpha сохранены, 0% пересвета/неона (объективно), тинтуемые нейтральны, smoke зелёные. Багов нет |
 | [qa_review_backend_project_folder_cleanup_unused_files_task.md](../tasks/qa_review_backend_project_folder_cleanup_unused_files_task.md) | QA (Claude) | new | Back-end cleanup done 2026-06-12; готово к QA-review отчета, backup и smoke/windowed результатов |
 
 ## Активные / Неподтвержденные
