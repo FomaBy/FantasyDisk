@@ -116,7 +116,7 @@
 | [bug_ascension_mini_elite_chance_dead_task.md](../tasks/bug_ascension_mini_elite_chance_dead_task.md) | high | Back-end | in_progress | Возвышения 2.0 | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)`; Codex handoff отменен, чтобы не было дубля |
 | [bug_ascension_elite_instant_phase_dead_task.md](../tasks/bug_ascension_elite_instant_phase_dead_task.md) | high | Back-end | in_progress | Возвышения 2.0 | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)` |
 | [bug_ascension_selector_not_clamped_task.md](../tasks/bug_ascension_selector_not_clamped_task.md) | normal | Back-end | in_progress | Возвышения 2.0 | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)` |
-| [bug_boss_phase_hazard_naked_circle_task.md](../tasks/bug_boss_phase_hazard_naked_circle_task.md) | normal | Design/Back-end | in_progress | VFX-полировка | Синхронизировано 2026-06-12: task-файл уже `in_progress (Claude Backend)`; зона рендера во время боя |
+| [bug_boss_phase_hazard_naked_circle_task.md](../tasks/bug_boss_phase_hazard_naked_circle_task.md) | normal | Design/Back-end | done | VFX-полировка | Fixed Design 2026-06-12 (ff0b4c7): Polygon2D -> HazardVfx; QA passed |
 | [bug_cleanup_artifact_iteration_previews_left_in_assets_task.md](../tasks/bug_cleanup_artifact_iteration_previews_left_in_assets_task.md) | normal | Back-end | new | Чистка проекта | ~9 `artifact_*_preview.png` итераций остались в assets/ (аудит считает ссылку из tools/-генератора за usage); категория #2 не закрыта |
 
 ## QA / Review (создано dispatcher 2026-06-12)
@@ -131,7 +131,7 @@
 | [qa_review_bug_ascension_mini_elite_chance_dead_task.md](../tasks/qa_review_bug_ascension_mini_elite_chance_dead_task.md) | QA (Claude) | blocked | Ждет `bug_ascension_mini_elite_chance_dead_task.md` -> review/done |
 | [qa_review_bug_ascension_elite_instant_phase_dead_task.md](../tasks/qa_review_bug_ascension_elite_instant_phase_dead_task.md) | QA (Claude) | blocked | Ждет `bug_ascension_elite_instant_phase_dead_task.md` -> review/done |
 | [qa_review_bug_ascension_selector_not_clamped_task.md](../tasks/qa_review_bug_ascension_selector_not_clamped_task.md) | QA (Claude) | blocked | Ждет `bug_ascension_selector_not_clamped_task.md` -> review/done |
-| [qa_review_bug_boss_phase_hazard_naked_circle_task.md](../tasks/qa_review_bug_boss_phase_hazard_naked_circle_task.md) | QA (Claude) | blocked | Ждет `bug_boss_phase_hazard_naked_circle_task.md` -> review/done |
+| [qa_review_bug_boss_phase_hazard_naked_circle_task.md](../tasks/qa_review_bug_boss_phase_hazard_naked_circle_task.md) | QA (Claude) | done | Ждет `bug_boss_phase_hazard_naked_circle_task.md` -> review/done | -> QA passed 2026-06-12: голых кругов нет, все 3 зоны на HazardVfx, доки точны, smoke зелёные
 
 ## Активные / Неподтвержденные
 

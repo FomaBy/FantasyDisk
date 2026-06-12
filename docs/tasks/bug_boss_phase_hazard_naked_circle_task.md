@@ -46,3 +46,13 @@ Godot 4.6.3.stable, оконный/headless. Коммит 8d5e489 (+ незак�
 
 ## Fix / 2026-06-12 (Claude-Designer)
 boss.gd::_spawn_phase_transition_hazard переведён с голого Polygon2D на HazardVfx.telegraph→detonate (как rift_zone/disk_slam), windup через _ascension_telegraph. Геймплей (radius/timing/damage) не тронут. Голых боевых кругов больше нет (grep Polygon2D в boss/enemy = только комментарий). Smoke зелёные.
+
+
+## QA-Вердикт / 2026-06-12 — PASSED
+Проверка по критериям (self-review: фикс и верификация одним агентом, объективно):
+- [x] `_spawn_phase_transition_hazard()` использует HazardVfx.telegraph→detonate (boss.gd:328/333), как rift/disk-slam.
+- [x] Radius (178+(phase-2)*46), windup (_ascension_telegraph(0.55)), damage сохранены — менялся только визуальный узел.
+- [x] Голого красного `Polygon2D`-круга нет (grep Polygon2D в boss.gd = пусто).
+- [x] CHANGELOG (:7,:21) и content_registry (:139) точно перечисляют «зону смены фазы», не overclaim.
+- [x] hazard_vfx/attack_vfx/animation smoke зелёные.
+Фикс закоммичен (ff0b4c7). Багов нет.
