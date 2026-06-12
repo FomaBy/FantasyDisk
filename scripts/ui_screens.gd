@@ -31,6 +31,69 @@ const SHOP_CURSOR_VARIANTS := {
 	"cross": "res://assets/sprites/ui/cursor/game_cursor_attack.png",
 }
 
+const HERO_RADAR_STATS := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+const HERO_CLASS_COLORS := {
+	"berserk": Color(1.00, 0.38, 0.22, 0.82),
+	"dark_mage": Color(0.66, 0.32, 1.00, 0.82),
+	"guitarist": Color(0.26, 0.72, 1.00, 0.82),
+	"assassin": Color(0.95, 0.22, 0.44, 0.82),
+	"ranger": Color(0.34, 0.84, 0.34, 0.82),
+	"doctor": Color(0.36, 0.96, 0.80, 0.82),
+	"chemist": Color(0.74, 0.95, 0.26, 0.82),
+	"knight": Color(0.86, 0.80, 0.58, 0.82),
+	"druid": Color(0.48, 0.78, 0.36, 0.82),
+}
+
+class HeroStatRadar:
+	extends Control
+
+	var stats: Dictionary = {}
+	var maxima: Dictionary = {}
+	var stat_names: Dictionary = {}
+	var stat_ids: Array = []
+	var fill_color := Color(0.90, 0.72, 0.26, 0.78)
+
+	func setup(new_stats: Dictionary, new_maxima: Dictionary, new_stat_names: Dictionary, new_stat_ids: Array, new_color: Color) -> void:
+		stats = new_stats.duplicate(true)
+		maxima = new_maxima.duplicate(true)
+		stat_names = new_stat_names.duplicate(true)
+		stat_ids = new_stat_ids.duplicate()
+		fill_color = new_color
+		queue_redraw()
+
+	func _draw() -> void:
+		if stat_ids.is_empty():
+			return
+		var center: Vector2 = size * 0.5
+		var radius: float = min(size.x, size.y) * 0.30
+		if radius <= 4.0:
+			return
+		var axis_count := stat_ids.size()
+		for ring_index in range(1, 5):
+			var ring_points := PackedVector2Array()
+			var ring_radius: float = radius * float(ring_index) / 4.0
+			for axis_index in range(axis_count):
+				ring_points.append(center + Vector2.UP.rotated(TAU * float(axis_index) / float(axis_count)) * ring_radius)
+			var closed_ring := PackedVector2Array(ring_points)
+			closed_ring.append(ring_points[0])
+			draw_polyline(closed_ring, Color(0.74, 0.66, 0.44, 0.28), 1.0)
+		var value_points := PackedVector2Array()
+		for axis_index in range(axis_count):
+			var stat_id := str(stat_ids[axis_index])
+			var angle := TAU * float(axis_index) / float(axis_count)
+			var direction := Vector2.UP.rotated(angle)
+			draw_line(center, center + direction * radius, Color(0.86, 0.78, 0.56, 0.34), 1.0)
+			var max_value: float = max(1.0, float(maxima.get(stat_id, 1.0)))
+			var value: float = float(stats.get(stat_id, 0.0))
+			value_points.append(center + direction * radius * clampf(value / max_value, 0.0, 1.0))
+			var label_position: Vector2 = center + direction * (radius + 28.0)
+			var label := "%s %d" % [str(stat_names.get(stat_id, stat_id)).substr(0, 3), int(round(value))]
+			draw_string(get_theme_default_font(), label_position - Vector2(28.0, -5.0), label, HORIZONTAL_ALIGNMENT_CENTER, 56.0, 12, Color(0.96, 0.90, 0.70, 0.96))
+		draw_colored_polygon(value_points, Color(fill_color.r, fill_color.g, fill_color.b, 0.30))
+		var closed_values := PackedVector2Array(value_points)
+		closed_values.append(value_points[0])
+		draw_polyline(closed_values, Color(fill_color.r, fill_color.g, fill_color.b, 0.95), 2.0)
+
 
 func _init(game_ref) -> void:
 	game = game_ref
@@ -171,7 +234,7 @@ func _show_character_select() -> void:
 	var shade := ColorRect.new()
 	shade.name = "HeroSelectShade"
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.015, 0.018, 0.028, 0.62)
+	shade.color = Color(0.015, 0.018, 0.028, 0.66)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
@@ -179,140 +242,310 @@ func _show_character_select() -> void:
 	margins.name = "HeroSelectMargins"
 	margins.set_anchors_preset(Control.PRESET_FULL_RECT)
 	margins.add_theme_constant_override("margin_left", 24)
-	margins.add_theme_constant_override("margin_top", 18)
+	margins.add_theme_constant_override("margin_top", 16)
 	margins.add_theme_constant_override("margin_right", 24)
-	margins.add_theme_constant_override("margin_bottom", 18)
+	margins.add_theme_constant_override("margin_bottom", 16)
 	root.add_child(margins)
 
 	var layout := VBoxContainer.new()
 	layout.name = "HeroSelectLayout"
 	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	layout.add_theme_constant_override("separation", 12)
+	layout.add_theme_constant_override("separation", 10)
 	margins.add_child(layout)
 
 	var header := HBoxContainer.new()
 	header.name = "HeroSelectHeader"
-	header.custom_minimum_size = Vector2(0, 58)
+	header.custom_minimum_size = Vector2(0, 50)
 	header.add_theme_constant_override("separation", 16)
 	layout.add_child(header)
 
 	var title_box := VBoxContainer.new()
 	title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_box.add_theme_constant_override("separation", 2)
+	title_box.add_theme_constant_override("separation", 1)
 	header.add_child(title_box)
 
 	var title_label := Label.new()
 	title_label.text = "Выбор героя"
-	title_label.add_theme_font_size_override("font_size", 38)
+	title_label.add_theme_font_size_override("font_size", 34)
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	title_box.add_child(title_label)
 
 	var subtitle_label := Label.new()
-	subtitle_label.text = "9 классов видны сразу. Наведи на героя, чтобы увидеть характеристики."
-	subtitle_label.add_theme_font_size_override("font_size", 15)
+	subtitle_label.text = "Портрет, досье, оружие и роза характеристик обновляются при выборе героя."
+	subtitle_label.add_theme_font_size_override("font_size", 14)
 	subtitle_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78, 0.92))
 	title_box.add_child(subtitle_label)
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HeroSelectBackButton"
-	back_button.custom_minimum_size = Vector2(150, 50)
+	back_button.custom_minimum_size = Vector2(150, 48)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 
-	var cards_grid := GridContainer.new()
-	cards_grid.name = "CharacterCardsGrid"
-	cards_grid.columns = 3
-	cards_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	cards_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	cards_grid.add_theme_constant_override("h_separation", 12)
-	cards_grid.add_theme_constant_override("v_separation", 10)
-	layout.add_child(cards_grid)
+	var content_row := HBoxContainer.new()
+	content_row.name = "HeroSelectContent"
+	content_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content_row.add_theme_constant_override("separation", 16)
+	layout.add_child(content_row)
 
-	var info_panel := PanelContainer.new()
-	info_panel.name = "HeroSelectInfoPanel"
-	info_panel.custom_minimum_size = Vector2(0, 74)
-	info_panel.add_theme_stylebox_override("panel", _character_card_style())
-	layout.add_child(info_panel)
+	var portrait_panel := PanelContainer.new()
+	portrait_panel.name = "HeroSelectPortraitPanel"
+	portrait_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	portrait_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	portrait_panel.size_flags_stretch_ratio = 0.42
+	portrait_panel.add_theme_stylebox_override("panel", _hero_portrait_style())
+	content_row.add_child(portrait_panel)
 
-	var info_box := VBoxContainer.new()
-	info_box.add_theme_constant_override("separation", 2)
-	info_panel.add_child(info_box)
+	var portrait_box := VBoxContainer.new()
+	portrait_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	portrait_box.add_theme_constant_override("separation", 6)
+	portrait_panel.add_child(portrait_box)
 
-	var info_title := Label.new()
-	info_title.name = "HeroSelectInfoTitle"
-	info_title.text = "Наведи на героя"
-	info_title.add_theme_font_size_override("font_size", 17)
-	info_title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
-	info_box.add_child(info_title)
+	var large_portrait := TextureRect.new()
+	large_portrait.name = "HeroSelectLargePortrait"
+	large_portrait.custom_minimum_size = Vector2(320, 400)
+	large_portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	large_portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	large_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	large_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	large_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	portrait_box.add_child(large_portrait)
 
-	var info_desc := Label.new()
-	info_desc.name = "HeroSelectInfoDescription"
-	info_desc.text = "В нижней панели появятся роль, сильные стороны, слабости и базовые характеристики."
-	info_desc.add_theme_font_size_override("font_size", 13)
-	info_desc.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
-	info_desc.clip_text = true
-	info_box.add_child(info_desc)
+	var portrait_name := Label.new()
+	portrait_name.name = "HeroSelectPortraitName"
+	portrait_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	portrait_name.add_theme_font_size_override("font_size", 25)
+	portrait_name.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
+	portrait_box.add_child(portrait_name)
 
-	var info_stats := Label.new()
-	info_stats.name = "HeroSelectInfoStats"
-	info_stats.text = ""
-	info_stats.add_theme_font_size_override("font_size", 12)
-	info_stats.add_theme_color_override("font_color", Color(0.84, 0.78, 0.66, 0.96))
-	info_stats.clip_text = true
-	info_box.add_child(info_stats)
+	var dossier_panel := PanelContainer.new()
+	dossier_panel.name = "HeroSelectDossierPanel"
+	dossier_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dossier_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dossier_panel.size_flags_stretch_ratio = 0.58
+	dossier_panel.add_theme_stylebox_override("panel", _panel_style())
+	content_row.add_child(dossier_panel)
 
-	var info_labels := {"title": info_title, "description": info_desc, "stats": info_stats}
+	var dossier := VBoxContainer.new()
+	dossier.name = "HeroSelectDossier"
+	dossier.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dossier.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dossier.add_theme_constant_override("separation", 7)
+	dossier_panel.add_child(dossier)
 
-	# Селектор уровня возвышения (усложнение). Клампится к максимуму выбранного героя при пике.
+	var dossier_title := Label.new()
+	dossier_title.name = "HeroSelectInfoTitle"
+	dossier_title.add_theme_font_size_override("font_size", 29)
+	dossier_title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
+	dossier.add_child(dossier_title)
+
+	var dossier_desc := Label.new()
+	dossier_desc.name = "HeroSelectInfoDescription"
+	dossier_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dossier_desc.add_theme_font_size_override("font_size", 15)
+	dossier_desc.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
+	dossier.add_child(dossier_desc)
+
+	var dossier_traits := Label.new()
+	dossier_traits.name = "HeroSelectTraits"
+	dossier_traits.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dossier_traits.add_theme_font_size_override("font_size", 14)
+	dossier_traits.add_theme_color_override("font_color", Color(0.80, 0.92, 0.86, 1.0))
+	dossier.add_child(dossier_traits)
+
+	var weapons_label := Label.new()
+	weapons_label.name = "HeroSelectWeapons"
+	weapons_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	weapons_label.add_theme_font_size_override("font_size", 14)
+	weapons_label.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 1.0))
+	dossier.add_child(weapons_label)
+
 	var asc_row := HBoxContainer.new()
 	asc_row.name = "AscensionSelectorRow"
 	asc_row.add_theme_constant_override("separation", 10)
-	info_box.add_child(asc_row)
-	var asc_minus := _make_button("−")
+	dossier.add_child(asc_row)
+	var asc_minus := _make_button("-")
 	asc_minus.name = "AscensionMinusButton"
-	asc_minus.custom_minimum_size = Vector2(48, 40)
+	asc_minus.custom_minimum_size = Vector2(48, 38)
 	asc_row.add_child(asc_minus)
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
-	asc_label.custom_minimum_size = Vector2(200, 40)
+	asc_label.custom_minimum_size = Vector2(190, 38)
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_label.add_theme_font_size_override("font_size", 16)
+	asc_label.add_theme_font_size_override("font_size", 15)
 	asc_label.add_theme_color_override("font_color", Color(1.0, 0.78, 0.32, 1.0))
 	asc_row.add_child(asc_label)
 	var asc_plus := _make_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	asc_plus.custom_minimum_size = Vector2(48, 40)
+	asc_plus.custom_minimum_size = Vector2(48, 38)
 	asc_row.add_child(asc_plus)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
 	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	asc_mods.add_theme_font_size_override("font_size", 12)
+	asc_mods.add_theme_font_size_override("font_size", 11)
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	info_box.add_child(asc_mods)
+	asc_mods.custom_minimum_size = Vector2(0, 34)
+	dossier.add_child(asc_mods)
+
+	var radar := HeroStatRadar.new()
+	radar.name = "HeroStatRadar"
+	radar.custom_minimum_size = Vector2(350, 190)
+	radar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	radar.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dossier.add_child(radar)
+
+	var select_button := _make_button("Выбрать")
+	select_button.name = "HeroSelectChooseButton"
+	select_button.custom_minimum_size = Vector2(320, 50)
+	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	dossier.add_child(select_button)
+
+	var thumbnail_strip := HBoxContainer.new()
+	thumbnail_strip.name = "HeroThumbnailStrip"
+	thumbnail_strip.custom_minimum_size = Vector2(0, 96)
+	thumbnail_strip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	thumbnail_strip.add_theme_constant_override("separation", 8)
+	layout.add_child(thumbnail_strip)
+
+	var legacy_grid := GridContainer.new()
+	legacy_grid.name = "CharacterCardsGrid"
+	legacy_grid.columns = 3
+	legacy_grid.visible = false
+	legacy_grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(legacy_grid)
+
+	var stat_maxima := _hero_radar_global_maxima()
+	var character_ids: Array = game.PROGRESSION_DATA.character_ids()
+	if not character_ids.has(game.selected_character_id):
+		game.selected_character_id = str(character_ids[0])
+	var thumbnail_buttons: Array[Button] = []
+
 	var refresh_asc := func() -> void:
+		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(game.selected_character_id))
 		var lvl: int = game.selected_ascension_level
-		asc_label.text = "Возвышение: %d / 10" % lvl
+		asc_label.text = "Возвышение: %d / %d" % [lvl, game.ascension_selectable_max(game.selected_character_id)]
 		var lines: Array = game.PROGRESSION_DATA.ascension_modifier_lines(lvl)
-		asc_mods.text = "Усложнения отключены (уровень 0 = обычная игра)." if lines.is_empty() else "\n".join(lines)
+		asc_mods.text = "Обычная сложность." if lines.is_empty() else "\n".join(lines)
+
+	var select_character := func(character_id: String) -> void:
+		game.selected_character_id = character_id
+		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(character_id))
+		var config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
+		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(character_id)
+		var title := str(config.get("title", character_id))
+		large_portrait.texture = game._cached_texture(str(config.get("sprite_path", "")))
+		portrait_name.text = title
+		dossier_title.text = title
+		dossier_desc.text = str(config.get("description", ""))
+		dossier_traits.text = "Сильные: %s\nСлабые: %s" % [str(config.get("strengths", "")), str(config.get("weaknesses", ""))]
+		weapons_label.text = "Оружие: %s" % _hero_weapon_names(character_id)
+		radar.setup(stats, stat_maxima, game.PROGRESSION_DATA.STAT_NAMES, HERO_RADAR_STATS, HERO_CLASS_COLORS.get(character_id, Color(0.95, 0.78, 0.34, 0.82)))
+		for button in thumbnail_buttons:
+			var thumb_id := str(button.get_meta("character_id", ""))
+			button.button_pressed = thumb_id == character_id
+			button.add_theme_stylebox_override("normal", _card_hover_style() if thumb_id == character_id else _character_card_style())
+		refresh_asc.call()
+
 	asc_minus.pressed.connect(func() -> void:
 		game.selected_ascension_level = maxi(game.selected_ascension_level - 1, 0)
 		refresh_asc.call()
 	)
 	asc_plus.pressed.connect(func() -> void:
-		# Нельзя выбрать закрытый уровень: кап = максимум среди всех героев.
-		var cap := 0
-		for cid in game.PROGRESSION_DATA.character_ids():
-			cap = maxi(cap, game.ascension_selectable_max(str(cid)))
-		game.selected_ascension_level = mini(game.selected_ascension_level + 1, cap)
+		game.selected_ascension_level = mini(game.selected_ascension_level + 1, game.ascension_selectable_max(game.selected_character_id))
 		refresh_asc.call()
 	)
-	refresh_asc.call()
+	select_button.pressed.connect(func() -> void:
+		_show_weapon_select()
+	)
 
-	for character_id in game.PROGRESSION_DATA.character_ids():
-		_add_character_button(cards_grid, str(character_id), info_labels)
+	for character_id in character_ids:
+		var char_id := str(character_id)
+		var captured_id := char_id
+		var thumb := _make_hero_thumbnail_button(captured_id, select_character)
+		thumbnail_strip.add_child(thumb)
+		thumbnail_buttons.append(thumb)
+		var legacy_card := Button.new()
+		legacy_card.name = "CharacterCard_%s" % captured_id
+		legacy_card.set_meta("character_id", captured_id)
+		legacy_card.pressed.connect(func() -> void:
+			select_character.call(captured_id)
+		)
+		legacy_grid.add_child(legacy_card)
+	for index in range(thumbnail_buttons.size()):
+		var button := thumbnail_buttons[index]
+		button.focus_neighbor_left = thumbnail_buttons[(index - 1 + thumbnail_buttons.size()) % thumbnail_buttons.size()].get_path()
+		button.focus_neighbor_right = thumbnail_buttons[(index + 1) % thumbnail_buttons.size()].get_path()
 
+	select_character.call(game.selected_character_id)
+	if not thumbnail_buttons.is_empty():
+		thumbnail_buttons[0].grab_focus()
 	game.ui_escape_action = _show_main_menu
+
+
+func _make_hero_thumbnail_button(character_id: String, select_character: Callable) -> Button:
+	var config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
+	var button := Button.new()
+	button.name = "HeroThumbnail_%s" % character_id
+	button.toggle_mode = true
+	button.set_meta("character_id", character_id)
+	button.custom_minimum_size = Vector2(124, 88)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.tooltip_text = "%s\n%s" % [str(config.get("title", character_id)), str(config.get("description", ""))]
+	button.add_theme_stylebox_override("normal", _character_card_style())
+	button.add_theme_stylebox_override("hover", _card_hover_style())
+	button.add_theme_stylebox_override("pressed", _card_hover_style())
+	button.add_theme_stylebox_override("focus", _card_hover_style())
+	button.pressed.connect(func() -> void:
+		select_character.call(character_id)
+	)
+
+	var content := HBoxContainer.new()
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.add_theme_constant_override("separation", 6)
+	button.add_child(content)
+
+	var portrait := TextureRect.new()
+	portrait.name = "HeroThumbnailPortrait_%s" % character_id
+	portrait.texture = game._cached_texture(str(config.get("sprite_path", "")))
+	portrait.custom_minimum_size = Vector2(54, 72)
+	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(portrait)
+
+	var title := Label.new()
+	title.name = "HeroThumbnailTitle_%s" % character_id
+	title.text = str(config.get("title", character_id))
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title.add_theme_font_size_override("font_size", 13)
+	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(title)
+	return button
+
+
+func _hero_radar_global_maxima() -> Dictionary:
+	var maxima := {}
+	for stat_id in HERO_RADAR_STATS:
+		maxima[stat_id] = 1.0
+	for character_id in game.PROGRESSION_DATA.character_ids():
+		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(str(character_id))
+		for stat_id in HERO_RADAR_STATS:
+			maxima[stat_id] = max(float(maxima.get(stat_id, 1.0)), float(stats.get(stat_id, 0.0)))
+	return maxima
+
+
+func _hero_weapon_names(character_id: String) -> String:
+	var names := []
+	for weapon_id in game.PROGRESSION_DATA.weapon_ids(character_id):
+		var weapon: Dictionary = game.PROGRESSION_DATA.weapon(character_id, str(weapon_id))
+		names.append(str(weapon.get("title", weapon_id)))
+	return ", ".join(names)
 
 
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
@@ -1298,21 +1531,23 @@ func _show_reward_screen() -> void:
 
 func _show_level_up_screen(return_to_map := false) -> void:
 	game.level_up_return_to_map = return_to_map
-	var box := _create_level_up_menu_box("Повышение уровня", "Выбери 1 из 3 улучшений. Бой на паузе до выбора.")
+	var box := _create_level_up_menu_box("Повышение уровня", "Выбери 1 из 5 усилений. Один выбор за уровень.")
 	if not game.combat_active:
 		_create_menu_run_hud()
 
-	var rewards_row := HBoxContainer.new()
+	# HFlowContainer: 5 карточек в ряд на широком экране, 3+2 на узком.
+	var rewards_row := HFlowContainer.new()
 	rewards_row.name = "LevelUpRewardsRow"
-	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	rewards_row.alignment = FlowContainer.ALIGNMENT_CENTER
 	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rewards_row.custom_minimum_size = Vector2(0.0, 178.0)
-	rewards_row.add_theme_constant_override("separation", 18)
+	rewards_row.custom_minimum_size = Vector2(0.0, 260.0)
+	rewards_row.add_theme_constant_override("h_separation", 14)
+	rewards_row.add_theme_constant_override("v_separation", 12)
 	box.add_child(rewards_row)
 
 	# Набор фиксируется на полученный уровень: переоткрытие окна показывает то же.
 	if game.level_up_offer.is_empty():
-		game.level_up_offer = _random_level_up_rewards(3)
+		game.level_up_offer = _random_level_up_rewards(5)
 	var reward_buttons: Array[Button] = []
 	for reward in game.level_up_offer:
 		var button := _make_level_up_reward_button(reward)
@@ -1321,6 +1556,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 			_apply_reward_to_active_run(reward)
 			game.level_up_offer = []
 			game.pending_level_ups = maxi(game.pending_level_ups - 1, 0)
+			game.ui_escape_action = Callable()
 			_update_level_up_button()
 			if game.pending_level_ups > 0:
 				_show_level_up_screen(return_to_map)
@@ -1336,6 +1572,39 @@ func _show_level_up_screen(return_to_map := false) -> void:
 		)
 		rewards_row.add_child(button)
 		reward_buttons.append(button)
+
+	# Клавиатура/геймпад: фокус по карточкам стрелками по кругу, Enter/Space выбирают.
+	for index in range(reward_buttons.size()):
+		var card := reward_buttons[index]
+		var left := reward_buttons[(index - 1 + reward_buttons.size()) % reward_buttons.size()]
+		var right := reward_buttons[(index + 1) % reward_buttons.size()]
+		card.focus_neighbor_left = left.get_path()
+		card.focus_neighbor_right = right.get_path()
+	if not reward_buttons.is_empty():
+		reward_buttons[0].grab_focus()
+
+	# Отложенный выбор: «Позже» (и Escape) закрывают окно БЕЗ траты пика — набор
+	# зафиксирован, вернуться можно кнопкой повышения внизу экрана.
+	var defer_choice := func() -> void:
+		game.ui_escape_action = Callable()
+		game.level_up_return_to_map = false
+		game.pop_pause("level_up")
+		game._clear_ui()
+		if game.combat_active:
+			_create_hud()
+			_update_hud()
+			_update_level_up_button()
+		else:
+			game.route._show_battle_map()
+
+	var later_button := _make_button("Позже")
+	later_button.name = "LevelUpLaterButton"
+	later_button.custom_minimum_size = Vector2(220, 48)
+	later_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	later_button.tooltip_text = "Закрыть без выбора — пик сохранится, вернуться можно кнопкой повышения внизу."
+	later_button.pressed.connect(defer_choice)
+	box.add_child(later_button)
+	game.ui_escape_action = defer_choice
 
 	var panel := box.get_parent() as PanelContainer
 	var title_label := box.get_node_or_null("LevelUpTitle") as Label
@@ -1434,38 +1703,60 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 
 
 func _make_level_up_reward_button(reward: Dictionary) -> Button:
+	var is_rare := bool(reward.get("rare", false))
+	var rare_color: Color = TIER_COLORS[3]
 	var button := _make_button("")
-	button.custom_minimum_size = Vector2(320, 168)
+	button.custom_minimum_size = Vector2(210, 252)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.focus_mode = Control.FOCUS_ALL
 	button.clip_text = true
 	button.tooltip_text = _format_level_up_reward_text(reward)
 	_apply_fantasy_button_theme(button, "reward")
+	if is_rare:
+		# Редкий слот (основная характеристика): золотая рамка-обводка поверх темы.
+		var rare_frame := StyleBoxFlat.new()
+		rare_frame.bg_color = Color(0.10, 0.08, 0.02, 0.55)
+		rare_frame.set_border_width_all(3)
+		rare_frame.border_color = rare_color
+		rare_frame.set_corner_radius_all(10)
+		button.add_theme_stylebox_override("normal", rare_frame)
+		button.add_theme_stylebox_override("hover", rare_frame)
+		button.add_theme_stylebox_override("focus", rare_frame)
 
 	var content := VBoxContainer.new()
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content.offset_left = 14.0
-	content.offset_top = 12.0
-	content.offset_right = -14.0
-	content.offset_bottom = -12.0
+	content.offset_left = 12.0
+	content.offset_top = 10.0
+	content.offset_right = -12.0
+	content.offset_bottom = -10.0
 	content.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_theme_constant_override("separation", 6)
 	button.add_child(content)
+
+	if is_rare:
+		var rare_tag := Label.new()
+		rare_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		rare_tag.text = "★ ХАРАКТЕРИСТИКА"
+		rare_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		rare_tag.add_theme_font_size_override("font_size", 12)
+		rare_tag.add_theme_color_override("font_color", rare_color)
+		content.add_child(rare_tag)
 
 	var icon_row := HBoxContainer.new()
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(48, 48)))
+	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(56, 56)))
 
 	var title_label := Label.new()
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text = str(reward.get("title", "Upgrade"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 18)
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.91, 0.58, 1.0))
+	title_label.add_theme_font_size_override("font_size", 17)
+	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(1.0, 0.91, 0.58, 1.0))
 	content.add_child(title_label)
 
 	var preview_label := Label.new()
@@ -2149,13 +2440,21 @@ func _weighted_sample(pool: Array, count: int) -> Array:
 	return picked
 
 
+const MAIN_STAT_SLOT_CHANCE := 0.13
+
+
 func _random_level_up_rewards(count: int) -> Array:
-	var pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
+	# Микс: улучшения оружия/класса/вторичных атрибутов + РЕДКО (~13% на слот)
+	# основная характеристика. Набор уникален и фиксируется на уровень.
+	var regular_pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
+	var stat_pool: Array = game.PROGRESSION_DATA.main_stat_level_up_rewards(game.selected_character_id)
 	var rewards := []
-	while rewards.size() < count and not pool.is_empty():
-		var index = game.rng.randi_range(0, pool.size() - 1)
-		rewards.append(pool[index])
-		pool.remove_at(index)
+	while rewards.size() < count and (not regular_pool.is_empty() or not stat_pool.is_empty()):
+		var want_rare: bool = not stat_pool.is_empty() and float(game.rng.randf()) < MAIN_STAT_SLOT_CHANCE
+		var source: Array = stat_pool if (want_rare or regular_pool.is_empty()) else regular_pool
+		var index: int = game.rng.randi_range(0, source.size() - 1)
+		rewards.append(source[index])
+		source.remove_at(index)
 	return rewards
 
 
@@ -2230,19 +2529,26 @@ func _update_level_up_button() -> void:
 		return
 
 	if game.level_up_button == null or not is_instance_valid(game.level_up_button):
+		# Заметная кнопка возврата внизу по центру: непотраченные пики не теряются.
 		game.level_up_button = Button.new()
 		game.level_up_button.name = "LevelUpPlusButton"
 		game.level_up_button.process_mode = Node.PROCESS_MODE_ALWAYS
-		game.level_up_button.position = Vector2(1480, 786)
-		game.level_up_button.size = Vector2(88, 88)
-		game.level_up_button.custom_minimum_size = Vector2(88, 88)
-		game.level_up_button.tooltip_text = "Открыть выбор улучшения"
-		game.level_up_button.add_theme_font_size_override("font_size", 32)
+		game.level_up_button.anchor_left = 0.5
+		game.level_up_button.anchor_right = 0.5
+		game.level_up_button.anchor_top = 1.0
+		game.level_up_button.anchor_bottom = 1.0
+		game.level_up_button.offset_left = -180.0
+		game.level_up_button.offset_right = 180.0
+		game.level_up_button.offset_top = -86.0
+		game.level_up_button.offset_bottom = -26.0
+		game.level_up_button.custom_minimum_size = Vector2(360, 60)
+		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
+		game.level_up_button.add_theme_font_size_override("font_size", 22)
 		_apply_fantasy_button_theme(game.level_up_button, "level_up")
 		game.level_up_button.pressed.connect(_open_pending_level_up)
 		game.hud_layer.add_child(game.level_up_button)
 
-	game.level_up_button.text = "+" if game.pending_level_ups == 1 else "+%d" % game.pending_level_ups
+	game.level_up_button.text = "Повышение уровня (%d)" % game.pending_level_ups
 
 
 func _level_up_affinity_suffix(reward: Dictionary) -> String:

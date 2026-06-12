@@ -1325,6 +1325,22 @@ static func level_up_rewards(character_id := "") -> Array:
 	return rewards
 
 
+static func main_stat_level_up_rewards(_character_id := "") -> Array:
+	# Редкий пул level-up: рост основной характеристики на +1. Помечены rare=true
+	# для визуального выделения; классовая интерпретация считается на карточке.
+	var rewards := []
+	for stat_id in STAT_NAMES.keys():
+		rewards.append({
+			"id": "levelup_stat_%s" % stat_id,
+			"title": "%s +1" % STAT_NAMES[stat_id],
+			"description": "Редкий рост основной характеристики: +1 к параметру «%s»." % STAT_NAMES[stat_id],
+			"kind": "stat",
+			"stats": {stat_id: 1.0},
+			"rare": true,
+		})
+	return rewards
+
+
 static func shop_items(route_stage := 0) -> Array:
 	var items := []
 	for item in SHOP_ITEMS:

@@ -487,6 +487,9 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
 		if combat_active:
 			if _has_pause_reason("level_up"):
+				# Escape во время level-up = «Позже»: закрыть без траты пика.
+				if ui_escape_action.is_valid():
+					ui_escape_action.call()
 				return
 			if pause_stats_menu != null and is_instance_valid(pause_stats_menu):
 				ui._resume_game()

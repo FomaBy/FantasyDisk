@@ -235,29 +235,58 @@ func _initialize() -> void:
 		quit(1)
 		return
 	if main.find_child("CharacterCardsScroll", true, false) != null:
-		push_error("Expected fullscreen hero select to show all 9 cards without a scroll container.")
+		push_error("Expected hero select v3 to avoid scroll containers.")
 		quit(1)
 		return
-	var hero_grid := main.find_child("CharacterCardsGrid", true, false) as GridContainer
-	if hero_grid == null or hero_grid.columns != 3:
-		push_error("Expected character select to use a 3x3 hero grid.")
+	var large_portrait := main.find_child("HeroSelectLargePortrait", true, false) as TextureRect
+	if large_portrait == null or large_portrait.texture == null:
+		push_error("Expected hero select v3 to show a large selected hero portrait.")
 		quit(1)
 		return
-	if hero_grid.get_child_count() != 9:
-		push_error("Expected character select to show 9 hero cards at once.")
+	var dossier := main.find_child("HeroSelectDossierPanel", true, false) as PanelContainer
+	if dossier == null:
+		push_error("Expected hero select v3 to show a dossier panel.")
+		quit(1)
+		return
+	var radar := main.find_child("HeroStatRadar", true, false) as Control
+	if radar == null or radar.custom_minimum_size.x < 300.0:
+		push_error("Expected hero select v3 to build a readable stat radar.")
+		quit(1)
+		return
+	var thumbnail_strip := main.find_child("HeroThumbnailStrip", true, false) as HBoxContainer
+	if thumbnail_strip == null or thumbnail_strip.get_child_count() != 9:
+		push_error("Expected hero select v3 to show a 9-hero thumbnail strip.")
 		quit(1)
 		return
 	for character_id in ProgressionData.character_ids():
-		var card := main.find_child("CharacterCard_%s" % character_id, true, false) as Button
-		if card == null or card.tooltip_text == "":
-			push_error("Expected character card with stats tooltip for %s." % character_id)
+		var thumb := main.find_child("HeroThumbnail_%s" % character_id, true, false) as Button
+		if thumb == null or thumb.tooltip_text == "":
+			push_error("Expected hero thumbnail with tooltip for %s." % character_id)
 			quit(1)
 			return
-		var portrait := main.find_child("CharacterPortrait_%s" % character_id, true, false) as TextureRect
+		thumb.pressed.emit()
+		await process_frame
+		if str(main.get("selected_character_id")) != str(character_id):
+			push_error("Expected clicking hero thumbnail to select %s." % character_id)
+			quit(1)
+			return
+		var portrait := main.find_child("HeroSelectLargePortrait", true, false) as TextureRect
 		if portrait == null or portrait.texture == null:
-			push_error("Expected character select to show portrait for %s." % character_id)
+			push_error("Expected selected hero portrait to update for %s." % character_id)
 			quit(1)
 			return
+	var choose_button := main.find_child("HeroSelectChooseButton", true, false) as Button
+	if choose_button == null:
+		push_error("Expected hero select v3 to expose a choose button.")
+		quit(1)
+		return
+	main.set("selected_character_id", "berserk")
+	choose_button.pressed.emit()
+	await process_frame
+	if main.find_child("HeroSelectScreen", true, false) != null or main.find_child("HeroSelectChooseButton", true, false) != null:
+		push_error("Expected hero choose button to advance to weapon select.")
+		quit(1)
+		return
 	if ProgressionData.reward_pool().size() < 28:
 		push_error("Expected expanded working artifact/reward pool.")
 		quit(1)
@@ -689,14 +718,6 @@ func _initialize() -> void:
 		push_error("Expected enemy spawns to stop during level-up pause.")
 		quit(1)
 		return
-	var escape_during_level_up := InputEventKey.new()
-	escape_during_level_up.keycode = KEY_ESCAPE
-	escape_during_level_up.pressed = true
-	main.call("_input", escape_during_level_up)
-	if not paused or not bool(main.call("_has_pause_reason", "level_up")):
-		push_error("Expected Esc not to cancel the level-up choice pause.")
-		quit(1)
-		return
 	if main.get("ui_layer") == null:
 		push_error("Expected level-up to open a reward UI while paused.")
 		quit(1)
@@ -721,15 +742,16 @@ func _initialize() -> void:
 		push_error("Expected level-up screen to include the selected hero portrait.")
 		quit(1)
 		return
+	# Переработка: ровно 5 вариантов за уровень.
 	var level_up_buttons := level_up_overlay.find_children("LevelUpRewardButton*", "Button", true, false)
-	if level_up_buttons.size() != 3:
-		push_error("Expected level-up to animate exactly three reward buttons.")
+	if level_up_buttons.size() != 5:
+		push_error("Expected level-up to animate exactly five reward buttons.")
 		quit(1)
 		return
 	for button_index in range(level_up_buttons.size()):
 		var reward_button := level_up_buttons[button_index] as Button
 		var button_rect := reward_button.get_global_rect()
-		if button_rect.size.x < 250.0 or button_rect.size.y < 120.0:
+		if button_rect.size.x < 190.0 or button_rect.size.y < 120.0:
 			push_error("Expected level-up reward buttons to keep readable card dimensions.")
 			quit(1)
 			return
@@ -741,12 +763,36 @@ func _initialize() -> void:
 			push_error("Expected level-up reward buttons to use stylized FantasyDisk button states.")
 			quit(1)
 			return
-		for compare_index in range(button_index + 1, level_up_buttons.size()):
-			var compare_rect := (level_up_buttons[compare_index] as Button).get_global_rect()
-			if button_rect.intersects(compare_rect):
-				push_error("Expected level-up reward buttons to stay separated instead of collapsing into one stack.")
-				quit(1)
-				return
+
+	# Отложенный выбор: Escape закрывает окно БЕЗ траты пика (пик сохраняется),
+	# внизу появляется заметная кнопка возврата к тому же набору.
+	var pending_before_defer := int(main.get("pending_level_ups"))
+	var escape_during_level_up := InputEventKey.new()
+	escape_during_level_up.keycode = KEY_ESCAPE
+	escape_during_level_up.pressed = true
+	main.call("_input", escape_during_level_up)
+	await process_frame
+	if bool(main.call("_has_pause_reason", "level_up")):
+		push_error("Expected Esc to defer (close) the level-up without keeping it paused.")
+		quit(1)
+		return
+	if int(main.get("pending_level_ups")) != pending_before_defer:
+		push_error("Expected deferred level-up to preserve the unspent pick.")
+		quit(1)
+		return
+	var return_button := main.find_child("LevelUpPlusButton", true, false) as Button
+	if return_button == null or not String(return_button.text).contains("Повышение"):
+		push_error("Expected a labelled level-up return button after deferring.")
+		quit(1)
+		return
+	# Возврат к тому же зафиксированному набору.
+	main.call("_open_pending_level_up")
+	await process_frame
+	var reopened := (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay")
+	if reopened == null or reopened.find_children("LevelUpRewardButton*", "Button", true, false).size() != 5:
+		push_error("Expected the return button to reopen the same fixed set of five rewards.")
+		quit(1)
+		return
 	var loop_guard := 0
 	while int(main.get("pending_level_ups")) > 0 and loop_guard < 8:
 		var active_overlay := (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay")
@@ -2693,17 +2739,47 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 	fix_main.ui._show_level_up_screen(true)
 	await process_frame
 	var first_offer: Array = (fix_main.get("level_up_offer") as Array).duplicate(true)
-	if first_offer.size() != 3:
-		_fail("Expected a fixed set of three level-up rewards.")
+	if first_offer.size() != 5:
+		_fail("Expected a fixed set of five level-up rewards.")
 		return
 	fix_main.call("_clear_ui")
 	fix_main.ui._show_level_up_screen(true)
 	await process_frame
 	var second_offer: Array = fix_main.get("level_up_offer")
-	for offer_index in range(3):
+	for offer_index in range(5):
 		if str((first_offer[offer_index] as Dictionary).get("id")) != str((second_offer[offer_index] as Dictionary).get("id")):
 			_fail("Expected reopening the level-up window to keep the same reward set.")
 			return
+
+	# 4b. Состав 5 вариантов: уникальность + РЕДКОСТЬ основной характеристики (~10-15%/слот).
+	#     Большой детерминированный сэмпл; редкие помечены rare=true + kind "stat".
+	(fix_main.get("rng") as RandomNumberGenerator).seed = 90125
+	var rare_slots := 0
+	var total_slots := 0
+	var draws := 400
+	for _draw in range(draws):
+		var offer: Array = fix_main.ui._random_level_up_rewards(5)
+		if offer.size() != 5:
+			_fail("Expected level-up generator to always return five options.")
+			return
+		var seen_ids := {}
+		for entry in offer:
+			var reward: Dictionary = entry
+			var rid := str(reward.get("id"))
+			if seen_ids.has(rid):
+				_fail("Expected level-up options within a draw to be unique.")
+				return
+			seen_ids[rid] = true
+			total_slots += 1
+			if bool(reward.get("rare", false)):
+				rare_slots += 1
+				if str(reward.get("kind")) != "stat" or not (reward.get("stats", {}) as Dictionary).size() > 0:
+					_fail("Expected rare level-up slot to be a main-characteristic stat reward.")
+					return
+	var rare_fraction := float(rare_slots) / float(total_slots)
+	if rare_fraction < 0.05 or rare_fraction > 0.25:
+		_fail("Expected rare main-characteristic frequency near 10-15%%, got %.1f%%." % (rare_fraction * 100.0))
+		return
 
 	# 5. Фиксация пары атрибутов: переоткрытие окна докачки не реролит бесплатно.
 	var fix_player := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
@@ -3057,20 +3133,29 @@ func _test_escape_navigation(main_scene: PackedScene) -> void:
 		_fail("Expected Escape on codex to return to the main menu.")
 		return
 
-	# Карточка персонажа кликабельна целиком (Button) и с hover-стилем.
+	# Hero select v3: миниатюра выбирает героя, кнопка «Выбрать» открывает оружие.
 	nav_main.call("_show_character_select")
 	await process_frame
-	var card := nav_main.find_child("CharacterCard_berserk", true, false) as Button
+	var card := nav_main.find_child("HeroThumbnail_berserk", true, false) as Button
 	if card == null:
-		_fail("Expected the whole character card to be a clickable Button.")
+		_fail("Expected hero thumbnail to be a clickable Button.")
 		return
 	if not card.has_theme_stylebox_override("hover"):
-		_fail("Expected the character card to carry a hover highlight style.")
+		_fail("Expected the hero thumbnail to carry a hover highlight style.")
 		return
 	card.pressed.emit()
 	await process_frame
-	if nav_main.find_child("CharacterCard_berserk", true, false) != null:
-		_fail("Expected clicking the character card body to advance to weapon select.")
+	if str(nav_main.get("selected_character_id")) != "berserk":
+		_fail("Expected clicking the hero thumbnail to select the hero.")
+		return
+	var choose := nav_main.find_child("HeroSelectChooseButton", true, false) as Button
+	if choose == null:
+		_fail("Expected hero select to keep a choose button.")
+		return
+	choose.pressed.emit()
+	await process_frame
+	if nav_main.find_child("HeroSelectScreen", true, false) != null:
+		_fail("Expected clicking choose to advance to weapon select.")
 		return
 
 	nav_main.queue_free()
