@@ -1009,9 +1009,60 @@ func _initialize() -> void:
 	await _test_enemy_stage_scaling_and_elite_rewards(main_scene)
 	await _test_ultimate_framework()
 	await _test_death_flow(main_scene)
+	await _test_epic_elite_boss_scale_hitbox()
 
 	print("Runtime smoke test passed.")
 	quit()
+
+
+func _test_epic_elite_boss_scale_hitbox() -> void:
+	# Элитки/боссы крупнее, хитбоксы согласованы: node scale тянет визуал +
+	# CollisionShape2D + contact_range вместе. Проверяем масштаб и что collision-
+	# радиус близок к видимому силуэту (нет «урона по воздуху» и непопадания вплотную).
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+
+	# Базовый моб для эталонного contact_range.
+	var mob := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate() as Node2D
+	holder.add_child(mob)
+	await process_frame
+	var mob_contact := float(mob.get("contact_range"))
+
+	var cases := {
+		"res://scenes/EliteArmored.tscn": 1.4,
+		"res://scenes/BossDiskDevourer.tscn": 1.9,
+	}
+	for scene_path in cases.keys():
+		var expected_scale: float = cases[scene_path]
+		var unit := (load(scene_path) as PackedScene).instantiate() as Node2D
+		holder.add_child(unit)
+		await process_frame
+		if absf(unit.scale.x - expected_scale) > 0.001 or absf(unit.scale.y - expected_scale) > 0.001:
+			_fail("Expected %s epic node scale %.2f, got %.2f." % [scene_path, expected_scale, unit.scale.x])
+			return
+		# Хитбокс vs силуэт: эффективный радиус CollisionShape близок к видимому.
+		var shape_node := unit.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if shape_node == null or shape_node.shape == null:
+			_fail("Expected %s to keep a CollisionShape2D." % scene_path)
+			return
+		var effective_radius: float = float(shape_node.shape.get("radius")) * unit.scale.x
+		var body := unit.get_node_or_null("Body") as Sprite2D
+		if body == null:
+			body = unit.get_node_or_null("Sprite2D") as Sprite2D
+		var visible_radius: float = body.texture.get_size().x * body.scale.x * unit.scale.x * 0.5
+		var ratio := effective_radius / maxf(visible_radius, 1.0)
+		if ratio < 0.45 or ratio > 1.25:
+			_fail("Expected %s collision radius to match silhouette (ratio %.2f, no air/point-blank gap)." % [scene_path, ratio])
+			return
+		# Контакт-урон крупнее моба (растёт с силуэтом).
+		if float(unit.get("contact_range")) <= mob_contact:
+			_fail("Expected %s contact_range to exceed a base mob's (%.1f vs %.1f)." % [scene_path, float(unit.get("contact_range")), mob_contact])
+			return
+		unit.queue_free()
+	holder.queue_free()
+	current_scene = null
+	await process_frame
 
 
 func _find_player_weapon(player: Node) -> Node:

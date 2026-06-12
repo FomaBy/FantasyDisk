@@ -108,6 +108,13 @@ const ELITE_ATTACK_CONFIG := {
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
 
+# Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
+# contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
+# согласованно одним множителем. Авторские body.scale: моб 0.42, элитка/босс 0.52.
+# Элитка 0.52*1.4=0.728 ≈ 1.73x моба; босс 0.52*1.9=0.988 ≈ 2.35x моба.
+const EPIC_ELITE_SCALE := 1.4
+const EPIC_BOSS_SCALE := 1.9
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -120,12 +127,31 @@ func _ready() -> void:
 		elite_behavior = enemy_type_name.to_lower().replace(" ", "_")
 	if elite_behavior != "":
 		set_meta("elite_behavior", elite_behavior)
+	_apply_epic_scale()
 	_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
 	_create_health_bar()
 	if ELITE_ATTACK_CONFIG.has(elite_behavior):
 		elite_attack_id = str(ELITE_ATTACK_CONFIG[elite_behavior]["attack_id"])
 		_elite_attack_cooldown = randf_range(2.2, 3.6)
+
+
+func _epic_scale_factor() -> float:
+	var lname := enemy_type_name.to_lower()
+	if lname.contains("warden") or lname.contains("devourer") or is_in_group("bosses"):
+		return EPIC_BOSS_SCALE
+	if is_in_group("elite_enemies") or elite_behavior != "":
+		return EPIC_ELITE_SCALE
+	return 1.0
+
+
+func _apply_epic_scale() -> void:
+	# Элитки/боссы крупнее и страшнее: один node scale тянет визуал, хитбокс,
+	# contact_range и health-bar вместе — «урона по воздуху» по гиганту не будет.
+	var factor := _epic_scale_factor()
+	if is_equal_approx(factor, 1.0):
+		return
+	scale = Vector2(factor, factor)
 
 
 func _apply_collision_profile() -> void:
