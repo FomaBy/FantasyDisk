@@ -457,7 +457,7 @@
  },
  "design_codex_elite_boss_sprite_resolution_upscale_task.md": {
   "key": "SCRUM-135",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "qa_recheck_backend_ascension_difficulty_ladder_task.md": {
   "key": "SCRUM-136",
@@ -489,7 +489,7 @@
  },
  "backend_escape_pause_character_overview_anywhere_task.md": {
   "key": "SCRUM-146",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "design_codex_ui_dark_fantasy_restyle_task.md": {
   "key": "SCRUM-147",
@@ -497,10 +497,22 @@
  },
  "backend_victory_screen_player_facing_text_task.md": {
   "key": "SCRUM-148",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_survivability_rebalance_vampirism_nerf_weighted_levelup_task.md": {
   "key": "SCRUM-149",
+  "status": "В работе"
+ },
+ "backend_meta_skill_tree_task.md": {
+  "key": "SCRUM-150",
+  "status": "К выполнению"
+ },
+ "backend_settings_volume_slider_ux_task.md": {
+  "key": "SCRUM-151",
+  "status": "К выполнению"
+ },
+ "design_codex_summon_allies_sprites_task.md": {
+  "key": "SCRUM-152",
   "status": "К выполнению"
  }
 }
