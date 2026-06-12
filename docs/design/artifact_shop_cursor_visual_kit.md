@@ -74,6 +74,7 @@ User feedback rework 2026-06-12: artifact icons поштучно переген�
 | `leech_heart` | Сердце Пиявки | `assets/sprites/ui/icons/artifacts/artifact_leech_heart.png` |
 | `thorn_pact` | Договор Шипов | `assets/sprites/ui/icons/artifacts/artifact_thorn_pact.png` |
 | `phantom_step` | Призрачный Шаг | `assets/sprites/ui/icons/artifacts/artifact_phantom_step.png` |
+| `leech_fang` | Клык Пиявки | `assets/sprites/ui/icons/artifacts/artifact_leech_fang.png` |
 
 ## Shop-Only Icon Mapping
 
