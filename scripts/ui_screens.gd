@@ -131,47 +131,125 @@ func _show_character_select() -> void:
 	game.route_nodes = game.route._generate_route()
 	game.current_shop_items.clear()
 	game.current_shop_purchased.clear()
-	var box := _create_menu_box("Выбор героя", "Выбери стиль боя для этого забега.")
+	game._clear_ui()
 
-	# Расширяем панель под 2-колоночную сетку 9 героев (2×600 + 14 sep + 56 margins = ~1310px).
-	var panel := box.get_parent() as PanelContainer
-	if panel != null:
-		panel.offset_left = -680.0
-		panel.offset_right = 680.0
-		panel.offset_top = -420.0
-		panel.offset_bottom = 420.0
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
 
-	# 9 классов: скроллируемая сетка 2 колонки, карточки целиком кликабельны.
-	var cards_scroll := ScrollContainer.new()
-	cards_scroll.name = "CharacterCardsScroll"
-	cards_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	cards_scroll.custom_minimum_size = Vector2(1240, 560)
-	box.add_child(cards_scroll)
-	var cards_grid := GridContainer.new()
-	cards_grid.name = "CharacterCardsGrid"
-	cards_grid.columns = 2
-	cards_grid.add_theme_constant_override("h_separation", 14)
-	cards_grid.add_theme_constant_override("v_separation", 12)
-	cards_scroll.add_child(cards_grid)
+	var root := Control.new()
+	root.name = "HeroSelectScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.ui_layer.add_child(root)
 
-	for character_id in game.PROGRESSION_DATA.character_ids():
-		var config = game.PROGRESSION_DATA.character_config(str(character_id))
-		var stats = game.PROGRESSION_DATA.base_stats(str(character_id))
-		_add_character_button(
-			cards_grid,
-			str(config["title"]),
-			"%s\nСильные: %s\nСлабые: %s\n%s" % [
-				str(config["description"]),
-				str(config["strengths"]),
-				str(config["weaknesses"]),
-				game.PROGRESSION_DATA.display_stats(stats),
-			],
-			str(character_id)
-		)
+	var background := TextureRect.new()
+	background.name = "HeroSelectBackground"
+	background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	background.texture = game._cached_texture(game.MAIN_MENU_BACKGROUND)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(background)
+
+	var shade := ColorRect.new()
+	shade.name = "HeroSelectShade"
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.color = Color(0.015, 0.018, 0.028, 0.62)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(shade)
+
+	var margins := MarginContainer.new()
+	margins.name = "HeroSelectMargins"
+	margins.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margins.add_theme_constant_override("margin_left", 24)
+	margins.add_theme_constant_override("margin_top", 18)
+	margins.add_theme_constant_override("margin_right", 24)
+	margins.add_theme_constant_override("margin_bottom", 18)
+	root.add_child(margins)
+
+	var layout := VBoxContainer.new()
+	layout.name = "HeroSelectLayout"
+	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	layout.add_theme_constant_override("separation", 12)
+	margins.add_child(layout)
+
+	var header := HBoxContainer.new()
+	header.name = "HeroSelectHeader"
+	header.custom_minimum_size = Vector2(0, 58)
+	header.add_theme_constant_override("separation", 16)
+	layout.add_child(header)
+
+	var title_box := VBoxContainer.new()
+	title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_box.add_theme_constant_override("separation", 2)
+	header.add_child(title_box)
+
+	var title_label := Label.new()
+	title_label.text = "Выбор героя"
+	title_label.add_theme_font_size_override("font_size", 38)
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
+	title_box.add_child(title_label)
+
+	var subtitle_label := Label.new()
+	subtitle_label.text = "9 классов видны сразу. Наведи на героя, чтобы увидеть характеристики."
+	subtitle_label.add_theme_font_size_override("font_size", 15)
+	subtitle_label.add_theme_color_override("font_color", Color(0.82, 0.88, 0.94, 0.92))
+	title_box.add_child(subtitle_label)
 
 	var back_button := _make_button("Назад")
+	back_button.name = "HeroSelectBackButton"
+	back_button.custom_minimum_size = Vector2(150, 50)
 	back_button.pressed.connect(_show_main_menu)
-	box.add_child(back_button)
+	header.add_child(back_button)
+
+	var cards_grid := GridContainer.new()
+	cards_grid.name = "CharacterCardsGrid"
+	cards_grid.columns = 3
+	cards_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cards_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	cards_grid.add_theme_constant_override("h_separation", 12)
+	cards_grid.add_theme_constant_override("v_separation", 10)
+	layout.add_child(cards_grid)
+
+	var info_panel := PanelContainer.new()
+	info_panel.name = "HeroSelectInfoPanel"
+	info_panel.custom_minimum_size = Vector2(0, 74)
+	info_panel.add_theme_stylebox_override("panel", _character_card_style())
+	layout.add_child(info_panel)
+
+	var info_box := VBoxContainer.new()
+	info_box.add_theme_constant_override("separation", 2)
+	info_panel.add_child(info_box)
+
+	var info_title := Label.new()
+	info_title.name = "HeroSelectInfoTitle"
+	info_title.text = "Наведи на героя"
+	info_title.add_theme_font_size_override("font_size", 17)
+	info_title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
+	info_box.add_child(info_title)
+
+	var info_desc := Label.new()
+	info_desc.name = "HeroSelectInfoDescription"
+	info_desc.text = "В нижней панели появятся роль, сильные стороны, слабости и базовые характеристики."
+	info_desc.add_theme_font_size_override("font_size", 13)
+	info_desc.add_theme_color_override("font_color", Color(0.86, 0.9, 0.95, 1.0))
+	info_desc.clip_text = true
+	info_box.add_child(info_desc)
+
+	var info_stats := Label.new()
+	info_stats.name = "HeroSelectInfoStats"
+	info_stats.text = ""
+	info_stats.add_theme_font_size_override("font_size", 12)
+	info_stats.add_theme_color_override("font_color", Color(0.72, 0.80, 0.88, 0.96))
+	info_stats.clip_text = true
+	info_box.add_child(info_stats)
+
+	var info_labels := {"title": info_title, "description": info_desc, "stats": info_stats}
+
+	for character_id in game.PROGRESSION_DATA.character_ids():
+		_add_character_button(cards_grid, str(character_id), info_labels)
+
 	game.ui_escape_action = _show_main_menu
 
 
@@ -889,77 +967,117 @@ func _end_current_run_by_player() -> void:
 	_show_death_screen("Забег завершен игроком.")
 
 
-func _add_character_button(box: Container, title: String, description: String, character_id: String) -> void:
-	var config = game.PROGRESSION_DATA.character_config(character_id)
+func _add_character_button(box: Container, character_id: String, info_labels: Dictionary) -> void:
+	var config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
+	var stats: Dictionary = game.PROGRESSION_DATA.base_stats(character_id)
+	var title := str(config.get("title", character_id))
+	var description := str(config.get("description", ""))
+	var strengths := str(config.get("strengths", ""))
+	var weaknesses := str(config.get("weaknesses", ""))
+	var stats_text: String = game.PROGRESSION_DATA.display_stats(stats)
 	# Вся карточка — одна кнопка: клик в любом месте, hover подсвечивает рамку.
 	var card := Button.new()
 	card.name = "CharacterCard_%s" % character_id
-	card.custom_minimum_size = Vector2(600, 140)
+	card.custom_minimum_size = Vector2(300, 150)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	card.clip_contents = true
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	card.tooltip_text = "%s\n%s\nСильные: %s\nСлабые: %s\n%s" % [title, description, strengths, weaknesses, stats_text]
 	card.add_theme_stylebox_override("normal", _character_card_style())
 	card.add_theme_stylebox_override("hover", _card_hover_style())
 	card.add_theme_stylebox_override("pressed", _card_hover_style())
 	card.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	card.mouse_entered.connect(func() -> void:
+		_update_hero_select_info(info_labels, title, description, strengths, weaknesses, stats_text)
+	)
 	card.pressed.connect(func() -> void:
 		game.selected_character_id = character_id
 		_show_weapon_select()
 	)
 	box.add_child(card)
 
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 18)
-	row.set_anchors_preset(Control.PRESET_FULL_RECT)
-	row.offset_left = 14.0
-	row.offset_top = 10.0
-	row.offset_right = -14.0
-	row.offset_bottom = -10.0
-	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_child(row)
+	var margin := MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_bottom", 8)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(margin)
+
+	var column := VBoxContainer.new()
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_theme_constant_override("separation", 3)
+	margin.add_child(column)
 
 	var portrait := TextureRect.new()
 	portrait.name = "CharacterPortrait_%s" % character_id
 	portrait.texture = game._cached_texture(str(config.get("sprite_path", "")))
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait.custom_minimum_size = Vector2(128, 128)
+	portrait.custom_minimum_size = Vector2(0, 96)
+	portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	row.add_child(portrait)
-
-	var text_box := VBoxContainer.new()
-	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	text_box.add_theme_constant_override("separation", 4)
-	row.add_child(text_box)
+	column.add_child(portrait)
 
 	var title_label := Label.new()
+	title_label.name = "CharacterTitle_%s" % character_id
 	title_label.text = title
-	title_label.add_theme_font_size_override("font_size", 22)
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 20)
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
-	text_box.add_child(title_label)
+	title_label.clip_text = true
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(title_label)
 
-	var details := Label.new()
-	details.text = description
-	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	details.add_theme_font_size_override("font_size", 14)
-	details.add_theme_color_override("font_color", Color(0.88, 0.92, 0.96, 1.0))
-	text_box.add_child(details)
+	var style_line := _hero_card_line(description, 13, Color(0.88, 0.92, 0.96, 1.0))
+	style_line.name = "CharacterStyle_%s" % character_id
+	column.add_child(style_line)
+
+	var strengths_line := _hero_card_line("Сильные: %s" % strengths, 12, Color(0.70, 0.95, 0.78, 1.0))
+	strengths_line.name = "CharacterStrengths_%s" % character_id
+	column.add_child(strengths_line)
+
+	var weaknesses_line := _hero_card_line("Слабые: %s" % weaknesses, 12, Color(0.95, 0.72, 0.70, 1.0))
+	weaknesses_line.name = "CharacterWeaknesses_%s" % character_id
+	column.add_child(weaknesses_line)
 
 	var ascension_level = game.ascension_level_for(character_id)
 	if ascension_level > 0:
 		var ascension_label := Label.new()
 		ascension_label.name = "CharacterAscension_%s" % character_id
 		ascension_label.text = "Возвышение: %d/10" % ascension_level
-		ascension_label.add_theme_font_size_override("font_size", 13)
+		ascension_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		ascension_label.add_theme_font_size_override("font_size", 11)
 		ascension_label.add_theme_color_override("font_color", Color(0.78, 0.58, 1.0, 1.0))
-		text_box.add_child(ascension_label)
+		ascension_label.clip_text = true
+		ascension_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		column.add_child(ascension_label)
 
-	var select_hint := Label.new()
-	select_hint.text = "▶"
-	select_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	select_hint.add_theme_font_size_override("font_size", 30)
-	select_hint.add_theme_color_override("font_color", Color(0.95, 0.78, 0.32, 0.9))
-	select_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(select_hint)
+
+func _hero_card_line(text: String, font_size: int, color: Color) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
+	label.clip_text = true
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return label
+
+
+func _update_hero_select_info(info_labels: Dictionary, title: String, description: String, strengths: String, weaknesses: String, stats_text: String) -> void:
+	var title_label := info_labels.get("title") as Label
+	var description_label := info_labels.get("description") as Label
+	var stats_label := info_labels.get("stats") as Label
+	if title_label != null:
+		title_label.text = title
+	if description_label != null:
+		description_label.text = "%s  |  Сильные: %s  |  Слабые: %s" % [description, strengths, weaknesses]
+	if stats_label != null:
+		stats_label.text = stats_text
 
 
 func _show_weapon_select() -> void:
