@@ -514,5 +514,21 @@
  "design_codex_summon_allies_sprites_task.md": {
   "key": "SCRUM-152",
   "status": "К выполнению"
+ },
+ "backend_drop_economy_rebalance_task.md": {
+  "key": "SCRUM-153",
+  "status": "К выполнению"
+ },
+ "backend_music_tavern_ambient_task.md": {
+  "key": "SCRUM-154",
+  "status": "К выполнению"
+ },
+ "backend_new_bosses_mini_elites_roster_task.md": {
+  "key": "SCRUM-155",
+  "status": "К выполнению"
+ },
+ "design_codex_new_bosses_mini_elites_sprites_task.md": {
+  "key": "SCRUM-156",
+  "status": "К выполнению"
  }
 }
