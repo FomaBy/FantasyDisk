@@ -5,22 +5,23 @@
 
 `unknown` — задача создана до введения доски, статус в файле не указан; уточняется при следующем контакте с исполнителем.
 
-## Feature Block — 0.1.3
+## Релиз v0.1.3 — ВЫПУЩЕН 2026-06-12
 
-С 2026-06-12 новые не-баговые запросы не выдаются исполнителям в текущий sprint.
-В текущую стабилизацию идут только баги, QA-дефекты, регрессии и release blockers.
-Все новые фичи/улучшения/баланс/арт/UI/контент оформляются в backlog версии `0.1.4`
-и не переводятся в `in_progress` без отдельного решения PM/пользователя.
+Тег `v0.1.3` на main; билды в `releases/v0.1.3/` (dmg + NSIS setup.exe + zip +
+SHA256SUMS + CHANGELOG-0.1.3.md). Jira «Спринт 0.1.3» завершен (все тикеты Готово).
+Feature block СНЯТ — новые задачи выдаются в обычном порядке.
 
-## Backlog — 0.1.4
+## Спринт 0.1.4 (активен, Jira sprint id 34)
+
+Цель: dark fantasy UI рестайл, Escape-досье персонажа, апскейл элиток/боссов.
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [backend_escape_pause_character_overview_anywhere_task.md](../tasks/backend_escape_pause_character_overview_anywhere_task.md) | Back-end (UI/UX) | new (backlog) | Jira: SCRUM-146; backlog `0.1.4` по feature freeze, не dispatch до релиза 0.1.3. Переосмысление Escape: досье персонажа с выделенными приоритетными атрибутами класса (данные согласовать с derived_parameters/CLASS_INTERPRETATIONS), доступно поверх магазина/level-up/события/награды/route map без поломки их состояния |
-| [design_codex_ui_dark_fantasy_restyle_task.md](../tasks/design_codex_ui_dark_fantasy_restyle_task.md) | Design (Claude арт-дирекшен/ревью; генерация Codex) → handoff Back-end | blocked (backlog) | Jira: SCRUM-147; Решение пользователя 2026-06-12: полный рестайл UI в dark fantasy по 5 референсам (кнопки 4-состояния → все панели/окна/HUD), старые UI-фреймы удалить. Blocked: feature freeze 0.1.3 + ждёт референсы в docs/design/references/ui_dark_fantasy_2026_06/. Supersedes SCRUM-111/118 |
+| [backend_escape_pause_character_overview_anywhere_task.md](../tasks/backend_escape_pause_character_overview_anywhere_task.md) | Back-end (UI/UX) | new | Jira: SCRUM-146; спринт 0.1.4 — можно брать в работу. Переосмысление Escape: досье персонажа с выделенными приоритетными атрибутами класса (данные согласовать с derived_parameters/CLASS_INTERPRETATIONS), доступно поверх магазина/level-up/события/награды/route map без поломки их состояния |
+| [design_codex_ui_dark_fantasy_restyle_task.md](../tasks/design_codex_ui_dark_fantasy_restyle_task.md) | Design (Claude арт-дирекшен/ревью; генерация Codex) → handoff Back-end | blocked (backlog) | Jira: SCRUM-147; Решение пользователя 2026-06-12: полный рестайл UI в dark fantasy по 5 референсам (кнопки 4-состояния → все панели/окна/HUD), старые UI-фреймы удалить. Blocked: ждёт референсы пользователя в docs/design/references/ui_dark_fantasy_2026_06/ (5 листов, см. README). Supersedes SCRUM-111/118 |
 | [design_contextual_ui_frames_rethink_task.md](../tasks/design_contextual_ui_frames_rethink_task.md) | Design (Claude, концепт+ресёрч; генерация Codex) | done (superseded) | Jira: SCRUM-111; SUPERSEDED 2026-06-12 решением пользователя о новом dark fantasy UI → SCRUM-147 / design_codex_ui_dark_fantasy_restyle_task.md; контекстные киты не интегрируются |
 | [backend_contextual_ui_frame_theme_integration_task.md](../tasks/backend_contextual_ui_frame_theme_integration_task.md) | Back-end | done (superseded) | Jira: SCRUM-118; SUPERSEDED 2026-06-12 → интеграция нового стиля придёт handoff'ом из SCRUM-147 / design_codex_ui_dark_fantasy_restyle_task.md |
-| [design_codex_elite_boss_sprite_resolution_upscale_task.md](../tasks/design_codex_elite_boss_sprite_resolution_upscale_task.md) | Design (Codex) → Claude-Designer | blocked | Jira: SCRUM-135; backlog `0.1.4` по feature block, не dispatch в Design без отдельного решения PM/пользователя поднять как release blocker `0.1.3`. Анти-мыло: 4 элитки + 2 босса 256→512px (поза 1:1), пруф `docs/design/previews/elite_boss_blur_proof.png` |
+| [design_codex_elite_boss_sprite_resolution_upscale_task.md](../tasks/design_codex_elite_boss_sprite_resolution_upscale_task.md) | Design (Codex) → Claude-Designer | new | Jira: SCRUM-135; спринт 0.1.4 — можно брать в работу (статус new). Анти-мыло: 4 элитки + 2 босса 256→512px (поза 1:1), пруф `docs/design/previews/elite_boss_blur_proof.png` |
 
 ## Process / Release Control
 

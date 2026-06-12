@@ -34,15 +34,10 @@ Versioning:
 - Check the current branch before making changes; do not do ordinary feature work directly on `main`.
 
 Feature block:
-- As of 2026-06-12, the project is in a feature block for the current `0.1.3`
-  stabilization/release line.
-- Only bugs, QA defects, release blockers, and regression fixes may be routed into
-  the current sprint/release.
-- Any new request or change that is not a bug must be created as backlog work for
-  version `0.1.4`; task files should include `Версия: 0.1.4`; do not start it,
-  dispatch it, or add it to the current sprint.
-- If a request is ambiguous, classify it conservatively as backlog `0.1.4` unless
-  it clearly fixes a broken existing requirement.
+- LIFTED 2026-06-12 with the v0.1.3 release. Current sprint is `Спринт 0.1.4`
+  (Jira board 1); new tasks may be dispatched normally again.
+- The mechanism stays documented in `docs/process/pm_workflow.md` and will be
+  re-enabled by PM before the next release stabilization.
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.
