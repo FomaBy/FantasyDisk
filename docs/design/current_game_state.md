@@ -390,14 +390,14 @@ Foundation новых классов уже включен в выбор пер�
 Магазин показывает четыре случайных предложения inline поверх `screen_shop_background.png` в центральной свободной области фона и позволяет купить несколько предметов за один визит, если хватает денег. Предметы показывают иконку и цену; название, описание, цену, class restriction и причину недоступности игрок видит только в hover tooltip. Купленные предметы получают overlay-состояние и становятся недоступными.
 
 Design visual kit/spec для всех артефактов, shop-only предметов и курсора описан в `docs/design/artifact_shop_cursor_visual_kit.md`:
-- 52 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, epic dark fantasy transparent item icons);
+- 53 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, transparent per-item dark fantasy item icons);
 - 7 shop-only icons: `assets/sprites/ui/icons/shop/shop_<shop_item_id>.png`;
 - полный mapping: `docs/design/artifact_shop_cursor_visual_kit.md`;
-- artifact icon pipeline: `tools/final_redesign_artifact_icons.py`; older deterministic/concept-sheet generators are kept only as superseded tooling/reference;
+- artifact icon pipeline: `tools/regenerate_artifact_icons_per_item.py`; validation/preview: `tools/validate_artifact_icons.py`;
 - shop/cursor generator: `tools/generate_artifact_shop_cursor_assets.py`;
-- preview: `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png` (`artifact_generated_concept_40px_preview.png` and `artifact_dark_artifacts_40px_preview.png` are updated as legacy preview paths).
+- active QA preview: `assets/sprites/ui/icons/artifact_per_item_preview.png` (256px and 40px checks for every active artifact).
 
-После пользовательского фидбэка 2026-06-11 artifact icons заменены на `256x256` PNG с прозрачным фоном: крупные мрачные предметы с черненым металлом, костью/камнем, темной кожей, проклятой бумагой, кристаллами, рунами, трещинами/царапинами и яркими магическими акцентами по смыслу предмета. Предыдущие generated/vector-like, glossy и concept-sheet tile направления заменены. Shop/cursor assets остаются в FantasyDisk fantasy-medallion / dagger-quill style.
+После пользовательского фидбэка 2026-06-12 artifact icons поштучно перегенерированы как `256x256` PNG с прозрачным фоном: один цельный законченный предмет на файл, bbox с запасом от краев, без пьедесталов, фоновых тайлов, осколков, частиц и текста. Образ каждого предмета привязан к названию и эффекту из `ProgressionData.ARTIFACTS`; предыдущие generated/vector-like, glossy и concept-sheet tile направления заменены. Shop/cursor assets остаются в FantasyDisk fantasy-medallion / dagger-quill style.
 
 Back-end integration complete: `scripts/ui_screens.gd` сначала ищет финальные PNG по mapping из visual kit, а если их нет, временно использует осмысленный fallback через `scripts/ui_icon_registry.gd` по эффекту предмета. На 2026-06-11 фактические artifact/shop/cursor PNG готовы и импортированы, поэтому fallback остается только fail-safe.
 

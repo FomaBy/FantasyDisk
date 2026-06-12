@@ -523,7 +523,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 
 | Группа | ID / naming | Каноническая папка / файл | Статус |
 | --- | --- | --- | --- |
-| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 256x256 epic dark fantasy transparent item icons | `assets/sprites/ui/icons/artifacts/` | Реализовано (final redesign 2026-06-11) |
+| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 53 шт., 256x256 RGBA, transparent per-item dark fantasy item icons; QA preview `assets/sprites/ui/icons/artifact_per_item_preview.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (per-item regeneration 2026-06-12) |
 | Shop-only item icons | `shop_<shop_item_id>.png` для всех `ProgressionData.SHOP_ITEMS` | `assets/sprites/ui/icons/shop/` | Реализовано |
 | Shop slot normal | `ui_shop_artifact_slot_frame` | `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png` | Реализовано |
 | Shop slot hover | `ui_shop_artifact_slot_hover` | `assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png` | Реализовано |
@@ -534,7 +534,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | Game cursor hover | `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png`, hotspot `(5, 4)` | Реализовано |
 | Game cursor attack | `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png`, hotspot `(5, 4)` | Реализовано |
 
-Shop-only icons имеют прозрачный фон, размер `128x128`, stylized fantasy cartoon style и не используют текст/emoji/default placeholders. Artifact icons находятся в final epic dark fantasy pass 256x256 выше. Shop item filenames намеренно следуют схеме `shop_<shop_item_id>.png`, поэтому для `shop_damage` путь выглядит как `assets/sprites/ui/icons/shop/shop_shop_damage.png`. Фактические PNG и `.import` файлы готовы в текущем checkout; backend hooks могут подхватывать эти файлы вместо fallback.
+Shop-only icons имеют прозрачный фон, размер `128x128`, stylized fantasy cartoon style и не используют текст/emoji/default placeholders. Artifact icons находятся в per-item regeneration pass 2026-06-12: каждый активный артефакт — отдельный цельный предмет без фона и мусора, с технической проверкой размера, alpha, bbox и связности. Shop item filenames намеренно следуют схеме `shop_<shop_item_id>.png`, поэтому для `shop_damage` путь выглядит как `assets/sprites/ui/icons/shop/shop_shop_damage.png`. Фактические PNG и `.import` файлы готовы в текущем checkout; backend hooks могут подхватывать эти файлы вместо fallback.
 
 ## Уровни Возвышения (Метапрогрессия)
 

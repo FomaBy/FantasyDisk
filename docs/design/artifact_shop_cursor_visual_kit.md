@@ -1,22 +1,22 @@
 # Artifact, Shop Item And Cursor Visual Kit
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-12
 
 Этот документ фиксирует Design visual kit для артефактов, shop-only предметов, inline shop UI и игрового курсора FantasyDisk. Back-end интеграция описана в `docs/tasks/backend_shop_inline_artifact_icons_cursor_integration_task.md`.
 
 Back-end audit follow-up resolved 2026-06-11: фактические PNG из разделов Artifact Icon Mapping, Shop-Only Icon Mapping, Shop Visual Assets и Cursor Assets добавлены в текущий checkout и импортированы в Godot. Fallback через `scripts/ui_icon_registry.gd` остается только fail-safe.
 
-User feedback rework 2026-06-11: artifact icons полностью заменены на `256x256` final epic dark fantasy transparent item icons: отдельные мрачные предметы без встроенной UI-рамки, черненый металл, кость/камень, темная кожа, проклятая бумага, кристаллы, руны, трещины/царапины и яркие магические акценты. Предыдущие generated/vector-like, glossy и concept-sheet tile направления superseded. Shop-only icons, frames and cursor variants keep the richer FantasyDisk fantasy-medallion / dagger-quill treatment.
+User feedback rework 2026-06-12: artifact icons поштучно перегенерированы как `256x256` RGBA transparent item icons: один цельный законченный предмет на каждый active artifact ID, без встроенной UI-рамки, пьедесталов, фона, осколков, частиц и текста. Предметы сохраняют dark fantasy lighting с источником сверху-слева и привязаны к названию/эффекту из `ProgressionData.ARTIFACTS`. Предыдущие generated/vector-like, glossy и concept-sheet tile направления superseded. Shop-only icons, frames and cursor variants keep the richer FantasyDisk fantasy-medallion / dagger-quill treatment.
 
 ## Summary
 
-- Artifact icons: `52` unique PNG, `256x256`, final epic dark fantasy transparent item icons.
+- Artifact icons: `53` unique PNG, `256x256`, transparent per-item dark fantasy item icons.
 - Shop-only icons: `7` unique PNG, `128x128`, transparent background.
 - Shop frame assets: slot, hover, price badge, purchased/unavailable overlay, tooltip frame.
 - Cursor assets: normal, hover and attack variants, `48x48`, transparent background.
-- Artifact pipeline: `tools/final_redesign_artifact_icons.py`; older deterministic/concept-sheet generators are superseded reference tooling.
+- Artifact pipeline: `tools/regenerate_artifact_icons_per_item.py`; technical validation and preview: `tools/validate_artifact_icons.py`; older deterministic/concept-sheet generators are superseded reference tooling.
 - Shop/cursor generator: `tools/generate_artifact_shop_cursor_assets.py`.
-- Preview: `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png`; legacy preview paths `artifact_generated_concept_40px_preview.png` and `artifact_dark_artifacts_40px_preview.png` are updated to the same active icon set.
+- Preview: `assets/sprites/ui/icons/artifact_per_item_preview.png` with 256px and 40px samples for every active artifact.
 
 ## Artifact Icon Mapping
 
