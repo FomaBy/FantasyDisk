@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Бюджет Силы Классов — Урон Соло/АоЕ И Выживаемость
 
-Статус: in_progress
+Статус: done
 Создано: 2026-06-12
 Автор: PM
 Dispatch: отправлено в существующий Back-end чат `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-12.
@@ -46,10 +46,22 @@ Dispatch: отправлено в существующий Back-end чат `019e
   новый `tools/balance_harness.gd` (или тест), `docs/design/mechanics_extract.md`.
 
 ## Acceptance Criteria
-- [ ] Харнесс генерирует таблицу 27 комбинаций одной командой.
-- [ ] Профили solo/aoe/balanced заданы в данных; отклонения ≤ ±10%.
-- [ ] Кривая «урон компенсирует выживаемость» формализована и применена.
-- [ ] Таблицы до/после в mechanics_extract; все smoke зеленые.
+- [x] Харнесс генерирует таблицу 27 комбинаций одной командой.
+- [x] Профили solo/aoe/balanced заданы в данных; отклонения ≤ ±10%.
+- [x] Кривая «урон компенсирует выживаемость» формализована и применена.
+- [x] Таблицы до/после в mechanics_extract; все smoke зеленые.
 
 ## Документация
 - mechanics_extract (бюджеты, профили, формула компенсации), CHANGELOG.
+
+## Результат 2026-06-12
+
+Back-end implementation complete:
+- Добавлен `tools/balance_harness.gd`, который одной Godot-командой пишет `build/balance_report.md`.
+- В `ProgressionData` добавлены `CLASS_BUDGET_PROFILES`, base solo/5-target targets, auto `budget_tuning_for()` и `estimate_weapon_budget()`.
+- `derived_parameters()` применяет runtime `budget_damage_multiplier`, а harness дополнительно проверяет solo/5-target residual multipliers без изменения attack identity.
+- Покрытие: 27/27 class+weapon pairs; max combined deviation after tuning: 0.1%; smoke проверяет отклонения ≤ ±10%.
+
+Checks:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/balance_harness.gd` — passed, report generated.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed (Godot warning about freed lambda capture printed, test result green).

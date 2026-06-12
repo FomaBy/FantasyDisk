@@ -4,6 +4,7 @@ const EXPECTED_ARENA_SIZE := Vector2(2560, 1440)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const EventData := preload("res://scripts/event_data.gd")
 
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -172,6 +173,7 @@ func _initialize() -> void:
 		return
 	await _test_route_map_start_selection(main_scene)
 	await _test_event_route_node_click(main_scene)
+	await _test_random_event_data_and_outcomes(main_scene)
 	var generated_elite := false
 	var generated_disk_boss := false
 	for _attempt in range(20):
@@ -956,6 +958,7 @@ func _initialize() -> void:
 	await _test_unique_class_identity_patterns()
 	await _test_universal_attribute_interpretations()
 	_test_class_budget_profiles()
+	await _test_enemy_stage_scaling_and_elite_rewards(main_scene)
 	await _test_ultimate_framework()
 	await _test_death_flow(main_scene)
 
@@ -1065,7 +1068,7 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 	route_main.set("route_stage", 0)
 	route_main.set("route_nodes", [
 		[
-			{"type": "event", "name": "Event 1: Test Stone", "row": 0, "branch": 0, "next_branches": [0]},
+			{"type": "event", "name": "Event 1: Test Stone", "event_id": "hot_spring", "row": 0, "branch": 0, "next_branches": [0]},
 			{"type": "battle", "name": "Battle 1: Test Road", "row": 0, "branch": 1, "next_branches": [0]},
 		],
 		[
@@ -1122,6 +1125,136 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 
 	route_main.queue_free()
 	await process_frame
+
+
+func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
+	if EventData.RANDOM_EVENTS.size() < 10:
+		_fail("Expected at least 10 random event scenarios.")
+		return
+	var ids := {}
+	var combat_outcomes := 0
+	var reward_outcomes := 0
+	var rest_outcomes := 0
+	var check_outcomes := 0
+	for event in EventData.RANDOM_EVENTS:
+		var event_id := str(event.get("id", ""))
+		if event_id == "" or ids.has(event_id):
+			_fail("Expected random event ids to be non-empty and unique.")
+			return
+		ids[event_id] = true
+		if str(event.get("title", "")) == "" or str(event.get("story", "")).length() < 40:
+			_fail("Expected event %s to include title and story text." % event_id)
+			return
+		var choices: Array = event.get("choices", [])
+		if choices.size() < 2:
+			_fail("Expected event %s to include at least two choices." % event_id)
+			return
+		for choice in choices:
+			if choice.has("combat") or _choice_nested_outcome_has(choice, "combat"):
+				combat_outcomes += 1
+			if choice.has("random_artifact") or choice.has("reward") or choice.has("money") or _choice_nested_outcome_has(choice, "random_artifact"):
+				reward_outcomes += 1
+			if choice.has("heal_percent"):
+				rest_outcomes += 1
+			if choice.has("check"):
+				check_outcomes += 1
+	if combat_outcomes < 3 or reward_outcomes < 3 or rest_outcomes < 1 or check_outcomes < 2:
+		_fail("Expected random events to cover combat, reward, rest and attribute-check outcomes.")
+		return
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 41
+	var used := []
+	for _index in range(EventData.RANDOM_EVENTS.size()):
+		var picked: Dictionary = EventData.pick_event(used, rng)
+		var picked_id := str(picked.get("id", ""))
+		if used.has(picked_id):
+			_fail("Expected event picker to avoid repeats within an act.")
+			return
+		used.append(picked_id)
+
+	var event_main := main_scene.instantiate()
+	root.add_child(event_main)
+	await process_frame
+	event_main.set("selected_character_id", "berserk")
+	event_main.set("selected_weapon_id", "sword")
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var event_player := player_scene.instantiate()
+	root.add_child(event_player)
+	event_player.configure_character("berserk", "sword")
+	event_player.set("money", 500)
+	var stats: Dictionary = event_player.get("stats")
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		stats[stat_id] = 12
+	event_player.set("stats", stats)
+	event_main.combat._store_player_snapshot(event_player)
+	event_player.queue_free()
+
+	var checked_success := false
+	var checked_failure := false
+	var checked_combat := false
+	for event in EventData.RANDOM_EVENTS:
+		for choice in (event.get("choices", []) as Array):
+			if choice.has("check") and not checked_success:
+				var high_player: Node = event_main.combat._snapshot_player_for_menu()
+				var success_outcome: Dictionary = event_main.ui._resolve_event_choice_outcome(choice, high_player)
+				high_player.queue_free()
+				if not bool(success_outcome.get("check_passed", false)):
+					_fail("Expected high-stat event check to pass for %s." % choice.get("id", ""))
+					event_main.queue_free()
+					return
+				checked_success = true
+			if choice.has("check") and not checked_failure:
+				var low_player: Node = event_main.combat._snapshot_player_for_menu()
+				var low_stats: Dictionary = low_player.get("stats")
+				var check: Dictionary = choice.get("check", {})
+				low_stats[str(check.get("stat", "knowledge"))] = 0
+				low_player.set("stats", low_stats)
+				var failure_outcome: Dictionary = event_main.ui._resolve_event_choice_outcome(choice, low_player)
+				low_player.queue_free()
+				if bool(failure_outcome.get("check_passed", true)):
+					_fail("Expected low-stat event check to fail for %s." % choice.get("id", ""))
+					event_main.queue_free()
+					return
+				checked_failure = true
+			if (choice.has("combat") or _choice_nested_outcome_has(choice, "combat")) and not checked_combat:
+				var combat_choice: Dictionary = choice.duplicate(true)
+				if not combat_choice.has("combat"):
+					combat_choice["combat"] = {"type": "battle", "enemy_health_multiplier": 1.05}
+				var started_combat: bool = event_main.ui._apply_event_choice(combat_choice)
+				await process_frame
+				if not started_combat or not bool(event_main.get("combat_active")):
+					_fail("Expected combat event outcome to start combat.")
+					event_main.queue_free()
+					return
+				event_main.combat._end_combat(true)
+				await process_frame
+				if bool(event_main.get("combat_active")) or not (event_main.get("pending_event_combat") as Dictionary).is_empty():
+					_fail("Expected event combat to clean up pending combat payload after victory.")
+					event_main.queue_free()
+					return
+				checked_combat = true
+			if checked_success and checked_failure and checked_combat:
+				break
+		if checked_success and checked_failure and checked_combat:
+			break
+	if not checked_success or not checked_failure or not checked_combat:
+		_fail("Expected random event tests to exercise checks and combat outcome.")
+		event_main.queue_free()
+		return
+	event_main.queue_free()
+	await process_frame
+
+
+func _choice_nested_outcome_has(choice: Dictionary, key: String) -> bool:
+	for branch_id in ["success", "failure", "post_combat"]:
+		var branch: Dictionary = choice.get(branch_id, {})
+		if branch.has(key):
+			return true
+	for outcome in (choice.get("random_outcomes", []) as Array):
+		if (outcome as Dictionary).has(key):
+			return true
+	return false
 
 
 func _send_route_node_mouse_press(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary) -> void:
@@ -1589,6 +1722,23 @@ func _test_victory_flow(main: Node) -> void:
 		push_error("Expected boss health bar max value to match scaled boss max health.")
 		quit(1)
 		return
+	var boss_phase_markers: Array = boss.get_meta("boss_phase_markers", [])
+	if boss_phase_markers.size() < 2 or not boss_health_bar.has_meta("phase_markers"):
+		push_error("Expected boss to expose HP phase markers for the uber-boss encounter.")
+		quit(1)
+		return
+	boss.set("health", float(boss.get("max_health")) * 0.64)
+	boss.call("_update_boss_phase")
+	if int(boss.get("boss_phase")) != 2 or int(boss.get_meta("boss_phase", 0)) != 2:
+		push_error("Expected boss to enter phase 2 below 66%% HP.")
+		quit(1)
+		return
+	boss.set("health", float(boss.get("max_health")) * 0.30)
+	boss.call("_update_boss_phase")
+	if int(boss.get("boss_phase")) != 3 or int(boss.get_meta("boss_phase", 0)) != 3:
+		push_error("Expected boss to enter phase 3 below 33%% HP.")
+		quit(1)
+		return
 	boss.set("dodge_chance", 0.0)
 	boss.set("shield_active", false)
 	boss.take_damage(25.0)
@@ -1660,6 +1810,18 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	var elite_body := elite_enemy.get_node_or_null("Body") as Sprite2D
 	if elite_body == null or elite_body.texture == null or not elite_body.texture.resource_path.begins_with("res://assets/sprites/elites/"):
 		push_error("Expected elite combat to use one of the new elite monster sprites.")
+		quit(1)
+		return
+	if not elite_enemy.has_meta("elite_phase_threshold") or float(elite_enemy.get_meta("elite_phase_threshold", 0.0)) > 0.51:
+		push_error("Expected elite enemies to expose a 50%% challenge phase threshold.")
+		quit(1)
+		return
+	elite_main.set("route_stage", 4)
+	elite_main.ui._show_elite_artifact_reward(Callable())
+	await process_frame
+	var elite_reward_buttons := elite_main.find_children("EliteArtifactRewardButton*", "Button", true, false)
+	if elite_reward_buttons.size() != 3:
+		push_error("Expected elite victory reward to offer exactly 3 artifact choices.")
 		quit(1)
 		return
 	elite_main.queue_free()
@@ -2040,6 +2202,56 @@ func _test_class_budget_profiles() -> void:
 	if checked != 27:
 		_fail("Expected balance budget coverage for 27 class+weapon pairs, got %d." % checked)
 		return
+
+
+func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> void:
+	var previous_scale := 0.0
+	for stage in range(0, 9):
+		var scale := ProgressionData.stage_scale(stage)
+		if scale <= previous_scale:
+			_fail("Expected stage_scale to increase monotonically, stage %d scale %.3f after %.3f." % [stage, scale, previous_scale])
+			return
+		previous_scale = scale
+	var stage0_damage_cost := 0
+	var stage6_damage_cost := 0
+	for item in ProgressionData.shop_items(0):
+		if str(item.get("id", "")) == "shop_damage":
+			stage0_damage_cost = int(item.get("cost", 0))
+	for item in ProgressionData.shop_items(6):
+		if str(item.get("id", "")) == "shop_damage":
+			stage6_damage_cost = int(item.get("cost", 0))
+	if stage0_damage_cost <= 0 or stage6_damage_cost <= stage0_damage_cost:
+		_fail("Expected shop prices to scale with stage_scale, got %d -> %d." % [stage0_damage_cost, stage6_damage_cost])
+		return
+	var elite_choices := ProgressionData.elite_artifact_choices(6, 3)
+	if elite_choices.size() != 3:
+		_fail("Expected elite artifact reward generator to return 3 choices.")
+		return
+	var seen_ids := {}
+	for choice in elite_choices:
+		if str(choice.get("kind", "")) != "artifact" or not choice.has("tier"):
+			_fail("Expected elite reward choices to be artifact rewards.")
+			return
+		var choice_id := str(choice.get("id", ""))
+		if seen_ids.has(choice_id):
+			_fail("Expected elite reward choices to be unique artifacts.")
+			return
+		seen_ids[choice_id] = true
+
+	var scaling_main := main_scene.instantiate()
+	root.add_child(scaling_main)
+	await process_frame
+	scaling_main.set("route_stage", 6)
+	scaling_main.ui._show_elite_artifact_reward(Callable())
+	await process_frame
+	var reward_screen := scaling_main.find_child("EliteArtifactRewardScreen", true, false) as Control
+	var reward_buttons := scaling_main.find_children("EliteArtifactRewardButton*", "Button", true, false)
+	if reward_screen == null or reward_buttons.size() != 3:
+		_fail("Expected elite artifact reward screen to render 3 clickable artifact buttons.")
+		scaling_main.queue_free()
+		return
+	scaling_main.queue_free()
+	await process_frame
 
 
 func _test_ultimate_framework() -> void:

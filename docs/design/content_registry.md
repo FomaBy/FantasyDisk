@@ -69,12 +69,12 @@
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
 | `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
-| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано |
+| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано; v2 unarmed base без встроенного копья/щита |
 | `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
 
 ## Новые Классы 0.2 (Фундамент, 2026-06-11)
 
-Спрайты всех шести прошли Design art-review (2026-06-11) и приняты как polished dark fantasy full-art (512x512, RGBA). Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и лежат в `assets/sprites/characters/cutout/` (torso, arm_l, arm_r, leg_l, leg_r для каждого). Манифест обновлён в `scripts/sliced_rig_manifest.gd`. Первые 9 weapon PNG для новых классов (chakrams, moon_crossbow, restore_potion, blast_powder, long_spear, summon_amulet — 6 штук готово; остальные shadow_daggers, venom_wire, storm_longbow, hunter_trap, plague_syringe, bone_saw, acid_flask, homunculus_vial, tower_shield, holy_flail, briar_staff, raven_totem) сгенерированы частично Codex — fallback-текстуры используются пока не все 18 PNG готовы.
+Спрайты всех шести прошли Design art-review (2026-06-11) и приняты как polished dark fantasy full-art (512x512, RGBA). Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и лежат в `assets/sprites/characters/cutout/` (torso, arm_l, arm_r, leg_l, leg_r для каждого). Манифест обновлён в `scripts/sliced_rig_manifest.gd`. Weapon art v2 pass 2026-06-12 устранил fallback-текстуры в сценах оружия, перерисовал три оружия Рыцаря и заменил `knight.png` на unarmed base sprite без встроенного копья/щита, чтобы все три варианта реально крепились через socket.
 
 | ID | Имя | Архетип | 3 стартовых оружия | «Свой» урон |
 | --- | --- | --- | --- | --- |
@@ -148,6 +148,11 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `beam_strip.png` | Луч темного жезла | Реализовано |
 | `sound_wave.png` | Звуковая волна электрогитары | Реализовано |
 | `music_note.png` | Ноты гитарных атак | Реализовано |
+| `poison_pool.png` | Растровая пузырящаяся poison/acid pool Химика вместо программного круга | Реализовано |
+| `spark_pool.png` | Растровое spark-cloud пятно Взрывной пыли Химика вместо программного круга | Реализовано |
+| `briar_pool.png` | Растровая thorn/briar зона Друида вместо программного круга | Реализовано |
+
+VFX pass 2026-06-12: `ClassWeapon._spawn_damage_pool()` больше не рисует видимый `Polygon2D`-диск для persistent pools. Химик/Друид используют эти PNG как `Sprite2D` с мягким scale/rotation pulse; damage radius/tick timing остались из weapon config. QA preview: `docs/design/previews/vfx_pool_assets_contact.png`.
 
 Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (53 шт., 256x256). Финальный Design pass 2026-06-12: все активные артефакты заменены на realistic epic D&D/tabletop fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Пайплайн вырезки из raster source sheets: `tools/extract_realistic_dnd_artifact_icons.py`; QA preview: `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass) superseded.
 
@@ -194,6 +199,8 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `summon_amulet` | Амулет призыва | Друид | Командуемая beast pack, scaling from Leadership | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `briar_staff` | Посох терний | Друид | Thorn zone, AoE DoT, crowd control | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `raven_totem` | Вороний тотем | Друид | Totem pulses, Leadership-scaled deploy limit | `ProgressionData.DRUID_WEAPONS` | Реализовано |
+
+Weapon art v2 2026-06-12: все 27 сцен `WeaponVisual` используют texture path, совпадающий с weapon ID; старые fallback-ссылки (`two_handed_hammer`, `long_spear`, `summon_amulet`, `blast_powder`, `restore_potion`, `moon_crossbow`, `chakrams`) убраны из чужих сцен. `long_spear`, `tower_shield`, `holy_flail` перерисованы как noble knight equipment. Scene scales уменьшены, чтобы оружие занимало примерно 50-65% высоты персонажа и не перекрывало лицо/корпус. Контрольные листы: `docs/design/previews/weapon_v2_assets_contact.png`, `docs/design/previews/weapon_v2_socket_contact.png`.
 
 Временные visuals классового оружия регистрируются в runtime-группе `player_weapon_effects` и должны удаляться при смене оружия/персонажа, смерти, завершении забега и очистке world state.
 
@@ -279,6 +286,25 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 | `event` | Событие | Выбор с наградой/риском | `assets/sprites/map_icons/map_event_question.png` | Реализовано |
 | `rest` | Костер | Лечение или защитный бонус | `assets/sprites/map_icons/map_rest_campfire.png` | Реализовано |
 | `boss` | Босс | Финальный бой акта | `map_boss_rift_warden.png` / `map_boss_disk_devourer.png` | Реализовано |
+
+## Случайные События
+
+Источник: `scripts/event_data.gd`. Event-node выбирает один сценарий из пула без повторов в рамках акта; после исчерпания пула список использованных событий сбрасывается. Тексты, выборы и последствия лежат в данных, UI только отображает сценарий и применяет outcome.
+
+| ID | Игровое имя | Типы исходов | Ключевая роль | Статус |
+| --- | --- | --- | --- | --- |
+| `wandering_bard` | Странствующий бард | цена, бафф, check Knowledge | Деньги за темп или рискованный песенный чек | Реализовано |
+| `cursed_altar` | Проклятый алтарь | HP-жертва, artifact, elite combat | Риск кровавой сделки или бой с тенью | Реализовано |
+| `road_ambush` | Засада! | combat, gold multiplier, check Agility | Внезапный усиленный бой с повышенной наградой | Реализовано |
+| `old_well` | Старый колодец | цена, heal/money/combat random, check Perception | Слепой бросок монеты или осторожное исследование | Реализовано |
+| `wounded_mercenary` | Раненый наемник | цена, summon/Leadership, money, penalty | Моральный выбор помощи или мародерства | Реализовано |
+| `goblin_lottery` | Гоблин-лотерейщик | hidden risk, artifact/junk/combat, check Perception | Мешок вслепую с мимиком как боевым риском | Реализовано |
+| `hot_spring` | Горячий источник | rest, Endurance, enemy health modifier | Сильный отдых с будущей боевой ценой | Реализовано |
+| `mirror_phantom` | Зеркальный фантом | elite combat, check Intelligence | Дуэль с отражением или изучение класса | Реализовано |
+| `stone_guardian` | Каменный страж | check Knowledge, artifact, combat | Загадка или силовой проход | Реализовано |
+| `heroes_graveyard` | Кладбище героев | hidden risk, artifact/combat, rest | Грабеж могилы или почтение павшим | Реализовано |
+| `fallen_star` | Падшая звезда | Energy, HP cost, check Intelligence | Сильный ресурсный апгрейд с ожогом | Реализовано |
+| `training_dummies` | Тренировочные манекены | check Agility/Strength, stat+mods | Испытания скорости и силы | Реализовано |
 
 ## UI Иконки Характеристик
 

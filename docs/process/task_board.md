@@ -97,11 +97,13 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [backend_class_dps_survivability_budget_task.md](../tasks/backend_class_dps_survivability_budget_task.md) | Back-end | in_progress | Dispatch 2026-06-12 -> существующий Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2`; ПЕРВАЯ: харнесс DPS/EHP, профили, ребаланс 27 оружий ±10% |
-| [backend_enemy_scaling_elite_boss_difficulty_task.md](../tasks/backend_enemy_scaling_elite_boss_difficulty_task.md) | Back-end | in_progress | Dispatch 2026-06-12 -> Back-end; после бюджета: stage_scale, сильные монстры, элитки-челлендж, reward 1-из-3, убер-босс 3+ фазы |
-| [backend_random_events_ten_scenarios_task.md](../tasks/backend_random_events_ten_scenarios_task.md) | Back-end | in_progress | Dispatch 2026-06-12 -> Back-end; 10+ событий: истории с выбором, засады, отдых, чеки атрибутов |
-| [design_weapon_art_v2_proportions_knight_task.md](../tasks/design_weapon_art_v2_proportions_knight_task.md) | Design | in_progress | Dispatch 2026-06-12 -> существующий Design `019eabf1-6d54-7561-8af9-ce25cdf483a9`; ПРИОРИТЕТ: оружие Рыцаря и пропорции всех 27 |
-| [design_weapon_attack_vfx_animations_polish_task.md](../tasks/design_weapon_attack_vfx_animations_polish_task.md) | Design | in_progress | Dispatch 2026-06-12 -> Design; после оружия v2: атаки 27 оружий + аудит/полировка всех голых VFX |
+| [backend_class_dps_survivability_budget_task.md](../tasks/backend_class_dps_survivability_budget_task.md) | Back-end | done | Закрыта 2026-06-12: `tools/balance_harness.gd`, `build/balance_report.md`, 27 class+weapon профилей/tuning, smoke green |
+| [backend_enemy_scaling_elite_boss_difficulty_task.md](../tasks/backend_enemy_scaling_elite_boss_difficulty_task.md) | Back-end | done | Закрыта 2026-06-12: stage_scale, усиление волн, elite reward 1-из-3, boss 3 phases, balance/runtime smoke green |
+| [backend_random_events_ten_scenarios_task.md](../tasks/backend_random_events_ten_scenarios_task.md) | Back-end | done | Закрыта 2026-06-12: 12 data-driven events, no-repeat, checks, combat outcomes, runtime smoke green |
+| [design_weapon_art_v2_proportions_knight_task.md](../tasks/design_weapon_art_v2_proportions_knight_task.md) | Design | done | Закрыта 2026-06-12: knight weapon trio redrawn, Knight unarmed base/cutout, 27 matching scene textures, smaller visual scale, runtime + animation smoke pass |
+| [design_weapon_attack_vfx_animations_polish_task.md](../tasks/design_weapon_attack_vfx_animations_polish_task.md) | Design | in_progress | Phase 1 2026-06-12: poison/spark/briar pools заменены на raster VFX + pulse, attack_vfx/animation smoke green; полный 27-weapon/VFX audit продолжается |
+| [backend_animation_smoke_ultimate_inputmap_warning_task.md](../tasks/backend_animation_smoke_ultimate_inputmap_warning_task.md) | Back-end | done | Закрыта 2026-06-12: Player guards missing `ultimate` InputMap action in standalone tests; animation/runtime smoke green |
+| [backend_runtime_smoke_combat_director_type_inference_task.md](../tasks/backend_runtime_smoke_combat_director_type_inference_task.md) | Back-end | new | Handoff 2026-06-12: runtime smoke blocked by `combat_director.gd` xp/money reward type inference, unrelated to Design VFX |
 
 ## Активные / Неподтвержденные
 

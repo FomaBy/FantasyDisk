@@ -135,6 +135,8 @@ const CLASS_BUDGET_PROFILES := {
 const BALANCE_BASE_SOLO_DPS := 48.0
 const BALANCE_BASE_AOE_DPS := 150.0
 const BALANCE_WINDOW_SECONDS := 30.0
+const STAGE_SCALE_BASE := 1.18
+const STAGE_SCALE_LINEAR := 0.075
 
 const BERSERK_WEAPONS := {
 	"sword": {
@@ -956,6 +958,15 @@ static func ascension_mods(character_id: String, level: int) -> Dictionary:
 	return combined
 
 
+static func stage_scale(route_stage: int) -> float:
+	var stage := maxf(float(route_stage), 0.0)
+	return snappedf(pow(STAGE_SCALE_BASE, stage) + STAGE_SCALE_LINEAR * stage, 0.001)
+
+
+static func stage_scaled_cost(base_cost: int, route_stage: int) -> int:
+	return maxi(1, int(ceil(float(base_cost) * stage_scale(route_stage))))
+
+
 static func character_ids() -> Array:
 	return CHARACTER_CONFIGS.keys()
 
@@ -1245,17 +1256,51 @@ static func level_up_rewards(character_id := "") -> Array:
 	return rewards
 
 
-static func shop_items() -> Array:
+static func shop_items(route_stage := 0) -> Array:
 	var items := []
 	for item in SHOP_ITEMS:
-		items.append(item.duplicate(true))
+		var shop_item: Dictionary = item.duplicate(true)
+		shop_item["cost"] = stage_scaled_cost(int(shop_item.get("cost", 0)), route_stage)
+		items.append(shop_item)
 	for artifact in ARTIFACTS:
 		var shop_artifact: Dictionary = artifact.duplicate(true)
-		shop_artifact["cost"] = int(shop_artifact.get("cost", COST_BY_TIER.get(int(shop_artifact.get("tier", 1)), 30)))
+		shop_artifact["cost"] = stage_scaled_cost(int(shop_artifact.get("cost", COST_BY_TIER.get(int(shop_artifact.get("tier", 1)), 30))), route_stage)
 		shop_artifact["kind"] = "artifact"
 		shop_artifact["weight"] = TIER_WEIGHTS.get(int(shop_artifact.get("tier", 1)), 1.0)
 		items.append(shop_artifact)
 	return items
+
+
+static func elite_artifact_choices(route_stage: int, count := 3) -> Array:
+	var pool := []
+	var scale := stage_scale(route_stage)
+	for artifact in ARTIFACTS:
+		var candidate: Dictionary = artifact.duplicate(true)
+		var tier := int(candidate.get("tier", 1))
+		var depth_weight := 1.0
+		if tier == 2:
+			depth_weight = 0.75 + scale * 0.25
+		elif tier == 3:
+			depth_weight = 0.22 + maxf(float(route_stage) - 2.0, 0.0) * 0.18
+		candidate["kind"] = "artifact"
+		candidate["weight"] = maxf(TIER_WEIGHTS.get(tier, 1.0) * depth_weight, 0.05)
+		pool.append(candidate)
+	var choices := []
+	while choices.size() < count and not pool.is_empty():
+		var total_weight := 0.0
+		for reward in pool:
+			total_weight += float(reward.get("weight", 1.0))
+		var roll := randf() * maxf(total_weight, 0.001)
+		var cursor := 0.0
+		var selected_index := 0
+		for index in range(pool.size()):
+			cursor += float(pool[index].get("weight", 1.0))
+			if roll <= cursor:
+				selected_index = index
+				break
+		choices.append(pool[selected_index])
+		pool.remove_at(selected_index)
+	return choices
 
 
 static func display_stats(stats: Dictionary) -> String:

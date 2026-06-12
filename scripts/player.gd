@@ -277,7 +277,7 @@ func _physics_process(_delta: float) -> void:
 		direction.y -= 1.0
 	if Input.is_action_pressed("move_down"):
 		direction.y += 1.0
-	if Input.is_action_just_pressed("ultimate"):
+	if InputMap.has_action("ultimate") and Input.is_action_just_pressed("ultimate"):
 		activate_ultimate()
 
 	velocity = direction.normalized() * speed

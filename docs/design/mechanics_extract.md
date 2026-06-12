@@ -186,6 +186,8 @@
 
 Элитные враги должны быть случайными, заметно жирнее и опаснее обычных.
 
+Обновление 2026-06-12: элитки используют общий `ProgressionData.stage_scale(route_stage)`, получают больший HP-бюджет, усиленный урон, более частые уникальные атаки и meta-флаг второй фазы на 50% HP. Победа над элиткой открывает экран выбора 1 из 3 артефактов; шанс tier-2/tier-3 растет с глубиной акта.
+
 ### Боссы
 
 | Босс | Паттерны |
@@ -194,6 +196,8 @@
 | Disk Devourer | Dash, disk slam AoE, radial burst, enrage |
 
 Финальный boss-node выбирает одного из двух боссов. Босс-файт не ограничен обычным combat timer.
+
+Обновление 2026-06-12: боссы имеют 3 фазы по HP (`100-66%`, `66-33%`, `33-0%`), фазовые метки для HP-бара, ускорение паттернов на каждой фазе и danger-zone при переходе фазы. Победа над боссом гарантирует tier-3 артефакт и золото, масштабированное stage scale.
 
 ### Спавн И Плотность
 
@@ -213,6 +217,29 @@
 - spawn edge padding: 72 пикселя;
 - spawn safe radius around player: 340 пикселей;
 - projectile cleanup bounds: 2560x1440 плюс margin 180 пикселей.
+
+### Stage Scale / Difficulty Economy (2026-06-12)
+
+Data source: `ProgressionData.stage_scale(route_stage)`.
+
+Единая кривая сложности и экономики:
+
+`stage_scale = pow(1.18, route_stage) + 0.075 * route_stage`
+
+Этот множитель используется в HP/уроне/скорости/плотности обычных волн, HP/уроне элиток и боссов, стоимости магазина/докачки/reroll, tier-weight выбора артефактов после элитки и золоте за победу над боссом.
+
+TTK-таблица из `build/balance_report.md` после прогона `tools/balance_harness.gd`:
+
+| Route Stage | Stage Scale | Ordinary Wave TTK | Elite TTK | Boss TTK | Shop Cost x |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 1.000 | 6.5s | 51.4s | 74.8s | 1.00x |
+| 2 | 1.542 | 10.1s | 55.3s | 83.8s | 1.54x |
+| 4 | 2.239 | 14.6s | 60.2s | 95.4s | 2.24x |
+| 6 | 3.150 | 20.6s | 66.7s | 110.6s | 3.15x |
+| 8 | 4.359 | 28.5s | 75.2s | 130.7s | 4.36x |
+| 10 | 5.984 | 39.1s | 86.8s | 157.7s | 5.98x |
+
+Это budget-estimate по выровненным class+weapon профилям. Реальный бой зависит от движения, уворотов, uptime оружия, pickup-паузы, выбранных артефактов и классовой механики.
 
 ### Пауза И UI Характеристик
 
@@ -464,6 +491,43 @@ Data source: `ProgressionData.ULTIMATE_CONFIGS`. В каждом конфиге 
 | Химик | Цепная реакция | алхимический burst по радиусу |
 | Рыцарь | Бастион | короткая неуязвимость + ring counter damage |
 | Друид | Зов стаи | временные союзники сверх лимита |
+
+### Class DPS / Survivability Budget Harness (2026-06-12)
+
+Data source: `ProgressionData.CLASS_BUDGET_PROFILES`, `ProgressionData.budget_tuning_for()`, `tools/balance_harness.gd`.
+
+Харнесс запускается одной командой:
+
+```bash
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/balance_harness.gd
+```
+
+Он пишет полный отчет в `build/balance_report.md` и считает 27 комбинаций класс+оружие: solo DPS за 30 секунд, 5-target DPS за 30 секунд и EHP. Вклад ульты учитывается как prorated contribution внутри 30-секундного окна.
+
+Формула EHP для бюджетного сравнения: `HP / (1-defense) / (1-dodge) + absorb*10 + regeneration*30 + lifesteal estimate`.
+
+Runtime применяет один безопасный `budget_damage_multiplier` в `derived_parameters`, чтобы не менять identity-параметры оружия. Для проверки обеих осей harness хранит также `budget_solo_multiplier` и `budget_aoe_multiplier` в возвращаемом weapon config и использует их только в бюджетной модели отчета.
+
+| Класс | Профиль | Survival | Damage budget | Solo target | 5-target target |
+| --- | --- | --- | ---: | ---: | ---: |
+| Берсерк | balanced | sturdy | 100% | 48.00 | 150.00 |
+| Темный маг | aoe | fragile | 115% | 38.64 | 224.25 |
+| Гитарист | aoe | control | 100% | 33.60 | 195.00 |
+| Ассасин | solo | fragile | 115% | 71.76 | 120.75 |
+| Рейнджер | solo | fragile | 115% | 71.76 | 120.75 |
+| Доктор | balanced | tank | 85% | 40.80 | 127.50 |
+| Химик | aoe | fragile | 115% | 38.64 | 224.25 |
+| Рыцарь | balanced | tank | 85% | 40.80 | 127.50 |
+| Друид | balanced | steady | 100% | 48.00 | 150.00 |
+
+Before/after summary from `build/balance_report.md`:
+
+| State | Covered pairs | Max combined deviation | Notes |
+| --- | ---: | ---: | --- |
+| Before tuning | 27 | 138.2% | Старые числа сильно выбивали DoT/deploy/summon и тяжелые melee weapons. |
+| After tuning | 27 | 0.1% | Все пары проходят проверку solo/5-target ≤ ±10% в `runtime_smoke_test.gd`. |
+
+Full before/after tables live in `build/balance_report.md` because they are generated artifacts and should be refreshed by the harness when formulas or weapon configs change.
 
 
 ### Новые Классы 0.2 — Статы И Баланс (2026-06-11)

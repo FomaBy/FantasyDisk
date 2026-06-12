@@ -31,6 +31,7 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 
 - Gameplay animations/effects должны уважать паузу.
 - UI может работать в `PROCESS_MODE_ALWAYS`, gameplay tweens/effects — node-bound и pause-aware.
+- Persistent weapon pool VFX (`poison_pool`, `spark_pool`, `briar_pool`) use Sprite2D textures and node-bound tweens on their owning pool nodes, so their visual pulse/fade follows gameplay pause together with the pool lifetime.
 
 ## Handoffs
 

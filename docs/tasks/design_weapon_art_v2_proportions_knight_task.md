@@ -1,6 +1,6 @@
 # Задача Для Claude-Designer: Оружие v2 — Красивее, Пропорциональнее, Рыцарю — Новое
 
-Статус: in_progress
+Статус: done
 Создано: 2026-06-12
 Автор: PM
 Dispatch: отправлено в существующий Design чат `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-12.
@@ -48,10 +48,28 @@ Dispatch: отправлено в существующий Design чат `019eab
 - content_registry: обновить статусы оружейного арта.
 
 ## Acceptance Criteria
-- [ ] Оружие Рыцаря полностью новое и достойное (главный пункт приёмки).
-- [ ] Все 27 спрайтов на планке качества; стиль един.
-- [ ] Оружие не перекрывает персонажей, пропорции ~50-65% высоты, проверены все классы.
-- [ ] Контрольный лист скриншотов в логе; smoke + animation smoke зеленые.
+- [x] Оружие Рыцаря полностью новое и достойное (главный пункт приёмки).
+- [x] Все 27 спрайтов на планке качества; стиль един.
+- [x] Оружие не перекрывает персонажей, пропорции ~50-65% высоты, проверены все классы.
+- [x] Контрольный лист скриншотов в логе; smoke + animation smoke зеленые.
 
 ## Документация
 - content_registry, CHANGELOG (Unreleased).
+
+## Результат 2026-06-12
+
+- Перерисованы с нуля три оружия Рыцаря:
+  - `assets/sprites/weapons/long_spear.png` — noble spear/lance с золотым гардом и синим знаменем;
+  - `assets/sprites/weapons/tower_shield.png` — компактный стальной/синий tower shield с золотым крестом;
+  - `assets/sprites/weapons/holy_flail.png` — святой кистень с короткой цепью, синим хватом и золотым акцентом.
+- Исправлен главный визуальный конфликт Рыцаря: `assets/sprites/characters/knight.png` заменен на unarmed base sprite без встроенного копья/щита, после чего `tools/slice_rig_cutouts.py` пересобрал `assets/sprites/characters/cutout/knight_*.png` и `scripts/sliced_rig_manifest.gd`.
+- Проверены 27 weapon PNG: все `256x256`, RGBA/transparent, без пустой alpha. В `assets/sprites/weapons/` ровно 27 активных PNG.
+- Проверены все weapon scenes: каждый `WeaponVisual` теперь ссылается на matching `assets/sprites/weapons/<weapon_id>.png`; старые fallback-ссылки на чужие картинки отсутствуют.
+- Уменьшены socket/display proportions у крупных weapon visuals: двуручные Берсерка, гитары, книга/череп, чакрамы, арбалет/лук, крупные химические предметы и knight trio теперь визуально занимают меньшую долю рядом с персонажем и не закрывают лицо/корпус.
+- Контрольные листы:
+  - `docs/design/previews/weapon_v2_assets_contact.png` — все 27 raw weapon PNG;
+  - `docs/design/previews/weapon_v2_socket_contact.png` — 9 классов x 3 оружия в визуальной посадке.
+- Validation:
+  - custom asset check: `weapon_png_count 27`, `png_validation OK`, scene texture check без mismatch;
+  - runtime smoke: `Runtime smoke test passed.`;
+  - animation smoke: `Animation smoke test passed.`; Godot дополнительно логирует pre-existing `InputMap action "ultimate" doesn't exist` в `player.gd:280`, это не связано с арт-задачей и передано Back-end отдельным handoff.

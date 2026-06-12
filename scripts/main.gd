@@ -179,6 +179,7 @@ const WINDOW_MODE_OPTIONS := [
 	"Fullscreen",
 ]
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
+const EVENT_DATA := preload("res://scripts/event_data.gd")
 const PAUSE_STATS_MENU_SCENE := preload("res://scenes/PauseStatsMenu.tscn")
 const LEVEL_UP_TOAST_SCENE := preload("res://scenes/LevelUpToast.tscn")
 const LEVEL_UP_EFFECT_SCENE := preload("res://scenes/LevelUpEffect.tscn")
@@ -277,6 +278,9 @@ var current_node_type := ""
 var current_combat_type := "battle"
 var current_boss_id := "rift_warden"
 var route_selected_indices := []
+var used_event_ids := []
+var current_event_definition := {}
+var pending_event_combat := {}
 var level_up_return_to_map := false
 var meta_points := 0
 var berserk_ascension_unlocked := false

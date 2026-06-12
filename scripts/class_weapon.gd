@@ -2,6 +2,9 @@ class_name ClassWeapon
 extends Node2D
 
 const SOUND_AMP_TEXTURE := preload("res://assets/sprites/weapons/sound_amp.png")
+const POISON_POOL_TEXTURE := preload("res://assets/sprites/effects/poison_pool.png")
+const SPARK_POOL_TEXTURE := preload("res://assets/sprites/effects/spark_pool.png")
+const BRIAR_POOL_TEXTURE := preload("res://assets/sprites/effects/briar_pool.png")
 
 @export var weapon_id := "dark_book"
 @export var display_name := "Class Weapon"
@@ -249,34 +252,62 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	if pool_element != "":
 		pool.set_meta("pool_element", pool_element)
 	pool.z_index = 5
-	var visual := Polygon2D.new()
-	visual.color = Color(visual_color.r, visual_color.g, visual_color.b, 0.30)
-	var points := PackedVector2Array()
-	for point_index in range(24):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 24.0) * aoe_radius * 0.7)
-	visual.polygon = points
+	var visual := Node2D.new()
+	visual.name = "PoolVisual"
+	var pool_sprite := Sprite2D.new()
+	pool_sprite.name = "PoolSprite"
+	pool_sprite.texture = _pool_visual_texture()
+	pool_sprite.modulate = Color(1.0, 1.0, 1.0, 0.82)
+	var pool_scale := (aoe_radius * 1.42) / 256.0
+	pool_sprite.scale = Vector2.ONE * pool_scale
+	visual.add_child(pool_sprite)
 	pool.add_child(visual)
 	_projectile_parent().add_child(pool)
 	pool.global_position = pool_position
 	if combo_target != null:
 		_trigger_chemist_combo(pool, combo_target, tick_damage)
 
+	var visual_tween := pool.create_tween()
+	visual_tween.set_loops()
+	visual_tween.tween_property(pool_sprite, "scale", Vector2.ONE * pool_scale * 1.045, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	visual_tween.parallel().tween_property(pool_sprite, "rotation", 0.045, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	visual_tween.tween_property(pool_sprite, "scale", Vector2.ONE * pool_scale * 0.985, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	visual_tween.parallel().tween_property(pool_sprite, "rotation", -0.035, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
 	var tick_count := int(floor(pool_duration / maxf(pool_tick_interval, 0.2)))
 	var pool_tween := pool.create_tween()
+	var pool_id := pool.get_instance_id()
+	var weapon_id := get_instance_id()
 	for tick_index in range(tick_count):
 		pool_tween.tween_interval(pool_tick_interval)
 		pool_tween.tween_callback(func() -> void:
-			if is_instance_valid(self):
-				_damage_enemies_in_circle(pool.global_position, aoe_radius * 0.7, tick_damage)
+			var current_weapon := instance_from_id(weapon_id) as Node
+			var current_pool := instance_from_id(pool_id) as Node2D
+			if current_weapon != null and current_pool != null:
+				current_weapon.call("_damage_enemies_in_circle", current_pool.global_position, aoe_radius * 0.7, tick_damage)
 		)
-	pool_tween.tween_property(visual, "color:a", 0.0, 0.2)
+	pool_tween.tween_property(pool_sprite, "modulate:a", 0.0, 0.2)
 	pool_tween.tween_callback(func() -> void:
-		if is_instance_valid(self):
-			pool.remove_from_group("chemist_clouds")
-			_release_effect(pool)
-		elif is_instance_valid(pool):
-			pool.queue_free()
+		var current_weapon := instance_from_id(weapon_id) as Node
+		var current_pool := instance_from_id(pool_id) as Node
+		if current_pool == null:
+			return
+		if current_weapon != null:
+			current_pool.remove_from_group("chemist_clouds")
+			current_weapon.call("_release_effect", current_pool)
+		else:
+			current_pool.queue_free()
 	)
+
+
+func _pool_visual_texture() -> Texture2D:
+	match pool_element:
+		"spark":
+			return SPARK_POOL_TEXTURE
+		"briar":
+			return BRIAR_POOL_TEXTURE
+		_:
+			return POISON_POOL_TEXTURE
 
 
 func _find_combo_cloud(pool_position: Vector2) -> Node2D:
@@ -535,18 +566,27 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 
 	var pulse_tween := amp.create_tween()
 	var pulse_count := maxi(int(floor(amp_lifetime / maxf(amp_pulse_interval, 0.2))), 1)
+	var amp_id := amp.get_instance_id()
+	var weapon_id := get_instance_id()
 	for pulse_index in range(pulse_count):
 		pulse_tween.tween_interval(amp_pulse_interval)
 		pulse_tween.tween_callback(func() -> void:
-			if is_instance_valid(self):
-				_fire_pulse(_owner_node(), amp.global_position)
+			var current_weapon := instance_from_id(weapon_id) as Node
+			var current_amp := instance_from_id(amp_id) as Node2D
+			if current_weapon != null and current_amp != null:
+				current_weapon.call("_fire_pulse", current_weapon.call("_owner_node"), current_amp.global_position)
 		)
 	pulse_tween.tween_callback(func() -> void:
-		if is_instance_valid(self):
-			_deployed_amps.erase(amp)
-			_release_effect(amp)
-		elif is_instance_valid(amp):
-			amp.queue_free()
+		var current_weapon := instance_from_id(weapon_id) as Node
+		var current_amp := instance_from_id(amp_id) as Node
+		if current_amp == null:
+			return
+		if current_weapon != null:
+			var amps: Array = current_weapon.get("_deployed_amps")
+			amps.erase(current_amp)
+			current_weapon.call("_release_effect", current_amp)
+		else:
+			current_amp.queue_free()
 	)
 
 	# Первый пульс сразу при установке.
@@ -569,31 +609,41 @@ func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
 	var check_interval := maxf(pool_tick_interval, 0.15)
 	var check_count := maxi(int(floor(pool_duration / check_interval)), 1)
 	var trap_tween := trap.create_tween()
+	var trap_id := trap.get_instance_id()
+	var owner_id := owner_node.get_instance_id()
+	var weapon_id := get_instance_id()
 	for check_index in range(check_count):
 		trap_tween.tween_interval(check_interval)
 		trap_tween.tween_callback(func() -> void:
-			if not is_instance_valid(self) or bool(state["triggered"]):
+			var current_weapon := instance_from_id(weapon_id) as Node
+			var current_trap := instance_from_id(trap_id) as Node2D
+			if current_weapon == null or current_trap == null or bool(state["triggered"]):
 				return
-			if not _has_enemy_in_circle(trap.global_position, aoe_radius):
+			if not current_weapon.call("_has_enemy_in_circle", current_trap.global_position, aoe_radius):
 				return
 			state["triggered"] = true
-			var trap_damage := _rolled_damage(owner_node) if is_instance_valid(owner_node) else damage
-			_damage_enemies_in_circle(trap.global_position, aoe_radius, trap_damage)
-			AttackVfx.ring_pulse(_projectile_parent(), trap.global_position, aoe_radius, visual_color, false)
-			for enemy in get_tree().get_nodes_in_group("enemies"):
+			var current_owner := instance_from_id(owner_id) as Node2D
+			var trap_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else damage
+			current_weapon.call("_damage_enemies_in_circle", current_trap.global_position, aoe_radius, trap_damage)
+			AttackVfx.ring_pulse(current_weapon.call("_projectile_parent"), current_trap.global_position, aoe_radius, visual_color, false)
+			for enemy in current_weapon.get_tree().get_nodes_in_group("enemies"):
 				var enemy_node := enemy as Node2D
 				if enemy_node == null or not is_instance_valid(enemy_node):
 					continue
-				var away := enemy_node.global_position - trap.global_position
+				var away := enemy_node.global_position - current_trap.global_position
 				if away.length_squared() > 0.001 and away.length() <= aoe_radius:
-					_push_enemy(enemy_node, away.normalized())
-			_release_effect(trap)
+					current_weapon.call("_push_enemy", enemy_node, away.normalized())
+			current_weapon.call("_release_effect", current_trap)
 		)
 	trap_tween.tween_callback(func() -> void:
-		if is_instance_valid(self) and not bool(state["triggered"]):
-			_release_effect(trap)
-		elif is_instance_valid(trap):
-			trap.queue_free()
+		var current_weapon := instance_from_id(weapon_id) as Node
+		var current_trap := instance_from_id(trap_id) as Node
+		if current_trap == null:
+			return
+		if current_weapon != null and not bool(state["triggered"]):
+			current_weapon.call("_release_effect", current_trap)
+		else:
+			current_trap.queue_free()
 	)
 
 

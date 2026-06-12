@@ -45,6 +45,9 @@ func _show_main_menu() -> void:
 	game._clear_ui()
 	game.route_stage = 0
 	game.route_selected_indices.clear()
+	game.used_event_ids.clear()
+	game.current_event_definition.clear()
+	game.pending_event_combat.clear()
 	game.pending_level_ups = 0
 	game.route_nodes = game.route._generate_route()
 
@@ -139,6 +142,9 @@ func _show_character_select() -> void:
 	game.run_player_snapshot.clear()
 	game.route_stage = 0
 	game.route_selected_indices.clear()
+	game.used_event_ids.clear()
+	game.current_event_definition.clear()
+	game.pending_event_combat.clear()
 	game.route_nodes = game.route._generate_route()
 	game.current_shop_items.clear()
 	game.current_shop_purchased.clear()
@@ -281,11 +287,11 @@ const ATTRIBUTE_REROLLS_PER_WINDOW := 2
 
 
 func _attribute_buy_cost() -> int:
-	return ATTRIBUTE_BUY_BASE_COST + ATTRIBUTE_BUY_STAGE_COST * game.route_stage
+	return game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_BUY_BASE_COST + ATTRIBUTE_BUY_STAGE_COST * game.route_stage, game.route_stage)
 
 
 func _attribute_reroll_cost() -> int:
-	return ATTRIBUTE_REROLL_BASE_COST + ATTRIBUTE_REROLL_STAGE_COST * game.route_stage
+	return game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_REROLL_BASE_COST + ATTRIBUTE_REROLL_STAGE_COST * game.route_stage, game.route_stage)
 
 
 func _show_victory_banner(on_continue: Callable) -> void:
@@ -1035,6 +1041,9 @@ func _quit_current_run() -> void:
 	game.route_stage = 0
 	game.run_player_snapshot.clear()
 	game.route_selected_indices.clear()
+	game.used_event_ids.clear()
+	game.current_event_definition.clear()
+	game.pending_event_combat.clear()
 	game.pending_level_ups = 0
 	game.current_route_choice = ""
 	game.route_nodes = game.route._generate_route()
@@ -1050,6 +1059,9 @@ func _end_current_run_by_player() -> void:
 	game.boss_combat_active = false
 	game.run_player_snapshot.clear()
 	game.route_selected_indices.clear()
+	game.used_event_ids.clear()
+	game.current_event_definition.clear()
+	game.pending_event_combat.clear()
 	game.pending_level_ups = 0
 	game.current_route_choice = ""
 	game._clear_world()
@@ -1253,6 +1265,81 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	var title_label := box.get_node_or_null("LevelUpTitle") as Label
 	var sparkle_root = game.ui_layer.get_node_or_null("LevelUpOverlay/LevelUpParticles") as Control
 	_start_level_up_intro(panel, title_label, reward_buttons, sparkle_root)
+
+
+func _show_elite_artifact_reward(on_done: Callable) -> void:
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "EliteArtifactRewardScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.ui_layer.add_child(root)
+
+	var shade := ColorRect.new()
+	shade.name = "EliteArtifactRewardShade"
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.color = Color(0.02, 0.015, 0.025, 0.76)
+	root.add_child(shade)
+
+	var panel := PanelContainer.new()
+	panel.name = "EliteArtifactRewardPanel"
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.custom_minimum_size = Vector2(1120, 430)
+	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
+	root.add_child(panel)
+
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 20)
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_child(box)
+
+	var title := Label.new()
+	title.name = "EliteArtifactRewardTitle"
+	title.text = "Трофей элитки"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 52)
+	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.38, 1.0))
+	box.add_child(title)
+
+	var subtitle := Label.new()
+	subtitle.name = "EliteArtifactRewardSubtitle"
+	subtitle.text = "Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи."
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_size_override("font_size", 20)
+	subtitle.add_theme_color_override("font_color", Color(0.86, 0.90, 0.98, 1.0))
+	box.add_child(subtitle)
+
+	var rewards_row := HBoxContainer.new()
+	rewards_row.name = "EliteArtifactRewardRow"
+	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rewards_row.custom_minimum_size = Vector2(0.0, 180.0)
+	rewards_row.add_theme_constant_override("separation", 18)
+	box.add_child(rewards_row)
+
+	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_stage, 3)
+	for reward in choices:
+		var reward_data: Dictionary = reward
+		var button := _make_level_up_reward_button(reward_data)
+		button.name = "EliteArtifactRewardButton%d" % rewards_row.get_child_count()
+		button.pressed.connect(func() -> void:
+			_apply_reward_to_run(reward_data)
+			game._clear_ui()
+			if on_done.is_valid():
+				on_done.call()
+		)
+		rewards_row.add_child(button)
+
+	game.ui_escape_action = Callable()
+	game._play_sfx("level_up")
 
 
 func _make_level_up_reward_button(reward: Dictionary) -> Button:
@@ -1700,20 +1787,32 @@ func _show_upgrade_screen() -> void:
 
 
 func _show_event_screen(route_node: Dictionary) -> void:
-	var box := _create_menu_box(route_node["name"], "Странная возможность на дороге: риск, награда или оба сразу.", "event")
+	var event_definition: Dictionary = {}
+	if route_node.has("event_id"):
+		event_definition = game.EVENT_DATA.event_by_id(str(route_node.get("event_id", "")))
+	if event_definition.is_empty():
+		event_definition = game.EVENT_DATA.pick_event(game.used_event_ids, game.rng)
+	var event_id := str(event_definition.get("id", ""))
+	if event_id != "" and not game.used_event_ids.has(event_id):
+		game.used_event_ids.append(event_id)
+	game.current_event_definition = event_definition.duplicate(true)
+
+	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event")
 	_create_menu_run_hud()
 	# На событии докачка недоступна: повторный вход перегенерировал бы выборы события.
 	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, Callable(), false)
-	var event_choices := _random_event_choices()
+	var event_choices: Array = event_definition.get("choices", _random_event_choices())
 	var index := 0
 	for event_choice in event_choices:
-		var button := _make_button("%s\n%s" % [event_choice["title"], event_choice["description"]])
+		var button := _make_button(_event_choice_button_text(event_choice))
 		button.name = "EventChoiceButton%d" % index
-		button.custom_minimum_size = Vector2(640, 74)
+		button.custom_minimum_size = Vector2(760, 92)
 		button.pressed.connect(func() -> void:
-			_apply_event_choice(event_choice)
-			game.route_stage += 1
-			game.route._show_battle_map()
+			var starts_combat := _apply_event_choice(event_choice)
+			if not starts_combat:
+				game.route_stage += 1
+				game.current_event_definition.clear()
+				game.route._show_battle_map()
 		)
 		box.add_child(button)
 		index += 1
@@ -1730,6 +1829,9 @@ func _show_victory_screen() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
 		game.route_selected_indices.clear()
+		game.used_event_ids.clear()
+		game.current_event_definition.clear()
+		game.pending_event_combat.clear()
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
 	var restart_button := _make_button("Новый забег")
@@ -1747,6 +1849,9 @@ func _show_death_screen(reason := "") -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
 		game.route_selected_indices.clear()
+		game.used_event_ids.clear()
+		game.current_event_definition.clear()
+		game.pending_event_combat.clear()
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
 	var retry_button := _make_button("Начать заново")
@@ -1778,7 +1883,16 @@ func _random_event_choices() -> Array:
 	return choices
 
 
-func _apply_event_choice(event_choice: Dictionary) -> void:
+func _event_choice_button_text(event_choice: Dictionary) -> String:
+	var marker := "Риск: " if bool(event_choice.get("risk", false)) else ""
+	return "%s\n%s%s" % [
+		str(event_choice.get("title", "Выбор")),
+		marker,
+		str(event_choice.get("description", "")),
+	]
+
+
+func _apply_event_choice(event_choice: Dictionary) -> bool:
 	var temp_player = game.player_scene.instantiate()
 	game.add_child(temp_player)
 	if game.run_player_snapshot.is_empty():
@@ -1786,19 +1900,67 @@ func _apply_event_choice(event_choice: Dictionary) -> void:
 	else:
 		game.combat._restore_player_snapshot(temp_player)
 
-	if event_choice.has("reward"):
-		temp_player.apply_reward(event_choice["reward"])
-
-	if event_choice.has("health_percent_cost"):
-		var cost := float(temp_player.get("max_health")) * float(event_choice["health_percent_cost"])
-		temp_player.set("health", max(1.0, float(temp_player.get("health")) - cost))
-
-	if event_choice.has("heal_percent"):
-		var heal := float(temp_player.get("max_health")) * float(event_choice["heal_percent"])
-		temp_player.set("health", min(float(temp_player.get("max_health")), float(temp_player.get("health")) + heal))
+	var outcome := _resolve_event_choice_outcome(event_choice, temp_player)
+	_apply_event_outcome_to_player(outcome, temp_player)
+	var combat_payload: Dictionary = outcome.get("combat", {})
 
 	game.combat._store_player_snapshot(temp_player)
 	temp_player.queue_free()
+
+	if not combat_payload.is_empty():
+		game.pending_event_combat = combat_payload.duplicate(true)
+		if outcome.has("post_combat"):
+			game.pending_event_combat["post_combat"] = outcome["post_combat"]
+		game.current_event_definition.clear()
+		var combat_type := str(combat_payload.get("type", "battle"))
+		game.combat._start_combat(false, "elite" if combat_type == "elite" else "battle")
+		return true
+	return false
+
+
+func _resolve_event_choice_outcome(event_choice: Dictionary, temp_player: Node) -> Dictionary:
+	var outcome := event_choice.duplicate(true)
+	if outcome.has("random_outcomes"):
+		var outcomes: Array = outcome.get("random_outcomes", [])
+		if not outcomes.is_empty():
+			var picked: Dictionary = outcomes[game.rng.randi_range(0, outcomes.size() - 1)]
+			outcome.merge(picked.duplicate(true), true)
+	if outcome.has("check"):
+		var check: Dictionary = outcome.get("check", {})
+		var stats: Dictionary = temp_player.get("stats")
+		var stat_id := str(check.get("stat", "knowledge"))
+		var difficulty := float(check.get("difficulty", 0.0))
+		var passed := float(stats.get(stat_id, 0.0)) >= difficulty
+		var branch: Dictionary = outcome.get("success" if passed else "failure", {})
+		outcome.merge(branch.duplicate(true), true)
+		outcome["check_passed"] = passed
+	return outcome
+
+
+func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> void:
+	if outcome.has("cost_money"):
+		temp_player.spend_money(int(outcome["cost_money"]))
+	if outcome.has("money"):
+		temp_player.gain_money(int(outcome["money"]))
+	if outcome.has("reward"):
+		temp_player.apply_reward(outcome["reward"])
+	if outcome.has("stats") or outcome.has("mods") or outcome.has("heal_percent"):
+		temp_player.apply_reward({
+			"kind": "event",
+			"title": str(outcome.get("title", "Событие")),
+			"stats": outcome.get("stats", {}),
+			"mods": outcome.get("mods", {}),
+			"heal_percent": outcome.get("heal_percent", 0.0),
+		})
+	if bool(outcome.get("random_artifact", false)):
+		var artifacts := _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id).filter(func(reward: Dictionary) -> bool:
+			return str(reward.get("kind", "")) == "artifact"
+		), 1)
+		if not artifacts.is_empty():
+			temp_player.apply_reward(artifacts[0])
+	if outcome.has("health_percent_cost"):
+		var cost := float(temp_player.get("max_health")) * float(outcome["health_percent_cost"])
+		temp_player.set("health", max(1.0, float(temp_player.get("health")) - cost))
 
 
 func _random_rewards(count: int) -> Array:
@@ -1835,7 +1997,7 @@ func _random_level_up_rewards(count: int) -> Array:
 
 
 func _random_shop_items(count: int) -> Array:
-	return _weighted_sample(game.PROGRESSION_DATA.shop_items(), count)
+	return _weighted_sample(game.PROGRESSION_DATA.shop_items(game.route_stage), count)
 
 
 func _on_player_leveled_up() -> void:
@@ -2568,11 +2730,11 @@ func _start_level_up_intro(panel: Node, title_label: Node, reward_buttons: Array
 	level_up_panel.pivot_offset = level_up_panel.size * 0.5
 	var dim = game.ui_layer.get_node_or_null("LevelUpOverlay/LevelUpDim") as ColorRect
 	if dim != null:
-		var dim_tween = game.create_tween()
+		var dim_tween = dim.create_tween()
 		dim_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		dim_tween.tween_property(dim, "color:a", 0.68, 0.16)
 
-	var panel_tween = game.create_tween()
+	var panel_tween = level_up_panel.create_tween()
 	panel_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	panel_tween.set_trans(Tween.TRANS_BACK)
 	panel_tween.set_ease(Tween.EASE_OUT)
@@ -2582,7 +2744,7 @@ func _start_level_up_intro(panel: Node, title_label: Node, reward_buttons: Array
 	var title := title_label as Label
 	if title != null and is_instance_valid(title):
 		title.pivot_offset = title.size * 0.5
-		var title_tween = game.create_tween()
+		var title_tween = title.create_tween()
 		title_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		title_tween.set_trans(Tween.TRANS_BACK)
 		title_tween.set_ease(Tween.EASE_OUT)
@@ -2601,7 +2763,7 @@ func _start_level_up_button_intro(reward_buttons: Array) -> void:
 		button.modulate.a = 0.0
 		button.scale = Vector2(0.94, 0.94)
 		button.pivot_offset = button.size * 0.5
-		var button_tween = game.create_tween()
+		var button_tween = button.create_tween()
 		button_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		button_tween.set_trans(Tween.TRANS_CUBIC)
 		button_tween.set_ease(Tween.EASE_OUT)
@@ -2619,7 +2781,7 @@ func _start_level_up_burst_intro(sparkle_root: Node) -> void:
 		if not child is ColorRect:
 			continue
 		var rect := child as ColorRect
-		var tween = game.create_tween()
+		var tween = rect.create_tween()
 		tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		tween.set_trans(Tween.TRANS_QUAD)
 		tween.set_ease(Tween.EASE_OUT)

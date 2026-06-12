@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: 10+ Новых Случайных Событий — Истории, Засады, Отдых
 
-Статус: in_progress
+Статус: done
 Создано: 2026-06-12
 Автор: PM
 Dispatch: отправлено в существующий Back-end чат `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-12.
@@ -56,10 +56,23 @@ Dispatch: отправлено в существующий Back-end чат `019e
   (веса узлов), `scripts/combat_director.gd` (боевые исходы: засада/мимик/фантом).
 
 ## Acceptance Criteria
-- [ ] ≥10 новых событий с 2-3 осмысленными выборами каждое.
-- [ ] Микс типов соблюден; чеки атрибутов работают; повторов за акт нет.
-- [ ] Боевые исходы корректно запускают бой и возвращают на карту.
-- [ ] Все в registry, тексты в данных; тесты исходов + smoke зеленые.
+- [x] ≥10 новых событий с 2-3 осмысленными выборами каждое.
+- [x] Микс типов соблюден; чеки атрибутов работают; повторов за акт нет.
+- [x] Боевые исходы корректно запускают бой и возвращают на карту.
+- [x] Все в registry, тексты в данных; тесты исходов + smoke зеленые.
 
 ## Документация
 - content_registry (события), current_game_state (пул событий), CHANGELOG.
+
+## Result Summary
+
+Закрыто 2026-06-12.
+
+- Добавлен `scripts/event_data.gd` с 12 data-driven сценариями: bard/altar/ambush/well/mercenary/lottery/spring/phantom/guardian/graveyard/star/dummies.
+- Event-node теперь выбирает один сценарий без повторов в рамках акта, хранит историю и choices в данных, а UI только рендерит и применяет outcome.
+- Outcomes поддерживают `stats`, `mods`, `money`, `cost_money`, `heal_percent`, `health_percent_cost`, `random_artifact`, `random_outcomes`, attribute `check`, `combat` и `post_combat`.
+- Боевые event outcomes стартуют обычный/элитный бой через временный `pending_event_combat`; payload очищается после победы/смерти.
+- Runtime smoke расширен проверками: 10+ событий, уникальные ID, no-repeat picker, mix combat/reward/rest/check, success/failure checks, combat outcome cleanup.
+
+Verification:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.

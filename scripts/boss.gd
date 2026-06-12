@@ -16,6 +16,8 @@ extends "res://scripts/enemy.gd"
 @export var slam_interval := 5.8
 @export var enrage_health_ratio := 0.35
 
+const BOSS_PHASE_MARKERS := [0.66, 0.33]
+
 var _burst_cooldown := 2.0
 var _dash_cooldown := 3.0
 var _dash_time_left := 0.0
@@ -27,6 +29,7 @@ var _rift_zone_cooldown := 3.4
 var _slam_cooldown := 4.2
 var shield_active := false
 var _enraged := false
+var boss_phase := 1
 
 
 func _ready() -> void:
@@ -35,6 +38,11 @@ func _ready() -> void:
 	if boss_behavior == "":
 		boss_behavior = "disk_devourer" if enemy_type_name == "Disk Devourer" else "rift_warden"
 	set_meta("boss_behavior", boss_behavior)
+	set_meta("boss_phase", boss_phase)
+	set_meta("boss_phase_markers", BOSS_PHASE_MARKERS)
+	var health_bar := get_node_or_null("HealthBar")
+	if health_bar != null:
+		health_bar.set_meta("phase_markers", BOSS_PHASE_MARKERS)
 	_update_shield_visual()
 
 
@@ -49,6 +57,7 @@ func _physics_process(delta: float) -> void:
 		super(delta)
 
 	_update_shield(delta)
+	_update_boss_phase()
 	_update_enrage()
 	_update_boss_attacks(delta)
 
@@ -74,25 +83,25 @@ func _update_boss_attacks(delta: float) -> void:
 		_slam_cooldown -= delta
 		if _dash_cooldown <= 0.0:
 			_start_dash_toward(player)
-			_dash_cooldown = dash_interval * (0.78 if _enraged else 1.0)
+			_dash_cooldown = dash_interval * _phase_interval_multiplier(0.82 if _enraged else 1.0)
 		if _slam_cooldown <= 0.0:
 			_spawn_disk_slam()
-			_slam_cooldown = slam_interval * (0.82 if _enraged else 1.0)
+			_slam_cooldown = slam_interval * _phase_interval_multiplier(0.86 if _enraged else 1.0)
 		if _burst_cooldown <= 0.0:
 			_fire_radial_burst()
-			_burst_cooldown = burst_interval * (0.86 if _enraged else 1.0)
+			_burst_cooldown = burst_interval * _phase_interval_multiplier(0.90 if _enraged else 1.0)
 	else:
 		_boss_summon_cooldown -= delta
 		_rift_zone_cooldown -= delta
 		if _burst_cooldown <= 0.0:
 			_fire_targeted_volley(player)
-			_burst_cooldown = burst_interval
+			_burst_cooldown = burst_interval * _phase_interval_multiplier()
 		if _rift_zone_cooldown <= 0.0:
 			_spawn_rift_zone(player.global_position)
-			_rift_zone_cooldown = rift_zone_interval
+			_rift_zone_cooldown = rift_zone_interval * _phase_interval_multiplier()
 		if _boss_summon_cooldown <= 0.0:
 			_summon_riftlings()
-			_boss_summon_cooldown = boss_summon_interval
+			_boss_summon_cooldown = boss_summon_interval * _phase_interval_multiplier()
 
 
 func _start_dash_toward(player: Node2D) -> void:
@@ -139,8 +148,9 @@ func _fire_radial_burst() -> void:
 		return
 
 	_play_rig_action("cast", Vector2.UP)
-	for index in range(burst_projectile_count):
-		var angle := TAU * float(index) / float(burst_projectile_count)
+	var projectile_count := burst_projectile_count + (boss_phase - 1) * 4
+	for index in range(projectile_count):
+		var angle := TAU * float(index) / float(projectile_count)
 		var target_position := global_position + Vector2.RIGHT.rotated(angle) * 100.0
 		var projectile := projectile_scene.instantiate()
 		var projectile_parent := get_tree().current_scene
@@ -162,8 +172,8 @@ func _fire_targeted_volley(player: Node2D) -> void:
 	var projectile_parent := get_tree().current_scene
 	if projectile_parent == null:
 		projectile_parent = get_tree().root
-	var volley_count: int = maxi(5, burst_projectile_count)
-	var spread := deg_to_rad(54.0)
+	var volley_count: int = maxi(5, burst_projectile_count + (boss_phase - 1) * 2)
+	var spread := deg_to_rad(54.0 + float(boss_phase - 1) * 14.0)
 	for index in range(volley_count):
 		var t := 0.0 if volley_count == 1 else float(index) / float(volley_count - 1)
 		var angle := lerpf(-spread * 0.5, spread * 0.5, t)
@@ -179,7 +189,7 @@ func _spawn_rift_zone(target_position: Vector2) -> void:
 	if parent == null:
 		parent = get_tree().root
 	_play_rig_action("cast", target_position - global_position)
-	var zone_damage := projectile_damage * 1.25
+	var zone_damage := projectile_damage * (1.25 + float(boss_phase - 1) * 0.18)
 	var zone := Node2D.new()
 	zone.name = "BossRiftZone"
 	zone.add_to_group("enemy_hazards")
@@ -190,7 +200,7 @@ func _spawn_rift_zone(target_position: Vector2) -> void:
 	visual.color = Color(0.45, 0.22, 1.0, 0.24)
 	var points := PackedVector2Array()
 	for point_index in range(32):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 32.0) * 92.0)
+		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 32.0) * (92.0 + float(boss_phase - 1) * 16.0))
 	visual.polygon = points
 	zone.add_child(visual)
 	var zone_tween := zone.create_tween()
@@ -198,7 +208,8 @@ func _spawn_rift_zone(target_position: Vector2) -> void:
 	zone_tween.tween_callback(func() -> void:
 		visual.color = Color(0.62, 0.30, 1.0, 0.52)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
-		if player != null and player.global_position.distance_to(zone.global_position) <= 92.0 and player.has_method("take_damage"):
+		var radius := 92.0 + float(boss_phase - 1) * 16.0
+		if player != null and player.global_position.distance_to(zone.global_position) <= radius and player.has_method("take_damage"):
 			player.take_damage(zone_damage, "rift_zone")
 	)
 	zone_tween.tween_interval(1.45)
@@ -210,7 +221,7 @@ func _spawn_disk_slam() -> void:
 	if parent == null:
 		parent = get_tree().root
 	_play_rig_action("attack", Vector2.DOWN)
-	var slam_damage := contact_damage * 1.5
+	var slam_damage := contact_damage * (1.5 + float(boss_phase - 1) * 0.22)
 	var slam := Node2D.new()
 	slam.name = "DiskSlamZone"
 	slam.add_to_group("enemy_hazards")
@@ -221,7 +232,7 @@ func _spawn_disk_slam() -> void:
 	visual.color = Color(1.0, 0.36, 0.16, 0.24)
 	var points := PackedVector2Array()
 	for point_index in range(36):
-		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 36.0) * 132.0)
+		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 36.0) * (132.0 + float(boss_phase - 1) * 18.0))
 	visual.polygon = points
 	slam.add_child(visual)
 	var slam_tween := slam.create_tween()
@@ -229,7 +240,8 @@ func _spawn_disk_slam() -> void:
 	slam_tween.tween_callback(func() -> void:
 		visual.color = Color(1.0, 0.28, 0.12, 0.55)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
-		if player != null and player.global_position.distance_to(slam.global_position) <= 132.0 and player.has_method("take_damage"):
+		var radius := 132.0 + float(boss_phase - 1) * 18.0
+		if player != null and player.global_position.distance_to(slam.global_position) <= radius and player.has_method("take_damage"):
 			player.take_damage(slam_damage, "disk_slam")
 	)
 	slam_tween.tween_interval(0.62)
@@ -249,11 +261,80 @@ func _summon_riftlings() -> void:
 	if parent == null:
 		parent = get_tree().root
 	_play_rig_action("cast", Vector2.UP)
-	for index in range(3):
+	var summon_count := 3 + boss_phase - 1
+	for index in range(summon_count):
 		var summon := scene.instantiate() as Node2D
 		parent.add_child(summon)
 		summon.add_to_group("summoned_enemies")
-		summon.global_position = _clamp_to_arena(global_position + Vector2.RIGHT.rotated(TAU * float(index) / 3.0 + randf() * 0.35) * 84.0)
+		summon.global_position = _clamp_to_arena(global_position + Vector2.RIGHT.rotated(TAU * float(index) / float(summon_count) + randf() * 0.35) * 84.0)
+
+
+func _phase_interval_multiplier(extra_multiplier := 1.0) -> float:
+	return extra_multiplier * (1.0 - float(boss_phase - 1) * 0.14)
+
+
+func _update_boss_phase() -> void:
+	if max_health <= 0.0:
+		return
+	var ratio := health / max_health
+	var next_phase := 1
+	if ratio <= 0.33:
+		next_phase = 3
+	elif ratio <= 0.66:
+		next_phase = 2
+	if next_phase <= boss_phase:
+		return
+
+	boss_phase = next_phase
+	set_meta("boss_phase", boss_phase)
+	_burst_cooldown = minf(_burst_cooldown, 0.45)
+	_dash_cooldown = minf(_dash_cooldown, 0.65)
+	_slam_cooldown = minf(_slam_cooldown, 0.55)
+	_rift_zone_cooldown = minf(_rift_zone_cooldown, 0.60)
+	_boss_summon_cooldown = minf(_boss_summon_cooldown, 0.85)
+	_shield_cooldown = minf(_shield_cooldown, 1.10)
+	if boss_phase == 2:
+		move_speed *= 1.08
+		dash_speed *= 1.08
+		_set_body_tint(Color(1.0, 0.82, 0.48, 1.0))
+	else:
+		move_speed *= 1.10
+		dash_speed *= 1.12
+		shield_duration *= 1.12
+		_set_body_tint(Color(1.0, 0.45, 0.36, 1.0))
+	_spawn_phase_transition_hazard()
+
+
+func _spawn_phase_transition_hazard() -> void:
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	var zone := Node2D.new()
+	zone.name = "BossPhaseHazard"
+	zone.add_to_group("enemy_hazards")
+	zone.global_position = _clamp_to_arena(global_position, 180.0)
+	zone.z_index = 10
+	parent.add_child(zone)
+
+	var radius := 178.0 + float(boss_phase - 2) * 46.0
+	var visual := Polygon2D.new()
+	visual.color = Color(1.0, 0.28, 0.16, 0.22)
+	var points := PackedVector2Array()
+	for point_index in range(48):
+		points.append(Vector2.RIGHT.rotated(TAU * float(point_index) / 48.0) * radius)
+	visual.polygon = points
+	zone.add_child(visual)
+
+	var tween := zone.create_tween()
+	tween.tween_interval(0.55)
+	tween.tween_callback(func() -> void:
+		visual.color = Color(1.0, 0.18, 0.12, 0.58)
+		var player := get_tree().get_first_node_in_group("player") as Node2D
+		if player != null and player.global_position.distance_to(zone.global_position) <= radius and player.has_method("take_damage"):
+			player.take_damage(projectile_damage * (1.35 + float(boss_phase - 1) * 0.25), "boss_phase")
+	)
+	tween.tween_interval(0.70)
+	tween.tween_callback(zone.queue_free)
 
 
 func _update_enrage() -> void:

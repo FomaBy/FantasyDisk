@@ -67,6 +67,16 @@ All weapon visuals live in `assets/sprites/weapons/` at `256x256` with transpare
 
 Per-weapon socket/display notes are tracked in `docs/design/systems/characters_weapons.md` and the Design handoff task `docs/tasks/design_all_classes_three_weapons_visual_upgrade_task.md`.
 
+## Combat VFX Assets
+
+Attack VFX sprites live in `assets/sprites/effects/` and are transparent PNGs intended for tinted `Sprite2D`/tween-based effects, not raw Godot primitive circles. On 2026-06-12 the first weapon VFX polish block replaced the visible persistent pool placeholders with raster fantasy effects:
+
+- `poison_pool.png` - green bubbling acid/poison puddle for Acid Flask and poison pools;
+- `spark_pool.png` - warm ember/spark chemical cloud for Blast Powder;
+- `briar_pool.png` - thorny green bramble pool for Druid/Druidic zone effects.
+
+`scripts/class_weapon.gd` now selects these by `pool_element` and animates them with pause-aware node-bound tweens. The gameplay radius, tick interval and duration stay data-driven from weapon config. QA preview: `docs/design/previews/vfx_pool_assets_contact.png`.
+
 ## Screen And Map Backgrounds
 
 - `assets/backgrounds/route_map_backdrop.png` - 2560x1440 eerie neutral route map background. It should stay darker and calmer than combat arenas, with low-contrast fog in the central route column and heavier silhouettes pushed to the edges.

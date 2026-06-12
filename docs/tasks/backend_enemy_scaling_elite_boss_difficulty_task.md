@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Сложность — Монстры Сильнее, Элитки-Челлендж, Убер-Босс, Скалирование Цен
 
-Статус: in_progress
+Статус: done
 Создано: 2026-06-12
 Автор: PM
 Dispatch: отправлено в существующий Back-end чат `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-12; выполнять после `backend_class_dps_survivability_budget_task.md`.
@@ -51,11 +51,26 @@ Dispatch: отправлено в существующий Back-end чат `019e
   `scripts/ui_screens.gd` (экран выбора награды элитки, хп-бар босса с метками).
 
 ## Acceptance Criteria
-- [ ] Кривая силы монстров плавная, в данных, задокументирована.
-- [ ] Элитки дают челлендж по целевым ощущениям; награда — выбор 1 из 3 артефактов.
-- [ ] Босс: 3+ фазы, телеграфы, арена-механика, соразмерная награда.
-- [ ] Цены растут той же кривой (единый stage_scale).
-- [ ] Таблица TTK по стадиям в mechanics_extract; smoke зеленые.
+- [x] Кривая силы монстров плавная, в данных, задокументирована.
+- [x] Элитки дают челлендж по целевым ощущениям; награда — выбор 1 из 3 артефактов.
+- [x] Босс: 3+ фазы, телеграфы, арена-механика, соразмерная награда.
+- [x] Цены растут той же кривой (единый stage_scale).
+- [x] Таблица TTK по стадиям в mechanics_extract; smoke зеленые.
 
 ## Документация
 - mechanics_extract (кривые, TTK), current_game_state (награды элиток/босса), CHANGELOG.
+
+## Result Summary
+
+Закрыто 2026-06-12.
+
+- Добавлен `ProgressionData.stage_scale(route_stage)` и `stage_scaled_cost()`: обычные волны, элитки, боссы, магазин, докачка и reroll используют одну кривую.
+- Обычные волны усилены через HP/урон/скорость/active cap/spawn cooldown от `stage_scale`.
+- Элитки усилены по HP/урону, получили meta-флаг 50% phase threshold и после победы открывают экран выбора 1 из 3 артефактов с tier-weight от глубины акта.
+- Боссы получили 3 HP-фазы, phase markers для HP-bar, ускорение паттернов, phase hazard-zone и награду tier-3 artifact + gold.
+- `tools/balance_harness.gd` теперь пишет TTK estimate по ordinary/elite/boss stages в `build/balance_report.md`; таблица продублирована в `docs/design/mechanics_extract.md`.
+- Тесты расширены: monotonic stage_scale, рост цен, elite reward screen 1-of-3, boss phase switches.
+
+Verification:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/balance_harness.gd` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.

@@ -37,7 +37,7 @@ static func build_report() -> String:
 	lines.append("- Solo DPS: expected direct damage, crit factor, post-attack-speed cooldown, DoT/pool/summon contribution and prorated ultimate contribution.")
 	lines.append("- 5-target DPS: same formula with deterministic hit-count model per attack mode.")
 	lines.append("- EHP: `HP / (1-defense) / (1-dodge) + absorb*10 + regeneration*30 + lifesteal estimate`.")
-	lines.append("- Runtime tuning: one `budget_damage_multiplier` per class+weapon, auto-derived from the profile target and applied in `ProgressionData.derived_parameters`.")
+	lines.append("- Runtime tuning: one `budget_damage_multiplier` per class+weapon is auto-derived from the profile target and applied in `ProgressionData.derived_parameters`; the report also stores solo/5-target residuals so the harness can verify both budget axes without changing attack identity.")
 	lines.append("")
 	lines.append("## After Tuning")
 	lines.append("")
@@ -50,6 +50,10 @@ static func build_report() -> String:
 	lines.append("## Profile Summary")
 	lines.append("")
 	lines.append(_summary(rows))
+	lines.append("")
+	lines.append("## Enemy Scaling TTK Estimate")
+	lines.append("")
+	lines.append(_enemy_scaling_ttk_table())
 	lines.append("")
 	return "\n".join(lines)
 
@@ -143,6 +147,29 @@ static func _summary(rows: Array) -> String:
 		])
 	lines.append("")
 	lines.append("Max combined budget deviation after tuning: %.1f%% (`%s`)." % [max_total_dev * 100.0, worst])
+	return "\n".join(lines)
+
+
+static func _enemy_scaling_ttk_table() -> String:
+	var stages := [0, 2, 4, 6, 8, 10]
+	var lines := PackedStringArray()
+	lines.append("Budget estimate only; actual encounter time also depends on movement, dodging, pickups, class uptime and route node modifiers.")
+	lines.append("")
+	lines.append("| Route Stage | Stage Scale | Ordinary Wave TTK | Elite TTK | Boss TTK | Shop Cost x |")
+	lines.append("| ---: | ---: | ---: | ---: | ---: | ---: |")
+	for stage in stages:
+		var scale := ProgressionData.stage_scale(stage)
+		var ordinary_wave_ttk := (980.0 * scale) / maxf(ProgressionData.BALANCE_BASE_AOE_DPS, 1.0)
+		var elite_ttk := (18.5 * 4.6 * (25.0 + scale * 4.0)) / maxf(ProgressionData.BALANCE_BASE_SOLO_DPS, 1.0)
+		var boss_ttk := (350.0 * 1.9 * (4.20 + scale * 1.20)) / maxf(ProgressionData.BALANCE_BASE_SOLO_DPS, 1.0)
+		lines.append("| %d | %.3f | %.1fs | %.1fs | %.1fs | %.2fx |" % [
+			stage,
+			scale,
+			ordinary_wave_ttk,
+			elite_ttk,
+			boss_ttk,
+			scale,
+		])
 	return "\n".join(lines)
 
 
