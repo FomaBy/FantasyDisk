@@ -28,8 +28,12 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var main_menu_actions := main.find_child("MainMenuActions", true, false) as VBoxContainer
-	if main_menu_actions == null or main_menu_actions.get_child_count() != 4:
-		push_error("Expected main menu to expose four action buttons (start, settings, codex, exit).")
+	if main_menu_actions == null or main_menu_actions.get_child_count() != 5:
+		push_error("Expected main menu to expose five action buttons (start, settings, skill tree, codex, exit).")
+		quit(1)
+		return
+	if main.find_child("MainMenuSkillTreeButton", true, false) == null:
+		push_error("Expected main menu to expose the Skill Tree button.")
 		quit(1)
 		return
 	if main_menu_actions.global_position.x > 140.0:
@@ -41,8 +45,8 @@ func _initialize() -> void:
 		var button := child as Button
 		if button != null:
 			main_menu_button_texts.append(button.text)
-	if main_menu_button_texts != ["Начать новую игру", "Настройки", "Кодекс", "Выйти из игры"]:
-		push_error("Expected main menu buttons to be start/settings/codex/exit.")
+	if main_menu_button_texts != ["Начать новую игру", "Настройки", "Древо умений", "Кодекс", "Выйти из игры"]:
+		push_error("Expected main menu buttons to be start/settings/skill tree/codex/exit.")
 		quit(1)
 		return
 

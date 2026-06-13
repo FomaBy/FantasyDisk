@@ -6,6 +6,7 @@ extends SceneTree
 
 const Meta := preload("res://scripts/meta_progression.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
+const MAIN_SCENE := preload("res://scenes/Main.tscn")
 
 
 func _initialize() -> void:
@@ -15,6 +16,7 @@ func _initialize() -> void:
 	_test_save_load_roundtrip()
 	_test_full_tree_power_cap()
 	await _test_player_application()
+	await _test_skill_tree_screen()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
 
@@ -120,6 +122,51 @@ func _test_save_load_roundtrip() -> void:
 	if not Meta.is_node_purchased(loaded, str(e[0]["id"])):
 		_fail("Expected purchased node to persist by id.")
 		return
+
+
+func _test_skill_tree_screen() -> void:
+	# Инкремент 3: экран древа умений из меню — все узлы видимы, состояния и
+	# покупка работают, очки тратятся, сохранение узлов.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+	# Дать очки в текущем мета-состоянии.
+	var state: Dictionary = main.get("meta_state")
+	state["skill_points"] = 5
+	state["skill_nodes"] = []
+	main.set("meta_state", state)
+
+	main.ui._show_skill_tree_screen()
+	await process_frame
+	if main.find_child("SkillTreeScreen", true, false) == null:
+		_fail("Expected skill tree screen to open.")
+		return
+	var node_buttons: Array = main.find_children("SkillNode_*", "Button", true, false)
+	if node_buttons.size() != Meta.SKILL_TREE.size():
+		_fail("Expected %d skill node buttons, got %d." % [Meta.SKILL_TREE.size(), node_buttons.size()])
+		return
+	if main.find_child("SkillTreePointsLabel", true, false) == null:
+		_fail("Expected a skill points counter.")
+		return
+
+	# Купить tier-1 узел ветви (доступен) — очки тратятся, узел становится куплен.
+	var first_id: String = str(Meta.branch_nodes("might")[0]["id"])
+	var first_btn := main.find_child("SkillNode_%s" % first_id, true, false) as Button
+	if first_btn == null or first_btn.disabled:
+		_fail("Expected tier-1 node '%s' to be enabled/available." % first_id)
+		return
+	var points_before: int = Meta.skill_points(main.get("meta_state"))
+	first_btn.pressed.emit()
+	await process_frame
+	if not Meta.is_node_purchased(main.get("meta_state"), first_id):
+		_fail("Expected clicking a node to purchase it.")
+		return
+	if Meta.skill_points(main.get("meta_state")) != points_before - 1:
+		_fail("Expected purchase to spend a skill point on screen.")
+		return
+
+	main.queue_free()
+	await process_frame
 
 
 func _test_player_application() -> void:

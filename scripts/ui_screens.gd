@@ -194,6 +194,12 @@ func _show_main_menu() -> void:
 	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(version_label)
 
+	var skill_tree_button := _make_button("Древо умений")
+	skill_tree_button.name = "MainMenuSkillTreeButton"
+	skill_tree_button.custom_minimum_size = Vector2(380, 62)
+	skill_tree_button.pressed.connect(_show_skill_tree_screen)
+	action_box.add_child(skill_tree_button)
+
 	var codex_button := _make_button("Кодекс")
 	codex_button.name = "MainMenuCodexButton"
 	codex_button.custom_minimum_size = Vector2(380, 62)
@@ -229,21 +235,7 @@ func _show_character_select() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
 
-	var background := TextureRect.new()
-	background.name = "HeroSelectBackground"
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	background.texture = game._cached_texture(game.MAIN_MENU_BACKGROUND)
-	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(background)
-
-	var shade := ColorRect.new()
-	shade.name = "HeroSelectShade"
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.015, 0.018, 0.028, 0.66)
-	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(shade)
+	_add_screen_background(root, "hero_select")
 
 	var margins := MarginContainer.new()
 	margins.name = "HeroSelectMargins"
@@ -673,6 +665,7 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	root.name = "AttributeShopScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_add_screen_background(root, "meta_progression")
 
 	var shade := ColorRect.new()
 	shade.color = Color(0.02, 0.025, 0.045, 0.92)
@@ -829,6 +822,121 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 	root.add_child(fab)
 
 
+func _show_skill_tree_screen() -> void:
+	# SCRUM-150 ч.3: общий экран древа умений из главного меню. Данные/логика —
+	# META_PROGRESSION (data-driven), сохранение узлов в user://. Применение
+	# эффектов к забегу — player.apply_meta_skill_modifiers (ч.2a) + старт-вайринг (ч.2b).
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "SkillTreeScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.ui_layer.add_child(root)
+	_add_screen_background(root, "codex")
+
+	var layout := VBoxContainer.new()
+	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layout.offset_left = 48.0
+	layout.offset_top = 26.0
+	layout.offset_right = -48.0
+	layout.offset_bottom = -26.0
+	layout.add_theme_constant_override("separation", 12)
+	root.add_child(layout)
+
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 18)
+	layout.add_child(header)
+	var title := Label.new()
+	title.text = "Древо умений"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	header.add_child(title)
+	var points_label := Label.new()
+	points_label.name = "SkillTreePointsLabel"
+	points_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	points_label.add_theme_font_size_override("font_size", 22)
+	points_label.add_theme_color_override("font_color", Color(1.0, 0.84, 0.34, 1.0))
+	header.add_child(points_label)
+	var back_button := _make_button("Назад в меню")
+	back_button.name = "SkillTreeBackButton"
+	back_button.custom_minimum_size = Vector2(240, 54)
+	back_button.pressed.connect(_show_main_menu)
+	header.add_child(back_button)
+	game.ui_escape_action = _show_main_menu
+
+	var hint := Label.new()
+	hint.name = "SkillTreeHint"
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_font_size_override("font_size", 14)
+	hint.add_theme_color_override("font_color", Color(0.80, 0.86, 0.92, 0.9))
+	layout.add_child(hint)
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	layout.add_child(scroll)
+	var branches_row := HBoxContainer.new()
+	branches_row.name = "SkillTreeBranches"
+	branches_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	branches_row.add_theme_constant_override("separation", 16)
+	scroll.add_child(branches_row)
+
+	var node_buttons: Array[Button] = []
+	var refresh := func() -> void:
+		var pts: int = game.META_PROGRESSION.skill_points(game.meta_state)
+		points_label.text = "Очки умений: %d" % pts
+		var bought: int = game.META_PROGRESSION.purchased_nodes(game.meta_state).size()
+		hint.text = "Очки умений зарабатываются за победы над боссами. Открывай узлы по ветвям — следующий требует предыдущий." if (pts == 0 and bought == 0) else ""
+		for nb in node_buttons:
+			var node_id: String = str(nb.get_meta("node_id"))
+			var status: String = game.META_PROGRESSION.node_status(game.meta_state, node_id)
+			nb.disabled = status != "available"
+			match status:
+				"purchased":
+					nb.modulate = Color(0.62, 1.0, 0.66, 1.0)
+				"available":
+					nb.modulate = Color(1.0, 0.92, 0.6, 1.0)
+				_:
+					nb.modulate = Color(0.62, 0.64, 0.70, 0.7)
+
+	for branch in game.META_PROGRESSION.SKILL_BRANCHES:
+		var branch_id: String = str(branch)
+		var col := VBoxContainer.new()
+		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		col.add_theme_constant_override("separation", 6)
+		branches_row.add_child(col)
+		var branch_title := Label.new()
+		branch_title.text = str(game.META_PROGRESSION.SKILL_BRANCH_TITLES.get(branch_id, branch_id))
+		branch_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		branch_title.add_theme_font_size_override("font_size", 20)
+		branch_title.add_theme_color_override("font_color", Color(0.96, 0.88, 0.54, 1.0))
+		col.add_child(branch_title)
+		for node in game.META_PROGRESSION.branch_nodes(branch_id):
+			var node_data: Dictionary = node
+			var node_id: String = str(node_data["id"])
+			var nb := _make_button("%s  (%d)\n%s" % [str(node_data["title"]), int(node_data["cost"]), str(node_data["desc"])])
+			nb.name = "SkillNode_%s" % node_id
+			nb.custom_minimum_size = Vector2(0, 64)
+			nb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			nb.add_theme_font_size_override("font_size", 13)
+			nb.set_meta("node_id", node_id)
+			nb.pressed.connect(func() -> void:
+				game.meta_state = game.META_PROGRESSION.buy_skill_node(game.meta_state, node_id)
+				game.META_PROGRESSION.save_state(game.meta_state)
+				refresh.call()
+			)
+			node_buttons.append(nb)
+			col.add_child(nb)
+
+	refresh.call()
+	if not node_buttons.is_empty():
+		node_buttons[0].grab_focus()
+
+
 func _show_codex_screen() -> void:
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
@@ -840,11 +948,7 @@ func _show_codex_screen() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
 
-	var background := ColorRect.new()
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.color = Color(0.030, 0.034, 0.055, 0.985)
-	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(background)
+	_add_screen_background(root, "codex")
 
 	var layout := VBoxContainer.new()
 	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1069,7 +1173,7 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 
 
 func _show_settings_menu() -> void:
-	var box := _create_menu_box("Настройки", "Экран, звук и управление")
+	var box := _create_menu_box("Настройки", "Экран, звук и управление", "settings")
 	box.alignment = BoxContainer.ALIGNMENT_BEGIN
 
 	var tabs := TabContainer.new()
@@ -1644,7 +1748,7 @@ func _update_hero_select_info(info_labels: Dictionary, title: String, descriptio
 
 func _show_weapon_select() -> void:
 	var character_config = game.PROGRESSION_DATA.character_config(game.selected_character_id)
-	var box := _create_menu_box("Выбор оружия", "%s: выбери стартовый подкласс/оружие." % str(character_config["title"]))
+	var box := _create_menu_box("Выбор оружия", "%s: выбери стартовый подкласс/оружие." % str(character_config["title"]), "weapon_select")
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
 		var button := _make_button("%s\n%s\nRange %.0f | AoE %.0f | Cooldown %.2fs" % [
@@ -1668,7 +1772,7 @@ func _show_weapon_select() -> void:
 
 
 func _show_reward_screen() -> void:
-	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "event")
+	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward")
 	_create_menu_run_hud()
 	for reward in _random_rewards(3):
 		var button := _make_button("%s\n%s" % [reward["title"], reward["description"]])
@@ -1774,6 +1878,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.ui_layer.add_child(root)
+	_add_screen_background(root, "elite_reward")
 
 	var shade := ColorRect.new()
 	shade.name = "EliteArtifactRewardShade"
@@ -2537,7 +2642,7 @@ func _show_rest_screen() -> void:
 
 
 func _show_upgrade_screen() -> void:
-	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "event")
+	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade")
 	_create_menu_run_hud()
 	for reward in _random_level_up_rewards(3):
 		var button := _make_button("%s\n%s" % [reward["title"], reward["description"]])
@@ -2609,7 +2714,7 @@ func _show_victory_screen() -> void:
 		game.meta_points,
 		_victory_ascension_summary(game.selected_character_id, run_level, ascension_level),
 	]
-	var box = _create_menu_box("Победа", subtitle, "event")
+	var box = _create_menu_box("Победа", subtitle, "victory")
 	var finish_run := func() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
@@ -2629,7 +2734,7 @@ func _show_death_screen(reason := "") -> void:
 	var subtitle := str(reason)
 	if subtitle == "":
 		subtitle = "Забег завершён на этапе маршрута %d." % [game.route_stage + 1]
-	var box := _create_menu_box("Поражение", subtitle, "event")
+	var box := _create_menu_box("Поражение", subtitle, "death")
 	var back_to_menu := func() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
@@ -3319,7 +3424,7 @@ func _apply_game_cursor() -> void:
 func _begin_rebind(action_name: String) -> void:
 	game.pending_rebind_action = action_name
 	var label := _action_label(action_name)
-	var box := _create_menu_box("Клавиша: %s" % label, "Нажми новую клавишу. Esc отменяет.")
+	var box := _create_menu_box("Клавиша: %s" % label, "Нажми новую клавишу. Esc отменяет.", "settings")
 
 	var cancel_button := _make_button("Отмена")
 	cancel_button.pressed.connect(func() -> void:
@@ -3373,7 +3478,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	var target_label := _action_label(target_action)
 	var conflict_label := _action_label(conflict_action)
 	var key_name := OS.get_keycode_string(keycode)
-	var box := _create_menu_box("Клавиша занята", "%s уже используется для «%s». Выбери другую клавишу для «%s»." % [key_name, conflict_label, target_label])
+	var box := _create_menu_box("Клавиша занята", "%s уже используется для «%s». Выбери другую клавишу для «%s»." % [key_name, conflict_label, target_label], "settings")
 	var retry_button := _make_button("Выбрать другую")
 	retry_button.pressed.connect(func() -> void:
 		_begin_rebind(target_action)
@@ -3555,6 +3660,7 @@ func _create_level_up_menu_box(title: String, subtitle: String) -> VBoxContainer
 	root.name = "LevelUpOverlay"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_add_screen_background(root, "level_up")
 
 	var dim := ColorRect.new()
 	dim.name = "LevelUpDim"
