@@ -27,10 +27,55 @@ import urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TASKS_GLOB = os.path.join(ROOT, "docs/tasks/*.md")
 MAP_PATH = os.path.join(ROOT, "docs/process/jira_sync_map.json")
+EPICS_PATH = os.path.join(ROOT, "docs/process/jira_epics.json")
 SITE = "https://fantasydisk.atlassian.net"
 PROJECT = "SCRUM"
 EMAIL = "fomamoney@gmail.com"
 KEYCHAIN_SERVICE = "fantasydisk-jira"
+
+# Аджайл-эпики: новые тикеты привязываются к parent-эпику по имени файла/заголовку.
+EPICS = json.load(open(EPICS_PATH)).get("epics", {}) if os.path.exists(EPICS_PATH) else {}
+
+
+def epic_for(name: str, title: str) -> str:
+    """Код эпика по имени task-файла + заголовку (зеркало ручной классификации)."""
+    f = (name or "").lower()
+    s = (title or "").lower()
+
+    def has(*ks):
+        return any(k in f or k in s for k in ks)
+
+    if has("add_character", "class_identity", "new_classes", "hero_select", "class_sheet", "three_weapons"):
+        return "CHARS"
+    if "animation" in f or has("rig", "motion", "cutout", "анимац", "_pose_", "movement"):
+        return "ANIM"
+    if has("music", "audio", "volume", "sfx", "звук", "музык", "эмбиент"):
+        return "AUDIO"
+    if has("balance", "vampir", "survivab", "level_up", "levelup", "drop_econom", "economy",
+           "dps", "harness", "reroll", "attribute_relevance", "баланс", "экономик", "дроп"):
+        return "BALANCE"
+    if has("meta_skill", "skill_tree", "patch_notes", "ascension_difficulty", "codex_encyclop",
+           "encyclopedia", "древо", "патч-ноут", "мета-прогресс"):
+        return "META"
+    if has("refactor", "_test_", "test_", "audit", "cleanup", "unused_asset", "domain_split",
+           "docs_domain", "registry_consist", "module_split", "type_inference", "smoke",
+           "performance", "code_quality"):
+        return "QUALITY"
+    if has("release", "build", "windows", "installer", "versioning", "jira_sync", "feature_block",
+           "process_", "integrity"):
+        return "RELEASE"
+    if has("elite", "boss", "mini_elite", "enemy", "attack_aim", "weapon_identity", "weapon_target",
+           "combat_feedback", "ascension", "event", "hazard", "spawn", "scaling",
+           "возвыш", "элит", "босс", "событ", "враг"):
+        return "COMBAT"
+    if name.startswith(("codex_design", "design_")) or has("sprite", "background", "backdrop", "icon",
+           "vfx_sprite", "art_", "_art", "redraw", "visual", "перерисов", "спрайт", "фон", "иконк", "арт"):
+        return "ART"
+    if has("ui_", "_ui_", "shop", "menu", "pause", "settings", "hud", "escape", "radar", "overlap",
+           "victory", "localization", "russian", "glossary", "tooltip", "frame", "button", "screen",
+           "dark_fantasy", "slider", "магазин", "меню", "интерфейс", "экран", "перевод", "локализ"):
+        return "UI"
+    return "QUALITY"
 
 STATUS_TARGET = {
     "new": "К выполнению",
@@ -168,6 +213,11 @@ def main():
             }
             if fix_version and not t["next_version"]:
                 fields["fixVersions"] = [{"name": fix_version}]
+            # Аджайл: привязать новый тикет к parent-эпику (кроме самих эпиков).
+            if t["itype"] != "Эпик":
+                ep = EPICS.get(epic_for(t["file"], t["title"]))
+                if ep:
+                    fields["parent"] = {"key": ep}
             issue = api("POST", "/rest/api/3/issue", {"fields": fields})
             key = issue["key"]
             mapping[t["file"]] = {"key": key, "status": "К выполнению"}
