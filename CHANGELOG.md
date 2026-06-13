@@ -4,7 +4,19 @@
 
 ## [Unreleased] — ветка dev
 
+- Контент (SCRUM-166): добавлен класс Робот (`robot`) с 3 уникальными оружиями — магнитный якорь (`robot_magnetic_anchor`), гидравлический пресс (`robot_compression_line`) и реакторное ядро (`robot_reactor_vent`); выбор героя/кодекс/тесты расширены под 16 классов и 48 weapon variants. Runtime smoke blocker по indentation в weapon-mechanics awaits исправлен. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+- Арт (SCRUM-166): подготовлен canonical Robot visual kit — `assets/sprites/characters/robot.png`, `assets/sprites/weapons/robot_magnetic_anchor.png`, `assets/sprites/weapons/robot_hydraulic_press.png`, `assets/sprites/weapons/robot_reactor_core.png`; добавлен preview `docs/design/previews/robot_art_contact.png`, Godot import и PNG/alpha validation пройдены.
+
+- Контент (SCRUM-162): добавлен класс Биолог (`biologist`) с 3 уникальными оружиями — споровая линза (`bio_spore_bloom`), инъектор образцов (`bio_sample_dart`) и семя симбионта (`bio_symbiote_web`); выбор героя/кодекс/тесты расширены под 15 классов и 45 weapon variants. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+- Арт (SCRUM-162): подготовлен canonical Biologist visual kit — `assets/sprites/characters/biologist.png`, `assets/sprites/weapons/biologist_spore_lens.png`, `assets/sprites/weapons/biologist_sample_injector.png`, `assets/sprites/weapons/biologist_symbiote_seed.png`; добавлен preview `docs/design/previews/biologist_art_contact.png`, Godot import и PNG/alpha validation пройдены.
+
+- Контент (SCRUM-165): добавлен класс Священник (`priest`) с 3 уникальными оружиями — светлый реликварий (`priest_sanctify`), кадило обета (`priest_ward`) и колокол молитвы (`priest_prayer_chain`); выбор героя/кодекс/тесты расширены под 14 классов и 42 weapon variants. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+
+- Контент (SCRUM-167): добавлен класс Снайпер (`sniper`) с 3 уникальными оружиями — винтовка Мертвого Глаза (`sniper_lockshot`), прицел Наводчика (`sniper_kill_zone`) и осколочные патроны (`sniper_split_round`); выбор героя/кодекс/тесты расширены под 13 классов и 39 weapon variants. Runtime smoke blocker по GDScript type inference в sniper weapon methods исправлен явными типами/casts. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+
 - Музыка (SCRUM-154): меню и бой переведены на струнный тавернный эмбиент (RandomMind, CC0/OpenGameArt) — «The Old Tower Inn» в меню, «Minstrel Dance» в бою, тёмная вариация «Battle» в босс-бою; бесшовные лупы (шов меню сглажен микро-фейдом), громкость треков нормализована к одному уровню, добавлен кроссфейд меню↔бой 0.9с; источники и лицензии в docs/design/audio.md.
+
+- Контент (SCRUM-163): добавлен класс Элементалист (`elementalist`) с 3 уникальными оружиями — кольцо стихий (`elemental_orbit`), призматический фокус (`prism_rift`) и ядро метеора (`meteor_shards`); выбор героя/кодекс/тесты расширены под 12 классов и 36 weapon variants. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
 
 - Контент (SCRUM-169): добавлен класс Вор (`thief`) с 3 уникальными оружиями — кошель рикошета (`coin_ricochet` + steal money), плащ захода (`shadow_backstab`) и дымовая бомба (`smoke_bomb` + временный dodge); выбор героя/кодекс/тесты расширены под 11 классов и 33 weapon variants. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
 
