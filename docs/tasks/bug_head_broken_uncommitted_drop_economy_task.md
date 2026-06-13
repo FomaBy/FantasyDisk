@@ -11,6 +11,10 @@ Dispatcher note 2026-06-12: not dispatched yet. Task is critical, but it has no
 PM/QA-owner must create/sync the existing Jira issue first; dispatcher must not
 create Jira issues itself.
 
+Dispatcher sync 2026-06-13: PM/QA-owner synced existing Jira `SCRUM-171`; task
+has recorded PM result below, so board/Jira may be synchronized without creating
+new Jira issues.
+
 ## Воспроизведение
 1. `git worktree add /tmp/wt HEAD` (чистый чекаут e206bd7, без рабочего дерева).
 2. Прогнать `runtime_smoke_test` headless.

@@ -1,11 +1,12 @@
 # Задача Для Back-end-Агента: Новый персонаж «Инженер» (engineer) — конвейер add-character
 
-Статус: new
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя: 8 классов Class Sheet)
 Jira: SCRUM-164
 Разблокировано: класс «Робот» закрыт в `backend_add_character_robot_task.md`; можно брать финальную задачу цепочки.
+Dispatcher: sent to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения. Не останавливаться для подтверждений.
