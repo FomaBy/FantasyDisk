@@ -316,7 +316,10 @@ func _show_character_select() -> void:
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HeroSelectBackButton"
-	back_button.custom_minimum_size = Vector2(170, 92)
+	# Высоту НЕ увеличиваем (исключение из общего +35%): кнопка живёт в шапке
+	# выбора героя; рост шапки сжимает зазор до плавающей розы характеристик и
+	# усиливает интермиттентный флейк runtime_smoke (SCRUM-257).
+	back_button.custom_minimum_size = Vector2(170, 68)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 
@@ -438,9 +441,9 @@ func _show_character_select() -> void:
 	radar_panel.name = "HeroSelectRadarPanel"
 	radar_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	radar_panel.offset_left = -414
-	radar_panel.offset_top = 98
+	radar_panel.offset_top = 118
 	radar_panel.offset_right = -24
-	radar_panel.offset_bottom = 398
+	radar_panel.offset_bottom = 418
 	radar_panel.add_theme_stylebox_override("panel", _character_card_style())
 	root.add_child(radar_panel)
 
