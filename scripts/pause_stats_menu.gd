@@ -646,7 +646,7 @@ func _value_color(entry: Dictionary) -> Color:
 func _make_button(text: String) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(280, 48)
+	button.custom_minimum_size = Vector2(280, 60)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_apply_fantasy_button_theme(button)
 	button.add_theme_font_size_override("font_size", 16)

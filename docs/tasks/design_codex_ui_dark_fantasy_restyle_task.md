@@ -320,3 +320,17 @@ Handoff Back-end (`backend_ui_dark_fantasy_theme_integration_task.md`): вайр
 Новый итоговый канон SCRUM-147: **button-only Parchment & Wax Seal**.
 Интерфейсные панели остаются legacy/old interface, пока пользователь отдельно
 не утвердит новый цельный realistic frame kit без нарезанных/странных панелей.
+
+Проверка после correction:
+
+- Godot import passed:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --import`
+- Focused UI theme test passed:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/dark_fantasy_ui_theme_test.gd`
+- UI no-overlap matrix passed:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd`
+- Full runtime smoke currently fails outside the UI visual scope at
+  `tests/runtime_smoke_test.gd:1042` with
+  `Expected exactly two attribute offers in the post-battle window.`
+  The UI correction did not change reward-offer logic; leave this for Back-end/QA
+  follow-up if it remains reproducible in their lane.

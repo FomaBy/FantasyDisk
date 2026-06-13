@@ -39,6 +39,13 @@ func _initialize() -> void:
 			push_error("Expected main menu to expose %s." % required_button)
 			quit(1)
 			return
+	var start_theme_button := main.find_child("MainMenuStartButton", true, false) as Button
+	var settings_theme_button := main.find_child("MainMenuSettingsButton", true, false) as Button
+	var exit_theme_button := main.find_child("MainMenuExitButton", true, false) as Button
+	if not _button_uses_dark_fantasy_role(start_theme_button, "primary") or not _button_uses_dark_fantasy_role(settings_theme_button, "secondary") or not _button_uses_dark_fantasy_role(exit_theme_button, "danger"):
+		push_error("Expected main menu buttons to use canonical dark fantasy primary/secondary/danger state textures.")
+		quit(1)
+		return
 	if main_menu_actions.global_position.x > 140.0:
 		push_error("Expected main menu buttons to stay on the left side of the start screen.")
 		quit(1)
@@ -1031,8 +1038,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var attribute_offers := main.find_child("AttributeOffers", true, false) as VBoxContainer
-	if attribute_offers == null or attribute_offers.get_child_count() != 2:
-		push_error("Expected exactly two attribute offers in the post-battle window.")
+	if attribute_offers == null or attribute_offers.get_child_count() < 2 or attribute_offers.get_child_count() > 8:
+		push_error("Expected 2-8 attribute offers in the post-battle window, including meta skill extra options.")
 		quit(1)
 		return
 	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
@@ -2096,6 +2103,25 @@ func _node_sprite_texture_path(node: Node, sprite_name: String) -> String:
 	if sprite == null or sprite.texture == null:
 		return ""
 	return sprite.texture.resource_path
+
+
+func _button_uses_dark_fantasy_role(button: Button, role: String) -> bool:
+	if button == null:
+		return false
+	var expected := {
+		"normal": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_idle.png" % role,
+		"hover": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_hover.png" % role,
+		"pressed": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_pressed.png" % role,
+		"disabled": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_disabled.png" % role,
+	}
+	for state in expected.keys():
+		var style := button.get_theme_stylebox(state)
+		if not (style is StyleBoxTexture):
+			return false
+		var texture := (style as StyleBoxTexture).texture
+		if texture == null or texture.resource_path != str(expected[state]):
+			return false
+	return true
 
 
 func _test_stat_artifact_recording() -> void:

@@ -16,7 +16,9 @@
 
 - Bugfix (SCRUM-211): товары магазина перенесены из старой правой wall-зоны в центр нового shop backdrop; frameless стиль и node-bound stock сохранены, runtime smoke проверяет центр группы (`center_delta_x=0.0`) и no-overlap на 1280x720/2560x1440.
 
-- UI Art (SCRUM-147): rejected flat UI pass replaced with an accepted-reference Parchment & Wax Seal rebuild — buttons are cut from `button_parchment_wax_seal.png`, frames use parchment + serrated forged-metal brackets, live `global/escape/shop` PNGs refreshed in-place, canonical `assets/sprites/ui/frames/dark_fantasy/` kit rebuilt, preview `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`, pipeline `tools/build_parchment_wax_ui_kit.py`; Godot import and runtime smoke pass.
+- UI Art (SCRUM-147): user correction applied — Parchment & Wax Seal remains only on buttons, button PNGs are taller so the wax seal fits, and all non-button panels/cards/HUD/tooltips/shop frames were restored to the old interface look; active preview `docs/design/previews/ui_button_only_legacy_panels_contact.png`, pipeline `tools/apply_button_only_ui_revert.py`.
+
+- UI Theme (SCRUM-222): Back-end style layer remains path-compatible — buttons use real primary/secondary/danger 4-state Parchment & Wax Seal PNG (`idle/hover/pressed/disabled`), while `dark_fantasy` non-button frame paths now visually mirror the old interface after the SCRUM-147 correction.
 
 - Баланс-аудит (SCRUM-188): добавлен route-level отчет `build/route_economy_xp_model.md` для balanced/combat-heavy/shop-heavy маршрутов; модель подтверждает 8-9 level-up и healthy/high покупательную способность, поэтому текущий XP uplift +7.1% оставлен без дополнительного повышения.
 

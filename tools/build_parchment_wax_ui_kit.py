@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Build SCRUM-147 parchment/wax UI assets from approved raster references.
+"""Historical full-frame SCRUM-147 parchment/wax builder.
 
-The previous UI pass drifted into flat procedural frames. This builder keeps the
-accepted reference artwork as the source of truth: buttons are cut from
-`button_parchment_wax_seal.png`, while panels use the metal/parchment material
-language from `docs/design/ui_parchment_kit/`.
+Superseded by direct user feedback on 2026-06-13: only buttons should use the
+Parchment & Wax Seal reference; panels/cards/HUD/tooltips/shop frames should use
+the old interface style. Run `tools/apply_button_only_ui_revert.py` for the
+current accepted pipeline.
 """
 
 from __future__ import annotations
@@ -440,6 +440,10 @@ def validate_pngs(paths: Iterable[Path]) -> None:
 
 
 def main() -> None:
+    raise SystemExit(
+        "Superseded: run tools/apply_button_only_ui_revert.py "
+        "(wax-seal buttons only, legacy panels)."
+    )
     ensure_dirs()
     button_ref = Image.open(BUTTON_REF).convert("RGBA")
     screen_ref = Image.open(PARCHMENT_SCREEN).convert("RGBA")

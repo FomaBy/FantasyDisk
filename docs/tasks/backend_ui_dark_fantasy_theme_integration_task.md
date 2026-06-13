@@ -99,4 +99,17 @@ Verification:
 
 - `Godot --headless --path ... --script res://tests/dark_fantasy_ui_theme_test.gd` — passed.
 - `Godot --headless --path ... --script res://tests/ui_no_overlap_matrix_test.gd` — passed.
-- `Godot --headless --path ... --script res://tests/runtime_smoke_test.gd` — passed.
+- `Godot --headless --path ... --script res://tests/runtime_smoke_test.gd` — passed during initial Back-end integration.
+
+## Post-Correction Design Verification (2026-06-13)
+
+After the user requested button-only wax-seal UI and legacy-looking panels:
+
+- Godot import — passed.
+- `dark_fantasy_ui_theme_test.gd` — passed.
+- `ui_no_overlap_matrix_test.gd` — passed.
+- Full `runtime_smoke_test.gd` currently fails at `tests/runtime_smoke_test.gd:1042`
+  with `Expected exactly two attribute offers in the post-battle window.`
+  This check concerns post-battle reward-offer logic, not the visual button/frame
+  correction; keep SCRUM-222's UI texture wiring result intact and route the
+  reward-offer smoke failure through Back-end/QA if it reproduces there.

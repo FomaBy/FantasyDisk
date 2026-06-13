@@ -12,13 +12,34 @@ const SHOP_SLOT_HOVER_PATH := "res://assets/sprites/ui/shop/ui_shop_artifact_slo
 const SHOP_PRICE_BADGE_PATH := "res://assets/sprites/ui/shop/ui_shop_price_badge.png"
 const SHOP_PURCHASED_OVERLAY_PATH := "res://assets/sprites/ui/shop/ui_shop_purchased_overlay.png"
 const SHOP_TOOLTIP_FRAME_PATH := "res://assets/sprites/ui/shop/ui_shop_tooltip_frame.png"
-const GLOBAL_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_panel_frame.png"
-const GLOBAL_BUTTON_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_button_frame.png"
-const GLOBAL_CARD_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_card_frame.png"
-const GLOBAL_LEVEL_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_level_panel_frame.png"
-const GLOBAL_HUD_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_hud_panel_frame.png"
-const GLOBAL_HUD_CARD_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_hud_card_frame.png"
-const GLOBAL_TOOLTIP_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_tooltip_frame.png"
+const DF_FRAME_DIR := "res://assets/sprites/ui/frames/dark_fantasy/"
+const GLOBAL_PANEL_FRAME_PATH := DF_FRAME_DIR + "ui_df_panel_frame.png"
+const GLOBAL_BUTTON_FRAME_PATH := DF_FRAME_DIR + "ui_df_button_secondary_idle.png"
+const GLOBAL_CARD_FRAME_PATH := DF_FRAME_DIR + "ui_df_card_frame.png"
+const GLOBAL_LEVEL_PANEL_FRAME_PATH := DF_FRAME_DIR + "ui_df_level_panel_frame.png"
+const GLOBAL_HUD_PANEL_FRAME_PATH := DF_FRAME_DIR + "ui_df_hud_panel_frame.png"
+const GLOBAL_HUD_CARD_FRAME_PATH := DF_FRAME_DIR + "ui_df_hud_card_frame.png"
+const GLOBAL_TOOLTIP_FRAME_PATH := DF_FRAME_DIR + "ui_df_tooltip_frame.png"
+const DF_BUTTON_TEXTURES := {
+	"primary": {
+		"normal": DF_FRAME_DIR + "ui_df_button_primary_idle.png",
+		"hover": DF_FRAME_DIR + "ui_df_button_primary_hover.png",
+		"pressed": DF_FRAME_DIR + "ui_df_button_primary_pressed.png",
+		"disabled": DF_FRAME_DIR + "ui_df_button_primary_disabled.png",
+	},
+	"secondary": {
+		"normal": DF_FRAME_DIR + "ui_df_button_secondary_idle.png",
+		"hover": DF_FRAME_DIR + "ui_df_button_secondary_hover.png",
+		"pressed": DF_FRAME_DIR + "ui_df_button_secondary_pressed.png",
+		"disabled": DF_FRAME_DIR + "ui_df_button_secondary_disabled.png",
+	},
+	"danger": {
+		"normal": DF_FRAME_DIR + "ui_df_button_danger_idle.png",
+		"hover": DF_FRAME_DIR + "ui_df_button_danger_hover.png",
+		"pressed": DF_FRAME_DIR + "ui_df_button_danger_pressed.png",
+		"disabled": DF_FRAME_DIR + "ui_df_button_danger_disabled.png",
+	},
+}
 const GLOSSARY := preload("res://scripts/glossary.gd")
 const SYSTEM_CHECKBOX_UNCHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_unchecked.png"
 const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_checked.png"
@@ -168,13 +189,13 @@ func _show_main_menu() -> void:
 
 	var start_button := _make_button("Начать новую игру")
 	start_button.name = "MainMenuStartButton"
-	start_button.custom_minimum_size = Vector2(380, 62)
+	start_button.custom_minimum_size = Vector2(380, 76)
 	start_button.pressed.connect(_show_character_select)
 	action_box.add_child(start_button)
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "MainMenuSettingsButton"
-	settings_button.custom_minimum_size = Vector2(380, 62)
+	settings_button.custom_minimum_size = Vector2(380, 76)
 	settings_button.pressed.connect(_show_settings_menu)
 	action_box.add_child(settings_button)
 
@@ -197,7 +218,7 @@ func _show_main_menu() -> void:
 
 	var skill_tree_button := _make_button("Древо умений")
 	skill_tree_button.name = "MainMenuSkillTreeButton"
-	skill_tree_button.custom_minimum_size = Vector2(380, 62)
+	skill_tree_button.custom_minimum_size = Vector2(380, 76)
 	skill_tree_button.pressed.connect(_show_skill_tree_screen)
 	action_box.add_child(skill_tree_button)
 
@@ -207,7 +228,7 @@ func _show_main_menu() -> void:
 	var last_seen: String = str(settings_module.load_settings().get("last_seen_version", "0.0.0"))
 	var patch_notes_button := _make_button("Что нового  ●" if patch_notes_data.has_new_since(last_seen) else "Что нового")
 	patch_notes_button.name = "MainMenuPatchNotesButton"
-	patch_notes_button.custom_minimum_size = Vector2(380, 62)
+	patch_notes_button.custom_minimum_size = Vector2(380, 76)
 	patch_notes_button.pressed.connect(func() -> void:
 		# Просмотр отмечает актуальную версию как увиденную — бейдж гаснет.
 		var saved: Dictionary = settings_module.load_settings()
@@ -219,13 +240,13 @@ func _show_main_menu() -> void:
 
 	var codex_button := _make_button("Кодекс")
 	codex_button.name = "MainMenuCodexButton"
-	codex_button.custom_minimum_size = Vector2(380, 62)
+	codex_button.custom_minimum_size = Vector2(380, 76)
 	codex_button.pressed.connect(_show_codex_screen)
 	action_box.add_child(codex_button)
 
 	var exit_button := _make_button("Выйти из игры")
 	exit_button.name = "MainMenuExitButton"
-	exit_button.custom_minimum_size = Vector2(380, 62)
+	exit_button.custom_minimum_size = Vector2(380, 76)
 	exit_button.pressed.connect(func() -> void:
 		game.get_tree().quit()
 	)
@@ -1721,31 +1742,31 @@ func _build_run_pause_menu() -> void:
 
 	var continue_button := _make_button("Продолжить")
 	continue_button.name = "RunPauseContinueButton"
-	continue_button.custom_minimum_size = Vector2(360, 58)
+	continue_button.custom_minimum_size = Vector2(360, 68)
 	continue_button.pressed.connect(_resume_game)
 	box.add_child(continue_button)
 
 	var dossier_button := _make_button("Досье персонажа")
 	dossier_button.name = "RunPauseDossierButton"
-	dossier_button.custom_minimum_size = Vector2(360, 58)
+	dossier_button.custom_minimum_size = Vector2(360, 68)
 	dossier_button.pressed.connect(_show_pause_dossier_menu)
 	box.add_child(dossier_button)
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "RunPauseSettingsButton"
-	settings_button.custom_minimum_size = Vector2(360, 58)
+	settings_button.custom_minimum_size = Vector2(360, 68)
 	settings_button.pressed.connect(_show_settings_menu)
 	box.add_child(settings_button)
 
 	var end_run_button := _make_button("Покинуть забег")
 	end_run_button.name = "RunPauseEndRunButton"
-	end_run_button.custom_minimum_size = Vector2(360, 58)
+	end_run_button.custom_minimum_size = Vector2(360, 68)
 	end_run_button.pressed.connect(_end_current_run_by_player)
 	box.add_child(end_run_button)
 
 	var main_menu_button := _make_button("Главное меню")
 	main_menu_button.name = "RunPauseMainMenuButton"
-	main_menu_button.custom_minimum_size = Vector2(360, 58)
+	main_menu_button.custom_minimum_size = Vector2(360, 68)
 	main_menu_button.pressed.connect(_quit_current_run)
 	box.add_child(main_menu_button)
 
@@ -4109,7 +4130,7 @@ func _level_up_badge_text() -> String:
 func _make_button(text: String) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(420, 54)
+	button.custom_minimum_size = Vector2(420, 64)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_style_button_control(button)
@@ -4122,49 +4143,35 @@ func _style_button_control(button: Button) -> void:
 
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
-	# Тёплое дерево/латунь (D&D-таверна): база кнопок коричневая, не сине-серая,
-	# чтобы tint текстуры рамки читался как дерево при свечах.
-	var normal_bg := Color(0.16, 0.115, 0.075, 0.97)
-	var hover_bg := Color(0.24, 0.17, 0.10, 1.0)
-	var pressed_bg := Color(0.11, 0.075, 0.05, 1.0)
-	var border := Color(0.68, 0.52, 0.22, 0.92)
-	var hover_border := Color(1.0, 0.82, 0.26, 1.0)
-	var pressed_border := Color(0.95, 0.62, 0.18, 1.0)
-	var border_width := 2
-	var shadow_alpha := 0.42
-	if variant == "reward":
-		normal_bg = Color(0.075, 0.065, 0.115, 0.98)
-		hover_bg = Color(0.125, 0.095, 0.19, 1.0)
-		pressed_bg = Color(0.055, 0.045, 0.09, 1.0)
-		border = Color(0.56, 0.42, 0.86, 0.98)
-		hover_border = Color(1.0, 0.82, 0.28, 1.0)
-		pressed_border = Color(0.55, 0.96, 1.0, 1.0)
-		border_width = 3
-		shadow_alpha = 0.58
-	elif variant == "danger":
-		normal_bg = Color(0.24, 0.055, 0.055, 0.98)
-		hover_bg = Color(0.36, 0.075, 0.070, 1.0)
-		pressed_bg = Color(0.16, 0.035, 0.040, 1.0)
-		border = Color(0.80, 0.20, 0.16, 0.96)
-		hover_border = Color(1.0, 0.48, 0.34, 1.0)
-		pressed_border = Color(0.95, 0.30, 0.22, 1.0)
-	elif variant == "level_up":
-		normal_bg = Color(0.08, 0.22, 0.20, 0.98)
-		hover_bg = Color(0.12, 0.34, 0.30, 1.0)
-		pressed_bg = Color(0.05, 0.15, 0.15, 1.0)
-		border = Color(0.38, 0.95, 0.78, 1.0)
-		hover_border = Color(0.78, 1.0, 0.88, 1.0)
-		pressed_border = Color(1.0, 0.82, 0.28, 1.0)
-		border_width = 3
-	button.add_theme_stylebox_override("normal", _button_style(normal_bg, border, shadow_alpha, border_width))
-	button.add_theme_stylebox_override("hover", _button_style(hover_bg, hover_border, min(shadow_alpha + 0.16, 0.74), border_width))
-	button.add_theme_stylebox_override("pressed", _button_style(pressed_bg, pressed_border, shadow_alpha, border_width))
-	button.add_theme_stylebox_override("disabled", _button_style(Color(0.06, 0.065, 0.075, 0.82), Color(0.20, 0.22, 0.25, 0.95), 0.18, border_width))
-	button.add_theme_stylebox_override("focus", _button_style(Color(0.0, 0.0, 0.0, 0.0), Color(0.55, 0.96, 1.0, 0.60), 0.0, 1))
+	var role := _button_role(button, variant)
+	button.add_theme_stylebox_override("normal", _button_state_style(role, "normal"))
+	button.add_theme_stylebox_override("hover", _button_state_style(role, "hover"))
+	button.add_theme_stylebox_override("pressed", _button_state_style(role, "pressed"))
+	button.add_theme_stylebox_override("disabled", _button_state_style(role, "disabled"))
+	button.add_theme_stylebox_override("focus", _button_state_style(role, "hover", Color(1.08, 1.05, 0.86, 1.0)))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.45, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+func _button_role(button: Button, variant := "default") -> String:
+	if variant == "danger":
+		return "danger"
+	if variant in ["reward", "level_up", "primary"]:
+		return "primary"
+	var text := button.text.to_lower()
+	if text.contains("выйти") or text.contains("покинуть") or text.contains("смерть") or text.contains("поражение"):
+		return "danger"
+	if text.contains("начать") or text.contains("выбрать") or text.contains("купить") or text.contains("получить") or text.contains("продолжить"):
+		return "primary"
+	return "secondary"
+
+
+func _button_state_style(role: String, state: String, tint := Color.WHITE) -> StyleBox:
+	var role_map: Dictionary = DF_BUTTON_TEXTURES.get(role, DF_BUTTON_TEXTURES["secondary"])
+	var path := str(role_map.get(state, role_map.get("normal", GLOBAL_BUTTON_FRAME_PATH)))
+	return _global_texture_style(path, Vector4(36, 30, 36, 32), tint, Vector4(18, 12, 18, 14))
 
 
 func _make_section_label(text: String) -> Label:
