@@ -14,13 +14,13 @@
 | SCRUM-213 Бой, враги, боссы, события | 32 | 0 | 1 | 0 | 33 |
 | SCRUM-214 Баланс и экономика | 14 | 3 | 0 | 0 | 17 |
 | SCRUM-215 Интерфейс, экраны, локализация | 20 | 1 | 0 | 0 | 21 |
-| SCRUM-216 Арт и спрайты | 31 | 4 | 0 | 0 | 35 |
+| SCRUM-216 Арт и спрайты | 31 | 4 | 1 | 0 | 36 |
 | SCRUM-217 Анимация и риги | 30 | 0 | 1 | 0 | 31 |
 | SCRUM-218 Звук и музыка | 5 | 0 | 0 | 0 | 5 |
 | SCRUM-219 Мета-прогрессия | 6 | 0 | 0 | 0 | 6 |
 | SCRUM-220 Качество кода, тесты, аудиты | 31 | 2 | 0 | 6 | 39 |
 | SCRUM-221 Релиз и процессы | 5 | 0 | 0 | 0 | 5 |
-| **ИТОГО** | **194** | **10** | **2** | **6** | **212** |
+| **ИТОГО** | **194** | **10** | **3** | **6** | **213** |
 
 (КК = Контроль качества, ждёт QA; Кв = К выполнению, ждёт взятия)
 
@@ -28,9 +28,11 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [codex_design_cursor_clawed_fire_task.md](../tasks/codex_design_cursor_clawed_fire_task.md) | Design (Codex) → Claude-Designer | new | Игровой курсор — 2-й вариант с референса (когтистый наконечник + огонь), заменить game_cursor.png, выверить hotspot |
+| [backend_weapon_select_sprite_clean_layout_task.md](../tasks/backend_weapon_select_sprite_clean_layout_task.md) | Back-end (UI) | new | Выбор оружия: показать спрайт оружия, убрать тяжёлый стиль кнопки, проще/читаемее, статы по-русски; no-overlap |
+| [backend_hero_select_description_left_of_radar_task.md](../tasks/backend_hero_select_description_left_of_radar_task.md) | Back-end (UI) | new | Выбор героя: описание героя слева от розы ветров (единая правая панель), отступы к рамкам, no-overlap |
+| [codex_design_cursor_clawed_fire_task.md](../tasks/codex_design_cursor_clawed_fire_task.md) | Design (Codex) → Claude-Designer | in_progress | Jira: SCRUM-223; dispatched Design `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-13. Игровой курсор — 2-й вариант с референса (когтистый наконечник + огонь), заменить `game_cursor.png`, выверить hotspot; duplicate audit: prior cursor pack SCRUM-79/SCRUM-55 is done and superseded by this specific rework |
 | [design_codex_new_bosses_mini_elites_sprites_task.md](../tasks/design_codex_new_bosses_mini_elites_sprites_task.md) | Design (Codex генерация) → Claude-Designer | in_progress | Jira: SCRUM-156; dispatched Design `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-12. Спрайты по общему ростеру: 3 босса 512px + 6 мини-элиток, painterly D&D, cutout-нарезка, превью-лист масштаба; duplicate SCRUM-180/SCRUM-204 requirements folded in: stable source paths, transparent alpha, animation-friendly separable parts, contact sheet, Animator unblock note |
-| [design_codex_ui_dark_fantasy_restyle_task.md](../tasks/design_codex_ui_dark_fantasy_restyle_task.md) | Design | done | Jira: SCRUM-147; user correction applied 2026-06-13: keep taller Parchment & Wax Seal buttons only, restore old/legacy interface panels across `global/escape/shop` and non-button `dark_fantasy` paths; QA preview `ui_button_only_legacy_panels_contact.png` |
+| [design_codex_ui_dark_fantasy_restyle_task.md](../tasks/design_codex_ui_dark_fantasy_restyle_task.md) | Design | review | Jira: SCRUM-147; user correction applied 2026-06-13: keep taller Parchment & Wax Seal buttons only, restore old/legacy interface panels across `global/escape/shop` and non-button `dark_fantasy` paths; QA preview `ui_button_only_legacy_panels_contact.png` |
 | [backend_ui_dark_fantasy_theme_integration_task.md](../tasks/backend_ui_dark_fantasy_theme_integration_task.md) | Back-end (UI theme integration) | review | Jira: SCRUM-222; done 2026-06-13 by Back-end, awaiting QA. Runtime style layer keeps primary/secondary/danger 4-state wax-seal buttons; non-button `dark_fantasy` frame paths now visually mirror old interface after SCRUM-147 correction |
 | [epic_full_project_quality_pass.md](../tasks/epic_full_project_quality_pass.md) | PM/Coordination | in_progress | Зонтик: 6 аудитов (Фаза 1) → волна исправлений (Фаза 2). Правила коллизий и «done=HEAD зелёный» |
 | [backend_refactor_ui_screens_domain_split_task.md](../tasks/backend_refactor_ui_screens_domain_split_task.md) | Back-end | blocked | Jira: SCRUM-199; serialized 2026-06-13 until SCRUM-147/SCRUM-222 UI dependency and active UI edits are stable |

@@ -445,7 +445,7 @@ Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 ви
 
 ## UI Visual Kit 2026-06-13
 
-SCRUM-147 заменяет прежний tavern/contextual UI direction на принятый Parchment & Wax Seal dark fantasy canon по референсам `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`, `screen_settings_full_reference.png` и `docs/design/ui_parchment_kit/`. Принятый rebuild 2026-06-13 использует светлый состаренный пергамент, красную сургучную печать, зубчатый кованый металл, рубиновые акценты, золотой hover glow, затемненный pressed state и grayscale disabled state. Live fallback frame paths в `global/`, `escape/` и selected `shop/` перерисованы в этом стиле без изменения имен/размеров. No-junk rule: без бессмысленных линий/кружков/квадратов/дефолтного Godot-декора.
+SCRUM-147 после пользовательской правки 2026-06-13 оставляет Parchment & Wax Seal только для кнопок. Кнопки используют референс `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: состаренный пергамент, красная сургучная печать, зубчатый кованый металл, рубин, золотой hover glow, затемненный pressed state и grayscale disabled state. Все non-button frame paths в `global/`, `escape/`, selected `shop/` и canonical `dark_fantasy/ui_df_panel/card/HUD/tooltip/stat/shop` возвращены к старому interface look, потому что full parchment panels выглядели странно разрезанными. No-junk rule: без бессмысленных линий/кружков/квадратов/дефолтного Godot-декора.
 
 | ID | Ассет | Роль |
 | --- | --- | --- |
@@ -462,7 +462,7 @@ SCRUM-147 заменяет прежний tavern/contextual UI direction на п
 | `ui_df_panel_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png` | Canonical dark fantasy large panel |
 | `ui_df_shop_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png` | Canonical merchant/shop frame |
 
-Pipeline/preview: `tools/build_parchment_wax_ui_kit.py`, `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`, `docs/design/previews/ui_parchment_kit_reference_contact.png`.
+Pipeline/preview: `tools/apply_button_only_ui_revert.py`, `docs/design/previews/ui_button_only_legacy_panels_contact.png`, compatibility preview `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`.
 
 Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
 

@@ -833,6 +833,14 @@
  },
  "codex_design_cursor_clawed_fire_task.md": {
   "key": "SCRUM-223",
+  "status": "В работе"
+ },
+ "backend_hero_select_description_left_of_radar_task.md": {
+  "key": "SCRUM-224",
+  "status": "К выполнению"
+ },
+ "backend_weapon_select_sprite_clean_layout_task.md": {
+  "key": "SCRUM-225",
   "status": "К выполнению"
  }
 }

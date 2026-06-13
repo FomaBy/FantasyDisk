@@ -1,12 +1,28 @@
 # Задача Для Design-Агента: Игровой курсор — драконий когтистый наконечник с огнём (2-й вариант с референса)
 
-Статус: new
+Статус: in_progress
 Приоритет: normal
 Роль: Design (Codex генерация) → Claude-Designer ревью/интеграция
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя со скриншотом)
 Jira: SCRUM-223
+
+## Dispatcher Note (2026-06-13)
+
+Dispatched to Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` for 0.1.4
+cursor art replacement and hotspot verification. Jira `SCRUM-223` is already
+created and in the active 0.1.4 sprint.
+
+Duplicate audit: older cursor work in `design_artifact_icons_shop_cursor_task.md`
+and `backend_shop_inline_artifact_icons_cursor_integration_task.md` is already
+done (`SCRUM-79`/`SCRUM-55`) and represented the previous generic cursor kit.
+This task is a new user-directed rework to the specific second reference variant,
+so it remains the canonical active cursor task.
+
+Per PM request, keep High-level model/reasoning settings; do not downgrade to
+low. If this reveals motion/timing/animation-state scope, create/update an
+Animator handoff instead of absorbing it in Design.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.

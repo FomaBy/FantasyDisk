@@ -56,7 +56,7 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
-SCRUM-147 replaces the old warm tavern/contextual UI canon with the active **Parchment & Wax Seal** dark fantasy UI canon. The fixed reference source is `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`, supported by `screen_settings_full_reference.png` and the fullscreen `docs/design/ui_parchment_kit/` references. The accepted 2026-06-13 rebuild uses the actual reference raster materials: aged parchment bodies, red wax seals, serrated forged-metal end caps/corner brackets, small ruby accents, warm gold hover glow, pressed darkening, and disabled grayscale. Ornament must function as frame construction, corner hardware, state feedback, or believable D&D/tabletop material detail. Abstract filler lines, circles, squares, dots, grids, or default Godot-looking controls are review defects.
+SCRUM-147 is now **button-only Parchment & Wax Seal** after direct user correction on 2026-06-13. The fixed button reference source is `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: aged parchment bodies, red wax seals, serrated forged-metal end caps, ruby accents, warm gold hover glow, pressed darkening, and disabled grayscale. The full parchment panel rebuild was rejected because sliced interface panels looked strange in game. All non-button frames are restored to the old/legacy interface look while keeping the Back-end `dark_fantasy/` texture paths stable.
 
 Canonical dark fantasy assets live in `assets/sprites/ui/frames/dark_fantasy/`:
 
@@ -74,12 +74,14 @@ State language:
 - pressed: darker parchment/metal and subtly compressed read, matching the reference;
 - disabled: desaturated grayscale, matching the reference.
 
-SCRUM-147 also overwrote the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, and selected `assets/sprites/ui/shop/` paths with the accepted parchment/wax/forged-metal treatment while preserving file names and dimensions. SCRUM-222 completed Back-end integration for explicit 4-state button styleboxes: runtime button roles map to `primary`, `secondary`, and `danger` texture sets, while common panels/cards/HUD/tooltip styleboxes resolve through the canonical `dark_fantasy/` frame paths. Safe cleanup of superseded historical frame assets remains in the cleanup flow after reference checks/backups.
+SCRUM-147 user correction restored the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, and selected `assets/sprites/ui/shop/` paths to the old interface style, except button frames. SCRUM-222 completed Back-end integration for explicit 4-state button styleboxes: runtime button roles map to `primary`, `secondary`, and `danger` texture sets, while common panels/cards/HUD/tooltip styleboxes resolve through `dark_fantasy/` frame paths that now visually mirror the old interface rather than the rejected sliced parchment panels.
 
 Rebuild/QA assets:
 
-- `tools/build_parchment_wax_ui_kit.py` - deterministic raster slicing/rebuild pipeline from the approved references;
-- `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png` - side-by-side reference/asset acceptance sheet;
+- `tools/apply_button_only_ui_revert.py` - active correction pipeline: taller wax-seal buttons + restored legacy panels;
+- `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
+- `docs/design/previews/ui_button_only_legacy_panels_contact.png` - active side-by-side correction sheet;
+- `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png` - compatibility copy of the active correction sheet;
 - `docs/design/previews/ui_parchment_kit_reference_contact.png` - contact sheet of the six fullscreen parchment-kit references.
 
 System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, arrows, checkbox checked/unchecked, slider track/grabber and scrollbar grabber. `scripts/ui_icon_registry.gd` exposes them as `system_*` IDs. Default grey Godot controls should remain fail-safe only.

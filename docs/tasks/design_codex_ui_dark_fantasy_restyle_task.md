@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Полный рестайл UI в Dark Fantasy (кнопки → весь интерфейс)
 
-Статус: done (Design review ПРИНЯТО 2026-06-13 — Claude-Designer; ребилд соответствует эталону Parchment & Wax Seal)
+Статус: done (User correction 2026-06-13 — wax-seal buttons only, legacy panels restored)
 Приоритет: high
 Версия: 0.1.4
 Создано: 2026-06-12
@@ -289,3 +289,34 @@ Jira/local sync:
 Контактный лист пересобран: `docs/design/previews/ui_dark_fantasy_restyle_kit_contact.png`.
 Handoff Back-end (`backend_ui_dark_fantasy_theme_integration_task.md`): вайринг styleboxes/тем по карте
 замены + удаление/архив старых tavern-фреймов после reference-проверок. Принято к интеграции.
+
+## User Correction / 2026-06-13 — DONE, оставить только кнопки
+
+Пользователь отклонил full-frame parchment UI после runtime/preview review:
+разрезанные интерфейсные панели выглядят странно и плохо. Новое решение:
+
+- оставить Parchment & Wax Seal только для кнопок;
+- сделать кнопочные PNG выше, чтобы сургучная печать помещалась и не была зажата;
+- все панели, карточки, HUD, тултипы, shop frames и Escape stats frames вернуть к старому интерфейсу.
+
+Выполнено:
+
+- добавлен текущий accepted pipeline `tools/apply_button_only_ui_revert.py`;
+- `tools/build_parchment_wax_ui_kit.py` помечен как superseded при прямом запуске,
+  чтобы он больше не генерировал отклоненные parchment panels;
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_*` пересобраны как более высокие
+  wax-seal кнопки (`384x120`);
+- `assets/sprites/ui/frames/global/ui_button_frame.png` пересобран выше (`160x88`);
+- `assets/sprites/ui/frames/escape/ui_escape_button_frame.png` пересобран выше (`384x144`);
+- все non-button frames восстановлены из legacy interface reference `b465bcd4^`,
+  включая canonical `dark_fantasy/ui_df_panel_frame.png`, `ui_df_card_frame.png`,
+  `ui_df_level_panel_frame.png`, HUD/card/tooltip/stat/shop frame paths, чтобы
+  Back-end SCRUM-222 мог оставить текущие texture paths без разрезанного UI вида;
+- preview обновлен:
+  `docs/design/previews/ui_button_only_legacy_panels_contact.png`,
+  `docs/design/previews/ui_dark_fantasy_restyle_kit_contact.png`,
+  `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`.
+
+Новый итоговый канон SCRUM-147: **button-only Parchment & Wax Seal**.
+Интерфейсные панели остаются legacy/old interface, пока пользователь отдельно
+не утвердит новый цельный realistic frame kit без нарезанных/странных панелей.
