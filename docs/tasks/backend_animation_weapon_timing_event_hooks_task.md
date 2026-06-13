@@ -1,6 +1,6 @@
 # Back-end handoff: weapon animation timing event hooks
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Animator handoff from SCRUM-187
@@ -50,3 +50,20 @@ outputs:
 - Existing weapon behavior and balance remain unchanged.
 - Runtime smoke and animation smoke pass after integration.
 - `docs/design/systems/animation.md` documents the final API once implemented.
+
+## Result Summary — 2026-06-13
+
+Back-end runtime support complete.
+
+- Extended `Player.play_action_animation(action_id, direction, phase := "", duration := 0.0, metadata := {})` as a backward-compatible side-channel.
+- Added `Player.weapon_animation_event(event)` and `last_weapon_animation_event`; non-empty phase calls emit metadata without restarting the base rig pose/action kick.
+- Added `ClassWeapon._emit_weapon_animation_event()` so weapon modes expose `attack_mode`, `weapon_id`, `display_name`, `phase_source`, phase and duration without Animator reading weapon internals.
+- Added phase hooks for delayed, pulse/burst, deploy and channel families, including grenade/smoke/prism/meteor/sanctify, amp/trap/mines/sentry, suppression/ward/spore/sample/orbit, beam/dot/drain/prayer/symbiote/drone.
+- Gameplay outputs, balance, damage, targeting, spawn rules and cleanup behavior were not intentionally changed.
+- Animation smoke includes a focused timing API regression for delayed windup, deploy+pulse and channel payloads.
+- `docs/design/systems/animation.md` documents the final API.
+
+Verification:
+
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.

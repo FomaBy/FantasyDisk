@@ -4,6 +4,8 @@
 
 ## [Unreleased] — ветка dev
 
+- Animation API (SCRUM-208): добавлен Back-end side-channel `weapon_animation_event` для delayed/pulse/deploy/channel оружия; phase metadata (`windup/release/pulse/burst/deploy/channel/recover`) идет из существующих gameplay таймингов и не меняет урон, targeting, VFX spawn или баланс.
+
 - Visual integration (SCRUM-170): центральные экраны получили role-specific dark fantasy backdrops из `assets/backgrounds/ui/` с cover scaling: cathedral для системных экранов, merchant archive для магазина, arcane lab для event/level-up/meta, reward hall для наград/победы и crypt для поражения/danger screens.
 
 - Visual integration (SCRUM-157): призывные союзники и deployables теперь различаются по источнику — Друидский амулет выбирает beast/pack-spirit, гомункул Химика использует отдельный homunculus sprite, звуковой усилитель и вороний тотем ставят собственные field sprites без изменения баланса и cleanup-групп.

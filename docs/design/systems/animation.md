@@ -45,7 +45,11 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 ## Timing / VFX Sync
 
 - SCRUM-187 (2026-06-13) implemented Animator-owned timing polish through existing `action_id`, `action_variant`, and normalized action progress in `cutout_rig_2d.gd`. This covers windup/release/body timing where the current action call already has enough data.
-- Delayed, pulse, burst, deploy, and channel VFX need Back-end event metadata for exact sync. Handoff: `docs/tasks/backend_animation_weapon_timing_event_hooks_task.md`.
+- SCRUM-208 (2026-06-13) added a Back-end timing event surface for weapon modes whose gameplay beats happen after the initial action pose. `Player.play_action_animation(action_id, direction, phase := "", duration := 0.0, metadata := {})` remains backward-compatible: calls without `phase` still drive the rig/action kick exactly as before, while calls with a non-empty phase update facing, store `last_weapon_animation_event`, and emit `weapon_animation_event(event)` without restarting the base pose.
+- Timing event payload keys: `action_id`, `phase`, `duration`, `direction`, `weapon_id`, `character_id`, `metadata`. `ClassWeapon._emit_weapon_animation_event()` adds `metadata.attack_mode`, `metadata.weapon_id`, `metadata.display_name`, and `metadata.phase_source = "class_weapon"`.
+- Supported phase names for weapon sync: `windup`, `release`, `pulse`, `burst`, `deploy`, `channel`, `recover`. Durations are derived from existing gameplay timing fields such as `grenade_delay`, `burst_interval`, `amp_lifetime`, `amp_pulse_interval`, `orbit_duration`, `pool_duration`, not Animator constants.
+- Covered mode families: delayed area/deploy (`grenade_cook`, `smoke_bomb`, `prism_rift`, `meteor_shards`, `priest_sanctify`, traps/mines), repeated pulse/burst (`suppression_burst`, `amp`, `priest_ward`, `bio_spore_bloom`, `bio_sample_dart`, `elemental_orbit`, `engineer_sentry_link`), and channel/beam/chain (`beam`, `dot_beam`, `drain_link`, `priest_prayer_chain`, `bio_symbiote_web`, `engineer_repair_drone`).
+- Animator should consume `weapon_animation_event` or `last_weapon_animation_event` for optional sync; gameplay damage, targeting, VFX spawning, cleanup and balance remain owned by Back-end weapon code.
 
 ## Pause Behavior
 
