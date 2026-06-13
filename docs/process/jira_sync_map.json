@@ -541,11 +541,15 @@
  },
  "backend_ingame_patch_notes_task.md": {
   "key": "SCRUM-159",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_shop_wall_artifacts_frameless_task.md": {
   "key": "SCRUM-160",
-  "status": "К выполнению"
+  "status": "В работе"
+ },
+ "backend_ui_screens_shop_style_parse_errors_task.md": {
+  "key": "SCRUM-160",
+  "status": "В работе"
  },
  "bug_hud_elements_overlap_task.md": {
   "key": "SCRUM-161",
@@ -585,7 +589,7 @@
  },
  "animation_engineer_rig_motion_task.md": {
   "key": "SCRUM-164",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_add_character_priest_task.md": {
   "key": "SCRUM-165",
@@ -662,5 +666,9 @@
  "bug_head_broken_uncommitted_drop_economy_task.md": {
   "key": "SCRUM-171",
   "status": "Готово"
+ },
+ "bug_audio_silent_master_volume_zero_persisted_task.md": {
+  "key": "SCRUM-172",
+  "status": "К выполнению"
  }
 }

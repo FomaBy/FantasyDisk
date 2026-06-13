@@ -1,12 +1,13 @@
 # Задача Для Back-end-Агента: Магазин — артефакты висят на стене без рамок
 
-Статус: new (сброшен PM 2026-06-13: залип в in_progress с периода сломанного HEAD, прогресса не было)
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя со скриншотом)
 Jira: SCRUM-160
 
 Dispatcher: sent to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-12.
+Dispatcher: restarted to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13 after PM reset noted stale in_progress/no progress.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения. Не останавливаться для подтверждений.

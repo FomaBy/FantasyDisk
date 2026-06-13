@@ -51,4 +51,5 @@ Back-end временно использует documented Druid/Raven/Hunter pla
 - Added QA/contact preview: `docs/design/previews/engineer_art_contact.png`.
 - Art direction: D&D/tabletop FantasyDisk artificer/tinkerer, leather, brass, rune tools, mechanical talismans and clockwork devices; distinct from Druid and not sci-fi engineer.
 - Validation: Godot headless import completed successfully; all four gameplay PNGs have expected size, RGBA alpha, transparent background, non-empty alpha bbox, and generated `.import` files.
+- Runtime smoke: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` completed with `Runtime smoke test passed`; log still reports missing `assets/sprites/characters/cutout/engineer_*.png` preload warnings/errors until Animator creates cutout parts.
 - Scope note: Design did not change Back-end gameplay/balance or implement rig/motion. `docs/tasks/animation_engineer_rig_motion_task.md` is now ready for Animator handoff.
