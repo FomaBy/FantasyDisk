@@ -1,6 +1,6 @@
 # Back-end Task: Survivability Scenario Harness
 
-Статус: new (PM 2026-06-13: сброшен из залипшего in_progress — claim >3ч без коммитов, Codex-dispatch не дал прогресса; готов к взятию воркером)
+Статус: done (2026-06-13, Claude Fable 5)
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-176
@@ -28,5 +28,10 @@ Create deterministic survivability scenarios for fragile/steady/sturdy/tank prof
 - New scenario harness runs headless.
 - No balance values changed in this task unless follow-up balance tasks are created.
 
+## Done (2026-06-13)
+`tools/survivability_harness.gd` — детерминированная модель выживаемости 4 профилей (fragile/steady/sturdy/tank) × 4 сценария (контактный рой/перекрёстный обстрел/бурст элитки/хазард фазы босса) на точной боевой формуле `derived_parameters` + порядок митигейта `take_damage` (absorb→defense→dodge→regen). Считает TTD, EHP, вклад каждого слоя и лечения; отчёт `build/survivability_report.md`. Балансовые значения НЕ менялись.
+`tests/survivability_scenario_test.gd` — гейт: монотонность TTD по стойкости в каждом сценарии, положительный вклад слоёв у sturdy/tank, absorb сильнее против роя чем бурста, **якорь к реальному `Player.take_damage`** (неувёрнутый удар == формула, 30.065 на 71 ударе), анти-вакуум 16 строк. Headless зелёный, детерминирован.
+
 ## Dispatcher Note (2026-06-13)
 Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.
+Dispatcher: restarted to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13 after PM reset stale in_progress.
