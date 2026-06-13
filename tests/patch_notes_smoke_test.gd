@@ -4,14 +4,47 @@ extends SceneTree
 # логики бейджа новой версии. Отдельный файл — runtime_smoke занят (анти-коллизия).
 
 const PatchNotes := preload("res://scripts/patch_notes_data.gd")
+const MAIN_SCENE := preload("res://scenes/Main.tscn")
 
 
 func _initialize() -> void:
 	_test_data_integrity()
 	_test_player_facing_text()
 	_test_version_since_logic()
+	await _test_screen_renders()
 	print("Patch notes smoke test passed.")
 	quit(0)
+
+
+func _test_screen_renders() -> void:
+	# Экран «Что нового» строит заголовки версий и буллеты из данных.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+	main.ui._show_patch_notes_screen()
+	await process_frame
+	if main.find_child("PatchNotesScreen", true, false) == null:
+		_fail("Expected patch notes screen to open.")
+		return
+	if main.find_child("PatchNotesBackButton", true, false) == null:
+		_fail("Expected a back button on patch notes screen.")
+		return
+	var version_labels: Array = main.find_children("PatchNotesVersion_*", "Label", true, false)
+	if version_labels.size() != PatchNotes.all_entries().size():
+		_fail("Expected %d version headers, got %d." % [PatchNotes.all_entries().size(), version_labels.size()])
+		return
+	# Хотя бы один буллет с текстом из данных присутствует.
+	var first_line := str((PatchNotes.all_entries()[0]["highlights"] as Array)[0])
+	var found := false
+	for label in main.find_children("*", "Label", true, false):
+		if str((label as Label).text).contains(first_line.substr(0, 12)):
+			found = true
+			break
+	if not found:
+		_fail("Expected patch notes screen to render highlight text.")
+		return
+	main.queue_free()
+	await process_frame
 
 
 func _fail(msg: String) -> void:

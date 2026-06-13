@@ -945,6 +945,73 @@ func _show_skill_tree_screen() -> void:
 		node_buttons[0].grab_focus()
 
 
+func _show_patch_notes_screen() -> void:
+	# SCRUM-159: экран «Что нового» из главного меню — data-driven патч-ноуты
+	# по версиям (новейшая первой), только пользовательский русский текст.
+	const PatchNotesData := preload("res://scripts/patch_notes_data.gd")
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "PatchNotesScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.ui_layer.add_child(root)
+	_add_screen_background(root, "codex")
+
+	var layout := VBoxContainer.new()
+	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layout.offset_left = 48.0
+	layout.offset_top = 26.0
+	layout.offset_right = -48.0
+	layout.offset_bottom = -26.0
+	layout.add_theme_constant_override("separation", 12)
+	root.add_child(layout)
+
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 18)
+	layout.add_child(header)
+	var title := Label.new()
+	title.text = "Что нового"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	header.add_child(title)
+	var back_button := _make_button("Назад в меню")
+	back_button.name = "PatchNotesBackButton"
+	back_button.custom_minimum_size = Vector2(240, 54)
+	back_button.pressed.connect(_show_main_menu)
+	header.add_child(back_button)
+	game.ui_escape_action = _show_main_menu
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	layout.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.name = "PatchNotesContent"
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 14)
+	scroll.add_child(content)
+
+	for entry in PatchNotesData.all_entries():
+		var entry_data: Dictionary = entry
+		var version_label := Label.new()
+		version_label.name = "PatchNotesVersion_%s" % str(entry_data.get("version", "")).replace(".", "_")
+		version_label.text = "Версия %s  (%s)" % [str(entry_data.get("version", "")), str(entry_data.get("date", ""))]
+		version_label.add_theme_font_size_override("font_size", 24)
+		version_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
+		content.add_child(version_label)
+		for line in (entry_data.get("highlights", []) as Array):
+			var bullet := Label.new()
+			bullet.text = "•  %s" % str(line)
+			bullet.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			bullet.add_theme_font_size_override("font_size", 16)
+			bullet.add_theme_color_override("font_color", Color(0.90, 0.93, 0.98, 1.0))
+			content.add_child(bullet)
+
+
 func _show_codex_screen() -> void:
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
