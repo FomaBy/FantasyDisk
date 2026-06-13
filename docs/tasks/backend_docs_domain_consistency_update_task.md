@@ -1,7 +1,25 @@
 # Back-end Task: Domain Docs Consistency Update
 
-Статус: in_progress
+Статус: done (2026-06-13, Claude Fable 5)
 Версия: 0.1.4
+
+## Done (2026-06-13, Claude)
+
+Рефреш доменных доков под 0.1.4 (commit 203fb398, только документация):
+- `combat.md` (06-11→06-13): boss-ростер (rift_warden + ashen_colossus/
+  bone_archon/brood_mother) с hazard-зонами, мини-элитки, секция elite/boss
+  escalation (hit-stop/camera shake/фазы), обновлённые тесты (фокус-сьюты
+  SCRUM-202, projectile/hazard смоки, балансовые харнессы).
+- `progression_balance.md` (06-12→06-13): доменный сплит progression_data
+  (SCRUM-198) как source-of-truth, древо умений (SCRUM-150) + патч-ноуты
+  (SCRUM-159), секция Balance Validation (харнессы).
+- Кросс-линк `reviews/mechanics_balance_audit_2026_06.md` добавлен в оба.
+- `characters_weapons.md` / `menus_ui.md` / `audio.md` — уже актуальны (06-13);
+  `current_game_state.md` / `technical_architecture.md` уже отражают сплит и
+  древо умений (поддерживаются актуальными). Доки именуются `progression_balance`/
+  `menus_ui` (а не `progression_economy`/`ui_menus` из scope — это те же файлы).
+- Content ID использованы из верифицированного кода; канонический реестр —
+  `content_registry.md`. Gameplay/код не менялись.
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-175
 Jira: SCRUM-195
