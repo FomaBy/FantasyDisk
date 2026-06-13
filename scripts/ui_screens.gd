@@ -217,8 +217,7 @@ func _show_character_select() -> void:
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
 	game.route_nodes = game.route._generate_route()
-	game.current_shop_items.clear()
-	game.current_shop_purchased.clear()
+	_clear_current_shop_stock()
 	game._clear_ui()
 
 	game.ui_layer = CanvasLayer.new()
@@ -337,6 +336,12 @@ func _show_character_select() -> void:
 	dossier.add_theme_constant_override("separation", 7)
 	dossier_panel.add_child(dossier)
 
+	var radar_reserved_space := Control.new()
+	radar_reserved_space.name = "HeroSelectRadarReservedSpace"
+	radar_reserved_space.custom_minimum_size = Vector2(0, 288)
+	radar_reserved_space.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dossier.add_child(radar_reserved_space)
+
 	var dossier_title := Label.new()
 	dossier_title.name = "HeroSelectInfoTitle"
 	dossier_title.add_theme_font_size_override("font_size", 29)
@@ -408,15 +413,15 @@ func _show_character_select() -> void:
 	# над пустым верх-правым полем досье — не перекрывает текст, выровненный влево).
 	var radar := HeroStatRadar.new()
 	radar.name = "HeroStatRadar"
-	radar.custom_minimum_size = Vector2(320, 200)
+	radar.custom_minimum_size = Vector2(370, 230)
 	radar.anchor_left = 1.0
 	radar.anchor_right = 1.0
 	radar.anchor_top = 0.0
 	radar.anchor_bottom = 0.0
-	radar.offset_left = -344.0
-	radar.offset_right = -24.0
-	radar.offset_top = 88.0
-	radar.offset_bottom = 288.0
+	radar.offset_left = -414.0
+	radar.offset_right = -44.0
+	radar.offset_top = 124.0
+	radar.offset_bottom = 354.0
 	radar.z_index = 6
 	root.add_child(radar)
 
@@ -1340,10 +1345,95 @@ func _show_pause_menu() -> void:
 	if game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer):
 		game.pause_overlay_layer.queue_free()
 	game.pause_overlay_layer = CanvasLayer.new()
-	game.pause_overlay_layer.name = "PauseDossierOverlayLayer"
+	game.pause_overlay_layer.name = "RunPauseOverlayLayer"
 	game.pause_overlay_layer.layer = 120
 	game.pause_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.pause_overlay_layer)
+	game.pause_stats_menu = null
+	_build_run_pause_menu()
+
+
+func _build_run_pause_menu() -> void:
+	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
+		return
+	for child in game.pause_overlay_layer.get_children():
+		child.queue_free()
+
+	var dim := ColorRect.new()
+	dim.name = "RunPauseDim"
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.color = Color(0.01, 0.015, 0.025, 0.70)
+	game.pause_overlay_layer.add_child(dim)
+
+	var root := CenterContainer.new()
+	root.name = "RunPauseMenuRoot"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.pause_overlay_layer.add_child(root)
+
+	var panel := PanelContainer.new()
+	panel.name = "RunPauseMenuPanel"
+	panel.custom_minimum_size = Vector2(520, 480)
+	panel.add_theme_stylebox_override("panel", _panel_style())
+	root.add_child(panel)
+
+	var box := VBoxContainer.new()
+	box.name = "RunPauseMenuButtons"
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 14)
+	panel.add_child(box)
+
+	var title := Label.new()
+	title.name = "RunPauseMenuTitle"
+	title.text = "Пауза"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 44)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	box.add_child(title)
+
+	var subtitle := Label.new()
+	subtitle.name = "RunPauseMenuSubtitle"
+	subtitle.text = "Забег поставлен на паузу"
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_size_override("font_size", 16)
+	subtitle.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
+	box.add_child(subtitle)
+
+	var continue_button := _make_button("Продолжить")
+	continue_button.name = "RunPauseContinueButton"
+	continue_button.custom_minimum_size = Vector2(360, 58)
+	continue_button.pressed.connect(_resume_game)
+	box.add_child(continue_button)
+
+	var dossier_button := _make_button("Досье персонажа")
+	dossier_button.name = "RunPauseDossierButton"
+	dossier_button.custom_minimum_size = Vector2(360, 58)
+	dossier_button.pressed.connect(_show_pause_dossier_menu)
+	box.add_child(dossier_button)
+
+	var settings_button := _make_button("Настройки")
+	settings_button.name = "RunPauseSettingsButton"
+	settings_button.custom_minimum_size = Vector2(360, 58)
+	settings_button.pressed.connect(_show_settings_menu)
+	box.add_child(settings_button)
+
+	var end_run_button := _make_button("Покинуть забег")
+	end_run_button.name = "RunPauseEndRunButton"
+	end_run_button.custom_minimum_size = Vector2(360, 58)
+	end_run_button.pressed.connect(_end_current_run_by_player)
+	box.add_child(end_run_button)
+
+	var main_menu_button := _make_button("Главное меню")
+	main_menu_button.name = "RunPauseMainMenuButton"
+	main_menu_button.custom_minimum_size = Vector2(360, 58)
+	main_menu_button.pressed.connect(_quit_current_run)
+	box.add_child(main_menu_button)
+
+
+func _show_pause_dossier_menu() -> void:
+	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
+		return
+	for child in game.pause_overlay_layer.get_children():
+		child.queue_free()
 
 	game.pause_stats_menu = game.PAUSE_STATS_MENU_SCENE.instantiate() as Control
 	game.pause_overlay_layer.add_child(game.pause_stats_menu)
@@ -1353,6 +1443,10 @@ func _show_pause_menu() -> void:
 	game.pause_stats_menu.settings_requested.connect(_show_settings_menu)
 	game.pause_stats_menu.end_run_confirmed.connect(_end_current_run_by_player)
 	game.pause_stats_menu.main_menu_requested.connect(_quit_current_run)
+
+
+func _is_run_pause_overlay_open() -> bool:
+	return game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer)
 
 
 func _can_open_pause_dossier() -> bool:
@@ -1920,12 +2014,39 @@ func _resume_combat_after_level_up() -> void:
 		_update_hud()
 
 
-func _show_shop_screen() -> void:
-	if game.current_shop_items.is_empty():
+func _current_shop_node_key() -> String:
+	var stage := int(game.route_stage)
+	var node_type := str(game.current_node_type)
+	if node_type == "":
+		node_type = "shop"
+	var route_choice := str(game.current_route_choice)
+	if route_choice == "":
+		route_choice = "direct"
+	return "%d:%s:%s" % [stage, node_type, route_choice]
+
+
+func _ensure_shop_stock_for_current_node() -> void:
+	var node_key := _current_shop_node_key()
+	if game.current_shop_node_key == "":
+		game.current_shop_node_key = node_key
+	var should_generate: bool = game.current_shop_items.is_empty()
+	if should_generate:
 		game.current_shop_items = _random_shop_items(4)
 		game.current_shop_purchased.clear()
-		for _index in range(game.current_shop_items.size()):
-			game.current_shop_purchased.append(false)
+	while game.current_shop_purchased.size() < game.current_shop_items.size():
+		game.current_shop_purchased.append(false)
+	if game.current_shop_purchased.size() > game.current_shop_items.size():
+		game.current_shop_purchased.resize(game.current_shop_items.size())
+
+
+func _clear_current_shop_stock() -> void:
+	game.current_shop_items.clear()
+	game.current_shop_purchased.clear()
+	game.current_shop_node_key = ""
+
+
+func _show_shop_screen() -> void:
+	_ensure_shop_stock_for_current_node()
 
 	var money := _run_money()
 	game._clear_ui()
@@ -2006,8 +2127,9 @@ func _show_shop_screen() -> void:
 		slot.offset_bottom = SHOP_INLINE_SLOT_SIZE.y * 0.5
 		items_area.add_child(slot)
 
-	var skip_button := _make_button("Покинуть магазин")
+	var skip_button := _make_button("Назад")
 	skip_button.name = "ShopLeaveButton"
+	skip_button.tooltip_text = "Покинуть магазин и продолжить маршрут."
 	skip_button.anchor_left = 0.5
 	skip_button.anchor_top = 1.0
 	skip_button.anchor_right = 0.5
@@ -2018,8 +2140,7 @@ func _show_shop_screen() -> void:
 	skip_button.offset_bottom = -58.0
 	skip_button.custom_minimum_size = Vector2(340, 58)
 	var leave_shop := func() -> void:
-		game.current_shop_items.clear()
-		game.current_shop_purchased.clear()
+		_clear_current_shop_stock()
 		game.route._advance_route_after_noncombat()
 	skip_button.pressed.connect(leave_shop)
 	game.ui_escape_action = leave_shop
@@ -2461,6 +2582,19 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		)
 		box.add_child(button)
 		index += 1
+	var back_button := _make_button("Назад")
+	back_button.name = "EventBackButton"
+	back_button.custom_minimum_size = Vector2(360, 58)
+	var allow_skip := bool(event_definition.get("allow_skip", false))
+	back_button.disabled = not allow_skip
+	back_button.tooltip_text = "Вернуться на карту без исхода события." if allow_skip else "Это событие требует выбрать исход."
+	back_button.pressed.connect(func() -> void:
+		if not allow_skip:
+			return
+		game.current_event_definition.clear()
+		game.route._show_battle_map()
+	)
+	box.add_child(back_button)
 
 
 func _show_victory_screen() -> void:

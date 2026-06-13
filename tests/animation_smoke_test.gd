@@ -8,6 +8,7 @@ func _initialize() -> void:
 	_test_enemy_animation()
 	_test_flying_elite_boss_rigs()
 	_test_elite_attack_phase_animation()
+	_test_hit_death_states()
 	_test_death_ghost()
 	print("Animation smoke test passed.")
 	quit()
@@ -247,7 +248,94 @@ func _test_player_animation() -> void:
 	for engineer_pose in [wrench_pose, drone_pose, mines_pose]:
 		if float(engineer_pose["socket_x"]) <= 8.0 or abs(float(engineer_pose["socket_y"])) >= 42.0:
 			_fail("Expected engineer weapon socket to stay readable near the tool hand.")
+
+	_test_legacy_player_weapon_pose_hooks(player)
 	player.queue_free()
+
+
+func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
+	var dark_book_pose: Dictionary = _sample_player_weapon_action_pose(player, "dark_mage", "dark_book", "cast", 0.14)
+	var skull_pose: Dictionary = _sample_player_weapon_action_pose(player, "dark_mage", "cursed_skull", "cast", 0.14)
+	var wand_pose: Dictionary = _sample_player_weapon_action_pose(player, "dark_mage", "dark_wand", "cast", 0.14)
+	_assert_three_pose_variants("dark_mage", dark_book_pose, skull_pose, wand_pose)
+	if float(dark_book_pose["arm_l_y"]) >= float(wand_pose["arm_l_y"]) - 3.0 or float(wand_pose["arm_r_x"]) <= float(dark_book_pose["arm_r_x"]) + 2.0:
+		_fail("Expected Dark Mage book/wand poses to read as different cast silhouettes.")
+
+	var electric_pose: Dictionary = _sample_player_weapon_action_pose(player, "guitarist", "electric_guitar", "shoot", 0.12)
+	var bass_pose: Dictionary = _sample_player_weapon_action_pose(player, "guitarist", "bass_guitar", "shoot", 0.18)
+	var amp_pose: Dictionary = _sample_player_weapon_action_pose(player, "guitarist", "sound_amp", "shoot", 0.18)
+	_assert_three_pose_variants("guitarist", electric_pose, bass_pose, amp_pose)
+	if _pose_distance(bass_pose, electric_pose) <= 3.0 or _pose_distance(amp_pose, electric_pose) <= 3.0:
+		_fail("Expected Guitarist bass pulse and amp deploy poses to separate from strum.")
+
+	var chakram_pose: Dictionary = _sample_player_weapon_action_pose(player, "assassin", "chakrams", "shoot", 0.12)
+	var dagger_pose: Dictionary = _sample_player_weapon_action_pose(player, "assassin", "shadow_daggers", "shoot", 0.12)
+	var wire_pose: Dictionary = _sample_player_weapon_action_pose(player, "assassin", "venom_wire", "shoot", 0.12)
+	_assert_three_pose_variants("assassin", chakram_pose, dagger_pose, wire_pose)
+	if float(dagger_pose["pelvis_x"]) <= float(wire_pose["pelvis_x"]) + 6.0 or float(wire_pose["arm_l_x"]) >= float(chakram_pose["arm_l_x"]) - 2.0:
+		_fail("Expected Assassin dagger lunge and venom-wire draw to be distinct.")
+
+	var moon_pose: Dictionary = _sample_player_weapon_action_pose(player, "ranger", "moon_crossbow", "cast", 0.12)
+	var storm_pose: Dictionary = _sample_player_weapon_action_pose(player, "ranger", "storm_longbow", "cast", 0.12)
+	var trap_pose: Dictionary = _sample_player_weapon_action_pose(player, "ranger", "hunter_trap", "shoot", 0.12)
+	_assert_three_pose_variants("ranger", moon_pose, storm_pose, trap_pose)
+	if float(trap_pose["pelvis_y"]) <= float(moon_pose["pelvis_y"]) + 3.0 or float(storm_pose["arm_l_y"]) >= float(trap_pose["arm_l_y"]) - 6.0:
+		_fail("Expected Ranger trap placement and charged bow poses to be distinct.")
+
+	var potion_pose: Dictionary = _sample_player_weapon_action_pose(player, "doctor", "restore_potion", "cast", 0.12)
+	var syringe_pose: Dictionary = _sample_player_weapon_action_pose(player, "doctor", "plague_syringe", "cast", 0.12)
+	var saw_pose: Dictionary = _sample_player_weapon_action_pose(player, "doctor", "bone_saw", "shoot", 0.12)
+	_assert_three_pose_variants("doctor", potion_pose, syringe_pose, saw_pose)
+	if float(saw_pose["arm_r_rot"]) <= float(syringe_pose["arm_r_rot"]) + 0.35 or float(syringe_pose["arm_r_x"]) <= float(potion_pose["arm_r_x"]) + 2.0:
+		_fail("Expected Doctor syringe jab and bone saw pose to differ from restore link.")
+
+	var powder_pose: Dictionary = _sample_player_weapon_action_pose(player, "chemist", "blast_powder", "cast", 0.12)
+	var acid_pose: Dictionary = _sample_player_weapon_action_pose(player, "chemist", "acid_flask", "cast", 0.18)
+	var vial_pose: Dictionary = _sample_player_weapon_action_pose(player, "chemist", "homunculus_vial", "cast", 0.16)
+	_assert_three_pose_variants("chemist", powder_pose, acid_pose, vial_pose)
+	if _pose_distance(acid_pose, powder_pose) <= 5.0 or _pose_distance(vial_pose, powder_pose) <= 5.0:
+		_fail("Expected Chemist powder/flask/vial casts to use different arm heights.")
+
+	var spear_pose: Dictionary = _sample_player_weapon_action_pose(player, "knight", "long_spear", "attack", 0.12)
+	var shield_pose: Dictionary = _sample_player_weapon_action_pose(player, "knight", "tower_shield", "attack", 0.12)
+	var flail_pose: Dictionary = _sample_player_weapon_action_pose(player, "knight", "holy_flail", "attack", 0.18)
+	_assert_three_pose_variants("knight", spear_pose, shield_pose, flail_pose)
+	if float(spear_pose["arm_r_x"]) <= float(shield_pose["arm_r_x"]) + 3.0 or _pose_distance(flail_pose, spear_pose) <= 6.0:
+		_fail("Expected Knight spear thrust, shield bash, and flail sweep silhouettes.")
+
+	var summon_pose: Dictionary = _sample_player_weapon_action_pose(player, "druid", "summon_amulet", "cast", 0.14)
+	var briar_pose: Dictionary = _sample_player_weapon_action_pose(player, "druid", "briar_staff", "cast", 0.14)
+	var raven_pose: Dictionary = _sample_player_weapon_action_pose(player, "druid", "raven_totem", "shoot", 0.14)
+	_assert_three_pose_variants("druid", summon_pose, briar_pose, raven_pose)
+	if float(summon_pose["arm_l_y"]) >= float(briar_pose["arm_l_y"]) - 5.0 or float(briar_pose["pelvis_y"]) <= float(summon_pose["pelvis_y"]) + 3.0:
+		_fail("Expected Druid summon, briar, and raven totem poses to be distinct.")
+
+	var legacy_samples := [
+		dark_book_pose, skull_pose, wand_pose, electric_pose, bass_pose, amp_pose,
+		chakram_pose, dagger_pose, wire_pose, moon_pose, storm_pose, trap_pose,
+		potion_pose, syringe_pose, saw_pose, powder_pose, acid_pose, vial_pose,
+		spear_pose, shield_pose, flail_pose, summon_pose, briar_pose, raven_pose,
+	]
+	for sample in legacy_samples:
+		if float(sample["socket_x"]) <= -120.0 or float(sample["socket_x"]) >= 180.0 or abs(float(sample["socket_y"])) >= 180.0:
+			_fail("Expected legacy player weapon socket to stay readable near the acting hand.")
+
+
+func _assert_three_pose_variants(label: String, pose_a: Dictionary, pose_b: Dictionary, pose_c: Dictionary) -> void:
+	if str(pose_a["variant"]) == "" or str(pose_b["variant"]) == "" or str(pose_c["variant"]) == "":
+		_fail("Expected %s pose samples to preserve weapon variants." % label)
+	var distance_ab := _pose_distance(pose_a, pose_b)
+	var distance_bc := _pose_distance(pose_b, pose_c)
+	var distance_ac := _pose_distance(pose_a, pose_c)
+	if minf(distance_ab, minf(distance_bc, distance_ac)) <= 3.0:
+		_fail("Expected %s weapon poses to have clearly distinct silhouettes." % label)
+
+
+func _pose_distance(pose_a: Dictionary, pose_b: Dictionary) -> float:
+	var total := 0.0
+	for key in ["pelvis_x", "pelvis_y", "arm_l_x", "arm_l_y", "arm_l_rot", "arm_r_x", "arm_r_y", "arm_r_rot"]:
+		total += abs(float(pose_a[key]) - float(pose_b[key]))
+	return total
 
 
 func _sample_berserk_attack_pose(player: Node, weapon_id: String, elapsed: float) -> Dictionary:
@@ -425,6 +513,44 @@ func _test_enemy_animation() -> void:
 		_fail("Expected shoot action to recoil the marksman.")
 	shooter.queue_free()
 
+	_test_enemy_archetype_pose("res://scenes/EnemyRunner.tscn", "attack", "spark runner", "RigRoot/Pelvis/Figure/Torso/Tail")
+	_test_enemy_archetype_pose("res://scenes/EnemyBruiser.tscn", "attack", "stone bruiser", "RigRoot/Pelvis/Figure/Torso/ArmR")
+	_test_enemy_archetype_pose("res://scenes/EnemySummoner.tscn", "cast", "bone caller", "RigRoot/Pelvis/Figure/Torso/ArmR")
+	_test_enemy_archetype_pose("res://scenes/EnemyMage.tscn", "cast", "void mage", "RigRoot/Pelvis/Figure/Torso/ArmR")
+	_test_enemy_archetype_pose("res://scenes/EnemySpitter.tscn", "shoot", "venom spitter", "")
+	_test_enemy_archetype_pose("res://scenes/EnemyShield.tscn", "attack", "rift shieldbearer", "RigRoot/Pelvis/Figure/Torso/Shield")
+	_test_enemy_archetype_pose("res://scenes/EnemyBiter.tscn", "attack", "small biter", "RigRoot/Pelvis/Figure/Torso/ArmR")
+	_test_enemy_archetype_pose("res://scenes/EnemyBoneShaman.tscn", "cast", "bone shaman", "RigRoot/Pelvis/Figure/Torso/ArmR")
+	_test_enemy_archetype_pose("res://scenes/EnemyFlyingRunner.tscn", "attack", "winged spark", "RigRoot/Pelvis/Figure/Torso/WingL")
+	_test_enemy_archetype_pose("res://scenes/BossDiskDevourer.tscn", "attack", "disk devourer", "")
+
+
+func _test_enemy_archetype_pose(scene_path: String, action_id: String, label: String, part_path: String) -> void:
+	var scene := load(scene_path) as PackedScene
+	var enemy := scene.instantiate()
+	root.add_child(enemy)
+	enemy.set("velocity", Vector2(100, 0))
+	enemy.call("_update_movement_animation", 0.18)
+	var rig := enemy.get_node("RigRoot") as Node2D
+	var pelvis := rig.get_node("Pelvis") as Node2D
+	if abs(pelvis.position.y) <= 0.01 and abs(pelvis.rotation) <= 0.01:
+		_fail("Expected %s movement to animate the rig pelvis." % label)
+	var before_pelvis: Vector2 = pelvis.position
+	var part: Node2D = null
+	if part_path != "":
+		part = enemy.get_node_or_null(part_path) as Node2D
+	var before_part_pos: Vector2 = Vector2.ZERO if part == null else part.position
+	var before_part_rot: float = 0.0 if part == null else part.rotation
+	enemy.call("_play_rig_action", action_id, Vector2.RIGHT)
+	enemy.call("_update_movement_animation", 0.14)
+	var pelvis_delta: float = pelvis.position.distance_to(before_pelvis) + abs(pelvis.rotation)
+	var part_delta := 0.0
+	if part != null:
+		part_delta = part.position.distance_to(before_part_pos) + abs(part.rotation - before_part_rot)
+	if pelvis_delta + part_delta <= 1.0:
+		_fail("Expected %s %s pose to produce a readable action silhouette." % [label, action_id])
+	enemy.queue_free()
+
 
 func _test_flying_elite_boss_rigs() -> void:
 	var flying_scene := load("res://scenes/EnemyFlyingRunner.tscn") as PackedScene
@@ -513,6 +639,38 @@ func _test_elite_attack_phase_animation() -> void:
 		elif behavior_id != "plague_prophet" and strike_pelvis.position.x <= 1.0:
 			_fail("Expected %s strike to lunge/gesture forward." % behavior_id)
 		elite.queue_free()
+
+
+func _test_hit_death_states() -> void:
+	_assert_hit_and_death_state("res://scenes/Player.tscn", "player", "player")
+	_assert_hit_and_death_state("res://scenes/Enemy.tscn", "enemy", "enemy")
+	_assert_hit_and_death_state("res://scenes/EliteArmored.tscn", "elite", "elite")
+	_assert_hit_and_death_state("res://scenes/BossWarden.tscn", "boss", "boss")
+
+
+func _assert_hit_and_death_state(scene_path: String, rig_kind: String, label: String) -> void:
+	var scene := load(scene_path) as PackedScene
+	var node := scene.instantiate()
+	root.add_child(node)
+	if rig_kind == "player":
+		node.configure_character("berserk")
+	node.call("_update_movement_animation", 0.1)
+	var rig_path := "VisualRoot/RigRoot" if rig_kind == "player" else "RigRoot"
+	var rig := node.get_node(rig_path) as Node2D
+	var pelvis := rig.get_node("Pelvis") as Node2D
+	rig.call("play_hit")
+	rig.call("update_animation", 0.02, Vector2.ZERO, Vector2.RIGHT)
+	if str(rig.get("state")) != "hit":
+		_fail("Expected %s rig to enter hit state." % label)
+	if abs(pelvis.position.x) <= 0.01:
+		_fail("Expected %s hit state to shake the pelvis." % label)
+	rig.call("play_death")
+	rig.call("update_animation", 0.22, Vector2.ZERO, Vector2.RIGHT)
+	if str(rig.get("state")) != "death":
+		_fail("Expected %s rig to enter death state." % label)
+	if rig.modulate.a >= 0.98:
+		_fail("Expected %s death state to fade or collapse the rig." % label)
+	node.queue_free()
 
 
 func _test_death_ghost() -> void:

@@ -4,6 +4,18 @@
 
 ## [Unreleased] — ветка dev
 
+- VFX (SCRUM-181): все 19 активных `assets/sprites/effects/*.png` перерисованы в более сдержанный painterly D&D/tabletop стиль без кислотного неона и голой геометрии; добавлены before/after и meadow/marsh readability previews, Godot import и `attack_vfx_smoke_test` проходят.
+
+- UI Art (SCRUM-182): derived stat icons, shop-only icons and shop state sprites refreshed in-place as compact fantasy raster objects/frames with transparent alpha; added before/after and 40px readability previews for Escape stats, level-up, shop and tooltip usage.
+
+- Design Audit (SCRUM-183): confirmed obsolete legacy placeholder/root prototype sprite candidates and updated Back-end cleanup handoff; no runtime assets were deleted in Design scope, with live exceptions documented for `berserk_walk_sheet_v2.png`, `enemy_projectile_magic_64.png`, and active `assets/sprites/enemies/*.png`.
+
+- Bugfix (SCRUM-207): магазин больше не регенерирует сток при повторном открытии того же shop-узла — набор товаров привязан к конкретной точке маршрута, купленные позиции остаются снятыми со стены, повторная покупка невозможна; новый shop-узел получает свежий сток.
+
+- UX (SCRUM-205): Escape в активном забеге теперь везде открывает единое меню паузы поверх текущего экрана; досье персонажа доступно кнопкой из этого меню, повторный Escape возвращает к подлежащему экрану без сброса состояния. Магазин получил единый «Назад», события показывают «Назад» с пояснением, если skip недоступен.
+
+- Bugfix (SCRUM-206): на экране выбора героя радар характеристик увеличен до 370x230, опущен ниже шапки и получил резервное пространство в досье; runtime smoke проверяет rect/no-overlap на 1280x720, 1600x900 и 2560x1440, dump сохранен в `build/qa/hero_select_radar_rects.md`.
+
 - Bugfix (SCRUM-172): исправлена потенциальная «немая» аудио-конфигурация — `master_volume=0` больше не hard-mute'ит Master bus, старые профили с нулем без явного intent-флага мигрируют к 100%, кроссфейд музыки сбрасывает застрявшие low-volume состояния, а вкладка «Звук» получила кнопку «Сбросить звук по умолчанию».
 
 - UI (SCRUM-160): магазин больше не показывает товары в золотых карточках — предметы висят на стене фона как реальные товары лавки, с контактной тенью, компактным ценником с монетой, hover tooltip, затемнением недоступного товара и empty-hook состоянием после покупки; runtime smoke проверяет отсутствие frame-style слотов и no-overlap на 1280x720/2560x1440.

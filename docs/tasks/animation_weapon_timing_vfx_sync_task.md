@@ -1,6 +1,6 @@
 # Animation: weapon timing and VFX sync audit follow-up
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Animator audit SCRUM-173
@@ -26,10 +26,23 @@ be documented as Back-end handoff instead of added here.
 5. Add smoke assertions for any new timing states that remain Animator-owned.
 
 ## Acceptance Criteria
-- Weapon-action timing gaps are mapped by mode.
-- Animator-only timing polish is implemented where possible.
-- Back-end handoff exists for any missing API/event hook.
-- Animation smoke passes after any implementation.
+- [x] Weapon-action timing gaps are mapped by mode.
+- [x] Animator-only timing polish is implemented where possible.
+- [x] Back-end handoff exists for missing API/event hooks.
+- [x] Animation smoke passes after implementation.
+
+## Result
+Done 2026-06-13 (Animator/Codex): Animator-owned timing polish now uses the
+existing `action_id`, `action_variant`, and normalized action progress inside
+`scripts/cutout_rig_2d.gd` for legacy player poses and enemy archetype poses.
+Delayed/multi-pulse/deploy/channel modes that need exact runtime event timing
+are mapped in Back-end handoff
+`docs/tasks/backend_animation_weapon_timing_event_hooks_task.md`.
+
+Verification:
+- `tests/animation_smoke_test.gd` passed.
+- `tests/runtime_smoke_test.gd` passed after the parallel SCRUM-207 shop stock
+  fix landed in the shared workspace.
 
 ## Dispatcher Note (2026-06-13)
 Dispatched to Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after user confirmed no feature freeze / backlog is eligible.

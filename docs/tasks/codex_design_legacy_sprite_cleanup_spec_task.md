@@ -1,6 +1,6 @@
 # Codex Design Task: Legacy Sprite Cleanup Spec
 
-Статус: in_progress (Codex Design, dispatched 2026-06-13)
+Статус: review
 Версия: 0.1.5
 Создано: 2026-06-13
 Роль: Design audit/spec + Back-end cleanup handoff
@@ -38,3 +38,23 @@ Do not remove `assets/sprites/characters/berserk_walk_sheet_v2.png` in this clea
 
 ## Dispatcher Note (2026-06-13)
 Dispatched to Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` after user confirmed no feature freeze / backlog is eligible.
+
+## Result (2026-06-13)
+
+Design cleanup spec completed without deleting or moving any assets.
+
+Created:
+
+- `docs/design/reviews/legacy_sprite_cleanup_spec_2026_06.md`
+
+Updated Back-end handoff:
+
+- `docs/tasks/backend_content_safe_cleanup_followup_task.md`
+
+Design confirms the listed placeholder/prototype character sprites, root `player_*.png`, root `enemy_*.png`, and root `boss_warden.png` are visually obsolete cleanup candidates. Back-end must still perform final manifest/runtime checks, safe archive/removal and smoke tests.
+
+Explicit Design keep list:
+
+- `assets/sprites/characters/berserk_walk_sheet_v2.png` — live via `scripts/player.gd`;
+- `assets/sprites/projectiles/enemy_projectile_magic_64.png` — live projectile;
+- `assets/sprites/enemies/*.png` — active enemy roster source paths.

@@ -1,14 +1,14 @@
 # Задача Для Back-end-Агента: Подключить Dark Fantasy Screen Backdrops
 
-Статус: new
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-12
 Связано: SCRUM-158, SCRUM-147
 Jira: SCRUM-170
 
-Dispatcher note 2026-06-12: not dispatched. This Back-end handoff exists as a
-local task file, but it has no Jira key and no task-board row. PM/task owner
-must create/sync the Jira + board linkage before dispatcher can route it.
+Dispatcher note 2026-06-13: Jira/task linkage is valid (`SCRUM-170`) and the
+feature block is lifted. Added to the local board queue and dispatched to
+Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
 
 ## Autonomy / Approval
 

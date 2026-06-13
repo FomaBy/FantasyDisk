@@ -42,6 +42,8 @@ Visual rules:
 
 Shop frame assets live in `assets/sprites/ui/shop/`. Cursor assets live in `assets/sprites/ui/cursor/`. Back-end hooks are already ready; these PNGs are the active Design target and fallback should remain fail-safe only.
 
+SCRUM-182 refreshed the active derived stat icons, shop-only icons, and shop state sprites on 2026-06-13 without changing registry paths. Derived icons in `assets/sprites/ui/icons/derived/` stay `64x64`; shop item icons in `assets/sprites/ui/icons/shop/` stay `128x128`; shop frames/badges/overlays in `assets/sprites/ui/shop/` keep their previous canvas sizes. The style target is compact readable fantasy object art with dark outlines, small material cues, transparent alpha, no text, no emoji, and no meaningless decorative filler. Review sheets: `docs/design/previews/ui_icon_unification_before_contact.png`, `docs/design/previews/ui_icon_unification_after_contact.png`, and `docs/design/previews/ui_icon_unification_40px_preview.png`.
+
 ## Character Pipeline Asset Handoffs
 
 SCRUM-165 adds Priest with canonical Design assets `assets/sprites/characters/priest.png`, `assets/sprites/weapons/priest_reliquary.png`, `assets/sprites/weapons/priest_censer.png`, and `assets/sprites/weapons/priest_chime.png`; source/result details are tracked in `docs/tasks/codex_design_priest_art_task.md`. Priest rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_priest_rig_motion_task.md`.
@@ -130,7 +132,7 @@ Attack VFX sprites live in `assets/sprites/effects/` and are transparent PNGs in
 
 `scripts/class_weapon.gd` now selects these by `pool_element` and animates them with pause-aware node-bound tweens. The gameplay radius, tick interval and duration stay data-driven from weapon config. QA preview: `docs/design/previews/vfx_pool_assets_contact.png`.
 
-Codex D&D VFX restyle pass 2026-06-12 replaced all 19 active PNGs in `assets/sprites/effects/` with restrained tabletop-style raster effects: muted noble palette, soft alpha glow, no acid-neon colors, no pure-white overexposure, and simpler silhouettes for fast combat readability. Tintable assets (`hazard_zone.png`, `elite_telegraph_circle.png`) remain warm-neutral so code modulation can recolor them. The non-runtime review sheet was moved out of `assets/` by the 2026-06-12 cleanup and is recoverable from `build/cleanup_backup_2026_06_12/assets/sprites/effects/effects_dnd_preview.png`.
+SCRUM-181 refreshed the full active VFX set again on 2026-06-13 after the sprite audit: all 19 `assets/sprites/effects/*.png` files now use a restrained painterly D&D/tabletop treatment with softer alpha edges, earthy gold/green/violet accents, readable silhouettes, and no acid-neon or baked pure-white overexposure. Tintable assets (`hazard_zone.png`, `elite_telegraph_circle.png`) remain warm-neutral so code modulation can recolor them. QA/reference previews live in `docs/design/previews/vfx_polish_before_contact.png`, `docs/design/previews/vfx_polish_after_contact.png`, `docs/design/previews/vfx_polish_before_after_contact.png`, `docs/design/previews/vfx_polish_readability_field_meadow.png`, and `docs/design/previews/vfx_polish_readability_field_marsh.png`.
 
 ## Screen And Map Backgrounds
 

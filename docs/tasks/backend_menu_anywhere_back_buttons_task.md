@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Меню в любом месте игры + кнопки «Назад» в эвентах/магазине + Escape=меню везде
 
-Статус: in_progress (Codex Back-end, dispatched 2026-06-13)
+Статус: done
 Приоритет: high
 Роль: Back-end (UI/UX)
 Версия: 0.1.4
@@ -46,13 +46,28 @@ Jira: SCRUM-205
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Меню открывается Escape'ом на всех экранах забега, закрывается без поломки.
-- [ ] Унифицирован Escape (одно меню; досье — из меню), вне забега прежнее поведение.
-- [ ] Кнопки «Назад» в событии и магазине единообразны.
-- [ ] 6 smoke + новые тесты зелёные; CHANGELOG/доки обновлены.
+- [x] Меню открывается Escape'ом на всех экранах забега, закрывается без поломки.
+- [x] Унифицирован Escape (одно меню; досье — из меню), вне забега прежнее поведение.
+- [x] Кнопки «Назад» в событии и магазине единообразны.
+- [x] 6 smoke + новые тесты зелёные; CHANGELOG/доки обновлены.
 
 ## Документация
 docs/design/current_game_state.md.
 
 ## Dispatcher Note (2026-06-13)
 Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.
+
+## Result Summary (Codex Back-end, 2026-06-13)
+
+Done. Escape в активном забеге теперь открывает единое `RunPauseMenuRoot` поверх текущего экрана; повторный Escape закрывает overlay и возвращает к подлежащему состоянию. Старое досье/статы не удалены: оно открывается кнопкой `RunPauseDossierButton` из pause menu и сохраняет существующий compact stats UI. Магазин получил единый экранный `Назад`, а события показывают `EventBackButton`; если event не поддерживает skip, кнопка disabled и tooltip объясняет, что нужно выбрать исход.
+
+Verification:
+- `runtime_smoke_test.gd` — passed.
+- `animation_smoke_test.gd` — passed.
+- `melee_weapon_targeting_test.gd` — passed.
+- `attack_vfx_smoke_test.gd` — passed.
+- `hazard_vfx_smoke_test.gd` — passed.
+- `meta_progression_smoke_test.gd` — passed.
+- `meta_skill_tree_smoke_test.gd` — passed.
+
+Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/process/task_board.md`, `docs/process/jira_sync_map.json`.

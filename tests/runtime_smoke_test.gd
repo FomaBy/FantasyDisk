@@ -252,12 +252,18 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var radar := main.find_child("HeroStatRadar", true, false) as Control
-	if radar == null or radar.custom_minimum_size.x < 300.0:
+	if radar == null or radar.custom_minimum_size.x < 360.0:
 		push_error("Expected hero select v3 to build a readable stat radar.")
 		quit(1)
 		return
-	if radar.get_parent() == dossier or radar.anchor_left < 0.99 or radar.offset_left > -280.0 or radar.offset_top < 70.0:
-		push_error("Expected hero stat radar to be a top-right floating widget, not an inline dossier block.")
+	var radar_rect := radar.get_global_rect()
+	var hero_screen_rect := hero_screen.get_global_rect()
+	if radar.get_parent() == dossier or radar.anchor_left < 0.99 or radar.offset_left > -360.0 or radar.offset_top < 120.0:
+		push_error("Expected hero stat radar to be a lowered top-right floating widget, not an inline dossier block.")
+		quit(1)
+		return
+	if radar_rect.position.y < hero_screen_rect.position.y + 112.0 or radar_rect.end.x > hero_screen_rect.end.x - 32.0:
+		push_error("Expected hero stat radar rect %s to keep clear top/right margins inside hero select rect %s." % [radar_rect, hero_screen_rect])
 		quit(1)
 		return
 	if main.find_child("HeroSelectPortraitName", true, false) != null:
@@ -787,14 +793,25 @@ func _initialize() -> void:
 			quit(1)
 			return
 
-	# Escape поверх level-up открывает досье персонажа, не разрушая выбор награды.
+	# Escape поверх level-up открывает единое меню забега, а досье доступно кнопкой.
 	var pause_escape := InputEventKey.new()
 	pause_escape.keycode = KEY_ESCAPE
 	pause_escape.pressed = true
 	main.call("_input", pause_escape)
 	await process_frame
+	if main.find_child("RunPauseMenuRoot", true, false) == null:
+		push_error("Expected Escape on level-up to open the run pause menu.")
+		quit(1)
+		return
+	var dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
+	if dossier_button == null:
+		push_error("Expected run pause menu to expose a character dossier button.")
+		quit(1)
+		return
+	dossier_button.pressed.emit()
+	await process_frame
 	if main.find_child("PauseStatsMenuRoot", true, false) == null:
-		push_error("Expected Escape on level-up to open the character dossier overlay.")
+		push_error("Expected dossier button to open the character dossier overlay.")
 		quit(1)
 		return
 	if main.find_child("PriorityBadge_strength", true, false) == null:
@@ -810,8 +827,8 @@ func _initialize() -> void:
 	pause_close.pressed = true
 	main.call("_input", pause_close)
 	await process_frame
-	if main.find_child("PauseStatsMenuRoot", true, false) != null:
-		push_error("Expected second Escape to close the character dossier overlay.")
+	if main.find_child("RunPauseMenuRoot", true, false) != null or main.find_child("PauseStatsMenuRoot", true, false) != null:
+		push_error("Expected second Escape to close the run pause overlay.")
 		quit(1)
 		return
 	if (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay") == null:
@@ -892,9 +909,20 @@ func _initialize() -> void:
 		push_error("Expected Esc to pause active combat.")
 		quit(1)
 		return
+	if main.find_child("RunPauseMenuRoot", true, false) == null:
+		push_error("Expected Esc to open the unified run pause menu.")
+		quit(1)
+		return
+	var pause_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
+	if pause_dossier_button == null:
+		push_error("Expected run pause menu to provide a character dossier button.")
+		quit(1)
+		return
+	pause_dossier_button.pressed.emit()
+	await process_frame
 	var pause_menu: Node = main.get("pause_stats_menu")
 	if pause_menu == null or not is_instance_valid(pause_menu):
-		push_error("Expected Esc to open pause stats menu.")
+		push_error("Expected dossier button to open pause stats menu.")
 		quit(1)
 		return
 	var run_controls := pause_menu.find_child("RunControls", true, false) as VBoxContainer
@@ -959,8 +987,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	main.call("_input", escape_event)
-	if paused or main.get("pause_stats_menu") != null:
-		push_error("Expected second Esc to close pause stats menu and resume combat.")
+	if paused or main.get("pause_stats_menu") != null or main.find_child("RunPauseMenuRoot", true, false) != null:
+		push_error("Expected second Esc to close run pause overlay and resume combat.")
 		quit(1)
 		return
 
@@ -1079,6 +1107,7 @@ func _initialize() -> void:
 	await _test_boss_zone_wave_safe_corridor()
 	await _test_elite_boss_presentation(main_scene)
 	await _test_boss_hud_omits_timer(main_scene)
+	await _test_hero_select_radar_no_overlap_layouts(main_scene)
 	await _test_shop_wall_no_overlap_layouts(main_scene)
 	await _test_hud_no_overlap_layouts(main_scene)
 	await _test_mini_elite_roster(main_scene)
@@ -1492,19 +1521,24 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		return
 	route_main.ui._show_pause_menu()
 	await process_frame
-	if route_main.find_child("PauseStatsMenuRoot", true, false) == null:
-		push_error("Expected Escape dossier to open over an event screen.")
+	if route_main.find_child("RunPauseMenuRoot", true, false) == null:
+		push_error("Expected run pause menu to open over an event screen.")
 		quit(1)
 		return
 	if route_main.find_child("EventScreen", true, false) == null:
-		push_error("Expected event screen to remain underneath the Escape dossier.")
+		push_error("Expected event screen to remain underneath the run pause menu.")
 		quit(1)
 		return
 	route_main.ui._resume_game()
 	await process_frame
 	event_choice = route_main.find_child("EventChoiceButton0", true, false) as Button
 	if event_choice == null:
-		push_error("Expected closing the Escape dossier to preserve event choices.")
+		push_error("Expected closing the run pause menu to preserve event choices.")
+		quit(1)
+		return
+	var event_back_button := route_main.find_child("EventBackButton", true, false) as Button
+	if event_back_button == null or not event_back_button.disabled or event_back_button.tooltip_text == "":
+		push_error("Expected event screen to show a disabled Back button with explanation when skip is not allowed.")
 		quit(1)
 		return
 
@@ -1791,11 +1825,13 @@ func _test_arena_generation(main: Node, player: Node) -> void:
 
 func _test_noncombat_nodes(main: Node) -> void:
 	main.set("route_stage", 1)
+	main.set("current_node_type", "shop")
+	main.set("current_route_choice", "smoke_shop_a")
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var shop_player := player_scene.instantiate()
 	root.add_child(shop_player)
 	shop_player.configure_character("berserk", "sword")
-	shop_player.set("money", 300)
+	shop_player.set("money", 5000)
 	main.call("_store_player_snapshot", shop_player)
 	shop_player.queue_free()
 	main.call("_show_shop_screen")
@@ -1832,6 +1868,11 @@ func _test_noncombat_nodes(main: Node) -> void:
 		push_error("Expected shop to offer multiple purchasable items.")
 		quit(1)
 		return
+	var initial_shop_node_key := str(main.get("current_shop_node_key"))
+	var initial_shop_ids: Array[String] = []
+	for item in shop_items:
+		var item_dict: Dictionary = item
+		initial_shop_ids.append(str(item_dict.get("id", "")))
 	var expected_first_icon_path := ""
 	var first_shop_item: Dictionary = shop_items[0]
 	if str(first_shop_item.get("kind", "")) == "artifact" or not str(first_shop_item.get("id", "")).begins_with("shop_"):
@@ -1853,23 +1894,29 @@ func _test_noncombat_nodes(main: Node) -> void:
 		return
 	main.ui._show_pause_menu()
 	await process_frame
-	if main.find_child("PauseStatsMenuRoot", true, false) == null:
-		push_error("Expected Escape dossier to open over the shop screen.")
+	if main.find_child("RunPauseMenuRoot", true, false) == null:
+		push_error("Expected run pause menu to open over the shop screen.")
 		quit(1)
 		return
-	if main.find_child("PauseCharacterDossier", true, false) == null:
-		push_error("Expected Escape dossier to include the run character overview.")
+	var shop_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
+	if shop_dossier_button == null:
+		push_error("Expected run pause menu to expose character dossier from shop.")
 		quit(1)
 		return
 	if main.find_child("ShopScreen", true, false) == null:
-		push_error("Expected shop screen to remain underneath the Escape dossier.")
+		push_error("Expected shop screen to remain underneath the run pause menu.")
 		quit(1)
 		return
 	main.ui._resume_game()
 	await process_frame
 	first_shop_button = main.find_child("ShopItemButton0", true, false) as Button
 	if first_shop_button == null:
-		push_error("Expected closing the Escape dossier to preserve shop buttons.")
+		push_error("Expected closing the run pause menu to preserve shop buttons.")
+		quit(1)
+		return
+	var shop_back_button := main.find_child("ShopLeaveButton", true, false) as Button
+	if shop_back_button == null or shop_back_button.text != "Назад":
+		push_error("Expected shop leave button to be the unified Back button.")
 		quit(1)
 		return
 	if not bool(main.call("_buy_shop_item_at", 0)):
@@ -1891,12 +1938,63 @@ func _test_noncombat_nodes(main: Node) -> void:
 		push_error("Expected second shop purchase in the same visit to succeed.")
 		quit(1)
 		return
+	await process_frame
+	for purchase_index in range(2, shop_items.size()):
+		if not bool(main.call("_buy_shop_item_at", purchase_index)):
+			push_error("Expected every shop item to be purchasable once during the same visit.")
+			quit(1)
+			return
+		await process_frame
+	var money_after_full_purchase := int(main.call("_run_money"))
+	main.call("_show_shop_screen")
+	var reshown_shop_ids: Array[String] = []
+	for item in main.get("current_shop_items"):
+		var item_dict: Dictionary = item
+		reshown_shop_ids.append(str(item_dict.get("id", "")))
+	if reshown_shop_ids != initial_shop_ids:
+		push_error("Expected reopening the same shop node to keep the original stock, got %s instead of %s." % [str(reshown_shop_ids), str(initial_shop_ids)])
+		quit(1)
+		return
+	var reshown_purchased: Array = main.get("current_shop_purchased")
+	for purchase_index in range(reshown_purchased.size()):
+		if not bool(reshown_purchased[purchase_index]):
+			push_error("Expected reopened shop stock position %d to remain purchased." % purchase_index)
+			quit(1)
+			return
+	var rebuy_button := _find_active_ui_child(main, "ShopItemButton0") as Button
+	if rebuy_button == null or not rebuy_button.disabled or rebuy_button.find_child("ShopEmptyHook", true, false) == null:
+		push_error("Expected fully purchased shop stock to re-render as disabled empty hooks. button=%s disabled=%s hook=%s purchased=%s ui=%s" % [str(rebuy_button), str(rebuy_button.disabled if rebuy_button != null else false), str(rebuy_button.find_child("ShopEmptyHook", true, false) if rebuy_button != null else null), str(main.get("current_shop_purchased")), _debug_child_tree(main.get("ui_layer") as Node)])
+		quit(1)
+		return
+	if bool(main.call("_buy_shop_item_at", 0)) or int(main.call("_run_money")) != money_after_full_purchase:
+		push_error("Expected rebuying a purchased shop position on the same node to be impossible.")
+		quit(1)
+		return
+	await process_frame
+	main.set("route_stage", 2)
+	main.set("current_route_choice", "smoke_shop_b")
+	main.call("_open_route_node", {"type": "shop", "name": "Smoke Shop B"})
+	await process_frame
+	if str(main.get("current_shop_node_key")) == initial_shop_node_key:
+		push_error("Expected a new shop route node to receive a distinct stock key.")
+		quit(1)
+		return
+	var new_shop_purchased: Array = main.get("current_shop_purchased")
+	if new_shop_purchased.is_empty():
+		push_error("Expected new shop node to generate stock.")
+		quit(1)
+		return
+	for purchase_index in range(new_shop_purchased.size()):
+		if bool(new_shop_purchased[purchase_index]):
+			push_error("Expected new shop node stock to start unpurchased.")
+			quit(1)
+			return
 	if main.get("hud_layer") == null:
 		push_error("Expected shop screen to keep the compact run HUD.")
 		quit(1)
 		return
 	if not _has_screen_background(main, "shop"):
-		push_error("Expected shop screen to include a shop background or fallback layer.")
+		push_error("Expected shop screen to include a shop background or fallback layer. Active UI tree: %s" % _debug_child_tree(main.get("ui_layer") as Node))
 		quit(1)
 		return
 	main.call("_show_rest_screen")
@@ -1910,8 +2008,35 @@ func _test_noncombat_nodes(main: Node) -> void:
 
 
 func _has_screen_background(node: Node, screen_background_id: String) -> bool:
+	var ui_layer = node.get("ui_layer")
+	if ui_layer is Node:
+		if (ui_layer as Node).find_child("ScreenBackground_%s" % screen_background_id, true, false) != null:
+			return true
+		if (ui_layer as Node).find_child("ScreenBackgroundFallback_%s" % screen_background_id, true, false) != null:
+			return true
 	return node.find_child("ScreenBackground_%s" % screen_background_id, true, false) != null \
 		or node.find_child("ScreenBackgroundFallback_%s" % screen_background_id, true, false) != null
+
+
+func _find_active_ui_child(node: Node, child_name: String) -> Node:
+	var ui_layer = node.get("ui_layer")
+	if ui_layer is Node:
+		var found := (ui_layer as Node).find_child(child_name, true, false)
+		if found != null:
+			return found
+	return node.find_child(child_name, true, false)
+
+
+func _debug_child_tree(node: Node, depth: int = 0) -> String:
+	if node == null or depth > 2:
+		return ""
+	var names := []
+	for child in node.get_children():
+		names.append("%s%s" % [" ".repeat(depth), child.name])
+		var nested := _debug_child_tree(child, depth + 1)
+		if nested != "":
+			names.append(nested)
+	return ", ".join(names)
 
 
 func _test_stat_artifact_recording() -> void:
@@ -4528,6 +4653,77 @@ func _control_center_matches_viewport_size(control: Control, viewport_size: Vect
 	var rect := control.get_global_rect()
 	var viewport_center := viewport_size * 0.5
 	return absf(rect.get_center().x - viewport_center.x) <= tolerance_px and absf(rect.get_center().y - viewport_center.y) <= tolerance_px
+
+
+func _test_hero_select_radar_no_overlap_layouts(main_scene: PackedScene) -> void:
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# Hero Select Radar Rect Dump")
+	dump_lines.append("")
+	for viewport_size in [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(2560, 1440)]:
+		await _assert_hero_select_radar_layout_at_size(main_scene, viewport_size, dump_lines)
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var file := FileAccess.open("%s/hero_select_radar_rects.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump_lines))
+		file.close()
+
+
+func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_size: Vector2i, dump_lines: PackedStringArray) -> void:
+	var viewport := SubViewport.new()
+	viewport.size = viewport_size
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	await process_frame
+
+	var hero_main := main_scene.instantiate()
+	viewport.add_child(hero_main)
+	await process_frame
+	hero_main.call("_show_character_select")
+	await process_frame
+	await process_frame
+
+	var context := "hero select %s" % str(viewport_size)
+	var hero_screen := hero_main.find_child("HeroSelectScreen", true, false) as Control
+	var radar := hero_main.find_child("HeroStatRadar", true, false) as Control
+	var header := hero_main.find_child("HeroSelectHeader", true, false) as Control
+	var dossier := hero_main.find_child("HeroSelectDossierPanel", true, false) as Control
+	var dossier_title := hero_main.find_child("HeroSelectInfoTitle", true, false) as Control
+	var dossier_desc := hero_main.find_child("HeroSelectInfoDescription", true, false) as Control
+	var choose_button := hero_main.find_child("HeroSelectChooseButton", true, false) as Control
+	if hero_screen == null or radar == null or header == null or dossier == null:
+		_fail("Expected hero select radar/header/dossier nodes at %s." % context)
+		return
+	var screen_rect := hero_screen.get_global_rect()
+	var radar_rect := radar.get_global_rect()
+	var header_rect := header.get_global_rect()
+	var dossier_rect := dossier.get_global_rect()
+	dump_lines.append("## %s" % context)
+	dump_lines.append("- `HeroSelectScreen`: `%s`" % str(screen_rect))
+	dump_lines.append("- `HeroSelectHeader`: `%s`" % str(header_rect))
+	dump_lines.append("- `HeroSelectDossierPanel`: `%s`" % str(dossier_rect))
+	dump_lines.append("- `HeroStatRadar`: `%s`" % str(radar_rect))
+	var min_top_gap := 112.0
+	var min_right_gap := 32.0
+	if radar_rect.position.y < screen_rect.position.y + min_top_gap:
+		_fail("Expected hero radar top gap >= %.0f at %s, got rect %s within screen %s." % [min_top_gap, context, radar_rect, screen_rect])
+		return
+	if radar_rect.end.x > screen_rect.end.x - min_right_gap:
+		_fail("Expected hero radar right gap >= %.0f at %s, got rect %s within screen %s." % [min_right_gap, context, radar_rect, screen_rect])
+		return
+	if _rect_with_tolerance(radar_rect, 4.0).intersects(_rect_with_tolerance(header_rect, 4.0)):
+		_fail("Expected hero radar not to overlap header at %s." % context)
+		return
+	if radar_rect.position.x < dossier_rect.position.x + 18.0 or radar_rect.position.y < dossier_rect.position.y + 18.0:
+		_fail("Expected hero radar to keep an inner margin inside dossier frame at %s." % context)
+		return
+	for control in [dossier_title, dossier_desc, choose_button]:
+		if control != null and _rect_with_tolerance(radar_rect, 4.0).intersects(_rect_with_tolerance((control as Control).get_global_rect(), 4.0)):
+			_fail("Expected hero radar not to overlap dossier content %s at %s." % [(control as Control).name, context])
+			return
+
+	viewport.queue_free()
+	await process_frame
 
 
 func _test_hud_no_overlap_layouts(main_scene: PackedScene) -> void:

@@ -1,15 +1,14 @@
 # Задача Для Back-end-Агента: Source-Specific Спрайты Призывных Союзников
 
-Статус: new
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-12
 Связано: SCRUM-152
 Jira: SCRUM-157
 
-Dispatcher note 2026-06-12: not dispatched. Jira has existing issue `SCRUM-157`
-in sprint 0.1.4, but this task file still says `Jira: SCRUM-157` and there is no
-`docs/process/task_board.md` row. PM/task owner must sync the task file and
-board before dispatcher can route it.
+Dispatcher note 2026-06-13: Jira/task linkage is valid (`SCRUM-157`) and the
+feature block is lifted. Added to the local board queue and dispatched to
+Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
 
 ## Autonomy / Approval
 

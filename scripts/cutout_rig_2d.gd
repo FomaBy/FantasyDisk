@@ -556,6 +556,14 @@ func _action_pose() -> Dictionary:
 		var engineer_pose: Dictionary = _engineer_action_pose(p)
 		if not engineer_pose.is_empty():
 			return engineer_pose
+	if is_player_rig:
+		var legacy_player_pose: Dictionary = _legacy_player_action_pose(p)
+		if not legacy_player_pose.is_empty():
+			return legacy_player_pose
+	else:
+		var enemy_pose: Dictionary = _enemy_archetype_action_pose(p)
+		if not enemy_pose.is_empty():
+			return enemy_pose
 
 	match action_id:
 		"attack":
@@ -642,6 +650,389 @@ func _action_pose() -> Dictionary:
 				pose["parts"]["vortex"] = {"rotation": 0.6 * amp}
 		_:
 			pass
+	return pose
+
+
+func _legacy_player_action_pose(p: float) -> Dictionary:
+	var variant: String = action_variant.to_lower()
+	var pose := {"parts": {}}
+	var parts: Dictionary = pose["parts"]
+
+	match profile_id:
+		"dark_mage":
+			if action_id != "cast":
+				return {}
+			if variant == "dark_book" or variant.contains("book"):
+				var open: float = sin(minf(p / 0.42, 1.0) * PI * 0.5)
+				var release: float = sin(maxf((p - 0.34) / 0.58, 0.0) * PI)
+				pose["push_y"] = -4.0 * open + 1.0 * release
+				pose["body_rot"] = -0.035 * open + 0.045 * release
+				pose["torso_rot"] = -0.030 * open
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.88 * open + 0.18 * release, "position": Vector2(-4.0 * open, -6.0 * open)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.72 * open + 0.26 * release, "position": Vector2(5.0 * open + 3.0 * release, -5.0 * open)}
+			elif variant == "cursed_skull" or variant.contains("skull") or variant.contains("curse"):
+				var conjure: float = sin(minf(p / 0.36, 1.0) * PI * 0.5)
+				var send: float = sin(maxf((p - 0.28) / 0.56, 0.0) * PI)
+				pose["push_x"] = -1.5 * conjure + 5.0 * send
+				pose["push_y"] = -2.0 * conjure
+				pose["body_rot"] = -0.050 * conjure + 0.070 * send
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.58 * conjure + 0.34 * send, "position": Vector2(7.0 * conjure + 5.0 * send, -3.0 * conjure)}
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.36 * conjure - 0.12 * send, "position": Vector2(-3.0 * conjure, -2.0 * conjure)}
+			elif variant == "dark_wand" or variant.contains("wand"):
+				var aim: float = sin(minf(p / 0.30, 1.0) * PI * 0.5)
+				var beam: float = sin(maxf((p - 0.24) / 0.56, 0.0) * PI)
+				pose["push_x"] = -1.0 * aim + 7.0 * beam
+				pose["push_y"] = -1.0 * aim
+				pose["body_rot"] = -0.035 * aim + 0.080 * beam
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": -0.18 * aim + 0.42 * beam, "position": Vector2(10.0 * aim + 4.0 * beam, -1.0 * aim)}
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": 0.24 * aim - 0.18 * beam, "position": Vector2(4.0 * aim, -1.0 * aim)}
+			else:
+				return {}
+		"guitarist":
+			if action_id != "shoot":
+				return {}
+			if variant == "electric_guitar" or variant.contains("electric"):
+				var strum: float = sin(p * PI)
+				pose["push_x"] = -2.0 + 6.0 * strum
+				pose["body_rot"] = 0.075 * strum
+				pose["squash_x"] = 1.0 + 0.030 * strum
+				pose["squash_y"] = 1.0 - 0.024 * strum
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.82 * strum, "position": Vector2(8.0 * strum, 2.0 * strum)}
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.30 * strum, "position": Vector2(3.0 * strum, -2.0 * strum)}
+			elif variant == "bass_guitar" or variant.contains("bass"):
+				var pulse: float = sin(minf(p / 0.55, 1.0) * PI)
+				pose["push_y"] = 5.0 * pulse
+				pose["body_rot"] = -0.035 * pulse
+				pose["squash_x"] = 1.0 + 0.080 * pulse
+				pose["squash_y"] = 1.0 - 0.070 * pulse
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": 0.36 * pulse, "position": Vector2(-3.0 * pulse, 3.5 * pulse)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.46 * pulse, "position": Vector2(5.0 * pulse, 4.5 * pulse)}
+			elif variant == "sound_amp" or variant.contains("amp"):
+				var lift: float = sin(minf(p / 0.38, 1.0) * PI * 0.5)
+				var plant: float = sin(maxf((p - 0.30) / 0.58, 0.0) * PI)
+				pose["push_y"] = -3.0 * lift + 5.5 * plant
+				pose["push_x"] = 2.0 * plant
+				pose["body_rot"] = -0.060 * lift + 0.050 * plant
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.62 * lift + 0.30 * plant, "position": Vector2(-2.0 * lift, -5.0 * lift + 5.0 * plant)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.54 * lift + 0.24 * plant, "position": Vector2(4.0 * lift + 3.0 * plant, -4.0 * lift + 5.0 * plant)}
+			else:
+				return {}
+		"assassin":
+			if action_id != "shoot":
+				return {}
+			if variant == "chakrams" or variant.contains("chakram"):
+				var wind: float = sin(minf(p / 0.28, 1.0) * PI)
+				var throw: float = sin(maxf((p - 0.20) / 0.52, 0.0) * PI)
+				pose["push_x"] = -3.5 * wind + 9.0 * throw
+				pose["push_y"] = -1.2 * wind
+				pose["body_rot"] = -0.080 * wind + 0.115 * throw
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": -0.70 * wind + 1.05 * throw, "position": Vector2(-3.0 * wind + 10.0 * throw, -2.0 * wind)}
+			elif variant == "shadow_daggers" or variant.contains("dagger"):
+				var crouch: float = sin(minf(p / 0.24, 1.0) * PI * 0.5)
+				var flurry: float = sin(maxf((p - 0.18) / 0.50, 0.0) * PI)
+				pose["push_x"] = -3.0 * crouch + 14.0 * flurry
+				pose["push_y"] = 3.0 * crouch
+				pose["body_rot"] = -0.070 * crouch + 0.130 * flurry
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.32 * crouch + 0.70 * flurry, "position": Vector2(13.0 * flurry, 2.0 * crouch)}
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.24 * crouch + 0.36 * flurry, "position": Vector2(8.0 * flurry, 2.0 * crouch)}
+			elif variant == "venom_wire" or variant.contains("wire"):
+				var draw: float = sin(minf(p / 0.34, 1.0) * PI * 0.5)
+				var snap: float = sin(maxf((p - 0.28) / 0.56, 0.0) * PI)
+				pose["push_x"] = -5.0 * draw + 6.0 * snap
+				pose["body_rot"] = -0.110 * draw + 0.060 * snap
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.52 * draw - 0.20 * snap, "position": Vector2(-6.0 * draw, -2.0 * draw)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.58 * draw + 0.30 * snap, "position": Vector2(8.0 * draw + 4.0 * snap, -1.0 * draw)}
+			else:
+				return {}
+		"ranger":
+			if variant == "moon_crossbow" or variant.contains("moon"):
+				var aim: float = sin(minf(p / 0.42, 1.0) * PI * 0.5)
+				var release: float = sin(maxf((p - 0.34) / 0.54, 0.0) * PI)
+				pose["push_x"] = -2.0 * aim - 4.5 * release
+				pose["push_y"] = 1.0 * aim
+				pose["body_rot"] = -0.025 * aim - 0.040 * release
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": -0.22 * aim - 0.16 * release, "position": Vector2(10.0 * aim - 2.0 * release, -1.0 * aim)}
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": 0.18 * aim - 0.08 * release, "position": Vector2(9.0 * aim, -0.5 * aim)}
+			elif variant == "storm_longbow" or variant.contains("storm"):
+				var draw_bow: float = sin(minf(p / 0.46, 1.0) * PI * 0.5)
+				var volley: float = sin(maxf((p - 0.36) / 0.56, 0.0) * PI)
+				pose["push_x"] = -5.0 * draw_bow - 2.0 * volley
+				pose["push_y"] = -2.0 * draw_bow
+				pose["body_rot"] = -0.065 * draw_bow + 0.050 * volley
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.58 * draw_bow + 0.22 * volley, "position": Vector2(8.0 * draw_bow, -4.0 * draw_bow)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.52 * draw_bow - 0.18 * volley, "position": Vector2(-2.0 * draw_bow + 4.0 * volley, -3.0 * draw_bow)}
+			elif variant == "hunter_trap" or variant.contains("trap"):
+				var kneel: float = sin(minf(p / 0.38, 1.0) * PI * 0.5)
+				var set_trap: float = sin(maxf((p - 0.30) / 0.58, 0.0) * PI)
+				pose["push_y"] = 5.5 * kneel
+				pose["push_x"] = 3.0 * set_trap
+				pose["body_rot"] = 0.055 * kneel - 0.035 * set_trap
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.62 * kneel + 0.20 * set_trap, "position": Vector2(5.0 * set_trap, 6.0 * kneel)}
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": 0.38 * kneel - 0.16 * set_trap, "position": Vector2(-3.0 * kneel, 5.0 * kneel)}
+			else:
+				return {}
+		"doctor":
+			if variant == "restore_potion" or variant.contains("restore") or variant.contains("potion"):
+				var siphon: float = sin(minf(p / 0.44, 1.0) * PI * 0.5)
+				var pull: float = sin(maxf((p - 0.34) / 0.58, 0.0) * PI)
+				pose["push_y"] = -2.0 * siphon
+				pose["push_x"] = -2.5 * pull
+				pose["body_rot"] = -0.035 * siphon - 0.035 * pull
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.66 * siphon, "position": Vector2(-3.0 * siphon, -5.0 * siphon)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.42 * siphon + 0.18 * pull, "position": Vector2(5.0 * siphon, -3.0 * siphon)}
+			elif variant == "plague_syringe" or variant.contains("syringe"):
+				var aim_syringe: float = sin(minf(p / 0.34, 1.0) * PI * 0.5)
+				var jab: float = sin(maxf((p - 0.26) / 0.54, 0.0) * PI)
+				pose["push_x"] = -1.5 * aim_syringe + 9.0 * jab
+				pose["body_rot"] = -0.030 * aim_syringe + 0.070 * jab
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": -0.12 * aim_syringe + 0.34 * jab, "position": Vector2(10.0 * aim_syringe + 4.0 * jab, -1.0 * aim_syringe)}
+			elif variant == "bone_saw" or variant.contains("saw"):
+				var raise_saw: float = sin(minf(p / 0.30, 1.0) * PI)
+				var saw: float = sin(maxf((p - 0.22) / 0.55, 0.0) * PI)
+				pose["push_x"] = -2.0 * raise_saw + 8.0 * saw
+				pose["push_y"] = -2.5 * raise_saw
+				pose["body_rot"] = -0.050 * raise_saw + 0.105 * saw
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": -0.65 * raise_saw + 1.20 * saw, "position": Vector2(2.0 * raise_saw + 8.0 * saw, -4.0 * raise_saw)}
+			else:
+				return {}
+		"chemist":
+			if variant == "blast_powder" or variant.contains("blast"):
+				var shake: float = sin(minf(p / 0.34, 1.0) * PI * 0.5)
+				var toss_powder: float = sin(maxf((p - 0.26) / 0.58, 0.0) * PI)
+				pose["push_y"] = -2.0 * shake + 2.0 * toss_powder
+				pose["push_x"] = -2.0 * shake + 7.0 * toss_powder
+				pose["body_rot"] = -0.050 * shake + 0.095 * toss_powder
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": -0.76 * shake + 0.95 * toss_powder, "position": Vector2(7.0 * toss_powder, -5.0 * shake + 2.0 * toss_powder)}
+			elif variant == "acid_flask" or variant.contains("acid") or variant.contains("flask"):
+				var windup_flask: float = sin(minf(p / 0.42, 1.0) * PI * 0.5)
+				var lob: float = sin(maxf((p - 0.32) / 0.60, 0.0) * PI)
+				pose["push_y"] = -4.0 * windup_flask + 3.0 * lob
+				pose["push_x"] = -1.5 * windup_flask + 8.5 * lob
+				pose["body_rot"] = -0.070 * windup_flask + 0.105 * lob
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": -1.02 * windup_flask + 1.12 * lob, "position": Vector2(8.0 * lob, -7.0 * windup_flask + 2.0 * lob)}
+			elif variant == "homunculus_vial" or variant.contains("homunculus") or variant.contains("vial"):
+				var cradle: float = sin(minf(p / 0.45, 1.0) * PI * 0.5)
+				var release_vial: float = sin(maxf((p - 0.34) / 0.58, 0.0) * PI)
+				pose["push_y"] = -3.0 * cradle
+				pose["push_x"] = 3.5 * release_vial
+				pose["body_rot"] = -0.040 * cradle + 0.050 * release_vial
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.48 * cradle, "position": Vector2(-3.0 * cradle, -4.0 * cradle)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.50 * cradle + 0.24 * release_vial, "position": Vector2(4.0 * cradle + 4.0 * release_vial, -4.0 * cradle)}
+			else:
+				return {}
+		"knight":
+			if action_id != "attack":
+				return {}
+			if variant == "long_spear" or variant.contains("spear"):
+				var brace_spear: float = sin(minf(p / 0.28, 1.0) * PI * 0.5)
+				var thrust_spear: float = sin(maxf((p - 0.22) / 0.56, 0.0) * PI)
+				pose["push_x"] = -2.0 * brace_spear + 14.0 * thrust_spear
+				pose["push_y"] = 1.8 * brace_spear
+				pose["body_rot"] = 0.035 * brace_spear + 0.070 * thrust_spear
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.24 * brace_spear + 0.22 * thrust_spear, "position": Vector2(13.0 * thrust_spear, -0.5 * brace_spear)}
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.18 * brace_spear, "position": Vector2(8.0 * thrust_spear, 1.0 * brace_spear)}
+			elif variant == "tower_shield" or variant.contains("shield"):
+				var guard: float = sin(minf(p / 0.24, 1.0) * PI * 0.5)
+				var bash: float = sin(maxf((p - 0.20) / 0.58, 0.0) * PI)
+				pose["push_x"] = 10.0 * bash
+				pose["push_y"] = 3.0 * guard
+				pose["body_rot"] = 0.070 * bash
+				pose["squash_x"] = 1.0 + 0.050 * bash
+				pose["squash_y"] = 1.0 - 0.040 * bash
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.18 * guard + 0.36 * bash, "position": Vector2(9.0 * bash, 3.0 * guard)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.30 * guard - 0.18 * bash, "position": Vector2(5.0 * bash, 2.0 * guard)}
+			elif variant == "holy_flail" or variant.contains("flail"):
+				var wind_flail: float = sin(minf(p / 0.36, 1.0) * PI)
+				var sweep_flail: float = sin(maxf((p - 0.28) / 0.58, 0.0) * PI)
+				pose["push_x"] = -3.0 * wind_flail + 7.0 * sweep_flail
+				pose["push_y"] = -4.0 * wind_flail + 4.0 * sweep_flail
+				pose["body_rot"] = -0.090 * wind_flail + 0.150 * sweep_flail
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": -0.95 * wind_flail + 1.55 * sweep_flail, "position": Vector2(3.0 * wind_flail + 8.0 * sweep_flail, -7.0 * wind_flail)}
+			else:
+				return {}
+		"druid":
+			if variant == "summon_amulet" or variant.contains("summon") or variant.contains("amulet"):
+				var call: float = sin(minf(p / 0.48, 1.0) * PI * 0.5)
+				var beckon: float = sin(maxf((p - 0.38) / 0.54, 0.0) * PI)
+				pose["push_y"] = -4.0 * call
+				pose["push_x"] = 2.0 * beckon
+				pose["body_rot"] = -0.045 * call + 0.040 * beckon
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.82 * call, "position": Vector2(-3.0 * call, -7.0 * call)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.72 * call + 0.20 * beckon, "position": Vector2(4.0 * call + 3.0 * beckon, -6.0 * call)}
+			elif variant == "briar_staff" or variant.contains("briar"):
+				var root: float = sin(minf(p / 0.40, 1.0) * PI * 0.5)
+				var seed: float = sin(maxf((p - 0.32) / 0.56, 0.0) * PI)
+				pose["push_y"] = 3.5 * root
+				pose["push_x"] = 5.0 * seed
+				pose["body_rot"] = 0.040 * root + 0.060 * seed
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.55 * root + 0.40 * seed, "position": Vector2(7.0 * seed, 5.0 * root)}
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": 0.25 * root - 0.18 * seed, "position": Vector2(-2.0 * root, 3.5 * root)}
+			elif variant == "raven_totem" or variant.contains("raven") or variant.contains("totem"):
+				var lift_totem: float = sin(minf(p / 0.42, 1.0) * PI * 0.5)
+				var plant_totem: float = sin(maxf((p - 0.34) / 0.56, 0.0) * PI)
+				pose["push_y"] = -3.0 * lift_totem + 5.0 * plant_totem
+				pose["push_x"] = 2.0 * plant_totem
+				pose["body_rot"] = -0.045 * lift_totem + 0.050 * plant_totem
+				if _parts.has("arm_l"):
+					parts["arm_l"] = {"rotation": -0.58 * lift_totem + 0.22 * plant_totem, "position": Vector2(-2.0 * lift_totem, -5.0 * lift_totem + 5.0 * plant_totem)}
+				if _parts.has("arm_r"):
+					parts["arm_r"] = {"rotation": 0.58 * lift_totem + 0.22 * plant_totem, "position": Vector2(4.0 * lift_totem + 3.0 * plant_totem, -5.0 * lift_totem + 5.0 * plant_totem)}
+			else:
+				return {}
+		_:
+			return {}
+	return pose
+
+
+func _enemy_archetype_action_pose(p: float) -> Dictionary:
+	var pose := {"parts": {}}
+	var parts: Dictionary = pose["parts"]
+	var key := _profile_asset_key()
+
+	match key:
+		"ash_marksman":
+			if action_id != "shoot":
+				return {}
+			var aim: float = sin(minf(p / 0.30, 1.0) * PI * 0.5)
+			var recoil: float = sin(maxf((p - 0.20) / 0.55, 0.0) * PI)
+			pose["push_x"] = -2.0 * aim - 7.0 * recoil
+			pose["body_rot"] = -0.040 * recoil
+			if _parts.has("weapon"):
+				parts["weapon"] = {"rotation": -0.20 * aim - 0.32 * recoil, "position": Vector2(-6.0 * recoil, -2.0 * recoil)}
+		"spark_runner":
+			if action_id != "attack":
+				return {}
+			var coil: float = sin(minf(p / 0.30, 1.0) * PI * 0.5)
+			var burst: float = sin(maxf((p - 0.24) / 0.54, 0.0) * PI)
+			pose["push_x"] = -5.0 * coil + 13.0 * burst
+			pose["push_y"] = 4.0 * coil - 1.0 * burst
+			pose["squash_x"] = 1.0 + 0.10 * coil
+			pose["squash_y"] = 1.0 - 0.14 * coil
+			if _parts.has("tail"):
+				parts["tail"] = {"rotation": -0.50 * coil + 0.30 * burst}
+		"stone_bruiser":
+			if action_id != "attack":
+				return {}
+			var lift: float = sin(minf(p / 0.42, 1.0) * PI * 0.5)
+			var slam: float = sin(maxf((p - 0.34) / 0.58, 0.0) * PI)
+			pose["push_y"] = -5.5 * lift + 8.0 * slam
+			pose["push_x"] = 4.0 * slam
+			pose["body_rot"] = -0.050 * lift + 0.080 * slam
+			pose["squash_x"] = 1.0 + 0.09 * slam
+			pose["squash_y"] = 1.0 - 0.11 * slam
+			for arm_name in ["arm_l", "arm_r"]:
+				if _parts.has(arm_name):
+					parts[arm_name] = {"rotation": -0.75 * lift + 0.55 * slam, "position": Vector2(4.0 * slam, -7.0 * lift + 8.0 * slam)}
+		"bone_caller", "void_mage", "bone_shaman":
+			if action_id != "cast":
+				return {}
+			var raise: float = sin(minf(p / 0.45, 1.0) * PI * 0.5)
+			var pulse: float = sin(maxf((p - 0.34) / 0.58, 0.0) * PI)
+			pose["push_y"] = -3.5 * raise + 1.0 * pulse
+			pose["body_rot"] = sin(p * TAU) * 0.035 * raise
+			pose["torso_rot"] = -0.045 * raise
+			if _parts.has("arm_l"):
+				parts["arm_l"] = {"rotation": -0.88 * raise + 0.18 * pulse, "position": Vector2(-3.0 * raise, -5.0 * raise)}
+			if _parts.has("arm_r"):
+				parts["arm_r"] = {"rotation": 0.88 * raise + 0.18 * pulse, "position": Vector2(4.0 * raise + 3.0 * pulse, -5.0 * raise)}
+		"venom_spitter":
+			if action_id != "shoot":
+				return {}
+			var inhale: float = sin(minf(p / 0.36, 1.0) * PI * 0.5)
+			var spit: float = sin(maxf((p - 0.28) / 0.54, 0.0) * PI)
+			pose["push_x"] = -3.0 * inhale + 8.0 * spit
+			pose["push_y"] = 2.0 * inhale
+			pose["body_rot"] = -0.050 * inhale + 0.090 * spit
+			pose["squash_x"] = 1.0 + 0.08 * inhale + 0.05 * spit
+			pose["squash_y"] = 1.0 - 0.10 * inhale - 0.04 * spit
+		"rift_shieldbearer":
+			if action_id != "attack":
+				return {}
+			var brace: float = sin(minf(p / 0.28, 1.0) * PI * 0.5)
+			var shove: float = sin(maxf((p - 0.22) / 0.56, 0.0) * PI)
+			pose["push_x"] = 2.0 * brace + 10.0 * shove
+			pose["push_y"] = 2.0 * brace
+			pose["body_rot"] = 0.070 * shove
+			if _parts.has("shield"):
+				parts["shield"] = {"rotation": -0.16 * brace + 0.30 * shove, "position": Vector2(10.0 * shove, 2.0 * brace)}
+			if _parts.has("arm_l"):
+				parts["arm_l"] = {"rotation": 0.30 * brace + 0.18 * shove, "position": Vector2(5.0 * shove, 1.0 * brace)}
+		"small_biter":
+			if action_id != "attack":
+				return {}
+			var crouch: float = sin(minf(p / 0.26, 1.0) * PI * 0.5)
+			var bite: float = sin(maxf((p - 0.20) / 0.48, 0.0) * PI)
+			pose["push_x"] = -2.0 * crouch + 12.0 * bite
+			pose["push_y"] = 4.5 * crouch - 2.0 * bite
+			pose["squash_x"] = 1.0 + 0.12 * crouch + 0.04 * bite
+			pose["squash_y"] = 1.0 - 0.16 * crouch - 0.02 * bite
+			for arm_name in ["arm_l", "arm_r"]:
+				if _parts.has(arm_name):
+					parts[arm_name] = {"rotation": 0.35 * crouch + 0.45 * bite, "position": Vector2(4.0 * bite, 3.0 * crouch)}
+		"winged_spark":
+			if action_id != "attack":
+				return {}
+			var flap: float = sin(minf(p / 0.32, 1.0) * PI)
+			var dive: float = sin(maxf((p - 0.24) / 0.54, 0.0) * PI)
+			pose["push_x"] = -3.0 * flap + 11.0 * dive
+			pose["push_y"] = -4.0 * flap + 2.0 * dive
+			pose["body_rot"] = 0.090 * dive
+			if _parts.has("wing_l"):
+				parts["wing_l"] = {"rotation": -0.55 * flap + 0.25 * dive, "position": Vector2(-1.0 * flap, -2.0 * flap)}
+			if _parts.has("wing_r"):
+				parts["wing_r"] = {"rotation": 0.55 * flap - 0.25 * dive, "position": Vector2(1.0 * flap, -2.0 * flap)}
+		"disk_devourer":
+			if action_id != "attack":
+				return {}
+			var compress: float = sin(minf(p / 0.34, 1.0) * PI * 0.5)
+			var chomp: float = sin(maxf((p - 0.28) / 0.56, 0.0) * PI)
+			pose["push_x"] = -4.0 * compress + 8.0 * chomp
+			pose["push_y"] = 5.0 * compress - 2.0 * chomp
+			pose["body_rot"] = -0.060 * compress + 0.100 * chomp
+			pose["squash_x"] = 1.0 + 0.15 * compress + 0.06 * chomp
+			pose["squash_y"] = 1.0 - 0.20 * compress - 0.05 * chomp
+		_:
+			return {}
 	return pose
 
 

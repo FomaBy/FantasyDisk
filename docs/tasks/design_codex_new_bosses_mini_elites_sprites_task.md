@@ -70,3 +70,4 @@ native (урок SCRUM-135 — на epic scale 256px мылится), мини-�
 
 ## Dispatch
 - 2026-06-12: Codex Documentation dispatcher отправил задачу в Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`; Jira `SCRUM-156` переведена в работу и добавлена в активный спринт 0.1.4. Парная Back-end-задача механик: `SCRUM-155`.
+- 2026-06-13: Dispatcher folded duplicate audit tasks SCRUM-180 (`codex_design_new_bosses_mini_elites_redraw_task.md`) and SCRUM-204 (`design_animation_ready_boss_mini_elite_parts_handoff_task.md`) into this active SCRUM-156 task. Additional acceptance context: final stable source paths, transparent alpha, animation-friendly separable parts, contact sheet, and explicit Animator unblock note after source sprites are ready.

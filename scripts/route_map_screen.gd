@@ -578,9 +578,19 @@ func _record_route_choice(step_index: int, branch_index: int) -> void:
 
 
 func _open_route_node(route_node: Dictionary) -> void:
-	game.current_shop_items.clear()
-	game.current_shop_purchased.clear()
-	match str(route_node.get("type", "battle")):
+	var node_type := str(route_node.get("type", "battle"))
+	if node_type == "shop":
+		var route_choice := str(route_node.get("name", game.current_route_choice))
+		var shop_node_key := "%d:%s:%s" % [int(game.route_stage), node_type, route_choice]
+		if game.current_shop_node_key != "" and game.current_shop_node_key != shop_node_key:
+			game.current_shop_items.clear()
+			game.current_shop_purchased.clear()
+			game.current_shop_node_key = ""
+	else:
+		game.current_shop_items.clear()
+		game.current_shop_purchased.clear()
+		game.current_shop_node_key = ""
+	match node_type:
 		"shop":
 			game.ui._show_shop_screen()
 		"rest":

@@ -1,6 +1,6 @@
 # Animation: enemy archetype motion coverage
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Animator audit SCRUM-173
@@ -35,10 +35,23 @@ Started by Animator/Codex on 2026-06-13.
 4. Keep `HeroFull` hidden source art architecture intact.
 
 ## Acceptance Criteria
-- Every listed entity has a tested movement/readability assertion.
-- Every listed entity has a tested action silhouette appropriate to its available parts.
-- Animation smoke passes.
-- Runtime smoke is run only if shared enemy runtime hooks change.
+- [x] Every listed entity has a tested movement/readability assertion.
+- [x] Every listed entity has a tested action silhouette appropriate to its available parts.
+- [x] Animation smoke passes.
+- [x] Runtime smoke passes.
+
+## Result
+Done 2026-06-13 (Animator/Codex): added enemy archetype action pose layer in
+`scripts/cutout_rig_2d.gd` for marksman, runner, bruiser, summoner, mage,
+spitter, shieldbearer, biter, bone shaman, winged spark, and Disk Devourer.
+Extended `tests/animation_smoke_test.gd` with movement + action readability
+coverage per listed archetype. No enemy stats, attacks, spawn rules, collision,
+or targeting changed.
+
+Verification:
+- `tests/animation_smoke_test.gd` passed.
+- `tests/runtime_smoke_test.gd` passed after the parallel SCRUM-207 shop stock
+  fix landed in the shared workspace.
 
 ## Dispatcher Note (2026-06-13)
 Dispatched to Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after user confirmed no feature freeze / backlog is eligible.

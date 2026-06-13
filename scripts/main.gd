@@ -307,6 +307,7 @@ var selected_window_mode_index := 0
 var pending_rebind_action := ""
 var current_shop_items := []
 var current_shop_purchased := []
+var current_shop_node_key := ""
 var pending_level_ups := 0
 var pause_reasons := {}
 var route_map_pan_active := false
@@ -492,7 +493,7 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
-		if pause_stats_menu != null and is_instance_valid(pause_stats_menu):
+		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
 			ui._resume_game()
 		elif ui.has_method("_can_open_pause_dossier") and ui._can_open_pause_dossier():
 			ui._show_pause_menu()
@@ -714,6 +715,10 @@ func _random_edge_spawn_position() -> Vector2:
 
 func _random_spawn_position() -> Vector2:
 	return combat._random_spawn_position()
+
+
+func _run_money() -> int:
+	return ui._run_money()
 
 
 func _route_node_icon_path(route_node: Dictionary, definition: Dictionary) -> String:
