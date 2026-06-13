@@ -1,49 +1,309 @@
 class_name ProgressionData
 extends RefCounted
 
-const CharacterData := preload("res://scripts/progression_data_characters.gd")
-const STAT_NAMES := CharacterData.STAT_NAMES
-const BASE_STATS := CharacterData.BASE_STATS
-const CHARACTER_CONFIGS := CharacterData.CHARACTER_CONFIGS
-const ULTIMATE_CONFIGS := CharacterData.ULTIMATE_CONFIGS
-const CLASS_DAMAGE_PARAMETER := CharacterData.CLASS_DAMAGE_PARAMETER
-const STAT_CLASS_RELEVANCE := CharacterData.STAT_CLASS_RELEVANCE
-const CLASS_INTERPRETATIONS := CharacterData.CLASS_INTERPRETATIONS
-const ATTRIBUTE_PRIORITIES := CharacterData.ATTRIBUTE_PRIORITIES
-const ATTRIBUTE_PRIORITY_REASONS := CharacterData.ATTRIBUTE_PRIORITY_REASONS
+const STAT_NAMES := {
+	"strength": "Сила",
+	"agility": "Ловкость",
+	"intelligence": "Интеллект",
+	"perception": "Восприятие",
+	"energy": "Энергия",
+	"knowledge": "Знание",
+	"endurance": "Выносливость",
+	"leadership": "Лидерство",
+}
 
-const BalanceData := preload("res://scripts/progression_data_balance.gd")
-const CLASS_BUDGET_PROFILES := BalanceData.CLASS_BUDGET_PROFILES
-const BALANCE_BASE_SOLO_DPS := BalanceData.BALANCE_BASE_SOLO_DPS
-const BALANCE_BASE_AOE_DPS := BalanceData.BALANCE_BASE_AOE_DPS
-const BALANCE_WINDOW_SECONDS := BalanceData.BALANCE_WINDOW_SECONDS
-const STAGE_SCALE_BASE := BalanceData.STAGE_SCALE_BASE
-const STAGE_SCALE_LINEAR := BalanceData.STAGE_SCALE_LINEAR
-const ECONOMY_PRICE_MULTIPLIER := BalanceData.ECONOMY_PRICE_MULTIPLIER
-const XP_CURVE_MULTIPLIER := BalanceData.XP_CURVE_MULTIPLIER
-const XP_CURVE_FLAT := BalanceData.XP_CURVE_FLAT
-const DROP_CLASS_MULTIPLIERS := BalanceData.DROP_CLASS_MULTIPLIERS
-const COST_BY_TIER := BalanceData.COST_BY_TIER
-const TIER_WEIGHTS := BalanceData.TIER_WEIGHTS
+const BASE_STATS := {
+	"berserk": {
+		"strength": 10.0,
+		"agility": 5.0,
+		"intelligence": 2.0,
+		"perception": 5.0,
+		"energy": 4.0,
+		"knowledge": 4.0,
+		"endurance": 7.0,
+		"leadership": 3.0,
+	},
+	"soldier": {
+		"strength": 7.0,
+		"agility": 6.0,
+		"intelligence": 2.0,
+		"perception": 8.0,
+		"energy": 4.0,
+		"knowledge": 5.0,
+		"endurance": 6.0,
+		"leadership": 5.0,
+	},
+	"thief": {
+		"strength": 5.0,
+		"agility": 9.0,
+		"intelligence": 3.0,
+		"perception": 8.0,
+		"energy": 5.0,
+		"knowledge": 4.0,
+		"endurance": 4.0,
+		"leadership": 5.0,
+	},
+	"elementalist": {
+		"strength": 2.0,
+		"agility": 4.0,
+		"intelligence": 9.0,
+		"perception": 7.0,
+		"energy": 8.0,
+		"knowledge": 6.0,
+		"endurance": 3.0,
+		"leadership": 5.0,
+	},
+	"sniper": {
+		"strength": 6.0,
+		"agility": 8.0,
+		"intelligence": 2.0,
+		"perception": 10.0,
+		"energy": 3.0,
+		"knowledge": 3.0,
+		"endurance": 7.0,
+		"leadership": 1.0,
+	},
+	"priest": {
+		"strength": 2.0,
+		"agility": 4.0,
+		"intelligence": 8.0,
+		"perception": 6.0,
+		"energy": 7.0,
+		"knowledge": 9.0,
+		"endurance": 5.0,
+		"leadership": 6.0,
+	},
+	"biologist": {
+		"strength": 2.0,
+		"agility": 5.0,
+		"intelligence": 8.0,
+		"perception": 7.0,
+		"energy": 6.0,
+		"knowledge": 10.0,
+		"endurance": 4.0,
+		"leadership": 4.0,
+	},
+	"robot": {
+		"strength": 8.0,
+		"agility": 3.0,
+		"intelligence": 5.0,
+		"perception": 5.0,
+		"energy": 7.0,
+		"knowledge": 4.0,
+		"endurance": 10.0,
+		"leadership": 4.0,
+	},
+	"engineer": {
+		"strength": 4.0,
+		"agility": 5.0,
+		"intelligence": 7.0,
+		"perception": 6.0,
+		"energy": 6.0,
+		"knowledge": 6.0,
+		"endurance": 5.0,
+		"leadership": 10.0,
+	},
+	"dark_mage": {
+		"strength": 2.0,
+		"agility": 3.0,
+		"intelligence": 10.0,
+		"perception": 5.0,
+		"energy": 7.0,
+		"knowledge": 6.0,
+		"endurance": 2.0,
+		"leadership": 5.0,
+	},
+	"guitarist": {
+		"strength": 4.0,
+		"agility": 6.0,
+		"intelligence": 4.0,
+		"perception": 7.0,
+		"energy": 6.0,
+		"knowledge": 5.0,
+		"endurance": 4.0,
+		"leadership": 7.0,
+	},
+	"assassin": {"strength": 6.0, "agility": 10.0, "intelligence": 2.0, "perception": 6.0, "energy": 3.0, "knowledge": 4.0, "endurance": 5.0, "leadership": 4.0},
+	"ranger": {"strength": 7.0, "agility": 7.0, "intelligence": 2.0, "perception": 9.0, "energy": 4.0, "knowledge": 4.0, "endurance": 4.0, "leadership": 3.0},
+	"doctor": {"strength": 2.0, "agility": 4.0, "intelligence": 8.0, "perception": 5.0, "energy": 6.0, "knowledge": 8.0, "endurance": 5.0, "leadership": 2.0},
+	"chemist": {"strength": 2.0, "agility": 4.0, "intelligence": 9.0, "perception": 6.0, "energy": 7.0, "knowledge": 7.0, "endurance": 3.0, "leadership": 2.0},
+	"knight": {"strength": 8.0, "agility": 3.0, "intelligence": 2.0, "perception": 4.0, "energy": 3.0, "knowledge": 4.0, "endurance": 10.0, "leadership": 6.0},
+	"druid": {"strength": 3.0, "agility": 4.0, "intelligence": 4.0, "perception": 7.0, "energy": 6.0, "knowledge": 5.0, "endurance": 5.0, "leadership": 9.0},
+}
+
+const CHARACTER_CONFIGS := {
+	"berserk": {
+		"id": "berserk",
+		"title": "Берсерк",
+		"description": "Ближний бой по области и высокий риск.",
+		"strengths": "урон, здоровье, толпа.",
+		"weaknesses": "нужна близость.",
+		"sprite_path": "res://assets/sprites/characters/berserk_unarmed.png",
+	},
+	"soldier": {
+		"id": "soldier",
+		"title": "Солдат",
+		"description": "Тактика, залпы и контроль позиции.",
+		"strengths": "дальность, стабильность, контроль.",
+		"weaknesses": "нужна линия огня.",
+		"sprite_path": "res://assets/sprites/characters/soldier.png",
+	},
+	"thief": {
+		"id": "thief",
+		"title": "Вор",
+		"description": "Уловки, рывки и карманная экономика.",
+		"strengths": "мобильность, крит, золото.",
+		"weaknesses": "мало здоровья.",
+		"sprite_path": "res://assets/sprites/characters/thief.png",
+	},
+	"elementalist": {
+		"id": "elementalist",
+		"title": "Элементалист",
+		"description": "Смена стихий, орбиты и разломы.",
+		"strengths": "области поражения, контроль зон, взрывной урон.",
+		"weaknesses": "хрупкий, требует позицию.",
+		"sprite_path": "res://assets/sprites/characters/elementalist.png",
+	},
+	"sniper": {
+		"id": "sniper",
+		"title": "Снайпер",
+		"description": "Точные выстрелы, метки и зоны поражения.",
+		"strengths": "дальность, одиночные цели, фокус элиток.",
+		"weaknesses": "слабее против плотной толпы рядом.",
+		"sprite_path": "res://assets/sprites/characters/sniper.png",
+	},
+	"priest": {
+		"id": "priest",
+		"title": "Священник",
+		"description": "Благословения, печати и священное восстановление.",
+		"strengths": "лечение, защита, стабильность.",
+		"weaknesses": "меньше взрывного урона по одиночной цели.",
+		"sprite_path": "res://assets/sprites/characters/priest.png",
+	},
+	"biologist": {
+		"id": "biologist",
+		"title": "Биолог",
+		"description": "Образцы, споры и симбиотические реакции.",
+		"strengths": "контроль биомассой, периодический урон, адаптация.",
+		"weaknesses": "нужны цели для цепных реакций.",
+		"sprite_path": "res://assets/sprites/characters/biologist.png",
+	},
+	"robot": {
+		"id": "robot",
+		"title": "Робот",
+		"description": "Тяжелая броня, магнитный контроль и реакторные выбросы.",
+		"strengths": "выживаемость, контроль, стабильный урон.",
+		"weaknesses": "медленный, зависит от позиционирования.",
+		"sprite_path": "res://assets/sprites/characters/robot.png",
+	},
+	"engineer": {
+		"id": "engineer",
+		"title": "Инженер",
+		"description": "Мастерская устройств, дронов и минных сеток.",
+		"strengths": "устройства, зона контроля, поддержка.",
+		"weaknesses": "нужно заранее ставить позицию.",
+		"sprite_path": "res://assets/sprites/characters/engineer.png",
+	},
+	"dark_mage": {
+		"id": "dark_mage",
+		"title": "Темный маг",
+		"description": "Области поражения, лучи и проклятия.",
+		"strengths": "площадь, периодический урон, пробивание.",
+		"weaknesses": "хрупкий.",
+		"sprite_path": "res://assets/sprites/characters/dark_mage.png",
+	},
+	"guitarist": {
+		"id": "guitarist",
+		"title": "Гитарист",
+		"description": "Ритм, волны и контроль.",
+		"strengths": "отталкивание, области поражения, темп.",
+		"weaknesses": "слабее по боссам.",
+		"sprite_path": "res://assets/sprites/characters/guitarist.png",
+	},
+	"assassin": {
+		"id": "assassin", "title": "Ассасин",
+		"description": "Криты, скорость и яд.",
+		"strengths": "криты, уворот, темп.",
+		"weaknesses": "мало здоровья.",
+		"sprite_path": "res://assets/sprites/characters/assassin.png",
+	},
+	"ranger": {
+		"id": "ranger", "title": "Рейнджер",
+		"description": "Дальние линии и ловушки.",
+		"strengths": "дальность, пробивание.",
+		"weaknesses": "плох вблизи.",
+		"sprite_path": "res://assets/sprites/characters/ranger.png",
+	},
+	"doctor": {
+		"id": "doctor", "title": "Доктор",
+		"description": "Лечение через урон.",
+		"strengths": "восстановление, яд, стабильность.",
+		"weaknesses": "низкий взрывной урон.",
+		"sprite_path": "res://assets/sprites/characters/doctor.png",
+	},
+	"chemist": {
+		"id": "chemist", "title": "Химик",
+		"description": "Взрывы и ядовитые зоны.",
+		"strengths": "зоны, периодический урон, области поражения.",
+		"weaknesses": "хрупкий.",
+		"sprite_path": "res://assets/sprites/characters/chemist.png",
+	},
+	"knight": {
+		"id": "knight", "title": "Рыцарь",
+		"description": "Танк, копье и щит.",
+		"strengths": "здоровье, защита, контроль.",
+		"weaknesses": "медленный.",
+		"sprite_path": "res://assets/sprites/characters/knight.png",
+	},
+	"druid": {
+		"id": "druid", "title": "Друид",
+		"description": "Стая, тернии и тотемы.",
+		"strengths": "призывы, зоны.",
+		"weaknesses": "слаб один.",
+		"sprite_path": "res://assets/sprites/characters/druid.png",
+	},
+}
+
+const CLASS_BUDGET_PROFILES := {
+	"berserk": {"profile": "balanced", "survival": "sturdy", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
+	"soldier": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
+	"thief": {"profile": "balanced", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.00},
+	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.95, "aoe_target": 1.10},
+	"sniper": {"profile": "solo", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.15, "aoe_target": 0.80},
+	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 0.95, "aoe_target": 1.05},
+	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.82, "aoe_target": 1.18},
+	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 0.95, "aoe_target": 1.05},
+	"engineer": {"profile": "balanced", "survival": "steady", "damage_budget": 0.96, "solo_target": 0.90, "aoe_target": 1.12},
+	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.70, "aoe_target": 1.30},
+	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 0.70, "aoe_target": 1.30},
+	"assassin": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
+	"ranger": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
+	"doctor": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
+	"chemist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.70, "aoe_target": 1.30},
+	"knight": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
+	"druid": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
+}
+
+const BALANCE_BASE_SOLO_DPS := 48.0
+const BALANCE_BASE_AOE_DPS := 150.0
+const BALANCE_WINDOW_SECONDS := 30.0
+const STAGE_SCALE_BASE := 1.18
+const STAGE_SCALE_LINEAR := 0.075
+const ECONOMY_PRICE_MULTIPLIER := 1.10
+const XP_CURVE_MULTIPLIER := 1.42
+const XP_CURVE_FLAT := 3.0
+
+const DROP_CLASS_MULTIPLIERS := {
+	"ordinary": {"xp": 1.0, "money": 1.0, "money_chance": 0.75},
+	"complex": {"xp": 1.3, "money": 1.35, "money_chance": 0.85},
+	"heavy": {"xp": 1.75, "money": 1.85, "money_chance": 0.95},
+	"mini_elite": {"xp": 3.6, "money": 3.8, "money_chance": 1.0},
+	"elite": {"xp": 8.0, "money": 8.5, "money_chance": 1.0},
+	"boss": {"xp": 24.0, "money": 92.0, "money_chance": 1.0},
+}
 
 const WeaponsData := preload("res://scripts/progression_data_weapons.gd")
 const BERSERK_WEAPONS := WeaponsData.BERSERK_WEAPONS
-const DARK_MAGE_WEAPONS := WeaponsData.DARK_MAGE_WEAPONS
-const GUITARIST_WEAPONS := WeaponsData.GUITARIST_WEAPONS
-const ASSASSIN_WEAPONS := WeaponsData.ASSASSIN_WEAPONS
-const RANGER_WEAPONS := WeaponsData.RANGER_WEAPONS
-const DOCTOR_WEAPONS := WeaponsData.DOCTOR_WEAPONS
-const CHEMIST_WEAPONS := WeaponsData.CHEMIST_WEAPONS
-const KNIGHT_WEAPONS := WeaponsData.KNIGHT_WEAPONS
-const DRUID_WEAPONS := WeaponsData.DRUID_WEAPONS
-const SOLDIER_WEAPONS := WeaponsData.SOLDIER_WEAPONS
-const THIEF_WEAPONS := WeaponsData.THIEF_WEAPONS
-const ELEMENTALIST_WEAPONS := WeaponsData.ELEMENTALIST_WEAPONS
-const SNIPER_WEAPONS := WeaponsData.SNIPER_WEAPONS
-const PRIEST_WEAPONS := WeaponsData.PRIEST_WEAPONS
-const BIOLOGIST_WEAPONS := WeaponsData.BIOLOGIST_WEAPONS
-const ROBOT_WEAPONS := WeaponsData.ROBOT_WEAPONS
-const ENGINEER_WEAPONS := WeaponsData.ENGINEER_WEAPONS
 const WEAPONS_BY_CLASS := WeaponsData.WEAPONS_BY_CLASS
 
 const ContentData := preload("res://scripts/progression_data_content.gd")
@@ -51,22 +311,63 @@ const STAT_REWARDS := ContentData.STAT_REWARDS
 const ARTIFACTS := ContentData.ARTIFACTS
 const LEVEL_UP_REWARDS := ContentData.LEVEL_UP_REWARDS
 
-const AscensionData := preload("res://scripts/progression_data_ascension.gd")
-const ASCENSION_MODIFIERS := AscensionData.ASCENSION_MODIFIERS
-const ASCENSION_DIFFICULTY_DEFAULTS := AscensionData.ASCENSION_DIFFICULTY_DEFAULTS
-const ASCENSION_LEVELS := AscensionData.ASCENSION_LEVELS
-
-const ShopData := preload("res://scripts/progression_data_shop.gd")
-const SHOP_ITEMS := ShopData.SHOP_ITEMS
-
-const EnemyData := preload("res://scripts/progression_data_enemies.gd")
-const MINI_ELITE_KINDS := EnemyData.MINI_ELITE_KINDS
+const ULTIMATE_CONFIGS := {
+	"berserk": {"title": "Неистовство", "description": "На несколько секунд ускоряется и каждый удар поднимает эхо-волну.", "duration": 5.5, "radius": 180.0, "damage": 0.75, "damage_charge_rate": 0.030, "taken_charge_rate": 1.35, "boss_cap": 0.10},
+	"soldier": {"title": "Приказ: Огонь", "description": "Серия прицельных залпов по ближайшим целям; сильнее по плотной толпе, но ограничена по боссу.", "duration": 0.0, "radius": 560.0, "damage": 1.08, "target_count": 9, "damage_charge_rate": 0.033, "taken_charge_rate": 1.12, "boss_cap": 0.09},
+	"thief": {"title": "Большой Куш", "description": "Мгновенный налет по ближайшим целям: урон, золотые нити и небольшой денежный выигрыш.", "duration": 0.0, "radius": 500.0, "damage": 1.02, "target_count": 8, "damage_charge_rate": 0.036, "taken_charge_rate": 1.00, "boss_cap": 0.08},
+	"elementalist": {"title": "Стихийная Сверхнова", "description": "Сверхнова четырех стихий взрывается вокруг героя и оставляет вторичные вспышки по ближайшим целям.", "duration": 0.0, "radius": 430.0, "damage": 1.18, "target_count": 6, "damage_charge_rate": 0.035, "taken_charge_rate": 1.04, "boss_cap": 0.10},
+	"sniper": {"title": "Последний Выстрел", "description": "Снайпер отмечает опасные цели и выпускает серию смертельных дальних попаданий.", "duration": 0.0, "radius": 760.0, "damage": 1.35, "target_count": 5, "damage_charge_rate": 0.034, "taken_charge_rate": 0.95, "boss_cap": 0.10},
+	"priest": {"title": "Хор Искупления", "description": "Священная волна поражает врагов вокруг и превращает часть урона в лечение.", "duration": 0.0, "radius": 410.0, "damage": 1.05, "target_count": 8, "heal_ratio": 0.45, "damage_charge_rate": 0.031, "taken_charge_rate": 1.22, "boss_cap": 0.08},
+	"biologist": {"title": "Пробуждение Колонии", "description": "Биолог запускает рост живой колонии: несколько биоимпульсов поражают ближайших врагов и оставляют слабый реген.", "duration": 0.0, "radius": 440.0, "damage": 1.10, "target_count": 9, "heal_ratio": 0.18, "damage_charge_rate": 0.033, "taken_charge_rate": 1.05, "boss_cap": 0.09},
+	"robot": {"title": "Аварийная Перегрузка", "description": "Робот включает аварийный контур: получает временное поглощение, выпускает ударную волну и несколько раз прожигает ближайших врагов.", "duration": 4.5, "radius": 380.0, "damage": 0.78, "target_count": 8, "damage_charge_rate": 0.030, "taken_charge_rate": 1.55, "boss_cap": 0.08},
+	"engineer": {"title": "Аварийная Мастерская", "description": "Инженер быстро разворачивает временную сеть устройств: лучи, ремонт и взрывные узлы вокруг себя.", "duration": 4.2, "radius": 430.0, "damage": 0.92, "target_count": 9, "heal_ratio": 0.12, "damage_charge_rate": 0.031, "taken_charge_rate": 1.18, "boss_cap": 0.08},
+	"dark_mage": {"title": "Темная буря", "description": "Вихрь темной магии проклинает всех врагов вокруг.", "duration": 0.0, "radius": 360.0, "damage": 1.35, "damage_charge_rate": 0.034, "taken_charge_rate": 1.05, "boss_cap": 0.11},
+	"guitarist": {"title": "Соло", "description": "Гигантская звуковая волна отбрасывает и глушит толпу.", "duration": 0.0, "radius": 430.0, "damage": 1.15, "damage_charge_rate": 0.033, "taken_charge_rate": 1.10, "boss_cap": 0.09},
+	"assassin": {"title": "Танец клинков", "description": "Серия мгновенных рывков-ударов по ближайшим целям.", "duration": 0.0, "radius": 520.0, "damage": 1.05, "target_count": 7, "damage_charge_rate": 0.036, "taken_charge_rate": 1.05, "boss_cap": 0.08},
+	"ranger": {"title": "Лунный залп", "description": "Дождь болтов поражает большую область вокруг героя.", "duration": 0.0, "radius": 480.0, "damage": 1.18, "target_count": 14, "damage_charge_rate": 0.034, "taken_charge_rate": 1.0, "boss_cap": 0.09},
+	"doctor": {"title": "Переливание", "description": "Массовый drain врагов вокруг; избыток лечения становится щитом-поглощением.", "duration": 0.0, "radius": 360.0, "damage": 0.95, "damage_charge_rate": 0.032, "taken_charge_rate": 1.25, "boss_cap": 0.08},
+	"chemist": {"title": "Цепная реакция", "description": "Алхимический каскад детонирует ближайшие зоны и врагов.", "duration": 0.0, "radius": 420.0, "damage": 1.25, "damage_charge_rate": 0.034, "taken_charge_rate": 1.05, "boss_cap": 0.10},
+	"knight": {"title": "Бастион", "description": "Короткая непробиваемость, таунт давления и усиленная контратака.", "duration": 5.0, "radius": 260.0, "damage": 0.70, "damage_charge_rate": 0.029, "taken_charge_rate": 1.55, "boss_cap": 0.07},
+	"druid": {"title": "Зов стаи", "description": "Временно призывает сверхлимитную стаю союзников.", "duration": 6.0, "radius": 260.0, "damage": 0.80, "target_count": 4, "damage_charge_rate": 0.031, "taken_charge_rate": 1.10, "boss_cap": 0.08},
+}
 
 # Классовая релевантность урона: какой derived-параметр является «своим» уроном класса.
+const CLASS_DAMAGE_PARAMETER := {
+	"berserk": "damage",
+	"soldier": "damage",
+	"thief": "damage",
+	"elementalist": "magic_damage",
+	"sniper": "damage",
+	"priest": "magic_damage",
+	"biologist": "magic_damage",
+	"robot": "damage",
+	"engineer": "damage",
+	"dark_mage": "magic_damage",
+	"guitarist": "sound_wave_damage",
+	"assassin": "damage",
+	"ranger": "damage",
+	"knight": "damage",
+	"doctor": "magic_damage",
+	"chemist": "magic_damage",
+	"druid": "sound_wave_damage",
+}
 # Атрибуты, дающие силу только перечисленным классам (по формулам derived_parameters):
 # strength питает только физический урон, intelligence — только магический,
 # energy — магический и звуковой. Отсутствие в карте = атрибут универсален.
+const STAT_CLASS_RELEVANCE := {}
+
 const MetaData := preload("res://scripts/progression_data_meta.gd")
+const CLASS_INTERPRETATIONS := MetaData.CLASS_INTERPRETATIONS
+const ATTRIBUTE_PRIORITIES := MetaData.ATTRIBUTE_PRIORITIES
+const ATTRIBUTE_PRIORITY_REASONS := MetaData.ATTRIBUTE_PRIORITY_REASONS
+const COST_BY_TIER := MetaData.COST_BY_TIER
+const TIER_WEIGHTS := MetaData.TIER_WEIGHTS
+const ASCENSION_MODIFIERS := MetaData.ASCENSION_MODIFIERS
+const ASCENSION_DIFFICULTY_DEFAULTS := MetaData.ASCENSION_DIFFICULTY_DEFAULTS
+const ASCENSION_LEVELS := MetaData.ASCENSION_LEVELS
+const SHOP_ITEMS := MetaData.SHOP_ITEMS
+
+
 static func artifact_definition(artifact_id: String) -> Dictionary:
 	for artifact in ARTIFACTS:
 		if str(artifact.get("id", "")) == artifact_id:
@@ -646,6 +947,16 @@ static func main_stat_level_up_rewards(_character_id := "") -> Array:
 # elite-сцену (placeholder-арт до SCRUM-156), профиль статов и тинт-идентичность.
 # `behavior` — ближайший существующий elite-паттерн атаки (бихейвиор-полиш —
 # парный art-пасс); `tint` — RGB множитель спрайта для различимости.
+const MINI_ELITE_KINDS := [
+	{"id": "mini_scavenger_reaper", "title": "Жнец-Падальщик", "scene": "stalker", "behavior": "night_stalker", "hp_mult": 0.42, "speed_mult": 1.28, "damage_mult": 1.05, "tint": [0.86, 0.96, 0.78], "desc": "Быстрый падальщик: рывками косит по дуге, добивая раненых первыми."},
+	{"id": "mini_plague_bellringer", "title": "Чумной Звонарь", "scene": "poisoned", "behavior": "plague_prophet", "hp_mult": 0.60, "speed_mult": 0.72, "damage_mult": 0.85, "tint": [0.72, 0.96, 0.62], "desc": "Медлительный звонарь чумы: сеет ядовитые лужи вокруг себя."},
+	{"id": "mini_bone_warden", "title": "Костяной Страж", "scene": "armored", "behavior": "iron_bastion", "hp_mult": 0.86, "speed_mult": 0.66, "damage_mult": 1.0, "tint": [0.94, 0.92, 0.84], "desc": "Костяной танк: бьёт ударной волной и держит строй, прикрывая свиту."},
+	{"id": "mini_spark_wight", "title": "Искровик", "scene": "commander", "behavior": "shard_marshal", "hp_mult": 0.50, "speed_mult": 0.92, "damage_mult": 0.95, "tint": [0.72, 0.86, 1.0], "desc": "Дальнобойный дух искр: бьёт залпом веером с предупреждающим телеграфом."},
+	{"id": "mini_rot_hound", "title": "Гнилая Гончая", "scene": "stalker", "behavior": "night_stalker", "hp_mult": 0.40, "speed_mult": 1.32, "damage_mult": 1.0, "tint": [0.82, 0.70, 0.60], "desc": "Стайная гончая гнили: налетает рывком, оставляя кровоточащие раны."},
+	{"id": "mini_shadow_devourer", "title": "Теневой Пожиратель", "scene": "stalker", "behavior": "night_stalker", "hp_mult": 0.52, "speed_mult": 1.08, "damage_mult": 1.12, "tint": [0.56, 0.50, 0.76], "desc": "Тень-пожиратель: телепортируется к жертве после короткого телеграфа."},
+]
+
+
 static func mini_elite_kinds() -> Array:
 	var kinds := []
 	for kind in MINI_ELITE_KINDS:
