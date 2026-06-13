@@ -74,7 +74,7 @@ State language:
 - pressed: darker parchment/metal and subtly compressed read, matching the reference;
 - disabled: desaturated grayscale, matching the reference.
 
-SCRUM-147 also overwrote the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, and selected `assets/sprites/ui/shop/` paths with the accepted parchment/wax/forged-metal treatment while preserving file names and dimensions. Back-end integration for explicit 4-state button styleboxes and safe cleanup is tracked in `docs/tasks/backend_ui_dark_fantasy_theme_integration_task.md`.
+SCRUM-147 also overwrote the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, and selected `assets/sprites/ui/shop/` paths with the accepted parchment/wax/forged-metal treatment while preserving file names and dimensions. SCRUM-222 completed Back-end integration for explicit 4-state button styleboxes: runtime button roles map to `primary`, `secondary`, and `danger` texture sets, while common panels/cards/HUD/tooltip styleboxes resolve through the canonical `dark_fantasy/` frame paths. Safe cleanup of superseded historical frame assets remains in the cleanup flow after reference checks/backups.
 
 Rebuild/QA assets:
 

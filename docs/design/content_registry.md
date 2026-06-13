@@ -450,7 +450,7 @@ SCRUM-147 заменяет прежний tavern/contextual UI direction на п
 | ID | Ассет | Роль |
 | --- | --- | --- |
 | `ui_panel_frame` | `assets/sprites/ui/frames/global/ui_panel_frame.png` | Базовые большие панели меню/событий/кодекса |
-| `ui_button_frame` | `assets/sprites/ui/frames/global/ui_button_frame.png` | Кнопки normal/hover/pressed/danger/level-up через tint |
+| `ui_button_frame` | `assets/sprites/ui/frames/global/ui_button_frame.png` | Legacy/live fallback frame; runtime buttons use SCRUM-222 role-based `ui_df_button_*` 4-state textures |
 | `ui_card_frame` | `assets/sprites/ui/frames/global/ui_card_frame.png` | Карточки персонажей, route node buttons, compact panels |
 | `ui_level_panel_frame` | `assets/sprites/ui/frames/global/ui_level_panel_frame.png` | Level-up / reward panel |
 | `ui_hud_panel_frame` | `assets/sprites/ui/frames/global/ui_hud_panel_frame.png` | Боевой HUD panel |

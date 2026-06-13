@@ -123,7 +123,9 @@ SCRUM-158/170 добавили и подключили canonical UI backdrop set
 
 Основной UI pass SCRUM-147 использует принятый Parchment & Wax Seal dark fantasy canon вместо дефолтных серых Godot/простых плоских панелей. Общие fallback-рамки лежат в `assets/sprites/ui/frames/global/`, Escape stats kit — в `assets/sprites/ui/frames/escape/`, canonical 4-state kit — в `assets/sprites/ui/frames/dark_fantasy/`. После пользовательского rejection 2026-06-13 первая плоская поставка была заменена на reference-matched rebuild: кнопки вырезаны из `button_parchment_wax_seal.png`, панели/карточки/тултипы используют состаренный пергамент, сургуч, зубчатый кованый металл и рубиновые акценты из approved refs. QA preview: `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`; pipeline: `tools/build_parchment_wax_ui_kit.py`.
 
-Contextual UI frame kits в `assets/sprites/ui/frames/contextual/` остаются historical/reference only и не являются активным runtime theme direction. Интеграция stateful SCRUM-147 styleboxes идет отдельной Back-end задачей `docs/tasks/backend_ui_dark_fantasy_theme_integration_task.md` / SCRUM-222.
+SCRUM-222 подключил stateful Back-end style layer к accepted SCRUM-147 kit: кнопки используют реальные 4-state textures для ролей `primary`, `secondary` и `danger` (`idle/hover/pressed/disabled`), а общие панели, карточки, level-up panel, HUD panel/card и tooltip берутся из canonical `assets/sprites/ui/frames/dark_fantasy/` paths. Runtime smoke теперь проверяет точные texture paths главных primary/secondary/danger кнопок, а `tests/dark_fantasy_ui_theme_test.gd` проверяет набор стилей отдельно.
+
+Contextual UI frame kits в `assets/sprites/ui/frames/contextual/` остаются historical/reference only и не являются активным runtime theme direction.
 
 Settings controls получили системные fantasy assets из `assets/sprites/ui/icons/system/`: checkbox checked/unchecked, slider track/grabber, arrows/back/settings/close icons. Иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_*`.
 

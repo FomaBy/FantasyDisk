@@ -43,3 +43,20 @@ Verification:
 - `Godot --headless --path ... --script res://tests/content_registry_consistency_test.gd` — passed.
 - `Godot --headless --path ... --script res://tests/animation_smoke_test.gd` — passed.
 - `Godot --headless --path ... --script res://tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-192)
+
+Проверено фактически (конфиг + тест + РЕАЛЬНЫЙ рендер):
+- sprite_path в CHARACTER_CONFIGS для 6 классов теперь указывает на ФИНАЛЬНЫЕ PNG
+  (не прокси): thief→thief.png, elementalist→elementalist.png, sniper→sniper.png,
+  priest→priest.png, biologist→biologist.png, engineer→engineer.png. ✓
+- Регресс-тест `tests/character_sprite_registry_alignment_test.gd` — PASSED
+  («17 characters»): каждый CHARACTER_CONFIGS[id].sprite_path существует + совпадает с
+  каноническим путём реестра. Защита от будущего дрейфа. ✓
+- РЕНДЕР hero select с выбранным thief (build/qa/sprite_registry_alignment/): главный
+  портрет — Вор с собственным финальным артом (капюшон/кинжалы/кожа), досье «Вор» —
+  т.е. в игре грузится правильный спрайт, не старый прокси. ✓
+- content_registry_consistency + animation + runtime smoke зелёные (по отчёту + мои
+  прогоны в прошлых тиках).
+Корректность-фикс: 6 новых классов больше не показывают прокси-спрайты. Багов нет.

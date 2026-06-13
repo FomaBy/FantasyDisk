@@ -731,10 +731,10 @@
   "key": "SCRUM-187",
   "status": "Готово"
  },
-"backend_balance_economy_xp_live_route_model_task.md": {
+ "backend_balance_economy_xp_live_route_model_task.md": {
   "key": "SCRUM-188",
   "status": "Готово"
-},
+ },
  "backend_balance_live_combat_harness_task.md": {
   "key": "SCRUM-189",
   "status": "Готово"
@@ -747,9 +747,9 @@
   "key": "SCRUM-191",
   "status": "Контроль качества"
  },
-"backend_content_character_sprite_registry_alignment_task.md": {
+ "backend_content_character_sprite_registry_alignment_task.md": {
   "key": "SCRUM-192",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_content_safe_cleanup_followup_task.md": {
   "key": "SCRUM-193",
@@ -811,10 +811,10 @@
   "key": "SCRUM-207",
   "status": "Готово"
  },
-"backend_animation_weapon_timing_event_hooks_task.md": {
+ "backend_animation_weapon_timing_event_hooks_task.md": {
   "key": "SCRUM-208",
   "status": "Готово"
-},
+ },
  "backend_runtime_smoke_shop_stock_persistence_task.md": {
   "key": "SCRUM-209",
   "status": "Готово"
@@ -829,6 +829,10 @@
  },
  "backend_ui_dark_fantasy_theme_integration_task.md": {
   "key": "SCRUM-222",
-  "status": "В работе"
+  "status": "Контроль качества"
+ },
+ "codex_design_cursor_clawed_fire_task.md": {
+  "key": "SCRUM-223",
+  "status": "К выполнению"
  }
 }

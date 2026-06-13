@@ -1,6 +1,6 @@
 # Back-end Task: Integrate Dark Fantasy UI Theme Assets
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Design handoff from SCRUM-147
@@ -79,3 +79,21 @@ assets/sprites/ui/shop/ui_shop_tooltip_frame.png
   in `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`.
 - No live screen uses the old tavern/contextual UI canon after integration.
 - Superseded frame cleanup is done only after reference checks and backup.
+
+## Result Summary (2026-06-13)
+
+Closed by Back-end.
+
+- Wired canonical `assets/sprites/ui/frames/dark_fantasy/` frame paths into the common UI style layer.
+- Buttons now use real 4-state Parchment & Wax Seal textures for primary, secondary and danger roles instead of tinting a single fallback button frame.
+- Common panels, cards, level-up panels, HUD panels/cards and tooltips now resolve through the canonical dark fantasy frame kit.
+- Added `tests/dark_fantasy_ui_theme_test.gd` to assert exact texture paths for primary/secondary/danger button states and common frame styleboxes.
+- Extended runtime smoke to verify main menu primary/secondary/danger buttons use the canonical dark fantasy state textures.
+- No Design/Animator work was performed; no rejected assets were wired.
+- Safe cleanup of superseded historical frame assets remains deferred to the existing cleanup flow after reference checks/backups.
+
+Verification:
+
+- `Godot --headless --path ... --script res://tests/dark_fantasy_ui_theme_test.gd` — passed.
+- `Godot --headless --path ... --script res://tests/ui_no_overlap_matrix_test.gd` — passed.
+- `Godot --headless --path ... --script res://tests/runtime_smoke_test.gd` — passed.
