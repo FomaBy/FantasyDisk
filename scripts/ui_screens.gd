@@ -200,6 +200,22 @@ func _show_main_menu() -> void:
 	skill_tree_button.pressed.connect(_show_skill_tree_screen)
 	action_box.add_child(skill_tree_button)
 
+	# SCRUM-159: «Что нового» с бейджем непросмотренной версии (не модалка).
+	var patch_notes_data := preload("res://scripts/patch_notes_data.gd")
+	var settings_module := preload("res://scripts/game_settings.gd")
+	var last_seen: String = str(settings_module.load_settings().get("last_seen_version", "0.0.0"))
+	var patch_notes_button := _make_button("Что нового  ●" if patch_notes_data.has_new_since(last_seen) else "Что нового")
+	patch_notes_button.name = "MainMenuPatchNotesButton"
+	patch_notes_button.custom_minimum_size = Vector2(380, 62)
+	patch_notes_button.pressed.connect(func() -> void:
+		# Просмотр отмечает актуальную версию как увиденную — бейдж гаснет.
+		var saved: Dictionary = settings_module.load_settings()
+		saved["last_seen_version"] = patch_notes_data.latest_version()
+		settings_module.save_settings(saved)
+		_show_patch_notes_screen()
+	)
+	action_box.add_child(patch_notes_button)
+
 	var codex_button := _make_button("Кодекс")
 	codex_button.name = "MainMenuCodexButton"
 	codex_button.custom_minimum_size = Vector2(380, 62)
