@@ -13,14 +13,14 @@
 | SCRUM-212 Персонажи и классы | 20 | 0 | 0 | 0 | 20 |
 | SCRUM-213 Бой, враги, боссы, события | 32 | 0 | 1 | 0 | 33 |
 | SCRUM-214 Баланс и экономика | 14 | 3 | 0 | 0 | 17 |
-| SCRUM-215 Интерфейс, экраны, локализация | 19 | 0 | 2 | 0 | 21 |
-| SCRUM-216 Арт и спрайты | 30 | 3 | 2 | 0 | 35 |
-| SCRUM-217 Анимация и риги | 26 | 4 | 1 | 0 | 31 |
+| SCRUM-215 Интерфейс, экраны, локализация | 20 | 0 | 1 | 0 | 21 |
+| SCRUM-216 Арт и спрайты | 30 | 5 | 0 | 0 | 35 |
+| SCRUM-217 Анимация и риги | 30 | 0 | 1 | 0 | 31 |
 | SCRUM-218 Звук и музыка | 5 | 0 | 0 | 0 | 5 |
 | SCRUM-219 Мета-прогрессия | 6 | 0 | 0 | 0 | 6 |
-| SCRUM-220 Качество кода, тесты, аудиты | 28 | 3 | 8 | 0 | 39 |
+| SCRUM-220 Качество кода, тесты, аудиты | 31 | 2 | 0 | 6 | 39 |
 | SCRUM-221 Релиз и процессы | 5 | 0 | 0 | 0 | 5 |
-| **ИТОГО** | **185** | **13** | **14** | **0** | **212** |
+| **ИТОГО** | **193** | **10** | **3** | **6** | **212** |
 
 (КК = Контроль качества, ждёт QA; Кв = К выполнению, ждёт взятия)
 
@@ -29,7 +29,7 @@
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [design_codex_new_bosses_mini_elites_sprites_task.md](../tasks/design_codex_new_bosses_mini_elites_sprites_task.md) | Design (Codex генерация) → Claude-Designer | in_progress | Jira: SCRUM-156; dispatched Design `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-12. Спрайты по общему ростеру: 3 босса 512px + 6 мини-элиток, painterly D&D, cutout-нарезка, превью-лист масштаба; duplicate SCRUM-180/SCRUM-204 requirements folded in: stable source paths, transparent alpha, animation-friendly separable parts, contact sheet, Animator unblock note |
-| [design_codex_ui_dark_fantasy_restyle_task.md](../tasks/design_codex_ui_dark_fantasy_restyle_task.md) | Design | review | Jira: SCRUM-147; done 2026-06-13 with accepted-reference Parchment & Wax Seal rebuild, moved to QA. This unblocks Back-end SCRUM-222 |
+| [design_codex_ui_dark_fantasy_restyle_task.md](../tasks/design_codex_ui_dark_fantasy_restyle_task.md) | Design | done | Jira: SCRUM-147; done 2026-06-13 with accepted-reference Parchment & Wax Seal rebuild, moved to QA. This unblocks Back-end SCRUM-222 | -> Design ПРИНЯТО 2026-06-13 (повторно): ребилд соответствует эталону Parchment & Wax Seal (пергамент+сургуч+кованая оправа+рубин, 4 состояния); hold с escape/global снят; вайринг -> Back-end
 | [backend_ui_dark_fantasy_theme_integration_task.md](../tasks/backend_ui_dark_fantasy_theme_integration_task.md) | Back-end (UI theme integration) | in_progress | Jira: SCRUM-222; unblocked 2026-06-13 after accepted SCRUM-147 rebuild and redispatched to Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2`. Use accepted Parchment & Wax Seal kit; keep model/reasoning High, do not downgrade to low |
 | [epic_full_project_quality_pass.md](../tasks/epic_full_project_quality_pass.md) | PM/Coordination | in_progress | Зонтик: 6 аудитов (Фаза 1) → волна исправлений (Фаза 2). Правила коллизий и «done=HEAD зелёный» |
 | [backend_refactor_ui_screens_domain_split_task.md](../tasks/backend_refactor_ui_screens_domain_split_task.md) | Back-end | blocked | Jira: SCRUM-199; serialized 2026-06-13 until SCRUM-147/SCRUM-222 UI dependency and active UI edits are stable |

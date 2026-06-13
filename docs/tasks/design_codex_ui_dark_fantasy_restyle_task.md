@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Полный рестайл UI в Dark Fantasy (кнопки → весь интерфейс)
 
-Статус: done (Design rebuild complete 2026-06-13 — accepted-reference Parchment & Wax Seal kit)
+Статус: done (Design review ПРИНЯТО 2026-06-13 — Claude-Designer; ребилд соответствует эталону Parchment & Wax Seal)
 Приоритет: high
 Версия: 0.1.4
 Создано: 2026-06-12
@@ -274,3 +274,18 @@ Jira/local sync:
   SCRUM-222 dependency updated to the accepted kit.
 - Jira REST sync completed from this thread: SCRUM-147 result comment added and
   issue transitioned from `В работе` to `Контроль качества`.
+
+
+## Design Review / 2026-06-13 (повторное) — ПРИНЯТО (Claude-Designer, арт-директор)
+После моего отказа кит ПЕРЕГЕНЕРИРОВАН и теперь соответствует эталону
+`references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`. Проверены РЕАЛЬНЫЕ файлы
+(не контактный лист — он был устаревшим, я пересобрал его из актуальных PNG):
+- Кнопка primary: пергамент-тело + кованая шипастая оправа + красная сургучная печать слева + рубин справа.
+- 4 состояния корректны: idle / hover (тёплое золотое свечение по краю) / pressed (затемнение+сжатие) / disabled (десатурация в серый).
+- danger/secondary — тот же кит, различие акцентом печати/состоянием (по спеке, не другой материал).
+- Панели/карточки/HUD/тултип/магазин/чипы/разделитель — единый пергамент+кованая-оправа язык; заголовки с золотым леттерингом по settings-эталону.
+- escape/global in-place замены ТОЖЕ перерисованы в новый канон — РАНЕЕ ВЫСТАВЛЕННЫЙ HOLD СНЯТ.
+- Тех: 23 фрейма RGBA, размеры под 9-slice, alpha непустая; Godot import/runtime smoke pass (по отчёту).
+Контактный лист пересобран: `docs/design/previews/ui_dark_fantasy_restyle_kit_contact.png`.
+Handoff Back-end (`backend_ui_dark_fantasy_theme_integration_task.md`): вайринг styleboxes/тем по карте
+замены + удаление/архив старых tavern-фреймов после reference-проверок. Принято к интеграции.
