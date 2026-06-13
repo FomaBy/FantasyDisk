@@ -285,8 +285,6 @@ const ULTIMATE_CONFIGS := {
 	"druid": {"title": "Зов стаи", "description": "Временно призывает сверхлимитную стаю союзников.", "duration": 6.0, "radius": 260.0, "damage": 0.80, "target_count": 4, "damage_charge_rate": 0.031, "taken_charge_rate": 1.10, "boss_cap": 0.08},
 }
 
-# Классовая релевантность урона: какой derived-параметр является «своим» уроном класса.
-
 const CLASS_DAMAGE_PARAMETER := {
 	"berserk": "damage",
 	"soldier": "damage",
@@ -306,9 +304,6 @@ const CLASS_DAMAGE_PARAMETER := {
 	"chemist": "magic_damage",
 	"druid": "sound_wave_damage",
 }
-# Атрибуты, дающие силу только перечисленным классам (по формулам derived_parameters):
-# strength питает только физический урон, intelligence — только магический,
-# energy — магический и звуковой. Отсутствие в карте = атрибут универсален.
 
 const STAT_CLASS_RELEVANCE := {}
 
@@ -510,5 +505,3 @@ const ATTRIBUTE_PRIORITY_REASONS := {
 	"endurance": "дает HP, защиту, поглощение и устойчивость под давлением",
 	"leadership": "усиливает призывы, эхо-оружие, поддержку и ауры",
 }
-
-# Базовая цена артефакта в магазине по тиру (редкость и сила растут вместе).

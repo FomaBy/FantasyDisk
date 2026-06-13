@@ -21,7 +21,14 @@ preserving existing `_fire_*` mechanics and cleanup contracts.
 
 ## Data
 
-- `scripts/progression_data.gd`: character, weapon, rewards, artifacts, shop, ascension.
+- `scripts/progression_data.gd`: compatibility facade for public data/API used by runtime, tests, and older systems.
+- `scripts/progression_data_characters.gd`: base stats, character configs, class interpretations, ultimate configs.
+- `scripts/progression_data_weapons.gd`: 51 class/weapon definitions and `WEAPONS_BY_CLASS`.
+- `scripts/progression_data_content.gd`: stat rewards, artifacts, level-up reward pools.
+- `scripts/progression_data_shop.gd`: shop item data.
+- `scripts/progression_data_ascension.gd`: ascension levels, run difficulty modifiers, per-level metadata.
+- `scripts/progression_data_balance.gd`: balance budgets, stage scaling, economy/XP/drop constants.
+- `scripts/progression_data_enemies.gd`: enemy-side data slices such as mini-elite kinds.
 - `scripts/stat_formulas.gd`: stat explanations and derived parameter formulas.
 - `docs/design/content_registry.md`: canonical entity/asset IDs.
 

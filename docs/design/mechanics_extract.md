@@ -19,7 +19,14 @@ solo DPS ~40.1 и 5-target AoE DPS ~138.6, отклонение от целев�
 
 | Область | Файл |
 | --- | --- |
-| Конфиги персонажей, оружия, наград, артефактов, магазина | `scripts/progression_data.gd` |
+| Compatibility facade для прогрессии/контента | `scripts/progression_data.gd` |
+| Конфиги персонажей и классовые интерпретации | `scripts/progression_data_characters.gd` |
+| Конфиги оружия | `scripts/progression_data_weapons.gd` |
+| Награды, артефакты, level-up pools | `scripts/progression_data_content.gd` |
+| Магазинные предметы | `scripts/progression_data_shop.gd` |
+| Возвышение | `scripts/progression_data_ascension.gd` |
+| Балансовые бюджеты, экономика, XP и drop scaling | `scripts/progression_data_balance.gd` |
+| Enemy-side data slices | `scripts/progression_data_enemies.gd` |
 | Формулы характеристик и описания для UI | `scripts/stat_formulas.gd` |
 | Игрок, движение, урон, уровень, экипировка | `scripts/player.gd` |
 | Оружие Берсерка | `scripts/berserk_weapon.gd` |

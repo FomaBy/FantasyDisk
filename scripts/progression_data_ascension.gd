@@ -24,7 +24,6 @@ const ASCENSION_MODIFIERS := [
 	{"id": "asc_edge_of_madness", "level": 10, "title": "Грань безумия", "description": "Игрок: -20% макс. HP; стартовая волна каждого боя усилена.",
 		"mods": {"player_max_hp_mult": 0.80, "first_wave_boost": 1.0}},
 ]
-# Нейтральные значения модификаторов сложности (уровень 0 = текущая игра).
 
 const ASCENSION_DIFFICULTY_DEFAULTS := {
 	"enemy_hp_mult": 1.0, "enemy_damage_mult": 1.0,

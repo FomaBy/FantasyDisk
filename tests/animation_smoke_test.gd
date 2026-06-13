@@ -251,6 +251,7 @@ func _test_player_animation() -> void:
 
 	_test_weapon_animation_timing_events(player)
 	_test_legacy_player_weapon_pose_hooks(player)
+	_test_unique_attack_phase_pose_hooks(player)
 	player.queue_free()
 
 
@@ -361,6 +362,75 @@ func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
 			_fail("Expected legacy player weapon socket to stay readable near the acting hand.")
 
 
+func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
+	var phase_samples := [
+		["dark_mage", "dark_book", "aoe_projectile", "cast", "windup"],
+		["dark_mage", "cursed_skull", "homing_curse", "cast", "windup"],
+		["dark_mage", "dark_wand", "beam", "cast", "channel"],
+		["guitarist", "electric_guitar", "sound_wave", "shoot", "windup"],
+		["guitarist", "bass_guitar", "pulse", "shoot", "pulse"],
+		["guitarist", "sound_amp", "amp", "shoot", "deploy"],
+		["assassin", "chakrams", "boomerang", "shoot", "windup"],
+		["assassin", "shadow_daggers", "stab_flurry", "shoot", "burst"],
+		["assassin", "venom_wire", "dot_beam", "cast", "channel"],
+		["ranger", "moon_crossbow", "beam", "cast", "channel"],
+		["ranger", "storm_longbow", "beam", "cast", "channel"],
+		["ranger", "hunter_trap", "trap", "shoot", "deploy"],
+		["doctor", "restore_potion", "drain_link", "cast", "channel"],
+		["doctor", "plague_syringe", "drain_link", "cast", "channel"],
+		["doctor", "bone_saw", "stab_flurry", "shoot", "burst"],
+		["chemist", "blast_powder", "aoe_projectile", "cast", "windup"],
+		["chemist", "acid_flask", "aoe_projectile", "cast", "windup"],
+		["chemist", "homunculus_vial", "summon", "cast", "deploy"],
+		["knight", "long_spear", "strip", "attack", "windup"],
+		["knight", "tower_shield", "sweep", "attack", "windup"],
+		["knight", "holy_flail", "circle", "attack", "windup"],
+		["druid", "summon_amulet", "summon", "cast", "deploy"],
+		["druid", "briar_staff", "aoe_projectile", "cast", "windup"],
+		["druid", "raven_totem", "amp", "shoot", "deploy"],
+		["soldier", "soldier_rifle", "suppression_burst", "shoot", "burst"],
+		["soldier", "soldier_grenade", "grenade_cook", "shoot", "windup"],
+		["soldier", "soldier_bayonet", "bayonet_brace", "shoot", "windup"],
+		["thief", "thief_coin_pouch", "coin_ricochet", "shoot", "windup"],
+		["thief", "thief_shadow_cloak", "shadow_backstab", "shoot", "windup"],
+		["thief", "thief_smoke_bomb", "smoke_bomb", "shoot", "windup"],
+		["elementalist", "elementalist_orb_ring", "elemental_orbit", "shoot", "channel"],
+		["elementalist", "elementalist_prism_focus", "prism_rift", "shoot", "windup"],
+		["elementalist", "elementalist_meteor_core", "meteor_shards", "shoot", "windup"],
+		["sniper", "sniper_deadeye_rifle", "sniper_lockshot", "shoot", "windup"],
+		["sniper", "sniper_spotter_scope", "sniper_kill_zone", "shoot", "windup"],
+		["sniper", "sniper_shatter_rounds", "sniper_split_round", "shoot", "windup"],
+		["priest", "priest_reliquary", "priest_sanctify", "shoot", "windup"],
+		["priest", "priest_censer", "priest_ward", "shoot", "pulse"],
+		["priest", "priest_chime", "priest_prayer_chain", "cast", "channel"],
+		["biologist", "biologist_spore_lens", "bio_spore_bloom", "shoot", "pulse"],
+		["biologist", "biologist_sample_injector", "bio_sample_dart", "shoot", "pulse"],
+		["biologist", "biologist_symbiote_seed", "bio_symbiote_web", "cast", "channel"],
+		["robot", "robot_magnetic_anchor", "robot_magnetic_anchor", "shoot", "windup"],
+		["robot", "robot_hydraulic_press", "robot_compression_line", "shoot", "windup"],
+		["robot", "robot_reactor_core", "robot_reactor_vent", "shoot", "windup"],
+		["engineer", "engineer_sentry_wrench", "engineer_sentry_link", "shoot", "deploy"],
+		["engineer", "engineer_repair_drone", "engineer_repair_drone", "cast", "channel"],
+		["engineer", "engineer_pressure_mines", "engineer_pressure_mines", "shoot", "deploy"],
+	]
+
+	for sample in phase_samples:
+		var pose: Dictionary = _sample_player_weapon_phase_pose(
+			player,
+			str(sample[0]),
+			str(sample[1]),
+			str(sample[2]),
+			str(sample[3]),
+			str(sample[4]),
+			0.14
+		)
+		var variant := str(pose["variant"])
+		if not variant.contains(str(sample[1])) or not variant.contains(str(sample[2])) or not variant.contains(str(sample[4])):
+			_fail("Expected unique attack phase variant to include weapon/mode/phase for %s/%s." % [sample[0], sample[1]])
+		if _pose_distance(pose, _idle_pose(player, str(sample[0]), str(sample[1]))) <= 1.8:
+			_fail("Expected unique attack phase to move rig silhouette for %s/%s." % [sample[0], sample[1]])
+
+
 func _assert_three_pose_variants(label: String, pose_a: Dictionary, pose_b: Dictionary, pose_c: Dictionary) -> void:
 	if str(pose_a["variant"]) == "" or str(pose_b["variant"]) == "" or str(pose_c["variant"]) == "":
 		_fail("Expected %s pose samples to preserve weapon variants." % label)
@@ -407,6 +477,58 @@ func _sample_player_weapon_action_pose(player: Node, character_id: String, weapo
 	var weapon_socket := player.get_node("VisualRoot/WeaponSocket") as Node2D
 	return {
 		"variant": str(rig.get("action_variant")),
+		"pelvis_x": pelvis.position.x,
+		"pelvis_y": pelvis.position.y,
+		"socket_x": weapon_socket.position.x,
+		"socket_y": weapon_socket.position.y,
+		"arm_l_x": arm_l.position.x,
+		"arm_l_y": arm_l.position.y,
+		"arm_l_rot": arm_l.rotation,
+		"arm_r_x": arm_r.position.x,
+		"arm_r_y": arm_r.position.y,
+		"arm_r_rot": arm_r.rotation,
+	}
+
+
+func _sample_player_weapon_phase_pose(player: Node, character_id: String, weapon_id: String, attack_mode: String, action_id: String, phase: String, elapsed: float) -> Dictionary:
+	player.configure_character(character_id, weapon_id)
+	player.set("velocity", Vector2.ZERO)
+	player.call("play_action_animation", action_id, Vector2.RIGHT, phase, 0.28, {
+		"attack_mode": attack_mode,
+		"weapon_id": weapon_id,
+	})
+	player.call("_update_movement_animation", elapsed)
+	var rig := player.get_node("VisualRoot/RigRoot") as Node2D
+	var pelvis := rig.get_node("Pelvis") as Node2D
+	var arm_l := rig.get_node("Pelvis/Figure/Torso/ArmL") as Node2D
+	var arm_r := rig.get_node("Pelvis/Figure/Torso/ArmR") as Node2D
+	var weapon_socket := player.get_node("VisualRoot/WeaponSocket") as Node2D
+	return {
+		"variant": str(rig.get("action_variant")),
+		"pelvis_x": pelvis.position.x,
+		"pelvis_y": pelvis.position.y,
+		"socket_x": weapon_socket.position.x,
+		"socket_y": weapon_socket.position.y,
+		"arm_l_x": arm_l.position.x,
+		"arm_l_y": arm_l.position.y,
+		"arm_l_rot": arm_l.rotation,
+		"arm_r_x": arm_r.position.x,
+		"arm_r_y": arm_r.position.y,
+		"arm_r_rot": arm_r.rotation,
+	}
+
+
+func _idle_pose(player: Node, character_id: String, weapon_id: String) -> Dictionary:
+	player.configure_character(character_id, weapon_id)
+	player.set("velocity", Vector2.ZERO)
+	player.call("_update_movement_animation", 0.0)
+	var rig := player.get_node("VisualRoot/RigRoot") as Node2D
+	var pelvis := rig.get_node("Pelvis") as Node2D
+	var arm_l := rig.get_node("Pelvis/Figure/Torso/ArmL") as Node2D
+	var arm_r := rig.get_node("Pelvis/Figure/Torso/ArmR") as Node2D
+	var weapon_socket := player.get_node("VisualRoot/WeaponSocket") as Node2D
+	return {
+		"variant": "",
 		"pelvis_x": pelvis.position.x,
 		"pelvis_y": pelvis.position.y,
 		"socket_x": weapon_socket.position.x,

@@ -9,13 +9,23 @@
 Jira: SCRUM-258
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
+## ФИЧА-ФРИЗ 0.1.4
+Бэклог `Версия: 0.1.5`. НЕ брать в работу и НЕ dispatch до релиза 0.1.4 и снятия
+фриза. Статус new, в активный спринт не попадает (sync уважает версию).
 
-## Dispatcher Redispatch (2026-06-13)
+## Parked Draft (2026-06-13)
 
-Отправлено в существующий Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`
-как 0.1.4 board-completion task. Keep reasoning High/no low. Scope Design/VFX
-only; motion/rig/timing/animation states — Animator handoff, code integration —
-Back-end handoff.
+По superseded dispatcher handoff Design успел сгенерировать черновой VFX-kit до
+коррекции фриза. Черновики убраны из live assets и припаркованы для будущей
+версии `0.1.5`:
+
+- `docs/design/backlog/vfx_015/effects/`
+- `docs/design/backlog/vfx_015/previews/`
+- `docs/design/backlog/vfx_015/vfx_unique_weapon_enemy_kit.md`
+- `docs/design/backlog/vfx_015/generate_unique_weapon_enemy_vfx.py`
+
+Это не active 0.1.4 content, не runtime wiring и не основание переводить задачу
+в `in_progress`.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.

@@ -773,7 +773,7 @@
  },
  "backend_refactor_progression_data_domain_split_task.md": {
   "key": "SCRUM-198",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_refactor_ui_screens_domain_split_task.md": {
   "key": "SCRUM-199",
@@ -921,14 +921,14 @@
  },
  "backend_elites_bosses_unique_skills_mechanics_task.md": {
   "key": "SCRUM-259",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_monster_elite_size_balance_rework_task.md": {
   "key": "SCRUM-260",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "design_codex_elite_boss_new_skills_vfx_task.md": {
   "key": "SCRUM-261",
-  "status": "В работе"
+  "status": "К выполнению"
  }
 }

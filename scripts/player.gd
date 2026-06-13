@@ -329,6 +329,14 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO, phase :
 	}
 	weapon_animation_event.emit(last_weapon_animation_event)
 	if phase != "":
+		var event_rig := _cutout_rig()
+		if event_rig != null and event_rig.has_method("play_action"):
+			var event_weapon_id := str(event_metadata.get("weapon_id", weapon_id))
+			var event_attack_mode := str(event_metadata.get("attack_mode", ""))
+			var event_variant := event_weapon_id if event_weapon_id != "" else weapon_id
+			if event_attack_mode != "":
+				event_variant = "%s:%s:%s" % [event_variant, event_attack_mode, phase]
+			event_rig.play_action(action_id, _facing_direction, event_variant, maxf(float(duration), 0.0))
 		return
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_action"):

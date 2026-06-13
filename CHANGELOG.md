@@ -4,6 +4,17 @@
 
 ## [Unreleased] — ветка dev
 
+- Animation (SCRUM-239): unique class attack timing events now drive the cutout
+  rig as `weapon_id:attack_mode:phase` variants, so windup/release/pulse/burst/
+  deploy/channel beats reuse Animator-owned poses without changing weapon
+  damage, targeting, VFX spawn, or balance; animation smoke covers all current
+  playable class weapon variants.
+
+- Refactor (SCRUM-198): `ProgressionData` стал compatibility facade, а данные
+  вынесены в domain owners: characters, weapons, rewards/artifacts, shop,
+  ascension, balance и enemies; public constants/API сохранены для старых smoke
+  и runtime-ссылок без изменения баланса.
+
 - Bugfix (SCRUM-230): в выборе героя текст Возвышения возле кнопки старта теперь показывает только изменение выбранного уровня (`Уровень N: ...`), а не весь кумулятивный список 1..N; полный список сохранен для tooltip/кодекса.
 
 - Content (SCRUM-192): `sprite_path` новых классов выровнен с canonical registry — Вор, Элементалист, Снайпер, Священник, Биолог и Инженер теперь используют собственные full-art PNG вместо proxy-спрайтов старых классов; добавлен focused registry alignment test на все 17 персонажей.

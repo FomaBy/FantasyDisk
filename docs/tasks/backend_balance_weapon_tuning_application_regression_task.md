@@ -5,7 +5,7 @@
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-176
 Jira: SCRUM-191
-QA: in_progress (2026-06-13)
+QA: blocked (2026-06-13) — рабочее дерево non-green из-за активного SCRUM-198
 Эпик: epic_full_project_quality_pass
 
 ## Scope
@@ -27,3 +27,33 @@ Ensure all weapon runtime paths receive `ProgressionData.weapon()` configs with 
 ## Dispatcher Note (2026-06-13)
 Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.
 Dispatcher: restarted to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13 after PM reset stale in_progress.
+
+## QA-Заметка (2026-06-13) — BLOCKED, не сертифицировано
+Статус QA: BLOCKED (повторить после стабилизации дерева)
+
+Что подтверждено в КОНСИСТЕНТНОМ окне дерева:
+- Целевой тест `weapon_tuning_application_test.gd` — **PASS (51 пара, все 51 с
+  нетривиальным множителем != 1.0)**, 3 гейта (реестр vs сырой WEAPONS_BY_CLASS,
+  деривация ratio==budget_damage_multiplier, рантайм через Player.configure_character).
+  Содержательный, не пустышка.
+
+Почему BLOCKED (не PASS):
+- Рабочее дерево в момент QA **non-green из-за активного рефактора SCRUM-198**
+  (ProgressionData domain split). git status: модифицированы `progression_data.gd`,
+  `class_weapon.gd`, `ui_screens.gd`; новые `progression_data_{ascension,balance,
+  characters,enemies,shop}.gd`. HEAD быстро двигался (fa66cf37 → 31bc8c61 за
+  минуты).
+- QA поймал ДВА транзиентных окна, где `scripts/player.gd` не парсится/не
+  компилируется (`Static function "weapon()"/"base_stats()"/… not found in base
+  "ProgressionData"`), из-за чего `runtime_smoke_weapon_mechanics_test`,
+  `melee_weapon_targeting_test` и др. не загружались. animation/meta при этом
+  проходили.
+- По правилу «done=HEAD зелёный» нельзя сертифицировать регрессию на дереве,
+  которое осциллирует red/green под активным воркером. По случайно пойманному
+  зелёному окну сертифицировать отказался.
+
+Действие: **повторить QA SCRUM-191 после того, как SCRUM-198 закоммитит единый
+green-стейт.** Собственный тест задачи уже зелёный — ожидаю, что после
+стабилизации будет clean PASS.
+
+Координационный риск зафиксирован в QA-заметке SCRUM-198 и эскалирован PM.

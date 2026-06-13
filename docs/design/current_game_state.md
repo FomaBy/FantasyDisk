@@ -513,7 +513,12 @@ SCRUM-152/157: `AllyMinion.tscn` больше не использует Polygon2
 - `knockback_power`
 - `ultimate_multiplier`
 
-Формулы и описания для UI характеристик находятся в `scripts/stat_formulas.gd`. Конфиги классов, оружия, наград, артефактов и магазина находятся в `scripts/progression_data.gd`.
+Формулы и описания для UI характеристик находятся в `scripts/stat_formulas.gd`.
+`scripts/progression_data.gd` остается compatibility facade для старых runtime
+ссылок, а данные разделены по domain owners: `progression_data_characters.gd`,
+`progression_data_weapons.gd`, `progression_data_content.gd`,
+`progression_data_shop.gd`, `progression_data_ascension.gd`,
+`progression_data_balance.gd` и `progression_data_enemies.gd`.
 
 Актуальная философия прокачки: все базовые и производные атрибуты полезны каждому классу. Старая фильтрация «нерелевантных» статов отключена; `STAT_CLASS_RELEVANCE` оставлен пустым для совместимости, а reward pools не скрывают чужие параметры. Для тематически чужих эффектов UI показывает классовую интерпретацию: магический урон становится зачарованием оружия, Лидерство — эхо-оружием/фантомом/соколом/фамильяром, звуковой урон — боевым кличем, DoT — малым bleed/burn/poison, Energy — ускорением уникальной механики.
 
@@ -898,7 +903,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 Метапрогрессия персистентна между сессиями:
 
 - За каждую победу над финальным боссом игрок получает 1 meta point, а выбранный персонаж — +1 уровень возвышения (максимум 10).
-- Бонусы уровней кумулятивны: уровень N включает все бонусы уровней 1..N. Таблицы уровней: `scripts/progression_data.gd::ASCENSION_LEVELS`, канонические ID в `docs/design/content_registry.md`.
+- Бонусы уровней кумулятивны: уровень N включает все бонусы уровней 1..N. Таблицы уровней доступны через `ProgressionData.ASCENSION_LEVELS` и хранятся в `scripts/progression_data_ascension.gd`; канонические ID в `docs/design/content_registry.md`.
 - Сохранение через `scripts/meta_progression.gd` в `user://fantasydisk_meta.cfg` (ConfigFile).
 - Бонусы применяются к игроку при старте первого боя забега (`apply_ascension_bonuses` в `scripts/main.gd`).
 - Карточка выбора персонажа показывает «Возвышение: N/10», экран победы показывает прогресс возвышения выбранного героя.

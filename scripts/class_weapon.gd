@@ -561,19 +561,26 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 
 	var travel_time: float = clamp(projectile.global_position.distance_to(target_position) / max(projectile_speed, 1.0), 0.08, 0.45)
 	var tween := create_tween()
+	var projectile_id := projectile.get_instance_id()
+	var owner_id := owner_node.get_instance_id()
+	var weapon_id := get_instance_id()
 	tween.tween_property(projectile, "global_position", target_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(func() -> void:
-		if is_instance_valid(self):
-			var explosion_damage := damage if not is_instance_valid(owner_node) else _rolled_damage(owner_node)
-			_damage_enemies_in_circle(target_position, aoe_radius, explosion_damage)
-			AttackVfx.orb_burst(_projectile_parent(), target_position, aoe_radius, visual_color)
+		var current_weapon := instance_from_id(weapon_id) as Node
+		if current_weapon != null:
+			var current_owner := instance_from_id(owner_id) as Node2D
+			var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
+			current_weapon.call("_damage_enemies_in_circle", target_position, aoe_radius, explosion_damage)
+			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, visual_color)
 			if leaves_pool:
-				var parameters_raw = owner_node.get("derived_parameters") if is_instance_valid(owner_node) else null
+				var parameters_raw = current_owner.get("derived_parameters") if current_owner != null else null
 				var tick_damage := 2.0
 				if parameters_raw is Dictionary:
 					tick_damage = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)), 1.0)
-				_spawn_damage_pool(target_position, tick_damage)
-		_release_effect(projectile)
+				current_weapon.call("_spawn_damage_pool", target_position, tick_damage)
+			var current_projectile := instance_from_id(projectile_id) as Node
+			if current_projectile != null:
+				current_weapon.call("_release_effect", current_projectile)
 	)
 
 
@@ -586,14 +593,20 @@ func _fire_curse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void
 
 	var target_position := target.global_position
 	var rolled := _rolled_damage(owner_node)
+	var target_id := target.get_instance_id()
+	var owner_id := owner_node.get_instance_id()
+	var weapon_id := get_instance_id()
 	var skull := AttackVfx.curse_skull(_projectile_parent(), owner_node.global_position + direction * 24.0, target_position, visual_color, 0.20, func() -> void:
-		if not is_instance_valid(self):
+		var current_weapon := instance_from_id(weapon_id) as Node
+		if current_weapon == null:
 			return
-		if is_instance_valid(target):
-			_damage_enemy_with_dot(target, rolled, owner_node)
+		var current_target := instance_from_id(target_id) as Node2D
+		var current_owner := instance_from_id(owner_id) as Node2D
+		if current_target != null:
+			current_weapon.call("_damage_enemy_with_dot", current_target, rolled, current_owner)
 		if aoe_radius > 0.0:
-			_damage_enemies_in_circle(target_position, aoe_radius * 0.72, rolled * 0.42)
-			AttackVfx.orb_burst(_projectile_parent(), target_position, aoe_radius * 0.72, visual_color)
+			current_weapon.call("_damage_enemies_in_circle", target_position, aoe_radius * 0.72, rolled * 0.42)
+			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius * 0.72, visual_color)
 	)
 	_register_effect(skull)
 

@@ -10,12 +10,6 @@ Jira: SCRUM-253
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
 
-## Dispatcher Redispatch (2026-06-13)
-
-Отправлено в существующий Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`
-как часть serialized 0.1.4 board-completion queue. Keep reasoning High/no low;
-если правка меняет motion/animation feel, оформить Animator handoff.
-
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
 

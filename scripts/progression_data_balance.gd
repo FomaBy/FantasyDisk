@@ -48,6 +48,5 @@ const DROP_CLASS_MULTIPLIERS := {
 }
 
 const COST_BY_TIER := {1: 30, 2: 55, 3: 95}
-# Вес появления артефакта в наградах/магазине по тиру (выше тир — реже).
 
 const TIER_WEIGHTS := {1: 1.0, 2: 0.45, 3: 0.12}

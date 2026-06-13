@@ -1,6 +1,6 @@
 # Back-end Task: Split `progression_data.gd` Into Domain Data Files
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-174
@@ -71,3 +71,59 @@ Release-freeze blocker снят именно для уже существующ�
 Не начинать параллельно с работой, которая меняет `scripts/progression_data.gd`;
 сохранить поведение и баланс, закрыть task/board/Jira sync перед переходом к
 следующей queued задаче.
+
+## Animator Blocker Handoff (2026-06-13)
+
+SCRUM-239 Animator implementation is complete, but final animation/runtime smoke
+verification is blocked by the current `ProgressionData` facade parse state:
+Godot reports missing `res://scripts/progression_data_meta.gd`,
+`ProgressionData.SHOP_ITEMS` compatibility errors in `tests/runtime_smoke_test.gd`,
+and dependent `player.gd` compile failure before animation smoke/runtime smoke
+can make a valid pass.
+
+Back-end owner should restore the compatibility facade/imports for the split
+data files and keep old public constants/functions used by umbrella smoke until
+all tests are migrated. Animator should rerun SCRUM-239 verification after this
+parse blocker is fixed; no gameplay/balance changes are requested from Animator.
+
+Jira sync 2026-06-13: blocker comment added to SCRUM-198; live Jira status is
+`В работе`, Fix Version `0.1.4`.
+
+## Result (2026-06-13)
+
+Done. `scripts/progression_data.gd` is now a compatibility facade over focused
+domain data owners:
+
+- `scripts/progression_data_characters.gd` — stats, character configs, class
+  interpretations, class priority metadata, ultimate configs.
+- `scripts/progression_data_weapons.gd` — class weapon definitions and
+  `WEAPONS_BY_CLASS`.
+- `scripts/progression_data_content.gd` — rewards, artifacts and level-up pools.
+- `scripts/progression_data_shop.gd` — shop item data.
+- `scripts/progression_data_ascension.gd` — ascension levels and modifiers.
+- `scripts/progression_data_balance.gd` — balance budgets, stage scale,
+  economy, XP and drop constants.
+- `scripts/progression_data_enemies.gd` — mini-elite data.
+
+The old public `ProgressionData` constants and static methods remain available
+for runtime, tests, and legacy callers, including individual class weapon
+constants and `SHOP_ITEMS`. The stale `progression_data_meta.gd` split artifact
+was removed after all imports were migrated. Balance estimators remain exposed
+through the facade for compatibility, but their constants live in the balance
+domain file and no balance values were intentionally changed.
+
+This fixes the SCRUM-239 release blocker from the missing facade/meta import
+state: Godot now parses the facade and `ProgressionData.SHOP_ITEMS` resolves
+again.
+
+Verification passed:
+
+- `tests/progression_data_api_surface_test.gd`
+- `tests/content_registry_consistency_test.gd`
+- `tests/runtime_smoke_progression_economy_test.gd`
+- `tools/balance_harness.gd`
+- `tests/runtime_smoke_test.gd`
+
+Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`,
+`docs/design/systems/technical_architecture.md`,
+`docs/design/mechanics_extract.md`.
