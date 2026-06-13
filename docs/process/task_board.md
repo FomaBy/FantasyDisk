@@ -87,10 +87,10 @@ Read-only аудиты идут СЕЙЧАС (безопасно паралле�
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [animation_legacy_player_weapon_pose_hooks_task.md](../tasks/animation_legacy_player_weapon_pose_hooks_task.md) | Animator | new | Jira: SCRUM-186; From SCRUM-173; 0.1.5 backlog. Legacy player classes need bespoke 3-weapon action silhouettes and smoke assertions |
-| [animation_enemy_archetype_motion_coverage_task.md](../tasks/animation_enemy_archetype_motion_coverage_task.md) | Animator | new | Jira: SCRUM-184; From SCRUM-173; 0.1.5 backlog. Per-archetype movement/action readability coverage for standard enemies and Disk Devourer |
-| [animation_hit_death_state_coverage_task.md](../tasks/animation_hit_death_state_coverage_task.md) | Animator | new | Jira: SCRUM-185; From SCRUM-173; 0.1.5 backlog. Hit/death readability for player/enemy/elite/boss rigs without gameplay changes |
-| [animation_weapon_timing_vfx_sync_task.md](../tasks/animation_weapon_timing_vfx_sync_task.md) | Animator → Back-end if API needed | new | Jira: SCRUM-187; From SCRUM-173; 0.1.5 backlog. Map multi-beat weapon timing/VFX sync gaps |
+| [animation_legacy_player_weapon_pose_hooks_task.md](../tasks/animation_legacy_player_weapon_pose_hooks_task.md) | Back-end (rig motion в cutout_rig_2d.gd) | new | Jira: SCRUM-186; From SCRUM-173; 0.1.5 backlog. Legacy player classes need bespoke 3-weapon action silhouettes and smoke assertions |
+| [animation_enemy_archetype_motion_coverage_task.md](../tasks/animation_enemy_archetype_motion_coverage_task.md) | Back-end (rig motion в cutout_rig_2d.gd) | new | Jira: SCRUM-184; From SCRUM-173; 0.1.5 backlog. Per-archetype movement/action readability coverage for standard enemies and Disk Devourer |
+| [animation_hit_death_state_coverage_task.md](../tasks/animation_hit_death_state_coverage_task.md) | Back-end (rig motion в cutout_rig_2d.gd) | new | Jira: SCRUM-185; From SCRUM-173; 0.1.5 backlog. Hit/death readability for player/enemy/elite/boss rigs without gameplay changes |
+| [animation_weapon_timing_vfx_sync_task.md](../tasks/animation_weapon_timing_vfx_sync_task.md) | Back-end (rig/timing) | new | Jira: SCRUM-187; From SCRUM-173; 0.1.5 backlog. Map multi-beat weapon timing/VFX sync gaps |
 | [design_animation_ready_boss_mini_elite_parts_handoff_task.md](../tasks/design_animation_ready_boss_mini_elite_parts_handoff_task.md) | Design | new | Jira: SCRUM-204; From SCRUM-173; related SCRUM-156; 0.1.5 backlog. Final animation-ready source sprites/parts needed for new bosses and mini-elites |
 
 ### Back-end Child Tasks From Quality Audits (0.1.5, pending Jira PM sync)

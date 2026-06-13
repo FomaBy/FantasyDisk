@@ -4,10 +4,10 @@
 Версия: 0.1.4
 Создано: 2026-06-12
 Связано: SCRUM-152
-Jira: TBD
+Jira: SCRUM-157
 
 Dispatcher note 2026-06-12: not dispatched. Jira has existing issue `SCRUM-157`
-in sprint 0.1.4, but this task file still says `Jira: TBD` and there is no
+in sprint 0.1.4, but this task file still says `Jira: SCRUM-157` and there is no
 `docs/process/task_board.md` row. PM/task owner must sync the task file and
 board before dispatcher can route it.
 

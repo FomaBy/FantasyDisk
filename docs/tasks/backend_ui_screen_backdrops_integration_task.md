@@ -4,7 +4,7 @@
 Версия: 0.1.4
 Создано: 2026-06-12
 Связано: SCRUM-158, SCRUM-147
-Jira: TBD
+Jira: SCRUM-170
 
 Dispatcher note 2026-06-12: not dispatched. This Back-end handoff exists as a
 local task file, but it has no Jira key and no task-board row. PM/task owner
