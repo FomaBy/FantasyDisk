@@ -27,6 +27,16 @@ const TTK_REFERENCE_HP := 90.0   # типовой враг среднего эт
 const TOLERANCE := 0.40          # ±40%: ловим грубые выбросы
 const REPORT_PATH := "res://build/live_combat_report.md"
 
+## Известные АРТЕФАКТЫ ЗАМЕРА: оружие, чью реальную пропускную способность
+## стационарный односторонний кластер болванок систематически недооценивает
+## (радиальный спред / DoT / зона / канал). Живой флаг по ним — НЕ реальная
+## недонастройка: формульный tools/balance_harness.gd держит их в бюджете
+## профиля. Помечаются в отчёте отдельным флагом «ℹ артефакт» и НЕ считаются
+## выбросами. Ключ — weapon_id, значение — объяснение для отчёта.
+const KNOWN_ARTIFACTS := {
+	"robot_reactor_core": "Радиальный 360° веер: 4 выброса по сторонам корпуса (0/90/180/270°), урон делится на 4. Кластер болванок с одной стороны ловит лишь 1 из 4 выбросов → ~1/4 пропускной способности. В реальном бою (рой вокруг героя) бьют все 4. Формульный balance_report: −0%/−0% от профиля robot — в бюджете.",
+}
+
 
 func _initialize() -> void:
 	await process_frame
@@ -136,11 +146,18 @@ func _write_report(rows: Array) -> void:
 	lines.append("| Класс | Оружие | Solo DPS | (vs медиана) | 5-target DPS | (vs медиана) | TTK(%.0fHP) | Флаг |" % TTK_REFERENCE_HP)
 	lines.append("| --- | --- | ---: | ---: | ---: | ---: | ---: | :---: |")
 	var outliers := 0
+	var artifacts := 0
 	for row in rows:
+		var wid := str(row["weapon"])
 		var solo_rel: float = float(row["solo_ratio"]) / maxf(solo_median, 0.001) - 1.0
 		var aoe_rel: float = float(row["aoe_ratio"]) / maxf(aoe_median, 0.001) - 1.0
 		var flag := "ok"
-		if float(row["solo_dps"]) <= 0.01:
+		var is_weak: bool = float(row["solo_dps"]) <= 0.01 or (solo_rel < -TOLERANCE and aoe_rel < -TOLERANCE)
+		if is_weak and KNOWN_ARTIFACTS.has(wid):
+			# Документированный артефакт геометрии замера — не реальная недонастройка.
+			flag = "ℹ артефакт"
+			artifacts += 1
+		elif float(row["solo_dps"]) <= 0.01:
 			flag = "⚠ 0 урона"
 			outliers += 1
 		elif solo_rel < -TOLERANCE and aoe_rel < -TOLERANCE:
@@ -153,7 +170,15 @@ func _write_report(rows: Array) -> void:
 			row["class"], row["weapon"], row["solo_dps"], solo_rel * 100.0,
 			row["aoe_dps"], aoe_rel * 100.0, row["ttk"], flag])
 	lines.append("")
-	lines.append("Пар проверено: %d; флагов (0 урона / слаб по обеим осям / экстремальный всплеск): %d. Остальные — здоровые специалисты (сильны на одной оси)." % [rows.size(), outliers])
+	lines.append("Пар проверено: %d; флагов-выбросов (0 урона / слаб по обеим осям / экстремальный всплеск): %d; документированных артефактов замера: %d. Остальные — здоровые специалисты (сильны на одной оси)." % [rows.size(), outliers, artifacts])
+	if not KNOWN_ARTIFACTS.is_empty():
+		lines.append("")
+		lines.append("## Артефакты замера (ℹ)")
+		lines.append("")
+		lines.append("Оружие ниже читается слабым на стационарном одностороннем кластере, но формульный `tools/balance_harness.gd` держит его В БЮДЖЕТЕ профиля. Это ограничение гарнесса (геометрия/DoT/зона), а НЕ недонастройка баланса — править параметры оружия НЕ нужно.")
+		lines.append("")
+		for artifact_id in KNOWN_ARTIFACTS:
+			lines.append("- **%s** — %s" % [artifact_id, KNOWN_ARTIFACTS[artifact_id]])
 	var file := FileAccess.open(REPORT_PATH, FileAccess.WRITE)
 	if file == null:
 		push_error("Не удалось записать отчёт: %s" % REPORT_PATH)
