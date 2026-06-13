@@ -493,7 +493,7 @@
  },
  "design_codex_ui_dark_fantasy_restyle_task.md": {
   "key": "SCRUM-147",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_victory_screen_player_facing_text_task.md": {
   "key": "SCRUM-148",
@@ -529,7 +529,7 @@
  },
  "design_codex_new_bosses_mini_elites_sprites_task.md": {
   "key": "SCRUM-156",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_summon_allies_source_sprite_integration_task.md": {
   "key": "SCRUM-157",
@@ -753,7 +753,7 @@
  },
  "backend_content_safe_cleanup_followup_task.md": {
   "key": "SCRUM-193",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_content_unused_asset_audit_manifest_task.md": {
   "key": "SCRUM-194",
@@ -761,11 +761,11 @@
  },
  "backend_docs_domain_consistency_update_task.md": {
   "key": "SCRUM-195",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_refactor_class_weapon_mode_registry_task.md": {
   "key": "SCRUM-196",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_refactor_combat_target_query_cache_task.md": {
   "key": "SCRUM-197",
@@ -789,7 +789,7 @@
  },
  "backend_test_runtime_smoke_suite_split_task.md": {
   "key": "SCRUM-202",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_test_ui_no_overlap_matrix_task.md": {
   "key": "SCRUM-203",
@@ -833,11 +833,11 @@
  },
  "codex_design_cursor_clawed_fire_task.md": {
   "key": "SCRUM-223",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_hero_select_description_left_of_radar_task.md": {
   "key": "SCRUM-224",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_weapon_select_sprite_clean_layout_task.md": {
   "key": "SCRUM-225",
@@ -861,10 +861,62 @@
  },
  "backend_ascension_per_level_changes_near_start_task.md": {
   "key": "SCRUM-230",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "bug_hero_select_radar_out_of_frame_description_left_task.md": {
   "key": "SCRUM-231",
+  "status": "Готово"
+ },
+ "animation_unique_attacks_all_classes_015_task.md": {
+  "key": "SCRUM-239",
+  "status": "К выполнению"
+ },
+ "backend_aim_modes_cursor_and_nearest_task.md": {
+  "key": "SCRUM-241",
+  "status": "К выполнению"
+ },
+ "backend_attribute_weapon_universal_synergy_task.md": {
+  "key": "SCRUM-243",
+  "status": "К выполнению"
+ },
+ "backend_auras_buffs_debuffs_system_task.md": {
+  "key": "SCRUM-245",
+  "status": "К выполнению"
+ },
+ "backend_crit_formulas_rebalance_task.md": {
+  "key": "SCRUM-247",
+  "status": "К выполнению"
+ },
+ "backend_global_balance_smoke_damage_survivability_task.md": {
+  "key": "SCRUM-249",
+  "status": "К выполнению"
+ },
+ "backend_melee_classes_strengthen_unique_attacks_task.md": {
+  "key": "SCRUM-251",
+  "status": "К выполнению"
+ },
+ "backend_remove_auto_movement_on_crit_dodge_task.md": {
+  "key": "SCRUM-253",
+  "status": "К выполнению"
+ },
+ "backend_summoner_classes_strengthen_task.md": {
+  "key": "SCRUM-254",
+  "status": "К выполнению"
+ },
+ "backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task.md": {
+  "key": "SCRUM-255",
+  "status": "К выполнению"
+ },
+ "backend_unique_class_mechanics_framework_main_attribute_task.md": {
+  "key": "SCRUM-256",
+  "status": "К выполнению"
+ },
+ "bug_umbrella_runtime_smoke_intermittent_failure_task.md": {
+  "key": "SCRUM-257",
+  "status": "К выполнению"
+ },
+ "design_codex_unique_weapons_vfx_all_classes_015_task.md": {
+  "key": "SCRUM-258",
   "status": "К выполнению"
  }
 }

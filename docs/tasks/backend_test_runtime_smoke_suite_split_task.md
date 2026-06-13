@@ -5,6 +5,7 @@
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-178
 Jira: SCRUM-202
+QA: in_progress (2026-06-13)
 Эпик: epic_full_project_quality_pass
 
 ## Scope
@@ -78,3 +79,41 @@ Note: the umbrella smoke emitted one residual `Lambda capture at index 0 was
 freed` Godot warning but exited 0 with `Runtime smoke test passed.` This task did
 not change gameplay/runtime cleanup code; if the warning becomes blocking, handle
 it as a separate debug-cleanup bug.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 35b79e06 (ветка dev)
+
+Проверено (фактически):
+- **5 focused-сьютов существуют** и НЕ пустышки: каждый
+  `extends "res://tests/runtime_smoke_test.gd"` (переиспользует helper/assert-слой)
+  и override `_initialize()` запускает реальное thematic-подмножество `_test_*`:
+  - ui → glossary, settings/rebind, weapon-select, parchment-seal;
+  - combat → arena generation, damage;
+  - progression_economy → stat/artifact recording, settings persistence,
+    full/universal attribute wiring;
+  - weapon_mechanics → berserk/class weapon configs, mode registry, all variants equip;
+  - boss_elite → elite flow, unique attacks, stage scaling, epic boss hitbox.
+- **Прогон headless (отдельные user-data-dir)**:
+  - `runtime_smoke_ui_test` — passed (0 warn)
+  - `runtime_smoke_combat_test` — passed (0 warn)
+  - `runtime_smoke_progression_economy_test` — passed (0 warn)
+  - `runtime_smoke_weapon_mechanics_test` — passed (0 warn)
+  - `runtime_smoke_boss_elite_test` — passed (0 warn)
+  - umbrella `runtime_smoke_test` — passed (обязательная команда сохранена).
+- **Регрессия (вне smoke-семейства)**: animation / meta_progression /
+  melee_weapon_targeting / ui_no_overlap_matrix — все зелёные.
+
+Acceptance:
+- [x] Существующая umbrella-команда доступна и зелёная.
+- [x] Все 5 новых focused-сьютов проходят headless.
+
+Краевые случаи:
+- Сьюты — настоящие подмножества (быстрее umbrella), а не дубль всего набора.
+- Umbrella не сломан сплитом (зелёный).
+- Переиспользование assert-слоя через `extends` подтверждено.
+
+Баги: нет. Нефатальный warning `Lambda capture at index 0 was freed` у umbrella
+воспроизводится (exit 0, тест passed) — латентный, не введён этим тиаском, у
+focused-сьютов отсутствует. Per авторская заметка отложен как debug-cleanup до
+момента, когда станет блокером; QA bug не заводит (не дефект приёмки, не блокер).

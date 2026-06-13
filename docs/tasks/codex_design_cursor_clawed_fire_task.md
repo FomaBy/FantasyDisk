@@ -125,3 +125,38 @@ requires a QA verdict.
 - Тех: 48x48 RGBA, alpha чистая. Текущий hotspot main.gd:96 = (5,4) рядом с остриём — приемлемо.
 - Точная выверка hotspot-кликов в рантайме + видимость в меню/бою — QA/Back-end (тривиальная интеграция).
 Арт принят, статус done подтверждён.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 1d772ee0 (ветка dev)
+
+Проверено (фактически):
+- **Ассеты**: `game_cursor.png` / `_hover` / `_attack` — все `48x48 RGBA8`
+  (fmt=5), непустая alpha. `used_rect` default = `(1,1) 43x46` — арт прижат к
+  левому-верхнему углу под остриё.
+- **Hotspot**: `GAME_CURSOR_HOTSPOT = Vector2(2, 2)` (main.gd:96); alpha в точке
+  hotspot (2,2) = 0.63 — на остром кончике есть непрозрачный арт (клик попадёт
+  в остриё, не в пустоту). Путь `GAME_CURSOR_PATH` корректный (main.gd:95).
+- **Интеграция**: `_apply_game_cursor` мапит весь набор —
+  `Input.CURSOR_ARROW`→game_cursor (3787), `CURSOR_POINTING_HAND`→_hover (3791),
+  `CURSOR_CROSS`→_attack (3795), все с тем же hotspot.
+- **Визуал** (`docs/design/previews/cursor_clawed_fire_before_after.png`): 2-й
+  вариант референса воспроизведён — тёмная сталь, когтистый наконечник,
+  оранжевое огненное свечение по острию, красный самоцвет-глаз; кончик чёткий,
+  hotspot-маркер на остром углу. Default/hover/attack — единый силуэт с разной
+  силой свечения.
+- **Тесты**: `dark_fantasy_ui_theme_test`, `ui_no_overlap_matrix_test` — passed;
+  Godot import — passed; CHANGELOG (SCRUM-223) присутствует.
+
+Acceptance:
+- [x] Курсор = когтистый огненный наконечник (2-й вариант), RGBA, чёткое остриё.
+- [x] Hotspot (2,2) выверен на кончик; на нём непрозрачный арт.
+- [x] Курсор подключён в меню/бою (3 shape→3 PNG); превью до/после; CHANGELOG.
+
+Краевые случаи:
+- 3 состояния курсора (arrow/hover/attack) все 48×48 RGBA с непустой alpha.
+- Остриё в (1,1)-зоне — hotspot (2,2) корректно на кончике.
+
+Баги: нет (в зоне курсора). Отдельно при регрессе обнаружена ИНТЕРМИТТЕНТНАЯ
+флака umbrella `runtime_smoke_test` (не относится к курсору — gameplay smoke);
+характеризуется отдельным прогоном, при подтверждении — bug-таска.

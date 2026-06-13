@@ -1,6 +1,6 @@
 # Back-end Task: Safe Cleanup Follow-up For Legacy Asset Candidates
 
-Статус: blocked
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-175
@@ -63,3 +63,13 @@ mixing cleanup with unrelated Design changes.
 Next unblock: run after SCRUM-147/SCRUM-222 UI asset dependency is accepted or
 the asset worktree is clean enough to produce an isolated backup/removal diff.
 No files were moved or deleted by this task.
+
+## PM Override / Redispatch (2026-06-13)
+
+Пользователь уточнил: всю текущую board нужно доделать в версии `0.1.4`.
+Redispatch в существующий Back-end thread
+`019eabd9-780b-78a2-9f4b-e7203d659ef2` как последовательный queue item после
+SCRUM-230, SCRUM-198 и SCRUM-199. Keep reasoning High/no low. Выполнять только
+как безопасный cleanup: без необратимого удаления, с backup/manifest checks,
+после закрытия/синхронизации предыдущих queued задач, чтобы diff был
+изолированным.

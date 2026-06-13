@@ -1,6 +1,6 @@
 # Back-end Task: Domain Docs Consistency Update
 
-Статус: blocked
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-175
@@ -40,3 +40,12 @@ Running the broad domain-doc refresh now would produce stale docs immediately.
 Next unblock: resume after the active content/UI blockers above are either done
 or explicitly deferred. Narrow task-local docs updates continue inside each
 implementation task.
+
+## PM Override / Redispatch (2026-06-13)
+
+Пользователь уточнил: всю текущую board нужно доделать в версии `0.1.4`.
+Redispatch в существующий Back-end thread
+`019eabd9-780b-78a2-9f4b-e7203d659ef2` как финальный последовательный queue item
+после SCRUM-230, SCRUM-198, SCRUM-199 и SCRUM-193. Keep reasoning High/no low.
+Задача должна закрыть оставшиеся domain-doc расхождения текущей board, затем
+обновить task/board/Jira sync.

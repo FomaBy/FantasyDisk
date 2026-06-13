@@ -49,3 +49,26 @@ SCRUM-147/SCRUM-229 are in QA rather than active code work, SCRUM-203 is
 Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` as item 4 after
 SCRUM-202, SCRUM-196 and SCRUM-198. Keep reasoning High/no low; do not change
 visual design or absorb Design/Animator scope.
+
+## Blocked / Release Freeze (2026-06-13)
+
+Blocked for the v0.1.4 stabilization freeze. This is a high-conflict structural
+refactor of `scripts/ui_screens.gd`, not a bug, QA defect, regression or release
+blocker. It also conflicts with the just-landed SCRUM-231 hero-select bugfix in
+the same file, so starting the module split now would add unnecessary release
+risk.
+
+Next unblock: resume after v0.1.4 release / feature-freeze lift, or if PM
+explicitly reclassifies the UI module split as a release blocker. No UI module
+split was started in this window.
+
+## PM Override / Redispatch (2026-06-13)
+
+Пользователь уточнил: всю текущую board нужно доделать в версии `0.1.4`.
+Release-freeze blocker снят именно для уже существующих board-задач. Redispatch
+в существующий Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` как
+последовательный queue item после SCRUM-230 и SCRUM-198. Keep reasoning High/no
+low. Не начинать параллельно с работой, которая меняет `scripts/ui_screens.gd`
+или UI smoke tests; сохранить визуал/поведение, закрыть task/board/Jira sync
+перед переходом к следующей queued задаче. Если всплывает motion/animation
+scope, создать/update Animator handoff вместо выполнения animation work.

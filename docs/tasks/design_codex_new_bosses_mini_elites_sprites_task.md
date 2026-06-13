@@ -140,3 +140,35 @@ Role-boundary handoff:
 - Тех: все 9 — 512x512 RGBA, bbox в рамке, alpha непустая; Godot import + runtime + animation smoke зелёные (по отчёту).
 - Исходники закоммичены Design-ревью. Cutout/пивоты/моушн -> Animator (SCRUM-204); сценовый вайринг/замена
   placeholder-тинта -> Back-end (SCRUM-155). Принято.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (скоуп «source sprites»)
+Коммит: bb46e5b9 (ветка dev)
+
+Проверено (фактически):
+- **9 спрайтов**: `boss_{bone_archon,brood_mother,ashen_colossus}` +
+  `mini_{scavenger_reaper,plague_bellringer,bone_warden,spark_wight,rot_hound,
+  shadow_devourer}` — все `512x512 RGBA8`, integral (непустой used_rect, фигура
+  цельная), прозрачный фон (alpha-прозрачность 49-76%), без остатков хромакея. BAD=0.
+- **Превью**: `new_bosses_mini_elites_contact.png` + `..._scale_preview.png` на месте.
+- **Визуал** (контакт-лист): единый painterly D&D dark-fantasy канон, силуэты
+  различимы (лич-архонт/паучиха/колосс; жнец/звонарь/костяной-страж/искровый-дух/
+  гниль-гончая/пожиратель-теней), читаются без тинта.
+- **Тесты**: `animation_smoke_test`, `runtime_smoke_boss_elite_test` — passed
+  (регресса от добавления файлов нет). CHANGELOG SCRUM-156 присутствует.
+
+Acceptance:
+- [x] 9 спрайтов 512px в каноне, integral, RGBA.
+- [x] Превью-лист масштаба готов; CHANGELOG; smoke зелёные.
+- [~] Cutout-нарезка/манифест — НЕ в этом задании: handoff Animator (SCRUM-204);
+  `assets/sprites/bosses/cutout/boss_bone_archon*` пока отсутствуют.
+
+⚠️ Пометка PM/исполнителям (не дефект SCRUM-156, чтобы не потерять): **новый арт
+ещё НЕ виден в игре** — мини-элитки в `progression_data.gd:2236` используют
+существующие сцены с рантайм-тинтом (`"scene":"stalker","tint":[...]`), новые PNG
+не подключены как sprite_path; боссы SCRUM-155 — placeholder-с-тинтом «до
+готовности SCRUM-156». Для появления финальных спрайтов в бою нужны Back-end-
+вайринг (SCRUM-155 follow-up) и Animator-cutout (SCRUM-204). QA перепроверит
+in-game вид, когда эти handoff'ы дойдут.
+
+Баги: нет (в зоне Design source-sprite поставки).

@@ -64,3 +64,46 @@ Implemented in `scripts/ui_screens.gd`: `HeroSelectDossierPanel` now contains `H
 Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13)
+Статус: FAILED
+Коммит: 35b79e06 (ветка dev)
+
+Итог: подцель «описание слева от розы» технически выполнена и автотесты зелёные,
+НО реализация ввела **визуальную регрессию**, отклонённую пользователем: роза
+ветров теперь заключена в ОТДЕЛЬНУЮ рамку-панель справа, тогда как до SCRUM-224
+она была плавающим виджетом в правом верхнем углу СНАРУЖИ рамок (урок SCRUM-206).
+Per QA-протокол «визуальная регрессия = FAILED, даже если остальные критерии
+прошли».
+
+Что прошло (зафиксировано для исполнителя bug-фикса):
+- **Код**: `HeroSelectDossierPanel` → `HeroSelectInfoRadarRow` (ui_screens.gd:363),
+  `HeroSelectDossier` слева (370), `HeroSelectRadarPanel`/`HeroStatRadar` справа
+  (438/459).
+- **Целевой тест** (`_assert_hero_select_radar_layout_at_size`:4959): на
+  1280/1600/2560 `dossier.end.x ≤ radar_panel.x − 12px` — прошёл (дамп
+  `build/qa/hero_select_radar_rects.md`, зазор 18px везде).
+- **Регрессия (4×smoke)** + `ui_no_overlap_matrix_test` — зелёные (между
+  описанием и розой пересечений нет — поэтому автотест и не поймал; проблема в
+  ПЛАЦМЕНТЕ розы относительно рамки, а не в overlap элементов).
+
+Почему FAILED (визуально, `build/qa/scrum229/character_select_1280x720.png`):
+- Роза «Характеристики» сидит ВНУТРИ правой leather+gold панели-рамки.
+- Требование пользователя: роза — в правом верхнем углу, ВНЕ рамки; слева от неё
+  описание. Текущая компоновка этого не даёт.
+
+Баги: уже заведён пользователем/PM —
+[bug_hero_select_radar_out_of_frame_description_left_task.md](bug_hero_select_radar_out_of_frame_description_left_task.md)
+(Back-end UI, new): вынести розу в правый верхний угол вне рамки, описание слева,
+no-overlap. Новую bug-таску QA не создаёт (дубль).
+
+Рекомендация: после bug-фикса QA перепроверит экран (роза вне рамки + описание
+слева + no-overlap на 3 размерах) и обновит вердикт.
+
+### Апдейт (2026-06-13): регрессия УСТРАНЕНА
+Bug-фикс SCRUM-231 завершён и **проверен QA: PASSED** (коммит f8f1409a). Роза
+вынесена в плавающий top-right виджет вне рамки досье, описание слева, no-overlap
+на 3 размерах (скрин `build/qa/scrum231/hero_select_radar_fixed.png`). Экран
+выбора героя теперь соответствует намерению пользователя. Исходный FAILED по
+SCRUM-224 остаётся как исторический факт; функционально вопрос закрыт через
+SCRUM-231.

@@ -14,6 +14,11 @@
 - `scripts/enemy.gd`: enemy AI, contact damage, elite attacks, HP bars.
 - `scripts/boss.gd`: boss patterns and victory flow.
 
+`scripts/class_weapon.gd` owns non-Berserk class weapon runtime behavior. SCRUM-196
+replaced the old long `attack_mode` dispatch match with `ATTACK_MODE_EXECUTORS`,
+a public registry that maps data-driven weapon modes to executor wrappers while
+preserving existing `_fire_*` mechanics and cleanup contracts.
+
 ## Data
 
 - `scripts/progression_data.gd`: character, weapon, rewards, artifacts, shop, ascension.
@@ -61,6 +66,10 @@ Focused runtime smoke suites (SCRUM-202) reuse the umbrella helper/assertion lay
 - `tests/runtime_smoke_progression_economy_test.gd` — rewards, artifacts, settings persistence, attribute wiring, economy/FAB, ascension.
 - `tests/runtime_smoke_weapon_mechanics_test.gd` — character/weapon configs, all variants equip, class weapon mechanics, aiming, ultimate.
 - `tests/runtime_smoke_boss_elite_test.gd` — elite flow, elite attacks, boss HUD, boss/mini-elite rosters, victory flow.
+
+Weapon smoke also checks that every non-Berserk weapon config with an
+`attack_mode` has a registered `ClassWeapon` executor, so newly added weapon
+modes fail fast in tests instead of falling through silently at runtime.
 
 Additional checks:
 

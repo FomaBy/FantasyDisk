@@ -21,12 +21,13 @@
 - Board: `1`
 - Current active sprint: `Спринт 0.1.4`
 - Current active sprint id: `34`
-- Feature block: **ACTIVE** from 2026-06-13 for `0.1.4` stabilization.
-  Finish already-started 0.1.4 work; route only bugs, QA defects, regressions
-  and release blockers in the current sprint. New features/improvements/art/
-  content go to backlog/fixVersion `0.1.5` and are not dispatched until the
-  `0.1.4` release is shipped. The freeze is lifted immediately after release
-  `v0.1.4`.
+- Feature block: **ACTIVE** from 2026-06-13 for `0.1.4` stabilization, with PM
+  override from the user on 2026-06-13: **the entire current board must be
+  finished in this version**. Existing board tasks stay in / return to sprint
+  `0.1.4` and are dispatched to completion. New feature/improvement/art/content
+  requests after this directive go to backlog/fixVersion `0.1.5` unless PM
+  explicitly pulls them into the release. The freeze is lifted immediately after
+  release `v0.1.4`.
 
 ## Безопасность Доступа
 
@@ -72,12 +73,13 @@ released, создаётся следующая. Игровые патч-ноу�
 
 1. Новые `.md` task-файлы и Jira issues создает PM/другая LLM, не Codex
    Documentation dispatcher.
-2. Пока feature block активен для стабилизации `0.1.4`, новые
-   синхронизированные задачи добавляются в текущий sprint только если это
-   bugfix/regression/QA defect/release blocker или уже начатая 0.1.4 работа,
-   которую надо довести до QA/release. Новые не-баговые задачи получают
-   `Версия: 0.1.5` / fixVersion `0.1.5`, остаются в backlog без active sprint
-   assignment и не dispatch'ятся до снятия фриза после релиза `v0.1.4`.
+2. Пока feature block активен для стабилизации `0.1.4`, уже существующие задачи
+   текущей board входят в `0.1.4` по PM override пользователя «всю борду надо
+   доделать в этой версии». Новые синхронизированные задачи после этой директивы
+   добавляются в текущий sprint только если это bugfix/regression/QA defect/
+   release blocker или явный PM override. Иначе получают `Версия: 0.1.5` /
+   fixVersion `0.1.5`, остаются в backlog без active sprint assignment и не
+   dispatch'ятся до снятия фриза после релиза `v0.1.4`.
 3. В `.md` task-файле рядом с метаданными добавить строку:
 
    ```text
@@ -137,18 +139,20 @@ source of truth, а остальные пометить `duplicate` или `supe
 
 ## Feature Block Обязательство
 
-Сейчас feature block АКТИВЕН: идёт стабилизация `Спринт 0.1.4`.
+Сейчас feature block АКТИВЕН: идёт стабилизация `Спринт 0.1.4`, но текущая
+board по PM override должна быть закрыта в `0.1.4`.
 Агенты и dispatcher обязаны:
 
 1. Проверять тип задачи перед dispatch.
-2. Не начинать новые не-баговые задачи.
-3. Для новых не-баговых задач создавать/оставлять Jira issue в backlog `0.1.5`,
+2. Дожимать уже существующие board-задачи до QA/release в текущей версии.
+3. Не начинать новые не-баговые задачи вне текущей board без PM override.
+4. Для новых не-баговых задач создавать/оставлять Jira issue в backlog `0.1.5`,
    без sprint assignment. Для Codex Documentation dispatcher это означает: не
    создавать самому, а проверить/сообщить, что PM/owner должен оформить
    backlog-задачу.
-4. Для багов, QA-дефектов, регрессий и release blockers текущего scope
+5. Для багов, QA-дефектов, регрессий и release blockers текущего scope
    использовать текущий sprint и обычный QA flow.
-5. Снять фриз сразу после релиза `v0.1.4`; следующий sprint `0.1.5` забирает
+6. Снять фриз сразу после релиза `v0.1.4`; следующий sprint `0.1.5` забирает
    накопленный backlog.
 
 ## Jira Description Минимум

@@ -6,6 +6,7 @@
 Создано: 2026-06-12
 Автор: PM (решение пользователя, 5 референсов в PM-чате)
 Jira: SCRUM-147
+QA: in_progress (2026-06-13)
 
 ## ВЫБРАННЫЙ КИТ (решение PM по запросу пользователя 2026-06-13): Parchment & Wax Seal
 Пользователь: «выбери случайную кнопку из ui_dark_fantasy_2026_06 и примени её
@@ -338,3 +339,36 @@ Handoff Back-end (`backend_ui_dark_fantasy_theme_integration_task.md`): вайр
 `assets/sprites/ui/shop/NewImport/`). Designer: отобрать лучшие, нарезать
 9-slice, привести имена к канону, проверить alpha, интегрировать в
 `assets/sprites/ui/frames/`. НЕ коммитить сырьё в live-ассеты.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: bb46e5b9 (ветка dev)
+
+Финальный канон (после user correction): **button-only Parchment & Wax Seal**;
+non-button рамки → legacy, затем заменены на leather+gold (SCRUM-229). Зонтичная
+задача — её части независимо зачтены QA, здесь сведено воедино.
+
+Проверено (фактически):
+- **Кнопки**: все 12 состояний `ui_df_button_{primary,secondary,danger}_{idle,
+  hover,pressed,disabled}.png` на месте; `primary_idle` = `384x120` RGBA8 —
+  поднятая высота, чтобы сургучная печать помещалась (требование коррекции).
+- **Превью**: 3/3 — `ui_button_only_legacy_panels_contact.png`,
+  `ui_parchment_wax_scrum147_reference_match_contact.png`,
+  `ui_dark_fantasy_restyle_kit_contact.png`.
+- **Целевые тесты**: `dark_fantasy_ui_theme_test` (сверяет точные button-state
+  текстуры + frame-пути) — passed; `ui_no_overlap_matrix_test` — passed.
+- **Визуал** (`build/qa/scrum229/main_menu_1280x720.png`): кнопки меню —
+  пергамент + кованая оправа + красная сургучная печать слева, 4 состояния по
+  спеке; согласованы с leather+gold панелями (settings/hero-select скрины).
+
+Перекрёстная валидация уже выполненными QA-вердиктами:
+- 4-state wax-seal wiring — SCRUM-222 (PASSED).
+- Видимость/высота печати — SCRUM-227 (PASSED).
+- Non-button панели (leather+gold, текущий вид) — SCRUM-229 (PASSED).
+
+Acceptance: финальный button-only канон, кнопки выше под печать, non-button
+рамки в едином dark-fantasy виде, import/theme/no-overlap/runtime smoke зелёные.
+
+Баги: нет. Примечание: интеграция ChatGPT-сырья из
+`docs/design/ui_parchment_kit/source_chatgpt/` — отдельный опциональный
+Design-follow-up, не входит в принятый итог SCRUM-147 и его не блокирует.
