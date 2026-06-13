@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Настройки — нормальный ползунок громкости
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя со скриншотом)
@@ -71,3 +71,9 @@ offscreen-кадр не снимается).
 
 ## Dispatch
 - 2026-06-12: Codex Documentation dispatcher отправил задачу в Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`; Jira `SCRUM-151` переведена в работу и добавлена в активный спринт 0.1.4.
+
+## Result
+- 2026-06-12: Back-end done. `_add_volume_row` теперь строит единые full-width аудио-слайдеры с видимым `StyleBoxFlat`-треком, золотой заполненной областью, шагом 2%, keyboard focus и понятным mute-текстом «Вкл.»/«Выкл.».
+- Live volume persistence проверяется smoke-тестом: изменение `VolumeSlider_music_volume` сразу пишет `music_volume` в `user://settings.cfg`.
+- QA-артефакты: `build/qa/settings_volume_slider_ux.png` (1600x900, графический Godot renderer) и fallback-dump `build/qa/settings_volume_slider_ux_tree.txt`.
+- Verification: runtime smoke passed; animation/attack/hazard/meta smoke passed.

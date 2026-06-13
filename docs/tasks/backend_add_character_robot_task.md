@@ -1,11 +1,11 @@
 # Задача Для Back-end-Агента: Новый персонаж «Робот» (robot) — конвейер add-character
 
-Статус: blocked
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя: 8 классов Class Sheet)
 Jira: SCRUM-166
-Blocked: ждет завершения задачи класса «Биолог» (общие файлы progression_data/ui_screens).
+Разблокировано: класс «Биолог» закрыт в `backend_add_character_biologist_task.md`; можно брать следующей задачей цепочки.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения. Не останавливаться для подтверждений.
@@ -45,3 +45,25 @@ motion-профилем, интеграция, тесты, документац�
 
 ## Документация
 mechanics_extract.md, content_registry.md, current_game_state.md, CHANGELOG.
+
+## Dispatch
+
+- 2026-06-13: dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after `backend_add_character_biologist_task.md` reached done. Scope: gameplay/data/UI integration/tests/docs only; art and animation stay in Design/Animator handoffs.
+
+## Result
+
+2026-06-13: Back-end scope завершен.
+
+- Добавлен класс `robot` / «Робот» с tank-control профилем, базовыми статами, приоритетами атрибутов, class interpretations, ultimate `Аварийная Перегрузка` и 10 уровнями Возвышения.
+- Добавлены ровно 3 weapon variants:
+  - `robot_magnetic_anchor` / `robot_magnetic_anchor`: target-centered magnetic pull + impulse damage.
+  - `robot_hydraulic_press` / `robot_compression_line`: line corridor compression с прижатием врагов к оси.
+  - `robot_reactor_core` / `robot_reactor_vent`: 4 directional reactor vents вокруг корпуса.
+- Созданы сцены `RobotMagneticAnchor.tscn`, `RobotHydraulicPress.tscn`, `RobotReactorCore.tscn`; после Design handoff подключены canonical Robot character/weapon PNG.
+- Созданы и переданы handoff-задачи `codex_design_robot_art_task.md` и `animation_robot_rig_motion_task.md`.
+- `runtime_smoke_test.gd` расширен проверками класса/оружий Robot и отдельным `_test_robot_weapon_mechanics`; parse blocker `backend_runtime_smoke_weapon_mechanics_indent_parse_task.md` закрыт.
+- Исправлен доступ `CutoutRig2D` к sliced rig manifest через runtime script constants, чтобы animation smoke оставался чистым после импорта Robot cutout assets.
+- Balance harness: `robot_magnetic_anchor`, `robot_hydraulic_press`, `robot_reactor_core` tuned profile `balanced/tank`, solo DPS ~40.1, 5-target AoE DPS ~138.6, deviation 0.0%.
+- Документация обновлена: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/content_registry.md`, `docs/design/mechanics_extract.md`, `docs/design/systems/characters_weapons.md`, `docs/design/systems/visual_style_assets.md`.
+- Verification passed: runtime smoke, balance harness, animation smoke, attack VFX smoke, hazard VFX smoke, melee targeting, meta progression smoke.
+- Следующая задача цепочки `backend_add_character_engineer_task.md` разблокирована.

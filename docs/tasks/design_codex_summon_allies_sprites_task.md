@@ -127,3 +127,25 @@ Jira: SCRUM-152
   `backend_summon_allies_source_sprite_integration_task.md`.
 - import green; runtime smoke заблокирован внешним SoundWaveVfx cleanup (не этот таск).
 Готово к QA.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (asset-часть)
+
+Проверено фактически:
+- Состав: 6 PNG в `assets/sprites/allies/` — ally_druid_beast, ally_druid_pack_spirit,
+  ally_homunculus, ally_leadership_echo, deploy_sound_amp_field,
+  deploy_raven_totem_field. Все 256×256. VERIFIED (sips).
+- Визуал (контакт-лист + scale-превью на meadow): painterly D&D-канон, детализация
+  на уровне канона персонажей, каждый юнит различим (волк с рогами / медведь-дух /
+  колба-голем / призрачный рыцарь Лидерства / золотой амп с гитарой / тотем с
+  вороном). Земляные/зелёные палитры союзников читаются как «свои» на боевом фоне,
+  масштаб к герою адекватный (scale-превью). VERIFIED.
+- Превью-листы на месте: asset_contact, scale_meadow, style_references. VERIFIED.
+- Runtime-интеграция (AllyMinion обретает спрайты): подтверждена косвенно — druid
+  summon поведенческий тест в runtime_smoke был зелёным на рабочем дереве после
+  интеграции (прогон 2026-06-12 поздний). Полный re-run заблокирован текущим
+  нестабильным деревом + сломанным HEAD (см. critical
+  `bug_head_broken_uncommitted_drop_economy_task.md`) — перепроверить smoke после
+  стабилизационного коммита.
+
+Багов по арту нет.

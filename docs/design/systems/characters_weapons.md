@@ -9,6 +9,13 @@
 | Character ID | Role |
 | --- | --- |
 | `berserk` | melee AoE/frustum fighter, высокий риск рядом с толпой |
+| `soldier` | tactical physical fighter: suppression burst, delayed grenade, bayonet brace |
+| `thief` | agile trickster: coin ricochet, shadow backstab, smoke dodge window |
+| `elementalist` | elemental AoE caster: orbit ticks, prism rifts, meteor shards |
+| `sniper` | long-range precision class: lockshot, kill-zone marking, split rounds |
+| `priest` | holy sustain caster: sanctify marks, ward pulses, prayer chains |
+| `biologist` | bio-reaction scientist: spore blooms, sample analysis, symbiote webs |
+| `robot` | heavy tank-control construct: magnetic pulls, compression lines, reactor vents |
 | `dark_mage` | caster: AoE, beams, DoT, дистанционный wave clear |
 | `guitarist` | sound/control: waves, knockback, deployable amp |
 | `assassin` | быстрый crit melee/ranged hybrid: boomerang, flurry, poison line |
@@ -27,6 +34,27 @@
 | `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `frustum` | Широкий усеченный замах 90 градусов, радиус 600, надежно достает врагов рядом |
 | `berserk` | `axe` | Двуручный топор | `TwoHandedAxe.tscn` | `sweep` | Широкая дуга, контроль ближней толпы |
 | `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Малый стартовый круг, сильный late-game AoE scaling |
+| `soldier` | `soldier_rifle` | Аркебуза строя | `SoldierRifle.tscn` | `suppression_burst` | Три коротких выстрела по линии: primary full damage, соседние цели reduced suppression damage |
+| `soldier` | `soldier_grenade` | Граната с фитилем | `SoldierGrenade.tscn` | `grenade_cook` | Телеграф ground-zone, задержка фитиля, взрыв с falloff |
+| `soldier` | `soldier_bayonet` | Штык-стойка | `SoldierBayonet.tscn` | `bayonet_brace` | Короткая defensive corridor-стойка: один укол на врага и knockback |
+| `thief` | `thief_coin_pouch` | Кошель Рикошета | `ThiefCoinPouch.tscn` | `coin_ricochet` | Цепной рикошет по ближайшим целям с убывающим уроном и кражей золота |
+| `thief` | `thief_shadow_cloak` | Плащ Захода | `ThiefShadowCloak.tscn` | `shadow_backstab` | Мгновенный заход за спину ближайшей цели, усиленный удар и небольшой splash |
+| `thief` | `thief_smoke_bomb` | Дымовая Бомба | `ThiefSmokeBomb.tscn` | `smoke_bomb` | Delayed AoE дыма плюс временное уклонение |
+| `elementalist` | `elementalist_orb_ring` | Кольцо Трех Стихий | `ElementalistOrbRing.tscn` | `elemental_orbit` | Стихийные сферы вращаются вокруг героя и наносят AoE-тиковый урон |
+| `elementalist` | `elementalist_prism_focus` | Призматический Фокус | `ElementalistPrismFocus.tscn` | `prism_rift` | Два пересекающихся луча-разлома по ближайшей цели после короткого телеграфа |
+| `elementalist` | `elementalist_meteor_core` | Ядро Метеора | `ElementalistMeteorCore.tscn` | `meteor_shards` | Отложенный метеорный удар и вторичные осколочные взрывы |
+| `sniper` | `sniper_deadeye_rifle` | Винтовка Мертвого Глаза | `SniperDeadeyeRifle.tscn` | `sniper_lockshot` | Дальний lockshot: короткий прицел, затем точный beam по locked target и falloff по линии |
+| `sniper` | `sniper_spotter_scope` | Прицел Наводчика | `SniperSpotterScope.tscn` | `sniper_kill_zone` | Маркирует kill-zone у ближайшей цели и вызывает несколько точных sky-beam попаданий |
+| `sniper` | `sniper_shatter_rounds` | Осколочные Патроны | `SniperShatterRounds.tscn` | `sniper_split_round` | Основной дальний выстрел раскалывается по соседним целям с убывающим уроном |
+| `priest` | `priest_reliquary` | Светлый Реликварий | `PriestReliquary.tscn` | `priest_sanctify` | Отмечает ближайшую цель и взрывает священную область с sustain-heal от урона |
+| `priest` | `priest_censer` | Кадило Обета | `PriestCenser.tscn` | `priest_ward` | Несколько защитных волн вокруг героя, ближний контроль и малое лечение |
+| `priest` | `priest_chime` | Колокол Молитвы | `PriestChime.tscn` | `priest_prayer_chain` | Молитвенная цепь перескакивает между врагами и возвращает sustain |
+| `biologist` | `biologist_spore_lens` | Споровая Линза | `BiologistSporeLens.tscn` | `bio_spore_bloom` | Три расширяющихся споровых кольца на цели с убывающим уроном |
+| `biologist` | `biologist_sample_injector` | Инъектор Образцов | `BiologistSampleInjector.tscn` | `bio_sample_dart` | Прямой sample dart и delayed analysis pulses по ближайшим тканям |
+| `biologist` | `biologist_symbiote_seed` | Семя Симбионта | `BiologistSymbioteSeed.tscn` | `bio_symbiote_web` | Симбиотическая сеть связывает первичную цель с соседними врагами |
+| `robot` | `robot_magnetic_anchor` | Магнитный Якорь | `RobotMagneticAnchor.tscn` | `robot_magnetic_anchor` | Target-centered magnetic anchor pulls nearby enemies inward and detonates |
+| `robot` | `robot_hydraulic_press` | Гидравлический Пресс | `RobotHydraulicPress.tscn` | `robot_compression_line` | Two pressure jaws compress a line corridor and push enemies toward its axis |
+| `robot` | `robot_reactor_core` | Реакторное Ядро | `RobotReactorCore.tscn` | `robot_reactor_vent` | Four directional reactor vents clear close-range space around the player |
 | `dark_mage` | `dark_book` | Книга тьмы | `DarkBook.tscn` | `aoe_projectile` | 2 AoE-снаряда по ближайшим целям |
 | `dark_mage` | `cursed_skull` | Проклятый череп | `CursedSkull.tscn` | `homing_curse` | Самонаведение, DoT и splash |
 | `dark_mage` | `dark_wand` | Темная палочка | `DarkWand.tscn` | `beam` | 2 pierce-луча веером |
@@ -55,17 +83,17 @@
 ## Backend Modes
 
 - `scripts/berserk_weapon.gd`: `frustum`, `strip`, `sweep`, `circle`; melee damage window is synced with swing timing.
-- `scripts/class_weapon.gd`: `aoe_projectile`, `homing_curse`, `beam`, `dot_beam`, `sound_wave`, `pulse`, `amp`, `trap`, `boomerang`, `stab_flurry`.
+- `scripts/class_weapon.gd`: `aoe_projectile`, `homing_curse`, `beam`, `dot_beam`, `sound_wave`, `pulse`, `amp`, `trap`, `boomerang`, `stab_flurry`, `suppression_burst`, `grenade_cook`, `bayonet_brace`, `coin_ricochet`, `shadow_backstab`, `smoke_bomb`, `elemental_orbit`, `prism_rift`, `meteor_shards`, `sniper_lockshot`, `sniper_kill_zone`, `sniper_split_round`, `priest_sanctify`, `priest_ward`, `priest_prayer_chain`, `bio_spore_bloom`, `bio_sample_dart`, `bio_symbiote_web`.
 - `scripts/summoner_weapon.gd`: summon weapon wrapper for Druid and Chemist minion styles.
 
-`stab_flurry` hits several nearest enemies inside a short wave-shaped melee zone. `dot_beam` is a pierce line that applies DoT. `trap` deploys a node that triggers burst damage and knockback when an enemy enters its radius. Deploy visuals reuse each weapon's `WeaponVisual` texture.
+`stab_flurry` hits several nearest enemies inside a short wave-shaped melee zone. `dot_beam` is a pierce line that applies DoT. `trap` deploys a node that triggers burst damage and knockback when an enemy enters its radius. Soldier-specific modes: `suppression_burst` schedules short repeated line shots, `grenade_cook` telegraphs then detonates a delayed AoE with falloff, and `bayonet_brace` checks a forward corridor for one hit per enemy during the brace window. Thief-specific modes: `coin_ricochet` chains between nearby enemies and can steal money, `shadow_backstab` repositions behind a target before striking, and `smoke_bomb` creates a delayed AoE plus temporary dodge. Elementalist-specific modes: `elemental_orbit` runs short orbiting AoE ticks around the player, `prism_rift` lays two crossing beams on a target, and `meteor_shards` delays an impact then spawns shard bursts. Sniper-specific modes: `sniper_lockshot` locks one target after a short telegraph, `sniper_kill_zone` rains several precision beams inside a marked area, and `sniper_split_round` branches from a primary shot into nearby enemies. Priest-specific modes: `priest_sanctify` delays a holy mark explosion, `priest_ward` pulses protective circles from the player, and `priest_prayer_chain` bounces a sustain tether between enemies. Biologist-specific modes: `bio_spore_bloom` grows expanding target-centered spore rings, `bio_sample_dart` follows a direct sample hit with delayed analysis pulses, and `bio_symbiote_web` links the primary target to nearby enemies with a damage-sharing web. Robot-specific modes: `robot_magnetic_anchor` pulls enemies toward a marked target before impact, `robot_compression_line` compresses enemies toward a line axis, and `robot_reactor_vent` emits four short directional vents around the player. Deploy visuals reuse each weapon's `WeaponVisual` texture.
 
 ## Visual Asset Status
 
-Design visual set is complete for 9 classes and 27 weapons as of 2026-06-11. Weapon art v2 pass 2026-06-12 reduced oversized socket visuals, fixed scene texture fallbacks, and replaced the Knight visual stack: `assets/sprites/characters/knight.png` is now an unarmed base sprite, while `long_spear.png`, `tower_shield.png`, and `holy_flail.png` are separate polished noble knight weapons. New class full-art PNGs are art-approved at `assets/sprites/characters/assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png` (`512x512`, transparent). All weapon PNGs in the matrix above exist at their canonical `assets/sprites/weapons/*.png` paths (`256x256`, transparent), including the 12 formerly fallback weapons:
+Design visual set is complete for the first 9 classes and 27 weapons as of 2026-06-11. SCRUM-168 adds Soldier as a Back-end class with canonical Soldier character/weapon PNG paths connected; rig/motion remains Animator handoff. SCRUM-169 adds Thief as Back-end gameplay with canonical Thief character/weapon PNG paths connected; rig/motion is `docs/tasks/animation_thief_rig_motion_task.md`. SCRUM-163 adds Elementalist gameplay with canonical PNGs ready and rig/motion in `docs/tasks/animation_elementalist_rig_motion_task.md`. SCRUM-167 adds Sniper gameplay with canonical PNGs ready and rig/motion in `docs/tasks/animation_sniper_rig_motion_task.md`. SCRUM-165 adds Priest gameplay with canonical PNGs ready and rig/motion in `docs/tasks/animation_priest_rig_motion_task.md`. SCRUM-162 adds Biologist gameplay with canonical PNGs ready and rig/motion in `docs/tasks/animation_biologist_rig_motion_task.md`. SCRUM-166 adds Robot gameplay with canonical PNGs ready and rig/motion in `docs/tasks/animation_robot_rig_motion_task.md`. Weapon art v2 pass 2026-06-12 reduced oversized socket visuals, fixed scene texture fallbacks, and replaced the Knight visual stack: `assets/sprites/characters/knight.png` is now an unarmed base sprite, while `long_spear.png`, `tower_shield.png`, and `holy_flail.png` are separate polished noble knight weapons. New class full-art PNGs are art-approved at `assets/sprites/characters/assassin.png`, `ranger.png`, `doctor.png`, `chemist.png`, `knight.png`, `druid.png` (`512x512`, transparent). The first 27 weapon PNGs in the matrix above exist at their canonical `assets/sprites/weapons/*.png` paths (`256x256`, transparent), including the 12 formerly fallback weapons:
 `shadow_daggers`, `venom_wire`, `storm_longbow`, `hunter_trap`, `plague_syringe`, `bone_saw`, `acid_flask`, `homunculus_vial`, `tower_shield`, `holy_flail`, `briar_staff`, `raven_totem`.
 
-Socket/display status: all 27 weapon scenes now point to their matching canonical PNG and use reduced `WeaponVisual.scale` for clearer body/face readability. Preview sheets: `docs/design/previews/weapon_v2_assets_contact.png` for raw PNG QA and `docs/design/previews/weapon_v2_socket_contact.png` for class/weapon visual placement. `venom_wire` is intentionally thin and best paired with a separate line/VFX during attacks; `hunter_trap`, `sound_amp`, `tower_shield`, `raven_totem`, `summon_amulet`, and `homunculus_vial` can also serve as deployable/world sprite bases.
+Socket/display status: the original 27 weapon scenes point to matching canonical PNG and use reduced `WeaponVisual.scale` for clearer body/face readability. Soldier scenes point to canonical `soldier_rifle.png`, `soldier_grenade.png`, and `soldier_bayonet.png`. Preview sheets: `docs/design/previews/weapon_v2_assets_contact.png` for raw PNG QA and `docs/design/previews/weapon_v2_socket_contact.png` for class/weapon visual placement. `venom_wire` is intentionally thin and best paired with a separate line/VFX during attacks; `hunter_trap`, `sound_amp`, `tower_shield`, `raven_totem`, `summon_amulet`, and `homunculus_vial` can also serve as deployable/world sprite bases.
 
 ## Targeting Rule
 

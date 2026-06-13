@@ -2,7 +2,7 @@
 
 ## Актуальный Слой Реализации
 
-Обновлено: 2026-06-12
+Обновлено: 2026-06-13
 
 Ниже сохранена выгрузка исходной таблицы механик. Этот верхний раздел фиксирует, какие механики уже перенесены в игру и как они называются в коде. Для точного текущего состояния также см. `docs/design/current_game_state.md`.
 
@@ -10,6 +10,10 @@
 - `docs/design/systems/progression_balance.md` — характеристики, формулы, rewards, artifacts, shop, ascension;
 - `docs/design/systems/characters_weapons.md` — текущие роли персонажей и оружия;
 - `docs/design/systems/combat.md` — runtime combat rules.
+
+Баланс SCRUM-166: `robot_magnetic_anchor`, `robot_hydraulic_press` и `robot_reactor_core`
+прогнаны через `tools/balance_harness.gd`; tuned профиль `balanced/tank` держит
+solo DPS ~40.1 и 5-target AoE DPS ~138.6, отклонение от целевого бюджета 0.0%.
 
 ### Где Живут Данные В Коде
 
@@ -83,6 +87,27 @@
 | Берсерк | Двуручный меч | `berserk_sword` | `frustum` | Усеченный замах 90°, радиус 600, base width 150, outer width 1200, interval 0.58, damage x1.15 |
 | Берсерк | Двуручный топор | `berserk_axe` | `sweep` | Дуга 140 градусов радиуса 320, damage x0.85 |
 | Берсерк | Двуручный молот | `berserk_hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.8 (AoE) / 1.45 (damage) — слабый старт, мощный потолок |
+| Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 быстрых выстрела по линии: первая цель получает полный урон, соседи в коридоре получают reduced suppression damage |
+| Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф зоны, короткая задержка фитиля, взрыв с falloff урона к краю |
+| Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Оборонительный forward brace: враг получает один укол за стойку и knockback |
+| Вор | Кошель Рикошета | `thief_coin_pouch` | `coin_ricochet` | Монета цепляется по ближайшим целям, урон убывает по цепи, первые попадания крадут немного золота |
+| Вор | Плащ Захода | `thief_shadow_cloak` | `shadow_backstab` | Вор смещается за ближайшую цель, наносит усиленный удар и цепляет врагов рядом |
+| Вор | Дымовая Бомба | `thief_smoke_bomb` | `smoke_bomb` | Дымовая зона взрывается после короткой задержки, а Вор получает временный dodge-window |
+| Элементалист | Кольцо Трех Стихий | `elementalist_orb_ring` | `elemental_orbit` | Орбитальные стихийные сферы наносят короткие AoE-тики вокруг героя |
+| Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | Крестовой разлом из двух лучей по ближайшей цели после короткого телеграфа |
+| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | Отложенный метеорный удар и вторичные осколочные взрывы вокруг цели |
+| Снайпер | Винтовка Мертвого Глаза | `sniper_deadeye_rifle` | `sniper_lockshot` | Короткий прицел/телеграф, затем точный дальний луч по locked target и falloff по линии |
+| Снайпер | Прицел Наводчика | `sniper_spotter_scope` | `sniper_kill_zone` | Маркирует kill-zone у ближайшей цели и вызывает несколько точных sky-beam попаданий по врагам внутри |
+| Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается по соседним целям с убывающим уроном |
+| Священник | Светлый Реликварий | `priest_reliquary` | `priest_sanctify` | Освящает ближайшую цель, затем знак взрывается по области и лечит часть нанесенного урона |
+| Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько защитных ward-пульсов вокруг героя наносят урон врагам рядом и дают малое лечение |
+| Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь перескакивает между врагами и возвращает sustain от нанесенного урона |
+| Биолог | Споровая Линза | `biologist_spore_lens` | `bio_spore_bloom` | Три расширяющихся споровых кольца выращиваются на цели и наносят убывающий урон |
+| Биолог | Инъектор Образцов | `biologist_sample_injector` | `bio_sample_dart` | Инъектор берет образец у цели, затем delayed analysis pulses бьют цель и ближайшие ткани |
+| Биолог | Семя Симбионта | `biologist_symbiote_seed` | `bio_symbiote_web` | Первичная цель связывается с соседними врагами симбиотической сетью и делит биоурон |
+| Робот | Магнитный Якорь | `robot_magnetic_anchor` | `robot_magnetic_anchor` | Ставит якорь на ближайшую цель, затем стягивает врагов к центру и бьет импульсом |
+| Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Две силовые губки сходятся по линии атаки, прижимая врагов к оси и нанося урон коридором |
+| Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Четыре направленных выброса вокруг корпуса чистят ближний круг и отталкивают толпу |
 | Темный маг | Темная книга | `dark_book` | `aoe_projectile` | 2 снаряда в две ближайшие цели, взрыв по области |
 | Темный маг | Проклятый череп | `cursed_skull` | `homing_curse` | Самонаведение, 5 DoT-тиков и небольшой splash по области цели |
 | Темный маг | Темный жезл | `dark_wand` | `beam` | 2 pierce-луча веером (шаг 14 градусов) |
@@ -414,9 +439,11 @@ Escape открывает крупное меню характеристик:
 
 ### Экономика 0.2: Цены, Тиры Артефактов, Аффинити (2026-06-11)
 
-- **Магазин**: все цены x3.5 (пример: shop_damage 12 -> 42). Артефакты в магазине стоят по тиру: Tier 1 — 30, Tier 2 — 55, Tier 3 — 95 (`COST_BY_TIER`).
+- **Магазин**: базовые цены уже включают pass x3.5 (пример: `shop_damage` 12 -> 42), а актуальная экономика 0.1.4 дополнительно применяет `ECONOMY_PRICE_MULTIPLIER = 1.10` внутри `stage_scaled_cost()`. Фактическая цена `shop_damage` на stage 0 — 47 золота. Артефакты в магазине стоят по тиру: Tier 1 — 30, Tier 2 — 55, Tier 3 — 95 (`COST_BY_TIER`) до stage/economy scaling.
 - **Редкость**: вес появления в наградах/магазине по тиру — 1.0 / 0.45 / 0.12 (`TIER_WEIGHTS`, weighted-выбор без возврата).
-- **Окно докачки после боя**: +1 к характеристике за `18 + 6 * route_stage` золота; reroll пары предложений за `6 + 2 * route_stage`, максимум 2 раза за окно; «Пропустить» — бесплатно.
+- **Окно докачки после боя**: +1 к характеристике за `18 + 6 * route_stage` золота, затем `stage_scaled_cost`; reroll пары предложений за `6 + 2 * route_stage`, затем `stage_scaled_cost`, максимум 2 раза за окно; «Пропустить» — бесплатно.
+- **Дроп 0.1.4**: rewards назначаются по `DROP_CLASS_MULTIPLIERS`: ordinary < complex < heavy < mini_elite < elite < boss. Жирные цели дают около x1.75 XP / x1.85 золота относительно базы; мини-элитки x3.6 / x3.8; элитки x8 / x8.5; босс получает fixed reward, умноженный на `stage_scale`. Ожидаемая покупательная способность по balance harness: +10.6%, XP: +7.1%, то есть темп прокачки остается в допуске.
+- **XP-кривая 0.1.4**: следующий уровень считается через `ceil(current_requirement * 1.42 + 3)` вместо прежнего `ceil(req * 1.35 + 2)`, чтобы усиленный дроп сложных целей не разгонял количество level-up сверх цели.
 - **Сила артефактов**: tier 1 усилен x2.5 от прежних значений (например +2 к стату -> +5, +20% урона -> +50%); даунсайды НЕ усилены. Tier 2 — двойные эффекты (усилены так же). Tier 3 (6 шт.) — билдообразующие механики: `echo_blast_every`, `extra_projectile`, `low_hp_damage_bonus`, `kill_heal_percent`, `thorn_reflect_multiplier`, `dodge_rush_bonus` (реализованы в player/class_weapon/combat_director/derived_parameters).
 - **class_affinity**: с 2026-06-12 это тематика/исходная фантазия артефакта, а не запрет. `affinity_mods` применяются любому классу через class interpretation text; UI больше не показывает «Не работает»/«Работает вполсилы», а объясняет, как текущий класс использует эффект.
 
@@ -504,7 +531,7 @@ Data source: `ProgressionData.CLASS_BUDGET_PROFILES`, `ProgressionData.budget_tu
 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/balance_harness.gd
 ```
 
-Он пишет полный отчет в `build/balance_report.md` и считает 27 комбинаций класс+оружие: solo DPS за 30 секунд, 5-target DPS за 30 секунд и EHP. Вклад ульты учитывается как prorated contribution внутри 30-секундного окна.
+Он пишет полный отчет в `build/balance_report.md` и считает 45 комбинаций класс+оружие: solo DPS за 30 секунд, 5-target DPS за 30 секунд и EHP. Вклад ульты учитывается как prorated contribution внутри 30-секундного окна.
 
 Формула EHP для бюджетного сравнения: `HP / (1-defense) / (1-dodge) + absorb*10 + regeneration*30 + lifesteal estimate`.
 
@@ -513,6 +540,12 @@ Runtime применяет один безопасный `budget_damage_multipli
 | Класс | Профиль | Survival | Damage budget | Solo target | 5-target target |
 | --- | --- | --- | ---: | ---: | ---: |
 | Берсерк | balanced | sturdy | 100% | 48.00 | 150.00 |
+| Солдат | balanced | steady | 100% | 48.00 | 150.00 |
+| Вор | balanced | fragile | 108% | 51.84 | 162.00 |
+| Элементалист | aoe | fragile | 108% | 49.25 | 178.20 |
+| Снайпер | solo | steady | 100% | 55.20 | 120.00 |
+| Священник | balanced | steady | 92% | 41.95 | 144.90 |
+| Биолог | aoe | fragile | 108% | 42.51 | 191.16 |
 | Темный маг | aoe | fragile | 115% | 38.64 | 224.25 |
 | Гитарист | aoe | control | 100% | 33.60 | 195.00 |
 | Ассасин | solo | fragile | 115% | 71.76 | 120.75 |
@@ -526,8 +559,8 @@ Before/after summary from `build/balance_report.md`:
 
 | State | Covered pairs | Max combined deviation | Notes |
 | --- | ---: | ---: | --- |
-| Before tuning | 27 | 138.2% | Старые числа сильно выбивали DoT/deploy/summon и тяжелые melee weapons. |
-| After tuning | 27 | 0.1% | Все пары проходят проверку solo/5-target ≤ ±10% в `runtime_smoke_test.gd`. |
+| Before tuning | 36 | 138.2% | Старые числа сильно выбивали DoT/deploy/summon, тяжелые melee weapons и новые class pipelines. |
+| After tuning | 45 | 0.1% | Все пары проходят проверку solo/5-target ≤ ±10% в `runtime_smoke_test.gd`; Вор, Элементалист, Снайпер, Священник и Биолог держатся в пределах ±20% от Берсерка с мечом. |
 
 Full before/after tables live in `build/balance_report.md` because they are generated artifacts and should be refreshed by the harness when formulas or weapon configs change.
 
@@ -536,6 +569,10 @@ Full before/after tables live in `build/balance_report.md` because they are gene
 
 | Класс | Str | Agi | Int | Per | Energy | Know | End | Lead | HP | Speed |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Элементалист | 2 | 4 | 9 | 7 | 8 | 6 | 3 | 5 | 48 | 258 |
+| Снайпер | 6 | 8 | 2 | 10 | 3 | 3 | 7 | 1 | 62 | 252 |
+| Священник | 2 | 4 | 8 | 6 | 7 | 9 | 5 | 6 | 66 | 246 |
+| Биолог | 2 | 5 | 8 | 7 | 6 | 10 | 4 | 4 | 54 | 254 |
 | Ассасин | 6 | 10 | 2 | 6 | 3 | 4 | 5 | 4 | 52 | 285 |
 | Рейнджер | 7 | 7 | 2 | 9 | 4 | 4 | 4 | 3 | 58 | 262 |
 | Доктор | 2 | 4 | 8 | 5 | 6 | 8 | 5 | 2 | 64 | 248 |

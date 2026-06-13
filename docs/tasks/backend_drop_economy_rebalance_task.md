@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Ребаланс дропа и экономики — жирные мобы дают больше, всё стоит дороже
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя)
@@ -65,3 +65,39 @@ Jira: SCRUM-153
 
 ## Dispatch
 - 2026-06-12: Codex Documentation dispatcher отправил задачу в Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`; Jira `SCRUM-153` переведена в работу и добавлена в активный спринт 0.1.4. Исполнителю напомнили синхронизироваться с `SCRUM-149` по общим файлам баланса.
+
+## Result
+- 2026-06-12: Back-end done. SCRUM-149 уже закрыт, конфликт по `progression_data.gd`/балансу снят перед реализацией.
+- В `ProgressionData` добавлены `DROP_CLASS_MULTIPLIERS`, `drop_class_rewards()`, `ECONOMY_PRICE_MULTIPLIER = 1.10` и единая XP-кривая `next_xp_requirement() = ceil(req * 1.42 + 3)`.
+- `CombatDirector` назначает фактический `drop_class`, XP, золото и шанс монеты при спавне/скейле: ordinary < complex < heavy < mini_elite < elite < boss. Босс получает direct fixed×stage reward при завершении боя, чтобы награда не терялась при cleanup мира.
+- Магазин, докачка атрибутов, reroll и платные event-исходы идут через `stage_scaled_cost()` и единый economy multiplier.
+- `build/balance_report.md`: +21.7% expected gold, +10.6% effective buying power после роста цен, +7.1% expected XP; таблица drop-классов добавлена.
+- Verification: balance harness passed; runtime smoke passed; full smoke set passed.
+
+## QA-Вердикт (2026-06-12) — независимая QA-сессия
+Статус: PASSED
+
+Проверено фактически (код + потребление + отчёт + harness + smoke):
+- Данные: `DROP_CLASS_MULTIPLIERS` (progression_data:144-151) монотонны и в ориентирах
+  PM: ordinary 1.0 < complex 1.3 < heavy 1.75 (~×1.5-2 ✓) < mini_elite 3.6 (~×3-4 ✓)
+  < elite 8.0 (~×6-10 ✓) < boss (money ×92 — крупный фикс ✓). VERIFIED.
+- Потребление ЖИВОЕ (урок ascension-багов проверен явно): combat_director присваивает
+  `drop_class` при спавне (мини-элитки :235/:272), `_drop_class_for_enemy` +
+  `_apply_drop_rewards` → `drop_class_rewards()` (:405-430); босс — direct fixed×stage
+  reward (:629), не теряется при cleanup. Не «мёртвые данные». VERIFIED.
+- Цены: единый `ECONOMY_PRICE_MULTIPLIER = 1.10` потребляется в `stage_scaled_cost`
+  (:1125) — магазин/докачка/reroll/event через одну точку. VERIFIED.
+- XP-кривая: `next_xp_requirement` ужесточена (×1.42+3), отчёт: +7.1% expected XP —
+  кривая уровней в рамке ±10-15%. VERIFIED.
+- Отчёт `build/balance_report.md`: секция «Drop And Economy Rebalance» — таблица
+  классов + до/после: +21.7% gold, +10.6% effective buying power (рамка 10-15% ✓).
+  Замечание (minor, не блокер): harness ПЕРЕЗАПИСЫВАЕТ отчёт — экономическая секция
+  при текущем прогоне уцелела, но генерация секций должна быть идемпотентной, иначе
+  будущий DPS-прогон может затереть экономику.
+- Тесты реальные: монотонность stage_scale (:2609), сравнение drop-классов (:2626+),
+  факт назначения elite drop_class спавном (:2672). VERIFIED.
+- Harness: пройден (отчёт перегенерирован). Smoke: 6/6 зелёные. (Промежуточный
+  Parse error boss.gd — мид-эдит параллельного SCRUM-155, после паузы runtime зелёный;
+  к SCRUM-153 отношения не имеет.)
+
+Багов нет.
