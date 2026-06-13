@@ -4,6 +4,8 @@
 
 ## [Unreleased] — ветка dev
 
+## [0.1.4] — 2026-06-13
+
 - Docs (SCRUM-195): synchronized the remaining 0.1.4 domain-doc drift after
   the data/UI splits and cleanup pass: fixed stale `0.2` wording, corrected
   system doc filenames, refreshed boss/mini-elite summaries and aligned current
