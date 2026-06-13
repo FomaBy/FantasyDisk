@@ -27,6 +27,24 @@ Role boundaries:
 - When taking a task, set `Статус: in_progress` in its file; when finishing, set `done` (or `review`) and append a short result summary so the PM can sync the task board.
 - Jira is mandatory for task tracking. Follow `docs/process/jira_sync.md`: every task must have a `Jira: SCRUM-*` link, current sprint membership, and Jira status/comment updates matching `.md` status changes. Never store Jira API tokens in the repository.
 
+**ЖИВАЯ СИНХРОНИЗАЦИЯ JIRA — ОБЯЗАТЕЛЬНА (директива пользователя 2026-06-13).**
+Пользователь управляет разработкой по Jira, поэтому Jira ВСЕГДА должна отражать
+реальность. Каждый агент, который берёт, двигает или завершает работу, ОБЯЗАН:
+1. **Взял в работу** → задача в `.md` `in_progress` + `python3 tools/jira_board_sync.py`
+   (тикет уходит в «В работе»). Не работать «в тени», не отразив это в Jira.
+2. **Завершил** → `.md` `done` с резюме + sync (тикет → «Контроль качества»;
+   после QA-вердикта PASSED → «Готово»). Закрытая работа ОБЯЗАНА быть закрыта в Jira.
+3. **Передаёшь работу другому агенту (handoff)** → создай handoff-`.md`, и его
+   тикет в Jira создаётся синком автоматически с нужным эпиком/ролью; в исходном
+   тикете комментарием отметь, КОМУ и ЧТО передано (Jira-ключ handoff'а). Передача
+   основной задачи без отражения в Jira запрещена.
+4. **Заблокировал / переименовал / дублировал** → отрази статус и причину в Jira
+   (status/comment), не оставляй расхождений `.md`↔Jira.
+5. В КОНЦЕ ЛЮБОГО прогона со сменой статусов — `python3 tools/jira_board_sync.py`
+   (идемпотентен); если изменился `jira_sync_map.json` — закоммить.
+Правило: «не закрыл/не передал в Jira — работа не считается сделанной». Держи
+синхронизацию Jira с реальностью в голове на каждом шаге.
+
 Versioning:
 - `main` is the stable `0.1` line.
 - `dev` is the active working branch for the current `0.1.x` line.
