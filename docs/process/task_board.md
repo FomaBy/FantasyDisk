@@ -64,7 +64,7 @@
 | Баг | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [bug_flaky_melee_targeting_hammer_aoe_cache_task.md](../tasks/bug_flaky_melee_targeting_hammer_aoe_cache_task.md) | Back-end | done | Jira: SCRUM-228. **QA: passed** (35b79e06) — анти-флака 25/25 PASS (было ~17%), `await process_frame` на месте, production-кэш `combat_target_query.gd` не тронут, регрессия 4×smoke зелёная |
-| [bug_umbrella_runtime_smoke_intermittent_failure_task.md](../tasks/bug_umbrella_runtime_smoke_intermittent_failure_task.md) | Back-end | done | Jira: SCRUM-257. Weapon delayed callbacks no longer capture freed nodes directly; caught 1280x720 hero-radar/header umbrella failure fixed; UI/weapon/animation/umbrella smokes passed and final isolated umbrella series is 12/12 clean |
+| [bug_umbrella_runtime_smoke_intermittent_failure_task.md](../tasks/bug_umbrella_runtime_smoke_intermittent_failure_task.md) | Back-end | done | Jira: SCRUM-257. **QA: passed** (5d7c2337) — freed-lambda warning eliminated; hero-radar/header umbrella flake fixed; 32/32 isolated umbrella PASS with 0 warnings; weapon/melee/UI/animation/meta regressions green |
 
 ## Backlog 0.1.5 — не dispatch во время feature freeze
 
