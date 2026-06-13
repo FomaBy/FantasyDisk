@@ -11,16 +11,16 @@
 | Эпик | Готово | КК | В работе | Кв | Всего |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | SCRUM-212 Персонажи и классы | 20 | 0 | 1 | 0 | 21 |
-| SCRUM-213 Бой, враги, боссы, события | 32 | 0 | 1 | 0 | 33 |
+| SCRUM-213 Бой, враги, боссы, события | 32 | 0 | 2 | 0 | 34 |
 | SCRUM-214 Баланс и экономика | 14 | 3 | 1 | 0 | 18 |
 | SCRUM-215 Интерфейс, экраны, локализация | 21 | 0 | 1 | 0 | 22 |
-| SCRUM-216 Арт и спрайты | 31 | 4 | 2 | 0 | 37 |
+| SCRUM-216 Арт и спрайты | 31 | 4 | 3 | 0 | 38 |
 | SCRUM-217 Анимация и риги | 30 | 0 | 1 | 0 | 31 |
 | SCRUM-218 Звук и музыка | 5 | 0 | 0 | 0 | 5 |
 | SCRUM-219 Мета-прогрессия | 6 | 0 | 0 | 0 | 6 |
 | SCRUM-220 Качество кода, тесты, аудиты | 31 | 2 | 0 | 6 | 39 |
 | SCRUM-221 Релиз и процессы | 5 | 0 | 0 | 0 | 5 |
-| **ИТОГО** | **195** | **9** | **7** | **6** | **217** |
+| **ИТОГО** | **195** | **9** | **9** | **6** | **219** |
 
 (КК = Контроль качества, ждёт QA; Кв = К выполнению, ждёт взятия)
 
@@ -28,7 +28,7 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [design_codex_interface_leather_gold_panels_restyle_task.md](../tasks/design_codex_interface_leather_gold_panels_restyle_task.md) | Design → Back-end | new | Переделать интерфейс: кит панелей/окон «кожа+золото» (5 PNG в references/interface) — 9-slice, карта замены всех панелей/тултипов/чекбоксов; согласовать с кнопками-пергаментом |
+| [design_codex_interface_leather_gold_panels_restyle_task.md](../tasks/design_codex_interface_leather_gold_panels_restyle_task.md) | Design → Back-end | in_progress | Jira: SCRUM-229; dispatched Design `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-13. Кит панелей/окон «кожа+золото»; keep High/no low; do not touch `scripts/ui_screens.gd` during Back-end UI batch, create Back-end handoff if needed |
 | [backend_parchment_button_seal_visible_height_task.md](../tasks/backend_parchment_button_seal_visible_height_task.md) | Back-end (UI) | in_progress | Jira: SCRUM-227; dispatched Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-13 as serialized `scripts/ui_screens.gd` UI batch addition with SCRUM-224/SCRUM-225/SCRUM-226. Печать на кнопках должна быть видна; keep High/no low; Jira sync required |
 | [backend_levelup_cards_text_field_style_task.md](../tasks/backend_levelup_cards_text_field_style_task.md) | Back-end (UI) | in_progress | Jira: SCRUM-226; dispatched Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-13 as serialized `scripts/ui_screens.gd` UI batch with SCRUM-224/SCRUM-225. Карточки повышения уровня — стиль поля с текстом, не кнопки; keep High/no low; Jira sync required |
 | [backend_weapon_select_sprite_clean_layout_task.md](../tasks/backend_weapon_select_sprite_clean_layout_task.md) | Back-end (UI) | in_progress | Jira: SCRUM-225; dispatched Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-13 as serialized `scripts/ui_screens.gd` UI batch with SCRUM-224/SCRUM-226. Выбор оружия: спрайт, убрать тяжёлый button-style, статы по-русски; keep High/no low; Jira sync required |
@@ -49,7 +49,7 @@
 
 | Баг | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [bug_flaky_melee_targeting_hammer_aoe_cache_task.md](../tasks/bug_flaky_melee_targeting_hammer_aoe_cache_task.md) | Back-end | blocked | Undispatched: missing Jira key/issue; PM/QA-owner must sync Jira first. Флака `melee_weapon_targeting_test` (~17%, hammer AoE Берсерка); фикс в тесте (await/`set_process(false)`), production не трогать. Найдено при QA SCRUM-222 |
+| [bug_flaky_melee_targeting_hammer_aoe_cache_task.md](../tasks/bug_flaky_melee_targeting_hammer_aoe_cache_task.md) | Back-end | in_progress | Jira: SCRUM-228; dispatched Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-13. Флака `melee_weapon_targeting_test` (~17%, hammer AoE Берсерка); фикс в тесте (await/`set_process(false)`), production не трогать; keep High/no low; Jira sync required |
 
 ## Архив
 

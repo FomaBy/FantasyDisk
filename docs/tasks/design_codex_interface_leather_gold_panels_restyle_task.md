@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Переделать интерфейс — панели/окна в стиле «кожа+золото» (референсы пользователя)
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Design (Claude-Designer обработка/9-slice/интеграция) → Back-end handoff
 Версия: 0.1.4
@@ -65,3 +65,6 @@ legacy». Этот кит — именно для ПАНЕЛЕЙ/ОКОН, ко�
 
 ## Документация
 visual_style_assets.md, content_registry.md, current_game_state.md.
+
+## Dispatcher Note (2026-06-13)
+Jira key `SCRUM-229` found in existing sync map/Jira and synced into this task. Dispatched to Design Codex thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`. Work with reasoning set to High; do not switch the run/model effort to low. Keep Jira live-synced: in-progress now, then update task/board/Jira on completion, with QA left to the board worker. Dependency context: SCRUM-147/SCRUM-222 accepted wax-seal buttons and legacy panels; this task is the new leather+gold panel kit pass. Avoid touching `scripts/ui_screens.gd` while Back-end's serialized UI batch SCRUM-224..227 is active; create/update a Back-end handoff for integration if code/stylebox wiring is needed. If any rig/motion/animation scope appears, create/update an Animator handoff instead.

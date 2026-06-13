@@ -1,9 +1,10 @@
 # BUG: Флака `melee_weapon_targeting_test` — hammer AoE из-за покадрового кэша целей
 
-Статус: blocked
+Статус: in_progress
 Приоритет: normal
 Роль: Back-end
 Найдено QA при тестировании: backend_ui_dark_fantasy_theme_integration_task.md (SCRUM-222 QA-прогон)
+Jira: SCRUM-228
 
 ## Воспроизведение
 1. `~/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script "res://tests/melee_weapon_targeting_test.gd"`
@@ -55,4 +56,4 @@ Production-код `combat_target_query.gd` трогать не требуетс�
 - Разрешение: н/п (headless логический тест)
 
 ## Dispatcher Note (2026-06-13)
-Undispatched: this QA-created bug task currently has no `Jira: SCRUM-*` key and no existing Jira issue recorded in `docs/process/jira_sync_map.json`. Per dispatcher boundary, do not create a Jira issue from this thread. PM/QA-owner must sync/create the Jira ticket first, then the bug can be routed to Back-end.
+Jira key `SCRUM-228` found in existing sync map/Jira and synced into this task. Dispatched to Back-end Codex thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` as an isolated test-flake fix. Work with reasoning set to High; do not switch the run/model effort to low. Keep Jira live-synced: in-progress now, then update task/board/Jira on completion, with QA left to the board worker. Duplicate audit: older melee targeting test work SCRUM-37 is already done and is not this hammer AoE cache flake.
