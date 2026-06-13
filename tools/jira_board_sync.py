@@ -211,7 +211,11 @@ def main():
                 "labels": labels,
                 "description": adf(f"Файл: docs/tasks/{t['file']}\n\n" + t["excerpt"]),
             }
-            if fix_version and not t["next_version"]:
+            if t["next_version"] and t["task_version"]:
+                # Фриз: будущая версия -> бэклог с fixVersion целевой версии (0.1.5),
+                # вне активного спринта.
+                fields["fixVersions"] = [{"name": t["task_version"]}]
+            elif fix_version and not t["next_version"]:
                 fields["fixVersions"] = [{"name": fix_version}]
             # Аджайл: привязать новый тикет к parent-эпику (кроме самих эпиков).
             if t["itype"] != "Эпик":
