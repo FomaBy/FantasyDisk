@@ -1,0 +1,16 @@
+{
+  "epics": {
+    "CHARS": "SCRUM-212",
+    "COMBAT": "SCRUM-213",
+    "BALANCE": "SCRUM-214",
+    "UI": "SCRUM-215",
+    "ART": "SCRUM-216",
+    "ANIM": "SCRUM-217",
+    "AUDIO": "SCRUM-218",
+    "META": "SCRUM-219",
+    "QUALITY": "SCRUM-220",
+    "RELEASE": "SCRUM-221"
+  },
+  "updated": "2026-06-13",
+  "note": "Аджайл-эпики FantasyDisk: новые задачи привязываются к parent-эпику по классификатору в tools/jira_board_sync.py"
+}

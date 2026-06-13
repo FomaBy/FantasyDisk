@@ -3,6 +3,7 @@ extends CharacterBody2D
 signal died
 signal leveled_up
 signal damaged(amount: float)
+signal weapon_animation_event(event: Dictionary)
 
 @export var max_health := 10.0
 @export var speed := 260.0
@@ -10,6 +11,8 @@ signal damaged(amount: float)
 
 const BERSERK_SPRITE := preload("res://assets/sprites/characters/berserk_unarmed.png")
 const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berserk_walk_sheet_v2.png")
+const ProgressionData := preload("res://scripts/progression_data.gd")
+const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const DARK_MAGE_SPRITE := preload("res://assets/sprites/characters/dark_mage.png")
 const GUITARIST_SPRITE := preload("res://assets/sprites/characters/guitarist.png")
 const ASSASSIN_SPRITE := preload("res://assets/sprites/characters/assassin.png")
@@ -17,6 +20,7 @@ const RANGER_SPRITE := preload("res://assets/sprites/characters/ranger.png")
 const DOCTOR_SPRITE := preload("res://assets/sprites/characters/doctor.png")
 const CHEMIST_SPRITE := preload("res://assets/sprites/characters/chemist.png")
 const KNIGHT_SPRITE := preload("res://assets/sprites/characters/knight.png")
+const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
@@ -47,6 +51,13 @@ const CHARACTER_CONFIGS := {
 		"sprite": GUITARIST_SPRITE,
 	},
 	"assassin": {"display_name": "Ассасин", "color": Color(0.66, 0.30, 0.95, 1.0), "max_health": 52.0, "speed": 285.0, "sprite": ASSASSIN_SPRITE},
+	"thief": {"display_name": "Вор", "color": Color(0.92, 0.68, 0.30, 1.0), "max_health": 56.0, "speed": 292.0, "sprite": ASSASSIN_SPRITE},
+	"elementalist": {"display_name": "Элементалист", "color": Color(0.30, 0.82, 1.0, 1.0), "max_health": 48.0, "speed": 258.0, "sprite": DARK_MAGE_SPRITE},
+	"sniper": {"display_name": "Снайпер", "color": Color(0.82, 0.88, 1.0, 1.0), "max_health": 62.0, "speed": 252.0, "sprite": RANGER_SPRITE},
+	"priest": {"display_name": "Священник", "color": Color(1.0, 0.90, 0.54, 1.0), "max_health": 66.0, "speed": 246.0, "sprite": DOCTOR_SPRITE},
+	"biologist": {"display_name": "Биолог", "color": Color(0.48, 0.95, 0.42, 1.0), "max_health": 54.0, "speed": 254.0, "sprite": CHEMIST_SPRITE},
+	"robot": {"display_name": "Робот", "color": Color(0.42, 0.82, 1.0, 1.0), "max_health": 98.0, "speed": 222.0, "sprite": ROBOT_SPRITE},
+	"engineer": {"display_name": "Инженер", "color": Color(0.86, 0.70, 0.32, 1.0), "max_health": 70.0, "speed": 246.0, "sprite": DRUID_SPRITE},
 	"ranger": {"display_name": "Рейнджер", "color": Color(0.40, 0.78, 0.42, 1.0), "max_health": 58.0, "speed": 262.0, "sprite": RANGER_SPRITE},
 	"doctor": {"display_name": "Доктор", "color": Color(0.92, 0.94, 0.98, 1.0), "max_health": 64.0, "speed": 248.0, "sprite": DOCTOR_SPRITE},
 	"chemist": {"display_name": "Химик", "color": Color(0.70, 0.95, 0.25, 1.0), "max_health": 50.0, "speed": 252.0, "sprite": CHEMIST_SPRITE},
@@ -58,6 +69,7 @@ var health := 0.0
 var character_id := "berserk"
 var weapon_id := ""
 var weapon_config := {}
+var last_weapon_animation_event: Dictionary = {}
 var equipped_weapon: Node = null
 var stats := {}
 var run_modifiers := {
@@ -78,6 +90,7 @@ var run_modifiers := {
 	"xp_gain_multiplier": 1.0,
 	"money_gain_multiplier": 1.0,
 	"healing_multiplier": 1.0,
+	"vampiric_heal_per_second_cap": 4.0,
 	"enemy_health_multiplier": 1.0,
 	"knockback_multiplier": 1.0,
 }
@@ -99,6 +112,9 @@ var _action_tween: Tween = null
 var _hit_flash_tween: Tween = null
 var _facing_direction := Vector2.RIGHT
 var _damage_invulnerability_left := 0.0
+# Паутинное замедление (Матерь Роя): фактор скорости до отметки времени.
+var _web_slow_until := 0.0
+var _web_slow_factor := 1.0
 var _echo_hit_counter := 0
 var _leadership_echo_hit_counter := 0
 var _dodge_rush_tween: Tween = null
@@ -107,6 +123,7 @@ var _low_hp_active := false
 var _assassin_dash_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
+var _vampiric_heal_budget := 0.0
 var ultimate_charge := 0.0
 var ultimate_max_charge := 100.0
 var _ultimate_active := false
@@ -146,6 +163,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		"xp_gain_multiplier": 1.0,
 		"money_gain_multiplier": 1.0,
 		"healing_multiplier": 1.0,
+		"vampiric_heal_per_second_cap": 4.0,
 		"enemy_health_multiplier": 1.0,
 		"knockback_multiplier": 1.0,
 	}
@@ -223,16 +241,20 @@ func _attach_weapon_scene(weapon_scene: PackedScene, config: Dictionary) -> void
 
 func _clear_equipped_weapon() -> void:
 	equipped_weapon = null
+	var had_weapon := false
 	for weapon in _equipped_weapons():
 		var weapon_node := weapon as Node
 		if weapon_node == null:
 			continue
+		had_weapon = true
 		if weapon_node.has_method("cleanup_effects"):
 			weapon_node.cleanup_effects()
 		if weapon_node.get_parent() != null:
 			weapon_node.get_parent().remove_child(weapon_node)
 		weapon_node.queue_free()
 	_clear_detached_weapon_effects()
+	if had_weapon:
+		call_deferred("_clear_detached_weapon_effects")
 
 
 func _clear_detached_weapon_effects() -> void:
@@ -280,7 +302,10 @@ func _physics_process(_delta: float) -> void:
 	if InputMap.has_action("ultimate") and Input.is_action_just_pressed("ultimate"):
 		activate_ultimate()
 
-	velocity = direction.normalized() * speed
+	var web_factor := 1.0
+	if _web_slow_until > Time.get_ticks_msec() / 1000.0:
+		web_factor = _web_slow_factor
+	velocity = direction.normalized() * speed * web_factor
 	move_and_slide()
 	_update_movement_animation(_delta)
 	_update_low_hp_state()
@@ -288,13 +313,34 @@ func _physics_process(_delta: float) -> void:
 	_update_battle_shout()
 
 
-func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void:
+func play_action_animation(action_id: String, direction := Vector2.ZERO, phase := "", duration := 0.0, metadata := {}) -> void:
 	if direction.length_squared() > 0.0:
 		_facing_direction = direction.normalized()
 		_update_sprite_facing(_facing_direction)
+	var event_metadata: Dictionary = metadata if metadata is Dictionary else {}
+	last_weapon_animation_event = {
+		"action_id": action_id,
+		"phase": phase,
+		"duration": maxf(float(duration), 0.0),
+		"direction": _facing_direction,
+		"weapon_id": weapon_id,
+		"character_id": character_id,
+		"metadata": event_metadata.duplicate(true),
+	}
+	weapon_animation_event.emit(last_weapon_animation_event)
+	if phase != "":
+		var event_rig := _cutout_rig()
+		if event_rig != null and event_rig.has_method("play_action"):
+			var event_weapon_id := str(event_metadata.get("weapon_id", weapon_id))
+			var event_attack_mode := str(event_metadata.get("attack_mode", ""))
+			var event_variant := event_weapon_id if event_weapon_id != "" else weapon_id
+			if event_attack_mode != "":
+				event_variant = "%s:%s:%s" % [event_variant, event_attack_mode, phase]
+			event_rig.play_action(action_id, _facing_direction, event_variant, maxf(float(duration), 0.0))
+		return
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_action"):
-		var animation_variant: String = weapon_id if action_id == "attack" else character_id
+		var animation_variant: String = weapon_id if weapon_id != "" else character_id
 		rig.play_action(action_id, _facing_direction, animation_variant)
 
 	if _action_tween != null and _action_tween.is_valid():
@@ -342,6 +388,12 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void
 	_action_tween.tween_callback(_apply_sprite_transform)
 
 
+func apply_web_slow(duration: float, factor: float) -> void:
+	# Паутина: временное замедление движения (повтор продлевает, фактор общий).
+	_web_slow_until = maxf(_web_slow_until, Time.get_ticks_msec() / 1000.0 + duration)
+	_web_slow_factor = clampf(factor, 0.2, 1.0)
+
+
 func take_damage(amount: float, _source := "") -> bool:
 	if _damage_invulnerability_left > 0.0:
 		return false
@@ -370,6 +422,16 @@ func take_damage(amount: float, _source := "") -> bool:
 	damaged.emit(amount)
 	_gain_ultimate_charge(final_damage * float(_ultimate_config().get("taken_charge_rate", 1.0)))
 	_trigger_thorn_reflect(final_damage)
+
+	# Capstone «Вторая жизнь» (мета-древо, Стойкость): раз за забег смертельный удар
+	# оставляет 1 HP и даёт 2с неуязвимости. Использование — run-persistent через snapshot.
+	if health <= 0.0 and float(run_modifiers.get("death_save", 0.0)) > 0.0 \
+			and float(run_modifiers.get("death_save_used", 0.0)) <= 0.0:
+		run_modifiers["death_save_used"] = 1.0
+		health = 1.0
+		_damage_invulnerability_left = maxf(_damage_invulnerability_left, 2.0)
+		_play_sfx("dodge")
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 200.0, Color(1.0, 0.95, 0.6, 0.55), false)
 
 	if health <= 0.0:
 		var rig := _cutout_rig()
@@ -496,20 +558,67 @@ func _apply_reward_mods(mods: Dictionary) -> void:
 			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 0.0)) + float(mods[modifier_id])
 
 
+# Боевое подмножество модификаторов мета-древа умений (SCRUM-150): суммарные
+# приросты из META_PROGRESSION.skill_modifiers складываются в run_modifiers как
+# постоянный бонус забега (поверх asc-наград). Экономические/мета-флаги дерева
+# (золото/цены/рероллы/death_save) применяются на уровне забега/UI, не здесь.
+const META_SKILL_MULT_MAP := {
+	"damage_mult": "damage_multiplier",
+	"attack_speed_mult": "attack_speed_multiplier",
+	"max_health_mult": "max_health_multiplier",
+	"xp_gain_mult": "xp_gain_multiplier",
+	"money_gain_mult": "money_gain_multiplier",
+	"ult_charge_mult": "ult_charge_multiplier",
+	"elite_boss_damage_mult": "elite_boss_damage_multiplier",
+}
+const META_SKILL_FLAT_MAP := {
+	"defense_flat": "defense_flat",
+	"dodge_flat": "dodge_flat",
+	"regeneration_flat": "regeneration_flat",
+}
+
+
+func apply_meta_skill_modifiers(mods: Dictionary) -> void:
+	var old_max_health := max_health
+	for key in META_SKILL_MULT_MAP:
+		if mods.has(key):
+			var run_key: String = META_SKILL_MULT_MAP[key]
+			# Значения дерева — доли (+0.06), множитель = 1.0 + сумма.
+			run_modifiers[run_key] = float(run_modifiers.get(run_key, 1.0)) * (1.0 + float(mods[key]))
+	for key in META_SKILL_FLAT_MAP:
+		if mods.has(key):
+			var run_key: String = META_SKILL_FLAT_MAP[key]
+			run_modifiers[run_key] = float(run_modifiers.get(run_key, 0.0)) + float(mods[key])
+	_apply_stat_scaling(false, old_max_health)
+	for weapon in _equipped_weapons():
+		_apply_weapon_scaling(weapon)
+	# Capstone «Боевой раж»: ульта стартует частично заряженной.
+	var start_charge := float(mods.get("ult_start_charge", 0.0))
+	if start_charge > 0.0:
+		ultimate_charge = clampf(ultimate_max_charge * start_charge, 0.0, ultimate_max_charge)
+	# Capstone «Вторая жизнь»: флаг спасения от смерти (логика — в take_damage).
+	if float(mods.get("death_save", 0.0)) > 0.0:
+		run_modifiers["death_save"] = 1.0
+
+
 func _apply_regeneration(delta: float) -> void:
+	var vampiric_cap := float(run_modifiers.get("vampiric_heal_per_second_cap", 4.0))
+	_vampiric_heal_budget = minf(_vampiric_heal_budget + vampiric_cap * delta, vampiric_cap)
 	var regeneration := float(derived_parameters.get("regeneration", 0.0))
 	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
 		return
-	health = minf(health + regeneration * delta, max_health)
+	health = minf(health + regeneration * float(run_modifiers.get("healing_multiplier", 1.0)) * delta, max_health)
 
 
 func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
 	_gain_ultimate_charge(maxf(dealt_damage, 0.0) * float(_ultimate_config().get("damage_charge_rate", 0.03)))
-	# Вампиризм: с шансом vampiric_chance лечит vampiric_amount + половину урона.
+	# Вампиризм теперь sustain, а не бессмертие: малая доля урона + per-second cap.
 	var vampiric_chance := float(derived_parameters.get("vampiric_chance", 0.0))
-	if vampiric_chance > 0.0 and dealt_damage > 0.0 and randf() < vampiric_chance:
-		var vampiric_heal := float(derived_parameters.get("vampiric_amount", 0.0)) + dealt_damage * 0.5
-		health = minf(health + vampiric_heal, max_health)
+	if vampiric_chance > 0.0 and dealt_damage > 0.0 and _vampiric_heal_budget > 0.0 and randf() < vampiric_chance:
+		var raw_heal := float(derived_parameters.get("vampiric_amount", 0.0)) + dealt_damage * 0.08
+		var vampiric_heal = minf(raw_heal, _vampiric_heal_budget)
+		_vampiric_heal_budget -= vampiric_heal
+		health = minf(health + vampiric_heal * float(run_modifiers.get("healing_multiplier", 1.0)), max_health)
 	_trigger_magic_enchant(enemy)
 	_trigger_universal_dot(enemy)
 	_trigger_leadership_echo(enemy)
@@ -548,6 +657,20 @@ func activate_ultimate() -> bool:
 			_activate_guitarist_ultimate(config, multiplier)
 		"assassin":
 			_activate_assassin_ultimate(config, multiplier)
+		"thief":
+			_activate_thief_ultimate(config, multiplier)
+		"elementalist":
+			_activate_elementalist_ultimate(config, multiplier)
+		"sniper":
+			_activate_sniper_ultimate(config, multiplier)
+		"priest":
+			_activate_priest_ultimate(config, multiplier)
+		"biologist":
+			_activate_biologist_ultimate(config, multiplier)
+		"robot":
+			_activate_robot_ultimate(config, multiplier)
+		"engineer":
+			_activate_engineer_ultimate(config, multiplier)
 		"ranger":
 			_activate_ranger_ultimate(config, multiplier)
 		"doctor":
@@ -627,6 +750,163 @@ func _activate_assassin_ultimate(config: Dictionary, multiplier: float) -> void:
 		_apply_ultimate_damage(enemy, damage_amount * float(derived_parameters.get("crit_damage_multiplier", 1.5)))
 
 
+func _activate_thief_ultimate(config: Dictionary, multiplier: float) -> void:
+	var count := int(config.get("target_count", 8)) + int(floor(multiplier))
+	var radius := float(config.get("radius", 500.0))
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 1.0)) * multiplier
+	var stolen := 0
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius * 0.52, Color(0.95, 0.66, 0.18, 0.36), true)
+	for enemy in _nearest_enemies(count, radius):
+		if not is_instance_valid(enemy):
+			continue
+		AttackVfx.beam(_vfx_parent(), global_position, enemy.global_position, 34.0, Color(1.0, 0.82, 0.28, 0.36))
+		_apply_ultimate_damage(enemy, damage_amount)
+		stolen += 2
+	if stolen > 0:
+		gain_money(stolen)
+
+
+func _activate_elementalist_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 430.0)) * clampf(multiplier, 0.8, 1.65)
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(config.get("damage", 1.18)) * multiplier
+	AttackVfx.orb_burst(_vfx_parent(), global_position, radius, Color(0.35, 0.80, 1.0, 0.44))
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius * 0.72, Color(1.0, 0.48, 0.16, 0.38), true)
+	_damage_enemies_in_radius(global_position, radius, damage_amount)
+	for enemy in _nearest_enemies(int(config.get("target_count", 6)), radius * 1.15):
+		if not is_instance_valid(enemy):
+			continue
+		AttackVfx.beam(_vfx_parent(), global_position, enemy.global_position, 42.0, Color(0.86, 0.46, 1.0, 0.40))
+		_apply_ultimate_damage(enemy, damage_amount * 0.42)
+
+
+func _activate_sniper_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 760.0)) * clampf(multiplier, 0.8, 1.6)
+	var count := int(config.get("target_count", 5)) + int(floor(multiplier))
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 1.35)) * multiplier
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius * 0.28, Color(0.78, 0.88, 1.0, 0.34), true)
+	for enemy in _nearest_enemies(count, radius):
+		if not is_instance_valid(enemy):
+			continue
+		var sky_start: Vector2 = enemy.global_position + Vector2(0.0, -radius * 0.42)
+		AttackVfx.beam(_vfx_parent(), sky_start, enemy.global_position, 36.0, Color(0.92, 0.96, 1.0, 0.48))
+		_apply_ultimate_damage(enemy, damage_amount)
+
+
+func _activate_priest_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 410.0)) * clampf(multiplier, 0.8, 1.65)
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(config.get("damage", 1.05)) * multiplier
+	var heal_ratio := float(config.get("heal_ratio", 0.45))
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(1.0, 0.92, 0.52, 0.38), false)
+	AttackVfx.orb_burst(_vfx_parent(), global_position, radius * 0.70, Color(0.88, 0.96, 1.0, 0.32))
+	var healed := 0.0
+	for enemy in _enemies_in_radius(global_position, radius):
+		_apply_ultimate_damage(enemy, damage_amount)
+		healed += damage_amount * heal_ratio
+	var before := health
+	health = minf(max_health, health + healed * float(run_modifiers.get("healing_multiplier", 1.0)))
+	if health > before + 0.01:
+		_show_heal_vfx()
+
+
+func _activate_biologist_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 440.0)) * clampf(multiplier, 0.8, 1.65)
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(config.get("damage", 1.10)) * multiplier
+	var heal_ratio := float(config.get("heal_ratio", 0.18))
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.46, 1.0, 0.38, 0.34), true)
+	AttackVfx.orb_burst(_vfx_parent(), global_position, radius * 0.58, Color(0.28, 0.92, 0.54, 0.30))
+	var healed := 0.0
+	for enemy in _nearest_enemies(int(config.get("target_count", 9)), radius):
+		if not is_instance_valid(enemy):
+			continue
+		AttackVfx.beam(_vfx_parent(), global_position, enemy.global_position, 30.0, Color(0.52, 1.0, 0.42, 0.36))
+		_apply_ultimate_damage(enemy, damage_amount)
+		healed += damage_amount * heal_ratio
+	if healed > 0.01:
+		var before := health
+		health = minf(max_health, health + healed * float(run_modifiers.get("healing_multiplier", 1.0)))
+		if health > before + 0.01:
+			_show_heal_vfx()
+
+
+func _activate_robot_ultimate(config: Dictionary, multiplier: float) -> void:
+	var duration := float(config.get("duration", 4.5)) * clampf(multiplier, 0.8, 1.7)
+	var radius := float(config.get("radius", 380.0)) * clampf(multiplier, 0.8, 1.55)
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 0.78)) * multiplier
+	var absorb_bonus := 8.0 + 4.0 * clampf(multiplier, 0.8, 2.0)
+	run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + absorb_bonus
+	run_modifiers["defense_flat"] = float(run_modifiers.get("defense_flat", 0.0)) + 0.05
+	_apply_stat_scaling(false, max_health)
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.42, 0.82, 1.0, 0.42), true)
+	_damage_enemies_in_radius(global_position, radius, damage_amount)
+	_ultimate_active = true
+	if _ultimate_tween != null and _ultimate_tween.is_valid():
+		_ultimate_tween.kill()
+	_ultimate_tween = create_tween()
+	var self_id := get_instance_id()
+	var pulse_count := maxi(int(config.get("target_count", 8)) / 2, 3)
+	for pulse_index in range(pulse_count):
+		_ultimate_tween.tween_interval(duration / float(pulse_count + 1))
+		_ultimate_tween.tween_callback(func() -> void:
+			var current_robot := instance_from_id(self_id) as Node2D
+			if current_robot == null or not is_instance_valid(current_robot):
+				return
+			AttackVfx.ring_pulse(_vfx_parent(), current_robot.global_position, radius * 0.62, Color(0.36, 1.0, 0.86, 0.32), false)
+			_damage_enemies_in_radius(current_robot.global_position, radius * 0.62, damage_amount * 0.34)
+		)
+	_ultimate_tween.tween_interval(duration / float(pulse_count + 1))
+	_ultimate_tween.tween_callback(func() -> void:
+		_ultimate_active = false
+		run_modifiers["absorb_flat"] = maxf(0.0, float(run_modifiers.get("absorb_flat", 0.0)) - absorb_bonus)
+		run_modifiers["defense_flat"] = maxf(0.0, float(run_modifiers.get("defense_flat", 0.0)) - 0.05)
+		_apply_stat_scaling(false, max_health)
+	)
+
+
+func _activate_engineer_ultimate(config: Dictionary, multiplier: float) -> void:
+	var duration := float(config.get("duration", 4.2)) * clampf(multiplier, 0.8, 1.7)
+	var radius := float(config.get("radius", 430.0)) * clampf(multiplier, 0.8, 1.55)
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 0.92)) * multiplier
+	var heal_ratio := float(config.get("heal_ratio", 0.12))
+	_ultimate_active = true
+	run_modifiers["summon_bonus"] = float(run_modifiers.get("summon_bonus", 0.0)) + 2.0
+	run_modifiers["regeneration_flat"] = float(run_modifiers.get("regeneration_flat", 0.0)) + 0.35
+	_apply_stat_scaling(false, max_health)
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.90, 0.72, 0.28, 0.42), true)
+	var healed := 0.0
+	for enemy in _nearest_enemies(int(config.get("target_count", 9)), radius):
+		if not is_instance_valid(enemy):
+			continue
+		AttackVfx.beam(_vfx_parent(), global_position, enemy.global_position, 30.0, Color(0.48, 0.90, 1.0, 0.42))
+		_apply_ultimate_damage(enemy, damage_amount)
+		healed += damage_amount * heal_ratio
+	if healed > 0.01:
+		var before := health
+		health = minf(max_health, health + healed * float(run_modifiers.get("healing_multiplier", 1.0)))
+		if health > before + 0.01:
+			_show_heal_vfx()
+	if _ultimate_tween != null and _ultimate_tween.is_valid():
+		_ultimate_tween.kill()
+	_ultimate_tween = create_tween()
+	var self_id := get_instance_id()
+	var pulse_count := maxi(int(config.get("target_count", 9)) / 3, 3)
+	for pulse_index in range(pulse_count):
+		_ultimate_tween.tween_interval(duration / float(pulse_count + 1))
+		_ultimate_tween.tween_callback(func() -> void:
+			var current_engineer := instance_from_id(self_id) as Node2D
+			if current_engineer == null or not is_instance_valid(current_engineer):
+				return
+			AttackVfx.ring_pulse(_vfx_parent(), current_engineer.global_position, radius * 0.48, Color(1.0, 0.56, 0.22, 0.34), false)
+			_damage_enemies_in_radius(current_engineer.global_position, radius * 0.48, damage_amount * 0.28)
+		)
+	_ultimate_tween.tween_interval(duration / float(pulse_count + 1))
+	_ultimate_tween.tween_callback(func() -> void:
+		_ultimate_active = false
+		run_modifiers["summon_bonus"] = maxf(0.0, float(run_modifiers.get("summon_bonus", 0.0)) - 2.0)
+		run_modifiers["regeneration_flat"] = maxf(0.0, float(run_modifiers.get("regeneration_flat", 0.0)) - 0.35)
+		_apply_stat_scaling(false, max_health)
+	)
+
+
 func _activate_ranger_ultimate(config: Dictionary, multiplier: float) -> void:
 	var radius := float(config.get("radius", 480.0)) * clampf(multiplier, 0.8, 1.6)
 	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 1.18)) * multiplier
@@ -688,22 +968,11 @@ func _damage_enemies_in_radius(center: Vector2, radius: float, damage_amount: fl
 
 
 func _enemies_in_radius(center: Vector2, radius: float) -> Array:
-	var result := []
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		if enemy_node.global_position.distance_squared_to(center) <= radius * radius:
-			result.append(enemy_node)
-	return result
+	return TARGET_QUERY.in_radius(self, center, radius)
 
 
 func _nearest_enemies(count: int, radius: float) -> Array:
-	var result := _enemies_in_radius(global_position, radius)
-	result.sort_custom(func(a: Node2D, b: Node2D) -> bool:
-		return global_position.distance_squared_to(a.global_position) < global_position.distance_squared_to(b.global_position)
-	)
-	return result.slice(0, mini(count, result.size()))
+	return TARGET_QUERY.nearest_many(self, global_position, radius, count)
 
 
 func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
@@ -731,11 +1000,8 @@ func _trigger_magic_enchant(enemy: Node2D) -> void:
 	var radius := clampf(float(derived_parameters.get("aoe_radius", 120.0)) * 0.45, 72.0, 170.0)
 	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
 	AttackVfx.orb_burst(parent, enemy.global_position, radius, Color(0.58, 0.38, 1.0, 0.34))
-	for other in get_tree().get_nodes_in_group("enemies"):
-		var other_node := other as Node2D
-		if other_node == null or not is_instance_valid(other_node):
-			continue
-		if other_node.global_position.distance_squared_to(enemy.global_position) <= radius * radius and other_node.has_method("take_damage"):
+	for other_node in TARGET_QUERY.in_radius(self, enemy.global_position, radius):
+		if other_node.has_method("take_damage"):
 			other_node.take_damage(enchant_damage)
 
 
@@ -781,17 +1047,13 @@ func _update_battle_shout() -> void:
 		return
 	var shout_radius := clampf(float(derived_parameters.get("aura_radius", 160.0)) * 0.55, 105.0, 230.0)
 	var affected := 0
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var away := enemy_node.global_position - global_position
-		if away.length_squared() <= shout_radius * shout_radius:
-			affected += 1
-			if enemy_node.has_method("apply_knockback") and away.length_squared() > 0.001:
-				enemy_node.apply_knockback(away.normalized() * sound_damage * 10.0)
-			elif away.length_squared() > 0.001:
-				enemy_node.global_position += away.normalized() * sound_damage * 0.08
+	for enemy_node in TARGET_QUERY.in_radius(self, global_position, shout_radius):
+		var away: Vector2 = enemy_node.global_position - global_position
+		affected += 1
+		if enemy_node.has_method("apply_knockback") and away.length_squared() > 0.001:
+			enemy_node.apply_knockback(away.normalized() * sound_damage * 10.0)
+		elif away.length_squared() > 0.001:
+			enemy_node.global_position += away.normalized() * sound_damage * 0.08
 	if affected <= 0:
 		return
 	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
@@ -814,11 +1076,8 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 	if scene == null:
 		scene = get_tree().root
 	AttackVfx.orb_burst(scene, blast_position, 140.0, Color(1.0, 0.82, 0.30, 0.5))
-	for other in get_tree().get_nodes_in_group("enemies"):
-		var other_node := other as Node2D
-		if other_node == null or not is_instance_valid(other_node):
-			continue
-		if other_node.global_position.distance_squared_to(blast_position) <= 140.0 * 140.0 and other_node.has_method("take_damage"):
+	for other_node in TARGET_QUERY.in_radius(self, blast_position, 140.0):
+		if other_node.has_method("take_damage"):
 			other_node.take_damage(blast_damage)
 
 
@@ -827,7 +1086,7 @@ func gain_xp(amount: int) -> void:
 	while xp >= xp_to_next:
 		xp -= xp_to_next
 		level += 1
-		xp_to_next = int(ceil(float(xp_to_next) * 1.35 + 2.0))
+		xp_to_next = ProgressionData.next_xp_requirement(xp_to_next)
 		leveled_up.emit()
 
 
@@ -926,6 +1185,9 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 
 	if weapon.get("wave_width") != null and weapon.has_meta("base_wave_width"):
 		weapon.set("wave_width", float(weapon.get_meta("base_wave_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
+
+	if weapon.get("suppression_width") != null and weapon.has_meta("base_suppression_width"):
+		weapon.set("suppression_width", float(weapon.get_meta("base_suppression_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
 
 	if weapon.get("max_summons") != null:
 		var base_max_summons := int(weapon.get_meta("base_max_summons"))

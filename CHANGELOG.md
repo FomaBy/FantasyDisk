@@ -4,6 +4,144 @@
 
 ## [Unreleased] — ветка dev
 
+## [0.1.4] — 2026-06-13
+
+- Docs (SCRUM-195): synchronized the remaining 0.1.4 domain-doc drift after
+  the data/UI splits and cleanup pass: fixed stale `0.2` wording, corrected
+  system doc filenames, refreshed boss/mini-elite summaries and aligned current
+  state with the active `dev` stabilization target.
+
+- Cleanup (SCRUM-193): verified the legacy sprite cleanup backup at
+  `build/cleanup_backup_2026_06_13/`, confirmed old character placeholders are
+  absent from active runtime folders, and hardened the asset audit around split
+  `progression_data_*` files so dynamic artifact/shop families stay protected.
+
+- Refactor (SCRUM-199): `scripts/ui_screens.gd` оставлен compatibility facade,
+  а hero radar control, dark-fantasy theme paths, shop UI constants и hero
+  select constants вынесены в `scripts/ui/` modules без изменения node names,
+  визуала или gameplay behavior.
+
+- Bugfix (SCRUM-257): укреплен umbrella `runtime_smoke_test` — delayed orb/curse
+  weapon callbacks больше не захватывают временные freed nodes напрямую, а
+  плавающий hero-select radar получил стабильный вертикальный зазор от header
+  на 1280×720; финальная isolated smoke-серия 12/12 без warning/error.
+
+- Marketing art: добавлен Steam Library Logo для FantasyDisk (`assets/marketing/steam/fantasydisk_steam_library_logo.png`, 1280x720 RGBA transparent) и preview на темном фоне; generator `tools/generate_steam_logo.py`.
+
+- Animation (SCRUM-239): unique class attack timing events now drive the cutout
+  rig as `weapon_id:attack_mode:phase` variants, so windup/release/pulse/burst/
+  deploy/channel beats reuse Animator-owned poses without changing weapon
+  damage, targeting, VFX spawn, or balance; animation smoke covers all current
+  playable class weapon variants.
+
+- Refactor (SCRUM-198): `ProgressionData` стал compatibility facade, а данные
+  вынесены в domain owners: characters, weapons, rewards/artifacts, shop,
+  ascension, balance и enemies; public constants/API сохранены для старых smoke
+  и runtime-ссылок без изменения баланса.
+
+- Bugfix (SCRUM-230): в выборе героя текст Возвышения возле кнопки старта теперь показывает только изменение выбранного уровня (`Уровень N: ...`), а не весь кумулятивный список 1..N; полный список сохранен для tooltip/кодекса.
+
+- Content (SCRUM-192): `sprite_path` новых классов выровнен с canonical registry — Вор, Элементалист, Снайпер, Священник, Биолог и Инженер теперь используют собственные full-art PNG вместо proxy-спрайтов старых классов; добавлен focused registry alignment test на все 17 персонажей.
+
+- Tests (SCRUM-203): добавлен focused UI no-overlap matrix test для main/settings/codex/patch/hero/victory/death peer-controls на 1152x648, 1280x720, 1600x900 и 2560x1440; rect dump пишется в `build/qa/ui_no_overlap_matrix.md`.
+
+- Tests (SCRUM-202): umbrella `tests/runtime_smoke_test.gd` сохранен как главный smoke path, а регрессии разложены на focused suites: `runtime_smoke_ui_test.gd`, `runtime_smoke_combat_test.gd`, `runtime_smoke_progression_economy_test.gd`, `runtime_smoke_weapon_mechanics_test.gd`, `runtime_smoke_boss_elite_test.gd`.
+
+- Refactor (SCRUM-196): `ClassWeapon` переведен с длинного `attack_mode` dispatch-match на публичный registry executor-ов; focused weapon smoke и umbrella smoke проверяют, что каждый data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет зарегистрированный executor.
+
+- Performance (SCRUM-197): добавлен `CombatTargetQuery` с per-frame cache для enemy target lookups; hot-path запросы в ClassWeapon/BerserkWeapon/player ultimates/allies/summoner переведены на nearest/radius/corridor/segment helpers, добавлен focused cache test.
+
+- Баланс-аудит (SCRUM-190): добавлен сценарный survivability harness для fragile/steady/sturdy/tank профилей и roster projection по реальным классам; отчеты `build/survivability_report.md` и `build/survivability_scenarios_report.md` фиксируют текущие TTD/mitigation слои без изменения балансовых констант.
+
+- Локализация (SCRUM-210): добавлен data-driven русский глоссарий `scripts/glossary.gd`, вкладка «Глоссарий» в Кодексе, пунктирные интерактивные термины и tooltip hook (hover / Alt+hover для popup-контекста); русифицированы ключевые visible strings магазина, level-up наград, HUD и кодексных описаний.
+
+- Bugfix (SCRUM-211): товары магазина перенесены из старой правой wall-зоны в центр нового shop backdrop; frameless стиль и node-bound stock сохранены, runtime smoke проверяет центр группы (`center_delta_x=0.0`) и no-overlap на 1280x720/2560x1440.
+
+- UI Art (SCRUM-147): user correction applied — Parchment & Wax Seal remains only on buttons, button PNGs are taller so the wax seal fits, and all non-button panels/cards/HUD/tooltips/shop frames were restored to the old interface look; active preview `docs/design/previews/ui_button_only_legacy_panels_contact.png`, pipeline `tools/apply_button_only_ui_revert.py`.
+
+- UI Theme (SCRUM-222): Back-end style layer remains path-compatible — buttons use real primary/secondary/danger 4-state Parchment & Wax Seal PNG (`idle/hover/pressed/disabled`), while `dark_fantasy` non-button frame paths now visually mirror the old interface after the SCRUM-147 correction.
+
+- Bugfix (SCRUM-231): на экране выбора героя роза характеристик снова вынесена из рамки досье в плавающий правый верхний виджет; досье/описание остаются слева от радара и no-overlap проверяется на 1280x720, 1600x900 и 2560x1440.
+
+- UI (SCRUM-224/SCRUM-225/SCRUM-226/SCRUM-227): экран выбора героя собран в единую правую информ-панель (досье слева от радара), выбор оружия показывает PNG-спрайт и русские статы в легких кликабельных карточках, level-up варианты стали text-field карточками без тяжелой reward-button рамки, а wax-seal кнопки подняты до читаемой высоты с компактным no-seal стилем для utility/dropdown controls. Runtime smoke пишет dumps `build/qa/hero_select_radar_rects.md`, `weapon_select_clean_layout.md` и `parchment_button_seal_sizes.md`.
+
+- Tests (SCRUM-228): стабилизирован `tests/melee_weapon_targeting_test.gd` — hammer AoE блок теперь ждет один frame после добавления enemies, чтобы тест не читал устаревший per-frame target cache; production `combat_target_query.gd` не менялся.
+
+- UI Art (SCRUM-223): игровой курсор заменен на выбранный пользователем dark steel dragon/clawed fire pointer — default/hover/attack PNG обновлены в `assets/sprites/ui/cursor/`, hotspot выверен на `(2, 2)`, preview `docs/design/previews/cursor_clawed_fire_before_after.png`.
+
+- UI Art (SCRUM-229): панели/окна/плашки/чекбоксы переведены с временного legacy вида на leather+gold dark fantasy kit из пользовательских референсов `docs/design/references/interface/`; добавлен пайплайн `tools/build_leather_gold_ui_kit.py`, source kit `assets/sprites/ui/frames/leather_gold/`, live replacements для `dark_fantasy/global/escape/shop/system` PNG и QA preview `docs/design/previews/interface_leather_gold_panel_kit_contact.png`.
+
+- Art (SCRUM-156): подготовлены 9 финальных painterly D&D source sprites для новых боссов и мини-элиток SCRUM-155 — `boss_bone_archon`, `boss_brood_mother`, `boss_ashen_colossus`, `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`; все PNG `512x512` RGBA transparent, preview `docs/design/previews/new_bosses_mini_elites_contact.png` и scale-лист `new_bosses_mini_elites_scale_preview.png`.
+
+- Баланс-аудит (SCRUM-188): добавлен route-level отчет `build/route_economy_xp_model.md` для balanced/combat-heavy/shop-heavy маршрутов; модель подтверждает 8-9 level-up и healthy/high покупательную способность, поэтому текущий XP uplift +7.1% оставлен без дополнительного повышения.
+
+- Animation API (SCRUM-208): добавлен Back-end side-channel `weapon_animation_event` для delayed/pulse/deploy/channel оружия; phase metadata (`windup/release/pulse/burst/deploy/channel/recover`) идет из существующих gameplay таймингов и не меняет урон, targeting, VFX spawn или баланс.
+
+- Visual integration (SCRUM-170): центральные экраны получили role-specific dark fantasy backdrops из `assets/backgrounds/ui/` с cover scaling: cathedral для системных экранов, merchant archive для магазина, arcane lab для event/level-up/meta, reward hall для наград/победы и crypt для поражения/danger screens.
+
+- Visual integration (SCRUM-157): призывные союзники и deployables теперь различаются по источнику — Друидский амулет выбирает beast/pack-spirit, гомункул Химика использует отдельный homunculus sprite, звуковой усилитель и вороний тотем ставят собственные field sprites без изменения баланса и cleanup-групп.
+
+- VFX (SCRUM-181): все 19 активных `assets/sprites/effects/*.png` перерисованы в более сдержанный painterly D&D/tabletop стиль без кислотного неона и голой геометрии; добавлены before/after и meadow/marsh readability previews, Godot import и `attack_vfx_smoke_test` проходят.
+
+- UI Art (SCRUM-182): derived stat icons, shop-only icons and shop state sprites refreshed in-place as compact fantasy raster objects/frames with transparent alpha; added before/after and 40px readability previews for Escape stats, level-up, shop and tooltip usage.
+
+- Design Audit (SCRUM-183): confirmed obsolete legacy placeholder/root prototype sprite candidates and updated Back-end cleanup handoff; no runtime assets were deleted in Design scope, with live exceptions documented for `berserk_walk_sheet_v2.png`, `enemy_projectile_magic_64.png`, and active `assets/sprites/enemies/*.png`.
+
+- Bugfix (SCRUM-207): магазин больше не регенерирует сток при повторном открытии того же shop-узла — набор товаров привязан к конкретной точке маршрута, купленные позиции остаются снятыми со стены, повторная покупка невозможна; новый shop-узел получает свежий сток.
+
+- UX (SCRUM-205): Escape в активном забеге теперь везде открывает единое меню паузы поверх текущего экрана; досье персонажа доступно кнопкой из этого меню, повторный Escape возвращает к подлежащему экрану без сброса состояния. Магазин получил единый «Назад», события показывают «Назад» с пояснением, если skip недоступен.
+
+- Bugfix (SCRUM-206): на экране выбора героя радар характеристик увеличен до 370x230, опущен ниже шапки и получил резервное пространство в досье; runtime smoke проверяет rect/no-overlap на 1280x720, 1600x900 и 2560x1440, dump сохранен в `build/qa/hero_select_radar_rects.md`.
+
+- Bugfix (SCRUM-172): исправлена потенциальная «немая» аудио-конфигурация — `master_volume=0` больше не hard-mute'ит Master bus, старые профили с нулем без явного intent-флага мигрируют к 100%, кроссфейд музыки сбрасывает застрявшие low-volume состояния, а вкладка «Звук» получила кнопку «Сбросить звук по умолчанию».
+
+- UI (SCRUM-160): магазин больше не показывает товары в золотых карточках — предметы висят на стене фона как реальные товары лавки, с контактной тенью, компактным ценником с монетой, hover tooltip, затемнением недоступного товара и empty-hook состоянием после покупки; runtime smoke проверяет отсутствие frame-style слотов и no-overlap на 1280x720/2560x1440.
+
+- Контент (SCRUM-164): добавлен финальный класс Class Sheet — Инженер (`engineer`) с 3 уникальными оружиями: ключ часового (`engineer_sentry_link`), ремонтный дрон (`engineer_repair_drone`) и минная сетка (`engineer_pressure_mines`); выбор героя/кодекс/тесты расширены под 17 классов и 51 weapon variant. Арт и rig/motion переданы Design/Animator handoff-задачами.
+- Арт (SCRUM-164): подготовлен canonical Engineer visual kit — `assets/sprites/characters/engineer.png`, `assets/sprites/weapons/engineer_sentry_wrench.png`, `assets/sprites/weapons/engineer_repair_drone.png`, `assets/sprites/weapons/engineer_pressure_mines.png`; добавлен preview `docs/design/previews/engineer_art_contact.png`, Godot import и PNG/alpha validation пройдены.
+
+- Контент (SCRUM-166): добавлен класс Робот (`robot`) с 3 уникальными оружиями — магнитный якорь (`robot_magnetic_anchor`), гидравлический пресс (`robot_compression_line`) и реакторное ядро (`robot_reactor_vent`); выбор героя/кодекс/тесты расширены под 16 классов и 48 weapon variants. Runtime smoke blocker по indentation в weapon-mechanics awaits исправлен. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+- Арт (SCRUM-166): подготовлен canonical Robot visual kit — `assets/sprites/characters/robot.png`, `assets/sprites/weapons/robot_magnetic_anchor.png`, `assets/sprites/weapons/robot_hydraulic_press.png`, `assets/sprites/weapons/robot_reactor_core.png`; добавлен preview `docs/design/previews/robot_art_contact.png`, Godot import и PNG/alpha validation пройдены.
+
+- Контент (SCRUM-162): добавлен класс Биолог (`biologist`) с 3 уникальными оружиями — споровая линза (`bio_spore_bloom`), инъектор образцов (`bio_sample_dart`) и семя симбионта (`bio_symbiote_web`); выбор героя/кодекс/тесты расширены под 15 классов и 45 weapon variants. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+- Арт (SCRUM-162): подготовлен canonical Biologist visual kit — `assets/sprites/characters/biologist.png`, `assets/sprites/weapons/biologist_spore_lens.png`, `assets/sprites/weapons/biologist_sample_injector.png`, `assets/sprites/weapons/biologist_symbiote_seed.png`; добавлен preview `docs/design/previews/biologist_art_contact.png`, Godot import и PNG/alpha validation пройдены.
+
+- Контент (SCRUM-165): добавлен класс Священник (`priest`) с 3 уникальными оружиями — светлый реликварий (`priest_sanctify`), кадило обета (`priest_ward`) и колокол молитвы (`priest_prayer_chain`); выбор героя/кодекс/тесты расширены под 14 классов и 42 weapon variants. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+
+- Контент (SCRUM-167): добавлен класс Снайпер (`sniper`) с 3 уникальными оружиями — винтовка Мертвого Глаза (`sniper_lockshot`), прицел Наводчика (`sniper_kill_zone`) и осколочные патроны (`sniper_split_round`); выбор героя/кодекс/тесты расширены под 13 классов и 39 weapon variants. Runtime smoke blocker по GDScript type inference в sniper weapon methods исправлен явными типами/casts. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+
+- Музыка (SCRUM-154): меню и бой переведены на струнный тавернный эмбиент (RandomMind, CC0/OpenGameArt) — «The Old Tower Inn» в меню, «Minstrel Dance» в бою, тёмная вариация «Battle» в босс-бою; бесшовные лупы (шов меню сглажен микро-фейдом), громкость треков нормализована к одному уровню, добавлен кроссфейд меню↔бой 0.9с; источники и лицензии в docs/design/audio.md.
+
+- Контент (SCRUM-163): добавлен класс Элементалист (`elementalist`) с 3 уникальными оружиями — кольцо стихий (`elemental_orbit`), призматический фокус (`prism_rift`) и ядро метеора (`meteor_shards`); выбор героя/кодекс/тесты расширены под 12 классов и 36 weapon variants. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+
+- Контент (SCRUM-169): добавлен класс Вор (`thief`) с 3 уникальными оружиями — кошель рикошета (`coin_ricochet` + steal money), плащ захода (`shadow_backstab`) и дымовая бомба (`smoke_bomb` + временный dodge); выбор героя/кодекс/тесты расширены под 11 классов и 33 weapon variants. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
+
+- Контент (SCRUM-168): добавлен класс Солдат (`soldier`) с 3 уникальными оружиями — аркебуза строя (`suppression_burst`), граната с фитилем (`grenade_cook`) и штык-стойка (`bayonet_brace`); подключены canonical Soldier character/weapon PNG, выбор героя/кодекс/тесты стали data-driven под 10 классов и 30 weapon variants. Rig/motion передан Animator handoff-задачей.
+
+- Контент (SCRUM-155, ч.2): 3 новых финальных босса — Костяной Архонт (волны скелетов, веер черепов, костяная стена с проходом), Матерь Роя (выводок паучат, паутинные зоны замедления, рывок в финальной фазе) и Пепельный Колосс (slam-волны с тлеющими зонами, энрейдж ниже четверти HP); ротация финального узла теперь из 5 боссов, у всех русские титулы в баннере появления, кодекс пополнен. Арт — placeholder с тинтом до готовности SCRUM-156.
+
+- Visual: добавлены dark fantasy UI backdrops `2560x1440` для экранов с центральными окнами и заменен арт главного меню на новую battle-сцену с героями/боссами FantasyDisk; существующие shop/event/campfire background paths обновлены совместимо, расширенное screen-role подключение вынесено в Back-end handoff.
+
+- Контент (SCRUM-155, ч.1): свита Возвышения L7 получила 6 data-driven видов мини-элиток (Жнец-Падальщик, Чумной Звонарь, Костяной Страж, Искровик, Гнилая Гончая, Теневой Пожиратель) — каждый со своим профилем HP/скорости/урона и тинт-идентичностью на placeholder-спрайтах; свита выбирает случайный вид. Все 6 добавлены в кодекс (раздел «Мини-элитки»). Боссы ростера — следующим инкрементом.
+
+- UX/баланс: Escape в активном забеге теперь открывает досье персонажа поверх боя, карты, магазина, события, level-up, докачки и награды элитки; досье показывает портрет, оружие, уровень/XP, Возвышение и выделяет приоритетные атрибуты класса из единого `ATTRIBUTE_PRIORITIES`.
+
+- Баланс: level-up переведен на 3 фиксированных варианта, редкие основные характеристики стали существенно реже (~5% на слот), обычные награды взвешены по профильным атрибутам класса; вампиризм получил cap лечения в секунду и малую долю урона, а регенерация/защита/уклонение усилены.
+
+- UX: экран победы очищен от технических строк (`Meta points`, raw `asc_` IDs) и показывает только русский пользовательский итог: победа над боссом, очки наследия, прогресс Возвышения и смысл новой награды.
+
+- Bugfix: cleanup эффектов оружия стал устойчивее при смене оружия Гитариста — отложенные callbacks старого усилителя больше не создают новые VFX после cleanup; summon-союзники Друида получили корректный импорт ассетов и устойчивый spawn parent.
+
+- UX: вкладка «Звук» в настройках получила читаемые слайдеры громкости — видимый трек на всю ширину, отличающуюся заполненную часть, шаг 2%, keyboard focus и понятный mute-переключатель «Вкл./Выкл.»; QA-скриншот сохранен в `build/qa/settings_volume_slider_ux.png`.
+
+- Баланс: дроп и экономика перебалансированы по классам целей — bruiser/shield, мини-элитки, элитки и боссы дают заметно больше XP/золота; магазин, докачка, reroll и платные event-исходы подорожали через общий multiplier x1.10; XP-кривая замедлена до `ceil(req*1.42+3)`. Balance harness показывает +10.6% эффективной покупательной способности и +7.1% XP в типовом маршруте.
+
+- Bugfix: верхний боевой HUD больше не пересекается на 1152x648/1280x720/2560x1440 — ресурсная панель адаптивно сжимается, таймер/бейдж Возвышения уступают место, ряд артефактов переносится ниже при нехватке ширины; runtime smoke пишет `build/qa/hud_no_overlap_rects.md`.
+
+- Visual: добавлен D&D/painterly набор призывных союзников и deployable-объектов (`assets/sprites/allies/`); `AllyMinion.tscn` получил raster fallback вместо Polygon2D-placeholder, а source-specific mapping вынесен в Back-end handoff.
+
+- Visual: 4 элитки (`iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`) и 2 босса (`boss_rift_warden`, `boss_disk_devourer`) переведены на native 512x512 PNG и перенарезаны в cutout rig pipeline, чтобы убрать мыло на epic scale в QHD/Retina без изменения хитбоксов и gameplay scale.
+
 ## [0.1.3] — 2026-06-12
 
 - Элитки и боссы — крупнее, сложнее, эпичнее: элитки ~1.73x, боссы ~2.35x моба с согласованными хитбоксами; в фазе 2 элитки бьют чаще (-20% кулдаун) и получают второе применение атаки, боссам добавлен паттерн «волна зон» с гарантированным безопасным коридором; подача — баннеры появления, умеренная тряска камеры (тумблер «Тряска камеры» в настройках) на спавне/ударах/смерти и hit-stop на смерти элитки/босса.

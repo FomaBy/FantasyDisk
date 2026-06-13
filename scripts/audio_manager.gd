@@ -13,9 +13,21 @@ const SFX_PATHS := {
 }
 
 const MUSIC_PATHS := {
-	"menu": "res://assets/audio/music_menu.wav",
-	"combat": "res://assets/audio/music_combat.wav",
+	"menu": "res://assets/audio/music_menu_tavern.wav",
+	"combat": "res://assets/audio/music_combat_minstrel.wav",
+	"boss": "res://assets/audio/music_boss_battle.mp3",
 }
+
+# Струнный тавернный эмбиент (SCRUM-154), все треки RandomMind, CC0 (OpenGameArt):
+# menu — «The Old Tower Inn» (луп, шов сглажен микро-фейдом 23мс);
+# combat — «Minstrel Dance» (авторский луп); boss — «Battle» (mp3, loop в рантайме).
+# Нормализация к ~-17 dBFS по замеренному RMS (-19.8 / -14.6 / -15.6 dBFS).
+const MUSIC_GAIN_DB := {
+	"menu": 2.8,
+	"combat": -2.4,
+	"boss": -1.4,
+}
+const MUSIC_CROSSFADE_SEC := 0.9
 
 const SFX_POOL_SIZE := 8
 const SFX_MIN_REPEAT_INTERVAL := 0.05
@@ -26,6 +38,8 @@ var _sfx_streams := {}
 var _music_streams := {}
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _music_player: AudioStreamPlayer = null
+var _music_player_fade: AudioStreamPlayer = null
+var _music_fade_tween: Tween = null
 var _current_music_id := ""
 var _last_played_at := {}
 var _disabled := false
@@ -50,6 +64,8 @@ func _ready() -> void:
 				stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 				stream.loop_begin = 0
 				stream.loop_end = int(stream.data.size() / 2.0)
+			elif stream is AudioStreamMP3:
+				stream.loop = true
 			_music_streams[music_id] = stream
 
 	for index in range(SFX_POOL_SIZE):
@@ -63,6 +79,11 @@ func _ready() -> void:
 	_music_player.bus = "Music"
 	_music_player.volume_db = MUSIC_VOLUME_DB
 	add_child(_music_player)
+	# Второй плеер для кроссфейда меню<->бой (играет уходящий трек, пока новый нарастает).
+	_music_player_fade = AudioStreamPlayer.new()
+	_music_player_fade.bus = "Music"
+	_music_player_fade.volume_db = MUSIC_VOLUME_DB
+	add_child(_music_player_fade)
 
 
 func _exit_tree() -> void:
@@ -85,6 +106,9 @@ func _release_audio_refs() -> void:
 	if _music_player != null:
 		_music_player.stop()
 		_music_player.stream = null
+	if _music_player_fade != null:
+		_music_player_fade.stop()
+		_music_player_fade.stream = null
 	_sfx_streams.clear()
 	_music_streams.clear()
 
@@ -112,7 +136,7 @@ func _set_bus_volume(bus_name: String, linear_volume: float, enabled: bool) -> v
 		return
 	var volume := clampf(linear_volume, 0.0, 1.0)
 	AudioServer.set_bus_volume_db(bus_index, linear_to_db(maxf(volume, 0.0001)))
-	AudioServer.set_bus_mute(bus_index, not enabled or volume <= 0.0)
+	AudioServer.set_bus_mute(bus_index, not enabled)
 
 
 func play_sfx(sfx_id: String) -> void:
@@ -135,12 +159,33 @@ func play_sfx(sfx_id: String) -> void:
 func play_music(music_id: String) -> void:
 	if _disabled:
 		return
+	var target_db := MUSIC_VOLUME_DB + float(MUSIC_GAIN_DB.get(music_id, 0.0))
+	if _music_fade_tween != null and _music_fade_tween.is_valid():
+		_music_fade_tween.kill()
+		_music_fade_tween = null
+		if _music_player_fade != null:
+			_music_player_fade.stop()
 	if _current_music_id == music_id and _music_player.playing:
+		_music_player.volume_db = target_db
 		return
 	var stream: AudioStream = _music_streams.get(music_id)
 	if stream == null:
 		stop_music()
 		return
+	# Кроссфейд: текущий трек уезжает на fade-плеер и затухает, новый нарастает.
+	if _music_player.playing and _current_music_id != "":
+		_music_player_fade.stream = _music_player.stream
+		_music_player_fade.volume_db = _music_player.volume_db
+		_music_player_fade.play(_music_player.get_playback_position())
+		_music_player.stop()
+		_music_fade_tween = create_tween()
+		_music_fade_tween.set_parallel(true)
+		_music_fade_tween.tween_property(_music_player_fade, "volume_db", -40.0, MUSIC_CROSSFADE_SEC)
+		_music_player.volume_db = -28.0
+		_music_fade_tween.tween_property(_music_player, "volume_db", target_db, MUSIC_CROSSFADE_SEC)
+		_music_fade_tween.chain().tween_callback(_music_player_fade.stop)
+	else:
+		_music_player.volume_db = target_db
 	_current_music_id = music_id
 	_music_player.stream = stream
 	_music_player.play()
@@ -148,6 +193,11 @@ func play_music(music_id: String) -> void:
 
 func stop_music() -> void:
 	_current_music_id = ""
+	if _music_fade_tween != null and _music_fade_tween.is_valid():
+		_music_fade_tween.kill()
 	if _music_player != null:
 		_music_player.stop()
 		_music_player.stream = null
+	if _music_player_fade != null:
+		_music_player_fade.stop()
+		_music_player_fade.stream = null

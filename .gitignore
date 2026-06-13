@@ -3,3 +3,6 @@
 build/
 releases/
 *.swp
+
+# Scratch image-gen / temp work dir
+tmp/

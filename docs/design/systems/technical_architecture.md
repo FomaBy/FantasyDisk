@@ -1,6 +1,6 @@
 # Technical Architecture
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-13 (0.1.4)
 
 Этот файл кратко описывает runtime architecture FantasyDisk для будущих Back-end задач.
 
@@ -8,15 +8,31 @@
 
 - `scripts/main.gd`: thin coordinator, shared run state, constants, delegated test-compatible methods.
 - `scripts/ui_screens.gd`: menus, HUD, shop/event/rest, level-up, victory/death, shared UI styles.
+- `scripts/ui/hero_stat_radar.gd`: reusable hero-select stat radar control.
+- `scripts/ui/ui_theme_paths.gd`: dark-fantasy theme texture path registry.
+- `scripts/ui/shop_ui_constants.gd`: shop icon/slot/cursor UI constants.
+- `scripts/ui/hero_select_constants.gd`: hero-select radar stats and class colors.
 - `scripts/route_map_screen.gd`: route generation/rendering, scroll/pan/click handling.
 - `scripts/combat_director.gd`: combat lifecycle, spawn, arena, pickups, rewards.
 - `scripts/player.gd`: character config, stats, weapon equip, damage, rewards.
 - `scripts/enemy.gd`: enemy AI, contact damage, elite attacks, HP bars.
 - `scripts/boss.gd`: boss patterns and victory flow.
 
+`scripts/class_weapon.gd` owns non-Berserk class weapon runtime behavior. SCRUM-196
+replaced the old long `attack_mode` dispatch match with `ATTACK_MODE_EXECUTORS`,
+a public registry that maps data-driven weapon modes to executor wrappers while
+preserving existing `_fire_*` mechanics and cleanup contracts.
+
 ## Data
 
-- `scripts/progression_data.gd`: character, weapon, rewards, artifacts, shop, ascension.
+- `scripts/progression_data.gd`: compatibility facade for public data/API used by runtime, tests, and older systems.
+- `scripts/progression_data_characters.gd`: base stats, character configs, class interpretations, ultimate configs.
+- `scripts/progression_data_weapons.gd`: 51 class/weapon definitions and `WEAPONS_BY_CLASS`.
+- `scripts/progression_data_content.gd`: stat rewards, artifacts, level-up reward pools.
+- `scripts/progression_data_shop.gd`: shop item data.
+- `scripts/progression_data_ascension.gd`: ascension levels, run difficulty modifiers, per-level metadata.
+- `scripts/progression_data_balance.gd`: balance budgets, stage scaling, economy/XP/drop constants.
+- `scripts/progression_data_enemies.gd`: enemy-side data slices such as mini-elite kinds.
 - `scripts/stat_formulas.gd`: stat explanations and derived parameter formulas.
 - `docs/design/content_registry.md`: canonical entity/asset IDs.
 
@@ -48,11 +64,23 @@ Use groups for temporary runtime nodes:
 
 ## Tests
 
-Main checks:
+Main umbrella check:
 
 ```bash
 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
 ```
+
+Focused runtime smoke suites (SCRUM-202) reuse the umbrella helper/assertion layer and are intended for faster refactor regression checks:
+
+- `tests/runtime_smoke_ui_test.gd` — menus, settings, Codex, hero/weapon UI, no-overlap/HUD/shop layout.
+- `tests/runtime_smoke_combat_test.gd` — combat startup, arena, HUD, player/enemy/projectile damage, health bars, death flow.
+- `tests/runtime_smoke_progression_economy_test.gd` — rewards, artifacts, settings persistence, attribute wiring, economy/FAB, ascension.
+- `tests/runtime_smoke_weapon_mechanics_test.gd` — character/weapon configs, all variants equip, class weapon mechanics, aiming, ultimate.
+- `tests/runtime_smoke_boss_elite_test.gd` — elite flow, elite attacks, boss HUD, boss/mini-elite rosters, victory flow.
+
+Weapon smoke also checks that every non-Berserk weapon config with an
+`attack_mode` has a registered `ClassWeapon` executor, so newly added weapon
+modes fail fast in tests instead of falling through silently at runtime.
 
 Additional checks:
 
@@ -66,5 +94,5 @@ Additional checks:
 Follow `docs/process/versioning_and_branching.md`:
 
 - `main` = stable `0.1`;
-- `dev` = active `0.2`;
+- `dev` = active `0.1.x` working line; текущая стабилизация — `0.1.4`;
 - new feature work happens in `dev` unless explicitly stated otherwise.

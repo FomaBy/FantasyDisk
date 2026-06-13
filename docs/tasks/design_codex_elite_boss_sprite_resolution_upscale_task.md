@@ -2,10 +2,12 @@
 
 Дата: 2026-06-12
 
-Статус: blocked (backlog `0.1.4` — см. «Классификация по Feature Freeze» ниже; в `in_progress` не переводить без отдельного решения PM/пользователя)
+Статус: done (Design review approved 2026-06-12)
 
 Версия: 0.1.4
 Jira: SCRUM-135
+
+Dispatch: отправлено в существующий Design чат `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-12.
 
 Роль: Design (Codex) — генерация арта; затем Claude-Designer — интеграция в риг-пайплайн.
 
@@ -106,3 +108,66 @@ Jira: SCRUM-135
 Развилка для PM/пользователя:
 - Если мыло гигантов считать **регрессией от epic-scale фичи / release blocker для 0.1.3** — поднять в активный спринт.
 - Иначе — оставить в `0.1.4` и брать после разморозки.
+
+## Progress Log
+
+2026-06-12 — взято в работу после снятия feature block и старта спринта 0.1.4.
+
+- Подтверждена ветка `dev`.
+- Проверены target source PNG: `assets/sprites/elites/{iron_bastion,night_stalker,plague_prophet,shard_marshal}.png` и `assets/sprites/bosses/{boss_rift_warden,boss_disk_devourer}.png`.
+- Проверен текущий cutout pipeline в `tools/slice_rig_cutouts.py` и manifest `scripts/sliced_rig_manifest.gd`: все 6 target entity пока используют `size = Vector2(256, 256)`.
+
+2026-06-12 — Design/Codex pass завершен, задача передана в review.
+
+- 4 элитки и 2 босса заменены на native `512x512` RGBA PNG поверх активных путей:
+  `assets/sprites/elites/{iron_bastion,night_stalker,plague_prophet,shard_marshal}.png`,
+  `assets/sprites/bosses/{boss_rift_warden,boss_disk_devourer}.png`.
+- Поза, ориентация влево, силуэт, foot/socket пропорции и идентичность сохранены 1:1; изменения направлены на анти-мыло при epic scale, не на смену дизайна.
+- `tools/slice_rig_cutouts.py` обновлен под 512px координатное пространство target-сущностей; cutout-части перенарезаны, `scripts/sliced_rig_manifest.gd` теперь хранит `size = Vector2(512.0, 512.0)` для всех 6 target entity.
+- Debug QA previews:
+  - before: `docs/design/previews/elite_boss_upscale_before_contact.png`;
+  - after: `docs/design/previews/elite_boss_upscale_after_contact.png`;
+  - rig reassemble/exploded: `docs/design/previews/elite_boss_upscale_rig_debug_contact.png`.
+- Godot import: passed.
+- Animation smoke: passed (`tests/animation_smoke_test.gd`).
+- Runtime smoke: blocked by unrelated current worktree UI/pause changes, not by SCRUM-135. Failure: `Expected Esc to defer (close) the level-up without keeping it paused. at tests/runtime_smoke_test.gd:788`. Dirty files involved are outside Design sprite scope (`scripts/main.gd`, `scripts/ui_screens.gd` and related Escape/level-up work). No gameplay/UI logic was changed in this Design task.
+
+## QA-Вердикт (2026-06-12) — независимая QA-сессия
+Статус: PASSED (асс ет/риг)
+
+Проверено фактически (sips + манифест + рендер-визуал + animation smoke):
+- Все 6 сущностей теперь 512×512 (были 256): 4 элитки (iron_bastion, night_stalker,
+  plague_prophet, shard_marshal) в `assets/sprites/elites/`, 2 босса (boss_rift_warden,
+  boss_disk_devourer) в `assets/sprites/bosses/`. VERIFIED.
+- Анти-мыло достигнуто: новый арт — НАСТОЯЩАЯ высокая детализация, не билинейный
+  2x-апскейл. iron_bastion (детальная тёмная броня + фиолет-акценты, чёткие контуры),
+  boss_rift_warden (gold-trim броня + рифт-вихрь, резкие края) — осмотрены в полном
+  разрешении. На каноне D&D dark fantasy. VERIFIED.
+- Поза/идентичность 1:1: манифест переразмечен в 512-пространство (iron_bastion size
+  512², foot_y 480, socket 400×320, боксы ≈2× старых 256-значений — щит/рука/нога),
+  cutout-части на диске (torso 512², конечности — суб-кропы). Перенарезка механическая
+  (×2), как и планировалось. VERIFIED.
+- `animation_smoke` ЗЕЛЁНЫЙ — риг собирается из новых 512-частей корректно.
+- blur_proof preview на месте (`docs/design/previews/elite_boss_blur_proof.png`).
+
+Регрессия: 5 из 6 smoke зелёные. runtime_smoke КРАСНЫЙ, но по НЕсвязанной причине —
+«Expected the druid amulet to summon a beast» (тест призыва Друида), subsystem
+активной параллельной работы SCRUM-152 (спрайты призывных) + механика призыва
+(`scenes/AllyMinion.tscn` правится in_progress). Ранее в сессии runtime_smoke был
+зелёным многократно → свежая поломка от in-progress призыва, НЕ от апскейла спрайтов
+(SCRUM-135 трогает только ассеты/манифест/cutout). Не блокирует приёмку спрайтов.
+
+Багов по SCRUM-135 нет. ФЛАГ для PM/Back-end: druid-summon runtime_smoke красный —
+перепроверить, когда SCRUM-152/механика призыва дойдут до done (см. ниже).
+
+
+## Design Review / 2026-06-12 — ПРИНЯТО (Claude-Designer)
+- 4 элитки + 2 босса: native 512x512 RGBA (проверено), поза/идентичность/канон
+  сохранены, painterly без артефактов (before/after contact-листы).
+- Cutout-части перенарезаны под 512-координаты; манифест `size = Vector2(512.0, 512.0)`
+  у всех 6 target-сущностей (проверено grep). Re-slice = no-op (синхронно с финальным артом).
+- Реассембл cutout пиксель-в-пиксель совпадает с оригиналом (rig_debug contact-лист), швов нет.
+- `animation_smoke_test` зелёный. Арт/cutout/манифест уже в git.
+- runtime smoke — заблокирован внешней Escape/level-up worktree-правкой (не связано с этим
+  апскейлом); cutout/rig-путь покрыт зелёным animation smoke.
+Готово к QA.

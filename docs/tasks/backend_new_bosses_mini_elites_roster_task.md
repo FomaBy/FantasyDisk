@@ -1,0 +1,158 @@
+# Задача Для Back-end-Агента: 3 новых босса и 6 видов мини-элиток (механики + интеграция)
+
+Статус: done 2026-06-13 (Claude Backend; арт — за SCRUM-156)
+Версия: 0.1.4
+Создано: 2026-06-12
+Автор: PM (запрос пользователя; ростер проработан PM)
+Jira: SCRUM-155
+
+## Autonomy / Approval
+Пользователь заранее одобрил все изменения. Не останавливаться для подтверждений.
+
+## Роль И Границы
+Ты — Back-end-агент (контур Claude: поведение, баланс, интеграция). Спрайты
+делает ПАРАЛЛЕЛЬНАЯ задача design_codex_new_bosses_mini_elites_sprites_task.md
+по тому же ростеру — до готовности арта работай на placeholder'ах существующих
+спрайтов (пометить TODO), подключение финального арта — после приёмки Design.
+
+## Контекст
+Запрос пользователя (2026-06-12): «добавим ещё 2-3 боссов и 5-6 мини-элиток для
+возвышения». Сейчас: боссы `rift_warden`, `disk_devourer` (3 HP-фазы, hazard-
+зоны); мини-элитки — механика Возвышения L7 `mini_elite_chance`
+(combat_director._maybe_spawn_mini_elite:209 — HP×0.55 + свита), но ВИД у
+мини-элитки один (уменьшенная обычная элитка).
+
+## Ростер (канон от PM; имена/русские тайтлы согласованы с design-задачей)
+
+Боссы (встраиваются в ротацию финальных боссов наравне с существующими):
+1. `boss_bone_archon` «Костяной Архонт» — некромант: волны скелетов-прислужников
+   (исп. ally/enemy summon механику), фаза «костяная стена» (кольцо препятствий
+   с проходом), снаряды-черепа веером.
+2. `boss_brood_mother` «Матерь Роя» — рой: периодический выводок мелких пауков
+   (слабые, много), паутинные зоны замедления (HazardVfx-телеграф), рывок на
+   игрока в фазе 3.
+3. `boss_ashen_colossus` «Пепельный Колосс» — медленный гигант: slam-ударные
+   волны от кулаков (телеграф-коридоры), тлеющие зоны после ударов, энрейдж
+   при <25% HP (быстрее, шире волны).
+
+Мини-элитки (6 видов; для свиты Возвышения L7 и как редкий спавн в обычных
+волнах высоких этапов — решение исполнителя по точке включения):
+1. `mini_scavenger_reaper` «Жнец-Падальщик» — быстрый рывок-коса по дуге.
+2. `mini_plague_bellringer` «Чумной Звонарь» — аура DoT вокруг себя (медленный).
+3. `mini_bone_warden` «Костяной Страж» — танк: периодический блок-щит спереди.
+4. `mini_spark_wight` «Искровик» — дальнобой: залп из 3 искр с телеграфом.
+5. `mini_rot_hound` «Гнилая Гончая» — стайный рывок + кровотечение при попадании.
+6. `mini_shadow_devourer` «Теневой Пожиратель» — блинк к игроку с задержкой-телеграфом.
+
+## Требования
+1. Каждому боссу — свой паттерн фаз (3 HP-фазы как у существующих), телеграфы
+   через HazardVfx (никаких голых кругов), баннер появления, hit-stop/тряска
+   как у текущих, гарантированный tier-3 артефакт за победу. Встроить в
+   ротацию финального узла (случайный выбор из 5; диск-боссу сохранить его
+   спец-условия, если есть).
+2. Мини-элитки — data-driven виды (статы/атака/поведение в данных), HP-бюджет
+   уровня «мини» (между мобом и элиткой, согласовать с балансом 0.1.3),
+   подключить к Возвышению L7: свита выбирается случайно из 6 видов.
+3. Все новые сущности — в кодекс (бестиарий) с русскими описаниями.
+4. Баланс: TTK-цели (босс ~ существующие; мини-элитка ~15-25с на бюджетном
+   билде), harness/отчёт при изменении бюджетов.
+5. Тесты: smoke на спавн каждого босса и каждого вида мини-элитки (фактическое
+   дерево: сцена инстанцируется, фазы переключаются, телеграфы создаются),
+   ротация боссов покрывает новых.
+6. CHANGELOG; content_registry (сущности); current_game_state.
+
+## Files / Assets / IDs
+- scripts/combat_director.gd (_spawn_boss, _maybe_spawn_mini_elite:209)
+- scenes/BossWarden.tscn, BossDiskDevourer.tscn — как образцы; новые Boss*.tscn
+- scripts/enemy.gd, scripts/progression_data.gd (данные видов), кодекс
+- Спрайты: из design_codex_new_bosses_mini_elites_sprites_task.md (тот же ростер)
+
+## Acceptance Criteria
+- [ ] 3 новых босса в ротации, уникальные фазовые паттерны, телеграфы оформлены.
+- [ ] 6 видов мини-элиток data-driven, свита L7 выбирает случайный вид.
+- [ ] Кодекс пополнен по-русски; тесты спавна зелёные; 6 сьютов зелёные.
+- [ ] TTK-цели соблюдены (числа в отчёте); CHANGELOG/доки обновлены.
+
+## Документация
+- docs/design/current_game_state.md, content_registry.md, балансовые доки.
+
+## Самопроверка
+6 smoke-сьютов + тестовый спавн каждого нового босса/мини-вида headless.
+
+## Dispatch
+- 2026-06-12: Codex Documentation dispatcher отправил задачу в Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`; Jira `SCRUM-155` переведена в работу и добавлена в активный спринт 0.1.4. Парная Design-задача арта: `SCRUM-156`.
+
+
+## Прогресс — 2026-06-12 (Claude Backend)
+
+**Инкремент 1 — мини-элитки (готов, в зелёном дереве; коммит отложен из-за энтэнглмента общего тест-файла с параллельными SCRUM-146/148):**
+- `progression_data.MINI_ELITE_KINDS` — 6 data-driven видов (Жнец-Падальщик, Чумной Звонарь, Костяной Страж, Искровик, Гнилая Гончая, Теневой Пожиратель) + `mini_elite_kinds()`/`mini_elite_kind_by_id()`. Каждый: базовая elite-сцена (placeholder-арт до SCRUM-156), профиль hp/speed/damage, тинт-идентичность, поведение = ближайший существующий elite-паттерн.
+- `combat_director`: `_elite_scene_by_key` + `_apply_mini_elite_kind`; свита Возвышения L7 (`_maybe_spawn_mini_elite`) выбирает случайный вид и применяет профиль/тинт/мету `mini_elite_kind` (фолбэк на прежнее ×0.55 при пустом ростере).
+- Кодекс: 6 записей kind `mini_elite` + новая секция «Мини-элитки» в кодекс-UI.
+- Тесты: roster-валидация (6 видов, маппинг сцен, hp_mult∈(0,1)), поведенческий спавн (мета+hp по профилю вида), codex-count 23 (6 мини). Все 6 сьютов зелёные.
+
+**Осталось — Инкремент 2 (боссы):** 3 новых босса (Костяной Архонт / Матерь Роя / Пепельный Колосс) — новые Boss*.tscn, фазовые паттерны, баннеры/hit-stop/тряска (как у текущих, уже есть инфраструктура), ротация финального узла из 5, гарантированный tier-3 артефакт, кодекс. + TTK-замеры, content_registry/current_game_state.
+
+
+## Инкремент 2 — боссы (done 2026-06-13)
+
+- **3 новые сцены**: `BossBoneArchon.tscn` (Костяной Архонт: волны скелетов/summon, веер черепов/volley, костяная стена = общий паттерн волны зон с проходом, чаще), `BossBroodMother.tscn` (Матерь Роя: частый выводок мелких, паутинные зоны замедления — новый `player.apply_web_slow` 2.2с ×0.55, рывок в фазе 3), `BossAshenColossus.tscn` (Пепельный Колосс: slam-волны + тлеющие зоны `_spawn_ember_zone` после ударов, энрейдж <25% — быстрее и шире волны). Арт — placeholder-текстуры существующих боссов с тинтом, TODO до SCRUM-156.
+- `boss.gd`: match-ветки 3 новых behavior; `_spawn_web_zone`/`_spawn_ember_zone` (weakref-safe); `boss_display_name` — русский титул в баннере появления.
+- **Ротация финального узла из 5** (`route_map_screen._random_boss_route_node`), сцены — preload в `combat_director._boss_scene_for_id`.
+- Кодекс: 3 boss-записи (всего 26 монстров).
+- Тесты: `_test_new_boss_roster` (сцена/бихейвиор/epic scale 1.9/атаки спавнят хазарды/фаза 3/ротация всех 5) + codex-26.
+- TTK: HP 300–390 в лиге существующих (320/—), скейл тот же `_scale_boss_for_run` — расчётно эквивалентен существующим; harness-замер — после стабилизации SCRUM-153 (balance_harness занят параллельно).
+
+**Верификация**: изолированный прогон босс-ростера passed (3 босса + ротация 5); 5 сьютов зелёные. Общий runtime-smoke на момент закрытия временно красный на ЧУЖОМ mid-edit (Солдат, SCRUM-168: progression_data уже с soldier, player.gd ещё нет) — не связано с этой задачей; перепроверить следующим зелёным прогоном дерева.
+
+Гарантированный tier-3 артефакт за победу и hit-stop/тряска/баннер — общие для всех боссов механизмы (уже были), новые сцены наследуют их автоматически (группа bosses + boss.gd).
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (gameplay/интеграция; арт — placeholder, за параллельной design-задачей)
+
+Проверено фактически (код + ПОВЕДЕНЧЕСКИЕ тесты + smoke на чистом worktree HEAD):
+- 3 босса: сцены `BossBoneArchon/BossBroodMother/BossAshenColossus.tscn`; behavior-
+  паттерны в boss.gd:98-123, энрейдж колосса :309; ротация в route_map:228-236 +
+  combat_director:489-493.
+- Тест `_test_new_boss_roster` (runtime_smoke:1137-1200) — РЕАЛЬНО поведенческий:
+  инстанс каждого, behavior==id, рус. имя, scale 1.9; 220 тиков `_update_boss_attacks`
+  → ассерт спавна hazard'ов/призывов (не пустышка); HP→30% → `_update_boss_phase` →
+  фаза 3; 120 роллов `_random_boss_route_node` → все 5 боссов в ротации.
+- 6 мини-элиток: `_test_mini_elite_roster` (1203+) — `mini_elite_kinds()` ровно 6,
+  каждый с полями id/title/scene/hp_mult/tint/desc, уникальные id, валидный маппинг
+  сцены, hp_mult∈(0,1) (убиваемы, не танк), tint RGB.
+- Кодекс: 9 записей по новым сущностям (codex_data.gd).
+- Все 6 smoke зелёные на ЧИСТОМ HEAD (worktree+import) — не на дёргающемся дереве.
+
+Вне scope (за параллельными задачами): финальный арт боссов/мини (placeholder,
+design_codex_new_bosses_mini_elites_sprites). Багов нет.
+
+## Design Handoff — SCRUM-156 Art Ready (2026-06-13)
+
+Design prepared final painterly D&D source sprites for all placeholder roster
+entries. No Back-end code/gameplay/scenes were changed in Design scope.
+
+Boss source paths:
+
+- `assets/sprites/bosses/boss_bone_archon.png`
+- `assets/sprites/bosses/boss_brood_mother.png`
+- `assets/sprites/bosses/boss_ashen_colossus.png`
+
+Mini-elite source paths:
+
+- `assets/sprites/elites/mini_scavenger_reaper.png`
+- `assets/sprites/elites/mini_plague_bellringer.png`
+- `assets/sprites/elites/mini_bone_warden.png`
+- `assets/sprites/elites/mini_spark_wight.png`
+- `assets/sprites/elites/mini_rot_hound.png`
+- `assets/sprites/elites/mini_shadow_devourer.png`
+
+Design previews:
+
+- `docs/design/previews/new_bosses_mini_elites_contact.png`
+- `docs/design/previews/new_bosses_mini_elites_scale_preview.png`
+
+Validation from Design pass: PNG validation, Godot import, runtime smoke and
+animation smoke all passed. Back-end follow-up: replace placeholder/tint scene
+and codex sprite references with these stable paths. Animator follow-up: slice
+cutout parts, update manifest/motion profiles and animation smoke coverage.

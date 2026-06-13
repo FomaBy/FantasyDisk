@@ -5,95 +5,37 @@ extends RefCounted
 
 var game
 
-const ARTIFACT_ICON_DIR := "res://assets/sprites/ui/icons/artifacts/"
-const SHOP_ICON_DIR := "res://assets/sprites/ui/icons/shop/"
-const SHOP_SLOT_FRAME_PATH := "res://assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png"
-const SHOP_SLOT_HOVER_PATH := "res://assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png"
-const SHOP_PRICE_BADGE_PATH := "res://assets/sprites/ui/shop/ui_shop_price_badge.png"
-const SHOP_PURCHASED_OVERLAY_PATH := "res://assets/sprites/ui/shop/ui_shop_purchased_overlay.png"
-const SHOP_TOOLTIP_FRAME_PATH := "res://assets/sprites/ui/shop/ui_shop_tooltip_frame.png"
-const GLOBAL_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_panel_frame.png"
-const GLOBAL_BUTTON_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_button_frame.png"
-const GLOBAL_CARD_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_card_frame.png"
-const GLOBAL_LEVEL_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_level_panel_frame.png"
-const GLOBAL_HUD_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_hud_panel_frame.png"
-const GLOBAL_HUD_CARD_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_hud_card_frame.png"
-const GLOBAL_TOOLTIP_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_tooltip_frame.png"
+const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
+const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
+const ShopUIConstants := preload("res://scripts/ui/shop_ui_constants.gd")
+const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd")
+
+const ARTIFACT_ICON_DIR := ShopUIConstants.ARTIFACT_ICON_DIR
+const SHOP_ICON_DIR := ShopUIConstants.SHOP_ICON_DIR
+const SHOP_SLOT_FRAME_PATH := ShopUIConstants.SHOP_SLOT_FRAME_PATH
+const SHOP_SLOT_HOVER_PATH := ShopUIConstants.SHOP_SLOT_HOVER_PATH
+const SHOP_PRICE_BADGE_PATH := ShopUIConstants.SHOP_PRICE_BADGE_PATH
+const SHOP_PURCHASED_OVERLAY_PATH := ShopUIConstants.SHOP_PURCHASED_OVERLAY_PATH
+const SHOP_TOOLTIP_FRAME_PATH := ShopUIConstants.SHOP_TOOLTIP_FRAME_PATH
+const DF_FRAME_DIR := UIThemePaths.DF_FRAME_DIR
+const GLOBAL_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_PANEL_FRAME_PATH
+const GLOBAL_BUTTON_FRAME_PATH := UIThemePaths.GLOBAL_BUTTON_FRAME_PATH
+const GLOBAL_CARD_FRAME_PATH := UIThemePaths.GLOBAL_CARD_FRAME_PATH
+const GLOBAL_LEVEL_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_LEVEL_PANEL_FRAME_PATH
+const GLOBAL_HUD_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_HUD_PANEL_FRAME_PATH
+const GLOBAL_HUD_CARD_FRAME_PATH := UIThemePaths.GLOBAL_HUD_CARD_FRAME_PATH
+const GLOBAL_TOOLTIP_FRAME_PATH := UIThemePaths.GLOBAL_TOOLTIP_FRAME_PATH
+const DF_BUTTON_TEXTURES := UIThemePaths.DF_BUTTON_TEXTURES
+const GLOSSARY := preload("res://scripts/glossary.gd")
 const SYSTEM_CHECKBOX_UNCHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_unchecked.png"
 const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_checked.png"
 const SYSTEM_SLIDER_TRACK_PATH := "res://assets/sprites/ui/icons/system/ui_slider_track.png"
 const SYSTEM_SLIDER_GRABBER_PATH := "res://assets/sprites/ui/icons/system/ui_slider_grabber.png"
-const SHOP_INLINE_SLOT_SIZE := Vector2(164, 186)
-const SHOP_INLINE_ICON_SIZE := Vector2(100, 100)
-const SHOP_CURSOR_VARIANTS := {
-	"arrow": "res://assets/sprites/ui/cursor/game_cursor.png",
-	"pointing_hand": "res://assets/sprites/ui/cursor/game_cursor_hover.png",
-	"cross": "res://assets/sprites/ui/cursor/game_cursor_attack.png",
-}
-
-const HERO_RADAR_STATS := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
-const HERO_CLASS_COLORS := {
-	"berserk": Color(1.00, 0.38, 0.22, 0.82),
-	"dark_mage": Color(0.66, 0.32, 1.00, 0.82),
-	"guitarist": Color(0.26, 0.72, 1.00, 0.82),
-	"assassin": Color(0.95, 0.22, 0.44, 0.82),
-	"ranger": Color(0.34, 0.84, 0.34, 0.82),
-	"doctor": Color(0.36, 0.96, 0.80, 0.82),
-	"chemist": Color(0.74, 0.95, 0.26, 0.82),
-	"knight": Color(0.86, 0.80, 0.58, 0.82),
-	"druid": Color(0.48, 0.78, 0.36, 0.82),
-}
-
-class HeroStatRadar:
-	extends Control
-
-	var stats: Dictionary = {}
-	var maxima: Dictionary = {}
-	var stat_names: Dictionary = {}
-	var stat_ids: Array = []
-	var fill_color := Color(0.90, 0.72, 0.26, 0.78)
-
-	func setup(new_stats: Dictionary, new_maxima: Dictionary, new_stat_names: Dictionary, new_stat_ids: Array, new_color: Color) -> void:
-		stats = new_stats.duplicate(true)
-		maxima = new_maxima.duplicate(true)
-		stat_names = new_stat_names.duplicate(true)
-		stat_ids = new_stat_ids.duplicate()
-		fill_color = new_color
-		queue_redraw()
-
-	func _draw() -> void:
-		if stat_ids.is_empty():
-			return
-		var center: Vector2 = size * 0.5
-		var radius: float = min(size.x, size.y) * 0.30
-		if radius <= 4.0:
-			return
-		var axis_count := stat_ids.size()
-		for ring_index in range(1, 5):
-			var ring_points := PackedVector2Array()
-			var ring_radius: float = radius * float(ring_index) / 4.0
-			for axis_index in range(axis_count):
-				ring_points.append(center + Vector2.UP.rotated(TAU * float(axis_index) / float(axis_count)) * ring_radius)
-			var closed_ring := PackedVector2Array(ring_points)
-			closed_ring.append(ring_points[0])
-			draw_polyline(closed_ring, Color(0.74, 0.66, 0.44, 0.28), 1.0)
-		var value_points := PackedVector2Array()
-		for axis_index in range(axis_count):
-			var stat_id := str(stat_ids[axis_index])
-			var angle := TAU * float(axis_index) / float(axis_count)
-			var direction := Vector2.UP.rotated(angle)
-			draw_line(center, center + direction * radius, Color(0.86, 0.78, 0.56, 0.34), 1.0)
-			var max_value: float = max(1.0, float(maxima.get(stat_id, 1.0)))
-			var value: float = float(stats.get(stat_id, 0.0))
-			value_points.append(center + direction * radius * clampf(value / max_value, 0.0, 1.0))
-			var label_position: Vector2 = center + direction * (radius + 28.0)
-			var label := "%s %d" % [str(stat_names.get(stat_id, stat_id)).substr(0, 3), int(round(value))]
-			draw_string(get_theme_default_font(), label_position - Vector2(28.0, -5.0), label, HORIZONTAL_ALIGNMENT_CENTER, 56.0, 12, Color(0.96, 0.90, 0.70, 0.96))
-		draw_colored_polygon(value_points, Color(fill_color.r, fill_color.g, fill_color.b, 0.30))
-		var closed_values := PackedVector2Array(value_points)
-		closed_values.append(value_points[0])
-		draw_polyline(closed_values, Color(fill_color.r, fill_color.g, fill_color.b, 0.95), 2.0)
-
+const SHOP_INLINE_SLOT_SIZE := ShopUIConstants.SHOP_INLINE_SLOT_SIZE
+const SHOP_INLINE_ICON_SIZE := ShopUIConstants.SHOP_INLINE_ICON_SIZE
+const SHOP_CURSOR_VARIANTS := ShopUIConstants.SHOP_CURSOR_VARIANTS
+const HERO_RADAR_STATS := HeroSelectConstants.HERO_RADAR_STATS
+const HERO_CLASS_COLORS := HeroSelectConstants.HERO_CLASS_COLORS
 
 func _init(game_ref) -> void:
 	game = game_ref
@@ -159,13 +101,13 @@ func _show_main_menu() -> void:
 
 	var start_button := _make_button("Начать новую игру")
 	start_button.name = "MainMenuStartButton"
-	start_button.custom_minimum_size = Vector2(380, 62)
+	start_button.custom_minimum_size = Vector2(380, 103)
 	start_button.pressed.connect(_show_character_select)
 	action_box.add_child(start_button)
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "MainMenuSettingsButton"
-	settings_button.custom_minimum_size = Vector2(380, 62)
+	settings_button.custom_minimum_size = Vector2(380, 103)
 	settings_button.pressed.connect(_show_settings_menu)
 	action_box.add_child(settings_button)
 
@@ -186,15 +128,37 @@ func _show_main_menu() -> void:
 	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(version_label)
 
+	var skill_tree_button := _make_button("Древо умений")
+	skill_tree_button.name = "MainMenuSkillTreeButton"
+	skill_tree_button.custom_minimum_size = Vector2(380, 103)
+	skill_tree_button.pressed.connect(_show_skill_tree_screen)
+	action_box.add_child(skill_tree_button)
+
+	# SCRUM-159: «Что нового» с бейджем непросмотренной версии (не модалка).
+	var patch_notes_data := preload("res://scripts/patch_notes_data.gd")
+	var settings_module := preload("res://scripts/game_settings.gd")
+	var last_seen: String = str(settings_module.load_settings().get("last_seen_version", "0.0.0"))
+	var patch_notes_button := _make_button("Что нового  ●" if patch_notes_data.has_new_since(last_seen) else "Что нового")
+	patch_notes_button.name = "MainMenuPatchNotesButton"
+	patch_notes_button.custom_minimum_size = Vector2(380, 103)
+	patch_notes_button.pressed.connect(func() -> void:
+		# Просмотр отмечает актуальную версию как увиденную — бейдж гаснет.
+		var saved: Dictionary = settings_module.load_settings()
+		saved["last_seen_version"] = patch_notes_data.latest_version()
+		settings_module.save_settings(saved)
+		_show_patch_notes_screen()
+	)
+	action_box.add_child(patch_notes_button)
+
 	var codex_button := _make_button("Кодекс")
 	codex_button.name = "MainMenuCodexButton"
-	codex_button.custom_minimum_size = Vector2(380, 62)
+	codex_button.custom_minimum_size = Vector2(380, 103)
 	codex_button.pressed.connect(_show_codex_screen)
 	action_box.add_child(codex_button)
 
 	var exit_button := _make_button("Выйти из игры")
 	exit_button.name = "MainMenuExitButton"
-	exit_button.custom_minimum_size = Vector2(380, 62)
+	exit_button.custom_minimum_size = Vector2(380, 103)
 	exit_button.pressed.connect(func() -> void:
 		game.get_tree().quit()
 	)
@@ -209,8 +173,7 @@ func _show_character_select() -> void:
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
 	game.route_nodes = game.route._generate_route()
-	game.current_shop_items.clear()
-	game.current_shop_purchased.clear()
+	_clear_current_shop_stock()
 	game._clear_ui()
 
 	game.ui_layer = CanvasLayer.new()
@@ -222,21 +185,7 @@ func _show_character_select() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
 
-	var background := TextureRect.new()
-	background.name = "HeroSelectBackground"
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	background.texture = game._cached_texture(game.MAIN_MENU_BACKGROUND)
-	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(background)
-
-	var shade := ColorRect.new()
-	shade.name = "HeroSelectShade"
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.015, 0.018, 0.028, 0.66)
-	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(shade)
+	_add_screen_background(root, "hero_select")
 
 	var margins := MarginContainer.new()
 	margins.name = "HeroSelectMargins"
@@ -279,7 +228,10 @@ func _show_character_select() -> void:
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HeroSelectBackButton"
-	back_button.custom_minimum_size = Vector2(150, 48)
+	# Высоту НЕ увеличиваем (исключение из общего +35%): кнопка живёт в шапке
+	# выбора героя; рост шапки сжимает зазор до плавающей розы характеристик и
+	# усиливает интермиттентный флейк runtime_smoke (SCRUM-257).
+	back_button.custom_minimum_size = Vector2(170, 68)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 
@@ -294,7 +246,7 @@ func _show_character_select() -> void:
 	portrait_panel.name = "HeroSelectPortraitPanel"
 	portrait_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	portrait_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	portrait_panel.size_flags_stretch_ratio = 0.42
+	portrait_panel.size_flags_stretch_ratio = 0.38
 	portrait_panel.add_theme_stylebox_override("panel", _hero_portrait_style())
 	content_row.add_child(portrait_panel)
 
@@ -318,7 +270,7 @@ func _show_character_select() -> void:
 	dossier_panel.name = "HeroSelectDossierPanel"
 	dossier_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dossier_panel.size_flags_stretch_ratio = 0.58
+	dossier_panel.size_flags_stretch_ratio = 0.62
 	dossier_panel.add_theme_stylebox_override("panel", _panel_style())
 	content_row.add_child(dossier_panel)
 
@@ -360,20 +312,20 @@ func _show_character_select() -> void:
 	asc_row.name = "AscensionSelectorRow"
 	asc_row.add_theme_constant_override("separation", 10)
 	dossier.add_child(asc_row)
-	var asc_minus := _make_button("-")
+	var asc_minus := _make_compact_button("-")
 	asc_minus.name = "AscensionMinusButton"
-	asc_minus.custom_minimum_size = Vector2(48, 38)
+	asc_minus.custom_minimum_size = Vector2(54, 62)
 	asc_row.add_child(asc_minus)
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
-	asc_label.custom_minimum_size = Vector2(190, 38)
+	asc_label.custom_minimum_size = Vector2(190, 46)
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	asc_label.add_theme_font_size_override("font_size", 15)
 	asc_label.add_theme_color_override("font_color", Color(1.0, 0.78, 0.32, 1.0))
 	asc_row.add_child(asc_label)
-	var asc_plus := _make_button("+")
+	var asc_plus := _make_compact_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	asc_plus.custom_minimum_size = Vector2(48, 38)
+	asc_plus.custom_minimum_size = Vector2(54, 62)
 	asc_row.add_child(asc_plus)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
@@ -385,9 +337,47 @@ func _show_character_select() -> void:
 
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HeroSelectChooseButton"
-	select_button.custom_minimum_size = Vector2(320, 50)
+	select_button.custom_minimum_size = Vector2(320, 92)
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	dossier.add_child(select_button)
+
+	var radar_reserve := Control.new()
+	radar_reserve.name = "HeroSelectRadarReserve"
+	radar_reserve.custom_minimum_size = Vector2(408, 300)
+	radar_reserve.size_flags_horizontal = Control.SIZE_SHRINK_END
+	radar_reserve.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	radar_reserve.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content_row.add_child(radar_reserve)
+
+	var radar_panel := PanelContainer.new()
+	radar_panel.name = "HeroSelectRadarPanel"
+	radar_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	radar_panel.offset_left = -414
+	radar_panel.offset_top = 118
+	radar_panel.offset_right = -24
+	radar_panel.offset_bottom = 418
+	radar_panel.add_theme_stylebox_override("panel", _character_card_style())
+	root.add_child(radar_panel)
+
+	var radar_box := VBoxContainer.new()
+	radar_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	radar_box.add_theme_constant_override("separation", 6)
+	radar_panel.add_child(radar_box)
+
+	var radar_title := Label.new()
+	radar_title.name = "HeroStatRadarTitle"
+	radar_title.text = "Характеристики"
+	radar_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	radar_title.add_theme_font_size_override("font_size", 17)
+	radar_title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
+	radar_box.add_child(radar_title)
+
+	var radar := HeroStatRadar.new()
+	radar.name = "HeroStatRadar"
+	radar.custom_minimum_size = Vector2(360, 230)
+	radar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	radar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	radar_box.add_child(radar)
 
 	var thumbnail_strip := HBoxContainer.new()
 	thumbnail_strip.name = "HeroThumbnailStrip"
@@ -395,22 +385,6 @@ func _show_character_select() -> void:
 	thumbnail_strip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	thumbnail_strip.add_theme_constant_override("separation", 8)
 	layout.add_child(thumbnail_strip)
-
-	# Роза ветров — плавающий виджет в ПРАВОМ ВЕРХНЕМ углу экрана (ниже шапки,
-	# над пустым верх-правым полем досье — не перекрывает текст, выровненный влево).
-	var radar := HeroStatRadar.new()
-	radar.name = "HeroStatRadar"
-	radar.custom_minimum_size = Vector2(320, 200)
-	radar.anchor_left = 1.0
-	radar.anchor_right = 1.0
-	radar.anchor_top = 0.0
-	radar.anchor_bottom = 0.0
-	radar.offset_left = -344.0
-	radar.offset_right = -24.0
-	radar.offset_top = 88.0
-	radar.offset_bottom = 288.0
-	radar.z_index = 6
-	root.add_child(radar)
 
 	var legacy_grid := GridContainer.new()
 	legacy_grid.name = "CharacterCardsGrid"
@@ -421,6 +395,7 @@ func _show_character_select() -> void:
 
 	var stat_maxima := _hero_radar_global_maxima()
 	var character_ids: Array = game.PROGRESSION_DATA.character_ids()
+	var thumbnail_size := _hero_thumbnail_size(character_ids.size())
 	if not character_ids.has(game.selected_character_id):
 		game.selected_character_id = str(character_ids[0])
 	var thumbnail_buttons: Array[Button] = []
@@ -429,8 +404,7 @@ func _show_character_select() -> void:
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(game.selected_character_id))
 		var lvl: int = game.selected_ascension_level
 		asc_label.text = "Возвышение: %d / %d" % [lvl, game.ascension_selectable_max(game.selected_character_id)]
-		var lines: Array = game.PROGRESSION_DATA.ascension_modifier_lines(lvl)
-		asc_mods.text = "Обычная сложность." if lines.is_empty() else "\n".join(lines)
+		asc_mods.text = game.PROGRESSION_DATA.ascension_level_change_line(lvl)
 
 	var select_character := func(character_id: String) -> void:
 		game.selected_character_id = character_id
@@ -465,7 +439,7 @@ func _show_character_select() -> void:
 	for character_id in character_ids:
 		var char_id := str(character_id)
 		var captured_id := char_id
-		var thumb := _make_hero_thumbnail_button(captured_id, select_character)
+		var thumb := _make_hero_thumbnail_button(captured_id, select_character, thumbnail_size)
 		thumbnail_strip.add_child(thumb)
 		thumbnail_buttons.append(thumb)
 		var legacy_card := Button.new()
@@ -486,14 +460,26 @@ func _show_character_select() -> void:
 	game.ui_escape_action = _show_main_menu
 
 
-func _make_hero_thumbnail_button(character_id: String, select_character: Callable) -> Button:
+func _hero_thumbnail_size(character_count: int) -> Vector2:
+	var viewport_width := 1280.0
+	if game != null and game.get_viewport() != null:
+		viewport_width = maxf(game.get_viewport().get_visible_rect().size.x, 1280.0)
+	var horizontal_margins := 48.0
+	var gap_total := maxf(float(character_count - 1), 0.0) * 8.0
+	var available_width := maxf(viewport_width - horizontal_margins - gap_total, 1.0)
+	var width := clampf(floor(available_width / maxf(float(character_count), 1.0)), 64.0, 124.0)
+	var height := clampf(width * 0.72, 64.0, 88.0)
+	return Vector2(width, height)
+
+
+func _make_hero_thumbnail_button(character_id: String, select_character: Callable, thumbnail_size := Vector2(124, 88)) -> Button:
 	var config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
 	var button := Button.new()
 	button.name = "HeroThumbnail_%s" % character_id
 	button.toggle_mode = true
 	button.set_meta("character_id", character_id)
-	button.custom_minimum_size = Vector2(124, 88)
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.custom_minimum_size = thumbnail_size
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [str(config.get("title", character_id)), str(config.get("description", ""))]
 	button.add_theme_stylebox_override("normal", _character_card_style())
@@ -548,6 +534,7 @@ const CODEX_SECTIONS := [
 	{"id": "monsters", "title": "Монстры"},
 	{"id": "artifacts", "title": "Артефакты"},
 	{"id": "stats", "title": "Характеристики"},
+	{"id": "glossary", "title": "Глоссарий"},
 	{"id": "ascensions", "title": "Возвышения"},
 ]
 
@@ -560,7 +547,11 @@ const ATTRIBUTE_REROLLS_PER_WINDOW := 2
 
 
 func _ascension_price(base: int) -> int:
-	return maxi(1, int(round(float(base) * float(game.ascension_difficulty()["price_mult"]))))
+	# Ветвь Богатства мета-древа (SCRUM-150): удешевление докачки атрибутов
+	# (attr_cost_mult ≤ 0). Используется только ценами докачки, не магазином.
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	var discount := maxf(1.0 + float(skill_mods.get("attr_cost_mult", 0.0)), 0.1)
+	return maxi(1, int(round(float(base) * float(game.ascension_difficulty()["price_mult"]) * discount)))
 
 
 func _attribute_buy_cost() -> int:
@@ -628,8 +619,12 @@ func _show_victory_banner(on_continue: Callable) -> void:
 
 func _random_attribute_pair() -> Array:
 	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	# Ветвь Знаний мета-древа (SCRUM-150): attr_extra_options добавляет варианты
+	# в окне докачки (по умолчанию 2 — обратная совместимость).
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	var option_count: int = clampi(2 + int(skill_mods.get("attr_extra_options", 0.0)), 2, pool.size())
 	var pair := []
-	for _pick in range(2):
+	for _pick in range(option_count):
 		var index: int = game.rng.randi_range(0, pool.size() - 1)
 		pair.append(pool[index])
 		pool.remove_at(index)
@@ -647,6 +642,7 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	root.name = "AttributeShopScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_add_screen_background(root, "meta_progression")
 
 	var shade := ColorRect.new()
 	shade.color = Color(0.02, 0.025, 0.045, 0.92)
@@ -736,7 +732,7 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		var stat_title := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
 		var offer_button := _make_button("%s +1   (%d зол.)" % [stat_title, buy_cost])
 		offer_button.name = "AttributeOffer_%s" % stat_id
-		offer_button.custom_minimum_size = Vector2(560, 64)
+		offer_button.custom_minimum_size = Vector2(560, 92)
 		offer_button.disabled = money < buy_cost
 		offer_button.tooltip_text = "%s +1\n%s" % [
 			stat_title,
@@ -779,9 +775,9 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 		return
 
 	# Желтая стрелка прокачки: докачка характеристик за деньги.
-	var fab := _make_button("⬆")
+	var fab := _make_compact_button("⬆")
 	fab.name = "UpgradeFabButton"
-	fab.custom_minimum_size = Vector2(64, 64)
+	fab.custom_minimum_size = Vector2(58, 58)
 	fab.anchor_left = 1.0
 	fab.anchor_top = 1.0
 	fab.anchor_right = 1.0
@@ -791,7 +787,7 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 	fab.offset_right = -24.0
 	fab.offset_bottom = -24.0
 	fab.add_theme_font_size_override("font_size", 30)
-	_apply_fantasy_button_theme(fab, "level_up")
+	_apply_compact_button_theme(fab)
 	fab.tooltip_text = "Докачка характеристик за золото"
 	if not allow_attribute_shop:
 		fab.disabled = true
@@ -801,6 +797,188 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 			_show_attribute_shop(return_action)
 	)
 	root.add_child(fab)
+
+
+func _show_skill_tree_screen() -> void:
+	# SCRUM-150 ч.3: общий экран древа умений из главного меню. Данные/логика —
+	# META_PROGRESSION (data-driven), сохранение узлов в user://. Применение
+	# эффектов к забегу — player.apply_meta_skill_modifiers (ч.2a) + старт-вайринг (ч.2b).
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "SkillTreeScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.ui_layer.add_child(root)
+	_add_screen_background(root, "codex")
+
+	var layout := VBoxContainer.new()
+	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layout.offset_left = 48.0
+	layout.offset_top = 26.0
+	layout.offset_right = -48.0
+	layout.offset_bottom = -26.0
+	layout.add_theme_constant_override("separation", 12)
+	root.add_child(layout)
+
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 18)
+	layout.add_child(header)
+	var title := Label.new()
+	title.text = "Древо умений"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	header.add_child(title)
+	var points_label := Label.new()
+	points_label.name = "SkillTreePointsLabel"
+	points_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	points_label.add_theme_font_size_override("font_size", 22)
+	points_label.add_theme_color_override("font_color", Color(1.0, 0.84, 0.34, 1.0))
+	header.add_child(points_label)
+	var back_button := _make_button("Назад в меню")
+	back_button.name = "SkillTreeBackButton"
+	back_button.custom_minimum_size = Vector2(260, 92)
+	back_button.pressed.connect(_show_main_menu)
+	header.add_child(back_button)
+	game.ui_escape_action = _show_main_menu
+
+	var hint := Label.new()
+	hint.name = "SkillTreeHint"
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_font_size_override("font_size", 14)
+	hint.add_theme_color_override("font_color", Color(0.80, 0.86, 0.92, 0.9))
+	layout.add_child(hint)
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	layout.add_child(scroll)
+	var branches_row := HBoxContainer.new()
+	branches_row.name = "SkillTreeBranches"
+	branches_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	branches_row.add_theme_constant_override("separation", 16)
+	scroll.add_child(branches_row)
+
+	var node_buttons: Array[Button] = []
+	var refresh := func() -> void:
+		var pts: int = game.META_PROGRESSION.skill_points(game.meta_state)
+		points_label.text = "Очки умений: %d" % pts
+		var bought: int = game.META_PROGRESSION.purchased_nodes(game.meta_state).size()
+		hint.text = "Очки умений зарабатываются за победы над боссами. Открывай узлы по ветвям — следующий требует предыдущий." if (pts == 0 and bought == 0) else ""
+		for nb in node_buttons:
+			var node_id: String = str(nb.get_meta("node_id"))
+			var status: String = game.META_PROGRESSION.node_status(game.meta_state, node_id)
+			nb.disabled = status != "available"
+			match status:
+				"purchased":
+					nb.modulate = Color(0.62, 1.0, 0.66, 1.0)
+				"available":
+					nb.modulate = Color(1.0, 0.92, 0.6, 1.0)
+				_:
+					nb.modulate = Color(0.62, 0.64, 0.70, 0.7)
+
+	for branch in game.META_PROGRESSION.SKILL_BRANCHES:
+		var branch_id: String = str(branch)
+		var col := VBoxContainer.new()
+		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		col.add_theme_constant_override("separation", 6)
+		branches_row.add_child(col)
+		var branch_title := Label.new()
+		branch_title.text = str(game.META_PROGRESSION.SKILL_BRANCH_TITLES.get(branch_id, branch_id))
+		branch_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		branch_title.add_theme_font_size_override("font_size", 20)
+		branch_title.add_theme_color_override("font_color", Color(0.96, 0.88, 0.54, 1.0))
+		col.add_child(branch_title)
+		for node in game.META_PROGRESSION.branch_nodes(branch_id):
+			var node_data: Dictionary = node
+			var node_id: String = str(node_data["id"])
+			var nb := _make_button("%s  (%d)\n%s" % [str(node_data["title"]), int(node_data["cost"]), str(node_data["desc"])])
+			nb.name = "SkillNode_%s" % node_id
+			nb.custom_minimum_size = Vector2(0, 103)
+			nb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			nb.add_theme_font_size_override("font_size", 13)
+			nb.set_meta("node_id", node_id)
+			nb.pressed.connect(func() -> void:
+				game.meta_state = game.META_PROGRESSION.buy_skill_node(game.meta_state, node_id)
+				game.META_PROGRESSION.save_state(game.meta_state)
+				refresh.call()
+			)
+			node_buttons.append(nb)
+			col.add_child(nb)
+
+	refresh.call()
+	if not node_buttons.is_empty():
+		node_buttons[0].grab_focus()
+
+
+func _show_patch_notes_screen() -> void:
+	# SCRUM-159: экран «Что нового» из главного меню — data-driven патч-ноуты
+	# по версиям (новейшая первой), только пользовательский русский текст.
+	const PatchNotesData := preload("res://scripts/patch_notes_data.gd")
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "PatchNotesScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.ui_layer.add_child(root)
+	_add_screen_background(root, "codex")
+
+	var layout := VBoxContainer.new()
+	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layout.offset_left = 48.0
+	layout.offset_top = 26.0
+	layout.offset_right = -48.0
+	layout.offset_bottom = -26.0
+	layout.add_theme_constant_override("separation", 12)
+	root.add_child(layout)
+
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 18)
+	layout.add_child(header)
+	var title := Label.new()
+	title.text = "Что нового"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	header.add_child(title)
+	var back_button := _make_button("Назад в меню")
+	back_button.name = "PatchNotesBackButton"
+	back_button.custom_minimum_size = Vector2(260, 92)
+	back_button.pressed.connect(_show_main_menu)
+	header.add_child(back_button)
+	game.ui_escape_action = _show_main_menu
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	layout.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.name = "PatchNotesContent"
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 14)
+	scroll.add_child(content)
+
+	for entry in PatchNotesData.all_entries():
+		var entry_data: Dictionary = entry
+		var version_label := Label.new()
+		version_label.name = "PatchNotesVersion_%s" % str(entry_data.get("version", "")).replace(".", "_")
+		version_label.text = "Версия %s  (%s)" % [str(entry_data.get("version", "")), str(entry_data.get("date", ""))]
+		version_label.add_theme_font_size_override("font_size", 24)
+		version_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
+		content.add_child(version_label)
+		for line in (entry_data.get("highlights", []) as Array):
+			var bullet := Label.new()
+			bullet.text = "•  %s" % str(line)
+			bullet.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			bullet.add_theme_font_size_override("font_size", 16)
+			bullet.add_theme_color_override("font_color", Color(0.90, 0.93, 0.98, 1.0))
+			content.add_child(bullet)
 
 
 func _show_codex_screen() -> void:
@@ -814,11 +992,7 @@ func _show_codex_screen() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
 
-	var background := ColorRect.new()
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.color = Color(0.030, 0.034, 0.055, 0.985)
-	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(background)
+	_add_screen_background(root, "codex")
 
 	var layout := VBoxContainer.new()
 	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -842,7 +1016,7 @@ func _show_codex_screen() -> void:
 
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "CodexBackButton"
-	back_button.custom_minimum_size = Vector2(240, 54)
+	back_button.custom_minimum_size = Vector2(260, 92)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -862,7 +1036,7 @@ func _show_codex_screen() -> void:
 		var section_id := str(section["id"])
 		var tab_button := _make_button(str(section["title"]))
 		tab_button.name = "CodexTab_%s" % section_id
-		tab_button.custom_minimum_size = Vector2(220, 50)
+		tab_button.custom_minimum_size = Vector2(230, 92)
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		tabs_row.add_child(tab_button)
 
@@ -901,6 +1075,8 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_build_codex_artifacts(list)
 		"stats":
 			_build_codex_stats(list)
+		"glossary":
+			_build_codex_glossary(list)
 		"ascensions":
 			_build_codex_ascensions(list)
 
@@ -936,6 +1112,106 @@ func _codex_label(parent: Control, text: String, font_size: int, color: Color) -
 	return label
 
 
+func _make_glossary_term_button(term_id: String, popup_context := false) -> Button:
+	var definition: Dictionary = GLOSSARY.definition(term_id)
+	var button := Button.new()
+	button.name = "GlossaryTerm_%s" % term_id
+	button.text = str(definition.get("name", term_id))
+	button.flat = true
+	button.focus_mode = Control.FOCUS_NONE
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.tooltip_text = "" if popup_context else _glossary_tooltip_text(term_id)
+	button.add_theme_font_size_override("font_size", 14)
+	button.add_theme_color_override("font_color", Color(0.92, 0.82, 0.54, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.62, 1.0))
+	button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+	button.add_theme_stylebox_override("hover", StyleBoxEmpty.new())
+	button.add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
+	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	button.mouse_entered.connect(func() -> void:
+		if not popup_context or Input.is_key_pressed(KEY_ALT):
+			_show_glossary_tooltip(button, term_id)
+	)
+	button.mouse_exited.connect(_hide_glossary_tooltip)
+	button.gui_input.connect(func(event: InputEvent) -> void:
+		if popup_context and event is InputEventKey and Input.is_key_pressed(KEY_ALT):
+			_show_glossary_tooltip(button, term_id)
+	)
+	var underline := HBoxContainer.new()
+	underline.name = "GlossaryDottedUnderline"
+	underline.anchor_left = 0.0
+	underline.anchor_top = 1.0
+	underline.anchor_right = 1.0
+	underline.anchor_bottom = 1.0
+	underline.offset_top = -4.0
+	underline.offset_bottom = -1.0
+	underline.alignment = BoxContainer.ALIGNMENT_CENTER
+	underline.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	underline.add_theme_constant_override("separation", 3)
+	for dot_index in range(10):
+		var dot := ColorRect.new()
+		dot.custom_minimum_size = Vector2(3, 2)
+		dot.color = Color(0.92, 0.74, 0.38, 0.95)
+		underline.add_child(dot)
+	button.add_child(underline)
+	return button
+
+
+func _glossary_tooltip_text(term_id: String) -> String:
+	var definition: Dictionary = GLOSSARY.definition(term_id)
+	return "%s\n%s" % [str(definition.get("name", term_id)), str(definition.get("desc", ""))]
+
+
+func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
+	_hide_glossary_tooltip()
+	if game.ui_layer == null:
+		return
+	var definition: Dictionary = GLOSSARY.definition(term_id)
+	if definition.is_empty():
+		return
+	var tooltip := PanelContainer.new()
+	tooltip.name = "GlossaryTooltipPanel"
+	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
+	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tooltip.custom_minimum_size = Vector2(360, 0)
+	tooltip.add_theme_stylebox_override("panel", _global_texture_style(GLOBAL_TOOLTIP_FRAME_PATH, Vector4(26, 26, 26, 26), Color.WHITE, Vector4(14, 12, 14, 12)))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 4)
+	box.add_theme_constant_override("margin_left", 12)
+	box.add_theme_constant_override("margin_top", 10)
+	box.add_theme_constant_override("margin_right", 12)
+	box.add_theme_constant_override("margin_bottom", 10)
+	tooltip.add_child(box)
+	var title := Label.new()
+	title.text = str(definition.get("name", term_id))
+	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.48, 1.0))
+	box.add_child(title)
+	var desc := Label.new()
+	desc.text = str(definition.get("desc", ""))
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.add_theme_font_size_override("font_size", 13)
+	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.80, 1.0))
+	box.add_child(desc)
+	game.ui_layer.add_child(tooltip)
+	var anchor_rect := anchor.get_global_rect()
+	var viewport_size := anchor.get_viewport_rect().size
+	tooltip.position = anchor_rect.position + Vector2(0, anchor_rect.size.y + 8.0)
+	tooltip.size = Vector2(380, 0)
+	await game.get_tree().process_frame
+	var rect := tooltip.get_global_rect()
+	tooltip.position.x = clampf(tooltip.position.x, 16.0, maxf(16.0, viewport_size.x - rect.size.x - 16.0))
+	tooltip.position.y = clampf(tooltip.position.y, 16.0, maxf(16.0, viewport_size.y - rect.size.y - 16.0))
+
+
+func _hide_glossary_tooltip() -> void:
+	if game.ui_layer == null:
+		return
+	var existing: Node = game.ui_layer.find_child("GlossaryTooltipPanel", true, false)
+	if existing != null:
+		existing.queue_free()
+
+
 func _build_codex_characters(list: VBoxContainer) -> void:
 	for character in CODEX_DATA.characters():
 		var row := _codex_entry_panel(list)
@@ -956,8 +1232,8 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 
 
 func _build_codex_monsters(list: VBoxContainer) -> void:
-	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "boss": "Боссы"}
-	for kind in ["standard", "elite", "boss"]:
+	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "mini_elite": "Мини-элитки (свита Возвышения)", "boss": "Боссы"}
+	for kind in ["standard", "elite", "mini_elite", "boss"]:
 		_codex_label(list, str(kind_titles[kind]), 26, Color(0.96, 0.90, 0.68, 1.0))
 		for monster in CODEX_DATA.monsters():
 			if str(monster["kind"]) != kind:
@@ -1042,8 +1318,30 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 				_codex_label(text_box, "Влияет на: %s" % stat["influences"], 12, Color(0.70, 0.78, 0.88, 1.0))
 
 
+func _build_codex_glossary(list: VBoxContainer) -> void:
+	_codex_label(list, "Глоссарий терминов", 26, Color(0.96, 0.90, 0.68, 1.0))
+	_codex_label(list, "Термины с пунктиром можно навести мышью. Во всплывающих окнах такие подсказки показываются только при зажатом Alt.", 13, Color(0.86, 0.90, 0.95, 1.0))
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 10)
+	list.add_child(grid)
+	for term_id in GLOSSARY.term_ids():
+		var definition: Dictionary = GLOSSARY.definition(term_id)
+		var panel := PanelContainer.new()
+		panel.name = "GlossaryEntry_%s" % term_id
+		panel.add_theme_stylebox_override("panel", _character_card_style())
+		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		grid.add_child(panel)
+		var box := VBoxContainer.new()
+		box.add_theme_constant_override("separation", 4)
+		panel.add_child(box)
+		box.add_child(_make_glossary_term_button(term_id, false))
+		_codex_label(box, str(definition.get("desc", "")), 12, Color(0.90, 0.86, 0.76, 1.0))
+
+
 func _show_settings_menu() -> void:
-	var box := _create_menu_box("Настройки", "Экран, звук и управление")
+	var box := _create_menu_box("Настройки", "Экран, звук и управление", "settings")
 	box.alignment = BoxContainer.ALIGNMENT_BEGIN
 
 	var tabs := TabContainer.new()
@@ -1066,7 +1364,7 @@ func _show_settings_menu() -> void:
 		screen_options.name = "SettingsScreenOption"
 		screen_options.custom_minimum_size = Vector2(520, 46)
 		screen_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_style_button_control(screen_options)
+		_apply_compact_button_theme(screen_options)
 		for screen_index in range(screen_count):
 			var size := DisplayServer.screen_get_size(screen_index)
 			screen_options.add_item("Экран %d (%dx%d)" % [screen_index + 1, size.x, size.y])
@@ -1082,7 +1380,7 @@ func _show_settings_menu() -> void:
 	resolution_options.name = "SettingsResolutionOption"
 	resolution_options.custom_minimum_size = Vector2(520, 46)
 	resolution_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_style_button_control(resolution_options)
+	_apply_compact_button_theme(resolution_options)
 	var usable_size := Vector2i(99999, 99999)
 	if DisplayServer.get_name() != "headless":
 		usable_size = DisplayServer.screen_get_usable_rect(clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))).size
@@ -1103,7 +1401,7 @@ func _show_settings_menu() -> void:
 	mode_options.name = "SettingsWindowModeOption"
 	mode_options.custom_minimum_size = Vector2(520, 46)
 	mode_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_style_button_control(mode_options)
+	_apply_compact_button_theme(mode_options)
 	for mode_name in game.WINDOW_MODE_OPTIONS:
 		mode_options.add_item(mode_name)
 	mode_options.selected = game.selected_window_mode_index
@@ -1146,6 +1444,14 @@ func _show_settings_menu() -> void:
 	_add_volume_row(audio_box, "Общая громкость", "master_volume", "")
 	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled")
 	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled")
+	var reset_audio_button := _make_button("Сбросить звук по умолчанию")
+	reset_audio_button.name = "SettingsResetAudioButton"
+	reset_audio_button.custom_minimum_size = Vector2(420, 92)
+	reset_audio_button.pressed.connect(func() -> void:
+		_reset_audio_to_defaults()
+		_show_settings_menu()
+	)
+	audio_box.add_child(reset_audio_button)
 
 	var controls_tab := _make_settings_tab("Управление")
 	var controls_box := controls_tab.get_child(0) as VBoxContainer
@@ -1165,9 +1471,9 @@ func _show_settings_menu() -> void:
 		label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 		row.add_child(label)
 
-		var bind_button := _make_button(_binding_text(action_name))
+		var bind_button := _make_compact_button(_binding_text(action_name))
 		bind_button.name = "BindingButton_%s" % action_name
-		bind_button.custom_minimum_size = Vector2(420, 38)
+		bind_button.custom_minimum_size = Vector2(420, 62)
 		bind_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		bind_button.pressed.connect(func() -> void:
 			_begin_rebind(action_name)
@@ -1183,7 +1489,7 @@ func _show_settings_menu() -> void:
 
 	var reset_button := _make_button("Сбросить управление по умолчанию")
 	reset_button.name = "SettingsResetBindingsButton"
-	reset_button.custom_minimum_size = Vector2(360, 42)
+	reset_button.custom_minimum_size = Vector2(440, 92)
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
 		_show_settings_menu()
@@ -1254,9 +1560,10 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	slider.name = "VolumeSlider_%s" % volume_key
 	slider.min_value = 0.0
 	slider.max_value = 100.0
-	slider.step = 5.0
-	slider.custom_minimum_size = Vector2(560, 42)
+	slider.step = 2.0
+	slider.custom_minimum_size = Vector2(560, 48)
 	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.focus_mode = Control.FOCUS_ALL
 	_style_slider(slider)
 	slider.value = float(game.audio_settings.get(volume_key, 1.0)) * 100.0
 	slider.value_changed.connect(func(value: float) -> void:
@@ -1279,13 +1586,14 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	if enabled_key != "":
 		var toggle := CheckBox.new()
 		toggle.name = "VolumeToggle_%s" % enabled_key
-		toggle.text = "звук"
-		toggle.custom_minimum_size = Vector2(96, 42)
+		toggle.custom_minimum_size = Vector2(108, 42)
 		toggle.button_pressed = bool(game.audio_settings.get(enabled_key, true))
+		toggle.text = "Вкл." if toggle.button_pressed else "Выкл."
 		_style_checkbox(toggle)
 		slider.editable = toggle.button_pressed
 		toggle.toggled.connect(func(pressed: bool) -> void:
 			game.audio_settings[enabled_key] = pressed
+			toggle.text = "Вкл." if pressed else "Выкл."
 			slider.editable = pressed
 			game._apply_audio_settings()
 			game.save_game_settings()
@@ -1293,30 +1601,156 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 		row.add_child(toggle)
 
 
+func _reset_audio_to_defaults() -> void:
+	for key in ["master_volume", "music_volume", "sfx_volume", "music_enabled", "sfx_enabled"]:
+		game.audio_settings[key] = game.GAME_SETTINGS.DEFAULTS[key]
+	game.audio_settings["master_zero_intent"] = false
+	game._apply_audio_settings()
+	game.save_game_settings()
+
+
 func _show_pause_menu() -> void:
-	if not game.combat_active:
+	if not _can_open_pause_dossier():
 		return
 
 	game.push_pause("escape_menu")
-	game._clear_ui()
-	game.ui_layer = CanvasLayer.new()
-	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
-	game.add_child(game.ui_layer)
+	if game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer):
+		game.pause_overlay_layer.queue_free()
+	game.pause_overlay_layer = CanvasLayer.new()
+	game.pause_overlay_layer.name = "RunPauseOverlayLayer"
+	game.pause_overlay_layer.layer = 120
+	game.pause_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.pause_overlay_layer)
+	game.pause_stats_menu = null
+	_build_run_pause_menu()
+
+
+func _build_run_pause_menu() -> void:
+	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
+		return
+	for child in game.pause_overlay_layer.get_children():
+		child.queue_free()
+
+	var dim := ColorRect.new()
+	dim.name = "RunPauseDim"
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.color = Color(0.01, 0.015, 0.025, 0.70)
+	game.pause_overlay_layer.add_child(dim)
+
+	var root := CenterContainer.new()
+	root.name = "RunPauseMenuRoot"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.pause_overlay_layer.add_child(root)
+
+	var panel := PanelContainer.new()
+	panel.name = "RunPauseMenuPanel"
+	panel.custom_minimum_size = Vector2(520, 480)
+	panel.add_theme_stylebox_override("panel", _panel_style())
+	root.add_child(panel)
+
+	var box := VBoxContainer.new()
+	box.name = "RunPauseMenuButtons"
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 14)
+	panel.add_child(box)
+
+	var title := Label.new()
+	title.name = "RunPauseMenuTitle"
+	title.text = "Пауза"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 44)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	box.add_child(title)
+
+	var subtitle := Label.new()
+	subtitle.name = "RunPauseMenuSubtitle"
+	subtitle.text = "Забег поставлен на паузу"
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_size_override("font_size", 16)
+	subtitle.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
+	box.add_child(subtitle)
+
+	var continue_button := _make_button("Продолжить")
+	continue_button.name = "RunPauseContinueButton"
+	continue_button.custom_minimum_size = Vector2(360, 92)
+	continue_button.pressed.connect(_resume_game)
+	box.add_child(continue_button)
+
+	var dossier_button := _make_button("Досье персонажа")
+	dossier_button.name = "RunPauseDossierButton"
+	dossier_button.custom_minimum_size = Vector2(360, 92)
+	dossier_button.pressed.connect(_show_pause_dossier_menu)
+	box.add_child(dossier_button)
+
+	var settings_button := _make_button("Настройки")
+	settings_button.name = "RunPauseSettingsButton"
+	settings_button.custom_minimum_size = Vector2(360, 92)
+	settings_button.pressed.connect(_show_settings_menu)
+	box.add_child(settings_button)
+
+	var end_run_button := _make_button("Покинуть забег")
+	end_run_button.name = "RunPauseEndRunButton"
+	end_run_button.custom_minimum_size = Vector2(360, 92)
+	end_run_button.pressed.connect(_end_current_run_by_player)
+	box.add_child(end_run_button)
+
+	var main_menu_button := _make_button("Главное меню")
+	main_menu_button.name = "RunPauseMainMenuButton"
+	main_menu_button.custom_minimum_size = Vector2(360, 92)
+	main_menu_button.pressed.connect(_quit_current_run)
+	box.add_child(main_menu_button)
+
+
+func _show_pause_dossier_menu() -> void:
+	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
+		return
+	for child in game.pause_overlay_layer.get_children():
+		child.queue_free()
 
 	game.pause_stats_menu = game.PAUSE_STATS_MENU_SCENE.instantiate() as Control
-	game.ui_layer.add_child(game.pause_stats_menu)
+	game.pause_overlay_layer.add_child(game.pause_stats_menu)
 	if game.pause_stats_menu.has_method("setup"):
-		game.pause_stats_menu.setup(game.current_player)
+		game.pause_stats_menu.setup(_pause_dossier_player())
 	game.pause_stats_menu.resume_requested.connect(_resume_game)
 	game.pause_stats_menu.settings_requested.connect(_show_settings_menu)
 	game.pause_stats_menu.end_run_confirmed.connect(_end_current_run_by_player)
 	game.pause_stats_menu.main_menu_requested.connect(_quit_current_run)
 
 
+func _is_run_pause_overlay_open() -> bool:
+	return game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer)
+
+
+func _can_open_pause_dossier() -> bool:
+	if game.combat_active:
+		return true
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	for screen_name in ["RouteMapScreen", "ShopScreen", "AttributeShopScreen", "LevelUpOverlay", "EliteArtifactRewardScreen", "EventScreen"]:
+		if game.ui_layer.find_child(screen_name, true, false) != null:
+			return true
+	return false
+
+
+func _pause_dossier_player() -> Node:
+	if game.current_player != null and is_instance_valid(game.current_player):
+		return game.current_player
+	var temp_player: Node = game.combat._snapshot_player_for_menu()
+	temp_player.set_meta("pause_dossier_temp_player", true)
+	return temp_player
+
+
 func _resume_game() -> void:
 	game.pending_rebind_action = ""
 	game.pop_pause("escape_menu")
-	game._clear_ui()
+	if game.pause_stats_menu != null and is_instance_valid(game.pause_stats_menu):
+		var temp_player := game.pause_stats_menu.get("_player") as Node
+		if temp_player != null and is_instance_valid(temp_player) and bool(temp_player.get_meta("pause_dossier_temp_player", false)):
+			temp_player.queue_free()
+	if game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer):
+		game.pause_overlay_layer.queue_free()
+	game.pause_overlay_layer = null
+	game.pause_stats_menu = null
 
 
 func _quit_current_run() -> void:
@@ -1482,17 +1916,10 @@ func _update_hero_select_info(info_labels: Dictionary, title: String, descriptio
 
 func _show_weapon_select() -> void:
 	var character_config = game.PROGRESSION_DATA.character_config(game.selected_character_id)
-	var box := _create_menu_box("Выбор оружия", "%s: выбери стартовый подкласс/оружие." % str(character_config["title"]))
+	var box := _create_menu_box("Выбор оружия", "%s: выбери стартовый подкласс/оружие." % str(character_config["title"]), "weapon_select")
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
-		var button := _make_button("%s\n%s\nRange %.0f | AoE %.0f | Cooldown %.2fs" % [
-			config["title"],
-			config["description"],
-			float(config.get("attack_range", 0.0)),
-			float(config.get("aoe_radius", 0.0)),
-			float(config.get("fire_interval", 0.0)),
-		])
-		button.custom_minimum_size = Vector2(680, 84)
+		var button := _make_weapon_select_card(config)
 		button.pressed.connect(func() -> void:
 			game.selected_weapon_id = str(config["id"])
 			game.route._show_battle_map()
@@ -1505,12 +1932,110 @@ func _show_weapon_select() -> void:
 	game.ui_escape_action = _show_character_select
 
 
+func _make_weapon_select_card(config: Dictionary) -> Button:
+	var weapon_id := str(config.get("id", ""))
+	var button := Button.new()
+	button.name = "WeaponOption_%s" % weapon_id
+	button.set_meta("weapon_id", weapon_id)
+	button.text = ""
+	button.custom_minimum_size = Vector2(860, 173)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.tooltip_text = "%s\n%s" % [str(config.get("title", weapon_id)), str(config.get("description", ""))]
+	button.add_theme_stylebox_override("normal", _weapon_card_style(false))
+	button.add_theme_stylebox_override("hover", _weapon_card_style(true))
+	button.add_theme_stylebox_override("pressed", _weapon_card_style(true, true))
+	button.add_theme_stylebox_override("focus", _weapon_card_style(true))
+	button.add_theme_stylebox_override("disabled", _weapon_card_style(false, false, true))
+
+	var row := HBoxContainer.new()
+	row.name = "WeaponOptionContent_%s" % weapon_id
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 18.0
+	row.offset_top = 12.0
+	row.offset_right = -18.0
+	row.offset_bottom = -12.0
+	row.add_theme_constant_override("separation", 18)
+	button.add_child(row)
+
+	var sprite := TextureRect.new()
+	sprite.name = "WeaponSelectSprite_%s" % weapon_id
+	sprite.custom_minimum_size = Vector2(112, 112)
+	sprite.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	sprite.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sprite.texture = game._cached_texture(_weapon_sprite_path(config))
+	row.add_child(sprite)
+
+	var text_box := VBoxContainer.new()
+	text_box.name = "WeaponSelectText_%s" % weapon_id
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	text_box.add_theme_constant_override("separation", 5)
+	row.add_child(text_box)
+
+	var title_label := Label.new()
+	title_label.name = "WeaponSelectTitle_%s" % weapon_id
+	title_label.text = str(config.get("title", weapon_id))
+	title_label.add_theme_font_size_override("font_size", 21)
+	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(title_label)
+
+	var desc_label := Label.new()
+	desc_label.name = "WeaponSelectDescription_%s" % weapon_id
+	desc_label.text = str(config.get("description", ""))
+	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.add_theme_font_size_override("font_size", 14)
+	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
+	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(desc_label)
+
+	var stats_label := Label.new()
+	stats_label.name = "WeaponSelectStats_%s" % weapon_id
+	stats_label.custom_minimum_size = Vector2(190, 0)
+	stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	stats_label.text = "Дальность: %.0f\nРадиус: %.0f\nПерезарядка: %.2fс" % [
+		float(config.get("attack_range", 0.0)),
+		float(config.get("aoe_radius", 0.0)),
+		float(config.get("fire_interval", 0.0)),
+	]
+	stats_label.add_theme_font_size_override("font_size", 14)
+	stats_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
+	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(stats_label)
+	return button
+
+
+func _weapon_sprite_path(config: Dictionary) -> String:
+	for key in ["icon_path", "sprite_path", "weapon_sprite_path"]:
+		var configured_path := str(config.get(key, ""))
+		if configured_path != "" and ResourceLoader.exists(configured_path):
+			return configured_path
+	var weapon_id := str(config.get("id", ""))
+	var aliases := {
+		"sword": "two_handed_sword",
+		"axe": "two_handed_axe",
+		"hammer": "two_handed_hammer",
+	}
+	var asset_id := str(aliases.get(weapon_id, weapon_id))
+	var direct_path := "res://assets/sprites/weapons/%s.png" % asset_id
+	if ResourceLoader.exists(direct_path):
+		return direct_path
+	return ""
+
+
 func _show_reward_screen() -> void:
-	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "event")
+	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward")
 	_create_menu_run_hud()
 	for reward in _random_rewards(3):
 		var button := _make_button("%s\n%s" % [reward["title"], reward["description"]])
-		button.custom_minimum_size = Vector2(640, 74)
+		button.custom_minimum_size = Vector2(640, 100)
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_run(reward)
 			game.route._show_battle_map()
@@ -1520,11 +2045,11 @@ func _show_reward_screen() -> void:
 
 func _show_level_up_screen(return_to_map := false) -> void:
 	game.level_up_return_to_map = return_to_map
-	var box := _create_level_up_menu_box("Повышение уровня", "Выбери 1 из 5 усилений. Один выбор за уровень.")
+	var box := _create_level_up_menu_box("Повышение уровня", "Выбери 1 из 3 усилений. Один выбор за уровень.")
 	if not game.combat_active:
 		_create_menu_run_hud()
 
-	# HFlowContainer: 5 карточек в ряд на широком экране, 3+2 на узком.
+	# HFlowContainer: 3 карточки в ряд на широком экране, перенос на узком.
 	var rewards_row := HFlowContainer.new()
 	rewards_row.name = "LevelUpRewardsRow"
 	rewards_row.alignment = FlowContainer.ALIGNMENT_CENTER
@@ -1536,7 +2061,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 
 	# Набор фиксируется на полученный уровень: переоткрытие окна показывает то же.
 	if game.level_up_offer.is_empty():
-		game.level_up_offer = _random_level_up_rewards(5)
+		game.level_up_offer = _random_level_up_rewards(3)
 	var reward_buttons: Array[Button] = []
 	for reward in game.level_up_offer:
 		var button := _make_level_up_reward_button(reward)
@@ -1588,7 +2113,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 
 	var later_button := _make_button("Позже")
 	later_button.name = "LevelUpLaterButton"
-	later_button.custom_minimum_size = Vector2(220, 48)
+	later_button.custom_minimum_size = Vector2(240, 92)
 	later_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	later_button.tooltip_text = "Закрыть без выбора — пик сохранится, вернуться можно кнопкой повышения внизу."
 	later_button.pressed.connect(defer_choice)
@@ -1612,6 +2137,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.ui_layer.add_child(root)
+	_add_screen_background(root, "elite_reward")
 
 	var shade := ColorRect.new()
 	shade.name = "EliteArtifactRewardShade"
@@ -1700,24 +2226,24 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 func _make_level_up_reward_button(reward: Dictionary) -> Button:
 	var is_rare := bool(reward.get("rare", false))
 	var rare_color: Color = TIER_COLORS[3]
-	var button := _make_button("")
-	button.custom_minimum_size = Vector2(210, 252)
+	var button := Button.new()
+	button.text = ""
+	button.custom_minimum_size = Vector2(245, 364)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
-	button.clip_text = true
+	button.clip_text = false
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = _format_level_up_reward_text(reward)
-	_apply_fantasy_button_theme(button, "reward")
-	if is_rare:
-		# Редкий слот (основная характеристика): золотая рамка-обводка поверх темы.
-		var rare_frame := StyleBoxFlat.new()
-		rare_frame.bg_color = Color(0.10, 0.08, 0.02, 0.55)
-		rare_frame.set_border_width_all(3)
-		rare_frame.border_color = rare_color
-		rare_frame.set_corner_radius_all(10)
-		button.add_theme_stylebox_override("normal", rare_frame)
-		button.add_theme_stylebox_override("hover", rare_frame)
-		button.add_theme_stylebox_override("focus", rare_frame)
+	button.set_meta("level_up_text_field_card", true)
+	button.add_theme_stylebox_override("normal", _level_up_text_field_style(false, is_rare))
+	button.add_theme_stylebox_override("hover", _level_up_text_field_style(true, is_rare))
+	button.add_theme_stylebox_override("pressed", _level_up_text_field_style(true, is_rare, true))
+	button.add_theme_stylebox_override("focus", _level_up_text_field_style(true, is_rare))
+	button.add_theme_stylebox_override("disabled", _level_up_text_field_style(false, is_rare, false, true))
+	button.add_theme_color_override("font_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
 
 	var content := VBoxContainer.new()
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1764,6 +2290,7 @@ func _make_level_up_reward_button(reward: Dictionary) -> Button:
 	content.add_child(preview_label)
 
 	var description_label := Label.new()
+	description_label.name = "LevelUpRewardDescription"
 	description_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	description_label.text = str(reward.get("description", ""))
 	description_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1779,7 +2306,7 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	# эффект и классовая интерпретация. Кликается целиком, фокусируется с клавиатуры.
 	var tier_color := _artifact_tier_color(reward)
 	var button := _make_button("")
-	button.custom_minimum_size = Vector2(340, 372)
+	button.custom_minimum_size = Vector2(340, 502)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
@@ -1852,12 +2379,39 @@ func _resume_combat_after_level_up() -> void:
 		_update_hud()
 
 
-func _show_shop_screen() -> void:
-	if game.current_shop_items.is_empty():
+func _current_shop_node_key() -> String:
+	var stage := int(game.route_stage)
+	var node_type := str(game.current_node_type)
+	if node_type == "":
+		node_type = "shop"
+	var route_choice := str(game.current_route_choice)
+	if route_choice == "":
+		route_choice = "direct"
+	return "%d:%s:%s" % [stage, node_type, route_choice]
+
+
+func _ensure_shop_stock_for_current_node() -> void:
+	var node_key := _current_shop_node_key()
+	if game.current_shop_node_key == "":
+		game.current_shop_node_key = node_key
+	var should_generate: bool = game.current_shop_items.is_empty()
+	if should_generate:
 		game.current_shop_items = _random_shop_items(4)
 		game.current_shop_purchased.clear()
-		for _index in range(game.current_shop_items.size()):
-			game.current_shop_purchased.append(false)
+	while game.current_shop_purchased.size() < game.current_shop_items.size():
+		game.current_shop_purchased.append(false)
+	if game.current_shop_purchased.size() > game.current_shop_items.size():
+		game.current_shop_purchased.resize(game.current_shop_items.size())
+
+
+func _clear_current_shop_stock() -> void:
+	game.current_shop_items.clear()
+	game.current_shop_purchased.clear()
+	game.current_shop_node_key = ""
+
+
+func _show_shop_screen() -> void:
+	_ensure_shop_stock_for_current_node()
 
 	var money := _run_money()
 	game._clear_ui()
@@ -1882,9 +2436,9 @@ func _show_shop_screen() -> void:
 	title_box.anchor_right = 0.5
 	title_box.anchor_bottom = 0.0
 	title_box.offset_left = -380.0
-	title_box.offset_top = 70.0
+	title_box.offset_top = 104.0
 	title_box.offset_right = 380.0
-	title_box.offset_bottom = 150.0
+	title_box.offset_bottom = 190.0
 	title_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	title_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(title_box)
@@ -1903,42 +2457,55 @@ func _show_shop_screen() -> void:
 	subtitle.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
 	title_box.add_child(subtitle)
 
-	# Сетка товаров лежит на «пустой стене» — светлом пергаменте правее торговца
-	# (~48-84% ширины и ~5-75% высоты фона screen_shop_background.png).
-	var wall := CenterContainer.new()
+	# Товары лежат в центральной свободной зоне shop backdrop как предметы
+	# лавки, а не как UI-карточки.
+	var wall := Control.new()
 	wall.name = "ShopParchmentWall"
-	wall.anchor_left = 0.50
-	wall.anchor_top = 0.10
-	wall.anchor_right = 0.82
-	wall.anchor_bottom = 0.72
+	wall.anchor_left = 0.20
+	wall.anchor_top = 0.33
+	wall.anchor_right = 0.80
+	wall.anchor_bottom = 0.79
+	wall.offset_left = 0.0
+	wall.offset_top = 0.0
+	wall.offset_right = 0.0
+	wall.offset_bottom = 0.0
 	wall.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(wall)
 
-	var items_area := GridContainer.new()
+	var items_area := Control.new()
 	items_area.name = "ShopInlineItems"
-	items_area.columns = 2
-	items_area.add_theme_constant_override("h_separation", 22)
-	items_area.add_theme_constant_override("v_separation", 18)
+	items_area.set_anchors_preset(Control.PRESET_FULL_RECT)
+	items_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	wall.add_child(items_area)
 
 	for index in range(game.current_shop_items.size()):
 		var item: Dictionary = game.current_shop_items[index]
-		items_area.add_child(_make_shop_item_slot(item, index, money))
+		var slot := _make_shop_item_slot(item, index, money)
+		var slot_anchor := _shop_wall_slot_anchor(index)
+		slot.anchor_left = slot_anchor.x
+		slot.anchor_top = slot_anchor.y
+		slot.anchor_right = slot_anchor.x
+		slot.anchor_bottom = slot_anchor.y
+		slot.offset_left = -SHOP_INLINE_SLOT_SIZE.x * 0.5
+		slot.offset_top = -SHOP_INLINE_SLOT_SIZE.y * 0.5
+		slot.offset_right = SHOP_INLINE_SLOT_SIZE.x * 0.5
+		slot.offset_bottom = SHOP_INLINE_SLOT_SIZE.y * 0.5
+		items_area.add_child(slot)
 
-	var skip_button := _make_button("Покинуть магазин")
+	var skip_button := _make_button("Назад")
 	skip_button.name = "ShopLeaveButton"
+	skip_button.tooltip_text = "Покинуть магазин и продолжить маршрут."
 	skip_button.anchor_left = 0.5
 	skip_button.anchor_top = 1.0
 	skip_button.anchor_right = 0.5
 	skip_button.anchor_bottom = 1.0
-	skip_button.offset_left = -170.0
-	skip_button.offset_top = -118.0
-	skip_button.offset_right = 170.0
+	skip_button.offset_left = -180.0
+	skip_button.offset_top = -126.0
+	skip_button.offset_right = 180.0
 	skip_button.offset_bottom = -58.0
-	skip_button.custom_minimum_size = Vector2(340, 58)
+	skip_button.custom_minimum_size = Vector2(360, 92)
 	var leave_shop := func() -> void:
-		game.current_shop_items.clear()
-		game.current_shop_purchased.clear()
+		_clear_current_shop_stock()
 		game.route._advance_route_after_noncombat()
 	skip_button.pressed.connect(leave_shop)
 	game.ui_escape_action = leave_shop
@@ -1954,6 +2521,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	button.custom_minimum_size = SHOP_INLINE_SLOT_SIZE
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.focus_mode = Control.FOCUS_ALL
 	button.text = ""
 	button.tooltip_text = _shop_item_tooltip(item, purchased, affordable)
 	if str(item.get("kind", "")) == "artifact":
@@ -1972,58 +2540,135 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 			note_label.offset_top = 4.0
 			note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			button.add_child(note_label)
-	button.add_theme_stylebox_override("normal", _shop_slot_style(false))
-	button.add_theme_stylebox_override("hover", _shop_slot_style(true))
-	button.add_theme_stylebox_override("pressed", _shop_slot_style(true))
-	button.add_theme_stylebox_override("focus", _shop_slot_style(true))
+	button.add_theme_stylebox_override("normal", _shop_wall_button_style(false))
+	button.add_theme_stylebox_override("hover", _shop_wall_button_style(true))
+	button.add_theme_stylebox_override("pressed", _shop_wall_button_style(true))
+	button.add_theme_stylebox_override("focus", _shop_wall_button_style(true))
+	button.add_theme_stylebox_override("disabled", _shop_wall_button_style(false))
 	button.pressed.connect(func() -> void:
 		_buy_shop_item_at(index)
 	)
 
-	var content := VBoxContainer.new()
+	if purchased:
+		button.disabled = true
+		_add_shop_empty_hook(button)
+		return button
+
+	var content := Control.new()
+	content.name = "ShopWallItemContent"
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content.offset_left = 14.0
-	content.offset_top = 14.0
-	content.offset_right = -14.0
-	content.offset_bottom = -12.0
-	content.alignment = BoxContainer.ALIGNMENT_CENTER
-	content.add_theme_constant_override("separation", 8)
 	button.add_child(content)
 
-	var icon_holder := CenterContainer.new()
-	icon_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_holder.custom_minimum_size = Vector2(108, 92)
-	content.add_child(icon_holder)
+	var shadow := PanelContainer.new()
+	shadow.name = "ShopItemContactShadow"
+	shadow.anchor_left = 0.5
+	shadow.anchor_top = 0.0
+	shadow.anchor_right = 0.5
+	shadow.anchor_bottom = 0.0
+	shadow.offset_left = -46.0
+	shadow.offset_top = 112.0
+	shadow.offset_right = 46.0
+	shadow.offset_bottom = 130.0
+	shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shadow.add_theme_stylebox_override("panel", _shop_item_shadow_style())
+	content.add_child(shadow)
 
 	var icon := TextureRect.new()
 	icon.name = "ShopItemIcon"
 	icon.texture = _shop_item_icon_texture(item)
 	icon.custom_minimum_size = SHOP_INLINE_ICON_SIZE
+	icon.anchor_left = 0.5
+	icon.anchor_top = 0.0
+	icon.anchor_right = 0.5
+	icon.anchor_bottom = 0.0
+	icon.offset_left = -SHOP_INLINE_ICON_SIZE.x * 0.5
+	icon.offset_top = 16.0
+	icon.offset_right = SHOP_INLINE_ICON_SIZE.x * 0.5
+	icon.offset_bottom = 16.0 + SHOP_INLINE_ICON_SIZE.y
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_holder.add_child(icon)
+	icon.modulate = Color(1.0, 1.0, 1.0, 1.0) if affordable else Color(0.52, 0.48, 0.45, 0.82)
+	content.add_child(icon)
 
 	var price_badge := PanelContainer.new()
 	price_badge.name = "ShopPriceBadge"
-	price_badge.custom_minimum_size = Vector2(106, 34)
+	price_badge.anchor_left = 0.5
+	price_badge.anchor_top = 1.0
+	price_badge.anchor_right = 0.5
+	price_badge.anchor_bottom = 1.0
+	price_badge.offset_left = -54.0
+	price_badge.offset_top = -42.0
+	price_badge.offset_right = 54.0
+	price_badge.offset_bottom = -12.0
+	price_badge.custom_minimum_size = Vector2(108, 30)
 	price_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	price_badge.add_theme_stylebox_override("panel", _shop_price_badge_style())
+	price_badge.add_theme_stylebox_override("panel", _shop_price_badge_style(affordable))
 	content.add_child(price_badge)
+
+	var price_row := HBoxContainer.new()
+	price_row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	price_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	price_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	price_badge.add_child(price_row)
+
+	var money_icon := TextureRect.new()
+	money_icon.name = "ShopPriceMoneyIcon"
+	money_icon.texture = game.UIIconRegistry.texture_for("money")
+	money_icon.custom_minimum_size = Vector2(18, 18)
+	money_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	money_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	money_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	price_row.add_child(money_icon)
 
 	var price_label := Label.new()
 	price_label.name = "ShopItemPrice"
-	price_label.text = "%dg" % cost
+	price_label.text = "%d" % cost
 	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	price_label.add_theme_font_size_override("font_size", 18)
 	price_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
-	price_badge.add_child(price_label)
+	price_row.add_child(price_label)
 
-	if purchased or not affordable:
-		_add_shop_state_overlay(button, "Куплено" if purchased else "Нет монет")
+	if not affordable:
+		_add_shop_state_overlay(button, "Нет монет")
 	return button
+
+
+func _shop_wall_slot_anchor(index: int) -> Vector2:
+	var anchors := [
+		Vector2(0.30, 0.20),
+		Vector2(0.70, 0.20),
+		Vector2(0.30, 0.80),
+		Vector2(0.70, 0.80),
+	]
+	return anchors[index % anchors.size()]
+
+
+func _add_shop_empty_hook(button: Button) -> void:
+	var hook := PanelContainer.new()
+	hook.name = "ShopEmptyHook"
+	hook.anchor_left = 0.5
+	hook.anchor_top = 0.5
+	hook.anchor_right = 0.5
+	hook.anchor_bottom = 0.5
+	hook.offset_left = -34.0
+	hook.offset_top = -18.0
+	hook.offset_right = 34.0
+	hook.offset_bottom = 18.0
+	hook.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hook.add_theme_stylebox_override("panel", _shop_empty_hook_style())
+	button.add_child(hook)
+
+	var label := Label.new()
+	label.text = "снято"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_color_override("font_color", Color(0.40, 0.30, 0.20, 0.78))
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hook.add_child(label)
 
 
 func _add_shop_state_overlay(button: Button, text: String) -> void:
@@ -2150,20 +2795,56 @@ func _shop_slot_style(is_hovered: bool) -> StyleBox:
 	return style
 
 
-func _shop_price_badge_style() -> StyleBox:
-	var texture_style := _shop_texture_style(SHOP_PRICE_BADGE_PATH, Vector2(14, 14))
-	if texture_style != null:
-		return texture_style
-
+func _shop_wall_button_style(is_hovered: bool) -> StyleBox:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.075, 0.065, 0.050, 0.88)
-	style.border_color = Color(1.0, 0.78, 0.24, 0.90)
+	style.bg_color = Color(0.90, 0.76, 0.38, 0.08) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
+	style.border_color = Color(1.0, 0.86, 0.42, 0.38) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
+	style.set_border_width_all(1 if is_hovered else 0)
+	style.set_corner_radius_all(18)
+	style.content_margin_left = 0
+	style.content_margin_top = 0
+	style.content_margin_right = 0
+	style.content_margin_bottom = 0
+	style.shadow_color = Color(1.0, 0.70, 0.24, 0.18) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
+	style.shadow_size = 12 if is_hovered else 0
+	return style
+
+
+func _shop_item_shadow_style() -> StyleBox:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.035, 0.025, 0.016, 0.38)
+	style.border_color = Color(0.0, 0.0, 0.0, 0.0)
+	style.set_border_width_all(0)
+	style.set_corner_radius_all(16)
+	return style
+
+
+func _shop_empty_hook_style() -> StyleBox:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.10, 0.075, 0.050, 0.22)
+	style.border_color = Color(0.18, 0.13, 0.08, 0.42)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(12)
+	style.content_margin_left = 6
+	style.content_margin_top = 4
+	style.content_margin_right = 6
+	style.content_margin_bottom = 4
+	return style
+
+
+func _shop_price_badge_style(affordable := true) -> StyleBox:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.075, 0.055, 0.035, 0.78) if affordable else Color(0.20, 0.055, 0.050, 0.82)
+	style.border_color = Color(0.72, 0.48, 0.16, 0.72) if affordable else Color(0.96, 0.30, 0.26, 0.76)
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(7)
-	style.content_margin_left = 8
-	style.content_margin_top = 5
-	style.content_margin_right = 8
-	style.content_margin_bottom = 5
+	style.content_margin_left = 5
+	style.content_margin_top = 3
+	style.content_margin_right = 6
+	style.content_margin_bottom = 3
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.24)
+	style.shadow_size = 4
+	style.shadow_offset = Vector2(0.0, 2.0)
 	return style
 
 
@@ -2203,7 +2884,7 @@ func _show_rest_screen() -> void:
 	# Escape = уйти от костра без бонуса (последовательно с пропуском магазина).
 	game.ui_escape_action = game.route._advance_route_after_noncombat
 	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, _show_rest_screen)
-	var heal_button := _make_button("Передышка\nВосстановить 35% максимального HP.")
+	var heal_button := _make_button("Передышка\nВосстановить 35% максимального здоровья.")
 	heal_button.name = "RestHealButton"
 	heal_button.pressed.connect(func() -> void:
 		_apply_event_choice({"title": "Rest", "description": "Recover", "heal_percent": 0.35})
@@ -2214,18 +2895,18 @@ func _show_rest_screen() -> void:
 	var guard_button := _make_button("Защитная стойка\nПолучить +6% защиты до конца забега.")
 	guard_button.name = "RestGuardButton"
 	guard_button.pressed.connect(func() -> void:
-		_apply_reward_to_run({"title": "Guard Stance", "description": "+6% defense.", "mods": {"defense_flat": 0.06}})
+		_apply_reward_to_run({"title": "Защитная стойка", "description": "+6% к защите.", "mods": {"defense_flat": 0.06}})
 		game.route._advance_route_after_noncombat()
 	)
 	box.add_child(guard_button)
 
 
 func _show_upgrade_screen() -> void:
-	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "event")
+	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade")
 	_create_menu_run_hud()
 	for reward in _random_level_up_rewards(3):
 		var button := _make_button("%s\n%s" % [reward["title"], reward["description"]])
-		button.custom_minimum_size = Vector2(640, 74)
+		button.custom_minimum_size = Vector2(640, 100)
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_run(reward)
 			game.route._advance_route_after_noncombat()
@@ -2245,6 +2926,9 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	game.current_event_definition = event_definition.duplicate(true)
 
 	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event")
+	var event_root := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
+	if event_root != null:
+		event_root.name = "EventScreen"
 	_create_menu_run_hud()
 	# На событии докачка недоступна: повторный вход перегенерировал бы выборы события.
 	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, Callable(), false)
@@ -2253,7 +2937,7 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	for event_choice in event_choices:
 		var button := _make_button(_event_choice_button_text(event_choice))
 		button.name = "EventChoiceButton%d" % index
-		button.custom_minimum_size = Vector2(760, 92)
+		button.custom_minimum_size = Vector2(760, 124)
 		button.pressed.connect(func() -> void:
 			var starts_combat := _apply_event_choice(event_choice)
 			if not starts_combat:
@@ -2263,17 +2947,37 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		)
 		box.add_child(button)
 		index += 1
+	var back_button := _make_button("Назад")
+	back_button.name = "EventBackButton"
+	back_button.custom_minimum_size = Vector2(380, 92)
+	var allow_skip := bool(event_definition.get("allow_skip", false))
+	back_button.disabled = not allow_skip
+	back_button.tooltip_text = "Вернуться на карту без исхода события." if allow_skip else "Это событие требует выбрать исход."
+	back_button.pressed.connect(func() -> void:
+		if not allow_skip:
+			return
+		game.current_event_definition.clear()
+		game.route._show_battle_map()
+	)
+	box.add_child(back_button)
 
 
 func _show_victory_screen() -> void:
-	var ascension_level = game.ascension_level_for(game.selected_character_id)
-	var character_title = str(game.PROGRESSION_DATA.character_config(game.selected_character_id).get("title", game.selected_character_id))
+	var ascension_level: int = game.ascension_level_for(game.selected_character_id)
+	var character_config: Dictionary = game.PROGRESSION_DATA.character_config(game.selected_character_id)
+	var character_title := str(character_config.get("title", "Герой"))
+	if character_title == "" or character_title == game.selected_character_id:
+		character_title = "Герой"
 	var run_level: int = game.selected_ascension_level
-	# Мета-прогрессия (заглушка с рабочим хуком): победа на уровне N открывает N+1 и
-	# выдаёт наградный бафф <класс>_asc_N, применяемый на старте будущих забегов.
-	var meta_text := "Возвышение %d пройдено — открыт уровень %d. Награда меты: бафф %s_asc_%d (применяется на старте забега)." % [run_level, mini(run_level + 1, 10), game.selected_character_id, mini(run_level + 1, 10)] if run_level >= ascension_level - 1 else "Возвышение %d пройдено." % run_level
-	var ascension_text = "Возвышение героя %s: %d/10. %s" % [character_title, ascension_level, meta_text]
-	var box = _create_menu_box("Победа", "Финальный босс повержен. Meta points: %d. %s" % [game.meta_points, ascension_text], "event")
+	# Победа над боссом даёт очко умений (record_boss_victory) — показываем игроку.
+	var skill_points_total: int = game.META_PROGRESSION.skill_points(game.meta_state)
+	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\nПолучено очко умений — всего %d, потрать их в «Древе умений» в меню.\n%s" % [
+		character_title,
+		game.meta_points,
+		skill_points_total,
+		_victory_ascension_summary(game.selected_character_id, run_level, ascension_level),
+	]
+	var box = _create_menu_box("Победа", subtitle, "victory")
 	var finish_run := func() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
@@ -2292,8 +2996,8 @@ func _show_victory_screen() -> void:
 func _show_death_screen(reason := "") -> void:
 	var subtitle := str(reason)
 	if subtitle == "":
-		subtitle = "Забег завершен на этапе маршрута %d." % [game.route_stage + 1]
-	var box := _create_menu_box("Поражение", subtitle, "event")
+		subtitle = "Забег завершён на этапе маршрута %d." % [game.route_stage + 1]
+	var box := _create_menu_box("Поражение", subtitle, "death")
 	var back_to_menu := func() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
@@ -2309,6 +3013,58 @@ func _show_death_screen(reason := "") -> void:
 	game.ui_escape_action = back_to_menu
 
 
+func _victory_ascension_summary(character_id: String, run_level: int, unlocked_level: int) -> String:
+	var lines := ["Текущий предел Возвышения: %d из 10." % unlocked_level]
+	if run_level >= unlocked_level - 1 and unlocked_level > 0:
+		lines.append("Открыт следующий уровень Возвышения.")
+		var reward_text := _ascension_reward_summary(character_id, unlocked_level)
+		if reward_text != "":
+			lines.append(reward_text)
+	else:
+		lines.append("Пройден уже освоенный уровень Возвышения.")
+	return "\n".join(lines)
+
+
+func _ascension_reward_summary(character_id: String, level: int) -> String:
+	var rewards: Array = game.PROGRESSION_DATA.ascension_levels(character_id)
+	var index := clampi(level - 1, 0, rewards.size() - 1)
+	if rewards.is_empty() or index < 0 or index >= rewards.size():
+		return ""
+	var reward: Dictionary = rewards[index]
+	var title := str(reward.get("title", "Новая мета-награда"))
+	var modifier_text := _modifier_summary_text(reward.get("mods", {}))
+	if modifier_text == "":
+		return "Новая награда для будущих забегов: %s." % title
+	return "Новая награда для будущих забегов: %s — %s." % [title, modifier_text]
+
+
+func _modifier_summary_text(mods_value) -> String:
+	var mods: Dictionary = mods_value if mods_value is Dictionary else {}
+	var parts := []
+	for key in mods.keys():
+		var value := float(mods[key])
+		match str(key):
+			"damage_multiplier":
+				parts.append("урон +%d%%" % int(round((value - 1.0) * 100.0)))
+			"attack_speed_multiplier":
+				parts.append("скорость атаки +%d%%" % int(round((value - 1.0) * 100.0)))
+			"move_speed_multiplier":
+				parts.append("скорость движения +%d%%" % int(round((value - 1.0) * 100.0)))
+			"aoe_radius_multiplier":
+				parts.append("радиус атак +%d%%" % int(round((value - 1.0) * 100.0)))
+			"range_multiplier":
+				parts.append("дальность атак +%d%%" % int(round((value - 1.0) * 100.0)))
+			"knockback_multiplier":
+				parts.append("отталкивание +%d%%" % int(round((value - 1.0) * 100.0)))
+			"max_health_flat":
+				parts.append("максимальное здоровье +%d" % int(round(value)))
+			"defense_flat":
+				parts.append("защита +%d%%" % int(round(value * 100.0)))
+			"crit_chance_flat":
+				parts.append("шанс крита +%d%%" % int(round(value * 100.0)))
+	return ", ".join(parts)
+
+
 func _random_event_choices() -> Array:
 	var rewards := _random_rewards(2)
 	var choices := [
@@ -2319,13 +3075,13 @@ func _random_event_choices() -> Array:
 		},
 		{
 			"title": "Risky Relic",
-			"description": "Lose 15% HP, gain an artifact/stat reward.",
+			"description": "Потерять 15% здоровья и получить артефакт или характеристику.",
 			"reward": rewards[1],
 			"health_percent_cost": 0.15,
 		},
 		{
 			"title": "Rest",
-			"description": "Recover 25% maximum HP.",
+			"description": "Восстановить 25% максимального здоровья.",
 			"heal_percent": 0.25,
 		},
 	]
@@ -2388,7 +3144,7 @@ func _resolve_event_choice_outcome(event_choice: Dictionary, temp_player: Node) 
 
 func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> void:
 	if outcome.has("cost_money"):
-		temp_player.spend_money(int(outcome["cost_money"]))
+		temp_player.spend_money(game.PROGRESSION_DATA.stage_scaled_cost(int(outcome["cost_money"]), game.route_stage))
 	if outcome.has("money"):
 		temp_player.gain_money(int(outcome["money"]))
 	if outcome.has("reward"):
@@ -2435,28 +3191,72 @@ func _weighted_sample(pool: Array, count: int) -> Array:
 	return picked
 
 
-const MAIN_STAT_SLOT_CHANCE := 0.13
+const MAIN_STAT_SLOT_CHANCE := 0.05
 
 
 func _random_level_up_rewards(count: int) -> Array:
-	# Микс: улучшения оружия/класса/вторичных атрибутов + РЕДКО (~13% на слот)
+	# Микс: улучшения оружия/класса/вторичных атрибутов + РЕДКО (~5% на слот)
 	# основная характеристика. Набор уникален и фиксируется на уровень.
 	var regular_pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
 	var stat_pool: Array = game.PROGRESSION_DATA.main_stat_level_up_rewards(game.selected_character_id)
 	var rewards := []
+	# Capstone «Озарение» (ветвь Знаний мета-древа, SCRUM-150): ПЕРВОЕ повышение
+	# в забеге гарантированно даёт основную характеристику. Гейт по level<=2
+	# (run-persistent через снапшот) — срабатывает один раз за забег.
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	if float(skill_mods.get("first_levelup_rare", 0.0)) > 0.0 and not stat_pool.is_empty() \
+			and game.current_player != null and is_instance_valid(game.current_player) \
+			and int(game.current_player.get("level")) <= 2:
+		var forced_index: int = game.rng.randi_range(0, stat_pool.size() - 1)
+		rewards.append(stat_pool[forced_index])
+		stat_pool.remove_at(forced_index)
 	while rewards.size() < count and (not regular_pool.is_empty() or not stat_pool.is_empty()):
 		var want_rare: bool = not stat_pool.is_empty() and float(game.rng.randf()) < MAIN_STAT_SLOT_CHANCE
 		var source: Array = stat_pool if (want_rare or regular_pool.is_empty()) else regular_pool
-		var index: int = game.rng.randi_range(0, source.size() - 1)
+		var index: int = _weighted_level_up_index(source)
 		rewards.append(source[index])
 		source.remove_at(index)
 	return rewards
 
 
+func _weighted_level_up_index(source: Array) -> int:
+	if source.size() <= 1:
+		return 0
+	var total := 0.0
+	var weights := []
+	for reward in source:
+		var weight: float = game.PROGRESSION_DATA.level_up_reward_weight(reward, game.selected_character_id)
+		weights.append(weight)
+		total += weight
+	if total <= 0.0:
+		return game.rng.randi_range(0, source.size() - 1)
+	var roll: float = game.rng.randf() * total
+	for index in range(source.size()):
+		roll -= float(weights[index])
+		if roll <= 0.0:
+			return index
+	return source.size() - 1
+
+
 func _random_shop_items(count: int) -> Array:
 	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(game.route_stage), count)
 	var price_mult := float(game.ascension_difficulty()["price_mult"])
-	if price_mult != 1.0:
+	# Ветвь Богатства мета-древа (SCRUM-150): скидка магазина (shop_price_mult ≤ 0).
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	price_mult *= maxf(1.0 + float(skill_mods.get("shop_price_mult", 0.0)), 0.1)
+	# Capstone «Связи в гильдии»: гарантированный редкий (tier 3) товар на стене.
+	if float(skill_mods.get("guaranteed_rare_shop", 0.0)) > 0.0 and not items.is_empty():
+		var has_rare := false
+		for item in items:
+			if int(item.get("tier", 1)) >= 3:
+				has_rare = true
+				break
+		if not has_rare:
+			var rares: Array = (game.PROGRESSION_DATA.shop_items(game.route_stage) as Array).filter(
+				func(it): return int((it as Dictionary).get("tier", 1)) >= 3)
+			if not rares.is_empty():
+				items[game.rng.randi_range(0, items.size() - 1)] = (rares[game.rng.randi_range(0, rares.size() - 1)] as Dictionary).duplicate(true)
+	if not is_equal_approx(price_mult, 1.0):
 		for item in items:
 			item["cost"] = maxi(1, int(round(float(item.get("cost", 0)) * price_mult)))
 	return items
@@ -2573,11 +3373,11 @@ func _update_level_up_button() -> void:
 		game.level_up_button.anchor_right = 0.5
 		game.level_up_button.anchor_top = 1.0
 		game.level_up_button.anchor_bottom = 1.0
-		game.level_up_button.offset_left = -180.0
-		game.level_up_button.offset_right = 180.0
-		game.level_up_button.offset_top = -86.0
+		game.level_up_button.offset_left = -190.0
+		game.level_up_button.offset_right = 190.0
+		game.level_up_button.offset_top = -94.0
 		game.level_up_button.offset_bottom = -26.0
-		game.level_up_button.custom_minimum_size = Vector2(360, 60)
+		game.level_up_button.custom_minimum_size = Vector2(380, 68)
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
 		game.level_up_button.add_theme_font_size_override("font_size", 22)
 		_apply_fantasy_button_theme(game.level_up_button, "level_up")
@@ -2741,11 +3541,11 @@ func _level_up_parameter_label(parameter_id: String) -> String:
 		"attack_speed":
 			return "Скорость атаки"
 		"health_point":
-			return "Макс. HP"
+			return "Макс. здоровье"
 		"move_speed":
 			return "Скорость"
 		"aoe_radius":
-			return "AoE радиус"
+			return "Радиус области"
 		"pickup_radius":
 			return "Радиус подбора"
 		"defense":
@@ -2759,9 +3559,9 @@ func _level_up_parameter_label(parameter_id: String) -> String:
 		"knockback_power":
 			return "Отталкивание"
 		"dot_damage":
-			return "DoT урон"
+			return "Периодический урон"
 		"dot_speed":
-			return "DoT скорость"
+			return "Скорость тиков"
 		"projectile_speed":
 			return "Скорость снарядов"
 		"aura_radius":
@@ -2912,7 +3712,7 @@ func _apply_game_cursor() -> void:
 func _begin_rebind(action_name: String) -> void:
 	game.pending_rebind_action = action_name
 	var label := _action_label(action_name)
-	var box := _create_menu_box("Клавиша: %s" % label, "Нажми новую клавишу. Esc отменяет.")
+	var box := _create_menu_box("Клавиша: %s" % label, "Нажми новую клавишу. Esc отменяет.", "settings")
 
 	var cancel_button := _make_button("Отмена")
 	cancel_button.pressed.connect(func() -> void:
@@ -2966,7 +3766,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	var target_label := _action_label(target_action)
 	var conflict_label := _action_label(conflict_action)
 	var key_name := OS.get_keycode_string(keycode)
-	var box := _create_menu_box("Клавиша занята", "%s уже используется для «%s». Выбери другую клавишу для «%s»." % [key_name, conflict_label, target_label])
+	var box := _create_menu_box("Клавиша занята", "%s уже используется для «%s». Выбери другую клавишу для «%s»." % [key_name, conflict_label, target_label], "settings")
 	var retry_button := _make_button("Выбрать другую")
 	retry_button.pressed.connect(func() -> void:
 		_begin_rebind(target_action)
@@ -3148,6 +3948,7 @@ func _create_level_up_menu_box(title: String, subtitle: String) -> VBoxContainer
 	root.name = "LevelUpOverlay"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_add_screen_background(root, "level_up")
 
 	var dim := ColorRect.new()
 	dim.name = "LevelUpDim"
@@ -3351,10 +4152,20 @@ func _level_up_badge_text() -> String:
 func _make_button(text: String) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(420, 54)
+	button.custom_minimum_size = Vector2(420, 92)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_style_button_control(button)
+	return button
+
+
+func _make_compact_button(text: String) -> Button:
+	var button := Button.new()
+	button.text = text
+	button.custom_minimum_size = Vector2(54, 62)
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.add_theme_font_size_override("font_size", 18)
+	_apply_compact_button_theme(button)
 	return button
 
 
@@ -3364,49 +4175,110 @@ func _style_button_control(button: Button) -> void:
 
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
-	# Тёплое дерево/латунь (D&D-таверна): база кнопок коричневая, не сине-серая,
-	# чтобы tint текстуры рамки читался как дерево при свечах.
-	var normal_bg := Color(0.16, 0.115, 0.075, 0.97)
-	var hover_bg := Color(0.24, 0.17, 0.10, 1.0)
-	var pressed_bg := Color(0.11, 0.075, 0.05, 1.0)
-	var border := Color(0.68, 0.52, 0.22, 0.92)
-	var hover_border := Color(1.0, 0.82, 0.26, 1.0)
-	var pressed_border := Color(0.95, 0.62, 0.18, 1.0)
-	var border_width := 2
-	var shadow_alpha := 0.42
-	if variant == "reward":
-		normal_bg = Color(0.075, 0.065, 0.115, 0.98)
-		hover_bg = Color(0.125, 0.095, 0.19, 1.0)
-		pressed_bg = Color(0.055, 0.045, 0.09, 1.0)
-		border = Color(0.56, 0.42, 0.86, 0.98)
-		hover_border = Color(1.0, 0.82, 0.28, 1.0)
-		pressed_border = Color(0.55, 0.96, 1.0, 1.0)
-		border_width = 3
-		shadow_alpha = 0.58
-	elif variant == "danger":
-		normal_bg = Color(0.24, 0.055, 0.055, 0.98)
-		hover_bg = Color(0.36, 0.075, 0.070, 1.0)
-		pressed_bg = Color(0.16, 0.035, 0.040, 1.0)
-		border = Color(0.80, 0.20, 0.16, 0.96)
-		hover_border = Color(1.0, 0.48, 0.34, 1.0)
-		pressed_border = Color(0.95, 0.30, 0.22, 1.0)
-	elif variant == "level_up":
-		normal_bg = Color(0.08, 0.22, 0.20, 0.98)
-		hover_bg = Color(0.12, 0.34, 0.30, 1.0)
-		pressed_bg = Color(0.05, 0.15, 0.15, 1.0)
-		border = Color(0.38, 0.95, 0.78, 1.0)
-		hover_border = Color(0.78, 1.0, 0.88, 1.0)
-		pressed_border = Color(1.0, 0.82, 0.28, 1.0)
-		border_width = 3
-	button.add_theme_stylebox_override("normal", _button_style(normal_bg, border, shadow_alpha, border_width))
-	button.add_theme_stylebox_override("hover", _button_style(hover_bg, hover_border, min(shadow_alpha + 0.16, 0.74), border_width))
-	button.add_theme_stylebox_override("pressed", _button_style(pressed_bg, pressed_border, shadow_alpha, border_width))
-	button.add_theme_stylebox_override("disabled", _button_style(Color(0.06, 0.065, 0.075, 0.82), Color(0.20, 0.22, 0.25, 0.95), 0.18, border_width))
-	button.add_theme_stylebox_override("focus", _button_style(Color(0.0, 0.0, 0.0, 0.0), Color(0.55, 0.96, 1.0, 0.60), 0.0, 1))
+	var role := _button_role(button, variant)
+	button.add_theme_stylebox_override("normal", _button_state_style(role, "normal"))
+	button.add_theme_stylebox_override("hover", _button_state_style(role, "hover"))
+	button.add_theme_stylebox_override("pressed", _button_state_style(role, "pressed"))
+	button.add_theme_stylebox_override("disabled", _button_state_style(role, "disabled"))
+	button.add_theme_stylebox_override("focus", _button_state_style(role, "hover", Color(1.08, 1.05, 0.86, 1.0)))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.45, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+func _button_role(button: Button, variant := "default") -> String:
+	if variant == "danger":
+		return "danger"
+	if variant in ["reward", "level_up", "primary"]:
+		return "primary"
+	var text := button.text.to_lower()
+	if text.contains("выйти") or text.contains("покинуть") or text.contains("смерть") or text.contains("поражение"):
+		return "danger"
+	if text.contains("начать") or text.contains("выбрать") or text.contains("купить") or text.contains("получить") or text.contains("продолжить"):
+		return "primary"
+	return "secondary"
+
+
+func _button_state_style(role: String, state: String, tint := Color.WHITE) -> StyleBox:
+	var role_map: Dictionary = DF_BUTTON_TEXTURES.get(role, DF_BUTTON_TEXTURES["secondary"])
+	var path := str(role_map.get(state, role_map.get("normal", GLOBAL_BUTTON_FRAME_PATH)))
+	return _global_texture_style(path, Vector4(88, 30, 38, 32), tint, Vector4(76, 14, 22, 14))
+
+
+func _apply_compact_button_theme(button: Button) -> void:
+	button.add_theme_stylebox_override("normal", _compact_button_style(false))
+	button.add_theme_stylebox_override("hover", _compact_button_style(true))
+	button.add_theme_stylebox_override("pressed", _compact_button_style(true, true))
+	button.add_theme_stylebox_override("focus", _compact_button_style(true))
+	button.add_theme_stylebox_override("disabled", _compact_button_style(false, false, true))
+	button.add_theme_color_override("font_color", Color(0.98, 0.92, 0.72, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.82, 0.32, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+func _compact_button_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.07, 0.075, 0.085, 0.78)
+	style.border_color = Color(0.58, 0.48, 0.28, 0.86)
+	if hovered:
+		style.bg_color = Color(0.12, 0.10, 0.075, 0.92)
+		style.border_color = Color(0.92, 0.72, 0.32, 1.0)
+	if pressed:
+		style.bg_color = Color(0.055, 0.060, 0.070, 0.96)
+	if disabled:
+		style.bg_color = Color(0.04, 0.045, 0.055, 0.58)
+		style.border_color = Color(0.24, 0.24, 0.25, 0.72)
+	style.set_corner_radius_all(8)
+	style.set_border_width_all(1)
+	style.content_margin_left = 8
+	style.content_margin_top = 6
+	style.content_margin_right = 8
+	style.content_margin_bottom = 6
+	return style
+
+
+func _weapon_card_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.055, 0.060, 0.074, 0.82)
+	style.border_color = Color(0.50, 0.42, 0.25, 0.72)
+	if hovered:
+		style.bg_color = Color(0.085, 0.075, 0.060, 0.92)
+		style.border_color = Color(0.92, 0.72, 0.30, 0.96)
+	if pressed:
+		style.bg_color = Color(0.045, 0.050, 0.060, 0.96)
+	if disabled:
+		style.bg_color = Color(0.04, 0.045, 0.055, 0.55)
+		style.border_color = Color(0.22, 0.23, 0.25, 0.65)
+	style.set_corner_radius_all(10)
+	style.set_border_width_all(1)
+	style.content_margin_left = 14
+	style.content_margin_top = 10
+	style.content_margin_right = 14
+	style.content_margin_bottom = 10
+	return style
+
+
+func _level_up_text_field_style(hovered := false, rare := false, pressed := false, disabled := false) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.065, 0.060, 0.050, 0.88) if rare else Color(0.052, 0.058, 0.074, 0.86)
+	style.border_color = Color(0.92, 0.72, 0.28, 0.98) if rare else Color(0.46, 0.52, 0.58, 0.82)
+	if hovered:
+		style.bg_color = Color(0.095, 0.080, 0.052, 0.94) if rare else Color(0.075, 0.082, 0.098, 0.94)
+		style.border_color = Color(1.0, 0.84, 0.34, 1.0) if rare else Color(0.72, 0.82, 0.90, 0.94)
+	if pressed:
+		style.bg_color = style.bg_color.darkened(0.12)
+	if disabled:
+		style.bg_color = Color(0.04, 0.045, 0.055, 0.56)
+		style.border_color = Color(0.25, 0.25, 0.27, 0.70)
+	style.set_corner_radius_all(10)
+	style.set_border_width_all(2 if rare else 1)
+	style.content_margin_left = 12
+	style.content_margin_top = 10
+	style.content_margin_right = 12
+	style.content_margin_bottom = 10
+	return style
 
 
 func _make_section_label(text: String) -> Label:
@@ -3455,6 +4327,19 @@ func _bar_style(background: Color) -> StyleBoxFlat:
 	return style
 
 
+func _slider_track_style(background: Color, border := Color(0.0, 0.0, 0.0, 0.0)) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = background
+	style.border_color = border
+	style.set_border_width_all(1 if border.a > 0.0 else 0)
+	style.set_corner_radius_all(9)
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	return style
+
+
 func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, content := Vector4.ZERO) -> StyleBox:
 	var texture: Texture2D = game._cached_texture(path)
 	if texture == null:
@@ -3484,9 +4369,10 @@ func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, 
 
 func _style_slider(slider: HSlider) -> void:
 	slider.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	slider.add_theme_stylebox_override("slider", _global_texture_style(SYSTEM_SLIDER_TRACK_PATH, Vector4(12, 8, 12, 8), Color.WHITE, Vector4.ZERO))
-	slider.add_theme_stylebox_override("grabber_area", _bar_style(Color(0.72, 0.55, 0.20, 0.35)))
-	slider.add_theme_stylebox_override("grabber_area_highlight", _bar_style(Color(0.86, 0.78, 0.32, 0.52)))
+	slider.add_theme_stylebox_override("slider", _slider_track_style(Color(0.035, 0.045, 0.065, 0.96), Color(0.55, 0.42, 0.18, 0.85)))
+	slider.add_theme_stylebox_override("grabber_area", _slider_track_style(Color(0.86, 0.62, 0.20, 0.82), Color(1.0, 0.82, 0.36, 0.90)))
+	slider.add_theme_stylebox_override("grabber_area_highlight", _slider_track_style(Color(1.0, 0.76, 0.28, 0.95), Color(1.0, 0.92, 0.54, 1.0)))
+	slider.add_theme_constant_override("center_grabber", 1)
 	var grabber: Texture2D = game._cached_texture(SYSTEM_SLIDER_GRABBER_PATH)
 	if grabber != null:
 		slider.add_theme_icon_override("grabber", grabber)
@@ -3516,6 +4402,7 @@ func _create_hud() -> void:
 	game.add_child(game.hud_layer)
 
 	var root := Control.new()
+	root.name = "CombatHudRoot"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
@@ -3524,6 +4411,11 @@ func _create_hud() -> void:
 	_create_combat_timer_panel(root)
 	_create_artifact_hud_row(root)
 	_create_damage_flash_overlay(root)
+	root.resized.connect(func() -> void:
+		_layout_combat_hud(root)
+	)
+	_layout_combat_hud(root)
+	call_deferred("_layout_combat_hud", root)
 	_update_level_up_button()
 	_update_hud()
 
@@ -3536,14 +4428,9 @@ func _create_combat_timer_panel(root: Control) -> void:
 	if game.selected_ascension_level > 0:
 		var asc_badge := PanelContainer.new()
 		asc_badge.name = "AscensionHudBadge"
-		asc_badge.anchor_left = 0.5
-		asc_badge.anchor_top = 0.0
-		asc_badge.anchor_right = 0.5
-		asc_badge.anchor_bottom = 0.0
-		asc_badge.offset_left = 96.0
-		asc_badge.offset_top = 18.0
-		asc_badge.offset_right = 150.0
-		asc_badge.offset_bottom = 62.0
+		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		asc_badge.position = Vector2(0, 18)
+		asc_badge.custom_minimum_size = Vector2(54, 44)
 		asc_badge.add_theme_stylebox_override("panel", _timer_panel_style(false))
 		asc_badge.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
 		root.add_child(asc_badge)
@@ -3561,14 +4448,9 @@ func _create_combat_timer_panel(root: Control) -> void:
 		return
 	var panel := PanelContainer.new()
 	panel.name = "CombatTimerPanel"
-	panel.anchor_left = 0.5
-	panel.anchor_top = 0.0
-	panel.anchor_right = 0.5
-	panel.anchor_bottom = 0.0
-	panel.offset_left = -86.0
-	panel.offset_top = 14.0
-	panel.offset_right = 86.0
-	panel.offset_bottom = 66.0
+	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	panel.position = Vector2(0, 14)
+	panel.custom_minimum_size = Vector2(172, 52)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_theme_stylebox_override("panel", _timer_panel_style(false))
 	root.add_child(panel)
@@ -3593,19 +4475,85 @@ func _timer_panel_style(alarm: bool) -> StyleBox:
 func _create_artifact_hud_row(root: Control) -> void:
 	var row := HFlowContainer.new()
 	row.name = "ArtifactHudRow"
-	row.anchor_left = 1.0
-	row.anchor_top = 0.0
-	row.anchor_right = 1.0
-	row.anchor_bottom = 0.0
-	row.offset_left = -420.0
-	row.offset_top = 16.0
-	row.offset_right = -18.0
-	row.offset_bottom = 120.0
+	row.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	row.position = Vector2(0, 16)
+	row.custom_minimum_size = Vector2(402, 104)
 	row.alignment = FlowContainer.ALIGNMENT_END
 	row.add_theme_constant_override("h_separation", 6)
 	row.add_theme_constant_override("v_separation", 6)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(row)
+
+
+func _layout_combat_hud(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var viewport_width := maxf(root.size.x, root.get_viewport_rect().size.x)
+	if viewport_width <= 0.0:
+		viewport_width = 1280.0
+	var margin := 18.0
+	var gap := 14.0
+	var timer_size := Vector2(172, 52)
+	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
+	if resource != null:
+		var resource_width := clampf(viewport_width * 0.50, 540.0, 750.0)
+		if viewport_width <= 1280.0:
+			resource_width = minf(resource_width, 600.0)
+		resource.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		resource.position = Vector2(margin, 18.0)
+		resource.custom_minimum_size = Vector2(resource_width, 78.0)
+		resource.size = resource.custom_minimum_size
+	var resource_right := margin
+	if resource != null:
+		resource_right = resource.position.x + resource.custom_minimum_size.x
+
+	var timer_panel := root.find_child("CombatTimerPanel", true, false) as PanelContainer
+	var timer_left := viewport_width * 0.5 - timer_size.x * 0.5
+	if timer_panel != null:
+		var right_limit := viewport_width - timer_size.x - margin
+		if timer_left < resource_right + gap:
+			timer_left = minf(resource_right + gap, right_limit)
+			if timer_left < resource_right + gap:
+				var narrow_resource_width := maxf(480.0, timer_left - gap - margin)
+				if resource != null:
+					resource.custom_minimum_size.x = narrow_resource_width
+					resource.size.x = narrow_resource_width
+					resource_right = resource.position.x + resource.custom_minimum_size.x
+				timer_left = maxf(resource_right + gap, margin)
+		timer_left = minf(timer_left, right_limit)
+		timer_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		timer_panel.position = Vector2(timer_left, 14.0)
+		timer_panel.custom_minimum_size = timer_size
+		timer_panel.size = timer_size
+
+	var asc_badge := root.find_child("AscensionHudBadge", true, false) as PanelContainer
+	if asc_badge != null:
+		var anchor_left := timer_left + timer_size.x + 8.0
+		if timer_panel == null:
+			anchor_left = maxf(viewport_width * 0.5 - 27.0, resource_right + gap)
+		if anchor_left + 54.0 > viewport_width - margin:
+			anchor_left = maxf(margin, timer_left - 62.0)
+		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		asc_badge.position = Vector2(anchor_left, 18.0)
+		asc_badge.custom_minimum_size = Vector2(54, 44)
+		asc_badge.size = asc_badge.custom_minimum_size
+
+	var artifact_row := root.find_child("ArtifactHudRow", true, false) as HFlowContainer
+	if artifact_row != null:
+		var row_width := clampf(viewport_width * 0.28, 220.0, 402.0)
+		var row_left := viewport_width - row_width - margin
+		var row_top := 16.0
+		var occupied_right := resource_right
+		if timer_panel != null:
+			occupied_right = maxf(occupied_right, timer_panel.position.x + timer_size.x)
+		if asc_badge != null:
+			occupied_right = maxf(occupied_right, asc_badge.position.x + asc_badge.custom_minimum_size.x)
+		if row_left < occupied_right + gap:
+			row_top = 88.0
+		artifact_row.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		artifact_row.position = Vector2(row_left, row_top)
+		artifact_row.custom_minimum_size = Vector2(row_width, 104.0)
+		artifact_row.size = artifact_row.custom_minimum_size
 
 
 func _refresh_artifact_hud_row() -> void:
@@ -3658,7 +4606,7 @@ func _artifact_icon_texture(artifact_id: String) -> Texture2D:
 	return game.UIIconRegistry.texture_for("buff_power")
 
 
-const TIER_LABELS := {1: "Tier 1", 2: "Tier 2 — редкий", 3: "Tier 3 — легендарный"}
+const TIER_LABELS := {1: "Тир 1", 2: "Тир 2 — редкий", 3: "Тир 3 — легендарный"}
 const TIER_COLORS := {
 	1: Color(0.80, 0.86, 0.94, 1.0),
 	2: Color(0.46, 0.78, 1.0, 1.0),
@@ -3700,7 +4648,7 @@ func _artifact_affinity_suffix(definition: Dictionary) -> String:
 
 
 func _artifact_tier_text(definition: Dictionary) -> String:
-	return str(TIER_LABELS.get(int(definition.get("tier", 1)), "Tier 1"))
+	return str(TIER_LABELS.get(int(definition.get("tier", 1)), "Тир 1"))
 
 
 func _artifact_tier_color(definition: Dictionary) -> Color:
@@ -3766,12 +4714,12 @@ func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
 	var panel := PanelContainer.new()
 	panel.name = "RunResourceHud"
 	panel.position = position
-	panel.custom_minimum_size = Vector2(750, 78)
+	panel.custom_minimum_size = Vector2(650, 78)
 	panel.add_theme_stylebox_override("panel", _hud_panel_style())
 	parent.add_child(panel)
 
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 12)
+	row.add_theme_constant_override("separation", 6)
 	panel.add_child(row)
 
 	game.health_bar = _add_hud_resource_card(row, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
@@ -3783,14 +4731,14 @@ func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
 func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: String, fill_color: Color) -> ProgressBar:
 	var card := PanelContainer.new()
 	card.name = "Hud%sCard" % label_text
-	card.custom_minimum_size = Vector2(178, 54)
+	card.custom_minimum_size = Vector2(126, 54)
 	card.add_theme_stylebox_override("panel", _hud_card_style())
 	parent.add_child(card)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 8)
+	line.add_theme_constant_override("separation", 5)
 	card.add_child(line)
-	line.add_child(game.UIIconRegistry.make_icon(icon_id, Vector2(38, 38)))
+	line.add_child(game.UIIconRegistry.make_icon(icon_id, Vector2(30, 30)))
 
 	var value_box := VBoxContainer.new()
 	value_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -3811,7 +4759,7 @@ func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: 
 
 	var bar := ProgressBar.new()
 	bar.name = "Hud%sBar" % label_text
-	bar.custom_minimum_size = Vector2(112, 10)
+	bar.custom_minimum_size = Vector2(62, 10)
 	bar.show_percentage = false
 	bar.add_theme_stylebox_override("background", _bar_style(Color(0.06, 0.07, 0.09, 0.94)))
 	bar.add_theme_stylebox_override("fill", _bar_style(fill_color))
@@ -3822,14 +4770,14 @@ func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: 
 func _add_hud_money_card(parent: HBoxContainer) -> void:
 	var card := PanelContainer.new()
 	card.name = "HudMoneyCard"
-	card.custom_minimum_size = Vector2(138, 54)
+	card.custom_minimum_size = Vector2(88, 54)
 	card.add_theme_stylebox_override("panel", _hud_card_style())
 	parent.add_child(card)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 8)
+	line.add_theme_constant_override("separation", 5)
 	card.add_child(line)
-	line.add_child(game.UIIconRegistry.make_icon("money", Vector2(38, 38)))
+	line.add_child(game.UIIconRegistry.make_icon("money", Vector2(30, 30)))
 
 	game.money_label = Label.new()
 	game.money_label.name = "HudMoneyLabel"
@@ -3916,12 +4864,12 @@ func _update_hud() -> void:
 
 	game.health_bar.max_value = max_hp
 	game.health_bar.value = hp
-	game.health_label.text = "HP %d/%d" % [ceil(hp), ceil(max_hp)]
+	game.health_label.text = "ОЗ %d/%d" % [ceil(hp), ceil(max_hp)]
 
 	if game.xp_bar != null and game.xp_label != null:
 		game.xp_bar.max_value = xp_to_next
 		game.xp_bar.value = xp
-		game.xp_label.text = "XP %d/%d" % [xp, xp_to_next]
+		game.xp_label.text = "Опыт %d/%d" % [xp, xp_to_next]
 
 	if game.money_label != null:
 		game.money_label.text = "%dg" % money
@@ -3930,7 +4878,7 @@ func _update_hud() -> void:
 		game.ultimate_bar.max_value = ultimate_max
 		game.ultimate_bar.value = ultimate_charge
 		var ready := ultimate_charge >= ultimate_max
-		game.ultimate_label.text = "ULT %d%%" % int(floor(ultimate_charge / ultimate_max * 100.0))
+		game.ultimate_label.text = "Ульта %d%%" % int(floor(ultimate_charge / ultimate_max * 100.0))
 		game.ultimate_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.36, 1.0) if ready else Color(0.98, 0.96, 0.86, 1.0))
 		game.ultimate_bar.tooltip_text = "Ультимейт (%s): %s" % [_binding_text("ultimate"), "готов" if ready else "заряжается от урона"]
 

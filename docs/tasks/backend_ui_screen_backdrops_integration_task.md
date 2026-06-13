@@ -1,0 +1,104 @@
+# Задача Для Back-end-Агента: Подключить Dark Fantasy Screen Backdrops
+
+Статус: done
+Версия: 0.1.4
+Создано: 2026-06-12
+Связано: SCRUM-158, SCRUM-147
+Jira: SCRUM-170
+
+Dispatcher note 2026-06-13: Jira/task linkage is valid (`SCRUM-170`) and the
+feature block is lifted. Added to the local board queue and dispatched to
+Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
+
+## Autonomy / Approval
+
+Пользователь заранее одобрил in-scope изменения. Подтверждение не спрашивать.
+
+## Контекст
+
+Design/Codex SCRUM-158 подготовил dark fantasy screen backdrops для экранов с центральными окнами и новый active main menu art.
+
+Уже подключено Design-only заменой существующих PNG путей:
+
+- `assets/backgrounds/main_menu_epic_battle.png` - новый главный экран;
+- `assets/sprites/ui/screens/screen_shop_background.png` - копия merchant/archive backdrop;
+- `assets/sprites/ui/screens/screen_event_background.png` - копия arcane/lab backdrop;
+- `assets/sprites/ui/screens/screen_campfire_background.png` - копия system/cathedral backdrop.
+
+Новые canonical role backdrops лежат отдельно:
+
+- `assets/backgrounds/ui/ui_backdrop_system_cathedral.png`;
+- `assets/backgrounds/ui/ui_backdrop_merchant_archive.png`;
+- `assets/backgrounds/ui/ui_backdrop_arcane_lab.png`;
+- `assets/backgrounds/ui/ui_backdrop_reward_hall.png`;
+- `assets/backgrounds/ui/ui_backdrop_defeat_crypt.png`.
+
+## Что Нужно От Back-end
+
+1. Расширить `SCREEN_BACKGROUND_PATHS` / screen background helper так, чтобы центральные окна могли использовать role-specific IDs:
+   - `system` / `settings` / `codex` / `hero_select` / `weapon_select` / `pause_stats` / `meta_tree` -> `ui_backdrop_system_cathedral.png`;
+   - `shop` -> `ui_backdrop_merchant_archive.png`;
+   - `event` / `upgrade` / `level_up` / `meta_progression` -> `ui_backdrop_arcane_lab.png`;
+   - `elite_reward` / `victory` / `artifact_reward` -> `ui_backdrop_reward_hall.png`;
+   - `death` / `defeat` / `end_run_confirm` / danger confirmations -> `ui_backdrop_defeat_crypt.png`;
+   - `campfire` can stay `system_cathedral` unless Design later provides a dedicated rest/campfire variant.
+2. Ensure all central-window screens call `_add_screen_background()` or equivalent full-rect `TextureRect` with `STRETCH_KEEP_ASPECT_COVERED`.
+3. Keep central panels readable: do not add extra opaque junk layers or decorative abstract lines/circles/squares.
+4. Capture QA screenshots for at least: main menu, settings, hero select, level-up, shop, event, victory/death at 1280x720 and 2560x1440 if practical.
+
+## Files / Assets / IDs
+
+- `scripts/main.gd`
+- `scripts/ui_screens.gd`
+- `scripts/pause_stats_menu.gd`
+- `assets/backgrounds/ui/*.png`
+- `assets/backgrounds/main_menu_epic_battle.png`
+- `assets/sprites/ui/screens/screen_*_background.png`
+
+## Acceptance Criteria
+
+- All screens with central windows have a dark fantasy backdrop behind the panel.
+- Backdrops use cover scaling without distortion.
+- Text/buttons remain readable.
+- Existing route map/combat backgrounds are not replaced by these UI backdrops.
+- Runtime smoke and relevant UI screenshots pass.
+
+## Документация
+
+Update `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md` and `docs/design/content_registry.md` if runtime mappings differ from this handoff.
+
+## Result Summary — 2026-06-13
+
+Back-end integration complete.
+
+- `SCREEN_BACKGROUND_PATHS` now maps central-window role IDs to canonical `assets/backgrounds/ui/*.png` backdrops.
+- Settings, codex, hero select, weapon select, level-up, shop, event, campfire, upgrade, meta progression, elite reward, artifact reward, victory and death screens now use `_add_screen_background()` / `_create_menu_box(..., screen_background_id)`.
+- Backdrops use full-rect `TextureRect` with cover scaling and existing readable shade layers; combat and route map backgrounds remain separate.
+- Runtime smoke now checks canonical UI backdrop assets and verifies actual settings/hero/shop/campfire screen background nodes.
+- Documentation updated in current game state, menus UI system doc, content registry and changelog.
+
+Verification:
+
+`/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+
+Result: passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-170)
+
+Проверено фактически (код + ассеты + РЕАЛЬНЫЙ рендер):
+- Маппинг ролей: `SCREEN_BACKGROUND_PATHS` (main.gd:74-93) — полный по спеке:
+  system/settings/codex/hero_select/weapon_select/pause_stats/meta_tree/campfire →
+  system_cathedral; shop → merchant_archive; event/upgrade/level_up/meta_progression →
+  arcane_lab; elite_reward/victory/artifact_reward → reward_hall; death/defeat/
+  end_run_confirm → defeat_crypt. ✓
+- `_add_screen_background` со `STRETCH_KEEP_ASPECT_COVERED` (ui_screens:137), вызовы из
+  hero_select/meta_progression/codex и др. ✓
+- Все 5 бэкдропов `assets/backgrounds/ui/ui_backdrop_*.png` — 2560×1440 на диске. ✓
+- РЕНДЕР магазина (1280×720): фоновый TextureRect.texture =
+  `ui_backdrop_merchant_archive.png` (role-mapping подтверждён в РАНТАЙМЕ, не только в
+  коде); центральные панели/товары читаемы поверх тёмного архива, без junk-слоёв,
+  кнопка «Назад» на месте. Скрин: build/qa/screen_backdrops/.
+- Дополнительно (инцидентные рендеры прошлых тиков): hero_select/settings/elite_reward/
+  главное меню — бэкдропы отображаются.
+- 6 smoke зелёные. Багов нет.

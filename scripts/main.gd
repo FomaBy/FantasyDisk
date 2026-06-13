@@ -72,16 +72,48 @@ const ARENA_BACKGROUND_OPTIONS := {
 }
 const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle.png"
 const SCREEN_BACKGROUND_PATHS := {
-	"event": "res://assets/sprites/ui/screens/screen_event_background.png",
-	"shop": "res://assets/sprites/ui/screens/screen_shop_background.png",
-	"campfire": "res://assets/sprites/ui/screens/screen_campfire_background.png",
+	"system": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"settings": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"codex": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"hero_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"weapon_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"pause_stats": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"meta_tree": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"campfire": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"shop": "res://assets/backgrounds/ui/ui_backdrop_merchant_archive.png",
+	"event": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+	"upgrade": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+	"level_up": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+	"meta_progression": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+	"elite_reward": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+	"victory": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+	"artifact_reward": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+	"death": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
+	"defeat": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
+	"end_run_confirm": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 }
 const GAME_CURSOR_PATH := "res://assets/sprites/ui/cursor/game_cursor.png"
-const GAME_CURSOR_HOTSPOT := Vector2(5, 4)
+const GAME_CURSOR_HOTSPOT := Vector2(2, 2)
 const SCREEN_BACKGROUND_FALLBACK_COLORS := {
+	"system": Color(0.045, 0.052, 0.070, 1.0),
+	"settings": Color(0.045, 0.052, 0.070, 1.0),
+	"codex": Color(0.045, 0.052, 0.070, 1.0),
+	"hero_select": Color(0.045, 0.052, 0.070, 1.0),
+	"weapon_select": Color(0.045, 0.052, 0.070, 1.0),
+	"pause_stats": Color(0.045, 0.052, 0.070, 1.0),
+	"meta_tree": Color(0.045, 0.052, 0.070, 1.0),
 	"event": Color(0.055, 0.045, 0.105, 1.0),
 	"shop": Color(0.070, 0.052, 0.030, 1.0),
 	"campfire": Color(0.080, 0.045, 0.025, 1.0),
+	"upgrade": Color(0.055, 0.045, 0.105, 1.0),
+	"level_up": Color(0.055, 0.045, 0.105, 1.0),
+	"meta_progression": Color(0.055, 0.045, 0.105, 1.0),
+	"elite_reward": Color(0.080, 0.060, 0.035, 1.0),
+	"victory": Color(0.080, 0.060, 0.035, 1.0),
+	"artifact_reward": Color(0.080, 0.060, 0.035, 1.0),
+	"death": Color(0.060, 0.035, 0.045, 1.0),
+	"defeat": Color(0.060, 0.035, 0.045, 1.0),
+	"end_run_confirm": Color(0.060, 0.035, 0.045, 1.0),
 }
 const MAP_NODE_DEFINITIONS := {
 	"battle": {
@@ -275,6 +307,7 @@ var current_player: Node2D = null
 var run_player_snapshot := {}
 var ui_layer: CanvasLayer = null
 var hud_layer: CanvasLayer = null
+var pause_overlay_layer: CanvasLayer = null
 var timer_label: Label = null
 var status_label: Label = null
 var health_bar: ProgressBar = null
@@ -306,6 +339,7 @@ var selected_window_mode_index := 0
 var pending_rebind_action := ""
 var current_shop_items := []
 var current_shop_purchased := []
+var current_shop_node_key := ""
 var pending_level_ups := 0
 var pause_reasons := {}
 var route_map_pan_active := false
@@ -475,6 +509,13 @@ func apply_ascension_bonuses(player: Node) -> void:
 		run_mods["max_health_multiplier"] = float(run_mods.get("max_health_multiplier", 1.0)) * float(difficulty["player_max_hp_mult"])
 		if player.has_method("_apply_stat_scaling"):
 			player._apply_stat_scaling(true)
+	# 3) Мета-древо умений (SCRUM-150): боевое подмножество в run_modifiers + старт-золото забега.
+	var skill_mods: Dictionary = META_PROGRESSION.skill_modifiers(meta_state)
+	if player.has_method("apply_meta_skill_modifiers"):
+		player.apply_meta_skill_modifiers(skill_mods)
+	var start_gold := int(round(float(skill_mods.get("start_gold_flat", 0.0))))
+	if start_gold > 0 and player.get("money") != null:
+		player.set("money", int(player.get("money")) + start_gold)
 
 
 func _input(event: InputEvent) -> void:
@@ -491,16 +532,10 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
-		if combat_active:
-			if _has_pause_reason("level_up"):
-				# Escape во время level-up = «Позже»: закрыть без траты пика.
-				if ui_escape_action.is_valid():
-					ui_escape_action.call()
-				return
-			if pause_stats_menu != null and is_instance_valid(pause_stats_menu):
-				ui._resume_game()
-			elif not _has_pause_reason("escape_menu"):
-				ui._show_pause_menu()
+		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
+			ui._resume_game()
+		elif ui.has_method("_can_open_pause_dossier") and ui._can_open_pause_dossier():
+			ui._show_pause_menu()
 		elif ui_escape_action.is_valid():
 			ui_escape_action.call()
 
@@ -637,10 +672,13 @@ func _clear_world() -> void:
 
 func _clear_ui() -> void:
 	ui_escape_action = Callable()
+	if pause_overlay_layer != null and is_instance_valid(pause_overlay_layer):
+		pause_overlay_layer.queue_free()
+	pause_overlay_layer = null
+	pause_stats_menu = null
 	if ui_layer != null and is_instance_valid(ui_layer):
 		ui_layer.queue_free()
 	ui_layer = null
-	pause_stats_menu = null
 
 
 func _clear_hud() -> void:
@@ -716,6 +754,10 @@ func _random_edge_spawn_position() -> Vector2:
 
 func _random_spawn_position() -> Vector2:
 	return combat._random_spawn_position()
+
+
+func _run_money() -> int:
+	return ui._run_money()
 
 
 func _route_node_icon_path(route_node: Dictionary, definition: Dictionary) -> String:

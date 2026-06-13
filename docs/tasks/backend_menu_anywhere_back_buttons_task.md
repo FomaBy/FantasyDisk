@@ -1,0 +1,99 @@
+# Задача Для Back-end-Агента: Меню в любом месте игры + кнопки «Назад» в эвентах/магазине + Escape=меню везде
+
+Статус: done
+Приоритет: high
+Роль: Back-end (UI/UX)
+Версия: 0.1.4
+Создано: 2026-06-13
+Автор: PM (запрос пользователя)
+Jira: SCRUM-205
+
+## Autonomy / Approval
+Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Контекст (запрос пользователя)
+«Возможность открыть меню в любом месте игры — на карте, в магазине и т.д.
+Предусмотреть кнопку Назад в эвентах и магазине. Escape пусть вызывает меню
+везде».
+
+ВАЖНО — согласовать с SCRUM-146 (Escape открывал ДОСЬЕ персонажа поверх экранов,
+сделано). Решение: Escape ВЕЗДЕ в забеге открывает игровое МЕНЮ (пауза с
+Продолжить/Настройки/Покинуть забег/Главное меню), а досье персонажа доступно
+КНОПКОЙ из этого меню (или отдельной кнопкой/вкладкой). Не должно быть двух
+разных реакций на Escape — унифицировать. Исполнитель выбирает чистую модель и
+фиксирует в отчёте; главное: один Escape = одно предсказуемое меню везде.
+
+## Требования
+1. **Меню доступно везде в забеге**: бой, карта маршрута, магазин, событие,
+   level-up, докачка, награда элитки, экраны победы/поражения. Открытие поверх
+   текущего экрана через стек пауз (push_pause/pop_pause), повторный Escape /
+   кнопка закрытия — возвращает к подлежащему экрану БЕЗ поломки его состояния.
+2. **Escape = меню везде в забеге** (унифицировать с поведением SCRUM-146:
+   досье — пункт меню, а не отдельная реакция Escape). Вне забега (главное
+   меню/выбор героя) Escape — как раньше.
+3. **Кнопка «Назад» в событиях и магазине**: видимая экранная кнопка возврата
+   (в магазине уже есть «Покинуть магазин» — привести к единому виду «Назад»;
+   в событии добавить, если выбор позволяет выйти без штрафа, иначе — пояснить).
+4. Карта маршрута: Escape открывает меню (не выходит из забега молча).
+5. Тесты: меню открывается/закрывается поверх каждого экрана без поломки
+   состояния (фактическое дерево узлов и работающие кнопки после закрытия);
+   Escape ведёт к меню на всех экранах забега.
+6. CHANGELOG; docs/design/current_game_state.md (раздел меню/пауза/навигация).
+
+## Files / Assets / IDs
+- scripts/ui_screens.gd (обработка Escape ~1190+, экраны магазина/события/карты,
+  pause menu), scripts/main.gd (pause stack), scripts/route_map_screen.gd
+- tests/runtime_smoke_test.gd
+
+## Acceptance Criteria
+- [x] Меню открывается Escape'ом на всех экранах забега, закрывается без поломки.
+- [x] Унифицирован Escape (одно меню; досье — из меню), вне забега прежнее поведение.
+- [x] Кнопки «Назад» в событии и магазине единообразны.
+- [x] 6 smoke + новые тесты зелёные; CHANGELOG/доки обновлены.
+
+## Документация
+docs/design/current_game_state.md.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.
+
+## Result Summary (Codex Back-end, 2026-06-13)
+
+Done. Escape в активном забеге теперь открывает единое `RunPauseMenuRoot` поверх текущего экрана; повторный Escape закрывает overlay и возвращает к подлежащему состоянию. Старое досье/статы не удалены: оно открывается кнопкой `RunPauseDossierButton` из pause menu и сохраняет существующий compact stats UI. Магазин получил единый экранный `Назад`, а события показывают `EventBackButton`; если event не поддерживает skip, кнопка disabled и tooltip объясняет, что нужно выбрать исход.
+
+Verification:
+- `runtime_smoke_test.gd` — passed.
+- `animation_smoke_test.gd` — passed.
+- `melee_weapon_targeting_test.gd` — passed.
+- `attack_vfx_smoke_test.gd` — passed.
+- `hazard_vfx_smoke_test.gd` — passed.
+- `meta_progression_smoke_test.gd` — passed.
+- `meta_skill_tree_smoke_test.gd` — passed.
+
+Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/process/task_board.md`, `docs/process/jira_sync_map.json`.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED
+
+Код-аудит диспатча Escape (main.gd:527-533):
+- Приоритет: overlay открыт → `_resume_game` (toggle-закрытие); иначе
+  `_can_open_pause_dossier()` → `_show_pause_menu` (единое RunPauseMenuRoot); иначе
+  per-screen `ui_escape_action`.
+- `_can_open_pause_dossier()` (ui_screens:1556-1564) = true при `combat_active` ИЛИ
+  открытом RouteMap/Shop/AttributeShop/LevelUp/EliteReward/Event → меню по Escape на
+  ВСЕХ экранах забега. Per-screen `ui_escape_action` (leave_shop/advance/…) остаётся
+  только вне забега (главное меню/выбор героя/настройки). Унификация выполнена —
+  один Escape = одно меню. Требование #2 ✓.
+- Меню строится на отдельном `pause_overlay_layer` (не разрушает подлежащий экран),
+  повторный Escape = resume → состояние экрана сохраняется. Требование #1 ✓.
+- Досье — кнопка `RunPauseDossierButton` из меню (SCRUM-146 досье не удалено,
+  переведено в пункт меню). #2 ✓.
+- Кнопки «Назад»: магазин — единый Назад; событие — `EventBackButton` (2691),
+  disabled+tooltip если skip недоступен. #3 ✓. Карта — в списке → Escape=меню. #4 ✓.
+
+РЕАЛЬНЫЙ рендер (1280×720) поверх боя: меню «Пауза» с Продолжить/Досье персонажа/
+Настройки/Покинуть забег/Главное меню, HUD затемнён. `_can_open_pause_dossier=true`.
+Скрин: build/qa/run_pause_menu/. Тест (runtime_smoke:819-947) проверяет открытие/
+закрытие RunPauseMenuRoot + досье-кнопку + RunControls/PauseControlButtons/BaseStatsList.
+
+6 smoke зелёные. Багов нет.

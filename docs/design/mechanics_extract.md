@@ -2,7 +2,7 @@
 
 ## Актуальный Слой Реализации
 
-Обновлено: 2026-06-12
+Обновлено: 2026-06-13
 
 Ниже сохранена выгрузка исходной таблицы механик. Этот верхний раздел фиксирует, какие механики уже перенесены в игру и как они называются в коде. Для точного текущего состояния также см. `docs/design/current_game_state.md`.
 
@@ -11,11 +11,22 @@
 - `docs/design/systems/characters_weapons.md` — текущие роли персонажей и оружия;
 - `docs/design/systems/combat.md` — runtime combat rules.
 
+Баланс SCRUM-166: `robot_magnetic_anchor`, `robot_hydraulic_press` и `robot_reactor_core`
+прогнаны через `tools/balance_harness.gd`; tuned профиль `balanced/tank` держит
+solo DPS ~40.1 и 5-target AoE DPS ~138.6, отклонение от целевого бюджета 0.0%.
+
 ### Где Живут Данные В Коде
 
 | Область | Файл |
 | --- | --- |
-| Конфиги персонажей, оружия, наград, артефактов, магазина | `scripts/progression_data.gd` |
+| Compatibility facade для прогрессии/контента | `scripts/progression_data.gd` |
+| Конфиги персонажей и классовые интерпретации | `scripts/progression_data_characters.gd` |
+| Конфиги оружия | `scripts/progression_data_weapons.gd` |
+| Награды, артефакты, level-up pools | `scripts/progression_data_content.gd` |
+| Магазинные предметы | `scripts/progression_data_shop.gd` |
+| Возвышение | `scripts/progression_data_ascension.gd` |
+| Балансовые бюджеты, экономика, XP и drop scaling | `scripts/progression_data_balance.gd` |
+| Enemy-side data slices | `scripts/progression_data_enemies.gd` |
 | Формулы характеристик и описания для UI | `scripts/stat_formulas.gd` |
 | Игрок, движение, урон, уровень, экипировка | `scripts/player.gd` |
 | Оружие Берсерка | `scripts/berserk_weapon.gd` |
@@ -83,6 +94,30 @@
 | Берсерк | Двуручный меч | `berserk_sword` | `frustum` | Усеченный замах 90°, радиус 600, base width 150, outer width 1200, interval 0.58, damage x1.15 |
 | Берсерк | Двуручный топор | `berserk_axe` | `sweep` | Дуга 140 градусов радиуса 320, damage x0.85 |
 | Берсерк | Двуручный молот | `berserk_hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.8 (AoE) / 1.45 (damage) — слабый старт, мощный потолок |
+| Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 быстрых выстрела по линии: первая цель получает полный урон, соседи в коридоре получают reduced suppression damage |
+| Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф зоны, короткая задержка фитиля, взрыв с falloff урона к краю |
+| Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Оборонительный forward brace: враг получает один укол за стойку и knockback |
+| Вор | Кошель Рикошета | `thief_coin_pouch` | `coin_ricochet` | Монета цепляется по ближайшим целям, урон убывает по цепи, первые попадания крадут немного золота |
+| Вор | Плащ Захода | `thief_shadow_cloak` | `shadow_backstab` | Вор смещается за ближайшую цель, наносит усиленный удар и цепляет врагов рядом |
+| Вор | Дымовая Бомба | `thief_smoke_bomb` | `smoke_bomb` | Дымовая зона взрывается после короткой задержки, а Вор получает временный dodge-window |
+| Элементалист | Кольцо Трех Стихий | `elementalist_orb_ring` | `elemental_orbit` | Орбитальные стихийные сферы наносят короткие AoE-тики вокруг героя |
+| Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | Крестовой разлом из двух лучей по ближайшей цели после короткого телеграфа |
+| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | Отложенный метеорный удар и вторичные осколочные взрывы вокруг цели |
+| Снайпер | Винтовка Мертвого Глаза | `sniper_deadeye_rifle` | `sniper_lockshot` | Короткий прицел/телеграф, затем точный дальний луч по locked target и falloff по линии |
+| Снайпер | Прицел Наводчика | `sniper_spotter_scope` | `sniper_kill_zone` | Маркирует kill-zone у ближайшей цели и вызывает несколько точных sky-beam попаданий по врагам внутри |
+| Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается по соседним целям с убывающим уроном |
+| Священник | Светлый Реликварий | `priest_reliquary` | `priest_sanctify` | Освящает ближайшую цель, затем знак взрывается по области и лечит часть нанесенного урона |
+| Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько защитных ward-пульсов вокруг героя наносят урон врагам рядом и дают малое лечение |
+| Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь перескакивает между врагами и возвращает sustain от нанесенного урона |
+| Биолог | Споровая Линза | `biologist_spore_lens` | `bio_spore_bloom` | Три расширяющихся споровых кольца выращиваются на цели и наносят убывающий урон |
+| Биолог | Инъектор Образцов | `biologist_sample_injector` | `bio_sample_dart` | Инъектор берет образец у цели, затем delayed analysis pulses бьют цель и ближайшие ткани |
+| Биолог | Семя Симбионта | `biologist_symbiote_seed` | `bio_symbiote_web` | Первичная цель связывается с соседними врагами симбиотической сетью и делит биоурон |
+| Робот | Магнитный Якорь | `robot_magnetic_anchor` | `robot_magnetic_anchor` | Ставит якорь на ближайшую цель, затем стягивает врагов к центру и бьет импульсом |
+| Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Две силовые губки сходятся по линии атаки, прижимая врагов к оси и нанося урон коридором |
+| Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Четыре направленных выброса вокруг корпуса чистят ближний круг и отталкивают толпу |
+| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | Временная турель сама выбирает цели и бьет их точечными лучами |
+| Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | Цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
+| Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | Три мины веером срабатывают отдельно при касании врагом |
 | Темный маг | Темная книга | `dark_book` | `aoe_projectile` | 2 снаряда в две ближайшие цели, взрыв по области |
 | Темный маг | Проклятый череп | `cursed_skull` | `homing_curse` | Самонаведение, 5 DoT-тиков и небольшой splash по области цели |
 | Темный маг | Темный жезл | `dark_wand` | `beam` | 2 pierce-луча веером (шаг 14 градусов) |
@@ -133,7 +168,7 @@
 
 ### Награды За Уровень
 
-Текущая система выдает 5 вариантов награды. Один полученный уровень дает ровно один выбор; при нескольких накопленных уровнях игрок получает несколько последовательных окон. Набор из 5 вариантов фиксируется в `level_up_offer` и не рероллится при закрытии/повторном открытии окна. Окно можно закрыть через Escape/«Позже» без потери выбора; нижняя кнопка «Повышение уровня (N)» возвращает к тому же набору и является единственной level-up точкой входа при `pending_level_ups > 0`. FAB докачки в этом состоянии скрыт и возвращается только для докачки атрибутов за золото при отсутствии pending-уровней.
+Текущая система выдает 3 варианта награды. Один полученный уровень дает ровно один выбор; при нескольких накопленных уровнях игрок получает несколько последовательных окон. Набор из 3 вариантов фиксируется в `level_up_offer` и не рероллится при закрытии/повторном открытии окна. Окно можно закрыть через «Позже» без потери выбора; нижняя кнопка «Повышение уровня (N)» возвращает к тому же набору и является единственной level-up точкой входа при `pending_level_ups > 0`. FAB докачки в этом состоянии скрыт и возвращается только для докачки атрибутов за золото при отсутствии pending-уровней. Вес обычных наград считается через `ProgressionData.level_up_reward_weight()`: награда получает зависимый базовый атрибут, затем умножается на значение и позицию этого атрибута в `ATTRIBUTE_PRIORITIES` класса; floor сохраняет шанс любых вариантов.
 
 В пуле есть:
 - прямой урон;
@@ -146,7 +181,7 @@
 - защита;
 - магический фокус;
 - отталкивание;
-- редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с шансом около 13% на слот и визуальной rare-пометкой;
+- редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с шансом около 5% на слот и визуальной rare-пометкой;
 - артефакты.
 
 При открытии level-up окна игра должна полностью ставиться на паузу.
@@ -414,9 +449,11 @@ Escape открывает крупное меню характеристик:
 
 ### Экономика 0.2: Цены, Тиры Артефактов, Аффинити (2026-06-11)
 
-- **Магазин**: все цены x3.5 (пример: shop_damage 12 -> 42). Артефакты в магазине стоят по тиру: Tier 1 — 30, Tier 2 — 55, Tier 3 — 95 (`COST_BY_TIER`).
+- **Магазин**: базовые цены уже включают pass x3.5 (пример: `shop_damage` 12 -> 42), а актуальная экономика 0.1.4 дополнительно применяет `ECONOMY_PRICE_MULTIPLIER = 1.10` внутри `stage_scaled_cost()`. Фактическая цена `shop_damage` на stage 0 — 47 золота. Артефакты в магазине стоят по тиру: Tier 1 — 30, Tier 2 — 55, Tier 3 — 95 (`COST_BY_TIER`) до stage/economy scaling.
 - **Редкость**: вес появления в наградах/магазине по тиру — 1.0 / 0.45 / 0.12 (`TIER_WEIGHTS`, weighted-выбор без возврата).
-- **Окно докачки после боя**: +1 к характеристике за `18 + 6 * route_stage` золота; reroll пары предложений за `6 + 2 * route_stage`, максимум 2 раза за окно; «Пропустить» — бесплатно.
+- **Окно докачки после боя**: +1 к характеристике за `18 + 6 * route_stage` золота, затем `stage_scaled_cost`; reroll пары предложений за `6 + 2 * route_stage`, затем `stage_scaled_cost`, максимум 2 раза за окно; «Пропустить» — бесплатно.
+- **Дроп 0.1.4**: rewards назначаются по `DROP_CLASS_MULTIPLIERS`: ordinary < complex < heavy < mini_elite < elite < boss. Жирные цели дают около x1.75 XP / x1.85 золота относительно базы; мини-элитки x3.6 / x3.8; элитки x8 / x8.5; босс получает fixed reward, умноженный на `stage_scale`. Ожидаемая покупательная способность по balance harness: +10.6%, XP: +7.1%, то есть темп прокачки остается в допуске. Route-level модель SCRUM-188 (`build/route_economy_xp_model.md`) показывает 8-9 level-up на representative routes и healthy/high shop affordability, поэтому дополнительный разгон XP до +10-15% пока не применяется.
+- **XP-кривая 0.1.4**: следующий уровень считается через `ceil(current_requirement * 1.42 + 3)` вместо прежнего `ceil(req * 1.35 + 2)`, чтобы усиленный дроп сложных целей не разгонял количество level-up сверх цели.
 - **Сила артефактов**: tier 1 усилен x2.5 от прежних значений (например +2 к стату -> +5, +20% урона -> +50%); даунсайды НЕ усилены. Tier 2 — двойные эффекты (усилены так же). Tier 3 (6 шт.) — билдообразующие механики: `echo_blast_every`, `extra_projectile`, `low_hp_damage_bonus`, `kill_heal_percent`, `thorn_reflect_multiplier`, `dodge_rush_bonus` (реализованы в player/class_weapon/combat_director/derived_parameters).
 - **class_affinity**: с 2026-06-12 это тематика/исходная фантазия артефакта, а не запрет. `affinity_mods` применяются любому классу через class interpretation text; UI больше не показывает «Не работает»/«Работает вполсилы», а объясняет, как текущий класс использует эффект.
 
@@ -455,8 +492,8 @@ Escape открывает крупное меню характеристик:
 | attack_speed | 27*Agi/100 * mult; интервал = base_fire_interval / AS | derived -> все оружия | работает |
 | crit_chance / crit_damage_multiplier | 0.05+Agi/100 / 1+2*Agi/20 | derived -> _rolled_damage всех оружий | работает |
 | move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |
-| dodge | 0.02 + Agi*0.012 + flat (cap 0.8) | Player.take_damage | работает |
-| defense | 0.04 + End*0.018 + flat (cap 0.75/0.95) | Player.take_damage | работает |
+| dodge | 0.03 + Agi*0.014 + flat (cap 0.75) | Player.take_damage | работает |
+| defense | 0.06 + End*0.022 + flat (cap 0.75/0.95 в применении) | Player.take_damage | работает |
 | health_point | 50*End/4 + flat) * mult | derived -> max_health | работает |
 | attack_range / aoe_radius | (weapon + Per*2.5/3.5) * mult | derived -> оружия | работает |
 | pickup_radius | 105 + Per*7 + flat | derived -> магнит pickups | работает |
@@ -467,14 +504,14 @@ Escape открывает крупное меню характеристик:
 | knockback_power | (weapon + End*4 + Lead*3) * mult | derived -> apply_knockback врагов | работает |
 | summon_amount | Leadership | max_summons оружий (ампы) | работает |
 | **absorb** | End*0.25 + награды; срез удара до защиты (мин. 20% проходит) | НОВОЕ: Player.take_damage | работает |
-| **regeneration** | (0.3+награды)*Know/5 HP/с | НОВОЕ: Player._apply_regeneration | работает |
-| **vampiric_chance** | награды (cap 0.6); источник — артефакт «Клык Пиявки» (tier 2) | НОВОЕ: Player.on_weapon_hit | работает |
-| **vampiric_amount** | награды + 50% нанесенного урона при проке | НОВОЕ: Player.on_weapon_hit | работает |
+| **regeneration** | (0.55+награды)*(0.65+Know/5) HP/с | Player._apply_regeneration | работает |
+| **vampiric_chance** | награды (cap 0.35); источник — артефакт «Клык Пиявки» (tier 2) | Player.on_weapon_hit | работает |
+| **vampiric_amount** | награды + 8% нанесенного урона при проке, но итоговое лечение ограничено `vampiric_heal_per_second_cap` | Player.on_weapon_hit | работает |
 | **knockback_distance** | Knockback Power * End / 20 (отображаемая дальность) | НОВОЕ: derived; в бою действует knockback_power (реализованный баланс приоритетнее формулы таблицы) | работает (display) |
 | **range_multiplier** | run-множитель дальности | НОВОЕ: выведен в derived для UI | работает |
 | **ultimate_multiplier** | 1 + Energy*0.02 + награды | НОВОЕ: усиливает class ultimate: урон, радиус, длительность или число целей | работает |
 
-Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» реализован как награды + 50% урона при проке.
+Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» сознательно заменен на малую долю урона с heal-per-second cap, чтобы вампиризм был поддержкой, а не бессмертием.
 
 ### Ultimate Framework (2026-06-12)
 
@@ -504,7 +541,7 @@ Data source: `ProgressionData.CLASS_BUDGET_PROFILES`, `ProgressionData.budget_tu
 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/balance_harness.gd
 ```
 
-Он пишет полный отчет в `build/balance_report.md` и считает 27 комбинаций класс+оружие: solo DPS за 30 секунд, 5-target DPS за 30 секунд и EHP. Вклад ульты учитывается как prorated contribution внутри 30-секундного окна.
+Он пишет полный отчет в `build/balance_report.md` и считает 45 комбинаций класс+оружие: solo DPS за 30 секунд, 5-target DPS за 30 секунд и EHP. Вклад ульты учитывается как prorated contribution внутри 30-секундного окна.
 
 Формула EHP для бюджетного сравнения: `HP / (1-defense) / (1-dodge) + absorb*10 + regeneration*30 + lifesteal estimate`.
 
@@ -513,6 +550,13 @@ Runtime применяет один безопасный `budget_damage_multipli
 | Класс | Профиль | Survival | Damage budget | Solo target | 5-target target |
 | --- | --- | --- | ---: | ---: | ---: |
 | Берсерк | balanced | sturdy | 100% | 48.00 | 150.00 |
+| Солдат | balanced | steady | 100% | 48.00 | 150.00 |
+| Вор | balanced | fragile | 108% | 51.84 | 162.00 |
+| Элементалист | aoe | fragile | 108% | 49.25 | 178.20 |
+| Снайпер | solo | steady | 100% | 55.20 | 120.00 |
+| Священник | balanced | steady | 92% | 41.95 | 144.90 |
+| Биолог | aoe | fragile | 108% | 42.51 | 191.16 |
+| Инженер | balanced | steady | 96% | 41.47 | 161.28 |
 | Темный маг | aoe | fragile | 115% | 38.64 | 224.25 |
 | Гитарист | aoe | control | 100% | 33.60 | 195.00 |
 | Ассасин | solo | fragile | 115% | 71.76 | 120.75 |
@@ -526,16 +570,55 @@ Before/after summary from `build/balance_report.md`:
 
 | State | Covered pairs | Max combined deviation | Notes |
 | --- | ---: | ---: | --- |
-| Before tuning | 27 | 138.2% | Старые числа сильно выбивали DoT/deploy/summon и тяжелые melee weapons. |
-| After tuning | 27 | 0.1% | Все пары проходят проверку solo/5-target ≤ ±10% в `runtime_smoke_test.gd`. |
+| Before tuning | 36 | 138.2% | Старые числа сильно выбивали DoT/deploy/summon, тяжелые melee weapons и новые class pipelines. |
+| After tuning | 51 | 0.1% | Все пары проходят проверку solo/5-target ≤ ±10% в `runtime_smoke_test.gd`; новые классы Class Sheet держатся в пределах ±20% от Берсерка с мечом. |
 
 Full before/after tables live in `build/balance_report.md` because they are generated artifacts and should be refreshed by the harness when formulas or weapon configs change.
+
+### Survivability Scenario Harness (SCRUM-190, 2026-06-13)
+
+Data sources:
+- `tools/survivability_harness.gd` — deterministic fragile/steady/sturdy/tank profile model anchored to `Player.take_damage`.
+- `tests/survivability_scenario_test.gd` — verifies TTD monotonicity, mitigation-layer contribution, absorb behavior and one-hit damage parity with real player damage.
+- `tools/survivability_scenarios.gd` — class roster projection using current `ProgressionData` character stats and each class' first weapon.
+
+Commands:
+
+```bash
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/survivability_harness.gd
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/survivability_scenario_test.gd
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/survivability_scenarios.gd
+```
+
+Generated reports:
+- `build/survivability_report.md` for synthetic stat profiles and mitigation layer math.
+- `build/survivability_scenarios_report.md` for real class roster projection.
+
+The class projection is intentionally a measuring harness, not an auto-tuner. Current run result: 6 ok, 62 low, 0 high across contact swarm, shooter crossfire, elite burst and boss phase hazard. This flags current real-class durability against the chosen scenario bands as generally under-budget, especially elite burst and boss hazard cases. SCRUM-190 does not change balance constants; follow-up balance work should decide whether to raise survivability budgets, lower scenario incoming damage bands, or tune class-specific defensive affordances.
+
+### Combat Target Query Cache (SCRUM-197, 2026-06-13)
+
+Runtime target lookups should use `CombatTargetQuery` (`scripts/combat_target_query.gd`) instead of directly repeating `get_tree().get_nodes_in_group("enemies")` inside weapon/player hot paths. The helper keeps `enemies` as the canonical group and caches the valid `Node2D` list for the current process/physics frame.
+
+Available helpers:
+- `nearest(source, origin, range_limit, excluded_ids)`.
+- `nearest_many(source, origin, range_limit, count, excluded_ids)`.
+- `in_radius(source, origin, radius)` and `has_in_radius(...)`.
+- `in_corridor(source, origin, direction, width, range_limit, back_allowance)`.
+- `in_segment(source, start, finish, width)`.
+
+Integrated systems: `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary effects, `AllyMinion`, `SummonerWeapon`. Focused check: `tests/combat_target_query_cache_test.gd`; broad regressions still run through `tests/melee_weapon_targeting_test.gd` and `tests/runtime_smoke_test.gd`.
 
 
 ### Новые Классы 0.2 — Статы И Баланс (2026-06-11)
 
 | Класс | Str | Agi | Int | Per | Energy | Know | End | Lead | HP | Speed |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Элементалист | 2 | 4 | 9 | 7 | 8 | 6 | 3 | 5 | 48 | 258 |
+| Снайпер | 6 | 8 | 2 | 10 | 3 | 3 | 7 | 1 | 62 | 252 |
+| Священник | 2 | 4 | 8 | 6 | 7 | 9 | 5 | 6 | 66 | 246 |
+| Биолог | 2 | 5 | 8 | 7 | 6 | 10 | 4 | 4 | 54 | 254 |
+| Инженер | 4 | 5 | 7 | 6 | 6 | 6 | 5 | 10 | 70 | 246 |
 | Ассасин | 6 | 10 | 2 | 6 | 3 | 4 | 5 | 4 | 52 | 285 |
 | Рейнджер | 7 | 7 | 2 | 9 | 4 | 4 | 4 | 3 | 58 | 262 |
 | Доктор | 2 | 4 | 8 | 5 | 6 | 8 | 5 | 2 | 64 | 248 |
@@ -561,3 +644,29 @@ AoE/DoT/саммоны — зачистка волны; точные замер�
 - reward_mult/healing_mult/player_max_hp_mult сворачиваются в `run_modifiers` игрока в `main.apply_ascension_bonuses` (на старте забега).
 
 Прогресс: `meta_progression.record_boss_victory(state, char, run_level)` повышает уровень только если `run_level >= completed`; `selectable_max = completed + 1` (cap 10). Наградный трек меты — старые per-class `ASCENSION_LEVELS`, применяются за пройденные уровни постоянно. Выбор уровня — селектор в hero select (клампится к `ascension_selectable_max` героя при пике), HUD-индикатор римской цифрой у таймера, кодекс-раздел «Возвышения».
+
+### Мета-древо умений (SCRUM-150)
+
+Общее для всех персонажей древо в `meta_progression.gd` (`SKILL_TREE`, data-driven). 4 независимые ветви по 10 узлов, последовательная разблокировка (tier N+1 требует tier N той же ветви), бюджет полной прокачки **42 очка** (диапазон 40-50). Валюта — `skill_points`, начисляются вместе с `meta_points` за победу над боссом (одна экономика); сохранение `skill_points`+`skill_nodes` в `user://`. Полная прокачка ≤ **~+30% эффективной силы** (`estimated_power_multiplier`).
+
+Ветви и эффекты (`skill_modifiers(state)` — множители суммируются как `1.0+Σ`, флаги — max):
+- **Богатство**: `money_gain_mult` (+опыт золота), `shop_price_mult` (скидка магазина), `start_gold_flat`, `attr_cost_mult` (удешевление докачки), capstone `guaranteed_rare_shop`.
+- **Знания**: `xp_gain_mult`, `levelup_rerolls`, `attr_extra_options` (+варианты докачки), capstone `first_levelup_rare`.
+- **Мощь**: `damage_mult`, `attack_speed_mult`, `ult_charge_mult`, `elite_boss_damage_mult`, capstone `ult_start_charge` (0.5).
+- **Стойкость**: `max_health_mult`, `regeneration_flat`, `defense_flat`, `dodge_flat`, capstone `death_save`.
+
+Применение (по мере освобождения файлов, сериализуется):
+- Боевое подмножество → `player.apply_meta_skill_modifiers(mods)` в `run_modifiers` + предзаряд ульты (ч.2a).
+- Эконом-флаги в UI: `shop_price_mult` → `_random_shop_items`, `attr_cost_mult` → `_ascension_price`, `attr_extra_options` → `_random_attribute_pair` (ч.5-7).
+- Экран древа — пункт «Древо умений» в главном меню (`_show_skill_tree_screen`, состояния узлов/покупка/счётчик, ч.3); «+очко умений» на экране победы (ч.4).
+- Старт забега (`main.apply_ascension_bonuses`): `player.apply_meta_skill_modifiers(skill_modifiers)` + начисление `start_gold_flat` в money (ч.12). SCRUM-150 завершён.
+
+### Экран «Что нового» / патч-ноуты (SCRUM-159)
+
+Data-driven патч-ноуты в `scripts/patch_notes_data.gd` (`PATCH_NOTES`, версии 0.1.0-0.1.4, новейшая первой) — только пользовательские русские формулировки, без внутренних ID/путей. API: `all_entries`, `latest_version`, `entries_since`/`has_new_since` (semver-сравнение). Экран `_show_skill...`→ `_show_patch_notes_screen` из главного меню (пункт «Что нового»): заголовки версий + буллеты, скролл, Назад/Escape. Бейдж «●» на пункте меню при `has_new_since(last_seen_version)`; открытие экрана записывает `last_seen_version = latest` (бейдж гаснет), не модалка. Персистентность `last_seen_version` — в `game_settings` (`user://`).
+
+### Локализация И Глоссарий (SCRUM-210)
+
+Текущий пользовательский язык — русский. Data-driven глоссарий расположен в `scripts/glossary.gd`: `TERMS[term_id] = {name, desc}`, API `term_ids()`, `definition()`, `name()`, `description()`, `is_valid_term()`. Покрыты 8 базовых характеристик, основные производные параметры и ключевые механики: периодический урон, крит, уклонение, защита, радиус подбора, вампиризм, Возвышение, артефакт, тематика класса, телеграф, элитка, мини-элитка, босс, ультимейт, призыв, перезарядка.
+
+UI hook: `ui_screens.gd::_make_glossary_term_button(term_id, popup_context := false)` создает термин с пунктирной underline-меткой. В обычном экране tooltip доступен по hover; в popup-контексте tooltip показывается только при Alt+hover, чтобы не плодить вложенные подсказки. Кодекс получил вкладку «Глоссарий». Runtime smoke проверяет валидность глоссария, underline node и фактический `GlossaryTooltipPanel`.

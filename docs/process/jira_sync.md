@@ -1,6 +1,6 @@
 # Jira Sync — FantasyDisk
 
-Обновлено: 2026-06-12
+Обновлено: 2026-06-13
 
 ## Назначение
 
@@ -19,10 +19,15 @@
 - Site: `https://fantasydisk.atlassian.net`
 - Project key: `SCRUM`
 - Board: `1`
-- Current active sprint: `Спринт 0.1.3`
-- Current active sprint id: `1`
-- Feature block active for `0.1.3`: new non-bug tasks target backlog/version
-  `0.1.4` and must not be added to the active sprint.
+- Current active sprint: `Спринт 0.1.4`
+- Current active sprint id: `34`
+- Feature block: **ACTIVE** from 2026-06-13 for `0.1.4` stabilization. Critical
+  PM correction on 2026-06-13: tasks with `Версия: 0.1.5` remain backlog and must
+  not be pulled into sprint `0.1.4`, dispatched, or changed to `in_progress`
+  until release `v0.1.4` or explicit PM override. Existing `0.1.4` tasks, bugs,
+  QA defects, regressions, release blockers, and already-recorded executor
+  results continue to be synchronized normally. The freeze is lifted immediately
+  after release `v0.1.4`.
 
 ## Безопасность Доступа
 
@@ -54,14 +59,32 @@ Atlassian и создать новый.
 Приоритет из `.md` переносить в Jira только если безопасно и доступное поле
 приоритета уже известно. Иначе хранить приоритет в описании.
 
+## Спринт = Релиз (правило пользователя, 2026-06-12)
+
+Каждый Jira-спринт соответствует релизу: «Спринт X.Y.Z» закрывается выпуском
+версии X.Y.Z. В проекте SCRUM ведутся Jira Releases (versions): на каждую
+версию — запись с описанием (краткий ченджлог + заметки обновления; полный
+текст — releases/vX.Y.Z/CHANGELOG-X.Y.Z.md). sync-скрипт проставляет новым
+тикетам fixVersion по имени активного спринта. При релизе версия помечается
+released, создаётся следующая. Игровые патч-ноуты для игрока — экран
+«Что нового» (данные обновляются в релизном чек-листе).
+
 ## Правила Создания И Обновления
 
-1. Новые `.md` task-файлы и Jira issues создает PM/другая LLM, не Codex
-   Documentation dispatcher.
-2. Во время feature block добавлять в активный спринт `Спринт 0.1.3` только
-   bugfix/regression/QA defect/release blocker задачи. Новые не-баговые задачи
-   создавать в Jira backlog с target `0.1.4` (label `target-0.1.4`, Fix Version
-   `0.1.4`, если версия заведена в Jira) и не добавлять в active sprint.
+1. Новые `.md` task-файлы и Jira issues создает PM/другая LLM. Codex
+   Documentation dispatcher также может создавать новые задачи, но только как
+   backlog `0.1.5` (`Статус: new`, `Версия: 0.1.5`, fixVersion `0.1.5`, без
+   active sprint assignment) или как явно текущие bug/QA defect/regression/
+   release blocker задачи.
+   Обычная сверка dispatcher может идти через `python3 tools/jira_board_sync.py
+   --no-create`; после намеренного создания backlog-задачи нужно запускать sync
+   без `--no-create`, чтобы появился Jira issue в backlog `0.1.5`.
+2. Пока feature block активен для стабилизации `0.1.4`, dispatcher добавляет в
+   текущий sprint только задачи с `Версия: 0.1.4` или без строки версии, если они
+   уже на active board, а также bugfix/regression/QA defect/release blocker или
+   явный PM override. Задачи с `Версия: 0.1.5` получают/сохраняют fixVersion
+   `0.1.5`, остаются в backlog без active sprint assignment и не dispatch'ятся до
+   снятия фриза после релиза `v0.1.4`.
 3. В `.md` task-файле рядом с метаданными добавить строку:
 
    ```text
@@ -93,7 +116,9 @@ Atlassian и создать новый.
 
 1. Проверить наличие `Jira: SCRUM-*` в task-файле.
 2. Если Jira key отсутствует — передать PM/owner задачу на создание issue до
-   начала работы. Codex Documentation dispatcher сам issue не создает.
+   начала работы. Исключение: Codex Documentation dispatcher может сам создать
+   Jira issue для backlog `0.1.5` или текущего bug/QA defect/release blocker,
+   соблюдая feature-freeze правила выше.
 3. При изменении `.md` статуса обновить Jira status/comment.
 4. Если задача переносится, блокируется или требует handoff — отразить это и в
    `.md`, и в Jira comment/status.
@@ -101,9 +126,11 @@ Atlassian и создать новый.
 6. Закрывать только свои задачи или задачи своего ревью-контура. Dispatcher/PM
    не закрывает задачу за исполнителя; он синхронизирует Jira только после того,
    как исполнитель записал результат в task-файл/board или QA добавил verdict.
-7. Codex Documentation dispatcher не создает новые Jira issues и `.md` task-файлы.
-   Его допустимые действия: route уже существующих задач, update existing status,
-   Jira comments/status sync, duplicate/superseded marking.
+7. Codex Documentation dispatcher не создает новые active-sprint feature tasks.
+   Его допустимые действия: создать backlog `0.1.5` task/Jira issue, route уже
+   существующих eligible задач, update existing status, Jira comments/status
+   sync, duplicate/superseded marking, а также оформить текущий bug/QA defect/
+   release blocker.
 
 ## Проверка Дубликатов
 
@@ -112,7 +139,7 @@ Dispatcher при регулярной сверке обязан искать д
 - одинаковый task-файл или source task path;
 - одинаковый Jira summary/почти одинаковая формулировка проблемы;
 - две активные задачи на одни и те же файлы, ассеты, экран или баг;
-- backlog-задача `0.1.4`, случайно продублированная в активном sprint.
+- backlog-задача `0.1.5`, случайно продублированная в активном sprint.
 
 Если найден дубль, dispatcher не раздает его исполнителю. Нужно оставить один
 source of truth, а остальные пометить `duplicate` или `superseded`, добавить
@@ -121,15 +148,23 @@ source of truth, а остальные пометить `duplicate` или `supe
 
 ## Feature Block Обязательство
 
-Пока активен feature block `0.1.3`, агенты и dispatcher обязаны:
+Сейчас feature block АКТИВЕН: идёт стабилизация `Спринт 0.1.4`. Критичная
+PM-коррекция 2026-06-13: `Версия: 0.1.5` остаётся backlog/fixVersion `0.1.5`
+вне active sprint и не dispatch'ится до релиза `v0.1.4` или явного PM override.
+Агенты и dispatcher обязаны:
 
 1. Проверять тип задачи перед dispatch.
-2. Не начинать новые не-баговые задачи.
-3. Для новых не-баговых задач создавать/оставлять Jira issue в backlog с target
-   `0.1.4`, без sprint assignment. Для Codex Documentation dispatcher это
-   означает: не создавать самому, а проверить/сообщить, что PM/owner должен
-   оформить backlog-задачу.
-4. Для багов текущего scope использовать текущий sprint `0.1.3` и обычный QA flow.
+2. Дожимать активные задачи `0.1.4`/без версии, баги, QA-дефекты, регрессии,
+   release blockers и уже записанные executor results до Jira/QA sync.
+3. Не начинать backlog-задачи `Версия: 0.1.5` без PM override и не переводить
+   их в `in_progress` во время фриза.
+4. Для новых не-баговых задач создавать/оставлять `.md` task и Jira issue в
+   backlog `0.1.5`, без sprint assignment. Codex Documentation dispatcher может
+   оформить такую backlog-задачу сам, но не dispatch'ит её во время freeze.
+5. Для багов, QA-дефектов, регрессий и release blockers текущего scope
+   использовать текущий sprint и обычный QA flow.
+6. Снять фриз сразу после релиза `v0.1.4`; следующий sprint `0.1.5` забирает
+   накопленный backlog.
 
 ## Jira Description Минимум
 
@@ -142,3 +177,25 @@ Jira issue должна содержать:
 - acceptance criteria;
 - документацию/тесты, которые нужно обновить или прогнать;
 - текущий sprint/release context.
+
+## Аджайл-эпики (с 2026-06-13, запрос пользователя «работать по аджайлу»)
+
+Все задачи Jira сгруппированы под 10 функциональных эпиков (тип «Эпик»):
+
+| Код | Эпик | Ключ |
+| --- | --- | --- |
+| CHARS | Персонажи и классы | SCRUM-212 |
+| COMBAT | Бой, враги, боссы и события | SCRUM-213 |
+| BALANCE | Баланс и экономика | SCRUM-214 |
+| UI | Интерфейс, экраны и локализация | SCRUM-215 |
+| ART | Арт и спрайты | SCRUM-216 |
+| ANIM | Анимация и риги | SCRUM-217 |
+| AUDIO | Звук и музыка | SCRUM-218 |
+| META | Мета-прогрессия | SCRUM-219 |
+| QUALITY | Качество кода, тесты, аудиты | SCRUM-220 |
+| RELEASE | Релиз и процессы | SCRUM-221 |
+
+Карта кодов→ключей — `docs/process/jira_epics.json`. Новые тикеты автоматически
+привязываются к parent-эпику классификатором `epic_for()` в
+`tools/jira_board_sync.py` (по имени task-файла + заголовку). При добавлении
+новых тем эпиков — обновить `jira_epics.json` и классификатор.

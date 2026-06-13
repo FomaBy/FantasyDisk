@@ -86,3 +86,16 @@ Done 2026-06-12.
 ```
 
 Результат: passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED
+
+- Код: в `combat_director._start_combat` флаги `combat_active`/`boss_combat_active`/
+  `current_combat_type` выставляются ДО `game.ui._create_hud()`; guard
+  `_create_combat_timer_panel` (ui_screens.gd:3703 `if boss_combat_active: return`)
+  теперь видит boss-state.
+- РЕАЛЬНЫЙ рендер босс-боя (Rift Warden, 1454×908→1600×900): `CombatTimerPanel`
+  ОТСУТСТВУЕТ (`find_child=null`), верх-центр чистый, баннер босса на месте. Скрин:
+  `build/qa/boss_timer_clean/`.
+- Тест: в boss combat нет CombatTimerPanel и не возвращается после _update_hud; в
+  normal combat таймер есть и тикает. runtime_smoke зелёный. Багов нет.

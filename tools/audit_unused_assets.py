@@ -22,7 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SELF = Path(__file__).resolve()
-BACKUP_DIR = ROOT / "build" / "cleanup_backup_2026_06_12"
+BACKUP_DIR = ROOT / "build" / "cleanup_backup_2026_06_13"
 
 SOURCE_GLOBS = ("scenes", "scripts", "tests", "tools")
 SOURCE_FILES = ("project.godot", "export_presets.cfg", "AGENTS.md")
@@ -38,6 +38,7 @@ PROTECTED_PREFIXES = (
     ".godot/",
     "build/qa/",
     "build/cleanup_backup_2026_06_12/",
+    "build/cleanup_backup_2026_06_13/",
 )
 PROTECTED_FILES = {"keep-awake.sh"}
 
@@ -61,6 +62,42 @@ KEEP_FILES = {
     "assets/sprites/ui/frames/escape/escape_stats_visual_kit_preview.png",
     "assets/sprites/ui/frames/escape/ui_stat_value_state_swatches.png",
 }
+
+# SCRUM-194: явный манифест ДИНАМИЧЕСКИХ семейств ассетов. Эти файлы грузятся по
+# пути, СОБРАННОМУ в рантайме (id артефакта/товара, имя части рига, тип узла
+# карты), поэтому статический grep "res://..." их НЕ находит и наивный аудит
+# пометил бы как мусор. Манифест делает защиту явной и проверяемой: каждое
+# семейство ОБЯЗАНО попадать под защиту (KEEP_DIRS / ID_MATCHED_DIRS / KEEP_FILES)
+# — это сверяет селф-тест tools/test_audit_unused_assets.py. Поле kind:
+#   "id"     — путь {dir}/{pattern с {id}}, id берётся из реестра (см. ID_MATCHED_DIRS);
+#   "dir"    — целая папка-семейство собирается динамически (см. KEEP_DIRS);
+#   "files"  — поimённый набор docs-only превью, runtime не грузит, но хранится.
+DYNAMIC_FAMILIES = (
+    {"name": "artifact_icons", "kind": "id", "dir": "assets/sprites/ui/icons/artifacts",
+     "pattern": "artifact_{id}.png",
+     "reference": "иконка артефакта строится по id из progression_data.ARTIFACTS"},
+    {"name": "shop_icons", "kind": "id", "dir": "assets/sprites/ui/icons/shop",
+     "pattern": "shop_{id}.png",
+     "reference": "иконка товара магазина строится по id"},
+    {"name": "character_cutout", "kind": "dir", "dir": "assets/sprites/characters/cutout",
+     "reference": "части ригов персонажей собираются sliced_rig_manifest.gd по имени семейства/части"},
+    {"name": "enemy_cutout", "kind": "dir", "dir": "assets/sprites/enemies/cutout",
+     "reference": "части ригов рядовых врагов собираются по имени"},
+    {"name": "elite_cutout", "kind": "dir", "dir": "assets/sprites/elites/cutout",
+     "reference": "части ригов элиток собираются по имени"},
+    {"name": "boss_cutout", "kind": "dir", "dir": "assets/sprites/bosses/cutout",
+     "reference": "части ригов боссов собираются по имени"},
+    {"name": "map_icons", "kind": "dir", "dir": "assets/sprites/map_icons",
+     "reference": "иконка узла маршрута грузится по типу узла"},
+    {"name": "ui_cursor", "kind": "dir", "dir": "assets/sprites/ui/cursor",
+     "reference": "курсоры назначаются по состоянию в рантайме"},
+    {"name": "ui_frames", "kind": "dir", "dir": "assets/sprites/ui/frames",
+     "reference": "рамки тем UI выбираются по контексту экрана"},
+    {"name": "ui_shop_frames", "kind": "dir", "dir": "assets/sprites/ui/shop",
+     "reference": "слоты/рамки магазина грузятся по состоянию"},
+    {"name": "kept_previews", "kind": "files", "files": tuple(sorted(KEEP_FILES)),
+     "reference": "docs-only Design превью; runtime не грузит, но сохраняется для ревью"},
+)
 
 ROOT_LOOSE_CANDIDATES = (
     ".DS_Store",
@@ -144,7 +181,16 @@ def collect_source_text() -> str:
 
 def known_game_ids() -> set[str]:
     ids: set[str] = set()
-    for rel_path in ("scripts/progression_data.gd", "scripts/event_data.gd"):
+    for rel_path in (
+        "scripts/progression_data.gd",
+        "scripts/progression_data_characters.gd",
+        "scripts/progression_data_weapons.gd",
+        "scripts/progression_data_content.gd",
+        "scripts/progression_data_shop.gd",
+        "scripts/progression_data_ascension.gd",
+        "scripts/progression_data_enemies.gd",
+        "scripts/event_data.gd",
+    ):
         path = ROOT / rel_path
         if not path.exists():
             continue
@@ -245,12 +291,92 @@ def build_candidates() -> tuple[list[dict[str, str]], dict[str, int]]:
     return candidates, stats
 
 
+SIDECAR_SUFFIXES = (".import", ".uid")
+
+
+def sidecars_for(rel_path: str) -> list[str]:
+    # SCRUM-194: группируем .import/.uid с исходным ассетом, чтобы чистка
+    # удаляла их одним блоком, а не оставляла осиротевшие сайдкары.
+    if rel_path.endswith(SIDECAR_SUFFIXES):
+        return []
+    found: list[str] = []
+    for suffix in SIDECAR_SUFFIXES:
+        if (ROOT / (rel_path + suffix)).exists():
+            found.append(rel_path + suffix)
+    return found
+
+
+def dynamic_inventory() -> list[dict[str, object]]:
+    # Перечисляет фактические файлы под каждым динамическим семейством — для
+    # отчёта и для проверки «ни один из них не попал в кандидаты на удаление».
+    inventory: list[dict[str, object]] = []
+    for family in DYNAMIC_FAMILIES:
+        members: list[str] = []
+        if family["kind"] == "files":
+            members = [rel_path for rel_path in family["files"] if (ROOT / rel_path).exists()]
+        else:
+            directory = ROOT / family["dir"]
+            if directory.exists():
+                for path in sorted(directory.rglob("*")):
+                    if path.is_file() and not rel(path).endswith(SIDECAR_SUFFIXES):
+                        members.append(rel(path))
+        inventory.append({"family": family, "members": members})
+    return inventory
+
+
+def write_manifest(candidates: list[dict[str, str]], stats: dict[str, int],
+                   inventory: list[dict[str, object]]) -> Path:
+    report_path = ROOT / "build" / "asset_audit_manifest.md"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    lines: list[str] = []
+    lines.append("# FantasyDisk — манифест аудита ассетов (SCRUM-194)")
+    lines.append("")
+    lines.append("Сгенерировано `tools/audit_unused_assets.py`. Отчёт **до** любой чистки.")
+    lines.append("Чистка (SCRUM-193) использует бэкап + `git rm` только по этому списку.")
+    lines.append("")
+    lines.append("Проверено файлов: **%d**; кандидатов на удаление: **%d**; "
+                 "динамически защищено: **%d**; явно сохранено: **%d**." % (
+                     stats["checked"], len(candidates), stats["dynamic_kept"], stats["explicit_kept"]))
+    lines.append("")
+    lines.append("## Динамические семейства (защищены от удаления)")
+    lines.append("")
+    lines.append("Грузятся по собранному в рантайме пути — статический grep их не видит.")
+    lines.append("")
+    lines.append("| Семейство | Расположение | Паттерн | Файлов | Почему динамическое |")
+    lines.append("| --- | --- | --- | ---: | --- |")
+    for entry in inventory:
+        family = entry["family"]
+        members = entry["members"]
+        location = family.get("dir", "(поимённо)")
+        pattern = family.get("pattern", "—")
+        lines.append("| %s | `%s` | `%s` | %d | %s |" % (
+            family["name"], location, pattern, len(members), family["reference"]))
+    lines.append("")
+    lines.append("## Кандидаты на удаление (с сайдкарами)")
+    lines.append("")
+    if not candidates:
+        lines.append("_Нет кандидатов._")
+    else:
+        lines.append("| Путь | Категория | Сайдкары | Причина |")
+        lines.append("| --- | --- | --- | --- |")
+        for item in candidates:
+            sidecars = sidecars_for(item["path"])
+            sidecar_text = ", ".join("`%s`" % s for s in sidecars) if sidecars else "—"
+            lines.append("| `%s` | %s | %s | %s |" % (
+                item["path"], item["category"], sidecar_text, item["reason"]))
+    lines.append("")
+    report_path.write_text("\n".join(lines) + "\n")
+    return report_path
+
+
 def main() -> int:
     if "--apply" in sys.argv:
         print("This audit is report-only; use the cleanup task's backup + git rm procedure.")
         return 2
 
     candidates, stats = build_candidates()
+    inventory = dynamic_inventory()
+    report_path = write_manifest(candidates, stats, inventory)
     print(
         "Всего проверено файлов: {checked}; кандидатов: {count}; "
         "dynamic keep: {dynamic_kept}; explicit keep: {explicit_kept}".format(
@@ -259,8 +385,11 @@ def main() -> int:
         )
     )
     print("Backup target:", BACKUP_DIR.relative_to(ROOT).as_posix())
+    print("Manifest report:", report_path.relative_to(ROOT).as_posix())
     for item in candidates:
-        print("CANDIDATE\t{path}\t{category}\t{reason}".format(**item))
+        sidecars = sidecars_for(item["path"])
+        suffix = ("\t+sidecars:" + ",".join(sidecars)) if sidecars else ""
+        print("CANDIDATE\t{path}\t{category}\t{reason}".format(**item) + suffix)
     return 0
 
 

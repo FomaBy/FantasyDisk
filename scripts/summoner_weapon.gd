@@ -1,5 +1,7 @@
 extends Node2D
 
+const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+
 @export var ally_scene: PackedScene
 @export var summon_interval := 4.0
 @export var max_summons := 2
@@ -10,9 +12,11 @@ extends Node2D
 @export var damage_multiplier := 0.55
 @export var fire_interval := 3.0
 @export var command_mode := "attack_target"
+@export var ally_visual_id := ""
 
 var _cooldown := 0.0
 var _command_refresh := 0.0
+var ally_visual_ids: Array[String] = []
 
 
 func configure_weapon(config: Dictionary) -> void:
@@ -22,6 +26,11 @@ func configure_weapon(config: Dictionary) -> void:
 	damage_parameter = str(config.get("damage_parameter", damage_parameter))
 	damage_multiplier = float(config.get("summon_damage_multiplier", damage_multiplier))
 	command_mode = str(config.get("command_mode", command_mode))
+	ally_visual_id = str(config.get("ally_visual_id", ally_visual_id))
+	ally_visual_ids.clear()
+	var configured_visuals: Array = config.get("ally_visual_ids", [])
+	for visual_id in configured_visuals:
+		ally_visual_ids.append(str(visual_id))
 
 
 func _ready() -> void:
@@ -46,7 +55,9 @@ func _summon() -> void:
 	if ally_scene == null:
 		return
 
-	var active_summons := get_tree().get_nodes_in_group("allies")
+	var active_summons := get_tree().get_nodes_in_group("allies").filter(func(ally: Node) -> bool:
+		return ally != null and is_instance_valid(ally) and not ally.is_queued_for_deletion()
+	)
 	if active_summons.size() >= max_summons:
 		return
 
@@ -55,12 +66,19 @@ func _summon() -> void:
 		return
 
 	var ally := ally_scene.instantiate() as Node2D
-	var parent := get_tree().current_scene
+	var parent := owner_node.get_tree().current_scene
+	if parent == null or not is_instance_valid(parent) or not parent.is_inside_tree():
+		parent = owner_node.get_parent()
 	if parent == null:
-		parent = get_tree().root
+		parent = owner_node.get_tree().root
 
 	parent.add_child(ally)
 	ally.add_to_group("player_weapon_effects")
+	var selected_visual_id := _selected_ally_visual_id()
+	if ally.has_method("set_visual_id"):
+		ally.call("set_visual_id", selected_visual_id)
+	else:
+		ally.set("ally_visual_id", selected_visual_id)
 	ally.set("owner_node", owner_node)
 	ally.set("command_mode", command_mode)
 	var angle := randf() * TAU
@@ -73,6 +91,21 @@ func _summon() -> void:
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("cast", ally.global_position - owner_node.global_position)
 	_command_ally(ally, owner_node)
+
+
+func _selected_ally_visual_id() -> String:
+	if not ally_visual_ids.is_empty():
+		return ally_visual_ids[randi() % ally_visual_ids.size()]
+	if not ally_visual_id.is_empty():
+		return ally_visual_id
+	match weapon_id:
+		"homunculus_vial":
+			return "homunculus"
+		"summon_amulet":
+			return "druid_beast" if randf() < 0.5 else "druid_pack_spirit"
+		"leadership_echo":
+			return "leadership_echo"
+	return "druid_beast"
 
 
 func _command_existing_summons() -> void:
@@ -99,17 +132,7 @@ func _command_ally(ally: Node2D, owner_node: Node2D) -> void:
 
 
 func _closest_enemy(owner_node: Node2D) -> Node2D:
-	var closest_enemy: Node2D = null
-	var closest_distance := INF
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var distance := owner_node.global_position.distance_squared_to(enemy_node.global_position)
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_enemy = enemy_node
-	return closest_enemy
+	return TARGET_QUERY.nearest(self, owner_node.global_position)
 
 
 func _owner_node() -> CharacterBody2D:

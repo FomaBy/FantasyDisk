@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/briar_staff.png" id="2_weapon_texture"]
+
+[node name="BiologistSporeLens" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_class_weapon")
+weapon_id = "biologist_spore_lens"
+display_name = "Споровая Линза"
+attack_mode = "bio_spore_bloom"
+damage_parameter = "magic_damage"
+fire_interval = 1.18
+damage = 12.0
+attack_range = 560.0
+aoe_radius = 210.0
+storm_ticks = 3
+burst_interval = 0.16
+damage_falloff = 0.7
+dot_ticks = 2
+visual_color = Color(0.46, 1, 0.42, 0.4)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 9
+texture = ExtResource("2_weapon_texture")
+position = Vector2(40, -20)
+rotation = -0.18
+scale = Vector2(0.34, 0.34)

@@ -1,6 +1,6 @@
 # Гид Диспетчера: Как Формировать Задачи И Куда Их Направлять (Claude vs Codex)
 
-Обновлено: 2026-06-12
+Обновлено: 2026-06-13
 Для кого: любой диспетчер задач FantasyDisk (PM-чат Claude, Codex-тред Documentation,
 будущие диспетчеры). Источник процесса: `docs/process/pm_workflow.md`.
 
@@ -17,8 +17,10 @@
 
 ВСЕ задачи, связанные с рисовкой — фреймы, спрайты, иконки, фоны, VFX-кадры,
 любые изображения — отдаются исполнителю **Codex Design** (генерация изображений)
-и выполняются в **стиле D&D** (тёплый tabletop/D&D-канон проекта: реалистичные
-магические предметы, таверна-дерево-латунь в UI, живописная подача — см.
+и выполняются в **стиле D&D** (актуальный dark fantasy/tabletop канон проекта:
+реалистичные магические предметы, painterly character/enemy art, а UI — по
+SCRUM-147 Parchment & Wax Seal dark fantasy canon: aged parchment, red wax seal,
+serrated forged metal, ruby accents and realistic D&D material detail; см.
 актуальные референсы в docs/design/systems/visual_style_assets.md и
 content_registry). К каждому запуску генерации ОБЯЗАТЕЛЬНО прикладываются
 референсы-изображения. Claude-Designer остается ревьюером, интегратором и
@@ -71,10 +73,13 @@ content_registry). К каждому запуску генерации ОБЯЗ�
 4. **Зависимости указывай явно** (какая задача чего ждет, кто снимает blocked).
 5. Правила исполнения едины: ветка dev, smoke-тесты, обновление документации,
    CHANGELOG (Unreleased), handoff при чужой работе.
-6. Codex Documentation dispatcher НЕ создает новые `.md` task-файлы и Jira
-   issues. Их готовит PM/другая LLM. Если при routing не хватает task-файла или
-   Jira key, dispatcher не создает их сам: оставляет задачу без dispatch и
-   сообщает PM/owner о недостающей синхронизации.
+6. Codex Documentation dispatcher может создавать новые `.md` task-файлы и Jira
+   issues только как backlog `0.1.5`: `Статус: new`, строка `Версия: 0.1.5`,
+   правильная роль, board/backlog-строка и Jira fixVersion `0.1.5` без active
+   sprint assignment. Такие задачи не dispatch'ятся и не переводятся в
+   `in_progress` до релиза `v0.1.4` или явного PM override. Для активного
+   `0.1.4` dispatcher не создает новые source tasks, кроме явно обозначенных
+   bugs/QA defects/release blockers.
 7. Каждая задача должна быть синхронизирована с Jira `SCRUM` по
    `docs/process/jira_sync.md`: issue в активном спринте, `Jira: SCRUM-*` в
    task-файле, Jira key/ссылка в `task_board.md`, status/comment updates при
@@ -88,18 +93,18 @@ content_registry). К каждому запуску генерации ОБЯЗ�
    не отправлять исполнителям; оставить один source of truth, остальные пометить
    `duplicate`/`superseded` с ссылкой на основной task/Jira.
 
-## Feature Block Routing — 0.1.3
+## Feature Block Routing (АКТИВЕН: стабилизация 0.1.4)
 
-С 2026-06-12 новые задачи маршрутизируются с учетом feature block:
-
-- **Bug / QA defect / regression / release blocker**: можно ставить на доску
-  текущего спринта и отправлять исполнителю по обычным правилам.
-- **Feature / improvement / balance change / new art / new UI / new content**:
-  PM/другая LLM создает task-файл и Jira issue как backlog `0.1.4`; dispatcher
-  не отправляет это в Back-end/Design/Animator и не добавляет в активный sprint.
-- Если неясно, баг это или улучшение, по умолчанию это backlog `0.1.4`.
-- Исполнители, получившие прямой запрос на новую фичу во время блока, должны
-  вернуть его PM/dispatcher для оформления в backlog `0.1.4`, а не брать в работу.
+Feature freeze включён пользователем 2026-06-13 для стабилизации `0.1.4`.
+Критичная PM-коррекция 2026-06-13: задачи с `Версия: 0.1.5` не затягивать в
+`0.1.4`, не dispatch'ить и не переводить в `in_progress` до релиза `v0.1.4`
+или явного PM override. В текущий sprint идут только уже активные задачи
+`0.1.4`/без версии, баги, QA-дефекты, регрессии, release blockers и уже
+записанные executor results, которые нужно синхронизировать. Спорное, чего ещё
+нет на active board, по умолчанию считать фичей `0.1.5`; dispatcher может
+оформить его как backlog-задачу `0.1.5` и Jira issue вне active sprint. Фриз
+снимается сразу после релиза `v0.1.4`; новый sprint `0.1.5` забирает накопленный
+backlog.
 
 ## Как Доставить Задачу Исполнителю
 
@@ -112,9 +117,9 @@ content_registry). К каждому запуску генерации ОБЯЗ�
   `/Applications/Codex.app/Contents/Resources/codex exec --full-auto "Выполни задачу docs/tasks/<файл> строго по инструкции" `
   (запускать из каталога проекта). В ТЗ для Codex всегда писать: «коммит НЕ делать
   (sandbox), статус review + резюме в файле задачи».
-- **QA-контур Claude**: через task board/автоматический QA process. Dispatcher
-  не создает новые QA task-файлы. Если QA-задача нужна, но отсутствует, это
-  возвращается PM/QA-owner на оформление.
+- **QA-контур Claude**: через task board/автоматический QA process. Новые QA
+  defects/release blockers оформляются по Jira sync rules; новые QA/backlog
+  запросы вне текущего release scope — только как `Версия: 0.1.5`, без dispatch.
 
 ## Обязательное Ревью За Codex
 
@@ -126,7 +131,9 @@ content_registry). К каждому запуску генерации ОБЯЗ�
 
 - Выдавать одну и ту же зону ответственности обоим контурам параллельно
   (две задачи на одни файлы = конфликт в рабочем каталоге).
-- Создавать новые `.md` task-файлы или Jira issues: это делает PM/другая LLM.
+- Создавать новые active-sprint `.md` task-файлы или Jira issues без bug/QA
+  defect/release-blocker причины. Новые фичи/улучшения во время freeze допустимы
+  только как backlog `0.1.5`, без dispatch.
 - Закрывать задачу за исполнителя без результата в task-файле или QA-вердикта.
 - Менять арт-направление без отметки superseded в старой задаче.
 - Отдавать Codex задачи с продуктовыми развилками («реши сам, как лучше для игры»).

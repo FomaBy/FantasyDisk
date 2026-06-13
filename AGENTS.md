@@ -27,22 +27,63 @@ Role boundaries:
 - When taking a task, set `Статус: in_progress` in its file; when finishing, set `done` (or `review`) and append a short result summary so the PM can sync the task board.
 - Jira is mandatory for task tracking. Follow `docs/process/jira_sync.md`: every task must have a `Jira: SCRUM-*` link, current sprint membership, and Jira status/comment updates matching `.md` status changes. Never store Jira API tokens in the repository.
 
+**ЖИВАЯ СИНХРОНИЗАЦИЯ JIRA — ОБЯЗАТЕЛЬНА (директива пользователя 2026-06-13).**
+Пользователь управляет разработкой по Jira, поэтому Jira ВСЕГДА должна отражать
+реальность. Каждый агент, который берёт, двигает или завершает работу, ОБЯЗАН:
+1. **Взял в работу** → задача в `.md` `in_progress` + `python3 tools/jira_board_sync.py`
+   (тикет уходит в «В работе»). Не работать «в тени», не отразив это в Jira.
+2. **Завершил** → `.md` `done` с резюме + sync (тикет → «Контроль качества»;
+   после QA-вердикта PASSED → «Готово»). Закрытая работа ОБЯЗАНА быть закрыта в Jira.
+3. **Передаёшь работу другому агенту (handoff)** → создай handoff-`.md`, и его
+   тикет в Jira создаётся синком автоматически с нужным эпиком/ролью; в исходном
+   тикете комментарием отметь, КОМУ и ЧТО передано (Jira-ключ handoff'а). Передача
+   основной задачи без отражения в Jira запрещена.
+4. **Заблокировал / переименовал / дублировал** → отрази статус и причину в Jira
+   (status/comment), не оставляй расхождений `.md`↔Jira.
+5. В КОНЦЕ ЛЮБОГО прогона со сменой статусов — `python3 tools/jira_board_sync.py`
+   (идемпотентен); если изменился `jira_sync_map.json` — закоммить.
+Правило: «не закрыл/не передал в Jira — работа не считается сделанной». Держи
+синхронизацию Jira с реальностью в голове на каждом шаге.
+
 Versioning:
 - `main` is the stable `0.1` line.
 - `dev` is the active working branch for the current `0.1.x` line.
 - All implementation tasks should be done on `dev` unless a task explicitly says otherwise.
 - Check the current branch before making changes; do not do ordinary feature work directly on `main`.
 
+Full autonomy (user directive, 2026-06-12):
+- ALL agents (Claude chats, board workers, QA, Codex threads) work autonomously:
+  do NOT ask the user questions, do NOT wait for user input or confirmation.
+- The user pre-approved all in-scope changes. If a requirement is ambiguous,
+  make the most reasonable product decision yourself, implement it, and record
+  the decision + rationale in the task file report.
+- If something truly cannot proceed (missing asset, broken dependency,
+  conflicting requirement), do not stall: mark the task `blocked` with a precise
+  reason on the board, create a handoff if another role can unblock it, and move
+  to the next task. PM reviews blocked items.
+- Questions for the user are allowed ONLY for destructive/irreversible actions
+  outside the repo (deleting user files, external accounts, payments) — these
+  are out of scope for executors anyway.
+
 Feature block:
-- As of 2026-06-12, the project is in a feature block for the current `0.1.3`
-  stabilization/release line.
-- Only bugs, QA defects, release blockers, and regression fixes may be routed into
-  the current sprint/release.
-- Any new request or change that is not a bug must be created as backlog work for
-  version `0.1.4`; task files should include `Версия: 0.1.4`; do not start it,
-  dispatch it, or add it to the current sprint.
-- If a request is ambiguous, classify it conservatively as backlog `0.1.4` unless
-  it clearly fixes a broken existing requirement.
+- ACTIVE from 2026-06-13 (user directive): стабилизация релиза `0.1.4`.
+- **КРИТИЧНО (исправление 2026-06-13): задачи с `Версия: 0.1.5` НЕ затягивать в
+  0.1.4 и НЕ менять им версию/статус.** Прежняя формулировка «всю board доделать
+  в 0.1.4» была неверно истолкована воркерами — они флипнули патч-задачи 0.1.5 в
+  0.1.4/in_progress. ЭТО ЗАПРЕЩЕНО. Версия в task-файле — закон: `0.1.5` = бэклог,
+  не трогать до снятия фриза.
+- В спринт 0.1.4 берём ТОЛЬКО: задачи без строки `Версия:` или с `Версия: 0.1.4`,
+  которые уже на board и не помечены 0.1.5; баги/QA-дефекты/регрессии/blockers.
+- Любой НОВЫЙ запрос (фича/улучшение/арт/контент) оформляется со строкой
+  `Версия: 0.1.5` → sync уводит в бэклог (Jira fixVersion 0.1.5, вне спринта).
+  НЕ dispatch, НЕ in_progress без явного решения PM.
+- Codex Documentation dispatcher может создавать новые backlog task-файлы/Jira
+  issues только для таких будущих задач: обязательно `Статус: new`, `Версия:
+  0.1.5`, правильная роль, строка на board/backlog, sync в Jira без добавления в
+  активный sprint. Для активного `0.1.4` dispatcher по-прежнему не создаёт новые
+  source tasks, кроме явно обозначенных bugs/QA defects/release blockers.
+- Спорное по умолчанию = backlog `0.1.5`.
+- Фриз СНИМАЕТСЯ сразу после релиза 0.1.4: новый спринт 0.1.5 заберёт бэклог.
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.
