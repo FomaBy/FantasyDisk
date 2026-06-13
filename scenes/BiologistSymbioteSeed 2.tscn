@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/homunculus_vial.png" id="2_weapon_texture"]
+
+[node name="BiologistSymbioteSeed" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_class_weapon")
+weapon_id = "biologist_symbiote_seed"
+display_name = "Семя Симбионта"
+attack_mode = "bio_symbiote_web"
+damage_parameter = "magic_damage"
+fire_interval = 1.24
+damage = 12.0
+attack_range = 580.0
+aoe_radius = 260.0
+projectile_count = 4
+beam_width = 34.0
+damage_falloff = 0.58
+heal_percent_of_damage = 0.03
+visual_color = Color(0.36, 0.92, 0.58, 0.42)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 9
+texture = ExtResource("2_weapon_texture")
+position = Vector2(38, -16)
+rotation = -0.22
+scale = Vector2(0.34, 0.34)

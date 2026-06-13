@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/robot_magnetic_anchor.png" id="2_weapon_texture"]
+
+[node name="RobotMagneticAnchor" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_class_weapon")
+weapon_id = "robot_magnetic_anchor"
+display_name = "Магнитный Якорь"
+attack_mode = "robot_magnetic_anchor"
+damage_parameter = "damage"
+fire_interval = 1.14
+damage = 12.0
+attack_range = 520.0
+aoe_radius = 230.0
+beam_width = 44.0
+knockback = 150.0
+grenade_delay = 0.22
+damage_falloff = 0.68
+visual_color = Color(0.42, 0.82, 1, 0.42)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 9
+texture = ExtResource("2_weapon_texture")
+position = Vector2(38, -18)
+rotation = -0.18
+scale = Vector2(0.32, 0.32)

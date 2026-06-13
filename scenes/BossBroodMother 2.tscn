@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/boss.gd" id="1_boss_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/boss_disk_devourer.png" id="2_boss_texture"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyProjectile.tscn" id="3_enemy_projectile"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyBiter.tscn" id="4_summon_enemy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boss"]
+radius = 72.0
+
+[node name="BossBroodMother" type="CharacterBody2D" groups=["enemies", "bosses"]]
+script = ExtResource("1_boss_script")
+enemy_type_name = "Brood Mother"
+boss_behavior = "brood_mother"
+boss_display_name = "Матерь Роя"
+max_health = 300.0
+move_speed = 72.0
+projectile_scene = ExtResource("3_enemy_projectile")
+boss_summon_scene = ExtResource("4_summon_enemy")
+projectile_damage = 3.0
+contact_damage = 2.7
+contact_range = 72.0
+boss_summon_interval = 5.2
+rift_zone_interval = 4.8
+dash_interval = 6.2
+dash_speed = 360.0
+dash_duration = 0.5
+zone_wave_interval = 10.0
+shield_interval = 999.0
+dodge_chance = 0.08
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_boss_texture")
+scale = Vector2(0.50, 0.50)
+modulate = Color(0.82, 1.0, 0.80, 1.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_boss")
