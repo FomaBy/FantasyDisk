@@ -5,6 +5,7 @@ const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
 const EventData := preload("res://scripts/event_data.gd")
 const Glossary := preload("res://scripts/glossary.gd")
 
@@ -279,7 +280,7 @@ func _initialize() -> void:
 	var dossier_text := main.find_child("HeroSelectDossier", true, false) as Control
 	var dossier_desc := main.find_child("HeroSelectInfoDescription", true, false) as Label
 	if radar_panel == null or dossier_text == null or dossier_desc == null:
-		push_error("Expected hero select to place dossier text and radar in one right-side info panel.")
+		push_error("Expected hero select to place dossier text left of a floating top-right radar.")
 		quit(1)
 		return
 	var radar_panel_rect := radar_panel.get_global_rect()
@@ -289,8 +290,8 @@ func _initialize() -> void:
 		push_error("Expected hero description/dossier to stay left of radar with a clear gap.")
 		quit(1)
 		return
-	if radar_panel.get_parent() == dossier_text:
-		push_error("Expected hero radar to be a sibling of the dossier text, not nested inside it.")
+	if radar_panel.get_parent() != hero_screen or radar_panel.anchor_right < 0.99:
+		push_error("Expected hero radar to be a floating top-right widget outside the dossier frame.")
 		quit(1)
 		return
 	if main.find_child("HeroSelectPortraitName", true, false) != null:
@@ -1108,6 +1109,7 @@ func _initialize() -> void:
 	_test_stat_artifact_recording()
 	_test_berserk_weapon_configs()
 	_test_class_weapon_configs()
+	_test_class_weapon_mode_registry()
 	_test_all_weapon_variants_equip()
 	await _test_weapon_effect_cleanup()
 	await _test_victory_flow(main)
@@ -2291,6 +2293,25 @@ func _test_class_weapon_configs() -> void:
 				quit(1)
 				return
 			player.queue_free()
+
+
+func _test_class_weapon_mode_registry() -> void:
+	var missing_modes := PackedStringArray()
+	for character_id in ProgressionData.WEAPONS_BY_CLASS.keys():
+		if str(character_id) == "berserk":
+			continue
+		var weapons: Dictionary = ProgressionData.WEAPONS_BY_CLASS.get(character_id, {})
+		for weapon_id in weapons.keys():
+			var config: Dictionary = weapons.get(weapon_id, {})
+			if not config.has("attack_mode"):
+				continue
+			var attack_mode := str(config.get("attack_mode", ""))
+			if attack_mode.is_empty() or not ClassWeaponScript.has_attack_mode_executor(attack_mode):
+				missing_modes.append("%s/%s:%s" % [str(character_id), str(weapon_id), attack_mode])
+	if not missing_modes.is_empty():
+		push_error("Expected every non-Berserk class weapon attack_mode to have a ClassWeapon executor: %s" % ", ".join(missing_modes))
+		quit(1)
+		return
 
 
 func _test_all_weapon_variants_equip() -> void:
@@ -4285,6 +4306,17 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	if absf(float(level3["enemy_hp_mult"]) - 1.15) > 0.001 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.20) > 0.001:
 		_fail("Expected level 3 to cumulatively include levels 1+2+3 modifiers.")
 		return
+	var level0_change := ProgressionData.ascension_level_change_line(0)
+	if not level0_change.to_lower().contains("без усложнений"):
+		_fail("Expected ascension level 0 delta text to say no complications, got: %s" % level0_change)
+		return
+	var level3_change := ProgressionData.ascension_level_change_line(3)
+	if not level3_change.contains("Уровень 3") or not level3_change.contains("Быстрая орда"):
+		_fail("Expected ascension level 3 delta text to describe only level 3, got: %s" % level3_change)
+		return
+	if level3_change.contains("Закалённые враги") or level3_change.contains("Жадные торговцы"):
+		_fail("Expected ascension level 3 delta text not to include lower-level changes, got: %s" % level3_change)
+		return
 	# L4+ модификаторы НЕ активны на уровне 3.
 	if float(level3["elite_instant_phase"]) > 0.0 or absf(float(level3["healing_mult"]) - 1.0) > 0.001:
 		_fail("Expected level 3 to exclude level 4+ modifiers.")
@@ -4330,6 +4362,39 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	if price_l2 <= price_l0:
 		_fail("Expected ascension 2 (greedy merchants) to raise attribute prices.")
 		return
+
+	# UI у кнопки старта показывает дельту выбранного уровня, а не кумулятивный список.
+	var delta_main := main_scene.instantiate()
+	root.add_child(delta_main)
+	await process_frame
+	var delta_meta := MetaProgression.default_state()
+	for unlock_level in range(3):
+		delta_meta = MetaProgression.record_boss_victory(delta_meta, "berserk", unlock_level)
+	delta_main.set("meta_state", delta_meta)
+	delta_main.set("selected_character_id", "berserk")
+	delta_main.set("selected_ascension_level", 3)
+	delta_main.call("_show_character_select")
+	await process_frame
+	await process_frame
+	var asc_mods_label := delta_main.find_child("AscensionModsLabel", true, false) as Label
+	if asc_mods_label == null:
+		_fail("Expected AscensionModsLabel on hero select.")
+		return
+	if not asc_mods_label.text.contains("Уровень 3") or not asc_mods_label.text.contains("Быстрая орда"):
+		_fail("Expected hero select ascension label to show selected level delta, got: %s" % asc_mods_label.text)
+		return
+	if asc_mods_label.text.contains("Закалённые враги") or asc_mods_label.text.contains("Жадные торговцы"):
+		_fail("Expected hero select ascension label not to show cumulative lower-level changes, got: %s" % asc_mods_label.text)
+		return
+	delta_main.set("selected_ascension_level", 0)
+	delta_main.call("_show_character_select")
+	await process_frame
+	asc_mods_label = delta_main.find_child("AscensionModsLabel", true, false) as Label
+	if asc_mods_label == null or not asc_mods_label.text.to_lower().contains("без усложнений"):
+		_fail("Expected hero select ascension level 0 label to say no complications.")
+		return
+	delta_main.queue_free()
+	await process_frame
 
 	# Уровень 10 урезает макс HP. Берсерк разблокирован до 10, сравниваем L0 vs L10
 	# при ОДНОМ мета-сейве — наградные баффы одинаковы, разница = чистый difficulty -20%.
@@ -4975,45 +5040,67 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var radar := hero_main.find_child("HeroStatRadar", true, false) as Control
 	var radar_panel := hero_main.find_child("HeroSelectRadarPanel", true, false) as Control
 	var header := hero_main.find_child("HeroSelectHeader", true, false) as Control
+	var portrait_panel := hero_main.find_child("HeroSelectPortraitPanel", true, false) as Control
 	var dossier_panel := hero_main.find_child("HeroSelectDossierPanel", true, false) as Control
 	var dossier := hero_main.find_child("HeroSelectDossier", true, false) as Control
 	var dossier_title := hero_main.find_child("HeroSelectInfoTitle", true, false) as Control
 	var dossier_desc := hero_main.find_child("HeroSelectInfoDescription", true, false) as Control
+	var asc_mods := hero_main.find_child("AscensionModsLabel", true, false) as Control
 	var choose_button := hero_main.find_child("HeroSelectChooseButton", true, false) as Control
-	if hero_screen == null or radar == null or radar_panel == null or header == null or dossier_panel == null or dossier == null or dossier_desc == null:
+	var thumbnail_strip := hero_main.find_child("HeroThumbnailStrip", true, false) as Control
+	if hero_screen == null or radar == null or radar_panel == null or header == null or portrait_panel == null or dossier_panel == null or dossier == null or dossier_desc == null or thumbnail_strip == null:
 		_fail("Expected hero select radar/header/dossier nodes at %s." % context)
 		return
 	var screen_rect := hero_screen.get_global_rect()
 	var radar_rect := radar.get_global_rect()
 	var radar_panel_rect := radar_panel.get_global_rect()
 	var header_rect := header.get_global_rect()
+	var portrait_rect := portrait_panel.get_global_rect()
 	var dossier_rect := dossier.get_global_rect()
 	var dossier_panel_rect := dossier_panel.get_global_rect()
 	var dossier_desc_rect := dossier_desc.get_global_rect()
+	var thumbnail_rect := thumbnail_strip.get_global_rect()
 	dump_lines.append("## %s" % context)
 	dump_lines.append("- `HeroSelectScreen`: `%s`" % str(screen_rect))
 	dump_lines.append("- `HeroSelectHeader`: `%s`" % str(header_rect))
+	dump_lines.append("- `HeroSelectPortraitPanel`: `%s`" % str(portrait_rect))
 	dump_lines.append("- `HeroSelectDossierPanel`: `%s`" % str(dossier_panel_rect))
 	dump_lines.append("- `HeroSelectDossier`: `%s`" % str(dossier_rect))
 	dump_lines.append("- `HeroSelectInfoDescription`: `%s`" % str(dossier_desc_rect))
+	if asc_mods != null:
+		dump_lines.append("- `AscensionModsLabel`: `%s`" % str(asc_mods.get_global_rect()))
 	dump_lines.append("- `HeroSelectRadarPanel`: `%s`" % str(radar_panel_rect))
 	dump_lines.append("- `HeroStatRadar`: `%s`" % str(radar_rect))
+	dump_lines.append("- `HeroThumbnailStrip`: `%s`" % str(thumbnail_rect))
 	var min_gap := 12.0
 	if dossier_rect.end.x > radar_panel_rect.position.x - min_gap or dossier_desc_rect.end.x > radar_panel_rect.position.x - min_gap:
 		_fail("Expected hero description/dossier to stay left of radar with >= %.0fpx gap at %s, got dossier %s desc %s radar panel %s." % [min_gap, context, dossier_rect, dossier_desc_rect, radar_panel_rect])
 		return
+	if radar_panel.get_parent() != hero_screen or radar_panel.anchor_right < 0.99 or radar_panel.anchor_left < 0.99:
+		_fail("Expected hero radar panel to be a floating top-right widget parented to HeroSelectScreen at %s." % context)
+		return
+	if radar_panel_rect.end.x > screen_rect.end.x - 18.0 or radar_panel_rect.position.x < screen_rect.end.x - 500.0:
+		_fail("Expected hero radar panel to sit near the top-right screen edge at %s, got %s in %s." % [context, radar_panel_rect, screen_rect])
+		return
+	if radar_panel_rect.position.y < header_rect.end.y + 8.0:
+		_fail("Expected hero radar panel to stay below the header with a clear gap at %s." % context)
+		return
 	if _rect_with_tolerance(radar_rect, 4.0).intersects(_rect_with_tolerance(header_rect, 4.0)):
 		_fail("Expected hero radar not to overlap header at %s." % context)
 		return
-	if radar_panel_rect.position.x < dossier_panel_rect.position.x + 18.0 or radar_panel_rect.end.x > dossier_panel_rect.end.x - 18.0:
-		_fail("Expected hero radar panel to stay inside right dossier frame at %s." % context)
+	if radar_panel_rect.position.x < dossier_panel_rect.end.x + min_gap:
+		_fail("Expected hero radar panel to float outside the dossier frame at %s, got dossier panel %s radar %s." % [context, dossier_panel_rect, radar_panel_rect])
 		return
-	if radar_panel.get_parent() == dossier:
-		_fail("Expected hero radar panel to be a sibling to dossier text, not nested inside it at %s." % context)
+	if radar_panel.is_ancestor_of(dossier_panel) or dossier_panel.is_ancestor_of(radar_panel):
+		_fail("Expected hero radar and dossier frame to be separate branches at %s." % context)
 		return
-	for control in [dossier_title, dossier_desc, choose_button]:
+	for control in [dossier_title, dossier_desc, asc_mods, choose_button]:
 		if control != null and _rect_with_tolerance(radar_panel_rect, 4.0).intersects(_rect_with_tolerance((control as Control).get_global_rect(), 4.0)):
 			_fail("Expected hero radar not to overlap dossier content %s at %s." % [(control as Control).name, context])
+			return
+	for peer in [portrait_panel, thumbnail_strip]:
+		if peer != null and _rect_with_tolerance(radar_panel_rect, 4.0).intersects(_rect_with_tolerance((peer as Control).get_global_rect(), 4.0)):
+			_fail("Expected hero radar not to overlap peer control %s at %s." % [(peer as Control).name, context])
 			return
 
 	viewport.queue_free()

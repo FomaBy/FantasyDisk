@@ -13,7 +13,7 @@
 Тип: bug_*.md -> Баг, остальные -> Задача. Лейблы: роль + fantasydisk (+blocked).
 
 Креды: macOS Keychain, сервис `fantasydisk-jira` (security find-generic-password).
-Запуск: python3 tools/jira_board_sync.py [--dry-run]
+Запуск: python3 tools/jira_board_sync.py [--dry-run] [--no-create]
 """
 import base64
 import glob
@@ -152,7 +152,9 @@ def parse_task(path: str) -> dict:
     else:
         # русские исторические статусы
         status = "done" if raw_status.startswith(("выполн", "закрыт", "реализ", "fixed")) else "new"
-    qa_passed = bool(re.search(r"##\s*QA-Вердикт.*?\n.{0,80}?PASSED", text, re.S))
+    qa_m = re.search(r"^##\s*QA-Вердикт.*?(?=^##\s+|\Z)", text, re.S | re.M)
+    qa_block = qa_m.group(0) if qa_m else ""
+    qa_passed = bool(re.search(r"^Статус:\s*PASSED\b", qa_block, re.M | re.I))
     if status == "done" and qa_passed:
         status = "qa_passed"
     if name.startswith("bug_"):
@@ -188,6 +190,7 @@ def adf(text: str) -> dict:
 
 def main():
     dry = "--dry-run" in sys.argv
+    no_create = "--no-create" in sys.argv or os.getenv("JIRA_SYNC_NO_CREATE") == "1"
     mapping = json.load(open(MAP_PATH)) if os.path.exists(MAP_PATH) else {}
     created = moved = 0
     sprint_id, sprint_name = (None, "") if dry else active_sprint()
@@ -201,8 +204,9 @@ def main():
         entry = mapping.get(t["file"])
         labels = ["fantasydisk", t["role"], t["executor"]] + (["blocked"] if t["blocked"] else [])
         if entry is None:
-            if dry:
-                print(f"CREATE {t['file']} -> [{t['itype']}] {target_status}")
+            if dry or no_create:
+                action = "CREATE" if dry else "SKIP_CREATE"
+                print(f"{action} {t['file']} -> [{t['itype']}] {target_status}")
                 continue
             fields = {
                 "project": {"key": PROJECT},

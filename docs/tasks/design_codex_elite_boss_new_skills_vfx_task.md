@@ -1,17 +1,27 @@
 # Арт/VFX новых скилов элиток и боссов (ауры/лужи/яд/телепорт/щит) — патч 0.1.5
 
-Статус: new
+Статус: in_progress
 Приоритет: normal
 Роль: Design (Codex генерация) → Claude-Designer
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-261
 Эпик-патч: 0.1.5 Бой и баланс (SCRUM-232)
 
-## ФИЧА-ФРИЗ 0.1.4
-Бэклог `Версия: 0.1.5`. НЕ брать в работу и НЕ dispatch до релиза 0.1.4 и снятия
-фриза. Статус new, в активный спринт не попадает (sync уважает версию).
+## PM Override (2026-06-13)
+
+Пользователь уточнил: всю текущую board нужно доделать в версии `0.1.4`.
+Эта уже существующая board-задача поднята из backlog `0.1.5` в текущий релиз и
+отправлена Design владельцу. Новые задачи после этой директивы остаются backlog
+`0.1.5`, если PM явно не решит иначе.
+
+## Dispatcher Redispatch (2026-06-13)
+
+Отправлено в существующий Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`
+как 0.1.4 board-completion task. Keep reasoning High/no low. Scope Design/VFX
+only; mechanics/API integration depends on Back-end `SCRUM-259`, and motion/rig/
+animation timing must be handed to Animator.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -38,4 +48,3 @@ Jira: SCRUM-261
 ## Acceptance Criteria
 - [ ] VFX/телеграфы новых скилов в каноне, читаемы; превью.
 - [ ] Интегрированы в HazardVfx/пулы; content_registry/CHANGELOG; smoke зелёные.
-

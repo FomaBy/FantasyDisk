@@ -4,9 +4,15 @@
 
 ## [Unreleased] — ветка dev
 
+- Bugfix (SCRUM-230): в выборе героя текст Возвышения возле кнопки старта теперь показывает только изменение выбранного уровня (`Уровень N: ...`), а не весь кумулятивный список 1..N; полный список сохранен для tooltip/кодекса.
+
 - Content (SCRUM-192): `sprite_path` новых классов выровнен с canonical registry — Вор, Элементалист, Снайпер, Священник, Биолог и Инженер теперь используют собственные full-art PNG вместо proxy-спрайтов старых классов; добавлен focused registry alignment test на все 17 персонажей.
 
 - Tests (SCRUM-203): добавлен focused UI no-overlap matrix test для main/settings/codex/patch/hero/victory/death peer-controls на 1152x648, 1280x720, 1600x900 и 2560x1440; rect dump пишется в `build/qa/ui_no_overlap_matrix.md`.
+
+- Tests (SCRUM-202): umbrella `tests/runtime_smoke_test.gd` сохранен как главный smoke path, а регрессии разложены на focused suites: `runtime_smoke_ui_test.gd`, `runtime_smoke_combat_test.gd`, `runtime_smoke_progression_economy_test.gd`, `runtime_smoke_weapon_mechanics_test.gd`, `runtime_smoke_boss_elite_test.gd`.
+
+- Refactor (SCRUM-196): `ClassWeapon` переведен с длинного `attack_mode` dispatch-match на публичный registry executor-ов; focused weapon smoke и umbrella smoke проверяют, что каждый data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет зарегистрированный executor.
 
 - Performance (SCRUM-197): добавлен `CombatTargetQuery` с per-frame cache для enemy target lookups; hot-path запросы в ClassWeapon/BerserkWeapon/player ultimates/allies/summoner переведены на nearest/radius/corridor/segment helpers, добавлен focused cache test.
 
@@ -20,6 +26,8 @@
 
 - UI Theme (SCRUM-222): Back-end style layer remains path-compatible — buttons use real primary/secondary/danger 4-state Parchment & Wax Seal PNG (`idle/hover/pressed/disabled`), while `dark_fantasy` non-button frame paths now visually mirror the old interface after the SCRUM-147 correction.
 
+- Bugfix (SCRUM-231): на экране выбора героя роза характеристик снова вынесена из рамки досье в плавающий правый верхний виджет; досье/описание остаются слева от радара и no-overlap проверяется на 1280x720, 1600x900 и 2560x1440.
+
 - UI (SCRUM-224/SCRUM-225/SCRUM-226/SCRUM-227): экран выбора героя собран в единую правую информ-панель (досье слева от радара), выбор оружия показывает PNG-спрайт и русские статы в легких кликабельных карточках, level-up варианты стали text-field карточками без тяжелой reward-button рамки, а wax-seal кнопки подняты до читаемой высоты с компактным no-seal стилем для utility/dropdown controls. Runtime smoke пишет dumps `build/qa/hero_select_radar_rects.md`, `weapon_select_clean_layout.md` и `parchment_button_seal_sizes.md`.
 
 - Tests (SCRUM-228): стабилизирован `tests/melee_weapon_targeting_test.gd` — hammer AoE блок теперь ждет один frame после добавления enemies, чтобы тест не читал устаревший per-frame target cache; production `combat_target_query.gd` не менялся.
@@ -27,6 +35,8 @@
 - UI Art (SCRUM-223): игровой курсор заменен на выбранный пользователем dark steel dragon/clawed fire pointer — default/hover/attack PNG обновлены в `assets/sprites/ui/cursor/`, hotspot выверен на `(2, 2)`, preview `docs/design/previews/cursor_clawed_fire_before_after.png`.
 
 - UI Art (SCRUM-229): панели/окна/плашки/чекбоксы переведены с временного legacy вида на leather+gold dark fantasy kit из пользовательских референсов `docs/design/references/interface/`; добавлен пайплайн `tools/build_leather_gold_ui_kit.py`, source kit `assets/sprites/ui/frames/leather_gold/`, live replacements для `dark_fantasy/global/escape/shop/system` PNG и QA preview `docs/design/previews/interface_leather_gold_panel_kit_contact.png`.
+
+- Art (SCRUM-156): подготовлены 9 финальных painterly D&D source sprites для новых боссов и мини-элиток SCRUM-155 — `boss_bone_archon`, `boss_brood_mother`, `boss_ashen_colossus`, `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`; все PNG `512x512` RGBA transparent, preview `docs/design/previews/new_bosses_mini_elites_contact.png` и scale-лист `new_bosses_mini_elites_scale_preview.png`.
 
 - Баланс-аудит (SCRUM-188): добавлен route-level отчет `build/route_economy_xp_model.md` для balanced/combat-heavy/shop-heavy маршрутов; модель подтверждает 8-9 level-up и healthy/high покупательную способность, поэтому текущий XP uplift +7.1% оставлен без дополнительного повышения.
 

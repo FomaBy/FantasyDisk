@@ -359,20 +359,12 @@ func _show_character_select() -> void:
 	dossier_panel.add_theme_stylebox_override("panel", _panel_style())
 	content_row.add_child(dossier_panel)
 
-	var info_radar_row := HBoxContainer.new()
-	info_radar_row.name = "HeroSelectInfoRadarRow"
-	info_radar_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info_radar_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	info_radar_row.add_theme_constant_override("separation", 18)
-	dossier_panel.add_child(info_radar_row)
-
 	var dossier := VBoxContainer.new()
 	dossier.name = "HeroSelectDossier"
 	dossier.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dossier.size_flags_stretch_ratio = 0.58
 	dossier.add_theme_constant_override("separation", 7)
-	info_radar_row.add_child(dossier)
+	dossier_panel.add_child(dossier)
 
 	var dossier_title := Label.new()
 	dossier_title.name = "HeroSelectInfoTitle"
@@ -434,13 +426,23 @@ func _show_character_select() -> void:
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	dossier.add_child(select_button)
 
+	var radar_reserve := Control.new()
+	radar_reserve.name = "HeroSelectRadarReserve"
+	radar_reserve.custom_minimum_size = Vector2(408, 300)
+	radar_reserve.size_flags_horizontal = Control.SIZE_SHRINK_END
+	radar_reserve.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	radar_reserve.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content_row.add_child(radar_reserve)
+
 	var radar_panel := PanelContainer.new()
 	radar_panel.name = "HeroSelectRadarPanel"
-	radar_panel.custom_minimum_size = Vector2(390, 300)
-	radar_panel.size_flags_horizontal = Control.SIZE_SHRINK_END
-	radar_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	radar_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	radar_panel.offset_left = -414
+	radar_panel.offset_top = 98
+	radar_panel.offset_right = -24
+	radar_panel.offset_bottom = 398
 	radar_panel.add_theme_stylebox_override("panel", _character_card_style())
-	info_radar_row.add_child(radar_panel)
+	root.add_child(radar_panel)
 
 	var radar_box := VBoxContainer.new()
 	radar_box.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -487,8 +489,7 @@ func _show_character_select() -> void:
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(game.selected_character_id))
 		var lvl: int = game.selected_ascension_level
 		asc_label.text = "Возвышение: %d / %d" % [lvl, game.ascension_selectable_max(game.selected_character_id)]
-		var lines: Array = game.PROGRESSION_DATA.ascension_modifier_lines(lvl)
-		asc_mods.text = "Обычная сложность." if lines.is_empty() else "\n".join(lines)
+		asc_mods.text = game.PROGRESSION_DATA.ascension_level_change_line(lvl)
 
 	var select_character := func(character_id: String) -> void:
 		game.selected_character_id = character_id

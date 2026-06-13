@@ -5,6 +5,7 @@
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-176
 Jira: SCRUM-191
+QA: in_progress (2026-06-13)
 Эпик: epic_full_project_quality_pass
 
 ## Scope

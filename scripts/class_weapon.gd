@@ -7,6 +7,61 @@ const SPARK_POOL_TEXTURE := preload("res://assets/sprites/effects/spark_pool.png
 const BRIAR_POOL_TEXTURE := preload("res://assets/sprites/effects/briar_pool.png")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 
+const DEFAULT_ATTACK_MODE := "sound_wave"
+const PRIMARY_CAST_ACTION_MODES := {
+	"aoe_projectile": true,
+	"homing_curse": true,
+	"beam": true,
+	"drain_link": true,
+}
+const EVENT_CAST_ACTION_MODES := {
+	"aoe_projectile": true,
+	"homing_curse": true,
+	"beam": true,
+	"dot_beam": true,
+	"drain_link": true,
+	"priest_prayer_chain": true,
+	"bio_symbiote_web": true,
+	"engineer_repair_drone": true,
+}
+const ATTACK_MODE_EXECUTORS := {
+	"aoe_projectile": "_exec_aoe_projectile",
+	"boomerang": "_exec_boomerang",
+	"stab_flurry": "_exec_stab_flurry",
+	"dot_beam": "_exec_dot_beam",
+	"homing_curse": "_exec_homing_curse",
+	"beam": "_exec_beam",
+	"drain_link": "_exec_drain_link",
+	"sound_wave": "_exec_sound_wave",
+	"pulse": "_exec_pulse",
+	"amp": "_exec_amp",
+	"trap": "_exec_trap",
+	"suppression_burst": "_exec_suppression_burst",
+	"grenade_cook": "_exec_grenade_cook",
+	"bayonet_brace": "_exec_bayonet_brace",
+	"coin_ricochet": "_exec_coin_ricochet",
+	"shadow_backstab": "_exec_shadow_backstab",
+	"smoke_bomb": "_exec_smoke_bomb",
+	"elemental_orbit": "_exec_elemental_orbit",
+	"prism_rift": "_exec_prism_rift",
+	"meteor_shards": "_exec_meteor_shards",
+	"sniper_lockshot": "_exec_sniper_lockshot",
+	"sniper_kill_zone": "_exec_sniper_kill_zone",
+	"sniper_split_round": "_exec_sniper_split_round",
+	"priest_sanctify": "_exec_priest_sanctify",
+	"priest_ward": "_exec_priest_ward",
+	"priest_prayer_chain": "_exec_priest_prayer_chain",
+	"bio_spore_bloom": "_exec_bio_spore_bloom",
+	"bio_sample_dart": "_exec_bio_sample_dart",
+	"bio_symbiote_web": "_exec_bio_symbiote_web",
+	"robot_magnetic_anchor": "_exec_robot_magnetic_anchor",
+	"robot_compression_line": "_exec_robot_compression_line",
+	"robot_reactor_vent": "_exec_robot_reactor_vent",
+	"engineer_sentry_link": "_exec_engineer_sentry_link",
+	"engineer_repair_drone": "_exec_engineer_repair_drone",
+	"engineer_pressure_mines": "_exec_engineer_pressure_mines",
+}
+
 @export var weapon_id := "dark_book"
 @export var display_name := "Class Weapon"
 @export var attack_mode := "aoe_projectile"
@@ -61,6 +116,14 @@ var _current_charge_multiplier := 1.0
 var _deployed_amps: Array[Node] = []
 var _spawned_effects: Array[Node] = []
 var _effects_shutdown := false
+
+
+static func registered_attack_modes() -> Array:
+	return ATTACK_MODE_EXECUTORS.keys()
+
+
+static func has_attack_mode_executor(mode: String) -> bool:
+	return ATTACK_MODE_EXECUTORS.has(mode)
 
 
 func _ready() -> void:
@@ -163,89 +226,170 @@ func _attack() -> void:
 	_cooldown = fire_interval
 
 	if owner_node.has_method("play_action_animation"):
-		owner_node.play_action_animation("cast" if attack_mode in ["aoe_projectile", "homing_curse", "beam", "drain_link"] else "shoot", direction)
+		owner_node.play_action_animation(_primary_action_animation_for_mode(), direction)
 	_emit_weapon_animation_event(owner_node, "windup", _estimated_windup_duration(), direction)
 
 	if heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(heal_percent_on_attack)
 
 	_current_charge_multiplier = _charge_multiplier()
-	match attack_mode:
-		"aoe_projectile":
-			_fire_aoe_projectile(owner_node, target, direction)
-		"boomerang":
-			_fire_boomerang(owner_node, direction)
-		"stab_flurry":
-			_fire_stab_flurry(owner_node, direction)
-		"dot_beam":
-			_fire_dot_beam(owner_node, direction)
-		"homing_curse":
-			_fire_curse(owner_node, target, direction)
-		"beam":
-			_fire_beam(owner_node, direction)
-		"drain_link":
-			_fire_drain_link(owner_node, target, direction)
-		"sound_wave":
-			_fire_sound_wave(owner_node, direction)
-		"pulse":
-			_fire_pulse(owner_node, owner_node.global_position)
-		"amp":
-			_fire_amp(owner_node, direction)
-		"trap":
-			_fire_trap(owner_node, direction)
-		"suppression_burst":
-			_fire_suppression_burst(owner_node, direction)
-		"grenade_cook":
-			_fire_grenade_cook(owner_node, target, direction)
-		"bayonet_brace":
-			_fire_bayonet_brace(owner_node, direction)
-		"coin_ricochet":
-			_fire_coin_ricochet(owner_node, target, direction)
-		"shadow_backstab":
-			_fire_shadow_backstab(owner_node, target, direction)
-		"smoke_bomb":
-			_fire_smoke_bomb(owner_node, target, direction)
-		"elemental_orbit":
-			_fire_elemental_orbit(owner_node, direction)
-		"prism_rift":
-			_fire_prism_rift(owner_node, target, direction)
-		"meteor_shards":
-			_fire_meteor_shards(owner_node, target, direction)
-		"sniper_lockshot":
-			_fire_sniper_lockshot(owner_node, target, direction)
-		"sniper_kill_zone":
-			_fire_sniper_kill_zone(owner_node, target, direction)
-		"sniper_split_round":
-			_fire_sniper_split_round(owner_node, target, direction)
-		"priest_sanctify":
-			_fire_priest_sanctify(owner_node, target, direction)
-		"priest_ward":
-			_fire_priest_ward(owner_node)
-		"priest_prayer_chain":
-			_fire_priest_prayer_chain(owner_node, target, direction)
-		"bio_spore_bloom":
-			_fire_bio_spore_bloom(owner_node, target, direction)
-		"bio_sample_dart":
-			_fire_bio_sample_dart(owner_node, target, direction)
-		"bio_symbiote_web":
-			_fire_bio_symbiote_web(owner_node, target, direction)
-		"robot_magnetic_anchor":
-			_fire_robot_magnetic_anchor(owner_node, target, direction)
-		"robot_compression_line":
-			_fire_robot_compression_line(owner_node, target, direction)
-		"robot_reactor_vent":
-			_fire_robot_reactor_vent(owner_node, direction)
-		"engineer_sentry_link":
-			_fire_engineer_sentry_link(owner_node, direction)
-		"engineer_repair_drone":
-			_fire_engineer_repair_drone(owner_node, target, direction)
-		"engineer_pressure_mines":
-			_fire_engineer_pressure_mines(owner_node, direction)
-		_:
-			_fire_sound_wave(owner_node, direction)
+	_execute_attack_mode(owner_node, target, direction)
 	if charge_seconds > 0.0:
 		_charge_time = 0.0
 	_current_charge_multiplier = 1.0
+
+
+func _primary_action_animation_for_mode() -> String:
+	return "cast" if PRIMARY_CAST_ACTION_MODES.has(attack_mode) else "shoot"
+
+
+func _event_action_animation_for_mode() -> String:
+	return "cast" if EVENT_CAST_ACTION_MODES.has(attack_mode) else "shoot"
+
+
+func _execute_attack_mode(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var executor_name := str(ATTACK_MODE_EXECUTORS.get(attack_mode, ATTACK_MODE_EXECUTORS[DEFAULT_ATTACK_MODE]))
+	call(executor_name, owner_node, target, direction)
+
+
+func _exec_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_aoe_projectile(owner_node, target, direction)
+
+
+func _exec_boomerang(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_boomerang(owner_node, direction)
+
+
+func _exec_stab_flurry(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_stab_flurry(owner_node, direction)
+
+
+func _exec_dot_beam(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_dot_beam(owner_node, direction)
+
+
+func _exec_homing_curse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_curse(owner_node, target, direction)
+
+
+func _exec_beam(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_beam(owner_node, direction)
+
+
+func _exec_drain_link(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_drain_link(owner_node, target, direction)
+
+
+func _exec_sound_wave(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_sound_wave(owner_node, direction)
+
+
+func _exec_pulse(owner_node: Node2D, _target: Node2D, _direction: Vector2) -> void:
+	_fire_pulse(owner_node, owner_node.global_position)
+
+
+func _exec_amp(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_amp(owner_node, direction)
+
+
+func _exec_trap(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_trap(owner_node, direction)
+
+
+func _exec_suppression_burst(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_suppression_burst(owner_node, direction)
+
+
+func _exec_grenade_cook(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_grenade_cook(owner_node, target, direction)
+
+
+func _exec_bayonet_brace(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_bayonet_brace(owner_node, direction)
+
+
+func _exec_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_coin_ricochet(owner_node, target, direction)
+
+
+func _exec_shadow_backstab(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_shadow_backstab(owner_node, target, direction)
+
+
+func _exec_smoke_bomb(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_smoke_bomb(owner_node, target, direction)
+
+
+func _exec_elemental_orbit(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_elemental_orbit(owner_node, direction)
+
+
+func _exec_prism_rift(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_prism_rift(owner_node, target, direction)
+
+
+func _exec_meteor_shards(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_meteor_shards(owner_node, target, direction)
+
+
+func _exec_sniper_lockshot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_sniper_lockshot(owner_node, target, direction)
+
+
+func _exec_sniper_kill_zone(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_sniper_kill_zone(owner_node, target, direction)
+
+
+func _exec_sniper_split_round(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_sniper_split_round(owner_node, target, direction)
+
+
+func _exec_priest_sanctify(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_priest_sanctify(owner_node, target, direction)
+
+
+func _exec_priest_ward(owner_node: Node2D, _target: Node2D, _direction: Vector2) -> void:
+	_fire_priest_ward(owner_node)
+
+
+func _exec_priest_prayer_chain(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_priest_prayer_chain(owner_node, target, direction)
+
+
+func _exec_bio_spore_bloom(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_bio_spore_bloom(owner_node, target, direction)
+
+
+func _exec_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_bio_sample_dart(owner_node, target, direction)
+
+
+func _exec_bio_symbiote_web(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_bio_symbiote_web(owner_node, target, direction)
+
+
+func _exec_robot_magnetic_anchor(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_robot_magnetic_anchor(owner_node, target, direction)
+
+
+func _exec_robot_compression_line(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_robot_compression_line(owner_node, target, direction)
+
+
+func _exec_robot_reactor_vent(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_robot_reactor_vent(owner_node, direction)
+
+
+func _exec_engineer_sentry_link(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_engineer_sentry_link(owner_node, direction)
+
+
+func _exec_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_engineer_repair_drone(owner_node, target, direction)
+
+
+func _exec_engineer_pressure_mines(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_engineer_pressure_mines(owner_node, direction)
 
 
 func _fire_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -1858,7 +2002,7 @@ func _emit_weapon_animation_event(owner_node: Node2D, phase: String, duration: f
 	payload["weapon_id"] = weapon_id
 	payload["display_name"] = display_name
 	payload["phase_source"] = "class_weapon"
-	var action_id := "cast" if attack_mode in ["aoe_projectile", "homing_curse", "beam", "dot_beam", "drain_link", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone"] else "shoot"
+	var action_id := _event_action_animation_for_mode()
 	owner_node.call("play_action_animation", action_id, direction, phase, maxf(duration, 0.0), payload)
 
 

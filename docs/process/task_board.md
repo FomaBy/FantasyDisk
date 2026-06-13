@@ -1,7 +1,7 @@
 # Task Board — FantasyDisk (живой дашборд)
 
 Обновлено: 2026-06-13
-Ведёт: PM. Доска показывает ТОЛЬКО активную работу. Завершённые задачи (≈206) не
+Ведёт: PM. Доска показывает ТОЛЬКО активную работу. Завершённые задачи (≈222) не
 дублируются здесь — они в Jira (эпики SCRUM-212..221, статус «Готово») и git-истории.
 Статусы: `new` | `in_progress` | `review` | `blocked` | `done`. Источник истины по деталям —
 файлы `docs/tasks/*.md`; управление и отчётность — Jira.
@@ -19,16 +19,17 @@ board-задачи раздаются/дожимаются до QA/release в т
 | Эпик | Готово | КК | В работе | Кв | Всего |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | SCRUM-212 Персонажи и классы | 22 | 0 | 0 | 0 | 22 |
-| SCRUM-213 Бой, враги, боссы, события | 33 | 1 | 1 | 0 | 35 |
-| SCRUM-214 Баланс и экономика | 15 | 3 | 0 | 0 | 18 |
+| SCRUM-213 Бой, враги, боссы, события | 35 | 0 | 0 | 0 | 35 |
+| SCRUM-214 Баланс и экономика | 16 | 2 | 0 | 0 | 18 |
 | SCRUM-215 Интерфейс, экраны, локализация | 22 | 0 | 0 | 0 | 22 |
 | SCRUM-216 Арт и спрайты | 35 | 3 | 0 | 0 | 38 |
 | SCRUM-217 Анимация и риги | 30 | 0 | 1 | 0 | 31 |
 | SCRUM-218 Звук и музыка | 5 | 0 | 0 | 0 | 5 |
 | SCRUM-219 Мета-прогрессия | 6 | 0 | 0 | 0 | 6 |
-| SCRUM-220 Качество кода, тесты, аудиты | 33 | 2 | 4 | 0 | 39 |
+| SCRUM-220 Качество кода, тесты, аудиты | 33 | 2 | 5 | 0 | 40 |
 | SCRUM-221 Релиз и процессы | 5 | 0 | 0 | 0 | 5 |
-| **ИТОГО** | **206** | **9** | **6** | **0** | **221** |
+| SCRUM-232 Board completion: бой и баланс | 13 | 0 | 15 | 0 | 28 |
+| **ИТОГО** | **222** | **7** | **21** | **0** | **250** |
 
 (КК = Контроль качества, ждёт QA; Кв = К выполнению, ждёт взятия)
 
@@ -37,7 +38,7 @@ board-задачи раздаются/дожимаются до QA/release в т
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [bug_hero_select_radar_out_of_frame_description_left_task.md](../tasks/bug_hero_select_radar_out_of_frame_description_left_task.md) | Back-end (UI) | done | Jira: SCRUM-231. **QA: passed** (f8f1409a) — радар = плавающий top-right виджет ВНЕ рамки досье (зазор 34px, тест ассертит parent=screen+anchor_right≥0.99), описание слева, no-overlap; визуал `build/qa/scrum231/hero_select_radar_fixed.png`. **Устраняет регрессию SCRUM-224** |
-| [backend_ascension_per_level_changes_near_start_task.md](../tasks/backend_ascension_per_level_changes_near_start_task.md) | Back-end (UI) | done | Jira: SCRUM-230. Реализована дельта выбранного уровня у кнопки старта, кумулятивный список сохранен для HUD tooltip/codex; 6 smoke passed 2026-06-13 |
+| [backend_ascension_per_level_changes_near_start_task.md](../tasks/backend_ascension_per_level_changes_near_start_task.md) | Back-end (UI) | done | Jira: SCRUM-230. **QA: passed** (6b56d592) — `ascension_level_change_line`: L3=только ур.3 (не 1-2), L0=«без усложнений», кумулятив сохранён для тултипа; тест ассертит «есть N, нет 1..N-1»; UI/no-overlap/регрессия зелёные; CHANGELOG+doc |
 | [design_codex_interface_leather_gold_panels_restyle_task.md](../tasks/design_codex_interface_leather_gold_panels_restyle_task.md) | Design → Back-end | done | Jira: SCRUM-229. **QA: passed** (35b79e06) — 5 рамок RGBA8, прозрачные углы (без checkerboard), целевые UI + 4×smoke зелёные, визуал в `build/qa/scrum229/` (выбор героя/настройки/меню): leather+gold панели + золотой чекбокс + кнопки-пергамент согласованы, перекрытий нет. Физ.удаление legacy → safe-cleanup flow |
 | [backend_parchment_button_seal_visible_height_task.md](../tasks/backend_parchment_button_seal_visible_height_task.md) | Back-end (UI) | done | Jira: SCRUM-227. **QA: passed** (35b79e06) — печать-кнопки 68-76px (≥64), тест `_test_parchment_button_seal_sizes` мерит 4 экрана + ассертит компактные no-seal, 4×smoke+no-overlap зелёные, визуал `build/qa/scrum227/` (меню печать не сжата, level-up чистый) |
 | [backend_levelup_cards_text_field_style_task.md](../tasks/backend_levelup_cards_text_field_style_task.md) | Back-end (UI) | done | Jira: SCRUM-226. **QA: passed** (35b79e06) — карточки = text-field (мета+StyleBoxFlat, не button-тема), клик применяет усиление, «Позже»/Escape defer, тест мерит 3 карточки/иконку/описание, 4×smoke+no-overlap зелёные, визуал `build/qa/scrum227/level_up.png` |
@@ -78,13 +79,16 @@ PM override 2026-06-13: текущая board должна быть додела�
 | [backend_melee_classes_strengthen_unique_attacks_task.md](../tasks/backend_melee_classes_strengthen_unique_attacks_task.md) | Back-end | in_progress | Jira: SCRUM-251. Усиление милишников + уникальные ближние атаки; animation scope -> Animator handoff |
 | [backend_summoner_classes_strengthen_task.md](../tasks/backend_summoner_classes_strengthen_task.md) | Back-end | in_progress | Jira: SCRUM-254. Усиление призывателей; art/animation scope -> Design/Animator handoff |
 | [backend_auras_buffs_debuffs_system_task.md](../tasks/backend_auras_buffs_debuffs_system_task.md) | Back-end | in_progress | Jira: SCRUM-245. Система аур/баффов/дебаффов; VFX/animation scope -> Design/Animator handoff |
+| [backend_elites_bosses_unique_skills_mechanics_task.md](../tasks/backend_elites_bosses_unique_skills_mechanics_task.md) | Back-end | in_progress | Jira: SCRUM-259. Уникальные паттерны/скилы всех элиток и боссов; VFX -> Design, motion/timing -> Animator handoff |
+| [backend_monster_elite_size_balance_rework_task.md](../tasks/backend_monster_elite_size_balance_rework_task.md) | Back-end | in_progress | Jira: SCRUM-260. Баланс монстров и размеры мини-элит/элит/боссов; visual clarity -> Design, motion side effects -> Animator |
 | [backend_aim_modes_cursor_and_nearest_task.md](../tasks/backend_aim_modes_cursor_and_nearest_task.md) | Back-end | in_progress | Jira: SCRUM-241. Опции: прицел по курсору / на ближайшего; dispatch Back-end High/no-low |
 | [backend_remove_auto_movement_on_crit_dodge_task.md](../tasks/backend_remove_auto_movement_on_crit_dodge_task.md) | Back-end | in_progress | Jira: SCRUM-253. Убрать авто-перемещение по криту/уклонению; motion side effects -> Animator handoff |
 | [animation_unique_attacks_all_classes_015_task.md](../tasks/animation_unique_attacks_all_classes_015_task.md) | Animator | in_progress | Jira: SCRUM-239. Анимации уникальных атак; dispatch Animator `019eb156-710c-71f0-8903-eada762dceb3`, High/no-low |
 | [design_codex_unique_weapons_vfx_all_classes_015_task.md](../tasks/design_codex_unique_weapons_vfx_all_classes_015_task.md) | Design(Codex) | in_progress | Jira: SCRUM-258. Арт/VFX уникального оружия и атак; dispatch Design `019eabf1-6d54-7561-8af9-ce25cdf483a9`, High/no-low |
+| [design_codex_elite_boss_new_skills_vfx_task.md](../tasks/design_codex_elite_boss_new_skills_vfx_task.md) | Design(Codex) | in_progress | Jira: SCRUM-261. Арт/VFX новых скилов элиток/боссов; depends on SCRUM-259; motion/timing -> Animator |
 
 ## Архив
 
-≈206 завершённых задач не показываются на доске. Полный список и история —
+≈222 завершённых задач не показываются на доске. Полный список и история —
 в Jira (фильтр по эпику, статус «Готово») и в `docs/tasks/*.md` (Статус: done +
 блок «## QA-Вердикт»). Прежняя длинная доска — в git-истории до 2026-06-13.
