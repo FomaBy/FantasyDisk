@@ -334,3 +334,10 @@ Handoff Back-end (`backend_ui_dark_fantasy_theme_integration_task.md`): вайр
   `Expected exactly two attribute offers in the post-battle window.`
   The UI correction did not change reward-offer logic; leave this for Back-end/QA
   follow-up if it remains reproducible in their lane.
+
+## ChatGPT-арт от пользователя (2026-06-13)
+Пользователь сгенерил 5 PNG пергаментного кита в ChatGPT — лежат в
+`docs/design/ui_parchment_kit/source_chatgpt/` (PM перенёс из ошибочной
+`assets/sprites/ui/shop/NewImport/`). Designer: отобрать лучшие, нарезать
+9-slice, привести имена к канону, проверить alpha, интегрировать в
+`assets/sprites/ui/frames/`. НЕ коммитить сырьё в live-ассеты.
