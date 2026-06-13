@@ -934,5 +934,13 @@
  "backend_final_balance_audit_aoe_crowd_clear_task.md": {
   "key": "SCRUM-262",
   "status": "К выполнению"
+ },
+ "backend_button_stretch_discipline_text_frame_task.md": {
+  "key": "SCRUM-263",
+  "status": "К выполнению"
+ },
+ "backend_unify_button_size_main_menu_standard_task.md": {
+  "key": "SCRUM-264",
+  "status": "К выполнению"
  }
 }
