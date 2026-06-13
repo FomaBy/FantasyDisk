@@ -74,12 +74,10 @@ content_registry). К каждому запуску генерации ОБЯЗ�
 5. Правила исполнения едины: ветка dev, smoke-тесты, обновление документации,
    CHANGELOG (Unreleased), handoff при чужой работе.
 6. Codex Documentation dispatcher может создавать новые `.md` task-файлы и Jira
-   issues только как backlog `0.1.5`: `Статус: new`, строка `Версия: 0.1.5`,
-   правильная роль, board/backlog-строка и Jira fixVersion `0.1.5` без active
-   sprint assignment. Такие задачи не dispatch'ятся и не переводятся в
-   `in_progress` до релиза `v0.1.4` или явного PM override. Для активного
-   `0.1.4` dispatcher не создает новые source tasks, кроме явно обозначенных
-   bugs/QA defects/release blockers.
+   issues для активного sprint `0.1.5`, если запрос пользователя/PM относится к
+   текущему патчу «Бой и баланс», либо как bug/QA defect/regression/release
+   blocker. Задачи будущего релиза после следующего freeze получают следующую
+   `Версия:` и остаются вне active sprint до PM override.
 7. Каждая задача должна быть синхронизирована с Jira `SCRUM` по
    `docs/process/jira_sync.md`: issue в активном спринте, `Jira: SCRUM-*` в
    task-файле, Jira key/ссылка в `task_board.md`, status/comment updates при
@@ -93,18 +91,13 @@ content_registry). К каждому запуску генерации ОБЯЗ�
    не отправлять исполнителям; оставить один source of truth, остальные пометить
    `duplicate`/`superseded` с ссылкой на основной task/Jira.
 
-## Feature Block Routing (АКТИВЕН: стабилизация 0.1.4)
+## Feature Block Routing (СНЯТ: активен sprint 0.1.5)
 
-Feature freeze включён пользователем 2026-06-13 для стабилизации `0.1.4`.
-Критичная PM-коррекция 2026-06-13: задачи с `Версия: 0.1.5` не затягивать в
-`0.1.4`, не dispatch'ить и не переводить в `in_progress` до релиза `v0.1.4`
-или явного PM override. В текущий sprint идут только уже активные задачи
-`0.1.4`/без версии, баги, QA-дефекты, регрессии, release blockers и уже
-записанные executor results, которые нужно синхронизировать. Спорное, чего ещё
-нет на active board, по умолчанию считать фичей `0.1.5`; dispatcher может
-оформить его как backlog-задачу `0.1.5` и Jira issue вне active sprint. Фриз
-снимается сразу после релиза `v0.1.4`; новый sprint `0.1.5` забирает накопленный
-backlog.
+Feature freeze `0.1.4` снят 2026-06-13 после релиза `v0.1.4`. Активен
+`Спринт 0.1.5` (id 67), patch scope — «Бой и баланс». Задачи с
+`Версия: 0.1.5` теперь можно dispatch'ить и переводить в `in_progress` обычным
+порядком, если у них нет явного blocker/dependency. Задачи, помеченные
+`blocked`, остаются закрытыми до выполнения указанной предпосылки.
 
 ## Как Доставить Задачу Исполнителю
 
@@ -118,8 +111,9 @@ backlog.
   (запускать из каталога проекта). В ТЗ для Codex всегда писать: «коммит НЕ делать
   (sandbox), статус review + резюме в файле задачи».
 - **QA-контур Claude**: через task board/автоматический QA process. Новые QA
-  defects/release blockers оформляются по Jira sync rules; новые QA/backlog
-  запросы вне текущего release scope — только как `Версия: 0.1.5`, без dispatch.
+  defects/release blockers оформляются по Jira sync rules; новые запросы вне
+  текущего release scope уходят в следующую версию и не dispatch'ятся до PM
+  override.
 
 ## Обязательное Ревью За Codex
 
@@ -131,9 +125,9 @@ backlog.
 
 - Выдавать одну и ту же зону ответственности обоим контурам параллельно
   (две задачи на одни файлы = конфликт в рабочем каталоге).
-- Создавать новые active-sprint `.md` task-файлы или Jira issues без bug/QA
-  defect/release-blocker причины. Новые фичи/улучшения во время freeze допустимы
-  только как backlog `0.1.5`, без dispatch.
+- Создавать новые active-sprint `.md` task-файлы или Jira issues вне текущего
+  patch scope без PM/user причины. Во время будущего freeze новые фичи снова
+  уходят в backlog следующей версии без dispatch.
 - Закрывать задачу за исполнителя без результата в task-файле или QA-вердикта.
 - Менять арт-направление без отметки superseded в старой задаче.
 - Отдавать Codex задачи с продуктовыми развилками («реши сам, как лучше для игры»).

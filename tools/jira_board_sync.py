@@ -199,7 +199,9 @@ def main():
     for path in sorted(glob.glob(TASKS_GLOB)):
         t = parse_task(path)
         # Задача будущей версии (не текущего спринта-релиза) -> бэклог:
-        # fixVersion целевой версии есть, active sprint assignment нет.
+        # fixVersion целевой версии есть, active sprint assignment нет. Задачи
+        # текущей версии добавляются в active sprint даже если Jira issue уже
+        # было создано ранее как backlog.
         t["next_version"] = bool(t["task_version"] and fix_version and t["task_version"] != fix_version)
         target_status = STATUS_TARGET[t["status"]]
         entry = mapping.get(t["file"])
@@ -235,6 +237,8 @@ def main():
             if not t["next_version"]:
                 sprint_queue.append(key)  # текущий release scope попадает в active sprint
             print(f"created {key}: {t['file']}")
+        elif t["task_version"] and fix_version and t["task_version"] == fix_version:
+            sprint_queue.append(entry["key"])
         if entry.get("status") == "Готово":
             continue  # финальное состояние: из «Готово» не понижаем
         if entry.get("status") != target_status:
