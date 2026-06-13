@@ -545,11 +545,11 @@
  },
  "backend_shop_wall_artifacts_frameless_task.md": {
   "key": "SCRUM-160",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_ui_screens_shop_style_parse_errors_task.md": {
   "key": "SCRUM-160",
-  "status": "В работе"
+  "status": "Готово"
  },
  "bug_hud_elements_overlap_task.md": {
   "key": "SCRUM-161",
@@ -669,6 +669,34 @@
  },
  "bug_audio_silent_master_volume_zero_persisted_task.md": {
   "key": "SCRUM-172",
+  "status": "В работе"
+ },
+ "audit_animation_rig_coverage.md": {
+  "key": "SCRUM-173",
+  "status": "К выполнению"
+ },
+ "audit_code_architecture_refactor_plan.md": {
+  "key": "SCRUM-174",
+  "status": "К выполнению"
+ },
+ "audit_content_docs_consistency.md": {
+  "key": "SCRUM-175",
+  "status": "К выполнению"
+ },
+ "audit_mechanics_balance_full.md": {
+  "key": "SCRUM-176",
+  "status": "К выполнению"
+ },
+ "audit_sprites_visual_consistency.md": {
+  "key": "SCRUM-177",
+  "status": "К выполнению"
+ },
+ "audit_test_coverage_quality.md": {
+  "key": "SCRUM-178",
+  "status": "К выполнению"
+ },
+ "epic_full_project_quality_pass.md": {
+  "key": "SCRUM-179",
   "status": "В работе"
  }
 }

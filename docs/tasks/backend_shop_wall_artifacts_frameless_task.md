@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Магазин — артефакты висят на стене без рамок
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя со скриншотом)
@@ -64,3 +64,19 @@ SHOP_SLOT_FRAME_PATH/SHOP_SLOT_HOVER_PATH ui_screens.gd:10-11).
 
 ## Самопроверка
 6 smoke + скриншот/дамп дерева магазина на 1280x720 и 2560x1440.
+
+## Result
+
+2026-06-13: Back-end/UI scope завершен.
+
+- `scripts/ui_screens.gd` перевел магазин с 2x2 framed card grid на frameless wall layout: кнопки остаются 164x186 для клика/клавиатуры, но визуально показывают только предмет, контактную тень и компактный ценник.
+- `ShopItemButton*` больше не использует `StyleBoxTexture` frame/hover для слота; hover остается мягкой программной подсветкой.
+- Цена стала компактной: money icon + число, без большой золотой плашки; недоступный товар затемняется и получает красный price tag.
+- Купленный товар снимается со стены: вместо иконки/цены показывается `ShopEmptyHook` с подписью «снято».
+- Runtime smoke расширен: проверяет отсутствие framed-slot styles, наличие иконки/тени/ценника/tooltip, purchase state и фактический no-overlap на 1280x720 и 2560x1440.
+- QA artifact: `build/qa/shop_wall_frameless_rects.md`. Headless SubViewport screenshot недоступен в текущем dummy renderer без Godot error `Parameter "t" is null`; оставлен числовой rect-dump, как в соседних UI задачах с headless limitation.
+- `CHANGELOG.md` и `docs/design/current_game_state.md` обновлены.
+
+Verification:
+
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.

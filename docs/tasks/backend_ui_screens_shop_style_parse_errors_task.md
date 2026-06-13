@@ -1,6 +1,6 @@
 # Back-end Task: UI Screens Shop Style Parse Errors
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-13
 Роль: Back-end / UI
@@ -47,3 +47,15 @@ Repro command:
 
 - `scripts/ui_screens.gd` compiles.
 - Runtime smoke reaches execution and passes, or any next unrelated blocker is documented precisely.
+
+## Result
+
+2026-06-13: Fixed as part of active SCRUM-160 shop-wall recovery.
+
+- Added `_shop_wall_button_style()`, `_shop_item_shadow_style()`, `_shop_empty_hook_style()`.
+- Updated `_shop_price_badge_style(affordable := true)` to match new calls.
+- `scripts/ui_screens.gd` compiles and runtime smoke passes.
+
+Verification:
+
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
