@@ -18,6 +18,7 @@ const RANGER_SPRITE := preload("res://assets/sprites/characters/ranger.png")
 const DOCTOR_SPRITE := preload("res://assets/sprites/characters/doctor.png")
 const CHEMIST_SPRITE := preload("res://assets/sprites/characters/chemist.png")
 const KNIGHT_SPRITE := preload("res://assets/sprites/characters/knight.png")
+const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
@@ -48,6 +49,12 @@ const CHARACTER_CONFIGS := {
 		"sprite": GUITARIST_SPRITE,
 	},
 	"assassin": {"display_name": "Ассасин", "color": Color(0.66, 0.30, 0.95, 1.0), "max_health": 52.0, "speed": 285.0, "sprite": ASSASSIN_SPRITE},
+	"thief": {"display_name": "Вор", "color": Color(0.92, 0.68, 0.30, 1.0), "max_health": 56.0, "speed": 292.0, "sprite": ASSASSIN_SPRITE},
+	"elementalist": {"display_name": "Элементалист", "color": Color(0.30, 0.82, 1.0, 1.0), "max_health": 48.0, "speed": 258.0, "sprite": DARK_MAGE_SPRITE},
+	"sniper": {"display_name": "Снайпер", "color": Color(0.82, 0.88, 1.0, 1.0), "max_health": 62.0, "speed": 252.0, "sprite": RANGER_SPRITE},
+	"priest": {"display_name": "Священник", "color": Color(1.0, 0.90, 0.54, 1.0), "max_health": 66.0, "speed": 246.0, "sprite": DOCTOR_SPRITE},
+	"biologist": {"display_name": "Биолог", "color": Color(0.48, 0.95, 0.42, 1.0), "max_health": 54.0, "speed": 254.0, "sprite": CHEMIST_SPRITE},
+	"robot": {"display_name": "Робот", "color": Color(0.42, 0.82, 1.0, 1.0), "max_health": 98.0, "speed": 222.0, "sprite": ROBOT_SPRITE},
 	"ranger": {"display_name": "Рейнджер", "color": Color(0.40, 0.78, 0.42, 1.0), "max_health": 58.0, "speed": 262.0, "sprite": RANGER_SPRITE},
 	"doctor": {"display_name": "Доктор", "color": Color(0.92, 0.94, 0.98, 1.0), "max_health": 64.0, "speed": 248.0, "sprite": DOCTOR_SPRITE},
 	"chemist": {"display_name": "Химик", "color": Color(0.70, 0.95, 0.25, 1.0), "max_health": 50.0, "speed": 252.0, "sprite": CHEMIST_SPRITE},
@@ -308,7 +315,7 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void
 		_update_sprite_facing(_facing_direction)
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_action"):
-		var animation_variant: String = weapon_id if action_id == "attack" else character_id
+		var animation_variant: String = weapon_id if weapon_id != "" else character_id
 		rig.play_action(action_id, _facing_direction, animation_variant)
 
 	if _action_tween != null and _action_tween.is_valid():
@@ -572,6 +579,18 @@ func activate_ultimate() -> bool:
 			_activate_guitarist_ultimate(config, multiplier)
 		"assassin":
 			_activate_assassin_ultimate(config, multiplier)
+		"thief":
+			_activate_thief_ultimate(config, multiplier)
+		"elementalist":
+			_activate_elementalist_ultimate(config, multiplier)
+		"sniper":
+			_activate_sniper_ultimate(config, multiplier)
+		"priest":
+			_activate_priest_ultimate(config, multiplier)
+		"biologist":
+			_activate_biologist_ultimate(config, multiplier)
+		"robot":
+			_activate_robot_ultimate(config, multiplier)
 		"ranger":
 			_activate_ranger_ultimate(config, multiplier)
 		"doctor":
@@ -649,6 +668,118 @@ func _activate_assassin_ultimate(config: Dictionary, multiplier: float) -> void:
 	for enemy in _nearest_enemies(int(count), float(config.get("radius", 520.0))):
 		AttackVfx.slash(_vfx_parent(), (enemy.global_position - global_position).normalized(), 120.0, Color(0.72, 0.22, 1.0, 0.42)).global_position = enemy.global_position
 		_apply_ultimate_damage(enemy, damage_amount * float(derived_parameters.get("crit_damage_multiplier", 1.5)))
+
+
+func _activate_thief_ultimate(config: Dictionary, multiplier: float) -> void:
+	var count := int(config.get("target_count", 8)) + int(floor(multiplier))
+	var radius := float(config.get("radius", 500.0))
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 1.0)) * multiplier
+	var stolen := 0
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius * 0.52, Color(0.95, 0.66, 0.18, 0.36), true)
+	for enemy in _nearest_enemies(count, radius):
+		if not is_instance_valid(enemy):
+			continue
+		AttackVfx.beam(_vfx_parent(), global_position, enemy.global_position, 34.0, Color(1.0, 0.82, 0.28, 0.36))
+		_apply_ultimate_damage(enemy, damage_amount)
+		stolen += 2
+	if stolen > 0:
+		gain_money(stolen)
+
+
+func _activate_elementalist_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 430.0)) * clampf(multiplier, 0.8, 1.65)
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(config.get("damage", 1.18)) * multiplier
+	AttackVfx.orb_burst(_vfx_parent(), global_position, radius, Color(0.35, 0.80, 1.0, 0.44))
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius * 0.72, Color(1.0, 0.48, 0.16, 0.38), true)
+	_damage_enemies_in_radius(global_position, radius, damage_amount)
+	for enemy in _nearest_enemies(int(config.get("target_count", 6)), radius * 1.15):
+		if not is_instance_valid(enemy):
+			continue
+		AttackVfx.beam(_vfx_parent(), global_position, enemy.global_position, 42.0, Color(0.86, 0.46, 1.0, 0.40))
+		_apply_ultimate_damage(enemy, damage_amount * 0.42)
+
+
+func _activate_sniper_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 760.0)) * clampf(multiplier, 0.8, 1.6)
+	var count := int(config.get("target_count", 5)) + int(floor(multiplier))
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 1.35)) * multiplier
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius * 0.28, Color(0.78, 0.88, 1.0, 0.34), true)
+	for enemy in _nearest_enemies(count, radius):
+		if not is_instance_valid(enemy):
+			continue
+		var sky_start: Vector2 = enemy.global_position + Vector2(0.0, -radius * 0.42)
+		AttackVfx.beam(_vfx_parent(), sky_start, enemy.global_position, 36.0, Color(0.92, 0.96, 1.0, 0.48))
+		_apply_ultimate_damage(enemy, damage_amount)
+
+
+func _activate_priest_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 410.0)) * clampf(multiplier, 0.8, 1.65)
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(config.get("damage", 1.05)) * multiplier
+	var heal_ratio := float(config.get("heal_ratio", 0.45))
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(1.0, 0.92, 0.52, 0.38), false)
+	AttackVfx.orb_burst(_vfx_parent(), global_position, radius * 0.70, Color(0.88, 0.96, 1.0, 0.32))
+	var healed := 0.0
+	for enemy in _enemies_in_radius(global_position, radius):
+		_apply_ultimate_damage(enemy, damage_amount)
+		healed += damage_amount * heal_ratio
+	var before := health
+	health = minf(max_health, health + healed * float(run_modifiers.get("healing_multiplier", 1.0)))
+	if health > before + 0.01:
+		_show_heal_vfx()
+
+
+func _activate_biologist_ultimate(config: Dictionary, multiplier: float) -> void:
+	var radius := float(config.get("radius", 440.0)) * clampf(multiplier, 0.8, 1.65)
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(config.get("damage", 1.10)) * multiplier
+	var heal_ratio := float(config.get("heal_ratio", 0.18))
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.46, 1.0, 0.38, 0.34), true)
+	AttackVfx.orb_burst(_vfx_parent(), global_position, radius * 0.58, Color(0.28, 0.92, 0.54, 0.30))
+	var healed := 0.0
+	for enemy in _nearest_enemies(int(config.get("target_count", 9)), radius):
+		if not is_instance_valid(enemy):
+			continue
+		AttackVfx.beam(_vfx_parent(), global_position, enemy.global_position, 30.0, Color(0.52, 1.0, 0.42, 0.36))
+		_apply_ultimate_damage(enemy, damage_amount)
+		healed += damage_amount * heal_ratio
+	if healed > 0.01:
+		var before := health
+		health = minf(max_health, health + healed * float(run_modifiers.get("healing_multiplier", 1.0)))
+		if health > before + 0.01:
+			_show_heal_vfx()
+
+
+func _activate_robot_ultimate(config: Dictionary, multiplier: float) -> void:
+	var duration := float(config.get("duration", 4.5)) * clampf(multiplier, 0.8, 1.7)
+	var radius := float(config.get("radius", 380.0)) * clampf(multiplier, 0.8, 1.55)
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 0.78)) * multiplier
+	var absorb_bonus := 8.0 + 4.0 * clampf(multiplier, 0.8, 2.0)
+	run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + absorb_bonus
+	run_modifiers["defense_flat"] = float(run_modifiers.get("defense_flat", 0.0)) + 0.05
+	_apply_stat_scaling(false, max_health)
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.42, 0.82, 1.0, 0.42), true)
+	_damage_enemies_in_radius(global_position, radius, damage_amount)
+	_ultimate_active = true
+	if _ultimate_tween != null and _ultimate_tween.is_valid():
+		_ultimate_tween.kill()
+	_ultimate_tween = create_tween()
+	var self_id := get_instance_id()
+	var pulse_count := maxi(int(config.get("target_count", 8)) / 2, 3)
+	for pulse_index in range(pulse_count):
+		_ultimate_tween.tween_interval(duration / float(pulse_count + 1))
+		_ultimate_tween.tween_callback(func() -> void:
+			var current_robot := instance_from_id(self_id) as Node2D
+			if current_robot == null or not is_instance_valid(current_robot):
+				return
+			AttackVfx.ring_pulse(_vfx_parent(), current_robot.global_position, radius * 0.62, Color(0.36, 1.0, 0.86, 0.32), false)
+			_damage_enemies_in_radius(current_robot.global_position, radius * 0.62, damage_amount * 0.34)
+		)
+	_ultimate_tween.tween_interval(duration / float(pulse_count + 1))
+	_ultimate_tween.tween_callback(func() -> void:
+		_ultimate_active = false
+		run_modifiers["absorb_flat"] = maxf(0.0, float(run_modifiers.get("absorb_flat", 0.0)) - absorb_bonus)
+		run_modifiers["defense_flat"] = maxf(0.0, float(run_modifiers.get("defense_flat", 0.0)) - 0.05)
+		_apply_stat_scaling(false, max_health)
+	)
 
 
 func _activate_ranger_ultimate(config: Dictionary, multiplier: float) -> void:

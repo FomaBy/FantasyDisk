@@ -35,6 +35,12 @@ const HERO_RADAR_STATS := ["strength", "agility", "intelligence", "perception", 
 const HERO_CLASS_COLORS := {
 	"berserk": Color(1.00, 0.38, 0.22, 0.82),
 	"soldier": Color(0.84, 0.74, 0.46, 0.82),
+	"thief": Color(0.92, 0.68, 0.30, 0.82),
+	"elementalist": Color(0.30, 0.82, 1.00, 0.82),
+	"sniper": Color(0.82, 0.88, 1.00, 0.82),
+	"priest": Color(1.00, 0.90, 0.54, 0.82),
+	"biologist": Color(0.48, 0.95, 0.42, 0.82),
+	"robot": Color(0.42, 0.82, 1.00, 0.82),
 	"dark_mage": Color(0.66, 0.32, 1.00, 0.82),
 	"guitarist": Color(0.26, 0.72, 1.00, 0.82),
 	"assassin": Color(0.95, 0.22, 0.44, 0.82),
@@ -489,7 +495,9 @@ func _show_character_select() -> void:
 
 
 func _hero_thumbnail_size(character_count: int) -> Vector2:
-	var viewport_width := maxf(get_viewport_rect().size.x, 1280.0)
+	var viewport_width := 1280.0
+	if game != null and game.get_viewport() != null:
+		viewport_width = maxf(game.get_viewport().get_visible_rect().size.x, 1280.0)
 	var horizontal_margins := 48.0
 	var gap_total := maxf(float(character_count - 1), 0.0) * 8.0
 	var available_width := maxf(viewport_width - horizontal_margins - gap_total, 1.0)

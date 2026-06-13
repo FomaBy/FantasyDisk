@@ -23,6 +23,76 @@ const BASE_STATS := {
 		"endurance": 7.0,
 		"leadership": 3.0,
 	},
+	"soldier": {
+		"strength": 7.0,
+		"agility": 6.0,
+		"intelligence": 2.0,
+		"perception": 8.0,
+		"energy": 4.0,
+		"knowledge": 5.0,
+		"endurance": 6.0,
+		"leadership": 5.0,
+	},
+	"thief": {
+		"strength": 5.0,
+		"agility": 9.0,
+		"intelligence": 3.0,
+		"perception": 8.0,
+		"energy": 5.0,
+		"knowledge": 4.0,
+		"endurance": 4.0,
+		"leadership": 5.0,
+	},
+	"elementalist": {
+		"strength": 2.0,
+		"agility": 4.0,
+		"intelligence": 9.0,
+		"perception": 7.0,
+		"energy": 8.0,
+		"knowledge": 6.0,
+		"endurance": 3.0,
+		"leadership": 5.0,
+	},
+	"sniper": {
+		"strength": 6.0,
+		"agility": 8.0,
+		"intelligence": 2.0,
+		"perception": 10.0,
+		"energy": 3.0,
+		"knowledge": 3.0,
+		"endurance": 7.0,
+		"leadership": 1.0,
+	},
+	"priest": {
+		"strength": 2.0,
+		"agility": 4.0,
+		"intelligence": 8.0,
+		"perception": 6.0,
+		"energy": 7.0,
+		"knowledge": 9.0,
+		"endurance": 5.0,
+		"leadership": 6.0,
+	},
+	"biologist": {
+		"strength": 2.0,
+		"agility": 5.0,
+		"intelligence": 8.0,
+		"perception": 7.0,
+		"energy": 6.0,
+		"knowledge": 10.0,
+		"endurance": 4.0,
+		"leadership": 4.0,
+	},
+	"robot": {
+		"strength": 8.0,
+		"agility": 3.0,
+		"intelligence": 5.0,
+		"perception": 5.0,
+		"energy": 7.0,
+		"knowledge": 4.0,
+		"endurance": 10.0,
+		"leadership": 4.0,
+	},
 	"dark_mage": {
 		"strength": 2.0,
 		"agility": 3.0,
@@ -59,6 +129,62 @@ const CHARACTER_CONFIGS := {
 		"strengths": "урон, HP, толпа.",
 		"weaknesses": "нужна близость.",
 		"sprite_path": "res://assets/sprites/characters/berserk_unarmed.png",
+	},
+	"soldier": {
+		"id": "soldier",
+		"title": "Солдат",
+		"description": "Тактика, залпы и контроль позиции.",
+		"strengths": "дальность, стабильность, контроль.",
+		"weaknesses": "нужна линия огня.",
+		"sprite_path": "res://assets/sprites/characters/soldier.png",
+	},
+	"thief": {
+		"id": "thief",
+		"title": "Вор",
+		"description": "Уловки, рывки и карманная экономика.",
+		"strengths": "мобильность, крит, золото.",
+		"weaknesses": "мало HP.",
+		"sprite_path": "res://assets/sprites/characters/assassin.png",
+	},
+	"elementalist": {
+		"id": "elementalist",
+		"title": "Элементалист",
+		"description": "Смена стихий, орбиты и разломы.",
+		"strengths": "AoE, контроль зон, burst.",
+		"weaknesses": "хрупкий, требует позицию.",
+		"sprite_path": "res://assets/sprites/characters/dark_mage.png",
+	},
+	"sniper": {
+		"id": "sniper",
+		"title": "Снайпер",
+		"description": "Точные выстрелы, метки и kill-zones.",
+		"strengths": "дальность, одиночные цели, elite focus.",
+		"weaknesses": "слабее против плотной толпы рядом.",
+		"sprite_path": "res://assets/sprites/characters/ranger.png",
+	},
+	"priest": {
+		"id": "priest",
+		"title": "Священник",
+		"description": "Благословения, печати и священный sustain.",
+		"strengths": "лечение, защита, стабильность.",
+		"weaknesses": "меньше burst по одиночной цели.",
+		"sprite_path": "res://assets/sprites/characters/doctor.png",
+	},
+	"biologist": {
+		"id": "biologist",
+		"title": "Биолог",
+		"description": "Образцы, споры и симбиотические реакции.",
+		"strengths": "контроль биомассой, DoT, адаптация.",
+		"weaknesses": "нужны цели для цепных реакций.",
+		"sprite_path": "res://assets/sprites/characters/chemist.png",
+	},
+	"robot": {
+		"id": "robot",
+		"title": "Робот",
+		"description": "Тяжелая броня, магнитный контроль и реакторные выбросы.",
+		"strengths": "выживаемость, контроль, стабильный урон.",
+		"weaknesses": "медленный, зависит от позиционирования.",
+		"sprite_path": "res://assets/sprites/characters/robot.png",
 	},
 	"dark_mage": {
 		"id": "dark_mage",
@@ -122,6 +248,13 @@ const CHARACTER_CONFIGS := {
 
 const CLASS_BUDGET_PROFILES := {
 	"berserk": {"profile": "balanced", "survival": "sturdy", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
+	"soldier": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
+	"thief": {"profile": "balanced", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.00},
+	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.95, "aoe_target": 1.10},
+	"sniper": {"profile": "solo", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.15, "aoe_target": 0.80},
+	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 0.95, "aoe_target": 1.05},
+	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.82, "aoe_target": 1.18},
+	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 0.95, "aoe_target": 1.05},
 	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.70, "aoe_target": 1.30},
 	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 0.70, "aoe_target": 1.30},
 	"assassin": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
@@ -137,6 +270,18 @@ const BALANCE_BASE_AOE_DPS := 150.0
 const BALANCE_WINDOW_SECONDS := 30.0
 const STAGE_SCALE_BASE := 1.18
 const STAGE_SCALE_LINEAR := 0.075
+const ECONOMY_PRICE_MULTIPLIER := 1.10
+const XP_CURVE_MULTIPLIER := 1.42
+const XP_CURVE_FLAT := 3.0
+
+const DROP_CLASS_MULTIPLIERS := {
+	"ordinary": {"xp": 1.0, "money": 1.0, "money_chance": 0.75},
+	"complex": {"xp": 1.3, "money": 1.35, "money_chance": 0.85},
+	"heavy": {"xp": 1.75, "money": 1.85, "money_chance": 0.95},
+	"mini_elite": {"xp": 3.6, "money": 3.8, "money_chance": 1.0},
+	"elite": {"xp": 8.0, "money": 8.5, "money_chance": 1.0},
+	"boss": {"xp": 24.0, "money": 92.0, "money_chance": 1.0},
+}
 
 const BERSERK_WEAPONS := {
 	"sword": {
@@ -527,8 +672,286 @@ const DRUID_WEAPONS := {
 	},
 }
 
+const SOLDIER_WEAPONS := {
+	"soldier_rifle": {
+		"id": "soldier_rifle", "title": "Аркебуза строя",
+		"description": "Залп подавления: 3 быстрых выстрела по ближайшей линии, основная цель получает полный урон, соседи в коридоре — ослабленный.",
+		"scene_path": "res://scenes/SoldierRifle.tscn",
+		"attack_mode": "suppression_burst", "damage_parameter": "damage",
+		"damage_multiplier": 0.58, "fire_interval": 1.05,
+		"attack_range": 620.0, "aoe_radius": 130.0,
+		"beam_width": 54.0, "suppression_width": 132.0,
+		"projectile_count": 3, "burst_interval": 0.075,
+		"damage_falloff": 0.38, "knockback": 44.0,
+		"visual_color": Color(0.84, 0.78, 0.58, 0.42),
+		"passive_mods": {"range_multiplier": 1.06},
+	},
+	"soldier_grenade": {
+		"id": "soldier_grenade", "title": "Граната с фитилем",
+		"description": "Бросок с задержкой: видимая зона взрывается после короткого фитиля, урон плавно падает к краю.",
+		"scene_path": "res://scenes/SoldierGrenade.tscn",
+		"attack_mode": "grenade_cook", "damage_parameter": "damage",
+		"damage_multiplier": 1.12, "fire_interval": 1.52,
+		"attack_range": 520.0, "aoe_radius": 175.0,
+		"projectile_speed": 560.0, "grenade_delay": 0.44,
+		"damage_falloff": 0.48, "knockback": 70.0,
+		"visual_color": Color(0.96, 0.55, 0.22, 0.46),
+		"passive_mods": {"aoe_radius_multiplier": 1.08},
+	},
+	"soldier_bayonet": {
+		"id": "soldier_bayonet", "title": "Штык-стойка",
+		"description": "Короткая оборонительная стойка: впереди открывается зона укола, каждый враг получает урон один раз и отталкивается.",
+		"scene_path": "res://scenes/SoldierBayonet.tscn",
+		"attack_mode": "bayonet_brace", "damage_parameter": "damage",
+		"damage_multiplier": 0.94, "fire_interval": 0.92,
+		"attack_range": 250.0, "aoe_radius": 125.0,
+		"beam_width": 128.0, "brace_duration": 0.34,
+		"knockback": 92.0,
+		"visual_color": Color(0.58, 0.86, 1.0, 0.40),
+		"passive_mods": {"defense_flat": 0.03},
+	},
+}
+
+const THIEF_WEAPONS := {
+	"thief_coin_pouch": {
+		"id": "thief_coin_pouch", "title": "Кошель Рикошета",
+		"description": "Монета скачет между целями цепью, наносит убывающий урон и крадет немного золота с первых попаданий.",
+		"scene_path": "res://scenes/ThiefCoinPouch.tscn",
+		"attack_mode": "coin_ricochet", "damage_parameter": "damage",
+		"damage_multiplier": 0.82, "fire_interval": 0.88,
+		"attack_range": 520.0, "aoe_radius": 120.0,
+		"beam_width": 34.0, "projectile_count": 4,
+		"damage_falloff": 0.62, "steal_money": 1,
+		"visual_color": Color(1.0, 0.78, 0.28, 0.44),
+		"passive_mods": {"money_gain_multiplier": 1.08},
+	},
+	"thief_shadow_cloak": {
+		"id": "thief_shadow_cloak", "title": "Плащ Захода",
+		"description": "Автоматический backstab: Вор смещается за ближайшую цель, бьет сильнее и цепляет врагов рядом.",
+		"scene_path": "res://scenes/ThiefShadowCloak.tscn",
+		"attack_mode": "shadow_backstab", "damage_parameter": "damage",
+		"damage_multiplier": 0.96, "fire_interval": 1.08,
+		"attack_range": 360.0, "aoe_radius": 140.0,
+		"knockback": 62.0,
+		"visual_color": Color(0.74, 0.30, 1.0, 0.42),
+		"passive_mods": {"dodge_flat": 0.04, "crit_chance_flat": 0.04},
+	},
+	"thief_smoke_bomb": {
+		"id": "thief_smoke_bomb", "title": "Дымовая Бомба",
+		"description": "Бросает дым: после короткой задержки зона взрывается, а Вор получает временное уклонение.",
+		"scene_path": "res://scenes/ThiefSmokeBomb.tscn",
+		"attack_mode": "smoke_bomb", "damage_parameter": "damage",
+		"damage_multiplier": 1.02, "fire_interval": 1.34,
+		"attack_range": 430.0, "aoe_radius": 170.0,
+		"grenade_delay": 0.26, "smoke_duration": 1.65,
+		"dodge_bonus": 0.10, "knockback": 54.0,
+		"visual_color": Color(0.45, 0.48, 0.58, 0.42),
+		"passive_mods": {"move_speed_multiplier": 1.04},
+	},
+}
+
+const ELEMENTALIST_WEAPONS := {
+	"elementalist_orb_ring": {
+		"id": "elementalist_orb_ring", "title": "Кольцо Трех Стихий",
+		"description": "Орбиты стихий вращаются вокруг героя, несколько раз прожигая врагов в зоне.",
+		"scene_path": "res://scenes/ElementalistOrbRing.tscn",
+		"attack_mode": "elemental_orbit", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.88, "fire_interval": 1.42,
+		"attack_range": 360.0, "aoe_radius": 210.0,
+		"projectile_count": 3, "orbit_duration": 1.35, "storm_ticks": 4,
+		"visual_color": Color(0.40, 0.82, 1.0, 0.42),
+		"passive_mods": {"aoe_radius_multiplier": 1.06},
+	},
+	"elementalist_prism_focus": {
+		"id": "elementalist_prism_focus", "title": "Призматический Фокус",
+		"description": "Открывает крестовой разлом на ближайшей цели: две линии стихий сходятся и бьют область пересечения.",
+		"scene_path": "res://scenes/ElementalistPrismFocus.tscn",
+		"attack_mode": "prism_rift", "damage_parameter": "magic_damage",
+		"damage_multiplier": 1.02, "fire_interval": 1.30,
+		"attack_range": 560.0, "aoe_radius": 180.0,
+		"beam_width": 64.0, "grenade_delay": 0.24,
+		"visual_color": Color(0.76, 0.42, 1.0, 0.44),
+		"passive_mods": {"range_multiplier": 1.05},
+	},
+	"elementalist_meteor_core": {
+		"id": "elementalist_meteor_core", "title": "Ядро Метеора",
+		"description": "Телеграфирует падение метеора: первый удар взрывается, затем осколки добивают соседние зоны.",
+		"scene_path": "res://scenes/ElementalistMeteorCore.tscn",
+		"attack_mode": "meteor_shards", "damage_parameter": "magic_damage",
+		"damage_multiplier": 1.10, "fire_interval": 1.68,
+		"attack_range": 610.0, "aoe_radius": 190.0,
+		"beam_width": 70.0, "grenade_delay": 0.36, "shard_count": 4,
+		"visual_color": Color(1.0, 0.48, 0.16, 0.46),
+		"passive_mods": {"damage_multiplier": 1.04},
+	},
+}
+
+const SNIPER_WEAPONS := {
+	"sniper_deadeye_rifle": {
+		"id": "sniper_deadeye_rifle", "title": "Винтовка Мертвого Глаза",
+		"description": "Lockshot: короткая фиксация линии, затем тяжелый точный выстрел с узким overpenetration.",
+		"scene_path": "res://scenes/SniperDeadeyeRifle.tscn",
+		"attack_mode": "sniper_lockshot", "damage_parameter": "damage",
+		"damage_multiplier": 1.22, "fire_interval": 1.42,
+		"attack_range": 940.0, "aoe_radius": 220.0,
+		"beam_width": 34.0, "grenade_delay": 0.20,
+		"damage_falloff": 0.38,
+		"visual_color": Color(0.92, 0.96, 1.0, 0.46),
+		"passive_mods": {"crit_chance_flat": 0.04},
+	},
+	"sniper_spotter_scope": {
+		"id": "sniper_spotter_scope", "title": "Прицел Наводчика",
+		"description": "Kill-zone: отмечает область вокруг цели и вызывает серию прицельных ударов по врагам внутри.",
+		"scene_path": "res://scenes/SniperSpotterScope.tscn",
+		"attack_mode": "sniper_kill_zone", "damage_parameter": "damage",
+		"damage_multiplier": 0.82, "fire_interval": 1.34,
+		"attack_range": 760.0, "aoe_radius": 210.0,
+		"beam_width": 30.0, "projectile_count": 4,
+		"grenade_delay": 0.22, "damage_falloff": 0.74,
+		"visual_color": Color(1.0, 0.62, 0.18, 0.42),
+		"passive_mods": {"range_multiplier": 1.04},
+	},
+	"sniper_shatter_rounds": {
+		"id": "sniper_shatter_rounds", "title": "Осколочные Патроны",
+		"description": "Split-round: основной выстрел по ближайшей цели, затем осколки уходят в соседних врагов.",
+		"scene_path": "res://scenes/SniperShatterRounds.tscn",
+		"attack_mode": "sniper_split_round", "damage_parameter": "damage",
+		"damage_multiplier": 0.98, "fire_interval": 1.08,
+		"attack_range": 820.0, "aoe_radius": 260.0,
+		"beam_width": 38.0, "split_count": 3,
+		"damage_falloff": 0.55,
+		"visual_color": Color(0.50, 0.88, 1.0, 0.42),
+		"passive_mods": {"crit_damage_multiplier": 1.08},
+	},
+}
+
+const PRIEST_WEAPONS := {
+	"priest_reliquary": {
+		"id": "priest_reliquary", "title": "Светлый Реликварий",
+		"description": "Sanctify: отмечает ближайшую цель святым знаком, затем знак взрывается и лечит Священника от нанесенного урона.",
+		"scene_path": "res://scenes/PriestReliquary.tscn",
+		"attack_mode": "priest_sanctify", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.96, "fire_interval": 1.22,
+		"attack_range": 560.0, "aoe_radius": 190.0,
+		"beam_width": 46.0, "grenade_delay": 0.24,
+		"damage_falloff": 0.62, "heal_percent_of_damage": 0.08,
+		"visual_color": Color(1.0, 0.92, 0.48, 0.42),
+		"passive_mods": {"regeneration_flat": 0.18},
+	},
+	"priest_censer": {
+		"id": "priest_censer", "title": "Кадило Обета",
+		"description": "Ward pulses: вокруг Священника проходят несколько защитных волн, которые жгут врагов и дают малое лечение.",
+		"scene_path": "res://scenes/PriestCenser.tscn",
+		"attack_mode": "priest_ward", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.58, "fire_interval": 1.08,
+		"attack_range": 260.0, "aoe_radius": 215.0,
+		"storm_ticks": 3, "burst_interval": 0.13,
+		"heal_percent_on_attack": 0.012,
+		"visual_color": Color(0.96, 1.0, 0.70, 0.36),
+		"passive_mods": {"defense_flat": 0.02},
+	},
+	"priest_chime": {
+		"id": "priest_chime", "title": "Колокол Молитвы",
+		"description": "Prayer chain: молитвенная нить перескакивает между врагами, каждый скачок возвращает часть силы Священнику.",
+		"scene_path": "res://scenes/PriestChime.tscn",
+		"attack_mode": "priest_prayer_chain", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.76, "fire_interval": 1.16,
+		"attack_range": 620.0, "aoe_radius": 300.0,
+		"projectile_count": 4, "beam_width": 34.0,
+		"damage_falloff": 0.78, "heal_percent_of_damage": 0.06,
+		"visual_color": Color(0.72, 0.92, 1.0, 0.40),
+		"passive_mods": {"aura_radius_multiplier": 1.05},
+	},
+}
+
+const BIOLOGIST_WEAPONS := {
+	"biologist_spore_lens": {
+		"id": "biologist_spore_lens", "title": "Споровая Линза",
+		"description": "Spore bloom: выращивает на цели три расширяющихся споровых кольца с убывающим уроном.",
+		"scene_path": "res://scenes/BiologistSporeLens.tscn",
+		"attack_mode": "bio_spore_bloom", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.66, "fire_interval": 1.18,
+		"attack_range": 560.0, "aoe_radius": 210.0,
+		"storm_ticks": 3, "burst_interval": 0.16,
+		"damage_falloff": 0.70, "dot_ticks": 2,
+		"visual_color": Color(0.46, 1.0, 0.42, 0.40),
+		"passive_mods": {"dot_damage_flat": 1.0},
+	},
+	"biologist_sample_injector": {
+		"id": "biologist_sample_injector", "title": "Инъектор Образцов",
+		"description": "Sample dart: берет образец у цели, затем два анализа бьют ее и ближайшие ткани.",
+		"scene_path": "res://scenes/BiologistSampleInjector.tscn",
+		"attack_mode": "bio_sample_dart", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.92, "fire_interval": 1.05,
+		"attack_range": 620.0, "aoe_radius": 170.0,
+		"projectile_count": 2, "burst_interval": 0.18,
+		"beam_width": 30.0, "damage_falloff": 0.64,
+		"visual_color": Color(0.70, 1.0, 0.28, 0.42),
+		"passive_mods": {"crit_chance_flat": 0.025},
+	},
+	"biologist_symbiote_seed": {
+		"id": "biologist_symbiote_seed", "title": "Семя Симбионта",
+		"description": "Symbiote web: первичная цель связывается с несколькими соседними врагами и делит биоурон по сети.",
+		"scene_path": "res://scenes/BiologistSymbioteSeed.tscn",
+		"attack_mode": "bio_symbiote_web", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.82, "fire_interval": 1.24,
+		"attack_range": 580.0, "aoe_radius": 260.0,
+		"projectile_count": 4, "beam_width": 34.0,
+		"damage_falloff": 0.58, "heal_percent_of_damage": 0.03,
+		"visual_color": Color(0.36, 0.92, 0.58, 0.42),
+		"passive_mods": {"aura_radius_multiplier": 1.04},
+	},
+}
+
+const ROBOT_WEAPONS := {
+	"robot_magnetic_anchor": {
+		"id": "robot_magnetic_anchor", "title": "Магнитный Якорь",
+		"description": "Magnetic anchor: ставит якорь на ближайшую цель, затем стягивает врагов к центру и бьет импульсом.",
+		"scene_path": "res://scenes/RobotMagneticAnchor.tscn",
+		"attack_mode": "robot_magnetic_anchor", "damage_parameter": "damage",
+		"damage_multiplier": 0.86, "fire_interval": 1.14,
+		"attack_range": 520.0, "aoe_radius": 230.0,
+		"grenade_delay": 0.22, "knockback": 150.0,
+		"damage_falloff": 0.68, "beam_width": 44.0,
+		"visual_color": Color(0.42, 0.82, 1.0, 0.42),
+		"passive_mods": {"absorb_flat": 2.0},
+	},
+	"robot_hydraulic_press": {
+		"id": "robot_hydraulic_press", "title": "Гидравлический Пресс",
+		"description": "Compression line: две силовые губки сходятся по линии атаки, прижимая врагов к оси и нанося урон коридором.",
+		"scene_path": "res://scenes/RobotHydraulicPress.tscn",
+		"attack_mode": "robot_compression_line", "damage_parameter": "damage",
+		"damage_multiplier": 0.98, "fire_interval": 1.22,
+		"attack_range": 430.0, "aoe_radius": 180.0,
+		"beam_width": 150.0, "suppression_width": 260.0,
+		"grenade_delay": 0.20, "knockback": 115.0,
+		"damage_falloff": 0.55,
+		"visual_color": Color(0.94, 0.72, 0.36, 0.42),
+		"passive_mods": {"defense_flat": 0.018},
+	},
+	"robot_reactor_core": {
+		"id": "robot_reactor_core", "title": "Реакторное Ядро",
+		"description": "Reactor vent: выпускает четыре направленных выброса вокруг корпуса, отталкивая врагов и контролируя ближнюю толпу.",
+		"scene_path": "res://scenes/RobotReactorCore.tscn",
+		"attack_mode": "robot_reactor_vent", "damage_parameter": "damage",
+		"damage_multiplier": 0.74, "fire_interval": 1.05,
+		"attack_range": 300.0, "aoe_radius": 155.0,
+		"beam_width": 92.0, "projectile_count": 4,
+		"knockback": 135.0, "damage_falloff": 0.70,
+		"visual_color": Color(0.36, 1.0, 0.86, 0.40),
+		"passive_mods": {"regeneration_flat": 0.16},
+	},
+}
+
 const WEAPONS_BY_CLASS := {
 	"berserk": BERSERK_WEAPONS,
+	"soldier": SOLDIER_WEAPONS,
+	"thief": THIEF_WEAPONS,
+	"elementalist": ELEMENTALIST_WEAPONS,
+	"sniper": SNIPER_WEAPONS,
+	"priest": PRIEST_WEAPONS,
+	"biologist": BIOLOGIST_WEAPONS,
+	"robot": ROBOT_WEAPONS,
 	"dark_mage": DARK_MAGE_WEAPONS,
 	"guitarist": GUITARIST_WEAPONS,
 	"assassin": ASSASSIN_WEAPONS,
@@ -675,6 +1098,13 @@ const LEVEL_UP_REWARDS := [
 
 const ULTIMATE_CONFIGS := {
 	"berserk": {"title": "Неистовство", "description": "На несколько секунд ускоряется и каждый удар поднимает эхо-волну.", "duration": 5.5, "radius": 180.0, "damage": 0.75, "damage_charge_rate": 0.030, "taken_charge_rate": 1.35, "boss_cap": 0.10},
+	"soldier": {"title": "Приказ: Огонь", "description": "Серия прицельных залпов по ближайшим целям; сильнее по плотной толпе, но ограничена по боссу.", "duration": 0.0, "radius": 560.0, "damage": 1.08, "target_count": 9, "damage_charge_rate": 0.033, "taken_charge_rate": 1.12, "boss_cap": 0.09},
+	"thief": {"title": "Большой Куш", "description": "Мгновенный налет по ближайшим целям: урон, золотые нити и небольшой денежный выигрыш.", "duration": 0.0, "radius": 500.0, "damage": 1.02, "target_count": 8, "damage_charge_rate": 0.036, "taken_charge_rate": 1.00, "boss_cap": 0.08},
+	"elementalist": {"title": "Стихийная Сверхнова", "description": "Сверхнова четырех стихий взрывается вокруг героя и оставляет вторичные вспышки по ближайшим целям.", "duration": 0.0, "radius": 430.0, "damage": 1.18, "target_count": 6, "damage_charge_rate": 0.035, "taken_charge_rate": 1.04, "boss_cap": 0.10},
+	"sniper": {"title": "Последний Выстрел", "description": "Снайпер отмечает опасные цели и выпускает серию смертельных дальних попаданий.", "duration": 0.0, "radius": 760.0, "damage": 1.35, "target_count": 5, "damage_charge_rate": 0.034, "taken_charge_rate": 0.95, "boss_cap": 0.10},
+	"priest": {"title": "Хор Искупления", "description": "Священная волна поражает врагов вокруг и превращает часть урона в лечение.", "duration": 0.0, "radius": 410.0, "damage": 1.05, "target_count": 8, "heal_ratio": 0.45, "damage_charge_rate": 0.031, "taken_charge_rate": 1.22, "boss_cap": 0.08},
+	"biologist": {"title": "Пробуждение Колонии", "description": "Биолог запускает рост живой колонии: несколько биоимпульсов поражают ближайших врагов и оставляют слабый реген.", "duration": 0.0, "radius": 440.0, "damage": 1.10, "target_count": 9, "heal_ratio": 0.18, "damage_charge_rate": 0.033, "taken_charge_rate": 1.05, "boss_cap": 0.09},
+	"robot": {"title": "Аварийная Перегрузка", "description": "Робот включает аварийный контур: получает временное поглощение, выпускает ударную волну и несколько раз прожигает ближайших врагов.", "duration": 4.5, "radius": 380.0, "damage": 0.78, "target_count": 8, "damage_charge_rate": 0.030, "taken_charge_rate": 1.55, "boss_cap": 0.08},
 	"dark_mage": {"title": "Темная буря", "description": "Вихрь темной магии проклинает всех врагов вокруг.", "duration": 0.0, "radius": 360.0, "damage": 1.35, "damage_charge_rate": 0.034, "taken_charge_rate": 1.05, "boss_cap": 0.11},
 	"guitarist": {"title": "Соло", "description": "Гигантская звуковая волна отбрасывает и глушит толпу.", "duration": 0.0, "radius": 430.0, "damage": 1.15, "damage_charge_rate": 0.033, "taken_charge_rate": 1.10, "boss_cap": 0.09},
 	"assassin": {"title": "Танец клинков", "description": "Серия мгновенных рывков-ударов по ближайшим целям.", "duration": 0.0, "radius": 520.0, "damage": 1.05, "target_count": 7, "damage_charge_rate": 0.036, "taken_charge_rate": 1.05, "boss_cap": 0.08},
@@ -688,6 +1118,13 @@ const ULTIMATE_CONFIGS := {
 # Классовая релевантность урона: какой derived-параметр является «своим» уроном класса.
 const CLASS_DAMAGE_PARAMETER := {
 	"berserk": "damage",
+	"soldier": "damage",
+	"thief": "damage",
+	"elementalist": "magic_damage",
+	"sniper": "damage",
+	"priest": "magic_damage",
+	"biologist": "magic_damage",
+	"robot": "damage",
 	"dark_mage": "magic_damage",
 	"guitarist": "sound_wave_damage",
 	"assassin": "damage",
@@ -712,6 +1149,101 @@ const CLASS_INTERPRETATIONS := {
 		"sound_wave_damage": "Дает боевой клич: периодическая волна отталкивания вокруг Берсерка.",
 		"dot_damage": "Добавляет малое кровотечение к ударам.",
 		"summon_amount": "Повышает частоту эхо-оружия.",
+	},
+	"soldier": {
+		"strength": "Усиливает залпы, штык и вес гранат.",
+		"intelligence": "Добавляет рунический воспламенитель к гранатам и выстрелам.",
+		"energy": "Ускоряет тактические циклы: фитиль, залп и готовность ульты.",
+		"knowledge": "Добавляет горение/кровотечение к пораженным целям.",
+		"leadership": "Командный клич периодически вызывает эхо-залп строя.",
+		"magic_damage": "Работает как зачарованный порох и руническая осколочная искра.",
+		"sound_wave_damage": "Работает как команда строя: ближний боевой окрик отталкивает толпу.",
+		"dot_damage": "Добавляет малый burn/bleed от пороха и штыка.",
+		"summon_amount": "Повышает частоту эхо-залпов и поддержку строя.",
+	},
+	"thief": {
+		"strength": "Добавляет вес backstab-ударам и рикошетам.",
+		"agility": "Главный стат: ускоряет темп уловок, крит и выживание через движение.",
+		"intelligence": "Зачаровывает дым и монеты теневой искрой.",
+		"perception": "Расширяет цепь рикошета, дальность захода и зону дыма.",
+		"energy": "Быстрее заряжает Большой Куш и снижает темп провалов.",
+		"knowledge": "Добавляет яд/кровотечение к скрытым ударам.",
+		"endurance": "Компенсирует низкое HP через устойчивость к ошибкам.",
+		"leadership": "Подкупленная тень периодически повторяет удар.",
+		"magic_damage": "Работает как теневое зачарование монет и клинков.",
+		"sound_wave_damage": "Работает как отвлекающий свист: ближний контроль пространства.",
+		"dot_damage": "Добавляет малый яд/bleed к backstab и дыму.",
+		"summon_amount": "Учащает подкупленные эхо-удары.",
+	},
+	"elementalist": {
+		"strength": "Утяжеляет метеоры и усиливает knockback от стихийных ударов.",
+		"agility": "Ускоряет цикл переключения стихий, движение и шанс крита.",
+		"intelligence": "Главный стат: усиливает магический урон всех стихий.",
+		"perception": "Расширяет разломы, орбиты и точность выбора зоны.",
+		"energy": "Ускоряет заряд Сверхновы и питает длительность стихийных паттернов.",
+		"knowledge": "Усиливает burn/frost-like DoT от остаточных вспышек.",
+		"endurance": "Компенсирует хрупкость защитой и HP.",
+		"leadership": "Фамильяр-искра периодически повторяет малую стихийную вспышку.",
+		"damage": "Работает как физический импульс метеорных осколков.",
+		"sound_wave_damage": "Работает как громовой хлопок после стихийного удара.",
+		"dot_damage": "Добавляет малые burn/frost тики к зонам.",
+		"summon_amount": "Учащает фамильярные эхо-вспышки.",
+	},
+	"sniper": {
+		"strength": "Усиливает отдачу тяжелых патронов и knockback lockshot.",
+		"agility": "Ускоряет перезарядку, смену позиции и шанс крита.",
+		"intelligence": "Зачаровывает патроны малым arcane splash.",
+		"perception": "Главный стат: дальность, точность, радиус kill-zone и pickup.",
+		"energy": "Быстрее заряжает Последний Выстрел и стабилизирует прицел.",
+		"knowledge": "Добавляет bleed/armor-pierce DoT к marked shots.",
+		"endurance": "Позволяет пережить ошибку при игре на дистанции.",
+		"leadership": "Корректировщик периодически повторяет малый прицельный выстрел.",
+		"magic_damage": "Работает как зачарованный наконечник пули.",
+		"sound_wave_damage": "Работает как оглушающий дульный хлопок вблизи.",
+		"dot_damage": "Добавляет кровотечение к lockshot и split-round.",
+		"summon_amount": "Учащает корректировочные эхо-выстрелы.",
+	},
+	"priest": {
+		"strength": "Придает вес кадилу и усиливает knockback священных волн.",
+		"agility": "Ускоряет чтение молитв, движение и шанс крита.",
+		"intelligence": "Усиливает священный магический урон печатей и молитв.",
+		"perception": "Расширяет зоны печатей, дальность реликвария и радиус подбора.",
+		"energy": "Быстрее заряжает Хор Искупления и поддерживает частые благословения.",
+		"knowledge": "Главный стат: усиливает священные формулы, DoT-покаяние и эффективность лечения.",
+		"endurance": "Дает HP/защиту, чтобы удерживать ближнюю ward-зону.",
+		"leadership": "Приходская поддержка периодически повторяет малую молитву.",
+		"damage": "Работает как физический импульс кадила и реликвария.",
+		"sound_wave_damage": "Работает как церковный звон: ближний отталкивающий клич.",
+		"dot_damage": "Добавляет покаянное горение к освященным целям.",
+		"summon_amount": "Учащает эхо-молитвы прихожан.",
+	},
+	"biologist": {
+		"strength": "Утяжеляет капсулы и повышает knockback биореакций.",
+		"agility": "Ускоряет сбор образцов, смену позиции и шанс крита.",
+		"intelligence": "Усиливает магическую биохимию спор и симбионтов.",
+		"perception": "Расширяет зоны роста, дальность инъектора и радиус подбора.",
+		"energy": "Быстрее заряжает Пробуждение Колонии и ускоряет реакционные циклы.",
+		"knowledge": "Главный стат: усиливает анализ образцов, DoT и точность биореакций.",
+		"endurance": "Компенсирует хрупкость HP/защитой при игре рядом с зонами.",
+		"leadership": "Лабораторный ассистент периодически повторяет малую биореакцию.",
+		"damage": "Работает как давление капсул и механический импульс инъектора.",
+		"sound_wave_damage": "Работает как биоакустический отпугивающий импульс.",
+		"dot_damage": "Усиливает споры, инфекционные тики и остаточную биомассу.",
+		"summon_amount": "Учащает ассистентские эхо-реакции без добавления отдельного питомца.",
+	},
+	"robot": {
+		"strength": "Главный стат: усиливает сервоприводы, гидравлику и физический импульс оружия.",
+		"agility": "Сокращает инерцию корпуса: быстрее перезарядка, движение и шанс крита.",
+		"intelligence": "Улучшает боевой алгоритм и добавляет маготехнический splash.",
+		"perception": "Расширяет магнитные зоны, дальность захвата и радиус подбора.",
+		"energy": "Питает реактор, быстрее заряжает Перегрузку и ускоряет контуры оружия.",
+		"knowledge": "Стабилизирует перегрев: усиливает DoT/реген и снижает цену ошибок.",
+		"endurance": "Ключевой защитный стат: HP, броня, поглощение и выдержка под давлением.",
+		"leadership": "Автопилотный протокол периодически повторяет малый механический импульс.",
+		"magic_damage": "Работает как рунический аккумулятор внутри механизма.",
+		"sound_wave_damage": "Работает как сирена давления: ближний отталкивающий выброс.",
+		"dot_damage": "Добавляет перегрев/искрение к реакторным и прессовым ударам.",
+		"summon_amount": "Учащает эхо-протоколы сервоприводов без отдельного питомца.",
 	},
 	"dark_mage": {
 		"strength": "Придает вес снарядам: больше knockback и физическая устойчивость.",
@@ -763,6 +1295,13 @@ const CLASS_INTERPRETATIONS := {
 
 const ATTRIBUTE_PRIORITIES := {
 	"berserk": ["strength", "endurance", "agility", "perception", "leadership"],
+	"soldier": ["perception", "strength", "agility", "endurance", "leadership"],
+	"thief": ["agility", "perception", "strength", "energy", "leadership"],
+	"elementalist": ["intelligence", "energy", "perception", "knowledge", "leadership"],
+	"sniper": ["perception", "agility", "strength", "endurance", "knowledge"],
+	"priest": ["knowledge", "intelligence", "energy", "leadership", "endurance"],
+	"biologist": ["knowledge", "intelligence", "perception", "energy", "agility"],
+	"robot": ["endurance", "strength", "energy", "perception", "knowledge"],
 	"dark_mage": ["intelligence", "energy", "knowledge", "perception", "leadership"],
 	"guitarist": ["leadership", "perception", "energy", "agility", "knowledge"],
 	"assassin": ["agility", "strength", "perception", "energy", "leadership"],
@@ -838,6 +1377,90 @@ const ASCENSION_LEVELS := {
 		{"id": "berserk_asc_8", "title": "Вихрь стали", "mods": {"attack_speed_multiplier": 1.05}},
 		{"id": "berserk_asc_9", "title": "Каменная кожа", "mods": {"defense_flat": 0.03}},
 		{"id": "berserk_asc_10", "title": "Аватар войны", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"soldier": [
+		{"id": "soldier_asc_1", "title": "Строевая Выучка", "mods": {"damage_multiplier": 1.05}},
+		{"id": "soldier_asc_2", "title": "Плотный Мундир", "mods": {"max_health_flat": 8.0}},
+		{"id": "soldier_asc_3", "title": "Быстрая Перезарядка", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "soldier_asc_4", "title": "Окопная Привычка", "mods": {"defense_flat": 0.02}},
+		{"id": "soldier_asc_5", "title": "Пороховая Дисциплина", "mods": {"damage_multiplier": 1.07}},
+		{"id": "soldier_asc_6", "title": "Марш-Бросок", "mods": {"max_health_flat": 12.0}},
+		{"id": "soldier_asc_7", "title": "Верный Прицел", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "soldier_asc_8", "title": "Команда Залпа", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "soldier_asc_9", "title": "Держать Линию", "mods": {"defense_flat": 0.03}},
+		{"id": "soldier_asc_10", "title": "Капитан Разлома", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
+	],
+	"thief": [
+		{"id": "thief_asc_1", "title": "Легкие Пальцы", "mods": {"damage_multiplier": 1.05}},
+		{"id": "thief_asc_2", "title": "Запасной Кинжал", "mods": {"max_health_flat": 7.0}},
+		{"id": "thief_asc_3", "title": "Быстрая Рука", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "thief_asc_4", "title": "Уход в Тень", "mods": {"dodge_flat": 0.02}},
+		{"id": "thief_asc_5", "title": "Сорванный Кошель", "mods": {"money_gain_multiplier": 1.06}},
+		{"id": "thief_asc_6", "title": "Тайный Карман", "mods": {"max_health_flat": 11.0}},
+		{"id": "thief_asc_7", "title": "Прицельный Рикошет", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "thief_asc_8", "title": "Дымный Выход", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "thief_asc_9", "title": "Ни Следа", "mods": {"dodge_flat": 0.03}},
+		{"id": "thief_asc_10", "title": "Король Карманов", "mods": {"damage_multiplier": 1.10, "money_gain_multiplier": 1.08}},
+	],
+	"elementalist": [
+		{"id": "elementalist_asc_1", "title": "Искра Первостихии", "mods": {"damage_multiplier": 1.05}},
+		{"id": "elementalist_asc_2", "title": "Кожух Пепла", "mods": {"max_health_flat": 6.0}},
+		{"id": "elementalist_asc_3", "title": "Быстрый Поток", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "elementalist_asc_4", "title": "Широкая Мандала", "mods": {"aoe_radius_multiplier": 1.05}},
+		{"id": "elementalist_asc_5", "title": "Раскаленное Ядро", "mods": {"damage_multiplier": 1.07}},
+		{"id": "elementalist_asc_6", "title": "Хрустальный Щит", "mods": {"max_health_flat": 10.0}},
+		{"id": "elementalist_asc_7", "title": "Дальняя Призма", "mods": {"range_multiplier": 1.06}},
+		{"id": "elementalist_asc_8", "title": "Четверной Круг", "mods": {"aoe_radius_multiplier": 1.06}},
+		{"id": "elementalist_asc_9", "title": "Живая Молния", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "elementalist_asc_10", "title": "Архонт Стихий", "mods": {"damage_multiplier": 1.10, "aoe_radius_multiplier": 1.06}},
+	],
+	"sniper": [
+		{"id": "sniper_asc_1", "title": "Холодная Мушка", "mods": {"damage_multiplier": 1.05}},
+		{"id": "sniper_asc_2", "title": "Запасной Плащ", "mods": {"max_health_flat": 8.0}},
+		{"id": "sniper_asc_3", "title": "Сухой Спуск", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "sniper_asc_4", "title": "Дальний Глаз", "mods": {"range_multiplier": 1.05}},
+		{"id": "sniper_asc_5", "title": "Бронебойный Заряд", "mods": {"damage_multiplier": 1.07}},
+		{"id": "sniper_asc_6", "title": "Низкая Позиция", "mods": {"defense_flat": 0.02}},
+		{"id": "sniper_asc_7", "title": "Точный Расчет", "mods": {"crit_chance_flat": 0.03}},
+		{"id": "sniper_asc_8", "title": "Быстрая Перезарядка", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "sniper_asc_9", "title": "Сквозной Прицел", "mods": {"crit_damage_multiplier": 1.06}},
+		{"id": "sniper_asc_10", "title": "Мастер Одного Выстрела", "mods": {"damage_multiplier": 1.10, "range_multiplier": 1.06}},
+	],
+	"priest": [
+		{"id": "priest_asc_1", "title": "Тихая Литания", "mods": {"damage_multiplier": 1.04}},
+		{"id": "priest_asc_2", "title": "Теплый Плащ", "mods": {"max_health_flat": 8.0}},
+		{"id": "priest_asc_3", "title": "Быстрая Молитва", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "priest_asc_4", "title": "Широкий Круг", "mods": {"aoe_radius_multiplier": 1.05}},
+		{"id": "priest_asc_5", "title": "Священная Формула", "mods": {"damage_multiplier": 1.06}},
+		{"id": "priest_asc_6", "title": "Обет Стойкости", "mods": {"defense_flat": 0.025}},
+		{"id": "priest_asc_7", "title": "Дальний Хор", "mods": {"range_multiplier": 1.05}},
+		{"id": "priest_asc_8", "title": "Благодатный Ритм", "mods": {"regeneration_flat": 0.28}},
+		{"id": "priest_asc_9", "title": "Звон Защиты", "mods": {"aoe_radius_multiplier": 1.06}},
+		{"id": "priest_asc_10", "title": "Пастырь Разлома", "mods": {"damage_multiplier": 1.09, "max_health_flat": 12.0}},
+	],
+	"biologist": [
+		{"id": "biologist_asc_1", "title": "Чистая Культура", "mods": {"damage_multiplier": 1.04}},
+		{"id": "biologist_asc_2", "title": "Плотная Мембрана", "mods": {"max_health_flat": 7.0}},
+		{"id": "biologist_asc_3", "title": "Быстрый Анализ", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "biologist_asc_4", "title": "Широкий Посев", "mods": {"aoe_radius_multiplier": 1.05}},
+		{"id": "biologist_asc_5", "title": "Сильный Реагент", "mods": {"damage_multiplier": 1.07}},
+		{"id": "biologist_asc_6", "title": "Стерильный Костюм", "mods": {"defense_flat": 0.02}},
+		{"id": "biologist_asc_7", "title": "Дальняя Проба", "mods": {"range_multiplier": 1.05}},
+		{"id": "biologist_asc_8", "title": "Живой Катализ", "mods": {"dot_damage_flat": 2.0}},
+		{"id": "biologist_asc_9", "title": "Быстрая Митоза", "mods": {"attack_speed_multiplier": 1.05}},
+		{"id": "biologist_asc_10", "title": "Архив Генома", "mods": {"damage_multiplier": 1.09, "aoe_radius_multiplier": 1.06}},
+	],
+	"robot": [
+		{"id": "robot_asc_1", "title": "Смазанные Шестерни", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "robot_asc_2", "title": "Толстый Корпус", "mods": {"max_health_flat": 10.0}},
+		{"id": "robot_asc_3", "title": "Магнитная Обмотка", "mods": {"aoe_radius_multiplier": 1.04}},
+		{"id": "robot_asc_4", "title": "Усиленный Сервопривод", "mods": {"damage_multiplier": 1.05}},
+		{"id": "robot_asc_5", "title": "Пластинчатая Броня", "mods": {"defense_flat": 0.025}},
+		{"id": "robot_asc_6", "title": "Стабильный Реактор", "mods": {"regeneration_flat": 0.22}},
+		{"id": "robot_asc_7", "title": "Дальний Захват", "mods": {"range_multiplier": 1.05}},
+		{"id": "robot_asc_8", "title": "Искровой Контур", "mods": {"dot_damage_flat": 2.0}},
+		{"id": "robot_asc_9", "title": "Амортизаторы", "mods": {"move_speed_multiplier": 1.04}},
+		{"id": "robot_asc_10", "title": "Неостановимый Протокол", "mods": {"damage_multiplier": 1.08, "max_health_flat": 14.0}},
 	],
 	"dark_mage": [
 		{"id": "dark_mage_asc_1", "title": "Темный фокус", "mods": {"damage_multiplier": 1.05}},
@@ -1110,7 +1733,34 @@ static func stage_scale(route_stage: int) -> float:
 
 
 static func stage_scaled_cost(base_cost: int, route_stage: int) -> int:
-	return maxi(1, int(ceil(float(base_cost) * stage_scale(route_stage))))
+	return maxi(1, int(ceil(float(base_cost) * stage_scale(route_stage) * ECONOMY_PRICE_MULTIPLIER)))
+
+
+static func next_xp_requirement(current_requirement: int) -> int:
+	return maxi(1, int(ceil(float(current_requirement) * XP_CURVE_MULTIPLIER + XP_CURVE_FLAT)))
+
+
+static func drop_class_multiplier(drop_class: String) -> Dictionary:
+	return (DROP_CLASS_MULTIPLIERS.get(drop_class, DROP_CLASS_MULTIPLIERS["ordinary"]) as Dictionary).duplicate(true)
+
+
+static func drop_class_rewards(drop_class: String, route_stage: int, wave_index := 0) -> Dictionary:
+	var multipliers := drop_class_multiplier(drop_class)
+	var scale := stage_scale(route_stage)
+	var wave_bonus := maxf(float(wave_index), 0.0)
+	if drop_class == "boss":
+		return {
+			"xp": maxi(1, int(round(float(multipliers.get("xp", 1.0)) * scale))),
+			"money": maxi(1, int(round(float(multipliers.get("money", 1.0)) * scale))),
+			"money_chance": clampf(float(multipliers.get("money_chance", 1.0)), 0.0, 1.0),
+		}
+	var base_xp := maxi(1, int(round(1.0 + maxf(scale - 1.0, 0.0) * 0.35 + wave_bonus * 0.008)))
+	var base_money := maxi(1, int(round(1.0 + maxf(scale - 1.0, 0.0) * 0.25 + wave_bonus * 0.006)))
+	return {
+		"xp": maxi(1, int(ceil(float(base_xp) * float(multipliers.get("xp", 1.0))))),
+		"money": maxi(1, int(ceil(float(base_money) * float(multipliers.get("money", 1.0))))),
+		"money_chance": clampf(float(multipliers.get("money_chance", 0.75)), 0.0, 1.0),
+	}
 
 
 static func character_ids() -> Array:
@@ -1241,6 +1891,56 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("beam_width", 40.0)) / 120.0, 1.0, 1.6), "dot_targets": 1.0}
 		"trap":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 85.0, 1.0, 4.2)}
+		"suppression_burst":
+			var burst_count := float(config.get("projectile_count", 3.0))
+			var suppression_width := float(config.get("suppression_width", 120.0))
+			return {"solo_hits": clampf(burst_count, 1.0, 4.0), "five_hits": clampf(burst_count * (1.0 + suppression_width / 210.0), 1.0, 5.0)}
+		"grenade_cook":
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 72.0, 1.0, 5.0)}
+		"bayonet_brace":
+			var brace_width := float(config.get("beam_width", 120.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + brace_width / 56.0, 1.0, 4.0)}
+		"coin_ricochet":
+			var chain_count := float(config.get("projectile_count", 3.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(chain_count * 0.76, 1.0, 5.0)}
+		"shadow_backstab":
+			return {"solo_hits": 1.22, "five_hits": clampf(1.22 + aoe_radius / 150.0, 1.22, 3.0)}
+		"smoke_bomb":
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 84.0, 1.0, 4.4)}
+		"elemental_orbit":
+			var orbit_ticks := float(config.get("storm_ticks", 4.0))
+			return {"solo_hits": clampf(orbit_ticks * 0.55, 1.0, 3.0), "five_hits": clampf(1.0 + aoe_radius / 55.0, 1.0, 5.0)}
+		"prism_rift":
+			var prism_width := float(config.get("beam_width", 64.0))
+			return {"solo_hits": 1.05, "five_hits": clampf(2.0 + prism_width / 48.0, 2.0, 5.0)}
+		"meteor_shards":
+			var meteor_shards := float(config.get("shard_count", 3.0))
+			return {"solo_hits": 1.06, "five_hits": clampf(1.0 + aoe_radius / 95.0 + meteor_shards * 0.32, 1.0, 5.0)}
+		"sniper_lockshot":
+			return {"solo_hits": 1.34, "five_hits": clampf(1.34 + float(config.get("beam_width", 34.0)) / 38.0, 1.34, 2.4)}
+		"sniper_kill_zone":
+			var kill_zone_shots := float(config.get("projectile_count", 3.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(kill_zone_shots * 0.82, 1.0, 4.2)}
+		"sniper_split_round":
+			var split_targets := float(config.get("split_count", 3.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + split_targets * 0.55, 1.0, 3.4)}
+		"priest_sanctify":
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 78.0, 1.0, 4.8)}
+		"priest_ward":
+			var ward_ticks := float(config.get("storm_ticks", 3.0))
+			return {"solo_hits": clampf(ward_ticks * 0.72, 1.0, 2.6), "five_hits": clampf(1.0 + aoe_radius / 70.0, 1.0, 4.5)}
+		"priest_prayer_chain":
+			var prayer_jumps := float(config.get("projectile_count", 4.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(prayer_jumps * 0.72, 1.0, 4.2)}
+		"bio_spore_bloom":
+			var bloom_ticks := float(config.get("storm_ticks", 3.0))
+			return {"solo_hits": clampf(1.0 + bloom_ticks * 0.34, 1.0, 2.4), "five_hits": clampf(1.0 + aoe_radius / 58.0, 1.0, 5.0)}
+		"bio_sample_dart":
+			var analysis_pulses := float(config.get("projectile_count", 2.0))
+			return {"solo_hits": clampf(1.0 + analysis_pulses * 0.52, 1.0, 2.5), "five_hits": clampf(1.0 + analysis_pulses * 0.72 + aoe_radius / 115.0, 1.0, 4.8)}
+		"bio_symbiote_web":
+			var web_links := float(config.get("projectile_count", 4.0))
+			return {"solo_hits": 1.18, "five_hits": clampf(1.0 + web_links * 0.62, 1.0, 4.6)}
 		_:
 			if int(config.get("max_summons", 0)) > 0:
 				return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("max_summons", 1)) * 0.8, 1.0, 3.5), "summon_targets": clampf(float(config.get("max_summons", 1)), 1.0, 4.0)}
