@@ -445,7 +445,7 @@ Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 ви
 
 ## UI Visual Kit 2026-06-13
 
-SCRUM-147 заменяет прежний tavern/contextual UI direction на dark fantasy gothic canon по референсам `docs/design/references/ui_dark_fantasy_2026_06/`. Новые материалы: obsidian/blackened metal panels, brass/gold bevels, crimson gems, violet magic accents, necromantic danger states, no junk UI. Кнопки используют единый Parchment & Wax Seal base kit с разными wax-seal акцентами и состояниями. Live fallback frame paths в `global/`, `escape/` и selected `shop/` перерисованы в этом стиле без изменения имен/размеров.
+SCRUM-147 заменяет прежний tavern/contextual UI direction на принятый Parchment & Wax Seal dark fantasy canon по референсам `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`, `screen_settings_full_reference.png` и `docs/design/ui_parchment_kit/`. Принятый rebuild 2026-06-13 использует светлый состаренный пергамент, красную сургучную печать, зубчатый кованый металл, рубиновые акценты, золотой hover glow, затемненный pressed state и grayscale disabled state. Live fallback frame paths в `global/`, `escape/` и selected `shop/` перерисованы в этом стиле без изменения имен/размеров. No-junk rule: без бессмысленных линий/кружков/квадратов/дефолтного Godot-декора.
 
 | ID | Ассет | Роль |
 | --- | --- | --- |
@@ -461,6 +461,8 @@ SCRUM-147 заменяет прежний tavern/contextual UI direction на da
 | `ui_df_button_danger_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_danger_idle.png` + hover/pressed/disabled | Exit/end-run/danger 4-state buttons |
 | `ui_df_panel_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png` | Canonical dark fantasy large panel |
 | `ui_df_shop_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png` | Canonical merchant/shop frame |
+
+Pipeline/preview: `tools/build_parchment_wax_ui_kit.py`, `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`, `docs/design/previews/ui_parchment_kit_reference_contact.png`.
 
 Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
 

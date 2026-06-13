@@ -1,6 +1,6 @@
 # Back-end Task: Safe Cleanup Follow-up For Legacy Asset Candidates
 
-Статус: in_progress
+Статус: blocked
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-175
@@ -51,3 +51,15 @@ Explicit keep list from Design:
 - `assets/sprites/enemies/*.png` remains active runtime/codex/rig source.
 
 No deletion or move was performed by Design.
+
+## Blocked (2026-06-13)
+
+Blocked for a clean cleanup window. The prerequisite manifest task SCRUM-194 is
+done, but the workspace currently contains active/rejected SCRUM-147 UI asset
+iteration files and refreshed UI frame assets. Because this task moves/removes
+tracked asset candidates with backup, executing it during visual-kit churn risks
+mixing cleanup with unrelated Design changes.
+
+Next unblock: run after SCRUM-147/SCRUM-222 UI asset dependency is accepted or
+the asset worktree is clean enough to produce an isolated backup/removal diff.
+No files were moved or deleted by this task.

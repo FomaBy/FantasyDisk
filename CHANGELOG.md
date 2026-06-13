@@ -4,6 +4,10 @@
 
 ## [Unreleased] — ветка dev
 
+- Content (SCRUM-192): `sprite_path` новых классов выровнен с canonical registry — Вор, Элементалист, Снайпер, Священник, Биолог и Инженер теперь используют собственные full-art PNG вместо proxy-спрайтов старых классов; добавлен focused registry alignment test на все 17 персонажей.
+
+- Tests (SCRUM-203): добавлен focused UI no-overlap matrix test для main/settings/codex/patch/hero/victory/death peer-controls на 1152x648, 1280x720, 1600x900 и 2560x1440; rect dump пишется в `build/qa/ui_no_overlap_matrix.md`.
+
 - Performance (SCRUM-197): добавлен `CombatTargetQuery` с per-frame cache для enemy target lookups; hot-path запросы в ClassWeapon/BerserkWeapon/player ultimates/allies/summoner переведены на nearest/radius/corridor/segment helpers, добавлен focused cache test.
 
 - Баланс-аудит (SCRUM-190): добавлен сценарный survivability harness для fragile/steady/sturdy/tank профилей и roster projection по реальным классам; отчеты `build/survivability_report.md` и `build/survivability_scenarios_report.md` фиксируют текущие TTD/mitigation слои без изменения балансовых констант.
@@ -12,7 +16,7 @@
 
 - Bugfix (SCRUM-211): товары магазина перенесены из старой правой wall-зоны в центр нового shop backdrop; frameless стиль и node-bound stock сохранены, runtime smoke проверяет центр группы (`center_delta_x=0.0`) и no-overlap на 1280x720/2560x1440.
 
-- UI Art (SCRUM-147): начат полный dark fantasy UI restyle — live `global/escape/shop` frame PNG заменены на obsidian/brass/crimson gothic frames, добавлен canonical `assets/sprites/ui/frames/dark_fantasy/` kit с единым Parchment & Wax Seal 4-state button set для primary/secondary/danger, обновлены UI canon docs и создан Back-end handoff для stateful theme integration/cleanup.
+- UI Art (SCRUM-147): rejected flat UI pass replaced with an accepted-reference Parchment & Wax Seal rebuild — buttons are cut from `button_parchment_wax_seal.png`, frames use parchment + serrated forged-metal brackets, live `global/escape/shop` PNGs refreshed in-place, canonical `assets/sprites/ui/frames/dark_fantasy/` kit rebuilt, preview `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`, pipeline `tools/build_parchment_wax_ui_kit.py`; Godot import and runtime smoke pass.
 
 - Баланс-аудит (SCRUM-188): добавлен route-level отчет `build/route_economy_xp_model.md` для balanced/combat-heavy/shop-heavy маршрутов; модель подтверждает 8-9 level-up и healthy/high покупательную способность, поэтому текущий XP uplift +7.1% оставлен без дополнительного повышения.
 

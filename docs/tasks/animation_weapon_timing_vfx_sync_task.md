@@ -44,5 +44,12 @@ Verification:
 - `tests/runtime_smoke_test.gd` passed after the parallel SCRUM-207 shop stock
   fix landed in the shared workspace.
 
+## QA-Вердикт
+Ожидает QA. Если QA вернет PASSED, Jira SCRUM-187 можно переводить в
+`Готово`; если FAILED, задачу нужно открыть заново с конкретным дефектом.
+Jira sync note 2026-06-13: direct read/update from this environment is blocked
+by Jira response `404 Issue does not exist or you do not have permission to see
+it` for SCRUM-187; local source task is ready for QA verdict sync.
+
 ## Dispatcher Note (2026-06-13)
 Dispatched to Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after user confirmed no feature freeze / backlog is eligible.

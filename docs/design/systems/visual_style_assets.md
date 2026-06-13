@@ -56,7 +56,7 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
-SCRUM-147 replaces the old warm tavern UI canon with the active dark fantasy UI canon. The reference source is `docs/design/references/ui_dark_fantasy_2026_06/`, especially `screen_settings_full_reference.png` and the 9 button kit sheets. The visual language is gothic dark fantasy: obsidian/blackened metal panels, brass/gold bevels, deep crimson gems, violet magic accents for arcane chips/tooltips, dark cathedral depth behind central windows, and no meaningless filler marks. Ornament must function as frame construction, corner hardware, state feedback, or material detail.
+SCRUM-147 replaces the old warm tavern/contextual UI canon with the active **Parchment & Wax Seal** dark fantasy UI canon. The fixed reference source is `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`, supported by `screen_settings_full_reference.png` and the fullscreen `docs/design/ui_parchment_kit/` references. The accepted 2026-06-13 rebuild uses the actual reference raster materials: aged parchment bodies, red wax seals, serrated forged-metal end caps/corner brackets, small ruby accents, warm gold hover glow, pressed darkening, and disabled grayscale. Ornament must function as frame construction, corner hardware, state feedback, or believable D&D/tabletop material detail. Abstract filler lines, circles, squares, dots, grids, or default Godot-looking controls are review defects.
 
 Canonical dark fantasy assets live in `assets/sprites/ui/frames/dark_fantasy/`:
 
@@ -68,15 +68,19 @@ Canonical dark fantasy assets live in `assets/sprites/ui/frames/dark_fantasy/`:
 
 State language:
 
-- all buttons use one Parchment & Wax Seal base kit, matching the SCRUM-147 task update;
-- primary: red wax seal accent for start/select/confirm/reward;
-- secondary: muted gold wax seal accent for back/settings/navigation;
-- danger: dark red wax seal accent for exit/end run/defeat confirmation;
-- hover: brighter trim and subtle glow;
-- pressed: darker, visually compressed;
-- disabled: desaturated and lower contrast.
+- all button role paths use one Parchment & Wax Seal base kit cut from the fixed reference sheet;
+- primary/secondary/danger keep separate asset IDs for Back-end role mapping, but they must not switch to unrelated visual kits;
+- hover: warm gold glow and brighter parchment edge, matching the reference;
+- pressed: darker parchment/metal and subtly compressed read, matching the reference;
+- disabled: desaturated grayscale, matching the reference.
 
-SCRUM-147 also overwrote the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, and selected `assets/sprites/ui/shop/` paths with the new dark fantasy material treatment while preserving file names and dimensions. Back-end integration for explicit 4-state button styleboxes and safe cleanup is tracked in `docs/tasks/backend_ui_dark_fantasy_theme_integration_task.md`.
+SCRUM-147 also overwrote the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, and selected `assets/sprites/ui/shop/` paths with the accepted parchment/wax/forged-metal treatment while preserving file names and dimensions. Back-end integration for explicit 4-state button styleboxes and safe cleanup is tracked in `docs/tasks/backend_ui_dark_fantasy_theme_integration_task.md`.
+
+Rebuild/QA assets:
+
+- `tools/build_parchment_wax_ui_kit.py` - deterministic raster slicing/rebuild pipeline from the approved references;
+- `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png` - side-by-side reference/asset acceptance sheet;
+- `docs/design/previews/ui_parchment_kit_reference_contact.png` - contact sheet of the six fullscreen parchment-kit references.
 
 System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, arrows, checkbox checked/unchecked, slider track/grabber and scrollbar grabber. `scripts/ui_icon_registry.gd` exposes them as `system_*` IDs. Default grey Godot controls should remain fail-safe only.
 

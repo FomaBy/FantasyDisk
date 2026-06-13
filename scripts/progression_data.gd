@@ -154,7 +154,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Уловки, рывки и карманная экономика.",
 		"strengths": "мобильность, крит, золото.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/assassin.png",
+		"sprite_path": "res://assets/sprites/characters/thief.png",
 	},
 	"elementalist": {
 		"id": "elementalist",
@@ -162,7 +162,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Смена стихий, орбиты и разломы.",
 		"strengths": "области поражения, контроль зон, взрывной урон.",
 		"weaknesses": "хрупкий, требует позицию.",
-		"sprite_path": "res://assets/sprites/characters/dark_mage.png",
+		"sprite_path": "res://assets/sprites/characters/elementalist.png",
 	},
 	"sniper": {
 		"id": "sniper",
@@ -170,7 +170,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Точные выстрелы, метки и зоны поражения.",
 		"strengths": "дальность, одиночные цели, фокус элиток.",
 		"weaknesses": "слабее против плотной толпы рядом.",
-		"sprite_path": "res://assets/sprites/characters/ranger.png",
+		"sprite_path": "res://assets/sprites/characters/sniper.png",
 	},
 	"priest": {
 		"id": "priest",
@@ -178,7 +178,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Благословения, печати и священное восстановление.",
 		"strengths": "лечение, защита, стабильность.",
 		"weaknesses": "меньше взрывного урона по одиночной цели.",
-		"sprite_path": "res://assets/sprites/characters/doctor.png",
+		"sprite_path": "res://assets/sprites/characters/priest.png",
 	},
 	"biologist": {
 		"id": "biologist",
@@ -186,7 +186,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Образцы, споры и симбиотические реакции.",
 		"strengths": "контроль биомассой, периодический урон, адаптация.",
 		"weaknesses": "нужны цели для цепных реакций.",
-		"sprite_path": "res://assets/sprites/characters/chemist.png",
+		"sprite_path": "res://assets/sprites/characters/biologist.png",
 	},
 	"robot": {
 		"id": "robot",
@@ -202,7 +202,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Мастерская устройств, дронов и минных сеток.",
 		"strengths": "устройства, зона контроля, поддержка.",
 		"weaknesses": "нужно заранее ставить позицию.",
-		"sprite_path": "res://assets/sprites/characters/druid.png",
+		"sprite_path": "res://assets/sprites/characters/engineer.png",
 	},
 	"dark_mage": {
 		"id": "dark_mage",

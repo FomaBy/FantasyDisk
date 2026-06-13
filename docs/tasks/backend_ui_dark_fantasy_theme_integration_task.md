@@ -12,11 +12,21 @@ Jira key `SCRUM-222` is now synced. Dispatched to Back-end thread
 Scope is code/theme wiring and verification; any newly discovered motion/timing
 work must be handed off to Animator instead of handled in Back-end.
 
-Dependency update: SCRUM-147 Design review rejected the current generated frame
-set on 2026-06-13 because it does not match the Parchment & Wax Seal reference.
-Do not wire the rejected dark_fantasy/global/escape frame assets as final
-styleboxes. Wait for the accepted SCRUM-147 regeneration, or limit work to
-non-final scaffolding that can swap assets without committing the rejected kit.
+Dependency update: SCRUM-147 Design rebuild is complete as of 2026-06-13. Use the
+accepted-reference Parchment & Wax Seal regeneration, not the earlier rejected
+flat/procedural pass. Canonical preview:
+`docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`.
+
+## Dispatcher Unblock / Redispatch (2026-06-13)
+
+The previous SCRUM-147 blocker is resolved: Design completed the accepted-reference
+Parchment & Wax Seal rebuild. Redispatched to Back-end thread
+`019eabd9-780b-78a2-9f4b-e7203d659ef2` for implementation and Jira sync.
+
+Per PM request, keep High-level model/reasoning settings for this work; do not
+downgrade to low. If integration reveals motion, timing, VFX sync, or animation
+state work, create/update an Animator handoff instead of absorbing it in
+Back-end.
 
 ## Context
 
@@ -43,6 +53,7 @@ Canonical kit:
 
 ```text
 assets/sprites/ui/frames/dark_fantasy/
+docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png
 docs/design/previews/ui_dark_fantasy_restyle_kit_contact.png
 assets/sprites/ui/frames/escape/escape_stats_visual_kit_preview.png
 ```
@@ -64,7 +75,7 @@ assets/sprites/ui/shop/ui_shop_tooltip_frame.png
 - Runtime smoke passes.
 - UI no-overlap smoke/screenshots pass for key screens.
 - Buttons visually use correct hover/pressed/disabled states from the new kit.
-- Final stylebox wiring uses the accepted SCRUM-147 regenerated kit, not the
-  rejected 2026-06-13 frame set.
+- Final stylebox wiring uses the accepted SCRUM-147 regenerated kit documented
+  in `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`.
 - No live screen uses the old tavern/contextual UI canon after integration.
 - Superseded frame cleanup is done only after reference checks and backup.

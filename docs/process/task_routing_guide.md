@@ -19,7 +19,8 @@
 любые изображения — отдаются исполнителю **Codex Design** (генерация изображений)
 и выполняются в **стиле D&D** (актуальный dark fantasy/tabletop канон проекта:
 реалистичные магические предметы, painterly character/enemy art, а UI — по
-SCRUM-147 dark fantasy gothic canon с obsidian/brass/crimson/necromantic kits; см.
+SCRUM-147 Parchment & Wax Seal dark fantasy canon: aged parchment, red wax seal,
+serrated forged metal, ruby accents and realistic D&D material detail; см.
 актуальные референсы в docs/design/systems/visual_style_assets.md и
 content_registry). К каждому запуску генерации ОБЯЗАТЕЛЬНО прикладываются
 референсы-изображения. Claude-Designer остается ревьюером, интегратором и

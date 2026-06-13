@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Полный рестайл UI в Dark Fantasy (кнопки → весь интерфейс)
 
-Статус: in_progress (Design ОТКЛОНЕНО 2026-06-13 — переделать по эталону Parchment & Wax Seal)
+Статус: done (Design rebuild complete 2026-06-13 — accepted-reference Parchment & Wax Seal kit)
 Приоритет: high
 Версия: 0.1.4
 Создано: 2026-06-12
@@ -217,3 +217,60 @@ Deferred out of Design scope:
 ### Внимание Back-end/интеграция: in-place замены `ui/frames/escape/*` и `ui/frames/global/*` — часть
 ОТКЛОНЁННОЙ поставки; НЕ вайрить styleboxes и НЕ коммитить их как финал до перегенерации. Незакоммиченный
 кит `ui/frames/dark_fantasy/` оставлен как есть для итерации (НЕ принят).
+
+SUPERSEDED 2026-06-13: блок выше относится только к отклоненной первой поставке.
+Ниже зафиксирована новая reference-matched поставка, которую можно передавать в
+Back-end integration как актуальный SCRUM-147 Design результат.
+
+## Result / Redo (2026-06-13) — DONE, Parchment & Wax Seal reference-matched rebuild
+
+Design reopened SCRUM-147 after the user rejection, re-read the task, inspected:
+
+- `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`;
+- `docs/design/references/ui_dark_fantasy_2026_06/screen_settings_full_reference.png`;
+- all six fullscreen references in `docs/design/ui_parchment_kit/`;
+- generated contact sheet `docs/design/previews/ui_parchment_kit_reference_contact.png`.
+
+Decision: do not invent a new procedural UI kit. The final asset rebuild cuts and
+reassembles approved raster reference materials:
+
+- buttons are cut from the fixed `button_parchment_wax_seal.png` sheet, preserving
+  aged parchment, red wax seal, serrated forged-metal end caps, right ruby,
+  hover gold glow, pressed darkening, and disabled grayscale;
+- panels/cards/tooltips/HUD/shop frames use clean parchment fills plus forged metal
+  brackets/end-cap hardware sampled from the accepted references;
+- no baked text, no abstract filler lines/circles/squares, no default Godot look.
+
+Pipeline added:
+
+- `tools/build_parchment_wax_ui_kit.py`
+
+Generated/replaced assets:
+
+- canonical kit: `assets/sprites/ui/frames/dark_fantasy/*.png` (23 files);
+- live fallback frames: `assets/sprites/ui/frames/global/*.png`;
+- Escape stats frames: `assets/sprites/ui/frames/escape/*.png`;
+- shop state frames: `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png`,
+  `ui_shop_artifact_slot_hover.png`, `ui_shop_price_badge.png`,
+  `ui_shop_purchased_overlay.png`, `ui_shop_tooltip_frame.png`;
+- preview: `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`;
+- Escape preview: `assets/sprites/ui/frames/escape/escape_stats_visual_kit_preview.png`.
+
+Validation:
+
+- PNG validation passed: all generated/replaced UI frame assets are RGBA and have
+  non-empty alpha; dimensions preserved.
+- Visual self-review passed against the side-by-side reference preview: parchment,
+  wax seal, serrated forged metal, ruby, hover/pressed/disabled states are readable.
+- Godot import passed:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --import`
+- Runtime smoke passed:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+
+Jira/local sync:
+
+- Source task set to `done` so SCRUM-147 can leave `В работе`.
+- `docs/process/task_board.md` updated: SCRUM-147 removed from active Design work;
+  SCRUM-222 dependency updated to the accepted kit.
+- Jira REST sync completed from this thread: SCRUM-147 result comment added and
+  issue transitioned from `В работе` to `Контроль качества`.

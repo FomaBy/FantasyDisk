@@ -1,6 +1,6 @@
 # Back-end Task: Refactor `ui_screens.gd` Into Domain UI Modules
 
-Статус: in_progress
+Статус: blocked
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-174
@@ -30,3 +30,13 @@ High conflict risk. Run only when no active task is editing `scripts/ui_screens.
 ## Dispatcher Note (2026-06-13)
 Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.
 Dispatcher: restarted to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13 after PM reset stale in_progress. High-conflict task; only start when no active UI edits.
+
+## Blocked / Serialized (2026-06-13)
+
+Blocked by active UI dependency churn. SCRUM-222 is waiting on the accepted
+SCRUM-147 UI frame kit, and current UI no-overlap/theme work still depends on
+stable screen/style behavior. Splitting `scripts/ui_screens.gd` while UI assets
+and tests are still settling would create high-conflict noise.
+
+Next unblock: resume after SCRUM-147/SCRUM-222 is unblocked and active UI edits
+are closed. No UI module split was started.

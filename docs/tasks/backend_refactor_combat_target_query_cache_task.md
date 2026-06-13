@@ -38,3 +38,21 @@ Verification:
 - `tests/combat_target_query_cache_test.gd`: passed.
 - `tests/melee_weapon_targeting_test.gd`: passed.
 - `tests/runtime_smoke_test.gd`: passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-197)
+
+Проверено фактически (корректность кэша + регресс-тесты + smoke на чистом HEAD):
+- Кэш-инвалидация (combat_target_query.gd:4-20) — КЛЮЧЕВАЯ корректность рефактора:
+  ключ `frame_key = process_frames + physics_frames*1e6` И `tree_id`; при изменении
+  любого — `_cache_generation += 1` + `_cached_enemies.clear()` (rebuild). Кэш живёт
+  ровно один кадр → НЕТ устаревших таргетов между кадрами; смена сцены тоже сбрасывает.
+- Хелперы nearest/nearest-many/radius/corridor/segment/has-in-radius; группа `enemies`
+  сохранена (контракт совместимости). Rewire в class_weapon/berserk_weapon/player/
+  ally_minion/summoner_weapon без изменения геометрии таргетинга/урона.
+- Выделенный `combat_target_query_cache_test` — PASSED (nearest/radius/corridor/segment
+  + same-frame reuse).
+- РЕГРЕСС-ГАРД `melee_weapon_targeting_test` — PASSED: таргетинг не изменился (это и есть
+  главная проверка «no gameplay behavior change»).
+- runtime/attack_vfx smoke зелёные на ЧИСТОМ worktree HEAD.
+Чистый перф-рефактор (меньше аллокаций hot-path), поведение неизменно. Багов нет.
