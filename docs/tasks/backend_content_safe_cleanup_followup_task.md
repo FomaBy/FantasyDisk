@@ -1,6 +1,6 @@
 # Back-end Task: Safe Cleanup Follow-up For Legacy Asset Candidates
 
-Статус: in_progress
+Статус: done (2026-06-13, Claude Fable 5)
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-175

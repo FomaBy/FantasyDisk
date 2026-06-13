@@ -71,8 +71,14 @@ released, создаётся следующая. Игровые патч-ноу�
 
 ## Правила Создания И Обновления
 
-1. Новые `.md` task-файлы и Jira issues создает PM/другая LLM, не Codex
-   Documentation dispatcher.
+1. Новые `.md` task-файлы и Jira issues создает PM/другая LLM. Codex
+   Documentation dispatcher также может создавать новые задачи, но только как
+   backlog `0.1.5` (`Статус: new`, `Версия: 0.1.5`, fixVersion `0.1.5`, без
+   active sprint assignment) или как явно текущие bug/QA defect/regression/
+   release blocker задачи.
+   Обычная сверка dispatcher может идти через `python3 tools/jira_board_sync.py
+   --no-create`; после намеренного создания backlog-задачи нужно запускать sync
+   без `--no-create`, чтобы появился Jira issue в backlog `0.1.5`.
 2. Пока feature block активен для стабилизации `0.1.4`, dispatcher добавляет в
    текущий sprint только задачи с `Версия: 0.1.4` или без строки версии, если они
    уже на active board, а также bugfix/regression/QA defect/release blocker или
@@ -110,7 +116,9 @@ released, создаётся следующая. Игровые патч-ноу�
 
 1. Проверить наличие `Jira: SCRUM-*` в task-файле.
 2. Если Jira key отсутствует — передать PM/owner задачу на создание issue до
-   начала работы. Codex Documentation dispatcher сам issue не создает.
+   начала работы. Исключение: Codex Documentation dispatcher может сам создать
+   Jira issue для backlog `0.1.5` или текущего bug/QA defect/release blocker,
+   соблюдая feature-freeze правила выше.
 3. При изменении `.md` статуса обновить Jira status/comment.
 4. Если задача переносится, блокируется или требует handoff — отразить это и в
    `.md`, и в Jira comment/status.
@@ -118,9 +126,11 @@ released, создаётся следующая. Игровые патч-ноу�
 6. Закрывать только свои задачи или задачи своего ревью-контура. Dispatcher/PM
    не закрывает задачу за исполнителя; он синхронизирует Jira только после того,
    как исполнитель записал результат в task-файл/board или QA добавил verdict.
-7. Codex Documentation dispatcher не создает новые Jira issues и `.md` task-файлы.
-   Его допустимые действия: route уже существующих задач, update existing status,
-   Jira comments/status sync, duplicate/superseded marking.
+7. Codex Documentation dispatcher не создает новые active-sprint feature tasks.
+   Его допустимые действия: создать backlog `0.1.5` task/Jira issue, route уже
+   существующих eligible задач, update existing status, Jira comments/status
+   sync, duplicate/superseded marking, а также оформить текущий bug/QA defect/
+   release blocker.
 
 ## Проверка Дубликатов
 
@@ -148,10 +158,9 @@ PM-коррекция 2026-06-13: `Версия: 0.1.5` остаётся backlog
    release blockers и уже записанные executor results до Jira/QA sync.
 3. Не начинать backlog-задачи `Версия: 0.1.5` без PM override и не переводить
    их в `in_progress` во время фриза.
-4. Для новых не-баговых задач создавать/оставлять Jira issue в backlog `0.1.5`,
-   без sprint assignment. Для Codex Documentation dispatcher это означает: не
-   создавать самому, а проверить/сообщить, что PM/owner должен оформить
-   backlog-задачу.
+4. Для новых не-баговых задач создавать/оставлять `.md` task и Jira issue в
+   backlog `0.1.5`, без sprint assignment. Codex Documentation dispatcher может
+   оформить такую backlog-задачу сам, но не dispatch'ит её во время freeze.
 5. Для багов, QA-дефектов, регрессий и release blockers текущего scope
    использовать текущий sprint и обычный QA flow.
 6. Снять фриз сразу после релиза `v0.1.4`; следующий sprint `0.1.5` забирает

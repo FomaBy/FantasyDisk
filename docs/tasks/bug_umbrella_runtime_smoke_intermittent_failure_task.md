@@ -1,11 +1,12 @@
 # BUG: Интермиттентное падение umbrella `runtime_smoke_test` + freed-lambda warning
 
-Статус: in_progress
+Статус: done
 Приоритет: low
 Роль: Back-end
 Версия: 0.1.4
 Jira: SCRUM-257
 Найдено QA: при регрессе SCRUM-223 (непрерывный QA-прогон 2026-06-13)
+QA: in_progress (2026-06-13)
 
 ## Dispatcher Redispatch (2026-06-13)
 
@@ -79,3 +80,34 @@ sync перед остановкой.
 
 Остаётся: дождаться захвата генуинного бэктрейса репро-харнессом → точечный
 фикс конкретной ассертации/лямбды; затем ≥30 прогонов без падений.
+
+## Result (2026-06-13)
+
+Done. Back-end diagnosis found and addressed two concrete stability risks:
+
+1. Delayed weapon VFX callbacks in `scripts/class_weapon.gd` no longer capture
+   temporary `Node` objects (`target`, `owner_node`, `projectile`) directly.
+   The orb/curse callbacks now store instance IDs and resolve them at callback
+   time, so cleanup between umbrella smoke sections cannot produce a freed node
+   capture or accidentally call into a stale object. Gameplay damage, timings,
+   targeting and VFX paths are unchanged.
+2. The umbrella probe caught a real layout failure on run 12:
+   `HeroSelectRadarPanel` at 1280x720 was too close to the header. The floating
+   radar was moved down from `y=98..398` to `y=118..418`, preserving the same
+   top-right floating behavior while giving the wax-seal header a stable gap.
+
+Verification:
+
+- `tests/runtime_smoke_ui_test.gd` passed.
+- `tests/runtime_smoke_weapon_mechanics_test.gd` passed.
+- `tests/animation_smoke_test.gd` passed.
+- Standard `tests/runtime_smoke_test.gd` passed.
+- Final isolated umbrella series passed 12/12 with separate `--user-data-dir`
+  and full logs in `build/qa/runtime_smoke_257_final_*.log`.
+- `rg "Lambda capture|WARNING|ERROR|_fail" build/qa/runtime_smoke_257_final_*.log`
+  found no warnings/errors/failures; every final log contains
+  `Runtime smoke test passed.`
+
+Note: earlier after-fix probe logs intentionally preserved the caught
+`HeroSelectRadarPanel` failure in `build/qa/runtime_smoke_257_after_fix_12.log`;
+that failure is fixed by the final radar offset adjustment.

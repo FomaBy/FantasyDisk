@@ -22,7 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SELF = Path(__file__).resolve()
-BACKUP_DIR = ROOT / "build" / "cleanup_backup_2026_06_12"
+BACKUP_DIR = ROOT / "build" / "cleanup_backup_2026_06_13"
 
 SOURCE_GLOBS = ("scenes", "scripts", "tests", "tools")
 SOURCE_FILES = ("project.godot", "export_presets.cfg", "AGENTS.md")
@@ -38,6 +38,7 @@ PROTECTED_PREFIXES = (
     ".godot/",
     "build/qa/",
     "build/cleanup_backup_2026_06_12/",
+    "build/cleanup_backup_2026_06_13/",
 )
 PROTECTED_FILES = {"keep-awake.sh"}
 
@@ -180,7 +181,16 @@ def collect_source_text() -> str:
 
 def known_game_ids() -> set[str]:
     ids: set[str] = set()
-    for rel_path in ("scripts/progression_data.gd", "scripts/event_data.gd"):
+    for rel_path in (
+        "scripts/progression_data.gd",
+        "scripts/progression_data_characters.gd",
+        "scripts/progression_data_weapons.gd",
+        "scripts/progression_data_content.gd",
+        "scripts/progression_data_shop.gd",
+        "scripts/progression_data_ascension.gd",
+        "scripts/progression_data_enemies.gd",
+        "scripts/event_data.gd",
+    ):
         path = ROOT / rel_path
         if not path.exists():
             continue

@@ -1,6 +1,6 @@
 # Back-end Task: Refactor `ui_screens.gd` Into Domain UI Modules
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-174
@@ -72,3 +72,34 @@ low. Не начинать параллельно с работой, котор�
 или UI smoke tests; сохранить визуал/поведение, закрыть task/board/Jira sync
 перед переходом к следующей queued задаче. Если всплывает motion/animation
 scope, создать/update Animator handoff вместо выполнения animation work.
+
+## Result (2026-06-13)
+
+Done with a conservative release-safe split. `scripts/ui_screens.gd` remains the
+compatibility facade with all public methods and tested node names intact, while
+the lowest-risk focused UI domains moved into `scripts/ui/` modules:
+
+- `scripts/ui/hero_stat_radar.gd` — standalone `HeroStatRadar` `Control`.
+- `scripts/ui/ui_theme_paths.gd` — dark-fantasy frame/button texture paths.
+- `scripts/ui/shop_ui_constants.gd` — shop icon paths, slot sizes and cursor
+  variant paths.
+- `scripts/ui/hero_select_constants.gd` — hero radar stat IDs and class colors.
+
+The facade aliases those constants/classes, so existing screen code, tests and
+callers continue to use the same names. No visual design, gameplay behavior,
+node names, button flow, shop behavior, HUD layout or animation behavior was
+intentionally changed.
+
+Verification passed:
+
+- `tests/runtime_smoke_ui_test.gd`
+- `tests/animation_smoke_test.gd`
+- `tests/meta_progression_smoke_test.gd`
+- `tests/meta_skill_tree_smoke_test.gd`
+- `tests/melee_weapon_targeting_test.gd`
+- `tests/attack_vfx_smoke_test.gd`
+- `tests/hazard_vfx_smoke_test.gd`
+- `tests/runtime_smoke_test.gd`
+
+Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`,
+`docs/design/systems/technical_architecture.md`.

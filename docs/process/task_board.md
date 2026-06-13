@@ -12,7 +12,7 @@
 2026-06-13: задачи с `Версия: 0.1.5` не затягивать в `0.1.4`, не dispatch'ить и
 не переводить в `in_progress` до релиза `v0.1.4` или явного PM override.
 Исключение: уже записанные executor results синхронизируются по факту
-(`SCRUM-239` сейчас в QA после Back-end unblock). Остальной patch backlog
+(`SCRUM-239` прошёл QA после Back-end unblock). Остальной patch backlog
 `SCRUM-232` остаётся fixVersion `0.1.5` вне active sprint.
 
 ## Прогресс по эпикам (снимок Jira, 2026-06-13)
@@ -33,8 +33,7 @@
 | **ИТОГО** | **222** | **9** | **5** | **14** | **250** |
 
 (КК = Контроль качества, ждёт QA; Кв = К выполнению. Для `SCRUM-232` колонка
-«Кв» сейчас означает backlog `0.1.5` вне active sprint; `SCRUM-239` показан ниже
-как active QA row.)
+«Кв» сейчас означает backlog `0.1.5` вне active sprint.)
 
 ## Активные задачи
 
@@ -55,21 +54,29 @@
 | [backend_test_runtime_smoke_suite_split_task.md](../tasks/backend_test_runtime_smoke_suite_split_task.md) | Back-end | done | Jira: SCRUM-202. **QA: passed** (35b79e06) — 5 focused-сьютов (extends+override `_initialize` с реальными `_test_*`) + umbrella все зелёные headless; регрессия зелёная; нефатальный lambda-warning у umbrella (exit 0, латентный, отложен) |
 | [backend_refactor_class_weapon_mode_registry_task.md](../tasks/backend_refactor_class_weapon_mode_registry_task.md) | Back-end | done | Jira: SCRUM-196. **QA: passed** (1fbc20c6) — registry+API, 83 executor/39 `_fire_*` сохранены, coverage-тест ассертит mode→executor по всему ростеру, weapon/animation/targeting/umbrella/meta зелёные |
 | [backend_refactor_progression_data_domain_split_task.md](../tasks/backend_refactor_progression_data_domain_split_task.md) | Back-end | review | Jira: SCRUM-198. Executor done; ProgressionData split into compatibility facade plus domain data files; facade parse/SHOP_ITEMS blocker fixed; API surface, content registry, progression economy, balance harness and umbrella runtime smoke passed; awaiting QA |
-| [backend_refactor_ui_screens_domain_split_task.md](../tasks/backend_refactor_ui_screens_domain_split_task.md) | Back-end | in_progress | Jira: SCRUM-199. Active `0.1.4` task after SCRUM-198; High/no-low; no visual/gameplay changes, no animation scope |
+| [backend_refactor_ui_screens_domain_split_task.md](../tasks/backend_refactor_ui_screens_domain_split_task.md) | Back-end | done | Jira: SCRUM-199. UI screens facade preserved; hero radar control/theme paths/shop constants/hero select constants split into scripts/ui modules; UI, animation, meta, melee, VFX and umbrella smokes passed |
 | [backend_content_safe_cleanup_followup_task.md](../tasks/backend_content_safe_cleanup_followup_task.md) | Back-end | in_progress | Jira: SCRUM-193. Active `0.1.4` task after SCRUM-198/199; High/no-low; safe cleanup only with backup/manifest checks |
 | [backend_docs_domain_consistency_update_task.md](../tasks/backend_docs_domain_consistency_update_task.md) | Back-end | in_progress | Jira: SCRUM-195. Active `0.1.4` follow-up after SCRUM-193 to refresh domain docs and close board/Jira sync |
-| [animation_unique_attacks_all_classes_015_task.md](../tasks/animation_unique_attacks_all_classes_015_task.md) | Animator | review | Jira: SCRUM-239. Executor done; Back-end SCRUM-198 fixed the ProgressionData facade parse blocker; animation smoke and runtime smoke passed; awaiting QA |
+| [animation_unique_attacks_all_classes_015_task.md](../tasks/animation_unique_attacks_all_classes_015_task.md) | Animator | done | Jira: SCRUM-239. **QA: passed** (168c3fad) — weapon phase variants reach cutout rig without gameplay changes; animation + runtime smoke passed ×2 after Back-end ProgressionData unblock; no bugs |
 
 ## Баги от QA
 
 | Баг | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [bug_flaky_melee_targeting_hammer_aoe_cache_task.md](../tasks/bug_flaky_melee_targeting_hammer_aoe_cache_task.md) | Back-end | done | Jira: SCRUM-228. **QA: passed** (35b79e06) — анти-флака 25/25 PASS (было ~17%), `await process_frame` на месте, production-кэш `combat_target_query.gd` не тронут, регрессия 4×smoke зелёная |
-| [bug_umbrella_runtime_smoke_intermittent_failure_task.md](../tasks/bug_umbrella_runtime_smoke_intermittent_failure_task.md) | Back-end | in_progress | Jira: SCRUM-257. Active `0.1.4` bug; dispatch Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2`, High/no-low. Umbrella `runtime_smoke_test` rare flake + `Lambda capture freed`; diagnose full backtrace, then fix |
+| [bug_umbrella_runtime_smoke_intermittent_failure_task.md](../tasks/bug_umbrella_runtime_smoke_intermittent_failure_task.md) | Back-end | done | Jira: SCRUM-257. Weapon delayed callbacks no longer capture freed nodes directly; caught 1280x720 hero-radar/header umbrella failure fixed; UI/weapon/animation/umbrella smokes passed and final isolated umbrella series is 12/12 clean |
 
 ## Backlog 0.1.5 — не dispatch во время feature freeze
 
-PATCH-эпик `SCRUM-232` содержит 14 незавершённых задач `Версия: 0.1.5` в backlog и 13 закрытых duplicate/superseded Jira issues. Эти backlog-задачи не показываются как active rows и не отправляются исполнителям до релиза `v0.1.4` или явного PM override. `SCRUM-239` показан выше как active QA row, потому что по нему уже записан Animator result.
+PATCH-эпик `SCRUM-232` содержит 14 незавершённых задач `Версия: 0.1.5` в backlog и 13 закрытых duplicate/superseded Jira issues. Эти backlog-задачи не показываются как active rows и не отправляются исполнителям до релиза `v0.1.4` или явного PM override. `SCRUM-239` уже прошёл QA как активная 0.1.4 work item, потому что по нему был записан Animator result.
+
+Новые запросы во время freeze можно оформлять как backlog-задачи `0.1.5`
+(`Статус: new`, `Версия: 0.1.5`, Jira fixVersion `0.1.5`, вне active sprint).
+Codex Documentation dispatcher может создавать такие task/Jira entries, но не
+dispatch'ит их и не переводит в `in_progress` до релиза `v0.1.4` или явного PM
+override.
+
+| backend_final_balance_audit_aoe_crowd_clear_task | Back-end | new(0.1.5) | ФИНАЛ патча: сверка цифр урона + фокус crowd-clear (пачки 5/10), выправить классы со слабым AoE; после всех балансовых правок |
 
 ## Архив
 

@@ -118,8 +118,18 @@ SCRUM-158/170 добавили и подключили canonical UI backdrop set
 | Ассет | Путь | Использование |
 | --- | --- | --- |
 | FantasyDisk App Icon | `icon.svg` | Project/application icon через `project.godot` |
+| FantasyDisk Steam Library Logo | `assets/marketing/steam/fantasydisk_steam_library_logo.png` | 1280x720 transparent PNG для Steam library/logo placement; preview на темном фоне: `assets/marketing/steam/fantasydisk_steam_library_logo_preview.png` |
 
 ## UI Visual Style
+
+Hero select v3 keeps the hero portrait on the left, dossier/details in the main
+right-side information area, and `HeroSelectRadarPanel` as a separate floating
+top-right widget. The radar is intentionally offset below the header/wax-seal
+buttons to keep the 1280x720, 1600x900 and 2560x1440 no-overlap smoke stable.
+The radar drawing control now lives in `scripts/ui/hero_stat_radar.gd`, while
+hero-select constants, shop UI constants and dark-fantasy theme paths live in
+focused `scripts/ui/*` modules and are exposed through the existing
+`scripts/ui_screens.gd` facade.
 
 Основной UI pass SCRUM-147 после пользовательской правки 2026-06-13 использует Parchment & Wax Seal только для кнопок. Общие fallback-рамки лежат в `assets/sprites/ui/frames/global/`, Escape stats kit — в `assets/sprites/ui/frames/escape/`, canonical 4-state kit — в `assets/sprites/ui/frames/dark_fantasy/`. Кнопки вырезаны из `button_parchment_wax_seal.png` и сделаны выше, чтобы сургучная печать помещалась. Full parchment panels были отклонены как странно разрезанные; SCRUM-229 заменил non-button panels/windows/bars/checks на leather+gold kit из `docs/design/references/interface/`. Source kit: `assets/sprites/ui/frames/leather_gold/`; active preview: `docs/design/previews/interface_leather_gold_panel_kit_contact.png`; QA copy: `build/qa/interface_leather_gold_panel_kit_contact.png`; pipeline: `tools/build_leather_gold_ui_kit.py`.
 

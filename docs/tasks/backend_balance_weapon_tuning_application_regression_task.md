@@ -5,7 +5,7 @@
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-176
 Jira: SCRUM-191
-QA: blocked (2026-06-13) — рабочее дерево non-green из-за активного SCRUM-198
+QA: passed (2026-06-13)
 Эпик: epic_full_project_quality_pass
 
 ## Scope
@@ -57,3 +57,30 @@ green-стейт.** Собственный тест задачи уже зелё
 стабилизации будет clean PASS.
 
 Координационный риск зафиксирован в QA-заметке SCRUM-198 и эскалирован PM.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 9d9cd15b (ветка dev)
+
+Дерево SCRUM-198 устаканилось в стабильное зелёное окно — блокер снят, перепроверено.
+
+Проверено (фактически, ДВА полных прохода подряд, оба зелёные — не lucky-окно):
+- Целевой `weapon_tuning_application_test.gd` — PASS ×2 («51 пар, 51 с
+  нетривиальным множителем != 1.0»). 3 содержательных гейта: реестр
+  `ProgressionData.weapon()` несёт `budget_damage_multiplier` (а сырой
+  `WEAPONS_BY_CLASS` — нет, обход ловится); деривация `ratio ==
+  budget_damage_multiplier`; рантайм через реальный `Player.configure_character`.
+- Регрессия ×2: `runtime_smoke_weapon_mechanics_test`, `melee_weapon_targeting_test`,
+  `animation_smoke_test`, `meta_progression_smoke_test` — все зелёные оба прохода.
+
+Acceptance:
+- [x] Каждый class+weapon получает тюненный конфиг через `weapon()` (51 пара, все
+  с множителем != 1.0).
+- [x] Обход сырым `WEAPONS_BY_CLASS` отлавливается (гейт 1).
+- [x] Focused weapon config test + регрессия зелёные.
+
+Краевые случаи:
+- Стабильность подтверждена двумя проходами (ранее ловил транзиентную churn
+  SCRUM-198 — теперь её нет).
+
+Баги: нет.

@@ -139,3 +139,31 @@ Back-end mapping handoff: `docs/tasks/backend_ui_screen_backdrops_integration_ta
 - Без текста/watermark. Маппинг экран→фон — Back-end handoff
   `backend_ui_screen_backdrops_integration_task.md`.
 Готово к QA/интеграции.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 168c3fad (ветка dev)
+
+Проверено (фактически):
+- **6 ассетов** существуют, все `2560x1440 RGBA8`: 5 оконных подложек
+  (system_cathedral, merchant_archive, arcane_lab, reward_hall, defeat_crypt) +
+  `main_menu_epic_battle`.
+- **Спокойный центр** (численно, центральная зона 30-70%): подложки
+  contrast = cathedral 0.24 / merchant 0.05 / arcane 0.06 / reward 0.15 /
+  defeat 0.18 — низкий, окна читаемы. `main_menu_epic_battle` = 0.92 (насыщенный
+  арт битвы; кнопки слева, центр-окна не требует — корректно).
+- **Мапинг**: `SCREEN_BACKGROUND_PATHS` потребляется `ui_screens.gd:4019`
+  (`screen_background_id → path`). Wiring подтверждён.
+- **Визуал** (мои существующие QA-скрины): settings = cathedral, main_menu =
+  epic battle, weapon_select = merchant archive, hero_select = cathedral — все
+  рендерятся, центральные окна читаемы поверх подложки.
+- **Превью**: result-contact + reference-contact на месте. CHANGELOG: 5 упоминаний.
+- **Runtime smoke** сейчас зелёный (исторический HUD-overlap из заметки 2026-06-12
+  уже устранён; перепроверено ×2 в этой сессии).
+
+Acceptance:
+- [x] 5 подложек 2560×1440, спокойный центр, окна читаются.
+- [x] Главное меню — новый арт битвы с героями/боссами, левая зона под кнопки читаема.
+- [x] Подключено к экранам (SCREEN_BACKGROUND_PATHS); превью; CHANGELOG.
+
+Баги: нет.

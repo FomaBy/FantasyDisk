@@ -85,3 +85,26 @@ No source PNG redraws or gameplay/animation changes were performed in this audit
 задачи (new_bosses_mini_elites_redraw / vfx_sprite_polish / ui_icon_style_unification /
 legacy_sprite_cleanup_spec). Перерисовки идут отдельными задачами -> Codex генерация,
 Claude-Designer ревью. Read-only, исходники/анимации не трогались.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 168c3fad (ветка dev)
+
+Read-only Design-аудит. QA = проверка наличия и полноты артефактов.
+
+Проверено (фактически):
+- **Контакт-листы**: 11 шт. `docs/design/previews/audit_*.png` — на месте.
+- **Отчёт + инвентарь**: `sprite_visual_audit_2026_06.md` +
+  `sprite_visual_audit_inventory_2026_06.json` (+ .md) — присутствуют.
+- **Дочерние задачи**: 4/4 созданы (new_bosses_mini_elites_redraw,
+  vfx_sprite_polish, ui_icon_style_unification, legacy_sprite_cleanup_spec).
+  Косвенное подтверждение точности приоритетов: дочерние SCRUM-181 (vfx) и
+  SCRUM-182 (ui-icons) — те самые «слабейшие группы» из находок — уже доделаны
+  и прошли QA (PASSED) в этой сессии.
+
+Acceptance:
+- [x] Инвентаризация ~111 спрайтов со статусом (JSON+MD).
+- [x] Контактные листы по группам + отчёт с приоритетами.
+- [x] Созданы дочерние codex_design-задачи на перерисовки.
+
+Баги: нет (read-only аудит, ничего не менялось).

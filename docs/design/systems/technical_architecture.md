@@ -8,6 +8,10 @@
 
 - `scripts/main.gd`: thin coordinator, shared run state, constants, delegated test-compatible methods.
 - `scripts/ui_screens.gd`: menus, HUD, shop/event/rest, level-up, victory/death, shared UI styles.
+- `scripts/ui/hero_stat_radar.gd`: reusable hero-select stat radar control.
+- `scripts/ui/ui_theme_paths.gd`: dark-fantasy theme texture path registry.
+- `scripts/ui/shop_ui_constants.gd`: shop icon/slot/cursor UI constants.
+- `scripts/ui/hero_select_constants.gd`: hero-select radar stats and class colors.
 - `scripts/route_map_screen.gd`: route generation/rendering, scroll/pan/click handling.
 - `scripts/combat_director.gd`: combat lifecycle, spawn, arena, pickups, rewards.
 - `scripts/player.gd`: character config, stats, weapon equip, damage, rewards.

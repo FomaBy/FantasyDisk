@@ -48,6 +48,7 @@ Review and redraw as needed:
 
 ## Dispatcher Note (2026-06-13)
 Dispatched to Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` after user confirmed no feature freeze / backlog is eligible.
+QA: in_progress (2026-06-13)
 
 ## Result (2026-06-13)
 
@@ -75,6 +76,30 @@ Validation:
 - Godot import: passed with the updated VFX PNGs.
 - `res://tests/attack_vfx_smoke_test.gd`: passed.
 - `res://tests/runtime_smoke_test.gd`: blocked by unrelated Back-end/runtime regression in noncombat shop node stock persistence: reopening the same shop node generated a different stock list. No VFX asset or Design-path failure was reported before that assertion.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 168c3fad (ветка dev)
+
+Проверено (фактически):
+- **19 VFX-файлов** в `assets/sprites/effects/` — все загружаются, все RGBA8
+  (0 битых/не-RGBA), размеры/имена сохранены (in-place замена).
+- **Превью**: 5/5 (`vfx_polish_before/after/before_after_contact` + 2
+  readability field — meadow/marsh).
+- **VFX smoke**: `attack_vfx_smoke_test` + `hazard_vfx_smoke_test` — passed;
+  `animation_smoke_test` — passed. (Исторический shop-stock блокер из заметки
+  уже снят — runtime smoke зелёный в этой сессии.)
+- **Визуал** (`vfx_polish_before_after_contact.png`): «до» — плоские/неоновые
+  примитивы; «после» — сдержанный painterly D&D с материальной текстурой,
+  та же форма эффектов (читаемость боя сохранена), прозрачный фон чистый,
+  без неона/мусора.
+
+Acceptance:
+- [x] Before/after contact sheet.
+- [x] PNG size/mode/alpha валидированы (19/19 RGBA, dims preserved).
+- [x] Attack/hazard VFX smoke зелёные после интеграции.
+
+Баги: нет.
 
 Back-end/QA note:
 

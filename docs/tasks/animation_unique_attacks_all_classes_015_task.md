@@ -1,13 +1,14 @@
 # Анимации уникальных атак всех классов (патч 0.1.4)
 
-Статус: new (фриз: патч 0.1.5, повторно возвращён в бэклог PM 2026-06-13 — воркер сделал вопреки фризу)
+Статус: done
 Приоритет: normal
 Роль: Animator (rig motion в cutout_rig_2d.gd)
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-239
 Эпик-патч: 0.1.4 Бой и баланс (overhaul)
+QA: in_progress (2026-06-13)
 
 
 ## Dispatcher Redispatch (2026-06-13)
@@ -48,7 +49,7 @@ PM override: текущую board доделать в `0.1.4`; SCRUM-239 исп�
 
 ## Acceptance Criteria
 - [x] Анимации новых уникальных атак для затронутых классов/оружий; тайминги из конфигов.
-- [ ] Final animation+runtime smoke green after Back-end `ProgressionData` facade parse blocker is fixed.
+- [x] Final animation+runtime smoke green after Back-end `ProgressionData` facade parse blocker is fixed.
 - [x] CHANGELOG/animation.md обновлены; handoff не понадобился.
 
 ## Result
@@ -94,3 +95,40 @@ Verification now passed:
 
 No Animator-owned motion, rig, pose, or timing polish was changed in this
 Back-end unblock pass.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 168c3fad (ветка dev)
+
+Проверено (фактически):
+- **Механизм**: `Player.play_action_animation(...)` (player.gd:316) строит
+  animation-only variant `weapon_id:attack_mode:phase` (строка 338) — передаёт
+  фазу оружия в cutout rig, НЕ меняя damage/targeting/VFX (gameplay-preserving).
+- **Тест не пустышка** (`animation_smoke_test.gd`): матрица phase-pose по классам
+  — ассертит, что rig получает variant равный equipped weapon id и силуэт
+  отличается от idle: Berserk (sword/axe/hammer + overhead slam силуэт),
+  Soldier (rifle/grenade/bayonet), Thief (coin/shadow/smoke), Elementalist
+  (orb/prism/meteor), Sniper (deadeye/spotter/shatter), + elite attack phase.
+- **Прогон ×2 — оба зелёные**: `animation_smoke_test` + `runtime_smoke_test`.
+  Блокер SCRUM-198 (ProgressionData facade / `progression_data_meta.gd` /
+  `SHOP_ITEMS`) снят — финальная верификация прошла стабильно.
+
+Acceptance:
+- [x] Анимации уникальных атак для затронутых классов/оружий, тайминги фаз из
+  конфигов оружия (источник истины — код).
+- [x] animation + runtime smoke зелёные (×2) после снятия Back-end parse-блокера.
+- [x] Риги не сломаны (silhouette-сдвиг проверяется, idle-сборка цела).
+
+Краевые случаи:
+- Gameplay-инвариант: variant — чисто анимационный, не трогает урон/таргетинг/VFX.
+- Стабильность: 2 прохода после стабилизации дерева SCRUM-198.
+
+Баги: нет.
+
+## Dispatcher QA Status Correction (2026-06-13)
+
+SCRUM-239 remains an active `0.1.4` QA row because Animator implementation and
+Back-end unblock verification are already recorded above. It must not be
+redispatched during the feature freeze unless QA/PM requests fixes, but it also
+must not be returned to `0.1.5` backlog while awaiting QA. Dispatcher restored
+task metadata to `Статус: done`, `Версия: 0.1.4` for Jira/board sync.

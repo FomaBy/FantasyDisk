@@ -198,7 +198,8 @@ def main():
     sprint_queue = []
     for path in sorted(glob.glob(TASKS_GLOB)):
         t = parse_task(path)
-        # задача будущей версии (не текущего спринта-релиза) -> бэклог без fixVersion
+        # Задача будущей версии (не текущего спринта-релиза) -> бэклог:
+        # fixVersion целевой версии есть, active sprint assignment нет.
         t["next_version"] = bool(t["task_version"] and fix_version and t["task_version"] != fix_version)
         target_status = STATUS_TARGET[t["status"]]
         entry = mapping.get(t["file"])
@@ -232,7 +233,7 @@ def main():
             entry = mapping[t["file"]]
             created += 1
             if not t["next_version"]:
-                sprint_queue.append(key)  # фичи 0.1.4 остаются в бэклоге (feature freeze)
+                sprint_queue.append(key)  # текущий release scope попадает в active sprint
             print(f"created {key}: {t['file']}")
         if entry.get("status") == "Готово":
             continue  # финальное состояние: из «Готово» не понижаем

@@ -4,6 +4,18 @@
 
 ## [Unreleased] — ветка dev
 
+- Refactor (SCRUM-199): `scripts/ui_screens.gd` оставлен compatibility facade,
+  а hero radar control, dark-fantasy theme paths, shop UI constants и hero
+  select constants вынесены в `scripts/ui/` modules без изменения node names,
+  визуала или gameplay behavior.
+
+- Bugfix (SCRUM-257): укреплен umbrella `runtime_smoke_test` — delayed orb/curse
+  weapon callbacks больше не захватывают временные freed nodes напрямую, а
+  плавающий hero-select radar получил стабильный вертикальный зазор от header
+  на 1280×720; финальная isolated smoke-серия 12/12 без warning/error.
+
+- Marketing art: добавлен Steam Library Logo для FantasyDisk (`assets/marketing/steam/fantasydisk_steam_library_logo.png`, 1280x720 RGBA transparent) и preview на темном фоне; generator `tools/generate_steam_logo.py`.
+
 - Animation (SCRUM-239): unique class attack timing events now drive the cutout
   rig as `weapon_id:attack_mode:phase` variants, so windup/release/pulse/burst/
   deploy/channel beats reuse Animator-owned poses without changing weapon

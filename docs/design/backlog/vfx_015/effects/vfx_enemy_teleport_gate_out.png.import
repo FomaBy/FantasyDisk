@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://db1br1rs13smu"
-path="res://.godot/imported/druid_placeholder.png-aa4b980f2124066cbd004ba7675b7ac8.ctex"
+uid="uid://bntgisld3860x"
+path="res://.godot/imported/vfx_enemy_teleport_gate_out.png-cfaccdc952c72228732a75ac58174f06.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/characters/druid_placeholder.png"
-dest_files=["res://.godot/imported/druid_placeholder.png-aa4b980f2124066cbd004ba7675b7ac8.ctex"]
+source_file="res://docs/design/backlog/vfx_015/effects/vfx_enemy_teleport_gate_out.png"
+dest_files=["res://.godot/imported/vfx_enemy_teleport_gate_out.png-cfaccdc952c72228732a75ac58174f06.ctex"]
 
 [params]
 
