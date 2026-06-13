@@ -1,8 +1,8 @@
 # Progression And Balance
 
-Обновлено: 2026-06-12
+Обновлено: 2026-06-13 (0.1.4)
 
-Source of truth для чисел: `scripts/progression_data.gd`, `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`.
+Source of truth для чисел: `scripts/progression_data.gd` (фасад) + доменные файлы данных `scripts/progression_data_characters.gd`, `progression_data_weapons.gd`, `progression_data_content.gd`, `progression_data_shop.gd`, `progression_data_ascension.gd`, `progression_data_enemies.gd` (доменный сплит SCRUM-198 — фасад реэкспортит их как const, публичный API сохранён), `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
 ## Base Stats
 
@@ -86,6 +86,24 @@ UI обязан показывать эти интерпретации текс�
 - Ascension levels: 10 уровней на персонажа.
 - Победа над финальным боссом увеличивает ascension выбранного героя.
 - Сохранение: `scripts/meta_progression.gd`, `user://fantasydisk_meta.cfg`.
+
+### Древо умений (мета, SCRUM-150)
+
+- 4 ветки (`Богатство`/`Знания`/`Мощь`/`Стойкость`), ~10 узлов каждая; покупка по тирам с пререквизитами.
+- Очки умений (`skill_points`) начисляются за победу над боссом; бюджет полного древа ≈ +29% силы (кап ≤ ~+30%).
+- Боевое подмножество модификаторов уходит в `run_modifiers` на старте забега (`player.apply_meta_skill_modifiers`); экономические узлы дают стартовое золото/скидки. Capstone «Вторая жизнь» (Стойкость) — раз за забег смертельный удар оставляет 1 HP.
+- Экран древа доступен в главном меню; данные/состояние — `scripts/meta_progression.gd`.
+
+### Патч-ноуты (SCRUM-159)
+
+- Кнопка «Что нового» + бейдж в меню; данные — `scripts/patch_notes_data.gd`, последняя виденная версия — `last_seen_version` в `game_settings`.
+
+## Balance Validation
+
+- Формульный харнесс: `tools/balance_harness.gd` → `build/balance_report.md` (бюджеты классов `CLASS_BUDGET_PROFILES`).
+- Живой DPS/TTK: `tools/live_combat_harness.gd` + гейт `tests/live_balance_simulation_test.gd`.
+- Выживаемость профилей: `tools/survivability_harness.gd` + гейт `tests/survivability_scenario_test.gd`.
+- Применение бюджет-тюнинга на рантайме: `tests/weapon_tuning_application_test.gd`. Экономика/XP маршрута: `tools/route_economy_xp_model.gd`.
 
 ## Known Balance Risks
 
