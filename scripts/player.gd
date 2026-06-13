@@ -524,6 +524,46 @@ func _apply_reward_mods(mods: Dictionary) -> void:
 			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 0.0)) + float(mods[modifier_id])
 
 
+# Боевое подмножество модификаторов мета-древа умений (SCRUM-150): суммарные
+# приросты из META_PROGRESSION.skill_modifiers складываются в run_modifiers как
+# постоянный бонус забега (поверх asc-наград). Экономические/мета-флаги дерева
+# (золото/цены/рероллы/death_save) применяются на уровне забега/UI, не здесь.
+const META_SKILL_MULT_MAP := {
+	"damage_mult": "damage_multiplier",
+	"attack_speed_mult": "attack_speed_multiplier",
+	"max_health_mult": "max_health_multiplier",
+	"xp_gain_mult": "xp_gain_multiplier",
+	"money_gain_mult": "money_gain_multiplier",
+	"ult_charge_mult": "ult_charge_multiplier",
+	"elite_boss_damage_mult": "elite_boss_damage_multiplier",
+}
+const META_SKILL_FLAT_MAP := {
+	"defense_flat": "defense_flat",
+	"dodge_flat": "dodge_flat",
+	"regeneration_flat": "regeneration_flat",
+}
+
+
+func apply_meta_skill_modifiers(mods: Dictionary) -> void:
+	var old_max_health := max_health
+	for key in META_SKILL_MULT_MAP:
+		if mods.has(key):
+			var run_key: String = META_SKILL_MULT_MAP[key]
+			# Значения дерева — доли (+0.06), множитель = 1.0 + сумма.
+			run_modifiers[run_key] = float(run_modifiers.get(run_key, 1.0)) * (1.0 + float(mods[key]))
+	for key in META_SKILL_FLAT_MAP:
+		if mods.has(key):
+			var run_key: String = META_SKILL_FLAT_MAP[key]
+			run_modifiers[run_key] = float(run_modifiers.get(run_key, 0.0)) + float(mods[key])
+	_apply_stat_scaling(false, old_max_health)
+	for weapon in _equipped_weapons():
+		_apply_weapon_scaling(weapon)
+	# Capstone «Боевой раж»: ульта стартует частично заряженной.
+	var start_charge := float(mods.get("ult_start_charge", 0.0))
+	if start_charge > 0.0:
+		ultimate_charge = clampf(ultimate_max_charge * start_charge, 0.0, ultimate_max_charge)
+
+
 func _apply_regeneration(delta: float) -> void:
 	var vampiric_cap := float(run_modifiers.get("vampiric_heal_per_second_cap", 4.0))
 	_vampiric_heal_budget = minf(_vampiric_heal_budget + vampiric_cap * delta, vampiric_cap)

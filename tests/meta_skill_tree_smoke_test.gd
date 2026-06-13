@@ -5,6 +5,7 @@ extends SceneTree
 # Отдельный файл — runtime_smoke_test.gd занят параллельным воркером (анти-коллизия).
 
 const Meta := preload("res://scripts/meta_progression.gd")
+const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 
 
 func _initialize() -> void:
@@ -13,6 +14,7 @@ func _initialize() -> void:
 	_test_purchase_and_points()
 	_test_save_load_roundtrip()
 	_test_full_tree_power_cap()
+	await _test_player_application()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
 
@@ -118,6 +120,59 @@ func _test_save_load_roundtrip() -> void:
 	if not Meta.is_node_purchased(loaded, str(e[0]["id"])):
 		_fail("Expected purchased node to persist by id.")
 		return
+
+
+func _test_player_application() -> void:
+	# Инкремент 2a: player.apply_meta_skill_modifiers складывает боевое подмножество
+	# дерева в run_modifiers и заряжает ульту (capstone). Применяем полное дерево.
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+	var player := PLAYER_SCENE.instantiate()
+	holder.add_child(player)
+	if player.has_method("configure_character"):
+		player.configure_character("berserk", "sword")
+	await process_frame
+
+	var state: Dictionary = Meta.default_state()
+	var all_nodes := []
+	for node in Meta.SKILL_TREE:
+		all_nodes.append(str(node["id"]))
+	state["skill_nodes"] = all_nodes
+	var mods: Dictionary = Meta.skill_modifiers(state)
+
+	var run_mods: Dictionary = player.get("run_modifiers")
+	var dmg_before := float(run_mods.get("damage_multiplier", 1.0))
+	var hp_before := float(player.get("max_health"))
+	player.set("ultimate_charge", 0.0)
+
+	player.call("apply_meta_skill_modifiers", mods)
+	await process_frame
+
+	run_mods = player.get("run_modifiers")
+	if float(run_mods.get("damage_multiplier", 1.0)) <= dmg_before:
+		_fail("Expected meta skill damage_mult to raise damage_multiplier.")
+		return
+	if float(player.get("max_health")) <= hp_before:
+		_fail("Expected meta skill max_health_mult to raise max HP.")
+		return
+	if float(run_mods.get("defense_flat", 0.0)) <= 0.0 or float(run_mods.get("regeneration_flat", 0.0)) <= 0.0:
+		_fail("Expected meta skill flats (defense/regen) to apply.")
+		return
+	if float(run_mods.get("xp_gain_multiplier", 1.0)) <= 1.0:
+		_fail("Expected meta skill xp_gain_mult to apply.")
+		return
+	# Capstone «Боевой раж»: ульта стартует на 50%.
+	var ult_charge := float(player.get("ultimate_charge"))
+	var ult_max := float(player.get("ultimate_max_charge"))
+	if ult_charge < ult_max * 0.45:
+		_fail("Expected ult_start_charge capstone to pre-charge the ultimate (%.1f/%.1f)." % [ult_charge, ult_max])
+		return
+
+	holder.queue_free()
+	current_scene = null
+	await process_frame
 
 
 func _test_full_tree_power_cap() -> void:
