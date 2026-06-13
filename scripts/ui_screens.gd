@@ -189,13 +189,13 @@ func _show_main_menu() -> void:
 
 	var start_button := _make_button("Начать новую игру")
 	start_button.name = "MainMenuStartButton"
-	start_button.custom_minimum_size = Vector2(380, 76)
+	start_button.custom_minimum_size = Vector2(380, 103)
 	start_button.pressed.connect(_show_character_select)
 	action_box.add_child(start_button)
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "MainMenuSettingsButton"
-	settings_button.custom_minimum_size = Vector2(380, 76)
+	settings_button.custom_minimum_size = Vector2(380, 103)
 	settings_button.pressed.connect(_show_settings_menu)
 	action_box.add_child(settings_button)
 
@@ -218,7 +218,7 @@ func _show_main_menu() -> void:
 
 	var skill_tree_button := _make_button("Древо умений")
 	skill_tree_button.name = "MainMenuSkillTreeButton"
-	skill_tree_button.custom_minimum_size = Vector2(380, 76)
+	skill_tree_button.custom_minimum_size = Vector2(380, 103)
 	skill_tree_button.pressed.connect(_show_skill_tree_screen)
 	action_box.add_child(skill_tree_button)
 
@@ -228,7 +228,7 @@ func _show_main_menu() -> void:
 	var last_seen: String = str(settings_module.load_settings().get("last_seen_version", "0.0.0"))
 	var patch_notes_button := _make_button("Что нового  ●" if patch_notes_data.has_new_since(last_seen) else "Что нового")
 	patch_notes_button.name = "MainMenuPatchNotesButton"
-	patch_notes_button.custom_minimum_size = Vector2(380, 76)
+	patch_notes_button.custom_minimum_size = Vector2(380, 103)
 	patch_notes_button.pressed.connect(func() -> void:
 		# Просмотр отмечает актуальную версию как увиденную — бейдж гаснет.
 		var saved: Dictionary = settings_module.load_settings()
@@ -240,13 +240,13 @@ func _show_main_menu() -> void:
 
 	var codex_button := _make_button("Кодекс")
 	codex_button.name = "MainMenuCodexButton"
-	codex_button.custom_minimum_size = Vector2(380, 76)
+	codex_button.custom_minimum_size = Vector2(380, 103)
 	codex_button.pressed.connect(_show_codex_screen)
 	action_box.add_child(codex_button)
 
 	var exit_button := _make_button("Выйти из игры")
 	exit_button.name = "MainMenuExitButton"
-	exit_button.custom_minimum_size = Vector2(380, 76)
+	exit_button.custom_minimum_size = Vector2(380, 103)
 	exit_button.pressed.connect(func() -> void:
 		game.get_tree().quit()
 	)
@@ -316,7 +316,7 @@ func _show_character_select() -> void:
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HeroSelectBackButton"
-	back_button.custom_minimum_size = Vector2(170, 68)
+	back_button.custom_minimum_size = Vector2(170, 92)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 
@@ -399,7 +399,7 @@ func _show_character_select() -> void:
 	dossier.add_child(asc_row)
 	var asc_minus := _make_compact_button("-")
 	asc_minus.name = "AscensionMinusButton"
-	asc_minus.custom_minimum_size = Vector2(54, 46)
+	asc_minus.custom_minimum_size = Vector2(54, 62)
 	asc_row.add_child(asc_minus)
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
@@ -410,7 +410,7 @@ func _show_character_select() -> void:
 	asc_row.add_child(asc_label)
 	var asc_plus := _make_compact_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	asc_plus.custom_minimum_size = Vector2(54, 46)
+	asc_plus.custom_minimum_size = Vector2(54, 62)
 	asc_row.add_child(asc_plus)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
@@ -422,7 +422,7 @@ func _show_character_select() -> void:
 
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HeroSelectChooseButton"
-	select_button.custom_minimum_size = Vector2(320, 68)
+	select_button.custom_minimum_size = Vector2(320, 92)
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	dossier.add_child(select_button)
 
@@ -817,7 +817,7 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		var stat_title := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
 		var offer_button := _make_button("%s +1   (%d зол.)" % [stat_title, buy_cost])
 		offer_button.name = "AttributeOffer_%s" % stat_id
-		offer_button.custom_minimum_size = Vector2(560, 68)
+		offer_button.custom_minimum_size = Vector2(560, 92)
 		offer_button.disabled = money < buy_cost
 		offer_button.tooltip_text = "%s +1\n%s" % [
 			stat_title,
@@ -925,7 +925,7 @@ func _show_skill_tree_screen() -> void:
 	header.add_child(points_label)
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "SkillTreeBackButton"
-	back_button.custom_minimum_size = Vector2(260, 68)
+	back_button.custom_minimum_size = Vector2(260, 92)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -982,7 +982,7 @@ func _show_skill_tree_screen() -> void:
 			var node_id: String = str(node_data["id"])
 			var nb := _make_button("%s  (%d)\n%s" % [str(node_data["title"]), int(node_data["cost"]), str(node_data["desc"])])
 			nb.name = "SkillNode_%s" % node_id
-			nb.custom_minimum_size = Vector2(0, 76)
+			nb.custom_minimum_size = Vector2(0, 103)
 			nb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			nb.add_theme_font_size_override("font_size", 13)
 			nb.set_meta("node_id", node_id)
@@ -1034,7 +1034,7 @@ func _show_patch_notes_screen() -> void:
 	header.add_child(title)
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "PatchNotesBackButton"
-	back_button.custom_minimum_size = Vector2(260, 68)
+	back_button.custom_minimum_size = Vector2(260, 92)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -1101,7 +1101,7 @@ func _show_codex_screen() -> void:
 
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "CodexBackButton"
-	back_button.custom_minimum_size = Vector2(260, 68)
+	back_button.custom_minimum_size = Vector2(260, 92)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -1121,7 +1121,7 @@ func _show_codex_screen() -> void:
 		var section_id := str(section["id"])
 		var tab_button := _make_button(str(section["title"]))
 		tab_button.name = "CodexTab_%s" % section_id
-		tab_button.custom_minimum_size = Vector2(230, 68)
+		tab_button.custom_minimum_size = Vector2(230, 92)
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		tabs_row.add_child(tab_button)
 
@@ -1531,7 +1531,7 @@ func _show_settings_menu() -> void:
 	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled")
 	var reset_audio_button := _make_button("Сбросить звук по умолчанию")
 	reset_audio_button.name = "SettingsResetAudioButton"
-	reset_audio_button.custom_minimum_size = Vector2(420, 68)
+	reset_audio_button.custom_minimum_size = Vector2(420, 92)
 	reset_audio_button.pressed.connect(func() -> void:
 		_reset_audio_to_defaults()
 		_show_settings_menu()
@@ -1558,7 +1558,7 @@ func _show_settings_menu() -> void:
 
 		var bind_button := _make_compact_button(_binding_text(action_name))
 		bind_button.name = "BindingButton_%s" % action_name
-		bind_button.custom_minimum_size = Vector2(420, 46)
+		bind_button.custom_minimum_size = Vector2(420, 62)
 		bind_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		bind_button.pressed.connect(func() -> void:
 			_begin_rebind(action_name)
@@ -1574,7 +1574,7 @@ func _show_settings_menu() -> void:
 
 	var reset_button := _make_button("Сбросить управление по умолчанию")
 	reset_button.name = "SettingsResetBindingsButton"
-	reset_button.custom_minimum_size = Vector2(440, 68)
+	reset_button.custom_minimum_size = Vector2(440, 92)
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
 		_show_settings_menu()
@@ -1757,31 +1757,31 @@ func _build_run_pause_menu() -> void:
 
 	var continue_button := _make_button("Продолжить")
 	continue_button.name = "RunPauseContinueButton"
-	continue_button.custom_minimum_size = Vector2(360, 68)
+	continue_button.custom_minimum_size = Vector2(360, 92)
 	continue_button.pressed.connect(_resume_game)
 	box.add_child(continue_button)
 
 	var dossier_button := _make_button("Досье персонажа")
 	dossier_button.name = "RunPauseDossierButton"
-	dossier_button.custom_minimum_size = Vector2(360, 68)
+	dossier_button.custom_minimum_size = Vector2(360, 92)
 	dossier_button.pressed.connect(_show_pause_dossier_menu)
 	box.add_child(dossier_button)
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "RunPauseSettingsButton"
-	settings_button.custom_minimum_size = Vector2(360, 68)
+	settings_button.custom_minimum_size = Vector2(360, 92)
 	settings_button.pressed.connect(_show_settings_menu)
 	box.add_child(settings_button)
 
 	var end_run_button := _make_button("Покинуть забег")
 	end_run_button.name = "RunPauseEndRunButton"
-	end_run_button.custom_minimum_size = Vector2(360, 68)
+	end_run_button.custom_minimum_size = Vector2(360, 92)
 	end_run_button.pressed.connect(_end_current_run_by_player)
 	box.add_child(end_run_button)
 
 	var main_menu_button := _make_button("Главное меню")
 	main_menu_button.name = "RunPauseMainMenuButton"
-	main_menu_button.custom_minimum_size = Vector2(360, 68)
+	main_menu_button.custom_minimum_size = Vector2(360, 92)
 	main_menu_button.pressed.connect(_quit_current_run)
 	box.add_child(main_menu_button)
 
@@ -2023,7 +2023,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	button.name = "WeaponOption_%s" % weapon_id
 	button.set_meta("weapon_id", weapon_id)
 	button.text = ""
-	button.custom_minimum_size = Vector2(860, 128)
+	button.custom_minimum_size = Vector2(860, 173)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -2120,7 +2120,7 @@ func _show_reward_screen() -> void:
 	_create_menu_run_hud()
 	for reward in _random_rewards(3):
 		var button := _make_button("%s\n%s" % [reward["title"], reward["description"]])
-		button.custom_minimum_size = Vector2(640, 74)
+		button.custom_minimum_size = Vector2(640, 100)
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_run(reward)
 			game.route._show_battle_map()
@@ -2198,7 +2198,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 
 	var later_button := _make_button("Позже")
 	later_button.name = "LevelUpLaterButton"
-	later_button.custom_minimum_size = Vector2(240, 68)
+	later_button.custom_minimum_size = Vector2(240, 92)
 	later_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	later_button.tooltip_text = "Закрыть без выбора — пик сохранится, вернуться можно кнопкой повышения внизу."
 	later_button.pressed.connect(defer_choice)
@@ -2313,7 +2313,7 @@ func _make_level_up_reward_button(reward: Dictionary) -> Button:
 	var rare_color: Color = TIER_COLORS[3]
 	var button := Button.new()
 	button.text = ""
-	button.custom_minimum_size = Vector2(245, 270)
+	button.custom_minimum_size = Vector2(245, 364)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
@@ -2391,7 +2391,7 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	# эффект и классовая интерпретация. Кликается целиком, фокусируется с клавиатуры.
 	var tier_color := _artifact_tier_color(reward)
 	var button := _make_button("")
-	button.custom_minimum_size = Vector2(340, 372)
+	button.custom_minimum_size = Vector2(340, 502)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
@@ -2588,7 +2588,7 @@ func _show_shop_screen() -> void:
 	skip_button.offset_top = -126.0
 	skip_button.offset_right = 180.0
 	skip_button.offset_bottom = -58.0
-	skip_button.custom_minimum_size = Vector2(360, 68)
+	skip_button.custom_minimum_size = Vector2(360, 92)
 	var leave_shop := func() -> void:
 		_clear_current_shop_stock()
 		game.route._advance_route_after_noncombat()
@@ -2991,7 +2991,7 @@ func _show_upgrade_screen() -> void:
 	_create_menu_run_hud()
 	for reward in _random_level_up_rewards(3):
 		var button := _make_button("%s\n%s" % [reward["title"], reward["description"]])
-		button.custom_minimum_size = Vector2(640, 74)
+		button.custom_minimum_size = Vector2(640, 100)
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_run(reward)
 			game.route._advance_route_after_noncombat()
@@ -3022,7 +3022,7 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	for event_choice in event_choices:
 		var button := _make_button(_event_choice_button_text(event_choice))
 		button.name = "EventChoiceButton%d" % index
-		button.custom_minimum_size = Vector2(760, 92)
+		button.custom_minimum_size = Vector2(760, 124)
 		button.pressed.connect(func() -> void:
 			var starts_combat := _apply_event_choice(event_choice)
 			if not starts_combat:
@@ -3034,7 +3034,7 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		index += 1
 	var back_button := _make_button("Назад")
 	back_button.name = "EventBackButton"
-	back_button.custom_minimum_size = Vector2(380, 68)
+	back_button.custom_minimum_size = Vector2(380, 92)
 	var allow_skip := bool(event_definition.get("allow_skip", false))
 	back_button.disabled = not allow_skip
 	back_button.tooltip_text = "Вернуться на карту без исхода события." if allow_skip else "Это событие требует выбрать исход."
@@ -4237,7 +4237,7 @@ func _level_up_badge_text() -> String:
 func _make_button(text: String) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(420, 68)
+	button.custom_minimum_size = Vector2(420, 92)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_style_button_control(button)
@@ -4247,7 +4247,7 @@ func _make_button(text: String) -> Button:
 func _make_compact_button(text: String) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(54, 46)
+	button.custom_minimum_size = Vector2(54, 62)
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.add_theme_font_size_override("font_size", 18)
 	_apply_compact_button_theme(button)
