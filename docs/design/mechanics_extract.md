@@ -618,4 +618,8 @@ AoE/DoT/саммоны — зачистка волны; точные замер�
 - Боевое подмножество → `player.apply_meta_skill_modifiers(mods)` в `run_modifiers` + предзаряд ульты (ч.2a).
 - Эконом-флаги в UI: `shop_price_mult` → `_random_shop_items`, `attr_cost_mult` → `_ascension_price`, `attr_extra_options` → `_random_attribute_pair` (ч.5-7).
 - Экран древа — пункт «Древо умений» в главном меню (`_show_skill_tree_screen`, состояния узлов/покупка/счётчик, ч.3); «+очко умений» на экране победы (ч.4).
-- Осталось (ждёт `main.gd`): вызов боевого применения и `start_gold_flat` на старте забега.
+- Старт забега (`main.apply_ascension_bonuses`): `player.apply_meta_skill_modifiers(skill_modifiers)` + начисление `start_gold_flat` в money (ч.12). SCRUM-150 завершён.
+
+### Экран «Что нового» / патч-ноуты (SCRUM-159)
+
+Data-driven патч-ноуты в `scripts/patch_notes_data.gd` (`PATCH_NOTES`, версии 0.1.0-0.1.4, новейшая первой) — только пользовательские русские формулировки, без внутренних ID/путей. API: `all_entries`, `latest_version`, `entries_since`/`has_new_since` (semver-сравнение). Экран `_show_skill...`→ `_show_patch_notes_screen` из главного меню (пункт «Что нового»): заголовки версий + буллеты, скролл, Назад/Escape. Бейдж «●» на пункте меню при `has_new_since(last_seen_version)`; открытие экрана записывает `last_seen_version = latest` (бейдж гаснет), не модалка. Персистентность `last_seen_version` — в `game_settings` (`user://`).
