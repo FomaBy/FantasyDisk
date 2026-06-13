@@ -2948,6 +2948,16 @@ func _random_level_up_rewards(count: int) -> Array:
 	var regular_pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
 	var stat_pool: Array = game.PROGRESSION_DATA.main_stat_level_up_rewards(game.selected_character_id)
 	var rewards := []
+	# Capstone «Озарение» (ветвь Знаний мета-древа, SCRUM-150): ПЕРВОЕ повышение
+	# в забеге гарантированно даёт основную характеристику. Гейт по level<=2
+	# (run-persistent через снапшот) — срабатывает один раз за забег.
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	if float(skill_mods.get("first_levelup_rare", 0.0)) > 0.0 and not stat_pool.is_empty() \
+			and game.current_player != null and is_instance_valid(game.current_player) \
+			and int(game.current_player.get("level")) <= 2:
+		var forced_index: int = game.rng.randi_range(0, stat_pool.size() - 1)
+		rewards.append(stat_pool[forced_index])
+		stat_pool.remove_at(forced_index)
 	while rewards.size() < count and (not regular_pool.is_empty() or not stat_pool.is_empty()):
 		var want_rare: bool = not stat_pool.is_empty() and float(game.rng.randf()) < MAIN_STAT_SLOT_CHANCE
 		var source: Array = stat_pool if (want_rare or regular_pool.is_empty()) else regular_pool

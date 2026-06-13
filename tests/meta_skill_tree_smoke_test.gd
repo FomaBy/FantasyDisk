@@ -21,8 +21,58 @@ func _initialize() -> void:
 	await _test_shop_discount()
 	await _test_attribute_discount()
 	await _test_attribute_extra_options()
+	await _test_first_levelup_rare_capstone()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
+
+
+func _test_first_levelup_rare_capstone() -> void:
+	# Capstone «Озарение»: первое повышение забега (level<=2) при купленном узле
+	# гарантирует основную характеристику среди наград.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+	main.set("selected_character_id", "berserk")
+	var player := PLAYER_SCENE.instantiate()
+	main.add_child(player)
+	player.add_to_group("player")
+	if player.has_method("configure_character"):
+		player.configure_character("berserk", "sword")
+	player.set("level", 2)
+	main.set("current_player", player)
+
+	var state: Dictionary = main.get("meta_state")
+	state["skill_nodes"] = ["lore_capstone"]
+	main.set("meta_state", state)
+
+	# С узлом + level<=2: гарантированно есть основная характеристика (rare).
+	var has_stat := false
+	for reward in main.ui._random_level_up_rewards(3):
+		if bool((reward as Dictionary).get("rare", false)):
+			has_stat = true
+			break
+	if not has_stat:
+		_fail("Expected first-levelup-rare capstone to force a main characteristic.")
+		return
+
+	# Уже не первое повышение (level 5): capstone не форсит — гарантии нет.
+	player.set("level", 5)
+	var forced_count := 0
+	for _try in range(20):
+		var only_regular := true
+		for reward in main.ui._random_level_up_rewards(3):
+			if bool((reward as Dictionary).get("rare", false)):
+				only_regular = false
+				break
+		if not only_regular:
+			forced_count += 1
+	# При 5% на слот форс-стат изредка выпадает, но НЕ в каждом наборе (capstone бы давал 20/20).
+	if forced_count >= 20:
+		_fail("Expected capstone not to force a stat past the first level-up.")
+		return
+
+	main.queue_free()
+	await process_frame
 
 
 func _test_attribute_extra_options() -> void:

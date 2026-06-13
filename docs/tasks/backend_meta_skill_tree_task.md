@@ -213,3 +213,16 @@ docs/design/mechanics_extract.md: раздел «Мета-древо умени�
 валюта/потолок силы, эффекты по ветвям (skill_modifiers), карта применения (player/UI/экран/победа)
 и остаток на main.gd. content_registry/current_game_state/CHANGELOG заняты другим воркером —
 вынесу туда при освобождении. Доковый инкремент, кода нет.
+
+
+## Инкремент 9 — capstone «Озарение» ветви Знаний (2026-06-13, file-изолированный)
+
+ui_screens._random_level_up_rewards: при купленном узле lore_capstone (first_levelup_rare)
+ПЕРВОЕ повышение в забеге (гейт level<=2, run-persistent через снапшот) гарантированно
+форсит основную характеристику в набор. Без узла — поведение идентично (обратно совместимо,
+существующие level-up тесты целы). Тест в meta_skill_tree_smoke (с узлом форс есть; на level 5
+не форсит). ui_screens свободен; main.gd не тронут.
+
+Применены ВСЕ 4 capstone-эффекта в свободной зоне нет — ult_start_charge/death_save идут
+через player.apply_meta_skill_modifiers (ч.2a, готово) и боевую логику; guaranteed_rare_shop —
+эконом-флаг (TODO, магазин). Осталось на main.gd: старт-золото + вызов боевого применения.
