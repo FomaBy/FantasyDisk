@@ -1,6 +1,6 @@
 # Codex Design Task: Legacy Sprite Cleanup Spec
 
-Статус: new
+Статус: in_progress (Codex Design, dispatched 2026-06-13)
 Версия: 0.1.5
 Создано: 2026-06-13
 Роль: Design audit/spec + Back-end cleanup handoff
@@ -35,3 +35,6 @@ Do not remove `assets/sprites/characters/berserk_walk_sheet_v2.png` in this clea
 - No active scene/script/codex reference breaks.
 - Project import remains clean.
 - Runtime smoke passes after cleanup.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` after user confirmed no feature freeze / backlog is eligible.

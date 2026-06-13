@@ -1,6 +1,6 @@
 # Back-end Task: Safe Cleanup Follow-up For Legacy Asset Candidates
 
-Статус: new
+Статус: in_progress (Codex Back-end, dispatched 2026-06-13)
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-175
@@ -28,3 +28,6 @@ Review and safely move likely unused legacy assets after the dynamic asset manif
 ## Dependency
 
 Blocked until `backend_content_unused_asset_audit_manifest_task.md` is done.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.

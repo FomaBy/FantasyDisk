@@ -1,6 +1,6 @@
 # Codex Design Task: VFX Sprite Polish Pass
 
-Статус: new
+Статус: in_progress (Codex Design, dispatched 2026-06-13)
 Версия: 0.1.5
 Создано: 2026-06-13
 Роль: Design / Codex image generation
@@ -45,3 +45,6 @@ Review and redraw as needed:
 - Before/after contact sheet in `docs/design/previews/`.
 - PNG size/mode/alpha validated.
 - Runtime/attack VFX smoke requested from Back-end/QA after integration.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` after user confirmed no feature freeze / backlog is eligible.

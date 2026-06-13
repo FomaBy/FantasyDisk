@@ -1,6 +1,6 @@
 # Back-end Task: Content Registry Consistency Test
 
-Статус: new
+Статус: in_progress (Codex Back-end, dispatched 2026-06-13)
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-178 / SCRUM-175
@@ -22,3 +22,6 @@ Add automated registry-vs-code-vs-assets checks for canonical IDs and resource p
 
 - New test passes headless.
 - False positives are documented and allowlisted.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.

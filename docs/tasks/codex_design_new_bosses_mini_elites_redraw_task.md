@@ -1,6 +1,6 @@
 # Codex Design Task: New Bosses And Mini-Elites Canonical Redraw
 
-Статус: new
+Статус: done (superseded 2026-06-13; covered by SCRUM-156)
 Версия: 0.1.5
 Создано: 2026-06-13
 Роль: Design / Codex image generation
@@ -40,3 +40,6 @@ Exact destination paths must be confirmed against scene/resource integration bef
 - PNG sizes and alpha validated.
 - Content registry/current game state updated.
 - Animator handoff created if cutout/rig/motion is required.
+
+## Dispatcher Note (2026-06-13)
+Duplicate audit: this scope is covered by active `design_codex_new_bosses_mini_elites_sprites_task.md` / Jira `SCRUM-156`. Requirements were sent to the Design thread as additional acceptance context for SCRUM-156 instead of dispatching a duplicate source task.

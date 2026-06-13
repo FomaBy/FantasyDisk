@@ -1,6 +1,6 @@
 # Animation: enemy archetype motion coverage
 
-Статус: new
+Статус: in_progress
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Animator audit SCRUM-173
@@ -12,6 +12,8 @@ Animator-only. Do not change enemy stats, attacks, spawn rules, collision, targe
 
 ## Context
 The audit found broad cutout-rig coverage for enemies, but smoke assertions currently sample only a subset: baseline melee, flying wings, elite phases, boss rig, and enemy death ghost. Several enemies have intentionally partial rigs, so each archetype needs tailored motion coverage.
+
+Started by Animator/Codex on 2026-06-13.
 
 ## Entities To Cover
 - `ash_marksman`
@@ -37,3 +39,6 @@ The audit found broad cutout-rig coverage for enemies, but smoke assertions curr
 - Every listed entity has a tested action silhouette appropriate to its available parts.
 - Animation smoke passes.
 - Runtime smoke is run only if shared enemy runtime hooks change.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after user confirmed no feature freeze / backlog is eligible.

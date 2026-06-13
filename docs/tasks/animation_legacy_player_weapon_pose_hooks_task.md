@@ -1,6 +1,6 @@
 # Animation: legacy player weapon pose hooks
 
-Статус: new
+Статус: in_progress
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Animator audit SCRUM-173
@@ -12,6 +12,10 @@ Animator-only. Do not change gameplay balance, weapon damage, targeting, project
 
 ## Context
 The animation audit found that `berserk` and the newest class wave have bespoke weapon-action silhouettes, while older playable classes mostly use generic `attack`, `shoot`, or `cast` fallbacks.
+
+Started by Animator/Codex on 2026-06-13. Implementation uses the actual
+weapon IDs in `scripts/progression_data.gd`; the original task examples include
+some pre-final placeholder names.
 
 ## Classes To Cover
 - `dark_mage`: `dark_book`, `curse_orb`, `void_staff`.
@@ -34,3 +38,6 @@ The animation audit found that `berserk` and the newest class wave have bespoke 
 - Weapon socket remains readable near the acting hand/tool for all sampled poses.
 - Animation smoke passes.
 - Runtime smoke is run if shared runtime behavior changes; otherwise note why it was not needed.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after user confirmed no feature freeze / backlog is eligible.

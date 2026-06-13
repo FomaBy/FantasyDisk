@@ -1,6 +1,6 @@
 # Animation: hit and death state coverage
 
-Статус: new
+Статус: in_progress
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Animator audit SCRUM-173
@@ -13,6 +13,8 @@ Animator-only. Do not change health, damage, loot, death cleanup, collision, or 
 ## Context
 `scripts/cutout_rig_2d.gd` has `play_hit()`, `_apply_hit_feedback()`, `play_death()`, and `spawn_death_ghost()`. Current smoke coverage validates enemy death ghost, but hit/death readability is not covered across player, standard enemy, elite, and boss categories.
 
+Started by Animator/Codex on 2026-06-13.
+
 ## Tasks
 1. Audit hit feedback readability for player, standard enemy, elite, and boss rigs.
 2. Add animation smoke coverage for hit tint/shake state without changing gameplay damage.
@@ -24,3 +26,6 @@ Animator-only. Do not change health, damage, loot, death cleanup, collision, or 
 - Death state is asserted for representative player/enemy/elite/boss rigs.
 - Existing death cleanup behavior is unchanged.
 - Animation smoke passes.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after user confirmed no feature freeze / backlog is eligible.

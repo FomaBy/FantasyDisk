@@ -1,6 +1,6 @@
 # Codex Design Task: UI Icon Style Unification
 
-Статус: new
+Статус: in_progress (Codex Design, dispatched 2026-06-13)
 Версия: 0.1.5
 Создано: 2026-06-13
 Роль: Design / Codex image generation
@@ -33,3 +33,6 @@ Do not redraw artifact icons in this task unless a specific artifact regression 
 - Before/after contact sheet in `docs/design/previews/`.
 - 40px readability preview.
 - `scripts/ui_icon_registry.gd` mapping changes are Back-end scope; create handoff if filenames or mappings need to change.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` after user confirmed no feature freeze / backlog is eligible.

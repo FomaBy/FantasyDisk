@@ -1,6 +1,6 @@
 # Back-end Task: Domain Docs Consistency Update
 
-Статус: new
+Статус: in_progress (Codex Back-end, dispatched 2026-06-13)
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-175
@@ -25,3 +25,6 @@ Refresh domain docs after the 0.1.4 class/content/UI growth.
 - No gameplay/code changes.
 - Cross-link reports from `docs/design/reviews/`.
 - Keep content IDs aligned with `content_registry.md`.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.

@@ -1,6 +1,6 @@
 # Back-end Task: Combat Target Query Cache
 
-Статус: new
+Статус: in_progress (Codex Back-end, dispatched 2026-06-13)
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-174
@@ -21,3 +21,6 @@ Reduce repeated hot-path `get_tree().get_nodes_in_group("enemies")` scans in wea
 
 - Runtime smoke and weapon tests pass.
 - Add a performance sanity test/log for dense wave query counts if feasible.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.

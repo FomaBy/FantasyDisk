@@ -1,6 +1,6 @@
 # Animation: weapon timing and VFX sync audit follow-up
 
-Статус: new
+Статус: in_progress
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Animator audit SCRUM-173
@@ -12,6 +12,11 @@ Animator-owned timing polish and pose specs only. If new gameplay callbacks, wea
 
 ## Context
 Elite attacks expose windup/strike/recover phases to animation. Player class weapons mostly trigger a single `shoot` or `cast` action with `weapon_id` as variant, which gives a readable pose but not a formal multi-beat timing track for deploys, pulses, delayed effects, or repeated bursts.
+
+Started by Animator/Codex on 2026-06-13. This task will implement only
+Animator-owned timing polish available through existing `action_id`,
+`action_variant`, and action duration data. Missing runtime event/VFX APIs will
+be documented as Back-end handoff instead of added here.
 
 ## Tasks
 1. Review class weapon modes with delayed, pulsed, deploy, beam, chain, or multi-hit behavior.
@@ -25,3 +30,6 @@ Elite attacks expose windup/strike/recover phases to animation. Player class wea
 - Animator-only timing polish is implemented where possible.
 - Back-end handoff exists for any missing API/event hook.
 - Animation smoke passes after any implementation.
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after user confirmed no feature freeze / backlog is eligible.

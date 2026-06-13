@@ -1,6 +1,6 @@
 # Design handoff: animation-ready boss and mini-elite parts
 
-Статус: new
+Статус: done (superseded 2026-06-13; covered by SCRUM-156)
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: Animator audit SCRUM-173
@@ -38,3 +38,6 @@ When Design assets are ready, create or unblock an Animator task for:
 - Final source sprites exist at stable paths.
 - Contact sheet or preview confirms readable silhouettes and transparent alpha.
 - Animator receives a clear unblock note with source paths and any intended separable parts.
+
+## Dispatcher Note (2026-06-13)
+Duplicate audit: this scope is covered by active `design_codex_new_bosses_mini_elites_sprites_task.md` / Jira `SCRUM-156`. Requirements were sent to the Design thread as additional acceptance context for SCRUM-156 instead of dispatching a duplicate source task.

@@ -123,13 +123,15 @@ done → «Контроль качества», done+QA PASSED → «Готов�
 Помимо живых чатов, доску автоматически разбирают два запланированных воркера
 (Claude Desktop → раздел Scheduled; работают, пока приложение открыто):
 
-- `fantasydisk-backend-board-worker` (сдвиг 0) и
-  `fantasydisk-backend-board-worker-2` (сдвиг +3, добавлен 2026-06-13 по запросу
-  пользователя «Claude больше тасок на бэкенд») — ДВА backend-воркера каждые
+- backend-воркеры ×3: `fantasydisk-backend-board-worker` (0),
+  `-worker-2` (+3), `-worker-3` (+1, добавлен 2026-06-13 под Quality Pass 0.1.5) —
+  каждые
   ~5 минут: берут по одной `new`-задаче роли Back-end, выполняют полностью
   (in_progress → код → тесты → документация → коммит в dev → done).
-- `fantasydisk-designer-board-worker` — каждые ~5 минут со сдвигом:
-  то же для роли Design + Design-ревью Codex-задач в статусе `review`.
+- `fantasydisk-designer-board-worker` (+2) — то же для роли Design + Design-ревью.
+- QA-воркеры ×2: `fantasydisk-qa-board-worker` (+4) и `-worker-2` (+2, добавлен
+  2026-06-13) — приёмка done по qa_protocol, claim-first против гонок.
+  Итого флот: backend×3, design×1, qa×2 (работают пока открыт Claude Desktop).
 
 **Анти-коллизия (урок сломанного HEAD SCRUM-171, 2026-06-13):** два backend-воркера
 не берут задачи с пересекающимися основными файлами — особенно

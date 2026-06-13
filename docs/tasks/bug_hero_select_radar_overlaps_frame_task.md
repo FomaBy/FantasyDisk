@@ -1,6 +1,6 @@
 # BUG: Роза ветров в выборе героя залезает на рамку — опустить и увеличить с отступами
 
-Статус: new
+Статус: in_progress (Codex Back-end, dispatched 2026-06-13)
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.4
@@ -40,3 +40,6 @@ Jira: SCRUM-206
 
 ## Документация
 docs/design/current_game_state.md (экран выбора героя).
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.
