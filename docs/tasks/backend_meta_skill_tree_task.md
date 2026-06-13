@@ -198,3 +198,10 @@ ui_screens._random_shop_items: ветвь Богатства (shop_price_mult �
 ui_screens._ascension_price (зовётся только ценами докачки, не магазином): ветвь
 Богатства (attr_cost_mult ≤ 0) удешевляет покупку/reroll атрибутов поверх asc price_mult.
 Тест в meta_skill_tree_smoke (цена с узлами < без). ui_screens свободен; main.gd не тронут.
+
+
+## Инкремент 7 — эконом-флаг: +варианты докачки (ветвь Знаний) (2026-06-13, file-изолированный)
+
+ui_screens._random_attribute_pair: attr_extra_options (узлы кругозора/эрудиции) добавляет
+варианты в окне докачки атрибутов (по умолч. 2 — обратная совместимость, существующие
+тесты не задеты). Тест в meta_skill_tree_smoke (2 без узлов, 4 с двумя). ui_screens свободен.

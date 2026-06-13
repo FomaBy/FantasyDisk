@@ -650,8 +650,12 @@ func _show_victory_banner(on_continue: Callable) -> void:
 
 func _random_attribute_pair() -> Array:
 	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	# Ветвь Знаний мета-древа (SCRUM-150): attr_extra_options добавляет варианты
+	# в окне докачки (по умолчанию 2 — обратная совместимость).
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	var option_count: int = clampi(2 + int(skill_mods.get("attr_extra_options", 0.0)), 2, pool.size())
 	var pair := []
-	for _pick in range(2):
+	for _pick in range(option_count):
 		var index: int = game.rng.randi_range(0, pool.size() - 1)
 		pair.append(pool[index])
 		pool.remove_at(index)

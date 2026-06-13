@@ -20,8 +20,30 @@ func _initialize() -> void:
 	await _test_victory_shows_skill_points()
 	await _test_shop_discount()
 	await _test_attribute_discount()
+	await _test_attribute_extra_options()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
+
+
+func _test_attribute_extra_options() -> void:
+	# Ветвь Знаний: по умолчанию 2 варианта докачки; узлы кругозора добавляют.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+	var base_state: Dictionary = main.get("meta_state")
+	base_state["skill_nodes"] = []
+	main.set("meta_state", base_state)
+	if main.ui._random_attribute_pair().size() != 2:
+		_fail("Expected default attribute offer to be 2 options.")
+		return
+	var more_state: Dictionary = main.get("meta_state")
+	more_state["skill_nodes"] = ["lore_attr_1", "lore_attr_2"]
+	main.set("meta_state", more_state)
+	if main.ui._random_attribute_pair().size() != 4:
+		_fail("Expected lore extra-option nodes to raise attribute offer to 4.")
+		return
+	main.queue_free()
+	await process_frame
 
 
 func _test_attribute_discount() -> void:
