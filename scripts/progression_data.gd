@@ -93,6 +93,16 @@ const BASE_STATS := {
 		"endurance": 10.0,
 		"leadership": 4.0,
 	},
+	"engineer": {
+		"strength": 4.0,
+		"agility": 5.0,
+		"intelligence": 7.0,
+		"perception": 6.0,
+		"energy": 6.0,
+		"knowledge": 6.0,
+		"endurance": 5.0,
+		"leadership": 10.0,
+	},
 	"dark_mage": {
 		"strength": 2.0,
 		"agility": 3.0,
@@ -186,6 +196,14 @@ const CHARACTER_CONFIGS := {
 		"weaknesses": "медленный, зависит от позиционирования.",
 		"sprite_path": "res://assets/sprites/characters/robot.png",
 	},
+	"engineer": {
+		"id": "engineer",
+		"title": "Инженер",
+		"description": "Мастерская устройств, дронов и минных сеток.",
+		"strengths": "устройства, зона контроля, поддержка.",
+		"weaknesses": "нужно заранее ставить позицию.",
+		"sprite_path": "res://assets/sprites/characters/druid.png",
+	},
 	"dark_mage": {
 		"id": "dark_mage",
 		"title": "Темный маг",
@@ -255,6 +273,7 @@ const CLASS_BUDGET_PROFILES := {
 	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 0.95, "aoe_target": 1.05},
 	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.82, "aoe_target": 1.18},
 	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 0.95, "aoe_target": 1.05},
+	"engineer": {"profile": "balanced", "survival": "steady", "damage_budget": 0.96, "solo_target": 0.90, "aoe_target": 1.12},
 	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.70, "aoe_target": 1.30},
 	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 0.70, "aoe_target": 1.30},
 	"assassin": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
@@ -943,6 +962,46 @@ const ROBOT_WEAPONS := {
 	},
 }
 
+const ENGINEER_WEAPONS := {
+	"engineer_sentry_wrench": {
+		"id": "engineer_sentry_wrench", "title": "Ключ Часового",
+		"description": "Sentry link: ставит короткоживущую турель, которая сама выбирает цели и прошивает их точечными лучами.",
+		"scene_path": "res://scenes/EngineerSentryWrench.tscn",
+		"attack_mode": "engineer_sentry_link", "damage_parameter": "damage",
+		"damage_multiplier": 0.72, "fire_interval": 1.32,
+		"attack_range": 560.0, "aoe_radius": 170.0,
+		"beam_width": 34.0, "projectile_count": 4,
+		"amp_lifetime": 2.8, "amp_pulse_interval": 0.42, "max_summons": 1,
+		"damage_falloff": 0.72, "knockback": 42.0,
+		"visual_color": Color(0.88, 0.70, 0.32, 0.42),
+		"passive_mods": {"summon_bonus": 1.0},
+	},
+	"engineer_repair_drone": {
+		"id": "engineer_repair_drone", "title": "Ремонтный Дрон",
+		"description": "Repair drone: дрон связывает несколько целей дугой и возвращает часть нанесенного урона в ремонт корпуса.",
+		"scene_path": "res://scenes/EngineerRepairDrone.tscn",
+		"attack_mode": "engineer_repair_drone", "damage_parameter": "damage",
+		"damage_multiplier": 0.82, "fire_interval": 1.08,
+		"attack_range": 540.0, "aoe_radius": 260.0,
+		"beam_width": 30.0, "projectile_count": 4,
+		"damage_falloff": 0.68, "heal_percent_of_damage": 0.045,
+		"visual_color": Color(0.48, 0.90, 1.0, 0.40),
+		"passive_mods": {"regeneration_flat": 0.14},
+	},
+	"engineer_pressure_mines": {
+		"id": "engineer_pressure_mines", "title": "Минная Сетка",
+		"description": "Pressure mine grid: раскладывает три малые мины веером; каждая срабатывает отдельно при касании врагом.",
+		"scene_path": "res://scenes/EngineerPressureMines.tscn",
+		"attack_mode": "engineer_pressure_mines", "damage_parameter": "damage",
+		"damage_multiplier": 0.96, "fire_interval": 1.46,
+		"attack_range": 390.0, "aoe_radius": 125.0,
+		"projectile_count": 3, "pool_duration": 3.0, "pool_tick_interval": 0.16,
+		"damage_falloff": 0.62, "knockback": 82.0,
+		"visual_color": Color(1.0, 0.54, 0.24, 0.42),
+		"passive_mods": {"aoe_radius_multiplier": 1.05},
+	},
+}
+
 const WEAPONS_BY_CLASS := {
 	"berserk": BERSERK_WEAPONS,
 	"soldier": SOLDIER_WEAPONS,
@@ -952,6 +1011,7 @@ const WEAPONS_BY_CLASS := {
 	"priest": PRIEST_WEAPONS,
 	"biologist": BIOLOGIST_WEAPONS,
 	"robot": ROBOT_WEAPONS,
+	"engineer": ENGINEER_WEAPONS,
 	"dark_mage": DARK_MAGE_WEAPONS,
 	"guitarist": GUITARIST_WEAPONS,
 	"assassin": ASSASSIN_WEAPONS,
@@ -1105,6 +1165,7 @@ const ULTIMATE_CONFIGS := {
 	"priest": {"title": "Хор Искупления", "description": "Священная волна поражает врагов вокруг и превращает часть урона в лечение.", "duration": 0.0, "radius": 410.0, "damage": 1.05, "target_count": 8, "heal_ratio": 0.45, "damage_charge_rate": 0.031, "taken_charge_rate": 1.22, "boss_cap": 0.08},
 	"biologist": {"title": "Пробуждение Колонии", "description": "Биолог запускает рост живой колонии: несколько биоимпульсов поражают ближайших врагов и оставляют слабый реген.", "duration": 0.0, "radius": 440.0, "damage": 1.10, "target_count": 9, "heal_ratio": 0.18, "damage_charge_rate": 0.033, "taken_charge_rate": 1.05, "boss_cap": 0.09},
 	"robot": {"title": "Аварийная Перегрузка", "description": "Робот включает аварийный контур: получает временное поглощение, выпускает ударную волну и несколько раз прожигает ближайших врагов.", "duration": 4.5, "radius": 380.0, "damage": 0.78, "target_count": 8, "damage_charge_rate": 0.030, "taken_charge_rate": 1.55, "boss_cap": 0.08},
+	"engineer": {"title": "Аварийная Мастерская", "description": "Инженер быстро разворачивает временную сеть устройств: лучи, ремонт и взрывные узлы вокруг себя.", "duration": 4.2, "radius": 430.0, "damage": 0.92, "target_count": 9, "heal_ratio": 0.12, "damage_charge_rate": 0.031, "taken_charge_rate": 1.18, "boss_cap": 0.08},
 	"dark_mage": {"title": "Темная буря", "description": "Вихрь темной магии проклинает всех врагов вокруг.", "duration": 0.0, "radius": 360.0, "damage": 1.35, "damage_charge_rate": 0.034, "taken_charge_rate": 1.05, "boss_cap": 0.11},
 	"guitarist": {"title": "Соло", "description": "Гигантская звуковая волна отбрасывает и глушит толпу.", "duration": 0.0, "radius": 430.0, "damage": 1.15, "damage_charge_rate": 0.033, "taken_charge_rate": 1.10, "boss_cap": 0.09},
 	"assassin": {"title": "Танец клинков", "description": "Серия мгновенных рывков-ударов по ближайшим целям.", "duration": 0.0, "radius": 520.0, "damage": 1.05, "target_count": 7, "damage_charge_rate": 0.036, "taken_charge_rate": 1.05, "boss_cap": 0.08},
@@ -1125,6 +1186,7 @@ const CLASS_DAMAGE_PARAMETER := {
 	"priest": "magic_damage",
 	"biologist": "magic_damage",
 	"robot": "damage",
+	"engineer": "damage",
 	"dark_mage": "magic_damage",
 	"guitarist": "sound_wave_damage",
 	"assassin": "damage",
@@ -1245,6 +1307,20 @@ const CLASS_INTERPRETATIONS := {
 		"dot_damage": "Добавляет перегрев/искрение к реакторным и прессовым ударам.",
 		"summon_amount": "Учащает эхо-протоколы сервоприводов без отдельного питомца.",
 	},
+	"engineer": {
+		"strength": "Усиливает тяжелые инструменты, мины и отдачу турелей.",
+		"agility": "Ускоряет сборку устройств, перезарядку и смену позиции.",
+		"intelligence": "Улучшает схемы, target-logic и маготехнические импульсы.",
+		"perception": "Расширяет сетку датчиков, радиус мин и дальность турелей.",
+		"energy": "Питает мастерскую, ускоряет ультимейт и длительность активных контуров.",
+		"knowledge": "Повышает качество ремонта, DoT-перегрев и стабильность устройств.",
+		"endurance": "Дает запас прочности, чтобы успеть развернуть устройства под давлением.",
+		"leadership": "Главный стат: повышает лимит/частоту устройств и протоколы поддержки.",
+		"magic_damage": "Работает как руническая схема внутри механизмов.",
+		"sound_wave_damage": "Работает как сирена мастерской: ближний контроль толпы.",
+		"dot_damage": "Добавляет перегрев, искрение и шрапнель к устройствам.",
+		"summon_amount": "Усиливает количество активных инженерных устройств и эхо-сборок.",
+	},
 	"dark_mage": {
 		"strength": "Придает вес снарядам: больше knockback и физическая устойчивость.",
 		"leadership": "Усиливает фамильярные эхо-касты и поддержку.",
@@ -1302,6 +1378,7 @@ const ATTRIBUTE_PRIORITIES := {
 	"priest": ["knowledge", "intelligence", "energy", "leadership", "endurance"],
 	"biologist": ["knowledge", "intelligence", "perception", "energy", "agility"],
 	"robot": ["endurance", "strength", "energy", "perception", "knowledge"],
+	"engineer": ["leadership", "intelligence", "perception", "energy", "knowledge"],
 	"dark_mage": ["intelligence", "energy", "knowledge", "perception", "leadership"],
 	"guitarist": ["leadership", "perception", "energy", "agility", "knowledge"],
 	"assassin": ["agility", "strength", "perception", "energy", "leadership"],
@@ -1461,6 +1538,18 @@ const ASCENSION_LEVELS := {
 		{"id": "robot_asc_8", "title": "Искровой Контур", "mods": {"dot_damage_flat": 2.0}},
 		{"id": "robot_asc_9", "title": "Амортизаторы", "mods": {"move_speed_multiplier": 1.04}},
 		{"id": "robot_asc_10", "title": "Неостановимый Протокол", "mods": {"damage_multiplier": 1.08, "max_health_flat": 14.0}},
+	],
+	"engineer": [
+		{"id": "engineer_asc_1", "title": "Быстрая Сборка", "mods": {"attack_speed_multiplier": 1.04}},
+		{"id": "engineer_asc_2", "title": "Запасные Пластины", "mods": {"max_health_flat": 8.0}},
+		{"id": "engineer_asc_3", "title": "Дополнительный Модуль", "mods": {"summon_bonus": 1.0}},
+		{"id": "engineer_asc_4", "title": "Точная Разметка", "mods": {"range_multiplier": 1.05}},
+		{"id": "engineer_asc_5", "title": "Усиленный Привод", "mods": {"damage_multiplier": 1.06}},
+		{"id": "engineer_asc_6", "title": "Ремонтный Контур", "mods": {"regeneration_flat": 0.24}},
+		{"id": "engineer_asc_7", "title": "Широкая Сетка", "mods": {"aoe_radius_multiplier": 1.05}},
+		{"id": "engineer_asc_8", "title": "Искровые Контакты", "mods": {"dot_damage_flat": 2.0}},
+		{"id": "engineer_asc_9", "title": "Полевой Инструмент", "mods": {"defense_flat": 0.02}},
+		{"id": "engineer_asc_10", "title": "Главный Механик Разлома", "mods": {"damage_multiplier": 1.08, "summon_bonus": 1.0}},
 	],
 	"dark_mage": [
 		{"id": "dark_mage_asc_1", "title": "Темный фокус", "mods": {"damage_multiplier": 1.05}},
@@ -1941,6 +2030,23 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 		"bio_symbiote_web":
 			var web_links := float(config.get("projectile_count", 4.0))
 			return {"solo_hits": 1.18, "five_hits": clampf(1.0 + web_links * 0.62, 1.0, 4.6)}
+		"robot_magnetic_anchor":
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 80.0, 1.0, 4.8)}
+		"robot_compression_line":
+			var compression_width := float(config.get("suppression_width", 220.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + compression_width / 82.0, 1.0, 4.6)}
+		"robot_reactor_vent":
+			var vent_count := float(config.get("projectile_count", 4.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + vent_count * 0.70 + aoe_radius / 150.0, 1.0, 5.0)}
+		"engineer_sentry_link":
+			var sentry_shots := float(config.get("projectile_count", 4.0))
+			return {"solo_hits": clampf(sentry_shots * 0.66, 1.0, 3.2), "five_hits": clampf(sentry_shots * 0.96, 1.0, 5.0)}
+		"engineer_repair_drone":
+			var drone_links := float(config.get("projectile_count", 4.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + drone_links * 0.68, 1.0, 4.6)}
+		"engineer_pressure_mines":
+			var mine_count := float(config.get("projectile_count", 3.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(mine_count * (1.0 + aoe_radius / 170.0), 1.0, 5.0)}
 		_:
 			if int(config.get("max_summons", 0)) > 0:
 				return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("max_summons", 1)) * 0.8, 1.0, 3.5), "summon_targets": clampf(float(config.get("max_summons", 1)), 1.0, 4.0)}

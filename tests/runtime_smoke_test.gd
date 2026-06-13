@@ -1064,6 +1064,7 @@ func _initialize() -> void:
 	await _test_priest_weapon_mechanics()
 	await _test_biologist_weapon_mechanics()
 	await _test_robot_weapon_mechanics()
+	await _test_engineer_weapon_mechanics()
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1078,6 +1079,7 @@ func _initialize() -> void:
 	await _test_boss_zone_wave_safe_corridor()
 	await _test_elite_boss_presentation(main_scene)
 	await _test_boss_hud_omits_timer(main_scene)
+	await _test_shop_wall_no_overlap_layouts(main_scene)
 	await _test_hud_no_overlap_layouts(main_scene)
 	await _test_mini_elite_roster(main_scene)
 	await _test_new_boss_roster(main_scene)
@@ -1802,9 +1804,9 @@ func _test_noncombat_nodes(main: Node) -> void:
 		push_error("Expected shop to render as an inline full-screen shop screen.")
 		quit(1)
 		return
-	var inline_items := main.find_child("ShopInlineItems", true, false) as GridContainer
-	if inline_items == null or inline_items.columns != 2:
-		push_error("Expected shop offers to sit in a 2-column grid on the parchment wall.")
+	var inline_items := main.find_child("ShopInlineItems", true, false) as Control
+	if inline_items == null or inline_items is GridContainer:
+		push_error("Expected shop offers to hang freely on the wall, not inside a card grid.")
 		quit(1)
 		return
 	var parchment_wall := main.find_child("ShopParchmentWall", true, false) as Control
@@ -1814,12 +1816,14 @@ func _test_noncombat_nodes(main: Node) -> void:
 		return
 	var first_shop_button := main.find_child("ShopItemButton0", true, false) as Button
 	if first_shop_button == null or first_shop_button.text != "" or first_shop_button.tooltip_text == "":
-		push_error("Expected shop item cards to show icon/price only and move descriptions into hover tooltip.")
+		push_error("Expected shop wall items to show icon/price only and move descriptions into hover tooltip.")
 		quit(1)
 		return
 	var first_shop_icon := first_shop_button.find_child("ShopItemIcon", true, false) as TextureRect
 	var first_shop_price := first_shop_button.find_child("ShopItemPrice", true, false) as Label
-	if first_shop_icon == null or first_shop_icon.texture == null or first_shop_price == null or not first_shop_price.text.ends_with("g"):
+	var first_shop_shadow := first_shop_button.find_child("ShopItemContactShadow", true, false) as PanelContainer
+	var first_shop_money_icon := first_shop_button.find_child("ShopPriceMoneyIcon", true, false) as TextureRect
+	if first_shop_icon == null or first_shop_icon.texture == null or first_shop_price == null or not first_shop_price.text.is_valid_int() or first_shop_shadow == null or first_shop_money_icon == null or first_shop_money_icon.texture == null:
 		push_error("Expected every inline shop offer to include a texture icon and visible price.")
 		quit(1)
 		return
@@ -1838,13 +1842,13 @@ func _test_noncombat_nodes(main: Node) -> void:
 		push_error("Expected inline shop to use the dedicated Design icon %s, got %s." % [expected_first_icon_path, first_shop_icon.texture.resource_path])
 		quit(1)
 		return
-	if not (first_shop_button.get_theme_stylebox("normal") is StyleBoxTexture) or not (first_shop_button.get_theme_stylebox("hover") is StyleBoxTexture):
-		push_error("Expected inline shop item slots to use Design StyleBoxTexture frames.")
+	if first_shop_button.get_theme_stylebox("normal") is StyleBoxTexture or first_shop_button.get_theme_stylebox("hover") is StyleBoxTexture:
+		push_error("Expected wall shop items to avoid card/frame StyleBoxTexture slots.")
 		quit(1)
 		return
 	var first_price_badge := first_shop_button.find_child("ShopPriceBadge", true, false) as PanelContainer
-	if first_price_badge == null or not (first_price_badge.get_theme_stylebox("panel") is StyleBoxTexture):
-		push_error("Expected inline shop price badge to use the Design price frame.")
+	if first_price_badge == null or first_price_badge.get_theme_stylebox("panel") is StyleBoxTexture:
+		push_error("Expected inline shop price badge to be compact and frameless.")
 		quit(1)
 		return
 	main.ui._show_pause_menu()
@@ -1872,17 +1876,15 @@ func _test_noncombat_nodes(main: Node) -> void:
 		push_error("Expected first shop purchase to succeed without leaving shop.")
 		quit(1)
 		return
+	await process_frame
 	if not bool(main.get("current_shop_purchased")[0]):
 		push_error("Expected bought shop item to be marked as purchased.")
 		quit(1)
 		return
-	var purchased_overlay := main.find_child("ShopItemStateOverlay", true, false) as PanelContainer
-	if purchased_overlay == null:
-		push_error("Expected bought shop item to expose a purchased state overlay.")
-		quit(1)
-		return
-	if not (purchased_overlay.get_theme_stylebox("panel") is StyleBoxTexture):
-		push_error("Expected bought shop item overlay to use the Design purchased/unavailable frame.")
+	var purchased_button := main.find_child("ShopItemButton0", true, false) as Button
+	var empty_hook := purchased_button.find_child("ShopEmptyHook", true, false) as PanelContainer if purchased_button != null else null
+	if purchased_button == null or not purchased_button.disabled or empty_hook == null or purchased_button.find_child("ShopItemIcon", true, false) != null:
+		push_error("Expected bought shop item to be removed from the wall and replaced by a small empty hook.")
 		quit(1)
 		return
 	if not bool(main.call("_buy_shop_item_at", 1)):
@@ -2018,6 +2020,11 @@ func _test_class_weapon_configs() -> void:
 			"robot_hydraulic_press": {"scene": "RobotHydraulicPress", "mode": "robot_compression_line", "sprite": "res://assets/sprites/weapons/robot_hydraulic_press.png"},
 			"robot_reactor_core": {"scene": "RobotReactorCore", "mode": "robot_reactor_vent", "sprite": "res://assets/sprites/weapons/robot_reactor_core.png"},
 		},
+		"engineer": {
+			"engineer_sentry_wrench": {"scene": "EngineerSentryWrench", "mode": "engineer_sentry_link", "sprite": "res://assets/sprites/weapons/raven_totem.png"},
+			"engineer_repair_drone": {"scene": "EngineerRepairDrone", "mode": "engineer_repair_drone", "sprite": "res://assets/sprites/weapons/summon_amulet.png"},
+			"engineer_pressure_mines": {"scene": "EngineerPressureMines", "mode": "engineer_pressure_mines", "sprite": "res://assets/sprites/weapons/hunter_trap.png"},
+		},
 		"dark_mage": {
 			"dark_book": {"scene": "DarkBook", "mode": "aoe_projectile", "sprite": "res://assets/sprites/weapons/dark_book.png"},
 			"cursed_skull": {"scene": "CursedSkull", "mode": "homing_curse", "sprite": "res://assets/sprites/weapons/cursed_skull.png"},
@@ -2068,6 +2075,7 @@ func _test_all_weapon_variants_equip() -> void:
 		"priest": ["priest_reliquary", "priest_censer", "priest_chime"],
 		"biologist": ["biologist_spore_lens", "biologist_sample_injector", "biologist_symbiote_seed"],
 		"robot": ["robot_magnetic_anchor", "robot_hydraulic_press", "robot_reactor_core"],
+		"engineer": ["engineer_sentry_wrench", "engineer_repair_drone", "engineer_pressure_mines"],
 		"dark_mage": ["dark_book", "cursed_skull", "dark_wand"],
 		"guitarist": ["electric_guitar", "bass_guitar", "sound_amp"],
 		"assassin": ["chakrams", "shadow_daggers", "venom_wire"],
@@ -2540,6 +2548,17 @@ func _test_unique_class_identity_patterns() -> void:
 	for required_robot_mode in ["robot_magnetic_anchor", "robot_compression_line", "robot_reactor_vent"]:
 		if not robot_modes.has(required_robot_mode):
 			_fail("Expected Robot to include unique %s attack mode." % required_robot_mode)
+			return
+	var engineer_modes := {}
+	for engineer_weapon_id in ProgressionData.weapon_ids("engineer"):
+		var engineer_mode := str(ProgressionData.weapon("engineer", engineer_weapon_id).get("attack_mode", ""))
+		if engineer_modes.has(engineer_mode):
+			_fail("Expected Engineer weapons to use three distinct attack modes.")
+			return
+		engineer_modes[engineer_mode] = true
+	for required_engineer_mode in ["engineer_sentry_link", "engineer_repair_drone", "engineer_pressure_mines"]:
+		if not engineer_modes.has(required_engineer_mode):
+			_fail("Expected Engineer to include unique %s attack mode." % required_engineer_mode)
 			return
 	if ProgressionData.weapon("doctor", "restore_potion").get("attack_mode", "") != "drain_link":
 		_fail("Expected Doctor restore potion slot to use the drain/lifesteal link pattern.")
@@ -3033,7 +3052,7 @@ func _test_weapon_aiming() -> void:
 func _test_all_playable_classes() -> void:
 	# Каждый класс экипирует сигнатурное оружие и наносит урон (друид — призывает).
 	var signature := {
-		"berserk": "sword", "soldier": "soldier_rifle", "thief": "thief_coin_pouch", "elementalist": "elementalist_orb_ring", "sniper": "sniper_deadeye_rifle", "priest": "priest_reliquary", "biologist": "biologist_spore_lens", "robot": "robot_magnetic_anchor", "dark_mage": "dark_wand", "guitarist": "electric_guitar",
+		"berserk": "sword", "soldier": "soldier_rifle", "thief": "thief_coin_pouch", "elementalist": "elementalist_orb_ring", "sniper": "sniper_deadeye_rifle", "priest": "priest_reliquary", "biologist": "biologist_spore_lens", "robot": "robot_magnetic_anchor", "engineer": "engineer_sentry_wrench", "dark_mage": "dark_wand", "guitarist": "electric_guitar",
 		"assassin": "chakrams", "ranger": "moon_crossbow", "doctor": "restore_potion",
 		"chemist": "blast_powder", "knight": "long_spear", "druid": "summon_amulet",
 	}
@@ -3523,6 +3542,77 @@ func _test_robot_weapon_mechanics() -> void:
 	await process_frame
 
 
+func _test_engineer_weapon_mechanics() -> void:
+	var engineer_weapons := ProgressionData.weapon_ids("engineer")
+	if engineer_weapons != ["engineer_sentry_wrench", "engineer_repair_drone", "engineer_pressure_mines"]:
+		_fail("Expected Engineer to expose exactly sentry wrench/repair drone/pressure mines weapons.")
+		return
+	var expected_modes := {
+		"engineer_sentry_wrench": "engineer_sentry_link",
+		"engineer_repair_drone": "engineer_repair_drone",
+		"engineer_pressure_mines": "engineer_pressure_mines",
+	}
+	for weapon_id in expected_modes.keys():
+		var config: Dictionary = ProgressionData.weapon("engineer", weapon_id)
+		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
+			_fail("Expected Engineer weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
+			return
+	if ProgressionData.ascension_levels("engineer").size() != 10:
+		_fail("Expected Engineer to have 10 ascension levels.")
+		return
+
+	var holder := Node2D.new()
+	holder.name = "EngineerWeaponMechanicsScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for weapon_id in expected_modes.keys():
+		var engineer := player_scene.instantiate()
+		holder.add_child(engineer)
+		engineer.global_position = Vector2(860, 720)
+		await process_frame
+		engineer.call("configure_character", "engineer", weapon_id)
+		var weapon: Node = engineer.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected Engineer %s to attach a weapon." % weapon_id)
+			return
+		weapon.set_process(false)
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		enemy.global_position = engineer.global_position + Vector2(180, 0)
+		var second_enemy := enemy_scene.instantiate()
+		holder.add_child(second_enemy)
+		second_enemy.set("max_health", 100000.0)
+		second_enemy.set("health", 100000.0)
+		second_enemy.global_position = engineer.global_position + Vector2(240, 45)
+		await process_frame
+		var before_hp := float(enemy.get("health"))
+		var before_second_hp := float(second_enemy.get("health"))
+		var before_player_hp := float(engineer.get("health"))
+		engineer.set("health", maxf(1.0, before_player_hp - 15.0))
+		weapon.call("_attack")
+		await create_timer(1.35).timeout
+		if float(enemy.get("health")) >= before_hp:
+			_fail("Expected Engineer weapon %s to damage its primary target." % weapon_id)
+			return
+		if weapon_id in ["engineer_sentry_wrench", "engineer_repair_drone"] and float(second_enemy.get("health")) >= before_second_hp:
+			_fail("Expected Engineer weapon %s to affect a secondary target." % weapon_id)
+			return
+		if weapon_id == "engineer_repair_drone" and float(engineer.get("health")) <= before_player_hp - 15.0:
+			_fail("Expected Engineer repair drone to restore health from damage.")
+			return
+		engineer.queue_free()
+		enemy.queue_free()
+		second_enemy.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
 func _test_full_attribute_wiring() -> void:
 	# Каждый подключенный параметр присутствует и реагирует на свой стат/награду.
 	var stats: Dictionary = ProgressionData.base_stats("berserk")
@@ -3604,6 +3694,20 @@ func _test_full_attribute_wiring() -> void:
 func _test_settings_persistence_and_audio() -> void:
 	# Save/load roundtrip настроек.
 	var game_settings := load("res://scripts/game_settings.gd")
+	var legacy_config := ConfigFile.new()
+	legacy_config.set_value(game_settings.SECTION, "resolution_index", 1)
+	legacy_config.set_value(game_settings.SECTION, "window_mode_index", 0)
+	legacy_config.set_value(game_settings.SECTION, "screen_index", 0)
+	legacy_config.set_value(game_settings.SECTION, "master_volume", 0.0)
+	legacy_config.set_value(game_settings.SECTION, "music_volume", 1.0)
+	legacy_config.set_value(game_settings.SECTION, "sfx_volume", 1.0)
+	legacy_config.set_value(game_settings.SECTION, "music_enabled", true)
+	legacy_config.set_value(game_settings.SECTION, "sfx_enabled", true)
+	legacy_config.save(game_settings.SAVE_PATH)
+	var migrated: Dictionary = game_settings.load_settings()
+	if absf(float(migrated.get("master_volume", 0.0)) - 1.0) > 0.001:
+		_fail("Expected legacy master_volume=0 without explicit intent to migrate back to 100%.")
+		return
 	var saved := {
 		"resolution_index": 2, "window_mode_index": 1, "screen_index": 1,
 		"master_volume": 0.85, "music_volume": 0.4, "sfx_volume": 0.65,
@@ -3630,6 +3734,14 @@ func _test_settings_persistence_and_audio() -> void:
 	if AudioServer.get_bus_index("Music") == -1 or AudioServer.get_bus_index("SFX") == -1:
 		_fail("Expected Music and SFX audio buses to be created.")
 		return
+	var master_bus := AudioServer.get_bus_index("Master")
+	audio.apply_volume_settings({"master_volume": 0.0, "music_volume": 1.0, "sfx_volume": 1.0, "music_enabled": true, "sfx_enabled": true})
+	if AudioServer.is_bus_mute(master_bus):
+		_fail("Expected master_volume=0 to set quiet volume without hard-muting the Master bus.")
+		return
+	if AudioServer.get_bus_volume_db(master_bus) > -70.0:
+		_fail("Expected master_volume=0 to apply a very quiet Master bus volume.")
+		return
 	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 0.5, "sfx_volume": 1.0, "music_enabled": false, "sfx_enabled": true})
 	var music_bus := AudioServer.get_bus_index("Music")
 	if not AudioServer.is_bus_mute(music_bus):
@@ -3637,6 +3749,9 @@ func _test_settings_persistence_and_audio() -> void:
 		return
 	if absf(AudioServer.get_bus_volume_db(music_bus) - linear_to_db(0.5)) > 0.1:
 		_fail("Expected the music slider to set bus volume (value preserved while muted).")
+		return
+	if AudioServer.is_bus_mute(master_bus):
+		_fail("Expected toggling Music to not mute the Master bus.")
 		return
 	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 1.0, "sfx_volume": 1.0, "music_enabled": true, "sfx_enabled": true})
 
@@ -3674,12 +3789,38 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		_fail("Expected music mute toggle to use clear Вкл./Выкл. text.")
 		return
 	var music_slider := main.find_child("VolumeSlider_music_volume", true, false) as HSlider
+	var master_slider := main.find_child("VolumeSlider_master_volume", true, false) as HSlider
+	if master_slider == null:
+		_fail("Expected master volume slider to exist.")
+		return
+	master_slider.value = 24.0
+	await process_frame
+	var master_bus := AudioServer.get_bus_index("Master")
+	if absf(AudioServer.get_bus_volume_db(master_bus) - linear_to_db(0.24)) > 0.1:
+		_fail("Expected moving the master slider to apply the Master bus live.")
+		return
 	music_slider.value = 42.0
 	await process_frame
 	var game_settings := load("res://scripts/game_settings.gd")
 	var loaded_audio: Dictionary = game_settings.load_settings()
+	if absf(float(loaded_audio.get("master_volume", 0.0)) - 0.24) > 0.021:
+		_fail("Expected moving the master slider to persist live volume.")
+		return
 	if absf(float(loaded_audio.get("music_volume", 0.0)) - 0.42) > 0.021:
 		_fail("Expected moving the music slider to persist live volume.")
+		return
+	var reset_audio := main.find_child("SettingsResetAudioButton", true, false) as Button
+	if reset_audio == null:
+		_fail("Expected sound settings to expose a reset audio defaults button.")
+		return
+	reset_audio.pressed.emit()
+	await process_frame
+	loaded_audio = game_settings.load_settings()
+	if absf(float(loaded_audio.get("master_volume", 0.0)) - 1.0) > 0.001 or absf(float(loaded_audio.get("music_volume", 0.0)) - 1.0) > 0.001 or absf(float(loaded_audio.get("sfx_volume", 0.0)) - 1.0) > 0.001:
+		_fail("Expected audio reset button to restore all audio sliders to 100%.")
+		return
+	if not bool(loaded_audio.get("music_enabled", false)) or not bool(loaded_audio.get("sfx_enabled", false)):
+		_fail("Expected audio reset button to enable music and SFX.")
 		return
 	if not InputMap.has_action("ultimate"):
 		_fail("Expected InputMap action 'ultimate' to exist.")
@@ -4404,6 +4545,112 @@ func _test_hud_no_overlap_layouts(main_scene: PackedScene) -> void:
 		file.close()
 
 
+func _test_shop_wall_no_overlap_layouts(main_scene: PackedScene) -> void:
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# Shop Wall No-Overlap Rect Dump")
+	dump_lines.append("")
+	for viewport_size in [Vector2i(1280, 720), Vector2i(2560, 1440)]:
+		await _assert_shop_wall_layout_at_size(main_scene, viewport_size, dump_lines)
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var file := FileAccess.open("%s/shop_wall_frameless_rects.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump_lines))
+		file.close()
+
+
+func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Vector2i, dump_lines: PackedStringArray) -> void:
+	var viewport := SubViewport.new()
+	viewport.size = viewport_size
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	await process_frame
+
+	var shop_main := main_scene.instantiate()
+	viewport.add_child(shop_main)
+	await process_frame
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var shop_player := player_scene.instantiate()
+	viewport.add_child(shop_player)
+	shop_player.configure_character("berserk", "sword")
+	shop_player.set("money", 300)
+	shop_main.call("_store_player_snapshot", shop_player)
+	shop_player.queue_free()
+	shop_main.set("route_stage", 2)
+	shop_main.call("_show_shop_screen")
+	await process_frame
+	await process_frame
+
+	var context := "shop %s" % str(viewport_size)
+	dump_lines.append("## %s" % context)
+	var wall := shop_main.find_child("ShopParchmentWall", true, false) as Control
+	var inline_items := shop_main.find_child("ShopInlineItems", true, false) as Control
+	if wall == null or inline_items == null:
+		_fail("Expected shop wall and item layer at %s." % context)
+		return
+	if inline_items is GridContainer:
+		_fail("Expected frameless shop items to avoid GridContainer/card layout at %s." % context)
+		return
+	if wall.anchor_left < 0.49 or wall.anchor_right > 0.83:
+		_fail("Expected shop wall to stay in merchant background free area at %s." % context)
+		return
+
+	var buttons := shop_main.find_children("ShopItemButton*", "Button", true, false)
+	if buttons.size() != 4:
+		_fail("Expected four wall shop buttons at %s." % context)
+		return
+	var button_controls := []
+	var visual_controls := []
+	for node in buttons:
+		var button := node as Button
+		if button == null:
+			continue
+		button_controls.append(button)
+		dump_lines.append("- `%s`: `%s`" % [button.name, str(button.get_global_rect())])
+		if button.get_theme_stylebox("normal") is StyleBoxTexture or button.get_theme_stylebox("hover") is StyleBoxTexture:
+			_fail("Expected %s to be frameless, got StyleBoxTexture." % button.name)
+			return
+		var icon := button.find_child("ShopItemIcon", true, false) as TextureRect
+		var price := button.find_child("ShopPriceBadge", true, false) as PanelContainer
+		var shadow := button.find_child("ShopItemContactShadow", true, false) as PanelContainer
+		if icon == null or icon.texture == null or price == null or shadow == null:
+			_fail("Expected %s to include icon, contact shadow, and compact price tag." % button.name)
+			return
+		if price.get_theme_stylebox("panel") is StyleBoxTexture:
+			_fail("Expected %s price tag to be compact, not a framed texture badge." % button.name)
+			return
+		visual_controls.append(icon)
+		visual_controls.append(price)
+		var money_icon := button.find_child("ShopPriceMoneyIcon", true, false) as TextureRect
+		var price_label := button.find_child("ShopItemPrice", true, false) as Label
+		if money_icon == null or money_icon.texture == null or price_label == null or not price_label.text.is_valid_int():
+			_fail("Expected %s price to show money icon plus numeric cost." % button.name)
+			return
+	var item_overlap := _first_control_overlap(button_controls, 6.0)
+	if not item_overlap.is_empty():
+		_fail("Expected shop wall hit areas not to overlap at %s, got %s." % [context, item_overlap])
+		return
+	var cross_slot_overlap := _first_cross_parent_overlap(visual_controls, 4.0)
+	if not cross_slot_overlap.is_empty():
+		_fail("Expected shop item visuals not to overlap at %s, got %s." % [context, cross_slot_overlap])
+		return
+
+	var hud_overlap := _first_control_overlap(button_controls + _visible_hud_top_controls(shop_main), 2.0)
+	if not hud_overlap.is_empty():
+		_fail("Expected shop wall controls not to overlap HUD at %s, got %s." % [context, hud_overlap])
+		return
+
+	if viewport_size == Vector2i(1280, 720):
+		var qa_dir := ProjectSettings.globalize_path("res://build/qa")
+		DirAccess.make_dir_recursive_absolute(qa_dir)
+		if DisplayServer.get_name() != "headless":
+			var image := viewport.get_texture().get_image()
+			image.save_png("%s/shop_wall_frameless_1280x720.png" % qa_dir)
+
+	viewport.queue_free()
+	await process_frame
+
+
 func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vector2i, boss_fight: bool, dump_lines: PackedStringArray) -> void:
 	var viewport := SubViewport.new()
 	viewport.size = viewport_size
@@ -4464,6 +4711,34 @@ func _first_control_overlap(controls: Array, tolerance_px := 2.0) -> String:
 			if first_rect.intersects(second_rect):
 				return "%s %s intersects %s %s" % [first.name, first.get_global_rect(), second.name, second.get_global_rect()]
 	return ""
+
+
+func _first_cross_parent_overlap(controls: Array, tolerance_px := 2.0) -> String:
+	for first_index in range(controls.size()):
+		var first := controls[first_index] as Control
+		if first == null:
+			continue
+		var first_button := _ancestor_button(first)
+		var first_rect := _rect_with_tolerance(first.get_global_rect(), tolerance_px)
+		for second_index in range(first_index + 1, controls.size()):
+			var second := controls[second_index] as Control
+			if second == null:
+				continue
+			if first_button != null and first_button == _ancestor_button(second):
+				continue
+			var second_rect := _rect_with_tolerance(second.get_global_rect(), tolerance_px)
+			if first_rect.intersects(second_rect):
+				return "%s %s intersects %s %s" % [first.name, first.get_global_rect(), second.name, second.get_global_rect()]
+	return ""
+
+
+func _ancestor_button(control: Control) -> Button:
+	var node: Node = control
+	while node != null:
+		if node is Button:
+			return node as Button
+		node = node.get_parent()
+	return null
 
 
 func _rect_with_tolerance(rect: Rect2, tolerance_px: float) -> Rect2:

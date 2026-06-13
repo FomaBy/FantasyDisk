@@ -116,3 +116,31 @@ mute при 0 всё равно стоит сделать чище (см. тре
 Verification:
 
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (с оговоркой о слышимости — см. ниже)
+
+Проверено фактически:
+- Mute-семантика: `_set_bus_volume` (audio_manager.gd:133-139) — db через
+  `linear_to_db(maxf(volume,0.0001))`, mute ТОЛЬКО `not enabled`, НЕ по volume<=0.
+  master=0 → очень тихо, без hard-mute Master. VERIFIED.
+- Миграция: `game_settings.load_settings:44-47` — master_volume<=0 без
+  `master_zero_intent` → поднимает до DEFAULTS (1.0) + save. Старые «немые» профили
+  чинятся сами. VERIFIED.
+- Анти-залипание кроссфейда (ведущий подозреваемый): `play_music:163-170` — при
+  активном tween kill + stop fade-player + при повторном входе в тот же трек
+  восстанавливает `volume_db=target_db`; при смене трека новый плеер всегда
+  пересетится (184-185). Не залипает на -28/-40 dB. VERIFIED.
+- Reset-кнопка: `SettingsResetAudioButton` «Сбросить звук по умолчанию»
+  (ui_screens.gd:1170-1177 → `_reset_audio_to_defaults`). VERIFIED (код).
+- Тесты РЕАЛЬНЫЕ (runtime_smoke:3698-3740) — ассертят ФАКТИЧЕСКИЙ AudioServer:
+  миграция master 0→1.0; `is_bus_mute(Master)==false` при master=0; db<-70 при 0;
+  live master persistence; reset. Не intent. VERIFIED.
+- 6 smoke на чистом HEAD f6085d5 зелёные.
+
+ОГОВОРКА (честно): фактическая СЛЫШИМОСТЬ звука через динамики машинно не
+проверяема — в QA-окружении нет аудиоустройства (headless и оконный рендер аудио не
+выводят/не захватывают). Сам корень тишины у пользователя (PM: settings здоров,
+master=1.0) кодом-фиксом адресован через анти-залипание кроссфейда — это
+правдоподобно, но ОКОНЧАТЕЛЬНОЕ подтверждение «звук вернулся» = ручной плейтест
+пользователя со звуком. Код/тесты/семантика — корректны, регрессий нет.

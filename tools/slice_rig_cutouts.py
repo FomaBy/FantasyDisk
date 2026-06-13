@@ -228,6 +228,20 @@ CONFIG = {
             "leg_r": {"crop": (256, 326, 386, 492), "pivot": (318, 346), "z": -1, "erase": ("below", 356)},
         },
     },
+    "engineer": {
+        "source": "assets/sprites/characters/engineer.png",
+        "group": "characters",
+        "style": "humanoid",
+        "attack_part": "arm_r",
+        "foot_y": 488,
+        "socket": (336, 286),
+        "parts": {
+            "arm_l": {"crop": (96, 142, 210, 360), "pivot": (178, 166), "z": 1, "erase": (96, 142, 180, 352)},
+            "arm_r": {"crop": (304, 134, 414, 358), "pivot": (326, 160), "z": 1, "erase": (326, 134, 414, 352)},
+            "leg_l": {"crop": (150, 318, 244, 488), "pivot": (194, 338), "z": -1, "erase": ("below", 354)},
+            "leg_r": {"crop": (248, 316, 356, 488), "pivot": (294, 338), "z": -1, "erase": ("below", 354)},
+        },
+    },
     "dark_mage": {
         "source": "assets/sprites/characters/dark_mage.png",
         "group": "characters",

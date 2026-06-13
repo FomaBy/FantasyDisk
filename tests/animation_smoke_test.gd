@@ -121,6 +121,7 @@ func _test_player_animation() -> void:
 		"priest": 0.025,
 		"biologist": 0.025,
 		"robot": 0.02,
+		"engineer": 0.025,
 	}
 	for character_id in new_class_profiles.keys():
 		player.configure_character(character_id)
@@ -231,6 +232,21 @@ func _test_player_animation() -> void:
 	for robot_pose in [anchor_pose, press_pose, reactor_pose]:
 		if float(robot_pose["socket_x"]) <= 8.0 or abs(float(robot_pose["socket_y"])) >= 42.0:
 			_fail("Expected robot weapon socket to stay readable near the construct hand.")
+
+	var wrench_pose: Dictionary = _sample_player_weapon_action_pose(player, "engineer", "engineer_sentry_wrench", "shoot", 0.12)
+	var drone_pose: Dictionary = _sample_player_weapon_action_pose(player, "engineer", "engineer_repair_drone", "shoot", 0.12)
+	var mines_pose: Dictionary = _sample_player_weapon_action_pose(player, "engineer", "engineer_pressure_mines", "shoot", 0.12)
+	if wrench_pose["variant"] != "engineer_sentry_wrench" or drone_pose["variant"] != "engineer_repair_drone" or mines_pose["variant"] != "engineer_pressure_mines":
+		_fail("Expected Engineer rig to receive the equipped weapon id as animation variant.")
+	if float(wrench_pose["arm_r_y"]) >= float(mines_pose["arm_r_y"]) - 4.0:
+		_fail("Expected engineer sentry wrench pose to lift the tool for deployment.")
+	if float(drone_pose["arm_l_y"]) >= float(mines_pose["arm_l_y"]) - 4.0 or float(drone_pose["pelvis_y"]) >= float(mines_pose["pelvis_y"]) - 2.0:
+		_fail("Expected engineer repair drone pose to launch upward.")
+	if float(mines_pose["pelvis_y"]) <= float(wrench_pose["pelvis_y"]) + 2.0 or float(mines_pose["arm_r_y"]) <= float(wrench_pose["arm_r_y"]) + 3.0:
+		_fail("Expected engineer pressure mines pose to crouch and place low.")
+	for engineer_pose in [wrench_pose, drone_pose, mines_pose]:
+		if float(engineer_pose["socket_x"]) <= 8.0 or abs(float(engineer_pose["socket_y"])) >= 42.0:
+			_fail("Expected engineer weapon socket to stay readable near the tool hand.")
 	player.queue_free()
 
 

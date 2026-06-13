@@ -227,6 +227,22 @@ const DATA := {
 			"torso": {"texture": preload("res://assets/sprites/characters/cutout/robot_torso.png"), "pos": Vector2(0.0, 0.0), "pivot": Vector2(256.0, 256.0), "z": 0},
 		},
 	},
+	"engineer": {
+		"source": "res://assets/sprites/characters/engineer.png",
+		"size": Vector2(512.0, 512.0),
+		"style": "humanoid",
+		"attack_part": "arm_r",
+		"base_facing": 1.0,
+		"foot_y": 488.0,
+		"socket": Vector2(336.0, 286.0),
+		"parts": {
+			"arm_l": {"texture": preload("res://assets/sprites/characters/cutout/engineer_arm_l.png"), "pos": Vector2(96.0, 142.0), "pivot": Vector2(178.0, 166.0), "z": 1},
+			"arm_r": {"texture": preload("res://assets/sprites/characters/cutout/engineer_arm_r.png"), "pos": Vector2(304.0, 134.0), "pivot": Vector2(326.0, 160.0), "z": 1},
+			"leg_l": {"texture": preload("res://assets/sprites/characters/cutout/engineer_leg_l.png"), "pos": Vector2(150.0, 318.0), "pivot": Vector2(194.0, 338.0), "z": -1},
+			"leg_r": {"texture": preload("res://assets/sprites/characters/cutout/engineer_leg_r.png"), "pos": Vector2(248.0, 316.0), "pivot": Vector2(294.0, 338.0), "z": -1},
+			"torso": {"texture": preload("res://assets/sprites/characters/cutout/engineer_torso.png"), "pos": Vector2(0.0, 0.0), "pivot": Vector2(256.0, 256.0), "z": 0},
+		},
+	},
 	"dark_mage": {
 		"source": "res://assets/sprites/characters/dark_mage.png",
 		"size": Vector2(512.0, 512.0),
@@ -516,7 +532,3 @@ const DATA := {
 		},
 	},
 }
-
-
-func get_data() -> Dictionary:
-	return DATA

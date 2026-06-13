@@ -4,6 +4,13 @@
 
 ## [Unreleased] — ветка dev
 
+- Bugfix (SCRUM-172): исправлена потенциальная «немая» аудио-конфигурация — `master_volume=0` больше не hard-mute'ит Master bus, старые профили с нулем без явного intent-флага мигрируют к 100%, кроссфейд музыки сбрасывает застрявшие low-volume состояния, а вкладка «Звук» получила кнопку «Сбросить звук по умолчанию».
+
+- UI (SCRUM-160): магазин больше не показывает товары в золотых карточках — предметы висят на стене фона как реальные товары лавки, с контактной тенью, компактным ценником с монетой, hover tooltip, затемнением недоступного товара и empty-hook состоянием после покупки; runtime smoke проверяет отсутствие frame-style слотов и no-overlap на 1280x720/2560x1440.
+
+- Контент (SCRUM-164): добавлен финальный класс Class Sheet — Инженер (`engineer`) с 3 уникальными оружиями: ключ часового (`engineer_sentry_link`), ремонтный дрон (`engineer_repair_drone`) и минная сетка (`engineer_pressure_mines`); выбор героя/кодекс/тесты расширены под 17 классов и 51 weapon variant. Арт и rig/motion переданы Design/Animator handoff-задачами.
+- Арт (SCRUM-164): подготовлен canonical Engineer visual kit — `assets/sprites/characters/engineer.png`, `assets/sprites/weapons/engineer_sentry_wrench.png`, `assets/sprites/weapons/engineer_repair_drone.png`, `assets/sprites/weapons/engineer_pressure_mines.png`; добавлен preview `docs/design/previews/engineer_art_contact.png`, Godot import и PNG/alpha validation пройдены.
+
 - Контент (SCRUM-166): добавлен класс Робот (`robot`) с 3 уникальными оружиями — магнитный якорь (`robot_magnetic_anchor`), гидравлический пресс (`robot_compression_line`) и реакторное ядро (`robot_reactor_vent`); выбор героя/кодекс/тесты расширены под 16 классов и 48 weapon variants. Runtime smoke blocker по indentation в weapon-mechanics awaits исправлен. Финальный арт и rig/motion переданы Design/Animator handoff-задачами.
 - Арт (SCRUM-166): подготовлен canonical Robot visual kit — `assets/sprites/characters/robot.png`, `assets/sprites/weapons/robot_magnetic_anchor.png`, `assets/sprites/weapons/robot_hydraulic_press.png`, `assets/sprites/weapons/robot_reactor_core.png`; добавлен preview `docs/design/previews/robot_art_contact.png`, Godot import и PNG/alpha validation пройдены.
 

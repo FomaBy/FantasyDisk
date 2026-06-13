@@ -63,3 +63,8 @@ Animator owns rig/motion/pose/timing polish. Back-end owns only gameplay configs
   - Godot headless editor import reimported Engineer cutout parts.
   - `res://tests/animation_smoke_test.gd` passed.
   - `res://tests/runtime_smoke_test.gd` could not run because of unrelated Back-end/UI compile errors in `scripts/ui_screens.gd`; handoff created: `docs/tasks/backend_ui_screens_shop_style_parse_errors_task.md`.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-164)
+Cutout (5) + manifest для engineer; motion profile/attack hooks 3 оружий.
+animation_smoke + runtime_smoke зелёные на чистом HEAD. Багов нет.

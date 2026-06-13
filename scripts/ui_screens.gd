@@ -24,7 +24,7 @@ const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_c
 const SYSTEM_SLIDER_TRACK_PATH := "res://assets/sprites/ui/icons/system/ui_slider_track.png"
 const SYSTEM_SLIDER_GRABBER_PATH := "res://assets/sprites/ui/icons/system/ui_slider_grabber.png"
 const SHOP_INLINE_SLOT_SIZE := Vector2(164, 186)
-const SHOP_INLINE_ICON_SIZE := Vector2(100, 100)
+const SHOP_INLINE_ICON_SIZE := Vector2(112, 112)
 const SHOP_CURSOR_VARIANTS := {
 	"arrow": "res://assets/sprites/ui/cursor/game_cursor.png",
 	"pointing_hand": "res://assets/sprites/ui/cursor/game_cursor_hover.png",
@@ -41,6 +41,7 @@ const HERO_CLASS_COLORS := {
 	"priest": Color(1.00, 0.90, 0.54, 0.82),
 	"biologist": Color(0.48, 0.95, 0.42, 0.82),
 	"robot": Color(0.42, 0.82, 1.00, 0.82),
+	"engineer": Color(0.86, 0.70, 0.32, 0.82),
 	"dark_mage": Color(0.66, 0.32, 1.00, 0.82),
 	"guitarist": Color(0.26, 0.72, 1.00, 0.82),
 	"assassin": Color(0.95, 0.22, 0.44, 0.82),
@@ -1166,6 +1167,14 @@ func _show_settings_menu() -> void:
 	_add_volume_row(audio_box, "Общая громкость", "master_volume", "")
 	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled")
 	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled")
+	var reset_audio_button := _make_button("Сбросить звук по умолчанию")
+	reset_audio_button.name = "SettingsResetAudioButton"
+	reset_audio_button.custom_minimum_size = Vector2(360, 42)
+	reset_audio_button.pressed.connect(func() -> void:
+		_reset_audio_to_defaults()
+		_show_settings_menu()
+	)
+	audio_box.add_child(reset_audio_button)
 
 	var controls_tab := _make_settings_tab("Управление")
 	var controls_box := controls_tab.get_child(0) as VBoxContainer
@@ -1313,6 +1322,14 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 			game.save_game_settings()
 		)
 		row.add_child(toggle)
+
+
+func _reset_audio_to_defaults() -> void:
+	for key in ["master_volume", "music_volume", "sfx_volume", "music_enabled", "sfx_enabled"]:
+		game.audio_settings[key] = game.GAME_SETTINGS.DEFAULTS[key]
+	game.audio_settings["master_zero_intent"] = false
+	game._apply_audio_settings()
+	game.save_game_settings()
 
 
 func _show_pause_menu() -> void:
@@ -1954,27 +1971,40 @@ func _show_shop_screen() -> void:
 	subtitle.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
 	title_box.add_child(subtitle)
 
-	# Сетка товаров лежит на «пустой стене» — светлом пергаменте правее торговца
-	# (~48-84% ширины и ~5-75% высоты фона screen_shop_background.png).
-	var wall := CenterContainer.new()
+	# Товары лежат на «пустой стене» фона screen_shop_background.png как
+	# предметы лавки, а не как UI-карточки.
+	var wall := Control.new()
 	wall.name = "ShopParchmentWall"
 	wall.anchor_left = 0.50
 	wall.anchor_top = 0.10
 	wall.anchor_right = 0.82
 	wall.anchor_bottom = 0.72
+	wall.offset_left = 0.0
+	wall.offset_top = 0.0
+	wall.offset_right = 0.0
+	wall.offset_bottom = 0.0
 	wall.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(wall)
 
-	var items_area := GridContainer.new()
+	var items_area := Control.new()
 	items_area.name = "ShopInlineItems"
-	items_area.columns = 2
-	items_area.add_theme_constant_override("h_separation", 22)
-	items_area.add_theme_constant_override("v_separation", 18)
+	items_area.set_anchors_preset(Control.PRESET_FULL_RECT)
+	items_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	wall.add_child(items_area)
 
 	for index in range(game.current_shop_items.size()):
 		var item: Dictionary = game.current_shop_items[index]
-		items_area.add_child(_make_shop_item_slot(item, index, money))
+		var slot := _make_shop_item_slot(item, index, money)
+		var slot_anchor := _shop_wall_slot_anchor(index)
+		slot.anchor_left = slot_anchor.x
+		slot.anchor_top = slot_anchor.y
+		slot.anchor_right = slot_anchor.x
+		slot.anchor_bottom = slot_anchor.y
+		slot.offset_left = -SHOP_INLINE_SLOT_SIZE.x * 0.5
+		slot.offset_top = -SHOP_INLINE_SLOT_SIZE.y * 0.5
+		slot.offset_right = SHOP_INLINE_SLOT_SIZE.x * 0.5
+		slot.offset_bottom = SHOP_INLINE_SLOT_SIZE.y * 0.5
+		items_area.add_child(slot)
 
 	var skip_button := _make_button("Покинуть магазин")
 	skip_button.name = "ShopLeaveButton"
@@ -2005,6 +2035,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	button.custom_minimum_size = SHOP_INLINE_SLOT_SIZE
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.focus_mode = Control.FOCUS_ALL
 	button.text = ""
 	button.tooltip_text = _shop_item_tooltip(item, purchased, affordable)
 	if str(item.get("kind", "")) == "artifact":
@@ -2023,58 +2054,135 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 			note_label.offset_top = 4.0
 			note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			button.add_child(note_label)
-	button.add_theme_stylebox_override("normal", _shop_slot_style(false))
-	button.add_theme_stylebox_override("hover", _shop_slot_style(true))
-	button.add_theme_stylebox_override("pressed", _shop_slot_style(true))
-	button.add_theme_stylebox_override("focus", _shop_slot_style(true))
+	button.add_theme_stylebox_override("normal", _shop_wall_button_style(false))
+	button.add_theme_stylebox_override("hover", _shop_wall_button_style(true))
+	button.add_theme_stylebox_override("pressed", _shop_wall_button_style(true))
+	button.add_theme_stylebox_override("focus", _shop_wall_button_style(true))
+	button.add_theme_stylebox_override("disabled", _shop_wall_button_style(false))
 	button.pressed.connect(func() -> void:
 		_buy_shop_item_at(index)
 	)
 
-	var content := VBoxContainer.new()
+	if purchased:
+		button.disabled = true
+		_add_shop_empty_hook(button)
+		return button
+
+	var content := Control.new()
+	content.name = "ShopWallItemContent"
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content.offset_left = 14.0
-	content.offset_top = 14.0
-	content.offset_right = -14.0
-	content.offset_bottom = -12.0
-	content.alignment = BoxContainer.ALIGNMENT_CENTER
-	content.add_theme_constant_override("separation", 8)
 	button.add_child(content)
 
-	var icon_holder := CenterContainer.new()
-	icon_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_holder.custom_minimum_size = Vector2(108, 92)
-	content.add_child(icon_holder)
+	var shadow := PanelContainer.new()
+	shadow.name = "ShopItemContactShadow"
+	shadow.anchor_left = 0.5
+	shadow.anchor_top = 0.0
+	shadow.anchor_right = 0.5
+	shadow.anchor_bottom = 0.0
+	shadow.offset_left = -46.0
+	shadow.offset_top = 112.0
+	shadow.offset_right = 46.0
+	shadow.offset_bottom = 130.0
+	shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shadow.add_theme_stylebox_override("panel", _shop_item_shadow_style())
+	content.add_child(shadow)
 
 	var icon := TextureRect.new()
 	icon.name = "ShopItemIcon"
 	icon.texture = _shop_item_icon_texture(item)
 	icon.custom_minimum_size = SHOP_INLINE_ICON_SIZE
+	icon.anchor_left = 0.5
+	icon.anchor_top = 0.0
+	icon.anchor_right = 0.5
+	icon.anchor_bottom = 0.0
+	icon.offset_left = -SHOP_INLINE_ICON_SIZE.x * 0.5
+	icon.offset_top = 16.0
+	icon.offset_right = SHOP_INLINE_ICON_SIZE.x * 0.5
+	icon.offset_bottom = 16.0 + SHOP_INLINE_ICON_SIZE.y
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon_holder.add_child(icon)
+	icon.modulate = Color(1.0, 1.0, 1.0, 1.0) if affordable else Color(0.52, 0.48, 0.45, 0.82)
+	content.add_child(icon)
 
 	var price_badge := PanelContainer.new()
 	price_badge.name = "ShopPriceBadge"
-	price_badge.custom_minimum_size = Vector2(106, 34)
+	price_badge.anchor_left = 0.5
+	price_badge.anchor_top = 1.0
+	price_badge.anchor_right = 0.5
+	price_badge.anchor_bottom = 1.0
+	price_badge.offset_left = -54.0
+	price_badge.offset_top = -42.0
+	price_badge.offset_right = 54.0
+	price_badge.offset_bottom = -12.0
+	price_badge.custom_minimum_size = Vector2(108, 30)
 	price_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	price_badge.add_theme_stylebox_override("panel", _shop_price_badge_style())
+	price_badge.add_theme_stylebox_override("panel", _shop_price_badge_style(affordable))
 	content.add_child(price_badge)
+
+	var price_row := HBoxContainer.new()
+	price_row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	price_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	price_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	price_badge.add_child(price_row)
+
+	var money_icon := TextureRect.new()
+	money_icon.name = "ShopPriceMoneyIcon"
+	money_icon.texture = game.UIIconRegistry.texture_for("money")
+	money_icon.custom_minimum_size = Vector2(18, 18)
+	money_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	money_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	money_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	price_row.add_child(money_icon)
 
 	var price_label := Label.new()
 	price_label.name = "ShopItemPrice"
-	price_label.text = "%dg" % cost
+	price_label.text = "%d" % cost
 	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	price_label.add_theme_font_size_override("font_size", 18)
 	price_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
-	price_badge.add_child(price_label)
+	price_row.add_child(price_label)
 
-	if purchased or not affordable:
-		_add_shop_state_overlay(button, "Куплено" if purchased else "Нет монет")
+	if not affordable:
+		_add_shop_state_overlay(button, "Нет монет")
 	return button
+
+
+func _shop_wall_slot_anchor(index: int) -> Vector2:
+	var anchors := [
+		Vector2(0.34, 0.25),
+		Vector2(0.78, 0.22),
+		Vector2(0.38, 0.78),
+		Vector2(0.82, 0.72),
+	]
+	return anchors[index % anchors.size()]
+
+
+func _add_shop_empty_hook(button: Button) -> void:
+	var hook := PanelContainer.new()
+	hook.name = "ShopEmptyHook"
+	hook.anchor_left = 0.5
+	hook.anchor_top = 0.5
+	hook.anchor_right = 0.5
+	hook.anchor_bottom = 0.5
+	hook.offset_left = -34.0
+	hook.offset_top = -18.0
+	hook.offset_right = 34.0
+	hook.offset_bottom = 18.0
+	hook.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hook.add_theme_stylebox_override("panel", _shop_empty_hook_style())
+	button.add_child(hook)
+
+	var label := Label.new()
+	label.text = "снято"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_color_override("font_color", Color(0.40, 0.30, 0.20, 0.78))
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hook.add_child(label)
 
 
 func _add_shop_state_overlay(button: Button, text: String) -> void:
@@ -2201,20 +2309,56 @@ func _shop_slot_style(is_hovered: bool) -> StyleBox:
 	return style
 
 
-func _shop_price_badge_style() -> StyleBox:
-	var texture_style := _shop_texture_style(SHOP_PRICE_BADGE_PATH, Vector2(14, 14))
-	if texture_style != null:
-		return texture_style
-
+func _shop_wall_button_style(is_hovered: bool) -> StyleBox:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.075, 0.065, 0.050, 0.88)
-	style.border_color = Color(1.0, 0.78, 0.24, 0.90)
+	style.bg_color = Color(0.90, 0.76, 0.38, 0.08) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
+	style.border_color = Color(1.0, 0.86, 0.42, 0.38) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
+	style.set_border_width_all(1 if is_hovered else 0)
+	style.set_corner_radius_all(18)
+	style.content_margin_left = 0
+	style.content_margin_top = 0
+	style.content_margin_right = 0
+	style.content_margin_bottom = 0
+	style.shadow_color = Color(1.0, 0.70, 0.24, 0.18) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
+	style.shadow_size = 12 if is_hovered else 0
+	return style
+
+
+func _shop_item_shadow_style() -> StyleBox:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.035, 0.025, 0.016, 0.38)
+	style.border_color = Color(0.0, 0.0, 0.0, 0.0)
+	style.set_border_width_all(0)
+	style.set_corner_radius_all(16)
+	return style
+
+
+func _shop_empty_hook_style() -> StyleBox:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.10, 0.075, 0.050, 0.22)
+	style.border_color = Color(0.18, 0.13, 0.08, 0.42)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(12)
+	style.content_margin_left = 6
+	style.content_margin_top = 4
+	style.content_margin_right = 6
+	style.content_margin_bottom = 4
+	return style
+
+
+func _shop_price_badge_style(affordable := true) -> StyleBox:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.075, 0.055, 0.035, 0.78) if affordable else Color(0.20, 0.055, 0.050, 0.82)
+	style.border_color = Color(0.72, 0.48, 0.16, 0.72) if affordable else Color(0.96, 0.30, 0.26, 0.76)
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(7)
-	style.content_margin_left = 8
-	style.content_margin_top = 5
-	style.content_margin_right = 8
-	style.content_margin_bottom = 5
+	style.content_margin_left = 5
+	style.content_margin_top = 3
+	style.content_margin_right = 6
+	style.content_margin_bottom = 3
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.24)
+	style.shadow_size = 4
+	style.shadow_offset = Vector2(0.0, 2.0)
 	return style
 
 

@@ -552,6 +552,10 @@ func _action_pose() -> Dictionary:
 		var robot_pose: Dictionary = _robot_action_pose(p)
 		if not robot_pose.is_empty():
 			return robot_pose
+	if is_player_rig and profile_id == "engineer":
+		var engineer_pose: Dictionary = _engineer_action_pose(p)
+		if not engineer_pose.is_empty():
+			return engineer_pose
 
 	match action_id:
 		"attack":
@@ -638,6 +642,75 @@ func _action_pose() -> Dictionary:
 				pose["parts"]["vortex"] = {"rotation": 0.6 * amp}
 		_:
 			pass
+	return pose
+
+
+func _engineer_action_pose(p: float) -> Dictionary:
+	var variant: String = action_variant.to_lower()
+	if action_id != "shoot" or not variant.begins_with("engineer_"):
+		return {}
+	var pose := {"parts": {}}
+	var parts: Dictionary = pose["parts"]
+
+	if variant == "engineer_sentry_wrench" or variant.contains("sentry") or variant.contains("wrench") or variant.contains("link"):
+		var ready: float = sin(minf(p / 0.34, 1.0) * PI * 0.5)
+		var deploy: float = sin(maxf((p - 0.28) / 0.58, 0.0) * PI)
+		pose["push_x"] = 2.0 * ready + 3.0 * deploy
+		pose["push_y"] = -1.0 * ready
+		pose["body_rot"] = 0.030 * ready + 0.045 * deploy
+		pose["torso_rot"] = 0.020 * ready
+		pose["squash_x"] = 1.0 + 0.022 * deploy
+		pose["squash_y"] = 1.0 - 0.018 * deploy
+		if _parts.has("arm_r"):
+			parts["arm_r"] = {
+				"rotation": -0.52 * ready + 0.30 * deploy,
+				"position": Vector2(8.0 * ready + 4.0 * deploy, -4.5 * ready),
+			}
+		if _parts.has("arm_l"):
+			parts["arm_l"] = {
+				"rotation": 0.20 * ready - 0.18 * deploy,
+				"position": Vector2(2.0 * ready, -1.0 * ready),
+			}
+	elif variant == "engineer_repair_drone" or variant.contains("repair") or variant.contains("drone"):
+		var launch: float = sin(minf(p / 0.40, 1.0) * PI * 0.5)
+		var guide: float = sin(maxf((p - 0.32) / 0.58, 0.0) * PI)
+		pose["push_y"] = -3.0 * launch
+		pose["push_x"] = 1.5 * guide
+		pose["body_rot"] = -0.030 * launch + 0.035 * guide
+		pose["torso_rot"] = -0.025 * launch
+		pose["squash_x"] = 1.0 + 0.018 * guide
+		pose["squash_y"] = 1.0 - 0.016 * guide
+		if _parts.has("arm_l"):
+			parts["arm_l"] = {
+				"rotation": -0.58 * launch - 0.12 * guide,
+				"position": Vector2(-2.5 * launch - 2.0 * guide, -5.0 * launch),
+			}
+		if _parts.has("arm_r"):
+			parts["arm_r"] = {
+				"rotation": 0.42 * launch + 0.12 * guide,
+				"position": Vector2(5.0 * launch + 2.0 * guide, -4.0 * launch),
+			}
+	elif variant == "engineer_pressure_mines" or variant.contains("pressure") or variant.contains("mine"):
+		var crouch: float = sin(minf(p / 0.38, 1.0) * PI * 0.5)
+		var place: float = sin(maxf((p - 0.30) / 0.60, 0.0) * PI)
+		pose["push_y"] = 4.0 * crouch
+		pose["push_x"] = 2.5 * place
+		pose["body_rot"] = 0.050 * crouch - 0.035 * place
+		pose["torso_rot"] = 0.040 * crouch
+		pose["squash_x"] = 1.0 + 0.028 * crouch
+		pose["squash_y"] = 1.0 - 0.024 * crouch
+		if _parts.has("arm_l"):
+			parts["arm_l"] = {
+				"rotation": 0.32 * crouch - 0.18 * place,
+				"position": Vector2(-3.0 * crouch - 2.0 * place, 4.0 * crouch + 1.0 * place),
+			}
+		if _parts.has("arm_r"):
+			parts["arm_r"] = {
+				"rotation": 0.60 * crouch + 0.18 * place,
+				"position": Vector2(5.0 * crouch + 4.0 * place, 5.0 * crouch + 1.0 * place),
+			}
+	else:
+		return {}
 	return pose
 
 
@@ -1356,6 +1429,8 @@ func _motion_profile() -> Dictionary:
 			profile.merge({"walk_frequency": 6.0, "bob": 1.70, "stride": 0.25, "arm_swing": 0.17, "foot_lift": 1.65, "weight_shift": 0.42, "body_counter": 0.030, "sway": 0.034, "idle_breath": 1.18, "walk_blend_rate": 5.3, "direction_blend_rate": 6.4}, true)
 		"robot":
 			profile.merge({"walk_frequency": 3.8, "bob": 3.85, "stride": 0.22, "arm_swing": 0.10, "foot_lift": 3.10, "weight_shift": 0.92, "body_counter": 0.032, "sway": 0.020, "idle_breath": 0.42, "squash_x": 0.014, "squash_y": 0.012, "speed_reference": 82.0, "walk_blend_rate": 4.0, "direction_blend_rate": 4.6}, true)
+		"engineer":
+			profile.merge({"walk_frequency": 5.9, "bob": 2.05, "stride": 0.27, "arm_swing": 0.18, "foot_lift": 1.85, "weight_shift": 0.54, "body_counter": 0.032, "sway": 0.040, "idle_breath": 1.05, "walk_blend_rate": 5.2, "direction_blend_rate": 6.2}, true)
 		"dark_mage":
 			profile.merge({"walk_frequency": 5.0, "bob": 1.55, "stride": 0.18, "arm_swing": 0.11, "foot_lift": 1.35, "weight_shift": 0.38, "idle_breath": 1.28, "sway": 0.032, "walk_blend_rate": 4.4, "direction_blend_rate": 5.1}, true)
 		"guitarist":

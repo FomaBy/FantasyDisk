@@ -1,11 +1,13 @@
 # Аудит: консистентность контента и документации
 
-Статус: new
+Статус: done
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: PM (запрос пользователя: полный аудит и рефакторинг проекта)
 Jira: SCRUM-175
 Эпик: epic_full_project_quality_pass
+
+Dispatcher: sent to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил ВСЁ. Работать автономно без вопросов и ожидания
@@ -32,3 +34,24 @@ Back-end (Claude)
 
 ## Документация
 docs/design/reviews/, затем целевые доки (отдельными задачами).
+
+## Результат — 2026-06-13
+
+Read-only аудит завершен. Отчет создан:
+`docs/design/reviews/content_docs_audit_2026_06.md`.
+
+Ключевые выводы:
+- Найден P1 drift: несколько новых `CHARACTER_CONFIGS[id].sprite_path` указывают на старые proxy sprites, хотя registry/current state говорят о финальных PNG.
+- Exact reference scan дает ожидаемые false positives для dynamic patterns (`artifact_%s`, shop icons, cutout families), поэтому cleanup tool нужен manifest/allowlist.
+- Реальные cleanup-кандидаты: `.DS_Store`, старые placeholder sprites, legacy root enemy duplicates, legacy `boss_warden.png`; удаление не выполнялось в рамках аудита.
+- `current_game_state.md` остается слишком плотным и требует domain-doc pass после текущего batch.
+
+Созданы child task specs 0.1.5:
+- `docs/tasks/backend_content_character_sprite_registry_alignment_task.md`
+- `docs/tasks/backend_content_unused_asset_audit_manifest_task.md`
+- `docs/tasks/backend_content_safe_cleanup_followup_task.md`
+- `docs/tasks/backend_docs_domain_consistency_update_task.md`
+
+Jira для child tasks: pending PM sync, потому что текущий Back-end toolset не имеет Jira connector/API.
+
+Verification: runtime, animation, meta progression, meta skill tree, melee targeting, attack VFX and hazard VFX smoke suites passed on 2026-06-13.

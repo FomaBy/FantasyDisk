@@ -1,11 +1,13 @@
 # Аудит: архитектура кода и план рефакторинга
 
-Статус: new
+Статус: done
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: PM (запрос пользователя: полный аудит и рефакторинг проекта)
 Jira: SCRUM-174
 Эпик: epic_full_project_quality_pass
+
+Dispatcher: sent to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил ВСЁ. Работать автономно без вопросов и ожидания
@@ -42,3 +44,24 @@ Back-end (Claude)
 
 ## Документация
 docs/design/reviews/ (новый отчёт), ссылки в эпике.
+
+## Результат — 2026-06-13
+
+Read-only аудит завершен. Отчет создан:
+`docs/design/reviews/code_architecture_audit_2026_06.md`.
+
+Ключевые выводы:
+- P1: `scripts/ui_screens.gd` — god-object на 4320 строк, нужно разделить по доменам экранов/HUD/styles.
+- P1: `scripts/class_weapon.gd` — 48 non-Berserk weapon modes и shared runtime helpers в одном файле; нужен registry/executor split.
+- P1: `scripts/progression_data.gd` — смешаны registry, formulas, rewards, economy, ascension и budget model.
+- P2: hot-path enemy scans через `get_nodes_in_group("enemies")` стоит заменить target-query cache.
+
+Созданы child task specs 0.1.5:
+- `docs/tasks/backend_refactor_ui_screens_domain_split_task.md`
+- `docs/tasks/backend_refactor_class_weapon_mode_registry_task.md`
+- `docs/tasks/backend_refactor_progression_data_domain_split_task.md`
+- `docs/tasks/backend_refactor_combat_target_query_cache_task.md`
+
+Jira для child tasks: pending PM sync, потому что текущий Back-end toolset не имеет Jira connector/API.
+
+Verification: runtime, animation, meta progression, meta skill tree, melee targeting, attack VFX and hazard VFX smoke suites passed on 2026-06-13.

@@ -136,7 +136,7 @@ func _set_bus_volume(bus_name: String, linear_volume: float, enabled: bool) -> v
 		return
 	var volume := clampf(linear_volume, 0.0, 1.0)
 	AudioServer.set_bus_volume_db(bus_index, linear_to_db(maxf(volume, 0.0001)))
-	AudioServer.set_bus_mute(bus_index, not enabled or volume <= 0.0)
+	AudioServer.set_bus_mute(bus_index, not enabled)
 
 
 func play_sfx(sfx_id: String) -> void:
@@ -159,15 +159,19 @@ func play_sfx(sfx_id: String) -> void:
 func play_music(music_id: String) -> void:
 	if _disabled:
 		return
+	var target_db := MUSIC_VOLUME_DB + float(MUSIC_GAIN_DB.get(music_id, 0.0))
+	if _music_fade_tween != null and _music_fade_tween.is_valid():
+		_music_fade_tween.kill()
+		_music_fade_tween = null
+		if _music_player_fade != null:
+			_music_player_fade.stop()
 	if _current_music_id == music_id and _music_player.playing:
+		_music_player.volume_db = target_db
 		return
 	var stream: AudioStream = _music_streams.get(music_id)
 	if stream == null:
 		stop_music()
 		return
-	var target_db := MUSIC_VOLUME_DB + float(MUSIC_GAIN_DB.get(music_id, 0.0))
-	if _music_fade_tween != null and _music_fade_tween.is_valid():
-		_music_fade_tween.kill()
 	# Кроссфейд: текущий трек уезжает на fade-плеер и затухает, новый нарастает.
 	if _music_player.playing and _current_music_id != "":
 		_music_player_fade.stream = _music_player.stream

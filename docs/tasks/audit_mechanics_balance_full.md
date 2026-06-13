@@ -1,11 +1,13 @@
 # Аудит: все механики и баланс (17 классов x оружие)
 
-Статус: new
+Статус: done
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: PM (запрос пользователя: полный аудит и рефакторинг проекта)
 Jira: SCRUM-176
 Эпик: epic_full_project_quality_pass
+
+Dispatcher: sent to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил ВСЁ. Работать автономно без вопросов и ожидания
@@ -37,3 +39,30 @@ Back-end (Claude)
 
 ## Документация
 docs/design/reviews/, mechanics_extract.md (если уточняются формулы — отдельной задачей).
+
+## Результат — 2026-06-13
+
+Read-only аудит завершен. Balance harness запущен:
+
+`/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/balance_harness.gd`
+
+Результат: passed, `build/balance_report.md` обновлен.
+
+Отчет создан:
+`docs/design/reviews/mechanics_balance_audit_2026_06.md`.
+
+Ключевые выводы:
+- 51/51 class+weapon pairs попадают в model targets после auto tuning.
+- Это не является полной live-balance гарантией: `budget_damage_multiplier` нормализует модель, но не проверяет фактический combat uptime/TTK.
+- Raw pre-tuning разброс экстремальный у ряда оружий, поэтому нужно проверить, что runtime нигде не обходит `ProgressionData.weapon()`.
+- Economy buying power в модели +10.6%, XP tempo +7.1%; XP ниже целевого диапазона +10-15% и требует live route validation.
+
+Созданы child task specs 0.1.5:
+- `docs/tasks/backend_balance_live_combat_harness_task.md`
+- `docs/tasks/backend_balance_survivability_scenarios_task.md`
+- `docs/tasks/backend_balance_economy_xp_live_route_model_task.md`
+- `docs/tasks/backend_balance_weapon_tuning_application_regression_task.md`
+
+Jira для child tasks: pending PM sync, потому что текущий Back-end toolset не имеет Jira connector/API.
+
+Verification: balance harness passed; runtime, animation, meta progression, meta skill tree, melee targeting, attack VFX and hazard VFX smoke suites passed on 2026-06-13.

@@ -231,6 +231,12 @@ func _attack() -> void:
 			_fire_robot_compression_line(owner_node, target, direction)
 		"robot_reactor_vent":
 			_fire_robot_reactor_vent(owner_node, direction)
+		"engineer_sentry_link":
+			_fire_engineer_sentry_link(owner_node, direction)
+		"engineer_repair_drone":
+			_fire_engineer_repair_drone(owner_node, target, direction)
+		"engineer_pressure_mines":
+			_fire_engineer_pressure_mines(owner_node, direction)
 		_:
 			_fire_sound_wave(owner_node, direction)
 	if charge_seconds > 0.0:
@@ -1423,6 +1429,162 @@ func _fire_robot_reactor_vent(owner_node: Node2D, direction: Vector2) -> void:
 			if enemy_node == null:
 				continue
 			_push_enemy(enemy_node, vent_direction)
+
+
+func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
+	_deployed_amps = _deployed_amps.filter(func(device: Node) -> bool:
+		return device != null and is_instance_valid(device)
+	)
+	var sentry := Node2D.new()
+	sentry.name = "EngineerSentryNode"
+	sentry.add_to_group("engineer_devices")
+	sentry.z_index = 7
+	var visual := Sprite2D.new()
+	visual.name = "SentryVisual"
+	visual.texture = _weapon_visual_texture()
+	visual.scale = Vector2.ONE * 0.28
+	sentry.add_child(visual)
+	_projectile_parent().add_child(sentry)
+	_register_effect(sentry)
+	sentry.global_position = owner_node.global_position + direction * 92.0
+	_deployed_amps.append(sentry)
+	while _deployed_amps.size() > maxi(max_summons, 1):
+		var oldest: Node = _deployed_amps.pop_front()
+		_release_effect(oldest)
+
+	AttackVfx.ring_pulse(_projectile_parent(), sentry.global_position, aoe_radius * 0.45, visual_color, false)
+	var weapon_id := get_instance_id()
+	var owner_id := owner_node.get_instance_id()
+	var sentry_id := sentry.get_instance_id()
+	var shot_count := maxi(projectile_count + _extra_projectiles(), 1)
+	var sentry_tween := sentry.create_tween()
+	for shot_index in range(shot_count):
+		if shot_index > 0:
+			sentry_tween.tween_interval(maxf(amp_pulse_interval, 0.12))
+		sentry_tween.tween_callback(func() -> void:
+			var current_weapon := instance_from_id(weapon_id) as Node
+			var current_owner := instance_from_id(owner_id) as Node2D
+			var current_sentry := instance_from_id(sentry_id) as Node2D
+			if current_weapon == null or current_owner == null or current_sentry == null:
+				return
+			var used: Dictionary = {}
+			var target_enemy: Node2D = current_weapon.call("_find_nearest_enemy_from", current_sentry.global_position, float(current_weapon.get("attack_range")), used)
+			if target_enemy == null:
+				return
+			var beam := AttackVfx.beam(current_weapon.call("_projectile_parent"), current_sentry.global_position, target_enemy.global_position, float(current_weapon.get("beam_width")), current_weapon.get("visual_color"))
+			current_weapon.call("_register_effect", beam)
+			var shot_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) * pow(float(current_weapon.get("damage_falloff")), float(shot_index))
+			current_weapon.call("_damage_enemy", target_enemy, shot_damage)
+		)
+	sentry_tween.tween_interval(maxf(amp_lifetime - float(shot_count) * maxf(amp_pulse_interval, 0.12), 0.08))
+	sentry_tween.tween_callback(func() -> void:
+		var current_weapon := instance_from_id(weapon_id) as Node
+		var current_sentry := instance_from_id(sentry_id) as Node
+		if current_sentry == null:
+			return
+		if current_weapon != null:
+			var devices: Array = current_weapon.get("_deployed_amps")
+			devices.erase(current_sentry)
+			current_weapon.call("_release_effect", current_sentry)
+		else:
+			current_sentry.queue_free()
+	)
+
+
+func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var first_target: Node2D = target
+	if first_target == null:
+		first_target = _find_closest_enemy(owner_node, INF)
+	if first_target == null:
+		AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position + direction * 120.0, aoe_radius * 0.34, visual_color, false)
+		return
+	var damage_value := _rolled_damage(owner_node)
+	var used := {first_target.get_instance_id(): true}
+	var previous_position := owner_node.global_position + direction * 28.0
+	var current_target := first_target
+	var healed := 0.0
+	var links := maxi(projectile_count + _extra_projectiles(), 1)
+	for link_index in range(links):
+		if current_target == null or not is_instance_valid(current_target):
+			break
+		var width: float = beam_width * maxf(0.42, pow(damage_falloff, float(link_index)) + 0.10)
+		var tether := AttackVfx.beam(_projectile_parent(), previous_position, current_target.global_position, width, visual_color)
+		_register_effect(tether)
+		var hit_damage := damage_value * pow(damage_falloff, float(link_index))
+		_damage_enemy(current_target, hit_damage)
+		healed += hit_damage * heal_percent_of_damage
+		previous_position = current_target.global_position
+		current_target = _find_nearest_enemy_from(previous_position, aoe_radius, used)
+		if current_target != null:
+			used[current_target.get_instance_id()] = true
+	AttackVfx.beam(_projectile_parent(), previous_position, owner_node.global_position, beam_width * 0.44, Color(visual_color.r, visual_color.g, visual_color.b, 0.25))
+	if healed > 0.01 and owner_node.get("health") != null and owner_node.get("max_health") != null:
+		owner_node.set("health", minf(float(owner_node.get("max_health")), float(owner_node.get("health")) + healed))
+		if owner_node.has_method("_show_heal_vfx"):
+			owner_node.call("_show_heal_vfx")
+
+
+func _fire_engineer_pressure_mines(owner_node: Node2D, direction: Vector2) -> void:
+	var mine_count := maxi(projectile_count + _extra_projectiles(), 1)
+	var spread := deg_to_rad(46.0)
+	for mine_index in range(mine_count):
+		var offset := 0.0
+		if mine_count > 1:
+			offset = lerpf(-spread * 0.5, spread * 0.5, float(mine_index) / float(mine_count - 1))
+		var mine_direction := direction.rotated(offset)
+		var distance := minf(attack_range, 150.0 + 54.0 * float(mine_index))
+		_spawn_engineer_pressure_mine(owner_node, owner_node.global_position + mine_direction * distance, mine_index)
+
+
+func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, mine_index: int) -> void:
+	var mine := Node2D.new()
+	mine.name = "EngineerPressureMine"
+	mine.add_to_group("engineer_devices")
+	mine.z_index = 6
+	var visual := Sprite2D.new()
+	visual.texture = _weapon_visual_texture()
+	visual.scale = Vector2.ONE * 0.18
+	visual.modulate = Color(1.0, 1.0, 1.0, 0.86)
+	mine.add_child(visual)
+	_projectile_parent().add_child(mine)
+	_register_effect(mine)
+	mine.global_position = mine_position
+	AttackVfx.ring_pulse(_projectile_parent(), mine_position, aoe_radius * 0.52, visual_color, true)
+	var state := {"triggered": false}
+	var check_interval := maxf(pool_tick_interval, 0.10)
+	var check_count := maxi(int(floor(pool_duration / check_interval)), 1)
+	var weapon_id := get_instance_id()
+	var owner_id := owner_node.get_instance_id()
+	var mine_id := mine.get_instance_id()
+	var mine_tween := mine.create_tween()
+	for check_index in range(check_count):
+		if check_index > 0:
+			mine_tween.tween_interval(check_interval)
+		mine_tween.tween_callback(func() -> void:
+			var current_weapon := instance_from_id(weapon_id) as Node
+			var current_owner := instance_from_id(owner_id) as Node2D
+			var current_mine := instance_from_id(mine_id) as Node2D
+			if current_weapon == null or current_mine == null or bool(state["triggered"]):
+				return
+			if not current_weapon.call("_has_enemy_in_circle", current_mine.global_position, float(current_weapon.get("aoe_radius")) * 0.62):
+				return
+			state["triggered"] = true
+			var mine_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))
+			mine_damage *= pow(float(current_weapon.get("damage_falloff")), float(mine_index) * 0.35)
+			current_weapon.call("_damage_enemies_in_circle_falloff", current_mine.global_position, float(current_weapon.get("aoe_radius")), mine_damage, float(current_weapon.get("damage_falloff")))
+			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), current_mine.global_position, float(current_weapon.get("aoe_radius")) * 0.72, current_weapon.get("visual_color"))
+			current_weapon.call("_release_effect", current_mine)
+		)
+	mine_tween.tween_callback(func() -> void:
+		var current_weapon := instance_from_id(weapon_id) as Node
+		var current_mine := instance_from_id(mine_id) as Node
+		if current_mine == null:
+			return
+		if current_weapon != null and not bool(state["triggered"]):
+			current_weapon.call("_release_effect", current_mine)
+		elif current_mine != null:
+			current_mine.queue_free()
+	)
 
 
 func _pull_enemies_toward(center: Vector2, radius: float, force: float) -> void:

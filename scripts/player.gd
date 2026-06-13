@@ -55,6 +55,7 @@ const CHARACTER_CONFIGS := {
 	"priest": {"display_name": "Священник", "color": Color(1.0, 0.90, 0.54, 1.0), "max_health": 66.0, "speed": 246.0, "sprite": DOCTOR_SPRITE},
 	"biologist": {"display_name": "Биолог", "color": Color(0.48, 0.95, 0.42, 1.0), "max_health": 54.0, "speed": 254.0, "sprite": CHEMIST_SPRITE},
 	"robot": {"display_name": "Робот", "color": Color(0.42, 0.82, 1.0, 1.0), "max_health": 98.0, "speed": 222.0, "sprite": ROBOT_SPRITE},
+	"engineer": {"display_name": "Инженер", "color": Color(0.86, 0.70, 0.32, 1.0), "max_health": 70.0, "speed": 246.0, "sprite": DRUID_SPRITE},
 	"ranger": {"display_name": "Рейнджер", "color": Color(0.40, 0.78, 0.42, 1.0), "max_health": 58.0, "speed": 262.0, "sprite": RANGER_SPRITE},
 	"doctor": {"display_name": "Доктор", "color": Color(0.92, 0.94, 0.98, 1.0), "max_health": 64.0, "speed": 248.0, "sprite": DOCTOR_SPRITE},
 	"chemist": {"display_name": "Химик", "color": Color(0.70, 0.95, 0.25, 1.0), "max_health": 50.0, "speed": 252.0, "sprite": CHEMIST_SPRITE},
@@ -591,6 +592,8 @@ func activate_ultimate() -> bool:
 			_activate_biologist_ultimate(config, multiplier)
 		"robot":
 			_activate_robot_ultimate(config, multiplier)
+		"engineer":
+			_activate_engineer_ultimate(config, multiplier)
 		"ranger":
 			_activate_ranger_ultimate(config, multiplier)
 		"doctor":
@@ -778,6 +781,51 @@ func _activate_robot_ultimate(config: Dictionary, multiplier: float) -> void:
 		_ultimate_active = false
 		run_modifiers["absorb_flat"] = maxf(0.0, float(run_modifiers.get("absorb_flat", 0.0)) - absorb_bonus)
 		run_modifiers["defense_flat"] = maxf(0.0, float(run_modifiers.get("defense_flat", 0.0)) - 0.05)
+		_apply_stat_scaling(false, max_health)
+	)
+
+
+func _activate_engineer_ultimate(config: Dictionary, multiplier: float) -> void:
+	var duration := float(config.get("duration", 4.2)) * clampf(multiplier, 0.8, 1.7)
+	var radius := float(config.get("radius", 430.0)) * clampf(multiplier, 0.8, 1.55)
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 0.92)) * multiplier
+	var heal_ratio := float(config.get("heal_ratio", 0.12))
+	_ultimate_active = true
+	run_modifiers["summon_bonus"] = float(run_modifiers.get("summon_bonus", 0.0)) + 2.0
+	run_modifiers["regeneration_flat"] = float(run_modifiers.get("regeneration_flat", 0.0)) + 0.35
+	_apply_stat_scaling(false, max_health)
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.90, 0.72, 0.28, 0.42), true)
+	var healed := 0.0
+	for enemy in _nearest_enemies(int(config.get("target_count", 9)), radius):
+		if not is_instance_valid(enemy):
+			continue
+		AttackVfx.beam(_vfx_parent(), global_position, enemy.global_position, 30.0, Color(0.48, 0.90, 1.0, 0.42))
+		_apply_ultimate_damage(enemy, damage_amount)
+		healed += damage_amount * heal_ratio
+	if healed > 0.01:
+		var before := health
+		health = minf(max_health, health + healed * float(run_modifiers.get("healing_multiplier", 1.0)))
+		if health > before + 0.01:
+			_show_heal_vfx()
+	if _ultimate_tween != null and _ultimate_tween.is_valid():
+		_ultimate_tween.kill()
+	_ultimate_tween = create_tween()
+	var self_id := get_instance_id()
+	var pulse_count := maxi(int(config.get("target_count", 9)) / 3, 3)
+	for pulse_index in range(pulse_count):
+		_ultimate_tween.tween_interval(duration / float(pulse_count + 1))
+		_ultimate_tween.tween_callback(func() -> void:
+			var current_engineer := instance_from_id(self_id) as Node2D
+			if current_engineer == null or not is_instance_valid(current_engineer):
+				return
+			AttackVfx.ring_pulse(_vfx_parent(), current_engineer.global_position, radius * 0.48, Color(1.0, 0.56, 0.22, 0.34), false)
+			_damage_enemies_in_radius(current_engineer.global_position, radius * 0.48, damage_amount * 0.28)
+		)
+	_ultimate_tween.tween_interval(duration / float(pulse_count + 1))
+	_ultimate_tween.tween_callback(func() -> void:
+		_ultimate_active = false
+		run_modifiers["summon_bonus"] = maxf(0.0, float(run_modifiers.get("summon_bonus", 0.0)) - 2.0)
+		run_modifiers["regeneration_flat"] = maxf(0.0, float(run_modifiers.get("regeneration_flat", 0.0)) - 0.35)
 		_apply_stat_scaling(false, max_health)
 	)
 

@@ -65,3 +65,10 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/balance_harness.gd` — passed, `build/balance_report.md` regenerated.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-164)
+Баланс (harness After-Tuning): solo tuned ≈ target 41.47 (±0%) по 3 оружиям
+(sentry_wrench/repair_drone/pressure_mines); Before-Tuning ниже — норма. char 512 +
+3 оружия 256 + 5 cutout + preview; в progression CHARACTER_CONFIGS; data-driven smoke
+зелёный. Завершает конвейер 8 персонажей. Все 6 smoke на чистом HEAD зелёные. Багов нет.
