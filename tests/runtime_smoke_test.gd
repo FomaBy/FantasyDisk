@@ -177,7 +177,10 @@ func _initialize() -> void:
 	await _test_random_event_data_and_outcomes(main_scene)
 	var generated_elite := false
 	var generated_disk_boss := false
-	for _attempt in range(20):
+	# Детерминированный reseed: с ростером из 5 боссов (SCRUM-155) disk_devourer
+	# выпадает ~1/5, поэтому фикс. seed + достаточная выборка вместо хрупких 20.
+	(main.get("rng") as RandomNumberGenerator).seed = 8675309
+	for _attempt in range(45):
 		var generated_route: Array = main.call("_generate_route")
 		for row in generated_route:
 			for route_node in row:
