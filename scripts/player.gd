@@ -399,6 +399,16 @@ func take_damage(amount: float, _source := "") -> bool:
 	_gain_ultimate_charge(final_damage * float(_ultimate_config().get("taken_charge_rate", 1.0)))
 	_trigger_thorn_reflect(final_damage)
 
+	# Capstone «Вторая жизнь» (мета-древо, Стойкость): раз за забег смертельный удар
+	# оставляет 1 HP и даёт 2с неуязвимости. Использование — run-persistent через snapshot.
+	if health <= 0.0 and float(run_modifiers.get("death_save", 0.0)) > 0.0 \
+			and float(run_modifiers.get("death_save_used", 0.0)) <= 0.0:
+		run_modifiers["death_save_used"] = 1.0
+		health = 1.0
+		_damage_invulnerability_left = maxf(_damage_invulnerability_left, 2.0)
+		_play_sfx("dodge")
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 200.0, Color(1.0, 0.95, 0.6, 0.55), false)
+
 	if health <= 0.0:
 		var rig := _cutout_rig()
 		if rig != null and rig.has_method("spawn_death_ghost"):
@@ -562,6 +572,9 @@ func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 	var start_charge := float(mods.get("ult_start_charge", 0.0))
 	if start_charge > 0.0:
 		ultimate_charge = clampf(ultimate_max_charge * start_charge, 0.0, ultimate_max_charge)
+	# Capstone «Вторая жизнь»: флаг спасения от смерти (логика — в take_damage).
+	if float(mods.get("death_save", 0.0)) > 0.0:
+		run_modifiers["death_save"] = 1.0
 
 
 func _apply_regeneration(delta: float) -> void:

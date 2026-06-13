@@ -238,3 +238,16 @@ ui_screens._random_shop_items: при купленном wealth_capstone (guaran
 Реализованы ВСЕ 4 capstone (death_save/ult_start — через player, guaranteed_rare_shop/first_levelup_rare — UI).
 Остаток только на занятом main.gd: вызов player.apply_meta_skill_modifiers + start_gold на старте забега;
 + death_save БОЕВАЯ логика в player.gd (свободен) — кандидат на след. итерацию.
+
+
+## Инкремент 11 — capstone «Вторая жизнь» ветви Стойкости (2026-06-13, file-изолированный)
+
+player.gd (свободен): death_save — смертельный удар раз за забег оставляет 1 HP + 2с
+неуязвимости (run-persistent через run_modifiers.death_save_used в snapshot). Флаг
+death_save ставится в apply_meta_skill_modifiers. Логика в take_damage перед смертью.
+Без узла — поведение идентично. Тест в meta_skill_tree_smoke (выжил раз; второй удар убивает).
+
+ИТОГ: все 4 ветви и все 4 capstone мета-древа реализованы и применяются в свободной зоне.
+Остаток ТОЛЬКО на занятом main.gd: вызов player.apply_meta_skill_modifiers + start_gold на
+старте забега (1-2 строки в apply_ascension_bonuses). Как только main.gd освободится — задача
+закрывается.

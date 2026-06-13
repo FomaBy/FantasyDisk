@@ -23,8 +23,55 @@ func _initialize() -> void:
 	await _test_attribute_extra_options()
 	await _test_first_levelup_rare_capstone()
 	await _test_guaranteed_rare_shop_capstone()
+	await _test_death_save_capstone()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
+
+
+func _test_death_save_capstone() -> void:
+	# Capstone «Вторая жизнь»: первый смертельный удар оставляет 1 HP (раз за забег).
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+	var player := PLAYER_SCENE.instantiate()
+	holder.add_child(player)
+	if player.has_method("configure_character"):
+		player.configure_character("berserk", "sword")
+	# Применяем дерево с death_save -> флаг в run_modifiers.
+	var state: Dictionary = Meta.default_state()
+	state["skill_nodes"] = ["endure_capstone"]
+	player.call("apply_meta_skill_modifiers", Meta.skill_modifiers(state))
+	# Гарантируем смертельный удар: убираем уклонение/защиту/поглощение.
+	var derived: Dictionary = player.get("derived_parameters")
+	derived["dodge"] = 0.0
+	derived["defense"] = 0.0
+	derived["absorb"] = 0.0
+	player.set("health", 5.0)
+	player.set("_damage_invulnerability_left", 0.0)
+
+	player.call("take_damage", 1000.0)
+	await process_frame
+	# death_save ставит 1 HP; за кадр реген может чуть добавить — проверяем «выжил на низком HP».
+	if not is_instance_valid(player) or float(player.get("health")) < 0.9 or float(player.get("health")) > 3.0:
+		_fail("Expected death-save capstone to leave the player alive at low HP.")
+		return
+	var rm: Dictionary = player.get("run_modifiers")
+	if float(rm.get("death_save_used", 0.0)) <= 0.0:
+		_fail("Expected death-save to be marked used after triggering.")
+		return
+
+	# Второй смертельный удар (сброс неуязвимости) — спасения больше нет.
+	player.set("_damage_invulnerability_left", 0.0)
+	player.call("take_damage", 1000.0)
+	await process_frame
+	if is_instance_valid(player):
+		_fail("Expected death-save to be once-per-run (second lethal hit kills).")
+		return
+
+	holder.queue_free()
+	current_scene = null
+	await process_frame
 
 
 func _test_guaranteed_rare_shop_capstone() -> void:
