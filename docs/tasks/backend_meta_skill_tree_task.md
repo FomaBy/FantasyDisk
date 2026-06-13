@@ -226,3 +226,15 @@ ui_screens._random_level_up_rewards: при купленном узле lore_cap
 Применены ВСЕ 4 capstone-эффекта в свободной зоне нет — ult_start_charge/death_save идут
 через player.apply_meta_skill_modifiers (ч.2a, готово) и боевую логику; guaranteed_rare_shop —
 эконом-флаг (TODO, магазин). Осталось на main.gd: старт-золото + вызов боевого применения.
+
+
+## Инкремент 10 — capstone «Связи в гильдии» ветви Богатства (2026-06-13, file-изолированный)
+
+ui_screens._random_shop_items: при купленном wealth_capstone (guaranteed_rare_shop) магазин
+гарантированно содержит редкий (tier 3) товар — если в наборе его нет, один слот заменяется
+случайным tier-3 из пула (с той же ценовой логикой/скидкой). Без узла — поведение идентично.
+Тест в meta_skill_tree_smoke (8 прогонов: tier-3 всегда есть). ui_screens свободен; main.gd не тронут.
+
+Реализованы ВСЕ 4 capstone (death_save/ult_start — через player, guaranteed_rare_shop/first_levelup_rare — UI).
+Остаток только на занятом main.gd: вызов player.apply_meta_skill_modifiers + start_gold на старте забега;
++ death_save БОЕВАЯ логика в player.gd (свободен) — кандидат на след. итерацию.

@@ -2992,6 +2992,18 @@ func _random_shop_items(count: int) -> Array:
 	# Ветвь Богатства мета-древа (SCRUM-150): скидка магазина (shop_price_mult ≤ 0).
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
 	price_mult *= maxf(1.0 + float(skill_mods.get("shop_price_mult", 0.0)), 0.1)
+	# Capstone «Связи в гильдии»: гарантированный редкий (tier 3) товар на стене.
+	if float(skill_mods.get("guaranteed_rare_shop", 0.0)) > 0.0 and not items.is_empty():
+		var has_rare := false
+		for item in items:
+			if int(item.get("tier", 1)) >= 3:
+				has_rare = true
+				break
+		if not has_rare:
+			var rares: Array = (game.PROGRESSION_DATA.shop_items(game.route_stage) as Array).filter(
+				func(it): return int((it as Dictionary).get("tier", 1)) >= 3)
+			if not rares.is_empty():
+				items[game.rng.randi_range(0, items.size() - 1)] = (rares[game.rng.randi_range(0, rares.size() - 1)] as Dictionary).duplicate(true)
 	if not is_equal_approx(price_mult, 1.0):
 		for item in items:
 			item["cost"] = maxi(1, int(round(float(item.get("cost", 0)) * price_mult)))

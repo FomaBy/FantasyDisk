@@ -22,8 +22,38 @@ func _initialize() -> void:
 	await _test_attribute_discount()
 	await _test_attribute_extra_options()
 	await _test_first_levelup_rare_capstone()
+	await _test_guaranteed_rare_shop_capstone()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
+
+
+func _test_guaranteed_rare_shop_capstone() -> void:
+	# Capstone «Связи в гильдии»: магазин гарантированно содержит редкий (tier 3) товар.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+	main.set("selected_ascension_level", 0)
+	main.set("route_stage", 3)
+	if main.has_method("reset_run_ascension"):
+		main.call("reset_run_ascension")
+	var state: Dictionary = main.get("meta_state")
+	state["skill_nodes"] = ["wealth_capstone"]
+	main.set("meta_state", state)
+
+	# Несколько прогонов: с capstone в каждом наборе должен быть tier-3.
+	for _try in range(8):
+		(main.get("rng") as RandomNumberGenerator).seed = 100 + _try
+		var items: Array = main.ui._random_shop_items(4)
+		var has_rare := false
+		for item in items:
+			if int((item as Dictionary).get("tier", 1)) >= 3:
+				has_rare = true
+				break
+		if not has_rare:
+			_fail("Expected guaranteed-rare-shop capstone to include a tier-3 item.")
+			return
+	main.queue_free()
+	await process_frame
 
 
 func _test_first_levelup_rare_capstone() -> void:
