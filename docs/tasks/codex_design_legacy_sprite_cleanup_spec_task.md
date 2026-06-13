@@ -1,6 +1,6 @@
 # Codex Design Task: Legacy Sprite Cleanup Spec
 
-Статус: review
+Статус: done (Design spec signed off 2026-06-13)
 Версия: 0.1.4
 Создано: 2026-06-13
 Роль: Design audit/spec + Back-end cleanup handoff
@@ -58,3 +58,15 @@ Explicit Design keep list:
 - `assets/sprites/characters/berserk_walk_sheet_v2.png` — live via `scripts/player.gd`;
 - `assets/sprites/projectiles/enemy_projectile_magic_64.png` — live projectile;
 - `assets/sprites/enemies/*.png` — active enemy roster source paths.
+
+
+## Design Sign-off / 2026-06-13 — ПОДПИСАНО (Claude-Designer)
+Design-проверка кандидатов завершена (read-only, ничего не удалялось):
+- `*_placeholder.png` — 0 ссылок в scripts/ (player.gd ранее переведён на рестайл-`*.png`) → устаревшие.
+- `player_berserk/ranger/summoner.png`, `boss_warden.png` — упоминаются ТОЛЬКО в
+  `scripts/generate_prototype_sprites.py` (генератор-прототипов их создаёт, не рантайм-потребитель) → устаревшие.
+- root `enemy_*.png` — устаревшие прототипы (активный ростер — `assets/sprites/enemies/*.png`, keep).
+- KEEP подтверждён: `berserk_walk_sheet_v2.png` (жив в player.gd), `enemies/*.png`, `enemy_projectile_magic_64.png`.
+ВНИМАНИЕ Back-end: при удалении учесть `generate_prototype_sprites.py` (legacy-генератор тех же файлов —
+либо тоже архивировать, либо он перезапишет удалённое). Финальный manifest/runtime-smoke — Back-end
+(`backend_content_safe_cleanup_followup_task.md`).
