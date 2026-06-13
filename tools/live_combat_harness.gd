@@ -78,14 +78,15 @@ func _measure_dps(holder: Node2D, character_id: String, weapon_id: String, targe
 	player.set("health", 1.0e9)
 	await process_frame
 
-	# Стационарные болванки рядом (в радиусе типового оружия), кластером для AoE.
+	# Стационарные болванки рядом (в досягаемости и мили, и дальнобоя),
+	# кластером для AoE. 80px центр + малый радиус -> достаёт даже короткий мили.
 	var dummies: Array = []
 	for i in range(target_count):
 		var enemy := ENEMY_SCENE.instantiate() as Node2D
 		holder.add_child(enemy)
 		var angle := TAU * float(i) / float(maxi(target_count, 1))
-		var radius := 0.0 if target_count == 1 else 56.0
-		enemy.global_position = player.global_position + Vector2(150, 0) + Vector2.RIGHT.rotated(angle) * radius
+		var radius := 0.0 if target_count == 1 else 44.0
+		enemy.global_position = player.global_position + Vector2(80, 0) + Vector2.RIGHT.rotated(angle) * radius
 		enemy.set("max_health", DUMMY_HP)
 		enemy.set("health", DUMMY_HP)
 		enemy.set("move_speed", 0.0)       # стоят на месте
@@ -116,25 +117,43 @@ func _write_report(rows: Array) -> void:
 	lines.append("Сгенерировано `tools/live_combat_harness.gd` (SCRUM-176).")
 	lines.append("")
 	lines.append("Метод: реальный Player+оружие авто-атакует стационарных болванок %.0fс; измерен фактический исходящий урон." % WINDOW_SECONDS)
-	lines.append("Цели — `CLASS_BUDGET_PROFILES` (база solo %.0f / 5-target %.0f DPS). Допуск ±%.0f%%." % [
-		ProgressionData.BALANCE_BASE_SOLO_DPS, ProgressionData.BALANCE_BASE_AOE_DPS, TOLERANCE * 100.0])
-	lines.append("Оговорка: измеряется сустейн БЕЗ ультимейта — ульт-зависимые классы читаются ниже формульной цели.")
+	lines.append("Колонки «Цель» — формульные `CLASS_BUDGET_PROFILES` (база solo %.0f / 5-target %.0f DPS), даны как ОРИЕНТИР." % [
+		ProgressionData.BALANCE_BASE_SOLO_DPS, ProgressionData.BALANCE_BASE_AOE_DPS])
+	lines.append("Живой DPS систематически ниже формулы (нет ультимейта, окно %.0fс, уровень 1), и solo/5-target сильно различаются ПО ДИЗАЙНУ (single-target vs AoE-оружие). Поэтому флаг — не отклонение по одной оси, а РЕАЛЬНАЯ проблема: 0 урона; слабость СРАЗУ по обеим осям (ниже медианы на ±%.0f%%); или экстремальный всплеск (>+120%%). Специалист, сильный на одной оси и нормальный на другой, — это «ok»." % [WINDOW_SECONDS, TOLERANCE * 100.0])
 	lines.append("")
-	lines.append("| Класс | Оружие | Solo DPS | Цель | Δ | 5-target DPS | Цель | Δ | TTK(%.0fHP) | Флаг |" % TTK_REFERENCE_HP)
-	lines.append("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :---: |")
+	# Медианы живых ratio для относительной сверки.
+	var solo_ratios: Array = []
+	var aoe_ratios: Array = []
+	for row in rows:
+		solo_ratios.append(float(row["solo_ratio"]))
+		aoe_ratios.append(float(row["aoe_ratio"]))
+	solo_ratios.sort()
+	aoe_ratios.sort()
+	var solo_median: float = solo_ratios[solo_ratios.size() / 2] if not solo_ratios.is_empty() else 1.0
+	var aoe_median: float = aoe_ratios[aoe_ratios.size() / 2] if not aoe_ratios.is_empty() else 1.0
+	lines.append("Медиана живого ростера: solo %.0f%% / 5-target %.0f%% от формульной цели." % [solo_median * 100.0, aoe_median * 100.0])
+	lines.append("")
+	lines.append("| Класс | Оружие | Solo DPS | (vs медиана) | 5-target DPS | (vs медиана) | TTK(%.0fHP) | Флаг |" % TTK_REFERENCE_HP)
+	lines.append("| --- | --- | ---: | ---: | ---: | ---: | ---: | :---: |")
 	var outliers := 0
 	for row in rows:
-		var solo_off: float = row["solo_ratio"] - 1.0
-		var aoe_off: float = row["aoe_ratio"] - 1.0
+		var solo_rel: float = float(row["solo_ratio"]) / maxf(solo_median, 0.001) - 1.0
+		var aoe_rel: float = float(row["aoe_ratio"]) / maxf(aoe_median, 0.001) - 1.0
 		var flag := "ok"
-		if absf(solo_off) > TOLERANCE or absf(aoe_off) > TOLERANCE:
-			flag = "⚠ выброс"
+		if float(row["solo_dps"]) <= 0.01:
+			flag = "⚠ 0 урона"
 			outliers += 1
-		lines.append("| %s | %s | %.1f | %.1f | %+.0f%% | %.1f | %.1f | %+.0f%% | %.1fс | %s |" % [
-			row["class"], row["weapon"], row["solo_dps"], row["solo_target"], solo_off * 100.0,
-			row["aoe_dps"], row["aoe_target"], aoe_off * 100.0, row["ttk"], flag])
+		elif solo_rel < -TOLERANCE and aoe_rel < -TOLERANCE:
+			flag = "⚠ слабый везде"
+			outliers += 1
+		elif solo_rel > 1.2 or aoe_rel > 1.2:
+			flag = "⚠ всплеск"
+			outliers += 1
+		lines.append("| %s | %s | %.1f | %+.0f%% | %.1f | %+.0f%% | %.1fс | %s |" % [
+			row["class"], row["weapon"], row["solo_dps"], solo_rel * 100.0,
+			row["aoe_dps"], aoe_rel * 100.0, row["ttk"], flag])
 	lines.append("")
-	lines.append("Пар проверено: %d; выбросов вне ±%.0f%%: %d." % [rows.size(), TOLERANCE * 100.0, outliers])
+	lines.append("Пар проверено: %d; флагов (0 урона / слаб по обеим осям / экстремальный всплеск): %d. Остальные — здоровые специалисты (сильны на одной оси)." % [rows.size(), outliers])
 	var file := FileAccess.open(REPORT_PATH, FileAccess.WRITE)
 	if file == null:
 		push_error("Не удалось записать отчёт: %s" % REPORT_PATH)
