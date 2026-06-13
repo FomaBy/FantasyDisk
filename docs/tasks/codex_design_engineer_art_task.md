@@ -1,6 +1,6 @@
 # Codex Design Task: Engineer Character And Weapon Art
 
-Статус: review
+Статус: done (Design review approved 2026-06-12)
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end handoff для `backend_add_character_engineer_task.md`
@@ -53,3 +53,10 @@ Back-end временно использует documented Druid/Raven/Hunter pla
 - Validation: Godot headless import completed successfully; all four gameplay PNGs have expected size, RGBA alpha, transparent background, non-empty alpha bbox, and generated `.import` files.
 - Runtime smoke: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` completed with `Runtime smoke test passed`; log still reports missing `assets/sprites/characters/cutout/engineer_*.png` preload warnings/errors until Animator creates cutout parts.
 - Scope note: Design did not change Back-end gameplay/balance or implement rig/motion. `docs/tasks/animation_engineer_rig_motion_task.md` is now ready for Animator handoff.
+
+
+## Design Review / 2026-06-12 — ПРИНЯТО (Claude-Designer)
+- SCRUM-164 Инженер: engineer 512 + sentry_wrench/repair_drone/pressure_mines 256.
+  Стимпанк-артифайсер латунь+бирюза, когерентен ростеру, отдельный силуэт от Робота.
+- Тех: 512/256 RGBA, bbox в рамке, alpha чистая, .import готов; cutout-нарезка готова.
+- Арт-ассеты закоммичены Design-ревью (были untracked). Геймплейные .tscn — Back-end.
