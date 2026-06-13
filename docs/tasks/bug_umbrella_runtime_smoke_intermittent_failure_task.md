@@ -111,3 +111,32 @@ Verification:
 Note: earlier after-fix probe logs intentionally preserved the caught
 `HeroSelectRadarPanel` failure in `build/qa/runtime_smoke_257_after_fix_12.log`;
 that failure is fixed by the final radar offset adjustment.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 5d7c2337 (ветка dev; серия гонялась на 6bf27d8c→5d7c2337)
+
+Проверено (фактически):
+- **Фикс 1 (freed-lambda)**: `class_weapon.gd` отложенные VFX-колбэки больше не
+  захватывают `Node` напрямую — хранят `get_instance_id()` (pool/weapon/projectile/
+  owner) и резолвят `instance_from_id()` в момент колбэка с гардом (строки
+  493-506, 564-569). Gameplay/урон/таргетинг/VFX не изменены.
+- **Фикс 2 (радар-маржа)**: `ui_screens.gd:356` `offset_top=118` (был 98) —
+  зазор шапка→радар восстановлен (~34px), убирает самоиндуцированный layout-флейк
+  на hero select 1280×720.
+- **АНТИ-ФЛАКА СЕРИЯ: 32/32 PASS, 0 падений, 0 `Lambda capture freed` warning**
+  (изолированный `--user-data-dir` на каждый прогон). Ключевой индикатор: warning,
+  который ДО фикса появлялся почти в каждом umbrella-прогоне, теперь 0/32 —
+  корень устранён. Приёмка бага (≥30 прогонов, 0 падений, warning исчез) —
+  выполнена.
+- **Регрессия (инвариантность фиксов)**: weapon_mechanics / melee_targeting /
+  ui_no_overlap_matrix / animation / meta — зелёные; gameplay и раскладка не
+  сломаны.
+
+Краевые случаи:
+- 32 прогона под параллельной CPU-нагрузкой (одновременно гонял регрессию
+  198/199/193) — 0 падений даже под нагрузкой → ещё более сильный pass.
+- Исходный backtrace `:5309` (overlap-детект) и freed-lambda оба не
+  воспроизводятся после фиксов.
+
+Баги: нет. Регрессионный гейт (umbrella) снова надёжен.
