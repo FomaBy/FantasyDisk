@@ -1,0 +1,142 @@
+extends SceneTree
+
+# SCRUM-150 ч.1 (file-изолированный): data-целостность древа умений, покупка с
+# последовательной разблокировкой, сохранение/загрузка, балансовый потолок силы.
+# Отдельный файл — runtime_smoke_test.gd занят параллельным воркером (анти-коллизия).
+
+const Meta := preload("res://scripts/meta_progression.gd")
+
+
+func _initialize() -> void:
+	_test_tree_data_integrity()
+	_test_branch_sequential_unlock()
+	_test_purchase_and_points()
+	_test_save_load_roundtrip()
+	_test_full_tree_power_cap()
+	print("Meta skill tree smoke test passed.")
+	quit(0)
+
+
+func _fail(msg: String) -> void:
+	push_error(msg)
+	quit(1)
+
+
+func _test_tree_data_integrity() -> void:
+	var total := Meta.skill_tree_total_cost()
+	if total < 40 or total > 50:
+		_fail("Expected skill tree budget 40-50, got %d." % total)
+		return
+	# 4 ветви, последовательные tier 1..N без дыр, уникальные id, описания не пусты.
+	var ids := {}
+	for branch in Meta.SKILL_BRANCHES:
+		var nodes: Array = Meta.branch_nodes(branch)
+		if nodes.is_empty():
+			_fail("Expected branch '%s' to have nodes." % branch)
+			return
+		for i in range(nodes.size()):
+			var node: Dictionary = nodes[i]
+			if int(node["tier"]) != i + 1:
+				_fail("Expected branch '%s' tiers to be contiguous 1..N (acyclic)." % branch)
+				return
+			if ids.has(str(node["id"])):
+				_fail("Duplicate skill node id '%s'." % str(node["id"]))
+				return
+			ids[str(node["id"])] = true
+			if str(node.get("desc", "")) == "" or str(node.get("title", "")) == "":
+				_fail("Node '%s' missing RU title/desc." % str(node["id"]))
+				return
+			# Описание без сырых внутренних ID (урок SCRUM-148).
+			if str(node["desc"]).contains("_mult") or str(node["desc"]).contains("_flat"):
+				_fail("Node '%s' desc leaks internal token." % str(node["id"]))
+				return
+
+
+func _test_branch_sequential_unlock() -> void:
+	var state: Dictionary = Meta.default_state()
+	state["skill_points"] = 99
+	var wealth: Array = Meta.branch_nodes("wealth")
+	var t1: String = str(wealth[0]["id"])
+	var t2: String = str(wealth[1]["id"])
+	# tier 1 доступен, tier 2 — заперт, пока не куплен tier 1.
+	if Meta.node_status(state, t1) != "available":
+		_fail("Expected tier 1 to be available with points.")
+		return
+	if Meta.node_status(state, t2) != "locked":
+		_fail("Expected tier 2 to be locked before tier 1.")
+		return
+	Meta.buy_skill_node(state, t1)
+	if Meta.node_status(state, t2) != "available":
+		_fail("Expected tier 2 to unlock after buying tier 1.")
+		return
+	# Нельзя купить заранее запертый узел (через 2 tier).
+	var t3: String = str(wealth[2]["id"])
+	if Meta.can_buy_node(state, t3):
+		_fail("Expected tier 3 to remain unbuyable before tier 2.")
+		return
+
+
+func _test_purchase_and_points() -> void:
+	var state: Dictionary = Meta.default_state()
+	state["skill_points"] = 1
+	var first: String = str(Meta.branch_nodes("might")[0]["id"])
+	Meta.buy_skill_node(state, first)
+	if not Meta.is_node_purchased(state, first):
+		_fail("Expected node to be purchased.")
+		return
+	if Meta.skill_points(state) != 0:
+		_fail("Expected purchase to spend the point.")
+		return
+	# Без очков следующий узел недоступен, даже если разблокирован по tier.
+	var second: String = str(Meta.branch_nodes("might")[1]["id"])
+	if Meta.can_buy_node(state, second):
+		_fail("Expected no-points node to be unbuyable.")
+		return
+	# Победа над боссом начисляет очко умений.
+	Meta.record_boss_victory(state, "berserk", 0)
+	if Meta.skill_points(state) != 1:
+		_fail("Expected a boss victory to grant 1 skill point.")
+		return
+
+
+func _test_save_load_roundtrip() -> void:
+	var path := "user://test_meta_skilltree.cfg"
+	var state: Dictionary = Meta.default_state()
+	state["skill_points"] = 10
+	# Купить первые два узла стойкости.
+	var e: Array = Meta.branch_nodes("endure")
+	Meta.buy_skill_node(state, str(e[0]["id"]))
+	Meta.buy_skill_node(state, str(e[1]["id"]))
+	Meta.save_state(state, path)
+	var loaded: Dictionary = Meta.load_state(path)
+	if Meta.purchased_nodes(loaded).size() != 2:
+		_fail("Expected 2 purchased nodes after load.")
+		return
+	if Meta.skill_points(loaded) != 8:
+		_fail("Expected skill_points to persist (got %d)." % Meta.skill_points(loaded))
+		return
+	if not Meta.is_node_purchased(loaded, str(e[0]["id"])):
+		_fail("Expected purchased node to persist by id.")
+		return
+
+
+func _test_full_tree_power_cap() -> void:
+	# Полная прокачка всех узлов -> эффективная сила не выше ~+30%.
+	var state: Dictionary = Meta.default_state()
+	var all_nodes := []
+	for node in Meta.SKILL_TREE:
+		all_nodes.append(str(node["id"]))
+	state["skill_nodes"] = all_nodes
+	var power := Meta.estimated_power_multiplier(state)
+	if power > 1.30:
+		_fail("Full skill tree exceeds +30%% power cap: %.3f." % power)
+		return
+	if power < 1.10:
+		_fail("Full skill tree suspiciously weak (%.3f) — check effects." % power)
+		return
+	var mods: Dictionary = Meta.skill_modifiers(state)
+	# Capstone-флаги присутствуют.
+	for flag in ["guaranteed_rare_shop", "first_levelup_rare", "ult_start_charge", "death_save"]:
+		if not mods.has(flag):
+			_fail("Expected full tree to include capstone flag '%s'." % flag)
+			return
