@@ -1,5 +1,7 @@
 extends Node2D
 
+const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+
 @export var ally_scene: PackedScene
 @export var summon_interval := 4.0
 @export var max_summons := 2
@@ -130,17 +132,7 @@ func _command_ally(ally: Node2D, owner_node: Node2D) -> void:
 
 
 func _closest_enemy(owner_node: Node2D) -> Node2D:
-	var closest_enemy: Node2D = null
-	var closest_distance := INF
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var distance := owner_node.global_position.distance_squared_to(enemy_node.global_position)
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_enemy = enemy_node
-	return closest_enemy
+	return TARGET_QUERY.nearest(self, owner_node.global_position)
 
 
 func _owner_node() -> CharacterBody2D:

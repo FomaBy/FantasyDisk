@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+
 const ALLY_VISUAL_PATHS := {
 	"druid_beast": "res://assets/sprites/allies/ally_druid_beast.png",
 	"druid_pack_spirit": "res://assets/sprites/allies/ally_druid_pack_spirit.png",
@@ -66,20 +68,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _find_closest_enemy() -> Node2D:
-	var closest_enemy: Node2D = null
-	var closest_distance := INF
-
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-
-		var distance := global_position.distance_squared_to(enemy_node.global_position)
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_enemy = enemy_node
-
-	return closest_enemy
+	return TARGET_QUERY.nearest(self, global_position)
 
 
 func _commanded_target() -> Node2D:
@@ -94,17 +83,7 @@ func _commanded_target() -> Node2D:
 
 
 func _find_closest_enemy_near(origin: Vector2, max_distance: float) -> Node2D:
-	var closest_enemy: Node2D = null
-	var closest_distance := max_distance * max_distance
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var distance := origin.distance_squared_to(enemy_node.global_position)
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_enemy = enemy_node
-	return closest_enemy
+	return TARGET_QUERY.nearest(self, origin, max_distance)
 
 
 func _follow_guard_position() -> void:

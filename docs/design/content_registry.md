@@ -443,11 +443,9 @@ Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 ви
 | `knight` | Бастион | Реализовано |
 | `druid` | Зов стаи | Реализовано |
 
-## UI Visual Kit 2026-06-12
+## UI Visual Kit 2026-06-13
 
-Radical UI pass заменяет основные StyleBoxFlat-плоскости на reusable fantasy texture frames. Генератор: `tools/generate_ui_overhaul_visual_assets.py`. Источник истины для рамок и системных иконок: `tools/generate_ui_tavern_theme.py` (часть в `generate_ui_overhaul_visual_assets.py` устарела — не перегенерировать ею).
-
-Стиль UI (рестайл 2026-06-12): тёплая D&D-таверна — тёмное дерево/кожа, латунная окантовка с заклёпками, свечной янтарь, без циановых самоцветов; панели тёмные ради читаемости светлого текста, кнопки на тёплой коричневой базе, системные иконки в золоте/янтаре.
+SCRUM-147 заменяет прежний tavern/contextual UI direction на dark fantasy gothic canon по референсам `docs/design/references/ui_dark_fantasy_2026_06/`. Новые материалы: obsidian/blackened metal panels, brass/gold bevels, crimson gems, violet magic accents, necromantic danger states, no junk UI. Кнопки используют единый Parchment & Wax Seal base kit с разными wax-seal акцентами и состояниями. Live fallback frame paths в `global/`, `escape/` и selected `shop/` перерисованы в этом стиле без изменения имен/размеров.
 
 | ID | Ассет | Роль |
 | --- | --- | --- |
@@ -458,17 +456,22 @@ Radical UI pass заменяет основные StyleBoxFlat-плоскост�
 | `ui_hud_panel_frame` | `assets/sprites/ui/frames/global/ui_hud_panel_frame.png` | Боевой HUD panel |
 | `ui_hud_card_frame` | `assets/sprites/ui/frames/global/ui_hud_card_frame.png` | HP/XP/money HUD cards |
 | `ui_tooltip_frame` | `assets/sprites/ui/frames/global/ui_tooltip_frame.png` | Generic tooltip/system panel frame |
+| `ui_df_button_primary_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_primary_idle.png` + hover/pressed/disabled | Primary 4-state buttons |
+| `ui_df_button_secondary_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_secondary_idle.png` + hover/pressed/disabled | Secondary/navigation 4-state buttons |
+| `ui_df_button_danger_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_danger_idle.png` + hover/pressed/disabled | Exit/end-run/danger 4-state buttons |
+| `ui_df_panel_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png` | Canonical dark fantasy large panel |
+| `ui_df_shop_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png` | Canonical merchant/shop frame |
 
 Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
 
-Contextual UI direction 2026-06-12: `docs/design/ui_contextual_concept.md` defines context kits. Current global tavern kit remains utility/shop fallback. The generated review kit lives in `assets/sprites/ui/frames/contextual/` with Wild Start, Grave Defeat, Laurel Reward and Parchment/Codex/Map variants. The first flat/simple pass was replaced after user feedback by a more realistic D&D/tabletop raster pass with material texture borrowed from existing FantasyDisk references (`docs/design/previews/contextual_ui_dnd_reference_contact.png`). Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md`; integration handoff: `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md`.
+Contextual UI direction 2026-06-12 is superseded by SCRUM-147. Contextual assets in `assets/sprites/ui/frames/contextual/` are historical/reference until Back-end cleanup confirms no live references. New context decisions should use the SCRUM-147 dark fantasy role system instead.
 
 | ID | Ассет | Роль | Статус |
 | --- | --- | --- | --- |
-| `ui_wild_*_frame` | `assets/sprites/ui/frames/contextual/ui_wild_panel_frame.png`, `ui_wild_button_frame.png`, `ui_wild_card_frame.png`, `ui_wild_tooltip_frame.png` | Main menu, character select, weapon select: living wood/vines/leaves | Done |
-| `ui_grave_*_frame` | `assets/sprites/ui/frames/contextual/ui_grave_panel_frame.png`, `ui_grave_button_frame.png`, `ui_grave_card_frame.png`, `ui_grave_tooltip_frame.png` | Defeat/death/danger confirmations: cracked bone, ash, grave-stone edge | Done |
-| `ui_laurel_*_frame` | `assets/sprites/ui/frames/contextual/ui_laurel_panel_frame.png`, `ui_laurel_button_frame.png`, `ui_laurel_card_frame.png`, `ui_laurel_tooltip_frame.png` | Victory, level-up, rewards, artifact selection: laurel/gold/parchment | Done |
-| `ui_parchment_*_frame` | `assets/sprites/ui/frames/contextual/ui_parchment_panel_frame.png`, `ui_parchment_button_frame.png`, `ui_parchment_card_frame.png`, `ui_parchment_tooltip_frame.png`, `ui_parchment_tab_frame.png` | Codex, route map, event text: parchment/book/map edge | Done |
+| `ui_wild_*_frame` | `assets/sprites/ui/frames/contextual/ui_wild_panel_frame.png`, `ui_wild_button_frame.png`, `ui_wild_card_frame.png`, `ui_wild_tooltip_frame.png` | Historical context kit, superseded by SCRUM-147 | Superseded |
+| `ui_grave_*_frame` | `assets/sprites/ui/frames/contextual/ui_grave_panel_frame.png`, `ui_grave_button_frame.png`, `ui_grave_card_frame.png`, `ui_grave_tooltip_frame.png` | Historical context kit, superseded by SCRUM-147 | Superseded |
+| `ui_laurel_*_frame` | `assets/sprites/ui/frames/contextual/ui_laurel_panel_frame.png`, `ui_laurel_button_frame.png`, `ui_laurel_card_frame.png`, `ui_laurel_tooltip_frame.png` | Historical context kit, superseded by SCRUM-147 | Superseded |
+| `ui_parchment_*_frame` | `assets/sprites/ui/frames/contextual/ui_parchment_panel_frame.png`, `ui_parchment_button_frame.png`, `ui_parchment_card_frame.png`, `ui_parchment_tooltip_frame.png`, `ui_parchment_tab_frame.png` | Historical context kit, superseded by SCRUM-147 | Superseded |
 
 ## Фоны И Карты
 

@@ -1,6 +1,6 @@
 # Back-end Task: Split `progression_data.gd` Into Domain Data Files
 
-Статус: new (PM 2026-06-13: сброшен из залипшего in_progress — claim >3ч без коммитов, Codex-dispatch не дал прогресса; готов к взятию воркером)
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-174
@@ -29,3 +29,4 @@ High conflict risk. Serialize after active balance/content tasks.
 
 ## Dispatcher Note (2026-06-13)
 Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.
+Dispatcher: restarted to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13 after PM reset stale in_progress. High-conflict task; serialize after active balance/content tasks as needed.

@@ -6,6 +6,7 @@ const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const EventData := preload("res://scripts/event_data.gd")
+const Glossary := preload("res://scripts/glossary.gd")
 
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -22,6 +23,7 @@ func _initialize() -> void:
 		push_error("Expected main menu UI to be created.")
 		quit(1)
 		return
+	await _test_glossary_terms(main)
 	var main_menu_background := main.find_child("MainMenuBackground", true, false) as TextureRect
 	if main_menu_background == null or main_menu_background.texture == null or main_menu_background.texture.resource_path != "res://assets/backgrounds/main_menu_epic_battle.png":
 		push_error("Expected main menu to render the epic battle background image.")
@@ -1127,6 +1129,37 @@ func _initialize() -> void:
 	quit()
 
 
+func _test_glossary_terms(main: Node) -> void:
+	var term_ids: Array = Glossary.term_ids()
+	if term_ids.size() < 24:
+		_fail("Expected the Russian glossary to cover core stats and mechanics, got %d terms." % term_ids.size())
+		return
+	for term_id in term_ids:
+		var definition: Dictionary = Glossary.definition(str(term_id))
+		if str(definition.get("name", "")) == "" or str(definition.get("desc", "")) == "":
+			_fail("Expected glossary term %s to include Russian name and description." % str(term_id))
+			return
+	var button := main.ui._make_glossary_term_button("crit", false) as Button
+	button.position = Vector2(24, 120)
+	(main.get("ui_layer") as CanvasLayer).add_child(button)
+	await process_frame
+	if button.find_child("GlossaryDottedUnderline", true, false) == null:
+		_fail("Expected glossary terms to expose a dotted underline marker.")
+		return
+	if not button.tooltip_text.contains("Критический удар"):
+		_fail("Expected normal-screen glossary term to expose hover tooltip text.")
+		return
+	await main.ui._show_glossary_tooltip(button, "crit")
+	await process_frame
+	var tooltip := main.find_child("GlossaryTooltipPanel", true, false) as PanelContainer
+	if tooltip == null or not _collect_label_text(tooltip).contains("Критический удар"):
+		_fail("Expected glossary hover to create a tooltip panel with the term name.")
+		return
+	main.ui._hide_glossary_tooltip()
+	button.queue_free()
+	await process_frame
+
+
 func _test_new_boss_roster(main_scene: PackedScene) -> void:
 	# SCRUM-155 ч.2: 3 новых босса — сцены валидны, behavior уникален, атаки
 	# тикают без ошибок (телеграф-зоны создаются), ротация маршрута из 5.
@@ -1856,8 +1889,8 @@ func _test_noncombat_nodes(main: Node) -> void:
 		quit(1)
 		return
 	var parchment_wall := main.find_child("ShopParchmentWall", true, false) as Control
-	if parchment_wall == null or parchment_wall.anchor_left < 0.45 or parchment_wall.anchor_right > 0.84:
-		push_error("Expected the shop grid to be anchored to the empty parchment wall zone.")
+	if parchment_wall == null or parchment_wall.anchor_left > 0.25 or parchment_wall.anchor_right < 0.75:
+		push_error("Expected the shop grid to be anchored to the centered backdrop wall zone.")
 		quit(1)
 		return
 	var first_shop_button := main.find_child("ShopItemButton0", true, false) as Button
@@ -4869,8 +4902,8 @@ func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Ve
 	if inline_items is GridContainer:
 		_fail("Expected frameless shop items to avoid GridContainer/card layout at %s." % context)
 		return
-	if wall.anchor_left < 0.49 or wall.anchor_right > 0.83:
-		_fail("Expected shop wall to stay in merchant background free area at %s." % context)
+	if wall.anchor_left > 0.25 or wall.anchor_right < 0.75:
+		_fail("Expected shop wall to cover the centered backdrop display area at %s." % context)
 		return
 
 	var buttons := shop_main.find_children("ShopItemButton*", "Button", true, false)
@@ -4879,12 +4912,17 @@ func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Ve
 		return
 	var button_controls := []
 	var visual_controls := []
+	var item_bounds := Rect2()
+	var has_item_bounds := false
 	for node in buttons:
 		var button := node as Button
 		if button == null:
 			continue
 		button_controls.append(button)
-		dump_lines.append("- `%s`: `%s`" % [button.name, str(button.get_global_rect())])
+		var button_rect := button.get_global_rect()
+		item_bounds = button_rect if not has_item_bounds else item_bounds.merge(button_rect)
+		has_item_bounds = true
+		dump_lines.append("- `%s`: `%s`" % [button.name, str(button_rect)])
 		if button.get_theme_stylebox("normal") is StyleBoxTexture or button.get_theme_stylebox("hover") is StyleBoxTexture:
 			_fail("Expected %s to be frameless, got StyleBoxTexture." % button.name)
 			return
@@ -4908,14 +4946,26 @@ func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Ve
 	if not item_overlap.is_empty():
 		_fail("Expected shop wall hit areas not to overlap at %s, got %s." % [context, item_overlap])
 		return
+	var viewport_center_x := float(viewport_size.x) * 0.5
+	var item_center_delta := absf(item_bounds.get_center().x - viewport_center_x)
+	var allowed_center_delta := maxf(28.0, float(viewport_size.x) * 0.025)
+	dump_lines.append("- Item bounds: `%s`, center_delta_x=%.1f" % [str(item_bounds), item_center_delta])
+	if item_center_delta > allowed_center_delta:
+		_fail("Expected shop item group to be centered at %s, delta %.1f > %.1f." % [context, item_center_delta, allowed_center_delta])
+		return
 	var cross_slot_overlap := _first_cross_parent_overlap(visual_controls, 4.0)
 	if not cross_slot_overlap.is_empty():
 		_fail("Expected shop item visuals not to overlap at %s, got %s." % [context, cross_slot_overlap])
 		return
 
-	var hud_overlap := _first_control_overlap(button_controls + _visible_hud_top_controls(shop_main), 2.0)
+	var layout_controls := button_controls + _visible_hud_top_controls(shop_main)
+	for name in ["ShopHeader", "ShopLeaveButton", "UpgradeFabButton"]:
+		var control := shop_main.find_child(name, true, false) as Control
+		if control != null and control.visible:
+			layout_controls.append(control)
+	var hud_overlap := _first_control_overlap(layout_controls, 2.0)
 	if not hud_overlap.is_empty():
-		_fail("Expected shop wall controls not to overlap HUD at %s, got %s." % [context, hud_overlap])
+		_fail("Expected centered shop controls not to overlap header/back/HUD at %s, got %s." % [context, hud_overlap])
 		return
 
 	if viewport_size == Vector2i(1280, 720):

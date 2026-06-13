@@ -1,6 +1,8 @@
 class_name BerserkWeapon
 extends Node2D
 
+const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+
 @export var weapon_id := "sword"
 @export var display_name := "Two-Handed Sword"
 @export var attack_shape := "frustum"
@@ -149,9 +151,8 @@ func _animate_hammer_slam(direction: Vector2) -> void:
 
 func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 	_show_hit_area(owner_node, attack_direction)
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node) or _hit_targets.has(enemy_node):
+	for enemy_node in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(enemy_node) or _hit_targets.has(enemy_node):
 			continue
 		if not _is_enemy_inside_attack(owner_node, enemy_node, attack_direction):
 			continue
@@ -177,17 +178,8 @@ func _target_direction(owner_node: Node2D) -> Vector2:
 
 
 func _find_closest_enemy(owner_node: Node2D, range_limit := -1.0) -> Node2D:
-	var closest_enemy: Node2D = null
-	var closest_distance := attack_range * attack_range if range_limit < 0.0 else range_limit
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var distance := owner_node.global_position.distance_squared_to(enemy_node.global_position)
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_enemy = enemy_node
-	return closest_enemy
+	var max_distance := attack_range if range_limit < 0.0 else range_limit
+	return TARGET_QUERY.nearest(self, owner_node.global_position, max_distance)
 
 
 func _is_enemy_inside_attack(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2) -> bool:

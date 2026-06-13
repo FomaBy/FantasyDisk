@@ -19,6 +19,7 @@ const GLOBAL_LEVEL_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui
 const GLOBAL_HUD_PANEL_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_hud_panel_frame.png"
 const GLOBAL_HUD_CARD_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_hud_card_frame.png"
 const GLOBAL_TOOLTIP_FRAME_PATH := "res://assets/sprites/ui/frames/global/ui_tooltip_frame.png"
+const GLOSSARY := preload("res://scripts/glossary.gd")
 const SYSTEM_CHECKBOX_UNCHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_unchecked.png"
 const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_checked.png"
 const SYSTEM_SLIDER_TRACK_PATH := "res://assets/sprites/ui/icons/system/ui_slider_track.png"
@@ -582,6 +583,7 @@ const CODEX_SECTIONS := [
 	{"id": "monsters", "title": "Монстры"},
 	{"id": "artifacts", "title": "Артефакты"},
 	{"id": "stats", "title": "Характеристики"},
+	{"id": "glossary", "title": "Глоссарий"},
 	{"id": "ascensions", "title": "Возвышения"},
 ]
 
@@ -1122,6 +1124,8 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_build_codex_artifacts(list)
 		"stats":
 			_build_codex_stats(list)
+		"glossary":
+			_build_codex_glossary(list)
 		"ascensions":
 			_build_codex_ascensions(list)
 
@@ -1155,6 +1159,106 @@ func _codex_label(parent: Control, text: String, font_size: int, color: Color) -
 	label.add_theme_color_override("font_color", color)
 	parent.add_child(label)
 	return label
+
+
+func _make_glossary_term_button(term_id: String, popup_context := false) -> Button:
+	var definition: Dictionary = GLOSSARY.definition(term_id)
+	var button := Button.new()
+	button.name = "GlossaryTerm_%s" % term_id
+	button.text = str(definition.get("name", term_id))
+	button.flat = true
+	button.focus_mode = Control.FOCUS_NONE
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.tooltip_text = "" if popup_context else _glossary_tooltip_text(term_id)
+	button.add_theme_font_size_override("font_size", 14)
+	button.add_theme_color_override("font_color", Color(0.92, 0.82, 0.54, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.62, 1.0))
+	button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+	button.add_theme_stylebox_override("hover", StyleBoxEmpty.new())
+	button.add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
+	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	button.mouse_entered.connect(func() -> void:
+		if not popup_context or Input.is_key_pressed(KEY_ALT):
+			_show_glossary_tooltip(button, term_id)
+	)
+	button.mouse_exited.connect(_hide_glossary_tooltip)
+	button.gui_input.connect(func(event: InputEvent) -> void:
+		if popup_context and event is InputEventKey and Input.is_key_pressed(KEY_ALT):
+			_show_glossary_tooltip(button, term_id)
+	)
+	var underline := HBoxContainer.new()
+	underline.name = "GlossaryDottedUnderline"
+	underline.anchor_left = 0.0
+	underline.anchor_top = 1.0
+	underline.anchor_right = 1.0
+	underline.anchor_bottom = 1.0
+	underline.offset_top = -4.0
+	underline.offset_bottom = -1.0
+	underline.alignment = BoxContainer.ALIGNMENT_CENTER
+	underline.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	underline.add_theme_constant_override("separation", 3)
+	for dot_index in range(10):
+		var dot := ColorRect.new()
+		dot.custom_minimum_size = Vector2(3, 2)
+		dot.color = Color(0.92, 0.74, 0.38, 0.95)
+		underline.add_child(dot)
+	button.add_child(underline)
+	return button
+
+
+func _glossary_tooltip_text(term_id: String) -> String:
+	var definition: Dictionary = GLOSSARY.definition(term_id)
+	return "%s\n%s" % [str(definition.get("name", term_id)), str(definition.get("desc", ""))]
+
+
+func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
+	_hide_glossary_tooltip()
+	if game.ui_layer == null:
+		return
+	var definition: Dictionary = GLOSSARY.definition(term_id)
+	if definition.is_empty():
+		return
+	var tooltip := PanelContainer.new()
+	tooltip.name = "GlossaryTooltipPanel"
+	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
+	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tooltip.custom_minimum_size = Vector2(360, 0)
+	tooltip.add_theme_stylebox_override("panel", _global_texture_style(GLOBAL_TOOLTIP_FRAME_PATH, Vector4(26, 26, 26, 26), Color.WHITE, Vector4(14, 12, 14, 12)))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 4)
+	box.add_theme_constant_override("margin_left", 12)
+	box.add_theme_constant_override("margin_top", 10)
+	box.add_theme_constant_override("margin_right", 12)
+	box.add_theme_constant_override("margin_bottom", 10)
+	tooltip.add_child(box)
+	var title := Label.new()
+	title.text = str(definition.get("name", term_id))
+	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.48, 1.0))
+	box.add_child(title)
+	var desc := Label.new()
+	desc.text = str(definition.get("desc", ""))
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.add_theme_font_size_override("font_size", 13)
+	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.80, 1.0))
+	box.add_child(desc)
+	game.ui_layer.add_child(tooltip)
+	var anchor_rect := anchor.get_global_rect()
+	var viewport_size := anchor.get_viewport_rect().size
+	tooltip.position = anchor_rect.position + Vector2(0, anchor_rect.size.y + 8.0)
+	tooltip.size = Vector2(380, 0)
+	await game.get_tree().process_frame
+	var rect := tooltip.get_global_rect()
+	tooltip.position.x = clampf(tooltip.position.x, 16.0, maxf(16.0, viewport_size.x - rect.size.x - 16.0))
+	tooltip.position.y = clampf(tooltip.position.y, 16.0, maxf(16.0, viewport_size.y - rect.size.y - 16.0))
+
+
+func _hide_glossary_tooltip() -> void:
+	if game.ui_layer == null:
+		return
+	var existing: Node = game.ui_layer.find_child("GlossaryTooltipPanel", true, false)
+	if existing != null:
+		existing.queue_free()
 
 
 func _build_codex_characters(list: VBoxContainer) -> void:
@@ -1261,6 +1365,28 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 			_codex_label(text_box, str(stat["description"]), 13, Color(0.93, 0.89, 0.80, 1.0))
 			if str(stat["influences"]) != "":
 				_codex_label(text_box, "Влияет на: %s" % stat["influences"], 12, Color(0.70, 0.78, 0.88, 1.0))
+
+
+func _build_codex_glossary(list: VBoxContainer) -> void:
+	_codex_label(list, "Глоссарий терминов", 26, Color(0.96, 0.90, 0.68, 1.0))
+	_codex_label(list, "Термины с пунктиром можно навести мышью. Во всплывающих окнах такие подсказки показываются только при зажатом Alt.", 13, Color(0.86, 0.90, 0.95, 1.0))
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 10)
+	list.add_child(grid)
+	for term_id in GLOSSARY.term_ids():
+		var definition: Dictionary = GLOSSARY.definition(term_id)
+		var panel := PanelContainer.new()
+		panel.name = "GlossaryEntry_%s" % term_id
+		panel.add_theme_stylebox_override("panel", _character_card_style())
+		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		grid.add_child(panel)
+		var box := VBoxContainer.new()
+		box.add_theme_constant_override("separation", 4)
+		panel.add_child(box)
+		box.add_child(_make_glossary_term_button(term_id, false))
+		_codex_label(box, str(definition.get("desc", "")), 12, Color(0.90, 0.86, 0.76, 1.0))
 
 
 func _show_settings_menu() -> void:
@@ -2267,9 +2393,9 @@ func _show_shop_screen() -> void:
 	title_box.anchor_right = 0.5
 	title_box.anchor_bottom = 0.0
 	title_box.offset_left = -380.0
-	title_box.offset_top = 70.0
+	title_box.offset_top = 104.0
 	title_box.offset_right = 380.0
-	title_box.offset_bottom = 150.0
+	title_box.offset_bottom = 190.0
 	title_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	title_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(title_box)
@@ -2288,14 +2414,14 @@ func _show_shop_screen() -> void:
 	subtitle.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
 	title_box.add_child(subtitle)
 
-	# Товары лежат на «пустой стене» фона screen_shop_background.png как
-	# предметы лавки, а не как UI-карточки.
+	# Товары лежат в центральной свободной зоне shop backdrop как предметы
+	# лавки, а не как UI-карточки.
 	var wall := Control.new()
 	wall.name = "ShopParchmentWall"
-	wall.anchor_left = 0.50
-	wall.anchor_top = 0.10
-	wall.anchor_right = 0.82
-	wall.anchor_bottom = 0.72
+	wall.anchor_left = 0.20
+	wall.anchor_top = 0.33
+	wall.anchor_right = 0.80
+	wall.anchor_bottom = 0.79
 	wall.offset_left = 0.0
 	wall.offset_top = 0.0
 	wall.offset_right = 0.0
@@ -2469,10 +2595,10 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 
 func _shop_wall_slot_anchor(index: int) -> Vector2:
 	var anchors := [
-		Vector2(0.34, 0.25),
-		Vector2(0.78, 0.22),
-		Vector2(0.38, 0.78),
-		Vector2(0.82, 0.72),
+		Vector2(0.30, 0.20),
+		Vector2(0.70, 0.20),
+		Vector2(0.30, 0.80),
+		Vector2(0.70, 0.80),
 	]
 	return anchors[index % anchors.size()]
 
@@ -2715,7 +2841,7 @@ func _show_rest_screen() -> void:
 	# Escape = уйти от костра без бонуса (последовательно с пропуском магазина).
 	game.ui_escape_action = game.route._advance_route_after_noncombat
 	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, _show_rest_screen)
-	var heal_button := _make_button("Передышка\nВосстановить 35% максимального HP.")
+	var heal_button := _make_button("Передышка\nВосстановить 35% максимального здоровья.")
 	heal_button.name = "RestHealButton"
 	heal_button.pressed.connect(func() -> void:
 		_apply_event_choice({"title": "Rest", "description": "Recover", "heal_percent": 0.35})
@@ -2726,7 +2852,7 @@ func _show_rest_screen() -> void:
 	var guard_button := _make_button("Защитная стойка\nПолучить +6% защиты до конца забега.")
 	guard_button.name = "RestGuardButton"
 	guard_button.pressed.connect(func() -> void:
-		_apply_reward_to_run({"title": "Guard Stance", "description": "+6% defense.", "mods": {"defense_flat": 0.06}})
+		_apply_reward_to_run({"title": "Защитная стойка", "description": "+6% к защите.", "mods": {"defense_flat": 0.06}})
 		game.route._advance_route_after_noncombat()
 	)
 	box.add_child(guard_button)
@@ -2906,13 +3032,13 @@ func _random_event_choices() -> Array:
 		},
 		{
 			"title": "Risky Relic",
-			"description": "Lose 15% HP, gain an artifact/stat reward.",
+			"description": "Потерять 15% здоровья и получить артефакт или характеристику.",
 			"reward": rewards[1],
 			"health_percent_cost": 0.15,
 		},
 		{
 			"title": "Rest",
-			"description": "Recover 25% maximum HP.",
+			"description": "Восстановить 25% максимального здоровья.",
 			"heal_percent": 0.25,
 		},
 	]
@@ -3372,11 +3498,11 @@ func _level_up_parameter_label(parameter_id: String) -> String:
 		"attack_speed":
 			return "Скорость атаки"
 		"health_point":
-			return "Макс. HP"
+			return "Макс. здоровье"
 		"move_speed":
 			return "Скорость"
 		"aoe_radius":
-			return "AoE радиус"
+			return "Радиус области"
 		"pickup_radius":
 			return "Радиус подбора"
 		"defense":
@@ -3390,9 +3516,9 @@ func _level_up_parameter_label(parameter_id: String) -> String:
 		"knockback_power":
 			return "Отталкивание"
 		"dot_damage":
-			return "DoT урон"
+			return "Периодический урон"
 		"dot_speed":
-			return "DoT скорость"
+			return "Скорость тиков"
 		"projectile_speed":
 			return "Скорость снарядов"
 		"aura_radius":
@@ -4366,7 +4492,7 @@ func _artifact_icon_texture(artifact_id: String) -> Texture2D:
 	return game.UIIconRegistry.texture_for("buff_power")
 
 
-const TIER_LABELS := {1: "Tier 1", 2: "Tier 2 — редкий", 3: "Tier 3 — легендарный"}
+const TIER_LABELS := {1: "Тир 1", 2: "Тир 2 — редкий", 3: "Тир 3 — легендарный"}
 const TIER_COLORS := {
 	1: Color(0.80, 0.86, 0.94, 1.0),
 	2: Color(0.46, 0.78, 1.0, 1.0),
@@ -4408,7 +4534,7 @@ func _artifact_affinity_suffix(definition: Dictionary) -> String:
 
 
 func _artifact_tier_text(definition: Dictionary) -> String:
-	return str(TIER_LABELS.get(int(definition.get("tier", 1)), "Tier 1"))
+	return str(TIER_LABELS.get(int(definition.get("tier", 1)), "Тир 1"))
 
 
 func _artifact_tier_color(definition: Dictionary) -> Color:
@@ -4624,12 +4750,12 @@ func _update_hud() -> void:
 
 	game.health_bar.max_value = max_hp
 	game.health_bar.value = hp
-	game.health_label.text = "HP %d/%d" % [ceil(hp), ceil(max_hp)]
+	game.health_label.text = "ОЗ %d/%d" % [ceil(hp), ceil(max_hp)]
 
 	if game.xp_bar != null and game.xp_label != null:
 		game.xp_bar.max_value = xp_to_next
 		game.xp_bar.value = xp
-		game.xp_label.text = "XP %d/%d" % [xp, xp_to_next]
+		game.xp_label.text = "Опыт %d/%d" % [xp, xp_to_next]
 
 	if game.money_label != null:
 		game.money_label.text = "%dg" % money
@@ -4638,7 +4764,7 @@ func _update_hud() -> void:
 		game.ultimate_bar.max_value = ultimate_max
 		game.ultimate_bar.value = ultimate_charge
 		var ready := ultimate_charge >= ultimate_max
-		game.ultimate_label.text = "ULT %d%%" % int(floor(ultimate_charge / ultimate_max * 100.0))
+		game.ultimate_label.text = "Ульта %d%%" % int(floor(ultimate_charge / ultimate_max * 100.0))
 		game.ultimate_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.36, 1.0) if ready else Color(0.98, 0.96, 0.86, 1.0))
 		game.ultimate_bar.tooltip_text = "Ультимейт (%s): %s" % [_binding_text("ultimate"), "готов" if ready else "заряжается от урона"]
 

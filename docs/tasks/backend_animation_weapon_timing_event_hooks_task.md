@@ -67,3 +67,25 @@ Verification:
 
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-208)
+
+Проверено фактически (код + поведенческий тест + smoke на чистом HEAD):
+- API: `Player.play_action_animation(action_id, direction, phase:="", duration:=0.0,
+  metadata:={})` (player.gd:316) — backward-compatible: без phase = старое поведение
+  (rig/action kick как раньше); с непустым phase — обновляет facing, пишет
+  `last_weapon_animation_event`, эмитит сигнал `weapon_animation_event` БЕЗ рестарта
+  базовой позы. Аддитивный side-channel.
+- `ClassWeapon._emit_weapon_animation_event` (class_weapon:165-167,639) — эмитит фазы
+  с длительностями из СУЩЕСТВУЮЩИХ таймингов (amp_pulse_interval/grenade_delay/...),
+  не новые Animator-константы. Метаданные attack_mode/weapon_id/display_name/phase_source.
+- 7 фаз (windup/release/pulse/burst/deploy/channel/recover), покрытие семейств:
+  delayed/deploy, pulse/burst, channel/beam/chain.
+- Геймплей/баланс не тронут: API аддитивен, durations из gameplay-полей, без phase =
+  как было. Все 6 smoke зелёные на ЧИСТОМ worktree HEAD (DPS/таргетинг/спавн не задеты).
+- ПОВЕДЕНЧЕСКИЙ тест (animation_smoke:259-284): connect `weapon_animation_event` →
+  emit windup(grenade 0.42)/deploy+pulse(amp 7.0/1.1)/channel(beam 0.16) → ассерт
+  `last_weapon_animation_event` имеет phase+duration+metadata-dict. ✓
+- `docs/design/systems/animation.md` (стр.47-51) документирует API/фазы/payload-ключи.
+Багов нет.

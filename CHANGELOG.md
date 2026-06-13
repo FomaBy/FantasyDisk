@@ -4,6 +4,18 @@
 
 ## [Unreleased] — ветка dev
 
+- Performance (SCRUM-197): добавлен `CombatTargetQuery` с per-frame cache для enemy target lookups; hot-path запросы в ClassWeapon/BerserkWeapon/player ultimates/allies/summoner переведены на nearest/radius/corridor/segment helpers, добавлен focused cache test.
+
+- Баланс-аудит (SCRUM-190): добавлен сценарный survivability harness для fragile/steady/sturdy/tank профилей и roster projection по реальным классам; отчеты `build/survivability_report.md` и `build/survivability_scenarios_report.md` фиксируют текущие TTD/mitigation слои без изменения балансовых констант.
+
+- Локализация (SCRUM-210): добавлен data-driven русский глоссарий `scripts/glossary.gd`, вкладка «Глоссарий» в Кодексе, пунктирные интерактивные термины и tooltip hook (hover / Alt+hover для popup-контекста); русифицированы ключевые visible strings магазина, level-up наград, HUD и кодексных описаний.
+
+- Bugfix (SCRUM-211): товары магазина перенесены из старой правой wall-зоны в центр нового shop backdrop; frameless стиль и node-bound stock сохранены, runtime smoke проверяет центр группы (`center_delta_x=0.0`) и no-overlap на 1280x720/2560x1440.
+
+- UI Art (SCRUM-147): начат полный dark fantasy UI restyle — live `global/escape/shop` frame PNG заменены на obsidian/brass/crimson gothic frames, добавлен canonical `assets/sprites/ui/frames/dark_fantasy/` kit с единым Parchment & Wax Seal 4-state button set для primary/secondary/danger, обновлены UI canon docs и создан Back-end handoff для stateful theme integration/cleanup.
+
+- Баланс-аудит (SCRUM-188): добавлен route-level отчет `build/route_economy_xp_model.md` для balanced/combat-heavy/shop-heavy маршрутов; модель подтверждает 8-9 level-up и healthy/high покупательную способность, поэтому текущий XP uplift +7.1% оставлен без дополнительного повышения.
+
 - Animation API (SCRUM-208): добавлен Back-end side-channel `weapon_animation_event` для delayed/pulse/deploy/channel оружия; phase metadata (`windup/release/pulse/burst/deploy/channel/recover`) идет из существующих gameplay таймингов и не меняет урон, targeting, VFX spawn или баланс.
 
 - Visual integration (SCRUM-170): центральные экраны получили role-specific dark fantasy backdrops из `assets/backgrounds/ui/` с cover scaling: cathedral для системных экранов, merchant archive для магазина, arcane lab для event/level-up/meta, reward hall для наград/победы и crypt для поражения/danger screens.

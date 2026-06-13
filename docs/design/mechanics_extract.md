@@ -445,7 +445,7 @@ Escape открывает крупное меню характеристик:
 - **Магазин**: базовые цены уже включают pass x3.5 (пример: `shop_damage` 12 -> 42), а актуальная экономика 0.1.4 дополнительно применяет `ECONOMY_PRICE_MULTIPLIER = 1.10` внутри `stage_scaled_cost()`. Фактическая цена `shop_damage` на stage 0 — 47 золота. Артефакты в магазине стоят по тиру: Tier 1 — 30, Tier 2 — 55, Tier 3 — 95 (`COST_BY_TIER`) до stage/economy scaling.
 - **Редкость**: вес появления в наградах/магазине по тиру — 1.0 / 0.45 / 0.12 (`TIER_WEIGHTS`, weighted-выбор без возврата).
 - **Окно докачки после боя**: +1 к характеристике за `18 + 6 * route_stage` золота, затем `stage_scaled_cost`; reroll пары предложений за `6 + 2 * route_stage`, затем `stage_scaled_cost`, максимум 2 раза за окно; «Пропустить» — бесплатно.
-- **Дроп 0.1.4**: rewards назначаются по `DROP_CLASS_MULTIPLIERS`: ordinary < complex < heavy < mini_elite < elite < boss. Жирные цели дают около x1.75 XP / x1.85 золота относительно базы; мини-элитки x3.6 / x3.8; элитки x8 / x8.5; босс получает fixed reward, умноженный на `stage_scale`. Ожидаемая покупательная способность по balance harness: +10.6%, XP: +7.1%, то есть темп прокачки остается в допуске.
+- **Дроп 0.1.4**: rewards назначаются по `DROP_CLASS_MULTIPLIERS`: ordinary < complex < heavy < mini_elite < elite < boss. Жирные цели дают около x1.75 XP / x1.85 золота относительно базы; мини-элитки x3.6 / x3.8; элитки x8 / x8.5; босс получает fixed reward, умноженный на `stage_scale`. Ожидаемая покупательная способность по balance harness: +10.6%, XP: +7.1%, то есть темп прокачки остается в допуске. Route-level модель SCRUM-188 (`build/route_economy_xp_model.md`) показывает 8-9 level-up на representative routes и healthy/high shop affordability, поэтому дополнительный разгон XP до +10-15% пока не применяется.
 - **XP-кривая 0.1.4**: следующий уровень считается через `ceil(current_requirement * 1.42 + 3)` вместо прежнего `ceil(req * 1.35 + 2)`, чтобы усиленный дроп сложных целей не разгонял количество level-up сверх цели.
 - **Сила артефактов**: tier 1 усилен x2.5 от прежних значений (например +2 к стату -> +5, +20% урона -> +50%); даунсайды НЕ усилены. Tier 2 — двойные эффекты (усилены так же). Tier 3 (6 шт.) — билдообразующие механики: `echo_blast_every`, `extra_projectile`, `low_hp_damage_bonus`, `kill_heal_percent`, `thorn_reflect_multiplier`, `dodge_rush_bonus` (реализованы в player/class_weapon/combat_director/derived_parameters).
 - **class_affinity**: с 2026-06-12 это тематика/исходная фантазия артефакта, а не запрет. `affinity_mods` применяются любому классу через class interpretation text; UI больше не показывает «Не работает»/«Работает вполсилы», а объясняет, как текущий класс использует эффект.
@@ -568,6 +568,40 @@ Before/after summary from `build/balance_report.md`:
 
 Full before/after tables live in `build/balance_report.md` because they are generated artifacts and should be refreshed by the harness when formulas or weapon configs change.
 
+### Survivability Scenario Harness (SCRUM-190, 2026-06-13)
+
+Data sources:
+- `tools/survivability_harness.gd` — deterministic fragile/steady/sturdy/tank profile model anchored to `Player.take_damage`.
+- `tests/survivability_scenario_test.gd` — verifies TTD monotonicity, mitigation-layer contribution, absorb behavior and one-hit damage parity with real player damage.
+- `tools/survivability_scenarios.gd` — class roster projection using current `ProgressionData` character stats and each class' first weapon.
+
+Commands:
+
+```bash
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/survivability_harness.gd
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/survivability_scenario_test.gd
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/survivability_scenarios.gd
+```
+
+Generated reports:
+- `build/survivability_report.md` for synthetic stat profiles and mitigation layer math.
+- `build/survivability_scenarios_report.md` for real class roster projection.
+
+The class projection is intentionally a measuring harness, not an auto-tuner. Current run result: 6 ok, 62 low, 0 high across contact swarm, shooter crossfire, elite burst and boss phase hazard. This flags current real-class durability against the chosen scenario bands as generally under-budget, especially elite burst and boss hazard cases. SCRUM-190 does not change balance constants; follow-up balance work should decide whether to raise survivability budgets, lower scenario incoming damage bands, or tune class-specific defensive affordances.
+
+### Combat Target Query Cache (SCRUM-197, 2026-06-13)
+
+Runtime target lookups should use `CombatTargetQuery` (`scripts/combat_target_query.gd`) instead of directly repeating `get_tree().get_nodes_in_group("enemies")` inside weapon/player hot paths. The helper keeps `enemies` as the canonical group and caches the valid `Node2D` list for the current process/physics frame.
+
+Available helpers:
+- `nearest(source, origin, range_limit, excluded_ids)`.
+- `nearest_many(source, origin, range_limit, count, excluded_ids)`.
+- `in_radius(source, origin, radius)` and `has_in_radius(...)`.
+- `in_corridor(source, origin, direction, width, range_limit, back_allowance)`.
+- `in_segment(source, start, finish, width)`.
+
+Integrated systems: `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary effects, `AllyMinion`, `SummonerWeapon`. Focused check: `tests/combat_target_query_cache_test.gd`; broad regressions still run through `tests/melee_weapon_targeting_test.gd` and `tests/runtime_smoke_test.gd`.
+
 
 ### Новые Классы 0.2 — Статы И Баланс (2026-06-11)
 
@@ -623,3 +657,9 @@ AoE/DoT/саммоны — зачистка волны; точные замер�
 ### Экран «Что нового» / патч-ноуты (SCRUM-159)
 
 Data-driven патч-ноуты в `scripts/patch_notes_data.gd` (`PATCH_NOTES`, версии 0.1.0-0.1.4, новейшая первой) — только пользовательские русские формулировки, без внутренних ID/путей. API: `all_entries`, `latest_version`, `entries_since`/`has_new_since` (semver-сравнение). Экран `_show_skill...`→ `_show_patch_notes_screen` из главного меню (пункт «Что нового»): заголовки версий + буллеты, скролл, Назад/Escape. Бейдж «●» на пункте меню при `has_new_since(last_seen_version)`; открытие экрана записывает `last_seen_version = latest` (бейдж гаснет), не модалка. Персистентность `last_seen_version` — в `game_settings` (`user://`).
+
+### Локализация И Глоссарий (SCRUM-210)
+
+Текущий пользовательский язык — русский. Data-driven глоссарий расположен в `scripts/glossary.gd`: `TERMS[term_id] = {name, desc}`, API `term_ids()`, `definition()`, `name()`, `description()`, `is_valid_term()`. Покрыты 8 базовых характеристик, основные производные параметры и ключевые механики: периодический урон, крит, уклонение, защита, радиус подбора, вампиризм, Возвышение, артефакт, тематика класса, телеграф, элитка, мини-элитка, босс, ультимейт, призыв, перезарядка.
+
+UI hook: `ui_screens.gd::_make_glossary_term_button(term_id, popup_context := false)` создает термин с пунктирной underline-меткой. В обычном экране tooltip доступен по hover; в popup-контексте tooltip показывается только при Alt+hover, чтобы не плодить вложенные подсказки. Кодекс получил вкладку «Глоссарий». Runtime smoke проверяет валидность глоссария, underline node и фактический `GlossaryTooltipPanel`.

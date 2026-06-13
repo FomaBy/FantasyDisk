@@ -56,40 +56,43 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
-The 2026-06-12 UI overhaul adds a reusable texture-frame kit in `assets/sprites/ui/frames/global/`. Source of truth for frames + system icons is now `tools/generate_ui_tavern_theme.py` (the frame/icon part of `generate_ui_overhaul_visual_assets.py` is superseded — re-running it would overwrite the warm theme with the old cold one).
+SCRUM-147 replaces the old warm tavern UI canon with the active dark fantasy UI canon. The reference source is `docs/design/references/ui_dark_fantasy_2026_06/`, especially `screen_settings_full_reference.png` and the 9 button kit sheets. The visual language is gothic dark fantasy: obsidian/blackened metal panels, brass/gold bevels, deep crimson gems, violet magic accents for arcane chips/tooltips, dark cathedral depth behind central windows, and no meaningless filler marks. Ornament must function as frame construction, corner hardware, state feedback, or material detail.
 
-Per the user's 2026-06-12 art direction, the kit is a warm Dungeons & Dragons tavern theme: dark wood / worn leather panels, brass trim with corner studs, candle-amber accents, no cyan gems. Panels stay dark ("tavern at night") so the light in-game text stays readable; buttons use a warm brown tint base; the coldest blue-white text colors were shifted to warm parchment.
+Canonical dark fantasy assets live in `assets/sprites/ui/frames/dark_fantasy/`:
 
-Canonical assets:
+- `ui_df_button_primary_idle.png`, `ui_df_button_primary_hover.png`, `ui_df_button_primary_pressed.png`, `ui_df_button_primary_disabled.png`;
+- `ui_df_button_secondary_idle.png`, `ui_df_button_secondary_hover.png`, `ui_df_button_secondary_pressed.png`, `ui_df_button_secondary_disabled.png`;
+- `ui_df_button_danger_idle.png`, `ui_df_button_danger_hover.png`, `ui_df_button_danger_pressed.png`, `ui_df_button_danger_disabled.png`;
+- `ui_df_panel_frame.png`, `ui_df_card_frame.png`, `ui_df_level_panel_frame.png`, `ui_df_hud_panel_frame.png`, `ui_df_hud_card_frame.png`, `ui_df_tooltip_frame.png`;
+- `ui_df_stat_row_frame.png`, `ui_df_stat_chip_frame.png`, `ui_df_shop_frame.png`, `ui_df_section_divider.png`, `ui_df_stat_value_state_swatches.png`.
 
-- `ui_panel_frame.png` - large panels for menus, codex, event/reward/death/victory layouts;
-- `ui_button_frame.png` - shared button frame, tinted per normal/hover/pressed/danger/level-up variant;
-- `ui_card_frame.png` - character cards, route node buttons, compact cards;
-- `ui_level_panel_frame.png` - level-up/reward panel;
-- `ui_hud_panel_frame.png` and `ui_hud_card_frame.png` - combat HUD shell/cards;
-- `ui_tooltip_frame.png` - generic tooltip/system frame.
+State language:
 
-System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, arrows, checkbox checked/unchecked, slider track/grabber and scrollbar grabber. `scripts/ui_icon_registry.gd` exposes them as `system_*` IDs. Settings sliders and checkboxes are styled with these textures; default grey Godot controls should remain fail-safe only.
+- all buttons use one Parchment & Wax Seal base kit, matching the SCRUM-147 task update;
+- primary: red wax seal accent for start/select/confirm/reward;
+- secondary: muted gold wax seal accent for back/settings/navigation;
+- danger: dark red wax seal accent for exit/end run/defeat confirmation;
+- hover: brighter trim and subtle glow;
+- pressed: darker, visually compressed;
+- disabled: desaturated and lower contrast.
+
+SCRUM-147 also overwrote the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, and selected `assets/sprites/ui/shop/` paths with the new dark fantasy material treatment while preserving file names and dimensions. Back-end integration for explicit 4-state button styleboxes and safe cleanup is tracked in `docs/tasks/backend_ui_dark_fantasy_theme_integration_task.md`.
+
+System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, arrows, checkbox checked/unchecked, slider track/grabber and scrollbar grabber. `scripts/ui_icon_registry.gd` exposes them as `system_*` IDs. Default grey Godot controls should remain fail-safe only.
 
 ## Contextual UI Direction
 
-`docs/design/ui_contextual_concept.md` defines the next UI-frame direction: the current tavern kit becomes a utility/shop fallback, while new context kits should carry screen meaning. The generated review kit in `assets/sprites/ui/frames/contextual/` contains Wild Start (main/hero/weapon), Grave Defeat (death/danger), Laurel Reward (victory/level-up/rewards), and Parchment/Codex/Map (codex/event/route). After user feedback on the first simple pass, the active PNGs were redrawn into a richer realistic D&D/tabletop raster style using current FantasyDisk artifacts/characters/weapons/backgrounds as references for material depth, dark outline, bevels and worn fantasy surfaces. The audit found that repeated brass studs and curved corner strokes are meaningful in merchant/utility contexts but become decoration without purpose on death, victory, codex and route screens.
+`docs/design/ui_contextual_concept.md` and the generated contextual kit in `assets/sprites/ui/frames/contextual/` are superseded by SCRUM-147. Their files may remain as historical/reference assets until Back-end cleanup confirms no live references, but they are no longer the UI direction for new screens. Context may still influence role color and button role selection, but only through the new dark fantasy canon.
 
-Hard no-junk rule from the user: contextual UI work must not add abstract
-decorative lines, circles, squares, dots, grids or filler marks. Every visible
-detail must read as a UI affordance or a believable D&D/tabletop material detail;
-otherwise it is a Design review defect.
+Hard no-junk rule from the user: UI work must not add abstract decorative lines, circles, squares, dots, grids or filler marks. Every visible detail must read as a UI affordance or a believable D&D/tabletop material detail; otherwise it is a Design review defect.
 
-Generated assets:
+Historical assets:
 
-- `ui_wild_panel_frame.png`, `ui_wild_button_frame.png`, `ui_wild_card_frame.png`, `ui_wild_tooltip_frame.png`;
-- `ui_grave_panel_frame.png`, `ui_grave_button_frame.png`, `ui_grave_card_frame.png`, `ui_grave_tooltip_frame.png`;
-- `ui_laurel_panel_frame.png`, `ui_laurel_button_frame.png`, `ui_laurel_card_frame.png`, `ui_laurel_tooltip_frame.png`;
-- `ui_parchment_panel_frame.png`, `ui_parchment_button_frame.png`, `ui_parchment_card_frame.png`, `ui_parchment_tooltip_frame.png`, `ui_parchment_tab_frame.png`;
-- preview sheet: `assets/sprites/ui/frames/contextual/contextual_ui_kits_preview.png`.
-- reference contact sheet used for the rework: `docs/design/previews/contextual_ui_dnd_reference_contact.png`.
+- `ui_wild_*_frame`, `ui_grave_*_frame`, `ui_laurel_*_frame`, `ui_parchment_*_frame` in `assets/sprites/ui/frames/contextual/`;
+- preview sheet: `assets/sprites/ui/frames/contextual/contextual_ui_kits_preview.png`;
+- reference contact sheet: `docs/design/previews/contextual_ui_dnd_reference_contact.png`.
 
-Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md` is done after Design owner review and QA SCRUM-120. Back-end integration handoff: `docs/tasks/backend_contextual_ui_frame_theme_integration_task.md` / SCRUM-118 remains backlog `0.1.4` under the 0.1.3 feature block.
+Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md` was completed as historical work; SCRUM-111/SCRUM-118 are superseded by SCRUM-147. Active Back-end integration is `docs/tasks/backend_ui_dark_fantasy_theme_integration_task.md`.
 
 ## Characters And Weapons
 

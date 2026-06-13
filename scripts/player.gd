@@ -12,6 +12,7 @@ signal weapon_animation_event(event: Dictionary)
 const BERSERK_SPRITE := preload("res://assets/sprites/characters/berserk_unarmed.png")
 const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berserk_walk_sheet_v2.png")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const DARK_MAGE_SPRITE := preload("res://assets/sprites/characters/dark_mage.png")
 const GUITARIST_SPRITE := preload("res://assets/sprites/characters/guitarist.png")
 const ASSASSIN_SPRITE := preload("res://assets/sprites/characters/assassin.png")
@@ -959,22 +960,11 @@ func _damage_enemies_in_radius(center: Vector2, radius: float, damage_amount: fl
 
 
 func _enemies_in_radius(center: Vector2, radius: float) -> Array:
-	var result := []
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		if enemy_node.global_position.distance_squared_to(center) <= radius * radius:
-			result.append(enemy_node)
-	return result
+	return TARGET_QUERY.in_radius(self, center, radius)
 
 
 func _nearest_enemies(count: int, radius: float) -> Array:
-	var result := _enemies_in_radius(global_position, radius)
-	result.sort_custom(func(a: Node2D, b: Node2D) -> bool:
-		return global_position.distance_squared_to(a.global_position) < global_position.distance_squared_to(b.global_position)
-	)
-	return result.slice(0, mini(count, result.size()))
+	return TARGET_QUERY.nearest_many(self, global_position, radius, count)
 
 
 func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
@@ -1002,11 +992,8 @@ func _trigger_magic_enchant(enemy: Node2D) -> void:
 	var radius := clampf(float(derived_parameters.get("aoe_radius", 120.0)) * 0.45, 72.0, 170.0)
 	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
 	AttackVfx.orb_burst(parent, enemy.global_position, radius, Color(0.58, 0.38, 1.0, 0.34))
-	for other in get_tree().get_nodes_in_group("enemies"):
-		var other_node := other as Node2D
-		if other_node == null or not is_instance_valid(other_node):
-			continue
-		if other_node.global_position.distance_squared_to(enemy.global_position) <= radius * radius and other_node.has_method("take_damage"):
+	for other_node in TARGET_QUERY.in_radius(self, enemy.global_position, radius):
+		if other_node.has_method("take_damage"):
 			other_node.take_damage(enchant_damage)
 
 
@@ -1052,17 +1039,13 @@ func _update_battle_shout() -> void:
 		return
 	var shout_radius := clampf(float(derived_parameters.get("aura_radius", 160.0)) * 0.55, 105.0, 230.0)
 	var affected := 0
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var away := enemy_node.global_position - global_position
-		if away.length_squared() <= shout_radius * shout_radius:
-			affected += 1
-			if enemy_node.has_method("apply_knockback") and away.length_squared() > 0.001:
-				enemy_node.apply_knockback(away.normalized() * sound_damage * 10.0)
-			elif away.length_squared() > 0.001:
-				enemy_node.global_position += away.normalized() * sound_damage * 0.08
+	for enemy_node in TARGET_QUERY.in_radius(self, global_position, shout_radius):
+		var away: Vector2 = enemy_node.global_position - global_position
+		affected += 1
+		if enemy_node.has_method("apply_knockback") and away.length_squared() > 0.001:
+			enemy_node.apply_knockback(away.normalized() * sound_damage * 10.0)
+		elif away.length_squared() > 0.001:
+			enemy_node.global_position += away.normalized() * sound_damage * 0.08
 	if affected <= 0:
 		return
 	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
@@ -1085,11 +1068,8 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 	if scene == null:
 		scene = get_tree().root
 	AttackVfx.orb_burst(scene, blast_position, 140.0, Color(1.0, 0.82, 0.30, 0.5))
-	for other in get_tree().get_nodes_in_group("enemies"):
-		var other_node := other as Node2D
-		if other_node == null or not is_instance_valid(other_node):
-			continue
-		if other_node.global_position.distance_squared_to(blast_position) <= 140.0 * 140.0 and other_node.has_method("take_damage"):
+	for other_node in TARGET_QUERY.in_radius(self, blast_position, 140.0):
+		if other_node.has_method("take_damage"):
 			other_node.take_damage(blast_damage)
 
 

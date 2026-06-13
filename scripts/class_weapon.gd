@@ -5,6 +5,7 @@ const SOUND_AMP_TEXTURE := preload("res://assets/sprites/weapons/sound_amp.png")
 const POISON_POOL_TEXTURE := preload("res://assets/sprites/effects/poison_pool.png")
 const SPARK_POOL_TEXTURE := preload("res://assets/sprites/effects/spark_pool.png")
 const BRIAR_POOL_TEXTURE := preload("res://assets/sprites/effects/briar_pool.png")
+const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 
 @export var weapon_id := "dark_book"
 @export var display_name := "Class Weapon"
@@ -280,9 +281,8 @@ func _fire_stab_flurry(owner_node: Node2D, direction: Vector2) -> void:
 	var slash := AttackVfx.slash(owner_node, direction, attack_range, visual_color)
 	_register_effect(slash)
 	var candidates := []
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
+	for enemy_node in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(enemy_node):
 			continue
 		if not _is_enemy_inside_wave(owner_node.global_position, enemy_node.global_position, direction):
 			continue
@@ -308,17 +308,8 @@ func _fire_stab_flurry(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: float) -> void:
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var to_enemy := enemy_node.global_position - origin
-		var forward := to_enemy.dot(direction)
-		if forward < 0.0 or forward > attack_range:
-			continue
-		var side: float = abs(to_enemy.dot(Vector2(-direction.y, direction.x)))
-		if side <= beam_width * 0.5:
-			_damage_enemy(enemy_node, amount)
+	for hit in TARGET_QUERY.in_corridor(self, origin, direction, beam_width, attack_range):
+		_damage_enemy(hit["node"], amount)
 
 
 func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
@@ -413,22 +404,7 @@ func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: f
 
 
 func _find_closest_enemies(owner_node: Node2D, count: int) -> Array:
-	var candidates := []
-	var range_squared := attack_range * attack_range
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var distance := owner_node.global_position.distance_squared_to(enemy_node.global_position)
-		if distance <= range_squared:
-			candidates.append({"node": enemy_node, "distance": distance})
-	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return float(a["distance"]) < float(b["distance"])
-	)
-	var result := []
-	for candidate in candidates.slice(0, count):
-		result.append(candidate["node"])
-	return result
+	return TARGET_QUERY.nearest_many(self, owner_node.global_position, attack_range, count)
 
 
 func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -1716,75 +1692,20 @@ func _extra_projectiles() -> int:
 
 
 func _find_closest_enemy(owner_node: Node2D, range_limit := -1.0) -> Node2D:
-	var closest_enemy: Node2D = null
-	var closest_distance := attack_range * attack_range if range_limit < 0.0 else range_limit
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var distance := owner_node.global_position.distance_squared_to(enemy_node.global_position)
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_enemy = enemy_node
-	return closest_enemy
+	var max_distance := attack_range if range_limit < 0.0 else range_limit
+	return TARGET_QUERY.nearest(self, owner_node.global_position, max_distance)
 
 
 func _enemies_in_corridor(origin: Vector2, direction: Vector2, width: float, range_limit: float) -> Array:
-	var hits := []
-	var normalized_direction := direction.normalized()
-	if normalized_direction.length_squared() <= 0.001:
-		normalized_direction = Vector2.RIGHT
-	var perpendicular := Vector2(-normalized_direction.y, normalized_direction.x)
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var to_enemy := enemy_node.global_position - origin
-		var forward := to_enemy.dot(normalized_direction)
-		if forward < -24.0 or forward > range_limit:
-			continue
-		var side: float = abs(to_enemy.dot(perpendicular))
-		if side > width * 0.5:
-			continue
-		hits.append({"node": enemy_node, "forward": forward})
-	hits.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return float(a["forward"]) < float(b["forward"])
-	)
-	return hits
+	return TARGET_QUERY.in_corridor(self, origin, direction, width, range_limit, 24.0)
 
 
 func _find_nearest_enemy_from(origin: Vector2, range_limit: float, excluded_ids: Dictionary) -> Node2D:
-	var closest_enemy: Node2D = null
-	var closest_distance := range_limit * range_limit
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node) or excluded_ids.has(enemy_node.get_instance_id()):
-			continue
-		var distance := origin.distance_squared_to(enemy_node.global_position)
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_enemy = enemy_node
-	return closest_enemy
+	return TARGET_QUERY.nearest(self, origin, range_limit, excluded_ids)
 
 
 func _nearest_enemies_from(origin: Vector2, range_limit: float, count: int, excluded_ids: Dictionary = {}) -> Array:
-	var candidates := []
-	var range_squared := range_limit * range_limit
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node) or excluded_ids.has(enemy_node.get_instance_id()):
-			continue
-		var distance := origin.distance_squared_to(enemy_node.global_position)
-		if distance > range_squared:
-			continue
-		candidates.append({"node": enemy_node, "distance": distance})
-	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return float(a["distance"]) < float(b["distance"])
-	)
-	var result := []
-	for candidate in candidates.slice(0, count):
-		result.append(candidate["node"])
-	return result
+	return TARGET_QUERY.nearest_many(self, origin, range_limit, count, excluded_ids)
 
 
 func _enemies_in_circle_sorted(origin: Vector2, radius: float, count: int) -> Array:
@@ -1834,22 +1755,13 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 
 
 func _damage_enemies_in_circle(origin: Vector2, radius: float, amount: float) -> void:
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		if origin.distance_squared_to(enemy_node.global_position) <= radius * radius:
-			_damage_enemy(enemy_node, amount)
+	for enemy_node in TARGET_QUERY.in_radius(self, origin, radius):
+		_damage_enemy(enemy_node, amount)
 
 
 func _damage_enemies_in_circle_falloff(origin: Vector2, radius: float, amount: float, minimum_factor: float) -> void:
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
+	for enemy_node in TARGET_QUERY.in_radius(self, origin, radius):
 		var distance := origin.distance_to(enemy_node.global_position)
-		if distance > radius:
-			continue
 		var factor := lerpf(1.0, clampf(minimum_factor, 0.0, 1.0), distance / maxf(radius, 1.0))
 		_damage_enemy(enemy_node, amount * factor)
 
@@ -1860,29 +1772,12 @@ func _damage_enemies_in_segment(start: Vector2, finish: Vector2, width: float, a
 	if length <= 0.001:
 		_damage_enemies_in_circle(start, width * 0.5, amount)
 		return
-	var direction := segment / length
-	var perpendicular := Vector2(-direction.y, direction.x)
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var to_enemy := enemy_node.global_position - start
-		var forward := to_enemy.dot(direction)
-		if forward < 0.0 or forward > length:
-			continue
-		var side: float = abs(to_enemy.dot(perpendicular))
-		if side <= width * 0.5:
-			_damage_enemy(enemy_node, amount)
+	for enemy_node in TARGET_QUERY.in_segment(self, start, finish, width):
+		_damage_enemy(enemy_node, amount)
 
 
 func _has_enemy_in_circle(origin: Vector2, radius: float) -> bool:
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		if origin.distance_squared_to(enemy_node.global_position) <= radius * radius:
-			return true
-	return false
+	return TARGET_QUERY.has_in_radius(self, origin, radius)
 
 
 func _push_enemy(enemy: Node2D, direction: Vector2) -> void:

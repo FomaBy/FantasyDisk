@@ -34,7 +34,7 @@ const DERIVED_GROUPS := [
 	{
 		"id": "magic_damage",
 		"title": "Магия",
-		"description": "Темная магия, AoE и снаряды.",
+		"description": "Темная магия, области поражения и снаряды.",
 		"stats": ["magic_damage", "aoe_radius", "projectile_speed", "attack_range", "range_multiplier"],
 		"accent": Color(0.55, 0.42, 1.0, 1.0),
 	},
@@ -47,7 +47,7 @@ const DERIVED_GROUPS := [
 	},
 	{
 		"id": "dot_poison",
-		"title": "Яд / DoT",
+		"title": "Яд / периодический урон",
 		"description": "Периодический урон и темп тиков.",
 		"stats": ["dot_damage", "dot_speed"],
 		"accent": Color(0.45, 0.95, 0.44, 1.0),
@@ -55,7 +55,7 @@ const DERIVED_GROUPS := [
 	{
 		"id": "survival",
 		"title": "Выживаемость",
-		"description": "HP, защита, движение и восстановление.",
+		"description": "Здоровье, защита, движение и восстановление.",
 		"stats": ["health_point", "defense", "dodge", "move_speed", "absorb", "regeneration", "vampiric_amount", "vampiric_chance"],
 		"accent": Color(0.95, 0.78, 0.32, 1.0),
 	},
@@ -353,7 +353,7 @@ func _refresh_artifacts() -> void:
 		var definition: Dictionary = ProgressionData.artifact_definition(artifact_id)
 		var description := str(definition.get("description", ""))
 		var title := str(artifact.get("title", ""))
-		var tier_text := "Tier %d" % int(definition.get("tier", 1))
+		var tier_text := "Тир %d" % int(definition.get("tier", 1))
 		icon.tooltip_text = title if description == "" else "%s (%s)\n%s" % [title, tier_text, description]
 		var pause_affinity: Array = definition.get("class_affinity", [])
 		if not pause_affinity.is_empty() and _player != null and not pause_affinity.has(str(_player.get("character_id"))):
