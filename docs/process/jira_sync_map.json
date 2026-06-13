@@ -497,7 +497,7 @@
  },
  "backend_victory_screen_player_facing_text_task.md": {
   "key": "SCRUM-148",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_survivability_rebalance_vampirism_nerf_weighted_levelup_task.md": {
   "key": "SCRUM-149",
@@ -509,7 +509,7 @@
  },
  "backend_settings_volume_slider_ux_task.md": {
   "key": "SCRUM-151",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_codex_summon_allies_sprites_task.md": {
   "key": "SCRUM-152",
@@ -541,11 +541,11 @@
  },
  "backend_ingame_patch_notes_task.md": {
   "key": "SCRUM-159",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_shop_wall_artifacts_frameless_task.md": {
   "key": "SCRUM-160",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "bug_hud_elements_overlap_task.md": {
   "key": "SCRUM-161",
@@ -553,47 +553,55 @@
  },
  "backend_add_character_biologist_task.md": {
   "key": "SCRUM-162",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "codex_design_biologist_art_task.md": {
   "key": "SCRUM-162",
-  "status": "В работе"
+  "status": "Готово"
  },
  "animation_biologist_rig_motion_task.md": {
   "key": "SCRUM-162",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_add_character_elementalist_task.md": {
   "key": "SCRUM-163",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "codex_design_elementalist_art_task.md": {
   "key": "SCRUM-163",
-  "status": "В работе"
+  "status": "Готово"
  },
  "animation_elementalist_rig_motion_task.md": {
   "key": "SCRUM-163",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_add_character_engineer_task.md": {
+  "key": "SCRUM-164",
+  "status": "Готово"
+ },
+ "codex_design_engineer_art_task.md": {
+  "key": "SCRUM-164",
+  "status": "В работе"
+ },
+ "animation_engineer_rig_motion_task.md": {
   "key": "SCRUM-164",
   "status": "В работе"
  },
  "backend_add_character_priest_task.md": {
   "key": "SCRUM-165",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "codex_design_priest_art_task.md": {
   "key": "SCRUM-165",
-  "status": "В работе"
+  "status": "Готово"
  },
  "animation_priest_rig_motion_task.md": {
   "key": "SCRUM-165",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_add_character_robot_task.md": {
   "key": "SCRUM-166",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_runtime_smoke_weapon_mechanics_indent_parse_task.md": {
   "key": "SCRUM-166",
@@ -601,15 +609,15 @@
  },
  "codex_design_robot_art_task.md": {
   "key": "SCRUM-166",
-  "status": "В работе"
+  "status": "Готово"
  },
  "animation_robot_rig_motion_task.md": {
   "key": "SCRUM-166",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_add_character_sniper_task.md": {
   "key": "SCRUM-167",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_runtime_smoke_class_weapon_type_inference_task.md": {
   "key": "SCRUM-167",
@@ -617,35 +625,35 @@
  },
  "codex_design_sniper_art_task.md": {
   "key": "SCRUM-167",
-  "status": "В работе"
+  "status": "Готово"
  },
  "animation_sniper_rig_motion_task.md": {
   "key": "SCRUM-167",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_add_character_soldier_task.md": {
   "key": "SCRUM-168",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "codex_design_soldier_art_task.md": {
   "key": "SCRUM-168",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "animation_soldier_rig_motion_task.md": {
   "key": "SCRUM-168",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_add_character_thief_task.md": {
   "key": "SCRUM-169",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "codex_design_thief_art_task.md": {
   "key": "SCRUM-169",
-  "status": "В работе"
+  "status": "Готово"
  },
  "animation_thief_rig_motion_task.md": {
   "key": "SCRUM-169",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_ui_screen_backdrops_integration_task.md": {
   "key": "SCRUM-170",
@@ -653,6 +661,6 @@
  },
  "bug_head_broken_uncommitted_drop_economy_task.md": {
   "key": "SCRUM-171",
-  "status": "Контроль качества"
+  "status": "Готово"
  }
 }

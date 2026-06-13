@@ -67,3 +67,10 @@ mechanics_extract.md, content_registry.md, current_game_state.md, CHANGELOG.
 - Документация обновлена: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/content_registry.md`, `docs/design/mechanics_extract.md`, `docs/design/systems/characters_weapons.md`, `docs/design/systems/visual_style_assets.md`.
 - Verification passed: runtime smoke, balance harness, animation smoke, attack VFX smoke, hazard VFX smoke, melee targeting, meta progression smoke.
 - Следующая задача цепочки `backend_add_character_engineer_task.md` разблокирована.
+
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-166)
+- Баланс (harness, After Tuning): solo/aoe tuned ≈ target 40.1/139 (отклонение ~±0% по всем 3 оружиям). Before-Tuning ниже — норма (бюджет-множитель).
+- 3 уникальных weapon mode (robot_magnetic_anchor/hydraulic_press/reactor_core); класс в `progression_data` CHARACTER_CONFIGS; data-driven weapon-variant smoke зелёный.
+- Все 6 smoke на ЧИСТОМ worktree HEAD зелёные. Багов нет.

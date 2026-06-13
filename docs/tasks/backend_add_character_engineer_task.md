@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Новый персонаж «Инженер» (engineer) — конвейер add-character
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя: 8 классов Class Sheet)
@@ -46,3 +46,22 @@ motion-профилем, интеграция, тесты, документац�
 
 ## Документация
 mechanics_extract.md, content_registry.md, current_game_state.md, CHANGELOG.
+
+## Result
+
+2026-06-13: Back-end scope завершен.
+
+- Добавлен финальный Class Sheet класс `engineer` / «Инженер»: базовые статы, class config, class interpretation, priorities, 10 ascension levels, ultimate config и codex playstyle.
+- Добавлены ровно 3 уникальных weapon modes: `engineer_sentry_link` / Ключ Часового, `engineer_repair_drone` / Ремонтный Дрон, `engineer_pressure_mines` / Минная Сетка.
+- Добавлены сцены оружия `EngineerSentryWrench.tscn`, `EngineerRepairDrone.tscn`, `EngineerPressureMines.tscn` с documented placeholder textures до Design art.
+- Codex обновлен через `scripts/codex_data.gd` и data-driven `ProgressionData`: герой, оружие, стили игры и 51 weapon variant доступны системам.
+- Runtime smoke расширен проверкой Engineer weapon mechanics, all playable classes, all weapon variants и unique class identity patterns.
+- Balance harness обновлен для 51 пары class+weapon; Engineer tuned в пределах бюджета: solo/5-target deviation около 0.1%.
+- Handoff-задачи созданы/синхронизированы: `codex_design_engineer_art_task.md` для Design и `animation_engineer_rig_motion_task.md` для Animator.
+- Class Sheet roster полностью реализован в Back-end: 17 героев / 51 стартовое оружие.
+
+Verification:
+
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tools/balance_harness.gd` — passed, `build/balance_report.md` regenerated.

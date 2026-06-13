@@ -67,3 +67,9 @@ Back-end не выполняет cutout/rig/motion работу. Нужен Anim
 ## Dispatch
 
 - 2026-06-13: dispatched to Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after Design art reached review and canonical Elementalist assets were present. Jira `SCRUM-163` remains shared with the Elementalist pipeline.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-163)
+- Cutout-части (5) + manifest для `elementalist`; motion profile/attack pose hooks 3 оружий.
+- animation_smoke + runtime_smoke зелёные на чистом HEAD (сборка рига проходит). Багов нет.

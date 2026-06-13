@@ -64,3 +64,9 @@ Back-end добавил playable class `sniper` с тремя weapon modes:
 - Verified `build/rig_debug/cut_sniper.png`; reassembled panel matches source art and cloak pieces stay on the torso/base layer.
 - Weapon socket placement for all 3 Sniper weapon variants is covered by `tests/animation_smoke_test.gd`.
 - Godot headless editor import passed; `tests/animation_smoke_test.gd` and `tests/runtime_smoke_test.gd` passed.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-167)
+- Cutout-части (5) + manifest для `sniper`; motion profile/attack pose hooks 3 оружий.
+- animation_smoke + runtime_smoke зелёные на чистом HEAD (сборка рига проходит). Багов нет.

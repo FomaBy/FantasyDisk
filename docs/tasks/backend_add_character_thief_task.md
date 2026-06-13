@@ -59,3 +59,10 @@ mechanics_extract.md, content_registry.md, current_game_state.md, CHANGELOG.
 - Добавлены сцены `ThiefCoinPouch.tscn`, `ThiefShadowCloak.tscn`, `ThiefSmokeBomb.tscn` на fallback textures до Design pass.
 - Созданы handoff-задачи `docs/tasks/codex_design_thief_art_task.md` и `docs/tasks/animation_thief_rig_motion_task.md`.
 - Проверки: runtime smoke passed; balance harness passed and wrote `build/balance_report.md`.
+
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-169)
+- Баланс (harness, After Tuning): solo/aoe tuned ≈ target 51.8/162 (отклонение ~±0% по всем 3 оружиям). Before-Tuning ниже — норма (бюджет-множитель).
+- 3 уникальных weapon mode (coin_ricochet/shadow_backstab/smoke_bomb); класс в `progression_data` CHARACTER_CONFIGS; data-driven weapon-variant smoke зелёный.
+- Все 6 smoke на ЧИСТОМ worktree HEAD зелёные. Багов нет.

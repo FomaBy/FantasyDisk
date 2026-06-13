@@ -58,3 +58,10 @@ mechanics_extract.md, content_registry.md, current_game_state.md, CHANGELOG.
 - Created Design handoff `docs/tasks/codex_design_biologist_art_task.md` and Animator handoff `docs/tasks/animation_biologist_rig_motion_task.md`; Back-end uses documented fallback art until those disciplines complete.
 - Updated `CHANGELOG.md`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/mechanics_extract.md`, `docs/design/systems/characters_weapons.md`, and `docs/design/systems/visual_style_assets.md`.
 - Unlocked next add-character task: `docs/tasks/backend_add_character_robot_task.md`.
+
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-162)
+- Баланс (harness, After Tuning): solo/aoe tuned ≈ target 42.5/191 (отклонение ~±0% по всем 3 оружиям). Before-Tuning ниже — норма (бюджет-множитель).
+- 3 уникальных weapon mode (bio_spore_bloom/sample_dart/symbiote_web); класс в `progression_data` CHARACTER_CONFIGS; data-driven weapon-variant smoke зелёный.
+- Все 6 smoke на ЧИСТОМ worktree HEAD зелёные. Багов нет.

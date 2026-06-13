@@ -57,3 +57,9 @@ Back-end не выполняет cutout/rig/motion работу. Нужен Anim
 ## Dispatch
 
 - 2026-06-12: Codex Documentation dispatcher отправил задачу в Animator thread `019eb156-710c-71f0-8903-eada762dceb3`; Jira `SCRUM-168` остается `В работе`, пока Soldier pipeline не пройдет animation/QA.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-168)
+- Cutout-части (5) + manifest для `soldier`; motion profile/attack pose hooks 3 оружий.
+- animation_smoke + runtime_smoke зелёные на чистом HEAD (сборка рига проходит). Багов нет.

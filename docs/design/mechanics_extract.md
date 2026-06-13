@@ -108,6 +108,9 @@ solo DPS ~40.1 и 5-target AoE DPS ~138.6, отклонение от целев�
 | Робот | Магнитный Якорь | `robot_magnetic_anchor` | `robot_magnetic_anchor` | Ставит якорь на ближайшую цель, затем стягивает врагов к центру и бьет импульсом |
 | Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Две силовые губки сходятся по линии атаки, прижимая врагов к оси и нанося урон коридором |
 | Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Четыре направленных выброса вокруг корпуса чистят ближний круг и отталкивают толпу |
+| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | Временная турель сама выбирает цели и бьет их точечными лучами |
+| Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | Цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
+| Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | Три мины веером срабатывают отдельно при касании врагом |
 | Темный маг | Темная книга | `dark_book` | `aoe_projectile` | 2 снаряда в две ближайшие цели, взрыв по области |
 | Темный маг | Проклятый череп | `cursed_skull` | `homing_curse` | Самонаведение, 5 DoT-тиков и небольшой splash по области цели |
 | Темный маг | Темный жезл | `dark_wand` | `beam` | 2 pierce-луча веером (шаг 14 градусов) |
@@ -546,6 +549,7 @@ Runtime применяет один безопасный `budget_damage_multipli
 | Снайпер | solo | steady | 100% | 55.20 | 120.00 |
 | Священник | balanced | steady | 92% | 41.95 | 144.90 |
 | Биолог | aoe | fragile | 108% | 42.51 | 191.16 |
+| Инженер | balanced | steady | 96% | 41.47 | 161.28 |
 | Темный маг | aoe | fragile | 115% | 38.64 | 224.25 |
 | Гитарист | aoe | control | 100% | 33.60 | 195.00 |
 | Ассасин | solo | fragile | 115% | 71.76 | 120.75 |
@@ -560,7 +564,7 @@ Before/after summary from `build/balance_report.md`:
 | State | Covered pairs | Max combined deviation | Notes |
 | --- | ---: | ---: | --- |
 | Before tuning | 36 | 138.2% | Старые числа сильно выбивали DoT/deploy/summon, тяжелые melee weapons и новые class pipelines. |
-| After tuning | 45 | 0.1% | Все пары проходят проверку solo/5-target ≤ ±10% в `runtime_smoke_test.gd`; Вор, Элементалист, Снайпер, Священник и Биолог держатся в пределах ±20% от Берсерка с мечом. |
+| After tuning | 51 | 0.1% | Все пары проходят проверку solo/5-target ≤ ±10% в `runtime_smoke_test.gd`; новые классы Class Sheet держатся в пределах ±20% от Берсерка с мечом. |
 
 Full before/after tables live in `build/balance_report.md` because they are generated artifacts and should be refreshed by the harness when formulas or weapon configs change.
 
@@ -573,6 +577,7 @@ Full before/after tables live in `build/balance_report.md` because they are gene
 | Снайпер | 6 | 8 | 2 | 10 | 3 | 3 | 7 | 1 | 62 | 252 |
 | Священник | 2 | 4 | 8 | 6 | 7 | 9 | 5 | 6 | 66 | 246 |
 | Биолог | 2 | 5 | 8 | 7 | 6 | 10 | 4 | 4 | 54 | 254 |
+| Инженер | 4 | 5 | 7 | 6 | 6 | 6 | 5 | 10 | 70 | 246 |
 | Ассасин | 6 | 10 | 2 | 6 | 3 | 4 | 5 | 4 | 52 | 285 |
 | Рейнджер | 7 | 7 | 2 | 9 | 4 | 4 | 4 | 3 | 58 | 262 |
 | Доктор | 2 | 4 | 8 | 5 | 6 | 8 | 5 | 2 | 64 | 248 |

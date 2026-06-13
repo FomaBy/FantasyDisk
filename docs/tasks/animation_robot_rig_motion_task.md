@@ -59,3 +59,9 @@ Animator owns rig/motion/pose/timing polish. Back-end owns only gameplay configs
   - Godot headless editor import passed.
   - `res://tests/animation_smoke_test.gd` passed.
   - `res://tests/runtime_smoke_test.gd` passed.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-166)
+- Cutout-части (5) + manifest для `robot`; motion profile/attack pose hooks 3 оружий.
+- animation_smoke + runtime_smoke зелёные на чистом HEAD (сборка рига проходит). Багов нет.

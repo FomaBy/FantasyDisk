@@ -77,3 +77,10 @@ offscreen-кадр не снимается).
 - Live volume persistence проверяется smoke-тестом: изменение `VolumeSlider_music_volume` сразу пишет `music_volume` в `user://settings.cfg`.
 - QA-артефакты: `build/qa/settings_volume_slider_ux.png` (1600x900, графический Godot renderer) и fallback-dump `build/qa/settings_volume_slider_ux_tree.txt`.
 - Verification: runtime smoke passed; animation/attack/hazard/meta smoke passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-151)
+Визуально подтверждено (build/qa/settings_volume_slider_ux.png): вкладка «Звук» — 3 ряда
+(Общая/Музыка/Эффекты) с ВИДИМЫМ full-width треком + золотая заливка + круглый грабер +
+% + mute-чекбокс «Вкл.». Баг «трек не рисуется, виден только грабер» исправлен. Live-
+persistence (запись в settings.cfg) покрыта smoke. 6 smoke зелёные. Багов нет.

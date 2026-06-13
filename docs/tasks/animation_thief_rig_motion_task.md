@@ -64,3 +64,9 @@ Back-end не выполняет cutout/rig/motion работу. Нужен Anim
 - Added action pose hooks for `thief_coin_pouch` / coin flick, `thief_shadow_cloak` / backstab lunge, and `thief_smoke_bomb` / low throw with dodge-back.
 - Verified `build/rig_debug/cut_thief.png`; reassembled panel matches source art.
 - Godot headless editor import passed. Thief pose assertions passed during implementation; current full animation/runtime smoke is blocked by unrelated Back-end parse errors in `scripts/class_weapon.gd` sniper methods (`shot_finish`, `targets`, `end_point`). Handoff created: `docs/tasks/backend_runtime_smoke_class_weapon_type_inference_task.md`.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-169)
+- Cutout-части (5) + manifest для `thief`; motion profile/attack pose hooks 3 оружий.
+- animation_smoke + runtime_smoke зелёные на чистом HEAD (сборка рига проходит). Багов нет.

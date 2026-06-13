@@ -57,3 +57,10 @@ mechanics_extract.md, content_registry.md, current_game_state.md, CHANGELOG.
 - Кодекс, runtime smoke, balance harness и docs обновлены под 10 классов / 30 weapon variants.
 - Handoff отправлен в Design thread для финальных Soldier PNG и в Animator thread для rig/motion после готовности арта.
 - Проверки passed: runtime, animation, meta_progression, melee_targeting, attack_vfx, hazard_vfx, balance_harness.
+
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-168)
+- Баланс (harness, After Tuning): solo/aoe tuned ≈ target 48.0/150 (отклонение ~±0% по всем 3 оружиям). Before-Tuning ниже — норма (бюджет-множитель).
+- 3 уникальных weapon mode (suppression_burst/grenade_cook/bayonet_brace); класс в `progression_data` CHARACTER_CONFIGS; data-driven weapon-variant smoke зелёный.
+- Все 6 smoke на ЧИСТОМ worktree HEAD зелёные. Багов нет.

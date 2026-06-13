@@ -56,3 +56,10 @@ mechanics_extract.md, content_registry.md, current_game_state.md, CHANGELOG.
 - Баланс: `tools/balance_harness.gd` green; Elementalist weapons дают примерно 49.2 solo DPS и 178.2 5-target DPS против Berserk sword 48.0/149.8, то есть в пределах ±20% acceptance.
 - Тесты: `runtime_smoke_test.gd` green, Elementalist coverage добавлен в class/weapon/equip/mechanics проверки; дополнительные smoke-сценарии прогнаны перед закрытием задачи.
 - Handoff: создано `docs/tasks/codex_design_elementalist_art_task.md` для Design и `docs/tasks/animation_elementalist_rig_motion_task.md` для Animator.
+
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-163)
+- Баланс (harness, After Tuning): solo/aoe tuned ≈ target 49.2/178 (отклонение ~±0% по всем 3 оружиям). Before-Tuning ниже — норма (бюджет-множитель).
+- 3 уникальных weapon mode (elemental_orbit/prism_rift/meteor_shards); класс в `progression_data` CHARACTER_CONFIGS; data-driven weapon-variant smoke зелёный.
+- Все 6 smoke на ЧИСТОМ worktree HEAD зелёные. Багов нет.

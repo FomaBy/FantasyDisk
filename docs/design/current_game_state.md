@@ -304,7 +304,7 @@ Event-node открывает один data-driven сценарий из `script
 
 ### Новые Классы 0.2
 
-Foundation новых классов уже включен в выбор персонажа, выбор оружия, кодекс, формулы характеристик, ascension и smoke tests. Design visual set для первых 9 персонажей и полного набора оружия 9 классов готов: новые герои art-approved, все 27 weapon PNG существуют по каноническим путям; gameplay/backend-сцены подключают matching weapon PNG без documented visual fallback. SCRUM-168 добавил 10-й Back-end-класс `soldier` и довел набор до 30 weapon variants; canonical Soldier character/weapon PNG и cutout rig/motion подключены. SCRUM-169 добавил 11-й Back-end-класс `thief` и довел набор до 33 weapon variants; canonical Thief character/weapon PNG и cutout rig/motion подключены. SCRUM-163 добавил 12-й Back-end-класс `elementalist` и довел набор до 36 weapon variants; canonical Elementalist character/weapon PNG и cutout rig/motion подключены. SCRUM-167 добавил 13-й Back-end-класс `sniper` и довел набор до 39 weapon variants; canonical Sniper character/weapon PNG и cutout rig/motion подключены. SCRUM-165 добавил 14-й Back-end-класс `priest` и довел набор до 42 weapon variants; canonical Priest character/weapon PNG и cutout rig/motion подключены. SCRUM-162 добавил 15-й Back-end-класс `biologist` и довел набор до 45 weapon variants; canonical Biologist character/weapon PNG и cutout rig/motion подключены. SCRUM-166 добавил 16-й Back-end-класс `robot` и довел набор до 48 weapon variants; canonical Robot character/weapon PNG и cutout rig/motion подключены. Weapon art v2 pass 2026-06-12 дополнительно перерисовал оружие Рыцаря, заменил базовый `knight.png` на unarmed sprite без встроенного копья/щита, пересобрал `knight_*` cutouts и уменьшил `WeaponVisual.scale` у крупных оружий.
+Foundation новых классов уже включен в выбор персонажа, выбор оружия, кодекс, формулы характеристик, ascension и smoke tests. Design visual set для первых 9 персонажей и полного набора оружия 9 классов готов: новые герои art-approved, все 27 weapon PNG существуют по каноническим путям; gameplay/backend-сцены подключают matching weapon PNG без documented visual fallback. SCRUM-168 добавил 10-й Back-end-класс `soldier` и довел набор до 30 weapon variants; canonical Soldier character/weapon PNG и cutout rig/motion подключены. SCRUM-169 добавил 11-й Back-end-класс `thief` и довел набор до 33 weapon variants; canonical Thief character/weapon PNG и cutout rig/motion подключены. SCRUM-163 добавил 12-й Back-end-класс `elementalist` и довел набор до 36 weapon variants; canonical Elementalist character/weapon PNG и cutout rig/motion подключены. SCRUM-167 добавил 13-й Back-end-класс `sniper` и довел набор до 39 weapon variants; canonical Sniper character/weapon PNG и cutout rig/motion подключены. SCRUM-165 добавил 14-й Back-end-класс `priest` и довел набор до 42 weapon variants; canonical Priest character/weapon PNG и cutout rig/motion подключены. SCRUM-162 добавил 15-й Back-end-класс `biologist` и довел набор до 45 weapon variants; canonical Biologist character/weapon PNG и cutout rig/motion подключены. SCRUM-166 добавил 16-й Back-end-класс `robot` и довел набор до 48 weapon variants; canonical Robot character/weapon PNG и cutout rig/motion подключены. SCRUM-164 добавил финальный 17-й Back-end-класс `engineer` и довел набор до 51 weapon variant; canonical Engineer character/weapon PNG готовы и переданы на Back-end/Animator handoff, rig/motion остается Animator scope. Weapon art v2 pass 2026-06-12 дополнительно перерисовал оружие Рыцаря, заменил базовый `knight.png` на unarmed sprite без встроенного копья/щита, пересобрал `knight_*` cutouts и уменьшил `WeaponVisual.scale` у крупных оружий.
 
 | ID | Имя | Роль | Базовые характеристики |
 | --- | --- | --- | --- |
@@ -315,6 +315,7 @@ Foundation новых классов уже включен в выбор пер�
 | `priest` | Священник | Священный sustain через освящение, ward-пульсы и молитвенную цепь | Str 2, Agi 4, Int 8, Per 6, Energy 7, Know 9, End 5, Lead 6 |
 | `biologist` | Биолог | Биореакции: споровые зоны, анализ образцов и симбиотическая сеть | Str 2, Agi 5, Int 8, Per 7, Energy 6, Know 10, End 4, Lead 4 |
 | `robot` | Робот | Тяжелый контроль: магнитный якорь, гидравлический пресс и реакторные выбросы | Str 8, Agi 3, Int 5, Per 5, Energy 7, Know 4, End 10, Lead 4 |
+| `engineer` | Инженер | Мастерская устройств: sentry link, repair drone и pressure mines | Str 4, Agi 5, Int 7, Per 6, Energy 6, Know 6, End 5, Lead 10 |
 | `assassin` | Ассасин | Быстрый крит-мили/линии | Str 6, Agi 10, Int 2, Per 6, Energy 3, Know 4, End 5, Lead 4 |
 | `ranger` | Рейнджер | Дальний точный контроль | Str 7, Agi 7, Int 2, Per 9, Energy 4, Know 4, End 4, Lead 3 |
 | `doctor` | Доктор | Sustain через урон и яд | Str 2, Agi 4, Int 8, Per 5, Energy 6, Know 8, End 5, Lead 2 |
@@ -364,7 +365,7 @@ Foundation новых классов уже включен в выбор пер�
 
 ## Оружие Новых Классов 0.2
 
-Все 15 игровых классов теперь имеют ровно 3 selectable weapon variants в `ProgressionData.WEAPONS_BY_CLASS`; smoke test проверяет загрузку и экипировку всех 45 вариантов.
+Все 17 игровых классов теперь имеют ровно 3 selectable weapon variants в `ProgressionData.WEAPONS_BY_CLASS`; smoke test проверяет загрузку и экипировку всех 51 вариантов.
 
 | Класс | Оружие | ID | Режим | Механика |
 | --- | --- | --- | --- | --- |
@@ -389,6 +390,9 @@ Foundation новых классов уже включен в выбор пер�
 | Робот | Магнитный Якорь | `robot_magnetic_anchor` | `robot_magnetic_anchor` | Якорь на ближайшей цели стягивает врагов к центру и бьет импульсом |
 | Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Две силовые губки сходятся по линии атаки и сжимают врагов к оси |
 | Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Четыре направленных выброса вокруг корпуса чистят ближний круг |
+| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | Временная турель сама выбирает цели и бьет их точечными лучами |
+| Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | Цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
+| Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | Три мины веером срабатывают отдельно при касании врагом |
 | Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор до цели и обратно; критовые попадания запускают короткий рывок к цели |
 | Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые short-range multi-stabs с критовыми рывками |
 | Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия с DoT и mobility hook на крите |
@@ -426,7 +430,7 @@ SCRUM-152 Design pass 2026-06-12: `AllyMinion.tscn` больше не испол
 | Звуковая волна | `sound_wave.png` + `music_note.png` | `electric_guitar` (sound_wave): волна `)))` расширяется по направлению, вылетают ноты |
 | Кольцевой импульс | `impact_ring.png` + ноты (для гитариста) | `bass_guitar` (pulse), `sound_amp` (amp) |
 
-Правила: эффекты самоочищаются tween-ами, классовое оружие дополнительно регистрирует их в `player_weapon_effects` (мертвые ссылки фильтруются в `_register_effect`/`cleanup_effects`). Runtime smoke проверяет экипировку всех 45 weapon variants; VFX smoke остается профильным тестом основных хелперов. Скриншоты для ручной проверки: `tools/capture_vfx_preview.gd` (windowed) -> `build/vfx_preview/`.
+Правила: эффекты самоочищаются tween-ами, классовое оружие дополнительно регистрирует их в `player_weapon_effects` (мертвые ссылки фильтруются в `_register_effect`/`cleanup_effects`). Runtime smoke проверяет экипировку всех 51 weapon variants; VFX smoke остается профильным тестом основных хелперов. Скриншоты для ручной проверки: `tools/capture_vfx_preview.gd` (windowed) -> `build/vfx_preview/`.
 
 ## Характеристики
 
@@ -505,7 +509,7 @@ Level-up показывает 3 фиксированных варианта на
 
 ## Ультимейты
 
-У каждого из 15 игровых классов есть ultimate ability, описанная в `ProgressionData.ULTIMATE_CONFIGS` и показанная в Кодексе. Заряд копится от нанесенного и полученного урона до 100, масштабируется от Energy и активируется InputMap action `ultimate` (default R, ребиндится в настройках). После активации заряд сбрасывается.
+У каждого из 17 игровых классов есть ultimate ability, описанная в `ProgressionData.ULTIMATE_CONFIGS` и показанная в Кодексе. Заряд копится от нанесенного и полученного урона до 100, масштабируется от Energy и активируется InputMap action `ultimate` (default R, ребиндится в настройках). После активации заряд сбрасывается.
 
 Боевой HUD содержит компактную карточку `ULT` рядом с HP/XP/money; tooltip показывает текущую клавишу и состояние готовности. `ultimate_multiplier` больше не зарезервирован: он усиливает урон, радиус, длительность или число целей ульты. По боссам действует per-hit cap от max HP босса. Верхний HUD обязан проходить no-overlap проверку фактических `global_rect`: ресурсная панель, таймер/бейдж Возвышения и ряд артефактов адаптивно размещаются без пересечений на 1152x648, 1280x720 и 2560x1440.
 
@@ -541,7 +545,7 @@ Level-up показывает 3 фиксированных варианта на
 
 Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»).
 
-Разделы: Персонажи (15 игровых классов, стиль игры, сильные/слабые стороны, оружие), Монстры (11 обычных + 4 элитки + 2 босса, поведение и названные умения), Артефакты (все из ARTIFACTS + SHOP_ITEMS с иконками), Характеристики (8 базовых + производные из STAT_DEFINITIONS с влияниями). Разделы строятся лениво при первом открытии вкладки и кэшируются — меню не фризит.
+Разделы: Персонажи (17 игровых классов, стиль игры, сильные/слабые стороны, оружие), Монстры (11 обычных + 4 элитки + 2 босса, поведение и названные умения), Артефакты (все из ARTIFACTS + SHOP_ITEMS с иконками), Характеристики (8 базовых + производные из STAT_DEFINITIONS с влияниями). Разделы строятся лениво при первом открытии вкладки и кэшируются — меню не фризит.
 
 ## Пауза
 
@@ -892,7 +896,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 ## Известные Ограничения
 
 - Исходный GDD упоминает автоскролл уровня вниз, но текущая реализация использует статичную арену с маршрутной картой.
-- Баланс классов и оружия теперь имеет измерительный слой: `tools/balance_harness.gd` генерирует `build/balance_report.md` для 45 пар класс+оружие (solo DPS, 5-target DPS, EHP) и smoke проверяет, что tuned-budget отклонения остаются в пределах ±10%. Playtest все еще нужен для ощущения темпа, но базовая численная сетка больше не держится только на ручной оценке.
+- Баланс классов и оружия теперь имеет измерительный слой: `tools/balance_harness.gd` генерирует `build/balance_report.md` для 51 пары класс+оружие (solo DPS, 5-target DPS, EHP) и smoke проверяет, что tuned-budget отклонения остаются в пределах ±10%. Playtest все еще нужен для ощущения темпа, но базовая численная сетка больше не держится только на ручной оценке.
 - Таблица механик остается долгосрочным источником формул, но код сейчас использует адаптированный слой формул.
 - Data-driven scene loading оружия в `scripts/player.gd` пока остается через `load()` на момент экипировки; это не hot path, но при большом расширении оружия можно вынести в общий PackedScene cache.
 - DOCX-документ может отставать от Markdown-документации, если его специально не регенерировали.

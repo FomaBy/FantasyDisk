@@ -64,3 +64,9 @@ Back-end already implements gameplay and weapon timing. Do not change damage, co
   - Godot headless editor import passed.
   - `res://tests/animation_smoke_test.gd` passed.
   - `res://tests/runtime_smoke_test.gd` could not run because of an unrelated Back-end parse error in `tests/runtime_smoke_test.gd:1060`; handoff created: `docs/tasks/backend_runtime_smoke_weapon_mechanics_indent_parse_task.md`.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-162)
+- Cutout-части (5) + manifest для `biologist`; motion profile/attack pose hooks 3 оружий.
+- animation_smoke + runtime_smoke зелёные на чистом HEAD (сборка рига проходит). Багов нет.

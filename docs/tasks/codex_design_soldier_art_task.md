@@ -88,3 +88,9 @@ Handoff:
   на soldier_grenade — на уровне всего генеративного арта, не блокер.
 - Cutout/rig/motion — зона Animator (`animation_soldier_rig_motion_task.md`), не Design.
 Готово к Animator/QA.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-168)
+- 4 PNG: `soldier.png` 512×512 RGBA + 3 оружия 256×256 RGBA, preview `soldier_art_contact.png` на месте.
+- Канон D&D: фэнтези-мушкетёр (кожа+латы), мушкет/бомба-ядро/штык — порохово-фэнтези, не модерн. Прозрачный фон, без watermark. Багов нет.

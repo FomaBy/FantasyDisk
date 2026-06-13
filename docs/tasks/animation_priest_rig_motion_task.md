@@ -72,3 +72,9 @@ Back-end добавил playable class `priest` с тремя weapon modes:
   - Godot headless editor import passed.
   - `res://tests/animation_smoke_test.gd` passed.
   - `res://tests/runtime_smoke_test.gd` passed.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-165)
+- Cutout-части (5) + manifest для `priest`; motion profile/attack pose hooks 3 оружий.
+- animation_smoke + runtime_smoke зелёные на чистом HEAD (сборка рига проходит). Багов нет.

@@ -58,3 +58,10 @@ mechanics_extract.md, content_registry.md, current_game_state.md, CHANGELOG.
 - Design handoff: `docs/tasks/codex_design_sniper_art_task.md`; Animator handoff: `docs/tasks/animation_sniper_rig_motion_task.md`.
 - Docs updated: `CHANGELOG.md`, `docs/design/content_registry.md`, `docs/design/mechanics_extract.md`, `docs/design/current_game_state.md`, `docs/design/systems/characters_weapons.md`, `docs/design/systems/visual_style_assets.md`.
 - Next class unlocked: `docs/tasks/backend_add_character_priest_task.md`.
+
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-167)
+- Баланс (harness, After Tuning): solo/aoe tuned ≈ target 55.2/120 (отклонение ~±0% по всем 3 оружиям). Before-Tuning ниже — норма (бюджет-множитель).
+- 3 уникальных weapon mode (sniper_lockshot/kill_zone/split_round); класс в `progression_data` CHARACTER_CONFIGS; data-driven weapon-variant smoke зелёный.
+- Все 6 smoke на ЧИСТОМ worktree HEAD зелёные. Багов нет.
