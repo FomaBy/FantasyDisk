@@ -1,6 +1,6 @@
 # Codex Design Task: UI Icon Style Unification
 
-Статус: in_progress (Codex Design, dispatched 2026-06-13)
+Статус: done (Design review approved 2026-06-13)
 Версия: 0.1.5
 Создано: 2026-06-13
 Роль: Design / Codex image generation
@@ -36,3 +36,39 @@ Do not redraw artifact icons in this task unless a specific artifact regression 
 
 ## Dispatcher Note (2026-06-13)
 Dispatched to Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` after user confirmed no feature freeze / backlog is eligible.
+
+## Result (2026-06-13)
+
+Design pass completed for the active derived/shop UI icon set. The update preserves all existing filenames and mapping paths, so no `scripts/ui_icon_registry.gd` changes or Back-end integration changes are required.
+
+Updated assets:
+
+- 20 derived stat icons in `assets/sprites/ui/icons/derived/` (`64x64`);
+- 7 shop item icons in `assets/sprites/ui/icons/shop/` (`128x128`);
+- 5 shop state/frame sprites in `assets/sprites/ui/shop/`.
+
+Review previews:
+
+- `docs/design/previews/ui_icon_unification_before_contact.png`;
+- `docs/design/previews/ui_icon_unification_after_contact.png`;
+- `docs/design/previews/ui_icon_unification_40px_preview.png`.
+
+Validation:
+
+- PNG validation: all 32 updated assets are RGBA, preserve their previous dimensions, and have non-empty alpha.
+- Godot import: passed.
+- 40px readability preview created for Escape stats/level-up/shop tooltip usage.
+- Full `runtime_smoke_test` was not rerun as a passing gate because the current workspace already has an unrelated Back-end/runtime blocker in noncombat shop stock persistence, recorded in SCRUM-181 validation notes.
+
+Design decision:
+
+- Kept the icons compact and object-based rather than adding decorative UI junk. The style now favors readable fantasy silhouettes, dark outlines, brass/parchment/stone/wood material hints, and transparent backgrounds while avoiding text, watermarks, emoji, and default Godot-looking controls.
+
+
+## Design Review / 2026-06-13 — ПРИНЯТО (Claude-Designer)
+- SCRUM-182: 20 derived(64) + 7 shop(128) + 5 shop-state унифицированы, имена/маппинг без изменений.
+- Единый dark-fantasy канон: тёмная обводка, мягкая тень, материал на металл/гем/дерево-иконках.
+- Читаемость 40px подтверждена (Escape stats/level-up/shop/tooltip) — силуэты различимы, не вектор-дефолт.
+- Замечание (не блокер): абстрактные концепты (attack_speed/crit/health) намеренно проще — оправданный
+  компромисс ради 40px-читаемости; дальнейшее усложнение нанесёт вред мелкому размеру. Бар выполнен.
+- Маппинг ui_icon_registry не трогался — Back-end-интеграция не требуется. Ассеты закоммичены.
