@@ -818,5 +818,13 @@
  "backend_runtime_smoke_shop_stock_persistence_task.md": {
   "key": "SCRUM-209",
   "status": "Готово"
+ },
+ "backend_full_russian_localization_glossary_tooltips_task.md": {
+  "key": "SCRUM-210",
+  "status": "К выполнению"
+ },
+ "bug_shop_items_center_screen_task.md": {
+  "key": "SCRUM-211",
+  "status": "К выполнению"
  }
 }

@@ -249,8 +249,48 @@ func _test_player_animation() -> void:
 		if float(engineer_pose["socket_x"]) <= 8.0 or abs(float(engineer_pose["socket_y"])) >= 42.0:
 			_fail("Expected engineer weapon socket to stay readable near the tool hand.")
 
+	_test_weapon_animation_timing_events(player)
 	_test_legacy_player_weapon_pose_hooks(player)
 	player.queue_free()
+
+
+func _test_weapon_animation_timing_events(player: Node) -> void:
+	var events: Array[Dictionary] = []
+	player.connect("weapon_animation_event", func(event: Dictionary) -> void:
+		events.append(event)
+	)
+
+	player.configure_character("soldier", "soldier_grenade")
+	var grenade_weapon: Node = player.get("equipped_weapon")
+	grenade_weapon.set_process(false)
+	grenade_weapon.call("_emit_weapon_animation_event", player, "windup", 0.42, Vector2.RIGHT, {"delayed": true})
+	_assert_weapon_timing_event(events, "grenade_cook", "windup")
+
+	player.configure_character("guitarist", "sound_amp")
+	var amp_weapon: Node = player.get("equipped_weapon")
+	amp_weapon.set_process(false)
+	amp_weapon.call("_emit_weapon_animation_event", player, "deploy", 7.0, Vector2.RIGHT, {"pulse_interval": 1.1})
+	amp_weapon.call("_emit_weapon_animation_event", player, "pulse", 1.1, Vector2.RIGHT, {"index": 0, "count": 6})
+	_assert_weapon_timing_event(events, "amp", "deploy")
+	_assert_weapon_timing_event(events, "amp", "pulse")
+
+	player.configure_character("dark_mage", "dark_wand")
+	var beam_weapon: Node = player.get("equipped_weapon")
+	beam_weapon.set_process(false)
+	beam_weapon.call("_emit_weapon_animation_event", player, "channel", 0.16, Vector2.RIGHT, {"beam_count": 2})
+	_assert_weapon_timing_event(events, "beam", "channel")
+
+	var last_event: Dictionary = player.get("last_weapon_animation_event")
+	if str(last_event.get("phase", "")) == "" or not last_event.has("duration") or not (last_event.get("metadata", {}) is Dictionary):
+		_fail("Expected Player to retain the last weapon animation timing event payload.")
+
+
+func _assert_weapon_timing_event(events: Array[Dictionary], attack_mode: String, phase: String) -> void:
+	for event in events:
+		var metadata: Dictionary = event.get("metadata", {})
+		if str(event.get("phase", "")) == phase and str(metadata.get("attack_mode", "")) == attack_mode and float(event.get("duration", 0.0)) >= 0.0:
+			return
+	_fail("Expected weapon animation timing event phase=%s attack_mode=%s." % [phase, attack_mode])
 
 
 func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:

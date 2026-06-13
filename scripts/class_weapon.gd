@@ -1201,6 +1201,7 @@ func _fire_sniper_split_round(owner_node: Node2D, target: Node2D, direction: Vec
 
 
 func _fire_priest_sanctify(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.10), direction, {"delayed": true})
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 480.0)
 	var target_id := 0
 	if target != null:
@@ -1227,6 +1228,8 @@ func _fire_priest_sanctify(owner_node: Node2D, target: Node2D, direction: Vector
 		if current_target != null:
 			impact_center = current_target.global_position
 		var damage_value: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))
+		if current_owner != null:
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true})
 		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), impact_center, float(current_weapon.get("aoe_radius")) * 0.72, current_weapon.get("visual_color"))
 		current_weapon.call("_damage_enemies_in_circle_falloff", impact_center, float(current_weapon.get("aoe_radius")), damage_value, float(current_weapon.get("damage_falloff")))
 		var release_mark := mark_ref.get_ref() as Node
@@ -1239,6 +1242,7 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
 	var pulse_count: int = maxi(storm_ticks, 1)
+	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.06) * float(maxi(pulse_count - 1, 1)), Vector2.RIGHT, {"count": pulse_count})
 	var damage_value: float = _rolled_damage(owner_node)
 	for pulse_index in range(pulse_count):
 		var ward_tween := create_tween()
@@ -1248,6 +1252,7 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 			var current_owner := instance_from_id(owner_id) as Node2D
 			if current_weapon == null or current_owner == null:
 				return
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("burst_interval")), 0.06), Vector2.RIGHT, {"index": pulse_index, "count": pulse_count})
 			var radius: float = float(current_weapon.get("aoe_radius")) * (0.72 + 0.14 * float(pulse_index))
 			AttackVfx.ring_pulse(current_weapon.call("_projectile_parent"), current_owner.global_position, radius, current_weapon.get("visual_color"), false)
 			current_weapon.call("_damage_enemies_in_circle", current_owner.global_position, radius, damage_value)
@@ -1255,6 +1260,7 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 
 
 func _fire_priest_prayer_chain(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "channel", maxf(0.14, float(projectile_count + _extra_projectiles()) * 0.04), direction, {"chain": true})
 	var first_target: Node2D = target
 	if first_target == null:
 		first_target = _find_closest_enemy(owner_node, INF)
@@ -1280,6 +1286,7 @@ func _fire_priest_prayer_chain(owner_node: Node2D, target: Node2D, direction: Ve
 
 
 func _fire_bio_spore_bloom(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.08) * float(maxi(storm_ticks - 1, 1)), direction, {"count": maxi(storm_ticks, 1)})
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 420.0)
 	var target_id := 0
 	if target != null:
@@ -1298,6 +1305,7 @@ func _fire_bio_spore_bloom(owner_node: Node2D, target: Node2D, direction: Vector
 			var current_owner := instance_from_id(owner_id) as Node2D
 			if current_weapon == null or current_owner == null:
 				return
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("burst_interval")), 0.08), direction, {"index": pulse_index, "count": pulse_count})
 			var impact_center: Vector2 = stored_center
 			var current_target := instance_from_id(target_id) as Node2D
 			if current_target != null:
@@ -1325,6 +1333,7 @@ func _fire_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector
 	var owner_id := owner_node.get_instance_id()
 	var target_id := first_target.get_instance_id()
 	var pulse_count: int = maxi(projectile_count, 1)
+	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.08) * float(pulse_count), direction, {"count": pulse_count})
 	for pulse_index in range(pulse_count):
 		var sample_tween := create_tween()
 		sample_tween.tween_interval(maxf(burst_interval, 0.08) * float(pulse_index + 1))
@@ -1334,6 +1343,7 @@ func _fire_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector
 			var current_target := instance_from_id(target_id) as Node2D
 			if current_weapon == null or current_owner == null or current_target == null:
 				return
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("burst_interval")), 0.08), direction, {"index": pulse_index, "count": pulse_count})
 			var radius: float = float(current_weapon.get("aoe_radius")) * (0.70 + 0.16 * float(pulse_index))
 			var pulse_damage: float = damage_value * pow(float(current_weapon.get("damage_falloff")), float(pulse_index + 1))
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), current_target.global_position, radius * 0.42, current_weapon.get("visual_color"))
@@ -1342,6 +1352,7 @@ func _fire_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector
 
 
 func _fire_bio_symbiote_web(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "channel", maxf(0.16, float(projectile_count + _extra_projectiles()) * 0.05), direction, {"chain": true})
 	var first_target: Node2D = target
 	if first_target == null:
 		first_target = _find_closest_enemy(owner_node, INF)
@@ -1461,6 +1472,7 @@ func _fire_robot_reactor_vent(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "deploy", amp_lifetime, direction, {"pulse_interval": amp_pulse_interval})
 	_deployed_amps = _deployed_amps.filter(func(device: Node) -> bool:
 		return device != null and is_instance_valid(device)
 	)
@@ -1496,6 +1508,7 @@ func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
 			var current_sentry := instance_from_id(sentry_id) as Node2D
 			if current_weapon == null or current_owner == null or current_sentry == null:
 				return
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("amp_pulse_interval")), 0.12), direction, {"index": shot_index, "count": shot_count})
 			var used: Dictionary = {}
 			var target_enemy: Node2D = current_weapon.call("_find_nearest_enemy_from", current_sentry.global_position, float(current_weapon.get("attack_range")), used)
 			if target_enemy == null:
@@ -1521,6 +1534,7 @@ func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "channel", maxf(0.16, float(projectile_count + _extra_projectiles()) * 0.05), direction, {"chain": true})
 	var first_target: Node2D = target
 	if first_target == null:
 		first_target = _find_closest_enemy(owner_node, INF)
@@ -1555,6 +1569,7 @@ func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: 
 
 func _fire_engineer_pressure_mines(owner_node: Node2D, direction: Vector2) -> void:
 	var mine_count := maxi(projectile_count + _extra_projectiles(), 1)
+	_emit_weapon_animation_event(owner_node, "deploy", pool_duration, direction, {"count": mine_count, "check_interval": pool_tick_interval})
 	var spread := deg_to_rad(46.0)
 	for mine_index in range(mine_count):
 		var offset := 0.0
@@ -1598,6 +1613,8 @@ func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, m
 			if not current_weapon.call("_has_enemy_in_circle", current_mine.global_position, float(current_weapon.get("aoe_radius")) * 0.62):
 				return
 			state["triggered"] = true
+			if current_owner != null:
+				current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, Vector2.RIGHT, {"mine_index": mine_index})
 			var mine_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))
 			mine_damage *= pow(float(current_weapon.get("damage_falloff")), float(mine_index) * 0.35)
 			current_weapon.call("_damage_enemies_in_circle_falloff", current_mine.global_position, float(current_weapon.get("aoe_radius")), mine_damage, float(current_weapon.get("damage_falloff")))
@@ -1935,6 +1952,32 @@ func _owner_node() -> CharacterBody2D:
 			return parent_node
 		parent_node = parent_node.get_parent()
 	return null
+
+
+func _emit_weapon_animation_event(owner_node: Node2D, phase: String, duration: float, direction: Vector2, metadata := {}) -> void:
+	if owner_node == null or not is_instance_valid(owner_node) or not owner_node.has_method("play_action_animation"):
+		return
+	var event_metadata: Dictionary = metadata if metadata is Dictionary else {}
+	var payload := event_metadata.duplicate(true)
+	payload["attack_mode"] = attack_mode
+	payload["weapon_id"] = weapon_id
+	payload["display_name"] = display_name
+	payload["phase_source"] = "class_weapon"
+	var action_id := "cast" if attack_mode in ["aoe_projectile", "homing_curse", "beam", "dot_beam", "drain_link", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone"] else "shoot"
+	owner_node.call("play_action_animation", action_id, direction, phase, maxf(duration, 0.0), payload)
+
+
+func _estimated_windup_duration() -> float:
+	match attack_mode:
+		"grenade_cook", "smoke_bomb", "prism_rift", "meteor_shards", "priest_sanctify", "robot_magnetic_anchor", "robot_compression_line", "sniper_lockshot", "sniper_kill_zone":
+			return maxf(grenade_delay, 0.08)
+		"suppression_burst", "priest_ward", "bio_spore_bloom", "bio_sample_dart":
+			return maxf(burst_interval, 0.06)
+		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
+			return 0.10
+		"beam", "dot_beam", "drain_link", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone":
+			return 0.12
+	return 0.08
 
 
 func _projectile_parent() -> Node:
