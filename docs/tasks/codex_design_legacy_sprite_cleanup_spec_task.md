@@ -1,7 +1,7 @@
 # Codex Design Task: Legacy Sprite Cleanup Spec
 
 Статус: review
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Роль: Design audit/spec + Back-end cleanup handoff
 Jira: SCRUM-183

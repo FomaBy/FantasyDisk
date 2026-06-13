@@ -10,7 +10,7 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - `scripts/cutout_rig_2d.gd` собирает rig/cutout parts для движения, squash, socket, hit/action timing.
 - Source PNG остаются меню/fallback-изображениями.
 - `scripts/sliced_rig_manifest.gd` хранит данные нарезки.
-- Read-only audit SCRUM-173 (2026-06-13) зафиксировал матрицу покрытия в `docs/design/reviews/animation_rig_audit_2026_06.md`: базовый rig/state слой широкий, но 0.1.5 follow-up нужен для legacy player weapon-action hooks, enemy archetype assertions, hit/death coverage, weapon timing/VFX sync и Design-ready parts для новых боссов/мини-элиток.
+- Read-only audit SCRUM-173 (2026-06-13) зафиксировал матрицу покрытия в `docs/design/reviews/animation_rig_audit_2026_06.md`: базовый rig/state слой широкий, но 0.1.4 follow-up нужен для legacy player weapon-action hooks, enemy archetype assertions, hit/death coverage, weapon timing/VFX sync и Design-ready parts для новых боссов/мини-элиток.
 
 ## Player Motion
 

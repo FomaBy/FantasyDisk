@@ -71,3 +71,29 @@ Verification:
 - `meta_skill_tree_smoke_test.gd` — passed.
 
 Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/process/task_board.md`, `docs/process/jira_sync_map.json`.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED
+
+Код-аудит диспатча Escape (main.gd:527-533):
+- Приоритет: overlay открыт → `_resume_game` (toggle-закрытие); иначе
+  `_can_open_pause_dossier()` → `_show_pause_menu` (единое RunPauseMenuRoot); иначе
+  per-screen `ui_escape_action`.
+- `_can_open_pause_dossier()` (ui_screens:1556-1564) = true при `combat_active` ИЛИ
+  открытом RouteMap/Shop/AttributeShop/LevelUp/EliteReward/Event → меню по Escape на
+  ВСЕХ экранах забега. Per-screen `ui_escape_action` (leave_shop/advance/…) остаётся
+  только вне забега (главное меню/выбор героя/настройки). Унификация выполнена —
+  один Escape = одно меню. Требование #2 ✓.
+- Меню строится на отдельном `pause_overlay_layer` (не разрушает подлежащий экран),
+  повторный Escape = resume → состояние экрана сохраняется. Требование #1 ✓.
+- Досье — кнопка `RunPauseDossierButton` из меню (SCRUM-146 досье не удалено,
+  переведено в пункт меню). #2 ✓.
+- Кнопки «Назад»: магазин — единый Назад; событие — `EventBackButton` (2691),
+  disabled+tooltip если skip недоступен. #3 ✓. Карта — в списке → Escape=меню. #4 ✓.
+
+РЕАЛЬНЫЙ рендер (1280×720) поверх боя: меню «Пауза» с Продолжить/Досье персонажа/
+Настройки/Покинуть забег/Главное меню, HUD затемнён. `_can_open_pause_dossier=true`.
+Скрин: build/qa/run_pause_menu/. Тест (runtime_smoke:819-947) проверяет открытие/
+закрытие RunPauseMenuRoot + досье-кнопку + RunControls/PauseControlButtons/BaseStatsList.
+
+6 smoke зелёные. Багов нет.

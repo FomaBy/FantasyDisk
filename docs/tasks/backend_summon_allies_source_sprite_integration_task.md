@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Source-Specific Спрайты Призывных Союзников
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-12
 Связано: SCRUM-152
@@ -61,3 +61,37 @@ Design/Codex task `docs/tasks/design_codex_summon_allies_sprites_task.md` под
 ## Документация
 
 Обновить `docs/design/current_game_state.md`, `docs/design/systems/characters_weapons.md` и `docs/design/content_registry.md`, если меняются runtime mappings.
+
+## Result Summary — 2026-06-13
+
+Back-end integration complete.
+
+- `AllyMinion` now exposes `ally_visual_id` and applies source-specific textures through a safe visual map with `ally_druid_beast` fallback.
+- `summoner_weapon.gd` passes `ally_visual_id` / `ally_visual_ids` from weapon config into spawned allies.
+- `summon_amulet` randomly uses `ally_druid_beast` or `ally_druid_pack_spirit`; `homunculus_vial` uses `ally_homunculus`; `leadership_echo` is reserved in the map for future echo summons.
+- `class_weapon.gd` supports optional `deploy_texture_path`; `sound_amp` uses `deploy_sound_amp_field.png`, `raven_totem` uses `deploy_raven_totem_field.png`.
+- Cleanup groups and balance values were not changed.
+- Runtime smoke extended to verify sound amp deploy sprite, Druid summon sprite, Chemist homunculus sprite, and Raven totem deploy sprite.
+
+Verification:
+
+`/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+
+Result: passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-157)
+
+Проверено фактически (код + рендер + smoke):
+- Source-specific визуал: `ally_minion.gd` — `ALLY_VISUAL_PATHS` (druid_beast/pack_spirit/
+  homunculus/leadership_echo), `@export ally_visual_id`, `set_visual_id()`+`_apply_visual()`
+  (грузит Texture2D по пути, fallback на druid_beast). ✓
+- Передача source: `summoner_weapon.gd` читает `ally_visual_id`/`ally_visual_ids` из
+  config (27-31), `_selected_ally_visual_id()` (75) → `ally.set("ally_visual_id", ...)`
+  (79). summon_amulet→druid beast/pack (вариативность), homunculus_vial→homunculus. ✓
+- Deploy-текстуры: `deploy_texture_path` в progression_data (sound_amp:464,
+  raven_totem:692) потребляется в `class_weapon._fire_amp` (1928-1929 load Texture2D). ✓
+- РЕНДЕР AllyMinion(set_visual_id "druid_beast"): Sprite2D с texture=
+  `ally_druid_beast.png`, **Polygon2D_count=0** — плейсхолдера больше нет, реальный
+  спрайт виден. Скрин: build/qa/ally_sprite_integration/.
+- 6 smoke зелёные (clean worktree). Багов нет.

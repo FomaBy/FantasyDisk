@@ -1,7 +1,7 @@
 # Mechanics And Balance Audit — 2026-06
 
 Дата: 2026-06-13  
-Версия аудита: 0.1.5  
+Версия аудита: 0.1.4  
 Источник: SCRUM-176 / `docs/tasks/audit_mechanics_balance_full.md`  
 Scope: read-only audit; balance values and gameplay code were not changed.
 

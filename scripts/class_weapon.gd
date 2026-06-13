@@ -49,6 +49,7 @@ const BRIAR_POOL_TEXTURE := preload("res://assets/sprites/effects/briar_pool.png
 @export var charge_seconds := 0.0
 @export var charge_max_multiplier := 1.0
 @export var dash_on_crit_distance := 0.0
+@export var deploy_texture_path := ""
 @export var visual_color := Color(0.5, 0.8, 1.0, 0.35)
 
 var _cooldown := 0.0
@@ -125,6 +126,7 @@ func configure_weapon(config: Dictionary) -> void:
 	charge_seconds = float(config.get("charge_seconds", charge_seconds))
 	charge_max_multiplier = float(config.get("charge_max_multiplier", charge_max_multiplier))
 	dash_on_crit_distance = float(config.get("dash_on_crit_distance", dash_on_crit_distance))
+	deploy_texture_path = str(config.get("deploy_texture_path", deploy_texture_path))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
 
@@ -161,6 +163,7 @@ func _attack() -> void:
 
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("cast" if attack_mode in ["aoe_projectile", "homing_curse", "beam", "drain_link"] else "shoot", direction)
+	_emit_weapon_animation_event(owner_node, "windup", _estimated_windup_duration(), direction)
 
 	if heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(heal_percent_on_attack)
@@ -479,6 +482,7 @@ func _fire_beam(owner_node: Node2D, direction: Vector2) -> void:
 	# Веер из beam_count лучей с шагом beam_fan_degrees, центрированный на цели.
 	# «Ядро Расщепления» (tier 3): extra_projectile добавляет луч/снаряд.
 	var count := maxi(beam_count + _extra_projectiles(), 1)
+	_emit_weapon_animation_event(owner_node, "channel", 0.16, direction, {"beam_count": count})
 	for beam_index in range(count):
 		var fan_offset := 0.0
 		if count > 1:
@@ -488,6 +492,7 @@ func _fire_beam(owner_node: Node2D, direction: Vector2) -> void:
 
 func _fire_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
 	var count := maxi(beam_count + _extra_projectiles(), 1)
+	_emit_weapon_animation_event(owner_node, "channel", maxf(0.16, float(maxi(dot_ticks, 1)) * 0.04), direction, {"beam_count": count, "dot_ticks": dot_ticks})
 	for beam_index in range(count):
 		var fan_offset := 0.0
 		if count > 1:
@@ -560,6 +565,7 @@ func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _fire_drain_link(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "channel", 0.20, direction, {"chain": true})
 	var finish: Vector2 = owner_node.global_position + direction * min(attack_range, 520.0)
 	if target != null:
 		finish = target.global_position
@@ -615,6 +621,7 @@ func _fire_pulse(owner_node: Node2D, origin: Vector2) -> void:
 
 
 func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "deploy", amp_lifetime, direction, {"pulse_interval": amp_pulse_interval})
 	# Деплой: усилитель ставится на землю, живет amp_lifetime секунд и пульсирует
 	# самостоятельно. Лимит одновременных ампов растет от Лидерства через
 	# max_summons (player._apply_weapon_scaling: base + floor(leadership / 4)).
@@ -627,7 +634,7 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 	amp.add_to_group("deployed_sound_amps")
 	amp.z_index = 5
 	var amp_visual := Sprite2D.new()
-	amp_visual.texture = _weapon_visual_texture()
+	amp_visual.texture = _deploy_visual_texture()
 	amp_visual.scale = Vector2(0.42, 0.42)
 	amp.add_child(amp_visual)
 	_projectile_parent().add_child(amp)
@@ -650,7 +657,11 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 			var current_weapon := instance_from_id(weapon_id) as Node
 			var current_amp := instance_from_id(amp_id) as Node2D
 			if current_weapon != null and current_amp != null and not bool(current_weapon.get("_effects_shutdown")):
-				current_weapon.call("_fire_pulse", current_weapon.call("_owner_node"), current_amp.global_position)
+				var current_owner := current_weapon.call("_owner_node") as Node2D
+				if current_owner != null:
+					var pulse_direction := current_amp.global_position - current_owner.global_position
+					current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("amp_pulse_interval")), 0.2), pulse_direction.normalized(), {"index": pulse_index, "count": pulse_count})
+				current_weapon.call("_fire_pulse", current_owner, current_amp.global_position)
 		)
 	pulse_tween.tween_callback(func() -> void:
 		var current_weapon := instance_from_id(weapon_id) as Node
@@ -666,10 +677,12 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 	)
 
 	# Первый пульс сразу при установке.
+	_emit_weapon_animation_event(owner_node, "pulse", maxf(amp_pulse_interval, 0.2), direction, {"index": 0, "count": pulse_count})
 	_fire_pulse(owner_node, amp.global_position)
 
 
 func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "deploy", pool_duration, direction, {"check_interval": pool_tick_interval})
 	var trap := Node2D.new()
 	trap.name = "WeaponTrapNode"
 	_register_effect(trap)
@@ -725,6 +738,7 @@ func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
 
 func _fire_suppression_burst(owner_node: Node2D, direction: Vector2) -> void:
 	var count := maxi(projectile_count + _extra_projectiles(), 1)
+	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.02) * float(maxi(count - 1, 1)), direction, {"count": count})
 	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
 	var burst_tween := create_tween()
@@ -736,6 +750,7 @@ func _fire_suppression_burst(owner_node: Node2D, direction: Vector2) -> void:
 			var current_owner := instance_from_id(owner_id) as Node2D
 			if current_weapon == null or current_owner == null:
 				return
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("burst_interval")), 0.02), direction, {"index": burst_index, "count": count})
 			current_weapon.call("_fire_suppression_round", current_owner, direction)
 		)
 
@@ -757,6 +772,7 @@ func _fire_suppression_round(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _fire_grenade_cook(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.10), direction, {"delayed": true})
 	var target_position: Vector2 = owner_node.global_position + direction * min(attack_range, 440.0)
 	if target != null:
 		target_position = target.global_position
@@ -777,6 +793,8 @@ func _fire_grenade_cook(owner_node: Node2D, target: Node2D, direction: Vector2) 
 				grenade.queue_free()
 			return
 		var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
+		if current_owner != null:
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true})
 		current_weapon.call("_damage_enemies_in_circle_falloff", target_position, aoe_radius, explosion_damage, damage_falloff)
 		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, visual_color)
 		current_weapon.call("_release_effect", grenade)
@@ -896,6 +914,7 @@ func _fire_shadow_backstab(owner_node: Node2D, target: Node2D, direction: Vector
 
 
 func _fire_smoke_bomb(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.10), direction, {"delayed": true})
 	var target_position: Vector2 = owner_node.global_position + direction * min(attack_range, 240.0)
 	if target != null:
 		target_position = target.global_position
@@ -914,6 +933,8 @@ func _fire_smoke_bomb(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 				smoke.queue_free()
 			return
 		var damage_value := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
+		if current_owner != null:
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", maxf(float(current_weapon.get("smoke_duration")), 0.2), direction, {"delayed": true})
 		current_weapon.call("_damage_enemies_in_circle", target_position, aoe_radius, damage_value)
 		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, visual_color)
 	)
@@ -928,6 +949,7 @@ func _fire_smoke_bomb(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 
 
 func _fire_elemental_orbit(owner_node: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "channel", orbit_duration, direction, {"ticks": maxi(storm_ticks, 1)})
 	var orbit_root := Node2D.new()
 	orbit_root.name = "ElementalOrbitNode"
 	orbit_root.z_index = 10
@@ -968,6 +990,7 @@ func _fire_elemental_orbit(owner_node: Node2D, direction: Vector2) -> void:
 			var current_orbit := instance_from_id(orbit_id) as Node2D
 			if current_weapon == null or current_owner == null or current_orbit == null:
 				return
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", tick_interval, direction, {"index": tick_index, "count": ticks})
 			current_orbit.global_position = current_owner.global_position
 			var tick_damage := float(current_weapon.call("_rolled_damage", current_owner)) / float(ticks)
 			current_weapon.call("_damage_enemies_in_circle", current_owner.global_position, current_weapon.get("aoe_radius"), tick_damage)
@@ -985,6 +1008,7 @@ func _fire_elemental_orbit(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _fire_prism_rift(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.12), direction, {"delayed": true})
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 360.0)
 	if target != null:
 		center = target.global_position
@@ -1007,6 +1031,8 @@ func _fire_prism_rift(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 		var current_owner := instance_from_id(owner_id) as Node2D
 		if current_weapon == null:
 			return
+		if current_owner != null:
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true})
 		var damage_value := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
 		var color_a := Color(0.26, 0.78, 1.0, 0.50)
 		var color_b := Color(1.0, 0.46, 0.20, 0.50)
@@ -1022,6 +1048,7 @@ func _fire_prism_rift(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 
 
 func _fire_meteor_shards(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.12), direction, {"delayed": true})
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 430.0)
 	if target != null:
 		center = target.global_position
@@ -1042,6 +1069,8 @@ func _fire_meteor_shards(owner_node: Node2D, target: Node2D, direction: Vector2)
 			if current_meteor != null:
 				current_meteor.queue_free()
 			return
+		if current_owner != null:
+			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true, "shards": int(current_weapon.get("shard_count"))})
 		var damage_value := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
 		current_weapon.call("_damage_enemies_in_circle", center, aoe_radius, damage_value * 0.72)
 		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), center, aoe_radius, visual_color)
@@ -1920,6 +1949,14 @@ func _weapon_visual_texture() -> Texture2D:
 	if visual != null and visual.texture != null:
 		return visual.texture
 	return SOUND_AMP_TEXTURE
+
+
+func _deploy_visual_texture() -> Texture2D:
+	if not deploy_texture_path.is_empty():
+		var texture := load(deploy_texture_path) as Texture2D
+		if texture != null:
+			return texture
+	return _weapon_visual_texture()
 
 
 func _register_effect(effect: Node) -> void:

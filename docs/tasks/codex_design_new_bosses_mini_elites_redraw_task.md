@@ -1,7 +1,7 @@
 # Codex Design Task: New Bosses And Mini-Elites Canonical Redraw
 
 Статус: done (superseded 2026-06-13; covered by SCRUM-156)
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Роль: Design / Codex image generation
 Jira: SCRUM-180

@@ -1,7 +1,7 @@
 # Аудит: покрытие и качество тестов
 
 Статус: done
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя: полный аудит и рефакторинг проекта)
 Jira: SCRUM-178
@@ -27,7 +27,7 @@ hazard_vfx). После роста контента (17 классов, новы
    призывы, no-overlap UI на всех экранах) и тесты-пустышки.
 3. **Отчёт** `docs/design/reviews/test_coverage_audit_2026_06.md` с пробелами
    по приоритету.
-4. **Породить** `backend_test_<area>_task.md` (0.1.5) на добор покрытия;
+4. **Породить** `backend_test_<area>_task.md` (0.1.4) на добор покрытия;
    акцент на фактические ассерты (дерево узлов/значения, не флаги).
 
 ## Acceptance Criteria
@@ -48,7 +48,7 @@ Read-only аудит завершен. Отчет создан:
 - Balance coverage остается model-first; нужны live DPS/TTK/survivability simulations.
 - Нет автоматического registry-vs-code-vs-assets gate.
 
-Созданы child task specs 0.1.5:
+Созданы child task specs 0.1.4:
 - `docs/tasks/backend_test_runtime_smoke_suite_split_task.md`
 - `docs/tasks/backend_test_live_balance_simulation_task.md`
 - `docs/tasks/backend_test_content_registry_consistency_task.md`

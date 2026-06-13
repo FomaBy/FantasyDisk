@@ -1,7 +1,7 @@
 # Аудит: все спрайты и визуальная консистентность
 
 Статус: done (Design audit signed off 2026-06-13)
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя: полный аудит и рефакторинг проекта)
 Jira: SCRUM-177
@@ -32,7 +32,7 @@ dark fantasy UI рестайл (SCRUM-147). Нужна проверка един
 3. Контактные листы по группам в `docs/design/previews/` для визуальной сверки.
 4. **Отчёт** `docs/design/reviews/sprite_visual_audit_2026_06.md` со списком
    «перерисовать/починить» по приоритету.
-5. **Породить** `codex_design_<area>_redraw_task.md` (0.1.5) на перерисовки —
+5. **Породить** `codex_design_<area>_redraw_task.md` (0.1.4) на перерисовки —
    Codex-генерация с референсами, Claude-Designer ревью/интеграция.
 
 ## Acceptance Criteria
@@ -63,7 +63,7 @@ content_registry.md (актуализация статусов), docs/design/rev
 - Wrote machine/markdown inventory:
   - `docs/design/reviews/sprite_visual_audit_inventory_2026_06.json`
   - `docs/design/reviews/sprite_visual_audit_inventory_2026_06.md`
-- Created child 0.1.5 tasks:
+- Created child 0.1.4 tasks:
   - `docs/tasks/codex_design_new_bosses_mini_elites_redraw_task.md`
   - `docs/tasks/codex_design_vfx_sprite_polish_task.md`
   - `docs/tasks/codex_design_ui_icon_style_unification_task.md`

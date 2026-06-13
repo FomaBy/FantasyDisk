@@ -1,7 +1,7 @@
 # Code Architecture Audit — 2026-06
 
 Дата: 2026-06-13  
-Версия аудита: 0.1.5  
+Версия аудита: 0.1.4  
 Источник: SCRUM-174 / `docs/tasks/audit_code_architecture_refactor_plan.md`  
 Scope: read-only audit; gameplay/UI code was not changed.
 
@@ -140,4 +140,4 @@ Created in `docs/tasks/`:
 3. `backend_refactor_progression_data_domain_split_task.md`
 4. `backend_refactor_combat_target_query_cache_task.md`
 
-All are versioned 0.1.5 and should be serialized because they touch shared files.
+All are versioned 0.1.4 and should be serialized because they touch shared files.

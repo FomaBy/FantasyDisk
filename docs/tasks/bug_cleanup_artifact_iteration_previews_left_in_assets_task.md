@@ -49,3 +49,22 @@ acceptance-критерий «старых превью в assets/ нет». ~9 
 
 ## Окружение
 Godot 4.6.3.stable. Чистка закоммичена в 8913860 (dev). macOS.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия (верификация фикса)
+Статус: PASSED
+
+Проверено фактически:
+- artifact_*_preview.png / artifact_concept_sheet.png в assets/ — **0** (вынесены). ✓
+- Аудит-логика починена: `ITERATION_PATTERNS=("preview","_source","contact","concept")`
+  (audit_unused_assets.py:106); отдельный `collect_runtime_source_text()` БЕЗ tools/
+  (:109); строка 237 `usage_text = runtime_source_text if is_iteration else source_text`
+  → для iteration-файлов ссылка из tools/-генератора больше НЕ считается usage. ✓
+- Живой `berserk_walk_sheet_v2.png` не тронут (player.gd preload). ✓
+- Повторный аудит: артефактные превью больше не «прячутся» как used. ✓
+
+Наблюдение (НЕ дефект SCRUM-63, уже отслеживается): аудит теперь корректно флагает
+6 `*_placeholder.png` новых классов как unused (player.gd их больше не грузит — мертвы).
+Их чистка уже в работе: `backend_content_safe_cleanup_followup_task.md` (in_progress) —
+дубль не заводил.
+
+6 smoke зелёные. Категория #2 закрыта.

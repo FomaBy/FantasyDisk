@@ -1,7 +1,7 @@
 # Test Coverage Audit — 2026-06
 
 Дата: 2026-06-13  
-Версия аудита: 0.1.5  
+Версия аудита: 0.1.4  
 Источник: SCRUM-178 / `docs/tasks/audit_test_coverage_quality.md`  
 Scope: read-only audit; tests were inspected but not modified.
 

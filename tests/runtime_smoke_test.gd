@@ -94,6 +94,11 @@ func _initialize() -> void:
 		"res://assets/sprites/ui/screens/screen_event_background.png",
 		"res://assets/sprites/ui/screens/screen_shop_background.png",
 		"res://assets/sprites/ui/screens/screen_campfire_background.png",
+		"res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+		"res://assets/backgrounds/ui/ui_backdrop_merchant_archive.png",
+		"res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+		"res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+		"res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 	]:
 		if not ResourceLoader.exists(screen_background_path):
 			push_error("Expected screen background asset to exist: %s" % screen_background_path)
@@ -218,6 +223,10 @@ func _initialize() -> void:
 
 	main.call("_show_settings_menu")
 	await process_frame
+	if not _has_screen_background(main, "settings"):
+		push_error("Expected settings screen to use the system/cathedral screen backdrop.")
+		quit(1)
+		return
 	await _test_settings_tabs_and_rebind(main)
 	main.set("selected_resolution_index", 0)
 	main.set("selected_window_mode_index", 1)
@@ -232,6 +241,10 @@ func _initialize() -> void:
 	var hero_screen := main.find_child("HeroSelectScreen", true, false) as Control
 	if hero_screen == null:
 		push_error("Expected character select to use a fullscreen hero select root.")
+		quit(1)
+		return
+	if not _has_screen_background(main, "hero_select"):
+		push_error("Expected hero select to use the system/cathedral screen backdrop.")
 		quit(1)
 		return
 	if main.find_child("CharacterCardsScroll", true, false) != null:
@@ -2036,6 +2049,22 @@ func _debug_child_tree(node: Node, depth: int = 0) -> String:
 	return ", ".join(names)
 
 
+func _node_sprite_texture_path(node: Node, sprite_name: String) -> String:
+	if node == null or not is_instance_valid(node):
+		return ""
+	var sprite := node as Sprite2D
+	if sprite == null:
+		if sprite_name.is_empty():
+			var sprites := node.find_children("*", "Sprite2D", true, false)
+			if not sprites.is_empty():
+				sprite = sprites[0] as Sprite2D
+		else:
+			sprite = node.find_child(sprite_name, true, false) as Sprite2D
+	if sprite == null or sprite.texture == null:
+		return ""
+	return sprite.texture.resource_path
+
+
 func _test_stat_artifact_recording() -> void:
 	var reward_pool: Array = load("res://scripts/progression_data.gd").reward_pool()
 	var stat_only_artifact := {}
@@ -2263,6 +2292,10 @@ func _test_weapon_effect_cleanup() -> void:
 	var deployed_amps: Array = weapon.get("_deployed_amps")
 	if get_nodes_in_group("player_weapon_effects").is_empty() and deployed_amps.is_empty():
 		push_error("Expected sound amp to register temporary weapon effects.")
+		quit(1)
+		return
+	if deployed_amps.is_empty() or _node_sprite_texture_path(deployed_amps[0], "") != "res://assets/sprites/allies/deploy_sound_amp_field.png":
+		push_error("Expected sound amp deployable to use its source-specific field sprite.")
 		quit(1)
 		return
 
@@ -2586,6 +2619,10 @@ func _test_class_weapon_rework() -> void:
 	if active_amps != 2:
 		_fail("Expected oldest amp to despawn at the limit, got %d active." % active_amps)
 		return
+	var amp_nodes := get_nodes_in_group("deployed_sound_amps")
+	if amp_nodes.is_empty() or _node_sprite_texture_path(amp_nodes[0], "") != "res://assets/sprites/allies/deploy_sound_amp_field.png":
+		_fail("Expected sound amp deployables to use the source-specific field sprite.")
+		return
 
 	guitarist.queue_free()
 	holder.queue_free()
@@ -2805,12 +2842,60 @@ func _test_unique_class_identity_patterns() -> void:
 	druid_weapon.call("_summon")
 	await process_frame
 	var commanded := false
+	var druid_visual_ok := false
 	for ally in get_nodes_in_group("allies"):
 		var ally_target = ally.get("command_target")
 		if ally.get("owner_node") == druid and ally_target != null and is_instance_valid(ally_target) and ally.get("command_mode") == "attack_target":
 			commanded = true
+			var ally_texture_path := _node_sprite_texture_path(ally, "Body")
+			if ally_texture_path in [
+				"res://assets/sprites/allies/ally_druid_beast.png",
+				"res://assets/sprites/allies/ally_druid_pack_spirit.png",
+			]:
+				druid_visual_ok = true
 	if not commanded:
 		_fail("Expected Druid pets to receive an attack-target command.")
+		return
+	if not druid_visual_ok:
+		_fail("Expected Druid pets to use a source-specific beast/pack-spirit sprite.")
+		return
+	for ally in get_nodes_in_group("allies"):
+		if ally != null and is_instance_valid(ally):
+			ally.queue_free()
+	await process_frame
+
+	var chemist_minion_owner := player_scene.instantiate()
+	holder.add_child(chemist_minion_owner)
+	chemist_minion_owner.global_position = Vector2(1600, 700)
+	await process_frame
+	chemist_minion_owner.call("configure_character", "chemist", "homunculus_vial")
+	var homunculus_weapon: Node = chemist_minion_owner.get("equipped_weapon")
+	homunculus_weapon.set_process(false)
+	homunculus_weapon.call("_summon")
+	await process_frame
+	var homunculus_visual_ok := false
+	for ally in get_nodes_in_group("allies"):
+		if ally.get("owner_node") == chemist_minion_owner and _node_sprite_texture_path(ally, "Body") == "res://assets/sprites/allies/ally_homunculus.png":
+			homunculus_visual_ok = true
+	if not homunculus_visual_ok:
+		_fail("Expected Chemist homunculus summons to use the homunculus sprite.")
+		return
+
+	var raven_druid := player_scene.instantiate()
+	holder.add_child(raven_druid)
+	raven_druid.global_position = Vector2(1620, 820)
+	await process_frame
+	raven_druid.call("configure_character", "druid", "raven_totem")
+	var raven_weapon: Node = raven_druid.get("equipped_weapon")
+	raven_weapon.set_process(false)
+	raven_weapon.call("_attack")
+	await process_frame
+	var raven_visual_ok := false
+	for deployable in get_nodes_in_group("deployed_sound_amps"):
+		if _node_sprite_texture_path(deployable, "") == "res://assets/sprites/allies/deploy_raven_totem_field.png":
+			raven_visual_ok = true
+	if not raven_visual_ok:
+		_fail("Expected Druid raven totem deployables to use the raven field sprite.")
 		return
 
 	var assassin := player_scene.instantiate()

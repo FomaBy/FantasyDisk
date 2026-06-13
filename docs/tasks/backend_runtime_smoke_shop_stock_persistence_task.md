@@ -1,16 +1,19 @@
 # Back-end: runtime smoke shop stock persistence regression
 
 Статус: done (duplicate 2026-06-13; covered by SCRUM-207)
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Animator handoff from SCRUM-184/185/186/187 verification
-Jira: duplicate of SCRUM-207
+Jira: SCRUM-209 (duplicate of SCRUM-207)
 
 ## Dispatcher Note (2026-06-13)
 Duplicate audit: this failure is the same source problem already tracked and
 dispatched as `bug_shop_rebuy_exploit_reopen_task.md` / Jira `SCRUM-207`
 (shop stock regenerates when reopening the same shop node). Not dispatched as a
 separate task. Keep SCRUM-207 as the source of truth.
+
+Dispatcher sync: SCRUM-209 exists as a duplicate Jira issue and should stay
+closed as duplicate/superseded by SCRUM-207.
 
 ## Role / Scope
 Back-end/UI state. Do not route to Animator; this is not a rig, motion, or
@@ -49,3 +52,10 @@ positions. A new route shop node should receive distinct generated stock.
 - Runtime smoke passes.
 - Existing shop wall/frameless UI behavior remains intact.
 - No animation/rig changes are required.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (дубликат, покрыт SCRUM-207)
+Регрессия персистентности стока магазина уже верифицирована в рамках
+`bug_shop_rebuy_exploit_reopen_task.md` (SCRUM-207, QA passed 2026-06-13):
+re-show узла сохраняет сток/purchased, rebuy невозможен, тест поведенческий зелёный.
+Отдельной работы не требует. Багов нет.

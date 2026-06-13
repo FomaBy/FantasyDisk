@@ -53,3 +53,9 @@ await _test_elementalist_weapon_mechanics()
 Проверка выполнена:
 `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
 Result: passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-166)
+Лишняя индентация перед sniper/priest/biologist/robot weapon-mechanics await в
+runtime_smoke_test.gd убрана — тест ПАРСИТСЯ и проходит на ЧИСТОМ worktree HEAD
+(нет Parse Error). Транзиентный indent-break закрыт. Багов нет.

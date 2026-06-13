@@ -1,7 +1,7 @@
 # Content And Docs Consistency Audit — 2026-06
 
 Дата: 2026-06-13  
-Версия аудита: 0.1.5  
+Версия аудита: 0.1.4  
 Источник: SCRUM-175 / `docs/tasks/audit_content_docs_consistency.md`  
 Scope: read-only audit; assets/docs/code were not cleaned or renamed.
 

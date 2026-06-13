@@ -246,12 +246,12 @@ SCRUM-152 Design pass 2026-06-12 добавил канонический raster-
 
 | ID | Игровая роль | Ассет | Runtime status |
 | --- | --- | --- | --- |
-| `ally_druid_beast` | Базовый питомец Друида / fallback `AllyMinion` | `assets/sprites/allies/ally_druid_beast.png` | Подключен как `scenes/AllyMinion.tscn::Body` |
-| `ally_druid_pack_spirit` | Вариант стаи Друида / ultimate pack visual | `assets/sprites/allies/ally_druid_pack_spirit.png` | Готов для Back-end selector |
-| `ally_homunculus` | Химикский гомункул от `homunculus_vial` | `assets/sprites/allies/ally_homunculus.png` | Готов для Back-end selector |
-| `ally_leadership_echo` | Призрачный союзник/эхо от Leadership | `assets/sprites/allies/ally_leadership_echo.png` | Готов для Back-end selector |
-| `deploy_sound_amp_field` | Полевой объект ампа Гитариста | `assets/sprites/allies/deploy_sound_amp_field.png` | Готов для Back-end deploy texture override |
-| `deploy_raven_totem_field` | Полевой объект Вороньего тотема Друида | `assets/sprites/allies/deploy_raven_totem_field.png` | Готов для Back-end deploy texture override |
+| `ally_druid_beast` | Базовый питомец Друида / fallback `AllyMinion` | `assets/sprites/allies/ally_druid_beast.png` | Подключен как fallback и один из runtime вариантов `summon_amulet` |
+| `ally_druid_pack_spirit` | Вариант стаи Друида / ultimate pack visual | `assets/sprites/allies/ally_druid_pack_spirit.png` | Подключен как runtime вариант `summon_amulet` через `ally_visual_ids` |
+| `ally_homunculus` | Химикский гомункул от `homunculus_vial` | `assets/sprites/allies/ally_homunculus.png` | Подключен через `ally_visual_id: homunculus` |
+| `ally_leadership_echo` | Призрачный союзник/эхо от Leadership | `assets/sprites/allies/ally_leadership_echo.png` | Зарезервирован в `AllyMinion` visual map для future Leadership echo |
+| `deploy_sound_amp_field` | Полевой объект ампа Гитариста | `assets/sprites/allies/deploy_sound_amp_field.png` | Подключен как `deploy_texture_path` для `sound_amp` |
+| `deploy_raven_totem_field` | Полевой объект Вороньего тотема Друида | `assets/sprites/allies/deploy_raven_totem_field.png` | Подключен как `deploy_texture_path` для `raven_totem` |
 
 Preview QA:
 
@@ -259,7 +259,7 @@ Preview QA:
 - `docs/design/previews/summon_allies_asset_contact.png` - transparent asset contact sheet;
 - `docs/design/previews/summon_allies_scale_meadow_preview.png` - scale/readability check on arena background.
 
-Back-end source-specific integration handoff: `docs/tasks/backend_summon_allies_source_sprite_integration_task.md`.
+Back-end source-specific integration complete in SCRUM-157: runtime selectors preserve cleanup groups and gameplay balance.
 
 ## Стандартные Монстры
 
@@ -479,11 +479,11 @@ Contextual UI direction 2026-06-12: `docs/design/ui_contextual_concept.md` defin
 | `screen_event_background` | Фон экрана события | `assets/sprites/ui/screens/screen_event_background.png` | Активный фон Event, battle reward, upgrade, victory/death fallback screens |
 | `screen_shop_background` | Фон магазина | `assets/sprites/ui/screens/screen_shop_background.png` | Активный фон Shop screen |
 | `screen_campfire_background` | Фон костра | `assets/sprites/ui/screens/screen_campfire_background.png` | Активный фон Rest/Campfire screen |
-| `ui_backdrop_system_cathedral` | System/Codex/Settings backdrop | `assets/backgrounds/ui/ui_backdrop_system_cathedral.png` | Dark fantasy cathedral backdrop, calm center |
-| `ui_backdrop_merchant_archive` | Shop/Event merchant backdrop | `assets/backgrounds/ui/ui_backdrop_merchant_archive.png` | Dark archive/shop backdrop, calm center |
-| `ui_backdrop_arcane_lab` | Level-up/Magic/Meta backdrop | `assets/backgrounds/ui/ui_backdrop_arcane_lab.png` | Necromantic lab backdrop, calm center |
-| `ui_backdrop_reward_hall` | Reward/Victory backdrop | `assets/backgrounds/ui/ui_backdrop_reward_hall.png` | Crimson/gold reliquary hall backdrop |
-| `ui_backdrop_defeat_crypt` | Defeat/Danger backdrop | `assets/backgrounds/ui/ui_backdrop_defeat_crypt.png` | Crypt/ossuary backdrop |
+| `ui_backdrop_system_cathedral` | System/Codex/Settings backdrop | `assets/backgrounds/ui/ui_backdrop_system_cathedral.png` | Active for `system`, `settings`, `codex`, `hero_select`, `weapon_select`, `pause_stats`, `meta_tree`, `campfire` |
+| `ui_backdrop_merchant_archive` | Shop backdrop | `assets/backgrounds/ui/ui_backdrop_merchant_archive.png` | Active for `shop` |
+| `ui_backdrop_arcane_lab` | Level-up/Magic/Meta backdrop | `assets/backgrounds/ui/ui_backdrop_arcane_lab.png` | Active for `event`, `upgrade`, `level_up`, `meta_progression` |
+| `ui_backdrop_reward_hall` | Reward/Victory backdrop | `assets/backgrounds/ui/ui_backdrop_reward_hall.png` | Active for `elite_reward`, `victory`, `artifact_reward` |
+| `ui_backdrop_defeat_crypt` | Defeat/Danger backdrop | `assets/backgrounds/ui/ui_backdrop_defeat_crypt.png` | Active for `death`, `defeat`, `end_run_confirm` |
 | `route_map_backdrop` | Жутковатый фон маршрутной карты | `assets/backgrounds/route_map_backdrop.png` | Низкоконтрастный dark fantasy фон full-screen route map, спокойная центральная зона под узлы и линии |
 | `stone_garden` | Каменный Сад | `assets/backgrounds/field_stone_garden.png` | Базовый фон |
 | `marsh` | Топь | `assets/backgrounds/field_marsh.png` | Болотный фон |
@@ -526,7 +526,7 @@ Contextual UI direction 2026-06-12: `docs/design/ui_contextual_concept.md` defin
 
 Активные спрайты персонажей, стандартных монстров, элиток, боссов, оружия, projectiles, pickups, route icons и UI icons проходят quality-audit перед сдачей визуальных задач. После аудита 2026-06-10 у `assets/sprites/enemies/enemy_suicide_runner.png` удален лишний правый фрагмент текстуры; активные pickup/player projectile больше не используют Polygon2D-placeholder как видимый слой.
 
-SCRUM-177 read-only sprite audit 2026-06-13: отчет `docs/design/reviews/sprite_visual_audit_2026_06.md`, contact sheets `docs/design/previews/audit_*.png`, inventory `docs/design/reviews/sprite_visual_audit_inventory_2026_06.*`. Вывод: активные персонажи/оружие/основные враги/артефакты/фоны в целом соответствуют D&D/dark-fantasy канону; отдельные 0.1.5 follow-up задачи заведены для placeholder/tint новых боссов и мини-элиток, polish VFX, унификации derived/shop UI icons и cleanup legacy placeholder sprites.
+SCRUM-177 read-only sprite audit 2026-06-13: отчет `docs/design/reviews/sprite_visual_audit_2026_06.md`, contact sheets `docs/design/previews/audit_*.png`, inventory `docs/design/reviews/sprite_visual_audit_inventory_2026_06.*`. Вывод: активные персонажи/оружие/основные враги/артефакты/фоны в целом соответствуют D&D/dark-fantasy канону; отдельные 0.1.4 follow-up задачи заведены для placeholder/tint новых боссов и мини-элиток, polish VFX, унификации derived/shop UI icons и cleanup legacy placeholder sprites.
 
 ## UI Иконки И HUD
 

@@ -1,6 +1,6 @@
 # Menus And UI
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-13
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
@@ -39,3 +39,17 @@ FantasyDisk uses a custom visible cursor:
 | `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png` | `(5, 4)` |
 
 Back-end owns runtime cursor setup and optional state switching.
+
+## Screen Backdrops
+
+Central-window screens use role-specific dark fantasy backdrops from `assets/backgrounds/ui/` through `SCREEN_BACKGROUND_PATHS` and `_add_screen_background()`:
+
+| Screen role IDs | Backdrop |
+| --- | --- |
+| `system`, `settings`, `codex`, `hero_select`, `weapon_select`, `pause_stats`, `meta_tree`, `campfire` | `assets/backgrounds/ui/ui_backdrop_system_cathedral.png` |
+| `shop` | `assets/backgrounds/ui/ui_backdrop_merchant_archive.png` |
+| `event`, `upgrade`, `level_up`, `meta_progression` | `assets/backgrounds/ui/ui_backdrop_arcane_lab.png` |
+| `elite_reward`, `victory`, `artifact_reward` | `assets/backgrounds/ui/ui_backdrop_reward_hall.png` |
+| `death`, `defeat`, `end_run_confirm` | `assets/backgrounds/ui/ui_backdrop_defeat_crypt.png` |
+
+Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.

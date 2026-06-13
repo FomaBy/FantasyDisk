@@ -72,16 +72,48 @@ const ARENA_BACKGROUND_OPTIONS := {
 }
 const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle.png"
 const SCREEN_BACKGROUND_PATHS := {
-	"event": "res://assets/sprites/ui/screens/screen_event_background.png",
-	"shop": "res://assets/sprites/ui/screens/screen_shop_background.png",
-	"campfire": "res://assets/sprites/ui/screens/screen_campfire_background.png",
+	"system": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"settings": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"codex": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"hero_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"weapon_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"pause_stats": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"meta_tree": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"campfire": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"shop": "res://assets/backgrounds/ui/ui_backdrop_merchant_archive.png",
+	"event": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+	"upgrade": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+	"level_up": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+	"meta_progression": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+	"elite_reward": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+	"victory": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+	"artifact_reward": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+	"death": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
+	"defeat": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
+	"end_run_confirm": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 }
 const GAME_CURSOR_PATH := "res://assets/sprites/ui/cursor/game_cursor.png"
 const GAME_CURSOR_HOTSPOT := Vector2(5, 4)
 const SCREEN_BACKGROUND_FALLBACK_COLORS := {
+	"system": Color(0.045, 0.052, 0.070, 1.0),
+	"settings": Color(0.045, 0.052, 0.070, 1.0),
+	"codex": Color(0.045, 0.052, 0.070, 1.0),
+	"hero_select": Color(0.045, 0.052, 0.070, 1.0),
+	"weapon_select": Color(0.045, 0.052, 0.070, 1.0),
+	"pause_stats": Color(0.045, 0.052, 0.070, 1.0),
+	"meta_tree": Color(0.045, 0.052, 0.070, 1.0),
 	"event": Color(0.055, 0.045, 0.105, 1.0),
 	"shop": Color(0.070, 0.052, 0.030, 1.0),
 	"campfire": Color(0.080, 0.045, 0.025, 1.0),
+	"upgrade": Color(0.055, 0.045, 0.105, 1.0),
+	"level_up": Color(0.055, 0.045, 0.105, 1.0),
+	"meta_progression": Color(0.055, 0.045, 0.105, 1.0),
+	"elite_reward": Color(0.080, 0.060, 0.035, 1.0),
+	"victory": Color(0.080, 0.060, 0.035, 1.0),
+	"artifact_reward": Color(0.080, 0.060, 0.035, 1.0),
+	"death": Color(0.060, 0.035, 0.045, 1.0),
+	"defeat": Color(0.060, 0.035, 0.045, 1.0),
+	"end_run_confirm": Color(0.060, 0.035, 0.045, 1.0),
 }
 const MAP_NODE_DEFINITIONS := {
 	"battle": {

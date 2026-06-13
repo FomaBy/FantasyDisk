@@ -10,9 +10,11 @@ extends Node2D
 @export var damage_multiplier := 0.55
 @export var fire_interval := 3.0
 @export var command_mode := "attack_target"
+@export var ally_visual_id := ""
 
 var _cooldown := 0.0
 var _command_refresh := 0.0
+var ally_visual_ids: Array[String] = []
 
 
 func configure_weapon(config: Dictionary) -> void:
@@ -22,6 +24,11 @@ func configure_weapon(config: Dictionary) -> void:
 	damage_parameter = str(config.get("damage_parameter", damage_parameter))
 	damage_multiplier = float(config.get("summon_damage_multiplier", damage_multiplier))
 	command_mode = str(config.get("command_mode", command_mode))
+	ally_visual_id = str(config.get("ally_visual_id", ally_visual_id))
+	ally_visual_ids.clear()
+	var configured_visuals: Array = config.get("ally_visual_ids", [])
+	for visual_id in configured_visuals:
+		ally_visual_ids.append(str(visual_id))
 
 
 func _ready() -> void:
@@ -65,6 +72,11 @@ func _summon() -> void:
 
 	parent.add_child(ally)
 	ally.add_to_group("player_weapon_effects")
+	var selected_visual_id := _selected_ally_visual_id()
+	if ally.has_method("set_visual_id"):
+		ally.call("set_visual_id", selected_visual_id)
+	else:
+		ally.set("ally_visual_id", selected_visual_id)
 	ally.set("owner_node", owner_node)
 	ally.set("command_mode", command_mode)
 	var angle := randf() * TAU
@@ -77,6 +89,21 @@ func _summon() -> void:
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("cast", ally.global_position - owner_node.global_position)
 	_command_ally(ally, owner_node)
+
+
+func _selected_ally_visual_id() -> String:
+	if not ally_visual_ids.is_empty():
+		return ally_visual_ids[randi() % ally_visual_ids.size()]
+	if not ally_visual_id.is_empty():
+		return ally_visual_id
+	match weapon_id:
+		"homunculus_vial":
+			return "homunculus"
+		"summon_amulet":
+			return "druid_beast" if randf() < 0.5 else "druid_pack_spirit"
+		"leadership_echo":
+			return "leadership_echo"
+	return "druid_beast"
 
 
 func _command_existing_summons() -> void:

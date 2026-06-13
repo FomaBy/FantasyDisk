@@ -102,3 +102,24 @@ Dispatch: отправлено в существующий Back-end чат `019e
 - Регенерация, defense и dodge усилены в `ProgressionData.derived_parameters` и `stat_formulas.gd`; level-up survival rewards подняты.
 - Level-up переведен на 3 фиксированных варианта; rare main stat chance снижен до 5% на слот; обычные rewards выбираются weighted через `ProgressionData.level_up_reward_weight()` и единый `ATTRIBUTE_PRIORITIES`.
 - `tools/balance_harness.gd` обновил `build/balance_report.md`; runtime smoke passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED
+
+Проверено фактически (код + harness + тесты + smoke на чистом HEAD):
+- Нерф вампиризма (player.gd:568-583): компонент урона 0.5→**0.08** (6× слабее) +
+  HARD-кап лечения `_vampiric_heal_budget` (≤4 HP/сек, накапливается cap*delta) +
+  chance cap 60→35%. Бессмертие на высоком DPS исключено — лечение жёстко ограничено
+  в секунду. Требования 1 ✓.
+- Реген/defense/dodge усилены (derived_parameters/stat_formulas), survival-награды
+  подняты (по отчёту). Требование 2.
+- Взвешенный level-up: `level_up_reward_weight` (progression_data:1758-1762) =
+  base × `attribute_priority_weight` с floor `maxf(0.25,...)`; единый `ATTRIBUTE_PRIORITIES`
+  (унификация с SCRUM-146). Требования 3,4 ✓.
+- 3 варианта (не 5): `_random_level_up_rewards(3)` (ui_screens:1813,2655); rare
+  main-stat `MAIN_STAT_SLOT_CHANCE := 0.05` (было 0.13, ~в 2.6× реже). Тест «ровно 3
+  варианта» (runtime_smoke:791). Требования 4а,4б ✓ (пересматривает прежний 5-вариантный
+  SCRUM-114).
+- Баланс: After-Tuning 51 строка — ВСЕ солодамаг-отклонения в пределах ±10% (≈0%):
+  правка только выживаемости, DPS-бюджеты не уехали. Требование 6 ✓.
+- 6 smoke зелёные на ЧИСТОМ worktree HEAD. Багов нет.

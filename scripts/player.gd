@@ -3,6 +3,7 @@ extends CharacterBody2D
 signal died
 signal leveled_up
 signal damaged(amount: float)
+signal weapon_animation_event(event: Dictionary)
 
 @export var max_health := 10.0
 @export var speed := 260.0
@@ -67,6 +68,7 @@ var health := 0.0
 var character_id := "berserk"
 var weapon_id := ""
 var weapon_config := {}
+var last_weapon_animation_event: Dictionary = {}
 var equipped_weapon: Node = null
 var stats := {}
 var run_modifiers := {
@@ -310,10 +312,23 @@ func _physics_process(_delta: float) -> void:
 	_update_battle_shout()
 
 
-func play_action_animation(action_id: String, direction := Vector2.ZERO) -> void:
+func play_action_animation(action_id: String, direction := Vector2.ZERO, phase := "", duration := 0.0, metadata := {}) -> void:
 	if direction.length_squared() > 0.0:
 		_facing_direction = direction.normalized()
 		_update_sprite_facing(_facing_direction)
+	var event_metadata: Dictionary = metadata if metadata is Dictionary else {}
+	last_weapon_animation_event = {
+		"action_id": action_id,
+		"phase": phase,
+		"duration": maxf(float(duration), 0.0),
+		"direction": _facing_direction,
+		"weapon_id": weapon_id,
+		"character_id": character_id,
+		"metadata": event_metadata.duplicate(true),
+	}
+	weapon_animation_event.emit(last_weapon_animation_event)
+	if phase != "":
+		return
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_action"):
 		var animation_variant: String = weapon_id if weapon_id != "" else character_id

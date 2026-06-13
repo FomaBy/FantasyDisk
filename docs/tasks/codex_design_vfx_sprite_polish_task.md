@@ -1,7 +1,7 @@
 # Codex Design Task: VFX Sprite Polish Pass
 
 Статус: done (Design review approved 2026-06-13)
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Роль: Design / Codex image generation
 Jira: SCRUM-181

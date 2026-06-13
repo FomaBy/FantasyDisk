@@ -1,7 +1,7 @@
 # Animation: weapon timing and VFX sync audit follow-up
 
 Статус: done
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Animator audit SCRUM-173
 Jira: SCRUM-187

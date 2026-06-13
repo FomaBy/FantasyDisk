@@ -106,3 +106,23 @@ Jira: SCRUM-155
 **Верификация**: изолированный прогон босс-ростера passed (3 босса + ротация 5); 5 сьютов зелёные. Общий runtime-smoke на момент закрытия временно красный на ЧУЖОМ mid-edit (Солдат, SCRUM-168: progression_data уже с soldier, player.gd ещё нет) — не связано с этой задачей; перепроверить следующим зелёным прогоном дерева.
 
 Гарантированный tier-3 артефакт за победу и hit-stop/тряска/баннер — общие для всех боссов механизмы (уже были), новые сцены наследуют их автоматически (группа bosses + boss.gd).
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (gameplay/интеграция; арт — placeholder, за параллельной design-задачей)
+
+Проверено фактически (код + ПОВЕДЕНЧЕСКИЕ тесты + smoke на чистом worktree HEAD):
+- 3 босса: сцены `BossBoneArchon/BossBroodMother/BossAshenColossus.tscn`; behavior-
+  паттерны в boss.gd:98-123, энрейдж колосса :309; ротация в route_map:228-236 +
+  combat_director:489-493.
+- Тест `_test_new_boss_roster` (runtime_smoke:1137-1200) — РЕАЛЬНО поведенческий:
+  инстанс каждого, behavior==id, рус. имя, scale 1.9; 220 тиков `_update_boss_attacks`
+  → ассерт спавна hazard'ов/призывов (не пустышка); HP→30% → `_update_boss_phase` →
+  фаза 3; 120 роллов `_random_boss_route_node` → все 5 боссов в ротации.
+- 6 мини-элиток: `_test_mini_elite_roster` (1203+) — `mini_elite_kinds()` ровно 6,
+  каждый с полями id/title/scene/hp_mult/tint/desc, уникальные id, валидный маппинг
+  сцены, hp_mult∈(0,1) (убиваемы, не танк), tint RGB.
+- Кодекс: 9 записей по новым сущностям (codex_data.gd).
+- Все 6 smoke зелёные на ЧИСТОМ HEAD (worktree+import) — не на дёргающемся дереве.
+
+Вне scope (за параллельными задачами): финальный арт боссов/мини (placeholder,
+design_codex_new_bosses_mini_elites_sprites). Багов нет.

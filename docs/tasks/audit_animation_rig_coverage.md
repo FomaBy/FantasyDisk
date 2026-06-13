@@ -1,7 +1,7 @@
 # Аудит: риги и анимации всех персонажей/врагов
 
 Статус: done
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя: полный аудит и рефакторинг проекта)
 Jira: SCRUM-173
@@ -30,7 +30,7 @@ smoke есть. Нужна проверка покрытия и качества
    рассинхрон позы атаки с таймингами оружия (код — источник истины).
 3. **Отчёт** `docs/design/reviews/animation_rig_audit_2026_06.md`: матрица
    покрытия (класс/враг × состояние) с пробелами и дефектами по приоритету.
-4. **Породить** `animation_<area>_task.md` (0.1.5) на доводку; нехватка частей
+4. **Породить** `animation_<area>_task.md` (0.1.4) на доводку; нехватка частей
    спрайтов — handoff Design.
 
 ## Acceptance Criteria
@@ -41,7 +41,7 @@ smoke есть. Нужна проверка покрытия и качества
 Done 2026-06-13 (Animator/Codex): read-only аудит завершен, отчет создан в
 `docs/design/reviews/animation_rig_audit_2026_06.md`.
 
-Порожденные follow-up задачи на 0.1.5:
+Порожденные follow-up задачи на 0.1.4:
 - `docs/tasks/animation_legacy_player_weapon_pose_hooks_task.md`
 - `docs/tasks/animation_enemy_archetype_motion_coverage_task.md`
 - `docs/tasks/animation_hit_death_state_coverage_task.md`

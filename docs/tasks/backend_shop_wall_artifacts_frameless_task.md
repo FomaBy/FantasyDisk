@@ -80,3 +80,22 @@ SHOP_SLOT_FRAME_PATH/SHOP_SLOT_HOVER_PATH ui_screens.gd:10-11).
 Verification:
 
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED
+
+Проверено фактически (код + рантайм-рендер + тест):
+- Рамки убраны: `_make_shop_item_slot` (ui_screens:2330) НЕ применяет SHOP_SLOT_FRAME_PATH;
+  иконка висит прямо на стене (2392-2408), стиль кнопки `_shop_wall_button_style`
+  (subtle, не золотая карточка). Рантайм: `frame_nodes=0`. ✓
+- «Висит»: `ShopItemContactShadow` под предметом (2378-2390) — рантайм 4 тени. Тр.1 ✓.
+- Компактный ценник: `ShopPriceBadge` (108×30, монета+число, 2410-2438) — рантайм 4 бейджа.
+  Недоступно → иконка затемнена `Color(0.52,0.48,0.45,0.82)` (2407) + красноватый стиль
+  бейджа (2422). Тр.2 ✓.
+- Клик-зона = вся кнопка SHOP_INLINE_SLOT_SIZE; иконка/ценник MOUSE_FILTER_IGNORE. Тр.3 ✓.
+- Куплено → disabled + `_add_shop_empty_hook` (силуэт-крюк, 2369). Тр.4 ✓.
+- Тест (runtime_smoke ~4865): ассертит frameless (нет GridContainer/card layout) +
+  дамп global_rect слотов для no-overlap. Тр.7 ✓.
+- РЕНДЕР 1280×720 (build/qa/shop_wall_frameless/): 4 предмета на стене merchant_archive
+  с ценниками+тенями, лёгкий разброс рядов, без рамок и пересечений, «Назад» внизу.
+- 6 smoke зелёные. Багов нет.

@@ -1,7 +1,7 @@
 # Аудит: все механики и баланс (17 классов x оружие)
 
 Статус: done
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя: полный аудит и рефакторинг проекта)
 Jira: SCRUM-176
@@ -29,7 +29,7 @@ Back-end (Claude)
    проверка на эксплойты и мёртвые опции.
 4. **Отчёт** `docs/design/reviews/mechanics_balance_audit_2026_06.md`: таблица
    класс×оружие с метриками, список выбросов и спорных механик по приоритету.
-5. **Породить** `backend_balance_<area>_task.md` (0.1.5) на каждую группу правок;
+5. **Породить** `backend_balance_<area>_task.md` (0.1.4) на каждую группу правок;
    общие файлы (progression_data/class_weapon) — сериализовать.
 
 ## Acceptance Criteria
@@ -57,7 +57,7 @@ Read-only аудит завершен. Balance harness запущен:
 - Raw pre-tuning разброс экстремальный у ряда оружий, поэтому нужно проверить, что runtime нигде не обходит `ProgressionData.weapon()`.
 - Economy buying power в модели +10.6%, XP tempo +7.1%; XP ниже целевого диапазона +10-15% и требует live route validation.
 
-Созданы child task specs 0.1.5:
+Созданы child task specs 0.1.4:
 - `docs/tasks/backend_balance_live_combat_harness_task.md`
 - `docs/tasks/backend_balance_survivability_scenarios_task.md`
 - `docs/tasks/backend_balance_economy_xp_live_route_model_task.md`

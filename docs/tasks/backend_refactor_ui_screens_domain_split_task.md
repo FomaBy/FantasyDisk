@@ -1,7 +1,7 @@
 # Back-end Task: Refactor `ui_screens.gd` Into Domain UI Modules
 
-Статус: in_progress (Codex Back-end, dispatched 2026-06-13)
-Версия: 0.1.5
+Статус: new (PM 2026-06-13: сброшен из залипшего in_progress — claim >3ч без коммитов, Codex-dispatch не дал прогресса; готов к взятию воркером)
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-174
 Jira: SCRUM-199

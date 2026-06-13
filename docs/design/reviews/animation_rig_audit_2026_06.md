@@ -1,7 +1,7 @@
 # Animation Rig Coverage Audit — June 2026
 
 Date: 2026-06-13  
-Version target: 0.1.5  
+Version target: 0.1.4  
 Source task: `docs/tasks/audit_animation_rig_coverage.md` / Jira SCRUM-173  
 Scope: Animator read-only audit. No runtime motion fixes were made.
 

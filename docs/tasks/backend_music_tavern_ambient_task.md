@@ -72,3 +72,24 @@ Smoke + ручное прослушивание лупов и переходов
 ## Результат — 2026-06-13
 
 Треки: RandomMind (OpenGameArt, CC0) — Old Tower Inn (меню, авторский loop-WAV + сглаженный шов), Minstrel Dance (бой, loop-WAV), Battle (босс, MP3 loop). audio_manager: MUSIC_PATHS/MUSIC_GAIN_DB (RMS-нормализация), AudioStreamMP3.loop, кроссфейд через второй плеер (0.9с, без щелчков), чистка fade-плеера в release. combat_director: босс-бой включает слот boss. ffmpeg в среде нет — конвертация afconvert (float→PCM16), нормализация поправками громкости по замеренному RMS. Проверки: import green, 6 smoke green, загрузка стримов + loop-флаги подтверждены изолированным скриптом, стыки лупов — амплитудным анализом.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (с оговоркой о слышимости — плейтест)
+
+Проверено фактически:
+- Файлы: `music_menu_tavern.wav` (8.4M), `music_combat_minstrel.wav` (9.5M),
+  `music_boss_battle.mp3` (3.0M) — на диске. Старые `music_menu.wav`/`music_combat.wav`
+  вынесены в `build/cleanup_backup_2026_06_12/audio/` (git rm). ✓
+- Маппинг: audio_manager:16-18 (menu/combat/boss → новые стримы), `_music_streams`
+  грузит (69), play_music читает (171). ✓
+- ЛИЦЕНЗИИ (юридически важно): `docs/design/audio.md` — таблица: все 3 трека
+  «Medieval: The Old Tower Inn / Minstrel Dance / Battle», автор RandomMind, **CC0**,
+  URL-источники opengameart.org. Чисто (CC0 — атрибуция необязательна, задокументирована). ✓
+- Луп: программная проверка стыков (меню 9748→0 сглажен микро-фейдом 23мс; бой 1436
+  мягкий; босс mp3 loop=true, стык 2 сэмпла), RMS-нормализация −17dBFS (MUSIC_GAIN_DB),
+  кроссфейд 0.9с. ✓
+- smoke зелёные на чистом worktree (audio_manager грузит стримы без «Failed loading»).
+
+ОГОВОРКА: фактическая слышимость/отсутствие щелчка на стыке машинно непроверяемы
+(в QA-окружении нет аудиоустройства) — окончательно за плейтестом пользователя.
+Код/файлы/лицензии/маппинг/loop-конфиг — корректны. Багов нет.

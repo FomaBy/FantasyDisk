@@ -4,6 +4,10 @@
 
 ## [Unreleased] — ветка dev
 
+- Visual integration (SCRUM-170): центральные экраны получили role-specific dark fantasy backdrops из `assets/backgrounds/ui/` с cover scaling: cathedral для системных экранов, merchant archive для магазина, arcane lab для event/level-up/meta, reward hall для наград/победы и crypt для поражения/danger screens.
+
+- Visual integration (SCRUM-157): призывные союзники и deployables теперь различаются по источнику — Друидский амулет выбирает beast/pack-spirit, гомункул Химика использует отдельный homunculus sprite, звуковой усилитель и вороний тотем ставят собственные field sprites без изменения баланса и cleanup-групп.
+
 - VFX (SCRUM-181): все 19 активных `assets/sprites/effects/*.png` перерисованы в более сдержанный painterly D&D/tabletop стиль без кислотного неона и голой геометрии; добавлены before/after и meadow/marsh readability previews, Godot import и `attack_vfx_smoke_test` проходят.
 
 - UI Art (SCRUM-182): derived stat icons, shop-only icons and shop state sprites refreshed in-place as compact fantasy raster objects/frames with transparent alpha; added before/after and 40px readability previews for Escape stats, level-up, shop and tooltip usage.

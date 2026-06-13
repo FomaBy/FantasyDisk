@@ -1,7 +1,7 @@
 # Аудит: архитектура кода и план рефакторинга
 
 Статус: done
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя: полный аудит и рефакторинг проекта)
 Jira: SCRUM-174
@@ -31,7 +31,7 @@ Back-end (Claude)
    именование, мёртвые ветки.
 5. **Отчёт** `docs/design/reviews/code_architecture_audit_2026_06.md`: находки по
    приоритету (P1 критично/P2/P3), с файлами и строками.
-6. **Породить execution-задачи** `backend_refactor_<area>_task.md` (Версия 0.1.5)
+6. **Породить execution-задачи** `backend_refactor_<area>_task.md` (Версия 0.1.4)
    по каждому крупному пункту: точные границы, «поведение сохранить, 6 smoke
    зелёные», для общих файлов — пометка «сериализовать, предпочтительно после
    0.1.4». Поставить их на доску со статусом new (или blocked, если зависят).
@@ -56,7 +56,7 @@ Read-only аудит завершен. Отчет создан:
 - P1: `scripts/progression_data.gd` — смешаны registry, formulas, rewards, economy, ascension и budget model.
 - P2: hot-path enemy scans через `get_nodes_in_group("enemies")` стоит заменить target-query cache.
 
-Созданы child task specs 0.1.5:
+Созданы child task specs 0.1.4:
 - `docs/tasks/backend_refactor_ui_screens_domain_split_task.md`
 - `docs/tasks/backend_refactor_class_weapon_mode_registry_task.md`
 - `docs/tasks/backend_refactor_progression_data_domain_split_task.md`

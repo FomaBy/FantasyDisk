@@ -59,3 +59,18 @@ Repro command:
 Verification:
 
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED
+
+Проверено фактически:
+- 4 ранее отсутствовавших/неверных helper'а определены с корректными сигнатурами:
+  `_shop_wall_button_style(is_hovered: bool)` (2629), `_shop_item_shadow_style()` (2644),
+  `_shop_empty_hook_style()` (2653), `_shop_price_badge_style(affordable := true)` (2666 —
+  теперь принимает аргумент, ранее «Too many arguments expected 0»). +`_add_shop_empty_hook`.
+- ui_screens.gd компилируется: smoke на ЧИСТОМ worktree HEAD зелёный (нет Parse Error /
+  «not found in base» / Compile Error). Транзиентный compile-break shop-wall работы закрыт.
+- Подтверждено косвенно: рендер магазина-стены (SCRUM-160 main) отработал — требует
+  компиляции ui_screens + этих helper'ов.
+
+Багов нет.

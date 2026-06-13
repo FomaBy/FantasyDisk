@@ -489,11 +489,11 @@
  },
  "backend_escape_pause_character_overview_anywhere_task.md": {
   "key": "SCRUM-146",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_codex_ui_dark_fantasy_restyle_task.md": {
   "key": "SCRUM-147",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_victory_screen_player_facing_text_task.md": {
   "key": "SCRUM-148",
@@ -501,11 +501,11 @@
  },
  "backend_survivability_rebalance_vampirism_nerf_weighted_levelup_task.md": {
   "key": "SCRUM-149",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_meta_skill_tree_task.md": {
   "key": "SCRUM-150",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_settings_volume_slider_ux_task.md": {
   "key": "SCRUM-151",
@@ -521,11 +521,11 @@
  },
  "backend_music_tavern_ambient_task.md": {
   "key": "SCRUM-154",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_new_bosses_mini_elites_roster_task.md": {
   "key": "SCRUM-155",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_codex_new_bosses_mini_elites_sprites_task.md": {
   "key": "SCRUM-156",
@@ -533,7 +533,7 @@
  },
  "backend_summon_allies_source_sprite_integration_task.md": {
   "key": "SCRUM-157",
-  "status": "В работе"
+  "status": "Готово"
  },
  "design_codex_screen_backdrops_main_menu_task.md": {
   "key": "SCRUM-158",
@@ -541,7 +541,7 @@
  },
  "backend_ingame_patch_notes_task.md": {
   "key": "SCRUM-159",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_shop_wall_artifacts_frameless_task.md": {
   "key": "SCRUM-160",
@@ -609,7 +609,7 @@
  },
  "backend_runtime_smoke_weapon_mechanics_indent_parse_task.md": {
   "key": "SCRUM-166",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "codex_design_robot_art_task.md": {
   "key": "SCRUM-166",
@@ -625,7 +625,7 @@
  },
  "backend_runtime_smoke_class_weapon_type_inference_task.md": {
   "key": "SCRUM-167",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "codex_design_sniper_art_task.md": {
   "key": "SCRUM-167",
@@ -661,7 +661,7 @@
  },
  "backend_ui_screen_backdrops_integration_task.md": {
   "key": "SCRUM-170",
-  "status": "В работе"
+  "status": "Готово"
  },
  "bug_head_broken_uncommitted_drop_economy_task.md": {
   "key": "SCRUM-171",
@@ -697,11 +697,11 @@
  },
  "codex_design_vfx_sprite_polish_task.md": {
   "key": "SCRUM-181",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "codex_design_ui_icon_style_unification_task.md": {
   "key": "SCRUM-182",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "codex_design_legacy_sprite_cleanup_spec_task.md": {
   "key": "SCRUM-183",
@@ -715,7 +715,7 @@
   "key": "SCRUM-179",
   "status": "В работе"
  },
-"animation_enemy_archetype_motion_coverage_task.md": {
+ "animation_enemy_archetype_motion_coverage_task.md": {
   "key": "SCRUM-184",
   "status": "Контроль качества"
  },
@@ -733,67 +733,67 @@
  },
  "backend_balance_economy_xp_live_route_model_task.md": {
   "key": "SCRUM-188",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_balance_live_combat_harness_task.md": {
   "key": "SCRUM-189",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_balance_survivability_scenarios_task.md": {
   "key": "SCRUM-190",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_balance_weapon_tuning_application_regression_task.md": {
   "key": "SCRUM-191",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_content_character_sprite_registry_alignment_task.md": {
   "key": "SCRUM-192",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_content_safe_cleanup_followup_task.md": {
   "key": "SCRUM-193",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_content_unused_asset_audit_manifest_task.md": {
   "key": "SCRUM-194",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_docs_domain_consistency_update_task.md": {
   "key": "SCRUM-195",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_refactor_class_weapon_mode_registry_task.md": {
   "key": "SCRUM-196",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_refactor_combat_target_query_cache_task.md": {
   "key": "SCRUM-197",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_refactor_progression_data_domain_split_task.md": {
   "key": "SCRUM-198",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_refactor_ui_screens_domain_split_task.md": {
   "key": "SCRUM-199",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_test_content_registry_consistency_task.md": {
   "key": "SCRUM-200",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_test_live_balance_simulation_task.md": {
   "key": "SCRUM-201",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_test_runtime_smoke_suite_split_task.md": {
   "key": "SCRUM-202",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "backend_test_ui_no_overlap_matrix_task.md": {
   "key": "SCRUM-203",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "design_animation_ready_boss_mini_elite_parts_handoff_task.md": {
   "key": "SCRUM-204",
@@ -801,14 +801,22 @@
  },
  "backend_menu_anywhere_back_buttons_task.md": {
   "key": "SCRUM-205",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "bug_hero_select_radar_overlaps_frame_task.md": {
   "key": "SCRUM-206",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "bug_shop_rebuy_exploit_reopen_task.md": {
   "key": "SCRUM-207",
-  "status": "Контроль качества"
+  "status": "Готово"
+ },
+ "backend_animation_weapon_timing_event_hooks_task.md": {
+  "key": "SCRUM-208",
+  "status": "В работе"
+ },
+ "backend_runtime_smoke_shop_stock_persistence_task.md": {
+  "key": "SCRUM-209",
+  "status": "Готово"
  }
 }

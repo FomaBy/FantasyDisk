@@ -1,11 +1,20 @@
 extends CharacterBody2D
 
+const ALLY_VISUAL_PATHS := {
+	"druid_beast": "res://assets/sprites/allies/ally_druid_beast.png",
+	"druid_pack_spirit": "res://assets/sprites/allies/ally_druid_pack_spirit.png",
+	"homunculus": "res://assets/sprites/allies/ally_homunculus.png",
+	"leadership_echo": "res://assets/sprites/allies/ally_leadership_echo.png",
+}
+const FALLBACK_ALLY_VISUAL_ID := "druid_beast"
+
 @export var move_speed := 230.0
 @export var damage := 1.5
 @export var attack_range := 24.0
 @export var attack_interval := 0.45
 @export var lifetime := 12.0
 @export var command_mode := "attack_target"
+@export var ally_visual_id := FALLBACK_ALLY_VISUAL_ID
 
 var _attack_cooldown := 0.0
 var owner_node: Node2D = null
@@ -15,6 +24,22 @@ var command_target: Node2D = null
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group("allies")
+	_apply_visual()
+
+
+func set_visual_id(visual_id: String) -> void:
+	ally_visual_id = visual_id
+	_apply_visual()
+
+
+func _apply_visual() -> void:
+	var body := get_node_or_null("Body") as Sprite2D
+	if body == null:
+		return
+	var path := str(ALLY_VISUAL_PATHS.get(ally_visual_id, ALLY_VISUAL_PATHS[FALLBACK_ALLY_VISUAL_ID]))
+	var texture := load(path) as Texture2D
+	if texture != null:
+		body.texture = texture
 
 
 func _physics_process(delta: float) -> void:

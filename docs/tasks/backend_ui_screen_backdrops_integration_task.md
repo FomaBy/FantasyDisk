@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Подключить Dark Fantasy Screen Backdrops
 
-Статус: in_progress
+Статус: done
 Версия: 0.1.4
 Создано: 2026-06-12
 Связано: SCRUM-158, SCRUM-147
@@ -66,3 +66,39 @@ Design/Codex SCRUM-158 подготовил dark fantasy screen backdrops для
 ## Документация
 
 Update `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md` and `docs/design/content_registry.md` if runtime mappings differ from this handoff.
+
+## Result Summary — 2026-06-13
+
+Back-end integration complete.
+
+- `SCREEN_BACKGROUND_PATHS` now maps central-window role IDs to canonical `assets/backgrounds/ui/*.png` backdrops.
+- Settings, codex, hero select, weapon select, level-up, shop, event, campfire, upgrade, meta progression, elite reward, artifact reward, victory and death screens now use `_add_screen_background()` / `_create_menu_box(..., screen_background_id)`.
+- Backdrops use full-rect `TextureRect` with cover scaling and existing readable shade layers; combat and route map backgrounds remain separate.
+- Runtime smoke now checks canonical UI backdrop assets and verifies actual settings/hero/shop/campfire screen background nodes.
+- Documentation updated in current game state, menus UI system doc, content registry and changelog.
+
+Verification:
+
+`/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+
+Result: passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-170)
+
+Проверено фактически (код + ассеты + РЕАЛЬНЫЙ рендер):
+- Маппинг ролей: `SCREEN_BACKGROUND_PATHS` (main.gd:74-93) — полный по спеке:
+  system/settings/codex/hero_select/weapon_select/pause_stats/meta_tree/campfire →
+  system_cathedral; shop → merchant_archive; event/upgrade/level_up/meta_progression →
+  arcane_lab; elite_reward/victory/artifact_reward → reward_hall; death/defeat/
+  end_run_confirm → defeat_crypt. ✓
+- `_add_screen_background` со `STRETCH_KEEP_ASPECT_COVERED` (ui_screens:137), вызовы из
+  hero_select/meta_progression/codex и др. ✓
+- Все 5 бэкдропов `assets/backgrounds/ui/ui_backdrop_*.png` — 2560×1440 на диске. ✓
+- РЕНДЕР магазина (1280×720): фоновый TextureRect.texture =
+  `ui_backdrop_merchant_archive.png` (role-mapping подтверждён в РАНТАЙМЕ, не только в
+  коде); центральные панели/товары читаемы поверх тёмного архива, без junk-слоёв,
+  кнопка «Назад» на месте. Скрин: build/qa/screen_backdrops/.
+- Дополнительно (инцидентные рендеры прошлых тиков): hero_select/settings/elite_reward/
+  главное меню — бэкдропы отображаются.
+- 6 smoke зелёные. Багов нет.

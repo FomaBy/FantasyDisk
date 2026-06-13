@@ -1,7 +1,7 @@
 # Аудит: консистентность контента и документации
 
 Статус: done
-Версия: 0.1.5
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя: полный аудит и рефакторинг проекта)
 Jira: SCRUM-175
@@ -26,7 +26,7 @@ Back-end (Claude)
 3. Найти осиротевшие ассеты (есть файл — нет ссылки) и битые ссылки (есть ссылка —
    нет файла), доп. к tools/audit_unused_assets.py.
 4. **Отчёт** `docs/design/reviews/content_docs_audit_2026_06.md`.
-5. **Породить** задачи на актуализацию доков и чистку (0.1.5).
+5. **Породить** задачи на актуализацию доков и чистку (0.1.4).
 
 ## Acceptance Criteria
 - [ ] Расхождения реестр↔код↔ассеты перечислены; осиротевшие/битые ссылки найдены.
@@ -46,7 +46,7 @@ Read-only аудит завершен. Отчет создан:
 - Реальные cleanup-кандидаты: `.DS_Store`, старые placeholder sprites, legacy root enemy duplicates, legacy `boss_warden.png`; удаление не выполнялось в рамках аудита.
 - `current_game_state.md` остается слишком плотным и требует domain-doc pass после текущего batch.
 
-Созданы child task specs 0.1.5:
+Созданы child task specs 0.1.4:
 - `docs/tasks/backend_content_character_sprite_registry_alignment_task.md`
 - `docs/tasks/backend_content_unused_asset_audit_manifest_task.md`
 - `docs/tasks/backend_content_safe_cleanup_followup_task.md`

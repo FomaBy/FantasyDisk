@@ -134,7 +134,7 @@ Child task:
 ## Non-Issues / Keep
 
 - Active 17 character full-art sprites: keep.
-- Current 51 weapon sprites: keep; monitor older simple ones but do not block 0.1.4/0.1.5 quality.
+- Current 51 weapon sprites: keep; monitor older simple ones but do not block 0.1.4 quality.
 - Active standard enemies, 4 elites, and 2 original bosses: keep.
 - Artifact icons: keep current realistic D&D raster pass.
 - Arena/UI backgrounds: keep; low-contrast arena floors are desirable for readability.

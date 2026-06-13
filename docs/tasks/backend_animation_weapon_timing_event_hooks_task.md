@@ -1,16 +1,16 @@
 # Back-end handoff: weapon animation timing event hooks
 
-Статус: blocked (PM/Jira sync required before dispatch)
-Версия: 0.1.5
+Статус: in_progress
+Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Animator handoff from SCRUM-187
-Jira: TBD (PM/task owner must create/sync before dispatcher can route)
+Jira: SCRUM-208
 
 ## Dispatcher Note (2026-06-13)
-Not dispatched. This handoff has a task file and board row, but no Jira key.
-Dispatcher must not create Jira issues; PM/task owner needs to create/sync the
-SCRUM issue and update this file plus `docs/process/task_board.md` before the
-Back-end thread can receive it.
+Jira sync blocker resolved: SCRUM-208 is now the source Jira issue for this
+existing handoff. Ready for Back-end routing.
+
+Dispatcher: sent to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13.
 
 ## Role / Scope
 Back-end owns runtime weapon event APIs, VFX emission timing, and gameplay

@@ -54,3 +54,10 @@ Likely source area:
 
 - 2026-06-13: done as part of SCRUM-167. Added explicit `Vector2`, `Node2D`, `Array`, and `float(...)` casts around Sniper methods in `scripts/class_weapon.gd` and `scripts/player.gd`.
 - Runtime smoke loads `scripts/class_weapon.gd` without the reported type inference parse errors at `shot_finish`, `targets`, or `end_point`; no Animator changes were required.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED (SCRUM-167)
+Type-inference парс-ошибки sniper в class_weapon.gd закрыты явными типами/кастами
+(`var targets :=` :250, `var shot_finish: Vector2 =` :1087, end_point). class_weapon
+компилируется: runtime_smoke + melee_targeting зелёные на ЧИСТОМ worktree HEAD (нет
+Parse Error/Compile Error). Багов нет.

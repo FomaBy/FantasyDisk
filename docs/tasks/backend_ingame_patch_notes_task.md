@@ -119,3 +119,20 @@ has_new_since(last_seen_version); по нажатию last_seen=latest сохр�
 
 ИТОГ SCRUM-159: data-driven патч-ноуты 0.1.0-0.1.4 (RU, без ID), экран «Что нового» из меню,
 бейдж новой версии с персистентностью last_seen — всё реализовано и протестировано. Done.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED
+
+Проверено фактически (данные + код + РЕАЛЬНЫЙ рендер):
+- Данные: `scripts/patch_notes_data.gd` — 5 версий (0.1.0/0.1.1/0.1.2/0.1.3 ретроспективно +
+  0.1.4 «в разработке»), каждая с version/date/notes. ✓
+- Player-facing (урок SCRUM-148): рендер показывает человекочитаемые русские заметки
+  без внутренних ID/`asc_`/`SCRUM`/`meta_points` (единственное вхождение «SCRUM-159» —
+  коммент-заголовок файла, не player-text). ✓
+- Экран: `_show_patch_notes_screen` (ui_screens:964), версии (свежая сверху, развёрнуты),
+  `PatchNotesVersion_*` лейблы (1017), «Назад в меню». РЕНДЕР 1280×800
+  (build/qa/patch_notes/): 0.1.4→0.1.0 с заметками, version_0_1_4_label присутствует. ✓
+- Бейдж: кнопка меню «Что нового ●» при `has_new_since(last_seen_version)`, снимается
+  при открытии (`last_seen_version = latest_version`), БЕЗ модалки (ui_screens:203-217). ✓
+- Тест: `MainMenuPatchNotesButton` в required-кнопках меню (runtime_smoke:35).
+- 6 smoke зелёные. Багов нет.

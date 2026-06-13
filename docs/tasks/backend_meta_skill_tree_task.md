@@ -265,3 +265,23 @@ meta_skill_tree_smoke (старт-золото +60, урон применён). 
 статы+ульта (player), скидки магазина/докачки/+варианты/гарант-редкий/Озарение (UI),
 death_save (player), старт-золото+боевое применение (main); экран древа в меню, очки на
 победе; доки в mechanics_extract. Все ветви и capstone работают. Done.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED
+
+Проверено фактически (данные + выделенный тест + harness-cap + РЕАЛЬНЫЙ рендер):
+- Data-driven `SKILL_TREE` (meta_progression.gd:15): 4 ветви wealth(10)/lore(8)/might(10)/
+  endure(10) = 38 узлов, суммарная стоимость **42 очка** (в диапазоне 40-50 ✓), каждый
+  узел branch/tier/cost/effects. Tier-последовательность внутри ветви, ветви независимы.
+- 4 capstone'а (cost≥2): wealth/lore/might/endure_capstone. Все 4 покрыты ПОВЕДЕНЧЕСКИМИ
+  тестами: `_test_first_levelup_rare_capstone`, `_test_guaranteed_rare_shop_capstone`,
+  `_test_death_save_capstone` (оставляет 1 HP раз за забег), + `_test_full_tree_power_cap`.
+- Кап силы: `_test_full_tree_power_cap()` — выделенный тест ПРОШЁЛ → полная прокачка
+  ≤25-30% эффективной силы соблюдена (жёсткое требование).
+- Persist: ConfigFile `user://fantasydisk_meta.cfg`, `purchased_nodes`/`skill_tree_total_cost`.
+- UI: кнопка «Древо умений» в меню (ui_screens:197) → `_show_skill_tree_screen` (849).
+  РЕНДЕР 1280×800 (build/qa/meta_skill_tree/): 4 ветви-колонки (Богатства/Знаний/Мощи/
+  Стойкости) с узлами/описаниями/стоимостью, счётчик «Очки умений», «Назад в меню»,
+  доступные подсвечены/закрытые затемнены, на cathedral-бэкдропе, без junk-слоёв.
+- Выделенный `meta_skill_tree_smoke_test.gd` — PASSED; 6 базовых smoke зелёные.
+Иконки узлов — программный UI-кит (арт-handoff отдельно, по задаче допустимо). Багов нет.

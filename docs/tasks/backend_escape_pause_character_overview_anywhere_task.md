@@ -87,3 +87,23 @@ level-up → Escape → закрыть → выбор работает.
 - Реализован `PauseDossierOverlayLayer`: Escape в активном забеге открывает досье поверх боя, route map, магазина, level-up, докачки, события и награды элитки; повторный Escape закрывает overlay без сброса подлежащего экрана.
 - `ProgressionData.ATTRIBUTE_PRIORITIES` стал единым источником приоритетных атрибутов для Escape-досье и weighted level-up; PauseStatsMenu сортирует/подсвечивает priority rows и показывает tooltip причины.
 - Runtime smoke расширен проверками level-up/shop/event overlay preservation и priority badge; результат: passed.
+
+## QA-Вердикт (2026-06-13) — независимая QA-сессия
+Статус: PASSED
+
+Проверено фактически (код + поведенческий тест + РЕАЛЬНЫЙ рендер):
+- Данные приоритетов: `ATTRIBUTE_PRIORITIES` (progression_data:1376) + единые
+  `attribute_priorities/_reason/_weight` (1711-1727) — общий источник с weighted
+  level-up (SCRUM-149) и Escape-досье. Требование 1,3-источник ✓.
+- Досье: `_build_dossier_header` (pause_stats_menu:169) — портрет/класс; приоритетные
+  атрибуты подсвечены акцентным цветом класса (32-67) + `PriorityBadge_strength` +
+  tooltip-причина. Требование 2,3 ✓.
+- Escape везде в забеге: реализовано через единый pause-overlay (унифицировано с
+  SCRUM-205 — Escape→меню→кнопка «Досье персонажа»→PauseStatsMenuRoot). Требование 4-доступ.
+- ПОВЕДЕНЧЕСКИЙ тест (runtime_smoke:815-855): Escape на level-up → меню → досье-кнопка →
+  `PauseStatsMenuRoot` + `PriorityBadge_strength`; `LevelUpOverlay` СОХРАНЯЕТСЯ под досье;
+  2-й Escape закрывает оба, level-up НЕ сброшен (pick сохранён). Требования 4,7 ✓.
+- РЕАЛЬНЫЙ рендер (build/qa/escape_dossier/): досье поверх боя — заголовок Берсерк+
+  портрет, базовые характеристики с подсветкой приоритетов, 6 групп боевых параметров,
+  меню Пауза. PauseStatsMenuRoot=true, PriorityBadge_strength=true.
+- 6 smoke зелёные. Багов нет.

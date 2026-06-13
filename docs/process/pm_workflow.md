@@ -124,7 +124,7 @@ done → «Контроль качества», done+QA PASSED → «Готов�
 (Claude Desktop → раздел Scheduled; работают, пока приложение открыто):
 
 - backend-воркеры ×3: `fantasydisk-backend-board-worker` (0),
-  `-worker-2` (+3), `-worker-3` (+1, добавлен 2026-06-13 под Quality Pass 0.1.5) —
+  `-worker-2` (+3), `-worker-3` (+1, добавлен 2026-06-13 под Quality Pass 0.1.4) —
   каждые
   ~5 минут: берут по одной `new`-задаче роли Back-end, выполняют полностью
   (in_progress → код → тесты → документация → коммит в dev → done).
