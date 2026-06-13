@@ -101,6 +101,33 @@ Verification:
 - `Godot --headless --path ... --script res://tests/ui_no_overlap_matrix_test.gd` — passed.
 - `Godot --headless --path ... --script res://tests/runtime_smoke_test.gd` — passed during initial Back-end integration.
 
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: e9aa3d3a (ветка dev)
+
+Проверено (фактический прогон headless, Godot 4.6.3):
+- `tests/dark_fantasy_ui_theme_test.gd` — passed. Тест не пустышка: инстансит
+  `Main.tscn`, резолвит реальные style-методы и сверяет ВСЕ 4 состояния кнопок
+  (idle/hover/pressed/disabled) для primary/secondary/danger с точными путями
+  `ui_df_button_<role>_<state>.png`, плюс panel/card/HUD-styleboxes → `ui_df_*`.
+  Это программно закрывает критерии «4-state wax-seal buttons» и «canonical frame paths».
+- `tests/ui_no_overlap_matrix_test.gd` — passed (правило «UI не наползает»).
+- `tests/runtime_smoke_test.gd` — **passed**. Заявленное в review-заметке падение
+  `runtime_smoke_test.gd:1042` «Expected exactly two attribute offers…» НА ТЕКУЩЕМ
+  HEAD НЕ ВОСПРОИЗВОДИТСЯ — runtime smoke зелёный. Блокер reward-offer снят.
+
+Регрессия (smoke-набор): runtime — pass, animation — pass, meta_progression — pass,
+melee_weapon_targeting — **флака** (см. ниже, не относится к UI-теме).
+
+Краевые случаи: проверены три button-роли × 4 состояния (через theme-тест),
+panel/card/HUD frame-пути, no-overlap матрица разрешений.
+
+Баги: нет в зоне SCRUM-222. Обнаружена НЕсвязанная флака регрессионного теста
+`melee_weapon_targeting_test` (~17%, hammer AoE) — покадровый кэш целей в
+`combat_target_query.gd`; заведена отдельная bug-задача
+[bug_flaky_melee_targeting_hammer_aoe_cache_task.md](bug_flaky_melee_targeting_hammer_aoe_cache_task.md).
+UI-тема её не затрагивает (combat-код этим тиаском не менялся).
+
 ## Post-Correction Design Verification (2026-06-13)
 
 After the user requested button-only wax-seal UI and legacy-looking panels:

@@ -829,7 +829,7 @@
  },
  "backend_ui_dark_fantasy_theme_integration_task.md": {
   "key": "SCRUM-222",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "codex_design_cursor_clawed_fire_task.md": {
   "key": "SCRUM-223",
@@ -849,6 +849,14 @@
  },
  "backend_parchment_button_seal_visible_height_task.md": {
   "key": "SCRUM-227",
+  "status": "В работе"
+ },
+ "bug_flaky_melee_targeting_hammer_aoe_cache_task.md": {
+  "key": "SCRUM-228",
+  "status": "К выполнению"
+ },
+ "design_codex_interface_leather_gold_panels_restyle_task.md": {
+  "key": "SCRUM-229",
   "status": "К выполнению"
  }
 }

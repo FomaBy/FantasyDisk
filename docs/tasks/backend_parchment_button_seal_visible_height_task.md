@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Кнопка пергамент+печать — печать должна быть видна (увеличить высоту, не сжимать)
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.4
@@ -56,3 +56,6 @@ Jira: SCRUM-227
 
 ## Документация
 docs/design/current_game_state.md (UI-кнопки), visual_style_assets.md (если кадр меняется).
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Back-end Codex thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` as an addition to the serialized `scripts/ui_screens.gd` UI batch with SCRUM-224/SCRUM-225/SCRUM-226. Work with reasoning set to High; do not switch the run/model effort to low. Keep Jira live-synced: in-progress now, then update task/board/Jira on completion, with QA left to the board worker. If fixing small buttons requires new/reworked frame art rather than layout/theme integration, create/update a Design handoff instead of doing visual asset work in Back-end. If any motion/timing/animation scope appears, create/update an Animator handoff instead of doing animation work in Back-end.
