@@ -28,6 +28,7 @@
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [backend_levelup_cards_text_field_style_task.md](../tasks/backend_levelup_cards_text_field_style_task.md) | Back-end (UI) | new | Карточки повышения уровня — стиль поля с текстом, не кнопки (убрать reward-button-тему); кликабельность/3 варианта/«Позже» сохранить; no-overlap |
 | [backend_weapon_select_sprite_clean_layout_task.md](../tasks/backend_weapon_select_sprite_clean_layout_task.md) | Back-end (UI) | new | Выбор оружия: показать спрайт оружия, убрать тяжёлый стиль кнопки, проще/читаемее, статы по-русски; no-overlap |
 | [backend_hero_select_description_left_of_radar_task.md](../tasks/backend_hero_select_description_left_of_radar_task.md) | Back-end (UI) | new | Выбор героя: описание героя слева от розы ветров (единая правая панель), отступы к рамкам, no-overlap |
 | [codex_design_cursor_clawed_fire_task.md](../tasks/codex_design_cursor_clawed_fire_task.md) | Design (Codex) → Claude-Designer | in_progress | Jira: SCRUM-223; dispatched Design `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-13. Игровой курсор — 2-й вариант с референса (когтистый наконечник + огонь), заменить `game_cursor.png`, выверить hotspot; duplicate audit: prior cursor pack SCRUM-79/SCRUM-55 is done and superseded by this specific rework |

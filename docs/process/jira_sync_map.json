@@ -842,5 +842,9 @@
  "backend_weapon_select_sprite_clean_layout_task.md": {
   "key": "SCRUM-225",
   "status": "К выполнению"
+ },
+ "backend_levelup_cards_text_field_style_task.md": {
+  "key": "SCRUM-226",
+  "status": "К выполнению"
  }
 }
