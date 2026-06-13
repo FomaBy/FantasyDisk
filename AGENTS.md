@@ -66,10 +66,15 @@ Full autonomy (user directive, 2026-06-12):
   are out of scope for executors anyway.
 
 Feature block:
-- LIFTED 2026-06-12 with the v0.1.3 release. Current sprint is `Спринт 0.1.4`
-  (Jira board 1); new tasks may be dispatched normally again.
-- The mechanism stays documented in `docs/process/pm_workflow.md` and will be
-  re-enabled by PM before the next release stabilization.
+- ACTIVE again from 2026-06-13 (user directive): стабилизация релиза `0.1.4`.
+  В текущий спринт 0.1.4 берём ТОЛЬКО: уже начатые (in_progress) задачи до
+  завершения, баги, QA-дефекты, регрессии, release-blockers.
+- Любой НОВЫЙ запрос/фича/улучшение/арт/контент оформляется со строкой
+  `Версия: 0.1.5` в task-файле → sync уводит его в бэклог (Jira fixVersion 0.1.5,
+  вне активного спринта). Не dispatch, не in_progress без явного решения PM.
+- Если классификация спорная (баг или фича) — по умолчанию это backlog `0.1.5`.
+- Фриз СНИМАЕТСЯ сразу после релиза 0.1.4 (как было с 0.1.3→0.1.4): новый спринт
+  0.1.5 заберёт бэклог.
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.
