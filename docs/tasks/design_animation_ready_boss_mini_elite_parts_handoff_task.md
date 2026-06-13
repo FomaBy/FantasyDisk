@@ -7,6 +7,7 @@
 Jira: SCRUM-204
 Parent: SCRUM-173 / `audit_animation_rig_coverage.md`
 Related: SCRUM-156 / `design_codex_new_bosses_mini_elites_sprites_task.md`
+QA: in_progress (2026-06-13)
 
 ## Role / Scope
 Design-owned. Animator must not redraw these sprites. Back-end gameplay/balance is out of scope.
@@ -63,3 +64,33 @@ Preview references:
 
 Design scope is complete. Animator may now perform cutout slicing, pivot/manifest
 work, motion profile setup and animation smoke coverage for these source sprites.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 78058d35 (ветка dev)
+
+Это handoff/координационный документ (superseded by SCRUM-156). Его приёмка =
+существование source-спрайтов + unblock-нота Animator'у; cutout/манифест/моушн
+он НЕ выполняет (явно передаёт будущему Animator-таску).
+
+Проверено (фактически, пересекается с QA SCRUM-156):
+- **Final source sprites на стабильных путях**: все 9 (`boss_*` ×3 + `mini_*` ×6)
+  существуют, `512x512 RGBA8`, integral, прозрачный фон — подтверждено в
+  QA-вердикте SCRUM-156.
+- **Превью**: `new_bosses_mini_elites_contact.png` + `..._scale_preview.png` на
+  месте, силуэты читаемы (визуальный ре-чек в SCRUM-156).
+- **Unblock-нота Animator'у**: присутствует (этот файл, секции «Animation-Friendly
+  Requirements» + «SCRUM-156 Design Result / Animator Unblock») — пути источников
+  и перечень separable-частей указаны.
+
+Acceptance:
+- [x] Final source sprites exist at stable paths.
+- [x] Contact sheet/preview подтверждает читаемые силуэты + прозрачную alpha.
+- [x] Animator получил чёткую unblock-ноту с путями и intended separable parts.
+
+Краевые случаи / согласованность:
+- Нет противоречия с находкой SCRUM-156 (cutout новых боссов отсутствует):
+  SCRUM-204 cutout и НЕ обещает — он его UNBLOCK'ает. Cutout-нарезка/манифест/
+  моушн остаются открытым Animator-follow-up; QA проверит их, когда дойдут.
+
+Баги: нет.

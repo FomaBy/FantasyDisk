@@ -741,7 +741,7 @@
  },
  "backend_balance_survivability_scenarios_task.md": {
   "key": "SCRUM-190",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_balance_weapon_tuning_application_regression_task.md": {
   "key": "SCRUM-191",
@@ -861,7 +861,7 @@
  },
  "backend_ascension_per_level_changes_near_start_task.md": {
   "key": "SCRUM-230",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "bug_hero_select_radar_out_of_frame_description_left_task.md": {
   "key": "SCRUM-231",
@@ -869,54 +869,66 @@
  },
  "animation_unique_attacks_all_classes_015_task.md": {
   "key": "SCRUM-239",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_aim_modes_cursor_and_nearest_task.md": {
   "key": "SCRUM-241",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_attribute_weapon_universal_synergy_task.md": {
   "key": "SCRUM-243",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_auras_buffs_debuffs_system_task.md": {
   "key": "SCRUM-245",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_crit_formulas_rebalance_task.md": {
   "key": "SCRUM-247",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_global_balance_smoke_damage_survivability_task.md": {
   "key": "SCRUM-249",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_melee_classes_strengthen_unique_attacks_task.md": {
   "key": "SCRUM-251",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_remove_auto_movement_on_crit_dodge_task.md": {
   "key": "SCRUM-253",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_summoner_classes_strengthen_task.md": {
   "key": "SCRUM-254",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task.md": {
   "key": "SCRUM-255",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_unique_class_mechanics_framework_main_attribute_task.md": {
   "key": "SCRUM-256",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "bug_umbrella_runtime_smoke_intermittent_failure_task.md": {
   "key": "SCRUM-257",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "design_codex_unique_weapons_vfx_all_classes_015_task.md": {
   "key": "SCRUM-258",
+  "status": "В работе"
+ },
+ "backend_elites_bosses_unique_skills_mechanics_task.md": {
+  "key": "SCRUM-259",
+  "status": "К выполнению"
+ },
+ "backend_monster_elite_size_balance_rework_task.md": {
+  "key": "SCRUM-260",
+  "status": "К выполнению"
+ },
+ "design_codex_elite_boss_new_skills_vfx_task.md": {
+  "key": "SCRUM-261",
   "status": "К выполнению"
  }
 }

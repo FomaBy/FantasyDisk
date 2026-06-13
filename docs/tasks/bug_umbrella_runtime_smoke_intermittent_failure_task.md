@@ -1,9 +1,19 @@
 # BUG: Интермиттентное падение umbrella `runtime_smoke_test` + freed-lambda warning
 
-Статус: new
+Статус: in_progress
 Приоритет: low
 Роль: Back-end
+Версия: 0.1.4
+Jira: SCRUM-257
 Найдено QA: при регрессе SCRUM-223 (непрерывный QA-прогон 2026-06-13)
+
+## Dispatcher Redispatch (2026-06-13)
+
+Пользователь уточнил: всю текущую board нужно доделать в версии `0.1.4`.
+Отправлено в существующий Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`
+как QA bug/flake task из текущей board. Keep reasoning High/no low. Сначала
+диагностика и логирование точной ассертации, затем fix; закрыть task/board/Jira
+sync перед остановкой.
 
 ## Симптом
 `tests/runtime_smoke_test.gd` (umbrella) ОЧЕНЬ редко падает с `_fail` (backtrace

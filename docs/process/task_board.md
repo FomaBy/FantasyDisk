@@ -37,7 +37,7 @@ board-задачи раздаются/дожимаются до QA/release в т
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [bug_hero_select_radar_out_of_frame_description_left_task.md](../tasks/bug_hero_select_radar_out_of_frame_description_left_task.md) | Back-end (UI) | done | Jira: SCRUM-231. **QA: passed** (f8f1409a) — радар = плавающий top-right виджет ВНЕ рамки досье (зазор 34px, тест ассертит parent=screen+anchor_right≥0.99), описание слева, no-overlap; визуал `build/qa/scrum231/hero_select_radar_fixed.png`. **Устраняет регрессию SCRUM-224** |
-| [backend_ascension_per_level_changes_near_start_task.md](../tasks/backend_ascension_per_level_changes_near_start_task.md) | Back-end (UI) | in_progress | Jira: SCRUM-230. PM override: текущая board закрывается в `0.1.4`; dispatch Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2` 2026-06-13, High/no-low. У кнопки старта показывать ТОЛЬКО изменение выбранного уровня возвышения (дельта, не кумулятив) |
+| [backend_ascension_per_level_changes_near_start_task.md](../tasks/backend_ascension_per_level_changes_near_start_task.md) | Back-end (UI) | done | Jira: SCRUM-230. Реализована дельта выбранного уровня у кнопки старта, кумулятивный список сохранен для HUD tooltip/codex; 6 smoke passed 2026-06-13 |
 | [design_codex_interface_leather_gold_panels_restyle_task.md](../tasks/design_codex_interface_leather_gold_panels_restyle_task.md) | Design → Back-end | done | Jira: SCRUM-229. **QA: passed** (35b79e06) — 5 рамок RGBA8, прозрачные углы (без checkerboard), целевые UI + 4×smoke зелёные, визуал в `build/qa/scrum229/` (выбор героя/настройки/меню): leather+gold панели + золотой чекбокс + кнопки-пергамент согласованы, перекрытий нет. Физ.удаление legacy → safe-cleanup flow |
 | [backend_parchment_button_seal_visible_height_task.md](../tasks/backend_parchment_button_seal_visible_height_task.md) | Back-end (UI) | done | Jira: SCRUM-227. **QA: passed** (35b79e06) — печать-кнопки 68-76px (≥64), тест `_test_parchment_button_seal_sizes` мерит 4 экрана + ассертит компактные no-seal, 4×smoke+no-overlap зелёные, визуал `build/qa/scrum227/` (меню печать не сжата, level-up чистый) |
 | [backend_levelup_cards_text_field_style_task.md](../tasks/backend_levelup_cards_text_field_style_task.md) | Back-end (UI) | done | Jira: SCRUM-226. **QA: passed** (35b79e06) — карточки = text-field (мета+StyleBoxFlat, не button-тема), клик применяет усиление, «Позже»/Escape defer, тест мерит 3 карточки/иконку/описание, 4×smoke+no-overlap зелёные, визуал `build/qa/scrum227/level_up.png` |
@@ -60,26 +60,28 @@ board-задачи раздаются/дожимаются до QA/release в т
 | Баг | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
 | [bug_flaky_melee_targeting_hammer_aoe_cache_task.md](../tasks/bug_flaky_melee_targeting_hammer_aoe_cache_task.md) | Back-end | done | Jira: SCRUM-228. **QA: passed** (35b79e06) — анти-флака 25/25 PASS (было ~17%), `await process_frame` на месте, production-кэш `combat_target_query.gd` не тронут, регрессия 4×smoke зелёная |
-| [bug_umbrella_runtime_smoke_intermittent_failure_task.md](../tasks/bug_umbrella_runtime_smoke_intermittent_failure_task.md) | Back-end | new | low. Umbrella `runtime_smoke_test` редко падает (1 из ~23, ~4%, не воспроизв. за 22 прогона); вероятно связано с `Lambda capture freed` warning. Рекомендация: логировать полный backtrace на падении + найти/починить freed-lambda `connect()`. Не блокер (>95% зелёный, focused-сьюты стабильны) |
+| [bug_umbrella_runtime_smoke_intermittent_failure_task.md](../tasks/bug_umbrella_runtime_smoke_intermittent_failure_task.md) | Back-end | in_progress | Jira: SCRUM-257. PM override: current board must finish in `0.1.4`; dispatch Back-end `019eabd9-780b-78a2-9f4b-e7203d659ef2`, High/no-low. Umbrella `runtime_smoke_test` rare flake + `Lambda capture freed`; diagnose full backtrace, then fix |
 
-## Бэклог 0.1.5 — патч «Бой и баланс» (PATCH-эпик SCRUM-232, под фризом)
+## Board Completion 0.1.4 — патч «Бой и баланс» (PATCH-эпик SCRUM-232)
 
-Не dispatch до релиза 0.1.4. fixVersion 0.1.5.
+PM override 2026-06-13: текущая board должна быть доделана в версии `0.1.4`.
+Задачи ниже подняты из backlog `0.1.5`, раздаются по ролям и выполняются
+последовательно/с handoff'ами по role boundaries.
 
 | Задача | Роль | Статус | Тема |
 | --- | --- | --- | --- |
-| backend_global_balance_smoke_damage_survivability_task | Back-end | new(0.1.5) | ОПОРА: глобальные smoke урон+выживаемость (гейты патча) |
-| backend_unique_class_mechanics_framework_main_attribute_task | Back-end | new(0.1.5) | Уникальные механики per класс в стиле основного атрибута (рамка) |
-| backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task | Back-end | new(0.1.5) | Нерф регена/вампиризма, баланс абсорба/уворота |
-| backend_crit_formulas_rebalance_task | Back-end | new(0.1.5) | Баланс крита/силы крита |
-| backend_attribute_weapon_universal_synergy_task | Back-end | new(0.1.5) | Все атрибуты × любое оружие |
-| backend_melee_classes_strengthen_unique_attacks_task | Back-end | new(0.1.5) | Усиление милишников + уникальные ближние атаки |
-| backend_summoner_classes_strengthen_task | Back-end | new(0.1.5) | Усиление призывателей |
-| backend_auras_buffs_debuffs_system_task | Back-end | new(0.1.5) | Система аур/баффов/дебаффов |
-| backend_aim_modes_cursor_and_nearest_task | Back-end | new(0.1.5) | Опции: прицел по курсору / на ближайшего |
-| backend_remove_auto_movement_on_crit_dodge_task | Back-end | new(0.1.5) | Убрать авто-перемещение по криту/уклонению |
-| animation_unique_attacks_all_classes_015_task | Back-end(rig) | new(0.1.5) | Анимации уникальных атак |
-| design_codex_unique_weapons_vfx_all_classes_015_task | Design(Codex) | new(0.1.5) | Арт/VFX уникального оружия и атак |
+| [backend_global_balance_smoke_damage_survivability_task.md](../tasks/backend_global_balance_smoke_damage_survivability_task.md) | Back-end | in_progress | Jira: SCRUM-249. ОПОРА: глобальные smoke урон+выживаемость (гейты патча); dispatch Back-end High/no-low |
+| [backend_unique_class_mechanics_framework_main_attribute_task.md](../tasks/backend_unique_class_mechanics_framework_main_attribute_task.md) | Back-end | in_progress | Jira: SCRUM-256. Уникальные механики per класс в стиле основного атрибута; dispatch Back-end High/no-low |
+| [backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task.md](../tasks/backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task.md) | Back-end | in_progress | Jira: SCRUM-255. Нерф регена/вампиризма, баланс абсорба/уворота; dispatch Back-end High/no-low |
+| [backend_crit_formulas_rebalance_task.md](../tasks/backend_crit_formulas_rebalance_task.md) | Back-end | in_progress | Jira: SCRUM-247. Баланс крита/силы крита; dispatch Back-end High/no-low |
+| [backend_attribute_weapon_universal_synergy_task.md](../tasks/backend_attribute_weapon_universal_synergy_task.md) | Back-end | in_progress | Jira: SCRUM-243. Все атрибуты × любое оружие; dispatch Back-end High/no-low |
+| [backend_melee_classes_strengthen_unique_attacks_task.md](../tasks/backend_melee_classes_strengthen_unique_attacks_task.md) | Back-end | in_progress | Jira: SCRUM-251. Усиление милишников + уникальные ближние атаки; animation scope -> Animator handoff |
+| [backend_summoner_classes_strengthen_task.md](../tasks/backend_summoner_classes_strengthen_task.md) | Back-end | in_progress | Jira: SCRUM-254. Усиление призывателей; art/animation scope -> Design/Animator handoff |
+| [backend_auras_buffs_debuffs_system_task.md](../tasks/backend_auras_buffs_debuffs_system_task.md) | Back-end | in_progress | Jira: SCRUM-245. Система аур/баффов/дебаффов; VFX/animation scope -> Design/Animator handoff |
+| [backend_aim_modes_cursor_and_nearest_task.md](../tasks/backend_aim_modes_cursor_and_nearest_task.md) | Back-end | in_progress | Jira: SCRUM-241. Опции: прицел по курсору / на ближайшего; dispatch Back-end High/no-low |
+| [backend_remove_auto_movement_on_crit_dodge_task.md](../tasks/backend_remove_auto_movement_on_crit_dodge_task.md) | Back-end | in_progress | Jira: SCRUM-253. Убрать авто-перемещение по криту/уклонению; motion side effects -> Animator handoff |
+| [animation_unique_attacks_all_classes_015_task.md](../tasks/animation_unique_attacks_all_classes_015_task.md) | Animator | in_progress | Jira: SCRUM-239. Анимации уникальных атак; dispatch Animator `019eb156-710c-71f0-8903-eada762dceb3`, High/no-low |
+| [design_codex_unique_weapons_vfx_all_classes_015_task.md](../tasks/design_codex_unique_weapons_vfx_all_classes_015_task.md) | Design(Codex) | in_progress | Jira: SCRUM-258. Арт/VFX уникального оружия и атак; dispatch Design `019eabf1-6d54-7561-8af9-ce25cdf483a9`, High/no-low |
 
 ## Архив
 

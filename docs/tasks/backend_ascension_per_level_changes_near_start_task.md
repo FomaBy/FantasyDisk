@@ -1,12 +1,13 @@
 # Задача Для Back-end-Агента: Возвышения — у кнопки старта показывать изменения ТОЛЬКО выбранного уровня
 
-Статус: in_progress
+Статус: done
 Приоритет: normal
 Роль: Back-end (UI)
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: PM (запрос пользователя)
 Jira: SCRUM-230
+QA: in_progress (2026-06-13)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -51,9 +52,9 @@ Jira: SCRUM-230
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] У кнопки старта показывается ТОЛЬКО изменение выбранного уровня возвышения.
-- [ ] Текст обновляется при смене уровня; уровень 0 — «без усложнений».
-- [ ] no-overlap; тест дельты (есть N, нет 1..N-1); 6 smoke зелёные; CHANGELOG.
+- [x] У кнопки старта показывается ТОЛЬКО изменение выбранного уровня возвышения.
+- [x] Текст обновляется при смене уровня; уровень 0 — «без усложнений».
+- [x] no-overlap; тест дельты (есть N, нет 1..N-1); 6 smoke зелёные; CHANGELOG.
 
 ## Документация
 docs/design/current_game_state.md (возвышения/выбор героя).
@@ -64,3 +65,21 @@ docs/design/current_game_state.md (возвышения/выбор героя).
 как первый элемент очереди закрытия всей текущей board для `0.1.4`. Keep
 reasoning High/no low. Scope Back-end/UI only; если всплывёт animation/motion
 scope, создать/update Animator handoff вместо выполнения motion-работы.
+
+## Result (2026-06-13)
+
+Status: done.
+
+Implemented Back-end/UI delta display for Ascension selection:
+- Added `ProgressionData.ascension_level_change_line(level)` for exact selected-level text.
+- Updated hero select `AscensionModsLabel` to show only the selected level delta near the start/choose area, while preserving cumulative `ascension_modifier_lines(level)` for HUD tooltip/codex use.
+- Extended runtime smoke coverage for level 0 text, level 3 delta-only text, and hero select UI label content; hero select no-overlap matrix also checks `AscensionModsLabel` against the floating radar.
+- Updated `CHANGELOG.md` and `docs/design/current_game_state.md`.
+
+Verification:
+- `runtime_smoke_ui_test.gd` — passed.
+- `runtime_smoke_combat_test.gd` — passed.
+- `runtime_smoke_progression_economy_test.gd` — passed.
+- `runtime_smoke_weapon_mechanics_test.gd` — passed.
+- `runtime_smoke_boss_elite_test.gd` — passed.
+- `runtime_smoke_test.gd` — passed.
