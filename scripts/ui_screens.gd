@@ -2709,9 +2709,12 @@ func _show_victory_screen() -> void:
 	if character_title == "" or character_title == game.selected_character_id:
 		character_title = "Герой"
 	var run_level: int = game.selected_ascension_level
-	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\n%s" % [
+	# Победа над боссом даёт очко умений (record_boss_victory) — показываем игроку.
+	var skill_points_total: int = game.META_PROGRESSION.skill_points(game.meta_state)
+	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\nПолучено очко умений — всего %d, потрать их в «Древе умений» в меню.\n%s" % [
 		character_title,
 		game.meta_points,
+		skill_points_total,
 		_victory_ascension_summary(game.selected_character_id, run_level, ascension_level),
 	]
 	var box = _create_menu_box("Победа", subtitle, "victory")

@@ -17,8 +17,31 @@ func _initialize() -> void:
 	_test_full_tree_power_cap()
 	await _test_player_application()
 	await _test_skill_tree_screen()
+	await _test_victory_shows_skill_points()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
+
+
+func _test_victory_shows_skill_points() -> void:
+	# Инкремент 4: экран победы сообщает игроку про начисленное очко умений.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+	var state: Dictionary = main.get("meta_state")
+	state["skill_points"] = 3
+	main.set("meta_state", state)
+	main.ui._show_victory_screen()
+	await process_frame
+	var found := false
+	for label in main.find_children("*", "Label", true, false):
+		if str((label as Label).text).contains("очко умений"):
+			found = true
+			break
+	if not found:
+		_fail("Expected victory screen to mention earned skill point.")
+		return
+	main.queue_free()
+	await process_frame
 
 
 func _fail(msg: String) -> void:
