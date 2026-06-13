@@ -73,3 +73,26 @@ SCRUM-230, SCRUM-198 и SCRUM-199. Keep reasoning High/no low. Выполнят�
 как безопасный cleanup: без необратимого удаления, с backup/manifest checks,
 после закрытия/синхронизации предыдущих queued задач, чтобы diff был
 изолированным.
+
+## Done (2026-06-13, Claude)
+
+Удалено 10 корневых legacy-прототипных спрайтов + их `.import` сайдкары (20
+файлов) + 5 `.DS_Store`, с бэкапом в `build/cleanup_backup_2026_06_13/`
+(необратимого удаления нет):
+`player_berserk/ranger/summoner`, `enemy_bone_shaman/bruiser/melee/runner/
+shooter/summoner`, `boss_warden` — каждый верифицирован как 0 рантайм-ссылок
+(только генератор `generate_prototype_sprites.py`). Коммит `88304f41`.
+
+Соответствует Design-списку SCRUM-183. Keep-лист соблюдён: живые
+`assets/sprites/enemies/*.png` (Enemy.tscn/codex/риг-манифест), новые боссы/
+мини-элитки, иконки артефактов — НЕ тронуты. Placeholder-спрайты персонажей
+из спеки уже отсутствовали (удалены ранее).
+
+ВАЖНО: чистка шла по верифицированному Design-списку, НЕ по сырому аудиту —
+аудит после сплита `progression_data` (SCRUM-198) даёт ложные срабатывания
+(флагует артефакт-иконки/новых боссов как unused). `known_game_ids()` аудита
+требует обновления под доменные файлы (отдельный воркер уже правит
+`tools/audit_unused_assets.py`).
+
+Верифицировано: `runtime_smoke` + `animation_smoke` + `content_registry`
+зелёные после удаления.
