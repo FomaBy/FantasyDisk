@@ -1,6 +1,6 @@
 # BUG: В игре нет музыки и звуков — сохранённая общая громкость 0% глушит всё
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (аудио/настройки)
 Создано: 2026-06-13
@@ -101,3 +101,18 @@ mute при 0 всё равно стоит сделать чище (см. тре
 ## Самопроверка
 6 smoke + ручной цикл: settings.cfg master=0 → запуск → звук вернулся (миграцией
 или сбросом); смена слайдеров слышна и сохраняется после перезапуска.
+
+## Result
+
+2026-06-13: Back-end/audio bugfix завершен.
+
+- `AudioManager._set_bus_volume()` больше не мьютит шину из-за `volume <= 0.0`; mute теперь зависит только от explicit enabled-флага. Для Master explicit mute-флага нет, поэтому `master_volume=0` становится очень тихой громкостью без hard-mute родительской шины.
+- `GameSettings.load_settings()` получил one-time migration: старый `user://settings.cfg` с `master_volume <= 0.0` и без `master_zero_intent` поднимается до дефолтных 100% и пересохраняется. Решение: старые профили не имели способа отличить осознанный 0% от случайно залипшей тишины, поэтому безопаснее восстановить звук; новые сохранения с осознанным 0% получают `master_zero_intent=true`.
+- `AudioManager.play_music()` теперь при прерывании crossfade kill'ит tween, останавливает fade-player и восстанавливает target volume для повторного входа в тот же трек, чтобы основной плеер не залипал на -28/-40 dB.
+- Во вкладку «Звук» добавлена кнопка `SettingsResetAudioButton` / «Сбросить звук по умолчанию»: master/music/sfx = 100%, music/SFX enabled = true, apply + save.
+- Runtime smoke расширен фактическими проверками `AudioServer`: legacy migration, Master bus mute/db при `master_volume=0`, Music mute toggle, live master slider persistence/apply и reset audio defaults.
+- `CHANGELOG.md` и `docs/design/current_game_state.md` обновлены.
+
+Verification:
+
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.

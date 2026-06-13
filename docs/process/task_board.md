@@ -75,7 +75,7 @@ Read-only аудиты идут СЕЙЧАС (безопасно паралле�
 | [audit_code_architecture_refactor_plan.md](../tasks/audit_code_architecture_refactor_plan.md) | Back-end (Claude) | new | План распила ui_screens.gd(4304)/class_weapon(1969)/progression_data(2320), мёртвый код, перф; отчёт + дочерние refactor-задачи |
 | [audit_mechanics_balance_full.md](../tasks/audit_mechanics_balance_full.md) | Back-end (Claude) | new | Harness по 17×51, выбросы ±20%, ревью механик/возвышений/экономики; отчёт + балансфиксы |
 | [audit_sprites_visual_consistency.md](../tasks/audit_sprites_visual_consistency.md) | Design (Claude→Codex) | new | Инвентаризация ~111 спрайтов, placeholder/качество/канон; контакт-листы; дочерние перерисовки Codex |
-| [audit_animation_rig_coverage.md](../tasks/audit_animation_rig_coverage.md) | Animator | new | Матрица покрытия idle/walk/attack/death по классам/врагам; дочерние animation-задачи |
+| [audit_animation_rig_coverage.md](../tasks/audit_animation_rig_coverage.md) | Design (Claude, аудит) → Animator/Codex (правки) | new | Матрица покрытия idle/walk/attack/death по классам/врагам; дочерние animation-задачи |
 | [audit_test_coverage_quality.md](../tasks/audit_test_coverage_quality.md) | Back-end (Claude) | new | Карта покрытия систем, пустышки, фактические ассерты; дочерние тест-задачи |
 | [audit_content_docs_consistency.md](../tasks/audit_content_docs_consistency.md) | Back-end (Claude) | new | Реестр↔код↔ассеты, осиротевшие/битые ссылки, дрейф доков; дочерние задачи |
 

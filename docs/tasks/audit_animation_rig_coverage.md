@@ -12,7 +12,7 @@ Jira: SCRUM-173
 инпута (директива полной автономии). Тупик = blocked с причиной + handoff.
 
 ## Роль
-Animator
+Design (Claude-Designer ведёт READ-ONLY аудит-фазу; порождённые правки ригов — Animator/Codex)
 ## Роль И Границы
 Animator-аудит (READ-ONLY + спека). Перерисовки частей — handoff Design (Codex).
 
