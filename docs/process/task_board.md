@@ -29,8 +29,8 @@
 | SCRUM-219 Мета-прогрессия | 6 | 0 | 0 | 0 | 6 |
 | SCRUM-220 Качество кода, тесты, аудиты | 33 | 3 | 4 | 0 | 40 |
 | SCRUM-221 Релиз и процессы | 5 | 0 | 0 | 0 | 5 |
-| SCRUM-232 Backlog 0.1.5: бой и баланс | 13 | 1 | 0 | 14 | 28 |
-| **ИТОГО** | **222** | **9** | **5** | **14** | **250** |
+| SCRUM-232 Backlog 0.1.5: бой и баланс | 13 | 1 | 0 | 15 | 29 |
+| **ИТОГО** | **222** | **9** | **5** | **15** | **251** |
 
 (КК = Контроль качества, ждёт QA; Кв = К выполнению. Для `SCRUM-232` колонка
 «Кв» сейчас означает backlog `0.1.5` вне active sprint.)
@@ -53,10 +53,10 @@
 | [epic_full_project_quality_pass.md](../tasks/epic_full_project_quality_pass.md) | PM/Coordination | in_progress | Зонтик: 6 аудитов (Фаза 1) → волна исправлений (Фаза 2). Правила коллизий и «done=HEAD зелёный» |
 | [backend_test_runtime_smoke_suite_split_task.md](../tasks/backend_test_runtime_smoke_suite_split_task.md) | Back-end | done | Jira: SCRUM-202. **QA: passed** (35b79e06) — 5 focused-сьютов (extends+override `_initialize` с реальными `_test_*`) + umbrella все зелёные headless; регрессия зелёная; нефатальный lambda-warning у umbrella (exit 0, латентный, отложен) |
 | [backend_refactor_class_weapon_mode_registry_task.md](../tasks/backend_refactor_class_weapon_mode_registry_task.md) | Back-end | done | Jira: SCRUM-196. **QA: passed** (1fbc20c6) — registry+API, 83 executor/39 `_fire_*` сохранены, coverage-тест ассертит mode→executor по всему ростеру, weapon/animation/targeting/umbrella/meta зелёные |
-| [backend_refactor_progression_data_domain_split_task.md](../tasks/backend_refactor_progression_data_domain_split_task.md) | Back-end | review | Jira: SCRUM-198. Executor done; ProgressionData split into compatibility facade plus domain data files; facade parse/SHOP_ITEMS blocker fixed; API surface, content registry, progression economy, balance harness and umbrella runtime smoke passed; awaiting QA |
+| [backend_refactor_progression_data_domain_split_task.md](../tasks/backend_refactor_progression_data_domain_split_task.md) | Back-end | done | Jira: SCRUM-198. **QA: passed** — ProgressionData compatibility facade + domain split verified; API surface, content registry, progression economy, weapon/boss/meta/melee smokes and balance harness green |
 | [backend_refactor_ui_screens_domain_split_task.md](../tasks/backend_refactor_ui_screens_domain_split_task.md) | Back-end | done | Jira: SCRUM-199. UI screens facade preserved; hero radar control/theme paths/shop constants/hero select constants split into scripts/ui modules; UI, animation, meta, melee, VFX and umbrella smokes passed |
-| [backend_content_safe_cleanup_followup_task.md](../tasks/backend_content_safe_cleanup_followup_task.md) | Back-end | done | Jira: SCRUM-193. Done 2026-06-13 (Claude): удалено 10 legacy-прототипных спрайтов +.import +5 .DS_Store с бэкапом (commit 88304f41); живые enemies/новые боссы/иконки НЕ тронуты; runtime+animation+content_registry зелёные |
-| [backend_docs_domain_consistency_update_task.md](../tasks/backend_docs_domain_consistency_update_task.md) | Back-end | done | Jira: SCRUM-195. Done 2026-06-13 (Claude): combat.md+progression_balance.md рефреш под 0.1.4 (боссы/мини-элитки/escalation, древо умений/сплит/харнессы), кросс-линки reviews/; прочие доки актуальны (commit 203fb398) |
+| [backend_content_safe_cleanup_followup_task.md](../tasks/backend_content_safe_cleanup_followup_task.md) | Back-end | done | Jira: SCRUM-193. Done 2026-06-13 (Claude): удалено 10 legacy-прототипных спрайтов +.import +5 .DS_Store с бэкапом (commit 88304f41). Codex follow-up: old character placeholders verified absent with backup, audit updated/verified for split `progression_data_*`, runtime+animation smoke green; live enemies/new bosses/icons not removed |
+| [backend_docs_domain_consistency_update_task.md](../tasks/backend_docs_domain_consistency_update_task.md) | Back-end | done | Jira: SCRUM-195. Done 2026-06-13 (Claude): combat.md+progression_balance.md рефреш под 0.1.4. Codex follow-up: fixed stale 0.2/version/doc-name drift, refreshed boss/mini-elite cleanup notes, runtime smoke green |
 | [animation_unique_attacks_all_classes_015_task.md](../tasks/animation_unique_attacks_all_classes_015_task.md) | Animator | done | Jira: SCRUM-239. **QA: passed** (168c3fad) — weapon phase variants reach cutout rig without gameplay changes; animation + runtime smoke passed ×2 after Back-end ProgressionData unblock; no bugs |
 
 ## Баги от QA
@@ -68,7 +68,7 @@
 
 ## Backlog 0.1.5 — не dispatch во время feature freeze
 
-PATCH-эпик `SCRUM-232` содержит 14 незавершённых задач `Версия: 0.1.5` в backlog и 13 закрытых duplicate/superseded Jira issues. Эти backlog-задачи не показываются как active rows и не отправляются исполнителям до релиза `v0.1.4` или явного PM override. `SCRUM-239` уже прошёл QA как активная 0.1.4 work item, потому что по нему был записан Animator result.
+PATCH-эпик `SCRUM-232` содержит 15 незавершённых задач `Версия: 0.1.5` в backlog и 13 закрытых duplicate/superseded Jira issues. Эти backlog-задачи не показываются как active rows и не отправляются исполнителям до релиза `v0.1.4` или явного PM override. `SCRUM-239` уже прошёл QA как активная 0.1.4 work item, потому что по нему был записан Animator result.
 
 Новые запросы во время freeze можно оформлять как backlog-задачи `0.1.5`
 (`Статус: new`, `Версия: 0.1.5`, Jira fixVersion `0.1.5`, вне active sprint).
@@ -76,7 +76,9 @@ Codex Documentation dispatcher может создавать такие task/Jir
 dispatch'ит их и не переводит в `in_progress` до релиза `v0.1.4` или явного PM
 override.
 
-| backend_final_balance_audit_aoe_crowd_clear_task | Back-end | new(0.1.5) | ФИНАЛ патча: сверка цифр урона + фокус crowd-clear (пачки 5/10), выправить классы со слабым AoE; после всех балансовых правок |
+| Задача | Роль | Статус | Примечание |
+| --- | --- | --- | --- |
+| [backend_final_balance_audit_aoe_crowd_clear_task.md](../tasks/backend_final_balance_audit_aoe_crowd_clear_task.md) | Back-end | new (0.1.5 backlog) | Jira: SCRUM-262. ФИНАЛ патча: сверка цифр урона + фокус crowd-clear (пачки 5/10), выправить классы со слабым AoE; после всех балансовых правок. Не dispatch во время freeze |
 
 ## Архив
 

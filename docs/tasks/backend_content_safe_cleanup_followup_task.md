@@ -96,3 +96,49 @@ shooter/summoner`, `boss_warden` — каждый верифицирован к�
 
 Верифицировано: `runtime_smoke` + `animation_smoke` + `content_registry`
 зелёные после удаления.
+
+## Back-end Follow-up Verification (2026-06-13, Codex)
+
+Проверен итог cleanup после SCRUM-198/SCRUM-199: старые placeholder-кандидаты
+персонажей из SCRUM-183 отсутствуют в активной папке
+`assets/sprites/characters/`, backup-копии лежат в
+`build/cleanup_backup_2026_06_13/assets/sprites/characters/`.
+
+Аудит ассетов готов к split-данным SCRUM-198: `tools/audit_unused_assets.py`
+считывает `scripts/progression_data_*` domain files, защищает
+`build/cleanup_backup_2026_06_13/` и больше не флагает динамические artifact/shop
+семейства как мусор. Оставшиеся raw candidates (новые boss/mini-elite/weapon
+PNG и временные файлы) не удалялись в SCRUM-193, потому что это не legacy
+root/placeholder cleanup и требует отдельной content-integration проверки.
+
+Отчет: `docs/process/content_safe_cleanup_report_2026_06_13.md`.
+
+Проверки:
+- `python3 tools/test_audit_unused_assets.py` — passed.
+- `python3 tools/audit_unused_assets.py` — report generated, 35 conservative candidates.
+- `tests/animation_smoke_test.gd` — passed.
+- `tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 361e45c7 (ветка dev)
+
+Проверено (фактически):
+- **Обратимость**: бэкап `build/cleanup_backup_2026_06_13/` — 26 файлов
+  (удалённые PNG/.import + `.DS_Store`); необратимого удаления нет, всё
+  восстановимо. Отчёт `content_safe_cleanup_report_2026_06_13.md` на месте.
+- **Нет битых ссылок** (acceptance): `content_registry_consistency_test` — passed
+  **0 allowlisted** (ни одной отсутствующей/осиротевшей ссылки); `animation_smoke`
+  + `runtime_smoke_*` зелёные после удаления.
+- **Проверка моей находки SCRUM-183**: `boss_warden.png` удалён и забэкаплен;
+  alias `cutout_rig_2d.gd:26 "boss_warden"→"rift_warden"` остался, но это
+  строковый key-мапинг (не PNG-load) — поломки нет (подтверждено зелёным
+  content_registry + smoke). Находка отработана корректно.
+- **`generate_prototype_sprites.py`** — это ручной legacy-генератор (не рантайм-
+  потребитель); удалённые файлы он не регенерит автоматически. Безопасно.
+
+Acceptance:
+- [x] Tracked-кандидаты — `git rm` только после backup; untracked → backup.
+- [x] Runtime + animation smoke зелёные после cleanup; content registry чист.
+
+Баги: нет.

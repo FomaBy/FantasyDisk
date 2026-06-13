@@ -4,6 +4,16 @@
 
 ## [Unreleased] — ветка dev
 
+- Docs (SCRUM-195): synchronized the remaining 0.1.4 domain-doc drift after
+  the data/UI splits and cleanup pass: fixed stale `0.2` wording, corrected
+  system doc filenames, refreshed boss/mini-elite summaries and aligned current
+  state with the active `dev` stabilization target.
+
+- Cleanup (SCRUM-193): verified the legacy sprite cleanup backup at
+  `build/cleanup_backup_2026_06_13/`, confirmed old character placeholders are
+  absent from active runtime folders, and hardened the asset audit around split
+  `progression_data_*` files so dynamic artifact/shop families stay protected.
+
 - Refactor (SCRUM-199): `scripts/ui_screens.gd` оставлен compatibility facade,
   а hero radar control, dark-fantasy theme paths, shop UI constants и hero
   select constants вынесены в `scripts/ui/` modules без изменения node names,

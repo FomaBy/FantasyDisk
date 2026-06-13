@@ -1,6 +1,6 @@
 # FantasyDisk Content Registry
 
-Обновлено: 2026-06-12
+Обновлено: 2026-06-13
 
 Этот документ задает правило для всех будущих задач: любая игровая сущность должна иметь понятное имя, стабильный ID и место в документации. Рандом в игре может выбирать только из заранее определенных сущностей, а не создавать безымянный контент, на который потом невозможно сослаться.
 
@@ -81,7 +81,7 @@
 | `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано; v2 unarmed base без встроенного копья/щита |
 | `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
 
-## Новые Классы 0.2 (Фундамент, 2026-06-11)
+## Расширенный Ростер 0.1.4 (Фундамент, 2026-06-11)
 
 Спрайты всех шести прошли Design art-review (2026-06-11) и приняты как polished dark fantasy full-art (512x512, RGBA). Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и лежат в `assets/sprites/characters/cutout/` (torso, arm_l, arm_r, leg_l, leg_r для каждого). Манифест обновлён в `scripts/sliced_rig_manifest.gd`. Weapon art v2 pass 2026-06-12 устранил fallback-текстуры в сценах оружия, перерисовал три оружия Рыцаря и заменил `knight.png` на unarmed base sprite без встроенного копья/щита, чтобы все три варианта реально крепились через socket.
 

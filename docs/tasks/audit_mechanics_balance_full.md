@@ -66,3 +66,12 @@ Read-only аудит завершен. Balance harness запущен:
 Jira для child tasks: pending PM sync, потому что текущий Back-end toolset не имеет Jira connector/API.
 
 Verification: balance harness passed; runtime, animation, meta progression, meta skill tree, melee targeting, attack VFX and hazard VFX smoke suites passed on 2026-06-13.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Read-only аудит механик/баланса. Deliverables: отчёт
+`docs/design/reviews/mechanics_balance_audit_2026_06.md` + 4 дочерние задачи.
+Действенность подтверждена: породил SCRUM-190 (survivability harness) и SCRUM-191
+(weapon-tuning regression) + live-balance — **все зачтены QA PASSED в этой
+сессии**. NB: SCRUM-190 вскрыл баланс-сигнал «6 ok / 62 low» (передан PM как
+balance follow-up). Баги: нет (read-only аудит).

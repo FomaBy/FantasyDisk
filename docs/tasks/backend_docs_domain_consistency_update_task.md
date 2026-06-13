@@ -33,12 +33,16 @@ Refresh domain docs after the 0.1.4 class/content/UI growth.
 
 - `docs/design/systems/characters_weapons.md`
 - `docs/design/systems/combat.md`
-- `docs/design/systems/progression_economy.md`
-- `docs/design/systems/ui_menus.md`
+- `docs/design/systems/progression_balance.md`
+- `docs/design/systems/menus_ui.md`
 - `docs/design/systems/audio.md`
+- `docs/design/systems/enemies_bosses.md`
+- `docs/design/systems/technical_architecture.md`
+- `docs/design/systems/visual_style_assets.md`
 - `docs/design/current_game_state.md` as concise index/current summary.
 
 ## Requirements
+QA: in_progress (2026-06-13)
 
 - No gameplay/code changes.
 - Cross-link reports from `docs/design/reviews/`.
@@ -67,3 +71,55 @@ Redispatch в существующий Back-end thread
 после SCRUM-230, SCRUM-198, SCRUM-199 и SCRUM-193. Keep reasoning High/no low.
 Задача должна закрыть оставшиеся domain-doc расхождения текущей board, затем
 обновить task/board/Jira sync.
+
+## Back-end Follow-up Verification (2026-06-13, Codex)
+
+После Claude refresh дополнительно выровнены оставшиеся stale-строки:
+
+- scope-файлы исправлены на фактические доменные документы:
+  `progression_balance` и `menus_ui`
+  (старые имена `progression_economy` / `ui_menus` больше не указаны как
+  реальные файлы);
+- `current_game_state`, `content_registry`, `audio`, `characters_weapons`,
+  `enemies_bosses`, `technical_architecture`, `visual_style_assets` выровнены
+  под текущий `dev` stabilization target 0.1.4;
+- убраны stale `0.2` формулировки из текущего ростера/branching docs;
+- `enemies_bosses` обновлен под 5 боссов и 6 mini-elite kinds, с явной пометкой,
+  что SCRUM-193 cleanup не удаляет pending source PNG новых boss/mini-elite;
+- `CHANGELOG.md` обновлен.
+
+Проверки:
+- text grep for stale release/version wording and phantom doc names — passed
+  (оставшиеся совпадения только в именах smoke-тестов и numeric timing values);
+- `tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 361e45c7 (ветка dev)
+
+Проверено (фактически, docs-задача — без Godot, кроме content-ID alignment):
+- **8/8 domain-доков** существуют (`characters_weapons`, `combat`,
+  `progression_balance`, `menus_ui`, `audio`, `enemies_bosses`,
+  `technical_architecture`, `visual_style_assets`) + `current_game_state.md`
+  (индекс).
+- **Нет phantom-имён в живых доках**: `progression_economy.md`/`ui_menus.md` как
+  реальные файлы не упоминаются в `docs/design/systems/` (только корректные
+  `progression_balance`/`menus_ui`).
+- **Нет stale-версий**: grep `0.1.2` / phantom `0.2` по системным докам и
+  `current_game_state` — чисто (остатки только числовые тайминги вида `0.2с`).
+- **No gameplay/code changes**: `git status` code/scenes/assets = 0 изменений
+  (docs-only, commit 203fb398).
+- **Content-ID alignment**: `content_registry_consistency_test` — passed
+  (0 allowlisted), IDs выровнены с `content_registry.md`.
+
+Acceptance:
+- [x] Domain-доки обновлены/выровнены; current_game_state — индекс.
+- [x] No gameplay/code changes.
+- [x] Content IDs выровнены с content_registry.
+
+Примечание (не блокер, вне scope): историчный `docs/design/reviews/
+content_docs_audit_2026_06.md:83-84` всё ещё перечисляет старые scope-имена
+`progression_economy.md`/`ui_menus.md` — это замороженный audit-артефакт, не
+живой системный док; на консистентность текущих доков не влияет.
+
+Баги: нет.

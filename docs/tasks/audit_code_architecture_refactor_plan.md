@@ -65,3 +65,11 @@ Read-only аудит завершен. Отчет создан:
 Jira для child tasks: pending PM sync, потому что текущий Back-end toolset не имеет Jira connector/API.
 
 Verification: runtime, animation, meta progression, meta skill tree, melee targeting, attack VFX and hazard VFX smoke suites passed on 2026-06-13.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Read-only архитектурный аудит. Deliverables: отчёт
+`docs/design/reviews/code_architecture_audit_2026_06.md` + 4 дочерние refactor-
+задачи. Действенность подтверждена сильно: аудит породил SCRUM-196/198/199/202 +
+combat_target_query_cache — **все зачтены QA PASSED в этой сессии** (registry,
+ProgressionData split, ui_screens split, smoke-suite split). Баги: нет.

@@ -55,3 +55,11 @@ Smoke не запускался в этой read-only/spec-only задаче: к
 
 ## Документация
 docs/design/systems/animation.md, docs/design/reviews/.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Read-only аудит ригов. Deliverables на месте: отчёт
+`docs/design/reviews/animation_rig_audit_2026_06.md` + 6 дочерних task-ссылок.
+Действенность подтверждена: аудит породил animation-rig/handoff задачи (вкл.
+SCRUM-204, зачтён PASSED в этой сессии). Аниматорные/runtime изменения не
+вносились. Баги: нет.

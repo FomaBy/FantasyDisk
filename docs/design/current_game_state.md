@@ -21,7 +21,7 @@ Domain docs для подробностей по областям:
 
 - Движок: Godot 4.
 - Жанр: 2D top-down loot-action survival roguelite с RPG-билдкрафтом.
-- Текущий релизный срез: `v0.1.2` от 2026-06-12; версия проекта в `project.godot` — `0.1.2`.
+- Текущий stabilization target: `0.1.4` на ветке `dev`; `project.godot` сейчас хранит `config/version=0.1.3` до финального release bump.
 - Основная рабочая платформа: macOS. Релизные платформы: macOS (dmg) и Windows (x86_64 exe c embed_pck + NSIS-инсталлер).
 - Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
 - Основная сцена: `scenes/Main.tscn`.
@@ -236,7 +236,9 @@ Event-node открывает один data-driven сценарий из `script
 
 ## Персонажи
 
-Первые три игровых персонажа используют polished stylized cartoon fantasy full hero sprites без квадратных placeholder-форм и без вида минимальных технических болванок. Новые шесть классов доступны в 0.2 foundation и прошли Design art-review как polished cartoon dark fantasy full-art. SCRUM-168 добавил Back-end-класс `soldier`; Design pass 2026-06-13 подготовил финальные `soldier.png`, `soldier_rifle.png`, `soldier_grenade.png` и `soldier_bayonet.png`, а Animator pass 2026-06-13 добавил Soldier cutout rig, manifest/profile и weapon pose hooks. В бою `scripts/cutout_rig_2d.gd` собирает видимую фигуру из нарезанных кусков того же polished-арта (torso, arm_l/arm_r, leg_l/leg_r): в покое сборка пиксельно совпадает с исходным PNG, в движении конечности реально двигаются. Нарезка генерируется инструментом `tools/slice_rig_cutouts.py` в `assets/sprites/characters/cutout/`, метаданные частей — в сгенерированном `scripts/sliced_rig_manifest.gd`. Source PNG в `assets/sprites/characters/` используются меню и выбором персонажа и являются исходником нарезки. Берсерк остается без оружия в базовом спрайте, а оружие крепится отдельно через `WeaponSocket`.
+Первые три игровых персонажа используют polished stylized cartoon fantasy full hero sprites без квадратных placeholder-форм и без вида минимальных технических болванок. Расширенный ростер 0.1.4 доведен до 17 классов; новые классы прошли Design art-review как polished cartoon dark fantasy full-art. SCRUM-168 добавил Back-end-класс `soldier`; Design pass 2026-06-13 подготовил финальные `soldier.png`, `soldier_rifle.png`, `soldier_grenade.png` и `soldier_bayonet.png`, а Animator pass 2026-06-13 добавил Soldier cutout rig, manifest/profile и weapon pose hooks. В бою `scripts/cutout_rig_2d.gd` собирает видимую фигуру из нарезанных кусков того же polished-арта (torso, arm_l/arm_r, leg_l/leg_r): в покое сборка пиксельно совпадает с исходным PNG, в движении конечности реально двигаются. Нарезка генерируется инструментом `tools/slice_rig_cutouts.py` в `assets/sprites/characters/cutout/`, метаданные частей — в сгенерированном `scripts/sliced_rig_manifest.gd`. Source PNG в `assets/sprites/characters/` используются меню и выбором персонажа и являются исходником нарезки. Берсерк остается без оружия в базовом спрайте, а оружие крепится отдельно через `WeaponSocket`.
+
+SCRUM-193 cleanup 2026-06-13: старые `*_placeholder.png` для Assassin/Chemist/Doctor/Druid/Knight/Ranger отсутствуют в активной папке персонажей; backup сохранен в `build/cleanup_backup_2026_06_13/`. Канонические source sprites персонажей — только `assets/sprites/characters/<class_id>.png`, а runtime cutout-части — `assets/sprites/characters/cutout/`.
 
 Текущие character sprites сделаны в стиле референса пользователя: Берсерк имеет бороду, плетеные волосы, массивное тело, мех, ремни, металлические браслеты, плечо со шипами, красную боевую разметку и skull-belt без встроенного оружия; Темный маг имеет капюшон, маску, мантию, черепа, кристаллы и фиолетовые spell-orbs; Гитарист имеет сине-золотой сценический костюм, музыкальные значки, ремни, перчатки и медиаторный амулет без встроенной гитары.
 
@@ -342,7 +344,7 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 | Выносливость | 4 |
 | Лидерство | 7 |
 
-### Новые Классы 0.2
+### Расширенный Ростер 0.1.4
 
 Foundation новых классов уже включен в выбор персонажа, выбор оружия, кодекс, формулы характеристик, ascension и smoke tests. Design visual set для первых 9 персонажей и полного набора оружия 9 классов готов: новые герои art-approved, все 27 weapon PNG существуют по каноническим путям; gameplay/backend-сцены подключают matching weapon PNG без documented visual fallback. SCRUM-168 добавил 10-й Back-end-класс `soldier` и довел набор до 30 weapon variants; canonical Soldier character/weapon PNG и cutout rig/motion подключены. SCRUM-169 добавил 11-й Back-end-класс `thief` и довел набор до 33 weapon variants; canonical Thief character/weapon PNG и cutout rig/motion подключены. SCRUM-163 добавил 12-й Back-end-класс `elementalist` и довел набор до 36 weapon variants; canonical Elementalist character/weapon PNG и cutout rig/motion подключены. SCRUM-167 добавил 13-й Back-end-класс `sniper` и довел набор до 39 weapon variants; canonical Sniper character/weapon PNG и cutout rig/motion подключены. SCRUM-165 добавил 14-й Back-end-класс `priest` и довел набор до 42 weapon variants; canonical Priest character/weapon PNG и cutout rig/motion подключены. SCRUM-162 добавил 15-й Back-end-класс `biologist` и довел набор до 45 weapon variants; canonical Biologist character/weapon PNG и cutout rig/motion подключены. SCRUM-166 добавил 16-й Back-end-класс `robot` и довел набор до 48 weapon variants; canonical Robot character/weapon PNG и cutout rig/motion подключены. SCRUM-164 добавил финальный 17-й Back-end-класс `engineer` и довел набор до 51 weapon variant; canonical Engineer character/weapon PNG и cutout rig/motion подключены. Weapon art v2 pass 2026-06-12 дополнительно перерисовал оружие Рыцаря, заменил базовый `knight.png` на unarmed sprite без встроенного копья/щита, пересобрал `knight_*` cutouts и уменьшил `WeaponVisual.scale` у крупных оружий.
 
@@ -405,7 +407,7 @@ SCRUM-192 выровнял runtime `sprite_path` всех новых класс�
 | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: damage x0.30, interval 0.85, сильный knockback, пассив +10% attack speed |
 | Усилитель | `sound_amp` | `amp` | Деплой: усилитель стоит на земле ~7с и пульсирует сам (тик 1.1с); одновременно 1 + floor(Лидерство/4) ампов, старший исчезает при превышении; группа `deployed_sound_amps`, чистится со сменой оружия/персонажа/забега |
 
-## Оружие Новых Классов 0.2
+## Оружие Расширенного Ростера 0.1.4
 
 Все 17 игровых классов теперь имеют ровно 3 selectable weapon variants в `ProgressionData.WEAPONS_BY_CLASS`; smoke test проверяет загрузку и экипировку всех 51 вариантов.
 
@@ -923,7 +925,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
 - Уворот игрока работает: `dodge` из `derived_parameters` проверяется в `Player.take_damage`, при успехе показывается всплывающий текст «Промах!» и звук уворота; урон и invulnerability window не применяются. Защита дополнительно ограничена 95%.
 - Скорость атаки оружия считается как `base_fire_interval / attack_speed` (минимум 0.18с): базовый `fire_interval` каждого оружия из `progression_data.gd` снова значим, оружия одного класса различаются темпом.
-- Ребаланс 2026-06-10: базовые `fire_interval` первых 9 оружий увеличены в 1.6 раза, чтобы итоговый темп после фикса формулы остался близким к прежнему ощущению, но с различиями между оружиями; 18 новых оружий 0.2 балансируются в своих конфигах.
+- Ребаланс 2026-06-10: базовые `fire_interval` первых 9 оружий увеличены в 1.6 раза, чтобы итоговый темп после фикса формулы остался близким к прежнему ощущению, но с различиями между оружиями; оружие расширенного ростера 0.1.4 балансируется в своих конфигах.
 - Pulse-режим бас-гитары и усилителя использует `_rolled_damage` (учитывает `damage_parameter` и криты), как остальные режимы классового оружия.
 - Все отложенные боевые эффекты (ядовитые зоны элиток, rift zone, disk slam, DoT-тики, окна урона свинга берсерка, очистка визуалов) используют tween-таймлайны, привязанные к нодам, а не `SceneTreeTimer`. Они замораживаются вместе с паузой и не наносят урон в level-up/Escape паузе.
 - Аура Маршала Осколков усиливает каждого обычного врага не более одного раза (meta `commander_aura_buffed`), без бесконечного мультипликативного стака.

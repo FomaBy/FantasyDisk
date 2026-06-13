@@ -2,7 +2,7 @@
 
 Обновлено: 2026-06-13
 
-Канонические данные персонажей и оружия находятся в `scripts/progression_data.gd`. Этот файл описывает игровую идентичность, сцены и текущие backend-режимы.
+Канонические данные персонажей и оружия доступны через compatibility facade `scripts/progression_data.gd`; после SCRUM-198 исходные домены живут в `scripts/progression_data_characters.gd` и `scripts/progression_data_weapons.gd`. Этот файл описывает игровую идентичность, сцены и текущие backend-режимы.
 
 ## Characters
 

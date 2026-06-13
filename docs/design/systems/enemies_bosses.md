@@ -1,8 +1,8 @@
 # Enemies, Elites And Bosses
 
-Обновлено: 2026-06-12
+Обновлено: 2026-06-13 (0.1.4)
 
-Канонические enemy/boss IDs и assets находятся в `docs/design/content_registry.md`. Основная логика врагов: `scripts/enemy.gd`, боссов: `scripts/boss.gd`, спавна: `scripts/combat_director.gd`.
+Канонические enemy/boss IDs и assets находятся в `docs/design/content_registry.md`. Основная логика врагов: `scripts/enemy.gd`, боссов: `scripts/boss.gd`, спавна: `scripts/combat_director.gd`. Data-driven enemy slices после SCRUM-198 находятся в `scripts/progression_data_enemies.gd` и экспортируются через `ProgressionData`.
 
 ## Standard Enemies
 
@@ -32,7 +32,24 @@ MVP поддерживает несколько архетипов:
 
 ## Bosses
 
-Boss node выбирает одного из доступных боссов, включая `rift_warden` и `disk_devourer`. С SCRUM-135 оба активных boss source sprites и cutout parts также `512x512`; `rift_warden` сохраняет отдельный `vortex` cutout part, `disk_devourer` остается single-torso rig.
+Boss node выбирает одного из доступных боссов: `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`. С SCRUM-135 первые два активных boss source sprites и cutout parts также `512x512`; `rift_warden` сохраняет отдельный `vortex` cutout part, `disk_devourer` остается single-torso rig. SCRUM-156 подготовил source sprites для трех новых боссов; runtime mechanics/scenes уже заведены, а полный art/cutout wiring остается отдельным content/animation scope.
+
+| Boss | Scene | Pattern |
+| --- | --- | --- |
+| `rift_warden` | `scenes/BossWarden.tscn` | залпы, зоны разлома, призыв, щит, увороты |
+| `disk_devourer` | `scenes/BossDiskDevourer.tscn` | рывки, disk slam AoE, radial burst, enrage |
+| `bone_archon` | `scenes/BossBoneArchon.tscn` | волны скелетов, веер черепов, костяная стена |
+| `brood_mother` | `scenes/BossBroodMother.tscn` | выводок, web slow zones, рывок в фазе 3 |
+| `ashen_colossus` | `scenes/BossAshenColossus.tscn` | slam-волны, тлеющие зоны, enrage ниже 25% HP |
+
+## Mini-Elites
+
+`ProgressionData.MINI_ELITE_KINDS` содержит 6 видов L7-свиты Возвышения:
+`mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`,
+`mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`. Их source PNG из
+SCRUM-156 лежат в `assets/sprites/elites/`, но SCRUM-193 cleanup их не удалял:
+raw audit видит их как candidates до полного content wiring, поэтому это не
+legacy cleanup scope.
 
 Минимальные правила:
 

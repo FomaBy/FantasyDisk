@@ -103,3 +103,26 @@ Verification passed:
 
 Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`,
 `docs/design/systems/technical_architecture.md`.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 361e45c7 (ветка dev)
+
+Проверено (фактически):
+- **Facade цел**: `ui_screens.gd` сохранил публичную поверхность — 25 `_show_*`-
+  методов на месте; вынесены 4 lowest-risk домена в `scripts/ui/`
+  (hero_select_constants, hero_stat_radar, shop_ui_constants, ui_theme_paths).
+- **Поведение/раскладка не изменены** (регрессия зелёная): `runtime_smoke_ui_test`,
+  `ui_no_overlap_matrix_test` (1152/1280/1469/2560), `animation_smoke_test`,
+  `meta_progression_smoke_test`, `melee_weapon_targeting_test`. Имена тестируемых
+  узлов сохранены (no-overlap и UI-тесты находят их).
+- **Дерево чистое/закоммичено** (`git status scripts/` пусто), зелёное.
+
+Acceptance:
+- [x] Сплит `ui_screens.gd` на focused UI-модули без изменения поведения.
+- [x] `ui_screens.gd` остался compatibility facade (public-методы/узлы целы).
+- [x] UI / animation / meta / melee / VFX / smoke зелёные.
+
+Примечание: umbrella `runtime_smoke` прогоняется 32× в SCRUM-257-серии на этом коде.
+
+Баги: нет.

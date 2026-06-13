@@ -753,7 +753,7 @@
  },
  "backend_content_safe_cleanup_followup_task.md": {
   "key": "SCRUM-193",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_content_unused_asset_audit_manifest_task.md": {
   "key": "SCRUM-194",
@@ -761,7 +761,7 @@
  },
  "backend_docs_domain_consistency_update_task.md": {
   "key": "SCRUM-195",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_refactor_class_weapon_mode_registry_task.md": {
   "key": "SCRUM-196",
@@ -773,11 +773,11 @@
  },
  "backend_refactor_progression_data_domain_split_task.md": {
   "key": "SCRUM-198",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_refactor_ui_screens_domain_split_task.md": {
   "key": "SCRUM-199",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_test_content_registry_consistency_task.md": {
   "key": "SCRUM-200",

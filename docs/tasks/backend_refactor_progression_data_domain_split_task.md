@@ -127,3 +127,33 @@ Verification passed:
 Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`,
 `docs/design/systems/technical_architecture.md`,
 `docs/design/mechanics_extract.md`.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 361e45c7 (ветка dev)
+
+Проверено (фактически):
+- **Структура facade**: `progression_data.gd` — compatibility facade с preload-
+  константами доменов (CharacterData/BalanceData/WeaponsData/ContentData/
+  AscensionData/ShopData). 7 domain-файлов на месте. `const SHOP_ITEMS :=
+  ShopData.SHOP_ITEMS` восстановлен. Stale `progression_data_meta.gd` (parse-
+  блокер churn-окна) УДАЛЁН.
+- **API-surface**: `progression_data_api_surface_test` — passed («17 персонажей,
+  фасад-API и константы на месте») — публичная поверхность цела после сплита.
+- **Поведение/данные не изменены** (регрессия зелёная): `content_registry_
+  consistency_test` (0 allowlisted), `runtime_smoke_progression_economy_test`,
+  `runtime_smoke_weapon_mechanics_test`, `runtime_smoke_boss_elite_test`,
+  `meta_progression_smoke_test`, `melee_weapon_targeting_test`.
+- **Стабилизация дерева**: ранее этот сплит churn'ил рабочее дерево (ловил
+  транзиентные parse-ошибки player.gd при QA SCRUM-191); теперь **закоммичен,
+  `git status scripts/` чист**, дерево зелёное.
+
+Acceptance:
+- [x] `ProgressionData` остался compatibility facade (API/константы целы).
+- [x] Сплит на focused-домены без изменения баланса/поведения.
+- [x] content registry / progression economy / balance harness / smoke зелёные.
+
+Примечание: umbrella `runtime_smoke` дополнительно прогоняется 32× в анти-флак
+серии SCRUM-257 на этом же коде — стабильность umbrella подтверждается там.
+
+Баги: нет.
