@@ -28,7 +28,7 @@ Domain docs для подробностей по областям:
 - Основной управляющий скрипт: `scripts/main.gd` — тонкий координатор (state, пауза, основной цикл, делегирующие стабы для тестов). Он владеет модулями-компонентами: `scripts/ui_screens.gd` (меню/экраны/HUD/стили), `scripts/route_map_screen.gd` (генерация маршрута и экран карты), `scripts/combat_director.gd` (бой, спавн, баланс, арена, pickups). Модули — RefCounted с ссылкой `game` на main; общее состояние живет в main.
 - Иконка приложения: `icon.svg`, подключена через `project.godot` `application/config/icon` и оформлена как fantasy disk emblem с золотым ободом и фиолетовым разломом.
 - Главный игрок: `scenes/Player.tscn`, логика в `scripts/player.gd`.
-- Smoke tests: `tests/runtime_smoke_test.gd`, `tests/animation_smoke_test.gd` и `tests/meta_progression_smoke_test.gd`.
+- Smoke tests: `tests/runtime_smoke_test.gd` остается umbrella-проверкой полного core loop. Для быстрых регрессий SCRUM-202 добавил focused suites: `tests/runtime_smoke_ui_test.gd`, `tests/runtime_smoke_combat_test.gd`, `tests/runtime_smoke_progression_economy_test.gd`, `tests/runtime_smoke_weapon_mechanics_test.gd`, `tests/runtime_smoke_boss_elite_test.gd`. Дополнительно используются `tests/animation_smoke_test.gd` и `tests/meta_progression_smoke_test.gd`.
 
 ## Основной Поток Игры
 
@@ -231,6 +231,20 @@ Event-node открывает один data-driven сценарий из `script
 Текущие character sprites сделаны в стиле референса пользователя: Берсерк имеет бороду, плетеные волосы, массивное тело, мех, ремни, металлические браслеты, плечо со шипами, красную боевую разметку и skull-belt без встроенного оружия; Темный маг имеет капюшон, маску, мантию, черепа, кристаллы и фиолетовые spell-orbs; Гитарист имеет сине-золотой сценический костюм, музыкальные значки, ремни, перчатки и медиаторный амулет без встроенной гитары.
 
 Стандартные монстры, элитки и боссы также используют polished cartoon fantasy full-art sprites в стиле последнего референса пользователя: темное фэнтези, выразительные силуэты, сильные черные контуры, объемная покраска и читаемые archetype-shapes. В бою их видимая фигура тоже собирается `scripts/cutout_rig_2d.gd` из нарезанных кусков того же арта (`assets/sprites/enemies|elites|bosses/cutout/`): конечности, оружие (арбалет), щиты, крылья, хвост и вихрь босса — отдельные анимируемые части. Старые placeholder rig-parts удалены. Нельзя возвращать монстров к generic placeholder-спрайтам или видимым квадратным заглушкам частей тела.
+
+SCRUM-156 Design pass 2026-06-13 подготовил финальные painterly D&D source sprites для новых сущностей SCRUM-155:
+`assets/sprites/bosses/boss_bone_archon.png`,
+`assets/sprites/bosses/boss_brood_mother.png`,
+`assets/sprites/bosses/boss_ashen_colossus.png`,
+`assets/sprites/elites/mini_scavenger_reaper.png`,
+`assets/sprites/elites/mini_plague_bellringer.png`,
+`assets/sprites/elites/mini_bone_warden.png`,
+`assets/sprites/elites/mini_spark_wight.png`,
+`assets/sprites/elites/mini_rot_hound.png`,
+`assets/sprites/elites/mini_shadow_devourer.png`.
+Все 9 PNG — `512x512`, RGBA, transparent, с preview-листами
+`docs/design/previews/new_bosses_mini_elites_contact.png` и
+`docs/design/previews/new_bosses_mini_elites_scale_preview.png`. Runtime scene/codex wiring и cutout rig slicing остаются Back-end/Animator scope; Design handoff записан в соответствующие task-файлы.
 
 ### Берсерк
 
@@ -532,6 +546,8 @@ Level-up показывает 3 фиксированных варианта на
 Боевой HUD содержит компактную карточку `ULT` рядом с HP/XP/money; tooltip показывает текущую клавишу и состояние готовности. `ultimate_multiplier` больше не зарезервирован: он усиливает урон, радиус, длительность или число целей ульты. По боссам действует per-hit cap от max HP босса. Верхний HUD обязан проходить no-overlap проверку фактических `global_rect`: ресурсная панель, таймер/бейдж Возвышения и ряд артефактов адаптивно размещаются без пересечений на 1152x648, 1280x720 и 2560x1440.
 
 UI no-overlap coverage 0.1.4: `tests/ui_no_overlap_matrix_test.gd` проверяет peer-controls main menu, settings, Codex, patch notes, hero select, victory и death на 1152x648, 1280x720, 1600x900 и 2560x1440, а `runtime_smoke_test.gd` дополнительно держит специализированные проверки HUD, shop wall, hero radar, route/level-up/elite reward flows. Matrix dump пишется в `build/qa/ui_no_overlap_matrix.md`.
+
+Runtime smoke split 0.1.4: focused suites наследуют helper/assertion слой umbrella smoke и запускают тематические подмножества без изменения gameplay behavior. Это дает быстрые проверки для UI/menu, combat, progression/economy, weapon mechanics и boss/elite перед крупными refactor-задачами, но обязательная полная команда `runtime_smoke_test.gd` остается доступной и должна проходить.
 
 Реализованные ульты: Берсерк — Неистовство; Солдат — Огневой приказ; Вор — Черная метка; Элементалист — Стихийная Сверхнова; Снайпер — Последний Выстрел; Священник — Хор Искупления; Биолог — Пробуждение Колонии; Темный маг — Темная буря; Гитарист — Соло; Ассасин — Танец клинков; Рейнджер — Лунный залп; Доктор — Переливание; Химик — Цепная реакция; Рыцарь — Бастион; Друид — Зов стаи.
 

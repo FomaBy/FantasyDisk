@@ -1,6 +1,6 @@
 # Back-end Task: Refactor `class_weapon.gd` Into Weapon Mode Registry
 
-Статус: blocked
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-174
@@ -39,3 +39,12 @@ not run while class/content alignment and smoke-regression cleanup are active.
 
 Next unblock: resume after current class/weapon/content tasks are stable and
 there is an isolated refactor window. No `class_weapon.gd` refactor was started.
+
+## Dispatcher Unblock / Dispatch (2026-06-13)
+
+Unblocked for a serialized Back-end refactor window: no active class/weapon work
+is in progress and `scripts/class_weapon.gd` was clean in git status. Dispatched
+to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` as item 2 after
+SCRUM-202. Keep reasoning High/no low; close and Jira-sync SCRUM-202 before
+starting this task, then close and Jira-sync this task before the next queued
+refactor.

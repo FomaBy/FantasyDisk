@@ -1,6 +1,6 @@
 # Jira Sync — FantasyDisk
 
-Обновлено: 2026-06-12
+Обновлено: 2026-06-13
 
 ## Назначение
 
@@ -21,8 +21,12 @@
 - Board: `1`
 - Current active sprint: `Спринт 0.1.4`
 - Current active sprint id: `34`
-- Feature block: not active. It was lifted after release `v0.1.3` on 2026-06-12.
-  Existing 0.1.4 tasks may be routed normally unless they have an explicit blocker.
+- Feature block: **ACTIVE** from 2026-06-13 for `0.1.4` stabilization.
+  Finish already-started 0.1.4 work; route only bugs, QA defects, regressions
+  and release blockers in the current sprint. New features/improvements/art/
+  content go to backlog/fixVersion `0.1.5` and are not dispatched until the
+  `0.1.4` release is shipped. The freeze is lifted immediately after release
+  `v0.1.4`.
 
 ## Безопасность Доступа
 
@@ -68,10 +72,12 @@ released, создаётся следующая. Игровые патч-ноу�
 
 1. Новые `.md` task-файлы и Jira issues создает PM/другая LLM, не Codex
    Documentation dispatcher.
-2. Пока feature block не активен, новые синхронизированные задачи добавляются в
-   текущий активный спринт. Когда PM включает feature block перед стабилизацией,
-   в активный спринт попадают только bugfix/regression/QA defect/release blocker
-   задачи; новые не-баговые задачи остаются в backlog следующей версии.
+2. Пока feature block активен для стабилизации `0.1.4`, новые
+   синхронизированные задачи добавляются в текущий sprint только если это
+   bugfix/regression/QA defect/release blocker или уже начатая 0.1.4 работа,
+   которую надо довести до QA/release. Новые не-баговые задачи получают
+   `Версия: 0.1.5` / fixVersion `0.1.5`, остаются в backlog без active sprint
+   assignment и не dispatch'ятся до снятия фриза после релиза `v0.1.4`.
 3. В `.md` task-файле рядом с метаданными добавить строку:
 
    ```text
@@ -122,7 +128,7 @@ Dispatcher при регулярной сверке обязан искать д
 - одинаковый task-файл или source task path;
 - одинаковый Jira summary/почти одинаковая формулировка проблемы;
 - две активные задачи на одни и те же файлы, ассеты, экран или баг;
-- backlog-задача `0.1.4`, случайно продублированная в активном sprint.
+- backlog-задача `0.1.5`, случайно продублированная в активном sprint.
 
 Если найден дубль, dispatcher не раздает его исполнителю. Нужно оставить один
 source of truth, а остальные пометить `duplicate` или `superseded`, добавить
@@ -131,17 +137,19 @@ source of truth, а остальные пометить `duplicate` или `supe
 
 ## Feature Block Обязательство
 
-Сейчас feature block НЕ активен: `v0.1.3` выпущен, активен `Спринт 0.1.4`.
-Когда PM снова включает feature block перед следующей стабилизацией, агенты и
-dispatcher обязаны:
+Сейчас feature block АКТИВЕН: идёт стабилизация `Спринт 0.1.4`.
+Агенты и dispatcher обязаны:
 
 1. Проверять тип задачи перед dispatch.
 2. Не начинать новые не-баговые задачи.
-3. Для новых не-баговых задач создавать/оставлять Jira issue в backlog следующей
-   версии, без sprint assignment. Для Codex Documentation dispatcher это
-   означает: не создавать самому, а проверить/сообщить, что PM/owner должен
-   оформить backlog-задачу.
-4. Для багов текущего scope использовать текущий sprint и обычный QA flow.
+3. Для новых не-баговых задач создавать/оставлять Jira issue в backlog `0.1.5`,
+   без sprint assignment. Для Codex Documentation dispatcher это означает: не
+   создавать самому, а проверить/сообщить, что PM/owner должен оформить
+   backlog-задачу.
+4. Для багов, QA-дефектов, регрессий и release blockers текущего scope
+   использовать текущий sprint и обычный QA flow.
+5. Снять фриз сразу после релиза `v0.1.4`; следующий sprint `0.1.5` забирает
+   накопленный backlog.
 
 ## Jira Description Минимум
 

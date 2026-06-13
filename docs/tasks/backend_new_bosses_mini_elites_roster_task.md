@@ -126,3 +126,33 @@ Jira: SCRUM-155
 
 Вне scope (за параллельными задачами): финальный арт боссов/мини (placeholder,
 design_codex_new_bosses_mini_elites_sprites). Багов нет.
+
+## Design Handoff — SCRUM-156 Art Ready (2026-06-13)
+
+Design prepared final painterly D&D source sprites for all placeholder roster
+entries. No Back-end code/gameplay/scenes were changed in Design scope.
+
+Boss source paths:
+
+- `assets/sprites/bosses/boss_bone_archon.png`
+- `assets/sprites/bosses/boss_brood_mother.png`
+- `assets/sprites/bosses/boss_ashen_colossus.png`
+
+Mini-elite source paths:
+
+- `assets/sprites/elites/mini_scavenger_reaper.png`
+- `assets/sprites/elites/mini_plague_bellringer.png`
+- `assets/sprites/elites/mini_bone_warden.png`
+- `assets/sprites/elites/mini_spark_wight.png`
+- `assets/sprites/elites/mini_rot_hound.png`
+- `assets/sprites/elites/mini_shadow_devourer.png`
+
+Design previews:
+
+- `docs/design/previews/new_bosses_mini_elites_contact.png`
+- `docs/design/previews/new_bosses_mini_elites_scale_preview.png`
+
+Validation from Design pass: PNG validation, Godot import, runtime smoke and
+animation smoke all passed. Back-end follow-up: replace placeholder/tint scene
+and codex sprite references with these stable paths. Animator follow-up: slice
+cutout parts, update manifest/motion profiles and animation smoke coverage.

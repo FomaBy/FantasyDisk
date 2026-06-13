@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя)
 Jira: SCRUM-227
+QA: in_progress (2026-06-13)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -70,3 +71,37 @@ Verification:
 - Runtime smoke checks actual visible wax-seal button rects and writes `build/qa/parchment_button_seal_sizes.md`.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 35b79e06 (ветка dev)
+
+Проверено (фактически):
+- **Код**: `_make_button()` дефолт `Vector2(420, 68)` (ui_screens.gd:4239);
+  `_make_compact_button()` + `_apply_compact_button_theme()` присутствуют
+  (4246/4293) — мелкие служебные контролы без печати; `_button_state_style()`
+  с расширенным левым полем под печать.
+- **Целевой тест не пустышка**: `_test_parchment_button_seal_sizes`
+  (runtime_smoke:1147, тело 4879-4933) обходит ВСЕ видимые кнопки на 4 экранах
+  (меню/выбор героя/выбор оружия/настройки); для кнопок с текстурой
+  `/ui_df_button_` требует `rect.size.y ≥ 64 И custom_minimum_size.y ≥ 64`
+  (печать не сжата) И что компактные (текст ≤2 симв., узкие) НЕ используют
+  печать-текстуру. Прошёл.
+- **Дамп** `build/qa/parchment_button_seal_sizes.md`: меню 76px, выбор
+  героя/оружия/настройки 68px — все ≥ порога 64px, печати есть место.
+- **Регрессия (4×smoke)**: runtime / animation / meta / targeting — зелёные;
+  `ui_no_overlap_matrix_test` — passed (1152/1280/1469/2560).
+- **Визуал** (`build/qa/scrum227/`): `main_menu_seals.png` — 6 кнопок меню с
+  видимой красной сургучной печатью слева, не сплющена (76px); `level_up.png`
+  (названный в задаче проблемный кейс) — окно leather+gold, варианты как
+  text-field карточки (SCRUM-226), нижняя кнопка с печатью в правильной
+  пропорции, перекрытий нет.
+- **CHANGELOG**: объединённая строка SCRUM-224/225/226/227 присутствует.
+
+Краевые случаи:
+- 4 экрана покрыты тестом печати; компактные `+/-`/dropdown — flat no-seal
+  (тест ассертит + видно в настройках).
+- Level-up (где раньше печать сжималась на 48px) — печать читаема.
+- no-overlap на 1280/1600/2560.
+
+Баги: нет.

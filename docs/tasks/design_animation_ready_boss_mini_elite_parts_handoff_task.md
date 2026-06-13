@@ -41,3 +41,25 @@ When Design assets are ready, create or unblock an Animator task for:
 
 ## Dispatcher Note (2026-06-13)
 Duplicate audit: this scope is covered by active `design_codex_new_bosses_mini_elites_sprites_task.md` / Jira `SCRUM-156`. Requirements were sent to the Design thread as additional acceptance context for SCRUM-156 instead of dispatching a duplicate source task.
+
+## SCRUM-156 Design Result / Animator Unblock (2026-06-13)
+
+Final source sprites now exist at stable paths:
+
+- `assets/sprites/bosses/boss_bone_archon.png`
+- `assets/sprites/bosses/boss_brood_mother.png`
+- `assets/sprites/bosses/boss_ashen_colossus.png`
+- `assets/sprites/elites/mini_scavenger_reaper.png`
+- `assets/sprites/elites/mini_plague_bellringer.png`
+- `assets/sprites/elites/mini_bone_warden.png`
+- `assets/sprites/elites/mini_spark_wight.png`
+- `assets/sprites/elites/mini_rot_hound.png`
+- `assets/sprites/elites/mini_shadow_devourer.png`
+
+Preview references:
+
+- `docs/design/previews/new_bosses_mini_elites_contact.png`
+- `docs/design/previews/new_bosses_mini_elites_scale_preview.png`
+
+Design scope is complete. Animator may now perform cutout slicing, pivot/manifest
+work, motion profile setup and animation smoke coverage for these source sprites.

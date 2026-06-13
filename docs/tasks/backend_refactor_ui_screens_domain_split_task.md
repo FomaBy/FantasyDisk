@@ -1,6 +1,6 @@
 # Back-end Task: Refactor `ui_screens.gd` Into Domain UI Modules
 
-Статус: blocked
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-174
@@ -40,3 +40,12 @@ and tests are still settling would create high-conflict noise.
 
 Next unblock: resume after SCRUM-147/SCRUM-222 is unblocked and active UI edits
 are closed. No UI module split was started.
+
+## Dispatcher Unblock / Dispatch (2026-06-13)
+
+Unblocked for a serialized Back-end refactor window: SCRUM-222 is `Готово`,
+SCRUM-147/SCRUM-229 are in QA rather than active code work, SCRUM-203 is
+`Готово`, and `scripts/ui_screens.gd` was clean in git status. Dispatched to
+Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` as item 4 after
+SCRUM-202, SCRUM-196 and SCRUM-198. Keep reasoning High/no low; do not change
+visual design or absorb Design/Animator scope.

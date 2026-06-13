@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя)
 Jira: SCRUM-225
+QA: in_progress (2026-06-13)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -64,3 +65,37 @@ Verification:
 - Runtime smoke checks sprite paths, non-`StyleBoxTexture` card styling, Russian stat labels and click selection; dump: `build/qa/weapon_select_clean_layout.md`.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 35b79e06 (ветка dev)
+
+Проверено (фактически):
+- **Ассеты**: спрайты оружия берсерка `two_handed_sword/axe/hammer.png` есть;
+  алиас-карта `sword/axe/hammer → two_handed_*` (ui_screens.gd:2106-2108).
+- **Код**: `_make_weapon_select_card()` (2019) — `Button` `WeaponOption_<id>`,
+  узел `WeaponSelectSprite_<id>` (2048), flat-стиль; клик ставит
+  `game.selected_weapon_id` (2008); «Назад»/Escape сохранены.
+- **Целевой тест не пустышка** (runtime_smoke:4818): на каждый weapon_id —
+  читаемая высота, normal/hover НЕ `StyleBoxTexture`, `WeaponSelectSprite_<id>`
+  с правильным путём текстуры, русские метки («Дальность»+«Перезарядка»), и клик
+  (`pressed.emit()`) выставляет `selected_weapon_id`. Прошёл.
+- **Регрессия (4×smoke)**: runtime / animation / meta / targeting — зелёные;
+  `ui_no_overlap_matrix_test` — passed (1152/1280/1469/2560).
+- **Визуал** (`build/qa/scrum225/weapon_select.png`): 3 карточки (Двуручный
+  меч/топор/молот) со спрайтом слева, колонки спрайт | название+описание | статы
+  по-русски (Дальность/Радиус/Перезарядка), без тяжёлой button-рамки; перекрытий нет.
+- **Дамп** `build/qa/weapon_select_clean_layout.md` присутствует. CHANGELOG —
+  строка 224/225/226/227 покрывает («PNG-спрайт и русские статы в лёгких
+  кликабельных карточках»).
+
+Краевые случаи:
+- Клик действительно выбирает оружие (тест ассертит `selected_weapon_id`).
+- Легаси-алиасы берсерка резолвятся в `two_handed_*` спрайты.
+- no-overlap на 1280/1600/2560.
+
+Баги: нет.
+
+Примечание (не баг): в `current_game_state.md` нет отдельной строки про
+SCRUM-225 (спрайт+рус.статы) — экран описан обобщённо, деталь покрыта CHANGELOG.
+Доковая мелочь, не блокер.

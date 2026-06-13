@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя со скриншотом)
 Jira: SCRUM-226
+QA: in_progress (2026-06-13)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -68,3 +69,40 @@ Verification:
 - Runtime smoke checks exactly 3 reward cards, `level_up_text_field_card` metadata, non-`StyleBoxTexture` styling, icon and description text.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd` — passed.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 35b79e06 (ветка dev)
+
+Проверено (фактически):
+- **Код**: `_make_level_up_reward_button` (ui_screens.gd:2310) строит `Button` с
+  мета `level_up_text_field_card=true`, все состояния через
+  `_level_up_text_field_style()` (`StyleBoxFlat`, НЕ `_apply_fantasy_button_theme`),
+  `focus_mode=FOCUS_ALL`, `clip_text=false`. Оставшийся вызов reward-button-темы
+  (2399) принадлежит `_make_elite_artifact_card` — это ДРУГОЙ экран (награда
+  элитки), не регресс.
+- **Кликабельность функциональна**: caller (2151) подключает
+  `button.pressed.connect(... _apply_reward_to_active_run(reward))` — клик
+  карточки применяет усиление; клавиатурная навигация сохранена (FOCUS_ALL).
+- **«Позже»/Escape**: `LevelUpLaterButton` + `game.ui_escape_action=defer_choice` —
+  отложенный выбор без траты пика.
+- **Целевой тест не пустышка** (runtime_smoke:803-836): ровно 3 карточки,
+  каждая с мета-флагом text-field, normal/hover НЕ `StyleBoxTexture`, иконка
+  `UIIcon_*`, непустой `LevelUpRewardDescription`, читаемые размеры (≥190×120).
+  Прошёл.
+- **Регрессия (4×smoke)**: runtime / animation / meta / targeting — зелёные;
+  `ui_no_overlap_matrix_test` — passed (1152/1280/1469/2560).
+- **Визуал** (`build/qa/scrum227/level_up.png`, тот же экран): 3 карточки в виде
+  полей с текстом (название → параметр X→Y → описание), без тяжёлой
+  reward-button рамки; перекрытий нет.
+- **Доки**: CHANGELOG (строка 224/225/226/227) + `current_game_state.md:616`
+  (level-up как text-field/panel карточки, кликабельные) обновлены.
+
+Краевые случаи:
+- Клик действительно применяет награду (pressed→`_apply_reward_to_active_run`).
+- Отложенный выбор через «Позже» и Escape — пик не тратится.
+- Описание не обрезается (`clip_text=false`, тест требует непустой текст).
+- rare-акцент сохранён в стиле поля (`_level_up_text_field_style(..., is_rare)`).
+- no-overlap на 1280/1600/2560.
+
+Баги: нет.

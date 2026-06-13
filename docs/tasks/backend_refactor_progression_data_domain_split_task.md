@@ -1,6 +1,6 @@
 # Back-end Task: Split `progression_data.gd` Into Domain Data Files
 
-Статус: blocked
+Статус: in_progress
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-174
@@ -40,3 +40,12 @@ look active without a safe isolated refactor window.
 
 Next unblock: resume after active content/balance tasks that modify
 `ProgressionData` are closed or explicitly paused. No domain split was started.
+
+## Dispatcher Unblock / Dispatch (2026-06-13)
+
+Unblocked for a serialized Back-end refactor window: SCRUM-192 is `Готово`, no
+active content/balance task is editing `ProgressionData`, and
+`scripts/progression_data.gd` was clean in git status. Dispatched to Back-end
+thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` as item 3 after SCRUM-202 and
+SCRUM-196. Keep reasoning High/no low; preserve balance exactly and close/Jira-
+sync each earlier queued task before starting.

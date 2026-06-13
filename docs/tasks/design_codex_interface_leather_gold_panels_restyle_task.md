@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя)
 Jira: SCRUM-229
+QA: passed (2026-06-13, 35b79e06)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -145,3 +146,43 @@ Back-end handoff:
   live paths already consumed by SCRUM-222 were replaced in-place.
 - If QA wants old legacy frame assets physically removed/archived, use the
   existing safe cleanup flow rather than deleting runtime assets in this Design task.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 35b79e06 (ветка dev)
+
+Проверено (фактически):
+- **Ассеты**: 5 канонных рамок в `assets/sprites/ui/frames/leather_gold/`
+  (square/wide/thin-bar/window/check) + системные чекбоксы — на месте, с `.import`.
+  Pipeline `tools/build_leather_gold_ui_kit.py` присутствует.
+- **Alpha/формат** (headless-загрузка через `Image`): все рамки RGBA8,
+  **углы прозрачны (corner_a=0.00) — запечённой шахматки НЕТ**, середина плотная,
+  ~5-8% прозрачных по кромкам. In-place `ui_df_panel_frame`/`ui_df_hud_panel_frame`
+  тоже несут leather+gold с корректной alpha.
+- **Целевые тесты**: `dark_fantasy_ui_theme_test` — passed (стайлбоксы резолвятся
+  через те же `dark_fantasy/` пути, что теперь несут новый кит),
+  `ui_no_overlap_matrix_test` — passed (1152/1280/1469/2560).
+- **Регрессия (4×smoke)**: runtime / animation / meta_progression /
+  melee_weapon_targeting — все зелёные.
+- **Визуальный QA** (оконный Godot, скрины в `build/qa/scrum229/`):
+  - `character_select` — панели досье/характеристик/портрета в leather+gold:
+    тёмная кожа, золотая гравировка, угловые кронштейны; 9-slice не искажён,
+    перекрытий нет.
+  - `settings` — окно-рамка leather+gold, чекбокс «Тряска камеры» с новой
+    золотой галочкой.
+  - `main_menu` — кнопки пергамент+печать (SCRUM-147) сосуществуют с панелями
+    leather+gold как единый dark-fantasy канон.
+
+Краевые случаи:
+- Прозрачные углы рамок (нет остатка checkerboard) — подтверждено по alpha.
+- Чекбокс из набора рендерится золотой галочкой в реальном экране настроек.
+- Кнопки и панели вместе (главное меню) — визуально согласованы.
+- Оговорка: оконный кадр клампится дисплеем до 1600×900, истинный 2560×1440
+  оконно не снять — но это разрешение покрыто `ui_no_overlap_matrix_test` (passed).
+
+Баги: нет.
+
+Примечание (не баг): физическое удаление/архивация старых legacy-ассетов
+оставлено на отдельный safe-cleanup flow (на доске
+`backend_content_safe_cleanup_followup`, blocked) — для критерия «единый
+leather+gold вид» достаточно in-place замены живых путей, что и сделано.

@@ -5,6 +5,7 @@
 Роль: Back-end
 Найдено QA при тестировании: backend_ui_dark_fantasy_theme_integration_task.md (SCRUM-222 QA-прогон)
 Jira: SCRUM-228
+QA: in_progress (2026-06-13)
 
 ## Воспроизведение
 1. `~/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script "res://tests/melee_weapon_targeting_test.gd"`
@@ -68,3 +69,28 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
 
 Note: rapid shell-loop launches of Godot hit an engine startup crash in `RotatedFileLogger::rotate_file()` before test code ran. Single Godot invocations and the required smoke checks pass.
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED
+Коммит: 35b79e06 (ветка dev)
+
+Проверено:
+- Фикс присутствует и закоммичен: `tests/melee_weapon_targeting_test.gd:152` —
+  `await process_frame` между добавлением `hammer_enemy`/`hammer_outside_enemy`
+  в группу `enemies` и `hammer.call("_attack")` (ровно предложенное решение).
+- Production-кэш `scripts/combat_target_query.gd` НЕ изменён (git diff HEAD чист) —
+  горячая покадровая оптимизация сохранена, как и требовалось.
+- **Анти-флака серия: 25/25 PASS, 0 промахов «hammer AoE», 0 крашей.** Прогон с
+  изолированным `--user-data-dir` на каждый запуск (обходит стартовый краш
+  логгера, отмеченный исполнителем). При прежней ~17%-флаке шанс 25 зелёных ≈ 1% —
+  устранение подтверждено.
+
+Краевые случаи:
+- Изолированные `user-data-dir` (имитация «холодного» первого запуска) — стабильно PASS,
+  т.е. исходный недетерминизм по `_cooldown`/`delta` снят.
+- Регрессия smoke-набора (runtime / animation / meta_progression / melee_targeting) —
+  все зелёные на 35b79e06.
+
+Баги: нет. Краш логгера `RotatedFileLogger::rotate_file()` при rapid-loop — это
+артефакт тестового окружения (общий лог-файл), не дефект игры; обходится отдельными
+`user-data-dir`. Отдельную баг-таску не завожу (вне зоны продукта).

@@ -130,11 +130,24 @@ Preview sheets: `docs/design/previews/summon_allies_asset_contact.png`, `docs/de
 
 SCRUM-135 anti-blur pass 2026-06-12 moved the 4 active elites (`iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`) and 2 active bosses (`boss_rift_warden`, `boss_disk_devourer`) from 256px source art to native `512x512` RGBA PNGs while preserving pose, silhouette and facing 1:1. The cutout pipeline now slices these six entities in 512px coordinate space and `scripts/sliced_rig_manifest.gd` records `size = Vector2(512, 512)` for them.
 
+SCRUM-156 added final source sprites for the SCRUM-155 roster expansion:
+`assets/sprites/bosses/boss_bone_archon.png`,
+`boss_brood_mother.png`, `boss_ashen_colossus.png`, plus
+`assets/sprites/elites/mini_scavenger_reaper.png`,
+`mini_plague_bellringer.png`, `mini_bone_warden.png`,
+`mini_spark_wight.png`, `mini_rot_hound.png`, and
+`mini_shadow_devourer.png`. All nine are `512x512` RGBA transparent painterly
+D&D source sprites. Runtime scene/codex wiring remains Back-end scope; cutout
+slicing, pivots, manifest updates and motion profiles remain Animator scope.
+
 Review previews:
 
 - `docs/design/previews/elite_boss_upscale_before_contact.png`;
 - `docs/design/previews/elite_boss_upscale_after_contact.png`;
 - `docs/design/previews/elite_boss_upscale_rig_debug_contact.png`.
+- `docs/design/previews/boss_elite_style_refs_contact.png`;
+- `docs/design/previews/new_bosses_mini_elites_contact.png`;
+- `docs/design/previews/new_bosses_mini_elites_scale_preview.png`.
 
 ## Combat VFX Assets
 

@@ -48,11 +48,19 @@ Use groups for temporary runtime nodes:
 
 ## Tests
 
-Main checks:
+Main umbrella check:
 
 ```bash
 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
 ```
+
+Focused runtime smoke suites (SCRUM-202) reuse the umbrella helper/assertion layer and are intended for faster refactor regression checks:
+
+- `tests/runtime_smoke_ui_test.gd` — menus, settings, Codex, hero/weapon UI, no-overlap/HUD/shop layout.
+- `tests/runtime_smoke_combat_test.gd` — combat startup, arena, HUD, player/enemy/projectile damage, health bars, death flow.
+- `tests/runtime_smoke_progression_economy_test.gd` — rewards, artifacts, settings persistence, attribute wiring, economy/FAB, ascension.
+- `tests/runtime_smoke_weapon_mechanics_test.gd` — character/weapon configs, all variants equip, class weapon mechanics, aiming, ultimate.
+- `tests/runtime_smoke_boss_elite_test.gd` — elite flow, elite attacks, boss HUD, boss/mini-elite rosters, victory flow.
 
 Additional checks:
 

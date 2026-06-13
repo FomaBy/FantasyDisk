@@ -765,7 +765,7 @@
  },
  "backend_refactor_class_weapon_mode_registry_task.md": {
   "key": "SCRUM-196",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_refactor_combat_target_query_cache_task.md": {
   "key": "SCRUM-197",
@@ -773,11 +773,11 @@
  },
  "backend_refactor_progression_data_domain_split_task.md": {
   "key": "SCRUM-198",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_refactor_ui_screens_domain_split_task.md": {
   "key": "SCRUM-199",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_test_content_registry_consistency_task.md": {
   "key": "SCRUM-200",
@@ -789,7 +789,7 @@
  },
  "backend_test_runtime_smoke_suite_split_task.md": {
   "key": "SCRUM-202",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_test_ui_no_overlap_matrix_task.md": {
   "key": "SCRUM-203",
@@ -841,22 +841,30 @@
  },
  "backend_weapon_select_sprite_clean_layout_task.md": {
   "key": "SCRUM-225",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_levelup_cards_text_field_style_task.md": {
   "key": "SCRUM-226",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_parchment_button_seal_visible_height_task.md": {
   "key": "SCRUM-227",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "bug_flaky_melee_targeting_hammer_aoe_cache_task.md": {
   "key": "SCRUM-228",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_codex_interface_leather_gold_panels_restyle_task.md": {
   "key": "SCRUM-229",
-  "status": "Контроль качества"
+  "status": "Готово"
+ },
+ "backend_ascension_per_level_changes_near_start_task.md": {
+  "key": "SCRUM-230",
+  "status": "К выполнению"
+ },
+ "bug_hero_select_radar_out_of_frame_description_left_task.md": {
+  "key": "SCRUM-231",
+  "status": "К выполнению"
  }
 }

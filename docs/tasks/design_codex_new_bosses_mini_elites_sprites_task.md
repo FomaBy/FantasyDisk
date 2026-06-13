@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Спрайты 3 новых боссов и 6 мини-элиток (D&D-канон)
 
-Статус: in_progress
+Статус: review
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя; ростер проработан PM)
@@ -71,3 +71,61 @@ native (урок SCRUM-135 — на epic scale 256px мылится), мини-�
 ## Dispatch
 - 2026-06-12: Codex Documentation dispatcher отправил задачу в Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`; Jira `SCRUM-156` переведена в работу и добавлена в активный спринт 0.1.4. Парная Back-end-задача механик: `SCRUM-155`.
 - 2026-06-13: Dispatcher folded duplicate audit tasks SCRUM-180 (`codex_design_new_bosses_mini_elites_redraw_task.md`) and SCRUM-204 (`design_animation_ready_boss_mini_elite_parts_handoff_task.md`) into this active SCRUM-156 task. Additional acceptance context: final stable source paths, transparent alpha, animation-friendly separable parts, contact sheet, and explicit Animator unblock note after source sprites are ready.
+
+## Result / 2026-06-13 — READY FOR QA
+
+Design source sprites completed using built-in Codex image generation with
+project style references from existing boss/elite sprites. Each generation used
+a flat `#00ff00` chroma-key background, then local alpha cleanup via
+`remove_chroma_key.py`, alpha crop and fit into `512x512` RGBA transparent source
+PNGs.
+
+Generated boss assets:
+
+- `assets/sprites/bosses/boss_bone_archon.png`
+- `assets/sprites/bosses/boss_brood_mother.png`
+- `assets/sprites/bosses/boss_ashen_colossus.png`
+
+Generated mini-elite assets:
+
+- `assets/sprites/elites/mini_scavenger_reaper.png`
+- `assets/sprites/elites/mini_plague_bellringer.png`
+- `assets/sprites/elites/mini_bone_warden.png`
+- `assets/sprites/elites/mini_spark_wight.png`
+- `assets/sprites/elites/mini_rot_hound.png`
+- `assets/sprites/elites/mini_shadow_devourer.png`
+
+Reference / QA previews:
+
+- `docs/design/previews/boss_elite_style_refs_contact.png`
+- `docs/design/previews/new_bosses_mini_elites_contact.png`
+- `docs/design/previews/new_bosses_mini_elites_scale_preview.png`
+
+Visual review:
+
+- `boss_bone_archon`: skeletal lich-necromancer, bone crown, vertebrae staff,
+  green necromantic glow, separable arms/staff silhouette.
+- `boss_brood_mother`: giant spider queen with egg abdomen, chitin, many eyes,
+  web strands and readable leg silhouette.
+- `boss_ashen_colossus`: charred stone giant, ember fissures, massive fists and
+  ash wisps.
+- Mini-elites are distinct at scale: reaper/scythe, plague bellringer, bone
+  shield warden, blue spark wight, rot hound and one-eyed shadow devourer.
+
+Validation:
+
+- PNG validation passed: all 9 files are `512x512`, RGBA, non-empty transparent alpha.
+- Godot import passed.
+- Runtime smoke passed:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+- Animation smoke passed:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd`
+
+Role-boundary handoff:
+
+- Back-end/runtime wiring was not changed in this Design pass. Existing SCRUM-155
+  task now has a Design handoff section with the final sprite paths so Back-end
+  can replace placeholder/tint scene and codex sprite references.
+- Cutout slicing, pivots, `scripts/sliced_rig_manifest.gd`, motion profiles and
+  animation smoke coverage remain Animator scope. Existing SCRUM-204 handoff was
+  updated with the final source paths and Animator unblock note.
