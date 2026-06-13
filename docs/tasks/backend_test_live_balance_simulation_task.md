@@ -1,6 +1,6 @@
 # Back-end Task: Add Live Balance Simulation Tests
 
-Статус: new (PM 2026-06-13: сброшен из залипшего in_progress — claim >3ч без коммитов, Codex-dispatch не дал прогресса; готов к взятию воркером)
+Статус: done (2026-06-13, Claude Fable 5)
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end audit SCRUM-178
@@ -21,5 +21,9 @@ Add factual live-DPS/TTK tests to complement formula-only balance harness output
 
 - New focused test/harness runs headless.
 
+## Done (2026-06-13)
+`tests/live_balance_simulation_test.gd` — детерминированный live-DPS/TTK тест: реальный Player+оружие бьёт стационарных болванок 8с, мерится фактический урон по одному представителю каждого архетипа (deploy/summon/dot/aoe/single, автоподбор по конфигу). ЖЁСТКО падает только на реальной поломке (0 урона за окно / NaN / <4 архетипов покрыто); балансовые дельты и aoe<solo — мягкий отчёт без флака. Headless зелёный, 5/5 архетипов покрыто, 0 пропавших.
+
 ## Dispatcher Note (2026-06-13)
 Dispatched to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after user confirmed no feature freeze / backlog is eligible.
+Dispatcher: restarted to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` on 2026-06-13 after PM reset stale in_progress.
