@@ -4,6 +4,9 @@
 
 ## [Unreleased] — ветка dev
 
+### Added
+- Опорные balance-гейты патча 0.1.5 (SCRUM-249): `tests/global_damage_balance_smoke_test.gd` (комбинированное бюджет-отклонение по всем парам класс×оружие в коридоре ±25%) и `tests/global_survivability_balance_smoke_test.gd` (TTD/митигация в коридорах + проверяемое «бессмертие недостижимо»: митигированный входящий урон > реген). Отчёты в `build/global_*_balance_report.md`. Запуск: `tools/run_focused_tests.sh global_damage global_survivability` или по отдельности через Godot headless. Каждая балансовая задача 0.1.5 проверяется против этих гейтов.
+
 ## [0.1.4] — 2026-06-13
 
 - Docs (SCRUM-195): synchronized the remaining 0.1.4 domain-doc drift after
