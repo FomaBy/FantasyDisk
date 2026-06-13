@@ -93,7 +93,7 @@ const SCREEN_BACKGROUND_PATHS := {
 	"end_run_confirm": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 }
 const GAME_CURSOR_PATH := "res://assets/sprites/ui/cursor/game_cursor.png"
-const GAME_CURSOR_HOTSPOT := Vector2(5, 4)
+const GAME_CURSOR_HOTSPOT := Vector2(2, 2)
 const SCREEN_BACKGROUND_FALLBACK_COLORS := {
 	"system": Color(0.045, 0.052, 0.070, 1.0),
 	"settings": Color(0.045, 0.052, 0.070, 1.0),

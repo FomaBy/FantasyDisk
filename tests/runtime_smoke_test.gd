@@ -275,14 +275,22 @@ func _initialize() -> void:
 		push_error("Expected hero select v3 to build a readable stat radar.")
 		quit(1)
 		return
-	var radar_rect := radar.get_global_rect()
-	var hero_screen_rect := hero_screen.get_global_rect()
-	if radar.get_parent() == dossier or radar.anchor_left < 0.99 or radar.offset_left > -360.0 or radar.offset_top < 120.0:
-		push_error("Expected hero stat radar to be a lowered top-right floating widget, not an inline dossier block.")
+	var radar_panel := main.find_child("HeroSelectRadarPanel", true, false) as Control
+	var dossier_text := main.find_child("HeroSelectDossier", true, false) as Control
+	var dossier_desc := main.find_child("HeroSelectInfoDescription", true, false) as Label
+	if radar_panel == null or dossier_text == null or dossier_desc == null:
+		push_error("Expected hero select to place dossier text and radar in one right-side info panel.")
 		quit(1)
 		return
-	if radar_rect.position.y < hero_screen_rect.position.y + 112.0 or radar_rect.end.x > hero_screen_rect.end.x - 32.0:
-		push_error("Expected hero stat radar rect %s to keep clear top/right margins inside hero select rect %s." % [radar_rect, hero_screen_rect])
+	var radar_panel_rect := radar_panel.get_global_rect()
+	var dossier_text_rect := dossier_text.get_global_rect()
+	var dossier_desc_rect := dossier_desc.get_global_rect()
+	if dossier_text_rect.end.x > radar_panel_rect.position.x - 12.0 or dossier_desc_rect.end.x > radar_panel_rect.position.x - 12.0:
+		push_error("Expected hero description/dossier to stay left of radar with a clear gap.")
+		quit(1)
+		return
+	if radar_panel.get_parent() == dossier_text:
+		push_error("Expected hero radar to be a sibling of the dossier text, not nested inside it.")
 		quit(1)
 		return
 	if main.find_child("HeroSelectPortraitName", true, false) != null:
@@ -807,8 +815,17 @@ func _initialize() -> void:
 			push_error("Expected each level-up reward button to show a stat or artifact icon.")
 			quit(1)
 			return
-		if reward_button.get_theme_stylebox("normal") == null or reward_button.get_theme_stylebox("hover") == null:
-			push_error("Expected level-up reward buttons to use stylized FantasyDisk button states.")
+		if not bool(reward_button.get_meta("level_up_text_field_card", false)):
+			push_error("Expected level-up reward cards to be styled as clickable text-field panels.")
+			quit(1)
+			return
+		if reward_button.get_theme_stylebox("normal") is StyleBoxTexture or reward_button.get_theme_stylebox("hover") is StyleBoxTexture:
+			push_error("Expected level-up reward cards to avoid heavy reward button frame textures.")
+			quit(1)
+			return
+		var description_label := reward_button.find_child("LevelUpRewardDescription", true, false) as Label
+		if description_label == null or description_label.text.strip_edges() == "":
+			push_error("Expected level-up reward cards to expose readable description text.")
 			quit(1)
 			return
 
@@ -1126,6 +1143,8 @@ func _initialize() -> void:
 	await _test_boss_zone_wave_safe_corridor()
 	await _test_elite_boss_presentation(main_scene)
 	await _test_boss_hud_omits_timer(main_scene)
+	await _test_weapon_select_clean_layout(main_scene)
+	await _test_parchment_button_seal_sizes(main_scene)
 	await _test_hero_select_radar_no_overlap_layouts(main_scene)
 	await _test_shop_wall_no_overlap_layouts(main_scene)
 	await _test_hud_no_overlap_layouts(main_scene)
@@ -4796,6 +4815,133 @@ func _control_center_matches_viewport_size(control: Control, viewport_size: Vect
 	return absf(rect.get_center().x - viewport_center.x) <= tolerance_px and absf(rect.get_center().y - viewport_center.y) <= tolerance_px
 
 
+func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
+	var weapon_main := main_scene.instantiate()
+	root.add_child(weapon_main)
+	await process_frame
+	weapon_main.set("selected_character_id", "berserk")
+	weapon_main.call("_show_weapon_select")
+	await process_frame
+	await process_frame
+
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# Weapon Select Clean Layout Dump")
+	dump_lines.append("")
+	var weapon_ids: Array = ProgressionData.weapon_ids("berserk")
+	for weapon_id_value in weapon_ids:
+		var weapon_id := str(weapon_id_value)
+		var button := weapon_main.find_child("WeaponOption_%s" % weapon_id, true, false) as Button
+		if button == null:
+			_fail("Expected weapon select card for %s." % weapon_id)
+			return
+		var rect := button.get_global_rect()
+		dump_lines.append("- `%s`: `%s`" % [button.name, str(rect)])
+		if rect.size.y < 110.0:
+			_fail("Expected weapon select card %s to keep readable row height, got %s." % [weapon_id, rect])
+			return
+		if button.get_theme_stylebox("normal") is StyleBoxTexture or button.get_theme_stylebox("hover") is StyleBoxTexture:
+			_fail("Expected weapon select card %s to use lightweight flat styling, not heavy button textures." % weapon_id)
+			return
+		var sprite := button.find_child("WeaponSelectSprite_%s" % weapon_id, true, false) as TextureRect
+		var expected_sprite := _expected_weapon_sprite_path(weapon_id)
+		if sprite == null or sprite.texture == null or sprite.texture.resource_path != expected_sprite:
+			_fail("Expected weapon select card %s to show sprite %s." % [weapon_id, expected_sprite])
+			return
+		var stats := button.find_child("WeaponSelectStats_%s" % weapon_id, true, false) as Label
+		if stats == null or not stats.text.contains("Дальность") or not stats.text.contains("Перезарядка"):
+			_fail("Expected weapon select card %s to show Russian stat labels." % weapon_id)
+			return
+	var first_button := weapon_main.find_child("WeaponOption_%s" % str(weapon_ids[0]), true, false) as Button
+	first_button.pressed.emit()
+	await process_frame
+	if str(weapon_main.get("selected_weapon_id")) != str(weapon_ids[0]):
+		_fail("Expected weapon select card click to select %s." % str(weapon_ids[0]))
+		return
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var file := FileAccess.open("%s/weapon_select_clean_layout.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump_lines))
+		file.close()
+	weapon_main.queue_free()
+	await process_frame
+
+
+func _expected_weapon_sprite_path(weapon_id: String) -> String:
+	var aliases := {
+		"sword": "two_handed_sword",
+		"axe": "two_handed_axe",
+		"hammer": "two_handed_hammer",
+	}
+	return "res://assets/sprites/weapons/%s.png" % str(aliases.get(weapon_id, weapon_id))
+
+
+func _test_parchment_button_seal_sizes(main_scene: PackedScene) -> void:
+	var seal_main := main_scene.instantiate()
+	root.add_child(seal_main)
+	await process_frame
+
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# Parchment Wax-Seal Button Size Dump")
+	dump_lines.append("")
+	_assert_visible_seal_buttons(seal_main, "main menu", dump_lines)
+	seal_main.call("_show_character_select")
+	await process_frame
+	await process_frame
+	_assert_visible_seal_buttons(seal_main, "hero select", dump_lines)
+	seal_main.set("selected_character_id", "berserk")
+	seal_main.call("_show_weapon_select")
+	await process_frame
+	await process_frame
+	_assert_visible_seal_buttons(seal_main, "weapon select", dump_lines)
+	seal_main.call("_show_settings_menu")
+	await process_frame
+	await process_frame
+	_assert_visible_seal_buttons(seal_main, "settings", dump_lines)
+
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var file := FileAccess.open("%s/parchment_button_seal_sizes.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump_lines))
+		file.close()
+	seal_main.queue_free()
+	await process_frame
+
+
+func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: PackedStringArray) -> void:
+	var ui_root = node.get("ui_layer")
+	if not (ui_root is Node):
+		return
+	dump_lines.append("## %s" % context)
+	var buttons: Array = (ui_root as Node).find_children("*", "Button", true, false)
+	for button_node in buttons:
+		var button := button_node as Button
+		if button == null or not button.visible:
+			continue
+		var texture_path := _button_normal_texture_path(button)
+		if not texture_path.contains("/ui_df_button_"):
+			continue
+		var rect := button.get_global_rect()
+		dump_lines.append("- `%s`: rect=`%s`, min=`%s`, texture=`%s`" % [button.name, str(rect), str(button.custom_minimum_size), texture_path])
+		if rect.size.y < 64.0 or button.custom_minimum_size.y < 64.0:
+			_fail("Expected wax-seal button %s on %s to stay tall enough for the seal, rect=%s min=%s." % [button.name, context, rect, button.custom_minimum_size])
+			return
+		if button.text.strip_edges().length() <= 2 and rect.size.x < 120.0:
+			_fail("Expected compact utility button %s on %s to avoid wax-seal button texture." % [button.name, context])
+			return
+
+
+func _button_normal_texture_path(button: Button) -> String:
+	var style := button.get_theme_stylebox("normal")
+	if not (style is StyleBoxTexture):
+		return ""
+	var texture := (style as StyleBoxTexture).texture
+	if texture == null:
+		return ""
+	return texture.resource_path
+
+
 func _test_hero_select_radar_no_overlap_layouts(main_scene: PackedScene) -> void:
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# Hero Select Radar Rect Dump")
@@ -4827,39 +4973,46 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var context := "hero select %s" % str(viewport_size)
 	var hero_screen := hero_main.find_child("HeroSelectScreen", true, false) as Control
 	var radar := hero_main.find_child("HeroStatRadar", true, false) as Control
+	var radar_panel := hero_main.find_child("HeroSelectRadarPanel", true, false) as Control
 	var header := hero_main.find_child("HeroSelectHeader", true, false) as Control
-	var dossier := hero_main.find_child("HeroSelectDossierPanel", true, false) as Control
+	var dossier_panel := hero_main.find_child("HeroSelectDossierPanel", true, false) as Control
+	var dossier := hero_main.find_child("HeroSelectDossier", true, false) as Control
 	var dossier_title := hero_main.find_child("HeroSelectInfoTitle", true, false) as Control
 	var dossier_desc := hero_main.find_child("HeroSelectInfoDescription", true, false) as Control
 	var choose_button := hero_main.find_child("HeroSelectChooseButton", true, false) as Control
-	if hero_screen == null or radar == null or header == null or dossier == null:
+	if hero_screen == null or radar == null or radar_panel == null or header == null or dossier_panel == null or dossier == null or dossier_desc == null:
 		_fail("Expected hero select radar/header/dossier nodes at %s." % context)
 		return
 	var screen_rect := hero_screen.get_global_rect()
 	var radar_rect := radar.get_global_rect()
+	var radar_panel_rect := radar_panel.get_global_rect()
 	var header_rect := header.get_global_rect()
 	var dossier_rect := dossier.get_global_rect()
+	var dossier_panel_rect := dossier_panel.get_global_rect()
+	var dossier_desc_rect := dossier_desc.get_global_rect()
 	dump_lines.append("## %s" % context)
 	dump_lines.append("- `HeroSelectScreen`: `%s`" % str(screen_rect))
 	dump_lines.append("- `HeroSelectHeader`: `%s`" % str(header_rect))
-	dump_lines.append("- `HeroSelectDossierPanel`: `%s`" % str(dossier_rect))
+	dump_lines.append("- `HeroSelectDossierPanel`: `%s`" % str(dossier_panel_rect))
+	dump_lines.append("- `HeroSelectDossier`: `%s`" % str(dossier_rect))
+	dump_lines.append("- `HeroSelectInfoDescription`: `%s`" % str(dossier_desc_rect))
+	dump_lines.append("- `HeroSelectRadarPanel`: `%s`" % str(radar_panel_rect))
 	dump_lines.append("- `HeroStatRadar`: `%s`" % str(radar_rect))
-	var min_top_gap := 112.0
-	var min_right_gap := 32.0
-	if radar_rect.position.y < screen_rect.position.y + min_top_gap:
-		_fail("Expected hero radar top gap >= %.0f at %s, got rect %s within screen %s." % [min_top_gap, context, radar_rect, screen_rect])
-		return
-	if radar_rect.end.x > screen_rect.end.x - min_right_gap:
-		_fail("Expected hero radar right gap >= %.0f at %s, got rect %s within screen %s." % [min_right_gap, context, radar_rect, screen_rect])
+	var min_gap := 12.0
+	if dossier_rect.end.x > radar_panel_rect.position.x - min_gap or dossier_desc_rect.end.x > radar_panel_rect.position.x - min_gap:
+		_fail("Expected hero description/dossier to stay left of radar with >= %.0fpx gap at %s, got dossier %s desc %s radar panel %s." % [min_gap, context, dossier_rect, dossier_desc_rect, radar_panel_rect])
 		return
 	if _rect_with_tolerance(radar_rect, 4.0).intersects(_rect_with_tolerance(header_rect, 4.0)):
 		_fail("Expected hero radar not to overlap header at %s." % context)
 		return
-	if radar_rect.position.x < dossier_rect.position.x + 18.0 or radar_rect.position.y < dossier_rect.position.y + 18.0:
-		_fail("Expected hero radar to keep an inner margin inside dossier frame at %s." % context)
+	if radar_panel_rect.position.x < dossier_panel_rect.position.x + 18.0 or radar_panel_rect.end.x > dossier_panel_rect.end.x - 18.0:
+		_fail("Expected hero radar panel to stay inside right dossier frame at %s." % context)
+		return
+	if radar_panel.get_parent() == dossier:
+		_fail("Expected hero radar panel to be a sibling to dossier text, not nested inside it at %s." % context)
 		return
 	for control in [dossier_title, dossier_desc, choose_button]:
-		if control != null and _rect_with_tolerance(radar_rect, 4.0).intersects(_rect_with_tolerance((control as Control).get_global_rect(), 4.0)):
+		if control != null and _rect_with_tolerance(radar_panel_rect, 4.0).intersects(_rect_with_tolerance((control as Control).get_global_rect(), 4.0)):
 			_fail("Expected hero radar not to overlap dossier content %s at %s." % [(control as Control).name, context])
 			return
 

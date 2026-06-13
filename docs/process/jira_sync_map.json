@@ -833,30 +833,30 @@
  },
  "codex_design_cursor_clawed_fire_task.md": {
   "key": "SCRUM-223",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_hero_select_description_left_of_radar_task.md": {
   "key": "SCRUM-224",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_weapon_select_sprite_clean_layout_task.md": {
   "key": "SCRUM-225",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_levelup_cards_text_field_style_task.md": {
   "key": "SCRUM-226",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_parchment_button_seal_visible_height_task.md": {
   "key": "SCRUM-227",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "bug_flaky_melee_targeting_hammer_aoe_cache_task.md": {
   "key": "SCRUM-228",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_codex_interface_leather_gold_panels_restyle_task.md": {
   "key": "SCRUM-229",
-  "status": "В работе"
+  "status": "Контроль качества"
  }
 }

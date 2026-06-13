@@ -1,6 +1,6 @@
 # BUG: Флака `melee_weapon_targeting_test` — hammer AoE из-за покадрового кэша целей
 
-Статус: in_progress
+Статус: done
 Приоритет: normal
 Роль: Back-end
 Найдено QA при тестировании: backend_ui_dark_fantasy_theme_integration_task.md (SCRUM-222 QA-прогон)
@@ -57,3 +57,14 @@ Production-код `combat_target_query.gd` трогать не требуетс�
 
 ## Dispatcher Note (2026-06-13)
 Jira key `SCRUM-228` found in existing sync map/Jira and synced into this task. Dispatched to Back-end Codex thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` as an isolated test-flake fix. Work with reasoning set to High; do not switch the run/model effort to low. Keep Jira live-synced: in-progress now, then update task/board/Jira on completion, with QA left to the board worker. Duplicate audit: older melee targeting test work SCRUM-37 is already done and is not this hammer AoE cache flake.
+
+## Result Summary (2026-06-13)
+
+Fixed the flaky test in `tests/melee_weapon_targeting_test.gd` by adding `await process_frame` after hammer enemies are added to the `enemies` group and before `hammer.call("_attack")`. The earlier sword weapon already had `weapon.set_process(false)`, so no extra production or test changes were needed. `scripts/combat_target_query.gd` was intentionally left unchanged because the per-frame cache is a hot-path optimization and the defect was same-frame test setup nondeterminism.
+
+Verification:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/melee_weapon_targeting_test.gd` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --user-data-dir /private/tmp/fantasydisk-melee-check --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/melee_weapon_targeting_test.gd` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+
+Note: rapid shell-loop launches of Godot hit an engine startup crash in `RotatedFileLogger::rotate_file()` before test code ran. Single Godot invocations and the required smoke checks pass.

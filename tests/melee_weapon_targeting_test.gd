@@ -149,6 +149,7 @@ func _initialize() -> void:
 	hammer_outside_enemy.add_to_group("enemies")
 	hammer_outside_enemy.set("health", hammer_outside_enemy.get("max_health"))
 
+	await process_frame
 	hammer.call("_attack")
 	if float(hammer_enemy.get("health")) >= float(hammer_enemy.get("max_health")):
 		push_error("Expected hammer AoE to damage enemies around Berserk.")

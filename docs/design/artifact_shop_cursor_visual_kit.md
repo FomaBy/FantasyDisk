@@ -6,7 +6,7 @@
 
 Back-end audit follow-up resolved 2026-06-11: фактические PNG из разделов Artifact Icon Mapping, Shop-Only Icon Mapping, Shop Visual Assets и Cursor Assets добавлены в текущий checkout и импортированы в Godot. Fallback через `scripts/ui_icon_registry.gd` остается только fail-safe.
 
-User feedback rework 2026-06-12: artifact icons заменены как `256x256` RGBA transparent realistic epic D&D/tabletop fantasy raster magic items. Это не пентаграммы, не плоские UI-symbols и не simple icon set: один красивый finished painted предмет на каждый active artifact ID, без встроенной UI-рамки, пьедесталов, фона, осколков, частиц и текста. Предметы сохраняют readable fantasy lighting/materials и привязаны к названию/эффекту из `ProgressionData.ARTIFACTS`. Предыдущие generated/vector-like, glossy, concept-sheet tile и per-item pictogram направления superseded. Shop-only icons, frames and cursor variants keep the richer FantasyDisk fantasy-medallion / dagger-quill treatment.
+User feedback rework 2026-06-12: artifact icons заменены как `256x256` RGBA transparent realistic epic D&D/tabletop fantasy raster magic items. Это не пентаграммы, не плоские UI-symbols и не simple icon set: один красивый finished painted предмет на каждый active artifact ID, без встроенной UI-рамки, пьедесталов, фона, осколков, частиц и текста. Предметы сохраняют readable fantasy lighting/materials и привязаны к названию/эффекту из `ProgressionData.ARTIFACTS`. Предыдущие generated/vector-like, glossy, concept-sheet tile и per-item pictogram направления superseded. Shop-only icons and frames keep the richer FantasyDisk fantasy-medallion treatment. Cursor variants were reworked in SCRUM-223 into a dark steel dragon/clawed fire pointer.
 
 ## Summary
 
@@ -114,11 +114,11 @@ For `2560x1440`, keep the shop offer group max width around `960-1100`, with slo
 
 | Asset ID | File | Size | Hotspot | Use |
 | --- | --- | ---: | --- | --- |
-| `ui_game_cursor` | `assets/sprites/ui/cursor/game_cursor.png` | `48x48` | `(5, 4)` | default cursor |
-| `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png` | `48x48` | `(5, 4)` | hover/clickable cursor |
-| `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png` | `48x48` | `(5, 4)` | optional combat/attack cursor |
+| `ui_game_cursor` | `assets/sprites/ui/cursor/game_cursor.png` | `48x48` | `(2, 2)` | default dragon claw fire cursor |
+| `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png` | `48x48` | `(2, 2)` | hover/clickable dragon claw fire cursor |
+| `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png` | `48x48` | `(2, 2)` | optional combat/attack dragon claw fire cursor |
 
-The cursor uses a pale dagger/quill fantasy pointer, strong dark outline, gem detail and gold/cyan/red state accents. It is designed to remain visible on combat backgrounds, route map, menu panels and shop screens.
+The cursor uses a dark forged steel dragon/claw pointer with a precise upper-left tip, orange fire glow along the blade and a red gem/eye. Hover and attack variants keep the same silhouette and hotspot while increasing the warm glow so the cursor remains visible on combat backgrounds, route map, menu panels and shop screens. SCRUM-223 preview: `docs/design/previews/cursor_clawed_fire_before_after.png`.
 
 ## Integration Notes
 

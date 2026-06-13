@@ -445,7 +445,7 @@ Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 ви
 
 ## UI Visual Kit 2026-06-13
 
-SCRUM-147 после пользовательской правки 2026-06-13 оставляет Parchment & Wax Seal только для кнопок. Кнопки используют референс `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: состаренный пергамент, красная сургучная печать, зубчатый кованый металл, рубин, золотой hover glow, затемненный pressed state и grayscale disabled state. Все non-button frame paths в `global/`, `escape/`, selected `shop/` и canonical `dark_fantasy/ui_df_panel/card/HUD/tooltip/stat/shop` возвращены к старому interface look, потому что full parchment panels выглядели странно разрезанными. No-junk rule: без бессмысленных линий/кружков/квадратов/дефолтного Godot-декора.
+SCRUM-147 после пользовательской правки 2026-06-13 оставляет Parchment & Wax Seal только для кнопок. Кнопки используют референс `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: состаренный пергамент, красная сургучная печать, зубчатый кованый металл, рубин, золотой hover glow, затемненный pressed state и grayscale disabled state. SCRUM-229 заменяет non-button frame paths в `global/`, `escape/`, selected `shop/` и canonical `dark_fantasy/ui_df_panel/card/HUD/tooltip/stat/shop` на leather+gold panel kit из `docs/design/references/interface/`: тёмная кожа/камень, золотая гравировка, угловые кронштейны, заклёпки и мягкое свечение. No-junk rule: без бессмысленных линий/кружков/квадратиков/дефолтного Godot-декора.
 
 | ID | Ассет | Роль |
 | --- | --- | --- |
@@ -461,8 +461,13 @@ SCRUM-147 после пользовательской правки 2026-06-13 о
 | `ui_df_button_danger_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_danger_idle.png` + hover/pressed/disabled | Exit/end-run/danger 4-state buttons |
 | `ui_df_panel_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png` | Canonical dark fantasy large panel |
 | `ui_df_shop_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png` | Canonical merchant/shop frame |
+| `ui_panel_leather_gold_square` | `assets/sprites/ui/frames/leather_gold/ui_panel_leather_gold_square.png` | SCRUM-229 source square/card frame |
+| `ui_panel_leather_gold_wide` | `assets/sprites/ui/frames/leather_gold/ui_panel_leather_gold_wide.png` | SCRUM-229 source wide panel/frame |
+| `ui_bar_leather_gold_thin` | `assets/sprites/ui/frames/leather_gold/ui_bar_leather_gold_thin.png` | SCRUM-229 source bar/label/divider frame |
+| `ui_window_leather_gold_main` | `assets/sprites/ui/frames/leather_gold/ui_window_leather_gold_main.png` | SCRUM-229 source large window panel |
+| `ui_check_leather_gold` | `assets/sprites/ui/frames/leather_gold/ui_check_leather_gold.png` | SCRUM-229 source checked state frame |
 
-Pipeline/preview: `tools/apply_button_only_ui_revert.py`, `docs/design/previews/ui_button_only_legacy_panels_contact.png`, compatibility preview `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png`.
+Pipeline/preview: `tools/apply_button_only_ui_revert.py` (SCRUM-147 buttons/legacy correction), `tools/build_leather_gold_ui_kit.py` (SCRUM-229 panels), `docs/design/previews/interface_leather_gold_panel_kit_contact.png`, QA copy `build/qa/interface_leather_gold_panel_kit_contact.png`.
 
 Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
 
@@ -705,9 +710,9 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | Shop price badge | `ui_shop_price_badge` | `assets/sprites/ui/shop/ui_shop_price_badge.png` | Реализовано |
 | Shop purchased/unavailable overlay | `ui_shop_purchased_overlay` | `assets/sprites/ui/shop/ui_shop_purchased_overlay.png` | Реализовано |
 | Shop tooltip frame | `ui_shop_tooltip_frame` | `assets/sprites/ui/shop/ui_shop_tooltip_frame.png` | Реализовано |
-| Game cursor | `ui_game_cursor` | `assets/sprites/ui/cursor/game_cursor.png`, hotspot `(5, 4)` | Реализовано |
-| Game cursor hover | `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png`, hotspot `(5, 4)` | Реализовано |
-| Game cursor attack | `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png`, hotspot `(5, 4)` | Реализовано |
+| Game cursor | `ui_game_cursor` | `assets/sprites/ui/cursor/game_cursor.png`, hotspot `(2, 2)` | Реализовано (SCRUM-223 dragon claw fire cursor) |
+| Game cursor hover | `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png`, hotspot `(2, 2)` | Реализовано (SCRUM-223 dragon claw fire cursor) |
+| Game cursor attack | `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png`, hotspot `(2, 2)` | Реализовано (SCRUM-223 dragon claw fire cursor) |
 
 Shop-only icons имеют прозрачный фон, размер `128x128`, stylized fantasy cartoon style и не используют текст/emoji/default placeholders. Artifact icons находятся в realistic D&D raster redraw pass 2026-06-12: каждый активный артефакт — отдельная законченная painted magic item-картинка без фона, пьедестала, текста и мусора, с технической проверкой размера, alpha, bbox и 40px-читаемости. Shop item filenames намеренно следуют схеме `shop_<shop_item_id>.png`, поэтому для `shop_damage` путь выглядит как `assets/sprites/ui/icons/shop/shop_shop_damage.png`. Фактические PNG и `.import` файлы готовы в текущем checkout; backend hooks могут подхватывать эти файлы вместо fallback.
 

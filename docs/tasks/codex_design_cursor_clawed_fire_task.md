@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Игровой курсор — драконий когтистый наконечник с огнём (2-й вариант с референса)
 
-Статус: in_progress
+Статус: done
 Приоритет: normal
 Роль: Design (Codex генерация) → Claude-Designer ревью/интеграция
 Версия: 0.1.4
@@ -78,3 +78,40 @@ content_registry.md (курсор), docs/design/previews/.
 Желателен исходный PNG от пользователя в docs/design/references/cursor/. Если его
 нет — Codex генерит по описанию README (dark fantasy когтистый наконечник + огонь).
 Не блокироваться: при отсутствии исходника генерировать по описанию.
+
+## Result / 2026-06-13 — READY FOR QA
+
+Source reference PNG was not present in `docs/design/references/cursor/`, so the
+asset was generated from the README description of the selected second variant:
+dark steel dragon/clawed pointer, orange fire glow along the tip, red gem/eye.
+
+Implemented assets:
+
+- `assets/sprites/ui/cursor/game_cursor.png` — new default cursor, `48x48` RGBA.
+- `assets/sprites/ui/cursor/game_cursor_hover.png` — same silhouette with stronger
+  warm hover glow, `48x48` RGBA.
+- `assets/sprites/ui/cursor/game_cursor_attack.png` — same silhouette with stronger
+  red/orange attack glow, `48x48` RGBA.
+
+Integration:
+
+- `scripts/main.gd` `GAME_CURSOR_HOTSPOT` changed from `Vector2(5, 4)` to
+  `Vector2(2, 2)` because the new sharp tip sits at the upper-left edge
+  (`game_cursor.png` alpha bbox `(1, 1, 44, 47)`).
+- Existing `_apply_game_cursor()` mapping remains valid and now applies the new
+  dragon claw set to arrow, pointing-hand and cross cursor shapes.
+
+Preview / validation:
+
+- Preview: `docs/design/previews/cursor_clawed_fire_before_after.png`.
+- PNG validation: all three cursor files are `48x48` RGBA with non-empty alpha.
+- Godot import passed after replacement.
+- Focused UI tests passed after the same working batch:
+  `dark_fantasy_ui_theme_test.gd`, `ui_no_overlap_matrix_test.gd`.
+- Full `runtime_smoke_test.gd` passed after the final import/UI asset batch.
+
+## Dispatcher QA Sync (2026-06-13)
+Implementation result is recorded above as READY FOR QA. Dispatcher synchronized
+the task status to `done` and Jira SCRUM-223 to `Контроль качества` so the QA
+board flow can pick it up. This is not final acceptance; final closure still
+requires a QA verdict.

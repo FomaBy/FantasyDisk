@@ -316,7 +316,7 @@ func _show_character_select() -> void:
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HeroSelectBackButton"
-	back_button.custom_minimum_size = Vector2(150, 48)
+	back_button.custom_minimum_size = Vector2(170, 68)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 
@@ -331,7 +331,7 @@ func _show_character_select() -> void:
 	portrait_panel.name = "HeroSelectPortraitPanel"
 	portrait_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	portrait_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	portrait_panel.size_flags_stretch_ratio = 0.42
+	portrait_panel.size_flags_stretch_ratio = 0.38
 	portrait_panel.add_theme_stylebox_override("panel", _hero_portrait_style())
 	content_row.add_child(portrait_panel)
 
@@ -355,22 +355,24 @@ func _show_character_select() -> void:
 	dossier_panel.name = "HeroSelectDossierPanel"
 	dossier_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dossier_panel.size_flags_stretch_ratio = 0.58
+	dossier_panel.size_flags_stretch_ratio = 0.62
 	dossier_panel.add_theme_stylebox_override("panel", _panel_style())
 	content_row.add_child(dossier_panel)
+
+	var info_radar_row := HBoxContainer.new()
+	info_radar_row.name = "HeroSelectInfoRadarRow"
+	info_radar_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info_radar_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	info_radar_row.add_theme_constant_override("separation", 18)
+	dossier_panel.add_child(info_radar_row)
 
 	var dossier := VBoxContainer.new()
 	dossier.name = "HeroSelectDossier"
 	dossier.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dossier.size_flags_stretch_ratio = 0.58
 	dossier.add_theme_constant_override("separation", 7)
-	dossier_panel.add_child(dossier)
-
-	var radar_reserved_space := Control.new()
-	radar_reserved_space.name = "HeroSelectRadarReservedSpace"
-	radar_reserved_space.custom_minimum_size = Vector2(0, 288)
-	radar_reserved_space.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dossier.add_child(radar_reserved_space)
+	info_radar_row.add_child(dossier)
 
 	var dossier_title := Label.new()
 	dossier_title.name = "HeroSelectInfoTitle"
@@ -403,20 +405,20 @@ func _show_character_select() -> void:
 	asc_row.name = "AscensionSelectorRow"
 	asc_row.add_theme_constant_override("separation", 10)
 	dossier.add_child(asc_row)
-	var asc_minus := _make_button("-")
+	var asc_minus := _make_compact_button("-")
 	asc_minus.name = "AscensionMinusButton"
-	asc_minus.custom_minimum_size = Vector2(48, 38)
+	asc_minus.custom_minimum_size = Vector2(54, 46)
 	asc_row.add_child(asc_minus)
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
-	asc_label.custom_minimum_size = Vector2(190, 38)
+	asc_label.custom_minimum_size = Vector2(190, 46)
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	asc_label.add_theme_font_size_override("font_size", 15)
 	asc_label.add_theme_color_override("font_color", Color(1.0, 0.78, 0.32, 1.0))
 	asc_row.add_child(asc_label)
-	var asc_plus := _make_button("+")
+	var asc_plus := _make_compact_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	asc_plus.custom_minimum_size = Vector2(48, 38)
+	asc_plus.custom_minimum_size = Vector2(54, 46)
 	asc_row.add_child(asc_plus)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
@@ -428,9 +430,37 @@ func _show_character_select() -> void:
 
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HeroSelectChooseButton"
-	select_button.custom_minimum_size = Vector2(320, 50)
+	select_button.custom_minimum_size = Vector2(320, 68)
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	dossier.add_child(select_button)
+
+	var radar_panel := PanelContainer.new()
+	radar_panel.name = "HeroSelectRadarPanel"
+	radar_panel.custom_minimum_size = Vector2(390, 300)
+	radar_panel.size_flags_horizontal = Control.SIZE_SHRINK_END
+	radar_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	radar_panel.add_theme_stylebox_override("panel", _character_card_style())
+	info_radar_row.add_child(radar_panel)
+
+	var radar_box := VBoxContainer.new()
+	radar_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	radar_box.add_theme_constant_override("separation", 6)
+	radar_panel.add_child(radar_box)
+
+	var radar_title := Label.new()
+	radar_title.name = "HeroStatRadarTitle"
+	radar_title.text = "Характеристики"
+	radar_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	radar_title.add_theme_font_size_override("font_size", 17)
+	radar_title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
+	radar_box.add_child(radar_title)
+
+	var radar := HeroStatRadar.new()
+	radar.name = "HeroStatRadar"
+	radar.custom_minimum_size = Vector2(360, 230)
+	radar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	radar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	radar_box.add_child(radar)
 
 	var thumbnail_strip := HBoxContainer.new()
 	thumbnail_strip.name = "HeroThumbnailStrip"
@@ -438,22 +468,6 @@ func _show_character_select() -> void:
 	thumbnail_strip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	thumbnail_strip.add_theme_constant_override("separation", 8)
 	layout.add_child(thumbnail_strip)
-
-	# Роза ветров — плавающий виджет в ПРАВОМ ВЕРХНЕМ углу экрана (ниже шапки,
-	# над пустым верх-правым полем досье — не перекрывает текст, выровненный влево).
-	var radar := HeroStatRadar.new()
-	radar.name = "HeroStatRadar"
-	radar.custom_minimum_size = Vector2(370, 230)
-	radar.anchor_left = 1.0
-	radar.anchor_right = 1.0
-	radar.anchor_top = 0.0
-	radar.anchor_bottom = 0.0
-	radar.offset_left = -414.0
-	radar.offset_right = -44.0
-	radar.offset_top = 124.0
-	radar.offset_bottom = 354.0
-	radar.z_index = 6
-	root.add_child(radar)
 
 	var legacy_grid := GridContainer.new()
 	legacy_grid.name = "CharacterCardsGrid"
@@ -802,7 +816,7 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		var stat_title := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
 		var offer_button := _make_button("%s +1   (%d зол.)" % [stat_title, buy_cost])
 		offer_button.name = "AttributeOffer_%s" % stat_id
-		offer_button.custom_minimum_size = Vector2(560, 64)
+		offer_button.custom_minimum_size = Vector2(560, 68)
 		offer_button.disabled = money < buy_cost
 		offer_button.tooltip_text = "%s +1\n%s" % [
 			stat_title,
@@ -845,9 +859,9 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 		return
 
 	# Желтая стрелка прокачки: докачка характеристик за деньги.
-	var fab := _make_button("⬆")
+	var fab := _make_compact_button("⬆")
 	fab.name = "UpgradeFabButton"
-	fab.custom_minimum_size = Vector2(64, 64)
+	fab.custom_minimum_size = Vector2(58, 58)
 	fab.anchor_left = 1.0
 	fab.anchor_top = 1.0
 	fab.anchor_right = 1.0
@@ -857,7 +871,7 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 	fab.offset_right = -24.0
 	fab.offset_bottom = -24.0
 	fab.add_theme_font_size_override("font_size", 30)
-	_apply_fantasy_button_theme(fab, "level_up")
+	_apply_compact_button_theme(fab)
 	fab.tooltip_text = "Докачка характеристик за золото"
 	if not allow_attribute_shop:
 		fab.disabled = true
@@ -910,7 +924,7 @@ func _show_skill_tree_screen() -> void:
 	header.add_child(points_label)
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "SkillTreeBackButton"
-	back_button.custom_minimum_size = Vector2(240, 54)
+	back_button.custom_minimum_size = Vector2(260, 68)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -967,7 +981,7 @@ func _show_skill_tree_screen() -> void:
 			var node_id: String = str(node_data["id"])
 			var nb := _make_button("%s  (%d)\n%s" % [str(node_data["title"]), int(node_data["cost"]), str(node_data["desc"])])
 			nb.name = "SkillNode_%s" % node_id
-			nb.custom_minimum_size = Vector2(0, 64)
+			nb.custom_minimum_size = Vector2(0, 76)
 			nb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			nb.add_theme_font_size_override("font_size", 13)
 			nb.set_meta("node_id", node_id)
@@ -1019,7 +1033,7 @@ func _show_patch_notes_screen() -> void:
 	header.add_child(title)
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "PatchNotesBackButton"
-	back_button.custom_minimum_size = Vector2(240, 54)
+	back_button.custom_minimum_size = Vector2(260, 68)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -1086,7 +1100,7 @@ func _show_codex_screen() -> void:
 
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "CodexBackButton"
-	back_button.custom_minimum_size = Vector2(240, 54)
+	back_button.custom_minimum_size = Vector2(260, 68)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -1106,7 +1120,7 @@ func _show_codex_screen() -> void:
 		var section_id := str(section["id"])
 		var tab_button := _make_button(str(section["title"]))
 		tab_button.name = "CodexTab_%s" % section_id
-		tab_button.custom_minimum_size = Vector2(220, 50)
+		tab_button.custom_minimum_size = Vector2(230, 68)
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		tabs_row.add_child(tab_button)
 
@@ -1434,7 +1448,7 @@ func _show_settings_menu() -> void:
 		screen_options.name = "SettingsScreenOption"
 		screen_options.custom_minimum_size = Vector2(520, 46)
 		screen_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_style_button_control(screen_options)
+		_apply_compact_button_theme(screen_options)
 		for screen_index in range(screen_count):
 			var size := DisplayServer.screen_get_size(screen_index)
 			screen_options.add_item("Экран %d (%dx%d)" % [screen_index + 1, size.x, size.y])
@@ -1450,7 +1464,7 @@ func _show_settings_menu() -> void:
 	resolution_options.name = "SettingsResolutionOption"
 	resolution_options.custom_minimum_size = Vector2(520, 46)
 	resolution_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_style_button_control(resolution_options)
+	_apply_compact_button_theme(resolution_options)
 	var usable_size := Vector2i(99999, 99999)
 	if DisplayServer.get_name() != "headless":
 		usable_size = DisplayServer.screen_get_usable_rect(clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))).size
@@ -1471,7 +1485,7 @@ func _show_settings_menu() -> void:
 	mode_options.name = "SettingsWindowModeOption"
 	mode_options.custom_minimum_size = Vector2(520, 46)
 	mode_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_style_button_control(mode_options)
+	_apply_compact_button_theme(mode_options)
 	for mode_name in game.WINDOW_MODE_OPTIONS:
 		mode_options.add_item(mode_name)
 	mode_options.selected = game.selected_window_mode_index
@@ -1516,7 +1530,7 @@ func _show_settings_menu() -> void:
 	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled")
 	var reset_audio_button := _make_button("Сбросить звук по умолчанию")
 	reset_audio_button.name = "SettingsResetAudioButton"
-	reset_audio_button.custom_minimum_size = Vector2(360, 42)
+	reset_audio_button.custom_minimum_size = Vector2(420, 68)
 	reset_audio_button.pressed.connect(func() -> void:
 		_reset_audio_to_defaults()
 		_show_settings_menu()
@@ -1541,9 +1555,9 @@ func _show_settings_menu() -> void:
 		label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 		row.add_child(label)
 
-		var bind_button := _make_button(_binding_text(action_name))
+		var bind_button := _make_compact_button(_binding_text(action_name))
 		bind_button.name = "BindingButton_%s" % action_name
-		bind_button.custom_minimum_size = Vector2(420, 38)
+		bind_button.custom_minimum_size = Vector2(420, 46)
 		bind_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		bind_button.pressed.connect(func() -> void:
 			_begin_rebind(action_name)
@@ -1559,7 +1573,7 @@ func _show_settings_menu() -> void:
 
 	var reset_button := _make_button("Сбросить управление по умолчанию")
 	reset_button.name = "SettingsResetBindingsButton"
-	reset_button.custom_minimum_size = Vector2(360, 42)
+	reset_button.custom_minimum_size = Vector2(440, 68)
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
 		_show_settings_menu()
@@ -1989,14 +2003,7 @@ func _show_weapon_select() -> void:
 	var box := _create_menu_box("Выбор оружия", "%s: выбери стартовый подкласс/оружие." % str(character_config["title"]), "weapon_select")
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
-		var button := _make_button("%s\n%s\nRange %.0f | AoE %.0f | Cooldown %.2fs" % [
-			config["title"],
-			config["description"],
-			float(config.get("attack_range", 0.0)),
-			float(config.get("aoe_radius", 0.0)),
-			float(config.get("fire_interval", 0.0)),
-		])
-		button.custom_minimum_size = Vector2(680, 84)
+		var button := _make_weapon_select_card(config)
 		button.pressed.connect(func() -> void:
 			game.selected_weapon_id = str(config["id"])
 			game.route._show_battle_map()
@@ -2007,6 +2014,104 @@ func _show_weapon_select() -> void:
 	back_button.pressed.connect(_show_character_select)
 	box.add_child(back_button)
 	game.ui_escape_action = _show_character_select
+
+
+func _make_weapon_select_card(config: Dictionary) -> Button:
+	var weapon_id := str(config.get("id", ""))
+	var button := Button.new()
+	button.name = "WeaponOption_%s" % weapon_id
+	button.set_meta("weapon_id", weapon_id)
+	button.text = ""
+	button.custom_minimum_size = Vector2(860, 128)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.tooltip_text = "%s\n%s" % [str(config.get("title", weapon_id)), str(config.get("description", ""))]
+	button.add_theme_stylebox_override("normal", _weapon_card_style(false))
+	button.add_theme_stylebox_override("hover", _weapon_card_style(true))
+	button.add_theme_stylebox_override("pressed", _weapon_card_style(true, true))
+	button.add_theme_stylebox_override("focus", _weapon_card_style(true))
+	button.add_theme_stylebox_override("disabled", _weapon_card_style(false, false, true))
+
+	var row := HBoxContainer.new()
+	row.name = "WeaponOptionContent_%s" % weapon_id
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 18.0
+	row.offset_top = 12.0
+	row.offset_right = -18.0
+	row.offset_bottom = -12.0
+	row.add_theme_constant_override("separation", 18)
+	button.add_child(row)
+
+	var sprite := TextureRect.new()
+	sprite.name = "WeaponSelectSprite_%s" % weapon_id
+	sprite.custom_minimum_size = Vector2(112, 112)
+	sprite.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	sprite.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sprite.texture = game._cached_texture(_weapon_sprite_path(config))
+	row.add_child(sprite)
+
+	var text_box := VBoxContainer.new()
+	text_box.name = "WeaponSelectText_%s" % weapon_id
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	text_box.add_theme_constant_override("separation", 5)
+	row.add_child(text_box)
+
+	var title_label := Label.new()
+	title_label.name = "WeaponSelectTitle_%s" % weapon_id
+	title_label.text = str(config.get("title", weapon_id))
+	title_label.add_theme_font_size_override("font_size", 21)
+	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(title_label)
+
+	var desc_label := Label.new()
+	desc_label.name = "WeaponSelectDescription_%s" % weapon_id
+	desc_label.text = str(config.get("description", ""))
+	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.add_theme_font_size_override("font_size", 14)
+	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
+	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(desc_label)
+
+	var stats_label := Label.new()
+	stats_label.name = "WeaponSelectStats_%s" % weapon_id
+	stats_label.custom_minimum_size = Vector2(190, 0)
+	stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	stats_label.text = "Дальность: %.0f\nРадиус: %.0f\nПерезарядка: %.2fс" % [
+		float(config.get("attack_range", 0.0)),
+		float(config.get("aoe_radius", 0.0)),
+		float(config.get("fire_interval", 0.0)),
+	]
+	stats_label.add_theme_font_size_override("font_size", 14)
+	stats_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
+	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(stats_label)
+	return button
+
+
+func _weapon_sprite_path(config: Dictionary) -> String:
+	for key in ["icon_path", "sprite_path", "weapon_sprite_path"]:
+		var configured_path := str(config.get(key, ""))
+		if configured_path != "" and ResourceLoader.exists(configured_path):
+			return configured_path
+	var weapon_id := str(config.get("id", ""))
+	var aliases := {
+		"sword": "two_handed_sword",
+		"axe": "two_handed_axe",
+		"hammer": "two_handed_hammer",
+	}
+	var asset_id := str(aliases.get(weapon_id, weapon_id))
+	var direct_path := "res://assets/sprites/weapons/%s.png" % asset_id
+	if ResourceLoader.exists(direct_path):
+		return direct_path
+	return ""
 
 
 func _show_reward_screen() -> void:
@@ -2092,7 +2197,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 
 	var later_button := _make_button("Позже")
 	later_button.name = "LevelUpLaterButton"
-	later_button.custom_minimum_size = Vector2(220, 48)
+	later_button.custom_minimum_size = Vector2(240, 68)
 	later_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	later_button.tooltip_text = "Закрыть без выбора — пик сохранится, вернуться можно кнопкой повышения внизу."
 	later_button.pressed.connect(defer_choice)
@@ -2205,24 +2310,24 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 func _make_level_up_reward_button(reward: Dictionary) -> Button:
 	var is_rare := bool(reward.get("rare", false))
 	var rare_color: Color = TIER_COLORS[3]
-	var button := _make_button("")
-	button.custom_minimum_size = Vector2(210, 252)
+	var button := Button.new()
+	button.text = ""
+	button.custom_minimum_size = Vector2(245, 270)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
-	button.clip_text = true
+	button.clip_text = false
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = _format_level_up_reward_text(reward)
-	_apply_fantasy_button_theme(button, "reward")
-	if is_rare:
-		# Редкий слот (основная характеристика): золотая рамка-обводка поверх темы.
-		var rare_frame := StyleBoxFlat.new()
-		rare_frame.bg_color = Color(0.10, 0.08, 0.02, 0.55)
-		rare_frame.set_border_width_all(3)
-		rare_frame.border_color = rare_color
-		rare_frame.set_corner_radius_all(10)
-		button.add_theme_stylebox_override("normal", rare_frame)
-		button.add_theme_stylebox_override("hover", rare_frame)
-		button.add_theme_stylebox_override("focus", rare_frame)
+	button.set_meta("level_up_text_field_card", true)
+	button.add_theme_stylebox_override("normal", _level_up_text_field_style(false, is_rare))
+	button.add_theme_stylebox_override("hover", _level_up_text_field_style(true, is_rare))
+	button.add_theme_stylebox_override("pressed", _level_up_text_field_style(true, is_rare, true))
+	button.add_theme_stylebox_override("focus", _level_up_text_field_style(true, is_rare))
+	button.add_theme_stylebox_override("disabled", _level_up_text_field_style(false, is_rare, false, true))
+	button.add_theme_color_override("font_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
 
 	var content := VBoxContainer.new()
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2269,6 +2374,7 @@ func _make_level_up_reward_button(reward: Dictionary) -> Button:
 	content.add_child(preview_label)
 
 	var description_label := Label.new()
+	description_label.name = "LevelUpRewardDescription"
 	description_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	description_label.text = str(reward.get("description", ""))
 	description_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -2477,11 +2583,11 @@ func _show_shop_screen() -> void:
 	skip_button.anchor_top = 1.0
 	skip_button.anchor_right = 0.5
 	skip_button.anchor_bottom = 1.0
-	skip_button.offset_left = -170.0
-	skip_button.offset_top = -118.0
-	skip_button.offset_right = 170.0
+	skip_button.offset_left = -180.0
+	skip_button.offset_top = -126.0
+	skip_button.offset_right = 180.0
 	skip_button.offset_bottom = -58.0
-	skip_button.custom_minimum_size = Vector2(340, 58)
+	skip_button.custom_minimum_size = Vector2(360, 68)
 	var leave_shop := func() -> void:
 		_clear_current_shop_stock()
 		game.route._advance_route_after_noncombat()
@@ -2927,7 +3033,7 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		index += 1
 	var back_button := _make_button("Назад")
 	back_button.name = "EventBackButton"
-	back_button.custom_minimum_size = Vector2(360, 58)
+	back_button.custom_minimum_size = Vector2(380, 68)
 	var allow_skip := bool(event_definition.get("allow_skip", false))
 	back_button.disabled = not allow_skip
 	back_button.tooltip_text = "Вернуться на карту без исхода события." if allow_skip else "Это событие требует выбрать исход."
@@ -3351,11 +3457,11 @@ func _update_level_up_button() -> void:
 		game.level_up_button.anchor_right = 0.5
 		game.level_up_button.anchor_top = 1.0
 		game.level_up_button.anchor_bottom = 1.0
-		game.level_up_button.offset_left = -180.0
-		game.level_up_button.offset_right = 180.0
-		game.level_up_button.offset_top = -86.0
+		game.level_up_button.offset_left = -190.0
+		game.level_up_button.offset_right = 190.0
+		game.level_up_button.offset_top = -94.0
 		game.level_up_button.offset_bottom = -26.0
-		game.level_up_button.custom_minimum_size = Vector2(360, 60)
+		game.level_up_button.custom_minimum_size = Vector2(380, 68)
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
 		game.level_up_button.add_theme_font_size_override("font_size", 22)
 		_apply_fantasy_button_theme(game.level_up_button, "level_up")
@@ -4130,10 +4236,20 @@ func _level_up_badge_text() -> String:
 func _make_button(text: String) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(420, 64)
+	button.custom_minimum_size = Vector2(420, 68)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_style_button_control(button)
+	return button
+
+
+func _make_compact_button(text: String) -> Button:
+	var button := Button.new()
+	button.text = text
+	button.custom_minimum_size = Vector2(54, 46)
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.add_theme_font_size_override("font_size", 18)
+	_apply_compact_button_theme(button)
 	return button
 
 
@@ -4171,7 +4287,82 @@ func _button_role(button: Button, variant := "default") -> String:
 func _button_state_style(role: String, state: String, tint := Color.WHITE) -> StyleBox:
 	var role_map: Dictionary = DF_BUTTON_TEXTURES.get(role, DF_BUTTON_TEXTURES["secondary"])
 	var path := str(role_map.get(state, role_map.get("normal", GLOBAL_BUTTON_FRAME_PATH)))
-	return _global_texture_style(path, Vector4(36, 30, 36, 32), tint, Vector4(18, 12, 18, 14))
+	return _global_texture_style(path, Vector4(88, 30, 38, 32), tint, Vector4(76, 14, 22, 14))
+
+
+func _apply_compact_button_theme(button: Button) -> void:
+	button.add_theme_stylebox_override("normal", _compact_button_style(false))
+	button.add_theme_stylebox_override("hover", _compact_button_style(true))
+	button.add_theme_stylebox_override("pressed", _compact_button_style(true, true))
+	button.add_theme_stylebox_override("focus", _compact_button_style(true))
+	button.add_theme_stylebox_override("disabled", _compact_button_style(false, false, true))
+	button.add_theme_color_override("font_color", Color(0.98, 0.92, 0.72, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.82, 0.32, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+func _compact_button_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.07, 0.075, 0.085, 0.78)
+	style.border_color = Color(0.58, 0.48, 0.28, 0.86)
+	if hovered:
+		style.bg_color = Color(0.12, 0.10, 0.075, 0.92)
+		style.border_color = Color(0.92, 0.72, 0.32, 1.0)
+	if pressed:
+		style.bg_color = Color(0.055, 0.060, 0.070, 0.96)
+	if disabled:
+		style.bg_color = Color(0.04, 0.045, 0.055, 0.58)
+		style.border_color = Color(0.24, 0.24, 0.25, 0.72)
+	style.set_corner_radius_all(8)
+	style.set_border_width_all(1)
+	style.content_margin_left = 8
+	style.content_margin_top = 6
+	style.content_margin_right = 8
+	style.content_margin_bottom = 6
+	return style
+
+
+func _weapon_card_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.055, 0.060, 0.074, 0.82)
+	style.border_color = Color(0.50, 0.42, 0.25, 0.72)
+	if hovered:
+		style.bg_color = Color(0.085, 0.075, 0.060, 0.92)
+		style.border_color = Color(0.92, 0.72, 0.30, 0.96)
+	if pressed:
+		style.bg_color = Color(0.045, 0.050, 0.060, 0.96)
+	if disabled:
+		style.bg_color = Color(0.04, 0.045, 0.055, 0.55)
+		style.border_color = Color(0.22, 0.23, 0.25, 0.65)
+	style.set_corner_radius_all(10)
+	style.set_border_width_all(1)
+	style.content_margin_left = 14
+	style.content_margin_top = 10
+	style.content_margin_right = 14
+	style.content_margin_bottom = 10
+	return style
+
+
+func _level_up_text_field_style(hovered := false, rare := false, pressed := false, disabled := false) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.065, 0.060, 0.050, 0.88) if rare else Color(0.052, 0.058, 0.074, 0.86)
+	style.border_color = Color(0.92, 0.72, 0.28, 0.98) if rare else Color(0.46, 0.52, 0.58, 0.82)
+	if hovered:
+		style.bg_color = Color(0.095, 0.080, 0.052, 0.94) if rare else Color(0.075, 0.082, 0.098, 0.94)
+		style.border_color = Color(1.0, 0.84, 0.34, 1.0) if rare else Color(0.72, 0.82, 0.90, 0.94)
+	if pressed:
+		style.bg_color = style.bg_color.darkened(0.12)
+	if disabled:
+		style.bg_color = Color(0.04, 0.045, 0.055, 0.56)
+		style.border_color = Color(0.25, 0.25, 0.27, 0.70)
+	style.set_corner_radius_all(10)
+	style.set_border_width_all(2 if rare else 1)
+	style.content_margin_left = 12
+	style.content_margin_top = 10
+	style.content_margin_right = 12
+	style.content_margin_bottom = 10
+	return style
 
 
 func _make_section_label(text: String) -> Label:

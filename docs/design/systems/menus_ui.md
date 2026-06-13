@@ -53,3 +53,13 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 | `death`, `defeat`, `end_run_confirm` | `assets/backgrounds/ui/ui_backdrop_defeat_crypt.png` |
 
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
+
+## Hero / Weapon / Level-Up Layout Rules
+
+- Hero select uses a fullscreen v3 layout: large portrait left, bottom hero thumbnail strip, and one right-side info panel. Inside that panel `HeroSelectDossier` stays left of `HeroSelectRadarPanel`; runtime smoke asserts the description/right dossier edge is left of the radar panel with a real gap at 1280x720, 1600x900 and 2560x1440.
+- Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
+- Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button.
+
+## Button Height / Wax Seal Rule
+
+Controls that use `ui_df_button_*` Parchment & Wax Seal textures must keep enough height for the seal to remain readable. Standard `_make_button()` buttons use 68px minimum height and left content padding for the seal. Compact utility controls (`+/-`, FAB, keybinding fields, dropdowns) use flat no-seal styling instead of squeezing the seal texture. Runtime smoke writes `build/qa/parchment_button_seal_sizes.md`.

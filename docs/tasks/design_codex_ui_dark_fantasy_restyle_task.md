@@ -329,11 +329,8 @@ Handoff Back-end (`backend_ui_dark_fantasy_theme_integration_task.md`): вайр
   `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/dark_fantasy_ui_theme_test.gd`
 - UI no-overlap matrix passed:
   `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd`
-- Full runtime smoke currently fails outside the UI visual scope at
-  `tests/runtime_smoke_test.gd:1042` with
-  `Expected exactly two attribute offers in the post-battle window.`
-  The UI correction did not change reward-offer logic; leave this for Back-end/QA
-  follow-up if it remains reproducible in their lane.
+- Full runtime smoke passed after the final import/UI asset batch:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
 
 ## ChatGPT-арт от пользователя (2026-06-13)
 Пользователь сгенерил 5 PNG пергаментного кита в ChatGPT — лежат в

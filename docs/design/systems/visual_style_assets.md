@@ -40,7 +40,7 @@ Visual rules:
 
 ## Shop Frames And Cursor
 
-Shop frame assets live in `assets/sprites/ui/shop/`. Cursor assets live in `assets/sprites/ui/cursor/`. Back-end hooks are already ready; these PNGs are the active Design target and fallback should remain fail-safe only.
+Shop frame assets live in `assets/sprites/ui/shop/`. Cursor assets live in `assets/sprites/ui/cursor/`. Back-end hooks are already ready; these PNGs are the active Design target and fallback should remain fail-safe only. Current cursor canon after SCRUM-223: `game_cursor.png`, `game_cursor_hover.png` and `game_cursor_attack.png` are a unified dark steel dragon/clawed fire pointer set with hotspot `(2, 2)`.
 
 SCRUM-182 refreshed the active derived stat icons, shop-only icons, and shop state sprites on 2026-06-13 without changing registry paths. Derived icons in `assets/sprites/ui/icons/derived/` stay `64x64`; shop item icons in `assets/sprites/ui/icons/shop/` stay `128x128`; shop frames/badges/overlays in `assets/sprites/ui/shop/` keep their previous canvas sizes. The style target is compact readable fantasy object art with dark outlines, small material cues, transparent alpha, no text, no emoji, and no meaningless decorative filler. Review sheets: `docs/design/previews/ui_icon_unification_before_contact.png`, `docs/design/previews/ui_icon_unification_after_contact.png`, and `docs/design/previews/ui_icon_unification_40px_preview.png`.
 
@@ -56,7 +56,9 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
-SCRUM-147 is now **button-only Parchment & Wax Seal** after direct user correction on 2026-06-13. The fixed button reference source is `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: aged parchment bodies, red wax seals, serrated forged-metal end caps, ruby accents, warm gold hover glow, pressed darkening, and disabled grayscale. The full parchment panel rebuild was rejected because sliced interface panels looked strange in game. All non-button frames are restored to the old/legacy interface look while keeping the Back-end `dark_fantasy/` texture paths stable.
+SCRUM-147 is now **button-only Parchment & Wax Seal** after direct user correction on 2026-06-13. The fixed button reference source is `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: aged parchment bodies, red wax seals, serrated forged-metal end caps, ruby accents, warm gold hover glow, pressed darkening, and disabled grayscale. The full parchment panel rebuild was rejected because sliced interface panels looked strange in game.
+
+SCRUM-229 replaces the previously restored legacy non-button panels with the user-provided **leather+gold panel/window kit** from `docs/design/references/interface/`: dark leather/stone interiors, engraved gold edging, corner brackets, rivets and restrained warm glow. Buttons remain parchment+seal; panels/windows/bars/checks now use leather+gold.
 
 Canonical dark fantasy assets live in `assets/sprites/ui/frames/dark_fantasy/`:
 
@@ -74,13 +76,16 @@ State language:
 - pressed: darker parchment/metal and subtly compressed read, matching the reference;
 - disabled: desaturated grayscale, matching the reference.
 
-SCRUM-147 user correction restored the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, and selected `assets/sprites/ui/shop/` paths to the old interface style, except button frames. SCRUM-222 completed Back-end integration for explicit 4-state button styleboxes: runtime button roles map to `primary`, `secondary`, and `danger` texture sets, while common panels/cards/HUD/tooltip styleboxes resolve through `dark_fantasy/` frame paths that now visually mirror the old interface rather than the rejected sliced parchment panels.
+SCRUM-229 updates the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, selected `assets/sprites/ui/shop/` paths and non-button `assets/sprites/ui/frames/dark_fantasy/` paths to leather+gold visuals. SCRUM-222 completed Back-end integration for explicit 4-state button styleboxes: runtime button roles map to `primary`, `secondary`, and `danger` texture sets, while common panels/cards/HUD/tooltip styleboxes resolve through `dark_fantasy/` frame paths that now carry the leather+gold panel kit.
 
 Rebuild/QA assets:
 
-- `tools/apply_button_only_ui_revert.py` - active correction pipeline: taller wax-seal buttons + restored legacy panels;
+- `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
+- `tools/build_leather_gold_ui_kit.py` - active SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
-- `docs/design/previews/ui_button_only_legacy_panels_contact.png` - active side-by-side correction sheet;
+- `docs/design/previews/ui_button_only_legacy_panels_contact.png` - SCRUM-147 side-by-side correction sheet;
+- `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - active SCRUM-229 leather+gold panel kit sheet;
+- `build/qa/interface_leather_gold_panel_kit_contact.png` - QA copy of the active leather+gold kit sheet;
 - `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png` - compatibility copy of the active correction sheet;
 - `docs/design/previews/ui_parchment_kit_reference_contact.png` - contact sheet of the six fullscreen parchment-kit references.
 
