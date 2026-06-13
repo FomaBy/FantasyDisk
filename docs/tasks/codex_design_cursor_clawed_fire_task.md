@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя со скриншотом)
 Jira: SCRUM-223
+QA: in_progress (2026-06-13)
 
 ## Dispatcher Note (2026-06-13)
 
@@ -115,3 +116,12 @@ Implementation result is recorded above as READY FOR QA. Dispatcher synchronized
 the task status to `done` and Jira SCRUM-223 to `Контроль качества` so the QA
 board flow can pick it up. This is not final acceptance; final closure still
 requires a QA verdict.
+
+
+## Design Review / 2026-06-13 — ПОДТВЕРЖДЕНО (Claude-Designer, пост-фактум sign-off)
+Задача была помечена done без Design-пометки; проверил живой `assets/sprites/ui/cursor/game_cursor.png`:
+- Соответствует 2-му варианту README: когтистый наконечник тёмной стали, оранжевое огненное свечение,
+  красный самоцвет, dark fantasy. Остриё непрозрачного bbox в (2,2) — влево-вверх под hotspot.
+- Тех: 48x48 RGBA, alpha чистая. Текущий hotspot main.gd:96 = (5,4) рядом с остриём — приемлемо.
+- Точная выверка hotspot-кликов в рантайме + видимость в меню/бою — QA/Back-end (тривиальная интеграция).
+Арт принят, статус done подтверждён.
