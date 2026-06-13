@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Полный рестайл UI в Dark Fantasy (кнопки → весь интерфейс)
 
-Статус: new (ОЖИВЛЕНА 2026-06-13 по запросу пользователя; ВЫБРАННЫЙ КИТ зафиксирован — Parchment & Wax Seal)
+Статус: in_progress (Design ОТКЛОНЕНО 2026-06-13 — переделать по эталону Parchment & Wax Seal)
 Приоритет: high
 Версия: 0.1.4
 Создано: 2026-06-12
@@ -126,3 +126,94 @@ Scale, Parchment&WaxSeal, Warplate, Necromancer, Dwarven Stone, Eldritch Void �
 
 ## Dispatch
 - 2026-06-12: Codex Documentation dispatcher отправил разблокированную задачу в Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`; Jira `SCRUM-147` переведена в работу. Референсы на месте: `docs/design/references/ui_dark_fantasy_2026_06/`.
+- 2026-06-13: Codex Documentation dispatcher restarted task to Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` after PM reset stale in_progress.
+
+## Result (2026-06-13)
+
+Статус: review — Design asset slice complete; Back-end integration/cleanup handoff created.
+
+Generated canonical dark fantasy UI kit:
+
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_primary_idle.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_primary_hover.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_primary_pressed.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_primary_disabled.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_secondary_idle.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_secondary_hover.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_secondary_pressed.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_secondary_disabled.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_danger_idle.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_danger_hover.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_danger_pressed.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_button_danger_disabled.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_card_frame.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_level_panel_frame.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_hud_panel_frame.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_hud_card_frame.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_tooltip_frame.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_stat_row_frame.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_stat_chip_frame.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_section_divider.png`
+- `assets/sprites/ui/frames/dark_fantasy/ui_df_stat_value_state_swatches.png`
+
+Button note:
+
+- The task's latest button direction is honored: all button states use one Parchment & Wax Seal base kit. Primary/secondary/danger differ by wax-seal accent and state treatment, not by unrelated kit material.
+
+Live fallback replacements:
+
+- Existing `assets/sprites/ui/frames/global/*.png` were replaced in-place with dark fantasy frames while preserving dimensions and paths.
+- Existing `assets/sprites/ui/frames/escape/*.png` were replaced in-place with dark fantasy frames while preserving dimensions and paths.
+- Existing shop state frames in `assets/sprites/ui/shop/` were refreshed in the new style.
+
+Preview:
+
+- `docs/design/previews/ui_dark_fantasy_restyle_kit_contact.png`
+- `assets/sprites/ui/frames/escape/escape_stats_visual_kit_preview.png`
+
+Documentation updated:
+
+- `docs/design/systems/visual_style_assets.md`
+- `docs/design/content_registry.md`
+- `docs/process/task_routing_guide.md`
+- `CHANGELOG.md`
+
+Back-end handoff:
+
+- `docs/tasks/backend_ui_dark_fantasy_theme_integration_task.md`
+
+Validation:
+
+- PNG validation: all generated/replaced UI frame assets are RGBA and have non-empty alpha.
+- Godot import: passed after initial frame generation and after the Parchment & Wax Seal button correction.
+- Runtime smoke: passed after frame replacement.
+
+Deferred out of Design scope:
+
+- Explicit stylebox/theme wiring for hover/pressed/disabled states is Back-end scope.
+- Safe removal/archive of superseded contextual/tavern assets is Back-end cleanup scope after reference checks. Design did not delete assets.
+
+
+## Design Review / 2026-06-13 — ОТКЛОНЕНО (Claude-Designer, арт-директор)
+Тех-часть ок (23 фрейма RGBA, размеры под 9-slice, alpha непустая), НО арт не соответствует
+зафиксированному эталону `references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`.
+Сданные кнопки/панели — плоские тёмно-коричневые прямоугольники с тонким золотым кантом и
+ромбиками в углах; выглядят процедурно-сгенерированными, эталон не прикладывался.
+
+### Что переделать (бок-о-бок с эталоном, генерация Codex с `-i button_parchment_wax_seal.png`):
+1. ТЕЛО кнопки — светлый СОСТАРЕННЫЙ ПЕРГАМЕНТ с тёплой бумажной текстурой (не плоская тёмная заливка).
+2. ОПРАВА — тёмный КОВАНЫЙ МЕТАЛЛ с ШИПАСТЫМИ УГЛОВЫМИ КРОНШТЕЙНАМИ как в эталоне (не тонкий кант).
+3. ЛЕВЫЙ акцент — КРАСНАЯ СУРГУЧНАЯ ПЕЧАТЬ-медальон; ПРАВЫЙ — малый РУБИН.
+4. Состояния строго по эталону: Idle (нейтральный пергамент), Hover (тёплое ЗОЛОТОЕ свечение по краю),
+   Pressed (затемнение + лёгкое сжатие), Disabled (десатурация в серый). Сейчас hover = просто ярче-оранжевый.
+5. primary/secondary/danger — различать АКЦЕНТОМ ПЕЧАТИ/состоянием на ОДНОМ пергамент-ките (это соблюдено по логике, но базовый материал неверный).
+6. Панели/карточки/тултипы/HUD/чипы — тот же пергамент+кованая-оправа язык, не плоские тёмные прямоугольники.
+
+### Критерий приёмки (жёсткий): preview бок-о-бок каждого фрейма с эталоном — материалы (пергамент,
+кованый металл, сургуч, рубин) должны читаться. Без этого не принимается.
+
+### Внимание Back-end/интеграция: in-place замены `ui/frames/escape/*` и `ui/frames/global/*` — часть
+ОТКЛОНЁННОЙ поставки; НЕ вайрить styleboxes и НЕ коммитить их как финал до перегенерации. Незакоммиченный
+кит `ui/frames/dark_fantasy/` оставлен как есть для итерации (НЕ принят).
