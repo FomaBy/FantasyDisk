@@ -1,6 +1,6 @@
 # Codex Design Task: Elementalist Art Kit
 
-Статус: review
+Статус: done (Design review approved 2026-06-12)
 Версия: 0.1.4
 Создано: 2026-06-13
 Роль: Design
@@ -78,3 +78,15 @@ Handoff:
 
 - Back-end can replace fallback references with the canonical PNG paths above if not already auto-resolved by ID.
 - Animator can now proceed with `docs/tasks/animation_elementalist_rig_motion_task.md`; Design does not perform rig/cutout/motion work.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-163)
+- 4 PNG: `elementalist.png` 512×512 RGBA + 3 оружия 256×256 RGBA, preview `elementalist_art_contact.png` на месте.
+- Канон D&D: маг стихий в каноне. Прозрачный фон, без watermark. Багов нет.
+
+
+## Design Review / 2026-06-12 — ПРИНЯТО (Claude-Designer)
+- SCRUM-163 Элементалист: 512 + orb_ring/prism_focus/meteor_core 256. 4 стихии когерентно, насыщенный фэнтези-арт.
+- Тех: 512 герой / 256 предметы RGBA, bbox в рамке, alpha чистая, .import готов, заведён в progression/player.
+- Без текста/watermark. Cutout-нарезка/проводка геймплея — Back-end handoff (backend_new_classes_foundation). Готово к QA.

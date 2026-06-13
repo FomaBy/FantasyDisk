@@ -1,6 +1,6 @@
 # Codex Design Task: Robot Character And Weapon Art
 
-Статус: review
+Статус: done (Design review approved 2026-06-12)
 Версия: 0.1.4
 Создано: 2026-06-13
 Автор: Back-end handoff для `backend_add_character_robot_task.md`
@@ -53,3 +53,15 @@ Back-end уже подключает documented fallbacks; после готов
 - Validation: Godot headless import completed successfully; all four gameplay PNGs have expected size, RGBA alpha, transparent background, non-empty alpha bbox, and generated `.import` files.
 - Runtime smoke: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` passed.
 - Scope note: Design did not change Back-end gameplay/balance or implement rig/motion. `docs/tasks/animation_robot_rig_motion_task.md` is now ready for Animator handoff.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-166)
+- 4 PNG: `robot.png` 512×512 RGBA + 3 оружия 256×256 RGBA, preview `robot_art_contact.png` на месте.
+- Канон D&D: стимпанк-клокворк конструкт (латунь/бронза/аркан-кристаллы), не sci-fi. Прозрачный фон, без watermark. Багов нет.
+
+
+## Design Review / 2026-06-12 — ПРИНЯТО (Claude-Designer)
+- SCRUM-166 Робот: 512 + magnetic_anchor/hydraulic_press/reactor_core 256. Стимпанк-автоматон, бирюзовое свечение.
+- Тех: 512 герой / 256 предметы RGBA, bbox в рамке, alpha чистая, .import готов, заведён в progression/player.
+- Без текста/watermark. Cutout-нарезка/проводка геймплея — Back-end handoff (backend_new_classes_foundation). Готово к QA.

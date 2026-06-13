@@ -1,6 +1,6 @@
 # Codex Design Task: Thief Art Kit
 
-Статус: review
+Статус: done (Design review approved 2026-06-12)
 Версия: 0.1.4
 Создано: 2026-06-12
 Роль: Design
@@ -78,3 +78,15 @@ Handoff:
 - Back-end can replace fallback references with the canonical PNG paths above if not already auto-resolved by ID.
 - Animator can now proceed with `docs/tasks/animation_thief_rig_motion_task.md`; Design does not perform rig/cutout/motion work.
 - 2026-06-12: Codex Documentation dispatcher отправил задачу в Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`; Jira `SCRUM-169` остается `В работе`, пока Thief pipeline не пройдет art/animation/QA.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-169)
+- 4 PNG: `thief.png` 512×512 RGBA + 3 оружия 256×256 RGBA, preview `thief_art_contact.png` на месте.
+- Канон D&D: плут в каноне. Прозрачный фон, без watermark. Багов нет.
+
+
+## Design Review / 2026-06-12 — ПРИНЯТО (Claude-Designer)
+- SCRUM-169 Вор: thief 512 + coin_pouch/shadow_cloak/smoke_bomb 256. Тёмно-зелёный плутовской канон, читаемые силуэты.
+- Тех: 512 герой / 256 предметы RGBA, bbox в рамке, alpha чистая, .import готов, заведён в progression/player.
+- Без текста/watermark. Cutout-нарезка/проводка геймплея — Back-end handoff (backend_new_classes_foundation). Готово к QA.

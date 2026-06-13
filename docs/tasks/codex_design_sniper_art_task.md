@@ -1,6 +1,6 @@
 # Codex Design Task: Sniper Character And Weapon Art
 
-Статус: review
+Статус: done (Design review approved 2026-06-12)
 Версия: 0.1.4
 Создано: 2026-06-13
 Роль: Design
@@ -94,3 +94,15 @@ Handoff:
 
 - Back-end can replace fallback references with the canonical PNG paths above if not already auto-resolved by ID.
 - Animator can now proceed with `docs/tasks/animation_sniper_rig_motion_task.md`; Design does not perform rig/cutout/motion work.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-167)
+- 4 PNG: `sniper.png` 512×512 RGBA + 3 оружия 256×256 RGBA, preview `sniper_art_contact.png` на месте.
+- Канон D&D: стрелок-фэнтези в каноне. Прозрачный фон, без watermark. Багов нет.
+
+
+## Design Review / 2026-06-12 — ПРИНЯТО (Claude-Designer)
+- SCRUM-167 Снайпер: 512 + deadeye_rifle/spotter_scope/shatter_rounds 256. Стимпанк-маркcмен, латунь+кристалл.
+- Тех: 512 герой / 256 предметы RGBA, bbox в рамке, alpha чистая, .import готов, заведён в progression/player.
+- Без текста/watermark. Cutout-нарезка/проводка геймплея — Back-end handoff (backend_new_classes_foundation). Готово к QA.

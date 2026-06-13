@@ -1,6 +1,6 @@
 # Codex Design Task: Biologist Character And Weapon Art
 
-Статус: review
+Статус: done (Design review approved 2026-06-12)
 Версия: 0.1.4
 Создано: 2026-06-13
 Роль: Design / Codex image generation
@@ -59,3 +59,15 @@ Back-end gameplay is implemented with documented fallback art. Replace those fal
 - Validation: Godot headless import completed successfully; all four gameplay PNGs have expected size, RGBA alpha, transparent background, non-empty alpha bbox, and generated `.import` files.
 - Runtime smoke note: `runtime_smoke_test.gd` was attempted after import and is blocked in the current shared worktree by unrelated compile/signature issues (`scripts/cutout_rig_2d.gd` external member `DATA`, playable class signature list). No Biologist PNG/import error was reported.
 - Scope note: Design did not change Back-end gameplay/balance or implement rig/motion. `docs/tasks/animation_biologist_rig_motion_task.md` is now ready for Animator handoff.
+
+
+## QA-Вердикт (2026-06-13)
+Статус: PASSED (SCRUM-162)
+- 4 PNG: `biologist.png` 512×512 RGBA + 3 оружия 256×256 RGBA, preview `biologist_art_contact.png` на месте.
+- Канон D&D: натуралист в каноне. Прозрачный фон, без watermark. Багов нет.
+
+
+## Design Review / 2026-06-12 — ПРИНЯТО (Claude-Designer)
+- SCRUM-162 Биолог: 512 + spore_lens/sample_injector/symbiote_seed 256. Алхимик-зелень когерентно.
+- Тех: 512 герой / 256 предметы RGBA, bbox в рамке, alpha чистая, .import готов, заведён в progression/player.
+- Без текста/watermark. Cutout-нарезка/проводка геймплея — Back-end handoff (backend_new_classes_foundation). Готово к QA.
