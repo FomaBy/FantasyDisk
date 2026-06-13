@@ -1055,6 +1055,12 @@ func _initialize() -> void:
 	await _test_full_attribute_wiring()
 	await _test_all_playable_classes()
 	await _test_soldier_weapon_mechanics()
+	await _test_thief_weapon_mechanics()
+	await _test_elementalist_weapon_mechanics()
+	await _test_sniper_weapon_mechanics()
+	await _test_priest_weapon_mechanics()
+	await _test_biologist_weapon_mechanics()
+	await _test_robot_weapon_mechanics()
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
 	await _test_class_weapon_rework()
@@ -1975,9 +1981,39 @@ func _test_class_weapon_configs() -> void:
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var expected := {
 		"soldier": {
-			"soldier_rifle": {"scene": "SoldierRifle", "mode": "suppression_burst", "sprite": "res://assets/sprites/weapons/storm_longbow.png"},
-			"soldier_grenade": {"scene": "SoldierGrenade", "mode": "grenade_cook", "sprite": "res://assets/sprites/weapons/blast_powder.png"},
-			"soldier_bayonet": {"scene": "SoldierBayonet", "mode": "bayonet_brace", "sprite": "res://assets/sprites/weapons/long_spear.png"},
+			"soldier_rifle": {"scene": "SoldierRifle", "mode": "suppression_burst", "sprite": "res://assets/sprites/weapons/soldier_rifle.png"},
+			"soldier_grenade": {"scene": "SoldierGrenade", "mode": "grenade_cook", "sprite": "res://assets/sprites/weapons/soldier_grenade.png"},
+			"soldier_bayonet": {"scene": "SoldierBayonet", "mode": "bayonet_brace", "sprite": "res://assets/sprites/weapons/soldier_bayonet.png"},
+		},
+		"thief": {
+			"thief_coin_pouch": {"scene": "ThiefCoinPouch", "mode": "coin_ricochet", "sprite": "res://assets/sprites/weapons/chakrams.png"},
+			"thief_shadow_cloak": {"scene": "ThiefShadowCloak", "mode": "shadow_backstab", "sprite": "res://assets/sprites/weapons/shadow_daggers.png"},
+			"thief_smoke_bomb": {"scene": "ThiefSmokeBomb", "mode": "smoke_bomb", "sprite": "res://assets/sprites/weapons/blast_powder.png"},
+		},
+		"elementalist": {
+			"elementalist_orb_ring": {"scene": "ElementalistOrbRing", "mode": "elemental_orbit", "sprite": "res://assets/sprites/weapons/dark_wand.png"},
+			"elementalist_prism_focus": {"scene": "ElementalistPrismFocus", "mode": "prism_rift", "sprite": "res://assets/sprites/weapons/acid_flask.png"},
+			"elementalist_meteor_core": {"scene": "ElementalistMeteorCore", "mode": "meteor_shards", "sprite": "res://assets/sprites/weapons/blast_powder.png"},
+		},
+		"sniper": {
+			"sniper_deadeye_rifle": {"scene": "SniperDeadeyeRifle", "mode": "sniper_lockshot", "sprite": "res://assets/sprites/weapons/moon_crossbow.png"},
+			"sniper_spotter_scope": {"scene": "SniperSpotterScope", "mode": "sniper_kill_zone", "sprite": "res://assets/sprites/weapons/soldier_rifle.png"},
+			"sniper_shatter_rounds": {"scene": "SniperShatterRounds", "mode": "sniper_split_round", "sprite": "res://assets/sprites/weapons/storm_longbow.png"},
+		},
+		"priest": {
+			"priest_reliquary": {"scene": "PriestReliquary", "mode": "priest_sanctify", "sprite": "res://assets/sprites/weapons/restore_potion.png"},
+			"priest_censer": {"scene": "PriestCenser", "mode": "priest_ward", "sprite": "res://assets/sprites/weapons/holy_flail.png"},
+			"priest_chime": {"scene": "PriestChime", "mode": "priest_prayer_chain", "sprite": "res://assets/sprites/weapons/sound_amp.png"},
+		},
+		"biologist": {
+			"biologist_spore_lens": {"scene": "BiologistSporeLens", "mode": "bio_spore_bloom", "sprite": "res://assets/sprites/weapons/briar_staff.png"},
+			"biologist_sample_injector": {"scene": "BiologistSampleInjector", "mode": "bio_sample_dart", "sprite": "res://assets/sprites/weapons/plague_syringe.png"},
+			"biologist_symbiote_seed": {"scene": "BiologistSymbioteSeed", "mode": "bio_symbiote_web", "sprite": "res://assets/sprites/weapons/homunculus_vial.png"},
+		},
+		"robot": {
+			"robot_magnetic_anchor": {"scene": "RobotMagneticAnchor", "mode": "robot_magnetic_anchor", "sprite": "res://assets/sprites/weapons/robot_magnetic_anchor.png"},
+			"robot_hydraulic_press": {"scene": "RobotHydraulicPress", "mode": "robot_compression_line", "sprite": "res://assets/sprites/weapons/robot_hydraulic_press.png"},
+			"robot_reactor_core": {"scene": "RobotReactorCore", "mode": "robot_reactor_vent", "sprite": "res://assets/sprites/weapons/robot_reactor_core.png"},
 		},
 		"dark_mage": {
 			"dark_book": {"scene": "DarkBook", "mode": "aoe_projectile", "sprite": "res://assets/sprites/weapons/dark_book.png"},
@@ -2023,6 +2059,12 @@ func _test_all_weapon_variants_equip() -> void:
 	var expected_weapon_ids := {
 		"berserk": ["sword", "axe", "hammer"],
 		"soldier": ["soldier_rifle", "soldier_grenade", "soldier_bayonet"],
+		"thief": ["thief_coin_pouch", "thief_shadow_cloak", "thief_smoke_bomb"],
+		"elementalist": ["elementalist_orb_ring", "elementalist_prism_focus", "elementalist_meteor_core"],
+		"sniper": ["sniper_deadeye_rifle", "sniper_spotter_scope", "sniper_shatter_rounds"],
+		"priest": ["priest_reliquary", "priest_censer", "priest_chime"],
+		"biologist": ["biologist_spore_lens", "biologist_sample_injector", "biologist_symbiote_seed"],
+		"robot": ["robot_magnetic_anchor", "robot_hydraulic_press", "robot_reactor_core"],
 		"dark_mage": ["dark_book", "cursed_skull", "dark_wand"],
 		"guitarist": ["electric_guitar", "bass_guitar", "sound_amp"],
 		"assassin": ["chakrams", "shadow_daggers", "venom_wire"],
@@ -2429,6 +2471,72 @@ func _test_unique_class_identity_patterns() -> void:
 	for required_soldier_mode in ["suppression_burst", "grenade_cook", "bayonet_brace"]:
 		if not soldier_modes.has(required_soldier_mode):
 			_fail("Expected Soldier to include unique %s attack mode." % required_soldier_mode)
+			return
+	var thief_modes := {}
+	for thief_weapon_id in ProgressionData.weapon_ids("thief"):
+		var thief_mode := str(ProgressionData.weapon("thief", thief_weapon_id).get("attack_mode", ""))
+		if thief_modes.has(thief_mode):
+			_fail("Expected Thief weapons to use three distinct attack modes.")
+			return
+		thief_modes[thief_mode] = true
+	for required_thief_mode in ["coin_ricochet", "shadow_backstab", "smoke_bomb"]:
+		if not thief_modes.has(required_thief_mode):
+			_fail("Expected Thief to include unique %s attack mode." % required_thief_mode)
+			return
+	var elementalist_modes := {}
+	for elementalist_weapon_id in ProgressionData.weapon_ids("elementalist"):
+		var elementalist_mode := str(ProgressionData.weapon("elementalist", elementalist_weapon_id).get("attack_mode", ""))
+		if elementalist_modes.has(elementalist_mode):
+			_fail("Expected Elementalist weapons to use three distinct attack modes.")
+			return
+		elementalist_modes[elementalist_mode] = true
+	for required_elementalist_mode in ["elemental_orbit", "prism_rift", "meteor_shards"]:
+		if not elementalist_modes.has(required_elementalist_mode):
+			_fail("Expected Elementalist to include unique %s attack mode." % required_elementalist_mode)
+			return
+	var sniper_modes := {}
+	for sniper_weapon_id in ProgressionData.weapon_ids("sniper"):
+		var sniper_mode := str(ProgressionData.weapon("sniper", sniper_weapon_id).get("attack_mode", ""))
+		if sniper_modes.has(sniper_mode):
+			_fail("Expected Sniper weapons to use three distinct attack modes.")
+			return
+		sniper_modes[sniper_mode] = true
+	for required_sniper_mode in ["sniper_lockshot", "sniper_kill_zone", "sniper_split_round"]:
+		if not sniper_modes.has(required_sniper_mode):
+			_fail("Expected Sniper to include unique %s attack mode." % required_sniper_mode)
+			return
+	var priest_modes := {}
+	for priest_weapon_id in ProgressionData.weapon_ids("priest"):
+		var priest_mode := str(ProgressionData.weapon("priest", priest_weapon_id).get("attack_mode", ""))
+		if priest_modes.has(priest_mode):
+			_fail("Expected Priest weapons to use three distinct attack modes.")
+			return
+		priest_modes[priest_mode] = true
+	for required_priest_mode in ["priest_sanctify", "priest_ward", "priest_prayer_chain"]:
+		if not priest_modes.has(required_priest_mode):
+			_fail("Expected Priest to include unique %s attack mode." % required_priest_mode)
+			return
+	var biologist_modes := {}
+	for biologist_weapon_id in ProgressionData.weapon_ids("biologist"):
+		var biologist_mode := str(ProgressionData.weapon("biologist", biologist_weapon_id).get("attack_mode", ""))
+		if biologist_modes.has(biologist_mode):
+			_fail("Expected Biologist weapons to use three distinct attack modes.")
+			return
+		biologist_modes[biologist_mode] = true
+	for required_biologist_mode in ["bio_spore_bloom", "bio_sample_dart", "bio_symbiote_web"]:
+		if not biologist_modes.has(required_biologist_mode):
+			_fail("Expected Biologist to include unique %s attack mode." % required_biologist_mode)
+			return
+	var robot_modes := {}
+	for robot_weapon_id in ProgressionData.weapon_ids("robot"):
+		var robot_mode := str(ProgressionData.weapon("robot", robot_weapon_id).get("attack_mode", ""))
+		if robot_modes.has(robot_mode):
+			_fail("Expected Robot weapons to use three distinct attack modes.")
+			return
+		robot_modes[robot_mode] = true
+	for required_robot_mode in ["robot_magnetic_anchor", "robot_compression_line", "robot_reactor_vent"]:
+		if not robot_modes.has(required_robot_mode):
+			_fail("Expected Robot to include unique %s attack mode." % required_robot_mode)
 			return
 	if ProgressionData.weapon("doctor", "restore_potion").get("attack_mode", "") != "drain_link":
 		_fail("Expected Doctor restore potion slot to use the drain/lifesteal link pattern.")
@@ -2922,7 +3030,7 @@ func _test_weapon_aiming() -> void:
 func _test_all_playable_classes() -> void:
 	# Каждый класс экипирует сигнатурное оружие и наносит урон (друид — призывает).
 	var signature := {
-		"berserk": "sword", "soldier": "soldier_rifle", "dark_mage": "dark_wand", "guitarist": "electric_guitar",
+		"berserk": "sword", "soldier": "soldier_rifle", "thief": "thief_coin_pouch", "elementalist": "elementalist_orb_ring", "sniper": "sniper_deadeye_rifle", "priest": "priest_reliquary", "biologist": "biologist_spore_lens", "robot": "robot_magnetic_anchor", "dark_mage": "dark_wand", "guitarist": "electric_guitar",
 		"assassin": "chakrams", "ranger": "moon_crossbow", "doctor": "restore_potion",
 		"chemist": "blast_powder", "knight": "long_spear", "druid": "summon_amulet",
 	}
@@ -3035,6 +3143,377 @@ func _test_soldier_weapon_mechanics() -> void:
 			return
 		soldier.queue_free()
 		enemy.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_thief_weapon_mechanics() -> void:
+	var thief_weapons := ProgressionData.weapon_ids("thief")
+	if thief_weapons != ["thief_coin_pouch", "thief_shadow_cloak", "thief_smoke_bomb"]:
+		_fail("Expected Thief to expose exactly coin pouch/shadow cloak/smoke bomb weapons.")
+		return
+	var expected_modes := {
+		"thief_coin_pouch": "coin_ricochet",
+		"thief_shadow_cloak": "shadow_backstab",
+		"thief_smoke_bomb": "smoke_bomb",
+	}
+	for weapon_id in expected_modes.keys():
+		var config: Dictionary = ProgressionData.weapon("thief", weapon_id)
+		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
+			_fail("Expected Thief weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
+			return
+	if ProgressionData.ascension_levels("thief").size() != 10:
+		_fail("Expected Thief to have 10 ascension levels.")
+		return
+
+	var holder := Node2D.new()
+	holder.name = "ThiefWeaponMechanicsScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for weapon_id in expected_modes.keys():
+		var thief := player_scene.instantiate()
+		holder.add_child(thief)
+		thief.global_position = Vector2(860, 720)
+		await process_frame
+		thief.call("configure_character", "thief", weapon_id)
+		var weapon: Node = thief.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected Thief %s to attach a weapon." % weapon_id)
+			return
+		weapon.set_process(false)
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		enemy.global_position = thief.global_position + Vector2(180, 0)
+		await process_frame
+		var before_hp := float(enemy.get("health"))
+		var before_money := int(thief.get("money"))
+		var before_dodge := float((thief.get("derived_parameters") as Dictionary).get("dodge", 0.0))
+		weapon.call("_attack")
+		await create_timer(0.85).timeout
+		if float(enemy.get("health")) >= before_hp:
+			_fail("Expected Thief weapon %s to damage its target." % weapon_id)
+			return
+		if weapon_id == "thief_coin_pouch" and int(thief.get("money")) <= before_money:
+			_fail("Expected Thief coin pouch to steal money on hit.")
+			return
+		if weapon_id == "thief_smoke_bomb":
+			var current_dodge := float((thief.get("derived_parameters") as Dictionary).get("dodge", 0.0))
+			if current_dodge <= before_dodge:
+				_fail("Expected Thief smoke bomb to grant temporary dodge.")
+				return
+		thief.queue_free()
+		enemy.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_elementalist_weapon_mechanics() -> void:
+	var elementalist_weapons := ProgressionData.weapon_ids("elementalist")
+	if elementalist_weapons != ["elementalist_orb_ring", "elementalist_prism_focus", "elementalist_meteor_core"]:
+		_fail("Expected Elementalist to expose exactly orb/prism/meteor weapons.")
+		return
+	var expected_modes := {
+		"elementalist_orb_ring": "elemental_orbit",
+		"elementalist_prism_focus": "prism_rift",
+		"elementalist_meteor_core": "meteor_shards",
+	}
+	for weapon_id in expected_modes.keys():
+		var config: Dictionary = ProgressionData.weapon("elementalist", weapon_id)
+		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
+			_fail("Expected Elementalist weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
+			return
+	if ProgressionData.ascension_levels("elementalist").size() != 10:
+		_fail("Expected Elementalist to have 10 ascension levels.")
+		return
+
+	var holder := Node2D.new()
+	holder.name = "ElementalistWeaponMechanicsScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for weapon_id in expected_modes.keys():
+		var elementalist := player_scene.instantiate()
+		holder.add_child(elementalist)
+		elementalist.global_position = Vector2(860, 720)
+		await process_frame
+		elementalist.call("configure_character", "elementalist", weapon_id)
+		var weapon: Node = elementalist.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected Elementalist %s to attach a weapon." % weapon_id)
+			return
+		weapon.set_process(false)
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		enemy.global_position = elementalist.global_position + Vector2(160, 0)
+		await process_frame
+		var before_hp := float(enemy.get("health"))
+		weapon.call("_attack")
+		await create_timer(0.95).timeout
+		if float(enemy.get("health")) >= before_hp:
+			_fail("Expected Elementalist weapon %s to damage its target." % weapon_id)
+			return
+		elementalist.queue_free()
+		enemy.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_sniper_weapon_mechanics() -> void:
+	var sniper_weapons := ProgressionData.weapon_ids("sniper")
+	if sniper_weapons != ["sniper_deadeye_rifle", "sniper_spotter_scope", "sniper_shatter_rounds"]:
+		_fail("Expected Sniper to expose exactly deadeye/scope/shatter weapons.")
+		return
+	var expected_modes := {
+		"sniper_deadeye_rifle": "sniper_lockshot",
+		"sniper_spotter_scope": "sniper_kill_zone",
+		"sniper_shatter_rounds": "sniper_split_round",
+	}
+	for weapon_id in expected_modes.keys():
+		var config: Dictionary = ProgressionData.weapon("sniper", weapon_id)
+		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
+			_fail("Expected Sniper weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
+			return
+	if ProgressionData.ascension_levels("sniper").size() != 10:
+		_fail("Expected Sniper to have 10 ascension levels.")
+		return
+
+	var holder := Node2D.new()
+	holder.name = "SniperWeaponMechanicsScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for weapon_id in expected_modes.keys():
+		var sniper := player_scene.instantiate()
+		holder.add_child(sniper)
+		sniper.global_position = Vector2(860, 720)
+		await process_frame
+		sniper.call("configure_character", "sniper", weapon_id)
+		var weapon: Node = sniper.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected Sniper %s to attach a weapon." % weapon_id)
+			return
+		weapon.set_process(false)
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		enemy.global_position = sniper.global_position + Vector2(220, 0)
+		await process_frame
+		var before_hp := float(enemy.get("health"))
+		weapon.call("_attack")
+		await create_timer(0.90).timeout
+		if float(enemy.get("health")) >= before_hp:
+			_fail("Expected Sniper weapon %s to damage its target." % weapon_id)
+			return
+		sniper.queue_free()
+		enemy.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_priest_weapon_mechanics() -> void:
+	var priest_weapons := ProgressionData.weapon_ids("priest")
+	if priest_weapons != ["priest_reliquary", "priest_censer", "priest_chime"]:
+		_fail("Expected Priest to expose exactly reliquary/censer/chime weapons.")
+		return
+	var expected_modes := {
+		"priest_reliquary": "priest_sanctify",
+		"priest_censer": "priest_ward",
+		"priest_chime": "priest_prayer_chain",
+	}
+	for weapon_id in expected_modes.keys():
+		var config: Dictionary = ProgressionData.weapon("priest", weapon_id)
+		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
+			_fail("Expected Priest weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
+			return
+	if ProgressionData.ascension_levels("priest").size() != 10:
+		_fail("Expected Priest to have 10 ascension levels.")
+		return
+
+	var holder := Node2D.new()
+	holder.name = "PriestWeaponMechanicsScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for weapon_id in expected_modes.keys():
+		var priest := player_scene.instantiate()
+		holder.add_child(priest)
+		priest.global_position = Vector2(860, 720)
+		await process_frame
+		priest.call("configure_character", "priest", weapon_id)
+		var weapon: Node = priest.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected Priest %s to attach a weapon." % weapon_id)
+			return
+		weapon.set_process(false)
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		enemy.global_position = priest.global_position + Vector2(180, 0)
+		await process_frame
+		var before_hp := float(enemy.get("health"))
+		var before_player_hp := float(priest.get("health"))
+		priest.set("health", maxf(1.0, before_player_hp - 18.0))
+		weapon.call("_attack")
+		await create_timer(0.85).timeout
+		if float(enemy.get("health")) >= before_hp:
+			_fail("Expected Priest weapon %s to damage its target." % weapon_id)
+			return
+		if weapon_id in ["priest_reliquary", "priest_chime"] and float(priest.get("health")) <= before_player_hp - 18.0:
+			_fail("Expected Priest weapon %s to return sustain healing." % weapon_id)
+			return
+		priest.queue_free()
+		enemy.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_biologist_weapon_mechanics() -> void:
+	var biologist_weapons := ProgressionData.weapon_ids("biologist")
+	if biologist_weapons != ["biologist_spore_lens", "biologist_sample_injector", "biologist_symbiote_seed"]:
+		_fail("Expected Biologist to expose exactly spore lens/sample injector/symbiote seed weapons.")
+		return
+	var expected_modes := {
+		"biologist_spore_lens": "bio_spore_bloom",
+		"biologist_sample_injector": "bio_sample_dart",
+		"biologist_symbiote_seed": "bio_symbiote_web",
+	}
+	for weapon_id in expected_modes.keys():
+		var config: Dictionary = ProgressionData.weapon("biologist", weapon_id)
+		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
+			_fail("Expected Biologist weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
+			return
+	if ProgressionData.ascension_levels("biologist").size() != 10:
+		_fail("Expected Biologist to have 10 ascension levels.")
+		return
+
+	var holder := Node2D.new()
+	holder.name = "BiologistWeaponMechanicsScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for weapon_id in expected_modes.keys():
+		var biologist := player_scene.instantiate()
+		holder.add_child(biologist)
+		biologist.global_position = Vector2(860, 720)
+		await process_frame
+		biologist.call("configure_character", "biologist", weapon_id)
+		var weapon: Node = biologist.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected Biologist %s to attach a weapon." % weapon_id)
+			return
+		weapon.set_process(false)
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		enemy.global_position = biologist.global_position + Vector2(180, 0)
+		var second_enemy := enemy_scene.instantiate()
+		holder.add_child(second_enemy)
+		second_enemy.set("max_health", 100000.0)
+		second_enemy.set("health", 100000.0)
+		second_enemy.global_position = biologist.global_position + Vector2(230, 50)
+		await process_frame
+		var before_hp := float(enemy.get("health"))
+		var before_second_hp := float(second_enemy.get("health"))
+		weapon.call("_attack")
+		await create_timer(0.90).timeout
+		if float(enemy.get("health")) >= before_hp:
+			_fail("Expected Biologist weapon %s to damage its primary target." % weapon_id)
+			return
+		if weapon_id == "biologist_symbiote_seed" and float(second_enemy.get("health")) >= before_second_hp:
+			_fail("Expected Biologist symbiote web to damage a linked nearby target.")
+			return
+		biologist.queue_free()
+		enemy.queue_free()
+		second_enemy.queue_free()
+		await process_frame
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_robot_weapon_mechanics() -> void:
+	var robot_weapons := ProgressionData.weapon_ids("robot")
+	if robot_weapons != ["robot_magnetic_anchor", "robot_hydraulic_press", "robot_reactor_core"]:
+		_fail("Expected Robot to expose exactly magnetic anchor/hydraulic press/reactor core weapons.")
+		return
+	var expected_modes := {
+		"robot_magnetic_anchor": "robot_magnetic_anchor",
+		"robot_hydraulic_press": "robot_compression_line",
+		"robot_reactor_core": "robot_reactor_vent",
+	}
+	for weapon_id in expected_modes.keys():
+		var config: Dictionary = ProgressionData.weapon("robot", weapon_id)
+		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
+			_fail("Expected Robot weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
+			return
+	if ProgressionData.ascension_levels("robot").size() != 10:
+		_fail("Expected Robot to have 10 ascension levels.")
+		return
+
+	var holder := Node2D.new()
+	holder.name = "RobotWeaponMechanicsScene"
+	root.add_child(holder)
+	current_scene = holder
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	for weapon_id in expected_modes.keys():
+		var robot := player_scene.instantiate()
+		holder.add_child(robot)
+		robot.global_position = Vector2(860, 720)
+		await process_frame
+		robot.call("configure_character", "robot", weapon_id)
+		var weapon: Node = robot.get("equipped_weapon")
+		if weapon == null:
+			_fail("Expected Robot %s to attach a weapon." % weapon_id)
+			return
+		weapon.set_process(false)
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		enemy.global_position = robot.global_position + Vector2(180, 0)
+		var second_enemy := enemy_scene.instantiate()
+		holder.add_child(second_enemy)
+		second_enemy.set("max_health", 100000.0)
+		second_enemy.set("health", 100000.0)
+		second_enemy.global_position = robot.global_position + Vector2(210, 70)
+		await process_frame
+		var before_hp := float(enemy.get("health"))
+		var before_second_hp := float(second_enemy.get("health"))
+		weapon.call("_attack")
+		await create_timer(0.55).timeout
+		if float(enemy.get("health")) >= before_hp:
+			_fail("Expected Robot weapon %s to damage its primary target." % weapon_id)
+			return
+		if weapon_id in ["robot_magnetic_anchor", "robot_reactor_core"] and float(second_enemy.get("health")) >= before_second_hp:
+			_fail("Expected Robot weapon %s to affect a nearby secondary target." % weapon_id)
+			return
+		robot.queue_free()
+		enemy.queue_free()
+		second_enemy.queue_free()
 		await process_frame
 	holder.queue_free()
 	current_scene = null

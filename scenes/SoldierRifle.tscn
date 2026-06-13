@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/soldier_rifle.png" id="2_weapon_texture"]
+
+[node name="SoldierRifle" type="Node2D" groups=["player_weapons"]]
+z_index = 8
+script = ExtResource("1_class_weapon")
+weapon_id = "soldier_rifle"
+display_name = "Аркебуза строя"
+attack_mode = "suppression_burst"
+damage_parameter = "damage"
+fire_interval = 1.05
+damage = 12.0
+attack_range = 620.0
+aoe_radius = 130.0
+beam_width = 54.0
+suppression_width = 132.0
+projectile_count = 3
+burst_interval = 0.075
+damage_falloff = 0.38
+knockback = 44.0
+visual_color = Color(0.84, 0.78, 0.58, 0.42)
+
+[node name="WeaponVisual" type="Sprite2D" parent="."]
+z_index = 9
+texture = ExtResource("2_weapon_texture")
+position = Vector2(48, -14)
+rotation = 0.18
+scale = Vector2(0.36, 0.30)

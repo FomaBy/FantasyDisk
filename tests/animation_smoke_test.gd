@@ -114,6 +114,13 @@ func _test_player_animation() -> void:
 		"chemist": 0.045,
 		"knight": 0.035,
 		"druid": 0.035,
+		"soldier": 0.04,
+		"thief": 0.05,
+		"elementalist": 0.03,
+		"sniper": 0.03,
+		"priest": 0.025,
+		"biologist": 0.025,
+		"robot": 0.02,
 	}
 	for character_id in new_class_profiles.keys():
 		player.configure_character(character_id)
@@ -128,6 +135,102 @@ func _test_player_animation() -> void:
 			_fail("Expected %s movement profile to move the pelvis." % character_id)
 		if abs(class_leg_l.rotation - class_leg_r.rotation) <= float(new_class_profiles[character_id]):
 			_fail("Expected %s to use a distinct readable walk profile." % character_id)
+
+	var rifle_pose: Dictionary = _sample_player_weapon_action_pose(player, "soldier", "soldier_rifle", "shoot", 0.12)
+	var grenade_pose: Dictionary = _sample_player_weapon_action_pose(player, "soldier", "soldier_grenade", "shoot", 0.12)
+	var bayonet_pose: Dictionary = _sample_player_weapon_action_pose(player, "soldier", "soldier_bayonet", "shoot", 0.12)
+	if rifle_pose["variant"] != "soldier_rifle" or grenade_pose["variant"] != "soldier_grenade" or bayonet_pose["variant"] != "soldier_bayonet":
+		_fail("Expected Soldier rig to receive the equipped weapon id as animation variant.")
+	if float(rifle_pose["pelvis_x"]) >= -2.0:
+		_fail("Expected soldier rifle pose to recoil backward.")
+	if float(grenade_pose["arm_r_y"]) >= float(rifle_pose["arm_r_y"]) - 2.0:
+		_fail("Expected soldier grenade pose to lift the throwing arm.")
+	if float(bayonet_pose["pelvis_x"]) <= float(grenade_pose["pelvis_x"]) + 1.0 or float(bayonet_pose["arm_r_x"]) <= float(rifle_pose["arm_r_x"]) + 8.0:
+		_fail("Expected soldier bayonet pose to brace forward.")
+
+	var coin_pose: Dictionary = _sample_player_weapon_action_pose(player, "thief", "thief_coin_pouch", "shoot", 0.12)
+	var shadow_pose: Dictionary = _sample_player_weapon_action_pose(player, "thief", "thief_shadow_cloak", "shoot", 0.12)
+	var smoke_pose: Dictionary = _sample_player_weapon_action_pose(player, "thief", "thief_smoke_bomb", "shoot", 0.12)
+	if coin_pose["variant"] != "thief_coin_pouch" or shadow_pose["variant"] != "thief_shadow_cloak" or smoke_pose["variant"] != "thief_smoke_bomb":
+		_fail("Expected Thief rig to receive the equipped weapon id as animation variant.")
+	if float(coin_pose["arm_r_rot"]) <= 0.25 or float(coin_pose["arm_r_x"]) <= float(smoke_pose["arm_r_x"]) + 5.0:
+		_fail("Expected thief coin pouch pose to read as a quick forward coin flick.")
+	if float(shadow_pose["pelvis_x"]) <= float(coin_pose["pelvis_x"]) + 4.0:
+		_fail("Expected thief shadow cloak pose to lunge farther forward than coin toss.")
+	if float(smoke_pose["pelvis_x"]) >= -3.0 or float(smoke_pose["arm_r_y"]) <= float(coin_pose["arm_r_y"]) + 5.0:
+		_fail("Expected thief smoke bomb pose to dodge back and throw low.")
+
+	var orbit_pose: Dictionary = _sample_player_weapon_action_pose(player, "elementalist", "elementalist_orb_ring", "shoot", 0.12)
+	var prism_pose: Dictionary = _sample_player_weapon_action_pose(player, "elementalist", "elementalist_prism_focus", "shoot", 0.12)
+	var meteor_pose: Dictionary = _sample_player_weapon_action_pose(player, "elementalist", "elementalist_meteor_core", "shoot", 0.12)
+	if orbit_pose["variant"] != "elementalist_orb_ring" or prism_pose["variant"] != "elementalist_prism_focus" or meteor_pose["variant"] != "elementalist_meteor_core":
+		_fail("Expected Elementalist rig to receive the equipped weapon id as animation variant.")
+	if float(orbit_pose["arm_l_rot"]) >= -0.25 or float(orbit_pose["arm_r_rot"]) <= 0.25:
+		_fail("Expected elementalist orb ring pose to channel with both arms spread.")
+	if float(prism_pose["arm_r_x"]) <= float(orbit_pose["arm_r_x"]) + 6.0:
+		_fail("Expected elementalist prism focus pose to focus forward.")
+	if float(meteor_pose["arm_l_y"]) >= float(orbit_pose["arm_l_y"]) - 3.0 or float(meteor_pose["pelvis_y"]) >= float(orbit_pose["pelvis_y"]) - 2.0:
+		_fail("Expected elementalist meteor core pose to lift into an overhead summon.")
+
+	var lockshot_pose: Dictionary = _sample_player_weapon_action_pose(player, "sniper", "sniper_deadeye_rifle", "shoot", 0.12)
+	var kill_zone_pose: Dictionary = _sample_player_weapon_action_pose(player, "sniper", "sniper_spotter_scope", "shoot", 0.12)
+	var split_pose: Dictionary = _sample_player_weapon_action_pose(player, "sniper", "sniper_shatter_rounds", "shoot", 0.12)
+	if lockshot_pose["variant"] != "sniper_deadeye_rifle" or kill_zone_pose["variant"] != "sniper_spotter_scope" or split_pose["variant"] != "sniper_shatter_rounds":
+		_fail("Expected Sniper rig to receive the equipped weapon id as animation variant.")
+	if float(lockshot_pose["arm_r_x"]) <= float(kill_zone_pose["arm_r_x"]) + 1.0:
+		_fail("Expected sniper lockshot pose to brace the rifle forward.")
+	if float(kill_zone_pose["arm_l_y"]) >= float(lockshot_pose["arm_l_y"]) - 2.0:
+		_fail("Expected sniper spotter scope pose to raise the off hand for marking.")
+	if float(split_pose["pelvis_x"]) >= float(lockshot_pose["pelvis_x"]) - 1.0:
+		_fail("Expected sniper shatter rounds pose to recoil harder than lockshot.")
+	for sniper_pose in [lockshot_pose, kill_zone_pose, split_pose]:
+		if float(sniper_pose["socket_x"]) <= 8.0 or abs(float(sniper_pose["socket_y"])) >= 36.0:
+			_fail("Expected sniper weapon socket to stay readable near the firing hand.")
+
+	var sanctify_pose: Dictionary = _sample_player_weapon_action_pose(player, "priest", "priest_reliquary", "shoot", 0.12)
+	var ward_pose: Dictionary = _sample_player_weapon_action_pose(player, "priest", "priest_censer", "shoot", 0.12)
+	var prayer_pose: Dictionary = _sample_player_weapon_action_pose(player, "priest", "priest_chime", "shoot", 0.12)
+	if sanctify_pose["variant"] != "priest_reliquary" or ward_pose["variant"] != "priest_censer" or prayer_pose["variant"] != "priest_chime":
+		_fail("Expected Priest rig to receive the equipped weapon id as animation variant.")
+	if float(sanctify_pose["arm_l_y"]) >= float(ward_pose["arm_l_y"]) - 2.0:
+		_fail("Expected priest sanctify pose to raise the blessing hand.")
+	if float(ward_pose["arm_r_x"]) <= float(sanctify_pose["arm_r_x"]) + 2.0:
+		_fail("Expected priest ward pose to open outward for a pulse.")
+	if float(prayer_pose["arm_r_y"]) >= float(ward_pose["arm_r_y"]) - 4.0:
+		_fail("Expected priest prayer chain pose to lift into a chime/chant.")
+	for priest_pose in [sanctify_pose, ward_pose, prayer_pose]:
+		if float(priest_pose["socket_x"]) <= 8.0 or abs(float(priest_pose["socket_y"])) >= 38.0:
+			_fail("Expected priest weapon socket to stay readable near the casting hand.")
+
+	var spore_pose: Dictionary = _sample_player_weapon_action_pose(player, "biologist", "biologist_spore_lens", "shoot", 0.12)
+	var sample_pose: Dictionary = _sample_player_weapon_action_pose(player, "biologist", "biologist_sample_injector", "shoot", 0.12)
+	var symbiote_pose: Dictionary = _sample_player_weapon_action_pose(player, "biologist", "biologist_symbiote_seed", "shoot", 0.12)
+	if spore_pose["variant"] != "biologist_spore_lens" or sample_pose["variant"] != "biologist_sample_injector" or symbiote_pose["variant"] != "biologist_symbiote_seed":
+		_fail("Expected Biologist rig to receive the equipped weapon id as animation variant.")
+	if float(spore_pose["arm_l_y"]) >= float(symbiote_pose["arm_l_y"]) - 4.0:
+		_fail("Expected biologist spore lens pose to lift into an inspection/bloom stance.")
+	if float(sample_pose["arm_r_x"]) <= float(spore_pose["arm_r_x"]) + 3.0:
+		_fail("Expected biologist sample injector pose to make a precise forward dart.")
+	if float(symbiote_pose["pelvis_y"]) <= float(spore_pose["pelvis_y"]) + 2.0 or float(symbiote_pose["arm_r_y"]) <= float(sample_pose["arm_r_y"]) + 2.0:
+		_fail("Expected biologist symbiote seed pose to plant low into a web gesture.")
+	for biologist_pose in [spore_pose, sample_pose, symbiote_pose]:
+		if float(biologist_pose["socket_x"]) <= 8.0 or abs(float(biologist_pose["socket_y"])) >= 40.0:
+			_fail("Expected biologist weapon socket to stay readable near the specimen hand.")
+
+	var anchor_pose: Dictionary = _sample_player_weapon_action_pose(player, "robot", "robot_magnetic_anchor", "shoot", 0.12)
+	var press_pose: Dictionary = _sample_player_weapon_action_pose(player, "robot", "robot_hydraulic_press", "shoot", 0.12)
+	var reactor_pose: Dictionary = _sample_player_weapon_action_pose(player, "robot", "robot_reactor_core", "shoot", 0.12)
+	if anchor_pose["variant"] != "robot_magnetic_anchor" or press_pose["variant"] != "robot_hydraulic_press" or reactor_pose["variant"] != "robot_reactor_core":
+		_fail("Expected Robot rig to receive the equipped weapon id as animation variant.")
+	if float(anchor_pose["pelvis_x"]) >= -1.0 or float(anchor_pose["arm_r_y"]) <= float(press_pose["arm_r_y"]) + 2.0:
+		_fail("Expected robot magnetic anchor pose to plant heavy and pull low.")
+	if float(press_pose["arm_r_x"]) <= float(anchor_pose["arm_r_x"]) + 2.0:
+		_fail("Expected robot hydraulic press pose to drive both arms forward.")
+	if float(reactor_pose["arm_l_x"]) >= float(anchor_pose["arm_l_x"]) - 2.0 or float(reactor_pose["arm_r_x"]) <= float(anchor_pose["arm_r_x"]) + 1.0:
+		_fail("Expected robot reactor core pose to open both arms for venting.")
+	for robot_pose in [anchor_pose, press_pose, reactor_pose]:
+		if float(robot_pose["socket_x"]) <= 8.0 or abs(float(robot_pose["socket_y"])) >= 42.0:
+			_fail("Expected robot weapon socket to stay readable near the construct hand.")
 	player.queue_free()
 
 
@@ -145,6 +248,31 @@ func _sample_berserk_attack_pose(player: Node, weapon_id: String, elapsed: float
 		"arm_r_x": arm_r.position.x,
 		"arm_r_y": arm_r.position.y,
 		"pelvis_y": pelvis.position.y,
+	}
+
+
+func _sample_player_weapon_action_pose(player: Node, character_id: String, weapon_id: String, action_id: String, elapsed: float) -> Dictionary:
+	player.configure_character(character_id, weapon_id)
+	player.set("velocity", Vector2.ZERO)
+	player.call("play_action_animation", action_id, Vector2.RIGHT)
+	player.call("_update_movement_animation", elapsed)
+	var rig := player.get_node("VisualRoot/RigRoot") as Node2D
+	var pelvis := rig.get_node("Pelvis") as Node2D
+	var arm_l := rig.get_node("Pelvis/Figure/Torso/ArmL") as Node2D
+	var arm_r := rig.get_node("Pelvis/Figure/Torso/ArmR") as Node2D
+	var weapon_socket := player.get_node("VisualRoot/WeaponSocket") as Node2D
+	return {
+		"variant": str(rig.get("action_variant")),
+		"pelvis_x": pelvis.position.x,
+		"pelvis_y": pelvis.position.y,
+		"socket_x": weapon_socket.position.x,
+		"socket_y": weapon_socket.position.y,
+		"arm_l_x": arm_l.position.x,
+		"arm_l_y": arm_l.position.y,
+		"arm_l_rot": arm_l.rotation,
+		"arm_r_x": arm_r.position.x,
+		"arm_r_y": arm_r.position.y,
+		"arm_r_rot": arm_r.rotation,
 	}
 
 

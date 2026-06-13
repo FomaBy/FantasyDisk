@@ -55,6 +55,12 @@ static func build_report() -> String:
 	lines.append("")
 	lines.append(_enemy_scaling_ttk_table())
 	lines.append("")
+	lines.append("## Drop And Economy Rebalance")
+	lines.append("")
+	lines.append(_drop_multiplier_table())
+	lines.append("")
+	lines.append(_economy_run_model())
+	lines.append("")
 	return "\n".join(lines)
 
 
@@ -170,6 +176,80 @@ static func _enemy_scaling_ttk_table() -> String:
 			boss_ttk,
 			scale,
 		])
+	return "\n".join(lines)
+
+
+static func _drop_multiplier_table() -> String:
+	var classes := ["ordinary", "complex", "heavy", "mini_elite", "elite", "boss"]
+	var lines := PackedStringArray()
+	lines.append("| Drop Class | XP Mult / Fixed | Money Mult / Fixed | Money Chance | Stage 0 XP | Stage 0 Gold | Stage 6 XP | Stage 6 Gold |")
+	lines.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+	for drop_class in classes:
+		var mult: Dictionary = ProgressionData.drop_class_multiplier(drop_class)
+		var stage0: Dictionary = ProgressionData.drop_class_rewards(drop_class, 0, 0)
+		var stage6: Dictionary = ProgressionData.drop_class_rewards(drop_class, 6, 0)
+		lines.append("| %s | %.2f | %.2f | %.0f%% | %d | %d | %d | %d |" % [
+			drop_class,
+			float(mult.get("xp", 1.0)),
+			float(mult.get("money", 1.0)),
+			float(mult.get("money_chance", 0.0)) * 100.0,
+			int(stage0.get("xp", 0)),
+			int(stage0.get("money", 0)),
+			int(stage6.get("xp", 0)),
+			int(stage6.get("money", 0)),
+		])
+	return "\n".join(lines)
+
+
+static func _economy_run_model() -> String:
+	var route_stages := [0, 1, 2, 3, 4, 5]
+	var encounter_mix := {
+		"ordinary": 72,
+		"complex": 14,
+		"heavy": 10,
+		"mini_elite": 2,
+		"elite": 1,
+	}
+	var old_money := 0.0
+	var old_xp := 0.0
+	var new_money := 0.0
+	var new_xp := 0.0
+	for stage in route_stages:
+		for drop_class in encounter_mix.keys():
+			var count := float(encounter_mix[drop_class]) / float(route_stages.size())
+			var rewards: Dictionary = ProgressionData.drop_class_rewards(str(drop_class), stage, 0)
+			new_xp += float(rewards.get("xp", 0)) * count
+			new_money += float(rewards.get("money", 0)) * float(rewards.get("money_chance", 0.75)) * count
+			match str(drop_class):
+				"complex":
+					old_xp += 2.0 * count
+					old_money += 1.0 * 0.75 * count
+				"heavy":
+					old_xp += 3.0 * count
+					old_money += 2.0 * 0.75 * count
+				"mini_elite":
+					old_xp += 4.0 * count
+					old_money += 4.0 * count
+				"elite":
+					old_xp += 8.0 * count
+					old_money += 6.0 * count
+				_:
+					old_xp += 1.0 * count
+					old_money += 1.0 * 0.75 * count
+	var old_cost := 1.0
+	var new_cost := ProgressionData.ECONOMY_PRICE_MULTIPLIER
+	var buying_power_delta := ((new_money / new_cost) / maxf(old_money / old_cost, 0.001) - 1.0) * 100.0
+	var xp_delta := (new_xp / maxf(old_xp, 0.001) - 1.0) * 100.0
+	var lines := PackedStringArray()
+	lines.append("Representative 6-stage route model. Encounter mix is a deterministic balance fixture, not a live spawn log.")
+	lines.append("")
+	lines.append("| Metric | Before | After | Delta |")
+	lines.append("| --- | ---: | ---: | ---: |")
+	lines.append("| Expected gold | %.1f | %.1f | %+0.1f%% |" % [old_money, new_money, (new_money / maxf(old_money, 0.001) - 1.0) * 100.0])
+	lines.append("| Effective buying power | %.1f | %.1f | %+0.1f%% |" % [old_money / old_cost, new_money / new_cost, buying_power_delta])
+	lines.append("| Expected XP | %.1f | %.1f | %+0.1f%% |" % [old_xp, new_xp, xp_delta])
+	lines.append("| Shop/attribute/event price multiplier | %.2fx | %.2fx | %+0.1f%% |" % [old_cost, new_cost, (new_cost / old_cost - 1.0) * 100.0])
+	lines.append("| XP curve next-level formula | `ceil(req*1.35+2)` | `ceil(req*%.2f+%.0f)` | tempo guard |" % [ProgressionData.XP_CURVE_MULTIPLIER, ProgressionData.XP_CURVE_FLAT])
 	return "\n".join(lines)
 
 
