@@ -798,5 +798,17 @@
  "design_animation_ready_boss_mini_elite_parts_handoff_task.md": {
   "key": "SCRUM-204",
   "status": "К выполнению"
+ },
+ "backend_menu_anywhere_back_buttons_task.md": {
+  "key": "SCRUM-205",
+  "status": "К выполнению"
+ },
+ "bug_hero_select_radar_overlaps_frame_task.md": {
+  "key": "SCRUM-206",
+  "status": "К выполнению"
+ },
+ "bug_shop_rebuy_exploit_reopen_task.md": {
+  "key": "SCRUM-207",
+  "status": "К выполнению"
  }
 }
