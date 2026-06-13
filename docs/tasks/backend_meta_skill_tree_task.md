@@ -179,3 +179,15 @@ record_boss_victory (ч.1), показ — здесь. Тест в meta_skill_tr
 ### Осталось (ждёт занятый main.gd)
 - 2b: вызов player.apply_meta_skill_modifiers на старте забега + проброс эконом-флагов.
 - harness-отчёт по итоговой силе; CHANGELOG/доки.
+
+
+## Инкремент 5 — эконом-флаг: скидка магазина (2026-06-13, file-изолированный)
+
+ui_screens._random_shop_items: ветвь Богатства (shop_price_mult ≤ 0 из skill_modifiers)
+снижает цены товаров поверх asc price_mult. Тест в meta_skill_tree_smoke (тот же seed,
+цены с узлами < без). ui_screens свободен; занятый main.gd не тронут.
+
+### Осталось (эконом-флаги в свободных файлах добираю по частям; старт-золото — main.gd, занят)
+- attr_cost_mult в окне докачки атрибутов (ui_screens), attr_extra_options, levelup_rerolls.
+- start_gold_flat на старте забега (main.gd — занят).
+- вызов player.apply_meta_skill_modifiers на старте забега (main.gd — занят).

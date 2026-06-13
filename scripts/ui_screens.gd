@@ -2971,7 +2971,10 @@ func _weighted_level_up_index(source: Array) -> int:
 func _random_shop_items(count: int) -> Array:
 	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(game.route_stage), count)
 	var price_mult := float(game.ascension_difficulty()["price_mult"])
-	if price_mult != 1.0:
+	# Ветвь Богатства мета-древа (SCRUM-150): скидка магазина (shop_price_mult ≤ 0).
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	price_mult *= maxf(1.0 + float(skill_mods.get("shop_price_mult", 0.0)), 0.1)
+	if not is_equal_approx(price_mult, 1.0):
 		for item in items:
 			item["cost"] = maxi(1, int(round(float(item.get("cost", 0)) * price_mult)))
 	return items

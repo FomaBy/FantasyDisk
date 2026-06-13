@@ -18,8 +18,44 @@ func _initialize() -> void:
 	await _test_player_application()
 	await _test_skill_tree_screen()
 	await _test_victory_shows_skill_points()
+	await _test_shop_discount()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
+
+
+func _test_shop_discount() -> void:
+	# Ветвь Богатства: купленные узлы скидки магазина снижают цены товаров.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+	main.set("selected_ascension_level", 0)
+	main.set("route_stage", 2)
+	if main.has_method("reset_run_ascension"):
+		main.call("reset_run_ascension")
+
+	var base_state: Dictionary = main.get("meta_state")
+	base_state["skill_nodes"] = []
+	main.set("meta_state", base_state)
+	(main.get("rng") as RandomNumberGenerator).seed = 4242
+	var full_items: Array = main.ui._random_shop_items(4)
+	var full_total := 0
+	for item in full_items:
+		full_total += int((item as Dictionary).get("cost", 0))
+
+	var disc_state: Dictionary = main.get("meta_state")
+	disc_state["skill_nodes"] = ["wealth_shop_1", "wealth_shop_2"]
+	main.set("meta_state", disc_state)
+	(main.get("rng") as RandomNumberGenerator).seed = 4242
+	var disc_items: Array = main.ui._random_shop_items(4)
+	var disc_total := 0
+	for item in disc_items:
+		disc_total += int((item as Dictionary).get("cost", 0))
+
+	if disc_total >= full_total or disc_total <= 0:
+		_fail("Expected shop discount nodes to lower prices (%d vs %d)." % [disc_total, full_total])
+		return
+	main.queue_free()
+	await process_frame
 
 
 func _test_victory_shows_skill_points() -> void:
