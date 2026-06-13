@@ -1,0 +1,5647 @@
+[
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/assassin.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      102,
+      38,
+      409,
+      490
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/berserk_unarmed.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      79,
+      36,
+      433,
+      496
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/biologist.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      127,
+      31,
+      385,
+      481
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/chemist.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      105,
+      38,
+      407,
+      490
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/dark_mage.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      72,
+      41,
+      440,
+      491
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/doctor.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      152,
+      38,
+      360,
+      490
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/druid.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      82,
+      38,
+      429,
+      490
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/elementalist.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      115,
+      23,
+      396,
+      488
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/engineer.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      98,
+      26,
+      414,
+      486
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/guitarist.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      97,
+      41,
+      414,
+      491
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/knight.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      120,
+      12,
+      392,
+      500
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/priest.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      127,
+      23,
+      384,
+      488
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/ranger.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      108,
+      38,
+      404,
+      490
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/robot.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      73,
+      23,
+      439,
+      488
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/sniper.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      139,
+      23,
+      372,
+      488
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/soldier.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      144,
+      26,
+      367,
+      486
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_active",
+    "path": "assets/sprites/characters/thief.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      143,
+      23,
+      369,
+      488
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/characters/assassin_placeholder.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      79,
+      36,
+      433,
+      496
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/characters/berserk_walk_sheet_v2.png",
+    "exists": true,
+    "size": [
+      2304,
+      768
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      59,
+      27,
+      2234,
+      760
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/characters/chemist_placeholder.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      72,
+      41,
+      440,
+      491
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/characters/doctor_placeholder.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      72,
+      41,
+      440,
+      491
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/characters/druid_placeholder.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      97,
+      41,
+      414,
+      491
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/characters/knight_placeholder.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      79,
+      36,
+      433,
+      496
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/characters/ranger_placeholder.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      72,
+      41,
+      440,
+      491
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/player_berserk.png",
+    "exists": true,
+    "size": [
+      96,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      23,
+      14,
+      82,
+      86
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/player_ranger.png",
+    "exists": true,
+    "size": [
+      96,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      26,
+      8,
+      81,
+      84
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_characters_legacy_placeholders",
+    "path": "assets/sprites/player_summoner.png",
+    "exists": true,
+    "size": [
+      96,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      22,
+      16,
+      81,
+      86
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/acid_flask.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      43,
+      14,
+      212,
+      242
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/bass_guitar.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      36,
+      21,
+      226,
+      231
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/biologist_sample_injector.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      18,
+      22,
+      238,
+      233
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/biologist_spore_lens.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      37,
+      18,
+      218,
+      238
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/biologist_symbiote_seed.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      43,
+      20,
+      212,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/blast_powder.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      32,
+      18,
+      224,
+      238
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/bone_saw.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      19,
+      28,
+      237,
+      228
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/briar_staff.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      43,
+      13,
+      212,
+      243
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/chakrams.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      19,
+      25,
+      237,
+      230
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/cursed_skull.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      59,
+      14,
+      201,
+      241
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/dark_book.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      47,
+      38,
+      202,
+      203
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/dark_wand.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      67,
+      32,
+      200,
+      219
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/electric_guitar.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      29,
+      14,
+      231,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/elementalist_meteor_core.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      52,
+      23,
+      204,
+      232
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/elementalist_orb_ring.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      21,
+      20,
+      234,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/elementalist_prism_focus.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      70,
+      18,
+      185,
+      238
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/engineer_pressure_mines.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      18,
+      43,
+      238,
+      212
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/engineer_repair_drone.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      20,
+      34,
+      235,
+      221
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/engineer_sentry_wrench.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      29,
+      18,
+      227,
+      238
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/holy_flail.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      25,
+      20,
+      230,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/homunculus_vial.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      72,
+      13,
+      184,
+      243
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/hunter_trap.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      19,
+      36,
+      237,
+      219
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/long_spear.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      33,
+      15,
+      223,
+      241
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/moon_crossbow.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      25,
+      19,
+      231,
+      237
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/plague_syringe.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      24,
+      19,
+      231,
+      237
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/priest_censer.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      65,
+      23,
+      191,
+      232
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/priest_chime.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      33,
+      23,
+      223,
+      232
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/priest_reliquary.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      59,
+      23,
+      197,
+      232
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/raven_totem.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      50,
+      13,
+      205,
+      243
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/restore_potion.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      46,
+      19,
+      210,
+      237
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/robot_hydraulic_press.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      37,
+      23,
+      219,
+      232
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/robot_magnetic_anchor.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      35,
+      18,
+      221,
+      238
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/robot_reactor_core.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      20,
+      34,
+      235,
+      221
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/shadow_daggers.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      33,
+      19,
+      223,
+      237
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/sniper_deadeye_rifle.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      15,
+      23,
+      240,
+      232
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/sniper_shatter_rounds.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      35,
+      26,
+      221,
+      230
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/sniper_spotter_scope.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      48,
+      28,
+      208,
+      227
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/soldier_bayonet.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      15,
+      16,
+      240,
+      239
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/soldier_grenade.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      41,
+      28,
+      215,
+      227
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/soldier_rifle.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      18,
+      28,
+      238,
+      228
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/sound_amp.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      48,
+      38,
+      207,
+      212
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/storm_longbow.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      34,
+      19,
+      221,
+      237
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/summon_amulet.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      36,
+      18,
+      218,
+      239
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/thief_coin_pouch.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      44,
+      26,
+      212,
+      230
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/thief_shadow_cloak.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      20,
+      34,
+      235,
+      221
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/thief_smoke_bomb.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      64,
+      44,
+      192,
+      212
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/tower_shield.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      55,
+      19,
+      200,
+      237
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/two_handed_axe.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      36,
+      19,
+      231,
+      222
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/two_handed_hammer.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      39,
+      16,
+      221,
+      225
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/two_handed_sword.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      40,
+      14,
+      223,
+      234
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_weapons_active",
+    "path": "assets/sprites/weapons/venom_wire.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      19,
+      27,
+      237,
+      229
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_bone_shaman.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      6,
+      14,
+      186,
+      177
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_bruiser_slow.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      6,
+      7,
+      186,
+      184
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_melee.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      8,
+      13,
+      184,
+      179
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_ranged.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      14,
+      8,
+      177,
+      184
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_rift_shieldbearer.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      22,
+      8,
+      169,
+      184
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_small_biter.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      13,
+      28,
+      178,
+      163
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_suicide_runner.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      10,
+      41,
+      138,
+      150
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_summoner.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      13,
+      8,
+      179,
+      184
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_venom_spitter.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      10,
+      22,
+      182,
+      170
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_void_mage.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      16,
+      8,
+      176,
+      184
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/enemies/enemy_winged_spark.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      12,
+      27,
+      180,
+      165
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/elites/iron_bastion.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      512,
+      512
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/elites/night_stalker.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      6,
+      512,
+      506
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/elites/plague_prophet.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      512,
+      512
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/elites/shard_marshal.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      512,
+      512
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/bosses/boss_disk_devourer.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      5,
+      15,
+      505,
+      495
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_active",
+    "path": "assets/sprites/bosses/boss_rift_warden.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      5,
+      1,
+      505,
+      509
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_legacy_root",
+    "path": "assets/sprites/boss_warden.png",
+    "exists": true,
+    "size": [
+      160,
+      160
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      6,
+      5,
+      155,
+      149
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_legacy_root",
+    "path": "assets/sprites/enemy_bone_shaman.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      51,
+      35,
+      198,
+      212
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_legacy_root",
+    "path": "assets/sprites/enemy_bruiser.png",
+    "exists": true,
+    "size": [
+      96,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      12,
+      8,
+      85,
+      90
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_legacy_root",
+    "path": "assets/sprites/enemy_melee.png",
+    "exists": true,
+    "size": [
+      80,
+      80
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      9,
+      6,
+      72,
+      71
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_legacy_root",
+    "path": "assets/sprites/enemy_runner.png",
+    "exists": true,
+    "size": [
+      80,
+      80
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      4,
+      6,
+      77,
+      75
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_legacy_root",
+    "path": "assets/sprites/enemy_shooter.png",
+    "exists": true,
+    "size": [
+      80,
+      80
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      13,
+      7,
+      70,
+      74
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_enemies_legacy_root",
+    "path": "assets/sprites/enemy_summoner.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      52,
+      35,
+      230,
+      212
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/beam_strip.png",
+    "exists": true,
+    "size": [
+      256,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      165
+    ],
+    "bbox": [
+      1,
+      0,
+      255,
+      64
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/briar_pool.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      182
+    ],
+    "bbox": [
+      0,
+      39,
+      255,
+      213
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/dust_puff_0.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      237
+    ],
+    "bbox": [
+      0,
+      19,
+      128,
+      113
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/dust_puff_1.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      220
+    ],
+    "bbox": [
+      11,
+      22,
+      126,
+      114
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/dust_puff_2.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      237
+    ],
+    "bbox": [
+      6,
+      22,
+      128,
+      118
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/elite_crystal_shard.png",
+    "exists": true,
+    "size": [
+      96,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      241
+    ],
+    "bbox": [
+      18,
+      3,
+      77,
+      91
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/elite_poison_lob.png",
+    "exists": true,
+    "size": [
+      96,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      185
+    ],
+    "bbox": [
+      6,
+      5,
+      91,
+      90
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/elite_shadow_trail.png",
+    "exists": true,
+    "size": [
+      256,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      163
+    ],
+    "bbox": [
+      0,
+      7,
+      256,
+      127
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/elite_shockwave_ring.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      175
+    ],
+    "bbox": [
+      35,
+      35,
+      478,
+      478
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/elite_telegraph_circle.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      175
+    ],
+    "bbox": [
+      34,
+      34,
+      479,
+      479
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/hazard_zone.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      175
+    ],
+    "bbox": [
+      19,
+      19,
+      238,
+      238
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/impact_flash.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      223
+    ],
+    "bbox": [
+      7,
+      9,
+      122,
+      127
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/impact_ring.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      175
+    ],
+    "bbox": [
+      18,
+      18,
+      239,
+      239
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/music_note.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      210
+    ],
+    "bbox": [
+      7,
+      13,
+      51,
+      62
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/poison_pool.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      182
+    ],
+    "bbox": [
+      18,
+      41,
+      244,
+      208
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/slash_arc.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      214
+    ],
+    "bbox": [
+      88,
+      25,
+      227,
+      231
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/sound_wave.png",
+    "exists": true,
+    "size": [
+      192,
+      192
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      166
+    ],
+    "bbox": [
+      33,
+      0,
+      192,
+      192
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/spark_pool.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      184
+    ],
+    "bbox": [
+      0,
+      40,
+      256,
+      216
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/effects/void_orb.png",
+    "exists": true,
+    "size": [
+      96,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      220
+    ],
+    "bbox": [
+      2,
+      2,
+      95,
+      95
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/projectiles/enemy_projectile_magic_64.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      4,
+      16,
+      59,
+      47
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/projectiles/player_projectile_spark_64.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      64,
+      64
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/allies/ally_druid_beast.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      61,
+      38,
+      196,
+      227
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/allies/ally_druid_pack_spirit.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      58,
+      38,
+      197,
+      227
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/allies/ally_homunculus.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      54,
+      40,
+      202,
+      216
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/allies/ally_leadership_echo.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      39,
+      29,
+      215,
+      217
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/allies/deploy_raven_totem_field.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      69,
+      25,
+      187,
+      222
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_effects_projectiles_allies",
+    "path": "assets/sprites/allies/deploy_sound_amp_field.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      40,
+      23,
+      216,
+      221
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_ashen_rift.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_cursed_grove.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_dry_road.png",
+    "exists": true,
+    "size": [
+      1600,
+      900
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_dusty_badlands.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_enchanted_meadow.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_marsh.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_meadow.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_misty_marsh.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_ruined_courtyard.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/field_stone_garden.png",
+    "exists": true,
+    "size": [
+      1600,
+      900
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/main_menu_epic_battle.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      255,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      2560,
+      1440
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/route_map_backdrop.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "alpha": null,
+    "bbox": null,
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      255,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      2560,
+      1440
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      255,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      2560,
+      1440
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/ui/ui_backdrop_merchant_archive.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      255,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      2560,
+      1440
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      255,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      2560,
+      1440
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      255,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      2560,
+      1440
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/sprites/ui/screens/screen_campfire_background.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      255,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      2560,
+      1440
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/sprites/ui/screens/screen_event_background.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      255,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      2560,
+      1440
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_backgrounds",
+    "path": "assets/sprites/ui/screens/screen_shop_background.png",
+    "exists": true,
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      255,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      2560,
+      1440
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/map_icons/map_battle_skull.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      30,
+      23,
+      98,
+      104
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/map_icons/map_boss_disk_devourer.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      14,
+      9,
+      114,
+      116
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/map_icons/map_boss_rift_warden.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      17,
+      6,
+      111,
+      121
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/map_icons/map_elite_skull_bones.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      8,
+      15,
+      119,
+      109
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/map_icons/map_event_question.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      30,
+      15,
+      98,
+      114
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/map_icons/map_rest_campfire.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      8,
+      10,
+      120,
+      118
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/map_icons/map_shop_tent.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      16,
+      13,
+      108,
+      109
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/cursor/game_cursor.png",
+    "exists": true,
+    "size": [
+      48,
+      48
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      48,
+      48
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/cursor/game_cursor_attack.png",
+    "exists": true,
+    "size": [
+      48,
+      48
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      48,
+      48
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/cursor/game_cursor_hover.png",
+    "exists": true,
+    "size": [
+      48,
+      48
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      48,
+      48
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/hud/hud_hp.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      4,
+      61,
+      59
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/hud/hud_money.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      6,
+      61,
+      57
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/hud/hud_xp.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      4,
+      3,
+      59,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/hud/timer_frame.png",
+    "exists": true,
+    "size": [
+      300,
+      90
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      300,
+      90
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/hud/timer_frame_alarm.png",
+    "exists": true,
+    "size": [
+      300,
+      90
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      300,
+      90
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/global/ui_button_frame.png",
+    "exists": true,
+    "size": [
+      160,
+      72
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      160,
+      72
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/global/ui_card_frame.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/global/ui_hud_card_frame.png",
+    "exists": true,
+    "size": [
+      96,
+      72
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      96,
+      72
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/global/ui_hud_panel_frame.png",
+    "exists": true,
+    "size": [
+      128,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      96
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/global/ui_level_panel_frame.png",
+    "exists": true,
+    "size": [
+      160,
+      160
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      160,
+      160
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/global/ui_panel_frame.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/global/ui_tooltip_frame.png",
+    "exists": true,
+    "size": [
+      128,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      96
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/escape/escape_stats_visual_kit_preview.png",
+    "exists": true,
+    "size": [
+      1280,
+      720
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      70,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      1280,
+      720
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/escape/ui_escape_button_frame.png",
+    "exists": true,
+    "size": [
+      384,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      384,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/escape/ui_escape_panel_frame.png",
+    "exists": true,
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      512,
+      512
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/escape/ui_stat_basic_row_frame.png",
+    "exists": true,
+    "size": [
+      512,
+      80
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      512,
+      80
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/escape/ui_stat_chip_frame.png",
+    "exists": true,
+    "size": [
+      384,
+      80
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      230
+    ],
+    "bbox": [
+      0,
+      0,
+      384,
+      80
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/escape/ui_stat_group_frame.png",
+    "exists": true,
+    "size": [
+      640,
+      320
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      245
+    ],
+    "bbox": [
+      0,
+      0,
+      640,
+      320
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/escape/ui_stat_section_divider.png",
+    "exists": true,
+    "size": [
+      640,
+      24
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      190
+    ],
+    "bbox": [
+      4,
+      4,
+      636,
+      20
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/escape/ui_stat_tooltip_frame.png",
+    "exists": true,
+    "size": [
+      640,
+      320
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      245
+    ],
+    "bbox": [
+      0,
+      0,
+      640,
+      320
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_map_cursor_hud_frames",
+    "path": "assets/sprites/ui/frames/escape/ui_stat_value_state_swatches.png",
+    "exists": true,
+    "size": [
+      640,
+      144
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      12,
+      24,
+      640,
+      113
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/stats/stat_agility.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      8,
+      5,
+      61,
+      58
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/stats/stat_endurance.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      4,
+      61,
+      59
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/stats/stat_energy.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      8,
+      3,
+      55,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/stats/stat_intelligence.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      6,
+      3,
+      58,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/stats/stat_knowledge.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      5,
+      3,
+      58,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/stats/stat_leadership.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      6,
+      3,
+      58,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/stats/stat_perception.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      8,
+      3,
+      55,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/stats/stat_strength.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      3,
+      61,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_aoe_radius.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      6,
+      3,
+      58,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_attack_range.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      10,
+      3,
+      54,
+      50
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_attack_speed.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      5,
+      61,
+      58
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_aura_radius.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      5,
+      61,
+      58
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_buff_power.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      6,
+      61,
+      57
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_crit_chance.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      4,
+      3,
+      60,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_crit_damage_multiplier.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      10,
+      3,
+      54,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_damage.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      3,
+      61,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_defense.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      12,
+      3,
+      51,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_dodge.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      8,
+      3,
+      56,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_dot_damage.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      13,
+      3,
+      51,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_dot_speed.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      11,
+      3,
+      52,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_health_point.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      13,
+      3,
+      51,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_knockback_power.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      9,
+      61,
+      55
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_magic_damage.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      5,
+      3,
+      59,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_move_speed.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      9,
+      3,
+      54,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_pickup_radius.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      11,
+      3,
+      55,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_projectile_speed.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      6,
+      61,
+      58
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_sound_wave_damage.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      3,
+      61,
+      61
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/derived/attr_summon_amount.png",
+    "exists": true,
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      3,
+      4,
+      61,
+      59
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/shop/shop_shop_artifact.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/shop/shop_shop_damage.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/shop/shop_shop_heal.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/shop/shop_shop_pickup.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/shop/shop_shop_range.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/shop/shop_shop_speed.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/icons/shop/shop_shop_weapon_cooldown.png",
+    "exists": true,
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      6,
+      8,
+      250,
+      250
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      4,
+      4,
+      252,
+      252
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/shop/ui_shop_price_badge.png",
+    "exists": true,
+    "size": [
+      256,
+      96
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      256,
+      96
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/shop/ui_shop_purchased_overlay.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      15,
+      15,
+      241,
+      241
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_ui_stat_shop_icons",
+    "path": "assets/sprites/ui/shop/ui_shop_tooltip_frame.png",
+    "exists": true,
+    "size": [
+      640,
+      320
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      0,
+      0,
+      640,
+      320
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_ash_page.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      32,
+      20,
+      224,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_banner_seed.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      37,
+      19,
+      219,
+      237
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_bass_cable.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      31,
+      21,
+      224,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_blood_pact.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      44,
+      20,
+      212,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_blood_sigil.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      36,
+      20,
+      220,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_broken_pick.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      54,
+      20,
+      202,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_burning_shard.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      73,
+      20,
+      183,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_captains_coin.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      25,
+      21,
+      231,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_copper_string.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      26,
+      21,
+      229,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_cracked_shield.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      44,
+      20,
+      211,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_cursed_crown.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      29,
+      20,
+      226,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_dark_crystal.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      69,
+      20,
+      187,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_echo_core.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      27,
+      21,
+      229,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_echo_pick.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      38,
+      21,
+      218,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_ember_core.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      20,
+      33,
+      235,
+      222
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_fast_boots.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      19,
+      29,
+      237,
+      226
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_fox_boots.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      31,
+      20,
+      225,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_fragile_heart.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      41,
+      20,
+      215,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_glass_edge.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      48,
+      20,
+      207,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_glass_orb.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      42,
+      21,
+      214,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_golden_route_mark.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      22,
+      21,
+      234,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_greedy_purse.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      31,
+      20,
+      225,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_hawk_lens.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      60,
+      20,
+      195,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_heavy_grip.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      52,
+      20,
+      203,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_heavy_totem.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      77,
+      20,
+      178,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_ink_candle.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      71,
+      20,
+      184,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_jagged_blade.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      58,
+      20,
+      198,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_1",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_leech_fang.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      74,
+      20,
+      181,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_leech_heart.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      34,
+      20,
+      222,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_living_root.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      51,
+      20,
+      204,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_loud_amp.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      42,
+      20,
+      213,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_magnetic_buckle.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      20,
+      46,
+      236,
+      209
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_old_codex.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      29,
+      20,
+      226,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_phantom_step.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      34,
+      20,
+      222,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_quickstring.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      21,
+      21,
+      235,
+      235
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_red_whetstone.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      24,
+      20,
+      231,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_sharp_talisman.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      85,
+      20,
+      171,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_silver_coin.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      44,
+      20,
+      213,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_skull_resonator.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      59,
+      20,
+      197,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_splinter_gloves.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      35,
+      20,
+      221,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_split_core.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      21,
+      23,
+      235,
+      233
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_star_compass.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      32,
+      20,
+      225,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_stone_heart.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      23,
+      20,
+      233,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_sturdy_amulet.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      26,
+      20,
+      229,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_summoners_bell.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      66,
+      20,
+      190,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_survival_manual.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      41,
+      20,
+      214,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_swift_ink.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      60,
+      21,
+      196,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_thorn_pact.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      43,
+      20,
+      212,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_void_ink.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      60,
+      20,
+      196,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_war_belt.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      20,
+      51,
+      236,
+      204
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_warrior_charm.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      46,
+      21,
+      210,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_warriors_rage.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      74,
+      20,
+      181,
+      236
+    ],
+    "import": true
+  },
+  {
+    "category": "audit_artifact_icons_2",
+    "path": "assets/sprites/ui/icons/artifacts/artifact_wide_sigil.png",
+    "exists": true,
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha": [
+      0,
+      255
+    ],
+    "bbox": [
+      24,
+      20,
+      233,
+      236
+    ],
+    "import": true
+  }
+]
