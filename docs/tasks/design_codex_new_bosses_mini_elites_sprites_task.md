@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Спрайты 3 новых боссов и 6 мини-элиток (D&D-канон)
 
-Статус: review
+Статус: done (Design review ПРИНЯТО 2026-06-13 — Claude-Designer)
 Версия: 0.1.4
 Создано: 2026-06-12
 Автор: PM (запрос пользователя; ростер проработан PM)
@@ -129,3 +129,14 @@ Role-boundary handoff:
 - Cutout slicing, pivots, `scripts/sliced_rig_manifest.gd`, motion profiles and
   animation smoke coverage remain Animator scope. Existing SCRUM-204 handoff was
   updated with the final source paths and Animator unblock note.
+
+
+## Design Review / 2026-06-13 — ПРИНЯТО (Claude-Designer)
+Проверены РЕАЛЬНЫЕ PNG (не только контактный лист) + сверка с каноном `boss_rift_warden`/`boss_disk_devourer`:
+- 3 босса 512px: bone_archon (лич-некромант, костяная корона, посох-позвонки), brood_mother (паучиха-королева,
+  яйца, хитин, паутина), ashen_colossus (каменный гигант, угли) — имозинг, единый painterly D&D-канон, золото+свечение.
+- 6 мини-элиток 512px: reaper/bellringer/bone_warden/spark_wight/rot_hound/shadow_devourer — различимы по силуэту,
+  читаются БЕЗ рантайм-тинта (ключевой критерий выполнен).
+- Тех: все 9 — 512x512 RGBA, bbox в рамке, alpha непустая; Godot import + runtime + animation smoke зелёные (по отчёту).
+- Исходники закоммичены Design-ревью. Cutout/пивоты/моушн -> Animator (SCRUM-204); сценовый вайринг/замена
+  placeholder-тинта -> Back-end (SCRUM-155). Принято.
