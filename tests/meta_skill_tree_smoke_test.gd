@@ -19,8 +19,36 @@ func _initialize() -> void:
 	await _test_skill_tree_screen()
 	await _test_victory_shows_skill_points()
 	await _test_shop_discount()
+	await _test_attribute_discount()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
+
+
+func _test_attribute_discount() -> void:
+	# Ветвь Богатства: узлы удешевления снижают цену докачки атрибутов.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+	main.set("selected_ascension_level", 0)
+	main.set("route_stage", 3)
+	if main.has_method("reset_run_ascension"):
+		main.call("reset_run_ascension")
+
+	var base_state: Dictionary = main.get("meta_state")
+	base_state["skill_nodes"] = []
+	main.set("meta_state", base_state)
+	var full_cost: int = main.ui._attribute_buy_cost()
+
+	var disc_state: Dictionary = main.get("meta_state")
+	disc_state["skill_nodes"] = ["wealth_attr_1", "wealth_attr_2"]
+	main.set("meta_state", disc_state)
+	var disc_cost: int = main.ui._attribute_buy_cost()
+
+	if disc_cost >= full_cost or disc_cost <= 0:
+		_fail("Expected attribute discount nodes to lower buy cost (%d vs %d)." % [disc_cost, full_cost])
+		return
+	main.queue_free()
+	await process_frame
 
 
 func _test_shop_discount() -> void:

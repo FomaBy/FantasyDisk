@@ -191,3 +191,10 @@ ui_screens._random_shop_items: ветвь Богатства (shop_price_mult �
 - attr_cost_mult в окне докачки атрибутов (ui_screens), attr_extra_options, levelup_rerolls.
 - start_gold_flat на старте забега (main.gd — занят).
 - вызов player.apply_meta_skill_modifiers на старте забега (main.gd — занят).
+
+
+## Инкремент 6 — эконом-флаг: скидка докачки атрибутов (2026-06-13, file-изолированный)
+
+ui_screens._ascension_price (зовётся только ценами докачки, не магазином): ветвь
+Богатства (attr_cost_mult ≤ 0) удешевляет покупку/reroll атрибутов поверх asc price_mult.
+Тест в meta_skill_tree_smoke (цена с узлами < без). ui_screens свободен; main.gd не тронут.

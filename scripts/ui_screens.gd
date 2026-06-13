@@ -578,7 +578,11 @@ const ATTRIBUTE_REROLLS_PER_WINDOW := 2
 
 
 func _ascension_price(base: int) -> int:
-	return maxi(1, int(round(float(base) * float(game.ascension_difficulty()["price_mult"]))))
+	# Ветвь Богатства мета-древа (SCRUM-150): удешевление докачки атрибутов
+	# (attr_cost_mult ≤ 0). Используется только ценами докачки, не магазином.
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	var discount := maxf(1.0 + float(skill_mods.get("attr_cost_mult", 0.0)), 0.1)
+	return maxi(1, int(round(float(base) * float(game.ascension_difficulty()["price_mult"]) * discount)))
 
 
 func _attribute_buy_cost() -> int:
