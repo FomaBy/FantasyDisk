@@ -24,8 +24,45 @@ func _initialize() -> void:
 	await _test_first_levelup_rare_capstone()
 	await _test_guaranteed_rare_shop_capstone()
 	await _test_death_save_capstone()
+	await _test_run_start_application()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
+
+
+func _test_run_start_application() -> void:
+	# Финал SCRUM-150: apply_ascension_bonuses на старте забега применяет боевые
+	# модификаторы дерева к игроку + начисляет старт-золото.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+	main.set("selected_character_id", "berserk")
+	main.set("selected_ascension_level", 0)
+	main.set("route_stage", 0)
+	var state: Dictionary = main.get("meta_state")
+	state["skill_nodes"] = ["wealth_start_1", "wealth_start_2", "might_dmg_1"]
+	main.set("meta_state", state)
+
+	var player := PLAYER_SCENE.instantiate()
+	main.add_child(player)
+	if player.has_method("configure_character"):
+		player.configure_character("berserk", "sword")
+	player.set("money", 0)
+	var dmg_before := float((player.get("run_modifiers") as Dictionary).get("damage_multiplier", 1.0))
+
+	main.call("apply_ascension_bonuses", player)
+	await process_frame
+
+	# Старт-золото: два узла по +30.
+	if int(player.get("money")) < 60:
+		_fail("Expected start-gold nodes to grant +60 gold at run start (got %d)." % int(player.get("money")))
+		return
+	# Боевой модификатор урона применён.
+	if float((player.get("run_modifiers") as Dictionary).get("damage_multiplier", 1.0)) <= dmg_before:
+		_fail("Expected meta skill damage to apply at run start.")
+		return
+
+	main.queue_free()
+	await process_frame
 
 
 func _test_death_save_capstone() -> void:

@@ -477,6 +477,13 @@ func apply_ascension_bonuses(player: Node) -> void:
 		run_mods["max_health_multiplier"] = float(run_mods.get("max_health_multiplier", 1.0)) * float(difficulty["player_max_hp_mult"])
 		if player.has_method("_apply_stat_scaling"):
 			player._apply_stat_scaling(true)
+	# 3) Мета-древо умений (SCRUM-150): боевое подмножество в run_modifiers + старт-золото забега.
+	var skill_mods: Dictionary = META_PROGRESSION.skill_modifiers(meta_state)
+	if player.has_method("apply_meta_skill_modifiers"):
+		player.apply_meta_skill_modifiers(skill_mods)
+	var start_gold := int(round(float(skill_mods.get("start_gold_flat", 0.0))))
+	if start_gold > 0 and player.get("money") != null:
+		player.set("money", int(player.get("money")) + start_gold)
 
 
 func _input(event: InputEvent) -> void:
