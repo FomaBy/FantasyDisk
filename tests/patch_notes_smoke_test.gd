@@ -5,15 +5,32 @@ extends SceneTree
 
 const PatchNotes := preload("res://scripts/patch_notes_data.gd")
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const GameSettings := preload("res://scripts/game_settings.gd")
 
 
 func _initialize() -> void:
 	_test_data_integrity()
 	_test_player_facing_text()
 	_test_version_since_logic()
+	_test_badge_persistence()
 	await _test_screen_renders()
 	print("Patch notes smoke test passed.")
 	quit(0)
+
+
+func _test_badge_persistence() -> void:
+	# SCRUM-159 ч.3: last_seen_version в настройках — основа бейджа «Что нового».
+	if not GameSettings.DEFAULTS.has("last_seen_version"):
+		_fail("Expected game settings to persist last_seen_version.")
+		return
+	# Свежая установка (default) видит бейдж: есть записи новее.
+	if not PatchNotes.has_new_since(str(GameSettings.DEFAULTS["last_seen_version"])):
+		_fail("Expected fresh install (default last_seen_version) to show the new-version badge.")
+		return
+	# «Просмотрел» актуальную версию -> бейджа нет.
+	if PatchNotes.has_new_since(PatchNotes.latest_version()):
+		_fail("Expected no badge after seeing the latest version.")
+		return
 
 
 func _test_screen_renders() -> void:

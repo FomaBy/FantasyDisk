@@ -17,6 +17,7 @@ const DEFAULTS := {
 	"music_enabled": true,
 	"sfx_enabled": true,
 	"screen_shake": true,
+	"last_seen_version": "0.0.0",
 	"input_bindings": {},
 }
 
@@ -39,6 +40,8 @@ static func load_settings() -> Dictionary:
 	settings["music_enabled"] = bool(settings["music_enabled"])
 	settings["sfx_enabled"] = bool(settings["sfx_enabled"])
 	settings["screen_shake"] = bool(settings["screen_shake"])
+	# SCRUM-159: версия, патч-ноуты которой игрок уже видел (для бейджа «Что нового»).
+	settings["last_seen_version"] = str(settings["last_seen_version"])
 	if not (settings["input_bindings"] is Dictionary):
 		settings["input_bindings"] = {}
 	if float(settings["master_volume"]) <= 0.0 and not has_master_zero_intent:
