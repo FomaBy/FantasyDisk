@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Выбор оружия — показать спрайт оружия, убрать стиль кнопки, проще и читаемее
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.4
@@ -52,3 +52,6 @@ Jira: SCRUM-225
 
 ## Документация
 docs/design/current_game_state.md (экран выбора оружия).
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Back-end Codex thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` as part of a serialized UI batch with SCRUM-224/SCRUM-226 because all three touch `scripts/ui_screens.gd`. Work with reasoning set to High; do not switch the run/model effort to low. Keep Jira live-synced: in-progress now, then update task/board/Jira on completion, with QA left to the board worker. If any motion/timing/animation scope appears, create/update an Animator handoff instead of doing animation work in Back-end.

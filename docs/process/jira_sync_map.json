@@ -837,14 +837,18 @@
  },
  "backend_hero_select_description_left_of_radar_task.md": {
   "key": "SCRUM-224",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_weapon_select_sprite_clean_layout_task.md": {
   "key": "SCRUM-225",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_levelup_cards_text_field_style_task.md": {
   "key": "SCRUM-226",
+  "status": "В работе"
+ },
+ "backend_parchment_button_seal_visible_height_task.md": {
+  "key": "SCRUM-227",
   "status": "К выполнению"
  }
 }

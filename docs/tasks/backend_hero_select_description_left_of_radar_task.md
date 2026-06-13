@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Выбор героя — описание героя слева от розы ветров
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.4
@@ -52,3 +52,6 @@ Jira: SCRUM-224
 
 ## Документация
 docs/design/current_game_state.md (экран выбора героя).
+
+## Dispatcher Note (2026-06-13)
+Dispatched to Back-end Codex thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` as part of a serialized UI batch with SCRUM-225/SCRUM-226 because all three touch `scripts/ui_screens.gd`. Work with reasoning set to High; do not switch the run/model effort to low. Keep Jira live-synced: in-progress now, then update task/board/Jira on completion, with QA left to the board worker. Duplicate audit: older hero-select/radar Jira items SCRUM-30, SCRUM-110 and SCRUM-206 are already done; this task remains canonical for the new description-left-of-radar layout. If any motion/timing/animation scope appears, create/update an Animator handoff instead of doing animation work in Back-end.
