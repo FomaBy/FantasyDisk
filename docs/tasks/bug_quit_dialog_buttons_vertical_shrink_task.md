@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-344
+QA: in_progress (2026-06-14)
 Связано: SCRUM-319 (диалог подтверждения выхода)
 
 ## Autonomy / Approval
@@ -62,3 +63,24 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
 
 Docs updated: `CHANGELOG.md`, `docs/design/systems/menus_ui.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: dev (зелёный build)
+
+Проверено (фактически):
+- **QA-dump** `build/qa/scrum319/quit_confirmation_dialog.md`:
+  `QuitConfirmExitButton` и `QuitConfirmCancelButton` — оба rect `S(220,72)`,
+  min `(220,72)`, texture `ui_btn_red_gold_pause.png` → НЕ сжаты по вертикали
+  (держат полные 72px). `dialog: true` (модальный), `focus_owner:
+  QuitConfirmCancelButton` (фокус на «Отмена», SCRUM-319 цел), panel
+  `P(500,630) S(600,340)` → центр (800,800) = центр экрана.
+- **Визуал** `build/qa/cap_quit_dialog.png`: «Выйти»/«Отмена» полной высоты,
+  текст по центру читаем, рамки не сплющены, диалог по центру, оверлей затемнён.
+- runtime_smoke (`_test_main_menu_quit_confirmation`) — passed.
+
+Acceptance:
+- [x] Кнопки не скукоживаются, держат 72px; текст читаем.
+- [x] Модальность/фокус/центрирование целы; smoke зелёные; скрин есть.
+
+Баги: нет.

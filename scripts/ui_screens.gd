@@ -778,7 +778,10 @@ func _hero_select_portrait_scale() -> float:
 		viewport_size = game.get_viewport().get_visible_rect().size
 	var content_height := _hero_select_content_row_height()
 	var available_width := maxf(viewport_size.x - 48.0, 1.0)
-	var right_min_width := _hero_select_dossier_frame_size().x + _hero_select_radar_frame_size().x + 18.0
+	var dossier_height_scale: float = content_height / HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.y
+	var dossier_width_scale: float = maxf(viewport_size.x, 1.0) / 1280.0
+	var dossier_estimated_scale: float = clampf(minf(dossier_height_scale, dossier_width_scale), 0.84, 2.0)
+	var right_min_width: float = round(HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.x * dossier_estimated_scale) + _hero_select_radar_frame_size().x + 18.0
 	var portrait_width_cap := maxf(available_width - right_min_width - 48.0, HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.x * 0.32)
 	var width_cap_scale := portrait_width_cap / HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.x
 	return clampf(content_height / HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.y, 0.32, minf(0.82, width_cap_scale))
@@ -821,13 +824,15 @@ func _hero_select_dossier_scale() -> float:
 	var viewport_size := Vector2(1280.0, 720.0)
 	if game != null and game.get_viewport() != null:
 		viewport_size = game.get_viewport().get_visible_rect().size
-	var height_scale := _hero_select_content_row_height() / HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.y
-	var width_scale := maxf(viewport_size.x, 1.0) / 1280.0
-	var content_width := maxf(viewport_size.x - 48.0, 1.0)
-	var portrait_width := _hero_select_portrait_frame_size().x
-	var radar_width := _hero_select_radar_frame_size().x + 18.0
-	var available_dossier_width := maxf(content_width - 16.0 - portrait_width - 16.0 - radar_width, 1.0)
-	var slot_width_scale := available_dossier_width / HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.x
+	var content_row_height: float = _hero_select_content_row_height()
+	var height_scale: float = content_row_height / HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.y
+	var width_scale: float = maxf(viewport_size.x, 1.0) / 1280.0
+	var content_width: float = maxf(viewport_size.x - 48.0, 1.0)
+	var portrait_scale: float = clampf(content_row_height / HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.y, 0.32, 0.82)
+	var portrait_width: float = float(round(HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.x * portrait_scale))
+	var radar_width: float = _hero_select_radar_frame_size().x + 18.0
+	var available_dossier_width: float = maxf(content_width - 16.0 - portrait_width - 16.0 - radar_width, 1.0)
+	var slot_width_scale: float = available_dossier_width / HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.x
 	return clampf(minf(minf(height_scale, width_scale), slot_width_scale), 0.84, 2.0)
 
 

@@ -122,3 +122,19 @@ docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_s
   `runtime_smoke_weapon_mechanics_test.gd`.
 - Docs updated: `CHANGELOG.md`, `docs/design/content_registry.md`,
   `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Визуал** `build/qa/cap_hero_select.png`: рамка карусели (низ) — обработанный
+  референс Carusel, орнамент пропорционален (без one-axis stretch), миниатюры в
+  content-зоне, не наезжают на орнамент.
+- **Тесты**: `ui_no_overlap_matrix_test` + `runtime_smoke_ui_test` зелёные.
+
+Acceptance:
+- [x] Рамка карусели = референс, пропорциональное масштабирование.
+- [x] Миниатюры в content-зоне; no-overlap.
+- [x] 6 smoke зелёные; скрин.
+
+Баги: нет.

@@ -1085,15 +1085,15 @@
  },
  "design_hero_select_carousel_frame_from_carusel_ref_task.md": {
   "key": "SCRUM-320",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_hero_select_portrait_frame_from_heroframe_ref_task.md": {
   "key": "SCRUM-321",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_hero_select_windrose_radar_frame_from_ref_task.md": {
   "key": "SCRUM-322",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_hero_select_dossier_frame_from_descriptionhs_ref_task.md": {
   "key": "SCRUM-323",
@@ -1101,11 +1101,11 @@
  },
  "backend_generate_asset_skill_task.md": {
   "key": "SCRUM-324",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_integrate_generated_settings_tab_switcher_frame_task.md": {
   "key": "SCRUM-325",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "art_ui_overhaul_combat_hud_task.md": {
   "key": "SCRUM-326",
@@ -1137,11 +1137,11 @@
  },
  "backend_hero_select_redesign_master_layout_task.md": {
   "key": "SCRUM-333",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_integrate_settings_tab_switcher_frame_task.md": {
   "key": "SCRUM-334",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_attack_vfx_runtime_coverage_task.md": {
   "key": "SCRUM-335",
@@ -1173,15 +1173,15 @@
  },
  "backend_hero_select_carousel_bigger_icons_task.md": {
   "key": "SCRUM-342",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "bug_back_button_cropped_use_bigger_frame_task.md": {
   "key": "SCRUM-343",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "bug_quit_dialog_buttons_vertical_shrink_task.md": {
   "key": "SCRUM-344",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_codex_new_textures_no_overlap_task.md": {
   "key": "SCRUM-345",
@@ -1193,15 +1193,15 @@
  },
  "backend_hero_select_radar_remove_title_center_enlarge_task.md": {
   "key": "SCRUM-347",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_levelup_buttons_beautify_and_uncrop_task.md": {
   "key": "SCRUM-348",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_run_autosave_and_continue_prompt_task.md": {
   "key": "SCRUM-349",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "animation_full_frame_pipeline_coverage_audit_task.md": {
   "key": "SCRUM-350",

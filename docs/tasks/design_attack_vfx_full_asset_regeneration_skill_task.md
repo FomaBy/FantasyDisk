@@ -1,6 +1,6 @@
 # Задача Для Design/Codex: Полная Перегенерация Attack VFX Через Skill
 
-Статус: new
+Статус: blocked
 Создано: 2026-06-14
 Автор: Codex handoff из SCRUM-335
 Исполнитель: Design / Codex

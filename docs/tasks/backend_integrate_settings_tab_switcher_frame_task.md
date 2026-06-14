@@ -102,3 +102,20 @@ and `CHANGELOG.md` after runtime integration.
 - Hover/focus/click состояния реализованы только внутри safe rects; декоративный металл, самоцветы, стрелки и кант не используются под runtime labels или hit zones. Четвертый safe slot остается пустым/decorative до появления четвертой вкладки.
 - Дополнительно восстановлен `HeroSelectPortraitPanel` expand/stretch ratio 1.0, чтобы SCRUM-333 master layout снова реально давал 1/3 portrait + 2/3 right region на целевых разрешениях.
 - Verification: `runtime_smoke_ui_test.gd` PASS, `ui_no_overlap_matrix_test.gd` PASS, `runtime_smoke_test.gd` PASS; Hero Select QA rect dump refreshed.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Визуал** `build/qa/cap_settings.png`: свитчер вкладок (Экран/Звук/Управление)
+  в красно-золотой рамке-свитчере, выбранная вкладка подсвечена; подписи runtime-
+  текстом в content-зоне, не перекрывают орнамент; вкладки кликабельны/переключаемы.
+- Доп.: восстановлен `HeroSelectPortraitPanel` ratio 1.0 (фикс для SCRUM-333).
+- **Тесты**: `runtime_smoke_ui_test` PASS, `ui_no_overlap_matrix_test` PASS,
+  `runtime_smoke_test` PASS (no-overlap на 1152/1280/1600/2560).
+
+Acceptance:
+- [x] Settings использует tab-switcher визуал; зоны в safe-rect, не на орнаменте.
+- [x] Переключение Экран/Звук/Управление работает; no-overlap; smoke зелёные.
+
+Баги: нет.

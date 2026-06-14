@@ -113,3 +113,20 @@ docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_s
 - Документация обновлена: `CHANGELOG.md`, `docs/design/content_registry.md`,
   `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`,
   `docs/process/task_board.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Визуал** `build/qa/cap_hero_select.png`: рамка превью героя (слева) —
+  референс heroframe, орнамент пропорционален, портрет (Берсерк) отцентрован в
+  content-зоне, не наезжает на орнамент, декоративная рамка видна и не перекрыта.
+- **Тесты**: `ui_no_overlap_matrix_test` + `runtime_smoke_ui_test` зелёные;
+  SCRUM-334 восстановил portrait panel ratio 1.0 (1/3 портрет).
+
+Acceptance:
+- [x] Рамка превью = heroframe, пропорциональное масштабирование.
+- [x] Портрет отцентрован, не наезжает; рамка видна.
+- [x] smoke зелёные; rect dump; скрин.
+
+Баги: нет.

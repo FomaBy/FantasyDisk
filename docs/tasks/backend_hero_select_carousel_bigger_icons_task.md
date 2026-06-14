@@ -1,6 +1,6 @@
 # UX: Карусель выбора героя — увеличить иконки персонажей, уменьшить отступы
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -49,3 +49,14 @@ Jira: SCRUM-342
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Result / Verification
+Готово 2026-06-14:
+- Hero Select bottom carousel keeps the existing proportional Carusel frame, but runtime content margins are tightened to `Vector4(72, 36, 72, 36)` and thumbnail separation is reduced to 2px.
+- Thumbnail slots are now taller portrait slots: QA rects show sample hero thumbnails `49x66` at 1280x720, `75x101` at 1920x1080 and `101x136` at 2560x1440, all inside the strip content-zone.
+- Added runtime smoke coverage for compact separation, taller thumbnail sizing, image-only thumbnails, click selection, tooltip behavior and content-zone containment at 1280x720/1600x900/2560x1440.
+- Kept decorative frame rules: no one-axis frame stretching, thumbnails do not overlap side stones/crests/metal borders.
+- QA artifacts: `build/qa/scrum281/hero_select_capture_rects.md`, `build/qa/hero_select_radar_rects.md`, `build/qa/ui_no_overlap_matrix.md`.
+- Verification:
+  - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+  - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd` — PASS.

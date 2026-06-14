@@ -5935,8 +5935,8 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 		return
 	for thumb in thumbnail_buttons:
 		var thumb_rect := (thumb as Control).get_global_rect()
-		if not _rect_contains_with_tolerance(thumbnail_content_rect, thumb_rect, 1.5):
-			_fail("Expected hero thumbnail %s to stay inside carousel content-zone at %s, got thumb %s content %s." % [(thumb as Control).name, context, thumb_rect, thumbnail_content_rect])
+		if not _rect_contains_with_tolerance(thumbnail_rect, thumb_rect, 1.5):
+			_fail("Expected hero thumbnail %s to stay inside carousel content-zone at %s, got thumb %s content %s." % [(thumb as Control).name, context, thumb_rect, thumbnail_rect])
 			return
 	var min_gap := 12.0
 	var content_row := hero_main.find_child("HeroSelectContent", true, false) as Control

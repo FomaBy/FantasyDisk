@@ -110,3 +110,22 @@ PNG в runtime assets и зафиксировать content-zone/safe-area дл�
 - [x] Runtime content-zone/safe-area recorded for labels/icons/click zones.
 - [x] Runtime integration handed off to Back-end SCRUM-334 instead of changing code in Design scope.
 - [x] Jira/task/board docs updated for Design result.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- Design-deliverable: production-ассет свитчера без baked-текста (подписи —
+  runtime-текст), состояния active/hover/pressed читаются из reference sheet;
+  runtime-интеграция передана Back-end SCRUM-334 (в Design-scope код не менялся).
+- **Визуал** `build/qa/cap_settings.png` (через интеграцию 334): фрейм вкладок
+  согласован со стилем settings (Ornate Dark / Red&Gold), runtime-текст/зоны в
+  content-зоне, рамка не перекрыта.
+- **Тесты** (интеграция 334): no-overlap + UI smoke зелёные.
+
+Acceptance:
+- [x] Фрейм согласован со стилем; нет baked-текста (runtime-подписи).
+- [x] Состояния понятны; зоны в content-зоне, рамка не перекрыта.
+- [x] Runtime-интеграция (через 334) без overlap; Jira/доска синканы.
+
+Баги: нет.

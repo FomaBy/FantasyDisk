@@ -7,7 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-348
-QA: in_progress (2026-06-14)
+QA: passed (2026-06-14, dev green build)
 Связано: SCRUM-278 (кнопка повышения в углу), SCRUM-273 (button kit), SCRUM-343 (обрезка кнопок), SCRUM-318 (hover)
 
 ## Autonomy / Approval
@@ -61,3 +61,24 @@ docs/design/systems/menus_ui.md, current_game_state.
 - `LevelUpLaterButton` расширена до 260x104 и использует `back_m`, чтобы «Позже» и орнамент не обрезались и оставались в content-зоне.
 - Runtime smoke проверяет стиль/alpha/позицию `LevelUpPlusButton`, не обрезанный `LevelUpLaterButton` и пишет QA dump `build/qa/combat_level_up_button.md`.
 - Verification: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: dev (зелёный build)
+
+Проверено (фактически):
+- **QA-dump** `build/qa/combat_level_up_button.md`: `LevelUpPlusButton` —
+  texture `ui_btn_red_gold_main_menu.png` (рамка меню), alpha `1.000`,
+  rect `P(1188,1470) S(405,104)` → правый край 1593<1600, нижний 1574<1600
+  (правый-нижний угол, SCRUM-278 цел), бейдж `S(28,28)` читаем.
+- **Smoke-ассерты** (runtime_smoke): `LevelUpPlusButton` использует red_gold
+  `main_menu` (стр.773); `LevelUpLaterButton` = `back_m`, rect ≥260×100
+  (стр.962-963 — НЕ обрезана). runtime_smoke — passed.
+- Логика повышения (reward overlay 3 кнопки, defer/«Позже») в smoke цела.
+
+Acceptance:
+- [x] Кнопка повышения красивая (рамка меню), не обрезана, угол/alpha/бейдж целы.
+- [x] «Позже» = back_m 260×104, не обрезана.
+- [x] Логика цела; smoke зелёные; QA-dump есть.
+
+Баги: нет.

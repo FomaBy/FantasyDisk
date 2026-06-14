@@ -74,3 +74,21 @@ Verification:
 
 Docs updated: `CHANGELOG.md`, `docs/design/systems/menus_ui.md`,
 `docs/design/current_game_state.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Визуал** `build/qa/cap_hero_select.png`: роза ветров (top-right) БЕЗ заголовка
+  «Характеристики», полигон по центру рамки-компаса, оси подписаны (Сил/Лов/Уот/
+  Уст/Зна и т.д.), подписи в пределах рамки, не на орнаменте.
+- Код: `hero_stat_radar.gd:HERO_RADAR_RADIUS_FACTOR := 0.36` (+20% к прежним 0.30).
+- **Тесты**: `runtime_smoke_ui_test` + `runtime_smoke_test` + `ui_no_overlap_matrix_test`
+  зелёные (no-overlap на 3+ разрешениях).
+
+Acceptance:
+- [x] Заголовок «Характеристики» убран.
+- [x] Роза ветров по центру компаса; полигон крупнее (+20%).
+- [x] Подписи в рамке читаемы; no-overlap; smoke зелёные; скрин.
+
+Баги: нет.

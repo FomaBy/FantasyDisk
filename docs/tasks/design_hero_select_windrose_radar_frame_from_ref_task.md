@@ -121,3 +121,20 @@ docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_s
 - Документация обновлена: `CHANGELOG.md`, `docs/design/content_registry.md`,
   `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`,
   `docs/process/task_board.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Визуал** `build/qa/cap_hero_select.png`: рамка розы ветров (правый-верхний
+  угол) — референс windrose, лучи/центр компаса не искажены, радар отцентрован в
+  content-зоне, кант/самоцветы не перекрыты текстом/графиком.
+- Заголовок убран (SCRUM-347), радар центрирован/крупнее.
+- **Тесты**: `ui_no_overlap_matrix_test` + `runtime_smoke_ui_test` зелёные.
+
+Acceptance:
+- [x] Рамка = windrose, лучи не искажены, пропорциональное масштабирование.
+- [x] Радар отцентрован, панель top-right; no-overlap.
+- [x] smoke зелёные; rect dump; скрин.
+
+Баги: нет.

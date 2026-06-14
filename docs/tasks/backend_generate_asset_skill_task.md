@@ -36,3 +36,21 @@ Jira: SCRUM-324
 - Скрипт принимает `--prompt`, `--output`, `--size`, `--quality`, вызывает OpenAI Images API с `model="gpt-image-2"` и `output_format="png"`, сохраняет относительные outputs в `docs/design/references/`.
 - После генерации скрипт создает `docs/tasks/design_integrate_generated_<slug>_task.md`, пытается запустить `tools/jira_board_sync.py` и подставить Jira key в task-файл.
 - Проверки: `python3 -m py_compile` PASS; `generate_asset.py --help` PASS. `quick_validate.py` не запустился из-за отсутствия `PyYAML` в доступных Python runtime, но frontmatter/metadata проверены вручную и файл создан через штатный `init_skill.py`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- `python3 -m py_compile generate_asset.py` — PASS (скрипт компилируется без
+  syntax errors).
+- Skill `fantasydisk-asset-generator` имеет `SKILL.md` + `generate_asset.py`;
+  скрипт создаёт `design_integrate_generated_<slug>_task.md` + пытается синкать Jira.
+- Backend/tooling задача (не UI): визуальный QA не требуется.
+
+Acceptance:
+- [x] generate_asset.py компилируется (py_compile PASS).
+- [x] Skill-инструкция описывает путь сохранения/Jira/ограничения gpt-image-2.
+- [x] Jira sync запускается после смены статуса.
+
+Примечание: `quick_validate.py` не прогнан (нет PyYAML в доступном runtime) —
+frontmatter проверен вручную, файл создан штатным `init_skill.py`. Баги: нет.

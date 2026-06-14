@@ -58,3 +58,19 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
 
 Docs updated: `CHANGELOG.md`, `docs/design/systems/menus_ui.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Визуал** `build/qa/cap_hero_select.png`: «Назад» (правый-верхний угол) в
+  красно-золотой рамке, текст+орнамент НЕ обрезаны, кнопка в пределах экрана.
+- **Smoke**: ранее build падал на «back button outside viewport (right 1677>1600)»
+  — теперь `runtime_smoke_test` + `runtime_smoke_ui_test` зелёные (кнопка внутри
+  вьюпорта); `ui_no_overlap_matrix_test` зелёный (no-overlap на всех разрешениях).
+
+Acceptance:
+- [x] «Назад» не обрезана, в пределах экрана справа, контент в content-зоне.
+- [x] smoke + no-overlap зелёные; скрин есть.
+
+Баги: нет.
