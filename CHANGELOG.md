@@ -10,6 +10,9 @@
   D&D dark fantasy playable-character visual canon, `384x384` cell format,
   `idle`/`walk`/`attack_primary` row convention, bottom-center pivot guidance,
   unarmed base-sheet rule and Design/Animator/Back-end handoff boundaries.
+  `Player` now probes `assets/sprites/characters/<class_id>_sheet.png`, builds
+  `idle`/`walk`/`attack_primary` plus runtime `attack` SpriteFrames when present,
+  and keeps safe static/cutout fallback for classes without final sheets.
 - Main menu background (SCRUM-316): added `assets/backgrounds/main_menu_epic_battle_v2.png`, a native 2560x1440 smooth D&D dark fantasy battle scene with three new bosses, two heroes, and UI-safe left/top composition zones.
 - Full-frame animation registry (SCRUM-351): added
   `scripts/full_frame_animation_registry.gd` as a data-driven SpriteFrames

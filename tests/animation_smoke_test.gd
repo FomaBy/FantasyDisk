@@ -31,6 +31,28 @@ func _test_player_animation() -> void:
 	var body := player.get_node("VisualRoot/Body") as AnimatedSprite2D
 	if body.visible:
 		_fail("Expected player fallback AnimatedSprite2D to be hidden behind RigRoot.")
+	if body.sprite_frames == null or not body.sprite_frames.has_animation("attack") or not body.sprite_frames.has_animation("attack_primary"):
+		_fail("Expected player fallback SpriteFrames to expose attack and attack_primary animations.")
+	if body.sprite_frames.get_frame_count("attack") < 1:
+		_fail("Expected player attack fallback to have at least one frame.")
+	player.call("play_action_animation", "attack", Vector2.RIGHT)
+	if body.animation != "attack":
+		_fail("Expected player action playback to select the attack animation on fallback SpriteFrames.")
+	player.set("velocity", Vector2(100, 0))
+	player.call("_update_movement_animation", 0.01)
+	if body.animation != "attack":
+		_fail("Expected player attack animation to survive the immediate movement update.")
+	player.call("_update_movement_animation", 1.0)
+	if body.animation == "attack":
+		_fail("Expected player attack animation lock to expire after the action window.")
+	var synthetic_sheet := _make_synthetic_character_sheet()
+	var synthetic_frames := player.call("_sprite_frames_from_character_sheet", synthetic_sheet) as SpriteFrames
+	if synthetic_frames == null:
+		_fail("Expected player character sheet builder to accept a 5x3 runtime sheet.")
+	if synthetic_frames.get_frame_count("idle") != 5 or synthetic_frames.get_frame_count("walk") != 5 or synthetic_frames.get_frame_count("attack") != 5:
+		_fail("Expected synthetic character sheet to produce 5 idle/walk/attack frames.")
+	if not synthetic_frames.get_animation_loop("walk") or synthetic_frames.get_animation_loop("attack"):
+		_fail("Expected character sheet walk to loop and attack to be one-shot.")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "player")
 
 	var rig := player.get_node("VisualRoot/RigRoot") as Node2D
@@ -84,6 +106,9 @@ func _test_player_animation() -> void:
 		_fail("Expected hammer attack pose to lift into an overhead slam silhouette.")
 
 	player.configure_character("guitarist")
+	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
+	if body.sprite_frames == null or body.sprite_frames.get_frame_count("attack") != 1:
+		_fail("Expected non-sheet character fallback attack animation to be safe and static.")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "guitarist")
 	player.call("play_action_animation", "shoot", Vector2.RIGHT)
 	player.call("_update_movement_animation", 0.10)
@@ -257,6 +282,15 @@ func _test_player_animation() -> void:
 	_test_legacy_player_weapon_pose_hooks(player)
 	_test_unique_attack_phase_pose_hooks(player)
 	player.queue_free()
+
+
+func _make_synthetic_character_sheet() -> Texture2D:
+	var image := Image.create(384 * 5, 384 * 3, false, Image.FORMAT_RGBA8)
+	for row in range(3):
+		for column in range(5):
+			var color := Color(0.12 + 0.18 * column, 0.16 + 0.22 * row, 0.35, 1.0)
+			image.fill_rect(Rect2i(column * 384, row * 384, 384, 384), color)
+	return ImageTexture.create_from_image(image)
 
 
 func _test_weapon_animation_timing_events(player: Node) -> void:

@@ -1069,7 +1069,7 @@
  },
  "art_unified_character_style_anim_spec_task.md": {
   "key": "SCRUM-298",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_main_menu_background_new_bosses_battle_task.md": {
   "key": "SCRUM-316",
@@ -1218,5 +1218,13 @@
  "animation_summon_creatures_update_via_director_skill_task.md": {
   "key": "SCRUM-353",
   "status": "Готово"
+ },
+ "bug_hero_select_description_carousel_overlap_layout_task.md": {
+  "key": "SCRUM-354",
+  "status": "К выполнению"
+ },
+ "design_hero_select_thinner_frames_no_overlap_task.md": {
+  "key": "SCRUM-355",
+  "status": "В работе"
  }
 }

@@ -27,6 +27,8 @@ const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const ALLY_MINION_SCENE := preload("res://scenes/AllyMinion.tscn")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
+const CHARACTER_SHEET_FRAME_SIZE := Vector2i(384, 384)
+const CHARACTER_SHEET_COLUMNS := 5
 const BASE_SPRITE_SCALE := Vector2(0.28, 0.28)
 
 const CHARACTER_CONFIGS := {
@@ -110,6 +112,7 @@ var _movement_scale_delta := Vector2.ZERO
 var _action_offset := Vector2.ZERO
 var _action_rotation := 0.0
 var _action_scale := Vector2.ONE
+var _body_action_time_left := 0.0
 var _action_tween: Tween = null
 var _hit_flash_tween: Tween = null
 var _facing_direction := Vector2.RIGHT
@@ -378,6 +381,7 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO, phase :
 				event_variant = "%s:%s:%s" % [event_variant, event_attack_mode, phase]
 			event_rig.play_action(action_id, _facing_direction, event_variant, maxf(float(duration), 0.0))
 		return
+	_play_body_action_animation(action_id, maxf(float(duration), 0.0))
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_action"):
 		var animation_variant: String = weapon_id if weapon_id != "" else character_id
@@ -1379,20 +1383,24 @@ func _update_movement_animation(delta: float) -> void:
 	if body == null:
 		return
 
+	var body_action_locked := _body_action_time_left > 0.0
+	if body_action_locked:
+		_body_action_time_left = maxf(_body_action_time_left - delta, 0.0)
+		body_action_locked = _body_action_time_left > 0.0
 	if velocity.length_squared() > 0.0:
 		_animation_time += delta * 10.0
 		_facing_direction = velocity.normalized()
 		_movement_offset = Vector2(0.0, sin(_animation_time) * 3.0)
 		_movement_rotation = clamp(velocity.x / max(speed, 1.0), -1.0, 1.0) * 0.12
 		_movement_scale_delta = Vector2(sin(_animation_time) * 0.025, -sin(_animation_time) * 0.018)
-		if body.animation != "walk":
+		if not body_action_locked and body.animation != "walk":
 			body.play("walk")
 		_update_sprite_facing(_facing_direction)
 	else:
 		_movement_offset = _movement_offset.lerp(Vector2.ZERO, 10.0 * delta)
 		_movement_rotation = lerpf(_movement_rotation, 0.0, 10.0 * delta)
 		_movement_scale_delta = _movement_scale_delta.lerp(Vector2.ZERO, 10.0 * delta)
-		if body.animation != "idle":
+		if not body_action_locked and body.animation != "idle":
 			body.play("idle")
 
 	var rig := _cutout_rig()
@@ -1506,9 +1514,64 @@ func _configure_player_rig(config: Dictionary) -> void:
 
 
 func _character_sprite_frames(config: Dictionary) -> SpriteFrames:
+	var sheet_frames := _character_sheet_sprite_frames(character_id)
+	if sheet_frames != null:
+		return sheet_frames
 	if character_id == "berserk":
 		return _berserk_sprite_frames()
 	return _single_texture_sprite_frames(config["sprite"])
+
+
+func _character_sheet_sprite_frames(class_id: String) -> SpriteFrames:
+	var sheet_path := "res://assets/sprites/characters/%s_sheet.png" % class_id
+	if not ResourceLoader.exists(sheet_path):
+		return null
+	var texture := load(sheet_path) as Texture2D
+	if texture == null:
+		return null
+	return _sprite_frames_from_character_sheet(texture, {
+		"frame_size": CHARACTER_SHEET_FRAME_SIZE,
+		"columns": CHARACTER_SHEET_COLUMNS,
+		"idle_fps": 5.0,
+		"walk_fps": 10.0,
+		"attack_fps": 14.0,
+	})
+
+
+func _sprite_frames_from_character_sheet(texture: Texture2D, sheet_config: Dictionary = {}) -> SpriteFrames:
+	if texture == null:
+		return null
+	var frame_size: Vector2i = sheet_config.get("frame_size", CHARACTER_SHEET_FRAME_SIZE)
+	var columns := int(sheet_config.get("columns", CHARACTER_SHEET_COLUMNS))
+	if frame_size.x <= 0 or frame_size.y <= 0 or columns <= 0:
+		return null
+	var rows := int(floor(float(texture.get_height()) / float(frame_size.y)))
+	var available_columns := int(floor(float(texture.get_width()) / float(frame_size.x)))
+	columns = min(columns, available_columns)
+	if rows < 2 or columns <= 0:
+		return null
+
+	var has_idle_row := rows >= 3
+	var idle_row := 0
+	var walk_row := 1 if has_idle_row else 0
+	var attack_row := 2 if has_idle_row else 1
+	var frames := SpriteFrames.new()
+	frames.remove_animation("default")
+	_add_sheet_animation(frames, "idle", texture, idle_row, 1 if not has_idle_row else columns, frame_size, true, float(sheet_config.get("idle_fps", 5.0)))
+	_add_sheet_animation(frames, "walk", texture, walk_row, columns, frame_size, true, float(sheet_config.get("walk_fps", 10.0)))
+	_add_sheet_animation(frames, "attack_primary", texture, attack_row, columns, frame_size, false, float(sheet_config.get("attack_fps", 14.0)))
+	_add_sheet_animation(frames, "attack", texture, attack_row, columns, frame_size, false, float(sheet_config.get("attack_fps", 14.0)))
+	return frames
+
+
+func _add_sheet_animation(frames: SpriteFrames, animation_name: String, texture: Texture2D, row: int, frame_count: int, frame_size: Vector2i, loop: bool, fps: float) -> void:
+	if frames.has_animation(animation_name):
+		frames.remove_animation(animation_name)
+	frames.add_animation(animation_name)
+	frames.set_animation_loop(animation_name, loop)
+	frames.set_animation_speed(animation_name, fps)
+	for frame_index in range(maxi(frame_count, 1)):
+		frames.add_frame(animation_name, _atlas_frame(texture, frame_index, row, frame_size))
 
 
 func _berserk_sprite_frames() -> SpriteFrames:
@@ -1525,6 +1588,12 @@ func _berserk_sprite_frames() -> SpriteFrames:
 	frames.set_animation_speed("walk", 10.0)
 	for frame_index in range(6):
 		frames.add_frame("walk", _atlas_frame(BERSERK_ANIMATED_SPRITE, frame_index, 1, BERSERK_ANIMATION_FRAME_SIZE))
+	for animation_name in ["attack_primary", "attack"]:
+		frames.add_animation(animation_name)
+		frames.set_animation_loop(animation_name, false)
+		frames.set_animation_speed(animation_name, 14.0)
+		for frame_index in range(5):
+			frames.add_frame(animation_name, _atlas_frame(BERSERK_ANIMATED_SPRITE, frame_index, 1, BERSERK_ANIMATION_FRAME_SIZE))
 	return frames
 
 
@@ -1536,7 +1605,27 @@ func _single_texture_sprite_frames(texture: Texture2D) -> SpriteFrames:
 		frames.set_animation_loop(animation_name, true)
 		frames.set_animation_speed(animation_name, 1.0)
 		frames.add_frame(animation_name, texture)
+	for animation_name in ["attack_primary", "attack"]:
+		frames.add_animation(animation_name)
+		frames.set_animation_loop(animation_name, false)
+		frames.set_animation_speed(animation_name, 1.0)
+		frames.add_frame(animation_name, texture)
 	return frames
+
+
+func _play_body_action_animation(action_id: String, duration := 0.0) -> void:
+	var body := _animated_sprite()
+	if body == null or body.sprite_frames == null:
+		return
+	var animation_name := "attack"
+	if not body.sprite_frames.has_animation(animation_name):
+		animation_name = "attack_primary"
+	if not body.sprite_frames.has_animation(animation_name):
+		return
+	body.play(animation_name)
+	var frame_count: int = maxi(body.sprite_frames.get_frame_count(animation_name), 1)
+	var fps := maxf(body.sprite_frames.get_animation_speed(animation_name), 1.0)
+	_body_action_time_left = maxf(maxf(duration, float(frame_count) / fps), 0.12)
 
 
 func _atlas_frame(texture: Texture2D, column: int, row: int, frame_size: Vector2i) -> AtlasTexture:

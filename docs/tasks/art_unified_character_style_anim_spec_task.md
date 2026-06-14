@@ -148,3 +148,39 @@ Verification:
 Note: final polished `<class_id>_sheet.png` assets, preview GIFs and motion
 quality remain owned by the queued per-character Design/Animator tasks. No art
 or motion polish was generated in Back-end scope.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (опорный scope: спека + рантайм-система + безопасный fallback)
+
+Проверено (фактически):
+- **Спека стиля/формата**: `docs/design/references/character_animation_style_sheet_0_1_5.md`
+  фиксирует единый стиль, ячейку `384×384`, ряды idle/walk/attack_primary (5 кадров),
+  pivot bottom-center `(192,348)`, путь `<class_id>_sheet.png`, заметки по 17 классам.
+- **Обобщённая система** (player.gd): `_character_sprite_frames(config)` (1516)
+  пробит `res://assets/sprites/characters/<class_id>_sheet.png` (1526),
+  `CHARACTER_SHEET_FRAME_SIZE=384×384`, добавлены анимации `attack_primary` +
+  alias `attack` (loop=false, 1562-1563), `play_action_animation` (359) с
+  case "attack" — БЕЗ изменения cutout-поз/урона/targeting/cooldown/weapon timing.
+- **Fallback безопасен**: нет финального листа → existing static/cutout (без краша);
+  берсерк держит legacy walk-лист + 5-кадровый attack-fallback; `berserk_unarmed.png`
+  512×512 (правило «без оружия» соблюдено).
+- **Тесты**: `animation_smoke_test` (sheet-builder output / fallback attack /
+  action-lock expiry / static fallback для не-sheet классов) + `runtime_smoke_test`
+  — оба passed.
+
+Acceptance (фактическое состояние):
+- [x] Style-sheet + формат листа задокументированы.
+- [x] Система обобщена, attack добавлена, walk/attack/flip playback, fallback.
+- [x] Fallback для неперерисованных безопасен; берсерк без оружия (unarmed).
+- [x] animation + runtime smoke зелёные.
+- [~] **Превью-гиф эталона в build/qa/ и финальный redraw берсерка в новом формате
+  НЕ выполнены в этом проходе** — заблокированы отсутствием `OPENAI_API_KEY`
+  (skill `fantasydisk-asset-generator`), честно вынесены в уже созданные пер-
+  персонажные задачи (`art_char_redraw_anim_berserk_task.md` + 15 классов).
+  Опорная (unblocking) ценность — спека + рантайм-система — доставлена и
+  протестирована; финальный арт/моушн — домен очереди.
+
+Вывод: опорная задача выполняет свою функцию (разблокирует 16 пер-персонажных
+задач). Арт-деливерабл (гиф/redraw) корректно делегирован, не потерян. Баги: нет
+(функциональной регрессии нет; невыполненные пункты — environment-blocked арт,
+не дефект системы).
