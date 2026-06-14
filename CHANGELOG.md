@@ -24,6 +24,11 @@
   mapping without network.
 
 ### Added
+- Codex texture kit (SCRUM-345): generated a new D&D/Dark Fantasy Dragon Codex
+  UI reference through `fantasydisk-asset-generator`, cut/imported 10 RGBA
+  production candidates under `assets/sprites/ui/frames/codex/`, and documented
+  strict content-zone metadata plus 720p/1080p/1440p design mocks for Back-end
+  no-overlap integration.
 - Animation source sheet safe gutters (SCRUM-394): repacked 26 canonical
   enemy/elite/boss full-frame source sheets to `1704x1144` RGBA and rebuilt 19
   death-row reference sheets to `1704x304` RGBA with `256x256` cells, `24px`

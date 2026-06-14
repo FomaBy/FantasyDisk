@@ -1,12 +1,13 @@
 # ART/UX: Кодекс — новые текстуры интерфейса (скиллом), убрать наложение персонажей/текста
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-345
+QA: in_progress (2026-06-14)
 Связано: SCRUM-331 (UI Overhaul кластер прогрессия/кодекс), SCRUM-324 (скилл), SCRUM-327 (стиль)
 
 ## Autonomy / Approval
@@ -101,3 +102,75 @@ provides an approved alternative generation source.
   safe-zone metadata, previews and Back-end handoff for runtime Codex layout;
   `scripts/ui_screens.gd` and no-overlap runtime integration остаются Back-end
   scope.
+- 2026-06-14 — Design asset kit готов и импортирован в Godot. Создана новая
+  D&D/Dark Fantasy Dragon Codex texture sheet через `fantasydisk-asset-generator`,
+  вырезано 10 production PNG в `assets/sprites/ui/frames/codex/`, записаны
+  content-zone/texture-margin metadata и QA previews. Runtime wiring/no-overlap
+  integration переданы Back-end:
+  `docs/tasks/backend_codex_texture_no_overlap_integration_task.md`.
+
+## Design Result Summary
+
+Новые runtime-кандидаты:
+
+- `assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png`
+- `assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png`
+- `assets/sprites/ui/frames/codex/ui_frame_codex_entry_card.png`
+- `assets/sprites/ui/frames/codex/ui_frame_codex_entry_card_hover.png`
+- `assets/sprites/ui/frames/codex/ui_frame_codex_portrait_slot.png`
+- `assets/sprites/ui/frames/codex/ui_frame_codex_tooltip.png`
+- `assets/sprites/ui/frames/codex/ui_frame_codex_tab.png`
+- `assets/sprites/ui/frames/codex/ui_frame_codex_tab_hover.png`
+- `assets/sprites/ui/frames/codex/ui_frame_codex_tab_pressed.png`
+- `assets/sprites/ui/frames/codex/ui_frame_codex_tab_disabled.png`
+
+Source/metadata/previews:
+
+- `docs/design/references/codex/codex_ui_texture_kit_reference.png`
+- `docs/design/references/codex/codex_ui_texture_kit_metadata.json`
+- `docs/design/previews/codex_ui_texture_kit_contact.png`
+- `build/qa/scrum345/codex_texture_mock_1280x720.png`
+- `build/qa/scrum345/codex_texture_mock_1920x1080.png`
+- `build/qa/scrum345/codex_texture_mock_2560x1440.png`
+
+Verification:
+
+- OpenAI Images smoke PASS before generation.
+- PNG validation PASS: 10/10 RGBA with transparent outer alpha and valid
+  `content_rect`.
+- Godot `--import` PASS and `.import` sidecars generated.
+- Existing `tests/ui_no_overlap_matrix_test.gd` PASS before runtime integration.
+- Existing `tests/runtime_smoke_ui_test.gd` PASS before runtime integration.
+
+Acceptance note: live Codex replacement and runtime no-overlap checks are not
+completed in this Design task because they require `scripts/ui_screens.gd`
+integration. That scope is handed off to Back-end task
+`backend_codex_texture_no_overlap_integration_task.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: codex texture kit + метаданные + Back-end handoff)
+
+Проверено (фактически):
+- **10 codex-текстур** (`assets/sprites/ui/frames/codex/`): main/section панели,
+  entry card + hover, portrait slot, tooltip, tabs ×4 (normal/hover/pressed/
+  disabled) — все RGBA с прозрачной alpha (10/10).
+- **Визуал** `codex_ui_texture_kit_contact.png` (+ моки 1280/1920/2560): D&D
+  Dark Fantasy Dragon — тонкие металлические рамки + красные самоцветы, content-зоны
+  (зелёные) маркированы (контент внутри, не на орнаменте). Метаданные
+  `codex_ui_texture_kit_metadata.json` (content_rect/margins); Godot import чист.
+- **Back-end handoff** `backend_codex_texture_no_overlap_integration_task.md`
+  создан (статус **«new»**).
+- **Тесты** (текущий рантайм): `ui_no_overlap_matrix_test` + `runtime_smoke_test`
+  — passed.
+
+⚠️ **Видимая замена текстур кодекса + no-overlap персонажей/текста ещё НЕ в рантайме**:
+требует интеграции `scripts/ui_screens.gd` (`_show_codex_screen`/`_show_codex_section`)
+— Back-end задача («new»), вне Design-scope. Проверю при готовности интеграции.
+
+Acceptance (Design-scope):
+- [x] Codex-текстуры созданы скиллом в едином D&D dragon-стиле (10 PNG).
+- [x] Content-зоны заданы (контент внутри рамок); метаданные/превью/моки; import чист.
+- [~] Live-замена + no-overlap персонажей/описаний на 3 разрешениях — Back-end integration.
+- [x] Текущие no-overlap/runtime smoke зелёные; Back-end handoff с данными.
+
+Статус review→done (Design-source). Баги: нет (видимая интеграция — delegated Back-end).

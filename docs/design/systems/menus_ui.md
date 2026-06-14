@@ -116,6 +116,16 @@ the medium back frame; longer `Назад в меню` buttons in Skill Tree, Pa
 and Codex use 260x104. Runtime smoke validates their viewport bounds and content
 zone sizes and writes `build/qa/scrum343/back_button_frames.md`.
 
+SCRUM-345 adds a Design-ready Codex-specific texture kit under
+`assets/sprites/ui/frames/codex/`:
+`ui_frame_codex_main_panel`, `section_panel`, `entry_card`,
+`entry_card_hover`, `portrait_slot`, `tooltip`, and `tab` states. Safe content
+rects live in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`.
+Runtime Codex content must stay inside those rects; portraits, descriptions,
+tabs, glossary tooltips and click/focus hitboxes must not sit on decorative
+dragon/metal/gem borders. Live integration is tracked by
+`docs/tasks/backend_codex_texture_no_overlap_integration_task.md`.
+
 The combat/route `LevelUpPlusButton` is an exception to the flat FAB look: in
 combat it uses the SCRUM-390 square plus texture states, remains fully opaque
 and anchored bottom-right, and keeps its pending-count badge readable. Runtime

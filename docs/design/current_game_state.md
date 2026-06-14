@@ -665,6 +665,14 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 
 Разделы: Персонажи (17 игровых классов, стиль игры, сильные/слабые стороны, оружие), Монстры (11 обычных + 4 элитки + 6 мини-элиток + 5 боссов, поведение и названные умения), Артефакты (все из ARTIFACTS + SHOP_ITEMS с иконками), Характеристики (8 базовых + производные из STAT_DEFINITIONS с влияниями). Разделы строятся лениво при первом открытии вкладки и кэшируются — меню не фризит.
 
+SCRUM-345 подготовил Design-ready Codex texture kit в стиле D&D/Dark Fantasy
+Dragon: `assets/sprites/ui/frames/codex/ui_frame_codex_*.png`, reference
+`docs/design/references/codex/codex_ui_texture_kit_reference.png`, safe-zone
+metadata `docs/design/references/codex/codex_ui_texture_kit_metadata.json` и
+превью `docs/design/previews/codex_ui_texture_kit_contact.png`. Runtime
+подключение в `scripts/ui_screens.gd` и live no-overlap проверки переданы
+Back-end task `docs/tasks/backend_codex_texture_no_overlap_integration_task.md`.
+
 ## Пауза
 
 Система паузы реализована через причины паузы. Основные причины:

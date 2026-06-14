@@ -1,6 +1,6 @@
 # BUG/ART: Настройки — 4 вкладки вместо 3; пересоздать свитчер скиллом (3 слота)
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -56,9 +56,9 @@ D&D + Dark Fantasy Dragon, опорная SCRUM-327). Старый ассет �
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] В настройках ровно 3 вкладки, пустого 4-го слота нет; SAFE_RECTS = 3.
-- [ ] Свитчер пересоздан скиллом, реалистичный стиль в цветах референсов; кнопки в слотах, no-overlap.
-- [ ] Логика 3 вкладок/скролл не сломаны; smoke зелёные; скрин; CHANGELOG.
+- [x] В настройках ровно 3 вкладки, пустого 4-го слота нет; SAFE_RECTS = 3.
+- [x] Свитчер пересоздан скиллом, реалистичный стиль в цветах референсов; кнопки в слотах, no-overlap.
+- [x] Логика 3 вкладок/скролл не сломаны; smoke зелёные; скрин; CHANGELOG.
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
@@ -101,3 +101,23 @@ provides an approved alternative generation source.
 
 ## Разблокировано 2026-06-14 (PM)
 Биллинг OpenAI восстановлен и ПРОВЕРЕН: тестовая генерация gpt-image-2 успешна. Блок `billing_hard_limit_reached` устарел — снят. Можно генерить скиллом.
+
+## Closure Note — Covered By SCRUM-391 / SCRUM-396
+
+Статус: done / superseded-by-completed-work.
+
+Эта задача является дублем уже завершенной пары:
+
+- Design SCRUM-391:
+  `docs/tasks/design_settings_menu_unified_restyle_task.md` — создал
+  production 3-slot Settings tab switcher
+  `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
+  через `fantasydisk-asset-generator`, metadata safe rects и previews.
+- Back-end SCRUM-396:
+  `docs/tasks/backend_settings_menu_unified_restyle_integration_task.md` —
+  подключил 3-slot switcher в runtime, заменил `SETTINGS_TAB_SWITCHER_SAFE_RECTS`
+  на ровно три rects, удалил пустой четвертый слот и прогнал
+  `runtime_smoke_ui`, `ui_no_overlap_matrix` и `runtime_smoke` PASS.
+
+Дополнительная генерация не требуется и была бы дублированием уже принятого
+asset/runtime результата.

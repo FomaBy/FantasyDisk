@@ -1461,8 +1461,8 @@
  },
  "design_settings_tabs_fix_3slots_restyle_skill_task.md": {
   "key": "SCRUM-341",
-  "status": "К выполнению",
-  "desc_hash": "35e96d9466e1613a760c922a4a02c0a8"
+  "status": "Контроль качества",
+  "desc_hash": "2d1a3c162da6c25df897469c5ce4a864"
  },
  "backend_hero_select_carousel_bigger_icons_task.md": {
   "key": "SCRUM-342",
@@ -1481,8 +1481,8 @@
  },
  "design_codex_new_textures_no_overlap_task.md": {
   "key": "SCRUM-345",
-  "status": "В работе",
-  "desc_hash": "9a61cd142ac2d1a4e3dcaea39ccc0d45"
+  "status": "Готово",
+  "desc_hash": "dd0801c70c6299ec464c5ddbb48f2ec4"
  },
  "design_hero_select_ascension_small_buttons_reposition_task.md": {
   "key": "SCRUM-346",
@@ -1933,5 +1933,10 @@
   "key": "SCRUM-402",
   "status": "Готово",
   "desc_hash": "a48ca26d680188116e633d46d7705555"
+ },
+ "backend_codex_texture_no_overlap_integration_task.md": {
+  "key": "SCRUM-403",
+  "status": "В работе",
+  "desc_hash": "9b04582f3f5691dc965d748942aa595d"
  }
 }
