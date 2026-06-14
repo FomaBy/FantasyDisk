@@ -472,12 +472,12 @@ static func estimate_weapon_budget(character_id: String, weapon_config: Dictiona
 	if _is_pure_summon_weapon(config):
 		direct_dps = 0.0
 	elif str(config.get("summon_role", "")) != "":
-		direct_dps *= _budget_summon_role_damage_factor(config, params)
+		direct_dps *= _budget_summon_role_damage_factor(config, params, stats)
 	var hit_model := _budget_hit_model(config)
 	var melee_unique_budget := _budget_melee_unique_bonus(config)
 	var dot_dps := _budget_dot_dps(config, params, interval)
 	var pool_dps := _budget_pool_dps(config, params, interval)
-	var summon_dps := _budget_summon_dps(config, params)
+	var summon_dps := _budget_summon_dps(config, params, stats)
 	var solo_dps := direct_dps * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps + summon_dps
 	var aoe_dps := direct_dps * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0)) + summon_dps * float(hit_model.get("summon_targets", 1.0))
 	var ultimate := _budget_ultimate_dps(character_id, params)
@@ -712,13 +712,14 @@ static func _budget_pool_dps(config: Dictionary, params: Dictionary, interval: f
 	return float(params.get("dot_damage", 1.0)) / tick_interval * uptime
 
 
-static func _budget_summon_dps(config: Dictionary, params: Dictionary) -> float:
+static func _budget_summon_dps(config: Dictionary, params: Dictionary, stats := {}) -> float:
 	if int(config.get("max_summons", 0)) <= 0 and not config.has("summon_damage_multiplier"):
 		return 0.0
 	var summon_count: float = maxf(float(config.get("max_summons", 1.0)), 1.0) + floor(float(params.get("summon_amount", 0.0)) / 4.0)
 	var summon_amount := float(params.get("summon_amount", 0.0))
-	var attack_interval := maxf(float(config.get("summon_attack_interval", 0.45)) / (1.0 + minf(summon_amount * 0.012, 0.18)), 0.18)
-	var role_factor := _budget_summon_role_damage_factor(config, params)
+	var leadership := float(stats.get("leadership", summon_amount)) if stats is Dictionary else summon_amount
+	var attack_interval := maxf(float(config.get("summon_attack_interval", 0.45)) / (1.0 + minf(summon_amount * 0.014 + leadership * 0.006, 0.30)), 0.18)
+	var role_factor := _budget_summon_role_damage_factor(config, params, stats)
 	var summon_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) * float(config.get("summon_damage_multiplier", 0.36)) * role_factor
 	return summon_count * summon_damage / attack_interval
 
@@ -727,9 +728,15 @@ static func _is_pure_summon_weapon(config: Dictionary) -> bool:
 	return config.has("summon_damage_multiplier") and not config.has("attack_mode") and not config.has("attack_shape")
 
 
-static func _budget_summon_role_damage_factor(config: Dictionary, params: Dictionary) -> float:
+static func _budget_summon_role_damage_factor(config: Dictionary, params: Dictionary, stats := {}) -> float:
 	var summon_amount := float(params.get("summon_amount", 0.0))
-	return float(config.get("summon_role_damage_multiplier", 1.0)) * (1.0 + minf(summon_amount * 0.018, 0.22))
+	var leadership := float(stats.get("leadership", summon_amount)) if stats is Dictionary else summon_amount
+	var knowledge := float(stats.get("knowledge", 0.0)) if stats is Dictionary else 0.0
+	var intelligence := float(stats.get("intelligence", 0.0)) if stats is Dictionary else 0.0
+	var energy := float(stats.get("energy", 0.0)) if stats is Dictionary else 0.0
+	var leadership_damage := 1.0 + minf(leadership * 0.020, 0.42)
+	var attribute_damage := 1.0 + minf(summon_amount * 0.014 + knowledge * 0.004 + intelligence * 0.003 + energy * 0.003, 0.34)
+	return float(config.get("summon_role_damage_multiplier", 1.0)) * leadership_damage * attribute_damage
 
 
 static func _budget_ultimate_dps(character_id: String, params: Dictionary) -> Dictionary:

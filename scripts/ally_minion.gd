@@ -23,6 +23,9 @@ const FALLBACK_ALLY_VISUAL_ID := "druid_beast"
 @export var summon_role := "pack_damage"
 @export var control_knockback := 0.0
 @export var support_heal_percent := 0.0
+@export var aoe_radius := 0.0
+@export var aoe_damage_multiplier := 0.55
+@export var leash_radius := 520.0
 
 var _attack_cooldown := 0.0
 var _attack_anim_time := 0.0
@@ -55,6 +58,9 @@ func set_combat_profile(profile: Dictionary) -> void:
 	summon_role = str(profile.get("summon_role", summon_role))
 	control_knockback = maxf(float(profile.get("control_knockback", control_knockback)), 0.0)
 	support_heal_percent = maxf(float(profile.get("support_heal_percent", support_heal_percent)), 0.0)
+	aoe_radius = maxf(float(profile.get("aoe_radius", aoe_radius)), 0.0)
+	aoe_damage_multiplier = clampf(float(profile.get("aoe_damage_multiplier", aoe_damage_multiplier)), 0.0, 1.0)
+	leash_radius = maxf(float(profile.get("leash_radius", leash_radius)), 120.0)
 
 
 func take_damage(amount: float) -> void:
@@ -119,11 +125,19 @@ func _find_closest_enemy() -> Node2D:
 
 func _commanded_target() -> Node2D:
 	if command_mode == "guard_owner" and owner_node != null and is_instance_valid(owner_node):
-		var local_target := _find_closest_enemy_near(owner_node.global_position, 320.0)
+		var local_target := _find_closest_enemy_near(owner_node.global_position, minf(leash_radius, 360.0))
 		if local_target != null:
 			return local_target
 		return null
 	if command_target != null and is_instance_valid(command_target):
+		if owner_node != null and is_instance_valid(owner_node) and owner_node.global_position.distance_to(command_target.global_position) > leash_radius:
+			command_target = null
+		else:
+			return command_target
+	if owner_node != null and is_instance_valid(owner_node):
+		var owner_local_target := _find_closest_enemy_near(owner_node.global_position, leash_radius)
+		if owner_local_target != null:
+			return owner_local_target
 		return command_target
 	return _find_closest_enemy()
 
@@ -149,13 +163,27 @@ func _try_attack(target: Node2D) -> void:
 	if _attack_cooldown > 0.0:
 		return
 
+	var final_damage := damage * StatusEffects.damage_multiplier(self)
+	var hit_ids := {}
 	if target.has_method("take_damage"):
-		target.take_damage(damage * StatusEffects.damage_multiplier(self))
+		target.take_damage(final_damage)
+	hit_ids[target.get_instance_id()] = true
 	if control_knockback > 0.0 and target.has_method("apply_knockback"):
 		var push_origin := owner_node.global_position if owner_node != null and is_instance_valid(owner_node) else global_position
 		var push_direction := target.global_position - push_origin
 		if push_direction.length_squared() > 0.001:
 			target.apply_knockback(push_direction.normalized() * control_knockback)
+	if aoe_radius > 0.0 and aoe_damage_multiplier > 0.0:
+		for enemy in TARGET_QUERY.in_radius(self, target.global_position, aoe_radius):
+			var enemy_node := enemy as Node2D
+			if enemy_node == null or not is_instance_valid(enemy_node) or hit_ids.has(enemy_node.get_instance_id()):
+				continue
+			if enemy_node.has_method("take_damage"):
+				enemy_node.take_damage(final_damage * aoe_damage_multiplier)
+			if control_knockback > 0.0 and enemy_node.has_method("apply_knockback"):
+				var splash_direction := enemy_node.global_position - target.global_position
+				if splash_direction.length_squared() > 0.001:
+					enemy_node.apply_knockback(splash_direction.normalized() * control_knockback * 0.45)
 	if support_heal_percent > 0.0 and owner_node != null and is_instance_valid(owner_node) and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(support_heal_percent)
 

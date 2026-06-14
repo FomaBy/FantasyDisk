@@ -51,6 +51,15 @@
 - Final balance audit (SCRUM-262): global damage smoke теперь проверяет не только combined solo/5-target DPS, но и финальный solo corridor ±20% плюс crowd-clear time 5/10/20 в коридоре ±30%; `tools/balance_harness.gd` пишет `build/balance_final_audit_0_1_5.md` с class viability и CCT таблицами для всех 51 class+weapon пар.
 
 ### Changed
+- Summoner rebalance (SCRUM-357): `SummonerWeapon` now gives summons a
+  noticeable Leadership-driven damage multiplier, stronger controlled HP/speed/
+  lifetime/haste scaling, owner-leashed group target assignment with overkill
+  avoidance, and data-driven small splash hits through `AllyMinion`.
+- Hero Select unified frame (SCRUM-356): added Design-ready
+  `ui_frame_hero_select_unified_panel.png` (`1536x1024` RGBA) and compact
+  `ui_frame_hero_select_asc_button_small.png` (`256x256` RGBA), generated
+  through the OpenAI Images / `fantasydisk-asset-generator` workflow with
+  transparent postprocess, strict content zones and Back-end integration handoff.
 - Hero Select frames (SCRUM-355): rebuilt the dossier and thumbnail-strip frame
   PNGs with a thinner/lighter D&D dark-fantasy treatment, added deterministic
   `tools/build_hero_select_thin_frames.py`, strict ornament-safe content margins

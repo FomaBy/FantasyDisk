@@ -3,11 +3,29 @@ extends SceneTree
 const ProgressionData := preload("res://scripts/progression_data.gd")
 
 
+class TestEnemy:
+	extends Node2D
+
+	var health := 30.0
+	var max_health := 30.0
+	var damage_taken := 0.0
+	var knockback_taken := Vector2.ZERO
+
+	func take_damage(amount: float) -> void:
+		damage_taken += maxf(amount, 0.0)
+		health -= maxf(amount, 0.0)
+
+	func apply_knockback(vector: Vector2) -> void:
+		knockback_taken += vector
+
+
 func _initialize() -> void:
 	var errors: Array = []
 	await _test_summon_configs(errors)
 	await _test_summon_profile_scales_with_leadership(errors)
 	await _test_ally_minion_profile_and_lifecycle(errors)
+	await _test_summon_group_target_distribution(errors)
+	await _test_ally_attack_splash(errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -67,10 +85,111 @@ func _test_summon_profile_scales_with_leadership(errors: Array) -> void:
 
 	if float(high_profile.get("damage", 0.0)) <= float(low_profile.get("damage", 0.0)):
 		errors.append("Expected Leadership to raise summon damage (low %.2f, high %.2f)." % [low_profile.get("damage", 0.0), high_profile.get("damage", 0.0)])
+	if float(high_profile.get("damage", 0.0)) < float(low_profile.get("damage", 0.0)) * 1.20:
+		errors.append("Expected Leadership to raise summon damage noticeably (low %.2f, high %.2f)." % [low_profile.get("damage", 0.0), high_profile.get("damage", 0.0)])
 	if float(high_profile.get("max_health", 0.0)) <= float(low_profile.get("max_health", 0.0)):
 		errors.append("Expected Leadership to raise summon health (low %.2f, high %.2f)." % [low_profile.get("max_health", 0.0), high_profile.get("max_health", 0.0)])
 	if float(high_profile.get("attack_interval", 99.0)) >= float(low_profile.get("attack_interval", 99.0)):
 		errors.append("Expected Leadership to shorten summon attack interval (low %.3f, high %.3f)." % [low_profile.get("attack_interval", 0.0), high_profile.get("attack_interval", 0.0)])
+	if float(high_profile.get("aoe_radius", 0.0)) <= float(low_profile.get("aoe_radius", 0.0)):
+		errors.append("Expected Leadership to raise summon splash radius (low %.2f, high %.2f)." % [low_profile.get("aoe_radius", 0.0), high_profile.get("aoe_radius", 0.0)])
+
+	holder.queue_free()
+	await process_frame
+
+
+func _test_summon_group_target_distribution(errors: Array) -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var player := player_scene.instantiate()
+	holder.add_child(player)
+	player.global_position = Vector2(400, 320)
+	await process_frame
+	player.call("configure_character", "druid", "summon_amulet")
+	var weapon: Node = player.get("equipped_weapon")
+	if weapon == null:
+		errors.append("Expected Druid summon weapon for target distribution test.")
+		holder.queue_free()
+		await process_frame
+		return
+	weapon.set_process(false)
+
+	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
+	var allies: Array = []
+	for index in range(3):
+		var ally := ally_scene.instantiate()
+		holder.add_child(ally)
+		ally.global_position = player.global_position + Vector2(-32.0 + index * 32.0, 34.0)
+		ally.set("owner_node", player)
+		ally.call("set_combat_profile", {
+			"damage": 18.0,
+			"attack_range": 36.0,
+			"lifetime": 20.0,
+			"max_health": 35.0,
+			"leash_radius": 560.0,
+		})
+		allies.append(ally)
+
+	for index in range(3):
+		var enemy := TestEnemy.new()
+		holder.add_child(enemy)
+		enemy.add_to_group("enemies")
+		enemy.health = 18.0
+		enemy.max_health = 18.0
+		enemy.global_position = player.global_position + Vector2(95.0 + index * 38.0, -20.0 + index * 12.0)
+	await process_frame
+
+	weapon.call("_command_existing_summons")
+	var assigned_ids := {}
+	for ally in allies:
+		var target = ally.get("command_target")
+		if target != null and is_instance_valid(target):
+			assigned_ids[target.get_instance_id()] = true
+	if assigned_ids.size() < 2:
+		errors.append("Expected summon target assignment to split 3 allies across at least 2 enemies, got %d unique targets." % assigned_ids.size())
+
+	holder.queue_free()
+	await process_frame
+
+
+func _test_ally_attack_splash(errors: Array) -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
+	var ally := ally_scene.instantiate()
+	holder.add_child(ally)
+	ally.global_position = Vector2(200, 200)
+	ally.call("set_combat_profile", {
+		"damage": 10.0,
+		"attack_range": 48.0,
+		"attack_interval": 0.35,
+		"aoe_radius": 76.0,
+		"aoe_damage_multiplier": 0.50,
+		"lifetime": 10.0,
+		"max_health": 20.0,
+	})
+	var primary := TestEnemy.new()
+	var nearby := TestEnemy.new()
+	var far := TestEnemy.new()
+	holder.add_child(primary)
+	holder.add_child(nearby)
+	holder.add_child(far)
+	primary.add_to_group("enemies")
+	nearby.add_to_group("enemies")
+	far.add_to_group("enemies")
+	primary.global_position = Vector2(238, 200)
+	nearby.global_position = Vector2(270, 202)
+	far.global_position = Vector2(390, 200)
+	await process_frame
+
+	ally.call("_try_attack", primary)
+	if absf(primary.damage_taken - 10.0) > 0.01:
+		errors.append("Expected primary summon target to take exactly full damage once, got %.2f." % primary.damage_taken)
+	if absf(nearby.damage_taken - 5.0) > 0.01:
+		errors.append("Expected nearby enemy to take splash damage, got %.2f." % nearby.damage_taken)
+	if far.damage_taken > 0.01:
+		errors.append("Expected far enemy outside splash radius to stay unharmed, got %.2f." % far.damage_taken)
 
 	holder.queue_free()
 	await process_frame

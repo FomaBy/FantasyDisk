@@ -1233,7 +1233,7 @@
  },
  "backend_summoner_rebalance_scaling_targeting_aoe_task.md": {
   "key": "SCRUM-357",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_ascension_rebalance_monsters_up_elites_down_task.md": {
   "key": "SCRUM-358",
@@ -1253,6 +1253,6 @@
  },
  "backend_ingame_feedback_bug_report_tool_task.md": {
   "key": "SCRUM-362",
-  "status": "К выполнению"
+  "status": "В работе"
  }
 }

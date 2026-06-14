@@ -22,6 +22,9 @@ const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 @export var summon_control_knockback := 0.0
 @export var summon_support_heal_percent := 0.0
 @export var summon_role_damage_multiplier := 1.0
+@export var summon_aoe_radius := 70.0
+@export var summon_aoe_damage_multiplier := 0.55
+@export var summon_leash_radius := 520.0
 
 var _cooldown := 0.0
 var _command_refresh := 0.0
@@ -45,6 +48,9 @@ func configure_weapon(config: Dictionary) -> void:
 	summon_control_knockback = float(config.get("summon_control_knockback", summon_control_knockback))
 	summon_support_heal_percent = float(config.get("summon_support_heal_percent", summon_support_heal_percent))
 	summon_role_damage_multiplier = float(config.get("summon_role_damage_multiplier", summon_role_damage_multiplier))
+	summon_aoe_radius = float(config.get("summon_aoe_radius", config.get("aoe_radius", summon_aoe_radius)))
+	summon_aoe_damage_multiplier = float(config.get("summon_aoe_damage_multiplier", summon_aoe_damage_multiplier))
+	summon_leash_radius = float(config.get("summon_leash_radius", summon_leash_radius))
 	ally_visual_ids.clear()
 	var configured_visuals: Array = config.get("ally_visual_ids", [])
 	for visual_id in configured_visuals:
@@ -111,7 +117,7 @@ func _summon() -> void:
 
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("cast", ally.global_position - owner_node.global_position)
-	_command_ally(ally, owner_node)
+	_command_existing_summons()
 
 
 func _summon_profile(owner_node: Node) -> Dictionary:
@@ -120,20 +126,31 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 	var stats_raw = owner_node.get("stats")
 	var stats: Dictionary = stats_raw if stats_raw is Dictionary else {}
 	var leadership := float(stats.get("leadership", 0.0))
+	var knowledge := float(stats.get("knowledge", 0.0))
+	var intelligence := float(stats.get("intelligence", 0.0))
+	var energy := float(stats.get("energy", 0.0))
 	var summon_amount := float(parameters.get("summon_amount", 0.0))
 	var base_damage := float(parameters.get(damage_parameter, parameters.get("damage", damage)))
-	var role_damage := summon_role_damage_multiplier * (1.0 + minf(summon_amount * 0.018, 0.22))
+	var leadership_damage := 1.0 + minf(leadership * 0.020, 0.42)
+	var attribute_damage := 1.0 + minf(summon_amount * 0.014 + knowledge * 0.004 + intelligence * 0.003 + energy * 0.003, 0.34)
+	var role_damage := summon_role_damage_multiplier * leadership_damage * attribute_damage
+	var summon_haste := minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
+	var summon_bulk := minf(leadership * 0.045 + summon_amount * 0.010, 0.75)
+	var summon_radius := summon_aoe_radius * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18))
 	var owner_max_hp := float(owner_node.get("max_health")) if owner_node.get("max_health") != null else 80.0
 	return {
 		"damage": maxf(base_damage * damage_multiplier * role_damage, 1.0),
-		"move_speed": 230.0 * summon_speed_multiplier * (1.0 + minf(leadership * 0.006, 0.16)),
+		"move_speed": 230.0 * summon_speed_multiplier * (1.0 + minf(leadership * 0.010, 0.28)),
 		"attack_range": maxf(float(parameters.get("attack_range", attack_range)) * 0.18, 24.0),
-		"attack_interval": maxf(summon_attack_interval / (1.0 + minf(summon_amount * 0.012, 0.18)), 0.18),
-		"lifetime": 12.0 * summon_lifetime_multiplier * (1.0 + minf(leadership * 0.018, 0.32)),
-		"max_health": owner_max_hp * summon_health_multiplier * (1.0 + minf(leadership * 0.035, 0.45)),
+		"attack_interval": maxf(summon_attack_interval / (1.0 + summon_haste), 0.18),
+		"lifetime": 12.0 * summon_lifetime_multiplier * (1.0 + minf(leadership * 0.026, 0.48)),
+		"max_health": owner_max_hp * summon_health_multiplier * (1.0 + summon_bulk),
 		"summon_role": summon_role,
 		"control_knockback": summon_control_knockback,
 		"support_heal_percent": summon_support_heal_percent,
+		"aoe_radius": summon_radius,
+		"aoe_damage_multiplier": summon_aoe_damage_multiplier,
+		"leash_radius": summon_leash_radius,
 	}
 
 
@@ -156,30 +173,95 @@ func _command_existing_summons() -> void:
 	var owner_node := _owner_node()
 	if owner_node == null:
 		return
+	var owned_allies := _owned_allies(owner_node)
+	var targets := _target_candidates(owner_node, max(owned_allies.size() * 3, 6))
+	var assigned_damage := {}
 	for ally in get_tree().get_nodes_in_group("allies"):
 		var ally_node := ally as Node2D
 		if ally_node == null or not is_instance_valid(ally_node):
 			continue
 		if ally_node.get("owner_node") != owner_node:
 			continue
-		_command_ally(ally_node, owner_node)
+		_command_ally(ally_node, owner_node, targets, assigned_damage)
 
 
-func _command_ally(ally: Node2D, owner_node: Node2D) -> void:
+func _command_ally(ally: Node2D, owner_node: Node2D, targets: Array = [], assigned_damage: Dictionary = {}) -> void:
 	if ally == null or not is_instance_valid(ally):
 		return
 	ally.set("command_mode", command_mode)
 	ally.set("owner_node", owner_node)
-	var target := _closest_enemy(owner_node)
+	var target := _best_group_target(ally, owner_node, targets, assigned_damage)
 	if target != null:
 		ally.set("command_target", target)
+	else:
+		ally.set("command_target", null)
 
 
-func _closest_enemy(owner_node: Node2D) -> Node2D:
+func _owned_allies(owner_node: Node2D) -> Array[Node2D]:
+	var result: Array[Node2D] = []
+	for ally in get_tree().get_nodes_in_group("allies"):
+		var ally_node := ally as Node2D
+		if ally_node == null or not is_instance_valid(ally_node):
+			continue
+		if ally_node.get("owner_node") == owner_node:
+			result.append(ally_node)
+	return result
+
+
+func _target_candidates(owner_node: Node2D, count: int) -> Array:
 	if owner_node.has_method("attack_aim_mode") and str(owner_node.call("attack_aim_mode")) == "cursor":
 		var origin: Vector2 = owner_node.call("attack_aim_position", attack_range) if owner_node.has_method("attack_aim_position") else owner_node.global_position
-		return TARGET_QUERY.nearest(self, origin, attack_range)
-	return TARGET_QUERY.nearest(self, owner_node.global_position)
+		var cursor_targets := TARGET_QUERY.nearest_many(self, origin, minf(attack_range, summon_leash_radius), count)
+		if not cursor_targets.is_empty():
+			return cursor_targets
+	return TARGET_QUERY.nearest_many(self, owner_node.global_position, summon_leash_radius, count)
+
+
+func _best_group_target(ally: Node2D, owner_node: Node2D, targets: Array, assigned_damage: Dictionary) -> Node2D:
+	if targets.is_empty():
+		return TARGET_QUERY.nearest(self, owner_node.global_position, summon_leash_radius)
+	var best_target: Node2D = null
+	var best_score := INF
+	for target_candidate in targets:
+		var target := target_candidate as Node2D
+		if target == null or not is_instance_valid(target):
+			continue
+		if owner_node.global_position.distance_to(target.global_position) > summon_leash_radius:
+			continue
+		var target_id := target.get_instance_id()
+		var health := _enemy_health(target)
+		var already_assigned := float(assigned_damage.get(target_id, 0.0))
+		if already_assigned >= health * 1.10:
+			continue
+		var distance_score := ally.global_position.distance_squared_to(target.global_position)
+		var owner_score := owner_node.global_position.distance_squared_to(target.global_position) * 0.20
+		var overkill_pressure := (already_assigned / maxf(health, 1.0)) * 180000.0
+		var score := distance_score + owner_score + overkill_pressure
+		if score < best_score:
+			best_score = score
+			best_target = target
+	if best_target != null:
+		var ally_damage := _ally_expected_damage(ally)
+		var best_id := best_target.get_instance_id()
+		assigned_damage[best_id] = float(assigned_damage.get(best_id, 0.0)) + ally_damage
+	return best_target
+
+
+func _enemy_health(enemy: Node2D) -> float:
+	var health_value = enemy.get("health")
+	if health_value != null:
+		return maxf(float(health_value), 1.0)
+	var max_health_value = enemy.get("max_health")
+	if max_health_value != null:
+		return maxf(float(max_health_value), 1.0)
+	return 20.0
+
+
+func _ally_expected_damage(ally: Node2D) -> float:
+	var ally_damage = ally.get("damage")
+	if ally_damage == null:
+		return maxf(damage, 1.0)
+	return maxf(float(ally_damage) * 1.6, 1.0)
 
 
 func _owner_node() -> CharacterBody2D:
