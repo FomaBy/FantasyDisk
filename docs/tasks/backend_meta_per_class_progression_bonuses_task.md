@@ -10,15 +10,16 @@
 - **Применение** (main.gd + player.gd, коммит a69ddcc0): main мерджит
   class_modifiers(meta_state, selected_character_id) в skill_mods; player.gd
   META_SKILL_MULT_MAP += class_* → множатся с аккаунтными бонусами.
-- **UI** (ui_screens.gd `_show_skill_tree_screen`): раздел «Прогресс класса» —
+- **UI** (ui_screens.gd `_show_skill_tree_screen`): компактный раздел «Классы» —
   выбранный класс, побед над боссами, открытые бонусы, следующий порог
-  (class_next_threshold). no-overlap соблюдён.
-- Зелёные: runtime smoke, ui_no_overlap_matrix, class_progression, meta, global_damage.
+  (`class_next_threshold`) и список активных бонусов (`class_unlocked_tiers`).
+- Зелёные: runtime smoke, UI smoke, class_progression, meta skill tree smoke.
 Роль: Back-end (прогрессия)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-360
+QA: ready (2026-06-14)
 
 ## Прогресс (2026-06-14, Claude Fable 5)
 **Сделано — ядро (изолированно, scripts/meta_progression.gd, не трогая занятые):**
@@ -33,14 +34,15 @@ Jira: SCRUM-360
 - Гейт `tests/class_progression_test.gd`: накопление, изоляция бонусов по классу,
   частичные пороги, save/load — PASS. meta + runtime smoke зелёные.
 
-**Осталось (интеграция — требует общих файлов):**
-- main.gd (занят): передать `class_modifiers(meta_state, selected_character_id)`
-  игроку рядом со `skill_modifiers` (main.gd:644-646).
-- player.gd (свободен): обработать ключи `class_*` в `apply_meta_skill_modifiers`
-  (склад в run_modifiers как 1.0+sum) — делать вместе с main.gd-передачей.
-- ui_screens.gd `_show_skill_tree_screen`: раздел «Классы» (прогресс выбранного
-  класса через `class_next_threshold`/`class_unlocked_tiers`), no-overlap.
-Взять, как только main.gd/ui_screens.gd освободятся.
+**Финальная интеграция (2026-06-14, Codex Back-end):**
+- Проверено, что main.gd передает `class_modifiers(meta_state, selected_character_id)`
+  игроку рядом со `skill_modifiers`.
+- Проверено, что player.gd обрабатывает `class_*` в `apply_meta_skill_modifiers`
+  и сворачивает их в run_modifiers как `1.0 + sum`.
+- UI раздел «Классы» усилен до отдельной compact panel с русским именем героя,
+  прогрессом, списком открытых бонусов и следующим порогом.
+- `tests/meta_skill_tree_smoke_test.gd` расширен проверкой run-start применения
+  и отсутствия протекания бонусов Берсерка на Солдата.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -79,9 +81,48 @@ Jira: SCRUM-360
 - tests/meta_progression_smoke_test.gd, tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] В дереве меты есть прогрессия по классам с бонусами для конкретного класса; копится за игру классом, сохраняется.
-- [ ] Бонусы применяются только выбранному классу; аккаунтные ветви целы.
-- [ ] UI классовой прогрессии без overlap; meta + runtime smoke зелёные; CHANGELOG.
+- [x] В дереве меты есть прогрессия по классам с бонусами для конкретного класса; копится за игру классом, сохраняется.
+- [x] Бонусы применяются только выбранному классу; аккаунтные ветви целы.
+- [x] UI классовой прогрессии без overlap; meta + runtime smoke зелёные; CHANGELOG.
 
 ## Документация
 docs/design/systems/progression_balance.md, current_game_state.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Ядро** (meta_progression.gd): `CLASS_PROGRESSION` (накопит. пороги, стр.73),
+  `class_boss_wins` в state (default/load/save 88/112/127, ConfigFile версия-совмест.),
+  `record_boss_victory` (138) копит победы per-character, API `class_modifiers`/
+  `class_next_threshold`/`class_boss_wins`.
+- **Применение** (run-модификаторы только своему классу): `main.gd:647` мерджит
+  `class_modifiers(meta_state, selected_character_id)` в skill_mods; `player.gd:621`
+  `META_SKILL_MULT_MAP` содержит `class_damage_mult→damage_multiplier` (+ class_*),
+  применяется в цикле (634). Ключи `class_*` отдельны от аккаунтных.
+- **Гейт** `class_progression_test` — passed: «накопление per-class, изоляция бонусов,
+  save/load, 5 порогов» (бонусы НЕ протекают на другие классы).
+- **UI** (`build/qa/cap_skill_tree_360.png`): раздел «Классы» вверху — «Берсерк»:
+  11 побед над боссами, открыто бонусов 5/5 + детали (урон+9%/HP+3%/скор.атаки+4%/
+  мастерство+5%/+2%HP); аккаунтные ветви (Богатства/Знаний/Мощи/Стойкости) ниже, БЕЗ
+  наложения, текст читаем.
+- **Тесты**: `meta_progression_smoke`, `runtime_smoke_test`, `ui_no_overlap_matrix_test`
+  — passed.
+
+Acceptance:
+- [x] Прогрессия по классам с бонусами конкретному классу; копится за победы класса; сохраняется.
+- [x] Бонусы только выбранному классу (изоляция в гейте); аккаунтные ветви целы.
+- [x] UI классовой прогрессии без overlap; meta + runtime smoke зелёные; доки.
+
+Баги: нет.
+
+## Result Summary — 2026-06-14 (Codex Back-end Close-Out)
+
+SCRUM-360 is complete and ready for QA. Final pass aligned the task file with the already implemented core, upgraded the skill tree class-progress UI, added run-start class-modifier coverage, and updated `CHANGELOG.md`, `docs/design/current_game_state.md` and `docs/design/systems/progression_balance.md`.
+
+Verification:
+- `git diff --check` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/class_progression_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/meta_skill_tree_smoke_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.

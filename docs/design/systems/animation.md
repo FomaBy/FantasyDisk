@@ -30,6 +30,11 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `move` 6f loop and `attack_primary`/runtime `attack`, `hit`, `death` 6f
   one-shots. The visual override is registry-only and does not change enemy AI,
   damage, targeting, spawn rules or balance.
+- SCRUM-364 extended the same standard-enemy full-frame integration to
+  `ash_marksman`, `spark_runner`, `stone_bruiser`, `bone_caller`, and
+  `void_mage`. Each uses a padded `384x384` runtime canvas, `move` 6f loop,
+  `attack_primary`/runtime `attack`, `hit`, and `death` 6f one-shots, and
+  registry-only activation on the existing enemy scenes.
 
 ## Full-Frame State Registry
 

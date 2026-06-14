@@ -24,6 +24,10 @@
   `attack_primary`/runtime `attack`, `hit`, `death` 6f one-shots through
   `FullFrameAnimationRegistry`, with no gameplay, targeting, spawn or balance
   changes.
+- Standard enemy full-frame batch (SCRUM-364): integrated accepted SCRUM-352
+  sheets for `ash_marksman`, `spark_runner`, `stone_bruiser`, `bone_caller`, and
+  `void_mage` as padded SpriteFrames/registry entries with the same `move`,
+  `attack_primary`/runtime `attack`, `hit`, and `death` contract.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню

@@ -1245,7 +1245,7 @@
  },
  "backend_meta_per_class_progression_bonuses_task.md": {
   "key": "SCRUM-360",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_hero_select_unified_portrait_description_frame_integration_task.md": {
   "key": "SCRUM-361",
@@ -1261,6 +1261,10 @@
  },
  "animation_standard_enemy_full_frame_batch_integration_task.md": {
   "key": "SCRUM-364",
+  "status": "Контроль качества"
+ },
+ "animation_standard_enemy_full_frame_batch_2_integration_task.md": {
+  "key": "SCRUM-365",
   "status": "В работе"
  }
 }
