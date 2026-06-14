@@ -583,18 +583,18 @@ Contextual UI direction 2026-06-12 is superseded by SCRUM-147. Contextual assets
 | `ui_backdrop_reward_hall` | Reward/Victory backdrop | `assets/backgrounds/ui/ui_backdrop_reward_hall.png` | Active for `elite_reward`, `victory`, `artifact_reward` |
 | `ui_backdrop_defeat_crypt` | Defeat/Danger backdrop | `assets/backgrounds/ui/ui_backdrop_defeat_crypt.png` | Active for `death`, `defeat`, `end_run_confirm` |
 | `route_map_backdrop` | Жутковатый фон маршрутной карты | `assets/backgrounds/route_map_backdrop.png` | Низкоконтрастный dark fantasy фон full-screen route map, спокойная центральная зона под узлы и линии |
-| `stone_garden` | Каменный Сад | `assets/backgrounds/field_stone_garden.png` | Базовый фон |
-| `marsh` | Топь | `assets/backgrounds/field_marsh.png` | Болотный фон |
-| `dry_road` | Сухая Дорога | `assets/backgrounds/field_dry_road.png` | Дорожный фон |
-| `meadow` | Луг | `assets/backgrounds/field_meadow.png` | Зеленый фон |
-| `ruined_courtyard` | Руинный Двор | `assets/backgrounds/field_ruined_courtyard.png` | D&D top-down руинная каменная арена |
-| `misty_marsh` | Туманная Топь | `assets/backgrounds/field_misty_marsh.png` | D&D top-down болотный грунт с лужами и мхом |
-| `dusty_badlands` | Пыльные Пустоши | `assets/backgrounds/field_dusty_badlands.png` | D&D top-down сухая земля/дорога |
-| `enchanted_meadow` | Зачарованный Луг | `assets/backgrounds/field_enchanted_meadow.png` | D&D top-down травяная поляна с мелкими цветами |
-| `ashen_rift` | Пепельный Разлом | `assets/backgrounds/field_ashen_rift.png` | D&D top-down вулканический пепел с тонкими трещинами |
-| `cursed_grove` | Проклятая Роща | `assets/backgrounds/field_cursed_grove.png` | D&D top-down сине-серый зачарованный лесной грунт |
+| `stone_garden` | Каменный Сад | `assets/backgrounds/field_stone_garden.png` | SCRUM-369 realistic D&D/dark fantasy stone-garden arena, 2560x1440 |
+| `marsh` | Топь | `assets/backgrounds/field_marsh.png` | SCRUM-369 realistic D&D/dark fantasy marsh arena, 2560x1440 |
+| `dry_road` | Сухая Дорога | `assets/backgrounds/field_dry_road.png` | SCRUM-369 realistic D&D/dark fantasy dry-road arena, 2560x1440 |
+| `meadow` | Луг | `assets/backgrounds/field_meadow.png` | SCRUM-369 realistic D&D/dark fantasy meadow arena, 2560x1440 |
+| `ruined_courtyard` | Руинный Двор | `assets/backgrounds/field_ruined_courtyard.png` | SCRUM-369 realistic D&D/dark fantasy ruined-courtyard arena, 2560x1440 |
+| `misty_marsh` | Туманная Топь | `assets/backgrounds/field_misty_marsh.png` | SCRUM-369 realistic D&D/dark fantasy misty-marsh arena, 2560x1440 |
+| `dusty_badlands` | Пыльные Пустоши | `assets/backgrounds/field_dusty_badlands.png` | SCRUM-369 realistic D&D/dark fantasy dusty-badlands arena, 2560x1440 |
+| `enchanted_meadow` | Зачарованный Луг | `assets/backgrounds/field_enchanted_meadow.png` | SCRUM-369 realistic D&D/dark fantasy enchanted-meadow arena, 2560x1440 |
+| `ashen_rift` | Пепельный Разлом | `assets/backgrounds/field_ashen_rift.png` | SCRUM-369 realistic D&D/dark fantasy ashen-rift arena, 2560x1440 |
+| `cursed_grove` | Проклятая Роща | `assets/backgrounds/field_cursed_grove.png` | SCRUM-369 realistic D&D/dark fantasy cursed-grove arena, 2560x1440 |
 
-Все активные боевые фоны — нативные 2560x1440. Pass 2026-06-12 заменил первые 4 на строго плоские top-down ground textures без высоких объектов, ложной перспективы и объемных камней/кустов: только низкоконтрастная почва, мох, трещины, трава, дорожные следы и мелкая наземная фактура. Expansion pass 2026-06-12 добавил еще 6 D&D battlemap-фонов с тем же gameplay-readable правилом: антуражно и красиво, но без крупных камней/кустов и объектов, которые читаются как препятствия. QA preview: `docs/design/previews/arena_backgrounds_6_dnd_contact.png`.
+Все активные боевые фоны — нативные 2560x1440. SCRUM-369 (2026-06-14) заменил весь набор из 10 арен через `fantasydisk-asset-generator`: реалистичные top-down D&D/dark fantasy battlefield floors с приглушенной центральной игровой зоной, без tall blockers, UI/text/watermarks и без битых ссылок. Source references: `docs/design/references/backgrounds/`; QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
 `route_map_backdrop` добавлен 2026-06-11 как отдельный 2560x1440 фон для маршрутной карты: мрачная пустошь/туманное предгорье, детали вынесены к краям, центр приглушен для читаемости узлов.
 
 ## Препятствия

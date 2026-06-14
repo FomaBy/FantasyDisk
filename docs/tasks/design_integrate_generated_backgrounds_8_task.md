@@ -1,11 +1,11 @@
 # Задача Для Design-Агента: Внедрить сгенерированный ассет backgrounds
 
-Статус: new
+Статус: done
 Создано: 2026-06-14
 Автор: Codex asset generator
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
 Версия: 0.1.5
-Jira: pending sync
+Jira: covered by SCRUM-369
 
 ## Autonomy / Approval
 Пользователь заранее одобрил изменения в рамках этой задачи. Работать автономно, не ждать дополнительных подтверждений.
@@ -36,3 +36,15 @@ FantasyDisk combat arena background, top-down Dungeons and Dragons dark fantasy 
 - [ ] Не тронуты `.import` файлы без необходимости.
 - [ ] При runtime-интеграции пройдены релевантные Godot smoke/UI checks.
 - [ ] Jira и task-файл синхронизированы после смены статуса.
+
+## Result
+Covered by SCRUM-369. This generated background reference was reviewed and integrated through `docs/tasks/design_level_backgrounds_redraw_new_style_skill_task.md`; final runtime assets are in `assets/backgrounds/field_*.png`, with contact/readability previews under `docs/design/previews/`.
+
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (covered by SCRUM-369)
+
+Генератор-стаб background-референса. Фактический deliverable (10 арена-фонов
+2560×1440 в новом стиле) верифицирован в QA-вердикте SCRUM-369 (все 10 на месте,
+2 ранее битые ссылки закрыты, combat+runtime smoke зелёные, контакт-лист). Не
+дублируется. Баги: нет.

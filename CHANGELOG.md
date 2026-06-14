@@ -30,6 +30,12 @@
   corner gems, separate optional dragon overlays, updated metadata margins
   (`72px` texture / `88px` content), previews and QA notes; Godot import,
   UI no-overlap matrix, runtime UI smoke and runtime smoke PASS.
+- Arena background redraw (SCRUM-369): regenerated and integrated all 10
+  `assets/backgrounds/field_*.png` combat backgrounds through
+  `fantasydisk-asset-generator` as realistic 2560x1440 D&D/dark fantasy arena
+  floors, including newly created `field_dry_road.png` and
+  `field_stone_garden.png`; contact/readability previews, Godot import,
+  background load smoke, combat smoke and runtime smoke PASS.
 - Unified master UI runtime integration (SCRUM-382): generic panels, cards,
   tooltips, timers and HUD frames now route through a shared tiled 9-slice
   unified frame builder in `scripts/ui_screens.gd` / `UIThemePaths`; authored

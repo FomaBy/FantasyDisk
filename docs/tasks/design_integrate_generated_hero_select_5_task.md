@@ -1,11 +1,11 @@
-# Задача Для Design-Агента: Внедрить сгенерированный ассет backgrounds
+# Задача Для Design-Агента: Внедрить сгенерированный ассет hero select
 
-Статус: done
+Статус: new
 Создано: 2026-06-14
 Автор: Codex asset generator
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
 Версия: 0.1.5
-Jira: covered by SCRUM-369
+Jira: pending sync
 
 ## Autonomy / Approval
 Пользователь заранее одобрил изменения в рамках этой задачи. Работать автономно, не ждать дополнительных подтверждений.
@@ -14,14 +14,14 @@ Jira: covered by SCRUM-369
 Сгенерирован новый PNG-референс через OpenAI Images API для FantasyDisk. Файл лежит в проектной папке референсов и должен быть оценен, доведен до production-ассета или использован как source/reference для внедрения.
 
 ## Source Asset
-- PNG: `docs/design/references/backgrounds/field_misty_marsh_reference.png`
+- PNG: `docs/design/references/hero_select/frame_compass.png`
 - Model: `gpt-image-2`
-- Size: `2560x1440`
+- Size: `1024x1024`
 - Quality: `high`
 - Prompt:
 
 ```text
-FantasyDisk combat arena background, top-down Dungeons and Dragons dark fantasy tabletop battlemap, realistic painterly ground texture, 2560x1440 wide arena floor, low-to-medium contrast central gameplay area, no tall objects, no walls blocking play, no characters, no monsters, no UI, no text, no watermark, flush-to-ground details only, subtle directional light from upper left, readable for animated heroes and monsters on top, edges naturally detailed without hard seams, not noisy, not over-saturated, dark fantasy dragon-era game art style. Biome: misty swamp floor, cold foggy wet ground, pale moss, dark mud, faint water channels, ghostly blue-green tones, low contrast center.
+Round COMPASS wind-rose frame with gold tick marks around the rim D&D Dark Fantasy Dragon UI frame, aged dark forged metal with muted gold trim, ruby gem accents, claw-notched corners, subtle dragon scale texture, ornate but restrained, cohesive with a unified dark fantasy set. Single isolated frame asset on a SOLID FLAT PURE MAGENTA #FF00FF background, EMPTY flat magenta interior (for chroma-key to transparent), ornament ONLY on the border, no text, no characters, no scene. Clean even border for 9-slice, crisp, centered.
 ```
 
 ## Что Нужно Сделать
@@ -36,15 +36,3 @@ FantasyDisk combat arena background, top-down Dungeons and Dragons dark fantasy 
 - [ ] Не тронуты `.import` файлы без необходимости.
 - [ ] При runtime-интеграции пройдены релевантные Godot smoke/UI checks.
 - [ ] Jira и task-файл синхронизированы после смены статуса.
-
-## Result
-Covered by SCRUM-369. This generated background reference was reviewed and integrated through `docs/tasks/design_level_backgrounds_redraw_new_style_skill_task.md`; final runtime assets are in `assets/backgrounds/field_*.png`, with contact/readability previews under `docs/design/previews/`.
-
-
-## QA-Вердикт (2026-06-14)
-Статус: PASSED (covered by SCRUM-369)
-
-Генератор-стаб background-референса. Фактический deliverable (10 арена-фонов
-2560×1440 в новом стиле) верифицирован в QA-вердикте SCRUM-369 (все 10 на месте,
-2 ранее битые ссылки закрыты, combat+runtime smoke зелёные, контакт-лист). Не
-дублируется. Баги: нет.
