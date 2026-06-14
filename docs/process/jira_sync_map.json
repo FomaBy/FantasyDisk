@@ -1189,7 +1189,7 @@
  },
  "design_hero_select_ascension_small_buttons_reposition_task.md": {
   "key": "SCRUM-346",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_hero_select_radar_remove_title_center_enlarge_task.md": {
   "key": "SCRUM-347",
@@ -1233,11 +1233,11 @@
  },
  "backend_summoner_rebalance_scaling_targeting_aoe_task.md": {
   "key": "SCRUM-357",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_ascension_rebalance_monsters_up_elites_down_task.md": {
   "key": "SCRUM-358",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_balance_pass_solo_skill_damage_buff_task.md": {
   "key": "SCRUM-359",
@@ -1245,6 +1245,14 @@
  },
  "backend_meta_per_class_progression_bonuses_task.md": {
   "key": "SCRUM-360",
+  "status": "К выполнению"
+ },
+ "backend_hero_select_unified_portrait_description_frame_integration_task.md": {
+  "key": "SCRUM-361",
+  "status": "К выполнению"
+ },
+ "backend_ingame_feedback_bug_report_tool_task.md": {
+  "key": "SCRUM-362",
   "status": "К выполнению"
  }
 }

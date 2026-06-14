@@ -1,6 +1,6 @@
 # ART/UX: Выбор героя — портрет + описание в ОДНОМ фрейме (тонкие рамки), Выбрать+возвышение вниз
 
-Статус: in_progress
+Статус: review
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
@@ -83,3 +83,42 @@ Design scope first:
   frame borders.
 - If runtime layout/code integration is needed, update/create a Back-end
   handoff with exact asset paths, source dimensions, target rects, and margins.
+
+## Result — 2026-06-14
+
+Design pass complete and ready for Back-end UI integration.
+
+Generated through the OpenAI Images / `fantasydisk-asset-generator` workflow
+using the secure env source outside git, then postprocessed to RGBA/alpha:
+
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_unified_panel.png`
+  (`1536x1024`, RGBA)
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_button_small.png`
+  (`256x256`, RGBA)
+
+Source/reference and QA files:
+
+- `docs/design/references/hero_select_unified_panel/ui_frame_hero_select_unified_panel_source.png`
+- `docs/design/references/hero_select_unified_panel/ui_frame_hero_select_asc_button_small_source.png`
+- `docs/design/references/hero_select_unified_panel/scrum356_unified_panel_metadata.json`
+- `docs/design/previews/scrum356_hero_select_unified_panel_content_zones.png`
+- `build/qa/scrum356/hero_select_unified_frame_design_qa.md`
+- `tools/generate_scrum356_hero_select_unified_assets.py`
+
+Strict source-space content zones for Back-end:
+
+- portrait: `Rect2(130, 145, 420, 560)`
+- description: `Rect2(610, 145, 786, 500)`
+- bottom controls: `Rect2(570, 705, 660, 178)`
+- small ascension button margins: `[76, 74, 76, 76]`
+
+Back-end handoff created:
+
+- `docs/tasks/backend_hero_select_unified_portrait_description_frame_integration_task.md`
+
+Design validation:
+
+- Pillow dimension/alpha check passed (`RGBA`, alpha range `(0, 255)`).
+- Preview confirms non-overlapping safe zones.
+- Runtime integration/smoke are intentionally not done in Design scope; Back-end
+  owns `scripts/ui_screens.gd` layout changes and no-overlap runtime checks.

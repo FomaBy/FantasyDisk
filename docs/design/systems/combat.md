@@ -44,6 +44,8 @@
 - Темный маг использует AoE projectile, DoT и beam; новые caster/control классы переиспользуют эти режимы с другими параметрами.
 - Гитарист и Друид используют sound wave / pulse / deployable amp/totem; Рейнджер использует deploy trap.
 - Друидский `druid_beast` summon использует `AllyMinion/AnimatedBody` с готовым `SpriteFrames`: `move` loop при движении/ожидании, `attack` one-shot при фактическом ударе и `flip_h` вправо по движению/атаке. Остальные ally visuals остаются статичными `Sprite2D` через fallback `Body`.
+- Мобильные summons получают групповые команды от `SummonerWeapon`: цели выбираются в leash radius вокруг владельца, назначенный burst damage учитывается как overkill pressure, поэтому несколько союзников расходятся по слабым врагам вместо погони всей стаей за одной целью. Если старая `command_target` ушла за leash radius, `AllyMinion` сбрасывает ее и возвращается к локальной цели/guard behavior.
+- Удар `AllyMinion` наносит основной цели полный урон один раз, затем бьет соседних врагов в data-driven малом splash radius (`summon_aoe_radius`, обычно 72-78 px) с `summon_aoe_damage_multiplier`, без повторного урона primary target.
 - Временные эффекты оружия добавляются в cleanup groups (`player_weapon_effects`, `deployed_sound_amps`, projectiles/hazards).
 - Gameplay effects не должны использовать `SceneTreeTimer`; текущие длительные эффекты привязаны к node-bound tweens и уважают паузу.
 

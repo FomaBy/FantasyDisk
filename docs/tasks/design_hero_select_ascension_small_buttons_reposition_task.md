@@ -1,6 +1,6 @@
 # ART/UX: Возвышение +/- — маленькие кнопки по референсам, по центру, вниз фрейма + «Выбрать»
 
-Статус: blocked
+Статус: review
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -102,3 +102,19 @@ Because this is an account/billing hard limit, Design did not retry another paid
 image request for the same mandatory generator path. SCRUM-346 is blocked until
 OpenAI image generation billing is available again or PM provides an approved
 alternative generation source.
+
+## Covered By SCRUM-356 — 2026-06-14
+The required compact ascension button asset was produced in the broader unified
+Hero Select frame task:
+
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_button_small.png`
+- source: `docs/design/references/hero_select_unified_panel/ui_frame_hero_select_asc_button_small_source.png`
+- margins: `[76, 74, 76, 76]`
+
+The positioning requirement (ascension row plus `HeroSelectChooseButton` at the
+bottom of the unified frame) is runtime/UI layout scope and is now handed off to
+Back-end in:
+
+- `docs/tasks/backend_hero_select_unified_portrait_description_frame_integration_task.md`
+
+This task is left in `review` as covered by SCRUM-356 rather than duplicated.

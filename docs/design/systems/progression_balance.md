@@ -74,6 +74,17 @@ UI обязан показывать эти интерпретации текс�
 - Artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png`.
 - `class_affinity` теперь означает тематику/источник артефакта, а не запрет. `affinity_mods` применяются любому классу через интерпретацию текущего героя.
 
+## Summon Scaling
+
+- `summon_amount = Leadership + Knowledge * 0.18 + Intelligence * 0.12 + Energy * 0.10`.
+- Мобильные summons используют `SummonerWeapon._summon_profile()`:
+  - damage = base derived damage * `summon_damage_multiplier` * role multiplier * Leadership multiplier `1 + min(Leadership * 0.020, 0.42)` * attribute multiplier `1 + min(summon_amount * 0.014 + Knowledge * 0.004 + Intelligence * 0.003 + Energy * 0.003, 0.34)`;
+  - attack interval получает haste `min(summon_amount * 0.014 + Leadership * 0.006, 0.30)`;
+  - max HP получает bulk `min(Leadership * 0.045 + summon_amount * 0.010, 0.75)`;
+  - move speed/lifetime/splash radius также мягко растут от Leadership/`summon_amount`.
+- Уровень 0 сохраняет базовый баланс: все множители начинаются с 1.0, caps ограничивают high-stat runaway.
+- Balance facade `ProgressionData.estimate_weapon_budget()` использует ту же damage/haste формулу для summon DPS estimate, чтобы отчеты 0.1.5 не считали старую слабую версию призывателей.
+
 ## Shop
 
 - Shop items берутся из `ProgressionData.SHOP_ITEMS` и artifact pool.

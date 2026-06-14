@@ -1,6 +1,6 @@
 # Design handoff: enemy, elite, and boss full-frame animation sheets
 
-Статус: blocked
+Статус: new
 Приоритет: high
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -133,3 +133,21 @@ alternative generation source.
 shell (включая shell Codex-воркеров). Скилл `fantasydisk-asset-generator`
 (gpt-image-2) готов к вызову. Блокер по отсутствию `OPENAI_API_KEY` снят
 окончательно; задача готова к исполнению через скилл.
+
+## Retry Succeeded — 2026-06-14
+User requested another attempt. Design retried the `rift_cutter` pilot through
+the current approved `$HOME/.codex/.env` OpenAI Images path. The first retry
+showed `gpt-image-2` edit does not support direct `background=transparent`; the
+task-specific wrapper was corrected to generate RGB source PNGs and perform
+transparent postprocess as required by the asset-generator skill notes.
+
+Pilot output now exists:
+
+- `docs/design/references/scrum352_full_frame_sheets/raw/rift_cutter_full_frame_sheet_raw.png`
+- `assets/sprites/enemies/full_frame/rift_cutter_full_frame_sheet.png`
+- `docs/design/references/scrum352_full_frame_sheets/scrum352_sheet_manifest.json`
+- `docs/design/previews/scrum352_full_frame_sheets_preview.png`
+
+This removes the previous billing blocker. The full SCRUM-352 production scope
+is still open: remaining standard enemies, route elites, mini-elites and bosses
+must be generated and then handed off to Animator.
