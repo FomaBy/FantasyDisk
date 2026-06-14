@@ -6,9 +6,11 @@ soft white halo — dilate the silhouette a few px, blur it, tint pure white at 
 restrained peak alpha, and composite it UNDERNEATH the original art. The result
 is a gentle rim/halo, not an outline stroke, and never burns the silhouette.
 
-Originals are backed up (once) to docs/design/backups/summon_noglow/ before the
-first edit so the pass is reversible and re-runnable (it always re-derives from
-the backup, so running twice does not stack the glow).
+Original PNGs are backed up (once) to docs/design/backups/summon_noglow/ before
+the first edit so the pass is reversible and re-runnable (it always re-derives
+from the backup, so running twice does not stack the glow). Godot .import
+sidecars are intentionally not copied into backup folders because they duplicate
+live asset UIDs during --import.
 
 Run from project root:  python3 tools/add_summon_contour_glow.py
 """

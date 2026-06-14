@@ -134,11 +134,6 @@ def main() -> None:
     backup = BACKUP_DIR / "ui_frame_hero_select_thumbnail_strip_scrum281.png"
     if not backup.exists():
         shutil.copy2(LIVE, backup)
-    import_sidecar = LIVE.with_suffix(LIVE.suffix + ".import")
-    if import_sidecar.exists():
-        backup_import = BACKUP_DIR / "ui_frame_hero_select_thumbnail_strip_scrum281.png.import"
-        if not backup_import.exists():
-            shutil.copy2(import_sidecar, backup_import)
 
     frame = _transparent_frame(SOURCE)
     frame.save(LIVE)

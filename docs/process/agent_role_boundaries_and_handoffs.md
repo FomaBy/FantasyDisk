@@ -47,6 +47,18 @@ status/comment или явно передать это dispatcher/PM. Jira API t
 
 Пользователь заранее одобрил in-scope изменения, поэтому агенты не спрашивают разрешение на работу. Но cross-discipline работу нужно передавать правильному агенту.
 
+## Asset Backup Hygiene
+
+Архивные копии игровых PNG/ресурсов внутри репозитория не должны входить в
+Godot import scope и не должны включать Godot `.import` sidecars.
+`docs/design/backups/` держит `.gdignore`, а `build/` уже исключен из импорта;
+новые backup-папки должны сохранять это правило. При создании backups копируйте
+исходный ассет и служебные manifest/preview-файлы, но не копируйте
+`<asset>.import`: эти sidecar файлы содержат UID живого ресурса и при попадании
+в import scope создают `UID duplicate detected` warnings. Если backup уже
+содержит `.import`, его нужно удалить или держать вне Godot import scope; живой
+ассет при необходимости перегенерирует свой `.import` сам.
+
 ## Design
 
 ПРАВИЛО «UI не наползает» (пользователь, 2026-06-12): любой UI/HUD-лейаут

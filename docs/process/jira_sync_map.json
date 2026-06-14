@@ -1407,7 +1407,7 @@
  "art_ui_overhaul_pause_end_task.md": {
   "key": "SCRUM-330",
   "status": "В работе",
-  "desc_hash": "e1f4cd37b83c91f4093da455b845b280"
+  "desc_hash": "e42764ae3db1059874ca3e8a2fbe0d95"
  },
  "art_ui_overhaul_progression_codex_task.md": {
   "key": "SCRUM-331",
@@ -1417,7 +1417,7 @@
  "art_ui_overhaul_shop_economy_task.md": {
   "key": "SCRUM-332",
   "status": "В работе",
-  "desc_hash": "cef961058ec0610ee61bd46604c4f28e"
+  "desc_hash": "3269b6d13bc0e7464f7710fc043a4750"
  },
  "backend_hero_select_redesign_master_layout_task.md": {
   "key": "SCRUM-333",
@@ -1946,7 +1946,17 @@
  },
  "bug_backup_import_uid_duplicates_cleanup_task.md": {
   "key": "SCRUM-405",
+  "status": "Готово",
+  "desc_hash": "c1e88e64ea836c7780ffe31d64d727d3"
+ },
+ "backend_ui_overhaul_shop_economy_integration_task.md": {
+  "key": "SCRUM-406",
+  "status": "В работе",
+  "desc_hash": "7e927427b294fd411fbf0a80b9e4d0cc"
+ },
+ "backend_pause_end_ui_overhaul_integration_task.md": {
+  "key": "SCRUM-407",
   "status": "К выполнению",
-  "desc_hash": "d4054794cc79c3b74f4b046cbe2a0897"
+  "desc_hash": "0626db9b155c07600d9a5628b70e9603"
  }
 }
