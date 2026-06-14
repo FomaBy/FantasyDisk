@@ -19,6 +19,7 @@ func _initialize() -> void:
 		_fail("Expected main menu actions in UI smoke.")
 		return
 	await _test_glossary_terms(main)
+	await _test_main_menu_quit_confirmation(main_scene)
 
 	main.call("_show_settings_menu")
 	await process_frame

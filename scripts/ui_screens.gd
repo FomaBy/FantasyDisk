@@ -109,6 +109,7 @@ func _show_main_menu() -> void:
 	game.add_child(game.ui_layer)
 
 	var root := Control.new()
+	root.name = "MainMenuScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
 
@@ -207,10 +208,114 @@ func _show_main_menu() -> void:
 	var exit_button := _make_button("Выйти из игры")
 	exit_button.name = "MainMenuExitButton"
 	_set_action_button_size(exit_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
-	exit_button.pressed.connect(func() -> void:
-		game.get_tree().quit()
-	)
+	exit_button.pressed.connect(_show_quit_confirmation_dialog)
 	action_box.add_child(exit_button)
+	game.ui_escape_action = _show_quit_confirmation_dialog
+
+
+func _show_quit_confirmation_dialog() -> void:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return
+	if game.ui_layer.find_child("QuitConfirmationDialog", true, false) != null:
+		var existing_cancel := game.ui_layer.find_child("QuitConfirmCancelButton", true, false) as Button
+		if existing_cancel != null:
+			existing_cancel.grab_focus()
+		return
+
+	var overlay := Control.new()
+	overlay.name = "QuitConfirmationDialog"
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.z_index = 500
+	game.ui_layer.add_child(overlay)
+
+	var dim := ColorRect.new()
+	dim.name = "QuitConfirmationDim"
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.color = Color(0.0, 0.0, 0.0, 0.70)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay.add_child(dim)
+
+	var panel := PanelContainer.new()
+	panel.name = "QuitConfirmationPanel"
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -300.0
+	panel.offset_top = -170.0
+	panel.offset_right = 300.0
+	panel.offset_bottom = 170.0
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_theme_stylebox_override("panel", _panel_style())
+	overlay.add_child(panel)
+
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 16)
+	panel.add_child(box)
+
+	var title_label := Label.new()
+	title_label.name = "QuitConfirmationTitle"
+	title_label.text = "Выйти из игры?"
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 34)
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	box.add_child(title_label)
+
+	var subtitle_label := Label.new()
+	subtitle_label.name = "QuitConfirmationSubtitle"
+	subtitle_label.text = "Несохраненный забег будет завершен. Продолжить выход?"
+	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle_label.add_theme_font_size_override("font_size", 16)
+	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
+	box.add_child(subtitle_label)
+
+	var button_row := HBoxContainer.new()
+	button_row.name = "QuitConfirmationButtons"
+	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	button_row.add_theme_constant_override("separation", 18)
+	box.add_child(button_row)
+
+	var confirm_button := _make_button("Выйти")
+	confirm_button.name = "QuitConfirmExitButton"
+	_set_action_button_size(confirm_button, 220.0, 72.0)
+	confirm_button.pressed.connect(func() -> void:
+		if game.has_method("request_game_quit"):
+			game.request_game_quit()
+		else:
+			game.get_tree().quit()
+	)
+	button_row.add_child(confirm_button)
+
+	var cancel_button := _make_button("Отмена")
+	cancel_button.name = "QuitConfirmCancelButton"
+	_set_action_button_size(cancel_button, 220.0, 72.0)
+	cancel_button.pressed.connect(_cancel_quit_confirmation_dialog)
+	button_row.add_child(cancel_button)
+
+	confirm_button.focus_neighbor_right = cancel_button.get_path()
+	confirm_button.focus_neighbor_left = cancel_button.get_path()
+	cancel_button.focus_neighbor_left = confirm_button.get_path()
+	cancel_button.focus_neighbor_right = confirm_button.get_path()
+	cancel_button.grab_focus()
+
+	overlay.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			if not panel.get_global_rect().has_point((event as InputEventMouseButton).global_position):
+				_cancel_quit_confirmation_dialog()
+	)
+	game.ui_escape_action = _cancel_quit_confirmation_dialog
+
+
+func _cancel_quit_confirmation_dialog() -> void:
+	if game.ui_layer != null and is_instance_valid(game.ui_layer):
+		var overlay: Node = game.ui_layer.find_child("QuitConfirmationDialog", true, false)
+		if overlay != null:
+			overlay.queue_free()
+	game.ui_escape_action = _show_quit_confirmation_dialog
 
 
 func _show_character_select() -> void:

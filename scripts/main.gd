@@ -383,6 +383,7 @@ var audio_settings := {
 }
 var input_bindings := {}
 var aim_mode := "nearest"
+var _quit_requested := false
 
 
 func _init() -> void:
@@ -408,6 +409,14 @@ func _exit_tree() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_PREDELETE:
 		_release_runtime_texture_refs()
+
+
+func request_game_quit() -> void:
+	_quit_requested = true
+	set_meta("game_quit_requested", true)
+	if bool(get_meta("suppress_game_quit", false)):
+		return
+	get_tree().quit()
 
 
 func _release_runtime_texture_refs() -> void:

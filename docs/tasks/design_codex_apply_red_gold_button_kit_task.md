@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-273
+QA: in_progress (2026-06-14)
 
 ## Dispatcher Sync Note (2026-06-14)
 
@@ -101,6 +102,34 @@ Runtime mapping:
 Примечание по source sheet: README остаётся каноном runtime-размеров, но часть
 подписей на самом листе слегка отличается. Финальные PNG приведены к размерам
 из задачи/README, а crop-boxes подогнаны по фактическому арту листа.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 9e0a23cf (ветка dev)
+
+Проверено (фактически):
+- **Ассеты**: 60 PNG `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_*` —
+  **15 типов кнопок × 4 состояния** (standard/max/main_menu/hero_confirm/back/
+  pause/codex_tab/rebind/reset_*/fab/…; idle/hover/pressed/disabled).
+- **Вайринг + 9-slice**: `RED_GOLD_BUTTON_TEXTURES` + `RED_GOLD_BUTTON_MARGINS`
+  (ui_theme_paths → ui_screens.gd:34/35, `_button_state_style`:4435). `dark_fantasy_
+  ui_theme_test` — passed (button-стайлбоксы резолвятся в Red&Gold-пути);
+  `runtime_smoke` — passed (умбрелла ассертит «main menu buttons use canonical
+  Red & Gold Dragon state textures»); `runtime_smoke_ui` + `ui_no_overlap_matrix`
+  — passed.
+- **Старый кит в backup**: `build/cleanup_backup_red_gold_buttons_2026_06_14/`
+  (12 файлов parchment/wax) — вне assets.
+- **Визуал**: Red&Gold dragon-кнопки (когтистая рамка, красный самоцвет) видны в
+  скринах меню / hero-select (SCRUM-281) / hover-preview (SCRUM-318); парные к
+  ornate-панелям SCRUM-274.
+
+Acceptance:
+- [x] 15 типов кнопок, 4 состояния, 9-slice без искажения когтей.
+- [x] ВСЕ кнопки на новом Red&Gold ките; карта замены полная; старый кит в backup.
+- [x] smoke (theme/umbrella/UI/no-overlap) зелёные; non-button панели на leather+gold (SCRUM-229).
+
+Баги: нет. Этот кит — источник транзиентной umbrella-churn во время волны QA;
+после стабилизации билд зелёный, перепроверено.
 
 Проверки:
 - `python3 tools/build_red_gold_button_kit.py` — PASS;

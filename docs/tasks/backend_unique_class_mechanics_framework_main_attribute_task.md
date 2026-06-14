@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-256
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
 ## Dispatcher Dispatch (2026-06-13)
@@ -77,3 +78,25 @@ Verification:
 
 Зависимости: SCRUM-251, SCRUM-254 и SCRUM-245 можно снимать с блокера SCRUM-256.
 SCRUM-258 остается заблокированным до фактической реализации механик SCRUM-251/254/245.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 9e0a23cf (ветка dev)
+
+Проверено (фактически):
+- **Framework**: `ProgressionData.CLASS_MECHANIC_IDENTITIES`
+  (progression_data_characters.gd) + фасадные API `class_mechanic_identity`,
+  `class_main_attribute`, `weapon_mechanic_identity`. `progression_data_api_surface_test`
+  — passed (17 персонажей, фасад-API/константы на месте); 51 weapon identity.
+- **Balance в коридоре**: global_damage (51 пара) + global_survivability + stat_formulas
+  + weapon_mechanics — зелёные.
+- **Действенность подтверждена**: framework разблокировал и был использован
+  дочерними SCRUM-251/254/245 (mechanic identities), 258 (weapon VFX по identity),
+  262 (финал-аудит) — **все зачтены QA PASSED** в этой сессии.
+
+Acceptance:
+- [x] Таблица класс→основной атрибут→механ-идентичность (17 классов).
+- [x] Уникальный геймплей per класс/оружие как data contract / weapon identity.
+- [x] Дочерние задачи существуют/разблокированы; balance smoke в коридорах; доки.
+
+Баги: нет.

@@ -27,6 +27,9 @@
 - Final balance audit (SCRUM-262): global damage smoke теперь проверяет не только combined solo/5-target DPS, но и финальный solo corridor ±20% плюс crowd-clear time 5/10/20 в коридоре ±30%; `tools/balance_harness.gd` пишет `build/balance_final_audit_0_1_5.md` с class viability и CCT таблицами для всех 51 class+weapon пар.
 
 ### Changed
+- Main menu UX (SCRUM-319): the «Выйти из игры» button and Escape on the
+  main menu now open a game-styled confirmation overlay; the real quit request
+  is sent only after explicit «Выйти», with «Отмена» focused by default.
 - UI buttons (SCRUM-318): hover/focus no longer use baked Red&Gold `*_hover`
   glow textures or yellow hover text; button themes now reuse the normal
   texture with neutral bright tint and near-white hover/focus font while

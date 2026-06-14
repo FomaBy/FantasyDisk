@@ -78,6 +78,14 @@ runtime button themes reuse the normal Red & Gold texture with a neutral tint
 used by active button themes. Pressed and disabled states keep their dedicated
 textures and semantics.
 
+## Main Menu Quit Confirmation
+
+`MainMenuExitButton` and Escape on `MainMenuScreen` open `QuitConfirmationDialog`
+instead of quitting immediately. The dialog is a custom game-styled full-screen
+modal overlay, not a default Godot `ConfirmationDialog`: it blocks clicks below
+the dim layer, focuses safe `Отмена` by default, cancels on Escape/outside click
+and calls `Main.request_game_quit()` only from the explicit `Выйти` button.
+
 ## Ornate Frame Safe-Area Rule
 
 Controls that use `ui_frame_ornate_*` textures must use the signed

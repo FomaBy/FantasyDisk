@@ -48,6 +48,7 @@ func _initialize() -> void:
 		push_error("Expected main menu buttons to use canonical Red & Gold Dragon state textures.")
 		quit(1)
 		return
+	await _test_main_menu_quit_confirmation(main_scene)
 	if main_menu_actions.global_position.x > 140.0:
 		push_error("Expected main menu buttons to stay on the left side of the start screen.")
 		quit(1)
@@ -5023,6 +5024,104 @@ func _test_escape_navigation(main_scene: PackedScene) -> void:
 
 	nav_main.queue_free()
 	await process_frame
+
+
+func _test_main_menu_quit_confirmation(main_scene: PackedScene) -> void:
+	var quit_main := main_scene.instantiate()
+	root.add_child(quit_main)
+	quit_main.set_meta("suppress_game_quit", true)
+	await process_frame
+	await process_frame
+
+	var exit_button := quit_main.find_child("MainMenuExitButton", true, false) as Button
+	if exit_button == null:
+		_fail("Expected main menu exit button for quit confirmation smoke.")
+		return
+	exit_button.pressed.emit()
+	await process_frame
+	await process_frame
+
+	var dialog := quit_main.find_child("QuitConfirmationDialog", true, false) as Control
+	var panel := quit_main.find_child("QuitConfirmationPanel", true, false) as Control
+	var confirm_button := quit_main.find_child("QuitConfirmExitButton", true, false) as Button
+	var cancel_button := quit_main.find_child("QuitConfirmCancelButton", true, false) as Button
+	if dialog == null or panel == null or confirm_button == null or cancel_button == null:
+		_fail("Expected game-styled quit confirmation dialog, panel and two buttons.")
+		return
+	if dialog.mouse_filter != Control.MOUSE_FILTER_STOP or panel.mouse_filter != Control.MOUSE_FILTER_STOP:
+		_fail("Expected quit confirmation dialog to be modal and block clicks below it.")
+		return
+	if quit_main.get_viewport().gui_get_focus_owner() != cancel_button:
+		_fail("Expected quit confirmation dialog to focus safe Cancel by default.")
+		return
+	if bool(quit_main.get_meta("game_quit_requested", false)):
+		_fail("Expected main menu quit request to remain false before explicit confirmation.")
+		return
+
+	_write_quit_confirmation_qa_dump(quit_main, panel)
+	cancel_button.pressed.emit()
+	await process_frame
+	if quit_main.find_child("QuitConfirmationDialog", true, false) != null:
+		_fail("Expected Cancel to close quit confirmation dialog.")
+		return
+	if quit_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected Cancel to keep the player on the main menu.")
+		return
+	if bool(quit_main.get_meta("game_quit_requested", false)):
+		_fail("Expected Cancel not to request game quit.")
+		return
+
+	var escape_event := InputEventKey.new()
+	escape_event.keycode = KEY_ESCAPE
+	escape_event.pressed = true
+	quit_main.call("_input", escape_event)
+	await process_frame
+	if quit_main.find_child("QuitConfirmationDialog", true, false) == null:
+		_fail("Expected Escape on main menu to open quit confirmation dialog.")
+		return
+	quit_main.call("_input", escape_event)
+	await process_frame
+	if quit_main.find_child("QuitConfirmationDialog", true, false) != null:
+		_fail("Expected Escape inside quit confirmation dialog to cancel it.")
+		return
+
+	exit_button = quit_main.find_child("MainMenuExitButton", true, false) as Button
+	exit_button.pressed.emit()
+	await process_frame
+	confirm_button = quit_main.find_child("QuitConfirmExitButton", true, false) as Button
+	cancel_button = quit_main.find_child("QuitConfirmCancelButton", true, false) as Button
+	if confirm_button == null or cancel_button == null:
+		_fail("Expected quit confirmation buttons before confirm flow.")
+		return
+	confirm_button.grab_focus()
+	await process_frame
+	confirm_button.pressed.emit()
+	await process_frame
+	if not bool(quit_main.get_meta("game_quit_requested", false)):
+		_fail("Expected explicit Exit confirmation to request game quit.")
+		return
+
+	quit_main.queue_free()
+	await process_frame
+
+
+func _write_quit_confirmation_qa_dump(main: Node, panel: Control) -> void:
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum319")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump := PackedStringArray()
+	dump.append("# SCRUM-319 Quit Confirmation QA")
+	dump.append("")
+	dump.append("- dialog: `%s`" % str(main.find_child("QuitConfirmationDialog", true, false) != null))
+	dump.append("- panel_rect: `%s`" % str(panel.get_global_rect()))
+	dump.append("- focus_owner: `%s`" % str(main.get_viewport().gui_get_focus_owner().name if main.get_viewport().gui_get_focus_owner() != null else ""))
+	var file := FileAccess.open("%s/quit_confirmation_dialog.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump))
+		file.close()
+	if DisplayServer.get_name() != "headless":
+		var image := main.get_viewport().get_texture().get_image()
+		if image != null and image.get_width() > 0 and image.get_height() > 0:
+			image.save_png("%s/quit_confirmation_dialog.png" % qa_dir)
 
 
 func _test_codex_screen(main_scene: PackedScene) -> void:
