@@ -4,6 +4,7 @@ const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const DF_DIR := "res://assets/sprites/ui/frames/dark_fantasy/"
 const RED_GOLD_DIR := "res://assets/sprites/ui/frames/red_gold/"
 const ORNATE_DIR := "res://assets/sprites/ui/frames/ornate/"
+const UNIFIED_DIR := "res://assets/sprites/ui/frames/unified/"
 
 
 func _initialize() -> void:
@@ -23,11 +24,11 @@ func _initialize() -> void:
 	if ui == null:
 		errors.append("Main.ui is missing.")
 	else:
-		_expect_style_path(ui.call("_panel_style"), "ui_frame_ornate_global_panel.png", "panel", errors, ORNATE_DIR)
-		_expect_style_path(ui.call("_level_up_panel_style"), "ui_frame_ornate_level_panel.png", "level panel", errors, ORNATE_DIR)
-		_expect_style_path(ui.call("_character_card_style"), "ui_frame_ornate_card_frame.png", "card", errors, ORNATE_DIR)
-		_expect_style_path(ui.call("_hud_panel_style"), "ui_frame_ornate_hud_panel.png", "HUD panel", errors, ORNATE_DIR)
-		_expect_style_path(ui.call("_hud_card_style"), "ui_frame_ornate_hud_card.png", "HUD card", errors, ORNATE_DIR)
+		_expect_unified_style(ui.call("_panel_style"), "panel", errors)
+		_expect_unified_style(ui.call("_level_up_panel_style"), "level panel", errors)
+		_expect_unified_style(ui.call("_character_card_style"), "card", errors)
+		_expect_unified_style(ui.call("_hud_panel_style"), "HUD panel", errors)
+		_expect_unified_style(ui.call("_hud_card_style"), "HUD card", errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -65,6 +66,17 @@ func _expect_style_path(style: StyleBox, file_name: String, context: String, err
 	var expected_path := base_dir + file_name
 	if texture_style.texture.resource_path != expected_path:
 		errors.append("%s texture mismatch: got %s, expected %s." % [context, texture_style.texture.resource_path, expected_path])
+
+
+func _expect_unified_style(style: StyleBox, context: String, errors: Array[String]) -> void:
+	_expect_style_path(style, "ui_frame_unified_master.png", context, errors, UNIFIED_DIR)
+	var texture_style := style as StyleBoxTexture
+	if texture_style == null:
+		return
+	if texture_style.texture_margin_left != 128.0 or texture_style.texture_margin_top != 128.0 or texture_style.texture_margin_right != 128.0 or texture_style.texture_margin_bottom != 128.0:
+		errors.append("%s unified frame should use 128px 9-slice texture margins." % context)
+	if texture_style.axis_stretch_horizontal != StyleBoxTexture.AXIS_STRETCH_MODE_TILE or texture_style.axis_stretch_vertical != StyleBoxTexture.AXIS_STRETCH_MODE_TILE:
+		errors.append("%s unified frame should tile both axes." % context)
 
 
 func _expect_neutral_button_hover(button: Button, errors: Array[String]) -> void:

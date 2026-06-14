@@ -1812,7 +1812,7 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tooltip.custom_minimum_size = Vector2(360, 0)
-	tooltip.add_theme_stylebox_override("panel", _ornate_frame_style(GLOBAL_TOOLTIP_FRAME_PATH, "tooltip"))
+	tooltip.add_theme_stylebox_override("panel", _unified_frame_style("tooltip"))
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
 	box.add_theme_constant_override("margin_left", 12)
@@ -5476,7 +5476,7 @@ func _slider_track_style(background: Color, border := Color(0.0, 0.0, 0.0, 0.0))
 	return style
 
 
-func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, content := Vector4.ZERO) -> StyleBox:
+func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, content := Vector4.ZERO, tile_edges := false) -> StyleBox:
 	var texture: Texture2D = game._cached_texture(path)
 	if texture == null:
 		var fallback := StyleBoxFlat.new()
@@ -5495,12 +5495,20 @@ func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, 
 	style.texture_margin_top = margins.y
 	style.texture_margin_right = margins.z
 	style.texture_margin_bottom = margins.w
+	if tile_edges:
+		style.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
+		style.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
 	style.modulate_color = tint
 	style.content_margin_left = content.x
 	style.content_margin_top = content.y
 	style.content_margin_right = content.z
 	style.content_margin_bottom = content.w
 	return style
+
+
+func _unified_frame_style(frame_type: String, tint := Color.WHITE) -> StyleBox:
+	var content: Vector4 = UNIFIED_FRAME_CONTENT.get(frame_type, UNIFIED_FRAME_CONTENT.get("global_panel", Vector4(24, 24, 24, 24)))
+	return _global_texture_style(GLOBAL_PANEL_FRAME_PATH, UNIFIED_FRAME_TEXTURE_MARGINS, tint, content, true)
 
 
 func _ornate_frame_style(path: String, frame_type: String, tint := Color.WHITE) -> StyleBox:
@@ -5611,7 +5619,7 @@ func _create_combat_timer_panel(root: Control) -> void:
 
 func _timer_panel_style(alarm: bool) -> StyleBox:
 	var tint := Color(1.22, 0.82, 0.72, 1.0) if alarm else Color.WHITE
-	return _ornate_frame_style(GLOBAL_TIMER_PANEL_FRAME_PATH, "timer_panel", tint)
+	return _unified_frame_style("timer_panel", tint)
 
 
 func _create_artifact_hud_row(root: Control) -> void:
@@ -5930,11 +5938,11 @@ func _add_hud_money_card(parent: HBoxContainer) -> void:
 
 
 func _hud_panel_style() -> StyleBox:
-	return _ornate_frame_style(GLOBAL_HUD_PANEL_FRAME_PATH, "hud_panel")
+	return _unified_frame_style("hud_panel")
 
 
 func _hud_card_style() -> StyleBox:
-	return _ornate_frame_style(GLOBAL_HUD_CARD_FRAME_PATH, "hud_card")
+	return _unified_frame_style("hud_card")
 
 
 func _run_resource_values() -> Dictionary:
