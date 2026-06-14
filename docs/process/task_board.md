@@ -46,6 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [design_hero_select_replace_frames_herouiframe_task.md](../tasks/design_hero_select_replace_frames_herouiframe_task.md) | Designer (Codex) | new | ART 0.1.5: заменить фреймы экрана выбора героя на набор references/herouiframe (8 фреймов→9-slice) на точных размерах из таблицы; закрывает SCRUM-276 |
 | [design_druid_wolf_summon_animation_slice_task.md](../tasks/design_druid_wolf_summon_animation_slice_task.md) | Designer (Codex) | new | ART 0.1.5: нарезать волка друида из референсов (move 8к / attack 6к) → SpriteFrames для союзника druid_beast |
 | [backend_druid_wolf_summon_animation_integrate_task.md](../tasks/backend_druid_wolf_summon_animation_integrate_task.md) | Back-end (анимации) | blocked | 0.1.5: оживить волка-призыва друида в AllyMinion (move/attack/flip); ждёт нарезку SpriteFrames |
 | [bug_all_characters_weapon_integrity_audit_task.md](../tasks/bug_all_characters_weapon_integrity_audit_task.md) | Back-end (геймплей) | in_progress | Jira: SCRUM-277. Аудит 17×3 weapon integrity: PriestChime/scene_path/attack_mode/выдача, защита от подмены пассивкой |

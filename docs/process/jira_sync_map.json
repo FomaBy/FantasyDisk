@@ -998,5 +998,9 @@
  "design_druid_wolf_summon_animation_slice_task.md": {
   "key": "SCRUM-280",
   "status": "К выполнению"
+ },
+ "design_hero_select_replace_frames_herouiframe_task.md": {
+  "key": "SCRUM-281",
+  "status": "К выполнению"
  }
 }
