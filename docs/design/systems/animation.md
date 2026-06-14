@@ -35,6 +35,9 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `void_mage`. Each uses a padded `384x384` runtime canvas, `move` 6f loop,
   `attack_primary`/runtime `attack`, `hit`, and `death` 6f one-shots, and
   registry-only activation on the existing enemy scenes.
+- SCRUM-365 added the next accepted standard-enemy batch: `venom_spitter` and
+  `rift_shieldbearer` use the same padded SpriteFrames contract and registry-only
+  scene activation.
 
 ## Full-Frame State Registry
 

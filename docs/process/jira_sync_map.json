@@ -1253,7 +1253,7 @@
  },
  "backend_ingame_feedback_bug_report_tool_task.md": {
   "key": "SCRUM-362",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "animation_rift_cutter_full_frame_integration_task.md": {
   "key": "SCRUM-363",
@@ -1265,6 +1265,10 @@
  },
  "animation_standard_enemy_full_frame_batch_2_integration_task.md": {
   "key": "SCRUM-365",
+  "status": "Контроль качества"
+ },
+ "animation_standard_enemy_full_frame_batch_3_integration_task.md": {
+  "key": "SCRUM-366",
   "status": "В работе"
  }
 }

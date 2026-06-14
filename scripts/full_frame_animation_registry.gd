@@ -72,6 +72,18 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -44.0),
 			"source_faces_left": true,
 		},
+		"venom_spitter": {
+			"frames": "res://assets/sprites/enemies/full_frame/venom_spitter_spriteframes.tres",
+			"scale": Vector2(0.36, 0.36),
+			"position": Vector2(0.0, -42.0),
+			"source_faces_left": true,
+		},
+		"rift_shieldbearer": {
+			"frames": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_spriteframes.tres",
+			"scale": Vector2(0.42, 0.42),
+			"position": Vector2(0.0, -50.0),
+			"source_faces_left": true,
+		},
 	},
 	"elite": {},
 	"boss": {},

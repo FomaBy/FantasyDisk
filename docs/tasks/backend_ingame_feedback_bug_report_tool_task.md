@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-362
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -88,3 +89,31 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
 
 Note: headless tests validate the overlay structure and screenshot preview texture; graphical screenshot capture of the form should be done by QA/windowed run because headless uses Godot's dummy renderer.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **P-action**: `main.gd:298-300` action `feedback` default_key `KEY_P`
+  (ребиндабельный); `_unhandled_input:668` `is_action_pressed("feedback")` →
+  `_show_feedback_overlay` (ui_screens.gd:4555).
+- **feedback_reporter.gd**: `submit_report` (HTTPRequest), `multipart_payload`
+  (Discord-совместимый), URL-lookup `FANTASYDISK_FEEDBACK_WEBHOOK` env /
+  `user://feedback_config.cfg`, локальный фолбэк `save_local_report` →
+  `user://feedback/<timestamp>/`, метаданные (версия/экран/персонаж/вьюпорт).
+- **БЕЗОПАСНОСТЬ ✓**: захардкоженного webhook URL/секрета в `scripts/` НЕТ (grep
+  пуст); отправка ТОЛЬКО по явному «Отправить» (privacy-нота в форме); оффлайн/ошибка
+  → локальный фолбэк (не крашит).
+- **Визуал формы** `build/qa/cap_feedback_form_362.png`: «Отправить фидбек» + подпись
+  «скриншот снят до открытия формы» + многострочное поле + превью скрина снизу +
+  «Отправить»/«Отмена», модальный оверлей, рамки в стиле игры, текст читаем, no-overlap.
+- **Тесты**: `runtime_smoke_ui_test` (overlay lifecycle/preview/fallback/multipart
+  payload) + `runtime_smoke_test` — passed; how-to `feedback_reporting.md` есть.
+
+Acceptance:
+- [x] P на любом экране открывает форму; Esc/«Отмена» закрывают.
+- [x] Скриншот вьюпорта (без формы в кадре, снят до открытия) — превью под полем.
+- [x] «Отправить» шлёт текст+скрин+мета на вебхук (Discord), URL вне репо, локальный фолбэк.
+- [x] Оффлайн/ошибка не крашат; форма в стиле игры, no-overlap; how-to + smoke зелёные.
+
+Баги: нет. (Сетевая фича реализована безопасно — секрет вне репо, egress только по явному действию игрока.)
