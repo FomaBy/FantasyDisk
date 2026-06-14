@@ -122,6 +122,10 @@ func _test_berserk_weapon_followup(errors: Array) -> void:
 	for enemy in [primary, secondary]:
 		enemy.set("max_health", 1000.0)
 		enemy.set("health", 1000.0)
+	# Враги должны попасть в группу `enemies` до любого _process-запроса покадрового
+	# кэша CombatTargetQuery, иначе arc-cleave не увидит secondary (флака SCRUM-272,
+	# тот же класс, что фикс SCRUM-228).
+	await process_frame
 	weapon.call("_apply_unique_melee_hit_effects", player, primary, Vector2.RIGHT, 100.0)
 	if float(secondary.get("health")) >= 960.0:
 		errors.append("Expected berserk melee arc follow-up to damage a nearby secondary target.")
