@@ -54,8 +54,11 @@
 - Hero Select frames (SCRUM-355): rebuilt the dossier and thumbnail-strip frame
   PNGs with a thinner/lighter D&D dark-fantasy treatment, added deterministic
   `tools/build_hero_select_thin_frames.py`, strict ornament-safe content margins
-  and QA preview/rect artifacts under `build/qa/scrum355/`. Back-end SCRUM-354
-  is now unblocked to switch runtime layout constants to the new safe zones.
+  and QA preview/rect artifacts under `build/qa/scrum355/`.
+- Hero Select layout (SCRUM-354): switched runtime dossier and thumbnail-strip
+  layout to the strict SCRUM-355 safe margins, fixed the description/carousel
+  visual overlap with a 16px+ frame gap, and added runtime smoke assertions for
+  computed safe-zone containment plus QA rect dumps in `build/qa/hero_select_radar_rects.md`.
 - Hero Select carousel (SCRUM-342): bottom hero thumbnails are taller and
   easier to read inside the existing Carusel frame safe-zone, with compact 2px
   separation and reduced runtime margins; QA rects show 49x66 at 1280x720,

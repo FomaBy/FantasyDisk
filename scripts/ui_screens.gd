@@ -61,10 +61,10 @@ const HERO_SELECT_RADAR_CONTENT_BASE := Vector4(245.0, 245.0, 245.0, 235.0)
 const HERO_SELECT_RADAR_GRAPH_BASE_SIZE := Vector2(200.0, 150.0)
 const HERO_SELECT_DOSSIER_FRAME_SOURCE_SIZE := Vector2(1120.0, 1140.0)
 const HERO_SELECT_DOSSIER_FRAME_BASE_SIZE := Vector2(387.0, 394.0)
-const HERO_SELECT_DOSSIER_CONTENT_BASE := Vector4(96.0, 66.0, 96.0, 54.0)
+const HERO_SELECT_DOSSIER_CONTENT_BASE := Vector4(126.0, 160.0, 126.0, 172.0)
+const HERO_SELECT_CAROUSEL_FRAME_SOURCE_SIZE := Vector2(1536.0, 255.0)
 const HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE := Vector2(1024.0, 170.0)
-const HERO_SELECT_CAROUSEL_CONTENT_BASE := Vector4(112.0, 46.0, 112.0, 46.0)
-const HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE := Vector4(72.0, 36.0, 72.0, 36.0)
+const HERO_SELECT_CAROUSEL_CONTENT_BASE := Vector4(132.0, 62.0, 132.0, 62.0)
 const HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION := 2
 const HERO_SELECT_FRAME_DIR := "res://assets/sprites/ui/frames/hero_select/"
 const SETTINGS_TAB_SWITCHER_FRAME_PATH := "res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png"
@@ -503,7 +503,7 @@ func _show_character_select() -> void:
 	layout.name = "HeroSelectLayout"
 	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	layout.add_theme_constant_override("separation", 10)
+	layout.add_theme_constant_override("separation", 16)
 	margins.add_child(layout)
 
 	var header := HBoxContainer.new()
@@ -644,70 +644,78 @@ func _show_character_select() -> void:
 	dossier.name = "HeroSelectDossier"
 	dossier.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dossier.add_theme_constant_override("separation", 7)
+	dossier.add_theme_constant_override("separation", 2)
 	dossier_content.add_child(dossier)
 
 	var dossier_title := Label.new()
 	dossier_title.name = "HeroSelectInfoTitle"
-	dossier_title.add_theme_font_size_override("font_size", 29)
+	dossier_title.add_theme_font_size_override("font_size", 22)
 	dossier_title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
 	dossier.add_child(dossier_title)
 
 	var dossier_desc := Label.new()
 	dossier_desc.name = "HeroSelectInfoDescription"
 	dossier_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	dossier_desc.add_theme_font_size_override("font_size", 15)
+	dossier_desc.max_lines_visible = 3
+	dossier_desc.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	dossier_desc.add_theme_font_size_override("font_size", 12)
 	dossier_desc.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	dossier.add_child(dossier_desc)
 
 	var dossier_traits := Label.new()
 	dossier_traits.name = "HeroSelectTraits"
 	dossier_traits.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	dossier_traits.add_theme_font_size_override("font_size", 14)
+	dossier_traits.max_lines_visible = 2
+	dossier_traits.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	dossier_traits.add_theme_font_size_override("font_size", 11)
 	dossier_traits.add_theme_color_override("font_color", Color(0.80, 0.92, 0.86, 1.0))
 	dossier.add_child(dossier_traits)
 
 	var weapons_label := Label.new()
 	weapons_label.name = "HeroSelectWeapons"
 	weapons_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weapons_label.add_theme_font_size_override("font_size", 14)
+	weapons_label.max_lines_visible = 2
+	weapons_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	weapons_label.add_theme_font_size_override("font_size", 11)
 	weapons_label.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 1.0))
 	dossier.add_child(weapons_label)
 
 	var asc_row := HBoxContainer.new()
 	asc_row.name = "AscensionSelectorRow"
-	asc_row.add_theme_constant_override("separation", 10)
+	asc_row.add_theme_constant_override("separation", 7)
 	dossier.add_child(asc_row)
 	var asc_minus := _make_compact_button("-")
 	asc_minus.name = "AscensionMinusButton"
-	asc_minus.custom_minimum_size = ASCENSION_BUTTON_SIZE
+	asc_minus.custom_minimum_size = Vector2(46, 38)
 	_apply_hero_select_button_frame(asc_minus, "asc_button")
 	asc_row.add_child(asc_minus)
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
-	asc_label.custom_minimum_size = Vector2(190, 46)
+	asc_label.custom_minimum_size = Vector2(168, 36)
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_label.add_theme_font_size_override("font_size", 15)
+	asc_label.add_theme_font_size_override("font_size", 13)
 	asc_label.add_theme_color_override("font_color", Color(1.0, 0.78, 0.32, 1.0))
 	asc_label.add_theme_stylebox_override("normal", _hero_select_frame_style("asc_label"))
 	asc_row.add_child(asc_label)
 	var asc_plus := _make_compact_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	asc_plus.custom_minimum_size = ASCENSION_BUTTON_SIZE
+	asc_plus.custom_minimum_size = Vector2(46, 38)
 	_apply_hero_select_button_frame(asc_plus, "asc_button")
 	asc_row.add_child(asc_plus)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
 	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	asc_mods.add_theme_font_size_override("font_size", 11)
+	asc_mods.max_lines_visible = 2
+	asc_mods.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	asc_mods.add_theme_font_size_override("font_size", 10)
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	asc_mods.custom_minimum_size = Vector2(0, 34)
+	asc_mods.custom_minimum_size = Vector2(0, 22)
 	asc_mods.add_theme_stylebox_override("normal", _hero_select_frame_style("asc_mods"))
 	dossier.add_child(asc_mods)
 
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HeroSelectChooseButton"
-	_set_action_button_size(select_button, 260.0, 72.0)
+	_set_action_button_size(select_button, 238.0, 72.0)
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	dossier.add_child(select_button)
 
@@ -786,11 +794,11 @@ func _show_character_select() -> void:
 	thumbnail_strip_content.name = "HeroThumbnailStripContent"
 	thumbnail_strip_content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	thumbnail_strip_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var carousel_scale := _hero_select_carousel_scale()
-	thumbnail_strip_content.add_theme_constant_override("margin_left", int(round(HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.x * carousel_scale)))
-	thumbnail_strip_content.add_theme_constant_override("margin_top", int(round(HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.y * carousel_scale)))
-	thumbnail_strip_content.add_theme_constant_override("margin_right", int(round(HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.z * carousel_scale)))
-	thumbnail_strip_content.add_theme_constant_override("margin_bottom", int(round(HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.w * carousel_scale)))
+	var carousel_source_scale := _hero_select_carousel_frame_size().x / HERO_SELECT_CAROUSEL_FRAME_SOURCE_SIZE.x
+	thumbnail_strip_content.add_theme_constant_override("margin_left", int(round(HERO_SELECT_CAROUSEL_CONTENT_BASE.x * carousel_source_scale)))
+	thumbnail_strip_content.add_theme_constant_override("margin_top", int(round(HERO_SELECT_CAROUSEL_CONTENT_BASE.y * carousel_source_scale)))
+	thumbnail_strip_content.add_theme_constant_override("margin_right", int(round(HERO_SELECT_CAROUSEL_CONTENT_BASE.z * carousel_source_scale)))
+	thumbnail_strip_content.add_theme_constant_override("margin_bottom", int(round(HERO_SELECT_CAROUSEL_CONTENT_BASE.w * carousel_source_scale)))
 	thumbnail_strip_frame.add_child(thumbnail_strip_content)
 
 	var thumbnail_strip := HBoxContainer.new()
@@ -878,10 +886,10 @@ func _show_character_select() -> void:
 
 
 func _hero_thumbnail_size(character_count: int) -> Vector2:
-	var carousel_scale := _hero_select_carousel_scale()
 	var frame_size := _hero_select_carousel_frame_size()
-	var horizontal_margins := (HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.x + HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.z) * carousel_scale
-	var vertical_margins := (HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.y + HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.w) * carousel_scale
+	var carousel_source_scale := frame_size.x / HERO_SELECT_CAROUSEL_FRAME_SOURCE_SIZE.x
+	var horizontal_margins := (HERO_SELECT_CAROUSEL_CONTENT_BASE.x + HERO_SELECT_CAROUSEL_CONTENT_BASE.z) * carousel_source_scale
+	var vertical_margins := (HERO_SELECT_CAROUSEL_CONTENT_BASE.y + HERO_SELECT_CAROUSEL_CONTENT_BASE.w) * carousel_source_scale
 	var gap_total := maxf(float(character_count - 1), 0.0) * float(HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION)
 	var available_width := maxf(frame_size.x - horizontal_margins - gap_total, 1.0)
 	var available_height := maxf(frame_size.y - vertical_margins, 1.0)

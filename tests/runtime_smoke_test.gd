@@ -11,6 +11,10 @@ const Glossary := preload("res://scripts/glossary.gd")
 const RunAutosave := preload("res://scripts/run_autosave.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
+const HERO_SELECT_DOSSIER_SOURCE_SIZE := Vector2(1120.0, 1140.0)
+const HERO_SELECT_DOSSIER_SAFE_MARGINS := Vector4(126.0, 160.0, 126.0, 172.0)
+const HERO_SELECT_THUMBNAIL_SOURCE_SIZE := Vector2(1536.0, 255.0)
+const HERO_SELECT_THUMBNAIL_SAFE_MARGINS := Vector4(132.0, 62.0, 132.0, 62.0)
 
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -5994,6 +5998,8 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var portrait_panel := hero_main.find_child("HeroSelectPortraitPanel", true, false) as Control
 	var right_region := hero_main.find_child("HeroSelectRightRegion", true, false) as Control
 	var dossier_panel := hero_main.find_child("HeroSelectDossierPanel", true, false) as Control
+	var dossier_frame := hero_main.find_child("HeroSelectDossierFrame", true, false) as Control
+	var dossier_content := hero_main.find_child("HeroSelectDossierContent", true, false) as Control
 	var dossier := hero_main.find_child("HeroSelectDossier", true, false) as Control
 	var dossier_title := hero_main.find_child("HeroSelectInfoTitle", true, false) as Control
 	var dossier_desc := hero_main.find_child("HeroSelectInfoDescription", true, false) as Control
@@ -6002,7 +6008,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var thumbnail_frame := hero_main.find_child("HeroThumbnailStripFrame", true, false) as Control
 	var thumbnail_content := hero_main.find_child("HeroThumbnailStripContent", true, false) as Control
 	var thumbnail_strip := hero_main.find_child("HeroThumbnailStrip", true, false) as Control
-	if hero_screen == null or radar == null or radar_panel == null or radar_content == null or header == null or portrait_panel == null or right_region == null or dossier_panel == null or dossier == null or dossier_desc == null or thumbnail_frame == null or thumbnail_content == null or thumbnail_strip == null:
+	if hero_screen == null or radar == null or radar_panel == null or radar_content == null or header == null or portrait_panel == null or right_region == null or dossier_panel == null or dossier_frame == null or dossier_content == null or dossier == null or dossier_desc == null or thumbnail_frame == null or thumbnail_content == null or thumbnail_strip == null:
 		_fail("Expected hero select radar/header/dossier nodes at %s." % context)
 		return
 	if radar_title != null:
@@ -6015,6 +6021,8 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var header_rect := header.get_global_rect()
 	var portrait_rect := portrait_panel.get_global_rect()
 	var right_region_rect := right_region.get_global_rect()
+	var dossier_frame_rect := dossier_frame.get_global_rect()
+	var dossier_content_rect := dossier_content.get_global_rect()
 	var dossier_rect := dossier.get_global_rect()
 	var dossier_panel_rect := dossier_panel.get_global_rect()
 	var dossier_desc_rect := dossier_desc.get_global_rect()
@@ -6027,6 +6035,8 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	dump_lines.append("- `HeroSelectPortraitPanel`: `%s`" % str(portrait_rect))
 	dump_lines.append("- `HeroSelectRightRegion`: `%s`" % str(right_region_rect))
 	dump_lines.append("- `HeroSelectDossierPanel`: `%s`" % str(dossier_panel_rect))
+	dump_lines.append("- `HeroSelectDossierFrame`: `%s`" % str(dossier_frame_rect))
+	dump_lines.append("- `HeroSelectDossierContent`: `%s`" % str(dossier_content_rect))
 	dump_lines.append("- `HeroSelectDossier`: `%s`" % str(dossier_rect))
 	dump_lines.append("- `HeroSelectInfoDescription`: `%s`" % str(dossier_desc_rect))
 	if asc_mods != null:
@@ -6048,9 +6058,22 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var first_thumb := thumbnail_buttons[0] as Control
 	var first_thumb_rect := first_thumb.get_global_rect()
 	dump_lines.append("- `HeroThumbnailSample`: min=`%s`, rect=`%s`" % [str(first_thumb.custom_minimum_size), str(first_thumb_rect)])
+	var dossier_safe_rect := _scaled_safe_rect(dossier_frame_rect, HERO_SELECT_DOSSIER_SOURCE_SIZE, HERO_SELECT_DOSSIER_SAFE_MARGINS)
+	var thumbnail_safe_rect := _scaled_safe_rect(thumbnail_frame_rect, HERO_SELECT_THUMBNAIL_SOURCE_SIZE, HERO_SELECT_THUMBNAIL_SAFE_MARGINS)
+	dump_lines.append("- `HeroSelectDossierSafeRect`: `%s`" % str(dossier_safe_rect))
+	dump_lines.append("- `HeroThumbnailStripSafeRect`: `%s`" % str(thumbnail_safe_rect))
+	if not _rect_contains_with_tolerance(dossier_safe_rect, dossier_rect, 2.0):
+		_fail("Expected hero dossier controls to stay inside SCRUM-355 strict safe-zone at %s, got content %s safe %s frame %s." % [context, dossier_rect, dossier_safe_rect, dossier_frame_rect])
+		return
+	if not _rect_contains_with_tolerance(thumbnail_safe_rect, thumbnail_rect, 2.0):
+		_fail("Expected hero thumbnail row to stay inside SCRUM-355 strict safe-zone at %s, got content %s safe %s frame %s." % [context, thumbnail_rect, thumbnail_safe_rect, thumbnail_frame_rect])
+		return
+	if thumbnail_frame_rect.position.y < dossier_frame_rect.end.y + 16.0:
+		_fail("Expected hero dossier frame and thumbnail strip frame to keep >=16px vertical gap at %s, got dossier %s thumbnail %s." % [context, dossier_frame_rect, thumbnail_frame_rect])
+		return
 	var min_expected_thumb_width := 48.0
 	if viewport_size.x >= 1600:
-		min_expected_thumb_width = 60.0
+		min_expected_thumb_width = 52.0
 	if viewport_size.x >= 2560:
 		min_expected_thumb_width = 96.0
 	if first_thumb.custom_minimum_size.x < min_expected_thumb_width or first_thumb.custom_minimum_size.y < maxf(first_thumb.custom_minimum_size.x * 1.20, 56.0):
@@ -6357,6 +6380,22 @@ func _rect_contains_with_tolerance(outer: Rect2, inner: Rect2, tolerance_px: flo
 		and inner.position.y >= outer.position.y - tolerance_px \
 		and inner.end.x <= outer.end.x + tolerance_px \
 		and inner.end.y <= outer.end.y + tolerance_px
+
+
+func _scaled_safe_rect(frame_rect: Rect2, source_size: Vector2, margins: Vector4) -> Rect2:
+	var scale_x := frame_rect.size.x / maxf(source_size.x, 1.0)
+	var scale_y := frame_rect.size.y / maxf(source_size.y, 1.0)
+	var margin_left := margins.x * scale_x
+	var margin_top := margins.y * scale_y
+	var margin_right := margins.z * scale_x
+	var margin_bottom := margins.w * scale_y
+	return Rect2(
+		frame_rect.position + Vector2(margin_left, margin_top),
+		Vector2(
+			maxf(frame_rect.size.x - margin_left - margin_right, 0.0),
+			maxf(frame_rect.size.y - margin_top - margin_bottom, 0.0)
+		)
+	)
 
 
 func _collect_label_text(node: Node) -> String:

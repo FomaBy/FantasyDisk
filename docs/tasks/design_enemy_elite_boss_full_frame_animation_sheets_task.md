@@ -1,6 +1,6 @@
 # Design handoff: enemy, elite, and boss full-frame animation sheets
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -86,3 +86,10 @@ from the secure Codex env file outside the repository and Python `openai` import
 successfully. Previous asset-generator environment blocker is resolved. This task
 is Design-owned source sheet generation; Animator should receive a follow-up only
 after accepted transparent full-frame sheets are produced.
+
+## Dispatch Note — 2026-06-14
+Documentation dispatcher routed SCRUM-352 to the existing Design Codex thread
+`019eabf1-6d54-7561-8af9-ce25cdf483a9`. Design must load the key only from the
+secure local env file outside the repository, must not print or persist the key
+in project files/logs, and must keep the work Design-owned until accepted sheets
+are ready for an Animator handoff.
