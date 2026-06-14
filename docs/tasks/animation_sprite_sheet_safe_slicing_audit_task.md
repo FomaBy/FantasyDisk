@@ -1,6 +1,6 @@
 # ANIM: Проверить все анимации на захват пикселей соседних кадров
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Animator (Codex)
 Версия: 0.1.5
@@ -12,6 +12,12 @@ Jira: SCRUM-387
 ## Autonomy / Approval
 Пользователь заранее одобрил in-scope работу. Работать автономно; вопросы только
 при опасных действиях вне репозитория.
+
+## Dispatch
+2026-06-14: Documentation dispatcher routed SCRUM-387 to existing Animator
+thread `019eb156-710c-71f0-8903-eada762dceb3`. Keep reasoning High/no low; use
+mandatory `fantasydisk-animation-director`; work on existing `dev`; no branch
+switch, commits, pushes, merges, tags, new worktrees or new threads.
 
 ## Контекст
 После обновления `fantasydisk-animation-director` введено обязательное правило

@@ -81,3 +81,29 @@ Done 2026-06-14.
 Verification:
 - `git diff --check -- tests/runtime_smoke_test.gd` — PASS
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически) — test-only фикс гонки victory-тайминга:
+- **Bounded wait** (runtime_smoke_test:2950-2955): жёсткие 2 кадра заменены на
+  `for _attempt in range(120): await process_frame; victory_text =
+  _collect_label_text(main); if not combat_active and victory_text.contains("Победа"):
+  break` — ждёт до 120 кадров пока бой завершится И появится «Победа»
+  (учитывает death-анимацию 379×370).
+- **Контракт SCRUM-148 ЦЕЛ**: required strings (2969) — `Победа`,
+  `Финальный босс повержен`, `Очки наследия`, `Возвышения`; forbidden internal
+  tokens (2964-2966) — `Meta points`/`asc_`/`_id`/`berserk_asc` — обе проверки
+  без изменений. Combat-end (2956) + meta-grant (2960) ассерты сохранены.
+- **Test-only**: gameplay/animation/SpriteFrames/boss-lifecycle/balance/targeting/
+  spawn/rewards НЕ тронуты (только тест-тайминг).
+- **runtime_smoke_test** — passed; build разблокирован.
+
+Acceptance:
+- [x] runtime_smoke зелёный.
+- [x] Victory player-facing текст удовлетворяет SCRUM-148 (строки + privacy-токены).
+- [x] Нет изменений animation/gameplay/balance.
+
+Корень совпал с моим диагнозом (boss death-анимация vs 2-кадровое ожидание).
+**SCRUM-386** (мой баг-трекер, заведён ранее) — ДУБЛИКАТ этого SCRUM-385; закрою его
+как дубликат. Баги: нет.

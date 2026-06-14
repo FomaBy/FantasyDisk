@@ -1,6 +1,6 @@
 # UX: Выбор героя — по умолчанию выбирать последнее доступное возвышение
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -11,6 +11,13 @@ Jira: SCRUM-389
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Dispatch
+2026-06-14: Documentation dispatcher routed SCRUM-389 to existing Back-end
+thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`. Keep reasoning High/no low;
+work on existing `dev`; no branch switch, commits, pushes, merges, tags, new
+worktrees or new threads. Linked SCRUM-388 is already marked done in its task
+file; do not reimplement it unless verification shows a direct regression.
 
 ## Контекст (запрос пользователя)
 «По умолчанию на классе надо выбирать последнее возможное возвышение».

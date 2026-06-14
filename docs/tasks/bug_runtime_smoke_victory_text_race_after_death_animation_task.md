@@ -1,6 +1,13 @@
 # BUG: runtime_smoke victory-текст не успевает после death-анимации босса (гонка тайминга)
 
-Статус: new
+> **СТАТУС 2026-06-14: superseded (ДУБЛИКАТ SCRUM-385).** Тот же дефект независимо
+> заведён и пофикшен воркером как **SCRUM-385** (`bug_victory_flow_runtime_smoke_text_missing_task.md`):
+> диагноз идентичен (boss death-анимация 379×370 vs 2-кадровое ожидание теста),
+> фикс = bounded 120-frame wait-until-victory в runtime_smoke (test-only, контракт
+> SCRUM-148 цел). runtime_smoke зелёный. QA SCRUM-385 — PASSED. Этот тикет (SCRUM-386)
+> закрывается как дубликат; действий не требуется.
+
+Статус: superseded
 Приоритет: high
 Роль: Back-end / Animator (тайминг)
 Версия: 0.1.5

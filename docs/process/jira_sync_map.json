@@ -1601,8 +1601,8 @@
  },
  "design_level_backgrounds_redraw_new_style_skill_task.md": {
   "key": "SCRUM-369",
-  "status": "К выполнению",
-  "desc_hash": "b50d67c7379f9d8ff859697356c938ea"
+  "status": "В работе",
+  "desc_hash": "196555171a39ec0aa8a710d0c3badbc4"
  },
  "animation_integrate_all_move_attack_death_states_task.md": {
   "key": "SCRUM-370",
@@ -1771,13 +1771,13 @@
  },
  "bug_victory_flow_runtime_smoke_text_missing_task.md": {
   "key": "SCRUM-385",
-  "status": "Контроль качества",
-  "desc_hash": "a88d5250936e5b44e4de014c95559709"
+  "status": "Готово",
+  "desc_hash": "1536f94e809d74cd5af7fd692f7cb533"
  },
  "bug_runtime_smoke_victory_text_race_after_death_animation_task.md": {
   "key": "SCRUM-386",
   "status": "К выполнению",
-  "desc_hash": "322e65924d24624f4661033339a77c76"
+  "desc_hash": "27f512d6c86f0bb94723ac4ffb270442"
  },
  "design_integrate_generated_unified_master_frame_2_task.md": {
   "key": "SCRUM-381",
@@ -1786,17 +1786,17 @@
  },
  "animation_sprite_sheet_safe_slicing_audit_task.md": {
   "key": "SCRUM-387",
-  "status": "К выполнению",
-  "desc_hash": "326aa394752da31be18d1db4c1010435"
+  "status": "В работе",
+  "desc_hash": "cbdb6de0c4904ec21a8cf06e1dbde03e"
  },
  "backend_meta_points_per_new_ascension_only_task.md": {
   "key": "SCRUM-388",
-  "status": "К выполнению",
-  "desc_hash": "cc040ee3442f2f76f4014d5ff61a4bcb"
+  "status": "Контроль качества",
+  "desc_hash": "7449800b8a191246852f3467448efe88"
  },
  "backend_hero_select_default_ascension_to_max_task.md": {
   "key": "SCRUM-389",
-  "status": "К выполнению",
-  "desc_hash": "de68e6b6798ca9513d470c83c9e439a8"
+  "status": "В работе",
+  "desc_hash": "4424134b32669b59f36efb96bc171f9e"
  }
 }

@@ -1,6 +1,6 @@
 # ART: Перерисовать все подложки уровней (арена-фоны) в новом стиле скиллом
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -68,3 +68,10 @@ field_dusty_badlands, field_enchanted_meadow, field_ashen_rift, field_cursed_gro
 
 ## Документация
 docs/design/systems/visual_style_assets.md, content_registry, current_game_state.
+
+## Progress Log
+- 2026-06-14 — Took task in Design/Codex thread after SCRUM-384 review.
+  Inventory confirmed 8 existing `assets/backgrounds/field_*.png` files and 2
+  live code references without PNGs: `field_dry_road`, `field_stone_garden`.
+  Scope decision: generate all 10 backgrounds and preserve existing
+  `ARENA_BACKGROUND_OPTIONS` links; do not change Back-end code.
