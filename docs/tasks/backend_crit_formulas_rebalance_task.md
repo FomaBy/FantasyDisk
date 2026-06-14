@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-247
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
 
@@ -67,3 +68,23 @@ Verification:
 
 Docs updated: `CHANGELOG.md`, `docs/design/mechanics_extract.md`,
 `docs/design/current_game_state.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Проверено (фактически):
+- **Код** (stat_formulas.gd): `crit_chance` с diminishing returns + cap 55%
+  (`clamp(raw/(1+raw*0.45), 0, 0.55)`, стр. 477); `crit_damage_multiplier =
+  clamp(1.30 + Agility*0.055 + flat, 1.0, 2.75)` (483) — капы 55%/2.75 как в спеке.
+- **Целевой тест** `stat_formulas_smoke_test` (детерминированный): passed
+  (35 определений). api_surface — passed.
+- **Баланс в коридоре**: `global_damage_balance` (51 пара, средний крит-урон в
+  DPS-коридоре после budget tuning) + `global_survivability` — зелёные; runtime
+  + weapon_mechanics — зелёные.
+
+Acceptance:
+- [x] Крит-формулы сбалансированы, капы разумны (55%/2.75); средний урон в коридоре.
+- [x] Harness-отчёт; smoke + global damage smoke зелёные; CHANGELOG/доки.
+
+Баги: нет.

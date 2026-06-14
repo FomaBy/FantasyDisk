@@ -12,6 +12,9 @@
 коллатераль). Реальный мусор: 64 осиротевших «2.png.import» (остаток дублей
 SCRUM-270, пропущенный regex'ом) → порождена
 cleanup_remove_orphan_import_sidecars_task (SCRUM-271), исполнена в этой же цепочке.
+Проверки после аудита/sidecar cleanup: `audit_unused_assets.py` PASS,
+`content_registry_consistency_test` PASS, `unique_weapon_vfx_assets_test` PASS,
+`runtime_smoke_test` PASS.
 Создано: 2026-06-14
 Автор: PM (запрос пользователя — полный рефакторинг/чистка)
 Jira: SCRUM-269
@@ -61,3 +64,35 @@ tools/audit_unused_assets.py (консервативный аудит) + ист�
 
 ## Документация
 docs/design/reviews/, content_registry.md.
+
+## Validation (2026-06-14)
+
+- `python3 tools/audit_unused_assets.py` — PASS, 1116 files checked, 87 raw
+  candidates after orphan sidecar cleanup; remaining raw candidates are
+  classified in the report as dynamic/pending-live/marketing collateral.
+- `tests/content_registry_consistency_test.gd` — PASS, 0 allowlisted.
+- `tests/unique_weapon_vfx_assets_test.gd` — PASS, 51 plates.
+- `tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Read-only asset-аудит. QA = наличие/содержательность отчёта + защита от ложных
+срабатываний + read-only.
+
+Проверено (фактически):
+- **Отчёт** `docs/design/reviews/cleanup_assets_audit_2026_06.md` (7.1KB):
+  сводка, таблица, **защита от ложных срабатываний** (79 «unused» = динамическая
+  загрузка; раздел «арт в ожидании вайринга — НЕ удалять»; `assets/marketing/**`
+  = KEEP), и реальный мусор (110 осиротевших сайдкаров → дочерняя задача).
+- **Read-only/ничего не сломано**: `content_registry_consistency` (0 allowlisted),
+  `runtime_smoke`, `unique_weapon_vfx_assets` — зелёные; `audit_unused_assets.py`
+  PASS (1116 файлов проверено).
+
+Acceptance:
+- [x] Список неиспользуемых с защитой от ложных срабатываний (динам. пути).
+- [x] Отчёт «удалить/оставить/backup»; дочерние cleanup-задачи.
+- [x] Read-only; import/smoke зелёные.
+
+Баги: нет.

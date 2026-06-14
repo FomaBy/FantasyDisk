@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-06-13 (0.1.5 dev snapshot)
+Обновлено: 2026-06-14 (0.1.5 dev snapshot)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -232,7 +232,7 @@ Event-node открывает один data-driven сценарий из `script
 - `tools/survivability_harness.gd` + `tests/survivability_scenario_test.gd` моделируют синтетические fragile/steady/sturdy/tank профили, проверяют рост TTD по стойкости, вклад absorb/defense/dodge/regen и якорят формулу к реальному `Player.take_damage`.
 - `tools/survivability_scenarios.gd` строит roster projection по текущим классам и first-weapon конфигам, пишет `build/survivability_scenarios_report.md`.
 
-Последний замер SCRUM-190: 6 ok, 62 low, 0 high по contact swarm, shooter crossfire, elite burst и boss phase hazard. Это измерительный флаг, а не изменение баланса: константы классов/врагов не менялись, follow-up balance pass должен отдельно решить, усиливать ли survivability, снижать входящий DPS сценариев или добавлять классовые защитные инструменты.
+Исторический замер SCRUM-190 дал 6 ok, 62 low, 0 high по contact swarm, shooter crossfire, elite burst и boss phase hazard. После него SCRUM-255 изменил формулы выживаемости: регенерация/вампиризм стали поддержкой с cap, а defense/dodge/absorb получили diminishing returns. Актуальное состояние проверяется `tests/global_survivability_balance_smoke_test.gd`, `tools/survivability_harness.gd` и `tests/survivability_scenario_test.gd`; старый SCRUM-190 результат больше не считается текущим балансом.
 
 ### Target queries
 
@@ -243,6 +243,8 @@ Event-node открывает один data-driven сценарий из `script
 Первые три игровых персонажа используют polished stylized cartoon fantasy full hero sprites без квадратных placeholder-форм и без вида минимальных технических болванок. Расширенный ростер 0.1.4 доведен до 17 классов; новые классы прошли Design art-review как polished cartoon dark fantasy full-art. SCRUM-168 добавил Back-end-класс `soldier`; Design pass 2026-06-13 подготовил финальные `soldier.png`, `soldier_rifle.png`, `soldier_grenade.png` и `soldier_bayonet.png`, а Animator pass 2026-06-13 добавил Soldier cutout rig, manifest/profile и weapon pose hooks. В бою `scripts/cutout_rig_2d.gd` собирает видимую фигуру из нарезанных кусков того же polished-арта (torso, arm_l/arm_r, leg_l/leg_r): в покое сборка пиксельно совпадает с исходным PNG, в движении конечности реально двигаются. Нарезка генерируется инструментом `tools/slice_rig_cutouts.py` в `assets/sprites/characters/cutout/`, метаданные частей — в сгенерированном `scripts/sliced_rig_manifest.gd`. Source PNG в `assets/sprites/characters/` используются меню и выбором персонажа и являются исходником нарезки. Берсерк остается без оружия в базовом спрайте, а оружие крепится отдельно через `WeaponSocket`.
 
 SCRUM-193 cleanup 2026-06-13: старые `*_placeholder.png` для Assassin/Chemist/Doctor/Druid/Knight/Ranger отсутствуют в активной папке персонажей; backup сохранен в `build/cleanup_backup_2026_06_13/`. Канонические source sprites персонажей — только `assets/sprites/characters/<class_id>.png`, а runtime cutout-части — `assets/sprites/characters/cutout/`.
+
+SCRUM-269 cleanup audit 2026-06-14: read-only asset/image аудит завершен в `docs/design/reviews/cleanup_assets_audit_2026_06.md`. Игровой арт защищен от удаления: weapon signature VFX и weapon select sprites грузятся динамически по `weapon_id`, новые boss/mini-elite source sprites остаются pending-live art, UI/cutout/icon families остаются dynamic assets. Единственная cleanup-находка — orphan ` 2.png.import` sidecars после duplicate cleanup — вынесена в SCRUM-271.
 
 Текущие character sprites сделаны в стиле референса пользователя: Берсерк имеет бороду, плетеные волосы, массивное тело, мех, ремни, металлические браслеты, плечо со шипами, красную боевую разметку и skull-belt без встроенного оружия; Темный маг имеет капюшон, маску, мантию, черепа, кристаллы и фиолетовые spell-orbs; Гитарист имеет сине-золотой сценический костюм, музыкальные значки, ремни, перчатки и медиаторный амулет без встроенной гитары.
 
@@ -389,15 +391,15 @@ SCRUM-241 добавил переключатель прицеливания: `n
 
 | Оружие | ID | Форма | Основной стиль | Сцена |
 | --- | --- | --- | --- | --- |
-| Двуручный меч | `berserk_sword` | Усеченный конус (`frustum`) | Широкий замах 90 градусов, радиус 600, высокий урон и надежное попадание по врагам рядом | `scenes/TwoHandedSword.tscn` |
-| Двуручный топор | `berserk_axe` | Дуга (`sweep`) | Широкий контроль окружения вблизи, урон ниже меча | `scenes/TwoHandedAxe.tscn` |
-| Двуручный молот | `berserk_hammer` | Круг | Слабый старт, усиленный рост от апгрейдов | `scenes/TwoHandedHammer.tscn` |
+| Двуручный меч | `sword` | Усеченный конус (`frustum`) | Широкий замах 90 градусов, радиус 600, высокий урон и надежное попадание по врагам рядом | `scenes/TwoHandedSword.tscn` |
+| Двуручный топор | `axe` | Дуга (`sweep`) | Широкий контроль окружения вблизи, урон ниже меча | `scenes/TwoHandedAxe.tscn` |
+| Двуручный молот | `hammer` | Круг | Слабый старт, усиленный рост от апгрейдов | `scenes/TwoHandedHammer.tscn` |
 
 Параметры (идентичность оружия, 2026-06-11):
 
 | Оружие | Зона | Темп / Урон | Модификаторы |
 | --- | --- | --- | --- |
-| Меч | Полоса 120 x 500 | interval 0.70, damage x1.15 | +10% урон (пассив) |
+| Меч | Усеченный frustum: radius 600, inner width 150, outer width 1200 | interval 0.58, damage x1.15 | +10% урон (пассив) |
 | Топор | Дуга 140 градусов, радиус 320 | interval 1.06, damage x0.85 | -10% урон (пассив) |
 | Молот | Круг радиуса 100 | interval 1.25, damage x0.55 | +20% AoE (пассив); `upgrade_aoe_exponent` 1.8 и `upgrade_damage_exponent` 1.45 усиливают рост именно от апгрейдов забега до большого круга и высокого урона к концу акта |
 
@@ -626,7 +628,7 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 
 Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»).
 
-Разделы: Персонажи (17 игровых классов, стиль игры, сильные/слабые стороны, оружие), Монстры (11 обычных + 4 элитки + 2 босса, поведение и названные умения), Артефакты (все из ARTIFACTS + SHOP_ITEMS с иконками), Характеристики (8 базовых + производные из STAT_DEFINITIONS с влияниями). Разделы строятся лениво при первом открытии вкладки и кэшируются — меню не фризит.
+Разделы: Персонажи (17 игровых классов, стиль игры, сильные/слабые стороны, оружие), Монстры (11 обычных + 4 элитки + 6 мини-элиток + 5 боссов, поведение и названные умения), Артефакты (все из ARTIFACTS + SHOP_ITEMS с иконками), Характеристики (8 базовых + производные из STAT_DEFINITIONS с влияниями). Разделы строятся лениво при первом открытии вкладки и кэшируются — меню не фризит.
 
 ## Пауза
 

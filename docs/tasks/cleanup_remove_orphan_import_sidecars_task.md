@@ -32,3 +32,40 @@ Cleanup SCRUM-270 удалил 275 `« N.ext»`-дублей по regex
 ## Acceptance Criteria
 - [x] 110 осиротевших сайдкаров удалены; реальные ассеты/скрипты не тронуты.
 - [x] runtime + content_registry smoke зелёные.
+
+## Результат (2026-06-14)
+
+Файл-изолированная cleanup-часть SCRUM-269 выполнена: двойные sidecar-дубли
+удалены, реальные PNG/GDScript/source ассеты не трогались.
+
+Validation:
+- `git ls-files | grep -E ' [0-9]\.[a-z]+\.[a-z]+$'` — 0 remaining double
+  extension sidecars.
+- `python3 tools/audit_unused_assets.py` — PASS; orphan ` 2.png.import`
+  candidates больше не появляются, оставшиеся candidates задокументированы как
+  dynamic/pending-live/marketing collateral.
+- `tests/content_registry_consistency_test.gd` — PASS, 0 allowlisted.
+- `tests/unique_weapon_vfx_assets_test.gd` — PASS, 51 plates.
+- `tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Проверено (фактически):
+- **0 осиротевших двойн.-расширение сайдкаров** осталось (выборка 400
+  `.import`/`.uid` — у всех есть исходник). 110 orphan ` N.png.import/.uid`
+  удалены.
+- **Реальные ассеты/скрипты целы** (удаление только сайдкаров несуществующих
+  дублей; базовые `.import` не тронуты).
+- **Бэкап не нужен — обоснованно**: `.import`/`.uid` детерминированно
+  регенерируются Godot-импортом (не уникальный контент).
+- **Smoke зелёные**: `content_registry_consistency` (0 allowlisted),
+  `unique_weapon_vfx_assets`, `runtime_smoke` — passed.
+
+Acceptance:
+- [x] 110 осиротевших сайдкаров удалены; реальные ассеты/скрипты не тронуты.
+- [x] runtime + content_registry smoke зелёные.
+
+Баги: нет. Завершает P1-cleanup цепочку (275 дублей SCRUM-270 + 110 сайдкаров
+здесь) — репо очищено от copy-артефактов.

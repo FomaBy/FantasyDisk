@@ -8,6 +8,13 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-274
 
+## Dispatcher Queue Note (2026-06-14)
+
+Queued as the next Design UI-kit task. Not dispatched yet because Design thread
+`019eabf1-6d54-7561-8af9-ce25cdf483a9` already has active owner work on
+SCRUM-273 (`design_codex_apply_red_gold_button_kit_task.md`). Re-check after
+SCRUM-273 reaches result/QA.
+
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
 

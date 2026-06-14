@@ -46,8 +46,9 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [design_codex_apply_ornate_frame_kit_task.md](../tasks/design_codex_apply_ornate_frame_kit_task.md) | Design → Back-end | new | 0.1.5: нарезать кит рамок Ornate Dark (docs/design/references/UiFrame, 13 типов с готовыми 9-slice margin'ами) + применить ко всем панелям/окнам/HUD/тултипам, старый leather+gold в backup; парная к кнопкам SCRUM-273 |
-| [design_codex_apply_red_gold_button_kit_task.md](../tasks/design_codex_apply_red_gold_button_kit_task.md) | Design → Back-end | new | 0.1.5: нарезать кит кнопок Red&Gold Dragon (docs/design/references/Buttons, 15 типов с точными размерами) + 9-slice + применить ко ВСЕМ кнопкам игры, старый пергамент-кит в backup |
+| [bug_settings_controls_tab_overflow_scroll_task.md](../tasks/bug_settings_controls_tab_overflow_scroll_task.md) | Back-end (UI) | new | БАГ 0.1.5: вкладка «Управление» переполнена (aim+биндинги+сброс) — обернуть в ScrollContainer как соседние вкладки; мышь+клава, «Назад» не перекрыта |
+| [design_codex_apply_red_gold_button_kit_task.md](../tasks/design_codex_apply_red_gold_button_kit_task.md) | Design → Back-end | done | Jira: SCRUM-273. Red&Gold Dragon button kit applied: 15 types × 4 states in `assets/sprites/ui/frames/red_gold/`, runtime type mapping in `ui_screens.gd`, preview/docs updated, dark theme/UI no-overlap/runtime smokes PASS |
+| [design_codex_apply_ornate_frame_kit_task.md](../tasks/design_codex_apply_ornate_frame_kit_task.md) | Design → Back-end | new | Jira: SCRUM-274. Queued next; Ornate Dark frame kit slice/9-slice/panel integration. Not dispatched while Design has active SCRUM-273 owner |
 | [backend_unify_button_size_main_menu_standard_task.md](../tasks/backend_unify_button_size_main_menu_standard_task.md) | Back-end (UI) | done | Jira: SCRUM-264. Единая высота action-кнопок 104px, главное меню 380x104, стандарт применен к обычным action-кнопкам; служебные/card controls оставлены исключениями; UI/no-overlap/umbrella+focused smokes green |
 | [backend_button_stretch_discipline_text_frame_task.md](../tasks/backend_button_stretch_discipline_text_frame_task.md) | Back-end (UI) | done | Jira: SCRUM-263. Широкие action-кнопки capped до 560px; text-heavy rewards/rest/upgrade/events используют info frame над короткой стандартной кнопкой; UI/no-overlap/umbrella+focused smokes green |
 | [backend_unique_class_mechanics_framework_main_attribute_task.md](../tasks/backend_unique_class_mechanics_framework_main_attribute_task.md) | Back-end | done | Jira: SCRUM-256. Framework готов: `CLASS_MECHANIC_IDENTITIES` + ProgressionData API, 17 class main attributes, 51 weapon identities, docs + progression API/weapon/full smoke + global balance gates green |
@@ -98,7 +99,7 @@ Feature freeze снят. Эти задачи остаются `blocked` до у�
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [design_codex_elite_boss_new_skills_vfx_task.md](../tasks/design_codex_elite_boss_new_skills_vfx_task.md) | Design | review | Jira: SCRUM-261. Design/Codex VFX kit ready: 13 dedicated boss/elite skill PNG + refreshed shared hazard/elite sprites, HazardVfx node-name texture routing, preview `docs/design/previews/scrum261_elite_boss_vfx_contact.png`; hazard/attack/boss-elite smoke PASS, full runtime blocked by unrelated CombatTargetQuery/UI duplicate-class workspace state |
+| [design_codex_elite_boss_new_skills_vfx_task.md](../tasks/design_codex_elite_boss_new_skills_vfx_task.md) | Design | done | Jira: SCRUM-261. **QA: passed** (2026-06-14) — 13 boss/enemy VFX assets integrated VFX-only; hazard/attack/boss-elite/full runtime smokes PASS after duplicate cleanup; no bugs |
 
 ## CLEANUP — рефакторинг и чистка v2 (эпик SCRUM-266, запрос 2026-06-14)
 

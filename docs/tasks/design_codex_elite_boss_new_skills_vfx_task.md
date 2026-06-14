@@ -1,8 +1,9 @@
 # Арт/VFX новых скилов элиток и боссов (ауры/лужи/яд/телепорт/щит) — патч 0.1.5
 
-Статус: review
+Статус: done (QA PASSED 2026-06-14)
 Приоритет: normal
 Роль: Design (Codex генерация) → Claude-Designer
+QA: in_progress (2026-06-14)
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
@@ -127,3 +128,30 @@ Design/Codex VFX pass завершён для SCRUM-261.
 Границы соблюдены: gameplay timings, damage, balance, node names и Back-end
 mechanics не менялись; motion/AnimationPlayer scope не выполнялся. Full runtime
 smoke требует отдельного Back-end/UI cleanup вне Design scope.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Проверено (фактически):
+- **13 boss/enemy VFX-ассетов** (`boss_*_zone.png` ×7 + `enemy_*` ×6:
+  summon_portal/command_aura/reflect_thorns/shadow_blink/shard_fan/shield_block) —
+  все RGBA8, 0 битых.
+- **Интеграция VFX-only**: `HazardVfx` выбирает текстуру по runtime node name
+  (BossGravityWell/VampiricBite/RiftZone/BroodWeb/AshEmber/MoltenArmor), хелперы
+  `shield_block()`/`summon_portal()`, telegraph различает shadow_strike/shard_fan —
+  БЕЗ изменения damage/timing/node-names (границы соблюдены).
+- **Визуал** (`scrum261_elite_boss_vfx_contact.png`): 13 telegraph/aura VFX
+  читаемы, различимы по цвету/форме per-способность, в dark-fantasy каноне,
+  прозрачный фон.
+- **Smoke**: `hazard_vfx` + `attack_vfx` + `runtime_smoke_boss_elite` — passed.
+  **Full `runtime_smoke` теперь ТОЖЕ зелёный**: заявленный в Result FAIL был
+  артефактом ` 2.gd` duplicate-class корраптации рабочего дерева — она УСТРАНЕНА
+  cleanup'ом SCRUM-270/271 (зачтены QA), и runtime_smoke на текущем HEAD проходит.
+
+Acceptance:
+- [x] VFX/телеграфы новых скилов в каноне, читаемы; превью.
+- [x] Интегрированы в HazardVfx/пулы; focused VFX/boss smokes зелёные; full runtime
+  caveat снят (corruption вычищена).
+
+Баги: нет.

@@ -14,6 +14,25 @@ Jira: SCRUM-272
 покадрового запроса кэша CombatTargetQuery. Геймплей/баланс не тронуты.
 Валидация: 18/18 прогонов зелёные (было ~3/12 падений). Acceptance ≥15×0 — PASS.
 
+Дополнительная проверка Codex Back-end (2026-06-14): повторный focused run
+`res://tests/melee_unique_mechanics_test.gd` 15/15 PASS; umbrella
+`res://tests/runtime_smoke_test.gd` PASS. Production-код не менялся.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Проверено (фактически):
+- **Фикс на месте**: `tests/melee_unique_mechanics_test.gd` — `await process_frame`
+  стоит после `add_child(primary/secondary)` + set health и ДО
+  `_apply_unique_melee_hit_effects` (ровно рекомендованное). Геймплей/баланс
+  не тронуты (только тест).
+- **Анти-флака серия: 16/16 PASS, 0 падений** (изолированные `--user-data-dir`).
+  Было ~3/12. Флака устранена.
+
+Acceptance: тест стабилен (≥15 прогонов без падений) — выполнено.
+Баги: нет. Этот фикс разблокирует ре-QA SCRUM-251.
+
 ## Dispatcher Dispatch (2026-06-14)
 
 Sent to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`. Keep reasoning

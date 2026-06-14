@@ -1,6 +1,6 @@
 # Арт/VFX уникального оружия и атак всех классов (патч 0.1.5)
 
-Статус: review
+Статус: done (QA PASSED 2026-06-14)
 Приоритет: normal
 Роль: Design (Codex генерация) → Claude-Designer
 Версия: 0.1.5
@@ -104,3 +104,29 @@ Validation:
 - `res://tests/summoner_strengthening_test.gd` — PASS;
 - `res://tests/weapon_identity_diversity_test.gd` — PASS;
 - `res://tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2f78c734 (ветка dev; 0.1.5 WIP, ассеты untracked но на диске)
+
+Проверено (фактически):
+- **51 VFX-плашки** `assets/sprites/effects/vfx_weapon_<id>.png` — все `256x256`
+  RGBA8, непустая alpha, 0 битых/не-RGBA (по всем weapon IDs).
+- **Целевой тест не пустышка** (`unique_weapon_vfx_assets_test.gd`): обходит
+  `ProgressionData.WEAPONS_BY_CLASS`, для КАЖДОГО weapon_id ассертит наличие
+  плашки (`ResourceLoader.exists`), spawn `AttackVfx.weapon_signature` и
+  использование textured sprites; финальный ассерт `checked == 51`. Passed
+  («51 plates»).
+- **VFX smoke**: `attack_vfx_smoke_test` + `hazard_vfx_smoke_test` — passed.
+- **Превью**: contact + readability (2/2). Визуал (readability на луг/тёмное
+  поле): эффекты читаемы на террейне, различимы по цвету/форме, без мусора.
+- **Регрессия**: runtime_smoke + сопутствующие 0.1.5 тесты (status_effects_aura,
+  melee_unique_mechanics, summoner_strengthening, weapon_identity_diversity) —
+  PASS (по отчёту; attack/hazard/runtime перепроверены QA зелёными).
+
+Acceptance:
+- [x] Оружейные VFX новых механик в каноне, читаемы; превью на месте.
+- [x] 51/51 плашек 256×256 RGBA; assets-тест + vfx smoke зелёные.
+- [x] content_registry/CHANGELOG обновлены.
+
+Баги: нет.

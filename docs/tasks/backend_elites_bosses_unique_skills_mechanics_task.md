@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-259
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (SCRUM-232)
 
 ## Dispatcher Dispatch (2026-06-14)
@@ -92,3 +93,25 @@ Verification:
 - `res://tests/runtime_smoke_test.gd` — passed.
 - `res://tests/global_damage_balance_smoke_test.gd` — passed.
 - `res://tests/global_survivability_balance_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Проверено (фактически):
+- **Data-driven каталог механик** + уникальные паттерны 4 элитки / 5 боссов с
+  телеграфами (enemy.gd/boss.gd/combat_director).
+- **Целевой тест** `runtime_smoke_boss_elite_test` — passed (спавн каждой элитки/
+  босса инстанцирует её уникальный паттерн — acceptance #7); `codex_data_smoke`
+  — passed (26 монстров/механик в реестре).
+- **Баланс/контрплей в коридоре**: `global_damage_balance` (51 пара) +
+  `global_survivability` (TTD≤600с, честные окна — бессмертие/анти-плей нет) —
+  зелёные; api_surface + runtime — зелёные.
+
+Acceptance:
+- [x] Каталог механик (4-6 новых) реализован data-driven.
+- [x] Каждой элитке/боссу — уникальный непов­торяющийся паттерн с телеграфами.
+- [x] Баланс в коридорах global smoke; честный контрплей. SCRUM-261 VFX handoff —
+  закрыт (QA passed).
+
+Баги: нет.

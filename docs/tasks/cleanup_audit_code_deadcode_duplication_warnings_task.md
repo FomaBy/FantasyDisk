@@ -47,3 +47,30 @@ progression_data/stat_formulas/class_weapon/player/ui_screens), чтобы не 
 
 ## Документация
 docs/design/reviews/ (новый отчёт), ссылки в эпике SCRUM-266.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2f78c734 (ветка dev)
+
+Read-only код-аудит. QA = проверка наличия и ДЕЙСТВЕННОСТИ deliverables.
+
+Проверено (фактически):
+- **Отчёт** `docs/design/reviews/cleanup_code_audit_2026_06.md` (5.9KB) —
+  содержателен: Сводка приоритетов, **P1 — дубликаты-артефакты «N.ext»
+  (275 файлов) КРИТИЧНО**, P2 GDScript-ворнинги, P3 мёртвый код (глубокий),
+  P-perf смеллы; Acceptance с [x].
+- **3 дочерние cleanup-execution-задачи** созданы:
+  `cleanup_remove_duplicate_artifact_files` (SCRUM-270),
+  `cleanup_audit_docs_full_update`, `cleanup_audit_unused_sprites_images`.
+- **Действенность подтверждена независимо**: P1-находка (дубли «N.ext») совпадает
+  с корраптацией, которую QA отдельно поймал в рабочем дереве (` 2.gd`/` 2.png`
+  теневые файлы) — аудит верно классифицировал её как критичную и породил фикс.
+- **Read-only**: аудит не менял код (порождены только отчёт + task-specs).
+
+Acceptance:
+- [x] Список ворнингов/dead code/дублей по приоритету с ссылками (P1/P2/P3) в отчёте.
+- [x] Созданы дочерние cleanup_*-execution-задачи (3).
+- [x] Аудит ничего не сломал (read-only).
+
+Баги: нет. Минор: в этом task-`.md` отсутствует «## Result»-секция (deliverable —
+сам отчёт-файл); рекомендую исполнителю добавить ссылку на отчёт для полноты.

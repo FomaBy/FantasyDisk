@@ -2,7 +2,7 @@
 
 Обновлено: 2026-06-13
 
-Этот файл описывает аудиосистему `dev` / stabilization target 0.1.4. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Музыкальная подсистема введена в SCRUM-154; отчёты ревью — `docs/design/reviews/`.
+Этот файл описывает аудиосистему `dev` / sprint target 0.1.5. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Музыкальная подсистема введена в SCRUM-154; отчёты ревью — `docs/design/reviews/`.
 
 Источник истины — autoload `scripts/audio_manager.gd` (`AudioManager`). Этот документ — обзор для дизайна, не дублирует код построчно.
 

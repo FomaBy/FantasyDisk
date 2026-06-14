@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-253
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
 ## Dispatcher Dispatch (2026-06-14)
@@ -70,3 +71,26 @@ Verification:
 - `res://tests/progression_data_api_surface_test.gd` — passed.
 - `res://tests/global_damage_balance_smoke_test.gd` — passed.
 - `res://tests/global_survivability_balance_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Проверено (фактически):
+- **Код**: Ассасин crit-dash убран — `dash_on_crit_distance` → совместимый
+  `crit_shadow_burst_radius` (class_weapon.gd:108/205); крит зовёт НЕПОДВИЖНЫЙ
+  `trigger_assassin_crit_shadow` (1953-1954). Старый `trigger_assassin_dash()` —
+  no-move wrapper. `shadow_backstab` (Вор) стал фантомным ударом БЕЗ изменения
+  `global_position`.
+- **Целевой тест acceptance #3**: runtime smoke расширен проверкой, что крит
+  Ассасина / уворот / shadow_backstab НЕ меняют `global_position` героя без
+  ввода — passed.
+- **Регрессия/баланс**: weapon_mechanics / melee_targeting / global_damage (51
+  пара коридор) / runtime — зелёные.
+
+Acceptance:
+- [x] Нет авто-смещения игрока по криту/уклонению; позиция = только ввод.
+- [x] Классовые механики (assassin dash, thief backstab) — не-перемещающие, задокументированы.
+- [x] Тест отсутствия скачка позиции; smoke + balance smoke зелёные.
+
+Баги: нет.

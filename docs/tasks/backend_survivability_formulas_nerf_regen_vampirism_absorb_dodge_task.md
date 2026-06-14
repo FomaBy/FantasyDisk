@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-255
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
 ## Dispatcher Dispatch (2026-06-14)
@@ -80,6 +81,30 @@ from 1.57/s to 0.30/s. `build/survivability_report.md`,
 `build/survivability_scenarios_report.md`, and `build/balance_report.md` were
 regenerated. Docs updated: `CHANGELOG.md`,
 `docs/design/mechanics_extract.md`, `docs/design/current_game_state.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Проверено (фактически):
+- **Формулы (нерф)**: shared-константы — defense diminishing cap 62%, dodge cap
+  55%, absorb min-through 35%, regen `(0.22+flat*0.45)*(0.45+Knowledge/12)`,
+  vampirism chance cap 22% + heal cap 1.4/2.6/s, weapon drain ×0.45. Числа в
+  отчёте (tank/contact_swarm TTD 321→38.5с, tank regen 1.57→0.30/с).
+- **Целевые тесты**: `survivability_scenario_test` — passed (монотонность TTD по
+  стойкости, вклад слоёв, absorb, **якорь к реальному `Player.take_damage`**);
+  `stat_formulas` — passed.
+- **Гейты**: `global_survivability` — passed (**TTD≤600с, митигация<98%,
+  бессмертие недостижимо** — нерф достиг цели, нет инвинсибл-билдов);
+  `global_damage` (51 пара коридор) + runtime — зелёные.
+
+Acceptance:
+- [x] Реген/вампиризм заметно ослаблены (числа в отчёте).
+- [x] Абсорб/уворот — убывающая отдача, разумные капы.
+- [x] Сценарии выживаемости в коридорах; global survivability smoke зелёный.
+- [x] CHANGELOG/доки/отчёт.
+
+Баги: нет.
 
 Verification:
 - `tests/stat_formulas_smoke_test.gd` passed.

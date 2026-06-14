@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-245
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
 ## Dependency Update (2026-06-13)
@@ -73,3 +74,32 @@ Verification passed:
 - `res://tests/global_survivability_balance_smoke_test.gd`
 - `res://tools/balance_harness.gd`
 - `res://tests/runtime_smoke_test.gd`
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2f78c734 (ветка dev; 0.1.5 WIP, консистентно)
+
+Проверено (фактически):
+- **Модуль** `scripts/status_effects.gd` (121 стр.): `apply_status` со
+  `stack_mode` (refresh/extend/stack), `max_stacks`, `duration`/`remaining`,
+  DoT-тики, slow, vulnerability, marker-мета — переиспользуемая система.
+- **Вайринг** (3/3): `enemy.gd` (тик статусов + slow движения + vulnerability
+  входящего урона), `ally_minion.gd` (тик + command-aura buff), `player.gd`
+  (классовые хуки: Dark Mage/Elementalist arcane vulnerability, Chemist/Doctor/
+  Assassin/Biologist toxic DoT, Soldier/Knight/Robot stagger slow, Guitarist/
+  Druid/Engineer/Priest ауры).
+- **Целевой тест не пустышка** (`status_effects_aura_test`, 95 стр.):
+  vulnerability реально повышает входящий урон; DoT-статус реально тикает урон по
+  длительности; аура применяется в радиусе. Passed.
+- **Баланс в коридоре**: `global_damage_balance` (51 пара) + `global_survivability`
+  («бессмертие недостижимо, митигация<98%») — зелёные → ауры НЕ стакаются в
+  инвинсибл (критерий #3 соблюдён).
+- **Регрессия**: runtime_smoke_combat / weapon_mechanics / runtime — зелёные.
+
+Acceptance:
+- [x] Система статус-эффектов (ауры/баффы/дебаффы) с длительностью/стаком/маркером.
+- [x] Назначены тематическим классам по основному атрибуту; в балансе.
+- [x] Тесты статусов; smoke + balance smoke зелёные; VFX через `ring_pulse`
+  (Design-handoff не понадобился).
+
+Баги: нет.

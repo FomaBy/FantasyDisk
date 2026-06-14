@@ -1,6 +1,6 @@
 # Technical Architecture
 
-Обновлено: 2026-06-13 (0.1.4)
+Обновлено: 2026-06-14 (0.1.5)
 
 Этот файл кратко описывает runtime architecture FantasyDisk для будущих Back-end задач.
 
@@ -94,5 +94,5 @@ Additional checks:
 Follow `docs/process/versioning_and_branching.md`:
 
 - `main` = stable `0.1`;
-- `dev` = active `0.1.x` working line; текущая стабилизация — `0.1.4`;
+- `dev` = active `0.1.x` working line; текущий sprint target — `0.1.5`;
 - new feature work happens in `dev` unless explicitly stated otherwise.

@@ -969,10 +969,14 @@
  },
  "design_codex_apply_red_gold_button_kit_task.md": {
   "key": "SCRUM-273",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_codex_apply_ornate_frame_kit_task.md": {
   "key": "SCRUM-274",
+  "status": "К выполнению"
+ },
+ "bug_settings_controls_tab_overflow_scroll_task.md": {
+  "key": "SCRUM-275",
   "status": "К выполнению"
  }
 }

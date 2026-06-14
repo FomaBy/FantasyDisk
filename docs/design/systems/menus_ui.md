@@ -1,6 +1,6 @@
 # Menus And UI
 
-Обновлено: 2026-06-13
+Обновлено: 2026-06-14
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
@@ -34,9 +34,9 @@ FantasyDisk uses a custom visible cursor:
 
 | Asset ID | File | Hotspot |
 | --- | --- | --- |
-| `ui_game_cursor` | `assets/sprites/ui/cursor/game_cursor.png` | `(5, 4)` |
-| `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png` | `(5, 4)` |
-| `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png` | `(5, 4)` |
+| `ui_game_cursor` | `assets/sprites/ui/cursor/game_cursor.png` | `(2, 2)` |
+| `ui_game_cursor_hover` | `assets/sprites/ui/cursor/game_cursor_hover.png` | `(2, 2)` |
+| `ui_game_cursor_attack` | `assets/sprites/ui/cursor/game_cursor_attack.png` | `(2, 2)` |
 
 Back-end owns runtime cursor setup and optional state switching.
 

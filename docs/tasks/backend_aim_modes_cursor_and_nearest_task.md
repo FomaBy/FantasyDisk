@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-241
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
 
@@ -72,3 +73,30 @@ SCRUM-241 done. Во вкладку «Управление» добавлен pe
 - `tests/global_damage_balance_smoke_test.gd` — passed.
 - `tests/global_survivability_balance_smoke_test.gd` — passed.
 - `tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2f78c734 (ветка dev; 0.1.5 WIP, консистентно)
+
+Проверено (фактически):
+- **Единый API** в `player.gd`: `attack_aim_mode()` (327), `attack_aim_position()`
+  (333), `attack_aim_direction()` (343) — при `cursor` направление берётся от
+  оффсета курсора (344-345). ClassWeapon/Berserk/Summoner используют его.
+- **UI-тоггл** (вкладка «Управление», ui_screens.gd:1467-1475): OptionButton
+  «Прицеливание» = {Автонаводка на ближайшего | По курсору}, отражает
+  `game.aim_mode`, меняет живьём по выбору.
+- **Персист + валидация** (game_settings.gd): дефолт `nearest` (20), клэмп в
+  {`nearest`,`cursor`} (44-46); round-trip покрыт `game_settings_smoke` (passed).
+- **Целевой тест** `aim_mode_settings_test` (133 стр.): mock-player с
+  aim_mode/cursor_direction, оружие читает aim-API; passed.
+- **Балансовая инвариантность**: `global_damage_balance_smoke` — passed (51 пара
+  в коридоре, без изменений) → новый режим не трогает баланс.
+- **Регрессия**: melee_targeting / weapon_mechanics / runtime — зелёные.
+
+Acceptance:
+- [x] Опция 2 режимов, персист (settings.cfg), живое применение.
+- [x] «По курсору» через единый API для melee/снарядов/лучей/deploy/point-AoE;
+  автонаводка `nearest` сохранена.
+- [x] Тест вектора атаки; smoke + глобальный balance smoke зелёные.
+
+Баги: нет.

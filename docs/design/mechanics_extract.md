@@ -2,7 +2,7 @@
 
 ## Актуальный Слой Реализации
 
-Обновлено: 2026-06-13
+Обновлено: 2026-06-14
 
 Ниже сохранена выгрузка исходной таблицы механик. Этот верхний раздел фиксирует, какие механики уже перенесены в игру и как они называются в коде. Для точного текущего состояния также см. `docs/design/current_game_state.md`.
 
@@ -55,11 +55,27 @@ solo DPS ~40.1 и 5-target AoE DPS ~138.6, отклонение от целев�
 
 ### Текущие Статы Персонажей
 
-| Персонаж | Str | Agi | Int | Per | Energy | Know | End | Lead |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Берсерк | 10 | 5 | 2 | 5 | 4 | 4 | 7 | 3 |
-| Темный маг | 2 | 3 | 10 | 5 | 7 | 6 | 2 | 5 |
-| Гитарист | 4 | 6 | 4 | 7 | 6 | 5 | 4 | 7 |
+Источник: `scripts/progression_data_characters.gd::BASE_STATS` / `CHARACTER_CONFIGS`.
+
+| Персонаж | ID | Str | Agi | Int | Per | Energy | Know | End | Lead |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Берсерк | `berserk` | 10 | 5 | 2 | 5 | 4 | 4 | 7 | 3 |
+| Солдат | `soldier` | 7 | 6 | 2 | 8 | 4 | 5 | 6 | 5 |
+| Вор | `thief` | 5 | 9 | 3 | 8 | 5 | 4 | 4 | 5 |
+| Элементалист | `elementalist` | 2 | 4 | 9 | 7 | 8 | 6 | 3 | 5 |
+| Снайпер | `sniper` | 6 | 8 | 2 | 10 | 3 | 3 | 7 | 1 |
+| Священник | `priest` | 2 | 4 | 8 | 6 | 7 | 9 | 5 | 6 |
+| Биолог | `biologist` | 2 | 5 | 8 | 7 | 6 | 10 | 4 | 4 |
+| Робот | `robot` | 8 | 3 | 5 | 5 | 7 | 4 | 10 | 4 |
+| Инженер | `engineer` | 4 | 5 | 7 | 6 | 6 | 6 | 5 | 10 |
+| Темный маг | `dark_mage` | 2 | 3 | 10 | 5 | 7 | 6 | 2 | 5 |
+| Гитарист | `guitarist` | 4 | 6 | 4 | 7 | 6 | 5 | 4 | 7 |
+| Ассасин | `assassin` | 6 | 10 | 2 | 6 | 3 | 4 | 5 | 4 |
+| Рейнджер | `ranger` | 7 | 7 | 2 | 9 | 4 | 4 | 4 | 3 |
+| Доктор | `doctor` | 2 | 4 | 8 | 5 | 6 | 8 | 5 | 2 |
+| Химик | `chemist` | 2 | 4 | 9 | 6 | 7 | 7 | 3 | 2 |
+| Рыцарь | `knight` | 8 | 3 | 2 | 4 | 3 | 4 | 10 | 6 |
+| Друид | `druid` | 3 | 4 | 4 | 7 | 6 | 5 | 5 | 9 |
 
 ### Основная Характеристика И Уникальная Идентичность Класса
 
@@ -118,9 +134,9 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 
 | Класс | Оружие | ID | Тип атаки | Ключевая механика |
 | --- | --- | --- | --- | --- |
-| Берсерк | Двуручный меч | `berserk_sword` | `frustum` | Усеченный замах 90°, радиус 600, base width 150, outer width 1200, interval 0.58, damage x1.15 |
-| Берсерк | Двуручный топор | `berserk_axe` | `sweep` | Дуга 140 градусов радиуса 320, damage x0.85 |
-| Берсерк | Двуручный молот | `berserk_hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.8 (AoE) / 1.45 (damage) — слабый старт, мощный потолок |
+| Берсерк | Двуручный меч | `sword` | `frustum` | Усеченный замах 90°, радиус 600, base width 150, outer width 1200, interval 0.58, damage x1.15 |
+| Берсерк | Двуручный топор | `axe` | `sweep` | Дуга 140 градусов радиуса 320, damage x0.85 |
+| Берсерк | Двуручный молот | `hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.8 (AoE) / 1.45 (damage) — слабый старт, мощный потолок |
 | Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 быстрых выстрела по линии: первая цель получает полный урон, соседи в коридоре получают reduced suppression damage |
 | Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф зоны, короткая задержка фитиля, взрыв с falloff урона к краю |
 | Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Оборонительный forward brace: враг получает один укол за стойку и knockback |
@@ -771,7 +787,9 @@ Available helpers:
 Integrated systems: `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary effects, `AllyMinion`, `SummonerWeapon`. Focused check: `tests/combat_target_query_cache_test.gd`; broad regressions still run through `tests/melee_weapon_targeting_test.gd` and `tests/runtime_smoke_test.gd`.
 
 
-### Новые Классы 0.2 — Статы И Баланс (2026-06-11)
+### Историческая Выдержка Class Sheet 0.2 — Статы И Баланс (2026-06-11)
+
+Этот блок сохранен как исходная проектная выдержка. Текущие runtime-статы всех 17 классов находятся в таблице «Текущие Статы Персонажей» выше и в `scripts/progression_data_characters.gd`.
 
 | Класс | Str | Agi | Int | Per | Energy | Know | End | Lead | HP | Speed |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |

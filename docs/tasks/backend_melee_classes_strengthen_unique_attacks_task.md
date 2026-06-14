@@ -86,3 +86,30 @@ Verification:
 - `tests/melee_weapon_targeting_test.gd` passed.
 - `tests/progression_data_api_surface_test.gd` passed.
 - `tests/runtime_smoke_test.gd` passed.
+
+## QA-Вердикт (2026-06-14, ре-QA)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+История: первичный QA-прогон дал **FAILED** — целевой proof-тест
+`melee_unique_mechanics_test` ФЛАЧИЛ (~3/12, arc follow-up; корень = same-frame
+target-cache, как SCRUM-228). Заведён баг **SCRUM-272**, Back-end применил
+одностроковый фикс (`await process_frame` после добавления врагов). Флака
+устранена → ре-QA.
+
+Проверено (фактически):
+- **Код melee identity**: `class_weapon.gd` — `melee_execute_threshold/multiplier`
+  (111-112), `melee_stagger_knockback_multiplier` (113), `_execute_attack_mode`
+  (278), arc-followup поля; balance через `ProgressionData._budget_melee_unique_bonus()`.
+- **Целевой тест теперь стабилен**: `melee_unique_mechanics_test` —
+  **16/16 PASS** (QA анти-флака серия; было ~3/12). Фикс SCRUM-272 подтверждён
+  (`await process_frame` на месте; production-код не тронут).
+- **Баланс в коридоре**: `global_damage_balance` (51 пара) + `global_survivability`
+  — зелёные; weapon_mechanics / melee_targeting / api_surface / runtime — зелёные.
+
+Acceptance:
+- [x] Милишники усилены до конкурентного DPS (в коридоре).
+- [x] Уникальные ближние атаки на класс/оружие (execute/cleave/stagger/sustain).
+- [x] Harness-отчёт; smoke + balance smoke зелёные (proof-тест стабилизирован).
+
+Баги: нет (флака закрыта через SCRUM-272 PASSED).

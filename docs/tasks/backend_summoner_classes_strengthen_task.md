@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-254
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
 ## Dependency Update (2026-06-13)
@@ -69,3 +70,29 @@ Verification passed:
 - `res://tests/runtime_smoke_test.gd`
 
 Balance snapshot after tuning: max combined budget deviation 0.1%; summon weapons remain inside global damage/survivability gates.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev; 0.1.5 WIP, консистентно)
+
+Проверено (фактически):
+- **Код**: `AllyMinion.set_combat_profile()` (44) + `take_damage()` (57) +
+  `summon_role` (22); `SummonerWeapon` строит профиль из Лидерства, передаёт
+  `set_combat_profile` (105-106), `summon_role`/`summon_role_damage_multiplier`.
+  `ProgressionData` трактует `summon_role` как summon-архетип (balance-модель
+  считает summon-оружие через minion DPS, а не невидимый прямой хит).
+- **Целевой тест** (`summoner_strengthening_test`, 106 стр.): ассертит
+  `summon_role` по парам (напр. druid/summon_amulet=pack_damage),
+  `summon_role_damage_multiplier > 0`, и что профиль масштабируется от Лидерства
+  + lifecycle миньона. Passed.
+- **Балансовая инвариантность**: `global_damage_balance` (51 пара, summon-оружие
+  внутри коридора) + `global_survivability` — зелёные; api_surface + weapon_mechanics
+  + runtime — зелёные.
+
+Acceptance:
+- [x] Призыватели конкурентны; призывы масштабируются (Лидерство) и полезны,
+  в DPS-коридоре (worst combined dev 0.1%).
+- [x] Уникальные роли призывов по классам (pack_damage/турель/тотем/гомункул/дрон);
+  balance smoke зелёный; доки.
+
+Баги: нет.

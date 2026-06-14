@@ -56,41 +56,65 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
-SCRUM-147 is now **button-only Parchment & Wax Seal** after direct user correction on 2026-06-13. The fixed button reference source is `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: aged parchment bodies, red wax seals, serrated forged-metal end caps, ruby accents, warm gold hover glow, pressed darkening, and disabled grayscale. The full parchment panel rebuild was rejected because sliced interface panels looked strange in game.
+SCRUM-273 supersedes the SCRUM-147 button-only Parchment & Wax Seal kit with the
+active **Red & Gold Dragon button kit** from
+`docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live
+button assets are sliced into `assets/sprites/ui/frames/red_gold/` as 15 button
+types with four states each: idle/base, hover, pressed and disabled. The old
+parchment/wax button kit is backed up outside live assets at
+`build/cleanup_backup_red_gold_buttons_2026_06_14/`.
 
-SCRUM-229 replaces the previously restored legacy non-button panels with the user-provided **leather+gold panel/window kit** from `docs/design/references/interface/`: dark leather/stone interiors, engraved gold edging, corner brackets, rivets and restrained warm glow. Buttons remain parchment+seal; panels/windows/bars/checks now use leather+gold.
+SCRUM-229 still owns non-button panels/windows/bars/checks through the
+user-provided **leather+gold panel/window kit** from
+`docs/design/references/interface/`: dark leather/stone interiors, engraved gold
+edging, corner brackets, rivets and restrained warm glow. Buttons use Red & Gold
+Dragon; panels/windows/bars/checks use leather+gold.
 
 Canonical dark fantasy assets live in `assets/sprites/ui/frames/dark_fantasy/`:
 
-- `ui_df_button_primary_idle.png`, `ui_df_button_primary_hover.png`, `ui_df_button_primary_pressed.png`, `ui_df_button_primary_disabled.png`;
-- `ui_df_button_secondary_idle.png`, `ui_df_button_secondary_hover.png`, `ui_df_button_secondary_pressed.png`, `ui_df_button_secondary_disabled.png`;
-- `ui_df_button_danger_idle.png`, `ui_df_button_danger_hover.png`, `ui_df_button_danger_pressed.png`, `ui_df_button_danger_disabled.png`;
 - `ui_df_panel_frame.png`, `ui_df_card_frame.png`, `ui_df_level_panel_frame.png`, `ui_df_hud_panel_frame.png`, `ui_df_hud_card_frame.png`, `ui_df_tooltip_frame.png`;
 - `ui_df_stat_row_frame.png`, `ui_df_stat_chip_frame.png`, `ui_df_shop_frame.png`, `ui_df_section_divider.png`, `ui_df_stat_value_state_swatches.png`.
 
+Canonical live button assets live in `assets/sprites/ui/frames/red_gold/`:
+
+- `ui_btn_red_gold_standard.png`, `ui_btn_red_gold_max.png`,
+  `ui_btn_red_gold_main_menu.png`, `ui_btn_red_gold_hero_confirm.png`;
+- `ui_btn_red_gold_reset_audio.png`, `ui_btn_red_gold_reset_bindings.png`,
+  `ui_btn_red_gold_codex_tab.png`, `ui_btn_red_gold_rebind.png`;
+- `ui_btn_red_gold_back_s.png`, `ui_btn_red_gold_back_m.png`,
+  `ui_btn_red_gold_back_l.png`, `ui_btn_red_gold_attr_selector.png`;
+- `ui_btn_red_gold_fab.png`, `ui_btn_red_gold_utility.png`,
+  `ui_btn_red_gold_pause.png`;
+- every file has `_hover`, `_pressed` and `_disabled` state variants.
+
 State language:
 
-- all button role paths use one Parchment & Wax Seal base kit cut from the fixed reference sheet;
-- primary/secondary/danger keep separate asset IDs for Back-end role mapping, but they must not switch to unrelated visual kits;
-- hover: warm gold glow and brighter parchment edge, matching the reference;
-- pressed: darker parchment/metal and subtly compressed read, matching the reference;
-- disabled: desaturated grayscale, matching the reference.
+- all visible Button styleboxes use the Red & Gold Dragon kit unless a control is
+  intentionally a card/hit-area rather than an action button;
+- hover: stronger red/gold glow and brighter metal bevel;
+- pressed: darker center and slightly lower-contrast metal read;
+- disabled: desaturated, dimmed version of the same button type.
 
 Runtime button sizing (SCRUM-263/SCRUM-264):
 
 - standard action buttons use a 104px minimum height through `_make_button()` / `_set_action_button_size()`;
-- the main menu uses the same 104px height, with tighter vertical separation so all six actions fit at 1280x720;
-- wide action buttons cap their visual width at 560px so the parchment ends and wax seal do not visibly stretch into a strip;
+- the main menu uses `main_menu` 380x104 buttons;
+- wide action buttons cap their visual width at 560px so dragon ends do not visibly stretch into a strip;
+- pause menu buttons use 280x60, rebind/dropdown-style controls use 420x62,
+  compact utility uses 54x42 and upgrade FAB uses 50x50;
 - text-heavy choices use an information frame above a short standard button instead of placing paragraphs inside a large button;
-- compact utility controls, route nodes, shop item hit areas, hero thumbnails and weapon/reward cards are intentional exceptions and should not receive the wax-seal action button frame.
+- route nodes, shop item hit areas, hero thumbnails and weapon/reward cards are
+  intentional exceptions and should not receive the heavy action button frame.
 
 SCRUM-229 updates the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, selected `assets/sprites/ui/shop/` paths and non-button `assets/sprites/ui/frames/dark_fantasy/` paths to leather+gold visuals. SCRUM-222 completed Back-end integration for explicit 4-state button styleboxes: runtime button roles map to `primary`, `secondary`, and `danger` texture sets, while common panels/cards/HUD/tooltip styleboxes resolve through `dark_fantasy/` frame paths that now carry the leather+gold panel kit.
 
 Rebuild/QA assets:
 
+- `tools/build_red_gold_button_kit.py` - SCRUM-273 active button kit pipeline from the Red & Gold Dragon sheet;
 - `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
 - `tools/build_leather_gold_ui_kit.py` - active SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
+- `docs/design/previews/red_gold_button_kit_contact.png` - active SCRUM-273 button state/type contact sheet;
 - `docs/design/previews/ui_button_only_legacy_panels_contact.png` - SCRUM-147 side-by-side correction sheet;
 - `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - active SCRUM-229 leather+gold panel kit sheet;
 - `build/qa/interface_leather_gold_panel_kit_contact.png` - QA copy of the active leather+gold kit sheet;
