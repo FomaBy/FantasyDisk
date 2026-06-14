@@ -1158,5 +1158,13 @@
  "design_reward_screens_redesign_per_reward_frames_task.md": {
   "key": "SCRUM-338",
   "status": "К выполнению"
+ },
+ "backend_shop_reentry_until_next_level_task.md": {
+  "key": "SCRUM-339",
+  "status": "К выполнению"
+ },
+ "design_recreate_all_artifact_icons_via_skill_task.md": {
+  "key": "SCRUM-340",
+  "status": "К выполнению"
  }
 }
