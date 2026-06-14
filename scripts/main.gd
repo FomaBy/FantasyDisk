@@ -294,6 +294,12 @@ const INPUT_ACTIONS := [
 		"default_key": KEY_R,
 		"alternate_key": 0,
 	},
+	{
+		"action": "feedback",
+		"label": "Фидбек",
+		"default_key": KEY_P,
+		"alternate_key": 0,
+	},
 ]
 
 var selected_character_id := "berserk"
@@ -308,6 +314,7 @@ var run_player_snapshot := {}
 var ui_layer: CanvasLayer = null
 var hud_layer: CanvasLayer = null
 var pause_overlay_layer: CanvasLayer = null
+var feedback_overlay_layer: CanvasLayer = null
 var timer_label: Label = null
 var status_label: Label = null
 var health_bar: ProgressBar = null
@@ -361,6 +368,7 @@ const COMBAT_DIRECTOR_SCRIPT := preload("res://scripts/combat_director.gd")
 const META_PROGRESSION := preload("res://scripts/meta_progression.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
+const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 
 var ui
 var route
@@ -645,6 +653,18 @@ func _input(event: InputEvent) -> void:
 	if pending_rebind_action != "":
 		ui._handle_rebind_input(event)
 		return
+
+	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("feedback"):
+		var screenshot := get_viewport().get_texture().get_image()
+		ui._show_feedback_overlay(screenshot)
+		get_viewport().set_input_as_handled()
+		return
+
+	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
+		if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():
+			ui._close_feedback_overlay()
+			get_viewport().set_input_as_handled()
+			return
 
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F12:
 		route_debug_free_pick = not route_debug_free_pick

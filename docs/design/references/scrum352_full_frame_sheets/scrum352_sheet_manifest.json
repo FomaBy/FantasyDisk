@@ -32,12 +32,12 @@
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          0,
-          0,
-          1536,
-          1024
+          22,
+          49,
+          1502,
+          989
         ],
-        "has_transparency": false
+        "has_transparency": true
       }
     }
   ]

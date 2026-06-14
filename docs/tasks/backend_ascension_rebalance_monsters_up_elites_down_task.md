@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-358
+QA: in_progress (2026-06-14)
 
 ## Результат (2026-06-14)
 Переработан `ASCENSION_MODIFIERS` (data-driven, кумулятивность учтена):
@@ -68,3 +69,28 @@ L7 «Эхо бездны» (mini_elite_chance 0.20) — стакаются и с
 
 ## Документация
 docs/design/systems/progression_balance.md, current_game_state.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Curve-гейт** `ascension_curve_balance_test` — passed: «монстры↑ монотонно до
+  L10 hp×1.32; элитки пик L7=0.14 → L10=0.03 спад» (немонотонная элит-кривая, пик
+  НЕ на максимуме — точно по ТЗ).
+- **Числа** (progression_data_ascension.gd, кумулятивно): L1 `enemy_hp_mult=1.20`,
+  `enemy_damage_mult=1.14`; L3 `spawn_count_mult=1.26`, `spawn_cooldown_mult=0.80`
+  (низкие — пресс ОБЫЧНЫХ монстров плотнее); L7 `mini_elite_chance=0.14`, L9 `−0.06`,
+  L10 `−0.05` → кумулятивно L7=0.14/L8=0.14/L9=0.08/L10=0.03 (высокие — меньше элиток).
+- **Тесты**: `runtime_smoke_test` (ascension-ladder обновлён под новые числа) +
+  `global_survivability_balance_smoke` (TTD≤600с, бессмертие недостижимо) — passed.
+  global_damage_balance не моделирует ascension (runtime difficulty multiplier, не
+  задет — корректно).
+
+Acceptance:
+- [x] Низкие возвышения: обычные монстры сильнее/плотнее (L1 hp1.20/dmg1.14, L3 spawn1.26),
+  пресс не от элиток.
+- [x] Высокие: элиток МЕНЬШЕ (кривая спадает к L10=0.03), сложность смещена в монстров/босса.
+- [x] Кривая осмысленна (монотонный монстр-пресс + немонотонные элитки); L0 не сломан;
+  runtime + curve + survivability зелёные; доки.
+
+Баги: нет.

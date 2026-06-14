@@ -1,6 +1,6 @@
 # Design handoff: enemy, elite, and boss full-frame animation sheets
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5

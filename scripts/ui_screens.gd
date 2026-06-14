@@ -9,6 +9,7 @@ const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
 const ShopUIConstants := preload("res://scripts/ui/shop_ui_constants.gd")
 const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd")
+const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 
 const ARTIFACT_ICON_DIR := ShopUIConstants.ARTIFACT_ICON_DIR
 const SHOP_ICON_DIR := ShopUIConstants.SHOP_ICON_DIR
@@ -4496,6 +4497,182 @@ func _apply_video_settings() -> void:
 			DisplayServer.window_set_position(usable.position + (usable.size - resolution) / 2)
 
 	game.save_game_settings()
+
+
+func _show_feedback_overlay(screenshot: Image = null) -> void:
+	_close_feedback_overlay()
+
+	game.feedback_overlay_layer = CanvasLayer.new()
+	game.feedback_overlay_layer.name = "FeedbackOverlayLayer"
+	game.feedback_overlay_layer.layer = 128
+	game.feedback_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.feedback_overlay_layer)
+
+	var root := Control.new()
+	root.name = "FeedbackOverlay"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	game.feedback_overlay_layer.add_child(root)
+
+	var dim := ColorRect.new()
+	dim.name = "FeedbackDim"
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.color = Color(0.0, 0.0, 0.0, 0.62)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.add_child(dim)
+
+	var panel := PanelContainer.new()
+	panel.name = "FeedbackPanel"
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -470.0
+	panel.offset_top = -350.0
+	panel.offset_right = 470.0
+	panel.offset_bottom = 350.0
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_theme_stylebox_override("panel", _panel_style())
+	root.add_child(panel)
+
+	var box := VBoxContainer.new()
+	box.name = "FeedbackContent"
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 12)
+	panel.add_child(box)
+
+	var title := Label.new()
+	title.text = "Отправить фидбек"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 36)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	box.add_child(title)
+
+	var hint := Label.new()
+	hint.text = "Опиши баг или впечатление. Скриншот ниже уже снят до открытия формы."
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_font_size_override("font_size", 16)
+	hint.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
+	box.add_child(hint)
+
+	var text_edit := TextEdit.new()
+	text_edit.name = "FeedbackTextEdit"
+	text_edit.custom_minimum_size = Vector2(780, 150)
+	text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_edit.placeholder_text = "Что случилось? Где ты был в игре? Что ожидал увидеть?"
+	text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+	text_edit.add_theme_font_size_override("font_size", 17)
+	text_edit.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84, 1.0))
+	text_edit.add_theme_color_override("font_placeholder_color", Color(0.66, 0.64, 0.58, 1.0))
+	box.add_child(text_edit)
+
+	var preview_frame := PanelContainer.new()
+	preview_frame.name = "FeedbackScreenshotFrame"
+	preview_frame.custom_minimum_size = Vector2(780, 300)
+	preview_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	preview_frame.add_theme_stylebox_override("panel", _character_card_style())
+	box.add_child(preview_frame)
+
+	var preview := TextureRect.new()
+	preview.name = "FeedbackScreenshotPreview"
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.custom_minimum_size = Vector2(760, 280)
+	var safe_screenshot: Image = FEEDBACK_REPORTER_SCRIPT._normalized_screenshot(screenshot)
+	preview.texture = ImageTexture.create_from_image(safe_screenshot)
+	preview_frame.add_child(preview)
+
+	var status := Label.new()
+	status.name = "FeedbackStatusLabel"
+	status.text = "Отправка происходит только после нажатия «Отправить»."
+	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status.add_theme_font_size_override("font_size", 14)
+	status.add_theme_color_override("font_color", Color(0.74, 0.82, 0.88, 1.0))
+	box.add_child(status)
+
+	var buttons := HBoxContainer.new()
+	buttons.name = "FeedbackButtons"
+	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	buttons.add_theme_constant_override("separation", 18)
+	box.add_child(buttons)
+
+	var send_button := _make_button("Отправить")
+	send_button.name = "FeedbackSendButton"
+	_set_action_button_size(send_button, 260.0, 72.0)
+	buttons.add_child(send_button)
+
+	var cancel_button := _make_button("Отмена")
+	cancel_button.name = "FeedbackCancelButton"
+	_set_action_button_size(cancel_button, 220.0, 72.0)
+	cancel_button.pressed.connect(_close_feedback_overlay)
+	buttons.add_child(cancel_button)
+
+	send_button.pressed.connect(func() -> void:
+		send_button.disabled = true
+		status.text = "Отправляем..."
+		var reporter: Node = _feedback_reporter()
+		reporter.connect("report_finished", func(success: bool, message: String, local_path: String) -> void:
+			status.text = message if local_path == "" else "%s\n%s" % [message, local_path]
+			status.add_theme_color_override("font_color", Color(0.74, 0.96, 0.74, 1.0) if success else Color(1.0, 0.82, 0.50, 1.0))
+			send_button.disabled = false
+		, CONNECT_ONE_SHOT)
+		reporter.call("submit_report", text_edit.text, safe_screenshot, _feedback_metadata())
+	)
+
+	text_edit.grab_focus()
+
+
+func _is_feedback_overlay_open() -> bool:
+	return game.feedback_overlay_layer != null and is_instance_valid(game.feedback_overlay_layer)
+
+
+func _close_feedback_overlay() -> void:
+	if game.feedback_overlay_layer != null and is_instance_valid(game.feedback_overlay_layer):
+		game.feedback_overlay_layer.queue_free()
+	game.feedback_overlay_layer = null
+
+
+func _feedback_reporter() -> Node:
+	var reporter := game.get_node_or_null("FeedbackReporter")
+	if reporter != null and is_instance_valid(reporter):
+		return reporter
+	reporter = FEEDBACK_REPORTER_SCRIPT.new()
+	reporter.name = "FeedbackReporter"
+	reporter.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(reporter)
+	return reporter
+
+
+func _feedback_metadata() -> Dictionary:
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	return {
+		"version": str(ProjectSettings.get_setting("application/config/version", "dev")),
+		"character": str(game.selected_character_id),
+		"weapon": str(game.selected_weapon_id),
+		"ascension": int(game.selected_ascension_level),
+		"route_stage": int(game.route_stage),
+		"current_node_type": str(game.current_node_type),
+		"combat_active": bool(game.combat_active),
+		"boss_active": bool(game.boss_combat_active),
+		"screen": _current_ui_screen_name(),
+		"resolution": "%dx%d" % [int(viewport_size.x), int(viewport_size.y)],
+		"os": OS.get_name(),
+		"timestamp": Time.get_datetime_string_from_system(),
+	}
+
+
+func _current_ui_screen_name() -> String:
+	if game.ui_layer != null and is_instance_valid(game.ui_layer):
+		for child in game.ui_layer.get_children():
+			if child is Control and not str(child.name).begins_with("ScreenBackground"):
+				return str(child.name)
+	if game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer):
+		return str(game.pause_overlay_layer.name)
+	if game.combat_active:
+		return "Combat"
+	return "World"
 
 
 func _create_menu_box(title: String, subtitle: String, screen_background_id := "") -> VBoxContainer:

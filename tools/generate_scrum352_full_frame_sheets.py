@@ -174,7 +174,22 @@ def ensure_rgba_and_sheet_size(path: Path) -> dict:
     im = Image.open(path).convert("RGBA")
     if im.size != (FRAME_COLUMNS * FRAME_SIZE, FRAME_ROWS * FRAME_SIZE):
         im = im.resize((FRAME_COLUMNS * FRAME_SIZE, FRAME_ROWS * FRAME_SIZE), Image.Resampling.LANCZOS)
-        im.save(path)
+    pixels = im.load()
+    width, height = im.size
+    for y in range(height):
+        for x in range(width):
+            r, g, b, a = pixels[x, y]
+            # gpt-image-2 often paints a checkerboard or green-screen illusion
+            # instead of real alpha. Treat bright neutral/green background as
+            # transparent while preserving dark sprite silhouettes and VFX.
+            neutral = max(r, g, b) > 205 and (max(r, g, b) - min(r, g, b)) < 30
+            soft_neutral = max(r, g, b) > 185 and (max(r, g, b) - min(r, g, b)) < 24
+            green = g > 85 and (g - max(r, b)) > 18
+            if neutral or green:
+                pixels[x, y] = (r, g, b, 0)
+            elif soft_neutral:
+                pixels[x, y] = (r, g, b, min(a, 72))
+    im.save(path)
     alpha = im.getchannel("A")
     bbox = alpha.getbbox()
     return {

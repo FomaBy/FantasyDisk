@@ -1213,7 +1213,7 @@
  },
  "design_enemy_elite_boss_full_frame_animation_sheets_task.md": {
   "key": "SCRUM-352",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "animation_summon_creatures_update_via_director_skill_task.md": {
   "key": "SCRUM-353",
@@ -1237,7 +1237,7 @@
  },
  "backend_ascension_rebalance_monsters_up_elites_down_task.md": {
   "key": "SCRUM-358",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_balance_pass_solo_skill_damage_buff_task.md": {
   "key": "SCRUM-359",
@@ -1245,7 +1245,7 @@
  },
  "backend_meta_per_class_progression_bonuses_task.md": {
   "key": "SCRUM-360",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_hero_select_unified_portrait_description_frame_integration_task.md": {
   "key": "SCRUM-361",
