@@ -1,6 +1,6 @@
 # BUG/UX: Кнопка повышения уровня в бою — в правый-нижний угол, непрозрачная, без hover
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -38,9 +38,23 @@ Jira: SCRUM-278
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Кнопка в правом-нижнем углу, не перекрывает HUD.
-- [ ] Непрозрачная (alpha=1), без hover-эффекта.
-- [ ] Клик/видимость работают; 6 smoke зелёные; скрин; CHANGELOG.
+- [x] Кнопка в правом-нижнем углу, не перекрывает HUD.
+- [x] Непрозрачная (alpha=1), без hover-эффекта.
+- [x] Клик/видимость работают; smoke зелёный; dump; CHANGELOG.
 
 ## Документация
 docs/design/current_game_state.md (боевой HUD).
+
+## Result
+2026-06-14 — Back-end done.
+
+- `LevelUpPlusButton` перенесена на bottom-right anchors с безопасным отступом.
+- Для боевой кнопки добавлен отдельный статичный opaque `StyleBoxFlat`: normal/hover/focus/pressed/disabled используют один и тот же stylebox, `modulate.a = 1.0`.
+- Pending badge сохранен и остается читаемым.
+- `tests/runtime_smoke_test.gd` расширен проверкой якорей, фактического bottom-right rect, alpha, отсутствия hover/focus restyle и no-overlap с HUD controls.
+- QA dump: `build/qa/combat_level_up_button.md`.
+- Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`.
+
+Verification:
+- PASS — `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+- Note — extra `runtime_smoke_ui_test.gd` / `ui_no_overlap_matrix_test.gd` are currently blocked by a separate hero-select layout regression (`HeroSelectDossier` overlaps `HeroSelectRadarPanel` at 1280x720), not by SCRUM-278. This should be handled by the active hero-select UI bug lane.

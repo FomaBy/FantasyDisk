@@ -989,7 +989,7 @@
  },
  "bug_combat_level_up_button_reposition_opaque_task.md": {
   "key": "SCRUM-278",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_druid_wolf_summon_animation_integrate_task.md": {
   "key": "SCRUM-279",
@@ -1002,5 +1002,73 @@
  "design_hero_select_replace_frames_herouiframe_task.md": {
   "key": "SCRUM-281",
   "status": "В работе"
+ },
+ "art_char_redraw_anim_assassin_task.md": {
+  "key": "SCRUM-282",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_berserk_task.md": {
+  "key": "SCRUM-283",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_biologist_task.md": {
+  "key": "SCRUM-284",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_chemist_task.md": {
+  "key": "SCRUM-285",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_dark_mage_task.md": {
+  "key": "SCRUM-286",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_doctor_task.md": {
+  "key": "SCRUM-287",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_druid_task.md": {
+  "key": "SCRUM-288",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_elementalist_task.md": {
+  "key": "SCRUM-289",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_engineer_task.md": {
+  "key": "SCRUM-290",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_guitarist_task.md": {
+  "key": "SCRUM-291",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_knight_task.md": {
+  "key": "SCRUM-292",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_priest_task.md": {
+  "key": "SCRUM-293",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_ranger_task.md": {
+  "key": "SCRUM-294",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_robot_task.md": {
+  "key": "SCRUM-295",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_sniper_task.md": {
+  "key": "SCRUM-296",
+  "status": "К выполнению"
+ },
+ "art_char_redraw_anim_thief_task.md": {
+  "key": "SCRUM-297",
+  "status": "К выполнению"
+ },
+ "art_unified_character_style_anim_spec_task.md": {
+  "key": "SCRUM-298",
+  "status": "К выполнению"
  }
 }
