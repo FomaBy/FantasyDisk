@@ -42,6 +42,14 @@
   for `iron_bastion`, `night_stalker`, and `plague_prophet` as full-frame
   SpriteFrames/registry entries with `move`, `attack`/`attack_primary`, two
   `skill_*` rows and validator-facing `attack_*` aliases per elite.
+- Shard Marshal full-frame animation (SCRUM-371): integrated the accepted
+  SCRUM-352 `shard_marshal` sheet as a full-frame SpriteFrames/registry entry
+  with `move`, `attack`/`attack_primary`, `skill_shard_fan`,
+  `skill_command_pulse`, and matching `attack_*` aliases.
+- Mini-elite full-frame visual hook (SCRUM-372): elite instances now prefer a
+  registered `mini_elite_kind` SpriteFrames entry for visual identity, then
+  fall back to their base `elite_behavior`; this is visual-only and does not
+  alter mini-elite spawn, stats, AI, damage, or rewards.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню

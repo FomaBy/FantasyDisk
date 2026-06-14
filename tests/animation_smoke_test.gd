@@ -878,6 +878,25 @@ func _test_full_frame_animation_registry() -> void:
 			_fail("Expected %s elite full-frame visual to hide the static body fallback." % elite_id)
 		elite.queue_free()
 
+	var mini_visual_scene := load("res://scenes/EliteStalker.tscn") as PackedScene
+	var mini_visual_elite := mini_visual_scene.instantiate()
+	root.add_child(mini_visual_elite)
+	mini_visual_elite.set_meta("mini_elite_kind", "iron_bastion")
+	mini_visual_elite.call("refresh_full_frame_visual")
+	var mini_visual_body := mini_visual_elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if mini_visual_body == null:
+		_fail("Expected mini-elite metadata refresh to preserve a FullFrameBody.")
+	elif str(mini_visual_body.get_meta("entity_id", "")) != "iron_bastion":
+		_fail("Expected mini_elite_kind with registered SpriteFrames to override the base elite visual id.")
+	mini_visual_elite.set_meta("mini_elite_kind", "missing_mini_visual_test")
+	mini_visual_elite.call("refresh_full_frame_visual")
+	mini_visual_body = mini_visual_elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if mini_visual_body == null:
+		_fail("Expected missing mini-elite visual id to keep the route elite fallback FullFrameBody.")
+	elif str(mini_visual_body.get_meta("entity_id", "")) != "night_stalker":
+		_fail("Expected missing mini_elite_kind SpriteFrames to fall back to elite_behavior visual id.")
+	mini_visual_elite.queue_free()
+
 
 func _test_enemy_animation() -> void:
 	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene

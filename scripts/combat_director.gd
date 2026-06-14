@@ -291,6 +291,8 @@ func _apply_mini_elite_kind(elite: Node2D, kind: Dictionary) -> void:
 	var rig := elite.get_node_or_null("RigRoot") as Node2D
 	if rig != null and tint.size() >= 3:
 		rig.modulate = Color(float(tint[0]), float(tint[1]), float(tint[2]), 1.0)
+	if elite.has_method("refresh_full_frame_visual"):
+		elite.call("refresh_full_frame_visual")
 	_apply_drop_rewards(elite, "mini_elite")
 
 

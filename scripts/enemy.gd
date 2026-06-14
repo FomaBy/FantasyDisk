@@ -981,6 +981,10 @@ func _configure_full_frame_animation() -> bool:
 	return true
 
 
+func refresh_full_frame_visual() -> void:
+	_configure_full_frame_animation()
+
+
 func _full_frame_entity_kind() -> String:
 	if is_in_group("bosses"):
 		return "boss"
@@ -992,6 +996,10 @@ func _full_frame_entity_kind() -> String:
 func _full_frame_entity_id(entity_kind: String) -> String:
 	if entity_kind == "boss" and get("boss_behavior") != null and str(get("boss_behavior")) != "":
 		return str(get("boss_behavior"))
+	if entity_kind == "elite" and has_meta("mini_elite_kind"):
+		var mini_elite_id := str(get_meta("mini_elite_kind", ""))
+		if mini_elite_id != "" and FullFrameAnimationRegistry.sprite_frames_for("elite", mini_elite_id) != null:
+			return mini_elite_id
 	if entity_kind == "elite" and elite_behavior != "":
 		return elite_behavior
 	return enemy_type_name.to_lower().replace(" ", "_")

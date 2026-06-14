@@ -1298,5 +1298,9 @@
  "design_unified_master_frame_system_projectwide_task.md": {
   "key": "SCRUM-373",
   "status": "К выполнению"
+ },
+ "bug_feedback_webhook_image_attachment_missing_task.md": {
+  "key": "SCRUM-374",
+  "status": "К выполнению"
  }
 }
