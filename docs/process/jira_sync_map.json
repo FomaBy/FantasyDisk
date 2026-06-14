@@ -1606,8 +1606,8 @@
  },
  "animation_integrate_all_move_attack_death_states_task.md": {
   "key": "SCRUM-370",
-  "status": "Контроль качества",
-  "desc_hash": "adc08e9b37bed1c5beb635aa257c0d14"
+  "status": "Готово",
+  "desc_hash": "aac754d4e896ea5c950eae0367faa5d7"
  },
  "animation_shard_marshal_full_frame_integration_task.md": {
   "key": "SCRUM-371",
@@ -1838,5 +1838,10 @@
   "key": "SCRUM-393",
   "status": "К выполнению",
   "desc_hash": "50f9c1baaacb6e779ace96e99f38a32f"
+ },
+ "design_integrate_generated_backgrounds_5_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "37f3af2835e3e428d6e5176c0f80b93f"
  }
 }

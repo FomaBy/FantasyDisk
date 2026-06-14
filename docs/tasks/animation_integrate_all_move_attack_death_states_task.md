@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-370
+QA: in_progress (2026-06-14)
 Связано: SCRUM-351 (full-frame registry), SCRUM-352 (элитки/боссы), SCRUM-353 (призывы),
 SCRUM-298 + 282-297 (перерисовка персонажей)
 
@@ -200,3 +201,31 @@ docs/design/systems/animation.md, content_registry, current_game_state.
 
 ## Разблокировано пользователем 2026-06-14
 Пользователь: анимационные задачи персонажей готовы к выполнению — снять блок. Хэндоффы (death-арт/death-плейбек) делать параллельно, не блокировать зонтичную интеграцию.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — зонтичная death-state интеграция завершена (move/attack/death для всех)
+
+Проверено (фактически):
+- **Манифест-валидатор**: «FantasyDisk animation manifest OK: **19 entities**».
+- **ВСЕ 19 сущностей имеют `death` ≥5 кадров** (load в Godot, проверка структуры):
+  4 союзника (druid_wolf/pack_spirit/homunculus/leadership_echo) + 4 route-элиты
+  (iron_bastion/night_stalker/plague_prophet/shard_marshal) + 6 мини-элит + 5 боссов
+  (rift_warden/disk_devourer/bone_archon/brood_mother/ashen_colossus) — **19/19
+  with_death**. У каждого move + attack/skill + death (6f non-loop).
+- **Death-lifecycle** (SCRUM-379, мной PASSED): смерть проигрывает full-frame death
+  до cleanup, ghost-fallback цел, loot/score/cleanup не дублируются.
+- **Victory-блокер** (SCRUM-385, мной PASSED): runtime_smoke victory-тайминг
+  починен — финальная верификация зелёная.
+- **Контакт-листы**: `scrum370_death_rows_contact.png` (+ partial) + per-entity GIF.
+- **Тесты**: `animation_smoke_test` + `runtime_smoke_test` — passed; Godot editor
+  import — PASS.
+
+Acceptance:
+- [x] Все подключённые full-frame сущности (союзники/элиты/мини/боссы) имеют move+attack+death (19/19 death).
+- [x] Смерть проигрывает нарисованную death перед удалением (379); ghost — fallback.
+- [x] Статичные обычные враги покрыты 363-368 или safe fallback; всё в registry.
+- [x] animation_smoke + runtime_smoke зелёные; контакт-листы; доки.
+
+Веха: death-state анимация полностью интегрирована (19 сущностей + стандартные враги
+363-368). Структурные gutters source-листов — отдельный аудит SCRUM-387 (не runtime-
+блокер 370). Баги: нет.

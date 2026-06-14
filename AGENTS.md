@@ -93,6 +93,14 @@ Project practices:
 - Keep code split into focused scenes and scripts.
 - Prefer data-driven character/enemy/weapon configuration where practical.
 - Keep prototype visuals simple until art direction exists.
+- **Изменения интерфейса — ТОЛЬКО через скилл `fantasydisk-ui-director`**
+  (Codex skill, `~/.codex/skills/fantasydisk-ui-director/`). Перед любым
+  внедрением/перерисовкой UI сначала создать OpenAI-API-generated mockup страницы
+  со всеми элементами, точными зонами контента, safe margins и responsive-правилами,
+  показать превью в чате при наличии PNG, затем воспроизводить расположение в
+  Godot по mockup/spec. Единый стиль всех экранов: D&D + Dark Fantasy Dragon,
+  отталкиваться от текущих красивых кнопок; старые/ручные пайплайны генерации
+  макетов не использовать как fallback.
 - **Генерация графики/ассетов — ТОЛЬКО скиллом `fantasydisk-asset-generator`**
   (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`, SCRUM-324):
   `scripts/generate_asset.py --prompt "<...>" --output <тема/файл> --size <WxH>
