@@ -49,3 +49,13 @@ alpha-ready production candidates:
 
 Runtime wiring is intentionally handed off to Back-end because the active HUD is
 assembled in `scripts/ui_screens.gd` and must preserve gameplay/HUD update logic.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (covered by SCRUM-390)
+
+Генератор-стаб combat-HUD reference. Собственный deliverable на месте: alpha-clean
+reference + production-candidates под `assets/sprites/ui/frames/combat_hud/` +
+`assets/sprites/ui/hud/combat_hud/`. Полный combat-HUD редроу — родитель SCRUM-390
+(`design_combat_hud_full_redraw_skill_task.md`, **in_progress**); рантайм-проводка
+HUD — Back-end. Эту задачу проверю по факту в составе SCRUM-390 (когда done/review).
+Не дублируется. Баги: нет.

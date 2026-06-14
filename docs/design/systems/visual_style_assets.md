@@ -93,6 +93,38 @@ The top/bottom ornaments are optional overlays for large windows only and are
 not applied to compact HUD cards/tooltips/chips. Runtime content, click zones,
 labels, portraits, icons and meters must remain inside the frame content area.
 
+SCRUM-390 prepares a dedicated **Combat HUD redraw kit** for Back-end runtime
+integration. It was generated through `fantasydisk-asset-generator` from current
+D&D/dark-fantasy UI references, then alpha-cleaned and cut into runtime
+candidates. Source and margins are recorded in
+`docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`;
+previews are `docs/design/previews/combat_hud_redraw_contact.png` and
+`docs/design/previews/combat_hud_redraw_safe_zones.png`; 720p/1080p/1440p mock
+screens live in `build/qa/scrum390/`.
+
+Canonical SCRUM-390 candidate assets:
+
+- `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png`
+  (`1024x144`, texture margins `96/44/96/44`, content margins `92/30/92/30`);
+- `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_hp.png`,
+  `_xp.png`, `_gold.png`, `_ult.png` (`256x144`, texture margins
+  `48/42/48/38`, content margins `32/24/32/22`);
+- `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png`
+  (`384x128`, texture margins `92/42/92/38`, content margins `82/32/82/28`);
+- `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_ascension_badge.png`
+  (`128x128`, content margins `40/34/40/34`);
+- `assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus.png` plus
+  `_hover`, `_pressed`, `_disabled` (`128x128`, content margins `36/34/36/36`);
+- `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`,
+  `_ult.png`, `_gold.png` (`512x32`) and
+  `ui_hud_gold_medallion.png` (`128x128`).
+
+These are not yet live UI paths until
+`docs/tasks/backend_combat_hud_redraw_integration_task.md` wires them into the
+combat HUD. Back-end must keep HP/XP/money/ultimate/timer logic unchanged and
+must keep labels, icons, bars, badges, plus glyph and click/focus zones inside
+the recorded content zones.
+
 SCRUM-281 adds a screen-specific **Hero Select frame kit** from
 `docs/design/references/herouiframe/`. It is used only by `HeroSelectScreen`,
 because the portrait/dossier/radar ornaments need custom safe areas. Live

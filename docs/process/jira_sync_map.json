@@ -1911,12 +1911,17 @@
  },
  "design_integrate_generated_combat_hud_redraw_task.md": {
   "key": "SCRUM-398",
-  "status": "К выполнению",
-  "desc_hash": "658cd5e159fb431f07350d85d4354eec"
+  "status": "Готово",
+  "desc_hash": "847c52e3ad8884e3de8f1799203e8774"
  },
  "design_summons_ethereal_redraw_anim_from_scratch_task.md": {
   "key": "SCRUM-399",
   "status": "К выполнению",
   "desc_hash": "f53e96aaaf6b679c0461e0b7c99c1acb"
+ },
+ "backend_combat_hud_redraw_integration_task.md": {
+  "key": "SCRUM-400",
+  "status": "К выполнению",
+  "desc_hash": "882101c0da7993409915176f625b4432"
  }
 }

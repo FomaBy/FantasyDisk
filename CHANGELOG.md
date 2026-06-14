@@ -24,6 +24,13 @@
   mapping without network.
 
 ### Added
+- Combat HUD redraw kit (SCRUM-390): generated a new D&D/dark-fantasy dragon
+  HUD reference sheet with `fantasydisk-asset-generator`, alpha-cleaned it, and
+  cut production candidates for the resource panel, HP/XP/money/ultimate cards,
+  timer, ascension badge, opaque level-up plus button, bar fills and gold
+  medallion under `assets/sprites/ui/frames/combat_hud/` and
+  `assets/sprites/ui/hud/combat_hud/`; metadata, safe-zone preview, 720p/1080p/
+  1440p mock screens and Back-end integration handoff are ready.
 - Unified master UI frame kit (SCRUM-373): added design-ready D&D/dark fantasy
   9-slice assets under `assets/sprites/ui/frames/unified/`, metadata
   `docs/design/references/unified_master_frame/unified_master_frame_metadata.json`,
