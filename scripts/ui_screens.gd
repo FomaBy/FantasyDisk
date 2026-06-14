@@ -49,6 +49,38 @@ const STANDARD_ACTION_BUTTON_WIDTH := 420.0
 const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
 const MAIN_MENU_ACTION_BUTTON_WIDTH := 380.0
 const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
+const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
+const HERO_SELECT_FRAME_DIR := "res://assets/sprites/ui/frames/hero_select/"
+const HERO_SELECT_FRAME_TEXTURES := {
+	"portrait": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_portrait.png",
+	"dossier": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_dossier.png",
+	"radar": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_radar.png",
+	"thumbnail_strip": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_thumbnail_strip.png",
+	"thumbnail": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_thumbnail.png",
+	"asc_button": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_asc_button.png",
+	"asc_label": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_asc_label.png",
+	"asc_mods": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_asc_mods.png",
+}
+const HERO_SELECT_FRAME_MARGINS := {
+	"portrait": Vector4(72, 86, 72, 92),
+	"dossier": Vector4(92, 86, 92, 90),
+	"radar": Vector4(88, 88, 88, 88),
+	"thumbnail_strip": Vector4(96, 48, 96, 52),
+	"thumbnail": Vector4(78, 72, 78, 76),
+	"asc_button": Vector4(58, 58, 58, 62),
+	"asc_label": Vector4(86, 36, 86, 38),
+	"asc_mods": Vector4(96, 30, 96, 32),
+}
+const HERO_SELECT_FRAME_CONTENT := {
+	"portrait": Vector4(38, 42, 38, 44),
+	"dossier": Vector4(28, 18, 32, 18),
+	"radar": Vector4(12, 12, 12, 12),
+	"thumbnail_strip": Vector4(24, 18, 24, 20),
+	"thumbnail": Vector4(14, 12, 14, 12),
+	"asc_button": Vector4(14, 12, 14, 14),
+	"asc_label": Vector4(24, 8, 24, 8),
+	"asc_mods": Vector4(28, 6, 28, 6),
+}
 
 func _init(game_ref) -> void:
 	game = game_ref
@@ -224,6 +256,7 @@ func _show_character_select() -> void:
 
 	var title_box := VBoxContainer.new()
 	title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_box.clip_contents = true
 	title_box.add_theme_constant_override("separation", 1)
 	header.add_child(title_box)
 
@@ -234,7 +267,10 @@ func _show_character_select() -> void:
 	title_box.add_child(title_label)
 
 	var subtitle_label := Label.new()
-	subtitle_label.text = "Портрет, досье, оружие и роза характеристик обновляются при выборе героя."
+	subtitle_label.text = "Выберите героя и уровень Возвышения."
+	subtitle_label.clip_text = true
+	subtitle_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	subtitle_label.add_theme_font_size_override("font_size", 14)
 	subtitle_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78, 0.92))
 	title_box.add_child(subtitle_label)
@@ -254,10 +290,11 @@ func _show_character_select() -> void:
 
 	var portrait_panel := PanelContainer.new()
 	portrait_panel.name = "HeroSelectPortraitPanel"
-	portrait_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	portrait_panel.custom_minimum_size = Vector2(320, 400)
+	portrait_panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	portrait_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	portrait_panel.size_flags_stretch_ratio = 0.38
-	portrait_panel.add_theme_stylebox_override("panel", _hero_portrait_style())
+	portrait_panel.add_theme_stylebox_override("panel", _hero_select_frame_style("portrait"))
 	content_row.add_child(portrait_panel)
 
 	var portrait_box := VBoxContainer.new()
@@ -267,7 +304,7 @@ func _show_character_select() -> void:
 
 	var large_portrait := TextureRect.new()
 	large_portrait.name = "HeroSelectLargePortrait"
-	large_portrait.custom_minimum_size = Vector2(320, 400)
+	large_portrait.custom_minimum_size = Vector2(220, 280)
 	large_portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	large_portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	large_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -278,10 +315,11 @@ func _show_character_select() -> void:
 
 	var dossier_panel := PanelContainer.new()
 	dossier_panel.name = "HeroSelectDossierPanel"
-	dossier_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dossier_panel.custom_minimum_size = Vector2(380, 0)
+	dossier_panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	dossier_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	dossier_panel.size_flags_stretch_ratio = 0.62
-	dossier_panel.add_theme_stylebox_override("panel", _panel_style())
+	dossier_panel.add_theme_stylebox_override("panel", _hero_select_frame_style("dossier"))
 	content_row.add_child(dossier_panel)
 
 	var dossier := VBoxContainer.new()
@@ -324,8 +362,8 @@ func _show_character_select() -> void:
 	dossier.add_child(asc_row)
 	var asc_minus := _make_compact_button("-")
 	asc_minus.name = "AscensionMinusButton"
-	asc_minus.custom_minimum_size = COMPACT_UTILITY_BUTTON_SIZE
-	_apply_compact_button_theme(asc_minus)
+	asc_minus.custom_minimum_size = ASCENSION_BUTTON_SIZE
+	_apply_hero_select_button_frame(asc_minus, "asc_button")
 	asc_row.add_child(asc_minus)
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
@@ -333,11 +371,12 @@ func _show_character_select() -> void:
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	asc_label.add_theme_font_size_override("font_size", 15)
 	asc_label.add_theme_color_override("font_color", Color(1.0, 0.78, 0.32, 1.0))
+	asc_label.add_theme_stylebox_override("normal", _hero_select_frame_style("asc_label"))
 	asc_row.add_child(asc_label)
 	var asc_plus := _make_compact_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	asc_plus.custom_minimum_size = COMPACT_UTILITY_BUTTON_SIZE
-	_apply_compact_button_theme(asc_plus)
+	asc_plus.custom_minimum_size = ASCENSION_BUTTON_SIZE
+	_apply_hero_select_button_frame(asc_plus, "asc_button")
 	asc_row.add_child(asc_plus)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
@@ -345,20 +384,22 @@ func _show_character_select() -> void:
 	asc_mods.add_theme_font_size_override("font_size", 11)
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
 	asc_mods.custom_minimum_size = Vector2(0, 34)
+	asc_mods.add_theme_stylebox_override("normal", _hero_select_frame_style("asc_mods"))
 	dossier.add_child(asc_mods)
 
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HeroSelectChooseButton"
-	_set_action_button_size(select_button, 320.0)
+	_set_action_button_size(select_button, 260.0, 72.0)
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	dossier.add_child(select_button)
 
-	var radar_reserve := Control.new()
+	var radar_reserve := PanelContainer.new()
 	radar_reserve.name = "HeroSelectRadarReserve"
 	radar_reserve.custom_minimum_size = Vector2(408, 300)
 	radar_reserve.size_flags_horizontal = Control.SIZE_SHRINK_END
 	radar_reserve.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	radar_reserve.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	radar_reserve.add_theme_stylebox_override("panel", _hero_select_frame_style("dossier", Color(0.72, 0.72, 0.72, 0.48)))
 	content_row.add_child(radar_reserve)
 
 	var radar_panel := PanelContainer.new()
@@ -368,7 +409,7 @@ func _show_character_select() -> void:
 	radar_panel.offset_top = 132
 	radar_panel.offset_right = -24
 	radar_panel.offset_bottom = 432
-	radar_panel.add_theme_stylebox_override("panel", _character_card_style())
+	radar_panel.add_theme_stylebox_override("panel", _hero_select_frame_style("radar"))
 	root.add_child(radar_panel)
 
 	var radar_box := VBoxContainer.new()
@@ -391,12 +432,19 @@ func _show_character_select() -> void:
 	radar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	radar_box.add_child(radar)
 
+	var thumbnail_strip_frame := PanelContainer.new()
+	thumbnail_strip_frame.name = "HeroThumbnailStripFrame"
+	thumbnail_strip_frame.custom_minimum_size = Vector2(0, 104)
+	thumbnail_strip_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	thumbnail_strip_frame.add_theme_stylebox_override("panel", _hero_select_frame_style("thumbnail_strip"))
+	layout.add_child(thumbnail_strip_frame)
+
 	var thumbnail_strip := HBoxContainer.new()
 	thumbnail_strip.name = "HeroThumbnailStrip"
 	thumbnail_strip.custom_minimum_size = Vector2(0, 96)
 	thumbnail_strip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	thumbnail_strip.add_theme_constant_override("separation", 8)
-	layout.add_child(thumbnail_strip)
+	thumbnail_strip.add_theme_constant_override("separation", 4)
+	thumbnail_strip_frame.add_child(thumbnail_strip)
 
 	var legacy_grid := GridContainer.new()
 	legacy_grid.name = "CharacterCardsGrid"
@@ -408,6 +456,7 @@ func _show_character_select() -> void:
 	var stat_maxima := _hero_radar_global_maxima()
 	var character_ids: Array = game.PROGRESSION_DATA.character_ids()
 	var thumbnail_size := _hero_thumbnail_size(character_ids.size())
+	thumbnail_strip.custom_minimum_size = Vector2(0, maxf(thumbnail_size.y + 8.0, 64.0))
 	if not character_ids.has(game.selected_character_id):
 		game.selected_character_id = str(character_ids[0])
 	var thumbnail_buttons: Array[Button] = []
@@ -433,7 +482,7 @@ func _show_character_select() -> void:
 		for button in thumbnail_buttons:
 			var thumb_id := str(button.get_meta("character_id", ""))
 			button.button_pressed = thumb_id == character_id
-			button.add_theme_stylebox_override("normal", _card_hover_style() if thumb_id == character_id else _character_card_style())
+			button.add_theme_stylebox_override("normal", _hero_select_frame_style("thumbnail", Color(1.12, 1.02, 0.78, 1.0)) if thumb_id == character_id else _hero_select_frame_style("thumbnail"))
 		refresh_asc.call()
 
 	asc_minus.pressed.connect(func() -> void:
@@ -475,12 +524,12 @@ func _show_character_select() -> void:
 func _hero_thumbnail_size(character_count: int) -> Vector2:
 	var viewport_width := 1280.0
 	if game != null and game.get_viewport() != null:
-		viewport_width = maxf(game.get_viewport().get_visible_rect().size.x, 1280.0)
-	var horizontal_margins := 48.0
-	var gap_total := maxf(float(character_count - 1), 0.0) * 8.0
+		viewport_width = maxf(game.get_viewport().get_visible_rect().size.x, 1.0)
+	var horizontal_margins := 124.0
+	var gap_total := maxf(float(character_count - 1), 0.0) * 4.0
 	var available_width := maxf(viewport_width - horizontal_margins - gap_total, 1.0)
-	var width := clampf(floor(available_width / maxf(float(character_count), 1.0)), 64.0, 124.0)
-	var height := clampf(width * 0.72, 64.0, 88.0)
+	var width := clampf(floor(available_width / maxf(float(character_count), 1.0)), 52.0, 124.0)
+	var height := clampf(width * 0.72, 52.0, 88.0)
 	return Vector2(width, height)
 
 
@@ -494,10 +543,10 @@ func _make_hero_thumbnail_button(character_id: String, select_character: Callabl
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [str(config.get("title", character_id)), str(config.get("description", ""))]
-	button.add_theme_stylebox_override("normal", _character_card_style())
-	button.add_theme_stylebox_override("hover", _card_hover_style())
-	button.add_theme_stylebox_override("pressed", _card_hover_style())
-	button.add_theme_stylebox_override("focus", _card_hover_style())
+	button.add_theme_stylebox_override("normal", _hero_select_frame_style("thumbnail"))
+	button.add_theme_stylebox_override("hover", _hero_select_frame_style("thumbnail", Color(1.12, 1.02, 0.78, 1.0)))
+	button.add_theme_stylebox_override("pressed", _hero_select_frame_style("thumbnail", Color(0.92, 0.86, 0.76, 1.0)))
+	button.add_theme_stylebox_override("focus", _hero_select_frame_style("thumbnail", Color(1.12, 1.02, 0.78, 1.0)))
 	button.pressed.connect(func() -> void:
 		select_character.call(character_id)
 	)
@@ -4492,6 +4541,21 @@ func _card_hover_style() -> StyleBox:
 
 func _character_card_style() -> StyleBox:
 	return _ornate_frame_style(GLOBAL_CARD_FRAME_PATH, "card_frame")
+
+
+func _hero_select_frame_style(frame_type: String, tint := Color.WHITE) -> StyleBox:
+	var path: String = HERO_SELECT_FRAME_TEXTURES.get(frame_type, HERO_SELECT_FRAME_TEXTURES["dossier"])
+	var margins: Vector4 = HERO_SELECT_FRAME_MARGINS.get(frame_type, Vector4(40, 40, 40, 40))
+	var content: Vector4 = HERO_SELECT_FRAME_CONTENT.get(frame_type, Vector4(16, 16, 16, 16))
+	return _global_texture_style(path, margins, tint, content)
+
+
+func _apply_hero_select_button_frame(button: Button, frame_type: String) -> void:
+	button.add_theme_stylebox_override("normal", _hero_select_frame_style(frame_type))
+	button.add_theme_stylebox_override("hover", _hero_select_frame_style(frame_type, Color(1.12, 1.04, 0.82, 1.0)))
+	button.add_theme_stylebox_override("pressed", _hero_select_frame_style(frame_type, Color(0.88, 0.82, 0.74, 1.0)))
+	button.add_theme_stylebox_override("focus", _hero_select_frame_style(frame_type, Color(1.12, 1.04, 0.82, 1.0)))
+	button.add_theme_stylebox_override("disabled", _hero_select_frame_style(frame_type, Color(0.62, 0.62, 0.62, 1.0)))
 
 
 func _button_style(background: Color, _border: Color, _shadow_alpha := 0.38, _border_width := 2) -> StyleBox:

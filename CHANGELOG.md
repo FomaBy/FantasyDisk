@@ -20,11 +20,21 @@
 - UI buttons (SCRUM-263/SCRUM-264): стандартные action-кнопки используют единую высоту 104px; главное меню поднято до нового стандарта, широкие кнопки capped по визуальной ширине, а text-heavy choices в наградах/костре/событиях/upgrade показывают описание в отдельной рамке над короткой стандартной кнопкой.
 - Red & Gold Dragon buttons (SCRUM-273): добавлен live-кит из 15 button types × 4 states в `assets/sprites/ui/frames/red_gold/`, pipeline `tools/build_red_gold_button_kit.py`, contact preview `docs/design/previews/red_gold_button_kit_contact.png` и backup прежнего parchment/wax button kit в `build/cleanup_backup_red_gold_buttons_2026_06_14/`.
 - Ornate Dark frames (SCRUM-274): добавлен live-кит из 13 non-button frame assets в `assets/sprites/ui/frames/ornate/`, pipeline `tools/build_ornate_ui_frame_kit.py`, contact preview `docs/design/previews/ornate_dark_frame_kit_contact.png` и backup прежних leather/gold + dark_fantasy/escape panel textures в `build/cleanup_backup_ornate_frames_2026_06_14/`.
+- Hero Select frames (SCRUM-281): экран выбора героя получил отдельный herouiframe kit из 8 live PNG в `assets/sprites/ui/frames/hero_select/`, pipeline `tools/build_hero_select_frame_kit.py`, preview `docs/design/previews/hero_select_frame_kit_contact.png` и QA screenshots `build/qa/scrum281/hero_select_1280x720.png`, `hero_select_1920x1080.png`, `hero_select_2560x1440.png`.
+- Druid wolf summon animation assets (SCRUM-280): нарезаны reference sheets `docs/design/references/wolfanimate/` в 14 normalized 256x224 PNG frames, собран `assets/sprites/allies/ally_druid_wolf_spriteframes.tres` с `move` 8f/12fps loop и `attack` 6f/14fps no-loop; QA preview/gifs в `build/qa/druid_wolf_summon_animation/`.
 - Elite/boss VFX kit (SCRUM-261): добавлены 13 dedicated D&D/painterly PNG для `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`, summon portal, shield block, reflect-thorns aura, command aura, shadow blink mark и shard fan warning; preview `docs/design/previews/scrum261_elite_boss_vfx_contact.png`.
 - Unique weapon VFX kit (SCRUM-258): добавлен полный набор из 51 transparent PNG `assets/sprites/effects/vfx_weapon_<weapon_id>.png` для всех class weapon identities 0.1.5, contact/readability previews и focused smoke `tests/unique_weapon_vfx_assets_test.gd`.
 - Final balance audit (SCRUM-262): global damage smoke теперь проверяет не только combined solo/5-target DPS, но и финальный solo corridor ±20% плюс crowd-clear time 5/10/20 в коридоре ±30%; `tools/balance_harness.gd` пишет `build/balance_final_audit_0_1_5.md` с class viability и CCT таблицами для всех 51 class+weapon пар.
 
 ### Changed
+- Druid summon (SCRUM-279): `druid_beast` allies now use
+  `ally_druid_wolf_spriteframes.tres` in `AllyMinion` for looping movement,
+  one-shot attack playback and horizontal facing; static ally visuals remain as
+  fallback/other summon variants.
+- Combat HUD (SCRUM-278): in-run `LevelUpPlusButton` now uses bottom-right
+  anchoring, a fully opaque static style, and identical normal/hover/focus
+  styleboxes; runtime smoke verifies position, alpha, no hover restyle and
+  writes `build/qa/combat_level_up_button.md`.
 - Settings UI (SCRUM-275): вкладка «Управление» теперь прокручивается внутри
   `ControlsScroll` с `follow_focus`, поэтому переключатель прицеливания, все
   биндинги и кнопка сброса доступны на 1280x720, а кнопка «Назад» остается вне
@@ -49,6 +59,7 @@
 - Balance gates (SCRUM-262): финальная 0.1.5 сверка прошла без числовых правок оружия — худшее crowd-clear отклонение +22.0% (`doctor/plague_syringe`, 20 целей), внутри ±30%, каждый класс имеет минимум одно crowd-viable оружие.
 - UI theme (SCRUM-273): runtime button styleboxes теперь выбирают Red & Gold Dragon texture type по node name/role/size (`main_menu`, `hero_confirm`, `reset_audio`, `reset_bindings`, `codex_tab`, `attr_selector`, `back_s/m/l`, `fab`, `utility`, `pause`, `rebind`); non-button panels оставались отдельным scope и затем были заменены SCRUM-274.
 - UI frames (SCRUM-274): global/level/card/hero/hover/tooltip/HUD/timer styleboxes теперь используют signed texture/content margins из Ornate Dark spec sheet; Escape stats menu переведен на ornate pause/stat frames и Red & Gold pause buttons.
+- Hero Select layout (SCRUM-281): портрет, досье, radar reserve, radar panel, ascension controls и bottom thumbnail strip используют dedicated 9-slice frames; 720p safe-area исправлена так, чтобы back button и миниатюры не вылезали за экран, а `HeroSelectChooseButton` стал локальным compact hero-confirm 260x72.
 
 ## [0.1.4] — 2026-06-13
 

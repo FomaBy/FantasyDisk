@@ -43,6 +43,7 @@
 - Прицеливание имеет два runtime-режима. `nearest` оставляет автонаводку на ближайшего врага, `cursor` берет единые `Player.attack_aim_direction()` / `attack_aim_position()` для melee, projectiles, beams, deploys и point-AoE. Summoner commands в cursor mode выбирают цель рядом с точкой курсора.
 - Темный маг использует AoE projectile, DoT и beam; новые caster/control классы переиспользуют эти режимы с другими параметрами.
 - Гитарист и Друид используют sound wave / pulse / deployable amp/totem; Рейнджер использует deploy trap.
+- Друидский `druid_beast` summon использует `AllyMinion/AnimatedBody` с готовым `SpriteFrames`: `move` loop при движении/ожидании, `attack` one-shot при фактическом ударе и `flip_h` вправо по движению/атаке. Остальные ally visuals остаются статичными `Sprite2D` через fallback `Body`.
 - Временные эффекты оружия добавляются в cleanup groups (`player_weapon_effects`, `deployed_sound_amps`, projectiles/hazards).
 - Gameplay effects не должны использовать `SceneTreeTimer`; текущие длительные эффекты привязаны к node-bound tweens и уважают паузу.
 

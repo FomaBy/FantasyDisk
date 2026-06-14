@@ -5,6 +5,7 @@ func _initialize() -> void:
 	_test_player_animation()
 	_test_enemy_projectile_sprite()
 	_test_enemy_sprite_paths()
+	_test_druid_wolf_ally_animation()
 	_test_enemy_animation()
 	_test_flying_elite_boss_rigs()
 	_test_elite_attack_phase_animation()
@@ -622,6 +623,45 @@ func _test_enemy_sprite_paths() -> void:
 	if disk_boss_body.texture == null or disk_boss_body.texture.resource_path != "res://assets/sprites/bosses/boss_disk_devourer.png":
 		_fail("Expected BossDiskDevourer to use res://assets/sprites/bosses/boss_disk_devourer.png.")
 	disk_boss.queue_free()
+
+
+func _test_druid_wolf_ally_animation() -> void:
+	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
+	var ally := ally_scene.instantiate()
+	root.add_child(ally)
+	ally.call("set_visual_id", "druid_beast")
+
+	var body := ally.get_node("Body") as Sprite2D
+	var animated_body := ally.get_node("AnimatedBody") as AnimatedSprite2D
+	if body.visible:
+		_fail("Expected druid_beast to hide the static ally fallback body.")
+	if not animated_body.visible or not ally.call("is_using_animated_ally_visual"):
+		_fail("Expected druid_beast to use AnimatedSprite2D.")
+	if animated_body.sprite_frames == null:
+		_fail("Expected druid_beast AnimatedSprite2D to have SpriteFrames.")
+	if not animated_body.sprite_frames.has_animation("move") or not animated_body.sprite_frames.has_animation("attack"):
+		_fail("Expected druid_beast SpriteFrames to expose move and attack animations.")
+	if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6:
+		_fail("Expected druid_beast move/attack frame counts to match the Design handoff.")
+	if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack"):
+		_fail("Expected druid_beast move to loop and attack to be one-shot.")
+	if animated_body.animation != "move" or not animated_body.is_playing():
+		_fail("Expected druid_beast to start in playing move animation.")
+
+	ally.set("velocity", Vector2(120, 0))
+	ally.call("_update_visual_animation")
+	if not animated_body.flip_h:
+		_fail("Expected druid_beast to flip horizontally when moving right.")
+	ally.call("_play_attack_animation", Vector2.LEFT)
+	if animated_body.animation != "attack" or animated_body.flip_h:
+		_fail("Expected druid_beast attack animation to face the attack direction.")
+
+	ally.call("set_visual_id", "druid_pack_spirit")
+	if animated_body.visible or not body.visible:
+		_fail("Expected non-wolf allies to keep the static Body visual.")
+	if body.texture == null or body.texture.resource_path != "res://assets/sprites/allies/ally_druid_pack_spirit.png":
+		_fail("Expected druid_pack_spirit to keep its static ally texture.")
+	ally.queue_free()
 
 
 func _test_enemy_animation() -> void:

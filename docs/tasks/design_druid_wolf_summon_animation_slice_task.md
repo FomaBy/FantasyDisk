@@ -1,6 +1,6 @@
 # ART: Нарезка анимации волка-призыва друида (move + attack) из референсов
 
-Статус: in_progress
+Статус: review
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -42,9 +42,52 @@ Jira: SCRUM-280
    игровой масштаб — для задачи интеграции (парная: SCRUM-279).
 
 ## Acceptance Criteria
-- [ ] SpriteFrames волка с "move"(8)/"attack"(6), trimmed, единый pivot, игровой масштаб.
-- [ ] Ассеты в assets/sprites/allies/; превью-гиф/скрин в build/qa/.
-- [ ] Параметры переданы в парную backend-задачу; CHANGELOG; content_registry.
+- [x] SpriteFrames волка с "move"(8)/"attack"(6), trimmed, единый pivot, игровой масштаб.
+- [x] Ассеты в assets/sprites/allies/; превью-гиф/скрин в build/qa/.
+- [x] Параметры переданы в парную backend-задачу; CHANGELOG; content_registry.
 
 ## Документация
 docs/design/content_registry.md (союзники друида), current_game_state.
+
+## Result 2026-06-14
+
+Готово к Backend integration / QA review.
+
+Output assets:
+
+- `assets/sprites/allies/ally_druid_wolf_spriteframes.tres`
+- `assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png` ...
+  `ally_druid_wolf_move_07.png`
+- `assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png` ...
+  `ally_druid_wolf_attack_05.png`
+
+Animation handoff:
+
+- `move`: 8 frames, loop=true, speed=12fps.
+- `attack`: 6 frames, loop=false, speed=14fps.
+- Canvas: 256x224 per frame.
+- Pivot handoff: bottom-center `(128, 204)`.
+- Runtime scale recommendation: `0.34` on `AnimatedSprite2D`, matching the
+  current static `Sprite2D Body` scale.
+- Source wolf faces left; Back-end should flip_h when moving/attacking right.
+
+Pipeline/QA:
+
+- `tools/build_druid_wolf_animation_assets.py` removes baked checkerboard,
+  segments wolves by alpha components, normalizes each frame to the shared
+  canvas, and writes preview gifs.
+- `tools/build_druid_wolf_spriteframes.gd` saves the native Godot
+  `SpriteFrames` resource.
+- QA artifacts:
+  `build/qa/druid_wolf_summon_animation/ally_druid_wolf_frames_contact.png`,
+  `ally_druid_wolf_move.gif`, `ally_druid_wolf_attack.gif`,
+  `ally_druid_wolf_manifest.md`.
+
+Validation:
+
+- Generated frame count: 14 PNG + 14 `.import`.
+- `ally_druid_wolf_spriteframes.tres` contains `move` 8f and `attack` 6f.
+- Visual self-QA: contact sheet checked; initial grid-slice crop defect in
+  attack frames was fixed by component-based segmentation.
+- `tests/animation_smoke_test.gd` PASS.
+- `tests/runtime_smoke_test.gd` PASS.

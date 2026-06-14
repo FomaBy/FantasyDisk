@@ -9,6 +9,13 @@ const ALLY_VISUAL_PATHS := {
 	"homunculus": "res://assets/sprites/allies/ally_homunculus.png",
 	"leadership_echo": "res://assets/sprites/allies/ally_leadership_echo.png",
 }
+const ANIMATED_ALLY_VISUALS := {
+	"druid_beast": {
+		"frames": "res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres",
+		"scale": Vector2(0.34, 0.34),
+		"position": Vector2(0.0, -31.0),
+	},
+}
 const FALLBACK_ALLY_VISUAL_ID := "druid_beast"
 
 @export var move_speed := 230.0
@@ -24,6 +31,8 @@ const FALLBACK_ALLY_VISUAL_ID := "druid_beast"
 @export var support_heal_percent := 0.0
 
 var _attack_cooldown := 0.0
+var _attack_anim_time := 0.0
+var _last_facing_right := false
 var owner_node: Node2D = null
 var command_target: Node2D = null
 var health := 18.0
@@ -62,18 +71,46 @@ func take_damage(amount: float) -> void:
 
 func _apply_visual() -> void:
 	var body := get_node_or_null("Body") as Sprite2D
+	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
 	if body == null:
 		return
 	var path := str(ALLY_VISUAL_PATHS.get(ally_visual_id, ALLY_VISUAL_PATHS[FALLBACK_ALLY_VISUAL_ID]))
 	var texture := load(path) as Texture2D
 	if texture != null:
 		body.texture = texture
+	body.visible = true
+
+	if animated_body == null:
+		return
+	if not ANIMATED_ALLY_VISUALS.has(ally_visual_id):
+		animated_body.visible = false
+		animated_body.stop()
+		return
+
+	var animated_config: Dictionary = ANIMATED_ALLY_VISUALS[ally_visual_id]
+	var frames := load(str(animated_config.get("frames", ""))) as SpriteFrames
+	if frames == null or not frames.has_animation("move") or not frames.has_animation("attack"):
+		animated_body.visible = false
+		animated_body.stop()
+		return
+
+	animated_body.sprite_frames = frames
+	animated_body.scale = animated_config.get("scale", Vector2(0.34, 0.34))
+	animated_body.position = animated_config.get("position", Vector2(0.0, -31.0))
+	animated_body.visible = true
+	animated_body.flip_h = _last_facing_right
+	body.visible = false
+	if animated_body.animation != "move":
+		animated_body.animation = "move"
+	if not animated_body.is_playing():
+		animated_body.play("move")
 
 
 func _physics_process(delta: float) -> void:
 	StatusEffects.tick(self, delta)
 	lifetime -= delta
 	_attack_cooldown -= delta
+	_attack_anim_time = maxf(_attack_anim_time - delta, 0.0)
 	if lifetime <= 0.0:
 		queue_free()
 		return
@@ -82,6 +119,7 @@ func _physics_process(delta: float) -> void:
 	if target == null:
 		_follow_guard_position()
 		move_and_slide()
+		_update_visual_animation()
 		return
 
 	var to_target := target.global_position - global_position
@@ -92,6 +130,7 @@ func _physics_process(delta: float) -> void:
 		velocity = to_target.normalized() * move_speed * StatusEffects.speed_multiplier(self)
 
 	move_and_slide()
+	_update_visual_animation()
 
 
 func _find_closest_enemy() -> Node2D:
@@ -141,3 +180,40 @@ func _try_attack(target: Node2D) -> void:
 		owner_node.heal_percent(support_heal_percent)
 
 	_attack_cooldown = attack_interval
+	_play_attack_animation(target.global_position - global_position)
+
+
+func _update_visual_animation() -> void:
+	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
+	if animated_body == null or not animated_body.visible:
+		return
+
+	if absf(velocity.x) > 1.0:
+		_last_facing_right = velocity.x > 0.0
+	animated_body.flip_h = _last_facing_right
+
+	if _attack_anim_time > 0.0:
+		if animated_body.animation != "attack":
+			animated_body.play("attack")
+		return
+
+	if animated_body.animation != "move":
+		animated_body.play("move")
+	elif not animated_body.is_playing():
+		animated_body.play("move")
+
+
+func _play_attack_animation(direction: Vector2 = Vector2.ZERO) -> void:
+	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
+	if animated_body == null or not animated_body.visible:
+		return
+	if absf(direction.x) > 0.01:
+		_last_facing_right = direction.x > 0.0
+	animated_body.flip_h = _last_facing_right
+	_attack_anim_time = 0.44
+	animated_body.play("attack")
+
+
+func is_using_animated_ally_visual() -> bool:
+	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
+	return animated_body != null and animated_body.visible

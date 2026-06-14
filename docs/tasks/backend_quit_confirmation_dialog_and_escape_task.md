@@ -1,12 +1,13 @@
 # UX: Подтверждение выхода из игры + выход по Escape из главного меню
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-319
+Блокируется: активные незакоммиченные UI-правки SCRUM-281 в `scripts/ui_screens.gd` / `tests/runtime_smoke_test.gd`; dispatch в Back-end после завершения/QA SCRUM-281 или явного PM override.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -21,6 +22,14 @@ Jira: SCRUM-319
 - Escape (KEY_ESCAPE) замаплен на действие «Пауза» (main.gd:288) — в главном меню
   не обрабатывается.
 - В проекте уже есть паттерн подтверждения (end_run_confirm, ui_screens.gd:1810).
+
+## Dispatcher Note
+2026-06-14: задача оформлена для текущего sprint `0.1.5`, но временно удержана
+как `blocked`, чтобы Back-end не редактировал `scripts/ui_screens.gd` и
+`tests/runtime_smoke_test.gd` поверх активного результата SCRUM-281. После
+завершения/QA SCRUM-281 или явного PM override dispatcher должен снять blocker и
+передать задачу в существующий Back-end thread
+`019eabd9-780b-78a2-9f4b-e7203d659ef2` с High reasoning/no low.
 
 ## Требования
 1. Диалог подтверждения выхода (в стиле игры, тёмное фэнтези — НЕ дефолтный

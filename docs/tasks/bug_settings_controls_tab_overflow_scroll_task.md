@@ -75,3 +75,33 @@ Verification:
 Docs:
 - `CHANGELOG.md`
 - `docs/design/current_game_state.md`
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: dd8377bf (ветка dev)
+
+Проверено (фактически):
+- **Код**: вкладка «Управление» (ui_screens.gd:1517+) обёрнута в `ControlsScroll`
+  (ScrollContainer, `horizontal_scroll_mode=DISABLED` 1518, `follow_focus=true`
+  1520) → `ControlsContent`-VBox со всеми рядами (Прицеливание + 6 ребиндов
+  `INPUT_ACTIONS` + `SettingsResetBindingsButton`). «Назад» — вне скролла.
+- **Целевые smoke-ассерты не пустышка** (runtime_smoke:4339-4357): `ControlsScroll`
+  оборачивает `ControlsContent`, vertical-only, `follow_focus`, содержит
+  `SettingsAimModeOption` и `SettingsResetBindingsButton`.
+- **Прогон (зелёный билд)**: `runtime_smoke` + `runtime_smoke_ui` +
+  `ui_no_overlap_matrix` (1152/1280/1469/2560) + `aim_mode_settings_test` — все
+  passed.
+- **Визуал** (`build/qa/settings_scroll/controls_tab.png`): элементы помещаются в
+  рамке вкладки, «Назад» виден, контент прокручивается. QA-дамп
+  `build/qa/settings_controls_scroll.md` присутствует.
+
+Acceptance:
+- [x] Вкладка прокручивается; все элементы доступны на 1280×720/оконных.
+- [x] Скролл + авто-прокрутка к фокусу (`follow_focus`) — клавиатура/геймпад.
+- [x] «Назад» не перекрыта; no-overlap; smoke зелёные; скрин/дамп; CHANGELOG.
+
+Примечание: первичный прогон ловил red (main menu/hero_select) — это была
+ТРАНЗИЕНТНАЯ churn активного воркера SCRUM-281 (Hero Select frames, mid-edit
+ui_screens.gd), НЕ дефект скролла; после стабилизации — зелёно.
+
+Баги: нет.

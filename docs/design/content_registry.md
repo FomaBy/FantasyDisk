@@ -271,6 +271,7 @@ SCRUM-152 Design pass 2026-06-12 добавил канонический raster-
 | --- | --- | --- | --- |
 | `ally_druid_beast` | Базовый питомец Друида / fallback `AllyMinion` | `assets/sprites/allies/ally_druid_beast.png` | Подключен как fallback и один из runtime вариантов `summon_amulet` |
 | `ally_druid_pack_spirit` | Вариант стаи Друида / ultimate pack visual | `assets/sprites/allies/ally_druid_pack_spirit.png` | Подключен как runtime вариант `summon_amulet` через `ally_visual_ids` |
+| `ally_druid_wolf_spriteframes` | Анимированный волк Друида / runtime frames for `druid_beast` | `assets/sprites/allies/ally_druid_wolf_spriteframes.tres` + `assets/sprites/allies/druid_wolf/ally_druid_wolf_{move,attack}_*.png` | Подключен в `AllyMinion`: `move` 8f/12fps loop, `attack` 6f/14fps no-loop, scale `0.34`, flip вправо по движению/атаке |
 | `ally_homunculus` | Химикский гомункул от `homunculus_vial` | `assets/sprites/allies/ally_homunculus.png` | Подключен через `ally_visual_id: homunculus` |
 | `ally_leadership_echo` | Призрачный союзник/эхо от Leadership | `assets/sprites/allies/ally_leadership_echo.png` | Зарезервирован в `AllyMinion` visual map для future Leadership echo |
 | `deploy_sound_amp_field` | Полевой объект ампа Гитариста | `assets/sprites/allies/deploy_sound_amp_field.png` | Подключен как `deploy_texture_path` для `sound_amp` |

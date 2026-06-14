@@ -1,0 +1,71 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png" id="1_iflah"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png" id="2_5krax"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png" id="3_l6fja"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png" id="4_6vayj"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png" id="5_ejdwn"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png" id="6_tbpbg"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png" id="7_e4hin"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png" id="8_cca1s"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png" id="9_005u5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png" id="10_wcgb5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png" id="11_s5otq"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png" id="12_ndh8s"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png" id="13_p133d"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png" id="14_tg3y7"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_iflah")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_5krax")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_l6fja")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_6vayj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ejdwn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_tbpbg")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_e4hin")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_cca1s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_005u5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_wcgb5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_s5otq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_ndh8s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_p133d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_tg3y7")
+}],
+"loop": true,
+"name": &"move",
+"speed": 12.0
+}]

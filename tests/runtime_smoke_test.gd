@@ -727,6 +727,48 @@ func _initialize() -> void:
 		push_error("Expected level-up to show a persistent + button.")
 		quit(1)
 		return
+	await process_frame
+	var level_up_plus_rect := level_up_plus.get_global_rect()
+	var level_up_viewport_size := main.get_viewport().get_visible_rect().size
+	if level_up_plus.anchor_left != 1.0 or level_up_plus.anchor_right != 1.0 or level_up_plus.anchor_top != 1.0 or level_up_plus.anchor_bottom != 1.0:
+		push_error("Expected combat level-up return button to use bottom-right anchors.")
+		quit(1)
+		return
+	if level_up_plus_rect.get_center().x < level_up_viewport_size.x * 0.68 or level_up_plus_rect.get_center().y < level_up_viewport_size.y * 0.74:
+		push_error("Expected combat level-up return button to sit in the bottom-right corner, got %s in viewport %s." % [level_up_plus_rect, level_up_viewport_size])
+		quit(1)
+		return
+	if absf(level_up_plus.modulate.a - 1.0) > 0.001:
+		push_error("Expected combat level-up return button modulate alpha to be fully opaque.")
+		quit(1)
+		return
+	var plus_normal_style := level_up_plus.get_theme_stylebox("normal")
+	if plus_normal_style == null or plus_normal_style != level_up_plus.get_theme_stylebox("hover") or plus_normal_style != level_up_plus.get_theme_stylebox("focus"):
+		push_error("Expected combat level-up return button hover/focus stylebox to match normal stylebox.")
+		quit(1)
+		return
+	if plus_normal_style is StyleBoxFlat and (plus_normal_style as StyleBoxFlat).bg_color.a < 0.999:
+		push_error("Expected combat level-up return button background style to be opaque.")
+		quit(1)
+		return
+	var plus_layout_controls := [level_up_plus]
+	for control in _visible_hud_top_controls(main):
+		plus_layout_controls.append(control)
+	var upgrade_fab := main.find_child("UpgradeFabButton", true, false) as Control
+	if upgrade_fab != null and upgrade_fab.visible:
+		plus_layout_controls.append(upgrade_fab)
+	var plus_overlap := _first_control_overlap(plus_layout_controls, 2.0)
+	if not plus_overlap.is_empty():
+		push_error("Expected combat level-up return button not to overlap HUD controls, got %s." % plus_overlap)
+		quit(1)
+		return
+	var level_up_badge_panel := level_up_plus.find_child("LevelUpPlusBadgePanel", true, false) as Control
+	var qa_dir_level_up := ProjectSettings.globalize_path("res://build/qa")
+	DirAccess.make_dir_recursive_absolute(qa_dir_level_up)
+	var level_up_dump := FileAccess.open("%s/combat_level_up_button.md" % qa_dir_level_up, FileAccess.WRITE)
+	if level_up_dump != null:
+		level_up_dump.store_string("# Combat Level-Up Return Button\n\n- Viewport: `%s`\n- Button: `%s`\n- Badge: `%s`\n- Alpha: `%.3f`\n- HoverSameAsNormal: `%s`\n" % [str(level_up_viewport_size), str(level_up_plus_rect), str(level_up_badge_panel.get_global_rect() if level_up_badge_panel != null else Rect2()), level_up_plus.modulate.a, str(plus_normal_style == level_up_plus.get_theme_stylebox("hover"))])
+		level_up_dump.close()
 	var level_up_toast := main.find_child("LevelUpToast", true, false)
 	if level_up_toast == null:
 		push_error("Expected level-up to play a placeholder toast animation.")
@@ -5273,6 +5315,11 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 		if texture_path.contains("ui_btn_red_gold_rebind"):
 			if button.custom_minimum_size.y < 62.0:
 				_fail("Expected rebind/dropdown button %s on %s to use at least 62px height, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
+		if texture_path.contains("ui_btn_red_gold_hero_confirm") and button.name == "HeroSelectChooseButton":
+			if button.custom_minimum_size.y < 72.0:
+				_fail("Expected compact hero select confirm button %s on %s to keep at least 72px height, got min=%s." % [button.name, context, button.custom_minimum_size])
 				return
 			continue
 		if rect.size.y < 64.0 or button.custom_minimum_size.y < 64.0:

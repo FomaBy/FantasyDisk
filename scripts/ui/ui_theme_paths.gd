@@ -180,7 +180,7 @@ const RED_GOLD_BUTTON_CONTENT := {
 	"standard": Vector4(76, 14, 76, 14),
 	"max": Vector4(82, 14, 82, 14),
 	"main_menu": Vector4(76, 14, 76, 14),
-	"hero_confirm": Vector4(70, 14, 70, 14),
+	"hero_confirm": Vector4(54, 14, 54, 14),
 	"reset_audio": Vector4(76, 14, 76, 14),
 	"reset_bindings": Vector4(78, 14, 78, 14),
 	"codex_tab": Vector4(50, 14, 50, 14),

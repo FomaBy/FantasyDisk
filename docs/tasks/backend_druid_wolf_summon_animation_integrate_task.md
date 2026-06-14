@@ -1,13 +1,14 @@
 # Backend: Интеграция анимации волка-призыва друида (move/attack в AllyMinion)
 
-Статус: blocked
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (анимации)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-279
-Блокируется: SCRUM-280 (нарезка SpriteFrames волка)
+Блокер снят: SCRUM-280 подготовил SpriteFrames волка.
+Dispatch: 2026-06-14 -> Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -53,3 +54,28 @@ design_druid_wolf_summon_animation_slice (SCRUM-280).
 
 ## Документация
 docs/design/systems/combat.md (союзники/призывы), current_game_state.
+
+## Design Handoff Update 2026-06-14
+
+SCRUM-280 готов. Использовать:
+
+- SpriteFrames: `res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres`
+- Source frame PNGs: `res://assets/sprites/allies/druid_wolf/`
+- Animations:
+  - `move`: 8 frames, loop=true, 12fps;
+  - `attack`: 6 frames, loop=false, 14fps.
+- Canvas: 256x224.
+- Pivot handoff: bottom-center `(128, 204)`.
+- Runtime scale recommendation: `0.34` on `AnimatedSprite2D`.
+- Source art faces left; flip horizontally for right-facing movement/attack.
+- Static `ally_druid_beast.png` remains fallback and must not be deleted.
+- QA previews: `build/qa/druid_wolf_summon_animation/`.
+
+## Dispatcher Note 2026-06-14
+
+SCRUM-279 dispatched to existing Back-end thread
+`019eabd9-780b-78a2-9f4b-e7203d659ef2` after SCRUM-280 recorded ready
+SpriteFrames. Back-end owns technical integration/tests/docs; if the integration
+reveals movement naturalness, pivot retiming, attack pose polish,
+AnimationPlayer/AnimationTree setup, or VFX timing sync beyond simple
+SpriteFrames playback, create/update an Animator handoff.
