@@ -52,8 +52,10 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   future sheet path is `assets/sprites/characters/<class_id>_sheet.png`, default
   cell size is `384x384`, preferred sheet is `1920x1152` with rows
   `idle` / `walk` / `attack_primary` (5 frames each). Base character sheets are
-  unarmed; weapon visuals stay in socket/weapon assets. Runtime loading and
-  motion validation remain Back-end/Animator-owned.
+  unarmed; weapon visuals stay in socket/weapon assets. Back-end now probes that
+  path at character configure time, builds `idle`/`walk`/`attack_primary` and
+  runtime `attack` SpriteFrames when a sheet exists, and otherwise falls back to
+  the old cutout/static character visuals.
 - Movement facing — отдельно от attack targeting.
 - Attack direction приходит из weapon targeting и не перетирается velocity.
 - `WeaponSocket` используется для attached weapons и должен оставаться совместимым с анимацией.

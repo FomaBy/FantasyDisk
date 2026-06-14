@@ -1069,7 +1069,7 @@
  },
  "art_unified_character_style_anim_spec_task.md": {
   "key": "SCRUM-298",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_main_menu_background_new_bosses_battle_task.md": {
   "key": "SCRUM-316",
@@ -1209,7 +1209,7 @@
  },
  "backend_full_frame_animation_state_registry_task.md": {
   "key": "SCRUM-351",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_enemy_elite_boss_full_frame_animation_sheets_task.md": {
   "key": "SCRUM-352",

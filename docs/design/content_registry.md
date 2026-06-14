@@ -107,8 +107,9 @@ sheets: `docs/design/references/character_animation_style_sheet_0_1_5.md`.
 Персонажные redraw-задачи должны класть unarmed sheet по пути
 `assets/sprites/characters/<class_id>_sheet.png`, cell `384x384`, 5 кадров
 `walk` и 5 кадров `attack_primary` минимум; preferred sheet — `1920x1152` с
-дополнительной строкой `idle`. Runtime registry/player wiring и motion timing
-остаются Back-end/Animator scope.
+дополнительной строкой `idle`. Runtime wiring готов: `Player` автоматически
+подхватывает этот путь при наличии sheet, добавляет runtime alias `attack` для
+`attack_primary` и сохраняет static/cutout fallback для неперерисованных классов.
 
 | ID | Тип | Где используется | Назначение | Статус |
 | --- | --- | --- | --- | --- |

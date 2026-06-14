@@ -1,11 +1,12 @@
 # Design handoff: enemy, elite, and boss full-frame animation sheets
 
-Статус: blocked
+Статус: new
 Приоритет: high
+Роль: Animator (Codex)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: Animator audit `animation_full_frame_pipeline_coverage_audit_task.md`
-Исполнитель: Design (Codex/Designer)
+Исполнитель: Animator (Codex)
 Jira: SCRUM-352
 Parent: SCRUM-350 / `animation_full_frame_pipeline_coverage_audit_task.md`
 

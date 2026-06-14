@@ -256,9 +256,11 @@ SCRUM-298 добавил Design standard для следующей волны pl
 `docs/design/references/character_animation_style_sheet_0_1_5.md`. Будущие
 redraw-задачи используют unarmed `assets/sprites/characters/<class_id>_sheet.png`,
 cell `384x384`, минимум 5 `walk` + 5 `attack_primary` кадров, preferred
-`1920x1152` sheet с дополнительной строкой `idle`. Это пока стандарт и handoff
-граница; runtime builder/player playback и motion validation остаются отдельным
-Back-end/Animator scope.
+`1920x1152` sheet с дополнительной строкой `idle`. Back-end runtime уже
+подготовлен: `Player._character_sheet_sprite_frames()` проверяет этот путь,
+строит `idle`/`walk`/`attack_primary` и alias `attack`, а при отсутствии листа
+сохраняет старый cutout/static fallback без краша. Motion quality и финальные
+листы остаются за Animator/Design задачами.
 
 SCRUM-193 cleanup 2026-06-13: старые `*_placeholder.png` для Assassin/Chemist/Doctor/Druid/Knight/Ranger отсутствуют в активной папке персонажей; backup сохранен в `build/cleanup_backup_2026_06_13/`. Канонические source sprites персонажей — только `assets/sprites/characters/<class_id>.png`, а runtime cutout-части — `assets/sprites/characters/cutout/`.
 
