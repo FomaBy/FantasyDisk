@@ -6,6 +6,7 @@
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
 Версия: 0.1.5
 Jira: covered by SCRUM-373
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил изменения в рамках этой задачи. Работать автономно, не ждать дополнительных подтверждений.
@@ -44,3 +45,25 @@ The generated source was accepted as the reference, postprocessed into the
 production unified frame kit under `assets/sprites/ui/frames/unified/`, validated
 with Pillow/Godot import, documented, and handed off to Back-end for runtime
 integration in `backend_unified_master_frame_system_projectwide_integration_task.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (covered by SCRUM-373)
+
+Проверено (фактически):
+- **Source reference** `ui_frame_unified_master_reference.png` `1024×1024` существует
+  (RGB на chroma-фоне по промпту, постобработан в прозрачный production-master).
+- **Production-кит** `assets/sprites/ui/frames/unified/ui_frame_unified_master.png`
+  (+ 5 сопутствующих ассетов) на месте — принят/доработан и **полностью
+  верифицирован в QA-вердикте SCRUM-373** (6 ассетов, 9-slice метаданные, контактлист,
+  Godot import чист).
+- Runtime-интеграция делегирована Back-end (`backend_unified_master_frame_system_
+  projectwide_integration_task.md` / SCRUM-382, «new») — вне scope этой задачи.
+
+Acceptance:
+- [x] PNG из references просмотрен и принят (→ production master).
+- [x] Финальный ассет со стабильным именем в правильной `assets/sprites/ui/frames/unified/`.
+- [x] `.import` без лишних правок; Godot import чист (373).
+- [x] Jira/task синканы.
+
+Вывод: задача-запись генератора, полностью покрыта SCRUM-373 (не дублируется).
+Баги: нет.

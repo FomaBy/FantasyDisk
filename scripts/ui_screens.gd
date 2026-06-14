@@ -30,6 +30,8 @@ const GLOBAL_HUD_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_HUD_PANEL_FRAME_PATH
 const GLOBAL_HUD_CARD_FRAME_PATH := UIThemePaths.GLOBAL_HUD_CARD_FRAME_PATH
 const GLOBAL_TOOLTIP_FRAME_PATH := UIThemePaths.GLOBAL_TOOLTIP_FRAME_PATH
 const GLOBAL_TIMER_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_TIMER_PANEL_FRAME_PATH
+const UNIFIED_FRAME_TEXTURE_MARGINS := UIThemePaths.UNIFIED_FRAME_TEXTURE_MARGINS
+const UNIFIED_FRAME_CONTENT := UIThemePaths.UNIFIED_FRAME_CONTENT
 const ORNATE_FRAME_MARGINS := UIThemePaths.ORNATE_FRAME_MARGINS
 const ORNATE_FRAME_CONTENT := UIThemePaths.ORNATE_FRAME_CONTENT
 const RED_GOLD_BUTTON_TEXTURES := UIThemePaths.RED_GOLD_BUTTON_TEXTURES
@@ -5410,27 +5412,27 @@ func _make_section_label(text: String) -> Label:
 
 
 func _panel_style() -> StyleBox:
-	return _ornate_frame_style(GLOBAL_PANEL_FRAME_PATH, "global_panel")
+	return _unified_frame_style("global_panel")
 
 
 func _level_up_panel_style() -> StyleBox:
-	return _ornate_frame_style(GLOBAL_LEVEL_PANEL_FRAME_PATH, "level_panel", Color(1.08, 1.03, 1.10, 1.0))
+	return _unified_frame_style("level_panel", Color(1.08, 1.03, 1.10, 1.0))
 
 
 func _level_up_hero_style() -> StyleBox:
-	return _ornate_frame_style(GLOBAL_HERO_CARD_FRAME_PATH, "hero_card", Color(0.82, 1.06, 1.10, 1.0))
+	return _unified_frame_style("hero_card", Color(0.82, 1.06, 1.10, 1.0))
 
 
 func _hero_portrait_style() -> StyleBox:
-	return _ornate_frame_style(GLOBAL_HERO_CARD_FRAME_PATH, "hero_card", Color(1.08, 0.98, 0.76, 1.0))
+	return _unified_frame_style("hero_card", Color(1.08, 0.98, 0.76, 1.0))
 
 
 func _card_hover_style() -> StyleBox:
-	return _ornate_frame_style(GLOBAL_CARD_HOVER_FRAME_PATH, "card_hover", Color(1.10, 1.02, 0.74, 1.0))
+	return _unified_frame_style("card_hover", Color(1.08, 1.08, 1.08, 1.0))
 
 
 func _character_card_style() -> StyleBox:
-	return _ornate_frame_style(GLOBAL_CARD_FRAME_PATH, "card_frame")
+	return _unified_frame_style("card_frame")
 
 
 func _hero_select_frame_style(frame_type: String, tint := Color.WHITE) -> StyleBox:

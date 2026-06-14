@@ -4,16 +4,38 @@ extends RefCounted
 const DF_FRAME_DIR := "res://assets/sprites/ui/frames/dark_fantasy/"
 const RED_GOLD_BUTTON_DIR := "res://assets/sprites/ui/frames/red_gold/"
 const ORNATE_FRAME_DIR := "res://assets/sprites/ui/frames/ornate/"
-const GLOBAL_PANEL_FRAME_PATH := ORNATE_FRAME_DIR + "ui_frame_ornate_global_panel.png"
+const UNIFIED_FRAME_DIR := "res://assets/sprites/ui/frames/unified/"
+const UNIFIED_MASTER_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master.png"
+const UNIFIED_MASTER_FILL_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master_fill.png"
+const UNIFIED_INNER_FILL_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_inner_fill.png"
+const UNIFIED_ORNAMENT_TOP_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_ornament_top.png"
+const UNIFIED_ORNAMENT_BOTTOM_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_ornament_bottom.png"
+const UNIFIED_HOVER_OVERLAY_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_hover_overlay.png"
+const UNIFIED_FRAME_SOURCE_SIZE := Vector2i(1024, 1024)
+const UNIFIED_FRAME_TEXTURE_MARGINS := Vector4(128, 128, 128, 128)
+const UNIFIED_FRAME_SAFE_RECT := Rect2(132, 132, 760, 760)
+const UNIFIED_FRAME_CONTENT := {
+	"global_panel": Vector4(28, 26, 28, 26),
+	"level_panel": Vector4(34, 30, 34, 30),
+	"card_frame": Vector4(12, 10, 12, 10),
+	"hero_card": Vector4(12, 10, 12, 10),
+	"card_hover": Vector4(18, 14, 18, 14),
+	"tooltip": Vector4(18, 16, 18, 16),
+	"hud_panel": Vector4(10, 9, 10, 9),
+	"hud_card": Vector4(8, 7, 8, 7),
+	"timer_panel": Vector4(14, 4, 14, 4),
+}
+
+const GLOBAL_PANEL_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
 const GLOBAL_BUTTON_FRAME_PATH := RED_GOLD_BUTTON_DIR + "ui_btn_red_gold_standard.png"
-const GLOBAL_CARD_FRAME_PATH := ORNATE_FRAME_DIR + "ui_frame_ornate_card_frame.png"
-const GLOBAL_HERO_CARD_FRAME_PATH := ORNATE_FRAME_DIR + "ui_frame_ornate_hero_card.png"
-const GLOBAL_CARD_HOVER_FRAME_PATH := ORNATE_FRAME_DIR + "ui_frame_ornate_card_hover.png"
-const GLOBAL_LEVEL_PANEL_FRAME_PATH := ORNATE_FRAME_DIR + "ui_frame_ornate_level_panel.png"
-const GLOBAL_HUD_PANEL_FRAME_PATH := ORNATE_FRAME_DIR + "ui_frame_ornate_hud_panel.png"
-const GLOBAL_HUD_CARD_FRAME_PATH := ORNATE_FRAME_DIR + "ui_frame_ornate_hud_card.png"
-const GLOBAL_TOOLTIP_FRAME_PATH := ORNATE_FRAME_DIR + "ui_frame_ornate_tooltip.png"
-const GLOBAL_TIMER_PANEL_FRAME_PATH := ORNATE_FRAME_DIR + "ui_frame_ornate_timer_panel.png"
+const GLOBAL_CARD_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
+const GLOBAL_HERO_CARD_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
+const GLOBAL_CARD_HOVER_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
+const GLOBAL_LEVEL_PANEL_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
+const GLOBAL_HUD_PANEL_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
+const GLOBAL_HUD_CARD_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
+const GLOBAL_TOOLTIP_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
+const GLOBAL_TIMER_PANEL_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
 
 const ORNATE_FRAME_MARGINS := {
 	"global_panel": Vector4(34, 34, 34, 34),
