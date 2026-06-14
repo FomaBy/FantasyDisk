@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-342
+QA: in_progress (2026-06-14)
 Связано: SCRUM-333 (мастер-лейаут выбора героя, done), SCRUM-320 (рамка карусели)
 
 ## Autonomy / Approval
@@ -60,3 +61,25 @@ docs/design/systems/menus_ui.md, current_game_state.
 - Verification:
   - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
   - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Rect-dump** `build/qa/scrum281/hero_select_capture_rects.md` @1280×720:
+  `HeroThumbnail_berserk` = `S(49×66)` — портретные (высокие) слоты вместо прежних
+  плоских 124×88, герои читаются; миниатюра `P(207,585)` внутри strip-контента
+  `P(128,534) S(1024,170)` (content-зона, не на орнаменте).
+- **Код**: `HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE := Vector4(72,36,72,36)`
+  (сжатые верт. паддинги) + separation уменьшен.
+- **Визуал** `build/qa/cap_hero_select.png`: ряд героев в карусели крупнее, влезает,
+  не наезжает на рамку.
+- **Тесты**: `runtime_smoke_test` PASS, `ui_no_overlap_matrix_test` PASS
+  (1280×720/1600×900/2560×1440).
+
+Acceptance:
+- [x] Иконки крупнее (портретные слоты), отступы/separation уменьшены.
+- [x] Единый размер, ряд влезает, hover/tooltip/выбор целы (smoke).
+- [x] Контент в content-зоне; smoke + no-overlap зелёные; скрин.
+
+Баги: нет.

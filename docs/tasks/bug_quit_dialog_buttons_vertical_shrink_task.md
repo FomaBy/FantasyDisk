@@ -7,7 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-344
-QA: in_progress (2026-06-14)
+QA: passed (2026-06-14, dev green build)
 Связано: SCRUM-319 (диалог подтверждения выхода)
 
 ## Autonomy / Approval
