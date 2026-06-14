@@ -70,3 +70,33 @@ Verification:
 - `Godot --headless --script res://tests/summoner_strengthening_test.gd` — PASS
 - `Godot --headless --script res://tests/runtime_smoke_boss_elite_test.gd` — PASS
 - `Godot --headless --script res://tests/runtime_smoke_test.gd` — PASS
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически) — death-lifecycle с защитой инвариантов:
+- **Once-only guard** (enemy.gd:218): `if _death_lifecycle_started: return` в начале
+  `take_damage` — повторный урон по умирающему НИЧЕГО не делает (нет двойной смерти/
+  наград/cleanup). Флаг ставится сразу при health<=0 (237).
+- **Награды один раз** (240): `died.emit(self)` ровно однократно под guard —
+  loot/score/XP выдаются независимо от визуала смерти (комментарий подтверждает).
+- **Death-playback или fallback** (243-249): при ЯВНОЙ full-frame `death` →
+  `_play_full_frame_death_then_free`; иначе `spawn_death_ghost()` + queue_free.
+- **Мёртвый враг не мешает cleanup** (252-274): set_physics_process/process(false),
+  remove_from_group по ВСЕМ combat-группам (enemies/bosses/elite_enemies/
+  summoned_enemies, 258-260), collision disabled (261-263), HP-бар + cutout rig
+  скрыты (264-269) → бой/босс не ждут визуальный труп, врага нельзя добить повторно;
+  death играет (270), free по длительности (clamp 0.25-1.2с).
+- **Ally** (ally_minion.gd:247-259): аналогичный full-frame death + immediate cleanup
+  при отсутствии death-ряда.
+- **Тесты**: `animation_smoke_test` (explicit full-frame death + fallback ghost) +
+  `runtime_smoke_test` + `runtime_smoke_boss_elite_test` + `summoner_strengthening_test`
+  — все passed.
+
+Acceptance:
+- [x] Стандартные full-frame враги играют death до удаления.
+- [x] Fallback death-ghost для отсутствующих death-рядов.
+- [x] Lifecycle стабилен; НЕТ дублей loot/score/cleanup (guard + once-emit + group-leave).
+- [x] animation_smoke + runtime_smoke зелёные.
+
+Баги: нет. (Балансовый scope не тронут — урон/таргетинг/loot-значения без изменений.)
