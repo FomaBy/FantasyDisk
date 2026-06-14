@@ -1,0 +1,53 @@
+# FEATURE: Прогрессия по классам в дереве меты (бонусы за класс, реиграбельность)
+
+Статус: new
+Приоритет: high
+Роль: Back-end (прогрессия)
+Версия: 0.1.5
+Создано: 2026-06-14
+Автор: PM (запрос пользователя)
+Jira: SCRUM-360
+
+## Autonomy / Approval
+Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Контекст (запрос пользователя)
+«Хочу улучшить реиграбельность за классы — добавить в дерево мета-прогрессии
+прогрессию ПО КЛАССАМ, дающую какие-то бонусы для класса».
+
+Сейчас мета-дерево `META_NODES` (scripts/meta_progression.gd) — аккаунтное
+(ветви wealth/lore/...), бонусы общие, не зависят от класса. Возвышение
+трекается per-character. Экран дерева: ui_screens.gd `_show_skill_tree_screen`.
+
+## Требования
+1. Добавить **прогрессию по классам**: per-class узлы/ветка, дающие бонусы
+   КОНКРЕТНОМУ классу (стимул отыгрывать каждый класс). Варианты бонусов
+   (data-driven, на усмотрение, согласовать с балансом): +урон/+HP/+скорость
+   конкретного класса, усиление его уникальной механики/оружия, мелкий уникальный
+   перк класса. Прогресс копится за игру этим классом (напр. за победы/боссов на
+   классе — увязать с record_boss_victory/ascension per character).
+2. Data-driven: классовые узлы и эффекты в данных (META_NODES или новый
+   CLASS_PROGRESSION), применяются в run-модификаторах только для выбранного
+   класса (selected_character_id). Не ломать аккаунтные ветви.
+3. UI в дереве меты (_show_skill_tree_screen): раздел/вкладка «Классы» или
+   per-class под-дерево; показывает прогресс/разблокировки выбранного класса;
+   соблюдать глобальное правило фреймов и no-overlap.
+4. Сохранение в user:// (как meta_progression ConfigFile), версионирование.
+5. Тест: классовые бонусы применяются только своему классу; прогресс копится и
+   сохраняется; runtime_smoke + meta_progression smoke зелёные.
+6. CHANGELOG; current_game_state; systems/progression_balance.
+
+## Files / Assets / IDs
+- scripts/meta_progression.gd (META_NODES, load/save, record_boss_victory,
+  per-character levels)
+- scripts/progression_data*.gd (применение run-модификаторов по классу)
+- scripts/ui_screens.gd (_show_skill_tree_screen)
+- tests/meta_progression_smoke_test.gd, tests/runtime_smoke_test.gd
+
+## Acceptance Criteria
+- [ ] В дереве меты есть прогрессия по классам с бонусами для конкретного класса; копится за игру классом, сохраняется.
+- [ ] Бонусы применяются только выбранному классу; аккаунтные ветви целы.
+- [ ] UI классовой прогрессии без overlap; meta + runtime smoke зелёные; CHANGELOG.
+
+## Документация
+docs/design/systems/progression_balance.md, current_game_state.

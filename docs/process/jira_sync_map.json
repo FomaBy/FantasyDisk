@@ -1234,5 +1234,17 @@
  "backend_summoner_rebalance_scaling_targeting_aoe_task.md": {
   "key": "SCRUM-357",
   "status": "К выполнению"
+ },
+ "backend_ascension_rebalance_monsters_up_elites_down_task.md": {
+  "key": "SCRUM-358",
+  "status": "К выполнению"
+ },
+ "backend_balance_pass_solo_skill_damage_buff_task.md": {
+  "key": "SCRUM-359",
+  "status": "К выполнению"
+ },
+ "backend_meta_per_class_progression_bonuses_task.md": {
+  "key": "SCRUM-360",
+  "status": "К выполнению"
  }
 }
