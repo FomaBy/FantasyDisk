@@ -15,6 +15,21 @@ const ANIMATED_ALLY_VISUALS := {
 		"scale": Vector2(0.34, 0.34),
 		"position": Vector2(0.0, -31.0),
 	},
+	"druid_pack_spirit": {
+		"frames": "res://assets/sprites/allies/ally_pack_spirit_spriteframes.tres",
+		"scale": Vector2(0.34, 0.34),
+		"position": Vector2(0.0, -10.0),
+	},
+	"homunculus": {
+		"frames": "res://assets/sprites/allies/ally_homunculus_spriteframes.tres",
+		"scale": Vector2(0.34, 0.34),
+		"position": Vector2(0.0, -10.0),
+	},
+	"leadership_echo": {
+		"frames": "res://assets/sprites/allies/ally_leadership_echo_spriteframes.tres",
+		"scale": Vector2(0.34, 0.34),
+		"position": Vector2(0.0, -10.0),
+	},
 }
 const FALLBACK_ALLY_VISUAL_ID := "druid_beast"
 

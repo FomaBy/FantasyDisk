@@ -1,0 +1,87 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_00.png" id="1_pack0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_01.png" id="2_pack1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_02.png" id="3_pack2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_03.png" id="4_pack3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_04.png" id="5_pack4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_05.png" id="6_pack5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_00.png" id="7_pack6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_01.png" id="8_pack7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_02.png" id="9_pack8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_03.png" id="10_pack9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_04.png" id="11_pack10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_05.png" id="12_pack11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_06.png" id="13_pack12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_07.png" id="14_pack13"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_pack0")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_pack1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_pack2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_pack3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_pack4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_pack5")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_pack6")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_pack7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_pack8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_pack9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_pack10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_pack11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_pack12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_pack13")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 12.0
+}]

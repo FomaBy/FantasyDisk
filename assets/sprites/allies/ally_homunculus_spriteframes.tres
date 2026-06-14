@@ -1,0 +1,87 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_00.png" id="1_homu0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_01.png" id="2_homu1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_02.png" id="3_homu2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_03.png" id="4_homu3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_04.png" id="5_homu4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_05.png" id="6_homu5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_00.png" id="7_homu6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_01.png" id="8_homu7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_02.png" id="9_homu8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_03.png" id="10_homu9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_04.png" id="11_homu10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_05.png" id="12_homu11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_06.png" id="13_homu12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_07.png" id="14_homu13"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_homu0")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_homu1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_homu2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_homu3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_homu4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_homu5")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_homu6")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_homu7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_homu8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_homu9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_homu10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_homu11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_homu12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_homu13")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 12.0
+}]

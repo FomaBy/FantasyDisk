@@ -656,11 +656,19 @@ func _test_druid_wolf_ally_animation() -> void:
 	if animated_body.animation != "attack" or animated_body.flip_h:
 		_fail("Expected druid_beast attack animation to face the attack direction.")
 
-	ally.call("set_visual_id", "druid_pack_spirit")
-	if animated_body.visible or not body.visible:
-		_fail("Expected non-wolf allies to keep the static Body visual.")
-	if body.texture == null or body.texture.resource_path != "res://assets/sprites/allies/ally_druid_pack_spirit.png":
-		_fail("Expected druid_pack_spirit to keep its static ally texture.")
+	# SCRUM-336: all summon creatures are now animated like the wolf (move+attack).
+	for summon_visual in ["druid_pack_spirit", "homunculus", "leadership_echo"]:
+		ally.call("set_visual_id", summon_visual)
+		if not animated_body.visible or body.visible or not ally.call("is_using_animated_ally_visual"):
+			_fail("Expected summon '%s' to use the animated AnimatedSprite2D visual." % summon_visual)
+		if animated_body.sprite_frames == null:
+			_fail("Expected summon '%s' AnimatedSprite2D to have SpriteFrames." % summon_visual)
+		if not animated_body.sprite_frames.has_animation("move") or not animated_body.sprite_frames.has_animation("attack"):
+			_fail("Expected summon '%s' SpriteFrames to expose move and attack animations." % summon_visual)
+		if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6:
+			_fail("Expected summon '%s' move/attack frame counts to match the wolf system (8/6)." % summon_visual)
+		if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack"):
+			_fail("Expected summon '%s' move to loop and attack to be one-shot." % summon_visual)
 	ally.queue_free()
 
 
