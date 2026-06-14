@@ -1,6 +1,6 @@
 # ART: Рамка карусели персонажей из референса Carusel (экран выбора героя)
 
-Статус: in_progress
+Статус: review
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -57,9 +57,9 @@ docs/design/references/carusel/ChatGPT Image Jun 14, 2026, 10_57_24 AM.png
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Рамка карусели персонажей = нарезка из референса Carusel (9-slice, углы/гребни целы при растяжении).
-- [ ] Миниатюры в content-зоне, не наезжают на орнамент; no-overlap на 3 разрешениях.
-- [ ] Старый ассет в бэкап; 6 smoke зелёные; скрин в build/qa/; CHANGELOG.
+- [x] Рамка карусели персонажей = нарезка из референса Carusel (9-slice, углы/гребни целы при растяжении).
+- [x] Миниатюры в content-зоне, не наезжают на орнамент; no-overlap на 3 разрешениях.
+- [x] Старый ассет в бэкап; 6 smoke зелёные; скрин в build/qa/; CHANGELOG.
 
 ## Документация
 docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_state.
@@ -70,3 +70,36 @@ docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_s
   проверен как `2482x633` RGB PNG с baked checkerboard вокруг рамки. Решение:
   использовать исходный орнамент как source-of-truth, локально убрать фон в
   alpha и заменить только `thumbnail_strip` frame, без изменения gameplay.
+- 2026-06-14: Design result готов к QA review. Добавлен reproducible pipeline
+  `tools/build_hero_select_carousel_frame.py`: flood-fill удаляет baked
+  checkerboard вокруг reference, сохраняет live RGBA `1536x255` PNG в
+  `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail_strip.png`
+  и preview `docs/design/previews/hero_select_carousel_frame_contact.png`.
+  Старый SCRUM-281 strip сохранен в
+  `build/cleanup_backup_hero_select_carousel_2026_06_14/`.
+
+## Result Summary / 2026-06-14
+
+- Live asset replaced in-place:
+  `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail_strip.png`.
+- 9-slice/layout values updated only for Hero Select `thumbnail_strip`:
+  texture margins `Vector4(112, 48, 112, 52)`, content margins
+  `Vector4(72, 36, 72, 36)`, strip minimum height `136px`.
+- Hero thumbnails are horizontally centered in the strip and adapt `56-124px`
+  width for the current 17-character roster so they stay inside the dark
+  content zone instead of touching side jewels.
+- QA artifacts:
+  `build/qa/scrum320/hero_select_carousel_1280x720.png`,
+  `hero_select_carousel_1920x1080.png`,
+  `hero_select_carousel_2560x1440.png`,
+  `hero_select_carousel_rects.md`.
+- Verification passed:
+  `runtime_smoke_ui_test.gd`,
+  `dark_fantasy_ui_theme_test.gd`,
+  `ui_no_overlap_matrix_test.gd`,
+  `runtime_smoke_test.gd`,
+  `runtime_smoke_combat_test.gd`,
+  `runtime_smoke_progression_economy_test.gd`,
+  `runtime_smoke_weapon_mechanics_test.gd`.
+- Docs updated: `CHANGELOG.md`, `docs/design/content_registry.md`,
+  `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`.

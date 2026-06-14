@@ -496,7 +496,7 @@ SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon ki
 | `ui_frame_hero_select_portrait` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_portrait.png` | Live Hero Select large portrait frame |
 | `ui_frame_hero_select_dossier` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_dossier.png` | Live Hero Select dossier and radar reserve frame |
 | `ui_frame_hero_select_radar` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_radar.png` | Live Hero Select floating stat radar frame |
-| `ui_frame_hero_select_thumbnail_strip` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail_strip.png` | Live Hero Select bottom thumbnail strip frame |
+| `ui_frame_hero_select_thumbnail_strip` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail_strip.png` | Live Hero Select bottom thumbnail strip frame; SCRUM-320 Carusel reference slice, backup in `build/cleanup_backup_hero_select_carousel_2026_06_14/` |
 | `ui_frame_hero_select_thumbnail` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail.png` | Live Hero Select adaptive hero thumbnail button frame |
 | `ui_frame_hero_select_asc_button` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_button.png` | Live Hero Select ascension +/- frame |
 | `ui_frame_hero_select_asc_label` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_label.png` | Live Hero Select ascension level label frame |
