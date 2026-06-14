@@ -35,7 +35,14 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"source_faces_left": true,
 		},
 	},
-	"enemy": {},
+	"enemy": {
+		"rift_cutter": {
+			"frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+			"scale": Vector2(0.38, 0.38),
+			"position": Vector2(0.0, -44.0),
+			"source_faces_left": true,
+		},
+	},
 	"elite": {},
 	"boss": {},
 	"hero": {},

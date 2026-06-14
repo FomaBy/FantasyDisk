@@ -4728,14 +4728,27 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		return
 	var boundary := "----FantasyDiskSmokeBoundary"
 	var multipart := FeedbackReporter.multipart_payload("Smoke payload", screenshot, {"screen": "runtime_smoke"}, boundary)
-	var multipart_text := multipart.get_string_from_utf8()
-	if not multipart_text.contains("payload_json") or not multipart_text.contains("fantasydisk_feedback.png"):
+	if not _packed_bytes_contains(multipart, "payload_json".to_utf8_buffer()) or not _packed_bytes_contains(multipart, "fantasydisk_feedback.png".to_utf8_buffer()):
 		_fail("Expected feedback multipart payload to include Discord payload_json and screenshot file part.")
 		feedback_main.queue_free()
 		await process_frame
 		return
 	feedback_main.queue_free()
 	await process_frame
+
+
+func _packed_bytes_contains(haystack: PackedByteArray, needle: PackedByteArray) -> bool:
+	if needle.is_empty() or haystack.size() < needle.size():
+		return false
+	for index in range(haystack.size() - needle.size() + 1):
+		var matched := true
+		for offset in range(needle.size()):
+			if haystack[index + offset] != needle[offset]:
+				matched = false
+				break
+		if matched:
+			return true
+	return false
 
 
 func _test_settings_tabs_and_rebind(main: Node) -> void:

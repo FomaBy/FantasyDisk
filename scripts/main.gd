@@ -661,7 +661,11 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("feedback"):
-		var screenshot := get_viewport().get_texture().get_image()
+		var screenshot: Image = null
+		if DisplayServer.get_name() != "headless":
+			var viewport_texture := get_viewport().get_texture()
+			if viewport_texture != null:
+				screenshot = viewport_texture.get_image()
 		ui._show_feedback_overlay(screenshot)
 		get_viewport().set_input_as_handled()
 		return

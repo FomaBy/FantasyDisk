@@ -1,12 +1,13 @@
 # ART/UX: Выбор героя — портрет + описание в ОДНОМ фрейме (тонкие рамки), Выбрать+возвышение вниз
 
-Статус: review
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-356
+QA: in_progress (2026-06-14)
 Связано: SCRUM-333 (мастер-лейаут), SCRUM-321 (рамка превью), SCRUM-323 (рамка описания),
 SCRUM-346 (возвышение +/- маленькие кнопки вниз), SCRUM-324 (asset-skill)
 
@@ -122,3 +123,38 @@ Design validation:
 - Preview confirms non-overlapping safe zones.
 - Runtime integration/smoke are intentionally not done in Design scope; Back-end
   owns `scripts/ui_screens.gd` layout changes and no-overlap runtime checks.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: объединённый фрейм-ассет + asc-кнопка + content-zones + handoff)
+
+Проверено (фактически):
+- **Ассеты** (skill `fantasydisk-asset-generator`, OpenAI Images): `ui_frame_hero_select_unified_panel.png`
+  `1536×1024` RGBA (alpha 0–255), `ui_frame_hero_select_asc_button_small.png`
+  `256×256` RGBA — валидны (Pillow); source/metadata/генератор
+  (`generate_scrum356_hero_select_unified_assets.py`) на месте.
+- **Тонкая объединённая рамка** (превью `scrum356_hero_select_unified_panel_content_zones.png`):
+  ОДИН фрейм, тонкая орнаментальная окантовка (угловые кресты/филигрань), внутри 3
+  НЕпересекающиеся зоны — портрет слева `Rect2(130,145,420,560)`, описание справа
+  `Rect2(610,145,786,500)`, нижний блок управления `Rect2(570,705,660,178)` с 2
+  слотами asc +/- кнопок и «Выбрать». Зоны не на орнаменте.
+- **Back-end handoff** `backend_hero_select_unified_portrait_description_frame_integration_task.md`
+  содержит точные content-zones/margins (7 совпадений Rect2/margins/asset).
+- **Тесты** (текущий 2-фреймовый лейаут): `runtime_smoke_test` + `ui_no_overlap_matrix_test`
+  — passed (регрессии нет).
+
+⚠️ **Видимое объединение портрет+описание в один фрейм + посадка «Выбрать»/возвышения
+вниз ещё НЕ в рантайме**: ui_screens.gd всё ещё рисует ДВА раздельных фрейма
+(`HeroSelectPortraitPanel` стр.551 + `HeroSelectDossierPanel` стр.612), unified-фрейм
+НЕ подключён. Рантайм-интеграция (+ бэкап старых рамок 321/323) — Back-end задача
+(статус **«new»**), явно вне Design-scope.
+
+Acceptance (фактическое состояние):
+- [x] Объединённый фрейм с тонкой рамкой (скиллом) + 3 непересекающиеся content-зоны.
+- [x] Малые asc +/- кнопки сделаны (asc_button_small, общий с SCRUM-346, не дубль).
+- [~] Рантайм: портрет+описание в одном фрейме, «Выбрать»/возвышение внизу, no-overlap
+  на 3 разрешениях — пендинг Back-end интеграции («new»), вне Design-scope.
+- [x] Радар/карусель не тронуты; превью non-overlap; handoff с точными числами.
+
+Вывод: Design-деливерабл (тонкий unified-фрейм + asc-кнопка + строгие зоны + handoff)
+выполнен корректно. Видимая перекомпоновка — на Back-end интеграции (отслеживается).
+Баги: нет.

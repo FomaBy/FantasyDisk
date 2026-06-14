@@ -6,7 +6,7 @@
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: Animator heartbeat watcher
-Jira: pending sync
+Jira: SCRUM-363
 Parent: SCRUM-352 / `design_enemy_elite_boss_full_frame_animation_sheets_task.md`
 
 ## Autonomy / Approval
