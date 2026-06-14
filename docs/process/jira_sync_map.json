@@ -1406,8 +1406,8 @@
  },
  "art_ui_overhaul_pause_end_task.md": {
   "key": "SCRUM-330",
-  "status": "К выполнению",
-  "desc_hash": "eebafa836d27ca3de77b6e31be2001cd"
+  "status": "В работе",
+  "desc_hash": "e1f4cd37b83c91f4093da455b845b280"
  },
  "art_ui_overhaul_progression_codex_task.md": {
   "key": "SCRUM-331",
@@ -1416,8 +1416,8 @@
  },
  "art_ui_overhaul_shop_economy_task.md": {
   "key": "SCRUM-332",
-  "status": "К выполнению",
-  "desc_hash": "51e8415826e7fad73d97a43ece01e7a1"
+  "status": "В работе",
+  "desc_hash": "cef961058ec0610ee61bd46604c4f28e"
  },
  "backend_hero_select_redesign_master_layout_task.md": {
   "key": "SCRUM-333",
@@ -1441,8 +1441,8 @@
  },
  "design_attack_vfx_full_asset_regeneration_skill_task.md": {
   "key": "SCRUM-337",
-  "status": "В работе",
-  "desc_hash": "d7fcf4e30deec7be86826e5d87657761"
+  "status": "Готово",
+  "desc_hash": "01de01a22cde0fde5688691fd0f334ab"
  },
  "design_reward_screens_redesign_per_reward_frames_task.md": {
   "key": "SCRUM-338",
@@ -1943,5 +1943,10 @@
   "key": "SCRUM-404",
   "status": "Готово",
   "desc_hash": "7f03aa06e38ddc93307d42f8d7102c19"
+ },
+ "bug_backup_import_uid_duplicates_cleanup_task.md": {
+  "key": "SCRUM-405",
+  "status": "К выполнению",
+  "desc_hash": "d4054794cc79c3b74f4b046cbe2a0897"
  }
 }

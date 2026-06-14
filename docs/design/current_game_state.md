@@ -169,6 +169,8 @@ SCRUM-258 добавил per-weapon visual signature layer для всех 51 о
 
 SCRUM-335 добавил runtime feedback в `scripts/enemy_projectile.gd`: обычный magic projectile врагов/боссов сохраняет свой canonical sprite, но получает textured `beam_strip.png` trail во время полета и `impact_flash.png` + `impact_ring.png` при попадании по игроку. Это не меняет lifetime, collision mask, one-hit guard, damage или speed.
 
+SCRUM-337 заменил весь активный raster art pack для attack VFX без изменения runtime API: 83 `assets/sprites/effects/*.png` и 2 `assets/sprites/projectiles/*.png` пересобраны через `fantasydisk-asset-generator` source sheets, очищены под alpha и экспортированы с теми же именами/размерами. В бою это выглядит как более объёмные D&D/dark-fantasy магические вспышки, слэши, зоны, порталы, лужи и weapon signature plates; mechanics, damage, delays, targeting и balance не менялись. Preview-листы: `docs/design/previews/scrum337_attack_vfx_core_contact.png`, `docs/design/previews/scrum337_attack_vfx_weapon_contact.png`.
+
 SCRUM-277 добавил weapon integrity gate для всего ростера: `tests/weapon_integrity_test.gd` проходит 17 классов x 3 оружия, проверяет `weapon_ids`, `scene_path`, scene `weapon_id`, attack-mode/shape marker, отсутствие коллизий с пассивками/магазином/level-up rewards и фактический `WeaponVisual` после `Player.configure_character()`. Оставшиеся proxy-текстуры новых классов заменены на canonical weapon PNG, включая `priest_chime -> priest_chime.png` вместо `sound_amp.png`.
 
 ## Препятствия
@@ -535,6 +537,8 @@ SCRUM-279/280 оживили базового волка Друида: `druid_be
 | Кольцевой импульс | `impact_ring.png` + ноты (для гитариста) | `bass_guitar` (pulse), `sound_amp` (amp) |
 
 Правила: эффекты самоочищаются tween-ами, классовое оружие дополнительно регистрирует их в `player_weapon_effects` (мертвые ссылки фильтруются в `_register_effect`/`cleanup_effects`). Runtime smoke проверяет экипировку всех 51 weapon variants; VFX smoke остается профильным тестом основных хелперов. Скриншоты для ручной проверки: `tools/capture_vfx_preview.gd` (windowed) -> `build/vfx_preview/`.
+
+SCRUM-337 production art refresh: все перечисленные texture paths плюс 51 `vfx_weapon_<weapon_id>.png`, elite/boss helper VFX и `assets/sprites/projectiles/*.png` пересобраны из generated source sheets `docs/design/references/attack_vfx_realistic_dark_fantasy/`. Deterministic cut/alpha pipeline: `tools/build_scrum337_attack_vfx_from_sources.py`; QA/readability artifacts: `build/qa/scrum337/`.
 
 ## Характеристики
 

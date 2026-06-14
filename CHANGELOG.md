@@ -33,6 +33,12 @@
   mapping without network.
 
 ### Added
+- Attack VFX regeneration (SCRUM-337): rebuilt the full active combat VFX art
+  pack through `fantasydisk-asset-generator` source sheets, replacing 83
+  `assets/sprites/effects/*.png` and 2 projectile PNGs with alpha-cleaned
+  D&D/dark-fantasy raster effects while preserving paths, canvas sizes and
+  gameplay/runtime behavior; previews and QA manifests added under
+  `docs/design/previews/` and `build/qa/scrum337/`.
 - Reward frame kit (SCRUM-338): generated Design-ready D&D/dark-fantasy reward
   card frames for battle rewards and elite artifact rewards, with transparent
   `768x1024` production PNGs, hover variants, source references, strict
