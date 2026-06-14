@@ -33,6 +33,12 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "death", Callable(self, "_open_death"), [
 			"ScreenBackground_death",
 		], dump_lines, errors, false)
+		await _check_screen(viewport_size, "battle_reward", Callable(self, "_open_battle_reward"), [
+			"BattleRewardButton0", "BattleRewardButton1", "BattleRewardButton2",
+		], dump_lines, errors)
+		await _check_screen(viewport_size, "elite_reward", Callable(self, "_open_elite_reward"), [
+			"EliteArtifactRewardButton0", "EliteArtifactRewardButton1", "EliteArtifactRewardButton2",
+		], dump_lines, errors)
 
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
@@ -112,6 +118,16 @@ func _open_victory(main: Node) -> void:
 
 func _open_death(main: Node) -> void:
 	main.ui._show_death_screen("Тестовое поражение.")
+
+
+func _open_battle_reward(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.ui._show_reward_screen()
+
+
+func _open_elite_reward(main: Node) -> void:
+	main.set("route_stage", 6)
+	main.ui._show_elite_artifact_reward(Callable())
 
 
 func _first_peer_overlap(controls: Array, tolerance_px: float) -> String:

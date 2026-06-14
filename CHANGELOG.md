@@ -5,6 +5,10 @@
 ## [Unreleased] — ветка dev
 
 ### Fixed
+- Reward screens runtime integration (SCRUM-404): battle rewards and elite
+  artifact choices now use the SCRUM-338 per-reward frame textures with
+  metadata-scaled safe-zone content containers, whole-card click/focus, runtime
+  texture/safe-rect assertions and QA dumps under `build/qa/scrum338/`.
 - Codex texture runtime integration (SCRUM-403): live Codex screens now use
   the SCRUM-345 texture kit for the root panel, section panel, tabs, entry
   cards, portrait/icon slots and glossary tooltip while keeping runtime content

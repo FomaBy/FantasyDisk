@@ -147,6 +147,18 @@ const CODEX_TOOLTIP_MARGINS := Vector4(58.0, 40.0, 58.0, 46.0)
 const CODEX_TOOLTIP_CONTENT := Vector4(70.0, 48.0, 70.0, 54.0)
 const CODEX_TAB_MARGINS := Vector4(42.0, 20.0, 42.0, 20.0)
 const CODEX_TAB_CONTENT := Vector4(52.0, 24.0, 52.0, 24.0)
+const REWARD_FRAME_DIR := "res://assets/sprites/ui/frames/rewards/"
+const REWARD_CARD_PATH := REWARD_FRAME_DIR + "ui_frame_reward_card.png"
+const REWARD_CARD_HOVER_PATH := REWARD_FRAME_DIR + "ui_frame_reward_card_hover.png"
+const REWARD_ELITE_CARD_PATH := REWARD_FRAME_DIR + "ui_frame_reward_elite_artifact_card.png"
+const REWARD_ELITE_CARD_HOVER_PATH := REWARD_FRAME_DIR + "ui_frame_reward_elite_artifact_card_hover.png"
+const REWARD_FRAME_SOURCE_SIZE := Vector2(768.0, 1024.0)
+const REWARD_CARD_SIZE := Vector2(300.0, 430.0)
+const REWARD_ELITE_CARD_SIZE := Vector2(340.0, 502.0)
+const REWARD_CARD_TEXTURE_MARGINS := Vector4(96.0, 112.0, 96.0, 112.0)
+const REWARD_CARD_SOURCE_CONTENT := Vector4(132.0, 170.0, 132.0, 164.0)
+const REWARD_ELITE_CARD_TEXTURE_MARGINS := Vector4(108.0, 130.0, 108.0, 130.0)
+const REWARD_ELITE_CARD_SOURCE_CONTENT := Vector4(150.0, 202.0, 150.0, 190.0)
 const HERO_SELECT_FRAME_TEXTURES := {
 	"unified_panel": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_unified_panel.png",
 	"portrait": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_portrait.png",
@@ -2918,13 +2930,35 @@ func _weapon_sprite_path(config: Dictionary) -> String:
 func _show_reward_screen() -> void:
 	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward")
 	_create_menu_run_hud()
+	var rewards_row := HBoxContainer.new()
+	rewards_row.name = "BattleRewardCardsRow"
+	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rewards_row.custom_minimum_size = Vector2(0.0, REWARD_CARD_SIZE.y)
+	rewards_row.add_theme_constant_override("separation", 18)
+	box.add_child(rewards_row)
+	var reward_buttons: Array[Button] = []
 	for reward in _random_rewards(3):
-		var button := _add_text_action_block(box, str(reward["title"]), str(reward["description"]), "Получить", "")
+		var reward_data: Dictionary = reward
+		var button := _make_battle_reward_card(reward_data)
+		button.name = "BattleRewardButton%d" % rewards_row.get_child_count()
 		button.pressed.connect(func() -> void:
-			_apply_reward_to_run(reward)
+			_apply_reward_to_run(reward_data)
 			game.save_run_autosave("reward_choice")
 			game.route._show_battle_map()
 		)
+		rewards_row.add_child(button)
+		reward_buttons.append(button)
+	for index in range(reward_buttons.size()):
+		var card := reward_buttons[index]
+		var left := reward_buttons[(index - 1 + reward_buttons.size()) % reward_buttons.size()]
+		var right := reward_buttons[(index + 1) % reward_buttons.size()]
+		card.focus_neighbor_left = left.get_path()
+		card.focus_neighbor_right = right.get_path()
+		card.focus_neighbor_top = card.get_path()
+		card.focus_neighbor_bottom = card.get_path()
+	if not reward_buttons.is_empty():
+		reward_buttons[0].grab_focus()
 
 
 func _show_level_up_screen(return_to_map := false) -> void:
@@ -3039,7 +3073,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 
 	var panel := PanelContainer.new()
 	panel.name = "EliteArtifactRewardPanel"
-	panel.custom_minimum_size = Vector2(1140, 560)
+	panel.custom_minimum_size = Vector2(1140, 640)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -3073,7 +3107,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	rewards_row.name = "EliteArtifactRewardRow"
 	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rewards_row.custom_minimum_size = Vector2(0.0, 380.0)
+	rewards_row.custom_minimum_size = Vector2(0.0, REWARD_ELITE_CARD_SIZE.y)
 	rewards_row.add_theme_constant_override("separation", 22)
 	box.add_child(rewards_row)
 
@@ -3187,29 +3221,96 @@ func _make_level_up_reward_button(reward: Dictionary) -> Button:
 	return button
 
 
+func _make_battle_reward_card(reward: Dictionary) -> Button:
+	var button := Button.new()
+	button.text = ""
+	button.custom_minimum_size = REWARD_CARD_SIZE
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.focus_mode = Control.FOCUS_ALL
+	button.clip_text = false
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.tooltip_text = _format_level_up_reward_text(reward)
+	button.set_meta("reward_frame_kind", "battle")
+	_apply_reward_card_theme(button, false)
+
+	var content := _add_reward_card_content_container(button, false)
+	content.name = "BattleRewardCardContent"
+	content.add_theme_constant_override("separation", 7)
+
+	var icon_row := HBoxContainer.new()
+	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	content.add_child(icon_row)
+	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(64, 64)))
+
+	var title_label := Label.new()
+	title_label.name = "BattleRewardTitle"
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_label.text = str(reward.get("title", "Награда"))
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_label.add_theme_font_size_override("font_size", 17)
+	title_label.add_theme_color_override("font_color", Color(1.0, 0.91, 0.58, 1.0))
+	content.add_child(title_label)
+
+	var preview_label := Label.new()
+	preview_label.name = "BattleRewardPreview"
+	preview_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview_label.text = _level_up_reward_preview(reward)
+	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	preview_label.add_theme_font_size_override("font_size", 14)
+	preview_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1.0))
+	content.add_child(preview_label)
+
+	var description_label := Label.new()
+	description_label.name = "BattleRewardDescription"
+	description_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	description_label.text = str(reward.get("description", ""))
+	description_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	description_label.add_theme_font_size_override("font_size", 12)
+	description_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
+	content.add_child(description_label)
+
+	var spacer := Control.new()
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	spacer.custom_minimum_size = Vector2(0.0, 4.0)
+	content.add_child(spacer)
+
+	var action_label := Label.new()
+	action_label.name = "BattleRewardActionLabel"
+	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	action_label.text = "Получить"
+	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	action_label.add_theme_font_size_override("font_size", 15)
+	action_label.add_theme_color_override("font_color", Color(1.0, 0.90, 0.64, 1.0))
+	action_label.add_theme_color_override("font_outline_color", Color(0.13, 0.04, 0.035, 0.92))
+	action_label.add_theme_constant_override("outline_size", 2)
+	content.add_child(action_label)
+	return button
+
+
 func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	# Крупная карточка трофея элитки: иконка 112px, название/тир цветом тира,
 	# эффект и классовая интерпретация. Кликается целиком, фокусируется с клавиатуры.
 	var tier_color := _artifact_tier_color(reward)
-	var button := _make_button("")
-	button.custom_minimum_size = Vector2(340, 502)
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var button := Button.new()
+	button.text = ""
+	button.custom_minimum_size = REWARD_ELITE_CARD_SIZE
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
-	button.clip_text = true
+	button.clip_text = false
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = _format_level_up_reward_text(reward)
-	_apply_fantasy_button_theme(button, "reward")
+	button.set_meta("reward_frame_kind", "elite_artifact")
+	_apply_reward_card_theme(button, true)
 
-	var content := VBoxContainer.new()
-	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content.offset_left = 18.0
-	content.offset_top = 18.0
-	content.offset_right = -18.0
-	content.offset_bottom = -18.0
-	content.alignment = BoxContainer.ALIGNMENT_CENTER
-	content.add_theme_constant_override("separation", 10)
-	button.add_child(content)
+	var content := _add_reward_card_content_container(button, true)
+	content.name = "EliteArtifactRewardContent"
+	content.add_theme_constant_override("separation", 6)
 
 	var icon_row := HBoxContainer.new()
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -3222,35 +3323,38 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	title_label.text = str(reward.get("title", "Артефакт"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 22)
+	title_label.add_theme_font_size_override("font_size", 18)
 	title_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(title_label)
 
 	var tier_label := Label.new()
+	tier_label.name = "EliteArtifactRewardTier"
 	tier_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tier_label.text = _artifact_tier_text(reward)
 	tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tier_label.add_theme_font_size_override("font_size", 15)
+	tier_label.add_theme_font_size_override("font_size", 13)
 	tier_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(tier_label)
 
 	var effect_label := Label.new()
+	effect_label.name = "EliteArtifactRewardDescription"
 	effect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	effect_label.text = str(reward.get("description", ""))
 	effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	effect_label.add_theme_font_size_override("font_size", 15)
+	effect_label.add_theme_font_size_override("font_size", 12)
 	effect_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
 	content.add_child(effect_label)
 
 	var interpretation := _reward_interpretation_text(reward)
 	if interpretation != "":
 		var interp_label := Label.new()
+		interp_label.name = "EliteArtifactRewardInterpretation"
 		interp_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		interp_label.text = interpretation
 		interp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		interp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		interp_label.add_theme_font_size_override("font_size", 13)
+		interp_label.add_theme_font_size_override("font_size", 11)
 		interp_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
 		content.add_child(interp_label)
 
@@ -5552,6 +5656,83 @@ func _card_hover_style() -> StyleBox:
 
 func _character_card_style() -> StyleBox:
 	return _unified_frame_style("card_frame")
+
+
+func _reward_card_content_margins(elite := false) -> Vector4:
+	var source_content := REWARD_ELITE_CARD_SOURCE_CONTENT if elite else REWARD_CARD_SOURCE_CONTENT
+	var display_size := REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE
+	return Vector4(
+		roundf(source_content.x / REWARD_FRAME_SOURCE_SIZE.x * display_size.x),
+		roundf(source_content.y / REWARD_FRAME_SOURCE_SIZE.y * display_size.y),
+		roundf(source_content.z / REWARD_FRAME_SOURCE_SIZE.x * display_size.x),
+		roundf(source_content.w / REWARD_FRAME_SOURCE_SIZE.y * display_size.y)
+	)
+
+
+func _reward_card_style(elite := false, hovered := false, pressed := false, disabled := false) -> StyleBox:
+	var path := REWARD_ELITE_CARD_PATH if elite else REWARD_CARD_PATH
+	if hovered:
+		path = REWARD_ELITE_CARD_HOVER_PATH if elite else REWARD_CARD_HOVER_PATH
+	var texture_margins := REWARD_ELITE_CARD_TEXTURE_MARGINS if elite else REWARD_CARD_TEXTURE_MARGINS
+	var content_margins := _reward_card_content_margins(elite)
+	var tint := Color.WHITE
+	if hovered:
+		tint = BUTTON_NEUTRAL_HOVER_TINT
+	if pressed:
+		tint = Color(0.88, 0.84, 0.90, 1.0) if elite else Color(0.90, 0.86, 0.78, 1.0)
+	if disabled:
+		tint = Color(0.58, 0.58, 0.58, 0.82)
+	var texture: Texture2D = game._cached_texture(path)
+	if texture == null:
+		var fallback := StyleBoxFlat.new()
+		fallback.bg_color = Color(0.08, 0.055, 0.08, 0.96) if elite else Color(0.09, 0.06, 0.045, 0.96)
+		fallback.border_color = Color(0.72, 0.50, 1.0, 0.88) if elite else Color(0.95, 0.72, 0.28, 0.88)
+		fallback.set_border_width_all(2)
+		fallback.set_corner_radius_all(8)
+		fallback.content_margin_left = content_margins.x
+		fallback.content_margin_top = content_margins.y
+		fallback.content_margin_right = content_margins.z
+		fallback.content_margin_bottom = content_margins.w
+		return fallback
+	var style := StyleBoxTexture.new()
+	style.texture = texture
+	style.texture_margin_left = texture_margins.x
+	style.texture_margin_top = texture_margins.y
+	style.texture_margin_right = texture_margins.z
+	style.texture_margin_bottom = texture_margins.w
+	style.modulate_color = tint
+	style.content_margin_left = content_margins.x
+	style.content_margin_top = content_margins.y
+	style.content_margin_right = content_margins.z
+	style.content_margin_bottom = content_margins.w
+	return style
+
+
+func _apply_reward_card_theme(button: Button, elite := false) -> void:
+	button.add_theme_stylebox_override("normal", _reward_card_style(elite))
+	button.add_theme_stylebox_override("hover", _reward_card_style(elite, true))
+	button.add_theme_stylebox_override("pressed", _reward_card_style(elite, true, true))
+	button.add_theme_stylebox_override("focus", _reward_card_style(elite, true))
+	button.add_theme_stylebox_override("disabled", _reward_card_style(elite, false, false, true))
+	button.add_theme_color_override("font_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
+
+
+func _add_reward_card_content_container(button: Button, elite := false) -> VBoxContainer:
+	var margins := _reward_card_content_margins(elite)
+	var content := VBoxContainer.new()
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.offset_left = margins.x
+	content.offset_top = margins.y
+	content.offset_right = -margins.z
+	content.offset_bottom = -margins.w
+	content.alignment = BoxContainer.ALIGNMENT_CENTER
+	button.add_child(content)
+	return content
 
 
 func _codex_main_panel_style() -> StyleBox:

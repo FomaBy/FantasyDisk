@@ -20,6 +20,11 @@ const HERO_SELECT_DOSSIER_SOURCE_SIZE := Vector2(1120.0, 1140.0)
 const HERO_SELECT_DOSSIER_SAFE_MARGINS := Vector4(126.0, 160.0, 126.0, 172.0)
 const HERO_SELECT_THUMBNAIL_SOURCE_SIZE := Vector2(1536.0, 255.0)
 const HERO_SELECT_THUMBNAIL_SAFE_MARGINS := Vector4(132.0, 62.0, 132.0, 62.0)
+const REWARD_FRAME_SOURCE_SIZE := Vector2(768.0, 1024.0)
+const REWARD_CARD_SAFE_MARGINS := Vector4(132.0, 170.0, 132.0, 164.0)
+const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(150.0, 202.0, 150.0, 190.0)
+const REWARD_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_card.png"
+const REWARD_ELITE_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card.png"
 
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -3777,12 +3782,28 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 	root.add_child(scaling_main)
 	await process_frame
 	scaling_main.set("route_stage", 6)
+	scaling_main.set("selected_character_id", "berserk")
+	scaling_main.ui._show_reward_screen()
+	await process_frame
+	await process_frame
+	var battle_reward_buttons := scaling_main.find_children("BattleRewardButton*", "Button", true, false)
+	if battle_reward_buttons.size() != 3:
+		_fail("Expected battle reward screen to render 3 SCRUM-338 framed reward cards.")
+		scaling_main.queue_free()
+		return
+	if not _assert_reward_cards_use_scrum338_frames(battle_reward_buttons, "BattleRewardCardContent", REWARD_CARD_TEXTURE, REWARD_CARD_SAFE_MARGINS, "battle_reward"):
+		scaling_main.queue_free()
+		return
 	scaling_main.ui._show_elite_artifact_reward(Callable())
+	await process_frame
 	await process_frame
 	var reward_screen := scaling_main.find_child("EliteArtifactRewardScreen", true, false) as Control
 	var reward_buttons := scaling_main.find_children("EliteArtifactRewardButton*", "Button", true, false)
 	if reward_screen == null or reward_buttons.size() != 3:
 		_fail("Expected elite artifact reward screen to render 3 clickable artifact buttons.")
+		scaling_main.queue_free()
+		return
+	if not _assert_reward_cards_use_scrum338_frames(reward_buttons, "EliteArtifactRewardContent", REWARD_ELITE_CARD_TEXTURE, REWARD_ELITE_CARD_SAFE_MARGINS, "elite_reward"):
 		scaling_main.queue_free()
 		return
 	scaling_main.queue_free()
@@ -6255,6 +6276,54 @@ func _assert_elite_reward_panel_centered(main_scene: PackedScene, viewport_size:
 
 	viewport.queue_free()
 	await process_frame
+
+
+func _assert_reward_cards_use_scrum338_frames(buttons: Array, content_name: String, texture_path: String, safe_margins: Vector4, context: String) -> bool:
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# SCRUM-338 Reward Frame Runtime Dump")
+	dump_lines.append("")
+	dump_lines.append("- Context: `%s`" % context)
+	dump_lines.append("- Expected texture: `%s`" % texture_path)
+	for button_node in buttons:
+		var button := button_node as Button
+		if button == null:
+			_fail("Expected %s reward card button." % context)
+			return false
+		var style_path := _stylebox_texture_path(button.get_theme_stylebox("normal"))
+		if style_path != texture_path:
+			_fail("Expected %s to use reward texture %s, got %s." % [button.name, texture_path, style_path])
+			return false
+		var hover_style_path := _stylebox_texture_path(button.get_theme_stylebox("hover"))
+		if not hover_style_path.ends_with("_hover.png"):
+			_fail("Expected %s to use a SCRUM-338 hover reward texture, got %s." % [button.name, hover_style_path])
+			return false
+		var content := button.find_child(content_name, false, false) as Control
+		if content == null:
+			_fail("Expected %s to expose %s inside the reward safe-zone." % [button.name, content_name])
+			return false
+		var card_rect := button.get_global_rect()
+		var content_rect := content.get_global_rect()
+		var safe_rect := _scaled_safe_rect(card_rect, REWARD_FRAME_SOURCE_SIZE, safe_margins)
+		dump_lines.append("- `%s`: card `%s`, safe `%s`, content `%s`, texture `%s`" % [
+			button.name,
+			str(card_rect),
+			str(safe_rect),
+			str(content_rect),
+			style_path,
+		])
+		if not _rect_contains_with_tolerance(safe_rect, content_rect, 2.0):
+			_fail("Expected %s content rect %s to stay inside reward safe rect %s." % [button.name, content_rect, safe_rect])
+			return false
+		if context == "battle_reward" and button.find_child("BattleRewardActionLabel", true, false) == null:
+			_fail("Expected %s to show the player-facing Получить action label." % button.name)
+			return false
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum338")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var file := FileAccess.open("%s/%s_reward_frames.md" % [qa_dir, context], FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump_lines))
+		file.close()
+	return true
 
 
 func _control_center_matches_viewport(control: Control, tolerance_px := 2.0) -> bool:
