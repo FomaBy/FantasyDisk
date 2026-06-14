@@ -230,10 +230,40 @@ func take_damage(amount: float) -> void:
 	_play_full_frame_state("hit", Vector2.ZERO)
 
 	if health <= 0.0:
-		if rig != null and rig.has_method("spawn_death_ghost"):
-			rig.spawn_death_ghost()
+		# Награды/лут/счёт — сразу через сигнал, независимо от визуала смерти.
 		died.emit(self)
+		# SCRUM-379: если есть ЯВНАЯ full-frame death-анимация — проигрываем её до
+		# удаления; иначе прежний death-ghost fallback (rig-призрак).
+		var death_body := _full_frame_body()
+		if death_body != null and death_body.visible and death_body.sprite_frames != null and death_body.sprite_frames.has_animation("death"):
+			_play_full_frame_death_then_free(death_body)
+		else:
+			if rig != null and rig.has_method("spawn_death_ghost"):
+				rig.spawn_death_ghost()
+			queue_free()
+
+
+func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
+	# SCRUM-379: проигрываем death-кадры, отключив поведение/столкновения мёртвого
+	# врага, затем удаляем по длительности анимации. Геймплей-награды уже выданы.
+	set_physics_process(false)
+	set_process(false)
+	for child in get_children():
+		if child is CollisionShape2D or child is CollisionPolygon2D:
+			child.set_deferred("disabled", true)
+	var rig := _cutout_rig()
+	if rig != null:
+		rig.visible = false
+	FullFrameAnimationRegistry.play_state(body, "death", Vector2.ZERO)
+	var frames := body.sprite_frames
+	var fps: float = maxf(frames.get_animation_speed("death"), 1.0)
+	var count: int = maxi(frames.get_frame_count("death"), 1)
+	var duration := float(count) / fps
+	var tree := get_tree()
+	if tree == null:
 		queue_free()
+		return
+	tree.create_timer(duration + 0.05).timeout.connect(queue_free)
 
 
 func _apply_elite_reflect_thorns(incoming_amount: float) -> void:

@@ -1313,18 +1313,22 @@
  },
  "animation_boss_full_frame_batch_integration_task.md": {
   "key": "SCRUM-377",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_boss_full_frame_skill_state_hooks_task.md": {
   "key": "SCRUM-378",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_full_frame_death_playback_lifecycle_task.md": {
   "key": "SCRUM-379",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "design_full_frame_death_rows_allies_elites_bosses_task.md": {
   "key": "SCRUM-380",
+  "status": "К выполнению"
+ },
+ "design_integrate_generated_unified_master_frame_task.md": {
+  "key": "SCRUM-381",
   "status": "К выполнению"
  }
 }

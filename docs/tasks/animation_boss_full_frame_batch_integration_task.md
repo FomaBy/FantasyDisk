@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator heartbeat watcher
 Jira: SCRUM-377
+QA: in_progress (2026-06-14)
 Parent: SCRUM-352 / `design_enemy_elite_boss_full_frame_animation_sheets_task.md`
 
 ## Autonomy / Approval
@@ -79,3 +80,36 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --editor --quit` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — батч 5 БОССОВ (завершает full-frame конвейер 26 сущностей SCRUM-352)
+
+Проверено (фактически):
+- **SpriteFrames** (load, все 5 ✓): `rift_warden`, `disk_devourer`, `bone_archon`,
+  `brood_mother`, `ashen_colossus` — у КАЖДОГО `move(6,loop=true)`,
+  `attack_primary(6)` + 2 `skill_*` ряда 6f (+ attack_* validator-aliases).
+  ALL_OK=true.
+- **Реестр**: 10 совпадений (5 boss × id+frames) под kind `boss`
+  (`boss.gd extends enemy.gd` → наследует FullFrameBody-путь; legacy fallback цел).
+- **Манифест-валидатор**: «FantasyDisk animation manifest OK: 5 entities».
+- **Контакт-лист** `boss_full_frame_contact_sheet.png` + GIF: 20 рядов анимаций
+  (5 боссов × move/attack/2 skill), distinct full-frame боссы с пер-кадровой
+  вариацией; не cutout.
+- **Тесты**: `animation_smoke_test` (boss registry-резолв, skill/alias frame counts,
+  FullFrameBody activation, static-sprite hiding, flip, skill-state) +
+  `runtime_smoke_test` (gameplay не изменён) — passed.
+
+Acceptance:
+- [x] Каждый босс: move 6f loop + attack_primary/attack 6f.
+- [x] Каждый: оба skill_* ряда 6f + attack_* aliases.
+- [x] Registry резолвит все 5 boss/<id>; FullFrameBody виден, legacy скрыт.
+- [x] Манифест валиден; animation_smoke зелёный; gameplay/balance/AI не тронуты.
+
+Примечание: рантайм-вызов skill-специфичных full-frame состояний из боссовых
+коллбэков — документированный Back-end follow-up
+(`backend_boss_full_frame_skill_state_hooks_task.md`), visual-only; registry
+state-resolution уже работает. Не дефект 377. Баги: нет.
+
+**Веха**: full-frame конвейер SCRUM-352 завершён — все 26 сущностей
+(11 врагов + 4 route-элиты + 6 мини-элит + 5 боссов) интегрированы через registry
+SCRUM-351 (363/364/365/366/367/368/371/376/377), gameplay не тронут.

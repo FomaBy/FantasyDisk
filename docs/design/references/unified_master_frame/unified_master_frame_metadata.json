@@ -1,0 +1,41 @@
+{
+  "task": "SCRUM-373",
+  "assets": {
+    "master_frame": "assets/sprites/ui/frames/unified/ui_frame_unified_master.png",
+    "master_frame_with_fill": "assets/sprites/ui/frames/unified/ui_frame_unified_master_fill.png",
+    "inner_fill": "assets/sprites/ui/frames/unified/ui_frame_unified_inner_fill.png",
+    "ornament_top": "assets/sprites/ui/frames/unified/ui_frame_unified_ornament_top.png",
+    "ornament_bottom": "assets/sprites/ui/frames/unified/ui_frame_unified_ornament_bottom.png",
+    "hover_overlay": "assets/sprites/ui/frames/unified/ui_frame_unified_hover_overlay.png"
+  },
+  "source_size": [
+    1024,
+    1024
+  ],
+  "texture_margins": {
+    "left": 160,
+    "top": 160,
+    "right": 160,
+    "bottom": 160
+  },
+  "content_margins": {
+    "left": 150,
+    "top": 150,
+    "right": 150,
+    "bottom": 150
+  },
+  "strict_safe_rect": [
+    150,
+    150,
+    724,
+    724
+  ],
+  "axis_stretch_horizontal": "tile",
+  "axis_stretch_vertical": "tile",
+  "draw_center_options": [
+    "false with separate inner_fill",
+    "true only for master_fill variant"
+  ],
+  "hover_recommendation": "Prefer runtime modulate/contrast shader on master_frame; hover_overlay is optional fallback.",
+  "rule": "No runtime content on border/corners/ornaments; content must stay inside strict_safe_rect scaled from source."
+}

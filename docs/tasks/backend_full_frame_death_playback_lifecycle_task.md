@@ -1,6 +1,6 @@
 # Back-end: Full-frame death playback lifecycle before cleanup
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end
 Версия: 0.1.5

@@ -1,6 +1,6 @@
 # Back-end handoff: boss full-frame skill state hooks
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end
 Версия: 0.1.5
@@ -47,4 +47,26 @@ where possible; if no full-frame body exists, keep current cutout/static fallbac
 - [ ] Animation smoke or runtime smoke covers at least one boss skill-state hook.
 
 ## Result
-Pending Back-end.
+Done 2026-06-14 (Back-end).
+
+Implemented visual-only boss skill playback hooks in `scripts/boss.gd`:
+- `rift_warden`: gravity well and rift zone/wave request `skill_gravity_well` / `skill_rift_zone`;
+- `disk_devourer`: vampiric bite and rift zone/wave request `skill_vampiric_bite` / `skill_rift_zone`;
+- `bone_archon`: skull volley and bone prison request `skill_skull_volley` / `skill_bone_prison`;
+- `brood_mother`: brood spawn and web zones request `skill_brood_spawn` / `skill_web_zone`;
+- `ashen_colossus`: molten slam and armor pulse request `skill_molten_slam` / `skill_armor_pulse`.
+
+The hook first tries the registered `FullFrameBody` state and falls back to the
+previous rig action (`cast`/`attack`/`shoot`) when no full-frame visual exists.
+Damage, hazards, cooldowns, targeting, spawn counts, telegraph durations and
+balance values were not changed.
+
+Updated `tests/animation_smoke_test.gd` to verify representative boss
+skill-state hook playback, and updated CHANGELOG plus animation/content/current
+state/enemy-boss docs.
+
+Verification:
+- `git diff --check` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_boss_elite_test.gd` — passed.
