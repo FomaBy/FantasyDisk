@@ -1,6 +1,6 @@
 # FEATURE: Внутриигровой фидбек/баг-репорт по клавише P (текст + скриншот → разработчику)
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI + сеть)
 Версия: 0.1.5
@@ -63,11 +63,28 @@ Jira: SCRUM-362
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] P на любом экране открывает форму фидбека; Esc/«Отмена» закрывают.
-- [ ] Скриншот вьюпорта (без формы в кадре) показан превью под полем ввода.
-- [ ] «Отправить» шлёт текст+скрин+мета на настраиваемый вебхук (Discord по умолчанию); URL вне репозитория; есть локальный фолбэк в user://feedback/.
-- [ ] Оффлайн/ошибка не крашат (фолбэк); форма в стиле игры, no-overlap, текст читаем.
-- [ ] how-to настройки + runtime_smoke зелёный + скрин формы; CHANGELOG.
+- [x] P на любом экране открывает форму фидбека; Esc/«Отмена» закрывают.
+- [x] Скриншот вьюпорта (без формы в кадре) показан превью под полем ввода.
+- [x] «Отправить» шлёт текст+скрин+мета на настраиваемый вебхук (Discord по умолчанию); URL вне репозитория; есть локальный фолбэк в user://feedback/.
+- [x] Оффлайн/ошибка не крашат (фолбэк); форма в стиле игры, no-overlap, текст читаем.
+- [x] how-to настройки + runtime_smoke зелёный + скрин формы; CHANGELOG.
 
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/systems/technical_architecture.md, current_game_state.
+
+## Result Summary — 2026-06-14
+
+Implemented global in-game feedback reporting:
+- added rebinding-friendly `feedback` input action on `P`;
+- added `FeedbackOverlayLayer` with multiline text, screenshot preview, send/cancel and Escape close without clearing the underlying screen;
+- added `scripts/feedback_reporter.gd` with Discord-compatible multipart webhook delivery, `FANTASYDISK_FEEDBACK_WEBHOOK` / `user://feedback_config.cfg` URL lookup and `user://feedback/<timestamp>/` local fallback;
+- added metadata capture for version, screen, route/combat state, character, weapon, viewport and timestamp;
+- extended runtime smoke with overlay lifecycle, preview, local fallback files and multipart payload checks;
+- documented setup/behavior in `docs/design/systems/feedback_reporting.md`, `menus_ui.md`, `technical_architecture.md`, `current_game_state.md` and `CHANGELOG.md`.
+
+Verification:
+- `git diff --check` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Note: headless tests validate the overlay structure and screenshot preview texture; graphical screenshot capture of the form should be done by QA/windowed run because headless uses Godot's dummy renderer.

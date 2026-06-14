@@ -1241,7 +1241,7 @@
  },
  "backend_balance_pass_solo_skill_damage_buff_task.md": {
   "key": "SCRUM-359",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_meta_per_class_progression_bonuses_task.md": {
   "key": "SCRUM-360",
@@ -1253,10 +1253,14 @@
  },
  "backend_ingame_feedback_bug_report_tool_task.md": {
   "key": "SCRUM-362",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "animation_rift_cutter_full_frame_integration_task.md": {
   "key": "SCRUM-363",
+  "status": "Готово"
+ },
+ "animation_standard_enemy_full_frame_batch_integration_task.md": {
+  "key": "SCRUM-364",
   "status": "В работе"
  }
 }

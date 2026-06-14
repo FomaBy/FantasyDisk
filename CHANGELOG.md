@@ -19,6 +19,11 @@
   state bridge for heroes/enemies/allies/elites/bosses. Allies can now opt into
   source-specific full-frame move/attack playback, and enemies/bosses keep
   cutout/static fallback when no SpriteFrames are registered.
+- Rift Cutter full-frame pilot (SCRUM-363): integrated the accepted SCRUM-352
+  enemy sheet as padded runtime SpriteFrames with `move` 6f loop and
+  `attack_primary`/runtime `attack`, `hit`, `death` 6f one-shots through
+  `FullFrameAnimationRegistry`, with no gameplay, targeting, spawn or balance
+  changes.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню
@@ -49,6 +54,7 @@
 - Elite/boss VFX kit (SCRUM-261): добавлены 13 dedicated D&D/painterly PNG для `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`, summon portal, shield block, reflect-thorns aura, command aura, shadow blink mark и shard fan warning; preview `docs/design/previews/scrum261_elite_boss_vfx_contact.png`.
 - Unique weapon VFX kit (SCRUM-258): добавлен полный набор из 51 transparent PNG `assets/sprites/effects/vfx_weapon_<weapon_id>.png` для всех class weapon identities 0.1.5, contact/readability previews и focused smoke `tests/unique_weapon_vfx_assets_test.gd`.
 - Final balance audit (SCRUM-262): global damage smoke теперь проверяет не только combined solo/5-target DPS, но и финальный solo corridor ±20% плюс crowd-clear time 5/10/20 в коридоре ±30%; `tools/balance_harness.gd` пишет `build/balance_final_audit_0_1_5.md` с class viability и CCT таблицами для всех 51 class+weapon пар.
+- In-game feedback tool (SCRUM-362): added a global `P` feedback action, top-level `FeedbackOverlayLayer` with pre-overlay screenshot preview, Discord-compatible webhook delivery through `FeedbackReporter`, safe `user://feedback/` fallback reports and runtime smoke coverage.
 
 ### Changed
 - Summoner rebalance (SCRUM-357): `SummonerWeapon` now gives summons a

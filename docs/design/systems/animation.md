@@ -24,6 +24,12 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse
   `AnimatedBody` (allies) when registry frames exist, while preserving existing
   cutout/static fallback when frames are missing.
+- SCRUM-363 integrated the first SCRUM-352 enemy pilot: `rift_cutter` now has
+  padded full-frame SpriteFrames at
+  `assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres` with
+  `move` 6f loop and `attack_primary`/runtime `attack`, `hit`, `death` 6f
+  one-shots. The visual override is registry-only and does not change enemy AI,
+  damage, targeting, spawn rules or balance.
 
 ## Full-Frame State Registry
 

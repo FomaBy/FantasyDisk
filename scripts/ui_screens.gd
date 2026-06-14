@@ -1377,6 +1377,24 @@ func _show_skill_tree_screen() -> void:
 	hint.add_theme_color_override("font_color", Color(0.80, 0.86, 0.92, 0.9))
 	layout.add_child(hint)
 
+	# SCRUM-360: прогресс ПО КЛАССУ (выбранный класс) — реиграбельность за классы.
+	var class_progress := Label.new()
+	class_progress.name = "SkillTreeClassProgress"
+	class_progress.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	class_progress.add_theme_font_size_override("font_size", 16)
+	class_progress.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 0.95))
+	layout.add_child(class_progress)
+	var class_id := str(game.selected_character_id)
+	var class_wins: int = game.META_PROGRESSION.class_boss_wins(game.meta_state, class_id)
+	var class_unlocked: int = game.META_PROGRESSION.class_level(game.meta_state, class_id)
+	var class_next: Dictionary = game.META_PROGRESSION.class_next_threshold(game.meta_state, class_id)
+	var class_text := "Прогресс класса «%s»: %d побед над боссами, открыто бонусов класса: %d." % [class_id, class_wins, class_unlocked]
+	if class_next.is_empty():
+		class_text += " Все бонусы класса открыты."
+	else:
+		class_text += " Следующий бонус — на %d победах: %s (%s)." % [int(class_next.get("wins", 0)), str(class_next.get("title", "")), str(class_next.get("desc", ""))]
+	class_progress.text = class_text
+
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED

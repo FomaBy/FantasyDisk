@@ -1,0 +1,179 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_00.png" id="1_st1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_01.png" id="2_st2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_02.png" id="3_st3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_03.png" id="4_st4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_04.png" id="5_st5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_attack_primary_05.png" id="6_st6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_00.png" id="7_st7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_01.png" id="8_st8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_02.png" id="9_st9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_03.png" id="10_st10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_04.png" id="11_st11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_move_05.png" id="12_st12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_00.png" id="13_st13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_01.png" id="14_st14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_02.png" id="15_st15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_03.png" id="16_st16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_04.png" id="17_st17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_hit_05.png" id="18_st18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_00.png" id="19_st19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_01.png" id="20_st20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_02.png" id="21_st21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_03.png" id="22_st22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_04.png" id="23_st23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/stone_bruiser/stone_bruiser_death_05.png" id="24_st24"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_st1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_st2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_st3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_st4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_st5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_st6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_st1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_st2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_st3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_st4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_st5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_st6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_st19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_st20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_st21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_st22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_st23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_st24")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_st13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_st14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_st15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_st16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_st17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_st18")
+}
+],
+"loop": false,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_st7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_st8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_st9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_st10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_st11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_st12")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+}]

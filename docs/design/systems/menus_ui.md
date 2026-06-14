@@ -108,6 +108,20 @@ fall back to `back_s`: that frame is authored for taller action buttons and
 visually squashes when used in this dialog. Runtime smoke records the actual
 rects and textures in `build/qa/scrum319/quit_confirmation_dialog.md`.
 
+## Feedback Overlay
+
+`P` opens `FeedbackOverlayLayer`, a separate top-level overlay that does not call
+`_clear_ui()` and therefore does not reset the underlying combat, route map,
+shop, event, level-up or reward screen. The overlay contains `FeedbackTextEdit`,
+`FeedbackScreenshotPreview`, `FeedbackSendButton` and `FeedbackCancelButton`.
+Escape closes only this overlay, while normal text input remains inside the text
+field.
+
+The screenshot is captured before the overlay is created. Sending is handled by
+`scripts/feedback_reporter.gd`: webhook reports use Discord-compatible
+multipart payloads, while missing/failed webhook delivery falls back to
+`user://feedback/<timestamp>/`. Details: `docs/design/systems/feedback_reporting.md`.
+
 ## Settings Tabs
 
 SCRUM-325 adds a design-ready Settings tab switcher frame at

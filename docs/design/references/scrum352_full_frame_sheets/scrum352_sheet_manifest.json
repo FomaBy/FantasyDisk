@@ -97,6 +97,93 @@
         ],
         "has_transparency": true
       }
+    },
+    {
+      "entity_id": "stone_bruiser",
+      "kind": "enemy",
+      "title": "Stone Bruiser",
+      "source_path": "assets/sprites/enemies/enemy_bruiser_slow.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/stone_bruiser_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/enemies/full_frame/stone_bruiser_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "hit_react",
+        "death"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          18,
+          37,
+          1495,
+          960
+        ],
+        "has_transparency": true
+      }
+    },
+    {
+      "entity_id": "bone_caller",
+      "kind": "enemy",
+      "title": "Bone Caller",
+      "source_path": "assets/sprites/enemies/enemy_summoner.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/bone_caller_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/enemies/full_frame/bone_caller_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "hit_react",
+        "death"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          27,
+          34,
+          1463,
+          974
+        ],
+        "has_transparency": true
+      }
+    },
+    {
+      "entity_id": "void_mage",
+      "kind": "enemy",
+      "title": "Void Mage",
+      "source_path": "assets/sprites/enemies/enemy_void_mage.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/void_mage_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/enemies/full_frame/void_mage_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "hit_react",
+        "death"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          37,
+          30,
+          1492,
+          970
+        ],
+        "has_transparency": true
+      }
     }
   ]
 }

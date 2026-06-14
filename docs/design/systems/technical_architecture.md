@@ -22,6 +22,9 @@
 - `scripts/run_autosave.gd`: active-run persistence helper for safe route
   checkpoint autosaves (`user://fantasydisk_autosave.cfg`), with schema checks
   and atomic `.tmp` writes.
+- `scripts/feedback_reporter.gd`: in-game feedback/bug-report delivery helper
+  for Discord-compatible webhook multipart sends plus `user://feedback/` local
+  fallback reports.
 
 `scripts/class_weapon.gd` owns non-Berserk class weapon runtime behavior. SCRUM-196
 replaced the old long `attack_mode` dispatch match with `ATTACK_MODE_EXECUTORS`,
@@ -94,6 +97,9 @@ Additional checks:
 - `tests/melee_weapon_targeting_test.gd`;
 - `tests/meta_progression_smoke_test.gd`.
 - `tests/run_autosave_persistence_test.gd`.
+- In-game feedback smoke is embedded in `tests/runtime_smoke_test.gd` and
+  verifies the `P` action, overlay lifecycle, screenshot preview, local fallback
+  files and multipart payload markers.
 
 ## Branching
 

@@ -299,7 +299,7 @@ Back-end source-specific integration complete in SCRUM-157: runtime selectors pr
 
 | ID | Игровое имя | Текущая сцена | Архетип | Ассет | Поведение | Статус |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rift_cutter` | Рубака Разлома | `scenes/Enemy.tscn` | Ближний бой | `assets/sprites/enemies/enemy_melee.png` | Идет к игроку, бьет с windup | Реализовано |
+| `rift_cutter` | Рубака Разлома | `scenes/Enemy.tscn` | Ближний бой | `assets/sprites/enemies/enemy_melee.png`; full-frame pilot `assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres` from `assets/sprites/enemies/full_frame/rift_cutter_full_frame_sheet.png` | Идет к игроку, бьет с windup; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
 | `ash_marksman` | Пепельный Стрелок | `scenes/EnemyShooter.tscn` | Дальний бой | `assets/sprites/enemies/enemy_ranged.png` | Держит дистанцию и стреляет | Реализовано |
 | `spark_runner` | Искровой Беглец | `scenes/EnemyRunner.tscn` | Быстрый враг | `assets/sprites/enemies/enemy_suicide_runner.png` | Быстро догоняет игрока, может спавниться пачками | Реализовано |
 | `stone_bruiser` | Каменный Громила | `scenes/EnemyBruiser.tscn` | Жирный медленный | `assets/sprites/enemies/enemy_bruiser_slow.png` | Высокий HP, низкая скорость | Реализовано |

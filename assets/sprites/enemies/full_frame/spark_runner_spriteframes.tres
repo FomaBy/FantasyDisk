@@ -1,0 +1,179 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_00.png" id="1_sp1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_01.png" id="2_sp2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_02.png" id="3_sp3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_03.png" id="4_sp4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_04.png" id="5_sp5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_attack_primary_05.png" id="6_sp6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_00.png" id="7_sp7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_01.png" id="8_sp8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_02.png" id="9_sp9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_03.png" id="10_sp10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_04.png" id="11_sp11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_move_05.png" id="12_sp12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_00.png" id="13_sp13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_01.png" id="14_sp14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_02.png" id="15_sp15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_03.png" id="16_sp16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_04.png" id="17_sp17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_hit_05.png" id="18_sp18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_00.png" id="19_sp19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_01.png" id="20_sp20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_02.png" id="21_sp21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_03.png" id="22_sp22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_04.png" id="23_sp23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/spark_runner/spark_runner_death_05.png" id="24_sp24"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_sp1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_sp2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_sp3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_sp4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_sp5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_sp6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_sp1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_sp2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_sp3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_sp4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_sp5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_sp6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_sp19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_sp20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_sp21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_sp22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_sp23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_sp24")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_sp13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_sp14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_sp15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_sp16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_sp17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_sp18")
+}
+],
+"loop": false,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_sp7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_sp8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_sp9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_sp10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_sp11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_sp12")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+}]
