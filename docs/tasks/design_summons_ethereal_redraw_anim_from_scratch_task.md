@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать призывных существ С НУЛЯ — эфирный голубой стиль + анимация
 
-Статус: review
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -8,6 +8,7 @@
 Автор: PM (запрос пользователя)
 Связано: SCRUM-353 (анимации призывов — этот таск ЗАМЕНЯЕТ их арт на эфирный), SCRUM-324 (asset-skill), animation-director
 Jira: SCRUM-399
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -155,3 +156,25 @@ Additional non-Animator blocker:
   expectation that animated `AllyMinion` death should immediately `queue_free`.
 - Back-end handoff: `docs/tasks/backend_runtime_smoke_levelup_summon_death_regression_task.md`
   / SCRUM-402.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Эфирный голубой стиль**: `ally_druid_beast.png` avg RGB R=105/G=182/**B=205**
+  — циан/голубой доминирует (призрачный оттенок). Визуал
+  `summons_ethereal_redraw_contact.png`: все 4 призыва (druid_beast/pack_spirit/
+  homunculus/leadership_echo) — полупрозрачные циан-голубые духи со свечением,
+  death = развоплощение в частицы. Мгновенно отличимы от плотных тёмных монстров.
+- **Контракт анимаций сохранён** (load в Godot): у всех 4 `move=8(loop)`,
+  `attack=6`, `death=6` — пути/тайминги SpriteFrames не изменены (код не трогали).
+- **Бэкап**: 88 PNG в `build/qa/scrum399/backups/assets/` (старый арт сохранён).
+- **Тесты**: `animation_smoke_test` + `runtime_smoke_test` — passed. (Прежние
+  блокеры runtime_smoke level-up + summoner death закрыты в SCRUM-402, мной PASSED.)
+
+Acceptance:
+- [x] 4 призыва перерисованы в эфирном голубом-призрачном стиле, отличимы от монстров.
+- [x] move(8)/attack(6)/death(6), эфирная пластика; пути SpriteFrames сохранены.
+- [x] Старое в бэкап; манифест валиден; animation+runtime smoke зелёные; контактлист.
+
+Статус review→done. Баги: нет.

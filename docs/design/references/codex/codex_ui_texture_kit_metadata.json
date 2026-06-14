@@ -1,0 +1,356 @@
+{
+  "task": "SCRUM-345",
+  "source_reference": "docs/design/references/codex/codex_ui_texture_kit_reference.png",
+  "assets": [
+    {
+      "id": "ui_frame_codex_main_panel",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png",
+      "source_box": [
+        22,
+        38,
+        806,
+        636
+      ],
+      "size": [
+        1024,
+        768
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        80,
+        72,
+        80,
+        82
+      ],
+      "content_margin": [
+        92,
+        82,
+        92,
+        92
+      ],
+      "content_rect": [
+        92,
+        82,
+        840,
+        594
+      ],
+      "use": "Root Codex panel/background frame with large empty inner content zone.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    },
+    {
+      "id": "ui_frame_codex_section_panel",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png",
+      "source_box": [
+        824,
+        55,
+        1232,
+        653
+      ],
+      "size": [
+        640,
+        960
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        58,
+        76,
+        58,
+        82
+      ],
+      "content_margin": [
+        68,
+        86,
+        68,
+        92
+      ],
+      "content_rect": [
+        68,
+        86,
+        504,
+        782
+      ],
+      "use": "Tall section panel for Codex category pages or right-side lists.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    },
+    {
+      "id": "ui_frame_codex_entry_card",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_entry_card.png",
+      "source_box": [
+        34,
+        787,
+        272,
+        842
+      ],
+      "size": [
+        640,
+        144
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        46,
+        26,
+        46,
+        28
+      ],
+      "content_margin": [
+        58,
+        32,
+        58,
+        34
+      ],
+      "content_rect": [
+        58,
+        32,
+        524,
+        78
+      ],
+      "use": "Horizontal entry card for character, monster, artifact, stat and glossary rows.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    },
+    {
+      "id": "ui_frame_codex_entry_card_hover",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_entry_card_hover.png",
+      "source_box": [
+        292,
+        787,
+        534,
+        842
+      ],
+      "size": [
+        640,
+        144
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        46,
+        26,
+        46,
+        28
+      ],
+      "content_margin": [
+        58,
+        32,
+        58,
+        34
+      ],
+      "content_rect": [
+        58,
+        32,
+        524,
+        78
+      ],
+      "use": "Hover/accent entry-card state.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    },
+    {
+      "id": "ui_frame_codex_portrait_slot",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_portrait_slot.png",
+      "source_box": [
+        1255,
+        406,
+        1497,
+        650
+      ],
+      "size": [
+        320,
+        320
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        42,
+        42,
+        42,
+        42
+      ],
+      "content_margin": [
+        54,
+        54,
+        54,
+        54
+      ],
+      "content_rect": [
+        54,
+        54,
+        212,
+        212
+      ],
+      "use": "Portrait/icon slot; art must stay inside circular inner area.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    },
+    {
+      "id": "ui_frame_codex_tooltip",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_tooltip.png",
+      "source_box": [
+        1228,
+        669,
+        1498,
+        787
+      ],
+      "size": [
+        768,
+        256
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        58,
+        40,
+        58,
+        46
+      ],
+      "content_margin": [
+        70,
+        48,
+        70,
+        54
+      ],
+      "content_rect": [
+        70,
+        48,
+        628,
+        154
+      ],
+      "use": "Glossary/codex tooltip frame.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    },
+    {
+      "id": "ui_frame_codex_tab",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_tab.png",
+      "source_box": [
+        34,
+        787,
+        272,
+        842
+      ],
+      "size": [
+        360,
+        96
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        42,
+        20,
+        42,
+        20
+      ],
+      "content_margin": [
+        52,
+        24,
+        52,
+        24
+      ],
+      "content_rect": [
+        52,
+        24,
+        256,
+        48
+      ],
+      "use": "Codex tab base state.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    },
+    {
+      "id": "ui_frame_codex_tab_hover",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_tab_hover.png",
+      "source_box": [
+        292,
+        787,
+        534,
+        842
+      ],
+      "size": [
+        360,
+        96
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        42,
+        20,
+        42,
+        20
+      ],
+      "content_margin": [
+        52,
+        24,
+        52,
+        24
+      ],
+      "content_rect": [
+        52,
+        24,
+        256,
+        48
+      ],
+      "use": "Codex tab hover/focus state.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    },
+    {
+      "id": "ui_frame_codex_tab_pressed",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_tab_pressed.png",
+      "source_box": [
+        550,
+        787,
+        792,
+        842
+      ],
+      "size": [
+        360,
+        96
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        42,
+        20,
+        42,
+        20
+      ],
+      "content_margin": [
+        52,
+        24,
+        52,
+        24
+      ],
+      "content_rect": [
+        52,
+        24,
+        256,
+        48
+      ],
+      "use": "Codex tab pressed/selected state.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    },
+    {
+      "id": "ui_frame_codex_tab_disabled",
+      "path": "assets/sprites/ui/frames/codex/ui_frame_codex_tab_disabled.png",
+      "source_box": [
+        34,
+        878,
+        273,
+        935
+      ],
+      "size": [
+        360,
+        96
+      ],
+      "mode": "RGBA",
+      "texture_margin": [
+        42,
+        20,
+        42,
+        20
+      ],
+      "content_margin": [
+        52,
+        24,
+        52,
+        24
+      ],
+      "content_rect": [
+        52,
+        24,
+        256,
+        48
+      ],
+      "use": "Codex tab disabled state.",
+      "rule": "Runtime content must stay inside content_rect; no text/art/icons/click zones on decorative border."
+    }
+  ]
+}

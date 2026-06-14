@@ -1916,8 +1916,8 @@
  },
  "design_summons_ethereal_redraw_anim_from_scratch_task.md": {
   "key": "SCRUM-399",
-  "status": "В работе",
-  "desc_hash": "ac05545776846e3a0dc7130ea18664b8"
+  "status": "Готово",
+  "desc_hash": "9e122635a07cc43c51219a67941cfbad"
  },
  "backend_combat_hud_redraw_integration_task.md": {
   "key": "SCRUM-400",
