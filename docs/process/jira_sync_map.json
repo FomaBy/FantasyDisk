@@ -1004,75 +1004,79 @@
   "status": "В работе"
  },
  "art_char_redraw_anim_assassin_task.md": {
-  "key": "SCRUM-299",
+  "key": "SCRUM-282",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_berserk_task.md": {
-  "key": "SCRUM-300",
+  "key": "SCRUM-283",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_biologist_task.md": {
-  "key": "SCRUM-301",
+  "key": "SCRUM-284",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_chemist_task.md": {
-  "key": "SCRUM-302",
+  "key": "SCRUM-285",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_dark_mage_task.md": {
-  "key": "SCRUM-303",
+  "key": "SCRUM-286",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_doctor_task.md": {
-  "key": "SCRUM-304",
+  "key": "SCRUM-287",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_druid_task.md": {
-  "key": "SCRUM-305",
+  "key": "SCRUM-288",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_elementalist_task.md": {
-  "key": "SCRUM-306",
+  "key": "SCRUM-289",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_engineer_task.md": {
-  "key": "SCRUM-307",
+  "key": "SCRUM-290",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_guitarist_task.md": {
-  "key": "SCRUM-308",
+  "key": "SCRUM-291",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_knight_task.md": {
-  "key": "SCRUM-309",
+  "key": "SCRUM-292",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_priest_task.md": {
-  "key": "SCRUM-310",
+  "key": "SCRUM-293",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_ranger_task.md": {
-  "key": "SCRUM-311",
+  "key": "SCRUM-294",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_robot_task.md": {
-  "key": "SCRUM-312",
+  "key": "SCRUM-295",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_sniper_task.md": {
-  "key": "SCRUM-313",
+  "key": "SCRUM-296",
   "status": "К выполнению"
  },
  "art_char_redraw_anim_thief_task.md": {
-  "key": "SCRUM-314",
+  "key": "SCRUM-297",
   "status": "К выполнению"
  },
  "art_unified_character_style_anim_spec_task.md": {
-  "key": "SCRUM-315",
+  "key": "SCRUM-298",
   "status": "К выполнению"
  },
  "design_main_menu_background_new_bosses_battle_task.md": {
-  "key": "SCRUM-317",
+  "key": "SCRUM-316",
+  "status": "К выполнению"
+ },
+ "bug_button_hover_remove_yellow_glow_task.md": {
+  "key": "SCRUM-318",
   "status": "К выполнению"
  }
 }
