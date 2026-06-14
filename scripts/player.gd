@@ -117,6 +117,7 @@ var _body_action_time_left := 0.0
 var _action_tween: Tween = null
 var _hit_flash_tween: Tween = null
 var _facing_direction := Vector2.RIGHT
+var _uses_full_frame_visual := false
 var _damage_invulnerability_left := 0.0
 # Паутинное замедление (Матерь Роя): фактор скорости до отметки времени.
 var _web_slow_until := 0.0
@@ -190,15 +191,17 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		visual_root.scale = Vector2.ONE
 	var body := _animated_sprite()
 	if body != null:
-		body.sprite_frames = _character_sprite_frames(config)
+		var full_frame_frames := _character_full_frame_sprite_frames(character_id)
+		_uses_full_frame_visual = full_frame_frames != null
+		body.sprite_frames = full_frame_frames if _uses_full_frame_visual else _character_sprite_frames(config)
 		body.animation = "idle"
 		body.play("idle")
 		body.position = Vector2.ZERO
 		body.rotation = 0.0
 		body.scale = BASE_SPRITE_SCALE
 		body.flip_h = false
-		body.visible = false
-	_configure_player_rig(config)
+		body.visible = _uses_full_frame_visual
+	_configure_player_rig(config, not _uses_full_frame_visual)
 	var weapon_socket := _weapon_socket()
 	if weapon_socket != null:
 		weapon_socket.position = Vector2.ZERO
@@ -419,6 +422,8 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO, phase :
 	}
 	weapon_animation_event.emit(last_weapon_animation_event)
 	if phase != "":
+		if _uses_full_frame_visual:
+			_play_body_action_animation(action_id, maxf(float(duration), 0.0))
 		var event_rig := _cutout_rig()
 		if event_rig != null and event_rig.has_method("play_action"):
 			var event_weapon_id := str(event_metadata.get("weapon_id", weapon_id))
@@ -1550,7 +1555,7 @@ func _cutout_rig() -> Node2D:
 	return get_node_or_null("VisualRoot/RigRoot") as Node2D
 
 
-func _configure_player_rig(config: Dictionary) -> void:
+func _configure_player_rig(config: Dictionary, show_cutout := true) -> void:
 	var visual_root := _visual_root()
 	if visual_root == null:
 		return
@@ -1563,18 +1568,23 @@ func _configure_player_rig(config: Dictionary) -> void:
 	var texture := config.get("sprite", BERSERK_SPRITE) as Texture2D
 	if rig.has_method("configure"):
 		rig.configure(texture, BASE_SPRITE_SCALE, character_id, {"is_player": true})
+	rig.visible = show_cutout
 
 
 func _character_sprite_frames(config: Dictionary) -> SpriteFrames:
-	var resource_frames := _character_resource_sprite_frames(character_id)
-	if resource_frames != null:
-		return resource_frames
-	var sheet_frames := _character_sheet_sprite_frames(character_id)
-	if sheet_frames != null:
-		return sheet_frames
+	var full_frame_frames := _character_full_frame_sprite_frames(character_id)
+	if full_frame_frames != null:
+		return full_frame_frames
 	if character_id == "berserk":
 		return _berserk_sprite_frames()
 	return _single_texture_sprite_frames(config["sprite"])
+
+
+func _character_full_frame_sprite_frames(class_id: String) -> SpriteFrames:
+	var resource_frames := _character_resource_sprite_frames(class_id)
+	if resource_frames != null:
+		return resource_frames
+	return _character_sheet_sprite_frames(class_id)
 
 
 func _character_resource_sprite_frames(class_id: String) -> SpriteFrames:

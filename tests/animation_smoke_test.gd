@@ -29,10 +29,13 @@ func _test_player_animation() -> void:
 	root.add_child(player)
 	player.configure_character("berserk")
 	var body := player.get_node("VisualRoot/Body") as AnimatedSprite2D
-	if body.visible:
-		_fail("Expected player fallback AnimatedSprite2D to be hidden behind RigRoot.")
+	var rig := player.get_node("VisualRoot/RigRoot") as Node2D
+	if not body.visible:
+		_fail("Expected Berserk full-frame AnimatedSprite2D to be visible.")
+	if rig.visible:
+		_fail("Expected Berserk cutout RigRoot to be hidden behind the full-frame AnimatedSprite2D.")
 	if body.sprite_frames == null or not body.sprite_frames.has_animation("attack") or not body.sprite_frames.has_animation("attack_primary"):
-		_fail("Expected player fallback SpriteFrames to expose attack and attack_primary animations.")
+		_fail("Expected player SpriteFrames to expose attack and attack_primary animations.")
 	if body.sprite_frames.resource_path != "res://assets/sprites/characters/berserk_spriteframes.tres":
 		_fail("Expected Berserk to use the accepted SCRUM-283 SpriteFrames resource.")
 	if body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
@@ -59,7 +62,6 @@ func _test_player_animation() -> void:
 		_fail("Expected character sheet walk to loop and attack to be one-shot.")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "player")
 
-	var rig := player.get_node("VisualRoot/RigRoot") as Node2D
 	var pelvis := rig.get_node("Pelvis") as Node2D
 	var leg_l := rig.get_node("Pelvis/Figure/LegL") as Node2D
 	var leg_r := rig.get_node("Pelvis/Figure/LegR") as Node2D
@@ -109,9 +111,9 @@ func _test_player_animation() -> void:
 	if float(hammer_pose["arm_r_y"]) >= float(sword_pose["arm_r_y"]) - 3.0 or float(hammer_pose["pelvis_y"]) >= float(sword_pose["pelvis_y"]) - 2.0:
 		_fail("Expected hammer attack pose to lift into an overhead slam silhouette.")
 
-	player.configure_character("doctor")
-	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
-	if body.sprite_frames == null or body.sprite_frames.get_frame_count("attack") != 1:
+	var fallback_texture := load("res://assets/sprites/characters/berserk_unarmed.png") as Texture2D
+	var fallback_frames := player.call("_single_texture_sprite_frames", fallback_texture) as SpriteFrames
+	if fallback_frames == null or fallback_frames.get_frame_count("attack") != 1:
 		_fail("Expected non-sheet character fallback attack animation to be safe and static.")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "guitarist")
 	player.call("play_action_animation", "shoot", Vector2.RIGHT)
@@ -122,6 +124,9 @@ func _test_player_animation() -> void:
 
 	player.configure_character("dark_mage")
 	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
+	rig = player.get_node("VisualRoot/RigRoot") as Node2D
+	if not body.visible or rig.visible:
+		_fail("Expected Dark Mage full-frame AnimatedSprite2D visible with hidden cutout RigRoot.")
 	if body.sprite_frames == null or body.sprite_frames.resource_path != "res://assets/sprites/characters/dark_mage_spriteframes.tres":
 		_fail("Expected Dark Mage to use the accepted SCRUM-286 SpriteFrames resource.")
 	if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
@@ -149,21 +154,41 @@ func _test_player_animation() -> void:
 		_fail("Expected cast action animation to raise the rig arms.")
 
 	var accepted_character_spriteframes := {
-		"berserk": "res://assets/sprites/characters/berserk_spriteframes.tres",
-		"dark_mage": "res://assets/sprites/characters/dark_mage_spriteframes.tres",
-		"guitarist": "res://assets/sprites/characters/guitarist_spriteframes.tres",
 		"assassin": "res://assets/sprites/characters/assassin_spriteframes.tres",
+		"berserk": "res://assets/sprites/characters/berserk_spriteframes.tres",
+		"biologist": "res://assets/sprites/characters/biologist_spriteframes.tres",
+		"chemist": "res://assets/sprites/characters/chemist_spriteframes.tres",
+		"dark_mage": "res://assets/sprites/characters/dark_mage_spriteframes.tres",
+		"doctor": "res://assets/sprites/characters/doctor_spriteframes.tres",
+		"druid": "res://assets/sprites/characters/druid_spriteframes.tres",
+		"elementalist": "res://assets/sprites/characters/elementalist_spriteframes.tres",
+		"engineer": "res://assets/sprites/characters/engineer_spriteframes.tres",
+		"guitarist": "res://assets/sprites/characters/guitarist_spriteframes.tres",
+		"knight": "res://assets/sprites/characters/knight_spriteframes.tres",
+		"priest": "res://assets/sprites/characters/priest_spriteframes.tres",
 		"ranger": "res://assets/sprites/characters/ranger_spriteframes.tres",
+		"robot": "res://assets/sprites/characters/robot_spriteframes.tres",
+		"sniper": "res://assets/sprites/characters/sniper_spriteframes.tres",
+		"soldier": "res://assets/sprites/characters/soldier_spriteframes.tres",
+		"thief": "res://assets/sprites/characters/thief_spriteframes.tres",
 	}
 	for sheet_character_id in accepted_character_spriteframes.keys():
 		player.configure_character(sheet_character_id)
 		body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
+		rig = player.get_node("VisualRoot/RigRoot") as Node2D
 		if body.sprite_frames == null or body.sprite_frames.resource_path != str(accepted_character_spriteframes[sheet_character_id]):
 			_fail("Expected %s to use its accepted SpriteFrames resource." % sheet_character_id)
+		if not body.visible or rig.visible:
+			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
 			_fail("Expected %s accepted SpriteFrames to expose 5 idle/walk/attack/attack_primary frames." % sheet_character_id)
 		if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
 			_fail("Expected %s idle/walk to loop and attacks to be one-shot." % sheet_character_id)
+	player.configure_character("missing_full_frame_test")
+	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
+	rig = player.get_node("VisualRoot/RigRoot") as Node2D
+	if body.visible or not rig.visible:
+		_fail("Expected missing full-frame fallback to hide Body and show cutout RigRoot.")
 
 	var new_class_profiles := {
 		"assassin": 0.08,
