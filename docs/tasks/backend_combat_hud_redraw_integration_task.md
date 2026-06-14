@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Источник: SCRUM-390 `design_combat_hud_full_redraw_skill_task.md`
 Jira: SCRUM-400
+QA: in_progress (2026-06-14)
 
 ## Dispatch
 
@@ -132,3 +133,27 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
 - QA dumps updated: `build/qa/scrum390/combat_hud_runtime_rects.md` and
   `build/qa/scrum390/combat_level_up_button.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — закрывает видимый combat HUD redraw (Design 390 + Back-end 400)
+
+Проверено (фактически):
+- **Рантайм использует combat_hud kit** (ui_screens.gd:88-93): `COMBAT_HUD_FRAME_DIR`
+  + resource panel + cards (hp/xp/gold/ult) + timer + badge + fills + level-up.
+- **Level-up button** (QA-dump `combat_level_up_button.md`): texture =
+  `ui_btn_combat_level_up_plus.png` (новый combat-HUD медальон), **alpha 1.000**
+  (непрозрачный), P(1476,1476) правый-нижний угол, бейдж S(28,28) читаем.
+- **Визуал** `build/qa/cap_combat_hud_400.png`: resource panel (HP/XP/gold/ult)
+  top-left + timer «0:30» в драконьей рамке top-center — новый dragon-стиль,
+  читаемо, не перекрывает геймплей, контент в content-зоне.
+- **Тесты**: `runtime_smoke_ui_test` («Runtime UI smoke suite passed»),
+  `ui_no_overlap_matrix_test`, `runtime_smoke_test` — все passed (build зелёный;
+  прежний level-up assertion-конфликт реконсилен — `_button_uses_combat_hud_plus_style`).
+
+Acceptance:
+- [x] Combat HUD на SCRUM-390 ассетах в live runtime.
+- [x] HP/XP/money/ult/timer/badge читаемы; level-up правый-низ, непрозрачный, бейдж, без жёлтого.
+- [x] Контент не на орнаменте; логика обновления цела (runtime_smoke).
+- [x] ui_no_overlap + runtime_smoke_ui + runtime smoke зелёные; QA-скрин/dump.
+
+Петля HUD закрыта: SCRUM-390 (kit) + 400 (интеграция). Баги: нет.

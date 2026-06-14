@@ -1,6 +1,6 @@
 # Back-end: Runtime Smoke Blockers — Level-Up Return Button + Ally Death Test
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI/runtime smoke)
 Версия: 0.1.5
@@ -67,7 +67,29 @@ Likely cause:
 
 ## Acceptance Criteria
 
-- [ ] `tests/runtime_smoke_test.gd` passes.
-- [ ] `tests/summoner_strengthening_test.gd` passes.
-- [ ] `tests/animation_smoke_test.gd` still passes.
-- [ ] If UX behavior changed intentionally, update relevant docs/changelog.
+- [x] `tests/runtime_smoke_test.gd` passes.
+- [x] `tests/summoner_strengthening_test.gd` passes.
+- [x] `tests/animation_smoke_test.gd` still passes.
+- [x] If UX behavior changed intentionally, update relevant docs/changelog.
+
+## Result
+
+Done 2026-06-14 (Back-end): both runtime blockers are resolved without gameplay,
+balance, cleanup or Design asset changes.
+
+- Blocker 1 was handled in SCRUM-400: `runtime_smoke_test.gd` now expects the
+  current SCRUM-390 bottom-right `LevelUpPlusButton` contract (`+` glyph,
+  combat HUD plus texture states, pending badge) instead of the obsolete
+  long-form `Повышение уровня (N)` label. Related UX/docs/changelog updates are
+  recorded in SCRUM-400.
+- Blocker 2 fixed in `tests/summoner_strengthening_test.gd`: the test now
+  validates the animated `AllyMinion` death lifecycle introduced by SCRUM-379
+  (`_death_lifecycle_started`, immediate removal from `allies`, no lifecycle
+  reset on repeated lethal damage, delayed `queue_free` after death playback)
+  while preserving the immediate cleanup expectation for non-animated fallback.
+
+Verification:
+
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/summoner_strengthening_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS on rerun. A preceding parallel run reported a transient autosave assertion outside this task scope; it did not reproduce in the required standalone runtime smoke.

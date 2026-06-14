@@ -1,7 +1,7 @@
 {
   "task": "SCRUM-352",
   "model": "gpt-image-2",
-  "output_size": "1536x1024",
+  "output_size": "1704x1144",
   "frame_size": [
     256,
     256
@@ -27,17 +27,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          22,
-          49,
-          1502,
-          989
+          48,
+          62,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -56,17 +59,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          39,
-          38,
-          1479,
-          973
+          48,
+          57,
+          1651,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -85,17 +91,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          28,
-          57,
-          1494,
-          967
+          48,
+          74,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -114,17 +123,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          18,
-          37,
-          1495,
-          960
+          48,
+          57,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -143,17 +155,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          27,
-          34,
-          1463,
-          974
+          53,
+          48,
+          1642,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -172,17 +187,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          37,
-          30,
-          1492,
-          970
+          49,
+          48,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -201,17 +219,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          56,
-          1489,
-          958
+          48,
+          73,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -230,17 +251,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          46,
-          33,
-          1498,
-          973
+          62,
+          50,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -259,17 +283,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          40,
-          75,
-          1466,
-          934
+          48,
+          99,
+          1645,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -288,17 +315,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          36,
-          19,
-          1504,
-          973
+          51,
+          48,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -317,17 +347,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          37,
-          1483,
-          976
+          48,
+          77,
+          1653,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -346,17 +379,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          13,
-          38,
-          1488,
-          963
+          48,
+          56,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -375,17 +411,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          34,
-          32,
-          1498,
-          954
+          48,
+          50,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -404,17 +443,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          23,
-          32,
-          1520,
-          963
+          48,
+          48,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -433,17 +475,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          30,
-          23,
-          1521,
-          989
+          48,
+          48,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -462,17 +507,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          22,
-          38,
-          1475,
-          970
+          48,
+          49,
+          1649,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -491,17 +539,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          26,
-          26,
-          1520,
-          1003
+          48,
+          48,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -520,17 +571,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          26,
-          26,
-          1496,
-          980
+          48,
+          59,
+          1649,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -549,17 +603,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          21,
-          39,
-          1496,
-          975
+          48,
+          48,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -578,17 +635,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          21,
-          51,
-          1513,
-          983
+          48,
+          85,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -607,17 +667,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          36,
+          48,
           50,
-          1488,
-          973
+          1651,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -636,17 +699,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          20,
-          20,
-          1519,
-          983
+          48,
+          48,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -665,17 +731,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          5,
-          0,
-          1514,
-          982
+          48,
+          48,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -694,17 +763,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          38,
-          25,
-          1496,
-          978
+          48,
+          48,
+          1655,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -723,17 +795,20 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          15,
-          23,
-          1529,
-          999
+          48,
+          50,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     },
     {
@@ -752,18 +827,24 @@
       "frame_count_per_row": 6,
       "qa": {
         "size": [
-          1536,
-          1024
+          1704,
+          1144
         ],
         "mode": "RGBA",
         "alpha_bbox": [
-          19,
-          23,
-          1512,
-          993
+          49,
+          48,
+          1656,
+          1096
         ],
-        "has_transparency": true
+        "has_transparency": true,
+        "frame_gutter_px": 24,
+        "outer_padding_px": 24,
+        "safe_slicing_checked": true
       }
     }
-  ]
+  ],
+  "frame_gutter_px": 24,
+  "outer_padding_px": 24,
+  "safe_slicing_checked": true
 }

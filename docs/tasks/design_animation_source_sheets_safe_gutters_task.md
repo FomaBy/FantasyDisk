@@ -1,6 +1,6 @@
 # DESIGN: Regenerate Animation Source Sheets With Safe Gutters
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Design
 Версия: 0.1.5
@@ -99,3 +99,10 @@ Update relevant source manifests and Design notes when refreshed sheets are
 created. Back-end/gameplay docs are not required unless active runtime paths
 change.
 
+## Progress Log
+
+- 2026-06-14 — Взято в работу Design. Решение: выполнить deterministic source
+  repack из текущих accepted sheet/death-row cells без изменения runtime
+  SpriteFrames, gameplay, state names or timing. Target source layout for
+  `256x256` cells: `24px` outer padding + `24px` discard-only gutters, with
+  per-cell alpha content kept inside the safe inner area.

@@ -25,7 +25,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "druid_pack_spirit",
@@ -47,7 +58,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "homunculus",
@@ -69,7 +91,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "leadership_echo",
@@ -91,7 +124,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "iron_bastion",
@@ -113,7 +157,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "night_stalker",
@@ -135,7 +190,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "plague_prophet",
@@ -157,7 +223,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "shard_marshal",
@@ -179,7 +256,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "mini_scavenger_reaper",
@@ -201,7 +289,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "mini_plague_bellringer",
@@ -223,7 +322,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "mini_bone_warden",
@@ -245,7 +355,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "mini_spark_wight",
@@ -267,7 +388,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "mini_rot_hound",
@@ -289,7 +421,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "mini_shadow_devourer",
@@ -311,7 +454,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "rift_warden",
@@ -333,7 +487,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "disk_devourer",
@@ -355,7 +520,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "bone_archon",
@@ -377,7 +553,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "brood_mother",
@@ -399,7 +586,18 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     },
     {
       "id": "ashen_colossus",
@@ -421,7 +619,29 @@
       ],
       "pivot": "bottom-center",
       "fps": 12,
-      "loop": false
+      "loop": false,
+      "frame_gutter_px": 24,
+      "outer_padding_px": 24,
+      "cell_size": [
+        256,
+        256
+      ],
+      "source_reference_size": [
+        1704,
+        304
+      ],
+      "safe_slicing_checked": true
     }
-  ]
+  ],
+  "frame_gutter_px": 24,
+  "outer_padding_px": 24,
+  "cell_size": [
+    256,
+    256
+  ],
+  "source_reference_size": [
+    1704,
+    304
+  ],
+  "safe_slicing_checked": true
 }
