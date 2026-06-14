@@ -1,12 +1,13 @@
 # Back-end/UI: Integrate SCRUM-373 unified master frame system projectwide
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: Design Codex handoff from SCRUM-373
 Jira: SCRUM-382
+QA: in_progress (2026-06-14)
 Связано: SCRUM-373, SCRUM-273, SCRUM-274, SCRUM-281, SCRUM-356
 
 ## Контекст
@@ -84,13 +85,41 @@ Usage:
 
 ## Acceptance Criteria
 
-- [ ] Generic UI panels/cards/tooltips/HUD use the SCRUM-373 unified frame
+- [x] Generic UI panels/cards/tooltips/HUD use the SCRUM-373 unified frame
   builder and tile edges without one-axis distortion.
-- [ ] Existing proportional/screen-specific frames remain proportional where
+- [x] Existing proportional/screen-specific frames remain proportional where
   documented and do not get forced through 9-slice.
-- [ ] Old frame references are backed up or removed from live runtime mappings
+- [x] Old frame references are backed up or removed from live runtime mappings
   only after replacement is verified.
-- [ ] `runtime_smoke_test.gd`, `ui_no_overlap_matrix_test.gd` and dark-fantasy
+- [x] `runtime_smoke_test.gd`, `ui_no_overlap_matrix_test.gd` and dark-fantasy
   UI/theme checks pass.
-- [ ] QA captures cover 1280x720, 1920x1080 and 2560x1440.
-- [ ] Documentation is updated after runtime integration.
+- [x] QA captures cover 1280x720, 1920x1080 and 2560x1440.
+- [x] Documentation is updated after runtime integration.
+
+## Result
+Done 2026-06-14.
+
+- Added unified master frame source-of-truth constants to
+  `scripts/ui/ui_theme_paths.gd`, including runtime paths, texture margins and
+  role-specific compact content margins.
+- Added `_unified_frame_style()` in `scripts/ui_screens.gd`; generic
+  panels/cards/tooltips/timers/HUD now use tiled `StyleBoxTexture` edges from
+  the SCRUM-373 unified kit. Filled generic surfaces use
+  `ui_frame_unified_master_fill.png` for readability; border-only
+  `ui_frame_unified_master.png` remains available through the same builder.
+- Preserved proportional/screen-specific surfaces: Hero Select unified
+  portrait/description frame, Hero Select radar/carousel/portrait/dossier
+  frames, Settings tab switcher strip and Red & Gold button kit are not routed
+  through generic 9-slice.
+- Updated `tests/dark_fantasy_ui_theme_test.gd` to assert unified frame resource
+  paths, 128px 9-slice margins and tiled horizontal/vertical axes.
+- QA artifact: `build/qa/scrum382/unified_master_runtime_qa.md`.
+- Documentation updated: `CHANGELOG.md`, `docs/design/current_game_state.md`,
+  `docs/design/systems/menus_ui.md`, `docs/design/systems/visual_style_assets.md`.
+
+Verification:
+- `git diff --check` — PASS
+- `Godot --headless --script res://tests/dark_fantasy_ui_theme_test.gd` — PASS
+- `Godot --headless --script res://tests/runtime_smoke_ui_test.gd` — PASS
+- `Godot --headless --script res://tests/ui_no_overlap_matrix_test.gd` — PASS
+- `Godot --headless --script res://tests/runtime_smoke_test.gd` — PASS

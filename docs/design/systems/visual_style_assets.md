@@ -67,24 +67,28 @@ parchment/wax button kit is backed up outside live assets at
 SCRUM-274 supersedes the SCRUM-229 leather+gold runtime panel direction with the
 active **Ornate Dark / Red frame kit** from
 `docs/design/references/UiFrame/frame_kit_ornate_dark_sheet_b_spec.png`.
-Non-button panels/windows/cards/tooltips/HUD/pause stat frames now resolve to
-`assets/sprites/ui/frames/ornate/`. The old leather+gold and previous
-dark_fantasy/escape panel textures are backed up outside live assets at
-`build/cleanup_backup_ornate_frames_2026_06_14/`.
+Non-button generic panels/windows/cards/tooltips/HUD/timer frames now resolve
+through the SCRUM-382 unified master frame builder. The old leather+gold and
+previous dark_fantasy/escape panel textures are backed up outside live assets at
+`build/cleanup_backup_ornate_frames_2026_06_14/`; the ornate pause/stat family
+remains available for the specialized compact Escape stats menu until that menu
+receives its own safe-area migration.
 
-SCRUM-373 prepares the next **Unified Master Frame kit** for projectwide
-centralization. Runtime-ready assets live in `assets/sprites/ui/frames/unified/`:
+SCRUM-373/SCRUM-382 provide the active **Unified Master Frame kit** for
+projectwide generic UI centralization. Runtime-ready assets live in
+`assets/sprites/ui/frames/unified/`:
 `ui_frame_unified_master.png`, `ui_frame_unified_master_fill.png`,
 `ui_frame_unified_inner_fill.png`, `ui_frame_unified_ornament_top.png`,
 `ui_frame_unified_ornament_bottom.png` and `ui_frame_unified_hover_overlay.png`.
-Back-end integration is tracked in
-`docs/tasks/backend_unified_master_frame_system_projectwide_integration_task.md`.
-Use source size `1024x1024`, texture margins `128/128/128/128`, content margins
-`132/132/132/132`, strict safe rect `Rect2(132,132,760,760)`, and
-`AXIS_STRETCH_MODE_TILE` for both axes. The top/bottom ornaments are optional
-overlays for large windows only; compact HUD cards/tooltips/chips must use the
-plain border without ornaments. Runtime content, click zones, labels, portraits,
-icons and meters must remain inside the strict safe rect.
+Back-end integration lives in `UIThemePaths` and `scripts/ui_screens.gd`:
+generic StyleBoxTextures use source size `1024x1024`, texture margins
+`128/128/128/128`, role-specific runtime content margins and
+`AXIS_STRETCH_MODE_TILE` for both axes. `ui_frame_unified_master_fill.png` is
+used for readable filled panels/cards/HUD; `ui_frame_unified_master.png` remains
+the border-only variant. The top/bottom ornaments are optional overlays for
+large windows only and are not applied to compact HUD cards/tooltips/chips.
+Runtime content, click zones, labels, portraits, icons and meters must remain
+inside the frame content area.
 
 SCRUM-281 adds a screen-specific **Hero Select frame kit** from
 `docs/design/references/herouiframe/`. It is used only by `HeroSelectScreen`,
@@ -92,7 +96,7 @@ because the portrait/dossier/radar ornaments need custom safe areas. Live
 assets resolve to `assets/sprites/ui/frames/hero_select/`; QA screenshots and
 rect dumps live in `build/qa/scrum281/`.
 
-Canonical live ornate frame assets live in `assets/sprites/ui/frames/ornate/`:
+Specialized ornate frame assets remain in `assets/sprites/ui/frames/ornate/`:
 
 - `ui_frame_ornate_global_panel.png`, `ui_frame_ornate_level_panel.png`,
   `ui_frame_ornate_card_frame.png`, `ui_frame_ornate_hero_card.png`;
