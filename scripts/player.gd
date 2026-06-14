@@ -30,6 +30,7 @@ const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_COLUMNS := 5
 const BASE_SPRITE_SCALE := Vector2(0.28, 0.28)
+const DEBUG_MOVE_ARRIVAL_DISTANCE := 10.0
 
 const CHARACTER_CONFIGS := {
 	"berserk": {
@@ -133,6 +134,8 @@ var ultimate_charge := 0.0
 var ultimate_max_charge := 100.0
 var _ultimate_active := false
 var _ultimate_tween: Tween = null
+var _debug_move_target_active := false
+var _debug_move_target := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -308,19 +311,63 @@ func _physics_process(_delta: float) -> void:
 		direction.y -= 1.0
 	if Input.is_action_pressed("move_down"):
 		direction.y += 1.0
+	var manual_direction := direction
 	if InputMap.has_action("ultimate") and Input.is_action_just_pressed("ultimate"):
 		activate_ultimate()
 
 	var web_factor := 1.0
 	if _web_slow_until > Time.get_ticks_msec() / 1000.0:
 		web_factor = _web_slow_factor
-	velocity = direction.normalized() * speed * web_factor * StatusEffects.speed_multiplier(self)
-	move_and_slide()
+	var speed_factor := speed * web_factor * StatusEffects.speed_multiplier(self)
+	if manual_direction.length_squared() > 0.0:
+		_clear_debug_move_target()
+	elif _debug_move_target_active:
+		var to_target := _debug_move_target - global_position
+		if to_target.length() <= DEBUG_MOVE_ARRIVAL_DISTANCE:
+			global_position = _debug_move_target
+			_clear_debug_move_target()
+		else:
+			direction = to_target.normalized()
+	velocity = direction.normalized() * speed_factor
+	if _debug_move_target_active and manual_direction.length_squared() <= 0.0:
+		var remaining := _debug_move_target - global_position
+		var max_step := velocity.length() * _delta
+		if remaining.length() <= maxf(DEBUG_MOVE_ARRIVAL_DISTANCE, max_step):
+			global_position = _debug_move_target
+			velocity = Vector2.ZERO
+			_clear_debug_move_target()
+		else:
+			move_and_slide()
+	else:
+		move_and_slide()
 	_update_movement_animation(_delta)
 	_update_low_hp_state()
 	_apply_regeneration(_delta)
 	_update_battle_shout()
 	_update_class_status_auras()
+
+
+func debug_set_move_target(world_position: Vector2, instant := false) -> void:
+	if instant:
+		global_position = world_position
+		velocity = Vector2.ZERO
+		_clear_debug_move_target()
+		return
+	_debug_move_target = world_position
+	_debug_move_target_active = true
+
+
+func debug_has_move_target() -> bool:
+	return _debug_move_target_active
+
+
+func debug_move_target_position() -> Vector2:
+	return _debug_move_target
+
+
+func _clear_debug_move_target() -> void:
+	_debug_move_target_active = false
+	_debug_move_target = Vector2.ZERO
 
 
 func set_aim_mode(mode: String) -> void:

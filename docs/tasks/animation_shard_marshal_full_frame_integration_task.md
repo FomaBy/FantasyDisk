@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator heartbeat watcher
 Jira: SCRUM-371
+QA: in_progress (2026-06-14)
 Parent: SCRUM-352 / `design_enemy_elite_boss_full_frame_animation_sheets_task.md`
 
 ## Autonomy / Approval
@@ -74,3 +75,28 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --editor --quit` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически) — элита shard_marshal (full-frame, 2 skill-ряда):
+- **SpriteFrames** (load): `move(6,loop=true)`, `attack_primary(6)`, `attack(6 alias)`,
+  `skill_shard_fan(6)`, `skill_command_pulse(6)` (+ attack_* validator-aliases),
+  7 анимаций — elite-правило (2+ skill-ряда) выполнено.
+- **Реестр**: `full_frame_animation_registry.gd:125` — `elite/shard_marshal`
+  (visual-only, legacy Body fallback при сбое загрузки).
+- **Манифест-валидатор**: «FantasyDisk animation manifest OK: 1 entities».
+- **Контакт-лист** `shard_marshal_full_frame_contact_sheet.png` + GIF: full-frame —
+  move/attack_primary/skill_shard_fan (веер осколков)/skill_command_pulse (импульс),
+  отдельные паттерны с реальной вариацией; не cutout.
+- **Тесты**: `animation_smoke_test` (EliteCommander FullFrameBody activation,
+  skill/alias frame counts, flip, phase-string `shard_marshal:shard_fan:windup` →
+  `skill_shard_fan`) + `runtime_smoke_test` (gameplay не изменён) — passed.
+
+Acceptance:
+- [x] shard_marshal: move 6f loop + attack_primary/attack 6f.
+- [x] skill_shard_fan + skill_command_pulse как 6f one-shot + attack_* aliases.
+- [x] Registry резолвит elite/shard_marshal; FullFrameBody виден, legacy скрыт.
+- [x] Манифест валиден; animation_smoke зелёный; gameplay/balance/AI не тронуты.
+
+Баги: нет.

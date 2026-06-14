@@ -2126,6 +2126,21 @@ func _show_settings_menu() -> void:
 	)
 	_add_settings_control_row(controls_box, "Прицеливание", aim_options)
 
+	var debug_toggle := CheckBox.new()
+	debug_toggle.name = "DebugModeToggle"
+	debug_toggle.custom_minimum_size = Vector2(300, 42)
+	debug_toggle.button_pressed = game.debug_mode_enabled
+	debug_toggle.text = "Вкл. (ПКМ / Shift+ЛКМ)" if debug_toggle.button_pressed else "Выкл."
+	debug_toggle.tooltip_text = "Дебаг: в бою ПКМ или Shift+ЛКМ задают точку движения, средняя кнопка телепортирует."
+	_style_checkbox(debug_toggle)
+	debug_toggle.toggled.connect(func(pressed: bool) -> void:
+		game.debug_mode_enabled = pressed
+		game.get_tree().root.set_meta("debug_mode", pressed)
+		debug_toggle.text = "Вкл. (ПКМ / Shift+ЛКМ)" if pressed else "Выкл."
+		game.save_game_settings()
+	)
+	_add_settings_control_row(controls_box, "Дебаг-режим", debug_toggle)
+
 	for input_action in game.INPUT_ACTIONS:
 		var action_name: String = input_action["action"]
 		var row := HBoxContainer.new()

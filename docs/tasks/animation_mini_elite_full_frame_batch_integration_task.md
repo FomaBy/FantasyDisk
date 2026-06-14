@@ -1,6 +1,6 @@
 # Animator: Mini-elite full-frame batch integration
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Animator (Codex)
 Версия: 0.1.5
@@ -46,16 +46,37 @@ six mini-elites, and SCRUM-372 added the runtime visual-id hook so registered
 - New source art or redraw.
 
 ## Acceptance Criteria
-- [ ] Each mini-elite has runtime `move` 6f loop and
+- [x] Each mini-elite has runtime `move` 6f loop and
       `attack_primary`/`attack` 6f one-shot.
-- [ ] Each mini-elite exposes both accepted `skill_*` rows as 6f one-shots plus
+- [x] Each mini-elite exposes both accepted `skill_*` rows as 6f one-shots plus
       `attack_*` validator aliases.
-- [ ] Runtime full-frame registry resolves all six `elite/mini_*` entries.
-- [ ] `mini_elite_kind` refresh creates visible mini-specific `FullFrameBody`
+- [x] Runtime full-frame registry resolves all six `elite/mini_*` entries.
+- [x] `mini_elite_kind` refresh creates visible mini-specific `FullFrameBody`
       while preserving route elite fallback when mini frames are missing.
-- [ ] Animation-director manifest validates.
-- [ ] `tests/animation_smoke_test.gd` passes.
-- [ ] No gameplay/balance/AI changes.
+- [x] Animation-director manifest validates.
+- [x] `tests/animation_smoke_test.gd` passes.
+- [x] No gameplay/balance/AI changes.
 
 ## Result
-Pending.
+Done 2026-06-14.
+
+- Packaged all six accepted SCRUM-352 mini-elite full-frame sheets into runtime
+  SpriteFrames under `assets/sprites/elites/full_frame/`.
+- Registered `mini_scavenger_reaper`, `mini_plague_bellringer`,
+  `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`, and
+  `mini_shadow_devourer` under `FullFrameAnimationRegistry` kind `elite`.
+- Added 6-frame `move` loops, 6-frame one-shot `attack`/`attack_primary`, two
+  6-frame one-shot `skill_*` rows per mini-elite, and validator-facing
+  `attack_*` aliases on the same skill frames.
+- Extended animation smoke coverage for mini registry resolution, loop flags,
+  skill/alias frame counts, `mini_elite_kind` visual override, fallback to base
+  route elite visuals, static body hiding, direction flip, and phase-state
+  resolution.
+- QA artifacts: `build/qa/animation_mini_elite_full_frame_batch_integration/`
+  contains the animation manifest, contact sheet and GIF previews.
+
+Verification:
+- `python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_mini_elite_full_frame_batch_integration/animation_manifest.json` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --editor --quit` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.

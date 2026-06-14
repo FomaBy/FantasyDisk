@@ -395,6 +395,7 @@ var audio_settings := {
 }
 var input_bindings := {}
 var aim_mode := "nearest"
+var debug_mode_enabled := false
 var _quit_requested := false
 
 
@@ -450,9 +451,11 @@ func _load_game_settings() -> void:
 	if not ["nearest", "cursor"].has(aim_mode):
 		aim_mode = "nearest"
 	screen_shake_enabled = bool(settings.get("screen_shake", true))
+	debug_mode_enabled = bool(settings.get("debug_mode", false))
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
+	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
 		ui._apply_video_settings()
@@ -467,6 +470,7 @@ func save_game_settings() -> void:
 	for key in audio_settings.keys():
 		settings[key] = audio_settings[key]
 	settings["screen_shake"] = screen_shake_enabled
+	settings["debug_mode"] = debug_mode_enabled
 	settings["aim_mode"] = aim_mode
 	if ui != null:
 		settings["input_bindings"] = ui._current_input_bindings()
@@ -474,6 +478,7 @@ func save_game_settings() -> void:
 		settings["input_bindings"] = input_bindings.duplicate(true)
 	GAME_SETTINGS.save_settings(settings)
 	get_tree().root.set_meta("aim_mode", aim_mode)
+	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
 
 
 func run_autosave_has_run() -> bool:
@@ -683,6 +688,9 @@ func _input(event: InputEvent) -> void:
 			route._show_battle_map()
 		return
 
+	if _handle_debug_combat_move_input(event):
+		return
+
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
 		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
 			ui._resume_game()
@@ -690,6 +698,41 @@ func _input(event: InputEvent) -> void:
 			ui._show_pause_menu()
 		elif ui_escape_action.is_valid():
 			ui_escape_action.call()
+
+
+func _handle_debug_combat_move_input(event: InputEvent) -> bool:
+	if not debug_mode_enabled or not combat_active or get_tree().paused:
+		return false
+	if current_player == null or not is_instance_valid(current_player):
+		return false
+	if not (event is InputEventMouseButton):
+		return false
+	var mouse_event := event as InputEventMouseButton
+	if not mouse_event.pressed:
+		return false
+	var is_smooth_move := mouse_event.button_index == MOUSE_BUTTON_RIGHT \
+			or (mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.shift_pressed)
+	var is_instant_move := mouse_event.button_index == MOUSE_BUTTON_MIDDLE
+	if not is_smooth_move and not is_instant_move:
+		return false
+	var world_position := _screen_position_to_arena_world(mouse_event.position)
+	if current_player.has_method("debug_set_move_target"):
+		current_player.call("debug_set_move_target", world_position, is_instant_move)
+	get_viewport().set_input_as_handled()
+	return true
+
+
+func _screen_position_to_arena_world(screen_position: Vector2) -> Vector2:
+	var canvas_transform := get_viewport().get_canvas_transform()
+	var world_position := canvas_transform.affine_inverse() * screen_position
+	return _clamp_arena_point(world_position)
+
+
+func _clamp_arena_point(world_position: Vector2, margin := 32.0) -> Vector2:
+	return Vector2(
+		clampf(world_position.x, margin, ARENA_SIZE.x - margin),
+		clampf(world_position.y, margin, ARENA_SIZE.y - margin)
+	)
 
 
 func _process(delta: float) -> void:

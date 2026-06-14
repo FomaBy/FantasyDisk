@@ -878,15 +878,108 @@ func _test_full_frame_animation_registry() -> void:
 			_fail("Expected %s elite full-frame visual to hide the static body fallback." % elite_id)
 		elite.queue_free()
 
+	var mini_elite_full_frame_scenes := {
+		"mini_scavenger_reaper": {
+			"path": "res://scenes/EliteStalker.tscn",
+			"skill_states": ["skill_reaping_dash", "skill_bleed_finish"],
+			"phase_state": "mini_scavenger_reaper:reaping_dash:windup",
+			"phase_resolved": "skill_reaping_dash",
+		},
+		"mini_plague_bellringer": {
+			"path": "res://scenes/ElitePoisoned.tscn",
+			"skill_states": ["skill_bell_toll", "skill_poison_pool"],
+			"phase_state": "mini_plague_bellringer:bell_toll:windup",
+			"phase_resolved": "skill_bell_toll",
+		},
+		"mini_bone_warden": {
+			"path": "res://scenes/EliteArmored.tscn",
+			"skill_states": ["skill_bone_guard", "skill_slam_wave"],
+			"phase_state": "mini_bone_warden:slam_wave:windup",
+			"phase_resolved": "skill_slam_wave",
+		},
+		"mini_spark_wight": {
+			"path": "res://scenes/EliteCommander.tscn",
+			"skill_states": ["skill_spark_fan", "skill_static_field"],
+			"phase_state": "mini_spark_wight:spark_fan:windup",
+			"phase_resolved": "skill_spark_fan",
+		},
+		"mini_rot_hound": {
+			"path": "res://scenes/EliteStalker.tscn",
+			"skill_states": ["skill_rot_lunge", "skill_bleed_howl"],
+			"phase_state": "mini_rot_hound:rot_lunge:windup",
+			"phase_resolved": "skill_rot_lunge",
+		},
+		"mini_shadow_devourer": {
+			"path": "res://scenes/EliteStalker.tscn",
+			"skill_states": ["skill_shadow_blink", "skill_devour_bite"],
+			"phase_state": "mini_shadow_devourer:shadow_blink:windup",
+			"phase_resolved": "skill_shadow_blink",
+		},
+	}
+	for mini_id in mini_elite_full_frame_scenes.keys():
+		var mini_info: Dictionary = mini_elite_full_frame_scenes[mini_id]
+		var mini_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", mini_id)
+		if mini_frames == null:
+			_fail("Expected full-frame registry to resolve %s mini-elite SpriteFrames." % mini_id)
+			continue
+		for animation_name in ["move", "attack", "attack_primary"]:
+			if not mini_frames.has_animation(animation_name):
+				_fail("Expected %s mini-elite SpriteFrames to expose %s animation." % [mini_id, animation_name])
+			elif mini_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, animation_name])
+		if not mini_frames.get_animation_loop("move"):
+			_fail("Expected %s mini-elite move to loop." % mini_id)
+		for one_shot_name in ["attack", "attack_primary"]:
+			if mini_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, one_shot_name])
+		for skill_state in mini_info["skill_states"]:
+			var mini_skill_name := str(skill_state)
+			var mini_attack_alias := "attack_%s" % mini_skill_name.trim_prefix("skill_")
+			if not mini_frames.has_animation(mini_skill_name):
+				_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, mini_skill_name])
+			elif mini_frames.get_frame_count(mini_skill_name) != 6:
+				_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, mini_skill_name])
+			if mini_frames.has_animation(mini_skill_name) and mini_frames.get_animation_loop(mini_skill_name):
+				_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, mini_skill_name])
+			if not mini_frames.has_animation(mini_attack_alias):
+				_fail("Expected %s mini-elite SpriteFrames to expose %s validator alias." % [mini_id, mini_attack_alias])
+			elif mini_frames.get_frame_count(mini_attack_alias) != 6:
+				_fail("Expected %s mini-elite %s alias to have 6 frames." % [mini_id, mini_attack_alias])
+			if mini_frames.has_animation(mini_attack_alias) and mini_frames.get_animation_loop(mini_attack_alias):
+				_fail("Expected %s mini-elite %s alias to be one-shot." % [mini_id, mini_attack_alias])
+
+		var mini_scene := load(str(mini_info["path"])) as PackedScene
+		var mini := mini_scene.instantiate()
+		root.add_child(mini)
+		mini.set_meta("mini_elite_kind", mini_id)
+		mini.call("refresh_full_frame_visual")
+		mini.call("_update_movement_animation", 0.1)
+		var mini_body := mini.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if mini_body == null or not mini_body.visible:
+			_fail("Expected %s mini-elite scene to create a visible FullFrameBody." % mini_id)
+		if mini_body != null:
+			if str(mini_body.get_meta("entity_id", "")) != mini_id:
+				_fail("Expected %s mini_elite_kind to select mini-specific SpriteFrames, got %s." % [mini_id, str(mini_body.get_meta("entity_id", ""))])
+			if not FullFrameAnimationRegistry.play_state(mini_body, str(mini_info["phase_state"]), Vector2.RIGHT):
+				_fail("Expected %s mini-elite phase state to resolve through the full-frame registry." % mini_id)
+			if mini_body.animation != str(mini_info["phase_resolved"]):
+				_fail("Expected %s mini-elite phase to resolve to %s, got %s." % [mini_id, str(mini_info["phase_resolved"]), mini_body.animation])
+			if not mini_body.flip_h:
+				_fail("Expected %s mini-elite full-frame art to face right via flip_h." % mini_id)
+		var mini_static_body := mini.get_node_or_null("Body") as CanvasItem
+		if mini_static_body != null and mini_static_body.visible:
+			_fail("Expected %s mini-elite full-frame visual to hide the static body fallback." % mini_id)
+		mini.queue_free()
+
 	var mini_visual_scene := load("res://scenes/EliteStalker.tscn") as PackedScene
 	var mini_visual_elite := mini_visual_scene.instantiate()
 	root.add_child(mini_visual_elite)
-	mini_visual_elite.set_meta("mini_elite_kind", "iron_bastion")
+	mini_visual_elite.set_meta("mini_elite_kind", "mini_scavenger_reaper")
 	mini_visual_elite.call("refresh_full_frame_visual")
 	var mini_visual_body := mini_visual_elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
 	if mini_visual_body == null:
 		_fail("Expected mini-elite metadata refresh to preserve a FullFrameBody.")
-	elif str(mini_visual_body.get_meta("entity_id", "")) != "iron_bastion":
+	elif str(mini_visual_body.get_meta("entity_id", "")) != "mini_scavenger_reaper":
 		_fail("Expected mini_elite_kind with registered SpriteFrames to override the base elite visual id.")
 	mini_visual_elite.set_meta("mini_elite_kind", "missing_mini_visual_test")
 	mini_visual_elite.call("refresh_full_frame_visual")
