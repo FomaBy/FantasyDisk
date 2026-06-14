@@ -3963,6 +3963,7 @@ func _show_victory_screen() -> void:
 		_victory_ascension_summary(game.selected_character_id, run_level, ascension_level),
 	]
 	var box = _create_menu_box("Победа", subtitle, "victory")
+	_add_result_crest(box, "victory")
 	var finish_run := func() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
@@ -3984,6 +3985,7 @@ func _show_death_screen(reason := "") -> void:
 	if subtitle == "":
 		subtitle = "Забег завершён на этапе маршрута %d." % [game.route_stage + 1]
 	var box := _create_menu_box("Поражение", subtitle, "death")
+	_add_result_crest(box, "death")
 	var back_to_menu := func() -> void:
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
@@ -5069,6 +5071,25 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	box.add_child(subtitle_label)
 
 	return box
+
+
+func _add_result_crest(box: VBoxContainer, kind: String) -> void:
+	# Аддитивная геральдическая эмблема-кольцо над заголовком экранов победы/поражения
+	# (D&D Dark Fantasy Dragon, fantasydisk-asset-generator). SCRUM-330.
+	var slug := "victory" if kind == "victory" else "defeat"
+	var tex: Texture2D = game._cached_texture("res://assets/sprites/ui/result_crests/ui_crest_%s.png" % slug)
+	if tex == null:
+		return
+	var crest := TextureRect.new()
+	crest.name = "ResultCrest"
+	crest.texture = tex
+	crest.custom_minimum_size = Vector2(176, 176)
+	crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	crest.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(crest)
+	box.move_child(crest, 0)
 
 
 func _add_screen_background(root: Control, screen_background_id: String) -> void:

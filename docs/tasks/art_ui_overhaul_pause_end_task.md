@@ -1,8 +1,8 @@
 # ART: UI Overhaul (Пауза и финальные экраны) — D&D + Dark Fantasy Dragon, новым скиллом
 
-Статус: new
+Статус: in_progress (Claude-Designer взял 2026-06-14, параллельно Codex)
 Приоритет: medium
-Роль: Designer (Codex)
+Роль: Designer (Claude-Designer; генерация — fantasydisk-asset-generator)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
@@ -69,3 +69,15 @@ heroframe/carusel/windrose/DescriptionHS/settings_tab_switcher_frame). Брат�
 
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/content_registry.md, current_game_state.
+
+## Прогресс 2026-06-14 (Claude-Designer, параллельно Codex)
+Сгенерировано скиллом fantasydisk-asset-generator (gpt-image-2, прозрачный фон через
+chroma-key): modal-рамка + кресты победы/поражения. Сохранено в
+`docs/design/references/ui_overhaul_pause_end/` (исходники) + `assets/sprites/ui/result_crests/`.
+ИНТЕГРИРОВАНО: геральдические кресты (венок победы / череп-драконы поражения) добавлены
+АДДИТИВНО над заголовком экранов `_show_victory_screen` / `_show_death_screen` (хелпер
+`_add_result_crest`). Безопасно: `_create_menu_box`/`_panel_style` — ОБЩИЙ билдер многих
+экранов, его не трогал (иначе заденет настройки/награды/костёр вне scope).
+Тесты: runtime_smoke + runtime_smoke_ui — зелёные.
+ОСТАЁТСЯ: scoped modal-рамка для паузы/финала (через opt-in параметр _create_menu_box),
+рестайл _show_pause_menu / _show_pause_dossier_menu, скрины build/qa, CHANGELOG.
