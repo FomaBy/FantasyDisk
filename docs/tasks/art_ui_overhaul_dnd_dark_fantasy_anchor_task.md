@@ -1,6 +1,6 @@
 # ART/ТЕХ: Полный апдейт интерфейса в стиле D&D + Dark Fantasy Dragon — ОПОРНАЯ
 
-Статус: new
+Статус: blocked
 Приоритет: high
 Роль: Designer (Codex) + Back-end (UI)
 Версия: 0.1.5
@@ -73,3 +73,11 @@ heroframe/carusel/windrose/DescriptionHS/settings_tab_switcher_frame). Брат�
 
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/content_registry.md, current_game_state.
+
+## Blocker — 2026-06-14
+Опорная UI-overhaul задача требует рисовать все общие атомы через
+`fantasydisk-asset-generator` (`gpt-image-2`) и запрещает старый pipeline. В
+текущем окружении отсутствует `OPENAI_API_KEY`, Python `openai` также недоступен.
+Без этого нельзя создать production-ready reference/assets для кнопок, рамок,
+курсора и подложек, а зависимые кластеры должны оставаться gated. Задача
+заблокирована до появления рабочего skill-доступа.

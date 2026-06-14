@@ -1,6 +1,6 @@
 # Design handoff: enemy, elite, and boss full-frame animation sheets
 
-Статус: new
+Статус: blocked
 Приоритет: high
 Версия: 0.1.5
 Создано: 2026-06-14
@@ -70,3 +70,11 @@ When sheets are ready, unblock Animator to:
 - [ ] Every elite/boss sheet has 2+ skill attack rows and is full-frame, not cutout.
 - [ ] Transparent alpha/no-crop/pivot notes are documented for Animator.
 - [ ] Task board and Jira are synced.
+
+## Blocker — 2026-06-14
+Design/Codex checked the task and the required `fantasydisk-asset-generator`
+skill. This full-frame sheet handoff explicitly says Design works by that skill
+and must not use the old asset pipeline. Current shell has no `OPENAI_API_KEY`,
+and `import openai` fails with `ModuleNotFoundError`, so production sprite-sheet
+generation cannot start. Animator handoff remains blocked until Design can
+produce the transparent full-frame sheets.

@@ -1201,7 +1201,7 @@
  },
  "backend_run_autosave_and_continue_prompt_task.md": {
   "key": "SCRUM-349",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "animation_full_frame_pipeline_coverage_audit_task.md": {
   "key": "SCRUM-350",
@@ -1213,6 +1213,10 @@
  },
  "design_enemy_elite_boss_full_frame_animation_sheets_task.md": {
   "key": "SCRUM-352",
+  "status": "К выполнению"
+ },
+ "animation_summon_creatures_update_via_director_skill_task.md": {
+  "key": "SCRUM-353",
   "status": "К выполнению"
  }
 }

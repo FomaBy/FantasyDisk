@@ -1,6 +1,6 @@
 # Feature: Автосохранение забега после элемента карты + предложение продолжить при старте
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end (геймплей/персистентность)
 Версия: 0.1.5
@@ -85,10 +85,25 @@ route_selected_indices, _open_route_node, _advance_route_after_noncombat).
 - tests/runtime_smoke_test.gd (+ новый persistence-тест)
 
 ## Acceptance Criteria
-- [ ] Забег автосохраняется после каждого пройденного элемента карты (безопасный стык).
-- [ ] При запуске при наличии валидного автосейва предлагается «Продолжить» или «Новая игра» (с отказом).
-- [ ] «Продолжить» восстанавливает забег (персонаж/этап/деньги/награды); смерть/победа очищает автосейв.
-- [ ] Повреждённый/несовместимый сейв не крашит; запись атомарна; persistence-тест + 6 smoke зелёные; CHANGELOG.
+- [x] Забег автосохраняется после каждого пройденного элемента карты (безопасный стык).
+- [x] При запуске при наличии валидного автосейва предлагается «Продолжить» или «Новая игра» (с отказом).
+- [x] «Продолжить» восстанавливает забег (персонаж/этап/деньги/награды); смерть/победа очищает автосейв.
+- [x] Повреждённый/несовместимый сейв не крашит; запись атомарна; persistence-тест + 6 smoke зелёные; CHANGELOG.
 
 ## Документация
 docs/design/current_game_state.md, docs/design/systems/ (persistence/meta), content_registry при необходимости.
+
+## Result (2026-06-14, Codex Back-end)
+
+Готово. Интегрировал `RunAutosave` в runtime flow:
+- `main.gd` собирает/восстанавливает route-safe snapshot: выбранный класс/оружие/Возвышение, route layout/stage/branches, player snapshot, pending rewards, event/shop state и shop reentry.
+- `route_map_screen.gd` сохраняет safe checkpoint после non-combat nodes и после выхода из shop без продвижения stage, сохраняя node-bound stock/purchased state.
+- `combat_director.gd` сохраняет после победы в обычном/элитном бою только после reward/attribute flow перед возвратом на карту.
+- `ui_screens.gd` показывает modal prompt «Продолжить»/«Новая игра» при старте из главного меню, очищает autosave при новом забеге, смерти и победе.
+- `run_autosave.gd` получил pre-parse validation, чтобы мусорный corrupted save игнорировался без красного ConfigFile parse spam.
+
+Тесты:
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/run_autosave_persistence_test.gd`
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+
+Документация обновлена: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/systems/technical_architecture.md`, новый `docs/design/systems/persistence.md`.

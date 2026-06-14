@@ -1,6 +1,6 @@
 # ART: Пересоздать ВСЕ иконки артефактов новым скиллом (единый стиль)
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -62,3 +62,10 @@ Jira: SCRUM-340
 
 ## Документация
 docs/design/content_registry.md (артефакты), current_game_state.
+
+## Blocker — 2026-06-14
+Design/Codex проверил mandatory skill path. Все 53 artifact icons должны быть
+пересозданы через `fantasydisk-asset-generator` (`gpt-image-2`), но текущая среда
+не содержит `OPENAI_API_KEY`, а Python `openai` import падает с
+`ModuleNotFoundError`. Старый/ручной генератор запрещён директивой задачи.
+Задача заблокирована до восстановления API-доступа к skill.

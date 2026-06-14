@@ -17,6 +17,9 @@
 - `scripts/player.gd`: character config, stats, weapon equip, damage, rewards.
 - `scripts/enemy.gd`: enemy AI, contact damage, elite attacks, HP bars.
 - `scripts/boss.gd`: boss patterns and victory flow.
+- `scripts/run_autosave.gd`: active-run persistence helper for safe route
+  checkpoint autosaves (`user://fantasydisk_autosave.cfg`), with schema checks
+  and atomic `.tmp` writes.
 
 `scripts/class_weapon.gd` owns non-Berserk class weapon runtime behavior. SCRUM-196
 replaced the old long `attack_mode` dispatch match with `ATTACK_MODE_EXECUTORS`,
@@ -88,6 +91,7 @@ Additional checks:
 - `tests/attack_vfx_smoke_test.gd`;
 - `tests/melee_weapon_targeting_test.gd`;
 - `tests/meta_progression_smoke_test.gd`.
+- `tests/run_autosave_persistence_test.gd`.
 
 ## Branching
 

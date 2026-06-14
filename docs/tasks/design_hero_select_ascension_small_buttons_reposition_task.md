@@ -1,6 +1,6 @@
 # ART/UX: Возвышение +/- — маленькие кнопки по референсам, по центру, вниз фрейма + «Выбрать»
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -57,3 +57,15 @@ PNG, прозрачный фон) по референсам интерфейса
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Blocker — 2026-06-14
+Design/Codex проверил задачу на ветке `dev` и прочитал skill
+`fantasydisk-asset-generator`. Задача требует создать новые маленькие рамки
+`asc_button_small` именно через этот skill (`gpt-image-2`). В текущем окружении
+нет `OPENAI_API_KEY`, а Python-пакет `openai` также недоступен, поэтому
+обязательный генерационный шаг не может быть выполнен корректно.
+
+Дальнейшая UI-посадка кнопок в `scripts/ui_screens.gd` относится к runtime/UI
+интеграции и должна идти после готовности production PNG; частичный layout без
+нового ассета не закрывает acceptance criteria. Задача заблокирована до появления
+`OPENAI_API_KEY`/доступного `fantasydisk-asset-generator`.

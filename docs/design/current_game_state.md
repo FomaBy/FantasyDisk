@@ -13,6 +13,7 @@ Domain docs для подробностей по областям:
 - `docs/design/systems/characters_weapons.md`;
 - `docs/design/systems/enemies_bosses.md`;
 - `docs/design/systems/progression_balance.md`;
+- `docs/design/systems/persistence.md`;
 - `docs/design/systems/visual_style_assets.md`;
 - `docs/design/systems/animation.md`;
 - `docs/design/systems/technical_architecture.md`.
@@ -57,7 +58,7 @@ Domain docs для подробностей по областям:
 - **Tab switcher art**: SCRUM-325 подготовил design-ready D&D/dark fantasy frame `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png` (`1280x256`, RGBA, без baked text) и safe-area preview `docs/design/previews/settings_tab_switcher_frame_content_zone.png`. SCRUM-334 подключил frame к runtime как `SettingsTabSwitcher`: built-in headers у `SettingsTabs` скрыты, а `SettingsTabButton_0..2` переключают страницы «Экран», «Звук», «Управление» из scaled safe rects (`tab_0_active_safe`, `tab_1_safe`, `tab_2_safe`) без наезда на металл/самоцветы/стрелки; четвертый safe slot пока декоративный.
 - **Звук**: слайдеры Общая/Музыка/Эффекты (0-100%, шаг 2) вынесены во вкладку «Звук», занимают всю ширину контентной зоны, имеют видимый темный трек, золотую заполненную часть, числовое значение справа и keyboard focus для стрелок. Переключатели музыки/эффектов подписаны «Вкл.»/«Выкл.»; mute не сбрасывает значение слайдера. Кнопка «Сбросить звук по умолчанию» возвращает master/music/sfx к 100% и включает music/SFX. Изменения применяются мгновенно через AudioServer (Master/Music/SFX — шины Music и SFX создаются программно в AudioManager).
 - **Управление**: вкладка «Управление» показывает режим прицеливания (`Автонаводка на ближайшего` / `По курсору`) и биндинги движения, паузы и `ultimate` внутри вертикального scroll-контейнера с авто-прокруткой к фокусу. Дефолты: aim mode `nearest`, WASD + стрелки для движения, Escape для паузы, R для ультимейта. Ребинд проверяет конфликт с другими действиями и не перезаписывает чужую клавишу молча; есть reset defaults.
-- **Персистенс**: дисплей, звук, `aim_mode` и `input_bindings` сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте.
+- **Персистенс**: дисплей, звук, `aim_mode` и `input_bindings` сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте. Активный забег сохраняется отдельно через `scripts/run_autosave.gd` в `user://fantasydisk_autosave.cfg` после безопасных route checkpoints; главное меню предлагает «Продолжить»/«Новая игра», а смерть/победа очищают autosave.
 
 В настройках доступны:
 
