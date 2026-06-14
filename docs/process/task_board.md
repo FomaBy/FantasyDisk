@@ -46,6 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [design_hero_select_windrose_radar_frame_from_ref_task.md](../tasks/design_hero_select_windrose_radar_frame_from_ref_task.md) | Designer (Codex) | new | ART 0.1.5: рамка розы ветров из референса windrose (1254×1254, радиальная — не искажать) → слот radar экрана выбора героя, правый-верхний угол |
 | [design_hero_select_portrait_frame_from_heroframe_ref_task.md](../tasks/design_hero_select_portrait_frame_from_heroframe_ref_task.md) | Designer (Codex) | new | ART 0.1.5: рамка превью героя слева из референса heroframe (997×1578, 9-slice) → слот portrait экрана выбора героя; портрет в content-зоне |
 | [design_hero_select_carousel_frame_from_carusel_ref_task.md](../tasks/design_hero_select_carousel_frame_from_carusel_ref_task.md) | Designer (Codex) | in_progress | Jira: SCRUM-320. ART 0.1.5: рамка карусели персонажей из референса Carusel (2482×633, 9-slice) → слот thumbnail_strip экрана выбора героя; миниатюры в content-зоне |
 | [backend_quit_confirmation_dialog_and_escape_task.md](../tasks/backend_quit_confirmation_dialog_and_escape_task.md) | Back-end (UI) | done | Jira: SCRUM-319. Main menu exit now opens custom confirmation dialog; Escape opens/cancels it, Cancel focused by default, quit only after explicit `Выйти`; 6 smoke checks PASS; QA preview in `build/qa/scrum319/` |

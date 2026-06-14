@@ -1090,5 +1090,9 @@
  "design_hero_select_portrait_frame_from_heroframe_ref_task.md": {
   "key": "SCRUM-321",
   "status": "К выполнению"
+ },
+ "design_hero_select_windrose_radar_frame_from_ref_task.md": {
+  "key": "SCRUM-322",
+  "status": "К выполнению"
  }
 }
