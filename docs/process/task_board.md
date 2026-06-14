@@ -46,6 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [design_codex_apply_ornate_frame_kit_task.md](../tasks/design_codex_apply_ornate_frame_kit_task.md) | Design → Back-end | new | 0.1.5: нарезать кит рамок Ornate Dark (docs/design/references/UiFrame, 13 типов с готовыми 9-slice margin'ами) + применить ко всем панелям/окнам/HUD/тултипам, старый leather+gold в backup; парная к кнопкам SCRUM-273 |
 | [design_codex_apply_red_gold_button_kit_task.md](../tasks/design_codex_apply_red_gold_button_kit_task.md) | Design → Back-end | new | 0.1.5: нарезать кит кнопок Red&Gold Dragon (docs/design/references/Buttons, 15 типов с точными размерами) + 9-slice + применить ко ВСЕМ кнопкам игры, старый пергамент-кит в backup |
 | [backend_unify_button_size_main_menu_standard_task.md](../tasks/backend_unify_button_size_main_menu_standard_task.md) | Back-end (UI) | done | Jira: SCRUM-264. Единая высота action-кнопок 104px, главное меню 380x104, стандарт применен к обычным action-кнопкам; служебные/card controls оставлены исключениями; UI/no-overlap/umbrella+focused smokes green |
 | [backend_button_stretch_discipline_text_frame_task.md](../tasks/backend_button_stretch_discipline_text_frame_task.md) | Back-end (UI) | done | Jira: SCRUM-263. Широкие action-кнопки capped до 560px; text-heavy rewards/rest/upgrade/events используют info frame над короткой стандартной кнопкой; UI/no-overlap/umbrella+focused smokes green |

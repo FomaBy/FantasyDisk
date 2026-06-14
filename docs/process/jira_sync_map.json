@@ -885,7 +885,7 @@
  },
  "backend_crit_formulas_rebalance_task.md": {
   "key": "SCRUM-247",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_global_balance_smoke_damage_survivability_task.md": {
   "key": "SCRUM-249",
@@ -897,7 +897,7 @@
  },
  "backend_remove_auto_movement_on_crit_dodge_task.md": {
   "key": "SCRUM-253",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_summoner_classes_strengthen_task.md": {
   "key": "SCRUM-254",
@@ -905,7 +905,7 @@
  },
  "backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task.md": {
   "key": "SCRUM-255",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_unique_class_mechanics_framework_main_attribute_task.md": {
   "key": "SCRUM-256",
@@ -921,7 +921,7 @@
  },
  "backend_elites_bosses_unique_skills_mechanics_task.md": {
   "key": "SCRUM-259",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_monster_elite_size_balance_rework_task.md": {
   "key": "SCRUM-260",
@@ -929,7 +929,7 @@
  },
  "design_codex_elite_boss_new_skills_vfx_task.md": {
   "key": "SCRUM-261",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_final_balance_audit_aoe_crowd_clear_task.md": {
   "key": "SCRUM-262",
@@ -969,6 +969,10 @@
  },
  "design_codex_apply_red_gold_button_kit_task.md": {
   "key": "SCRUM-273",
+  "status": "В работе"
+ },
+ "design_codex_apply_ornate_frame_kit_task.md": {
+  "key": "SCRUM-274",
   "status": "К выполнению"
  }
 }
