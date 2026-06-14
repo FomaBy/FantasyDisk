@@ -149,12 +149,14 @@ Rebuild/QA assets:
 - `tools/build_ornate_ui_frame_kit.py` - SCRUM-274 active panel/frame pipeline from the Ornate Dark spec sheet;
 - `tools/build_hero_select_frame_kit.py` - SCRUM-281 Hero Select frame pipeline from `references/herouiframe`;
 - `tools/capture_hero_select_qa.gd` - SCRUM-281 screenshot/rect QA capture for 1280x720, 1920x1080 and 2560x1440;
+- `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png` - SCRUM-325 design-ready Settings tab switcher frame (`1280x256`, RGBA);
 - `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
 - `tools/build_leather_gold_ui_kit.py` - superseded SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
 - `docs/design/previews/red_gold_button_kit_contact.png` - active SCRUM-273 button state/type contact sheet;
 - `docs/design/previews/ornate_dark_frame_kit_contact.png` - active SCRUM-274 frame contact sheet;
 - `docs/design/previews/hero_select_frame_kit_contact.png` - active SCRUM-281 Hero Select frame contact sheet;
+- `docs/design/previews/settings_tab_switcher_frame_content_zone.png` - SCRUM-325 Settings tab switcher safe-area overlay;
 - `docs/design/previews/ui_button_only_legacy_panels_contact.png` - SCRUM-147 side-by-side correction sheet;
 - `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - superseded SCRUM-229 leather+gold panel kit sheet;
 - `build/qa/interface_leather_gold_panel_kit_contact.png` - historical QA copy of the SCRUM-229 leather+gold kit sheet;
@@ -233,7 +235,7 @@ Attack VFX sprites live in `assets/sprites/effects/` and are transparent PNGs in
 
 SCRUM-181 refreshed the full active VFX set again on 2026-06-13 after the sprite audit: all 19 `assets/sprites/effects/*.png` files now use a restrained painterly D&D/tabletop treatment with softer alpha edges, earthy gold/green/violet accents, readable silhouettes, and no acid-neon or baked pure-white overexposure. Tintable assets (`hazard_zone.png`, `elite_telegraph_circle.png`) remain warm-neutral so code modulation can recolor them. QA/reference previews live in `docs/design/previews/vfx_polish_before_contact.png`, `docs/design/previews/vfx_polish_after_contact.png`, `docs/design/previews/vfx_polish_before_after_contact.png`, `docs/design/previews/vfx_polish_readability_field_meadow.png`, and `docs/design/previews/vfx_polish_readability_field_marsh.png`.
 
-SCRUM-258 extends this with a full unique weapon signature set for sprint 0.1.5: `assets/sprites/effects/vfx_weapon_<weapon_id>.png` for every current weapon ID in `ProgressionData.WEAPONS_BY_CLASS` (51 files, `256x256` RGBA transparent). These are not inventory icons: they are short-lived combat plates used by `AttackVfx.weapon_signature()` to make each unique class/weapon mechanic visually distinct while preserving the exact Back-end mechanics. Style rules: restrained D&D/tabletop magic, readable at combat scale, no UI frame, no text, no watermark, no acid-neon; silhouettes should stay simple enough to read under tint and tween fade. Rebuild pipeline: `tools/generate_unique_weapon_vfx_015.py`; previews: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png` and `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
+SCRUM-258 extends this with a full unique weapon signature set for sprint 0.1.5: `assets/sprites/effects/vfx_weapon_<weapon_id>.png` for every current weapon ID in `ProgressionData.WEAPONS_BY_CLASS` (51 files, `256x256` RGBA transparent). These are not inventory icons: they are short-lived combat plates used by `AttackVfx.weapon_signature()` to make each unique class/weapon mechanic visually distinct while preserving the exact Back-end mechanics. SCRUM-335 routes the same signature layer through `BerserkWeapon`, covering Berserk and Knight melee scenes that do not use `ClassWeapon`. Style rules: restrained D&D/tabletop magic, readable at combat scale, no UI frame, no text, no watermark, no acid-neon; silhouettes should stay simple enough to read under tint and tween fade. Rebuild pipeline is superseded for new art by `fantasydisk-asset-generator`; the old script remains historical for this existing generated set. Previews: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png` and `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
 
 ## Screen And Map Backgrounds
 

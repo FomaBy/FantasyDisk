@@ -1,6 +1,6 @@
 # ART: Рамка превью героя (слева) из референса heroframe — экран выбора героя
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -73,10 +73,43 @@ docs/design/references/heroframe/ChatGPT Image Jun 14, 2026, 11_01_30 AM.png
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Рамка превью героя (слева) = референс heroframe; основная рамка масштабируется пропорционально, без one-axis stretch.
-- [ ] Портрет отцентрован в content-зоне, не наезжает на орнамент; no-overlap на 3 разрешениях.
-- [ ] Task result фиксирует финальные content-zone/margins; декоративная рамка остаётся видимой и не перекрытой портретом.
-- [ ] Старый ассет в бэкап; 6 smoke зелёные; скрин в build/qa/; CHANGELOG.
+- [x] Рамка превью героя (слева) = референс heroframe; основная рамка масштабируется пропорционально, без one-axis stretch.
+- [x] Портрет отцентрован в content-зоне, не наезжает на орнамент; no-overlap на 3 разрешениях.
+- [x] Task result фиксирует финальные content-zone/margins; декоративная рамка остаётся видимой и не перекрытой портретом.
+- [x] Старый ассет в бэкап; smoke зелёные; rect dump в build/qa/; CHANGELOG.
 
 ## Документация
 docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_state.
+
+## Progress Log
+
+- 2026-06-14: взято в работу Design/Codex на ветке `dev`. Проблема подтверждена:
+  live `ui_frame_hero_select_portrait.png` уже качественный RGBA frame, но
+  runtime использует его как растягиваемый `PanelContainer`/StyleBox, что ломает
+  пропорции на высоких разрешениях. Решение: цельный `TextureRect` с
+  aspect-preserving container + отдельный content layer для портрета.
+- 2026-06-14: завершено. Новый raster PNG не генерировался, потому что текущий
+  live `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_portrait.png`
+  уже является production-quality heroframe-style transparent asset; дефект был
+  в one-axis stretch runtime layer. Старый файл сохранен в backup:
+  `build/cleanup_backup_hero_select_portrait_2026_06_14/`.
+- Runtime теперь использует две сущности: `HeroSelectPortraitPanel` сохраняет
+  левую треть master-layout (1:2 с правой областью), а вложенный
+  `HeroSelectPortraitFrame` рисует frame art цельным `TextureRect` без
+  9-slice/StyleBox stretch. Фактические размеры frame art по QA dump:
+  `249x394` at 1280x720, `423x669` at 1920x1080, `596x944` at 2560x1440.
+- Финальная content-zone / safe-area для portrait frame:
+  `HERO_SELECT_PORTRAIT_CONTENT_BASE = Vector4(128, 230, 128, 330)` в координатах
+  source `734x1162`. `HeroSelectLargePortrait` масштабируется внутри этой зоны:
+  `163x204`, `275x347`, `388x489` на 720p/1080p/1440p, не попадая на верхний
+  гребень, боковой металл, нижний гребень или самоцвет.
+- QA/verification:
+  - `tools/capture_hero_select_qa.gd` PASS, rect dump:
+    `build/qa/scrum321/hero_select_portrait_rects.md`.
+  - `tests/runtime_smoke_ui_test.gd` PASS.
+  - `tests/dark_fantasy_ui_theme_test.gd` PASS.
+  - `tests/ui_no_overlap_matrix_test.gd` PASS.
+  - `tests/runtime_smoke_test.gd` PASS.
+- Документация обновлена: `CHANGELOG.md`, `docs/design/content_registry.md`,
+  `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`,
+  `docs/process/task_board.md`.

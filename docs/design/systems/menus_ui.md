@@ -56,8 +56,8 @@ Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable sh
 
 ## Hero / Weapon / Level-Up Layout Rules
 
-- Hero select uses a fullscreen v4 layout: large portrait left, central dossier, floating top-right radar, and a bottom image-only hero thumbnail strip. SCRUM-281 replaces its screen-specific frames with `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_*` from `docs/design/references/herouiframe/`; SCRUM-320 specifically replaces the bottom `thumbnail_strip` asset with the Carusel reference frame from `docs/design/references/carusel/`. Runtime smoke asserts the description/right dossier edge is left of the radar panel with a real gap at 1280x720, 1600x900 and 2560x1440.
-- Hero Select must preserve 720p safe areas: `HeroSelectBackButton` stays inside the top-right viewport, portrait/dossier/radar remain separated, and the bottom thumbnail strip stays fully visible with adaptive image-only previews. The SCRUM-320 Carusel strip is not 9-sliced: it is drawn as one `TextureRect` and scales proportionally (`1024x170` at 720p, `1536x255` at 1080p, `2048x340` at 1440p) so the metal/jewel ornament never stretches on only one axis. Thumbnails are centered in a separate content layer with base margins `Vector4(112, 46, 112, 46)` and adapt `42-124px`; they must never overlap side stones, crests, spikes, or metal borders. QA capture lives at `build/qa/scrum281/hero_select_*.png`; SCRUM-320 copies its acceptance screenshots to `build/qa/scrum320/`.
+- Hero select uses a fullscreen master layout: `HeroSelectContent` has two primary regions with 1:2 stretch, so `HeroSelectPortraitPanel` owns the left third and `HeroSelectRightRegion` owns the right two thirds. The dossier lives inside the right region, while an invisible `HeroSelectRadarReserve` keeps the floating top-right `HeroSelectRadarPanel` from covering text. SCRUM-281 replaces its screen-specific frames with `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_*` from `docs/design/references/herouiframe/`; SCRUM-320 specifically replaces the bottom `thumbnail_strip` asset with the Carusel reference frame from `docs/design/references/carusel/`. Runtime smoke asserts the 1/3·2/3 split, that the description/right dossier edge is left of the radar panel with a real gap, and no-overlap at 1280x720, 1600x900 and 2560x1440.
+- Hero Select must preserve 720p safe areas: `HeroSelectBackButton` stays inside the top-right viewport, portrait/dossier/radar remain separated, and the bottom thumbnail strip stays fully visible with adaptive image-only previews. The SCRUM-320 Carusel strip is not 9-sliced: it is drawn as one `TextureRect` and scales proportionally (`1024x170` at 720p, `1536x255` at 1080p, `2048x340` at 1440p) so the metal/jewel ornament never stretches on only one axis. Thumbnails are centered in a separate content layer with base margins `Vector4(112, 46, 112, 46)` and adapt `42-124px`; they must never overlap side stones, crests, spikes, or metal borders. SCRUM-321 applies the same no-one-axis-stretch rule to the left portrait: `HeroSelectPortraitPanel` remains the 1/3 layout column, while inner `HeroSelectPortraitFrame` draws `ui_frame_hero_select_portrait.png` as one proportional image (`249x394`, `423x669`, `596x944` at 720p/1080p/1440p). `HeroSelectLargePortrait` is constrained by `HERO_SELECT_PORTRAIT_CONTENT_BASE = Vector4(128, 230, 128, 330)`, keeping the hero off the top crest, side metal and bottom jewel. QA capture lives at `build/qa/scrum281/hero_select_*.png`; SCRUM-320 copies its acceptance screenshots to `build/qa/scrum320/`; SCRUM-321 rect dump lives at `build/qa/scrum321/hero_select_portrait_rects.md`.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
 - Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button.
 
@@ -86,6 +86,34 @@ modal overlay, not a default Godot `ConfirmationDialog`: it blocks clicks below
 the dim layer, focuses safe `Отмена` by default, cancels on Escape/outside click
 and calls `Main.request_game_quit()` only from the explicit `Выйти` button.
 
+## Settings Tabs
+
+SCRUM-325 adds a design-ready Settings tab switcher frame at
+`assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png`
+(`1280x256`, RGBA transparent, no baked text). SCRUM-334 wires it into the
+runtime settings screen as the `SettingsTabSwitcher` control, displayed at a
+fixed 5:1 proportional size so the strip is never stretched on one axis.
+The built-in `TabContainer` headers are hidden; `SettingsTabs` still owns the
+three settings pages, while `SettingsTabButton_0..2` switch `current_tab`.
+
+Runtime labels/click/focus zones must stay inside these base safe rects and
+scale proportionally with the whole image. Runtime smoke validates the actual
+button rects against the scaled safe rects:
+
+| Slot | Safe Rect |
+| --- | --- |
+| `tab_0_active_safe` | `Rect2(146, 78, 178, 82)` |
+| `tab_1_safe` | `Rect2(414, 91, 178, 74)` |
+| `tab_2_safe` | `Rect2(693, 91, 178, 74)` |
+| `tab_3_safe` | `Rect2(969, 91, 162, 74)` |
+
+Only the first three slots are interactive in 0.1.5. The fourth slot remains
+ornamental/empty until a fourth settings page exists.
+
+Do not place text, icons, click zones or focus rings on the tab strip's metal
+bevels, red gems, side arrows, spikes or lower rail. Preview:
+`docs/design/previews/settings_tab_switcher_frame_content_zone.png`.
+
 ## Ornate Frame Safe-Area Rule
 
 Controls that use `ui_frame_ornate_*` textures must use the signed
@@ -101,3 +129,7 @@ Hero Select is the exception to generic ornate frames: it uses its own
 thumbnail strip is an additional exception inside Hero Select: it uses
 `HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE` and `HERO_SELECT_CAROUSEL_CONTENT_BASE`
 with whole-image scaling instead of StyleBoxTexture slicing.
+The portrait frame is also image-only after SCRUM-321: use
+`HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE` and
+`HERO_SELECT_PORTRAIT_CONTENT_BASE`; do not turn it back into a 9-slice or
+stretchable StyleBox.

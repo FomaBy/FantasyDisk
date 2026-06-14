@@ -1,6 +1,6 @@
 # ART: Рамка розы ветров (радар характеристик) из референса windrose — выбор героя
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -86,3 +86,12 @@ docs/design/references/windrose/ChatGPT Image Jun 14, 2026, 11_07_47 AM.png
 
 ## Документация
 docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_state.
+
+## Progress Log
+
+- 2026-06-14: взято в работу Design/Codex на ветке `dev`. `fantasydisk-asset-generator`
+  skill read; OpenAI generation unavailable in this environment (`OPENAI_API_KEY`
+  missing), so task proceeds from the existing approved reference
+  `docs/design/references/windrose/ChatGPT Image Jun 14, 2026, 11_07_47 AM.png`.
+  Decision: create production RGBA asset by local cleanup/crop from the reference
+  and integrate it as a whole-image proportional square frame, not 9-slice.

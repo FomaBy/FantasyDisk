@@ -1,6 +1,6 @@
 # UX/Layout: Редизайн экрана выбора героя — лейаут 1/3·2/3 + радар + карусель (МАСТЕР)
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -81,3 +81,9 @@ SCRUM-322 (роза ветров), SCRUM-323 (описание), SCRUM-324 (asse
 
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/content_registry.md, current_game_state.
+
+## Result / Summary
+- Реализован master layout: `HeroSelectContent` делится на `HeroSelectPortraitPanel` слева и `HeroSelectRightRegion` справа с фактической пропорцией 1/3·2/3 на 1280x720, 1600x900 и 2560x1440.
+- `HeroSelectDossierPanel` перенесен внутрь правого региона, а невидимый `HeroSelectRadarReserve` удерживает текст слева от floating top-right `HeroSelectRadarPanel`; portrait, dossier, radar и carousel не накладываются друг на друга и на frame ornament.
+- Hover/tooltip/selection behavior нижней карусели сохранен, новых ассетов или animation-scope не потребовалось.
+- Verification: `runtime_smoke_ui_test.gd` PASS, `ui_no_overlap_matrix_test.gd` PASS, `runtime_smoke_test.gd` PASS, QA rect dump обновлен в `build/qa/hero_select_radar_rects.md` и `build/qa/scrum281/hero_select_capture_rects.md` (headless screenshot skipped by dummy renderer).

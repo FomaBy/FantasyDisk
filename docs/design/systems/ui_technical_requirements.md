@@ -242,6 +242,7 @@ Shop style alpha:
 | Элемент | Требование |
 | --- | --- |
 | Settings TabContainer | min `1000 x 430`. |
+| Settings tab switcher frame | Design-ready asset `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png`, base `1280 x 256`; whole-image proportional scaling only; labels/click zones use safe rects from SCRUM-325/SCRUM-334. |
 | OptionButton controls | min `520 x 46`. |
 | Settings row label | `180 x 46`. |
 | Binding row label | `170 x 38`. |

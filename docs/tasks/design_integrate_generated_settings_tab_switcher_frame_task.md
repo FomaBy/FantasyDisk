@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Внедрить сгенерированный фрейм вкладок настроек
 
-Статус: in_progress
+Статус: done
 Создано: 2026-06-14
 Автор: Codex asset generator workflow
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
@@ -64,3 +64,49 @@ PNG в runtime assets и зафиксировать content-zone/safe-area дл�
 
 - 2026-06-14: взято в работу Design/Codex на ветке `dev`; начат art review
   reference/transparent/preview, с обязательной проверкой content-zone правила.
+- 2026-06-14: transparent candidate принят как production asset без новой
+  генерации: `1280x256` RGBA, прозрачный фон, baked text отсутствует, active tab
+  читается, визуально согласован с Red&Gold/Ornate dark fantasy settings canon.
+- 2026-06-14: production PNG перенесён в
+  `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png`.
+  Подготовлен safe-area overlay
+  `docs/design/previews/settings_tab_switcher_frame_content_zone.png`.
+- 2026-06-14: runtime/theme integration не выполнялась в Design scope; создан
+  Back-end handoff `docs/tasks/backend_integrate_settings_tab_switcher_frame_task.md`
+  / SCRUM-334.
+- 2026-06-14: validation PASS — asset metadata/safe rect bounds, `runtime_smoke_ui_test.gd`,
+  `ui_no_overlap_matrix_test.gd`. Handoff отправлен в Back-end thread
+  `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
+
+## Result Summary / 2026-06-14
+
+- Final asset ID: `ui_frame_settings_tab_switcher`.
+- Final PNG: `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png`.
+- Dimensions/format: `1280x256`, RGBA transparent, no baked text/watermark.
+- Source accepted from:
+  `docs/design/references/settings_tab_switcher_frame/settings_tab_switcher_frame_transparent.png`.
+- Preview/safe-area:
+  `docs/design/previews/settings_tab_switcher_frame_content_zone.png`.
+- Safe label/click zones in base coordinates:
+  - `tab_0_active_safe`: `Rect2(146, 78, 178, 82)`.
+  - `tab_1_safe`: `Rect2(414, 91, 178, 74)`.
+  - `tab_2_safe`: `Rect2(693, 91, 178, 74)`.
+  - `tab_3_safe`: `Rect2(969, 91, 162, 74)`.
+- Required runtime rule: whole-image proportional scale only; text/icons/click
+  zones/focus rings must stay inside those safe rects and not cover metal,
+  gems, arrows, spikes or rails.
+- Docs updated: `CHANGELOG.md`, `docs/design/content_registry.md`,
+  `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`,
+  `docs/design/systems/ui_technical_requirements.md`,
+  `docs/design/systems/visual_style_assets.md`.
+- Back-end handoff: SCRUM-334 handles `SettingsTabs` runtime integration.
+- Handoff was sent to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
+
+## Acceptance Status
+
+- [x] Новый фрейм вкладок визуально согласован с settings screen, Ornate Dark и Red&Gold Dragon референсами.
+- [x] В production asset нет baked text; подписи вкладок остаются runtime-текстом.
+- [x] Active/inactive visual direction is clear in the accepted reference strip.
+- [x] Runtime content-zone/safe-area recorded for labels/icons/click zones.
+- [x] Runtime integration handed off to Back-end SCRUM-334 instead of changing code in Design scope.
+- [x] Jira/task/board docs updated for Design result.
