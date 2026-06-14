@@ -46,7 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [backend_run_autosave_and_continue_prompt_task.md](../tasks/backend_run_autosave_and_continue_prompt_task.md) | Back-end (геймплей/персистентность) | new | FEATURE 0.1.5: автосейв забега после элемента карты + при старте предлагать «Продолжить»/«Новая игра» (с отказом); очистка при смерти/победе |
+| [backend_run_autosave_and_continue_prompt_task.md](../tasks/backend_run_autosave_and_continue_prompt_task.md) | Back-end (геймплей/персистентность) | in_progress | FEATURE 0.1.5: автосейв забега после элемента карты + при старте предлагать «Продолжить»/«Новая игра» (с отказом); очистка при смерти/победе |
 | [backend_hero_select_radar_remove_title_center_enlarge_task.md](../tasks/backend_hero_select_radar_remove_title_center_enlarge_task.md) | Back-end (UI) | done | Jira: SCRUM-347. Убран HeroStatRadarTitle, радар центрирован в compass field, polygon radius 0.30→0.36 (+20%), подписи внутри рамки. Runtime smoke PASS |
 | [backend_levelup_buttons_beautify_and_uncrop_task.md](../tasks/backend_levelup_buttons_beautify_and_uncrop_task.md) | Back-end (UI) | done | Jira: SCRUM-348. `LevelUpPlusButton` использует Red & Gold `main_menu` frame с нейтральным hover/focus, alpha/позиция/бейдж сохранены; `LevelUpLaterButton` 260x104 `back_m`; runtime smoke PASS, dump `build/qa/combat_level_up_button.md` |
 | [bug_back_button_cropped_use_bigger_frame_task.md](../tasks/bug_back_button_cropped_use_bigger_frame_task.md) | Back-end (UI) | done | Jira: SCRUM-343. Hero back увеличен до 240x104 medium back-frame; SkillTree/PatchNotes/Codex back checked. Runtime smoke PASS, QA dump `build/qa/scrum343/back_button_frames.md` |

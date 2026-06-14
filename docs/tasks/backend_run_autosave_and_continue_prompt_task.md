@@ -1,6 +1,6 @@
 # Feature: Автосохранение забега после элемента карты + предложение продолжить при старте
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Back-end (геймплей/персистентность)
 Версия: 0.1.5
@@ -8,6 +8,25 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-349
 Связано: SCRUM-319 (диалог подтверждения — паттерн), SCRUM-339 (поток магазина/карты)
+
+## Прогресс (2026-06-14, Claude Fable 5)
+**Сделано (изолированно, без правки общих файлов):**
+- `scripts/run_autosave.gd` (`class RunAutosave`) — самодостаточный модуль
+  персистентности: `save_run(state)` (атомарно через .tmp+rename),
+  `load_run()`/`has_run()` (повреждённый/несовместимый/отсутствующий → {} без
+  крэша), `clear_run()`; версионирование схемы (`SCHEMA_VERSION`). Паттерн
+  ConfigFile как у meta_progression.gd. State агностичен (любой run-Dictionary).
+- `tests/run_autosave_persistence_test.gd` — гейт: round-trip разных типов,
+  атомарность (нет остаточного .tmp), повреждённый файл, несовместимая схема,
+  перезапись, очистка. PASS. Покрыт edge-case acceptance (п.5).
+
+**Осталось (интеграция — требует общих файлов, сейчас заняты):**
+- main.gd: собрать run-state в Dictionary + вызвать `RunAutosave.save_run` после
+  элемента карты; `clear_run` при смерти/победе.
+- route_map_screen.gd: триггер автосейва на завершении узла (`_open_route_node`).
+- ui_screens.gd: на старте (`_show_main_menu`) при `RunAutosave.has_run()` —
+  «Продолжить»/«Новая игра» (отказ → новый забег + clear).
+Взять, как только main.gd/route_map_screen.gd/ui_screens.gd освободятся.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
