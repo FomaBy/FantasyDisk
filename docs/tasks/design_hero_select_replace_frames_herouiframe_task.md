@@ -1,6 +1,6 @@
 # ART: Заменить фреймы экрана выбора героя на набор references/herouiframe
 
-Статус: review
+Статус: done (QA PASSED 2026-06-14)
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -128,3 +128,26 @@ Validation:
   `build/qa/scrum281/hero_select_1280x720.png`,
   `build/qa/scrum281/hero_select_1920x1080.png`,
   `build/qa/scrum281/hero_select_2560x1440.png`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 29b352b5 (ветка dev; работа устаканилась и закоммичена в зелёном)
+
+Проверено (фактически):
+- **8 фреймов** в `assets/sprites/ui/frames/hero_select/` (новый herouiframe-кит).
+- **Целевые тесты**: `runtime_smoke_ui` + `ui_no_overlap_matrix` (1152/1280/1469/
+  2560) + `runtime_smoke` — все passed (включая 720p safe-area ассерты).
+- **Визуал** (`build/qa/scrum281/hero_select_1280x720.png`, +1080/1440): 8 элементов
+  в новых тёмных ornate-рамках (красно-золотой акцент); на 720p **«Назад» видна,
+  лента миниатюр в вьюпорте, контент в рамках, ничего не обрезано** (safe-area
+  фикс, закрывает SCRUM-276); радар top-right.
+
+Acceptance:
+- [x] Все 8 элементов Hero Select используют новые herouiframe на 720p/1080p/1440p.
+- [x] Content margins ≥ окантовки; контент не залазит на рамку (закрывает SCRUM-276).
+- [x] 6 smoke зелёные; скрины в build/qa/scrum281/; CHANGELOG/registry.
+
+Примечание: эта задача была активным источником транзиентной churn ui_screens.gd
+во время QA-прогона; после стабилизации/коммита билд зелёный, перепроверено.
+
+Баги: нет.

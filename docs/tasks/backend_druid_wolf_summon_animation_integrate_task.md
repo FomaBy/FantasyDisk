@@ -7,7 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-279
-QA: in_progress (2026-06-14)
+QA: PASSED (2026-06-14)
 Блокер снят: SCRUM-280 подготовил SpriteFrames волка.
 Dispatch: 2026-06-14 -> Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
 
