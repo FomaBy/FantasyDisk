@@ -1,6 +1,6 @@
 # ART/ТЕХ: Единый стиль персонажей + система анимаций (5 move + 5 attack) — ОПОРНАЯ
 
-Статус: in_progress
+Статус: review
 Приоритет: high
 Роль: Designer (Codex) + Back-end (анимации)
 Версия: 0.1.5
@@ -91,3 +91,29 @@ docs/design/systems/technical_architecture.md, current_game_state.
   `player.gd` attack playback, AnimationPlayer/AnimationTree, motion timing and
   actual animated sheet production remain Back-end/Animator scope per
   `docs/process/agent_role_boundaries_and_handoffs.md`.
+
+## Design Result — 2026-06-14
+- Added Design standard:
+  `docs/design/references/character_animation_style_sheet_0_1_5.md`.
+- Standard fixes the playable hero visual canon: polished D&D/tabletop dark
+  fantasy, expressive full hero silhouettes, no blocky placeholder look, and
+  base character sheets without weapons in hands.
+- Standard fixes sheet format for per-character tasks:
+  `assets/sprites/characters/<class_id>_sheet.png`, `384x384` cells, preferred
+  `1920x1152` sheet with rows `idle`, `walk`, `attack_primary`, 5 frames each.
+  Minimum early-production fallback is `1920x768` with `walk` + `attack_primary`.
+- Recorded pivot/safe-area rules: bottom-center foot anchor `(192,348)`,
+  transparent padding, stable feet baseline, no crop in attack follow-through.
+- Added class-by-class visual identity notes for all 17 playable classes.
+- Updated docs: `animation.md`, `content_registry.md`, `current_game_state.md`,
+  `CHANGELOG.md`.
+
+## Remaining Non-Design Scope
+- Back-end: data-driven character sheet registry/runtime loading, safe fallback,
+  and `player.gd` attack playback integration.
+- Animator: actual motion production/validation with
+  `fantasydisk-animation-director`, SpriteFrames/AnimationPlayer/manifest/GIFs,
+  fps/loop/non-loop verification and animation smoke.
+- Asset generation for final production sheets still depends on
+  `fantasydisk-asset-generator`; current shell has no `OPENAI_API_KEY`, so
+  Design did not generate final `<class_id>_sheet.png` assets in this pass.

@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-353
+QA: in_progress (2026-06-14)
 Связано: SCRUM-279/280 (волк druid_beast), SCRUM-336 (прошлый проход), SCRUM-324 (asset-skill)
 
 ## Autonomy / Approval
@@ -104,3 +105,29 @@ Verification:
   gameplay on unrelated active UI/background work: `Expected main menu to render
   the epic battle background image.` This failure is outside Animator scope and
   not caused by SCRUM-353 summon assets.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Манифест-валидатор** (skill `validate_animation_manifest.py`):
+  «FantasyDisk animation manifest OK: **4 entities**».
+- **Контакт-лист** `summon_animation_contact_sheet.png`: у всех 4 призывов
+  (druid_beast/pack_spirit/homunculus/leadership_echo) — `move` 8 кадров (loop) +
+  `attack` 6 кадров (non-loop), full-frame с реальной вариацией по кадрам (не
+  cutout). + 4 preview GIF на сущность.
+- **Wolf safe-canvas**: `ally_druid_wolf_move_00.png` = `256×256` (паддинг с
+  256×224, убран alpha-edge contact); registry-компенсация в
+  `full_frame_animation_registry.gd`: druid_beast `scale(0.37,0.37)`
+  `position(0,-37)` — размер/посадка на землю сохранены, flip работает.
+- **Тесты**: `animation_smoke_test` — passed; `runtime_smoke_test` — **passed**
+  (прошлый фейл был внешним main-menu background-ассертом SCRUM-316, теперь
+  устранён переключением на v2; к summon/animation path отношения не имел).
+
+Acceptance:
+- [x] У всех 4 призывов move ≥5 (loop) + attack_primary ≥5 (non-loop), full-frame.
+- [x] Пути/интеграция SpriteFrames сохранены; wolf safe-canvas + compensation, flip.
+- [x] Манифест валиден; animation_smoke + runtime_smoke зелёные; контакт-лист/GIF; доки.
+
+Примечание: кадры — full-frame baseline (валидированы скиллом); дальнейший
+рисованный апгрейд опционален (вне scope). Баги: нет.

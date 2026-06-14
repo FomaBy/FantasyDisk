@@ -46,6 +46,14 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 
 ## Player Motion
 
+- SCRUM-298 Design standard: playable character full-frame redraws now use
+  `docs/design/references/character_animation_style_sheet_0_1_5.md` as the
+  source of truth for art direction, sheet rows, pivots and naming. Canonical
+  future sheet path is `assets/sprites/characters/<class_id>_sheet.png`, default
+  cell size is `384x384`, preferred sheet is `1920x1152` with rows
+  `idle` / `walk` / `attack_primary` (5 frames each). Base character sheets are
+  unarmed; weapon visuals stay in socket/weapon assets. Runtime loading and
+  motion validation remain Back-end/Animator-owned.
 - Movement facing — отдельно от attack targeting.
 - Attack direction приходит из weapon targeting и не перетирается velocity.
 - `WeaponSocket` используется для attached weapons и должен оставаться совместимым с анимацией.

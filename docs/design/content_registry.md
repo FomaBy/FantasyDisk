@@ -102,6 +102,14 @@
 
 Канонический контроллер cutout-анимации: `scripts/cutout_rig_2d.gd`.
 
+SCRUM-298 зафиксировал Design standard для будущих full-frame playable character
+sheets: `docs/design/references/character_animation_style_sheet_0_1_5.md`.
+Персонажные redraw-задачи должны класть unarmed sheet по пути
+`assets/sprites/characters/<class_id>_sheet.png`, cell `384x384`, 5 кадров
+`walk` и 5 кадров `attack_primary` минимум; preferred sheet — `1920x1152` с
+дополнительной строкой `idle`. Runtime registry/player wiring и motion timing
+остаются Back-end/Animator scope.
+
 | ID | Тип | Где используется | Назначение | Статус |
 | --- | --- | --- | --- | --- |
 | `idle` | Animation state | Игрок, враги, элитки, боссы | Спокойная поза с малым body sway | Реализовано |
