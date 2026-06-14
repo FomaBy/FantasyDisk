@@ -735,6 +735,35 @@
         ],
         "has_transparency": true
       }
+    },
+    {
+      "entity_id": "ashen_colossus",
+      "kind": "boss",
+      "title": "Ashen Colossus",
+      "source_path": "assets/sprites/bosses/boss_ashen_colossus.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/ashen_colossus_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/bosses/full_frame/ashen_colossus_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_molten_slam",
+        "skill_armor_pulse"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          19,
+          23,
+          1512,
+          993
+        ],
+        "has_transparency": true
+      }
     }
   ]
 }

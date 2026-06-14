@@ -50,6 +50,10 @@
   registered `mini_elite_kind` SpriteFrames entry for visual identity, then
   fall back to their base `elite_behavior`; this is visual-only and does not
   alter mini-elite spawn, stats, AI, damage, or rewards.
+- Mini-elite full-frame batch (SCRUM-376): integrated all six accepted SCRUM-352
+  mini-elite sheets as SpriteFrames/registry entries for the SCRUM-372
+  `mini_elite_kind` visual-id hook, with `move`, `attack`/`attack_primary`, two
+  `skill_*` rows and matching `attack_*` aliases per mini-elite.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню

@@ -1228,6 +1228,7 @@ func _initialize() -> void:
 	await _test_victory_flow(main)
 	await _test_elite_flow(main_scene)
 	await _test_debug_free_pick(main_scene)
+	await _test_debug_combat_click_to_move(main_scene)
 	await _test_codex_screen(main_scene)
 	await _test_escape_navigation(main_scene)
 	await _test_economy_tiers_and_fab(main_scene)
@@ -4639,6 +4640,7 @@ func _test_settings_persistence_and_audio() -> void:
 		"resolution_index": 2, "window_mode_index": 1, "screen_index": 1,
 		"master_volume": 0.85, "music_volume": 0.4, "sfx_volume": 0.65,
 		"music_enabled": false, "sfx_enabled": true, "aim_mode": "cursor",
+		"debug_mode": true,
 	}
 	game_settings.save_settings(saved)
 	var loaded: Dictionary = game_settings.load_settings()
@@ -4834,6 +4836,26 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	if controls_content.find_child("SettingsAimModeOption", true, false) == null:
 		_fail("Expected aim mode selector to live inside the scrollable controls content.")
 		return
+	var debug_toggle := controls_content.find_child("DebugModeToggle", true, false) as CheckBox
+	if debug_toggle == null:
+		_fail("Expected controls settings to expose the DebugModeToggle.")
+		return
+	debug_toggle.button_pressed = true
+	debug_toggle.toggled.emit(true)
+	await process_frame
+	var game_settings := load("res://scripts/game_settings.gd")
+	var loaded_debug: Dictionary = game_settings.load_settings()
+	if not bool(main.get("debug_mode_enabled")) or not bool(loaded_debug.get("debug_mode", false)):
+		_fail("Expected DebugModeToggle to update runtime state and persist to settings.")
+		return
+	debug_toggle.button_pressed = false
+	debug_toggle.toggled.emit(false)
+	await process_frame
+	loaded_debug = game_settings.load_settings()
+	if bool(main.get("debug_mode_enabled")) or bool(loaded_debug.get("debug_mode", true)):
+		_fail("Expected DebugModeToggle to restore OFF state.")
+		return
+	_write_debug_settings_artifact(main, debug_toggle)
 	if controls_content.get_child_count() < 8:
 		_fail("Expected controls content to include aim mode, binding rows, hint, and reset button.")
 		return
@@ -4875,7 +4897,6 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		return
 	music_slider.value = 42.0
 	await process_frame
-	var game_settings := load("res://scripts/game_settings.gd")
 	var loaded_audio: Dictionary = game_settings.load_settings()
 	if absf(float(loaded_audio.get("master_volume", 0.0)) - 0.24) > 0.021:
 		_fail("Expected moving the master slider to persist live volume.")
@@ -4926,12 +4947,110 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		return
 
 
+func _write_debug_settings_artifact(main: Node, debug_toggle: CheckBox) -> void:
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum375")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump := PackedStringArray()
+	dump.append("# SCRUM-375 Settings Debug Toggle")
+	dump.append("")
+	dump.append("- toggle: `%s`" % str(debug_toggle.get_global_rect()))
+	dump.append("- text: `%s`" % debug_toggle.text)
+	var viewport := main.get_viewport()
+	if viewport != null and DisplayServer.get_name() != "headless":
+		var image := viewport.get_texture().get_image()
+		if image != null and image.get_width() > 0 and image.get_height() > 0:
+			var png_path := "%s/settings_debug_mode_toggle.png" % qa_dir
+			image.save_png(png_path)
+			dump.append("- screenshot: `%s`" % png_path)
+	else:
+		dump.append("- screenshot: skipped in headless; rect dump is authoritative.")
+	var file := FileAccess.open("%s/settings_debug_mode_toggle.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump))
+		file.close()
+
+
 func _keycodes_for_action(action_name: String) -> Array:
 	var keys := []
 	for event in InputMap.action_get_events(action_name):
 		if event is InputEventKey:
 			keys.append((event as InputEventKey).keycode)
 	return keys
+
+
+func _test_debug_combat_click_to_move(main_scene: PackedScene) -> void:
+	var debug_main := main_scene.instantiate()
+	root.add_child(debug_main)
+	await process_frame
+	debug_main.set("selected_character_id", "berserk")
+	debug_main.set("selected_weapon_id", "sword")
+	debug_main.call("_start_combat")
+	await process_frame
+	await process_frame
+	var player := debug_main.get("current_player") as Node2D
+	if player == null:
+		_fail("Expected debug click-to-move smoke to spawn a player.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	debug_main.set("debug_mode_enabled", false)
+	var screen_target := root.get_visible_rect().size * 0.5 + Vector2(180.0, 0.0)
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_RIGHT
+	click.position = screen_target
+	click.pressed = true
+	debug_main.call("_input", click)
+	await process_frame
+	if bool(player.call("debug_has_move_target")):
+		_fail("Expected debug click-to-move to ignore combat clicks while debug_mode is OFF.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	debug_main.set("debug_mode_enabled", true)
+	var expected_target: Vector2 = debug_main.call("_screen_position_to_arena_world", screen_target)
+	debug_main.call("_input", click)
+	await process_frame
+	if not bool(player.call("debug_has_move_target")):
+		_fail("Expected debug_mode ON right-click to assign a player move target.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	var assigned_target: Vector2 = player.call("debug_move_target_position")
+	if assigned_target.distance_to(expected_target) > 2.0:
+		_fail("Expected assigned debug target %s to match screen-to-world target %s." % [str(assigned_target), str(expected_target)])
+		debug_main.queue_free()
+		await process_frame
+		return
+	var start_position := player.global_position
+	for _step in range(8):
+		player.call("_physics_process", 0.1)
+	if player.global_position.distance_to(expected_target) >= start_position.distance_to(expected_target):
+		_fail("Expected player to move closer to debug click target.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	Input.action_press("move_left")
+	player.call("_physics_process", 0.1)
+	Input.action_release("move_left")
+	if bool(player.call("debug_has_move_target")):
+		_fail("Expected manual movement input to cancel debug click-to-move target.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	var middle := InputEventMouseButton.new()
+	middle.button_index = MOUSE_BUTTON_MIDDLE
+	middle.position = screen_target + Vector2(0.0, 90.0)
+	middle.pressed = true
+	var instant_target: Vector2 = debug_main.call("_screen_position_to_arena_world", middle.position)
+	debug_main.call("_input", middle)
+	await process_frame
+	if player.global_position.distance_to(instant_target) > 2.0:
+		_fail("Expected middle-click debug input to teleport player to the clamped arena target.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	debug_main.queue_free()
+	await process_frame
 
 
 func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:

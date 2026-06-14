@@ -1309,6 +1309,10 @@
  },
  "animation_mini_elite_full_frame_batch_integration_task.md": {
   "key": "SCRUM-376",
-  "status": "Контроль качества"
+  "status": "Готово"
+ },
+ "animation_boss_full_frame_batch_integration_task.md": {
+  "key": "SCRUM-377",
+  "status": "В работе"
  }
 }
