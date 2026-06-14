@@ -1,12 +1,13 @@
 # ART: Рамка описания героя (центр) из референса DescriptionHS — на всё свободное место
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-323
+QA: in_progress (2026-06-14)
 Связано: SCRUM-281 (Hero Select kit, слот dossier), SCRUM-320/321/322 (карусель/превью/роза)
 
 ## Autonomy / Approval
@@ -172,3 +173,79 @@ runtime sizes, margins, backup location, QA artifact paths.
   pass DescriptionHS reference pack -> production dossier frame. Цель: убрать
   one-axis stretch у центрального dossier slot, зафиксировать proportional
   rendering и content-zone без наезда текста/кнопок на декоративный border.
+- 2026-06-14: `OPENAI_API_KEY` отсутствует в shell, поэтому генерация через
+  `fantasydisk-asset-generator` невозможна; принято техническое решение
+  использовать уже утвержденный DescriptionHS reference pack как source и
+  пересобрать production PNG воспроизводимым локальным pipeline.
+- 2026-06-14: source выбран `DescriptionHS/(1)` (`1467x1072`) как наиболее
+  подходящий по геометрии для central dossier slot. Вертикальный `(2)` оставлен
+  style reference: он красивый, но слишком высокий для текущего 720p content
+  stack и снова провоцировал бы сжатие/перекрытие.
+- 2026-06-14: добавлен pipeline
+  `tools/build_hero_select_dossier_frame.py`, production asset перезаписан как
+  `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_dossier.png`
+  (`1120x1140`, RGBA), старый PNG/.import сохранены в
+  `build/cleanup_backup_hero_select_dossier_2026_06_14/`.
+- 2026-06-14: runtime `HeroSelectDossierPanel` переведен со stretchable
+  `StyleBoxTexture` на `CenterContainer -> HeroSelectDossierFrame ->
+  HeroSelectDossierFrameArt(TextureRect) + HeroSelectDossierContent`, чтобы
+  декоративный frame art масштабировался единым коэффициентом.
+- 2026-06-14: QA PASS — `tools/capture_hero_select_qa.gd`,
+  `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`,
+  `dark_fantasy_ui_theme_test.gd`, `runtime_smoke_test.gd`.
+
+## Result Summary / 2026-06-14
+
+- Final asset ID: `ui_frame_hero_select_dossier`.
+- Final PNG: `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_dossier.png`.
+- Dimensions/format: `1120x1140`, RGBA transparent.
+- Pipeline: `tools/build_hero_select_dossier_frame.py`.
+- Source: `docs/design/references/DescriptionHS/ChatGPT Image Jun 14, 2026, 11_12_12 AM (1).png`.
+- Backup: `build/cleanup_backup_hero_select_dossier_2026_06_14/ui_frame_hero_select_dossier_pre_scrum323.png`
+  and `.png.import`.
+- Preview/safe-area: `docs/design/previews/hero_select_dossier_frame_content_zone.png`.
+- Runtime source size: `HERO_SELECT_DOSSIER_FRAME_SOURCE_SIZE = Vector2(1120, 1140)`.
+- Runtime base frame size: `HERO_SELECT_DOSSIER_FRAME_BASE_SIZE = Vector2(387, 394)`.
+- Runtime content margins: `HERO_SELECT_DOSSIER_CONTENT_BASE = Vector4(96, 66, 96, 54)`.
+- Actual frame rects:
+  - `1280x720`: `HeroSelectDossierFrame` `387x394`, `HeroSelectDossier` `323x358`.
+  - `1920x1080`: `HeroSelectDossierFrame` `581x591`, `HeroSelectDossier` `481x529`.
+  - `2560x1440`: `HeroSelectDossierFrame` `774x788`, `HeroSelectDossier` `642x705`.
+- QA rect dump: `build/qa/scrum323/hero_select_dossier_rects.md`.
+- Runtime rule: draw the dossier frame as a whole proportional image only; do
+  not use it as a stretchable 9-slice frame. Text, Ascension controls and
+  `HeroSelectChooseButton` must stay in `HeroSelectDossierContent`.
+
+## Acceptance Status
+
+- [x] Рамка описания героя = референс DescriptionHS; основной frame art масштабируется пропорционально, без one-axis stretch.
+- [x] Весь контент досье в content-зоне, не наезжает на орнамент; описание читаемо (закрывает SCRUM-276).
+- [x] Task result фиксирует финальные content-zone/margins; decorative border/corners/seals/spikes remain unobstructed.
+- [x] Task result фиксирует финальные source size, texture margins, content margins и фактические runtime rects.
+- [x] Возвышение и start button остаются отдельными controls/assets; они не bake-ятся в outer-frame PNG.
+- [x] Старый ассет в бэкап; no-overlap на 3 разрешениях; smoke зелёные; QA rect dump; CHANGELOG/docs updated.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Ассет**: `ui_frame_hero_select_dossier.png` = `1120×1140` RGBA (PIL); бэкап
+  `build/cleanup_backup_hero_select_dossier_2026_06_14/...pre_scrum323.png(.import)`
+  на месте (старый не удалён).
+- **Пропорциональность** (rect dump `build/qa/scrum323/hero_select_dossier_rects.md`):
+  `HeroSelectDossierFrame` `387×394` @1280×720 → `581×591` @1920×1080 (×~1.50 по
+  ОБЕИМ осям) — без one-axis stretch. Контент `HeroSelectDossier` `323×358` @1280
+  внутри content-зоны `P(478,153)` ⊂ frame `P(445,130) S(387,394)` (не на орнаменте).
+- **Визуал** `build/qa/cap_hero_select.png`: центральная панель «Берсерк»
+  (описание/черты/оружие/Возвышение/«Выбрать») в рамке, текст читаем, не наезжает.
+- **Тесты**: `dark_fantasy_ui_theme_test`, `runtime_smoke_ui_test`,
+  `ui_no_overlap_matrix_test`, `runtime_smoke_test` — passed.
+
+Acceptance:
+- [x] Рамка = DescriptionHS, пропорциональное масштабирование, без one-axis stretch.
+- [x] Контент в content-зоне, не на орнаменте, описание читаемо (закрывает SCRUM-276).
+- [x] Возвышение/start button отдельные controls (не bake-нуты); бэкап есть.
+- [x] no-overlap на 3 разрешениях; smoke зелёные; rect dump; доки.
+
+Примечание: Jira застрял на «В работе» при готовом done — синк выровняет → Готово.
+Баги: нет.
