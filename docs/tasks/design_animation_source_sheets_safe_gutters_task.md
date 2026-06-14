@@ -1,12 +1,13 @@
 # DESIGN: Regenerate Animation Source Sheets With Safe Gutters
 
-Статус: review
+Статус: done
 Приоритет: high
 Роль: Design
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: Animator handoff from SCRUM-387
 Jira: SCRUM-394
+QA: in_progress (2026-06-14)
 Связано: SCRUM-350, SCRUM-352, SCRUM-370, SCRUM-380, SCRUM-387
 
 ## Autonomy / Approval
@@ -132,3 +133,28 @@ change.
   `docs/design/previews/scrum394_safe_gutter_source_sheets_contact.png`.
 - Verification: PNG safe-gutter validation PASS (`45/45`, `0` failed), Godot
   import PASS, `tests/animation_smoke_test.gd` PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design source-asset compliance — закрывает 387 follow-up)
+
+Проверено (фактически):
+- **Source-листы пересобраны с gutters**: 26/26 full_frame @`1704×1144` (enemies/
+  elites/bosses) + 19/19 death_rows @`1704×304` — все с `24px` discard-only gutters
+  + `24px` outer padding (256² ячейки), vs прежние 1536×1024 / 0px.
+- **Манифесты** (scrum352 + scrum380): записывают `frame_gutter_px=24`,
+  `outer_padding_px=24`, `safe_slicing_checked=True`.
+- **Safe-gutter report** `source_sheet_safe_gutters_report.json`: 45 листов
+  (26+19), валидация PASS (45/45, 0 failed).
+- **Визуал** `scrum394_safe_gutter_source_sheets_contact.png`: ячейки 6×4 с
+  прозрачными gutters (checkerboard между кадрами), контент внутри своей ячейки,
+  без захвата соседних/edge.
+- **Runtime НЕ тронут**: `animation_smoke_test` passed — runtime SpriteFrames/
+  gameplay/state names/timings без изменений (source-only пересборка).
+
+Acceptance:
+- [x] Source-листы с прозрачными gutters/padding по стандарту animation-director.
+- [x] Контент не касается границ ячеек/gutter/листа.
+- [x] Entity IDs/row semantics/pose order/identities сохранены.
+- [x] Манифесты записывают gutter/padding/safe_slicing_checked; превью.
+
+Статус review→done. Баги: нет. Source-pipeline теперь безопасен для будущей нарезки.

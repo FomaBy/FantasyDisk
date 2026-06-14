@@ -1,6 +1,6 @@
 # ART/UX: Кодекс — новые текстуры интерфейса (скиллом), убрать наложение персонажей/текста
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -93,3 +93,11 @@ provides an approved alternative generation source.
 
 ## Разблокировано 2026-06-14 (PM)
 Биллинг OpenAI восстановлен и ПРОВЕРЕН: тестовая генерация gpt-image-2 успешна. Блок `billing_hard_limit_reached` устарел — снят. Можно генерить скиллом.
+
+## Progress Log
+
+- 2026-06-14 — Взято Design/Codex в работу после повторного Images API smoke:
+  `images_api_smoke=PASS`. Scope decision: выполнить Design asset kit,
+  safe-zone metadata, previews and Back-end handoff for runtime Codex layout;
+  `scripts/ui_screens.gd` and no-overlap runtime integration остаются Back-end
+  scope.

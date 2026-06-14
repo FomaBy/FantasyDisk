@@ -1481,8 +1481,8 @@
  },
  "design_codex_new_textures_no_overlap_task.md": {
   "key": "SCRUM-345",
-  "status": "К выполнению",
-  "desc_hash": "e8c5861d6c199a9f849f86633672553f"
+  "status": "В работе",
+  "desc_hash": "9a61cd142ac2d1a4e3dcaea39ccc0d45"
  },
  "design_hero_select_ascension_small_buttons_reposition_task.md": {
   "key": "SCRUM-346",
@@ -1826,8 +1826,8 @@
  },
  "design_animation_source_sheets_safe_gutters_task.md": {
   "key": "SCRUM-394",
-  "status": "В работе",
-  "desc_hash": "e8da75aaac8b01e1d03271be36e52c93"
+  "status": "Готово",
+  "desc_hash": "a8a1255d9c42525e591d5697a2b6a14e"
  },
  "design_integrate_generated_backgrounds_3_task.md": {
   "key": "SCRUM-393",
