@@ -1682,7 +1682,7 @@
  "design_unified_frame_revise_thin_metallic_task.md": {
   "key": "SCRUM-384",
   "status": "В работе",
-  "desc_hash": "2cc2c3a3f4392da6537a660a08fbfcf0"
+  "desc_hash": "339248f9a56030a4bfb673795fe8306b"
  },
  "design_integrate_generated_scrum380_death_rows_3_task.md": {
   "key": "SCRUM-383",
@@ -1781,7 +1781,17 @@
  },
  "design_integrate_generated_unified_master_frame_2_task.md": {
   "key": "SCRUM-381",
+  "status": "Контроль качества",
+  "desc_hash": "7209cc51b4673833f5a56029a42481d6"
+ },
+ "animation_sprite_sheet_safe_slicing_audit_task.md": {
+  "key": "SCRUM-387",
   "status": "К выполнению",
-  "desc_hash": "470f950039dbf58c3ee4395956d6d821"
+  "desc_hash": "326aa394752da31be18d1db4c1010435"
+ },
+ "backend_meta_points_per_new_ascension_only_task.md": {
+  "key": "SCRUM-388",
+  "status": "К выполнению",
+  "desc_hash": "02dbeb6c2402f9f91007844fb76d8602"
  }
 }
