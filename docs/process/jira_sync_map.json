@@ -1174,5 +1174,21 @@
  "backend_hero_select_carousel_bigger_icons_task.md": {
   "key": "SCRUM-342",
   "status": "К выполнению"
+ },
+ "bug_back_button_cropped_use_bigger_frame_task.md": {
+  "key": "SCRUM-343",
+  "status": "К выполнению"
+ },
+ "bug_quit_dialog_buttons_vertical_shrink_task.md": {
+  "key": "SCRUM-344",
+  "status": "К выполнению"
+ },
+ "design_codex_new_textures_no_overlap_task.md": {
+  "key": "SCRUM-345",
+  "status": "К выполнению"
+ },
+ "design_hero_select_ascension_small_buttons_reposition_task.md": {
+  "key": "SCRUM-346",
+  "status": "К выполнению"
  }
 }

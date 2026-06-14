@@ -46,6 +46,10 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [bug_back_button_cropped_use_bigger_frame_task.md](../tasks/bug_back_button_cropped_use_bigger_frame_task.md) | Back-end (UI) | new | БАГ 0.1.5: кнопка «Назад» (справа) обрезана — использовать необрезанную/чуть большую рамку; проверить все back-кнопки |
+| [bug_quit_dialog_buttons_vertical_shrink_task.md](../tasks/bug_quit_dialog_buttons_vertical_shrink_task.md) | Back-end (UI) | new | БАГ 0.1.5: в диалоге выхода кнопки скукоживаются по вертикали — держать высоту 72px, рамка не сплющивается |
+| [design_hero_select_ascension_small_buttons_reposition_task.md](../tasks/design_hero_select_ascension_small_buttons_reposition_task.md) | Designer (Codex) | new | UX 0.1.5: возвышение +/- маленькими кнопками по референсам (скиллом), по центру, вместе с «Выбрать» вниз фрейма описания героя |
+| [design_codex_new_textures_no_overlap_task.md](../tasks/design_codex_new_textures_no_overlap_task.md) | Designer (Codex) | new | ART 0.2.0: кодекс — новые текстуры скиллом + персонажи/описания не накладываются на UI (детал. SCRUM-331) |
 | [backend_hero_select_carousel_bigger_icons_task.md](../tasks/backend_hero_select_carousel_bigger_icons_task.md) | Back-end (UI) | new | UX 0.1.5: карусель выбора героя — иконки персонажей КРУПНЕЕ, уменьшить отступы (separation+верт.), герои плохо видны; follow-up к SCRUM-333 |
 | [design_settings_tabs_fix_3slots_restyle_skill_task.md](../tasks/design_settings_tabs_fix_3slots_restyle_skill_task.md) | Designer (Codex) | new | БАГ 0.1.5: настройки показывают 4 вкладки вместо 3 (свитчер на 4 слота) — пересоздать ассет скиллом на 3 слота + SAFE_RECTS=3, реалистичный стиль в цветах референсов |
 | [design_recreate_all_artifact_icons_via_skill_task.md](../tasks/design_recreate_all_artifact_icons_via_skill_task.md) | Designer (Codex) | new | ART 0.2.0: пересоздать ВСЕ 53 иконки артефактов скиллом (gpt-image-2, прозрачный фон, D&D Dark Fantasy Dragon), единый набор; имена/пути сохранить; будущие — тоже скиллом |
