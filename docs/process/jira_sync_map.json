@@ -1961,8 +1961,8 @@
  },
  "backend_ui_overhaul_progression_codex_integration_task.md": {
   "key": "SCRUM-408",
-  "status": "К выполнению",
-  "desc_hash": "fd86de6ebe741066c202bb84463460e1"
+  "status": "В работе",
+  "desc_hash": "f4325803287f414af2497fcbed78358b"
  },
  "backend_assassin_crit_shadow_vfx_runtime_smoke_task.md": {
   "key": "SCRUM-409",
@@ -1971,12 +1971,12 @@
  },
  "bug_runtime_smoke_assassin_crit_shadow_vfx_flaky_task.md": {
   "key": "SCRUM-410",
-  "status": "В работе",
-  "desc_hash": "02da31131de6eaf76a1ee766f6b8d3be"
+  "status": "Готово",
+  "desc_hash": "c3fe9a70c217f81e21027a45c510ece9"
  },
  "bug_player_fullframe_anim_hidden_behind_cutout_rig_task.md": {
   "key": "SCRUM-411",
-  "status": "К выполнению",
-  "desc_hash": "c873a1a63c92d3b29b4b88e16b5000d8"
+  "status": "Контроль качества",
+  "desc_hash": "851e520fd6c830c74b1cfe4bffb06ed2"
  }
 }

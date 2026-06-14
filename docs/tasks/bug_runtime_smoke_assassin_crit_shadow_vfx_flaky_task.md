@@ -1,12 +1,13 @@
 # BUG: runtime_smoke assassin crit shadow VFX assertion остаётся флейки
 
-Статус: in_progress
+Статус: done
 Приоритет: low
 Роль: Back-end / QA tooling
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: QA (находка при батч-QA character-animation, follow-up к SCRUM-409)
 Jira: SCRUM-410
+QA: in_progress (2026-06-14)
 Связано: SCRUM-409
 
 ## Контекст
@@ -36,9 +37,9 @@ character-animation HEAD-прогон runtime_smoke упал 1 раз из ~4 (�
 3. Прогнать runtime_smoke ≥10 раз подряд — 0 фейлов (де-флейк подтверждён).
 
 ## Acceptance Criteria
-- [ ] `tests/runtime_smoke_test.gd` assassin crit shadow ассерт детерминирован.
-- [ ] 10/10 последовательных прогонов runtime_smoke зелёные.
-- [ ] Геймплей/VFX-поведение не изменено (только устойчивость проверки).
+- [x] `tests/runtime_smoke_test.gd` assassin crit shadow ассерт детерминирован.
+- [x] 10/10 последовательных прогонов runtime_smoke зелёные.
+- [x] Геймплей/VFX-поведение не изменено (только устойчивость проверки).
 
 ## Files
 - `tests/runtime_smoke_test.gd` (ассерт ~3594-3610)
@@ -57,3 +58,38 @@ for i in $(seq 1 10); do ~/Downloads/Godot.app/Contents/MacOS/Godot --headless \
   because this is a QA/runtime smoke flaky bug follow-up to SCRUM-409, not new
   feature work. Scope: deterministic runtime smoke assertion only; no gameplay,
   balance, art, animation, release or refactor work.
+
+## Result
+- 2026-06-14 — Back-end fixed the flaky runtime assertion in
+  `tests/runtime_smoke_test.gd`: the Assassin crit-shadow smoke now disables the
+  equipped weapon auto-process for this isolated hook check, clears the hook
+  cooldown before the manual trigger, and asserts newly spawned VFX immediately
+  after `trigger_assassin_crit_shadow()` instead of waiting through a fragile
+  `0.15s` lifetime window. Gameplay/VFX code, damage, balance, class mechanics,
+  art and animation assets were not changed.
+- Verification:
+  - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/attack_vfx_smoke_test.gd` — PASS.
+  - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+  - `for i in $(seq 1 10); do ... --user-data-dir /private/tmp/fantasydisk_scrum410_$i ... runtime_smoke_test.gd ...; done` — PASS 10/10.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — ассерт детерминирован, 10/10 прогонов зелёные
+
+Проверено (фактически):
+- **10/10 runtime_smoke**: прогнал `runtime_smoke_test.gd` десять раз подряд
+  (изолированные user-data-dir) — **10/10 «Runtime smoke test passed»** (было ≈20-25%
+  флейк-фейлов). Де-флейк подтверждён.
+- **Фикс детерминирован** (`tests/runtime_smoke_test.gd`): убран хрупкий
+  `await create_timer(0.15).timeout`; теперь отключается `equipped_weapon` auto-process,
+  сбрасывается `_assassin_crit_shadow_cooldown_left=0`, и spawned-VFX проверяется
+  **сразу** после `trigger_assassin_crit_shadow()` (сбор имён новых *Vfx, проверка
+  непустоты) — без зависимости от lifetime-окна.
+- **Геймплей/VFX не тронуты**: изменён только тест (assertion), без правок
+  gameplay/VFX/damage/balance/art.
+
+Acceptance:
+- [x] Assassin crit shadow ассерт детерминирован (без 0.15s окна).
+- [x] 10/10 последовательных runtime_smoke зелёные.
+- [x] Геймплей/VFX-поведение не изменено (только устойчивость проверки).
+
+Статус done. Баги: нет. Флейк QA-гейта устранён (follow-up к SCRUM-409 закрыт).
