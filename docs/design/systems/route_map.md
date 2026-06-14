@@ -1,6 +1,6 @@
 # Route Map
 
-Обновлено: 2026-06-11
+Обновлено: 2026-06-14
 
 Route map — full-screen экран выбора пути между боями. Реализация: `scripts/route_map_screen.gd`, делегирующие методы в `scripts/main.gd`.
 
@@ -37,10 +37,17 @@ Route map — full-screen экран выбора пути между боями
 
 - Стартовые узлы первого ряда доступны сразу после выбора персонажа и оружия.
 - Пути ограничены через `next_branches`; карта не должна быть all-to-all.
-- Назад возвращаться нельзя.
+- Назад возвращаться нельзя, кроме текущего `shop`-узла после выхода из лавки:
+  магазин можно повторно открыть до выбора следующего route node.
 - Boss row находится в конце маршрута.
-- Event/shop/rest node после выбора возвращает игрока на карту и открывает следующий ряд.
+- Event/rest node после выбора возвращает игрока на карту и продвигает маршрут.
+- Shop node после выхода возвращает игрока на карту без продвижения `route_stage`:
+  тот же shop остается кликабельным с сохраненным стоком/покупками, а следующий
+  ряд уже доступен. Выбор любого узла следующего ряда финализирует магазин,
+  очищает его stock state и становится точкой невозврата.
 
 ## Tests
 
-- `tests/runtime_smoke_test.gd` проверяет full-screen scroll area, стартовый выбор, event click, drag suppression, thin route lines, tooltips и route branching.
+- `tests/runtime_smoke_test.gd` проверяет full-screen scroll area, стартовый выбор,
+  event click, shop re-entry до следующего узла, drag suppression, thin route
+  lines, tooltips и route branching.

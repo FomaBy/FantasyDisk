@@ -1,6 +1,6 @@
 # UX/Flow: Возврат в магазин в любой момент до перехода на след. уровень
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end (геймплей/flow)
 Версия: 0.1.5
@@ -66,3 +66,18 @@ Jira: SCRUM-339
 
 ## Документация
 docs/design/current_game_state.md (карта забега / магазин), systems/economy|map при наличии.
+
+## Result 2026-06-14
+
+Implemented Back-end route/shop flow:
+- `leave_shop` now returns to the route map through `_return_to_map_after_shop_visit()` without advancing `route_stage` and without clearing node-bound stock;
+- `route_map_screen.gd` keeps the visited shop node revisitable while enabling connected next-row route nodes;
+- choosing a connected next route node finalizes the pending shop re-entry, clears `current_shop_items/current_shop_purchased/current_shop_node_key`, advances route stage and opens the chosen next node;
+- rest/event exits still use the normal non-combat advance path.
+
+Runtime coverage added to `tests/runtime_smoke_test.gd`: shop -> buy -> leave -> route map with both shop and next node clickable -> revisit same stock/purchased state -> no rebuy -> choose next battle -> shop stock cleared and combat starts.
+
+Verification:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/systems/route_map.md`, `docs/design/systems/progression_balance.md`.

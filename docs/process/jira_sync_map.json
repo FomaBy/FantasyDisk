@@ -1093,7 +1093,7 @@
  },
  "design_hero_select_windrose_radar_frame_from_ref_task.md": {
   "key": "SCRUM-322",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_hero_select_dossier_frame_from_descriptionhs_ref_task.md": {
   "key": "SCRUM-323",
@@ -1161,7 +1161,7 @@
  },
  "backend_shop_reentry_until_next_level_task.md": {
   "key": "SCRUM-339",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_recreate_all_artifact_icons_via_skill_task.md": {
   "key": "SCRUM-340",
@@ -1177,7 +1177,7 @@
  },
  "bug_back_button_cropped_use_bigger_frame_task.md": {
   "key": "SCRUM-343",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "bug_quit_dialog_buttons_vertical_shrink_task.md": {
   "key": "SCRUM-344",
@@ -1189,6 +1189,14 @@
  },
  "design_hero_select_ascension_small_buttons_reposition_task.md": {
   "key": "SCRUM-346",
+  "status": "К выполнению"
+ },
+ "backend_hero_select_radar_remove_title_center_enlarge_task.md": {
+  "key": "SCRUM-347",
+  "status": "К выполнению"
+ },
+ "backend_levelup_buttons_beautify_and_uncrop_task.md": {
+  "key": "SCRUM-348",
   "status": "К выполнению"
  }
 }

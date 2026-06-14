@@ -79,6 +79,10 @@ UI обязан показывать эти интерпретации текс�
 - Shop items берутся из `ProgressionData.SHOP_ITEMS` и artifact pool.
 - Shop screen показывает 4 предложения на parchment wall.
 - Покупка проверяет money, купленные items получают unavailable state.
+- Сток привязан к конкретному `shop` route node: выход из лавки не очищает
+  stock и не двигает маршрут, поэтому магазин можно открыть повторно до выбора
+  следующего route node. Следующий route node финализирует прошлый магазин и
+  очищает его stock/purchased state.
 - Shop-only icons: `assets/sprites/ui/icons/shop/shop_<shop_item_id>.png`.
 
 ## Meta Progression

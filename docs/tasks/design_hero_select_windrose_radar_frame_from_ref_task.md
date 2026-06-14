@@ -1,6 +1,6 @@
 # ART: Рамка розы ветров (радар характеристик) из референса windrose — выбор героя
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -79,10 +79,10 @@ docs/design/references/windrose/ChatGPT Image Jun 14, 2026, 11_07_47 AM.png
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Рамка розы ветров = референс windrose; лучи/центр компаса НЕ искажены и масштабируются пропорционально.
-- [ ] Радар+заголовок отцентрованы в content-зоне; панель в правом-верхнем углу; no-overlap на 3 разрешениях.
-- [ ] Task result фиксирует финальные content-zone/margins; лучи/самоцветы/кант не перекрыты текстом или графиком.
-- [ ] Старый ассет в бэкап; 6 smoke зелёные; скрин в build/qa/; CHANGELOG.
+- [x] Рамка розы ветров = референс windrose; лучи/центр компаса НЕ искажены и масштабируются пропорционально.
+- [x] Радар+заголовок отцентрованы в content-зоне; панель в правом-верхнем углу; no-overlap на 3 разрешениях.
+- [x] Task result фиксирует финальные content-zone/margins; лучи/самоцветы/кант не перекрыты текстом или графиком.
+- [x] Старый ассет в бэкап; smoke зелёные; rect dump в build/qa/; CHANGELOG.
 
 ## Документация
 docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_state.
@@ -95,3 +95,28 @@ docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_s
   `docs/design/references/windrose/ChatGPT Image Jun 14, 2026, 11_07_47 AM.png`.
   Decision: create production RGBA asset by local cleanup/crop from the reference
   and integrate it as a whole-image proportional square frame, not 9-slice.
+- 2026-06-14: завершено. Runtime PNG заменен на windrose production asset:
+  `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_radar.png`
+  (`1024x1024`, RGBA, transparent). Pipeline:
+  `tools/build_hero_select_windrose_frame.py`. Старый SCRUM-281 radar backup:
+  `build/cleanup_backup_hero_select_windrose_2026_06_14/`.
+- Safe-area/content-zone: source margins
+  `HERO_SELECT_RADAR_CONTENT_BASE = Vector4(245, 245, 245, 235)` for source
+  `1024x1024`; preview:
+  `docs/design/previews/hero_select_windrose_radar_content_zone.png`.
+  Runtime title/graph are centered inside this inner field; red gems, metal
+  tips, spikes and windrose ring remain outside actual label/graph bounds.
+- Runtime integration: `HeroSelectRadarPanel` is now a square top-right
+  `Control` with `HeroSelectRadarFrameArt` full-rect `TextureRect` and
+  `HeroSelectRadarContent` margins. Display frame sizes from QA:
+  `390x390` at 1280x720, `585x585` at 1920x1080, `780x780` at 2560x1440.
+  Graph sizes: `200x150`, `300x225`, `400x300`.
+- QA/verification:
+  - `tools/capture_hero_select_qa.gd` PASS, rect dump:
+    `build/qa/scrum322/hero_select_windrose_radar_rects.md`.
+  - `tests/runtime_smoke_ui_test.gd` PASS.
+  - `tests/ui_no_overlap_matrix_test.gd` PASS.
+  - Final dark theme/runtime smoke run recorded after docs update.
+- Документация обновлена: `CHANGELOG.md`, `docs/design/content_registry.md`,
+  `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`,
+  `docs/process/task_board.md`.
