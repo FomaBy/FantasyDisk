@@ -1,6 +1,6 @@
 # ART: Рамка описания героя (центр) из референса DescriptionHS — на всё свободное место
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -165,3 +165,10 @@ file, размеры, alpha, margins, content-zone, backup и QA artifacts.
 docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_state.
 Обновлять только фактические technical docs/registry записи: paths, source sizes,
 runtime sizes, margins, backup location, QA artifact paths.
+
+## Progress Log
+
+- 2026-06-14: взято в работу Design/Codex на ветке `dev`; начинаю technical
+  pass DescriptionHS reference pack -> production dossier frame. Цель: убрать
+  one-axis stretch у центрального dossier slot, зафиксировать proportional
+  rendering и content-zone без наезда текста/кнопок на декоративный border.

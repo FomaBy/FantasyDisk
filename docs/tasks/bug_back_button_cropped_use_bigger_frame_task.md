@@ -1,6 +1,6 @@
 # BUG/UX: Кнопка «Назад» обрезана — использовать необрезанную (чуть большую) рамку
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -43,3 +43,18 @@ Jira: SCRUM-343
 
 ## Документация
 docs/design/systems/menus_ui.md
+
+## Result 2026-06-14
+
+Implemented Back-end UI fix:
+- `HeroSelectBackButton` increased from 170x104 to 240x104 so it uses the
+  medium Red&Gold `back_m` frame instead of the cropped narrow `back_s` frame.
+- Added runtime smoke coverage for `HeroSelectBackButton`,
+  `SkillTreeBackButton`, `PatchNotesBackButton` and `CodexBackButton`: checks
+  viewport bounds, minimum size, button height and content-zone width/height.
+- QA dump written to `build/qa/scrum343/back_button_frames.md`.
+
+Verification:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Docs updated: `CHANGELOG.md`, `docs/design/systems/menus_ui.md`.

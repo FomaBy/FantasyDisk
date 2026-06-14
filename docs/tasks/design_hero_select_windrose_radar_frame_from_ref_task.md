@@ -116,7 +116,8 @@ docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_s
     `build/qa/scrum322/hero_select_windrose_radar_rects.md`.
   - `tests/runtime_smoke_ui_test.gd` PASS.
   - `tests/ui_no_overlap_matrix_test.gd` PASS.
-  - Final dark theme/runtime smoke run recorded after docs update.
+  - `tests/dark_fantasy_ui_theme_test.gd` PASS.
+  - `tests/runtime_smoke_test.gd` PASS.
 - Документация обновлена: `CHANGELOG.md`, `docs/design/content_registry.md`,
   `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`,
   `docs/process/task_board.md`.

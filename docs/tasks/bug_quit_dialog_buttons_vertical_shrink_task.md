@@ -1,6 +1,6 @@
 # BUG: Диалог выхода — кнопки «скукоживаются» по вертикали, исправить
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -44,3 +44,21 @@ Jira: SCRUM-344
 
 ## Документация
 docs/design/systems/menus_ui.md
+
+## Result 2026-06-14
+
+Implemented Back-end UI fix:
+- `QuitConfirmationButtons` row and both dialog buttons now keep shrink-centered
+  vertical sizing with 72px minimum height;
+- `QuitConfirmExitButton` and `QuitConfirmCancelButton` are routed to the
+  Red&Gold `pause` button frame, which has safe margins for 220x72 buttons,
+  instead of falling back to the vertically squashed `back_s` texture;
+- runtime smoke asserts the actual 220x72 rect, `pause` texture type, modal
+  behavior and safe default focus on `Отмена`.
+
+QA dump: `build/qa/scrum319/quit_confirmation_dialog.md`.
+
+Verification:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Docs updated: `CHANGELOG.md`, `docs/design/systems/menus_ui.md`.

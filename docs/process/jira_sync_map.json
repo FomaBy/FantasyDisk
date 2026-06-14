@@ -1097,7 +1097,7 @@
  },
  "design_hero_select_dossier_frame_from_descriptionhs_ref_task.md": {
   "key": "SCRUM-323",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_generate_asset_skill_task.md": {
   "key": "SCRUM-324",
@@ -1177,11 +1177,11 @@
  },
  "bug_back_button_cropped_use_bigger_frame_task.md": {
   "key": "SCRUM-343",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "bug_quit_dialog_buttons_vertical_shrink_task.md": {
   "key": "SCRUM-344",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "design_codex_new_textures_no_overlap_task.md": {
   "key": "SCRUM-345",
@@ -1197,6 +1197,10 @@
  },
  "backend_levelup_buttons_beautify_and_uncrop_task.md": {
   "key": "SCRUM-348",
+  "status": "К выполнению"
+ },
+ "backend_run_autosave_and_continue_prompt_task.md": {
+  "key": "SCRUM-349",
   "status": "К выполнению"
  }
 }

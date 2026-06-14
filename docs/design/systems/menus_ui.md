@@ -71,6 +71,12 @@ uses 50x50. Route nodes, shop item hit areas, hero thumbnails and
 weapon/reward cards stay as cards/hit areas instead of receiving heavy action
 button frames. Runtime smoke writes `build/qa/red_gold_button_sizes.md`.
 
+Back buttons use the Red&Gold `back_*` family and must not be squeezed into
+ornament-cropping widths. `HeroSelectBackButton` uses 240x104 so it resolves to
+the medium back frame; longer `Назад в меню` buttons in Skill Tree, Patch Notes
+and Codex use 260x104. Runtime smoke validates their viewport bounds and content
+zone sizes and writes `build/qa/scrum343/back_button_frames.md`.
+
 Hover/focus states after SCRUM-318 are neutral-bright, not golden glow states:
 runtime button themes reuse the normal Red & Gold texture with a neutral tint
 (`1.16` hover / `1.20` focus) and near-white hover/focus text. Baked
@@ -85,6 +91,13 @@ instead of quitting immediately. The dialog is a custom game-styled full-screen
 modal overlay, not a default Godot `ConfirmationDialog`: it blocks clicks below
 the dim layer, focuses safe `Отмена` by default, cancels on Escape/outside click
 and calls `Main.request_game_quit()` only from the explicit `Выйти` button.
+
+SCRUM-344 locks the dialog action buttons to 220x72 and routes
+`QuitConfirmExitButton` / `QuitConfirmCancelButton` to the Red&Gold `pause`
+button frame, whose vertical margins are safe at 72px. Do not let these buttons
+fall back to `back_s`: that frame is authored for taller action buttons and
+visually squashes when used in this dialog. Runtime smoke records the actual
+rects and textures in `build/qa/scrum319/quit_confirmation_dialog.md`.
 
 ## Settings Tabs
 
