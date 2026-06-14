@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator heartbeat watcher
 Jira: SCRUM-366
+QA: in_progress (2026-06-14)
 Parent: SCRUM-352 / `design_enemy_elite_boss_full_frame_animation_sheets_task.md`
 
 ## Autonomy / Approval
@@ -58,3 +59,27 @@ Verification:
 - `python3 ~/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_standard_enemy_full_frame_batch_3_integration/animation_manifest.json` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически) — batch 3 (small_biter):
+- **SpriteFrames** (load) `small_biter_spriteframes.tres`: `move(6,loop=true)`,
+  `attack_primary(6)`, `attack(6 alias)`, `hit(6)`, `death(6)` — точно по acceptance.
+- **Реестр**: `full_frame_animation_registry.gd:87` — `enemy/small_biter`
+  (visual-only override, fallback цел).
+- **Манифест-валидатор**: «FantasyDisk animation manifest OK: 1 entities».
+- **Контакт-лист** `small_biter_full_frame_contact_sheet.png` + GIF — full-frame.
+- **Тесты**: `animation_smoke_test` — passed (registry-резолв / frame counts /
+  loop flags / aliases / right-flip / FullFrameBody для EnemyBiter).
+
+Acceptance:
+- [x] small_biter: move 6f loop + attack_primary/attack 6f + hit 6f + death 6f.
+- [x] Registry резолвит enemy/small_biter; FullFrameBody виден, legacy скрыт.
+- [x] Манифест валиден; animation_smoke зелёный; gameplay/balance/AI не тронуты.
+
+Примечание: на момент QA `runtime_smoke_test.gd` падал на Parse Error
+(`_scaled_source_rect()` not found) — это АКТИВНЫЙ churn другого воркера (файл
+Modified/uncommitted, mid-edit hero-select хелпера), НЕ изменение SCRUM-366 (трогал
+только spriteframes + 1 строку реестра). Коммит вердикта green-gated до зелёного
+runtime_smoke. Баги: нет (по 366).

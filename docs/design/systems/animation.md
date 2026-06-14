@@ -40,6 +40,10 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   scene activation.
 - SCRUM-366 added `small_biter` to the same full-frame registry path with a
   compact `0.30` scale and the standard 6-frame move/attack/hit/death contract.
+- SCRUM-367 added `bone_shaman` and `winged_spark` to standard-enemy full-frame
+  registry coverage. `winged_spark` preserves the accepted source `hover_flap`
+  row as a looped runtime state and exposes `hit` as a visual alias to keep the
+  existing enemy hit-state contract.
 
 ## Full-Frame State Registry
 

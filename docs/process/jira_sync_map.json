@@ -1269,6 +1269,18 @@
  },
  "animation_standard_enemy_full_frame_batch_3_integration_task.md": {
   "key": "SCRUM-366",
+  "status": "Готово"
+ },
+ "animation_standard_enemy_full_frame_batch_4_integration_task.md": {
+  "key": "SCRUM-367",
   "status": "Контроль качества"
+ },
+ "animation_route_elite_full_frame_batch_integration_task.md": {
+  "key": "SCRUM-368",
+  "status": "В работе"
+ },
+ "design_level_backgrounds_redraw_new_style_skill_task.md": {
+  "key": "SCRUM-369",
+  "status": "К выполнению"
  }
 }

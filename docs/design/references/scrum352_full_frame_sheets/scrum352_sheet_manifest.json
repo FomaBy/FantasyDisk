@@ -329,6 +329,122 @@
         ],
         "has_transparency": true
       }
+    },
+    {
+      "entity_id": "iron_bastion",
+      "kind": "elite",
+      "title": "Iron Bastion",
+      "source_path": "assets/sprites/elites/iron_bastion.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/iron_bastion_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/elites/full_frame/iron_bastion_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_shield_block",
+        "skill_slam_wave"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          13,
+          38,
+          1488,
+          963
+        ],
+        "has_transparency": true
+      }
+    },
+    {
+      "entity_id": "night_stalker",
+      "kind": "elite",
+      "title": "Night Stalker",
+      "source_path": "assets/sprites/elites/night_stalker.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/night_stalker_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/elites/full_frame/night_stalker_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_shadow_strike",
+        "skill_phase_dash"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          34,
+          32,
+          1498,
+          954
+        ],
+        "has_transparency": true
+      }
+    },
+    {
+      "entity_id": "plague_prophet",
+      "kind": "elite",
+      "title": "Plague Prophet",
+      "source_path": "assets/sprites/elites/plague_prophet.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/plague_prophet_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/elites/full_frame/plague_prophet_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_poison_volley",
+        "skill_plague_aura"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          23,
+          32,
+          1520,
+          963
+        ],
+        "has_transparency": true
+      }
+    },
+    {
+      "entity_id": "shard_marshal",
+      "kind": "elite",
+      "title": "Shard Marshal",
+      "source_path": "assets/sprites/elites/shard_marshal.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/shard_marshal_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/elites/full_frame/shard_marshal_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_shard_fan",
+        "skill_command_pulse"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          30,
+          23,
+          1521,
+          989
+        ],
+        "has_transparency": true
+      }
     }
   ]
 }

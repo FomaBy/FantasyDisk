@@ -6,7 +6,7 @@
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: Design Codex handoff from SCRUM-356
-Jira: pending sync
+Jira: SCRUM-361
 Связано: SCRUM-356, SCRUM-346, SCRUM-354, SCRUM-355
 
 ## Context
@@ -75,3 +75,17 @@ clickable zones must sit only inside the listed safe zones.
 - [ ] Plus/minus buttons use `ui_frame_hero_select_asc_button_small.png`.
 - [ ] Runtime smoke and UI no-overlap matrix pass; QA rect dump proves all
       Hero Select content is inside the safe zones.
+
+## Animator Verification Blocker Note — 2026-06-14
+
+During SCRUM-367 animation verification, runtime smoke failed on this Back-end/UI
+task, not on animation registry integration:
+
+```text
+Expected compact hero select confirm button HeroSelectChooseButton on hero select
+to keep at least 72px height, got min=(260.0, 42.48).
+```
+
+Godot editor import also reported a `scripts/ui_screens.gd:849` parse/type
+inference warning around `max_level`. Animation smoke still passed. Back-end/UI
+should fix this in SCRUM-361; Animator did not modify Hero Select layout.
