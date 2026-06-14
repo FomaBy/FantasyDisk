@@ -4,7 +4,20 @@
 
 ## [Unreleased] — ветка dev
 
+### Added
+- UI Overhaul «Пауза и финальные экраны» (SCRUM-330, новым скиллом fantasydisk-
+  asset-generator): геральдические кресты победы (драконий венок) и поражения
+  (череп-драконы) над заголовком экранов победы/смерти; тонкая dark-fantasy-dragon
+  рамка меню паузы (`ui_frame_dark_menu.png`). Общий `_create_menu_box`/`_panel_style`
+  не тронут (scoped). Ассеты в `assets/sprites/ui/` + `docs/design/references/`.
+- Призывные существа (SCRUM-336): анимация движения через конечности + белое
+  контурное свечение всех спрайтов призыва.
+
 ### Fixed
+- Backup import UID cleanup (SCRUM-405): excluded `docs/design/backups/` from
+  Godot import scope and removed tracked `.import` sidecars there so archive PNG
+  copies no longer duplicate live resource UIDs during `--import`; documented
+  backup hygiene to avoid copying sidecars into future asset archives.
 - Reward screens runtime integration (SCRUM-404): battle rewards and elite
   artifact choices now use the SCRUM-338 per-reward frame textures with
   metadata-scaled safe-zone content containers, whole-card click/focus, runtime
@@ -33,6 +46,11 @@
   mapping without network.
 
 ### Added
+- Economy UI frame kit (SCRUM-332): generated a mockup-first Design package for
+  shop, attribute shop, rest, upgrade and event screens, with spec under
+  `docs/design/mockups/scrum332_shop_economy/`, six alpha-cleaned runtime-ready
+  frames under `assets/sprites/ui/frames/economy/`, reference copies and a
+  Back-end integration handoff.
 - Attack VFX regeneration (SCRUM-337): rebuilt the full active combat VFX art
   pack through `fantasydisk-asset-generator` source sheets, replacing 83
   `assets/sprites/effects/*.png` and 2 projectile PNGs with alpha-cleaned
