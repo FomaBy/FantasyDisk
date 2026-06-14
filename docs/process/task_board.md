@@ -46,6 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [backend_hero_select_default_ascension_to_max_task.md](../tasks/backend_hero_select_default_ascension_to_max_task.md) | Back-end (UI) | new | UX 0.1.5: выбор героя — по умолчанию выбирать последнее доступное возвышение класса (selectable_max), не 0 |
 | [backend_meta_points_per_new_ascension_only_task.md](../tasks/backend_meta_points_per_new_ascension_only_task.md) | Back-end (прогрессия/баланс) | new | BALANCE 0.1.5: очки меты — 1 очко ТОЛЬКО за новое возвышение (любой класс), без фарма повторных боссов; согласовать экономику дерева |
 | [design_unified_frame_revise_thin_metallic_task.md](../tasks/design_unified_frame_revise_thin_metallic_task.md) | Designer (Codex) → Back-end (UI) | new | ART 0.1.5: РЕВИЗИЯ единого фрейма (SCRUM-373) — тонкая металлическая рамка, тонкие углы + красные самоцветы по углам + драконья плашка в середине; контент строго внутри; пути ассетов сохранить |
 | [backend_debug_mode_click_to_move_player_task.md](../tasks/backend_debug_mode_click_to_move_player_task.md) | Back-end (UI + геймплей) | done | Jira: SCRUM-375. Debug-mode settings toggle + combat arena click-to-move/teleport implemented; OFF state preserves normal input; runtime UI/full smoke PASS |

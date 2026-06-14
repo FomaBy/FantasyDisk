@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator handoff from SCRUM-370 runtime verification
 Jira: SCRUM-385
+QA: in_progress (2026-06-14)
 
 ## Context
 Animator SCRUM-370 completed full-frame death animation integration and ran the

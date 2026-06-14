@@ -1772,7 +1772,7 @@
  "bug_victory_flow_runtime_smoke_text_missing_task.md": {
   "key": "SCRUM-385",
   "status": "Контроль качества",
-  "desc_hash": "e267636f03ae223cdb4d80569671bb90"
+  "desc_hash": "a88d5250936e5b44e4de014c95559709"
  },
  "bug_runtime_smoke_victory_text_race_after_death_animation_task.md": {
   "key": "SCRUM-386",
@@ -1792,6 +1792,11 @@
  "backend_meta_points_per_new_ascension_only_task.md": {
   "key": "SCRUM-388",
   "status": "К выполнению",
-  "desc_hash": "02dbeb6c2402f9f91007844fb76d8602"
+  "desc_hash": "cc040ee3442f2f76f4014d5ff61a4bcb"
+ },
+ "backend_hero_select_default_ascension_to_max_task.md": {
+  "key": "SCRUM-389",
+  "status": "К выполнению",
+  "desc_hash": "de68e6b6798ca9513d470c83c9e439a8"
  }
 }

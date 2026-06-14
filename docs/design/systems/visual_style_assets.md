@@ -75,20 +75,23 @@ remains available for the specialized compact Escape stats menu until that menu
 receives its own safe-area migration.
 
 SCRUM-373/SCRUM-382 provide the active **Unified Master Frame kit** for
-projectwide generic UI centralization. Runtime-ready assets live in
+projectwide generic UI centralization. SCRUM-384 revises the same preserved
+runtime paths into the active thin metallic version: slim dark-steel rails,
+small red corner gems and separate optional dragon overlays. Runtime-ready
+assets live in
 `assets/sprites/ui/frames/unified/`:
 `ui_frame_unified_master.png`, `ui_frame_unified_master_fill.png`,
 `ui_frame_unified_inner_fill.png`, `ui_frame_unified_ornament_top.png`,
 `ui_frame_unified_ornament_bottom.png` and `ui_frame_unified_hover_overlay.png`.
 Back-end integration lives in `UIThemePaths` and `scripts/ui_screens.gd`:
 generic StyleBoxTextures use source size `1024x1024`, texture margins
-`128/128/128/128`, role-specific runtime content margins and
-`AXIS_STRETCH_MODE_TILE` for both axes. `ui_frame_unified_master_fill.png` is
-used for readable filled panels/cards/HUD; `ui_frame_unified_master.png` remains
-the border-only variant. The top/bottom ornaments are optional overlays for
-large windows only and are not applied to compact HUD cards/tooltips/chips.
-Runtime content, click zones, labels, portraits, icons and meters must remain
-inside the frame content area.
+`72/72/72/72`, strict content margins `88/88/88/88`, safe rect
+`Rect2(88, 88, 848, 848)` and `AXIS_STRETCH_MODE_TILE` for both axes.
+`ui_frame_unified_master_fill.png` is used for readable filled
+panels/cards/HUD; `ui_frame_unified_master.png` remains the border-only variant.
+The top/bottom ornaments are optional overlays for large windows only and are
+not applied to compact HUD cards/tooltips/chips. Runtime content, click zones,
+labels, portraits, icons and meters must remain inside the frame content area.
 
 SCRUM-281 adds a screen-specific **Hero Select frame kit** from
 `docs/design/references/herouiframe/`. It is used only by `HeroSelectScreen`,
@@ -177,6 +180,8 @@ Rebuild/QA assets:
 - `docs/design/previews/settings_tab_switcher_frame_content_zone.png` - SCRUM-325 Settings tab switcher safe-area overlay;
 - `docs/design/previews/unified_master_frame_9slice_contact.png` - SCRUM-373 unified master frame contact sheet;
 - `docs/design/previews/unified_master_frame_safe_zone.png` - SCRUM-373 strict content-zone overlay;
+- `docs/design/previews/unified_master_frame_thin_revision_contact.png` - SCRUM-384 thin metallic unified frame revision contact sheet;
+- `docs/design/previews/unified_master_frame_thin_safe_zone.png` - SCRUM-384 `72px` texture / `88px` content margin overlay;
 - `docs/design/previews/ui_button_only_legacy_panels_contact.png` - SCRUM-147 side-by-side correction sheet;
 - `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - superseded SCRUM-229 leather+gold panel kit sheet;
 - `build/qa/interface_leather_gold_panel_kit_contact.png` - historical QA copy of the SCRUM-229 leather+gold kit sheet;
