@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Внедрить сгенерированный ассет combat hud redraw
 
-Статус: new
+Статус: done
 Создано: 2026-06-14
 Автор: Codex asset generator
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
@@ -31,8 +31,21 @@ FantasyDisk dark fantasy Dungeons and Dragons combat HUD asset sheet, transparen
 4. Обновить `docs/design/content_registry.md`, релевантные domain docs и `CHANGELOG.md`, если ассет вошел в игру.
 
 ## Acceptance Criteria
-- [ ] PNG из `docs/design/references/` просмотрен и принят/доработан перед runtime-интеграцией.
-- [ ] Финальный ассет, если создается, имеет стабильное имя и лежит в правильной `assets/sprites/...` папке.
-- [ ] Не тронуты `.import` файлы без необходимости.
-- [ ] При runtime-интеграции пройдены релевантные Godot smoke/UI checks.
-- [ ] Jira и task-файл синхронизированы после смены статуса.
+- [x] PNG из `docs/design/references/` просмотрен и принят/доработан перед runtime-интеграцией.
+- [x] Финальный ассет, если создается, имеет стабильное имя и лежит в правильной `assets/sprites/...` папке.
+- [x] Не тронуты `.import` файлы без необходимости.
+- [x] При runtime-интеграции пройдены релевантные Godot smoke/UI checks.
+- [x] Jira и task-файл синхронизированы после смены статуса.
+
+## Result
+
+Covered by parent Design task `design_combat_hud_full_redraw_skill_task.md` / SCRUM-390.
+The generated source sheet was accepted as reference only, then postprocessed into
+alpha-ready production candidates:
+
+- `docs/design/references/combat_hud_redraw/combat_hud_redraw_reference_sheet_alpha_clean.png`
+- `assets/sprites/ui/frames/combat_hud/`
+- `assets/sprites/ui/hud/combat_hud/`
+
+Runtime wiring is intentionally handed off to Back-end because the active HUD is
+assembled in `scripts/ui_screens.gd` and must preserve gameplay/HUD update logic.

@@ -4861,6 +4861,16 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
 		return
 	var scale := switcher_rect.size / base_size
+	var settings_switcher_dump := PackedStringArray()
+	settings_switcher_dump.append("# SCRUM-396 Settings Tab Switcher")
+	settings_switcher_dump.append("")
+	settings_switcher_dump.append("- frame_path: `%s`" % tab_switcher_frame.texture.resource_path)
+	settings_switcher_dump.append("- switcher_rect: `%s`" % str(switcher_rect))
+	settings_switcher_dump.append("- base_size: `%s`" % str(base_size))
+	settings_switcher_dump.append("- display_size: `%s`" % str(switcher_rect.size))
+	settings_switcher_dump.append("")
+	settings_switcher_dump.append("| tab | actual | expected scaled safe rect | source safe rect |")
+	settings_switcher_dump.append("| --- | --- | --- | --- |")
 	for tab_index in range(3):
 		var tab_button := main.find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
 		if tab_button == null:
@@ -4871,6 +4881,7 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 			safe_rects[tab_index].size * scale
 		)
 		var actual := tab_button.get_global_rect()
+		settings_switcher_dump.append("| `%d` | `%s` | `%s` | `%s` |" % [tab_index, str(actual), str(expected), str(safe_rects[tab_index])])
 		if actual.position.distance_to(expected.position) > 3.0 or actual.size.distance_to(expected.size) > 3.0:
 			_fail("Expected SettingsTabButton_%d to stay inside its recorded safe rect. Actual=%s expected=%s" % [tab_index, str(actual), str(expected)])
 			return
@@ -4879,6 +4890,16 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if tabs.current_tab != tab_index:
 			_fail("Expected SettingsTabButton_%d to switch SettingsTabs current_tab." % tab_index)
 			return
+	var settings_switcher_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum396")
+	DirAccess.make_dir_recursive_absolute(settings_switcher_qa_dir)
+	var settings_switcher_file := FileAccess.open("%s/settings_tab_switcher_3slot_rects.md" % settings_switcher_qa_dir, FileAccess.WRITE)
+	if settings_switcher_file != null:
+		settings_switcher_file.store_string("\n".join(settings_switcher_dump))
+		settings_switcher_file.close()
+	if DisplayServer.get_name() != "headless":
+		var settings_switcher_image := main.get_viewport().get_texture().get_image()
+		if settings_switcher_image != null:
+			settings_switcher_image.save_png("%s/settings_tab_switcher_3slot.png" % settings_switcher_qa_dir)
 	var controls_scroll := main.find_child("ControlsScroll", true, false) as ScrollContainer
 	if controls_scroll == null:
 		_fail("Expected controls settings tab to wrap bindings in ControlsScroll.")

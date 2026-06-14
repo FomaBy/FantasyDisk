@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Design handoff from SCRUM-391
 Jira: SCRUM-396
+QA: in_progress (2026-06-14)
 
 ## Context
 
@@ -75,3 +76,26 @@ Verification:
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_ui_test.gd`
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd`
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — закрывает видимый 3-slot switcher (Design 391 + Back-end 396)
+
+Проверено (фактически):
+- **Рантайм переключён на 3-slot**: `SETTINGS_TAB_SWITCHER_FRAME_PATH` (ui_screens.gd:80)
+  = `ui_frame_settings_tab_switcher_3slot.png`; `SETTINGS_TAB_SWITCHER_SAFE_RECTS`
+  (83) = **ровно 3 Rect2** (Экран/Звук/Управление, старый 4-й убран);
+  smoke ассертит отсутствие `SettingsTabButton_3`.
+- **Визуал** `build/qa/cap_settings_3slot_396.png`: ровно 3 вкладки в dragon-стиле,
+  **пустого 4-го слота НЕТ** (vs cap_settings_391.png), активная вкладка выделена,
+  без жёлтого; панель в тонком unified-фрейме (384/392); контент в content-зоне.
+- **Тесты**: `runtime_smoke_ui_test` («Runtime UI smoke suite passed»),
+  `ui_no_overlap_matrix_test`, `runtime_smoke_test` — все passed; rect-dump
+  `build/qa/scrum396/settings_tab_switcher_3slot_rects.md`.
+
+Acceptance:
+- [x] Switcher ровно 3 слота, без пустого 4-го (визуал).
+- [x] Метки/клик-зоны Экран/Звук/Управление в safe-rect (3 rects, no-overlap).
+- [x] Active/hover/pressed читаемы, без жёлтого; вкладки единообразны; no-overlap 3 разрешения.
+- [x] runtime_smoke_ui + no-overlap + runtime smoke зелёные; скрин/dump в build/qa/.
+
+Петля настроек закрыта: SCRUM-391 (3-slot ассет) + 396 (рантайм-интеграция). Баги: нет.

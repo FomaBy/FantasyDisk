@@ -1901,8 +1901,8 @@
  },
  "backend_settings_menu_unified_restyle_integration_task.md": {
   "key": "SCRUM-396",
-  "status": "Контроль качества",
-  "desc_hash": "8a1b581124ba14a858bba42b7eba0917"
+  "status": "Готово",
+  "desc_hash": "0d5e114ecc96b9586208abf8a72afad0"
  },
  "design_integrate_generated_settings_menu_unified_task.md": {
   "key": "SCRUM-397",
@@ -1917,6 +1917,6 @@
  "design_summons_ethereal_redraw_anim_from_scratch_task.md": {
   "key": "SCRUM-399",
   "status": "К выполнению",
-  "desc_hash": "62ed651df35131af3bd8891290e10625"
+  "desc_hash": "f53e96aaaf6b679c0461e0b7c99c1acb"
  }
 }
