@@ -3,26 +3,26 @@ extends RefCounted
 # SCRUM-198: ascension difficulty and per-class ascension reward data. ProgressionData remains the facade.
 
 const ASCENSION_MODIFIERS := [
-	{"id": "asc_hardened_foes", "level": 1, "title": "Закалённые враги", "description": "Монстры: +15% HP и +10% урона.",
-		"mods": {"enemy_hp_mult": 1.15, "enemy_damage_mult": 1.10}},
+	{"id": "asc_hardened_foes", "level": 1, "title": "Закалённые враги", "description": "Монстры: +20% HP и +14% урона.",
+		"mods": {"enemy_hp_mult": 1.20, "enemy_damage_mult": 1.14}},
 	{"id": "asc_greedy_merchants", "level": 2, "title": "Жадные торговцы", "description": "Все цены (магазин, докачка, reroll): +25%.",
 		"mods": {"price_mult": 1.25}},
-	{"id": "asc_swift_horde", "level": 3, "title": "Быстрая орда", "description": "Волны спавнятся чаще, плотность +20%.",
-		"mods": {"spawn_count_mult": 1.20, "spawn_cooldown_mult": 0.83}},
+	{"id": "asc_swift_horde", "level": 3, "title": "Быстрая орда", "description": "Волны спавнятся чаще, плотность +26%.",
+		"mods": {"spawn_count_mult": 1.26, "spawn_cooldown_mult": 0.80}},
 	{"id": "asc_fierce_elites", "level": 4, "title": "Свирепые элитки", "description": "Элитки: +20% HP, боевая фаза открывается сразу.",
 		"mods": {"elite_hp_mult": 1.20, "elite_instant_phase": 1.0}},
 	{"id": "asc_scarce_spoils", "level": 5, "title": "Скудные трофеи", "description": "Золото и опыт с боёв: -20%.",
 		"mods": {"reward_mult": 0.80}},
 	{"id": "asc_thinned_flesh", "level": 6, "title": "Истончённая плоть", "description": "Всё лечение (зелья, регенерация, вампиризм, drain): -30%.",
 		"mods": {"healing_mult": 0.70}},
-	{"id": "asc_abyssal_echo", "level": 7, "title": "Эхо бездны", "description": "В обычных волнах может появиться мини-элитка со свитой.",
-		"mods": {"mini_elite_chance": 0.20}},
-	{"id": "asc_long_watch", "level": 8, "title": "Длинная вахта", "description": "Таймер боя +25%, спавн не ослабевает.",
-		"mods": {"round_duration_mult": 1.25}},
-	{"id": "asc_warden_wrath", "level": 9, "title": "Гнев стража", "description": "Босс: +1 опасная фаза, +20% HP, телеграфы короче.",
-		"mods": {"boss_hp_mult": 1.20, "boss_extra_phase": 1.0, "boss_telegraph_mult": 0.75}},
-	{"id": "asc_edge_of_madness", "level": 10, "title": "Грань безумия", "description": "Игрок: -20% макс. HP; стартовая волна каждого боя усилена.",
-		"mods": {"player_max_hp_mult": 0.80, "first_wave_boost": 1.0}},
+	{"id": "asc_abyssal_echo", "level": 7, "title": "Эхо бездны", "description": "В обычных волнах изредка появляется мини-элитка со свитой.",
+		"mods": {"mini_elite_chance": 0.14}},
+	{"id": "asc_long_watch", "level": 8, "title": "Длинная вахта", "description": "Таймер боя +25%; обычные монстры крепче (+10% HP).",
+		"mods": {"round_duration_mult": 1.25, "enemy_hp_mult": 1.10}},
+	{"id": "asc_warden_wrath", "level": 9, "title": "Гнев стража", "description": "Босс: +1 опасная фаза, +20% HP, телеграфы короче; мини-элиток заметно меньше.",
+		"mods": {"boss_hp_mult": 1.20, "boss_extra_phase": 1.0, "boss_telegraph_mult": 0.75, "mini_elite_chance": -0.06}},
+	{"id": "asc_edge_of_madness", "level": 10, "title": "Грань безумия", "description": "Игрок: -20% макс. HP; стартовая волна усилена; пресс смещён на монстров (+12% урона), мини-элиток ещё меньше.",
+		"mods": {"player_max_hp_mult": 0.80, "first_wave_boost": 1.0, "enemy_damage_mult": 1.12, "mini_elite_chance": -0.05}},
 ]
 
 const ASCENSION_DIFFICULTY_DEFAULTS := {

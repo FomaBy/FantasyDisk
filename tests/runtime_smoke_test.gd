@@ -4962,8 +4962,8 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 			_fail("Expected ascension level 0 modifier %s to be neutral (%f)." % [key, neutral])
 			return
 	var level3: Dictionary = ProgressionData.ascension_difficulty_mods(3)
-	# L1 enemy hp 1.15, L1 dmg 1.10, L2 price 1.25, L3 spawn density 1.20 — кумулятивно активны.
-	if absf(float(level3["enemy_hp_mult"]) - 1.15) > 0.001 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.20) > 0.001:
+	# SCRUM-358: L1 enemy hp 1.20, L1 dmg 1.14, L2 price 1.25, L3 spawn density 1.26 — кумулятивно активны.
+	if absf(float(level3["enemy_hp_mult"]) - 1.20) > 0.001 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.26) > 0.001:
 		_fail("Expected level 3 to cumulatively include levels 1+2+3 modifiers.")
 		return
 	var level0_change := ProgressionData.ascension_level_change_line(0)

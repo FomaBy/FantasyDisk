@@ -1,12 +1,26 @@
 # BALANCE: Возвышения — усилить монстров на низких, меньше элиток на высоких
 
-Статус: new
+Статус: done (2026-06-14, Claude Fable 5)
 Приоритет: high
 Роль: Back-end (баланс)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-358
+
+## Результат (2026-06-14)
+Переработан `ASCENSION_MODIFIERS` (data-driven, кумулятивность учтена):
+- **Низкие — монстры сильнее/плотнее (не элитки):** L1 enemy_hp 1.15→1.20, dmg
+  1.10→1.14; L3 spawn_count 1.20→1.26, spawn_cooldown 0.83→0.80.
+- **Высокие — меньше элиток, пресс на монстров/босса:** L7 mini_elite_chance
+  0.20→0.14; L8 +enemy_hp_mult 1.10; L9 +mini_elite_chance −0.06; L10
+  +enemy_damage_mult 1.12, +mini_elite_chance −0.05.
+- Итог mini_elite кривой: L7=0.14, L8=0.14, L9=0.08, L10=0.03 — **немонотонна,
+  пик НЕ на максимуме, спад к высоким** (combat_director трактует ≤0 как «без
+  элиток», `combat_director.gd:216`). Монстры монотонно крепнут до L10 hp×1.32.
+- Гейт: новый `tests/ascension_curve_balance_test.gd` (свойства кривой). runtime
+  smoke (его ascension-ladder проверка обновлена под новые числа), ascension
+  curve, survivability — зелёные. balance-гейты ascension не используют (не задеты).
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
