@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-341
+QA: in_progress (2026-06-14)
 Связано: SCRUM-324 (asset-skill), SCRUM-327 (опорная стиля), SCRUM-329 (кластер меню/настройки)
 
 ## Autonomy / Approval
@@ -121,3 +122,14 @@ provides an approved alternative generation source.
 
 Дополнительная генерация не требуется и была бы дублированием уже принятого
 asset/runtime результата.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (covered by SCRUM-391 + SCRUM-396)
+
+Эта задача (4→3 слота + рестайл свитчера настроек) — дубль завершённой пары
+SCRUM-391 (3-slot switcher ассет) + SCRUM-396 (рантайм-интеграция), которые я УЖЕ
+верифицировал: рантайм `SETTINGS_TAB_SWITCHER_SAFE_RECTS` = ровно **3 Rect2**
+(пустого 4-го нет), `SETTINGS_TAB_SWITCHER_FRAME_PATH` = 3slot-ассет; визуал
+`build/qa/cap_settings_3slot_396.png` — ровно 3 вкладки (Экран/Звук/Управление)
+в dragon-стиле, скролл «Управление» цел, no-overlap+runtime+ui smoke зелёные.
+Не дублируется. Баги: нет.
