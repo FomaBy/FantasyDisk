@@ -10,6 +10,11 @@
   `docs/design/references/unified_master_frame/unified_master_frame_metadata.json`,
   contact/safe-zone previews and Back-end handoff for projectwide runtime
   centralization without one-axis frame stretching.
+- Unified master UI runtime integration (SCRUM-382): generic panels, cards,
+  tooltips, timers and HUD frames now route through a shared tiled 9-slice
+  unified frame builder in `scripts/ui_screens.gd` / `UIThemePaths`; authored
+  Hero Select frames, Settings tab strip and Red & Gold buttons remain
+  proportional/specialized.
 - Character animation art standard (SCRUM-298): added
   `docs/design/references/character_animation_style_sheet_0_1_5.md` with the
   D&D dark fantasy playable-character visual canon, `384x384` cell format,

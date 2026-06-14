@@ -1,6 +1,6 @@
 # ANIM: Внедрить анимации всех монстров и персонажей — move/attack/death (full-frame)
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Animator (Codex) → Back-end (анимации)
 Версия: 0.1.5
@@ -26,6 +26,12 @@ SCRUM-298 + 282-297 (перерисовка персонажей)
   `death` rows. Runtime death lifecycle still calls `spawn_death_ghost()` and
   needs Back-end ownership to play `FullFrameBody` death before cleanup/removal.
   SCRUM-370 is blocked on the handoffs below.
+- 2026-06-14 — Documentation dispatcher re-dispatched SCRUM-370 to Animator after
+  the user explicitly unblocked animation work in parallel with the remaining
+  death-row Design handoff. Back-end runtime death playback SCRUM-379 is done;
+  Design death rows SCRUM-380 remains parallel `in_progress`, so Animator should
+  proceed with available move/attack/death integration, validation, and precise
+  partial blockers instead of waiting on the whole umbrella.
 
 ## Handoffs / Blockers
 - Design handoff: `design_full_frame_death_rows_allies_elites_bosses_task.md`

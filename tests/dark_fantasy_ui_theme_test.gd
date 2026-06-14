@@ -69,10 +69,15 @@ func _expect_style_path(style: StyleBox, file_name: String, context: String, err
 
 
 func _expect_unified_style(style: StyleBox, context: String, errors: Array[String]) -> void:
-	_expect_style_path(style, "ui_frame_unified_master.png", context, errors, UNIFIED_DIR)
 	var texture_style := style as StyleBoxTexture
 	if texture_style == null:
+		errors.append("%s should use StyleBoxTexture from unified master frame kit." % context)
 		return
+	if texture_style.texture == null:
+		errors.append("%s StyleBoxTexture has no texture." % context)
+		return
+	if not [UNIFIED_DIR + "ui_frame_unified_master.png", UNIFIED_DIR + "ui_frame_unified_master_fill.png"].has(texture_style.texture.resource_path):
+		errors.append("%s texture mismatch: got %s, expected unified master/master_fill." % [context, texture_style.texture.resource_path])
 	if texture_style.texture_margin_left != 128.0 or texture_style.texture_margin_top != 128.0 or texture_style.texture_margin_right != 128.0 or texture_style.texture_margin_bottom != 128.0:
 		errors.append("%s unified frame should use 128px 9-slice texture margins." % context)
 	if texture_style.axis_stretch_horizontal != StyleBoxTexture.AXIS_STRETCH_MODE_TILE or texture_style.axis_stretch_vertical != StyleBoxTexture.AXIS_STRETCH_MODE_TILE:

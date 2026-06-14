@@ -123,3 +123,33 @@ Verification:
 - `Godot --headless --script res://tests/runtime_smoke_ui_test.gd` — PASS
 - `Godot --headless --script res://tests/ui_no_overlap_matrix_test.gd` — PASS
 - `Godot --headless --script res://tests/runtime_smoke_test.gd` — PASS
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — закрывает петлю единого мастер-фрейма (SCRUM-373 дизайн + 382 интеграция)
+
+Проверено (фактически):
+- **Source-of-truth** (`ui/ui_theme_paths.gd:7-11`): `UNIFIED_FRAME_DIR` +
+  `UNIFIED_MASTER_FRAME_PATH`/fill/inner_fill/ornament — единые константы.
+- **Билдер** `_unified_frame_style(frame_type, tint, center_fill)` (ui_screens.gd:5510)
+  с `axis_stretch_horizontal/vertical = AXIS_STRETCH_MODE_TILE` (5500-5501) — края
+  тайлятся, НЕ one-axis stretch; texture margins 128.
+- **Generic-панели → unified** (dark_fantasy_ui_theme_test:27-31 ассертит): `_panel_style`,
+  `_level_up_panel_style`, `_character_card_style`, `_hud_panel_style`, `_hud_card_style`
+  — все routed через unified builder. Визуал `cap_skilltree_unified_382.png`:
+  панели Древа умений в едином орнаментальном фрейме, тайл без искажений, текст читаем.
+- **Screen-specific СОХРАНЕНЫ** (не прогнаны через generic 9-slice): визуал
+  `cap_heroselect_unified_382.png` идентичен SCRUM-361 — proportional unified
+  portrait/description панель + радар/карусель отдельно; settings switcher + Red&Gold
+  кнопки не тронуты.
+- **Тесты**: `dark_fantasy_ui_theme_test` (unified paths + 128 margins + tile),
+  `runtime_smoke_test`, `runtime_smoke_ui_test`, `ui_no_overlap_matrix_test`
+  (1280/1920/2560) — все passed. QA-артефакт `build/qa/scrum382/unified_master_runtime_qa.md`.
+
+Acceptance:
+- [x] Generic panels/cards/tooltips/HUD используют unified builder + тайл без one-axis distortion.
+- [x] Proportional/screen-specific фреймы остаются proportional (hero-select preserved).
+- [x] Старые frame-ссылки централизованы/в бэкап после проверенной замены.
+- [x] runtime + no-overlap + dark-fantasy зелёные; QA captures 3 разрешения; доки.
+
+Баги: нет. **Веха**: единый мастер-фрейм спроектирован (373) и внедрён по проекту (382) —
+generic UI унифицирован, screen-specific сохранены, без наложений.

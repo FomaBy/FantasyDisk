@@ -1285,7 +1285,7 @@
  },
  "animation_integrate_all_move_attack_death_states_task.md": {
   "key": "SCRUM-370",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "animation_shard_marshal_full_frame_integration_task.md": {
   "key": "SCRUM-371",
@@ -1333,7 +1333,7 @@
  },
  "backend_unified_master_frame_system_projectwide_integration_task.md": {
   "key": "SCRUM-382",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_integrate_generated_scrum380_death_rows_task.md": {
   "key": "SCRUM-383",
@@ -1356,6 +1356,10 @@
   "status": "К выполнению"
  },
  "design_integrate_generated_scrum380_death_rows_5_task.md": {
+  "key": "SCRUM-383",
+  "status": "К выполнению"
+ },
+ "design_integrate_generated_scrum380_death_rows_6_task.md": {
   "key": "SCRUM-383",
   "status": "К выполнению"
  }

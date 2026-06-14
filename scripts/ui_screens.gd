@@ -30,6 +30,7 @@ const GLOBAL_HUD_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_HUD_PANEL_FRAME_PATH
 const GLOBAL_HUD_CARD_FRAME_PATH := UIThemePaths.GLOBAL_HUD_CARD_FRAME_PATH
 const GLOBAL_TOOLTIP_FRAME_PATH := UIThemePaths.GLOBAL_TOOLTIP_FRAME_PATH
 const GLOBAL_TIMER_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_TIMER_PANEL_FRAME_PATH
+const UNIFIED_MASTER_FILL_FRAME_PATH := UIThemePaths.UNIFIED_MASTER_FILL_FRAME_PATH
 const UNIFIED_FRAME_TEXTURE_MARGINS := UIThemePaths.UNIFIED_FRAME_TEXTURE_MARGINS
 const UNIFIED_FRAME_CONTENT := UIThemePaths.UNIFIED_FRAME_CONTENT
 const ORNATE_FRAME_MARGINS := UIThemePaths.ORNATE_FRAME_MARGINS
@@ -5506,9 +5507,10 @@ func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, 
 	return style
 
 
-func _unified_frame_style(frame_type: String, tint := Color.WHITE) -> StyleBox:
+func _unified_frame_style(frame_type: String, tint := Color.WHITE, center_fill := true) -> StyleBox:
 	var content: Vector4 = UNIFIED_FRAME_CONTENT.get(frame_type, UNIFIED_FRAME_CONTENT.get("global_panel", Vector4(24, 24, 24, 24)))
-	return _global_texture_style(GLOBAL_PANEL_FRAME_PATH, UNIFIED_FRAME_TEXTURE_MARGINS, tint, content, true)
+	var path := UNIFIED_MASTER_FILL_FRAME_PATH if center_fill else GLOBAL_PANEL_FRAME_PATH
+	return _global_texture_style(path, UNIFIED_FRAME_TEXTURE_MARGINS, tint, content, true)
 
 
 func _ornate_frame_style(path: String, frame_type: String, tint := Color.WHITE) -> StyleBox:
