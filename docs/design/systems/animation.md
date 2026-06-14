@@ -99,6 +99,7 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - Enemy archetype pass SCRUM-184 (2026-06-13) добавил tailored action readability для partial rigs: marksman weapon recoil, runner coil/burst, bruiser slam, summoner/mage/shaman ritual casts, spitter body-squash shot, shieldbearer brace/shove, biter lunge, winged spark dive, Disk Devourer body chomp. Smoke проверяет movement + action silhouette per archetype.
 - Elite active attacks имеют внешние фазы `windup/strike/recover/idle`.
 - `enemy.gd` передает elite phases в rig как animation variant `<elite_behavior>:<elite_attack_id>:<phase>` вместе с backend duration. `cutout_rig_2d.gd` держит pose layer для `iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`; VFX и damage остаются в backend/effects layer.
+- SCRUM-368 (2026-06-14) перевел route elites `iron_bastion`, `night_stalker` и `plague_prophet` на production full-frame SpriteFrames через `FullFrameAnimationRegistry` kind `elite`. У каждой элитки есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и `attack_*` validator aliases. Backend phase variants (`<elite_behavior>:<attack_id>:<phase>`) резолвятся в соответствующую accepted skill row без изменения damage/VFX timing.
 
 ## Summon / Ally Motion
 

@@ -1249,7 +1249,7 @@
  },
  "backend_hero_select_unified_portrait_description_frame_integration_task.md": {
   "key": "SCRUM-361",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_ingame_feedback_bug_report_tool_task.md": {
   "key": "SCRUM-362",
@@ -1277,7 +1277,7 @@
  },
  "animation_route_elite_full_frame_batch_integration_task.md": {
   "key": "SCRUM-368",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_level_backgrounds_redraw_new_style_skill_task.md": {
   "key": "SCRUM-369",

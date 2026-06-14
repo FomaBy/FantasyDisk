@@ -1,6 +1,6 @@
 # Animator: Route elite full-frame batch integration
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Animator (Codex)
 Версия: 0.1.5
@@ -34,15 +34,37 @@ changing gameplay, balance, targeting, damage, spawn rules or AI.
 - Update animation docs and registry notes only for these accepted sheets.
 
 ## Acceptance Criteria
-- [ ] Each elite has runtime `move` 6f loop and `attack_primary`/`attack` 6f
+- [x] Each elite has runtime `move` 6f loop and `attack_primary`/`attack` 6f
       one-shot.
-- [ ] Each elite exposes both accepted `skill_*` rows as 6f one-shots.
-- [ ] Runtime full-frame registry resolves all three `elite/<id>` entries.
-- [ ] Existing elite scenes create visible `FullFrameBody` while hiding legacy
+- [x] Each elite exposes both accepted `skill_*` rows as 6f one-shots.
+- [x] Runtime full-frame registry resolves all three `elite/<id>` entries.
+- [x] Existing elite scenes create visible `FullFrameBody` while hiding legacy
       fallback body.
-- [ ] Animation-director manifest validates.
-- [ ] `tests/animation_smoke_test.gd` passes.
-- [ ] No gameplay/balance/AI changes.
+- [x] Animation-director manifest validates.
+- [x] `tests/animation_smoke_test.gd` passes.
+- [x] No gameplay/balance/AI changes.
 
 ## Result
-Pending.
+Done 2026-06-14.
+
+- Packaged accepted SCRUM-352 full-frame elite sheets into runtime SpriteFrames:
+  `iron_bastion_spriteframes.tres`, `night_stalker_spriteframes.tres`, and
+  `plague_prophet_spriteframes.tres`.
+- Registered all three route elites under `FullFrameAnimationRegistry` kind
+  `elite`; legacy `Body` remains fallback and is hidden only when the registry
+  SpriteFrames load successfully.
+- Added 6-frame `move` loops, 6-frame one-shot `attack`/`attack_primary`,
+  two 6-frame one-shot `skill_*` rows per elite, and validator-facing
+  `attack_*` aliases on the same skill frames.
+- Extended full-frame animation smoke coverage for elite registry resolution,
+  loop flags, skill/alias frame counts, scene `FullFrameBody` activation,
+  static body hiding, direction flip, and backend phase string resolution
+  (`<elite_behavior>:<attack_id>:<phase>` -> accepted skill row).
+- QA artifacts: `build/qa/animation_route_elite_full_frame_batch_integration/`
+  contains the animation manifest, contact sheet and GIF previews.
+
+Verification:
+- `python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_route_elite_full_frame_batch_integration/animation_manifest.json` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --editor --quit` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.

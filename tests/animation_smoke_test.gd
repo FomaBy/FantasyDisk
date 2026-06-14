@@ -837,12 +837,19 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected %s elite %s to be one-shot." % [elite_id, one_shot_name])
 		for skill_state in elite_info["skill_states"]:
 			var skill_name := str(skill_state)
+			var attack_alias := "attack_%s" % skill_name.trim_prefix("skill_")
 			if not elite_frames.has_animation(skill_name):
 				_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, skill_name])
 			elif elite_frames.get_frame_count(skill_name) != 6:
 				_fail("Expected %s elite %s to have 6 frames." % [elite_id, skill_name])
 			if elite_frames.has_animation(skill_name) and elite_frames.get_animation_loop(skill_name):
 				_fail("Expected %s elite %s to be one-shot." % [elite_id, skill_name])
+			if not elite_frames.has_animation(attack_alias):
+				_fail("Expected %s elite SpriteFrames to expose %s validator alias." % [elite_id, attack_alias])
+			elif elite_frames.get_frame_count(attack_alias) != 6:
+				_fail("Expected %s elite %s alias to have 6 frames." % [elite_id, attack_alias])
+			if elite_frames.has_animation(attack_alias) and elite_frames.get_animation_loop(attack_alias):
+				_fail("Expected %s elite %s alias to be one-shot." % [elite_id, attack_alias])
 
 		var elite_scene := load(str(elite_info["path"])) as PackedScene
 		var elite := elite_scene.instantiate()

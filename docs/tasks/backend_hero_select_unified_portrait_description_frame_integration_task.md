@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Design Codex handoff from SCRUM-356
 Jira: SCRUM-361
+QA: in_progress (2026-06-14)
 Связано: SCRUM-356, SCRUM-346, SCRUM-354, SCRUM-355
 
 ## Context
@@ -107,3 +108,31 @@ to keep at least 72px height, got min=(260.0, 42.48).
 Godot editor import also reported a `scripts/ui_screens.gd:849` parse/type
 inference warning around `max_level`. Animation smoke still passed. Back-end/UI
 fixed in SCRUM-361; Animator did not modify Hero Select layout.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — закрывает видимую петлю SCRUM-355/346/356 (unified panel в рантайме)
+
+Проверено (фактически):
+- **Код** (ui_screens.gd): `unified_panel` подключён (стр.87) +
+  `HeroSelectUnifiedPanel` CenterContainer (562) рисует
+  `ui_frame_hero_select_unified_panel.png` как whole-image TextureRect (без
+  one-axis stretch); `asc_button_small` (94) для +/- кнопок.
+- **Визуал** `build/qa/cap_hero_select_unified_361.png`: портрет (Берсерк) +
+  описание (заголовок/черты/оружие) в ОДНОЙ тонкой рамке; внизу рамки — ряд
+  возвышения с МАЛЫМИ +/- кнопками + «Выбрать», по центру, в bottom-controls зоне;
+  роза ветров — отдельный top-right виджет; карусель — отдельная нижняя полоса;
+  «Назад» не обрезана. Ничего не на орнаменте.
+- **Тесты**: `runtime_smoke_test` (включая SCRUM-356 safe-zone ассерты: ascension
+  row + choose button внутри bottom_controls — РАНЬШЕ падал на choose-button height
+  42.48<72, ТЕПЕРЬ зелёный) + `runtime_smoke_ui_test` + `ui_no_overlap_matrix_test`
+  — все passed; QA rect dump `build/qa/hero_select_radar_rects.md` (safe rects).
+
+Acceptance:
+- [x] Портрет+описание в ОДНОМ unified-фрейме; whole-image пропорционально, без stretch.
+- [x] Радар отдельный top-right; карусель отдельная нижняя полоса.
+- [x] Возвышение + «Выбрать» внизу в bottom_controls, по центру, не накладываются.
+- [x] +/- используют asc_button_small; runtime + no-overlap зелёные; safe-zone доказан.
+
+Связка закрыта: SCRUM-355 (тонкие рамки) + 354 (overlap-margins) + 356 (unified ассет)
++ 346 (малые asc) + **361 (рантайм-интеграция)** = видимая перекомпоновка Hero Select
+полностью в игре. Баги: нет.

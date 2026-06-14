@@ -38,6 +38,10 @@
 - Standard enemy full-frame batch 4 (SCRUM-367): integrated accepted SCRUM-352
   sheets for `bone_shaman` and `winged_spark`; `winged_spark` now exposes a
   looped `hover_flap` state plus the standard runtime hit alias.
+- Route elite full-frame batch (SCRUM-368): integrated accepted SCRUM-352 sheets
+  for `iron_bastion`, `night_stalker`, and `plague_prophet` as full-frame
+  SpriteFrames/registry entries with `move`, `attack`/`attack_primary`, two
+  `skill_*` rows and validator-facing `attack_*` aliases per elite.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню
