@@ -1297,7 +1297,7 @@
  },
  "design_unified_master_frame_system_projectwide_task.md": {
   "key": "SCRUM-373",
-  "status": "В работе"
+  "status": "Готово"
  },
  "bug_feedback_webhook_image_attachment_missing_task.md": {
   "key": "SCRUM-374",
@@ -1321,7 +1321,7 @@
  },
  "backend_full_frame_death_playback_lifecycle_task.md": {
   "key": "SCRUM-379",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_full_frame_death_rows_allies_elites_bosses_task.md": {
   "key": "SCRUM-380",
@@ -1329,6 +1329,10 @@
  },
  "design_integrate_generated_unified_master_frame_task.md": {
   "key": "SCRUM-381",
-  "status": "К выполнению"
+  "status": "Контроль качества"
+ },
+ "backend_unified_master_frame_system_projectwide_integration_task.md": {
+  "key": "SCRUM-382",
+  "status": "В работе"
  }
 }
