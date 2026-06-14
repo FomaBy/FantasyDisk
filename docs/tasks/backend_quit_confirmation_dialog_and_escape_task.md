@@ -1,6 +1,6 @@
 # UX: Подтверждение выхода из игры + выход по Escape из главного меню
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -11,6 +11,14 @@ Jira: SCRUM-319
 
 ## Progress 2026-06-14
 - Back-end снял блокировку после завершения SCRUM-318 и взял задачу в работу.
+
+## Result 2026-06-14
+- Реализован custom game-styled `QuitConfirmationDialog` на главном меню: `MainMenuExitButton` и Escape открывают один и тот же модальный overlay; default focus стоит на безопасной кнопке `Отмена`.
+- Реальный выход вынесен в `Main.request_game_quit()` и вызывается только через явную кнопку `Выйти`; smoke использует `suppress_game_quit`, чтобы проверять flow без завершения процесса.
+- Escape внутри диалога и `Отмена` закрывают overlay и оставляют игрока в главном меню; существующая Escape-навигация настроек/кодекса/выбора героя/оружия не изменилась.
+- Опциональный `NOTIFICATION_WM_CLOSE_REQUEST` не перехватывался в этой итерации: текущий handler отвечает за освобождение texture refs при закрытии окна, а требуемые user-facing пути выхода покрыты кнопкой и Escape.
+- QA dump/preview: `build/qa/scrum319/quit_confirmation_dialog.md`, `build/qa/scrum319/quit_confirmation_dialog.png`.
+- Проверки PASS: `dark_fantasy_ui_theme_test.gd`, `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`, `runtime_smoke_test.gd`, `runtime_smoke_combat_test.gd`, `animation_smoke_test.gd`.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -64,10 +72,10 @@ blocker и передать SCRUM-319 в существующий Back-end threa
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Выход из главного меню (кнопка) — только через диалог подтверждения.
-- [ ] Escape в главном меню открывает тот же диалог; Escape=«Пауза»/назад на других экранах не сломан.
-- [ ] Диалог модальный, стиль игры, фокус на «Отмена», клава+геймпад; quit только по «Выйти».
-- [ ] 6 smoke зелёные; скрин в build/qa/; CHANGELOG.
+- [x] Выход из главного меню (кнопка) — только через диалог подтверждения.
+- [x] Escape в главном меню открывает тот же диалог; Escape=«Пауза»/назад на других экранах не сломан.
+- [x] Диалог модальный, стиль игры, фокус на «Отмена», клава+геймпад; quit только по «Выйти».
+- [x] 6 smoke зелёные; скрин в build/qa/; CHANGELOG.
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.

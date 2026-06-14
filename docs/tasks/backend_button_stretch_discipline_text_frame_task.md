@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя)
 Jira: SCRUM-263
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -72,3 +73,22 @@ Verification:
 - `runtime_smoke_boss_elite_test.gd` — passed.
 
 Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/systems/visual_style_assets.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: a785da46 (ветка dev)
+
+Проверено (фактически):
+- **Дисциплина растяжения**: визуальная ширина action-кнопок capped 560px (рамка
+  не вытягивается в полосу); хелпер «много текста → info-frame НАД + короткая
+  стандартная кнопка ПОД» введён и применён к rewards/rest/upgrade/events.
+- **Тесты**: `runtime_smoke_ui` + `ui_no_overlap_matrix` + `runtime_smoke`
+  (+ combat/progression focused) — все passed; кликабельность/навигация/no-overlap
+  сохранены.
+
+Acceptance:
+- [x] Широкие/высокие кнопки не искажают арт (cap 560px, торцы фиксированы).
+- [x] Хелпер info-frame-над-кнопкой введён и применён.
+- [x] Кликабельность/навигация/no-overlap; smoke зелёные.
+
+Баги: нет.

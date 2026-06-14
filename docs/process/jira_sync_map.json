@@ -937,11 +937,11 @@
  },
  "backend_button_stretch_discipline_text_frame_task.md": {
   "key": "SCRUM-263",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_unify_button_size_main_menu_standard_task.md": {
   "key": "SCRUM-264",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "cleanup_audit_code_deadcode_duplication_warnings_task.md": {
   "key": "SCRUM-267",
@@ -1081,6 +1081,6 @@
  },
  "backend_quit_confirmation_dialog_and_escape_task.md": {
   "key": "SCRUM-319",
-  "status": "В работе"
+  "status": "Контроль качества"
  }
 }

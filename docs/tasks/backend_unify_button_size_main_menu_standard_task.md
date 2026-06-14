@@ -7,6 +7,7 @@
 Создано: 2026-06-13
 Автор: PM (запрос пользователя)
 Jira: SCRUM-264
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -71,3 +72,24 @@ Verification:
 - `runtime_smoke_boss_elite_test.gd` — passed.
 
 Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/systems/visual_style_assets.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: a785da46 (ветка dev)
+
+Проверено (фактически):
+- **Единый стандарт**: `STANDARD_ACTION_BUTTON_HEIGHT := 104.0` (константа в
+  runtime_smoke), главное меню 380×104, стандарт применён ко всем обычным
+  action-кнопкам; runtime smoke расширен проверкой стандартной высоты wax-seal
+  action buttons.
+- **Исключения зафиксированы намеренно**: компактные utility (`+/-`, dropdown,
+  keybind), route nodes, shop hit areas, hero thumbnails, weapon/reward cards.
+- **Тесты**: `runtime_smoke_ui` + `ui_no_overlap_matrix` + `runtime_smoke` —
+  passed (нет пересечений/переполнения рядов на 1280×720/2560×1440).
+
+Acceptance:
+- [x] Единый стандарт высоты action-кнопок (104px) по всей игре; меню 380×104.
+- [x] Компактные/служебные controls — намеренные исключения, не растянуты.
+- [x] no-overlap на 2 размерах; smoke зелёные; доки.
+
+Баги: нет.
