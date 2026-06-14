@@ -46,6 +46,8 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [bug_all_characters_weapon_integrity_audit_task.md](../tasks/bug_all_characters_weapon_integrity_audit_task.md) | Back-end (геймплей) | new | БАГ 0.1.5 HIGH: Священник получает усилок вместо «Колокола» — сквозной аудит оружия ВСЕХ 17 классов (data+scene+attack_mode+выдача), +тест целостности |
+| [bug_combat_level_up_button_reposition_opaque_task.md](../tasks/bug_combat_level_up_button_reposition_opaque_task.md) | Back-end (UI) | new | UX 0.1.5: кнопка повышения уровня в бою → правый-нижний угол, непрозрачная, без hover |
 | [bug_hero_select_description_overlaps_frame_task.md](../tasks/bug_hero_select_description_overlaps_frame_task.md) | Back-end (UI) | new | БАГ 0.1.5: на выборе героя описание залазит на окантовку фрейма — content_margin ≥ рамки + центрировать текст в safe-area (связано с SCRUM-274) |
 | [bug_settings_controls_tab_overflow_scroll_task.md](../tasks/bug_settings_controls_tab_overflow_scroll_task.md) | Back-end (UI) | in_progress | Jira: SCRUM-275. Проверить/закрепить ScrollContainer для вкладки «Управление»: aim+биндинги+сброс доступны прокруткой, «Назад» не перекрыта |
 | [design_codex_apply_red_gold_button_kit_task.md](../tasks/design_codex_apply_red_gold_button_kit_task.md) | Design → Back-end | done | Jira: SCRUM-273. Red&Gold Dragon button kit applied: 15 types × 4 states in `assets/sprites/ui/frames/red_gold/`, runtime type mapping in `ui_screens.gd`, preview/docs updated, dark theme/UI no-overlap/runtime smokes PASS |

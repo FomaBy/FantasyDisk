@@ -982,5 +982,13 @@
  "bug_hero_select_description_overlaps_frame_task.md": {
   "key": "SCRUM-276",
   "status": "К выполнению"
+ },
+ "bug_all_characters_weapon_integrity_audit_task.md": {
+  "key": "SCRUM-277",
+  "status": "К выполнению"
+ },
+ "bug_combat_level_up_button_reposition_opaque_task.md": {
+  "key": "SCRUM-278",
+  "status": "К выполнению"
  }
 }
