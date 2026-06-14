@@ -1,6 +1,6 @@
 # BUG/ART: Настройки — 4 вкладки вместо 3; пересоздать свитчер скиллом (3 слота)
 
-Статус: blocked
+Статус: new
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -98,3 +98,6 @@ billing_hard_limit_reached
 
 Task is blocked until OpenAI image generation billing is available again or PM
 provides an approved alternative generation source.
+
+## Разблокировано 2026-06-14 (PM)
+Биллинг OpenAI восстановлен и ПРОВЕРЕН: тестовая генерация gpt-image-2 успешна. Блок `billing_hard_limit_reached` устарел — снят. Можно генерить скиллом.

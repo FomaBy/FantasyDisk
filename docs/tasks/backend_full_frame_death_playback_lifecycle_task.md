@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator handoff from SCRUM-370
 Jira: SCRUM-379
+QA: in_progress (2026-06-14)
 
 ## Context
 SCRUM-370 requires drawn full-frame death animations to play before entity

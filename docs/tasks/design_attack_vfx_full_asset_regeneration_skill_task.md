@@ -1,6 +1,6 @@
 # Задача Для Design/Codex: Полная Перегенерация Attack VFX Через Skill
 
-Статус: blocked
+Статус: new
 Создано: 2026-06-14
 Автор: Codex handoff из SCRUM-335
 Исполнитель: Design / Codex
@@ -70,3 +70,6 @@ billing_hard_limit_reached
 
 Task is blocked until OpenAI image generation billing is available again or PM
 provides an approved alternative generation source.
+
+## Разблокировано 2026-06-14 (PM)
+Биллинг OpenAI восстановлен и ПРОВЕРЕН: тестовая генерация gpt-image-2 успешна. Блок `billing_hard_limit_reached` устарел — снят. Можно генерить скиллом.

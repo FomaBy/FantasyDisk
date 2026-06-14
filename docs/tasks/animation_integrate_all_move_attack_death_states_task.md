@@ -1,6 +1,6 @@
 # ANIM: Внедрить анимации всех монстров и персонажей — move/attack/death (full-frame)
 
-Статус: blocked
+Статус: new
 Приоритет: high
 Роль: Animator (Codex) → Back-end (анимации)
 Версия: 0.1.5
@@ -98,3 +98,6 @@ SCRUM-298 + 282-297 (перерисовка персонажей)
 
 ## Документация
 docs/design/systems/animation.md, content_registry, current_game_state.
+
+## Разблокировано 2026-06-14 (PM)
+Биллинг OpenAI восстановлен и ПРОВЕРЕН: тестовая генерация gpt-image-2 успешна. Блок `billing_hard_limit_reached` устарел — снят. Можно генерить скиллом.
