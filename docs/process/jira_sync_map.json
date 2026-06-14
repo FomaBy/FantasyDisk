@@ -1082,5 +1082,9 @@
  "backend_quit_confirmation_dialog_and_escape_task.md": {
   "key": "SCRUM-319",
   "status": "Контроль качества"
+ },
+ "design_hero_select_carousel_frame_from_carusel_ref_task.md": {
+  "key": "SCRUM-320",
+  "status": "К выполнению"
  }
 }

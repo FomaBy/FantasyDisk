@@ -46,6 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [design_hero_select_carousel_frame_from_carusel_ref_task.md](../tasks/design_hero_select_carousel_frame_from_carusel_ref_task.md) | Designer (Codex) | new | ART 0.1.5: рамка карусели персонажей из референса Carusel (2482×633, 9-slice) → слот thumbnail_strip экрана выбора героя; миниатюры в content-зоне |
 | [backend_quit_confirmation_dialog_and_escape_task.md](../tasks/backend_quit_confirmation_dialog_and_escape_task.md) | Back-end (UI) | done | Jira: SCRUM-319. Main menu exit now opens custom confirmation dialog; Escape opens/cancels it, Cancel focused by default, quit only after explicit `Выйти`; 6 smoke checks PASS; QA preview in `build/qa/scrum319/` |
 | [bug_button_hover_remove_yellow_glow_task.md](../tasks/bug_button_hover_remove_yellow_glow_task.md) | Back-end (UI) | done | Jira: SCRUM-318. Hover/focus button states no longer use baked yellow/gold glow textures; neutral bright tint + near-white hover/focus font; 6 smoke checks PASS; QA preview in `build/qa/scrum318/` |
 | [design_main_menu_background_new_bosses_battle_task.md](../tasks/design_main_menu_background_new_bosses_battle_task.md) | Designer (Codex) | new | Jira: SCRUM-316. ART 0.1.6: новый фон главного меню 2560×1440 — 3 новых босса + пара героев в бою, более гладкие текстуры; UI читаем, старый в бэкап; future-scope, не dispatch в 0.1.5 |
