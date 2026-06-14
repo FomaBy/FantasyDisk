@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-348
+QA: in_progress (2026-06-14)
 Связано: SCRUM-278 (кнопка повышения в углу), SCRUM-273 (button kit), SCRUM-343 (обрезка кнопок), SCRUM-318 (hover)
 
 ## Autonomy / Approval
