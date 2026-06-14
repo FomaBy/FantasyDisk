@@ -51,6 +51,11 @@
 - Final balance audit (SCRUM-262): global damage smoke теперь проверяет не только combined solo/5-target DPS, но и финальный solo corridor ±20% плюс crowd-clear time 5/10/20 в коридоре ±30%; `tools/balance_harness.gd` пишет `build/balance_final_audit_0_1_5.md` с class viability и CCT таблицами для всех 51 class+weapon пар.
 
 ### Changed
+- Hero Select frames (SCRUM-355): rebuilt the dossier and thumbnail-strip frame
+  PNGs with a thinner/lighter D&D dark-fantasy treatment, added deterministic
+  `tools/build_hero_select_thin_frames.py`, strict ornament-safe content margins
+  and QA preview/rect artifacts under `build/qa/scrum355/`. Back-end SCRUM-354
+  is now unblocked to switch runtime layout constants to the new safe zones.
 - Hero Select carousel (SCRUM-342): bottom hero thumbnails are taller and
   easier to read inside the existing Carusel frame safe-zone, with compact 2px
   separation and reduced runtime margins; QA rects show 49x66 at 1280x720,
