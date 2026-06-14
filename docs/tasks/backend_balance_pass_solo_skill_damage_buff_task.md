@@ -1,12 +1,26 @@
 # BALANCE: Общий ребаланс + увеличить урон соло-скилов (single-target)
 
-Статус: new
+Статус: done (2026-06-14, Claude Fable 5)
 Приоритет: high
 Роль: Back-end (баланс)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-359
+
+## Результат (2026-06-14)
+Подняты заниженные `solo_target` в `CLASS_BUDGET_PROFILES`
+(scripts/progression_data_balance.gd). Механика: `budget_tuning_for`
+(progression_data.gd:437) авто-масштабирует реальный single-target урон оружий к
+`solo_target` (`solo_budget_multiplier = solo_target/scaled_solo`) — поднятие цели
+ПОДНИМАЕТ реальный соло-урон, гейт остаётся в коридоре (цель и реальный растут вместе):
+- dark_mage 0.70→0.84, guitarist 0.70→0.84, chemist 0.70→0.84 (соло-аутсайдеры);
+- biologist 0.82→0.92, engineer 0.90→0.98;
+- elementalist/priest/robot 0.95→1.00.
+AoE-идентичность сохранена (AoE-классы по-прежнему solo<aoe, напр. dark_mage 0.84
+vs aoe 1.30). aoe_target/survival не тронуты.
+Гейты зелёные: global_damage (51 пара, коридоры), survivability, live_balance_sim,
+weapon_tuning_application, runtime smoke. Гейт SCRUM-249 уже покрывает solo_target.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
