@@ -5,6 +5,12 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- Main menu background (SCRUM-316): added `assets/backgrounds/main_menu_epic_battle_v2.png`, a native 2560x1440 smooth D&D dark fantasy battle scene with three new bosses, two heroes, and UI-safe left/top composition zones.
+- Full-frame animation registry (SCRUM-351): added
+  `scripts/full_frame_animation_registry.gd` as a data-driven SpriteFrames
+  state bridge for heroes/enemies/allies/elites/bosses. Allies can now opt into
+  source-specific full-frame move/attack playback, and enemies/bosses keep
+  cutout/static fallback when no SpriteFrames are registered.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню
@@ -84,6 +90,10 @@
   `ally_druid_wolf_spriteframes.tres` in `AllyMinion` for looping movement,
   one-shot attack playback and horizontal facing; static ally visuals remain as
   fallback/other summon variants.
+- Summon animations (SCRUM-353): all four mobile ally visuals now validate under
+  `fantasydisk-animation-director` as full-frame SpriteFrames with `move` 8f loop
+  and `attack_primary`/runtime `attack` 6f one-shot; wolf frames were padded to
+  safe 256x256 canvas with registry placement compensation.
 - Combat HUD (SCRUM-278): in-run `LevelUpPlusButton` now uses bottom-right
   anchoring, a fully opaque static style, and identical normal/hover/focus
   styleboxes; runtime smoke verifies position, alpha, no hover restyle and

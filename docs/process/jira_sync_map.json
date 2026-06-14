@@ -1069,11 +1069,11 @@
  },
  "art_unified_character_style_anim_spec_task.md": {
   "key": "SCRUM-298",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "design_main_menu_background_new_bosses_battle_task.md": {
   "key": "SCRUM-316",
-  "status": "В работе"
+  "status": "Готово"
  },
  "bug_button_hover_remove_yellow_glow_task.md": {
   "key": "SCRUM-318",
@@ -1209,7 +1209,7 @@
  },
  "backend_full_frame_animation_state_registry_task.md": {
   "key": "SCRUM-351",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_enemy_elite_boss_full_frame_animation_sheets_task.md": {
   "key": "SCRUM-352",
@@ -1217,6 +1217,6 @@
  },
  "animation_summon_creatures_update_via_director_skill_task.md": {
   "key": "SCRUM-353",
-  "status": "В работе"
+  "status": "Контроль качества"
  }
 }

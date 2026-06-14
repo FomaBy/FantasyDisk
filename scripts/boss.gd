@@ -44,6 +44,8 @@ func _ready() -> void:
 		boss_behavior = "disk_devourer" if enemy_type_name == "Disk Devourer" else "rift_warden"
 	set_meta("boss_behavior", boss_behavior)
 	_apply_unique_encounter_pattern_meta(boss_behavior)
+	if _full_frame_body() == null:
+		_configure_full_frame_animation()
 	set_meta("boss_phase", boss_phase)
 	set_meta("boss_phase_markers", BOSS_PHASE_MARKERS)
 	var health_bar := get_node_or_null("HealthBar")

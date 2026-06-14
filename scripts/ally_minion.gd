@@ -2,34 +2,13 @@ extends CharacterBody2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
 
 const ALLY_VISUAL_PATHS := {
 	"druid_beast": "res://assets/sprites/allies/ally_druid_beast.png",
 	"druid_pack_spirit": "res://assets/sprites/allies/ally_druid_pack_spirit.png",
 	"homunculus": "res://assets/sprites/allies/ally_homunculus.png",
 	"leadership_echo": "res://assets/sprites/allies/ally_leadership_echo.png",
-}
-const ANIMATED_ALLY_VISUALS := {
-	"druid_beast": {
-		"frames": "res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres",
-		"scale": Vector2(0.34, 0.34),
-		"position": Vector2(0.0, -31.0),
-	},
-	"druid_pack_spirit": {
-		"frames": "res://assets/sprites/allies/ally_pack_spirit_spriteframes.tres",
-		"scale": Vector2(0.34, 0.34),
-		"position": Vector2(0.0, -10.0),
-	},
-	"homunculus": {
-		"frames": "res://assets/sprites/allies/ally_homunculus_spriteframes.tres",
-		"scale": Vector2(0.34, 0.34),
-		"position": Vector2(0.0, -10.0),
-	},
-	"leadership_echo": {
-		"frames": "res://assets/sprites/allies/ally_leadership_echo_spriteframes.tres",
-		"scale": Vector2(0.34, 0.34),
-		"position": Vector2(0.0, -10.0),
-	},
 }
 const FALLBACK_ALLY_VISUAL_ID := "druid_beast"
 
@@ -97,28 +76,14 @@ func _apply_visual() -> void:
 
 	if animated_body == null:
 		return
-	if not ANIMATED_ALLY_VISUALS.has(ally_visual_id):
+	var configured := FullFrameAnimationRegistry.configure_entity_visual(self, "ally", ally_visual_id, "AnimatedBody", "Body")
+	if configured == null or configured.sprite_frames == null or not configured.sprite_frames.has_animation("move") or not configured.sprite_frames.has_animation("attack"):
 		animated_body.visible = false
 		animated_body.stop()
+		body.visible = true
 		return
-
-	var animated_config: Dictionary = ANIMATED_ALLY_VISUALS[ally_visual_id]
-	var frames := load(str(animated_config.get("frames", ""))) as SpriteFrames
-	if frames == null or not frames.has_animation("move") or not frames.has_animation("attack"):
-		animated_body.visible = false
-		animated_body.stop()
-		return
-
-	animated_body.sprite_frames = frames
-	animated_body.scale = animated_config.get("scale", Vector2(0.34, 0.34))
-	animated_body.position = animated_config.get("position", Vector2(0.0, -31.0))
-	animated_body.visible = true
 	animated_body.flip_h = _last_facing_right
-	body.visible = false
-	if animated_body.animation != "move":
-		animated_body.animation = "move"
-	if not animated_body.is_playing():
-		animated_body.play("move")
+	FullFrameAnimationRegistry.play_state(animated_body, "move", Vector2.LEFT)
 
 
 func _physics_process(delta: float) -> void:
@@ -208,14 +173,10 @@ func _update_visual_animation() -> void:
 	animated_body.flip_h = _last_facing_right
 
 	if _attack_anim_time > 0.0:
-		if animated_body.animation != "attack":
-			animated_body.play("attack")
+		FullFrameAnimationRegistry.play_state(animated_body, "attack", Vector2.RIGHT if _last_facing_right else Vector2.LEFT)
 		return
 
-	if animated_body.animation != "move":
-		animated_body.play("move")
-	elif not animated_body.is_playing():
-		animated_body.play("move")
+	FullFrameAnimationRegistry.play_state(animated_body, "move", Vector2.RIGHT if _last_facing_right else Vector2.LEFT)
 
 
 func _play_attack_animation(direction: Vector2 = Vector2.ZERO) -> void:
@@ -224,9 +185,8 @@ func _play_attack_animation(direction: Vector2 = Vector2.ZERO) -> void:
 		return
 	if absf(direction.x) > 0.01:
 		_last_facing_right = direction.x > 0.0
-	animated_body.flip_h = _last_facing_right
 	_attack_anim_time = 0.44
-	animated_body.play("attack")
+	FullFrameAnimationRegistry.play_state(animated_body, "attack", direction)
 
 
 func is_using_animated_ally_visual() -> bool:

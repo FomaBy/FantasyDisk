@@ -54,6 +54,8 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
+Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_MENU_BACKGROUND`. SCRUM-316 keeps the battle focus center-right/lower-right, leaving the left third for the vertical button stack and the top-center area for the title. The asset is native 2560x1440 and was prepared with proportional cover-crop, not one-axis stretching.
+
 ## Hero / Weapon / Level-Up Layout Rules
 
 - Hero select uses a fullscreen master layout: `HeroSelectContent` has two primary regions with 1:2 stretch, so `HeroSelectPortraitPanel` owns the left third and `HeroSelectRightRegion` owns the right two thirds. The dossier lives inside the right region, while an invisible `HeroSelectRadarReserve` keeps the floating top-right `HeroSelectRadarPanel` from covering text. SCRUM-281 replaces its screen-specific frames with `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_*` from `docs/design/references/herouiframe/`; SCRUM-320 specifically replaces the bottom `thumbnail_strip` asset with the Carusel reference frame from `docs/design/references/carusel/`. Runtime smoke asserts the 1/3·2/3 split, that the description/right dossier edge is left of the radar panel with a real gap, and no-overlap at 1280x720, 1600x900 and 2560x1440.

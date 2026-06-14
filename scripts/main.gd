@@ -70,7 +70,7 @@ const ARENA_BACKGROUND_OPTIONS := {
 		"res://assets/backgrounds/field_cursed_grove.png",
 	],
 }
-const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle.png"
+const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle_v2.png"
 const SCREEN_BACKGROUND_PATHS := {
 	"system": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"settings": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",

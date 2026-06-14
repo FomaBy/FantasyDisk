@@ -1,12 +1,13 @@
 # ART: Новый фон главного меню — 3 новых босса + герои в бою, гладкие текстуры
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-316
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -62,3 +63,48 @@ current_game_state.
 - Генерация выполняется через встроенный `imagegen` skill/tool, потому что эта
   задача не содержит обязательной директивы `fantasydisk-asset-generator`, а
   локальный `OPENAI_API_KEY` для custom skill отсутствует.
+
+## Результат — 2026-06-14
+- Создан новый production background:
+  `assets/backgrounds/main_menu_epic_battle_v2.png` (`2560x1440`, PNG).
+- Исходник/reference сохранен:
+  `docs/design/references/main_menu_background_new_bosses/main_menu_epic_battle_v2_source.png`.
+- Preview сохранен:
+  `docs/design/previews/main_menu_epic_battle_v2_preview.png` (`1280x720`).
+- Старый фон не удалён; backup сохранен архивом:
+  `docs/design/backups/scrum316_main_menu_background_2026_06_14/main_menu_epic_battle_pre_scrum316.zip`.
+- `scripts/main.gd` переключен на
+  `res://assets/backgrounds/main_menu_epic_battle_v2.png`.
+- Изображение подготовлено proportional cover-crop до `2560x1440`, без
+  растяжения по одной оси. Композиция оставляет спокойную левую треть под
+  вертикальные кнопки и спокойную top-center область под заголовок.
+- Документация обновлена: `CHANGELOG.md`, `content_registry.md`,
+  `current_game_state.md`, `menus_ui.md`, `visual_style_assets.md`.
+- Проверки: Godot import PASS; `runtime_smoke_test.gd` PASS;
+  `runtime_smoke_ui_test.gd` PASS; `ui_no_overlap_matrix_test.gd` PASS;
+  `dark_fantasy_ui_theme_test.gd` PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Ассет**: `main_menu_epic_battle_v2.png` = `2560×1440` (PIL); `MAIN_MENU_BACKGROUND`
+  (main.gd:73) переключён на v2; бэкап старого
+  `docs/design/backups/scrum316_.../main_menu_epic_battle_pre_scrum316.zip` (не удалён);
+  smoke-ассерт пути фона обновлён на v2 (runtime_smoke:32) — консистентно.
+- **Визуал** (`build/qa/cap_main_menu_v2.png` + превью
+  `main_menu_epic_battle_v2_preview.png`): композиция = 3 читаемо-разных НОВЫХ
+  босса (огненный демон-титан с цепью / тёмный рогатый латник / пурпурная
+  аберрация с глазами-щупальцами) + 2 героя в бою (воин с топором + маг-кастер);
+  гладкие painterly-текстуры (чище/мягче прежнего), тёмное фэнтези/канон сохранены.
+- **Читаемость UI**: левая треть спокойная — 6 кнопок меню (red_gold) и top-center
+  логотип разборчивы поверх фона, высокий контраст.
+- **Тесты**: `runtime_smoke_test`, `runtime_smoke_ui_test`,
+  `ui_no_overlap_matrix_test`, `dark_fantasy_ui_theme_test` — passed.
+
+Acceptance:
+- [x] Фон 2560×1440: 3 новых босса + 2 героя в бою, гладкие текстуры.
+- [x] Кнопки/логотип читаемы; MAIN_MENU_BACKGROUND переключён; старый в бэкап.
+- [x] smoke зелёные; скрин в build/qa/; доки.
+
+Баги: нет.

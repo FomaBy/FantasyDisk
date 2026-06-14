@@ -1,6 +1,6 @@
 # ART/ТЕХ: Единый стиль персонажей + система анимаций (5 move + 5 attack) — ОПОРНАЯ
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) + Back-end (анимации)
 Версия: 0.1.5
@@ -82,3 +82,12 @@ AnimationPlayer, манифест, контакт-лист/GIF, валидиру
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/content_registry.md,
 docs/design/systems/technical_architecture.md, current_game_state.
+
+## Progress — 2026-06-14
+- Design/Codex взял опорную задачу в работу как Design-owned style/format spec.
+- Scope correction: task mixes Design, Back-end and Animator ownership. Design
+  will define art direction, sprite-sheet format, naming, pivots, content
+  registry notes and handoff boundaries. Runtime SpriteFrames builder,
+  `player.gd` attack playback, AnimationPlayer/AnimationTree, motion timing and
+  actual animated sheet production remain Back-end/Animator scope per
+  `docs/process/agent_role_boundaries_and_handoffs.md`.

@@ -19,6 +19,30 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   patterns. Audit `docs/design/reviews/animation_full_frame_pipeline_audit_2026_06.md`
   / SCRUM-350 tracks current compliance and created Design/Back-end handoffs
   SCRUM-352 and SCRUM-351.
+- SCRUM-351 added `scripts/full_frame_animation_registry.gd`: a Back-end
+  SpriteFrames lookup/state adapter for `hero`, `enemy`, `ally`, `elite`, and
+  `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse
+  `AnimatedBody` (allies) when registry frames exist, while preserving existing
+  cutout/static fallback when frames are missing.
+
+## Full-Frame State Registry
+
+- `FullFrameAnimationRegistry.registry_config(entity_kind, entity_id)` is the
+  canonical runtime lookup point for full-frame SpriteFrames metadata.
+- `configure_entity_visual()` attaches the animated body, applies scale/offset,
+  hides the static fallback only after a valid SpriteFrames resource exists, and
+  records `entity_kind`, `entity_id`, and `source_faces_left` metadata.
+- `play_state(animated_body, state, direction)` accepts direct states
+  (`move`, `attack`, `hit`, `death`) and variants such as
+  `attack_slam_wave` or `<elite_behavior>:<attack_id>:<phase>`. The helper
+  records `last_requested_state` and `last_resolved_state` for smoke tests and
+  Animator debugging.
+- Missing states resolve through safe aliases (`attack_primary` -> `attack`,
+  `walk/run/levitate` -> `move`, skill variants -> `attack`) before falling
+  back to idle/move. Missing resources return `null` and leave old visuals
+  untouched.
+- Damage windows, targeting, cooldowns, spawn rules, VFX spawn and cleanup
+  remain owned by gameplay code. The registry is a visual state bridge only.
 
 ## Player Motion
 
@@ -45,6 +69,21 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - Enemy archetype pass SCRUM-184 (2026-06-13) добавил tailored action readability для partial rigs: marksman weapon recoil, runner coil/burst, bruiser slam, summoner/mage/shaman ritual casts, spitter body-squash shot, shieldbearer brace/shove, biter lunge, winged spark dive, Disk Devourer body chomp. Smoke проверяет movement + action silhouette per archetype.
 - Elite active attacks имеют внешние фазы `windup/strike/recover/idle`.
 - `enemy.gd` передает elite phases в rig как animation variant `<elite_behavior>:<elite_attack_id>:<phase>` вместе с backend duration. `cutout_rig_2d.gd` держит pose layer для `iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`; VFX и damage остаются в backend/effects layer.
+
+## Summon / Ally Motion
+
+- SCRUM-353 (2026-06-14) validated all mobile summon creatures through
+  `fantasydisk-animation-director`: `druid_beast`, `druid_pack_spirit`,
+  `homunculus`, and `leadership_echo` use full-frame SpriteFrames on the
+  existing runtime paths. Each has `move` 8f/12fps loop and runtime `attack`
+  6f/14fps non-loop, recorded as `attack_primary` in the skill manifest.
+- `FullFrameAnimationRegistry` owns visual-only SpriteFrames lookup/placement for
+  allies and keeps static `ally_*.png` sprites as fallback. Gameplay damage,
+  targeting, command mode, lifetime, and summon role scaling remain in
+  `SummonerWeapon` / `AllyMinion`.
+- SCRUM-353 padded the wolf (`druid_beast`) frame PNGs to safe `256x256` canvas
+  so transparent alpha no longer touches canvas edges; registry placement is
+  `scale Vector2(0.37, 0.37)`, `position Vector2(0, -37)`.
 
 ## Hit / Death
 

@@ -17,6 +17,8 @@
 - `scripts/player.gd`: character config, stats, weapon equip, damage, rewards.
 - `scripts/enemy.gd`: enemy AI, contact damage, elite attacks, HP bars.
 - `scripts/boss.gd`: boss patterns and victory flow.
+- `scripts/full_frame_animation_registry.gd`: optional SpriteFrames registry and
+  state adapter for full-frame hero/enemy/ally/elite/boss animation fallback.
 - `scripts/run_autosave.gd`: active-run persistence helper for safe route
   checkpoint autosaves (`user://fantasydisk_autosave.cfg`), with schema checks
   and atomic `.tmp` writes.

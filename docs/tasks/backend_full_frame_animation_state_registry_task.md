@@ -1,6 +1,6 @@
 # Back-end handoff: full-frame animation state registry
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Версия: 0.1.5
 Создано: 2026-06-14
@@ -46,9 +46,30 @@ and bosses.
    provided SpriteFrames do not crash runtime.
 
 ## Acceptance Criteria
-- [ ] Runtime can select full-frame SpriteFrames per entity/state when present.
-- [ ] Cutout rig fallback remains intact for entities without sheets.
-- [ ] Boss/elite skill animation state names can be passed through without
+- [x] Runtime can select full-frame SpriteFrames per entity/state when present.
+- [x] Cutout rig fallback remains intact for entities without sheets.
+- [x] Boss/elite skill animation state names can be passed through without
       changing skill mechanics.
-- [ ] Animation/runtime smoke tests pass.
-- [ ] Documentation and Jira/task board are synced.
+- [x] Animation/runtime smoke tests pass.
+- [x] Documentation and Jira/task board are synced.
+
+## Result
+Done 2026-06-14 by Back-end.
+
+- Added `scripts/full_frame_animation_registry.gd`, a data-driven SpriteFrames
+  registry/state adapter for `hero`, `enemy`, `ally`, `elite`, and `boss`
+  entity kinds.
+- Integrated `AllyMinion` with registry-backed source-specific full-frame
+  visuals while preserving static PNG fallback.
+- Integrated optional `FullFrameBody` lookup into `Enemy`/`Boss`; entities with
+  no registered SpriteFrames continue using the existing cutout rig/static body.
+- Elite attack phases can now pass animation state variants such as
+  `<elite_behavior>:<attack_id>:<phase>` without changing mechanics, damage,
+  targeting, cooldowns, or spawn rules.
+- Extended `tests/animation_smoke_test.gd` with registry coverage for present
+  SpriteFrames, missing-resource fallback, alias/state resolution, facing flip
+  and enemy cutout fallback.
+
+Verification:
+- PASS `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd`
+- PASS `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`

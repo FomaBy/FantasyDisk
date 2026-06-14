@@ -1,11 +1,14 @@
 extends SceneTree
 
+const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
+
 
 func _initialize() -> void:
 	_test_player_animation()
 	_test_enemy_projectile_sprite()
 	_test_enemy_sprite_paths()
 	_test_druid_wolf_ally_animation()
+	_test_full_frame_animation_registry()
 	_test_enemy_animation()
 	_test_flying_elite_boss_rigs()
 	_test_elite_attack_phase_animation()
@@ -670,6 +673,49 @@ func _test_druid_wolf_ally_animation() -> void:
 		if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack"):
 			_fail("Expected summon '%s' move to loop and attack to be one-shot." % summon_visual)
 	ally.queue_free()
+
+
+func _test_full_frame_animation_registry() -> void:
+	var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", "druid_beast")
+	if frames == null or not frames.has_animation("move") or not frames.has_animation("attack"):
+		_fail("Expected full-frame registry to resolve druid_beast move/attack SpriteFrames.")
+	if FullFrameAnimationRegistry.sprite_frames_for("enemy", "missing_test_enemy") != null:
+		_fail("Expected missing full-frame registry entries to return null.")
+
+	var owner := Node2D.new()
+	root.add_child(owner)
+	owner.set_meta("full_frame_spriteframes_path", "res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres")
+	owner.set_meta("full_frame_scale", Vector2(0.34, 0.34))
+	owner.set_meta("full_frame_position", Vector2(0.0, -31.0))
+	owner.set_meta("full_frame_source_faces_left", true)
+	var static_body := Sprite2D.new()
+	static_body.name = "Body"
+	static_body.visible = true
+	owner.add_child(static_body)
+	var animated_body := FullFrameAnimationRegistry.configure_entity_visual(owner, "enemy", "runtime_dummy")
+	if animated_body == null or not animated_body.visible or static_body.visible:
+		_fail("Expected registry to create visible FullFrameBody and hide static Body.")
+	if str(animated_body.get_meta("entity_kind", "")) != "enemy" or str(animated_body.get_meta("entity_id", "")) != "runtime_dummy":
+		_fail("Expected registry to tag entity kind/id on FullFrameBody.")
+	if not FullFrameAnimationRegistry.play_state(animated_body, "attack_slam_wave", Vector2.RIGHT):
+		_fail("Expected registry to accept boss/elite-style skill state names.")
+	if animated_body.animation != "attack":
+		_fail("Expected attack_slam_wave to resolve to existing attack animation.")
+	if not animated_body.flip_h:
+		_fail("Expected source-left full-frame art to flip when facing right.")
+	if str(animated_body.get_meta("last_requested_state", "")) != "attack_slam_wave" or str(animated_body.get_meta("last_resolved_state", "")) != "attack":
+		_fail("Expected FullFrameBody metadata to expose requested/resolved state.")
+	owner.queue_free()
+
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+	var enemy := enemy_scene.instantiate()
+	root.add_child(enemy)
+	enemy.call("_update_movement_animation", 0.1)
+	if enemy.get_node_or_null("FullFrameBody") != null:
+		_fail("Expected enemies without registry SpriteFrames to avoid FullFrameBody.")
+	if enemy.get_node_or_null("RigRoot") == null:
+		_fail("Expected enemies without full-frame sheets to keep cutout rig fallback.")
+	enemy.queue_free()
 
 
 func _test_enemy_animation() -> void:

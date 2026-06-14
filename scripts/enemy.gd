@@ -50,6 +50,7 @@ var _knockback_velocity := Vector2.ZERO
 var _cached_player: Node2D = null
 var _cached_body: Sprite2D = null
 var _cached_rig: Node2D = null
+var _cached_full_frame_body: AnimatedSprite2D = null
 var _cached_audio: Node = null
 var elite_attack_state := "idle"
 var elite_attack_id := ""
@@ -68,6 +69,7 @@ const ARENA_ENTITY_MARGIN := 48.0
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
 const ENEMY_PROJECTILE_SCENE := preload("res://scenes/EnemyProjectile.tscn")
 const ELITE_TELEGRAPH_TEXTURE := preload("res://assets/sprites/effects/elite_telegraph_circle.png")
 const POISON_POOL_TEXTURE := preload("res://assets/sprites/effects/poison_pool.png")
@@ -101,7 +103,8 @@ func _ready() -> void:
 		set_meta("elite_behavior", elite_behavior)
 		_apply_unique_encounter_pattern_meta(elite_behavior)
 	_apply_epic_scale()
-	_configure_enemy_rig()
+	if not _configure_full_frame_animation():
+		_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
 	_create_health_bar()
 	var config := _elite_attack_config()
@@ -224,6 +227,7 @@ func take_damage(amount: float) -> void:
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_hit"):
 		rig.play_hit()
+	_play_full_frame_state("hit", Vector2.ZERO)
 
 	if health <= 0.0:
 		if rig != null and rig.has_method("spawn_death_ghost"):
@@ -426,6 +430,12 @@ func _play_elite_attack_phase_animation(phase: String, duration: float) -> void:
 	if elite_attack_id == "":
 		var config: Dictionary = _elite_attack_config()
 		elite_attack_id = str(config.get("attack_id", ""))
+	var full_frame_state := "%s:%s:%s" % [elite_behavior, elite_attack_id, phase]
+	if _play_full_frame_state(full_frame_state, _elite_attack_direction):
+		var full_frame_body := _full_frame_body()
+		if full_frame_body != null:
+			full_frame_body.set_meta("phase_duration", duration)
+		return
 	var rig := _cutout_rig()
 	if rig == null:
 		_configure_enemy_rig()
@@ -938,6 +948,12 @@ func _body_sprite() -> Sprite2D:
 
 
 func _update_movement_animation(delta: float) -> void:
+	var full_frame_body := _full_frame_body()
+	if full_frame_body != null and full_frame_body.visible:
+		var state := "move" if velocity.length_squared() > 1.0 else "idle"
+		FullFrameAnimationRegistry.play_state(full_frame_body, state, velocity)
+		return
+
 	var body := _body_sprite()
 	if body == null:
 		return
@@ -951,7 +967,47 @@ func _update_movement_animation(delta: float) -> void:
 		rig.update_animation(delta, velocity, velocity)
 
 
+func _configure_full_frame_animation() -> bool:
+	var entity_kind := _full_frame_entity_kind()
+	var entity_id := _full_frame_entity_id(entity_kind)
+	var static_body_name := "Body" if get_node_or_null("Body") != null else "Sprite2D"
+	var animated_body := FullFrameAnimationRegistry.configure_entity_visual(self, entity_kind, entity_id, "FullFrameBody", static_body_name)
+	if animated_body == null:
+		return false
+	_cached_full_frame_body = animated_body
+	var rig := _cutout_rig()
+	if rig != null:
+		rig.visible = false
+	return true
+
+
+func _full_frame_entity_kind() -> String:
+	if is_in_group("bosses"):
+		return "boss"
+	if is_in_group("elite_enemies") or elite_behavior != "":
+		return "elite"
+	return "enemy"
+
+
+func _full_frame_entity_id(entity_kind: String) -> String:
+	if entity_kind == "boss" and get("boss_behavior") != null and str(get("boss_behavior")) != "":
+		return str(get("boss_behavior"))
+	if entity_kind == "elite" and elite_behavior != "":
+		return elite_behavior
+	return enemy_type_name.to_lower().replace(" ", "_")
+
+
+func _full_frame_body() -> AnimatedSprite2D:
+	if _cached_full_frame_body != null and is_instance_valid(_cached_full_frame_body):
+		return _cached_full_frame_body
+	_cached_full_frame_body = get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	return _cached_full_frame_body
+
+
 func _configure_enemy_rig() -> void:
+	var full_frame_body := _full_frame_body()
+	if full_frame_body != null and full_frame_body.visible:
+		return
 	var body := get_node_or_null("Body") as Sprite2D
 	if body == null:
 		body = get_node_or_null("Sprite2D") as Sprite2D
@@ -981,6 +1037,15 @@ func _cutout_rig() -> Node2D:
 
 
 func _play_rig_action(action_name: String, direction := Vector2.ZERO) -> void:
+	if _play_full_frame_state(action_name, direction):
+		return
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_action"):
 		rig.play_action(action_name, direction)
+
+
+func _play_full_frame_state(state_name: String, direction := Vector2.ZERO) -> bool:
+	var full_frame_body := _full_frame_body()
+	if full_frame_body == null or not full_frame_body.visible:
+		return false
+	return FullFrameAnimationRegistry.play_state(full_frame_body, state_name, direction)

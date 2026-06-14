@@ -91,7 +91,7 @@ Domain docs для подробностей по областям:
 
 | Фон | Путь |
 | --- | --- |
-| Main Menu Epic Battle | `assets/backgrounds/main_menu_epic_battle.png` |
+| Main Menu Epic Battle V2 | `assets/backgrounds/main_menu_epic_battle_v2.png` |
 | Event Screen | `assets/sprites/ui/screens/screen_event_background.png` |
 | Shop Screen | `assets/sprites/ui/screens/screen_shop_background.png` |
 | Campfire Screen | `assets/sprites/ui/screens/screen_campfire_background.png` |
@@ -110,7 +110,7 @@ Domain docs для подробностей по областям:
 Фон арены выбирается случайно из доступного набора и может зависеть от типа узла карты.
 
 Все 10 боевых фонов нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. Pass 2026-06-12 заменил первые 4 на плоские top-down ground textures без объемных объектов и ложной перспективы: только низкоконтрастная почва, мох, трещины, трава, сухие дорожные следы и мелкая наземная фактура. Expansion pass 2026-06-12 добавил 6 новых D&D-style арен (`ruined_courtyard`, `misty_marsh`, `dusty_badlands`, `enchanted_meadow`, `ashen_rift`, `cursed_grove`) с мелким антуражем и без крупных камней/кустов; они подключены в `ARENA_BACKGROUND_OPTIONS` для обычных боев, а более драматичные варианты — для boss pool. QA preview: `docs/design/previews/arena_backgrounds_6_dnd_contact.png`.
-`main_menu_epic_battle.png` используется стартовым экраном и обновлен SCRUM-158 как dark fantasy battle art с героями/боссами FantasyDisk и спокойной левой зоной под 3 кнопки. `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` используются небоевыми экранами поверх читаемого затемнения; SCRUM-158 заменил их на dark fantasy подложки из нового набора, сохранив существующие пути для совместимости.
+`main_menu_epic_battle_v2.png` используется стартовым экраном с SCRUM-316: новый smooth D&D dark fantasy battle art с тремя новыми боссами и двумя героями, спокойной левой третью под колонку кнопок и более спокойной top-center областью под логотип. Старый `main_menu_epic_battle.png` сохранён как legacy/reference. `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` используются небоевыми экранами поверх читаемого затемнения; SCRUM-158 заменил их на dark fantasy подложки из нового набора, сохранив существующие пути для совместимости.
 
 SCRUM-158/170 добавили и подключили canonical UI backdrop set `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Все `2560x1440`, с низкоконтрастным спокойным центром под центральные окна и более богатым dark fantasy материалом по краям. Runtime mapping идет через `SCREEN_BACKGROUND_PATHS`: `system/settings/codex/hero_select/weapon_select/pause_stats/meta_tree/campfire` -> cathedral, `shop` -> merchant archive, `event/upgrade/level_up/meta_progression` -> arcane lab, `elite_reward/victory/artifact_reward` -> reward hall, `death/defeat/end_run_confirm` -> defeat crypt. Фоны ставятся `TextureRect` cover-scaling под читаемое затемнение, без замены route map/combat backgrounds.
 `route_map_backdrop.png` используется full-screen route map hook-ом: это темный низкоконтрастный фон пустоши с туманным спокойным центром под узлы и линиями, а детали/силуэты вынесены к краям.
@@ -496,7 +496,7 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 
 SCRUM-152/157/254: `AllyMinion.tscn` больше не использует Polygon2D-placeholder, а показывает `assets/sprites/allies/ally_druid_beast.png` как безопасный fallback. Source-specific runtime mapping подключен: `summon_amulet` выбирает `ally_druid_beast.png` или `ally_druid_pack_spirit.png`, `homunculus_vial` использует `ally_homunculus.png`, будущий `leadership_echo` зарезервирован под `ally_leadership_echo.png`. Deployable mapping вынесен в weapon config: `sound_amp` ставит `deploy_sound_amp_field.png`, `raven_totem` ставит `deploy_raven_totem_field.png`. С SCRUM-254 `AllyMinion` имеет runtime `max_health/health`, `take_damage()` и `set_combat_profile()`, чтобы призывы могли получать роль, выживаемость и темп от владельца. Cleanup groups (`allies`, `player_weapon_effects`, `deployed_sound_amps`) не менялись.
 
-SCRUM-279/280 оживили базового волка Друида: `druid_beast` в `AllyMinion` включает `AnimatedSprite2D` с `assets/sprites/allies/ally_druid_wolf_spriteframes.tres`, `move` (8 frames, 12fps, loop) при перемещении/ожидании, `attack` (6 frames, 14fps, one-shot) в момент фактического удара и `flip_h` вправо по направлению движения/атаки. `ally_druid_beast.png` сохранен как fallback, а `druid_pack_spirit`, `homunculus` и `leadership_echo` остаются статичными визуалами.
+SCRUM-279/280 оживили базового волка Друида: `druid_beast` в `AllyMinion` включает `AnimatedSprite2D` с `assets/sprites/allies/ally_druid_wolf_spriteframes.tres`, `move` (8 frames, 12fps, loop) при перемещении/ожидании, `attack` (6 frames, 14fps, one-shot) в момент фактического удара и `flip_h` вправо по направлению движения/атаки. SCRUM-351 централизовал это через `scripts/full_frame_animation_registry.gd`: `druid_beast`, `druid_pack_spirit`, `homunculus` и `leadership_echo` подключают full-frame SpriteFrames по source-specific ally ID, а PNG `ally_*.png` остаются безопасным fallback при отсутствии или поломке SpriteFrames. SCRUM-353 validated the four mobile summons through `fantasydisk-animation-director`, maps runtime `attack` to manifest `attack_primary`, and padded wolf frames to safe `256x256` canvas with registry placement compensation.
 
 ## Боевые Эффекты (Attack VFX)
 
@@ -891,8 +891,10 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 - `hit`
 - `death`
 
+- Full-frame registry SCRUM-351: враги, элитки и боссы могут опционально использовать `FullFrameBody` с `SpriteFrames` из `scripts/full_frame_animation_registry.gd`; при отсутствии ресурса runtime автоматически оставляет старый `RigRoot`/static fallback. Elite/boss skill phases можно передавать как state variants (`<elite_behavior>:<attack_id>:<phase>`) без изменения mechanics/timing.
+
 Враги:
-- все стандартные враги, элитки и боссы используют общий `RigRoot` поверх существующего `Body` / `Sprite2D`;
+- стандартные враги, элитки и боссы по умолчанию используют общий `RigRoot` поверх существующего `Body` / `Sprite2D`, если для их canonical ID не задан full-frame SpriteFrames;
 - исходный спрайт врага скрыт и остается источником текстуры и масштаба; видимая фигура собирается из cutout-частей того же арта;
 - части тела берутся из `assets/sprites/enemies/cutout`, `assets/sprites/elites/cutout`, `assets/sprites/bosses/cutout`;
 - `winged_spark` машет отдельными `wing_l`/`wing_r` (нарезанные крылья) и болтает лапами в полете;
