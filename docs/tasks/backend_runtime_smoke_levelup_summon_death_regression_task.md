@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Design/Animator handoff from SCRUM-399
 Jira: SCRUM-402
+QA: in_progress (2026-06-14)
 
 ## Context
 
@@ -93,3 +94,30 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/summoner_strengthening_test.gd` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS on rerun. A preceding parallel run reported a transient autosave assertion outside this task scope; it did not reproduce in the required standalone runtime smoke.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — реконсиляция устаревших ассертов (test-maintenance)
+
+Проверено (фактически):
+- **Blocker 1 (level-up)**: runtime_smoke-ассерт обновлён (в SCRUM-400) на новый
+  SCRUM-390 контракт `LevelUpPlusButton` (combat-HUD медальон,
+  `_button_uses_combat_hud_plus_style`) вместо устаревшего `Повышение уровня (N)`
+  лейбла. Это и есть та реконсиляция, что починила red build (я наблюдал переход
+  Red&Gold→combat_hud в ассерте).
+- **Blocker 2 (summoner death)**: `summoner_strengthening_test.gd` обновлён —
+  валидирует SCRUM-379 AllyMinion death-lifecycle (`_death_lifecycle_started`,
+  немедленное удаление из `allies`, без сброса при повторном lethal, delayed
+  `queue_free` после death-playback), сохраняя once-only cleanup инвариант +
+  immediate-fallback для не-анимированных.
+- **Тесты**: `runtime_smoke_test` + `summoner_strengthening_test` +
+  `animation_smoke_test` — все passed. Test-only (gameplay/damage/targeting/
+  rewards/balance/cleanup-логика не тронуты — реконсилены ожидания тестов под
+  интендед изменения 379/390).
+
+Acceptance:
+- [x] runtime_smoke зелёный.
+- [x] summoner_strengthening зелёный (death-lifecycle, инвариант не ослаблен).
+- [x] animation_smoke зелёный; UX-доки в SCRUM-400.
+
+Баги: нет. Этим закрыт runtime_smoke-блокер, что временно держал build красным во
+время HUD/death интеграции.

@@ -24,6 +24,11 @@
   mapping without network.
 
 ### Added
+- Animation source sheet safe gutters (SCRUM-394): repacked 26 canonical
+  enemy/elite/boss full-frame source sheets to `1704x1144` RGBA and rebuilt 19
+  death-row reference sheets to `1704x304` RGBA with `256x256` cells, `24px`
+  transparent gutters and `24px` outer padding, updating manifests and contact
+  preview without changing runtime SpriteFrames or gameplay.
 - Ethereal summon redesign (SCRUM-399): generated a new summon source sheet
   with `fantasydisk-asset-generator` and replaced the four mobile summon static
   sprites plus existing move/attack/death frame PNGs with blue/cyan translucent

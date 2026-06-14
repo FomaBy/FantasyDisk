@@ -62,6 +62,13 @@ This is not a current gameplay/runtime blocker because active runtime frames are
 already extracted individual PNGs and passed the edge-bleed audit. It is a
 source compliance blocker for future regeneration/re-slicing from those sheets.
 
+SCRUM-394 resolved the source compliance blocker on 2026-06-14: all 26
+full-frame source sheets were repacked to `1704x1144` RGBA, and all 19
+SCRUM-380 death-row references were rebuilt to `1704x304` RGBA. Both packs now
+use `256x256` cells with `24 px` transparent discard-only gutters and `24 px`
+outer padding. Runtime SpriteFrames were not changed. Validation report:
+`build/qa/design_animation_source_sheets_safe_gutters/source_sheet_safe_gutters_report.json`.
+
 ## QA Artifacts
 
 - `build/qa/animation_sprite_sheet_safe_slicing_audit/animation_manifest.json`
@@ -85,4 +92,3 @@ python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/
 
 Runtime smoke was not required: SCRUM-387 changed no runtime registry, scenes,
 shared scripts, or gameplay resources.
-

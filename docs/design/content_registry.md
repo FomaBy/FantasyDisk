@@ -376,17 +376,20 @@ Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 ви
 | `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png`; full-frame `assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_*.png` + `brood_mother_death_row.png` | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_brood_spawn`, `skill_web_zone` + `attack_*` aliases | Реализовано |
 | `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png`; full-frame `assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_*.png` + `ashen_colossus_death_row.png` | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_molten_slam`, `skill_armor_pulse` + `attack_*` aliases | Реализовано |
 
-SCRUM-352 Design source для full-frame rows хранится как
-`assets/sprites/bosses/full_frame/<boss_id>_full_frame_sheet.png` (`1536x1024`,
-RGBA, transparent, 6 columns x 4 rows). Row contract и pivot notes зафиксированы
-в `docs/design/references/scrum352_full_frame_sheets/scrum352_sheet_manifest.json`.
+SCRUM-352/SCRUM-394 Design source для full-frame rows хранится как
+`assets/sprites/{enemies,elites,bosses}/full_frame/<entity_id>_full_frame_sheet.png`
+(`1704x1144`, RGBA, transparent, 6 columns x 4 rows, `256x256` cells, `24px`
+discard-only gutters, `24px` outer padding). Row contract, safe-slicing metadata
+and pivot notes are recorded in
+`docs/design/references/scrum352_full_frame_sheets/scrum352_sheet_manifest.json`.
 SCRUM-378 подключил визуальную маршрутизацию этих boss `skill_*` rows из
 `scripts/boss.gd`: callbacks способностей запрашивают соответствующий full-frame
 state, но урон, телеграфы, cooldowns, targeting и spawn timing остаются
 Back-end mechanics data без изменений.
-SCRUM-380 Design source для явных full-frame `death` rows хранится в
+SCRUM-380/SCRUM-394 Design source для явных full-frame `death` rows хранится в
 `assets/sprites/bosses/full_frame/<boss_id>/<boss_id>_death_*.png` и
-`<boss_id>_death_row.png`; общий манифест:
+`<boss_id>_death_row.png`; source references are `1704x304` RGBA with `256x256`
+cells, `24px` discard-only gutters and `24px` outer padding; общий манифест:
 `docs/design/references/scrum380_death_rows/scrum380_death_rows_manifest.json`.
 Для `bone_archon`, `brood_mother` и `ashen_colossus` строки готовы как Design
 source pack и подключены Animator-owned SpriteFrames integration SCRUM-370.

@@ -74,6 +74,12 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   existing runtime SpriteFrames paths for 4 allies, 4 route elites, all 6
   mini-elites and all 5 bosses; validation artifacts are under
   `build/qa/animation_integrate_all_move_attack_death_states/`.
+- SCRUM-394 (2026-06-14) refreshes canonical source-sheet structure only:
+  26 full-frame source sheets are now `1704x1144` RGBA and 19 death-row
+  references are now `1704x304` RGBA, both using `256x256` cells with `24 px`
+  transparent discard-only gutters and `24 px` outer padding. Runtime
+  SpriteFrames, frame counts, states, timings and gameplay behavior were not
+  changed.
 
 ## Player Motion
 

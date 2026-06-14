@@ -1827,7 +1827,7 @@
  "design_animation_source_sheets_safe_gutters_task.md": {
   "key": "SCRUM-394",
   "status": "В работе",
-  "desc_hash": "761cac3f58c95a67435bfbeafff4acf9"
+  "desc_hash": "e8da75aaac8b01e1d03271be36e52c93"
  },
  "design_integrate_generated_backgrounds_3_task.md": {
   "key": "SCRUM-393",
@@ -1931,7 +1931,7 @@
  },
  "backend_runtime_smoke_levelup_summon_death_regression_task.md": {
   "key": "SCRUM-402",
-  "status": "Контроль качества",
-  "desc_hash": "6365f3d200497b4434cee9a26cda03b2"
+  "status": "Готово",
+  "desc_hash": "a48ca26d680188116e633d46d7705555"
  }
 }
