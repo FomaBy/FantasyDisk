@@ -873,15 +873,15 @@
  },
  "backend_aim_modes_cursor_and_nearest_task.md": {
   "key": "SCRUM-241",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_attribute_weapon_universal_synergy_task.md": {
   "key": "SCRUM-243",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_auras_buffs_debuffs_system_task.md": {
   "key": "SCRUM-245",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_crit_formulas_rebalance_task.md": {
   "key": "SCRUM-247",
@@ -893,7 +893,7 @@
  },
  "backend_melee_classes_strengthen_unique_attacks_task.md": {
   "key": "SCRUM-251",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_remove_auto_movement_on_crit_dodge_task.md": {
   "key": "SCRUM-253",
@@ -901,7 +901,7 @@
  },
  "backend_summoner_classes_strengthen_task.md": {
   "key": "SCRUM-254",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task.md": {
   "key": "SCRUM-255",
@@ -917,7 +917,7 @@
  },
  "design_codex_unique_weapons_vfx_all_classes_015_task.md": {
   "key": "SCRUM-258",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_elites_bosses_unique_skills_mechanics_task.md": {
   "key": "SCRUM-259",
@@ -945,14 +945,30 @@
  },
  "cleanup_audit_code_deadcode_duplication_warnings_task.md": {
   "key": "SCRUM-267",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "cleanup_audit_docs_full_update_task.md": {
   "key": "SCRUM-268",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "cleanup_audit_unused_sprites_images_task.md": {
   "key": "SCRUM-269",
+  "status": "Готово"
+ },
+ "cleanup_remove_duplicate_artifact_files_task.md": {
+  "key": "SCRUM-270",
+  "status": "Готово"
+ },
+ "cleanup_remove_orphan_import_sidecars_task.md": {
+  "key": "SCRUM-271",
+  "status": "Готово"
+ },
+ "bug_flaky_melee_unique_mechanics_arc_followup_task.md": {
+  "key": "SCRUM-272",
+  "status": "Готово"
+ },
+ "design_codex_apply_red_gold_button_kit_task.md": {
+  "key": "SCRUM-273",
   "status": "К выполнению"
  }
 }
