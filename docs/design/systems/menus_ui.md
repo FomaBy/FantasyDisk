@@ -60,6 +60,12 @@ Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable sh
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
 - Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button.
 
-## Button Height / Wax Seal Rule
+## Button Height / Red & Gold Dragon Rule
 
-Controls that use `ui_df_button_*` Parchment & Wax Seal textures must keep enough height for the seal to remain readable. Standard `_make_button()` buttons use 68px minimum height and left content padding for the seal. Compact utility controls (`+/-`, FAB, keybinding fields, dropdowns) use flat no-seal styling instead of squeezing the seal texture. Runtime smoke writes `build/qa/parchment_button_seal_sizes.md`.
+Controls that use `ui_btn_red_gold_*` textures must keep the authored dragon
+caps and bevel readable. Standard `_make_button()` buttons use the 104px action
+height from SCRUM-263/264, main menu uses 380x104, pause uses 280x60,
+rebind/dropdown-style controls use 420x62, compact utility uses 54x42 and FAB
+uses 50x50. Route nodes, shop item hit areas, hero thumbnails and
+weapon/reward cards stay as cards/hit areas instead of receiving heavy action
+button frames. Runtime smoke writes `build/qa/red_gold_button_sizes.md`.

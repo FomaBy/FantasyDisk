@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Применить кит UI-рамок «Ornate Dark» из docs/design/references/UiFrame ко всей игре
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Design (Claude-Designer нарезка/9-slice/интеграция) → Back-end handoff
 Версия: 0.1.5
@@ -10,10 +10,9 @@ Jira: SCRUM-274
 
 ## Dispatcher Queue Note (2026-06-14)
 
-Queued as the next Design UI-kit task. Not dispatched yet because Design thread
-`019eabf1-6d54-7561-8af9-ce25cdf483a9` already has active owner work on
-SCRUM-273 (`design_codex_apply_red_gold_button_kit_task.md`). Re-check after
-SCRUM-273 reaches result/QA.
+Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` took this task after
+SCRUM-273 reached `done`; SCRUM-273 Red & Gold Dragon buttons are the active
+button canon and must stay unchanged while this task replaces panel/frame assets.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.

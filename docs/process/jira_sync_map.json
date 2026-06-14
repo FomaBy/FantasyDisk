@@ -973,10 +973,14 @@
  },
  "design_codex_apply_ornate_frame_kit_task.md": {
   "key": "SCRUM-274",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "bug_settings_controls_tab_overflow_scroll_task.md": {
   "key": "SCRUM-275",
+  "status": "В работе"
+ },
+ "bug_hero_select_description_overlaps_frame_task.md": {
+  "key": "SCRUM-276",
   "status": "К выполнению"
  }
 }

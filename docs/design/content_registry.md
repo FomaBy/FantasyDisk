@@ -466,22 +466,33 @@ Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 ви
 | `knight` | Бастион | Реализовано |
 | `druid` | Зов стаи | Реализовано |
 
-## UI Visual Kit 2026-06-13
+## UI Visual Kit 2026-06-14
 
-SCRUM-147 после пользовательской правки 2026-06-13 оставляет Parchment & Wax Seal только для кнопок. Кнопки используют референс `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: состаренный пергамент, красная сургучная печать, зубчатый кованый металл, рубин, золотой hover glow, затемненный pressed state и grayscale disabled state. SCRUM-229 заменяет non-button frame paths в `global/`, `escape/`, selected `shop/` и canonical `dark_fantasy/ui_df_panel/card/HUD/tooltip/stat/shop` на leather+gold panel kit из `docs/design/references/interface/`: тёмная кожа/камень, золотая гравировка, угловые кронштейны, заклёпки и мягкое свечение. No-junk rule: без бессмысленных линий/кружков/квадратиков/дефолтного Godot-декора.
+SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon kit из `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live-кнопки лежат в `assets/sprites/ui/frames/red_gold/`: 15 типов, каждый с idle/base, hover, pressed и disabled. Старый Parchment & Wax Seal button kit скопирован в backup `build/cleanup_backup_red_gold_buttons_2026_06_14/` и больше не является runtime-каноном. SCRUM-229 сохраняет non-button frame paths в `global/`, `escape/`, selected `shop/` и canonical `dark_fantasy/ui_df_panel/card/HUD/tooltip/stat/shop` как leather+gold panel kit из `docs/design/references/interface/`: тёмная кожа/камень, золотая гравировка, угловые кронштейны, заклёпки и мягкое свечение. No-junk rule: без бессмысленных линий/кружков/квадратиков/дефолтного Godot-декора.
 
 | ID | Ассет | Роль |
 | --- | --- | --- |
 | `ui_panel_frame` | `assets/sprites/ui/frames/global/ui_panel_frame.png` | Базовые большие панели меню/событий/кодекса |
-| `ui_button_frame` | `assets/sprites/ui/frames/global/ui_button_frame.png` | Legacy/live fallback frame; runtime buttons use SCRUM-222 role-based `ui_df_button_*` 4-state textures |
+| `ui_button_frame` | `assets/sprites/ui/frames/global/ui_button_frame.png` | Legacy/fallback frame; runtime buttons use SCRUM-273 `ui_btn_red_gold_*` 4-state textures |
 | `ui_card_frame` | `assets/sprites/ui/frames/global/ui_card_frame.png` | Карточки персонажей, route node buttons, compact panels |
 | `ui_level_panel_frame` | `assets/sprites/ui/frames/global/ui_level_panel_frame.png` | Level-up / reward panel |
 | `ui_hud_panel_frame` | `assets/sprites/ui/frames/global/ui_hud_panel_frame.png` | Боевой HUD panel |
 | `ui_hud_card_frame` | `assets/sprites/ui/frames/global/ui_hud_card_frame.png` | HP/XP/money HUD cards |
 | `ui_tooltip_frame` | `assets/sprites/ui/frames/global/ui_tooltip_frame.png` | Generic tooltip/system panel frame |
-| `ui_df_button_primary_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_primary_idle.png` + hover/pressed/disabled | Primary 4-state buttons |
-| `ui_df_button_secondary_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_secondary_idle.png` + hover/pressed/disabled | Secondary/navigation 4-state buttons |
-| `ui_df_button_danger_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_danger_idle.png` + hover/pressed/disabled | Exit/end-run/danger 4-state buttons |
+| `ui_btn_red_gold_standard_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_standard.png` + hover/pressed/disabled | Standard 420x104 action buttons |
+| `ui_btn_red_gold_max_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_max.png` + hover/pressed/disabled | Wide 560x104 action buttons |
+| `ui_btn_red_gold_main_menu_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_main_menu.png` + hover/pressed/disabled | Main menu 380x104 buttons |
+| `ui_btn_red_gold_hero_confirm_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_hero_confirm.png` + hover/pressed/disabled | Hero confirm 320x104 buttons |
+| `ui_btn_red_gold_reset_audio_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_reset_audio.png` + hover/pressed/disabled | Settings reset audio 420x104 buttons |
+| `ui_btn_red_gold_reset_bindings_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_reset_bindings.png` + hover/pressed/disabled | Settings reset bindings 440x104 buttons |
+| `ui_btn_red_gold_codex_tab_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_codex_tab.png` + hover/pressed/disabled | Codex tab buttons |
+| `ui_btn_red_gold_back_s/m/l_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_back_s.png` / `back_m.png` / `back_l.png` + states | Navigation/back buttons by width |
+| `ui_btn_red_gold_attr_selector_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_attr_selector.png` + hover/pressed/disabled | Attribute selector 560x104 buttons |
+| `ui_btn_red_gold_fab_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_fab.png` + hover/pressed/disabled | Upgrade FAB 50x50 |
+| `ui_btn_red_gold_utility_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_utility.png` + hover/pressed/disabled | Compact utility 54x42 |
+| `ui_btn_red_gold_pause_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause.png` + hover/pressed/disabled | Pause menu 280x60 |
+| `ui_btn_red_gold_rebind_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_rebind.png` + hover/pressed/disabled | Keybinding/dropdown-style 420x62 controls |
+| `ui_df_button_primary/secondary/danger_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_*` | Superseded SCRUM-147 parchment/wax buttons; retained only as legacy/reference fallback |
 | `ui_df_panel_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png` | Canonical dark fantasy large panel |
 | `ui_df_shop_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png` | Canonical merchant/shop frame |
 | `ui_panel_leather_gold_square` | `assets/sprites/ui/frames/leather_gold/ui_panel_leather_gold_square.png` | SCRUM-229 source square/card frame |
