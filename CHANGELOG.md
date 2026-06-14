@@ -27,6 +27,10 @@
 - Final balance audit (SCRUM-262): global damage smoke теперь проверяет не только combined solo/5-target DPS, но и финальный solo corridor ±20% плюс crowd-clear time 5/10/20 в коридоре ±30%; `tools/balance_harness.gd` пишет `build/balance_final_audit_0_1_5.md` с class viability и CCT таблицами для всех 51 class+weapon пар.
 
 ### Changed
+- UI buttons (SCRUM-318): hover/focus no longer use baked Red&Gold `*_hover`
+  glow textures or yellow hover text; button themes now reuse the normal
+  texture with neutral bright tint and near-white hover/focus font while
+  pressed/disabled semantics stay unchanged.
 - Druid summon (SCRUM-279): `druid_beast` allies now use
   `ally_druid_wolf_spriteframes.tres` in `AllyMinion` for looping movement,
   one-shot attack playback and horizontal facing; static ally visuals remain as

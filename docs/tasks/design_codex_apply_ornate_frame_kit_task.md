@@ -1,12 +1,13 @@
 # Задача Для Design-Агента: Применить кит UI-рамок «Ornate Dark» из docs/design/references/UiFrame ко всей игре
 
-Статус: review
+Статус: done (QA PASSED 2026-06-14)
 Приоритет: high
 Роль: Design (Claude-Designer нарезка/9-slice/интеграция) → Back-end handoff
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-274
+QA: in_progress (2026-06-14)
 
 ## Dispatcher Queue Note (2026-06-14)
 
@@ -127,3 +128,29 @@ Umbrella validation caveat:
   имеет canonical `assets/sprites/weapons/thief_coin_pouch.png`.
 - Это не связано с ornate UI frame pass и не менялось в этой задаче; чинить
   weapon-config/test ownership внутри Design UI scope не стал.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 6252c9be (ветка dev)
+
+Проверено (фактически):
+- **13 ornate-рамок** `assets/sprites/ui/frames/ornate/*.png` — все RGBA8, 0 битых
+  (panel/level/card/hero/hover/tooltip/HUD/bar/divider).
+- **Вайринг подтверждён**: `dark_fantasy_ui_theme_test` — passed (стайлбоксы
+  панелей/карточек/HUD/тултипа резолвятся в ornate-пути); `pause_stats_menu.gd`
+  переведён на ornate; `ui_no_overlap_matrix` — passed.
+- **Визуал** (`ornate_dark_frame_kit_contact.png`): 13 тёмных рамок с золотой
+  ornate-окантовкой (угловые флёроны) + красный акцент, 9-slice, единый
+  dark-fantasy канон; парные к Red&Gold кнопкам SCRUM-273. В игре видно на
+  hero_select (скрин SCRUM-281).
+- **Билд стабильно зелёный**: runtime_smoke + no-overlap — 2/2 прогона зелёные.
+
+Acceptance:
+- [x] 13 рамок 9-slice по подписанным margin; панели/карточки/HUD/тултип/пауза/кодекс.
+- [x] Рамки + кнопки = единый ornate dark канон; превью до/после.
+- [x] smoke (панели грузят новые стайлбоксы) + no-overlap зелёные; registry/CHANGELOG.
+
+Примечание: umbrella-caveat из Result (`thief_coin_pouch` weapon sprite) был
+до фикса SCRUM-277 (weapon-текстуры) — сейчас runtime_smoke зелёный (2/2), caveat снят.
+
+Баги: нет.

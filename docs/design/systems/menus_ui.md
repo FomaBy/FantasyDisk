@@ -71,6 +71,13 @@ uses 50x50. Route nodes, shop item hit areas, hero thumbnails and
 weapon/reward cards stay as cards/hit areas instead of receiving heavy action
 button frames. Runtime smoke writes `build/qa/red_gold_button_sizes.md`.
 
+Hover/focus states after SCRUM-318 are neutral-bright, not golden glow states:
+runtime button themes reuse the normal Red & Gold texture with a neutral tint
+(`1.16` hover / `1.20` focus) and near-white hover/focus text. Baked
+`*_hover.png` textures remain in the asset kit for compatibility but are not
+used by active button themes. Pressed and disabled states keep their dedicated
+textures and semantics.
+
 ## Ornate Frame Safe-Area Rule
 
 Controls that use `ui_frame_ornate_*` textures must use the signed

@@ -1,6 +1,6 @@
 # UX: Переделать hover кнопок — ярче и контрастнее, БЕЗ жёлтого свечения
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -56,9 +56,9 @@ Jira: SCRUM-318
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Hover/focus всех кнопок — ярче и контрастнее, БЕЗ жёлтого свечения и золотого текста.
-- [ ] Единообразно во всех экранах; pressed/disabled не сломаны.
-- [ ] 6 smoke зелёные; скрин hover в build/qa/; CHANGELOG.
+- [x] Hover/focus всех кнопок — ярче и контрастнее, БЕЗ жёлтого свечения и золотого текста.
+- [x] Единообразно во всех экранах; pressed/disabled не сломаны.
+- [x] 6 smoke зелёные; скрин hover в build/qa/; CHANGELOG.
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
@@ -71,3 +71,29 @@ docs/design/systems/menus_ui.md, current_game_state.
 
 SCRUM-281 получил QA PASSED, UI-churn blocker снят. Задача взята в Back-end
 thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
+
+## Result 2026-06-14
+
+Done:
+- `scripts/ui_screens.gd`: global Red&Gold button hover/focus now reuses the
+  normal texture with neutral bright tint (`1.16` hover / `1.20` focus) instead
+  of baked `*_hover.png`; hover/focus font is near-white. Compact buttons,
+  hero-select button frames/thumbnails and level-up return hover/focus were
+  aligned to the same rule.
+- `scripts/pause_stats_menu.gd`: Escape/pause buttons no longer load
+  `ui_btn_red_gold_pause_hover.png`; hover/focus reuse normal pause texture
+  with neutral bright tint and near-white text.
+- Tests updated to assert non-glow hover/focus texture paths, neutral tint and
+  neutral hover/focus font.
+- QA preview: `build/qa/scrum318/button_hover_neutral_preview.png`.
+
+Verification:
+- PASS: `tests/dark_fantasy_ui_theme_test.gd`
+- PASS: `tests/runtime_smoke_ui_test.gd`
+- PASS: `tests/ui_no_overlap_matrix_test.gd`
+- PASS: `tests/runtime_smoke_combat_test.gd`
+- PASS: `tests/animation_smoke_test.gd`
+- PASS: `tests/runtime_smoke_test.gd`
+
+Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`,
+`docs/design/systems/menus_ui.md`.
