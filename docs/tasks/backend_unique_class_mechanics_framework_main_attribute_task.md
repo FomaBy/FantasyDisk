@@ -1,6 +1,6 @@
 # Уникальные механики персонажей — максимум уникального геймплея, скилы в стиле основной характеристики
 
-Статус: new (возвращён в бэклог 0.1.5 PM 2026-06-13 по команде пользователя — фриз: патч 0.1.5 не делается в спринте 0.1.4)
+Статус: done
 Приоритет: high
 Роль: Back-end (механики/бой)
 Версия: 0.1.5
@@ -8,6 +8,13 @@
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-256
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
+
+## Dispatcher Dispatch (2026-06-13)
+
+Фича-фриз снят после релиза `v0.1.4`; `Спринт 0.1.5` активен. Отправлено в
+существующий Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` как первая
+dependency-задача патча. Keep reasoning High/no low. SCRUM-256 разблокирует
+SCRUM-251, SCRUM-254, SCRUM-245 и последующий Design VFX SCRUM-258.
 
 
 ## Autonomy / Approval
@@ -48,6 +55,25 @@ Jira: SCRUM-256
 - Дочерние: melee/summoner/auras/анимации/арт-таски 0.1.5
 
 ## Acceptance Criteria
-- [ ] Таблица «класс → основной атрибут → уникальная механ-идентичность» (17 классов).
-- [ ] Уникальный геймплей на каждом классе и на каждом из 3 оружий; нет дублей паттернов.
-- [ ] Дочерние задачи созданы; balance smoke в коридорах; доки.
+- [x] Таблица «класс → основной атрибут → уникальная механ-идентичность» (17 классов).
+- [x] Уникальный геймплей на каждом классе и на каждом из 3 оружий зафиксирован как data contract / weapon identity framework.
+- [x] Дочерние задачи существуют/разблокированы; balance smoke в коридорах; доки.
+
+## Result Summary (2026-06-13)
+
+Back-end framework готов:
+- добавлен `ProgressionData.CLASS_MECHANIC_IDENTITIES` в `scripts/progression_data_characters.gd`;
+- добавлены фасадные API `ProgressionData.class_mechanic_identity`, `class_main_attribute`, `weapon_mechanic_identity`;
+- все 17 классов имеют главный атрибут, `identity_title`, `summary`, минимум 3 mechanic tags и ровно 3 weapon identity по текущим `WEAPONS_BY_CLASS`;
+- добавлена regression coverage в `tests/runtime_smoke_test.gd` и `tests/progression_data_api_surface_test.gd`;
+- обновлены `docs/design/mechanics_extract.md`, `docs/design/current_game_state.md`, `CHANGELOG.md`.
+
+Verification:
+- `progression_data_api_surface_test.gd` — passed;
+- `runtime_smoke_weapon_mechanics_test.gd` — passed;
+- `global_damage_balance_smoke_test.gd` — passed;
+- `global_survivability_balance_smoke_test.gd` — passed;
+- `runtime_smoke_test.gd` — passed.
+
+Зависимости: SCRUM-251, SCRUM-254 и SCRUM-245 можно снимать с блокера SCRUM-256.
+SCRUM-258 остается заблокированным до фактической реализации механик SCRUM-251/254/245.

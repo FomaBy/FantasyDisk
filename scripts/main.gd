@@ -382,6 +382,7 @@ var audio_settings := {
 	"sfx_enabled": true,
 }
 var input_bindings := {}
+var aim_mode := "nearest"
 
 
 func _init() -> void:
@@ -424,9 +425,13 @@ func _load_game_settings() -> void:
 	for key in audio_settings.keys():
 		audio_settings[key] = settings[key]
 	input_bindings = (settings.get("input_bindings", {}) as Dictionary).duplicate(true)
+	aim_mode = str(settings.get("aim_mode", "nearest"))
+	if not ["nearest", "cursor"].has(aim_mode):
+		aim_mode = "nearest"
 	screen_shake_enabled = bool(settings.get("screen_shake", true))
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
+	get_tree().root.set_meta("aim_mode", aim_mode)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
 		ui._apply_video_settings()
@@ -441,11 +446,13 @@ func save_game_settings() -> void:
 	for key in audio_settings.keys():
 		settings[key] = audio_settings[key]
 	settings["screen_shake"] = screen_shake_enabled
+	settings["aim_mode"] = aim_mode
 	if ui != null:
 		settings["input_bindings"] = ui._current_input_bindings()
 	else:
 		settings["input_bindings"] = input_bindings.duplicate(true)
 	GAME_SETTINGS.save_settings(settings)
+	get_tree().root.set_meta("aim_mode", aim_mode)
 
 
 func _apply_audio_settings() -> void:

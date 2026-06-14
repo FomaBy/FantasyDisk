@@ -45,6 +45,8 @@ def epic_for(name: str, title: str) -> str:
     def has(*ks):
         return any(k in f or k in s for k in ks)
 
+    if f.startswith(("cleanup_", "refactor_audit_")) or has("cleanup_pass", "deadcode", "dead_code", "рефакторинг и чистка"):
+        return "CLEANUP"
     if f.startswith(("qol_", "ux_")) or has("qol", "quality_of_life", "удобств", "качество жизни"):
         return "QOL"
     if has("add_character", "class_identity", "new_classes", "hero_select", "class_sheet", "three_weapons"):

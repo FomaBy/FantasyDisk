@@ -1,6 +1,6 @@
 # Кнопки — главное меню +10-15% высоты, единый размер кнопок по всей игре
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -51,3 +51,23 @@ Jira: SCRUM-264
 
 ## Документация
 docs/design/current_game_state.md, visual_style_assets.md (стандарт кнопок).
+
+## Result — 2026-06-13
+Статус: done
+
+- Вынесены единые constants/action helpers в `scripts/ui_screens.gd`: стандартная высота action-кнопок 104px, main menu width 380px, max visual width 560px.
+- Главное меню переведено на новый стандарт: шесть кнопок 380x104 с меньшим vertical separation, чтобы помещаться на 1280x720.
+- Все обычные action-кнопки основных экранов приведены к `_set_action_button_size()`: hero select, codex, patch notes, settings reset/back, run pause, shop leave, event back, level-up return/later, attribute offers.
+- Исключения зафиксированы как намеренные: компактные utility controls (`+/-`, dropdown/keybind-style controls), route nodes, shop item hit areas, hero thumbnails, weapon/reward cards.
+- Runtime smoke расширен проверкой стандартной высоты wax-seal action buttons.
+
+Verification:
+- `runtime_smoke_ui_test.gd` — passed.
+- `ui_no_overlap_matrix_test.gd` — passed.
+- `runtime_smoke_test.gd` — passed.
+- `runtime_smoke_combat_test.gd` — passed.
+- `runtime_smoke_progression_economy_test.gd` — passed.
+- `runtime_smoke_weapon_mechanics_test.gd` — passed.
+- `runtime_smoke_boss_elite_test.gd` — passed.
+
+Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/systems/visual_style_assets.md`.

@@ -75,7 +75,7 @@ func _run(errors: Array) -> void:
 		"resolution_index": 2, "window_mode_index": 1, "screen_index": 0,
 		"master_volume": 0.7, "music_volume": 0.4, "sfx_volume": 0.9,
 		"master_zero_intent": false, "music_enabled": false, "sfx_enabled": true,
-		"screen_shake": false, "last_seen_version": "0.1.4", "input_bindings": {"jump": 32},
+		"screen_shake": false, "aim_mode": "cursor", "last_seen_version": "0.1.4", "input_bindings": {"jump": 32},
 	})
 	s = GameSettings.load_settings()
 	if int(s["resolution_index"]) != 2 or int(s["window_mode_index"]) != 1:
@@ -84,6 +84,8 @@ func _run(errors: Array) -> void:
 		errors.append("round-trip громкостей не сохранился (%s/%s)" % [s["master_volume"], s["music_volume"]])
 	if bool(s["music_enabled"]) != false or bool(s["screen_shake"]) != false:
 		errors.append("round-trip булевых флагов не сохранился")
+	if str(s["aim_mode"]) != "cursor":
+		errors.append("round-trip aim_mode не сохранился (%s)" % s["aim_mode"])
 	if str(s["last_seen_version"]) != "0.1.4":
 		errors.append("round-trip last_seen_version не сохранился (%s)" % s["last_seen_version"])
 	if not (s["input_bindings"] is Dictionary) or int(s["input_bindings"].get("jump", -1)) != 32:
@@ -105,6 +107,13 @@ func _run(errors: Array) -> void:
 		errors.append("коэрция last_seen_version в string не сработала (%s)" % typeof(s["last_seen_version"]))
 	if not (s["input_bindings"] is Dictionary):
 		errors.append("негодный input_bindings не сброшен в Dictionary")
+
+	# 3b) aim_mode: неизвестное значение возвращается к безопасной автонаводке.
+	_clear()
+	_write_raw({"aim_mode": "broken"})
+	s = GameSettings.load_settings()
+	if str(s["aim_mode"]) != "nearest":
+		errors.append("негодный aim_mode не сброшен в nearest (%s)" % s["aim_mode"])
 
 	# 4) SCRUM-172 recovery: master_volume=0 без master_zero_intent -> возврат в дефолт.
 	_clear()

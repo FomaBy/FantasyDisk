@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
 
 const ALLY_VISUAL_PATHS := {
 	"druid_beast": "res://assets/sprites/allies/ally_druid_beast.png",
@@ -17,21 +18,46 @@ const FALLBACK_ALLY_VISUAL_ID := "druid_beast"
 @export var lifetime := 12.0
 @export var command_mode := "attack_target"
 @export var ally_visual_id := FALLBACK_ALLY_VISUAL_ID
+@export var max_health := 18.0
+@export var summon_role := "pack_damage"
+@export var control_knockback := 0.0
+@export var support_heal_percent := 0.0
 
 var _attack_cooldown := 0.0
 var owner_node: Node2D = null
 var command_target: Node2D = null
+var health := 18.0
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group("allies")
+	health = max_health
 	_apply_visual()
 
 
 func set_visual_id(visual_id: String) -> void:
 	ally_visual_id = visual_id
 	_apply_visual()
+
+
+func set_combat_profile(profile: Dictionary) -> void:
+	damage = maxf(float(profile.get("damage", damage)), 0.1)
+	move_speed = maxf(float(profile.get("move_speed", move_speed)), 40.0)
+	attack_range = maxf(float(profile.get("attack_range", attack_range)), 8.0)
+	attack_interval = maxf(float(profile.get("attack_interval", attack_interval)), 0.12)
+	lifetime = maxf(float(profile.get("lifetime", lifetime)), 1.0)
+	max_health = maxf(float(profile.get("max_health", max_health)), 1.0)
+	health = max_health
+	summon_role = str(profile.get("summon_role", summon_role))
+	control_knockback = maxf(float(profile.get("control_knockback", control_knockback)), 0.0)
+	support_heal_percent = maxf(float(profile.get("support_heal_percent", support_heal_percent)), 0.0)
+
+
+func take_damage(amount: float) -> void:
+	health -= maxf(amount, 0.0)
+	if health <= 0.0:
+		queue_free()
 
 
 func _apply_visual() -> void:
@@ -45,6 +71,7 @@ func _apply_visual() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	StatusEffects.tick(self, delta)
 	lifetime -= delta
 	_attack_cooldown -= delta
 	if lifetime <= 0.0:
@@ -62,7 +89,7 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		_try_attack(target)
 	else:
-		velocity = to_target.normalized() * move_speed
+		velocity = to_target.normalized() * move_speed * StatusEffects.speed_multiplier(self)
 
 	move_and_slide()
 
@@ -104,6 +131,13 @@ func _try_attack(target: Node2D) -> void:
 		return
 
 	if target.has_method("take_damage"):
-		target.take_damage(damage)
+		target.take_damage(damage * StatusEffects.damage_multiplier(self))
+	if control_knockback > 0.0 and target.has_method("apply_knockback"):
+		var push_origin := owner_node.global_position if owner_node != null and is_instance_valid(owner_node) else global_position
+		var push_direction := target.global_position - push_origin
+		if push_direction.length_squared() > 0.001:
+			target.apply_knockback(push_direction.normalized() * control_knockback)
+	if support_heal_percent > 0.0 and owner_node != null and is_instance_valid(owner_node) and owner_node.has_method("heal_percent"):
+		owner_node.heal_percent(support_heal_percent)
 
 	_attack_cooldown = attack_interval

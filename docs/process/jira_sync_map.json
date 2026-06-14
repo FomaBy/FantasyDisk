@@ -873,19 +873,19 @@
  },
  "backend_aim_modes_cursor_and_nearest_task.md": {
   "key": "SCRUM-241",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_attribute_weapon_universal_synergy_task.md": {
   "key": "SCRUM-243",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_auras_buffs_debuffs_system_task.md": {
   "key": "SCRUM-245",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_crit_formulas_rebalance_task.md": {
   "key": "SCRUM-247",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_global_balance_smoke_damage_survivability_task.md": {
   "key": "SCRUM-249",
@@ -893,23 +893,23 @@
  },
  "backend_melee_classes_strengthen_unique_attacks_task.md": {
   "key": "SCRUM-251",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_remove_auto_movement_on_crit_dodge_task.md": {
   "key": "SCRUM-253",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_summoner_classes_strengthen_task.md": {
   "key": "SCRUM-254",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task.md": {
   "key": "SCRUM-255",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_unique_class_mechanics_framework_main_attribute_task.md": {
   "key": "SCRUM-256",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "bug_umbrella_runtime_smoke_intermittent_failure_task.md": {
   "key": "SCRUM-257",
@@ -917,30 +917,42 @@
  },
  "design_codex_unique_weapons_vfx_all_classes_015_task.md": {
   "key": "SCRUM-258",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_elites_bosses_unique_skills_mechanics_task.md": {
   "key": "SCRUM-259",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_monster_elite_size_balance_rework_task.md": {
   "key": "SCRUM-260",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "design_codex_elite_boss_new_skills_vfx_task.md": {
   "key": "SCRUM-261",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_final_balance_audit_aoe_crowd_clear_task.md": {
   "key": "SCRUM-262",
-  "status": "К выполнению"
+  "status": "Готово"
  },
  "backend_button_stretch_discipline_text_frame_task.md": {
   "key": "SCRUM-263",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_unify_button_size_main_menu_standard_task.md": {
   "key": "SCRUM-264",
+  "status": "Контроль качества"
+ },
+ "cleanup_audit_code_deadcode_duplication_warnings_task.md": {
+  "key": "SCRUM-267",
+  "status": "К выполнению"
+ },
+ "cleanup_audit_docs_full_update_task.md": {
+  "key": "SCRUM-268",
+  "status": "К выполнению"
+ },
+ "cleanup_audit_unused_sprites_images_task.md": {
+  "key": "SCRUM-269",
   "status": "К выполнению"
  }
 }

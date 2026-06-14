@@ -143,9 +143,9 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 
 ## VFX-Ассеты Эффектов
 
-Папка: `assets/sprites/effects/`. Генераторы: `tools/generate_attack_vfx.py` (оружие игрока), `tools/generate_elite_vfx.py` (уникальные атаки элиток). Все PNG с прозрачным фоном.
+Папка: `assets/sprites/effects/`. Генераторы: `tools/generate_attack_vfx.py` (оружие игрока), `tools/generate_elite_vfx.py` (уникальные атаки элиток), `tools/generate_elite_boss_vfx_015.py` (SCRUM-261 elite/boss skill VFX), `tools/generate_unique_weapon_vfx_015.py` (SCRUM-258 unique weapon identity plates). Все PNG с прозрачным фоном.
 
-Опасные зоны врагов/босса (2026-06-12) оформлены через `scripts/hazard_vfx.gd` (`HazardVfx.telegraph`/`detonate`): тинтуемая текстура `hazard_zone.png` (ведьмино-кольцо опасности с насечками и мягкой заливкой) на windup, затем `impact_ring`+`impact_flash` детонация, для яда — бурлящая `poison_pool` лужа. Заменены голые `Polygon2D`-круги боссовских зон (rift zone, disk slam, зона смены фазы) и элитного яда (hazard zone + persistent puddle).
+Опасные зоны врагов/босса (2026-06-12, обновлено SCRUM-261) оформлены через `scripts/hazard_vfx.gd` (`HazardVfx.telegraph`/`detonate`): базовый `hazard_zone.png` остается tint-friendly warning circle, затем `impact_ring`+`impact_flash` дают момент детонации, для яда — бурлящая `poison_pool` лужа. После SCRUM-261 `HazardVfx` выбирает dedicated painterly D&D texture по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`, а также shield/summon/aura helpers. Тайминги, урон, радиусы и node names не менялись.
 
 Оружие игрока (используются `scripts/attack_vfx.gd`):
 
@@ -167,6 +167,10 @@ VFX pass 2026-06-12: `ClassWeapon._spawn_damage_pool()` больше не рис
 
 D&D VFX restyle pass 2026-06-12: все 19 PNG в `assets/sprites/effects/` заменены на сдержанный tabletop fantasy style без кислотного неона и пересветов. Размеры/имена/alpha сохранены; `hazard_zone` и `elite_telegraph_circle` оставлены warm-neutral/tintable под кодовую модуляцию. Non-runtime QA preview вынесен из `assets/` в `build/cleanup_backup_2026_06_12/assets/sprites/effects/effects_dnd_preview.png`.
 
+SCRUM-261 elite/boss VFX pass 2026-06-14: добавлены dedicated 512x512/256x256 PNG для новых mechanics SCRUM-259: `boss_gravity_well_zone.png`, `boss_vampiric_bite_zone.png`, `boss_rift_zone.png`, `boss_bone_prison_zone.png`, `boss_brood_web_zone.png`, `boss_ash_ember_zone.png`, `boss_molten_armor_pulse.png`, `enemy_summon_portal.png`, `enemy_shield_block_front.png`, `enemy_reflect_thorns_aura.png`, `enemy_command_aura_pulse.png`, `enemy_shadow_blink_mark.png`, `enemy_shard_fan_burst.png`. QA/contact preview: `docs/design/previews/scrum261_elite_boss_vfx_contact.png`.
+
+SCRUM-258 unique weapon VFX pass 2026-06-14: добавлены 51 dedicated `256x256` RGBA PNG `vfx_weapon_<weapon_id>.png` для всех текущих `ProgressionData.WEAPONS_BY_CLASS` weapon IDs. Это короткие D&D/painterly VFX-пластины под реальные mechanics SCRUM-256/251/254/245: melee execute/cleave/stagger, charged shots/traps, drain/status links, summon/deploy identities, auras and buff/debuff reads. `scripts/attack_vfx.gd::weapon_signature()` и `scripts/class_weapon.gd::_spawn_weapon_signature()` подключают их визуально по `weapon_id` без изменения урона, формул, targeting, cooldowns или таймингов. QA previews: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png`, `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
+
 Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (53 шт., 256x256). Финальный Design pass 2026-06-12: все активные артефакты заменены на realistic epic D&D/tabletop fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Пайплайн вырезки из raster source sheets: `tools/extract_realistic_dnd_artifact_icons.py`; QA preview: `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass) superseded.
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
@@ -180,6 +184,24 @@ D&D VFX restyle pass 2026-06-12: все 19 PNG в `assets/sprites/effects/` за
 | `elite_poison_lob.png` | 96x96 | Ядовитый снаряд Чумного Пророка | Ассет готов |
 | `elite_crystal_shard.png` | 96x96 | Кристальный осколок Маршала Осколков (острие +X) | Ассет готов |
 | `elite_telegraph_circle.png` | 512x512 | Универсальный круг-предупреждение зоны атаки | Ассет готов |
+| `enemy_shadow_blink_mark.png` | 512x512 | Метка выхода/удара `shadow_strike` Ночного Сталкера | Ассет готов |
+| `enemy_shard_fan_burst.png` | 512x512 | Предупреждение веера/кольца осколков `shard_fan` | Ассет готов |
+| `enemy_shield_block_front.png` | 256x256 | Короткий фронтальный VFX щита для `shield_block` | Ассет готов |
+| `enemy_reflect_thorns_aura.png` | 512x512 | Аура отражающих шипов `reflect_thorns` | Ассет готов |
+| `enemy_command_aura_pulse.png` | 512x512 | Аура усиления `aura_buff` Маршала Осколков | Ассет готов |
+
+VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
+
+| Файл | Runtime node/mechanic | Назначение | Статус |
+| --- | --- | --- | --- |
+| `boss_gravity_well_zone.png` | `BossGravityWell` | Фиолетовая гравитационная воронка Стража Разлома | Ассет готов |
+| `boss_vampiric_bite_zone.png` | `BossVampiricBite` | Кровавый круг укуса/вампиризма Пожирателя Диска | Ассет готов |
+| `boss_rift_zone.png` | `BossRiftZone` | Разломная зона Стража/волны разлома | Ассет готов |
+| `boss_bone_prison_zone.png` | `BossRiftZone` + `boss_behavior=bone_archon` | Костяная тюрьма/стена Архонта | Ассет готов |
+| `boss_brood_web_zone.png` | `BroodWebZone` | Паутинная зона Матери Роя | Ассет готов |
+| `boss_ash_ember_zone.png` | `AshEmberZone` | Тлеющая зона Пепельного Колосса | Ассет готов |
+| `boss_molten_armor_pulse.png` | `BossMoltenArmorPulse` | Раскаленный импульс брони Колосса | Ассет готов |
+| `enemy_summon_portal.png` | summon/retinue helper | Портал призыва свиты | Ассет готов |
 
 ## Оружие
 
@@ -218,9 +240,9 @@ D&D VFX restyle pass 2026-06-12: все 19 PNG в `assets/sprites/effects/` за
 | `electric_guitar` | Электрогитара | Гитарист | Звуковая волна вперед | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `bass_guitar` | Бас-гитара | Гитарист | Частый слабый контроль-пульс с сильным отталкиванием | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `sound_amp` | Звуковой усилитель | Гитарист | Деплойный усилитель: живет ~7с, лимит 1 + floor(Лидерство/4) | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
-| `chakrams` | Чакрамы | Ассасин | Boomerang-коридор туда и обратно; критовые попадания дают рывок | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
-| `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне + crit dash hook | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
-| `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT + crit dash hook | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `chakrams` | Чакрамы | Ассасин | Boomerang-коридор туда и обратно; критовые попадания дают shadow burst у цели без перемещения героя | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне + crit shadow burst у цели | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT + crit shadow burst у цели | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
 | `moon_crossbow` | Лунный арбалет | Рейнджер | Stance-charged piercing shot | `ProgressionData.RANGER_WEAPONS` | Реализовано |
 | `storm_longbow` | Грозовой длинный лук | Рейнджер | Stance-charged веер грозовых лучей | `ProgressionData.RANGER_WEAPONS` | Реализовано |
 | `hunter_trap` | Охотничий капкан | Рейнджер | Deploy trap: burst + knockback; stance charge усиливает | `ProgressionData.RANGER_WEAPONS` | Реализовано |
@@ -291,7 +313,7 @@ Back-end source-specific integration complete in SCRUM-157: runtime selectors pr
 
 Обновление SCRUM-135 от 2026-06-12: все 4 активные элитки используют native `512x512` source PNG и перенарезанные `assets/sprites/elites/cutout/` части под `scripts/sliced_rig_manifest.gd` `size = Vector2(512, 512)`. Поза/силуэт сохранены 1:1 относительно прежних 256px-спрайтов, чтобы epic scale оставался геометрически тем же, но без билинейного мыла на QHD/Retina.
 
-Все уникальные атаки элиток: параметры лежат в `scripts/enemy.gd::ELITE_ATTACK_CONFIG` (data-driven), фазы `windup/strike/recover/idle` доступны Animator через сигнал `elite_attack_phase_changed` и meta `elite_attack_phase`; урон атаки ограничен 25% max HP игрока. VFX: `elite_telegraph_circle.png`, `elite_shockwave_ring.png`, `elite_shadow_trail.png`, `elite_poison_lob.png`, `elite_crystal_shard.png` в `assets/sprites/effects/`.
+Все уникальные атаки элиток: параметры лежат в `ProgressionData.ELITE_ATTACK_CONFIGS` (data-driven), reusable mechanics — в `ProgressionData.ENEMY_MECHANIC_CATALOG`, unique signatures — в `ProgressionData.UNIQUE_ENCOUNTER_PATTERNS`. Фазы `windup/strike/recover/idle` доступны Animator через сигнал `elite_attack_phase_changed` и meta `elite_attack_phase`; урон атаки ограничен 25% max HP игрока. VFX: `elite_telegraph_circle.png`, `elite_shockwave_ring.png`, `elite_shadow_trail.png`, `elite_poison_lob.png`, `elite_crystal_shard.png` в `assets/sprites/effects/`.
 
 ## Умения Монстров (Канонические Имена Кодекса)
 

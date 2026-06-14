@@ -1,6 +1,6 @@
 # Все атрибуты логично сочетаются с любым оружием
 
-Статус: new (возвращён в бэклог 0.1.5 PM 2026-06-13 по команде пользователя — фриз: патч 0.1.5 не делается в спринте 0.1.4)
+Статус: done
 Приоритет: high
 Роль: Back-end (баланс/механики)
 Версия: 0.1.5
@@ -46,6 +46,44 @@ Jira: SCRUM-243
 - scripts/player.gd, scripts/class_weapon.gd, tools/balance_harness.gd, tests/
 
 ## Acceptance Criteria
-- [ ] Каждый атрибут даёт осмысленный эффект на каждом архетипе оружия (карта в доке).
-- [ ] Нет мёртвых сочетаний; DPS/выживаемость в коридорах.
-- [ ] Тест эффекта атрибут×оружие; 6 smoke + balance smoke зелёные; доки.
+- [x] Каждый атрибут даёт осмысленный эффект на каждом архетипе оружия (карта в доке).
+- [x] Нет мёртвых сочетаний; DPS/выживаемость в коридорах.
+- [x] Тест эффекта атрибут×оружие; 6 smoke + balance smoke зелёные; доки.
+
+## Result Summary (2026-06-14)
+
+Back-end balance/system pass complete. Added a canonical data-driven synergy
+matrix:
+- `ProgressionData.ATTRIBUTE_WEAPON_SYNERGY_MAP`;
+- `ProgressionData.weapon_archetype(weapon_config)`;
+- `ProgressionData.attribute_weapon_synergy_description(stat_id, weapon_config)`.
+
+`derived_parameters` now has soft universal cross-scaling for:
+damage/magic/sound, attack speed, range/AoE, projectile speed, DoT,
+aura/buff, summon amount and ultimate multiplier. This makes every base
+attribute change at least one effective parameter for representative
+melee/projectile/beam/aoe/summon/aura weapons while keeping baseline DPS
+controlled by `budget_damage_multiplier`.
+
+Runtime hardening included in-scope:
+- `Player._vfx_parent()` now always returns a `Node2D` fallback for slash VFX,
+  avoiding root `Window` type errors when current_scene is absent in headless
+  smoke contexts;
+- the contact-damage smoke enemy is made high-HP so the test cannot be killed by
+  automatic weapon effects before contact assertions.
+
+Docs/reports updated:
+- `docs/design/mechanics_extract.md` — 8×6 synergy table and formula notes;
+- `docs/design/current_game_state.md`;
+- `CHANGELOG.md`;
+- `build/attribute_weapon_synergy_scrum243_report.md`;
+- `build/balance_report.md`.
+
+Verification:
+- `tests/stat_formulas_smoke_test.gd` passed.
+- `tests/progression_data_api_surface_test.gd` passed.
+- `tests/runtime_smoke_progression_economy_test.gd` passed.
+- `tools/balance_harness.gd` passed.
+- `tests/global_damage_balance_smoke_test.gd` passed.
+- `tests/global_survivability_balance_smoke_test.gd` passed.
+- `tests/runtime_smoke_test.gd` passed.

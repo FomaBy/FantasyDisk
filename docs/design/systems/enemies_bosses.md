@@ -1,6 +1,6 @@
 # Enemies, Elites And Bosses
 
-Обновлено: 2026-06-13 (0.1.4)
+Обновлено: 2026-06-13 (0.1.5)
 
 Канонические enemy/boss IDs и assets находятся в `docs/design/content_registry.md`. Основная логика врагов: `scripts/enemy.gd`, боссов: `scripts/boss.gd`, спавна: `scripts/combat_director.gd`. Data-driven enemy slices после SCRUM-198 находятся в `scripts/progression_data_enemies.gd` и экспортируются через `ProgressionData`.
 
@@ -19,16 +19,30 @@ MVP поддерживает несколько архетипов:
 
 ## Elites
 
-Элитки крупнее обычных мобов примерно в 1.35x. С SCRUM-135 активные elite source sprites и cutout manifests переведены на native `512x512`, поэтому epic-scale рендер не апскейлит прежний 256px-арт на QHD/Retina. Collision shapes, contact range auto-fit и gameplay scale не менялись.
+SCRUM-260 развел размеры по data-driven профилям `ProgressionData.ENEMY_SIZE_PROFILES`
+(`scripts/progression_data_enemies.gd`):
+
+| Profile | Scale | Runtime meaning |
+| --- | ---: | --- |
+| `ordinary` | 1.00 | обычные враги |
+| `mini_elite` | 1.05 | свита Возвышения L7: усиленный моб, меньше полноценной элитки |
+| `elite` | 1.68 | карточная элитка узла маршрута, крупная и страшная |
+| `boss` | 1.90 | боссы, самые крупные сущности |
+
+Профиль передается в meta `epic_scale_profile` до `_ready()`, поэтому один node
+scale согласованно тянет visible rig/body, `CollisionShape2D`, auto-fit
+`contact_range` и HP-bar. С SCRUM-135 активные elite source sprites и cutout
+manifests переведены на native `512x512`, поэтому epic-scale рендер не апскейлит
+прежний 256px-арт на QHD/Retina.
 
 | Elite | Attack | Pattern |
 | --- | --- | --- |
-| `iron_bastion` | `slam_wave` | windup, кольцевая ударная волна, knockback |
-| `night_stalker` | `shadow_strike` | telegraph, исчезновение/телепорт за спину, удар |
-| `plague_prophet` | `poison_volley` | 3 lob-снаряда, ядовитые лужи с тиками |
-| `shard_marshal` | `shard_fan` | веер кристальных снарядов |
+| `iron_bastion` | `slam_wave` | shield block, thorn reflect while shielded, windup shockwave, knockback |
+| `night_stalker` | `shadow_strike` | telegraph, исчезновение/телепорт за спину, phase-2 mirror second strike |
+| `plague_prophet` | `poison_volley` | lob-снаряды, ядовитые лужи с тиками, plague/healing-inversion hook |
+| `shard_marshal` | `shard_fan` | aura buff, веер кристальных снарядов, phase-2 ring volley |
 
-Параметры data-driven в `scripts/enemy.gd::ELITE_ATTACK_CONFIG`. Фазы `windup/strike/recover/idle` доступны Animator через сигнал `elite_attack_phase_changed` и meta `elite_attack_phase`. Урон уникальной атаки ограничен 25% max HP игрока.
+Параметры data-driven в `ProgressionData.ELITE_ATTACK_CONFIGS`, reusable mechanics — в `ProgressionData.ENEMY_MECHANIC_CATALOG`, unique signatures — в `ProgressionData.UNIQUE_ENCOUNTER_PATTERNS`. Фазы `windup/strike/recover/idle` доступны Animator через сигнал `elite_attack_phase_changed` и meta `elite_attack_phase`; сами сущности также получают meta `unique_pattern_id`, `unique_pattern_title`, `unique_mechanics`. Урон уникальной атаки ограничен 25% max HP игрока.
 
 ## Bosses
 
@@ -36,11 +50,13 @@ Boss node выбирает одного из доступных боссов: `r
 
 | Boss | Scene | Pattern |
 | --- | --- | --- |
-| `rift_warden` | `scenes/BossWarden.tscn` | залпы, зоны разлома, призыв, щит, увороты |
-| `disk_devourer` | `scenes/BossDiskDevourer.tscn` | рывки, disk slam AoE, radial burst, enrage |
-| `bone_archon` | `scenes/BossBoneArchon.tscn` | волны скелетов, веер черепов, костяная стена |
-| `brood_mother` | `scenes/BossBroodMother.tscn` | выводок, web slow zones, рывок в фазе 3 |
-| `ashen_colossus` | `scenes/BossAshenColossus.tscn` | slam-волны, тлеющие зоны, enrage ниже 25% HP |
+| `rift_warden` | `scenes/BossWarden.tscn` | залпы, зоны разлома, призыв, щит, увороты, `BossGravityWell` |
+| `disk_devourer` | `scenes/BossDiskDevourer.tscn` | рывки, disk slam AoE, radial burst, `BossVampiricBite`, enrage |
+| `bone_archon` | `scenes/BossBoneArchon.tscn` | волны скелетов, веер черепов, bone prison/wall через `BossRiftZone` с проходом |
+| `brood_mother` | `scenes/BossBroodMother.tscn` | выводок, `BroodWebZone`, дополнительный web pressure, рывок в фазе 3 |
+| `ashen_colossus` | `scenes/BossAshenColossus.tscn` | slam-волны, тлеющие зоны, `BossMoltenArmorPulse`, enrage ниже 25% HP |
+
+SCRUM-259 добавил boss-specific telegraph mechanics, SCRUM-261 закрыл их визуальный слой. Новые зоны продолжают использовать `HazardVfx.telegraph`/`detonate`, но helper выбирает dedicated painterly textures по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`. Щиты, reflect-thorns, command aura и summon portal также получили отдельные VFX PNG. Runtime smoke проверяет, что каждая boss scene получает unique-pattern meta и реально создает свой named mechanic node; Design smoke проверяет текстурный hazard pipeline.
 
 ## Mini-Elites
 
@@ -50,6 +66,11 @@ Boss node выбирает одного из доступных боссов: `r
 SCRUM-156 лежат в `assets/sprites/elites/`, но SCRUM-193 cleanup их не удалял:
 raw audit видит их как candidates до полного content wiring, поэтому это не
 legacy cleanup scope.
+
+Мини-элитки используют те же elite-сцены и поведенческие паттерны, но перед
+добавлением в дерево получают meta `drop_class=mini_elite` и
+`epic_scale_profile=mini_elite`; поэтому визуально они читаются как усиленная
+свита, а не как полноценный route elite или босс.
 
 Минимальные правила:
 
@@ -63,8 +84,12 @@ legacy cleanup scope.
 
 - Обычные враги стали жирнее и чуть медленнее относительно ранних прототипов.
 - Количество врагов растет по stage/wave, но early-game не должен зажимать игрока со всех сторон.
-- Элитки редкие и опасные, но их атаки читаемы через telegraph.
+- Мини-элитки меньше карточных элиток, но дают повышенный drop class.
+- Карточные элитки редкие, крупные и опасные, но их атаки читаемы через telegraph.
+- Боссы остаются крупнейшими enemy entities.
 
 ## Tests
 
-`tests/runtime_smoke_test.gd` проверяет elite scenes, attack phases, boss pool, spawn bounds, wave pacing и базовые combat flows.
+`tests/runtime_smoke_test.gd` и `tests/runtime_smoke_boss_elite_test.gd`
+проверяют elite scenes, attack phases, boss pool, spawn bounds, wave pacing,
+mini/card elite/boss scale order и базовые combat flows.

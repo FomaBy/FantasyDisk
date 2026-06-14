@@ -17,6 +17,7 @@ extends SceneTree
 # Запуск: Godot --headless --path . --script res://tests/survivability_scenario_test.gd
 
 const Surv := preload("res://tools/survivability_harness.gd")
+const ProgressionData := preload("res://scripts/progression_data.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 
 const EPS := 0.01
@@ -87,7 +88,7 @@ func _initialize() -> void:
 		player.configure_character("berserk", "")
 		await process_frame
 		var dp: Dictionary = player.get("derived_parameters")
-		var defense := clampf(float(dp.get("defense", 0.0)), 0.0, 0.95)
+		var defense := clampf(float(dp.get("defense", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
 		var absorb := float(dp.get("absorb", 0.0))
 		player.set("max_health", 1.0e9)
 		player.set("health", 1.0e9)

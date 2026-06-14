@@ -1,8 +1,8 @@
 # Combat
 
-Обновлено: 2026-06-13 (0.1.4)
+Обновлено: 2026-06-13 (0.1.5)
 
-Этот файл описывает активную боевую систему `dev` / версии 0.1.4. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
+Этот файл описывает активную боевую систему `dev` / версии 0.1.5. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
 ## Arena And Camera
 
@@ -40,10 +40,22 @@
 
 - Берсерк использует melee shapes: `strip`, `sweep`, `circle`.
 - Class weapons используют reusable modes: `aoe_projectile`, `homing_curse`, `beam`, `dot_beam`, `sound_wave`, `pulse`, `amp`, `trap`, `boomerang`, `stab_flurry`.
+- Прицеливание имеет два runtime-режима. `nearest` оставляет автонаводку на ближайшего врага, `cursor` берет единые `Player.attack_aim_direction()` / `attack_aim_position()` для melee, projectiles, beams, deploys и point-AoE. Summoner commands в cursor mode выбирают цель рядом с точкой курсора.
 - Темный маг использует AoE projectile, DoT и beam; новые caster/control классы переиспользуют эти режимы с другими параметрами.
 - Гитарист и Друид используют sound wave / pulse / deployable amp/totem; Рейнджер использует deploy trap.
 - Временные эффекты оружия добавляются в cleanup groups (`player_weapon_effects`, `deployed_sound_amps`, projectiles/hazards).
 - Gameplay effects не должны использовать `SceneTreeTimer`; текущие длительные эффекты привязаны к node-bound tweens и уважают паузу.
+
+## Status Effects / Auras
+
+- Общий runtime-модуль: `scripts/status_effects.gd`.
+- Статусы хранятся в meta `status_effects` на цели и тикают из `_physics_process()` владельца, поэтому пауза замораживает duration и DoT вместе с gameplay.
+- Поддерживаются duration, refresh/add/extend stack policy, DoT ticks, `speed_multiplier`, `damage_multiplier`, `damage_taken_multiplier` и marker metadata.
+- `Enemy` применяет status slow к движению и vulnerability к входящему урону.
+- `AllyMinion` применяет status damage/speed buffs к атакам и перемещению.
+- `Player` раздает thematic on-hit debuffs: arcane vulnerability (Dark Mage/Elementalist), toxic DoT (Chemist/Doctor/Assassin/Biologist), stagger slow (Soldier/Knight/Robot).
+- Support/Leadership classes (`guitarist`, `druid`, `engineer`, `priest`) обновляют class aura примерно раз в 0.55с. Союзники получают `command_aura`, враги в радиусе — `command_pressure`, Priest получает мягкий self-support tick.
+- Визуально используется существующий `AttackVfx.ring_pulse` и marker metadata; новых Design/VFX ассетов для SCRUM-245 не потребовалось.
 
 ## Spawn And Waves
 
@@ -71,6 +83,7 @@
 - Зонтичный smoke: `tests/runtime_smoke_test.gd` (полный прогон).
 - Фокус-сьюты (SCRUM-202, split зонтика): `tests/runtime_smoke_combat_test.gd`, `runtime_smoke_boss_elite_test.gd`, `runtime_smoke_weapon_mechanics_test.gd`, `runtime_smoke_progression_economy_test.gd`, `runtime_smoke_ui_test.gd`.
 - Targeting-specific smoke: `tests/melee_weapon_targeting_test.gd`.
+- Status/aura smoke: `tests/status_effects_aura_test.gd`.
 - VFX smoke: `tests/attack_vfx_smoke_test.gd`, `tests/hazard_vfx_smoke_test.gd`.
 - Снаряды: `tests/projectile_smoke_test.gd`, `tests/enemy_projectile_smoke_test.gd`.
 - Балансовые харнессы (отчёты в `build/`): `tools/balance_harness.gd` (формульный), `tools/live_combat_harness.gd` (живой DPS/TTK), `tools/survivability_harness.gd` (выживаемость профилей). Прогон всех standalone-тестов: `tools/run_focused_tests.sh`.

@@ -8,6 +8,7 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
 const EventData := preload("res://scripts/event_data.gd")
 const Glossary := preload("res://scripts/glossary.gd")
+const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -559,6 +560,8 @@ func _initialize() -> void:
 	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
 	var contact_enemy := enemy_scene.instantiate()
 	root.add_child(contact_enemy)
+	contact_enemy.set("max_health", 100000.0)
+	contact_enemy.set("health", 100000.0)
 	contact_enemy.global_position = player.global_position
 	await process_frame
 	if int(contact_enemy.get("collision_mask")) & 1 != 0:
@@ -1122,6 +1125,7 @@ func _initialize() -> void:
 	await _test_class_relevance_and_offer_fixation(main_scene)
 	_test_settings_persistence_and_audio()
 	await _test_full_attribute_wiring()
+	_test_attribute_weapon_synergy_matrix()
 	await _test_all_playable_classes()
 	await _test_soldier_weapon_mechanics()
 	await _test_thief_weapon_mechanics()
@@ -1131,10 +1135,13 @@ func _initialize() -> void:
 	await _test_biologist_weapon_mechanics()
 	await _test_robot_weapon_mechanics()
 	await _test_engineer_weapon_mechanics()
+	_test_unique_encounter_pattern_catalog()
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
+	await _test_no_auto_player_movement_from_crit_or_dodge()
 	await _test_class_weapon_rework()
 	await _test_unique_class_identity_patterns()
+	_test_class_mechanic_identity_framework()
 	await _test_universal_attribute_interpretations()
 	_test_class_budget_profiles()
 	await _test_enemy_stage_scaling_and_elite_rewards(main_scene)
@@ -1195,9 +1202,18 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 	root.add_child(m)
 	await process_frame
 	var expected := {
+		"rift_warden": "",
+		"disk_devourer": "",
 		"bone_archon": "Костяной Архонт",
 		"brood_mother": "Матерь Роя",
 		"ashen_colossus": "Пепельный Колосс",
+	}
+	var expected_unique_nodes := {
+		"rift_warden": "BossGravityWell",
+		"disk_devourer": "BossVampiricBite",
+		"bone_archon": "BossRiftZone",
+		"brood_mother": "BroodWebZone",
+		"ashen_colossus": "BossMoltenArmorPulse",
 	}
 	for boss_id in expected.keys():
 		var scene: PackedScene = m.combat.call("_boss_scene_for_id", boss_id)
@@ -1213,18 +1229,32 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 		if str(boss.get("boss_behavior")) != boss_id:
 			_fail("Expected boss behavior '%s', got '%s'." % [boss_id, str(boss.get("boss_behavior"))])
 			return
-		if str(boss.get("boss_display_name")) != str(expected[boss_id]):
+		if str(expected[boss_id]) != "" and str(boss.get("boss_display_name")) != str(expected[boss_id]):
 			_fail("Expected Russian display name for '%s'." % boss_id)
 			return
-		if absf(boss.scale.x - 1.9) > 0.01:
-			_fail("Expected epic boss scale 1.9 for '%s'." % boss_id)
+		if str(boss.get_meta("unique_pattern_id", "")) != boss_id:
+			_fail("Expected boss '%s' to expose its unique encounter pattern meta." % boss_id)
+			return
+		var boss_mechanics: Array = boss.get_meta("unique_mechanics", []) as Array
+		if boss_mechanics.size() < 3:
+			_fail("Expected boss '%s' to expose at least 3 unique mechanics." % boss_id)
+			return
+		var expected_boss_scale: float = float(ProgressionData.enemy_size_profile("boss").get("scale", 1.9))
+		if absf(boss.scale.x - expected_boss_scale) > 0.01:
+			_fail("Expected epic boss scale %.2f for '%s'." % [expected_boss_scale, boss_id])
 			return
 		# Игрок рядом + прогон атак: хазард-зоны телеграфятся без ошибок.
 		var player := (load("res://scenes/Player.tscn") as PackedScene).instantiate() as Node2D
 		holder.add_child(player)
 		player.add_to_group("player")
-		player.global_position = boss.global_position + Vector2(280, 0)
+		player.global_position = boss.global_position + Vector2(120 if boss_id == "disk_devourer" else 280, 0)
 		await process_frame
+		boss.set("_boss_unique_cooldown", 0.0)
+		boss.call("_update_boss_attacks", 0.1)
+		await process_frame
+		if holder.find_child(str(expected_unique_nodes[boss_id]), true, false) == null:
+			_fail("Expected boss '%s' unique mechanic to spawn %s." % [boss_id, str(expected_unique_nodes[boss_id])])
+			return
 		var hazards_before := holder.find_children("*", "Node2D", true, false).size()
 		for _tick in range(220):
 			boss.call("_update_boss_attacks", 0.05)
@@ -1252,6 +1282,38 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 			return
 	m.queue_free()
 	await process_frame
+
+
+func _test_unique_encounter_pattern_catalog() -> void:
+	var catalog: Dictionary = ProgressionData.enemy_mechanic_catalog()
+	for required_id in ["aura_buff", "summon_retinue", "blink_reposition", "hazard_pool", "poison_dot", "shield_block", "charge_telegraph", "reflect_thorns", "slow_zone", "vampirism", "rift_wave", "mirror_double", "gravity_pull", "weakpoint_shell", "healing_inversion", "split_spawn"]:
+		if not catalog.has(required_id):
+			_fail("Expected enemy mechanic catalog to include %s." % required_id)
+			return
+	var patterns: Dictionary = ProgressionData.unique_encounter_patterns()
+	var expected_entities := ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal", "rift_warden", "disk_devourer", "bone_archon", "brood_mother", "ashen_colossus"]
+	var seen_signatures := {}
+	for entity_id in expected_entities:
+		var pattern: Dictionary = ProgressionData.unique_encounter_pattern(entity_id)
+		if pattern.is_empty():
+			_fail("Expected unique encounter pattern for %s." % entity_id)
+			return
+		var mechanics: Array = pattern.get("mechanics", []) as Array
+		if mechanics.size() < 3:
+			_fail("Expected %s to have at least 3 mechanics." % entity_id)
+			return
+		for mechanic_id in mechanics:
+			if not catalog.has(str(mechanic_id)):
+				_fail("Expected %s mechanic %s to exist in catalog." % [entity_id, str(mechanic_id)])
+				return
+		var signature_parts := PackedStringArray()
+		for mechanic_id in mechanics:
+			signature_parts.append(str(mechanic_id))
+		var signature := ",".join(signature_parts)
+		if seen_signatures.has(signature):
+			_fail("Expected unique mechanic signature for %s; duplicated %s." % [entity_id, str(seen_signatures[signature])])
+			return
+		seen_signatures[signature] = entity_id
 
 
 func _test_mini_elite_roster(main_scene: PackedScene) -> void:
@@ -1396,7 +1458,8 @@ func _test_elite_phase2_escalation() -> void:
 
 
 func _test_epic_elite_boss_scale_hitbox() -> void:
-	# Элитки/боссы крупнее, хитбоксы согласованы: node scale тянет визуал +
+	# Мини-элитки/элитки/боссы разведены по data-driven size profile; хитбоксы
+	# согласованы: node scale тянет визуал +
 	# CollisionShape2D + contact_range вместе. Проверяем масштаб и что collision-
 	# радиус близок к видимому силуэту (нет «урона по воздуху» и непопадания вплотную).
 	var holder := Node2D.new()
@@ -1409,18 +1472,24 @@ func _test_epic_elite_boss_scale_hitbox() -> void:
 	await process_frame
 	var mob_contact := float(mob.get("contact_range"))
 
-	var cases := {
-		"res://scenes/EliteArmored.tscn": 1.4,
-		"res://scenes/BossDiskDevourer.tscn": 1.9,
-	}
-	for scene_path in cases.keys():
-		var expected_scale: float = cases[scene_path]
+	var observed_scales: Dictionary = {}
+	var cases: Array[Dictionary] = [
+		{"scene": "res://scenes/EliteArmored.tscn", "profile": "mini_elite"},
+		{"scene": "res://scenes/EliteArmored.tscn", "profile": "elite"},
+		{"scene": "res://scenes/BossDiskDevourer.tscn", "profile": "boss"},
+	]
+	for case: Dictionary in cases:
+		var scene_path: String = str(case["scene"])
+		var profile: String = str(case["profile"])
+		var expected_scale: float = float(ProgressionData.enemy_size_profile(profile).get("scale", 1.0))
 		var unit := (load(scene_path) as PackedScene).instantiate() as Node2D
+		unit.set_meta("epic_scale_profile", profile)
 		holder.add_child(unit)
 		await process_frame
 		if absf(unit.scale.x - expected_scale) > 0.001 or absf(unit.scale.y - expected_scale) > 0.001:
-			_fail("Expected %s epic node scale %.2f, got %.2f." % [scene_path, expected_scale, unit.scale.x])
+			_fail("Expected %s profile '%s' node scale %.2f, got %.2f." % [scene_path, profile, expected_scale, unit.scale.x])
 			return
+		observed_scales[profile] = unit.scale.x
 		# Хитбокс vs силуэт: эффективный радиус CollisionShape близок к видимому.
 		var shape_node := unit.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if shape_node == null or shape_node.shape == null:
@@ -1440,6 +1509,9 @@ func _test_epic_elite_boss_scale_hitbox() -> void:
 			_fail("Expected %s contact_range to exceed a base mob's (%.1f vs %.1f)." % [scene_path, float(unit.get("contact_range")), mob_contact])
 			return
 		unit.queue_free()
+	if not (float(observed_scales["mini_elite"]) < float(observed_scales["elite"]) and float(observed_scales["elite"]) < float(observed_scales["boss"])):
+		_fail("Expected size order mini_elite < elite < boss, got %s." % str(observed_scales))
+		return
 	holder.queue_free()
 	current_scene = null
 	await process_frame
@@ -3006,15 +3078,56 @@ func _test_unique_class_identity_patterns() -> void:
 	holder.add_child(assassin_enemy)
 	assassin_enemy.global_position = assassin.global_position + Vector2(220, 0)
 	var assassin_start: Vector2 = assassin.global_position
-	assassin.call("trigger_assassin_dash", assassin_enemy, 100.0)
+	var vfx_before := holder.find_children("*Vfx", "Node2D", true, false).size()
+	assassin.call("trigger_assassin_crit_shadow", assassin_enemy, 100.0)
 	await create_timer(0.15).timeout
-	if assassin.global_position.distance_to(assassin_start) < 40.0:
-		_fail("Expected Assassin critical mobility hook to dash toward a target.")
+	if assassin.global_position.distance_to(assassin_start) > 0.01:
+		_fail("Expected Assassin critical shadow hook to preserve player-controlled position.")
+		return
+	if holder.find_children("*Vfx", "Node2D", true, false).size() <= vfx_before:
+		_fail("Expected Assassin critical shadow hook to keep a non-moving combat/VFX effect.")
 		return
 
 	holder.queue_free()
 	current_scene = null
 	await process_frame
+
+
+func _test_class_mechanic_identity_framework() -> void:
+	var valid_stats := ProgressionData.STAT_NAMES.keys()
+	var identity_titles := {}
+	for character_id in ProgressionData.character_ids():
+		var identity: Dictionary = ProgressionData.class_mechanic_identity(character_id)
+		if identity.is_empty():
+			_fail("Expected %s to expose a class mechanic identity." % character_id)
+			return
+		var main_attribute := ProgressionData.class_main_attribute(character_id)
+		if not valid_stats.has(main_attribute):
+			_fail("Expected %s main attribute to be a valid base stat, got %s." % [character_id, main_attribute])
+			return
+		var priorities := ProgressionData.attribute_priorities(character_id)
+		if priorities.is_empty() or str(priorities[0]) != main_attribute:
+			_fail("Expected %s main attribute %s to match first attribute priority %s." % [character_id, main_attribute, str(priorities)])
+			return
+		var title := str(identity.get("identity_title", ""))
+		if title == "" or identity_titles.has(title):
+			_fail("Expected unique non-empty identity title for %s, got '%s'." % [character_id, title])
+			return
+		identity_titles[title] = true
+		var tags: Array = identity.get("mechanic_tags", [])
+		if tags.size() < 3:
+			_fail("Expected %s to expose at least three mechanic tags." % character_id)
+			return
+		var weapon_identities: Dictionary = identity.get("weapon_identities", {})
+		var weapon_ids := ProgressionData.weapon_ids(character_id)
+		if weapon_identities.size() != weapon_ids.size():
+			_fail("Expected %s weapon identities to cover exactly %d weapons, got %d." % [character_id, weapon_ids.size(), weapon_identities.size()])
+			return
+		for weapon_id in weapon_ids:
+			var weapon_text := ProgressionData.weapon_mechanic_identity(character_id, str(weapon_id))
+			if weapon_text == "":
+				_fail("Expected %s/%s to expose weapon mechanic identity text." % [character_id, str(weapon_id)])
+				return
 
 
 func _test_universal_attribute_interpretations() -> void:
@@ -3355,6 +3468,51 @@ func _test_weapon_aiming() -> void:
 	await process_frame
 
 
+func _test_no_auto_player_movement_from_crit_or_dodge() -> void:
+	var holder := Node2D.new()
+	holder.name = "NoAutoMovementTestScene"
+	root.add_child(holder)
+	current_scene = holder
+
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+
+	var assassin := player_scene.instantiate()
+	holder.add_child(assassin)
+	assassin.global_position = Vector2(900, 720)
+	await process_frame
+	assassin.call("configure_character", "assassin", "chakrams")
+	assassin.set("derived_parameters", {"damage": 30.0, "crit_chance": 1.0, "crit_damage_multiplier": 2.0})
+	var weapon: Node = assassin.get("equipped_weapon")
+	weapon.set_process(false)
+
+	var target := enemy_scene.instantiate()
+	holder.add_child(target)
+	target.set("max_health", 100000.0)
+	target.set("health", 100000.0)
+	target.global_position = assassin.global_position + Vector2(160, 0)
+	await process_frame
+
+	var crit_position_before: Vector2 = assassin.global_position
+	weapon.call("_damage_enemy", target, weapon.call("_rolled_damage", assassin))
+	await create_timer(0.16).timeout
+	if assassin.global_position.distance_to(crit_position_before) > 0.01:
+		_fail("Expected critical weapon hooks to preserve player-controlled position.")
+		return
+
+	assassin.set("derived_parameters", {"dodge": 1.0, "defense": 0.0})
+	var dodge_position_before: Vector2 = assassin.global_position
+	assassin.call("take_damage", 12.0)
+	await process_frame
+	if assassin.global_position.distance_to(dodge_position_before) > 0.01:
+		_fail("Expected dodge hooks to preserve player-controlled position.")
+		return
+
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
 func _test_all_playable_classes() -> void:
 	# Каждый класс экипирует сигнатурное оружие и наносит урон (друид — призывает).
 	var signature := {
@@ -3522,10 +3680,14 @@ func _test_thief_weapon_mechanics() -> void:
 		var before_hp := float(enemy.get("health"))
 		var before_money := int(thief.get("money"))
 		var before_dodge := float((thief.get("derived_parameters") as Dictionary).get("dodge", 0.0))
+		var before_position: Vector2 = thief.global_position
 		weapon.call("_attack")
 		await create_timer(0.85).timeout
 		if float(enemy.get("health")) >= before_hp:
 			_fail("Expected Thief weapon %s to damage its target." % weapon_id)
+			return
+		if weapon_id == "thief_shadow_cloak" and thief.global_position.distance_to(before_position) > 0.01:
+			_fail("Expected Thief shadow cloak to strike without moving the player body.")
 			return
 		if weapon_id == "thief_coin_pouch" and int(thief.get("money")) <= before_money:
 			_fail("Expected Thief coin pouch to steal money on hit.")
@@ -3941,8 +4103,9 @@ func _test_full_attribute_wiring() -> void:
 		return
 	var vamp_mods := {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}
 	var vamp: Dictionary = ProgressionData.derived_parameters(stats, vamp_mods, weapon)
-	if absf(float(vamp["vampiric_chance"]) - 0.25) > 0.001 or absf(float(vamp["vampiric_amount"]) - 2.0) > 0.001:
-		_fail("Expected vampiric rewards to feed the vampiric parameters.")
+	if absf(float(vamp["vampiric_chance"]) - ProgressionData.VAMPIRIC_CHANCE_CAP) > 0.001 \
+			or absf(float(vamp["vampiric_amount"]) - 2.0 * ProgressionData.VAMPIRIC_BASE_HEAL_MULTIPLIER) > 0.001:
+		_fail("Expected vampiric rewards to use SCRUM-255 nerfed chance/amount caps.")
 		return
 	var berserk_priorities: Array = ProgressionData.attribute_priorities("berserk")
 	var mage_priorities: Array = ProgressionData.attribute_priorities("dark_mage")
@@ -3997,6 +4160,66 @@ func _test_full_attribute_wiring() -> void:
 	await process_frame
 
 
+func _test_attribute_weapon_synergy_matrix() -> void:
+	var synergy_map: Dictionary = ProgressionData.attribute_weapon_synergy_map()
+	var required_archetypes := ["melee", "projectile", "beam", "aoe", "summon", "aura"]
+	var stat_ids := ProgressionData.STAT_NAMES.keys()
+	for stat_id in stat_ids:
+		var stat_map: Dictionary = synergy_map.get(stat_id, {}) as Dictionary
+		for archetype in required_archetypes:
+			if str(stat_map.get(archetype, "")) == "":
+				_fail("Expected synergy map to explain %s x %s." % [stat_id, archetype])
+				return
+
+	var representatives := {}
+	for character_id in ProgressionData.character_ids():
+		for weapon_id in ProgressionData.weapon_ids(character_id):
+			var weapon_config: Dictionary = ProgressionData.weapon(character_id, weapon_id)
+			var archetype := ProgressionData.weapon_archetype(weapon_config)
+			if not representatives.has(archetype):
+				representatives[archetype] = {
+					"character_id": character_id,
+					"weapon_id": weapon_id,
+					"weapon": weapon_config,
+				}
+	for archetype in required_archetypes:
+		if not representatives.has(archetype):
+			_fail("Expected at least one weapon representative for archetype %s." % archetype)
+			return
+
+	var watched_parameters := [
+		"damage", "magic_damage", "sound_wave_damage", "attack_speed",
+		"crit_chance", "crit_damage_multiplier", "move_speed", "dodge",
+		"defense", "health_point", "attack_range", "aoe_radius",
+		"pickup_radius", "dot_damage", "dot_speed", "projectile_speed",
+		"aura_radius", "buff_power", "knockback_power", "summon_amount",
+		"absorb", "regeneration", "knockback_distance", "ultimate_multiplier",
+	]
+	for archetype in required_archetypes:
+		var rep: Dictionary = representatives[archetype]
+		var character_id := str(rep.get("character_id", "berserk"))
+		var weapon_config: Dictionary = rep.get("weapon", {}) as Dictionary
+		var base_stats: Dictionary = ProgressionData.base_stats(character_id)
+		var base_params: Dictionary = ProgressionData.derived_parameters(base_stats, {}, weapon_config)
+		for stat_id in stat_ids:
+			var boosted_stats := base_stats.duplicate(true)
+			boosted_stats[stat_id] = float(boosted_stats.get(stat_id, 0.0)) + 4.0
+			var boosted_params: Dictionary = ProgressionData.derived_parameters(boosted_stats, {}, weapon_config)
+			var changed := false
+			for parameter_id in watched_parameters:
+				if absf(float(boosted_params.get(parameter_id, 0.0)) - float(base_params.get(parameter_id, 0.0))) > 0.001:
+					changed = true
+					break
+			if not changed:
+				_fail("Expected %s to change at least one effective parameter for %s weapon %s/%s." % [
+					stat_id,
+					archetype,
+					character_id,
+					str(rep.get("weapon_id", "")),
+				])
+				return
+
+
 func _test_settings_persistence_and_audio() -> void:
 	# Save/load roundtrip настроек.
 	var game_settings := load("res://scripts/game_settings.gd")
@@ -4017,7 +4240,7 @@ func _test_settings_persistence_and_audio() -> void:
 	var saved := {
 		"resolution_index": 2, "window_mode_index": 1, "screen_index": 1,
 		"master_volume": 0.85, "music_volume": 0.4, "sfx_volume": 0.65,
-		"music_enabled": false, "sfx_enabled": true,
+		"music_enabled": false, "sfx_enabled": true, "aim_mode": "cursor",
 	}
 	game_settings.save_settings(saved)
 	var loaded: Dictionary = game_settings.load_settings()
@@ -4181,8 +4404,8 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 	var before: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
 	mage_stats["strength"] = mage_stats["strength"] + 10.0
 	var after: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
-	if float(after.get("magic_damage", 0.0)) != float(before.get("magic_damage", 0.0)):
-		_fail("Expected +10 strength to leave dark mage magic damage unchanged.")
+	if float(after.get("magic_damage", 0.0)) <= float(before.get("magic_damage", 0.0)):
+		_fail("Expected +10 strength to raise dark mage magic damage through weapon synergy.")
 		return
 
 	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.
@@ -4509,6 +4732,14 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	# Убиваемая, не танк: HP = тот же волновой elite-скейл × data-driven hp_mult вида.
 	var mini_node: Node = spawned[0]
 	var mini_hp: float = float(mini_node.get("max_health"))
+	var expected_mini_scale: float = float(ProgressionData.enemy_size_profile("mini_elite").get("scale", 1.05))
+	var expected_elite_scale: float = float(ProgressionData.enemy_size_profile("elite").get("scale", 1.68))
+	if absf((mini_node as Node2D).scale.x - expected_mini_scale) > 0.01:
+		_fail("Expected spawned ascension mini-elite scale %.2f, got %.2f." % [expected_mini_scale, (mini_node as Node2D).scale.x])
+		return
+	if expected_mini_scale >= expected_elite_scale:
+		_fail("Expected mini-elite size profile to stay smaller than card elite.")
+		return
 	var expected_hp_mult := 0.55
 	var mini_kind_id := str(mini_node.get_meta("mini_elite_kind", ""))
 	for kind in ProgressionData.mini_elite_kinds():
@@ -4799,6 +5030,17 @@ func _test_elite_unique_attacks() -> void:
 		if str(elite.get("elite_attack_id")) == "":
 			_fail("Expected elite %s to expose a unique attack id." % behavior_id)
 			return
+		if str(elite.get_meta("unique_pattern_id", "")) != behavior_id:
+			_fail("Expected elite %s to expose its unique encounter pattern meta." % behavior_id)
+			return
+		var mechanics: Array = elite.get_meta("unique_mechanics", []) as Array
+		if mechanics.size() < 3:
+			_fail("Expected elite %s to expose at least 3 unique mechanics." % behavior_id)
+			return
+		var config: Dictionary = ProgressionData.elite_attack_config(behavior_id)
+		if config.is_empty() or str(config.get("attack_id", "")) != str(elite.get("elite_attack_id")):
+			_fail("Expected elite %s attack config to come from ProgressionData." % behavior_id)
+			return
 		var observed_phases := []
 		elite.elite_attack_phase_changed.connect(func(_attack_id: String, phase: String) -> void:
 			observed_phases.append(phase)
@@ -4991,6 +5233,9 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 		dump_lines.append("- `%s`: rect=`%s`, min=`%s`, texture=`%s`" % [button.name, str(rect), str(button.custom_minimum_size), texture_path])
 		if rect.size.y < 64.0 or button.custom_minimum_size.y < 64.0:
 			_fail("Expected wax-seal button %s on %s to stay tall enough for the seal, rect=%s min=%s." % [button.name, context, rect, button.custom_minimum_size])
+			return
+		if absf(button.custom_minimum_size.y - STANDARD_ACTION_BUTTON_HEIGHT) > 0.5:
+			_fail("Expected action button %s on %s to use standard height %.0f, got min=%s." % [button.name, context, STANDARD_ACTION_BUTTON_HEIGHT, button.custom_minimum_size])
 			return
 		if button.text.strip_edges().length() <= 2 and rect.size.x < 120.0:
 			_fail("Expected compact utility button %s on %s to avoid wax-seal button texture." % [button.name, context])

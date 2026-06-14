@@ -11,11 +11,76 @@ const ZONE_TEXTURE := preload("res://assets/sprites/effects/hazard_zone.png")
 const RING_TEXTURE := preload("res://assets/sprites/effects/impact_ring.png")
 const FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
 const POISON_POOL_TEXTURE := preload("res://assets/sprites/effects/poison_pool.png")
+const GRAVITY_WELL_TEXTURE := preload("res://assets/sprites/effects/boss_gravity_well_zone.png")
+const VAMPIRIC_BITE_TEXTURE := preload("res://assets/sprites/effects/boss_vampiric_bite_zone.png")
+const RIFT_ZONE_TEXTURE := preload("res://assets/sprites/effects/boss_rift_zone.png")
+const BROOD_WEB_TEXTURE := preload("res://assets/sprites/effects/boss_brood_web_zone.png")
+const ASH_EMBER_TEXTURE := preload("res://assets/sprites/effects/boss_ash_ember_zone.png")
+const MOLTEN_PULSE_TEXTURE := preload("res://assets/sprites/effects/boss_molten_armor_pulse.png")
+const BONE_PRISON_TEXTURE := preload("res://assets/sprites/effects/boss_bone_prison_zone.png")
+const SUMMON_PORTAL_TEXTURE := preload("res://assets/sprites/effects/enemy_summon_portal.png")
+const SHIELD_BLOCK_TEXTURE := preload("res://assets/sprites/effects/enemy_shield_block_front.png")
+const REFLECT_THORNS_TEXTURE := preload("res://assets/sprites/effects/enemy_reflect_thorns_aura.png")
+const COMMAND_AURA_TEXTURE := preload("res://assets/sprites/effects/enemy_command_aura_pulse.png")
 
 # hazard_zone.png danger-ring radius in texture pixels.
 const ZONE_RADIUS := 118.0
 # impact_ring.png rim radius in texture pixels.
 const RING_RADIUS := 104.0
+
+
+static func _texture_radius(texture: Texture2D) -> float:
+	return maxf(float(maxi(texture.get_width(), texture.get_height())) * 0.5, 1.0)
+
+
+static func _zone_texture(parent: Node2D) -> Texture2D:
+	if parent == null:
+		return ZONE_TEXTURE
+	match parent.name:
+		"BossGravityWell":
+			return GRAVITY_WELL_TEXTURE
+		"BossVampiricBite":
+			return VAMPIRIC_BITE_TEXTURE
+		"BossRiftZone":
+			if str(parent.get_meta("boss_behavior", "")).contains("bone"):
+				return BONE_PRISON_TEXTURE
+			return RIFT_ZONE_TEXTURE
+		"BroodWebZone":
+			return BROOD_WEB_TEXTURE
+		"AshEmberZone":
+			return ASH_EMBER_TEXTURE
+		"BossMoltenArmorPulse":
+			return MOLTEN_PULSE_TEXTURE
+		_:
+			return ZONE_TEXTURE
+
+
+static func _residue_texture(parent: Node2D, kind: String) -> Texture2D:
+	if kind == "poison":
+		return POISON_POOL_TEXTURE
+	if parent == null:
+		return null
+	match parent.name:
+		"BossRiftZone":
+			if str(parent.get_meta("boss_behavior", "")).contains("bone"):
+				return BONE_PRISON_TEXTURE
+			return RIFT_ZONE_TEXTURE
+		"BroodWebZone":
+			return BROOD_WEB_TEXTURE
+		"AshEmberZone":
+			return ASH_EMBER_TEXTURE
+		_:
+			return null
+
+
+static func _aura_texture(parent: Node2D) -> Texture2D:
+	var mechanics: Array = parent.get_meta("unique_mechanics", []) as Array if parent != null else []
+	if mechanics.has("reflect_thorns"):
+		return REFLECT_THORNS_TEXTURE
+	var elite_behavior := str(parent.get("elite_behavior")) if parent != null and parent.get("elite_behavior") != null else ""
+	if elite_behavior.contains("commander") or elite_behavior.contains("marshal"):
+		return COMMAND_AURA_TEXTURE
+	return RING_TEXTURE
 
 
 static func _additive(texture: Texture2D, color: Color) -> Sprite2D:
@@ -38,9 +103,9 @@ static func telegraph(parent: Node2D, radius: float, color: Color, windup: float
 	parent.add_child(holder)
 
 	var zone := Sprite2D.new()
-	zone.texture = ZONE_TEXTURE
+	zone.texture = _zone_texture(parent)
 	zone.modulate = Color(color.r, color.g, color.b, 0.0)
-	var target_scale: float = radius / ZONE_RADIUS
+	var target_scale: float = radius / _texture_radius(zone.texture)
 	zone.scale = Vector2.ONE * target_scale * 0.7
 	holder.add_child(zone)
 
@@ -76,11 +141,12 @@ static func detonate(parent: Node2D, radius: float, color: Color, kind := "") ->
 	burst.name = "HazardBurst"
 	parent.add_child(burst)
 
-	if kind == "poison":
+	var residue_texture := _residue_texture(parent, kind)
+	if residue_texture != null:
 		var pool := Sprite2D.new()
-		pool.texture = POISON_POOL_TEXTURE
+		pool.texture = residue_texture
 		pool.modulate = Color(1.0, 1.0, 1.0, 0.0)
-		pool.scale = Vector2.ONE * (radius / 128.0)
+		pool.scale = Vector2.ONE * (radius / _texture_radius(residue_texture))
 		pool.z_index = -1
 		burst.add_child(pool)
 		var pool_tween := burst.create_tween()
@@ -132,8 +198,9 @@ static func aura_pulse(parent: Node2D, radius: float, color: Color) -> void:
 	holder.z_index = -1
 	parent.add_child(holder)
 
-	var glow := _additive(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.7))
-	glow.scale = Vector2.ONE * (radius / 200.0)
+	var aura_texture := _aura_texture(parent)
+	var glow := _additive(aura_texture, Color(color.r, color.g, color.b, 0.7))
+	glow.scale = Vector2.ONE * (radius / _texture_radius(aura_texture))
 	holder.add_child(glow)
 
 	var ring := _additive(RING_TEXTURE, Color(color.r, color.g, color.b, 0.85))
@@ -152,3 +219,39 @@ static func aura_pulse(parent: Node2D, radius: float, color: Color) -> void:
 	tween.tween_property(ring2, "modulate:a", 0.0, 0.4).set_delay(0.12)
 	tween.tween_property(glow, "modulate:a", 0.0, 0.4)
 	tween.chain().tween_callback(holder.queue_free)
+
+
+## Short-lived defensive front plate used for elite/boss shield activation.
+static func shield_block(parent: Node2D, color: Color) -> void:
+	if not is_instance_valid(parent) or not parent.is_inside_tree():
+		return
+	var holder := Node2D.new()
+	holder.name = "ShieldBlockVfx"
+	holder.z_index = 13
+	parent.add_child(holder)
+
+	var shield := _additive(SHIELD_BLOCK_TEXTURE, Color(color.r, color.g, color.b, 0.78))
+	shield.position = Vector2(0.0, -12.0)
+	shield.scale = Vector2.ONE * 0.34
+	holder.add_child(shield)
+
+	var tween := holder.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(shield, "scale", Vector2.ONE * 0.54, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(shield, "modulate:a", 0.0, 0.55).set_delay(0.18)
+	tween.chain().tween_callback(holder.queue_free)
+
+
+static func summon_portal(parent: Node2D, radius: float, color: Color) -> void:
+	if not is_instance_valid(parent) or not parent.is_inside_tree():
+		return
+	var portal := _additive(SUMMON_PORTAL_TEXTURE, Color(color.r, color.g, color.b, 0.82))
+	portal.name = "SummonPortalVfx"
+	portal.z_index = 8
+	portal.scale = Vector2.ONE * (radius / _texture_radius(SUMMON_PORTAL_TEXTURE))
+	parent.add_child(portal)
+	var tween := portal.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(portal, "rotation", TAU * 0.12, 0.55).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(portal, "modulate:a", 0.0, 0.45).set_delay(0.25)
+	tween.chain().tween_callback(portal.queue_free)

@@ -76,6 +76,14 @@ State language:
 - pressed: darker parchment/metal and subtly compressed read, matching the reference;
 - disabled: desaturated grayscale, matching the reference.
 
+Runtime button sizing (SCRUM-263/SCRUM-264):
+
+- standard action buttons use a 104px minimum height through `_make_button()` / `_set_action_button_size()`;
+- the main menu uses the same 104px height, with tighter vertical separation so all six actions fit at 1280x720;
+- wide action buttons cap their visual width at 560px so the parchment ends and wax seal do not visibly stretch into a strip;
+- text-heavy choices use an information frame above a short standard button instead of placing paragraphs inside a large button;
+- compact utility controls, route nodes, shop item hit areas, hero thumbnails and weapon/reward cards are intentional exceptions and should not receive the wax-seal action button frame.
+
 SCRUM-229 updates the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, selected `assets/sprites/ui/shop/` paths and non-button `assets/sprites/ui/frames/dark_fantasy/` paths to leather+gold visuals. SCRUM-222 completed Back-end integration for explicit 4-state button styleboxes: runtime button roles map to `primary`, `secondary`, and `danger` texture sets, while common panels/cards/HUD/tooltip styleboxes resolve through `dark_fantasy/` frame paths that now carry the leather+gold panel kit.
 
 Rebuild/QA assets:
@@ -160,6 +168,8 @@ Attack VFX sprites live in `assets/sprites/effects/` and are transparent PNGs in
 `scripts/class_weapon.gd` now selects these by `pool_element` and animates them with pause-aware node-bound tweens. The gameplay radius, tick interval and duration stay data-driven from weapon config. QA preview: `docs/design/previews/vfx_pool_assets_contact.png`.
 
 SCRUM-181 refreshed the full active VFX set again on 2026-06-13 after the sprite audit: all 19 `assets/sprites/effects/*.png` files now use a restrained painterly D&D/tabletop treatment with softer alpha edges, earthy gold/green/violet accents, readable silhouettes, and no acid-neon or baked pure-white overexposure. Tintable assets (`hazard_zone.png`, `elite_telegraph_circle.png`) remain warm-neutral so code modulation can recolor them. QA/reference previews live in `docs/design/previews/vfx_polish_before_contact.png`, `docs/design/previews/vfx_polish_after_contact.png`, `docs/design/previews/vfx_polish_before_after_contact.png`, `docs/design/previews/vfx_polish_readability_field_meadow.png`, and `docs/design/previews/vfx_polish_readability_field_marsh.png`.
+
+SCRUM-258 extends this with a full unique weapon signature set for sprint 0.1.5: `assets/sprites/effects/vfx_weapon_<weapon_id>.png` for every current weapon ID in `ProgressionData.WEAPONS_BY_CLASS` (51 files, `256x256` RGBA transparent). These are not inventory icons: they are short-lived combat plates used by `AttackVfx.weapon_signature()` to make each unique class/weapon mechanic visually distinct while preserving the exact Back-end mechanics. Style rules: restrained D&D/tabletop magic, readable at combat scale, no UI frame, no text, no watermark, no acid-neon; silhouettes should stay simple enough to read under tint and tween fade. Rebuild pipeline: `tools/generate_unique_weapon_vfx_015.py`; previews: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png` and `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
 
 ## Screen And Map Backgrounds
 

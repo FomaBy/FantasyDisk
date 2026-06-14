@@ -1,6 +1,6 @@
 # Опции прицеливания — 2 режима: автонаводка на ближайшего и наведение по курсору
 
-Статус: new (возвращён в бэклог 0.1.5 PM 2026-06-13 по команде пользователя — фриз: патч 0.1.5 не делается в спринте 0.1.4)
+Статус: done
 Приоритет: high
 Роль: Back-end (бой/опции)
 Версия: 0.1.5
@@ -46,6 +46,29 @@ player.gd/class_weapon.gd). Нужен переключаемый режим.
 - tests/
 
 ## Acceptance Criteria
-- [ ] Опция 2 режимов, персист, живое применение.
-- [ ] По курсору работает для всех типов оружия; автонаводка сохранена.
-- [ ] Тест вектора атаки; 6 smoke + глобальный balance smoke зелёные.
+- [x] Опция 2 режимов, персист, живое применение.
+- [x] По курсору работает для всех типов оружия; автонаводка сохранена.
+- [x] Тест вектора атаки; 6 smoke + глобальный balance smoke зелёные.
+
+## Result 2026-06-13
+
+SCRUM-241 done. Во вкладку «Управление» добавлен persisted переключатель
+`Прицеливание`: `Автонаводка на ближайшего` / `По курсору`. `scripts/player.gd`
+теперь дает единый Back-end API `attack_aim_mode`, `attack_aim_direction` и
+`attack_aim_position`; `ClassWeapon`, `BerserkWeapon` и `SummonerWeapon`
+используют его без изменения баланса. `nearest` сохраняет старую автонаводку,
+`cursor` направляет melee/лучи/снаряды/deploy/point-AoE на курсор.
+
+Документация обновлена: `CHANGELOG.md`,
+`docs/design/current_game_state.md`, `docs/design/systems/combat.md`. Отчет:
+`build/aim_modes_scrum241_report.md`.
+
+Проверки:
+- `tests/aim_mode_settings_test.gd` — passed.
+- `tests/game_settings_smoke_test.gd` — passed.
+- `tests/melee_weapon_targeting_test.gd` — passed.
+- `tests/runtime_smoke_weapon_mechanics_test.gd` — passed.
+- `tests/runtime_smoke_ui_test.gd` — passed.
+- `tests/global_damage_balance_smoke_test.gd` — passed.
+- `tests/global_survivability_balance_smoke_test.gd` — passed.
+- `tests/runtime_smoke_test.gd` — passed.

@@ -28,6 +28,7 @@ func _test_vfx_helpers() -> void:
 		AttackVfxScript.sound_wave_blast(host, Vector2.ZERO, Vector2.RIGHT, 300.0, color),
 		AttackVfxScript.ring_pulse(host, Vector2(10, 10), 180.0, color, true),
 		AttackVfxScript.curse_skull(host, Vector2.ZERO, Vector2(120, 0), color, 0.2, Callable()),
+		AttackVfxScript.weapon_signature(host, Vector2(42, 42), "sword", 140.0, color, 0.0),
 	]
 	for node in nodes:
 		if node == null or not is_instance_valid(node):

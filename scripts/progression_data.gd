@@ -9,6 +9,7 @@ const ULTIMATE_CONFIGS := CharacterData.ULTIMATE_CONFIGS
 const CLASS_DAMAGE_PARAMETER := CharacterData.CLASS_DAMAGE_PARAMETER
 const STAT_CLASS_RELEVANCE := CharacterData.STAT_CLASS_RELEVANCE
 const CLASS_INTERPRETATIONS := CharacterData.CLASS_INTERPRETATIONS
+const CLASS_MECHANIC_IDENTITIES := CharacterData.CLASS_MECHANIC_IDENTITIES
 const ATTRIBUTE_PRIORITIES := CharacterData.ATTRIBUTE_PRIORITIES
 const ATTRIBUTE_PRIORITY_REASONS := CharacterData.ATTRIBUTE_PRIORITY_REASONS
 
@@ -17,6 +18,32 @@ const CLASS_BUDGET_PROFILES := BalanceData.CLASS_BUDGET_PROFILES
 const BALANCE_BASE_SOLO_DPS := BalanceData.BALANCE_BASE_SOLO_DPS
 const BALANCE_BASE_AOE_DPS := BalanceData.BALANCE_BASE_AOE_DPS
 const BALANCE_WINDOW_SECONDS := BalanceData.BALANCE_WINDOW_SECONDS
+const CROWD_CLEAR_TARGET_COUNTS := BalanceData.CROWD_CLEAR_TARGET_COUNTS
+const CROWD_CLEAR_ENEMY_HP := BalanceData.CROWD_CLEAR_ENEMY_HP
+const CROWD_CLEAR_CORRIDOR := BalanceData.CROWD_CLEAR_CORRIDOR
+const CROWD_CLEAR_SOLO_CORRIDOR := BalanceData.CROWD_CLEAR_SOLO_CORRIDOR
+const SURVIVABILITY_DEFENSE_CAP := BalanceData.SURVIVABILITY_DEFENSE_CAP
+const SURVIVABILITY_DEFENSE_DIMINISH := BalanceData.SURVIVABILITY_DEFENSE_DIMINISH
+const SURVIVABILITY_DODGE_CAP := BalanceData.SURVIVABILITY_DODGE_CAP
+const SURVIVABILITY_DODGE_DIMINISH := BalanceData.SURVIVABILITY_DODGE_DIMINISH
+const SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION := BalanceData.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION
+const SURVIVABILITY_ABSORB_FLAT_DIMINISH := BalanceData.SURVIVABILITY_ABSORB_FLAT_DIMINISH
+const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := BalanceData.SURVIVABILITY_REGEN_FLAT_MULTIPLIER
+const VAMPIRIC_CHANCE_CAP := BalanceData.VAMPIRIC_CHANCE_CAP
+const VAMPIRIC_DAMAGE_HEAL_RATIO := BalanceData.VAMPIRIC_DAMAGE_HEAL_RATIO
+const VAMPIRIC_BASE_HEAL_MULTIPLIER := BalanceData.VAMPIRIC_BASE_HEAL_MULTIPLIER
+const VAMPIRIC_HEAL_CAP_DEFAULT := BalanceData.VAMPIRIC_HEAL_CAP_DEFAULT
+const VAMPIRIC_HEAL_CAP_HARD := BalanceData.VAMPIRIC_HEAL_CAP_HARD
+const WEAPON_DRAIN_HEAL_MULTIPLIER := BalanceData.WEAPON_DRAIN_HEAL_MULTIPLIER
+const CRIT_CHANCE_CAP := BalanceData.CRIT_CHANCE_CAP
+const CRIT_CHANCE_DIMINISH := BalanceData.CRIT_CHANCE_DIMINISH
+const CRIT_FLAT_EFFECTIVENESS := BalanceData.CRIT_FLAT_EFFECTIVENESS
+const CRIT_DAMAGE_BASE_MULTIPLIER := BalanceData.CRIT_DAMAGE_BASE_MULTIPLIER
+const CRIT_DAMAGE_AGILITY_SCALE := BalanceData.CRIT_DAMAGE_AGILITY_SCALE
+const CRIT_DAMAGE_FLAT_EFFECTIVENESS := BalanceData.CRIT_DAMAGE_FLAT_EFFECTIVENESS
+const CRIT_DAMAGE_CAP := BalanceData.CRIT_DAMAGE_CAP
+const WEAPON_ARCHETYPE_BY_MODE := BalanceData.WEAPON_ARCHETYPE_BY_MODE
+const ATTRIBUTE_WEAPON_SYNERGY_MAP := BalanceData.ATTRIBUTE_WEAPON_SYNERGY_MAP
 const STAGE_SCALE_BASE := BalanceData.STAGE_SCALE_BASE
 const STAGE_SCALE_LINEAR := BalanceData.STAGE_SCALE_LINEAR
 const ECONOMY_PRICE_MULTIPLIER := BalanceData.ECONOMY_PRICE_MULTIPLIER
@@ -60,7 +87,11 @@ const ShopData := preload("res://scripts/progression_data_shop.gd")
 const SHOP_ITEMS := ShopData.SHOP_ITEMS
 
 const EnemyData := preload("res://scripts/progression_data_enemies.gd")
+const ENEMY_SIZE_PROFILES := EnemyData.ENEMY_SIZE_PROFILES
 const MINI_ELITE_KINDS := EnemyData.MINI_ELITE_KINDS
+const ENEMY_MECHANIC_CATALOG := EnemyData.ENEMY_MECHANIC_CATALOG
+const ELITE_ATTACK_CONFIGS := EnemyData.ELITE_ATTACK_CONFIGS
+const UNIQUE_ENCOUNTER_PATTERNS := EnemyData.UNIQUE_ENCOUNTER_PATTERNS
 
 static func artifact_definition(artifact_id: String) -> Dictionary:
 	for artifact in ARTIFACTS:
@@ -108,6 +139,45 @@ static func class_interpretation_text(character_id: String, stat_or_parameter_id
 
 static func attribute_priorities(character_id: String) -> Array:
 	return (ATTRIBUTE_PRIORITIES.get(character_id, []) as Array).duplicate()
+
+
+static func class_mechanic_identity(character_id: String) -> Dictionary:
+	var fallback: Dictionary = CLASS_MECHANIC_IDENTITIES.get("berserk", {}) as Dictionary
+	var identity: Dictionary = CLASS_MECHANIC_IDENTITIES.get(character_id, fallback) as Dictionary
+	return identity.duplicate(true)
+
+
+static func class_main_attribute(character_id: String) -> String:
+	var identity: Dictionary = class_mechanic_identity(character_id)
+	var main_attribute: String = str(identity.get("main_attribute", ""))
+	if main_attribute != "":
+		return main_attribute
+	var priorities: Array = attribute_priorities(character_id)
+	if not priorities.is_empty():
+		return str(priorities[0])
+	return "strength"
+
+
+static func weapon_mechanic_identity(character_id: String, weapon_id: String) -> String:
+	var identity: Dictionary = class_mechanic_identity(character_id)
+	var weapon_identities: Dictionary = identity.get("weapon_identities", {}) as Dictionary
+	return str(weapon_identities.get(weapon_id, ""))
+
+
+static func weapon_archetype(weapon_config: Dictionary) -> String:
+	if int(weapon_config.get("max_summons", 0)) > 0 or weapon_config.has("summon_damage_multiplier") or str(weapon_config.get("summon_role", "")) != "":
+		return "summon"
+	var mode := str(weapon_config.get("attack_mode", weapon_config.get("attack_shape", "single")))
+	return str(WEAPON_ARCHETYPE_BY_MODE.get(mode, "projectile"))
+
+
+static func attribute_weapon_synergy_map() -> Dictionary:
+	return ATTRIBUTE_WEAPON_SYNERGY_MAP.duplicate(true)
+
+
+static func attribute_weapon_synergy_description(stat_id: String, weapon_config: Dictionary) -> String:
+	var stat_map: Dictionary = ATTRIBUTE_WEAPON_SYNERGY_MAP.get(stat_id, {}) as Dictionary
+	return str(stat_map.get(weapon_archetype(weapon_config), "Универсально усиливает текущую схему оружия."))
 
 
 static func attribute_priority_reason(character_id: String, stat_id: String) -> String:
@@ -162,6 +232,77 @@ static func level_up_reward_weight(reward: Dictionary, character_id: String) -> 
 
 static func ultimate_config(character_id: String) -> Dictionary:
 	return ULTIMATE_CONFIGS.get(character_id, ULTIMATE_CONFIGS["berserk"]).duplicate(true)
+
+
+static func _diminishing_percent(raw_value: float, cap: float, curve: float) -> float:
+	var raw := maxf(raw_value, 0.0)
+	var softened := raw / (1.0 + raw * curve)
+	return clampf(softened, 0.0, cap)
+
+
+static func effective_defense(raw_defense: float) -> float:
+	return _diminishing_percent(raw_defense, SURVIVABILITY_DEFENSE_CAP, SURVIVABILITY_DEFENSE_DIMINISH)
+
+
+static func effective_dodge(raw_dodge: float) -> float:
+	return _diminishing_percent(raw_dodge, SURVIVABILITY_DODGE_CAP, SURVIVABILITY_DODGE_DIMINISH)
+
+
+static func effective_absorb(endurance: float, flat_absorb: float) -> float:
+	var base_absorb := maxf(endurance, 0.0) * 0.16
+	var positive_flat := maxf(flat_absorb, 0.0)
+	var negative_flat := minf(flat_absorb, 0.0)
+	var softened_flat := positive_flat / (1.0 + positive_flat * SURVIVABILITY_ABSORB_FLAT_DIMINISH)
+	return maxf(0.0, base_absorb + softened_flat + negative_flat)
+
+
+static func effective_regeneration(knowledge: float, flat_regeneration: float) -> float:
+	var positive_flat := maxf(flat_regeneration, 0.0) * SURVIVABILITY_REGEN_FLAT_MULTIPLIER
+	var negative_flat := minf(flat_regeneration, 0.0)
+	var regen_base := maxf(0.0, 0.22 + positive_flat + negative_flat)
+	var knowledge_scale := 0.45 + maxf(knowledge, 0.0) / 12.0
+	return regen_base * knowledge_scale
+
+
+static func effective_vampiric_chance(raw_chance: float) -> float:
+	return clampf(raw_chance, 0.0, VAMPIRIC_CHANCE_CAP)
+
+
+static func effective_vampiric_cap(raw_cap: float) -> float:
+	return clampf(raw_cap, 0.0, VAMPIRIC_HEAL_CAP_HARD)
+
+
+static func effective_crit_chance(raw_chance: float) -> float:
+	var raw := maxf(raw_chance, 0.0)
+	var softened := raw / (1.0 + raw * CRIT_CHANCE_DIMINISH)
+	return clampf(softened, 0.0, CRIT_CHANCE_CAP)
+
+
+static func effective_crit_damage_multiplier(agility: float, flat_bonus: float) -> float:
+	var positive_flat := maxf(flat_bonus, 0.0) * CRIT_DAMAGE_FLAT_EFFECTIVENESS
+	var negative_flat := minf(flat_bonus, 0.0)
+	var multiplier := CRIT_DAMAGE_BASE_MULTIPLIER + maxf(agility, 0.0) * CRIT_DAMAGE_AGILITY_SCALE + positive_flat + negative_flat
+	return clampf(multiplier, 1.0, CRIT_DAMAGE_CAP)
+
+
+static func _archetype_damage_multiplier(archetype: String, strength: float, agility: float, intelligence: float, perception: float, energy: float, knowledge: float, endurance: float, leadership: float) -> float:
+	var bonus := 0.0
+	match archetype:
+		"melee":
+			bonus = strength * 0.004 + endurance * 0.003 + agility * 0.002
+		"projectile":
+			bonus = perception * 0.004 + agility * 0.003 + strength * 0.002
+		"beam":
+			bonus = intelligence * 0.004 + energy * 0.003 + perception * 0.002
+		"aoe":
+			bonus = perception * 0.004 + intelligence * 0.003 + knowledge * 0.002
+		"summon":
+			bonus = leadership * 0.004 + knowledge * 0.003 + intelligence * 0.002
+		"aura":
+			bonus = leadership * 0.004 + energy * 0.003 + perception * 0.002
+		_:
+			bonus = perception * 0.002 + agility * 0.002
+	return 1.0 + bonus
 
 
 static func base_stats(character_id: String) -> Dictionary:
@@ -328,12 +469,17 @@ static func estimate_weapon_budget(character_id: String, weapon_config: Dictiona
 	var crit_factor := 1.0 + float(params.get("crit_chance", 0.0)) * maxf(float(params.get("crit_damage_multiplier", 1.0)) - 1.0, 0.0)
 	var interval := maxf(float(config.get("fire_interval", 1.0)) / maxf(float(params.get("attack_speed", 1.0)), 0.1), 0.18)
 	var direct_dps := base_damage * crit_factor / interval
+	if _is_pure_summon_weapon(config):
+		direct_dps = 0.0
+	elif str(config.get("summon_role", "")) != "":
+		direct_dps *= _budget_summon_role_damage_factor(config, params)
 	var hit_model := _budget_hit_model(config)
+	var melee_unique_budget := _budget_melee_unique_bonus(config)
 	var dot_dps := _budget_dot_dps(config, params, interval)
 	var pool_dps := _budget_pool_dps(config, params, interval)
 	var summon_dps := _budget_summon_dps(config, params)
-	var solo_dps := direct_dps * float(hit_model.get("solo_hits", 1.0)) + dot_dps + pool_dps + summon_dps
-	var aoe_dps := direct_dps * float(hit_model.get("five_hits", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0)) + summon_dps * float(hit_model.get("summon_targets", 1.0))
+	var solo_dps := direct_dps * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps + summon_dps
+	var aoe_dps := direct_dps * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0)) + summon_dps * float(hit_model.get("summon_targets", 1.0))
 	var ultimate := _budget_ultimate_dps(character_id, params)
 	solo_dps += float(ultimate.get("solo", 0.0))
 	aoe_dps += float(ultimate.get("aoe", 0.0))
@@ -348,6 +494,69 @@ static func estimate_weapon_budget(character_id: String, weapon_config: Dictiona
 		"direct_dps": snappedf(direct_dps, 0.01),
 		"hit_model": hit_model,
 	}
+
+
+static func estimate_crowd_clear_budget(character_id: String, weapon_config: Dictionary, target_count: int, apply_budget := true) -> Dictionary:
+	var count: int = maxi(target_count, 1)
+	var profile := class_budget_profile(character_id)
+	var metrics := estimate_weapon_budget(character_id, weapon_config, apply_budget)
+	var tuning: Dictionary = weapon_config.get("budget_tuning", {})
+	var aoe_target := float(tuning.get(
+		"aoe_target",
+		BALANCE_BASE_AOE_DPS * float(profile.get("aoe_target", 1.0)) * float(profile.get("damage_budget", 1.0))
+	))
+	var crowd_dps := maxf(float(metrics.get("aoe_dps", 0.0)) * _crowd_clear_density_factor(weapon_config, count), 0.001)
+	var target_dps := maxf(aoe_target * _crowd_clear_target_factor(weapon_config, count), 0.001)
+	var total_hp := CROWD_CLEAR_ENEMY_HP * float(count)
+	var cct := total_hp / crowd_dps
+	var target_cct := total_hp / target_dps
+	return {
+		"target_count": count,
+		"crowd_dps": snappedf(crowd_dps, 0.01),
+		"target_dps": snappedf(target_dps, 0.01),
+		"cct": snappedf(cct, 0.01),
+		"target_cct": snappedf(target_cct, 0.01),
+		"cct_dev": snappedf(cct / maxf(target_cct, 0.001) - 1.0, 0.001),
+		"enemy_hp": CROWD_CLEAR_ENEMY_HP,
+	}
+
+
+static func crowd_clear_counts() -> Array:
+	return CROWD_CLEAR_TARGET_COUNTS.duplicate(true)
+
+
+static func _crowd_clear_density_factor(config: Dictionary, target_count: int) -> float:
+	var mode := str(config.get("attack_mode", config.get("attack_shape", "single")))
+	var archetype := weapon_archetype(config)
+	var count := float(maxi(target_count, 1))
+	var factor := 1.0
+	if count >= 10.0:
+		factor *= 0.96
+	if count >= 20.0:
+		factor *= 0.94
+	match archetype:
+		"aoe", "aura":
+			factor *= 1.05
+		"summon":
+			factor *= 0.96
+		"beam":
+			factor *= 0.98
+		"melee":
+			factor *= 0.98
+	if ["sniper_lockshot", "moon_crossbow", "drain_link"].has(mode):
+		factor *= 0.92
+	elif ["aoe_projectile", "grenade_cook", "smoke_bomb", "meteor_shards", "bio_spore_bloom", "engineer_pressure_mines"].has(mode):
+		factor *= 1.04
+	return clampf(factor, 0.82, 1.12)
+
+
+static func _crowd_clear_target_factor(config: Dictionary, target_count: int) -> float:
+	var archetype := weapon_archetype(config)
+	var count := float(maxi(target_count, 1))
+	var factor := 1.0
+	if count >= 20.0 and ["aoe", "aura", "summon"].has(archetype):
+		factor = 1.04
+	return factor
 
 
 static func _budget_hit_model(config: Dictionary) -> Dictionary:
@@ -466,6 +675,28 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 	return {"solo_hits": 1.0, "five_hits": 1.0}
 
 
+static func _budget_melee_unique_bonus(config: Dictionary) -> Dictionary:
+	var solo_bonus := 1.0
+	var aoe_bonus := 1.0
+	var close_multiplier := float(config.get("melee_close_damage_multiplier", 1.0))
+	if float(config.get("melee_close_bonus_radius", 0.0)) > 0.0 and close_multiplier > 1.0:
+		var close_uptime := 0.58 if weapon_archetype(config) == "melee" else 0.34
+		solo_bonus += (close_multiplier - 1.0) * close_uptime
+		aoe_bonus += (close_multiplier - 1.0) * close_uptime
+	var execute_multiplier := float(config.get("melee_execute_multiplier", 1.0))
+	var execute_threshold := float(config.get("melee_execute_threshold", 0.0))
+	if execute_threshold > 0.0 and execute_multiplier > 1.0:
+		var execute_uptime := clampf(execute_threshold, 0.0, 0.55) * 0.72
+		solo_bonus += (execute_multiplier - 1.0) * execute_uptime
+		aoe_bonus += (execute_multiplier - 1.0) * execute_uptime
+	var followup_radius := float(config.get("melee_arc_followup_radius", 0.0))
+	var followup_multiplier := float(config.get("melee_arc_followup_multiplier", 0.0))
+	if followup_radius > 0.0 and followup_multiplier > 0.0:
+		var followup_targets := clampf(followup_radius / 115.0, 0.45, 2.4)
+		aoe_bonus += followup_multiplier * followup_targets
+	return {"solo": solo_bonus, "aoe": aoe_bonus}
+
+
 static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: float) -> float:
 	var ticks := float(config.get("dot_ticks", 0.0))
 	if ticks <= 0.0:
@@ -485,8 +716,20 @@ static func _budget_summon_dps(config: Dictionary, params: Dictionary) -> float:
 	if int(config.get("max_summons", 0)) <= 0 and not config.has("summon_damage_multiplier"):
 		return 0.0
 	var summon_count: float = maxf(float(config.get("max_summons", 1.0)), 1.0) + floor(float(params.get("summon_amount", 0.0)) / 4.0)
-	var summon_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) * float(config.get("summon_damage_multiplier", 0.36))
-	return summon_count * summon_damage / 0.95
+	var summon_amount := float(params.get("summon_amount", 0.0))
+	var attack_interval := maxf(float(config.get("summon_attack_interval", 0.45)) / (1.0 + minf(summon_amount * 0.012, 0.18)), 0.18)
+	var role_factor := _budget_summon_role_damage_factor(config, params)
+	var summon_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) * float(config.get("summon_damage_multiplier", 0.36)) * role_factor
+	return summon_count * summon_damage / attack_interval
+
+
+static func _is_pure_summon_weapon(config: Dictionary) -> bool:
+	return config.has("summon_damage_multiplier") and not config.has("attack_mode") and not config.has("attack_shape")
+
+
+static func _budget_summon_role_damage_factor(config: Dictionary, params: Dictionary) -> float:
+	var summon_amount := float(params.get("summon_amount", 0.0))
+	return float(config.get("summon_role_damage_multiplier", 1.0)) * (1.0 + minf(summon_amount * 0.018, 0.22))
 
 
 static func _budget_ultimate_dps(character_id: String, params: Dictionary) -> Dictionary:
@@ -506,12 +749,15 @@ static func _budget_ultimate_dps(character_id: String, params: Dictionary) -> Di
 
 static func _budget_ehp(config: Dictionary, params: Dictionary) -> float:
 	var health := float(params.get("health_point", 1.0))
-	var defense := clampf(float(params.get("defense", 0.0)), 0.0, 0.75)
-	var dodge := clampf(float(params.get("dodge", 0.0)), 0.0, 0.8)
+	var defense := clampf(float(params.get("defense", 0.0)), 0.0, SURVIVABILITY_DEFENSE_CAP)
+	var dodge := clampf(float(params.get("dodge", 0.0)), 0.0, SURVIVABILITY_DODGE_CAP)
 	var absorb := float(params.get("absorb", 0.0))
 	var regen := float(params.get("regeneration", 0.0))
-	var lifesteal := float(config.get("heal_percent_of_damage", 0.0)) * 120.0 + float(config.get("heal_percent_on_attack", 0.0)) * health * 2.0
-	return health / maxf(1.0 - defense, 0.05) / maxf(1.0 - dodge, 0.05) + absorb * 10.0 + regen * BALANCE_WINDOW_SECONDS + lifesteal
+	var lifesteal := (
+		float(config.get("heal_percent_of_damage", 0.0)) * 120.0
+		+ float(config.get("heal_percent_on_attack", 0.0)) * health * 2.0
+	) * WEAPON_DRAIN_HEAL_MULTIPLIER
+	return health / maxf(1.0 - defense, 0.10) / maxf(1.0 - dodge, 0.10) + absorb * 6.0 + regen * BALANCE_WINDOW_SECONDS + lifesteal
 
 
 static func weapon(character_id: String, weapon_id: String) -> Dictionary:
@@ -555,6 +801,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var aoe_radius_multiplier := pow(float(run_modifiers.get("aoe_radius_multiplier", 1.0)), upgrade_aoe_exponent) * float(passive_mods.get("aoe_radius_multiplier", 1.0))
 	var knockback_multiplier := float(run_modifiers.get("knockback_multiplier", 1.0)) * float(passive_mods.get("knockback_multiplier", 1.0))
 	var defense_flat := float(run_modifiers.get("defense_flat", 0.0)) + float(passive_mods.get("defense_flat", 0.0))
+	var absorb_flat := float(run_modifiers.get("absorb_flat", 0.0)) + float(passive_mods.get("absorb_flat", 0.0))
+	var regeneration_flat := float(run_modifiers.get("regeneration_flat", 0.0)) + float(passive_mods.get("regeneration_flat", 0.0))
 	var pickup_radius_flat := float(run_modifiers.get("pickup_radius_flat", 0.0)) + float(passive_mods.get("pickup_radius_flat", 0.0))
 	var max_health_flat := float(run_modifiers.get("max_health_flat", 0.0)) + float(passive_mods.get("max_health_flat", 0.0))
 	var projectile_speed_flat := float(run_modifiers.get("projectile_speed_flat", 0.0)) + float(passive_mods.get("projectile_speed_flat", 0.0))
@@ -562,37 +810,49 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var buff_power_flat := float(run_modifiers.get("buff_power_flat", 0.0)) + float(passive_mods.get("buff_power_flat", 0.0))
 	var dot_damage_flat := float(run_modifiers.get("dot_damage_flat", 0.0)) + float(passive_mods.get("dot_damage_flat", 0.0))
 	var dot_speed_flat := float(run_modifiers.get("dot_speed_flat", 0.0)) + float(passive_mods.get("dot_speed_flat", 0.0))
+	var crit_chance_flat := (float(run_modifiers.get("crit_chance_flat", 0.0)) + float(passive_mods.get("crit_chance_flat", 0.0))) * CRIT_FLAT_EFFECTIVENESS
+	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + float(passive_mods.get("crit_damage_flat", 0.0))
+	if passive_mods.has("crit_damage_multiplier"):
+		crit_damage_flat += float(passive_mods.get("crit_damage_multiplier", 1.0)) - 1.0
+	var archetype := weapon_archetype(weapon_config)
+	var archetype_damage_multiplier := _archetype_damage_multiplier(archetype, strength, agility, intelligence, perception, energy, knowledge, endurance, leadership)
+	var universal_damage_flat := float(run_modifiers.get("damage_flat", 0.0))
+	var physical_base := 15.0 * strength / 10.0 + intelligence * 0.18 + perception * 0.10 + energy * 0.12 + knowledge * 0.09 + endurance * 0.08 + leadership * 0.10
+	var magic_base := 14.0 * intelligence / 10.0 + energy * 0.65 + strength * 0.16 + agility * 0.08 + perception * 0.12 + knowledge * 0.14 + endurance * 0.06 + leadership * 0.10
+	var sound_base := 12.0 * (perception + energy) / 12.0 + leadership * 0.45 + strength * 0.08 + agility * 0.08 + intelligence * 0.09 + knowledge * 0.10 + endurance * 0.05
+	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
+	var universal_dot_base := 4.0 + knowledge * 0.65 + intelligence * 0.18 + strength * 0.12 + perception * 0.10 + energy * 0.10 + leadership * 0.10 + dot_damage_flat
 
 	return {
-		"damage": (15.0 * strength / 10.0) * weapon_damage_multiplier * damage_multiplier + float(run_modifiers.get("damage_flat", 0.0)),
-		"magic_damage": (14.0 * intelligence / 10.0 + energy * 0.65) * weapon_damage_multiplier * damage_multiplier + float(run_modifiers.get("damage_flat", 0.0)),
-		"sound_wave_damage": (12.0 * (perception + energy) / 12.0 + leadership * 0.45) * weapon_damage_multiplier * damage_multiplier + float(run_modifiers.get("damage_flat", 0.0)),
-		"attack_speed": max(0.1, (9.0 * 3.0 * agility / 100.0) * attack_speed_multiplier),
-		"crit_chance": clamp(0.05 + agility / 100.0 + float(run_modifiers.get("crit_chance_flat", 0.0)), 0.0, 0.8),
-		"crit_damage_multiplier": 1.0 + 2.0 * agility / 20.0 + float(run_modifiers.get("crit_damage_flat", 0.0)),
+		"damage": physical_base * weapon_damage_multiplier * damage_multiplier * archetype_damage_multiplier + universal_damage_flat,
+		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier * archetype_damage_multiplier + universal_damage_flat,
+		"sound_wave_damage": sound_base * weapon_damage_multiplier * damage_multiplier * archetype_damage_multiplier + universal_damage_flat,
+		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
+		"crit_chance": effective_crit_chance(0.04 + agility * 0.0075 + crit_chance_flat),
+		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
 		"move_speed": (282.0 + agility * 6.2) * move_speed_multiplier,
-		"dodge": clamp(0.03 + agility * 0.014 + float(run_modifiers.get("dodge_flat", 0.0)), 0.0, 0.75),
-		"defense": clamp(0.06 + endurance * 0.022 + defense_flat, 0.0, 0.75),
+		"dodge": effective_dodge(0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0))),
+		"defense": effective_defense(0.04 + endurance * 0.018 + defense_flat),
 		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
-		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + perception * 2.5) * range_multiplier,
-		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + perception * 3.5) * aoe_radius_multiplier,
+		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + perception * 2.5 + intelligence * 0.35 + endurance * 0.25 + leadership * 0.35) * range_multiplier,
+		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + perception * 3.5 + intelligence * 0.45 + knowledge * 0.35 + leadership * 0.30) * aoe_radius_multiplier,
 		"pickup_radius": 105.0 + perception * 7.0 + pickup_radius_flat,
-		"dot_damage": max(1.0, (4.0 + knowledge * 0.65 + dot_damage_flat) * damage_multiplier),
-		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + dot_speed_flat),
-		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + projectile_speed_flat,
-		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + aura_radius_flat) * aoe_radius_multiplier,
-		"buff_power": 1.0 + leadership * 0.025 + buff_power_flat,
+		"dot_damage": max(1.0, universal_dot_base * damage_multiplier),
+		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010 + dot_speed_flat),
+		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + energy * 4.0 + knowledge * 2.0 + projectile_speed_flat,
+		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + perception * 0.80 + energy * 0.65 + knowledge * 0.45 + aura_radius_flat) * aoe_radius_multiplier,
+		"buff_power": 1.0 + leadership * 0.025 + knowledge * 0.006 + energy * 0.004 + buff_power_flat,
 		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier,
-		"summon_amount": leadership,
+		"summon_amount": leadership + knowledge * 0.18 + intelligence * 0.12 + energy * 0.10,
 		# Подключение полного набора атрибутов (аудит 2026-06-11):
-		"absorb": endurance * 0.25 + float(run_modifiers.get("absorb_flat", 0.0)),
-		"regeneration": (0.55 + float(run_modifiers.get("regeneration_flat", 0.0))) * (0.65 + knowledge / 5.0),
-		"vampiric_chance": clampf(float(run_modifiers.get("vampiric_chance_flat", 0.0)), 0.0, 0.35),
-		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)),
+		"absorb": effective_absorb(endurance, absorb_flat),
+		"regeneration": effective_regeneration(knowledge, regeneration_flat),
+		"vampiric_chance": effective_vampiric_chance(float(run_modifiers.get("vampiric_chance_flat", 0.0))),
+		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)) * VAMPIRIC_BASE_HEAL_MULTIPLIER,
 		"knockback_distance": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier * endurance / 20.0,
 		"range_multiplier": range_multiplier,
 		# Усиливает классовую ульту: урон, радиус, длительность или число целей.
-		"ultimate_multiplier": 1.0 + energy * 0.02 + float(run_modifiers.get("ultimate_flat", 0.0)),
+		"ultimate_multiplier": 1.0 + energy * 0.02 + (strength + agility + intelligence + perception + knowledge + endurance + leadership) * 0.002 + float(run_modifiers.get("ultimate_flat", 0.0)),
 	}
 
 
@@ -653,6 +913,30 @@ static func mini_elite_kind_by_id(kind_id: String) -> Dictionary:
 		if str(kind.get("id", "")) == kind_id:
 			return kind.duplicate(true)
 	return {}
+
+
+static func enemy_size_profile(profile_id: String) -> Dictionary:
+	var fallback: Dictionary = ENEMY_SIZE_PROFILES.get("ordinary", {"scale": 1.0}) as Dictionary
+	var profile: Dictionary = ENEMY_SIZE_PROFILES.get(profile_id, fallback) as Dictionary
+	return profile.duplicate(true)
+
+
+static func enemy_mechanic_catalog() -> Dictionary:
+	return ENEMY_MECHANIC_CATALOG.duplicate(true)
+
+
+static func elite_attack_config(behavior_id: String) -> Dictionary:
+	var config: Dictionary = ELITE_ATTACK_CONFIGS.get(behavior_id, {}) as Dictionary
+	return config.duplicate(true)
+
+
+static func unique_encounter_pattern(entity_id: String) -> Dictionary:
+	var pattern: Dictionary = UNIQUE_ENCOUNTER_PATTERNS.get(entity_id, {}) as Dictionary
+	return pattern.duplicate(true)
+
+
+static func unique_encounter_patterns() -> Dictionary:
+	return UNIQUE_ENCOUNTER_PATTERNS.duplicate(true)
 
 
 static func shop_items(route_stage := 0) -> Array:

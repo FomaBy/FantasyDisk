@@ -67,6 +67,7 @@ const ARENA_SIZE := Vector2(2560, 1440)
 const ARENA_ENTITY_MARGIN := 48.0
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
 const ENEMY_PROJECTILE_SCENE := preload("res://scenes/EnemyProjectile.tscn")
 const ELITE_TELEGRAPH_TEXTURE := preload("res://assets/sprites/effects/elite_telegraph_circle.png")
 const POISON_POOL_TEXTURE := preload("res://assets/sprites/effects/poison_pool.png")
@@ -74,46 +75,17 @@ const ELITE_SHOCKWAVE_TEXTURE := preload("res://assets/sprites/effects/elite_sho
 const ELITE_SHADOW_TRAIL_TEXTURE := preload("res://assets/sprites/effects/elite_shadow_trail.png")
 const ELITE_POISON_LOB_TEXTURE := preload("res://assets/sprites/effects/elite_poison_lob.png")
 const ELITE_CRYSTAL_SHARD_TEXTURE := preload("res://assets/sprites/effects/elite_crystal_shard.png")
+const ELITE_SHADOW_MARK_TEXTURE := preload("res://assets/sprites/effects/enemy_shadow_blink_mark.png")
+const ELITE_SHARD_FAN_BURST_TEXTURE := preload("res://assets/sprites/effects/enemy_shard_fan_burst.png")
 
-# Data-driven параметры уникальных атак элиток. Урон атаки считается как
-# contact_damage * damage_factor и дополнительно ограничен 25% max HP игрока.
-const ELITE_ATTACK_CONFIG := {
-	"iron_bastion": {
-		"attack_id": "slam_wave",
-		"cooldown": 6.0, "windup": 0.6, "strike": 0.25, "recover": 0.5,
-		"trigger_range": 340.0, "radius": 260.0,
-		"damage_factor": 2.0, "knockback": 150.0,
-	},
-	"night_stalker": {
-		"attack_id": "shadow_strike",
-		"cooldown": 7.0, "windup": 0.5, "strike": 0.18, "recover": 0.45,
-		"trigger_range": 540.0, "radius": 92.0,
-		"damage_factor": 2.4, "behind_offset": 74.0,
-	},
-	"plague_prophet": {
-		"attack_id": "poison_volley",
-		"cooldown": 8.0, "windup": 0.45, "strike": 0.35, "recover": 0.5,
-		"trigger_range": 560.0, "radius": 56.0,
-		"damage_factor": 0.8, "lob_count": 3, "lob_spread": 130.0,
-		"puddle_duration": 3.0, "tick_interval": 0.6, "lob_travel_time": 0.4,
-	},
-	"shard_marshal": {
-		"attack_id": "shard_fan",
-		"cooldown": 6.0, "windup": 0.5, "strike": 0.2, "recover": 0.4,
-		"trigger_range": 620.0, "radius": 0.0,
-		"damage_factor": 1.0, "shard_count": 5, "spread_degrees": 60.0,
-		"shard_speed": 430.0,
-	},
-}
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
 
 # Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
 # contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
-# согласованно одним множителем. Авторские body.scale: моб 0.42, элитка/босс 0.52.
-# Элитка 0.52*1.4=0.728 ≈ 1.73x моба; босс 0.52*1.9=0.988 ≈ 2.35x моба.
-const EPIC_ELITE_SCALE := 1.4
-const EPIC_BOSS_SCALE := 1.9
+# согласованно одним множителем. Профиль задается data-driven через
+# ProgressionData.ENEMY_SIZE_PROFILES и meta `epic_scale_profile`.
+const EPIC_SCALE_PROFILE_META := "epic_scale_profile"
 
 
 func _ready() -> void:
@@ -127,22 +99,45 @@ func _ready() -> void:
 		elite_behavior = enemy_type_name.to_lower().replace(" ", "_")
 	if elite_behavior != "":
 		set_meta("elite_behavior", elite_behavior)
+		_apply_unique_encounter_pattern_meta(elite_behavior)
 	_apply_epic_scale()
 	_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
 	_create_health_bar()
-	if ELITE_ATTACK_CONFIG.has(elite_behavior):
-		elite_attack_id = str(ELITE_ATTACK_CONFIG[elite_behavior]["attack_id"])
+	var config := _elite_attack_config()
+	if not config.is_empty():
+		elite_attack_id = str(config["attack_id"])
 		_elite_attack_cooldown = randf_range(2.2, 3.6)
 
 
+func _apply_unique_encounter_pattern_meta(entity_id: String) -> void:
+	var pattern := ProgressionData.unique_encounter_pattern(entity_id)
+	if pattern.is_empty():
+		return
+	set_meta("unique_pattern_id", entity_id)
+	set_meta("unique_pattern_title", str(pattern.get("title", "")))
+	set_meta("unique_mechanics", (pattern.get("mechanics", []) as Array).duplicate())
+
+
+func _elite_attack_config() -> Dictionary:
+	return ProgressionData.elite_attack_config(elite_behavior)
+
+
 func _epic_scale_factor() -> float:
+	var profile_id := _epic_scale_profile_id()
+	var profile: Dictionary = ProgressionData.enemy_size_profile(profile_id)
+	return float(profile.get("scale", 1.0))
+
+
+func _epic_scale_profile_id() -> String:
+	if has_meta(EPIC_SCALE_PROFILE_META):
+		return str(get_meta(EPIC_SCALE_PROFILE_META, "ordinary"))
 	var lname := enemy_type_name.to_lower()
 	if lname.contains("warden") or lname.contains("devourer") or is_in_group("bosses"):
-		return EPIC_BOSS_SCALE
+		return "boss"
 	if is_in_group("elite_enemies") or elite_behavior != "":
-		return EPIC_ELITE_SCALE
-	return 1.0
+		return "elite"
+	return "ordinary"
 
 
 func _apply_epic_scale() -> void:
@@ -167,6 +162,7 @@ func _apply_collision_profile() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	StatusEffects.tick(self, delta)
 	var player := _player()
 	if player == null:
 		velocity = _consume_knockback(delta)
@@ -189,16 +185,17 @@ func _physics_process(delta: float) -> void:
 		_update_movement_animation(delta)
 		return
 
+	var status_speed := StatusEffects.speed_multiplier(self)
 	if can_summon and distance < desired_summoning_distance * 0.85:
-		velocity = -direction.normalized() * move_speed
+		velocity = -direction.normalized() * move_speed * status_speed
 	elif can_summon and distance <= desired_summoning_distance * 1.15:
 		velocity = Vector2.ZERO
 	elif can_shoot and distance < desired_shooting_distance * 0.85:
-		velocity = -direction.normalized() * move_speed
+		velocity = -direction.normalized() * move_speed * status_speed
 	elif can_shoot and distance <= desired_shooting_distance:
 		velocity = Vector2.ZERO
 	elif direction.length_squared() > 0.0:
-		velocity = direction.normalized() * move_speed
+		velocity = direction.normalized() * move_speed * status_speed
 	else:
 		velocity = Vector2.ZERO
 
@@ -213,9 +210,10 @@ func _physics_process(delta: float) -> void:
 
 
 func take_damage(amount: float) -> void:
-	var final_amount := amount
+	var final_amount := amount * StatusEffects.damage_taken_multiplier(self)
 	if _elite_shield_active:
 		final_amount *= elite_shield_damage_reduction
+		_apply_elite_reflect_thorns(amount)
 	health -= final_amount
 	_update_health_bar()
 	if is_inside_tree():
@@ -232,6 +230,22 @@ func take_damage(amount: float) -> void:
 			rig.spawn_death_ghost()
 		died.emit(self)
 		queue_free()
+
+
+func _apply_elite_reflect_thorns(incoming_amount: float) -> void:
+	var mechanics: Array = get_meta("unique_mechanics", []) as Array
+	if not mechanics.has("reflect_thorns"):
+		return
+	var player := _player()
+	if player == null or not player.has_method("take_damage"):
+		return
+	if player.global_position.distance_to(global_position) > 190.0:
+		return
+	var reflected_damage: float = minf(contact_damage * 0.55 + incoming_amount * 0.03, contact_damage * 1.15)
+	if reflected_damage <= 0.0:
+		return
+	HazardVfx.aura_pulse(self, 150.0, Color(0.78, 0.92, 1.0, 0.9))
+	player.take_damage(reflected_damage, "elite_reflect_thorns")
 
 
 func _update_elite_patterns(delta: float, player: Node2D, distance: float) -> void:
@@ -261,6 +275,7 @@ func _update_elite_shield(delta: float) -> void:
 		_elite_shield_active = true
 		_elite_shield_time_left = 1.8
 		_set_body_tint(Color(0.62, 0.86, 1.0, 1.0))
+		HazardVfx.shield_block(self, Color(0.62, 0.86, 1.0, 1.0))
 		_play_rig_action("cast", Vector2.UP)
 
 
@@ -362,7 +377,7 @@ func _set_body_tint(color: Color) -> void:
 
 
 func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool:
-	var config: Dictionary = ELITE_ATTACK_CONFIG.get(elite_behavior, {})
+	var config: Dictionary = _elite_attack_config()
 	if config.is_empty():
 		return false
 
@@ -408,8 +423,8 @@ func _set_elite_attack_phase(phase: String, duration: float) -> void:
 
 
 func _play_elite_attack_phase_animation(phase: String, duration: float) -> void:
-	if elite_attack_id == "" and ELITE_ATTACK_CONFIG.has(elite_behavior):
-		var config: Dictionary = ELITE_ATTACK_CONFIG[elite_behavior]
+	if elite_attack_id == "":
+		var config: Dictionary = _elite_attack_config()
 		elite_attack_id = str(config.get("attack_id", ""))
 	var rig := _cutout_rig()
 	if rig == null:
@@ -611,8 +626,14 @@ func _spawn_elite_telegraph(target_position: Vector2, radius: float, duration: f
 	telegraph.global_position = target_position
 
 	var sprite := Sprite2D.new()
-	sprite.texture = ELITE_TELEGRAPH_TEXTURE
-	var texture_radius: float = maxf(ELITE_TELEGRAPH_TEXTURE.get_size().x * 0.5, 1.0)
+	match elite_attack_id:
+		"shadow_strike":
+			sprite.texture = ELITE_SHADOW_MARK_TEXTURE
+		"shard_fan":
+			sprite.texture = ELITE_SHARD_FAN_BURST_TEXTURE
+		_:
+			sprite.texture = ELITE_TELEGRAPH_TEXTURE
+	var texture_radius: float = maxf(float(maxi(sprite.texture.get_width(), sprite.texture.get_height())) * 0.5, 1.0)
 	var target_scale := maxf(radius, 32.0) / texture_radius
 	sprite.scale = Vector2(target_scale, target_scale) * 0.4
 	sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)

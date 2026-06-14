@@ -1,6 +1,6 @@
 # Формулы крита — отбалансить шанс крита, силу крита и связанное
 
-Статус: new (возвращён в бэклог 0.1.5 PM 2026-06-13 по команде пользователя — фриз: патч 0.1.5 не делается в спринте 0.1.4)
+Статус: done
 Приоритет: high
 Роль: Back-end (баланс)
 Версия: 0.1.5
@@ -38,5 +38,32 @@ Jira: SCRUM-247
 - scripts/progression_data.gd (derived_parameters), tools/balance_harness.gd, tests/
 
 ## Acceptance Criteria
-- [ ] Крит-формулы сбалансированы, капы разумны; средний урон в коридоре DPS-smoke.
-- [ ] Отчёт harness; 6 smoke + глобальный damage smoke зелёные; CHANGELOG/доки.
+- [x] Крит-формулы сбалансированы, капы разумны; средний урон в коридоре DPS-smoke.
+- [x] Отчёт harness; 6 smoke + глобальный damage smoke зелёные; CHANGELOG/доки.
+
+## Result Summary (2026-06-14)
+
+Back-end balance complete. Crit formulas now use shared 0.1.5 constants:
+- `crit_chance = effective_crit_chance(0.04 + Agility*0.0075 + flat*0.75)`,
+  diminishing returns, cap 55%;
+- `crit_damage_multiplier = clamp(1.30 + Agility*0.055 + flat*0.75, 1.0, 2.75)`;
+- passive `crit_damage_multiplier` in weapon configs is folded in as a flat
+  delta (`1.08` => `+0.08`) so existing passive configs are no longer ignored.
+
+`build/crit_rebalance_scrum247_report.md` records sample before/after numbers:
+Agility 20 with +50% crit chance and +80% crit damage goes from ~3.10x average
+crit factor to ~1.92x. `tools/balance_harness.gd` regenerated
+`build/balance_report.md`; average class+weapon DPS remains inside the global
+damage smoke corridor through existing budget tuning.
+
+Verification:
+- `tests/stat_formulas_smoke_test.gd` passed.
+- `tests/progression_data_api_surface_test.gd` passed.
+- `tools/balance_harness.gd` passed.
+- `tests/global_damage_balance_smoke_test.gd` passed.
+- `tests/global_survivability_balance_smoke_test.gd` passed.
+- `tests/runtime_smoke_weapon_mechanics_test.gd` passed.
+- `tests/runtime_smoke_test.gd` passed.
+
+Docs updated: `CHANGELOG.md`, `docs/design/mechanics_extract.md`,
+`docs/design/current_game_state.md`.

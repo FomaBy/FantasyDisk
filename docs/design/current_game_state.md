@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-06-13 (release 0.1.4 / dev snapshot)
+Обновлено: 2026-06-13 (0.1.5 dev snapshot)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -21,7 +21,7 @@ Domain docs для подробностей по областям:
 
 - Движок: Godot 4.
 - Жанр: 2D top-down loot-action survival roguelite с RPG-билдкрафтом.
-- Текущий stabilization target: `0.1.4` на ветке `dev`; `project.godot` сейчас хранит `config/version=0.1.3` до финального release bump.
+- Текущий sprint target: `0.1.5` на ветке `dev`; release `v0.1.4` уже выпущен, feature freeze снят.
 - Основная рабочая платформа: macOS. Релизные платформы: macOS (dmg) и Windows (x86_64 exe c embed_pck + NSIS-инсталлер).
 - Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
 - Основная сцена: `scenes/Main.tscn`.
@@ -55,8 +55,8 @@ Domain docs для подробностей по областям:
 - **Оконные разрешения** применяются честно: размер клампится по `screen_get_usable_rect` выбранного монитора (учет масштаба ОС/дока/меню-бара), окно центрируется от origin usable rect (раньше центрирование игнорировало origin — на втором мониторе окно уезжало); разрешения больше монитора задизейблены в списке. Borderless занимает usable rect экрана.
 - **Вкладки**: экран настроек разделен на `TabContainer`-вкладки «Экран», «Звук», «Управление», чтобы каждая вкладка помещалась в окно 1280x720 без вертикального скролла.
 - **Звук**: слайдеры Общая/Музыка/Эффекты (0-100%, шаг 2) вынесены во вкладку «Звук», занимают всю ширину контентной зоны, имеют видимый темный трек, золотую заполненную часть, числовое значение справа и keyboard focus для стрелок. Переключатели музыки/эффектов подписаны «Вкл.»/«Выкл.»; mute не сбрасывает значение слайдера. Кнопка «Сбросить звук по умолчанию» возвращает master/music/sfx к 100% и включает music/SFX. Изменения применяются мгновенно через AudioServer (Master/Music/SFX — шины Music и SFX создаются программно в AudioManager).
-- **Управление**: вкладка «Управление» показывает биндинги движения, паузы и `ultimate`. Дефолты: WASD + стрелки для движения, Escape для паузы, R для ультимейта. Ребинд проверяет конфликт с другими действиями и не перезаписывает чужую клавишу молча; есть reset defaults.
-- **Персистенс**: дисплей, звук и `input_bindings` сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте.
+- **Управление**: вкладка «Управление» показывает режим прицеливания (`Автонаводка на ближайшего` / `По курсору`) и биндинги движения, паузы и `ultimate`. Дефолты: aim mode `nearest`, WASD + стрелки для движения, Escape для паузы, R для ультимейта. Ребинд проверяет конфликт с другими действиями и не перезаписывает чужую клавишу молча; есть reset defaults.
+- **Персистенс**: дисплей, звук, `aim_mode` и `input_bindings` сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте.
 
 В настройках доступны:
 
@@ -135,7 +135,7 @@ focused `scripts/ui/*` modules and are exposed through the existing
 
 SCRUM-222 подключил stateful Back-end style layer к SCRUM-147 kit: кнопки используют реальные 4-state textures для ролей `primary`, `secondary` и `danger` (`idle/hover/pressed/disabled`), а общие панели, карточки, level-up panel, HUD panel/card и tooltip берутся из canonical `assets/sprites/ui/frames/dark_fantasy/` paths. После SCRUM-229 эти non-button canonical paths визуально являются leather+gold frames. Runtime smoke проверяет точные texture paths главных primary/secondary/danger кнопок, а `tests/dark_fantasy_ui_theme_test.gd` проверяет набор стилей отдельно.
 
-SCRUM-227 закрепил правило для Parchment & Wax Seal кнопок: если control использует `ui_df_button_*` texture state, его фактическая высота должна быть не ниже ~64px, а стандартный `_make_button()` задает 68px. Текст имеет увеличенный левый content margin под сургучную печать, чтобы не налезать на нее. Маленькие utility controls (`+/-`, FAB, keybind/dropdown controls) используют компактный flat/no-seal style вместо сжатой печати. Runtime smoke пишет фактический dump размеров в `build/qa/parchment_button_seal_sizes.md`.
+SCRUM-227 закрепил правило для Parchment & Wax Seal кнопок: если control использует `ui_df_button_*` texture state, его фактическая высота должна быть не ниже ~64px. SCRUM-263/264 подняли стандарт action-кнопок до 104px: `_make_button()` и `_set_action_button_size()` задают единый размер, главное меню использует тот же стандарт, а широкие action-кнопки capped по визуальной ширине, чтобы не растягивать торцы/печать. Text-heavy choices используют паттерн «инфо-рамка над + короткая стандартная кнопка под». Маленькие utility controls (`+/-`, dropdown/keybind-style controls, shop/item hit areas, hero thumbnails, route nodes, reward/weapon cards) остаются компактными или карточными без сжатой печати. Runtime smoke пишет фактический dump размеров в `build/qa/parchment_button_seal_sizes.md`.
 
 Contextual UI frame kits в `assets/sprites/ui/frames/contextual/` остаются historical/reference only и не являются активным runtime theme direction.
 
@@ -144,6 +144,10 @@ Settings controls получили системные fantasy assets из `asset
 ## Combat VFX
 
 Активные атаки оружия используют raster/fantasy VFX из `assets/sprites/effects/` через `scripts/attack_vfx.gd` и `scripts/class_weapon.gd`. Persistent pools больше не выглядят как программные круги: `poison_pool.png`, `spark_pool.png` и `briar_pool.png` подключены к Химику/Друиду как Sprite2D с мягкой пульсацией и fade-out, при этом урон, радиус и интервалы тиков остаются в data-driven weapon config.
+
+SCRUM-261 обновил enemy/boss skill VFX под runtime mechanics SCRUM-259. `HazardVfx` теперь выбирает отдельные D&D/painterly PNG по node name (`BossGravityWell`, `BossVampiricBite`, `BossRiftZone`, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`) и даёт отдельные helpers для shield block, summon portal, reflect-thorns aura и command aura. Это визуальная маршрутизация: gameplay timing, damage, node names и balance не менялись. Preview-лист: `docs/design/previews/scrum261_elite_boss_vfx_contact.png`.
+
+SCRUM-258 добавил per-weapon visual signature layer для всех 51 оружий ростера 0.1.5: `assets/sprites/effects/vfx_weapon_<weapon_id>.png`. `ClassWeapon` перед исполнением текущего attack mode вызывает `AttackVfx.weapon_signature()` и размещает короткую полупрозрачную D&D/painterly пластину по `weapon_id` в зоне атаки/цели/ауры. Это только визуальный слой: урон, радиусы, формулы, targeting, cooldowns, delay и status mechanics остаются из Back-end SCRUM-256/251/254/245. Preview-листы: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png`, `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
 
 ## Препятствия
 
@@ -350,6 +354,16 @@ Foundation новых классов уже включен в выбор пер�
 
 SCRUM-192 выровнял runtime `sprite_path` всех новых классов с `docs/design/content_registry.md`: `thief`, `elementalist`, `sniper`, `priest`, `biologist`, `robot` и `engineer` используют собственные canonical PNG из `assets/sprites/characters/`. Регрессия закрыта focused-тестом `tests/character_sprite_registry_alignment_test.gd`, который проверяет все 17 character IDs и существование их canonical sprite resources.
 
+SCRUM-256 добавил framework уникальных классовых идентичностей: `ProgressionData.CLASS_MECHANIC_IDENTITIES` и фасадные API `class_mechanic_identity`, `class_main_attribute`, `weapon_mechanic_identity`. Для всех 17 классов зафиксированы главный атрибут, identity title, mechanic tags и 3 weapon identity. Это data contract для патча 0.1.5: последующие задачи melee/summoner/aura/VFX используют таблицу как источник направления, а сам framework не меняет текущий баланс.
+
+SCRUM-243 добавил универсальную матрицу синергий `ProgressionData.ATTRIBUTE_WEAPON_SYNERGY_MAP`: каждый базовый атрибут имеет понятный эффект для melee, projectile, beam, AoE, summon и aura архетипов. `derived_parameters` получил мягкий cross-scaling для damage/magic/sound, attack speed, range/AoE, projectile speed, DoT, aura, summon и ultimate, поэтому прокачка любого атрибута меняет фактический параметр у representative оружия каждого архетипа. Стартовый DPS удерживается budget tuning; global damage/survivability smoke остаются зелеными.
+
+SCRUM-254 усилил summon/support персонажей через data-driven `summon_role` поля. `SummonerWeapon` передает `AllyMinion` профиль урона, HP, скорости, интервала атаки, lifetime, control knockback и support heal, которые масштабируются от Leadership/`summon_amount`. Друидский `summon_amulet` теперь роль `pack_damage`, Химик `homunculus_vial` — `tank_control`, Друид `raven_totem` — `support_totem`, Инженер `engineer_sentry_wrench` — `engineer_sentry`, `engineer_repair_drone` — `support_drone`. `ProgressionData.weapon_archetype()` считает `summon_role` как summon archetype, а balance harness больше не добавляет чистым summon-оружиям невидимый direct hit.
+
+SCRUM-245 добавил reusable status layer `scripts/status_effects.gd`. Статусы живут в meta цели (`status_effects`), поддерживают duration, refresh/add/extend stack policy, DoT ticks, speed multiplier, damage multiplier, damage-taken multiplier и marker metadata. `Enemy` учитывает status slow и vulnerability в движении/получении урона; `AllyMinion` учитывает command-aura damage/speed buff; `Player` тикает собственные статусы, раздает on-hit debuffs и классовые ауры. Тематические назначения: Dark Mage/Elementalist — `arcane_vulnerability`, Chemist/Doctor/Assassin/Biologist — `toxic_debuff`, Soldier/Knight/Robot — `staggered`, Guitarist/Druid/Engineer — `command_pressure` вокруг героя, Priest — мягкая self-support aura.
+
+SCRUM-251 усилил ближние классы через data-driven melee identity hooks в `ClassWeapon` и `BerserkWeapon`: close-hit bonus, wounded execute, stagger knockback, cleave follow-up и small sustain. Эффекты назначены не одинаково, а по роли оружия: меч/копье добивают раненых, топор/кистень дают cleave, молот/щит/штык/робот дают stagger, кинжалы получают close execute, костяная пила — sustain. Эти эффекты не двигают тело игрока автоматически и учитываются в `ProgressionData._budget_melee_unique_bonus()` при DPS tuning.
+
 | ID | Имя | Роль | Базовые характеристики |
 | --- | --- | --- | --- |
 | `soldier` | Солдат | Тактический физический контроль | Str 7, Agi 5, Int 3, Per 8, Energy 4, Know 3, End 7, Lead 5 |
@@ -370,6 +384,8 @@ SCRUM-192 выровнял runtime `sprite_path` всех новых класс�
 ## Оружие Берсерка
 
 Берсерк использует отдельный скрипт `scripts/berserk_weapon.gd`. Урон наносится только в активное окно удара, синхронизированное с анимацией. Оружие показывает область поражения и не бьет одну цель несколько раз за один swing.
+
+SCRUM-241 добавил переключатель прицеливания: `nearest` сохраняет автонаводку на ближайшего врага, `cursor` заставляет melee-дуги, лучи, снаряды и зоны использовать `Player.attack_aim_direction()` / `Player.attack_aim_position()` от курсора. Значение хранится в `user://settings.cfg` как `aim_mode` и применяется живьем через root meta.
 
 | Оружие | ID | Форма | Основной стиль | Сцена |
 | --- | --- | --- | --- | --- |
@@ -425,7 +441,7 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф ground-zone, короткая задержка и взрыв с falloff урона |
 | Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Короткая defensive corridor-стойка: один укол на врага за brace window + knockback |
 | Вор | Кошель Рикошета | `thief_coin_pouch` | `coin_ricochet` | Монета цепляется по ближайшим врагам, урон убывает по цепи, первые попадания крадут золото |
-| Вор | Плащ Захода | `thief_shadow_cloak` | `shadow_backstab` | Вор смещается за ближайшую цель, наносит усиленный удар и малый splash рядом |
+| Вор | Плащ Захода | `thief_shadow_cloak` | `shadow_backstab` | Фантомный удар за ближайшей целью наносит усиленный урон и малый splash рядом, не двигая героя |
 | Вор | Дымовая Бомба | `thief_smoke_bomb` | `smoke_bomb` | Delayed AoE дыма плюс временный dodge-window |
 | Элементалист | Кольцо Трех Стихий | `elementalist_orb_ring` | `elemental_orbit` | Орбита стихийных сфер вокруг героя с несколькими AoE-тиками |
 | Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | Крестовой разлом из двух лучей по ближайшей цели после короткого телеграфа |
@@ -445,9 +461,9 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | Временная турель сама выбирает цели и бьет их точечными лучами |
 | Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | Цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
 | Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | Три мины веером срабатывают отдельно при касании врагом |
-| Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор до цели и обратно; критовые попадания запускают короткий рывок к цели |
-| Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые short-range multi-stabs с критовыми рывками |
-| Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия с DoT и mobility hook на крите |
+| Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор до цели и обратно; критовые попадания запускают теневой всплеск у цели без смещения героя |
+| Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые short-range multi-stabs с критовым теневым burst у цели |
+| Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия с DoT и теневым всплеском на крите |
 | Рейнджер | Лунный арбалет | `moon_crossbow` | `beam` | Заряжаемый piercing shot: неподвижная стойка повышает урон |
 | Рейнджер | Грозовой длинный лук | `storm_longbow` | `beam` | Заряжаемый веер дальних лучей |
 | Рейнджер | Охотничий капкан | `hunter_trap` | `trap` | Deploy trap: burst + knockback; стойка усиливает подготовку |
@@ -456,17 +472,17 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Доктор | Костяная пила | `bone_saw` | `stab_flurry` | Ближний saw/flurry, DoT и lifesteal от нанесенного урона |
 | Химик | Взрывная пыль | `blast_powder` | `aoe_projectile` | Spark cloud + взрыв; облака разных элементов дают combo explosion |
 | Химик | Кислотная колба | `acid_flask` | `aoe_projectile` | Poison/acid pool; пересечение с другим элементом взрывает комбо |
-| Химик | Склянка гомункула | `homunculus_vial` | `summon` | Temporary minion от magic damage |
+| Химик | Склянка гомункула | `homunculus_vial` | `summon` | Гомункул `tank_control`: temporary minion от magic damage, больше HP и control knockback |
 | Рыцарь | Копье | `long_spear` | `strip` | Длинный точечный strip; блок раз в cooldown снижает удар и контратакует рядом |
 | Рыцарь | Башенный щит | `tower_shield` | `sweep` | Frontal bash/control; самый надежный block/counter вариант |
 | Рыцарь | Освященный кистень | `holy_flail` | `circle` | Medium circular heavy swing; более сильная контратака, но длиннее cooldown |
-| Друид | Амулет призыва | `summon_amulet` | `summon` | Beast pack scaling from Leadership; питомцы получают команду attack_target |
+| Друид | Амулет призыва | `summon_amulet` | `summon` | Beast pack `pack_damage`: Leadership scaling, быстрые питомцы получают команду attack_target |
 | Друид | Посох терний | `briar_staff` | `aoe_projectile` | Thorn zone, AoE DoT |
-| Друид | Вороний тотем | `raven_totem` | `amp` | Totem pulses, Leadership-scaled deploy limit |
+| Друид | Вороний тотем | `raven_totem` | `amp` | `support_totem` pulses, Leadership-scaled deploy limit, малый support sustain |
 
-Новые backend modes/hooks: Soldier `suppression_burst`/`grenade_cook`/`bayonet_brace`, Thief `coin_ricochet`/`shadow_backstab`/`smoke_bomb`, Elementalist `elemental_orbit`/`prism_rift`/`meteor_shards`, Sniper `sniper_lockshot`/`sniper_kill_zone`/`sniper_split_round`, Priest `priest_sanctify`/`priest_ward`/`priest_prayer_chain`, Biologist `bio_spore_bloom`/`bio_sample_dart`/`bio_symbiote_web`, `stab_flurry`, `dot_beam`, `trap`, `drain_link`, ranger stance charge (`charge_seconds`/`charge_max_multiplier`), assassin crit dash (`dash_on_crit_distance`), chemist cloud combos (`pool_element`/`combo_clouds`), knight block/counter (`block_reduction`/`counter_damage_multiplier`) и druid pet commands (`command_mode`, `command_target`). Deploy/trap/totem/cloud visuals используют `WeaponVisual` или `AttackVfx`, регистрируются в `player_weapon_effects` для cleanup; химические облака дополнительно временно входят в `chemist_clouds`.
+Новые backend modes/hooks: Soldier `suppression_burst`/`grenade_cook`/`bayonet_brace`, Thief `coin_ricochet`/`shadow_backstab`/`smoke_bomb`, Elementalist `elemental_orbit`/`prism_rift`/`meteor_shards`, Sniper `sniper_lockshot`/`sniper_kill_zone`/`sniper_split_round`, Priest `priest_sanctify`/`priest_ward`/`priest_prayer_chain`, Biologist `bio_spore_bloom`/`bio_sample_dart`/`bio_symbiote_web`, `stab_flurry`, `dot_beam`, `trap`, `drain_link`, ranger stance charge (`charge_seconds`/`charge_max_multiplier`), assassin crit shadow burst (`crit_shadow_burst_radius`), chemist cloud combos (`pool_element`/`combo_clouds`), knight block/counter (`block_reduction`/`counter_damage_multiplier`) и druid pet commands (`command_mode`, `command_target`). Deploy/trap/totem/cloud visuals используют `WeaponVisual` или `AttackVfx`, регистрируются в `player_weapon_effects` для cleanup; химические облака дополнительно временно входят в `chemist_clouds`.
 
-SCRUM-152/157: `AllyMinion.tscn` больше не использует Polygon2D-placeholder, а показывает `assets/sprites/allies/ally_druid_beast.png` как безопасный fallback. Source-specific runtime mapping подключен: `summon_amulet` выбирает `ally_druid_beast.png` или `ally_druid_pack_spirit.png`, `homunculus_vial` использует `ally_homunculus.png`, будущий `leadership_echo` зарезервирован под `ally_leadership_echo.png`. Deployable mapping вынесен в weapon config: `sound_amp` ставит `deploy_sound_amp_field.png`, `raven_totem` ставит `deploy_raven_totem_field.png`. Cleanup groups (`allies`, `player_weapon_effects`, `deployed_sound_amps`) не менялись.
+SCRUM-152/157/254: `AllyMinion.tscn` больше не использует Polygon2D-placeholder, а показывает `assets/sprites/allies/ally_druid_beast.png` как безопасный fallback. Source-specific runtime mapping подключен: `summon_amulet` выбирает `ally_druid_beast.png` или `ally_druid_pack_spirit.png`, `homunculus_vial` использует `ally_homunculus.png`, будущий `leadership_echo` зарезервирован под `ally_leadership_echo.png`. Deployable mapping вынесен в weapon config: `sound_amp` ставит `deploy_sound_amp_field.png`, `raven_totem` ставит `deploy_raven_totem_field.png`. С SCRUM-254 `AllyMinion` имеет runtime `max_health/health`, `take_damage()` и `set_combat_profile()`, чтобы призывы могли получать роль, выживаемость и темп от владельца. Cleanup groups (`allies`, `player_weapon_effects`, `deployed_sound_amps`) не менялись.
 
 ## Боевые Эффекты (Attack VFX)
 
@@ -534,7 +550,11 @@ SCRUM-152/157: `AllyMinion.tscn` больше не использует Polygon2
 
 Актуальная философия прокачки: все базовые и производные атрибуты полезны каждому классу. Старая фильтрация «нерелевантных» статов отключена; `STAT_CLASS_RELEVANCE` оставлен пустым для совместимости, а reward pools не скрывают чужие параметры. Для тематически чужих эффектов UI показывает классовую интерпретацию: магический урон становится зачарованием оружия, Лидерство — эхо-оружием/фантомом/соколом/фамильяром, звуковой урон — боевым кличем, DoT — малым bleed/burn/poison, Energy — ускорением уникальной механики.
 
-Runtime hooks уже подключены в `scripts/player.gd` и `scripts/class_weapon.gd`: оружейные попадания могут запускать magic enchant splash, малый DoT, leadership echo-hit и battle shout; Energy ускоряет dash Ассасина, counter Рыцаря и charge Рейнджера.
+Runtime hooks уже подключены в `scripts/player.gd` и `scripts/class_weapon.gd`: оружейные попадания могут запускать magic enchant splash, малый DoT, leadership echo-hit и battle shout; Energy ускоряет теневой burst Ассасина, counter Рыцаря и charge Рейнджера. Крит/уворот игрока не двигают тело персонажа автоматически: позиция героя остается под контролем ввода, а критовые классовые эффекты Ассасина происходят как вспышка/удар у цели.
+
+Status hooks SCRUM-245: weapon hit дополнительно может наложить `arcane_vulnerability`, `toxic_debuff` или `staggered` по классу. Leadership/support классы обновляют ауру примерно раз в 0.55с: союзники внутри радиуса получают `command_aura`, враги — `command_pressure`. Визуально используется существующий мягкий `AttackVfx.ring_pulse` плюс marker metadata; новый Design asset не требуется.
+
+Криты после SCRUM-247 используют сглаженные формулы: `crit_chance = effective_crit_chance(0.04 + Agility*0.0075 + flat*0.75)`, cap 55%; `crit_damage_multiplier = clamp(1.30 + Agility*0.055 + flat*0.75, 1.0, 2.75)`. Это сохраняет crit-builds полезными, но не дает flat-стаку шанса/силы крита доминировать над стабильным уроном; средний DPS удерживается через `ProgressionData.weapon()` budget tuning.
 
 ## Награды И Артефакты
 
@@ -632,7 +652,7 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 
 | Экран | Описание |
 | --- | --- |
-| Главное меню | Эпичный battle-art фон и левая колонка из трех кнопок: начать новую игру, настройки, выйти из игры |
+| Главное меню | Эпичный battle-art фон и левая колонка из шести стандартных action-кнопок: начать новую игру, настройки, древо умений, что нового, кодекс, выйти из игры |
 | Настройки | Вкладки «Экран» / «Звук» / «Управление»: монитор, режим окна, разрешение, full-width audio sliders, mute, rebinding движения/паузы/ultimate |
 | Выбор персонажа | Fullscreen v3: большой портрет слева без дубля имени, справа единая информ-панель с досье слева от радара характеристик, адаптивная лента героев снизу только картинками |
 | Выбор оружия | Три оружия выбранного класса как легкие кликабельные карточки: спрайт оружия слева, название/описание, русские статы «Дальность/Радиус/Перезарядка»; тяжелая button texture frame не используется |
@@ -640,8 +660,8 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 | Боевой HUD | Минимальные HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |
 | Level-up | Геройский экран выбора 1 из 3 наград с портретом персонажа, частицами, редким main-stat акцентом и отложенным выбором через нижнюю кнопку; reward варианты выглядят как text-field/panel карточки, оставаясь кликабельными |
 | Магазин | Frameless wall-предметы поверх `screen_shop_background.png`: иконка, тень, компактная цена, описание только hover tooltip, unavailable dim/price и empty-hook после покупки |
-| Событие | Выбор одного из вариантов события поверх `screen_event_background.png` |
-| Отдых | Лечение или защитный бонус поверх `screen_campfire_background.png` |
+| Событие | Выбор одного из вариантов события поверх `screen_event_background.png`; длинный текст исхода находится в рамке над короткой кнопкой выбора |
+| Отдых | Лечение или защитный бонус поверх `screen_campfire_background.png`; описание бонуса находится в рамке над стандартной action-кнопкой |
 | Pause menu / stats | Escape открывает компактное run menu с Continue/Досье/Settings/End Run/Main Menu; досье персонажа открывается из него и показывает кнопки слева, приоритетные базовые характеристики сверху с бейджем/tooltip, производные параметры справа в логических группах |
 | Смерть | Завершение забега |
 | Победа | Русский пользовательский итог без внутренних ID: победа над боссом, очки наследия, прогресс Возвышения и смысл новой награды |
@@ -761,16 +781,18 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
 Элитки выбираются случайно. Они должны быть примерно на порядок опаснее обычных врагов за счет HP, урона и паттернов. Обновление 2026-06-12: элитки используют `ProgressionData.stage_scale(route_stage)`, получают большой HP-бюджет под ~45-90с активного боя в budget estimate, имеют meta-флаг второй фазы на 50% HP и после победы открывают выбор 1 из 3 артефактов.
 
-Обновление 2026-06-11: элитки крупнее обычных мобов в ~1.35 раза — collision shape увеличены в 1.35x, contact_range подгоняется автоматически под видимый размер. У каждой элитки есть уникальная телеграфированная активная атака со state machine `windup -> strike -> recover -> idle` (конфиг `scripts/enemy.gd::ELITE_ATTACK_CONFIG`, сигнал `elite_attack_phase_changed` для Animator). Во время атаки элитка стоит на месте; урон атаки ограничен 25% максимального HP игрока; от всех атак можно увернуться движением.
+Обновление SCRUM-260 от 2026-06-13: размеры enemy-rank data-driven через `ProgressionData.ENEMY_SIZE_PROFILES`: ordinary 1.00, mini_elite 1.05, route elite 1.68, boss 1.90. Mini-элитки свиты Возвышения получают meta `epic_scale_profile=mini_elite` до `_ready()` и визуально читаются как усиленные мобы, карточные элитки стали крупнее и немного опаснее (HP x1.08, damage x1.06 в `_scale_elite_enemy`), боссы остаются крупнейшими. Один node scale тянет rig/body, `CollisionShape2D`, auto-fit contact_range и HP-bar.
+
+Обновление SCRUM-259 от 2026-06-13: у элиток и боссов есть общий data-driven каталог `ProgressionData.ENEMY_MECHANIC_CATALOG`, боевые конфиги элиток `ELITE_ATTACK_CONFIGS` и unique-pattern registry `UNIQUE_ENCOUNTER_PATTERNS`. При `_ready()` сущность получает meta `unique_pattern_id`, `unique_pattern_title`, `unique_mechanics`; smoke проверяет каталог, неповторяемые signatures, telegraph/state phases и фактический spawn boss-specific mechanics. У каждой элитки есть уникальная телеграфированная активная атака со state machine `windup -> strike -> recover -> idle` (сигнал `elite_attack_phase_changed` для Animator). Во время атаки элитка стоит на месте; урон атаки ограничен 25% максимального HP игрока; от всех атак можно увернуться движением.
 
 Обновление SCRUM-135 от 2026-06-12: активные source sprites всех 4 элиток заменены на native `512x512` и перенарезаны в `assets/sprites/elites/cutout/` с manifest `size = Vector2(512, 512)`. Поза/силуэт сохранены 1:1, поэтому хитбоксы, contact_range и epic scale остались прежними, а QHD/Retina-рендер больше не тянет 256px-арт выше native.
 
 | Элитка | Сцена | Спрайт | Уникальное поведение |
 | --- | --- | --- | --- |
-| Железный Оплот | `scenes/EliteArmored.tscn` | `assets/sprites/elites/iron_bastion.png` | Щит; Slam-волна: замах 0.6с, кольцо 260 с уроном и отбрасыванием (кулдаун 6с) |
-| Ночной Сталкер | `scenes/EliteStalker.tscn` | `assets/sprites/elites/night_stalker.png` | Рывки; Теневой удар: уход в тень 0.5с, телепорт за спину игрока, быстрый удар (кулдаун 7с) |
-| Чумной Пророк | `scenes/ElitePoisoned.tscn` | `assets/sprites/elites/plague_prophet.png` | Ядовитые зоны; Ядовитый залп: 3 lob-снаряда, лужи на 3с с тиками (кулдаун 8с) |
-| Маршал Осколков | `scenes/EliteCommander.tscn` | `assets/sprites/elites/shard_marshal.png` | Аура усиления; Залп осколков: веер из 5 кристальных снарядов (кулдаун 6с) |
+| Железный Оплот | `scenes/EliteArmored.tscn` | `assets/sprites/elites/iron_bastion.png` | Щит; шипованный панцирь во время щита; Slam-волна: замах 0.6с, кольцо 260 с уроном и отбрасыванием |
+| Ночной Сталкер | `scenes/EliteStalker.tscn` | `assets/sprites/elites/night_stalker.png` | Рывки; Теневой удар: уход в тень 0.5с, телепорт за спину игрока; во второй фазе зеркальный второй заход |
+| Чумной Пророк | `scenes/ElitePoisoned.tscn` | `assets/sprites/elites/plague_prophet.png` | Ядовитые зоны; Ядовитый залп: lob-снаряды, лужи на 3с с тиками, чумная тематика healing inversion hook |
+| Маршал Осколков | `scenes/EliteCommander.tscn` | `assets/sprites/elites/shard_marshal.png` | Аура усиления; Залп осколков: веер из 5 кристальных снарядов; фаза 2 добавляет кольцо осколков |
 
 ## Боссы
 
@@ -778,10 +800,13 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
 | Босс | ID | Сцена | Спрайт | Паттерны |
 | --- | --- | --- | --- | --- |
-| Rift Warden | `rift_warden` | `scenes/BossWarden.tscn` | `boss_rift_warden.png` | Залпы, зоны разлома, призыв, щит, увороты |
-| Disk Devourer | `disk_devourer` | `scenes/BossDiskDevourer.tscn` | `boss_disk_devourer.png` | Рывок, slam AoE, radial burst, enrage |
+| Rift Warden | `rift_warden` | `scenes/BossWarden.tscn` | `boss_rift_warden.png` | Залпы, зоны разлома, призыв, щит, увороты, gravity well |
+| Disk Devourer | `disk_devourer` | `scenes/BossDiskDevourer.tscn` | `boss_disk_devourer.png` | Рывок, slam AoE, radial burst, vampiric bite, enrage |
+| Bone Archon | `bone_archon` | `scenes/BossBoneArchon.tscn` | placeholder `boss_rift_warden.png` | Скелеты, веер черепов, bone prison/wall с проходом |
+| Brood Mother | `brood_mother` | `scenes/BossBroodMother.tscn` | placeholder `boss_disk_devourer.png` | Выводок, web slow zones, дополнительный web pressure, phase-3 lunge |
+| Ashen Colossus | `ashen_colossus` | `scenes/BossAshenColossus.tscn` | placeholder `boss_disk_devourer.png` | Slam-волны, ember fields, molten armor pulse, enrage |
 
-Боссы используют `scripts/boss.gd`, который расширяет логику обычного врага. Обновление 2026-06-12: каждый босс имеет 3 HP-фазы (`100-66%`, `66-33%`, `33-0%`), фазовые метки в meta/HP-bar, ускорение атак на фазах и danger-zone при переходе. HP/урон боссов масштабируются через ту же `stage_scale`, что и экономика.
+Боссы используют `scripts/boss.gd`, который расширяет логику обычного врага. Обновление 2026-06-12: каждый босс имеет 3 HP-фазы (`100-66%`, `66-33%`, `33-0%`), фазовые метки в meta/HP-bar, ускорение атак на фазах и danger-zone при переходе. Обновление SCRUM-259: boss-specific mechanics создают telegraph nodes (`BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `BossMoltenArmorPulse`) и закреплены в `ProgressionData.UNIQUE_ENCOUNTER_PATTERNS`. HP/урон боссов масштабируются через ту же `stage_scale`, что и экономика.
 
 Обновление SCRUM-135 от 2026-06-12: `boss_rift_warden.png` и `boss_disk_devourer.png` теперь native `512x512`, их boss cutout parts и `scripts/sliced_rig_manifest.gd` обновлены под 512px. `rift_warden` сохраняет отдельный `vortex` part; `disk_devourer` остается single-torso rig по текущему cutout CONFIG.
 
@@ -869,7 +894,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 - `shoot`: отдача корпуса и оружия/руки назад-вверх;
 - `shoot` Солдата получает animation variant из текущего `weapon_id`: `soldier_rifle` — короткая отдача строевого залпа, `soldier_grenade` — cook/overhand throw, `soldier_bayonet` — forward defensive brace. Это только motion layer; `suppression_burst`, `grenade_cook`, `bayonet_brace` damage/timing остаются в `ClassWeapon`.
 - `cast`: подъем обеих рук/посоха/черепа с подъемом корпуса и удержанием позы;
-- Уникальные атаки элиток получают animation variant из backend-фазы `<elite_behavior>:<elite_attack_id>:<phase>` и используют длительность `windup/strike/recover` из `ELITE_ATTACK_CONFIG`: Iron Bastion поднимается в slam windup и резко проседает на strike; Night Stalker сжимается в crouch и делает forward lunge; Plague Prophet делает ritual arm raise/throw; Shard Marshal разводит руки и затем жестом выбрасывает shard fan.
+- Уникальные атаки элиток получают animation variant из backend-фазы `<elite_behavior>:<elite_attack_id>:<phase>` и используют длительность `windup/strike/recover` из `ProgressionData.ELITE_ATTACK_CONFIGS`: Iron Bastion поднимается в slam windup и резко проседает на strike; Night Stalker сжимается в crouch и делает forward lunge; Plague Prophet делает ritual arm raise/throw; Shard Marshal разводит руки и затем жестом выбрасывает shard fan.
 - `hit`: красная вспышка и короткая тряска;
 - `death`: при гибели враг оставляет `DeathGhostRig` (копию рига), которая падает, сминается и растворяется (`spawn_death_ghost` в `scripts/cutout_rig_2d.gd`).
 
@@ -923,16 +948,20 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
 ## Боевые Правила После Bugfix-Пакета 2026-06-10
 
-- Уворот игрока работает: `dodge` из `derived_parameters` проверяется в `Player.take_damage`, при успехе показывается всплывающий текст «Промах!» и звук уворота; урон и invulnerability window не применяются. Защита дополнительно ограничена 95%.
+- Уворот игрока работает: `dodge` из `derived_parameters` проверяется в `Player.take_damage`, при успехе показывается всплывающий текст «Промах!» и звук уворота; урон и invulnerability window не применяются. С 0.1.5 defense/dodge/absorb используют SCRUM-255 diminishing returns: defense cap 62%, dodge cap 55%, absorb пропускает минимум 35% каждого удара.
+- Регенерация и вампиризм после SCRUM-255 стали поддержкой, а не основным sustain: `regeneration = (0.22 + flat*0.45) * (0.45 + Knowledge/12)`, vampiric chance cap 22%, vampiric heal = `vampiric_amount*0.55 + 3.5% dealt damage`, cap 1.4/с с hard cap 2.6/с. Synthetic tank contact swarm в `tools/survivability_harness.gd` теперь 38.5с TTD вместо 321.0с.
+- Формулы атрибутов после SCRUM-243 используют универсальный cross-scaling: Strength/Intelligence/Knowledge/Leadership больше не являются «мертвыми» на чужих archetype-оружиях, а Perception/Energy/Endurance дают не только профильные, но и малые темп/стабилизационные эффекты. Тест `runtime_smoke_test.gd::_test_attribute_weapon_synergy_matrix` проверяет все 8 атрибутов против 6 weapon archetypes.
 - Скорость атаки оружия считается как `base_fire_interval / attack_speed` (минимум 0.18с): базовый `fire_interval` каждого оружия из `progression_data.gd` снова значим, оружия одного класса различаются темпом.
 - Ребаланс 2026-06-10: базовые `fire_interval` первых 9 оружий увеличены в 1.6 раза, чтобы итоговый темп после фикса формулы остался близким к прежнему ощущению, но с различиями между оружиями; оружие расширенного ростера 0.1.4 балансируется в своих конфигах.
 - Pulse-режим бас-гитары и усилителя использует `_rolled_damage` (учитывает `damage_parameter` и криты), как остальные режимы классового оружия.
 - Все отложенные боевые эффекты (ядовитые зоны элиток, rift zone, disk slam, DoT-тики, окна урона свинга берсерка, очистка визуалов) используют tween-таймлайны, привязанные к нодам, а не `SceneTreeTimer`. Они замораживаются вместе с паузой и не наносят урон в level-up/Escape паузе.
+- Status effects (`scripts/status_effects.gd`) тикают из `_physics_process()` владельца, а не через отдельные таймеры, поэтому пауза замораживает duration/DoT вместе с gameplay.
 - Аура Маршала Осколков усиливает каждого обычного врага не более одного раза (meta `commander_aura_buffed`), без бесконечного мультипликативного стака.
 - Статусные перекраски врагов/боссов (щит, windup, аура, ярость, dodge-flash) применяются к видимым cutout-частям через `CutoutRig2D.set_status_tint`, а не только на скрытый source-спрайт.
 - Отталкивание классового оружия идет через `Enemy.apply_knockback` (импульс в velocity с затуханием), а не телепорт `global_position`; враги без метода сохраняют старый fallback.
 - Враги кэшируют ссылку на игрока (`_player()`), а не ищут группу каждый физический кадр.
 - Прицеливание оружия игрока (фикс 2026-06-11): все оружия целятся в ближайшего живого врага. Приоритет: ближайший в attack_range -> ближайший на арене -> последнее направление атаки. Направление движения персонажа влияет только на walk-анимацию; анимация атаки и VFX используют то же направление, что и расчет урона.
+- Ближние identity-эффекты SCRUM-251 работают только на прямых weapon hits: DoT-тики не повторяют close/execute/stagger/cleave, поэтому эффекты не каскадят через яды и кровотечение. Focused coverage: `tests/melee_unique_mechanics_test.gd`.
 - При любом уроне по игроку боевой HUD показывает легкое покраснение экрана (`DamageFlashOverlay`): фиксированный пик alpha 0.20 без стакания, затухание ~0.32с, эффект замирает на паузе (PROCESS_MODE_PAUSABLE). Сигнал: `Player.damaged`.
 - Нерф 2026-06-11: стартовый радиус молота Берсерка уменьшен вдвое — `aoe_radius` и `attack_range` 200 -> 100, пассив +20% AoE сохранен.
 
@@ -959,7 +988,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 ## Известные Ограничения
 
 - Исходный GDD упоминает автоскролл уровня вниз, но текущая реализация использует статичную арену с маршрутной картой.
-- Баланс классов и оружия теперь имеет измерительный слой: `tools/balance_harness.gd` генерирует `build/balance_report.md` для 51 пары класс+оружие (solo DPS, 5-target DPS, EHP) и smoke проверяет, что tuned-budget отклонения остаются в пределах ±10%. Playtest все еще нужен для ощущения темпа, но базовая численная сетка больше не держится только на ручной оценке.
+- Баланс классов и оружия теперь имеет измерительный слой: `tools/balance_harness.gd` генерирует `build/balance_report.md` для 51 пары класс+оружие (solo DPS, 5-target DPS, crowd-clear 5/10/20, EHP) и финальный отчет `build/balance_final_audit_0_1_5.md`. `tests/global_damage_balance_smoke_test.gd` проверяет combined DPS ±25%, solo DPS ±20% и 5/10/20 crowd-clear time ±30%; текущий SCRUM-262 результат PASS, худшее CCT +22.0% у `doctor/plague_syringe` на 20 целях. Playtest все еще нужен для ощущения темпа, но базовая численная сетка больше не держится только на ручной оценке.
 - Таблица механик остается долгосрочным источником формул, но код сейчас использует адаптированный слой формул.
 - Data-driven scene loading оружия в `scripts/player.gd` пока остается через `load()` на момент экипировки; это не hot path, но при большом расширении оружия можно вынести в общий PackedScene cache.
 - DOCX-документ может отставать от Markdown-документации, если его специально не регенерировали.

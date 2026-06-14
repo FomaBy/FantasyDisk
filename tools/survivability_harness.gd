@@ -16,7 +16,8 @@ extends SceneTree
 ## Корректность формулы относительно реального кода якорится тестом
 ## tests/survivability_scenario_test.gd (реальный Player.take_damage).
 ##
-## БАЛАНСОВЫЕ ЗНАЧЕНИЯ НЕ МЕНЯЮТСЯ (требование задачи) — только замер/отчёт.
+## SCRUM-255 обновляет баланс выживаемости: реген/вампиризм ослаблены, defense,
+## absorb и dodge используют убывающую отдачу и более низкие капы.
 ##
 ## Запуск: Godot --headless --path . --script res://tools/survivability_harness.gd
 ## Вывод: build/survivability_report.md
@@ -62,24 +63,24 @@ static func profile_params(profile: Dictionary) -> Dictionary:
 
 # Точный ожидаемый урон за ОДНО попадание после absorb+defense+dodge.
 static func expected_hit_damage(amount: float, defense: float, absorb: float, dodge: float) -> float:
-	var after_absorb: float = maxf(amount - absorb, amount * 0.2)
+	var after_absorb: float = maxf(amount - absorb, amount * ProgressionData.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION)
 	var after_defense := after_absorb * (1.0 - defense)
-	return after_defense * (1.0 - clampf(dodge, 0.0, 0.8))
+	return after_defense * (1.0 - clampf(dodge, 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP))
 
 
 # Строит одну строку модели (profile x scenario) с TTD и разложением митигейта.
 static func model_row(profile: Dictionary, scenario: Dictionary) -> Dictionary:
 	var p := profile_params(profile)
 	var health := float(p.get("health_point", 1.0))
-	var defense := clampf(float(p.get("defense", 0.0)), 0.0, 0.95)
+	var defense := clampf(float(p.get("defense", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
 	var absorb := float(p.get("absorb", 0.0))
-	var dodge := clampf(float(p.get("dodge", 0.0)), 0.0, 0.8)
+	var dodge := clampf(float(p.get("dodge", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP)
 	var regen := float(p.get("regeneration", 0.0))
 	var amount := float(scenario["amount"])
 	var cadence := float(scenario["cadence"])
 
 	var raw_dps := amount * cadence
-	var after_absorb_dps: float = maxf(amount - absorb, amount * 0.2) * cadence
+	var after_absorb_dps: float = maxf(amount - absorb, amount * ProgressionData.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION) * cadence
 	var after_defense_dps := after_absorb_dps * (1.0 - defense)
 	var after_dodge_dps := after_defense_dps * (1.0 - dodge)
 	var effective_dps: float = maxf(after_dodge_dps - regen, 0.05)
@@ -121,11 +122,11 @@ func _initialize() -> void:
 func _write_report(rows: Array) -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://build"))
 	var lines := PackedStringArray()
-	lines.append("# FantasyDisk — отчёт выживаемости (SCRUM-190)")
+	lines.append("# FantasyDisk — отчёт выживаемости (SCRUM-255)")
 	lines.append("")
 	lines.append("Сгенерировано `tools/survivability_harness.gd`. Детерминированная модель")
 	lines.append("на боевой формуле `derived_parameters` + порядок митигейта `Player.take_damage`.")
-	lines.append("Балансовые значения НЕ менялись — только замер.")
+	lines.append("SCRUM-255: regen/vampirism снижены, defense/dodge/absorb переведены на более низкие капы и diminishing returns.")
 	lines.append("")
 	lines.append("Профили (синтетические стат-блоки):")
 	for profile in PROFILES:

@@ -1,6 +1,6 @@
 # Баланс монстров + размеры элиток: мини-элитки возвышения МЕНЬШЕ, элитки на карте БОЛЬШЕ и страшнее
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end (баланс/бой)
 Версия: 0.1.5
@@ -9,9 +9,17 @@
 Jira: SCRUM-260
 Эпик-патч: 0.1.5 Бой и баланс (SCRUM-232)
 
-## ФИЧА-ФРИЗ 0.1.4
-Бэклог `Версия: 0.1.5`. НЕ брать в работу и НЕ dispatch до релиза 0.1.4 и снятия
-фриза. Статус new, в активный спринт не попадает (sync уважает версию).
+## Sprint 0.1.5
+Фича-фриз снят после релиза `v0.1.4`; задача входит в активный sprint 0.1.5 и
+готова к dispatch, если нет file-collision с уже взятой Back-end задачей.
+
+## Dispatcher Dispatch (2026-06-13)
+
+Отправлено в существующий Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`
+как 0.1.5 Back-end task. Keep reasoning High/no low. Указан collision context:
+SCRUM-256 уже `in_progress` и может трогать `scripts/progression_data.gd`; если
+SCRUM-260 требует тот же файл, сериализовать работу или явно заблокировать, а не
+смешивать правки.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -58,7 +66,25 @@ meta `drop_class="mini_elite"`, HP×0.55) визуально НЕ отделен
 - tools/balance_harness.gd, tests/
 
 ## Acceptance Criteria
-- [ ] Мини-элитки свиты меньше; карточные элитки крупнее и страшнее; босс крупнее всех.
-- [ ] Размеры data-driven; хитбоксы/бары согласованы.
-- [ ] Баланс монстров пересмотрен под нерф игрока; глобальные smoke в коридорах.
-- [ ] Тест порядка размеров; 6 smoke зелёные; CHANGELOG/доки.
+- [x] Мини-элитки свиты меньше; карточные элитки крупнее и страшнее; босс крупнее всех.
+- [x] Размеры data-driven; хитбоксы/бары согласованы.
+- [x] Баланс монстров пересмотрен под нерф игрока; глобальные smoke в коридорах.
+- [x] Тест порядка размеров; smoke/balance зелёные; CHANGELOG/доки.
+
+## Result Summary (2026-06-13)
+
+Back-end реализация завершена:
+- добавлен `ProgressionData.ENEMY_SIZE_PROFILES` (`ordinary=1.00`, `mini_elite=1.05`, `elite=1.68`, `boss=1.90`);
+- `enemy.gd` читает meta `epic_scale_profile` и применяет data-driven node scale до согласованного visible/collision/contact/HP-bar поведения;
+- mini-элитки Возвышения получают `epic_scale_profile=mini_elite` до `_ready()`, поэтому больше не выглядят как полноценные route-элитки;
+- карточные элитки получают `epic_scale_profile=elite`, стали крупнее и чуть страшнее: HP x1.08, damage x1.06 поверх прежнего elite budget;
+- боссы получают `epic_scale_profile=boss` и остаются крупнейшим enemy rank;
+- обновлены `tests/runtime_smoke_test.gd` и `tests/progression_data_api_surface_test.gd`;
+- обновлены `CHANGELOG.md`, `docs/design/mechanics_extract.md`, `docs/design/current_game_state.md`, `docs/design/systems/enemies_bosses.md`.
+
+Verification:
+- `progression_data_api_surface_test.gd` — passed;
+- `runtime_smoke_boss_elite_test.gd` — passed;
+- `global_damage_balance_smoke_test.gd` — passed;
+- `global_survivability_balance_smoke_test.gd` — passed;
+- `runtime_smoke_test.gd` — passed.

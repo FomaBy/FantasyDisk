@@ -1,6 +1,6 @@
 # Task Board — FantasyDisk (живой дашборд)
 
-Обновлено: 2026-06-13
+Обновлено: 2026-06-14
 Ведёт: PM. Доска показывает ТОЛЬКО активную работу. Завершённые задачи (≈222) не
 дублируются здесь — они в Jira (эпики SCRUM-212..221, статус «Готово») и git-истории.
 Статусы: `new` | `in_progress` | `review` | `blocked` | `done`. Источник истины по деталям —
@@ -10,11 +10,15 @@
 
 Релиз v0.1.4 выпущен. Активен Спринт 0.1.5 (эпик SCRUM-232). Очередь патча
 сериализована по зависимостям/общим файлам:
-- СТАРТ (new): SCRUM-256 framework механик, 255/247/243 формулы (выживаемость/
-  крит/синергия), 241 прицел, 253 авто-движение, 260 монстры/размеры, 259
-  скилы элиток/боссов. Гейты 249 и анимации 239 — done (ждут QA).
-- BLOCKED до предпосылок: 251/254/245 (классы — после 256), 258/261 (арт —
-  после механик), 262 финальная сверка AoE (после ВСЕХ правок).
+- СТАРТ: SCRUM-256 framework механик — done; SCRUM-260 монстры/размеры —
+  done/QA; SCRUM-253 авто-движение — done; SCRUM-259 скилы элиток/боссов —
+  done/QA; SCRUM-255 формулы выживаемости — done; SCRUM-247/243
+  формулы — done; SCRUM-241 прицел — done. Гейты 249 и анимации 239 —
+  done (ждут/прошли QA по Jira).
+- SCRUM-256 framework завершен; 251/254/245 сняты с framework-блокера и снова
+  доступны как backend-задачи. SCRUM-258 разблокирован и отправлен Design после
+  готовности 256/251/254/245. SCRUM-262 финальная сверка AoE разблокирована и
+  отправлена Back-end после готовности всех balance/mechanics gates.
 Анти-коллизия воркеров сериализует общие файлы (stat_formulas/progression_data/
 class_weapon). «done = чистый HEAD зелёный».
 
@@ -36,15 +40,27 @@ class_weapon). «done = чистый HEAD зелёный».
 | SCRUM-232 Backlog 0.1.5: бой и баланс | 13 | 1 | 0 | 15 | 29 |
 | **ИТОГО** | **222** | **9** | **5** | **15** | **251** |
 
-(КК = Контроль качества, ждёт QA; Кв = К выполнению. Для `SCRUM-232` колонка
-«Кв» сейчас означает backlog `0.1.5` вне active sprint.)
+(КК = Контроль качества, ждёт QA; Кв = К выполнению/current sprint todo.)
 
 ## Активные задачи
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [backend_unify_button_size_main_menu_standard_task.md](../tasks/backend_unify_button_size_main_menu_standard_task.md) | Back-end (UI) | new | 0.1.5: главное меню +10-15% высоты кнопок, единый стандарт высоты для ВСЕХ кнопок игры (служебные — исключения) |
-| [backend_button_stretch_discipline_text_frame_task.md](../tasks/backend_button_stretch_discipline_text_frame_task.md) | Back-end (UI) | new | 0.1.5: не растягивать арт широких/высоких кнопок (9-slice торцы фикс); много текста → рамка над + стандартная кнопка под |
+| [backend_unify_button_size_main_menu_standard_task.md](../tasks/backend_unify_button_size_main_menu_standard_task.md) | Back-end (UI) | done | Jira: SCRUM-264. Единая высота action-кнопок 104px, главное меню 380x104, стандарт применен к обычным action-кнопкам; служебные/card controls оставлены исключениями; UI/no-overlap/umbrella+focused smokes green |
+| [backend_button_stretch_discipline_text_frame_task.md](../tasks/backend_button_stretch_discipline_text_frame_task.md) | Back-end (UI) | done | Jira: SCRUM-263. Широкие action-кнопки capped до 560px; text-heavy rewards/rest/upgrade/events используют info frame над короткой стандартной кнопкой; UI/no-overlap/umbrella+focused smokes green |
+| [backend_unique_class_mechanics_framework_main_attribute_task.md](../tasks/backend_unique_class_mechanics_framework_main_attribute_task.md) | Back-end | done | Jira: SCRUM-256. Framework готов: `CLASS_MECHANIC_IDENTITIES` + ProgressionData API, 17 class main attributes, 51 weapon identities, docs + progression API/weapon/full smoke + global balance gates green |
+| [backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task.md](../tasks/backend_survivability_formulas_nerf_regen_vampirism_absorb_dodge_task.md) | Back-end | done | Jira: SCRUM-255. Regen/vampirism strongly nerfed; defense/dodge/absorb now diminishing with lower caps; tank/contact_swarm synthetic TTD 321.0s→38.5s; stat/survivability/API/global balance/runtime smokes green |
+| [backend_crit_formulas_rebalance_task.md](../tasks/backend_crit_formulas_rebalance_task.md) | Back-end | done | Jira: SCRUM-247. Crit chance/power rebalanced with shared constants, diminishing chance cap 55%, crit damage cap 2.75; stat/API/balance/runtime smokes green |
+| [backend_attribute_weapon_universal_synergy_task.md](../tasks/backend_attribute_weapon_universal_synergy_task.md) | Back-end | done | Jira: SCRUM-243. Universal 8×6 attribute×weapon archetype synergy map + soft cross-scaling in derived parameters; stat/API/progression/balance/full runtime smokes green |
+| [backend_melee_classes_strengthen_unique_attacks_task.md](../tasks/backend_melee_classes_strengthen_unique_attacks_task.md) | Back-end | done | Jira: SCRUM-251. Melee identity hooks added to ClassWeapon/BerserkWeapon; sword/spear execute, axe/flail cleave, shield/bayonet/robot stagger, dagger close execute, saw sustain; balance/full runtime smokes green |
+| [backend_summoner_classes_strengthen_task.md](../tasks/backend_summoner_classes_strengthen_task.md) | Back-end | done | Jira: SCRUM-254. Разблокировано SCRUM-256; summon/leadership identities должны использовать class mechanic framework |
+| [backend_auras_buffs_debuffs_system_task.md](../tasks/backend_auras_buffs_debuffs_system_task.md) | Back-end | done | Jira: SCRUM-245. Разблокировано SCRUM-256; aura/buff/debuff назначения должны использовать class mechanic framework |
+| [backend_aim_modes_cursor_and_nearest_task.md](../tasks/backend_aim_modes_cursor_and_nearest_task.md) | Back-end | done | Jira: SCRUM-241. Aim mode selector added to Settings/Controls; nearest keeps auto-targeting, cursor routes melee/projectiles/beams/deploy/point-AoE through Player aim API; focused/UI/weapon/global balance/full runtime smokes green |
+| [backend_remove_auto_movement_on_crit_dodge_task.md](../tasks/backend_remove_auto_movement_on_crit_dodge_task.md) | Back-end | done | Jira: SCRUM-253. Player-body crit dash заменен на неподвижный shadow burst, `shadow_backstab` Вора больше не телепортирует героя; runtime weapon/full smoke + API + global balance gates green |
+| [backend_monster_elite_size_balance_rework_task.md](../tasks/backend_monster_elite_size_balance_rework_task.md) | Back-end | done | Jira: SCRUM-260. Enemy size profiles data-driven: mini_elite 1.05, route elite 1.68, boss 1.90; card elites slightly buffed HP/damage; hitbox/contact/HP-bar coherency tested; API/boss-elite/full smoke + global balance gates green |
+| [backend_elites_bosses_unique_skills_mechanics_task.md](../tasks/backend_elites_bosses_unique_skills_mechanics_task.md) | Back-end | done | Jira: SCRUM-259. Data-driven mechanic catalog + unique patterns for 4 elites/5 bosses; boss-specific telegraph mechanics wired; codex/docs/tests updated; SCRUM-261 Design VFX handoff unblocked |
+| [design_codex_unique_weapons_vfx_all_classes_015_task.md](../tasks/design_codex_unique_weapons_vfx_all_classes_015_task.md) | Design | review | Jira: SCRUM-258. 51 per-weapon D&D/painterly VFX plates `vfx_weapon_<weapon_id>.png` generated/imported for all class weapon identities; `AttackVfx.weapon_signature()` + `ClassWeapon` visual-only routing added; previews `scrum258_unique_weapon_vfx_contact/readability`; unique weapon/attack/hazard/status/melee/summoner/runtime smokes PASS |
+| [backend_final_balance_audit_aoe_crowd_clear_task.md](../tasks/backend_final_balance_audit_aoe_crowd_clear_task.md) | Back-end | done | Jira: SCRUM-262. Финальный 0.1.5 balance/AoE audit PASS: 51 class×weapon пар, solo ±20%, CCT 5/10/20 ±30%, худшее CCT +22.0% doctor/plague_syringe на 20 целях; damage/survivability/harness green |
 | [bug_hero_select_radar_out_of_frame_description_left_task.md](../tasks/bug_hero_select_radar_out_of_frame_description_left_task.md) | Back-end (UI) | done | Jira: SCRUM-231. **QA: passed** (f8f1409a) — радар = плавающий top-right виджет ВНЕ рамки досье (зазор 34px, тест ассертит parent=screen+anchor_right≥0.99), описание слева, no-overlap; визуал `build/qa/scrum231/hero_select_radar_fixed.png`. **Устраняет регрессию SCRUM-224** |
 | [backend_ascension_per_level_changes_near_start_task.md](../tasks/backend_ascension_per_level_changes_near_start_task.md) | Back-end (UI) | done | Jira: SCRUM-230. **QA: passed** (6b56d592) — `ascension_level_change_line`: L3=только ур.3 (не 1-2), L0=«без усложнений», кумулятив сохранён для тултипа; тест ассертит «есть N, нет 1..N-1»; UI/no-overlap/регрессия зелёные; CHANGELOG+doc |
 | [design_codex_interface_leather_gold_panels_restyle_task.md](../tasks/design_codex_interface_leather_gold_panels_restyle_task.md) | Design → Back-end | done | Jira: SCRUM-229. **QA: passed** (35b79e06) — 5 рамок RGBA8, прозрачные углы (без checkerboard), целевые UI + 4×smoke зелёные, визуал в `build/qa/scrum229/` (выбор героя/настройки/меню): leather+gold панели + золотой чекбокс + кнопки-пергамент согласованы, перекрытий нет. Физ.удаление legacy → safe-cleanup flow |
@@ -72,19 +88,26 @@ class_weapon). «done = чистый HEAD зелёный».
 | [bug_flaky_melee_targeting_hammer_aoe_cache_task.md](../tasks/bug_flaky_melee_targeting_hammer_aoe_cache_task.md) | Back-end | done | Jira: SCRUM-228. **QA: passed** (35b79e06) — анти-флака 25/25 PASS (было ~17%), `await process_frame` на месте, production-кэш `combat_target_query.gd` не тронут, регрессия 4×smoke зелёная |
 | [bug_umbrella_runtime_smoke_intermittent_failure_task.md](../tasks/bug_umbrella_runtime_smoke_intermittent_failure_task.md) | Back-end | done | Jira: SCRUM-257. **QA: passed** (5d7c2337) — freed-lambda warning eliminated; hero-radar/header umbrella flake fixed; 32/32 isolated umbrella PASS with 0 warnings; weapon/melee/UI/animation/meta regressions green |
 
-## Backlog 0.1.5 — не dispatch во время feature freeze
+## 0.1.5 — blocked / dependency-gated
 
-PATCH-эпик `SCRUM-232` содержит 15 незавершённых задач `Версия: 0.1.5` в backlog и 13 закрытых duplicate/superseded Jira issues. Эти backlog-задачи не показываются как active rows и не отправляются исполнителям до релиза `v0.1.4` или явного PM override. `SCRUM-239` уже прошёл QA как активная 0.1.4 work item, потому что по нему был записан Animator result.
-
-Новые запросы во время freeze можно оформлять как backlog-задачи `0.1.5`
-(`Статус: new`, `Версия: 0.1.5`, Jira fixVersion `0.1.5`, вне active sprint).
-Codex Documentation dispatcher может создавать такие task/Jira entries, но не
-dispatch'ит их и не переводит в `in_progress` до релиза `v0.1.4` или явного PM
-override.
+Feature freeze снят. Эти задачи остаются `blocked` до указанных предпосылок и
+не dispatch'ятся, пока blocker не будет снят исполнителем/PM.
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [backend_final_balance_audit_aoe_crowd_clear_task.md](../tasks/backend_final_balance_audit_aoe_crowd_clear_task.md) | Back-end | new (0.1.5 backlog) | Jira: SCRUM-262. ФИНАЛ патча: сверка цифр урона + фокус crowd-clear (пачки 5/10), выправить классы со слабым AoE; после всех балансовых правок. Не dispatch во время freeze |
+| [design_codex_elite_boss_new_skills_vfx_task.md](../tasks/design_codex_elite_boss_new_skills_vfx_task.md) | Design | review | Jira: SCRUM-261. Design/Codex VFX kit ready: 13 dedicated boss/elite skill PNG + refreshed shared hazard/elite sprites, HazardVfx node-name texture routing, preview `docs/design/previews/scrum261_elite_boss_vfx_contact.png`; hazard/attack/boss-elite smoke PASS, full runtime blocked by unrelated CombatTargetQuery/UI duplicate-class workspace state |
+
+## CLEANUP — рефакторинг и чистка v2 (эпик SCRUM-266, запрос 2026-06-14)
+
+ФАЗА 1 read-only аудиты идут сейчас (безопасно во время патча 0.1.5 — только
+читают+отчёты). ФАЗА 2 (удаления/рефакторинг) сериализуется ПОСЛЕ балансового
+патча на общих файлах. «done = чистый HEAD зелёный».
+
+| Задача | Роль | Статус | Тема |
+| --- | --- | --- | --- |
+| cleanup_audit_code_deadcode_duplication_warnings_task | Back-end | new | Мёртвый код, дубли, ошибки/ворнинги → отчёт + cleanup-задачи |
+| cleanup_audit_unused_sprites_images_task | Design→Back-end | new | Неиспользуемые спрайты/картинки → список удаления (с защитой от ложных) |
+| cleanup_audit_docs_full_update_task | Back-end | new | Доки ↔ код/ассеты: сверить и обновить |
 
 ## Архив
 

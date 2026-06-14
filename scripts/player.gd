@@ -13,6 +13,7 @@ const BERSERK_SPRITE := preload("res://assets/sprites/characters/berserk_unarmed
 const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berserk_walk_sheet_v2.png")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
 const DARK_MAGE_SPRITE := preload("res://assets/sprites/characters/dark_mage.png")
 const GUITARIST_SPRITE := preload("res://assets/sprites/characters/guitarist.png")
 const ASSASSIN_SPRITE := preload("res://assets/sprites/characters/assassin.png")
@@ -69,6 +70,7 @@ var health := 0.0
 var character_id := "berserk"
 var weapon_id := ""
 var weapon_config := {}
+var aim_mode := "nearest"
 var last_weapon_animation_event: Dictionary = {}
 var equipped_weapon: Node = null
 var stats := {}
@@ -90,7 +92,7 @@ var run_modifiers := {
 	"xp_gain_multiplier": 1.0,
 	"money_gain_multiplier": 1.0,
 	"healing_multiplier": 1.0,
-	"vampiric_heal_per_second_cap": 4.0,
+	"vampiric_heal_per_second_cap": ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT,
 	"enemy_health_multiplier": 1.0,
 	"knockback_multiplier": 1.0,
 }
@@ -118,11 +120,11 @@ var _web_slow_factor := 1.0
 var _echo_hit_counter := 0
 var _leadership_echo_hit_counter := 0
 var _dodge_rush_tween: Tween = null
-var _assassin_dash_tween: Tween = null
 var _low_hp_active := false
-var _assassin_dash_cooldown_left := 0.0
+var _assassin_crit_shadow_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
+var _status_aura_cooldown_left := 0.0
 var _vampiric_heal_budget := 0.0
 var ultimate_charge := 0.0
 var ultimate_max_charge := 100.0
@@ -163,7 +165,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		"xp_gain_multiplier": 1.0,
 		"money_gain_multiplier": 1.0,
 		"healing_multiplier": 1.0,
-		"vampiric_heal_per_second_cap": 4.0,
+		"vampiric_heal_per_second_cap": ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT,
 		"enemy_health_multiplier": 1.0,
 		"knockback_multiplier": 1.0,
 	}
@@ -204,6 +206,8 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_action_rotation = 0.0
 	_action_scale = Vector2.ONE
 	_facing_direction = Vector2.RIGHT
+	if is_inside_tree():
+		set_aim_mode(str(get_tree().root.get_meta("aim_mode", aim_mode)))
 
 	_clear_equipped_weapon()
 	if new_weapon_id != "":
@@ -285,10 +289,12 @@ func _weapon_socket() -> Node2D:
 
 
 func _physics_process(_delta: float) -> void:
+	StatusEffects.tick(self, _delta)
 	_damage_invulnerability_left = max(_damage_invulnerability_left - _delta, 0.0)
-	_assassin_dash_cooldown_left = max(_assassin_dash_cooldown_left - _delta, 0.0)
+	_assassin_crit_shadow_cooldown_left = max(_assassin_crit_shadow_cooldown_left - _delta, 0.0)
 	_knight_counter_cooldown_left = max(_knight_counter_cooldown_left - _delta, 0.0)
 	_battle_shout_cooldown_left = max(_battle_shout_cooldown_left - _delta, 0.0)
+	_status_aura_cooldown_left = max(_status_aura_cooldown_left - _delta, 0.0)
 	var direction := Vector2.ZERO
 
 	if Input.is_action_pressed("move_left"):
@@ -305,12 +311,46 @@ func _physics_process(_delta: float) -> void:
 	var web_factor := 1.0
 	if _web_slow_until > Time.get_ticks_msec() / 1000.0:
 		web_factor = _web_slow_factor
-	velocity = direction.normalized() * speed * web_factor
+	velocity = direction.normalized() * speed * web_factor * StatusEffects.speed_multiplier(self)
 	move_and_slide()
 	_update_movement_animation(_delta)
 	_update_low_hp_state()
 	_apply_regeneration(_delta)
 	_update_battle_shout()
+	_update_class_status_auras()
+
+
+func set_aim_mode(mode: String) -> void:
+	aim_mode = "cursor" if mode == "cursor" else "nearest"
+
+
+func attack_aim_mode() -> String:
+	if is_inside_tree():
+		set_aim_mode(str(get_tree().root.get_meta("aim_mode", aim_mode)))
+	return aim_mode
+
+
+func attack_aim_position(range_limit := 999999.0) -> Vector2:
+	var cursor_position := get_global_mouse_position()
+	var offset := cursor_position - global_position
+	if range_limit >= 999998.0 or offset.length() <= range_limit:
+		return cursor_position
+	if offset.length_squared() <= 0.001:
+		return global_position + _facing_direction * range_limit
+	return global_position + offset.normalized() * range_limit
+
+
+func attack_aim_direction(default_direction := Vector2.RIGHT, range_limit := 999999.0) -> Vector2:
+	if attack_aim_mode() == "cursor":
+		var offset := attack_aim_position(range_limit) - global_position
+		if offset.length_squared() > 0.001:
+			return offset.normalized()
+	var fallback := default_direction
+	if fallback.length_squared() <= 0.001:
+		fallback = _facing_direction
+	if fallback.length_squared() <= 0.001:
+		fallback = Vector2.RIGHT
+	return fallback.normalized()
 
 
 func play_action_animation(action_id: String, direction := Vector2.ZERO, phase := "", duration := 0.0, metadata := {}) -> void:
@@ -403,17 +443,18 @@ func take_damage(amount: float, _source := "") -> bool:
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, 170.0, Color(0.90, 0.95, 1.0, 0.40), false)
 		return true
 
-	if randf() < clampf(float(derived_parameters.get("dodge", 0.0)), 0.0, 0.8):
+	if randf() < clampf(float(derived_parameters.get("dodge", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP):
 		_show_dodge_popup()
 		_play_sfx("dodge")
 		_trigger_dodge_rush()
 		return false
 
 	var defended_amount := _try_knight_counter(amount)
-	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, 0.95)
-	# Поглощение: плоско срезает часть удара до защиты, но не ниже 20% урона.
+	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
+	# Поглощение плоско срезает часть удара до защиты, но после SCRUM-255
+	# гарантированно пропускает заметную долю мелких ударов.
 	var absorb := float(derived_parameters.get("absorb", 0.0))
-	var absorbed_amount: float = maxf(defended_amount - absorb, defended_amount * 0.2)
+	var absorbed_amount: float = maxf(defended_amount - absorb, defended_amount * ProgressionData.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION)
 	var final_damage := absorbed_amount * (1.0 - defense)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
@@ -442,23 +483,24 @@ func take_damage(amount: float, _source := "") -> bool:
 	return true
 
 
-func trigger_assassin_dash(target: Node2D, dash_distance: float) -> void:
+func trigger_assassin_dash(target: Node2D, burst_radius: float) -> void:
+	trigger_assassin_crit_shadow(target, burst_radius)
+
+
+func trigger_assassin_crit_shadow(target: Node2D, burst_radius: float) -> void:
 	if character_id != "assassin" or target == null or not is_instance_valid(target):
 		return
-	if _assassin_dash_cooldown_left > 0.0 or dash_distance <= 0.0:
+	if _assassin_crit_shadow_cooldown_left > 0.0 or burst_radius <= 0.0:
 		return
 	var to_target := target.global_position - global_position
 	if to_target.length_squared() <= 16.0:
 		return
 	var energy := float(stats.get("energy", 0.0))
-	_assassin_dash_cooldown_left = maxf(0.25, 0.55 / (1.0 + energy * 0.035))
-	var dash_direction := to_target.normalized()
-	var dash_target := global_position + dash_direction * minf(dash_distance, maxf(to_target.length() - 28.0, 0.0))
-	if _assassin_dash_tween != null and _assassin_dash_tween.is_valid():
-		_assassin_dash_tween.kill()
-	_assassin_dash_tween = create_tween()
-	_assassin_dash_tween.tween_property(self, "global_position", dash_target, 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	AttackVfx.ring_pulse(get_tree().current_scene if get_tree().current_scene != null else get_tree().root, global_position, 58.0, Color(0.70, 0.20, 1.0, 0.38), false)
+	_assassin_crit_shadow_cooldown_left = maxf(0.25, 0.55 / (1.0 + energy * 0.035))
+	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
+	var radius := maxf(burst_radius, 42.0)
+	AttackVfx.ring_pulse(parent, target.global_position, radius, Color(0.70, 0.20, 1.0, 0.38), false)
+	AttackVfx.slash(parent, (target.global_position - global_position).normalized(), minf(radius * 1.4, 180.0), Color(0.72, 0.22, 1.0, 0.34)).global_position = target.global_position
 
 
 func _try_knight_counter(incoming_amount: float) -> float:
@@ -602,7 +644,7 @@ func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 
 
 func _apply_regeneration(delta: float) -> void:
-	var vampiric_cap := float(run_modifiers.get("vampiric_heal_per_second_cap", 4.0))
+	var vampiric_cap := ProgressionData.effective_vampiric_cap(float(run_modifiers.get("vampiric_heal_per_second_cap", ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT)))
 	_vampiric_heal_budget = minf(_vampiric_heal_budget + vampiric_cap * delta, vampiric_cap)
 	var regeneration := float(derived_parameters.get("regeneration", 0.0))
 	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
@@ -615,13 +657,14 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
 	# Вампиризм теперь sustain, а не бессмертие: малая доля урона + per-second cap.
 	var vampiric_chance := float(derived_parameters.get("vampiric_chance", 0.0))
 	if vampiric_chance > 0.0 and dealt_damage > 0.0 and _vampiric_heal_budget > 0.0 and randf() < vampiric_chance:
-		var raw_heal := float(derived_parameters.get("vampiric_amount", 0.0)) + dealt_damage * 0.08
-		var vampiric_heal = minf(raw_heal, _vampiric_heal_budget)
+		var raw_heal := float(derived_parameters.get("vampiric_amount", 0.0)) + dealt_damage * ProgressionData.VAMPIRIC_DAMAGE_HEAL_RATIO
+		var vampiric_heal := minf(raw_heal, _vampiric_heal_budget)
 		_vampiric_heal_budget -= vampiric_heal
 		health = minf(health + vampiric_heal * float(run_modifiers.get("healing_multiplier", 1.0)), max_health)
 	_trigger_magic_enchant(enemy)
 	_trigger_universal_dot(enemy)
 	_trigger_leadership_echo(enemy)
+	_trigger_class_status_effects(enemy)
 	_trigger_berserk_ultimate_echo(enemy)
 	_on_weapon_hit_echo(enemy)
 
@@ -986,7 +1029,12 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 
 func _vfx_parent() -> Node:
 	var scene := get_tree().current_scene
-	return scene if scene != null else get_tree().root
+	if scene is Node2D:
+		return scene
+	var parent := get_parent()
+	if parent is Node2D:
+		return parent
+	return self
 
 
 func _trigger_magic_enchant(enemy: Node2D) -> void:
@@ -1022,6 +1070,80 @@ func _trigger_universal_dot(enemy: Node2D) -> void:
 		)
 
 
+func _trigger_class_status_effects(enemy: Node2D) -> void:
+	if enemy == null or not is_instance_valid(enemy):
+		return
+	var buff_power := float(derived_parameters.get("buff_power", 1.0))
+	match character_id:
+		"dark_mage", "elementalist":
+			StatusEffects.apply_status(enemy, "arcane_vulnerability", {
+				"duration": 2.6,
+				"max_stacks": 2,
+				"stack_mode": "add",
+				"damage_taken_multiplier": 1.0 + minf(0.045 * buff_power, 0.075),
+				"marker_color": Color(0.72, 0.42, 1.0, 1.0),
+			})
+		"chemist", "doctor", "assassin", "biologist":
+			StatusEffects.apply_status(enemy, "toxic_debuff", {
+				"duration": 2.4,
+				"max_stacks": 2,
+				"stack_mode": "add",
+				"dot_damage": maxf(float(derived_parameters.get("dot_damage", 1.0)) * 0.08, 0.35),
+				"dot_interval": 0.75,
+				"marker_color": Color(0.45, 1.0, 0.35, 1.0),
+			})
+		"soldier", "knight", "robot":
+			StatusEffects.apply_status(enemy, "staggered", {
+				"duration": 1.4,
+				"speed_multiplier": 0.90,
+				"marker_color": Color(0.90, 0.88, 0.72, 1.0),
+			})
+
+
+func _update_class_status_auras() -> void:
+	if _status_aura_cooldown_left > 0.0 or not is_inside_tree():
+		return
+	if character_id not in ["guitarist", "druid", "engineer", "priest"]:
+		return
+	var aura_radius := clampf(float(derived_parameters.get("aura_radius", 160.0)) * 0.62, 120.0, 280.0)
+	var buff_power := float(derived_parameters.get("buff_power", 1.0))
+	var applied := false
+	StatusEffects.apply_status(self, "class_aura_focus", {
+		"duration": 0.85,
+		"speed_multiplier": 1.0 + minf(0.018 * buff_power, 0.035),
+	})
+	for ally in get_tree().get_nodes_in_group("allies"):
+		var ally_node := ally as Node2D
+		if ally_node == null or not is_instance_valid(ally_node):
+			continue
+		if ally_node.get("owner_node") != self:
+			continue
+		if ally_node.global_position.distance_to(global_position) > aura_radius:
+			continue
+		StatusEffects.apply_status(ally_node, "command_aura", {
+			"duration": 0.85,
+			"damage_multiplier": 1.0 + minf(0.055 * buff_power, 0.12),
+			"speed_multiplier": 1.0 + minf(0.025 * buff_power, 0.05),
+			"marker_color": Color(0.50, 0.88, 1.0, 1.0),
+		})
+		applied = true
+	if character_id in ["guitarist", "druid", "engineer"]:
+		for enemy_node in TARGET_QUERY.in_radius(self, global_position, aura_radius):
+			StatusEffects.apply_status(enemy_node, "command_pressure", {
+				"duration": 0.85,
+				"speed_multiplier": 0.93,
+				"damage_taken_multiplier": 1.0 + minf(0.018 * buff_power, 0.035),
+				"marker_color": Color(0.42, 0.78, 1.0, 1.0),
+			})
+			applied = true
+	if character_id == "priest":
+		heal_percent(minf(0.0015 * buff_power, 0.004))
+		applied = true
+	if applied:
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, aura_radius, Color(0.44, 0.82, 1.0, 0.20), false)
+	_status_aura_cooldown_left = 0.55
+
+
 func _trigger_leadership_echo(enemy: Node2D) -> void:
 	if enemy == null or not is_instance_valid(enemy) or not enemy.has_method("take_damage"):
 		return
@@ -1034,7 +1156,7 @@ func _trigger_leadership_echo(enemy: Node2D) -> void:
 		return
 	_leadership_echo_hit_counter = 0
 	var echo_damage := float(derived_parameters.get(PROGRESSION_DATA.damage_parameter_for(character_id), derived_parameters.get("damage", 8.0))) * 0.34
-	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
+	var parent := _vfx_parent() as Node2D
 	AttackVfx.slash(parent, (enemy.global_position - global_position).normalized(), 110.0, Color(0.78, 0.90, 1.0, 0.34)).global_position = enemy.global_position
 	enemy.take_damage(echo_damage)
 

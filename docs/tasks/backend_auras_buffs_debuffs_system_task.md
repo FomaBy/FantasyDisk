@@ -1,6 +1,6 @@
 # Система аур, баффов и дебаффов — дать персонажам ауры/бафы/дебафы
 
-Статус: blocked (ждёт SCRUM-256 framework — ауры/баффы назначаются по идентичностям классов)
+Статус: done
 Приоритет: high
 Роль: Back-end (механики)
 Версия: 0.1.5
@@ -8,6 +8,13 @@
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-245
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
+
+## Dependency Update (2026-06-13)
+
+SCRUM-256 завершён: `ProgressionData.CLASS_MECHANIC_IDENTITIES` фиксирует
+главный атрибут, mechanic tags и weapon identity для каждого класса. Эта задача
+больше не заблокирована framework-зависимостью и может назначать ауры/баффы/
+дебаффы по class identity table.
 
 
 ## Autonomy / Approval
@@ -45,3 +52,24 @@ Jira: SCRUM-245
 - [ ] Система статус-эффектов (ауры/баффы/дебаффы) с длительностью/стаком/маркером.
 - [ ] Назначены подходящим классам в стиле основного атрибута; в балансе.
 - [ ] Тесты статусов; 6 smoke + balance smoke зелёные; доки; VFX-handoff если нужно.
+
+## Result — 2026-06-13
+
+Статус: done
+
+Implemented SCRUM-245 Back-end status/aura layer:
+- Added reusable `scripts/status_effects.gd` with duration, stack policy, DoT ticks, slow, damage buff, vulnerability and marker metadata.
+- Wired `Enemy` to tick status effects, apply slow to movement and vulnerability to incoming damage.
+- Wired `AllyMinion` to tick status effects and consume command aura damage/speed buffs.
+- Wired `Player` class hooks: Dark Mage/Elementalist arcane vulnerability, Chemist/Doctor/Assassin/Biologist toxic DoT, Soldier/Knight/Robot stagger slow, and Guitarist/Druid/Engineer/Priest class auras.
+- Existing `AttackVfx.ring_pulse()` is enough for aura feedback; no Design/Animator handoff required.
+- Added focused smoke `tests/status_effects_aura_test.gd` and report `build/status_effects_auras_scrum245_report.md`.
+
+Verification passed:
+- `res://tests/status_effects_aura_test.gd`
+- `res://tests/runtime_smoke_combat_test.gd`
+- `res://tests/runtime_smoke_weapon_mechanics_test.gd`
+- `res://tests/global_damage_balance_smoke_test.gd`
+- `res://tests/global_survivability_balance_smoke_test.gd`
+- `res://tools/balance_harness.gd`
+- `res://tests/runtime_smoke_test.gd`
