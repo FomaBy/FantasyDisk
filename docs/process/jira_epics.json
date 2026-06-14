@@ -9,7 +9,8 @@
     "AUDIO": "SCRUM-218",
     "META": "SCRUM-219",
     "QUALITY": "SCRUM-220",
-    "RELEASE": "SCRUM-221"
+    "RELEASE": "SCRUM-221",
+    "QOL": "SCRUM-265"
   },
   "updated": "2026-06-13",
   "note": "Аджайл-эпики FantasyDisk: новые задачи привязываются к parent-эпику по классификатору в tools/jira_board_sync.py"
