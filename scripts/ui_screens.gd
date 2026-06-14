@@ -4635,7 +4635,7 @@ func _close_feedback_overlay() -> void:
 
 
 func _feedback_reporter() -> Node:
-	var reporter := game.get_node_or_null("FeedbackReporter")
+	var reporter: Node = game.get_node_or_null("FeedbackReporter")
 	if reporter != null and is_instance_valid(reporter):
 		return reporter
 	reporter = FEEDBACK_REPORTER_SCRIPT.new()

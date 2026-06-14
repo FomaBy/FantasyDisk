@@ -654,17 +654,17 @@ func _input(event: InputEvent) -> void:
 		ui._handle_rebind_input(event)
 		return
 
+	if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():
+		if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
+			ui._close_feedback_overlay()
+			get_viewport().set_input_as_handled()
+		return
+
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("feedback"):
 		var screenshot := get_viewport().get_texture().get_image()
 		ui._show_feedback_overlay(screenshot)
 		get_viewport().set_input_as_handled()
 		return
-
-	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
-		if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():
-			ui._close_feedback_overlay()
-			get_viewport().set_input_as_handled()
-			return
 
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F12:
 		route_debug_free_pick = not route_debug_free_pick

@@ -1189,7 +1189,7 @@
  },
  "design_hero_select_ascension_small_buttons_reposition_task.md": {
   "key": "SCRUM-346",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_hero_select_radar_remove_title_center_enlarge_task.md": {
   "key": "SCRUM-347",
@@ -1253,6 +1253,10 @@
  },
  "backend_ingame_feedback_bug_report_tool_task.md": {
   "key": "SCRUM-362",
+  "status": "В работе"
+ },
+ "animation_rift_cutter_full_frame_integration_task.md": {
+  "key": "SCRUM-363",
   "status": "В работе"
  }
 }

@@ -9,6 +9,7 @@ const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
 const EventData := preload("res://scripts/event_data.gd")
 const Glossary := preload("res://scripts/glossary.gd")
 const RunAutosave := preload("res://scripts/run_autosave.gd")
+const FeedbackReporter := preload("res://scripts/feedback_reporter.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const HERO_SELECT_DOSSIER_SOURCE_SIZE := Vector2(1120.0, 1140.0)
@@ -56,6 +57,7 @@ func _initialize() -> void:
 		return
 	await _test_back_button_frame_safety(main_scene)
 	await _test_main_menu_quit_confirmation(main_scene)
+	await _test_feedback_overlay_and_local_fallback(main_scene)
 	if main_menu_actions.global_position.x > 140.0:
 		push_error("Expected main menu buttons to stay on the left side of the start screen.")
 		quit(1)
@@ -4660,6 +4662,80 @@ func _test_settings_persistence_and_audio() -> void:
 		_fail("Expected toggling Music to not mute the Master bus.")
 		return
 	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 1.0, "sfx_volume": 1.0, "music_enabled": true, "sfx_enabled": true})
+
+
+func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
+	var feedback_main := main_scene.instantiate()
+	root.add_child(feedback_main)
+	await process_frame
+	if not InputMap.has_action("feedback"):
+		_fail("Expected feedback InputMap action to exist.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var feedback_has_p := false
+	for event in InputMap.action_get_events("feedback"):
+		if event is InputEventKey and int(event.keycode) == KEY_P:
+			feedback_has_p = true
+	if not feedback_has_p:
+		_fail("Expected feedback InputMap action to default to P.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+
+	var feedback_event := InputEventKey.new()
+	feedback_event.keycode = KEY_P
+	feedback_event.physical_keycode = KEY_P
+	feedback_event.pressed = true
+	feedback_main.call("_input", feedback_event)
+	await process_frame
+	var overlay := feedback_main.get("feedback_overlay_layer") as CanvasLayer
+	if overlay == null or not is_instance_valid(overlay):
+		_fail("Expected P to open FeedbackOverlayLayer.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var text_edit := feedback_main.find_child("FeedbackTextEdit", true, false) as TextEdit
+	var preview := feedback_main.find_child("FeedbackScreenshotPreview", true, false) as TextureRect
+	if text_edit == null or preview == null or preview.texture == null:
+		_fail("Expected feedback overlay to show text input and screenshot preview.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+
+	var escape_event := InputEventKey.new()
+	escape_event.keycode = KEY_ESCAPE
+	escape_event.physical_keycode = KEY_ESCAPE
+	escape_event.pressed = true
+	feedback_main.call("_input", escape_event)
+	await process_frame
+	if feedback_main.get("feedback_overlay_layer") != null:
+		_fail("Expected Escape to close feedback overlay.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+
+	var screenshot := Image.create(32, 18, false, Image.FORMAT_RGBA8)
+	screenshot.fill(Color(0.12, 0.18, 0.24, 1.0))
+	var local_path := FeedbackReporter.save_local_report("Smoke feedback fallback", screenshot, {
+		"screen": "runtime_smoke",
+		"version": "test",
+	})
+	if not FileAccess.file_exists("%s/report.txt" % local_path) or not FileAccess.file_exists("%s/screenshot.png" % local_path):
+		_fail("Expected feedback local fallback to write report.txt and screenshot.png under %s." % local_path)
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var boundary := "----FantasyDiskSmokeBoundary"
+	var multipart := FeedbackReporter.multipart_payload("Smoke payload", screenshot, {"screen": "runtime_smoke"}, boundary)
+	var multipart_text := multipart.get_string_from_utf8()
+	if not multipart_text.contains("payload_json") or not multipart_text.contains("fantasydisk_feedback.png"):
+		_fail("Expected feedback multipart payload to include Discord payload_json and screenshot file part.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	feedback_main.queue_free()
+	await process_frame
 
 
 func _test_settings_tabs_and_rebind(main: Node) -> void:

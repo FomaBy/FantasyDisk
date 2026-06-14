@@ -1,6 +1,6 @@
 # ART/UX: Возвышение +/- — маленькие кнопки по референсам, по центру, вниз фрейма + «Выбрать»
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -118,3 +118,32 @@ Back-end in:
 - `docs/tasks/backend_hero_select_unified_portrait_description_frame_integration_task.md`
 
 This task is left in `review` as covered by SCRUM-356 rather than duplicated.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: covered by SCRUM-356 — обязательный skill-ассет произведён)
+
+Проверено (фактически):
+- **Обязательный Design-деливерабл выполнен** (через SCRUM-356): компактная рамка
+  `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_button_small.png`
+  существует (`256×256` RGBA), source + margins `[76,74,76,76]` зафиксированы.
+  Skill-генерация (`fantasydisk-asset-generator`) — мандатный путь соблюдён (старые/
+  процедурные генераторы не использовались).
+- **Рантайм-посадка кнопок — вне Design-scope** (task explicitly: «runtime
+  repositioning belongs to Back-end only after the production PNG exists», стр.91-92):
+  делегирована в `backend_hero_select_unified_portrait_description_frame_integration_task.md`.
+
+⚠️ **Видимое изменение (маленькие +/- по центру, прижатые вниз фрейма) ещё НЕ в
+рантайме**: ui_screens.gd всё ещё использует старый `asc_button`
+(`ui_frame_hero_select_asc_button.png`, стр.86) и `ASCENSION_BUTTON_SIZE=54×62`
+(стр.53); новый `asc_button_small` НЕ подключён, репозиционирование не интегрировано.
+Гейтится Back-end интеграцией (статус **«new»**) + SCRUM-356.
+
+Acceptance (фактическое состояние):
+- [x] Компактная asc-рамка по референсам произведена скиллом (covered by 356).
+- [~] Кнопки +/- маленькие/по центру и блок возвышения+«Выбрать» внизу фрейма — асс
+  готов, но рантайм-посадка пендинг (Back-end integration «new», вне Design-scope).
+- [~] no-overlap/smoke/скрин финального вида — после интеграции (356 + Back-end).
+
+Вывод: задача корректно сведена в SCRUM-356 (не дублируется). Design-вклад (skill-
+ассет) выполнен. Видимый результат лежит на Back-end интеграции (отслеживается,
+«new»). Баги: нет (нет дефекта — есть незавершённая делегированная интеграция).
