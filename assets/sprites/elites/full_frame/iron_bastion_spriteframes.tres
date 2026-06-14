@@ -1,0 +1,239 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_00.png" id="1_ir1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_01.png" id="2_ir2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_02.png" id="3_ir3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_03.png" id="4_ir4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_04.png" id="5_ir5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_attack_primary_05.png" id="6_ir6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_00.png" id="7_ir7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_01.png" id="8_ir8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_02.png" id="9_ir9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_03.png" id="10_ir10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_04.png" id="11_ir11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_move_05.png" id="12_ir12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_00.png" id="13_ir13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_01.png" id="14_ir14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_02.png" id="15_ir15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_03.png" id="16_ir16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_04.png" id="17_ir17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_shield_block_05.png" id="18_ir18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_00.png" id="19_ir19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_01.png" id="20_ir20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_02.png" id="21_ir21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_03.png" id="22_ir22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_04.png" id="23_ir23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/iron_bastion/iron_bastion_skill_slam_wave_05.png" id="24_ir24"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_ir1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_ir2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_ir3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_ir4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_ir5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_ir6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_ir1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_ir2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_ir3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_ir4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_ir5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_ir6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_ir7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_ir8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_ir9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_ir10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_ir11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_ir12")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_ir13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ir14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_ir15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_ir16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_ir17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ir18")
+}
+],
+"loop": false,
+"name": &"skill_shield_block",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_ir13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ir14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_ir15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_ir16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_ir17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ir18")
+}
+],
+"loop": false,
+"name": &"attack_shield_block",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_ir19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_ir20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_ir21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_ir22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_ir23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_ir24")
+}
+],
+"loop": false,
+"name": &"skill_slam_wave",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_ir19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_ir20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_ir21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_ir22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_ir23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_ir24")
+}
+],
+"loop": false,
+"name": &"attack_slam_wave",
+"speed": 12.0
+}]

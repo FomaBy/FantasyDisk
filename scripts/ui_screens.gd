@@ -692,28 +692,20 @@ func _show_character_select() -> void:
 	dossier.add_child(weapons_label)
 
 	var bottom_safe_rect := _hero_select_unified_scaled_rect(HERO_SELECT_UNIFIED_BOTTOM_CONTROLS_RECT)
-	var bottom_controls := HBoxContainer.new()
+	var bottom_controls := VBoxContainer.new()
 	bottom_controls.name = "HeroSelectBottomControls"
 	bottom_controls.position = bottom_safe_rect.position
 	bottom_controls.size = bottom_safe_rect.size
 	bottom_controls.custom_minimum_size = bottom_safe_rect.size
 	bottom_controls.alignment = BoxContainer.ALIGNMENT_CENTER
-	bottom_controls.add_theme_constant_override("separation", int(round(14.0 * _hero_select_unified_scale())))
+	bottom_controls.add_theme_constant_override("separation", 1)
 	unified_frame.add_child(bottom_controls)
-
-	var asc_stack := VBoxContainer.new()
-	asc_stack.name = "HeroSelectAscensionStack"
-	asc_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	asc_stack.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	asc_stack.alignment = BoxContainer.ALIGNMENT_CENTER
-	asc_stack.add_theme_constant_override("separation", 2)
-	bottom_controls.add_child(asc_stack)
 
 	var asc_row := HBoxContainer.new()
 	asc_row.name = "AscensionSelectorRow"
 	asc_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	asc_row.add_theme_constant_override("separation", 6)
-	asc_stack.add_child(asc_row)
+	bottom_controls.add_child(asc_row)
 	var asc_minus := _make_compact_button("-")
 	asc_minus.name = "AscensionMinusButton"
 	asc_minus.custom_minimum_size = _hero_select_asc_small_button_size()
@@ -721,7 +713,7 @@ func _show_character_select() -> void:
 	asc_row.add_child(asc_minus)
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
-	asc_label.custom_minimum_size = Vector2(round(190.0 * _hero_select_unified_scale()), maxf(_hero_select_asc_small_button_size().y * 0.72, 28.0))
+	asc_label.custom_minimum_size = Vector2(round(220.0 * _hero_select_unified_scale()), maxf(_hero_select_asc_small_button_size().y * 0.72, 20.0))
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_label.add_theme_font_size_override("font_size", 13)
@@ -740,14 +732,21 @@ func _show_character_select() -> void:
 	asc_mods.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	asc_mods.add_theme_font_size_override("font_size", 10)
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	asc_mods.custom_minimum_size = Vector2(0, 20)
+	asc_mods.custom_minimum_size = Vector2(bottom_safe_rect.size.x * 0.76, clampf(bottom_safe_rect.size.y * 0.18, 12.0, 22.0))
+	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	asc_mods.visible = _hero_select_unified_scale() >= 0.52
 	asc_mods.add_theme_stylebox_override("normal", _hero_select_frame_style("asc_mods"))
-	asc_stack.add_child(asc_mods)
+	bottom_controls.add_child(asc_mods)
 
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HeroSelectChooseButton"
-	var choose_height := clampf(bottom_safe_rect.size.y * 0.62, 48.0, 72.0)
-	_set_action_button_size(select_button, clampf(bottom_safe_rect.size.x * 0.34, 178.0, 260.0), choose_height)
+	var choose_height := clampf(bottom_safe_rect.size.y * 0.36, 24.0, 54.0)
+	_set_action_button_size(select_button, clampf(bottom_safe_rect.size.x * 0.62, 124.0, 260.0), choose_height)
+	select_button.add_theme_stylebox_override("normal", _hero_select_compact_choice_style(false, false))
+	select_button.add_theme_stylebox_override("hover", _hero_select_compact_choice_style(true, false))
+	select_button.add_theme_stylebox_override("pressed", _hero_select_compact_choice_style(true, true))
+	select_button.add_theme_stylebox_override("focus", _hero_select_compact_choice_style(true, false))
+	select_button.add_theme_font_size_override("font_size", 11 if _hero_select_unified_scale() < 0.52 else 13)
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	select_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	bottom_controls.add_child(select_button)
@@ -853,7 +852,8 @@ func _show_character_select() -> void:
 	var refresh_asc := func() -> void:
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(game.selected_character_id))
 		var lvl: int = game.selected_ascension_level
-		asc_label.text = "Возвышение: %d / %d" % [lvl, game.ascension_selectable_max(game.selected_character_id)]
+		var max_level: int = game.ascension_selectable_max(game.selected_character_id)
+		asc_label.text = ("Возв.: %d/%d" % [lvl, max_level]) if _hero_select_unified_scale() < 0.52 else ("Возвышение: %d / %d" % [lvl, max_level])
 		asc_mods.text = game.PROGRESSION_DATA.ascension_level_change_line(lvl)
 
 	var select_character := func(character_id: String) -> void:
@@ -953,7 +953,7 @@ func _hero_select_unified_scaled_rect(source_rect: Rect2) -> Rect2:
 
 func _hero_select_asc_small_button_size() -> Vector2:
 	var bottom_rect := _hero_select_unified_scaled_rect(HERO_SELECT_UNIFIED_BOTTOM_CONTROLS_RECT)
-	var side := clampf(floor(bottom_rect.size.y * 0.72), 44.0, 64.0)
+	var side := clampf(floor(bottom_rect.size.y * 0.42), 28.0, 56.0)
 	return Vector2(side, side)
 
 
@@ -5317,6 +5317,24 @@ func _compact_button_style(hovered := false, pressed := false, disabled := false
 	style.content_margin_top = 6
 	style.content_margin_right = 8
 	style.content_margin_bottom = 6
+	return style
+
+
+func _hero_select_compact_choice_style(hovered := false, pressed := false) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.058, 0.064, 0.075, 0.80)
+	style.border_color = Color(0.56, 0.50, 0.36, 0.82)
+	if hovered:
+		style.bg_color = Color(0.080, 0.084, 0.090, 0.92)
+		style.border_color = Color(0.78, 0.72, 0.58, 0.96)
+	if pressed:
+		style.bg_color = Color(0.045, 0.050, 0.058, 0.96)
+	style.set_corner_radius_all(7)
+	style.set_border_width_all(1)
+	style.content_margin_left = 6
+	style.content_margin_top = 2
+	style.content_margin_right = 6
+	style.content_margin_bottom = 2
 	return style
 
 

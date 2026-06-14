@@ -288,11 +288,26 @@ func _initialize() -> void:
 		push_error("Expected hero select v3 to show a dossier panel.")
 		quit(1)
 		return
+	var unified_frame := main.find_child("HeroSelectUnifiedFrame", true, false) as Control
+	if unified_frame == null:
+		push_error("Expected hero select to use the SCRUM-356 unified portrait+description frame.")
+		quit(1)
+		return
 	var content_row := main.find_child("HeroSelectContent", true, false) as Control
 	var portrait_panel := main.find_child("HeroSelectPortraitPanel", true, false) as Control
-	var right_region := main.find_child("HeroSelectRightRegion", true, false) as Control
-	if content_row == null or portrait_panel == null or right_region == null:
-		push_error("Expected hero select master layout to expose 1/3 portrait and 2/3 right region.")
+	if content_row == null or portrait_panel == null:
+		push_error("Expected hero select unified layout to expose content row and portrait safe-zone panel.")
+		quit(1)
+		return
+	var unified_rect := unified_frame.get_global_rect()
+	var unified_ratio := unified_rect.size.x / maxf(unified_rect.size.y, 1.0)
+	var source_ratio := HERO_SELECT_UNIFIED_SOURCE_SIZE.x / HERO_SELECT_UNIFIED_SOURCE_SIZE.y
+	if absf(unified_ratio - source_ratio) > 0.015:
+		push_error("Expected hero select unified frame to stay whole-image proportional.")
+		quit(1)
+		return
+	if not _rect_contains_with_tolerance(_scaled_source_rect(unified_rect, HERO_SELECT_UNIFIED_SOURCE_SIZE, HERO_SELECT_UNIFIED_PORTRAIT_RECT), portrait_panel.get_global_rect(), 2.0):
+		push_error("Expected hero portrait panel to stay inside the unified frame portrait safe-zone.")
 		quit(1)
 		return
 	var radar := main.find_child("HeroStatRadar", true, false) as Control
@@ -6031,8 +6046,8 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 				return
 			continue
 		if texture_path.contains("ui_btn_red_gold_hero_confirm") and button.name == "HeroSelectChooseButton":
-			if button.custom_minimum_size.y < 72.0:
-				_fail("Expected compact hero select confirm button %s on %s to keep at least 72px height, got min=%s." % [button.name, context, button.custom_minimum_size])
+			if button.custom_minimum_size.y < 24.0:
+				_fail("Expected SCRUM-356 compact hero select confirm button %s on %s to stay usable inside the unified bottom safe-zone, got min=%s." % [button.name, context, button.custom_minimum_size])
 				return
 			continue
 		if rect.size.y < 64.0 or button.custom_minimum_size.y < 64.0:
@@ -6088,6 +6103,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var radar_content := hero_main.find_child("HeroSelectRadarContent", true, false) as Control
 	var radar_title := hero_main.find_child("HeroStatRadarTitle", true, false) as Control
 	var header := hero_main.find_child("HeroSelectHeader", true, false) as Control
+	var unified_frame := hero_main.find_child("HeroSelectUnifiedFrame", true, false) as Control
 	var portrait_panel := hero_main.find_child("HeroSelectPortraitPanel", true, false) as Control
 	var right_region := hero_main.find_child("HeroSelectRightRegion", true, false) as Control
 	var dossier_panel := hero_main.find_child("HeroSelectDossierPanel", true, false) as Control
@@ -6096,13 +6112,14 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var dossier := hero_main.find_child("HeroSelectDossier", true, false) as Control
 	var dossier_title := hero_main.find_child("HeroSelectInfoTitle", true, false) as Control
 	var dossier_desc := hero_main.find_child("HeroSelectInfoDescription", true, false) as Control
+	var asc_row := hero_main.find_child("AscensionSelectorRow", true, false) as Control
 	var asc_mods := hero_main.find_child("AscensionModsLabel", true, false) as Control
 	var choose_button := hero_main.find_child("HeroSelectChooseButton", true, false) as Control
 	var thumbnail_frame := hero_main.find_child("HeroThumbnailStripFrame", true, false) as Control
 	var thumbnail_content := hero_main.find_child("HeroThumbnailStripContent", true, false) as Control
 	var thumbnail_strip := hero_main.find_child("HeroThumbnailStrip", true, false) as Control
-	if hero_screen == null or radar == null or radar_panel == null or radar_content == null or header == null or portrait_panel == null or right_region == null or dossier_panel == null or dossier_frame == null or dossier_content == null or dossier == null or dossier_desc == null or thumbnail_frame == null or thumbnail_content == null or thumbnail_strip == null:
-		_fail("Expected hero select radar/header/dossier nodes at %s." % context)
+	if hero_screen == null or radar == null or radar_panel == null or radar_content == null or header == null or unified_frame == null or portrait_panel == null or right_region == null or dossier_panel == null or dossier_frame == null or dossier_content == null or dossier == null or dossier_desc == null or asc_row == null or choose_button == null or thumbnail_frame == null or thumbnail_content == null or thumbnail_strip == null:
+		_fail("Expected hero select radar/header/unified-frame/dossier nodes at %s." % context)
 		return
 	if radar_title != null:
 		_fail("Expected hero stat radar title to be removed at %s." % context)
@@ -6112,6 +6129,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var radar_panel_rect := radar_panel.get_global_rect()
 	var radar_content_rect := radar_content.get_global_rect()
 	var header_rect := header.get_global_rect()
+	var unified_frame_rect := unified_frame.get_global_rect()
 	var portrait_rect := portrait_panel.get_global_rect()
 	var right_region_rect := right_region.get_global_rect()
 	var dossier_frame_rect := dossier_frame.get_global_rect()
@@ -6125,6 +6143,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	dump_lines.append("## %s" % context)
 	dump_lines.append("- `HeroSelectScreen`: `%s`" % str(screen_rect))
 	dump_lines.append("- `HeroSelectHeader`: `%s`" % str(header_rect))
+	dump_lines.append("- `HeroSelectUnifiedFrame`: `%s`" % str(unified_frame_rect))
 	dump_lines.append("- `HeroSelectPortraitPanel`: `%s`" % str(portrait_rect))
 	dump_lines.append("- `HeroSelectRightRegion`: `%s`" % str(right_region_rect))
 	dump_lines.append("- `HeroSelectDossierPanel`: `%s`" % str(dossier_panel_rect))
@@ -6134,6 +6153,8 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	dump_lines.append("- `HeroSelectInfoDescription`: `%s`" % str(dossier_desc_rect))
 	if asc_mods != null:
 		dump_lines.append("- `AscensionModsLabel`: `%s`" % str(asc_mods.get_global_rect()))
+	dump_lines.append("- `AscensionSelectorRow`: `%s`" % str(asc_row.get_global_rect()))
+	dump_lines.append("- `HeroSelectChooseButton`: `%s`" % str(choose_button.get_global_rect()))
 	dump_lines.append("- `HeroSelectRadarPanel`: `%s`" % str(radar_panel_rect))
 	dump_lines.append("- `HeroSelectRadarContent`: `%s`" % str(radar_content_rect))
 	dump_lines.append("- `HeroStatRadar`: `%s`" % str(radar_rect))
@@ -6151,18 +6172,42 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var first_thumb := thumbnail_buttons[0] as Control
 	var first_thumb_rect := first_thumb.get_global_rect()
 	dump_lines.append("- `HeroThumbnailSample`: min=`%s`, rect=`%s`" % [str(first_thumb.custom_minimum_size), str(first_thumb_rect)])
-	var dossier_safe_rect := _scaled_safe_rect(dossier_frame_rect, HERO_SELECT_DOSSIER_SOURCE_SIZE, HERO_SELECT_DOSSIER_SAFE_MARGINS)
+	var unified_ratio := unified_frame_rect.size.x / maxf(unified_frame_rect.size.y, 1.0)
+	var unified_source_ratio := HERO_SELECT_UNIFIED_SOURCE_SIZE.x / HERO_SELECT_UNIFIED_SOURCE_SIZE.y
+	var portrait_safe_rect := _scaled_source_rect(unified_frame_rect, HERO_SELECT_UNIFIED_SOURCE_SIZE, HERO_SELECT_UNIFIED_PORTRAIT_RECT)
+	var description_safe_rect := _scaled_source_rect(unified_frame_rect, HERO_SELECT_UNIFIED_SOURCE_SIZE, HERO_SELECT_UNIFIED_DESCRIPTION_RECT)
+	var bottom_controls_safe_rect := _scaled_source_rect(unified_frame_rect, HERO_SELECT_UNIFIED_SOURCE_SIZE, HERO_SELECT_UNIFIED_BOTTOM_CONTROLS_RECT)
 	var thumbnail_safe_rect := _scaled_safe_rect(thumbnail_frame_rect, HERO_SELECT_THUMBNAIL_SOURCE_SIZE, HERO_SELECT_THUMBNAIL_SAFE_MARGINS)
-	dump_lines.append("- `HeroSelectDossierSafeRect`: `%s`" % str(dossier_safe_rect))
+	dump_lines.append("- `HeroSelectUnifiedPortraitSafeRect`: `%s`" % str(portrait_safe_rect))
+	dump_lines.append("- `HeroSelectUnifiedDescriptionSafeRect`: `%s`" % str(description_safe_rect))
+	dump_lines.append("- `HeroSelectUnifiedBottomControlsSafeRect`: `%s`" % str(bottom_controls_safe_rect))
 	dump_lines.append("- `HeroThumbnailStripSafeRect`: `%s`" % str(thumbnail_safe_rect))
-	if not _rect_contains_with_tolerance(dossier_safe_rect, dossier_rect, 2.0):
-		_fail("Expected hero dossier controls to stay inside SCRUM-355 strict safe-zone at %s, got content %s safe %s frame %s." % [context, dossier_rect, dossier_safe_rect, dossier_frame_rect])
+	if absf(unified_ratio - unified_source_ratio) > 0.015:
+		_fail("Expected SCRUM-356 unified frame to stay whole-image proportional at %s, got frame %s." % [context, unified_frame_rect])
+		return
+	if not _rect_contains_with_tolerance(portrait_safe_rect, portrait_rect, 2.0):
+		_fail("Expected hero portrait to stay inside SCRUM-356 portrait safe-zone at %s, got content %s safe %s frame %s." % [context, portrait_rect, portrait_safe_rect, unified_frame_rect])
+		return
+	if not _rect_contains_with_tolerance(description_safe_rect, dossier_rect, 2.0):
+		_fail("Expected hero dossier controls to stay inside SCRUM-356 description safe-zone at %s, got content %s safe %s frame %s." % [context, dossier_rect, description_safe_rect, unified_frame_rect])
+		return
+	if not _rect_contains_with_tolerance(description_safe_rect, dossier_desc_rect, 2.0):
+		_fail("Expected hero description text to stay inside SCRUM-356 description safe-zone at %s, got desc %s safe %s." % [context, dossier_desc_rect, description_safe_rect])
+		return
+	if not _rect_contains_with_tolerance(bottom_controls_safe_rect, asc_row.get_global_rect(), 2.0):
+		_fail("Expected ascension row to stay inside SCRUM-356 bottom controls safe-zone at %s, got row %s safe %s." % [context, asc_row.get_global_rect(), bottom_controls_safe_rect])
+		return
+	if asc_mods != null and asc_mods.visible and not _rect_contains_with_tolerance(bottom_controls_safe_rect, asc_mods.get_global_rect(), 2.0):
+		_fail("Expected ascension delta text to stay inside SCRUM-356 bottom controls safe-zone at %s, got mods %s safe %s." % [context, asc_mods.get_global_rect(), bottom_controls_safe_rect])
+		return
+	if not _rect_contains_with_tolerance(bottom_controls_safe_rect, choose_button.get_global_rect(), 2.0):
+		_fail("Expected hero select choose button to stay inside SCRUM-356 bottom controls safe-zone at %s, got button %s safe %s." % [context, choose_button.get_global_rect(), bottom_controls_safe_rect])
 		return
 	if not _rect_contains_with_tolerance(thumbnail_safe_rect, thumbnail_rect, 2.0):
 		_fail("Expected hero thumbnail row to stay inside SCRUM-355 strict safe-zone at %s, got content %s safe %s frame %s." % [context, thumbnail_rect, thumbnail_safe_rect, thumbnail_frame_rect])
 		return
-	if thumbnail_frame_rect.position.y < dossier_frame_rect.end.y + 16.0:
-		_fail("Expected hero dossier frame and thumbnail strip frame to keep >=16px vertical gap at %s, got dossier %s thumbnail %s." % [context, dossier_frame_rect, thumbnail_frame_rect])
+	if thumbnail_frame_rect.position.y < unified_frame_rect.end.y + 16.0:
+		_fail("Expected hero unified frame and thumbnail strip frame to keep >=16px vertical gap at %s, got unified %s thumbnail %s." % [context, unified_frame_rect, thumbnail_frame_rect])
 		return
 	var min_expected_thumb_width := 48.0
 	if viewport_size.x >= 1600:
@@ -6181,15 +6226,6 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 			_fail("Expected hero thumbnail %s to stay inside carousel content-zone at %s, got thumb %s content %s." % [(thumb as Control).name, context, thumb_rect, thumbnail_rect])
 			return
 	var min_gap := 12.0
-	var content_row := hero_main.find_child("HeroSelectContent", true, false) as Control
-	if content_row != null:
-		var content_width := maxf(content_row.get_global_rect().size.x, 1.0)
-		var portrait_share := portrait_rect.size.x / content_width
-		var right_share := right_region_rect.size.x / content_width
-		dump_lines.append("- `HeroSelectContentShare`: portrait=`%.3f`, right=`%.3f`" % [portrait_share, right_share])
-		if absf(portrait_share - 0.333) > 0.055 or absf(right_share - 0.667) > 0.055:
-			_fail("Expected hero select master layout 1/3 portrait and 2/3 right region at %s, got %.3f / %.3f." % [context, portrait_share, right_share])
-			return
 	if dossier_rect.end.x > radar_panel_rect.position.x - min_gap or dossier_desc_rect.end.x > radar_panel_rect.position.x - min_gap:
 		_fail("Expected hero description/dossier to stay left of radar with >= %.0fpx gap at %s, got dossier %s desc %s radar panel %s." % [min_gap, context, dossier_rect, dossier_desc_rect, radar_panel_rect])
 		return
@@ -6488,6 +6524,15 @@ func _scaled_safe_rect(frame_rect: Rect2, source_size: Vector2, margins: Vector4
 			maxf(frame_rect.size.x - margin_left - margin_right, 0.0),
 			maxf(frame_rect.size.y - margin_top - margin_bottom, 0.0)
 		)
+	)
+
+
+func _scaled_source_rect(frame_rect: Rect2, source_size: Vector2, source_rect: Rect2) -> Rect2:
+	var scale_x := frame_rect.size.x / maxf(source_size.x, 1.0)
+	var scale_y := frame_rect.size.y / maxf(source_size.y, 1.0)
+	return Rect2(
+		frame_rect.position + Vector2(source_rect.position.x * scale_x, source_rect.position.y * scale_y),
+		Vector2(source_rect.size.x * scale_x, source_rect.size.y * scale_y)
 	)
 
 

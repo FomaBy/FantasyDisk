@@ -1,0 +1,239 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_00.png" id="1_pl1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_01.png" id="2_pl2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_02.png" id="3_pl3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_03.png" id="4_pl4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_04.png" id="5_pl5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_attack_primary_05.png" id="6_pl6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_00.png" id="7_pl7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_01.png" id="8_pl8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_02.png" id="9_pl9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_03.png" id="10_pl10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_04.png" id="11_pl11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_05.png" id="12_pl12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_00.png" id="13_pl13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_01.png" id="14_pl14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_02.png" id="15_pl15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_03.png" id="16_pl16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_04.png" id="17_pl17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_05.png" id="18_pl18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_00.png" id="19_pl19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_01.png" id="20_pl20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_02.png" id="21_pl21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_03.png" id="22_pl22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_04.png" id="23_pl23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_plague_aura_05.png" id="24_pl24"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_pl1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_pl2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_pl3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_pl4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_pl5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_pl6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_pl1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_pl2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_pl3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_pl4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_pl5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_pl6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_pl7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_pl8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_pl9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_pl10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_pl11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_pl12")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_pl13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_pl14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_pl15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_pl16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_pl17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_pl18")
+}
+],
+"loop": false,
+"name": &"skill_poison_volley",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_pl13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_pl14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_pl15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_pl16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_pl17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_pl18")
+}
+],
+"loop": false,
+"name": &"attack_poison_volley",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_pl19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_pl20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_pl21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_pl22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_pl23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_pl24")
+}
+],
+"loop": false,
+"name": &"skill_plague_aura",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_pl19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_pl20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_pl21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_pl22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_pl23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_pl24")
+}
+],
+"loop": false,
+"name": &"attack_plague_aura",
+"speed": 12.0
+}]

@@ -1,0 +1,75 @@
+# ANIM: Внедрить анимации всех монстров и персонажей — move/attack/death (full-frame)
+
+Статус: new
+Приоритет: high
+Роль: Animator (Codex) → Back-end (анимации)
+Версия: 0.1.5
+Создано: 2026-06-14
+Автор: PM (запрос пользователя)
+Jira: SCRUM-
+Связано: SCRUM-351 (full-frame registry), SCRUM-352 (элитки/боссы), SCRUM-353 (призывы),
+SCRUM-298 + 282-297 (перерисовка персонажей)
+
+## Autonomy / Approval
+Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Контекст (запрос пользователя)
+«Надо внедрить анимацию всех монстров и персонажей, что нарисовано, в игру. Очень
+красиво выглядит анимация монстров. Надо добавить анимацию смерти, атаки, движения».
+
+Текущее состояние:
+- Система: `FullFrameAnimationRegistry` (scripts/full_frame_animation_registry.gd) —
+  состояния idle/move/walk/run/attack/cast/shoot/hit/**death** с fallback-цепочками
+  (death:130-140). Враги (enemy.gd:972-1051 configure_entity_visual/play_state),
+  allies (move/attack), элитки — full-frame листы (night_stalker/plague_prophet/
+  iron_bastion и т.д.).
+- ПРОБЛЕМА: смерть сейчас = `spawn_death_ghost()` (риг-призрак, enemy.gd:233/
+  player.gd:483), а НЕ нарисованная анимация death. Многие обычные враги
+  (enemy_melee/ranged/small_biter/suicide_runner/bone_shaman/bruiser_slow/
+  venom_spitter/summoner/rift_shieldbearer) статичны (нет full-frame листов).
+
+## ОБЯЗАТЕЛЬНО — скиллы
+Анимации — `fantasydisk-animation-director` (SpriteFrames/манифест/контакт/GIF,
+валидатор, animation_smoke). Исходный арт/листы — `fantasydisk-asset-generator`
+(если нужны новые кадры). Full-frame, без cutout-фейка.
+
+## Требования
+1. **move/attack/death для ВСЕХ** играбельных персонажей и монстров (обычные враги,
+   элитки, боссы, призывы) — каждый имеет:
+   - `move`/`walk` (loop, 5+ кадров),
+   - `attack`/`attack_primary` (no-loop, 5+; у элиток/боссов — по skill-паттернам),
+   - **`death`** (no-loop, 5+; проигрывается при гибели ДО удаления сущности).
+2. **Анимация смерти в рантайме**: при гибели врага/игрока проигрывать full-frame
+   `death` (через play_state "death"), затем удалять; согласовать/заменить
+   `spawn_death_ghost` там, где есть нарисованная death (ghost оставить fallback'ом
+   для тех, у кого death-листа ещё нет). Не ломать лут/очки/cleanup-таймеры.
+3. **Анимировать статичных обычных врагов**: сгенерировать/нарезать full-frame
+   листы (move/attack/death) и подключить через configure_entity_visual; пока листа
+   нет — безопасный fallback на статичный кадр (без краша).
+4. Зарегистрировать все листы в registry (entity_kind/entity_id → SpriteFrames),
+   единый pivot/масштаб, flip по направлению; элитки/боссы 512², обычные 256/384,
+   герои 384².
+5. Координация: не дублировать с 282-298 (персонажи), 352 (элитки/боссы), 353
+   (призывы) — эта задача ДОВОДИТ интеграцию и добавляет **death** везде + следит,
+   что всё реально проигрывается в игре.
+6. Тест: animation_smoke + runtime_smoke зелёные; для каждого entity_kind/id —
+   move/attack/death существуют и проигрываются (или безопасный fallback); смерть
+   проигрывает анимацию перед удалением. Контакт-листы/GIF в build/qa/.
+7. CHANGELOG; docs/design/systems/animation.md; content_registry; current_game_state.
+
+## Files / Assets / IDs
+- scripts/full_frame_animation_registry.gd (состояния/fallback; регистрация листов)
+- scripts/enemy.gd (configure_entity_visual 974; play_state; смерть 230-234)
+- scripts/player.gd (death 473-484; rig/death_ghost)
+- scripts/ally_minion.gd (move/attack 85-217; + death)
+- assets/sprites/{enemies,elites,characters,allies}/ (full-frame листы) + бэкап
+- tests/animation_smoke_test.gd, tests/runtime_smoke_test.gd
+
+## Acceptance Criteria
+- [ ] У всех персонажей и монстров (обычные/элитки/боссы/призывы) есть move + attack + death (full-frame, скиллом).
+- [ ] Смерть проигрывает нарисованную death-анимацию перед удалением (ghost — fallback); лут/cleanup целы.
+- [ ] Статичные обычные враги анимированы или безопасный fallback; всё зарегистрировано и проигрывается в игре.
+- [ ] animation_smoke + runtime_smoke зелёные; контакт-листы/GIF; CHANGELOG + animation.md.
+
+## Документация
+docs/design/systems/animation.md, content_registry, current_game_state.

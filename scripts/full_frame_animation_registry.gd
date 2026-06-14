@@ -90,8 +90,39 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -32.0),
 			"source_faces_left": true,
 		},
+		"bone_shaman": {
+			"frames": "res://assets/sprites/enemies/full_frame/bone_shaman_spriteframes.tres",
+			"scale": Vector2(0.36, 0.36),
+			"position": Vector2(0.0, -44.0),
+			"source_faces_left": true,
+		},
+		"winged_spark": {
+			"frames": "res://assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres",
+			"scale": Vector2(0.32, 0.32),
+			"position": Vector2(0.0, -42.0),
+			"source_faces_left": true,
+		},
 	},
-	"elite": {},
+	"elite": {
+		"iron_bastion": {
+			"frames": "res://assets/sprites/elites/full_frame/iron_bastion_spriteframes.tres",
+			"scale": Vector2(0.70, 0.70),
+			"position": Vector2(0.0, -82.0),
+			"source_faces_left": true,
+		},
+		"night_stalker": {
+			"frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
+			"scale": Vector2(0.62, 0.62),
+			"position": Vector2(0.0, -76.0),
+			"source_faces_left": true,
+		},
+		"plague_prophet": {
+			"frames": "res://assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres",
+			"scale": Vector2(0.66, 0.66),
+			"position": Vector2(0.0, -78.0),
+			"source_faces_left": true,
+		},
+	},
 	"boss": {},
 	"hero": {},
 }
@@ -206,6 +237,8 @@ static func _state_candidates(requested_state: String) -> Array:
 		for part in normalized.split(":", false):
 			if part != "":
 				candidates.append(part)
+				candidates.append("skill_%s" % part)
+				candidates.append("attack_%s" % part)
 	if normalized.begins_with("attack_"):
 		candidates.append("attack")
 		candidates.append("attack_primary")

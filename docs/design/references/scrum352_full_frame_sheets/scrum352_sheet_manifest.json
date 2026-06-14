@@ -445,6 +445,35 @@
         ],
         "has_transparency": true
       }
+    },
+    {
+      "entity_id": "mini_scavenger_reaper",
+      "kind": "elite",
+      "title": "Mini Scavenger Reaper",
+      "source_path": "assets/sprites/elites/mini_scavenger_reaper.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/mini_scavenger_reaper_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/elites/full_frame/mini_scavenger_reaper_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_reaping_dash",
+        "skill_bleed_finish"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          22,
+          38,
+          1475,
+          970
+        ],
+        "has_transparency": true
+      }
     }
   ]
 }

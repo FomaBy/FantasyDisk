@@ -70,3 +70,30 @@ Verification:
 - `python3 ~/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_standard_enemy_full_frame_batch_4_integration/animation_manifest.json` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — attempted, blocked by unrelated SCRUM-361 Hero Select UI failure: `HeroSelectChooseButton` min height `42.48`, expected at least `72`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически) — batch 4 (bone_shaman + winged_spark):
+- **SpriteFrames** (load): `bone_shaman` — `move(6,loop=true)`, `attack_primary(6)`,
+  `attack(6 alias)`, `hit(6)`, `death(6)`; `winged_spark` — те же + **`hover_flap(6,
+  loop=true)`** (парящая левитация для летающего врага), `hit(6)` non-loop alias.
+  Точно по acceptance.
+- **Реестр**: `full_frame_animation_registry.gd` — оба `enemy/bone_shaman` +
+  `enemy/winged_spark` (4 совпадения id+frames; visual-only, fallback цел).
+- **Манифест-валидатор**: «FantasyDisk animation manifest OK: 2 entities».
+- **Контакт-лист** `standard_enemy_full_frame_batch_4_contact_sheet.png` + GIF:
+  full-frame — bone_shaman (move/спелл-attack/hit/death), winged_spark (move/attack/
+  hover_flap махание крыльями/death); не cutout.
+- **Тесты**: `animation_smoke_test` (+ `winged_spark.hover_flap`, FullFrameBody для
+  EnemyBoneShaman+EnemyFlyingRunner) + `runtime_smoke_test` — **оба passed**
+  (прежний блокер SCRUM-361/356 Hero Select choose-button height устранён воркером
+  интеграции unified panel; теперь runtime_smoke зелёный).
+
+Acceptance:
+- [x] bone_shaman: move 6f loop + attack_primary/attack 6f + hit 6f + death 6f.
+- [x] winged_spark: + hover_flap 6f loop, hit 6f alias.
+- [x] Registry резолвит оба; FullFrameBody виден; манифест валиден; smoke зелёные;
+  gameplay/balance/AI не тронуты.
+
+Баги: нет.

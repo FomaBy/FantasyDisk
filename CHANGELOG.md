@@ -35,6 +35,9 @@
 - Standard enemy full-frame batch 3 (SCRUM-366): integrated the accepted
   SCRUM-352 `small_biter` sheet as padded SpriteFrames with the standard
   full-frame enemy state contract.
+- Standard enemy full-frame batch 4 (SCRUM-367): integrated accepted SCRUM-352
+  sheets for `bone_shaman` and `winged_spark`; `winged_spark` now exposes a
+  looped `hover_flap` state plus the standard runtime hit alias.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню
@@ -73,11 +76,13 @@
   noticeable Leadership-driven damage multiplier, stronger controlled HP/speed/
   lifetime/haste scaling, owner-leashed group target assignment with overkill
   avoidance, and data-driven small splash hits through `AllyMinion`.
-- Hero Select unified frame (SCRUM-356): added Design-ready
-  `ui_frame_hero_select_unified_panel.png` (`1536x1024` RGBA) and compact
-  `ui_frame_hero_select_asc_button_small.png` (`256x256` RGBA), generated
-  through the OpenAI Images / `fantasydisk-asset-generator` workflow with
-  transparent postprocess, strict content zones and Back-end integration handoff.
+- Hero Select unified frame (SCRUM-356): runtime now renders
+  `ui_frame_hero_select_unified_panel.png` (`1536x1024` RGBA) as one
+  proportional `HeroSelectUnifiedFrame` containing portrait, dossier and bottom
+  controls inside SCRUM-356 source safe-zones; `-`/`+` use
+  `ui_frame_hero_select_asc_button_small.png`, radar and carousel remain
+  separate, and smoke QA dumps the scaled safe rects in
+  `build/qa/hero_select_radar_rects.md`.
 - Hero Select frames (SCRUM-355): rebuilt the dossier and thumbnail-strip frame
   PNGs with a thinner/lighter D&D dark-fantasy treatment, added deterministic
   `tools/build_hero_select_thin_frames.py`, strict ornament-safe content margins

@@ -723,6 +723,8 @@ func _test_full_frame_animation_registry() -> void:
 		"venom_spitter": "res://scenes/EnemySpitter.tscn",
 		"rift_shieldbearer": "res://scenes/EnemyShield.tscn",
 		"small_biter": "res://scenes/EnemyBiter.tscn",
+		"bone_shaman": "res://scenes/EnemyBoneShaman.tscn",
+		"winged_spark": "res://scenes/EnemyFlyingRunner.tscn",
 	}
 	for enemy_id in standard_enemy_scenes.keys():
 		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
@@ -739,6 +741,11 @@ func _test_full_frame_animation_registry() -> void:
 		for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
 			if enemy_frames.get_animation_loop(one_shot_name):
 				_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
+		if enemy_id == "winged_spark":
+			if not enemy_frames.has_animation("hover_flap") or enemy_frames.get_frame_count("hover_flap") != 6:
+				_fail("Expected winged_spark hover_flap to have 6 frames.")
+			elif not enemy_frames.get_animation_loop("hover_flap"):
+				_fail("Expected winged_spark hover_flap to loop.")
 	if FullFrameAnimationRegistry.sprite_frames_for("enemy", "missing_test_enemy") != null:
 		_fail("Expected missing full-frame registry entries to return null.")
 
@@ -791,6 +798,72 @@ func _test_full_frame_animation_registry() -> void:
 		if enemy_static_body != null and enemy_static_body.visible:
 			_fail("Expected %s full-frame visual to hide the static body fallback." % enemy_id)
 		enemy.queue_free()
+
+	var elite_full_frame_scenes := {
+		"iron_bastion": {
+			"path": "res://scenes/EliteArmored.tscn",
+			"skill_states": ["skill_shield_block", "skill_slam_wave"],
+			"phase_state": "iron_bastion:slam_wave:windup",
+			"phase_resolved": "skill_slam_wave",
+		},
+		"night_stalker": {
+			"path": "res://scenes/EliteStalker.tscn",
+			"skill_states": ["skill_shadow_strike", "skill_phase_dash"],
+			"phase_state": "night_stalker:shadow_strike:windup",
+			"phase_resolved": "skill_shadow_strike",
+		},
+		"plague_prophet": {
+			"path": "res://scenes/ElitePoisoned.tscn",
+			"skill_states": ["skill_poison_volley", "skill_plague_aura"],
+			"phase_state": "plague_prophet:poison_volley:windup",
+			"phase_resolved": "skill_poison_volley",
+		},
+	}
+	for elite_id in elite_full_frame_scenes.keys():
+		var elite_info: Dictionary = elite_full_frame_scenes[elite_id]
+		var elite_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", elite_id)
+		if elite_frames == null:
+			_fail("Expected full-frame registry to resolve %s elite SpriteFrames." % elite_id)
+			continue
+		for animation_name in ["move", "attack", "attack_primary"]:
+			if not elite_frames.has_animation(animation_name):
+				_fail("Expected %s elite SpriteFrames to expose %s animation." % [elite_id, animation_name])
+			elif elite_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s elite %s to have 6 frames." % [elite_id, animation_name])
+		if not elite_frames.get_animation_loop("move"):
+			_fail("Expected %s elite move to loop." % elite_id)
+		for one_shot_name in ["attack", "attack_primary"]:
+			if elite_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s elite %s to be one-shot." % [elite_id, one_shot_name])
+		for skill_state in elite_info["skill_states"]:
+			var skill_name := str(skill_state)
+			if not elite_frames.has_animation(skill_name):
+				_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, skill_name])
+			elif elite_frames.get_frame_count(skill_name) != 6:
+				_fail("Expected %s elite %s to have 6 frames." % [elite_id, skill_name])
+			if elite_frames.has_animation(skill_name) and elite_frames.get_animation_loop(skill_name):
+				_fail("Expected %s elite %s to be one-shot." % [elite_id, skill_name])
+
+		var elite_scene := load(str(elite_info["path"])) as PackedScene
+		var elite := elite_scene.instantiate()
+		root.add_child(elite)
+		if elite.get_node_or_null("FullFrameBody") == null:
+			elite.call("_configure_full_frame_animation")
+		elite.call("_update_movement_animation", 0.1)
+		var elite_full_frame_body := elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if elite_full_frame_body == null or not elite_full_frame_body.visible:
+			_fail("Expected %s elite scene to create a visible FullFrameBody." % elite_id)
+		if elite_full_frame_body != null:
+			if not FullFrameAnimationRegistry.play_state(elite_full_frame_body, str(elite_info["phase_state"]), Vector2.RIGHT):
+				_fail("Expected %s elite phase state to resolve through the full-frame registry." % elite_id)
+			if elite_full_frame_body.animation != str(elite_info["phase_resolved"]):
+				_fail("Expected %s elite phase to resolve to %s, got %s." % [elite_id, str(elite_info["phase_resolved"]), elite_full_frame_body.animation])
+			if not elite_full_frame_body.flip_h:
+				_fail("Expected %s elite full-frame art to face right via flip_h." % elite_id)
+		var elite_static_body := elite.get_node_or_null("Body") as CanvasItem
+		if elite_static_body != null and elite_static_body.visible:
+			_fail("Expected %s elite full-frame visual to hide the static body fallback." % elite_id)
+		elite.queue_free()
 
 
 func _test_enemy_animation() -> void:
@@ -936,6 +1009,21 @@ func _test_elite_attack_phase_animation() -> void:
 		root.add_child(elite)
 		elite.call("_set_elite_attack_phase", "windup", 0.6)
 		elite.call("_update_movement_animation", 0.3)
+		var full_frame_body := elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if full_frame_body != null and full_frame_body.visible:
+			var expected_full_frame_state := "skill_%s" % str(info["attack"])
+			if full_frame_body.animation != expected_full_frame_state:
+				_fail("Expected %s windup to resolve to full-frame %s, got %s." % [behavior_id, expected_full_frame_state, full_frame_body.animation])
+			if abs(float(full_frame_body.get_meta("phase_duration", 0.0)) - 0.6) > 0.01:
+				_fail("Expected %s windup to store full-frame phase duration." % behavior_id)
+			elite.call("_set_elite_attack_phase", "strike", 0.25)
+			elite.call("_update_movement_animation", 0.125)
+			if full_frame_body.animation != expected_full_frame_state:
+				_fail("Expected %s strike to keep full-frame %s, got %s." % [behavior_id, expected_full_frame_state, full_frame_body.animation])
+			if abs(float(full_frame_body.get_meta("phase_duration", 0.0)) - 0.25) > 0.01:
+				_fail("Expected %s strike to update full-frame phase duration." % behavior_id)
+			elite.queue_free()
+			continue
 		var rig := elite.get_node("RigRoot") as Node2D
 		var expected_variant := "%s:%s:windup" % [behavior_id, str(info["attack"])]
 		if str(rig.get("action_variant")) != expected_variant:

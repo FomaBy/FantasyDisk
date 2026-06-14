@@ -1249,7 +1249,7 @@
  },
  "backend_hero_select_unified_portrait_description_frame_integration_task.md": {
   "key": "SCRUM-361",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_ingame_feedback_bug_report_tool_task.md": {
   "key": "SCRUM-362",
@@ -1273,7 +1273,7 @@
  },
  "animation_standard_enemy_full_frame_batch_4_integration_task.md": {
   "key": "SCRUM-367",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "animation_route_elite_full_frame_batch_integration_task.md": {
   "key": "SCRUM-368",
@@ -1281,6 +1281,10 @@
  },
  "design_level_backgrounds_redraw_new_style_skill_task.md": {
   "key": "SCRUM-369",
+  "status": "К выполнению"
+ },
+ "animation_integrate_all_move_attack_death_states_task.md": {
+  "key": "SCRUM-370",
   "status": "К выполнению"
  }
 }
