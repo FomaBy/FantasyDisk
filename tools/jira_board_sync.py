@@ -18,6 +18,7 @@
 import base64
 import fcntl
 import glob
+import hashlib
 import json
 import os
 import re
@@ -199,8 +200,9 @@ def parse_task(path: str) -> dict:
         re.search(r"^(Исполнитель|Executor):.*Codex", text, re.M | re.I))
     executor = "codex" if is_codex else "claude"
     excerpt = text[:4500]
+    desc_hash = hashlib.md5(excerpt.encode("utf-8")).hexdigest()
     return {"file": name, "title": title[:250], "status": status,
-            "role": role, "itype": itype, "excerpt": excerpt,
+            "role": role, "itype": itype, "excerpt": excerpt, "desc_hash": desc_hash,
             "blocked": raw_status.startswith("blocked"),
             "task_version": task_version if not name.startswith("bug_") else None,
             "executor": executor}
@@ -273,7 +275,7 @@ def main():
                         fields["parent"] = {"key": ep}
                 issue = api("POST", "/rest/api/3/issue", {"fields": fields})
                 key = issue["key"]
-                mapping[t["file"]] = {"key": key, "status": "К выполнению"}
+                mapping[t["file"]] = {"key": key, "status": "К выполнению", "desc_hash": t["desc_hash"]}
                 json.dump(mapping, open(MAP_PATH, "w"), ensure_ascii=False, indent=1)
                 entry = mapping[t["file"]]
                 created += 1
@@ -282,6 +284,12 @@ def main():
                 print(f"created {key}: {t['file']}")
         elif t["task_version"] and fix_version and t["task_version"] == fix_version:
             sprint_queue.append(entry["key"])
+        # Описание в Jira держим в синхроне с .md: при изменении контента (хэш)
+        # переписываем description, чтобы текст «Статус: blocked» и т.п. не устаревал.
+        if not dry and entry.get("desc_hash") != t["desc_hash"]:
+            api("PUT", f"/rest/api/3/issue/{entry['key']}",
+                {"fields": {"description": adf(f"Файл: docs/tasks/{t['file']}\n\n" + t["excerpt"])}})
+            entry["desc_hash"] = t["desc_hash"]
         if entry.get("status") == "Готово":
             continue  # финальное состояние: из «Готово» не понижаем
         if entry.get("status") != target_status:
