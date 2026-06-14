@@ -64,14 +64,13 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_M
 - SCRUM-356 runtime integration: `ui_frame_hero_select_unified_panel.png` is drawn as one proportional `TextureRect`, not 9-sliced or stretched on one axis. Runtime content may only use these source-space safe zones: portrait `Rect2(130,145,420,560)`, description `Rect2(610,145,786,500)`, bottom controls `Rect2(570,705,660,178)`. `ui_frame_hero_select_asc_button_small.png` is the compact `256x256` stepper frame for both `-` and `+`; on compact 720p layouts the ascension delta line is hidden so the row and choose button stay inside `bottom_controls`, while larger layouts show the delta line inside the same safe-zone. QA rects live in `build/qa/hero_select_radar_rects.md`.
 - SCRUM-373/SCRUM-382 add and integrate the unified master frame kit in `assets/sprites/ui/frames/unified/`. SCRUM-384 revises the same preserved runtime paths into a thinner metallic frame with small red corner gems and separate optional dragon overlays. Generic panels/cards/tooltips/HUD/timer frames use a shared StyleBoxTexture builder with tile stretch on both axes and texture margins `72/72/72/72`; filled runtime surfaces use `ui_frame_unified_master_fill.png` for readability, while `ui_frame_unified_master.png` remains the border-only variant. Strict content margins are `88/88/88/88` from the `1024x1024` source (`Rect2(88, 88, 848, 848)` safe rect). Screen-specific whole-image frames with authored source safe zones, including Hero Select SCRUM-356, the radar, carousel and settings tab switcher, stay proportional and are not forced into the generic 9-slice builder. Optional top/bottom unified ornaments remain large-window-only; no runtime content may overlap them.
 
-- SCRUM-391 prepares the next Settings tab switcher art candidate:
+- SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
 (`1280x256` RGBA). It has exactly three slots in the red-gold/dark-steel style,
 with safe rects `Rect2(160,88,270,82)`, `Rect2(506,88,270,82)` and
-`Rect2(852,88,270,82)`. This asset is not live until Back-end updates
-`SETTINGS_TAB_SWITCHER_FRAME_PATH` / `SETTINGS_TAB_SWITCHER_SAFE_RECTS` through
-`backend_settings_menu_unified_restyle_integration_task.md`; the active runtime
-still uses the previous `ui_frame_settings_tab_switcher.png`.
+`Rect2(852,88,270,82)`. Runtime `SETTINGS_TAB_SWITCHER_FRAME_PATH` points to
+this 3-slot asset, `SETTINGS_TAB_SWITCHER_SAFE_RECTS` contains exactly those
+three rects, and `SettingsTabButton_3` must not exist.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
 - Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button. SCRUM-348 sets `LevelUpLaterButton` to a non-cropped 260x104 medium back frame.
 
@@ -134,13 +133,13 @@ multipart payloads, while missing/failed webhook delivery falls back to
 
 ## Settings Tabs
 
-SCRUM-325 adds a design-ready Settings tab switcher frame at
-`assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png`
-(`1280x256`, RGBA transparent, no baked text). SCRUM-334 wires it into the
-runtime settings screen as the `SettingsTabSwitcher` control, displayed at a
-fixed 5:1 proportional size so the strip is never stretched on one axis.
-The built-in `TabContainer` headers are hidden; `SettingsTabs` still owns the
-three settings pages, while `SettingsTabButton_0..2` switch `current_tab`.
+SCRUM-396 uses the design-ready 3-slot Settings tab switcher frame at
+`assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
+(`1280x256`, RGBA transparent, no baked text). It is wired into the runtime
+settings screen as the `SettingsTabSwitcher` control, displayed at a fixed 5:1
+proportional size (`640x128`) so the strip is never stretched on one axis. The
+built-in `TabContainer` headers are hidden; `SettingsTabs` still owns the three
+settings pages, while `SettingsTabButton_0..2` switch `current_tab`.
 
 Runtime labels/click/focus zones must stay inside these base safe rects and
 scale proportionally with the whole image. Runtime smoke validates the actual
@@ -148,17 +147,18 @@ button rects against the scaled safe rects:
 
 | Slot | Safe Rect |
 | --- | --- |
-| `tab_0_active_safe` | `Rect2(146, 78, 178, 82)` |
-| `tab_1_safe` | `Rect2(414, 91, 178, 74)` |
-| `tab_2_safe` | `Rect2(693, 91, 178, 74)` |
-| `tab_3_safe` | `Rect2(969, 91, 162, 74)` |
+| `tab_0_screen_safe` | `Rect2(160, 88, 270, 82)` |
+| `tab_1_audio_safe` | `Rect2(506, 88, 270, 82)` |
+| `tab_2_controls_safe` | `Rect2(852, 88, 270, 82)` |
 
-Only the first three slots are interactive in 0.1.5. The fourth slot remains
-ornamental/empty until a fourth settings page exists.
+There is no fourth runtime slot and no fourth hit area. If the settings screen
+ever needs another page, Design must provide a new asset and safe-zone metadata
+instead of Back-end placing a tab on the existing ornament.
 
 Do not place text, icons, click zones or focus rings on the tab strip's metal
-bevels, red gems, side arrows, spikes or lower rail. Preview:
-`docs/design/previews/settings_tab_switcher_frame_content_zone.png`.
+bevels, dragon heads, red gems, dividers or lower rail. Preview:
+`docs/design/previews/settings_menu_3slot_switcher_safe_zone.png`; runtime QA
+dump: `build/qa/scrum396/settings_tab_switcher_3slot_rects.md`.
 
 The «Управление» tab also contains the `DebugModeToggle` (SCRUM-375). It is a
 normal settings checkbox inside `ControlsScroll`, not a fourth tab. The toggle is

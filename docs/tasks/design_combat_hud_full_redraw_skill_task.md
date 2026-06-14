@@ -1,6 +1,6 @@
 # ART/UX: Полная перерисовка боевого HUD (HP/опыт/золото/ульта/таймер + кнопка повышения)
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
@@ -68,3 +68,7 @@ D&D + Dark Fantasy Dragon, единый фрейм). Старые HUD-ассет
 
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/systems/visual_style_assets.md, current_game_state.
+
+## Progress Log
+
+- 2026-06-14 — Взято в работу Design/Codex. Scope подтвержден: создать новый визуальный HUD-kit и metadata/safe-zones; runtime wiring/layout останется Back-end handoff, если потребуется менять `scripts/ui_screens.gd`.

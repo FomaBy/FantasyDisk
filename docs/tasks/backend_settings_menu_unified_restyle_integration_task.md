@@ -1,6 +1,6 @@
 # Back-end: Settings Menu Unified Restyle Integration
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -46,11 +46,32 @@ text/click zones on the new 3-slot art.
 
 ## Acceptance Criteria
 
-- [ ] Settings switcher visually has exactly three slots and no empty fourth slot.
-- [ ] `Экран`, `Звук`, `Управление` labels/click zones sit inside the safe rects.
-- [ ] Active/hover/pressed states remain readable and do not add yellow glow.
-- [ ] Settings tabs keep unified spacing and no-overlap at 1280x720, 1920x1080,
+- [x] Settings switcher visually has exactly three slots and no empty fourth slot.
+- [x] `Экран`, `Звук`, `Управление` labels/click zones sit inside the safe rects.
+- [x] Active/hover/pressed states remain readable and do not add yellow glow.
+- [x] Settings tabs keep unified spacing and no-overlap at 1280x720, 1920x1080,
   and 2560x1440.
-- [ ] `tests/runtime_smoke_ui_test.gd`, `tests/ui_no_overlap_matrix_test.gd`,
+- [x] `tests/runtime_smoke_ui_test.gd`, `tests/ui_no_overlap_matrix_test.gd`,
   and `tests/runtime_smoke_test.gd` pass.
-- [ ] Screenshots/dumps are saved under `build/qa/`.
+- [x] Screenshots/dumps are saved under `build/qa/`.
+
+## Result
+
+Done 2026-06-14:
+
+- Runtime Settings screen now uses
+  `res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`.
+- `SETTINGS_TAB_SWITCHER_SAFE_RECTS` contains exactly the three Design source
+  rects for `Экран`, `Звук`, `Управление`; `SettingsTabButton_3` is asserted
+  absent by smoke.
+- Runtime smoke now writes
+  `build/qa/scrum396/settings_tab_switcher_3slot_rects.md` with actual vs
+  expected scaled safe rects.
+- Updated `CHANGELOG.md`, `docs/design/current_game_state.md`, and
+  `docs/design/systems/menus_ui.md` to remove obsolete 4-slot guidance.
+
+Verification:
+
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_ui_test.gd`
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd`
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
