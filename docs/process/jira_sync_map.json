@@ -1085,6 +1085,10 @@
  },
  "design_hero_select_carousel_frame_from_carusel_ref_task.md": {
   "key": "SCRUM-320",
+  "status": "В работе"
+ },
+ "design_hero_select_portrait_frame_from_heroframe_ref_task.md": {
+  "key": "SCRUM-321",
   "status": "К выполнению"
  }
 }

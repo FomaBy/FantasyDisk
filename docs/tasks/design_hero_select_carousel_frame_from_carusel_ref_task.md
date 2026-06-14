@@ -1,6 +1,6 @@
 # ART: Рамка карусели персонажей из референса Carusel (экран выбора героя)
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -63,3 +63,10 @@ docs/design/references/carusel/ChatGPT Image Jun 14, 2026, 10_57_24 AM.png
 
 ## Документация
 docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_state.
+
+## Progress Log
+
+- 2026-06-14: взято в работу Design/Codex на ветке `dev`; референс Carusel
+  проверен как `2482x633` RGB PNG с baked checkerboard вокруг рамки. Решение:
+  использовать исходный орнамент как source-of-truth, локально убрать фон в
+  alpha и заменить только `thumbnail_strip` frame, без изменения gameplay.
