@@ -19,6 +19,18 @@ Autonomy and approval:
 - For every future task that changes functionality, balance, content, UI, progression, visuals, or animation, update the relevant documentation in the same task.
 - After large multi-agent change batches, run the documentation split/update task in `docs/tasks/documentation_post_changes_domain_split_task.md` and keep domain docs under `docs/design/systems/` up to date.
 
+**UI/ВИЗУАЛ — ГЛОБАЛЬНОЕ ПРАВИЛО ФРЕЙМОВ (директива пользователя 2026-06-14, ОБЯЗАТЕЛЬНО для ВСЕХ агентов).**
+Ни при каких обстоятельствах нельзя накладывать элементы интерфейса — кнопки,
+портреты/героев, области выбора (карусели, списки, слоты), иконки, текст — на
+текстуру/окантовку/орнамент рамки (frame). Контент размещается ТОЛЬКО в пустой
+зоне фрейма: в прозрачной/тёмной внутренней области или на подложке фона.
+Декоративная рамка всегда остаётся видимой и не перекрытой контентом.
+- Технически: у текстурных стилей (StyleBoxTexture / 9-slice) **content margins ≥
+  texture margins (толщины окантовки) + запас**. Для радиальных/фигурных рамок
+  content-зона = реальная внутренняя пустая область, не bounding box.
+- Это hard-правило приёмки: наложение контента на орнамент рамки = QA FAILED
+  (см. `docs/process/qa_protocol.md` «Контент только в пустой зоне фрейма»).
+
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`, task statuses are tracked in `docs/process/task_board.md`.
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
