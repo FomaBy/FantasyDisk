@@ -1798,5 +1798,10 @@
   "key": "SCRUM-389",
   "status": "В работе",
   "desc_hash": "4424134b32669b59f36efb96bc171f9e"
+ },
+ "design_combat_hud_full_redraw_skill_task.md": {
+  "key": "SCRUM-390",
+  "status": "К выполнению",
+  "desc_hash": "b301525f711784430c5511a227304789"
  }
 }

@@ -46,6 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [design_combat_hud_full_redraw_skill_task.md](../tasks/design_combat_hud_full_redraw_skill_task.md) | Designer (Codex) → Back-end (UI) | new | ART 0.1.5: полная перерисовка боевого HUD скиллом — HP/опыт/золото/ульта/таймер + непрозрачная кнопка повышения справа-снизу; единый фрейм, по референсам проекта |
 | [backend_hero_select_default_ascension_to_max_task.md](../tasks/backend_hero_select_default_ascension_to_max_task.md) | Back-end (UI) | in_progress | Jira: SCRUM-389. Dispatched to existing Back-end thread 2026-06-14. UX 0.1.5: выбор героя — по умолчанию выбирать последнее доступное возвышение класса (selectable_max), не 0 |
 | [backend_meta_points_per_new_ascension_only_task.md](../tasks/backend_meta_points_per_new_ascension_only_task.md) | Back-end (прогрессия/баланс) | done | Jira: SCRUM-388. Task file reports done 2026-06-14: meta/skill points now only awarded for unlocking a new ascension; repeat boss wins give 0; meta/class/runtime smokes green |
 | [design_unified_frame_revise_thin_metallic_task.md](../tasks/design_unified_frame_revise_thin_metallic_task.md) | Designer (Codex) → Back-end (UI) | review | Jira: SCRUM-384. Thin metallic unified frame revision ready: preserved runtime paths, texture margins `72`, content margins `88`, red corner gems, separate dragon overlays, contact/safe previews; import/UI no-overlap/runtime UI/runtime smokes PASS |

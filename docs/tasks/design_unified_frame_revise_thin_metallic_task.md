@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-384
+QA: in_progress (2026-06-14)
 Связано: SCRUM-373 (единый мастер-фрейм, design done) + его backend-интеграция, SCRUM-324 (скилл)
 
 ## Autonomy / Approval
