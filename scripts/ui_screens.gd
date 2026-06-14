@@ -145,6 +145,27 @@ const PAUSE_END_MODAL_PATH := "res://assets/sprites/ui/frames/pause_end/ui_frame
 const PAUSE_END_MODAL_SOURCE_SIZE := Vector2(1280.0, 1024.0)
 const PAUSE_END_MODAL_TEXTURE_MARGINS := Vector4(160.0, 170.0, 160.0, 164.0)
 const PAUSE_END_MODAL_CONTENT := Vector4(170.0, 180.0, 170.0, 174.0)
+const PROGRESSION_FRAME_DIR := "res://assets/sprites/ui/frames/progression/"
+const PROGRESSION_MAIN_PANEL_PATH := PROGRESSION_FRAME_DIR + "ui_frame_progression_main_panel.png"
+const PROGRESSION_BRANCH_PANEL_PATH := PROGRESSION_FRAME_DIR + "ui_frame_progression_branch_panel.png"
+const PROGRESSION_CLASS_PANEL_PATH := PROGRESSION_FRAME_DIR + "ui_frame_progression_class_panel.png"
+const PROGRESSION_POINTS_BADGE_PATH := PROGRESSION_FRAME_DIR + "ui_frame_progression_points_badge.png"
+const PROGRESSION_TOOLTIP_PATH := PROGRESSION_FRAME_DIR + "ui_frame_progression_tooltip.png"
+const PROGRESSION_NODE_TEXTURES := {
+	"available": PROGRESSION_FRAME_DIR + "ui_frame_progression_node_available.png",
+	"locked": PROGRESSION_FRAME_DIR + "ui_frame_progression_node_locked.png",
+	"purchased": PROGRESSION_FRAME_DIR + "ui_frame_progression_node_purchased.png",
+	"focus": PROGRESSION_FRAME_DIR + "ui_frame_progression_node_focus.png",
+}
+const PROGRESSION_MAIN_PANEL_MARGINS := Vector4(78.0, 92.0, 78.0, 86.0)
+const PROGRESSION_MAIN_PANEL_CONTENT := Vector4(88.0, 92.0, 88.0, 82.0)
+const PROGRESSION_BRANCH_PANEL_MARGINS := Vector4(54.0, 88.0, 54.0, 92.0)
+const PROGRESSION_BRANCH_PANEL_CONTENT := Vector4(28.0, 54.0, 28.0, 48.0)
+const PROGRESSION_CLASS_PANEL_MARGINS := Vector4(96.0, 52.0, 72.0, 56.0)
+const PROGRESSION_CLASS_PANEL_CONTENT := Vector4(104.0, 42.0, 42.0, 42.0)
+const PROGRESSION_POINTS_BADGE_CONTENT := Vector4(20.0, 18.0, 20.0, 28.0)
+const PROGRESSION_TOOLTIP_MARGINS := Vector4(58.0, 58.0, 76.0, 76.0)
+const PROGRESSION_TOOLTIP_CONTENT := Vector4(84.0, 78.0, 112.0, 100.0)
 const CODEX_FRAME_DIR := "res://assets/sprites/ui/frames/codex/"
 const CODEX_MAIN_PANEL_PATH := CODEX_FRAME_DIR + "ui_frame_codex_main_panel.png"
 const CODEX_SECTION_PANEL_PATH := CODEX_FRAME_DIR + "ui_frame_codex_section_panel.png"
@@ -1532,13 +1553,23 @@ func _show_skill_tree_screen() -> void:
 	game.ui_layer.add_child(root)
 	_add_screen_background(root, "codex")
 
+	var main_panel := PanelContainer.new()
+	main_panel.name = "SkillTreeMainPanel"
+	main_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	main_panel.offset_left = 48.0
+	main_panel.offset_top = 26.0
+	main_panel.offset_right = -48.0
+	main_panel.offset_bottom = -26.0
+	main_panel.add_theme_stylebox_override("panel", _progression_main_panel_style())
+	root.add_child(main_panel)
+
 	var layout := VBoxContainer.new()
 	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
-	layout.offset_left = 48.0
-	layout.offset_top = 26.0
-	layout.offset_right = -48.0
-	layout.offset_bottom = -26.0
-	layout.add_theme_constant_override("separation", 12)
+	layout.offset_left = 136.0
+	layout.offset_top = 118.0
+	layout.offset_right = -136.0
+	layout.offset_bottom = -108.0
+	layout.add_theme_constant_override("separation", 10)
 	root.add_child(layout)
 
 	var header := HBoxContainer.new()
@@ -1553,9 +1584,16 @@ func _show_skill_tree_screen() -> void:
 	var points_label := Label.new()
 	points_label.name = "SkillTreePointsLabel"
 	points_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	points_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	points_label.add_theme_font_size_override("font_size", 22)
 	points_label.add_theme_color_override("font_color", Color(1.0, 0.84, 0.34, 1.0))
-	header.add_child(points_label)
+	var points_badge := PanelContainer.new()
+	points_badge.name = "SkillTreePointsBadge"
+	points_badge.custom_minimum_size = Vector2(132.0, 96.0)
+	points_badge.add_theme_stylebox_override("panel", _progression_points_badge_style())
+	points_badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	header.add_child(points_badge)
+	points_badge.add_child(points_label)
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "SkillTreeBackButton"
 	_set_action_button_size(back_button, 260.0)
@@ -1570,16 +1608,21 @@ func _show_skill_tree_screen() -> void:
 	hint.add_theme_color_override("font_color", Color(0.80, 0.86, 0.92, 0.9))
 	layout.add_child(hint)
 
+	var body := HBoxContainer.new()
+	body.name = "SkillTreeBody"
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 18)
+	layout.add_child(body)
+
 	# SCRUM-360: прогресс ПО КЛАССУ (выбранный класс) — реиграбельность за классы.
 	var class_panel := PanelContainer.new()
 	class_panel.name = "SkillTreeClassPanel"
-	class_panel.add_theme_stylebox_override("panel", _character_card_style())
-	layout.add_child(class_panel)
+	class_panel.custom_minimum_size = Vector2(330.0, 210.0)
+	class_panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	class_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	class_panel.add_theme_stylebox_override("panel", _progression_class_panel_style())
+	body.add_child(class_panel)
 	var class_margin := MarginContainer.new()
-	class_margin.add_theme_constant_override("margin_left", 18)
-	class_margin.add_theme_constant_override("margin_right", 18)
-	class_margin.add_theme_constant_override("margin_top", 12)
-	class_margin.add_theme_constant_override("margin_bottom", 12)
 	class_panel.add_child(class_margin)
 	var class_box := VBoxContainer.new()
 	class_box.add_theme_constant_override("separation", 5)
@@ -1624,13 +1667,16 @@ func _show_skill_tree_screen() -> void:
 		class_bonus_list.text = "\n".join(bonus_lines)
 
 	var scroll := ScrollContainer.new()
+	scroll.name = "SkillTreeBranchScroll"
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	layout.add_child(scroll)
+	body.add_child(scroll)
 	var branches_row := HBoxContainer.new()
 	branches_row.name = "SkillTreeBranches"
 	branches_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	branches_row.add_theme_constant_override("separation", 16)
+	branches_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	branches_row.add_theme_constant_override("separation", 14)
 	scroll.add_child(branches_row)
 
 	var node_buttons: Array[Button] = []
@@ -1643,34 +1689,71 @@ func _show_skill_tree_screen() -> void:
 			var node_id: String = str(nb.get_meta("node_id"))
 			var status: String = game.META_PROGRESSION.node_status(game.meta_state, node_id)
 			nb.disabled = status != "available"
+			_apply_progression_node_button_theme(nb, status)
+			var title_label := nb.get_meta("title_label") as Label
+			var desc_label := nb.get_meta("desc_label") as Label
 			match status:
 				"purchased":
 					nb.modulate = Color(0.62, 1.0, 0.66, 1.0)
+					if title_label != null:
+						title_label.add_theme_color_override("font_color", Color(0.62, 1.0, 0.66, 1.0))
+					if desc_label != null:
+						desc_label.add_theme_color_override("font_color", Color(0.78, 0.94, 0.82, 0.95))
 				"available":
 					nb.modulate = Color(1.0, 0.92, 0.6, 1.0)
+					if title_label != null:
+						title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.40, 1.0))
+					if desc_label != null:
+						desc_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78, 1.0))
 				_:
 					nb.modulate = Color(0.62, 0.64, 0.70, 0.7)
+					if title_label != null:
+						title_label.add_theme_color_override("font_color", Color(0.70, 0.72, 0.78, 0.9))
+					if desc_label != null:
+						desc_label.add_theme_color_override("font_color", Color(0.60, 0.64, 0.70, 0.82))
 
 	for branch in game.META_PROGRESSION.SKILL_BRANCHES:
 		var branch_id: String = str(branch)
+		var branch_panel := PanelContainer.new()
+		branch_panel.name = "SkillTreeBranchPanel_%s" % branch_id
+		branch_panel.custom_minimum_size = Vector2(164.0, 430.0)
+		branch_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		branch_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		branch_panel.add_theme_stylebox_override("panel", _progression_branch_panel_style())
+		branches_row.add_child(branch_panel)
 		var col := VBoxContainer.new()
+		col.name = "SkillTreeBranchContent_%s" % branch_id
 		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		col.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		col.add_theme_constant_override("separation", 6)
-		branches_row.add_child(col)
+		branch_panel.add_child(col)
 		var branch_title := Label.new()
 		branch_title.text = str(game.META_PROGRESSION.SKILL_BRANCH_TITLES.get(branch_id, branch_id))
 		branch_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		branch_title.add_theme_font_size_override("font_size", 20)
+		branch_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		branch_title.add_theme_font_size_override("font_size", 17)
 		branch_title.add_theme_color_override("font_color", Color(0.96, 0.88, 0.54, 1.0))
 		col.add_child(branch_title)
 		for node in game.META_PROGRESSION.branch_nodes(branch_id):
 			var node_data: Dictionary = node
 			var node_id: String = str(node_data["id"])
-			var nb := _make_button("%s  (%d)\n%s" % [str(node_data["title"]), int(node_data["cost"]), str(node_data["desc"])])
+			var node_box := VBoxContainer.new()
+			node_box.name = "SkillNodeBlock_%s" % node_id
+			node_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			node_box.add_theme_constant_override("separation", 2)
+			col.add_child(node_box)
+			var nb := Button.new()
 			nb.name = "SkillNode_%s" % node_id
-			nb.custom_minimum_size = Vector2(0, 103)
-			nb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			nb.add_theme_font_size_override("font_size", 13)
+			nb.text = str(int(node_data["cost"]))
+			nb.tooltip_text = "%s\n%s" % [str(node_data["title"]), str(node_data["desc"])]
+			nb.custom_minimum_size = Vector2(74.0, 74.0)
+			nb.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			nb.focus_mode = Control.FOCUS_ALL
+			nb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+			nb.add_theme_font_size_override("font_size", 20)
+			nb.add_theme_color_override("font_color", Color(1.0, 0.92, 0.58, 1.0))
+			nb.add_theme_color_override("font_disabled_color", Color(0.70, 0.72, 0.78, 0.82))
+			_apply_progression_node_button_theme(nb, "locked")
 			nb.set_meta("node_id", node_id)
 			nb.pressed.connect(func() -> void:
 				game.meta_state = game.META_PROGRESSION.buy_skill_node(game.meta_state, node_id)
@@ -1678,7 +1761,25 @@ func _show_skill_tree_screen() -> void:
 				refresh.call()
 			)
 			node_buttons.append(nb)
-			col.add_child(nb)
+			node_box.add_child(nb)
+			var node_title := Label.new()
+			node_title.name = "SkillNodeTitle_%s" % node_id
+			node_title.text = str(node_data["title"])
+			node_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			node_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			node_title.add_theme_font_size_override("font_size", 12)
+			node_title.add_theme_color_override("font_color", Color(0.82, 0.84, 0.90, 0.95))
+			node_box.add_child(node_title)
+			var node_desc := Label.new()
+			node_desc.name = "SkillNodeDesc_%s" % node_id
+			node_desc.text = str(node_data["desc"])
+			node_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			node_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			node_desc.add_theme_font_size_override("font_size", 10)
+			node_desc.add_theme_color_override("font_color", Color(0.70, 0.74, 0.80, 0.9))
+			node_box.add_child(node_desc)
+			nb.set_meta("title_label", node_title)
+			nb.set_meta("desc_label", node_desc)
 
 	refresh.call()
 	if not node_buttons.is_empty():
@@ -6031,6 +6132,44 @@ func _codex_portrait_slot_style() -> StyleBox:
 
 func _codex_tooltip_style() -> StyleBox:
 	return _global_texture_style(CODEX_TOOLTIP_PATH, CODEX_TOOLTIP_MARGINS, Color.WHITE, CODEX_TOOLTIP_CONTENT)
+
+
+func _progression_main_panel_style() -> StyleBox:
+	return _global_texture_style(PROGRESSION_MAIN_PANEL_PATH, PROGRESSION_MAIN_PANEL_MARGINS, Color.WHITE, PROGRESSION_MAIN_PANEL_CONTENT)
+
+
+func _progression_branch_panel_style() -> StyleBox:
+	return _global_texture_style(PROGRESSION_BRANCH_PANEL_PATH, PROGRESSION_BRANCH_PANEL_MARGINS, Color.WHITE, PROGRESSION_BRANCH_PANEL_CONTENT)
+
+
+func _progression_class_panel_style() -> StyleBox:
+	return _global_texture_style(PROGRESSION_CLASS_PANEL_PATH, PROGRESSION_CLASS_PANEL_MARGINS, Color.WHITE, PROGRESSION_CLASS_PANEL_CONTENT)
+
+
+func _progression_points_badge_style() -> StyleBox:
+	return _global_texture_style(PROGRESSION_POINTS_BADGE_PATH, Vector4.ZERO, Color.WHITE, PROGRESSION_POINTS_BADGE_CONTENT)
+
+
+func _progression_tooltip_style() -> StyleBox:
+	return _global_texture_style(PROGRESSION_TOOLTIP_PATH, PROGRESSION_TOOLTIP_MARGINS, Color.WHITE, PROGRESSION_TOOLTIP_CONTENT)
+
+
+func _progression_node_style(status: String, focused := false) -> StyleBox:
+	var texture_id := "focus" if focused else status
+	if not PROGRESSION_NODE_TEXTURES.has(texture_id):
+		texture_id = "locked"
+	var tint := Color.WHITE
+	if status == "locked":
+		tint = Color(0.70, 0.72, 0.78, 0.82)
+	return _global_texture_style(str(PROGRESSION_NODE_TEXTURES[texture_id]), Vector4.ZERO, tint, Vector4(18.0, 18.0, 18.0, 18.0))
+
+
+func _apply_progression_node_button_theme(button: Button, status: String) -> void:
+	button.add_theme_stylebox_override("normal", _progression_node_style(status))
+	button.add_theme_stylebox_override("hover", _progression_node_style(status, true))
+	button.add_theme_stylebox_override("pressed", _progression_node_style(status, true))
+	button.add_theme_stylebox_override("focus", _progression_node_style(status, true))
+	button.add_theme_stylebox_override("disabled", _progression_node_style(status))
 
 
 func _hero_select_frame_style(frame_type: String, tint := Color.WHITE) -> StyleBox:

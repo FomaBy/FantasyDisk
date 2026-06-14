@@ -20,6 +20,10 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
 			"CodexBackButton", "CodexTabs", "CodexContent",
 		], dump_lines, errors, false)
+		await _check_screen(viewport_size, "skill_tree", Callable(self, "_open_skill_tree"), [
+			"SkillTreeBackButton", "SkillTreePointsBadge", "SkillTreeClassPanel",
+			"SkillTreeBranches",
+		], dump_lines, errors)
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
 			"PatchNotesBackButton",
 		], dump_lines, errors, false)
@@ -81,6 +85,11 @@ func _initialize() -> void:
 	if scrum332_file != null:
 		scrum332_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["_economy"])))
 		scrum332_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum331" % qa_dir)
+	var scrum331_file := FileAccess.open("%s/scrum331/progression_ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum331_file != null:
+		scrum331_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["skill_tree"])))
+		scrum331_file.close()
 
 	if not errors.is_empty():
 		for error in errors:
@@ -136,6 +145,10 @@ func _open_settings(main: Node) -> void:
 
 func _open_codex(main: Node) -> void:
 	main.ui._show_codex_screen()
+
+
+func _open_skill_tree(main: Node) -> void:
+	main.ui._show_skill_tree_screen()
 
 
 func _open_patch_notes(main: Node) -> void:

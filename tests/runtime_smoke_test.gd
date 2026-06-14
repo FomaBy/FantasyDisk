@@ -1338,6 +1338,7 @@ func _initialize() -> void:
 	await _test_boss_hud_omits_timer(main_scene)
 	await _test_weapon_select_clean_layout(main_scene)
 	await _test_parchment_button_seal_sizes(main_scene)
+	await _test_skill_tree_progression_kit(main_scene)
 	await _test_hero_select_radar_no_overlap_layouts(main_scene)
 	await _test_shop_wall_no_overlap_layouts(main_scene)
 	await _test_hud_no_overlap_layouts(main_scene)
@@ -6204,6 +6205,95 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 	codex_main.queue_free()
 	await process_frame
+
+
+func _test_skill_tree_progression_kit(main_scene: PackedScene) -> void:
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# SCRUM-331 Progression Skill Tree Runtime Dump")
+	dump_lines.append("")
+	for viewport_size in [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]:
+		await _assert_skill_tree_progression_kit_at_size(main_scene, viewport_size, dump_lines)
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum331")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump_file := FileAccess.open("%s/progression_skill_tree_runtime_dump.md" % qa_dir, FileAccess.WRITE)
+	if dump_file != null:
+		dump_file.store_string("\n".join(dump_lines))
+		dump_file.close()
+
+
+func _assert_skill_tree_progression_kit_at_size(main_scene: PackedScene, viewport_size: Vector2i, dump_lines: PackedStringArray) -> void:
+	var viewport := SubViewport.new()
+	viewport.size = viewport_size
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	await process_frame
+
+	var skill_main := main_scene.instantiate()
+	viewport.add_child(skill_main)
+	await process_frame
+	skill_main.ui._show_skill_tree_screen()
+	await process_frame
+	await process_frame
+
+	var context := "skill_tree %s" % str(viewport_size)
+	var screen := skill_main.find_child("SkillTreeScreen", true, false) as Control
+	var main_panel := skill_main.find_child("SkillTreeMainPanel", true, false) as PanelContainer
+	var points_badge := skill_main.find_child("SkillTreePointsBadge", true, false) as PanelContainer
+	var class_panel := skill_main.find_child("SkillTreeClassPanel", true, false) as PanelContainer
+	var branches := skill_main.find_child("SkillTreeBranches", true, false) as Control
+	var branch_panel := skill_main.find_child("SkillTreeBranchPanel_*", true, false) as PanelContainer
+	var node_button := skill_main.find_child("SkillNode_*", true, false) as Button
+	var node_title := skill_main.find_child("SkillNodeTitle_*", true, false) as Label
+	var node_desc := skill_main.find_child("SkillNodeDesc_*", true, false) as Label
+	if screen == null or main_panel == null or points_badge == null or class_panel == null or branches == null or branch_panel == null or node_button == null or node_title == null or node_desc == null:
+		_fail("Expected SCRUM-331 skill tree controls to exist at %s." % context)
+		return
+
+	var expected_panel_textures := {
+		"SkillTreeMainPanel": "res://assets/sprites/ui/frames/progression/ui_frame_progression_main_panel.png",
+		"SkillTreePointsBadge": "res://assets/sprites/ui/frames/progression/ui_frame_progression_points_badge.png",
+		"SkillTreeClassPanel": "res://assets/sprites/ui/frames/progression/ui_frame_progression_class_panel.png",
+		"SkillTreeBranchPanel": "res://assets/sprites/ui/frames/progression/ui_frame_progression_branch_panel.png",
+	}
+	var actual_panel_textures := {
+		"SkillTreeMainPanel": _stylebox_texture_path(main_panel.get_theme_stylebox("panel")),
+		"SkillTreePointsBadge": _stylebox_texture_path(points_badge.get_theme_stylebox("panel")),
+		"SkillTreeClassPanel": _stylebox_texture_path(class_panel.get_theme_stylebox("panel")),
+		"SkillTreeBranchPanel": _stylebox_texture_path(branch_panel.get_theme_stylebox("panel")),
+	}
+	for node_name in expected_panel_textures.keys():
+		if str(actual_panel_textures[node_name]) != str(expected_panel_textures[node_name]):
+			_fail("Expected %s to use `%s`, got `%s` at %s." % [node_name, expected_panel_textures[node_name], actual_panel_textures[node_name], context])
+			return
+
+	var node_texture_path := _stylebox_texture_path(node_button.get_theme_stylebox("normal"))
+	if not node_texture_path.begins_with("res://assets/sprites/ui/frames/progression/ui_frame_progression_node_"):
+		_fail("Expected skill node to use SCRUM-331 circular node frame, got `%s` at %s." % [node_texture_path, context])
+		return
+	if node_button.text.length() > 3 or node_button.text.contains("\n"):
+		_fail("Expected circular skill node to contain only short cost text, got `%s` at %s." % [node_button.text, context])
+		return
+	if node_title.get_global_rect().intersects(node_button.get_global_rect()) or node_desc.get_global_rect().intersects(node_button.get_global_rect()):
+		_fail("Expected skill node title/description labels to stay outside the circular node frame at %s." % context)
+		return
+	if class_panel.get_global_rect().intersects(branches.get_global_rect()):
+		_fail("Expected class panel and branch grid not to overlap at %s." % context)
+		return
+
+	dump_lines.append("## %s" % context)
+	for control in [main_panel, points_badge, class_panel, branches, branch_panel, node_button, node_title, node_desc]:
+		var ctrl := control as Control
+		dump_lines.append("- `%s`: `%s` texture `%s`" % [ctrl.name, str(ctrl.get_global_rect()), _progression_dump_texture(ctrl)])
+	viewport.queue_free()
+	await process_frame
+
+
+func _progression_dump_texture(control: Control) -> String:
+	if control is PanelContainer:
+		return _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel"))
+	if control is Button:
+		return _stylebox_texture_path((control as Button).get_theme_stylebox("normal"))
+	return ""
 
 
 func _test_elite_unique_attacks() -> void:

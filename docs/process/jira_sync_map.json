@@ -1961,8 +1961,8 @@
  },
  "backend_ui_overhaul_progression_codex_integration_task.md": {
   "key": "SCRUM-408",
-  "status": "В работе",
-  "desc_hash": "f4325803287f414af2497fcbed78358b"
+  "status": "Готово",
+  "desc_hash": "4bdd62fa46a1baaf38ece10ce21f019b"
  },
  "backend_assassin_crit_shadow_vfx_runtime_smoke_task.md": {
   "key": "SCRUM-409",

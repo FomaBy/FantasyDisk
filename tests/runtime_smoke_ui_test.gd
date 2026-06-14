@@ -35,6 +35,7 @@ func _initialize() -> void:
 		return
 	await _test_weapon_select_clean_layout(main_scene)
 	await _test_parchment_button_seal_sizes(main_scene)
+	await _test_skill_tree_progression_kit(main_scene)
 	await _test_hero_select_radar_no_overlap_layouts(main_scene)
 	await _test_codex_screen(main_scene)
 	await _test_escape_navigation(main_scene)
