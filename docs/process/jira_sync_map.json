@@ -1786,8 +1786,8 @@
  },
  "animation_sprite_sheet_safe_slicing_audit_task.md": {
   "key": "SCRUM-387",
-  "status": "В работе",
-  "desc_hash": "cbdb6de0c4904ec21a8cf06e1dbde03e"
+  "status": "Контроль качества",
+  "desc_hash": "f187ef5cc74c97b16d900bd800f96e6a"
  },
  "backend_meta_points_per_new_ascension_only_task.md": {
   "key": "SCRUM-388",
@@ -1796,8 +1796,8 @@
  },
  "backend_hero_select_default_ascension_to_max_task.md": {
   "key": "SCRUM-389",
-  "status": "Контроль качества",
-  "desc_hash": "181be9df42a648a2478e19f3d73fcb83"
+  "status": "Готово",
+  "desc_hash": "7cfe01f14e3f638d06eba04ba926150d"
  },
  "design_combat_hud_full_redraw_skill_task.md": {
   "key": "SCRUM-390",
@@ -1823,5 +1823,15 @@
   "key": "SCRUM-393",
   "status": "К выполнению",
   "desc_hash": "5962d6ec855c930e3960abbab1ed8543"
+ },
+ "design_animation_source_sheets_safe_gutters_task.md": {
+  "key": "SCRUM-394",
+  "status": "К выполнению",
+  "desc_hash": "2712c1cb453e0f78637a7100156708b5"
+ },
+ "design_integrate_generated_backgrounds_3_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "335fac59f5399913dd8b76ca5afeb823"
  }
 }

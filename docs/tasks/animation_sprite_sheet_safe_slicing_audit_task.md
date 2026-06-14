@@ -1,6 +1,6 @@
 # ANIM: Проверить все анимации на захват пикселей соседних кадров
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Animator (Codex)
 Версия: 0.1.5
@@ -80,16 +80,16 @@ Runtime frame rectangles не должны включать gutter pixels. Gutte
 discard-only область source sheet.
 
 ## Acceptance Criteria
-- [ ] Есть отчёт `docs/design/reviews/animation_safe_slicing_audit_2026_06.md`
+- [x] Есть отчёт `docs/design/reviews/animation_safe_slicing_audit_2026_06.md`
   со списком проверенных assets, найденных bleed-дефектов, исправлений и handoff.
-- [ ] Все runtime SpriteFrames/source sheets текущего активного набора проверены
+- [x] Все runtime SpriteFrames/source sheets текущего активного набора проверены
   на соседний-frame bleed и edge artifacts.
-- [ ] Все безопасные Animator-owned дефекты исправлены без изменения gameplay и
+- [x] Все безопасные Animator-owned дефекты исправлены без изменения gameplay и
   без регрессии масштаба/пивота.
-- [ ] Для не-Animator-owned дефектов созданы Design/Back-end handoff tasks.
-- [ ] Манифесты/QA artifacts включают `frame_gutter_px`, `outer_padding_px`,
+- [x] Для не-Animator-owned дефектов созданы Design/Back-end handoff tasks.
+- [x] Манифесты/QA artifacts включают `frame_gutter_px`, `outer_padding_px`,
   `safe_slicing_checked`; skill validator проходит.
-- [ ] `animation_smoke_test.gd` проходит; `runtime_smoke_test.gd` запущен, если
+- [x] `animation_smoke_test.gd` проходит; `runtime_smoke_test.gd` запущен, если
   менялись runtime ресурсы, registry, scenes или shared scripts.
 
 ## Verification
@@ -105,3 +105,50 @@ python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/
 ```bash
 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
 ```
+
+## Результат
+
+2026-06-14 Animator SCRUM-387 завершён.
+
+Проверено:
+- 30 active runtime `SpriteFrames` under `assets/sprites/allies`,
+  `assets/sprites/enemies`, `assets/sprites/elites`, `assets/sprites/bosses`;
+- 794 unique runtime PNG frames;
+- 45 source/reference sheets from full-frame enemy/elite/boss packs and
+  SCRUM-380 death-row references.
+
+Runtime result: active runtime frames pass safe slicing. Found `0`
+neighboring-frame/crop-edge captures, `0` edge-touching frames, and `0`
+crop-edge chroma remnants. 122 frames contain green-dominant pixels somewhere
+inside the frame, but `green_edge_frames = 0`, so they are not chroma remnants
+on crop edges. 145 runtime frames are below the new ideal transparent padding
+target, mostly bottom-baseline/death rows, but they are individual PNG frames
+with no current neighbor capture. No runtime asset rewrite was made to avoid
+scale/pivot regressions.
+
+Source sheet result: all 45 checked source/reference sheets are exact 6x4 grids
+with `0 px` structural gutter and `0 px` outer padding against the new `24 px`
+standard for `256x256` cells. This is Design-owned source compliance work, not
+an Animator runtime fix. Created handoff:
+`docs/tasks/design_animation_source_sheets_safe_gutters_task.md`.
+
+Report:
+`docs/design/reviews/animation_safe_slicing_audit_2026_06.md`.
+
+QA artifacts:
+- `build/qa/animation_sprite_sheet_safe_slicing_audit/animation_manifest.json`
+- `build/qa/animation_sprite_sheet_safe_slicing_audit/runtime_frame_audit.json`
+- `build/qa/animation_sprite_sheet_safe_slicing_audit/source_sheet_audit.json`
+
+Verification:
+
+```bash
+python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_sprite_sheet_safe_slicing_audit/animation_manifest.json
+# FantasyDisk animation manifest OK: 30 entities
+
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd
+# Animation smoke test passed.
+```
+
+`runtime_smoke_test.gd` was not required because this task did not change
+runtime registry, scenes, shared scripts, or gameplay resources.

@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-389
+QA: in_progress (2026-06-14)
 Связано: SCRUM-388 (очки меты за новое возвышение), SCRUM-360 (классовая прогрессия), SCRUM-346 (возвышение +/-)
 
 ## Autonomy / Approval
@@ -68,3 +69,24 @@ docs/design/systems/menus_ui.md, current_game_state.
 Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/meta_progression_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Код** (ui_screens.gd): лямбда `select_character` (862) ВСЕГДА ставит
+  `selected_ascension_level = ascension_selectable_max(character_id)` (864) при
+  выборе/первичной инициализации; `-` → `maxi(lvl-1, 0)` (881), `+` →
+  `mini(lvl+1, selectable_max)` (885) — ручное в диапазоне; clamp на старте (2596).
+- **Репродукция**: форсировал level=0 → `_show_character_select()` → level=**10** =
+  `selectable_max(berserk)` → DEFAULT_TO_MAX=true. (per-character `selectable_max`
+  учитывает прогресс: у непройденного класса дефолт = его max 0/1.)
+- **Тесты**: `runtime_smoke_test` (max-default + manual lower + class-switch
+  recompute) + `meta_progression_smoke_test` — passed.
+
+Acceptance:
+- [x] При выборе/смене класса дефолт = максимально доступный уровень возвышения.
+- [x] Ручное −/+ работает, не уходит за selectable_max; старт корректен; clamp цел.
+- [x] smoke зелёные; доки.
+
+Баги: нет.
