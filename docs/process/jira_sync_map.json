@@ -1682,7 +1682,7 @@
  "design_unified_frame_revise_thin_metallic_task.md": {
   "key": "SCRUM-384",
   "status": "В работе",
-  "desc_hash": "339248f9a56030a4bfb673795fe8306b"
+  "desc_hash": "86a509e133ae60f0a63fc91ee95ba467"
  },
  "design_integrate_generated_scrum380_death_rows_3_task.md": {
   "key": "SCRUM-383",
@@ -1802,6 +1802,11 @@
  "design_combat_hud_full_redraw_skill_task.md": {
   "key": "SCRUM-390",
   "status": "К выполнению",
-  "desc_hash": "b301525f711784430c5511a227304789"
+  "desc_hash": "b39a0a34f9fce794554ee176764f5203"
+ },
+ "design_settings_menu_unified_restyle_task.md": {
+  "key": "SCRUM-391",
+  "status": "К выполнению",
+  "desc_hash": "b35dde3aac8c16e6ec5ffc93c40b8bf9"
  }
 }
