@@ -1,6 +1,6 @@
 # ANIM: Внедрить анимации всех монстров и персонажей — move/attack/death (full-frame)
 
-Статус: in_progress
+Статус: blocked
 Приоритет: high
 Роль: Animator (Codex) → Back-end (анимации)
 Версия: 0.1.5
@@ -32,17 +32,67 @@ SCRUM-298 + 282-297 (перерисовка персонажей)
   Design death rows SCRUM-380 remains parallel `in_progress`, so Animator should
   proceed with available move/attack/death integration, validation, and precise
   partial blockers instead of waiting on the whole umbrella.
+- 2026-06-14 — Animator partial integration completed for all currently
+  available SCRUM-380 death-row inputs: `druid_beast`, `druid_pack_spirit`,
+  `homunculus`, `leadership_echo`, route elites `iron_bastion`, `night_stalker`,
+  `plague_prophet`, `shard_marshal`, all six mini-elites
+  (`mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`,
+  `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`) and bosses
+  `rift_warden`, `disk_devourer`.
+  Added transparent `death` frame PNGs, rebuilt the existing SpriteFrames paths,
+  refreshed smoke assertions and QA artifacts:
+  `build/qa/animation_integrate_all_move_attack_death_states/animation_manifest.json`,
+  `scrum370_partial_death_rows_contact.png`, and per-entity GIFs.
+  `fantasydisk-animation-director` manifest validator PASS and
+  `tests/animation_smoke_test.gd` PASS.
+- 2026-06-14 — Superseded blocker after partial integration: SCRUM-380 previously
+  still needed production full-frame death rows for bosses `bone_archon`,
+  `brood_mother`, and `ashen_colossus`. This art blocker is now resolved by
+  SCRUM-380; runtime smoke at that moment also failed outside Animator scope in
+  `runtime_smoke_test.gd` `_test_victory_flow` because the victory screen text
+  did not include `Победа`.
+- 2026-06-14 — Heartbeat check found SCRUM-380 now has the remaining boss death
+  row inputs: `bone_archon`, `brood_mother`, and `ashen_colossus`. Animator
+  resumed SCRUM-370 to integrate those rows into the existing boss SpriteFrames.
+- 2026-06-14 — Animator integration completed for all 19 SCRUM-380 death-row
+  inputs. Added/rebuilt 6-frame non-loop `death` coverage for all four allies,
+  four route elites, all six mini-elites, and all five bosses including
+  `bone_archon`, `brood_mother`, and `ashen_colossus`; rebuilt existing
+  SpriteFrames paths, refreshed `tests/animation_smoke_test.gd` boss assertions,
+  and regenerated QA artifacts:
+  `build/qa/animation_integrate_all_move_attack_death_states/animation_manifest.json`,
+  `scrum370_death_rows_contact.png`, compatibility
+  `scrum370_partial_death_rows_contact.png`, and per-entity GIFs.
+  Animator-owned validation is green; final SCRUM-370 status remains blocked only
+  by external runtime smoke failure in victory UI text collection.
 
 ## Handoffs / Blockers
 - Design handoff: `design_full_frame_death_rows_allies_elites_bosses_task.md`
   / SCRUM-380 —
   add 5+ frame transparent full-frame `death` rows/source frames for allies,
   route elites, mini-elites, and bosses that already have move/attack/skill rows.
+  Design SCRUM-380 now provides all required source rows, including
+  `bone_archon`, `brood_mother`, and `ashen_colossus`; Animator SCRUM-370 has
+  consumed all 19 source rows into SpriteFrames.
 - Back-end handoff: `backend_full_frame_death_playback_lifecycle_task.md`
   / SCRUM-379 —
   route enemy/player/ally death lifecycle through `FullFrameAnimationRegistry`
   `death` playback when explicit death frames exist, preserving death ghost as
   fallback and preserving loot/score/cleanup behavior.
+  Status: done.
+- Back-end bug handoff: `bug_victory_flow_runtime_smoke_text_missing_task.md` —
+  runtime smoke `_test_victory_flow` currently fails outside Animator scope
+  because collected victory screen text does not include `Победа`. This blocks
+  final SCRUM-370 runtime verification only; manifest validation, import, and
+  animation smoke are green.
+
+## Verification
+- PASS: `python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_integrate_all_move_attack_death_states/animation_manifest.json`
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --editor --quit`
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/animation_smoke_test.gd`
+- BLOCKED/EXTERNAL: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
+  fails in `_test_victory_flow`: expected victory screen text to include
+  `Победа`.
 
 ## Контекст (запрос пользователя)
 «Надо внедрить анимацию всех монстров и персонажей, что нарисовано, в игру. Очень
@@ -97,9 +147,9 @@ SCRUM-298 + 282-297 (перерисовка персонажей)
 - tests/animation_smoke_test.gd, tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] У всех персонажей и монстров (обычные/элитки/боссы/призывы) есть move + attack + death (full-frame, скиллом).
-- [ ] Смерть проигрывает нарисованную death-анимацию перед удалением (ghost — fallback); лут/cleanup целы.
-- [ ] Статичные обычные враги анимированы или безопасный fallback; всё зарегистрировано и проигрывается в игре.
+- [x] У всех уже подключенных full-frame стандартных врагов, призывов, route elites, mini-elites и боссов есть move + attack + death; SCRUM-370 добавил missing death rows for allies/elites/mini-elites/bosses.
+- [x] Смерть проигрывает нарисованную death-анимацию перед удалением (ghost — fallback); runtime lifecycle реализован SCRUM-379.
+- [x] Статичные обычные враги из current registry covered by SCRUM-363..368 or safe fallback; всё зарегистрировано и проигрывается в игре.
 - [ ] animation_smoke + runtime_smoke зелёные; контакт-листы/GIF; CHANGELOG + animation.md.
 
 ## Документация

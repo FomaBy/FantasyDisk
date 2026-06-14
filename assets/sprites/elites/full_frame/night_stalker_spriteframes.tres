@@ -1,239 +1,284 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_00.png" id="1_ni1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_01.png" id="2_ni2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_02.png" id="3_ni3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_03.png" id="4_ni4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_04.png" id="5_ni5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_05.png" id="6_ni6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_00.png" id="7_ni7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_01.png" id="8_ni8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_02.png" id="9_ni9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_03.png" id="10_ni10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_04.png" id="11_ni11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_05.png" id="12_ni12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_00.png" id="13_ni13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_01.png" id="14_ni14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_02.png" id="15_ni15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_03.png" id="16_ni16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_04.png" id="17_ni17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_05.png" id="18_ni18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_00.png" id="19_ni19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_01.png" id="20_ni20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_02.png" id="21_ni21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_03.png" id="22_ni22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_04.png" id="23_ni23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_05.png" id="24_ni24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_00.png" id="1_ns1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_01.png" id="2_ns2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_02.png" id="3_ns3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_03.png" id="4_ns4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_04.png" id="5_ns5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_05.png" id="6_ns6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_00.png" id="7_ns7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_01.png" id="8_ns8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_02.png" id="9_ns9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_03.png" id="10_ns10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_04.png" id="11_ns11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_05.png" id="12_ns12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_00.png" id="13_ns13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_01.png" id="14_ns14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_02.png" id="15_ns15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_03.png" id="16_ns16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_04.png" id="17_ns17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_05.png" id="18_ns18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_00.png" id="19_ns19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_01.png" id="20_ns20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_02.png" id="21_ns21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_03.png" id="22_ns22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_04.png" id="23_ns23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_05.png" id="24_ns24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_00.png" id="25_ns25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_01.png" id="26_ns26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_02.png" id="27_ns27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_03.png" id="28_ns28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_04.png" id="29_ns29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_05.png" id="30_ns30"]
 
 [resource]
-animations = [{
+animations = [
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("1_ni1")
+"texture": ExtResource("1_ns1")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("2_ni2")
+"texture": ExtResource("2_ns2")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("3_ni3")
+"texture": ExtResource("3_ns3")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("4_ni4")
+"texture": ExtResource("4_ns4")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("5_ni5")
+"texture": ExtResource("5_ns5")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("6_ni6")
+"texture": ExtResource("6_ns6")
 }
 ],
 "loop": false,
 "name": &"attack",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("1_ni1")
+"texture": ExtResource("1_ns1")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("2_ni2")
+"texture": ExtResource("2_ns2")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("3_ni3")
+"texture": ExtResource("3_ns3")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("4_ni4")
+"texture": ExtResource("4_ns4")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("5_ni5")
+"texture": ExtResource("5_ns5")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("6_ni6")
+"texture": ExtResource("6_ns6")
 }
 ],
 "loop": false,
 "name": &"attack_primary",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("7_ni7")
+"texture": ExtResource("7_ns7")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("8_ni8")
+"texture": ExtResource("8_ns8")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("9_ni9")
+"texture": ExtResource("9_ns9")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("10_ni10")
+"texture": ExtResource("10_ns10")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("11_ni11")
+"texture": ExtResource("11_ns11")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("12_ni12")
+"texture": ExtResource("12_ns12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_ns13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ns14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_ns15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_ns16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_ns17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ns18")
 }
 ],
 "loop": true,
 "name": &"move",
 "speed": 9.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("13_ni13")
+"texture": ExtResource("19_ns19")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("14_ni14")
+"texture": ExtResource("20_ns20")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("15_ni15")
+"texture": ExtResource("21_ns21")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("16_ni16")
+"texture": ExtResource("22_ns22")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("17_ni17")
+"texture": ExtResource("23_ns23")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("18_ni18")
+"texture": ExtResource("24_ns24")
 }
 ],
 "loop": false,
 "name": &"skill_shadow_strike",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("13_ni13")
+"texture": ExtResource("19_ns19")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("14_ni14")
+"texture": ExtResource("20_ns20")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("15_ni15")
+"texture": ExtResource("21_ns21")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("16_ni16")
+"texture": ExtResource("22_ns22")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("17_ni17")
+"texture": ExtResource("23_ns23")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("18_ni18")
+"texture": ExtResource("24_ns24")
 }
 ],
 "loop": false,
 "name": &"attack_shadow_strike",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("19_ni19")
+"texture": ExtResource("25_ns25")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_ni20")
+"texture": ExtResource("26_ns26")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_ni21")
+"texture": ExtResource("27_ns27")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_ni22")
+"texture": ExtResource("28_ns28")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_ni23")
+"texture": ExtResource("29_ns29")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_ni24")
+"texture": ExtResource("30_ns30")
 }
 ],
 "loop": false,
 "name": &"skill_phase_dash",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("19_ni19")
+"texture": ExtResource("25_ns25")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_ni20")
+"texture": ExtResource("26_ns26")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_ni21")
+"texture": ExtResource("27_ns27")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_ni22")
+"texture": ExtResource("28_ns28")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_ni23")
+"texture": ExtResource("29_ns29")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_ni24")
+"texture": ExtResource("30_ns30")
 }
 ],
 "loop": false,
 "name": &"attack_phase_dash",
 "speed": 12.0
-}]
+}
+]

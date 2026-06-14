@@ -1,92 +1,39 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_00.png" id="1_ac1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_01.png" id="2_ac2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_02.png" id="3_ac3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_03.png" id="4_ac4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_04.png" id="5_ac5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_05.png" id="6_ac6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_00.png" id="7_ac7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_01.png" id="8_ac8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_02.png" id="9_ac9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_03.png" id="10_ac10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_04.png" id="11_ac11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_05.png" id="12_ac12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_00.png" id="13_ac13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_01.png" id="14_ac14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_02.png" id="15_ac15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_03.png" id="16_ac16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_04.png" id="17_ac17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_05.png" id="18_ac18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_00.png" id="19_ac19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_01.png" id="20_ac20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_02.png" id="21_ac21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_03.png" id="22_ac22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_04.png" id="23_ac23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_05.png" id="24_ac24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_00.png" id="1_ac1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_01.png" id="2_ac2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_02.png" id="3_ac3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_03.png" id="4_ac4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_04.png" id="5_ac5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_05.png" id="6_ac6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_00.png" id="7_ac7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_01.png" id="8_ac8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_02.png" id="9_ac9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_03.png" id="10_ac10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_04.png" id="11_ac11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_05.png" id="12_ac12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_00.png" id="13_ac13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_01.png" id="14_ac14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_02.png" id="15_ac15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_03.png" id="16_ac16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_04.png" id="17_ac17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_05.png" id="18_ac18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_00.png" id="19_ac19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_01.png" id="20_ac20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_02.png" id="21_ac21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_03.png" id="22_ac22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_04.png" id="23_ac23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_05.png" id="24_ac24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_00.png" id="25_ac25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_01.png" id="26_ac26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_02.png" id="27_ac27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_03.png" id="28_ac28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_04.png" id="29_ac29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_05.png" id="30_ac30"]
 
 [resource]
-animations = [{
-"frames": [
+animations = [
 {
-"duration": 1.0,
-"texture": ExtResource("7_ac7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_ac8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_ac9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_ac10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_ac11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_ac12")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_ac7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_ac8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_ac9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_ac10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_ac11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_ac12")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
-}, {
 "frames": [
 {
 "duration": 1.0,
@@ -113,10 +60,73 @@ animations = [{
 "texture": ExtResource("6_ac6")
 }
 ],
-"loop": true,
-"name": &"move",
-"speed": 9.0
-}, {
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_ac1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_ac2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_ac3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_ac4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_ac5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_ac6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_ac7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_ac8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_ac9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_ac10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_ac11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_ac12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
 "frames": [
 {
 "duration": 1.0,
@@ -141,99 +151,134 @@ animations = [{
 {
 "duration": 1.0,
 "texture": ExtResource("18_ac18")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_ac19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_ac20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_ac21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_ac22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_ac23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_ac24")
 }
 ],
 "loop": false,
 "name": &"skill_molten_slam",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("13_ac13")
+"texture": ExtResource("19_ac19")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("14_ac14")
+"texture": ExtResource("20_ac20")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("15_ac15")
+"texture": ExtResource("21_ac21")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("16_ac16")
+"texture": ExtResource("22_ac22")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("17_ac17")
+"texture": ExtResource("23_ac23")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("18_ac18")
+"texture": ExtResource("24_ac24")
 }
 ],
 "loop": false,
 "name": &"attack_molten_slam",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("19_ac19")
+"texture": ExtResource("25_ac25")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_ac20")
+"texture": ExtResource("26_ac26")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_ac21")
+"texture": ExtResource("27_ac27")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_ac22")
+"texture": ExtResource("28_ac28")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_ac23")
+"texture": ExtResource("29_ac29")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_ac24")
+"texture": ExtResource("30_ac30")
 }
 ],
 "loop": false,
 "name": &"skill_armor_pulse",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("19_ac19")
+"texture": ExtResource("25_ac25")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_ac20")
+"texture": ExtResource("26_ac26")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_ac21")
+"texture": ExtResource("27_ac27")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_ac22")
+"texture": ExtResource("28_ac28")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_ac23")
+"texture": ExtResource("29_ac29")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_ac24")
+"texture": ExtResource("30_ac30")
 }
 ],
 "loop": false,
 "name": &"attack_armor_pulse",
 "speed": 12.0
-}]
+}
+]

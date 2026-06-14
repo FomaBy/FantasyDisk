@@ -1,6 +1,6 @@
 # ART: Ревизия единого фрейма — ТОНКАЯ металлическая рамка (самоцветы+драконья плашка)
 
-Статус: new
+Статус: review
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
@@ -61,3 +61,38 @@ Jira: SCRUM-384
 
 ## Документация
 docs/design/systems/visual_style_assets.md, docs/design/systems/menus_ui.md.
+
+## Progress Log
+- 2026-06-14 — Took task in Design/Codex thread; starting thin metallic unified frame revision from SCRUM-373 assets with preserved runtime paths.
+- 2026-06-14 — Generated reference via `fantasydisk-asset-generator`:
+  `docs/design/references/unified_master_frame/thin_metallic_unified_frame_reference.png`.
+  The generated reference matched the thin metal/gem/dragon direction, but the
+  raw image had a baked paper background, so the production asset was rebuilt
+  as a clean alpha-ready thin frame while preserving the generated art direction.
+- 2026-06-14 — Replaced preserved runtime paths:
+  `assets/sprites/ui/frames/unified/ui_frame_unified_master.png`,
+  `ui_frame_unified_master_fill.png`, `ui_frame_unified_inner_fill.png`,
+  `ui_frame_unified_ornament_top.png`, `ui_frame_unified_ornament_bottom.png`,
+  `ui_frame_unified_hover_overlay.png`. Old SCRUM-373 PNGs are backed up under
+  `build/qa/scrum384/backups/`.
+- 2026-06-14 — Updated metadata:
+  `docs/design/references/unified_master_frame/unified_master_frame_metadata.json`.
+  New texture margins: `72/72/72/72`; content margins: `88/88/88/88`; strict
+  safe rect: `Rect2(88, 88, 848, 848)`. Dragon ornaments are separate optional
+  overlays for large panels only and are not baked into 9-slice stretch zones.
+- 2026-06-14 — QA artifacts:
+  `docs/design/previews/unified_master_frame_thin_revision_contact.png`,
+  `docs/design/previews/unified_master_frame_thin_safe_zone.png`,
+  `build/qa/scrum384/unified_frame_thin_revision_qa.md`.
+- 2026-06-14 — Verification PASS: PNG RGBA/alpha validation, Godot headless
+  import, `tests/ui_no_overlap_matrix_test.gd`, `tests/runtime_smoke_ui_test.gd`
+  and `tests/runtime_smoke_test.gd`.
+
+## Result
+Design ревизия готова к QA/review. Единый master frame теперь тонкий: dark steel
+rails, тонкие углы, небольшие красные самоцветы в углах, больше внутреннего
+пространства для контента. Runtime paths сохранены, поэтому SCRUM-382 integration
+подхватывает ревизованный ассет без смены ссылок. Важное правило для Back-end/UI:
+контент остается строго внутри scaled safe rect из metadata; optional dragon
+overlays можно использовать только на крупных панелях и нельзя размещать поверх
+них текст/иконки/кнопки.

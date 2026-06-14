@@ -676,12 +676,15 @@ func _test_druid_wolf_ally_animation() -> void:
 		_fail("Expected druid_beast to use AnimatedSprite2D.")
 	if animated_body.sprite_frames == null:
 		_fail("Expected druid_beast AnimatedSprite2D to have SpriteFrames.")
-	if not animated_body.sprite_frames.has_animation("move") or not animated_body.sprite_frames.has_animation("attack"):
-		_fail("Expected druid_beast SpriteFrames to expose move and attack animations.")
-	if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6:
-		_fail("Expected druid_beast move/attack frame counts to match the Design handoff.")
-	if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack"):
-		_fail("Expected druid_beast move to loop and attack to be one-shot.")
+	for animation_name in ["move", "attack", "attack_primary", "death"]:
+		if not animated_body.sprite_frames.has_animation(animation_name):
+			_fail("Expected druid_beast SpriteFrames to expose %s animation." % animation_name)
+	if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6 \
+			or animated_body.sprite_frames.get_frame_count("attack_primary") != 6 or animated_body.sprite_frames.get_frame_count("death") != 6:
+		_fail("Expected druid_beast move/attack/death frame counts to match the Design handoff.")
+	if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack") \
+			or animated_body.sprite_frames.get_animation_loop("attack_primary") or animated_body.sprite_frames.get_animation_loop("death"):
+		_fail("Expected druid_beast move to loop and attack/death to be one-shot.")
 	if animated_body.animation != "move" or not animated_body.is_playing():
 		_fail("Expected druid_beast to start in playing move animation.")
 
@@ -700,19 +703,23 @@ func _test_druid_wolf_ally_animation() -> void:
 			_fail("Expected summon '%s' to use the animated AnimatedSprite2D visual." % summon_visual)
 		if animated_body.sprite_frames == null:
 			_fail("Expected summon '%s' AnimatedSprite2D to have SpriteFrames." % summon_visual)
-		if not animated_body.sprite_frames.has_animation("move") or not animated_body.sprite_frames.has_animation("attack"):
-			_fail("Expected summon '%s' SpriteFrames to expose move and attack animations." % summon_visual)
-		if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6:
-			_fail("Expected summon '%s' move/attack frame counts to match the wolf system (8/6)." % summon_visual)
-		if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack"):
-			_fail("Expected summon '%s' move to loop and attack to be one-shot." % summon_visual)
+		for animation_name in ["move", "attack", "attack_primary", "death"]:
+			if not animated_body.sprite_frames.has_animation(animation_name):
+				_fail("Expected summon '%s' SpriteFrames to expose %s animation." % [summon_visual, animation_name])
+		if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6 \
+				or animated_body.sprite_frames.get_frame_count("attack_primary") != 6 or animated_body.sprite_frames.get_frame_count("death") != 6:
+			_fail("Expected summon '%s' move/attack/death frame counts to match the wolf system (8/6/6)." % summon_visual)
+		if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack") \
+				or animated_body.sprite_frames.get_animation_loop("attack_primary") or animated_body.sprite_frames.get_animation_loop("death"):
+			_fail("Expected summon '%s' move to loop and attack/death to be one-shot." % summon_visual)
 	ally.queue_free()
 
 
 func _test_full_frame_animation_registry() -> void:
 	var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", "druid_beast")
-	if frames == null or not frames.has_animation("move") or not frames.has_animation("attack"):
-		_fail("Expected full-frame registry to resolve druid_beast move/attack SpriteFrames.")
+	if frames == null or not frames.has_animation("move") or not frames.has_animation("attack") \
+			or not frames.has_animation("attack_primary") or not frames.has_animation("death"):
+		_fail("Expected full-frame registry to resolve druid_beast move/attack/death SpriteFrames.")
 	var standard_enemy_scenes := {
 		"rift_cutter": "res://scenes/Enemy.tscn",
 		"ash_marksman": "res://scenes/EnemyShooter.tscn",
@@ -838,7 +845,14 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected %s elite %s to have 6 frames." % [elite_id, animation_name])
 		if not elite_frames.get_animation_loop("move"):
 			_fail("Expected %s elite move to loop." % elite_id)
-		for one_shot_name in ["attack", "attack_primary"]:
+		if elite_id in ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal"]:
+			if not elite_frames.has_animation("death"):
+				_fail("Expected %s elite SpriteFrames to expose death after SCRUM-370 death integration." % elite_id)
+			elif elite_frames.get_frame_count("death") != 6:
+				_fail("Expected %s elite death to have 6 frames." % elite_id)
+		for one_shot_name in ["attack", "attack_primary", "death"]:
+			if not elite_frames.has_animation(one_shot_name):
+				continue
 			if elite_frames.get_animation_loop(one_shot_name):
 				_fail("Expected %s elite %s to be one-shot." % [elite_id, one_shot_name])
 		for skill_state in elite_info["skill_states"]:
@@ -929,7 +943,14 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, animation_name])
 		if not mini_frames.get_animation_loop("move"):
 			_fail("Expected %s mini-elite move to loop." % mini_id)
-		for one_shot_name in ["attack", "attack_primary"]:
+		if mini_id in ["mini_scavenger_reaper", "mini_plague_bellringer", "mini_bone_warden", "mini_spark_wight", "mini_rot_hound", "mini_shadow_devourer"]:
+			if not mini_frames.has_animation("death"):
+				_fail("Expected %s mini-elite SpriteFrames to expose death after SCRUM-370 death integration." % mini_id)
+			elif mini_frames.get_frame_count("death") != 6:
+				_fail("Expected %s mini-elite death to have 6 frames." % mini_id)
+		for one_shot_name in ["attack", "attack_primary", "death"]:
+			if not mini_frames.has_animation(one_shot_name):
+				continue
 			if mini_frames.get_animation_loop(one_shot_name):
 				_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, one_shot_name])
 		for skill_state in mini_info["skill_states"]:
@@ -1050,7 +1071,13 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected %s boss %s to have 6 frames." % [boss_id, animation_name])
 		if not boss_frames.get_animation_loop("move"):
 			_fail("Expected %s boss move to loop." % boss_id)
-		for one_shot_name in ["attack", "attack_primary"]:
+		if not boss_frames.has_animation("death"):
+			_fail("Expected %s boss SpriteFrames to expose death after SCRUM-370 death integration." % boss_id)
+		elif boss_frames.get_frame_count("death") != 6:
+			_fail("Expected %s boss death to have 6 frames." % boss_id)
+		for one_shot_name in ["attack", "attack_primary", "death"]:
+			if not boss_frames.has_animation(one_shot_name):
+				continue
 			if boss_frames.get_animation_loop(one_shot_name):
 				_fail("Expected %s boss %s to be one-shot." % [boss_id, one_shot_name])
 		for skill_state in boss_info["skill_states"]:

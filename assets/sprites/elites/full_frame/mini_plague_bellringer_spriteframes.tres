@@ -1,92 +1,39 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_00.png" id="1_mpb1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_01.png" id="2_mpb2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_02.png" id="3_mpb3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_03.png" id="4_mpb4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_04.png" id="5_mpb5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_05.png" id="6_mpb6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_00.png" id="7_mpb7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_01.png" id="8_mpb8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_02.png" id="9_mpb9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_03.png" id="10_mpb10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_04.png" id="11_mpb11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_05.png" id="12_mpb12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_00.png" id="13_mpb13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_01.png" id="14_mpb14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_02.png" id="15_mpb15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_03.png" id="16_mpb16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_04.png" id="17_mpb17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_05.png" id="18_mpb18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_00.png" id="19_mpb19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_01.png" id="20_mpb20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_02.png" id="21_mpb21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_03.png" id="22_mpb22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_04.png" id="23_mpb23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_05.png" id="24_mpb24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_00.png" id="1_mpb1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_01.png" id="2_mpb2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_02.png" id="3_mpb3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_03.png" id="4_mpb4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_04.png" id="5_mpb5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_attack_primary_05.png" id="6_mpb6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_death_00.png" id="7_mpb7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_death_01.png" id="8_mpb8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_death_02.png" id="9_mpb9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_death_03.png" id="10_mpb10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_death_04.png" id="11_mpb11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_death_05.png" id="12_mpb12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_00.png" id="13_mpb13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_01.png" id="14_mpb14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_02.png" id="15_mpb15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_03.png" id="16_mpb16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_04.png" id="17_mpb17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_move_05.png" id="18_mpb18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_00.png" id="19_mpb19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_01.png" id="20_mpb20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_02.png" id="21_mpb21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_03.png" id="22_mpb22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_04.png" id="23_mpb23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_bell_toll_05.png" id="24_mpb24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_00.png" id="25_mpb25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_01.png" id="26_mpb26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_02.png" id="27_mpb27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_03.png" id="28_mpb28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_04.png" id="29_mpb29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_plague_bellringer/mini_plague_bellringer_skill_poison_pool_05.png" id="30_mpb30"]
 
 [resource]
-animations = [{
-"frames": [
+animations = [
 {
-"duration": 1.0,
-"texture": ExtResource("7_mpb7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_mpb8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_mpb9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_mpb10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_mpb11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_mpb12")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_mpb7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_mpb8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_mpb9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_mpb10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_mpb11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_mpb12")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
-}, {
 "frames": [
 {
 "duration": 1.0,
@@ -113,10 +60,73 @@ animations = [{
 "texture": ExtResource("6_mpb6")
 }
 ],
-"loop": true,
-"name": &"move",
-"speed": 9.0
-}, {
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_mpb1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_mpb2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_mpb3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_mpb4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_mpb5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_mpb6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_mpb7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_mpb8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_mpb9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_mpb10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_mpb11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_mpb12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
 "frames": [
 {
 "duration": 1.0,
@@ -141,99 +151,134 @@ animations = [{
 {
 "duration": 1.0,
 "texture": ExtResource("18_mpb18")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_mpb19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_mpb20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_mpb21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_mpb22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_mpb23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_mpb24")
 }
 ],
 "loop": false,
 "name": &"skill_bell_toll",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("13_mpb13")
+"texture": ExtResource("19_mpb19")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("14_mpb14")
+"texture": ExtResource("20_mpb20")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("15_mpb15")
+"texture": ExtResource("21_mpb21")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("16_mpb16")
+"texture": ExtResource("22_mpb22")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("17_mpb17")
+"texture": ExtResource("23_mpb23")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("18_mpb18")
+"texture": ExtResource("24_mpb24")
 }
 ],
 "loop": false,
 "name": &"attack_bell_toll",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("19_mpb19")
+"texture": ExtResource("25_mpb25")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_mpb20")
+"texture": ExtResource("26_mpb26")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_mpb21")
+"texture": ExtResource("27_mpb27")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_mpb22")
+"texture": ExtResource("28_mpb28")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_mpb23")
+"texture": ExtResource("29_mpb29")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_mpb24")
+"texture": ExtResource("30_mpb30")
 }
 ],
 "loop": false,
 "name": &"skill_poison_pool",
 "speed": 12.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("19_mpb19")
+"texture": ExtResource("25_mpb25")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_mpb20")
+"texture": ExtResource("26_mpb26")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_mpb21")
+"texture": ExtResource("27_mpb27")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_mpb22")
+"texture": ExtResource("28_mpb28")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_mpb23")
+"texture": ExtResource("29_mpb29")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_mpb24")
+"texture": ExtResource("30_mpb30")
 }
 ],
 "loop": false,
 "name": &"attack_poison_pool",
 "speed": 12.0
-}]
+}
+]

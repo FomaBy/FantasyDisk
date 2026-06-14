@@ -4,6 +4,13 @@
 
 ## [Unreleased] — ветка dev
 
+### Fixed
+- Feedback Discord webhook attachments (SCRUM-374): multipart `payload_json`
+  now declares `attachments[0]` with the same filename as `files[0]`, so
+  Discord API v10 keeps the `fantasydisk_feedback.png` screenshot instead of
+  accepting text-only 204 responses; runtime smoke now asserts the filename
+  mapping without network.
+
 ### Added
 - Unified master UI frame kit (SCRUM-373): added design-ready D&D/dark fantasy
   9-slice assets under `assets/sprites/ui/frames/unified/`, metadata
@@ -83,6 +90,17 @@
   `FullFrameBody.death` now leave combat groups, disable collision/HP bars and
   play their drawn death row before cleanup; entities without a full-frame death
   row keep the existing `DeathGhostRig` fallback.
+- Full-frame death row source pack (SCRUM-380): generated 19 accepted
+  transparent Design source rows and 114 `death_00..05` frames for allies, route
+  elites, mini-elites and bosses, with manifest
+  `docs/design/references/scrum380_death_rows/scrum380_death_rows_manifest.json`
+  plus contact/readability previews for Animator integration.
+- Full-frame death rows integration (SCRUM-370): added 6-frame non-loop `death`
+  rows to existing SpriteFrames for 4 allies, 4 route elites, all 6 mini-elites
+  and all 5 bosses; manifest, contact sheet and GIF previews live under
+  `build/qa/animation_integrate_all_move_attack_death_states/`. Animator
+  validation is green; final runtime umbrella verification is blocked by an
+  unrelated victory-flow text regression handed to Back-end.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню

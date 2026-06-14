@@ -2947,8 +2947,12 @@ func _test_victory_flow(main: Node) -> void:
 		quit(1)
 		return
 	boss.take_damage(99999.0)
-	await process_frame
-	await process_frame
+	var victory_text := ""
+	for _attempt in range(120):
+		await process_frame
+		victory_text = _collect_label_text(main)
+		if not bool(main.get("combat_active")) and victory_text.contains("Победа"):
+			break
 	if bool(main.get("combat_active")):
 		push_error("Expected boss death to end combat.")
 		quit(1)
@@ -2957,7 +2961,6 @@ func _test_victory_flow(main: Node) -> void:
 		push_error("Expected boss victory to grant meta progress and Berserk Ascension 1.")
 		quit(1)
 		return
-	var victory_text := _collect_label_text(main)
 	for forbidden in ["Meta points", "asc_", "_id", "berserk_asc"]:
 		if victory_text.contains(forbidden):
 			push_error("Expected victory screen text to hide internal technical token '%s'." % forbidden)
@@ -4754,13 +4757,64 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		feedback_main.queue_free()
 		await process_frame
 		return
+	var payload_json := _feedback_multipart_payload_json(multipart, boundary)
+	var multipart_filename := _feedback_multipart_file_filename(multipart)
+	var attachments: Array = payload_json.get("attachments", [])
+	if attachments.size() != 1 or not attachments[0] is Dictionary:
+		_fail("Expected feedback payload_json to declare one Discord attachment.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var attachment := attachments[0] as Dictionary
+	if int(attachment.get("id", -1)) != 0 or str(attachment.get("filename", "")) != multipart_filename or multipart_filename != "fantasydisk_feedback.png":
+		_fail("Expected feedback payload_json attachment filename to match files[0] filename.")
+		feedback_main.queue_free()
+		await process_frame
+		return
 	feedback_main.queue_free()
 	await process_frame
 
 
-func _packed_bytes_contains(haystack: PackedByteArray, needle: PackedByteArray) -> bool:
+func _feedback_multipart_payload_json(multipart: PackedByteArray, boundary: String) -> Dictionary:
+	var text := _feedback_multipart_header_text(multipart)
+	var marker := "Content-Type: application/json\r\n\r\n"
+	var start := text.find(marker)
+	if start < 0:
+		return {}
+	start += marker.length()
+	var end := text.find("\r\n--%s" % boundary, start)
+	if end < 0:
+		return {}
+	var parsed = JSON.parse_string(text.substr(start, end - start))
+	return parsed if parsed is Dictionary else {}
+
+
+func _feedback_multipart_file_filename(multipart: PackedByteArray) -> String:
+	var text := _feedback_multipart_header_text(multipart)
+	var marker := "Content-Disposition: form-data; name=\"files[0]\"; filename=\""
+	var start := text.find(marker)
+	if start < 0:
+		return ""
+	start += marker.length()
+	var end := text.find("\"", start)
+	if end < 0:
+		return ""
+	return text.substr(start, end - start)
+
+
+func _feedback_multipart_header_text(multipart: PackedByteArray) -> String:
+	var png_signature := PackedByteArray([0x89, 0x50, 0x4E, 0x47])
+	var png_start := _packed_bytes_find(multipart, png_signature)
+	var header := PackedByteArray()
+	var length := png_start if png_start >= 0 else multipart.size()
+	for index in range(length):
+		header.append(multipart[index])
+	return header.get_string_from_utf8()
+
+
+func _packed_bytes_find(haystack: PackedByteArray, needle: PackedByteArray) -> int:
 	if needle.is_empty() or haystack.size() < needle.size():
-		return false
+		return -1
 	for index in range(haystack.size() - needle.size() + 1):
 		var matched := true
 		for offset in range(needle.size()):
@@ -4768,8 +4822,12 @@ func _packed_bytes_contains(haystack: PackedByteArray, needle: PackedByteArray) 
 				matched = false
 				break
 		if matched:
-			return true
-	return false
+			return index
+	return -1
+
+
+func _packed_bytes_contains(haystack: PackedByteArray, needle: PackedByteArray) -> bool:
+	return _packed_bytes_find(haystack, needle) >= 0
 
 
 func _test_settings_tabs_and_rebind(main: Node) -> void:

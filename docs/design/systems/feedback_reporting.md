@@ -17,6 +17,9 @@ SCRUM-362 adds an in-game feedback and bug report tool. It is a Back-end/runtime
 `scripts/feedback_reporter.gd` sends Discord-compatible multipart payloads through `HTTPRequest`:
 
 - `payload_json.content` contains the player text plus runtime metadata.
+- `payload_json.attachments[0]` declares `id: 0` and filename
+  `fantasydisk_feedback.png`, matching multipart part `files[0]`. Discord API
+  v10 needs this explicit attachment reference when `payload_json` is present.
 - `files[0]` contains `fantasydisk_feedback.png`.
 
 Webhook URL lookup order:
@@ -52,4 +55,6 @@ Headless runs cannot read a real viewport screenshot, so the overlay uses a smal
 - the overlay opens and closes;
 - screenshot preview texture exists;
 - local fallback writes `report.txt` and `screenshot.png`;
-- multipart payload contains `payload_json` and `fantasydisk_feedback.png`.
+- multipart payload contains `payload_json` and `fantasydisk_feedback.png`;
+- `payload_json.attachments[0].filename` matches the `files[0]` multipart
+  `Content-Disposition` filename, so Discord keeps the screenshot attachment.

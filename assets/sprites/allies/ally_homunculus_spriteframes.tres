@@ -1,87 +1,158 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_00.png" id="1_homu0"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_01.png" id="2_homu1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_02.png" id="3_homu2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_03.png" id="4_homu3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_04.png" id="5_homu4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_05.png" id="6_homu5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_00.png" id="7_homu6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_01.png" id="8_homu7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_02.png" id="9_homu8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_03.png" id="10_homu9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_04.png" id="11_homu10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_05.png" id="12_homu11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_06.png" id="13_homu12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_07.png" id="14_homu13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_00.png" id="1_ah1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_01.png" id="2_ah2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_02.png" id="3_ah3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_03.png" id="4_ah4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_04.png" id="5_ah5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_05.png" id="6_ah6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_00.png" id="7_ah7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_01.png" id="8_ah8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_02.png" id="9_ah9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_03.png" id="10_ah10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_04.png" id="11_ah11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_05.png" id="12_ah12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_00.png" id="13_ah13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_01.png" id="14_ah14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_02.png" id="15_ah15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_03.png" id="16_ah16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_04.png" id="17_ah17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_05.png" id="18_ah18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_06.png" id="19_ah19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_07.png" id="20_ah20"]
 
 [resource]
-animations = [{
+animations = [
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("1_homu0")
+"texture": ExtResource("1_ah1")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("2_homu1")
+"texture": ExtResource("2_ah2")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("3_homu2")
+"texture": ExtResource("3_ah3")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("4_homu3")
+"texture": ExtResource("4_ah4")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("5_homu4")
+"texture": ExtResource("5_ah5")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("6_homu5")
+"texture": ExtResource("6_ah6")
 }
 ],
 "loop": false,
 "name": &"attack",
 "speed": 14.0
-}, {
+},
+{
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("7_homu6")
+"texture": ExtResource("1_ah1")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("8_homu7")
+"texture": ExtResource("2_ah2")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("9_homu8")
+"texture": ExtResource("3_ah3")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("10_homu9")
+"texture": ExtResource("4_ah4")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("11_homu10")
+"texture": ExtResource("5_ah5")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("12_homu11")
+"texture": ExtResource("6_ah6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_ah7")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("13_homu12")
+"texture": ExtResource("8_ah8")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("14_homu13")
+"texture": ExtResource("9_ah9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_ah10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_ah11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_ah12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_ah13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ah14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_ah15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_ah16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_ah17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ah18")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_ah19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_ah20")
 }
 ],
 "loop": true,
 "name": &"move",
 "speed": 12.0
-}]
+}
+]

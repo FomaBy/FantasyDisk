@@ -67,6 +67,13 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   deaths: enemies with `FullFrameBody.death` play that row before delayed
   cleanup while leaving combat groups/collisions immediately after rewards are
   emitted; missing death rows keep the existing death-ghost fallback.
+- SCRUM-380 (2026-06-14) provides the complete Design source pack for explicit
+  full-frame `death` rows: 19 entities, 114 transparent frames, row sheets,
+  manifest `docs/design/references/scrum380_death_rows/scrum380_death_rows_manifest.json`
+  and contact/readability previews. SCRUM-370 consumed all 19 rows into the
+  existing runtime SpriteFrames paths for 4 allies, 4 route elites, all 6
+  mini-elites and all 5 bosses; validation artifacts are under
+  `build/qa/animation_integrate_all_move_attack_death_states/`.
 
 ## Player Motion
 
@@ -105,8 +112,8 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - `enemy.gd` передает elite phases в rig как animation variant `<elite_behavior>:<elite_attack_id>:<phase>` вместе с backend duration. `cutout_rig_2d.gd` держит pose layer для `iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`; VFX и damage остаются в backend/effects layer.
 - SCRUM-368 (2026-06-14) перевел route elites `iron_bastion`, `night_stalker` и `plague_prophet` на production full-frame SpriteFrames через `FullFrameAnimationRegistry` kind `elite`. У каждой элитки есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и `attack_*` validator aliases. Backend phase variants (`<elite_behavior>:<attack_id>:<phase>`) резолвятся в соответствующую accepted skill row без изменения damage/VFX timing.
 - SCRUM-371 (2026-06-14) добавил тот же production full-frame contract для `shard_marshal`: `move`, `attack`/`attack_primary`, `skill_shard_fan`, `skill_command_pulse` и matching `attack_*` aliases; backend phase `shard_marshal:shard_fan:*` визуально резолвится в `skill_shard_fan`.
-- SCRUM-376 (2026-06-14) подключил full-frame contract для всех mini-elites через SCRUM-372 `mini_elite_kind` visual-id hook: `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`. У каждого есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и matching `attack_*` aliases; missing mini-specific frames fallback'аются на base `elite_behavior`.
-- SCRUM-377 (2026-06-14) подключил full-frame contract для боссов `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`: `move`, `attack`/`attack_primary`, две 6f `skill_*` строки и matching `attack_*` aliases. SCRUM-378 добавил Back-end visual-only hooks: boss callbacks запрашивают matching `skill_*` state через `FullFrameAnimationRegistry`, а damage/VFX timing/targeting/cooldowns остаются прежними.
+- SCRUM-376 (2026-06-14) подключил full-frame contract для всех mini-elites через SCRUM-372 `mini_elite_kind` visual-id hook: `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`. У каждого есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и matching `attack_*` aliases; missing mini-specific frames fallback'аются на base `elite_behavior`. SCRUM-370 добавил каждому `death` 6f one-shot.
+- SCRUM-377 (2026-06-14) подключил full-frame contract для боссов `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`: `move`, `attack`/`attack_primary`, две 6f `skill_*` строки и matching `attack_*` aliases. SCRUM-378 добавил Back-end visual-only hooks: boss callbacks запрашивают matching `skill_*` state через `FullFrameAnimationRegistry`, а damage/VFX timing/targeting/cooldowns остаются прежними. SCRUM-370 добавил `death` 6f one-shot rows для всех 5 boss SpriteFrames.
 - SCRUM-372 (2026-06-14) добавил visual-only hook для мини-элиток: если elite instance имеет meta `mini_elite_kind` и `FullFrameAnimationRegistry.sprite_frames_for("elite", mini_elite_kind)` существует, runtime выбирает именно этот full-frame visual ID. Если SpriteFrames для mini-kind еще нет, сохраняется прежний fallback на `elite_behavior` route-элитки.
 
 ## Summon / Ally Motion
@@ -116,6 +123,8 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `homunculus`, and `leadership_echo` use full-frame SpriteFrames on the
   existing runtime paths. Each has `move` 8f/12fps loop and runtime `attack`
   6f/14fps non-loop, recorded as `attack_primary` in the skill manifest.
+- SCRUM-370 adds ally `death` rows to those same SpriteFrames paths:
+  6 frames at 10fps, non-loop, with static `ally_*.png` fallback unchanged.
 - `FullFrameAnimationRegistry` owns visual-only SpriteFrames lookup/placement for
   allies and keeps static `ally_*.png` sprites as fallback. Gameplay damage,
   targeting, command mode, lifetime, and summon role scaling remain in

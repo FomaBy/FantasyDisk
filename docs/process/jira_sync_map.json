@@ -1607,7 +1607,7 @@
  "animation_integrate_all_move_attack_death_states_task.md": {
   "key": "SCRUM-370",
   "status": "К выполнению",
-  "desc_hash": "528a3f8f01c223c4e3186183ca6e4806"
+  "desc_hash": "0cfc8be2b94c043bbcca46cb2d1701f4"
  },
  "animation_shard_marshal_full_frame_integration_task.md": {
   "key": "SCRUM-371",
@@ -1771,8 +1771,8 @@
  },
  "bug_victory_flow_runtime_smoke_text_missing_task.md": {
   "key": "SCRUM-385",
-  "status": "В работе",
-  "desc_hash": "0af7ad44488452852d094344926609d3"
+  "status": "Контроль качества",
+  "desc_hash": "e267636f03ae223cdb4d80569671bb90"
  },
  "bug_runtime_smoke_victory_text_race_after_death_animation_task.md": {
   "key": "SCRUM-386",

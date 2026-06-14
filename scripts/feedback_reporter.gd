@@ -8,6 +8,7 @@ const CONFIG_SECTION := "feedback"
 const WEBHOOK_KEY := "webhook_url"
 const LOCAL_ROOT := "user://feedback"
 const ENV_WEBHOOK := "FANTASYDISK_FEEDBACK_WEBHOOK"
+const SCREENSHOT_FILENAME := "fantasydisk_feedback.png"
 
 var _pending_text := ""
 var _pending_metadata := {}
@@ -61,14 +62,17 @@ static func discord_content(text: String, metadata: Dictionary) -> String:
 
 static func multipart_payload(text: String, screenshot: Image, metadata: Dictionary, boundary: String) -> PackedByteArray:
 	var body := PackedByteArray()
-	var payload_json := JSON.stringify({"content": discord_content(text, metadata)})
+	var payload_json := JSON.stringify({
+		"content": discord_content(text, metadata),
+		"attachments": [{"id": 0, "filename": SCREENSHOT_FILENAME}],
+	})
 	_append_utf8(body, "--%s\r\n" % boundary)
 	_append_utf8(body, "Content-Disposition: form-data; name=\"payload_json\"\r\n")
 	_append_utf8(body, "Content-Type: application/json\r\n\r\n")
 	_append_utf8(body, "%s\r\n" % payload_json)
 
 	_append_utf8(body, "--%s\r\n" % boundary)
-	_append_utf8(body, "Content-Disposition: form-data; name=\"files[0]\"; filename=\"fantasydisk_feedback.png\"\r\n")
+	_append_utf8(body, "Content-Disposition: form-data; name=\"files[0]\"; filename=\"%s\"\r\n" % SCREENSHOT_FILENAME)
 	_append_utf8(body, "Content-Type: image/png\r\n\r\n")
 	body.append_array(_normalized_screenshot(screenshot).save_png_to_buffer())
 	_append_utf8(body, "\r\n--%s--\r\n" % boundary)

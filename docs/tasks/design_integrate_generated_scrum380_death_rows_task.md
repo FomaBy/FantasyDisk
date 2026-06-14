@@ -1,11 +1,11 @@
 # Задача Для Design-Агента: Внедрить сгенерированный ассет scrum380 death rows
 
-Статус: new
+Статус: done
 Создано: 2026-06-14
 Автор: Codex asset generator
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
 Версия: 0.1.5
-Jira: pending sync
+Jira: covered by SCRUM-380
 
 ## Autonomy / Approval
 Пользователь заранее одобрил изменения в рамках этой задачи. Работать автономно, не ждать дополнительных подтверждений.
@@ -36,3 +36,16 @@ FantasyDisk Dungeons and Dragons dark fantasy transparent sprite sheet reference
 - [ ] Не тронуты `.import` файлы без необходимости.
 - [ ] При runtime-интеграции пройдены релевантные Godot smoke/UI checks.
 - [ ] Jira и task-файл синхронизированы после смены статуса.
+
+## Result — 2026-06-14
+
+Covered by SCRUM-380 `design_full_frame_death_rows_allies_elites_bosses_task.md`. The generated reference was accepted into the full 19-entity death-row pass, postprocessed to transparent runtime frames/row sheets, validated, imported through Godot, and handed back to Animator through SCRUM-370.
+
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (covered by SCRUM-380)
+
+Генератор-стаб death-row референса. Фактический deliverable (death-ряды 19
+сущностей) произведён и **верифицирован в QA-вердикте SCRUM-380** (114 кадров,
+манифест, контакт-превью, Godot import чист). Runtime .tres-интеграция — Animator
+SCRUM-370. Не дублируется. Баги: нет.

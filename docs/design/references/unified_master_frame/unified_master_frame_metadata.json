@@ -1,5 +1,6 @@
 {
-  "task": "SCRUM-373",
+  "task": "SCRUM-384",
+  "supersedes_task": "SCRUM-373 visual frame thickness revision",
   "assets": {
     "master_frame": "assets/sprites/ui/frames/unified/ui_frame_unified_master.png",
     "master_frame_with_fill": "assets/sprites/ui/frames/unified/ui_frame_unified_master_fill.png",
@@ -8,27 +9,28 @@
     "ornament_bottom": "assets/sprites/ui/frames/unified/ui_frame_unified_ornament_bottom.png",
     "hover_overlay": "assets/sprites/ui/frames/unified/ui_frame_unified_hover_overlay.png"
   },
+  "reference": "docs/design/references/unified_master_frame/thin_metallic_unified_frame_reference.png",
   "source_size": [
     1024,
     1024
   ],
   "texture_margins": {
-    "left": 128,
-    "top": 128,
-    "right": 128,
-    "bottom": 128
+    "left": 72,
+    "top": 72,
+    "right": 72,
+    "bottom": 72
   },
   "content_margins": {
-    "left": 132,
-    "top": 132,
-    "right": 132,
-    "bottom": 132
+    "left": 88,
+    "top": 88,
+    "right": 88,
+    "bottom": 88
   },
   "strict_safe_rect": [
-    132,
-    132,
-    760,
-    760
+    88,
+    88,
+    848,
+    848
   ],
   "axis_stretch_horizontal": "tile",
   "axis_stretch_vertical": "tile",
@@ -36,7 +38,8 @@
     "false with separate inner_fill",
     "true only for master_fill variant"
   ],
-  "ornaments": "Use top/bottom ornament overlays only on large panels/windows; never on compact tooltips/HUD/buttons.",
-  "hover_recommendation": "Prefer runtime modulate/contrast shader on master_frame; hover_overlay is optional fallback.",
-  "rule": "No runtime content on border/corners/ornaments; content must stay inside strict_safe_rect scaled from source."
+  "ornaments": "Top/bottom dragon overlays are separate optional assets for large panels only. Do not bake ornaments into 9-slice stretch zones; never place content on them.",
+  "red_gems": "Small corner gemstones are part of the non-stretched corner zones.",
+  "rule": "No runtime content on border/corners/gems/dragon ornaments/metal. Content must stay inside strict_safe_rect scaled from source.",
+  "backup": "build/qa/scrum384/backups/"
 }
