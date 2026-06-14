@@ -3409,22 +3409,22 @@ func _update_level_up_button() -> void:
 		return
 
 	if game.level_up_button == null or not is_instance_valid(game.level_up_button):
-		# Заметная кнопка возврата внизу по центру: непотраченные пики не теряются.
+		# SCRUM-278: corner return button keeps unspent picks visible without blocking center combat.
 		game.level_up_button = Button.new()
 		game.level_up_button.name = "LevelUpPlusButton"
 		game.level_up_button.process_mode = Node.PROCESS_MODE_ALWAYS
-		game.level_up_button.anchor_left = 0.5
-		game.level_up_button.anchor_right = 0.5
+		game.level_up_button.anchor_left = 1.0
+		game.level_up_button.anchor_right = 1.0
 		game.level_up_button.anchor_top = 1.0
 		game.level_up_button.anchor_bottom = 1.0
-		game.level_up_button.offset_left = -190.0
-		game.level_up_button.offset_right = 190.0
+		game.level_up_button.offset_left = -412.0
+		game.level_up_button.offset_right = -28.0
 		game.level_up_button.offset_top = -130.0
 		game.level_up_button.offset_bottom = -26.0
 		_set_action_button_size(game.level_up_button, 380.0)
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
 		game.level_up_button.add_theme_font_size_override("font_size", 22)
-		_apply_fantasy_button_theme(game.level_up_button, "level_up")
+		_apply_static_level_up_return_button_theme(game.level_up_button)
 		game.level_up_button.pressed.connect(_open_pending_level_up)
 		level_button_parent.add_child(game.level_up_button)
 
@@ -3454,6 +3454,7 @@ func _update_level_up_button() -> void:
 		badge_panel.add_child(badge)
 
 	game.level_up_button.text = "Повышение уровня (%d)" % game.pending_level_ups
+	game.level_up_button.modulate = Color(1.0, 1.0, 1.0, 1.0)
 	var badge_label := game.level_up_button.find_child("LevelUpPlusBadge", true, false) as Label
 	if badge_label != null:
 		badge_label.text = str(game.pending_level_ups)
@@ -4281,6 +4282,31 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.45, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+func _apply_static_level_up_return_button_theme(button: Button) -> void:
+	var style := _level_up_return_button_style()
+	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
+		button.add_theme_stylebox_override(state, style)
+	button.add_theme_color_override("font_color", Color(1.0, 0.92, 0.58, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.58, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(1.0, 0.92, 0.58, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 0.92, 0.58, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.78, 0.70, 0.48, 1.0))
+	button.modulate = Color(1.0, 1.0, 1.0, 1.0)
+
+
+func _level_up_return_button_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.18, 0.035, 0.025, 1.0)
+	style.border_color = Color(0.96, 0.72, 0.24, 1.0)
+	style.set_corner_radius_all(12)
+	style.set_border_width_all(3)
+	style.content_margin_left = 24
+	style.content_margin_top = 14
+	style.content_margin_right = 24
+	style.content_margin_bottom = 14
+	return style
 
 
 func _button_role(button: Button, variant := "default") -> String:

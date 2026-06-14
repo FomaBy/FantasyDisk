@@ -1,6 +1,6 @@
 # ART: Заменить фреймы экрана выбора героя на набор references/herouiframe
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5

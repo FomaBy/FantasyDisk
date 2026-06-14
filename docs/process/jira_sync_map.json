@@ -925,7 +925,7 @@
  },
  "backend_monster_elite_size_balance_rework_task.md": {
   "key": "SCRUM-260",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_codex_elite_boss_new_skills_vfx_task.md": {
   "key": "SCRUM-261",
@@ -1001,6 +1001,6 @@
  },
  "design_hero_select_replace_frames_herouiframe_task.md": {
   "key": "SCRUM-281",
-  "status": "К выполнению"
+  "status": "В работе"
  }
 }

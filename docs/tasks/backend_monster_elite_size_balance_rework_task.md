@@ -89,3 +89,27 @@ Verification:
 - `global_damage_balance_smoke_test.gd` — passed;
 - `global_survivability_balance_smoke_test.gd` — passed;
 - `runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: e09d679e (ветка dev)
+
+Проверено (фактически, на зелёном HEAD после стабилизации дерева):
+- **Размеры data-driven**: профили mini_elite 1.05 / route elite 1.68 / boss 1.90
+  (мини-элитки меньше, карточные элитки крупнее, босс крупнее всех).
+- **Целевой тест** `runtime_smoke_boss_elite_test` — passed (включает
+  `_test_epic_elite_boss_scale_hitbox` — согласованность хитбоксов/contact/HP-бар
+  с новым размером); api_surface — passed.
+- **Баланс в коридоре**: `global_damage_balance` (51 пара) + `global_survivability`
+  — зелёные; runtime — зелёный.
+
+Acceptance:
+- [x] Мини-элитки меньше, карточные элитки крупнее/страшнее, босс крупнее всех.
+- [x] Размеры data-driven; хитбоксы/бары согласованы (scale-hitbox тест).
+- [x] Баланс в коридорах; smoke зелёные.
+
+Примечание: первичный QA-прогон ловил падения boss_elite/runtime — это была
+ТРАНЗИЕНТНАЯ churn активного воркера SCRUM-273 (кит кнопок, mid-edit ui_screens.gd),
+НЕ дефект SCRUM-260. После коммита кита билд зелёный, перепроверено.
+
+Баги: нет.
