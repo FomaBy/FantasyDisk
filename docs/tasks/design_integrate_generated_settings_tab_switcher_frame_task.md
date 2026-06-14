@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Внедрить сгенерированный фрейм вкладок настроек
 
-Статус: new
+Статус: in_progress
 Создано: 2026-06-14
 Автор: Codex asset generator workflow
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
@@ -59,3 +59,8 @@ D&D + Dark Fantasy settings tab switcher frame for FantasyDisk. Four connected t
 Передано в Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` по запросу пользователя:
 дизайнер должен принять/доработать новый вид tabs для настроек, перенести финальный
 PNG в runtime assets и зафиксировать content-zone/safe-area для Back-end/QA.
+
+## Progress Log
+
+- 2026-06-14: взято в работу Design/Codex на ветке `dev`; начат art review
+  reference/transparent/preview, с обязательной проверкой content-zone правила.

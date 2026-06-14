@@ -1105,7 +1105,7 @@
  },
  "design_integrate_generated_settings_tab_switcher_frame_task.md": {
   "key": "SCRUM-325",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "art_ui_overhaul_combat_hud_task.md": {
   "key": "SCRUM-326",
@@ -1133,6 +1133,10 @@
  },
  "art_ui_overhaul_shop_economy_task.md": {
   "key": "SCRUM-332",
+  "status": "К выполнению"
+ },
+ "backend_hero_select_redesign_master_layout_task.md": {
+  "key": "SCRUM-333",
   "status": "К выполнению"
  }
 }
