@@ -618,6 +618,16 @@ Design visual kit/spec для всех артефактов, shop-only пред�
 
 Back-end integration complete: `scripts/ui_screens.gd` сначала ищет финальные PNG по mapping из visual kit, а если их нет, временно использует осмысленный fallback через `scripts/ui_icon_registry.gd` по эффекту предмета. На 2026-06-11 фактические artifact/shop/cursor PNG готовы и импортированы, поэтому fallback остается только fail-safe.
 
+SCRUM-338 reward-screen Design kit готов к runtime-подключению: отдельные
+карточки наград боя и артефактной награды элитки лежат в
+`assets/sprites/ui/frames/rewards/` как `ui_frame_reward_card*.png` и
+`ui_frame_reward_elite_artifact_card*.png` (`768x1024`, transparent RGBA). Это
+Design-only результат; runtime подключение `_show_reward_screen` и
+`_show_elite_artifact_reward` передано Back-end в
+`docs/tasks/backend_reward_screens_per_reward_frames_integration_task.md`, чтобы
+логика наград не менялась в Design-чате. Safe-zone metadata:
+`docs/design/references/rewards/reward_frames_scrum338_metadata.json`.
+
 Level-up показывает 3 фиксированных варианта на каждый полученный уровень: обычные улучшения оружия/параметров и очень редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с визуальной rare-пометкой. Вес обычных наград считается от единого источника `ProgressionData.ATTRIBUTE_PRIORITIES` и зависимости награды от базовой характеристики: профильные параметры класса выпадают чаще, но у каждого варианта есть floor. Один уровень дает ровно один выбор; если накопилось несколько уровней, окна открываются последовательно. Окно можно закрыть через «Позже» без потери выбора: тот же набор остается в `level_up_offer`, а нижняя SCRUM-390 plus-кнопка с pending-бейджем возвращает игрока к сохраненному пику. Level-up и докачка атрибутов показывают иконки через `UIIconRegistry` и добавляют текст «Интерпретация» для выбранного героя. Артефакты с `class_affinity` больше не считаются нерабочими для чужого класса: affinity теперь описывает тематику, а `affinity_mods` применяются через интерпретацию текущего героя.
 
 ## Ультимейты

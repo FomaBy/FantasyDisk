@@ -29,6 +29,10 @@
   mapping without network.
 
 ### Added
+- Reward frame kit (SCRUM-338): generated Design-ready D&D/dark-fantasy reward
+  card frames for battle rewards and elite artifact rewards, with transparent
+  `768x1024` production PNGs, hover variants, source references, strict
+  safe-zone metadata, contact preview and Back-end integration handoff.
 - Artifact icon regeneration (SCRUM-340): recreated all 53
   `assets/sprites/ui/icons/artifacts/artifact_<id>.png` files through
   `fantasydisk-asset-generator` / OpenAI Images as transparent 256px

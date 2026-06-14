@@ -1,12 +1,13 @@
 # ART/UX: Редизайн наград за уровень (обычный/элитка) — каждая награда в своём фрейме
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-338
+QA: in_progress (2026-06-14)
 Связано: SCRUM-328 (UI Overhaul: повышение/награды), SCRUM-327 (опорная стиля),
 SCRUM-324 (asset-skill)
 
@@ -102,3 +103,92 @@ provides an approved alternative generation source.
 
 ## Разблокировано 2026-06-14 (PM)
 Биллинг OpenAI восстановлен и ПРОВЕРЕН: тестовая генерация gpt-image-2 успешна. Блок `billing_hard_limit_reached` устарел — снят. Можно генерить скиллом.
+
+## Progress Log
+- 2026-06-14 — Started Design execution. Previous billing blocker is obsolete after SCRUM-340 successful `fantasydisk-asset-generator` run. Scope kept to Design assets, safe-zone metadata, previews and Back-end handoff for runtime layout integration.
+- 2026-06-14 — Design assets completed. Generated two source frames through
+  `fantasydisk-asset-generator` / OpenAI Images and built four production RGBA
+  PNGs for battle reward and elite artifact reward card states. Runtime code was
+  not changed; integration is handed off to Back-end.
+
+## Result Summary
+
+Design-ready reward frame kit:
+
+- `assets/sprites/ui/frames/rewards/ui_frame_reward_card.png`
+- `assets/sprites/ui/frames/rewards/ui_frame_reward_card_hover.png`
+- `assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card.png`
+- `assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card_hover.png`
+
+Source references:
+
+- `docs/design/references/rewards/reward_card_common_source.png`
+- `docs/design/references/rewards/reward_card_elite_artifact_source.png`
+- `docs/design/references/rewards/reward_frames_scrum338_metadata.json`
+
+Preview / QA:
+
+- `docs/design/previews/reward_frames_scrum338_sources_contact.png`
+- `docs/design/previews/reward_frames_scrum338_contact_safe_zones.png`
+
+Safe-zone contract:
+
+- `reward_card`: source `768x1024`, texture margins `Vector4(96, 112, 96, 112)`,
+  content margins `Vector4(132, 170, 132, 164)`.
+- `reward_elite_artifact_card`: source `768x1024`, texture margins
+  `Vector4(108, 130, 108, 130)`, content margins
+  `Vector4(150, 202, 150, 190)`.
+
+Verification:
+
+- PNG validation PASS: 4/4 production reward frames are `768x1024` RGBA with
+  transparent corners and non-empty alpha.
+- Godot import PASS.
+- Visual safe-zone preview PASS: content rectangles stay inside dark center
+  fields and away from border gems, crests, metal, spikes and bottom ornaments.
+- `tests/ui_no_overlap_matrix_test.gd` PASS on current runtime.
+- `tests/runtime_smoke_test.gd` PASS on current runtime.
+- Design QA report: `build/qa/scrum338/reward_frame_design_qa.md`.
+
+Back-end handoff:
+
+- `docs/tasks/backend_reward_screens_per_reward_frames_integration_task.md`
+  created for runtime StyleBoxTexture constants, `_show_reward_screen` /
+  `_show_elite_artifact_reward` integration and actual no-overlap/smoke checks.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: reward frame kit + safe-zone metadata + Back-end handoff)
+
+Проверено (фактически):
+- **4 reward-фрейма** (`assets/sprites/ui/frames/rewards/`): `reward_card` +
+  hover, `reward_elite_artifact_card` + hover — все `768×1024` RGBA, прозрачные
+  углы (corner_alpha=0), непустая alpha (≈571k–619k opaque px). 4 `.import`
+  sidecars, Godot import без ошибок.
+- **Safe-zone metadata** `reward_frames_scrum338_metadata.json`: content margins
+  ≥ texture margins на обоих ассетах (reward content [132,170,132,164] ≥ tex
+  [96,112,96,112]; elite content [150,202,150,190] ≥ tex [108,130,108,130]) —
+  глобальное правило фреймов соблюдено.
+- **Визуал** `reward_frames_scrum338_contact_safe_zones.png`: 4 фрейма в D&D Dark
+  Fantasy Dragon стиле (elite — фиолетовый «эпичный»/редкий вариант, отличает
+  ценность); content-rect внутри тёмного поля, не на орнаменте/самоцветах/гребнях;
+  3-up раскладки (битва/элитка) — карточки не накладываются. Source-контакт +
+  2 source PNG + metadata.
+- **Тесты** (текущий рантайм): `ui_no_overlap_matrix_test` +
+  `runtime_smoke_ui_test` + `runtime_smoke_test` — все passed. Рантайм
+  `scripts/ui_screens.gd` не тронут (Design-only).
+- **Back-end handoff** `backend_reward_screens_per_reward_frames_integration_task.md`
+  создан (статус **«new»**).
+
+⚠️ **Видимый редизайн экранов наград (3 карточки в фреймах + элитка) ещё НЕ в
+рантайме**: требует интеграции `_show_reward_screen` / `_show_elite_artifact_reward`
+со StyleBoxTexture-константами — Back-end задача («new»), вне Design-scope.
+Проверю live-no-overlap на 3 разрешениях при готовности интеграции.
+
+Acceptance (Design-scope):
+- [x] Reward-фреймы созданы скиллом в едином D&D dragon-стиле (4 PNG: common+elite, normal+hover).
+- [x] Elite — отдельный более эпичный фрейм (фиолетовый), отличает ценность.
+- [x] Content margins ≥ окантовки; safe-zone превью (контент в зоне, карточки не накладываются).
+- [x] Текущие no-overlap/runtime/ui smoke зелёные; Back-end handoff с metadata.
+- [~] Live 3-карточная раскладка + no-overlap на 1280/1920/2560 — Back-end integration.
+
+Статус review→done (Design-source). Баги: нет (видимая интеграция — delegated Back-end).

@@ -1446,8 +1446,8 @@
  },
  "design_reward_screens_redesign_per_reward_frames_task.md": {
   "key": "SCRUM-338",
-  "status": "В работе",
-  "desc_hash": "ee0cb95f7ec66302d2ffd141b908ca24"
+  "status": "Готово",
+  "desc_hash": "01911ab23485b0edc1066b35f059fe3c"
  },
  "backend_shop_reentry_until_next_level_task.md": {
   "key": "SCRUM-339",
@@ -1938,5 +1938,10 @@
   "key": "SCRUM-403",
   "status": "Готово",
   "desc_hash": "171e967268126c2cafcd2bbe12850d63"
+ },
+ "backend_reward_screens_per_reward_frames_integration_task.md": {
+  "key": "SCRUM-404",
+  "status": "В работе",
+  "desc_hash": "fe59604967f52c712590cffcf5f92654"
  }
 }

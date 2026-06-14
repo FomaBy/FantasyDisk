@@ -184,6 +184,18 @@ SCRUM-258 unique weapon VFX pass 2026-06-14: добавлены 51 dedicated `25
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
 
+Reward frame kit SCRUM-338 (Design-ready, Back-end integration handoff):
+`assets/sprites/ui/frames/rewards/ui_frame_reward_card.png`,
+`ui_frame_reward_card_hover.png`,
+`ui_frame_reward_elite_artifact_card.png`,
+`ui_frame_reward_elite_artifact_card_hover.png` (`768x1024`, RGBA,
+transparent). Source references and safe-zone metadata:
+`docs/design/references/rewards/reward_frames_scrum338_metadata.json`; QA preview:
+`docs/design/previews/reward_frames_scrum338_contact_safe_zones.png`. Runtime
+content must stay inside documented content margins: battle reward card
+`Vector4(132, 170, 132, 164)`, elite artifact card
+`Vector4(150, 202, 150, 190)`.
+
 Уникальные атаки элиток (имена зафиксированы для Back-end интеграции, не переименовывать):
 
 | Файл | Размер | Назначение | Статус |

@@ -136,6 +136,18 @@ HP/XP/money/ultimate/timer logic unchanged and keeps labels, icons, bars,
 badges, plus glyph and click/focus zones inside the recorded content zones; QA
 runtime rect dumps live in `build/qa/scrum390/`.
 
+SCRUM-338 adds a Design-ready **reward card frame kit** for battle reward and
+elite artifact reward screens. Assets live in `assets/sprites/ui/frames/rewards/`:
+`ui_frame_reward_card.png`, `ui_frame_reward_card_hover.png`,
+`ui_frame_reward_elite_artifact_card.png` and
+`ui_frame_reward_elite_artifact_card_hover.png`. Each is `768x1024` RGBA with
+transparent corners, a dark empty content field and ornate D&D/dark-fantasy
+metal border. Source and runtime margins live in
+`docs/design/references/rewards/reward_frames_scrum338_metadata.json`; Back-end
+must keep reward text, icons, buttons, hover/focus hit areas and artifact tier
+labels inside those content margins. Runtime integration is handed off in
+`docs/tasks/backend_reward_screens_per_reward_frames_integration_task.md`.
+
 SCRUM-281 adds a screen-specific **Hero Select frame kit** from
 `docs/design/references/herouiframe/`. It is used only by `HeroSelectScreen`,
 because the portrait/dossier/radar ornaments need custom safe areas. Live
