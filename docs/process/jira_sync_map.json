@@ -1786,8 +1786,8 @@
  },
  "animation_sprite_sheet_safe_slicing_audit_task.md": {
   "key": "SCRUM-387",
-  "status": "Контроль качества",
-  "desc_hash": "f187ef5cc74c97b16d900bd800f96e6a"
+  "status": "Готово",
+  "desc_hash": "a11d18f4f8f108014988a9669449a1e6"
  },
  "backend_meta_points_per_new_ascension_only_task.md": {
   "key": "SCRUM-388",
@@ -1843,5 +1843,10 @@
   "key": "SCRUM-393",
   "status": "К выполнению",
   "desc_hash": "37f3af2835e3e428d6e5176c0f80b93f"
+ },
+ "design_integrate_generated_backgrounds_6_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "9125c1e9400db954a9e191f6bb8ec2cf"
  }
 }

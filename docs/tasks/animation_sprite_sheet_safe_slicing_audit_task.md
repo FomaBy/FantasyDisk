@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-387
+QA: in_progress (2026-06-14)
 Связано: SCRUM-350, SCRUM-353, SCRUM-370, SCRUM-380
 
 ## Autonomy / Approval
@@ -152,3 +153,30 @@ python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/
 
 `runtime_smoke_test.gd` was not required because this task did not change
 runtime registry, scenes, shared scripts, or gameplay resources.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (read-only safe-slicing аудит)
+
+Проверено (фактически):
+- **Отчёт** `docs/design/reviews/animation_safe_slicing_audit_2026_06.md` +
+  JSON-артефакты `runtime_frame_audit.json` + `source_sheet_audit.json` — на месте.
+- **Runtime безопасен**: `runtime_green_edge_frames=0`, `green_edge_pixels=0` —
+  0 chroma-остатков на crop-edge; отчёт фиксирует 0 neighbor-frame/crop-edge
+  захватов, 0 edge-touching (runtime-кадры — отдельные PNG, не runtime-нарезка →
+  захват соседей неприменим). Покрыто: 30 SpriteFrames, 794 PNG, 45 source-листов.
+- **Source-несоответствие → Design handoff**: 45 source-листов имеют 0px gutter/
+  padding vs новый 24px-стандарт (256² ячейки) — это Design-source compliance, не
+  Animator runtime-фикс. Handoff `design_animation_source_sheets_safe_gutters_task.md`
+  создан (статус «new»). Не runtime-блокер (runtime использует отдельные PNG).
+- **Манифест-валидатор** (skill, с `frame_gutter_px`/`outer_padding_px`/
+  `safe_slicing_checked`): «OK: 30 entities». `animation_smoke_test` — passed.
+- runtime_smoke не требовался (аудит не менял runtime registry/scenes/scripts).
+
+Acceptance:
+- [x] Отчёт с проверенными assets/дефектами/исправлениями/handoff.
+- [x] Все runtime SpriteFrames/source проверены на neighbor-bleed/edge-artifacts.
+- [x] Безопасные Animator-дефекты исправлены (0 runtime-дефектов → нечего чинить; без scale/pivot-регрессии).
+- [x] Не-Animator дефекты (source gutters) → Design handoff.
+- [x] Манифест с safe-slicing полями; валидатор + animation_smoke зелёные.
+
+Баги: нет. Source-gutter compliance отслеживается отдельным Design-таском (не блокер).
