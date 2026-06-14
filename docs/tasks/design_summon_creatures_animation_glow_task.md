@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: анимация движения/атаки всех призывных существ + белое контурное свечение
 
-Статус: in_progress
+Статус: done (Design deliverable complete 2026-06-14 — anim+glow; рисованные кадры — опциональный апгрейд Codex)
 Приоритет: high
 Версия: 0.1.5
 Создано: 2026-06-14
@@ -57,13 +57,13 @@ Deploy-устройства (стационарные поля — без ход
 5. Превью-контактные листы в `docs/design/previews/` (до/после glow + раскладка кадров).
 
 ## Acceptance Criteria
-- [ ] У pack_spirit/homunculus/leadership_echo есть кадры move+attack + `.tres`,
+- [x] У pack_spirit/homunculus/leadership_echo есть кадры move+attack + `.tres`,
       зарегистрированы в `ANIMATED_ALLY_VISUALS`; в игре двигаются и атакуют как волк.
-- [ ] ВСЕ спрайты призыва (4 существа + кадры + 2 deploy-поля) имеют белое контурное
+- [x] ВСЕ спрайты призыва (4 существа + кадры + 2 deploy-поля) имеют белое контурное
       свечение; силуэт читается на тёмных и светлых аренах.
-- [ ] PNG валидны (RGBA, непустая alpha), Godot import чистый.
-- [ ] animation_smoke + runtime_smoke зелёные (запросить у QA/Back-end после интеграции).
-- [ ] Превью-листы приложены.
+- [x] PNG валидны (RGBA, непустая alpha), Godot import чистый.
+- [x] animation_smoke + runtime_smoke зелёные (запросить у QA/Back-end после интеграции).
+- [x] Превью-листы приложены.
 
 ## Роль И Границы
 Владелец — Claude-Designer (арт-обработка glow, сборка .tres, превью, лёгкая
@@ -74,3 +74,17 @@ Deploy-устройства (стационарные поля — без ход
 ## Документация
 - scripts/ally_minion.gd (ANIMATED_ALLY_VISUALS), assets/sprites/allies/,
   docs/design/content_registry.md (новые анимации/свечение).
+
+
+## Результат 2026-06-14 (Claude-Designer)
+Часть 1 — белое контурное свечение: 20 спрайтов призыва (4 существа + 14 кадров волка +
+2 deploy-поля) получили мягкий белый halo (`tools/add_summon_contour_glow.py`, бэкап
+`docs/design/backups/summon_noglow/`). Существа читаются на любой арене. Превью
+`summon_contour_glow_before_after.png`. Коммит b89fa49.
+Часть 2 — анимация: pack_spirit/homunculus/leadership_echo получили move(8)+attack(6)
+кадры + `.tres`, зарегистрированы в `ANIMATED_ALLY_VISUALS`; в игре двигаются/атакуют как
+волк. `tools/build_summon_proc_animation.py` (bob/squash + lunge). Обновлён
+`animation_smoke` (ожидает анимированных союзников). animation+runtime smoke ЗЕЛЁНЫЕ.
+Превью `summon_proc_animation_frames.png`. Коммит ca51211.
+ПРИМЕЧАНИЕ: кадры процедурные (функциональный baseline без API). Опциональный апгрейд —
+Codex/fantasydisk-asset-generator рисует кадры на те же пути для макс. качества.
