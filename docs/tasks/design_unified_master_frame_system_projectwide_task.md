@@ -1,12 +1,13 @@
 # ART/UX: Единый мастер-фрейм для ВСЕХ интерфейсов (9-slice) + внедрение по проекту
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-373
+QA: in_progress (2026-06-14)
 Связано: SCRUM-327 (UI Overhaul опорная), SCRUM-324 (asset-skill), SCRUM-318 (hover без жёлтого),
 hero-select рамки (320/321/322/323/356)
 
@@ -82,3 +83,87 @@ references/, внедрить в assets/. Старые семейства рам
 
 ## Документация
 docs/design/systems/visual_style_assets.md, docs/design/systems/menus_ui.md, content_registry.
+
+## Result — 2026-06-14
+
+Design pass complete; projectwide runtime integration is handed off to Back-end.
+
+Generated through the required `fantasydisk-asset-generator` / OpenAI Images
+workflow using the secure env source outside git, then postprocessed into a
+true 9-slice-ready runtime kit:
+
+- `assets/sprites/ui/frames/unified/ui_frame_unified_master.png`
+  (`1024x1024`, RGBA, transparent frame)
+- `assets/sprites/ui/frames/unified/ui_frame_unified_master_fill.png`
+  (`1024x1024`, RGBA, full panel-fill variant)
+- `assets/sprites/ui/frames/unified/ui_frame_unified_inner_fill.png`
+  (`256x256`, RGBA, center fill tile)
+- `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_top.png`
+  (`204x150`, RGBA, optional large-panel overlay)
+- `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_bottom.png`
+  (`204x150`, RGBA, optional large-panel overlay)
+- `assets/sprites/ui/frames/unified/ui_frame_unified_hover_overlay.png`
+  (`1024x1024`, RGBA, optional fallback overlay)
+
+Reference, metadata and previews:
+
+- `docs/design/references/unified_master_frame/ui_frame_unified_master_reference.png`
+- `docs/design/references/unified_master_frame/ui_frame_unified_master_reference_alpha_clean.png`
+- `docs/design/references/unified_master_frame/unified_master_frame_metadata.json`
+- `docs/design/previews/unified_master_frame_9slice_contact.png`
+- `docs/design/previews/unified_master_frame_safe_zone.png`
+- `build/qa/scrum373/unified_master_frame_design_qa.md`
+
+Runtime spec for Back-end:
+
+- source size: `1024x1024`
+- texture margins: `128/128/128/128`
+- content margins: `132/132/132/132`
+- strict safe rect: `Rect2(132, 132, 760, 760)`
+- horizontal/vertical stretch: tile, not one-axis stretch
+- optional top/bottom ornaments only for large panels/windows
+- hover/focus should prefer runtime modulate/contrast; overlay is fallback only
+
+Back-end handoff created:
+
+- `docs/tasks/backend_unified_master_frame_system_projectwide_integration_task.md`
+
+Validation:
+
+- Pillow dimension/alpha checks passed for all runtime assets and previews.
+- Godot headless import passed for all SCRUM-373 assets/references/previews.
+- Runtime smoke/no-overlap/projectwide replacement are intentionally delegated
+  to Back-end because they require UI builder/theme path integration and screen
+  layout updates.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: 9-slice мастер-фрейм кит + спека + Back-end handoff)
+
+Проверено (фактически):
+- **6 ассетов** (skill `fantasydisk-asset-generator`): `master.png` 1024² RGBA
+  прозрачный (alpha 0-255), `ornament_top/bottom` 204×150 RGBA прозрачные,
+  `hover_overlay` 1024² RGBA; `master_fill`/`inner_fill` намеренно непрозрачны
+  (это фон-заливки, не рамка — корректно). Godot import чист.
+- **Метаданные** `unified_master_frame_metadata.json`: source 1024², texture_margins
+  128, content_margins 132, `strict_safe_rect [132,132,760,760]`,
+  `axis_stretch H/V = tile` (НЕ one-axis stretch), draw_center/ornament/hover-правила,
+  content-safe-zone правило — полная 9-slice спека для Back-end.
+- **Визуал** `unified_master_frame_9slice_contact.png` (+ safe_zone): орнаментальные
+  углы + тайлящиеся края H/V + опц. фон + опц. верх/низ орнаменты (D&D dark-fantasy),
+  масштабируется без искажений на разных размерах.
+- **Back-end handoff** `backend_unified_master_frame_system_projectwide_integration_task.md`
+  / SCRUM-382 создан.
+
+⚠️ **Проектная интеграция (централизация 12 GLOBAL_*_FRAME_PATH → один билдер +
+замена единым фреймом по ВСЕМ экранам + бэкап старых 9 семейств) ещё НЕ в рантайме**:
+это Back-end задача SCRUM-382 (статус **«new»**), явно вне Design-scope. runtime/
+no-overlap по экранам — после интеграции.
+
+Acceptance (фактическое состояние):
+- [x] Единый 9-slice мастер-фрейм (углы + тайл-края H/V + опц. фон/центр.орнаменты/hover) скиллом.
+- [~] Код-централизация (12 путей→один) + внедрение по всем экранам — Back-end SCRUM-382 («new»).
+- [~] runtime/no-overlap по экранам — после интеграции (382).
+- [x] Контактлист фрейма + safe-zone превью + метаданные/спека; Godot import чист.
+
+Вывод: Design-деливерабл (кит + 9-slice спека + handoff) выполнен. Видимое проектное
+внедрение — гейтится SCRUM-382. Статус review→done. Баги: нет.

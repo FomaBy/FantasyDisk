@@ -497,6 +497,11 @@ SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon ki
 | `ui_hud_panel_frame` | `assets/sprites/ui/frames/global/ui_hud_panel_frame.png` | Боевой HUD panel |
 | `ui_hud_card_frame` | `assets/sprites/ui/frames/global/ui_hud_card_frame.png` | HP/XP/money HUD cards |
 | `ui_tooltip_frame` | `assets/sprites/ui/frames/global/ui_tooltip_frame.png` | Generic tooltip/system panel frame |
+| `ui_frame_unified_master` | `assets/sprites/ui/frames/unified/ui_frame_unified_master.png` | SCRUM-373 design-ready projectwide master frame border, `1024x1024` RGBA, transparent center; use 9-slice tile margins `128/128/128/128`, content margins `132/132/132/132`, strict safe rect `[132,132,760,760]`; Back-end integration pending in `backend_unified_master_frame_system_projectwide_integration_task.md` |
+| `ui_frame_unified_master_fill` | `assets/sprites/ui/frames/unified/ui_frame_unified_master_fill.png` | SCRUM-373 full panel-fill variant for rectangular surfaces where an opaque fill is acceptable |
+| `ui_frame_unified_inner_fill` | `assets/sprites/ui/frames/unified/ui_frame_unified_inner_fill.png` | SCRUM-373 `256x256` center fill tile for unified frame panels |
+| `ui_frame_unified_ornament_top_bottom` | `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_top.png`, `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_bottom.png` | SCRUM-373 optional large-window ornaments only; do not use on compact HUD, tooltip, chip or button surfaces |
+| `ui_frame_unified_hover_overlay` | `assets/sprites/ui/frames/unified/ui_frame_unified_hover_overlay.png` | SCRUM-373 optional hover overlay fallback; preferred runtime hover is neutral modulate/contrast, not yellow glow |
 | `ui_frame_ornate_global_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_global_panel.png` | Live global/menu/event/codex panel frame |
 | `ui_frame_ornate_level_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_level_panel.png` | Live level-up/reward main panel |
 | `ui_frame_ornate_card_frame` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_card_frame.png` | Live list/card frame |

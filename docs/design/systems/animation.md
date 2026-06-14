@@ -63,6 +63,10 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   untouched.
 - Damage windows, targeting, cooldowns, spawn rules, VFX spawn and cleanup
   remain owned by gameplay code. The registry is a visual state bridge only.
+- SCRUM-379 adds death playback lifecycle ownership for explicit full-frame
+  deaths: enemies with `FullFrameBody.death` play that row before delayed
+  cleanup while leaving combat groups/collisions immediately after rewards are
+  emitted; missing death rows keep the existing death-ghost fallback.
 
 ## Player Motion
 
@@ -123,6 +127,10 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 ## Hit / Death
 
 - SCRUM-185 (2026-06-13) smoke coverage now asserts representative player, standard enemy, elite, and boss rigs entering `hit` and `death` states. `play_hit()` remains a short tint/shake state; `play_death()` keeps the existing collapse/fade; gameplay health, loot, cleanup, and death ownership remain Back-end.
+- SCRUM-379 (2026-06-14) smoke coverage now asserts standard full-frame enemies
+  select explicit `death` animation before cleanup and that fallback enemies
+  still spawn `DeathGhostRig`. Gameplay rewards/death signals fire before the
+  delayed visual cleanup, so loot/score/XP are not delayed or duplicated.
 
 ## Timing / VFX Sync
 

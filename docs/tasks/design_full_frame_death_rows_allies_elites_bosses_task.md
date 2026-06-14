@@ -1,6 +1,6 @@
 # Design: Full-frame death rows for allies, elites, mini-elites, and bosses
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Design
 Версия: 0.1.5

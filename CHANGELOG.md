@@ -5,6 +5,11 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- Unified master UI frame kit (SCRUM-373): added design-ready D&D/dark fantasy
+  9-slice assets under `assets/sprites/ui/frames/unified/`, metadata
+  `docs/design/references/unified_master_frame/unified_master_frame_metadata.json`,
+  contact/safe-zone previews and Back-end handoff for projectwide runtime
+  centralization without one-axis frame stretching.
 - Character animation art standard (SCRUM-298): added
   `docs/design/references/character_animation_style_sheet_0_1_5.md` with the
   D&D dark fantasy playable-character visual canon, `384x384` cell format,
@@ -69,6 +74,10 @@
   full-frame `skill_*` states for gravity wells, rift zones, skull volleys,
   bone prison, brood spawn/web zones, molten slam and armor pulse while keeping
   gameplay damage, hazards, cooldowns, targeting and spawn timing unchanged.
+- Full-frame death lifecycle (SCRUM-379): standard enemies with explicit
+  `FullFrameBody.death` now leave combat groups, disable collision/HP bars and
+  play their drawn death row before cleanup; entities without a full-frame death
+  row keep the existing `DeathGhostRig` fallback.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню

@@ -1,6 +1,6 @@
 # Back-end: Full-frame death playback lifecycle before cleanup
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end
 Версия: 0.1.5
@@ -44,7 +44,28 @@ balance, damage, targeting, spawn rules, loot values, score values, or UI.
   in the task result; do not alter animation art.
 
 ## Acceptance Criteria
-- [ ] Standard full-frame enemies play `death` before removal.
-- [ ] Fallback death ghost still works for missing death rows.
-- [ ] Player/ally/enemy lifecycle remains stable; no duplicate loot/score/cleanup.
-- [ ] `tests/animation_smoke_test.gd` and `tests/runtime_smoke_test.gd` pass.
+- [x] Standard full-frame enemies play `death` before removal.
+- [x] Fallback death ghost still works for missing death rows.
+- [x] Player/ally/enemy lifecycle remains stable; no duplicate loot/score/cleanup.
+- [x] `tests/animation_smoke_test.gd` and `tests/runtime_smoke_test.gd` pass.
+
+## Result
+Done 2026-06-14.
+
+- `Enemy.take_damage()` now emits rewards/death once, then uses explicit
+  `FullFrameBody.death` playback before delayed cleanup when available.
+- Full-frame dying enemies immediately leave combat groups, stop processing,
+  disable collision, hide HP bars and old cutout rigs, so combat/boss cleanup
+  does not wait on a visual-only corpse.
+- Missing full-frame death rows keep the existing `DeathGhostRig` fallback.
+- `AllyMinion` already has matching full-frame death lifecycle support and keeps
+  immediate cleanup when no `death` row is present.
+- `tests/animation_smoke_test.gd` now proves both explicit full-frame death and
+  fallback ghost behavior.
+
+Verification:
+- `git diff --check` — PASS
+- `Godot --headless --script res://tests/animation_smoke_test.gd` — PASS
+- `Godot --headless --script res://tests/summoner_strengthening_test.gd` — PASS
+- `Godot --headless --script res://tests/runtime_smoke_boss_elite_test.gd` — PASS
+- `Godot --headless --script res://tests/runtime_smoke_test.gd` — PASS

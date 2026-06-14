@@ -1,11 +1,11 @@
 # Задача Для Design-Агента: Внедрить сгенерированный ассет unified master frame
 
-Статус: new
+Статус: done
 Создано: 2026-06-14
 Автор: Codex asset generator
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
 Версия: 0.1.5
-Jira: pending sync
+Jira: covered by SCRUM-373
 
 ## Autonomy / Approval
 Пользователь заранее одобрил изменения в рамках этой задачи. Работать автономно, не ждать дополнительных подтверждений.
@@ -36,3 +36,11 @@ FantasyDisk unified master UI frame for a dark fantasy Dungeons and Dragons game
 - [ ] Не тронуты `.import` файлы без необходимости.
 - [ ] При runtime-интеграции пройдены релевантные Godot smoke/UI checks.
 - [ ] Jira и task-файл синхронизированы после смены статуса.
+
+## Result — 2026-06-14
+
+Covered by SCRUM-373 `design_unified_master_frame_system_projectwide_task.md`.
+The generated source was accepted as the reference, postprocessed into the
+production unified frame kit under `assets/sprites/ui/frames/unified/`, validated
+with Pillow/Godot import, documented, and handed off to Back-end for runtime
+integration in `backend_unified_master_frame_system_projectwide_integration_task.md`.

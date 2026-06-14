@@ -272,9 +272,12 @@ func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
 	var fps: float = maxf(frames.get_animation_speed("death"), 1.0)
 	var count: int = maxi(frames.get_frame_count("death"), 1)
 	var duration := clampf(float(count) / fps, 0.25, 1.2)
+	if not is_inside_tree():
+		call_deferred("queue_free")
+		return
 	var tree := get_tree()
 	if tree == null:
-		queue_free()
+		call_deferred("queue_free")
 		return
 	tree.create_timer(duration + 0.05).timeout.connect(queue_free)
 

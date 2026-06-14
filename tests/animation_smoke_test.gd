@@ -1338,11 +1338,30 @@ func _test_death_ghost() -> void:
 	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
 	var enemy := enemy_scene.instantiate()
 	holder.add_child(enemy)
+	if enemy.get_node_or_null("FullFrameBody") == null:
+		enemy.call("_configure_full_frame_animation")
 	enemy.call("_update_movement_animation", 0.1)
 	enemy.call("take_damage", 9999.0)
+	var full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if full_frame_body == null or full_frame_body.animation != "death":
+		_fail("Expected full-frame enemy death to play explicit death animation before cleanup.")
+	if holder.get_node_or_null("DeathGhostRig") != null:
+		_fail("Expected full-frame enemy death to avoid duplicate death ghost fallback.")
+	if enemy.is_in_group("enemies"):
+		_fail("Expected full-frame dying enemy to leave combat groups before delayed cleanup.")
+	if enemy.is_queued_for_deletion():
+		_fail("Expected full-frame enemy to delay queue_free until death animation playback ends.")
+	enemy.queue_free()
+
+	var fallback_enemy := enemy_scene.instantiate()
+	fallback_enemy.set("enemy_type_name", "Missing Test Enemy")
+	holder.add_child(fallback_enemy)
+	fallback_enemy.call("_configure_enemy_rig")
+	fallback_enemy.call("_update_movement_animation", 0.1)
+	fallback_enemy.call("take_damage", 9999.0)
 	var ghost := holder.get_node_or_null("DeathGhostRig") as Node2D
 	if ghost == null:
-		_fail("Expected dying enemy to leave a death ghost rig behind.")
+		_fail("Expected dying fallback enemy to leave a death ghost rig behind.")
 	if str(ghost.get("state")) != "death":
 		_fail("Expected the death ghost to play the death animation.")
 	holder.queue_free()

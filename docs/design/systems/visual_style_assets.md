@@ -72,6 +72,20 @@ Non-button panels/windows/cards/tooltips/HUD/pause stat frames now resolve to
 dark_fantasy/escape panel textures are backed up outside live assets at
 `build/cleanup_backup_ornate_frames_2026_06_14/`.
 
+SCRUM-373 prepares the next **Unified Master Frame kit** for projectwide
+centralization. Runtime-ready assets live in `assets/sprites/ui/frames/unified/`:
+`ui_frame_unified_master.png`, `ui_frame_unified_master_fill.png`,
+`ui_frame_unified_inner_fill.png`, `ui_frame_unified_ornament_top.png`,
+`ui_frame_unified_ornament_bottom.png` and `ui_frame_unified_hover_overlay.png`.
+Back-end integration is tracked in
+`docs/tasks/backend_unified_master_frame_system_projectwide_integration_task.md`.
+Use source size `1024x1024`, texture margins `128/128/128/128`, content margins
+`132/132/132/132`, strict safe rect `Rect2(132,132,760,760)`, and
+`AXIS_STRETCH_MODE_TILE` for both axes. The top/bottom ornaments are optional
+overlays for large windows only; compact HUD cards/tooltips/chips must use the
+plain border without ornaments. Runtime content, click zones, labels, portraits,
+icons and meters must remain inside the strict safe rect.
+
 SCRUM-281 adds a screen-specific **Hero Select frame kit** from
 `docs/design/references/herouiframe/`. It is used only by `HeroSelectScreen`,
 because the portrait/dossier/radar ornaments need custom safe areas. Live
@@ -157,6 +171,8 @@ Rebuild/QA assets:
 - `docs/design/previews/ornate_dark_frame_kit_contact.png` - active SCRUM-274 frame contact sheet;
 - `docs/design/previews/hero_select_frame_kit_contact.png` - active SCRUM-281 Hero Select frame contact sheet;
 - `docs/design/previews/settings_tab_switcher_frame_content_zone.png` - SCRUM-325 Settings tab switcher safe-area overlay;
+- `docs/design/previews/unified_master_frame_9slice_contact.png` - SCRUM-373 unified master frame contact sheet;
+- `docs/design/previews/unified_master_frame_safe_zone.png` - SCRUM-373 strict content-zone overlay;
 - `docs/design/previews/ui_button_only_legacy_panels_contact.png` - SCRUM-147 side-by-side correction sheet;
 - `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - superseded SCRUM-229 leather+gold panel kit sheet;
 - `build/qa/interface_leather_gold_panel_kit_contact.png` - historical QA copy of the SCRUM-229 leather+gold kit sheet;
