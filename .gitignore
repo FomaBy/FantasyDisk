@@ -9,3 +9,6 @@ tmp/
 
 # In-game feedback Discord webhook (секрет, не коммитить)
 feedback_webhook.cfg
+
+# Feedback intake state (дедуп, локальный)
+tools/.feedback_intake_state.json
