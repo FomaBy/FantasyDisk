@@ -1,6 +1,6 @@
 # ART: Перерисовать «Биолог» в едином стиле + анимации (5 move / 5 attack)
 
-Статус: new
+Статус: review (Design-source ready; Animator integration pending)
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -58,3 +58,19 @@ docs/design/content_registry.md (персонаж biologist), current_game_state
 
 ## Пайплайн ролей (2026-06-14)
 Двухфазно: 1) **Design (Codex)** перерисовывает спрайт в едином стиле БЕЗ оружия через `fantasydisk-asset-generator` (прозрачный фон), отдаёт принятый лист/кадры; 2) **Animator (Codex)** строит SpriteFrames/манифест и анимации move(5)/attack(5) через `fantasydisk-animation-director`, гоняет animation_smoke. Ключ OPENAI восстановлен 2026-06-14 — блок снят, Design стартует первым.
+
+## Dispatch Log
+- 2026-06-14: Dispatcher routed SCRUM-284 to Designer 2 window `019ec7a6-55a5-7bc3-a397-606ce046308d` for the Design-owned source-sheet pass. Feature block remains active, but this row is eligible because it is already listed in Sprint 0.1.5 and explicitly waits for a Design-owned accepted source sheet before Animator integration. Scope: `biologist_sheet.png` source/preview/Design QA only; no SpriteFrames/runtime/gameplay work.
+
+## Результат 2026-06-14 (Designer 2 / Codex)
+Design-owned source pass completed through `fantasydisk-asset-generator` using the approved OpenAI pipeline. Rejected the earlier source variant because it included bag/flask/spore props; accepted source uses a fitted protective scientist-naturalist suit with subtle green/blue bioluminescent inserts and visibly empty hands in every frame.
+
+Generated and validated Design handoff artifacts:
+- accepted runtime/source sheet: `assets/sprites/characters/biologist_sheet.png` (`1920x1152`, 3 rows x 5 columns, `384x384` cells);
+- source reference: `docs/design/references/characters/biologist/biologist_sheet_source.png`;
+- alpha-clean reference: `docs/design/references/characters/biologist/biologist_sheet_alpha_clean.png`;
+- 32px-gutter source: `docs/design/references/characters/biologist/biologist_sheet_guttered_source.png`;
+- contact preview: `docs/design/previews/scrum284_biologist_sheet_contact.png`;
+- QA manifest/report/GIFs: `build/qa/scrum284_biologist/`.
+
+Validation: animation manifest validator PASS; PIL source cleanliness PASS (`15/15` non-empty cells, alpha extrema `(0,255)`, no safe-padding/edge-touch failures, global scale `1.0`). No weapons, tools, syringes, flasks, bags, or held objects remain in the accepted sheet. SpriteFrames, runtime registry, gameplay logic and smoke-test integration were intentionally not touched; Animator owns the next phase.

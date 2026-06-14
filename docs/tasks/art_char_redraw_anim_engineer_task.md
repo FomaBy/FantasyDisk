@@ -1,6 +1,6 @@
 # ART: Перерисовать «Инженер» в едином стиле + анимации (5 move / 5 attack)
 
-Статус: new
+Статус: done (Claude-Designer 2026-06-14 — лист 5/5/5 + .tres, animation_smoke зелёный)
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -58,3 +58,7 @@ docs/design/content_registry.md (персонаж engineer), current_game_state.
 
 ## Пайплайн ролей (2026-06-14)
 Двухфазно: 1) **Design (Codex)** перерисовывает спрайт в едином стиле БЕЗ оружия через `fantasydisk-asset-generator` (прозрачный фон), отдаёт принятый лист/кадры; 2) **Animator (Codex)** строит SpriteFrames/манифест и анимации move(5)/attack(5) через `fantasydisk-animation-director`, гоняет animation_smoke. Ключ OPENAI восстановлен 2026-06-14 — блок снят, Design стартует первым.
+
+
+## Результат 2026-06-14 (Claude-Designer, параллельно Codex)
+Лист скиллом + tools/build_character_sheet.py -> full_frame/engineer/ кадры + engineer_spriteframes.tres. player.gd грузит .tres. animation_smoke зелёный (exit 0).

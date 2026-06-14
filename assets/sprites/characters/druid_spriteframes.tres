@@ -1,0 +1,129 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_idle_00.png" id="1_dru1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_idle_01.png" id="2_dru2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_idle_02.png" id="3_dru3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_idle_03.png" id="4_dru4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_idle_04.png" id="5_dru5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_walk_00.png" id="6_dru6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_walk_01.png" id="7_dru7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_walk_02.png" id="8_dru8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_walk_03.png" id="9_dru9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_walk_04.png" id="10_dru10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_attack_primary_00.png" id="11_dru11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_attack_primary_01.png" id="12_dru12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_attack_primary_02.png" id="13_dru13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_attack_primary_03.png" id="14_dru14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/druid/druid_attack_primary_04.png" id="15_dru15"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_dru1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_dru2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_dru3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_dru4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_dru5")
+}
+],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("6_dru6")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_dru7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_dru8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_dru9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_dru10")
+}
+],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_dru11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_dru12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_dru13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_dru14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_dru15")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_dru11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_dru12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_dru13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_dru14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_dru15")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}
+]
