@@ -1,6 +1,6 @@
 # ART/UX: Кодекс — новые текстуры интерфейса (скиллом), убрать наложение персонажей/текста
 
-Статус: blocked
+Статус: new
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -56,10 +56,16 @@ SCRUM-327). Исходники в docs/design/references/codex/, внедрит�
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/content_registry.md, current_game_state.
 
-## Blocker — 2026-06-14
+## Blocker History — 2026-06-14
 Design/Codex проверил обязательный pipeline: новые Codex UI textures должны быть
 созданы через `fantasydisk-asset-generator` (`gpt-image-2`). В текущем окружении
 отсутствуют `OPENAI_API_KEY` и Python-пакет `openai`, поэтому генерация новых
 PNG невозможна без нарушения директивы задачи. Runtime no-overlap/layout часть
 нужно выполнять после готовности ассетов или отдельным Back-end handoff; текущая
 Design-задача заблокирована до восстановления доступа к skill.
+
+## Blocker Resolved — 2026-06-14
+Documentation dispatcher verified that local `OPENAI_API_KEY` can now be loaded
+from the secure Codex env file outside the repository and Python `openai` imports
+successfully. Previous asset-generator environment blocker is resolved; task is
+eligible for Design/Codex execution after the currently active Design task.

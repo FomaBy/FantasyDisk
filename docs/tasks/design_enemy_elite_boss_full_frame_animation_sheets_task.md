@@ -2,11 +2,11 @@
 
 Статус: new
 Приоритет: high
-Роль: Animator (Codex)
+Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: Animator audit `animation_full_frame_pipeline_coverage_audit_task.md`
-Исполнитель: Animator (Codex)
+Исполнитель: Designer (Codex)
 Jira: SCRUM-352
 Parent: SCRUM-350 / `animation_full_frame_pipeline_coverage_audit_task.md`
 
@@ -72,10 +72,17 @@ When sheets are ready, unblock Animator to:
 - [ ] Transparent alpha/no-crop/pivot notes are documented for Animator.
 - [ ] Task board and Jira are synced.
 
-## Blocker — 2026-06-14
+## Blocker History — 2026-06-14
 Design/Codex checked the task and the required `fantasydisk-asset-generator`
 skill. This full-frame sheet handoff explicitly says Design works by that skill
 and must not use the old asset pipeline. Current shell has no `OPENAI_API_KEY`,
 and `import openai` fails with `ModuleNotFoundError`, so production sprite-sheet
 generation cannot start. Animator handoff remains blocked until Design can
 produce the transparent full-frame sheets.
+
+## Blocker Resolved — 2026-06-14
+Documentation dispatcher verified that local `OPENAI_API_KEY` can now be loaded
+from the secure Codex env file outside the repository and Python `openai` imports
+successfully. Previous asset-generator environment blocker is resolved. This task
+is Design-owned source sheet generation; Animator should receive a follow-up only
+after accepted transparent full-frame sheets are produced.

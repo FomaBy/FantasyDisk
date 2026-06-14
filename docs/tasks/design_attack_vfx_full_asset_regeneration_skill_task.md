@@ -1,6 +1,6 @@
 # Задача Для Design/Codex: Полная Перегенерация Attack VFX Через Skill
 
-Статус: blocked
+Статус: new
 Создано: 2026-06-14
 Автор: Codex handoff из SCRUM-335
 Исполнитель: Design / Codex
@@ -10,8 +10,14 @@ Jira: SCRUM-337
 ## Autonomy / Approval
 Пользователь заранее одобрил изменения в рамках этой задачи. Работать автономно, не ждать дополнительных подтверждений.
 
-## Блокер
+## Blocker History — 2026-06-14
 В текущем окружении отсутствует `OPENAI_API_KEY`, поэтому skill `fantasydisk-asset-generator` не может вызвать OpenAI Images API (`gpt-image-2`). Старые локальные генераторы `tools/generate_*vfx*.py` не использовать: пользовательская директива требует генерацию графики/ассетов только через skill.
+
+## Blocker Resolved — 2026-06-14
+Documentation dispatcher verified that local `OPENAI_API_KEY` can now be loaded
+from the secure Codex env file outside the repository and Python `openai` imports
+successfully. Previous asset-generator environment blocker is resolved; task is
+eligible for Design/Codex execution after the currently active Design task.
 
 ## Контекст
 Пользователь попросил переработать все эффекты атак персонажей и монстров реалистично и в стиле игры. SCRUM-335 закрыл runtime-покрытие существующими ассетами: `BerserkWeapon` теперь использует `vfx_weapon_*` signature layer, а enemy projectile получил textured trail/impact. Эта задача остается для полноценного нового art pass через Images API skill.

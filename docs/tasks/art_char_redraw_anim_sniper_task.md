@@ -2,7 +2,7 @@
 
 Статус: new
 Приоритет: medium
-Роль: Animator (Codex)
+Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
@@ -55,3 +55,6 @@ pivot, тень). **Без оружия в руках.**
 
 ## Документация
 docs/design/content_registry.md (персонаж sniper), current_game_state.
+
+## Пайплайн ролей (2026-06-14)
+Двухфазно: 1) **Design (Codex)** перерисовывает спрайт в едином стиле БЕЗ оружия через `fantasydisk-asset-generator` (прозрачный фон), отдаёт принятый лист/кадры; 2) **Animator (Codex)** строит SpriteFrames/манифест и анимации move(5)/attack(5) через `fantasydisk-animation-director`, гоняет animation_smoke. Ключ OPENAI восстановлен 2026-06-14 — блок снят, Design стартует первым.

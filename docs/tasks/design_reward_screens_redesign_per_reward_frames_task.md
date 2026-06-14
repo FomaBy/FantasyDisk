@@ -1,6 +1,6 @@
 # ART/UX: Редизайн наград за уровень (обычный/элитка) — каждая награда в своём фрейме
 
-Статус: blocked
+Статус: new
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -65,10 +65,16 @@ D&D + Dark Fantasy Dragon. Исходники — в docs/design/references/rewa
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/content_registry.md, current_game_state.
 
-## Blocker — 2026-06-14
+## Blocker History — 2026-06-14
 Новые reward frame PNG по требованиям должны быть созданы через
 `fantasydisk-asset-generator`. В текущем окружении отсутствует `OPENAI_API_KEY`,
 и Python-пакет `openai` недоступен, поэтому выполнить mandatory skill generation
 невозможно. Runtime/layout переработка наград должна идти после готовности
 ассетов или отдельным Back-end handoff; текущая Design-задача заблокирована до
 восстановления skill-доступа.
+
+## Blocker Resolved — 2026-06-14
+Documentation dispatcher verified that local `OPENAI_API_KEY` can now be loaded
+from the secure Codex env file outside the repository and Python `openai` imports
+successfully. Previous asset-generator environment blocker is resolved; task is
+eligible for Design/Codex execution after the currently active Design task.

@@ -1,6 +1,6 @@
 # BUG/ART: Настройки — 4 вкладки вместо 3; пересоздать свитчер скиллом (3 слота)
 
-Статус: blocked
+Статус: new
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -63,10 +63,16 @@ D&D + Dark Fantasy Dragon, опорная SCRUM-327). Старый ассет �
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
 
-## Blocker — 2026-06-14
+## Blocker History — 2026-06-14
 Design/Codex проверил обязательный генерационный шаг. Новый 3-slot settings tab
 switcher должен быть пересоздан через `fantasydisk-asset-generator`, но в shell
 нет `OPENAI_API_KEY`, а Python-пакет `openai` не установлен. Без production PNG
 нельзя корректно зафиксировать `SAFE_RECTS=3` и content-zone под новый ассет.
 Задача заблокирована до доступности skill; runtime-интеграция/SAFE_RECTS после
 готовности ассета должна идти как UI/Back-end integration.
+
+## Blocker Resolved — 2026-06-14
+Documentation dispatcher verified that local `OPENAI_API_KEY` can now be loaded
+from the secure Codex env file outside the repository and Python `openai` imports
+successfully. Previous asset-generator environment blocker is resolved; task is
+eligible for Design/Codex execution after the currently active Design task.

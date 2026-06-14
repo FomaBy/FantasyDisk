@@ -1,6 +1,6 @@
 # ART/UX: Возвышение +/- — маленькие кнопки по референсам, по центру, вниз фрейма + «Выбрать»
 
-Статус: blocked
+Статус: new
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -58,7 +58,7 @@ PNG, прозрачный фон) по референсам интерфейса
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
 
-## Blocker — 2026-06-14
+## Blocker History — 2026-06-14
 Design/Codex проверил задачу на ветке `dev` и прочитал skill
 `fantasydisk-asset-generator`. Задача требует создать новые маленькие рамки
 `asc_button_small` именно через этот skill (`gpt-image-2`). В текущем окружении
@@ -69,3 +69,9 @@ Design/Codex проверил задачу на ветке `dev` и прочит
 интеграции и должна идти после готовности production PNG; частичный layout без
 нового ассета не закрывает acceptance criteria. Задача заблокирована до появления
 `OPENAI_API_KEY`/доступного `fantasydisk-asset-generator`.
+
+## Blocker Resolved — 2026-06-14
+Documentation dispatcher verified that local `OPENAI_API_KEY` can now be loaded
+from the secure Codex env file outside the repository and Python `openai` imports
+successfully. Previous asset-generator environment blocker is resolved; task is
+eligible for Design/Codex execution after the currently active Design task.
