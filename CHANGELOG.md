@@ -21,12 +21,46 @@
 - Red & Gold Dragon buttons (SCRUM-273): добавлен live-кит из 15 button types × 4 states в `assets/sprites/ui/frames/red_gold/`, pipeline `tools/build_red_gold_button_kit.py`, contact preview `docs/design/previews/red_gold_button_kit_contact.png` и backup прежнего parchment/wax button kit в `build/cleanup_backup_red_gold_buttons_2026_06_14/`.
 - Ornate Dark frames (SCRUM-274): добавлен live-кит из 13 non-button frame assets в `assets/sprites/ui/frames/ornate/`, pipeline `tools/build_ornate_ui_frame_kit.py`, contact preview `docs/design/previews/ornate_dark_frame_kit_contact.png` и backup прежних leather/gold + dark_fantasy/escape panel textures в `build/cleanup_backup_ornate_frames_2026_06_14/`.
 - Hero Select frames (SCRUM-281): экран выбора героя получил отдельный herouiframe kit из 8 live PNG в `assets/sprites/ui/frames/hero_select/`, pipeline `tools/build_hero_select_frame_kit.py`, preview `docs/design/previews/hero_select_frame_kit_contact.png` и QA screenshots `build/qa/scrum281/hero_select_1280x720.png`, `hero_select_1920x1080.png`, `hero_select_2560x1440.png`.
+- Hero Select carousel frame (SCRUM-320): `ui_frame_hero_select_thumbnail_strip.png` пересобран из референса Carusel как 1536x255 RGBA frame с прозрачным фоном, pipeline `tools/build_hero_select_carousel_frame.py`, preview `docs/design/previews/hero_select_carousel_frame_contact.png`, backup прежнего SCRUM-281 strip в `build/cleanup_backup_hero_select_carousel_2026_06_14/`.
+- Hero Select portrait frame (SCRUM-321): принят live `ui_frame_hero_select_portrait.png` as production heroframe-style asset, добавлен safe-area preview `docs/design/previews/hero_select_portrait_frame_content_zone.png`, backup исходника в `build/cleanup_backup_hero_select_portrait_2026_06_14/`.
+- Hero Select windrose radar frame (SCRUM-322): `ui_frame_hero_select_radar.png` пересобран из windrose reference как 1024x1024 RGBA compass frame, pipeline `tools/build_hero_select_windrose_frame.py`, safe-area preview `docs/design/previews/hero_select_windrose_radar_content_zone.png`, backup прежнего SCRUM-281 radar в `build/cleanup_backup_hero_select_windrose_2026_06_14/`.
+- Settings tab switcher frame (SCRUM-325): добавлен design-ready D&D/dark fantasy PNG `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png` (`1280x256`, RGBA, без baked text), safe-area preview `docs/design/previews/settings_tab_switcher_frame_content_zone.png` и Back-end handoff SCRUM-334 на runtime integration.
 - Druid wolf summon animation assets (SCRUM-280): нарезаны reference sheets `docs/design/references/wolfanimate/` в 14 normalized 256x224 PNG frames, собран `assets/sprites/allies/ally_druid_wolf_spriteframes.tres` с `move` 8f/12fps loop и `attack` 6f/14fps no-loop; QA preview/gifs в `build/qa/druid_wolf_summon_animation/`.
 - Elite/boss VFX kit (SCRUM-261): добавлены 13 dedicated D&D/painterly PNG для `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`, summon portal, shield block, reflect-thorns aura, command aura, shadow blink mark и shard fan warning; preview `docs/design/previews/scrum261_elite_boss_vfx_contact.png`.
 - Unique weapon VFX kit (SCRUM-258): добавлен полный набор из 51 transparent PNG `assets/sprites/effects/vfx_weapon_<weapon_id>.png` для всех class weapon identities 0.1.5, contact/readability previews и focused smoke `tests/unique_weapon_vfx_assets_test.gd`.
 - Final balance audit (SCRUM-262): global damage smoke теперь проверяет не только combined solo/5-target DPS, но и финальный solo corridor ±20% плюс crowd-clear time 5/10/20 в коридоре ±30%; `tools/balance_harness.gd` пишет `build/balance_final_audit_0_1_5.md` с class viability и CCT таблицами для всех 51 class+weapon пар.
 
 ### Changed
+- Level-up buttons (SCRUM-348): in-run `LevelUpPlusButton` now uses the
+  Red&Gold main-menu button frame while keeping bottom-right anchoring, opacity
+  and badge readability; `LevelUpLaterButton` uses a non-cropped 260x104
+  medium back frame. Runtime smoke verifies both styles and the deferred-choice
+  flow.
+- Hero Select radar (SCRUM-347): removed the old `Характеристики` title inside
+  the windrose, centered `HeroStatRadar` in the compass content area and raised
+  the polygon radius factor from `0.30` to `0.36` (+20%) with tighter label
+  offsets so labels stay inside the frame; runtime smoke covers 1280x720,
+  1600x900 and 2560x1440.
+- Quit confirmation (SCRUM-344): кнопки «Выйти»/«Отмена» в диалоге выхода
+  теперь принудительно остаются 220x72 и используют 72px-safe Red&Gold
+  `pause` frame вместо сплющенного `back_s`; runtime smoke проверяет размеры,
+  texture type, модальность и фокус на «Отмена».
+- Back buttons (SCRUM-343): `HeroSelectBackButton` теперь использует 240x104
+  medium back-frame вместо узкого 170px варианта, чтобы текст и Red&Gold
+  орнамент не обрезались; runtime smoke также проверяет SkillTree/PatchNotes/
+  Codex back buttons и пишет QA dump в `build/qa/scrum343/back_button_frames.md`.
+- Shop route flow (SCRUM-339): leaving a shop now returns to the route map
+  without advancing the route stage or clearing node-bound stock; the visited
+  shop stays revisitable with purchased slots preserved until the player chooses
+  the next route node, which finalizes/clears the shop and starts the next step.
+- Settings tabs (SCRUM-334): экран настроек теперь использует production `ui_frame_settings_tab_switcher.png` как proportional 5:1 strip; встроенные tab headers скрыты, а runtime labels/click/focus зоны вкладок `Экран`, `Звук`, `Управление` лежат строго внутри recorded safe rects. UI smoke проверяет aspect ratio, safe-rect геометрию и click switching.
+- Hero Select portrait frame (SCRUM-321): `HeroSelectPortraitPanel` сохраняет левую треть master layout, но сам `HeroSelectPortraitFrame` рисуется отдельным цельным `TextureRect` и масштабируется пропорционально (`249x394`, `423x669`, `596x944` на 720p/1080p/1440p); портрет героя лежит в content-zone `Vector4(128, 230, 128, 330)` и не попадает на металл, гребни или нижний самоцвет.
+- Hero Select windrose radar (SCRUM-322): floating `HeroSelectRadarPanel` больше не использует stretchable radar StyleBox; windrose art рисуется цельным квадратным `TextureRect` (`390x390`, `585x585`, `780x780` at 720p/1080p/1440p), а `HeroStatRadar` масштабируется внутри safe margins `Vector4(245, 245, 245, 235)`.
+- Hero Select layout (SCRUM-333): экран выбора героя переведен на master-компоновку 1/3·2/3: `HeroSelectPortraitPanel` занимает левую треть, `HeroSelectRightRegion` занимает правые две трети с досье и невидимым резервом под floating top-right radar. Bottom carousel, hover и tooltip поведение сохранены; runtime smoke теперь проверяет фактические пропорции и no-overlap на 1280x720, 1600x900 и 2560x1440.
+- Attack VFX runtime coverage (SCRUM-335): `BerserkWeapon` now routes existing
+  `vfx_weapon_<weapon_id>.png` signature plates for Berserk/Knight melee
+  attacks, and enemy magic projectiles gained textured trail + impact feedback
+  using existing VFX textures; damage/timing/collision/balance unchanged.
 - Main menu UX (SCRUM-319): the «Выйти из игры» button and Escape on the
   main menu now open a game-styled confirmation overlay; the real quit request
   is sent only after explicit «Выйти», with «Отмена» focused by default.
@@ -67,6 +101,9 @@
 - UI theme (SCRUM-273): runtime button styleboxes теперь выбирают Red & Gold Dragon texture type по node name/role/size (`main_menu`, `hero_confirm`, `reset_audio`, `reset_bindings`, `codex_tab`, `attr_selector`, `back_s/m/l`, `fab`, `utility`, `pause`, `rebind`); non-button panels оставались отдельным scope и затем были заменены SCRUM-274.
 - UI frames (SCRUM-274): global/level/card/hero/hover/tooltip/HUD/timer styleboxes теперь используют signed texture/content margins из Ornate Dark spec sheet; Escape stats menu переведен на ornate pause/stat frames и Red & Gold pause buttons.
 - Hero Select layout (SCRUM-281): портрет, досье, radar reserve, radar panel, ascension controls и bottom thumbnail strip используют dedicated 9-slice frames; 720p safe-area исправлена так, чтобы back button и миниатюры не вылезали за экран, а `HeroSelectChooseButton` стал локальным compact hero-confirm 260x72.
+- Hero Select carousel (SCRUM-320): bottom thumbnail strip теперь использует Carusel reference frame как цельный `TextureRect` без 9-slice/one-axis stretch; рамка масштабируется пропорционально (`1024x170` at 720p, `1536x255` at 1080p, `2048x340` at 1440p), а 17 hero thumbnails центрируются в отдельном content layer с base margins `112/46/112/46` и адаптируются до `42-124px`, не перекрывая орнамент.
+- Hero Select portrait (SCRUM-321): левый portrait frame больше не тянется как StyleBox по одной оси; колонка остается 1/3 ширины, а внутренняя heroframe-рамка центрируется и масштабируется единым коэффициентом. Safe margins: `Vector4(128, 230, 128, 330)`.
+- Hero Select windrose radar (SCRUM-322): правый radar frame заменен на windrose compass reference, не растягивается в прямоугольник и растет пропорционально с разрешением; graph/title остаются в safe inner field, а тест проверяет square aspect вместо старого fixed 500px cap.
 
 ## [0.1.4] — 2026-06-13
 

@@ -1145,11 +1145,11 @@
  },
  "backend_attack_vfx_runtime_coverage_task.md": {
   "key": "SCRUM-335",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_summon_creatures_animation_glow_task.md": {
   "key": "SCRUM-336",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_attack_vfx_full_asset_regeneration_skill_task.md": {
   "key": "SCRUM-337",

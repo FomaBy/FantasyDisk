@@ -8,6 +8,7 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
 const EventData := preload("res://scripts/event_data.gd")
 const Glossary := preload("res://scripts/glossary.gd")
+const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 
 func _initialize() -> void:
@@ -48,6 +49,7 @@ func _initialize() -> void:
 		push_error("Expected main menu buttons to use canonical Red & Gold Dragon state textures.")
 		quit(1)
 		return
+	await _test_back_button_frame_safety(main_scene)
 	await _test_main_menu_quit_confirmation(main_scene)
 	if main_menu_actions.global_position.x > 140.0:
 		push_error("Expected main menu buttons to stay on the left side of the start screen.")
@@ -188,6 +190,7 @@ func _initialize() -> void:
 		return
 	await _test_route_map_start_selection(main_scene)
 	await _test_event_route_node_click(main_scene)
+	await _test_shop_reentry_until_next_level(main_scene)
 	await _test_random_event_data_and_outcomes(main_scene)
 	var generated_elite := false
 	var generated_disk_boss := false
@@ -268,14 +271,29 @@ func _initialize() -> void:
 		push_error("Expected hero select v3 to show a large selected hero portrait.")
 		quit(1)
 		return
-	var dossier := main.find_child("HeroSelectDossierPanel", true, false) as PanelContainer
+	var dossier := main.find_child("HeroSelectDossierPanel", true, false) as Control
 	if dossier == null:
 		push_error("Expected hero select v3 to show a dossier panel.")
 		quit(1)
 		return
+	var content_row := main.find_child("HeroSelectContent", true, false) as Control
+	var portrait_panel := main.find_child("HeroSelectPortraitPanel", true, false) as Control
+	var right_region := main.find_child("HeroSelectRightRegion", true, false) as Control
+	if content_row == null or portrait_panel == null or right_region == null:
+		push_error("Expected hero select master layout to expose 1/3 portrait and 2/3 right region.")
+		quit(1)
+		return
 	var radar := main.find_child("HeroStatRadar", true, false) as Control
-	if radar == null or radar.custom_minimum_size.x < 360.0:
+	if radar == null or radar.custom_minimum_size.x < 190.0 or radar.custom_minimum_size.y < 140.0:
 		push_error("Expected hero select v3 to build a readable stat radar.")
+		quit(1)
+		return
+	if main.find_child("HeroStatRadarTitle", true, false) != null:
+		push_error("Expected hero select radar to remove the old 'Характеристики' title label.")
+		quit(1)
+		return
+	if HeroStatRadarScript.HERO_RADAR_RADIUS_FACTOR < 0.36:
+		push_error("Expected hero select radar polygon radius to be enlarged by at least 20%%.")
 		quit(1)
 		return
 	var radar_panel := main.find_child("HeroSelectRadarPanel", true, false) as Control
@@ -309,10 +327,18 @@ func _initialize() -> void:
 		var thumb_button := thumb_node as Button
 		if thumb_button == null:
 			continue
-		if thumb_button.custom_minimum_size.x > 124.0 or thumb_button.custom_minimum_size.x < 64.0:
+		if thumb_button.custom_minimum_size.x > 136.0 or thumb_button.custom_minimum_size.x < 42.0:
 			push_error("Expected hero thumbnail carousel to adapt thumbnail width for the growing roster.")
 			quit(1)
 			return
+		if thumb_button.custom_minimum_size.y < maxf(thumb_button.custom_minimum_size.x * 1.20, 56.0):
+			push_error("Expected hero thumbnail carousel to use taller, more readable portrait slots.")
+			quit(1)
+			return
+	if thumbnail_strip.get_theme_constant("separation") > 2:
+		push_error("Expected hero thumbnail carousel to reduce excessive horizontal separation.")
+		quit(1)
+		return
 	for character_id in ProgressionData.character_ids():
 		var thumb := main.find_child("HeroThumbnail_%s" % character_id, true, false) as Button
 		if thumb == null or thumb.tooltip_text == "":
@@ -744,15 +770,15 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var plus_normal_style := level_up_plus.get_theme_stylebox("normal")
-	if plus_normal_style == null or plus_normal_style != level_up_plus.get_theme_stylebox("hover") or plus_normal_style != level_up_plus.get_theme_stylebox("focus"):
-		push_error("Expected combat level-up return button hover/focus stylebox to match normal stylebox.")
+	if plus_normal_style == null or not _button_uses_red_gold_type(level_up_plus, "main_menu"):
+		push_error("Expected combat level-up return button to use the Red&Gold main-menu frame style.")
 		quit(1)
 		return
 	if not _is_neutral_button_font(level_up_plus.get_theme_color("font_hover_color")) or not _is_neutral_button_font(level_up_plus.get_theme_color("font_focus_color")):
 		push_error("Expected combat level-up return button hover/focus font colors to be neutral near-white.")
 		quit(1)
 		return
-	if plus_normal_style is StyleBoxFlat and (plus_normal_style as StyleBoxFlat).bg_color.a < 0.999:
+	if plus_normal_style is StyleBoxTexture and (plus_normal_style as StyleBoxTexture).modulate_color.a < 0.999:
 		push_error("Expected combat level-up return button background style to be opaque.")
 		quit(1)
 		return
@@ -772,7 +798,8 @@ func _initialize() -> void:
 	DirAccess.make_dir_recursive_absolute(qa_dir_level_up)
 	var level_up_dump := FileAccess.open("%s/combat_level_up_button.md" % qa_dir_level_up, FileAccess.WRITE)
 	if level_up_dump != null:
-		level_up_dump.store_string("# Combat Level-Up Return Button\n\n- Viewport: `%s`\n- Button: `%s`\n- Badge: `%s`\n- Alpha: `%.3f`\n- HoverSameAsNormal: `%s`\n" % [str(level_up_viewport_size), str(level_up_plus_rect), str(level_up_badge_panel.get_global_rect() if level_up_badge_panel != null else Rect2()), level_up_plus.modulate.a, str(plus_normal_style == level_up_plus.get_theme_stylebox("hover"))])
+		var plus_texture := (plus_normal_style as StyleBoxTexture).texture if plus_normal_style is StyleBoxTexture else null
+		level_up_dump.store_string("# Combat Level-Up Return Button\n\n- Viewport: `%s`\n- Button: `%s`\n- Badge: `%s`\n- Alpha: `%.3f`\n- Texture: `%s`\n" % [str(level_up_viewport_size), str(level_up_plus_rect), str(level_up_badge_panel.get_global_rect() if level_up_badge_panel != null else Rect2()), level_up_plus.modulate.a, str(plus_texture.resource_path if plus_texture != null else "")])
 		level_up_dump.close()
 	var level_up_toast := main.find_child("LevelUpToast", true, false)
 	if level_up_toast == null:
@@ -929,6 +956,11 @@ func _initialize() -> void:
 	var defer_button := main.find_child("LevelUpLaterButton", true, false) as Button
 	if defer_button == null:
 		push_error("Expected level-up to expose a bottom button for deferred choice.")
+		quit(1)
+		return
+	var defer_rect := defer_button.get_global_rect()
+	if defer_rect.size.x < 260.0 or defer_rect.size.y < 100.0 or not _button_uses_red_gold_type(defer_button, "back_m"):
+		push_error("Expected level-up Later button to use a non-cropped 260x104 medium back frame, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
 		quit(1)
 		return
 	defer_button.pressed.emit()
@@ -1751,6 +1783,153 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 	await process_frame
 
 
+func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
+	var shop_main := main_scene.instantiate()
+	root.add_child(shop_main)
+	await process_frame
+	shop_main.set("selected_character_id", "berserk")
+	shop_main.set("selected_weapon_id", "sword")
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var shop_player := player_scene.instantiate()
+	root.add_child(shop_player)
+	shop_player.configure_character("berserk", "sword")
+	shop_player.set("money", 5000)
+	shop_main.call("_store_player_snapshot", shop_player)
+	shop_player.queue_free()
+	shop_main.set("route_stage", 0)
+	shop_main.set("route_nodes", [
+		[
+			{"type": "shop", "name": "Shop 1: Test Caravan", "row": 0, "branch": 0, "next_branches": [0]},
+		],
+		[
+			{"type": "battle", "name": "Battle 2: Test Road", "row": 1, "branch": 0, "next_branches": [0]},
+		],
+		[
+			{"type": "boss", "name": "Rift Warden", "boss_id": "rift_warden", "row": 2, "branch": 0},
+		],
+	])
+	shop_main.call("_show_battle_map")
+	await process_frame
+	await process_frame
+
+	var route_scroll := shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
+	var shop_button := shop_main.find_child("RouteNode_shop_0_0", true, false) as Button
+	if route_scroll == null or shop_button == null or shop_button.disabled:
+		push_error("Expected test shop route node to start clickable.")
+		quit(1)
+		return
+	var route_nodes: Array = shop_main.get("route_nodes")
+	var shop_route_node: Dictionary = route_nodes[0][0]
+	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	await process_frame
+	if shop_main.find_child("ShopScreen", true, false) == null:
+		push_error("Expected clicking a shop route node to open the shop.")
+		quit(1)
+		return
+	var initial_shop_key := str(shop_main.get("current_shop_node_key"))
+	var initial_shop_ids: Array[String] = []
+	for item in (shop_main.get("current_shop_items") as Array):
+		var item_dict: Dictionary = item
+		initial_shop_ids.append(str(item_dict.get("id", "")))
+	if initial_shop_ids.is_empty():
+		push_error("Expected route shop to generate stock.")
+		quit(1)
+		return
+	if not bool(shop_main.call("_buy_shop_item_at", 0)):
+		push_error("Expected first route-shop item purchase to succeed.")
+		quit(1)
+		return
+	await process_frame
+	var purchased_after_buy: Array = shop_main.get("current_shop_purchased")
+	if purchased_after_buy.is_empty() or not bool(purchased_after_buy[0]):
+		push_error("Expected purchased route-shop item to stay marked.")
+		quit(1)
+		return
+	var money_after_buy := int(shop_main.call("_run_money"))
+	var leave_button := shop_main.find_child("ShopLeaveButton", true, false) as Button
+	if leave_button == null:
+		push_error("Expected route shop to expose a leave button.")
+		quit(1)
+		return
+	leave_button.pressed.emit()
+	await process_frame
+	await process_frame
+	if int(shop_main.get("route_stage")) != 0 or not bool(shop_main.get("shop_reentry_pending")):
+		push_error("Expected leaving shop to keep route_stage=0 and mark shop reentry pending.")
+		quit(1)
+		return
+	if shop_main.find_child("RouteMapScreen", true, false) == null:
+		push_error("Expected leaving shop to return to the route map.")
+		quit(1)
+		return
+	shop_button = shop_main.find_child("RouteNode_shop_0_0", true, false) as Button
+	var next_battle_button := shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	if shop_button == null or shop_button.disabled or next_battle_button == null or next_battle_button.disabled:
+		push_error("Expected both the visited shop and next route node to be clickable before leaving the level. shop=%s next=%s" % [str(shop_button), str(next_battle_button)])
+		quit(1)
+		return
+
+	route_scroll = shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
+	if route_scroll == null:
+		push_error("Expected route map scroll to exist before revisiting shop.")
+		quit(1)
+		return
+	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	await process_frame
+	if shop_main.find_child("ShopScreen", true, false) == null:
+		push_error("Expected revisiting the pending shop to reopen shop screen.")
+		quit(1)
+		return
+	var revisited_ids: Array[String] = []
+	for item in (shop_main.get("current_shop_items") as Array):
+		var item_dict: Dictionary = item
+		revisited_ids.append(str(item_dict.get("id", "")))
+	if revisited_ids != initial_shop_ids or str(shop_main.get("current_shop_node_key")) != initial_shop_key:
+		push_error("Expected revisited shop to keep same stock/key, got %s/%s instead of %s/%s." % [str(revisited_ids), str(shop_main.get("current_shop_node_key")), str(initial_shop_ids), initial_shop_key])
+		quit(1)
+		return
+	var revisited_purchased: Array = shop_main.get("current_shop_purchased")
+	if revisited_purchased.is_empty() or not bool(revisited_purchased[0]):
+		push_error("Expected revisited shop to preserve purchased state.")
+		quit(1)
+		return
+	if bool(shop_main.call("_buy_shop_item_at", 0)) or int(shop_main.call("_run_money")) != money_after_buy:
+		push_error("Expected revisited purchased shop slot to be non-rebuyable.")
+		quit(1)
+		return
+	leave_button = shop_main.find_child("ShopLeaveButton", true, false) as Button
+	leave_button.pressed.emit()
+	await process_frame
+	await process_frame
+	route_scroll = shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
+	next_battle_button = shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	if route_scroll == null or next_battle_button == null or next_battle_button.disabled:
+		push_error("Expected next battle node to stay clickable after a repeated shop visit.")
+		quit(1)
+		return
+	var next_route_node: Dictionary = route_nodes[1][0]
+	_send_route_node_mouse_press(shop_main, next_battle_button, route_scroll, 0, next_route_node, 1)
+	_send_route_node_mouse_release(shop_main, next_battle_button, route_scroll, 0, next_route_node, 1)
+	await process_frame
+	if int(shop_main.get("route_stage")) != 1 or bool(shop_main.get("shop_reentry_pending")):
+		push_error("Expected choosing the next route node to advance route_stage and clear shop reentry pending.")
+		quit(1)
+		return
+	if str(shop_main.get("current_shop_node_key")) != "" or not (shop_main.get("current_shop_items") as Array).is_empty() or not (shop_main.get("current_shop_purchased") as Array).is_empty():
+		push_error("Expected choosing next route node to finalize/clear previous shop stock.")
+		quit(1)
+		return
+	if not bool(shop_main.get("combat_active")) or str(shop_main.get("current_combat_type")) != "battle":
+		push_error("Expected choosing next route node after shop to start that battle.")
+		quit(1)
+		return
+
+	shop_main.queue_free()
+	await process_frame
+
+
 func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 	if EventData.RANDOM_EVENTS.size() < 10:
 		_fail("Expected at least 10 random event scenarios.")
@@ -1881,24 +2060,24 @@ func _choice_nested_outcome_has(choice: Dictionary, key: String) -> bool:
 	return false
 
 
-func _send_route_node_mouse_press(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary) -> void:
+func _send_route_node_mouse_press(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary, step_index := 0) -> void:
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
-	main.call("_handle_route_node_input", button, press, scroll, 0, branch_index, route_node)
+	main.call("_handle_route_node_input", button, press, scroll, step_index, branch_index, route_node)
 
 
-func _send_route_node_mouse_release(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary) -> void:
+func _send_route_node_mouse_release(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary, step_index := 0) -> void:
 	var release := InputEventMouseButton.new()
 	release.button_index = MOUSE_BUTTON_LEFT
 	release.pressed = false
-	main.call("_handle_route_node_input", button, release, scroll, 0, branch_index, route_node)
+	main.call("_handle_route_node_input", button, release, scroll, step_index, branch_index, route_node)
 
 
-func _send_route_node_mouse_drag(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary, relative: Vector2) -> void:
+func _send_route_node_mouse_drag(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary, relative: Vector2, step_index := 0) -> void:
 	var motion := InputEventMouseMotion.new()
 	motion.relative = relative
-	main.call("_handle_route_node_input", button, motion, scroll, 0, branch_index, route_node)
+	main.call("_handle_route_node_input", button, motion, scroll, step_index, branch_index, route_node)
 
 
 func _test_arena_generation(main: Node, player: Node) -> void:
@@ -4362,6 +4541,40 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if tabs.get_node_or_null(tab_name) == null:
 			_fail("Expected settings tab %s to exist." % tab_name)
 			return
+	var tab_switcher := main.find_child("SettingsTabSwitcher", true, false) as Control
+	var tab_switcher_frame := main.find_child("SettingsTabSwitcherFrame", true, false) as TextureRect
+	if tab_switcher == null or tab_switcher_frame == null or tab_switcher_frame.texture == null:
+		_fail("Expected settings screen to use the SettingsTabSwitcher frame texture.")
+		return
+	var switcher_rect := tab_switcher.get_global_rect()
+	if absf((switcher_rect.size.x / switcher_rect.size.y) - 5.0) > 0.035:
+		_fail("Expected SettingsTabSwitcher to preserve the authored 1280x256 aspect ratio.")
+		return
+	var base_size := Vector2(1280.0, 256.0)
+	var safe_rects := [
+		Rect2(146.0, 78.0, 178.0, 82.0),
+		Rect2(414.0, 91.0, 178.0, 74.0),
+		Rect2(693.0, 91.0, 178.0, 74.0),
+	]
+	var scale := switcher_rect.size / base_size
+	for tab_index in range(3):
+		var tab_button := main.find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
+		if tab_button == null:
+			_fail("Expected SettingsTabButton_%d to exist." % tab_index)
+			return
+		var expected := Rect2(
+			switcher_rect.position + safe_rects[tab_index].position * scale,
+			safe_rects[tab_index].size * scale
+		)
+		var actual := tab_button.get_global_rect()
+		if actual.position.distance_to(expected.position) > 3.0 or actual.size.distance_to(expected.size) > 3.0:
+			_fail("Expected SettingsTabButton_%d to stay inside its recorded safe rect. Actual=%s expected=%s" % [tab_index, str(actual), str(expected)])
+			return
+		tab_button.pressed.emit()
+		await process_frame
+		if tabs.current_tab != tab_index:
+			_fail("Expected SettingsTabButton_%d to switch SettingsTabs current_tab." % tab_index)
+			return
 	var controls_scroll := main.find_child("ControlsScroll", true, false) as ScrollContainer
 	if controls_scroll == null:
 		_fail("Expected controls settings tab to wrap bindings in ControlsScroll.")
@@ -4386,6 +4599,8 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	if controls_content.get_child_count() < 8:
 		_fail("Expected controls content to include aim mode, binding rows, hint, and reset button.")
 		return
+	tabs.current_tab = 1
+	await process_frame
 	for slider_id in ["master_volume", "music_volume", "sfx_volume"]:
 		var slider := main.find_child("VolumeSlider_%s" % slider_id, true, false) as HSlider
 		if slider == null or not slider.visible or slider.max_value != 100.0:
@@ -5054,6 +5269,8 @@ func _test_main_menu_quit_confirmation(main_scene: PackedScene) -> void:
 	if quit_main.get_viewport().gui_get_focus_owner() != cancel_button:
 		_fail("Expected quit confirmation dialog to focus safe Cancel by default.")
 		return
+	if not _assert_quit_dialog_button_size(confirm_button, "exit") or not _assert_quit_dialog_button_size(cancel_button, "cancel"):
+		return
 	if bool(quit_main.get_meta("game_quit_requested", false)):
 		_fail("Expected main menu quit request to remain false before explicit confirmation.")
 		return
@@ -5105,6 +5322,120 @@ func _test_main_menu_quit_confirmation(main_scene: PackedScene) -> void:
 	await process_frame
 
 
+func _test_back_button_frame_safety(main_scene: PackedScene) -> void:
+	var back_main := main_scene.instantiate()
+	root.add_child(back_main)
+	await process_frame
+	var checked := []
+
+	back_main.call("_show_character_select")
+	await process_frame
+	var hero_back_button := back_main.find_child("HeroSelectBackButton", true, false) as Button
+	if not _assert_back_button_frame_safe(hero_back_button, "hero_select", 240.0, checked):
+		return
+	hero_back_button.pressed.emit()
+	await process_frame
+
+	var skill_tree_button := back_main.find_child("MainMenuSkillTreeButton", true, false) as Button
+	if skill_tree_button == null:
+		_fail("Expected MainMenuSkillTreeButton for back-button frame QA.")
+		return
+	skill_tree_button.pressed.emit()
+	await process_frame
+	var skill_tree_back_button := back_main.find_child("SkillTreeBackButton", true, false) as Button
+	if not _assert_back_button_frame_safe(skill_tree_back_button, "skill_tree", 260.0, checked):
+		return
+	skill_tree_back_button.pressed.emit()
+	await process_frame
+
+	var patch_button := back_main.find_child("MainMenuPatchNotesButton", true, false) as Button
+	if patch_button == null:
+		_fail("Expected MainMenuPatchNotesButton for back-button frame QA.")
+		return
+	patch_button.pressed.emit()
+	await process_frame
+	var patch_back_button := back_main.find_child("PatchNotesBackButton", true, false) as Button
+	if not _assert_back_button_frame_safe(patch_back_button, "patch_notes", 260.0, checked):
+		return
+	patch_back_button.pressed.emit()
+	await process_frame
+
+	var codex_button := back_main.find_child("MainMenuCodexButton", true, false) as Button
+	if codex_button == null:
+		_fail("Expected MainMenuCodexButton for back-button frame QA.")
+		return
+	codex_button.pressed.emit()
+	await process_frame
+	var codex_back_button := back_main.find_child("CodexBackButton", true, false) as Button
+	if not _assert_back_button_frame_safe(codex_back_button, "codex", 260.0, checked):
+		return
+
+	_write_back_button_qa_dump(back_main, checked)
+	back_main.queue_free()
+	await process_frame
+
+
+func _assert_back_button_frame_safe(button: Button, context: String, min_width: float, checked: Array) -> bool:
+	if button == null:
+		_fail("Expected %s back button to exist." % context)
+		return false
+	var rect := button.get_global_rect()
+	var viewport_rect := button.get_viewport().get_visible_rect()
+	if button.custom_minimum_size.x < min_width or rect.size.x < min_width - 1.0:
+		_fail("Expected %s back button to use a non-cropped medium/large frame, got min=%s rect=%s." % [context, str(button.custom_minimum_size), str(rect)])
+		return false
+	if rect.size.y < 92.0:
+		_fail("Expected %s back button height to keep Red&Gold ornament readable, got %s." % [context, str(rect)])
+		return false
+	if rect.position.x < -0.5 or rect.position.y < -0.5 or rect.end.x > viewport_rect.size.x + 0.5 or rect.end.y > viewport_rect.size.y + 0.5:
+		_fail("Expected %s back button to stay inside viewport, got rect=%s viewport=%s." % [context, str(rect), str(viewport_rect)])
+		return false
+	var normal_style := button.get_theme_stylebox("normal")
+	if normal_style == null:
+		_fail("Expected %s back button to have a themed normal stylebox." % context)
+		return false
+	var content_width := rect.size.x - normal_style.get_content_margin(SIDE_LEFT) - normal_style.get_content_margin(SIDE_RIGHT)
+	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
+	var estimated_text_width := float(button.text.length()) * 8.5 + 8.0
+	if content_width < estimated_text_width or content_height < 34.0:
+		_fail("Expected %s back button text to fit inside content zone, got content %.1fx%.1f text_est=%.1f rect=%s." % [context, content_width, content_height, estimated_text_width, str(rect)])
+		return false
+	checked.append({
+		"context": context,
+		"name": button.name,
+		"text": button.text,
+		"rect": rect,
+		"min_size": button.custom_minimum_size,
+		"content_size": Vector2(content_width, content_height),
+	})
+	return true
+
+
+func _write_back_button_qa_dump(main: Node, checked: Array) -> void:
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum343")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump := PackedStringArray()
+	dump.append("# SCRUM-343 Back Button QA")
+	dump.append("")
+	for entry in checked:
+		var item: Dictionary = entry
+		dump.append("- `%s` `%s`: rect `%s`, min `%s`, content `%s`" % [
+			str(item.get("context", "")),
+			str(item.get("name", "")),
+			str(item.get("rect", "")),
+			str(item.get("min_size", "")),
+			str(item.get("content_size", "")),
+		])
+	var file := FileAccess.open("%s/back_button_frames.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump))
+		file.close()
+	if DisplayServer.get_name() != "headless":
+		var image := main.get_viewport().get_texture().get_image()
+		if image != null and image.get_width() > 0 and image.get_height() > 0:
+			image.save_png("%s/back_button_frames.png" % qa_dir)
+
+
 func _write_quit_confirmation_qa_dump(main: Node, panel: Control) -> void:
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum319")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
@@ -5114,6 +5445,16 @@ func _write_quit_confirmation_qa_dump(main: Node, panel: Control) -> void:
 	dump.append("- dialog: `%s`" % str(main.find_child("QuitConfirmationDialog", true, false) != null))
 	dump.append("- panel_rect: `%s`" % str(panel.get_global_rect()))
 	dump.append("- focus_owner: `%s`" % str(main.get_viewport().gui_get_focus_owner().name if main.get_viewport().gui_get_focus_owner() != null else ""))
+	for button_name in ["QuitConfirmExitButton", "QuitConfirmCancelButton"]:
+		var button := main.find_child(button_name, true, false) as Button
+		if button != null:
+			var style := button.get_theme_stylebox("normal") as StyleBoxTexture
+			dump.append("- %s: rect `%s`, min `%s`, texture `%s`" % [
+				button_name,
+				str(button.get_global_rect()),
+				str(button.custom_minimum_size),
+				str(style.texture.resource_path if style != null and style.texture != null else ""),
+			])
 	var file := FileAccess.open("%s/quit_confirmation_dialog.md" % qa_dir, FileAccess.WRITE)
 	if file != null:
 		file.store_string("\n".join(dump))
@@ -5122,6 +5463,31 @@ func _write_quit_confirmation_qa_dump(main: Node, panel: Control) -> void:
 		var image := main.get_viewport().get_texture().get_image()
 		if image != null and image.get_width() > 0 and image.get_height() > 0:
 			image.save_png("%s/quit_confirmation_dialog.png" % qa_dir)
+
+
+func _assert_quit_dialog_button_size(button: Button, context: String) -> bool:
+	if button == null:
+		_fail("Expected quit confirmation %s button." % context)
+		return false
+	var rect := button.get_global_rect()
+	if absf(button.custom_minimum_size.x - 220.0) > 0.5 or absf(button.custom_minimum_size.y - 72.0) > 0.5:
+		_fail("Expected quit confirmation %s button minimum size to stay 220x72, got %s." % [context, str(button.custom_minimum_size)])
+		return false
+	if absf(rect.size.x - 220.0) > 1.0 or absf(rect.size.y - 72.0) > 1.0:
+		_fail("Expected quit confirmation %s button rect to stay 220x72, got %s." % [context, str(rect)])
+		return false
+	if not _button_uses_red_gold_type(button, "pause"):
+		_fail("Expected quit confirmation %s button to use the 72px-safe pause Red&Gold frame." % context)
+		return false
+	var normal_style := button.get_theme_stylebox("normal")
+	if normal_style == null:
+		_fail("Expected quit confirmation %s button to have content margins." % context)
+		return false
+	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
+	if content_height < 48.0:
+		_fail("Expected quit confirmation %s button content height to remain readable, got %.1f." % [context, content_height])
+		return false
+	return true
 
 
 func _test_codex_screen(main_scene: PackedScene) -> void:
@@ -5496,47 +5862,109 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var hero_screen := hero_main.find_child("HeroSelectScreen", true, false) as Control
 	var radar := hero_main.find_child("HeroStatRadar", true, false) as Control
 	var radar_panel := hero_main.find_child("HeroSelectRadarPanel", true, false) as Control
+	var radar_content := hero_main.find_child("HeroSelectRadarContent", true, false) as Control
+	var radar_title := hero_main.find_child("HeroStatRadarTitle", true, false) as Control
 	var header := hero_main.find_child("HeroSelectHeader", true, false) as Control
 	var portrait_panel := hero_main.find_child("HeroSelectPortraitPanel", true, false) as Control
+	var right_region := hero_main.find_child("HeroSelectRightRegion", true, false) as Control
 	var dossier_panel := hero_main.find_child("HeroSelectDossierPanel", true, false) as Control
 	var dossier := hero_main.find_child("HeroSelectDossier", true, false) as Control
 	var dossier_title := hero_main.find_child("HeroSelectInfoTitle", true, false) as Control
 	var dossier_desc := hero_main.find_child("HeroSelectInfoDescription", true, false) as Control
 	var asc_mods := hero_main.find_child("AscensionModsLabel", true, false) as Control
 	var choose_button := hero_main.find_child("HeroSelectChooseButton", true, false) as Control
+	var thumbnail_frame := hero_main.find_child("HeroThumbnailStripFrame", true, false) as Control
+	var thumbnail_content := hero_main.find_child("HeroThumbnailStripContent", true, false) as Control
 	var thumbnail_strip := hero_main.find_child("HeroThumbnailStrip", true, false) as Control
-	if hero_screen == null or radar == null or radar_panel == null or header == null or portrait_panel == null or dossier_panel == null or dossier == null or dossier_desc == null or thumbnail_strip == null:
+	if hero_screen == null or radar == null or radar_panel == null or radar_content == null or header == null or portrait_panel == null or right_region == null or dossier_panel == null or dossier == null or dossier_desc == null or thumbnail_frame == null or thumbnail_content == null or thumbnail_strip == null:
 		_fail("Expected hero select radar/header/dossier nodes at %s." % context)
+		return
+	if radar_title != null:
+		_fail("Expected hero stat radar title to be removed at %s." % context)
 		return
 	var screen_rect := hero_screen.get_global_rect()
 	var radar_rect := radar.get_global_rect()
 	var radar_panel_rect := radar_panel.get_global_rect()
+	var radar_content_rect := radar_content.get_global_rect()
 	var header_rect := header.get_global_rect()
 	var portrait_rect := portrait_panel.get_global_rect()
+	var right_region_rect := right_region.get_global_rect()
 	var dossier_rect := dossier.get_global_rect()
 	var dossier_panel_rect := dossier_panel.get_global_rect()
 	var dossier_desc_rect := dossier_desc.get_global_rect()
+	var thumbnail_frame_rect := thumbnail_frame.get_global_rect()
+	var thumbnail_content_rect := thumbnail_content.get_global_rect()
 	var thumbnail_rect := thumbnail_strip.get_global_rect()
 	dump_lines.append("## %s" % context)
 	dump_lines.append("- `HeroSelectScreen`: `%s`" % str(screen_rect))
 	dump_lines.append("- `HeroSelectHeader`: `%s`" % str(header_rect))
 	dump_lines.append("- `HeroSelectPortraitPanel`: `%s`" % str(portrait_rect))
+	dump_lines.append("- `HeroSelectRightRegion`: `%s`" % str(right_region_rect))
 	dump_lines.append("- `HeroSelectDossierPanel`: `%s`" % str(dossier_panel_rect))
 	dump_lines.append("- `HeroSelectDossier`: `%s`" % str(dossier_rect))
 	dump_lines.append("- `HeroSelectInfoDescription`: `%s`" % str(dossier_desc_rect))
 	if asc_mods != null:
 		dump_lines.append("- `AscensionModsLabel`: `%s`" % str(asc_mods.get_global_rect()))
 	dump_lines.append("- `HeroSelectRadarPanel`: `%s`" % str(radar_panel_rect))
+	dump_lines.append("- `HeroSelectRadarContent`: `%s`" % str(radar_content_rect))
 	dump_lines.append("- `HeroStatRadar`: `%s`" % str(radar_rect))
-	dump_lines.append("- `HeroThumbnailStrip`: `%s`" % str(thumbnail_rect))
+	dump_lines.append("- `HeroThumbnailStripFrame`: `%s`" % str(thumbnail_frame_rect))
+	dump_lines.append("- `HeroThumbnailStripContent`: `%s`" % str(thumbnail_content_rect))
+	dump_lines.append("- `HeroThumbnailStrip`: `%s` separation=`%d`" % [str(thumbnail_rect), thumbnail_strip.get_theme_constant("separation")])
+	var thumbnail_buttons := []
+	for child in thumbnail_strip.get_children():
+		var thumb := child as Control
+		if thumb != null:
+			thumbnail_buttons.append(thumb)
+	if thumbnail_buttons.is_empty():
+		_fail("Expected hero thumbnail buttons at %s." % context)
+		return
+	var first_thumb := thumbnail_buttons[0] as Control
+	var first_thumb_rect := first_thumb.get_global_rect()
+	dump_lines.append("- `HeroThumbnailSample`: min=`%s`, rect=`%s`" % [str(first_thumb.custom_minimum_size), str(first_thumb_rect)])
+	var min_expected_thumb_width := 48.0
+	if viewport_size.x >= 1600:
+		min_expected_thumb_width = 60.0
+	if viewport_size.x >= 2560:
+		min_expected_thumb_width = 96.0
+	if first_thumb.custom_minimum_size.x < min_expected_thumb_width or first_thumb.custom_minimum_size.y < maxf(first_thumb.custom_minimum_size.x * 1.20, 56.0):
+		_fail("Expected larger, taller hero thumbnails at %s, got min %s." % [context, first_thumb.custom_minimum_size])
+		return
+	if thumbnail_strip.get_theme_constant("separation") > 2:
+		_fail("Expected compact hero thumbnail separation at %s." % context)
+		return
+	for thumb in thumbnail_buttons:
+		var thumb_rect := (thumb as Control).get_global_rect()
+		if not _rect_contains_with_tolerance(thumbnail_content_rect, thumb_rect, 1.5):
+			_fail("Expected hero thumbnail %s to stay inside carousel content-zone at %s, got thumb %s content %s." % [(thumb as Control).name, context, thumb_rect, thumbnail_content_rect])
+			return
 	var min_gap := 12.0
+	var content_row := hero_main.find_child("HeroSelectContent", true, false) as Control
+	if content_row != null:
+		var content_width := maxf(content_row.get_global_rect().size.x, 1.0)
+		var portrait_share := portrait_rect.size.x / content_width
+		var right_share := right_region_rect.size.x / content_width
+		dump_lines.append("- `HeroSelectContentShare`: portrait=`%.3f`, right=`%.3f`" % [portrait_share, right_share])
+		if absf(portrait_share - 0.333) > 0.055 or absf(right_share - 0.667) > 0.055:
+			_fail("Expected hero select master layout 1/3 portrait and 2/3 right region at %s, got %.3f / %.3f." % [context, portrait_share, right_share])
+			return
 	if dossier_rect.end.x > radar_panel_rect.position.x - min_gap or dossier_desc_rect.end.x > radar_panel_rect.position.x - min_gap:
 		_fail("Expected hero description/dossier to stay left of radar with >= %.0fpx gap at %s, got dossier %s desc %s radar panel %s." % [min_gap, context, dossier_rect, dossier_desc_rect, radar_panel_rect])
 		return
 	if radar_panel.get_parent() != hero_screen or radar_panel.anchor_right < 0.99 or radar_panel.anchor_left < 0.99:
 		_fail("Expected hero radar panel to be a floating top-right widget parented to HeroSelectScreen at %s." % context)
 		return
-	if radar_panel_rect.end.x > screen_rect.end.x - 18.0 or radar_panel_rect.position.x < screen_rect.end.x - 500.0:
+	if absf(radar_panel_rect.size.x - radar_panel_rect.size.y) > 2.0:
+		_fail("Expected hero radar windrose frame to stay square/proportional at %s, got %s." % [context, radar_panel_rect])
+		return
+	if radar_rect.get_center().distance_to(radar_content_rect.get_center()) > 4.0:
+		_fail("Expected hero radar graph to be centered in its windrose content zone at %s, got radar %s content %s." % [context, radar_rect, radar_content_rect])
+		return
+	if HeroStatRadarScript.HERO_RADAR_RADIUS_FACTOR < 0.36:
+		_fail("Expected hero radar polygon radius factor to stay enlarged at %s." % context)
+		return
+	var expected_left_min := screen_rect.end.x - radar_panel_rect.size.x - 48.0
+	if radar_panel_rect.end.x > screen_rect.end.x - 18.0 or radar_panel_rect.position.x < expected_left_min:
 		_fail("Expected hero radar panel to sit near the top-right screen edge at %s, got %s in %s." % [context, radar_panel_rect, screen_rect])
 		return
 	if radar_panel_rect.position.y < header_rect.end.y + 8.0:
@@ -5796,6 +6224,13 @@ func _rect_with_tolerance(rect: Rect2, tolerance_px: float) -> Rect2:
 	var shrink := tolerance_px * 0.5
 	var size := Vector2(maxf(rect.size.x - tolerance_px, 0.0), maxf(rect.size.y - tolerance_px, 0.0))
 	return Rect2(rect.position + Vector2(shrink, shrink), size)
+
+
+func _rect_contains_with_tolerance(outer: Rect2, inner: Rect2, tolerance_px: float) -> bool:
+	return inner.position.x >= outer.position.x - tolerance_px \
+		and inner.position.y >= outer.position.y - tolerance_px \
+		and inner.end.x <= outer.end.x + tolerance_px \
+		and inner.end.y <= outer.end.y + tolerance_px
 
 
 func _collect_label_text(node: Node) -> String:

@@ -57,6 +57,7 @@ func _test_weapon_fire_paths() -> void:
 
 	var weapon_sets := {
 		"berserk": ["sword", "axe", "hammer"],
+		"knight": ["long_spear", "tower_shield", "holy_flail"],
 		"dark_mage": ["dark_book", "cursed_skull", "dark_wand"],
 		"guitarist": ["electric_guitar", "bass_guitar", "sound_amp"],
 	}
@@ -70,5 +71,15 @@ func _test_weapon_fire_paths() -> void:
 				quit(1)
 			if weapon.has_method("_attack"):
 				weapon.call("_attack")
+			if not _has_vfx_node("WeaponSignatureVfx_%s" % weapon_id):
+				push_error("Expected %s/%s to spawn dedicated weapon signature VFX." % [character_id, weapon_id])
+				quit(1)
 	player.queue_free()
 	enemy.queue_free()
+
+
+func _has_vfx_node(node_name: String) -> bool:
+	for child in root.get_children():
+		if child.name == node_name:
+			return true
+	return false

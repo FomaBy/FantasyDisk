@@ -6,6 +6,7 @@
 Исполнитель: Codex
 Версия: 0.1.5
 Jira: SCRUM-335
+QA: passed (2026-06-14, commit 1f58fd93)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил изменения в рамках этой задачи. Работать автономно, не ждать дополнительных подтверждений.
@@ -46,3 +47,28 @@ Jira: SCRUM-335
 - `enemy_projectile_smoke_test` — PASS.
 - `hazard_vfx_smoke_test` — PASS.
 - `runtime_smoke_test` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 1f58fd93 (ветка dev)
+
+Проверено (фактически):
+- **Код**: `BerserkWeapon._show_weapon_signature()` → `AttackVfx.weapon_signature()`
+  показывает existing `vfx_weapon_*` plates для Berserk/Knight melee (sword/axe/
+  hammer/long_spear/tower_shield/holy_flail) БЕЗ изменения урона/зон/cooldown/
+  targeting; enemy projectile получил textured trail + impact flash.
+- **Целевые тесты — все зелёные**: `attack_vfx_smoke_test`,
+  `enemy_projectile_smoke_test` (setup/движение/arena/коллизия+однократность/
+  runtime VFX/despawn), `hazard_vfx_smoke_test`, `runtime_smoke_combat`,
+  `animation_smoke` — passed.
+
+Acceptance:
+- [x] BerserkWeapon/melee показывают dedicated weapon signature VFX (6 оружий).
+- [x] Enemy projectile — textured trail + impact, gameplay не изменён.
+- [x] attack_vfx/enemy_projectile/hazard тесты проходят; docs/Jira синканы.
+
+Примечание: полная skill-перегенерация VFX-ассетов вынесена в SCRUM-337 (blocked,
+нет `OPENAI_API_KEY`) — вне scope этой runtime-интеграционной задачи; правило
+«ассеты только skill-ом» соблюдено (старые генераторы не запускались).
+
+Баги: нет.

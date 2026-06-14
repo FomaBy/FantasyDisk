@@ -53,7 +53,29 @@ const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
+const HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE := Vector2(734.0, 1162.0)
+const HERO_SELECT_PORTRAIT_CONTENT_BASE := Vector4(128.0, 230.0, 128.0, 330.0)
+const HERO_SELECT_RADAR_FRAME_SOURCE_SIZE := Vector2(1024.0, 1024.0)
+const HERO_SELECT_RADAR_FRAME_BASE_SIZE := Vector2(390.0, 390.0)
+const HERO_SELECT_RADAR_CONTENT_BASE := Vector4(245.0, 245.0, 245.0, 235.0)
+const HERO_SELECT_RADAR_GRAPH_BASE_SIZE := Vector2(200.0, 150.0)
+const HERO_SELECT_DOSSIER_FRAME_SOURCE_SIZE := Vector2(1120.0, 1140.0)
+const HERO_SELECT_DOSSIER_FRAME_BASE_SIZE := Vector2(387.0, 394.0)
+const HERO_SELECT_DOSSIER_CONTENT_BASE := Vector4(96.0, 66.0, 96.0, 54.0)
+const HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE := Vector2(1024.0, 170.0)
+const HERO_SELECT_CAROUSEL_CONTENT_BASE := Vector4(112.0, 46.0, 112.0, 46.0)
+const HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE := Vector4(72.0, 36.0, 72.0, 36.0)
+const HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION := 2
 const HERO_SELECT_FRAME_DIR := "res://assets/sprites/ui/frames/hero_select/"
+const SETTINGS_TAB_SWITCHER_FRAME_PATH := "res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png"
+const SETTINGS_TAB_SWITCHER_BASE_SIZE := Vector2(1280.0, 256.0)
+const SETTINGS_TAB_SWITCHER_DISPLAY_SIZE := Vector2(640.0, 128.0)
+const SETTINGS_TAB_SWITCHER_SAFE_RECTS := [
+	Rect2(146.0, 78.0, 178.0, 82.0),
+	Rect2(414.0, 91.0, 178.0, 74.0),
+	Rect2(693.0, 91.0, 178.0, 74.0),
+	Rect2(969.0, 91.0, 162.0, 74.0),
+]
 const HERO_SELECT_FRAME_TEXTURES := {
 	"portrait": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_portrait.png",
 	"dossier": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_dossier.png",
@@ -68,7 +90,7 @@ const HERO_SELECT_FRAME_MARGINS := {
 	"portrait": Vector4(72, 86, 72, 92),
 	"dossier": Vector4(92, 86, 92, 90),
 	"radar": Vector4(88, 88, 88, 88),
-	"thumbnail_strip": Vector4(96, 48, 96, 52),
+	"thumbnail_strip": Vector4(112, 48, 112, 52),
 	"thumbnail": Vector4(78, 72, 78, 76),
 	"asc_button": Vector4(58, 58, 58, 62),
 	"asc_label": Vector4(86, 36, 86, 38),
@@ -78,7 +100,7 @@ const HERO_SELECT_FRAME_CONTENT := {
 	"portrait": Vector4(38, 42, 38, 44),
 	"dossier": Vector4(28, 18, 32, 18),
 	"radar": Vector4(12, 12, 12, 12),
-	"thumbnail_strip": Vector4(24, 18, 24, 20),
+	"thumbnail_strip": Vector4(72, 36, 72, 36),
 	"thumbnail": Vector4(14, 12, 14, 12),
 	"asc_button": Vector4(14, 12, 14, 14),
 	"asc_label": Vector4(24, 8, 24, 8),
@@ -102,6 +124,9 @@ func _show_main_menu() -> void:
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
 	game.pending_level_ups = 0
+	game.shop_reentry_pending = false
+	game.shop_reentry_route_stage = -1
+	game.shop_reentry_branch_index = -1
 	game.route_nodes = game.route._generate_route()
 
 	game.ui_layer = CanvasLayer.new()
@@ -276,12 +301,15 @@ func _show_quit_confirmation_dialog() -> void:
 	var button_row := HBoxContainer.new()
 	button_row.name = "QuitConfirmationButtons"
 	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	button_row.custom_minimum_size = Vector2(0.0, 72.0)
+	button_row.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button_row.add_theme_constant_override("separation", 18)
 	box.add_child(button_row)
 
 	var confirm_button := _make_button("Выйти")
 	confirm_button.name = "QuitConfirmExitButton"
 	_set_action_button_size(confirm_button, 220.0, 72.0)
+	confirm_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	confirm_button.pressed.connect(func() -> void:
 		if game.has_method("request_game_quit"):
 			game.request_game_quit()
@@ -293,6 +321,7 @@ func _show_quit_confirmation_dialog() -> void:
 	var cancel_button := _make_button("Отмена")
 	cancel_button.name = "QuitConfirmCancelButton"
 	_set_action_button_size(cancel_button, 220.0, 72.0)
+	cancel_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	cancel_button.pressed.connect(_cancel_quit_confirmation_dialog)
 	button_row.add_child(cancel_button)
 
@@ -325,6 +354,9 @@ func _show_character_select() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.shop_reentry_pending = false
+	game.shop_reentry_route_stage = -1
+	game.shop_reentry_branch_index = -1
 	game.route_nodes = game.route._generate_route()
 	_clear_current_shop_stock()
 	game._clear_ui()
@@ -385,7 +417,7 @@ func _show_character_select() -> void:
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HeroSelectBackButton"
-	_set_action_button_size(back_button, 170.0)
+	_set_action_button_size(back_button, 240.0)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 
@@ -396,23 +428,51 @@ func _show_character_select() -> void:
 	content_row.add_theme_constant_override("separation", 16)
 	layout.add_child(content_row)
 
-	var portrait_panel := PanelContainer.new()
+	var portrait_panel := CenterContainer.new()
 	portrait_panel.name = "HeroSelectPortraitPanel"
-	portrait_panel.custom_minimum_size = Vector2(320, 400)
-	portrait_panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	portrait_panel.custom_minimum_size = _hero_select_portrait_frame_size()
+	portrait_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	portrait_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	portrait_panel.size_flags_stretch_ratio = 0.38
-	portrait_panel.add_theme_stylebox_override("panel", _hero_select_frame_style("portrait"))
+	portrait_panel.size_flags_stretch_ratio = 1.0
+	portrait_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content_row.add_child(portrait_panel)
+
+	var portrait_frame := Control.new()
+	portrait_frame.name = "HeroSelectPortraitFrame"
+	portrait_frame.custom_minimum_size = _hero_select_portrait_frame_size()
+	portrait_frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	portrait_frame.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	portrait_panel.add_child(portrait_frame)
+
+	var portrait_frame_art := TextureRect.new()
+	portrait_frame_art.name = "HeroSelectPortraitFrameArt"
+	portrait_frame_art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	portrait_frame_art.texture = game._cached_texture(HERO_SELECT_FRAME_TEXTURES["portrait"])
+	portrait_frame_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait_frame_art.stretch_mode = TextureRect.STRETCH_SCALE
+	portrait_frame_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	portrait_frame.add_child(portrait_frame_art)
+
+	var portrait_content := MarginContainer.new()
+	portrait_content.name = "HeroSelectPortraitContent"
+	portrait_content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	portrait_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var portrait_scale := _hero_select_portrait_scale()
+	portrait_content.add_theme_constant_override("margin_left", int(round(HERO_SELECT_PORTRAIT_CONTENT_BASE.x * portrait_scale)))
+	portrait_content.add_theme_constant_override("margin_top", int(round(HERO_SELECT_PORTRAIT_CONTENT_BASE.y * portrait_scale)))
+	portrait_content.add_theme_constant_override("margin_right", int(round(HERO_SELECT_PORTRAIT_CONTENT_BASE.z * portrait_scale)))
+	portrait_content.add_theme_constant_override("margin_bottom", int(round(HERO_SELECT_PORTRAIT_CONTENT_BASE.w * portrait_scale)))
+	portrait_frame.add_child(portrait_content)
 
 	var portrait_box := VBoxContainer.new()
 	portrait_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	portrait_box.add_theme_constant_override("separation", 6)
-	portrait_panel.add_child(portrait_box)
+	portrait_content.add_child(portrait_box)
 
 	var large_portrait := TextureRect.new()
 	large_portrait.name = "HeroSelectLargePortrait"
-	large_portrait.custom_minimum_size = Vector2(220, 280)
+	large_portrait.custom_minimum_size = Vector2(0, 0)
 	large_portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	large_portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	large_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -421,21 +481,53 @@ func _show_character_select() -> void:
 	portrait_box.add_child(large_portrait)
 	# Имя героя теперь ТОЛЬКО в досье (HeroSelectInfoTitle) — подпись под портретом убрана.
 
-	var dossier_panel := PanelContainer.new()
+	var right_region := HBoxContainer.new()
+	right_region.name = "HeroSelectRightRegion"
+	right_region.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_region.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right_region.size_flags_stretch_ratio = 2.0
+	right_region.add_theme_constant_override("separation", 16)
+	content_row.add_child(right_region)
+
+	var dossier_panel := CenterContainer.new()
 	dossier_panel.name = "HeroSelectDossierPanel"
-	dossier_panel.custom_minimum_size = Vector2(380, 0)
-	dossier_panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	dossier_panel.custom_minimum_size = _hero_select_dossier_frame_size()
+	dossier_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dossier_panel.size_flags_stretch_ratio = 0.62
-	dossier_panel.add_theme_stylebox_override("panel", _hero_select_frame_style("dossier"))
-	content_row.add_child(dossier_panel)
+	right_region.add_child(dossier_panel)
+
+	var dossier_frame := Control.new()
+	dossier_frame.name = "HeroSelectDossierFrame"
+	dossier_frame.custom_minimum_size = _hero_select_dossier_frame_size()
+	dossier_frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	dossier_frame.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	dossier_panel.add_child(dossier_frame)
+
+	var dossier_frame_art := TextureRect.new()
+	dossier_frame_art.name = "HeroSelectDossierFrameArt"
+	dossier_frame_art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dossier_frame_art.texture = game._cached_texture(HERO_SELECT_FRAME_TEXTURES["dossier"])
+	dossier_frame_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	dossier_frame_art.stretch_mode = TextureRect.STRETCH_SCALE
+	dossier_frame_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dossier_frame.add_child(dossier_frame_art)
+
+	var dossier_content := MarginContainer.new()
+	dossier_content.name = "HeroSelectDossierContent"
+	dossier_content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var dossier_source_scale := _hero_select_dossier_frame_size().x / HERO_SELECT_DOSSIER_FRAME_SOURCE_SIZE.x
+	dossier_content.add_theme_constant_override("margin_left", int(round(HERO_SELECT_DOSSIER_CONTENT_BASE.x * dossier_source_scale)))
+	dossier_content.add_theme_constant_override("margin_top", int(round(HERO_SELECT_DOSSIER_CONTENT_BASE.y * dossier_source_scale)))
+	dossier_content.add_theme_constant_override("margin_right", int(round(HERO_SELECT_DOSSIER_CONTENT_BASE.z * dossier_source_scale)))
+	dossier_content.add_theme_constant_override("margin_bottom", int(round(HERO_SELECT_DOSSIER_CONTENT_BASE.w * dossier_source_scale)))
+	dossier_frame.add_child(dossier_content)
 
 	var dossier := VBoxContainer.new()
 	dossier.name = "HeroSelectDossier"
 	dossier.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	dossier.add_theme_constant_override("separation", 7)
-	dossier_panel.add_child(dossier)
+	dossier_content.add_child(dossier)
 
 	var dossier_title := Label.new()
 	dossier_title.name = "HeroSelectInfoTitle"
@@ -501,58 +593,96 @@ func _show_character_select() -> void:
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	dossier.add_child(select_button)
 
-	var radar_reserve := PanelContainer.new()
+	var radar_frame_size := _hero_select_radar_frame_size()
+
+	var radar_reserve := Control.new()
 	radar_reserve.name = "HeroSelectRadarReserve"
-	radar_reserve.custom_minimum_size = Vector2(408, 300)
+	radar_reserve.custom_minimum_size = Vector2(radar_frame_size.x + 18.0, radar_frame_size.y)
 	radar_reserve.size_flags_horizontal = Control.SIZE_SHRINK_END
 	radar_reserve.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	radar_reserve.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	radar_reserve.add_theme_stylebox_override("panel", _hero_select_frame_style("dossier", Color(0.72, 0.72, 0.72, 0.48)))
-	content_row.add_child(radar_reserve)
+	right_region.add_child(radar_reserve)
 
-	var radar_panel := PanelContainer.new()
+	var radar_panel := Control.new()
 	radar_panel.name = "HeroSelectRadarPanel"
 	radar_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	radar_panel.offset_left = -414
+	radar_panel.offset_left = -24.0 - radar_frame_size.x
 	radar_panel.offset_top = 132
 	radar_panel.offset_right = -24
-	radar_panel.offset_bottom = 432
-	radar_panel.add_theme_stylebox_override("panel", _hero_select_frame_style("radar"))
+	radar_panel.offset_bottom = 132.0 + radar_frame_size.y
+	radar_panel.custom_minimum_size = radar_frame_size
+	radar_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(radar_panel)
+
+	var radar_frame_art := TextureRect.new()
+	radar_frame_art.name = "HeroSelectRadarFrameArt"
+	radar_frame_art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	radar_frame_art.texture = game._cached_texture(HERO_SELECT_FRAME_TEXTURES["radar"])
+	radar_frame_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	radar_frame_art.stretch_mode = TextureRect.STRETCH_SCALE
+	radar_frame_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	radar_panel.add_child(radar_frame_art)
+
+	var radar_content := MarginContainer.new()
+	radar_content.name = "HeroSelectRadarContent"
+	radar_content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	radar_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var radar_source_scale := radar_frame_size.x / HERO_SELECT_RADAR_FRAME_SOURCE_SIZE.x
+	radar_content.add_theme_constant_override("margin_left", int(round(HERO_SELECT_RADAR_CONTENT_BASE.x * radar_source_scale)))
+	radar_content.add_theme_constant_override("margin_top", int(round(HERO_SELECT_RADAR_CONTENT_BASE.y * radar_source_scale)))
+	radar_content.add_theme_constant_override("margin_right", int(round(HERO_SELECT_RADAR_CONTENT_BASE.z * radar_source_scale)))
+	radar_content.add_theme_constant_override("margin_bottom", int(round(HERO_SELECT_RADAR_CONTENT_BASE.w * radar_source_scale)))
+	radar_panel.add_child(radar_content)
 
 	var radar_box := VBoxContainer.new()
 	radar_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	radar_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	radar_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	radar_box.add_theme_constant_override("separation", 6)
-	radar_panel.add_child(radar_box)
-
-	var radar_title := Label.new()
-	radar_title.name = "HeroStatRadarTitle"
-	radar_title.text = "Характеристики"
-	radar_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	radar_title.add_theme_font_size_override("font_size", 17)
-	radar_title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
-	radar_box.add_child(radar_title)
+	radar_content.add_child(radar_box)
 
 	var radar := HeroStatRadar.new()
 	radar.name = "HeroStatRadar"
-	radar.custom_minimum_size = Vector2(360, 230)
+	radar.custom_minimum_size = _hero_select_radar_graph_size()
 	radar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	radar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	radar_box.add_child(radar)
 
-	var thumbnail_strip_frame := PanelContainer.new()
+	var thumbnail_strip_frame := Control.new()
 	thumbnail_strip_frame.name = "HeroThumbnailStripFrame"
-	thumbnail_strip_frame.custom_minimum_size = Vector2(0, 104)
-	thumbnail_strip_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	thumbnail_strip_frame.add_theme_stylebox_override("panel", _hero_select_frame_style("thumbnail_strip"))
+	thumbnail_strip_frame.custom_minimum_size = _hero_select_carousel_frame_size()
+	thumbnail_strip_frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	thumbnail_strip_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layout.add_child(thumbnail_strip_frame)
+
+	var thumbnail_strip_art := TextureRect.new()
+	thumbnail_strip_art.name = "HeroThumbnailStripFrameArt"
+	thumbnail_strip_art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	thumbnail_strip_art.texture = game._cached_texture(HERO_SELECT_FRAME_TEXTURES["thumbnail_strip"])
+	thumbnail_strip_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	thumbnail_strip_art.stretch_mode = TextureRect.STRETCH_SCALE
+	thumbnail_strip_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	thumbnail_strip_frame.add_child(thumbnail_strip_art)
+
+	var thumbnail_strip_content := MarginContainer.new()
+	thumbnail_strip_content.name = "HeroThumbnailStripContent"
+	thumbnail_strip_content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	thumbnail_strip_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var carousel_scale := _hero_select_carousel_scale()
+	thumbnail_strip_content.add_theme_constant_override("margin_left", int(round(HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.x * carousel_scale)))
+	thumbnail_strip_content.add_theme_constant_override("margin_top", int(round(HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.y * carousel_scale)))
+	thumbnail_strip_content.add_theme_constant_override("margin_right", int(round(HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.z * carousel_scale)))
+	thumbnail_strip_content.add_theme_constant_override("margin_bottom", int(round(HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.w * carousel_scale)))
+	thumbnail_strip_frame.add_child(thumbnail_strip_content)
 
 	var thumbnail_strip := HBoxContainer.new()
 	thumbnail_strip.name = "HeroThumbnailStrip"
 	thumbnail_strip.custom_minimum_size = Vector2(0, 96)
 	thumbnail_strip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	thumbnail_strip.add_theme_constant_override("separation", 4)
-	thumbnail_strip_frame.add_child(thumbnail_strip)
+	thumbnail_strip.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	thumbnail_strip.alignment = BoxContainer.ALIGNMENT_CENTER
+	thumbnail_strip.add_theme_constant_override("separation", HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION)
+	thumbnail_strip_content.add_child(thumbnail_strip)
 
 	var legacy_grid := GridContainer.new()
 	legacy_grid.name = "CharacterCardsGrid"
@@ -630,15 +760,108 @@ func _show_character_select() -> void:
 
 
 func _hero_thumbnail_size(character_count: int) -> Vector2:
-	var viewport_width := 1280.0
-	if game != null and game.get_viewport() != null:
-		viewport_width = maxf(game.get_viewport().get_visible_rect().size.x, 1.0)
-	var horizontal_margins := 124.0
-	var gap_total := maxf(float(character_count - 1), 0.0) * 4.0
-	var available_width := maxf(viewport_width - horizontal_margins - gap_total, 1.0)
-	var width := clampf(floor(available_width / maxf(float(character_count), 1.0)), 52.0, 124.0)
-	var height := clampf(width * 0.72, 52.0, 88.0)
+	var carousel_scale := _hero_select_carousel_scale()
+	var frame_size := _hero_select_carousel_frame_size()
+	var horizontal_margins := (HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.x + HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.z) * carousel_scale
+	var vertical_margins := (HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.y + HERO_SELECT_CAROUSEL_COMPACT_CONTENT_BASE.w) * carousel_scale
+	var gap_total := maxf(float(character_count - 1), 0.0) * float(HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION)
+	var available_width := maxf(frame_size.x - horizontal_margins - gap_total, 1.0)
+	var available_height := maxf(frame_size.y - vertical_margins, 1.0)
+	var width := clampf(floor(available_width / maxf(float(character_count), 1.0)), 42.0, 136.0)
+	var height := clampf(width * 1.35, 56.0, available_height)
 	return Vector2(width, height)
+
+
+func _hero_select_portrait_scale() -> float:
+	var viewport_size := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var content_height := _hero_select_content_row_height()
+	var available_width := maxf(viewport_size.x - 48.0, 1.0)
+	var right_min_width := _hero_select_dossier_frame_size().x + _hero_select_radar_frame_size().x + 18.0
+	var portrait_width_cap := maxf(available_width - right_min_width - 48.0, HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.x * 0.32)
+	var width_cap_scale := portrait_width_cap / HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.x
+	return clampf(content_height / HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.y, 0.32, minf(0.82, width_cap_scale))
+
+
+func _hero_select_portrait_frame_size() -> Vector2:
+	var scale := _hero_select_portrait_scale()
+	return Vector2(
+		round(HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.x * scale),
+		round(HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE.y * scale)
+	)
+
+
+func _hero_select_radar_scale() -> float:
+	var viewport_size := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var height_scale := maxf(viewport_size.y, 1.0) / 720.0
+	var width_scale := maxf(viewport_size.x, 1.0) / 1280.0
+	return clampf(minf(height_scale, width_scale), 1.0, 2.0)
+
+
+func _hero_select_radar_frame_size() -> Vector2:
+	var scale := _hero_select_radar_scale()
+	return Vector2(
+		round(HERO_SELECT_RADAR_FRAME_BASE_SIZE.x * scale),
+		round(HERO_SELECT_RADAR_FRAME_BASE_SIZE.y * scale)
+	)
+
+
+func _hero_select_radar_graph_size() -> Vector2:
+	var scale := _hero_select_radar_scale()
+	return Vector2(
+		round(HERO_SELECT_RADAR_GRAPH_BASE_SIZE.x * scale),
+		round(HERO_SELECT_RADAR_GRAPH_BASE_SIZE.y * scale)
+	)
+
+
+func _hero_select_dossier_scale() -> float:
+	var viewport_size := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var height_scale := _hero_select_content_row_height() / HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.y
+	var width_scale := maxf(viewport_size.x, 1.0) / 1280.0
+	var content_width := maxf(viewport_size.x - 48.0, 1.0)
+	var portrait_width := _hero_select_portrait_frame_size().x
+	var radar_width := _hero_select_radar_frame_size().x + 18.0
+	var available_dossier_width := maxf(content_width - 16.0 - portrait_width - 16.0 - radar_width, 1.0)
+	var slot_width_scale := available_dossier_width / HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.x
+	return clampf(minf(minf(height_scale, width_scale), slot_width_scale), 0.84, 2.0)
+
+
+func _hero_select_dossier_frame_size() -> Vector2:
+	var scale := _hero_select_dossier_scale()
+	return Vector2(
+		round(HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.x * scale),
+		round(HERO_SELECT_DOSSIER_FRAME_BASE_SIZE.y * scale)
+	)
+
+
+func _hero_select_content_row_height() -> float:
+	var viewport_size := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var vertical_padding := 32.0
+	var header_height := 104.0
+	var layout_gaps := 20.0
+	return maxf(viewport_size.y - vertical_padding - header_height - layout_gaps - _hero_select_carousel_frame_size().y, 300.0)
+
+
+func _hero_select_carousel_scale() -> float:
+	var viewport_size := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var available_width := maxf(viewport_size.x - 48.0, 1.0)
+	var height_scale := maxf(viewport_size.y, 1.0) / 720.0
+	var width_scale := available_width / HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE.x
+	return clampf(minf(height_scale, width_scale), 0.64, 2.08)
+
+
+func _hero_select_carousel_frame_size() -> Vector2:
+	var scale := _hero_select_carousel_scale()
+	return Vector2(round(HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE.x * scale), round(HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE.y * scale))
 
 
 func _make_hero_thumbnail_button(character_id: String, select_character: Callable, thumbnail_size := Vector2(124, 88)) -> Button:
@@ -649,6 +872,7 @@ func _make_hero_thumbnail_button(character_id: String, select_character: Callabl
 	button.set_meta("character_id", character_id)
 	button.custom_minimum_size = thumbnail_size
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [str(config.get("title", character_id)), str(config.get("description", ""))]
 	button.add_theme_stylebox_override("normal", _hero_select_frame_style("thumbnail"))
@@ -1515,12 +1739,14 @@ func _show_settings_menu() -> void:
 
 	var tabs := TabContainer.new()
 	tabs.name = "SettingsTabs"
-	tabs.custom_minimum_size = Vector2(1000, 430)
+	tabs.custom_minimum_size = Vector2(1000, 300)
 	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	tabs.tabs_visible = false
 	tabs.add_theme_font_size_override("font_size", 17)
 	tabs.add_theme_color_override("font_selected_color", Color(0.98, 0.90, 0.50, 1.0))
 	tabs.add_theme_color_override("font_unselected_color", Color(0.73, 0.78, 0.84, 1.0))
+	box.add_child(_make_settings_tab_switcher(tabs))
 	box.add_child(tabs)
 
 	var screen_tab := _make_settings_tab("Экран")
@@ -1707,6 +1933,94 @@ func _show_settings_menu() -> void:
 	back_button.pressed.connect(settings_back)
 	box.add_child(back_button)
 	game.ui_escape_action = settings_back
+
+
+func _make_settings_tab_switcher(tabs: TabContainer) -> Control:
+	var switcher := Control.new()
+	switcher.name = "SettingsTabSwitcher"
+	switcher.custom_minimum_size = SETTINGS_TAB_SWITCHER_DISPLAY_SIZE
+	switcher.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	switcher.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var art := TextureRect.new()
+	art.name = "SettingsTabSwitcherFrame"
+	art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	art.texture = game._cached_texture(SETTINGS_TAB_SWITCHER_FRAME_PATH)
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	# The control uses the same 5:1 aspect ratio as the source PNG, so this is
+	# uniform scaling, not one-axis stretching.
+	art.stretch_mode = TextureRect.STRETCH_SCALE
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	switcher.add_child(art)
+
+	var buttons: Array[Button] = []
+	var labels := ["Экран", "Звук", "Управление"]
+	var scale := SETTINGS_TAB_SWITCHER_DISPLAY_SIZE / SETTINGS_TAB_SWITCHER_BASE_SIZE
+	for tab_index in range(labels.size()):
+		var safe_rect: Rect2 = SETTINGS_TAB_SWITCHER_SAFE_RECTS[tab_index]
+		var button := Button.new()
+		button.name = "SettingsTabButton_%d" % tab_index
+		button.text = labels[tab_index]
+		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		button.focus_mode = Control.FOCUS_ALL
+		button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		button.offset_left = round(safe_rect.position.x * scale.x)
+		button.offset_top = round(safe_rect.position.y * scale.y)
+		button.offset_right = round((safe_rect.position.x + safe_rect.size.x) * scale.x)
+		button.offset_bottom = round((safe_rect.position.y + safe_rect.size.y) * scale.y)
+		button.add_theme_font_size_override("font_size", 12)
+		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
+		var target_tab := tab_index
+		button.pressed.connect(func() -> void:
+			tabs.current_tab = target_tab
+		)
+		switcher.add_child(button)
+		buttons.append(button)
+
+	var update_buttons := func(active_tab: int) -> void:
+		for button_index in range(buttons.size()):
+			_apply_settings_tab_button_theme(buttons[button_index], button_index == active_tab)
+	update_buttons.call(tabs.current_tab)
+	tabs.tab_changed.connect(func(tab_index: int) -> void:
+		update_buttons.call(tab_index)
+	)
+	return switcher
+
+
+func _apply_settings_tab_button_theme(button: Button, selected: bool) -> void:
+	button.add_theme_stylebox_override("normal", _settings_tab_button_style(selected, false, false))
+	button.add_theme_stylebox_override("hover", _settings_tab_button_style(selected, true, false))
+	button.add_theme_stylebox_override("pressed", _settings_tab_button_style(selected, true, true))
+	button.add_theme_stylebox_override("focus", _settings_tab_button_style(selected, true, false))
+	button.add_theme_stylebox_override("disabled", _settings_tab_button_style(false, false, false))
+	button.add_theme_color_override("font_color", Color(1.0, 0.88, 0.58, 1.0) if selected else Color(0.84, 0.86, 0.91, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 1.0, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.78, 1.0, 0.96, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+func _settings_tab_button_style(selected: bool, hovered: bool, pressed: bool) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.035, 0.032, 0.040, 0.08)
+	style.border_color = Color(0.74, 0.80, 0.88, 0.14)
+	if selected:
+		style.bg_color = Color(0.22, 0.045, 0.035, 0.34)
+		style.border_color = Color(0.95, 0.82, 0.48, 0.42)
+	if hovered:
+		style.bg_color = Color(0.16, 0.16, 0.18, 0.38) if not selected else Color(0.28, 0.075, 0.060, 0.44)
+		style.border_color = Color(0.92, 0.94, 0.98, 0.56)
+	if pressed:
+		style.bg_color = Color(0.05, 0.12, 0.13, 0.46)
+		style.border_color = Color(0.72, 1.0, 0.96, 0.70)
+	style.set_corner_radius_all(8)
+	style.set_border_width_all(1)
+	style.content_margin_left = 6
+	style.content_margin_right = 6
+	style.content_margin_top = 4
+	style.content_margin_bottom = 4
+	return style
 
 
 func _make_settings_tab(tab_name: String) -> MarginContainer:
@@ -2313,7 +2627,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 
 	var later_button := _make_button("Позже")
 	later_button.name = "LevelUpLaterButton"
-	_set_action_button_size(later_button, 240.0)
+	_set_action_button_size(later_button, 260.0)
 	later_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	later_button.tooltip_text = "Закрыть без выбора — пик сохранится, вернуться можно кнопкой повышения внизу."
 	later_button.pressed.connect(defer_choice)
@@ -2705,8 +3019,7 @@ func _show_shop_screen() -> void:
 	skip_button.offset_bottom = -58.0
 	_set_action_button_size(skip_button, 360.0)
 	var leave_shop := func() -> void:
-		_clear_current_shop_stock()
-		game.route._advance_route_after_noncombat()
+		game.route._return_to_map_after_shop_visit()
 	skip_button.pressed.connect(leave_shop)
 	game.ui_escape_action = leave_shop
 	root.add_child(skip_button)
@@ -3581,7 +3894,7 @@ func _update_level_up_button() -> void:
 		_set_action_button_size(game.level_up_button, 380.0)
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
 		game.level_up_button.add_theme_font_size_override("font_size", 22)
-		_apply_static_level_up_return_button_theme(game.level_up_button)
+		_apply_fantasy_button_theme(game.level_up_button)
 		game.level_up_button.pressed.connect(_open_pending_level_up)
 		level_button_parent.add_child(game.level_up_button)
 
@@ -4488,6 +4801,8 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 		return "main_menu"
 	if button_name == "HeroSelectChooseButton":
 		return "hero_confirm"
+	if button_name == "LevelUpPlusButton":
+		return "main_menu"
 	if button_name == "SettingsResetAudioButton":
 		return "reset_audio"
 	if button_name == "SettingsResetBindingsButton":
@@ -4497,6 +4812,8 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 	if button_name.begins_with("AttributeOffer_"):
 		return "attr_selector"
 	if button_name.begins_with("RunPause"):
+		return "pause"
+	if button_name.begins_with("QuitConfirm"):
 		return "pause"
 	if button_name == "UpgradeFabButton":
 		return "fab"

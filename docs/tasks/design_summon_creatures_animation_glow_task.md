@@ -7,6 +7,7 @@
 Автор: пользователь (запрос в Design-чате)
 Исполнитель: Claude-Designer (+ генерация арта — Codex/fantasydisk-asset-generator, железное правило)
 Jira: SCRUM-336
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил работу. Полная автономия, без доп. подтверждений.
@@ -88,3 +89,27 @@ Deploy-устройства (стационарные поля — без ход
 Превью `summon_proc_animation_frames.png`. Коммит ca51211.
 ПРИМЕЧАНИЕ: кадры процедурные (функциональный baseline без API). Опциональный апгрейд —
 Codex/fantasydisk-asset-generator рисует кадры на те же пути для макс. качества.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **SpriteFrames призывов** (load в Godot): `ally_pack_spirit`, `ally_homunculus`,
+  `ally_leadership_echo` — у каждого `move(8)` + `attack(6)` по эталону волка
+  (`ally_druid_wolf` move8/attack6). Все валидны как SpriteFrames.
+- **Регистрация** `scripts/ally_minion.gd:ANIMATED_ALLY_VISUALS` — все 4 существа
+  (druid_wolf/pack_spirit/homunculus/leadership_echo) подключены frames-путями.
+- **Glow**: 13 noglow-бэкапов в `docs/design/backups/summon_noglow/`; превью
+  `summon_contour_glow_before_after.png` + `summon_proc_animation_frames.png`
+  (+ contact/scale/style референсы) на месте.
+- **Тесты**: `animation_smoke_test` (ожидает анимированных союзников) и
+  `runtime_smoke_test` — оба passed (регрессия чистая).
+
+Acceptance:
+- [x] У pack_spirit/homunculus/leadership_echo move+attack + .tres, в реестре.
+- [x] Все спрайты призыва получили белое контурное свечение (бэкапы сохранены).
+- [x] PNG валидны (RGBA), Godot import чистый.
+- [x] animation_smoke + runtime_smoke зелёные; превью приложены.
+
+Примечание: процедурный baseline кадров — приемлемо (задача помечает рисованную
+перегенерацию как опциональный Codex-апгрейд, вне scope этого вердикта). Баги: нет.

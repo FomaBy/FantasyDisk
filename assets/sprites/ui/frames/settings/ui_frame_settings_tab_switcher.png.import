@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c50yn0nrb8f1o"
-path="res://.godot/imported/field_dry_road.png-1cedd8dde8af7eee7975b0e38fdaa734.ctex"
+uid="uid://dpkgasmhvsowc"
+path="res://.godot/imported/ui_frame_settings_tab_switcher.png-d673b7a447901ea6f584eef19c7275f5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/backgrounds/field_dry_road.png"
-dest_files=["res://.godot/imported/field_dry_road.png-1cedd8dde8af7eee7975b0e38fdaa734.ctex"]
+source_file="res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png"
+dest_files=["res://.godot/imported/ui_frame_settings_tab_switcher.png-d673b7a447901ea6f584eef19c7275f5.ctex"]
 
 [params]
 

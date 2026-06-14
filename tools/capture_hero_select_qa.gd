@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Captures the Hero Select screen for SCRUM-281 visual QA.
+## Captures the Hero Select screen for Hero Select visual QA.
 ## Run: Godot --headless --path . --script res://tools/capture_hero_select_qa.gd
 ## Output: build/qa/scrum281/hero_select_*.png
 
@@ -24,7 +24,7 @@ func _initialize() -> void:
 	if file != null:
 		file.store_string("\n".join(dump_lines))
 		file.close()
-	print("Hero Select QA screenshots captured.")
+		print("Hero Select QA capture updated.")
 	quit(0)
 
 
@@ -42,21 +42,53 @@ func _capture_at_size(viewport_size: Vector2i, qa_dir: String, dump_lines: Packe
 	for _i in range(8):
 		await process_frame
 
-	var image := viewport.get_texture().get_image()
 	var output_path := "%s/hero_select_%dx%d.png" % [qa_dir, viewport_size.x, viewport_size.y]
-	if image != null:
-		image.save_png(output_path)
 	dump_lines.append("## %dx%d" % [viewport_size.x, viewport_size.y])
+	if DisplayServer.get_name() == "headless":
+		dump_lines.append("- screenshot: skipped in headless dummy renderer; rect dump below is authoritative for layout QA.")
+	else:
+		var image := viewport.get_texture().get_image()
+		if image != null:
+			image.save_png(output_path)
+			dump_lines.append("- screenshot: `%s`" % output_path)
+		else:
+			dump_lines.append("- screenshot: unavailable")
 	for node_name in [
 		"HeroSelectHeader",
 		"HeroSelectBackButton",
-		"HeroSelectContent",
-		"HeroSelectPortraitPanel",
-		"HeroSelectDossierPanel",
-		"HeroSelectRadarReserve",
-		"HeroSelectRadarPanel",
-		"HeroThumbnailStripFrame",
+			"HeroSelectContent",
+			"HeroSelectPortraitPanel",
+			"HeroSelectPortraitFrame",
+			"HeroSelectPortraitFrameArt",
+			"HeroSelectPortraitContent",
+			"HeroSelectLargePortrait",
+			"HeroSelectRightRegion",
+			"HeroSelectDossierPanel",
+			"HeroSelectDossierFrame",
+			"HeroSelectDossierFrameArt",
+			"HeroSelectDossierContent",
+			"HeroSelectDossier",
+			"HeroSelectInfoTitle",
+			"HeroSelectInfoDescription",
+			"HeroSelectTraits",
+			"HeroSelectWeapons",
+			"AscensionSelectorRow",
+			"AscensionMinusButton",
+			"AscensionLevelLabel",
+			"AscensionPlusButton",
+			"AscensionModsLabel",
+			"HeroSelectChooseButton",
+			"HeroSelectRadarReserve",
+			"HeroSelectRadarPanel",
+			"HeroSelectRadarFrameArt",
+			"HeroSelectRadarContent",
+			"HeroStatRadarTitle",
+			"HeroStatRadar",
+			"HeroThumbnailStripFrame",
+		"HeroThumbnailStripContent",
 		"HeroThumbnailStrip",
+		"HeroThumbnail_berserk",
+		"HeroThumbnail_thief",
 	]:
 		var control := main.find_child(node_name, true, false) as Control
 		if control != null:

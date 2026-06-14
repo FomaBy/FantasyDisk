@@ -274,6 +274,7 @@ func _rolled_damage(owner_node: Node2D) -> float:
 
 
 func _show_hit_area(owner_node: Node2D, attack_direction: Vector2) -> void:
+	_show_weapon_signature(owner_node, attack_direction)
 	if attack_shape == "circle":
 		_show_circle_area(owner_node)
 	elif attack_shape == "sweep":
@@ -282,6 +283,26 @@ func _show_hit_area(owner_node: Node2D, attack_direction: Vector2) -> void:
 		_show_strip_area(owner_node, attack_direction)
 	else:
 		_show_frustum_area(owner_node, attack_direction)
+
+
+func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> void:
+	if owner_node == null or attack_direction.length_squared() <= 0.001:
+		return
+	var direction := attack_direction.normalized()
+	var scene := get_tree().current_scene
+	if scene == null:
+		scene = get_tree().root
+	var center := owner_node.global_position + direction * minf(maxf(attack_range * 0.45, 72.0), 260.0)
+	var radius := maxf(aoe_radius, inner_width * 1.45)
+	if attack_shape == "circle":
+		center = owner_node.global_position
+		radius = maxf(aoe_radius, 96.0)
+	elif attack_shape == "strip":
+		center = owner_node.global_position + direction * ((start_distance + attack_range) * 0.5)
+		radius = maxf(inner_width * 2.0, 96.0)
+	var signature := AttackVfx.weapon_signature(scene, center, weapon_id, radius, visual_color, direction.angle())
+	if signature != null:
+		signature.add_to_group("player_weapon_effects")
 
 
 func _show_strip_area(owner_node: Node2D, attack_direction: Vector2) -> void:
