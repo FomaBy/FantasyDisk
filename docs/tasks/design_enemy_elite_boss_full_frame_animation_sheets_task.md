@@ -1,6 +1,6 @@
 # Design handoff: enemy, elite, and boss full-frame animation sheets
 
-Статус: in_progress
+Статус: blocked
 Приоритет: high
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -93,6 +93,38 @@ Documentation dispatcher routed SCRUM-352 to the existing Design Codex thread
 secure local env file outside the repository, must not print or persist the key
 in project files/logs, and must keep the work Design-owned until accepted sheets
 are ready for an Animator handoff.
+
+## Blocked Again — 2026-06-14
+Design resumed the task on `dev`, read AGENTS/process docs, the task file, and
+`fantasydisk-asset-generator`, then ran a duplicate audit. No accepted
+enemy/elite/boss full-frame sheets exist yet; current project coverage is static
+PNG + cutout fallback, with only ally full-frame SpriteFrames already present.
+
+Prepared task-specific generator wrapper:
+
+- `tools/generate_scrum352_full_frame_sheets.py`
+
+The wrapper follows the asset-generator rules for OpenAI Images, transparent PNG
+outputs, deterministic SCRUM-352 paths, and no runtime/SpriteFrames integration.
+It also records sheet rows, 256x256 frame cells, bottom-center pivot metadata,
+and a preview/manifest path when generation succeeds.
+
+QA/prep artifact:
+
+- `docs/design/previews/scrum352_current_static_inventory.png`
+
+Pilot generation was attempted for `rift_cutter` using the current approved env
+source `$HOME/.codex/.env`, without printing or persisting the key. The OpenAI
+Images API returned:
+
+```text
+billing_hard_limit_reached
+```
+
+Per dispatcher instruction, Design stopped immediately, did not retry, and did
+not use old/random/local fallback generators. SCRUM-352 remains blocked until
+OpenAI image generation billing is available again or PM provides an approved
+alternative generation source.
 
 
 ## Ключ настроен — блокер снят (2026-06-14)

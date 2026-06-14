@@ -1,6 +1,6 @@
 # ART: Пересоздать ВСЕ иконки артефактов новым скиллом (единый стиль)
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -83,3 +83,16 @@ eligible for Design/Codex execution after the currently active Design task.
 shell (включая shell Codex-воркеров). Скилл `fantasydisk-asset-generator`
 (gpt-image-2) готов к вызову. Блокер по отсутствию `OPENAI_API_KEY` снят
 окончательно; задача готова к исполнению через скилл.
+
+## Blocked Again — 2026-06-14
+Design queue audit after SCRUM-352 confirmed this task still requires all
+artifact icons to be recreated through `fantasydisk-asset-generator` / OpenAI
+Images (`gpt-image-2`) and disallows old/local/random generators. The current
+approved env source is available, but OpenAI Images returns:
+
+```text
+billing_hard_limit_reached
+```
+
+Task is blocked until OpenAI image generation billing is available again or PM
+provides an approved alternative generation source.

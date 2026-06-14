@@ -1,6 +1,6 @@
 # ART/UX: Возвышение +/- — маленькие кнопки по референсам, по центру, вниз фрейма + «Выбрать»
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -83,3 +83,22 @@ eligible for Design/Codex execution after the currently active Design task.
 shell (включая shell Codex-воркеров). Скилл `fantasydisk-asset-generator`
 (gpt-image-2) готов к вызову. Блокер по отсутствию `OPENAI_API_KEY` снят
 окончательно; задача готова к исполнению через скилл.
+
+## Blocked Again — 2026-06-14
+Design picked the task after SCRUM-352 and rechecked scope. The required Design
+deliverable is still a new `asc_button_small` PNG generated specifically through
+`fantasydisk-asset-generator`/OpenAI Images (`gpt-image-2`); old/random/local
+generators are explicitly disallowed, and runtime repositioning belongs to
+Back-end only after the production PNG exists.
+
+The current approved env source is available, but the SCRUM-352 pilot against
+OpenAI Images returned:
+
+```text
+billing_hard_limit_reached
+```
+
+Because this is an account/billing hard limit, Design did not retry another paid
+image request for the same mandatory generator path. SCRUM-346 is blocked until
+OpenAI image generation billing is available again or PM provides an approved
+alternative generation source.

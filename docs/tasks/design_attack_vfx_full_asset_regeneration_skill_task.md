@@ -1,6 +1,6 @@
 # Задача Для Design/Codex: Полная Перегенерация Attack VFX Через Skill
 
-Статус: new
+Статус: blocked
 Создано: 2026-06-14
 Автор: Codex handoff из SCRUM-335
 Исполнитель: Design / Codex
@@ -57,3 +57,16 @@ python3 /Users/sergeyfomin/.codex/skills/fantasydisk-asset-generator/scripts/gen
 shell (включая shell Codex-воркеров). Скилл `fantasydisk-asset-generator`
 (gpt-image-2) готов к вызову. Блокер по отсутствию `OPENAI_API_KEY` снят
 окончательно; задача готова к исполнению через скилл.
+
+## Blocked Again — 2026-06-14
+Design queue audit after SCRUM-352 confirmed this task still requires full
+attack VFX regeneration through `fantasydisk-asset-generator` / OpenAI Images
+(`gpt-image-2`) and disallows old/local/random generators. The current approved
+env source is available, but OpenAI Images returns:
+
+```text
+billing_hard_limit_reached
+```
+
+Task is blocked until OpenAI image generation billing is available again or PM
+provides an approved alternative generation source.

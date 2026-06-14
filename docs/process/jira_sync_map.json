@@ -1213,7 +1213,7 @@
  },
  "design_enemy_elite_boss_full_frame_animation_sheets_task.md": {
   "key": "SCRUM-352",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "animation_summon_creatures_update_via_director_skill_task.md": {
   "key": "SCRUM-353",
@@ -1226,5 +1226,9 @@
  "design_hero_select_thinner_frames_no_overlap_task.md": {
   "key": "SCRUM-355",
   "status": "Готово"
+ },
+ "design_hero_select_unified_portrait_description_frame_task.md": {
+  "key": "SCRUM-356",
+  "status": "К выполнению"
  }
 }

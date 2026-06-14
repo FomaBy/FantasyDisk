@@ -1,6 +1,6 @@
 # BUG/ART: Настройки — 4 вкладки вместо 3; пересоздать свитчер скиллом (3 слота)
 
-Статус: new
+Статус: blocked
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -84,3 +84,17 @@ eligible for Design/Codex execution after the currently active Design task.
 shell (включая shell Codex-воркеров). Скилл `fantasydisk-asset-generator`
 (gpt-image-2) готов к вызову. Блокер по отсутствию `OPENAI_API_KEY` снят
 окончательно; задача готова к исполнению через скилл.
+
+## Blocked Again — 2026-06-14
+Design queue audit after SCRUM-352 confirmed this task still requires the new
+3-slot settings tab switcher to be generated through
+`fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) and disallows
+old/local/random generators. The current approved env source is available, but
+OpenAI Images returns:
+
+```text
+billing_hard_limit_reached
+```
+
+Task is blocked until OpenAI image generation billing is available again or PM
+provides an approved alternative generation source.

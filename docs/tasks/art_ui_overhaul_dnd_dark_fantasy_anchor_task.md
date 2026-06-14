@@ -1,6 +1,6 @@
 # ART/ТЕХ: Полный апдейт интерфейса в стиле D&D + Dark Fantasy Dragon — ОПОРНАЯ
 
-Статус: new
+Статус: blocked
 Приоритет: high
 Роль: Designer (Codex) + Back-end (UI)
 Версия: 0.1.5
@@ -95,3 +95,17 @@ eligible for Design/Codex execution after the currently active Design task.
 shell (включая shell Codex-воркеров). Скилл `fantasydisk-asset-generator`
 (gpt-image-2) готов к вызову. Блокер по отсутствию `OPENAI_API_KEY` снят
 окончательно; задача готова к исполнению через скилл.
+
+## Blocked Again — 2026-06-14
+Design queue audit after SCRUM-352 confirmed this anchor task still requires all
+common UI atoms to be generated through `fantasydisk-asset-generator` / OpenAI
+Images (`gpt-image-2`) and disallows the old pipeline. The current approved env
+source is available, but OpenAI Images returns:
+
+```text
+billing_hard_limit_reached
+```
+
+Task is blocked until OpenAI image generation billing is available again or PM
+provides an approved alternative generation source. Dependent UI-overhaul
+clusters remain gated by this anchor.
