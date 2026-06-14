@@ -1302,5 +1302,9 @@
  "bug_feedback_webhook_image_attachment_missing_task.md": {
   "key": "SCRUM-374",
   "status": "К выполнению"
+ },
+ "backend_debug_mode_click_to_move_player_task.md": {
+  "key": "SCRUM-375",
+  "status": "К выполнению"
  }
 }

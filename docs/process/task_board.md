@@ -46,6 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [backend_debug_mode_click_to_move_player_task.md](../tasks/backend_debug_mode_click_to_move_player_task.md) | Back-end (UI + геймплей) | new | FEATURE(debug) 0.1.5: тоггл «Дебаг-режим» в настройках (в существующей вкладке, не 4-я) → клик по арене ведёт/телепортит персонажа; неконфликтующий ввод |
 | [design_unified_master_frame_system_projectwide_task.md](../tasks/design_unified_master_frame_system_projectwide_task.md) | Designer (Codex) → Back-end (UI) | new | ART 0.1.5: ЕДИНЫЙ мастер-фрейм для всех интерфейсов (9-slice: углы+тайл-края H/V+опц.фон+центр.орнаменты+hover ярче/контраст) скиллом; централизовать код (свести 67 ассетов/12 GLOBAL_* к одному) и внедрить по проекту |
 | [animation_integrate_all_move_attack_death_states_task.md](../tasks/animation_integrate_all_move_attack_death_states_task.md) | Animator (Codex) → Back-end | new | ANIM 0.1.5: внедрить в игру move/attack/DEATH для ВСЕХ монстров и персонажей (full-frame); анимация смерти вместо риг-призрака; анимировать статичных врагов |
 | [design_level_backgrounds_redraw_new_style_skill_task.md](../tasks/design_level_backgrounds_redraw_new_style_skill_task.md) | Designer (Codex) | new | ART 0.1.5: перерисовать все 10 подложек уровней (field_*, 2560×1440) скиллом в новом стиле D&D Dark Fantasy Dragon — реалистично, спрайты читаемы поверх, свет под анимации; +2 недостающих |
