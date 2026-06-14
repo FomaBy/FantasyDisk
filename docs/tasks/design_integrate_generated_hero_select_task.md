@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Внедрить сгенерированный ассет hero select
 
-Статус: new
+Статус: done (Design deliverable 2026-06-14 — мокап+рамки через ui-director skill, тесты зелёные)
 Создано: 2026-06-14
 Автор: Codex asset generator
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
@@ -62,3 +62,14 @@ Workflow скилла соблюдён: СНАЧАЛА полностранич�
 Design: мокап + рамки (генерация скиллом) + подгонка размеров + визуальная сверка.
 Back-end: финальная выверка content-полей и no-overlap на 1280x720/1920x1080/2560x1440,
 UI/anim/runtime smoke, скрины в build/qa/ (handoff если поля поедут).
+
+
+## Результат 2026-06-14 (Claude-Designer)
+Через скилл fantasydisk-ui-director: мокап (gpt-image-2, показан) + 4 когерентные рамки
+(портрет/досье/компас-радар/карусель) в D&D Dark Fantasy Dragon. Chroma-key magenta->alpha,
+подгонка под размеры -> замена по живым путям `assets/sprites/ui/frames/hero_select/`
+(бэкап старых в `docs/design/backups/hero_select_frames_pre_dragon/`). БЕЗ правок кода.
+Тесты ЗЕЛЁНЫЕ: ui_no_overlap_matrix, runtime_smoke_ui, dark_fantasy_ui_theme, runtime, anim.
+Превью: hero_select_assembled_preview.png, hero_select_new_frames_contact.png. Коммит af4ee2c.
+Follow-up (Back-end/QA): живые скрины 1280x720/1920x1080/2560x1440 в build/qa/ для финальной
+визуальной сверки; при желании — генерация остальных мелких рамок (thumbnail/asc_*) тем же скиллом.
