@@ -87,7 +87,11 @@ func _post_to_webhook(webhook_url: String) -> void:
 
 	var boundary := "----FantasyDiskFeedback%s" % str(Time.get_unix_time_from_system()).replace(".", "")
 	var body := multipart_payload(_pending_text, _pending_screenshot, _pending_metadata, boundary)
-	var headers := ["Content-Type: multipart/form-data; boundary=%s" % boundary]
+	# User-Agent ОБЯЗАТЕЛЕН: без него Discord/Cloudflare возвращает HTTP 403 (SCRUM-362).
+	var headers := [
+		"Content-Type: multipart/form-data; boundary=%s" % boundary,
+		"User-Agent: FantasyDisk-Feedback/1.0",
+	]
 	var error := _request.request_raw(webhook_url, headers, HTTPClient.METHOD_POST, body)
 	if error != OK:
 		var local_path := save_local_report(_pending_text, _pending_screenshot, _pending_metadata)
@@ -106,13 +110,23 @@ func _on_request_completed(result: int, response_code: int, _headers: PackedStri
 
 
 func _webhook_url() -> String:
+	# Источник URL по приоритету (SCRUM-362):
+	# 1) env (дев-машина); 2) res://feedback_webhook.cfg (бандлится в сборку — у
+	# тестеров; ключ discord_webhook_url); 3) user://feedback_config.cfg (legacy/override).
 	var env_url := OS.get_environment(ENV_WEBHOOK).strip_edges()
 	if env_url != "":
 		return env_url
+	var bundled := ConfigFile.new()
+	if bundled.load("res://feedback_webhook.cfg") == OK:
+		var u := str(bundled.get_value("feedback", "discord_webhook_url", "")).strip_edges()
+		if u != "":
+			return u
 	var config := ConfigFile.new()
-	if config.load(CONFIG_PATH) != OK:
-		return ""
-	return str(config.get_value(CONFIG_SECTION, WEBHOOK_KEY, "")).strip_edges()
+	if config.load(CONFIG_PATH) == OK:
+		var u2 := str(config.get_value(CONFIG_SECTION, WEBHOOK_KEY, "")).strip_edges()
+		if u2 != "":
+			return u2
+	return ""
 
 
 static func _report_body(text: String, metadata: Dictionary) -> String:

@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator heartbeat watcher
 Jira: SCRUM-368
+QA: in_progress (2026-06-14)
 Parent: SCRUM-352 / `design_enemy_elite_boss_full_frame_animation_sheets_task.md`
 
 ## Autonomy / Approval
@@ -68,3 +69,31 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --editor --quit` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — первый ЭЛИТНЫЙ full-frame батч (2+ skill-ряда, elite-правило)
+
+Проверено (фактически):
+- **SpriteFrames** (load, у каждого elite ≥7 анимаций): `iron_bastion` —
+  `move(6,loop)`, `attack_primary(6)`, `skill_shield_block(6)`, `skill_slam_wave(6)`;
+  `night_stalker` — move/attack_primary + `skill_shadow_strike(6)`,
+  `skill_phase_dash(6)`; `plague_prophet` — move/attack_primary +
+  `skill_poison_volley(6)`, `skill_plague_aura(6)`. Все 6-кадровые; 2+ skill-ряда
+  (elite full-frame правило выполнено).
+- **Реестр**: `full_frame_animation_registry.gd:107/113/120` — все 3 под kind
+  `elite` (visual-only, legacy Body fallback при сбое загрузки).
+- **Манифест-валидатор**: «FantasyDisk animation manifest OK: 3 entities».
+- **Контакт-лист** `route_elite_full_frame_contact_sheet.png` + GIF: full-frame,
+  каждый skill — отдельный паттерн с реальной вариацией (shield-block/slam-wave,
+  shadow-strike/phase-dash, poison-volley/plague-aura); не cutout.
+- **Тесты**: `animation_smoke_test` (elite registry-резолв, skill/alias frame counts,
+  FullFrameBody activation, flip, backend phase-string `<elite_behavior>:<attack_id>:
+  <phase>` → skill-ряд) + `runtime_smoke_test` (gameplay не изменён) — passed.
+
+Acceptance:
+- [x] Каждый elite: move 6f loop + attack_primary/attack 6f.
+- [x] Каждый elite: оба skill_* ряда как 6f one-shot.
+- [x] Registry резолвит все 3 elite/<id>; FullFrameBody виден, legacy скрыт.
+- [x] Манифест валиден; animation_smoke зелёный; gameplay/balance/AI не тронуты.
+
+Баги: нет.

@@ -503,6 +503,64 @@
         ],
         "has_transparency": true
       }
+    },
+    {
+      "entity_id": "mini_bone_warden",
+      "kind": "elite",
+      "title": "Mini Bone Warden",
+      "source_path": "assets/sprites/elites/mini_bone_warden.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/mini_bone_warden_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/elites/full_frame/mini_bone_warden_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_bone_guard",
+        "skill_slam_wave"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          26,
+          26,
+          1496,
+          980
+        ],
+        "has_transparency": true
+      }
+    },
+    {
+      "entity_id": "mini_spark_wight",
+      "kind": "elite",
+      "title": "Mini Spark Wight",
+      "source_path": "assets/sprites/elites/mini_spark_wight.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/mini_spark_wight_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/elites/full_frame/mini_spark_wight_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_spark_fan",
+        "skill_static_field"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          21,
+          39,
+          1496,
+          975
+        ],
+        "has_transparency": true
+      }
     }
   ]
 }

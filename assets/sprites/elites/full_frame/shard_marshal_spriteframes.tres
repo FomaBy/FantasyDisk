@@ -1,0 +1,239 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_00.png" id="1_sh1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_01.png" id="2_sh2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_02.png" id="3_sh3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_03.png" id="4_sh4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_04.png" id="5_sh5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_move_05.png" id="6_sh6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_00.png" id="7_sh7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_01.png" id="8_sh8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_02.png" id="9_sh9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_03.png" id="10_sh10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_04.png" id="11_sh11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_attack_primary_05.png" id="12_sh12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_00.png" id="13_sh13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_01.png" id="14_sh14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_02.png" id="15_sh15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_03.png" id="16_sh16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_04.png" id="17_sh17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_shard_fan_05.png" id="18_sh18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_00.png" id="19_sh19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_01.png" id="20_sh20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_02.png" id="21_sh21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_03.png" id="22_sh22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_04.png" id="23_sh23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/shard_marshal/shard_marshal_skill_command_pulse_05.png" id="24_sh24"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_sh7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_sh8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_sh9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_sh10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_sh11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_sh12")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_sh7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_sh8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_sh9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_sh10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_sh11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_sh12")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_sh1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_sh2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_sh3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_sh4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_sh5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_sh6")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_sh13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_sh14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_sh15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_sh16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_sh17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_sh18")
+}
+],
+"loop": false,
+"name": &"skill_shard_fan",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_sh13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_sh14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_sh15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_sh16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_sh17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_sh18")
+}
+],
+"loop": false,
+"name": &"attack_shard_fan",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_sh19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_sh20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_sh21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_sh22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_sh23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_sh24")
+}
+],
+"loop": false,
+"name": &"skill_command_pulse",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_sh19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_sh20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_sh21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_sh22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_sh23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_sh24")
+}
+],
+"loop": false,
+"name": &"attack_command_pulse",
+"speed": 12.0
+}]

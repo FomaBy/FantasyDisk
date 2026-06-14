@@ -818,6 +818,12 @@ func _test_full_frame_animation_registry() -> void:
 			"phase_state": "plague_prophet:poison_volley:windup",
 			"phase_resolved": "skill_poison_volley",
 		},
+		"shard_marshal": {
+			"path": "res://scenes/EliteCommander.tscn",
+			"skill_states": ["skill_shard_fan", "skill_command_pulse"],
+			"phase_state": "shard_marshal:shard_fan:windup",
+			"phase_resolved": "skill_shard_fan",
+		},
 	}
 	for elite_id in elite_full_frame_scenes.keys():
 		var elite_info: Dictionary = elite_full_frame_scenes[elite_id]

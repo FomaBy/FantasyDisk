@@ -1277,7 +1277,7 @@
  },
  "animation_route_elite_full_frame_batch_integration_task.md": {
   "key": "SCRUM-368",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_level_backgrounds_redraw_new_style_skill_task.md": {
   "key": "SCRUM-369",
@@ -1286,5 +1286,9 @@
  "animation_integrate_all_move_attack_death_states_task.md": {
   "key": "SCRUM-370",
   "status": "К выполнению"
+ },
+ "animation_shard_marshal_full_frame_integration_task.md": {
+  "key": "SCRUM-371",
+  "status": "В работе"
  }
 }
