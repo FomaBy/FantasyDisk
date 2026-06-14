@@ -133,13 +133,16 @@ func _end_combat(victory: bool) -> void:
 			# Новый бой = новое окно докачки: набор и rerolls легально сбрасываются.
 			game.attribute_offer = []
 			game.attribute_rerolls_left = game.ui.ATTRIBUTE_REROLLS_PER_WINDOW
+			var return_to_route_map := func() -> void:
+				game.save_run_autosave("combat_node")
+				game.route._show_battle_map()
 			game.ui._show_victory_banner(func() -> void:
 				if was_elite_fight:
 					game.ui._show_elite_artifact_reward(func() -> void:
-						game.ui._show_attribute_shop(game.route._show_battle_map)
+						game.ui._show_attribute_shop(return_to_route_map)
 					)
 				else:
-					game.ui._show_attribute_shop(game.route._show_battle_map)
+					game.ui._show_attribute_shop(return_to_route_map)
 			)
 	else:
 		game.ui._show_death_screen()

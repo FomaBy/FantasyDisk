@@ -360,6 +360,7 @@ const ROUTE_MAP_SCRIPT := preload("res://scripts/route_map_screen.gd")
 const COMBAT_DIRECTOR_SCRIPT := preload("res://scripts/combat_director.gd")
 const META_PROGRESSION := preload("res://scripts/meta_progression.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
+const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 
 var ui
 var route
@@ -465,6 +466,109 @@ func save_game_settings() -> void:
 		settings["input_bindings"] = input_bindings.duplicate(true)
 	GAME_SETTINGS.save_settings(settings)
 	get_tree().root.set_meta("aim_mode", aim_mode)
+
+
+func run_autosave_has_run() -> bool:
+	return RUN_AUTOSAVE.has_run()
+
+
+func save_run_autosave(reason := "") -> bool:
+	if route_nodes.is_empty():
+		return false
+	var state := _run_autosave_state()
+	state["saved_reason"] = reason
+	return RUN_AUTOSAVE.save_run(state)
+
+
+func load_run_autosave() -> bool:
+	var state: Dictionary = RUN_AUTOSAVE.load_run()
+	if state.is_empty():
+		return false
+	_apply_run_autosave_state(state)
+	return true
+
+
+func clear_run_autosave() -> void:
+	RUN_AUTOSAVE.clear_run()
+
+
+func _run_autosave_state() -> Dictionary:
+	return {
+		"selected_character_id": selected_character_id,
+		"selected_weapon_id": selected_weapon_id,
+		"selected_ascension_level": selected_ascension_level,
+		"route_stage": route_stage,
+		"route_nodes": route_nodes.duplicate(true),
+		"route_selected_indices": route_selected_indices.duplicate(true),
+		"current_route_choice": current_route_choice,
+		"current_node_type": current_node_type,
+		"current_combat_type": current_combat_type,
+		"current_boss_id": current_boss_id,
+		"run_player_snapshot": run_player_snapshot.duplicate(true),
+		"pending_level_ups": pending_level_ups,
+		"level_up_offer": level_up_offer.duplicate(true),
+		"attribute_offer": attribute_offer.duplicate(true),
+		"attribute_rerolls_left": attribute_rerolls_left,
+		"used_event_ids": used_event_ids.duplicate(true),
+		"current_event_definition": current_event_definition.duplicate(true),
+		"run_ascension_difficulty": run_ascension_difficulty.duplicate(true),
+		"current_shop_items": current_shop_items.duplicate(true),
+		"current_shop_purchased": current_shop_purchased.duplicate(true),
+		"current_shop_node_key": current_shop_node_key,
+		"shop_reentry_pending": shop_reentry_pending,
+		"shop_reentry_route_stage": shop_reentry_route_stage,
+		"shop_reentry_branch_index": shop_reentry_branch_index,
+	}
+
+
+func _apply_run_autosave_state(state: Dictionary) -> void:
+	combat_active = false
+	boss_combat_active = false
+	_clear_all_game_pauses()
+	_clear_world()
+	_clear_hud()
+	_clear_ui()
+
+	selected_character_id = str(state.get("selected_character_id", selected_character_id))
+	selected_weapon_id = str(state.get("selected_weapon_id", selected_weapon_id))
+	selected_ascension_level = int(state.get("selected_ascension_level", 0))
+	route_stage = maxi(0, int(state.get("route_stage", 0)))
+	route_nodes = _autosave_array(state.get("route_nodes", []))
+	if route_nodes.is_empty():
+		route_nodes = route._generate_route()
+	route_stage = clampi(route_stage, 0, maxi(route_nodes.size() - 1, 0))
+	route_selected_indices = _autosave_array(state.get("route_selected_indices", []))
+	current_route_choice = str(state.get("current_route_choice", ""))
+	current_node_type = str(state.get("current_node_type", ""))
+	current_combat_type = str(state.get("current_combat_type", "battle"))
+	current_boss_id = str(state.get("current_boss_id", "rift_warden"))
+	run_player_snapshot = _autosave_dictionary(state.get("run_player_snapshot", {}))
+	pending_level_ups = maxi(0, int(state.get("pending_level_ups", 0)))
+	level_up_offer = _autosave_array(state.get("level_up_offer", []))
+	attribute_offer = _autosave_array(state.get("attribute_offer", []))
+	attribute_rerolls_left = maxi(0, int(state.get("attribute_rerolls_left", 0)))
+	used_event_ids = _autosave_array(state.get("used_event_ids", []))
+	current_event_definition = _autosave_dictionary(state.get("current_event_definition", {}))
+	pending_event_combat.clear()
+	run_ascension_difficulty = _autosave_dictionary(state.get("run_ascension_difficulty", {}))
+	current_shop_items = _autosave_array(state.get("current_shop_items", []))
+	current_shop_purchased = _autosave_array(state.get("current_shop_purchased", []))
+	current_shop_node_key = str(state.get("current_shop_node_key", ""))
+	shop_reentry_pending = bool(state.get("shop_reentry_pending", false))
+	shop_reentry_route_stage = int(state.get("shop_reentry_route_stage", -1))
+	shop_reentry_branch_index = int(state.get("shop_reentry_branch_index", -1))
+
+
+func _autosave_array(value: Variant) -> Array:
+	if value is Array:
+		return (value as Array).duplicate(true)
+	return []
+
+
+func _autosave_dictionary(value: Variant) -> Dictionary:
+	if value is Dictionary:
+		return (value as Dictionary).duplicate(true)
+	return {}
 
 
 func _apply_audio_settings() -> void:

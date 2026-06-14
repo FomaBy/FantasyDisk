@@ -629,6 +629,7 @@ func _open_route_node(route_node: Dictionary) -> void:
 func _advance_route_after_noncombat() -> void:
 	_finalize_pending_shop_reentry()
 	game.route_stage += 1
+	game.save_run_autosave("noncombat_node")
 	_show_battle_map()
 
 
@@ -639,6 +640,7 @@ func _return_to_map_after_shop_visit() -> void:
 	game.shop_reentry_pending = true
 	game.shop_reentry_route_stage = int(game.route_stage)
 	game.shop_reentry_branch_index = selected_branch
+	game.save_run_autosave("shop_visit")
 	_show_battle_map()
 
 

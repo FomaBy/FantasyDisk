@@ -47,6 +47,15 @@ static func save_run(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> bool:
 
 # Загрузить run-состояние. {} если файла нет / повреждён / несовместимая схема.
 static func load_run(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
+	if not FileAccess.file_exists(save_path):
+		return {}
+	var file := FileAccess.open(save_path, FileAccess.READ)
+	if file == null:
+		return {}
+	var preview := file.get_as_text().strip_edges()
+	file.close()
+	if preview == "" or not preview.begins_with("["):
+		return {}
 	var config := ConfigFile.new()
 	var err := config.load(save_path)
 	if err != OK:

@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-349
+QA: in_progress (2026-06-14)
 Связано: SCRUM-319 (диалог подтверждения — паттерн), SCRUM-339 (поток магазина/карты)
 
 ## Прогресс (2026-06-14, Claude Fable 5)
@@ -107,3 +108,35 @@ docs/design/current_game_state.md, docs/design/systems/ (persistence/meta), cont
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
 
 Документация обновлена: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/systems/technical_architecture.md`, новый `docs/design/systems/persistence.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Persistence-гейт** `run_autosave_persistence_test` — passed
+  (round-trip/atomic/corrupt/version/clear): повреждённый/несовместимый сейв →
+  игнор без краша, запись атомарна (.tmp+rename), очистка работает.
+- **Save-хуки** (автосейв после каждого элемента карты, безопасный стык):
+  `route_map_screen.gd:632` (noncombat_node), `:643` (shop_visit),
+  `combat_director.gd:137` (combat_node) → `main.save_run_autosave()` →
+  `RUN_AUTOSAVE.save_run(_run_autosave_state())`.
+- **Clear-хуки** (завершение/новый забег): `ui_screens.gd:451/468` (новая игра),
+  `:3600/:3632` (смерть/победа) → `main.clear_run_autosave()`.
+- **Continue prompt** (визуал `build/qa/cap_continue_prompt.png`): модальный
+  «Продолжить забег?» со сводкой «Берсерк : этап 1 · уровень 1 · золото 0» +
+  кнопки «Продолжить»/«Новая игра» в красно-золотой рамке (паттерн SCRUM-319/344),
+  центрирован, оверлей затемнён. При пустом автосейве → обычный выбор героя.
+- **Восстановление**: `_run_autosave_state()`/`_apply_run_autosave_state()`
+  (класс/оружие/Возвышение, route layout/stage/branches, player snapshot, rewards,
+  event/shop state, shop reentry).
+- **Регрессия**: `runtime_smoke_test` (incl. `_test_run_autosave_continue_prompt`)
+  — passed.
+
+Acceptance:
+- [x] Автосейв после каждого пройденного элемента карты (safe checkpoint).
+- [x] При старте с валидным автосейвом — «Продолжить»/«Новая игра» (с отказом).
+- [x] «Продолжить» восстанавливает забег; смерть/победа/новая игра очищают автосейв.
+- [x] Повреждённый/несовместимый сейв не крашит; запись атомарна; persistence +
+  smoke зелёные; визуал диалога; доки.
+
+Баги: нет.

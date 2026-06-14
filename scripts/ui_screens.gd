@@ -176,7 +176,12 @@ func _show_main_menu() -> void:
 	var start_button := _make_button("Начать новую игру")
 	start_button.name = "MainMenuStartButton"
 	_set_action_button_size(start_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
-	start_button.pressed.connect(_show_character_select)
+	start_button.pressed.connect(func() -> void:
+		if game.run_autosave_has_run():
+			_show_continue_run_dialog()
+		else:
+			_show_character_select()
+	)
 	action_box.add_child(start_button)
 
 	var settings_button := _make_button("Настройки")
@@ -347,7 +352,120 @@ func _cancel_quit_confirmation_dialog() -> void:
 	game.ui_escape_action = _show_quit_confirmation_dialog
 
 
+func _show_continue_run_dialog() -> void:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return
+	if game.ui_layer.find_child("ContinueRunDialog", true, false) != null:
+		var existing_continue := game.ui_layer.find_child("ContinueRunButton", true, false) as Button
+		if existing_continue != null:
+			existing_continue.grab_focus()
+		return
+
+	var autosave_state: Dictionary = game.RUN_AUTOSAVE.load_run()
+	if autosave_state.is_empty():
+		_show_character_select()
+		return
+
+	var overlay := Control.new()
+	overlay.name = "ContinueRunDialog"
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.z_index = 520
+	game.ui_layer.add_child(overlay)
+
+	var dim := ColorRect.new()
+	dim.name = "ContinueRunDim"
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.color = Color(0.0, 0.0, 0.0, 0.72)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay.add_child(dim)
+
+	var panel := PanelContainer.new()
+	panel.name = "ContinueRunPanel"
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -340.0
+	panel.offset_top = -190.0
+	panel.offset_right = 340.0
+	panel.offset_bottom = 190.0
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_theme_stylebox_override("panel", _panel_style())
+	overlay.add_child(panel)
+
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 16)
+	panel.add_child(box)
+
+	var title_label := Label.new()
+	title_label.name = "ContinueRunTitle"
+	title_label.text = "Продолжить забег?"
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 34)
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	box.add_child(title_label)
+
+	var character_id := str(autosave_state.get("selected_character_id", "berserk"))
+	var character_config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
+	var character_title := str(character_config.get("title", character_id))
+	var route_stage := int(autosave_state.get("route_stage", 0)) + 1
+	var snapshot: Dictionary = {}
+	if autosave_state.get("run_player_snapshot", {}) is Dictionary:
+		snapshot = (autosave_state.get("run_player_snapshot", {}) as Dictionary)
+	var money := int(snapshot.get("money", 0))
+	var level := int(snapshot.get("level", 1))
+	var subtitle_label := Label.new()
+	subtitle_label.name = "ContinueRunSubtitle"
+	subtitle_label.text = "%s · этап %d · уровень %d · золото %d\nМожно вернуться на карту или начать новый забег." % [character_title, route_stage, level, money]
+	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle_label.add_theme_font_size_override("font_size", 16)
+	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
+	box.add_child(subtitle_label)
+
+	var button_row := HBoxContainer.new()
+	button_row.name = "ContinueRunButtons"
+	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	button_row.custom_minimum_size = Vector2(0.0, 76.0)
+	button_row.add_theme_constant_override("separation", 18)
+	box.add_child(button_row)
+
+	var continue_button := _make_button("Продолжить")
+	continue_button.name = "ContinueRunButton"
+	_set_action_button_size(continue_button, 240.0, 72.0)
+	continue_button.pressed.connect(func() -> void:
+		if game.load_run_autosave():
+			game.route._show_battle_map()
+		else:
+			_show_character_select()
+	)
+	button_row.add_child(continue_button)
+
+	var new_game_button := _make_button("Новая игра")
+	new_game_button.name = "ContinueRunNewGameButton"
+	_set_action_button_size(new_game_button, 240.0, 72.0)
+	new_game_button.pressed.connect(func() -> void:
+		game.clear_run_autosave()
+		_show_character_select()
+	)
+	button_row.add_child(new_game_button)
+
+	continue_button.focus_neighbor_right = new_game_button.get_path()
+	continue_button.focus_neighbor_left = new_game_button.get_path()
+	new_game_button.focus_neighbor_left = continue_button.get_path()
+	new_game_button.focus_neighbor_right = continue_button.get_path()
+	continue_button.grab_focus()
+	game.ui_escape_action = func() -> void:
+		if is_instance_valid(overlay):
+			overlay.queue_free()
+		game.ui_escape_action = _show_quit_confirmation_dialog
+
+
 func _show_character_select() -> void:
+	game.clear_run_autosave()
 	game.run_player_snapshot.clear()
 	game.route_stage = 0
 	game.route_selected_indices.clear()
@@ -2558,6 +2676,7 @@ func _show_reward_screen() -> void:
 		var button := _add_text_action_block(box, str(reward["title"]), str(reward["description"]), "Получить", "")
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_run(reward)
+			game.save_run_autosave("reward_choice")
 			game.route._show_battle_map()
 		)
 
@@ -2601,6 +2720,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 					_create_hud()
 					_update_hud()
 				elif return_to_map or not game.combat_active:
+					game.save_run_autosave("level_up_choice")
 					game.route._show_battle_map()
 		)
 		rewards_row.add_child(button)
@@ -2628,6 +2748,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 			_update_hud()
 			_update_level_up_button()
 		else:
+			game.save_run_autosave("level_up_deferred")
 			game.route._show_battle_map()
 
 	var later_button := _make_button("Позже")
@@ -3456,9 +3577,8 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		button.pressed.connect(func() -> void:
 			var starts_combat := _apply_event_choice(event_choice)
 			if not starts_combat:
-				game.route_stage += 1
 				game.current_event_definition.clear()
-				game.route._show_battle_map()
+				game.route._advance_route_after_noncombat()
 		)
 		index += 1
 	var back_button := _make_button("Назад")
@@ -3477,6 +3597,7 @@ func _show_event_screen(route_node: Dictionary) -> void:
 
 
 func _show_victory_screen() -> void:
+	game.clear_run_autosave()
 	var ascension_level: int = game.ascension_level_for(game.selected_character_id)
 	var character_config: Dictionary = game.PROGRESSION_DATA.character_config(game.selected_character_id)
 	var character_title := str(character_config.get("title", "Герой"))
@@ -3508,6 +3629,7 @@ func _show_victory_screen() -> void:
 
 
 func _show_death_screen(reason := "") -> void:
+	game.clear_run_autosave()
 	var subtitle := str(reason)
 	if subtitle == "":
 		subtitle = "Забег завершён на этапе маршрута %d." % [game.route_stage + 1]

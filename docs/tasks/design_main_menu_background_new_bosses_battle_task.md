@@ -1,6 +1,6 @@
 # ART: Новый фон главного меню — 3 новых босса + герои в бою, гладкие текстуры
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -54,3 +54,11 @@ Jira: SCRUM-316
 ## Документация
 docs/design/content_registry.md (фоны/меню), docs/design/systems/menus_ui.md,
 current_game_state.
+
+## Progress — 2026-06-14
+- Design/Codex взял задачу в работу на ветке `dev` по прямому пользовательскому
+  override после проверки board: task board строка была `new`/future-scope, но
+  пользователь явно попросил не простаивать при наличии Design-задач.
+- Генерация выполняется через встроенный `imagegen` skill/tool, потому что эта
+  задача не содержит обязательной директивы `fantasydisk-asset-generator`, а
+  локальный `OPENAI_API_KEY` для custom skill отсутствует.

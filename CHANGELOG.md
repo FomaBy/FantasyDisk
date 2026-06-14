@@ -5,6 +5,11 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
+  `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
+  (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню
+  при наличии валидного сейва предлагает «Продолжить» или «Новая игра», а
+  смерть/победа очищают autosave. Добавлены persistence + runtime smoke checks.
 - Cleanup audit (SCRUM-269): added `docs/design/reviews/cleanup_assets_audit_2026_06.md`
   with dynamic-path protection for weapon VFX, weapon sprites, boss/mini-elite
   source art and UI/icon/cutout families; spawned SCRUM-271 for isolated orphan

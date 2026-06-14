@@ -1,6 +1,6 @@
 # ANIM: Обновить анимации всех призывных существ (animation-director skill)
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Animator (Codex)
 Версия: 0.1.5
@@ -67,3 +67,8 @@ bottom-center; парящие сущности — левитация (не ст
 
 ## Документация
 docs/design/systems/animation.md, docs/design/content_registry.md, current_game_state.
+
+## Dispatch
+2026-06-14: Documentation dispatcher routed SCRUM-353 to existing Animator window
+`019eb156-710c-71f0-8903-eada762dceb3`. Keep reasoning High/no low, use
+`fantasydisk-animation-director`, and do not expand into gameplay/balance/UI scope.

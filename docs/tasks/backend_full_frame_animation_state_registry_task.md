@@ -1,6 +1,6 @@
 # Back-end handoff: full-frame animation state registry
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Версия: 0.1.5
 Создано: 2026-06-14

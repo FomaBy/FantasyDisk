@@ -8,6 +8,7 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
 const EventData := preload("res://scripts/event_data.gd")
 const Glossary := preload("res://scripts/glossary.gd")
+const RunAutosave := preload("res://scripts/run_autosave.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 
@@ -191,6 +192,7 @@ func _initialize() -> void:
 	await _test_route_map_start_selection(main_scene)
 	await _test_event_route_node_click(main_scene)
 	await _test_shop_reentry_until_next_level(main_scene)
+	await _test_run_autosave_continue_prompt(main_scene)
 	await _test_random_event_data_and_outcomes(main_scene)
 	var generated_elite := false
 	var generated_disk_boss := false
@@ -1928,6 +1930,130 @@ func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
 
 	shop_main.queue_free()
 	await process_frame
+
+
+func _test_run_autosave_continue_prompt(main_scene: PackedScene) -> void:
+	RunAutosave.clear_run()
+
+	var save_main := main_scene.instantiate()
+	root.add_child(save_main)
+	await process_frame
+	save_main.set("selected_character_id", "dark_mage")
+	save_main.set("selected_weapon_id", "shadow_orb")
+	save_main.set("selected_ascension_level", 2)
+	save_main.set("route_stage", 3)
+	save_main.set("route_selected_indices", [1, 0, 2])
+	save_main.set("run_player_snapshot", {
+		"character_id": "dark_mage",
+		"weapon_id": "shadow_orb",
+		"health": 77.0,
+		"max_health": 120.0,
+		"stats": {"intelligence": 13, "endurance": 8},
+		"run_modifiers": {"damage_multiplier": 1.15},
+		"artifacts": [{"id": "hawk_eye", "title": "Ястребиный глаз"}],
+		"xp": 21,
+		"xp_to_next": 42,
+		"level": 5,
+		"money": 314,
+	})
+	if not bool(save_main.call("save_run_autosave", "runtime_smoke")):
+		_fail("Expected run autosave to be created from safe route state.")
+		return
+	if not RunAutosave.has_run():
+		_fail("Expected RunAutosave.has_run after save.")
+		return
+	save_main.queue_free()
+	await process_frame
+
+	var continue_main := main_scene.instantiate()
+	root.add_child(continue_main)
+	await process_frame
+	var start_button := continue_main.find_child("MainMenuStartButton", true, false) as Button
+	if start_button == null:
+		_fail("Expected main menu start button before autosave prompt.")
+		return
+	start_button.pressed.emit()
+	await process_frame
+	var dialog := continue_main.find_child("ContinueRunDialog", true, false) as Control
+	var continue_button := continue_main.find_child("ContinueRunButton", true, false) as Button
+	var new_game_button := continue_main.find_child("ContinueRunNewGameButton", true, false) as Button
+	if dialog == null or continue_button == null or new_game_button == null:
+		_fail("Expected autosave prompt with Continue/New Game buttons.")
+		return
+	continue_button.pressed.emit()
+	await process_frame
+	if continue_main.find_child("RouteMapScreen", true, false) == null:
+		_fail("Expected Continue to restore directly to route map.")
+		return
+	if str(continue_main.get("selected_character_id")) != "dark_mage" or int(continue_main.get("route_stage")) != 3:
+		_fail("Expected Continue to restore character and route stage.")
+		return
+	var restored_snapshot: Dictionary = continue_main.get("run_player_snapshot")
+	if int(restored_snapshot.get("money", 0)) != 314 or int(restored_snapshot.get("level", 0)) != 5:
+		_fail("Expected Continue to restore player money/level snapshot.")
+		return
+	continue_main.queue_free()
+	await process_frame
+
+	var fixture_route := [
+		[
+			{"type": "battle", "name": "Autosave Battle", "row": 0, "branch": 0, "next_branches": [0]},
+		],
+		[
+			{"type": "boss", "name": "Rift Warden", "boss_id": "rift_warden", "row": 1, "branch": 0},
+		],
+	]
+	if not RunAutosave.save_run({
+		"selected_character_id": "berserk",
+		"selected_weapon_id": "sword",
+		"route_stage": 0,
+		"route_nodes": fixture_route,
+		"run_player_snapshot": {"character_id": "berserk", "weapon_id": "sword", "money": 99, "level": 3},
+	}):
+		_fail("Expected manual run autosave fixture to save.")
+		return
+	var new_main := main_scene.instantiate()
+	root.add_child(new_main)
+	await process_frame
+	var new_start := new_main.find_child("MainMenuStartButton", true, false) as Button
+	if new_start == null:
+		_fail("Expected start button for New Game autosave prompt.")
+		return
+	new_start.pressed.emit()
+	await process_frame
+	var prompt_new_game := new_main.find_child("ContinueRunNewGameButton", true, false) as Button
+	if prompt_new_game == null:
+		_fail("Expected New Game choice while autosave exists.")
+		return
+	prompt_new_game.pressed.emit()
+	await process_frame
+	if RunAutosave.has_run():
+		_fail("Expected New Game choice to clear existing autosave.")
+		return
+	if new_main.find_child("HeroSelectScreen", true, false) == null or int(new_main.get("route_stage")) != 0:
+		_fail("Expected New Game choice to enter fresh hero select.")
+		return
+	new_main.queue_free()
+	await process_frame
+
+	var clear_main := main_scene.instantiate()
+	root.add_child(clear_main)
+	await process_frame
+	clear_main.call("save_run_autosave", "clear_death")
+	clear_main.ui._show_death_screen("Тестовая смерть.")
+	await process_frame
+	if RunAutosave.has_run():
+		_fail("Expected death screen to clear run autosave.")
+		return
+	clear_main.call("save_run_autosave", "clear_victory")
+	clear_main.ui._show_victory_screen()
+	await process_frame
+	if RunAutosave.has_run():
+		_fail("Expected victory screen to clear run autosave.")
+		return
+	clear_main.queue_free()
+	await process_frame
+	RunAutosave.clear_run()
 
 
 func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
