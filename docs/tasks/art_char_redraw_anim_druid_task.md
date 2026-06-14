@@ -61,3 +61,24 @@ docs/design/content_registry.md (персонаж druid), current_game_state.
 
 ## Результат 2026-06-14 (Claude-Designer, параллельно Codex)
 Лист скиллом + tools/build_character_sheet.py -> full_frame/druid/ кадры + druid_spriteframes.tres. player.gd грузит .tres. animation_smoke зелёный (exit 0).
+
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — «Друид» перерисован + анимирован, играет в игре
+
+Проверено (фактически):
+- **Frame counts** (`druid_spriteframes.tres`): **walk 5 / attack 5** (+attack_primary 5,
+  idle 5) — требование 5 move/5 attack выполнено.
+- **Рантайм-привязка активна**: `.tres` закоммичен в HEAD, грузится через
+  `player.gd:_character_resource_sprite_frames` (приоритет над cutout) — анимация играет.
+- **Визуал** (`druid_sheet_normalized.png` / контакт): перерисован в едином D&D
+  dark-fantasy стиле, без оружия в руках (по спеке), плавные walk/attack, прозрачный фон.
+- **Тесты**: `animation_smoke_test` PASS (все классы грузятся/играют), runtime_smoke зелёный
+  (флейк ассасин-ассерта — отдельный SCRUM-410).
+
+Acceptance:
+- [x] «Друид» перерисован в едином стиле, без оружия в руках.
+- [x] 5 walk + 5 attack, зарегистрирован (.tres в HEAD), играет в игре.
+- [x] animation smoke зелёный; превью/нормализованный лист.
+
+Статус done. Баги: нет. Двухфазная Design→Animator закрыта.

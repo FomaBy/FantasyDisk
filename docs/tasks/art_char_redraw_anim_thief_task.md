@@ -1,6 +1,6 @@
 # ART: Перерисовать «Вор» в едином стиле + анимации (5 move / 5 attack)
 
-Статус: done (Claude-Designer 2026-06-14 — лист 5/5/5 + .tres, animation_smoke зелёный)
+Статус: done (Claude-Designer + Designer 2 2026-06-14 — лист 5/5/5 + .tres, animation_smoke зелёный)
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -70,3 +70,36 @@ docs/design/content_registry.md (персонаж thief), current_game_state.
 
 ## Результат 2026-06-14 (Claude-Designer, параллельно Codex)
 Лист скиллом fantasydisk-asset-generator (1920x1152, idle/walk/attack, без оружия) -> tools/build_character_sheet.py: flood-fill фон + центровка + нарезка в full_frame/thief/ + авторинг thief_spriteframes.tres. player.gd грузит .tres по конвенции. animation_smoke зелёный (exit 0).
+
+## Результат 2026-06-14 (Designer 2 / Codex)
+Design-owned source pass refreshed through `fantasydisk-asset-generator` using the approved OpenAI pipeline, with a stricter no-held-object prompt after rejecting an earlier coin/smoke variant. Accepted unarmed source: `docs/design/references/characters/thief/thief_sheet_source.png`.
+
+Generated and validated Design handoff artifacts:
+- runtime source sheet: `assets/sprites/characters/thief_sheet.png` (`1920x1152`, 3 rows x 5 columns, `384x384` cells);
+- alpha-clean reference: `docs/design/references/characters/thief/thief_sheet_alpha_clean.png`;
+- 32px-gutter source: `docs/design/references/characters/thief/thief_sheet_guttered_source.png`;
+- contact preview: `docs/design/previews/scrum297_thief_sheet_contact.png`;
+- QA manifest/report/GIFs: `build/qa/scrum297_thief/`.
+
+Validation: manifest validator PASS; PIL source cleanliness PASS (`15/15` non-empty cells, alpha extrema `(0,255)`, no safe-padding/edge-touch failures, global scale `1.0`). Hands are visually empty in all accepted frames; no weapons, coins, smoke, held props, text, background, or neighboring-frame bleed. Animator/runtime SpriteFrames were already produced by the parallel owner and were not edited by Designer 2.
+
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — «Вор» перерисован + анимирован, играет в игре
+
+Проверено (фактически):
+- **Frame counts** (`thief_spriteframes.tres`): **walk 5 / attack 5** (+attack_primary 5,
+  idle 5) — требование 5 move/5 attack выполнено.
+- **Рантайм-привязка активна**: `.tres` закоммичен в HEAD, грузится через
+  `player.gd:_character_resource_sprite_frames` (приоритет над cutout) — анимация играет.
+- **Визуал** (`thief_sheet_normalized.png` / контакт): перерисован в едином D&D
+  dark-fantasy стиле, без оружия в руках (по спеке), плавные walk/attack, прозрачный фон.
+- **Тесты**: `animation_smoke_test` PASS (все классы грузятся/играют), runtime_smoke зелёный
+  (флейк ассасин-ассерта — отдельный SCRUM-410).
+
+Acceptance:
+- [x] «Вор» перерисован в едином стиле, без оружия в руках.
+- [x] 5 walk + 5 attack, зарегистрирован (.tres в HEAD), играет в игре.
+- [x] animation smoke зелёный; превью/нормализованный лист.
+
+Статус done. Баги: нет. Двухфазная Design→Animator закрыта.

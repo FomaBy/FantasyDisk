@@ -1266,13 +1266,13 @@
  },
  "art_char_redraw_anim_biologist_task.md": {
   "key": "SCRUM-284",
-  "status": "В работе",
-  "desc_hash": "2a38bb7e042828803b03001fa24a5404"
+  "status": "Контроль качества",
+  "desc_hash": "f1c98436fa992064aebba38b8bbbf613"
  },
  "art_char_redraw_anim_chemist_task.md": {
   "key": "SCRUM-285",
-  "status": "Контроль качества",
-  "desc_hash": "080823044379258ae28077bf46239dbe"
+  "status": "Готово",
+  "desc_hash": "79c73d6960a138edcbe77f3b42b871ca"
  },
  "art_char_redraw_anim_dark_mage_task.md": {
   "key": "SCRUM-286",
@@ -1281,23 +1281,23 @@
  },
  "art_char_redraw_anim_doctor_task.md": {
   "key": "SCRUM-287",
-  "status": "Контроль качества",
-  "desc_hash": "2480fae0ee2360147bb6fd7cd4077bf5"
+  "status": "Готово",
+  "desc_hash": "f58273226108898968d80bc125684bfd"
  },
  "art_char_redraw_anim_druid_task.md": {
   "key": "SCRUM-288",
-  "status": "Контроль качества",
-  "desc_hash": "35c718aee6cc9c25b703a59b97c005cb"
+  "status": "Готово",
+  "desc_hash": "315d400d143c01fcc0ffd6055f449259"
  },
  "art_char_redraw_anim_elementalist_task.md": {
   "key": "SCRUM-289",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "c85d63121fa0a6e6e2f5bbafe6a5d9bf"
  },
  "art_char_redraw_anim_engineer_task.md": {
   "key": "SCRUM-290",
-  "status": "Контроль качества",
-  "desc_hash": "3997ca56a40b8292810d8e069d664ede"
+  "status": "Готово",
+  "desc_hash": "aa2fd02073dd9eaba177b3598505d34e"
  },
  "art_char_redraw_anim_guitarist_task.md": {
   "key": "SCRUM-291",
@@ -1306,13 +1306,13 @@
  },
  "art_char_redraw_anim_knight_task.md": {
   "key": "SCRUM-292",
-  "status": "Контроль качества",
-  "desc_hash": "762fd34bdcbaf565ea2cfb9ad6d996c1"
+  "status": "Готово",
+  "desc_hash": "f703cc1029533d757d8fb123b25eae0c"
  },
  "art_char_redraw_anim_priest_task.md": {
   "key": "SCRUM-293",
-  "status": "Контроль качества",
-  "desc_hash": "cf80f0de0d751fca5fc833d4d7cba48c"
+  "status": "Готово",
+  "desc_hash": "8d102fd78e56741a3baca11a4f8f8366"
  },
  "art_char_redraw_anim_ranger_task.md": {
   "key": "SCRUM-294",
@@ -1321,17 +1321,17 @@
  },
  "art_char_redraw_anim_robot_task.md": {
   "key": "SCRUM-295",
-  "status": "Контроль качества",
-  "desc_hash": "82e1f562497c052d4b8b0fa50471fdc5"
+  "status": "Готово",
+  "desc_hash": "bcc4ffd85cb899572d895ca9662fabaa"
  },
  "art_char_redraw_anim_sniper_task.md": {
   "key": "SCRUM-296",
-  "status": "Контроль качества",
-  "desc_hash": "b5d8623b7ec4d393777acc416e7cdb6c"
+  "status": "Готово",
+  "desc_hash": "2a533a7c548bffb530b03c9e4539bee6"
  },
  "art_char_redraw_anim_thief_task.md": {
   "key": "SCRUM-297",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "8a2976fcda7a9df4c922dfa5e29aa550"
  },
  "art_unified_character_style_anim_spec_task.md": {
@@ -1971,7 +1971,7 @@
  },
  "bug_runtime_smoke_assassin_crit_shadow_vfx_flaky_task.md": {
   "key": "SCRUM-410",
-  "status": "К выполнению",
-  "desc_hash": "6b0325567256061dc211e7f95d9b55a9"
+  "status": "В работе",
+  "desc_hash": "02da31131de6eaf76a1ee766f6b8d3be"
  }
 }

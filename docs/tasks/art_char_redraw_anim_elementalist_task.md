@@ -1,6 +1,6 @@
 # ART: Перерисовать «Элементалист» в едином стиле + анимации (5 move / 5 attack)
 
-Статус: done (Claude-Designer 2026-06-14 — лист 5/5/5 + .tres, animation_smoke зелёный)
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -102,3 +102,49 @@ Role boundary:
 
 ## Результат 2026-06-14 (Claude-Designer, параллельно Codex)
 Лист скиллом + tools/build_character_sheet.py -> full_frame/elementalist/ кадры + elementalist_spriteframes.tres. player.gd грузит .tres. animation_smoke зелёный (exit 0).
+
+## Animator Result — 2026-06-14
+
+Animator-фаза по accepted source sheet выполнена:
+- runtime SpriteFrames: `assets/sprites/characters/elementalist_spriteframes.tres`;
+- extracted runtime frames: `assets/sprites/characters/full_frame/elementalist/`;
+- source sheet: `assets/sprites/characters/elementalist_sheet.png`;
+- animations: `idle` 5f loop at 5fps, `walk` 5f loop at 10fps,
+  `attack_primary` 5f one-shot at 14fps, runtime alias `attack` 5f one-shot at
+  14fps;
+- QA artifacts: `build/qa/scrum289/animation_manifest.json`,
+  `build/qa/scrum289/elementalist_anim_contact.png`,
+  `build/qa/scrum289/elementalist_idle.gif`,
+  `build/qa/scrum289/elementalist_walk.gif`,
+  `build/qa/scrum289/elementalist_attack_primary.gif`.
+
+Verification:
+- animation manifest validator — PASS.
+- Godot headless import — PASS.
+- `tests/animation_smoke_test.gd` — PASS with Elementalist asserted as an
+  accepted SpriteFrames resource.
+- `tests/runtime_smoke_test.gd` — PASS.
+
+Scope note: Animator consumed the accepted Design sheet only; no Design source
+redraw, gameplay, balance, Back-end mechanics, weapon logic or UI changes.
+
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — «Элементалист» перерисован + анимирован, играет в игре
+
+Проверено (фактически):
+- **Frame counts** (`elementalist_spriteframes.tres`): **walk 5 / attack 5** (+attack_primary 5,
+  idle 5) — требование 5 move/5 attack выполнено.
+- **Рантайм-привязка активна**: `.tres` закоммичен в HEAD, грузится через
+  `player.gd:_character_resource_sprite_frames` (приоритет над cutout) — анимация играет.
+- **Визуал** (`elementalist_sheet_normalized.png` / контакт): перерисован в едином D&D
+  dark-fantasy стиле, без оружия в руках (по спеке), плавные walk/attack, прозрачный фон.
+- **Тесты**: `animation_smoke_test` PASS (все классы грузятся/играют), runtime_smoke зелёный
+  (флейк ассасин-ассерта — отдельный SCRUM-410).
+
+Acceptance:
+- [x] «Элементалист» перерисован в едином стиле, без оружия в руках.
+- [x] 5 walk + 5 attack, зарегистрирован (.tres в HEAD), играет в игре.
+- [x] animation smoke зелёный; превью/нормализованный лист.
+
+Статус done. Баги: нет. Двухфазная Design→Animator закрыта.

@@ -61,3 +61,24 @@ docs/design/content_registry.md (персонаж chemist), current_game_state.
 
 ## Результат 2026-06-14 (Claude-Designer, параллельно Codex)
 Лист скиллом fantasydisk-asset-generator (1920x1152, idle/walk/attack, без оружия) -> tools/build_character_sheet.py: flood-fill фон + центровка + нарезка в full_frame/chemist/ + авторинг chemist_spriteframes.tres. player.gd грузит .tres по конвенции. animation_smoke зелёный (exit 0).
+
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — «Химик» перерисован + анимирован, играет в игре
+
+Проверено (фактически):
+- **Frame counts** (`chemist_spriteframes.tres`): **walk 5 / attack 5** (+attack_primary 5,
+  idle 5) — требование 5 move/5 attack выполнено.
+- **Рантайм-привязка активна**: `.tres` закоммичен в HEAD, грузится через
+  `player.gd:_character_resource_sprite_frames` (приоритет над cutout) — анимация играет.
+- **Визуал** (`chemist_sheet_normalized.png` / контакт): перерисован в едином D&D
+  dark-fantasy стиле, без оружия в руках (по спеке), плавные walk/attack, прозрачный фон.
+- **Тесты**: `animation_smoke_test` PASS (все классы грузятся/играют), runtime_smoke зелёный
+  (флейк ассасин-ассерта — отдельный SCRUM-410).
+
+Acceptance:
+- [x] «Химик» перерисован в едином стиле, без оружия в руках.
+- [x] 5 walk + 5 attack, зарегистрирован (.tres в HEAD), играет в игре.
+- [x] animation smoke зелёный; превью/нормализованный лист.
+
+Статус done. Баги: нет. Двухфазная Design→Animator закрыта.
