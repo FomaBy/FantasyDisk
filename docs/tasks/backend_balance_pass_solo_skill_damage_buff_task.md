@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-359
+QA: in_progress (2026-06-14)
 
 ## Результат (2026-06-14)
 Подняты заниженные `solo_target` в `CLASS_BUDGET_PROFILES`
@@ -65,3 +66,31 @@ solo_target < 1.0: dark_mage 0.70, biologist 0.82, engineer 0.90, priest/robot
 
 ## Документация
 docs/design/systems/progression_balance.md, current_game_state.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **solo_target подняты** (progression_data_balance.gd): dark_mage/guitarist/chemist
+  `0.84` (соло-аутсайдеры), biologist `0.92`, engineer `0.98`, elementalist/priest/
+  robot `1.00`. Механика `budget_tuning_for` авто-масштабирует реальный single-target
+  урон к solo_target — цель↑ ⇒ реальный соло-урон↑, гейт остаётся в коридоре.
+- **AoE-идентичность сохранена**: AoE-классы по-прежнему solo<aoe (dark_mage solo
+  0.84 vs aoe 1.30; biologist 0.92 vs 1.18) — классы не уравнены.
+- **ВСЕ баланс-гейты зелёные** (ключевая проверка):
+  - `global_damage_balance_smoke` — passed (51 пара; combined ±25%/solo ±20%/CCT
+    ±30%; худшее CCT +22% doctor/plague — в коридорах).
+  - `weapon_tuning_application_test` — passed (51 пара, 51 с нетривиальным
+    множителем → бафф реально применён к оружиям).
+  - `live_balance_simulation_test` — passed (5 архетипов, 0 мягких заметок;
+    dark_mage/dark_wand solo=48.7, 5-target=112.6, ttk=1.8с).
+  - `global_survivability_balance_smoke` — passed (TTD≤600с, бессмертие недостижимо).
+  - `runtime_smoke_test` — passed.
+
+Acceptance:
+- [x] Соло-скилы усилены у занижённых классов (dark_mage/guitarist/chemist 0.84,
+  biologist 0.92, engineer 0.98); таблица было→стало в Result.
+- [x] Перекосы соло/AoE выровнены, идентичность классов сохранена (solo<aoe у AoE).
+- [x] runtime + balance/sim тесты зелёные; доки.
+
+Баги: нет.

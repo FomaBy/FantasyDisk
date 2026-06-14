@@ -25,6 +25,7 @@ func _initialize() -> void:
 	await _test_guaranteed_rare_shop_capstone()
 	await _test_death_save_capstone()
 	await _test_run_start_application()
+	await _test_class_progression_run_start_application()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
 
@@ -59,6 +60,49 @@ func _test_run_start_application() -> void:
 	# Боевой модификатор урона применён.
 	if float((player.get("run_modifiers") as Dictionary).get("damage_multiplier", 1.0)) <= dmg_before:
 		_fail("Expected meta skill damage to apply at run start.")
+		return
+
+	main.queue_free()
+	await process_frame
+
+
+func _test_class_progression_run_start_application() -> void:
+	# SCRUM-360: классовые бонусы применяются только к выбранному классу и через
+	# тот же run-start wiring, что и аккаунтное древо.
+	var main := MAIN_SCENE.instantiate()
+	root.add_child(main)
+	await process_frame
+
+	var state: Dictionary = Meta.default_state()
+	for _i in range(9):
+		state = Meta.record_boss_victory(state, "berserk", 0)
+	main.set("meta_state", state)
+	main.set("selected_character_id", "berserk")
+	main.set("selected_ascension_level", 0)
+
+	var berserk_player := PLAYER_SCENE.instantiate()
+	main.add_child(berserk_player)
+	berserk_player.configure_character("berserk", "sword")
+	var berserk_damage_before := float((berserk_player.get("derived_parameters") as Dictionary).get("damage", 0.0))
+	var berserk_health_before := float(berserk_player.get("max_health"))
+	main.call("apply_ascension_bonuses", berserk_player)
+	await process_frame
+	var berserk_damage_after := float((berserk_player.get("derived_parameters") as Dictionary).get("damage", 0.0))
+	var berserk_health_after := float(berserk_player.get("max_health"))
+	if berserk_damage_after <= berserk_damage_before or berserk_health_after <= berserk_health_before:
+		_fail("Expected selected class progression to increase Berserk damage and HP at run start.")
+		return
+
+	var soldier_player := PLAYER_SCENE.instantiate()
+	main.add_child(soldier_player)
+	soldier_player.configure_character("soldier", "soldier_rifle")
+	main.set("selected_character_id", "soldier")
+	var soldier_damage_before := float((soldier_player.get("derived_parameters") as Dictionary).get("damage", 0.0))
+	main.call("apply_ascension_bonuses", soldier_player)
+	await process_frame
+	var soldier_damage_after := float((soldier_player.get("derived_parameters") as Dictionary).get("damage", 0.0))
+	if not is_equal_approx(soldier_damage_after, soldier_damage_before):
+		_fail("Expected Berserk class progression not to leak onto Soldier.")
 		return
 
 	main.queue_free()

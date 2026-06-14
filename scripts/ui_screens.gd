@@ -1378,22 +1378,57 @@ func _show_skill_tree_screen() -> void:
 	layout.add_child(hint)
 
 	# SCRUM-360: прогресс ПО КЛАССУ (выбранный класс) — реиграбельность за классы.
+	var class_panel := PanelContainer.new()
+	class_panel.name = "SkillTreeClassPanel"
+	class_panel.add_theme_stylebox_override("panel", _character_card_style())
+	layout.add_child(class_panel)
+	var class_margin := MarginContainer.new()
+	class_margin.add_theme_constant_override("margin_left", 18)
+	class_margin.add_theme_constant_override("margin_right", 18)
+	class_margin.add_theme_constant_override("margin_top", 12)
+	class_margin.add_theme_constant_override("margin_bottom", 12)
+	class_panel.add_child(class_margin)
+	var class_box := VBoxContainer.new()
+	class_box.add_theme_constant_override("separation", 5)
+	class_margin.add_child(class_box)
+	var class_header := Label.new()
+	class_header.name = "SkillTreeClassHeader"
+	class_header.text = "Классы"
+	class_header.add_theme_font_size_override("font_size", 18)
+	class_header.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
+	class_box.add_child(class_header)
 	var class_progress := Label.new()
 	class_progress.name = "SkillTreeClassProgress"
 	class_progress.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	class_progress.add_theme_font_size_override("font_size", 16)
+	class_progress.add_theme_font_size_override("font_size", 15)
 	class_progress.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 0.95))
-	layout.add_child(class_progress)
+	class_box.add_child(class_progress)
+	var class_bonus_list := Label.new()
+	class_bonus_list.name = "SkillTreeClassBonusList"
+	class_bonus_list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	class_bonus_list.add_theme_font_size_override("font_size", 13)
+	class_bonus_list.add_theme_color_override("font_color", Color(0.78, 0.94, 0.82, 0.95))
+	class_box.add_child(class_bonus_list)
 	var class_id := str(game.selected_character_id)
+	var class_config: Dictionary = game.PROGRESSION_DATA.character_config(class_id)
+	var class_title := str(class_config.get("title", class_id))
 	var class_wins: int = game.META_PROGRESSION.class_boss_wins(game.meta_state, class_id)
 	var class_unlocked: int = game.META_PROGRESSION.class_level(game.meta_state, class_id)
 	var class_next: Dictionary = game.META_PROGRESSION.class_next_threshold(game.meta_state, class_id)
-	var class_text := "Прогресс класса «%s»: %d побед над боссами, открыто бонусов класса: %d." % [class_id, class_wins, class_unlocked]
+	var class_text := "«%s»: %d побед над боссами, открыто бонусов: %d/%d." % [class_title, class_wins, class_unlocked, game.META_PROGRESSION.class_progression().size()]
 	if class_next.is_empty():
 		class_text += " Все бонусы класса открыты."
 	else:
 		class_text += " Следующий бонус — на %d победах: %s (%s)." % [int(class_next.get("wins", 0)), str(class_next.get("title", "")), str(class_next.get("desc", ""))]
 	class_progress.text = class_text
+	var unlocked_tiers: Array = game.META_PROGRESSION.class_unlocked_tiers(game.meta_state, class_id)
+	if unlocked_tiers.is_empty():
+		class_bonus_list.text = "Открытых классовых бонусов пока нет. Победи босса этим героем, чтобы начать его личную ветку."
+	else:
+		var bonus_lines := PackedStringArray()
+		for tier in unlocked_tiers:
+			bonus_lines.append("%s: %s" % [str(tier.get("title", "")), str(tier.get("desc", ""))])
+		class_bonus_list.text = "\n".join(bonus_lines)
 
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL

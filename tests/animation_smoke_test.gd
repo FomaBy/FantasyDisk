@@ -713,20 +713,29 @@ func _test_full_frame_animation_registry() -> void:
 	var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", "druid_beast")
 	if frames == null or not frames.has_animation("move") or not frames.has_animation("attack"):
 		_fail("Expected full-frame registry to resolve druid_beast move/attack SpriteFrames.")
-	var rift_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", "rift_cutter")
-	if rift_frames == null:
-		_fail("Expected full-frame registry to resolve rift_cutter SpriteFrames.")
-	else:
+	var standard_enemy_scenes := {
+		"rift_cutter": "res://scenes/Enemy.tscn",
+		"ash_marksman": "res://scenes/EnemyShooter.tscn",
+		"spark_runner": "res://scenes/EnemyRunner.tscn",
+		"stone_bruiser": "res://scenes/EnemyBruiser.tscn",
+		"bone_caller": "res://scenes/EnemySummoner.tscn",
+		"void_mage": "res://scenes/EnemyMage.tscn",
+	}
+	for enemy_id in standard_enemy_scenes.keys():
+		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
+		if enemy_frames == null:
+			_fail("Expected full-frame registry to resolve %s SpriteFrames." % enemy_id)
+			continue
 		for animation_name in ["move", "attack", "attack_primary", "hit", "death"]:
-			if not rift_frames.has_animation(animation_name):
-				_fail("Expected rift_cutter SpriteFrames to expose %s animation." % animation_name)
-			elif rift_frames.get_frame_count(animation_name) != 6:
-				_fail("Expected rift_cutter %s to have 6 frames." % animation_name)
-		if not rift_frames.get_animation_loop("move"):
-			_fail("Expected rift_cutter move to loop.")
+			if not enemy_frames.has_animation(animation_name):
+				_fail("Expected %s SpriteFrames to expose %s animation." % [enemy_id, animation_name])
+			elif enemy_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s %s to have 6 frames." % [enemy_id, animation_name])
+		if not enemy_frames.get_animation_loop("move"):
+			_fail("Expected %s move to loop." % enemy_id)
 		for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
-			if rift_frames.get_animation_loop(one_shot_name):
-				_fail("Expected rift_cutter %s to be one-shot." % one_shot_name)
+			if enemy_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
 	if FullFrameAnimationRegistry.sprite_frames_for("enemy", "missing_test_enemy") != null:
 		_fail("Expected missing full-frame registry entries to return null.")
 
@@ -755,29 +764,30 @@ func _test_full_frame_animation_registry() -> void:
 		_fail("Expected FullFrameBody metadata to expose requested/resolved state.")
 	owner.queue_free()
 
-	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
-	var enemy := enemy_scene.instantiate()
-	root.add_child(enemy)
-	if enemy.get_node_or_null("FullFrameBody") == null:
-		enemy.call("_configure_full_frame_animation")
-	enemy.call("_update_movement_animation", 0.1)
-	var enemy_full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
-	if enemy_full_frame_body == null or not enemy_full_frame_body.visible:
-		_fail("Expected rift_cutter enemies to create a visible FullFrameBody.")
-	if enemy_full_frame_body != null:
-		for animation_name in ["move", "attack_primary", "hit", "death"]:
-			if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
-				_fail("Expected rift_cutter enemy FullFrameBody to use registry SpriteFrames.")
-		if enemy_full_frame_body.animation != "move":
-			_fail("Expected rift_cutter enemy FullFrameBody to start in move animation.")
-		if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
-			_fail("Expected rift_cutter FullFrameBody to play attack_primary.")
-		if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
-			_fail("Expected rift_cutter attack_primary to resolve and face right.")
-	var enemy_static_body := enemy.get_node_or_null("Body") as CanvasItem
-	if enemy_static_body != null and enemy_static_body.visible:
-		_fail("Expected rift_cutter full-frame visual to hide the static body fallback.")
-	enemy.queue_free()
+	for enemy_id in standard_enemy_scenes.keys():
+		var enemy_scene := load(str(standard_enemy_scenes[enemy_id])) as PackedScene
+		var enemy := enemy_scene.instantiate()
+		root.add_child(enemy)
+		if enemy.get_node_or_null("FullFrameBody") == null:
+			enemy.call("_configure_full_frame_animation")
+		enemy.call("_update_movement_animation", 0.1)
+		var enemy_full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if enemy_full_frame_body == null or not enemy_full_frame_body.visible:
+			_fail("Expected %s enemies to create a visible FullFrameBody." % enemy_id)
+		if enemy_full_frame_body != null:
+			for animation_name in ["move", "attack_primary", "hit", "death"]:
+				if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
+					_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
+			if enemy_full_frame_body.animation != "move":
+				_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
+			if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
+				_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
+			if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
+				_fail("Expected %s attack_primary to resolve and face right." % enemy_id)
+		var enemy_static_body := enemy.get_node_or_null("Body") as CanvasItem
+		if enemy_static_body != null and enemy_static_body.visible:
+			_fail("Expected %s full-frame visual to hide the static body fallback." % enemy_id)
+		enemy.queue_free()
 
 
 func _test_enemy_animation() -> void:

@@ -1241,11 +1241,11 @@
  },
  "backend_balance_pass_solo_skill_damage_buff_task.md": {
   "key": "SCRUM-359",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "backend_meta_per_class_progression_bonuses_task.md": {
   "key": "SCRUM-360",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_hero_select_unified_portrait_description_frame_integration_task.md": {
   "key": "SCRUM-361",
