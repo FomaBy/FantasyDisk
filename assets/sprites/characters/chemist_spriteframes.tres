@@ -1,0 +1,129 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_idle_00.png" id="1_che1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_idle_01.png" id="2_che2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_idle_02.png" id="3_che3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_idle_03.png" id="4_che4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_idle_04.png" id="5_che5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_walk_00.png" id="6_che6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_walk_01.png" id="7_che7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_walk_02.png" id="8_che8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_walk_03.png" id="9_che9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_walk_04.png" id="10_che10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_attack_primary_00.png" id="11_che11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_attack_primary_01.png" id="12_che12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_attack_primary_02.png" id="13_che13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_attack_primary_03.png" id="14_che14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/chemist/chemist_attack_primary_04.png" id="15_che15"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_che1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_che2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_che3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_che4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_che5")
+}
+],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("6_che6")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_che7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_che8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_che9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_che10")
+}
+],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_che11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_che12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_che13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_che14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_che15")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_che11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_che12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_che13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_che14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_che15")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}
+]

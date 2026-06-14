@@ -1,0 +1,129 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_idle_00.png" id="1_sni1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_idle_01.png" id="2_sni2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_idle_02.png" id="3_sni3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_idle_03.png" id="4_sni4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_idle_04.png" id="5_sni5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_walk_00.png" id="6_sni6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_walk_01.png" id="7_sni7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_walk_02.png" id="8_sni8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_walk_03.png" id="9_sni9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_walk_04.png" id="10_sni10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_attack_primary_00.png" id="11_sni11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_attack_primary_01.png" id="12_sni12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_attack_primary_02.png" id="13_sni13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_attack_primary_03.png" id="14_sni14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/sniper/sniper_attack_primary_04.png" id="15_sni15"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_sni1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_sni2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_sni3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_sni4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_sni5")
+}
+],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("6_sni6")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_sni7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_sni8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_sni9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_sni10")
+}
+],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_sni11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_sni12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_sni13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_sni14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_sni15")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_sni11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_sni12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_sni13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_sni14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_sni15")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}
+]

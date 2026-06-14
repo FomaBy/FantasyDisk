@@ -1,0 +1,129 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_idle_00.png" id="1_doc1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_idle_01.png" id="2_doc2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_idle_02.png" id="3_doc3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_idle_03.png" id="4_doc4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_idle_04.png" id="5_doc5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_walk_00.png" id="6_doc6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_walk_01.png" id="7_doc7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_walk_02.png" id="8_doc8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_walk_03.png" id="9_doc9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_walk_04.png" id="10_doc10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_attack_primary_00.png" id="11_doc11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_attack_primary_01.png" id="12_doc12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_attack_primary_02.png" id="13_doc13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_attack_primary_03.png" id="14_doc14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/doctor/doctor_attack_primary_04.png" id="15_doc15"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_doc1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_doc2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_doc3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_doc4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_doc5")
+}
+],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("6_doc6")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_doc7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_doc8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_doc9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_doc10")
+}
+],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_doc11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_doc12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_doc13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_doc14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_doc15")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_doc11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_doc12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_doc13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_doc14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_doc15")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}
+]

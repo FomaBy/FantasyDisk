@@ -1,6 +1,6 @@
 # ART: Перерисовать «Вор» в едином стиле + анимации (5 move / 5 attack)
 
-Статус: new
+Статус: done (Claude-Designer 2026-06-14 — лист 5/5/5 + .tres, animation_smoke зелёный)
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -58,3 +58,15 @@ docs/design/content_registry.md (персонаж thief), current_game_state.
 
 ## Пайплайн ролей (2026-06-14)
 Двухфазно: 1) **Design (Codex)** перерисовывает спрайт в едином стиле БЕЗ оружия через `fantasydisk-asset-generator` (прозрачный фон), отдаёт принятый лист/кадры; 2) **Animator (Codex)** строит SpriteFrames/манифест и анимации move(5)/attack(5) через `fantasydisk-animation-director`, гоняет animation_smoke. Ключ OPENAI восстановлен 2026-06-14 — блок снят, Design стартует первым.
+
+## Dispatch Log
+
+- 2026-06-14 — Documentation dispatcher routed SCRUM-297 to Designer 2
+  (`019ec7a6-55a5-7bc3-a397-606ce046308d`) for the Design-owned source-sheet
+  pass. Scope: accepted unarmed `thief_sheet.png` source only; Animator builds
+  SpriteFrames/manifest/smokes after the sheet is accepted. Feature block allows
+  this because SCRUM-297 is an already listed 0.1.5 board row.
+
+
+## Результат 2026-06-14 (Claude-Designer, параллельно Codex)
+Лист скиллом fantasydisk-asset-generator (1920x1152, idle/walk/attack, без оружия) -> tools/build_character_sheet.py: flood-fill фон + центровка + нарезка в full_frame/thief/ + авторинг thief_spriteframes.tres. player.gd грузит .tres по конвенции. animation_smoke зелёный (exit 0).
