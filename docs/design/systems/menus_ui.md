@@ -150,6 +150,12 @@ Do not place text, icons, click zones or focus rings on the tab strip's metal
 bevels, red gems, side arrows, spikes or lower rail. Preview:
 `docs/design/previews/settings_tab_switcher_frame_content_zone.png`.
 
+The «Управление» tab also contains the `DebugModeToggle` (SCRUM-375). It is a
+normal settings checkbox inside `ControlsScroll`, not a fourth tab. The toggle is
+OFF by default and persists through `scripts/game_settings.gd`; its tooltip
+documents the combat-only debug controls (right-click / Shift+left-click move
+target, middle-click teleport).
+
 ## Ornate Frame Safe-Area Rule
 
 Controls that use `ui_frame_ornate_*` textures must use the signed

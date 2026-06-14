@@ -4,8 +4,9 @@
 
 ## Settings
 
-- Video, audio, input bindings, `aim_mode`, screen shake and last-seen patch
-  notes version are saved by `scripts/game_settings.gd` to `user://settings.cfg`.
+- Video, audio, input bindings, `aim_mode`, `debug_mode`, screen shake and
+  last-seen patch notes version are saved by `scripts/game_settings.gd` to
+  `user://settings.cfg`.
 - Settings are loaded in `Main._ready()` before the main menu is shown and are
   applied immediately when changed in the settings screen.
 

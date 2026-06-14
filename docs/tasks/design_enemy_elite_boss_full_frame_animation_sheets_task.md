@@ -1,6 +1,6 @@
 # Design handoff: enemy, elite, and boss full-frame animation sheets
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -8,6 +8,7 @@
 Автор: Animator audit `animation_full_frame_pipeline_coverage_audit_task.md`
 Исполнитель: Designer (Codex)
 Jira: SCRUM-352
+QA: in_progress (2026-06-14)
 Parent: SCRUM-350 / `animation_full_frame_pipeline_coverage_audit_task.md`
 
 ## Autonomy / Approval
@@ -151,3 +152,70 @@ Pilot output now exists:
 This removes the previous billing blocker. The full SCRUM-352 production scope
 is still open: remaining standard enemies, route elites, mini-elites and bosses
 must be generated and then handed off to Animator.
+
+## Result — 2026-06-14
+Design completed the full SCRUM-352 production source sheet set through the
+approved `fantasydisk-asset-generator` / OpenAI Images path and the
+task-specific wrapper:
+
+- `tools/generate_scrum352_full_frame_sheets.py`
+
+Generated accepted transparent full-frame source sheets for all 26 requested
+entities:
+
+- 11 standard enemies in `assets/sprites/enemies/full_frame/*_full_frame_sheet.png`
+- 10 route/mini elites in `assets/sprites/elites/full_frame/*_full_frame_sheet.png`
+- 5 bosses in `assets/sprites/bosses/full_frame/*_full_frame_sheet.png`
+
+Reference/raw outputs and manifest:
+
+- `docs/design/references/scrum352_full_frame_sheets/raw/*_full_frame_sheet_raw.png`
+- `docs/design/references/scrum352_full_frame_sheets/scrum352_sheet_manifest.json`
+
+Preview/QA artifacts:
+
+- `docs/design/previews/scrum352_full_frame_sheets_preview.png`
+- `docs/design/previews/scrum352_full_frame_sheets_contact.png`
+
+Validation:
+
+- Pillow validation PASS: 26/26 PNGs are `1536x1024`, RGBA, have transparent
+  alpha, and have non-empty alpha bounding boxes.
+- Manifest PASS: 26 generated entries, 6 columns, 4 rows, 256px cells,
+  bottom-center pivot guidance, source faces left.
+- Visual contact review PASS: enemy, elite, mini-elite and boss rows are
+  readable as D&D/dark fantasy full-frame sheets with movement, primary attack
+  and skill/death rows according to the task row contract.
+- Godot import PASS:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --import`
+
+Scope note: Design produced and validated the source sheets/manifest/previews.
+Runtime SpriteFrames, registry validation, animation smoke and gameplay-facing
+integration are Animator-owned and were tracked in the downstream full-frame
+integration tasks. Design did not hand-edit gameplay or timing logic.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — родительский source-asset деливерабл (26 full-frame листов)
+
+Проверено (фактически):
+- **26/26 source-листов** (Pillow): 11 врагов + 10 элит/мини-элит + 5 боссов —
+  ВСЕ `1536×1024` RGBA с прозрачной alpha (ext[0]<255) и непустым bbox; BAD=0.
+- **Манифест** `scrum352_sheet_manifest.json`: `generated` = 26 записей
+  (entity_id/kind/title/source); `frame_size=[256,256]`, columns/rows, pivot
+  bottom-center, source_faces_left — контракт рядов задокументирован для Animator.
+- **Визуал** `scrum352_full_frame_sheets_contact.png` (+ preview): 26 листов 6×4
+  (move/attack_primary/2 skill·death), читаемые dark-fantasy/D&D силуэты,
+  прозрачный фон, не cutout.
+- **E2E-валидация (сильнейшая)**: эти листы потреблены и проверены 8 downstream-
+  интеграциями — SCRUM-363/364/365/366/367 (враги), 368/371 (route-элиты), 376
+  (6 мини-элит) — ВСЕ нарезали move 6f loop + attack 6f (+ 2 skill для элит) и
+  прошли QA-вердикты. Боссы — downstream SCRUM-377 (в очереди). Godot import PASS.
+
+Acceptance:
+- [x] Контакт-листы/превью существуют для каждого семейства (родительский + per-family downstream).
+- [x] Каждый лист 5+ move + 5+ attack кадров (downstream подтвердили 6f/6f).
+- [x] Каждая элита/босс 2+ skill-ряда, full-frame не cutout (368/371/376 подтвердили).
+- [x] Прозрачная alpha/no-crop/pivot задокументированы (манифест + 26 RGBA transparent).
+- [x] Доска/Jira синканы.
+
+Примечание: статус review→done (QA пройдено по Design-scope). Баги: нет.

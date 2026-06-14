@@ -1,6 +1,6 @@
 # ANIM: Внедрить анимации всех монстров и персонажей — move/attack/death (full-frame)
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Animator (Codex) → Back-end (анимации)
 Версия: 0.1.5
@@ -12,6 +12,12 @@ SCRUM-298 + 282-297 (перерисовка персонажей)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Progress Log
+- 2026-06-14 — Animator (Codex) took SCRUM-370 after completing SCRUM-376/SCRUM-377
+  batch integrations. First pass is limited to Animator-owned coverage audit,
+  SpriteFrames/registry verification, and precise Design/Back-end handoffs for
+  missing death rows or runtime death playback.
 
 ## Контекст (запрос пользователя)
 «Надо внедрить анимацию всех монстров и персонажей, что нарисовано, в игру. Очень

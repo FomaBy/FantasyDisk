@@ -4627,6 +4627,9 @@ func _apply_video_settings() -> void:
 
 func _show_feedback_overlay(screenshot: Image = null) -> void:
 	_close_feedback_overlay()
+	# Пауза при открытии формы фидбека — как Escape (оверлей PROCESS_MODE_ALWAYS,
+	# поэтому ввод в форму работает на паузе). Снимается в _close_feedback_overlay.
+	game.push_pause("feedback")
 
 	game.feedback_overlay_layer = CanvasLayer.new()
 	game.feedback_overlay_layer.name = "FeedbackOverlayLayer"
@@ -4758,6 +4761,8 @@ func _close_feedback_overlay() -> void:
 	if game.feedback_overlay_layer != null and is_instance_valid(game.feedback_overlay_layer):
 		game.feedback_overlay_layer.queue_free()
 	game.feedback_overlay_layer = null
+	# Снять паузу, поставленную при открытии формы фидбека (no-op, если не стояла).
+	game.pop_pause("feedback")
 
 
 func _feedback_reporter() -> Node:

@@ -1,6 +1,6 @@
 # FEATURE(debug): Дебаг-режим в опциях — клик по карте телепортит/ведёт персонажа
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI + геймплей)
 Версия: 0.1.5
@@ -60,10 +60,36 @@ game_settings.gd DEFAULTS (9-22). Движение игрока — player.gd `_
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Тоггл «Дебаг-режим» в настройках (в существующей вкладке, не 4-я), персистится; по умолчанию выкл.
-- [ ] При ВКЛ: выбор точки на арене ведёт/телепортит персонажа в неё; неконфликтующий ввод (не ломает атаку/прицел).
-- [ ] При ВЫКЛ: обычное управление, клик не перемещает; пауза/ввод/runtime не сломаны.
-- [ ] smoke зелёный; скрин настроек; CHANGELOG; current_game_state.
+- [x] Тоггл «Дебаг-режим» в настройках (в существующей вкладке, не 4-я), персистится; по умолчанию выкл.
+- [x] При ВКЛ: выбор точки на арене ведёт/телепортит персонажа в неё; неконфликтующий ввод (не ломает атаку/прицел).
+- [x] При ВЫКЛ: обычное управление, клик не перемещает; пауза/ввод/runtime не сломаны.
+- [x] smoke зелёный; скрин настроек; CHANGELOG; current_game_state.
 
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/systems/combat.md, current_game_state.
+
+## Result — 2026-06-14
+
+Done by Codex Back-end.
+
+- Added persisted `debug_mode` setting in `scripts/game_settings.gd`, loaded/saved
+  through `Main` and exposed in the existing «Управление» settings tab as
+  `DebugModeToggle`; no fourth tab was added.
+- Added combat-only debug click routing in `scripts/main.gd`: right-click or
+  Shift+left-click assigns a smooth arena move target, middle-click teleports to
+  the clamped arena point. Screen coordinates are converted through the active
+  viewport canvas transform, so camera/zoom are respected.
+- Added `Player.debug_set_move_target()` and target-driven movement; WASD input
+  cancels the debug target and keeps normal player control authoritative.
+- OFF state leaves normal aim/attack/pause/runtime behavior unchanged.
+- Updated `CHANGELOG.md`, `docs/design/current_game_state.md`,
+  `docs/design/systems/menus_ui.md`, `docs/design/systems/combat.md`, and
+  `docs/design/systems/persistence.md`.
+
+Verification:
+- `git diff --check` — PASS
+- `runtime_smoke_ui_test.gd` — PASS
+- `runtime_smoke_test.gd` — PASS
+- QA artifact: `build/qa/scrum375/settings_debug_mode_toggle.md`; PNG capture is
+  intentionally skipped in headless dummy renderer to avoid false renderer
+  warnings, and the same helper saves PNG in non-headless runs.

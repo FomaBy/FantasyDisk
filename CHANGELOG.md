@@ -19,6 +19,12 @@
   state bridge for heroes/enemies/allies/elites/bosses. Allies can now opt into
   source-specific full-frame move/attack playback, and enemies/bosses keep
   cutout/static fallback when no SpriteFrames are registered.
+- Enemy/elite/boss full-frame source sheets (SCRUM-352): generated 26 accepted
+  transparent production sheets for standard enemies, route elites, mini-elites
+  and bosses in `assets/sprites/{enemies,elites,bosses}/full_frame/`, with
+  manifest `docs/design/references/scrum352_full_frame_sheets/scrum352_sheet_manifest.json`
+  and previews `scrum352_full_frame_sheets_preview.png` /
+  `scrum352_full_frame_sheets_contact.png`.
 - Rift Cutter full-frame pilot (SCRUM-363): integrated the accepted SCRUM-352
   enemy sheet as padded runtime SpriteFrames with `move` 6f loop and
   `attack_primary`/runtime `attack`, `hit`, `death` 6f one-shots through
@@ -54,6 +60,11 @@
   mini-elite sheets as SpriteFrames/registry entries for the SCRUM-372
   `mini_elite_kind` visual-id hook, with `move`, `attack`/`attack_primary`, two
   `skill_*` rows and matching `attack_*` aliases per mini-elite.
+- Boss full-frame batch (SCRUM-377): integrated all five accepted SCRUM-352 boss
+  sheets as boss SpriteFrames/registry entries with `move`,
+  `attack`/`attack_primary`, two `skill_*` rows and matching `attack_*` aliases
+  per boss; created Back-end follow-up for visual-only skill-state playback
+  hooks.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню
@@ -86,6 +97,11 @@
 - Final balance audit (SCRUM-262): global damage smoke теперь проверяет не только combined solo/5-target DPS, но и финальный solo corridor ±20% плюс crowd-clear time 5/10/20 в коридоре ±30%; `tools/balance_harness.gd` пишет `build/balance_final_audit_0_1_5.md` с class viability и CCT таблицами для всех 51 class+weapon пар.
 - In-game feedback tool (SCRUM-362): added a global `P` feedback action, top-level `FeedbackOverlayLayer` with pre-overlay screenshot preview, Discord-compatible webhook delivery through `FeedbackReporter`, safe `user://feedback/` fallback reports and runtime smoke coverage.
 - Per-class meta progression (SCRUM-360): boss victories now build `class_boss_wins` for the played class, unlock class-only damage/HP/attack-speed bonuses at 1/2/4/6/9 wins, apply them only to the selected hero at run start, and show a compact «Классы» section in the skill tree screen.
+- Debug combat movement (SCRUM-375): settings now include a persisted
+  OFF-by-default «Дебаг-режим» toggle; when enabled in combat, right-click or
+  Shift+left-click sets a smooth arena move target and middle-click teleports to
+  the clamped arena point. Normal combat input is unchanged while the toggle is
+  off.
 
 ### Changed
 - Summoner rebalance (SCRUM-357): `SummonerWeapon` now gives summons a

@@ -165,7 +165,38 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"source_faces_left": true,
 		},
 	},
-	"boss": {},
+	"boss": {
+		"rift_warden": {
+			"frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+			"scale": Vector2(0.74, 0.74),
+			"position": Vector2(0.0, -86.0),
+			"source_faces_left": true,
+		},
+		"disk_devourer": {
+			"frames": "res://assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres",
+			"scale": Vector2(0.78, 0.78),
+			"position": Vector2(0.0, -90.0),
+			"source_faces_left": true,
+		},
+		"bone_archon": {
+			"frames": "res://assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres",
+			"scale": Vector2(0.76, 0.76),
+			"position": Vector2(0.0, -88.0),
+			"source_faces_left": true,
+		},
+		"brood_mother": {
+			"frames": "res://assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres",
+			"scale": Vector2(0.78, 0.78),
+			"position": Vector2(0.0, -88.0),
+			"source_faces_left": true,
+		},
+		"ashen_colossus": {
+			"frames": "res://assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres",
+			"scale": Vector2(0.82, 0.82),
+			"position": Vector2(0.0, -94.0),
+			"source_faces_left": true,
+		},
+	},
 	"hero": {},
 }
 

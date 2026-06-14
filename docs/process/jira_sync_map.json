@@ -1213,7 +1213,7 @@
  },
  "design_enemy_elite_boss_full_frame_animation_sheets_task.md": {
   "key": "SCRUM-352",
-  "status": "В работе"
+  "status": "Готово"
  },
  "animation_summon_creatures_update_via_director_skill_task.md": {
   "key": "SCRUM-353",
@@ -1285,7 +1285,7 @@
  },
  "animation_integrate_all_move_attack_death_states_task.md": {
   "key": "SCRUM-370",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "animation_shard_marshal_full_frame_integration_task.md": {
   "key": "SCRUM-371",
@@ -1297,7 +1297,7 @@
  },
  "design_unified_master_frame_system_projectwide_task.md": {
   "key": "SCRUM-373",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "bug_feedback_webhook_image_attachment_missing_task.md": {
   "key": "SCRUM-374",
@@ -1305,7 +1305,7 @@
  },
  "backend_debug_mode_click_to_move_player_task.md": {
   "key": "SCRUM-375",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "animation_mini_elite_full_frame_batch_integration_task.md": {
   "key": "SCRUM-376",
@@ -1313,6 +1313,10 @@
  },
  "animation_boss_full_frame_batch_integration_task.md": {
   "key": "SCRUM-377",
+  "status": "Контроль качества"
+ },
+ "backend_boss_full_frame_skill_state_hooks_task.md": {
+  "key": "SCRUM-378",
   "status": "В работе"
  }
 }

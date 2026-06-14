@@ -368,11 +368,16 @@ Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 ви
 
 | ID | Игровое имя | Текущая сцена | Роль | Ассет | Паттерны | Статус |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rift_warden` | Страж Разлома | `scenes/BossWarden.tscn` | Финальный босс контроля | `assets/sprites/bosses/boss_rift_warden.png` | Залпы, зоны разлома, призыв, щит, увороты | Реализовано |
-| `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png` | Рывки, disk slam AoE, radial burst, enrage | Реализовано |
-| `bone_archon` | Костяной Архонт | `scenes/BossBoneArchon.tscn` | Финальный босс-некромант | `assets/sprites/bosses/boss_bone_archon.png` (SCRUM-156 source ready; runtime scene wiring Back-end scope) | Волны скелетов (summon), веер черепов (volley), костяная стена (волна зон с проходом) | Реализовано (механики; арт source ready) |
-| `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png` (SCRUM-156 source ready; runtime scene wiring Back-end scope) | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3 | Реализовано (механики; арт source ready) |
-| `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png` (SCRUM-156 source ready; runtime scene wiring Back-end scope) | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны) | Реализовано (механики; арт source ready) |
+| `rift_warden` | Страж Разлома | `scenes/BossWarden.tscn` | Финальный босс контроля | `assets/sprites/bosses/boss_rift_warden.png`; full-frame `assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres` | Залпы, зоны разлома, призыв, щит, увороты. Визуально: `move`, `attack`/`attack_primary`, `skill_gravity_well`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
+| `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png`; full-frame `assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres` | Рывки, disk slam AoE, radial burst, enrage. Визуально: `move`, `attack`/`attack_primary`, `skill_vampiric_bite`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
+| `bone_archon` | Костяной Архонт | `scenes/BossBoneArchon.tscn` | Финальный босс-некромант | `assets/sprites/bosses/boss_bone_archon.png`; full-frame `assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres` | Волны скелетов (summon), веер черепов (volley), костяная стена (волна зон с проходом). Визуально: `move`, `attack`/`attack_primary`, `skill_skull_volley`, `skill_bone_prison` + `attack_*` aliases | Реализовано |
+| `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png`; full-frame `assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres` | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3. Визуально: `move`, `attack`/`attack_primary`, `skill_brood_spawn`, `skill_web_zone` + `attack_*` aliases | Реализовано |
+| `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png`; full-frame `assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres` | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны). Визуально: `move`, `attack`/`attack_primary`, `skill_molten_slam`, `skill_armor_pulse` + `attack_*` aliases | Реализовано |
+
+SCRUM-352 Design source для full-frame rows хранится как
+`assets/sprites/bosses/full_frame/<boss_id>_full_frame_sheet.png` (`1536x1024`,
+RGBA, transparent, 6 columns x 4 rows). Row contract и pivot notes зафиксированы
+в `docs/design/references/scrum352_full_frame_sheets/scrum352_sheet_manifest.json`.
 
 Обновление SCRUM-135 от 2026-06-12: оба boss source PNG заменены на native `512x512` и перенарезаны в `assets/sprites/bosses/cutout/`; `rift_warden` сохраняет отдельный `vortex` part, `disk_devourer` остается single-torso rig по текущему CONFIG. Epic boss scale не менялся.
 

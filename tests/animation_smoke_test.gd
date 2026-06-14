@@ -990,6 +990,93 @@ func _test_full_frame_animation_registry() -> void:
 		_fail("Expected missing mini_elite_kind SpriteFrames to fall back to elite_behavior visual id.")
 	mini_visual_elite.queue_free()
 
+	var boss_full_frame_scenes := {
+		"rift_warden": {
+			"path": "res://scenes/BossWarden.tscn",
+			"skill_states": ["skill_gravity_well", "skill_rift_zone"],
+			"phase_state": "rift_warden:gravity_well:windup",
+			"phase_resolved": "skill_gravity_well",
+		},
+		"disk_devourer": {
+			"path": "res://scenes/BossDiskDevourer.tscn",
+			"skill_states": ["skill_vampiric_bite", "skill_rift_zone"],
+			"phase_state": "disk_devourer:vampiric_bite:windup",
+			"phase_resolved": "skill_vampiric_bite",
+		},
+		"bone_archon": {
+			"path": "res://scenes/BossBoneArchon.tscn",
+			"skill_states": ["skill_skull_volley", "skill_bone_prison"],
+			"phase_state": "bone_archon:skull_volley:windup",
+			"phase_resolved": "skill_skull_volley",
+		},
+		"brood_mother": {
+			"path": "res://scenes/BossBroodMother.tscn",
+			"skill_states": ["skill_brood_spawn", "skill_web_zone"],
+			"phase_state": "brood_mother:brood_spawn:windup",
+			"phase_resolved": "skill_brood_spawn",
+		},
+		"ashen_colossus": {
+			"path": "res://scenes/BossAshenColossus.tscn",
+			"skill_states": ["skill_molten_slam", "skill_armor_pulse"],
+			"phase_state": "ashen_colossus:molten_slam:windup",
+			"phase_resolved": "skill_molten_slam",
+		},
+	}
+	for boss_id in boss_full_frame_scenes.keys():
+		var boss_info: Dictionary = boss_full_frame_scenes[boss_id]
+		var boss_frames := FullFrameAnimationRegistry.sprite_frames_for("boss", boss_id)
+		if boss_frames == null:
+			_fail("Expected full-frame registry to resolve %s boss SpriteFrames." % boss_id)
+			continue
+		for animation_name in ["move", "attack", "attack_primary"]:
+			if not boss_frames.has_animation(animation_name):
+				_fail("Expected %s boss SpriteFrames to expose %s animation." % [boss_id, animation_name])
+			elif boss_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s boss %s to have 6 frames." % [boss_id, animation_name])
+		if not boss_frames.get_animation_loop("move"):
+			_fail("Expected %s boss move to loop." % boss_id)
+		for one_shot_name in ["attack", "attack_primary"]:
+			if boss_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s boss %s to be one-shot." % [boss_id, one_shot_name])
+		for skill_state in boss_info["skill_states"]:
+			var boss_skill_name := str(skill_state)
+			var boss_attack_alias := "attack_%s" % boss_skill_name.trim_prefix("skill_")
+			if not boss_frames.has_animation(boss_skill_name):
+				_fail("Expected %s boss SpriteFrames to expose %s." % [boss_id, boss_skill_name])
+			elif boss_frames.get_frame_count(boss_skill_name) != 6:
+				_fail("Expected %s boss %s to have 6 frames." % [boss_id, boss_skill_name])
+			if boss_frames.has_animation(boss_skill_name) and boss_frames.get_animation_loop(boss_skill_name):
+				_fail("Expected %s boss %s to be one-shot." % [boss_id, boss_skill_name])
+			if not boss_frames.has_animation(boss_attack_alias):
+				_fail("Expected %s boss SpriteFrames to expose %s validator alias." % [boss_id, boss_attack_alias])
+			elif boss_frames.get_frame_count(boss_attack_alias) != 6:
+				_fail("Expected %s boss %s alias to have 6 frames." % [boss_id, boss_attack_alias])
+			if boss_frames.has_animation(boss_attack_alias) and boss_frames.get_animation_loop(boss_attack_alias):
+				_fail("Expected %s boss %s alias to be one-shot." % [boss_id, boss_attack_alias])
+
+		var boss_scene := load(str(boss_info["path"])) as PackedScene
+		var boss := boss_scene.instantiate()
+		root.add_child(boss)
+		if boss.get_node_or_null("FullFrameBody") == null:
+			boss.call("_configure_full_frame_animation")
+		boss.call("_update_movement_animation", 0.1)
+		var boss_body := boss.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if boss_body == null or not boss_body.visible:
+			_fail("Expected %s boss scene to create a visible FullFrameBody." % boss_id)
+		if boss_body != null:
+			if str(boss_body.get_meta("entity_id", "")) != boss_id:
+				_fail("Expected %s boss scene to select boss-specific SpriteFrames, got %s." % [boss_id, str(boss_body.get_meta("entity_id", ""))])
+			if not FullFrameAnimationRegistry.play_state(boss_body, str(boss_info["phase_state"]), Vector2.RIGHT):
+				_fail("Expected %s boss phase state to resolve through the full-frame registry." % boss_id)
+			if boss_body.animation != str(boss_info["phase_resolved"]):
+				_fail("Expected %s boss phase to resolve to %s, got %s." % [boss_id, str(boss_info["phase_resolved"]), boss_body.animation])
+			if not boss_body.flip_h:
+				_fail("Expected %s boss full-frame art to face right via flip_h." % boss_id)
+		var boss_static_body := boss.get_node_or_null("Sprite2D") as CanvasItem
+		if boss_static_body != null and boss_static_body.visible:
+			_fail("Expected %s boss full-frame visual to hide the static sprite fallback." % boss_id)
+		boss.queue_free()
+
 
 func _test_enemy_animation() -> void:
 	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
