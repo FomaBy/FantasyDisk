@@ -53,3 +53,9 @@ D&D + Dark Fantasy settings tab switcher frame for FantasyDisk. Four connected t
 - [ ] Runtime-текст/иконки/кликабельные зоны вкладок находятся в content-zone и не перекрывают декоративную рамку.
 - [ ] Runtime integration, если выполняется, не ломает layout и не создаёт overlap на 1152x648 и wide-low viewport.
 - [ ] Jira и task-файл синхронизированы после смены статуса.
+
+## Передача 2026-06-14
+
+Передано в Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` по запросу пользователя:
+дизайнер должен принять/доработать новый вид tabs для настроек, перенести финальный
+PNG в runtime assets и зафиксировать content-zone/safe-area для Back-end/QA.

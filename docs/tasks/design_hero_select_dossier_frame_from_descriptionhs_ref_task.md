@@ -58,6 +58,12 @@ file, размеры, alpha, margins, content-zone, backup и QA artifacts.
    бэкап, не удалять.
 4. Весь контент досье (заголовок/описание/черты/оружие/возвышение/кнопка «Выбрать»)
    — в content-зоне рамки, отцентрован, без наезда на орнамент; описание читаемо.
+   Обязательное правило 2026-06-14: текст, кнопки, controls Возвышения, selection
+   zones и любые карточки/иконки не должны лежать на декоративных border/corners,
+   самоцветах, печатях, гребнях, шипах или металлическом орнаменте. Если source
+   frame не даёт достаточно пустой зоны, уменьшать/перестраивать layout или
+   фиксировать blocker/handoff, но не класть контент на рамку. Финальные
+   content-zone/margins обязательны в task result.
 5. Не менять художественное направление в рамках этой задачи: использовать
    только existing Hero Select/reference pack как источник, а в результате
    описывать технические параметры, не новый стиль.
@@ -141,6 +147,7 @@ file, размеры, alpha, margins, content-zone, backup и QA artifacts.
 ## Acceptance Criteria
 - [ ] Рамка описания героя = референс DescriptionHS; основной frame art масштабируется пропорционально, без one-axis stretch.
 - [ ] Весь контент досье в content-зоне, не наезжает на орнамент; описание читаемо (закрывает SCRUM-276).
+- [ ] Task result фиксирует финальные content-zone/margins; decorative border/corners/seals/spikes remain unobstructed.
 - [ ] Task result фиксирует финальные source size, texture margins, content margins и фактические runtime rects.
 - [ ] Возвышение и start button остаются отдельными controls/assets; они не bake-ятся в outer-frame PNG.
 - [ ] Старый ассет в бэкап; no-overlap на 3 разрешениях; 6 smoke зелёные; скрин; CHANGELOG.

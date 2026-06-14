@@ -93,6 +93,14 @@ Project practices:
 - Keep code split into focused scenes and scripts.
 - Prefer data-driven character/enemy/weapon configuration where practical.
 - Keep prototype visuals simple until art direction exists.
+- **Генерация графики/ассетов — ТОЛЬКО скиллом `fantasydisk-asset-generator`**
+  (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`, SCRUM-324):
+  `scripts/generate_asset.py --prompt "<...>" --output <тема/файл> --size <WxH>
+  --quality high` (OpenAI Images API, модель `gpt-image-2`, PNG). Он рисует кратно
+  лучше прежнего пайплайна — старый способ не использовать. Все ассеты — на
+  ПРОЗРАЧНОМ фоне; исходник сохраняется в `docs/design/references/<тема>/` (для
+  единообразия на будущее), затем внедряется в `assets/`. Стиль — D&D + Dark
+  Fantasy Dragon (см. UI Overhaul SCRUM-327).
 - Run Godot headless smoke tests after gameplay changes:
   `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
 - Do not commit `.godot/`.

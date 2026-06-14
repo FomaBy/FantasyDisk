@@ -19,8 +19,12 @@ Jira: SCRUM-329
 Экраны кластера (scripts/ui_screens.gd): _show_main_menu (94), _show_settings_menu (1551), _show_patch_notes_screen (1125), _show_rebind_conflict (4006), _show_quit_confirmation_dialog (218).
 
 ## ОБЯЗАТЕЛЬНО — новый графический скилл + конвенции ассетов (директива пользователя)
-- Рисовать ВСЮ графику этого тикета новым скиллом генерации графики/интерфейсов
-  (он рисует кратно лучше прежнего пайплайна) — НЕ использовать старый способ.
+- Рисовать ВСЮ графику этого тикета СКИЛЛОМ `fantasydisk-asset-generator`
+  (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`) через
+  `scripts/generate_asset.py --prompt "<...>" --output <тема/файл> --size <WxH>
+  --quality high` (OpenAI Images API, модель `gpt-image-2`, PNG). Он рисует кратно
+  лучше прежнего пайплайна — НЕ использовать старый способ. См. SCRUM-324.
+  Прозрачный фон обязателен (`background=transparent`/output_format png).
 - Все ассеты — PNG на ПРОЗРАЧНОМ фоне (RGBA, без подложки/checkerboard).
 - Сохранять файлы СРАЗУ в три места для единообразия на будущее:
   1) `assets/` — игровой ассет (по месту использования, напр. assets/sprites/ui/...),

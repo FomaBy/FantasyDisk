@@ -37,10 +37,11 @@ docs/design/references/carusel/ChatGPT Image Jun 14, 2026, 10_57_24 AM.png
    из этого референса, и/или обновить значения в
    HERO_SELECT_FRAME_* (ui_screens.gd:61/71/81) под новую рамку. Старый ассет —
    в бэкап, не удалять.
-3. Миниатюры героев (HeroThumbnailStrip / _make_hero_thumbnail_button 124×88) и
-   их выравнивание — внутри content-зоны новой рамки, без наезда на орнамент;
-   высота полосы (HeroThumbnailStripFrame custom_minimum_size, сейчас 104)
-   согласовать с пропорцией новой рамки.
+3. Миниатюры героев (HeroThumbnailStrip / _make_hero_thumbnail_button) и
+   их выравнивание — только внутри пустой content-зоны новой рамки, без наезда
+   на боковые камни, нижний/верхний металлический кант, центральные гребни или
+   любой другой декоративный орнамент. Финальную content-zone/margins записать
+   в task result и docs.
 4. Тёмное фэнтези, канон, единство с общим frame-kit (SCRUM-274) и hero-select
    китом (SCRUM-281).
 5. Тест (smoke): экран выбора героя строится; рамка карусели = новый ассет;
@@ -92,6 +93,11 @@ docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_s
 - Hero thumbnails are horizontally centered in the strip and adapt `42-124px`
   width for the current 17-character roster so they stay inside the dark
   content zone instead of touching side jewels.
+- Mandatory UI content-zone rule applied: carousel content margins are
+  `Vector4(112, 46, 112, 46)` at 1280x720 base and scale proportionally with
+  the frame (`168/69/168/69` at 1080p, `224/92/224/92` at 1440p). The decorative
+  border/corners/jewels/spikes remain unobstructed; thumbnails are contained in
+  `HeroThumbnailStripContent`.
 - QA artifacts:
   `build/qa/scrum320/hero_select_carousel_1280x720.png`,
   `hero_select_carousel_1920x1080.png`,

@@ -19,8 +19,12 @@ Jira: SCRUM-326
 Экраны кластера (scripts/ui_screens.gd): _show_combat_title_banner (3556), _show_level_up_toast (3521), _show_victory_banner (773), in-run HUD (полоски HP/опыта, миникарта/таймер, кнопка повышения SCRUM-278, FAB докачки).
 
 ## ОБЯЗАТЕЛЬНО — новый графический скилл + конвенции ассетов (директива пользователя)
-- Рисовать ВСЮ графику этого тикета новым скиллом генерации графики/интерфейсов
-  (он рисует кратно лучше прежнего пайплайна) — НЕ использовать старый способ.
+- Рисовать ВСЮ графику этого тикета СКИЛЛОМ `fantasydisk-asset-generator`
+  (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`) через
+  `scripts/generate_asset.py --prompt "<...>" --output <тема/файл> --size <WxH>
+  --quality high` (OpenAI Images API, модель `gpt-image-2`, PNG). Он рисует кратно
+  лучше прежнего пайплайна — НЕ использовать старый способ. См. SCRUM-324.
+  Прозрачный фон обязателен (`background=transparent`/output_format png).
 - Все ассеты — PNG на ПРОЗРАЧНОМ фоне (RGBA, без подложки/checkerboard).
 - Сохранять файлы СРАЗУ в три места для единообразия на будущее:
   1) `assets/` — игровой ассет (по месту использования, напр. assets/sprites/ui/...),
