@@ -21,6 +21,31 @@ QA: in_progress (2026-06-14)
 - QA dump/preview: `build/qa/scrum319/quit_confirmation_dialog.md`, `build/qa/scrum319/quit_confirmation_dialog.png`.
 - Проверки PASS: `dark_fantasy_ui_theme_test.gd`, `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`, `runtime_smoke_test.gd`, `runtime_smoke_combat_test.gd`, `animation_smoke_test.gd`.
 
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 817590f9 (ветка dev)
+
+Проверено (фактически):
+- **Код**: `_show_quit_confirmation_dialog` (ui_screens.gd:216); и
+  `MainMenuExitButton.pressed` (211), И Escape (`game.ui_escape_action`, 213)
+  открывают ОДИН модальный `QuitConfirmationDialog` (dim+panel+title+subtitle+
+  кнопки). Реальный выход — только `Main.request_game_quit()` через явную «Выйти»;
+  smoke использует `suppress_game_quit` (тестирует flow без завершения процесса).
+- **Безопасность**: default focus на «Отмена»; Escape/«Отмена» закрывают overlay,
+  оставляют в меню; существующая Escape-навигация (настройки/кодекс/выбор) не
+  изменилась.
+- **Визуал** (`build/qa/scrum319/quit_confirmation_dialog.png`): game-styled тёмная
+  панель (красно-золотая ornate-рамка), «Выйти из игры?» + предупреждение о
+  несохранённом забеге, «Выйти» (danger) + «Отмена» (подсвечена, default focus).
+- **Тесты**: theme/ui/no-overlap/runtime/combat/animation — все PASS.
+
+Acceptance:
+- [x] Окно подтверждения при выходе; выход только после явного «Выйти».
+- [x] Escape из главного меню открывает то же подтверждение; «Отмена»/Escape — назад.
+- [x] Существующая Escape-навигация не сломана; smoke зелёные; дамп/превью.
+
+Баги: нет.
+
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
 
