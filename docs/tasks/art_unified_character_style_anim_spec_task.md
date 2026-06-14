@@ -1,6 +1,6 @@
 # ART/ТЕХ: Единый стиль персонажей + система анимаций (5 move + 5 attack) — ОПОРНАЯ
 
-Статус: review
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) + Back-end (анимации)
 Версия: 0.1.5
@@ -117,3 +117,8 @@ docs/design/systems/technical_architecture.md, current_game_state.
 - Asset generation for final production sheets still depends on
   `fantasydisk-asset-generator`; current shell has no `OPENAI_API_KEY`, so
   Design did not generate final `<class_id>_sheet.png` assets in this pass.
+
+## Back-end Progress — 2026-06-14
+- Back-end phase started after Design standard review. Scope is limited to
+  runtime sheet registry/loading, player SpriteFrames fallback and attack
+  playback hooks; no art generation and no motion polish.

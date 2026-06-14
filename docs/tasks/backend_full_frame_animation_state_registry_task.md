@@ -7,6 +7,7 @@
 Автор: Animator audit `animation_full_frame_pipeline_coverage_audit_task.md`
 Исполнитель: Back-end
 Jira: SCRUM-351
+QA: in_progress (2026-06-14)
 Parent: SCRUM-350 / `animation_full_frame_pipeline_coverage_audit_task.md`
 
 ## Autonomy / Approval
@@ -73,3 +74,30 @@ Done 2026-06-14 by Back-end.
 Verification:
 - PASS `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd`
 - PASS `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Реестр** `scripts/full_frame_animation_registry.gd`: data-driven с 5 видами
+  сущностей — `ally` (заполнен summon-записями), `enemy`/`elite`/`boss`/`hero`
+  (пустые-но-готовые карты для будущей регистрации); `_resolve_animation_name`
+  для alias/state-резолвинга; safe fallback (false/null) при отсутствии sheet.
+- **Интеграция**: `ally_minion.gd` (registry-backed визуалы + static PNG
+  fallback), `enemy.gd` (optional `FullFrameBody` lookup), `boss.gd extends
+  enemy.gd` → наследует тот же путь; без зарегистрированных sheet → existing
+  cutout-rig/static body (fallback цел).
+- **Elite/boss фаза-варианты**: `elite_behavior` meta (enemy.gd:103) позволяет
+  адресовать состояния `<behavior>:<attack>:<phase>` без правки механик/урона/
+  targeting/cooldown/spawn.
+- **Тесты**: `animation_smoke_test` (`_test_full_frame_animation_registry` —
+  present sheets / missing-resource fallback / alias-резолв / facing flip / enemy
+  cutout fallback) + `runtime_smoke_test` — оба passed.
+
+Acceptance:
+- [x] Runtime выбирает full-frame SpriteFrames по entity/state при наличии.
+- [x] Cutout-rig fallback цел для сущностей без sheet.
+- [x] Boss/elite имена состояний прокидываются без изменения механик.
+- [x] animation/runtime smoke зелёные; доки/Jira синканы.
+
+Баги: нет.
