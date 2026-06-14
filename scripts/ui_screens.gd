@@ -585,6 +585,9 @@ func _show_character_select() -> void:
 	unified_frame_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	unified_frame_art.stretch_mode = TextureRect.STRETCH_SCALE
 	unified_frame_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Старая комбинированная unified-рамка скрыта: портрет и досье теперь рисуются
+	# отдельными dark-fantasy-dragon рамками (как в макапе). SCRUM-336.
+	unified_frame_art.visible = false
 	unified_frame.add_child(unified_frame_art)
 
 	var portrait_safe_rect := _hero_select_unified_scaled_rect(HERO_SELECT_UNIFIED_PORTRAIT_RECT)
@@ -602,6 +605,15 @@ func _show_character_select() -> void:
 	portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_panel.add_child(portrait_frame)
 
+	var portrait_frame_art := TextureRect.new()
+	portrait_frame_art.name = "HeroSelectPortraitFrameArt"
+	portrait_frame_art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	portrait_frame_art.texture = game._cached_texture(HERO_SELECT_FRAME_TEXTURES["portrait"])
+	portrait_frame_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait_frame_art.stretch_mode = TextureRect.STRETCH_SCALE
+	portrait_frame_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	portrait_frame.add_child(portrait_frame_art)
+
 	var portrait_content := MarginContainer.new()
 	portrait_content.name = "HeroSelectPortraitContent"
 	portrait_content.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -609,7 +621,7 @@ func _show_character_select() -> void:
 	# Инсет контента внутрь рамки портрета (доли реальной прозрачной зоны рамки),
 	# чтобы спрайт героя не налезал на орнамент. SCRUM-336/hero-select.
 	portrait_content.add_theme_constant_override("margin_left", int(round(portrait_safe_rect.size.x * 0.11)))
-	portrait_content.add_theme_constant_override("margin_top", int(round(portrait_safe_rect.size.y * 0.18)))
+	portrait_content.add_theme_constant_override("margin_top", int(round(portrait_safe_rect.size.y * 0.20)))
 	portrait_content.add_theme_constant_override("margin_right", int(round(portrait_safe_rect.size.x * 0.11)))
 	portrait_content.add_theme_constant_override("margin_bottom", int(round(portrait_safe_rect.size.y * 0.13)))
 	portrait_frame.add_child(portrait_content)
@@ -653,15 +665,24 @@ func _show_character_select() -> void:
 	dossier_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_panel.add_child(dossier_frame)
 
+	var dossier_frame_art := TextureRect.new()
+	dossier_frame_art.name = "HeroSelectDossierFrameArt"
+	dossier_frame_art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dossier_frame_art.texture = game._cached_texture(HERO_SELECT_FRAME_TEXTURES["dossier"])
+	dossier_frame_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	dossier_frame_art.stretch_mode = TextureRect.STRETCH_SCALE
+	dossier_frame_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dossier_frame.add_child(dossier_frame_art)
+
 	var dossier_content := MarginContainer.new()
 	dossier_content.name = "HeroSelectDossierContent"
 	dossier_content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	dossier_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Инсет контента внутрь рамки досье, чтобы текст/возвышение не налезали на орнамент.
-	dossier_content.add_theme_constant_override("margin_left", int(round(dossier_safe_rect.size.x * 0.085)))
-	dossier_content.add_theme_constant_override("margin_top", int(round(dossier_safe_rect.size.y * 0.15)))
-	dossier_content.add_theme_constant_override("margin_right", int(round(dossier_safe_rect.size.x * 0.085)))
-	dossier_content.add_theme_constant_override("margin_bottom", int(round(dossier_safe_rect.size.y * 0.12)))
+	dossier_content.add_theme_constant_override("margin_left", int(round(dossier_safe_rect.size.x * 0.08)))
+	dossier_content.add_theme_constant_override("margin_top", int(round(dossier_safe_rect.size.y * 0.25)))
+	dossier_content.add_theme_constant_override("margin_right", int(round(dossier_safe_rect.size.x * 0.08)))
+	dossier_content.add_theme_constant_override("margin_bottom", int(round(dossier_safe_rect.size.y * 0.17)))
 	dossier_frame.add_child(dossier_content)
 
 	var dossier := VBoxContainer.new()
