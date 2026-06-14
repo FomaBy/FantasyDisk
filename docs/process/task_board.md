@@ -46,6 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [design_unified_frame_revise_thin_metallic_task.md](../tasks/design_unified_frame_revise_thin_metallic_task.md) | Designer (Codex) → Back-end (UI) | new | ART 0.1.5: РЕВИЗИЯ единого фрейма (SCRUM-373) — тонкая металлическая рамка, тонкие углы + красные самоцветы по углам + драконья плашка в середине; контент строго внутри; пути ассетов сохранить |
 | [backend_debug_mode_click_to_move_player_task.md](../tasks/backend_debug_mode_click_to_move_player_task.md) | Back-end (UI + геймплей) | done | Jira: SCRUM-375. Debug-mode settings toggle + combat arena click-to-move/teleport implemented; OFF state preserves normal input; runtime UI/full smoke PASS |
 | [design_unified_master_frame_system_projectwide_task.md](../tasks/design_unified_master_frame_system_projectwide_task.md) | Designer (Codex) → Back-end (UI) | review | Jira: SCRUM-373. Design-ready unified master frame kit created in `assets/sprites/ui/frames/unified/`, with 9-slice tile margins `128`, content margins `132`, safe-zone preview and QA note; Back-end runtime centralization handed off |
 | [backend_unified_master_frame_system_projectwide_integration_task.md](../tasks/backend_unified_master_frame_system_projectwide_integration_task.md) | Back-end (UI) | in_progress | Jira: SCRUM-382. Integrate SCRUM-373 unified master frame builder projectwide, preserve proportional screen-specific frames, run runtime/UI/no-overlap smokes |
