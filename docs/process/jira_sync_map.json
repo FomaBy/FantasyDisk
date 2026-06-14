@@ -1801,8 +1801,8 @@
  },
  "design_combat_hud_full_redraw_skill_task.md": {
   "key": "SCRUM-390",
-  "status": "В работе",
-  "desc_hash": "c21143efff0796a824e67ec1e3435b13"
+  "status": "Готово",
+  "desc_hash": "88ce281d5aab1547200d3c27a2cb8ef0"
  },
  "design_settings_menu_unified_restyle_task.md": {
   "key": "SCRUM-391",
@@ -1912,16 +1912,16 @@
  "design_integrate_generated_combat_hud_redraw_task.md": {
   "key": "SCRUM-398",
   "status": "Готово",
-  "desc_hash": "847c52e3ad8884e3de8f1799203e8774"
+  "desc_hash": "27c02df364df9eb23616071ae97b7847"
  },
  "design_summons_ethereal_redraw_anim_from_scratch_task.md": {
   "key": "SCRUM-399",
-  "status": "К выполнению",
-  "desc_hash": "f53e96aaaf6b679c0461e0b7c99c1acb"
+  "status": "В работе",
+  "desc_hash": "72e0c96cb57e629e4a9c04a81e853681"
  },
  "backend_combat_hud_redraw_integration_task.md": {
   "key": "SCRUM-400",
-  "status": "К выполнению",
-  "desc_hash": "882101c0da7993409915176f625b4432"
+  "status": "В работе",
+  "desc_hash": "cd8c614376754a9e701469d8b8e4693f"
  }
 }

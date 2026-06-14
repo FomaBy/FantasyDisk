@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать призывных существ С НУЛЯ — эфирный голубой стиль + анимация
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -63,3 +63,11 @@ Jira: SCRUM-399
 
 ## Документация
 docs/design/systems/animation.md, content_registry, current_game_state.
+
+## Progress Log
+
+- 2026-06-14 — Взято в работу Design/Codex. Role boundary decision: Design will
+  replace the summon visual source/frame PNGs with an ethereal blue repaint using
+  `fantasydisk-asset-generator` references while preserving current SpriteFrames
+  paths and animation timing. Any new motion staging beyond this visual pass
+  remains Animator scope.

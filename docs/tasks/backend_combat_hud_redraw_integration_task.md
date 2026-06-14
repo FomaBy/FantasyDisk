@@ -1,12 +1,18 @@
 # Back-end Task: Integrate SCRUM-390 Combat HUD Redraw
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Источник: SCRUM-390 `design_combat_hud_full_redraw_skill_task.md`
-Jira: pending sync
+Jira: SCRUM-400
+
+## Dispatch
+
+- 2026-06-14 16:52 UTC — Documentation dispatcher routed this Back-end handoff to
+  existing Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
+  Reasoning must stay High/no low. Scope is Back-end UI integration only.
 
 ## Context
 

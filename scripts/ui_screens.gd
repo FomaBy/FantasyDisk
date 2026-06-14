@@ -85,6 +85,39 @@ const SETTINGS_TAB_SWITCHER_SAFE_RECTS := [
 	Rect2(506.0, 88.0, 270.0, 82.0),
 	Rect2(852.0, 88.0, 270.0, 82.0),
 ]
+const COMBAT_HUD_FRAME_DIR := "res://assets/sprites/ui/frames/combat_hud/"
+const COMBAT_HUD_FILL_DIR := "res://assets/sprites/ui/hud/combat_hud/"
+const COMBAT_HUD_RESOURCE_PANEL_PATH := COMBAT_HUD_FRAME_DIR + "ui_frame_combat_hud_resource_panel.png"
+const COMBAT_HUD_CARD_PATHS := {
+	"hp": COMBAT_HUD_FRAME_DIR + "ui_frame_combat_hud_card_hp.png",
+	"xp": COMBAT_HUD_FRAME_DIR + "ui_frame_combat_hud_card_xp.png",
+	"money": COMBAT_HUD_FRAME_DIR + "ui_frame_combat_hud_card_gold.png",
+	"ultimate_multiplier": COMBAT_HUD_FRAME_DIR + "ui_frame_combat_hud_card_ult.png",
+}
+const COMBAT_HUD_TIMER_PATH := COMBAT_HUD_FRAME_DIR + "ui_frame_combat_hud_timer.png"
+const COMBAT_HUD_ASCENSION_BADGE_PATH := COMBAT_HUD_FRAME_DIR + "ui_frame_combat_hud_ascension_badge.png"
+const COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES := {
+	"normal": COMBAT_HUD_FRAME_DIR + "ui_btn_combat_level_up_plus.png",
+	"hover": COMBAT_HUD_FRAME_DIR + "ui_btn_combat_level_up_plus_hover.png",
+	"pressed": COMBAT_HUD_FRAME_DIR + "ui_btn_combat_level_up_plus_pressed.png",
+	"disabled": COMBAT_HUD_FRAME_DIR + "ui_btn_combat_level_up_plus_disabled.png",
+}
+const COMBAT_HUD_BAR_FILL_PATHS := {
+	"hp": COMBAT_HUD_FILL_DIR + "ui_hud_bar_fill_hp.png",
+	"xp": COMBAT_HUD_FILL_DIR + "ui_hud_bar_fill_xp.png",
+	"ultimate_multiplier": COMBAT_HUD_FILL_DIR + "ui_hud_bar_fill_ult.png",
+	"money": COMBAT_HUD_FILL_DIR + "ui_hud_bar_fill_gold.png",
+}
+const COMBAT_HUD_GOLD_MEDALLION_PATH := COMBAT_HUD_FILL_DIR + "ui_hud_gold_medallion.png"
+const COMBAT_HUD_RESOURCE_PANEL_MARGINS := Vector4(96.0, 44.0, 96.0, 44.0)
+const COMBAT_HUD_RESOURCE_PANEL_CONTENT := Vector4(92.0, 30.0, 92.0, 30.0)
+const COMBAT_HUD_CARD_MARGINS := Vector4(48.0, 42.0, 48.0, 38.0)
+const COMBAT_HUD_CARD_CONTENT := Vector4(32.0, 24.0, 32.0, 22.0)
+const COMBAT_HUD_TIMER_MARGINS := Vector4(92.0, 42.0, 92.0, 38.0)
+const COMBAT_HUD_TIMER_CONTENT := Vector4(82.0, 32.0, 82.0, 28.0)
+const COMBAT_HUD_ASCENSION_CONTENT := Vector4(40.0, 34.0, 40.0, 34.0)
+const COMBAT_HUD_LEVEL_UP_MARGINS := Vector4(34.0, 34.0, 34.0, 34.0)
+const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(36.0, 34.0, 36.0, 36.0)
 const HERO_SELECT_FRAME_TEXTURES := {
 	"unified_panel": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_unified_panel.png",
 	"portrait": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_portrait.png",
@@ -5274,12 +5307,12 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 	var button_name: String = button.name if button != null else ""
 	var button_text: String = button.text.to_lower() if button != null else ""
 	var size: Vector2 = button.custom_minimum_size if button != null else _action_button_size()
+	if button_name == "LevelUpPlusButton":
+		return "combat_level_up_plus"
 	if button_name.begins_with("MainMenu"):
 		return "main_menu"
 	if button_name == "HeroSelectChooseButton":
 		return "hero_confirm"
-	if button_name == "LevelUpPlusButton":
-		return "main_menu"
 	if button_name == "SettingsResetAudioButton":
 		return "reset_audio"
 	if button_name == "SettingsResetBindingsButton":
@@ -5331,6 +5364,11 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 
 func _button_state_style(button: Button, _role: String, state: String, tint := Color.WHITE) -> StyleBox:
 	var button_type := _button_asset_type(button)
+	if button_type == "combat_level_up_plus":
+		var plus_state := state
+		var plus_path := str(COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES.get(plus_state, COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES["normal"]))
+		var plus_tint := BUTTON_NEUTRAL_HOVER_TINT if state == "hover" and tint == Color.WHITE else tint
+		return _global_texture_style(plus_path, COMBAT_HUD_LEVEL_UP_MARGINS, plus_tint, COMBAT_HUD_LEVEL_UP_CONTENT)
 	var type_map: Dictionary = RED_GOLD_BUTTON_TEXTURES.get(button_type, RED_GOLD_BUTTON_TEXTURES["standard"])
 	var texture_state := "normal" if state == "hover" else state
 	var path := str(type_map.get(texture_state, type_map.get("normal", GLOBAL_BUTTON_FRAME_PATH)))
@@ -5613,8 +5651,8 @@ func _create_combat_timer_panel(root: Control) -> void:
 		asc_badge.name = "AscensionHudBadge"
 		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		asc_badge.position = Vector2(0, 18)
-		asc_badge.custom_minimum_size = Vector2(54, 44)
-		asc_badge.add_theme_stylebox_override("panel", _timer_panel_style(false))
+		asc_badge.custom_minimum_size = Vector2(64, 64)
+		asc_badge.add_theme_stylebox_override("panel", _ascension_badge_style())
 		asc_badge.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
 		root.add_child(asc_badge)
 		var asc_text := Label.new()
@@ -5633,7 +5671,7 @@ func _create_combat_timer_panel(root: Control) -> void:
 	panel.name = "CombatTimerPanel"
 	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	panel.position = Vector2(0, 14)
-	panel.custom_minimum_size = Vector2(172, 52)
+	panel.custom_minimum_size = Vector2(192, 64)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_theme_stylebox_override("panel", _timer_panel_style(false))
 	root.add_child(panel)
@@ -5651,8 +5689,12 @@ func _create_combat_timer_panel(root: Control) -> void:
 
 
 func _timer_panel_style(alarm: bool) -> StyleBox:
-	var tint := Color(1.22, 0.82, 0.72, 1.0) if alarm else Color.WHITE
-	return _unified_frame_style("timer_panel", tint)
+	var tint := Color(1.20, 0.78, 0.72, 1.0) if alarm else Color.WHITE
+	return _global_texture_style(COMBAT_HUD_TIMER_PATH, COMBAT_HUD_TIMER_MARGINS, tint, COMBAT_HUD_TIMER_CONTENT)
+
+
+func _ascension_badge_style() -> StyleBox:
+	return _global_texture_style(COMBAT_HUD_ASCENSION_BADGE_PATH, Vector4(0, 0, 0, 0), Color.WHITE, COMBAT_HUD_ASCENSION_CONTENT)
 
 
 func _create_artifact_hud_row(root: Control) -> void:
@@ -5676,7 +5718,7 @@ func _layout_combat_hud(root: Control) -> void:
 		viewport_width = 1280.0
 	var margin := 18.0
 	var gap := 14.0
-	var timer_size := Vector2(172, 52)
+	var timer_size := Vector2(192, 64)
 	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
 	if resource != null:
 		var resource_width := clampf(viewport_width * 0.50, 540.0, 750.0)
@@ -5684,7 +5726,7 @@ func _layout_combat_hud(root: Control) -> void:
 			resource_width = minf(resource_width, 600.0)
 		resource.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		resource.position = Vector2(margin, 18.0)
-		resource.custom_minimum_size = Vector2(resource_width, 78.0)
+		resource.custom_minimum_size = Vector2(resource_width, 88.0)
 		resource.size = resource.custom_minimum_size
 	var resource_right := margin
 	if resource != null:
@@ -5711,14 +5753,15 @@ func _layout_combat_hud(root: Control) -> void:
 
 	var asc_badge := root.find_child("AscensionHudBadge", true, false) as PanelContainer
 	if asc_badge != null:
+		var badge_size := 64.0
 		var anchor_left := timer_left + timer_size.x + 8.0
 		if timer_panel == null:
-			anchor_left = maxf(viewport_width * 0.5 - 27.0, resource_right + gap)
-		if anchor_left + 54.0 > viewport_width - margin:
-			anchor_left = maxf(margin, timer_left - 62.0)
+			anchor_left = maxf(viewport_width * 0.5 - badge_size * 0.5, resource_right + gap)
+		if anchor_left + badge_size > viewport_width - margin:
+			anchor_left = maxf(margin, timer_left - badge_size - 8.0)
 		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		asc_badge.position = Vector2(anchor_left, 18.0)
-		asc_badge.custom_minimum_size = Vector2(54, 44)
+		asc_badge.custom_minimum_size = Vector2(badge_size, badge_size)
 		asc_badge.size = asc_badge.custom_minimum_size
 
 	var artifact_row := root.find_child("ArtifactHudRow", true, false) as HFlowContainer
