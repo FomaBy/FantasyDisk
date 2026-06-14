@@ -1098,5 +1098,41 @@
  "design_hero_select_dossier_frame_from_descriptionhs_ref_task.md": {
   "key": "SCRUM-323",
   "status": "К выполнению"
+ },
+ "backend_generate_asset_skill_task.md": {
+  "key": "SCRUM-324",
+  "status": "Контроль качества"
+ },
+ "design_integrate_generated_settings_tab_switcher_frame_task.md": {
+  "key": "SCRUM-325",
+  "status": "К выполнению"
+ },
+ "art_ui_overhaul_combat_hud_task.md": {
+  "key": "SCRUM-326",
+  "status": "К выполнению"
+ },
+ "art_ui_overhaul_dnd_dark_fantasy_anchor_task.md": {
+  "key": "SCRUM-327",
+  "status": "К выполнению"
+ },
+ "art_ui_overhaul_levelup_rewards_task.md": {
+  "key": "SCRUM-328",
+  "status": "К выполнению"
+ },
+ "art_ui_overhaul_menus_settings_task.md": {
+  "key": "SCRUM-329",
+  "status": "К выполнению"
+ },
+ "art_ui_overhaul_pause_end_task.md": {
+  "key": "SCRUM-330",
+  "status": "К выполнению"
+ },
+ "art_ui_overhaul_progression_codex_task.md": {
+  "key": "SCRUM-331",
+  "status": "К выполнению"
+ },
+ "art_ui_overhaul_shop_economy_task.md": {
+  "key": "SCRUM-332",
+  "status": "К выполнению"
  }
 }

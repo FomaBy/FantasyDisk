@@ -17,8 +17,7 @@ Jira: SCRUM-320
 фрейм для карусели персонажей на экране выбора персонажа».
 
 Карусель персонажей = нижняя горизонтальная планка миниатюр на экране выбора
-героя: `HeroThumbnailStripFrame` (PanelContainer, ui_screens.gd:543-548) со
-стилем `_hero_select_frame_style("thumbnail_strip")`. Сейчас там рамка из
+героя: `HeroThumbnailStripFrame` (ui_screens.gd:543-548). Сейчас там рамка из
 SCRUM-281 (ui_frame_hero_select_thumbnail_strip.png) — заменить на этот референс.
 
 ## Исходник (референс, уже в репо)
@@ -28,11 +27,11 @@ docs/design/references/carusel/ChatGPT Image Jun 14, 2026, 10_57_24 AM.png
 ПРОЗРАЧНАЯ плоская середина. Горизонтальный формат — точно под карусель.
 
 ## Требования
-1. Нарезать референс в 9-slice так, чтобы при растяжении по ширине сохранялись
-   декоративные углы и центральные гребни, а середина (тёмная зона) тянулась без
-   искажения орнамента. Подобрать texture margins (углы крупные — ориентировочно
-   ~150px по бокам, ~60-80px сверху/снизу; уточнить по факту) и
-   **content margins ≥ окантовки + запас**, чтобы миниатюры не залезали на рамку.
+1. Использовать референс как цельную пропорциональную рамку: не растягивать
+   только по одной оси; не использовать 9-slice для этого орнаментального
+   элемента, чтобы не ломать рисунок на разных разрешениях.
+   Рамка должна масштабироваться одним коэффициентом, сохраняя исходный aspect
+   ratio и декоративные углы/центральные гребни.
 2. Подключить как рамку карусели: заменить ассет слота `thumbnail_strip`
    (HERO_SELECT_FRAME_DIR/ui_frame_hero_select_thumbnail_strip.png) на нарезанный
    из этого референса, и/или обновить значения в
@@ -57,7 +56,7 @@ docs/design/references/carusel/ChatGPT Image Jun 14, 2026, 10_57_24 AM.png
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [x] Рамка карусели персонажей = нарезка из референса Carusel (9-slice, углы/гребни целы при растяжении).
+- [x] Рамка карусели персонажей = обработанный референс Carusel с прозрачным фоном, который масштабируется пропорционально без one-axis stretch.
 - [x] Миниатюры в content-зоне, не наезжают на орнамент; no-overlap на 3 разрешениях.
 - [x] Старый ассет в бэкап; 6 smoke зелёные; скрин в build/qa/; CHANGELOG.
 
@@ -77,15 +76,20 @@ docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_s
   и preview `docs/design/previews/hero_select_carousel_frame_contact.png`.
   Старый SCRUM-281 strip сохранен в
   `build/cleanup_backup_hero_select_carousel_2026_06_14/`.
+- 2026-06-14: учтена правка пользователя — отказ от 9-slice/one-axis stretch.
+  `HeroThumbnailStripFrame` теперь является aspect-preserving Control:
+  цельный `TextureRect` масштабируется как 1024x170 / 1536x255 / 2048x340 для
+  720p/1080p/1440p, а миниатюры живут в отдельном content layer.
 
 ## Result Summary / 2026-06-14
 
 - Live asset replaced in-place:
   `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail_strip.png`.
-- 9-slice/layout values updated only for Hero Select `thumbnail_strip`:
-  texture margins `Vector4(112, 48, 112, 52)`, content margins
-  `Vector4(72, 36, 72, 36)`, strip minimum height `136px`.
-- Hero thumbnails are horizontally centered in the strip and adapt `56-124px`
+- `HeroThumbnailStripFrame` no longer uses `_hero_select_frame_style("thumbnail_strip")`;
+  it draws the Carusel PNG as a whole `TextureRect` with proportional runtime
+  sizes: `1024x170` at 1280x720, `1536x255` at 1920x1080,
+  `2048x340` at 2560x1440.
+- Hero thumbnails are horizontally centered in the strip and adapt `42-124px`
   width for the current 17-character roster so they stay inside the dark
   content zone instead of touching side jewels.
 - QA artifacts:
