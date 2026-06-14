@@ -1161,10 +1161,14 @@
  },
  "backend_shop_reentry_until_next_level_task.md": {
   "key": "SCRUM-339",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "design_recreate_all_artifact_icons_via_skill_task.md": {
   "key": "SCRUM-340",
+  "status": "К выполнению"
+ },
+ "design_settings_tabs_fix_3slots_restyle_skill_task.md": {
+  "key": "SCRUM-341",
   "status": "К выполнению"
  }
 }

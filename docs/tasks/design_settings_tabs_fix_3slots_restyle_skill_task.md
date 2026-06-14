@@ -1,0 +1,64 @@
+# BUG/ART: Настройки — 4 вкладки вместо 3; пересоздать свитчер скиллом (3 слота)
+
+Статус: new
+Приоритет: high
+Роль: Designer (Codex)
+Версия: 0.1.5
+Создано: 2026-06-14
+Автор: PM (запрос пользователя)
+Jira: SCRUM-341
+Связано: SCRUM-324 (asset-skill), SCRUM-327 (опорная стиля), SCRUM-329 (кластер меню/настройки)
+
+## Autonomy / Approval
+Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Контекст (запрос пользователя)
+«Исправить баг в настройках, где 4 вкладки, хотя надо только 3. А ещё изменить
+стиль вкладок, используя новый скилл — должно быть реалистично, в цветах текущих
+референсов».
+
+Причина бага (scripts/ui_screens.gd): свитчер вкладок настроек нарисован на
+4 слота — `SETTINGS_TAB_SWITCHER_SAFE_RECTS` (64) содержит 4 Rect2, а ассет
+`assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png` (1280×256)
+имеет 4 компартмента. Кода же только 3 вкладки (labels = ["Экран","Звук",
+"Управление"], _make_settings_tab_switcher 1841; tabs_visible=false). Итог:
+3 кнопки + пустой 4-й слот = визуально «4 вкладки».
+
+## ОБЯЗАТЕЛЬНО — скилл генерации (директива пользователя)
+Новый фрейм свитчера СОЗДАВАТЬ скиллом `fantasydisk-asset-generator`
+(`scripts/generate_asset.py --prompt "<...>" --output settings/tab_switcher_3
+--size 1280x256 --quality high`, OpenAI Images, `gpt-image-2`, PNG, ПРОЗРАЧНЫЙ
+фон). Реалистичный стиль в цветах текущих референсов (см.
+docs/design/references/settings_tab_switcher_frame/ и общий UI-стиль
+D&D + Dark Fantasy Dragon, опорная SCRUM-327). Старый ассет — в бэкап.
+
+## Требования
+1. Пересоздать ассет свитчера вкладок ровно на **3 слота** (Экран / Звук /
+   Управление), без пустого 4-го. Тот же путь
+   (ui_frame_settings_tab_switcher.png) или новый файл с обновлением константы.
+2. Обновить `SETTINGS_TAB_SWITCHER_SAFE_RECTS` (ui_screens.gd:64) до **3** Rect2,
+   точно по позициям слотов нового ассета (кнопки/текст центрированы в слотах,
+   не наезжают на орнамент — глобальное правило фреймов).
+3. Стиль вкладок — реалистичный, в цветах текущих референсов; согласован с
+   кластером меню/настроек (SCRUM-329) и опорной (SCRUM-327). Состояния
+   selected/hover/pressed читаемы; hover без жёлтого свечения (SCRUM-318).
+4. Сохранить логику: 3 вкладки, переключение по кнопкам, скролл «Управление»
+   (SCRUM-275) не сломан.
+5. Тест (smoke): настройки строятся; ровно 3 видимые вкладки, пустого слота нет;
+   кнопки в слотах, no-overlap. Скрин настроек в build/qa/.
+6. CHANGELOG; menus_ui; current_game_state.
+
+## Files / Assets / IDs
+- scripts/ui_screens.gd (SETTINGS_TAB_SWITCHER_* 61-64; _make_settings_tab_switcher
+  1821; labels 1841; _settings_tab_button_style 1887)
+- assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png (+ бэкап)
+- docs/design/references/settings_tab_switcher_frame/ (референс/исходник скилла)
+- tests/runtime_smoke_test.gd
+
+## Acceptance Criteria
+- [ ] В настройках ровно 3 вкладки, пустого 4-го слота нет; SAFE_RECTS = 3.
+- [ ] Свитчер пересоздан скиллом, реалистичный стиль в цветах референсов; кнопки в слотах, no-overlap.
+- [ ] Логика 3 вкладок/скролл не сломаны; smoke зелёные; скрин; CHANGELOG.
+
+## Документация
+docs/design/systems/menus_ui.md, current_game_state.
