@@ -11,6 +11,7 @@ const ALLY_VISUAL_PATHS := {
 	"leadership_echo": "res://assets/sprites/allies/ally_leadership_echo.png",
 }
 const FALLBACK_ALLY_VISUAL_ID := "druid_beast"
+const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
 
 @export var move_speed := 230.0
 @export var damage := 1.5
@@ -33,6 +34,7 @@ var _last_facing_right := false
 var owner_node: Node2D = null
 var command_target: Node2D = null
 var health := 18.0
+var _death_lifecycle_started := false
 
 
 func _ready() -> void:
@@ -64,9 +66,11 @@ func set_combat_profile(profile: Dictionary) -> void:
 
 
 func take_damage(amount: float) -> void:
+	if _death_lifecycle_started:
+		return
 	health -= maxf(amount, 0.0)
 	if health <= 0.0:
-		queue_free()
+		_begin_death_lifecycle()
 
 
 func _apply_visual() -> void:
@@ -220,3 +224,48 @@ func _play_attack_animation(direction: Vector2 = Vector2.ZERO) -> void:
 func is_using_animated_ally_visual() -> bool:
 	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
 	return animated_body != null and animated_body.visible
+
+
+func _begin_death_lifecycle() -> void:
+	if _death_lifecycle_started:
+		return
+	_death_lifecycle_started = true
+	health = 0.0
+	if _play_full_frame_death():
+		_disable_dead_ally_runtime()
+		var tween := create_tween()
+		tween.tween_interval(_full_frame_death_duration())
+		tween.tween_callback(queue_free)
+		return
+	queue_free()
+
+
+func _play_full_frame_death() -> bool:
+	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
+	if animated_body == null or not animated_body.visible or animated_body.sprite_frames == null:
+		return false
+	if not animated_body.sprite_frames.has_animation("death"):
+		return false
+	var direction := Vector2.RIGHT if _last_facing_right else Vector2.LEFT
+	return FullFrameAnimationRegistry.play_state(animated_body, "death", direction)
+
+
+func _full_frame_death_duration() -> float:
+	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
+	if animated_body == null or animated_body.sprite_frames == null or not animated_body.sprite_frames.has_animation("death"):
+		return FULL_FRAME_DEATH_DURATION_FALLBACK
+	var frames := animated_body.sprite_frames
+	var frame_count := frames.get_frame_count("death")
+	var animation_speed := maxf(frames.get_animation_speed("death"), 1.0)
+	return clampf(float(frame_count) / animation_speed, 0.25, 1.2)
+
+
+func _disable_dead_ally_runtime() -> void:
+	velocity = Vector2.ZERO
+	set_physics_process(false)
+	set_process(false)
+	if is_in_group("allies"):
+		remove_from_group("allies")
+	var collision := get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if collision != null:
+		collision.set_deferred("disabled", true)

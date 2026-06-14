@@ -13,22 +13,22 @@
     1024
   ],
   "texture_margins": {
-    "left": 160,
-    "top": 160,
-    "right": 160,
-    "bottom": 160
+    "left": 128,
+    "top": 128,
+    "right": 128,
+    "bottom": 128
   },
   "content_margins": {
-    "left": 150,
-    "top": 150,
-    "right": 150,
-    "bottom": 150
+    "left": 132,
+    "top": 132,
+    "right": 132,
+    "bottom": 132
   },
   "strict_safe_rect": [
-    150,
-    150,
-    724,
-    724
+    132,
+    132,
+    760,
+    760
   ],
   "axis_stretch_horizontal": "tile",
   "axis_stretch_vertical": "tile",
@@ -36,6 +36,7 @@
     "false with separate inner_fill",
     "true only for master_fill variant"
   ],
+  "ornaments": "Use top/bottom ornament overlays only on large panels/windows; never on compact tooltips/HUD/buttons.",
   "hover_recommendation": "Prefer runtime modulate/contrast shader on master_frame; hover_overlay is optional fallback.",
   "rule": "No runtime content on border/corners/ornaments; content must stay inside strict_safe_rect scaled from source."
 }

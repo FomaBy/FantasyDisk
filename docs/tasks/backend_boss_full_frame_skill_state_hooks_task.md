@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator (Codex)
 Jira: SCRUM-378
+QA: in_progress (2026-06-14)
 Parent: SCRUM-377 / `animation_boss_full_frame_batch_integration_task.md`
 
 ## Context
@@ -70,3 +71,29 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_boss_elite_test.gd` — passed.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — visual-only skill-playback хуки боссов (закрывает follow-up 377)
+
+Проверено (фактически):
+- **Хуки** (boss.gd): `_play_boss_skill_visual(...)` вызывается для всех skill-
+  состояний — `skill_gravity_well`(207), `skill_vampiric_bite`(246),
+  `skill_bone_prison`(279), `skill_armor_pulse`(295), `skill_skull_volley`(389),
+  `skill_molten_slam`(450), `skill_web_zone`(492), `skill_brood_spawn`(567),
+  `skill_rift_zone`(587). Маппинг 5 боссов × 2 скилла покрыт.
+- **Visual-only + fallback**: хелпер (580) `if skill_state != "" and
+  _play_full_frame_state(skill_state, direction)` — сначала full-frame состояние,
+  иначе откат на rig-action (`cast`/`attack`/`shoot`). Без правки damage/hazards/
+  cooldowns/targeting/spawn/telegraph.
+- **Тесты**: `animation_smoke_test` (boss skill-state hook playback) +
+  `runtime_smoke_test` + `runtime_smoke_boss_elite_test` (boss/elite suite) —
+  все passed.
+
+Acceptance:
+- [x] Боссовые механики запрашивают matching visual skill-state при наличии
+  registered full-frame SpriteFrames.
+- [x] damage/hazards/cooldowns/targeting/spawn не изменены (visual-only).
+- [x] Animation/runtime smoke покрывают boss skill-state хук.
+
+Баги: нет. Этим закрыт документированный follow-up из SCRUM-377 — full-frame
+конвейер боссов полностью завершён (ассеты + интеграция + skill-visual хуки).

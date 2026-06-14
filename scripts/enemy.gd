@@ -52,6 +52,7 @@ var _cached_body: Sprite2D = null
 var _cached_rig: Node2D = null
 var _cached_full_frame_body: AnimatedSprite2D = null
 var _cached_audio: Node = null
+var _death_lifecycle_started := false
 var elite_attack_state := "idle"
 var elite_attack_id := ""
 var _elite_attack_cooldown := 0.0
@@ -82,6 +83,7 @@ const ELITE_SHARD_FAN_BURST_TEXTURE := preload("res://assets/sprites/effects/ene
 
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
+const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
 
 # Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
 # contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
@@ -213,6 +215,8 @@ func _physics_process(delta: float) -> void:
 
 
 func take_damage(amount: float) -> void:
+	if _death_lifecycle_started:
+		return
 	var final_amount := amount * StatusEffects.damage_taken_multiplier(self)
 	if _elite_shield_active:
 		final_amount *= elite_shield_damage_reduction
@@ -230,6 +234,8 @@ func take_damage(amount: float) -> void:
 	_play_full_frame_state("hit", Vector2.ZERO)
 
 	if health <= 0.0:
+		_death_lifecycle_started = true
+		health = 0.0
 		# Награды/лут/счёт — сразу через сигнал, независимо от визуала смерти.
 		died.emit(self)
 		# SCRUM-379: если есть ЯВНАЯ full-frame death-анимация — проигрываем её до
@@ -248,9 +254,16 @@ func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
 	# врага, затем удаляем по длительности анимации. Геймплей-награды уже выданы.
 	set_physics_process(false)
 	set_process(false)
+	velocity = Vector2.ZERO
+	for group_name in ["enemies", "bosses", "elite_enemies", "summoned_enemies"]:
+		if is_in_group(group_name):
+			remove_from_group(group_name)
 	for child in get_children():
 		if child is CollisionShape2D or child is CollisionPolygon2D:
 			child.set_deferred("disabled", true)
+	var health_bar := get_node_or_null("HealthBar") as CanvasItem
+	if health_bar != null:
+		health_bar.visible = false
 	var rig := _cutout_rig()
 	if rig != null:
 		rig.visible = false
@@ -258,7 +271,7 @@ func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
 	var frames := body.sprite_frames
 	var fps: float = maxf(frames.get_animation_speed("death"), 1.0)
 	var count: int = maxi(frames.get_frame_count("death"), 1)
-	var duration := float(count) / fps
+	var duration := clampf(float(count) / fps, 0.25, 1.2)
 	var tree := get_tree()
 	if tree == null:
 		queue_free()
