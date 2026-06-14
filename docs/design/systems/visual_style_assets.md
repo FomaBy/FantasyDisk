@@ -119,6 +119,16 @@ Canonical SCRUM-390 candidate assets:
   `_ult.png`, `_gold.png` (`512x32`) and
   `ui_hud_gold_medallion.png` (`128x128`).
 
+SCRUM-345/SCRUM-403 provide the active **Codex texture kit** for the in-game
+encyclopedia and glossary tooltip. Assets live in
+`assets/sprites/ui/frames/codex/` and are wired only to Codex runtime surfaces:
+`CodexMainPanel`, `CodexContent`, `CodexTab_*`, Codex entry cards,
+portrait/artifact icon slots and `GlossaryTooltipPanel`. Safe-zone metadata is
+canonical in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`;
+runtime uses those content margins instead of placing labels, icons, portraits
+or click/focus areas on dragon/metal/gem ornament. QA dump:
+`build/qa/scrum345/codex_texture_runtime_dump.md`.
+
 These are live UI paths for the combat HUD after
 `docs/tasks/backend_combat_hud_redraw_integration_task.md`. Back-end keeps
 HP/XP/money/ultimate/timer logic unchanged and keeps labels, icons, bars,

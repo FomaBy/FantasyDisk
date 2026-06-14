@@ -1347,6 +1347,9 @@ func _test_glossary_terms(main: Node) -> void:
 	if tooltip == null or not _collect_label_text(tooltip).contains("Критический удар"):
 		_fail("Expected glossary hover to create a tooltip panel with the term name.")
 		return
+	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_tooltip.png":
+		_fail("Expected glossary tooltip to use the Codex tooltip frame texture.")
+		return
 	main.ui._hide_glossary_tooltip()
 	button.queue_free()
 	await process_frame
@@ -6043,9 +6046,53 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 	codex_button.pressed.emit()
 	await process_frame
-	if codex_main.find_child("CodexScreen", true, false) == null:
+	var codex_screen := codex_main.find_child("CodexScreen", true, false) as Control
+	if codex_screen == null:
 		_fail("Expected the Codex screen to open from the main menu.")
 		return
+	var codex_main_panel := codex_main.find_child("CodexMainPanel", true, false) as PanelContainer
+	var codex_tabs := codex_main.find_child("CodexTabs", true, false) as Control
+	var codex_content := codex_main.find_child("CodexContent", true, false) as PanelContainer
+	var default_section := codex_main.find_child("CodexSection_characters", true, false) as Control
+	var default_entry := codex_main.find_child("CodexEntryCard", true, false) as PanelContainer
+	var default_portrait := codex_main.find_child("CodexPortraitSlot", true, false) as PanelContainer
+	if codex_main_panel == null or codex_content == null or codex_tabs == null or default_section == null or default_entry == null or default_portrait == null:
+		_fail("Expected Codex runtime layout to include main panel, tabs, content, entry card, and portrait slot.")
+		return
+	var expected_codex_textures := {
+		"CodexMainPanel": "res://assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png",
+		"CodexContent": "res://assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png",
+		"CodexEntryCard": "res://assets/sprites/ui/frames/codex/ui_frame_codex_entry_card.png",
+		"CodexPortraitSlot": "res://assets/sprites/ui/frames/codex/ui_frame_codex_portrait_slot.png",
+	}
+	for node_name in expected_codex_textures.keys():
+		var panel := codex_main.find_child(str(node_name), true, false) as PanelContainer
+		if panel == null:
+			_fail("Expected Codex panel %s to exist." % node_name)
+			return
+		var actual_path := _stylebox_texture_path(panel.get_theme_stylebox("panel"))
+		if actual_path != str(expected_codex_textures[node_name]):
+			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
+			return
+	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
+	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_tab.png":
+		_fail("Expected Codex tabs to use the Codex tab texture kit.")
+		return
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum345")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# SCRUM-345 Codex Texture Runtime Dump")
+	dump_lines.append("")
+	for control in [codex_main_panel, codex_tabs, codex_content, default_entry, default_portrait]:
+		var control_node := control as Control
+		var texture_path := ""
+		if control_node is PanelContainer:
+			texture_path = _stylebox_texture_path((control_node as PanelContainer).get_theme_stylebox("panel"))
+		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control_node.name, str(control_node.get_global_rect()), texture_path])
+	var dump_file := FileAccess.open("%s/codex_texture_runtime_dump.md" % qa_dir, FileAccess.WRITE)
+	if dump_file != null:
+		dump_file.store_string("\n".join(dump_lines))
+		dump_file.close()
 
 	# Полнота данных кодекса.
 	var codex_data := load("res://scripts/codex_data.gd")

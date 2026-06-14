@@ -18,7 +18,7 @@ func _initialize() -> void:
 			"SettingsResolutionOption", "SettingsWindowModeOption",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
-			"CodexBackButton",
+			"CodexBackButton", "CodexTabs", "CodexContent",
 		], dump_lines, errors, false)
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
 			"PatchNotesBackButton",

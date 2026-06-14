@@ -1,6 +1,6 @@
 # ART: Пересоздать ВСЕ иконки артефактов новым скиллом (единый стиль)
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -99,3 +99,11 @@ provides an approved alternative generation source.
 
 ## Разблокировано 2026-06-14 (PM)
 Биллинг OpenAI восстановлен и ПРОВЕРЕН: тестовая генерация gpt-image-2 успешна. Блок `billing_hard_limit_reached` устарел — снят. Можно генерить скиллом.
+
+## Progress Log
+
+- 2026-06-14 — Взято в работу Design/Codex после heartbeat audit. Branch:
+  `dev`. Повторная проверка очереди показала SCRUM-340 первым доступным Design
+  item; OpenAI Images уже был проверен как available в предыдущем work block.
+  Scope: asset generation/postprocess/backup/previews/docs only; runtime code
+  remains unchanged because artifact paths stay stable.

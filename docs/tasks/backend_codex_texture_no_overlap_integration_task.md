@@ -1,12 +1,13 @@
 # BACK-END: Integrate Codex Texture Kit And No-Overlap Layout
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: Design handoff from SCRUM-345
 Jira: SCRUM-403
+QA: in_progress (2026-06-14)
 Связано: SCRUM-345, SCRUM-331, SCRUM-327
 
 ## Context
@@ -82,3 +83,51 @@ decorative metal, dragon ornaments, jewels, spikes or frame corners.
 - Godot import PASS for all new PNGs.
 - Current UI no-overlap matrix PASS before runtime integration.
 - Current runtime UI smoke PASS before runtime integration.
+
+## Result — 2026-06-14
+
+Back-end runtime integration complete.
+
+- `scripts/ui_screens.gd` now wires the SCRUM-345 Codex kit into
+  `CodexMainPanel`, `CodexContent`, `CodexTab_*`, Codex entry cards,
+  portrait/artifact icon slots and `GlossaryTooltipPanel`.
+- Runtime content uses the texture content margins from
+  `codex_ui_texture_kit_metadata.json`; existing global/ornate frames remain
+  the fallback for non-Codex screens.
+- Codex data, navigation, glossary definitions, gameplay/progression values and
+  artifact stats were not changed.
+- QA dump saved:
+  `build/qa/scrum345/codex_texture_runtime_dump.md`.
+
+Verification:
+
+- PASS:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_ui_test.gd`
+- PASS:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd`
+- PASS:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — закрывает видимый codex redraw + no-overlap (Design 345 + Back-end 403)
+
+Проверено (фактически):
+- **Рантайм использует codex kit** (ui_screens.gd:125-129): `CODEX_FRAME_DIR` +
+  main/section/entry-card/hover paths — codex текстуры подключены к CodexMainPanel/
+  Content/Tabs/entry/portrait/tooltip.
+- **Визуал** `build/qa/cap_codex_403.png`: «Кодекс» в металлической dragon-рамке,
+  6 вкладок секций (Персонажи/Монстры/Артефакты/Характеристики/Глоссарий/
+  Возвышения), запись «Берсерк» — **портрет в круглом слоте СЛЕВА + описание в
+  content-зоне СПРАВА, НЕ накладываются** (оригинальная жалоба пользователя
+  «персонажи/описания наезжают на UI» УСТРАНЕНА); контент не на орнаменте.
+- **Тесты**: `runtime_smoke_ui_test` («Runtime UI smoke suite passed»),
+  `ui_no_overlap_matrix_test`, `runtime_smoke_test` — все passed; QA-dump
+  `codex_texture_runtime_dump.md`.
+
+Acceptance:
+- [x] Codex root/section/tabs/entry/portraits/tooltips на SCRUM-345 kit.
+- [x] Арт персонажей + описания в content-зонах (портрет в слоте, текст в зоне), не на орнаменте.
+- [x] Длинные описания в safe-зоне; навигация/фокус целы.
+- [x] ui_no_overlap + runtime_smoke_ui + runtime smoke зелёные; QA-скрин/dump.
+
+Петля кодекса закрыта: SCRUM-345 (kit) + 403 (интеграция). Баги: нет.

@@ -122,6 +122,31 @@ const COMBAT_HUD_ASCENSION_CONTENT := Vector4(40.0, 34.0, 40.0, 34.0)
 const COMBAT_HUD_ASCENSION_RUNTIME_CONTENT := Vector4(14.0, 8.0, 14.0, 8.0)
 const COMBAT_HUD_LEVEL_UP_MARGINS := Vector4(34.0, 34.0, 34.0, 34.0)
 const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(36.0, 34.0, 36.0, 36.0)
+const CODEX_FRAME_DIR := "res://assets/sprites/ui/frames/codex/"
+const CODEX_MAIN_PANEL_PATH := CODEX_FRAME_DIR + "ui_frame_codex_main_panel.png"
+const CODEX_SECTION_PANEL_PATH := CODEX_FRAME_DIR + "ui_frame_codex_section_panel.png"
+const CODEX_ENTRY_CARD_PATH := CODEX_FRAME_DIR + "ui_frame_codex_entry_card.png"
+const CODEX_ENTRY_CARD_HOVER_PATH := CODEX_FRAME_DIR + "ui_frame_codex_entry_card_hover.png"
+const CODEX_PORTRAIT_SLOT_PATH := CODEX_FRAME_DIR + "ui_frame_codex_portrait_slot.png"
+const CODEX_TOOLTIP_PATH := CODEX_FRAME_DIR + "ui_frame_codex_tooltip.png"
+const CODEX_TAB_TEXTURES := {
+	"normal": CODEX_FRAME_DIR + "ui_frame_codex_tab.png",
+	"hover": CODEX_FRAME_DIR + "ui_frame_codex_tab_hover.png",
+	"pressed": CODEX_FRAME_DIR + "ui_frame_codex_tab_pressed.png",
+	"disabled": CODEX_FRAME_DIR + "ui_frame_codex_tab_disabled.png",
+}
+const CODEX_MAIN_PANEL_MARGINS := Vector4(80.0, 72.0, 80.0, 82.0)
+const CODEX_MAIN_PANEL_CONTENT := Vector4(92.0, 82.0, 92.0, 92.0)
+const CODEX_SECTION_PANEL_MARGINS := Vector4(58.0, 76.0, 58.0, 82.0)
+const CODEX_SECTION_PANEL_CONTENT := Vector4(68.0, 86.0, 68.0, 92.0)
+const CODEX_ENTRY_CARD_MARGINS := Vector4(46.0, 26.0, 46.0, 28.0)
+const CODEX_ENTRY_CARD_CONTENT := Vector4(58.0, 32.0, 58.0, 34.0)
+const CODEX_PORTRAIT_SLOT_MARGINS := Vector4(42.0, 42.0, 42.0, 42.0)
+const CODEX_PORTRAIT_SLOT_CONTENT := Vector4(54.0, 54.0, 54.0, 54.0)
+const CODEX_TOOLTIP_MARGINS := Vector4(58.0, 40.0, 58.0, 46.0)
+const CODEX_TOOLTIP_CONTENT := Vector4(70.0, 48.0, 70.0, 54.0)
+const CODEX_TAB_MARGINS := Vector4(42.0, 20.0, 42.0, 20.0)
+const CODEX_TAB_CONTENT := Vector4(52.0, 24.0, 52.0, 24.0)
 const HERO_SELECT_FRAME_TEXTURES := {
 	"unified_panel": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_unified_panel.png",
 	"portrait": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_portrait.png",
@@ -1701,14 +1726,19 @@ func _show_codex_screen() -> void:
 
 	_add_screen_background(root, "codex")
 
+	var main_panel := PanelContainer.new()
+	main_panel.name = "CodexMainPanel"
+	main_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	main_panel.offset_left = 28.0
+	main_panel.offset_top = 18.0
+	main_panel.offset_right = -28.0
+	main_panel.offset_bottom = -18.0
+	main_panel.add_theme_stylebox_override("panel", _codex_main_panel_style())
+	root.add_child(main_panel)
+
 	var layout := VBoxContainer.new()
-	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
-	layout.offset_left = 48.0
-	layout.offset_top = 26.0
-	layout.offset_right = -48.0
-	layout.offset_bottom = -26.0
 	layout.add_theme_constant_override("separation", 14)
-	root.add_child(layout)
+	main_panel.add_child(layout)
 
 	var header := HBoxContainer.new()
 	header.add_theme_constant_override("separation", 18)
@@ -1736,7 +1766,7 @@ func _show_codex_screen() -> void:
 	var content := PanelContainer.new()
 	content.name = "CodexContent"
 	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	content.add_theme_stylebox_override("panel", _panel_style())
+	content.add_theme_stylebox_override("panel", _codex_section_panel_style())
 	layout.add_child(content)
 
 	for section in CODEX_SECTIONS:
@@ -1790,7 +1820,8 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 
 func _codex_entry_panel(list: VBoxContainer) -> HBoxContainer:
 	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", _character_card_style())
+	panel.name = "CodexEntryCard"
+	panel.add_theme_stylebox_override("panel", _codex_entry_card_style())
 	list.add_child(panel)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 16)
@@ -1799,13 +1830,30 @@ func _codex_entry_panel(list: VBoxContainer) -> HBoxContainer:
 
 
 func _codex_portrait(row: HBoxContainer, sprite_path: String, size: Vector2) -> void:
+	var texture: Texture2D = null
+	if sprite_path != "" and ResourceLoader.exists(sprite_path):
+		texture = game._cached_texture(sprite_path)
+	_codex_icon_slot(row, texture, size, "CodexPortraitSlot")
+
+
+func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, node_name := "CodexPortraitSlot") -> void:
+	var slot := PanelContainer.new()
+	slot.name = node_name
+	slot.custom_minimum_size = size + Vector2(
+		CODEX_PORTRAIT_SLOT_CONTENT.x + CODEX_PORTRAIT_SLOT_CONTENT.z,
+		CODEX_PORTRAIT_SLOT_CONTENT.y + CODEX_PORTRAIT_SLOT_CONTENT.w
+	)
+	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	slot.add_theme_stylebox_override("panel", _codex_portrait_slot_style())
+	row.add_child(slot)
 	var portrait := TextureRect.new()
 	portrait.custom_minimum_size = size
+	portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	if sprite_path != "" and ResourceLoader.exists(sprite_path):
-		portrait.texture = game._cached_texture(sprite_path)
-	row.add_child(portrait)
+	portrait.texture = texture
+	slot.add_child(portrait)
 
 
 func _codex_label(parent: Control, text: String, font_size: int, color: Color) -> Label:
@@ -1880,14 +1928,10 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	tooltip.name = "GlossaryTooltipPanel"
 	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tooltip.custom_minimum_size = Vector2(360, 0)
-	tooltip.add_theme_stylebox_override("panel", _unified_frame_style("tooltip"))
+	tooltip.custom_minimum_size = Vector2(460, 0)
+	tooltip.add_theme_stylebox_override("panel", _codex_tooltip_style())
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
-	box.add_theme_constant_override("margin_left", 12)
-	box.add_theme_constant_override("margin_top", 10)
-	box.add_theme_constant_override("margin_right", 12)
-	box.add_theme_constant_override("margin_bottom", 10)
 	tooltip.add_child(box)
 	var title := Label.new()
 	title.text = str(definition.get("name", term_id))
@@ -1904,7 +1948,7 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	var anchor_rect := anchor.get_global_rect()
 	var viewport_size := anchor.get_viewport_rect().size
 	tooltip.position = anchor_rect.position + Vector2(0, anchor_rect.size.y + 8.0)
-	tooltip.size = Vector2(380, 0)
+	tooltip.size = Vector2(460, 0)
 	await game.get_tree().process_frame
 	var rect := tooltip.get_global_rect()
 	tooltip.position.x = clampf(tooltip.position.x, 16.0, maxf(16.0, viewport_size.x - rect.size.x - 16.0))
@@ -1965,18 +2009,14 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 	list.add_child(grid)
 	for artifact in CODEX_DATA.artifacts():
 		var panel := PanelContainer.new()
-		panel.add_theme_stylebox_override("panel", _character_card_style())
+		panel.name = "CodexEntryCard"
+		panel.add_theme_stylebox_override("panel", _codex_entry_card_style())
 		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		grid.add_child(panel)
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 10)
 		panel.add_child(row)
-		var icon := TextureRect.new()
-		icon.custom_minimum_size = Vector2(96, 96)
-		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon.texture = _artifact_icon_texture(str(artifact["id"]))
-		row.add_child(icon)
+		_codex_icon_slot(row, _artifact_icon_texture(str(artifact["id"])), Vector2(96, 96), "CodexArtifactIconSlot")
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(text_box)
@@ -2037,7 +2077,7 @@ func _build_codex_glossary(list: VBoxContainer) -> void:
 		var definition: Dictionary = GLOSSARY.definition(term_id)
 		var panel := PanelContainer.new()
 		panel.name = "GlossaryEntry_%s" % term_id
-		panel.add_theme_stylebox_override("panel", _character_card_style())
+		panel.add_theme_stylebox_override("panel", _codex_entry_card_style())
 		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		grid.add_child(panel)
 		var box := VBoxContainer.new()
@@ -5373,6 +5413,11 @@ func _button_state_style(button: Button, _role: String, state: String, tint := C
 		var plus_path := str(COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES.get(plus_state, COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES["normal"]))
 		var plus_tint := BUTTON_NEUTRAL_HOVER_TINT if state == "hover" and tint == Color.WHITE else tint
 		return _global_texture_style(plus_path, COMBAT_HUD_LEVEL_UP_MARGINS, plus_tint, COMBAT_HUD_LEVEL_UP_CONTENT)
+	if button_type == "codex_tab":
+		var tab_state := state
+		var tab_path := str(CODEX_TAB_TEXTURES.get(tab_state, CODEX_TAB_TEXTURES["normal"]))
+		var tab_tint := BUTTON_NEUTRAL_HOVER_TINT if state == "hover" and tint == Color.WHITE else tint
+		return _global_texture_style(tab_path, CODEX_TAB_MARGINS, tab_tint, CODEX_TAB_CONTENT)
 	var type_map: Dictionary = RED_GOLD_BUTTON_TEXTURES.get(button_type, RED_GOLD_BUTTON_TEXTURES["standard"])
 	var texture_state := "normal" if state == "hover" else state
 	var path := str(type_map.get(texture_state, type_map.get("normal", GLOBAL_BUTTON_FRAME_PATH)))
@@ -5507,6 +5552,27 @@ func _card_hover_style() -> StyleBox:
 
 func _character_card_style() -> StyleBox:
 	return _unified_frame_style("card_frame")
+
+
+func _codex_main_panel_style() -> StyleBox:
+	return _global_texture_style(CODEX_MAIN_PANEL_PATH, CODEX_MAIN_PANEL_MARGINS, Color.WHITE, CODEX_MAIN_PANEL_CONTENT)
+
+
+func _codex_section_panel_style() -> StyleBox:
+	return _global_texture_style(CODEX_SECTION_PANEL_PATH, CODEX_SECTION_PANEL_MARGINS, Color.WHITE, CODEX_SECTION_PANEL_CONTENT)
+
+
+func _codex_entry_card_style(hovered := false) -> StyleBox:
+	var path := CODEX_ENTRY_CARD_HOVER_PATH if hovered else CODEX_ENTRY_CARD_PATH
+	return _global_texture_style(path, CODEX_ENTRY_CARD_MARGINS, Color.WHITE, CODEX_ENTRY_CARD_CONTENT)
+
+
+func _codex_portrait_slot_style() -> StyleBox:
+	return _global_texture_style(CODEX_PORTRAIT_SLOT_PATH, CODEX_PORTRAIT_SLOT_MARGINS, Color.WHITE, CODEX_PORTRAIT_SLOT_CONTENT)
+
+
+func _codex_tooltip_style() -> StyleBox:
+	return _global_texture_style(CODEX_TOOLTIP_PATH, CODEX_TOOLTIP_MARGINS, Color.WHITE, CODEX_TOOLTIP_CONTENT)
 
 
 func _hero_select_frame_style(frame_type: String, tint := Color.WHITE) -> StyleBox:

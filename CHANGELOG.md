@@ -5,6 +5,11 @@
 ## [Unreleased] — ветка dev
 
 ### Fixed
+- Codex texture runtime integration (SCRUM-403): live Codex screens now use
+  the SCRUM-345 texture kit for the root panel, section panel, tabs, entry
+  cards, portrait/icon slots and glossary tooltip while keeping runtime content
+  inside metadata safe zones; UI no-overlap, runtime UI smoke and full runtime
+  smoke cover the texture paths and layout dump.
 - Settings menu unified restyle integration (SCRUM-396): runtime Settings tabs
   now use the SCRUM-391 3-slot switcher asset and exactly three source safe
   rects for `Экран`, `Звук`, `Управление`, removing the obsolete fourth hit area

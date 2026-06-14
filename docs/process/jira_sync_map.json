@@ -1456,8 +1456,8 @@
  },
  "design_recreate_all_artifact_icons_via_skill_task.md": {
   "key": "SCRUM-340",
-  "status": "К выполнению",
-  "desc_hash": "35d25eb5aac6e85ae8962f9f94e5fd35"
+  "status": "В работе",
+  "desc_hash": "aff9bdffa9e71e9aaab84e44c42554aa"
  },
  "design_settings_tabs_fix_3slots_restyle_skill_task.md": {
   "key": "SCRUM-341",
@@ -1936,7 +1936,7 @@
  },
  "backend_codex_texture_no_overlap_integration_task.md": {
   "key": "SCRUM-403",
-  "status": "В работе",
-  "desc_hash": "9b04582f3f5691dc965d748942aa595d"
+  "status": "Готово",
+  "desc_hash": "171e967268126c2cafcd2bbe12850d63"
  }
 }

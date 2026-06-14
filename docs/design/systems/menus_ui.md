@@ -123,8 +123,10 @@ SCRUM-345 adds a Design-ready Codex-specific texture kit under
 rects live in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`.
 Runtime Codex content must stay inside those rects; portraits, descriptions,
 tabs, glossary tooltips and click/focus hitboxes must not sit on decorative
-dragon/metal/gem borders. Live integration is tracked by
-`docs/tasks/backend_codex_texture_no_overlap_integration_task.md`.
+dragon/metal/gem borders. SCRUM-403 wires the kit into `_show_codex_screen`,
+Codex tabs, entry cards, portrait/icon slots and `GlossaryTooltipPanel`.
+Runtime smoke asserts the actual StyleBoxTexture paths and writes
+`build/qa/scrum345/codex_texture_runtime_dump.md`.
 
 The combat/route `LevelUpPlusButton` is an exception to the flat FAB look: in
 combat it uses the SCRUM-390 square plus texture states, remains fully opaque
