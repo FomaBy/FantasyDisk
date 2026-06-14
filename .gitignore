@@ -15,3 +15,7 @@ tools/.feedback_intake_state.json
 
 # Release Discord webhook (секрет, не коммитить)
 release_webhook.cfg
+
+# Telethon session релиза (секрет)
+*.session
+fantasydisk_release.session
