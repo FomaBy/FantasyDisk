@@ -1,6 +1,6 @@
 # ART: Перерисовать «Берсерк» в едином стиле + анимации (5 move / 5 attack)
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -86,3 +86,47 @@ Design scope intentionally did not build SpriteFrames, AnimationPlayer, runtime 
 Лист -> `assets/sprites/characters/berserk_sheet.png` (конвенция). player.gd:_character_sprite_frames
 АВТО-подхватывает лист над cutout-ригом; idle(5,5fps)/walk(5,10)/attack(5,14). animation_smoke ЗЕЛЁНЫЙ.
 Исходник+keyed в references/characters/berserk/; превью previews/berserk_sheet_normalized.png.
+
+## Animator Result — 2026-06-14
+
+Animator-фаза SCRUM-283 завершена:
+- runtime SpriteFrames: `assets/sprites/characters/berserk_spriteframes.tres`;
+- extracted runtime frames: `assets/sprites/characters/full_frame/berserk/`;
+- source sheet remains `assets/sprites/characters/berserk_sheet.png`;
+- animations: `walk` 5f loop at 10fps, `attack_primary` 5f one-shot at 14fps, runtime alias `attack` 5f one-shot at 14fps, `idle` 1f loop fallback at 5fps;
+- pivot/canvas: `384x384`, bottom-center feet guide `[192,348]`;
+- safe slicing: runtime SpriteFrames use separate per-frame PNGs, so no runtime rect can include neighboring source-sheet pixels.
+
+QA artifacts:
+- manifest: `build/qa/scrum283/animation_manifest.json`;
+- contact sheet: `build/qa/scrum283/berserk_anim_contact.png`;
+- GIF previews: `build/qa/scrum283/berserk_walk.gif`, `build/qa/scrum283/berserk_attack_primary.gif`.
+
+Verification:
+- `python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/scrum283/animation_manifest.json` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — «Берсерк» перерисован + анимирован (Design + Animator), играет в игре
+
+Проверено (фактически):
+- **Новая анимация АКТИВНА в рантайме**: `player.gd:_character_sprite_frames` (1568)
+  предпочитает `_character_resource_sprite_frames("berserk")` (1569) → грузит
+  **`berserk_spriteframes.tres`** ПЕРВЫМ; старый v2-cutout (`_berserk_sprite_frames`)
+  — последний fallback, не достигается (берётся новый лист).
+- **Счётчики кадров** (manifest + .tres): **walk 5** (loop 10fps), **attack 5** +
+  **attack_primary 5** (one-shot 14fps), idle 5 (5fps) — требование 5 move/5 attack ✓.
+- **Визуал** `berserk_anim_contact.png`: мускулистый варвар, меховые наручи/пояс,
+  боевая раскраска, **руки ПУСТЫЕ (без оружия)** ✓, прозрачный фон, единый стиль,
+  плавные walk/attack позы. GIF walk/attack_primary/idle в build/qa/scrum283/.
+- **Тесты**: `validate_animation_manifest` PASS; `animation_smoke_test` PASS;
+  `runtime_smoke_test` PASS. Лист 384×384, pivot [192,348], cutout_used=false,
+  safe-slicing (per-frame PNG, без захвата соседей).
+
+Acceptance:
+- [x] «Берсерк» перерисован в едином стиле, без оружия в руках.
+- [x] 5 walk + 5 attack (384, единый pivot), плавно; зарегистрирован (.tres), играет в игре.
+- [x] animation + runtime smoke зелёные; превью-гиф; manifest валиден.
+
+Статус done. Баги: нет. Двухфазная (Design→Animator) полностью закрыта.

@@ -1,0 +1,100 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_00.png" id="1_gu1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_01.png" id="2_gu2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_02.png" id="3_gu3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_03.png" id="4_gu4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_04.png" id="5_gu5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_walk_00.png" id="6_gu6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_walk_01.png" id="7_gu7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_walk_02.png" id="8_gu8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_walk_03.png" id="9_gu9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_walk_04.png" id="10_gu10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_attack_primary_00.png" id="11_gu11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_attack_primary_01.png" id="12_gu12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_attack_primary_02.png" id="13_gu13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_attack_primary_03.png" id="14_gu14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist/guitarist_attack_primary_04.png" id="15_gu15"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_gu11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_gu12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_gu13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_gu14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_gu15")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_gu11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_gu12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_gu13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_gu14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_gu15")
+}],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_gu1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_gu2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_gu3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_gu4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_gu5")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_gu6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_gu7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_gu8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_gu9")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_gu10")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+}]

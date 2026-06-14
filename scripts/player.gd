@@ -548,7 +548,7 @@ func trigger_assassin_crit_shadow(target: Node2D, burst_radius: float) -> void:
 		return
 	var energy := float(stats.get("energy", 0.0))
 	_assassin_crit_shadow_cooldown_left = maxf(0.25, 0.55 / (1.0 + energy * 0.035))
-	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
+	var parent := get_parent() if get_parent() is Node2D else _vfx_parent()
 	var radius := maxf(burst_radius, 42.0)
 	AttackVfx.ring_pulse(parent, target.global_position, radius, Color(0.70, 0.20, 1.0, 0.38), false)
 	AttackVfx.slash(parent, (target.global_position - global_position).normalized(), minf(radius * 1.4, 180.0), Color(0.72, 0.22, 1.0, 0.34)).global_position = target.global_position
@@ -1566,12 +1566,22 @@ func _configure_player_rig(config: Dictionary) -> void:
 
 
 func _character_sprite_frames(config: Dictionary) -> SpriteFrames:
+	var resource_frames := _character_resource_sprite_frames(character_id)
+	if resource_frames != null:
+		return resource_frames
 	var sheet_frames := _character_sheet_sprite_frames(character_id)
 	if sheet_frames != null:
 		return sheet_frames
 	if character_id == "berserk":
 		return _berserk_sprite_frames()
 	return _single_texture_sprite_frames(config["sprite"])
+
+
+func _character_resource_sprite_frames(class_id: String) -> SpriteFrames:
+	var frames_path := "res://assets/sprites/characters/%s_spriteframes.tres" % class_id
+	if not ResourceLoader.exists(frames_path):
+		return null
+	return load(frames_path) as SpriteFrames
 
 
 func _character_sheet_sprite_frames(class_id: String) -> SpriteFrames:

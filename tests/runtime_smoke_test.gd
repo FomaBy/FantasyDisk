@@ -3583,14 +3583,22 @@ func _test_unique_class_identity_patterns() -> void:
 	var assassin_enemy := enemy_scene.instantiate()
 	holder.add_child(assassin_enemy)
 	assassin_enemy.global_position = assassin.global_position + Vector2(220, 0)
+	await process_frame
 	var assassin_start: Vector2 = assassin.global_position
-	var vfx_before := holder.find_children("*Vfx", "Node2D", true, false).size()
+	var vfx_before := {}
+	for existing_vfx in holder.find_children("*Vfx", "Node2D", true, false):
+		vfx_before[int(existing_vfx.get_instance_id())] = true
 	assassin.call("trigger_assassin_crit_shadow", assassin_enemy, 100.0)
 	await create_timer(0.15).timeout
 	if assassin.global_position.distance_to(assassin_start) > 0.01:
 		_fail("Expected Assassin critical shadow hook to preserve player-controlled position.")
 		return
-	if holder.find_children("*Vfx", "Node2D", true, false).size() <= vfx_before:
+	var spawned_assassin_vfx := false
+	for current_vfx in holder.find_children("*Vfx", "Node2D", true, false):
+		if not vfx_before.has(int(current_vfx.get_instance_id())):
+			spawned_assassin_vfx = true
+			break
+	if not spawned_assassin_vfx:
 		_fail("Expected Assassin critical shadow hook to keep a non-moving combat/VFX effect.")
 		return
 

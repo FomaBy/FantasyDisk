@@ -1,6 +1,6 @@
 # ART: Перерисовать «Рейнджер» в едином стиле + анимации (5 move / 5 attack)
 
-Статус: done (Claude-Designer 2026-06-14 — лист 5/5/5, авто-подхват player.gd, animation_smoke зелёный)
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -61,3 +61,48 @@ docs/design/content_registry.md (персонаж ranger), current_game_state.
 
 ## Результат 2026-06-14 (Claude-Designer, параллельно Codex)
 Лист сгенерён скиллом fantasydisk-asset-generator (1920x1152, 5x3 idle/walk/attack, без оружия), обработан tools/build_character_sheet.py (flood-fill фон + центровка pivot) -> assets/sprites/characters/ranger_sheet.png. player.gd авто-подхватывает (приоритет над ригом). animation_smoke зелёный.
+
+## Animator Result — 2026-06-14
+
+Animator-фаза по accepted source sheet выполнена:
+- runtime SpriteFrames: `assets/sprites/characters/ranger_spriteframes.tres`;
+- extracted runtime frames: `assets/sprites/characters/full_frame/ranger/`;
+- source sheet: `assets/sprites/characters/ranger_sheet.png`;
+- animations: `idle` 5f loop at 5fps, `walk` 5f loop at 10fps,
+  `attack_primary` 5f one-shot at 14fps, runtime alias `attack` 5f one-shot at
+  14fps;
+- QA artifacts: `build/qa/scrum294/animation_manifest.json`,
+  `build/qa/scrum294/ranger_anim_contact.png`,
+  `build/qa/scrum294/ranger_idle.gif`,
+  `build/qa/scrum294/ranger_walk.gif`,
+  `build/qa/scrum294/ranger_attack_primary.gif`.
+
+Verification:
+- animation manifest validator — PASS.
+- `tests/animation_smoke_test.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — PASS after Back-end blocker SCRUM-409.
+
+Back-end handoff resolved:
+- `docs/tasks/backend_assassin_crit_shadow_vfx_runtime_smoke_task.md` — done,
+  unblocked full runtime verification for SCRUM-291/SCRUM-282/SCRUM-294.
+
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — «Рейнджер» перерисован + анимирован, играет в игре
+
+Проверено (фактически):
+- **Манифест** `build/qa/.../animation_manifest.json` (id `ranger`): **walk 5 / attack 5**
+  (+attack_primary 5, idle 5) — требование 5 move/5 attack выполнено.
+- **Рантайм-привязка активна**: `player.gd:_character_resource_sprite_frames` грузит
+  `assets/sprites/characters/ranger_spriteframes.tres` (приоритет над cutout-ригом) —
+  новая анимация играет в игре.
+- **Визуал** контакт-лист/gif: перерисован в едином D&D dark-fantasy стиле, без оружия
+  в руках (по спеке), плавные walk/attack позы, прозрачный фон.
+- **Тесты**: `animation_smoke_test` + `runtime_smoke_test` — passed.
+
+Acceptance:
+- [x] «Рейнджер» перерисован в едином стиле, без оружия в руках.
+- [x] 5 walk + 5 attack, зарегистрирован (.tres), играет в игре.
+- [x] animation + runtime smoke зелёные; превью/контакт.
+
+Статус done. Баги: нет. Двухфазная Design→Animator закрыта.

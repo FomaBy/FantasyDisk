@@ -120,3 +120,24 @@ Verification:
 
 ## Результат 2026-06-14 (Claude-Designer, параллельно Codex)
 Лист сгенерён скиллом fantasydisk-asset-generator (1920x1152, 5x3 idle/walk/attack, без оружия), обработан tools/build_character_sheet.py (flood-fill фон + центровка pivot) -> assets/sprites/characters/dark_mage_sheet.png. player.gd авто-подхватывает (приоритет над ригом). animation_smoke зелёный.
+
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — «Тёмный маг» перерисован + анимирован, играет в игре
+
+Проверено (фактически):
+- **Манифест** `build/qa/.../animation_manifest.json` (id `dark_mage`): **walk 5 / attack 5**
+  (+attack_primary 5, idle 5) — требование 5 move/5 attack выполнено.
+- **Рантайм-привязка активна**: `player.gd:_character_resource_sprite_frames` грузит
+  `assets/sprites/characters/dark_mage_spriteframes.tres` (приоритет над cutout-ригом) —
+  новая анимация играет в игре.
+- **Визуал** контакт-лист/gif: перерисован в едином D&D dark-fantasy стиле, без оружия
+  в руках (по спеке), плавные walk/attack позы, прозрачный фон.
+- **Тесты**: `animation_smoke_test` + `runtime_smoke_test` — passed.
+
+Acceptance:
+- [x] «Тёмный маг» перерисован в едином стиле, без оружия в руках.
+- [x] 5 walk + 5 attack, зарегистрирован (.tres), играет в игре.
+- [x] animation + runtime smoke зелёные; превью/контакт.
+
+Статус done. Баги: нет. Двухфазная Design→Animator закрыта.
