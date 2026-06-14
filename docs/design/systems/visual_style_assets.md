@@ -17,7 +17,8 @@ Canonical folders:
 - `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png` - legacy 40px artifact preview from the previous pass;
 - `assets/sprites/ui/icons/artifact_generated_concept_40px_preview.png` - legacy preview path updated to the same active icon set;
 - `assets/sprites/ui/icons/artifact_dark_artifacts_40px_preview.png` - legacy preview path updated to the same active icon set;
-- `tools/extract_realistic_dnd_artifact_icons.py` - active raster source sheet extraction and validation pipeline;
+- SCRUM-340 `fantasydisk-asset-generator` pass - active artifact icon source pipeline; source references live in `docs/design/references/icons/artifacts/artifact_<id>_source.png`;
+- `tools/extract_realistic_dnd_artifact_icons.py` - superseded raster source sheet extraction and validation pipeline kept for reference;
 - `tools/regenerate_artifact_icons_per_item.py` - superseded per-item artifact icon regeneration pipeline kept for reference;
 - `tools/validate_artifact_icons.py` - artifact icon technical validation and QA preview builder;
 - `tools/final_redesign_artifact_icons.py` - superseded artifact icon polish/extraction pipeline kept for reference;
@@ -35,7 +36,7 @@ Visual rules:
 - no emoji/default placeholders;
 - no text inside icons;
 - keep artifact silhouettes readable at `40x40`;
-- artifact icons use centered realistic D&D/tabletop fantasy magic items on transparent backgrounds, with one complete painted object per icon; shop-only icons use ornate fantasy-medallion frames, strong dark outlines, fantasy-metal/gem accents, glow and transparent background;
+- artifact icons use centered realistic D&D/tabletop fantasy magic items generated through `fantasydisk-asset-generator` on transparent backgrounds, with one complete painted object per icon, stable `artifact_<id>.png` paths, and 40px readability previews; shop-only icons use ornate fantasy-medallion frames, strong dark outlines, fantasy-metal/gem accents, glow and transparent background;
 - avoid reusing the exact same icon with only a recolor for distinct items.
 
 ## Shop Frames And Cursor

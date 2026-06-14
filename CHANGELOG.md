@@ -29,6 +29,11 @@
   mapping without network.
 
 ### Added
+- Artifact icon regeneration (SCRUM-340): recreated all 53
+  `assets/sprites/ui/icons/artifacts/artifact_<id>.png` files through
+  `fantasydisk-asset-generator` / OpenAI Images as transparent 256px
+  D&D/dark-fantasy magic item PNGs, with old-icon backup, source references,
+  coverage manifest, contact sheet and 40px readability preview.
 - Codex texture kit (SCRUM-345): generated a new D&D/Dark Fantasy Dragon Codex
   UI reference through `fantasydisk-asset-generator`, cut/imported 10 RGBA
   production candidates under `assets/sprites/ui/frames/codex/`, and documented

@@ -1446,8 +1446,8 @@
  },
  "design_reward_screens_redesign_per_reward_frames_task.md": {
   "key": "SCRUM-338",
-  "status": "К выполнению",
-  "desc_hash": "73c8cff4d5e7c7b0585e0d207414ac08"
+  "status": "В работе",
+  "desc_hash": "ee0cb95f7ec66302d2ffd141b908ca24"
  },
  "backend_shop_reentry_until_next_level_task.md": {
   "key": "SCRUM-339",
@@ -1456,8 +1456,8 @@
  },
  "design_recreate_all_artifact_icons_via_skill_task.md": {
   "key": "SCRUM-340",
-  "status": "В работе",
-  "desc_hash": "aff9bdffa9e71e9aaab84e44c42554aa"
+  "status": "Готово",
+  "desc_hash": "c3f363bbb9e9828a6d9679d9f450070b"
  },
  "design_settings_tabs_fix_3slots_restyle_skill_task.md": {
   "key": "SCRUM-341",
