@@ -1,6 +1,6 @@
 # Задача Для Design/Codex: Полная Перегенерация Attack VFX Через Skill
 
-Статус: new
+Статус: in_progress
 Создано: 2026-06-14
 Автор: Codex handoff из SCRUM-335
 Исполнитель: Design / Codex
@@ -73,3 +73,11 @@ provides an approved alternative generation source.
 
 ## Разблокировано 2026-06-14 (PM)
 Биллинг OpenAI восстановлен и ПРОВЕРЕН: тестовая генерация gpt-image-2 успешна. Блок `billing_hard_limit_reached` устарел — снят. Можно генерить скиллом.
+
+## Progress Log
+
+- 2026-06-14 — Started Design/Codex execution after SCRUM-338 closure. Current
+  live inventory is 83 `assets/sprites/effects/*.png` plus 2 projectile PNGs.
+  Scope is asset/reference generation, alpha cleanup, previews, docs and smoke
+  checks only; gameplay timings, damage, targeting and runtime scripts remain
+  Back-end-owned.

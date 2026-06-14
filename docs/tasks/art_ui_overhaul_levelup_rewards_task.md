@@ -1,6 +1,6 @@
 # ART: UI Overhaul (Повышение уровня и награды) — D&D + Dark Fantasy Dragon, новым скиллом
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -69,3 +69,6 @@ heroframe/carusel/windrose/DescriptionHS/settings_tab_switcher_frame). Брат�
 
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/content_registry.md, current_game_state.
+
+## Superseded 2026-06-14 (PM)
+Широкий UI-Overhaul кластер закрыт как покрытый более конкретными задачами: SCRUM-338 (редизайн наград) + SCRUM-348 (кнопки повышения). Дубль не нужен.

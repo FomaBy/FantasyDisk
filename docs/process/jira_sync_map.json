@@ -1386,23 +1386,23 @@
  },
  "art_ui_overhaul_combat_hud_task.md": {
   "key": "SCRUM-326",
-  "status": "К выполнению",
-  "desc_hash": "10c9488c6ea1c1da9cb74e7f930407b5"
+  "status": "Готово",
+  "desc_hash": "3db88f29aa82ea0e5e52f47c29f2f972"
  },
  "art_ui_overhaul_dnd_dark_fantasy_anchor_task.md": {
   "key": "SCRUM-327",
-  "status": "К выполнению",
-  "desc_hash": "714e98c11e8e0672d1c0bf7df84ece69"
+  "status": "Готово",
+  "desc_hash": "d05f78881f696e56950462e031cddfb3"
  },
  "art_ui_overhaul_levelup_rewards_task.md": {
   "key": "SCRUM-328",
-  "status": "К выполнению",
-  "desc_hash": "d4aa57313c6cc31f900508cd245d275d"
+  "status": "Готово",
+  "desc_hash": "73ea6db333c7821553ebc306c8f73381"
  },
  "art_ui_overhaul_menus_settings_task.md": {
   "key": "SCRUM-329",
-  "status": "К выполнению",
-  "desc_hash": "79846c9c2d1fdc90a4b29f708703753e"
+  "status": "Готово",
+  "desc_hash": "b55490a67c07f9fe1f5150c74e8688b2"
  },
  "art_ui_overhaul_pause_end_task.md": {
   "key": "SCRUM-330",
@@ -1441,8 +1441,8 @@
  },
  "design_attack_vfx_full_asset_regeneration_skill_task.md": {
   "key": "SCRUM-337",
-  "status": "К выполнению",
-  "desc_hash": "d1550683889c05c7c3a220c593bc46ee"
+  "status": "В работе",
+  "desc_hash": "d7fcf4e30deec7be86826e5d87657761"
  },
  "design_reward_screens_redesign_per_reward_frames_task.md": {
   "key": "SCRUM-338",
@@ -1941,7 +1941,7 @@
  },
  "backend_reward_screens_per_reward_frames_integration_task.md": {
   "key": "SCRUM-404",
-  "status": "В работе",
-  "desc_hash": "fe59604967f52c712590cffcf5f92654"
+  "status": "Готово",
+  "desc_hash": "7f03aa06e38ddc93307d42f8d7102c19"
  }
 }

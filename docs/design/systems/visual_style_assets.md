@@ -97,8 +97,8 @@ labels, portraits, icons and meters must remain inside the frame content area.
 SCRUM-390 prepared a dedicated **Combat HUD redraw kit** and SCRUM-400 wires it
 into the live runtime HUD. It was generated through
 `fantasydisk-asset-generator` from current D&D/dark-fantasy UI references, then
-alpha-cleaned and cut into runtime candidates. Source and margins are recorded in
-`docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`;
+alpha-cleaned and cut into runtime candidates. Source and margins are recorded
+in `docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`;
 previews are `docs/design/previews/combat_hud_redraw_contact.png` and
 `docs/design/previews/combat_hud_redraw_safe_zones.png`; 720p/1080p/1440p mock
 screens live in `build/qa/scrum390/`.
@@ -119,6 +119,20 @@ Canonical SCRUM-390 candidate assets:
 - `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`,
   `_ult.png`, `_gold.png` (`512x32`) and
   `ui_hud_gold_medallion.png` (`128x128`).
+
+SCRUM-338/SCRUM-404 provide the active **Reward Card frame kit** for battle
+reward offers and elite artifact choices. Runtime assets live in
+`assets/sprites/ui/frames/rewards/`:
+`ui_frame_reward_card.png`, `ui_frame_reward_card_hover.png`,
+`ui_frame_reward_elite_artifact_card.png` and
+`ui_frame_reward_elite_artifact_card_hover.png`. Source size is `768x1024`;
+Back-end uses texture margins `96/112/96/112` and content margins
+`132/170/132/164` for battle reward cards, and texture margins
+`108/130/108/130` plus content margins `150/202/150/190` for elite artifact
+cards. Runtime content containers are proportionally scaled to the card control
+size; labels, icons, artifact tier text and action labels must stay inside the
+safe area while the whole card remains clickable/focusable. Runtime QA dumps are
+written to `build/qa/scrum338/`.
 
 SCRUM-345/SCRUM-403 provide the active **Codex texture kit** for the in-game
 encyclopedia and glossary tooltip. Assets live in
