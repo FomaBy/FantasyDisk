@@ -1,6 +1,6 @@
 # ART/UX: Hero Select thinner frames + no-overlap visual fix
 
-Статус: review
+Статус: done
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
