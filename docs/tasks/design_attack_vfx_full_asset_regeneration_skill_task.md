@@ -49,3 +49,11 @@ python3 /Users/sergeyfomin/.codex/skills/fantasydisk-asset-generator/scripts/gen
 - [ ] Gameplay timing/damage/targeting не изменены.
 - [ ] `attack_vfx_smoke_test`, `hazard_vfx_smoke_test`, `enemy_projectile_smoke_test`, `runtime_smoke_test` проходят.
 - [ ] `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/visual_style_assets.md` и `CHANGELOG.md` обновлены.
+
+
+## Ключ настроен — блокер снят (2026-06-14)
+`OPENAI_API_KEY` фактически сохранён в `~/.codex/.env` (права 600, вне git) +
+автозагрузка в `~/.zshrc` — доступен в окружении автоматически в каждом новом
+shell (включая shell Codex-воркеров). Скилл `fantasydisk-asset-generator`
+(gpt-image-2) готов к вызову. Блокер по отсутствию `OPENAI_API_KEY` снят
+окончательно; задача готова к исполнению через скилл.

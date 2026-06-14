@@ -87,3 +87,11 @@ Documentation dispatcher verified that local `OPENAI_API_KEY` can now be loaded
 from the secure Codex env file outside the repository and Python `openai` imports
 successfully. Previous asset-generator environment blocker is resolved; task is
 eligible for Design/Codex execution after the currently active Design task.
+
+
+## Ключ настроен — блокер снят (2026-06-14)
+`OPENAI_API_KEY` фактически сохранён в `~/.codex/.env` (права 600, вне git) +
+автозагрузка в `~/.zshrc` — доступен в окружении автоматически в каждом новом
+shell (включая shell Codex-воркеров). Скилл `fantasydisk-asset-generator`
+(gpt-image-2) готов к вызову. Блокер по отсутствию `OPENAI_API_KEY` снят
+окончательно; задача готова к исполнению через скилл.

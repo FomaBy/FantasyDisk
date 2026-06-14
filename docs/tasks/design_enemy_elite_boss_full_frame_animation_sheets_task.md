@@ -93,3 +93,11 @@ Documentation dispatcher routed SCRUM-352 to the existing Design Codex thread
 secure local env file outside the repository, must not print or persist the key
 in project files/logs, and must keep the work Design-owned until accepted sheets
 are ready for an Animator handoff.
+
+
+## Ключ настроен — блокер снят (2026-06-14)
+`OPENAI_API_KEY` фактически сохранён в `~/.codex/.env` (права 600, вне git) +
+автозагрузка в `~/.zshrc` — доступен в окружении автоматически в каждом новом
+shell (включая shell Codex-воркеров). Скилл `fantasydisk-asset-generator`
+(gpt-image-2) готов к вызову. Блокер по отсутствию `OPENAI_API_KEY` снят
+окончательно; задача готова к исполнению через скилл.
