@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-318
+QA: in_progress (2026-06-14)
 Блокер снят: SCRUM-281 QA PASSED 2026-06-14; SCRUM-318 active in Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
 Связано: SCRUM-273 (Red&Gold button kit)
 
@@ -97,3 +98,28 @@ Verification:
 
 Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`,
 `docs/design/systems/menus_ui.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: cea33e22 (ветка dev)
+
+Проверено (фактически):
+- **Код**: `BUTTON_NEUTRAL_HOVER_FONT = Color(1,1,1,1)` (чисто белый текст),
+  `BUTTON_NEUTRAL_HOVER_TINT = 1.16` (яркость). `_button_state_style`: для hover
+  `texture_state := "normal"` (берёт normal-текстуру, НЕ золотую glow `*_hover.png`)
+  + `final_tint = NEUTRAL_HOVER_TINT`. Применено ко всем кнопкам (primary/secondary/
+  back/compact/hero-select/level-up) + `pause_stats_menu` (pause кнопки без
+  `*_pause_hover.png`).
+- **Тесты ассертят non-glow**: `dark_fantasy_ui_theme_test` (non-glow hover/focus
+  пути, нейтральный tint/font); `runtime_smoke_ui` + `runtime_smoke` +
+  `ui_no_overlap_matrix` — все passed.
+- **Визуал** (`build/qa/scrum318/button_hover_neutral_preview.png`): NORMAL/HOVER/
+  FOCUS — одна и та же Red&Gold текстура, ярче (tint 1.00/1.16/1.20), «no
+  *_hover.png / no yellow font». Жёлтое свечение убрано, hover = ярче+контраст.
+
+Acceptance:
+- [x] Жёлтое свечение/тёплый блик убраны из hover у ВСЕХ кнопок.
+- [x] Hover делает кнопку ярче/контрастнее (brightness tint, не glow-ассет).
+- [x] `font_hover_color` нейтрально-белый; smoke зелёные; скрин в build/qa/.
+
+Баги: нет.
