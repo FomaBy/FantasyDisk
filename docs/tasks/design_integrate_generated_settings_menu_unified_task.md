@@ -43,3 +43,10 @@ alpha-cleaned and converted into production candidate
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`.
 Runtime activation is handed off to
 `docs/tasks/backend_settings_menu_unified_restyle_integration_task.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (covered by SCRUM-391)
+
+Генератор-стаб settings-switcher референса. Фактический deliverable (3-slot switcher
+ассет + метаданные + Back-end handoff) верифицирован в QA-вердикте SCRUM-391.
+Видимая интеграция switcher — Back-end задача (рантайм пока 4-slot). Не дублируется. Баги: нет.

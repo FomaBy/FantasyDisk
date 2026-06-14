@@ -1806,8 +1806,8 @@
  },
  "design_settings_menu_unified_restyle_task.md": {
   "key": "SCRUM-391",
-  "status": "В работе",
-  "desc_hash": "10e9f031aff2e5bcf5aca9a48a464226"
+  "status": "Готово",
+  "desc_hash": "e1dc17d339cdda20e5f10b1cdcfacc93"
  },
  "backend_unified_frame_thin_runtime_margins_update_task.md": {
   "key": "SCRUM-392",
@@ -1901,12 +1901,12 @@
  },
  "backend_settings_menu_unified_restyle_integration_task.md": {
   "key": "SCRUM-396",
-  "status": "К выполнению",
-  "desc_hash": "76a7b0ce9cd663d6c33b18b505234bc1"
+  "status": "В работе",
+  "desc_hash": "c10c143067adf922c1ff36715524c61c"
  },
  "design_integrate_generated_settings_menu_unified_task.md": {
   "key": "SCRUM-397",
-  "status": "Контроль качества",
-  "desc_hash": "dbedad282290449002260595ff8f792d"
+  "status": "Готово",
+  "desc_hash": "3ec15ccab20c738c9af3d2990c6f5974"
  }
 }

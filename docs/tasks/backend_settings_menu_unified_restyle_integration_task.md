@@ -1,12 +1,12 @@
 # Back-end: Settings Menu Unified Restyle Integration
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: Design handoff from SCRUM-391
-Jira: pending sync
+Jira: SCRUM-396
 
 ## Context
 

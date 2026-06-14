@@ -77,14 +77,13 @@ const HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE := Vector2(1024.0, 170.0)
 const HERO_SELECT_CAROUSEL_CONTENT_BASE := Vector4(132.0, 62.0, 132.0, 62.0)
 const HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION := 2
 const HERO_SELECT_FRAME_DIR := "res://assets/sprites/ui/frames/hero_select/"
-const SETTINGS_TAB_SWITCHER_FRAME_PATH := "res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png"
+const SETTINGS_TAB_SWITCHER_FRAME_PATH := "res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png"
 const SETTINGS_TAB_SWITCHER_BASE_SIZE := Vector2(1280.0, 256.0)
 const SETTINGS_TAB_SWITCHER_DISPLAY_SIZE := Vector2(640.0, 128.0)
 const SETTINGS_TAB_SWITCHER_SAFE_RECTS := [
-	Rect2(146.0, 78.0, 178.0, 82.0),
-	Rect2(414.0, 91.0, 178.0, 74.0),
-	Rect2(693.0, 91.0, 178.0, 74.0),
-	Rect2(969.0, 91.0, 162.0, 74.0),
+	Rect2(160.0, 88.0, 270.0, 82.0),
+	Rect2(506.0, 88.0, 270.0, 82.0),
+	Rect2(852.0, 88.0, 270.0, 82.0),
 ]
 const HERO_SELECT_FRAME_TEXTURES := {
 	"unified_panel": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_unified_panel.png",
@@ -607,6 +606,12 @@ func _show_character_select() -> void:
 	portrait_content.name = "HeroSelectPortraitContent"
 	portrait_content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	portrait_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Инсет контента внутрь рамки портрета (доли реальной прозрачной зоны рамки),
+	# чтобы спрайт героя не налезал на орнамент. SCRUM-336/hero-select.
+	portrait_content.add_theme_constant_override("margin_left", int(round(portrait_safe_rect.size.x * 0.11)))
+	portrait_content.add_theme_constant_override("margin_top", int(round(portrait_safe_rect.size.y * 0.18)))
+	portrait_content.add_theme_constant_override("margin_right", int(round(portrait_safe_rect.size.x * 0.11)))
+	portrait_content.add_theme_constant_override("margin_bottom", int(round(portrait_safe_rect.size.y * 0.13)))
 	portrait_frame.add_child(portrait_content)
 
 	var portrait_box := VBoxContainer.new()
@@ -652,6 +657,11 @@ func _show_character_select() -> void:
 	dossier_content.name = "HeroSelectDossierContent"
 	dossier_content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	dossier_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Инсет контента внутрь рамки досье, чтобы текст/возвышение не налезали на орнамент.
+	dossier_content.add_theme_constant_override("margin_left", int(round(dossier_safe_rect.size.x * 0.085)))
+	dossier_content.add_theme_constant_override("margin_top", int(round(dossier_safe_rect.size.y * 0.15)))
+	dossier_content.add_theme_constant_override("margin_right", int(round(dossier_safe_rect.size.x * 0.085)))
+	dossier_content.add_theme_constant_override("margin_bottom", int(round(dossier_safe_rect.size.y * 0.12)))
 	dossier_frame.add_child(dossier_content)
 
 	var dossier := VBoxContainer.new()

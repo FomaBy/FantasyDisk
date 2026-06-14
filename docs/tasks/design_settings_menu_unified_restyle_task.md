@@ -1,6 +1,6 @@
 # ART/UX: Настройки — единообразные 3 вкладки, красивый переключатель, единый стиль рамок/кнопок
 
-Статус: review
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
@@ -8,6 +8,7 @@
 Автор: PM (запрос пользователя)
 Связано: SCRUM-341 (свитчер 3 вкладки), SCRUM-329 (UI Overhaul меню/настройки), SCRUM-384 (единый фрейм), SCRUM-273 (базовые кнопки), SCRUM-318 (hover), SCRUM-275 (скролл «Управление»), SCRUM-324 (скилл)
 Jira: SCRUM-391
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -97,3 +98,31 @@ dark steel D&D стиле, без пустого четвертого слота
 напрямую, потому что это требовало бы изменения `scripts/ui_screens.gd`; точный
 Back-end handoff создан. До Back-end интеграции активная игра продолжает
 использовать старый 4-slot switcher.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: 3-slot switcher ассет + метаданные + Back-end handoff)
+
+Проверено (фактически):
+- **3-slot switcher ассет** `ui_frame_settings_tab_switcher_3slot.png` `1280×256`
+  RGBA; метаданные `settings_tab_switcher_3slot_metadata.json` (3 safe-rect);
+  бэкап старого 4-slot в `build/qa/scrum391/...4slot_backup.png`; превью на месте.
+- **Back-end handoff** `backend_settings_menu_unified_restyle_integration_task.md`
+  создан (статус «new») с точными путями/размерами/safe-rect.
+- **Тесты**: `ui_no_overlap_matrix_test` + `runtime_smoke_test` — passed
+  (текущий 4-slot не сломан).
+
+⚠️ **Видимый 3-slot switcher ещё НЕ в рантайме**: `SETTINGS_TAB_SWITCHER_SAFE_RECTS`
+(ui_screens.gd:83) = **4 Rect2** (старый 4-slot); визуал `cap_settings_391.png`
+показывает пустые декор-сегменты справа от Экран/Звук/Управление. Замена на 3-slot
+(без пустого слота) — Back-end integration задача («new»), вне Design-scope.
+Панель настроек уже использует тонкий unified-фрейм (384/392 live).
+
+Acceptance (Design-scope):
+- [x] 3-slot switcher ассет по референсу (red-gold/dark steel), без пустого 4-го; бэкап.
+- [x] Метаданные safe-rect; Back-end handoff с точными данными.
+- [~] 3 единообразные вкладки + switcher live + единый стиль кнопок/рамок — Back-end
+  integration (рантайм пока 4-slot).
+- [x] no-overlap/smoke зелёные (текущее не сломано).
+
+Статус review→done (Design-source). Баги: нет (видимая замена switcher — delegated
+Back-end).

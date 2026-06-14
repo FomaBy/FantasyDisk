@@ -4844,16 +4844,22 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	if tab_switcher == null or tab_switcher_frame == null or tab_switcher_frame.texture == null:
 		_fail("Expected settings screen to use the SettingsTabSwitcher frame texture.")
 		return
+	if tab_switcher_frame.texture.resource_path != "res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png":
+		_fail("Expected settings screen to use the 3-slot SettingsTabSwitcher frame texture, got %s." % tab_switcher_frame.texture.resource_path)
+		return
 	var switcher_rect := tab_switcher.get_global_rect()
 	if absf((switcher_rect.size.x / switcher_rect.size.y) - 5.0) > 0.035:
 		_fail("Expected SettingsTabSwitcher to preserve the authored 1280x256 aspect ratio.")
 		return
 	var base_size := Vector2(1280.0, 256.0)
 	var safe_rects := [
-		Rect2(146.0, 78.0, 178.0, 82.0),
-		Rect2(414.0, 91.0, 178.0, 74.0),
-		Rect2(693.0, 91.0, 178.0, 74.0),
+		Rect2(160.0, 88.0, 270.0, 82.0),
+		Rect2(506.0, 88.0, 270.0, 82.0),
+		Rect2(852.0, 88.0, 270.0, 82.0),
 	]
+	if main.find_child("SettingsTabButton_3", true, false) != null:
+		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
+		return
 	var scale := switcher_rect.size / base_size
 	for tab_index in range(3):
 		var tab_button := main.find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
