@@ -1,6 +1,6 @@
 # Backend: Интеграция анимации волка-призыва друида (move/attack в AllyMinion)
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (анимации)
 Версия: 0.1.5
@@ -48,9 +48,9 @@ design_druid_wolf_summon_animation_slice (SCRUM-280).
 - tests/animation_smoke_test.gd / runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Волк друида анимирован: бег при движении, атака при ударе, flip по направлению.
-- [ ] Остальные союзники не сломаны (статичные визуалы работают).
-- [ ] 6 smoke + анимационный тест зелёные; скрин/гиф; CHANGELOG.
+- [x] Волк друида анимирован: бег при движении, атака при ударе, flip по направлению.
+- [x] Остальные союзники не сломаны (статичные визуалы работают).
+- [x] 6 smoke + анимационный тест зелёные; скрин/гиф; CHANGELOG.
 
 ## Документация
 docs/design/systems/combat.md (союзники/призывы), current_game_state.
@@ -79,3 +79,29 @@ SpriteFrames. Back-end owns technical integration/tests/docs; if the integration
 reveals movement naturalness, pivot retiming, attack pose polish,
 AnimationPlayer/AnimationTree setup, or VFX timing sync beyond simple
 SpriteFrames playback, create/update an Animator handoff.
+
+## Result 2026-06-14
+
+Done by Back-end runtime integration:
+- `scenes/AllyMinion.tscn` keeps static `Body` fallback and adds hidden
+  `AnimatedBody` for animated variants.
+- `scripts/ally_minion.gd` enables `AnimatedBody` only for `druid_beast`,
+  loads `ally_druid_wolf_spriteframes.tres`, plays looping `move`, one-shot
+  `attack` on actual hit, and flips right by movement/attack direction.
+- `druid_pack_spirit`, `homunculus` and `leadership_echo` stay static via
+  `Body`; `ally_druid_beast.png` remains fallback.
+- `tests/animation_smoke_test.gd` now asserts druid wolf SpriteFrames,
+  move/attack frame counts, loop flags, playback, flip and static visual
+  compatibility.
+- QA contact: `build/qa/druid_wolf_backend_integration/druid_wolf_backend_runtime_contact.png`.
+
+Verification:
+- PASS: `tests/summoner_strengthening_test.gd`
+- PASS: `tests/status_effects_aura_test.gd`
+- PASS: `tests/animation_smoke_test.gd`
+- PASS: `tests/runtime_smoke_combat_test.gd`
+- PASS: `tests/runtime_smoke_weapon_mechanics_test.gd`
+- PASS: `tests/runtime_smoke_test.gd`
+
+Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`,
+`docs/design/content_registry.md`, `docs/design/systems/combat.md`.

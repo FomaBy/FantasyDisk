@@ -993,11 +993,11 @@
  },
  "backend_druid_wolf_summon_animation_integrate_task.md": {
   "key": "SCRUM-279",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "design_druid_wolf_summon_animation_slice_task.md": {
   "key": "SCRUM-280",
-  "status": "В работе"
+  "status": "Готово"
  },
  "design_hero_select_replace_frames_herouiframe_task.md": {
   "key": "SCRUM-281",

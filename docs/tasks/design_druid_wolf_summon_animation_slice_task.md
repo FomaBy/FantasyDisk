@@ -1,6 +1,6 @@
 # ART: Нарезка анимации волка-призыва друида (move + attack) из референсов
 
-Статус: review
+Статус: done (QA PASSED 2026-06-14)
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -91,3 +91,27 @@ Validation:
   attack frames was fixed by component-based segmentation.
 - `tests/animation_smoke_test.gd` PASS.
 - `tests/runtime_smoke_test.gd` PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 29b352b5 (ветка dev)
+
+Проверено (фактически, загрузка .tres через Godot):
+- **SpriteFrames** `ally_druid_wolf_spriteframes.tres`: анимации `["attack","move"]`
+  — `move`: **8 кадров**, fps 12, **loop=true**; `attack`: **6 кадров**, fps 14,
+  **loop=false**. Совпадает с референсами (Wolfmoving 8 / wolfattacking 6).
+- **Кадры**: 6 attack + 8 move PNG в `assets/sprites/allies/druid_wolf/`, trimmed.
+- **Манифест/handoff** `build/qa/druid_wolf_summon_animation/ally_druid_wolf_manifest.md`:
+  canvas 256×224, pivot bottom-center (128,204), runtime scale 0.34 — параметры
+  для парной backend-задачи.
+- **Визуал** (`ally_druid_wolf_frames_contact.png` + `_move.gif`): волк-зверь
+  друида (зелёно-мшистый, в каноне), читаемые move-цикл и attack-выпад; единый
+  pivot, прозрачный фон.
+- **Тесты**: `animation_smoke_test` + `runtime_smoke_test` — PASS.
+
+Acceptance:
+- [x] SpriteFrames move(8)/attack(6), trimmed, единый pivot, игровой масштаб.
+- [x] Ассеты в allies/; превью-гиф/контакт-лист в build/qa/.
+- [x] Параметры (pivot/scale/fps) переданы backend через манифест.
+
+Баги: нет.
