@@ -1,6 +1,6 @@
 # ART: UI Overhaul (Прогрессия и кодекс) — D&D + Dark Fantasy Dragon, новым скиллом
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -126,3 +126,28 @@ Validation:
   present.
 - Geometry, safe zones, forbidden ornament zones and responsive rules recorded
   in `spec.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: progression/codex frame kit + Back-end handoff)
+
+Проверено (фактически):
+- **9 progression-фреймов** (`assets/sprites/ui/frames/progression/`): main/branch/class
+  панели + 4 состояния узлов (available/focus/locked/purchased) + points_badge + tooltip
+  — все RGBA, прозрачные углы (corner=0), контент+прозрачность (bad=0); 9 `.import`.
+- **Визуал** `scrum331_progression_frame_kit_contact.png`: единый D&D Dark Fantasy
+  Dragon стиль (тёмный металл/камень, золото/красная окантовка, самоцветы); состояния
+  узлов визуально различимы (кольца available/focus/locked/purchased); content-зоны —
+  тёмные центры.
+- **Back-end handoff** `backend_ui_overhaul_progression_codex_integration_task.md`
+  создан (статус **«blocked»**).
+
+⚠️ **Видимая замена UI прогрессии/кодекса ещё НЕ в рантайме**: требует интеграции
+`scripts/ui_screens.gd` — Back-end задача SCRUM-408, статус **«blocked»**. Проверю
+live-no-overlap на 3 разрешениях при разблокировке и готовности интеграции.
+
+Acceptance (Design-scope):
+- [x] Progression/codex фреймы созданы скиллом в едином D&D dragon-стиле (9 PNG).
+- [x] Ассеты в assets/ + references; content-зоны/safe margins; import чист.
+- [~] Live-замена + no-overlap на 3 разрешениях — Back-end SCRUM-408 (blocked).
+
+Статус review→done (Design-source). Баги: нет (видимая интеграция — delegated Back-end 408, blocked).
