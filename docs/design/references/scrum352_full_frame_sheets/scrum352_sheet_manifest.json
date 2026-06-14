@@ -648,6 +648,64 @@
         ],
         "has_transparency": true
       }
+    },
+    {
+      "entity_id": "disk_devourer",
+      "kind": "boss",
+      "title": "Disk Devourer",
+      "source_path": "assets/sprites/bosses/boss_disk_devourer.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/disk_devourer_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/bosses/full_frame/disk_devourer_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_vampiric_bite",
+        "skill_rift_zone"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          5,
+          0,
+          1514,
+          982
+        ],
+        "has_transparency": true
+      }
+    },
+    {
+      "entity_id": "bone_archon",
+      "kind": "boss",
+      "title": "Bone Archon",
+      "source_path": "assets/sprites/bosses/boss_bone_archon.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/bone_archon_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/bosses/full_frame/bone_archon_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_skull_volley",
+        "skill_bone_prison"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          38,
+          25,
+          1496,
+          978
+        ],
+        "has_transparency": true
+      }
     }
   ]
 }

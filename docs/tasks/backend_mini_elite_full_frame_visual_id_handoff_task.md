@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator (Codex)
 Jira: SCRUM-372
+QA: in_progress (2026-06-14)
 Parent: SCRUM-352 / `design_enemy_elite_boss_full_frame_animation_sheets_task.md`
 
 ## Context
@@ -69,3 +70,31 @@ Verification:
 - `animation_smoke_test.gd` — PASS; includes registered mini-kind override and
   missing mini-kind fallback coverage
 - `runtime_smoke_test.gd` — PASS
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически) — visual-only резолвер мини-элит:
+- **Резолвер** `Enemy._full_frame_entity_id("elite")` (enemy.gd:996-1001): при
+  `has_meta("mini_elite_kind")` И наличии
+  `FullFrameAnimationRegistry.sprite_frames_for("elite", mini_id)` использует
+  mini-id; иначе fallback на `elite_behavior` (route-элиты резолвятся как прежде).
+  `refresh_full_frame_visual()` (984) — хук рефреша.
+- **Рефреш после metadata**: `combat_director._apply_mini_elite_kind` (273) ставит
+  meta `mini_elite_kind` (276) ЗАТЕМ зовёт `refresh_full_frame_visual()` (294-295)
+  — визуал переcобирается после присвоения id (порядок корректен).
+- **Тесты**: `animation_smoke_test` (878-892) покрывает ОБА пути — registered
+  override (`mini_elite_kind="iron_bastion"` → переопределяет базовый elite-id) +
+  missing fallback (`"missing_mini_visual_test"` → откат на elite_behavior); +
+  `runtime_smoke_test` — оба passed.
+- **Gameplay не тронут**: резолвер visual-only (stats/AI/damage/targeting/rewards/
+  spawn не меняются); runtime_smoke зелёный.
+
+Acceptance:
+- [x] Мини-элиты с mini_elite_kind резолвят full-frame registry по этому id.
+- [x] Route-элиты продолжают резолвиться по elite_behavior (fallback).
+- [x] Нет изменений gameplay/balance/AI.
+- [x] Smoke покрывает mini-elite override + fallback.
+
+Примечание: фактические mini-elite спрайт-листы — в Animator follow-up (этот таск =
+только Back-end visual-ID хук). Баги: нет.

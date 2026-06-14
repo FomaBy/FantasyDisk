@@ -1293,7 +1293,7 @@
  },
  "backend_mini_elite_full_frame_visual_id_handoff_task.md": {
   "key": "SCRUM-372",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_unified_master_frame_system_projectwide_task.md": {
   "key": "SCRUM-373",
@@ -1305,6 +1305,10 @@
  },
  "backend_debug_mode_click_to_move_player_task.md": {
   "key": "SCRUM-375",
-  "status": "К выполнению"
+  "status": "В работе"
+ },
+ "animation_mini_elite_full_frame_batch_integration_task.md": {
+  "key": "SCRUM-376",
+  "status": "В работе"
  }
 }

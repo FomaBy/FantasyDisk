@@ -1,6 +1,6 @@
 # FEATURE(debug): Дебаг-режим в опциях — клик по карте телепортит/ведёт персонажа
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Back-end (UI + геймплей)
 Версия: 0.1.5
@@ -11,6 +11,12 @@ Jira: SCRUM-375
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Dispatch Note — 2026-06-14
+Documentation dispatcher routed SCRUM-375 to existing Back-end window
+`019eabd9-780b-78a2-9f4b-e7203d659ef2`. Duplicate audit: existing
+`route_debug_free_pick` coverage is route-map-only debug selection, not combat
+arena click-to-move/teleport. Back-end scope only; keep reasoning High/no low.
 
 ## Контекст (запрос пользователя)
 «Надо в опциях ввести дебаг-режим, в котором на карте можно в любой момент любую
