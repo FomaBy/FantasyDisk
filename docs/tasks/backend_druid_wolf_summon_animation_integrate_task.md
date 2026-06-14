@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-279
+QA: in_progress (2026-06-14)
 Блокер снят: SCRUM-280 подготовил SpriteFrames волка.
 Dispatch: 2026-06-14 -> Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
 
@@ -105,3 +106,25 @@ Verification:
 
 Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`,
 `docs/design/content_registry.md`, `docs/design/systems/combat.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 4c9f3cf6 (ветка dev)
+
+Проверено (фактически):
+- **Вайринг** (ally_minion.gd): волк-`SpriteFrames` (`ally_druid_wolf_spriteframes.tres`,
+  стр.14) на узле `AnimatedBody` (AnimatedSprite2D); `play("move")` при движении
+  (106/201/203), `play("attack")` в момент атаки (197) с возвратом в move.
+- **Целевой тест** `_test_druid_wolf_ally_animation()` в `animation_smoke_test`
+  (acceptance #5: спавн druid_beast → AnimatedSprite2D присутствует, move/attack
+  существуют и проигрываются) — passed.
+- **Регрессия**: animation_smoke / weapon_mechanics / runtime — зелёные.
+- **Пара со SCRUM-280** (QA passed): SpriteFrames move(8)/attack(6) + pivot/scale
+  из манифеста корректно подключены.
+
+Acceptance:
+- [x] AnimatedSprite2D с move/attack; move(loop) при движении, attack(no-loop) на атаке.
+- [x] flip_h по направлению; idle без дёрганья.
+- [x] Тест анимации волка зелёный; smoke зелёные; доки.
+
+Баги: нет.
