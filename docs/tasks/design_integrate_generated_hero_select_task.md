@@ -5,7 +5,8 @@
 Автор: Codex asset generator
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
 Версия: 0.1.5
-Jira: pending sync
+Jira: SCRUM-395
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил изменения в рамках этой задачи. Работать автономно, не ждать дополнительных подтверждений.
@@ -73,3 +74,28 @@ UI/anim/runtime smoke, скрины в build/qa/ (handoff если поля по
 Превью: hero_select_assembled_preview.png, hero_select_new_frames_contact.png. Коммит af4ee2c.
 Follow-up (Back-end/QA): живые скрины 1280x720/1920x1080/2560x1440 в build/qa/ для финальной
 визуальной сверки; при желании — генерация остальных мелких рамок (thumbnail/asc_*) тем же скиллом.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: hero-select рамки в dragon-стиле)
+
+Проверено (фактически):
+- **4 рамки** (сохранённые размеры для 9-slice): `portrait` 734×1162, `dossier`
+  1120×1140, `radar` 1024×1024, `thumbnail_strip` 1536×255 — все RGBA, заменены
+  по живым путям `assets/sprites/ui/frames/hero_select/`. Бэкап 8 PNG в
+  `docs/design/backups/hero_select_frames_pre_dragon/`. Мокап-референс на месте.
+- **Визуал** `build/qa/cap_heroselect_395.png`: новый dragon-стиль live —
+  тонкие металлические рамки + красные самоцветы в углах, **радар = круглый
+  компас/роза ветров**, карусель в dragon-рамке, портрет+описание+возвышение+
+  «Выбрать» в рамке. Контент внутри content-зон, без наложений, текст читаем,
+  когерентный D&D dark-fantasy.
+- **Тесты**: `ui_no_overlap_matrix_test` + `runtime_smoke_test` (+ заявленные
+  runtime_smoke_ui/dark_fantasy/anim) — passed; БЕЗ правок кода (замена ассетов).
+
+Acceptance:
+- [x] Рамки просмотрены/приняты; финальные ассеты по стабильным путям (сохранены размеры).
+- [x] `.import` без лишних правок; runtime UI/no-overlap/smoke зелёные.
+- [x] Бэкап старых; превью; Jira/task синканы.
+
+Примечание: мокап следовал раздельному лейауту SCRUM-333, но рантайм использует
+unified-panel (361) + отдельные радар/карусель — dragon-арт применён когерентно.
+Баги: нет.

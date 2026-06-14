@@ -36,6 +36,11 @@
   floors, including newly created `field_dry_road.png` and
   `field_stone_garden.png`; contact/readability previews, Godot import,
   background load smoke, combat smoke and runtime smoke PASS.
+- Settings tab switcher design (SCRUM-391): generated and alpha-cleaned a
+  Design-ready 3-slot red-gold/dark-steel Settings switcher candidate at
+  `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`,
+  documented exact safe rects and created Back-end handoff for runtime path/rect
+  integration.
 - Unified master UI runtime integration (SCRUM-382): generic panels, cards,
   tooltips, timers and HUD frames now route through a shared tiled 9-slice
   unified frame builder in `scripts/ui_screens.gd` / `UIThemePaths`; authored

@@ -1,6 +1,6 @@
 # ART/UX: Настройки — единообразные 3 вкладки, красивый переключатель, единый стиль рамок/кнопок
 
-Статус: new
+Статус: review
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
@@ -65,3 +65,35 @@ Jira: SCRUM-391
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Progress Log
+- 2026-06-14 — Took task in Design/Codex thread after SCRUM-369 review. Starting settings menu asset/style inventory; Design scope only, Back-end runtime layout/theme changes will be handed off if needed.
+- 2026-06-14 — Generated a new 3-slot Settings tab switcher reference through
+  `fantasydisk-asset-generator`:
+  `docs/design/references/settings_menu_unified/settings_tab_switcher_3slot_reference.png`.
+  The raw reference used a baked checkerboard background, so it was alpha-cleaned
+  into `settings_tab_switcher_3slot_reference_alpha_clean.png`.
+- 2026-06-14 — Created production candidate
+  `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
+  (`1280x256`, RGBA). Current active 4-slot asset was backed up to
+  `build/qa/scrum391/ui_frame_settings_tab_switcher_4slot_backup.png`.
+- 2026-06-14 — Recorded Design safe rects in
+  `docs/design/references/settings_menu_unified/settings_tab_switcher_3slot_metadata.json`:
+  `Rect2(160,88,270,82)`, `Rect2(506,88,270,82)`,
+  `Rect2(852,88,270,82)`. Preview/contact:
+  `docs/design/previews/settings_menu_3slot_switcher_safe_zone.png`,
+  `docs/design/previews/settings_menu_unified_restyle_contact.png`.
+- 2026-06-14 — Verification PASS: PNG RGBA/alpha validation and Godot import.
+  Runtime settings integration needs Back-end because current
+  `SETTINGS_TAB_SWITCHER_SAFE_RECTS` still contains four source rects.
+- 2026-06-14 — Created Back-end handoff
+  `docs/tasks/backend_settings_menu_unified_restyle_integration_task.md` with
+  exact asset path, source size, safe rects and runtime acceptance criteria.
+
+## Result
+Design side готов к review. Новый production candidate решает визуальную часть:
+переключатель настроек теперь имеет ровно 3 выразительные вкладки в red-gold /
+dark steel D&D стиле, без пустого четвертого слота. Live runtime path не заменен
+напрямую, потому что это требовало бы изменения `scripts/ui_screens.gd`; точный
+Back-end handoff создан. До Back-end интеграции активная игра продолжает
+использовать старый 4-slot switcher.

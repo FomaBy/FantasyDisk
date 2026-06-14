@@ -46,7 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [design_settings_menu_unified_restyle_task.md](../tasks/design_settings_menu_unified_restyle_task.md) | Designer (Codex) → Back-end (UI) | new | ART 0.1.5: настройки — 3 единообразные вкладки + красивый переключатель по референсу + единый стиль рамок/кнопок из базовых кнопок игры (коорд. SCRUM-341/384/273) |
+| [design_settings_menu_unified_restyle_task.md](../tasks/design_settings_menu_unified_restyle_task.md) | Designer (Codex) → Back-end (UI) | review | Jira: SCRUM-391. Design-ready 3-slot Settings switcher candidate created at `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`, safe rects/previews/docs ready; Back-end handoff created for runtime path/safe-rect integration |
 | [design_combat_hud_full_redraw_skill_task.md](../tasks/design_combat_hud_full_redraw_skill_task.md) | Designer (Codex) → Back-end (UI) | new | ART 0.1.5: полная перерисовка боевого HUD скиллом — HP/опыт/золото/ульта/таймер + непрозрачная кнопка повышения справа-снизу; единый фрейм, по референсам проекта |
 | [backend_hero_select_default_ascension_to_max_task.md](../tasks/backend_hero_select_default_ascension_to_max_task.md) | Back-end (UI) | done | Jira: SCRUM-389. Hero Select теперь по умолчанию выбирает selectable_max класса; runtime smoke + meta progression smoke passed 2026-06-14. |
 | [backend_meta_points_per_new_ascension_only_task.md](../tasks/backend_meta_points_per_new_ascension_only_task.md) | Back-end (прогрессия/баланс) | done | Jira: SCRUM-388. Task file reports done 2026-06-14: meta/skill points now only awarded for unlocking a new ascension; repeat boss wins give 0; meta/class/runtime smokes green |
