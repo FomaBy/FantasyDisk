@@ -136,19 +136,25 @@ static func ascension_level(state: Dictionary, character_id: String) -> int:
 
 
 static func record_boss_victory(state: Dictionary, character_id: String, run_level := -1) -> Dictionary:
-	state["meta_points"] = int(state.get("meta_points", 0)) + 1
-	# Победа над боссом даёт и очко умений древа меты (та же экономика, не вторая валюта).
-	state["skill_points"] = int(state.get("skill_points", 0)) + 1
 	var levels = state.get("ascension_levels", {})
 	if not (levels is Dictionary):
 		levels = {}
 	var completed := clampi(int(levels.get(character_id, 0)), 0, MAX_ASCENSION_LEVEL)
 	# Разблокировка следующего уровня — только если забег прошёл на текущем максимуме
-	# (или выше). run_level < 0 = старое поведение (всегда +1, для совместимости).
+	# (или выше). run_level < 0 = старое поведение (для совместимости).
+	var unlocked_new_ascension := false
 	if run_level < 0 or run_level >= completed:
+		if completed < MAX_ASCENSION_LEVEL:
+			unlocked_new_ascension = true
 		completed = clampi(completed + 1, 0, MAX_ASCENSION_LEVEL)
 	levels[character_id] = completed
 	state["ascension_levels"] = levels
+	# Очки меты/умений — ТОЛЬКО за НОВОЕ возвышение (любым классом), без фарма
+	# повторных боссов на уже пройденном уровне. На максимуме (10) повторы не дают
+	# очко. class_boss_wins (прогрессия класса) копится отдельно за каждую победу.
+	if unlocked_new_ascension:
+		state["meta_points"] = int(state.get("meta_points", 0)) + 1
+		state["skill_points"] = int(state.get("skill_points", 0)) + 1
 	# Прогрессия по классам (SCRUM-360): победа над боссом этим классом копит его прогресс.
 	var class_wins = state.get("class_boss_wins", {})
 	if not (class_wins is Dictionary):
