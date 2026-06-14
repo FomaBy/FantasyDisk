@@ -1,6 +1,6 @@
 # UX: Выбор героя — по умолчанию выбирать последнее доступное возвышение
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -47,9 +47,24 @@ file; do not reimplement it unless verification shows a direct regression.
 - tests/runtime_smoke_test.gd, tests/meta_progression_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] При выборе/смене класса по умолчанию выбран максимально доступный уровень возвышения класса.
-- [ ] Ручное понижение −/повышение + работает; не уходит за selectable_max; забег стартует корректно.
-- [ ] smoke зелёные; CHANGELOG; current_game_state.
+- [x] При выборе/смене класса по умолчанию выбран максимально доступный уровень возвышения класса.
+- [x] Ручное понижение −/повышение + работает; не уходит за selectable_max; забег стартует корректно.
+- [x] smoke зелёные; CHANGELOG; current_game_state.
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Result
+2026-06-14 Back-end:
+- `scripts/ui_screens.gd` теперь при выборе/первичном открытии героя ставит
+  `selected_ascension_level = ascension_selectable_max(character_id)`, а
+  существующие `-`/`+` продолжают вручную менять выбранный уровень в пределах
+  доступного диапазона.
+- `tests/runtime_smoke_test.gd` расширен smoke-проверкой max-default,
+  ручного понижения и пересчета при переключении класса.
+- Обновлены `CHANGELOG.md`, `docs/design/current_game_state.md` и
+  `docs/design/systems/menus_ui.md`.
+
+Verification:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/meta_progression_smoke_test.gd` — passed.

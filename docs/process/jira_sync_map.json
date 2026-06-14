@@ -1781,8 +1781,8 @@
  },
  "design_integrate_generated_unified_master_frame_2_task.md": {
   "key": "SCRUM-381",
-  "status": "Контроль качества",
-  "desc_hash": "7209cc51b4673833f5a56029a42481d6"
+  "status": "Готово",
+  "desc_hash": "4000de5e705bf5de40f983b10bc4df0a"
  },
  "animation_sprite_sheet_safe_slicing_audit_task.md": {
   "key": "SCRUM-387",
@@ -1796,8 +1796,8 @@
  },
  "backend_hero_select_default_ascension_to_max_task.md": {
   "key": "SCRUM-389",
-  "status": "В работе",
-  "desc_hash": "4424134b32669b59f36efb96bc171f9e"
+  "status": "Контроль качества",
+  "desc_hash": "181be9df42a648a2478e19f3d73fcb83"
  },
  "design_combat_hud_full_redraw_skill_task.md": {
   "key": "SCRUM-390",
@@ -1818,5 +1818,10 @@
   "key": "SCRUM-393",
   "status": "К выполнению",
   "desc_hash": "c52d47d2fca16eee67d09a9fca967d61"
+ },
+ "design_integrate_generated_backgrounds_2_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "5962d6ec855c930e3960abbab1ed8543"
  }
 }

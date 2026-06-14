@@ -44,3 +44,10 @@ was used as the generated art direction source for the thin metallic unified
 frame revision. Final runtime assets were written to the preserved
 `assets/sprites/ui/frames/unified/` paths, with metadata/previews/docs updated
 from `docs/tasks/design_unified_frame_revise_thin_metallic_task.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (covered by SCRUM-384)
+
+Генератор-стаб thin-metallic reference. Фактический deliverable (тонкая ревизия
+единого фрейма) верифицирован в QA-вердикте SCRUM-384 (margins 128→72, самоцветы,
+9-slice, тесты зелёные). Не дублируется. Баги: нет.
