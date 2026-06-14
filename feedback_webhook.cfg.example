@@ -1,0 +1,7 @@
+# FantasyDisk — конфиг вебхука внутриигрового фидбека (SCRUM-362).
+# Скопируй этот файл в `feedback_webhook.cfg` (он в .gitignore) и вставь
+# свой Discord webhook URL. Файл бандлится в сборку при экспорте, поэтому
+# у тестеров фидбек по P будет уходить тебе в Discord. URL — секрет,
+# в публичный git НЕ попадает.
+[feedback]
+discord_webhook_url = "https://discord.com/api/webhooks/XXXX/YYYY"

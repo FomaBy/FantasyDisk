@@ -6,3 +6,6 @@ releases/
 
 # Scratch image-gen / temp work dir
 tmp/
+
+# In-game feedback Discord webhook (секрет, не коммитить)
+feedback_webhook.cfg

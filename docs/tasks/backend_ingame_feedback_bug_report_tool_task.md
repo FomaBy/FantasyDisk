@@ -20,15 +20,21 @@ QA: in_progress (2026-06-14)
 Клавиша P свободна (INPUT_ACTIONS: WASD, pause=Esc, ultimate=R). Ввод — main.gd
 `_unhandled_input` (645-662). Готового скриншот/HTTP кода нет — фича net-new.
 
-## Инструмент (архитектура, согласовано PM)
-Канал доставки — **HTTP POST на настраиваемый вебхук** (multipart):
-- **Дефолт: Discord webhook** (Discord-совместимый payload: content=текст+мета,
-  file=PNG-скриншот) — приходит разработчику на комп без своего сервера.
-- **Конфиг URL вне репозитория** (как Jira-токен): читать из `user://feedback_config.cfg`
-  или env `FANTASYDISK_FEEDBACK_WEBHOOK`. НЕ хардкодить и НЕ коммитить URL/секрет.
-- **Локальный фолбэк**: если вебхук не задан/недоступен — сохранять репорт в
+## Инструмент (РЕШЕНО пользователем 2026-06-14: Discord webhook)
+Канал доставки — **Discord webhook** через HTTP POST `multipart/form-data`:
+- payload: `content` = текст бага + метаданные; `file` = PNG-скриншот → в канал Discord.
+- **URL вебхука — секрет, ВНЕ публичного git.** Источник (по приоритету):
+  1) `feedback_webhook.cfg` в корне проекта (ConfigFile, секция `[feedback]`,
+     ключ `discord_webhook_url`) — файл в `.gitignore`, шаблон
+     `feedback_webhook.cfg.example` закоммичен; бандлится в экспорт-сборку, чтобы
+     у тестеров фидбек работал; читать через `res://feedback_webhook.cfg`;
+  2) env `FANTASYDISK_FEEDBACK_WEBHOOK` (для дев-машины).
+  НЕ хардкодить URL в коде. Настройка — `docs/feedback_webhook_setup.md`.
+- **Локальный фолбэк**: если URL не задан/нет сети/ошибка — сохранять репорт в
   `user://feedback/<timestamp>/` (report.txt + screenshot.png), показать путь.
 Транспорт — Godot `HTTPRequest` (multipart/form-data), без блокировки UI.
+PM уже подготовил: `.gitignore` (feedback_webhook.cfg), `feedback_webhook.cfg.example`,
+`docs/feedback_webhook_setup.md`. Пользователь создаёт вебхук и вставляет URL сам.
 
 ## Требования
 1. **Клавиша P** (новый INPUT_ACTION «feedback», ребиндабельный; проверить, что P
