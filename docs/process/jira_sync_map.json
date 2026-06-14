@@ -1266,7 +1266,7 @@
  },
  "art_char_redraw_anim_biologist_task.md": {
   "key": "SCRUM-284",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "f1c98436fa992064aebba38b8bbbf613"
  },
  "art_char_redraw_anim_chemist_task.md": {
@@ -1977,6 +1977,6 @@
  "bug_player_fullframe_anim_hidden_behind_cutout_rig_task.md": {
   "key": "SCRUM-411",
   "status": "К выполнению",
-  "desc_hash": "42d935b87a2aa2794ef50514f503fda5"
+  "desc_hash": "c873a1a63c92d3b29b4b88e16b5000d8"
  }
 }

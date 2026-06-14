@@ -99,3 +99,25 @@ Verification:
 
 Scope note: Animator consumed the accepted Design sheet only; no Design source
 redraw, gameplay, balance, Back-end mechanics, weapon logic or UI changes.
+
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED — «Биолог» перерисован + анимирован, играет в игре
+
+Проверено (фактически):
+- **Frame counts** (`biologist_spriteframes.tres`): walk 5 / attack 5 (+attack_primary 5,
+  idle 5) — требование 5 move/5 attack выполнено.
+- **Рантайм-привязка активна**: `.tres` в HEAD, грузится через
+  `player.gd:_character_resource_sprite_frames` (приоритет над cutout) — играет в игре.
+- **Визуал** `scrum284_biologist_sheet_contact.png`: перерисован в едином D&D
+  dark-fantasy стиле (зелёный полевой костюм), без оружия в руках, idle/walk/attack
+  по 5 кадров, прозрачный фон.
+- **Тесты**: `animation_smoke_test` PASS; runtime_smoke зелёный на HEAD
+  (флейк ассасин-ассерта — SCRUM-410).
+
+Acceptance:
+- [x] «Биолог» перерисован в едином стиле, без оружия в руках.
+- [x] 5 walk + 5 attack, зарегистрирован (.tres в HEAD), играет в игре.
+- [x] animation smoke зелёный; контакт-лист.
+
+Статус done. Баги: нет. Двухфазная Design→Animator закрыта.
