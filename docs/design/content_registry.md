@@ -378,6 +378,10 @@ SCRUM-352 Design source для full-frame rows хранится как
 `assets/sprites/bosses/full_frame/<boss_id>_full_frame_sheet.png` (`1536x1024`,
 RGBA, transparent, 6 columns x 4 rows). Row contract и pivot notes зафиксированы
 в `docs/design/references/scrum352_full_frame_sheets/scrum352_sheet_manifest.json`.
+SCRUM-378 подключил визуальную маршрутизацию этих boss `skill_*` rows из
+`scripts/boss.gd`: callbacks способностей запрашивают соответствующий full-frame
+state, но урон, телеграфы, cooldowns, targeting и spawn timing остаются
+Back-end mechanics data без изменений.
 
 Обновление SCRUM-135 от 2026-06-12: оба boss source PNG заменены на native `512x512` и перенарезаны в `assets/sprites/bosses/cutout/`; `rift_warden` сохраняет отдельный `vortex` part, `disk_devourer` остается single-torso rig по текущему CONFIG. Epic boss scale не менялся.
 

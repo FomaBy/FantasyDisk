@@ -1285,7 +1285,7 @@
  },
  "animation_integrate_all_move_attack_death_states_task.md": {
   "key": "SCRUM-370",
-  "status": "В работе"
+  "status": "К выполнению"
  },
  "animation_shard_marshal_full_frame_integration_task.md": {
   "key": "SCRUM-371",
@@ -1305,7 +1305,7 @@
  },
  "backend_debug_mode_click_to_move_player_task.md": {
   "key": "SCRUM-375",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "animation_mini_elite_full_frame_batch_integration_task.md": {
   "key": "SCRUM-376",
@@ -1318,5 +1318,13 @@
  "backend_boss_full_frame_skill_state_hooks_task.md": {
   "key": "SCRUM-378",
   "status": "В работе"
+ },
+ "backend_full_frame_death_playback_lifecycle_task.md": {
+  "key": "SCRUM-379",
+  "status": "К выполнению"
+ },
+ "design_full_frame_death_rows_allies_elites_bosses_task.md": {
+  "key": "SCRUM-380",
+  "status": "К выполнению"
  }
 }

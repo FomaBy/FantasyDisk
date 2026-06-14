@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-375
+QA: in_progress (2026-06-14)
 Связано: SCRUM-341 (3 вкладки настроек), SCRUM-275 (скролл «Управление»)
 
 ## Autonomy / Approval
@@ -93,3 +94,31 @@ Verification:
 - QA artifact: `build/qa/scrum375/settings_debug_mode_toggle.md`; PNG capture is
   intentionally skipped in headless dummy renderer to avoid false renderer
   warnings, and the same helper saves PNG in non-headless runs.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Тоггл + персист**: `game_settings.gd:20` `"debug_mode": false` (default OFF),
+  bool-валидация (45); `DebugModeToggle` (ui_screens.gd:2130) — строка в существующей
+  вкладке «Управление» (3 вкладки: 1 def + 3 call `_make_settings_tab`, НЕ 4-я);
+  main.gd load(454)/save(473)/root-meta(458/481).
+- **Визуал** `build/qa/cap_settings_debug_375.png` + QA-dump: вкладка «Управление»
+  показывает «Дебаг-режим: Выкл.» чекбоксом (P478,842 S300×72), читаем, без
+  наложения; скролл SCRUM-275 цел.
+- **Click-to-move** (main.gd:704+): combat-only + OFF-safe
+  (`if not debug_mode_enabled or not combat_active or paused: return`); RMB/Shift+LMB
+  = smooth move target, MMB = телепорт; screen→world через canvas_transform (камера/
+  зум учтены), кламп по арене.
+- **Player** (player.gd:137-336): `_debug_move_target` + move-to-target; WASD
+  (manual_direction) отменяет дебаг-цель — ручное управление приоритетно.
+- **Тесты**: `runtime_smoke_test` (тоггл save/read + ON задаёт цель/движение + OFF
+  клик не телепортит) + `runtime_smoke_ui_test` — passed.
+
+Acceptance:
+- [x] Тоггл в существующей вкладке (не 4-я), персистится, default выкл.
+- [x] ВКЛ: выбор точки ведёт/телепортит; неконфликтующий ввод (RMB/MMB, не ломает aim/атаку).
+- [x] ВЫКЛ: обычное управление, клик не перемещает; пауза/ввод/runtime целы.
+- [x] smoke зелёный; скрин настроек; доки.
+
+Баги: нет.

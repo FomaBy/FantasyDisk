@@ -65,6 +65,10 @@
   `attack`/`attack_primary`, two `skill_*` rows and matching `attack_*` aliases
   per boss; created Back-end follow-up for visual-only skill-state playback
   hooks.
+- Boss full-frame skill hooks (SCRUM-378): boss mechanics now request matching
+  full-frame `skill_*` states for gravity wells, rift zones, skull volleys,
+  bone prison, brood spawn/web zones, molten slam and armor pulse while keeping
+  gameplay damage, hazards, cooldowns, targeting and spawn timing unchanged.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню

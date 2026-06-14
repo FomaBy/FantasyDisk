@@ -1,6 +1,6 @@
 # ANIM: Внедрить анимации всех монстров и персонажей — move/attack/death (full-frame)
 
-Статус: in_progress
+Статус: blocked
 Приоритет: high
 Роль: Animator (Codex) → Back-end (анимации)
 Версия: 0.1.5
@@ -18,6 +18,25 @@ SCRUM-298 + 282-297 (перерисовка персонажей)
   batch integrations. First pass is limited to Animator-owned coverage audit,
   SpriteFrames/registry verification, and precise Design/Back-end handoffs for
   missing death rows or runtime death playback.
+- 2026-06-14 — Animator coverage audit completed:
+  `build/qa/animation_integrate_all_move_attack_death_states/coverage.md`.
+  Existing standard enemy full-frame SpriteFrames cover `move`, `attack_primary`,
+  and explicit `death`. Current allies, route elites, mini-elites, and bosses
+  cover `move` + attack/skill rows but do not include explicit full-frame
+  `death` rows. Runtime death lifecycle still calls `spawn_death_ghost()` and
+  needs Back-end ownership to play `FullFrameBody` death before cleanup/removal.
+  SCRUM-370 is blocked on the handoffs below.
+
+## Handoffs / Blockers
+- Design handoff: `design_full_frame_death_rows_allies_elites_bosses_task.md`
+  / SCRUM-380 —
+  add 5+ frame transparent full-frame `death` rows/source frames for allies,
+  route elites, mini-elites, and bosses that already have move/attack/skill rows.
+- Back-end handoff: `backend_full_frame_death_playback_lifecycle_task.md`
+  / SCRUM-379 —
+  route enemy/player/ally death lifecycle through `FullFrameAnimationRegistry`
+  `death` playback when explicit death frames exist, preserving death ghost as
+  fallback and preserving loot/score/cleanup behavior.
 
 ## Контекст (запрос пользователя)
 «Надо внедрить анимацию всех монстров и персонажей, что нарисовано, в игру. Очень

@@ -996,30 +996,45 @@ func _test_full_frame_animation_registry() -> void:
 			"skill_states": ["skill_gravity_well", "skill_rift_zone"],
 			"phase_state": "rift_warden:gravity_well:windup",
 			"phase_resolved": "skill_gravity_well",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_gravity_well", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_gravity_well",
 		},
 		"disk_devourer": {
 			"path": "res://scenes/BossDiskDevourer.tscn",
 			"skill_states": ["skill_vampiric_bite", "skill_rift_zone"],
 			"phase_state": "disk_devourer:vampiric_bite:windup",
 			"phase_resolved": "skill_vampiric_bite",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_rift_zone", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_rift_zone",
 		},
 		"bone_archon": {
 			"path": "res://scenes/BossBoneArchon.tscn",
 			"skill_states": ["skill_skull_volley", "skill_bone_prison"],
 			"phase_state": "bone_archon:skull_volley:windup",
 			"phase_resolved": "skill_skull_volley",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_bone_prison", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_bone_prison",
 		},
 		"brood_mother": {
 			"path": "res://scenes/BossBroodMother.tscn",
 			"skill_states": ["skill_brood_spawn", "skill_web_zone"],
 			"phase_state": "brood_mother:brood_spawn:windup",
 			"phase_resolved": "skill_brood_spawn",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_web_zone", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_web_zone",
 		},
 		"ashen_colossus": {
 			"path": "res://scenes/BossAshenColossus.tscn",
 			"skill_states": ["skill_molten_slam", "skill_armor_pulse"],
 			"phase_state": "ashen_colossus:molten_slam:windup",
 			"phase_resolved": "skill_molten_slam",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_molten_slam", "attack", Vector2.RIGHT],
+			"hook_expected": "skill_molten_slam",
 		},
 	}
 	for boss_id in boss_full_frame_scenes.keys():
@@ -1072,10 +1087,20 @@ func _test_full_frame_animation_registry() -> void:
 				_fail("Expected %s boss phase to resolve to %s, got %s." % [boss_id, str(boss_info["phase_resolved"]), boss_body.animation])
 			if not boss_body.flip_h:
 				_fail("Expected %s boss full-frame art to face right via flip_h." % boss_id)
+			boss.global_position = Vector2(420.0, 420.0)
+			boss.callv(str(boss_info["hook_method"]), boss_info["hook_args"] as Array)
+			if str(boss_body.get_meta("last_requested_state", "")) != str(boss_info["hook_expected"]):
+				_fail("Expected %s boss skill hook to request %s, got %s." % [boss_id, str(boss_info["hook_expected"]), str(boss_body.get_meta("last_requested_state", ""))])
+			if boss_body.animation != str(boss_info["hook_expected"]):
+				_fail("Expected %s boss skill hook to play %s, got %s." % [boss_id, str(boss_info["hook_expected"]), boss_body.animation])
 		var boss_static_body := boss.get_node_or_null("Sprite2D") as CanvasItem
 		if boss_static_body != null and boss_static_body.visible:
 			_fail("Expected %s boss full-frame visual to hide the static sprite fallback." % boss_id)
 		boss.queue_free()
+		for hazard in get_nodes_in_group("enemy_hazards"):
+			var hazard_node := hazard as Node
+			if hazard_node != null and is_instance_valid(hazard_node):
+				hazard_node.queue_free()
 
 
 func _test_enemy_animation() -> void:
