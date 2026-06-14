@@ -1229,6 +1229,10 @@
  },
  "design_hero_select_unified_portrait_description_frame_task.md": {
   "key": "SCRUM-356",
+  "status": "В работе"
+ },
+ "backend_summoner_rebalance_scaling_targeting_aoe_task.md": {
+  "key": "SCRUM-357",
   "status": "К выполнению"
  }
 }

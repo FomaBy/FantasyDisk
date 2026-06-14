@@ -1,6 +1,6 @@
 # ART/UX: Выбор героя — портрет + описание в ОДНОМ фрейме (тонкие рамки), Выбрать+возвышение вниз
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
@@ -63,3 +63,23 @@ SCRUM-346 (возвышение +/- маленькие кнопки вниз), S
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Handoff — Documentation Dispatcher
+
+2026-06-14: Routed to the existing Design Codex thread
+`019eabf1-6d54-7561-8af9-ce25cdf483a9` for the Design-owned first pass.
+Use High reasoning / no low. Current OpenAI env source is `~/.codex/.env`;
+do not print or persist the key. Dispatcher retry verified that the
+`fantasydisk-asset-generator` path can generate at valid OpenAI image sizes
+(`1024x1024`); do not use unsupported tiny sizes such as `512x512`.
+
+Design scope first:
+- Create the unified portrait+description frame source/runtime PNG and strict
+  content-zone metadata.
+- Create or reuse the small ascension +/- button assets; coordinate with
+  SCRUM-346 and avoid duplicate assets.
+- Preserve the global frame safe-zone rule: no text, hero, button, icon,
+  selection control, thumbnail, or interactive element may sit on decorative
+  frame borders.
+- If runtime layout/code integration is needed, update/create a Back-end
+  handoff with exact asset paths, source dimensions, target rects, and margins.

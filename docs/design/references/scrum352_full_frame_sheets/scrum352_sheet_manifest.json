@@ -1,0 +1,44 @@
+{
+  "task": "SCRUM-352",
+  "model": "gpt-image-2",
+  "output_size": "1536x1024",
+  "frame_size": [
+    256,
+    256
+  ],
+  "columns": 6,
+  "rows": 4,
+  "source_faces_left": true,
+  "pivot": "bottom-center of each 256x256 cell",
+  "generated": [
+    {
+      "entity_id": "rift_cutter",
+      "kind": "enemy",
+      "title": "Rift Cutter",
+      "source_path": "assets/sprites/enemies/enemy_melee.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/rift_cutter_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/enemies/full_frame/rift_cutter_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "hit_react",
+        "death"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          0,
+          0,
+          1536,
+          1024
+        ],
+        "has_transparency": false
+      }
+    }
+  ]
+}
