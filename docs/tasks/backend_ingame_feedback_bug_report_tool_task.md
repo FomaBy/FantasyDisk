@@ -34,7 +34,14 @@ QA: in_progress (2026-06-14)
   `user://feedback/<timestamp>/` (report.txt + screenshot.png), показать путь.
 Транспорт — Godot `HTTPRequest` (multipart/form-data), без блокировки UI.
 PM уже подготовил: `.gitignore` (feedback_webhook.cfg), `feedback_webhook.cfg.example`,
-`docs/feedback_webhook_setup.md`. Пользователь создаёт вебхук и вставляет URL сам.
+`docs/feedback_webhook_setup.md`. Пользователь создал вебхук, URL вписан в
+`feedback_webhook.cfg` (PM проверил — доставка в Discord 204 OK).
+**КРИТИЧНО (проверено PM):** запрос к Discord ОБЯЗАН содержать заголовок
+`User-Agent` (напр. `FantasyDisk-Feedback/1.0`) — без него Discord/Cloudflare
+возвращает HTTP 403. В Godot `HTTPRequest.request(url, headers, ...)` передавать
+`["Content-Type: ...", "User-Agent: FantasyDisk-Feedback/1.0"]`. Для текст-только —
+JSON `{"content":...}`; со скриншотом — `multipart/form-data` с полями
+`payload_json` (content/username) + `file` (PNG).
 
 ## Требования
 1. **Клавиша P** (новый INPUT_ACTION «feedback», ребиндабельный; проверить, что P
