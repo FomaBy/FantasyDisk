@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator heartbeat watcher
 Jira: SCRUM-365
+QA: in_progress (2026-06-14)
 Parent: SCRUM-352 / `design_enemy_elite_boss_full_frame_animation_sheets_task.md`
 
 ## Autonomy / Approval
@@ -61,3 +62,27 @@ Verification:
 - `python3 ~/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_standard_enemy_full_frame_batch_2_integration/animation_manifest.json` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически) — batch 2 потребителей FullFrameAnimationRegistry:
+- **SpriteFrames** (load): `venom_spitter` и `rift_shieldbearer` — у каждого
+  `move(6,loop=true)`, `attack_primary(6)`, `attack(6 alias)`, `hit(6)`,
+  `death(6)` (one-shot) — точно по acceptance.
+- **Реестр**: `full_frame_animation_registry.gd:75/81` — `enemy/venom_spitter` +
+  `enemy/rift_shieldbearer` (visual-only override, static/cutout fallback цел).
+- **Манифест-валидатор**: «FantasyDisk animation manifest OK: 2 entities».
+- **Контакт-лист** `standard_enemy_full_frame_batch_2_contact_sheet.png` + 8 GIF:
+  full-frame, реальная пер-кадровая вариация — venom_spitter (move/плевок/hit/death),
+  rift_shieldbearer (move/удар щитом/hit/death); не cutout.
+- **Тесты**: `animation_smoke_test` (registry-резолв / frame counts / loop flags /
+  aliases / right-flip / FullFrameBody для EnemySpitter+EnemyShield) +
+  `runtime_smoke_test` (gameplay не изменён) — passed.
+
+Acceptance:
+- [x] Каждый враг: move 6f loop + attack_primary/attack 6f + hit 6f + death 6f.
+- [x] Registry резолвит оба enemy/<id>; FullFrameBody виден, legacy скрыт.
+- [x] Манифест валиден; animation_smoke зелёный; gameplay/balance/AI не тронуты.
+
+Баги: нет.

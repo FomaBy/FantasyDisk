@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: Animator heartbeat watcher
 Jira: SCRUM-364
+QA: in_progress (2026-06-14)
 Parent: SCRUM-352 / `design_enemy_elite_boss_full_frame_animation_sheets_task.md`
 
 ## Autonomy / Approval
@@ -66,3 +67,27 @@ Verification:
 - `python3 ~/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_standard_enemy_full_frame_batch_integration/animation_manifest.json` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически) — batch 1 (5 врагов) потребителей FullFrameAnimationRegistry:
+- **SpriteFrames** (load, проверка структуры): `ash_marksman`, `spark_runner`,
+  `stone_bruiser`, `bone_caller`, `void_mage` — у КАЖДОГО `move(6,loop=true)`,
+  `attack_primary(6,non-loop)`, `hit(6)`, `death(6)` — точно по acceptance (все 5 ✓).
+- **Реестр**: `full_frame_animation_registry.gd` — все 5 `enemy/<id>` (10 совпадений
+  id+frames; visual-only override, static/cutout fallback цел).
+- **Манифест-валидатор**: «FantasyDisk animation manifest OK: 5 entities».
+- **Контакт-лист** `standard_enemy_full_frame_batch_contact_sheet.png` + GIF:
+  full-frame, реальная пер-кадровая вариация (ash_marksman/spark_runner/stone_bruiser/
+  bone_caller/void_mage — move/attack/hit/death); не cutout.
+- **Тесты**: `animation_smoke_test` (registry-резолв / frame counts / loop flags /
+  aliases / right-flip / FullFrameBody для EnemyShooter/Runner/Bruiser/Summoner/Mage)
+  + `runtime_smoke_test` (gameplay не изменён) — passed.
+
+Acceptance:
+- [x] Каждый из 5 врагов: move 6f loop + attack_primary/attack 6f + hit 6f + death 6f.
+- [x] Registry резолвит все 5 enemy/<id>; FullFrameBody виден, legacy скрыт.
+- [x] Манифест валиден; animation_smoke зелёный; gameplay/balance/AI не тронуты.
+
+Баги: нет.

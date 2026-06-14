@@ -38,6 +38,8 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - SCRUM-365 added the next accepted standard-enemy batch: `venom_spitter` and
   `rift_shieldbearer` use the same padded SpriteFrames contract and registry-only
   scene activation.
+- SCRUM-366 added `small_biter` to the same full-frame registry path with a
+  compact `0.30` scale and the standard 6-frame move/attack/hit/death contract.
 
 ## Full-Frame State Registry
 

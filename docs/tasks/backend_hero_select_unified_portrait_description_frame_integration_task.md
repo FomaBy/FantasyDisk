@@ -1,6 +1,6 @@
 # Back-end/UI: Integrate SCRUM-356 unified Hero Select portrait+description frame
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5

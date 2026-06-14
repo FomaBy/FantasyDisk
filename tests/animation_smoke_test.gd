@@ -722,6 +722,7 @@ func _test_full_frame_animation_registry() -> void:
 		"void_mage": "res://scenes/EnemyMage.tscn",
 		"venom_spitter": "res://scenes/EnemySpitter.tscn",
 		"rift_shieldbearer": "res://scenes/EnemyShield.tscn",
+		"small_biter": "res://scenes/EnemyBiter.tscn",
 	}
 	for enemy_id in standard_enemy_scenes.keys():
 		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)

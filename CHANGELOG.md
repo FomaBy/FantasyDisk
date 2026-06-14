@@ -32,6 +32,9 @@
   sheets for `venom_spitter` and `rift_shieldbearer` through
   `FullFrameAnimationRegistry` with no gameplay, targeting, spawn, or balance
   changes.
+- Standard enemy full-frame batch 3 (SCRUM-366): integrated the accepted
+  SCRUM-352 `small_biter` sheet as padded SpriteFrames with the standard
+  full-frame enemy state contract.
 - Run autosave (SCRUM-349): активный забег теперь атомарно сохраняется в
   `user://fantasydisk_autosave.cfg` после безопасных route checkpoints
   (бой/элитка после reward flow, event/rest/upgrade, shop visit); главное меню

@@ -84,6 +84,12 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -50.0),
 			"source_faces_left": true,
 		},
+		"small_biter": {
+			"frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+			"scale": Vector2(0.30, 0.30),
+			"position": Vector2(0.0, -32.0),
+			"source_faces_left": true,
+		},
 	},
 	"elite": {},
 	"boss": {},
