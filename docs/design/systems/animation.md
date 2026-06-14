@@ -125,6 +125,14 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   6f/14fps non-loop, recorded as `attack_primary` in the skill manifest.
 - SCRUM-370 adds ally `death` rows to those same SpriteFrames paths:
   6 frames at 10fps, non-loop, with static `ally_*.png` fallback unchanged.
+- SCRUM-399 (2026-06-14) replaced the visual source and runtime PNG frame
+  art for the four mobile summons with an ethereal allied spirit style: blue/
+  cyan translucent bodies, soft inner glow and smoky edges. The pass preserved
+  existing SpriteFrames resources, frame counts, loop flags, timings and
+  registry placement. A follow-up safe-slicing cleanup repacked all 80 animated
+  summon frame PNGs into the existing `256x256` cells with 24px transparent
+  gutters: 0 edge-touch frames, 0 padding failures. Any new motion staging
+  beyond this visual repaint remains Animator scope.
 - `FullFrameAnimationRegistry` owns visual-only SpriteFrames lookup/placement for
   allies and keeps static `ally_*.png` sprites as fallback. Gameplay damage,
   targeting, command mode, lifetime, and summon role scaling remain in

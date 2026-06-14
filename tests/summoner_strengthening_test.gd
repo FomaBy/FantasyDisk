@@ -217,9 +217,30 @@ func _test_ally_minion_profile_and_lifecycle(errors: Array) -> void:
 		errors.append("Expected AllyMinion set_combat_profile to apply combat values.")
 	if str(ally.get("summon_role")) != "tank_control":
 		errors.append("Expected AllyMinion profile to set summon_role.")
+	var animated_body := ally.get_node_or_null("AnimatedBody") as AnimatedSprite2D
+	var expects_delayed_death := animated_body != null and animated_body.visible and animated_body.sprite_frames != null and animated_body.sprite_frames.has_animation("death")
 	ally.call("take_damage", 50.0)
 	await process_frame
-	if is_instance_valid(ally) and not ally.is_queued_for_deletion():
-		errors.append("Expected AllyMinion to queue_free after lethal damage.")
+	if expects_delayed_death:
+		if not is_instance_valid(ally) or ally.is_queued_for_deletion():
+			errors.append("Expected animated AllyMinion death to delay queue_free until death playback ends.")
+		elif not bool(ally.get("_death_lifecycle_started")):
+			errors.append("Expected AllyMinion lethal damage to start the death lifecycle.")
+		elif ally.is_in_group("allies"):
+			errors.append("Expected dying AllyMinion to leave the allies group before delayed cleanup.")
+		else:
+			ally.call("take_damage", 50.0)
+			await process_frame
+			if not bool(ally.get("_death_lifecycle_started")):
+				errors.append("Expected repeated lethal damage not to reset AllyMinion death lifecycle.")
+			var frame_guard := 0
+			while is_instance_valid(ally) and not ally.is_queued_for_deletion() and frame_guard < 100:
+				await process_frame
+				frame_guard += 1
+			if is_instance_valid(ally) and not ally.is_queued_for_deletion():
+				errors.append("Expected animated AllyMinion to queue_free after death playback.")
+	else:
+		if is_instance_valid(ally) and not ally.is_queued_for_deletion():
+			errors.append("Expected non-animated AllyMinion to queue_free after lethal damage.")
 	holder.queue_free()
 	await process_frame

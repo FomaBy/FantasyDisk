@@ -274,7 +274,7 @@ Weapon art v2 2026-06-12: сцены `WeaponVisual` должны использ�
 
 ## Призывные Союзники И Deployables
 
-SCRUM-152 Design pass 2026-06-12 добавил канонический raster-набор союзных summon/deployable ассетов в `assets/sprites/allies/`. Все PNG `256x256`, RGBA, transparent, painterly D&D style, с теплым/зеленым allied accent для отличия от врагов.
+SCRUM-152 Design pass 2026-06-12 добавил канонический raster-набор союзных summon/deployable ассетов в `assets/sprites/allies/`. SCRUM-399 (2026-06-14) заменил четыре мобильных summon visuals на эфирный союзный стиль: голубой/циановый ghost tint, прозрачность, мягкое внутреннее свечение и дымчатые края, чтобы призывы мгновенно отличались от плотных темных монстров. Все PNG RGBA/transparent; runtime IDs, SpriteFrames paths, counts and timings сохранены.
 
 | ID | Игровая роль | Ассет | Runtime status |
 | --- | --- | --- | --- |
@@ -289,7 +289,9 @@ Preview QA:
 
 - `docs/design/previews/summon_allies_style_references.png` - project style references used for Codex Design generation;
 - `docs/design/previews/summon_allies_asset_contact.png` - transparent asset contact sheet;
-- `docs/design/previews/summon_allies_scale_meadow_preview.png` - scale/readability check on arena background.
+- `docs/design/previews/summon_allies_scale_meadow_preview.png` - scale/readability check on arena background;
+- `docs/design/previews/summons_ethereal_redraw_contact.png` - SCRUM-399 ethereal summon static/frame contact sheet;
+- `docs/design/previews/summons_ethereal_readability_meadow.png` - SCRUM-399 meadow readability preview against current arena colors.
 
 Back-end source-specific integration complete in SCRUM-157: runtime selectors preserve cleanup groups and gameplay balance.
 

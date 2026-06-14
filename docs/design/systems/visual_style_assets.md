@@ -93,10 +93,10 @@ The top/bottom ornaments are optional overlays for large windows only and are
 not applied to compact HUD cards/tooltips/chips. Runtime content, click zones,
 labels, portraits, icons and meters must remain inside the frame content area.
 
-SCRUM-390 prepares a dedicated **Combat HUD redraw kit** for Back-end runtime
-integration. It was generated through `fantasydisk-asset-generator` from current
-D&D/dark-fantasy UI references, then alpha-cleaned and cut into runtime
-candidates. Source and margins are recorded in
+SCRUM-390 prepared a dedicated **Combat HUD redraw kit** and SCRUM-400 wires it
+into the live runtime HUD. It was generated through
+`fantasydisk-asset-generator` from current D&D/dark-fantasy UI references, then
+alpha-cleaned and cut into runtime candidates. Source and margins are recorded in
 `docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`;
 previews are `docs/design/previews/combat_hud_redraw_contact.png` and
 `docs/design/previews/combat_hud_redraw_safe_zones.png`; 720p/1080p/1440p mock
@@ -119,11 +119,11 @@ Canonical SCRUM-390 candidate assets:
   `_ult.png`, `_gold.png` (`512x32`) and
   `ui_hud_gold_medallion.png` (`128x128`).
 
-These are not yet live UI paths until
-`docs/tasks/backend_combat_hud_redraw_integration_task.md` wires them into the
-combat HUD. Back-end must keep HP/XP/money/ultimate/timer logic unchanged and
-must keep labels, icons, bars, badges, plus glyph and click/focus zones inside
-the recorded content zones.
+These are live UI paths for the combat HUD after
+`docs/tasks/backend_combat_hud_redraw_integration_task.md`. Back-end keeps
+HP/XP/money/ultimate/timer logic unchanged and keeps labels, icons, bars,
+badges, plus glyph and click/focus zones inside the recorded content zones; QA
+runtime rect dumps live in `build/qa/scrum390/`.
 
 SCRUM-281 adds a screen-specific **Hero Select frame kit** from
 `docs/design/references/herouiframe/`. It is used only by `HeroSelectScreen`,

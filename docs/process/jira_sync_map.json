@@ -1917,11 +1917,21 @@
  "design_summons_ethereal_redraw_anim_from_scratch_task.md": {
   "key": "SCRUM-399",
   "status": "В работе",
-  "desc_hash": "72e0c96cb57e629e4a9c04a81e853681"
+  "desc_hash": "ac05545776846e3a0dc7130ea18664b8"
  },
  "backend_combat_hud_redraw_integration_task.md": {
   "key": "SCRUM-400",
+  "status": "Контроль качества",
+  "desc_hash": "6fe33344038fed82cc6f059c220a5436"
+ },
+ "design_integrate_generated_summons_ethereal_task.md": {
+  "key": "SCRUM-401",
+  "status": "Готово",
+  "desc_hash": "f1d90aef53a3bcb11f90a191fdab6434"
+ },
+ "backend_runtime_smoke_levelup_summon_death_regression_task.md": {
+  "key": "SCRUM-402",
   "status": "В работе",
-  "desc_hash": "cd8c614376754a9e701469d8b8e4693f"
+  "desc_hash": "b3903559deda4bd755a16d18f5aca6d8"
  }
 }

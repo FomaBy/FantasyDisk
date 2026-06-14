@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать призывных существ С НУЛЯ — эфирный голубой стиль + анимация
 
-Статус: in_progress
+Статус: review
 Приоритет: high
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -71,3 +71,87 @@ docs/design/systems/animation.md, content_registry, current_game_state.
   `fantasydisk-asset-generator` references while preserving current SpriteFrames
   paths and animation timing. Any new motion staging beyond this visual pass
   remains Animator scope.
+- 2026-06-14 — Generated `docs/design/references/summons_ethereal/summons_ethereal_source_sheet.png`
+  through `fantasydisk-asset-generator`, alpha-cleaned/cropped it as the new
+  visual source, and repainted all existing static + full-frame summon PNGs in
+  the same cyan/blue ethereal allied style while preserving SpriteFrames paths,
+  frame counts, canvas sizes, timings and runtime IDs.
+
+## Result Summary — 2026-06-14
+
+Design pass is QA-ready.
+
+- Replaced all four static summon fallbacks with transparent ethereal blue/cyan
+  spirit designs:
+  - `assets/sprites/allies/ally_druid_beast.png`
+  - `assets/sprites/allies/ally_druid_pack_spirit.png`
+  - `assets/sprites/allies/ally_homunculus.png`
+  - `assets/sprites/allies/ally_leadership_echo.png`
+- Repainted the existing full-frame animation PNGs for `move`, `attack` and
+  `death` under:
+  - `assets/sprites/allies/druid_wolf/`
+  - `assets/sprites/allies/pack_spirit/`
+  - `assets/sprites/allies/homunculus/`
+  - `assets/sprites/allies/leadership_echo/`
+- Preserved runtime SpriteFrames resources, frame counts and timing contracts:
+  `move` 8f loop, `attack` 6f one-shot, `death` 6f one-shot.
+- Stored source/manifest/previews:
+  - `docs/design/references/summons_ethereal/summons_ethereal_source_sheet.png`
+  - `docs/design/references/summons_ethereal/summons_ethereal_manifest.json`
+  - `docs/design/previews/summons_ethereal_redraw_contact.png`
+  - `docs/design/previews/summons_ethereal_readability_meadow.png`
+- Old runtime PNGs were backed up under `build/qa/scrum399/backups/`.
+
+Verification:
+- PNG validation: 90 `assets/sprites/allies/**/*.png` checked as RGBA with
+  non-empty alpha — PASS.
+- Safe padding cleanup: 80 animated frame PNGs checked, 0 edge-touch frames,
+  0 safe-padding failures, 0 strong edge alpha after cleanup — PASS.
+- Godot import: PASS.
+- `tests/animation_smoke_test.gd` — PASS.
+- `tests/status_effects_aura_test.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — BLOCKED by unrelated Back-end/UI assertion:
+  `Expected a labelled level-up return button after deferring` at
+  `tests/runtime_smoke_test.gd:1051`.
+- `tests/summoner_strengthening_test.gd` — BLOCKED by stale Back-end/test
+  expectation after ally death lifecycle: it still expects immediate
+  `queue_free` on lethal damage, while animated allies now play `death` before
+  cleanup.
+
+Back-end handoff for the two non-Design smoke blockers:
+`docs/tasks/backend_runtime_smoke_levelup_summon_death_regression_task.md`.
+
+## Animator Validation — 2026-06-14
+
+Animator pass consumed the available Design repaint outputs without changing
+gameplay, balance, targeting, spawn rules, UI layout, SpriteFrames paths or
+runtime integration.
+
+Animation contract status:
+- `druid_beast`, `druid_pack_spirit`, `homunculus`, `leadership_echo` all keep
+  the existing runtime SpriteFrames resources.
+- Each entity has `move` 8f loop, `attack`/`attack_primary` 6f one-shot and
+  `death` 6f one-shot, satisfying the frame-count/state contract.
+- `tests/animation_smoke_test.gd` — PASS.
+- QA artifacts:
+  - `build/qa/design_summons_ethereal_redraw_anim_from_scratch/animation_manifest.json`
+  - `build/qa/design_summons_ethereal_redraw_anim_from_scratch/summons_ethereal_animation_contact.png`
+
+Resolved Design cleanup:
+- The `fantasydisk-animation-director` no-crop/safe-slicing blocker was fixed
+  by repacking all 80 animated frame PNGs into the existing `256x256` cells with
+  a 24px transparent gutter and then rebuilding the four `*_death_row.png`
+  files.
+- Post-cleanup audit: 0 edge-touch frames, 0 safe-padding failures, 0 strong edge
+  alpha. Report:
+  `build/qa/design_summons_ethereal_redraw_anim_from_scratch/safe_padding_cleanup_report.json`.
+- Godot import and `tests/animation_smoke_test.gd` still PASS after cleanup.
+
+Additional non-Animator blocker:
+- `tests/runtime_smoke_test.gd` is blocked by the Back-end/UI assertion
+  `Expected a SCRUM-390 level-up plus return button after deferring` at
+  `tests/runtime_smoke_test.gd:1051`.
+- `tests/summoner_strengthening_test.gd` is blocked by a stale Back-end test
+  expectation that animated `AllyMinion` death should immediately `queue_free`.
+- Back-end handoff: `docs/tasks/backend_runtime_smoke_levelup_summon_death_regression_task.md`
+  / SCRUM-402.

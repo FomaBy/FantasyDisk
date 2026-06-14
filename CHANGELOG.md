@@ -24,6 +24,13 @@
   mapping without network.
 
 ### Added
+- Ethereal summon redesign (SCRUM-399): generated a new summon source sheet
+  with `fantasydisk-asset-generator` and replaced the four mobile summon static
+  sprites plus existing move/attack/death frame PNGs with blue/cyan translucent
+  allied spirit visuals, preserving SpriteFrames paths, frame counts and timings;
+  all 80 animated frame PNGs were repacked with 24px transparent safe gutters
+  to satisfy no-crop validation. Contact/readability previews and manifest are under
+  `docs/design/references/summons_ethereal/` and `docs/design/previews/`.
 - Combat HUD redraw kit (SCRUM-390): generated a new D&D/dark-fantasy dragon
   HUD reference sheet with `fantasydisk-asset-generator`, alpha-cleaned it, and
   cut production candidates for the resource panel, HP/XP/money/ultimate cards,
@@ -175,6 +182,11 @@
   off.
 
 ### Changed
+- Combat HUD runtime integration (SCRUM-400): live combat HUD now uses the
+  SCRUM-390 resource panel, HP/XP/money/ULT cards, bar fills, timer frame,
+  ascension badge and opaque bottom-right level-up plus button while preserving
+  HP/XP/money/ULT/timer semantics; no-overlap/runtime smoke dumps are written to
+  `build/qa/scrum390/`.
 - Summoner rebalance (SCRUM-357): `SummonerWeapon` now gives summons a
   noticeable Leadership-driven damage multiplier, stronger controlled HP/speed/
   lifetime/haste scaling, owner-leashed group target assignment with overkill

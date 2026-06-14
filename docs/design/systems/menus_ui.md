@@ -74,9 +74,9 @@ three rects, and `SettingsTabButton_3` must not exist.
 
 ## Combat HUD Redraw
 
-SCRUM-390 prepares a Design-ready combat HUD kit, but live runtime activation is
-handed off to Back-end because `scripts/ui_screens.gd` owns the HUD tree and
-value updates. Candidate assets:
+SCRUM-390 prepared the Design-ready combat HUD kit and SCRUM-400 wires it into
+the live runtime because `scripts/ui_screens.gd` owns the HUD tree and value
+updates. Active assets:
 
 - `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png`;
 - `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_hp.png`,
@@ -88,14 +88,15 @@ value updates. Candidate assets:
 - `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`,
   `_ult.png`, `_gold.png` and `ui_hud_gold_medallion.png`.
 
-Runtime must keep the combat HUD compact and readable: resource panel top-left,
-timer near top center, artifact row top-right with existing adaptive wrap, and
-opaque level-up plus button bottom-right. Text, icons, bars, count badges,
-focus/click zones and the plus glyph must stay inside the safe rects documented
-in `docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`.
-Do not place HUD values on dragon heads, red gems, claw tips, bevels or other
-decorative borders. Design mocks at `1280x720`, `1920x1080` and `2560x1440` live
-in `build/qa/scrum390/`.
+Runtime keeps the combat HUD compact and readable: resource panel top-left,
+timer near top center, artifact row top-right with adaptive vertical fallback,
+and opaque level-up plus button bottom-right. Text, icons, bars, count badges,
+focus/click zones and the plus glyph stay inside the safe rects documented in
+`docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`.
+Runtime uses compact content margins only to fit the live 720p HUD band; source
+safe rects remain the authority and decorative dragon heads, red gems, claw
+tips and bevels must stay unobstructed. Design mocks and Back-end runtime rect
+dumps at `1152x648`, `1280x720` and `2560x1440` live in `build/qa/scrum390/`.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
 - Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button. SCRUM-348 sets `LevelUpLaterButton` to a non-cropped 260x104 medium back frame.
 
@@ -115,10 +116,11 @@ the medium back frame; longer `Назад в меню` buttons in Skill Tree, Pa
 and Codex use 260x104. Runtime smoke validates their viewport bounds and content
 zone sizes and writes `build/qa/scrum343/back_button_frames.md`.
 
-The combat/route `LevelUpPlusButton` is an exception to the flat FAB look: it
-uses the Red&Gold `main_menu` frame for visual weight, remains fully opaque and
-anchored bottom-right, and keeps its pending-count badge readable. Runtime smoke
-writes `build/qa/combat_level_up_button.md`.
+The combat/route `LevelUpPlusButton` is an exception to the flat FAB look: in
+combat it uses the SCRUM-390 square plus texture states, remains fully opaque
+and anchored bottom-right, and keeps its pending-count badge readable. Runtime
+smoke writes `build/qa/combat_level_up_button.md` and
+`build/qa/scrum390/combat_level_up_button.md`.
 
 Hover/focus states after SCRUM-318 are neutral-bright, not golden glow states:
 runtime button themes reuse the normal Red & Gold texture with a neutral tint

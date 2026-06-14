@@ -458,9 +458,37 @@ func _initialize() -> void:
 		push_error("Expected combat to create the compact resource HUD.")
 		quit(1)
 		return
+	var resource_style := resource_hud.get_theme_stylebox("panel")
+	if _stylebox_texture_path(resource_style) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png":
+		push_error("Expected combat resource HUD to use the SCRUM-390 resource panel frame.")
+		quit(1)
+		return
+	var expected_hud_cards := {
+		"HudHPCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_hp.png",
+		"HudXPCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_xp.png",
+		"HudMoneyCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_gold.png",
+		"HudULTCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_ult.png",
+	}
 	for hud_node_name in ["HudHPCard", "HudXPCard", "HudMoneyCard"]:
 		if resource_hud.find_child(hud_node_name, true, false) == null:
 			push_error("Expected combat resource HUD to include %s." % hud_node_name)
+			quit(1)
+			return
+	for hud_node_name in expected_hud_cards.keys():
+		var hud_card := resource_hud.find_child(str(hud_node_name), true, false) as PanelContainer
+		if hud_card == null or _stylebox_texture_path(hud_card.get_theme_stylebox("panel")) != str(expected_hud_cards[hud_node_name]):
+			push_error("Expected %s to use SCRUM-390 card frame %s." % [hud_node_name, str(expected_hud_cards[hud_node_name])])
+			quit(1)
+			return
+	var expected_hud_fills := {
+		"HudHPBar": "res://assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png",
+		"HudXPBar": "res://assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_xp.png",
+		"HudULTBar": "res://assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_ult.png",
+	}
+	for bar_name in expected_hud_fills.keys():
+		var hud_bar := resource_hud.find_child(str(bar_name), true, false) as ProgressBar
+		if hud_bar == null or _stylebox_texture_path(hud_bar.get_theme_stylebox("fill")) != str(expected_hud_fills[bar_name]):
+			push_error("Expected %s to use SCRUM-390 bar fill %s." % [bar_name, str(expected_hud_fills[bar_name])])
 			quit(1)
 			return
 	for hud_icon_id in ["hp", "xp", "money"]:
@@ -469,6 +497,10 @@ func _initialize() -> void:
 			push_error("Expected combat HUD icon %s to use a PNG texture." % hud_icon_id)
 			quit(1)
 			return
+	if (resource_hud.find_child("UIIcon_money", true, false) as TextureRect).texture.resource_path != "res://assets/sprites/ui/hud/combat_hud/ui_hud_gold_medallion.png":
+		push_error("Expected combat money HUD icon to use the SCRUM-390 gold medallion.")
+		quit(1)
+		return
 	if main.get("status_label") != null:
 		push_error("Expected combat HUD to stay compact and not expose the status label.")
 		quit(1)
@@ -478,6 +510,10 @@ func _initialize() -> void:
 	var timer_text := main.get("timer_label") as Label
 	if timer_panel == null or timer_text == null or timer_panel.get_global_rect().position.y > 24.0:
 		push_error("Expected the combat timer panel to stay in the top HUD band.")
+		quit(1)
+		return
+	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png":
+		push_error("Expected combat timer panel to use the SCRUM-390 timer frame.")
 		quit(1)
 		return
 	main.set("round_time_left", 4.0)
@@ -797,8 +833,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var plus_normal_style := level_up_plus.get_theme_stylebox("normal")
-	if plus_normal_style == null or not _button_uses_red_gold_type(level_up_plus, "main_menu"):
-		push_error("Expected combat level-up return button to use the Red&Gold main-menu frame style.")
+	if plus_normal_style == null or not _button_uses_combat_hud_plus_style(level_up_plus):
+		push_error("Expected combat level-up return button to use the SCRUM-390 combat HUD plus button kit.")
 		quit(1)
 		return
 	if not _is_neutral_button_font(level_up_plus.get_theme_color("font_hover_color")) or not _is_neutral_button_font(level_up_plus.get_theme_color("font_focus_color")):
@@ -823,11 +859,21 @@ func _initialize() -> void:
 	var level_up_badge_panel := level_up_plus.find_child("LevelUpPlusBadgePanel", true, false) as Control
 	var qa_dir_level_up := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir_level_up)
+	var level_up_dump_text := ""
 	var level_up_dump := FileAccess.open("%s/combat_level_up_button.md" % qa_dir_level_up, FileAccess.WRITE)
 	if level_up_dump != null:
 		var plus_texture := (plus_normal_style as StyleBoxTexture).texture if plus_normal_style is StyleBoxTexture else null
-		level_up_dump.store_string("# Combat Level-Up Return Button\n\n- Viewport: `%s`\n- Button: `%s`\n- Badge: `%s`\n- Alpha: `%.3f`\n- Texture: `%s`\n" % [str(level_up_viewport_size), str(level_up_plus_rect), str(level_up_badge_panel.get_global_rect() if level_up_badge_panel != null else Rect2()), level_up_plus.modulate.a, str(plus_texture.resource_path if plus_texture != null else "")])
+		level_up_dump_text = "# Combat Level-Up Return Button\n\n- Viewport: `%s`\n- Button: `%s`\n- Badge: `%s`\n- Alpha: `%.3f`\n- Texture: `%s`\n" % [str(level_up_viewport_size), str(level_up_plus_rect), str(level_up_badge_panel.get_global_rect() if level_up_badge_panel != null else Rect2()), level_up_plus.modulate.a, str(plus_texture.resource_path if plus_texture != null else "")]
+		level_up_dump.store_string(level_up_dump_text)
 		level_up_dump.close()
+	var scrum390_level_up_dir := ProjectSettings.globalize_path("res://build/qa/scrum390")
+	DirAccess.make_dir_recursive_absolute(scrum390_level_up_dir)
+	var scrum390_level_up_dump := FileAccess.open("%s/combat_level_up_button.md" % scrum390_level_up_dir, FileAccess.WRITE)
+	if scrum390_level_up_dump != null:
+		if level_up_dump_text == "":
+			level_up_dump_text = "# Combat Level-Up Return Button\n\n- Viewport: `%s`\n- Button: `%s`\n- Badge: `%s`\n- Alpha: `%.3f`\n- Texture: `%s`\n" % [str(level_up_viewport_size), str(level_up_plus_rect), str(level_up_badge_panel.get_global_rect() if level_up_badge_panel != null else Rect2()), level_up_plus.modulate.a, _stylebox_texture_path(plus_normal_style)]
+		scrum390_level_up_dump.store_string(level_up_dump_text)
+		scrum390_level_up_dump.close()
 	var level_up_toast := main.find_child("LevelUpToast", true, false)
 	if level_up_toast == null:
 		push_error("Expected level-up to play a placeholder toast animation.")
@@ -1001,8 +1047,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var return_button := main.find_child("LevelUpPlusButton", true, false) as Button
-	if return_button == null or not String(return_button.text).contains("Повышение"):
-		push_error("Expected a labelled level-up return button after deferring.")
+	if return_button == null or return_button.text != "+" or not _button_uses_combat_hud_plus_style(return_button):
+		push_error("Expected a SCRUM-390 level-up plus return button after deferring.")
 		quit(1)
 		return
 	# Возврат к тому же зафиксированному набору.
@@ -2589,6 +2635,34 @@ func _button_uses_red_gold_type(button: Button, button_type: String) -> bool:
 		"focus": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
 		"pressed": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_pressed.png" % button_type,
 		"disabled": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_disabled.png" % button_type,
+	}
+	for state in expected.keys():
+		var style := button.get_theme_stylebox(state)
+		if not (style is StyleBoxTexture):
+			return false
+		var texture := (style as StyleBoxTexture).texture
+		if texture == null or texture.resource_path != str(expected[state]):
+			return false
+	var hover_style := button.get_theme_stylebox("hover") as StyleBoxTexture
+	var focus_style := button.get_theme_stylebox("focus") as StyleBoxTexture
+	if hover_style == null or focus_style == null:
+		return false
+	if not _is_neutral_bright_button_tint(hover_style.modulate_color) or not _is_neutral_bright_button_tint(focus_style.modulate_color):
+		return false
+	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
+		return false
+	return true
+
+
+func _button_uses_combat_hud_plus_style(button: Button) -> bool:
+	if button == null:
+		return false
+	var expected := {
+		"normal": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus.png",
+		"hover": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus_hover.png",
+		"focus": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus_hover.png",
+		"pressed": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus_pressed.png",
+		"disabled": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus_disabled.png",
 	}
 	for state in expected.keys():
 		var style := button.get_theme_stylebox(state)
@@ -6290,6 +6364,10 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 
 func _button_normal_texture_path(button: Button) -> String:
 	var style := button.get_theme_stylebox("normal")
+	return _stylebox_texture_path(style)
+
+
+func _stylebox_texture_path(style: StyleBox) -> String:
 	if not (style is StyleBoxTexture):
 		return ""
 	var texture := (style as StyleBoxTexture).texture
@@ -6513,6 +6591,12 @@ func _test_hud_no_overlap_layouts(main_scene: PackedScene) -> void:
 	if file != null:
 		file.store_string("\n".join(dump_lines))
 		file.close()
+	var scrum390_dir := ProjectSettings.globalize_path("res://build/qa/scrum390")
+	DirAccess.make_dir_recursive_absolute(scrum390_dir)
+	var scrum390_file := FileAccess.open("%s/combat_hud_runtime_rects.md" % scrum390_dir, FileAccess.WRITE)
+	if scrum390_file != null:
+		scrum390_file.store_string("\n".join(dump_lines))
+		scrum390_file.close()
 
 
 func _test_shop_wall_no_overlap_layouts(main_scene: PackedScene) -> void:
@@ -6666,7 +6750,16 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 	var controls := _visible_hud_top_controls(hud_main)
 	dump_lines.append("## %s" % context)
 	for control in controls:
-		dump_lines.append("- `%s`: `%s`" % [control.name, str(control.get_global_rect())])
+		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control.name, str(control.get_global_rect()), _stylebox_texture_path(control.get_theme_stylebox("panel") if control is PanelContainer else null)])
+		if control.name == "RunResourceHud" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png":
+			_fail("Expected RunResourceHud to use SCRUM-390 resource panel frame at %s." % context)
+			return
+		if control.name == "CombatTimerPanel" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png":
+			_fail("Expected CombatTimerPanel to use SCRUM-390 timer frame at %s." % context)
+			return
+		if control.name == "AscensionHudBadge" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_ascension_badge.png":
+			_fail("Expected AscensionHudBadge to use SCRUM-390 ascension badge frame at %s." % context)
+			return
 	var overlap := _first_control_overlap(controls, 2.0)
 	if not overlap.is_empty():
 		_fail("Expected no top HUD overlap at %s, got %s." % [context, overlap])

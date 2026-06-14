@@ -1,6 +1,6 @@
 # Back-end Task: Integrate SCRUM-390 Combat HUD Redraw
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -97,14 +97,38 @@ Previews / QA:
 
 ## Acceptance Criteria
 
-- [ ] Combat HUD uses the SCRUM-390 frame assets in live runtime.
-- [ ] HP, XP, money, ultimate, timer and ascension badge remain readable at
+- [x] Combat HUD uses the SCRUM-390 frame assets in live runtime.
+- [x] HP, XP, money, ultimate, timer and ascension badge remain readable at
   `1280x720`, `1920x1080`, `2560x1440`.
-- [ ] `LevelUpPlusButton` remains bottom-right, fully opaque, with readable count
+- [x] `LevelUpPlusButton` remains bottom-right, fully opaque, with readable count
   badge and no yellow glow.
-- [ ] No content overlaps decorative borders/gems/dragon heads/claws.
-- [ ] Existing HP/XP/money/ultimate/timer update logic is unchanged.
-- [ ] `tests/ui_no_overlap_matrix_test.gd` passes.
-- [ ] `tests/runtime_smoke_ui_test.gd` passes.
-- [ ] `tests/runtime_smoke_test.gd` passes.
-- [ ] Add/update QA screenshots in `build/qa/scrum390/`.
+- [x] No content overlaps decorative borders/gems/dragon heads/claws.
+- [x] Existing HP/XP/money/ultimate/timer update logic is unchanged.
+- [x] `tests/ui_no_overlap_matrix_test.gd` passes.
+- [x] `tests/runtime_smoke_ui_test.gd` passes.
+- [x] `tests/runtime_smoke_test.gd` passes.
+- [x] Add/update QA screenshots in `build/qa/scrum390/`.
+
+## Result
+
+Done 2026-06-14 (Back-end): live `scripts/ui_screens.gd` now uses the SCRUM-390
+combat HUD kit for the resource panel, HP/XP/money/ULT cards, bar fills, timer,
+ascension badge, gold medallion and bottom-right `LevelUpPlusButton`. Runtime
+keeps existing HP/XP/money/ULT/timer update semantics; only frame/style/layout
+wiring changed. The level-up return button now uses the dedicated opaque combat
+plus texture states with neutral hover/focus and the existing pending-count
+badge.
+
+Layout note: source safe-zone metadata remains documented as canonical, while
+runtime uses compact content margins for the 720p HUD band so labels/icons/bars
+stay inside the frame center and do not cover dragon/gem/claw ornament. Artifact
+row placement now drops below the lowest occupied top-HUD element when the
+resource panel/timer/badge occupy the upper band.
+
+Verification:
+
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+- QA dumps updated: `build/qa/scrum390/combat_hud_runtime_rects.md` and
+  `build/qa/scrum390/combat_level_up_button.md`.

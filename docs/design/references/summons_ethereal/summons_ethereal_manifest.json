@@ -1,0 +1,45 @@
+{
+  "task": "SCRUM-399",
+  "source_sheet": "docs/design/references/summons_ethereal/summons_ethereal_source_sheet.png",
+  "static_sources": {
+    "druid_beast": "docs/design/references/summons_ethereal/druid_beast_ethereal_static_source.png",
+    "druid_pack_spirit": "docs/design/references/summons_ethereal/druid_pack_spirit_ethereal_static_source.png",
+    "homunculus": "docs/design/references/summons_ethereal/homunculus_ethereal_static_source.png",
+    "leadership_echo": "docs/design/references/summons_ethereal/leadership_echo_ethereal_static_source.png"
+  },
+  "visuals": {
+    "druid_beast": {
+      "static": "assets/sprites/allies/ally_druid_beast.png",
+      "spriteframes": "assets/sprites/allies/ally_druid_wolf_spriteframes.tres",
+      "move_frames": 8,
+      "attack_frames": 6,
+      "death_frames": 6,
+      "folder": "assets/sprites/allies/druid_wolf"
+    },
+    "druid_pack_spirit": {
+      "static": "assets/sprites/allies/ally_druid_pack_spirit.png",
+      "spriteframes": "assets/sprites/allies/ally_pack_spirit_spriteframes.tres",
+      "move_frames": 8,
+      "attack_frames": 6,
+      "death_frames": 6,
+      "folder": "assets/sprites/allies/pack_spirit"
+    },
+    "homunculus": {
+      "static": "assets/sprites/allies/ally_homunculus.png",
+      "spriteframes": "assets/sprites/allies/ally_homunculus_spriteframes.tres",
+      "move_frames": 8,
+      "attack_frames": 6,
+      "death_frames": 6,
+      "folder": "assets/sprites/allies/homunculus"
+    },
+    "leadership_echo": {
+      "static": "assets/sprites/allies/ally_leadership_echo.png",
+      "spriteframes": "assets/sprites/allies/ally_leadership_echo_spriteframes.tres",
+      "move_frames": 8,
+      "attack_frames": 6,
+      "death_frames": 6,
+      "folder": "assets/sprites/allies/leadership_echo"
+    }
+  },
+  "notes": "Design visual repaint only; SpriteFrames paths/timing unchanged for Animator/runtime contract."
+}

@@ -111,11 +111,15 @@ const COMBAT_HUD_BAR_FILL_PATHS := {
 const COMBAT_HUD_GOLD_MEDALLION_PATH := COMBAT_HUD_FILL_DIR + "ui_hud_gold_medallion.png"
 const COMBAT_HUD_RESOURCE_PANEL_MARGINS := Vector4(96.0, 44.0, 96.0, 44.0)
 const COMBAT_HUD_RESOURCE_PANEL_CONTENT := Vector4(92.0, 30.0, 92.0, 30.0)
+const COMBAT_HUD_RESOURCE_PANEL_RUNTIME_CONTENT := Vector4(48.0, 6.0, 48.0, 6.0)
 const COMBAT_HUD_CARD_MARGINS := Vector4(48.0, 42.0, 48.0, 38.0)
 const COMBAT_HUD_CARD_CONTENT := Vector4(32.0, 24.0, 32.0, 22.0)
+const COMBAT_HUD_CARD_RUNTIME_CONTENT := Vector4(12.0, 8.0, 12.0, 8.0)
 const COMBAT_HUD_TIMER_MARGINS := Vector4(92.0, 42.0, 92.0, 38.0)
 const COMBAT_HUD_TIMER_CONTENT := Vector4(82.0, 32.0, 82.0, 28.0)
+const COMBAT_HUD_TIMER_RUNTIME_CONTENT := Vector4(42.0, 18.0, 42.0, 16.0)
 const COMBAT_HUD_ASCENSION_CONTENT := Vector4(40.0, 34.0, 40.0, 34.0)
+const COMBAT_HUD_ASCENSION_RUNTIME_CONTENT := Vector4(14.0, 8.0, 14.0, 8.0)
 const COMBAT_HUD_LEVEL_UP_MARGINS := Vector4(34.0, 34.0, 34.0, 34.0)
 const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(36.0, 34.0, 36.0, 36.0)
 const HERO_SELECT_FRAME_TEXTURES := {
@@ -4216,13 +4220,13 @@ func _update_level_up_button() -> void:
 		game.level_up_button.anchor_right = 1.0
 		game.level_up_button.anchor_top = 1.0
 		game.level_up_button.anchor_bottom = 1.0
-		game.level_up_button.offset_left = -412.0
+		game.level_up_button.offset_left = -124.0
 		game.level_up_button.offset_right = -28.0
-		game.level_up_button.offset_top = -130.0
+		game.level_up_button.offset_top = -124.0
 		game.level_up_button.offset_bottom = -26.0
-		_set_action_button_size(game.level_up_button, 380.0)
+		game.level_up_button.custom_minimum_size = Vector2(96, 98)
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
-		game.level_up_button.add_theme_font_size_override("font_size", 22)
+		game.level_up_button.add_theme_font_size_override("font_size", 34)
 		_apply_fantasy_button_theme(game.level_up_button)
 		game.level_up_button.pressed.connect(_open_pending_level_up)
 		level_button_parent.add_child(game.level_up_button)
@@ -4252,7 +4256,7 @@ func _update_level_up_button() -> void:
 		badge.add_theme_color_override("font_color", Color(0.08, 0.05, 0.02, 1.0))
 		badge_panel.add_child(badge)
 
-	game.level_up_button.text = "Повышение уровня (%d)" % game.pending_level_ups
+	game.level_up_button.text = "+"
 	game.level_up_button.modulate = Color(1.0, 1.0, 1.0, 1.0)
 	var badge_label := game.level_up_button.find_child("LevelUpPlusBadge", true, false) as Label
 	if badge_label != null:
@@ -5690,11 +5694,11 @@ func _create_combat_timer_panel(root: Control) -> void:
 
 func _timer_panel_style(alarm: bool) -> StyleBox:
 	var tint := Color(1.20, 0.78, 0.72, 1.0) if alarm else Color.WHITE
-	return _global_texture_style(COMBAT_HUD_TIMER_PATH, COMBAT_HUD_TIMER_MARGINS, tint, COMBAT_HUD_TIMER_CONTENT)
+	return _global_texture_style(COMBAT_HUD_TIMER_PATH, COMBAT_HUD_TIMER_MARGINS, tint, COMBAT_HUD_TIMER_RUNTIME_CONTENT)
 
 
 func _ascension_badge_style() -> StyleBox:
-	return _global_texture_style(COMBAT_HUD_ASCENSION_BADGE_PATH, Vector4(0, 0, 0, 0), Color.WHITE, COMBAT_HUD_ASCENSION_CONTENT)
+	return _global_texture_style(COMBAT_HUD_ASCENSION_BADGE_PATH, Vector4(0, 0, 0, 0), Color.WHITE, COMBAT_HUD_ASCENSION_RUNTIME_CONTENT)
 
 
 func _create_artifact_hud_row(root: Control) -> void:
@@ -5718,15 +5722,15 @@ func _layout_combat_hud(root: Control) -> void:
 		viewport_width = 1280.0
 	var margin := 18.0
 	var gap := 14.0
-	var timer_size := Vector2(192, 64)
+	var timer_size := Vector2(288, 96)
 	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
 	if resource != null:
-		var resource_width := clampf(viewport_width * 0.50, 540.0, 750.0)
+		var resource_width := clampf(viewport_width * 0.54, 650.0, 820.0)
 		if viewport_width <= 1280.0:
-			resource_width = minf(resource_width, 600.0)
+			resource_width = minf(resource_width, 690.0)
 		resource.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		resource.position = Vector2(margin, 18.0)
-		resource.custom_minimum_size = Vector2(resource_width, 88.0)
+		resource.custom_minimum_size = Vector2(resource_width, 84.0)
 		resource.size = resource.custom_minimum_size
 	var resource_right := margin
 	if resource != null:
@@ -5755,12 +5759,18 @@ func _layout_combat_hud(root: Control) -> void:
 	if asc_badge != null:
 		var badge_size := 64.0
 		var anchor_left := timer_left + timer_size.x + 8.0
+		var badge_top := 18.0
 		if timer_panel == null:
 			anchor_left = maxf(viewport_width * 0.5 - badge_size * 0.5, resource_right + gap)
 		if anchor_left + badge_size > viewport_width - margin:
 			anchor_left = maxf(margin, timer_left - badge_size - 8.0)
+		var badge_would_overlap_resource := false
+		if resource != null:
+			badge_would_overlap_resource = Rect2(Vector2(anchor_left, badge_top), Vector2(badge_size, badge_size)).intersects(Rect2(resource.position, resource.size))
+		if anchor_left < resource_right + gap and badge_would_overlap_resource:
+			badge_top = 110.0
 		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		asc_badge.position = Vector2(anchor_left, 18.0)
+		asc_badge.position = Vector2(anchor_left, badge_top)
 		asc_badge.custom_minimum_size = Vector2(badge_size, badge_size)
 		asc_badge.size = asc_badge.custom_minimum_size
 
@@ -5770,12 +5780,17 @@ func _layout_combat_hud(root: Control) -> void:
 		var row_left := viewport_width - row_width - margin
 		var row_top := 16.0
 		var occupied_right := resource_right
+		var occupied_bottom := 0.0
+		if resource != null:
+			occupied_bottom = maxf(occupied_bottom, resource.position.y + resource.size.y)
 		if timer_panel != null:
 			occupied_right = maxf(occupied_right, timer_panel.position.x + timer_size.x)
+			occupied_bottom = maxf(occupied_bottom, timer_panel.position.y + timer_size.y)
 		if asc_badge != null:
 			occupied_right = maxf(occupied_right, asc_badge.position.x + asc_badge.custom_minimum_size.x)
+			occupied_bottom = maxf(occupied_bottom, asc_badge.position.y + asc_badge.custom_minimum_size.y)
 		if row_left < occupied_right + gap:
-			row_top = 88.0
+			row_top = occupied_bottom + 8.0
 		artifact_row.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		artifact_row.position = Vector2(row_left, row_top)
 		artifact_row.custom_minimum_size = Vector2(row_width, 104.0)
@@ -5940,7 +5955,7 @@ func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
 	var panel := PanelContainer.new()
 	panel.name = "RunResourceHud"
 	panel.position = position
-	panel.custom_minimum_size = Vector2(650, 78)
+	panel.custom_minimum_size = Vector2(690, 84)
 	panel.add_theme_stylebox_override("panel", _hud_panel_style())
 	parent.add_child(panel)
 
@@ -5957,14 +5972,14 @@ func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
 func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: String, fill_color: Color) -> ProgressBar:
 	var card := PanelContainer.new()
 	card.name = "Hud%sCard" % label_text
-	card.custom_minimum_size = Vector2(126, 54)
-	card.add_theme_stylebox_override("panel", _hud_card_style())
+	card.custom_minimum_size = Vector2(132, 72)
+	card.add_theme_stylebox_override("panel", _hud_card_style(icon_id))
 	parent.add_child(card)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 5)
+	line.add_theme_constant_override("separation", 4)
 	card.add_child(line)
-	line.add_child(game.UIIconRegistry.make_icon(icon_id, Vector2(30, 30)))
+	line.add_child(game.UIIconRegistry.make_icon(icon_id, Vector2(24, 24)))
 
 	var value_box := VBoxContainer.new()
 	value_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -5973,7 +5988,7 @@ func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: 
 
 	var value_label := Label.new()
 	value_label.name = "Hud%sLabel" % label_text
-	value_label.add_theme_font_size_override("font_size", 15)
+	value_label.add_theme_font_size_override("font_size", 14)
 	value_label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
 	value_box.add_child(value_label)
 	if icon_id == "hp":
@@ -5985,10 +6000,10 @@ func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: 
 
 	var bar := ProgressBar.new()
 	bar.name = "Hud%sBar" % label_text
-	bar.custom_minimum_size = Vector2(62, 10)
+	bar.custom_minimum_size = Vector2(58, 8)
 	bar.show_percentage = false
 	bar.add_theme_stylebox_override("background", _bar_style(Color(0.06, 0.07, 0.09, 0.94)))
-	bar.add_theme_stylebox_override("fill", _bar_style(fill_color))
+	bar.add_theme_stylebox_override("fill", _hud_bar_fill_style(icon_id, fill_color))
 	value_box.add_child(bar)
 	return bar
 
@@ -5996,14 +6011,21 @@ func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: 
 func _add_hud_money_card(parent: HBoxContainer) -> void:
 	var card := PanelContainer.new()
 	card.name = "HudMoneyCard"
-	card.custom_minimum_size = Vector2(88, 54)
-	card.add_theme_stylebox_override("panel", _hud_card_style())
+	card.custom_minimum_size = Vector2(104, 72)
+	card.add_theme_stylebox_override("panel", _hud_card_style("money"))
 	parent.add_child(card)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 5)
+	line.add_theme_constant_override("separation", 4)
 	card.add_child(line)
-	line.add_child(game.UIIconRegistry.make_icon("money", Vector2(30, 30)))
+	var money_icon := TextureRect.new()
+	money_icon.name = "UIIcon_money"
+	money_icon.custom_minimum_size = Vector2(24, 24)
+	money_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	money_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	money_icon.texture = game._cached_texture(COMBAT_HUD_GOLD_MEDALLION_PATH)
+	money_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	line.add_child(money_icon)
 
 	game.money_label = Label.new()
 	game.money_label.name = "HudMoneyLabel"
@@ -6014,11 +6036,19 @@ func _add_hud_money_card(parent: HBoxContainer) -> void:
 
 
 func _hud_panel_style() -> StyleBox:
-	return _unified_frame_style("hud_panel")
+	return _global_texture_style(COMBAT_HUD_RESOURCE_PANEL_PATH, COMBAT_HUD_RESOURCE_PANEL_MARGINS, Color.WHITE, COMBAT_HUD_RESOURCE_PANEL_RUNTIME_CONTENT)
 
 
-func _hud_card_style() -> StyleBox:
-	return _unified_frame_style("hud_card")
+func _hud_card_style(icon_id := "hp") -> StyleBox:
+	var path := str(COMBAT_HUD_CARD_PATHS.get(icon_id, COMBAT_HUD_CARD_PATHS["hp"]))
+	return _global_texture_style(path, COMBAT_HUD_CARD_MARGINS, Color.WHITE, COMBAT_HUD_CARD_RUNTIME_CONTENT)
+
+
+func _hud_bar_fill_style(icon_id: String, fallback_color: Color) -> StyleBox:
+	var path := str(COMBAT_HUD_BAR_FILL_PATHS.get(icon_id, ""))
+	if path != "" and ResourceLoader.exists(path):
+		return _global_texture_style(path, Vector4(4, 4, 4, 4), Color.WHITE, Vector4.ZERO)
+	return _bar_style(fallback_color)
 
 
 func _run_resource_values() -> Dictionary:
