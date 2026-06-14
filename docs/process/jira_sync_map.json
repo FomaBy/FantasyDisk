@@ -1606,8 +1606,8 @@
  },
  "animation_integrate_all_move_attack_death_states_task.md": {
   "key": "SCRUM-370",
-  "status": "В работе",
-  "desc_hash": "f39b7ba01386c21749be76a735f2a5f1"
+  "status": "К выполнению",
+  "desc_hash": "528a3f8f01c223c4e3186183ca6e4806"
  },
  "animation_shard_marshal_full_frame_integration_task.md": {
   "key": "SCRUM-371",
@@ -1626,8 +1626,8 @@
  },
  "bug_feedback_webhook_image_attachment_missing_task.md": {
   "key": "SCRUM-374",
-  "status": "К выполнению",
-  "desc_hash": "8869ac7b83f34f0e17ebda734425c146"
+  "status": "Готово",
+  "desc_hash": "781f7db6a0fad1152421240e6b3f96d0"
  },
  "backend_debug_mode_click_to_move_player_task.md": {
   "key": "SCRUM-375",
@@ -1656,8 +1656,8 @@
  },
  "design_full_frame_death_rows_allies_elites_bosses_task.md": {
   "key": "SCRUM-380",
-  "status": "В работе",
-  "desc_hash": "298e034bac67c1b72d609e94b3344576"
+  "status": "Готово",
+  "desc_hash": "1062062d39405634beb6651d131b1279"
  },
  "design_integrate_generated_unified_master_frame_task.md": {
   "key": "SCRUM-381",
@@ -1671,57 +1671,117 @@
  },
  "design_integrate_generated_scrum380_death_rows_task.md": {
   "key": "SCRUM-383",
-  "status": "К выполнению",
-  "desc_hash": "6420ebc6464562d437c3c4f63bceb5f9"
+  "status": "Готово",
+  "desc_hash": "93d08501cb068245cf9975f82bf48af8"
  },
  "design_integrate_generated_scrum380_death_rows_2_task.md": {
   "key": "SCRUM-383",
-  "status": "К выполнению",
-  "desc_hash": "da22d7fab1601f8ae3c6f581689462f0"
+  "status": "Готово",
+  "desc_hash": "62c4a17a2e739f9d6eaae8d44e949b07"
  },
  "design_unified_frame_revise_thin_metallic_task.md": {
   "key": "SCRUM-384",
-  "status": "К выполнению",
-  "desc_hash": "15228a736c648f66263893b4a47ebae2"
+  "status": "В работе",
+  "desc_hash": "2cc2c3a3f4392da6537a660a08fbfcf0"
  },
  "design_integrate_generated_scrum380_death_rows_3_task.md": {
   "key": "SCRUM-383",
-  "status": "К выполнению",
-  "desc_hash": "97b7904ec19dbdbbfa9d87192e977b82"
+  "status": "Готово",
+  "desc_hash": "f281ed457f4635985756340ed94aed1d"
  },
  "design_integrate_generated_scrum380_death_rows_4_task.md": {
   "key": "SCRUM-383",
-  "status": "К выполнению",
-  "desc_hash": "24a08903b473907ef9c62fe3c10ab0aa"
+  "status": "Готово",
+  "desc_hash": "767a110278a3da308c6fb2d97e021a0c"
  },
  "design_integrate_generated_scrum380_death_rows_5_task.md": {
   "key": "SCRUM-383",
-  "status": "К выполнению",
-  "desc_hash": "8c402c4a1f08dbccec48ed38695da649"
+  "status": "Готово",
+  "desc_hash": "576571e6174cfa423f299e169e012978"
  },
  "design_integrate_generated_scrum380_death_rows_6_task.md": {
   "key": "SCRUM-383",
-  "status": "К выполнению",
-  "desc_hash": "7e2707d16ae46ae58621b803d611e54c"
+  "status": "Готово",
+  "desc_hash": "5b456dba45f703df1f74d0cf1f6df789"
  },
  "design_integrate_generated_scrum380_death_rows_10_task.md": {
   "key": "SCRUM-383",
-  "status": "К выполнению",
-  "desc_hash": "3771a56d18160c4cd1a747c6d4fbc717"
+  "status": "Готово",
+  "desc_hash": "0596337cc211eb163da3b1f5bdaef5d5"
  },
  "design_integrate_generated_scrum380_death_rows_7_task.md": {
   "key": "SCRUM-383",
-  "status": "К выполнению",
-  "desc_hash": "9dbaf6a0b0bb4707ac7ba7062819afc9"
+  "status": "Готово",
+  "desc_hash": "9c22ee16dc891ae1d664ea2b06d10cb0"
  },
  "design_integrate_generated_scrum380_death_rows_8_task.md": {
   "key": "SCRUM-383",
-  "status": "К выполнению",
-  "desc_hash": "26c20b6d0c63ae1eb235e4729afdeff2"
+  "status": "Готово",
+  "desc_hash": "d54e9697b552cbcc60364e64ae452c86"
  },
  "design_integrate_generated_scrum380_death_rows_9_task.md": {
   "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "63c6d1ac5942ca11ac1bab7ea7bfb945"
+ },
+ "design_integrate_generated_scrum380_death_rows_11_task.md": {
+  "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "24cb19ad78dec55d950cfbb2c4821962"
+ },
+ "design_integrate_generated_scrum380_death_rows_12_task.md": {
+  "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "98c069684217be38a39a042b339097e5"
+ },
+ "design_integrate_generated_scrum380_death_rows_13_task.md": {
+  "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "22dd05dfe77c392fe59710c35468e5c8"
+ },
+ "design_integrate_generated_scrum380_death_rows_14_task.md": {
+  "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "811bca0d01566fd4cd3d002f756f03a0"
+ },
+ "design_integrate_generated_scrum380_death_rows_15_task.md": {
+  "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "faf7d3caa882d382412b0be6aaefa279"
+ },
+ "design_integrate_generated_scrum380_death_rows_16_task.md": {
+  "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "dbcb0e4e431ac9b28214d000546b1872"
+ },
+ "design_integrate_generated_scrum380_death_rows_17_task.md": {
+  "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "fc3a6ce164e9a746850d8dab8671e1e4"
+ },
+ "design_integrate_generated_scrum380_death_rows_18_task.md": {
+  "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "43684eef78f75993f0c9b7fd850ab9ff"
+ },
+ "design_integrate_generated_scrum380_death_rows_19_task.md": {
+  "key": "SCRUM-383",
+  "status": "Готово",
+  "desc_hash": "8d185d813f54ed3a666191d9a9485d43"
+ },
+ "bug_victory_flow_runtime_smoke_text_missing_task.md": {
+  "key": "SCRUM-385",
+  "status": "В работе",
+  "desc_hash": "0af7ad44488452852d094344926609d3"
+ },
+ "bug_runtime_smoke_victory_text_race_after_death_animation_task.md": {
+  "key": "SCRUM-386",
   "status": "К выполнению",
-  "desc_hash": "dcd8e1607136bb34990e545de39ce672"
+  "desc_hash": "322e65924d24624f4661033339a77c76"
+ },
+ "design_integrate_generated_unified_master_frame_2_task.md": {
+  "key": "SCRUM-381",
+  "status": "К выполнению",
+  "desc_hash": "470f950039dbf58c3ee4395956d6d821"
  }
 }
