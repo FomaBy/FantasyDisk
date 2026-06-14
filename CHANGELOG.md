@@ -5,6 +5,10 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- Cleanup audit (SCRUM-269): added `docs/design/reviews/cleanup_assets_audit_2026_06.md`
+  with dynamic-path protection for weapon VFX, weapon sprites, boss/mini-elite
+  source art and UI/icon/cutout families; spawned SCRUM-271 for isolated orphan
+  ` 2.png.import` sidecar cleanup.
 - Опорные balance-гейты патча 0.1.5 (SCRUM-249): `tests/global_damage_balance_smoke_test.gd` (комбинированное бюджет-отклонение по всем парам класс×оружие в коридоре ±25%) и `tests/global_survivability_balance_smoke_test.gd` (TTD/митигация в коридорах + проверяемое «бессмертие недостижимо»: митигированный входящий урон > реген). Отчёты в `build/global_*_balance_report.md`. Запуск: `tools/run_focused_tests.sh global_damage global_survivability` или по отдельности через Godot headless. Каждая балансовая задача 0.1.5 проверяется против этих гейтов.
 - Class mechanics framework (SCRUM-256): добавлен `ProgressionData.CLASS_MECHANIC_IDENTITIES` и API `class_mechanic_identity` / `class_main_attribute` / `weapon_mechanic_identity`, фиксирующие главный атрибут, уникальную идентичность и 3 weapon identity для всех 17 классов без изменения текущего баланса.
 - Attribute×weapon synergy matrix (SCRUM-243): добавлены `ProgressionData.ATTRIBUTE_WEAPON_SYNERGY_MAP`, `weapon_archetype()` и `attribute_weapon_synergy_description()`; smoke проверяет, что каждый из 8 базовых атрибутов меняет фактический параметр для melee/projectile/beam/aoe/summon/aura representative оружия.
@@ -14,11 +18,23 @@
 - Elite/boss mechanics framework (SCRUM-259): добавлен `ProgressionData.ENEMY_MECHANIC_CATALOG`, `ELITE_ATTACK_CONFIGS` и `UNIQUE_ENCOUNTER_PATTERNS` для 4 элиток и 5 боссов; runtime записывает unique pattern/mechanics в meta, а smoke проверяет каталог, уникальность signatures, telegraph/state phases и фактический spawn уникальных boss mechanics.
 - Aim modes (SCRUM-241): во вкладке «Управление» добавлен persisted переключатель `Автонаводка на ближайшего` / `По курсору`; оружие берет направление и point-AoE из единого `Player.attack_aim_direction()` / `attack_aim_position()`, а focused smoke проверяет персист и фактическую смену вектора атаки.
 - UI buttons (SCRUM-263/SCRUM-264): стандартные action-кнопки используют единую высоту 104px; главное меню поднято до нового стандарта, широкие кнопки capped по визуальной ширине, а text-heavy choices в наградах/костре/событиях/upgrade показывают описание в отдельной рамке над короткой стандартной кнопкой.
+- Red & Gold Dragon buttons (SCRUM-273): добавлен live-кит из 15 button types × 4 states в `assets/sprites/ui/frames/red_gold/`, pipeline `tools/build_red_gold_button_kit.py`, contact preview `docs/design/previews/red_gold_button_kit_contact.png` и backup прежнего parchment/wax button kit в `build/cleanup_backup_red_gold_buttons_2026_06_14/`.
+- Ornate Dark frames (SCRUM-274): добавлен live-кит из 13 non-button frame assets в `assets/sprites/ui/frames/ornate/`, pipeline `tools/build_ornate_ui_frame_kit.py`, contact preview `docs/design/previews/ornate_dark_frame_kit_contact.png` и backup прежних leather/gold + dark_fantasy/escape panel textures в `build/cleanup_backup_ornate_frames_2026_06_14/`.
 - Elite/boss VFX kit (SCRUM-261): добавлены 13 dedicated D&D/painterly PNG для `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`, summon portal, shield block, reflect-thorns aura, command aura, shadow blink mark и shard fan warning; preview `docs/design/previews/scrum261_elite_boss_vfx_contact.png`.
 - Unique weapon VFX kit (SCRUM-258): добавлен полный набор из 51 transparent PNG `assets/sprites/effects/vfx_weapon_<weapon_id>.png` для всех class weapon identities 0.1.5, contact/readability previews и focused smoke `tests/unique_weapon_vfx_assets_test.gd`.
 - Final balance audit (SCRUM-262): global damage smoke теперь проверяет не только combined solo/5-target DPS, но и финальный solo corridor ±20% плюс crowd-clear time 5/10/20 в коридоре ±30%; `tools/balance_harness.gd` пишет `build/balance_final_audit_0_1_5.md` с class viability и CCT таблицами для всех 51 class+weapon пар.
 
 ### Changed
+- Settings UI (SCRUM-275): вкладка «Управление» теперь прокручивается внутри
+  `ControlsScroll` с `follow_focus`, поэтому переключатель прицеливания, все
+  биндинги и кнопка сброса доступны на 1280x720, а кнопка «Назад» остается вне
+  скролла и не перекрывается.
+- Weapon integrity (SCRUM-277): 18 legacy proxy-texture links in Thief,
+  Elementalist, Sniper, Priest, Biologist and Engineer weapon scenes now point
+  to their canonical `assets/sprites/weapons/<weapon_id>.png`; `PriestChime`
+  no longer renders as the Guitarist `sound_amp`. Added
+  `tests/weapon_integrity_test.gd` covering all 17 classes and 51 weapons from
+  data -> scene -> equipped player visual.
 - Attribute formulas (SCRUM-243): `derived_parameters` получил мягкий universal cross-scaling для damage/magic/sound, attack speed, range/AoE, projectile speed, DoT, aura, summon и ultimate, чтобы непрофильные атрибуты тоже работали на любом weapon archetype; `budget_damage_multiplier` удерживает стартовый DPS в глобальном damage-smoke коридоре.
 - Melee balance (SCRUM-251): Берсерк, Soldier Bayonet, Assassin Shadow Daggers, Doctor Bone Saw, Knight melee kit и Robot compression/anchor получили разные ближние identity-эффекты без авто-движения игрока; `ProgressionData.estimate_weapon_budget()` учитывает эти melee bonuses при tuning.
 - Summoner balance (SCRUM-254): Друидская стая стала быстрым damage-pack, гомункул Химика — более живучим control-minion, вороний тотем — support/control deploy, а инженерные sentry/drone получили роли устройств; `ProgressionData.estimate_weapon_budget()` больше не считает чистые summon-оружия как невидимый прямой удар.
@@ -31,6 +47,8 @@
 - Player weapon VFX routing (SCRUM-258): `ClassWeapon` добавляет короткую `AttackVfx.weapon_signature()` пластину по текущему `weapon_id`, чтобы новые unique attacks/auras/status identities имели отличимый visual read без изменения damage, targeting, cooldowns, timings или balance.
 - Combat control (SCRUM-253): критовые механики Ассасина больше не двигают тело игрока автоматически; бывший crit dash заменен на неподвижный shadow burst у цели, а `shadow_backstab` Вора стал фантомным ударом без телепорта игрока. Smoke-тест проверяет, что крит, уворот и backstab не меняют `global_position` героя без ввода.
 - Balance gates (SCRUM-262): финальная 0.1.5 сверка прошла без числовых правок оружия — худшее crowd-clear отклонение +22.0% (`doctor/plague_syringe`, 20 целей), внутри ±30%, каждый класс имеет минимум одно crowd-viable оружие.
+- UI theme (SCRUM-273): runtime button styleboxes теперь выбирают Red & Gold Dragon texture type по node name/role/size (`main_menu`, `hero_confirm`, `reset_audio`, `reset_bindings`, `codex_tab`, `attr_selector`, `back_s/m/l`, `fab`, `utility`, `pause`, `rebind`); non-button panels оставались отдельным scope и затем были заменены SCRUM-274.
+- UI frames (SCRUM-274): global/level/card/hero/hover/tooltip/HUD/timer styleboxes теперь используют signed texture/content margins из Ornate Dark spec sheet; Escape stats menu переведен на ornate pause/stat frames и Red & Gold pause buttons.
 
 ## [0.1.4] — 2026-06-13
 

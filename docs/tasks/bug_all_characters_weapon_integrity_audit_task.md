@@ -1,6 +1,6 @@
 # BUG: Аудит оружия ВСЕХ персонажей — у Священника усилок вместо «Колокола»
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (геймплей)
 Версия: 0.1.5
@@ -64,3 +64,62 @@ level-up/weapon-pickup путает оружие с пассивным пред�
 
 ## Документация
 docs/design/content_registry.md, docs/design/systems/combat.md, current_game_state.
+
+## Result (2026-06-14)
+
+Done. Root cause: `PriestChime.tscn` had the correct `weapon_id =
+"priest_chime"` and `attack_mode = "priest_prayer_chain"`, but its
+`WeaponVisual` texture still pointed at the Guitarist `sound_amp.png`. The
+issue was not a collision with passive `summoners_bell`; it was a stale proxy
+texture reference in the scene. The full audit found the same proxy-texture
+class of bug in 18 scenes across Thief, Elementalist, Sniper, Priest, Biologist
+and Engineer. All 18 now point to their canonical
+`assets/sprites/weapons/<weapon_id>.png`.
+
+Additional scene/data mismatches fixed:
+- `TwoHandedAxe.tscn`: scene `attack_shape` now matches data (`sweep`).
+- `RestorePotion.tscn`: scene `attack_mode` now matches data (`drain_link`).
+- `PlagueSyringe.tscn`: scene `attack_mode` now matches data (`drain_link`).
+
+New regression coverage:
+- `tests/weapon_integrity_test.gd` checks all 17 classes and 51 weapons:
+  exactly 3 weapon IDs per class, non-empty config/scene marker, no passive/shop
+  ID collision, existing scene and canonical texture, scene `weapon_id`, scene
+  attack mode/shape for the owning script, and actual
+  `Player.configure_character(character, weapon)` equipped visual.
+
+Audit table:
+
+| Class | Weapons | Status |
+| --- | --- | --- |
+| berserk | sword, axe, hammer | OK |
+| soldier | soldier_rifle, soldier_grenade, soldier_bayonet | OK |
+| thief | thief_coin_pouch, thief_shadow_cloak, thief_smoke_bomb | OK |
+| elementalist | elementalist_orb_ring, elementalist_prism_focus, elementalist_meteor_core | OK |
+| sniper | sniper_deadeye_rifle, sniper_spotter_scope, sniper_shatter_rounds | OK |
+| priest | priest_reliquary, priest_censer, priest_chime | OK |
+| biologist | biologist_spore_lens, biologist_sample_injector, biologist_symbiote_seed | OK |
+| robot | robot_magnetic_anchor, robot_hydraulic_press, robot_reactor_core | OK |
+| engineer | engineer_sentry_wrench, engineer_repair_drone, engineer_pressure_mines | OK |
+| dark_mage | dark_book, cursed_skull, dark_wand | OK |
+| guitarist | electric_guitar, bass_guitar, sound_amp | OK |
+| assassin | chakrams, shadow_daggers, venom_wire | OK |
+| ranger | moon_crossbow, storm_longbow, hunter_trap | OK |
+| doctor | restore_potion, plague_syringe, bone_saw | OK |
+| chemist | blast_powder, acid_flask, homunculus_vial | OK |
+| knight | long_spear, tower_shield, holy_flail | OK |
+| druid | summon_amulet, briar_staff, raven_totem | OK |
+
+Verification:
+- `res://tests/weapon_integrity_test.gd` PASS (17 classes, 51 weapons).
+- `res://tests/progression_data_api_surface_test.gd` PASS.
+- `res://tests/weapon_identity_diversity_test.gd` PASS.
+- `res://tests/runtime_smoke_weapon_mechanics_test.gd` PASS.
+- `res://tests/global_damage_balance_smoke_test.gd` PASS.
+- `res://tests/runtime_smoke_test.gd` PASS.
+
+Docs updated:
+- `CHANGELOG.md`
+- `docs/design/content_registry.md`
+- `docs/design/current_game_state.md`
+- `docs/design/systems/combat.md`

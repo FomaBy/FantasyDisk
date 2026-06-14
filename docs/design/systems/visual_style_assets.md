@@ -64,16 +64,23 @@ types with four states each: idle/base, hover, pressed and disabled. The old
 parchment/wax button kit is backed up outside live assets at
 `build/cleanup_backup_red_gold_buttons_2026_06_14/`.
 
-SCRUM-229 still owns non-button panels/windows/bars/checks through the
-user-provided **leather+gold panel/window kit** from
-`docs/design/references/interface/`: dark leather/stone interiors, engraved gold
-edging, corner brackets, rivets and restrained warm glow. Buttons use Red & Gold
-Dragon; panels/windows/bars/checks use leather+gold.
+SCRUM-274 supersedes the SCRUM-229 leather+gold runtime panel direction with the
+active **Ornate Dark / Red frame kit** from
+`docs/design/references/UiFrame/frame_kit_ornate_dark_sheet_b_spec.png`.
+Non-button panels/windows/cards/tooltips/HUD/pause stat frames now resolve to
+`assets/sprites/ui/frames/ornate/`. The old leather+gold and previous
+dark_fantasy/escape panel textures are backed up outside live assets at
+`build/cleanup_backup_ornate_frames_2026_06_14/`.
 
-Canonical dark fantasy assets live in `assets/sprites/ui/frames/dark_fantasy/`:
+Canonical live ornate frame assets live in `assets/sprites/ui/frames/ornate/`:
 
-- `ui_df_panel_frame.png`, `ui_df_card_frame.png`, `ui_df_level_panel_frame.png`, `ui_df_hud_panel_frame.png`, `ui_df_hud_card_frame.png`, `ui_df_tooltip_frame.png`;
-- `ui_df_stat_row_frame.png`, `ui_df_stat_chip_frame.png`, `ui_df_shop_frame.png`, `ui_df_section_divider.png`, `ui_df_stat_value_state_swatches.png`.
+- `ui_frame_ornate_global_panel.png`, `ui_frame_ornate_level_panel.png`,
+  `ui_frame_ornate_card_frame.png`, `ui_frame_ornate_hero_card.png`;
+- `ui_frame_ornate_card_hover.png`, `ui_frame_ornate_tooltip.png`,
+  `ui_frame_ornate_hud_panel.png`, `ui_frame_ornate_hud_card.png`,
+  `ui_frame_ornate_timer_panel.png`;
+- `ui_frame_ornate_pause_main.png`, `ui_frame_ornate_pause_stat_group.png`,
+  `ui_frame_ornate_pause_stat_chip.png`, `ui_frame_ornate_pause_stat_tooltip.png`.
 
 Canonical live button assets live in `assets/sprites/ui/frames/red_gold/`:
 
@@ -106,18 +113,30 @@ Runtime button sizing (SCRUM-263/SCRUM-264):
 - route nodes, shop item hit areas, hero thumbnails and weapon/reward cards are
   intentional exceptions and should not receive the heavy action button frame.
 
-SCRUM-229 updates the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, selected `assets/sprites/ui/shop/` paths and non-button `assets/sprites/ui/frames/dark_fantasy/` paths to leather+gold visuals. SCRUM-222 completed Back-end integration for explicit 4-state button styleboxes: runtime button roles map to `primary`, `secondary`, and `danger` texture sets, while common panels/cards/HUD/tooltip styleboxes resolve through `dark_fantasy/` frame paths that now carry the leather+gold panel kit.
+Runtime frame sizing (SCRUM-274):
+
+- `UIThemePaths.ORNATE_FRAME_MARGINS` and `ORNATE_FRAME_CONTENT` mirror the
+  signed texture/content margins from the user spec sheet;
+- global panels use 34px texture margins and 28/26 content padding;
+- level panels use 46px texture margins and 34/30 content padding;
+- cards use the card/hero/hover-specific margins from the sheet instead of
+  stretching one generic frame everywhere;
+- HUD and timer panels use their dedicated horizontal frame assets;
+- Escape stats uses `pause_main`, `pause_stat_group`, `pause_stat_chip` and
+  `pause_stat_tooltip` frames; its buttons use the SCRUM-273 `pause` button.
 
 Rebuild/QA assets:
 
 - `tools/build_red_gold_button_kit.py` - SCRUM-273 active button kit pipeline from the Red & Gold Dragon sheet;
+- `tools/build_ornate_ui_frame_kit.py` - SCRUM-274 active panel/frame pipeline from the Ornate Dark spec sheet;
 - `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
-- `tools/build_leather_gold_ui_kit.py` - active SCRUM-229 panel/window pipeline from user interface references;
+- `tools/build_leather_gold_ui_kit.py` - superseded SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
 - `docs/design/previews/red_gold_button_kit_contact.png` - active SCRUM-273 button state/type contact sheet;
+- `docs/design/previews/ornate_dark_frame_kit_contact.png` - active SCRUM-274 frame contact sheet;
 - `docs/design/previews/ui_button_only_legacy_panels_contact.png` - SCRUM-147 side-by-side correction sheet;
-- `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - active SCRUM-229 leather+gold panel kit sheet;
-- `build/qa/interface_leather_gold_panel_kit_contact.png` - QA copy of the active leather+gold kit sheet;
+- `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - superseded SCRUM-229 leather+gold panel kit sheet;
+- `build/qa/interface_leather_gold_panel_kit_contact.png` - historical QA copy of the SCRUM-229 leather+gold kit sheet;
 - `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png` - compatibility copy of the active correction sheet;
 - `docs/design/previews/ui_parchment_kit_reference_contact.png` - contact sheet of the six fullscreen parchment-kit references.
 
@@ -125,7 +144,7 @@ System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, a
 
 ## Contextual UI Direction
 
-`docs/design/ui_contextual_concept.md` and the generated contextual kit in `assets/sprites/ui/frames/contextual/` are superseded by SCRUM-147. Their files may remain as historical/reference assets until Back-end cleanup confirms no live references, but they are no longer the UI direction for new screens. Context may still influence role color and button role selection, but only through the new dark fantasy canon.
+`docs/design/ui_contextual_concept.md` and the generated contextual kit in `assets/sprites/ui/frames/contextual/` are superseded by the SCRUM-273/SCRUM-274 UI canon. Their files may remain as historical/reference assets until Back-end cleanup confirms no live references, but they are no longer the UI direction for new screens. Context may still influence role color and button/frame selection, but only through the new Red & Gold Dragon + Ornate Dark canon.
 
 Hard no-junk rule from the user: UI work must not add abstract decorative lines, circles, squares, dots, grids or filler marks. Every visible detail must read as a UI affordance or a believable D&D/tabletop material detail; otherwise it is a Design review defect.
 

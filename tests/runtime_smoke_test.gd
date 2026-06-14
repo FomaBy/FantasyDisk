@@ -44,8 +44,8 @@ func _initialize() -> void:
 	var start_theme_button := main.find_child("MainMenuStartButton", true, false) as Button
 	var settings_theme_button := main.find_child("MainMenuSettingsButton", true, false) as Button
 	var exit_theme_button := main.find_child("MainMenuExitButton", true, false) as Button
-	if not _button_uses_dark_fantasy_role(start_theme_button, "primary") or not _button_uses_dark_fantasy_role(settings_theme_button, "secondary") or not _button_uses_dark_fantasy_role(exit_theme_button, "danger"):
-		push_error("Expected main menu buttons to use canonical dark fantasy primary/secondary/danger state textures.")
+	if not _button_uses_red_gold_type(start_theme_button, "main_menu") or not _button_uses_red_gold_type(settings_theme_button, "main_menu") or not _button_uses_red_gold_type(exit_theme_button, "main_menu"):
+		push_error("Expected main menu buttons to use canonical Red & Gold Dragon state textures.")
 		quit(1)
 		return
 	if main_menu_actions.global_position.x > 140.0:
@@ -2198,14 +2198,14 @@ func _node_sprite_texture_path(node: Node, sprite_name: String) -> String:
 	return sprite.texture.resource_path
 
 
-func _button_uses_dark_fantasy_role(button: Button, role: String) -> bool:
+func _button_uses_red_gold_type(button: Button, button_type: String) -> bool:
 	if button == null:
 		return false
 	var expected := {
-		"normal": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_idle.png" % role,
-		"hover": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_hover.png" % role,
-		"pressed": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_pressed.png" % role,
-		"disabled": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_disabled.png" % role,
+		"normal": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
+		"hover": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_hover.png" % button_type,
+		"pressed": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_pressed.png" % button_type,
+		"disabled": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_disabled.png" % button_type,
 	}
 	for state in expected.keys():
 		var style := button.get_theme_stylebox(state)
@@ -2294,29 +2294,29 @@ func _test_class_weapon_configs() -> void:
 			"soldier_bayonet": {"scene": "SoldierBayonet", "mode": "bayonet_brace", "sprite": "res://assets/sprites/weapons/soldier_bayonet.png"},
 		},
 		"thief": {
-			"thief_coin_pouch": {"scene": "ThiefCoinPouch", "mode": "coin_ricochet", "sprite": "res://assets/sprites/weapons/chakrams.png"},
-			"thief_shadow_cloak": {"scene": "ThiefShadowCloak", "mode": "shadow_backstab", "sprite": "res://assets/sprites/weapons/shadow_daggers.png"},
-			"thief_smoke_bomb": {"scene": "ThiefSmokeBomb", "mode": "smoke_bomb", "sprite": "res://assets/sprites/weapons/blast_powder.png"},
+			"thief_coin_pouch": {"scene": "ThiefCoinPouch", "mode": "coin_ricochet", "sprite": "res://assets/sprites/weapons/thief_coin_pouch.png"},
+			"thief_shadow_cloak": {"scene": "ThiefShadowCloak", "mode": "shadow_backstab", "sprite": "res://assets/sprites/weapons/thief_shadow_cloak.png"},
+			"thief_smoke_bomb": {"scene": "ThiefSmokeBomb", "mode": "smoke_bomb", "sprite": "res://assets/sprites/weapons/thief_smoke_bomb.png"},
 		},
 		"elementalist": {
-			"elementalist_orb_ring": {"scene": "ElementalistOrbRing", "mode": "elemental_orbit", "sprite": "res://assets/sprites/weapons/dark_wand.png"},
-			"elementalist_prism_focus": {"scene": "ElementalistPrismFocus", "mode": "prism_rift", "sprite": "res://assets/sprites/weapons/acid_flask.png"},
-			"elementalist_meteor_core": {"scene": "ElementalistMeteorCore", "mode": "meteor_shards", "sprite": "res://assets/sprites/weapons/blast_powder.png"},
+			"elementalist_orb_ring": {"scene": "ElementalistOrbRing", "mode": "elemental_orbit", "sprite": "res://assets/sprites/weapons/elementalist_orb_ring.png"},
+			"elementalist_prism_focus": {"scene": "ElementalistPrismFocus", "mode": "prism_rift", "sprite": "res://assets/sprites/weapons/elementalist_prism_focus.png"},
+			"elementalist_meteor_core": {"scene": "ElementalistMeteorCore", "mode": "meteor_shards", "sprite": "res://assets/sprites/weapons/elementalist_meteor_core.png"},
 		},
 		"sniper": {
-			"sniper_deadeye_rifle": {"scene": "SniperDeadeyeRifle", "mode": "sniper_lockshot", "sprite": "res://assets/sprites/weapons/moon_crossbow.png"},
-			"sniper_spotter_scope": {"scene": "SniperSpotterScope", "mode": "sniper_kill_zone", "sprite": "res://assets/sprites/weapons/soldier_rifle.png"},
-			"sniper_shatter_rounds": {"scene": "SniperShatterRounds", "mode": "sniper_split_round", "sprite": "res://assets/sprites/weapons/storm_longbow.png"},
+			"sniper_deadeye_rifle": {"scene": "SniperDeadeyeRifle", "mode": "sniper_lockshot", "sprite": "res://assets/sprites/weapons/sniper_deadeye_rifle.png"},
+			"sniper_spotter_scope": {"scene": "SniperSpotterScope", "mode": "sniper_kill_zone", "sprite": "res://assets/sprites/weapons/sniper_spotter_scope.png"},
+			"sniper_shatter_rounds": {"scene": "SniperShatterRounds", "mode": "sniper_split_round", "sprite": "res://assets/sprites/weapons/sniper_shatter_rounds.png"},
 		},
 		"priest": {
-			"priest_reliquary": {"scene": "PriestReliquary", "mode": "priest_sanctify", "sprite": "res://assets/sprites/weapons/restore_potion.png"},
-			"priest_censer": {"scene": "PriestCenser", "mode": "priest_ward", "sprite": "res://assets/sprites/weapons/holy_flail.png"},
-			"priest_chime": {"scene": "PriestChime", "mode": "priest_prayer_chain", "sprite": "res://assets/sprites/weapons/sound_amp.png"},
+			"priest_reliquary": {"scene": "PriestReliquary", "mode": "priest_sanctify", "sprite": "res://assets/sprites/weapons/priest_reliquary.png"},
+			"priest_censer": {"scene": "PriestCenser", "mode": "priest_ward", "sprite": "res://assets/sprites/weapons/priest_censer.png"},
+			"priest_chime": {"scene": "PriestChime", "mode": "priest_prayer_chain", "sprite": "res://assets/sprites/weapons/priest_chime.png"},
 		},
 		"biologist": {
-			"biologist_spore_lens": {"scene": "BiologistSporeLens", "mode": "bio_spore_bloom", "sprite": "res://assets/sprites/weapons/briar_staff.png"},
-			"biologist_sample_injector": {"scene": "BiologistSampleInjector", "mode": "bio_sample_dart", "sprite": "res://assets/sprites/weapons/plague_syringe.png"},
-			"biologist_symbiote_seed": {"scene": "BiologistSymbioteSeed", "mode": "bio_symbiote_web", "sprite": "res://assets/sprites/weapons/homunculus_vial.png"},
+			"biologist_spore_lens": {"scene": "BiologistSporeLens", "mode": "bio_spore_bloom", "sprite": "res://assets/sprites/weapons/biologist_spore_lens.png"},
+			"biologist_sample_injector": {"scene": "BiologistSampleInjector", "mode": "bio_sample_dart", "sprite": "res://assets/sprites/weapons/biologist_sample_injector.png"},
+			"biologist_symbiote_seed": {"scene": "BiologistSymbioteSeed", "mode": "bio_symbiote_web", "sprite": "res://assets/sprites/weapons/biologist_symbiote_seed.png"},
 		},
 		"robot": {
 			"robot_magnetic_anchor": {"scene": "RobotMagneticAnchor", "mode": "robot_magnetic_anchor", "sprite": "res://assets/sprites/weapons/robot_magnetic_anchor.png"},
@@ -2324,9 +2324,9 @@ func _test_class_weapon_configs() -> void:
 			"robot_reactor_core": {"scene": "RobotReactorCore", "mode": "robot_reactor_vent", "sprite": "res://assets/sprites/weapons/robot_reactor_core.png"},
 		},
 		"engineer": {
-			"engineer_sentry_wrench": {"scene": "EngineerSentryWrench", "mode": "engineer_sentry_link", "sprite": "res://assets/sprites/weapons/raven_totem.png"},
-			"engineer_repair_drone": {"scene": "EngineerRepairDrone", "mode": "engineer_repair_drone", "sprite": "res://assets/sprites/weapons/summon_amulet.png"},
-			"engineer_pressure_mines": {"scene": "EngineerPressureMines", "mode": "engineer_pressure_mines", "sprite": "res://assets/sprites/weapons/hunter_trap.png"},
+			"engineer_sentry_wrench": {"scene": "EngineerSentryWrench", "mode": "engineer_sentry_link", "sprite": "res://assets/sprites/weapons/engineer_sentry_wrench.png"},
+			"engineer_repair_drone": {"scene": "EngineerRepairDrone", "mode": "engineer_repair_drone", "sprite": "res://assets/sprites/weapons/engineer_repair_drone.png"},
+			"engineer_pressure_mines": {"scene": "EngineerPressureMines", "mode": "engineer_pressure_mines", "sprite": "res://assets/sprites/weapons/engineer_pressure_mines.png"},
 		},
 		"dark_mage": {
 			"dark_book": {"scene": "DarkBook", "mode": "aoe_projectile", "sprite": "res://assets/sprites/weapons/dark_book.png"},
@@ -4294,6 +4294,30 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if tabs.get_node_or_null(tab_name) == null:
 			_fail("Expected settings tab %s to exist." % tab_name)
 			return
+	var controls_scroll := main.find_child("ControlsScroll", true, false) as ScrollContainer
+	if controls_scroll == null:
+		_fail("Expected controls settings tab to wrap bindings in ControlsScroll.")
+		return
+	if controls_scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or controls_scroll.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_DISABLED:
+		_fail("Expected ControlsScroll to use vertical-only scrolling.")
+		return
+	if not controls_scroll.follow_focus:
+		_fail("Expected ControlsScroll to follow keyboard/gamepad focus.")
+		return
+	var controls_content := controls_scroll.find_child("ControlsContent", true, false) as VBoxContainer
+	if controls_content == null:
+		_fail("Expected ControlsScroll to contain ControlsContent.")
+		return
+	var reset_bindings := controls_content.find_child("SettingsResetBindingsButton", true, false) as Button
+	if reset_bindings == null:
+		_fail("Expected reset bindings button to live inside the scrollable controls content.")
+		return
+	if controls_content.find_child("SettingsAimModeOption", true, false) == null:
+		_fail("Expected aim mode selector to live inside the scrollable controls content.")
+		return
+	if controls_content.get_child_count() < 8:
+		_fail("Expected controls content to include aim mode, binding rows, hint, and reset button.")
+		return
 	for slider_id in ["master_volume", "music_volume", "sfx_volume"]:
 		var slider := main.find_child("VolumeSlider_%s" % slider_id, true, false) as HSlider
 		if slider == null or not slider.visible or slider.max_value != 100.0:
@@ -5189,7 +5213,7 @@ func _test_parchment_button_seal_sizes(main_scene: PackedScene) -> void:
 	await process_frame
 
 	var dump_lines := PackedStringArray()
-	dump_lines.append("# Parchment Wax-Seal Button Size Dump")
+	dump_lines.append("# Red & Gold Dragon Button Size Dump")
 	dump_lines.append("")
 	_assert_visible_seal_buttons(seal_main, "main menu", dump_lines)
 	seal_main.call("_show_character_select")
@@ -5208,7 +5232,7 @@ func _test_parchment_button_seal_sizes(main_scene: PackedScene) -> void:
 
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
-	var file := FileAccess.open("%s/parchment_button_seal_sizes.md" % qa_dir, FileAccess.WRITE)
+	var file := FileAccess.open("%s/red_gold_button_sizes.md" % qa_dir, FileAccess.WRITE)
 	if file != null:
 		file.store_string("\n".join(dump_lines))
 		file.close()
@@ -5227,18 +5251,35 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 		if button == null or not button.visible:
 			continue
 		var texture_path := _button_normal_texture_path(button)
-		if not texture_path.contains("/ui_df_button_"):
+		if not texture_path.contains("/red_gold/ui_btn_red_gold_"):
 			continue
 		var rect := button.get_global_rect()
 		dump_lines.append("- `%s`: rect=`%s`, min=`%s`, texture=`%s`" % [button.name, str(rect), str(button.custom_minimum_size), texture_path])
+		if texture_path.contains("ui_btn_red_gold_utility"):
+			if absf(button.custom_minimum_size.x - 54.0) > 0.5 or absf(button.custom_minimum_size.y - 42.0) > 0.5:
+				_fail("Expected compact utility button %s on %s to use 54x42 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
+		if texture_path.contains("ui_btn_red_gold_fab"):
+			if absf(button.custom_minimum_size.x - 50.0) > 0.5 or absf(button.custom_minimum_size.y - 50.0) > 0.5:
+				_fail("Expected FAB button %s on %s to use 50x50 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
+		if texture_path.contains("ui_btn_red_gold_pause"):
+			if absf(button.custom_minimum_size.x - 280.0) > 0.5 or absf(button.custom_minimum_size.y - 60.0) > 0.5:
+				_fail("Expected pause button %s on %s to use 280x60 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
+		if texture_path.contains("ui_btn_red_gold_rebind"):
+			if button.custom_minimum_size.y < 62.0:
+				_fail("Expected rebind/dropdown button %s on %s to use at least 62px height, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
 		if rect.size.y < 64.0 or button.custom_minimum_size.y < 64.0:
-			_fail("Expected wax-seal button %s on %s to stay tall enough for the seal, rect=%s min=%s." % [button.name, context, rect, button.custom_minimum_size])
+			_fail("Expected Red & Gold button %s on %s to stay tall enough, rect=%s min=%s." % [button.name, context, rect, button.custom_minimum_size])
 			return
 		if absf(button.custom_minimum_size.y - STANDARD_ACTION_BUTTON_HEIGHT) > 0.5:
 			_fail("Expected action button %s on %s to use standard height %.0f, got min=%s." % [button.name, context, STANDARD_ACTION_BUTTON_HEIGHT, button.custom_minimum_size])
-			return
-		if button.text.strip_edges().length() <= 2 and rect.size.x < 120.0:
-			_fail("Expected compact utility button %s on %s to avoid wax-seal button texture." % [button.name, context])
 			return
 
 

@@ -18,14 +18,22 @@ const SHOP_PRICE_BADGE_PATH := ShopUIConstants.SHOP_PRICE_BADGE_PATH
 const SHOP_PURCHASED_OVERLAY_PATH := ShopUIConstants.SHOP_PURCHASED_OVERLAY_PATH
 const SHOP_TOOLTIP_FRAME_PATH := ShopUIConstants.SHOP_TOOLTIP_FRAME_PATH
 const DF_FRAME_DIR := UIThemePaths.DF_FRAME_DIR
+const RED_GOLD_BUTTON_DIR := UIThemePaths.RED_GOLD_BUTTON_DIR
 const GLOBAL_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_PANEL_FRAME_PATH
 const GLOBAL_BUTTON_FRAME_PATH := UIThemePaths.GLOBAL_BUTTON_FRAME_PATH
 const GLOBAL_CARD_FRAME_PATH := UIThemePaths.GLOBAL_CARD_FRAME_PATH
+const GLOBAL_HERO_CARD_FRAME_PATH := UIThemePaths.GLOBAL_HERO_CARD_FRAME_PATH
+const GLOBAL_CARD_HOVER_FRAME_PATH := UIThemePaths.GLOBAL_CARD_HOVER_FRAME_PATH
 const GLOBAL_LEVEL_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_LEVEL_PANEL_FRAME_PATH
 const GLOBAL_HUD_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_HUD_PANEL_FRAME_PATH
 const GLOBAL_HUD_CARD_FRAME_PATH := UIThemePaths.GLOBAL_HUD_CARD_FRAME_PATH
 const GLOBAL_TOOLTIP_FRAME_PATH := UIThemePaths.GLOBAL_TOOLTIP_FRAME_PATH
-const DF_BUTTON_TEXTURES := UIThemePaths.DF_BUTTON_TEXTURES
+const GLOBAL_TIMER_PANEL_FRAME_PATH := UIThemePaths.GLOBAL_TIMER_PANEL_FRAME_PATH
+const ORNATE_FRAME_MARGINS := UIThemePaths.ORNATE_FRAME_MARGINS
+const ORNATE_FRAME_CONTENT := UIThemePaths.ORNATE_FRAME_CONTENT
+const RED_GOLD_BUTTON_TEXTURES := UIThemePaths.RED_GOLD_BUTTON_TEXTURES
+const RED_GOLD_BUTTON_MARGINS := UIThemePaths.RED_GOLD_BUTTON_MARGINS
+const RED_GOLD_BUTTON_CONTENT := UIThemePaths.RED_GOLD_BUTTON_CONTENT
 const GLOSSARY := preload("res://scripts/glossary.gd")
 const SYSTEM_CHECKBOX_UNCHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_unchecked.png"
 const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_checked.png"
@@ -40,7 +48,7 @@ const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const STANDARD_ACTION_BUTTON_WIDTH := 420.0
 const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
 const MAIN_MENU_ACTION_BUTTON_WIDTH := 380.0
-const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 62.0)
+const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
 
 func _init(game_ref) -> void:
 	game = game_ref
@@ -316,7 +324,8 @@ func _show_character_select() -> void:
 	dossier.add_child(asc_row)
 	var asc_minus := _make_compact_button("-")
 	asc_minus.name = "AscensionMinusButton"
-	asc_minus.custom_minimum_size = Vector2(54, 62)
+	asc_minus.custom_minimum_size = COMPACT_UTILITY_BUTTON_SIZE
+	_apply_compact_button_theme(asc_minus)
 	asc_row.add_child(asc_minus)
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
@@ -327,7 +336,8 @@ func _show_character_select() -> void:
 	asc_row.add_child(asc_label)
 	var asc_plus := _make_compact_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	asc_plus.custom_minimum_size = Vector2(54, 62)
+	asc_plus.custom_minimum_size = COMPACT_UTILITY_BUTTON_SIZE
+	_apply_compact_button_theme(asc_plus)
 	asc_row.add_child(asc_plus)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
@@ -779,7 +789,7 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 	# Желтая стрелка прокачки: докачка характеристик за деньги.
 	var fab := _make_compact_button("⬆")
 	fab.name = "UpgradeFabButton"
-	fab.custom_minimum_size = Vector2(58, 58)
+	fab.custom_minimum_size = Vector2(50, 50)
 	fab.anchor_left = 1.0
 	fab.anchor_top = 1.0
 	fab.anchor_right = 1.0
@@ -1176,7 +1186,7 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tooltip.custom_minimum_size = Vector2(360, 0)
-	tooltip.add_theme_stylebox_override("panel", _global_texture_style(GLOBAL_TOOLTIP_FRAME_PATH, Vector4(26, 26, 26, 26), Color.WHITE, Vector4(14, 12, 14, 12)))
+	tooltip.add_theme_stylebox_override("panel", _ornate_frame_style(GLOBAL_TOOLTIP_FRAME_PATH, "tooltip"))
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
 	box.add_theme_constant_override("margin_left", 12)
@@ -1364,7 +1374,7 @@ func _show_settings_menu() -> void:
 	if screen_count > 1:
 		var screen_options := OptionButton.new()
 		screen_options.name = "SettingsScreenOption"
-		screen_options.custom_minimum_size = Vector2(520, 46)
+		screen_options.custom_minimum_size = Vector2(520, 62)
 		screen_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_apply_compact_button_theme(screen_options)
 		for screen_index in range(screen_count):
@@ -1380,7 +1390,7 @@ func _show_settings_menu() -> void:
 
 	var resolution_options := OptionButton.new()
 	resolution_options.name = "SettingsResolutionOption"
-	resolution_options.custom_minimum_size = Vector2(520, 46)
+	resolution_options.custom_minimum_size = Vector2(520, 62)
 	resolution_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_apply_compact_button_theme(resolution_options)
 	var usable_size := Vector2i(99999, 99999)
@@ -1401,7 +1411,7 @@ func _show_settings_menu() -> void:
 
 	var mode_options := OptionButton.new()
 	mode_options.name = "SettingsWindowModeOption"
-	mode_options.custom_minimum_size = Vector2(520, 46)
+	mode_options.custom_minimum_size = Vector2(520, 62)
 	mode_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_apply_compact_button_theme(mode_options)
 	for mode_name in game.WINDOW_MODE_OPTIONS:
@@ -1456,12 +1466,28 @@ func _show_settings_menu() -> void:
 	audio_box.add_child(reset_audio_button)
 
 	var controls_tab := _make_settings_tab("Управление")
-	var controls_box := controls_tab.get_child(0) as VBoxContainer
 	tabs.add_child(controls_tab)
+	# Вкладка «Управление» переполнялась (прицеливание + строка-ребинд на каждый
+	# INPUT_ACTION) — оборачиваем контент в вертикальный ScrollContainer, чтобы
+	# всё помещалось и прокручивалось внутри высоты таба.
+	var controls_page := controls_tab.get_child(0) as VBoxContainer
+	var controls_scroll := ScrollContainer.new()
+	controls_scroll.name = "ControlsScroll"
+	controls_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	controls_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	controls_scroll.follow_focus = true
+	controls_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	controls_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	controls_page.add_child(controls_scroll)
+	var controls_box := VBoxContainer.new()
+	controls_box.name = "ControlsContent"
+	controls_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	controls_box.add_theme_constant_override("separation", 14)
+	controls_scroll.add_child(controls_box)
 
 	var aim_options := OptionButton.new()
 	aim_options.name = "SettingsAimModeOption"
-	aim_options.custom_minimum_size = Vector2(520, 46)
+	aim_options.custom_minimum_size = Vector2(520, 62)
 	aim_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_apply_compact_button_theme(aim_options)
 	aim_options.add_item("Автонаводка на ближайшего")
@@ -1493,6 +1519,7 @@ func _show_settings_menu() -> void:
 		bind_button.name = "BindingButton_%s" % action_name
 		bind_button.custom_minimum_size = Vector2(420, 62)
 		bind_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_apply_compact_button_theme(bind_button)
 		bind_button.pressed.connect(func() -> void:
 			_begin_rebind(action_name)
 		)
@@ -1690,31 +1717,31 @@ func _build_run_pause_menu() -> void:
 
 	var continue_button := _make_button("Продолжить")
 	continue_button.name = "RunPauseContinueButton"
-	_set_action_button_size(continue_button, 360.0)
+	_set_action_button_size(continue_button, 280.0, 60.0)
 	continue_button.pressed.connect(_resume_game)
 	box.add_child(continue_button)
 
 	var dossier_button := _make_button("Досье персонажа")
 	dossier_button.name = "RunPauseDossierButton"
-	_set_action_button_size(dossier_button, 360.0)
+	_set_action_button_size(dossier_button, 280.0, 60.0)
 	dossier_button.pressed.connect(_show_pause_dossier_menu)
 	box.add_child(dossier_button)
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "RunPauseSettingsButton"
-	_set_action_button_size(settings_button, 360.0)
+	_set_action_button_size(settings_button, 280.0, 60.0)
 	settings_button.pressed.connect(_show_settings_menu)
 	box.add_child(settings_button)
 
 	var end_run_button := _make_button("Покинуть забег")
 	end_run_button.name = "RunPauseEndRunButton"
-	_set_action_button_size(end_run_button, 360.0)
+	_set_action_button_size(end_run_button, 280.0, 60.0)
 	end_run_button.pressed.connect(_end_current_run_by_player)
 	box.add_child(end_run_button)
 
 	var main_menu_button := _make_button("Главное меню")
 	main_menu_button.name = "RunPauseMainMenuButton"
-	_set_action_button_size(main_menu_button, 360.0)
+	_set_action_button_size(main_menu_button, 280.0, 60.0)
 	main_menu_button.pressed.connect(_quit_current_run)
 	box.add_child(main_menu_button)
 
@@ -4231,10 +4258,11 @@ func _action_button_size(width := STANDARD_ACTION_BUTTON_WIDTH) -> Vector2:
 	return Vector2(minf(width, MAX_ACTION_BUTTON_VISUAL_WIDTH), STANDARD_ACTION_BUTTON_HEIGHT)
 
 
-func _set_action_button_size(button: Button, width := STANDARD_ACTION_BUTTON_WIDTH) -> void:
+func _set_action_button_size(button: Button, width := STANDARD_ACTION_BUTTON_WIDTH, height := STANDARD_ACTION_BUTTON_HEIGHT) -> void:
 	if button == null:
 		return
-	button.custom_minimum_size = _action_button_size(width)
+	button.custom_minimum_size = Vector2(minf(width, MAX_ACTION_BUTTON_VISUAL_WIDTH), height)
+	_apply_fantasy_button_theme(button)
 
 
 func _style_button_control(button: Button) -> void:
@@ -4244,11 +4272,11 @@ func _style_button_control(button: Button) -> void:
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 	var role := _button_role(button, variant)
-	button.add_theme_stylebox_override("normal", _button_state_style(role, "normal"))
-	button.add_theme_stylebox_override("hover", _button_state_style(role, "hover"))
-	button.add_theme_stylebox_override("pressed", _button_state_style(role, "pressed"))
-	button.add_theme_stylebox_override("disabled", _button_state_style(role, "disabled"))
-	button.add_theme_stylebox_override("focus", _button_state_style(role, "hover", Color(1.08, 1.05, 0.86, 1.0)))
+	button.add_theme_stylebox_override("normal", _button_state_style(button, role, "normal"))
+	button.add_theme_stylebox_override("hover", _button_state_style(button, role, "hover"))
+	button.add_theme_stylebox_override("pressed", _button_state_style(button, role, "pressed"))
+	button.add_theme_stylebox_override("disabled", _button_state_style(button, role, "disabled"))
+	button.add_theme_stylebox_override("focus", _button_state_style(button, role, "hover", Color(1.08, 1.05, 0.86, 1.0)))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.45, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
@@ -4268,18 +4296,76 @@ func _button_role(button: Button, variant := "default") -> String:
 	return "secondary"
 
 
-func _button_state_style(role: String, state: String, tint := Color.WHITE) -> StyleBox:
-	var role_map: Dictionary = DF_BUTTON_TEXTURES.get(role, DF_BUTTON_TEXTURES["secondary"])
-	var path := str(role_map.get(state, role_map.get("normal", GLOBAL_BUTTON_FRAME_PATH)))
-	return _global_texture_style(path, Vector4(88, 30, 38, 32), tint, Vector4(76, 14, 22, 14))
+func _button_asset_type(button: Button, variant := "default") -> String:
+	var button_name: String = button.name if button != null else ""
+	var button_text: String = button.text.to_lower() if button != null else ""
+	var size: Vector2 = button.custom_minimum_size if button != null else _action_button_size()
+	if button_name.begins_with("MainMenu"):
+		return "main_menu"
+	if button_name == "HeroSelectChooseButton":
+		return "hero_confirm"
+	if button_name == "SettingsResetAudioButton":
+		return "reset_audio"
+	if button_name == "SettingsResetBindingsButton":
+		return "reset_bindings"
+	if button_name.begins_with("CodexTab_"):
+		return "codex_tab"
+	if button_name.begins_with("AttributeOffer_"):
+		return "attr_selector"
+	if button_name.begins_with("RunPause"):
+		return "pause"
+	if button_name == "UpgradeFabButton":
+		return "fab"
+	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
+		return "rebind"
+	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 64.0:
+		return "utility"
+	if variant == "level_up" or button_name == "LevelUpButton":
+		return "back_l"
+	if button_text == "назад":
+		if size.x <= 180.0:
+			return "back_s"
+		if size.x <= 300.0:
+			return "back_m"
+		return "back_l"
+	if variant in ["reward", "primary"] and size.x >= 540.0:
+		return "attr_selector"
+	if size.y <= 66.0:
+		if size.x <= 70.0:
+			return "utility"
+		if size.x <= 300.0:
+			return "pause"
+		return "rebind"
+	if size.x >= 540.0:
+		return "max"
+	if size.x >= 430.0:
+		return "reset_bindings"
+	if size.x >= 400.0:
+		return "standard"
+	if size.x >= 360.0:
+		return "back_l"
+	if size.x >= 300.0:
+		return "hero_confirm"
+	if size.x >= 240.0:
+		return "back_m"
+	return "back_s"
+
+
+func _button_state_style(button: Button, _role: String, state: String, tint := Color.WHITE) -> StyleBox:
+	var button_type := _button_asset_type(button)
+	var type_map: Dictionary = RED_GOLD_BUTTON_TEXTURES.get(button_type, RED_GOLD_BUTTON_TEXTURES["standard"])
+	var path := str(type_map.get(state, type_map.get("normal", GLOBAL_BUTTON_FRAME_PATH)))
+	var margins: Vector4 = RED_GOLD_BUTTON_MARGINS.get(button_type, Vector4(84, 30, 84, 32))
+	var content: Vector4 = RED_GOLD_BUTTON_CONTENT.get(button_type, Vector4(76, 14, 76, 14))
+	return _global_texture_style(path, margins, tint, content)
 
 
 func _apply_compact_button_theme(button: Button) -> void:
-	button.add_theme_stylebox_override("normal", _compact_button_style(false))
-	button.add_theme_stylebox_override("hover", _compact_button_style(true))
-	button.add_theme_stylebox_override("pressed", _compact_button_style(true, true))
-	button.add_theme_stylebox_override("focus", _compact_button_style(true))
-	button.add_theme_stylebox_override("disabled", _compact_button_style(false, false, true))
+	button.add_theme_stylebox_override("normal", _button_state_style(button, "secondary", "normal"))
+	button.add_theme_stylebox_override("hover", _button_state_style(button, "secondary", "hover"))
+	button.add_theme_stylebox_override("pressed", _button_state_style(button, "secondary", "pressed"))
+	button.add_theme_stylebox_override("focus", _button_state_style(button, "secondary", "hover", Color(1.08, 1.05, 0.86, 1.0)))
+	button.add_theme_stylebox_override("disabled", _button_state_style(button, "secondary", "disabled"))
 	button.add_theme_color_override("font_color", Color(0.98, 0.92, 0.72, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.82, 0.32, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
@@ -4359,27 +4445,27 @@ func _make_section_label(text: String) -> Label:
 
 
 func _panel_style() -> StyleBox:
-	return _global_texture_style(GLOBAL_PANEL_FRAME_PATH, Vector4(34, 34, 34, 34), Color.WHITE, Vector4(28, 26, 28, 26))
+	return _ornate_frame_style(GLOBAL_PANEL_FRAME_PATH, "global_panel")
 
 
 func _level_up_panel_style() -> StyleBox:
-	return _global_texture_style(GLOBAL_LEVEL_PANEL_FRAME_PATH, Vector4(46, 46, 46, 46), Color(1.08, 1.03, 1.10, 1.0), Vector4(34, 30, 34, 30))
+	return _ornate_frame_style(GLOBAL_LEVEL_PANEL_FRAME_PATH, "level_panel", Color(1.08, 1.03, 1.10, 1.0))
 
 
 func _level_up_hero_style() -> StyleBox:
-	return _global_texture_style(GLOBAL_CARD_FRAME_PATH, Vector4(28, 28, 28, 28), Color(0.82, 1.06, 1.10, 1.0), Vector4(7, 7, 7, 7))
+	return _ornate_frame_style(GLOBAL_HERO_CARD_FRAME_PATH, "hero_card", Color(0.82, 1.06, 1.10, 1.0))
 
 
 func _hero_portrait_style() -> StyleBox:
-	return _global_texture_style(GLOBAL_CARD_FRAME_PATH, Vector4(28, 28, 28, 28), Color(1.08, 0.98, 0.76, 1.0), Vector4(8, 8, 8, 8))
+	return _ornate_frame_style(GLOBAL_HERO_CARD_FRAME_PATH, "hero_card", Color(1.08, 0.98, 0.76, 1.0))
 
 
 func _card_hover_style() -> StyleBox:
-	return _global_texture_style(GLOBAL_CARD_FRAME_PATH, Vector4(30, 30, 30, 30), Color(1.10, 1.02, 0.74, 1.0), Vector4(16, 14, 16, 14))
+	return _ornate_frame_style(GLOBAL_CARD_HOVER_FRAME_PATH, "card_hover", Color(1.10, 1.02, 0.74, 1.0))
 
 
 func _character_card_style() -> StyleBox:
-	return _global_texture_style(GLOBAL_CARD_FRAME_PATH, Vector4(30, 30, 30, 30), Color.WHITE, Vector4(16, 14, 16, 14))
+	return _ornate_frame_style(GLOBAL_CARD_FRAME_PATH, "card_frame")
 
 
 func _button_style(background: Color, _border: Color, _shadow_alpha := 0.38, _border_width := 2) -> StyleBox:
@@ -4433,6 +4519,12 @@ func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, 
 	style.content_margin_right = content.z
 	style.content_margin_bottom = content.w
 	return style
+
+
+func _ornate_frame_style(path: String, frame_type: String, tint := Color.WHITE) -> StyleBox:
+	var margins: Vector4 = ORNATE_FRAME_MARGINS.get(frame_type, Vector4(30, 30, 30, 30))
+	var content: Vector4 = ORNATE_FRAME_CONTENT.get(frame_type, Vector4(12, 12, 12, 12))
+	return _global_texture_style(path, margins, tint, content)
 
 
 func _style_slider(slider: HSlider) -> void:
@@ -4536,8 +4628,8 @@ func _create_combat_timer_panel(root: Control) -> void:
 
 
 func _timer_panel_style(alarm: bool) -> StyleBox:
-	var path := "res://assets/sprites/ui/hud/timer_frame_alarm.png" if alarm else "res://assets/sprites/ui/hud/timer_frame.png"
-	return _global_texture_style(path, Vector4(34, 24, 34, 24), Color.WHITE, Vector4(14, 4, 14, 4))
+	var tint := Color(1.22, 0.82, 0.72, 1.0) if alarm else Color.WHITE
+	return _ornate_frame_style(GLOBAL_TIMER_PANEL_FRAME_PATH, "timer_panel", tint)
 
 
 func _create_artifact_hud_row(root: Control) -> void:
@@ -4856,11 +4948,11 @@ func _add_hud_money_card(parent: HBoxContainer) -> void:
 
 
 func _hud_panel_style() -> StyleBox:
-	return _global_texture_style(GLOBAL_HUD_PANEL_FRAME_PATH, Vector4(28, 22, 28, 24), Color.WHITE, Vector4(10, 9, 10, 9))
+	return _ornate_frame_style(GLOBAL_HUD_PANEL_FRAME_PATH, "hud_panel")
 
 
 func _hud_card_style() -> StyleBox:
-	return _global_texture_style(GLOBAL_HUD_CARD_FRAME_PATH, Vector4(22, 18, 22, 20), Color.WHITE, Vector4(8, 7, 8, 7))
+	return _ornate_frame_style(GLOBAL_HUD_CARD_FRAME_PATH, "hud_card")
 
 
 func _run_resource_values() -> Dictionary:

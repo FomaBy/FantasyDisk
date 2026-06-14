@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Применить кит UI-рамок «Ornate Dark» из docs/design/references/UiFrame ко всей игре
 
-Статус: in_progress
+Статус: review
 Приоритет: high
 Роль: Design (Claude-Designer нарезка/9-slice/интеграция) → Back-end handoff
 Версия: 0.1.5
@@ -64,10 +64,66 @@ Pause Main Panel, Pause Stat Group, Pause Stat Chip/Basic Row, Pause Stat Toolti
 - docs/design/systems/visual_style_assets.md, content_registry.md
 
 ## Acceptance Criteria
-- [ ] 13 рамок нарезаны (имена/alpha/9-slice по подписанным margin'ам).
-- [ ] Все панели/окна/тултипы/HUD/карточки/пауза на новом ornate-ките; карта замены полная.
-- [ ] Старый panel-кит в backup; контент не наезжает на орнамент; no-overlap.
+- [x] 13 рамок нарезаны (имена/alpha/9-slice по подписанным margin'ам).
+- [x] Все панели/окна/тултипы/HUD/карточки/пауза на новом ornate-ките; карта замены полная.
+- [x] Старый panel-кит в backup; контент не наезжает на орнамент; no-overlap.
 - [ ] 6 smoke зелёные; превью до/после; content_registry/CHANGELOG.
 
 ## Документация
 visual_style_assets.md (panel-канон ornate dark), content_registry.md, current_game_state.md.
+
+## Результат (2026-06-14)
+
+Design/runtime visual pass готов к QA review.
+
+Добавлено:
+- 13 RGBA PNG frame assets в `assets/sprites/ui/frames/ornate/`:
+  `global_panel`, `level_panel`, `card_frame`, `hero_card`, `card_hover`,
+  `tooltip`, `hud_panel`, `hud_card`, `timer_panel`, `pause_main`,
+  `pause_stat_group`, `pause_stat_chip`, `pause_stat_tooltip`;
+- Godot `.import` sidecars для всех 13 PNG;
+- pipeline `tools/build_ornate_ui_frame_kit.py`;
+- contact preview `docs/design/previews/ornate_dark_frame_kit_contact.png`;
+- backup прежних leather/gold + dark_fantasy/escape panel textures:
+  `build/cleanup_backup_ornate_frames_2026_06_14/`.
+
+Runtime mapping:
+- `scripts/ui/ui_theme_paths.gd` теперь содержит `ORNATE_FRAME_DIR`,
+  canonical frame paths и signed texture/content margins из spec-листа;
+- `scripts/ui_screens.gd` переведен на typed ornate frames для global panel,
+  level panel, card/list, hero/card, card hover, tooltip, HUD panel/card и
+  timer panel;
+- `scripts/pause_stats_menu.gd` переведен на ornate pause main/stat group/stat
+  chip/stat tooltip frames, а pause buttons используют Red & Gold Dragon
+  `pause` state textures из SCRUM-273.
+
+Карта замены:
+- Main/global windows, settings/codex/event containers → `global_panel`;
+- Level-up/reward main panel → `level_panel`;
+- List/card rows and generic character cards → `card_frame`;
+- Hero portrait/card frame → `hero_card`;
+- Hover/selected card state → `card_hover`;
+- Generic/glossary tooltip → `tooltip`;
+- Combat resource HUD strip → `hud_panel`;
+- HP/XP/money/ultimate HUD cards → `hud_card`;
+- Combat timer/ascension timer badge → `timer_panel`;
+- Escape stats main panel → `pause_main`;
+- Escape derived stat groups → `pause_stat_group`;
+- Escape base stat rows + derived chips → `pause_stat_chip`;
+- Escape stat tooltip → `pause_stat_tooltip`.
+
+Проверки:
+- `python3 tools/build_ornate_ui_frame_kit.py` — PASS;
+- asset validation — 13/13 PNG имеют ожидаемые размеры, RGBA и непустую alpha;
+- `tests/dark_fantasy_ui_theme_test.gd` — PASS;
+- `tests/runtime_smoke_ui_test.gd` — PASS;
+- `tests/ui_no_overlap_matrix_test.gd` — PASS.
+
+Umbrella validation caveat:
+- `tests/runtime_smoke_test.gd` сейчас падает на внешнем non-UI ассёрте:
+  `Expected thief_coin_pouch to use its weapon sprite.`
+- Фактический failure находится в `_test_class_weapon_configs`, где тест всё
+  ещё ожидает старый fallback `chakrams.png`, тогда как текущий checkout уже
+  имеет canonical `assets/sprites/weapons/thief_coin_pouch.png`.
+- Это не связано с ornate UI frame pass и не менялось в этой задаче; чинить
+  weapon-config/test ownership внутри Design UI scope не стал.

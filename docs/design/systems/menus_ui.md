@@ -69,3 +69,12 @@ rebind/dropdown-style controls use 420x62, compact utility uses 54x42 and FAB
 uses 50x50. Route nodes, shop item hit areas, hero thumbnails and
 weapon/reward cards stay as cards/hit areas instead of receiving heavy action
 button frames. Runtime smoke writes `build/qa/red_gold_button_sizes.md`.
+
+## Ornate Frame Safe-Area Rule
+
+Controls that use `ui_frame_ornate_*` textures must use the signed
+texture/content margins from `UIThemePaths.ORNATE_FRAME_MARGINS` and
+`UIThemePaths.ORNATE_FRAME_CONTENT`. Text and icons should sit inside the dark
+center field, not on the red metal ornament. If an existing screen needs more
+safe-area than the frame provides, treat it as a layout bug for the owning UI
+task instead of stretching or cropping the source frame art.

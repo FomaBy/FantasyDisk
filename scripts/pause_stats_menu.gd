@@ -7,13 +7,16 @@ signal main_menu_requested
 
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
-const ESCAPE_PANEL_FRAME := preload("res://assets/sprites/ui/frames/escape/ui_escape_panel_frame.png")
-const ESCAPE_BUTTON_FRAME := preload("res://assets/sprites/ui/frames/escape/ui_escape_button_frame.png")
-const STAT_BASIC_ROW_FRAME := preload("res://assets/sprites/ui/frames/escape/ui_stat_basic_row_frame.png")
-const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/escape/ui_stat_group_frame.png")
-const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/escape/ui_stat_chip_frame.png")
-const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/escape/ui_stat_tooltip_frame.png")
+const ESCAPE_PANEL_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_main.png")
+const STAT_BASIC_ROW_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_chip.png")
+const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_group.png")
+const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_chip.png")
+const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_tooltip.png")
 const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
+const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause.png")
+const PAUSE_BUTTON_HOVER := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_hover.png")
+const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_pressed.png")
+const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_disabled.png")
 
 const VALUE_HIGH := Color(0.439, 0.949, 0.651, 1.0)
 const VALUE_LOW := Color(1.0, 0.420, 0.420, 1.0)
@@ -654,25 +657,18 @@ func _make_button(text: String) -> Button:
 
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
-	# Тёплое дерево/латунь (D&D-таверна) — единая база с ui_screens.
-	var normal_bg := Color(0.16, 0.115, 0.075, 0.97)
-	var hover_bg := Color(0.24, 0.17, 0.10, 1.0)
-	var pressed_bg := Color(0.11, 0.075, 0.05, 1.0)
-	var border := Color(0.68, 0.52, 0.22, 0.92)
-	var hover_border := Color(1.0, 0.82, 0.26, 1.0)
-	var pressed_border := Color(0.95, 0.62, 0.18, 1.0)
+	var normal_tint := Color.WHITE
+	var hover_tint := Color(1.08, 1.05, 0.86, 1.0)
+	var pressed_tint := Color(0.92, 0.88, 0.82, 1.0)
 	if variant == "danger":
-		normal_bg = Color(0.24, 0.055, 0.055, 0.98)
-		hover_bg = Color(0.36, 0.075, 0.070, 1.0)
-		pressed_bg = Color(0.16, 0.035, 0.040, 1.0)
-		border = Color(0.80, 0.20, 0.16, 0.96)
-		hover_border = Color(1.0, 0.48, 0.34, 1.0)
-		pressed_border = Color(0.95, 0.30, 0.22, 1.0)
-	button.add_theme_stylebox_override("normal", _button_style(normal_bg, border))
-	button.add_theme_stylebox_override("hover", _button_style(hover_bg, hover_border, 0.58))
-	button.add_theme_stylebox_override("pressed", _button_style(pressed_bg, pressed_border))
-	button.add_theme_stylebox_override("disabled", _button_style(Color(0.06, 0.065, 0.075, 0.82), Color(0.20, 0.22, 0.25, 0.95), 0.18))
-	button.add_theme_stylebox_override("focus", _button_style(Color(0.0, 0.0, 0.0, 0.0), Color(0.55, 0.96, 1.0, 0.60), 0.0, 1))
+		normal_tint = Color(1.08, 0.72, 0.72, 1.0)
+		hover_tint = Color(1.18, 0.78, 0.68, 1.0)
+		pressed_tint = Color(0.92, 0.55, 0.55, 1.0)
+	button.add_theme_stylebox_override("normal", _button_style(PAUSE_BUTTON_NORMAL, normal_tint))
+	button.add_theme_stylebox_override("hover", _button_style(PAUSE_BUTTON_HOVER, hover_tint))
+	button.add_theme_stylebox_override("pressed", _button_style(PAUSE_BUTTON_PRESSED, pressed_tint))
+	button.add_theme_stylebox_override("disabled", _button_style(PAUSE_BUTTON_DISABLED, Color(0.72, 0.72, 0.72, 1.0)))
+	button.add_theme_stylebox_override("focus", _button_style(PAUSE_BUTTON_HOVER, hover_tint))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.45, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
@@ -719,10 +715,8 @@ func _make_section_divider() -> TextureRect:
 	return divider
 
 
-func _button_style(background: Color, _border: Color, _shadow_alpha := 0.38, _border_width := 2) -> StyleBox:
-	var tint := background.lightened(0.35)
-	tint.a = 1.0
-	var style := _texture_style(ESCAPE_BUTTON_FRAME, 28, 24, 28, 28, tint, Vector4(16, 10, 16, 12))
+func _button_style(texture: Texture2D, tint: Color) -> StyleBox:
+	var style := _texture_style(texture, 68, 20, 68, 20, tint, Vector4(56, 8, 56, 8))
 	if style is StyleBoxTexture:
 		(style as StyleBoxTexture).modulate_color.a = 1.0
 	return style
