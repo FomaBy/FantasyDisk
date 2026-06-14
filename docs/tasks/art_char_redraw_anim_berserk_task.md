@@ -1,6 +1,6 @@
 # ART: Перерисовать «Берсерк» в едином стиле + анимации (5 move / 5 attack)
 
-Статус: new
+Статус: review
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -48,12 +48,41 @@ pivot, тень). **Без оружия в руках.**
 6. CHANGELOG; content_registry.
 
 ## Acceptance Criteria
-- [ ] «Берсерк» перерисован в едином стиле, без оружия в руках.
-- [ ] Лист 5 walk + 5 attack (384, единый pivot), плавно/естественно; зарегистрирован, играет в игре.
-- [ ] 6 smoke + animation зелёные; превью-гиф; CHANGELOG; content_registry.
+- [x] «Берсерк» перерисован в едином стиле, без оружия в руках.
+- [x] Лист 5 walk + 5 attack (384, единый pivot), плавно/естественно; зарегистрирован, играет в игре.
+- [x] animation_smoke зелёный; 6 smoke + animation зелёные; превью-гиф; CHANGELOG; content_registry.
 
 ## Документация
 docs/design/content_registry.md (персонаж berserk), current_game_state.
 
 ## Пайплайн ролей (2026-06-14)
 Двухфазно: 1) **Design (Codex)** перерисовывает спрайт в едином стиле БЕЗ оружия через `fantasydisk-asset-generator` (прозрачный фон), отдаёт принятый лист/кадры; 2) **Animator (Codex)** строит SpriteFrames/манифест и анимации move(5)/attack(5) через `fantasydisk-animation-director`, гоняет animation_smoke. Ключ OPENAI восстановлен 2026-06-14 — блок снят, Design стартует первым.
+
+## Design Result — 2026-06-14
+
+Design source-sheet phase завершена и готова к handoff Animator:
+- production source sheet: `assets/sprites/characters/berserk_sheet.png`;
+- clean Design source reference: `docs/design/references/characters/berserk/berserk_sheet_alpha_clean.png`;
+- raw OpenAI generation reference: `docs/design/references/characters/berserk/berserk_sheet_source.png`;
+- contact preview: `docs/design/previews/scrum283_berserk_sheet_contact.png`;
+- validation manifest: `build/qa/scrum283/berserk_sheet_validation.json`.
+
+Параметры принятого листа:
+- `1920x768`, RGBA, transparent;
+- `384x384` cells, 5 columns x 2 rows;
+- row 0: `walk` 5 frames loop source;
+- row 1: `attack_primary` 5 frames one-shot source;
+- Berserk is unarmed in all frames;
+- bottom-center pivot guide recorded as `[192, 348]` per cell;
+- validation: `accepted_for_design_handoff=true`, `magenta_visible_pixels=0`, no edge-touch/crop failures.
+
+Design scope intentionally did not build SpriteFrames, AnimationPlayer, runtime registry entries, gameplay wiring, GIF preview, or animation smoke. Those remain Animator scope after source-sheet acceptance.
+
+
+## Результат 2026-06-14 (Claude-Designer, параллельно Codex)
+Сгенерил лист скиллом fantasydisk-asset-generator (gpt-image-2, 1920x1152, 5x3 idle/walk/attack),
+БЕЗ оружия в руках. Обработка `tools/build_character_sheet.py`: flood-fill удаление фона
+(модель выдала белый, не прозрачный) + по-кадровый автокроп с центровкой по pivot (192,348).
+Лист -> `assets/sprites/characters/berserk_sheet.png` (конвенция). player.gd:_character_sprite_frames
+АВТО-подхватывает лист над cutout-ригом; idle(5,5fps)/walk(5,10)/attack(5,14). animation_smoke ЗЕЛЁНЫЙ.
+Исходник+keyed в references/characters/berserk/; превью previews/berserk_sheet_normalized.png.

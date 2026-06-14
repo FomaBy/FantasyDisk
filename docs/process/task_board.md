@@ -6,10 +6,16 @@
 Статусы: `new` | `in_progress` | `review` | `blocked` | `done`. Источник истины по деталям —
 файлы `docs/tasks/*.md`; управление и отчётность — Jira.
 
-## Спринт 0.1.5 — патч «Бой и баланс» (АКТИВЕН, фриз снят 2026-06-13)
+## Спринт 0.1.5 — патч «Бой и баланс» (АКТИВЕН, FEATURE BLOCK с 2026-06-14)
 
-Релиз v0.1.4 выпущен. Активен Спринт 0.1.5 (эпик SCRUM-232). Очередь патча
-сериализована по зависимостям/общим файлам:
+Релиз v0.1.4 выпущен. Активен Спринт 0.1.5 (эпик SCRUM-232). PM включил
+feature block 2026-06-14: в 0.1.5 доделываются только уже заведенные строки этой
+доски, текущие bug/QA defect/regression/release blocker задачи и уже записанные
+результаты исполнителей. Новые не-баговые фичи больше не добавляются в 0.1.5:
+они оформляются как `Версия: 0.1.6` и остаются вне активного спринта до открытия
+следующей версии.
+
+Очередь патча сериализована по зависимостям/общим файлам:
 - СТАРТ: SCRUM-256 framework механик — done; SCRUM-260 монстры/размеры —
   done/QA; SCRUM-253 авто-движение — done; SCRUM-259 скилы элиток/боссов —
   done/QA; SCRUM-255 формулы выживаемости — done; SCRUM-247/243
@@ -115,10 +121,11 @@ class_weapon). «done = чистый HEAD зелёный».
 | [art_ui_overhaul_combat_hud_task.md](../tasks/art_ui_overhaul_combat_hud_task.md) | Designer (Codex) | done | ART 0.1.5: UI Overhaul «Боевой HUD, баннеры и тосты» — gated by blocked anchor SCRUM-327 / `billing_hard_limit_reached` — SUPERSEDED (покрыто конкретными задачами) |
 | [art_ui_overhaul_levelup_rewards_task.md](../tasks/art_ui_overhaul_levelup_rewards_task.md) | Designer (Codex) | done | ART 0.1.5: UI Overhaul «Повышение уровня и награды» — gated by blocked anchor SCRUM-327 / `billing_hard_limit_reached` — SUPERSEDED (покрыто конкретными задачами) |
 | [art_ui_overhaul_shop_economy_task.md](../tasks/art_ui_overhaul_shop_economy_task.md) | Designer 2 (Codex) → Back-end (UI) | review | Jira: SCRUM-332. Design-ready economy UI pack complete: OpenAI mockup/spec, 6 alpha-cleaned frame assets under `assets/sprites/ui/frames/economy/`, reference copies/contact preview ready; Back-end integration handoff created. |
-| [backend_ui_overhaul_shop_economy_integration_task.md](../tasks/backend_ui_overhaul_shop_economy_integration_task.md) | Back-end (UI) | in_progress | Jira: SCRUM-406. Dispatched 2026-06-14 to Back-end window `019eabd9-780b-78a2-9f4b-e7203d659ef2`; integrate SCRUM-332 economy frame kit into shop/attribute/rest/upgrade/event runtime screens while preserving behavior and frame safe zones. |
-| [art_ui_overhaul_progression_codex_task.md](../tasks/art_ui_overhaul_progression_codex_task.md) | Designer (Codex) | new | ART 0.1.5: UI Overhaul «Прогрессия и кодекс» — gated by blocked anchor SCRUM-327 / `billing_hard_limit_reached` |
+| [backend_ui_overhaul_shop_economy_integration_task.md](../tasks/backend_ui_overhaul_shop_economy_integration_task.md) | Back-end (UI) | done | Jira: SCRUM-406. SCRUM-332 economy frames integrated into shop/attribute/rest/upgrade/event runtime screens; shop keeps compact square wall slots with economy price badges, choice screens use safe-zone economy cards. Verified `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`, `runtime_smoke_test.gd`; QA dump `build/qa/scrum332/economy_ui_no_overlap_matrix.md`. |
+| [art_ui_overhaul_progression_codex_task.md](../tasks/art_ui_overhaul_progression_codex_task.md) | Designer 2 (Codex) → Back-end (UI) | review | Jira: SCRUM-331. Design-ready progression/codex pack complete: OpenAI mockup/spec, 9 alpha-cleaned progression frame assets under `assets/sprites/ui/frames/progression/`, existing Codex kit preserved; Back-end integration handoff created. |
+| [backend_ui_overhaul_progression_codex_integration_task.md](../tasks/backend_ui_overhaul_progression_codex_integration_task.md) | Back-end (UI) | blocked | Jira: SCRUM-408. Parked before implementation by PM feature block for Sprint 0.1.5; only spec read/Jira claim happened, no runtime code changed. Needs explicit PM/dispatcher exception or post-block redispatch. |
 | [art_ui_overhaul_pause_end_task.md](../tasks/art_ui_overhaul_pause_end_task.md) | Designer (Codex) → Back-end (UI) | review | Jira: SCRUM-330. Design-ready pause/end UI pack complete: OpenAI mockup/spec, transparent modal frame, result crest references, safe-zone metadata/previews ready; Back-end integration handoff created. |
-| [backend_pause_end_ui_overhaul_integration_task.md](../tasks/backend_pause_end_ui_overhaul_integration_task.md) | Back-end (UI) | new | Jira: SCRUM-407. Integrate SCRUM-330 pause/result modal frame kit into pause/dossier/victory/death runtime screens; not dispatched while Back-end is active on SCRUM-406. |
+| [backend_pause_end_ui_overhaul_integration_task.md](../tasks/backend_pause_end_ui_overhaul_integration_task.md) | Back-end (UI) | done | Jira: SCRUM-407. SCRUM-330 pause/end modal frame integrated into pause menu, pause dossier/stats, victory and death runtime screens with scaled safe zones, decorative result crests and 720p adaptive result content; runtime_smoke_ui, ui_no_overlap_matrix and runtime_smoke PASS; QA dump `build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`. |
 | [backend_integrate_settings_tab_switcher_frame_task.md](../tasks/backend_integrate_settings_tab_switcher_frame_task.md) | Back-end | done | Jira: SCRUM-334. Settings tab switcher frame integrated as proportional 5:1 runtime strip; SettingsTabButton_0..2 stay inside scaled safe rects and switch hidden SettingsTabs pages. UI smoke, no-overlap matrix and runtime smoke PASS. |
 | [design_integrate_generated_settings_tab_switcher_frame_task.md](../tasks/design_integrate_generated_settings_tab_switcher_frame_task.md) | Designer (Codex) | done | Jira: SCRUM-325. Settings tab switcher accepted as production PNG `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png` (1280×256 RGBA); safe-area preview/docs done; runtime integration handed off to Back-end SCRUM-334; UI/no-overlap smoke PASS |
 | [backend_generate_asset_skill_task.md](../tasks/backend_generate_asset_skill_task.md) | Codex / Tooling | done | Jira: SCRUM-324. Скилл `fantasydisk-asset-generator` создан: OpenAI Images API `gpt-image-2`, PNG в `docs/design/references/`, follow-up task на внедрение; py_compile/help PASS |
@@ -130,8 +137,8 @@ class_weapon). «done = чистый HEAD зелёный».
 | [bug_button_hover_remove_yellow_glow_task.md](../tasks/bug_button_hover_remove_yellow_glow_task.md) | Back-end (UI) | done | Jira: SCRUM-318. Hover/focus button states no longer use baked yellow/gold glow textures; neutral bright tint + near-white hover/focus font; 6 smoke checks PASS; QA preview in `build/qa/scrum318/` |
 | [design_main_menu_background_new_bosses_battle_task.md](../tasks/design_main_menu_background_new_bosses_battle_task.md) | Designer (Codex) | done | Jira: SCRUM-316. Новый фон `main_menu_epic_battle_v2.png` 2560×1440: 3 босса + 2 героя, smooth D&D dark fantasy, left/top UI-safe zones; import + runtime/UI/no-overlap/theme smokes PASS |
 | [art_unified_character_style_anim_spec_task.md](../tasks/art_unified_character_style_anim_spec_task.md) | Designer+Back-end | done | Jira: SCRUM-298. Design standard + Back-end runtime complete: player loads future `<class_id>_sheet.png`, exposes idle/walk/attack_primary/attack fallback and preserves cutout/static fallback; animation/runtime smoke PASS |
-| [art_char_redraw_anim_berserk_task.md](../tasks/art_char_redraw_anim_berserk_task.md) | Animator (Codex) | new | Jira: SCRUM-283. ART 0.1.5: перерисовать «Берсерк» в едином стиле, 5 walk/5 attack, без оружия; blocked — waits for Design-owned accepted source sheet via `fantasydisk-asset-generator`; Animator integration/validation after sheet delivery |
-| [art_char_redraw_anim_dark_mage_task.md](../tasks/art_char_redraw_anim_dark_mage_task.md) | Animator (Codex) | new | Jira: SCRUM-286. ART 0.1.5: перерисовать «Тёмный маг» в едином стиле, 5 walk/5 attack, без оружия; blocked — waits for Design-owned accepted source sheet via `fantasydisk-asset-generator`; Animator integration/validation after sheet delivery |
+| [art_char_redraw_anim_berserk_task.md](../tasks/art_char_redraw_anim_berserk_task.md) | Designer (Codex) → Animator (Codex) | review | Jira: SCRUM-283. Design source sheet accepted: `assets/sprites/characters/berserk_sheet.png` (`1920x768`, `384x384`, 5 walk + 5 attack_primary, transparent, unarmed), preview/validation ready; Animator next for SpriteFrames/manifest/GIF/smokes. |
+| [art_char_redraw_anim_dark_mage_task.md](../tasks/art_char_redraw_anim_dark_mage_task.md) | Designer 2 (Codex) → Animator (Codex) | in_progress | Jira: SCRUM-286. Design source-sheet pass active in Designer 2 window `019ec7a6-55a5-7bc3-a397-606ce046308d`; generate accepted `dark_mage_sheet.png` first, then hand off to Animator for SpriteFrames/manifest/smokes. |
 | [art_char_redraw_anim_guitarist_task.md](../tasks/art_char_redraw_anim_guitarist_task.md) | Animator (Codex) | new | Jira: SCRUM-291. ART 0.1.5: перерисовать «Гитарист» в едином стиле, 5 walk/5 attack, без оружия; blocked — waits for Design-owned accepted source sheet via `fantasydisk-asset-generator`; Animator integration/validation after sheet delivery |
 | [art_char_redraw_anim_assassin_task.md](../tasks/art_char_redraw_anim_assassin_task.md) | Animator (Codex) | new | Jira: SCRUM-282. ART 0.1.5: перерисовать «Ассасин» в едином стиле, 5 walk/5 attack, без оружия; blocked — waits for Design-owned accepted source sheet via `fantasydisk-asset-generator`; Animator integration/validation after sheet delivery |
 | [art_char_redraw_anim_thief_task.md](../tasks/art_char_redraw_anim_thief_task.md) | Animator (Codex) | new | Jira: SCRUM-297. ART 0.1.5: перерисовать «Вор» в едином стиле, 5 walk/5 attack, без оружия; blocked — waits for Design-owned accepted source sheet via `fantasydisk-asset-generator`; Animator integration/validation after sheet delivery |
@@ -200,8 +207,8 @@ class_weapon). «done = чистый HEAD зелёный».
 
 ## 0.1.5 — blocked / dependency-gated
 
-Feature freeze снят. Эти задачи остаются `blocked` до указанных предпосылок и
-не dispatch'ятся, пока blocker не будет снят исполнителем/PM.
+Feature block 0.1.5 активен. Эти задачи остаются `blocked` до указанных
+предпосылок и не dispatch'ятся, пока blocker не будет снят исполнителем/PM.
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
