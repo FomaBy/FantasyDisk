@@ -616,6 +616,11 @@ const META_SKILL_MULT_MAP := {
 	"money_gain_mult": "money_gain_multiplier",
 	"ult_charge_mult": "ult_charge_multiplier",
 	"elite_boss_damage_mult": "elite_boss_damage_multiplier",
+	# Прогрессия по классам (SCRUM-360): бонусы текущего класса (передаются только
+	# выбранному классу из main); множатся с аккаунтными на тот же run_modifier.
+	"class_damage_mult": "damage_multiplier",
+	"class_attack_speed_mult": "attack_speed_multiplier",
+	"class_max_health_mult": "max_health_multiplier",
 }
 const META_SKILL_FLAT_MAP := {
 	"defense_flat": "defense_flat",

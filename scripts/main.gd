@@ -642,6 +642,11 @@ func apply_ascension_bonuses(player: Node) -> void:
 			player._apply_stat_scaling(true)
 	# 3) Мета-древо умений (SCRUM-150): боевое подмножество в run_modifiers + старт-золото забега.
 	var skill_mods: Dictionary = META_PROGRESSION.skill_modifiers(meta_state)
+	# Прогрессия по классам (SCRUM-360): бонусы ТОЛЬКО выбранного класса — мерджим в
+	# skill_mods (ключи class_* не пересекаются с аккаунтными), применяются вместе.
+	var class_mods: Dictionary = META_PROGRESSION.class_modifiers(meta_state, selected_character_id)
+	for class_key in class_mods:
+		skill_mods[class_key] = class_mods[class_key]
 	if player.has_method("apply_meta_skill_modifiers"):
 		player.apply_meta_skill_modifiers(skill_mods)
 	var start_gold := int(round(float(skill_mods.get("start_gold_flat", 0.0))))
