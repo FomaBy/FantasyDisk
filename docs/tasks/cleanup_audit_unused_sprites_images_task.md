@@ -1,13 +1,27 @@
 # Аудит: неиспользуемые спрайты и картинки
 
-Статус: new
+Статус: done (2026-06-14, Claude Fable 5)
 Приоритет: high
 Роль: Design (Claude) → Back-end cleanup
 Версия: 0.1.5
+
+## Результат (2026-06-14)
+Отчёт: docs/design/reviews/cleanup_assets_audit_2026_06.md. Вывод: мёртвого
+игрового арта НЕТ — все 79 «unused» кандидатов ложные (vfx_weapon_%s / weapons/%s
+грузятся по weapon_id; боссы/мини-элитки 0.1.5 ждут вайринга; marketing —
+коллатераль). Реальный мусор: 64 осиротевших «2.png.import» (остаток дублей
+SCRUM-270, пропущенный regex'ом) → порождена
+cleanup_remove_orphan_import_sidecars_task (SCRUM-271), исполнена в этой же цепочке.
 Создано: 2026-06-14
 Автор: PM (запрос пользователя — полный рефакторинг/чистка)
 Jira: SCRUM-269
 Эпик: CLEANUP — рефакторинг и чистка v2 (SCRUM-266)
+
+## Dispatcher Dispatch (2026-06-14)
+
+Sent to Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`. Keep reasoning
+High/no low. Scope is read-only asset/image audit and report/task generation
+only: do not delete assets, generate art, or change runtime code.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -41,9 +55,9 @@ tools/audit_unused_assets.py (консервативный аудит) + ист�
    Само удаление — НЕ в этой read-only задаче.
 
 ## Acceptance Criteria
-- [ ] Список неиспользуемых ассетов с защитой от ложных срабатываний (динамич. пути).
-- [ ] Отчёт с «удалить/оставить/backup»; созданы дочерние cleanup-задачи.
-- [ ] Read-only: ничего не удалено в этой задаче; import/smoke зелёные.
+- [x] Список неиспользуемых ассетов с защитой от ложных срабатываний (динамич. пути).
+- [x] Отчёт с «удалить/оставить/backup»; созданы дочерние cleanup-задачи.
+- [x] Read-only: ничего не удалено в этой задаче; import/smoke зелёные.
 
 ## Документация
 docs/design/reviews/, content_registry.md.
