@@ -1,6 +1,6 @@
 # Animator: Shard Marshal full-frame integration
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Animator (Codex)
 Версия: 0.1.5
@@ -40,16 +40,37 @@ changing gameplay, balance, targeting, damage, spawn rules or AI.
   `elite_behavior`; this should be handled as a Back-end visual-registry handoff.
 
 ## Acceptance Criteria
-- [ ] `shard_marshal` has runtime `move` 6f loop and `attack_primary`/`attack`
+- [x] `shard_marshal` has runtime `move` 6f loop and `attack_primary`/`attack`
       6f one-shot.
-- [ ] `shard_marshal` exposes `skill_shard_fan` and `skill_command_pulse` as
+- [x] `shard_marshal` exposes `skill_shard_fan` and `skill_command_pulse` as
       6f one-shots plus `attack_*` validator aliases.
-- [ ] Runtime full-frame registry resolves `elite/shard_marshal`.
-- [ ] `EliteCommander.tscn` creates visible `FullFrameBody` while hiding legacy
+- [x] Runtime full-frame registry resolves `elite/shard_marshal`.
+- [x] `EliteCommander.tscn` creates visible `FullFrameBody` while hiding legacy
       fallback body.
-- [ ] Animation-director manifest validates.
-- [ ] `tests/animation_smoke_test.gd` passes.
-- [ ] No gameplay/balance/AI changes.
+- [x] Animation-director manifest validates.
+- [x] `tests/animation_smoke_test.gd` passes.
+- [x] No gameplay/balance/AI changes.
 
 ## Result
-Pending.
+Done 2026-06-14.
+
+- Packaged the accepted SCRUM-352 `shard_marshal` full-frame sheet into runtime
+  SpriteFrames: `assets/sprites/elites/full_frame/shard_marshal_spriteframes.tres`.
+- Registered `shard_marshal` under `FullFrameAnimationRegistry` kind `elite`;
+  legacy `Body` remains fallback and is hidden only when the registry
+  SpriteFrames load successfully.
+- Added 6-frame `move` loop, 6-frame one-shot `attack`/`attack_primary`,
+  `skill_shard_fan`, `skill_command_pulse`, and matching `attack_*` validator
+  aliases on the same skill frames.
+- Extended full-frame animation smoke coverage for `EliteCommander.tscn`
+  activation, skill/alias frame counts, loop flags, direction flip, and backend
+  phase string resolution (`shard_marshal:shard_fan:windup` ->
+  `skill_shard_fan`).
+- QA artifacts: `build/qa/animation_shard_marshal_full_frame_integration/`
+  contains the animation manifest, contact sheet and GIF previews.
+
+Verification:
+- `python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_shard_marshal_full_frame_integration/animation_manifest.json` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --editor --quit` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.

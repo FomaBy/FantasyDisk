@@ -561,6 +561,93 @@
         ],
         "has_transparency": true
       }
+    },
+    {
+      "entity_id": "mini_rot_hound",
+      "kind": "elite",
+      "title": "Mini Rot Hound",
+      "source_path": "assets/sprites/elites/mini_rot_hound.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/mini_rot_hound_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/elites/full_frame/mini_rot_hound_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_rot_lunge",
+        "skill_bleed_howl"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          21,
+          51,
+          1513,
+          983
+        ],
+        "has_transparency": true
+      }
+    },
+    {
+      "entity_id": "mini_shadow_devourer",
+      "kind": "elite",
+      "title": "Mini Shadow Devourer",
+      "source_path": "assets/sprites/elites/mini_shadow_devourer.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/mini_shadow_devourer_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/elites/full_frame/mini_shadow_devourer_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_shadow_blink",
+        "skill_devour_bite"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          36,
+          50,
+          1488,
+          973
+        ],
+        "has_transparency": true
+      }
+    },
+    {
+      "entity_id": "rift_warden",
+      "kind": "boss",
+      "title": "Rift Warden",
+      "source_path": "assets/sprites/bosses/boss_rift_warden.png",
+      "reference_path": "docs/design/references/scrum352_full_frame_sheets/raw/rift_warden_full_frame_sheet_raw.png",
+      "asset_path": "assets/sprites/bosses/full_frame/rift_warden_full_frame_sheet.png",
+      "rows": [
+        "move",
+        "attack_primary",
+        "skill_gravity_well",
+        "skill_rift_zone"
+      ],
+      "frame_count_per_row": 6,
+      "qa": {
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          20,
+          20,
+          1519,
+          983
+        ],
+        "has_transparency": true
+      }
     }
   ]
 }

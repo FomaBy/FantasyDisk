@@ -1289,6 +1289,14 @@
  },
  "animation_shard_marshal_full_frame_integration_task.md": {
   "key": "SCRUM-371",
-  "status": "В работе"
+  "status": "Контроль качества"
+ },
+ "backend_mini_elite_full_frame_visual_id_handoff_task.md": {
+  "key": "SCRUM-372",
+  "status": "Контроль качества"
+ },
+ "design_unified_master_frame_system_projectwide_task.md": {
+  "key": "SCRUM-373",
+  "status": "К выполнению"
  }
 }
