@@ -977,7 +977,7 @@
  },
  "bug_settings_controls_tab_overflow_scroll_task.md": {
   "key": "SCRUM-275",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "bug_hero_select_description_overlaps_frame_task.md": {
   "key": "SCRUM-276",
@@ -985,10 +985,18 @@
  },
  "bug_all_characters_weapon_integrity_audit_task.md": {
   "key": "SCRUM-277",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "bug_combat_level_up_button_reposition_opaque_task.md": {
   "key": "SCRUM-278",
+  "status": "К выполнению"
+ },
+ "backend_druid_wolf_summon_animation_integrate_task.md": {
+  "key": "SCRUM-279",
+  "status": "К выполнению"
+ },
+ "design_druid_wolf_summon_animation_slice_task.md": {
+  "key": "SCRUM-280",
   "status": "К выполнению"
  }
 }

@@ -1,6 +1,6 @@
 # BUG: Настройки → «Управление» — элементы не помещаются на экране, нужен скролл
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -52,3 +52,26 @@ Jira: SCRUM-275
 
 ## Документация
 docs/design/current_game_state.md (настройки/управление).
+
+## Result (2026-06-14)
+
+Done. The settings `Управление` tab now uses `ControlsScroll` with vertical-only
+scrolling and `follow_focus`, so the aim mode selector, all keybinding rows, the
+hint and `SettingsResetBindingsButton` remain reachable at 1280x720/windowed
+sizes while the `Назад` button stays outside the scrollable area. Added runtime
+smoke assertions that `ControlsScroll` wraps `ControlsContent`, contains
+`SettingsAimModeOption` and `SettingsResetBindingsButton`, disables horizontal
+scrolling and follows keyboard/gamepad focus.
+
+QA dump:
+- `build/qa/settings_controls_scroll.md`
+
+Verification:
+- `res://tests/runtime_smoke_test.gd` PASS.
+- `res://tests/runtime_smoke_ui_test.gd` PASS.
+- `res://tests/ui_no_overlap_matrix_test.gd` PASS.
+- `res://tests/aim_mode_settings_test.gd` PASS.
+
+Docs:
+- `CHANGELOG.md`
+- `docs/design/current_game_state.md`
