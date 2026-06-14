@@ -46,6 +46,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [backend_hero_select_carousel_bigger_icons_task.md](../tasks/backend_hero_select_carousel_bigger_icons_task.md) | Back-end (UI) | new | UX 0.1.5: карусель выбора героя — иконки персонажей КРУПНЕЕ, уменьшить отступы (separation+верт.), герои плохо видны; follow-up к SCRUM-333 |
 | [design_settings_tabs_fix_3slots_restyle_skill_task.md](../tasks/design_settings_tabs_fix_3slots_restyle_skill_task.md) | Designer (Codex) | new | БАГ 0.1.5: настройки показывают 4 вкладки вместо 3 (свитчер на 4 слота) — пересоздать ассет скиллом на 3 слота + SAFE_RECTS=3, реалистичный стиль в цветах референсов |
 | [design_recreate_all_artifact_icons_via_skill_task.md](../tasks/design_recreate_all_artifact_icons_via_skill_task.md) | Designer (Codex) | new | ART 0.2.0: пересоздать ВСЕ 53 иконки артефактов скиллом (gpt-image-2, прозрачный фон, D&D Dark Fantasy Dragon), единый набор; имена/пути сохранить; будущие — тоже скиллом |
 | [backend_shop_reentry_until_next_level_task.md](../tasks/backend_shop_reentry_until_next_level_task.md) | Back-end (геймплей/flow) | in_progress | Jira: SCRUM-339. UX 0.1.5: магазин ревизитируем до перехода на след. уровень; первое закрытие уже даёт доступные узлы карты; продвижение этапа — при выборе след. узла, не при закрытии магазина |

@@ -1170,5 +1170,9 @@
  "design_settings_tabs_fix_3slots_restyle_skill_task.md": {
   "key": "SCRUM-341",
   "status": "К выполнению"
+ },
+ "backend_hero_select_carousel_bigger_icons_task.md": {
+  "key": "SCRUM-342",
+  "status": "К выполнению"
  }
 }
