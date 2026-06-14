@@ -1811,8 +1811,8 @@
  },
  "backend_unified_frame_thin_runtime_margins_update_task.md": {
   "key": "SCRUM-392",
-  "status": "К выполнению",
-  "desc_hash": "45b1bf3727439a65330187147a7f082d"
+  "status": "Готово",
+  "desc_hash": "c004bcfb1168e50d55c0f9a927f0963f"
  },
  "design_integrate_generated_backgrounds_task.md": {
   "key": "SCRUM-393",
@@ -1848,5 +1848,40 @@
   "key": "SCRUM-393",
   "status": "К выполнению",
   "desc_hash": "9125c1e9400db954a9e191f6bb8ec2cf"
+ },
+ "design_integrate_generated_backgrounds_10_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "437acef6aa54b51f59034aec9158df78"
+ },
+ "design_integrate_generated_backgrounds_7_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "847b01c673536d37813cecc7d13e860d"
+ },
+ "design_integrate_generated_backgrounds_8_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "9f8350240432c517bbd09c3fbd291724"
+ },
+ "design_integrate_generated_backgrounds_9_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "71eb06a3d2f3a3ee6e3644b3f486bdcd"
+ },
+ "design_integrate_generated_hero_select_2_task.md": {
+  "key": "SCRUM-395",
+  "status": "К выполнению",
+  "desc_hash": "33a9b2f7fbfa90b525cd0a2d9440b62a"
+ },
+ "design_integrate_generated_hero_select_3_task.md": {
+  "key": "SCRUM-395",
+  "status": "К выполнению",
+  "desc_hash": "1f7be97fb90c237884006f5abbc240a9"
+ },
+ "design_integrate_generated_hero_select_task.md": {
+  "key": "SCRUM-395",
+  "status": "К выполнению",
+  "desc_hash": "446635f0454656e419a53dfd8051174b"
  }
 }

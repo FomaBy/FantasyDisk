@@ -5,6 +5,10 @@
 ## [Unreleased] — ветка dev
 
 ### Fixed
+- Unified thin frame runtime margins (SCRUM-392): `UIThemePaths` now uses the
+  SCRUM-384 metadata-aligned 72px 9-slice margins and 88px source safe rect for
+  the unified master frame, with the theme smoke checking against metadata
+  instead of stale 128px expectations.
 - Hero Select ascension default (SCRUM-389): selecting/opening a hero now
   defaults the ascension selector to that class's current selectable maximum,
   while the minus/plus controls still let the player lower or restore the run

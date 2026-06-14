@@ -12,8 +12,8 @@ const UNIFIED_ORNAMENT_TOP_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_ornamen
 const UNIFIED_ORNAMENT_BOTTOM_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_ornament_bottom.png"
 const UNIFIED_HOVER_OVERLAY_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_hover_overlay.png"
 const UNIFIED_FRAME_SOURCE_SIZE := Vector2i(1024, 1024)
-const UNIFIED_FRAME_TEXTURE_MARGINS := Vector4(128, 128, 128, 128)
-const UNIFIED_FRAME_SAFE_RECT := Rect2(132, 132, 760, 760)
+const UNIFIED_FRAME_TEXTURE_MARGINS := Vector4(72, 72, 72, 72)
+const UNIFIED_FRAME_SAFE_RECT := Rect2(88, 88, 848, 848)
 const UNIFIED_FRAME_CONTENT := {
 	"global_panel": Vector4(28, 26, 28, 26),
 	"level_panel": Vector4(34, 30, 34, 30),

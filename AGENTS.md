@@ -117,6 +117,16 @@ Project practices:
   full-frame sprite-sheet анимации без production cutout-разрезания статичного
   спрайта, плюс отдельные attack-паттерны под разные skill/phase. Animator
   валидирует manifest bundled-скриптом skill и прогоняет animation smoke.
+- **Баланс классов и оружия — через скилл
+  `fantasydisk-class-balance-director`**
+  (Codex skill, `~/.codex/skills/fantasydisk-class-balance-director/`). Каждый
+  класс балансируется как сумма трёх selectable weapons, а не как отдельное
+  оружие: суммарная эффективность кита должна быть сопоставима по solo-target,
+  AoE/crowd-clear и defensive/survivability механикам. Все классы сравниваются
+  между собой по total kit score трёх оружий. При провале оси сначала менять
+  механику оружия/кита (геометрия удара, target pattern, контроль, sustain,
+  defensive window, summon behavior и т.п.), а не только множители урона; при
+  этом каждое из трёх оружий должно сохранять отличающийся gameplay/niche.
 - Run Godot headless smoke tests after gameplay changes:
   `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
 - Do not commit `.godot/`.
