@@ -1,6 +1,6 @@
 # ART: UI Overhaul (Магазин и узлы экономики) — D&D + Dark Fantasy Dragon, новым скиллом
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -69,3 +69,79 @@ heroframe/carusel/windrose/DescriptionHS/settings_tab_switcher_frame). Брат�
 
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/content_registry.md, current_game_state.
+
+## Progress Log
+
+- 2026-06-14 — Designer 2 took SCRUM-332 after board check. Anchor SCRUM-327 is
+  `done`/superseded and this task file marks SCRUM-327 as coordination, not a
+  blocker. Jira moved to «В работе» via `tools/jira_board_sync.py`.
+- 2026-06-14 — Generated OpenAI/API economy cluster mockup via
+  `fantasydisk-asset-generator`:
+  `docs/design/references/ui_overhaul_shop_economy/scrum332_economy_cluster_mockup.png`;
+  copied into `docs/design/mockups/scrum332_shop_economy/`.
+- 2026-06-14 — Generated OpenAI/API isolated frame source sheet:
+  `docs/design/references/ui_overhaul_shop_economy/scrum332_economy_frame_asset_sheet.png`.
+  Because gpt-image-2 baked a checkerboard, added deterministic alpha/crop
+  builder `tools/build_scrum332_shop_economy_assets.py`.
+
+## Result Summary — 2026-06-14
+
+Design-scope complete and ready for QA / Back-end integration handoff.
+
+Deliverables:
+- Mockup/spec:
+  - `docs/design/mockups/scrum332_shop_economy/scrum332_economy_cluster_mockup.png`
+  - `docs/design/mockups/scrum332_shop_economy/spec.md`
+- Runtime-ready frame kit:
+  - `assets/sprites/ui/frames/economy/ui_frame_economy_panel.png`
+  - `assets/sprites/ui/frames/economy/ui_frame_economy_choice_card.png`
+  - `assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_hover.png`
+  - `assets/sprites/ui/frames/economy/ui_frame_economy_dragon_panel.png`
+  - `assets/sprites/ui/frames/economy/ui_frame_economy_price_badge.png`
+  - `assets/sprites/ui/frames/economy/ui_frame_economy_tooltip.png`
+- Reference copies:
+  `docs/design/references/ui_overhaul_shop_economy/runtime_assets/`.
+- Preview:
+  `docs/design/previews/scrum332_shop_economy_frame_kit_contact.png`.
+- Back-end handoff:
+  `docs/tasks/backend_ui_overhaul_shop_economy_integration_task.md`.
+
+Design decision:
+- SCRUM-332 does not wire `scripts/ui_screens.gd` in Design scope. Back-end owns
+  live layout, focus, escape, shop purchase/reentry, route advancement and
+  no-overlap runtime tests.
+- The generated kit intentionally does not include a dedicated square shop-slot
+  replacement. Back-end may keep current shop slots; if a new square slot is
+  needed, create a small follow-up Design generation instead of squashing the
+  tall `economy_choice_card`.
+
+Validation:
+- OpenAI mockup generated and preview shown in chat.
+- Frame source sheet generated through `fantasydisk-asset-generator`.
+- Alpha-cleaned runtime PNGs created from source sheet; dimensions verified by
+  `file`.
+- Godot headless `--import` exited 0 and created `.import` sidecars for all six
+  `assets/sprites/ui/frames/economy/*.png` files.
+- Geometry, safe zones, forbidden ornament zones and responsive rules recorded
+  in `spec.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: economy frame kit + spec + Back-end handoff — теперь realized live)
+
+Проверено (фактически):
+- **6 economy-фреймов** (`assets/sprites/ui/frames/economy/`): panel 1024×640,
+  choice_card + hover 512×768, dragon_panel 1024×512, price_badge 256×96, tooltip
+  640×320 — все RGBA, прозрачные углы, контент+прозрачность; 6 `.import`, import чист.
+- **Визуал** `scrum332_shop_economy_frame_kit_contact.png`: единый D&D Dark Fantasy
+  Dragon стиль (тёмный металл/камень, золото-оранж окантовка, красные самоцветы),
+  content-зоны — тёмные центры. Mockup + spec.md (safe zones/forbidden ornament).
+- **Back-end handoff** реализован: SCRUM-406 (live-интеграция economy в shop/attribute/
+  rest/upgrade/event) — мной QA PASSED + закоммичен (7e1b362d). No-overlap чист на 5
+  разрешениях, рамки в рантайме.
+
+Acceptance (Design+realized):
+- [x] Economy-экраны в едином D&D dragon-стиле (kit скиллом, прозрачный фон).
+- [x] Ассеты в assets/ + references/; правило фреймов (safe zones в spec); навигация цела (через 406).
+- [x] no-overlap на 3 разрешениях + smoke зелёные (через 406); kit + контакт-лист.
+
+Статус review→done. Баги: нет. Economy-петля закрыта: 332 (kit) + 406 (live).

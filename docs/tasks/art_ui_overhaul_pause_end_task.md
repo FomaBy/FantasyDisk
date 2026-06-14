@@ -1,6 +1,6 @@
 # ART: UI Overhaul (Пауза и финальные экраны) — D&D + Dark Fantasy Dragon, новым скиллом
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Claude-Designer; генерация — fantasydisk-asset-generator)
 Версия: 0.1.5
@@ -95,6 +95,11 @@ Design scope completed and ready for Back-end integration:
 - Validation artifact:
   `build/qa/scrum330/pause_end_asset_validation.json`
   (`magenta_visible_pixels: 0`, alpha present).
+- Codex Design validation:
+  PNG/metadata validation PASS; Godot `--import` PASS. Full
+  `runtime_smoke_test.gd` currently fails on an unrelated post-battle attribute
+  offer assertion in the shared dirty runtime/test tree; no SCRUM-330 Design
+  asset failure was observed.
 - Runtime wiring intentionally not done in Design; Back-end handoff created:
   `docs/tasks/backend_pause_end_ui_overhaul_integration_task.md`.
 
@@ -118,3 +123,24 @@ chroma-key): modal-рамка + кресты победы/поражения. С
 параллельная сессия (Codex shop/economy) временно сломала тот же файл (вызовы
 `_economy_panel_style`/`_make_economy_choice_card` без определений). Коммит ui_screens.gd —
 как только их правка достроится и файл начнёт парситься. Моя секция парсится чисто.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: pause/end frame kit + crests + Back-end handoff — теперь realized live)
+
+Проверено (фактически):
+- **Ассеты**: `ui_frame_pause_end_modal.png` (1280×1024 RGBA) + кресты
+  `ui_crest_victory/defeat.png` + тонкая menu-рамка; mockup, metadata
+  (`scrum330_pause_end_metadata.json`: safe rect/content margins), превью
+  (`ui_overhaul_pause_end_contact/safe_zones`). Validation `magenta=0`, alpha present.
+- **Кресты** интегрированы в HEAD (`_add_result_crest` на victory/death — 3 вхождения,
+  декоративный header).
+- **Back-end handoff** реализован: SCRUM-407 (modal на pause menu/victory/death +
+  pause dossier `pause_stats_menu.gd`) — мной QA PASSED + закоммичен (7e1b362d).
+  No-overlap дамп `scrum330/pause_end_ui_no_overlap_matrix.md` чист на 5 разрешениях.
+
+Acceptance:
+- [x] Design mockup/asset package кластера «Пауза и финал» в D&D dragon-стиле (скиллом).
+- [x] Ассеты в assets/ + references/metadata/previews; safe margins зафиксированы.
+- [x] Runtime no-overlap/smoke на 3 разрешениях — realized через SCRUM-407 (PASS).
+
+Статус review→done. Баги: нет. Pause/end петля закрыта: 330 (kit) + 407 (live).
