@@ -1,0 +1,54 @@
+# Back-end handoff: full-frame animation state registry
+
+Статус: new
+Приоритет: high
+Версия: 0.1.5
+Создано: 2026-06-14
+Автор: Animator audit `animation_full_frame_pipeline_coverage_audit_task.md`
+Исполнитель: Back-end
+Jira: TBD
+Parent: `animation_full_frame_pipeline_coverage_audit_task.md`
+
+## Autonomy / Approval
+Пользователь заранее одобрил in-scope работу. Back-end работает автономно; если
+обнаружится Animator-only motion polish, вернуть handoff в Animator.
+
+## Role / Scope
+Back-end runtime architecture only. Do not change balance, damage, targeting,
+spawn rules, or Design art direction. Animator owns motion quality and final
+state/pattern coverage once runtime hooks exist.
+
+## Context
+Current runtime broadly supports cutout rigs and `AllyMinion` SpriteFrames for
+animated summons. The new animation standard needs a reusable full-frame state
+registry for heroes/enemies/elites/bosses so Animator can map:
+
+- `move` / `walk` / `run` / `levitate`;
+- `attack_primary`;
+- skill/phase attacks such as `attack_slam_wave`, `attack_shadow_strike`,
+  boss phase attacks, and future class/summon patterns;
+- hit/death fallback behavior without gameplay side effects.
+
+Existing work SCRUM-208/SCRUM-239 exposes weapon phase events for cutout rig pose
+sync, but it is not a general SpriteFrames state registry for non-player enemies
+and bosses.
+
+## Requirements
+1. Add a data-driven full-frame animation registry or equivalent resource lookup
+   that can coexist with current cutout rig fallback.
+2. Support entity-kind IDs (`hero`, `enemy`, `summon`/`ally`, `elite`, `boss`) and
+   canonical entity IDs without hardcoding every state in gameplay code.
+3. Let Animator/Design-provided SpriteFrames play `move` loop and one-shot attack
+   states without altering damage windows, targeting, or cooldowns.
+4. Boss/elite skill phases must be addressable by animation state name/variant
+   while gameplay remains the source of truth for actual mechanics.
+5. Add smoke coverage that verifies missing SpriteFrames fall back cleanly and
+   provided SpriteFrames do not crash runtime.
+
+## Acceptance Criteria
+- [ ] Runtime can select full-frame SpriteFrames per entity/state when present.
+- [ ] Cutout rig fallback remains intact for entities without sheets.
+- [ ] Boss/elite skill animation state names can be passed through without
+      changing skill mechanics.
+- [ ] Animation/runtime smoke tests pass.
+- [ ] Documentation and Jira/task board are synced.

@@ -1,6 +1,6 @@
 # Animation
 
-Обновлено: 2026-06-13
+Обновлено: 2026-06-14
 
 Animator ownership описан в `docs/process/agent_role_boundaries_and_handoffs.md`. Back-end должен не полировать motion, а предоставлять стабильные states/API.
 
@@ -11,6 +11,13 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - Source PNG остаются меню/fallback-изображениями.
 - `scripts/sliced_rig_manifest.gd` хранит данные нарезки.
 - Read-only audit SCRUM-173 (2026-06-13) зафиксировал матрицу покрытия в `docs/design/reviews/animation_rig_audit_2026_06.md`: базовый rig/state слой широкий, но 0.1.4 follow-up нужен для legacy player weapon-action hooks, enemy archetype assertions, hit/death coverage, weapon timing/VFX sync и Design-ready parts для новых боссов/мини-элиток.
+- Directive 2026-06-14: future production animation must follow
+  `fantasydisk-animation-director`: every playable character, monster, summon,
+  elite, and boss needs 5+ movement frames and 5+ primary attack frames. Elites
+  and bosses must use smooth full-frame sprite sheets for production animation,
+  not cutout slicing of static sprites, and need multiple skill/phase attack
+  patterns. Audit `docs/design/reviews/animation_full_frame_pipeline_audit_2026_06.md`
+  tracks current compliance and handoffs.
 
 ## Player Motion
 

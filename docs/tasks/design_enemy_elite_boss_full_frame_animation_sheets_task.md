@@ -1,0 +1,72 @@
+# Design handoff: enemy, elite, and boss full-frame animation sheets
+
+Статус: new
+Приоритет: high
+Версия: 0.1.5
+Создано: 2026-06-14
+Автор: Animator audit `animation_full_frame_pipeline_coverage_audit_task.md`
+Исполнитель: Design (Codex/Designer)
+Jira: TBD
+Parent: `animation_full_frame_pipeline_coverage_audit_task.md`
+
+## Autonomy / Approval
+Пользователь заранее одобрил in-scope работу. Design работает автономно по
+`fantasydisk-asset-generator`; старый asset pipeline не использовать.
+
+## Role / Scope
+Design-owned. Animator must not redraw these production sprites. Back-end gameplay,
+balance, targeting, spawn rules, and damage are out of scope.
+
+## Context
+The new animation standard requires full-frame production animation for elites and
+bosses. Current enemies, elites, mini-elites, and bosses mostly have static source
+PNGs plus cutout parts. That remains useful as fallback/readability coverage, but
+does not satisfy the new 5+ frame movement and 5+ frame attack-production standard,
+especially the "no cutout for elites/bosses" rule.
+
+Existing non-duplicate work:
+
+- SCRUM-156 delivered static source PNGs for new bosses/mini-elites.
+- SCRUM-204 only unblocked cutout slicing and is superseded by SCRUM-156.
+- SCRUM-184/185 covered cutout readability smoke, not production full-frame sheets.
+- SCRUM-298 covers playable characters, not enemies/elites/bosses.
+
+## Needed Assets
+Create transparent full-frame sprite-sheet source for:
+
+- Standard enemies: `rift_cutter`, `ash_marksman`, `spark_runner`,
+  `stone_bruiser`, `bone_caller`, `void_mage`, `venom_spitter`,
+  `rift_shieldbearer`, `small_biter`, `bone_shaman`, `winged_spark`.
+- Route elites: `iron_bastion`, `night_stalker`, `plague_prophet`,
+  `shard_marshal`.
+- Mini-elites: `mini_scavenger_reaper`, `mini_plague_bellringer`,
+  `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`,
+  `mini_shadow_devourer`.
+- Bosses: `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`,
+  `ashen_colossus`.
+
+## Animation Requirements
+- Transparent PNG, no baked background, no crop, stable bottom-center pivot.
+- Movement row: 5+ frames, loop=true. Legged enemies use real walk/run; flying or
+  lore-floating entities use natural levitation/flap with tucked/natural legs.
+- `attack_primary`: 5+ frames, loop=false, with anticipation, active frame,
+  follow-through, and recovery.
+- Elites/bosses: full-frame sheets only for production animation; no production
+  cutout slicing from static sprites. Each elite/boss needs at least two
+  skill/phase-specific attack rows. Prefer 7-9 frames for boss attacks.
+- Keep readable silhouettes at current game scale and preserve transparent alpha.
+
+## Handoff Back To Animator
+When sheets are ready, unblock Animator to:
+
+- build/import SpriteFrames resources;
+- map `move`/`attack_primary`/skill attacks into the animation manifest;
+- update animation smoke and QA previews;
+- keep gameplay timing owned by Back-end.
+
+## Acceptance Criteria
+- [ ] Contact sheets/GIF previews exist for each produced entity family.
+- [ ] Every sheet has 5+ movement frames and 5+ primary attack frames.
+- [ ] Every elite/boss sheet has 2+ skill attack rows and is full-frame, not cutout.
+- [ ] Transparent alpha/no-crop/pivot notes are documented for Animator.
+- [ ] Task board and Jira are synced.

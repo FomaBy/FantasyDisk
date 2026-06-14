@@ -1193,7 +1193,7 @@
  },
  "backend_hero_select_radar_remove_title_center_enlarge_task.md": {
   "key": "SCRUM-347",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "backend_levelup_buttons_beautify_and_uncrop_task.md": {
   "key": "SCRUM-348",
@@ -1201,6 +1201,18 @@
  },
  "backend_run_autosave_and_continue_prompt_task.md": {
   "key": "SCRUM-349",
+  "status": "К выполнению"
+ },
+ "animation_full_frame_pipeline_coverage_audit_task.md": {
+  "key": "SCRUM-350",
+  "status": "В работе"
+ },
+ "backend_full_frame_animation_state_registry_task.md": {
+  "key": "SCRUM-351",
+  "status": "К выполнению"
+ },
+ "design_enemy_elite_boss_full_frame_animation_sheets_task.md": {
+  "key": "SCRUM-352",
   "status": "К выполнению"
  }
 }

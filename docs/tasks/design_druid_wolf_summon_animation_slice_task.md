@@ -11,6 +11,15 @@ Jira: SCRUM-280
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
 
+## АНИМАЦИЯ — СКИЛЛОМ (директива пользователя 2026-06-14)
+Анимацию (move/walk 5+ кадров loop, attack_primary 5+ кадров non-loop; элитки/боссы
+— full-frame sprite-sheet без cutout-разрезания) делать скиллом
+`fantasydisk-animation-director`
+(`~/.codex/skills/fantasydisk-animation-director/`): он строит SpriteFrames/
+AnimationPlayer, манифест, контакт-лист/GIF, валидирует
+`scripts/validate_animation_manifest.py` и гоняет animation_smoke. Источник арта —
+через `fantasydisk-asset-generator`. См. AGENTS.md (раздел анимаций).
+
 ## Контекст (запрос пользователя)
 «Надо сделать анимацию призыва волка у друида. Анимация в папке
 референсы/wolfanimate — 2 файла: 1 на анимацию движения, 1 на анимацию атаки».
