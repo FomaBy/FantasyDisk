@@ -17,7 +17,8 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   and bosses must use smooth full-frame sprite sheets for production animation,
   not cutout slicing of static sprites, and need multiple skill/phase attack
   patterns. Audit `docs/design/reviews/animation_full_frame_pipeline_audit_2026_06.md`
-  tracks current compliance and handoffs.
+  / SCRUM-350 tracks current compliance and created Design/Back-end handoffs
+  SCRUM-352 and SCRUM-351.
 
 ## Player Motion
 

@@ -1,12 +1,13 @@
 # UX: Роза ветров — убрать заголовок, центрировать, увеличить на 20-30%
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-347
+QA: in_progress (2026-06-14)
 Связано: SCRUM-322 (рамка розы ветров), SCRUM-333 (мастер-лейаут)
 
 ## Autonomy / Approval
@@ -53,3 +54,23 @@ radar_box (VBox). Полигон рисует scripts/ui/hero_stat_radar.gd `_dr
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Result 2026-06-14
+
+Implemented Back-end UI fix:
+- removed the runtime `HeroStatRadarTitle` label from Hero Select;
+- made `HeroStatRadar` the only child inside the windrose content container and
+  centered it in the compass field;
+- increased `HeroStatRadar` polygon radius factor from `0.30` to `0.36` (+20%);
+- tightened label offset/width so axis labels remain inside the windrose frame.
+
+Runtime smoke now asserts title removal, enlarged radius factor, centered radar
+rects, top-right floating panel, dossier gap, square windrose frame and no
+overlap at 1280x720, 1600x900 and 2560x1440. QA dump:
+`build/qa/hero_select_radar_rects.md`.
+
+Verification:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Docs updated: `CHANGELOG.md`, `docs/design/systems/menus_ui.md`,
+`docs/design/current_game_state.md`.

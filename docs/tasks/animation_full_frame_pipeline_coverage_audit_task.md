@@ -1,12 +1,13 @@
 # Animation: full-frame pipeline coverage audit
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: Dispatcher/User directive 2026-06-14
 Исполнитель: Codex Animator
-Jira: TBD
+Jira: SCRUM-350
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил in-scope работу. Работать автономно; вопросы только при
@@ -44,11 +45,11 @@ frame-count/full-frame production standard and creates the next handoffs.
 6. Update `docs/design/systems/animation.md`, this task, task board, and Jira.
 
 ## Acceptance Criteria
-- [ ] Duplicate audit records why existing tasks do not cover this new scope.
-- [ ] Coverage matrix identifies compliant, partial, and blocked entity families.
-- [ ] Child Design/Back-end handoffs exist for missing production sheets/runtime hooks.
-- [ ] Skill manifest validator passes for currently compliant animated entities.
-- [ ] Jira/task board are synced.
+- [x] Duplicate audit records why existing tasks do not cover this new scope.
+- [x] Coverage matrix identifies compliant, partial, and blocked entity families.
+- [x] Child Design/Back-end handoffs exist for missing production sheets/runtime hooks.
+- [x] Skill manifest validator passes for currently compliant animated entities.
+- [x] Jira/task board are synced.
 
 ## Verification
 Run:
@@ -61,4 +62,46 @@ Godot runtime smoke is not required for this read-only/spec-only audit unless co
 scenes, or imported assets are changed.
 
 ## Result
-In progress.
+Done 2026-06-14 (Codex Animator): read-only audit against the new
+`fantasydisk-animation-director` full-frame standard is complete.
+
+Deliverables:
+- Report: `docs/design/reviews/animation_full_frame_pipeline_audit_2026_06.md`.
+- Validated pass-only manifest:
+  `build/qa/animation_full_frame_pipeline_coverage/animation_manifest.json`.
+- Design handoff: `docs/tasks/design_enemy_elite_boss_full_frame_animation_sheets_task.md`
+  / SCRUM-352.
+- Back-end handoff: `docs/tasks/backend_full_frame_animation_state_registry_task.md`
+  / SCRUM-351.
+
+Verification:
+- `validate_animation_manifest.py` passed for 4 currently compliant ally
+  SpriteFrames entities.
+
+Godot smoke was not run because this audit did not change code, scenes, imported
+assets, gameplay runtime, or animation resources.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 1f58fd93 (ветка dev)
+
+Read-only animation-coverage аудит. QA = наличие/действенность deliverables.
+
+Проверено (фактически):
+- **Манифест-валидатор** (skill `validate_animation_manifest.py`):
+  «FantasyDisk animation manifest OK: **4 entities**» — pass-only манифест
+  `build/qa/animation_full_frame_pipeline_coverage/animation_manifest.json`
+  валиден (4 compliant: druid_beast + 3 призыва).
+- **Отчёт** `docs/design/reviews/animation_full_frame_pipeline_audit_2026_06.md`:
+  Coverage Matrix (heroes — Partial; standard enemies — Partial; summons/allies —
+  Mostly compliant) + duplicate-audit (ссылки на SCRUM-173/156/204).
+- **Дочерние handoff'ы созданы**: SCRUM-351 (Back-end full-frame state registry)
+  + SCRUM-352 (Design enemy/elite/boss full-frame sheets).
+
+Acceptance:
+- [x] Duplicate-аудит фиксирует, почему текущие задачи не покрывают новый scope.
+- [x] Coverage matrix (compliant/partial/blocked).
+- [x] Дочерние Design/Back-end handoff'ы (351/352).
+- [x] Skill-валидатор манифеста зелёный; Jira/доска синканы.
+
+Read-only: код/сцены/ассеты не менялись (smoke не требовался). Баги: нет.

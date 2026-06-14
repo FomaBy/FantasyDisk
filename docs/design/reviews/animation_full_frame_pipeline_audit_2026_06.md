@@ -63,8 +63,11 @@ walk loop.
 
 ## Child Tasks / Handoffs
 - Design: `docs/tasks/design_enemy_elite_boss_full_frame_animation_sheets_task.md`
+  / SCRUM-352.
 - Back-end: `docs/tasks/backend_full_frame_animation_state_registry_task.md`
+  / SCRUM-351.
 - Existing Design anchor for heroes: `docs/tasks/art_unified_character_style_anim_spec_task.md`
+  / SCRUM-298.
 
 ## Animator Decision
 Do not implement motion fixes on top of the old cutout system for this new standard.

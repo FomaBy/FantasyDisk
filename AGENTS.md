@@ -101,6 +101,14 @@ Project practices:
   ПРОЗРАЧНОМ фоне; исходник сохраняется в `docs/design/references/<тема>/` (для
   единообразия на будущее), затем внедряется в `assets/`. Стиль — D&D + Dark
   Fantasy Dragon (см. UI Overhaul SCRUM-327).
+- **Анимации персонажей/монстров/элиток/боссов — через скилл
+  `fantasydisk-animation-director`**
+  (Codex skill, `~/.codex/skills/fantasydisk-animation-director/`). Минимум для
+  каждой анимированной сущности: движение `move/walk` 5+ кадров и основная атака
+  `attack_primary` 5+ кадров. Для элиток и боссов обязательны плавные
+  full-frame sprite-sheet анимации без production cutout-разрезания статичного
+  спрайта, плюс отдельные attack-паттерны под разные skill/phase. Animator
+  валидирует manifest bundled-скриптом skill и прогоняет animation smoke.
 - Run Godot headless smoke tests after gameplay changes:
   `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
 - Do not commit `.godot/`.

@@ -1161,7 +1161,7 @@
  },
  "backend_shop_reentry_until_next_level_task.md": {
   "key": "SCRUM-339",
-  "status": "Контроль качества"
+  "status": "Готово"
  },
  "design_recreate_all_artifact_icons_via_skill_task.md": {
   "key": "SCRUM-340",
@@ -1173,7 +1173,7 @@
  },
  "backend_hero_select_carousel_bigger_icons_task.md": {
   "key": "SCRUM-342",
-  "status": "К выполнению"
+  "status": "В работе"
  },
  "bug_back_button_cropped_use_bigger_frame_task.md": {
   "key": "SCRUM-343",
@@ -1193,11 +1193,11 @@
  },
  "backend_hero_select_radar_remove_title_center_enlarge_task.md": {
   "key": "SCRUM-347",
-  "status": "В работе"
+  "status": "Контроль качества"
  },
  "backend_levelup_buttons_beautify_and_uncrop_task.md": {
   "key": "SCRUM-348",
-  "status": "К выполнению"
+  "status": "Контроль качества"
  },
  "backend_run_autosave_and_continue_prompt_task.md": {
   "key": "SCRUM-349",
@@ -1205,7 +1205,7 @@
  },
  "animation_full_frame_pipeline_coverage_audit_task.md": {
   "key": "SCRUM-350",
-  "status": "В работе"
+  "status": "Готово"
  },
  "backend_full_frame_animation_state_registry_task.md": {
   "key": "SCRUM-351",

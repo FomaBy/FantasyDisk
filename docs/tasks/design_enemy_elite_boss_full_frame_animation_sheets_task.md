@@ -6,8 +6,8 @@
 Создано: 2026-06-14
 Автор: Animator audit `animation_full_frame_pipeline_coverage_audit_task.md`
 Исполнитель: Design (Codex/Designer)
-Jira: TBD
-Parent: `animation_full_frame_pipeline_coverage_audit_task.md`
+Jira: SCRUM-352
+Parent: SCRUM-350 / `animation_full_frame_pipeline_coverage_audit_task.md`
 
 ## Autonomy / Approval
 Пользователь заранее одобрил in-scope работу. Design работает автономно по

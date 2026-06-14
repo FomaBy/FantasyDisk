@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-339
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -81,3 +82,26 @@ Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
 
 Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/systems/route_map.md`, `docs/design/systems/progression_balance.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 1f58fd93 (ветка dev)
+
+Проверено (фактически):
+- **Код-инвариант**: `leave_shop` → `_return_to_map_after_shop_visit()` БЕЗ
+  `route_stage++` и без чистки node-bound стока; `route_map_screen.gd` держит
+  посещённый shop-узел ревизитируемым (`shop_reentry_pending`/
+  `shop_reentry_route_stage`, стр.454/534) + открывает следующий ряд; финализация
+  (чистка стока) — на выборе следующего узла.
+- **Целевой тест** `_test_shop_reentry_until_next_level` (runtime_smoke:193) —
+  passed (умбрелла зелёная, 0 shop-reentry ошибок): магазин ревизитируем →
+  вернуться (сток/покупки те же) → выбрать след. узел → магазин финализирован.
+- **Регрессия**: progression_economy / combat / meta_progression / umbrella —
+  зелёные.
+
+Acceptance:
+- [x] Магазин ревизитируем до выбора следующего route node; сток/покупки persists.
+- [x] Закрытие лавки не двигает stage/stock; следующий узел финализирует магазин.
+- [x] Инварианты карты сохранены; smoke зелёные; доки.
+
+Баги: нет.

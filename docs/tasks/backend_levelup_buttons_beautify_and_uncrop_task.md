@@ -1,6 +1,6 @@
 # UX: Кнопка повышения уровня — красивая по референсу меню + «Позже» не обрезана
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -53,3 +53,10 @@ Jira: SCRUM-348
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Result / Verification
+Готово 2026-06-14:
+- `LevelUpPlusButton` переведена на Red & Gold `main_menu` frame через общую fantasy button theme: кнопка остается в правом нижнем углу, полностью непрозрачная, с читаемым pending-бейджем и нейтральным hover/focus без желтого свечения.
+- `LevelUpLaterButton` расширена до 260x104 и использует `back_m`, чтобы «Позже» и орнамент не обрезались и оставались в content-зоне.
+- Runtime smoke проверяет стиль/alpha/позицию `LevelUpPlusButton`, не обрезанный `LevelUpLaterButton` и пишет QA dump `build/qa/combat_level_up_button.md`.
+- Verification: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.

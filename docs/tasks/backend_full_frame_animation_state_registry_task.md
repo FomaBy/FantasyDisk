@@ -6,8 +6,8 @@
 Создано: 2026-06-14
 Автор: Animator audit `animation_full_frame_pipeline_coverage_audit_task.md`
 Исполнитель: Back-end
-Jira: TBD
-Parent: `animation_full_frame_pipeline_coverage_audit_task.md`
+Jira: SCRUM-351
+Parent: SCRUM-350 / `animation_full_frame_pipeline_coverage_audit_task.md`
 
 ## Autonomy / Approval
 Пользователь заранее одобрил in-scope работу. Back-end работает автономно; если
