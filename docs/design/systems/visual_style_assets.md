@@ -72,6 +72,12 @@ Non-button panels/windows/cards/tooltips/HUD/pause stat frames now resolve to
 dark_fantasy/escape panel textures are backed up outside live assets at
 `build/cleanup_backup_ornate_frames_2026_06_14/`.
 
+SCRUM-281 adds a screen-specific **Hero Select frame kit** from
+`docs/design/references/herouiframe/`. It is used only by `HeroSelectScreen`,
+because the portrait/dossier/radar ornaments need custom safe areas. Live
+assets resolve to `assets/sprites/ui/frames/hero_select/`; QA screenshots and
+rect dumps live in `build/qa/scrum281/`.
+
 Canonical live ornate frame assets live in `assets/sprites/ui/frames/ornate/`:
 
 - `ui_frame_ornate_global_panel.png`, `ui_frame_ornate_level_panel.png`,
@@ -81,6 +87,14 @@ Canonical live ornate frame assets live in `assets/sprites/ui/frames/ornate/`:
   `ui_frame_ornate_timer_panel.png`;
 - `ui_frame_ornate_pause_main.png`, `ui_frame_ornate_pause_stat_group.png`,
   `ui_frame_ornate_pause_stat_chip.png`, `ui_frame_ornate_pause_stat_tooltip.png`.
+
+Canonical live Hero Select frame assets live in
+`assets/sprites/ui/frames/hero_select/`:
+
+- `ui_frame_hero_select_portrait.png`, `ui_frame_hero_select_dossier.png`,
+  `ui_frame_hero_select_radar.png`, `ui_frame_hero_select_thumbnail_strip.png`;
+- `ui_frame_hero_select_thumbnail.png`, `ui_frame_hero_select_asc_button.png`,
+  `ui_frame_hero_select_asc_label.png`, `ui_frame_hero_select_asc_mods.png`.
 
 Canonical live button assets live in `assets/sprites/ui/frames/red_gold/`:
 
@@ -124,16 +138,23 @@ Runtime frame sizing (SCRUM-274):
 - HUD and timer panels use their dedicated horizontal frame assets;
 - Escape stats uses `pause_main`, `pause_stat_group`, `pause_stat_chip` and
   `pause_stat_tooltip` frames; its buttons use the SCRUM-273 `pause` button.
+- Hero Select uses the SCRUM-281 `ui_frame_hero_select_*` kit with custom
+  `HERO_SELECT_FRAME_MARGINS` and `HERO_SELECT_FRAME_CONTENT` in
+  `scripts/ui_screens.gd`; the bottom thumbnail strip uses compressed thumbnail
+  safe margins so 18 class previews fit inside 1280x720.
 
 Rebuild/QA assets:
 
 - `tools/build_red_gold_button_kit.py` - SCRUM-273 active button kit pipeline from the Red & Gold Dragon sheet;
 - `tools/build_ornate_ui_frame_kit.py` - SCRUM-274 active panel/frame pipeline from the Ornate Dark spec sheet;
+- `tools/build_hero_select_frame_kit.py` - SCRUM-281 Hero Select frame pipeline from `references/herouiframe`;
+- `tools/capture_hero_select_qa.gd` - SCRUM-281 screenshot/rect QA capture for 1280x720, 1920x1080 and 2560x1440;
 - `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
 - `tools/build_leather_gold_ui_kit.py` - superseded SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
 - `docs/design/previews/red_gold_button_kit_contact.png` - active SCRUM-273 button state/type contact sheet;
 - `docs/design/previews/ornate_dark_frame_kit_contact.png` - active SCRUM-274 frame contact sheet;
+- `docs/design/previews/hero_select_frame_kit_contact.png` - active SCRUM-281 Hero Select frame contact sheet;
 - `docs/design/previews/ui_button_only_legacy_panels_contact.png` - SCRUM-147 side-by-side correction sheet;
 - `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - superseded SCRUM-229 leather+gold panel kit sheet;
 - `build/qa/interface_leather_gold_panel_kit_contact.png` - historical QA copy of the SCRUM-229 leather+gold kit sheet;

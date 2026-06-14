@@ -56,7 +56,8 @@ Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable sh
 
 ## Hero / Weapon / Level-Up Layout Rules
 
-- Hero select uses a fullscreen v3 layout: large portrait left, bottom hero thumbnail strip, and one right-side info panel. Inside that panel `HeroSelectDossier` stays left of `HeroSelectRadarPanel`; runtime smoke asserts the description/right dossier edge is left of the radar panel with a real gap at 1280x720, 1600x900 and 2560x1440.
+- Hero select uses a fullscreen v4 layout: large portrait left, central dossier, floating top-right radar, and a bottom image-only hero thumbnail strip. SCRUM-281 replaces its screen-specific frames with `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_*` from `docs/design/references/herouiframe/`. Runtime smoke asserts the description/right dossier edge is left of the radar panel with a real gap at 1280x720, 1600x900 and 2560x1440.
+- Hero Select must preserve 720p safe areas: `HeroSelectBackButton` stays inside the top-right viewport, portrait/dossier/radar remain separated, and the bottom thumbnail strip stays fully visible with adaptive image-only previews. QA capture lives at `build/qa/scrum281/hero_select_*.png`.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
 - Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button.
 
@@ -78,3 +79,7 @@ texture/content margins from `UIThemePaths.ORNATE_FRAME_MARGINS` and
 center field, not on the red metal ornament. If an existing screen needs more
 safe-area than the frame provides, treat it as a layout bug for the owning UI
 task instead of stretching or cropping the source frame art.
+
+Hero Select is the exception to generic ornate frames: it uses its own
+`HERO_SELECT_FRAME_TEXTURES`, `HERO_SELECT_FRAME_MARGINS` and
+`HERO_SELECT_FRAME_CONTENT` in `scripts/ui_screens.gd`.

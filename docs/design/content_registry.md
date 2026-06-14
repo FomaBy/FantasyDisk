@@ -492,6 +492,14 @@ SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon ki
 | `ui_frame_ornate_pause_stat_group` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_group.png` | Live Escape derived stat group |
 | `ui_frame_ornate_pause_stat_chip` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_chip.png` | Live Escape base row / derived chip |
 | `ui_frame_ornate_pause_stat_tooltip` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_tooltip.png` | Live Escape stat tooltip |
+| `ui_frame_hero_select_portrait` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_portrait.png` | Live Hero Select large portrait frame |
+| `ui_frame_hero_select_dossier` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_dossier.png` | Live Hero Select dossier and radar reserve frame |
+| `ui_frame_hero_select_radar` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_radar.png` | Live Hero Select floating stat radar frame |
+| `ui_frame_hero_select_thumbnail_strip` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail_strip.png` | Live Hero Select bottom thumbnail strip frame |
+| `ui_frame_hero_select_thumbnail` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail.png` | Live Hero Select adaptive hero thumbnail button frame |
+| `ui_frame_hero_select_asc_button` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_button.png` | Live Hero Select ascension +/- frame |
+| `ui_frame_hero_select_asc_label` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_label.png` | Live Hero Select ascension level label frame |
+| `ui_frame_hero_select_asc_mods` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_mods.png` | Live Hero Select ascension modifier line frame |
 | `ui_btn_red_gold_standard_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_standard.png` + hover/pressed/disabled | Standard 420x104 action buttons |
 | `ui_btn_red_gold_max_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_max.png` + hover/pressed/disabled | Wide 560x104 action buttons |
 | `ui_btn_red_gold_main_menu_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_main_menu.png` + hover/pressed/disabled | Main menu 380x104 buttons |
@@ -514,7 +522,7 @@ SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon ki
 | `ui_window_leather_gold_main` | `assets/sprites/ui/frames/leather_gold/ui_window_leather_gold_main.png` | Superseded SCRUM-229 source large window panel |
 | `ui_check_leather_gold` | `assets/sprites/ui/frames/leather_gold/ui_check_leather_gold.png` | Superseded SCRUM-229 source checked state frame |
 
-Pipeline/preview: `tools/build_red_gold_button_kit.py` (SCRUM-273 buttons), `tools/build_ornate_ui_frame_kit.py` (SCRUM-274 panels), active previews `docs/design/previews/red_gold_button_kit_contact.png` and `docs/design/previews/ornate_dark_frame_kit_contact.png`. Historical: `tools/apply_button_only_ui_revert.py` (SCRUM-147 buttons/legacy correction), `tools/build_leather_gold_ui_kit.py` (SCRUM-229 panels), `docs/design/previews/interface_leather_gold_panel_kit_contact.png`.
+Pipeline/preview: `tools/build_red_gold_button_kit.py` (SCRUM-273 buttons), `tools/build_ornate_ui_frame_kit.py` (SCRUM-274 panels), `tools/build_hero_select_frame_kit.py` (SCRUM-281 Hero Select frames), active previews `docs/design/previews/red_gold_button_kit_contact.png`, `docs/design/previews/ornate_dark_frame_kit_contact.png` and `docs/design/previews/hero_select_frame_kit_contact.png`. Historical: `tools/apply_button_only_ui_revert.py` (SCRUM-147 buttons/legacy correction), `tools/build_leather_gold_ui_kit.py` (SCRUM-229 panels), `docs/design/previews/interface_leather_gold_panel_kit_contact.png`.
 
 Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
 

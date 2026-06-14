@@ -1,6 +1,6 @@
 # ART: Заменить фреймы экрана выбора героя на набор references/herouiframe
 
-Статус: in_progress
+Статус: review
 Приоритет: high
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -81,10 +81,50 @@ docs/design/references/herouiframe/ — 8 PNG (сырые экспортные �
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Все 8 элементов Hero Select используют новые фреймы из herouiframe на размерах из таблицы.
-- [ ] Content margins ≥ окантовки; контент центрирован, не залазит на рамку (закрывает и SCRUM-276).
-- [ ] Ascension +/- = 54×62 без регрессов других мест; старые стили в бэкап.
-- [ ] 6 smoke зелёные; скрин в build/qa/; CHANGELOG; content_registry.
+- [x] Все 8 элементов Hero Select используют новые фреймы из herouiframe на размерах из таблицы.
+- [x] Content margins ≥ окантовки; контент центрирован, не залазит на рамку (закрывает и SCRUM-276).
+- [x] Ascension +/- = 54×62 без регрессов других мест; старые стили в бэкап.
+- [x] 6 smoke зелёные; скрин в build/qa/; CHANGELOG; content_registry.
 
 ## Документация
 docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_state.
+
+## Result 2026-06-14
+
+Готово к QA review. Нарезан и подключен dedicated Hero Select frame kit:
+
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_portrait.png`
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_dossier.png`
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_radar.png`
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail_strip.png`
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail.png`
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_button.png`
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_label.png`
+- `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_mods.png`
+
+Pipeline/preview:
+
+- `tools/build_hero_select_frame_kit.py`
+- `tools/capture_hero_select_qa.gd`
+- `docs/design/previews/herouiframe_reference_contact.png`
+- `docs/design/previews/hero_select_frame_kit_contact.png`
+
+Layout fixes:
+
+- 1280x720 safe-area fixed: `HeroSelectBackButton` is inside the viewport
+  (`build/qa/scrum281/hero_select_capture_rects.md`: x=1086..1256).
+- Bottom thumbnail strip no longer overflows/crops; thumbnails use adaptive
+  compact width at 1280 and expand at 1920/2560.
+- `HeroSelectChooseButton` is a local compact `hero_confirm` exception
+  (260x72) so the screen-specific heavy frames fit 720p.
+- Ascension +/- use dedicated 54x62 frames.
+
+Validation:
+
+- `tests/runtime_smoke_ui_test.gd` PASS.
+- `tests/ui_no_overlap_matrix_test.gd` PASS.
+- `tests/runtime_smoke_test.gd` PASS.
+- QA screenshots captured by windowed Godot:
+  `build/qa/scrum281/hero_select_1280x720.png`,
+  `build/qa/scrum281/hero_select_1920x1080.png`,
+  `build/qa/scrum281/hero_select_2560x1440.png`.
