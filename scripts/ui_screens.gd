@@ -861,7 +861,7 @@ func _show_character_select() -> void:
 
 	var select_character := func(character_id: String) -> void:
 		game.selected_character_id = character_id
-		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(character_id))
+		game.selected_ascension_level = game.ascension_selectable_max(character_id)
 		var config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
 		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(character_id)
 		var title := str(config.get("title", character_id))

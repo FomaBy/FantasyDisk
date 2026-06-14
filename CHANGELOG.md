@@ -5,6 +5,10 @@
 ## [Unreleased] — ветка dev
 
 ### Fixed
+- Hero Select ascension default (SCRUM-389): selecting/opening a hero now
+  defaults the ascension selector to that class's current selectable maximum,
+  while the minus/plus controls still let the player lower or restore the run
+  level before weapon select.
 - Feedback Discord webhook attachments (SCRUM-374): multipart `payload_json`
   now declares `attachments[0]` with the same filename as `files[0]`, so
   Discord API v10 keeps the `fantasydisk_feedback.png` screenshot instead of

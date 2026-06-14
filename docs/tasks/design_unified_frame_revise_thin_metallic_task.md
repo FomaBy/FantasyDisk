@@ -1,6 +1,6 @@
 # ART: Ревизия единого фрейма — ТОНКАЯ металлическая рамка (самоцветы+драконья плашка)
 
-Статус: review
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
@@ -97,3 +97,34 @@ rails, тонкие углы, небольшие красные самоцвет
 контент остается строго внутри scaled safe rect из metadata; optional dragon
 overlays можно использовать только на крупных панелях и нельзя размещать поверх
 них текст/иконки/кнопки.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED (Design-scope: тонкая ревизия ассета + метаданные)
+
+Проверено (фактически):
+- **Тоньше**: метаданные `texture_margins` 128→**72**, `content_margins` 132→**88**,
+  `strict_safe_rect` inner 760→**848** (больше места). Путь сохранён
+  (`ui_frame_unified_master.png` 1024² RGBA прозрачный) — SCRUM-382 подхватывает.
+- **Визуал** `unified_master_frame_thin_revision_contact.png` + рендер
+  `cap_thinframe_384.png` (Древо умений): рамка реально тоньше (vs old backup/382),
+  тёмная сталь, **красные самоцветы в углах**, опц. dragon-overlays, контент внутри,
+  9-slice тайлится (wide preview); красивее/легче.
+- **Тесты**: `ui_no_overlap_matrix_test` + `runtime_smoke_test` — passed (контент в
+  content-зоне, без наложений).
+
+⚠️ **Back-end follow-up (не Design-дефект)**: runtime-константа
+`UIThemePaths.UNIFIED_FRAME_TEXTURE_MARGINS = Vector4(128,128,128,128)`
+(ui_theme_paths.gd:15) **НЕ обновлена** под тонкий ассет (бордюр ~72px). Сейчас
+9-slice режет по 128 в рамку с 72px бордюром — на крупных панелях рендер приемлем
+(зона 72-128px пустая, искажения нет), но для ПИКСЕЛЬ-точности (особенно мелкие
+панели/тултипы <256px) константу следует привести к `72`. Это Back-end-интеграция
+(SCRUM-382 домен), вне Design-scope 384.
+
+Acceptance (Design-scope):
+- [x] Тонкая металлическая рамка + тонкие углы + красные самоцветы; dragon-overlay опц.
+- [x] Контент во внутренней зоне (safe_rect 848); 9-slice тайлится; пути сохранены.
+- [x] Метаданные обновлены под тонкие значения; превью/бэкап; тесты зелёные.
+- [~] Runtime texture margins под тонкий ассет — Back-end follow-up (SCRUM-382).
+
+Статус review→done (Design-source). Баги: нет (рендер приемлем; margin-точность —
+delegated Back-end follow-up).

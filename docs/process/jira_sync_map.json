@@ -1681,8 +1681,8 @@
  },
  "design_unified_frame_revise_thin_metallic_task.md": {
   "key": "SCRUM-384",
-  "status": "В работе",
-  "desc_hash": "86a509e133ae60f0a63fc91ee95ba467"
+  "status": "Готово",
+  "desc_hash": "f8075c9035c938bf43ea25cba84d24d0"
  },
  "design_integrate_generated_scrum380_death_rows_3_task.md": {
   "key": "SCRUM-383",
@@ -1807,6 +1807,16 @@
  "design_settings_menu_unified_restyle_task.md": {
   "key": "SCRUM-391",
   "status": "К выполнению",
-  "desc_hash": "b35dde3aac8c16e6ec5ffc93c40b8bf9"
+  "desc_hash": "8a87f2ae28b9dce786ffcc84a8a1439c"
+ },
+ "backend_unified_frame_thin_runtime_margins_update_task.md": {
+  "key": "SCRUM-392",
+  "status": "К выполнению",
+  "desc_hash": "45b1bf3727439a65330187147a7f082d"
+ },
+ "design_integrate_generated_backgrounds_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "c52d47d2fca16eee67d09a9fca967d61"
  }
 }

@@ -5313,14 +5313,21 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	root.add_child(delta_main)
 	await process_frame
 	var delta_meta := MetaProgression.default_state()
-	for unlock_level in range(3):
+	for unlock_level in range(2):
 		delta_meta = MetaProgression.record_boss_victory(delta_meta, "berserk", unlock_level)
 	delta_main.set("meta_state", delta_meta)
 	delta_main.set("selected_character_id", "berserk")
-	delta_main.set("selected_ascension_level", 3)
+	delta_main.set("selected_ascension_level", 0)
 	delta_main.call("_show_character_select")
 	await process_frame
 	await process_frame
+	if int(delta_main.get("selected_ascension_level")) != delta_main.call("ascension_selectable_max", "berserk"):
+		_fail("Expected hero select to default ascension to the selected class selectable max.")
+		return
+	var asc_label := delta_main.find_child("AscensionLevelLabel", true, false) as Label
+	if asc_label == null or (not asc_label.text.contains("3 / 3") and not asc_label.text.contains("3/3")):
+		_fail("Expected hero select ascension label to reflect selectable max 3/3, got: %s" % (asc_label.text if asc_label != null else "<missing>"))
+		return
 	var asc_mods_label := delta_main.find_child("AscensionModsLabel", true, false) as Label
 	if asc_mods_label == null:
 		_fail("Expected AscensionModsLabel on hero select.")
@@ -5331,12 +5338,31 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	if asc_mods_label.text.contains("Закалённые враги") or asc_mods_label.text.contains("Жадные торговцы"):
 		_fail("Expected hero select ascension label not to show cumulative lower-level changes, got: %s" % asc_mods_label.text)
 		return
-	delta_main.set("selected_ascension_level", 0)
-	delta_main.call("_show_character_select")
+	var asc_minus_button := delta_main.find_child("AscensionMinusButton", true, false) as Button
+	if asc_minus_button == null:
+		_fail("Expected AscensionMinusButton on hero select.")
+		return
+	asc_minus_button.pressed.emit()
+	await process_frame
+	if int(delta_main.get("selected_ascension_level")) != 2:
+		_fail("Expected manual ascension decrease to remain available after max default.")
+		return
+	asc_minus_button.pressed.emit()
+	asc_minus_button.pressed.emit()
 	await process_frame
 	asc_mods_label = delta_main.find_child("AscensionModsLabel", true, false) as Label
 	if asc_mods_label == null or not asc_mods_label.text.to_lower().contains("без усложнений"):
 		_fail("Expected hero select ascension level 0 label to say no complications.")
+		return
+	var dark_mage_thumb := delta_main.find_child("HeroThumbnail_dark_mage", true, false) as Button
+	if dark_mage_thumb == null:
+		_fail("Expected dark mage hero thumbnail for ascension class-switch smoke.")
+		return
+	dark_mage_thumb.pressed.emit()
+	await process_frame
+	var dark_mage_max: int = int(delta_main.call("ascension_selectable_max", "dark_mage"))
+	if int(delta_main.get("selected_ascension_level")) != dark_mage_max:
+		_fail("Expected hero class switch to recalculate ascension default to dark mage selectable max.")
 		return
 	delta_main.queue_free()
 	await process_frame
