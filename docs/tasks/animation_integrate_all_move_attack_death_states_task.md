@@ -1,6 +1,6 @@
 # ANIM: Внедрить анимации всех монстров и персонажей — move/attack/death (full-frame)
 
-Статус: blocked
+Статус: done
 Приоритет: high
 Роль: Animator (Codex) → Back-end (анимации)
 Версия: 0.1.5
@@ -65,6 +65,15 @@ SCRUM-298 + 282-297 (перерисовка персонажей)
   `scrum370_partial_death_rows_contact.png`, and per-entity GIFs.
   Animator-owned validation is green; final SCRUM-370 status remains blocked only
   by external runtime smoke failure in victory UI text collection.
+- 2026-06-14 — Heartbeat follow-up found Back-end blocker SCRUM-385 is now
+  done/QA PASSED. Animator resumed SCRUM-370 for final runtime verification and
+  closure sync.
+- 2026-06-14 — Final SCRUM-370 closure pass complete after SCRUM-385 unblock.
+  Refreshed `build/qa/animation_integrate_all_move_attack_death_states/animation_manifest.json`
+  with required `frame_gutter_px`, `outer_padding_px`, `safe_slicing_checked`
+  fields from the updated animation-director validator; source-sheet structural
+  gutter compliance remains tracked separately by SCRUM-387/Design handoff.
+  Manifest validator, Godot import, animation smoke, and runtime smoke all PASS.
 
 ## Handoffs / Blockers
 - Design handoff: `design_full_frame_death_rows_allies_elites_bosses_task.md`
@@ -81,18 +90,15 @@ SCRUM-298 + 282-297 (перерисовка персонажей)
   fallback and preserving loot/score/cleanup behavior.
   Status: done.
 - Back-end bug handoff: `bug_victory_flow_runtime_smoke_text_missing_task.md` —
-  runtime smoke `_test_victory_flow` currently fails outside Animator scope
-  because collected victory screen text does not include `Победа`. This blocks
-  final SCRUM-370 runtime verification only; manifest validation, import, and
-  animation smoke are green.
+  runtime smoke `_test_victory_flow` previously failed outside Animator scope
+  because collected victory screen text did not include `Победа`. Status: done
+  and QA PASSED; Animator final verification resumed.
 
 ## Verification
 - PASS: `python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_integrate_all_move_attack_death_states/animation_manifest.json`
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --editor --quit`
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/animation_smoke_test.gd`
-- BLOCKED/EXTERNAL: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
-  fails in `_test_victory_flow`: expected victory screen text to include
-  `Победа`.
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
 
 ## Контекст (запрос пользователя)
 «Надо внедрить анимацию всех монстров и персонажей, что нарисовано, в игру. Очень
@@ -150,7 +156,41 @@ SCRUM-298 + 282-297 (перерисовка персонажей)
 - [x] У всех уже подключенных full-frame стандартных врагов, призывов, route elites, mini-elites и боссов есть move + attack + death; SCRUM-370 добавил missing death rows for allies/elites/mini-elites/bosses.
 - [x] Смерть проигрывает нарисованную death-анимацию перед удалением (ghost — fallback); runtime lifecycle реализован SCRUM-379.
 - [x] Статичные обычные враги из current registry covered by SCRUM-363..368 or safe fallback; всё зарегистрировано и проигрывается в игре.
-- [ ] animation_smoke + runtime_smoke зелёные; контакт-листы/GIF; CHANGELOG + animation.md.
+- [x] animation_smoke + runtime_smoke зелёные; контакт-листы/GIF; CHANGELOG + animation.md.
+
+## Результат
+
+Done 2026-06-14.
+
+Animator-owned umbrella closure complete:
+- all 19 SCRUM-380 death-row inputs are integrated into existing runtime
+  `SpriteFrames` paths for 4 allies, 4 route elites, 6 mini-elites and 5 bosses;
+- each covered entity has `move`, `attack`/`attack_primary` or skill attack rows,
+  and explicit 6-frame non-loop `death`;
+- SCRUM-379 death lifecycle is done, so runtime can play full-frame `death`
+  before cleanup with ghost fallback preserved;
+- SCRUM-385 victory-flow runtime smoke blocker is done/QA PASSED and final
+  runtime verification now passes;
+- QA manifest refreshed for the updated `fantasydisk-animation-director`
+  safe-slicing fields. Source/reference sheets that need structural gutters are
+  tracked separately by SCRUM-387 Design handoff, with no SCRUM-370 runtime
+  blocker remaining.
+
+Final verification:
+
+```bash
+python3 /Users/sergeyfomin/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/animation_integrate_all_move_attack_death_states/animation_manifest.json
+# FantasyDisk animation manifest OK: 19 entities
+
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --editor --quit
+# PASS
+
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd
+# Animation smoke test passed.
+
+/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
+# Runtime smoke test passed.
+```
 
 ## Документация
 docs/design/systems/animation.md, content_registry, current_game_state.

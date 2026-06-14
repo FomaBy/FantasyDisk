@@ -1606,8 +1606,8 @@
  },
  "animation_integrate_all_move_attack_death_states_task.md": {
   "key": "SCRUM-370",
-  "status": "К выполнению",
-  "desc_hash": "0cfc8be2b94c043bbcca46cb2d1701f4"
+  "status": "Контроль качества",
+  "desc_hash": "adc08e9b37bed1c5beb635aa257c0d14"
  },
  "animation_shard_marshal_full_frame_integration_task.md": {
   "key": "SCRUM-371",
@@ -1791,8 +1791,8 @@
  },
  "backend_meta_points_per_new_ascension_only_task.md": {
   "key": "SCRUM-388",
-  "status": "Контроль качества",
-  "desc_hash": "7449800b8a191246852f3467448efe88"
+  "status": "Готово",
+  "desc_hash": "b056cdabbe22cb8c98e9dab061a5daf4"
  },
  "backend_hero_select_default_ascension_to_max_task.md": {
   "key": "SCRUM-389",
@@ -1833,5 +1833,10 @@
   "key": "SCRUM-393",
   "status": "К выполнению",
   "desc_hash": "335fac59f5399913dd8b76ca5afeb823"
+ },
+ "design_integrate_generated_backgrounds_4_task.md": {
+  "key": "SCRUM-393",
+  "status": "К выполнению",
+  "desc_hash": "50f9c1baaacb6e779ace96e99f38a32f"
  }
 }

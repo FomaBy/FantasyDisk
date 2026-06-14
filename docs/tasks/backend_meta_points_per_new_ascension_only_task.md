@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-388
+QA: in_progress (2026-06-14)
 
 ## Результат (2026-06-14)
 `record_boss_victory` (meta_progression.gd) переработан: +1 `meta_points`/`skill_points`
@@ -67,3 +68,28 @@ runtime smoke зелёные. Экономика дерева достижима
 
 ## Документация
 docs/design/systems/progression_balance.md, current_game_state.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+
+Проверено (фактически):
+- **Логика** `record_boss_victory` (meta_progression.gd:138-164): `unlocked_new_ascension`
+  = true ТОЛЬКО при `run_level >= completed` И `completed < MAX_ASCENSION_LEVEL(10)`
+  (146-148); очко `+1 meta_points/skill_points` начисляется ТОЛЬКО при этом флаге
+  (155-157). Значит: новое возвышение → +1; повтор на пройденном (run_level<completed)
+  → 0; на максимуме L10 → 0 (фарма нет). `run_level<0` = legacy-совместимость.
+- **class_boss_wins** независим: +1 за КАЖДУЮ победу (162), не привязан к очкам
+  (SCRUM-360 прогрессия).
+- **Целевой гейт** `meta_points_per_ascension_test` — passed: «очко только за новое
+  возвышение; фарм не даёт; class_boss_wins независим».
+- **Save/load**: meta_points/skill_points/ascension_levels/class_boss_wins
+  сохраняются/читаются (84-127); обратная совместимость (run_level<0).
+- **Тесты**: `meta_progression_smoke_test` + `runtime_smoke_test` — passed.
+
+Acceptance:
+- [x] Очко меты только за впервые пройденный уровень возвышения (любой класс); повтор/фарм/max = 0.
+- [x] Per-class прогресс независим; первый клир = новое возвышение.
+- [x] Экономика дерева (потолок = сумма max-возвышений/класс); обратная совместимость сейвов.
+- [x] meta + runtime smoke зелёные; доки.
+
+Баги: нет.
