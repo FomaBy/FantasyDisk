@@ -1,7 +1,19 @@
 # FEATURE: Прогрессия по классам в дереве меты (бонусы за класс, реиграбельность)
 
-Статус: in_progress
+Статус: done (2026-06-14, Claude Fable 5)
 Приоритет: high
+
+## Завершено (2026-06-14) — фича полная
+- **Ядро** (meta_progression.gd, в HEAD): CLASS_PROGRESSION (накопит. пороги),
+  class_boss_wins per character (record_boss_victory), class_modifiers (бонусы
+  только своему классу), save/load; гейт tests/class_progression_test.gd.
+- **Применение** (main.gd + player.gd, коммит a69ddcc0): main мерджит
+  class_modifiers(meta_state, selected_character_id) в skill_mods; player.gd
+  META_SKILL_MULT_MAP += class_* → множатся с аккаунтными бонусами.
+- **UI** (ui_screens.gd `_show_skill_tree_screen`): раздел «Прогресс класса» —
+  выбранный класс, побед над боссами, открытые бонусы, следующий порог
+  (class_next_threshold). no-overlap соблюдён.
+- Зелёные: runtime smoke, ui_no_overlap_matrix, class_progression, meta, global_damage.
 Роль: Back-end (прогрессия)
 Версия: 0.1.5
 Создано: 2026-06-14
