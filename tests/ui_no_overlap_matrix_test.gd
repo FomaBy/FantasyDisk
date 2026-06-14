@@ -23,22 +23,47 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
 			"PatchNotesBackButton",
 		], dump_lines, errors, false)
+		await _check_screen(viewport_size, "pause_menu", Callable(self, "_open_pause_menu"), [
+			"RunPauseMenuPanel", "RunPauseContinueButton", "RunPauseDossierButton",
+			"RunPauseSettingsButton", "RunPauseEndRunButton", "RunPauseMainMenuButton",
+		], dump_lines, errors)
+		await _check_screen(viewport_size, "pause_stats", Callable(self, "_open_pause_stats"), [
+			"EscapeStatsPanelFrame", "PauseControlButtons", "BaseStatsList",
+			"DerivedStatsGroups",
+		], dump_lines, errors)
 		await _check_screen(viewport_size, "hero_select", Callable(self, "_open_hero_select"), [
 			"HeroSelectHeader", "HeroSelectPortraitPanel", "HeroSelectDossierPanel",
 			"HeroSelectChooseButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "victory", Callable(self, "_open_victory"), [
-			"ScreenBackground_victory",
-		], dump_lines, errors, false)
+			"PauseEndModalPanel_victory", "ResultCrest", "VictoryNewRunButton",
+		], dump_lines, errors)
 		await _check_screen(viewport_size, "death", Callable(self, "_open_death"), [
-			"ScreenBackground_death",
-		], dump_lines, errors, false)
+			"PauseEndModalPanel_death", "ResultCrest", "DeathRetryButton",
+		], dump_lines, errors)
 		await _check_screen(viewport_size, "battle_reward", Callable(self, "_open_battle_reward"), [
 			"BattleRewardButton0", "BattleRewardButton1", "BattleRewardButton2",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "elite_reward", Callable(self, "_open_elite_reward"), [
 			"EliteArtifactRewardButton0", "EliteArtifactRewardButton1", "EliteArtifactRewardButton2",
 		], dump_lines, errors)
+		await _check_screen(viewport_size, "shop_economy", Callable(self, "_open_shop"), [
+			"ShopHeader", "ShopParchmentWall", "ShopItemButton0", "ShopItemButton1",
+			"ShopItemButton2", "ShopItemButton3", "ShopLeaveButton",
+		], dump_lines, errors)
+		await _check_screen(viewport_size, "attribute_shop_economy", Callable(self, "_open_attribute_shop"), [
+			"AttributeShopPanel", "AttributeOffer_damage", "AttributeOffer_attack_speed",
+			"AttributeRerollButton", "AttributeSkipButton",
+		], dump_lines, errors)
+		await _check_screen(viewport_size, "rest_economy", Callable(self, "_open_rest"), [
+			"RestHealButton", "RestGuardButton",
+		], dump_lines, errors)
+		await _check_screen(viewport_size, "upgrade_economy", Callable(self, "_open_upgrade"), [
+			"UpgradeChoiceButton0", "UpgradeChoiceButton1", "UpgradeChoiceButton2",
+		], dump_lines, errors)
+		await _check_screen(viewport_size, "event_economy", Callable(self, "_open_event"), [
+			"EventChoiceButton0", "EventChoiceButton1", "EventChoiceButton2", "EventBackButton",
+		], dump_lines, errors, false)
 
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
@@ -46,6 +71,16 @@ func _initialize() -> void:
 	if file != null:
 		file.store_string("\n".join(dump_lines))
 		file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum330" % qa_dir)
+	var scrum330_file := FileAccess.open("%s/scrum330/pause_end_ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum330_file != null:
+		scrum330_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["pause_menu", "pause_stats", "victory", "death"])))
+		scrum330_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum332" % qa_dir)
+	var scrum332_file := FileAccess.open("%s/scrum332/economy_ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum332_file != null:
+		scrum332_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["_economy"])))
+		scrum332_file.close()
 
 	if not errors.is_empty():
 		for error in errors:
@@ -107,6 +142,21 @@ func _open_patch_notes(main: Node) -> void:
 	main.ui._show_patch_notes_screen()
 
 
+func _open_pause_menu(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.call("_start_combat")
+	main.ui._show_pause_menu()
+
+
+func _open_pause_stats(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.call("_start_combat")
+	main.ui._show_pause_menu()
+	main.ui._show_pause_dossier_menu()
+
+
 func _open_hero_select(main: Node) -> void:
 	main.call("_show_character_select")
 
@@ -128,6 +178,46 @@ func _open_battle_reward(main: Node) -> void:
 func _open_elite_reward(main: Node) -> void:
 	main.set("route_stage", 6)
 	main.ui._show_elite_artifact_reward(Callable())
+
+
+func _open_shop(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.set("route_stage", 3)
+	main.set("current_node_type", "shop")
+	main.set("current_route_choice", "matrix_shop")
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var player := player_scene.instantiate()
+	main.add_child(player)
+	player.configure_character("berserk", "sword")
+	player.set("money", 5000)
+	main.call("_store_player_snapshot", player)
+	player.queue_free()
+	main.call("_show_shop_screen")
+
+
+func _open_attribute_shop(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("attribute_offer", ["damage", "attack_speed"])
+	main.ui._show_attribute_shop(Callable())
+
+
+func _open_rest(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.call("_show_rest_screen")
+
+
+func _open_upgrade(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.call("_show_upgrade_screen")
+
+
+func _open_event(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.ui._show_event_screen({
+		"name": "Тестовое событие",
+		"event_id": "wandering_bard",
+	})
 
 
 func _first_peer_overlap(controls: Array, tolerance_px: float) -> String:
@@ -161,3 +251,20 @@ func _rect_with_tolerance(rect: Rect2, tolerance_px: float) -> Rect2:
 	var shrink := tolerance_px * 0.5
 	var size := Vector2(maxf(rect.size.x - tolerance_px, 0.0), maxf(rect.size.y - tolerance_px, 0.0))
 	return Rect2(rect.position + Vector2(shrink, shrink), size)
+
+
+func _filter_dump_sections(lines: PackedStringArray, markers: Array) -> PackedStringArray:
+	var filtered := PackedStringArray()
+	filtered.append("# Filtered UI No-Overlap Matrix")
+	filtered.append("")
+	var keep := false
+	for line in lines:
+		if line.begins_with("## "):
+			keep = false
+			for marker in markers:
+				if line.contains(str(marker)):
+					keep = true
+					break
+		if keep:
+			filtered.append(line)
+	return filtered

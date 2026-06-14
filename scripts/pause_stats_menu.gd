@@ -13,12 +13,16 @@ const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_fram
 const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_chip.png")
 const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_tooltip.png")
 const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
+const PAUSE_END_MODAL_FRAME := preload("res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png")
 const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause.png")
 const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_pressed.png")
 const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_disabled.png")
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
+const PAUSE_END_MODAL_SOURCE_SIZE := Vector2(1280.0, 1024.0)
+const PAUSE_END_MODAL_TEXTURE_MARGINS := Vector4(160.0, 170.0, 160.0, 164.0)
+const PAUSE_END_MODAL_CONTENT := Vector4(170.0, 180.0, 170.0, 174.0)
 
 const VALUE_HIGH := Color(0.439, 0.949, 0.651, 1.0)
 const VALUE_LOW := Color(1.0, 0.420, 0.420, 1.0)
@@ -101,28 +105,41 @@ func _build_layout() -> void:
 	overlay.color = Color(0.01, 0.015, 0.025, 0.74)
 	add_child(overlay)
 
-	var root := MarginContainer.new()
+	var root := Control.new()
 	root.name = "PauseStatsMenuRoot"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("margin_left", 30)
-	root.add_theme_constant_override("margin_top", 24)
-	root.add_theme_constant_override("margin_right", 30)
-	root.add_theme_constant_override("margin_bottom", 24)
 	add_child(root)
 
 	var panel := PanelContainer.new()
 	panel.name = "EscapeStatsPanelFrame"
-	panel.add_theme_stylebox_override("panel", _panel_style())
+	var panel_size := get_viewport_rect().size - Vector2(40.0, 36.0)
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = 20.0
+	panel.offset_top = 18.0
+	panel.offset_right = -20.0
+	panel.offset_bottom = -18.0
+	panel.clip_contents = true
+	panel.add_theme_stylebox_override("panel", _pause_end_modal_style(panel_size))
 	root.add_child(panel)
+
+	var safe_scroll := ScrollContainer.new()
+	safe_scroll.name = "PauseStatsSafeScroll"
+	safe_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	safe_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	safe_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	safe_scroll.follow_focus = true
+	panel.add_child(safe_scroll)
 
 	var layout := HBoxContainer.new()
 	layout.name = "EscapeStatsLayout"
+	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	layout.add_theme_constant_override("separation", 18)
-	panel.add_child(layout)
+	safe_scroll.add_child(layout)
 
 	var left_column := VBoxContainer.new()
 	left_column.name = "RunControls"
-	left_column.custom_minimum_size = Vector2(330, 0)
+	left_column.custom_minimum_size = Vector2(300 if get_viewport_rect().size.x < 1500.0 else 330, 0)
 	left_column.add_theme_constant_override("separation", 10)
 	layout.add_child(left_column)
 
@@ -164,7 +181,7 @@ func _build_layout() -> void:
 
 	_derived_groups_container = GridContainer.new()
 	_derived_groups_container.name = "DerivedStatsGroups"
-	_derived_groups_container.columns = 2
+	_derived_groups_container.columns = 1 if get_viewport_rect().size.x < 1800.0 else 2
 	_derived_groups_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_derived_groups_container.add_theme_constant_override("h_separation", 12)
 	_derived_groups_container.add_theme_constant_override("v_separation", 12)
@@ -678,6 +695,30 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 
 func _panel_style() -> StyleBox:
 	return _texture_style(ESCAPE_PANEL_FRAME, 40, 40, 40, 40, Color.WHITE, Vector4(24, 24, 24, 24))
+
+
+func _pause_end_modal_style(display_size: Vector2) -> StyleBox:
+	var texture_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_TEXTURE_MARGINS)
+	var content_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
+	return _texture_style(
+		PAUSE_END_MODAL_FRAME,
+		texture_margins.x,
+		texture_margins.y,
+		texture_margins.z,
+		texture_margins.w,
+		Color.WHITE,
+		content_margins
+	)
+
+
+func _scaled_frame_margins(source_size: Vector2, display_size: Vector2, source_margins: Vector4) -> Vector4:
+	var scale := minf(display_size.x / source_size.x, display_size.y / source_size.y)
+	return Vector4(
+		roundf(source_margins.x * scale),
+		roundf(source_margins.y * scale),
+		roundf(source_margins.z * scale),
+		roundf(source_margins.w * scale)
+	)
 
 
 func _basic_stat_row_style(is_hovered: bool, is_priority := false) -> StyleBox:

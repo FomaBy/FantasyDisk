@@ -122,6 +122,29 @@ const COMBAT_HUD_ASCENSION_CONTENT := Vector4(40.0, 34.0, 40.0, 34.0)
 const COMBAT_HUD_ASCENSION_RUNTIME_CONTENT := Vector4(14.0, 8.0, 14.0, 8.0)
 const COMBAT_HUD_LEVEL_UP_MARGINS := Vector4(34.0, 34.0, 34.0, 34.0)
 const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(36.0, 34.0, 36.0, 36.0)
+const ECONOMY_FRAME_DIR := "res://assets/sprites/ui/frames/economy/"
+const ECONOMY_PANEL_PATH := ECONOMY_FRAME_DIR + "ui_frame_economy_panel.png"
+const ECONOMY_CHOICE_CARD_PATH := ECONOMY_FRAME_DIR + "ui_frame_economy_choice_card.png"
+const ECONOMY_CHOICE_CARD_HOVER_PATH := ECONOMY_FRAME_DIR + "ui_frame_economy_choice_card_hover.png"
+const ECONOMY_DRAGON_PANEL_PATH := ECONOMY_FRAME_DIR + "ui_frame_economy_dragon_panel.png"
+const ECONOMY_PRICE_BADGE_PATH := ECONOMY_FRAME_DIR + "ui_frame_economy_price_badge.png"
+const ECONOMY_TOOLTIP_PATH := ECONOMY_FRAME_DIR + "ui_frame_economy_tooltip.png"
+const ECONOMY_PANEL_SOURCE_SIZE := Vector2(1024.0, 640.0)
+const ECONOMY_PANEL_TEXTURE_MARGINS := Vector4(80.0, 80.0, 84.0, 82.0)
+const ECONOMY_PANEL_CONTENT := Vector4(112.0, 112.0, 116.0, 118.0)
+const ECONOMY_CHOICE_SOURCE_SIZE := Vector2(512.0, 768.0)
+const ECONOMY_CHOICE_TEXTURE_MARGINS := Vector4(72.0, 106.0, 72.0, 112.0)
+const ECONOMY_CHOICE_HOVER_TEXTURE_MARGINS := Vector4(76.0, 110.0, 76.0, 116.0)
+const ECONOMY_CHOICE_CONTENT := Vector4(104.0, 152.0, 104.0, 164.0)
+const ECONOMY_CHOICE_HOVER_CONTENT := Vector4(110.0, 158.0, 110.0, 170.0)
+const ECONOMY_PRICE_BADGE_MARGINS := Vector4(44.0, 28.0, 44.0, 28.0)
+const ECONOMY_PRICE_BADGE_CONTENT := Vector4(66.0, 34.0, 66.0, 34.0)
+const ECONOMY_TOOLTIP_MARGINS := Vector4(58.0, 58.0, 58.0, 70.0)
+const ECONOMY_TOOLTIP_CONTENT := Vector4(82.0, 74.0, 82.0, 92.0)
+const PAUSE_END_MODAL_PATH := "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png"
+const PAUSE_END_MODAL_SOURCE_SIZE := Vector2(1280.0, 1024.0)
+const PAUSE_END_MODAL_TEXTURE_MARGINS := Vector4(160.0, 170.0, 160.0, 164.0)
+const PAUSE_END_MODAL_CONTENT := Vector4(170.0, 180.0, 170.0, 174.0)
 const CODEX_FRAME_DIR := "res://assets/sprites/ui/frames/codex/"
 const CODEX_MAIN_PANEL_PATH := CODEX_FRAME_DIR + "ui_frame_codex_main_panel.png"
 const CODEX_SECTION_PANEL_PATH := CODEX_FRAME_DIR + "ui_frame_codex_section_panel.png"
@@ -1348,13 +1371,15 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	panel.anchor_right = 0.5
 	panel.anchor_bottom = 0.5
 	panel.offset_left = -340.0
-	panel.offset_top = -260.0
+	panel.offset_top = -330.0
 	panel.offset_right = 340.0
-	panel.offset_bottom = 260.0
-	panel.add_theme_stylebox_override("panel", _panel_style())
+	panel.offset_bottom = 330.0
+	panel.add_theme_stylebox_override("panel", _economy_panel_style())
 	root.add_child(panel)
 
 	var box := VBoxContainer.new()
+	box.name = "AttributeShopContent"
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 12)
 	panel.add_child(box)
 
@@ -1372,9 +1397,10 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	money_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.30, 1.0))
 	box.add_child(money_label)
 
-	var offers_box := VBoxContainer.new()
+	var offers_box := HBoxContainer.new()
 	offers_box.name = "AttributeOffers"
-	offers_box.add_theme_constant_override("separation", 10)
+	offers_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	offers_box.add_theme_constant_override("separation", 22)
 	box.add_child(offers_box)
 
 	var reroll_button := _make_button("")
@@ -1407,9 +1433,11 @@ func _show_attribute_shop(on_done: Callable) -> void:
 func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	if root == null or not is_instance_valid(root):
 		return
-	var offers_box := root.find_child("AttributeOffers", true, false) as VBoxContainer
+	var offers_box := root.find_child("AttributeOffers", true, false) as BoxContainer
 	var money_label := root.find_child("AttributeShopMoney", true, false) as Label
 	var reroll_button := root.find_child("AttributeRerollButton", true, false) as Button
+	if offers_box == null or money_label == null or reroll_button == null:
+		return
 	for child in offers_box.get_children():
 		child.queue_free()
 
@@ -1420,19 +1448,18 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	reroll_button.disabled = game.attribute_rerolls_left <= 0 or money < _attribute_reroll_cost()
 
 	for stat_id in game.attribute_offer:
-		var stat_title := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
-		var offer_button := _make_button("%s +1   (%d зол.)" % [stat_title, buy_cost])
+		var stat_title: String = str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
+		var interpretation: String = str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
+		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, Vector2(250.0, 330.0))
 		offer_button.name = "AttributeOffer_%s" % stat_id
-		_set_action_button_size(offer_button, 560.0)
 		offer_button.disabled = money < buy_cost
 		offer_button.tooltip_text = "%s +1\n%s" % [
 			stat_title,
-			game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id),
+			interpretation,
 		]
 		var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(36, 36))
-		icon_control.position = Vector2(14, 14)
-		icon_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		offer_button.add_child(icon_control)
+		icon_control.name = "AttributeOfferIcon_%s" % stat_id
+		_prepend_economy_choice_content(offer_button, icon_control)
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
 				return
@@ -2541,14 +2568,15 @@ func _build_run_pause_menu() -> void:
 
 	var panel := PanelContainer.new()
 	panel.name = "RunPauseMenuPanel"
-	panel.custom_minimum_size = Vector2(520, 480)
-	panel.add_theme_stylebox_override("panel", _panel_style())
+	var panel_size := _pause_end_modal_display_size("pause")
+	panel.custom_minimum_size = panel_size
+	panel.add_theme_stylebox_override("panel", _pause_end_modal_style(panel_size))
 	root.add_child(panel)
 
 	var box := VBoxContainer.new()
-	box.name = "RunPauseMenuButtons"
+	box.name = "RunPauseMenuContent"
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 14)
+	box.add_theme_constant_override("separation", 8)
 	panel.add_child(box)
 
 	var title := Label.new()
@@ -3452,9 +3480,9 @@ func _show_shop_screen() -> void:
 	var wall := Control.new()
 	wall.name = "ShopParchmentWall"
 	wall.anchor_left = 0.20
-	wall.anchor_top = 0.33
+	wall.anchor_top = 0.38
 	wall.anchor_right = 0.80
-	wall.anchor_bottom = 0.79
+	wall.anchor_bottom = 0.75
 	wall.offset_left = 0.0
 	wall.offset_top = 0.0
 	wall.offset_right = 0.0
@@ -3556,9 +3584,9 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	shadow.anchor_right = 0.5
 	shadow.anchor_bottom = 0.0
 	shadow.offset_left = -46.0
-	shadow.offset_top = 112.0
+	shadow.offset_top = 88.0
 	shadow.offset_right = 46.0
-	shadow.offset_bottom = 130.0
+	shadow.offset_bottom = 106.0
 	shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	shadow.add_theme_stylebox_override("panel", _shop_item_shadow_style())
 	content.add_child(shadow)
@@ -3572,9 +3600,9 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	icon.anchor_right = 0.5
 	icon.anchor_bottom = 0.0
 	icon.offset_left = -SHOP_INLINE_ICON_SIZE.x * 0.5
-	icon.offset_top = 16.0
+	icon.offset_top = 12.0
 	icon.offset_right = SHOP_INLINE_ICON_SIZE.x * 0.5
-	icon.offset_bottom = 16.0 + SHOP_INLINE_ICON_SIZE.y
+	icon.offset_bottom = 12.0 + SHOP_INLINE_ICON_SIZE.y
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -3587,11 +3615,11 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	price_badge.anchor_top = 1.0
 	price_badge.anchor_right = 0.5
 	price_badge.anchor_bottom = 1.0
-	price_badge.offset_left = -54.0
-	price_badge.offset_top = -42.0
-	price_badge.offset_right = 54.0
+	price_badge.offset_left = -64.0
+	price_badge.offset_top = -52.0
+	price_badge.offset_right = 64.0
 	price_badge.offset_bottom = -12.0
-	price_badge.custom_minimum_size = Vector2(108, 30)
+	price_badge.custom_minimum_size = Vector2(128, 40)
 	price_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	price_badge.add_theme_stylebox_override("panel", _shop_price_badge_style(affordable))
 	content.add_child(price_badge)
@@ -3627,10 +3655,10 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 
 func _shop_wall_slot_anchor(index: int) -> Vector2:
 	var anchors := [
-		Vector2(0.30, 0.20),
-		Vector2(0.70, 0.20),
-		Vector2(0.30, 0.80),
-		Vector2(0.70, 0.80),
+		Vector2(0.30, 0.18),
+		Vector2(0.70, 0.18),
+		Vector2(0.30, 0.84),
+		Vector2(0.70, 0.84),
 	]
 	return anchors[index % anchors.size()]
 
@@ -3822,6 +3850,14 @@ func _shop_empty_hook_style() -> StyleBox:
 
 
 func _shop_price_badge_style(affordable := true) -> StyleBox:
+	var display_size := Vector2(128.0, 40.0)
+	var texture_margins := _scaled_frame_margins(Vector2(256.0, 96.0), display_size, ECONOMY_PRICE_BADGE_MARGINS)
+	var content_margins := _scaled_frame_margins(Vector2(256.0, 96.0), display_size, ECONOMY_PRICE_BADGE_CONTENT)
+	var tint := Color.WHITE if affordable else Color(0.76, 0.55, 0.55, 0.92)
+	var texture_style := _global_texture_style(ECONOMY_PRICE_BADGE_PATH, texture_margins, tint, content_margins)
+	if texture_style != null:
+		return texture_style
+
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.075, 0.055, 0.035, 0.78) if affordable else Color(0.20, 0.055, 0.050, 0.82)
 	style.border_color = Color(0.72, 0.48, 0.16, 0.72) if affordable else Color(0.96, 0.30, 0.26, 0.76)
@@ -3873,15 +3909,17 @@ func _show_rest_screen() -> void:
 	# Escape = уйти от костра без бонуса (последовательно с пропуском магазина).
 	game.ui_escape_action = game.route._advance_route_after_noncombat
 	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, _show_rest_screen)
-	var heal_button := _add_text_action_block(box, "Передышка", "Восстановить 35% максимального здоровья.", "Отдохнуть", "RestHealButton")
-	heal_button.name = "RestHealButton"
+	var choices := _make_economy_choice_row("RestChoiceRow")
+	box.add_child(choices)
+	var heal_button := _make_economy_choice_card("Передышка", "Восстановить 35% максимального здоровья.", "Отдохнуть", "RestHealButton", Vector2(300.0, 390.0))
+	choices.add_child(heal_button)
 	heal_button.pressed.connect(func() -> void:
 		_apply_event_choice({"title": "Rest", "description": "Recover", "heal_percent": 0.35})
 		game.route._advance_route_after_noncombat()
 	)
 
-	var guard_button := _add_text_action_block(box, "Защитная стойка", "Получить +6% защиты до конца забега.", "Подготовиться", "RestGuardButton")
-	guard_button.name = "RestGuardButton"
+	var guard_button := _make_economy_choice_card("Защитная стойка", "Получить +6% защиты до конца забега.", "Подготовиться", "RestGuardButton", Vector2(300.0, 390.0))
+	choices.add_child(guard_button)
 	guard_button.pressed.connect(func() -> void:
 		_apply_reward_to_run({"title": "Защитная стойка", "description": "+6% к защите.", "mods": {"defense_flat": 0.06}})
 		game.route._advance_route_after_noncombat()
@@ -3891,12 +3929,17 @@ func _show_rest_screen() -> void:
 func _show_upgrade_screen() -> void:
 	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade")
 	_create_menu_run_hud()
+	var choices := _make_economy_choice_row("UpgradeChoiceRow")
+	box.add_child(choices)
+	var index := 0
 	for reward in _random_level_up_rewards(3):
-		var button := _add_text_action_block(box, str(reward["title"]), str(reward["description"]), "Выбрать", "")
+		var button := _make_economy_choice_card(str(reward["title"]), str(reward["description"]), "Выбрать", "UpgradeChoiceButton%d" % index, Vector2(250.0, 375.0))
+		choices.add_child(button)
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_run(reward)
 			game.route._advance_route_after_noncombat()
 		)
+		index += 1
 
 
 func _show_event_screen(route_node: Dictionary) -> void:
@@ -3918,12 +3961,15 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	# На событии докачка недоступна: повторный вход перегенерировал бы выборы события.
 	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, Callable(), false)
 	var event_choices: Array = event_definition.get("choices", _random_event_choices())
+	var choices := _make_economy_choice_row("EventChoiceRow")
+	box.add_child(choices)
 	var index := 0
 	for event_choice in event_choices:
 		var title_text := str(event_choice.get("title", "Выбор"))
 		var desc_text := _event_choice_description_text(event_choice)
-		var button := _add_text_action_block(box, title_text, desc_text, "Выбрать", "EventChoiceButton%d" % index)
+		var button := _make_economy_choice_card(title_text, desc_text, "Выбрать", "EventChoiceButton%d" % index, Vector2(250.0, 375.0))
 		button.name = "EventChoiceButton%d" % index
+		choices.add_child(button)
 		button.pressed.connect(func() -> void:
 			var starts_combat := _apply_event_choice(event_choice)
 			if not starts_combat:
@@ -3974,6 +4020,8 @@ func _show_victory_screen() -> void:
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
 	var restart_button := _make_button("Новый забег")
+	restart_button.name = "VictoryNewRunButton"
+	_set_action_button_size(restart_button, STANDARD_ACTION_BUTTON_WIDTH, _pause_end_result_button_height())
 	restart_button.pressed.connect(finish_run)
 	box.add_child(restart_button)
 	game.ui_escape_action = finish_run
@@ -3996,6 +4044,8 @@ func _show_death_screen(reason := "") -> void:
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
 	var retry_button := _make_button("Начать заново")
+	retry_button.name = "DeathRetryButton"
+	_set_action_button_size(retry_button, STANDARD_ACTION_BUTTON_WIDTH, _pause_end_result_button_height())
 	retry_button.pressed.connect(back_to_menu)
 	box.add_child(retry_button)
 	game.ui_escape_action = back_to_menu
@@ -5039,26 +5089,48 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 		_add_screen_background(root, screen_background_id)
 
 	var panel := PanelContainer.new()
+	panel.name = "MenuPanel_%s" % screen_background_id if screen_background_id != "" else "MenuPanel"
 	panel.anchor_left = 0.5
 	panel.anchor_top = 0.5
 	panel.anchor_right = 0.5
 	panel.anchor_bottom = 0.5
-	panel.offset_left = -560.0
-	panel.offset_top = -330.0
-	panel.offset_right = 560.0
-	panel.offset_bottom = 330.0
-	panel.add_theme_stylebox_override("panel", _panel_style())
+	var economy_panel := _is_economy_screen_background(screen_background_id)
+	var pause_end_panel := _is_pause_end_screen_background(screen_background_id)
+	var display_size := _pause_end_modal_display_size(screen_background_id) if pause_end_panel else Vector2.ZERO
+	var half_size := display_size * 0.5 if pause_end_panel else (_economy_menu_panel_half_size(screen_background_id) if economy_panel else Vector2(560.0, 330.0))
+	panel.offset_left = -half_size.x
+	panel.offset_top = -half_size.y
+	panel.offset_right = half_size.x
+	panel.offset_bottom = half_size.y
+	if pause_end_panel:
+		panel.name = "PauseEndModalPanel_%s" % screen_background_id
+		panel.clip_contents = true
+		panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size))
+	else:
+		panel.add_theme_stylebox_override("panel", _economy_panel_style() if economy_panel else _panel_style())
 	root.add_child(panel)
 
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 14)
-	panel.add_child(box)
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_theme_constant_override("separation", 12 if pause_end_panel else (16 if economy_panel else 14))
+	if pause_end_panel:
+		var scroll := ScrollContainer.new()
+		scroll.name = "PauseEndModalScroll_%s" % screen_background_id
+		scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		scroll.follow_focus = true
+		panel.add_child(scroll)
+		scroll.add_child(box)
+	else:
+		panel.add_child(box)
 
 	var title_label := Label.new()
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 42)
+	title_label.add_theme_font_size_override("font_size", 34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42)
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -5066,7 +5138,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	subtitle_label.text = subtitle
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", 17)
+	subtitle_label.add_theme_font_size_override("font_size", 15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17)
 	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	box.add_child(subtitle_label)
 
@@ -5083,13 +5155,28 @@ func _add_result_crest(box: VBoxContainer, kind: String) -> void:
 	var crest := TextureRect.new()
 	crest.name = "ResultCrest"
 	crest.texture = tex
-	crest.custom_minimum_size = Vector2(176, 176)
+	var crest_size := _pause_end_result_crest_size()
+	crest.custom_minimum_size = Vector2(crest_size, crest_size)
 	crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	crest.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(crest)
 	box.move_child(crest, 0)
+
+
+func _pause_end_result_crest_size() -> float:
+	var viewport_height: float = float(game.get_viewport().get_visible_rect().size.y)
+	return clampf(viewport_height * 0.17, 112.0, 176.0)
+
+
+func _pause_end_result_button_height() -> float:
+	var viewport_height: float = float(game.get_viewport().get_visible_rect().size.y)
+	if viewport_height < 800.0:
+		return 72.0
+	if viewport_height < 1000.0:
+		return 88.0
+	return STANDARD_ACTION_BUTTON_HEIGHT
 
 
 func _add_screen_background(root: Control, screen_background_id: String) -> void:
@@ -5677,6 +5764,175 @@ func _card_hover_style() -> StyleBox:
 
 func _character_card_style() -> StyleBox:
 	return _unified_frame_style("card_frame")
+
+
+func _is_economy_screen_background(screen_background_id: String) -> bool:
+	return ["campfire", "upgrade", "event"].has(screen_background_id)
+
+
+func _is_pause_end_screen_background(screen_background_id: String) -> bool:
+	return ["pause", "victory", "death"].has(screen_background_id)
+
+
+func _pause_end_modal_display_size(screen_background_id: String) -> Vector2:
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	var max_width := viewport_size.x * 0.84
+	var max_height := viewport_size.y * 0.90
+	if screen_background_id == "victory" or screen_background_id == "death":
+		max_width = viewport_size.x * 0.82
+		max_height = viewport_size.y * 0.88
+	var source_aspect := PAUSE_END_MODAL_SOURCE_SIZE.x / PAUSE_END_MODAL_SOURCE_SIZE.y
+	var height := minf(max_height, max_width / source_aspect)
+	height = clampf(height, 520.0, 820.0)
+	var width := height * source_aspect
+	if width > max_width:
+		width = max_width
+		height = width / source_aspect
+	return Vector2(roundf(width), roundf(height))
+
+
+func _economy_menu_panel_half_size(screen_background_id: String) -> Vector2:
+	match screen_background_id:
+		"event":
+			return Vector2(600.0, 390.0)
+		"upgrade":
+			return Vector2(540.0, 365.0)
+		"campfire":
+			return Vector2(480.0, 358.0)
+	return Vector2(560.0, 330.0)
+
+
+func _scaled_frame_margins(source_size: Vector2, display_size: Vector2, source_margins: Vector4) -> Vector4:
+	var scale := minf(display_size.x / source_size.x, display_size.y / source_size.y)
+	return Vector4(
+		roundf(source_margins.x * scale),
+		roundf(source_margins.y * scale),
+		roundf(source_margins.z * scale),
+		roundf(source_margins.w * scale)
+	)
+
+
+func _economy_panel_style() -> StyleBox:
+	return _global_texture_style(ECONOMY_PANEL_PATH, ECONOMY_PANEL_TEXTURE_MARGINS, Color.WHITE, ECONOMY_PANEL_CONTENT)
+
+
+func _pause_end_modal_style(display_size: Vector2) -> StyleBox:
+	var texture_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_TEXTURE_MARGINS)
+	var content_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
+	return _global_texture_style(PAUSE_END_MODAL_PATH, texture_margins, Color.WHITE, content_margins)
+
+
+func _economy_choice_style(display_size: Vector2, hovered := false, pressed := false, disabled := false) -> StyleBox:
+	var path := ECONOMY_CHOICE_CARD_HOVER_PATH if hovered else ECONOMY_CHOICE_CARD_PATH
+	var texture_margins := _scaled_frame_margins(ECONOMY_CHOICE_SOURCE_SIZE, display_size, ECONOMY_CHOICE_HOVER_TEXTURE_MARGINS if hovered else ECONOMY_CHOICE_TEXTURE_MARGINS)
+	var content_margins := _scaled_frame_margins(ECONOMY_CHOICE_SOURCE_SIZE, display_size, ECONOMY_CHOICE_HOVER_CONTENT if hovered else ECONOMY_CHOICE_CONTENT)
+	var tint := Color.WHITE
+	if hovered:
+		tint = BUTTON_NEUTRAL_HOVER_TINT
+	if pressed:
+		tint = Color(0.90, 0.84, 0.76, 1.0)
+	if disabled:
+		tint = Color(0.58, 0.58, 0.58, 0.82)
+	return _global_texture_style(path, texture_margins, tint, content_margins)
+
+
+func _economy_choice_content_margins(display_size: Vector2) -> Vector4:
+	return _scaled_frame_margins(ECONOMY_CHOICE_SOURCE_SIZE, display_size, ECONOMY_CHOICE_CONTENT)
+
+
+func _apply_economy_choice_theme(button: Button, display_size: Vector2) -> void:
+	button.add_theme_stylebox_override("normal", _economy_choice_style(display_size))
+	button.add_theme_stylebox_override("hover", _economy_choice_style(display_size, true))
+	button.add_theme_stylebox_override("pressed", _economy_choice_style(display_size, true, true))
+	button.add_theme_stylebox_override("focus", _economy_choice_style(display_size, true))
+	button.add_theme_stylebox_override("disabled", _economy_choice_style(display_size, false, false, true))
+	button.add_theme_color_override("font_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
+
+
+func _make_economy_choice_row(row_name: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.name = row_name
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 24)
+	return row
+
+
+func _make_economy_choice_card(title: String, description: String, action_text: String, button_name: String, display_size: Vector2) -> Button:
+	var button := Button.new()
+	button.name = button_name if button_name != "" else "EconomyChoiceCard"
+	button.set_meta("economy_frame_kind", "choice_card")
+	button.text = ""
+	button.custom_minimum_size = display_size
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.tooltip_text = "%s\n%s" % [title, description]
+	_apply_economy_choice_theme(button, display_size)
+
+	var margins := _economy_choice_content_margins(display_size)
+	var content := VBoxContainer.new()
+	content.name = "%sContent" % button.name
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.offset_left = margins.x
+	content.offset_top = margins.y
+	content.offset_right = -margins.z
+	content.offset_bottom = -margins.w
+	content.alignment = BoxContainer.ALIGNMENT_CENTER
+	content.add_theme_constant_override("separation", 7)
+	button.add_child(content)
+
+	var title_label := Label.new()
+	title_label.name = "%sTitle" % button.name
+	title_label.text = title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_label.add_theme_font_size_override("font_size", 17)
+	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(title_label)
+
+	var desc_label := Label.new()
+	desc_label.name = "%sDescription" % button.name
+	desc_label.text = description
+	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	desc_label.add_theme_font_size_override("font_size", 13)
+	desc_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.76, 1.0))
+	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(desc_label)
+
+	var action_label := Label.new()
+	action_label.name = "%sAction" % button.name
+	action_label.text = action_text
+	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	action_label.add_theme_font_size_override("font_size", 15)
+	action_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
+	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(action_label)
+	return button
+
+
+func _prepend_economy_choice_content(button: Button, control: Control) -> void:
+	if button == null or control == null:
+		return
+	var content := button.find_child("%sContent" % button.name, true, false) as BoxContainer
+	if content == null:
+		control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		button.add_child(control)
+		return
+	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	control.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	content.add_child(control)
+	content.move_child(control, 0)
 
 
 func _reward_card_content_margins(elite := false) -> Vector4:

@@ -1261,8 +1261,8 @@
  },
  "art_char_redraw_anim_berserk_task.md": {
   "key": "SCRUM-283",
-  "status": "К выполнению",
-  "desc_hash": "0898e0c845547b9db3445f6feaafd1ad"
+  "status": "В работе",
+  "desc_hash": "b34e9bee8600edf195c8c070558628fa"
  },
  "art_char_redraw_anim_biologist_task.md": {
   "key": "SCRUM-284",
@@ -1276,8 +1276,8 @@
  },
  "art_char_redraw_anim_dark_mage_task.md": {
   "key": "SCRUM-286",
-  "status": "К выполнению",
-  "desc_hash": "b99d407b51882f673b6c7e18b0211add"
+  "status": "В работе",
+  "desc_hash": "ad147b70e552445d29cd2fb96e314140"
  },
  "art_char_redraw_anim_doctor_task.md": {
   "key": "SCRUM-287",
@@ -1411,8 +1411,8 @@
  },
  "art_ui_overhaul_progression_codex_task.md": {
   "key": "SCRUM-331",
-  "status": "К выполнению",
-  "desc_hash": "e09ef493339a89727385b9800bce25e7"
+  "status": "В работе",
+  "desc_hash": "39e65add9f8b0551b94114fdac0604b6"
  },
  "art_ui_overhaul_shop_economy_task.md": {
   "key": "SCRUM-332",
@@ -1951,12 +1951,17 @@
  },
  "backend_ui_overhaul_shop_economy_integration_task.md": {
   "key": "SCRUM-406",
-  "status": "В работе",
-  "desc_hash": "7e927427b294fd411fbf0a80b9e4d0cc"
+  "status": "Готово",
+  "desc_hash": "8132edb3d38c6f00f346c56f23d7035d"
  },
  "backend_pause_end_ui_overhaul_integration_task.md": {
   "key": "SCRUM-407",
+  "status": "Готово",
+  "desc_hash": "35868f0dc11b5acb6bcda08cf119a993"
+ },
+ "backend_ui_overhaul_progression_codex_integration_task.md": {
+  "key": "SCRUM-408",
   "status": "К выполнению",
-  "desc_hash": "0626db9b155c07600d9a5628b70e9603"
+  "desc_hash": "fd86de6ebe741066c202bb84463460e1"
  }
 }

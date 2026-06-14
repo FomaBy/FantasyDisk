@@ -1110,6 +1110,11 @@ func _initialize() -> void:
 		push_error("Expected Esc to open the unified run pause menu.")
 		quit(1)
 		return
+	var run_pause_panel := main.find_child("RunPauseMenuPanel", true, false) as PanelContainer
+	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
+		push_error("Expected run pause menu to use the SCRUM-330 pause/end modal frame.")
+		quit(1)
+		return
 	var pause_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
 	if pause_dossier_button == null:
 		push_error("Expected run pause menu to provide a character dossier button.")
@@ -1143,8 +1148,8 @@ func _initialize() -> void:
 		push_error("Expected base stats to sit under controls as one compact row per base stat.")
 		quit(1)
 		return
-	if derived_groups.columns != 2 or derived_groups.get_child_count() < 5:
-		push_error("Expected derived stats to be organized into compact logical groups.")
+	if derived_groups.columns < 1 or derived_groups.columns > 2 or derived_groups.get_child_count() < 5:
+		push_error("Expected derived stats to be organized into responsive compact logical groups.")
 		quit(1)
 		return
 	var strength_row := pause_menu.find_child("BaseStatRow_strength", true, false) as Control
@@ -1158,6 +1163,10 @@ func _initialize() -> void:
 	var physical_group := pause_menu.find_child("DerivedStatGroup_physical_damage", true, false) as PanelContainer
 	if escape_panel == null or resume_button == null or physical_group == null:
 		push_error("Expected pause stats menu to expose Design kit hook nodes.")
+		quit(1)
+		return
+	if _stylebox_texture_path(escape_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
+		push_error("Expected pause dossier/stats panel to use the SCRUM-330 pause/end modal frame.")
 		quit(1)
 		return
 	if not (escape_panel.get_theme_stylebox("panel") is StyleBoxTexture):
@@ -1219,9 +1228,13 @@ func _initialize() -> void:
 		push_error("Expected the attribute purchase window after the victory banner.")
 		quit(1)
 		return
-	var attribute_offers := main.find_child("AttributeOffers", true, false) as VBoxContainer
+	var attribute_offers := main.find_child("AttributeOffers", true, false) as BoxContainer
 	if attribute_offers == null or attribute_offers.get_child_count() < 2 or attribute_offers.get_child_count() > 8:
 		push_error("Expected 2-8 attribute offers in the post-battle window, including meta skill extra options.")
+		quit(1)
+		return
+	if _stylebox_texture_path((attribute_panel as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_panel.png":
+		push_error("Expected attribute shop panel to use the SCRUM-332 economy panel frame.")
 		quit(1)
 		return
 	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
@@ -1234,6 +1247,10 @@ func _initialize() -> void:
 	var stats_before: Dictionary = (snapshot.get("stats", {}) as Dictionary).duplicate(true)
 	var attr_money_before := int(main.ui._run_money())
 	var first_offer := attribute_offers.get_child(0) as Button
+	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card.png":
+		push_error("Expected attribute offers to use the SCRUM-332 economy choice card frame.")
+		quit(1)
+		return
 	var offered_stat := str(first_offer.name).replace("AttributeOffer_", "")
 	if first_offer.disabled:
 		push_error("Expected the attribute offer to be affordable in the test run (money %d)." % attr_money_before)
@@ -2467,8 +2484,8 @@ func _test_noncombat_nodes(main: Node) -> void:
 		quit(1)
 		return
 	var first_price_badge := first_shop_button.find_child("ShopPriceBadge", true, false) as PanelContainer
-	if first_price_badge == null or first_price_badge.get_theme_stylebox("panel") is StyleBoxTexture:
-		push_error("Expected inline shop price badge to be compact and frameless.")
+	if first_price_badge == null or _stylebox_texture_path(first_price_badge.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_price_badge.png":
+		push_error("Expected inline shop price badge to use the SCRUM-332 economy price badge frame.")
 		quit(1)
 		return
 	main.ui._show_pause_menu()
@@ -3053,6 +3070,11 @@ func _test_victory_flow(main: Node) -> void:
 			push_error("Expected victory screen text to include '%s'." % expected)
 			quit(1)
 			return
+	var victory_panel := main.find_child("PauseEndModalPanel_victory", true, false) as PanelContainer
+	if victory_panel == null or _stylebox_texture_path(victory_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
+		push_error("Expected victory screen to use the SCRUM-330 pause/end modal frame.")
+		quit(1)
+		return
 
 
 func _test_elite_flow(main_scene: PackedScene) -> void:
@@ -6791,8 +6813,8 @@ func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Ve
 		if icon == null or icon.texture == null or price == null or shadow == null:
 			_fail("Expected %s to include icon, contact shadow, and compact price tag." % button.name)
 			return
-		if price.get_theme_stylebox("panel") is StyleBoxTexture:
-			_fail("Expected %s price tag to be compact, not a framed texture badge." % button.name)
+		if _stylebox_texture_path(price.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_price_badge.png":
+			_fail("Expected %s price tag to use the SCRUM-332 economy price badge." % button.name)
 			return
 		visual_controls.append(icon)
 		visual_controls.append(price)
@@ -7050,6 +7072,11 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 	await process_frame
 	if bool(death_main.get("combat_active")):
 		push_error("Expected player death to end combat.")
+		quit(1)
+		return
+	var death_panel := death_main.find_child("PauseEndModalPanel_death", true, false) as PanelContainer
+	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
+		push_error("Expected death screen to use the SCRUM-330 pause/end modal frame.")
 		quit(1)
 		return
 	death_main.queue_free()
