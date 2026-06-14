@@ -22,7 +22,10 @@ Domain docs для подробностей по областям:
 
 - Движок: Godot 4.
 - Жанр: 2D top-down loot-action survival roguelite с RPG-билдкрафтом.
-- Текущий sprint target: `0.1.5` на ветке `dev`; release `v0.1.4` уже выпущен, feature freeze снят.
+- Текущий sprint target: стабилизация `0.1.5` на ветке `dev`; release `v0.1.4`
+  уже выпущен, feature block 0.1.5 активен с 2026-06-14. Новые не-баговые фичи
+  уходят в `0.1.6`, текущая версия дожимает уже заведённые board-задачи и
+  bug/QA defect/regression/release blockers.
 - Основная рабочая платформа: macOS. Релизные платформы: macOS (dmg) и Windows (x86_64 exe c embed_pck + NSIS-инсталлер).
 - Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
 - Основная сцена: `scenes/Main.tscn`.
@@ -159,6 +162,18 @@ Contextual UI frame kits в `assets/sprites/ui/frames/contextual/` остают�
 
 Settings controls получили системные fantasy assets из `assets/sprites/ui/icons/system/`: checkbox checked/unchecked, slider track/grabber, arrows/back/settings/close icons. Иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_*`. SCRUM-396 подключил design-ready 3-slot tab switcher frame `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png` к экрану настроек как proportional strip с runtime hit areas внутри recorded safe rects и без obsolete fourth slot.
 
+SCRUM-332 prepared a Design-ready economy node UI kit for shop, attribute shop,
+rest/campfire, upgrade and event screens. SCRUM-406 wires it into runtime:
+attribute shop, rest, upgrade and event choices use the economy panel plus
+choice-card frame variants inside the authored safe zones, while shop keeps
+compact square wall item slots and uses only the economy price badge so the
+merchant wall layout remains readable. Mockup/spec:
+`docs/design/mockups/scrum332_shop_economy/`; runtime-ready frame assets:
+`assets/sprites/ui/frames/economy/`; preview:
+`docs/design/previews/scrum332_shop_economy_frame_kit_contact.png`; runtime QA
+dump: `build/qa/scrum332/economy_ui_no_overlap_matrix.md`. The irregular dragon
+panel still must not use its full bounding box as content space.
+
 ## Combat VFX
 
 Активные атаки оружия используют raster/fantasy VFX из `assets/sprites/effects/` через `scripts/attack_vfx.gd`, `scripts/class_weapon.gd` и melee-пути `scripts/berserk_weapon.gd`. Persistent pools больше не выглядят как программные круги: `poison_pool.png`, `spark_pool.png` и `briar_pool.png` подключены к Химику/Друиду как Sprite2D с мягкой пульсацией и fade-out, при этом урон, радиус и интервалы тиков остаются в data-driven weapon config.
@@ -276,6 +291,62 @@ cell `384x384`, минимум 5 `walk` + 5 `attack_primary` кадров, prefe
 сохраняет старый cutout/static fallback без краша. Motion quality и финальные
 листы остаются за Animator/Design задачами.
 
+SCRUM-286 добавил Dark Mage sheet на этом пути:
+`assets/sprites/characters/dark_mage_sheet.png` (`1920x1152`, 5 `idle`, 5
+`walk`, 5 `attack_primary`, transparent RGBA). Тёмный маг остаётся без
+встроенного оружия в руках; weapon/socket visuals и gameplay timing не менялись.
+Animator pass подключил runtime `assets/sprites/characters/dark_mage_spriteframes.tres`
+и отдельные кадры `assets/sprites/characters/full_frame/dark_mage/`: `idle` 5f
+loop, `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shot. QA
+артефакты: `docs/design/previews/scrum286_dark_mage_sheet_contact.png`,
+`build/qa/scrum286_dark_mage/`; animation/runtime smoke PASS.
+
+SCRUM-291 добавил Guitarist sheet на этом пути:
+`assets/sprites/characters/guitarist_sheet.png` (`1920x1152`, 5 `idle`, 5
+`walk`, 5 `attack_primary`, transparent RGBA). Гитарист остаётся без встроенной
+гитары/баса/ампа или другого инструмента в руках; weapon/socket visuals,
+deployable amp visuals и gameplay timing не менялись. Animator pass подключил
+runtime `assets/sprites/characters/guitarist_spriteframes.tres` и отдельные
+кадры `assets/sprites/characters/full_frame/guitarist/`: `idle` 5f loop,
+`walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shot. QA артефакты:
+`docs/design/previews/scrum291_guitarist_sheet_contact.png`,
+`build/qa/scrum291_guitarist/` and `build/qa/scrum291/`; manifest validation,
+Godot import, animation smoke and runtime smoke PASS after SCRUM-409.
+
+SCRUM-289 Design pass добавил Elementalist source sheet на этом пути:
+`assets/sprites/characters/elementalist_sheet.png` (`1920x1152`, 5 `idle`, 5
+`walk`, 5 `attack_primary`, transparent RGBA). Элементалист остаётся без
+посоха, wand, orb, focus или любого held object; в руках только близкая
+стихийная энергия огня/льда/молнии. Source refs:
+`docs/design/references/characters/elementalist/`; preview:
+`docs/design/previews/scrum289_elementalist_sheet_contact.png`; Design QA:
+`build/qa/scrum289_elementalist/`. Animator pass подключил runtime
+`assets/sprites/characters/elementalist_spriteframes.tres` и отдельные кадры
+`assets/sprites/characters/full_frame/elementalist/`: `idle` 5f loop, `walk`
+5f loop, `attack_primary`/runtime `attack` 5f one-shot. Animator QA artifacts:
+`build/qa/scrum289/`; manifest validation, Godot import, animation smoke and
+runtime smoke PASS.
+
+SCRUM-282 / SCRUM-294 added accepted unarmed Assassin and Ranger runtime
+SpriteFrames on the same 5 idle / 5 walk / 5 attack_primary contract:
+`assets/sprites/characters/assassin_spriteframes.tres` with per-frame PNGs in
+`assets/sprites/characters/full_frame/assassin/`, and
+`assets/sprites/characters/ranger_spriteframes.tres` with per-frame PNGs in
+`assets/sprites/characters/full_frame/ranger/`. Both keep weapon visuals
+separate from the base character sheets and pass manifest validation, animation
+smoke and full runtime smoke.
+
+SCRUM-283 Design pass 2026-06-14 подготовил принятый source sheet Берсерка:
+`assets/sprites/characters/berserk_sheet.png` (`1920x768`, `384x384` cells,
+5 `walk` + 5 `attack_primary`, RGBA transparent, unarmed). QA-манифест
+`build/qa/scrum283/berserk_sheet_validation.json` принят для Design handoff:
+нет magenta halo, edge-touch/crop failures или оружия в руках. Animator pass
+подключил `assets/sprites/characters/berserk_spriteframes.tres` и per-frame
+runtime PNGs `assets/sprites/characters/full_frame/berserk/`: `walk` 5f loop,
+`attack_primary`/runtime `attack` 5f one-shot, `idle` fallback 1f. Manifest,
+contact sheet and GIF previews live in `build/qa/scrum283/`; animation and
+runtime smoke PASS.
+
 SCRUM-193 cleanup 2026-06-13: старые `*_placeholder.png` для Assassin/Chemist/Doctor/Druid/Knight/Ranger отсутствуют в активной папке персонажей; backup сохранен в `build/cleanup_backup_2026_06_13/`. Канонические source sprites персонажей — только `assets/sprites/characters/<class_id>.png`, а runtime cutout-части — `assets/sprites/characters/cutout/`.
 
 SCRUM-269 cleanup audit 2026-06-14: read-only asset/image аудит завершен в `docs/design/reviews/cleanup_assets_audit_2026_06.md`. Игровой арт защищен от удаления: weapon signature VFX и weapon select sprites грузятся динамически по `weapon_id`, новые boss/mini-elite source sprites остаются pending-live art, UI/cutout/icon families остаются dynamic assets. Единственная cleanup-находка — orphan ` 2.png.import` sidecars после duplicate cleanup — вынесена в SCRUM-271.
@@ -304,7 +375,7 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: ближний бой, физический урон, выживаемость.
 - Базовое здоровье: 88.
 - Базовая скорость: 235.
-- Спрайты: `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/berserk_walk_sheet_v2.png`, cutout-части `assets/sprites/characters/cutout/berserk_*.png`.
+- Спрайты: `assets/sprites/characters/berserk_unarmed.png`, Design-ready source sheet `assets/sprites/characters/berserk_sheet.png`, legacy fallback `assets/sprites/characters/berserk_walk_sheet_v2.png`, cutout-части `assets/sprites/characters/cutout/berserk_*.png`.
 - Особенность: оружие отделено от персонажа и крепится к `WeaponSocket`.
 
 Базовые характеристики:
@@ -348,7 +419,9 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: магический урон, AoE, лучи, DoT.
 - Базовое здоровье: 42.
 - Базовая скорость: 250.
-- Спрайт: `assets/sprites/characters/dark_mage.png`, cutout-части `assets/sprites/characters/cutout/dark_mage_*.png`.
+- Спрайт: `assets/sprites/characters/dark_mage.png`, runtime animation sheet
+  `assets/sprites/characters/dark_mage_sheet.png`, cutout-части
+  `assets/sprites/characters/cutout/dark_mage_*.png`.
 
 Базовые характеристики:
 
@@ -369,7 +442,11 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: звуковые волны, импульсы, ауры, отталкивание.
 - Базовое здоровье: 60.
 - Базовая скорость: 268.
-- Спрайт: `assets/sprites/characters/guitarist.png`, cutout-части `assets/sprites/characters/cutout/guitarist_*.png`.
+- Спрайт: `assets/sprites/characters/guitarist.png`, runtime animation sheet
+  `assets/sprites/characters/guitarist_sheet.png`,
+  `assets/sprites/characters/guitarist_spriteframes.tres`, per-frame runtime
+  PNGs in `assets/sprites/characters/full_frame/guitarist/`, cutout-части
+  `assets/sprites/characters/cutout/guitarist_*.png`.
 
 Базовые характеристики:
 
@@ -389,6 +466,20 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 Foundation новых классов уже включен в выбор персонажа, выбор оружия, кодекс, формулы характеристик, ascension и smoke tests. Design visual set для первых 9 персонажей и полного набора оружия 9 классов готов: новые герои art-approved, все 27 weapon PNG существуют по каноническим путям; gameplay/backend-сцены подключают matching weapon PNG без documented visual fallback. SCRUM-168 добавил 10-й Back-end-класс `soldier` и довел набор до 30 weapon variants; canonical Soldier character/weapon PNG и cutout rig/motion подключены. SCRUM-169 добавил 11-й Back-end-класс `thief` и довел набор до 33 weapon variants; canonical Thief character/weapon PNG и cutout rig/motion подключены. SCRUM-163 добавил 12-й Back-end-класс `elementalist` и довел набор до 36 weapon variants; canonical Elementalist character/weapon PNG и cutout rig/motion подключены. SCRUM-167 добавил 13-й Back-end-класс `sniper` и довел набор до 39 weapon variants; canonical Sniper character/weapon PNG и cutout rig/motion подключены. SCRUM-165 добавил 14-й Back-end-класс `priest` и довел набор до 42 weapon variants; canonical Priest character/weapon PNG и cutout rig/motion подключены. SCRUM-162 добавил 15-й Back-end-класс `biologist` и довел набор до 45 weapon variants; canonical Biologist character/weapon PNG и cutout rig/motion подключены. SCRUM-166 добавил 16-й Back-end-класс `robot` и довел набор до 48 weapon variants; canonical Robot character/weapon PNG и cutout rig/motion подключены. SCRUM-164 добавил финальный 17-й Back-end-класс `engineer` и довел набор до 51 weapon variant; canonical Engineer character/weapon PNG и cutout rig/motion подключены. Weapon art v2 pass 2026-06-12 дополнительно перерисовал оружие Рыцаря, заменил базовый `knight.png` на unarmed sprite без встроенного копья/щита, пересобрал `knight_*` cutouts и уменьшил `WeaponVisual.scale` у крупных оружий.
 
 SCRUM-192 выровнял runtime `sprite_path` всех новых классов с `docs/design/content_registry.md`: `thief`, `elementalist`, `sniper`, `priest`, `biologist`, `robot` и `engineer` используют собственные canonical PNG из `assets/sprites/characters/`. Регрессия закрыта focused-тестом `tests/character_sprite_registry_alignment_test.gd`, который проверяет все 17 character IDs и существование их canonical sprite resources.
+
+SCRUM-297 добавил принятый unarmed animation source sheet для `thief`: `assets/sprites/characters/thief_sheet.png` (`384x384`, 5 idle / 5 walk / 5 attack_primary) с alpha-clean и 32px-gutter references под `docs/design/references/characters/thief/`, contact preview `docs/design/previews/scrum297_thief_sheet_contact.png` и Design QA artifacts under `build/qa/scrum297_thief/`. Параллельный Animator pass уже подключил `assets/sprites/characters/thief_spriteframes.tres` и per-frame PNGs under `assets/sprites/characters/full_frame/thief/`; Designer 2 не менял SpriteFrames/runtime wiring.
+
+SCRUM-284 добавил unarmed animation source sheet для `biologist`:
+`assets/sprites/characters/biologist_sheet.png` (`384x384`, 5 idle / 5 walk /
+5 attack_primary) с alpha-clean и 32px-gutter references под
+`docs/design/references/characters/biologist/`, contact preview
+`docs/design/previews/scrum284_biologist_sheet_contact.png` и Design QA
+artifacts under `build/qa/scrum284_biologist/`. Animator pass подключил runtime
+`assets/sprites/characters/biologist_spriteframes.tres` и отдельные кадры
+`assets/sprites/characters/full_frame/biologist/`: `idle` 5f loop, `walk` 5f
+loop, `attack_primary`/runtime `attack` 5f one-shot. Animator QA artifacts:
+`build/qa/scrum284/`; manifest validation, Godot import, animation smoke and
+runtime smoke PASS.
 
 SCRUM-256 добавил framework уникальных классовых идентичностей: `ProgressionData.CLASS_MECHANIC_IDENTITIES` и фасадные API `class_mechanic_identity`, `class_main_attribute`, `weapon_mechanic_identity`. Для всех 17 классов зафиксированы главный атрибут, identity title, mechanic tags и 3 weapon identity. Это data contract для патча 0.1.5: последующие задачи melee/summoner/aura/VFX используют таблицу как источник направления, а сам framework не меняет текущий баланс.
 
@@ -632,6 +723,23 @@ Design-only результат; runtime подключение `_show_reward_scr
 логика наград не менялась в Design-чате. Safe-zone metadata:
 `docs/design/references/rewards/reward_frames_scrum338_metadata.json`.
 
+SCRUM-330 подготовил Design-ready kit для pause/result кластера: OpenAI/skill
+mockup `docs/design/references/ui_overhaul_pause_end/pause_end_cluster_mockup.png`,
+spec `docs/design/mockups/ui_overhaul_pause_end/scrum330_pause_end_mockup_spec.md`,
+runtime frame candidate
+`assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png` (`1280x1024`,
+RGBA transparent) и previews `docs/design/previews/ui_overhaul_pause_end_contact.png`
+/ `ui_overhaul_pause_end_safe_zones.png`. Source safe rect modal frame:
+`Rect2(170,180,940,670)`; content margins `Vector4(170,180,170,174)`.
+Result crests `ui_crest_victory.png` / `ui_crest_defeat.png` остаются
+декоративными header assets. SCRUM-407 подключил этот kit в runtime: меню паузы,
+pause dossier/stats, victory и death screens используют
+`ui_frame_pause_end_modal.png` как масштабируемый modal `StyleBoxTexture` с
+Design safe/content margins; длинное dossier/stats содержимое живет внутри
+scroll safe-zone, а victory/death crest и action button адаптивно уменьшаются на
+720p без попадания на орнамент. QA dump:
+`build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
+
 Level-up показывает 3 фиксированных варианта на каждый полученный уровень: обычные улучшения оружия/параметров и очень редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с визуальной rare-пометкой. Вес обычных наград считается от единого источника `ProgressionData.ATTRIBUTE_PRIORITIES` и зависимости награды от базовой характеристики: профильные параметры класса выпадают чаще, но у каждого варианта есть floor. Один уровень дает ровно один выбор; если накопилось несколько уровней, окна открываются последовательно. Окно можно закрыть через «Позже» без потери выбора: тот же набор остается в `level_up_offer`, а нижняя SCRUM-390 plus-кнопка с pending-бейджем возвращает игрока к сохраненному пику. Level-up и докачка атрибутов показывают иконки через `UIIconRegistry` и добавляют текст «Интерпретация» для выбранного героя. Артефакты с `class_affinity` больше не считаются нерабочими для чужого класса: affinity теперь описывает тематику, а `affinity_mods` применяются через интерпретацию текущего героя.
 
 ## Ультимейты
@@ -691,6 +799,15 @@ safe-zone metadata
 проверяет фактические texture paths, а QA dump пишется в
 `build/qa/scrum345/codex_texture_runtime_dump.md`.
 
+SCRUM-331 prepared a Design-ready progression/skill-tree frame kit and mockup
+while preserving the existing Codex kit. Mockup/spec:
+`docs/design/mockups/scrum331_progression_codex/`; runtime-ready assets:
+`assets/sprites/ui/frames/progression/`; preview:
+`docs/design/previews/scrum331_progression_frame_kit_contact.png`. The kit
+defines main skill-tree panel, branch panel, circular node states, class
+progression panel, points badge and tooltip safe zones. Runtime integration is
+tracked in `docs/tasks/backend_ui_overhaul_progression_codex_integration_task.md`.
+
 ## Пауза
 
 Система паузы реализована через причины паузы. Основные причины:
@@ -726,9 +843,9 @@ safe-zone metadata
 | Магазин | Frameless wall-предметы поверх `screen_shop_background.png`: иконка, тень, компактная цена, описание только hover tooltip, unavailable dim/price и empty-hook после покупки |
 | Событие | Выбор одного из вариантов события поверх `screen_event_background.png`; длинный текст исхода находится в рамке над короткой кнопкой выбора |
 | Отдых | Лечение или защитный бонус поверх `screen_campfire_background.png`; описание бонуса находится в рамке над стандартной action-кнопкой |
-| Pause menu / stats | Escape открывает компактное run menu с Continue/Досье/Settings/End Run/Main Menu; досье персонажа открывается из него и показывает кнопки слева, приоритетные базовые характеристики сверху с бейджем/tooltip, производные параметры справа в логических группах |
-| Смерть | Завершение забега |
-| Победа | Русский пользовательский итог без внутренних ID: победа над боссом, очки наследия, прогресс Возвышения и смысл новой награды |
+| Pause menu / stats | Escape открывает компактное run menu с Continue/Досье/Settings/End Run/Main Menu; досье персонажа открывается из него и показывает кнопки слева, приоритетные базовые характеристики сверху с бейджем/tooltip, производные параметры справа в логических группах; SCRUM-330 Design kit готовит новый modal frame с safe-zone, runtime wiring передан Back-end |
+| Смерть | Завершение забега; SCRUM-330 result crest/modal kit подготовлен как Design package |
+| Победа | Русский пользовательский итог без внутренних ID: победа над боссом, очки наследия, прогресс Возвышения и смысл новой награды; SCRUM-330 result crest/modal kit подготовлен как Design package |
 
 HP, XP и деньги должны оставаться видимыми на карте, в событиях и в магазине.
 

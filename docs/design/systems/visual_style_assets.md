@@ -134,6 +134,29 @@ size; labels, icons, artifact tier text and action labels must stay inside the
 safe area while the whole card remains clickable/focusable. Runtime QA dumps are
 written to `build/qa/scrum338/`.
 
+SCRUM-330 provides the Design-ready **Pause / Victory / Defeat modal kit** for
+the pause and result-screen cluster. The accepted runtime candidate is
+`assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png` (`1280x1024`,
+RGBA transparent), derived from `fantasydisk-asset-generator` reference art and
+alpha-cleaned from its magenta key background. Source metadata lives in
+`docs/design/references/ui_overhaul_pause_end/scrum330_pause_end_metadata.json`;
+mockup/spec lives in
+`docs/design/mockups/ui_overhaul_pause_end/scrum330_pause_end_mockup_spec.md`;
+previews are `docs/design/previews/ui_overhaul_pause_end_contact.png` and
+`docs/design/previews/ui_overhaul_pause_end_safe_zones.png`. The modal frame
+must use source safe rect `[170,180,940,670]` / content margins
+`[170,180,170,174]`; runtime content, buttons, labels, click/focus zones and
+icons must stay out of the dragon heads, side columns, ruby gems, bottom crest
+and outer metal. Existing result crests
+`assets/sprites/ui/result_crests/ui_crest_victory.png` and
+`assets/sprites/ui/result_crests/ui_crest_defeat.png` remain decorative header
+art only. SCRUM-407 wires this kit into runtime pause menu, pause dossier/stats,
+victory and death screens through scaled `StyleBoxTexture` margins; result
+screens keep crest art outside text/buttons, and smaller 720p viewports use
+adaptive crest/action button sizing so interactive content stays inside the
+modal safe zone. Runtime QA dump:
+`build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
+
 SCRUM-345/SCRUM-403 provide the active **Codex texture kit** for the in-game
 encyclopedia and glossary tooltip. Assets live in
 `assets/sprites/ui/frames/codex/` and are wired only to Codex runtime surfaces:

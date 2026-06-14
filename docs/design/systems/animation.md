@@ -93,6 +93,82 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   path at character configure time, builds `idle`/`walk`/`attack_primary` and
   runtime `attack` SpriteFrames when a sheet exists, and otherwise falls back to
   the old cutout/static character visuals.
+- SCRUM-283 integrated Berserk's accepted unarmed source sheet
+  `assets/sprites/characters/berserk_sheet.png` into runtime SpriteFrames at
+  `assets/sprites/characters/berserk_spriteframes.tres`: `walk` 5f loop,
+  `attack_primary`/runtime `attack` 5f one-shots, `idle` one-frame fallback,
+  `384x384` canvas, bottom-center pivot guide `[192,348]`. Runtime frames are
+  extracted to `assets/sprites/characters/full_frame/berserk/` so SpriteFrames
+  do not slice neighboring source-sheet pixels; manifest/contact/GIF artifacts
+  live under `build/qa/scrum283/`.
+- SCRUM-286 integrated the accepted unarmed Dark Mage sheet
+  `assets/sprites/characters/dark_mage_sheet.png` into runtime SpriteFrames at
+  `assets/sprites/characters/dark_mage_spriteframes.tres`: `idle` 5f loop,
+  `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`. Runtime frames are extracted to
+  `assets/sprites/characters/full_frame/dark_mage/`; source references, a
+  32px-gutter QA sheet, manifest and GIF previews are under
+  `docs/design/references/characters/dark_mage/` and
+  `build/qa/scrum286_dark_mage/`.
+- SCRUM-291 integrated the accepted unarmed Guitarist sheet
+  `assets/sprites/characters/guitarist_sheet.png` into runtime SpriteFrames at
+  `assets/sprites/characters/guitarist_spriteframes.tres`: `idle` 5f loop,
+  `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`. Runtime frames are extracted to
+  `assets/sprites/characters/full_frame/guitarist/`; Design source references
+  remain under `docs/design/references/characters/guitarist/`, while Animator
+  manifest/contact/GIF artifacts live under `build/qa/scrum291/`. Manifest
+  validation, Godot import, animation smoke and runtime smoke PASS after
+  SCRUM-409.
+- SCRUM-297 accepted the unarmed Thief sheet
+  `assets/sprites/characters/thief_sheet.png`: `idle` 5f loop, `walk` 5f loop,
+  `attack_primary` 5f one-shot, `384x384` canvas, bottom-center pivot guide
+  `[192,348]`, no weapons/coins/smoke/held props. Design source references,
+  alpha-clean sheet, 32px-gutter QA sheet, contact preview, manifest and GIF
+  previews are under `docs/design/references/characters/thief/`,
+  `docs/design/previews/scrum297_thief_sheet_contact.png` and
+  `build/qa/scrum297_thief/`. Parallel Animator output already provides
+  `assets/sprites/characters/thief_spriteframes.tres` and per-frame PNGs under
+  `assets/sprites/characters/full_frame/thief/`.
+- SCRUM-289 accepted the unarmed Elementalist Design source sheet
+  `assets/sprites/characters/elementalist_sheet.png`: `idle` 5f loop source,
+  `walk` 5f loop source, `attack_primary` 5f one-shot source, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`, no staff/wand/orb/focus/held
+  object. Source references, alpha-clean sheet, 32px-gutter QA sheet, contact
+  preview, manifest and GIF previews are under
+  `docs/design/references/characters/elementalist/`,
+  `docs/design/previews/scrum289_elementalist_sheet_contact.png` and
+  `build/qa/scrum289_elementalist/`. Animator pass integrated runtime
+  `assets/sprites/characters/elementalist_spriteframes.tres`: `idle` 5f loop,
+  `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`, and per-frame PNGs under
+  `assets/sprites/characters/full_frame/elementalist/`. Animator
+  manifest/contact/GIF artifacts live under `build/qa/scrum289/`; manifest
+  validation, Godot import, animation smoke and runtime smoke PASS.
+- SCRUM-284 accepted the unarmed Biologist Design source sheet
+  `assets/sprites/characters/biologist_sheet.png`: `idle` 5f loop source,
+  `walk` 5f loop source, `attack_primary` 5f one-shot source, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`, no tools/syringes/flasks/bags/
+  weapons/orbs/held objects. Source references, alpha-clean sheet, 32px-gutter
+  QA sheet, contact preview, manifest and GIF previews are under
+  `docs/design/references/characters/biologist/`,
+  `docs/design/previews/scrum284_biologist_sheet_contact.png` and
+  `build/qa/scrum284_biologist/`. Animator pass integrated runtime
+  `assets/sprites/characters/biologist_spriteframes.tres`: `idle` 5f loop,
+  `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`, and per-frame PNGs under
+  `assets/sprites/characters/full_frame/biologist/`. Animator
+  manifest/contact/GIF artifacts live under `build/qa/scrum284/`; manifest
+  validation, Godot import, animation smoke and runtime smoke PASS.
+- SCRUM-282 and SCRUM-294 integrated accepted unarmed Assassin/Ranger sheets
+  into runtime SpriteFrames at
+  `assets/sprites/characters/assassin_spriteframes.tres` and
+  `assets/sprites/characters/ranger_spriteframes.tres`: each has `idle` 5f
+  loop, `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, a
+  `384x384` canvas, and per-frame PNGs under
+  `assets/sprites/characters/full_frame/assassin/` and
+  `assets/sprites/characters/full_frame/ranger/`. Manifest validation,
+  animation smoke and runtime smoke PASS.
 - Movement facing — отдельно от attack targeting.
 - Attack direction приходит из weapon targeting и не перетирается velocity.
 - `WeaponSocket` используется для attached weapons и должен оставаться совместимым с анимацией.

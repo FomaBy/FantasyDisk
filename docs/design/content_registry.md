@@ -63,19 +63,19 @@
 
 | ID | Игровое имя | Роль | Источник | Ассет | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано |
+| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/berserk_sheet.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано |
 | `soldier` | Солдат | Тактический физический класс: залпы, гранаты и удержание линии | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/soldier.png`, `assets/sprites/characters/cutout/soldier_*.png` | Реализовано |
-| `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/cutout/thief_*.png` | Реализовано |
-| `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/cutout/elementalist_*.png` | Реализовано |
+| `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/thief_sheet.png`, `assets/sprites/characters/thief_spriteframes.tres`, `assets/sprites/characters/full_frame/thief/`, `assets/sprites/characters/cutout/thief_*.png` | Реализовано; SCRUM-297 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated |
+| `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/elementalist_sheet.png`, `assets/sprites/characters/elementalist_spriteframes.tres`, `assets/sprites/characters/full_frame/elementalist/`, `assets/sprites/characters/cutout/elementalist_*.png` | Реализовано; SCRUM-289 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `sniper` | Снайпер | Дальний точный класс: lockshot, kill-zone и split rounds | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/sniper.png`, `assets/sprites/characters/cutout/sniper_*.png` | Реализовано |
 | `priest` | Священник | Священный sustain: sanctify, ward-пульсы и молитвенная цепь | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/priest.png`; `assets/sprites/characters/cutout/priest_*.png` | Реализовано |
-| `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`; `assets/sprites/characters/cutout/biologist_*.png` | Реализовано |
+| `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
 | `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer.png`; `assets/sprites/characters/cutout/engineer_*.png` | Реализовано |
-| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/cutout/dark_mage_*.png` | Реализовано |
-| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/cutout/guitarist_*.png` | Реализовано |
-| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано |
-| `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано |
+| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cutout/dark_mage_*.png` | Реализовано; SCRUM-286 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated |
+| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png` | Реализовано; SCRUM-291 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
+| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано; SCRUM-282 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
+| `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
 | `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
 | `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано; v2 unarmed base без встроенного копья/щита |
@@ -110,6 +110,13 @@ sheets: `docs/design/references/character_animation_style_sheet_0_1_5.md`.
 дополнительной строкой `idle`. Runtime wiring готов: `Player` автоматически
 подхватывает этот путь при наличии sheet, добавляет runtime alias `attack` для
 `attack_primary` и сохраняет static/cutout fallback для неперерисованных классов.
+SCRUM-283 Design pass подготовил первый принятый playable source sheet:
+`assets/sprites/characters/berserk_sheet.png` (`1920x768`, `384x384` cells,
+5 `walk` + 5 `attack_primary`, transparent, unarmed). Animator pass подключил
+runtime `assets/sprites/characters/berserk_spriteframes.tres` с отдельными
+кадрами `assets/sprites/characters/full_frame/berserk/`, `walk` 5f loop,
+`attack_primary`/`attack` 5f one-shot, manifest/contact/GIF в
+`build/qa/scrum283/`; animation/runtime smoke PASS.
 
 | ID | Тип | Где используется | Назначение | Статус |
 | --- | --- | --- | --- | --- |
@@ -149,6 +156,53 @@ Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем
 Разрешения source-спрайтов: персонажи 512x512, стандартные монстры 192x192, активные элитки 512x512 после SCRUM-135, боссы 512x512 для текущего boss roster/source set. Mini-elite source sprites из SCRUM-156 также 512x512.
 
 Спрайт `dark_mage` переработан 2026-06-11 под walk-анимацию: нейтральная стойка с двумя читаемыми симметричными ногами (просвет между ними, стопы на одной линии, низ мантии не скрывает колени/стопы). Инструмент: `tools/rework_dark_mage_legs.py` (оригинал в `build/bg_backup/dark_mage_original.png`). Cutout-части ног (`assets/sprites/characters/cutout/dark_mage_leg_l.png` / `dark_mage_leg_r.png`) пересобраны с полными голень+бедро крупами и пивотами у бедер.
+
+SCRUM-286 (2026-06-14) добавил Design-ready unarmed full-frame sheet
+`assets/sprites/characters/dark_mage_sheet.png`: `1920x1152`, 3 rows
+(`idle`, `walk`, `attack_primary`) x 5 frames, `384x384` cells, transparent
+RGBA, bottom-center pivot guide `[192,348]`. Source/reference files live under
+`docs/design/references/characters/dark_mage/`; QA contact/GIF/manifest files
+live under `docs/design/previews/` and `build/qa/scrum286_dark_mage/`. Animator
+pass подключил runtime `assets/sprites/characters/dark_mage_spriteframes.tres`
+через отдельные кадры `assets/sprites/characters/full_frame/dark_mage/`, чтобы
+live SpriteFrames не резали соседние клетки source sheet; animation/runtime smoke
+PASS.
+
+SCRUM-291 (2026-06-14) добавил unarmed Guitarist sheet
+`assets/sprites/characters/guitarist_sheet.png`: `1920x1152`, 3 rows
+(`idle`, `walk`, `attack_primary`) x 5 frames, `384x384` cells, transparent
+RGBA, bottom-center pivot guide `[192,348]`. Animator pass подключил runtime
+`assets/sprites/characters/guitarist_spriteframes.tres` через отдельные кадры
+`assets/sprites/characters/full_frame/guitarist/`, чтобы live SpriteFrames не
+резали соседние клетки source sheet. Source/reference files live under
+`docs/design/references/characters/guitarist/`; Design QA files live under
+`build/qa/scrum291_guitarist/`, Animator manifest/contact/GIF under
+`build/qa/scrum291/`. Manifest validation, Godot import, animation smoke and
+runtime smoke PASS after SCRUM-409.
+
+SCRUM-289 (2026-06-14) добавил unarmed Elementalist sheet
+`assets/sprites/characters/elementalist_sheet.png`: `1920x1152`, 3 rows
+(`idle`, `walk`, `attack_primary`) x 5 frames, `384x384` cells, transparent
+RGBA, bottom-center pivot guide `[192,348]`. Source/reference files live under
+`docs/design/references/characters/elementalist/`; QA contact preview:
+`docs/design/previews/scrum289_elementalist_sheet_contact.png`; Design
+manifest/report/GIF previews live under `build/qa/scrum289_elementalist/`.
+Character is unarmed: no staff, wand, orb, focus, weapon or held object; only
+close hand fire/ice/lightning energy remains. Animator pass подключил runtime
+`assets/sprites/characters/elementalist_spriteframes.tres` через отдельные
+кадры `assets/sprites/characters/full_frame/elementalist/`; Animator
+manifest/contact/GIF previews live under `build/qa/scrum289/`. Manifest
+validation, Godot import, animation smoke and runtime smoke PASS.
+
+SCRUM-282 / SCRUM-294 (2026-06-14) подключили accepted unarmed Assassin and
+Ranger sheets through runtime SpriteFrames:
+`assets/sprites/characters/assassin_spriteframes.tres` and
+`assets/sprites/characters/ranger_spriteframes.tres`. Both expose `idle` 5f
+loop, `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, with
+per-frame runtime PNGs in `assets/sprites/characters/full_frame/assassin/` and
+`assets/sprites/characters/full_frame/ranger/`; QA manifests/contact/GIFs live
+under `build/qa/scrum282/` and `build/qa/scrum294/`. Manifest validation,
+animation smoke and runtime smoke PASS.
 
 ## VFX-Ассеты Эффектов
 
@@ -197,6 +251,29 @@ transparent). Source references and safe-zone metadata:
 content must stay inside documented content margins: battle reward card
 `Vector4(132, 170, 132, 164)`, elite artifact card
 `Vector4(150, 202, 150, 190)`.
+
+Economy node frame kit SCRUM-332 (Design-ready, Back-end integration handoff):
+`assets/sprites/ui/frames/economy/ui_frame_economy_panel.png`,
+`ui_frame_economy_choice_card.png`, `ui_frame_economy_choice_card_hover.png`,
+`ui_frame_economy_dragon_panel.png`, `ui_frame_economy_price_badge.png`,
+`ui_frame_economy_tooltip.png`. Mockup/spec:
+`docs/design/mockups/scrum332_shop_economy/spec.md`; generated references:
+`docs/design/references/ui_overhaul_shop_economy/`; preview:
+`docs/design/previews/scrum332_shop_economy_frame_kit_contact.png`. Content
+must stay inside the documented safe zones, especially for the irregular dragon
+panel.
+
+Progression frame kit SCRUM-331 (Design-ready, Back-end integration handoff):
+`assets/sprites/ui/frames/progression/ui_frame_progression_main_panel.png`,
+`ui_frame_progression_branch_panel.png`, `ui_frame_progression_node_available.png`,
+`ui_frame_progression_node_locked.png`, `ui_frame_progression_node_purchased.png`,
+`ui_frame_progression_node_focus.png`, `ui_frame_progression_class_panel.png`,
+`ui_frame_progression_points_badge.png`, `ui_frame_progression_tooltip.png`.
+Mockup/spec: `docs/design/mockups/scrum331_progression_codex/spec.md`;
+generated references: `docs/design/references/ui_overhaul_progression_codex/`;
+preview: `docs/design/previews/scrum331_progression_frame_kit_contact.png`.
+Circular node content must stay within the documented inner circle; the existing
+SCRUM-345/SCRUM-403 Codex texture kit remains the live Codex baseline.
 
 Уникальные атаки элиток (имена зафиксированы для Back-end интеграции, не переименовывать):
 
@@ -534,6 +611,8 @@ SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon ki
 | `ui_frame_combat_hud_ascension_badge` | `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_ascension_badge.png` | SCRUM-390 Design-ready ascension badge, `128x128` RGBA; content margins `[40,34,40,34]`, safe rect `[40,34,48,60]` |
 | `ui_btn_combat_level_up_plus_*` | `assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus.png` + hover/pressed/disabled | SCRUM-390 opaque bottom-right level-up plus button kit, `128x128` RGBA; safe rect `[36,34,56,58]`; no yellow hover glow |
 | `ui_hud_bar_fill_*` | `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`, `_ult.png`, `_gold.png` | SCRUM-390 painterly resource fill textures, `512x32` RGBA, optional Back-end use for HP/XP/ULT/gold bars |
+| `ui_frame_pause_end_modal` | `assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png` | SCRUM-330 Design-ready pause/victory/death modal frame, `1280x1024` RGBA transparent. Source safe rect `[170,180,940,670]`, content margins `[170,180,170,174]`; use proportional whole-image frame or verified 9-slice only; runtime content must not overlap dragon heads, side columns, gems, bottom crest or metal border. Metadata: `docs/design/references/ui_overhaul_pause_end/scrum330_pause_end_metadata.json`; Back-end integration handoff: `backend_pause_end_ui_overhaul_integration_task.md` |
+| `ui_result_crest_victory_defeat` | `assets/sprites/ui/result_crests/ui_crest_victory.png`, `assets/sprites/ui/result_crests/ui_crest_defeat.png` | SCRUM-330 result-screen decorative crests accepted for victory/death headers; decorative only in this pass, not content containers |
 | `ui_frame_codex_*` | `assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png`, `_section_panel.png`, `_entry_card.png`, `_entry_card_hover.png`, `_portrait_slot.png`, `_tooltip.png`, `_tab.png`, `_tab_hover.png`, `_tab_pressed.png`, `_tab_disabled.png` | SCRUM-345 Design-ready Codex texture kit generated through `fantasydisk-asset-generator`; metadata and safe-zones in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`; runtime activation handed off to `backend_codex_texture_no_overlap_integration_task.md` |
 | `ui_frame_ornate_global_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_global_panel.png` | Live global/menu/event/codex panel frame |
 | `ui_frame_ornate_level_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_level_panel.png` | Live level-up/reward main panel |

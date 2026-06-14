@@ -1,6 +1,6 @@
 # ART: Перерисовать «Биолог» в едином стиле + анимации (5 move / 5 attack)
 
-Статус: review (Design-source ready; Animator integration pending)
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.5
@@ -73,4 +73,29 @@ Generated and validated Design handoff artifacts:
 - contact preview: `docs/design/previews/scrum284_biologist_sheet_contact.png`;
 - QA manifest/report/GIFs: `build/qa/scrum284_biologist/`.
 
-Validation: animation manifest validator PASS; PIL source cleanliness PASS (`15/15` non-empty cells, alpha extrema `(0,255)`, no safe-padding/edge-touch failures, global scale `1.0`). No weapons, tools, syringes, flasks, bags, or held objects remain in the accepted sheet. SpriteFrames, runtime registry, gameplay logic and smoke-test integration were intentionally not touched; Animator owns the next phase.
+Validation: animation manifest validator PASS; PIL source cleanliness PASS (`15/15` non-empty cells, alpha extrema `(0,255)`, no safe-padding/edge-touch failures, global scale `1.0`). No weapons, tools, syringes, flasks, bags, or held objects remain in the accepted sheet. SpriteFrames, runtime registry, gameplay logic and smoke-test integration were intentionally not touched in the Design pass; Animator integration is recorded below.
+
+## Animator Result — 2026-06-14
+
+Animator-фаза по accepted source sheet выполнена:
+- runtime SpriteFrames: `assets/sprites/characters/biologist_spriteframes.tres`;
+- extracted runtime frames: `assets/sprites/characters/full_frame/biologist/`;
+- source sheet: `assets/sprites/characters/biologist_sheet.png`;
+- animations: `idle` 5f loop at 5fps, `walk` 5f loop at 10fps,
+  `attack_primary` 5f one-shot at 14fps, runtime alias `attack` 5f one-shot at
+  14fps;
+- QA artifacts: `build/qa/scrum284/animation_manifest.json`,
+  `build/qa/scrum284/biologist_anim_contact.png`,
+  `build/qa/scrum284/biologist_idle.gif`,
+  `build/qa/scrum284/biologist_walk.gif`,
+  `build/qa/scrum284/biologist_attack_primary.gif`.
+
+Verification:
+- animation manifest validator — PASS.
+- Godot headless import — PASS.
+- `tests/animation_smoke_test.gd` — PASS with Biologist asserted as an accepted
+  SpriteFrames resource.
+- `tests/runtime_smoke_test.gd` — PASS.
+
+Scope note: Animator consumed the accepted Design sheet only; no Design source
+redraw, gameplay, balance, Back-end mechanics, weapon logic or UI changes.

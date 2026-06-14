@@ -18,6 +18,33 @@ Design-ready assets:
 | `ui_shop_purchased_overlay` | `assets/sprites/ui/shop/ui_shop_purchased_overlay.png` |
 | `ui_shop_tooltip_frame` | `assets/sprites/ui/shop/ui_shop_tooltip_frame.png` |
 
+SCRUM-332 adds a Design-ready economy node frame kit for the broader shop/rest/
+upgrade/event/attribute cluster. Mockup and spec live in
+`docs/design/mockups/scrum332_shop_economy/`; generated source/reference art
+lives in `docs/design/references/ui_overhaul_shop_economy/`; contact preview is
+`docs/design/previews/scrum332_shop_economy_frame_kit_contact.png`.
+Runtime-ready assets:
+
+| Asset ID | File |
+| --- | --- |
+| `ui_frame_economy_panel` | `assets/sprites/ui/frames/economy/ui_frame_economy_panel.png` |
+| `ui_frame_economy_choice_card` | `assets/sprites/ui/frames/economy/ui_frame_economy_choice_card.png` |
+| `ui_frame_economy_choice_card_hover` | `assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_hover.png` |
+| `ui_frame_economy_dragon_panel` | `assets/sprites/ui/frames/economy/ui_frame_economy_dragon_panel.png` |
+| `ui_frame_economy_price_badge` | `assets/sprites/ui/frames/economy/ui_frame_economy_price_badge.png` |
+| `ui_frame_economy_tooltip` | `assets/sprites/ui/frames/economy/ui_frame_economy_tooltip.png` |
+
+SCRUM-406 makes the SCRUM-332 kit live in runtime. Attribute shop, campfire/rest,
+upgrade and random event choices use `ui_frame_economy_panel` plus
+`ui_frame_economy_choice_card`/hover variants with their safe-zone content
+margins. Shop itself keeps compact square wall item hit areas instead of
+squashing the tall choice-card art into slots; only the price tag uses
+`ui_frame_economy_price_badge`. Use the safe zones from
+`docs/design/mockups/scrum332_shop_economy/spec.md`. `ui_frame_economy_dragon_panel`
+is irregular: its content may only use the real inner rect to the right of the
+dragon head/wing, not the full bounding box. Runtime QA dump:
+`build/qa/scrum332/economy_ui_no_overlap_matrix.md`.
+
 Rules:
 
 - show artifact/shop item icon and price directly on the shop background;
@@ -129,6 +156,31 @@ Codex tabs, entry cards, portrait/icon slots and `GlossaryTooltipPanel`.
 Runtime smoke asserts the actual StyleBoxTexture paths and writes
 `build/qa/scrum345/codex_texture_runtime_dump.md`.
 
+SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
+the SCRUM-345/SCRUM-403 Codex kit as the accepted Codex baseline. Mockup/spec:
+`docs/design/mockups/scrum331_progression_codex/`; generated references:
+`docs/design/references/ui_overhaul_progression_codex/`; preview:
+`docs/design/previews/scrum331_progression_frame_kit_contact.png`. Runtime-ready
+assets:
+
+| Asset ID | File |
+| --- | --- |
+| `ui_frame_progression_main_panel` | `assets/sprites/ui/frames/progression/ui_frame_progression_main_panel.png` |
+| `ui_frame_progression_branch_panel` | `assets/sprites/ui/frames/progression/ui_frame_progression_branch_panel.png` |
+| `ui_frame_progression_node_available` | `assets/sprites/ui/frames/progression/ui_frame_progression_node_available.png` |
+| `ui_frame_progression_node_locked` | `assets/sprites/ui/frames/progression/ui_frame_progression_node_locked.png` |
+| `ui_frame_progression_node_purchased` | `assets/sprites/ui/frames/progression/ui_frame_progression_node_purchased.png` |
+| `ui_frame_progression_node_focus` | `assets/sprites/ui/frames/progression/ui_frame_progression_node_focus.png` |
+| `ui_frame_progression_class_panel` | `assets/sprites/ui/frames/progression/ui_frame_progression_class_panel.png` |
+| `ui_frame_progression_points_badge` | `assets/sprites/ui/frames/progression/ui_frame_progression_points_badge.png` |
+| `ui_frame_progression_tooltip` | `assets/sprites/ui/frames/progression/ui_frame_progression_tooltip.png` |
+
+Use the safe zones from `docs/design/mockups/scrum331_progression_codex/spec.md`.
+Circular skill-node frames must remain square/proportional; long node text should
+move to tooltip/adjacent labels instead of sitting on the ornate ring. Back-end
+integration is tracked separately in
+`docs/tasks/backend_ui_overhaul_progression_codex_integration_task.md`.
+
 The combat/route `LevelUpPlusButton` is an exception to the flat FAB look: in
 combat it uses the SCRUM-390 square plus texture states, remains fully opaque
 and anchored bottom-right, and keeps its pending-count badge readable. Runtime
@@ -156,6 +208,42 @@ button frame, whose vertical margins are safe at 72px. Do not let these buttons
 fall back to `back_s`: that frame is authored for taller action buttons and
 visually squashes when used in this dialog. Runtime smoke records the actual
 rects and textures in `build/qa/scrum319/quit_confirmation_dialog.md`.
+
+## Pause And Result Screens
+
+SCRUM-330 prepared the Design package for pause, pause dossier/stats, victory
+and death screens. The generated mockup/spec lives at
+`docs/design/mockups/ui_overhaul_pause_end/scrum330_pause_end_mockup_spec.md`;
+contact/safe-zone previews are
+`docs/design/previews/ui_overhaul_pause_end_contact.png` and
+`docs/design/previews/ui_overhaul_pause_end_safe_zones.png`.
+
+Design-ready runtime assets:
+
+| Asset ID | File | Safe-zone |
+| --- | --- | --- |
+| `ui_frame_pause_end_modal` | `assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png` | Source `1280x1024`, safe rect `Rect2(170,180,940,670)`, content margins `Vector4(170,180,170,174)` |
+| `ui_crest_victory` | `assets/sprites/ui/result_crests/ui_crest_victory.png` | Decorative header only |
+| `ui_crest_defeat` | `assets/sprites/ui/result_crests/ui_crest_defeat.png` | Decorative header only |
+
+Rules:
+
+- draw the modal frame proportionally as a whole image, or integrate it as a
+  verified 9-slice only if ornament distortion is checked;
+- never stretch the whole frame along one axis;
+- keep title/body/buttons/focus/click zones inside the scaled modal safe rect;
+- do not place runtime content on dragon heads, wings, side columns, ruby gems,
+  bottom crest or outer metal;
+- result crests are decorative in this pass and should not become runtime text
+  containers.
+
+Runtime connection is implemented in SCRUM-407: `scripts/ui_screens.gd` uses the
+modal frame for pause, victory and death menu boxes, while
+`scripts/pause_stats_menu.gd` uses the same frame for the pause dossier/stats
+overlay. Long stats content scrolls inside the modal safe-zone; result crests
+remain decorative header art and 720p result actions use smaller crest/button
+sizes so labels and click/focus zones stay off the border ornaments. QA dump:
+`build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
 
 ## Feedback Overlay
 

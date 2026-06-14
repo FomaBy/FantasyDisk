@@ -7,9 +7,10 @@
 
 Задачи формирует PM-чат/другая LLM по регламенту `docs/process/pm_workflow.md`.
 Codex Documentation dispatcher может создавать новые задачи в active sprint
-`0.1.5`, если они относятся к текущему patch scope, или как явно текущие bug/QA
-defect/regression/release blocker задачи. Во время будущего freeze новые
-не-баговые задачи снова уходят в backlog следующей версии. Статусы всех задач
+`0.1.5` только в рамках feature block: уже заведенные строки доски, активные
+bug/QA defect/regression/release blocker задачи или явно разрешенные PM
+исключения. Новые не-баговые feature requests уходят в backlog следующей версии
+как `Версия: 0.1.6` и не добавляются в текущий sprint. Статусы всех задач
 отслеживаются на доске `docs/process/task_board.md`: при взятии задачи
 исполнитель ставит в файле задачи `Статус: in_progress`, по завершении —
 `done` (или `review`) с коротким резюме результата. Закрытие задачи —

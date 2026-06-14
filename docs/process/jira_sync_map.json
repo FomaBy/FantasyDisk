@@ -1973,5 +1973,10 @@
   "key": "SCRUM-410",
   "status": "В работе",
   "desc_hash": "02da31131de6eaf76a1ee766f6b8d3be"
+ },
+ "bug_player_fullframe_anim_hidden_behind_cutout_rig_task.md": {
+  "key": "SCRUM-411",
+  "status": "К выполнению",
+  "desc_hash": "42d935b87a2aa2794ef50514f503fda5"
  }
 }

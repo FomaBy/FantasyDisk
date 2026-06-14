@@ -1,6 +1,6 @@
 # ART: UI Overhaul (Прогрессия и кодекс) — D&D + Dark Fantasy Dragon, новым скиллом
 
-Статус: new
+Статус: review
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -69,3 +69,60 @@ heroframe/carusel/windrose/DescriptionHS/settings_tab_switcher_frame). Брат�
 
 ## Документация
 docs/design/systems/menus_ui.md, docs/design/content_registry.md, current_game_state.
+
+## Progress Log
+
+- 2026-06-14 — Designer 2 took SCRUM-331 after SCRUM-332 Design handoff. Anchor
+  SCRUM-327 is `done`/superseded and this task file marks it as coordination,
+  not a blocker. Jira moved to «В работе» via `tools/jira_board_sync.py`.
+- 2026-06-14 — Generated OpenAI/API progression+codex mockup via
+  `fantasydisk-asset-generator`:
+  `docs/design/references/ui_overhaul_progression_codex/scrum331_progression_codex_mockup.png`;
+  copied into `docs/design/mockups/scrum331_progression_codex/`.
+- 2026-06-14 — Generated OpenAI/API isolated progression frame source sheet:
+  `docs/design/references/ui_overhaul_progression_codex/scrum331_progression_frame_asset_sheet.png`;
+  added deterministic alpha/crop builder
+  `tools/build_scrum331_progression_codex_assets.py`.
+
+## Result Summary — 2026-06-14
+
+Design-scope complete and ready for QA / Back-end integration handoff.
+
+Deliverables:
+- Mockup/spec:
+  - `docs/design/mockups/scrum331_progression_codex/scrum331_progression_codex_mockup.png`
+  - `docs/design/mockups/scrum331_progression_codex/spec.md`
+- Runtime-ready progression frame kit:
+  - `assets/sprites/ui/frames/progression/ui_frame_progression_main_panel.png`
+  - `assets/sprites/ui/frames/progression/ui_frame_progression_branch_panel.png`
+  - `assets/sprites/ui/frames/progression/ui_frame_progression_node_available.png`
+  - `assets/sprites/ui/frames/progression/ui_frame_progression_node_locked.png`
+  - `assets/sprites/ui/frames/progression/ui_frame_progression_node_purchased.png`
+  - `assets/sprites/ui/frames/progression/ui_frame_progression_node_focus.png`
+  - `assets/sprites/ui/frames/progression/ui_frame_progression_class_panel.png`
+  - `assets/sprites/ui/frames/progression/ui_frame_progression_points_badge.png`
+  - `assets/sprites/ui/frames/progression/ui_frame_progression_tooltip.png`
+- Reference copies:
+  `docs/design/references/ui_overhaul_progression_codex/runtime_assets/`.
+- Preview:
+  `docs/design/previews/scrum331_progression_frame_kit_contact.png`.
+- Back-end handoff:
+  `docs/tasks/backend_ui_overhaul_progression_codex_integration_task.md`.
+
+Design decision:
+- SCRUM-331 preserves the existing SCRUM-345/SCRUM-403 Codex texture kit as
+  accepted baseline. This pass adds progression/skill-tree assets and a unified
+  spec, rather than replacing Codex frames again.
+- Runtime wiring is intentionally handed off. Back-end owns skill purchase state,
+  lazy Codex section construction, glossary popup placement, focus, and escape
+  behavior.
+
+Validation:
+- OpenAI mockup generated and preview shown in chat.
+- Progression frame source sheet generated through `fantasydisk-asset-generator`.
+- Alpha-cleaned runtime PNGs created from source sheet; dimensions and alpha
+  verified by PIL.
+- Godot headless import completed; progression frame `.import` sidecars are
+  present.
+- Geometry, safe zones, forbidden ornament zones and responsive rules recorded
+  in `spec.md`.

@@ -1,11 +1,12 @@
 # BUG: runtime_smoke assassin crit shadow VFX assertion остаётся флейки
 
-Статус: new
+Статус: in_progress
 Приоритет: low
 Роль: Back-end / QA tooling
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: QA (находка при батч-QA character-animation, follow-up к SCRUM-409)
+Jira: SCRUM-410
 Связано: SCRUM-409
 
 ## Контекст
@@ -49,3 +50,10 @@ for i in $(seq 1 10); do ~/Downloads/Godot.app/Contents/MacOS/Godot --headless \
   --user-data-dir /private/tmp/flk$i --path "$PWD" --script res://tests/runtime_smoke_test.gd \
   2>&1 | grep -c "Runtime smoke test passed"; done   # ожидается 10× "1"
 ```
+
+## Dispatch Log
+- 2026-06-14 — Dispatcher routed SCRUM-410 to Back-end window
+  `019eabd9-780b-78a2-9f4b-e7203d659ef2`. Eligible during 0.1.5 feature block
+  because this is a QA/runtime smoke flaky bug follow-up to SCRUM-409, not new
+  feature work. Scope: deterministic runtime smoke assertion only; no gameplay,
+  balance, art, animation, release or refactor work.
