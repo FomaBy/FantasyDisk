@@ -747,6 +747,10 @@ func _initialize() -> void:
 		push_error("Expected combat level-up return button hover/focus stylebox to match normal stylebox.")
 		quit(1)
 		return
+	if not _is_neutral_button_font(level_up_plus.get_theme_color("font_hover_color")) or not _is_neutral_button_font(level_up_plus.get_theme_color("font_focus_color")):
+		push_error("Expected combat level-up return button hover/focus font colors to be neutral near-white.")
+		quit(1)
+		return
 	if plus_normal_style is StyleBoxFlat and (plus_normal_style as StyleBoxFlat).bg_color.a < 0.999:
 		push_error("Expected combat level-up return button background style to be opaque.")
 		quit(1)
@@ -1051,6 +1055,10 @@ func _initialize() -> void:
 		return
 	if not (resume_button.get_theme_stylebox("normal") is StyleBoxTexture):
 		push_error("Expected Escape menu buttons to use Design StyleBoxTexture frame.")
+		quit(1)
+		return
+	if not _button_uses_red_gold_type(resume_button, "pause"):
+		push_error("Expected Escape menu buttons to use neutral non-glow Red&Gold hover/focus states.")
 		quit(1)
 		return
 	if not (strength_row.get_theme_stylebox("panel") is StyleBoxTexture) or not (damage_chip.get_theme_stylebox("panel") is StyleBoxTexture) or not (physical_group.get_theme_stylebox("panel") is StyleBoxTexture):
@@ -2245,7 +2253,8 @@ func _button_uses_red_gold_type(button: Button, button_type: String) -> bool:
 		return false
 	var expected := {
 		"normal": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
-		"hover": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_hover.png" % button_type,
+		"hover": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
+		"focus": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
 		"pressed": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_pressed.png" % button_type,
 		"disabled": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_disabled.png" % button_type,
 	}
@@ -2256,7 +2265,23 @@ func _button_uses_red_gold_type(button: Button, button_type: String) -> bool:
 		var texture := (style as StyleBoxTexture).texture
 		if texture == null or texture.resource_path != str(expected[state]):
 			return false
+	var hover_style := button.get_theme_stylebox("hover") as StyleBoxTexture
+	var focus_style := button.get_theme_stylebox("focus") as StyleBoxTexture
+	if hover_style == null or focus_style == null:
+		return false
+	if not _is_neutral_bright_button_tint(hover_style.modulate_color) or not _is_neutral_bright_button_tint(focus_style.modulate_color):
+		return false
+	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
+		return false
 	return true
+
+
+func _is_neutral_bright_button_tint(color: Color) -> bool:
+	return color.r >= 1.0 and color.g >= 1.0 and color.b >= 1.0 and absf(color.r - color.g) <= 0.015 and absf(color.g - color.b) <= 0.015
+
+
+func _is_neutral_button_font(color: Color) -> bool:
+	return color.r >= 0.98 and color.g >= 0.98 and color.b >= 0.98 and absf(color.r - color.g) <= 0.015 and absf(color.g - color.b) <= 0.015
 
 
 func _test_stat_artifact_recording() -> void:

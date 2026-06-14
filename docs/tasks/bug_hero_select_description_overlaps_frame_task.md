@@ -1,13 +1,14 @@
 # BUG: Выбор героя — описание залазит на текстуру рамки, центрировать в фрейме
 
-Статус: blocked
+Статус: done (closed by SCRUM-281 QA PASSED 2026-06-14)
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (отчёт пользователя)
 Jira: SCRUM-276
-Блокируется: SCRUM-281 (активная Design-задача меняет Hero Select frame kit и safe-area; не брать Back-end параллельно до результата/QA)
+QA: PASSED via SCRUM-281 (2026-06-14)
+Закрыто: SCRUM-281 QA PASSED 2026-06-14 закрыл safe-area/content-margin проблему Hero Select без отдельного Back-end pass.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -52,3 +53,16 @@ Jira: SCRUM-276
 
 ## Документация
 docs/design/current_game_state.md (экран выбора героя).
+
+## Dispatcher Closure — 2026-06-14
+SCRUM-281 `design_hero_select_replace_frames_herouiframe_task.md` получил
+QA PASSED и прямо фиксирует: content margins >= окантовки, контент не залазит
+на рамку, safe-area фикс закрывает SCRUM-276, багов нет. Отдельный Back-end pass
+для SCRUM-276 больше не нужен; баг закрыт как resolved by SCRUM-281.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED via SCRUM-281
+
+SCRUM-281 QA PASSED проверил Hero Select safe-area/content margins на 720p/1080p/
+1440p и подтвердил, что контент больше не залазит на рамку. Этот bug закрыт
+без отдельного Back-end pass.

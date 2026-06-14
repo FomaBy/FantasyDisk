@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (отчёт пользователя)
 Jira: SCRUM-277
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -123,3 +124,31 @@ Docs updated:
 - `docs/design/content_registry.md`
 - `docs/design/current_game_state.md`
 - `docs/design/systems/combat.md`
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 352f8189 (ветка dev)
+
+Проверено (фактически, целевые тесты содержательны):
+- **Корень бага** устранён: `PriestChime.tscn` WeaponVisual указывал на
+  guitarist `sound_amp.png` (stale proxy-баг в 18 сценах Thief/Elementalist/
+  Sniper/Priest/Biologist) — исправлено на корректные per-weapon текстуры. Это
+  НЕ коллизия с пассивкой `summoners_bell`, как казалось.
+- **Целевые тесты — все зелёные**:
+  - `weapon_integrity_test` — **17 classes, 51 weapons** (data+scene+attack_mode+
+    выдача, исключение пассивок);
+  - `weapon_scene_integrity_test` — 51, все scene_path резолвятся, id уникальны;
+  - `weapon_identity_diversity_test` — 51 уникальных сигнатур, дублей нет;
+  - `progression_data_api_surface` + `runtime_smoke_weapon_mechanics` +
+    `runtime_smoke_combat` — passed.
+
+Acceptance:
+- [x] Корень бага Священника найден/устранён (stale WeaponVisual, не Колокол-пассивка).
+- [x] 17 классов × 3 корректных оружия (data+scene+mode+выдача), без чужих/пассивок.
+- [x] Тест целостности оружия зелёный (+ identity/scene); отчёт; CHANGELOG.
+
+Примечание: umbrella `runtime_smoke` сейчас транзиентно red, но ТОЛЬКО на ассерте
+SCRUM-273 (main-menu Red&Gold button textures, кит мигрируется) — это отдельная
+активная задача, НЕ дефект SCRUM-277. Weapon-integrity деливерабл полностью зелёный.
+
+Баги: нет.

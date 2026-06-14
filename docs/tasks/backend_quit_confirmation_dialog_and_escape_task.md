@@ -7,7 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-319
-Блокируется: активные незакоммиченные UI-правки SCRUM-281 в `scripts/ui_screens.gd` / `tests/runtime_smoke_test.gd`; dispatch в Back-end после завершения/QA SCRUM-281 или явного PM override.
+Блокируется: последовательная UI-очередь; SCRUM-318 уже active in Back-end и трогает `scripts/ui_screens.gd` / `tests/runtime_smoke_test.gd`; dispatch после завершения/QA SCRUM-318 или явного PM override.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -26,9 +26,10 @@ Jira: SCRUM-319
 ## Dispatcher Note
 2026-06-14: задача оформлена для текущего sprint `0.1.5`, но временно удержана
 как `blocked`, чтобы Back-end не редактировал `scripts/ui_screens.gd` и
-`tests/runtime_smoke_test.gd` поверх активного результата SCRUM-281. После
-завершения/QA SCRUM-281 или явного PM override dispatcher должен снять blocker и
-передать задачу в существующий Back-end thread
+`tests/runtime_smoke_test.gd` поверх активной UI-работы. SCRUM-281 получил
+QA PASSED; dispatcher отправил SCRUM-318 первым как текущий bug/UI hover pass.
+После завершения/QA SCRUM-318 или явного PM override dispatcher должен снять
+blocker и передать SCRUM-319 в существующий Back-end thread
 `019eabd9-780b-78a2-9f4b-e7203d659ef2` с High reasoning/no low.
 
 ## Требования

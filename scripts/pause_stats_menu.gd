@@ -14,9 +14,11 @@ const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame
 const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_tooltip.png")
 const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
 const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause.png")
-const PAUSE_BUTTON_HOVER := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_hover.png")
 const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_pressed.png")
 const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_disabled.png")
+const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
+const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
+const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
 
 const VALUE_HIGH := Color(0.439, 0.949, 0.651, 1.0)
 const VALUE_LOW := Color(1.0, 0.420, 0.420, 1.0)
@@ -658,19 +660,18 @@ func _make_button(text: String) -> Button:
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 	var normal_tint := Color.WHITE
-	var hover_tint := Color(1.08, 1.05, 0.86, 1.0)
 	var pressed_tint := Color(0.92, 0.88, 0.82, 1.0)
 	if variant == "danger":
 		normal_tint = Color(1.08, 0.72, 0.72, 1.0)
-		hover_tint = Color(1.18, 0.78, 0.68, 1.0)
 		pressed_tint = Color(0.92, 0.55, 0.55, 1.0)
 	button.add_theme_stylebox_override("normal", _button_style(PAUSE_BUTTON_NORMAL, normal_tint))
-	button.add_theme_stylebox_override("hover", _button_style(PAUSE_BUTTON_HOVER, hover_tint))
+	button.add_theme_stylebox_override("hover", _button_style(PAUSE_BUTTON_NORMAL, BUTTON_NEUTRAL_HOVER_TINT))
 	button.add_theme_stylebox_override("pressed", _button_style(PAUSE_BUTTON_PRESSED, pressed_tint))
 	button.add_theme_stylebox_override("disabled", _button_style(PAUSE_BUTTON_DISABLED, Color(0.72, 0.72, 0.72, 1.0)))
-	button.add_theme_stylebox_override("focus", _button_style(PAUSE_BUTTON_HOVER, hover_tint))
+	button.add_theme_stylebox_override("focus", _button_style(PAUSE_BUTTON_NORMAL, BUTTON_NEUTRAL_FOCUS_TINT))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.45, 1.0))
+	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 

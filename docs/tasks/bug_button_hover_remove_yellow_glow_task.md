@@ -1,13 +1,13 @@
 # UX: Переделать hover кнопок — ярче и контрастнее, БЕЗ жёлтого свечения
 
-Статус: blocked
+Статус: in_progress
 Приоритет: medium
 Роль: Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-318
-Блокируется: SCRUM-281 (активная Design-задача меняет `scripts/ui_screens.gd` и Hero Select frame/safe-area; не брать Back-end UI hover pass параллельно до результата/QA)
+Блокер снят: SCRUM-281 QA PASSED 2026-06-14; SCRUM-318 active in Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
 Связано: SCRUM-273 (Red&Gold button kit)
 
 ## Autonomy / Approval
@@ -66,3 +66,8 @@ docs/design/systems/menus_ui.md, current_game_state.
 ## Dispatcher Hold — 2026-06-14
 - Задача не dispatch'ится в Back-end, пока Design thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` активно правит `scripts/ui_screens.gd` по SCRUM-281.
 - После SCRUM-281 result/QA dispatcher должен снять blocker и отправить SCRUM-318 в Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`, если hover/focus жёлтое свечение всё ещё актуально.
+
+## Dispatcher Unblock — 2026-06-14
+
+SCRUM-281 получил QA PASSED, UI-churn blocker снят. Задача взята в Back-end
+thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.

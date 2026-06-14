@@ -7,6 +7,7 @@
 Создано: 2026-06-14
 Автор: PM (отчёт пользователя)
 Jira: SCRUM-278
+QA: in_progress (2026-06-14)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -58,3 +59,27 @@ docs/design/current_game_state.md (боевой HUD).
 Verification:
 - PASS — `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
 - Note — extra `runtime_smoke_ui_test.gd` / `ui_no_overlap_matrix_test.gd` are currently blocked by a separate hero-select layout regression (`HeroSelectDossier` overlaps `HeroSelectRadarPanel` at 1280x720), not by SCRUM-278. This should be handled by the active hero-select UI bug lane.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 352f8189 (ветка dev)
+
+Проверено (фактически, smoke-ассерты содержательны):
+- **Дамп** `build/qa/combat_level_up_button.md`: `LevelUpPlusButton` rect
+  `(1188,1470) 384×104` в правом-нижнем углу (viewport 1600), **Alpha=1.000**,
+  **HoverSameAsNormal=true**, бейдж `LevelUpPlusBadgePanel` 28×28.
+- **Ассерты** (runtime_smoke:733-745): anchor=1 (право-низ); `modulate.a≈1.0`;
+  normal==hover==focus stylebox (нет hover-эффекта); bg `StyleBoxFlat.a≥0.999`
+  (фон непрозрачный); кнопка НЕ перекрывает HUD; бейдж присутствует.
+- **Прогон**: `runtime_smoke` + `runtime_smoke_ui` + `ui_no_overlap_matrix` —
+  все passed.
+
+Acceptance:
+- [x] Кнопка в правом-нижнем углу, не перекрывает HUD.
+- [x] Непрозрачная (alpha=1, фон opaque), без hover-эффекта (hover==normal==focus).
+- [x] Бейдж читаем; smoke зелёные; дамп в build/qa/.
+
+Примечание: caveat из Result («ui/no-overlap заблокированы hero-select
+регрессией») СНЯТ — это была churn SCRUM-281 (теперь QA passed); оба теста зелёные.
+
+Баги: нет.

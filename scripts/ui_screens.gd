@@ -50,6 +50,9 @@ const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
 const MAIN_MENU_ACTION_BUTTON_WIDTH := 380.0
 const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
 const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
+const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
+const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
+const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
 const HERO_SELECT_FRAME_DIR := "res://assets/sprites/ui/frames/hero_select/"
 const HERO_SELECT_FRAME_TEXTURES := {
 	"portrait": HERO_SELECT_FRAME_DIR + "ui_frame_hero_select_portrait.png",
@@ -544,9 +547,9 @@ func _make_hero_thumbnail_button(character_id: String, select_character: Callabl
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [str(config.get("title", character_id)), str(config.get("description", ""))]
 	button.add_theme_stylebox_override("normal", _hero_select_frame_style("thumbnail"))
-	button.add_theme_stylebox_override("hover", _hero_select_frame_style("thumbnail", Color(1.12, 1.02, 0.78, 1.0)))
+	button.add_theme_stylebox_override("hover", _hero_select_frame_style("thumbnail", BUTTON_NEUTRAL_HOVER_TINT))
 	button.add_theme_stylebox_override("pressed", _hero_select_frame_style("thumbnail", Color(0.92, 0.86, 0.76, 1.0)))
-	button.add_theme_stylebox_override("focus", _hero_select_frame_style("thumbnail", Color(1.12, 1.02, 0.78, 1.0)))
+	button.add_theme_stylebox_override("focus", _hero_select_frame_style("thumbnail", BUTTON_NEUTRAL_FOCUS_TINT))
 	button.pressed.connect(func() -> void:
 		select_character.call(character_id)
 	)
@@ -4326,9 +4329,10 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 	button.add_theme_stylebox_override("hover", _button_state_style(button, role, "hover"))
 	button.add_theme_stylebox_override("pressed", _button_state_style(button, role, "pressed"))
 	button.add_theme_stylebox_override("disabled", _button_state_style(button, role, "disabled"))
-	button.add_theme_stylebox_override("focus", _button_state_style(button, role, "hover", Color(1.08, 1.05, 0.86, 1.0)))
+	button.add_theme_stylebox_override("focus", _button_state_style(button, role, "hover", BUTTON_NEUTRAL_FOCUS_TINT))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.45, 1.0))
+	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
@@ -4338,9 +4342,9 @@ func _apply_static_level_up_return_button_theme(button: Button) -> void:
 	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
 		button.add_theme_stylebox_override(state, style)
 	button.add_theme_color_override("font_color", Color(1.0, 0.92, 0.58, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.58, 1.0))
+	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(1.0, 0.92, 0.58, 1.0))
-	button.add_theme_color_override("font_focus_color", Color(1.0, 0.92, 0.58, 1.0))
+	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_disabled_color", Color(0.78, 0.70, 0.48, 1.0))
 	button.modulate = Color(1.0, 1.0, 1.0, 1.0)
 
@@ -4429,20 +4433,23 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 func _button_state_style(button: Button, _role: String, state: String, tint := Color.WHITE) -> StyleBox:
 	var button_type := _button_asset_type(button)
 	var type_map: Dictionary = RED_GOLD_BUTTON_TEXTURES.get(button_type, RED_GOLD_BUTTON_TEXTURES["standard"])
-	var path := str(type_map.get(state, type_map.get("normal", GLOBAL_BUTTON_FRAME_PATH)))
+	var texture_state := "normal" if state == "hover" else state
+	var path := str(type_map.get(texture_state, type_map.get("normal", GLOBAL_BUTTON_FRAME_PATH)))
+	var final_tint := BUTTON_NEUTRAL_HOVER_TINT if state == "hover" and tint == Color.WHITE else tint
 	var margins: Vector4 = RED_GOLD_BUTTON_MARGINS.get(button_type, Vector4(84, 30, 84, 32))
 	var content: Vector4 = RED_GOLD_BUTTON_CONTENT.get(button_type, Vector4(76, 14, 76, 14))
-	return _global_texture_style(path, margins, tint, content)
+	return _global_texture_style(path, margins, final_tint, content)
 
 
 func _apply_compact_button_theme(button: Button) -> void:
 	button.add_theme_stylebox_override("normal", _button_state_style(button, "secondary", "normal"))
 	button.add_theme_stylebox_override("hover", _button_state_style(button, "secondary", "hover"))
 	button.add_theme_stylebox_override("pressed", _button_state_style(button, "secondary", "pressed"))
-	button.add_theme_stylebox_override("focus", _button_state_style(button, "secondary", "hover", Color(1.08, 1.05, 0.86, 1.0)))
+	button.add_theme_stylebox_override("focus", _button_state_style(button, "secondary", "hover", BUTTON_NEUTRAL_FOCUS_TINT))
 	button.add_theme_stylebox_override("disabled", _button_state_style(button, "secondary", "disabled"))
 	button.add_theme_color_override("font_color", Color(0.98, 0.92, 0.72, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.82, 0.32, 1.0))
+	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
@@ -4552,9 +4559,9 @@ func _hero_select_frame_style(frame_type: String, tint := Color.WHITE) -> StyleB
 
 func _apply_hero_select_button_frame(button: Button, frame_type: String) -> void:
 	button.add_theme_stylebox_override("normal", _hero_select_frame_style(frame_type))
-	button.add_theme_stylebox_override("hover", _hero_select_frame_style(frame_type, Color(1.12, 1.04, 0.82, 1.0)))
+	button.add_theme_stylebox_override("hover", _hero_select_frame_style(frame_type, BUTTON_NEUTRAL_HOVER_TINT))
 	button.add_theme_stylebox_override("pressed", _hero_select_frame_style(frame_type, Color(0.88, 0.82, 0.74, 1.0)))
-	button.add_theme_stylebox_override("focus", _hero_select_frame_style(frame_type, Color(1.12, 1.04, 0.82, 1.0)))
+	button.add_theme_stylebox_override("focus", _hero_select_frame_style(frame_type, BUTTON_NEUTRAL_FOCUS_TINT))
 	button.add_theme_stylebox_override("disabled", _hero_select_frame_style(frame_type, Color(0.62, 0.62, 0.62, 1.0)))
 
 
