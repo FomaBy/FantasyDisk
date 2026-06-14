@@ -1,12 +1,34 @@
 # FEATURE: Прогрессия по классам в дереве меты (бонусы за класс, реиграбельность)
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (прогрессия)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: PM (запрос пользователя)
 Jira: SCRUM-360
+
+## Прогресс (2026-06-14, Claude Fable 5)
+**Сделано — ядро (изолированно, scripts/meta_progression.gd, не трогая занятые):**
+- `CLASS_PROGRESSION` — накопительные пороги по классам (общие, data-driven; бонусы
+  class_damage_mult/class_max_health_mult/class_attack_speed_mult — ключи `class_*`
+  отдельны от аккаунтных skill_modifiers).
+- `class_boss_wins` в state (default/load/save, версия-совместимо через ConfigFile).
+- `record_boss_victory` копит победы класса (per character) — увязано с уже
+  существующим per-character трекингом.
+- API: `class_boss_wins`/`class_level`/`class_unlocked_tiers`/`class_modifiers`
+  (бонусы ТОЛЬКО своему классу)/`class_next_threshold` (для UI).
+- Гейт `tests/class_progression_test.gd`: накопление, изоляция бонусов по классу,
+  частичные пороги, save/load — PASS. meta + runtime smoke зелёные.
+
+**Осталось (интеграция — требует общих файлов):**
+- main.gd (занят): передать `class_modifiers(meta_state, selected_character_id)`
+  игроку рядом со `skill_modifiers` (main.gd:644-646).
+- player.gd (свободен): обработать ключи `class_*` в `apply_meta_skill_modifiers`
+  (склад в run_modifiers как 1.0+sum) — делать вместе с main.gd-передачей.
+- ui_screens.gd `_show_skill_tree_screen`: раздел «Классы» (прогресс выбранного
+  класса через `class_next_threshold`/`class_unlocked_tiers`), no-overlap.
+Взять, как только main.gd/ui_screens.gd освободятся.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
