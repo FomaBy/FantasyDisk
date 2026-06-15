@@ -1,0 +1,45 @@
+{
+  "task": "SCRUM-439",
+  "generated_with": "fantasydisk-asset-generator / OpenAI Images API; alpha-clean postprocess removed baked checkerboard from source frame sheets",
+  "mockup": "docs/design/mockups/scrum439_settings_v2/scrum439_settings_v2_mockup.png",
+  "source_assets": [
+    "docs/design/references/settings_v2/scrum439_settings_v2_main_modal_frame_source.png",
+    "docs/design/references/settings_v2/scrum439_settings_v2_frame_kit_source.png"
+  ],
+  "runtime_candidates": [
+    "assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png",
+    "assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png",
+    "assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_section_panel.png",
+    "assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_control_row.png"
+  ],
+  "previews": [
+    "docs/design/previews/scrum439_settings_v2_safe_zones.png",
+    "docs/design/previews/scrum439_settings_v2_assets_contact.png"
+  ],
+  "margins": {
+    "ui_frame_settings_v2_main_modal.png": {
+      "texture": "L96 T118 R96 B96",
+      "content": "L144 T192 R144 B128",
+      "safe_inner_rect_source": "Rect2(144,192,1248,704)"
+    },
+    "ui_frame_settings_v2_tab_switcher_3slot.png": {
+      "texture": "L120 T56 R120 B56",
+      "content": "per-slot safe rects below",
+      "slot_safe_rects_source": [
+        "Rect2(150,78,275,92)",
+        "Rect2(502,78,275,92)",
+        "Rect2(854,78,275,92)"
+      ]
+    },
+    "ui_frame_settings_v2_section_panel.png": {
+      "texture": "L76 T76 R76 B76",
+      "content": "L104 T96 R104 B92",
+      "safe_inner_rect_source": "Rect2(104,96,816,196)"
+    },
+    "ui_frame_settings_v2_control_row.png": {
+      "texture": "L72 T42 R72 B42",
+      "content": "L96 T54 R96 B54",
+      "safe_inner_rect_source": "Rect2(96,54,1344,84)"
+    }
+  }
+}

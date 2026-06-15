@@ -1,12 +1,13 @@
 # ART/UX: Окно настроек — ПОЛНОСТЬЮ перерисовать с нуля по макапу
 
-Статус: new
+Статус: review
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-439
+QA: in_progress (2026-06-15)
 Связано: SCRUM-391/341/329 (настройки — поглощаются), SCRUM-384 (единый фрейм), ui-director
 
 ## Autonomy / Approval
@@ -46,3 +47,98 @@ Jira: SCRUM-439
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Dispatcher Dispatch (2026-06-15)
+
+Передано Designer 2 (`019ec7a6-55a5-7bc3-a397-606ce046308d`) как 0.1.6
+Design-first UI row.
+
+Scope for this pass: generate the required Settings v2 mockup/spec first with
+`fantasydisk-ui-director`, prepare any transparent UI visual/source assets with
+`fantasydisk-asset-generator`, and document exact content zones, margins and
+responsive rules for the three tabs and tab switcher. Do not edit runtime
+`scripts/ui_screens.gd` or run Back-end smokes in this Design pass; Back-end
+integration follows after accepted mockup/spec handoff. Keep reasoning High/no low.
+
+## Design Result (Designer 2 / 2026-06-15)
+
+Status: Design-ready, waiting for Back-end integration.
+
+Produced the Settings v2 rebuild package through the required UI/art skills:
+
+- OpenAI-generated all-tabs mockup:
+  `docs/design/mockups/scrum439_settings_v2/scrum439_settings_v2_mockup.png`
+  (source copy:
+  `docs/design/references/settings_v2/scrum439_settings_v2_mockup.png`).
+- Geometry/spec handoff:
+  `docs/design/mockups/scrum439_settings_v2/spec.md`.
+- Annotated safe-zone preview:
+  `docs/design/previews/scrum439_settings_v2_safe_zones.png`.
+- Transparent frame candidate contact sheet:
+  `docs/design/previews/scrum439_settings_v2_assets_contact.png`.
+- Source/reference metadata:
+  `docs/design/references/settings_v2/scrum439_settings_v2_metadata.json`.
+
+Prepared Design-source transparent candidate assets, not wired into runtime:
+
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png`
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png`
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_section_panel.png`
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_control_row.png`
+
+Design acceptance notes:
+
+- All three tabs are covered: `Экран`, `Звук`, `Управление`.
+- The tab switcher remains exactly three slots; no fourth slot/hit area.
+- Content zones and responsive rules are specified for 1280x720, 1920x1080 and
+  2560x1440.
+- Frame-rule is preserved: runtime labels, icons, sliders, dropdowns,
+  checkboxes, focus rings and scrollbars must remain inside documented empty
+  safe zones, never on ornament/borders.
+- Existing runtime semantics to preserve are listed in the spec:
+  `SettingsTabs`, `SettingsTabSwitcher`, `SettingsTabButton_0..2`,
+  `SettingsResolutionOption`, `SettingsWindowModeOption`, `ScreenShakeToggle`,
+  `VolumeSlider_*`, `VolumeToggle_*`, `SettingsAimModeOption`,
+  `DebugModeToggle`, `ControlsScroll`, `BindingButton_*`, reset/back buttons.
+
+Validation:
+
+- Generated mockup/source art through `fantasydisk-asset-generator`.
+- Alpha-cleaned source frames into RGBA candidates; verified final asset alpha
+  extrema are `(0, 255)`.
+- Did not edit `scripts/ui_screens.gd`, `scripts/game_settings.gd` or runtime
+  settings/rebind logic.
+- Did not run Back-end Godot smoke/no-overlap tests in this Design pass.
+
+Back-end follow-up:
+
+- Rebuild `_show_settings_menu()` against
+  `docs/design/mockups/scrum439_settings_v2/spec.md`.
+- Wire the candidate assets only after confirming 9-slice/proportional behavior
+  matches the documented texture/content margins.
+- Run `tests/ui_no_overlap_matrix_test.gd` and the runtime smoke after wiring,
+  then attach 3-tab screenshots in `build/qa/`.
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED (Design-scope: settings v2 rebuild mockup + 4 фрейма + spec); Back-end runtime build — pending
+
+Проверено (фактически):
+- **Mockup** `scrum439_settings_v2/scrum439_settings_v2_mockup.png`: 3 единообразные
+  вкладки (Экран/Звук/Управление) в едином D&D dragon-стиле — дропдауны (разрешение/
+  режим окна), слайдеры громкости, красные тогглы, скролл биндингов + красивый
+  3-slot переключатель вкладок. Контент в зонах.
+- **4 production-фрейма** (`assets/sprites/ui/frames/settings_v2/`): main_modal
+  (1536×1024), section_panel (1024×384), control_row (1536×192), tab_switcher_3slot
+  (1280×256) — все RGBA прозрачные (corner≤4). + spec.
+
+⚠️ **Runtime окно ещё НЕ собрано** по макапу — Back-end follow-up (Design-only pass):
+сборка settings-экрана строго по макапу, 3 вкладки/переключатель, скролл/сохранение,
+бэкап старого, smoke+matrix. НЕ промоутил в Готово. (Связано: интеграция SCRUM-441
+resolution-фикса ждёт этот settings-rebuild.)
+
+Acceptance:
+- [x] Макап настроек + 3 вкладки + переключатель + единый стиль рамок зафиксированы (Design).
+- [x] 4 settings_v2 фрейма прозрачные; content-зоны/safe rects.
+- [ ] Runtime по макапу + no-overlap/smoke + скролл/сохранение + бэкап — Back-end follow-up (pending).
+
+Статус: Design-source PASS, ждёт Back-end integration. Баги: нет (Design-scope).
