@@ -10,6 +10,7 @@ const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
 const ShopUIConstants := preload("res://scripts/ui/shop_ui_constants.gd")
 const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
+const DisplayResolution := preload("res://scripts/display_resolution.gd")
 
 const ARTIFACT_ICON_DIR := ShopUIConstants.ARTIFACT_ICON_DIR
 const SHOP_ICON_DIR := ShopUIConstants.SHOP_ICON_DIR
@@ -77,13 +78,26 @@ const HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE := Vector2(1024.0, 170.0)
 const HERO_SELECT_CAROUSEL_CONTENT_BASE := Vector4(132.0, 62.0, 132.0, 62.0)
 const HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION := 2
 const HERO_SELECT_FRAME_DIR := "res://assets/sprites/ui/frames/hero_select/"
-const SETTINGS_TAB_SWITCHER_FRAME_PATH := "res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png"
+const SETTINGS_V2_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v2/"
+const SETTINGS_V2_MAIN_MODAL_PATH := SETTINGS_V2_FRAME_DIR + "ui_frame_settings_v2_main_modal.png"
+const SETTINGS_V2_TAB_SWITCHER_PATH := SETTINGS_V2_FRAME_DIR + "ui_frame_settings_v2_tab_switcher_3slot.png"
+const SETTINGS_V2_SECTION_PANEL_PATH := SETTINGS_V2_FRAME_DIR + "ui_frame_settings_v2_section_panel.png"
+const SETTINGS_V2_CONTROL_ROW_PATH := SETTINGS_V2_FRAME_DIR + "ui_frame_settings_v2_control_row.png"
+const SETTINGS_V2_MAIN_SOURCE_SIZE := Vector2(1536.0, 1024.0)
+const SETTINGS_V2_MAIN_TEXTURE_MARGINS := Vector4(96.0, 118.0, 96.0, 96.0)
+const SETTINGS_V2_MAIN_CONTENT_MARGINS := Vector4(144.0, 192.0, 144.0, 128.0)
+const SETTINGS_V2_SECTION_SOURCE_SIZE := Vector2(1024.0, 384.0)
+const SETTINGS_V2_SECTION_TEXTURE_MARGINS := Vector4(76.0, 76.0, 76.0, 76.0)
+const SETTINGS_V2_SECTION_CONTENT_MARGINS := Vector4(104.0, 96.0, 104.0, 92.0)
+const SETTINGS_V2_CONTROL_ROW_SOURCE_SIZE := Vector2(1536.0, 192.0)
+const SETTINGS_V2_CONTROL_ROW_TEXTURE_MARGINS := Vector4(72.0, 42.0, 72.0, 42.0)
+const SETTINGS_V2_CONTROL_ROW_CONTENT_MARGINS := Vector4(96.0, 54.0, 96.0, 54.0)
+const SETTINGS_TAB_SWITCHER_FRAME_PATH := SETTINGS_V2_TAB_SWITCHER_PATH
 const SETTINGS_TAB_SWITCHER_BASE_SIZE := Vector2(1280.0, 256.0)
-const SETTINGS_TAB_SWITCHER_DISPLAY_SIZE := Vector2(640.0, 128.0)
 const SETTINGS_TAB_SWITCHER_SAFE_RECTS := [
-	Rect2(160.0, 88.0, 270.0, 82.0),
-	Rect2(506.0, 88.0, 270.0, 82.0),
-	Rect2(852.0, 88.0, 270.0, 82.0),
+	Rect2(150.0, 78.0, 275.0, 92.0),
+	Rect2(502.0, 78.0, 275.0, 92.0),
+	Rect2(854.0, 78.0, 275.0, 92.0),
 ]
 const COMBAT_HUD_FRAME_DIR := "res://assets/sprites/ui/frames/combat_hud/"
 const COMBAT_HUD_FILL_DIR := "res://assets/sprites/ui/hud/combat_hud/"
@@ -2535,21 +2549,161 @@ func _build_codex_glossary(list: VBoxContainer) -> void:
 		_codex_label(box, str(definition.get("desc", "")), 12, Color(0.90, 0.86, 0.76, 1.0))
 
 
+func _apply_control_rect(control: Control, rect: Rect2) -> void:
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.offset_left = rect.position.x
+	control.offset_top = rect.position.y
+	control.offset_right = rect.position.x + rect.size.x
+	control.offset_bottom = rect.position.y + rect.size.y
+
+
+func _settings_v2_modal_rect() -> Rect2:
+	var viewport_size := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var width := clampf(roundf(viewport_size.x * 0.80), 1024.0, 2048.0)
+	var height := roundf(width * 924.0 / 1536.0)
+	var max_height := roundf(viewport_size.y * 0.88)
+	if height > max_height:
+		height = max_height
+		width = roundf(height * 1536.0 / 924.0)
+	return Rect2(
+		Vector2(roundf((viewport_size.x - width) * 0.5), roundf((viewport_size.y - height) * 0.5)),
+		Vector2(width, height)
+	)
+
+
+func _settings_v2_scaled_modal_rect(reference_rect: Rect2, modal_size: Vector2) -> Rect2:
+	var scale := modal_size / Vector2(1536.0, 924.0)
+	return Rect2(
+		Vector2(roundf(reference_rect.position.x * scale.x), roundf(reference_rect.position.y * scale.y)),
+		Vector2(roundf(reference_rect.size.x * scale.x), roundf(reference_rect.size.y * scale.y))
+	)
+
+
+func _settings_v2_tab_switcher_size(modal_size: Vector2) -> Vector2:
+	var width := clampf(roundf(modal_size.x * 0.573), 640.0, 1100.0)
+	var height := roundf(width / 5.0)
+	return Vector2(width, height)
+
+
+func _settings_v2_content_panel_rect(modal_size: Vector2) -> Rect2:
+	var main_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, modal_size, SETTINGS_V2_MAIN_CONTENT_MARGINS)
+	var switcher_size := _settings_v2_tab_switcher_size(modal_size)
+	var switcher_top := roundf(maxf(32.0, modal_size.y * 0.052))
+	var top := switcher_top + switcher_size.y + roundf(maxf(18.0, modal_size.y * 0.028))
+	var back_top := modal_size.y - 64.0 - maxf(28.0, modal_size.y * 0.055)
+	var left := main_margins.x + 24.0
+	var right := main_margins.z + 24.0
+	var height := maxf(292.0, back_top - top - 24.0)
+	return Rect2(Vector2(left, top), Vector2(maxf(640.0, modal_size.x - left - right), height))
+
+
+func _settings_v2_main_modal_style(display_size: Vector2) -> StyleBox:
+	var texture_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, display_size, SETTINGS_V2_MAIN_TEXTURE_MARGINS)
+	var content_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, display_size, SETTINGS_V2_MAIN_CONTENT_MARGINS)
+	return _global_texture_style(SETTINGS_V2_MAIN_MODAL_PATH, texture_margins, Color.WHITE, content_margins, true)
+
+
+func _settings_v2_content_panel_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.035, 0.030, 0.036, 0.70)
+	style.border_color = Color(0.68, 0.54, 0.30, 0.34)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(8)
+	style.content_margin_left = 24
+	style.content_margin_right = 24
+	style.content_margin_top = 20
+	style.content_margin_bottom = 20
+	return style
+
+
+func _settings_resolution_entries(usable_logical: Vector2i) -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	for resolution in game.RESOLUTION_OPTIONS:
+		entries.append({
+			"resolution": resolution,
+			"label": "%dx%d" % [resolution.x, resolution.y],
+		})
+	if DisplayServer.get_name() == "macos":
+		var native_resolution := DisplayResolution.native_logical_resolution(usable_logical)
+		if native_resolution.x > 0 and native_resolution.y > 0:
+			var duplicate := false
+			for entry in entries:
+				if entry["resolution"] == native_resolution:
+					duplicate = true
+					break
+			if not duplicate:
+				entries.append({
+					"resolution": native_resolution,
+					"label": "%dx%d (Mac)" % [native_resolution.x, native_resolution.y],
+				})
+	return entries
+
+
 func _show_settings_menu() -> void:
-	var box := _create_menu_box("Настройки", "Экран, звук и управление", "settings")
-	box.alignment = BoxContainer.ALIGNMENT_BEGIN
+	game._clear_ui()
+
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "SettingsV2Root"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	game.ui_layer.add_child(root)
+	_add_screen_background(root, "settings")
+
+	var modal_rect := _settings_v2_modal_rect()
+	var modal := Control.new()
+	modal.name = "SettingsV2Modal"
+	modal.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	_apply_control_rect(modal, modal_rect)
+	root.add_child(modal)
+
+	var modal_frame := PanelContainer.new()
+	modal_frame.name = "SettingsV2MainModalFrame"
+	modal_frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+	modal_frame.add_theme_stylebox_override("panel", _settings_v2_main_modal_style(modal_rect.size))
+	modal_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	modal.add_child(modal_frame)
+
+	var title := Label.new()
+	title.name = "SettingsV2Title"
+	title.text = "Настройки"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	_apply_control_rect(title, _settings_v2_scaled_modal_rect(Rect2(144.0, 94.0, 1248.0, 48.0), modal_rect.size))
+	modal.add_child(title)
 
 	var tabs := TabContainer.new()
 	tabs.name = "SettingsTabs"
-	tabs.custom_minimum_size = Vector2(1000, 300)
+	tabs.custom_minimum_size = Vector2(760, 260)
 	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
 	tabs.add_theme_font_size_override("font_size", 17)
 	tabs.add_theme_color_override("font_selected_color", Color(0.98, 0.90, 0.50, 1.0))
 	tabs.add_theme_color_override("font_unselected_color", Color(0.73, 0.78, 0.84, 1.0))
-	box.add_child(_make_settings_tab_switcher(tabs))
-	box.add_child(tabs)
+
+	var switcher_size := _settings_v2_tab_switcher_size(modal_rect.size)
+	var switcher := _make_settings_tab_switcher(tabs, switcher_size)
+	_apply_control_rect(switcher, Rect2(
+		Vector2(roundf((modal_rect.size.x - switcher_size.x) * 0.5), roundf(maxf(32.0, modal_rect.size.y * 0.052))),
+		switcher_size
+	))
+	modal.add_child(switcher)
+
+	var content_panel := PanelContainer.new()
+	content_panel.name = "SettingsContentPanel"
+	var content_panel_rect := _settings_v2_content_panel_rect(modal_rect.size)
+	content_panel.add_theme_stylebox_override("panel", _settings_v2_content_panel_style())
+	_apply_control_rect(content_panel, content_panel_rect)
+	modal.add_child(content_panel)
+	content_panel.add_child(tabs)
 
 	var screen_tab := _make_settings_tab("Экран")
 	var screen_box := screen_tab.get_child(0) as VBoxContainer
@@ -2579,15 +2733,21 @@ func _show_settings_menu() -> void:
 	resolution_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_apply_compact_button_theme(resolution_options)
 	var usable_size := Vector2i(99999, 99999)
+	var screen_scale := 1.0
 	if DisplayServer.get_name() != "headless":
-		usable_size = DisplayServer.screen_get_usable_rect(clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))).size
-	for option_index in range(game.RESOLUTION_OPTIONS.size()):
-		var resolution: Vector2i = game.RESOLUTION_OPTIONS[option_index]
-		resolution_options.add_item("%dx%d" % [resolution.x, resolution.y])
-		# Разрешения больше выбранного монитора недоступны.
-		if resolution.x > usable_size.x or resolution.y > usable_size.y:
+		var res_screen := clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))
+		usable_size = DisplayServer.screen_get_usable_rect(res_screen).size
+		screen_scale = DisplayServer.screen_get_scale(res_screen)
+	var resolution_entries := _settings_resolution_entries(usable_size)
+	for option_index in range(resolution_entries.size()):
+		var entry: Dictionary = resolution_entries[option_index]
+		var resolution: Vector2i = entry["resolution"]
+		resolution_options.add_item(str(entry["label"]))
+		# SCRUM-441: доступность считаем в ФИЗ.пикселях (usable * Retina scale), не в
+		# логических точках — иначе Full HD/2K зря отключаются на Mac/HiDPI.
+		if not DisplayResolution.resolution_fits(resolution, usable_size, screen_scale):
 			resolution_options.set_item_disabled(option_index, true)
-	resolution_options.selected = game.selected_resolution_index
+	resolution_options.selected = clampi(game.selected_resolution_index, 0, resolution_entries.size() - 1)
 	resolution_options.item_selected.connect(func(index: int) -> void:
 		game.selected_resolution_index = index
 		_apply_video_settings()
@@ -2609,7 +2769,7 @@ func _show_settings_menu() -> void:
 	_add_settings_control_row(screen_box, "Режим окна", mode_options)
 
 	var screen_hint := Label.new()
-	screen_hint.text = "Оконные разрешения автоматически ограничиваются выбранным монитором."
+	screen_hint.text = "Оконные разрешения проверяются по физическим пикселям монитора; на Retina Full HD и 2K остаются доступными, если помещаются."
 	screen_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	screen_hint.add_theme_font_size_override("font_size", 14)
 	screen_hint.add_theme_color_override("font_color", Color(0.70, 0.76, 0.82, 1.0))
@@ -2747,15 +2907,23 @@ func _show_settings_menu() -> void:
 		else:
 			_show_main_menu()
 	var back_button := _make_button("Назад")
+	back_button.name = "SettingsBackButton"
+	_set_action_button_size(back_button, 280.0, 64.0)
 	back_button.pressed.connect(settings_back)
-	box.add_child(back_button)
+	var back_size := back_button.custom_minimum_size
+	_apply_control_rect(back_button, Rect2(
+		Vector2(roundf((modal_rect.size.x - back_size.x) * 0.5), roundf(modal_rect.size.y - back_size.y - maxf(28.0, modal_rect.size.y * 0.055))),
+		back_size
+	))
+	modal.add_child(back_button)
 	game.ui_escape_action = settings_back
 
 
-func _make_settings_tab_switcher(tabs: TabContainer) -> Control:
+func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZERO) -> Control:
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
-	switcher.custom_minimum_size = SETTINGS_TAB_SWITCHER_DISPLAY_SIZE
+	var actual_display_size := display_size if display_size.x > 0.0 and display_size.y > 0.0 else Vector2(640.0, 128.0)
+	switcher.custom_minimum_size = actual_display_size
 	switcher.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	switcher.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2773,7 +2941,7 @@ func _make_settings_tab_switcher(tabs: TabContainer) -> Control:
 
 	var buttons: Array[Button] = []
 	var labels := ["Экран", "Звук", "Управление"]
-	var scale := SETTINGS_TAB_SWITCHER_DISPLAY_SIZE / SETTINGS_TAB_SWITCHER_BASE_SIZE
+	var scale := actual_display_size / SETTINGS_TAB_SWITCHER_BASE_SIZE
 	for tab_index in range(labels.size()):
 		var safe_rect: Rect2 = SETTINGS_TAB_SWITCHER_SAFE_RECTS[tab_index]
 		var button := Button.new()
@@ -5275,9 +5443,9 @@ func _action_label(action_name: String) -> String:
 
 
 func _apply_video_settings() -> void:
-	game.selected_resolution_index = clampi(game.selected_resolution_index, 0, game.RESOLUTION_OPTIONS.size() - 1)
 	game.selected_window_mode_index = clampi(game.selected_window_mode_index, 0, game.WINDOW_MODE_OPTIONS.size() - 1)
 	if DisplayServer.get_name() == "headless":
+		game.selected_resolution_index = clampi(game.selected_resolution_index, 0, game.RESOLUTION_OPTIONS.size() - 1)
 		game.save_game_settings()
 		return
 
@@ -5286,6 +5454,9 @@ func _apply_video_settings() -> void:
 	var screen: int = game.selected_screen_index
 	# usable rect учитывает масштаб ОС, док и меню-бар: окно не вылезет за экран.
 	var usable := DisplayServer.screen_get_usable_rect(screen)
+	var screen_scale := DisplayServer.screen_get_scale(screen)
+	var resolution_entries := _settings_resolution_entries(usable.size)
+	game.selected_resolution_index = clampi(game.selected_resolution_index, 0, resolution_entries.size() - 1)
 
 	match game.selected_window_mode_index:
 		1:
@@ -5299,15 +5470,20 @@ func _apply_video_settings() -> void:
 			DisplayServer.window_set_current_screen(screen)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		_:
-			var resolution: Vector2i = game.RESOLUTION_OPTIONS[game.selected_resolution_index]
-			resolution.x = mini(resolution.x, usable.size.x)
-			resolution.y = mini(resolution.y, usable.size.y)
+			var resolution: Vector2i = resolution_entries[game.selected_resolution_index]["resolution"]
+			# SCRUM-441: клэмп к ФИЗ.пикселям (usable * Retina scale), не к лог.точкам —
+			# иначе окно на Retina клэмпится до ~логического размера и «не меняется».
+			resolution = DisplayResolution.clamp_to_physical(resolution, usable.size, screen_scale)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
 			DisplayServer.window_set_current_screen(screen)
 			DisplayServer.window_set_size(resolution)
+			var logical_window_size := Vector2i(
+				int(round(float(resolution.x) / maxf(screen_scale, 1.0))),
+				int(round(float(resolution.y) / maxf(screen_scale, 1.0)))
+			)
 			# Центр выбранного монитора: позиция считается от origin его usable rect.
-			DisplayServer.window_set_position(usable.position + (usable.size - resolution) / 2)
+			DisplayServer.window_set_position(usable.position + (usable.size - logical_window_size) / 2)
 
 	game.save_game_settings()
 
