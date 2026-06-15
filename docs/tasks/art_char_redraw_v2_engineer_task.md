@@ -65,3 +65,19 @@ Engineer source handoff is accepted. Keep reasoning High/no low.
 
 ## ОТМЕНЕНО 2026-06-15 (пользователь)
 Широкий редизайн персонажей v2 отменён — пользователю не нравится подход. Работаем по одному классу заново (старт — Берсерк, отдельная задача).
+
+## Designer 2 Conflict Audit (2026-06-15)
+
+Получен поздний dispatcher handoff на SCRUM-428, но локальный task-файл и board
+уже содержат пользовательскую отмену broad character v2 redesign. Designer 2 не
+переводит задачу в `review` и не создаёт Animator/runtime handoff.
+
+До обнаружения отмены были сгенерированы provisional Engineer source artifacts:
+`docs/design/references/characters_v2/engineer/`,
+`assets/sprites/characters/v2/engineer/`,
+`docs/design/previews/scrum428_engineer_v2_contact.png`,
+`docs/design/previews/scrum428_engineer_v2_dark_bg.png`,
+`build/qa/scrum428_engineer_v2/`.
+Strict PNG QA по provisional outputs: `white=0`, `neutral=0`, `pale=0`,
+`edge=0`. Эти файлы оставлены на месте для dispatcher/PM reconciliation, но
+**не считаются accepted source handoff** из-за текущего `cancelled` статуса.

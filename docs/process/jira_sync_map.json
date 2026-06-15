@@ -1387,22 +1387,22 @@
  "art_ui_overhaul_combat_hud_task.md": {
   "key": "SCRUM-326",
   "status": "Готово",
-  "desc_hash": "3db88f29aa82ea0e5e52f47c29f2f972"
+  "desc_hash": "a8ce2be2c9449b252cff77b39a97f3e2"
  },
  "art_ui_overhaul_dnd_dark_fantasy_anchor_task.md": {
   "key": "SCRUM-327",
   "status": "Готово",
-  "desc_hash": "d05f78881f696e56950462e031cddfb3"
+  "desc_hash": "6fdfb2d11016dd19ea02b0015eedf95b"
  },
  "art_ui_overhaul_levelup_rewards_task.md": {
   "key": "SCRUM-328",
   "status": "Готово",
-  "desc_hash": "73ea6db333c7821553ebc306c8f73381"
+  "desc_hash": "2c5ba42dc526b4631b3eaf0ac01d5918"
  },
  "art_ui_overhaul_menus_settings_task.md": {
   "key": "SCRUM-329",
   "status": "Готово",
-  "desc_hash": "b55490a67c07f9fe1f5150c74e8688b2"
+  "desc_hash": "ee80a8ada59639851c82f5153cb68dea"
  },
  "art_ui_overhaul_pause_end_task.md": {
   "key": "SCRUM-330",
@@ -2326,7 +2326,7 @@
  "art_char_redraw_v2_robot_task.md": {
   "key": "SCRUM-432",
   "status": "Готово",
-  "desc_hash": "1ec8243570cca6ed50ba5dfa878e10e1"
+  "desc_hash": "ca3088c2b17a97017ef36c51a740298c"
  },
  "art_char_redraw_v2_sniper_task.md": {
   "key": "SCRUM-433",
@@ -2346,7 +2346,7 @@
  "design_hero_select_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-436",
   "status": "Готово",
-  "desc_hash": "da9cb2c8fcc2cb7471a554397e83b018"
+  "desc_hash": "2279dc4b150e9f57651ca926218ca6dd"
  },
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
   "key": "SCRUM-437",
@@ -2365,8 +2365,8 @@
  },
  "bug_mass_duplicate_space2_files_cleanup_task.md": {
   "key": "SCRUM-440",
-  "status": "К выполнению",
-  "desc_hash": "3bd5e1241bf61f02214b0c51c36ce85a"
+  "status": "В работе",
+  "desc_hash": "3500dbff224a7a11acb15733390fdf2c"
  },
  "bug_settings_resolution_not_working_mac_hidpi_task.md": {
   "key": "SCRUM-441",
@@ -2386,6 +2386,11 @@
  "bug_runtime_smoke_death_flow_death_save_fragility_task.md": {
   "key": "SCRUM-444",
   "status": "Готово",
-  "desc_hash": "4bb837ad21da3b74882cf04a3a1d87c7"
+  "desc_hash": "261acc98dfbd3babf2dde06c909b1d8f"
+ },
+ "design_integrate_generated_hero_select_mockup_task.md": {
+  "key": "SCRUM-445",
+  "status": "К выполнению",
+  "desc_hash": "d19cf2234f62eddbd29dae55b702d276"
  }
 }

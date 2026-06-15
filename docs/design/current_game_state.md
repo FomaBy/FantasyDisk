@@ -365,6 +365,20 @@ frames are backed up under `docs/design/backups/scrum420_berserk_v2_pre_anim/`.
 Attack animation is intentionally absent for this v2 row; animation and runtime
 smoke pass.
 
+SCRUM-442 подготовил узкий Berserk v3 single-sprite candidate после отмены
+широкого character v2 подхода: новый чуть более мультяшный unarmed barbarian
+source в `docs/design/references/characters_v3/berserk/`, normalized game
+candidate `assets/sprites/characters/berserk_v3_sprite.png`, backup старого
+`berserk_unarmed.png` под
+`docs/design/backups/scrum442_berserk_v3_pre_sprite/`, contact/dark-bg previews
+и strict alpha/pose QA report
+`build/qa/scrum442_berserk_v3/scrum442_berserk_v3_alpha_pose_report.json`.
+После review исправлен ambiguous source artifact: `berserk_v3_source_raw.png`
+теперь тоже transparent RGBA `1024x1024`, как `berserk_v3_source.png` и
+`berserk_v3_source_clean.png`, без opaque checker/RGB фона.
+Это Design-only sprite candidate: анимации, SpriteFrames и runtime wiring не
+входили в scope.
+
 SCRUM-424 подготовил per-class Dark Mage v2 Design-source handoff:
 `docs/design/references/characters_v2/dark_mage/dark_mage_v2_source_clean.png`,
 `dark_mage_v2_idle_cell_512.png`, `dark_mage_v2_sheet_source_handoff.png`,
@@ -501,6 +515,18 @@ pivot `[256,470]`. White/neutral matte pixels и edge-visible pixels в
 source/cell/sheet равны `0`. Это не live runtime replacement; current
 `biologist_sheet.png` / `biologist_spriteframes.tres` остаются активными до
 Animator/Back-end integration.
+
+SCRUM-432 подготовил per-class Robot v2 Design-source handoff:
+`docs/design/references/characters_v2/robot/robot_v2_source_clean.png`,
+`robot_v2_idle_cell_512.png`, `robot_v2_sheet_source_handoff.png`,
+`robot_v2_design_handoff.md` и QA report
+`build/qa/scrum432_robot_v2/scrum432_robot_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный polished mechanical guardian с cyan/blue sensors, core
+glow and rune seams, без weapon/tool/gun/cannon/shield/orb/focus или held
+object в руках, прозрачный RGBA, visible height `376 px` в `512x512` cell и
+pivot `[256,470]`. Edge-visible pixels и floodable neutral/checker pixels после
+cleanup равны `0`. Это не live runtime replacement; current Robot runtime
+assets остаются активными до Animator/Back-end integration.
 
 SCRUM-289 Design pass добавил Elementalist source sheet на этом пути:
 `assets/sprites/characters/elementalist_sheet.png` (`1920x1152`, 5 `idle`, 5
@@ -972,7 +998,7 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 
 - Escape = назад на меню/предзабеговых экранах через единый стек: главное меню -> игровой диалог подтверждения выхода, настройки/кодекс/выбор персонажа -> меню; выбор оружия -> выбор персонажа. Кнопка «Выйти из игры» в главном меню открывает тот же `QuitConfirmationDialog`; реальный quit вызывается только по «Выйти», а «Отмена» в фокусе по умолчанию. В активном забеге Escape открывает единое меню паузы поверх текущего состояния: бой, route map, магазин, level-up, докачка атрибутов, событие, награда элитки. Повторный Escape закрывает меню и оставляет подлежащий экран без reroll/сброса; досье персонажа открывается отдельной кнопкой «Досье персонажа» внутри pause menu. Событие по-прежнему требует выбора действия; если skip не разрешен, кнопка «Назад» на событии видна, но disabled и объясняет это в tooltip.
 - `P` открывает фидбек/bug-report overlay поверх текущего экрана через отдельный top-level `FeedbackOverlayLayer`, не очищая текущий UI и не сбрасывая состояние магазина/карты/level-up. Escape внутри overlay закрывает только форму фидбека, а ввод текста остается в `FeedbackTextEdit`.
-- Экран выбора героя — fullscreen `HeroSelectScreen`: `HeroSelectUnifiedFrame` объединяет портрет, досье и нижний блок Возвышения/«Выбрать» в одном цельном `1536x1024` PNG, масштабируемом единым коэффициентом. Runtime соблюдает safe-zones SCRUM-356: портрет `Rect2(130,145,420,560)`, описание `Rect2(610,145,786,500)`, controls `Rect2(570,705,660,178)`; плюс/минус используют compact `ui_frame_hero_select_asc_button_small.png`, а кнопка «Выбрать» получила compact text-field style, чтобы не выходить на орнамент на 720p. SCRUM-416 uses the accepted cleaned full-frame idle frame as the static portrait source for both the large portrait and carousel thumbnails across all 17 classes. SCRUM-417 keeps that source and makes `HeroSelectLargePortrait` use covered aspect scaling inside its content-zone, so the hero fills the safe area more tightly without touching the unified frame ornament. `HeroSelectRadarPanel` остается отдельным floating top-right windrose frame, `HeroThumbnailStripFrame` остается отдельным bottom carousel. Runtime smoke проверяет whole-image proportional aspect, containment всех Hero Select content rects в SCRUM-356 safe zones, gap до radar, square radar aspect, carousel safe-zone, SCRUM-416 portrait texture paths, SCRUM-417 covered portrait scaling and no-overlap on 1280x720, 1600x900 and 2560x1440; dumps: `build/qa/hero_select_radar_rects.md`, `build/qa/scrum416/hero_select_portrait_runtime_paths.md`, `build/qa/scrum417/character_size_runtime_dump.md`. SCRUM-436 подготовил Design-ready v2 rebuild package under `docs/design/mockups/scrum436_hero_select_v2/`: новая компоновка пересобирает весь экран кроме preserved live `HeroSelectRadarPanel` / `HeroStatRadar`, задаёт safe-zones/responsive rects для 1280x720 / 1920x1080 / 2560x1440 и ждёт Back-end runtime integration. Все кнопки игры используют pointer-курсор.
+- Экран выбора героя — fullscreen `HeroSelectScreen`: SCRUM-436 теперь является live runtime layout. `_show_character_select()` строит centered proportional `HeroSelectCanvas` из source size `1920x1080` и размещает large hero preview, dossier/title/body/traits/weapons, ascension selector, `HeroSelectChooseButton`, `HeroSelectBackButton`, image-only carousel and tooltip-safe footer strictly inside the recorded v2 safe/content rects from `docs/design/mockups/scrum436_hero_select_v2/hero_select_v2_layout_metadata.json`. `HeroSelectRadarPanel` / `HeroStatRadar` сохранены как существующий SCRUM-322/SCRUM-347 compass-rose contract and only positioned in the v2 radar reserved rect. SCRUM-416 uses the accepted cleaned full-frame idle frame as the static portrait source for both the large portrait and carousel thumbnails across all 17 classes; SCRUM-417 covered portrait scaling remains inside the SCRUM-436 portrait safe zone. Runtime smoke проверяет v2 proportional aspect, containment всех Hero Select content rects, preserved radar placement, carousel safe-zone, SCRUM-416 portrait texture paths, SCRUM-417 covered portrait scaling and no-overlap on 1280x720, 1600x900 and 2560x1440; dumps: `build/qa/scrum436/hero_select_v2_runtime_rects.md`, `build/qa/scrum436/hero_select_v2_no_overlap_matrix.md`, plus legacy `build/qa/hero_select_radar_rects.md`. Все кнопки игры используют pointer-курсор.
 - Размеры изображений: кодекс — персонажи 216px with covered scaling (SCRUM-417), монстры 150px, артефакты 96px; HUD-артефакты 48px; пауза-артефакты 56px; иконки магазина 112px внутри frameless hit area 164x186.
 - Фон маршрутной карты: если существует `assets/backgrounds/route_map_backdrop.png`, он подключается с cover-растяжением и затемнением 0.62 для читаемости узлов; иначе — прежний однотонный фон (graceful fallback до выхода арта).
 

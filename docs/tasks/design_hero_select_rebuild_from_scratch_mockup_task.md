@@ -72,7 +72,16 @@ PM прошёл пайплайн макап→анализ→нарезка, о�
 - docs/design/references/hero_select_v2/ (макап + исходники)
 - tests/runtime_smoke_test.gd, tests/ui_no_overlap_matrix_test.gd
 
+## ТРЕБОВАНИЕ ПОЛЬЗОВАТЕЛЯ: 1-В-1 С МАКАПОМ (2026-06-15)
+Финальный экран в Godot должен совпадать с макапом
+`docs/design/references/hero_select_mockup/hero_select_layout_mockup.png` ПИКСЕЛЬ-В-ПИКСЕЛЬ
+по композиции: те же позиции/пропорции/рамки по `elements_normalized.json`, те же
+8 нарезанных фреймов (`assets/sprites/ui/frames/hero_select_v2/`). QA сверяет
+скриншот экрана с макапом — расхождение композиции = FAILED. Передано дизайнеру на
+завершение вёрстки.
+
 ## Acceptance Criteria
+- [ ] Экран 1-в-1 с макапом (позиции/пропорции/рамки совпадают; QA сверяет скрин vs макап).
 - [x] Сгенерирован макап выбора героя (ui-director) и Design spec/handoff.
 - [x] Экран собран строго по макапу в runtime.
 - [x] Роза ветров сохранена как обязательный live contract; всё остальное пересобирается с нуля по новому spec.

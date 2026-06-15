@@ -1,11 +1,12 @@
 # BUG: Массовая дубликация файлов с суффиксом « 2» (Finder/sync) — чистка + источник
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end / Tooling
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: QA (находка при SCRUM-422)
+Jira: SCRUM-440
 
 ## Контекст
 В репозитории расплодились дубликаты файлов с macOS-суффиксом « 2» (Finder
@@ -56,3 +57,9 @@ find . -name "* 2.*" -not -path "./.git/*" | wc -l  # → 0 (untracked тоже)
 ## Files
 - Весь репозиторий (scripts/, tests/, docs/, assets/) — « 2»-дубли
 - Источник: tools/ (feedback_intake, asset/animation helpers, backup), cron/sync
+
+## Dispatcher Handoff
+
+2026-06-15: Routed to existing Back-end window
+`019eabd9-780b-78a2-9f4b-e7203d659ef2` as an eligible high-priority
+Back-end/tooling bug in Sprint 0.1.6. Keep reasoning High/no low.

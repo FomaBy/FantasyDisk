@@ -63,7 +63,7 @@
 
 | ID | Игровое имя | Роль | Источник | Ассет | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/berserk_sheet.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано |
+| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/berserk_v3_sprite.png`, `assets/sprites/characters/berserk_sheet.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано; SCRUM-442 v3 single-sprite candidate ready, not live runtime |
 | `soldier` | Солдат | Тактический физический класс: залпы, гранаты и удержание линии | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/soldier.png`, `assets/sprites/characters/cutout/soldier_*.png` | Реализовано |
 | `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/thief_sheet.png`, `assets/sprites/characters/thief_spriteframes.tres`, `assets/sprites/characters/full_frame/thief/`, `assets/sprites/characters/cutout/thief_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/thief/` | Реализовано; SCRUM-435 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/elementalist_sheet.png`, `assets/sprites/characters/elementalist_spriteframes.tres`, `assets/sprites/characters/full_frame/elementalist/`, `assets/sprites/characters/cutout/elementalist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/elementalist/` | Реализовано; SCRUM-427 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
@@ -208,6 +208,19 @@ and `assets/sprites/characters/v2/biologist/biologist_v2_sheet.png`. These are
 source handoff assets only; they do not replace current runtime
 `biologist_sheet.png` or `biologist_spriteframes.tres` until Animator/Back-end
 integration is accepted.
+
+SCRUM-432 adds the Robot v2 Design-source handoff under
+`docs/design/references/characters_v2/robot/`: raw OpenAI source,
+alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
+source-sheet layout, accepted source sheet copy, handoff note and QA report.
+Asset-side handoff copies live in
+`assets/sprites/characters/v2/robot/robot_v2_idle_source.png` and
+`assets/sprites/characters/v2/robot/robot_v2_sheet_source_handoff.png`. The
+source is a bright/epic polished mechanical guardian with cyan/blue sensors and
+empty hands, no baked weapon/tool/held object, visible height `376 px`, pivot
+`[256,470]`, no edge-visible or floodable neutral/checker pixels after cleanup.
+These are source handoff assets only; they do not replace current runtime Robot
+assets until Animator/Back-end integration is accepted.
 
 ## Расширенный Ростер 0.1.4 (Фундамент, 2026-06-11)
 
