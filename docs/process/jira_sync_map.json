@@ -2256,6 +2256,91 @@
  "cleanup_assets_dedup_size_reduction_task.md": {
   "key": "SCRUM-418",
   "status": "К выполнению",
-  "desc_hash": "56270073269bfe0470c9b60e2cb2cb4c"
+  "desc_hash": "92e90154ab7718ddbc107de2863a8d24"
+ },
+ "art_char_redraw_v2_assassin_task.md": {
+  "key": "SCRUM-419",
+  "status": "К выполнению",
+  "desc_hash": "58d3f255dca79048a0ff509bc4b4c03c"
+ },
+ "art_char_redraw_v2_berserk_task.md": {
+  "key": "SCRUM-420",
+  "status": "К выполнению",
+  "desc_hash": "04cf81a190b0173086fa6beb3f37873a"
+ },
+ "art_char_redraw_v2_biologist_task.md": {
+  "key": "SCRUM-421",
+  "status": "К выполнению",
+  "desc_hash": "9e19a7ed6844ac10b94355bbc67c4c9d"
+ },
+ "art_char_redraw_v2_bright_epic_anchor_task.md": {
+  "key": "SCRUM-422",
+  "status": "К выполнению",
+  "desc_hash": "5abb2481eac71e0956410e79d454846b"
+ },
+ "art_char_redraw_v2_chemist_task.md": {
+  "key": "SCRUM-423",
+  "status": "К выполнению",
+  "desc_hash": "206d87ff1aa5c48a6af12f08113f7973"
+ },
+ "art_char_redraw_v2_dark_mage_task.md": {
+  "key": "SCRUM-424",
+  "status": "К выполнению",
+  "desc_hash": "b5f49e6065853d900ffddd43c5cc02ce"
+ },
+ "art_char_redraw_v2_doctor_task.md": {
+  "key": "SCRUM-425",
+  "status": "К выполнению",
+  "desc_hash": "a04c727acef919204ad02f0c95962474"
+ },
+ "art_char_redraw_v2_druid_task.md": {
+  "key": "SCRUM-426",
+  "status": "К выполнению",
+  "desc_hash": "2751f8bb71075434b9f511b6d298b34e"
+ },
+ "art_char_redraw_v2_elementalist_task.md": {
+  "key": "SCRUM-427",
+  "status": "К выполнению",
+  "desc_hash": "ccb1ff2e7d44815f45e4436bc95e5a56"
+ },
+ "art_char_redraw_v2_engineer_task.md": {
+  "key": "SCRUM-428",
+  "status": "К выполнению",
+  "desc_hash": "187e4590cb384fa72586bb89054a1e6b"
+ },
+ "art_char_redraw_v2_guitarist_task.md": {
+  "key": "SCRUM-429",
+  "status": "К выполнению",
+  "desc_hash": "e77febeca51a4098774d36177e86bdb3"
+ },
+ "art_char_redraw_v2_knight_task.md": {
+  "key": "SCRUM-430",
+  "status": "К выполнению",
+  "desc_hash": "ab7a9743badbf7ca836a4e95201139ed"
+ },
+ "art_char_redraw_v2_priest_task.md": {
+  "key": "SCRUM-431",
+  "status": "К выполнению",
+  "desc_hash": "e9142d609813c036170122d311708d45"
+ },
+ "art_char_redraw_v2_robot_task.md": {
+  "key": "SCRUM-432",
+  "status": "К выполнению",
+  "desc_hash": "806469bea686f6b587cd0c891017edd5"
+ },
+ "art_char_redraw_v2_sniper_task.md": {
+  "key": "SCRUM-433",
+  "status": "К выполнению",
+  "desc_hash": "73807c15652eef869862d6c68d7d76ad"
+ },
+ "art_char_redraw_v2_soldier_task.md": {
+  "key": "SCRUM-434",
+  "status": "К выполнению",
+  "desc_hash": "a1006be88e2e99d3d165272d59b46fd0"
+ },
+ "art_char_redraw_v2_thief_task.md": {
+  "key": "SCRUM-435",
+  "status": "К выполнению",
+  "desc_hash": "8a5459ae5caaefb83300e5597764389f"
  }
 }
