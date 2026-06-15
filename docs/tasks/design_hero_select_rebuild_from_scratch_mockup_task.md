@@ -1,12 +1,13 @@
 # ART/UX: Экран выбора героя — ПЕРЕРИСОВАТЬ С НУЛЯ по макапу (оставить только розу ветров)
 
-Статус: new
+Статус: review
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-436
+QA: in_progress (2026-06-15)
 Связано: SCRUM-322 (роза ветров — СОХРАНИТЬ), SCRUM-384 (единый фрейм), ui-director skill
 
 ## Autonomy / Approval
@@ -52,10 +53,77 @@ D&D + Dark Fantasy Dragon, на базе текущих красивых кно�
 - tests/runtime_smoke_test.gd, tests/ui_no_overlap_matrix_test.gd
 
 ## Acceptance Criteria
-- [ ] Сгенерирован макап выбора героя (ui-director), экран собран строго по нему.
-- [ ] Роза ветров сохранена нетронутой; всё остальное перерисовано с нуля; старое в бэкап.
-- [ ] Карусель — крупные изображения в ряд без тяжёлых рамок, hover+tooltip; контент в content-зонах; no-overlap; текст читаем на 3 разрешениях.
-- [ ] Логика/навигация целы; smoke + matrix зелёные; макап+скрины; CHANGELOG.
+- [x] Сгенерирован макап выбора героя (ui-director) и Design spec/handoff.
+- [ ] Экран собран строго по макапу в runtime.
+- [x] Роза ветров сохранена как обязательный live contract; всё остальное пересобирается с нуля по новому spec.
+- [ ] Старые runtime слои/ассеты перенесены в бэкап при Back-end integration.
+- [x] Карусель — крупные изображения в ряд без тяжёлых рамок, hover+tooltip; контент-зоны записаны для 3 разрешений.
+- [ ] Runtime no-overlap/smoke/matrix зелёные; текст читаем на 3 разрешениях.
+- [x] Макап+safe-zone overlay+QA contact sheet+CHANGELOG/docs обновлены.
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Dispatcher Dispatch (2026-06-15)
+
+Передано Design main (`019eabf1-6d54-7561-8af9-ce25cdf483a9`) как 0.1.6
+Design-first UI row после завершения SCRUM-438 Design package.
+
+Scope for this pass: generate the required Hero Select v2 mockup/spec first with
+`fantasydisk-ui-director`; preserve the existing compass rose/radar contract from
+SCRUM-322; prepare any transparent UI frame/source assets with
+`fantasydisk-asset-generator`; document exact content zones, safe margins,
+responsive rules and handoff notes for Back-end. Do not edit runtime
+`scripts/ui_screens.gd`, rebuild navigation, or run Back-end smokes in this Design
+pass; runtime integration follows after accepted mockup/spec handoff. Keep
+reasoning High/no low.
+
+## Design Result (2026-06-15)
+
+Design-first Hero Select v2 package готов и передан на review / Back-end UI
+handoff. Runtime-код не менялся в этом Design pass.
+
+Artifacts:
+- Raw OpenAI mockup: `docs/design/references/hero_select_v2/hero_select_v2_full_window_mockup_1920x1088.png`
+- Technical 1920x1080 mockup: `docs/design/mockups/scrum436_hero_select_v2/hero_select_v2_mockup_1920x1080.png`
+- Preview: `docs/design/previews/scrum436_hero_select_v2_mockup_preview.png`
+- Safe-zone overlay: `docs/design/mockups/scrum436_hero_select_v2/hero_select_v2_safe_zones_annotated_1920x1080.png`
+- Safe-zone preview: `docs/design/previews/scrum436_hero_select_v2_safe_zones.png`
+- Layout metadata / responsive rects: `docs/design/mockups/scrum436_hero_select_v2/hero_select_v2_layout_metadata.json`
+- Spec/handoff: `docs/design/mockups/scrum436_hero_select_v2/spec.md`
+- Dark-background QA contact sheet: `build/qa/scrum436_hero_select_v2/hero_select_v2_mockup_dark_background_qa.png`
+
+Key decisions:
+- `HeroSelectRadarPanel` / `HeroStatRadar` are preserved exactly as live SCRUM-322/SCRUM-347 runtime elements. The mockup only reserves their target rect.
+- Everything else is a new layout/spec: large left hero preview, central dossier/traits/weapons, bottom ascension selector, Select/Back buttons, wide image-only carousel, and tooltip safe area.
+- All runtime content must stay inside recorded safe rects; decorative dragon frame, metal, gems, corners, arrows and carousel ornament remain unobstructed.
+- Responsive rule: single proportional scale factor `s = min(viewport_width / 1920, viewport_height / 1080)`, centered canvas; no one-axis frame stretching.
+
+Validation:
+- Verified generated PNG dimensions: raw `1920x1088`, technical mockup/overlay/previews `1920x1080`.
+- Parsed `hero_select_v2_layout_metadata.json` and checked 1280x720 / 1920x1080 / 2560x1440 scaled rects.
+- Runtime smoke/no-overlap not run by design scope; Back-end integration must run them after rebuilding `_show_character_select()`.
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED (Design-scope: hero-select v2 rebuild mockup + spec + safe-zones); Back-end runtime build — pending
+
+Проверено (фактически):
+- **Mockup готов** `scrum436_hero_select_v2/hero_select_v2_mockup_1920x1080.png`:
+  крупный портрет-слот слева (+ кнопки ± возвышения, центр-кнопка), досье-панель по
+  центру (пергамент: имя/класс/стат-ряды/описание), **роза ветров/радар сверху-справа
+  СОХРАНЕНА** (обязательный live contract), карусель-стрип из 10 thumbnail снизу,
+  select-бар; единый D&D dragon-орнамент. Полный rebuild, роза ветров на месте.
+- **Safe-zones + metadata + spec**: `hero_select_v2_safe_zones_annotated_1920x1080.png`
+  + `hero_select_v2_layout_metadata.json` + `spec.md` — content-зоны/safe rects.
+
+⚠️ **Runtime окно ещё НЕ собрано** по макапу — Back-end follow-up (Design-only pass):
+сборка `_show_hero_select`/слоёв строго по макапу, бэкап старого, navigation/smoke/
+no-overlap. НЕ промоутил в Готово — тикет ждёт Back-end фазу.
+
+Acceptance:
+- [x] Макап hero-select (ui-director) + Design spec/handoff.
+- [x] Роза ветров сохранена как обязательный live contract; остальное rebuild по spec.
+- [x] Content-зоны/safe rects заданы.
+- [ ] Runtime по макапу + бэкап старого + smoke/no-overlap — Back-end follow-up (pending).
+
+Статус: Design-source PASS, ждёт Back-end integration. Баги: нет (Design-scope).

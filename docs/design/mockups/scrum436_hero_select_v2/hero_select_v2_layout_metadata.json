@@ -1,0 +1,832 @@
+{
+  "task": "SCRUM-436",
+  "screen": "Hero Select v2 mockup/spec",
+  "base_viewport": [
+    1920,
+    1080
+  ],
+  "source_reference": "docs/design/references/hero_select_v2/hero_select_v2_full_window_mockup_1920x1088.png",
+  "technical_mockup": "docs/design/mockups/scrum436_hero_select_v2/hero_select_v2_mockup_1920x1080.png",
+  "preview": "docs/design/previews/scrum436_hero_select_v2_mockup_preview.png",
+  "safe_zone_overlay": "docs/design/mockups/scrum436_hero_select_v2/hero_select_v2_safe_zones_annotated_1920x1080.png",
+  "preserved_runtime_element": {
+    "node_names": [
+      "HeroSelectRadarPanel",
+      "HeroStatRadar"
+    ],
+    "asset": "assets/sprites/ui/frames/hero_select/ui_frame_hero_select_radar.png",
+    "rule": "Preserve the live SCRUM-322/SCRUM-347 radar implementation exactly; this package only reserves its target rect."
+  },
+  "rects_1920x1080": {
+    "viewport": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "outer_frame_rect": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "outer_safe": [
+      92,
+      72,
+      1736,
+      944
+    ],
+    "hero_preview_frame": [
+      218,
+      82,
+      552,
+      582
+    ],
+    "hero_preview_safe": [
+      262,
+      124,
+      464,
+      496
+    ],
+    "dossier_frame": [
+      800,
+      86,
+      694,
+      578
+    ],
+    "dossier_title_safe": [
+      876,
+      138,
+      526,
+      56
+    ],
+    "dossier_body_safe": [
+      846,
+      214,
+      606,
+      92
+    ],
+    "dossier_description_safe": [
+      838,
+      340,
+      626,
+      126
+    ],
+    "traits_safe": [
+      864,
+      494,
+      590,
+      58
+    ],
+    "weapons_safe": [
+      840,
+      574,
+      618,
+      56
+    ],
+    "ascension_panel": [
+      232,
+      678,
+      520,
+      70
+    ],
+    "asc_minus_safe": [
+      258,
+      686,
+      46,
+      46
+    ],
+    "asc_label_safe": [
+      326,
+      690,
+      310,
+      40
+    ],
+    "asc_plus_safe": [
+      690,
+      686,
+      46,
+      46
+    ],
+    "select_button_safe": [
+      986,
+      692,
+      372,
+      54
+    ],
+    "back_button_safe": [
+      1538,
+      692,
+      292,
+      54
+    ],
+    "radar_panel_preserved": [
+      1510,
+      92,
+      286,
+      326
+    ],
+    "radar_content_safe": [
+      1554,
+      122,
+      200,
+      210
+    ],
+    "radar_no_redesign_reserved": [
+      1510,
+      92,
+      286,
+      326
+    ],
+    "carousel_frame": [
+      92,
+      764,
+      1736,
+      204
+    ],
+    "carousel_safe": [
+      124,
+      790,
+      1672,
+      150
+    ],
+    "tooltip_safe": [
+      540,
+      970,
+      840,
+      80
+    ],
+    "carousel_thumb_safe_each": [
+      [
+        124,
+        800,
+        142,
+        130
+      ],
+      [
+        280,
+        800,
+        142,
+        130
+      ],
+      [
+        436,
+        800,
+        142,
+        130
+      ],
+      [
+        592,
+        800,
+        142,
+        130
+      ],
+      [
+        748,
+        800,
+        142,
+        130
+      ],
+      [
+        904,
+        800,
+        142,
+        130
+      ],
+      [
+        1060,
+        800,
+        142,
+        130
+      ],
+      [
+        1216,
+        800,
+        142,
+        130
+      ],
+      [
+        1372,
+        800,
+        142,
+        130
+      ],
+      [
+        1528,
+        800,
+        142,
+        130
+      ]
+    ]
+  },
+  "responsive_rects": {
+    "1280x720": {
+      "viewport": [
+        0.0,
+        0.0,
+        1280.0,
+        720.0
+      ],
+      "outer_frame_rect": [
+        0.0,
+        0.0,
+        1280.0,
+        720.0
+      ],
+      "outer_safe": [
+        61.33,
+        48.0,
+        1157.33,
+        629.33
+      ],
+      "hero_preview_frame": [
+        145.33,
+        54.67,
+        368.0,
+        388.0
+      ],
+      "hero_preview_safe": [
+        174.67,
+        82.67,
+        309.33,
+        330.67
+      ],
+      "dossier_frame": [
+        533.33,
+        57.33,
+        462.67,
+        385.33
+      ],
+      "dossier_title_safe": [
+        584.0,
+        92.0,
+        350.67,
+        37.33
+      ],
+      "dossier_body_safe": [
+        564.0,
+        142.67,
+        404.0,
+        61.33
+      ],
+      "dossier_description_safe": [
+        558.67,
+        226.67,
+        417.33,
+        84.0
+      ],
+      "traits_safe": [
+        576.0,
+        329.33,
+        393.33,
+        38.67
+      ],
+      "weapons_safe": [
+        560.0,
+        382.67,
+        412.0,
+        37.33
+      ],
+      "ascension_panel": [
+        154.67,
+        452.0,
+        346.67,
+        46.67
+      ],
+      "asc_minus_safe": [
+        172.0,
+        457.33,
+        30.67,
+        30.67
+      ],
+      "asc_label_safe": [
+        217.33,
+        460.0,
+        206.67,
+        26.67
+      ],
+      "asc_plus_safe": [
+        460.0,
+        457.33,
+        30.67,
+        30.67
+      ],
+      "select_button_safe": [
+        657.33,
+        461.33,
+        248.0,
+        36.0
+      ],
+      "back_button_safe": [
+        1025.33,
+        461.33,
+        194.67,
+        36.0
+      ],
+      "radar_panel_preserved": [
+        1006.67,
+        61.33,
+        190.67,
+        217.33
+      ],
+      "radar_content_safe": [
+        1036.0,
+        81.33,
+        133.33,
+        140.0
+      ],
+      "radar_no_redesign_reserved": [
+        1006.67,
+        61.33,
+        190.67,
+        217.33
+      ],
+      "carousel_frame": [
+        61.33,
+        509.33,
+        1157.33,
+        136.0
+      ],
+      "carousel_safe": [
+        82.67,
+        526.67,
+        1114.67,
+        100.0
+      ],
+      "tooltip_safe": [
+        360.0,
+        646.67,
+        560.0,
+        53.33
+      ],
+      "carousel_thumb_safe_each": [
+        [
+          82.67,
+          533.33,
+          94.67,
+          86.67
+        ],
+        [
+          186.67,
+          533.33,
+          94.67,
+          86.67
+        ],
+        [
+          290.67,
+          533.33,
+          94.67,
+          86.67
+        ],
+        [
+          394.67,
+          533.33,
+          94.67,
+          86.67
+        ],
+        [
+          498.67,
+          533.33,
+          94.67,
+          86.67
+        ],
+        [
+          602.67,
+          533.33,
+          94.67,
+          86.67
+        ],
+        [
+          706.67,
+          533.33,
+          94.67,
+          86.67
+        ],
+        [
+          810.67,
+          533.33,
+          94.67,
+          86.67
+        ],
+        [
+          914.67,
+          533.33,
+          94.67,
+          86.67
+        ],
+        [
+          1018.67,
+          533.33,
+          94.67,
+          86.67
+        ]
+      ]
+    },
+    "1920x1080": {
+      "viewport": [
+        0.0,
+        0.0,
+        1920.0,
+        1080.0
+      ],
+      "outer_frame_rect": [
+        0.0,
+        0.0,
+        1920.0,
+        1080.0
+      ],
+      "outer_safe": [
+        92.0,
+        72.0,
+        1736.0,
+        944.0
+      ],
+      "hero_preview_frame": [
+        218.0,
+        82.0,
+        552.0,
+        582.0
+      ],
+      "hero_preview_safe": [
+        262.0,
+        124.0,
+        464.0,
+        496.0
+      ],
+      "dossier_frame": [
+        800.0,
+        86.0,
+        694.0,
+        578.0
+      ],
+      "dossier_title_safe": [
+        876.0,
+        138.0,
+        526.0,
+        56.0
+      ],
+      "dossier_body_safe": [
+        846.0,
+        214.0,
+        606.0,
+        92.0
+      ],
+      "dossier_description_safe": [
+        838.0,
+        340.0,
+        626.0,
+        126.0
+      ],
+      "traits_safe": [
+        864.0,
+        494.0,
+        590.0,
+        58.0
+      ],
+      "weapons_safe": [
+        840.0,
+        574.0,
+        618.0,
+        56.0
+      ],
+      "ascension_panel": [
+        232.0,
+        678.0,
+        520.0,
+        70.0
+      ],
+      "asc_minus_safe": [
+        258.0,
+        686.0,
+        46.0,
+        46.0
+      ],
+      "asc_label_safe": [
+        326.0,
+        690.0,
+        310.0,
+        40.0
+      ],
+      "asc_plus_safe": [
+        690.0,
+        686.0,
+        46.0,
+        46.0
+      ],
+      "select_button_safe": [
+        986.0,
+        692.0,
+        372.0,
+        54.0
+      ],
+      "back_button_safe": [
+        1538.0,
+        692.0,
+        292.0,
+        54.0
+      ],
+      "radar_panel_preserved": [
+        1510.0,
+        92.0,
+        286.0,
+        326.0
+      ],
+      "radar_content_safe": [
+        1554.0,
+        122.0,
+        200.0,
+        210.0
+      ],
+      "radar_no_redesign_reserved": [
+        1510.0,
+        92.0,
+        286.0,
+        326.0
+      ],
+      "carousel_frame": [
+        92.0,
+        764.0,
+        1736.0,
+        204.0
+      ],
+      "carousel_safe": [
+        124.0,
+        790.0,
+        1672.0,
+        150.0
+      ],
+      "tooltip_safe": [
+        540.0,
+        970.0,
+        840.0,
+        80.0
+      ],
+      "carousel_thumb_safe_each": [
+        [
+          124.0,
+          800.0,
+          142.0,
+          130.0
+        ],
+        [
+          280.0,
+          800.0,
+          142.0,
+          130.0
+        ],
+        [
+          436.0,
+          800.0,
+          142.0,
+          130.0
+        ],
+        [
+          592.0,
+          800.0,
+          142.0,
+          130.0
+        ],
+        [
+          748.0,
+          800.0,
+          142.0,
+          130.0
+        ],
+        [
+          904.0,
+          800.0,
+          142.0,
+          130.0
+        ],
+        [
+          1060.0,
+          800.0,
+          142.0,
+          130.0
+        ],
+        [
+          1216.0,
+          800.0,
+          142.0,
+          130.0
+        ],
+        [
+          1372.0,
+          800.0,
+          142.0,
+          130.0
+        ],
+        [
+          1528.0,
+          800.0,
+          142.0,
+          130.0
+        ]
+      ]
+    },
+    "2560x1440": {
+      "viewport": [
+        0.0,
+        0.0,
+        2560.0,
+        1440.0
+      ],
+      "outer_frame_rect": [
+        0.0,
+        0.0,
+        2560.0,
+        1440.0
+      ],
+      "outer_safe": [
+        122.67,
+        96.0,
+        2314.67,
+        1258.67
+      ],
+      "hero_preview_frame": [
+        290.67,
+        109.33,
+        736.0,
+        776.0
+      ],
+      "hero_preview_safe": [
+        349.33,
+        165.33,
+        618.67,
+        661.33
+      ],
+      "dossier_frame": [
+        1066.67,
+        114.67,
+        925.33,
+        770.67
+      ],
+      "dossier_title_safe": [
+        1168.0,
+        184.0,
+        701.33,
+        74.67
+      ],
+      "dossier_body_safe": [
+        1128.0,
+        285.33,
+        808.0,
+        122.67
+      ],
+      "dossier_description_safe": [
+        1117.33,
+        453.33,
+        834.67,
+        168.0
+      ],
+      "traits_safe": [
+        1152.0,
+        658.67,
+        786.67,
+        77.33
+      ],
+      "weapons_safe": [
+        1120.0,
+        765.33,
+        824.0,
+        74.67
+      ],
+      "ascension_panel": [
+        309.33,
+        904.0,
+        693.33,
+        93.33
+      ],
+      "asc_minus_safe": [
+        344.0,
+        914.67,
+        61.33,
+        61.33
+      ],
+      "asc_label_safe": [
+        434.67,
+        920.0,
+        413.33,
+        53.33
+      ],
+      "asc_plus_safe": [
+        920.0,
+        914.67,
+        61.33,
+        61.33
+      ],
+      "select_button_safe": [
+        1314.67,
+        922.67,
+        496.0,
+        72.0
+      ],
+      "back_button_safe": [
+        2050.67,
+        922.67,
+        389.33,
+        72.0
+      ],
+      "radar_panel_preserved": [
+        2013.33,
+        122.67,
+        381.33,
+        434.67
+      ],
+      "radar_content_safe": [
+        2072.0,
+        162.67,
+        266.67,
+        280.0
+      ],
+      "radar_no_redesign_reserved": [
+        2013.33,
+        122.67,
+        381.33,
+        434.67
+      ],
+      "carousel_frame": [
+        122.67,
+        1018.67,
+        2314.67,
+        272.0
+      ],
+      "carousel_safe": [
+        165.33,
+        1053.33,
+        2229.33,
+        200.0
+      ],
+      "tooltip_safe": [
+        720.0,
+        1293.33,
+        1120.0,
+        106.67
+      ],
+      "carousel_thumb_safe_each": [
+        [
+          165.33,
+          1066.67,
+          189.33,
+          173.33
+        ],
+        [
+          373.33,
+          1066.67,
+          189.33,
+          173.33
+        ],
+        [
+          581.33,
+          1066.67,
+          189.33,
+          173.33
+        ],
+        [
+          789.33,
+          1066.67,
+          189.33,
+          173.33
+        ],
+        [
+          997.33,
+          1066.67,
+          189.33,
+          173.33
+        ],
+        [
+          1205.33,
+          1066.67,
+          189.33,
+          173.33
+        ],
+        [
+          1413.33,
+          1066.67,
+          189.33,
+          173.33
+        ],
+        [
+          1621.33,
+          1066.67,
+          189.33,
+          173.33
+        ],
+        [
+          1829.33,
+          1066.67,
+          189.33,
+          173.33
+        ],
+        [
+          2037.33,
+          1066.67,
+          189.33,
+          173.33
+        ]
+      ]
+    }
+  },
+  "safe_zone_rule": "Runtime content must remain inside safe rects; decorative frame borders, gems, metal, crests, dragon ornament, arrows and carousel frame corners remain unobstructed.",
+  "scaling_rule": "Use a single proportional scale factor s=min(viewport_width/1920, viewport_height/1080), centered in the viewport. Do not stretch frame artwork independently by one axis."
+}
