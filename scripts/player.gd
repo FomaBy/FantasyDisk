@@ -29,7 +29,10 @@ const ALLY_MINION_SCENE := preload("res://scenes/AllyMinion.tscn")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_COLUMNS := 5
-const BASE_SPRITE_SCALE := Vector2(0.28, 0.28)
+const PLAYER_COMBAT_VISUAL_SCALE := 0.5
+const BASE_SPRITE_SCALE := Vector2(PLAYER_COMBAT_VISUAL_SCALE, PLAYER_COMBAT_VISUAL_SCALE)
+# Анимация атаки персонажей отключена по запросу пользователя (2026-06-15).
+const USE_ATTACK_ANIMATION := false
 const DEBUG_MOVE_ARRIVAL_DISTANCE := 10.0
 
 const CHARACTER_CONFIGS := {
@@ -1686,6 +1689,11 @@ func _single_texture_sprite_frames(texture: Texture2D) -> SpriteFrames:
 
 
 func _play_body_action_animation(action_id: String, duration := 0.0) -> void:
+	# Анимация атаки ОТКЛЮЧЕНА (запрос пользователя 2026-06-15): attack/attack_primary
+	# кадры не используем — тело остаётся на walk/idle при атаке. Чтобы вернуть —
+	# поставить USE_ATTACK_ANIMATION = true.
+	if not USE_ATTACK_ANIMATION:
+		return
 	var body := _animated_sprite()
 	if body == null or body.sprite_frames == null:
 		return

@@ -25,6 +25,8 @@ const REWARD_CARD_SAFE_MARGINS := Vector4(132.0, 170.0, 132.0, 164.0)
 const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(150.0, 202.0, 150.0, 190.0)
 const REWARD_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_card.png"
 const REWARD_ELITE_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card.png"
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.5
+const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -288,6 +290,10 @@ func _initialize() -> void:
 		push_error("Expected hero select v3 to show a large selected hero portrait.")
 		quit(1)
 		return
+	if large_portrait.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED:
+		push_error("Expected hero select large portrait to use tighter covered scaling inside its content zone.")
+		quit(1)
+		return
 	var dossier := main.find_child("HeroSelectDossierPanel", true, false) as Control
 	if dossier == null:
 		push_error("Expected hero select v3 to show a dossier panel.")
@@ -374,6 +380,11 @@ func _initialize() -> void:
 	var hero_portrait_dump := PackedStringArray()
 	hero_portrait_dump.append("# SCRUM-416 Hero Select Portrait Runtime Paths")
 	hero_portrait_dump.append("")
+	var scrum417_dump := PackedStringArray()
+	scrum417_dump.append("# SCRUM-417 Character Size Runtime Dump")
+	scrum417_dump.append("")
+	scrum417_dump.append("- `HeroSelectLargePortraitRect`: `%s`" % str(large_portrait.get_global_rect()))
+	scrum417_dump.append("- `HeroSelectLargePortraitStretch`: `%s`" % str(large_portrait.stretch_mode))
 	for character_id in ProgressionData.character_ids():
 		var thumb := main.find_child("HeroThumbnail_%s" % character_id, true, false) as Button
 		if thumb == null or thumb.tooltip_text == "":
@@ -406,12 +417,19 @@ func _initialize() -> void:
 			quit(1)
 			return
 		hero_portrait_dump.append("- `%s`: thumbnail `%s`, large `%s`" % [character_id, thumb_portrait.texture.resource_path, portrait.texture.resource_path])
+		scrum417_dump.append("- `%s` hero portrait rect `%s`, texture `%s`" % [character_id, str(portrait.get_global_rect()), portrait.texture.resource_path])
 	var scrum416_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum416")
 	DirAccess.make_dir_recursive_absolute(scrum416_qa_dir)
 	var hero_portrait_dump_file := FileAccess.open("%s/hero_select_portrait_runtime_paths.md" % scrum416_qa_dir, FileAccess.WRITE)
 	if hero_portrait_dump_file != null:
 		hero_portrait_dump_file.store_string("\n".join(hero_portrait_dump))
 		hero_portrait_dump_file.close()
+	var scrum417_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum417")
+	DirAccess.make_dir_recursive_absolute(scrum417_qa_dir)
+	var scrum417_dump_file := FileAccess.open("%s/character_size_runtime_dump.md" % scrum417_qa_dir, FileAccess.WRITE)
+	if scrum417_dump_file != null:
+		scrum417_dump_file.store_string("\n".join(scrum417_dump))
+		scrum417_dump_file.close()
 	var choose_button := main.find_child("HeroSelectChooseButton", true, false) as Button
 	if choose_button == null:
 		push_error("Expected hero select v3 to expose a choose button.")
@@ -590,8 +608,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var player_body := player.get_node_or_null("VisualRoot/Body") as AnimatedSprite2D
-	if player_body == null or player_body.scale.x > 0.30:
-		push_error("Expected player visual scale to be reduced by another 20-30% for the larger arena view.")
+	if player_body == null or absf(player_body.scale.x - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001 or absf(player_body.scale.y - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001:
+		push_error("Expected player visual scale to use SCRUM-417 enlarged combat scale %.2f." % EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)
 		quit(1)
 		return
 	var player_rig := player.get_node_or_null("VisualRoot/RigRoot") as Node2D
@@ -605,6 +623,19 @@ func _initialize() -> void:
 		push_error("Expected player hurtbox to match the smaller character size.")
 		quit(1)
 		return
+	var scrum417_combat_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum417")
+	DirAccess.make_dir_recursive_absolute(scrum417_combat_qa_dir)
+	var scrum417_combat_dump := PackedStringArray()
+	scrum417_combat_dump.append("# SCRUM-417 Combat Character Size Runtime Dump")
+	scrum417_combat_dump.append("")
+	scrum417_combat_dump.append("- `PlayerVisualScale`: `%s`" % str(player_body.scale))
+	scrum417_combat_dump.append("- `PlayerBodyVisible`: `%s`" % str(player_body.visible))
+	scrum417_combat_dump.append("- `PlayerRigVisible`: `%s`" % str(player_rig.visible))
+	scrum417_combat_dump.append("- `PlayerCollisionRadius`: `%.2f`" % player_shape.radius)
+	var scrum417_combat_file := FileAccess.open("%s/combat_character_size_runtime_dump.md" % scrum417_combat_qa_dir, FileAccess.WRITE)
+	if scrum417_combat_file != null:
+		scrum417_combat_file.store_string("\n".join(scrum417_combat_dump))
+		scrum417_combat_file.close()
 	if int(player.get("collision_mask")) & 6 != 0:
 		push_error("Expected player physics mask to ignore enemy collision layers.")
 		quit(1)
@@ -6211,6 +6242,9 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_portrait_texture == null or codex_portrait_texture.texture == null or codex_portrait_texture.texture.resource_path != expected_default_portrait:
 		_fail("Expected default Codex character portrait to use new full-frame portrait %s." % expected_default_portrait)
 		return
+	if codex_portrait_texture.custom_minimum_size != EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE or codex_portrait_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED:
+		_fail("Expected Codex character portrait to use SCRUM-417 tighter %s covered scaling." % str(EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE))
+		return
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
 	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_tab.png":
 		_fail("Expected Codex tabs to use the Codex tab texture kit.")
@@ -6241,6 +6275,20 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if scrum416_codex_file != null:
 		scrum416_codex_file.store_string("\n".join(scrum416_codex_dump))
 		scrum416_codex_file.close()
+	var scrum417_codex_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum417")
+	DirAccess.make_dir_recursive_absolute(scrum417_codex_qa_dir)
+	var scrum417_codex_dump := PackedStringArray()
+	scrum417_codex_dump.append("# SCRUM-417 Codex Character Portrait Runtime Dump")
+	scrum417_codex_dump.append("")
+	scrum417_codex_dump.append("- `CodexPortraitSlot`: `%s`" % str(default_portrait.get_global_rect()))
+	scrum417_codex_dump.append("- `CodexPortraitTextureRect`: `%s`" % str(codex_portrait_texture.get_global_rect()))
+	scrum417_codex_dump.append("- `CodexPortraitMinimumSize`: `%s`" % str(codex_portrait_texture.custom_minimum_size))
+	scrum417_codex_dump.append("- `CodexPortraitStretch`: `%s`" % str(codex_portrait_texture.stretch_mode))
+	scrum417_codex_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	var scrum417_codex_file := FileAccess.open("%s/codex_character_portrait_runtime_dump.md" % scrum417_codex_qa_dir, FileAccess.WRITE)
+	if scrum417_codex_file != null:
+		scrum417_codex_file.store_string("\n".join(scrum417_codex_dump))
+		scrum417_codex_file.close()
 
 	# Полнота данных кодекса.
 	var codex_data := load("res://scripts/codex_data.gd")
