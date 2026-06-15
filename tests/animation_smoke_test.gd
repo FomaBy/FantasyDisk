@@ -272,11 +272,15 @@ func _test_player_animation() -> void:
 	if not body.visible or rig.visible:
 		_fail("Expected Dark Mage full-frame AnimatedSprite2D visible with hidden cutout RigRoot.")
 	if body.sprite_frames == null or body.sprite_frames.resource_path != "res://assets/sprites/characters/dark_mage_spriteframes.tres":
-		_fail("Expected Dark Mage to use the accepted SCRUM-286 SpriteFrames resource.")
-	if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
-		_fail("Expected Dark Mage SCRUM-286 SpriteFrames to expose 5 idle/walk/attack/attack_primary frames.")
-	if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
-		_fail("Expected Dark Mage idle/walk to loop and attacks to be one-shot.")
+		_fail("Expected Dark Mage to use the accepted SCRUM-424 v2 SpriteFrames resource.")
+	if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
+		_fail("Expected Dark Mage SCRUM-424 v2 SpriteFrames to expose idle/walk/move animations.")
+	if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
+		_fail("Expected Dark Mage SCRUM-424 v2 SpriteFrames to omit attack animations by task scope.")
+	if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:
+		_fail("Expected Dark Mage SCRUM-424 v2 SpriteFrames to expose 5 idle/walk/move frames.")
+	if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or not body.sprite_frames.get_animation_loop("move"):
+		_fail("Expected Dark Mage SCRUM-424 v2 idle/walk/move animations to loop.")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "dark mage")
 	player.set("velocity", Vector2(100, 0))
 	player.call("_update_movement_animation", 0.18)
@@ -326,15 +330,20 @@ func _test_player_animation() -> void:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
-		if sheet_character_id == "berserk":
+		if sheet_character_id == "berserk" or sheet_character_id == "dark_mage" or sheet_character_id == "guitarist":
+			var v2_label := "SCRUM-420"
+			if sheet_character_id == "dark_mage":
+				v2_label = "SCRUM-424"
+			elif sheet_character_id == "guitarist":
+				v2_label = "SCRUM-429"
 			if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
-				_fail("Expected Berserk SCRUM-420 v2 SpriteFrames to expose idle/walk/move frames.")
+				_fail("Expected %s %s v2 SpriteFrames to expose idle/walk/move frames." % [sheet_character_id, v2_label])
 			if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
-				_fail("Expected Berserk SCRUM-420 v2 accepted SpriteFrames to omit attack animations.")
+				_fail("Expected %s %s v2 accepted SpriteFrames to omit attack animations." % [sheet_character_id, v2_label])
 			if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:
-				_fail("Expected Berserk SCRUM-420 v2 accepted SpriteFrames to expose 5 idle/walk/move frames.")
+				_fail("Expected %s %s v2 accepted SpriteFrames to expose 5 idle/walk/move frames." % [sheet_character_id, v2_label])
 			if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or not body.sprite_frames.get_animation_loop("move"):
-				_fail("Expected Berserk SCRUM-420 v2 idle/walk/move to loop.")
+				_fail("Expected %s %s v2 idle/walk/move to loop." % [sheet_character_id, v2_label])
 		else:
 			if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
 				_fail("Expected %s accepted SpriteFrames to expose 5 idle/walk/attack/attack_primary frames." % sheet_character_id)

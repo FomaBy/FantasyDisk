@@ -25,6 +25,7 @@ func _initialize() -> void:
 	_test_clamp(errors)
 	_test_scale_guard(errors)
 	_test_native(errors)
+	_write_scrum441_dump()
 
 	if not errors.is_empty():
 		for e in errors:
@@ -84,3 +85,22 @@ func _test_scale_guard(errors: Array) -> void:
 func _test_native(errors: Array) -> void:
 	_expect(errors, DisplayResolution.native_logical_resolution(MAC_LOGICAL) == MAC_LOGICAL,
 		"native_logical_resolution должно вернуть логический размер монитора")
+
+
+func _write_scrum441_dump() -> void:
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum441")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var lines := PackedStringArray()
+	lines.append("# SCRUM-441 HiDPI Resolution Evidence")
+	lines.append("")
+	lines.append("- mac_logical_usable: `%s`" % str(MAC_LOGICAL))
+	lines.append("- retina_scale: `%.1f`" % RETINA_SCALE)
+	lines.append("- physical_usable: `%s`" % str(DisplayResolution.physical_usable_size(MAC_LOGICAL, RETINA_SCALE)))
+	lines.append("- full_hd_fits_retina: `%s`" % str(DisplayResolution.resolution_fits(FULL_HD, MAC_LOGICAL, RETINA_SCALE)))
+	lines.append("- k2_fits_retina: `%s`" % str(DisplayResolution.resolution_fits(K2, MAC_LOGICAL, RETINA_SCALE)))
+	lines.append("- native_logical_option: `%s (Mac)`" % str(DisplayResolution.native_logical_resolution(MAC_LOGICAL)))
+	lines.append("- oversized_clamp: `%s`" % str(DisplayResolution.clamp_to_physical(Vector2i(4000, 3000), MAC_LOGICAL, RETINA_SCALE)))
+	var file := FileAccess.open("%s/hidpi_resolution_evidence.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(lines))
+		file.close()

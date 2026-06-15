@@ -2595,7 +2595,7 @@ func _settings_v2_content_panel_rect(modal_size: Vector2) -> Rect2:
 	var back_top := modal_size.y - 64.0 - maxf(28.0, modal_size.y * 0.055)
 	var left := main_margins.x + 24.0
 	var right := main_margins.z + 24.0
-	var height := maxf(292.0, back_top - top - 24.0)
+	var height := maxf(248.0, back_top - top - 24.0)
 	return Rect2(Vector2(left, top), Vector2(maxf(640.0, modal_size.x - left - right), height))
 
 
@@ -2611,10 +2611,10 @@ func _settings_v2_content_panel_style() -> StyleBoxFlat:
 	style.border_color = Color(0.68, 0.54, 0.30, 0.34)
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(8)
-	style.content_margin_left = 24
-	style.content_margin_right = 24
-	style.content_margin_top = 20
-	style.content_margin_bottom = 20
+	style.content_margin_left = 18
+	style.content_margin_right = 18
+	style.content_margin_top = 14
+	style.content_margin_bottom = 14
 	return style
 
 
@@ -2681,7 +2681,7 @@ func _show_settings_menu() -> void:
 
 	var tabs := TabContainer.new()
 	tabs.name = "SettingsTabs"
-	tabs.custom_minimum_size = Vector2(760, 260)
+	tabs.custom_minimum_size = Vector2(700, 220)
 	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
@@ -2697,13 +2697,22 @@ func _show_settings_menu() -> void:
 	))
 	modal.add_child(switcher)
 
-	var content_panel := PanelContainer.new()
+	var content_panel := Panel.new()
 	content_panel.name = "SettingsContentPanel"
 	var content_panel_rect := _settings_v2_content_panel_rect(modal_rect.size)
 	content_panel.add_theme_stylebox_override("panel", _settings_v2_content_panel_style())
+	content_panel.clip_contents = true
 	_apply_control_rect(content_panel, content_panel_rect)
 	modal.add_child(content_panel)
-	content_panel.add_child(tabs)
+	var content_margin := MarginContainer.new()
+	content_margin.name = "SettingsContentSafe"
+	content_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content_margin.add_theme_constant_override("margin_left", 18)
+	content_margin.add_theme_constant_override("margin_top", 14)
+	content_margin.add_theme_constant_override("margin_right", 18)
+	content_margin.add_theme_constant_override("margin_bottom", 14)
+	content_panel.add_child(content_margin)
+	content_margin.add_child(tabs)
 
 	var screen_tab := _make_settings_tab("Экран")
 	var screen_box := screen_tab.get_child(0) as VBoxContainer

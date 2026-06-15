@@ -17,7 +17,8 @@ func _initialize() -> void:
 			"MainMenuPatchNotesButton", "MainMenuCodexButton", "MainMenuExitButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "settings", Callable(self, "_open_settings"), [
-			"SettingsResolutionOption", "SettingsWindowModeOption",
+			"SettingsTabSwitcher", "SettingsContentPanel",
+			"SettingsResolutionOption", "SettingsWindowModeOption", "SettingsBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
 			"CodexBackButton", "CodexTabs", "CodexContent", "CodexDetailPanel",
@@ -112,6 +113,11 @@ func _initialize() -> void:
 	if scrum438_file != null:
 		scrum438_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["codex"])))
 		scrum438_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum439" % qa_dir)
+	var scrum439_file := FileAccess.open("%s/scrum439/settings_v2_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum439_file != null:
+		scrum439_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["settings"])))
+		scrum439_file.close()
 
 	if not errors.is_empty():
 		for error in errors:

@@ -5091,8 +5091,8 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	if tab_switcher == null or tab_switcher_frame == null or tab_switcher_frame.texture == null:
 		_fail("Expected settings screen to use the SettingsTabSwitcher frame texture.")
 		return
-	if tab_switcher_frame.texture.resource_path != "res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png":
-		_fail("Expected settings screen to use the 3-slot SettingsTabSwitcher frame texture, got %s." % tab_switcher_frame.texture.resource_path)
+	if tab_switcher_frame.texture.resource_path != "res://assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png":
+		_fail("Expected settings screen to use the SCRUM-439 Settings v2 3-slot switcher texture, got %s." % tab_switcher_frame.texture.resource_path)
 		return
 	var switcher_rect := tab_switcher.get_global_rect()
 	if absf((switcher_rect.size.x / switcher_rect.size.y) - 5.0) > 0.035:
@@ -5100,21 +5100,27 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		return
 	var base_size := Vector2(1280.0, 256.0)
 	var safe_rects := [
-		Rect2(160.0, 88.0, 270.0, 82.0),
-		Rect2(506.0, 88.0, 270.0, 82.0),
-		Rect2(852.0, 88.0, 270.0, 82.0),
+		Rect2(150.0, 78.0, 275.0, 92.0),
+		Rect2(502.0, 78.0, 275.0, 92.0),
+		Rect2(854.0, 78.0, 275.0, 92.0),
 	]
 	if main.find_child("SettingsTabButton_3", true, false) != null:
 		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
 		return
 	var scale := switcher_rect.size / base_size
 	var settings_switcher_dump := PackedStringArray()
-	settings_switcher_dump.append("# SCRUM-396 Settings Tab Switcher")
+	settings_switcher_dump.append("# SCRUM-439 Settings v2 Runtime Layout")
 	settings_switcher_dump.append("")
 	settings_switcher_dump.append("- frame_path: `%s`" % tab_switcher_frame.texture.resource_path)
 	settings_switcher_dump.append("- switcher_rect: `%s`" % str(switcher_rect))
 	settings_switcher_dump.append("- base_size: `%s`" % str(base_size))
 	settings_switcher_dump.append("- display_size: `%s`" % str(switcher_rect.size))
+	var modal := main.find_child("SettingsV2Modal", true, false) as Control
+	var content_panel := main.find_child("SettingsContentPanel", true, false) as Control
+	if modal != null:
+		settings_switcher_dump.append("- modal_rect: `%s`" % str(modal.get_global_rect()))
+	if content_panel != null:
+		settings_switcher_dump.append("- content_panel_rect: `%s`" % str(content_panel.get_global_rect()))
 	settings_switcher_dump.append("")
 	settings_switcher_dump.append("| tab | actual | expected scaled safe rect | source safe rect |")
 	settings_switcher_dump.append("| --- | --- | --- | --- |")
@@ -5137,16 +5143,16 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if tabs.current_tab != tab_index:
 			_fail("Expected SettingsTabButton_%d to switch SettingsTabs current_tab." % tab_index)
 			return
-	var settings_switcher_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum396")
+	var settings_switcher_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum439")
 	DirAccess.make_dir_recursive_absolute(settings_switcher_qa_dir)
-	var settings_switcher_file := FileAccess.open("%s/settings_tab_switcher_3slot_rects.md" % settings_switcher_qa_dir, FileAccess.WRITE)
+	var settings_switcher_file := FileAccess.open("%s/settings_v2_runtime_rects.md" % settings_switcher_qa_dir, FileAccess.WRITE)
 	if settings_switcher_file != null:
 		settings_switcher_file.store_string("\n".join(settings_switcher_dump))
 		settings_switcher_file.close()
 	if DisplayServer.get_name() != "headless":
 		var settings_switcher_image := main.get_viewport().get_texture().get_image()
 		if settings_switcher_image != null:
-			settings_switcher_image.save_png("%s/settings_tab_switcher_3slot.png" % settings_switcher_qa_dir)
+			settings_switcher_image.save_png("%s/settings_v2_runtime.png" % settings_switcher_qa_dir)
 	var controls_scroll := main.find_child("ControlsScroll", true, false) as ScrollContainer
 	if controls_scroll == null:
 		_fail("Expected controls settings tab to wrap bindings in ControlsScroll.")
@@ -6823,6 +6829,11 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 		if texture_path.contains("ui_btn_red_gold_pause"):
 			if absf(button.custom_minimum_size.x - 280.0) > 0.5 or absf(button.custom_minimum_size.y - 60.0) > 0.5:
 				_fail("Expected pause button %s on %s to use 280x60 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
+		if context == "settings" and button.name == "SettingsBackButton":
+			if absf(button.custom_minimum_size.x - 280.0) > 0.5 or absf(button.custom_minimum_size.y - 64.0) > 0.5:
+				_fail("Expected SCRUM-439 SettingsBackButton to use 280x64 inside the v2 modal safe zone, got min=%s." % button.custom_minimum_size)
 				return
 			continue
 		if texture_path.contains("ui_btn_red_gold_rebind"):
