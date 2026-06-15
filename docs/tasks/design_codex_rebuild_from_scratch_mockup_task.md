@@ -1,6 +1,6 @@
 # ART/UX: Окно кодекса — ПОЛНОСТЬЮ переделать по макапу (с нуля)
 
-Статус: review
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.6
@@ -153,3 +153,23 @@ Acceptance:
 - [ ] Runtime по макапу + navigation/smoke/no-overlap — Back-end follow-up (pending).
 
 Статус: Design-source PASS, ждёт Back-end integration. Баги: нет (Design-scope).
+
+## Dispatcher Back-end Dispatch (2026-06-15)
+
+Передано Back-end (`019eabd9-780b-78a2-9f4b-e7203d659ef2`) как следующая
+готовая UI runtime-интеграция без активного владельца.
+
+Scope for this pass: rebuild the live Codex runtime around
+`docs/design/mockups/scrum438_codex_v2/spec.md`, preserving all existing Codex
+data sections, navigation/back/Escape behavior, glossary tooltip semantics,
+keyboard/gamepad focus, SCRUM-416 portrait paths and SCRUM-417 covered portrait
+scaling. Do not wire the mockup PNG as a single atlas; build runtime Controls
+inside the documented safe zones and keep all text/icons/portraits off frame
+ornaments. Back up/remove old Codex live textures only during the runtime
+replacement pass and keep backups outside Godot import scope.
+
+Required verification after integration: `tests/runtime_smoke_test.gd`,
+`tests/runtime_smoke_ui_test.gd`, `tests/ui_no_overlap_matrix_test.gd`, with
+Codex screenshots/dumps under `build/qa/scrum438/`. Keep reasoning High/no low.
+Do not touch Settings/SCRUM-439, Hero Select/SCRUM-436, Berserk/SCRUM-420,
+Animator work, balance, or unrelated UI surfaces in this pass.

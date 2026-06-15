@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Тёмный маг» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -8,6 +8,17 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-424
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
+
+## Designer 2 Takeover (2026-06-15)
+
+Взято Designer 2 после SCRUM-439 heartbeat/board check. SCRUM-422 anchor
+принят, SCRUM-420 Berserk v2 занят Design main, поэтому следующий свободный
+Design-row — Dark Mage v2. Scope this pass: подготовить accepted bright+epic
+Design source pack для `dark_mage` по anchor-формату (`512x512`, pivot
+`(256,470)`, visible body `360-380px`, transparent RGBA, idle/move source
+reference, no attack/no held weapon). Runtime SpriteFrames/player wiring and
+Godot smokes остаются Animator/Back-end scope unless a safe existing project
+pipeline can consume the accepted source without touching gameplay logic.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.

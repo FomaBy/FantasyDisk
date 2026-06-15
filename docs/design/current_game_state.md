@@ -343,6 +343,16 @@ copy `assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png`. Это
 пока не заменяет runtime SpriteFrames; Animator подключает idle/move после
 принятия per-class source.
 
+SCRUM-420 подготовил отдельный per-class Berserk v2 Design-source handoff:
+`docs/design/references/characters_v2/berserk/berserk_v2_source_clean.png`,
+`berserk_v2_idle_cell_512.png`, `berserk_v2_sheet_source_handoff.png`,
+`berserk_v2_design_handoff.md` и QA report
+`build/qa/scrum420_berserk_v2/scrum420_berserk_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный, без оружия в руках, с battle paint/fur/rage aura,
+прозрачный RGBA, visible height `376 px` в `512x512` cell и pivot `[256,470]`.
+Это не live runtime replacement; current 0.1.5 `berserk_sheet.png` /
+`berserk_spriteframes.tres` остаются активными до Animator/Back-end integration.
+
 SCRUM-286 добавил Dark Mage sheet на этом пути:
 `assets/sprites/characters/dark_mage_sheet.png` (`1920x1152`, 5 `idle`, 5
 `walk`, 5 `attack_primary`, transparent RGBA). Тёмный маг остаётся без
@@ -427,7 +437,7 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: ближний бой, физический урон, выживаемость.
 - Базовое здоровье: 88.
 - Базовая скорость: 235.
-- Спрайты: `assets/sprites/characters/berserk_unarmed.png`, Design-ready source sheet `assets/sprites/characters/berserk_sheet.png`, legacy fallback `assets/sprites/characters/berserk_walk_sheet_v2.png`, cutout-части `assets/sprites/characters/cutout/berserk_*.png`.
+- Спрайты: `assets/sprites/characters/berserk_unarmed.png`, Design-ready source sheet `assets/sprites/characters/berserk_sheet.png`, legacy fallback `assets/sprites/characters/berserk_walk_sheet_v2.png`, cutout-части `assets/sprites/characters/cutout/berserk_*.png`. 0.1.6 v2 source handoff: `assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png` и `berserk_v2_sheet_source_handoff.png` (Design-source only; not live runtime yet).
 - Особенность: оружие отделено от персонажа и крепится к `WeaponSocket`.
 
 Базовые характеристики:

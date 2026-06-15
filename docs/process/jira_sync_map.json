@@ -2266,7 +2266,7 @@
  "art_char_redraw_v2_berserk_task.md": {
   "key": "SCRUM-420",
   "status": "В работе",
-  "desc_hash": "6a2fcfe632bad31c7d8bf8a0c06f1515"
+  "desc_hash": "58a5e84b0dd892911668abda447847a7"
  },
  "art_char_redraw_v2_biologist_task.md": {
   "key": "SCRUM-421",
@@ -2285,8 +2285,8 @@
  },
  "art_char_redraw_v2_dark_mage_task.md": {
   "key": "SCRUM-424",
-  "status": "К выполнению",
-  "desc_hash": "d3b088afa0050aa933fa0de6c7dbe857"
+  "status": "В работе",
+  "desc_hash": "806c870e4233faa0501f094dac45ab8d"
  },
  "art_char_redraw_v2_doctor_task.md": {
   "key": "SCRUM-425",
@@ -2356,7 +2356,7 @@
  "design_codex_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-438",
   "status": "В работе",
-  "desc_hash": "014e442cdf5ca65c70a91b19a56bc7d7"
+  "desc_hash": "7781ab5a247a605beb69167eccfc35a7"
  },
  "design_settings_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-439",
