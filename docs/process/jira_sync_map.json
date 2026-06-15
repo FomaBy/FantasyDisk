@@ -2345,8 +2345,8 @@
  },
  "design_hero_select_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-436",
-  "status": "В работе",
-  "desc_hash": "fac9dc1d492c8c8f909a4467244538f8"
+  "status": "Готово",
+  "desc_hash": "da9cb2c8fcc2cb7471a554397e83b018"
  },
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
   "key": "SCRUM-437",
@@ -2375,17 +2375,17 @@
  },
  "design_berserk_sprite_v3_cartoonish_transparent_task.md": {
   "key": "SCRUM-442",
-  "status": "В работе",
-  "desc_hash": "9b6ce4f16005f92c74e02419d53546fd"
+  "status": "Контроль качества",
+  "desc_hash": "9aab35d784e49ea5f58125a0a7496929"
  },
  "bug_player_death_does_not_end_combat_task.md": {
   "key": "SCRUM-443",
   "status": "К выполнению",
-  "desc_hash": "2a10b4040b1befa41e512bd315ba624b"
+  "desc_hash": "aacbf328f47fac37918937ea6546bca4"
  },
  "bug_runtime_smoke_death_flow_death_save_fragility_task.md": {
   "key": "SCRUM-444",
-  "status": "К выполнению",
-  "desc_hash": "9ea6ad6c321b0ead7bc6c9c0d350a07d"
+  "status": "Контроль качества",
+  "desc_hash": "e63b1c5074c5d84f0556b7a72bdbdbec"
  }
 }

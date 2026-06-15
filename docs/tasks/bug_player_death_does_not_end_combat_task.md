@@ -1,7 +1,7 @@
 # BUG (CRITICAL): Смерть игрока НЕ завершает бой — game-breaking
 
-Статус: new
-Приоритет: critical
+Статус: superseded (не game-breaking; реальный фикс — тест/изоляция SCRUM-444)
+Приоритет: low (понижено: не геймплейный баг, тест-артефакт)
 Роль: Back-end (бой/death-flow)
 Версия: 0.1.6
 Создано: 2026-06-15
@@ -106,3 +106,13 @@ app_userdata/FantasyDisk/fantasydisk_meta.cfg` (дерево полностью 
 
 **Кто применяет:** правку `_test_death_flow` беру я, как только `runtime_smoke_test.gd`
 освободится (сейчас M у другого воркера). Геймплейный код не трогать.
+
+## QA-подтверждение диагноза (2026-06-15)
+QA эмпирически подтвердил Back-end диагноз: с нейтрализованным `run_modifiers.death_save=0`
+→ `take_damage(99999)` убивает игрока → **бой завершается за 1 кадр** (`combat_active=false`,
+player freed). Геймплейный death-flow КОРРЕКТЕН — это НЕ game-breaking.
+
+Мой первоначальный «critical» — ошибка из-за того, что `--user-data-dir` не изолирует
+`user://`, и тест читал реальный dev-сейв с купленным `endure_capstone` (death_save).
+Понижено до low, помечено superseded: реальная работа — в **SCRUM-444** (фикс
+`_test_death_flow` + тест-изоляция от реального мета-сейва). Геймплейный код НЕ трогать.
