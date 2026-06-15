@@ -20,7 +20,7 @@ func _initialize() -> void:
 			"SettingsResolutionOption", "SettingsWindowModeOption",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
-			"CodexBackButton", "CodexTabs", "CodexContent",
+			"CodexBackButton", "CodexTabs", "CodexContent", "CodexDetailPanel",
 		], dump_lines, errors, false)
 		await _check_screen(viewport_size, "skill_tree", Callable(self, "_open_skill_tree"), [
 			"SkillTreeBackButton", "SkillTreePointsBadge", "SkillTreeClassPanel",
@@ -107,6 +107,11 @@ func _initialize() -> void:
 	if scrum331_file != null:
 		scrum331_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["skill_tree"])))
 		scrum331_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum438" % qa_dir)
+	var scrum438_file := FileAccess.open("%s/scrum438/codex_v2_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum438_file != null:
+		scrum438_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["codex"])))
+		scrum438_file.close()
 
 	if not errors.is_empty():
 		for error in errors:

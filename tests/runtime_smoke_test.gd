@@ -6082,12 +6082,51 @@ func _test_back_button_frame_safety(main_scene: PackedScene) -> void:
 	codex_button.pressed.emit()
 	await process_frame
 	var codex_back_button := back_main.find_child("CodexBackButton", true, false) as Button
-	if not _assert_back_button_frame_safe(codex_back_button, "codex", 260.0, checked):
+	if not _assert_codex_v2_back_button_safe(codex_back_button, checked):
 		return
 
 	_write_back_button_qa_dump(back_main, checked)
 	back_main.queue_free()
 	await process_frame
+
+
+func _assert_codex_v2_back_button_safe(button: Button, checked: Array) -> bool:
+	if button == null:
+		_fail("Expected codex v2 back button to exist.")
+		return false
+	var rect := button.get_global_rect()
+	var expected := _codex_v2_expected_rect(Rect2(1684, 60, 126, 96), button.get_viewport_rect().size)
+	if rect.position.distance_to(expected.position) > 2.0 or rect.size.distance_to(expected.size) > 2.0:
+		_fail("Expected codex v2 compact back button to sit inside SCRUM-438 safe rect %s, got %s." % [str(expected), str(rect)])
+		return false
+	if button.text != "←":
+		_fail("Expected codex v2 compact back button to use icon text, got `%s`." % button.text)
+		return false
+	var normal_style := button.get_theme_stylebox("normal")
+	if normal_style == null:
+		_fail("Expected codex v2 back button to have a themed normal stylebox.")
+		return false
+	var content_width := rect.size.x - normal_style.get_content_margin(SIDE_LEFT) - normal_style.get_content_margin(SIDE_RIGHT)
+	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
+	if content_width < 20.0 or content_height < 34.0:
+		_fail("Expected codex v2 back arrow to fit inside content zone, got %.1fx%.1f." % [content_width, content_height])
+		return false
+	checked.append({
+		"context": "codex_v2",
+		"name": button.name,
+		"text": button.text,
+		"rect": rect,
+		"min_size": button.custom_minimum_size,
+		"content_size": Vector2(content_width, content_height),
+	})
+	return true
+
+
+func _codex_v2_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
+	var base_size := Vector2(1920.0, 1080.0)
+	var scale := minf(viewport_size.x / base_size.x, viewport_size.y / base_size.y)
+	var offset := (viewport_size - base_size * scale) * 0.5
+	return Rect2(offset + base_rect.position * scale, base_rect.size * scale)
 
 
 func _assert_back_button_frame_safe(button: Button, context: String, min_width: float, checked: Array) -> bool:
@@ -6221,19 +6260,24 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected the Codex screen to open from the main menu.")
 		return
 	var codex_main_panel := codex_main.find_child("CodexMainPanel", true, false) as PanelContainer
+	var codex_nav_panel := codex_main.find_child("CodexNavPanel", true, false) as PanelContainer
 	var codex_tabs := codex_main.find_child("CodexTabs", true, false) as Control
 	var codex_content := codex_main.find_child("CodexContent", true, false) as PanelContainer
+	var codex_detail := codex_main.find_child("CodexDetailPanel", true, false) as PanelContainer
 	var default_section := codex_main.find_child("CodexSection_characters", true, false) as Control
-	var default_entry := codex_main.find_child("CodexEntryCard", true, false) as PanelContainer
+	var default_entry := codex_main.find_child("CodexEntryCard", true, false) as Control
 	var default_portrait := codex_main.find_child("CodexPortraitSlot", true, false) as PanelContainer
-	if codex_main_panel == null or codex_content == null or codex_tabs == null or default_section == null or default_entry == null or default_portrait == null:
-		_fail("Expected Codex runtime layout to include main panel, tabs, content, entry card, and portrait slot.")
+	var detail_portrait := codex_main.find_child("CodexDetailPortraitSlot", true, false) as PanelContainer
+	if codex_main_panel == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or default_section == null or default_entry == null or default_portrait == null or detail_portrait == null:
+		_fail("Expected SCRUM-438 Codex runtime layout to include main/nav/list/detail panels, tabs, entry card, and portrait slots.")
 		return
 	var expected_codex_textures := {
 		"CodexMainPanel": "res://assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png",
+		"CodexNavPanel": "res://assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png",
 		"CodexContent": "res://assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png",
-		"CodexEntryCard": "res://assets/sprites/ui/frames/codex/ui_frame_codex_entry_card.png",
+		"CodexDetailPanel": "res://assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png",
 		"CodexPortraitSlot": "res://assets/sprites/ui/frames/codex/ui_frame_codex_portrait_slot.png",
+		"CodexDetailPortraitSlot": "res://assets/sprites/ui/frames/codex/ui_frame_codex_portrait_slot.png",
 	}
 	for node_name in expected_codex_textures.keys():
 		var panel := codex_main.find_child(str(node_name), true, false) as PanelContainer
@@ -6244,28 +6288,47 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		if actual_path != str(expected_codex_textures[node_name]):
 			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
 			return
-	var codex_portrait_texture := _first_child_texture_rect(default_portrait)
+	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_entry_card.png":
+		_fail("Expected SCRUM-438 Codex list cards to use the Codex entry card frame.")
+		return
+	var codex_portrait_texture := _first_child_texture_rect(detail_portrait)
 	var expected_default_portrait := _expected_character_portrait_path("berserk")
 	if codex_portrait_texture == null or codex_portrait_texture.texture == null or codex_portrait_texture.texture.resource_path != expected_default_portrait:
 		_fail("Expected default Codex character portrait to use new full-frame portrait %s." % expected_default_portrait)
 		return
-	if codex_portrait_texture.custom_minimum_size != EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE or codex_portrait_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED:
-		_fail("Expected Codex character portrait to use SCRUM-417 tighter %s covered scaling." % str(EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE))
+	if codex_portrait_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED:
+		_fail("Expected Codex character detail portrait to preserve SCRUM-417 covered scaling.")
 		return
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
 	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_tab.png":
 		_fail("Expected Codex tabs to use the Codex tab texture kit.")
 		return
+	var expected_layout := {
+		"CodexMainPanel": Rect2(24, 20, 1872, 1040),
+		"CodexTabs": Rect2(88, 198, 258, 720),
+		"CodexContent": Rect2(388, 170, 835, 872),
+		"CodexDetailPanel": Rect2(1242, 170, 606, 872),
+	}
+	var codex_viewport_size := codex_screen.get_viewport_rect().size
+	for node_name in expected_layout.keys():
+		var control := codex_main.find_child(str(node_name), true, false) as Control
+		var expected_rect := _codex_v2_expected_rect(expected_layout[node_name], codex_viewport_size)
+		var actual_rect := control.get_global_rect()
+		if actual_rect.position.distance_to(expected_rect.position) > 2.0 or actual_rect.size.distance_to(expected_rect.size) > 2.0:
+			_fail("Expected SCRUM-438 %s rect near %s, got %s." % [node_name, str(expected_rect), str(actual_rect)])
+			return
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum345")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# SCRUM-345 Codex Texture Runtime Dump")
 	dump_lines.append("")
-	for control in [codex_main_panel, codex_tabs, codex_content, default_entry, default_portrait]:
+	for control in [codex_main_panel, codex_nav_panel, codex_tabs, codex_content, codex_detail, default_entry, default_portrait, detail_portrait]:
 		var control_node := control as Control
 		var texture_path := ""
 		if control_node is PanelContainer:
 			texture_path = _stylebox_texture_path((control_node as PanelContainer).get_theme_stylebox("panel"))
+		elif control_node is Button:
+			texture_path = _stylebox_texture_path((control_node as Button).get_theme_stylebox("normal"))
 		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control_node.name, str(control_node.get_global_rect()), texture_path])
 	dump_lines.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
 	var dump_file := FileAccess.open("%s/codex_texture_runtime_dump.md" % qa_dir, FileAccess.WRITE)
@@ -6288,14 +6351,28 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	scrum417_codex_dump.append("# SCRUM-417 Codex Character Portrait Runtime Dump")
 	scrum417_codex_dump.append("")
 	scrum417_codex_dump.append("- `CodexPortraitSlot`: `%s`" % str(default_portrait.get_global_rect()))
-	scrum417_codex_dump.append("- `CodexPortraitTextureRect`: `%s`" % str(codex_portrait_texture.get_global_rect()))
-	scrum417_codex_dump.append("- `CodexPortraitMinimumSize`: `%s`" % str(codex_portrait_texture.custom_minimum_size))
-	scrum417_codex_dump.append("- `CodexPortraitStretch`: `%s`" % str(codex_portrait_texture.stretch_mode))
+	scrum417_codex_dump.append("- `CodexDetailPortraitSlot`: `%s`" % str(detail_portrait.get_global_rect()))
+	scrum417_codex_dump.append("- `CodexDetailPortraitTextureRect`: `%s`" % str(codex_portrait_texture.get_global_rect()))
+	scrum417_codex_dump.append("- `CodexDetailPortraitMinimumSize`: `%s`" % str(codex_portrait_texture.custom_minimum_size))
+	scrum417_codex_dump.append("- `CodexDetailPortraitStretch`: `%s`" % str(codex_portrait_texture.stretch_mode))
 	scrum417_codex_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
 	var scrum417_codex_file := FileAccess.open("%s/codex_character_portrait_runtime_dump.md" % scrum417_codex_qa_dir, FileAccess.WRITE)
 	if scrum417_codex_file != null:
 		scrum417_codex_file.store_string("\n".join(scrum417_codex_dump))
 		scrum417_codex_file.close()
+	var scrum438_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum438")
+	DirAccess.make_dir_recursive_absolute(scrum438_qa_dir)
+	var scrum438_dump := PackedStringArray()
+	scrum438_dump.append("# SCRUM-438 Codex V2 Runtime Dump")
+	scrum438_dump.append("")
+	for control in [codex_main_panel, codex_nav_panel, codex_tabs, codex_content, codex_detail, default_entry, default_portrait, detail_portrait]:
+		var c := control as Control
+		scrum438_dump.append("- `%s`: `%s`" % [c.name, str(c.get_global_rect())])
+	scrum438_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	var scrum438_file := FileAccess.open("%s/codex_v2_runtime_dump.md" % scrum438_qa_dir, FileAccess.WRITE)
+	if scrum438_file != null:
+		scrum438_file.store_string("\n".join(scrum438_dump))
+		scrum438_file.close()
 
 	# Полнота данных кодекса.
 	var codex_data := load("res://scripts/codex_data.gd")

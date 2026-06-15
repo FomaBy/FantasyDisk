@@ -72,7 +72,7 @@
 | `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
 | `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer.png`; `assets/sprites/characters/cutout/engineer_*.png` | Реализовано |
-| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cutout/dark_mage_*.png` | Реализовано; SCRUM-286 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated |
+| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source handoff `assets/sprites/characters/v2/dark_mage/dark_mage_v2_idle_source.png` | Реализовано; SCRUM-286 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-424 v2 source handoff ready, not live runtime |
 | `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png` | Реализовано; SCRUM-291 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано; SCRUM-282 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
@@ -106,8 +106,22 @@ alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
 source-sheet layout and QA report. Asset-side handoff copies live in
 `assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png` and
 `assets/sprites/characters/v2/berserk/berserk_v2_sheet_source_handoff.png`.
+Animator integration now replaces the live Berserk full-frame runtime resource
+with v2 `idle` / `walk` / `move` loops in
+`assets/sprites/characters/berserk_spriteframes.tres` and per-frame PNGs under
+`assets/sprites/characters/full_frame/berserk/`. The derived safe sheet is
+`assets/sprites/characters/v2/berserk/berserk_v2_anim_sheet.png`; previous live
+frames are backed up under `docs/design/backups/scrum420_berserk_v2_pre_anim/`.
+Attack animation remains absent by SCRUM-420 scope.
+
+SCRUM-424 adds the Dark Mage v2 Design-source handoff under
+`docs/design/references/characters_v2/dark_mage/`: raw OpenAI source,
+alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
+source-sheet layout, handoff note and QA report. Asset-side handoff copies live
+in `assets/sprites/characters/v2/dark_mage/dark_mage_v2_idle_source.png` and
+`assets/sprites/characters/v2/dark_mage/dark_mage_v2_sheet_source_handoff.png`.
 These are source handoff assets only; they do not replace current runtime
-`berserk_sheet.png` or `berserk_spriteframes.tres` until Animator/Back-end
+`dark_mage_sheet.png` or `dark_mage_spriteframes.tres` until Animator/Back-end
 integration is accepted.
 
 ## Расширенный Ростер 0.1.4 (Фундамент, 2026-06-11)
@@ -657,8 +671,8 @@ SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon ki
 | `ui_hud_bar_fill_*` | `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`, `_ult.png`, `_gold.png` | SCRUM-390 painterly resource fill textures, `512x32` RGBA, optional Back-end use for HP/XP/ULT/gold bars |
 | `ui_frame_pause_end_modal` | `assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png` | SCRUM-330 Design-ready pause/victory/death modal frame, `1280x1024` RGBA transparent. Source safe rect `[170,180,940,670]`, content margins `[170,180,170,174]`; use proportional whole-image frame or verified 9-slice only; runtime content must not overlap dragon heads, side columns, gems, bottom crest or metal border. Metadata: `docs/design/references/ui_overhaul_pause_end/scrum330_pause_end_metadata.json`; Back-end integration handoff: `backend_pause_end_ui_overhaul_integration_task.md` |
 | `ui_result_crest_victory_defeat` | `assets/sprites/ui/result_crests/ui_crest_victory.png`, `assets/sprites/ui/result_crests/ui_crest_defeat.png` | SCRUM-330 result-screen decorative crests accepted for victory/death headers; decorative only in this pass, not content containers |
-| `ui_frame_codex_*` | `assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png`, `_section_panel.png`, `_entry_card.png`, `_entry_card_hover.png`, `_portrait_slot.png`, `_tooltip.png`, `_tab.png`, `_tab_hover.png`, `_tab_pressed.png`, `_tab_disabled.png` | SCRUM-345 Design-ready Codex texture kit generated through `fantasydisk-asset-generator`; metadata and safe-zones in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`; remains the live runtime Codex kit until SCRUM-438 Back-end integration replaces it |
-| `ui_codex_v2_mockup_spec` | `docs/design/mockups/scrum438_codex_v2/spec.md`, `codex_v2_mockup_1920x1080.png`, `codex_v2_layout_metadata.json` | SCRUM-438 Design contract for the full Codex window rebuild; not a runtime texture atlas; Back-end must implement with Control layout/frames and preserve all safe zones |
+| `ui_frame_codex_*` | `assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png`, `_section_panel.png`, `_entry_card.png`, `_entry_card_hover.png`, `_portrait_slot.png`, `_tooltip.png`, `_tab.png`, `_tab_hover.png`, `_tab_pressed.png`, `_tab_disabled.png` | SCRUM-345 Design-ready Codex texture kit generated through `fantasydisk-asset-generator`; metadata and safe-zones in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`; SCRUM-438 reuses these paths as component frames for the live Codex v2 runtime rebuild |
+| `ui_codex_v2_mockup_spec` | `docs/design/mockups/scrum438_codex_v2/spec.md`, `codex_v2_mockup_1920x1080.png`, `codex_v2_layout_metadata.json` | SCRUM-438 Design/runtime contract for the full Codex window rebuild; not a runtime texture atlas; live implementation uses Control layout/frames and preserves recorded safe zones |
 | `ui_frame_ornate_global_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_global_panel.png` | Live global/menu/event/codex panel frame |
 | `ui_frame_ornate_level_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_level_panel.png` | Live level-up/reward main panel |
 | `ui_frame_ornate_card_frame` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_card_frame.png` | Live list/card frame |

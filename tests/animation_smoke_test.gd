@@ -173,14 +173,18 @@ func _test_player_animation() -> void:
 		_fail("Expected Berserk full-frame visual to use SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(body.scale)])
 	if rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 		_fail("Expected hidden fallback cutout rig to receive SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(rig.get("base_scale"))])
-	if body.sprite_frames == null or not body.sprite_frames.has_animation("attack") or not body.sprite_frames.has_animation("attack_primary"):
-		_fail("Expected player SpriteFrames to expose attack and attack_primary animations.")
+	if body.sprite_frames == null:
+		_fail("Expected Berserk player SpriteFrames to load.")
 	if body.sprite_frames.resource_path != "res://assets/sprites/characters/berserk_spriteframes.tres":
-		_fail("Expected Berserk to use the accepted SCRUM-283 SpriteFrames resource.")
-	if body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
-		_fail("Expected Berserk SCRUM-283 SpriteFrames to expose 5 walk/attack/attack_primary frames.")
-	if not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
-		_fail("Expected Berserk walk to loop and attacks to be one-shot.")
+		_fail("Expected Berserk to use the accepted SCRUM-420 v2 SpriteFrames resource.")
+	if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
+		_fail("Expected Berserk SCRUM-420 v2 SpriteFrames to expose idle/walk/move animations.")
+	if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
+		_fail("Expected Berserk SCRUM-420 v2 SpriteFrames to omit attack animations by task scope.")
+	if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:
+		_fail("Expected Berserk SCRUM-420 v2 SpriteFrames to expose 5 idle/walk/move frames.")
+	if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or not body.sprite_frames.get_animation_loop("move"):
+		_fail("Expected Berserk SCRUM-420 v2 idle/walk/move animations to loop.")
 	player.call("play_action_animation", "attack", Vector2.RIGHT)
 	var last_event := player.get("last_weapon_animation_event") as Dictionary
 	if str(last_event.get("action_id", "")) != "attack":
@@ -322,10 +326,20 @@ func _test_player_animation() -> void:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
-		if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
-			_fail("Expected %s accepted SpriteFrames to expose 5 idle/walk/attack/attack_primary frames." % sheet_character_id)
-		if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
-			_fail("Expected %s idle/walk to loop and attacks to be one-shot." % sheet_character_id)
+		if sheet_character_id == "berserk":
+			if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
+				_fail("Expected Berserk SCRUM-420 v2 SpriteFrames to expose idle/walk/move frames.")
+			if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
+				_fail("Expected Berserk SCRUM-420 v2 accepted SpriteFrames to omit attack animations.")
+			if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:
+				_fail("Expected Berserk SCRUM-420 v2 accepted SpriteFrames to expose 5 idle/walk/move frames.")
+			if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or not body.sprite_frames.get_animation_loop("move"):
+				_fail("Expected Berserk SCRUM-420 v2 idle/walk/move to loop.")
+		else:
+			if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
+				_fail("Expected %s accepted SpriteFrames to expose 5 idle/walk/attack/attack_primary frames." % sheet_character_id)
+			if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
+				_fail("Expected %s idle/walk to loop and attacks to be one-shot." % sheet_character_id)
 	player.configure_character("missing_full_frame_test")
 	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
 	rig = player.get_node("VisualRoot/RigRoot") as Node2D

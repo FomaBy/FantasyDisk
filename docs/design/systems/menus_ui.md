@@ -173,9 +173,12 @@ button frames. Runtime smoke writes `build/qa/red_gold_button_sizes.md`.
 
 Back buttons use the Red&Gold `back_*` family and must not be squeezed into
 ornament-cropping widths. `HeroSelectBackButton` uses 240x104 so it resolves to
-the medium back frame; longer `Назад в меню` buttons in Skill Tree, Patch Notes
-and Codex use 260x104. Runtime smoke validates their viewport bounds and content
-zone sizes and writes `build/qa/scrum343/back_button_frames.md`.
+the medium back frame; longer `Назад в меню` buttons in Skill Tree and Patch
+Notes use 260x104. Codex v2 is the screen-specific exception: SCRUM-438 uses a
+compact arrow back button inside the authored `back_button_safe` rect so the
+library frame ornament stays unobstructed. Runtime smoke validates their
+viewport bounds and content zone sizes and writes
+`build/qa/scrum343/back_button_frames.md`.
 
 SCRUM-345 adds a Design-ready Codex-specific texture kit under
 `assets/sprites/ui/frames/codex/`:
@@ -192,17 +195,20 @@ SCRUM-417 increases character portrait density by rendering character
 `CodexPortraitSlot` textures at `216x216` with covered aspect scaling while
 leaving non-character icon slots centered; runtime smoke writes the rect dump to
 `build/qa/scrum417/codex_character_portrait_runtime_dump.md`.
-SCRUM-438 prepares the Codex v2 rebuild Design package without touching runtime:
-OpenAI mockup `docs/design/mockups/scrum438_codex_v2/codex_v2_mockup_1920x1080.png`,
-safe-zone overlay
-`docs/design/mockups/scrum438_codex_v2/codex_v2_safe_zones_annotated_1920x1080.png`,
-spec `docs/design/mockups/scrum438_codex_v2/spec.md` and metadata
-`docs/design/mockups/scrum438_codex_v2/codex_v2_layout_metadata.json`. The v2
-layout keeps six sections, back navigation, list cards, detail panel, portrait
-slots and glossary tooltip, but moves them into explicit safe rects. Back-end
-must build the screen from real Controls/frames, not as one baked mockup image;
-old Codex textures remain live until the runtime integration pass backs them up
-and replaces the layout.
+SCRUM-438 makes the Codex v2 rebuild live in runtime. `_show_codex_screen` now
+builds a real Control hierarchy from the accepted OpenAI mockup/spec:
+`CodexMainPanel`, `CodexNavPanel`, vertical `CodexTabs`, `CodexContent` as the
+scrollable list page, and `CodexDetailPanel` for selected-entry portrait/chips/
+body text. Uniform-scale rects come from
+`docs/design/mockups/scrum438_codex_v2/codex_v2_layout_metadata.json` for
+1280x720 / 1920x1080 / 2560x1440. The full mockup PNG is not wired as a runtime
+atlas; the existing SCRUM-345/SCRUM-403 Codex frame kit remains the component
+frame material. Entry cards are focusable buttons, sections still lazy-build
+and cache, Escape/back returns to main menu, glossary tooltips keep the Codex
+tooltip frame, and character detail portraits keep SCRUM-416 full-frame
+`sprite_path` plus SCRUM-417 covered scaling. QA dumps:
+`build/qa/scrum438/codex_v2_runtime_dump.md` and
+`build/qa/scrum438/codex_v2_no_overlap_matrix.md`.
 
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the accepted Codex baseline. Mockup/spec:

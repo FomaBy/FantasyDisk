@@ -5,6 +5,23 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- Dark Mage v2 Design-source handoff (SCRUM-424): generated the bright+epic
+  unarmed Dark Mage source, alpha-cleaned the checker matte, normalized a
+  `512x512` source cell with pivot `[256,470]`, and added source-sheet handoff,
+  contact preview and QA report under `docs/design/references/characters_v2/dark_mage/`
+  and `build/qa/scrum424_dark_mage_v2/`; Animator/runtime wiring remains follow-up.
+- Berserk v2 Design-source handoff (SCRUM-420): generated the bright+epic
+  unarmed Berserk source, alpha-cleaned the checker matte, normalized a
+  `512x512` source cell with pivot `[256,470]`, and added source-sheet handoff,
+  contact preview and QA report under `docs/design/references/characters_v2/berserk/`
+  and `build/qa/scrum420_berserk_v2/`. Animator integration now routes live
+  Berserk through v2 `idle` / `walk` / `move` SpriteFrames at
+  `assets/sprites/characters/berserk_spriteframes.tres`, derived 5-frame loops
+  from the accepted source, backed up the previous live frames under
+  `docs/design/backups/scrum420_berserk_v2_pre_anim/`, and added contact/GIF/
+  manifest QA artifacts under `build/qa/scrum420_berserk_v2_anim/`. Attack
+  frames remain intentionally absent for this v2 row; animation and runtime
+  smoke pass.
 - Settings v2 rebuild mockup/spec (SCRUM-439): added the OpenAI-generated
   all-tabs Settings redesign package with transparent frame candidates, exact
   safe zones, responsive rules for 1280x720 / 1920x1080 / 2560x1440, and Back-
@@ -27,6 +44,11 @@
   `build/qa/scrum422_character_v2_anchor/`.
 
 ### Fixed
+- Codex v2 runtime rebuild (SCRUM-438): the live Codex screen now follows the
+  accepted v2 layout with left section navigation, center scrollable entry list,
+  right detail panel, compact safe-zone back arrow, preserved data sections and
+  SCRUM-416/SCRUM-417 portrait routing/scaling. Runtime UI smoke, no-overlap
+  matrix and full runtime smoke pass; QA dumps live under `build/qa/scrum438/`.
 - Economy choice-card width (SCRUM-437): rest, upgrade, event and Attribute
   Shop choices now use the wide `ui_frame_economy_choice_card_wide*.png`
   runtime frames with source-space safe rect metadata, responsive 360/420/480px

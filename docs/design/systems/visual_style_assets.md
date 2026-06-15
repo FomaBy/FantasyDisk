@@ -63,6 +63,17 @@ bottom-center pivot `(256, 470)`, and target body height around `360-380 px`
 inside the cell so runtime scale `0.39-0.40` reads about twice the average
 standard monster screen height.
 
+SCRUM-424 adds the Dark Mage v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/dark_mage/dark_mage_v2_source_clean.png`,
+`dark_mage_v2_idle_cell_512.png`, `dark_mage_v2_sheet_source_handoff.png`,
+`dark_mage_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum424_dark_mage_v2_contact.png` and QA report
+`build/qa/scrum424_dark_mage_v2/scrum424_dark_mage_v2_alpha_size_report.json`.
+The accepted source is a bright violet/purple unarmed void caster with empty
+glowing hands, transparent RGBA, visible height `376 px` and pivot `(256,470)`;
+it is a source handoff only until Animator/Back-end builds real idle/move
+SpriteFrames.
+
 SCRUM-165 adds Priest with canonical Design assets `assets/sprites/characters/priest.png`, `assets/sprites/weapons/priest_reliquary.png`, `assets/sprites/weapons/priest_censer.png`, and `assets/sprites/weapons/priest_chime.png`; source/result details are tracked in `docs/tasks/codex_design_priest_art_task.md`. Priest rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_priest_rig_motion_task.md`.
 
 SCRUM-162 adds Biologist gameplay with canonical Design assets ready: `assets/sprites/characters/biologist.png`, `assets/sprites/weapons/biologist_spore_lens.png`, `assets/sprites/weapons/biologist_sample_injector.png`, and `assets/sprites/weapons/biologist_symbiote_seed.png`; contact preview is `docs/design/previews/biologist_art_contact.png`, and source/result notes live in `docs/tasks/codex_design_biologist_art_task.md`. Biologist rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_biologist_rig_motion_task.md`.

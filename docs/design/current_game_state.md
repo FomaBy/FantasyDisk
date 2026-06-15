@@ -350,8 +350,25 @@ SCRUM-420 подготовил отдельный per-class Berserk v2 Design-so
 `build/qa/scrum420_berserk_v2/scrum420_berserk_v2_alpha_size_report.json`.
 Персонаж яркий/эпичный, без оружия в руках, с battle paint/fur/rage aura,
 прозрачный RGBA, visible height `376 px` в `512x512` cell и pivot `[256,470]`.
-Это не live runtime replacement; current 0.1.5 `berserk_sheet.png` /
-`berserk_spriteframes.tres` остаются активными до Animator/Back-end integration.
+Animator pass подключил live `assets/sprites/characters/berserk_spriteframes.tres`
+к v2 `idle` / `walk` / `move` 5-frame loops, derived from the accepted source,
+with runtime frames under `assets/sprites/characters/full_frame/berserk/` and a
+48px-gutter source sheet at
+`assets/sprites/characters/v2/berserk/berserk_v2_anim_sheet.png`. Previous live
+frames are backed up under `docs/design/backups/scrum420_berserk_v2_pre_anim/`.
+Attack animation is intentionally absent for this v2 row; animation and runtime
+smoke pass.
+
+SCRUM-424 подготовил per-class Dark Mage v2 Design-source handoff:
+`docs/design/references/characters_v2/dark_mage/dark_mage_v2_source_clean.png`,
+`dark_mage_v2_idle_cell_512.png`, `dark_mage_v2_sheet_source_handoff.png`,
+`dark_mage_v2_design_handoff.md` и QA report
+`build/qa/scrum424_dark_mage_v2/scrum424_dark_mage_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный фиолетовый void-caster, без staff/wand/book/orb/weapon в
+руках, прозрачный RGBA, visible height `376 px` в `512x512` cell и pivot
+`[256,470]`. Это не live runtime replacement; current 0.1.5
+`dark_mage_sheet.png` / `dark_mage_spriteframes.tres` остаются активными до
+Animator/Back-end integration.
 
 SCRUM-286 добавил Dark Mage sheet на этом пути:
 `assets/sprites/characters/dark_mage_sheet.png` (`1920x1152`, 5 `idle`, 5
@@ -437,7 +454,7 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: ближний бой, физический урон, выживаемость.
 - Базовое здоровье: 88.
 - Базовая скорость: 235.
-- Спрайты: `assets/sprites/characters/berserk_unarmed.png`, Design-ready source sheet `assets/sprites/characters/berserk_sheet.png`, legacy fallback `assets/sprites/characters/berserk_walk_sheet_v2.png`, cutout-части `assets/sprites/characters/cutout/berserk_*.png`. 0.1.6 v2 source handoff: `assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png` и `berserk_v2_sheet_source_handoff.png` (Design-source only; not live runtime yet).
+- Спрайты: `assets/sprites/characters/berserk_unarmed.png`, historical 0.1.5 source sheet `assets/sprites/characters/berserk_sheet.png`, legacy fallback `assets/sprites/characters/berserk_walk_sheet_v2.png`, cutout-части `assets/sprites/characters/cutout/berserk_*.png`. Live 0.1.6 v2 runtime uses `assets/sprites/characters/berserk_spriteframes.tres` with 5-frame `idle` / `walk` / `move` loops from `assets/sprites/characters/full_frame/berserk/`; source/handoff assets live under `assets/sprites/characters/v2/berserk/`.
 - Особенность: оружие отделено от персонажа и крепится к `WeaponSocket`.
 
 Базовые характеристики:
@@ -845,7 +862,7 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 
 ## Кодекс (Энциклопедия)
 
-Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»). Character portraits in Codex use the same SCRUM-416 full-frame idle `sprite_path` source as Hero Select; SCRUM-417 renders the character portrait texture at `216x216` with covered scaling inside the Codex portrait slot. QA path/rect dumps: `build/qa/scrum416/codex_character_portrait_runtime_paths.md`, `build/qa/scrum417/codex_character_portrait_runtime_dump.md`.
+Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»). SCRUM-438 rebuild сделал live Codex v2: единый main frame, шесть вертикальных вкладок слева, центральный scrollable список записей и правый detail panel с портретом/чипами/текстом. Layout масштабируется uniform-scale из `docs/design/mockups/scrum438_codex_v2/codex_v2_layout_metadata.json`; mockup PNG не используется как runtime atlas. Character portraits in Codex use the same SCRUM-416 full-frame idle `sprite_path` source as Hero Select; SCRUM-417 covered scaling preserved in the right detail portrait. QA path/rect dumps: `build/qa/scrum416/codex_character_portrait_runtime_paths.md`, `build/qa/scrum417/codex_character_portrait_runtime_dump.md`, `build/qa/scrum438/codex_v2_runtime_dump.md`, `build/qa/scrum438/codex_v2_no_overlap_matrix.md`.
 
 Разделы: Персонажи (17 игровых классов, стиль игры, сильные/слабые стороны, оружие), Монстры (11 обычных + 4 элитки + 6 мини-элиток + 5 боссов, поведение и названные умения), Артефакты (все из ARTIFACTS + SHOP_ITEMS с иконками), Характеристики (8 базовых + производные из STAT_DEFINITIONS с влияниями). Разделы строятся лениво при первом открытии вкладки и кэшируются — меню не фризит.
 
@@ -861,15 +878,16 @@ safe-zone metadata
 проверяет фактические texture paths, а QA dump пишется в
 `build/qa/scrum345/codex_texture_runtime_dump.md`.
 
-SCRUM-438 подготовил Design-first Codex v2 rebuild package: OpenAI-generated
+SCRUM-438 подключил Codex v2 rebuild в runtime по OpenAI-generated package:
 mockup `docs/design/mockups/scrum438_codex_v2/codex_v2_mockup_1920x1080.png`,
 safe-zone overlay
 `docs/design/mockups/scrum438_codex_v2/codex_v2_safe_zones_annotated_1920x1080.png`,
 spec `docs/design/mockups/scrum438_codex_v2/spec.md` and machine-readable
 layout metadata
 `docs/design/mockups/scrum438_codex_v2/codex_v2_layout_metadata.json`. Runtime
-still uses the SCRUM-345/SCRUM-403 Codex kit until Back-end consumes the v2
-handoff; no `scripts/ui_screens.gd` behavior changed in this Design pass.
+uses real Controls and the accepted Codex frame kit paths, not the full mockup
+PNG as a baked atlas; old texture paths remain because the v2 pass reuses them
+as component frames instead of replacing art.
 
 SCRUM-331 prepared a Design-ready progression/skill-tree frame kit and mockup
 while preserving the existing Codex kit. Mockup/spec:

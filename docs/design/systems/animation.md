@@ -94,6 +94,27 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   Animator handoff after source acceptance should build `idle` 4-5f loop and
   `move` 5+f loop SpriteFrames/GIF/contact previews from the per-class sources,
   without changing gameplay, attack states, balance, collision, or weapon logic.
+- SCRUM-420 Animator pass promotes Berserk's accepted v2 source into the live
+  runtime resource `assets/sprites/characters/berserk_spriteframes.tres`.
+  The resource now exposes `idle`, `walk`, and `move` only, each with 5 looping
+  `512x512` full-frame frames derived from
+  `docs/design/references/characters_v2/berserk/berserk_v2_idle_cell_512.png`.
+  Runtime frames live under `assets/sprites/characters/full_frame/berserk/`,
+  the safe 48px-gutter export sheet lives at
+  `assets/sprites/characters/v2/berserk/berserk_v2_anim_sheet.png`, and the
+  previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum420_berserk_v2_pre_anim/`. QA artifacts live under
+  `build/qa/scrum420_berserk_v2_anim/`; animation and runtime smokes pass.
+  The bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-420 explicitly
+  excludes attack animation.
+- SCRUM-424 adds the Dark Mage v2 Design-source handoff under
+  `docs/design/references/characters_v2/dark_mage/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet and QA
+  report. Asset-side handoff copies live in
+  `assets/sprites/characters/v2/dark_mage/`. The sheet repeats the accepted
+  source for idle/move placeholders only; Animator must create real `idle` and
+  `move/walk` frames before SpriteFrames/runtime integration.
 - SCRUM-298 Design standard: playable character full-frame redraws now use
   `docs/design/references/character_animation_style_sheet_0_1_5.md` as the
   source of truth for art direction, sheet rows, pivots and naming. Canonical

@@ -1,6 +1,6 @@
 # ART/UX: Окно кодекса — ПОЛНОСТЬЮ переделать по макапу (с нуля)
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.6
@@ -43,7 +43,7 @@ responsive), показать превью PNG, затем воспроизве�
 ## Acceptance Criteria
 - [x] Сгенерирован макап кодекса; единый стиль и rebuild layout зафиксированы в Design spec.
 - [x] Все секции, портреты/арт и текст имеют content-зоны/safe rects для 1280x720, 1920x1080 и 2560x1440.
-- [ ] Runtime окно собрано строго по макапу; старое в бэкап; navigation/smoke/no-overlap matrix зелёные. Отложено до Back-end integration, потому что этот pass Design-only.
+- [x] Runtime окно собрано строго по макапу; старое в бэкап; navigation/smoke/no-overlap matrix зелёные. Back-end runtime integration completed 2026-06-15; old Codex texture paths reused as component frames, so no backup/removal was needed.
 
 ## Документация
 docs/design/systems/menus_ui.md, content_registry, current_game_state.
@@ -173,3 +173,39 @@ Required verification after integration: `tests/runtime_smoke_test.gd`,
 Codex screenshots/dumps under `build/qa/scrum438/`. Keep reasoning High/no low.
 Do not touch Settings/SCRUM-439, Hero Select/SCRUM-436, Berserk/SCRUM-420,
 Animator work, balance, or unrelated UI surfaces in this pass.
+
+## Результат Back-end Runtime Integration (2026-06-15)
+
+Статус: `done` — live Codex runtime rebuilt по SCRUM-438 v2 spec.
+
+Что сделано:
+- `scripts/ui_screens.gd`: `_show_codex_screen` переведен с прежней top-tabs
+  layout на v2 каркас: `CodexMainPanel`, `CodexNavPanel`, вертикальные
+  `CodexTabs`, центральный `CodexContent` scroll-list и правый
+  `CodexDetailPanel`.
+- Layout использует uniform-scale rects из
+  `docs/design/mockups/scrum438_codex_v2/codex_v2_layout_metadata.json`;
+  runtime mockup PNG не подключался как atlas.
+- Все существующие Codex data sections сохранены: characters, monsters,
+  artifacts, stats, glossary, ascensions. Разделы по-прежнему lazy-build/cache.
+- Entry cards стали focusable/clickable list buttons; выбор записи обновляет
+  detail panel с portrait/chips/body text.
+- SCRUM-416 portrait source routing сохранён; SCRUM-417 covered scaling
+  сохранён для detail portrait. Glossary tooltip semantics и Codex tooltip frame
+  сохранены.
+- Старые Codex texture paths не удалялись и не бэкапились, потому что v2 runtime
+  переиспользует их как component frames вместо замены art assets.
+
+QA / Tests:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script res://tests/runtime_smoke_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script res://tests/ui_no_overlap_matrix_test.gd` — PASS.
+- QA dumps:
+  `build/qa/scrum438/codex_v2_runtime_dump.md`,
+  `build/qa/scrum438/codex_v2_no_overlap_matrix.md`.
+
+Docs updated:
+- `CHANGELOG.md`;
+- `docs/design/current_game_state.md`;
+- `docs/design/systems/menus_ui.md`;
+- `docs/design/content_registry.md`.

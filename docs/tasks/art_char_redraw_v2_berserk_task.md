@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Берсерк» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -45,8 +45,8 @@ QA: in_progress (2026-06-15)
 
 ## Acceptance Criteria
 - [x] «Берсерк» перерисован v2: ярко/эпично по классу, прозрачный фон (нет белого/каймы/карманов).
-- [ ] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
-- [ ] Старое в бэкап; animation+runtime smoke зелёные; превью-гиф; CHANGELOG.
+- [x] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
+- [x] Старое в бэкап; animation+runtime smoke зелёные; превью-гиф; CHANGELOG.
 - [x] Design-source handoff prepared: 512-cell source, pivot/height report, placeholder source-sheet layout, dark-bg preview.
 
 ## Документация
@@ -130,3 +130,47 @@ Acceptance (Design-source scope):
 - [~] animation+runtime smoke + gif — Animator follow-up.
 
 Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
+
+## Animator Takeover (2026-06-15)
+
+Статус: `in_progress` — беру Animator-фазу после принятого Design-source PASS.
+Scope: собрать реальные idle + move/walk v2 loop-кадры из accepted
+`berserk_v2_idle_cell_512.png`, обновить live SpriteFrames/runtime путь
+`assets/sprites/characters/berserk_spriteframes.tres`, положить старые live ассеты
+в docs backup, создать manifest/contact/GIF QA artifacts, прогнать animation smoke
+и runtime smoke. Attack остаётся отсутствующим по требованиям этой v2 строки.
+
+## Animator Result (2026-06-15)
+
+Статус: `done` — Berserk v2 Animator/runtime integration завершена.
+
+Что сделано:
+- Из accepted source `docs/design/references/characters_v2/berserk/berserk_v2_idle_cell_512.png`
+  собраны реальные 5-frame `idle` breathing loop и 5-frame `walk`/`move` loop.
+- Live runtime frames обновлены в `assets/sprites/characters/full_frame/berserk/`
+  (`berserk_idle_00..04.png`, `berserk_walk_00..04.png`), cell size `512x512`,
+  pivot contract `[256,470]` сохранён.
+- Live SpriteFrames обновлён: `assets/sprites/characters/berserk_spriteframes.tres`
+  exposes `idle`, `walk`, `move` only. `attack` / `attack_primary` intentionally
+  absent by v2 task scope.
+- Safe source sheet exported:
+  `assets/sprites/characters/v2/berserk/berserk_v2_anim_sheet.png`
+  (`512x512` cells, `48px` gutters/outer padding).
+- QA artifacts:
+  `build/qa/scrum420_berserk_v2_anim/animation_manifest.json`,
+  `manifest_validator_output.txt`, `scrum420_berserk_v2_anim_contact.png`,
+  `berserk_v2_idle.gif`, `berserk_v2_walk.gif`.
+- Previous live SpriteFrames/idle/walk/attack_primary PNGs backed up under
+  `docs/design/backups/scrum420_berserk_v2_pre_anim/`.
+- Documentation updated: `CHANGELOG.md`, `docs/design/systems/animation.md`,
+  `docs/design/content_registry.md`, `docs/design/current_game_state.md`.
+
+Validation:
+- Bundled animation-director manifest validator was run and saved to
+  `build/qa/scrum420_berserk_v2_anim/manifest_validator_output.txt`. It reports
+  the expected `missing attack_primary animation` because the current generic
+  validator requires attack globally, while SCRUM-420 explicitly says
+  **attack НЕ делать**. This is a validator-contract mismatch, not a runtime
+  blocker.
+- `tests/animation_smoke_test.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — PASS.
