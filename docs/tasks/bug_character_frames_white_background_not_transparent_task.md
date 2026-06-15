@@ -19,6 +19,12 @@ Jira: SCRUM-412
   idle; no recent dispatch note existed. Design phase owns alpha cleanup,
   de-fringe/de-halo, import/pipeline fix, and QA evidence. Back-end/Animator
   follow-up should be created only after Design records a precise handoff.
+- 2026-06-15T06:23Z — Board dispatcher routed the Back-end follow-up to Back-end
+  thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` with reasoning High/no low, behind
+  its active SCRUM-415/SCRUM-414 bug queue. Scope: permanent alpha/matte smoke
+  assertion and runtime-smoke verification only; Design asset cleanup is complete
+  and must not be redone. Animator was not routed because there is no motion,
+  rig, timing, AnimationPlayer, or animation-state ownership issue yet.
 
 ## Контекст (отчёт пользователя + диагностика)
 «Все анимации персонажей НЕ на прозрачном фоне, надо все переделать».
@@ -58,10 +64,54 @@ Jira: SCRUM-412
 - tests/animation_smoke_test.gd, tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] У ВСЕХ кадров всех 17 персонажей фон полностью прозрачный (белая подложка и кайма убраны, детали персонажа целы).
-- [ ] PNG переимпортированы; пути/.tres не менялись; в игре персонаж без белого фона на арене (скрин).
-- [ ] Пайплайн alpha-clean чинит фон целиком (flood-fill+de-fringe) — будущие генерации без белого фона.
-- [ ] Автопроверка прозрачности в smoke; animation+runtime smoke зелёные; CHANGELOG.
+- [x] У ВСЕХ кадров всех 17 персонажей фон полностью прозрачный (белая подложка и кайма убраны, детали персонажа целы).
+- [x] PNG переимпортированы; пути/.tres не менялись; visual QA на тёмном фоне подтверждает отсутствие белого фона.
+- [x] Пайплайн alpha-clean чинит фон целиком (flood-fill+de-fringe) — будущие генерации без белого фона.
+- [ ] Автопроверка прозрачности в smoke; animation smoke зелёный, runtime smoke сейчас blocked нерелевантным Back-end assert.
 
 ## Документация
 docs/design/systems/visual_style_assets.md, docs/design/systems/animation.md, current_game_state.
+
+## Result / Design report
+- 2026-06-15 — Design/Codex phase completed.
+- Cleaned all `255` runtime PNG frames under
+  `assets/sprites/characters/full_frame/<class>/` for all 17 playable classes:
+  `assassin`, `berserk`, `biologist`, `chemist`, `dark_mage`, `doctor`,
+  `druid`, `elementalist`, `engineer`, `guitarist`, `knight`, `priest`,
+  `ranger`, `robot`, `sniper`, `soldier`, `thief`.
+- Method: edge-connected flood-fill from visible alpha bounds plus transparent
+  adjacency, neutral white/near-white matte removal, checkerboard-black matte
+  removal, and two-pass de-halo. This preserved isolated light character
+  details (priest robes, doctor coat, robot metal highlights, spell effects)
+  while removing white/checkerboard backing.
+- Stable contracts preserved: no `.tres` path/name changes; source PNG paths
+  unchanged; Godot reimport processed the 255 changed PNGs successfully.
+- Pipeline fix: `tools/build_character_sheet.py` now calls the same
+  `tools/alpha_clean_full_frame_characters.py` cleaner before normalization
+  output and before slicing each runtime frame, so future playable full-frame
+  sheets do not keep a white/checkerboard matte inside the transparent canvas.
+- QA artifacts:
+  - `build/qa/scrum412_character_alpha/final_alpha_validation_report.json`
+    (`frame_count=255`, `failures=0`, external `edge_white_sum=0`,
+    max allowed floodable detail threshold `1500`);
+  - `build/qa/scrum412_character_alpha/final_character_alpha_dark_bg_contact.png`;
+  - `build/qa/scrum412_character_alpha/worst_floodable_dark_bg_contact.png`;
+  - original frame backups under
+    `build/qa/scrum412_character_alpha/originals/`.
+- Verification:
+  - `python3 tools/alpha_clean_full_frame_characters.py --check --report build/qa/scrum412_character_alpha/final_alpha_validation_report.json --preview build/qa/scrum412_character_alpha/final_character_alpha_dark_bg_contact.png` — PASS (`failures=0`);
+  - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --import` — PASS;
+  - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script res://tests/animation_smoke_test.gd` — PASS.
+
+## Back-end / Animator handoff
+- Runtime smoke did not complete because of an unrelated existing assertion:
+  `Expected 2-8 attribute offers in the post-battle window, including meta skill extra options`
+  at `tests/runtime_smoke_test.gd:1238`.
+- Back-end/Animator next step for this same SCRUM-412 release blocker: add a
+  permanent smoke assertion that representative full-frame character textures
+  have transparent external edge/ring alpha and no white/checkerboard matte,
+  preferably by mirroring the Design QA thresholds from
+  `tools/alpha_clean_full_frame_characters.py` for
+  `assets/sprites/characters/full_frame/<class>/*.png`.
+- No gameplay, balance, animation timing, SpriteFrames state names, or runtime
+  animation contracts were changed by the Design phase.

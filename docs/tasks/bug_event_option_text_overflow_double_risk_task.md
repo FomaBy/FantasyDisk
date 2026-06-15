@@ -1,6 +1,6 @@
 # BUG: События — текст опций не влезает в рамку + дубль «Риск: Риск:»
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -10,6 +10,13 @@ Jira: SCRUM-415
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Dispatch
+- 2026-06-15T06:13Z — Board dispatcher routed to Back-end thread
+  `019eabd9-780b-78a2-9f4b-e7203d659ef2` as priority 2 in the Back-end bug
+  queue (reasoning High/no low). Active-owner audit: Back-end was idle; Design
+  main was actively working SCRUM-412; Designer 2 and Animator had no eligible
+  owner work. Back-end owns UI text/layout/tests/docs for this bug.
 
 ## Контекст (отчёт пользователя + диагностика)
 «В эвентах текст опций не поместился в рамки» (скрин «Зеркальный фантом»).

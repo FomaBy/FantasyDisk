@@ -100,6 +100,16 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   old cutout body cannot cover the accepted redraw. The hidden rig remains only
   as a compatibility/socket/action-event anchor. Characters without full-frame
   frames keep the previous fallback: hidden `Body`, visible cutout `RigRoot`.
+- SCRUM-412 cleaned the playable full-frame runtime PNG set at
+  `assets/sprites/characters/full_frame/<class>/`: all 17 classes and all 255
+  `idle` / `walk` / `attack_primary` frames now use real transparent alpha
+  rather than a white/checkerboard matte inside the `384x384` canvas. The
+  `SpriteFrames` resources and animation timings were not changed. Future
+  playable sheet builds must run `tools/build_character_sheet.py`, which now
+  calls `tools/alpha_clean_full_frame_characters.py` to remove edge-connected
+  white/near-white/checkerboard matte from the visible alpha bounds and de-halo
+  the silhouette before writing sliced frames. QA proof lives under
+  `build/qa/scrum412_character_alpha/`; Godot import and animation smoke pass.
 - SCRUM-283 integrated Berserk's accepted unarmed source sheet
   `assets/sprites/characters/berserk_sheet.png` into runtime SpriteFrames at
   `assets/sprites/characters/berserk_spriteframes.tres`: `walk` 5f loop,

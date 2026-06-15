@@ -300,6 +300,16 @@ rig сохраняется только как невидимый compatibility/
 для классов без full-frame кадров fallback остаётся прежним: `Body` скрыт,
 cutout `RigRoot` видим.
 
+SCRUM-412 очистил полный playable full-frame runtime set от белой/checkerboard
+подложки: все `255` PNG в
+`assets/sprites/characters/full_frame/<class>/` для 17 классов теперь имеют
+настоящую прозрачную альфу внутри `384x384` canvas, без изменения путей,
+`<class_id>_spriteframes.tres`, state names или timings. QA на тёмном фоне и
+пиксельная проверка: `build/qa/scrum412_character_alpha/`. Будущие сборки
+листов должны проходить через `tools/build_character_sheet.py`, где включён
+edge-connected alpha-clean/de-halo из
+`tools/alpha_clean_full_frame_characters.py`.
+
 SCRUM-286 добавил Dark Mage sheet на этом пути:
 `assets/sprites/characters/dark_mage_sheet.png` (`1920x1152`, 5 `idle`, 5
 `walk`, 5 `attack_primary`, transparent RGBA). Тёмный маг остаётся без

@@ -300,6 +300,16 @@ Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_ta
 
 The expanded 0.1.4 class weapon visual set covers 17 classes and 51 starting weapons. New class full-art PNGs live in `assets/sprites/characters/` at `512x512` with transparent background and cutout-ready silhouettes. SCRUM-168 adds Soldier with canonical `soldier.png`, `soldier_rifle.png`, `soldier_grenade.png`, and `soldier_bayonet.png`; rig/cutout/motion is tracked separately in `docs/tasks/animation_soldier_rig_motion_task.md`. SCRUM-169 adds Thief with canonical `thief.png`, `thief_coin_pouch.png`, `thief_shadow_cloak.png`, and `thief_smoke_bomb.png`; rig/cutout/motion is tracked separately in `docs/tasks/animation_thief_rig_motion_task.md`. SCRUM-163 adds Elementalist with canonical `elementalist.png`, `elementalist_orb_ring.png`, `elementalist_prism_focus.png`, and `elementalist_meteor_core.png`; rig/cutout/motion is tracked separately in `docs/tasks/animation_elementalist_rig_motion_task.md`. SCRUM-167 adds Sniper with canonical `sniper.png`, `sniper_deadeye_rifle.png`, `sniper_spotter_scope.png`, and `sniper_shatter_rounds.png`; rig/cutout/motion is tracked separately in `docs/tasks/animation_sniper_rig_motion_task.md`. Later Class Sheet additions Priest, Biologist, Robot and Engineer also have canonical kits; Engineer is the final 17th Back-end class, with rig/cutout/motion tracked in `docs/tasks/animation_engineer_rig_motion_task.md`.
 
+Playable full-frame animation PNGs under
+`assets/sprites/characters/full_frame/<class>/` must be `384x384` RGBA with
+real transparent alpha, not a white/checkerboard matte hidden inside the
+visible bounds. SCRUM-412 cleaned all 255 current playable frames and established
+`tools/alpha_clean_full_frame_characters.py` as the validation/fix tool;
+`tools/build_character_sheet.py` calls the same edge-connected matte removal
+and de-halo pass for future full-frame character sheet slices. QA proof:
+`build/qa/scrum412_character_alpha/final_character_alpha_dark_bg_contact.png`
+and `build/qa/scrum412_character_alpha/final_alpha_validation_report.json`.
+
 All weapon visuals live in `assets/sprites/weapons/` at `256x256` with transparent background. The active style target is polished cartoon dark fantasy: strong black silhouette, readable object shape at `40x40`, compact controlled glow, material detail, and no text/watermark/built-in UI frame. Weapon art v2 pass 2026-06-12 replaced the Knight trio (`long_spear.png`, `tower_shield.png`, `holy_flail.png`) with polished noble equipment, removed fallback texture links from weapon scenes, and reduced socket display scale across oversized weapons. The raw and socket QA sheets are `docs/design/previews/weapon_v2_assets_contact.png` and `docs/design/previews/weapon_v2_socket_contact.png`.
 
 Per-weapon socket/display notes are tracked in `docs/design/systems/characters_weapons.md` and the Design handoff task `docs/tasks/design_all_classes_three_weapons_visual_upgrade_task.md`.

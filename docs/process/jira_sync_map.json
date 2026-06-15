@@ -1998,5 +1998,10 @@
   "key": "SCRUM-415",
   "status": "В работе",
   "desc_hash": "5093048b50cb2d0ec66aba22cc94d822"
+ },
+ "bug_new_character_art_not_shown_heroselect_codex_task.md": {
+  "key": "SCRUM-416",
+  "status": "К выполнению",
+  "desc_hash": "dec0cb481f8fee56604e951e17cab8ae"
  }
 }
