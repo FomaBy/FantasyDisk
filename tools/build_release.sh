@@ -36,6 +36,14 @@ echo "==> Перенос свежей сборочной инфраструкт�
 cp "${REPO_DIR}/export_presets.cfg" "${WORKTREE_DIR}/export_presets.cfg"
 mkdir -p "${WORKTREE_DIR}/assets"
 cp "${REPO_DIR}/assets/icon.ico" "${WORKTREE_DIR}/assets/icon.ico"
+# Бандлим gitignored секрет вебхука фидбека в билд (иначе на чужих ПК «вебхук не
+# настроен» → локальное сохранение). include_filter в export_presets.cfg его включает.
+if [[ -f "${REPO_DIR}/feedback_webhook.cfg" ]]; then
+  cp "${REPO_DIR}/feedback_webhook.cfg" "${WORKTREE_DIR}/feedback_webhook.cfg"
+  echo "    feedback_webhook.cfg скопирован в worktree (фидбек заработает на тестерских ПК)"
+else
+  echo "    ВНИМАНИЕ: feedback_webhook.cfg не найден — фидбек в сборке будет сохранять локально"
+fi
 
 echo "==> Импорт ресурсов (headless)"
 "${GODOT}" --headless --import --path "${WORKTREE_DIR}" >/dev/null 2>&1 || true
