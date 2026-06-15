@@ -2252,5 +2252,10 @@
  "backend_generate_asset_skill_task 2.md": {
   "key": "SCRUM-324",
   "status": "К выполнению"
+ },
+ "cleanup_assets_dedup_size_reduction_task.md": {
+  "key": "SCRUM-418",
+  "status": "К выполнению",
+  "desc_hash": "56270073269bfe0470c9b60e2cb2cb4c"
  }
 }
