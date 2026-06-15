@@ -82,3 +82,29 @@ QA: in_progress (2026-06-15)
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED — экран «Докачка» вписывается + опции читаемо доступны/недоступны
+
+Проверено (фактически, против HEAD — фикс закоммичен; чужой 412 event-WIP в working-tree сломал компиляцию, к 413 не относится):
+- **Переполнение убрано** (ui_screens.gd `_show_attribute_shop`): панель не фикс-660 —
+  `anchor_bottom=1.0`, `offset_top=40`, `offset_bottom=-40` → высота = вьюпорт−80px
+  (вписывается в 1280×720 и узкие окна). Контент в `ScrollContainer`
+  (`horizontal_scroll_mode=SCROLL_MODE_DISABLED`) → опции + «Обновить»/«Пропустить»
+  достижимы прокруткой. No-overlap дамп: AttributeShopPanel адаптивна (~576-640px vs
+  прежние фикс-660).
+- **Недоступные опции затемнены** (`_refresh_attribute_shop`): при `money < buy_cost`
+  `offer_button.disabled=true` + `modulate=Color(0.5,0.5,0.55,0.85)` (серая) + tooltip —
+  явно видно «нет золота», а не «сломано».
+- **Кликабельность**: оверлеи/иконки карточки не перехватывают клик (mouse_filter IGNORE),
+  кликает Button; affordable-карточка enabled, unaffordable disabled+серая.
+- **Тесты (HEAD изолированно)**: `runtime_smoke_test` + `runtime_smoke_ui_test` +
+  `ui_no_overlap_matrix_test` — все passed. HEAD компилируется.
+
+Acceptance:
+- [x] «Докачка» вписывается на 1280×720/1920×1080/2560×1440 и узких окнах; нижние кнопки достижимы (scroll).
+- [x] Опции кликаются когда доступны; недоступные серые/disabled + tooltip, не выглядят активными.
+- [x] Оверлеи не блокируют клики; no-overlap; smoke + matrix зелёные.
+
+Статус done. Баги: нет. Закрывает watch-item attribute-shop overflow из QA SCRUM-406.
+(Примечание: working-tree имел parse error от незакоммиченного 412 event-WIP — не относится к 413, фикс 413 в HEAD зелёный.)

@@ -1982,21 +1982,21 @@
  "bug_character_frames_white_background_not_transparent_task.md": {
   "key": "SCRUM-412",
   "status": "В работе",
-  "desc_hash": "43367842f08e2546a0134aa655ffeb8e"
+  "desc_hash": "787e8a37c6365d5ae393cdd136eb6cfa"
  },
  "bug_attribute_shop_overflow_and_unclickable_options_task.md": {
   "key": "SCRUM-413",
-  "status": "К выполнению",
-  "desc_hash": "4d4ab1724bd9eff4b1a871bf97dff54e"
+  "status": "Готово",
+  "desc_hash": "d6764b37d6445a940a92ee2b6da40b7d"
  },
  "bug_elite_boss_health_bar_offscreen_too_high_task.md": {
   "key": "SCRUM-414",
-  "status": "К выполнению",
-  "desc_hash": "a053b645c5acc2fbe6a887a9ddae2c6e"
+  "status": "В работе",
+  "desc_hash": "e0ecd9bfac4a3a57704e4b18aa742262"
  },
  "bug_event_option_text_overflow_double_risk_task.md": {
   "key": "SCRUM-415",
-  "status": "К выполнению",
-  "desc_hash": "29c37625034e3ecc1c100a6679b3ccdf"
+  "status": "В работе",
+  "desc_hash": "5093048b50cb2d0ec66aba22cc94d822"
  }
 }
