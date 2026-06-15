@@ -1,12 +1,20 @@
 # ART/ТЕХ: Перерисовка персонажей v2 — ЯРКО и ЭПИЧНО, move+idle, 2× монстра — ОПОРНАЯ
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-422
+
+## Dispatcher Dispatch (2026-06-15)
+
+Sent to Design main thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` as the first
+0.1.6 character-redraw anchor. Keep reasoning High/no low. Scope starts with
+Design/source work only: create the bright+epic class style-sheet, transparent
+source art/spec, size/pivot format, and one accepted exemplar/handoff. Do not
+route Animator work until Design source assets and handoff are accepted.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.

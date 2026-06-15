@@ -1352,7 +1352,7 @@
  "backend_quit_confirmation_dialog_and_escape_task.md": {
   "key": "SCRUM-319",
   "status": "Готово",
-  "desc_hash": "325403f146085121a6fa251c1111c1ac"
+  "desc_hash": "f1f6d4763398610ccb7f19155945d8d0"
  },
  "design_hero_select_carousel_frame_from_carusel_ref_task.md": {
   "key": "SCRUM-320",
@@ -2261,86 +2261,91 @@
  "art_char_redraw_v2_assassin_task.md": {
   "key": "SCRUM-419",
   "status": "К выполнению",
-  "desc_hash": "58d3f255dca79048a0ff509bc4b4c03c"
+  "desc_hash": "23e39519fe1bb02e6b68a4faea0494a1"
  },
  "art_char_redraw_v2_berserk_task.md": {
   "key": "SCRUM-420",
   "status": "К выполнению",
-  "desc_hash": "04cf81a190b0173086fa6beb3f37873a"
+  "desc_hash": "b9eccdb4392a4ef2c12db4c792fbd435"
  },
  "art_char_redraw_v2_biologist_task.md": {
   "key": "SCRUM-421",
   "status": "К выполнению",
-  "desc_hash": "9e19a7ed6844ac10b94355bbc67c4c9d"
+  "desc_hash": "03d2c73d4170aeb8e3b6d4d1f135ae3e"
  },
  "art_char_redraw_v2_bright_epic_anchor_task.md": {
   "key": "SCRUM-422",
-  "status": "К выполнению",
-  "desc_hash": "5abb2481eac71e0956410e79d454846b"
+  "status": "В работе",
+  "desc_hash": "68232e2cabc9dcc9c381dd93fb5cf2fb"
  },
  "art_char_redraw_v2_chemist_task.md": {
   "key": "SCRUM-423",
   "status": "К выполнению",
-  "desc_hash": "206d87ff1aa5c48a6af12f08113f7973"
+  "desc_hash": "9ca131642fceff32fec4d7b2516beaf1"
  },
  "art_char_redraw_v2_dark_mage_task.md": {
   "key": "SCRUM-424",
   "status": "К выполнению",
-  "desc_hash": "b5f49e6065853d900ffddd43c5cc02ce"
+  "desc_hash": "d3b088afa0050aa933fa0de6c7dbe857"
  },
  "art_char_redraw_v2_doctor_task.md": {
   "key": "SCRUM-425",
   "status": "К выполнению",
-  "desc_hash": "a04c727acef919204ad02f0c95962474"
+  "desc_hash": "6d72795d7171e10c6c4e51c2e6a13da7"
  },
  "art_char_redraw_v2_druid_task.md": {
   "key": "SCRUM-426",
   "status": "К выполнению",
-  "desc_hash": "2751f8bb71075434b9f511b6d298b34e"
+  "desc_hash": "bb8efd755ad0c41a6e2e48ca441ea078"
  },
  "art_char_redraw_v2_elementalist_task.md": {
   "key": "SCRUM-427",
   "status": "К выполнению",
-  "desc_hash": "ccb1ff2e7d44815f45e4436bc95e5a56"
+  "desc_hash": "195598dc694c1f2ed3c3b4e056baaaa5"
  },
  "art_char_redraw_v2_engineer_task.md": {
   "key": "SCRUM-428",
   "status": "К выполнению",
-  "desc_hash": "187e4590cb384fa72586bb89054a1e6b"
+  "desc_hash": "ae4b3b883b4aa955febf78e76e253d03"
  },
  "art_char_redraw_v2_guitarist_task.md": {
   "key": "SCRUM-429",
   "status": "К выполнению",
-  "desc_hash": "e77febeca51a4098774d36177e86bdb3"
+  "desc_hash": "b6ba8f76a6cc2eecd431a6e4fcbba453"
  },
  "art_char_redraw_v2_knight_task.md": {
   "key": "SCRUM-430",
   "status": "К выполнению",
-  "desc_hash": "ab7a9743badbf7ca836a4e95201139ed"
+  "desc_hash": "beda4209bb9164aefd3634630654f171"
  },
  "art_char_redraw_v2_priest_task.md": {
   "key": "SCRUM-431",
   "status": "К выполнению",
-  "desc_hash": "e9142d609813c036170122d311708d45"
+  "desc_hash": "50ff926e8756716195396822853eee3f"
  },
  "art_char_redraw_v2_robot_task.md": {
   "key": "SCRUM-432",
   "status": "К выполнению",
-  "desc_hash": "806469bea686f6b587cd0c891017edd5"
+  "desc_hash": "8bd0041e2cc48e82922eb0581f602910"
  },
  "art_char_redraw_v2_sniper_task.md": {
   "key": "SCRUM-433",
   "status": "К выполнению",
-  "desc_hash": "73807c15652eef869862d6c68d7d76ad"
+  "desc_hash": "fe71f8f45ed613af6afb416ca567fb97"
  },
  "art_char_redraw_v2_soldier_task.md": {
   "key": "SCRUM-434",
   "status": "К выполнению",
-  "desc_hash": "a1006be88e2e99d3d165272d59b46fd0"
+  "desc_hash": "50f9682581022de728ff52417d022f5d"
  },
  "art_char_redraw_v2_thief_task.md": {
   "key": "SCRUM-435",
   "status": "К выполнению",
-  "desc_hash": "8a5459ae5caaefb83300e5597764389f"
+  "desc_hash": "a5dbc2ccf56630d70b8045f9571d454b"
+ },
+ "design_hero_select_rebuild_from_scratch_mockup_task.md": {
+  "key": "SCRUM-436",
+  "status": "К выполнению",
+  "desc_hash": "dc97d3ec5f93e23f3b21f1a700d24cf5"
  }
 }

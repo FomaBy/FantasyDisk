@@ -52,7 +52,8 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [art_char_redraw_v2_bright_epic_anchor_task.md](../tasks/art_char_redraw_v2_bright_epic_anchor_task.md) | Designer (Codex) → Animator (Codex) | new | ART 0.1.6 ОПОРНАЯ: перерисовка персонажей v2 — ЯРКО+ЭПИЧНО по классу, прозрачный фон, move+idle (без attack), 2× размер монстра; скиллы; блокирует 16 |
+| [design_hero_select_rebuild_from_scratch_mockup_task.md](../tasks/design_hero_select_rebuild_from_scratch_mockup_task.md) | Designer (Codex) → Back-end (UI) | new | UX 0.1.6: выбор героя — ПЕРЕРИСОВАТЬ С НУЛЯ по макапу (ui-director), оставить только розу ветров; всё остальное заново |
+| [art_char_redraw_v2_bright_epic_anchor_task.md](../tasks/art_char_redraw_v2_bright_epic_anchor_task.md) | Designer (Codex) → Animator (Codex) | in_progress | Jira: SCRUM-422. Dispatched to Design main `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-15; anchor defines bright+epic style/spec/source exemplar before Animator handoff; blocks 16 per-class rows. |
 | [art_char_redraw_v2_berserk_task.md](../tasks/art_char_redraw_v2_berserk_task.md) | Designer (Codex) → Animator (Codex) | new | ART 0.1.6: перерисовать «Берсерк» v2 ярко/эпично, прозрачный фон, move+idle (без attack), 2× монстра; ждёт опорную |
 | [art_char_redraw_v2_dark_mage_task.md](../tasks/art_char_redraw_v2_dark_mage_task.md) | Designer (Codex) → Animator (Codex) | new | ART 0.1.6: перерисовать «Тёмный маг» v2 ярко/эпично, прозрачный фон, move+idle (без attack), 2× монстра; ждёт опорную |
 | [art_char_redraw_v2_guitarist_task.md](../tasks/art_char_redraw_v2_guitarist_task.md) | Designer (Codex) → Animator (Codex) | new | ART 0.1.6: перерисовать «Гитарист» v2 ярко/эпично, прозрачный фон, move+idle (без attack), 2× монстра; ждёт опорную |
