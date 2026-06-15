@@ -1,12 +1,13 @@
 # ART/UX: Выбор героя v3 — макап → зоны → production-рамки → вёрстка (с нуля)
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Designer 2 (Codex) → Back-end (UI)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-446
+QA: in_progress (2026-06-15)
 Связано: SCRUM-436 (предыдущая попытка — SUPERSEDED этим), ui-director, asset-generator
 
 ## Autonomy / Approval
@@ -84,11 +85,69 @@ Jira: SCRUM-446
 - tests/runtime_smoke_test.gd, tests/ui_no_overlap_matrix_test.gd
 
 ## Acceptance Criteria
-- [ ] Фаза 1: макап со всеми 4 зонами (+заголовок/назад) сгенерирован, единый стиль.
-- [ ] Фаза 2: zones.json + zones_normalized.json (bbox каждой зоны) по анализу макапа.
-- [ ] Фаза 3: отдельные production-рамки под каждую зону (прозрачный фон, content-зоны/margins в frames_spec.json), опц. фон.
-- [ ] Фаза 4: экран пересобран с нуля, зоны по координатам, живые элементы в content-зонах; старое не используется.
-- [ ] Экран 1-в-1 с макапом (QA скрин-сравнение); no-overlap; текст читаем на 3 разрешениях; smoke+matrix зелёные; CHANGELOG.
+- [x] Фаза 1: макап со всеми 4 зонами (+заголовок/назад) сгенерирован, единый стиль.
+- [x] Фаза 2: zones.json + zones_normalized.json (bbox каждой зоны) по анализу макапа.
+- [x] Фаза 3: отдельные production-рамки под каждую зону (прозрачный фон, content-зоны/margins в frames_spec.json), опц. фон.
+- [ ] Фаза 4: экран пересобран с нуля, зоны по координатам, живые элементы в content-зонах; старое не используется. Передано Back-end handoff.
+- [ ] Экран 1-в-1 с макапом (QA скрин-сравнение); no-overlap; текст читаем на 3 разрешениях; smoke+matrix зелёные; CHANGELOG. Back-end scope.
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Design Result (2026-06-15)
+
+Статус: done (Design-source / handoff-ready). Runtime phase 4 не выполнялась в
+этом Design 2 окне и передана отдельной Back-end задачей
+`docs/tasks/backend_hero_select_v3_runtime_from_mockup_task.md`.
+
+Artifacts:
+- Mockup: `docs/design/references/hero_select_v3/mockup.png`
+- Annotated zones: `docs/design/references/hero_select_v3/mockup_zones_annotated.png`
+- Raw Vision zones: `docs/design/references/hero_select_v3/zones_vision_raw.json`
+- Corrected source-of-truth zones: `docs/design/references/hero_select_v3/zones.json`
+- Corrected normalized zones: `docs/design/references/hero_select_v3/zones_normalized.json`
+- Frame/content spec: `docs/design/references/hero_select_v3/frames_spec.json`
+- UI mockup spec: `docs/design/references/hero_select_v3/hero_select_v3_mockup_spec.md`
+- UI-director package mirror: `docs/design/mockups/hero_select_v3/`
+- Frame preview/contact sheet: `docs/design/previews/hero_select_v3_frames_contact.png`
+- Runtime frame assets: `assets/sprites/ui/frames/hero_select_v3/frame_preview.png`,
+  `frame_dossier.png`, `frame_radar.png`, `frame_carousel.png`, optional `background.png`.
+
+Validation:
+- OpenAI Images API used for mockup and production frame source art.
+- OpenAI Vision API used for raw bbox detection; raw output preserved in
+  `zones_vision_raw.json`.
+- Designer overlay QA corrected Vision overreach so final `zones.json` zones are
+  non-overlapping (`hero_preview` ends at y=622, carousel starts at y=626).
+- Final frame PNG audit: RGBA, transparent content rects, `white_opaque_pixels=0`
+  for all four transparent production frame assets and optional background.
+- Runtime smoke/no-overlap not run by Design scope; Back-end handoff must run them
+  after `_show_character_select` rebuild.
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED (Design-source: Фазы 1-3 — макап, зоны, production-рамки) — Фаза 4 Back-end отдельно
+
+Проверено (фактически, на артефактах):
+- **Фаза 1 — макап** `hero_select_v3/mockup.png` (1536×864): D&D dark-fantasy, ЯВНО видны
+  4 зоны (preview слева вертикально, dossier центр с «ASCENSION»-степпером, роза ветров
+  справа-сверху, карусель снизу) + HERO SELECT баннер + BACK ✓.
+- **Фаза 2 — зоны** `zones.json`+`zones_normalized.json` (OpenAI Vision + Designer-коррекция):
+  4 ГЛАВНЫЕ content-зоны **не пересекаются** (hero_preview bottom=622 < carousel top=626;
+  dossier right=1013 < radar left=1086; preview right=384 < dossier left=388) ✓.
+- **Фаза 3 — production-рамки**: `frame_preview/dossier/radar/carousel.png` — все RGBA,
+  **white_opaque=0** (прозрачный фон, без белой каймы), у каждой content-rect внутри
+  орнамента (контакт-лист `hero_select_v3_frames_contact.png` — cyan-зоны). `frames_spec.json`
+  фиксирует content_margins + правило «контент только в content_rect, орнамент запрещён» ✓.
+
+Acceptance (Design-source scope):
+- [x] Фаза 1: макап со всеми 4 зонами + заголовок/назад, единый стиль.
+- [x] Фаза 2: zones.json + zones_normalized.json (bbox каждой зоны), 4 главные зоны не пересекаются.
+- [x] Фаза 3: отдельные production-рамки под зоны (прозрачные, content-зоны/margins в frames_spec.json).
+- [~] Фаза 4 (вёрстка с нуля + 1-в-1 с макапом + smoke/matrix) — Back-end scope, отдельный таск
+  `backend_hero_select_v3_runtime_from_mockup_task.md`, НЕ в этом Design-вердикте.
+
+Статус done (Design-source). Баги: нет. Заменяет провалившийся SCRUM-436.
+⚠️ Для Back-end (Фаза 4): служебные элементы слегка перекрывают верхний край главных зон
+(title↔dossier ~11px, back_button↔hero_preview ~7px) — это header-оверлеи; при вёрстке
+рендерить title/back в header-band, чтобы живой контент dossier/preview (в content_rect) с
+ними не сталкивался. runtime/no-overlap прогнать после пересборки `_show_character_select`.

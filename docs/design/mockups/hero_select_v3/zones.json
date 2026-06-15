@@ -1,0 +1,58 @@
+{
+  "source": "docs/design/references/hero_select_v3/mockup.png",
+  "image_size": {
+    "width": 1536,
+    "height": 864
+  },
+  "method": "OpenAI Vision API raw detection saved to zones_vision_raw.json; Designer overlap correction applied after annotated overlay QA; final zones are non-overlapping.",
+  "zones": {
+    "hero_preview": {
+      "x": 42,
+      "y": 82,
+      "width": 342,
+      "height": 540,
+      "confidence": 0.94,
+      "note": "Vision bbox corrected to visible left preview frame only; bottom ends above carousel and right edge leaves gap before dossier."
+    },
+    "dossier": {
+      "x": 388,
+      "y": 93,
+      "width": 625,
+      "height": 467,
+      "confidence": 0.98,
+      "note": "Central frame for hero description, traits, weapons and ascension controls."
+    },
+    "radar": {
+      "x": 1086,
+      "y": 91,
+      "width": 388,
+      "height": 407,
+      "confidence": 0.94,
+      "note": "Vision bbox widened to full upper-right square frame and compass ornament."
+    },
+    "carousel": {
+      "x": 26,
+      "y": 626,
+      "width": 1488,
+      "height": 226,
+      "confidence": 0.96,
+      "note": "Vision bbox corrected upward to include full carousel rail, cards and arrow sockets."
+    },
+    "title": {
+      "x": 537,
+      "y": 25,
+      "width": 469,
+      "height": 79,
+      "confidence": 0.98,
+      "note": "Top center title banner."
+    },
+    "back_button": {
+      "x": 52,
+      "y": 28,
+      "width": 123,
+      "height": 61,
+      "confidence": 0.99,
+      "note": "Top-left back button."
+    }
+  }
+}

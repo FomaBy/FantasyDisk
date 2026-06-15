@@ -1,0 +1,227 @@
+{
+  "source_task": "docs/tasks/design_hero_select_v3_mockup_zones_frames_pipeline_task.md",
+  "jira": "SCRUM-446",
+  "base_resolution": {
+    "width": 1536,
+    "height": 864
+  },
+  "mockup": "docs/design/references/hero_select_v3/mockup.png",
+  "zones_pixels": "docs/design/references/hero_select_v3/zones.json",
+  "zones_normalized": "docs/design/references/hero_select_v3/zones_normalized.json",
+  "global_frame_rule": "Runtime content may render only inside content_rect/content_margins; decorative border, gems, claws, corners and metal ornament are forbidden zones.",
+  "frames": {
+    "frame_preview": {
+      "asset_path": "assets/sprites/ui/frames/hero_select_v3/frame_preview.png",
+      "source_path": "docs/design/references/hero_select_v3/frames_raw/frame_preview_raw.png",
+      "intended_zone": "hero_preview",
+      "asset_size": {
+        "width": 1024,
+        "height": 1792
+      },
+      "texture_margins_px": {
+        "left": 148,
+        "top": 224,
+        "right": 148,
+        "bottom": 260
+      },
+      "content_margins_px": {
+        "left": 210,
+        "top": 332,
+        "right": 210,
+        "bottom": 367
+      },
+      "content_rect_px": {
+        "x": 210,
+        "y": 332,
+        "width": 604,
+        "height": 1093
+      },
+      "content_rect_normalized": {
+        "nx": 0.205078,
+        "ny": 0.185268,
+        "nw": 0.589844,
+        "nh": 0.609933
+      },
+      "nine_slice": true,
+      "minimum_runtime_size_px": {
+        "width": 476,
+        "height": 604
+      },
+      "alpha_bbox_px": {
+        "x": 7,
+        "y": 5,
+        "width": 1008,
+        "height": 1777
+      },
+      "validation": {
+        "mode": "RGBA",
+        "white_opaque_pixels_after_cleanup": 0,
+        "transparent_content_rect": true
+      },
+      "notes": "Vertical hero portrait frame; keep portrait body entirely inside content rect."
+    },
+    "frame_dossier": {
+      "asset_path": "assets/sprites/ui/frames/hero_select_v3/frame_dossier.png",
+      "source_path": "docs/design/references/hero_select_v3/frames_raw/frame_dossier_raw.png",
+      "intended_zone": "dossier",
+      "asset_size": {
+        "width": 1536,
+        "height": 1152
+      },
+      "texture_margins_px": {
+        "left": 177,
+        "top": 144,
+        "right": 177,
+        "bottom": 167
+      },
+      "content_margins_px": {
+        "left": 253,
+        "top": 202,
+        "right": 253,
+        "bottom": 236
+      },
+      "content_rect_px": {
+        "x": 253,
+        "y": 202,
+        "width": 1030,
+        "height": 714
+      },
+      "content_rect_normalized": {
+        "nx": 0.164714,
+        "ny": 0.175347,
+        "nw": 0.670573,
+        "nh": 0.619792
+      },
+      "nine_slice": true,
+      "minimum_runtime_size_px": {
+        "width": 534,
+        "height": 431
+      },
+      "alpha_bbox_px": {
+        "x": 19,
+        "y": 22,
+        "width": 1498,
+        "height": 1098
+      },
+      "validation": {
+        "mode": "RGBA",
+        "white_opaque_pixels_after_cleanup": 0,
+        "transparent_content_rect": true
+      },
+      "notes": "Text, weapon rows, ascension controls and select button must stay inside content rect."
+    },
+    "frame_radar": {
+      "asset_path": "assets/sprites/ui/frames/hero_select_v3/frame_radar.png",
+      "source_path": "docs/design/references/hero_select_v3/frames_raw/frame_radar_raw.png",
+      "intended_zone": "radar",
+      "asset_size": {
+        "width": 1024,
+        "height": 1024
+      },
+      "texture_margins_px": {
+        "left": 148,
+        "top": 148,
+        "right": 148,
+        "bottom": 148
+      },
+      "content_margins_px": {
+        "left": 230,
+        "top": 230,
+        "right": 230,
+        "bottom": 230
+      },
+      "content_rect_px": {
+        "x": 230,
+        "y": 230,
+        "width": 564,
+        "height": 564
+      },
+      "content_rect_normalized": {
+        "nx": 0.224609,
+        "ny": 0.224609,
+        "nw": 0.550781,
+        "nh": 0.550781
+      },
+      "nine_slice": false,
+      "minimum_runtime_size_px": {
+        "width": 476,
+        "height": 416
+      },
+      "alpha_bbox_px": {
+        "x": 11,
+        "y": 15,
+        "width": 1002,
+        "height": 974
+      },
+      "validation": {
+        "mode": "RGBA",
+        "white_opaque_pixels_after_cleanup": 0,
+        "transparent_content_rect": true
+      },
+      "notes": "Square-only compass/radar frame; do not 9-slice or stretch non-uniformly."
+    },
+    "frame_carousel": {
+      "asset_path": "assets/sprites/ui/frames/hero_select_v3/frame_carousel.png",
+      "source_path": "docs/design/references/hero_select_v3/frames_raw/frame_carousel_raw.png",
+      "intended_zone": "carousel",
+      "asset_size": {
+        "width": 2304,
+        "height": 768
+      },
+      "texture_margins_px": {
+        "left": 173,
+        "top": 127,
+        "right": 173,
+        "bottom": 127
+      },
+      "content_margins_px": {
+        "left": 265,
+        "top": 196,
+        "right": 265,
+        "bottom": 196
+      },
+      "content_rect_px": {
+        "x": 265,
+        "y": 196,
+        "width": 1774,
+        "height": 376
+      },
+      "content_rect_normalized": {
+        "nx": 0.115017,
+        "ny": 0.255208,
+        "nw": 0.769965,
+        "nh": 0.489583
+      },
+      "nine_slice": true,
+      "minimum_runtime_size_px": {
+        "width": 526,
+        "height": 374
+      },
+      "alpha_bbox_px": {
+        "x": 0,
+        "y": 116,
+        "width": 2302,
+        "height": 493
+      },
+      "validation": {
+        "mode": "RGBA",
+        "white_opaque_pixels_after_cleanup": 0,
+        "transparent_content_rect": true
+      },
+      "notes": "Carousel cards and arrows stay inside content rect; ornaments/gems are forbidden zones."
+    }
+  },
+  "annotated_mockup": "docs/design/references/hero_select_v3/mockup_zones_annotated.png",
+  "frames_contact_preview": "docs/design/previews/hero_select_v3_frames_contact.png",
+  "zones_vision_raw": "docs/design/references/hero_select_v3/zones_vision_raw.json",
+  "background": {
+    "asset_path": "assets/sprites/ui/frames/hero_select_v3/background.png",
+    "source_path": "docs/design/references/hero_select_v3/background.png",
+    "asset_size": {
+      "width": 1536,
+      "height": 864
+    },
+    "alpha": "opaque full-screen background; runtime frames are separate transparent overlays",
+    "notes": "Optional low-contrast background for Hero Select v3. It contains no panels, labels, heroes, icons, or old Hero Select assets."
+  }
+}

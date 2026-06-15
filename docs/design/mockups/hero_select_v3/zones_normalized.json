@@ -1,0 +1,58 @@
+{
+  "source": "docs/design/references/hero_select_v3/mockup.png",
+  "image_size": {
+    "width": 1536,
+    "height": 864
+  },
+  "method": "OpenAI Vision API raw detection saved to zones_vision_raw.json; Designer overlap correction applied after annotated overlay QA; final zones are non-overlapping.",
+  "zones": {
+    "hero_preview": {
+      "nx": 0.027344,
+      "ny": 0.094907,
+      "nw": 0.222656,
+      "nh": 0.625,
+      "confidence": 0.94,
+      "note": "Vision bbox corrected to visible left preview frame only; bottom ends above carousel and right edge leaves gap before dossier."
+    },
+    "dossier": {
+      "nx": 0.252604,
+      "ny": 0.107639,
+      "nw": 0.406901,
+      "nh": 0.540509,
+      "confidence": 0.98,
+      "note": "Central frame for hero description, traits, weapons and ascension controls."
+    },
+    "radar": {
+      "nx": 0.707031,
+      "ny": 0.105324,
+      "nw": 0.252604,
+      "nh": 0.471065,
+      "confidence": 0.94,
+      "note": "Vision bbox widened to full upper-right square frame and compass ornament."
+    },
+    "carousel": {
+      "nx": 0.016927,
+      "ny": 0.724537,
+      "nw": 0.96875,
+      "nh": 0.261574,
+      "confidence": 0.96,
+      "note": "Vision bbox corrected upward to include full carousel rail, cards and arrow sockets."
+    },
+    "title": {
+      "nx": 0.349609,
+      "ny": 0.028935,
+      "nw": 0.305339,
+      "nh": 0.091435,
+      "confidence": 0.98,
+      "note": "Top center title banner."
+    },
+    "back_button": {
+      "nx": 0.033854,
+      "ny": 0.032407,
+      "nw": 0.080078,
+      "nh": 0.070602,
+      "confidence": 0.99,
+      "note": "Top-left back button."
+    }
+  }
+}
