@@ -118,6 +118,11 @@ func _initialize() -> void:
 	if scrum439_file != null:
 		scrum439_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["settings"])))
 		scrum439_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum436" % qa_dir)
+	var scrum436_file := FileAccess.open("%s/scrum436/hero_select_v2_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum436_file != null:
+		scrum436_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["hero_select"])))
+		scrum436_file.close()
 
 	if not errors.is_empty():
 		for error in errors:

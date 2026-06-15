@@ -77,6 +77,28 @@ const HERO_SELECT_CAROUSEL_FRAME_SOURCE_SIZE := Vector2(1536.0, 255.0)
 const HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE := Vector2(1024.0, 170.0)
 const HERO_SELECT_CAROUSEL_CONTENT_BASE := Vector4(132.0, 62.0, 132.0, 62.0)
 const HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION := 2
+const HERO_SELECT_V2_SOURCE_SIZE := Vector2(1920.0, 1080.0)
+const HERO_SELECT_V2_OUTER_SAFE := Rect2(92.0, 72.0, 1736.0, 944.0)
+const HERO_SELECT_V2_PORTRAIT_FRAME := Rect2(218.0, 82.0, 552.0, 582.0)
+const HERO_SELECT_V2_PORTRAIT_SAFE := Rect2(262.0, 124.0, 464.0, 496.0)
+const HERO_SELECT_V2_DOSSIER_FRAME := Rect2(800.0, 86.0, 694.0, 578.0)
+const HERO_SELECT_V2_DOSSIER_CONTENT := Rect2(838.0, 138.0, 626.0, 492.0)
+const HERO_SELECT_V2_DOSSIER_TITLE_SAFE := Rect2(876.0, 138.0, 526.0, 56.0)
+const HERO_SELECT_V2_DOSSIER_BODY_SAFE := Rect2(846.0, 214.0, 606.0, 92.0)
+const HERO_SELECT_V2_DOSSIER_DESCRIPTION_SAFE := Rect2(838.0, 340.0, 626.0, 126.0)
+const HERO_SELECT_V2_TRAITS_SAFE := Rect2(864.0, 494.0, 590.0, 58.0)
+const HERO_SELECT_V2_WEAPONS_SAFE := Rect2(840.0, 574.0, 618.0, 56.0)
+const HERO_SELECT_V2_ASC_PANEL := Rect2(232.0, 678.0, 520.0, 70.0)
+const HERO_SELECT_V2_ASC_MINUS_SAFE := Rect2(258.0, 686.0, 46.0, 46.0)
+const HERO_SELECT_V2_ASC_LABEL_SAFE := Rect2(326.0, 690.0, 310.0, 40.0)
+const HERO_SELECT_V2_ASC_PLUS_SAFE := Rect2(690.0, 686.0, 46.0, 46.0)
+const HERO_SELECT_V2_SELECT_SAFE := Rect2(986.0, 692.0, 372.0, 54.0)
+const HERO_SELECT_V2_BACK_SAFE := Rect2(1538.0, 692.0, 292.0, 54.0)
+const HERO_SELECT_V2_RADAR_PANEL := Rect2(1510.0, 92.0, 286.0, 326.0)
+const HERO_SELECT_V2_RADAR_CONTENT := Rect2(1554.0, 122.0, 200.0, 210.0)
+const HERO_SELECT_V2_CAROUSEL_FRAME := Rect2(92.0, 764.0, 1736.0, 204.0)
+const HERO_SELECT_V2_CAROUSEL_SAFE := Rect2(124.0, 790.0, 1672.0, 150.0)
+const HERO_SELECT_V2_TOOLTIP_SAFE := Rect2(540.0, 970.0, 840.0, 80.0)
 const HERO_SELECT_FRAME_DIR := "res://assets/sprites/ui/frames/hero_select/"
 const SETTINGS_V2_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v2/"
 const SETTINGS_V2_MAIN_MODAL_PATH := SETTINGS_V2_FRAME_DIR + "ui_frame_settings_v2_main_modal.png"
@@ -659,105 +681,51 @@ func _show_character_select() -> void:
 
 	_add_screen_background(root, "hero_select")
 
-	var margins := MarginContainer.new()
-	margins.name = "HeroSelectMargins"
-	margins.set_anchors_preset(Control.PRESET_FULL_RECT)
-	margins.add_theme_constant_override("margin_left", 24)
-	margins.add_theme_constant_override("margin_top", 16)
-	margins.add_theme_constant_override("margin_right", 24)
-	margins.add_theme_constant_override("margin_bottom", 16)
-	root.add_child(margins)
+	var canvas_rect := _hero_select_v2_canvas_rect()
+	var canvas := Control.new()
+	canvas.name = "HeroSelectCanvas"
+	canvas.position = canvas_rect.position
+	canvas.size = canvas_rect.size
+	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(canvas)
 
-	var layout := VBoxContainer.new()
-	layout.name = "HeroSelectLayout"
-	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	layout.add_theme_constant_override("separation", 16)
-	margins.add_child(layout)
+	var content_row := Control.new()
+	content_row.name = "HeroSelectContent"
+	content_row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	canvas.add_child(content_row)
 
-	var header := HBoxContainer.new()
+	var header := Control.new()
 	header.name = "HeroSelectHeader"
-	header.custom_minimum_size = Vector2(0, 50)
-	header.add_theme_constant_override("separation", 16)
-	layout.add_child(header)
-
-	var title_box := VBoxContainer.new()
-	title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_box.clip_contents = true
-	title_box.add_theme_constant_override("separation", 1)
-	header.add_child(title_box)
+	header.position = _hero_select_v2_scaled_rect(HERO_SELECT_V2_OUTER_SAFE).position
+	header.size = Vector2(round(640.0 * _hero_select_v2_scale()), maxf(48.0 * _hero_select_v2_scale(), 24.0))
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header.visible = false
+	canvas.add_child(header)
 
 	var title_label := Label.new()
+	title_label.name = "HeroSelectScreenTitle"
 	title_label.text = "Выбор героя"
-	title_label.add_theme_font_size_override("font_size", 34)
+	title_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", maxi(16, int(round(30.0 * _hero_select_v2_scale()))))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
-	title_box.add_child(title_label)
-
-	var subtitle_label := Label.new()
-	subtitle_label.text = "Выберите героя и уровень Возвышения."
-	subtitle_label.clip_text = true
-	subtitle_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	subtitle_label.add_theme_font_size_override("font_size", 14)
-	subtitle_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78, 0.92))
-	title_box.add_child(subtitle_label)
-
-	var back_button := _make_button("Назад")
-	back_button.name = "HeroSelectBackButton"
-	_set_action_button_size(back_button, 240.0)
-	back_button.pressed.connect(_show_main_menu)
-	header.add_child(back_button)
-
-	var content_row := HBoxContainer.new()
-	content_row.name = "HeroSelectContent"
-	content_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	content_row.add_theme_constant_override("separation", 16)
-	layout.add_child(content_row)
-
-	var unified_panel := CenterContainer.new()
-	unified_panel.name = "HeroSelectUnifiedPanel"
-	unified_panel.custom_minimum_size = _hero_select_unified_frame_size()
-	unified_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	unified_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	unified_panel.size_flags_stretch_ratio = 1.0
-	unified_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content_row.add_child(unified_panel)
+	header.add_child(title_label)
 
 	var unified_frame := Control.new()
 	unified_frame.name = "HeroSelectUnifiedFrame"
-	unified_frame.custom_minimum_size = _hero_select_unified_frame_size()
-	unified_frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	unified_frame.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	unified_frame.position = _hero_select_v2_scaled_rect(HERO_SELECT_V2_OUTER_SAFE).position
+	unified_frame.size = _hero_select_v2_scaled_rect(HERO_SELECT_V2_OUTER_SAFE).size
 	unified_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	unified_panel.add_child(unified_frame)
+	canvas.add_child(unified_frame)
 
-	var unified_frame_art := TextureRect.new()
-	unified_frame_art.name = "HeroSelectUnifiedFrameArt"
-	unified_frame_art.set_anchors_preset(Control.PRESET_FULL_RECT)
-	unified_frame_art.texture = game._cached_texture(HERO_SELECT_FRAME_TEXTURES["unified_panel"])
-	unified_frame_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	unified_frame_art.stretch_mode = TextureRect.STRETCH_SCALE
-	unified_frame_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Старая комбинированная unified-рамка скрыта: портрет и досье теперь рисуются
-	# отдельными dark-fantasy-dragon рамками (как в макапе). SCRUM-336.
-	unified_frame_art.visible = false
-	unified_frame.add_child(unified_frame_art)
-
-	var portrait_safe_rect := _hero_select_unified_scaled_rect(HERO_SELECT_UNIFIED_PORTRAIT_RECT)
+	var portrait_frame_rect := _hero_select_v2_scaled_rect(HERO_SELECT_V2_PORTRAIT_FRAME)
+	var portrait_safe_rect := _hero_select_v2_scaled_rect(HERO_SELECT_V2_PORTRAIT_SAFE)
 	var portrait_panel := Control.new()
 	portrait_panel.name = "HeroSelectPortraitPanel"
-	portrait_panel.position = portrait_safe_rect.position
-	portrait_panel.size = portrait_safe_rect.size
-	portrait_panel.custom_minimum_size = portrait_safe_rect.size
+	_place_control_in_rect(portrait_panel, portrait_frame_rect)
 	portrait_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	unified_frame.add_child(portrait_panel)
-
-	var portrait_frame := Control.new()
-	portrait_frame.name = "HeroSelectPortraitFrame"
-	portrait_frame.set_anchors_preset(Control.PRESET_FULL_RECT)
-	portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait_panel.add_child(portrait_frame)
+	canvas.add_child(portrait_panel)
 
 	var portrait_frame_art := TextureRect.new()
 	portrait_frame_art.name = "HeroSelectPortraitFrameArt"
@@ -766,52 +734,30 @@ func _show_character_select() -> void:
 	portrait_frame_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait_frame_art.stretch_mode = TextureRect.STRETCH_SCALE
 	portrait_frame_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait_frame.add_child(portrait_frame_art)
+	portrait_panel.add_child(portrait_frame_art)
 
-	var portrait_content := MarginContainer.new()
+	var portrait_content := Control.new()
 	portrait_content.name = "HeroSelectPortraitContent"
-	portrait_content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	portrait_content.position = portrait_safe_rect.position - portrait_frame_rect.position
+	portrait_content.size = portrait_safe_rect.size
 	portrait_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Инсет контента внутрь рамки портрета (доли реальной прозрачной зоны рамки),
-	# чтобы спрайт героя не налезал на орнамент. SCRUM-336/hero-select.
-	portrait_content.add_theme_constant_override("margin_left", int(round(portrait_safe_rect.size.x * 0.11)))
-	portrait_content.add_theme_constant_override("margin_top", int(round(portrait_safe_rect.size.y * 0.20)))
-	portrait_content.add_theme_constant_override("margin_right", int(round(portrait_safe_rect.size.x * 0.11)))
-	portrait_content.add_theme_constant_override("margin_bottom", int(round(portrait_safe_rect.size.y * 0.13)))
-	portrait_frame.add_child(portrait_content)
-
-	var portrait_box := VBoxContainer.new()
-	portrait_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	portrait_box.add_theme_constant_override("separation", 6)
-	portrait_content.add_child(portrait_box)
+	portrait_panel.add_child(portrait_content)
 
 	var large_portrait := TextureRect.new()
 	large_portrait.name = "HeroSelectLargePortrait"
-	large_portrait.custom_minimum_size = Vector2(0, 0)
-	large_portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	large_portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	large_portrait.set_anchors_preset(Control.PRESET_FULL_RECT)
 	large_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	large_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	large_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait_box.add_child(large_portrait)
-	# Имя героя теперь ТОЛЬКО в досье (HeroSelectInfoTitle) — подпись под портретом убрана.
+	portrait_content.add_child(large_portrait)
 
-	var right_region := Control.new()
-	right_region.name = "HeroSelectRightRegion"
-	right_region.custom_minimum_size = Vector2(_hero_select_radar_frame_size().x + 18.0, _hero_select_radar_frame_size().y)
-	right_region.size_flags_horizontal = Control.SIZE_SHRINK_END
-	right_region.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right_region.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content_row.add_child(right_region)
-
-	var dossier_safe_rect := _hero_select_unified_scaled_rect(HERO_SELECT_UNIFIED_DESCRIPTION_RECT)
+	var dossier_frame_rect := _hero_select_v2_scaled_rect(HERO_SELECT_V2_DOSSIER_FRAME)
+	var dossier_content_rect := _hero_select_v2_scaled_rect(HERO_SELECT_V2_DOSSIER_CONTENT)
 	var dossier_panel := Control.new()
 	dossier_panel.name = "HeroSelectDossierPanel"
-	dossier_panel.position = dossier_safe_rect.position
-	dossier_panel.size = dossier_safe_rect.size
-	dossier_panel.custom_minimum_size = dossier_safe_rect.size
+	_place_control_in_rect(dossier_panel, dossier_frame_rect)
 	dossier_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	unified_frame.add_child(dossier_panel)
+	canvas.add_child(dossier_panel)
 
 	var dossier_frame := Control.new()
 	dossier_frame.name = "HeroSelectDossierFrame"
@@ -828,127 +774,160 @@ func _show_character_select() -> void:
 	dossier_frame_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_frame.add_child(dossier_frame_art)
 
-	var dossier_content := MarginContainer.new()
+	var dossier_content := Control.new()
 	dossier_content.name = "HeroSelectDossierContent"
-	dossier_content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_place_control_in_rect(dossier_content, dossier_content_rect)
 	dossier_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Инсет контента внутрь рамки досье, чтобы текст/возвышение не налезали на орнамент.
-	dossier_content.add_theme_constant_override("margin_left", int(round(dossier_safe_rect.size.x * 0.08)))
-	dossier_content.add_theme_constant_override("margin_top", int(round(dossier_safe_rect.size.y * 0.25)))
-	dossier_content.add_theme_constant_override("margin_right", int(round(dossier_safe_rect.size.x * 0.08)))
-	dossier_content.add_theme_constant_override("margin_bottom", int(round(dossier_safe_rect.size.y * 0.17)))
-	dossier_frame.add_child(dossier_content)
+	canvas.add_child(dossier_content)
 
-	var dossier := VBoxContainer.new()
+	var dossier := Control.new()
 	dossier.name = "HeroSelectDossier"
-	dossier.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	dossier.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dossier.add_theme_constant_override("separation", 2)
+	dossier.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dossier.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_content.add_child(dossier)
 
 	var dossier_title := Label.new()
 	dossier_title.name = "HeroSelectInfoTitle"
-	dossier_title.add_theme_font_size_override("font_size", 22)
+	_place_control_in_rect(dossier_title, _hero_select_v2_rect_relative(HERO_SELECT_V2_DOSSIER_TITLE_SAFE, HERO_SELECT_V2_DOSSIER_CONTENT))
+	dossier_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	dossier_title.clip_text = true
+	dossier_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	dossier_title.add_theme_font_size_override("font_size", maxi(14, int(round(28.0 * _hero_select_v2_scale()))))
 	dossier_title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
 	dossier.add_child(dossier_title)
 
 	var dossier_desc := Label.new()
 	dossier_desc.name = "HeroSelectInfoDescription"
+	_place_control_in_rect(dossier_desc, _hero_select_v2_rect_relative(HERO_SELECT_V2_DOSSIER_BODY_SAFE, HERO_SELECT_V2_DOSSIER_CONTENT))
 	dossier_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	dossier_desc.max_lines_visible = 3
 	dossier_desc.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	dossier_desc.add_theme_font_size_override("font_size", 12)
+	dossier_desc.add_theme_font_size_override("font_size", maxi(9, int(round(16.0 * _hero_select_v2_scale()))))
 	dossier_desc.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	dossier.add_child(dossier_desc)
 
+	var dossier_summary := Label.new()
+	dossier_summary.name = "HeroSelectDossierSummary"
+	_place_control_in_rect(dossier_summary, _hero_select_v2_rect_relative(HERO_SELECT_V2_DOSSIER_DESCRIPTION_SAFE, HERO_SELECT_V2_DOSSIER_CONTENT))
+	dossier_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dossier_summary.max_lines_visible = 4
+	dossier_summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	dossier_summary.add_theme_font_size_override("font_size", maxi(9, int(round(14.0 * _hero_select_v2_scale()))))
+	dossier_summary.add_theme_color_override("font_color", Color(0.86, 0.82, 0.72, 0.95))
+	dossier.add_child(dossier_summary)
+
 	var dossier_traits := Label.new()
 	dossier_traits.name = "HeroSelectTraits"
+	_place_control_in_rect(dossier_traits, _hero_select_v2_rect_relative(HERO_SELECT_V2_TRAITS_SAFE, HERO_SELECT_V2_DOSSIER_CONTENT))
 	dossier_traits.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	dossier_traits.max_lines_visible = 2
+	dossier_traits.max_lines_visible = 1
 	dossier_traits.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	dossier_traits.add_theme_font_size_override("font_size", 11)
+	dossier_traits.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	dossier_traits.add_theme_font_size_override("font_size", maxi(9, int(round(13.0 * _hero_select_v2_scale()))))
 	dossier_traits.add_theme_color_override("font_color", Color(0.80, 0.92, 0.86, 1.0))
 	dossier.add_child(dossier_traits)
 
 	var weapons_label := Label.new()
 	weapons_label.name = "HeroSelectWeapons"
+	_place_control_in_rect(weapons_label, _hero_select_v2_rect_relative(HERO_SELECT_V2_WEAPONS_SAFE, HERO_SELECT_V2_DOSSIER_CONTENT))
 	weapons_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weapons_label.max_lines_visible = 2
+	weapons_label.max_lines_visible = 1
 	weapons_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	weapons_label.add_theme_font_size_override("font_size", 11)
+	weapons_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	weapons_label.add_theme_font_size_override("font_size", maxi(9, int(round(13.0 * _hero_select_v2_scale()))))
 	weapons_label.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 1.0))
 	dossier.add_child(weapons_label)
 
-	var bottom_safe_rect := _hero_select_unified_scaled_rect(HERO_SELECT_UNIFIED_BOTTOM_CONTROLS_RECT)
-	var bottom_controls := VBoxContainer.new()
+	var bottom_controls := Control.new()
 	bottom_controls.name = "HeroSelectBottomControls"
-	bottom_controls.position = bottom_safe_rect.position
-	bottom_controls.size = bottom_safe_rect.size
-	bottom_controls.custom_minimum_size = bottom_safe_rect.size
-	bottom_controls.alignment = BoxContainer.ALIGNMENT_CENTER
-	bottom_controls.add_theme_constant_override("separation", 1)
-	unified_frame.add_child(bottom_controls)
+	_place_control_in_rect(bottom_controls, _hero_select_v2_scaled_rect(HERO_SELECT_V2_ASC_PANEL))
+	bottom_controls.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	canvas.add_child(bottom_controls)
 
-	var asc_row := HBoxContainer.new()
+	var asc_row_source := Rect2(HERO_SELECT_V2_ASC_MINUS_SAFE.position, Vector2(HERO_SELECT_V2_ASC_PLUS_SAFE.end.x - HERO_SELECT_V2_ASC_MINUS_SAFE.position.x, HERO_SELECT_V2_ASC_PLUS_SAFE.size.y))
+	var asc_row := Control.new()
 	asc_row.name = "AscensionSelectorRow"
-	asc_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	asc_row.add_theme_constant_override("separation", 6)
-	bottom_controls.add_child(asc_row)
+	_place_control_in_rect(asc_row, _hero_select_v2_scaled_rect(asc_row_source))
+	asc_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	canvas.add_child(asc_row)
+
 	var asc_minus := _make_compact_button("-")
 	asc_minus.name = "AscensionMinusButton"
-	asc_minus.custom_minimum_size = _hero_select_asc_small_button_size()
+	_place_control_in_rect(asc_minus, _hero_select_v2_scaled_rect(HERO_SELECT_V2_ASC_MINUS_SAFE))
 	_apply_hero_select_button_frame(asc_minus, "asc_button_small")
-	asc_row.add_child(asc_minus)
+	canvas.add_child(asc_minus)
+
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
-	asc_label.custom_minimum_size = Vector2(round(220.0 * _hero_select_unified_scale()), maxf(_hero_select_asc_small_button_size().y * 0.72, 20.0))
+	_place_control_in_rect(asc_label, _hero_select_v2_scaled_rect(HERO_SELECT_V2_ASC_LABEL_SAFE))
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_label.add_theme_font_size_override("font_size", 13)
+	asc_label.add_theme_font_size_override("font_size", maxi(10, int(round(18.0 * _hero_select_v2_scale()))))
 	asc_label.add_theme_color_override("font_color", Color(1.0, 0.78, 0.32, 1.0))
 	asc_label.add_theme_stylebox_override("normal", _hero_select_frame_style("asc_label"))
-	asc_row.add_child(asc_label)
+	canvas.add_child(asc_label)
+
 	var asc_plus := _make_compact_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	asc_plus.custom_minimum_size = _hero_select_asc_small_button_size()
+	_place_control_in_rect(asc_plus, _hero_select_v2_scaled_rect(HERO_SELECT_V2_ASC_PLUS_SAFE))
 	_apply_hero_select_button_frame(asc_plus, "asc_button_small")
-	asc_row.add_child(asc_plus)
+	canvas.add_child(asc_plus)
+
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
+	_place_control_in_rect(asc_mods, _hero_select_v2_scaled_rect(HERO_SELECT_V2_TOOLTIP_SAFE))
 	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	asc_mods.max_lines_visible = 1
+	asc_mods.max_lines_visible = 2
 	asc_mods.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	asc_mods.add_theme_font_size_override("font_size", 10)
+	asc_mods.add_theme_font_size_override("font_size", maxi(9, int(round(15.0 * _hero_select_v2_scale()))))
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	asc_mods.custom_minimum_size = Vector2(bottom_safe_rect.size.x * 0.76, clampf(bottom_safe_rect.size.y * 0.18, 12.0, 22.0))
 	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_mods.visible = _hero_select_unified_scale() >= 0.52
+	asc_mods.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	asc_mods.add_theme_stylebox_override("normal", _hero_select_frame_style("asc_mods"))
-	bottom_controls.add_child(asc_mods)
+	canvas.add_child(asc_mods)
 
-	var select_button := _make_button("Выбрать")
+	var select_button := Button.new()
 	select_button.name = "HeroSelectChooseButton"
-	var choose_height := clampf(bottom_safe_rect.size.y * 0.36, 24.0, 54.0)
-	_set_action_button_size(select_button, clampf(bottom_safe_rect.size.x * 0.62, 124.0, 260.0), choose_height)
+	select_button.text = "Выбрать"
+	select_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	select_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_place_control_in_rect(select_button, _hero_select_v2_scaled_rect(HERO_SELECT_V2_SELECT_SAFE))
 	select_button.add_theme_stylebox_override("normal", _hero_select_compact_choice_style(false, false))
 	select_button.add_theme_stylebox_override("hover", _hero_select_compact_choice_style(true, false))
 	select_button.add_theme_stylebox_override("pressed", _hero_select_compact_choice_style(true, true))
 	select_button.add_theme_stylebox_override("focus", _hero_select_compact_choice_style(true, false))
-	select_button.add_theme_font_size_override("font_size", 11 if _hero_select_unified_scale() < 0.52 else 13)
-	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	select_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	bottom_controls.add_child(select_button)
+	select_button.add_theme_font_size_override("font_size", maxi(10, int(round(17.0 * _hero_select_v2_scale()))))
+	_place_control_in_rect(select_button, _hero_select_v2_scaled_rect(HERO_SELECT_V2_SELECT_SAFE))
+	canvas.add_child(select_button)
 
-	var radar_frame_size := _hero_select_radar_frame_size()
+	var back_button := Button.new()
+	back_button.name = "HeroSelectBackButton"
+	back_button.text = "Назад"
+	back_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	back_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_place_control_in_rect(back_button, _hero_select_v2_scaled_rect(HERO_SELECT_V2_BACK_SAFE))
+	back_button.add_theme_stylebox_override("normal", _hero_select_compact_choice_style(false, false))
+	back_button.add_theme_stylebox_override("hover", _hero_select_compact_choice_style(true, false))
+	back_button.add_theme_stylebox_override("pressed", _hero_select_compact_choice_style(true, true))
+	back_button.add_theme_stylebox_override("focus", _hero_select_compact_choice_style(true, false))
+	back_button.add_theme_font_size_override("font_size", maxi(10, int(round(16.0 * _hero_select_v2_scale()))))
+	_place_control_in_rect(back_button, _hero_select_v2_scaled_rect(HERO_SELECT_V2_BACK_SAFE))
+	back_button.pressed.connect(_show_main_menu)
+	canvas.add_child(back_button)
+
+	var radar_frame_rect := _hero_select_v2_scaled_rect(HERO_SELECT_V2_RADAR_PANEL)
+	var radar_content_rect := _hero_select_v2_scaled_rect(HERO_SELECT_V2_RADAR_CONTENT)
+	var right_region := Control.new()
+	right_region.name = "HeroSelectRightRegion"
+	_place_control_in_rect(right_region, radar_frame_rect)
+	right_region.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	canvas.add_child(right_region)
 
 	var radar_panel := Control.new()
 	radar_panel.name = "HeroSelectRadarPanel"
-	radar_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	radar_panel.offset_left = -24.0 - radar_frame_size.x
-	radar_panel.offset_top = 132
-	radar_panel.offset_right = -24
-	radar_panel.offset_bottom = 132.0 + radar_frame_size.y
-	radar_panel.custom_minimum_size = radar_frame_size
+	radar_panel.position = canvas.position + radar_frame_rect.position
+	radar_panel.size = radar_frame_rect.size
+	radar_panel.custom_minimum_size = radar_frame_rect.size
 	radar_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(radar_panel)
 
@@ -963,35 +942,36 @@ func _show_character_select() -> void:
 
 	var radar_content := MarginContainer.new()
 	radar_content.name = "HeroSelectRadarContent"
-	radar_content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	radar_content.position = radar_content_rect.position - radar_frame_rect.position
+	radar_content.size = radar_content_rect.size
 	radar_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var radar_source_scale := radar_frame_size.x / HERO_SELECT_RADAR_FRAME_SOURCE_SIZE.x
-	radar_content.add_theme_constant_override("margin_left", int(round(HERO_SELECT_RADAR_CONTENT_BASE.x * radar_source_scale)))
-	radar_content.add_theme_constant_override("margin_top", int(round(HERO_SELECT_RADAR_CONTENT_BASE.y * radar_source_scale)))
-	radar_content.add_theme_constant_override("margin_right", int(round(HERO_SELECT_RADAR_CONTENT_BASE.z * radar_source_scale)))
-	radar_content.add_theme_constant_override("margin_bottom", int(round(HERO_SELECT_RADAR_CONTENT_BASE.w * radar_source_scale)))
+	radar_content.add_theme_constant_override("margin_left", 0)
+	radar_content.add_theme_constant_override("margin_top", 0)
+	radar_content.add_theme_constant_override("margin_right", 0)
+	radar_content.add_theme_constant_override("margin_bottom", 0)
 	radar_panel.add_child(radar_content)
 
 	var radar_box := VBoxContainer.new()
 	radar_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	radar_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	radar_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	radar_box.add_theme_constant_override("separation", 6)
+	radar_box.add_theme_constant_override("separation", 0)
 	radar_content.add_child(radar_box)
 
 	var radar := HeroStatRadar.new()
 	radar.name = "HeroStatRadar"
-	radar.custom_minimum_size = _hero_select_radar_graph_size()
+	radar.custom_minimum_size = Vector2(radar_content_rect.size.x, radar_content_rect.size.y)
 	radar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	radar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	radar_box.add_child(radar)
 
+	var carousel_frame_rect := _hero_select_v2_scaled_rect(HERO_SELECT_V2_CAROUSEL_FRAME)
+	var carousel_safe_rect := _hero_select_v2_scaled_rect(HERO_SELECT_V2_CAROUSEL_SAFE)
 	var thumbnail_strip_frame := Control.new()
 	thumbnail_strip_frame.name = "HeroThumbnailStripFrame"
-	thumbnail_strip_frame.custom_minimum_size = _hero_select_carousel_frame_size()
-	thumbnail_strip_frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_place_control_in_rect(thumbnail_strip_frame, carousel_frame_rect)
 	thumbnail_strip_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layout.add_child(thumbnail_strip_frame)
+	canvas.add_child(thumbnail_strip_frame)
 
 	var thumbnail_strip_art := TextureRect.new()
 	thumbnail_strip_art.name = "HeroThumbnailStripFrameArt"
@@ -1002,24 +982,21 @@ func _show_character_select() -> void:
 	thumbnail_strip_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	thumbnail_strip_frame.add_child(thumbnail_strip_art)
 
-	var thumbnail_strip_content := MarginContainer.new()
+	var thumbnail_strip_content := Control.new()
 	thumbnail_strip_content.name = "HeroThumbnailStripContent"
-	thumbnail_strip_content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	thumbnail_strip_content.position = carousel_safe_rect.position - carousel_frame_rect.position
+	thumbnail_strip_content.size = carousel_safe_rect.size
 	thumbnail_strip_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var carousel_source_scale := _hero_select_carousel_frame_size().x / HERO_SELECT_CAROUSEL_FRAME_SOURCE_SIZE.x
-	thumbnail_strip_content.add_theme_constant_override("margin_left", int(round(HERO_SELECT_CAROUSEL_CONTENT_BASE.x * carousel_source_scale)))
-	thumbnail_strip_content.add_theme_constant_override("margin_top", int(round(HERO_SELECT_CAROUSEL_CONTENT_BASE.y * carousel_source_scale)))
-	thumbnail_strip_content.add_theme_constant_override("margin_right", int(round(HERO_SELECT_CAROUSEL_CONTENT_BASE.z * carousel_source_scale)))
-	thumbnail_strip_content.add_theme_constant_override("margin_bottom", int(round(HERO_SELECT_CAROUSEL_CONTENT_BASE.w * carousel_source_scale)))
 	thumbnail_strip_frame.add_child(thumbnail_strip_content)
 
 	var thumbnail_strip := HBoxContainer.new()
 	thumbnail_strip.name = "HeroThumbnailStrip"
-	thumbnail_strip.custom_minimum_size = Vector2(0, 96)
+	thumbnail_strip.set_anchors_preset(Control.PRESET_FULL_RECT)
+	thumbnail_strip.custom_minimum_size = carousel_safe_rect.size
 	thumbnail_strip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	thumbnail_strip.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	thumbnail_strip.alignment = BoxContainer.ALIGNMENT_CENTER
-	thumbnail_strip.add_theme_constant_override("separation", HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION)
+	thumbnail_strip.add_theme_constant_override("separation", _hero_select_v2_thumbnail_separation())
 	thumbnail_strip_content.add_child(thumbnail_strip)
 
 	var legacy_grid := GridContainer.new()
@@ -1032,7 +1009,6 @@ func _show_character_select() -> void:
 	var stat_maxima := _hero_radar_global_maxima()
 	var character_ids: Array = game.PROGRESSION_DATA.character_ids()
 	var thumbnail_size := _hero_thumbnail_size(character_ids.size())
-	thumbnail_strip.custom_minimum_size = Vector2(0, maxf(thumbnail_size.y + 8.0, 64.0))
 	if not character_ids.has(game.selected_character_id):
 		game.selected_character_id = str(character_ids[0])
 	var thumbnail_buttons: Array[Button] = []
@@ -1041,7 +1017,7 @@ func _show_character_select() -> void:
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(game.selected_character_id))
 		var lvl: int = game.selected_ascension_level
 		var max_level: int = game.ascension_selectable_max(game.selected_character_id)
-		asc_label.text = ("Возв.: %d/%d" % [lvl, max_level]) if _hero_select_unified_scale() < 0.52 else ("Возвышение: %d / %d" % [lvl, max_level])
+		asc_label.text = ("Возв.: %d/%d" % [lvl, max_level]) if _hero_select_v2_scale() < 0.62 else ("Возвышение: %d / %d" % [lvl, max_level])
 		asc_mods.text = game.PROGRESSION_DATA.ascension_level_change_line(lvl)
 
 	var select_character := func(character_id: String) -> void:
@@ -1053,7 +1029,8 @@ func _show_character_select() -> void:
 		large_portrait.texture = game._cached_texture(str(config.get("sprite_path", "")))
 		dossier_title.text = title
 		dossier_desc.text = str(config.get("description", ""))
-		dossier_traits.text = "Сильные: %s\nСлабые: %s" % [str(config.get("strengths", "")), str(config.get("weaknesses", ""))]
+		dossier_summary.text = game.PROGRESSION_DATA.display_stats(stats)
+		dossier_traits.text = "Сильные: %s  |  Слабые: %s" % [str(config.get("strengths", "")), str(config.get("weaknesses", ""))]
 		weapons_label.text = "Оружие: %s" % _hero_weapon_names(character_id)
 		radar.setup(stats, stat_maxima, game.PROGRESSION_DATA.STAT_NAMES, HERO_RADAR_STATS, HERO_CLASS_COLORS.get(character_id, Color(0.95, 0.78, 0.34, 0.82)))
 		for button in thumbnail_buttons:
@@ -1091,6 +1068,17 @@ func _show_character_select() -> void:
 		var button := thumbnail_buttons[index]
 		button.focus_neighbor_left = thumbnail_buttons[(index - 1 + thumbnail_buttons.size()) % thumbnail_buttons.size()].get_path()
 		button.focus_neighbor_right = thumbnail_buttons[(index + 1) % thumbnail_buttons.size()].get_path()
+		button.focus_neighbor_top = select_button.get_path()
+		button.focus_neighbor_bottom = select_button.get_path()
+	asc_minus.focus_neighbor_right = asc_plus.get_path()
+	asc_plus.focus_neighbor_left = asc_minus.get_path()
+	asc_plus.focus_neighbor_right = select_button.get_path()
+	select_button.focus_neighbor_left = asc_plus.get_path()
+	select_button.focus_neighbor_right = back_button.get_path()
+	back_button.focus_neighbor_left = select_button.get_path()
+	if not thumbnail_buttons.is_empty():
+		select_button.focus_neighbor_bottom = thumbnail_buttons[0].get_path()
+		back_button.focus_neighbor_bottom = thumbnail_buttons[thumbnail_buttons.size() - 1].get_path()
 
 	select_character.call(game.selected_character_id)
 	if not thumbnail_buttons.is_empty():
@@ -1099,16 +1087,56 @@ func _show_character_select() -> void:
 
 
 func _hero_thumbnail_size(character_count: int) -> Vector2:
-	var frame_size := _hero_select_carousel_frame_size()
-	var carousel_source_scale := frame_size.x / HERO_SELECT_CAROUSEL_FRAME_SOURCE_SIZE.x
-	var horizontal_margins := (HERO_SELECT_CAROUSEL_CONTENT_BASE.x + HERO_SELECT_CAROUSEL_CONTENT_BASE.z) * carousel_source_scale
-	var vertical_margins := (HERO_SELECT_CAROUSEL_CONTENT_BASE.y + HERO_SELECT_CAROUSEL_CONTENT_BASE.w) * carousel_source_scale
-	var gap_total := maxf(float(character_count - 1), 0.0) * float(HERO_SELECT_CAROUSEL_THUMBNAIL_SEPARATION)
-	var available_width := maxf(frame_size.x - horizontal_margins - gap_total, 1.0)
-	var available_height := maxf(frame_size.y - vertical_margins, 1.0)
+	var safe_rect := _hero_select_v2_scaled_rect(HERO_SELECT_V2_CAROUSEL_SAFE)
+	var gap_total := maxf(float(character_count - 1), 0.0) * float(_hero_select_v2_thumbnail_separation())
+	var available_width := maxf(safe_rect.size.x - gap_total, 1.0)
+	var available_height := maxf(safe_rect.size.y, 1.0)
 	var width := clampf(floor(available_width / maxf(float(character_count), 1.0)), 42.0, 136.0)
 	var height := clampf(width * 1.35, 56.0, available_height)
 	return Vector2(width, height)
+
+
+func _hero_select_v2_scale() -> float:
+	var viewport_size := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	return minf(viewport_size.x / HERO_SELECT_V2_SOURCE_SIZE.x, viewport_size.y / HERO_SELECT_V2_SOURCE_SIZE.y)
+
+
+func _hero_select_v2_canvas_rect() -> Rect2:
+	var viewport_size := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var canvas_size := HERO_SELECT_V2_SOURCE_SIZE * _hero_select_v2_scale()
+	return Rect2((viewport_size - canvas_size) * 0.5, canvas_size)
+
+
+func _hero_select_v2_scaled_rect(source_rect: Rect2) -> Rect2:
+	var scale := _hero_select_v2_scale()
+	return Rect2(
+		Vector2(round(source_rect.position.x * scale), round(source_rect.position.y * scale)),
+		Vector2(round(source_rect.size.x * scale), round(source_rect.size.y * scale))
+	)
+
+
+func _hero_select_v2_rect_relative(source_rect: Rect2, source_parent: Rect2) -> Rect2:
+	var scale := _hero_select_v2_scale()
+	return Rect2(
+		Vector2(round((source_rect.position.x - source_parent.position.x) * scale), round((source_rect.position.y - source_parent.position.y) * scale)),
+		Vector2(round(source_rect.size.x * scale), round(source_rect.size.y * scale))
+	)
+
+
+func _hero_select_v2_thumbnail_separation() -> int:
+	return maxi(2, int(round(6.0 * _hero_select_v2_scale())))
+
+
+func _place_control_in_rect(control: Control, rect: Rect2) -> void:
+	if control == null:
+		return
+	control.position = rect.position
+	control.size = rect.size
+	control.custom_minimum_size = rect.size
 
 
 func _hero_select_unified_scale() -> float:

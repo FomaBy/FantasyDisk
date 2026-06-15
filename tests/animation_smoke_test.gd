@@ -330,12 +330,18 @@ func _test_player_animation() -> void:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
-		if sheet_character_id == "berserk" or sheet_character_id == "dark_mage" or sheet_character_id == "guitarist":
+		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "dark_mage" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "thief":
 			var v2_label := "SCRUM-420"
-			if sheet_character_id == "dark_mage":
+			if sheet_character_id == "assassin":
+				v2_label = "SCRUM-419"
+			elif sheet_character_id == "dark_mage":
 				v2_label = "SCRUM-424"
+			elif sheet_character_id == "elementalist":
+				v2_label = "SCRUM-427"
 			elif sheet_character_id == "guitarist":
 				v2_label = "SCRUM-429"
+			elif sheet_character_id == "thief":
+				v2_label = "SCRUM-435"
 			if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
 				_fail("Expected %s %s v2 SpriteFrames to expose idle/walk/move frames." % [sheet_character_id, v2_label])
 			if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
