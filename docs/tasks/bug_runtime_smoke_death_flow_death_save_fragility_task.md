@@ -1,11 +1,12 @@
 # BUG: runtime_smoke `_test_death_flow` падает при активном death_save (мета-дерево)
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end / QA tooling
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: Back-end (диагностика регресса «Expected player death to end combat»)
+Jira: SCRUM-444
 
 ## Симптом
 `tests/runtime_smoke_test.gd` детерминированно падает (2/2):
@@ -49,6 +50,45 @@
 Беру правку, как только файл освободится (== HEAD), либо применит владелец.
 
 ## Acceptance Criteria
-- [ ] `_test_death_flow` нейтрализует death_save (как dodge) перед смертельным ударом.
-- [ ] `runtime_smoke_test` зелёный и при полном мета-дереве, и при пустом.
-- [ ] Геймплей death_save не тронут (правка только в тесте).
+- [x] `_test_death_flow` нейтрализует death_save (как dodge) перед смертельным ударом.
+- [x] `runtime_smoke_test` зелёный и при полном мета-дереве, и при пустом.
+- [x] Геймплей death_save не тронут (правка только в тесте).
+
+## Back-end Result (2026-06-15)
+
+Фикс применён в `tests/runtime_smoke_test.gd`: `_test_death_flow` теперь
+детерминированно отключает `run_modifiers["death_save"]` и помечает
+`death_save_used` перед смертельным `take_damage(99999)`, так же как тест уже
+обнулял dodge. Геймплейный код death_save не менялся.
+
+Verification:
+- PASS: `tests/runtime_smoke_test.gd`
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED — death-тест детерминирован независимо от мета-дерева
+
+Проверено (фактически):
+- **Фикс присутствует** в `tests/runtime_smoke_test.gd:7552-7553`: `_test_death_flow`
+  обнуляет `run_modifiers["death_save"]=0.0` + `death_save_used=1.0` перед
+  `take_damage(99999)` (так же, как уже обнулялся dodge). Геймплейный death_save код
+  (`player.gd:528-534`) НЕ тронут.
+- **runtime_smoke зелёный 3/3** на РЕАЛЬНОМ dev-сейве (полное мета-дерево, активный
+  `endure_capstone`/death_save=1.0) — то самое окружение, где раньше стабильно падало
+  «Expected player death to end combat». Теперь смерть → бой завершается → тест проходит.
+- Это закрывает корень ложного «critical» SCRUM-443: red был тест-артефактом
+  (`--user-data-dir` не изолирует `user://`, тест читал dev-death_save), не геймплейным
+  багом. См. [[godot-userdatadir-not-isolating-real-save]].
+
+Acceptance:
+- [x] `_test_death_flow` нейтрализует death_save перед смертельным ударом.
+- [x] runtime_smoke зелёный и при полном мета-дереве (проверено 3/3), и при пустом.
+- [x] Геймплей death_save не тронут (правка только в тесте).
+
+Статус done. Баги: нет.
+⚠️ **Landing в HEAD отложен (НЕ дефект 444):** фикс лежит в working-tree, намертво
+сцеплен в одном hot-файле с активной перезаписью hero_select v2 (SCRUM-436:
+`HERO_SELECT_V2_*` константы + ассерты `HeroSelectCanvas`, которой в HEAD-коде
+`ui_screens.gd` ещё нет). Коммит теста в одиночку дал бы красный HEAD. Фикс попадёт
+в HEAD вместе с coupled-коммитом SCRUM-436 (test + `ui_screens.gd` v2-реализация)
+владельцем 436. До тех пор HEAD-runtime_smoke остаётся красным по 436-несоответствию,
+НЕ по death-flow.
