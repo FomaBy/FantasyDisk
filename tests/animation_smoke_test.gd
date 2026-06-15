@@ -1,6 +1,7 @@
 extends SceneTree
 
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := Vector2(0.36, 0.36)
 
 
 func _initialize() -> void:
@@ -8,6 +9,7 @@ func _initialize() -> void:
 	_test_enemy_projectile_sprite()
 	_test_enemy_sprite_paths()
 	_test_druid_wolf_ally_animation()
+	_test_character_full_frame_alpha_matte()
 	_test_full_frame_animation_registry()
 	_test_enemy_animation()
 	_test_flying_elite_boss_rigs()
@@ -23,6 +25,139 @@ func _fail(message: String) -> void:
 	quit(1)
 
 
+func _test_character_full_frame_alpha_matte() -> void:
+	for character_id in ProgressionData.character_ids():
+		var path := "res://assets/sprites/characters/full_frame/%s/%s_idle_00.png" % [character_id, character_id]
+		var image := Image.new()
+		var err := image.load(ProjectSettings.globalize_path(path))
+		if err != OK:
+			_fail("Expected representative full-frame alpha smoke image to load: %s." % path)
+			return
+		var edge_white := _alpha_smoke_edge_white_pixels(image)
+		var floodable_matte := _alpha_smoke_floodable_background(image)
+		if edge_white != 0 or floodable_matte > 1500:
+			_fail("Expected %s to have transparent matte-free edges; edge_white=%d floodable_matte=%d." % [path, edge_white, floodable_matte])
+			return
+
+
+func _alpha_smoke_background_candidate(color: Color) -> bool:
+	var alpha := int(round(color.a * 255.0))
+	if alpha <= 8:
+		return false
+	var r := int(round(color.r * 255.0))
+	var g := int(round(color.g * 255.0))
+	var b := int(round(color.b * 255.0))
+	var hi := maxi(r, maxi(g, b))
+	var lo := mini(r, mini(g, b))
+	var neutral_white := hi >= 224 and lo >= 216 and hi - lo <= 42
+	var checker_black := alpha >= 220 and hi <= 20 and hi - lo <= 8
+	return neutral_white or checker_black
+
+
+func _alpha_smoke_visible_bbox(image: Image) -> Array:
+	var x0 := image.get_width()
+	var y0 := image.get_height()
+	var x1 := -1
+	var y1 := -1
+	for y in range(image.get_height()):
+		for x in range(image.get_width()):
+			if int(round(image.get_pixel(x, y).a * 255.0)) <= 8:
+				continue
+			x0 = mini(x0, x)
+			y0 = mini(y0, y)
+			x1 = maxi(x1, x + 1)
+			y1 = maxi(y1, y + 1)
+	if x1 < 0 or y1 < 0:
+		return []
+	return [x0, y0, x1, y1]
+
+
+func _alpha_smoke_neighbors(point: Vector2i, width: int, height: int) -> Array:
+	var neighbors := []
+	if point.x > 0:
+		neighbors.append(Vector2i(point.x - 1, point.y))
+	if point.x + 1 < width:
+		neighbors.append(Vector2i(point.x + 1, point.y))
+	if point.y > 0:
+		neighbors.append(Vector2i(point.x, point.y - 1))
+	if point.y + 1 < height:
+		neighbors.append(Vector2i(point.x, point.y + 1))
+	return neighbors
+
+
+func _alpha_smoke_seed_points(image: Image, bbox: Array) -> Array:
+	var width := image.get_width()
+	var height := image.get_height()
+	var x0: int = bbox[0]
+	var y0: int = bbox[1]
+	var x1: int = bbox[2]
+	var y1: int = bbox[3]
+	var seeds := []
+	var seen := {}
+	for x in range(x0, x1):
+		for y in [y0, y1 - 1]:
+			var point := Vector2i(x, y)
+			if not seen.has(point) and _alpha_smoke_background_candidate(image.get_pixel(x, y)):
+				seeds.append(point)
+				seen[point] = true
+	for y in range(y0, y1):
+		for x in [x0, x1 - 1]:
+			var point := Vector2i(x, y)
+			if not seen.has(point) and _alpha_smoke_background_candidate(image.get_pixel(x, y)):
+				seeds.append(point)
+				seen[point] = true
+	for y in range(y0, y1):
+		for x in range(x0, x1):
+			var point := Vector2i(x, y)
+			if seen.has(point) or not _alpha_smoke_background_candidate(image.get_pixel(x, y)):
+				continue
+			for neighbor in _alpha_smoke_neighbors(point, width, height):
+				var neighbor_point := neighbor as Vector2i
+				if int(round(image.get_pixel(neighbor_point.x, neighbor_point.y).a * 255.0)) <= 8:
+					seeds.append(point)
+					seen[point] = true
+					break
+	return seeds
+
+
+func _alpha_smoke_floodable_background(image: Image) -> int:
+	var bbox := _alpha_smoke_visible_bbox(image)
+	if bbox.is_empty():
+		return 0
+	var width := image.get_width()
+	var height := image.get_height()
+	var seen := {}
+	var queue := []
+	for point in _alpha_smoke_seed_points(image, bbox):
+		var seed := point as Vector2i
+		if not seen.has(seed):
+			seen[seed] = true
+			queue.append(seed)
+	while not queue.is_empty():
+		var point := queue.pop_front() as Vector2i
+		for neighbor in _alpha_smoke_neighbors(point, width, height):
+			var neighbor_point := neighbor as Vector2i
+			if seen.has(neighbor_point):
+				continue
+			if _alpha_smoke_background_candidate(image.get_pixel(neighbor_point.x, neighbor_point.y)):
+				seen[neighbor_point] = true
+				queue.append(neighbor_point)
+	return seen.size()
+
+
+func _alpha_smoke_edge_white_pixels(image: Image, ring_width := 8) -> int:
+	var total := 0
+	var width := image.get_width()
+	var height := image.get_height()
+	for y in range(height):
+		for x in range(width):
+			if not (x < ring_width or y < ring_width or x >= width - ring_width or y >= height - ring_width):
+				continue
+			if _alpha_smoke_background_candidate(image.get_pixel(x, y)):
+				total += 1
+	return total
+
+
 func _test_player_animation() -> void:
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var player := player_scene.instantiate()
@@ -34,6 +169,10 @@ func _test_player_animation() -> void:
 		_fail("Expected Berserk full-frame AnimatedSprite2D to be visible.")
 	if rig.visible:
 		_fail("Expected Berserk cutout RigRoot to be hidden behind the full-frame AnimatedSprite2D.")
+	if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
+		_fail("Expected Berserk full-frame visual to use SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(body.scale)])
+	if rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
+		_fail("Expected hidden fallback cutout rig to receive SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(rig.get("base_scale"))])
 	if body.sprite_frames == null or not body.sprite_frames.has_animation("attack") or not body.sprite_frames.has_animation("attack_primary"):
 		_fail("Expected player SpriteFrames to expose attack and attack_primary animations.")
 	if body.sprite_frames.resource_path != "res://assets/sprites/characters/berserk_spriteframes.tres":
@@ -43,15 +182,16 @@ func _test_player_animation() -> void:
 	if not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
 		_fail("Expected Berserk walk to loop and attacks to be one-shot.")
 	player.call("play_action_animation", "attack", Vector2.RIGHT)
-	if body.animation != "attack":
-		_fail("Expected player action playback to select the attack animation on fallback SpriteFrames.")
+	var last_event := player.get("last_weapon_animation_event") as Dictionary
+	if str(last_event.get("action_id", "")) != "attack":
+		_fail("Expected player action playback to emit an attack weapon animation event.")
 	player.set("velocity", Vector2(100, 0))
 	player.call("_update_movement_animation", 0.01)
-	if body.animation != "attack":
-		_fail("Expected player attack animation to survive the immediate movement update.")
+	if body.animation == "attack" or body.animation == "attack_primary":
+		_fail("Expected player body attack SpriteFrames to stay disabled while weapon/rig action events run.")
 	player.call("_update_movement_animation", 1.0)
-	if body.animation == "attack":
-		_fail("Expected player attack animation lock to expire after the action window.")
+	if body.animation == "attack" or body.animation == "attack_primary":
+		_fail("Expected player movement animation to remain in a non-attack state after the action window.")
 	var synthetic_sheet := _make_synthetic_character_sheet()
 	var synthetic_frames := player.call("_sprite_frames_from_character_sheet", synthetic_sheet) as SpriteFrames
 	if synthetic_frames == null:
@@ -180,6 +320,8 @@ func _test_player_animation() -> void:
 			_fail("Expected %s to use its accepted SpriteFrames resource." % sheet_character_id)
 		if not body.visible or rig.visible:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
+		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
+			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
 		if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
 			_fail("Expected %s accepted SpriteFrames to expose 5 idle/walk/attack/attack_primary frames." % sheet_character_id)
 		if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):

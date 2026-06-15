@@ -1467,7 +1467,7 @@
  "backend_hero_select_carousel_bigger_icons_task.md": {
   "key": "SCRUM-342",
   "status": "Готово",
-  "desc_hash": "61747fc4de7564b8862a30d09f063443"
+  "desc_hash": "1c8d16a5b202b4d722bf12c16027b9af"
  },
  "bug_back_button_cropped_use_bigger_frame_task.md": {
   "key": "SCRUM-343",
@@ -1982,7 +1982,7 @@
  "bug_character_frames_white_background_not_transparent_task.md": {
   "key": "SCRUM-412",
   "status": "Готово",
-  "desc_hash": "ecdd28389e1a1eb29f6758e47b291ff4"
+  "desc_hash": "f756cbb6f27b1ace45ffc36e658c578a"
  },
  "bug_attribute_shop_overflow_and_unclickable_options_task.md": {
   "key": "SCRUM-413",
@@ -2006,7 +2006,7 @@
  },
  "bug_character_sprites_increase_size_task.md": {
   "key": "SCRUM-417",
-  "status": "В работе",
-  "desc_hash": "2de71f624c9c69a3d3dacab1e4470b98"
+  "status": "Готово",
+  "desc_hash": "2ce3f2d6119e0f0f4591e017f76a5dcf"
  }
 }

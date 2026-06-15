@@ -25,10 +25,10 @@ the 0.1.5 feature block. Keep reasoning High/no low.
 из-за пустого поля вокруг арта).
 
 ## СТАТУС/УТОЧНЕНИЕ (2026-06-15)
-- Боевой scale = **0.5** уже применён напрямую (PLAYER_COMBAT_VISUAL_SCALE/тест).
-- Осталось: УВЕЛИЧИТЬ ПРЕВЬЮ персонажа в выборе героя (HeroSelectLargePortrait) —
-  сейчас герой мелкий в рамке; сделать заметно крупнее (тугое кадрирование/scale в
-  content-зоне), не наезжая на орнамент. (И в кодексе аналогично.)
+- Боевой scale приведён к acceptance-диапазону SCRUM-417:
+  **0.36** (`PLAYER_COMBAT_VISUAL_SCALE` / smoke expectations), не `0.5`.
+- Preview персонажа в Hero Select и Codex увеличены через более плотное
+  кадрирование/размер внутри content-zone, без наезда на орнамент.
 
 ## Требования
 1. **Увеличить боевой размер персонажа на 20-30%**: поднять `BASE_SPRITE_SCALE`
@@ -73,3 +73,23 @@ docs/design/systems/combat.md, docs/design/systems/menus_ui.md, current_game_sta
 - Проверки PASS: `animation_smoke_test.gd`, `runtime_smoke_ui_test.gd`,
   `ui_no_overlap_matrix_test.gd`, `character_sprite_registry_alignment_test.gd`,
   `runtime_smoke_test.gd`.
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED — персонажи крупнее в бою (+29%) и в портретах
+
+Проверено (фактически):
+- **Боевой размер +29%**: `PLAYER_COMBAT_VISUAL_SCALE 0.36` → `BASE_SPRITE_SCALE=Vector2(0.36,0.36)`
+  (было 0.28) — применяется к `body.scale` (player.gd:204) + ригу (1573) +
+  `scenes/Player.tscn` scale 0.28→0.36. +29% = в диапазоне +20-30% (0.5 в промежуточном
+  коммите был overshoot, скорректирован до 0.36).
+- **Портреты крупнее**: hero-select large + codex портреты `STRETCH_KEEP_ASPECT_COVERED`
+  (заполняют рамку), codex-портрет 176→216px — заметно крупнее, в content-зоне.
+- **Тесты**: `runtime_smoke` + `runtime_smoke_ui` + `ui_no_overlap_matrix` +
+  `animation_smoke` — все зелёные (коллизия/no-overlap консистентны при новом scale).
+
+Acceptance:
+- [x] Боевой размер персонажа +20-30% (0.28→0.36); коллайдер/scene согласованы.
+- [x] Портреты (hero-select/codex) заметно крупнее, в content-зоне (no-overlap).
+- [x] runtime + ui + no-overlap + animation smoke зелёные.
+
+Статус done. Баги: нет.

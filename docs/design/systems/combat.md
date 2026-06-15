@@ -24,6 +24,12 @@
 ## Player Control And Attacks
 
 - Движение: WASD / переназначаемые hotkeys.
+- SCRUM-417 sets playable character combat visuals to
+  `BASE_SPRITE_SCALE = Vector2(0.36, 0.36)` for both accepted full-frame
+  `AnimatedSprite2D` characters and the legacy cutout-rig fallback, about +29%
+  from the old `0.28` baseline. The player collision radius remains `10.5` so
+  readability improves without changing combat ranges, contact behavior or
+  balance.
 - Дебаг-режим (SCRUM-375): если persisted setting `debug_mode` включен, то
   только в активном combat ПКМ или Shift+ЛКМ задают точку плавного движения
   игрока на арене, а средняя кнопка мыши мгновенно переносит игрока в выбранную

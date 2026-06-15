@@ -755,7 +755,7 @@ func _show_character_select() -> void:
 	large_portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	large_portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	large_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	large_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	large_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	large_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_box.add_child(large_portrait)
 	# Имя героя теперь ТОЛЬКО в досье (HeroSelectInfoTitle) — подпись под портретом убрана.
@@ -2014,7 +2014,7 @@ func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, nod
 	portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED if node_name == "CodexPortraitSlot" else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.texture = texture
 	slot.add_child(portrait)
 
@@ -2129,7 +2129,7 @@ func _hide_glossary_tooltip() -> void:
 func _build_codex_characters(list: VBoxContainer) -> void:
 	for character in CODEX_DATA.characters():
 		var row := _codex_entry_panel(list)
-		_codex_portrait(row, str(character["sprite"]), Vector2(176, 176))
+		_codex_portrait(row, str(character["sprite"]), Vector2(216, 216))
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.add_theme_constant_override("separation", 4)
