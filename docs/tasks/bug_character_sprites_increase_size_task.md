@@ -1,6 +1,6 @@
 # UX: Увеличить размер всех персонажей на 20-30%
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI/бой)
 Версия: 0.1.5
@@ -8,6 +8,10 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-417
 Связано: SCRUM-416 (портреты), SCRUM-412 (прозрачность), SCRUM-411 (видимость анимспрайта)
+
+Dispatcher: routed to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`
+on 2026-06-15 as an eligible active-sprint bug/UX stabilization row under
+the 0.1.5 feature block. Keep reasoning High/no low.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -19,6 +23,12 @@ Jira: SCRUM-417
 применяется к AnimatedSprite2D (player.gd:201) и ригу (1570). Персонажи мелковаты.
 Портрет в выборе героя/кодексе — STRETCH_KEEP_ASPECT_CENTERED в фикс-панели (мелкий
 из-за пустого поля вокруг арта).
+
+## СТАТУС/УТОЧНЕНИЕ (2026-06-15)
+- Боевой scale = **0.5** уже применён напрямую (PLAYER_COMBAT_VISUAL_SCALE/тест).
+- Осталось: УВЕЛИЧИТЬ ПРЕВЬЮ персонажа в выборе героя (HeroSelectLargePortrait) —
+  сейчас герой мелкий в рамке; сделать заметно крупнее (тугое кадрирование/scale в
+  content-зоне), не наезжая на орнамент. (И в кодексе аналогично.)
 
 ## Требования
 1. **Увеличить боевой размер персонажа на 20-30%**: поднять `BASE_SPRITE_SCALE`
@@ -41,9 +51,25 @@ Jira: SCRUM-417
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Боевой размер персонажей увеличен на 20-30% (BASE_SPRITE_SCALE), все 17 классов.
-- [ ] Портрет в выборе героя/кодексе крупнее (персонаж заполняет рамку), без наезда на орнамент.
-- [ ] Хитбокс/прицел/баланс не сломаны; pivot/flip/оружие целы; smoke зелёные; скрины; CHANGELOG.
+- [x] Боевой размер персонажей увеличен на 20-30% (BASE_SPRITE_SCALE), все 17 классов.
+- [x] Портрет в выборе героя/кодексе крупнее (персонаж заполняет рамку), без наезда на орнамент.
+- [x] Хитбокс/прицел/баланс не сломаны; pivot/flip/оружие целы; smoke зелёные; скрины; CHANGELOG.
 
 ## Документация
 docs/design/systems/combat.md, docs/design/systems/menus_ui.md, current_game_state.
+
+## Результат
+- `BASE_SPRITE_SCALE` нормализован в целевой SCRUM-417 диапазон:
+  `Vector2(0.36, 0.36)` (+28.6% от исходных `0.28`) и применяется к
+  full-frame `AnimatedSprite2D` и legacy cutout-rig fallback.
+- Player collision radius оставлен `10.5`: gameplay ranges/balance не менялись,
+  а smoke фиксирует визуальный рост отдельно от hurtbox.
+- `HeroSelectLargePortrait` и Codex character portrait используют tighter
+  `STRETCH_KEEP_ASPECT_COVERED`; Codex character portrait size увеличен до
+  `216x216`, при этом no-overlap/safe-zone matrix зелёный.
+- QA dumps: `build/qa/scrum417/combat_character_size_runtime_dump.md`,
+  `build/qa/scrum417/character_size_runtime_dump.md`,
+  `build/qa/scrum417/codex_character_portrait_runtime_dump.md`.
+- Проверки PASS: `animation_smoke_test.gd`, `runtime_smoke_ui_test.gd`,
+  `ui_no_overlap_matrix_test.gd`, `character_sprite_registry_alignment_test.gd`,
+  `runtime_smoke_test.gd`.
