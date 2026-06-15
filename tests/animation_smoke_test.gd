@@ -1,7 +1,7 @@
 extends SceneTree
 
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
-const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := Vector2(0.36, 0.36)
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := Vector2(0.5, 0.5)
 
 
 func _initialize() -> void:
