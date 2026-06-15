@@ -2351,16 +2351,21 @@
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
   "key": "SCRUM-437",
   "status": "В работе",
-  "desc_hash": "14ee126890e1b1a20ec2d645e3a4da77"
+  "desc_hash": "ce3d3c1150f95319adc06ffb6f7fa527"
  },
  "design_codex_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-438",
-  "status": "К выполнению",
-  "desc_hash": "721ddbc74425b6256294c6f321fbd423"
+  "status": "В работе",
+  "desc_hash": "70bb5445df848569fcd7c0a012a8d25b"
  },
  "design_settings_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-439",
   "status": "К выполнению",
   "desc_hash": "4d10cca9d9c349d2dcf4d4ce2ed20de2"
+ },
+ "bug_mass_duplicate_space2_files_cleanup_task.md": {
+  "key": "SCRUM-440",
+  "status": "К выполнению",
+  "desc_hash": "3bd5e1241bf61f02214b0c51c36ce85a"
  }
 }
