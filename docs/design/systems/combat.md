@@ -96,3 +96,12 @@
 - VFX smoke: `tests/attack_vfx_smoke_test.gd`, `tests/hazard_vfx_smoke_test.gd`.
 - Снаряды: `tests/projectile_smoke_test.gd`, `tests/enemy_projectile_smoke_test.gd`.
 - Балансовые харнессы (отчёты в `build/`): `tools/balance_harness.gd` (формульный), `tools/live_combat_harness.gd` (живой DPS/TTK), `tools/survivability_harness.gd` (выживаемость профилей). Прогон всех standalone-тестов: `tools/run_focused_tests.sh`.
+
+## Enemy HP Bars
+
+SCRUM-414 keeps normal enemy health bars in their original world-space
+overhead position, but elite and boss bars clamp into the active viewport when
+their large sprite would place the bar above the top screen edge. The clamp uses
+the current canvas transform so camera/zoom are respected, preserves the
+existing `scripts/enemy_health_bar.gd` drawing node, and keeps boss phase marker
+metadata on the same bar.

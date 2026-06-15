@@ -110,6 +110,9 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   white/near-white/checkerboard matte from the visible alpha bounds and de-halo
   the silhouette before writing sliced frames. QA proof lives under
   `build/qa/scrum412_character_alpha/`; Godot import and animation smoke pass.
+  `tests/animation_smoke_test.gd` now permanently samples one cleaned
+  `*_idle_00.png` per playable class and fails if edge-ring white/checkerboard
+  pixels or floodable matte regress beyond the SCRUM-412 thresholds.
 - SCRUM-283 integrated Berserk's accepted unarmed source sheet
   `assets/sprites/characters/berserk_sheet.png` into runtime SpriteFrames at
   `assets/sprites/characters/berserk_spriteframes.tres`: `walk` 5f loop,

@@ -309,6 +309,8 @@ visible bounds. SCRUM-412 cleaned all 255 current playable frames and establishe
 and de-halo pass for future full-frame character sheet slices. QA proof:
 `build/qa/scrum412_character_alpha/final_character_alpha_dark_bg_contact.png`
 and `build/qa/scrum412_character_alpha/final_alpha_validation_report.json`.
+Back-end animation smoke keeps a representative per-class alpha/matte assertion
+so future white or checkerboard matte regressions fail before release QA.
 
 All weapon visuals live in `assets/sprites/weapons/` at `256x256` with transparent background. The active style target is polished cartoon dark fantasy: strong black silhouette, readable object shape at `40x40`, compact controlled glow, material detail, and no text/watermark/built-in UI frame. Weapon art v2 pass 2026-06-12 replaced the Knight trio (`long_spear.png`, `tower_shield.png`, `holy_flail.png`) with polished noble equipment, removed fallback texture links from weapon scenes, and reduced socket display scale across oversized weapons. The raw and socket QA sheets are `docs/design/previews/weapon_v2_assets_contact.png` and `docs/design/previews/weapon_v2_socket_contact.png`.
 

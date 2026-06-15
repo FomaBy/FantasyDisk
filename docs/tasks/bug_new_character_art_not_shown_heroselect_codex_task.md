@@ -1,6 +1,6 @@
 # BUG: Новые перерисованные персонажи не показаны (выбор героя, кодекс, миниатюры, выбор оружия)
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.5
@@ -11,6 +11,17 @@ Jira: SCRUM-416
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Dispatch
+- 2026-06-15T06:28Z — Board dispatcher routed to Back-end thread
+  `019eabd9-780b-78a2-9f4b-e7203d659ef2` with reasoning High/no low, queued after
+  the active SCRUM-415/SCRUM-414/SCRUM-412 bug work unless the same UI/data path is
+  touched sooner. Active-owner audit: SCRUM-416 had no recent dispatch note or
+  owner; Design main had completed SCRUM-412 Design phase; Designer 2 and Animator
+  had no eligible owner work. Back-end owns the UI/data binding from old
+  `sprite_path` assets to accepted transparent full-frame art. If a new cropped
+  portrait asset is truly required, Back-end must record a precise Design handoff
+  instead of generating Design assets. Animator is not routed.
 
 ## Контекст (отчёт пользователя + диагностика)
 «Почему новые персонажи не показываются на экране выбора персонажа и в кодексе».
@@ -50,9 +61,27 @@ Jira: SCRUM-416
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] Во всех статичных местах (выбор героя, миниатюры, кодекс, выбор оружия) показан НОВЫЙ перерисованный персонаж для всех 17 классов.
-- [ ] Портреты на прозрачном фоне (без белого, коорд. SCRUM-412), без оружия, в content-зоне; старые в бэкап, нет битых ссылок.
-- [ ] smoke зелёные; скрины выбора героя + кодекса; CHANGELOG.
+- [x] Во всех статичных местах (выбор героя, миниатюры, кодекс, выбор оружия) показан НОВЫЙ перерисованный персонаж для всех 17 классов.
+- [x] Портреты на прозрачном фоне (без белого, коорд. SCRUM-412), без оружия, в content-зоне; старые в бэкап, нет битых ссылок.
+- [x] smoke зелёные; скрины выбора героя + кодекса; CHANGELOG.
 
 ## Документация
 docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_state.
+
+## Result / Back-end report
+- Updated all 17 `ProgressionData.character_config(...).sprite_path` values from legacy static PNGs to the accepted SCRUM-412-cleaned full-frame idle portraits:
+  `res://assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`.
+- Existing static portrait surfaces now inherit the new art through the canonical config path: Hero Select large portrait, carousel thumbnails, Codex character portrait, pause/level-up/legacy portrait surfaces. Weapon select currently has no hero portrait surface and only renders weapon cards, so no feature UI was added during the freeze.
+- Added regression coverage:
+  `tests/character_sprite_registry_alignment_test.gd` now requires the full-frame idle portrait paths for all 17 classes, and `tests/runtime_smoke_test.gd` asserts actual Hero Select thumbnail/large portraits, Codex default portrait and level-up portrait texture paths.
+- QA dumps:
+  `build/qa/scrum416/character_portrait_registry_alignment.md`,
+  `build/qa/scrum416/hero_select_portrait_runtime_paths.md`,
+  `build/qa/scrum416/codex_character_portrait_runtime_paths.md`.
+- Verification PASS:
+  `character_sprite_registry_alignment_test.gd`,
+  `content_registry_consistency_test.gd`,
+  `ui_no_overlap_matrix_test.gd`,
+  `runtime_smoke_ui_test.gd`,
+  `animation_smoke_test.gd`,
+  `runtime_smoke_test.gd`.

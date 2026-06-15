@@ -76,9 +76,9 @@ QA: in_progress (2026-06-15)
 - tests/runtime_smoke_test.gd, tests/ui_no_overlap_matrix_test.gd
 
 ## Acceptance Criteria
-- [ ] «Докачка» влезает на 1280×720/1920×1080/2560×1440 и узких окнах; обе нижние кнопки видимы и кликабельны.
-- [ ] Опции кликаются когда доступны; недоступные (нет золота) визуально серые/disabled с подсказкой, не выглядят активными.
-- [ ] Оверлеи не блокируют клики; no-overlap; smoke + matrix зелёные; скрин; CHANGELOG.
+- [x] «Докачка» влезает на 1280×720/1920×1080/2560×1440 и узких окнах; обе нижние кнопки видимы и кликабельны.
+- [x] Опции кликаются когда доступны; недоступные (нет золота) визуально серые/disabled с подсказкой, не выглядят активными.
+- [x] Оверлеи не блокируют клики; no-overlap; smoke + matrix зелёные; QA dump; CHANGELOG.
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
@@ -108,3 +108,18 @@ Acceptance:
 
 Статус done. Баги: нет. Закрывает watch-item attribute-shop overflow из QA SCRUM-406.
 (Примечание: working-tree имел parse error от незакоммиченного 412 event-WIP — не относится к 413, фикс 413 в HEAD зелёный.)
+
+## Result / Back-end follow-up
+- 2026-06-15 — Current Back-end pass tightened the live fix in
+  `scripts/ui_screens.gd`.
+- `AttributeShopPanel` now also clamps width to the viewport, `AttributeOffers`
+  is a grid instead of a single horizontal row, offer cards and reroll/skip
+  actions use compact dimensions that fit 1152x648/1280x720, and disabled
+  cards include an explicit insufficient-gold tooltip.
+- QA dumps:
+  `build/qa/scrum413/attribute_shop_no_overlap_matrix.md` plus the shared
+  `build/qa/scrum332/economy_ui_no_overlap_matrix.md`.
+- Verification:
+  - `runtime_smoke_ui_test.gd` — PASS;
+  - `ui_no_overlap_matrix_test.gd` — PASS;
+  - `runtime_smoke_test.gd` — PASS.

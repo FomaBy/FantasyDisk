@@ -1982,7 +1982,7 @@
  "bug_character_frames_white_background_not_transparent_task.md": {
   "key": "SCRUM-412",
   "status": "Готово",
-  "desc_hash": "4b1f5fbb4bfd02fb48f129ea015c6aa5"
+  "desc_hash": "ecdd28389e1a1eb29f6758e47b291ff4"
  },
  "bug_attribute_shop_overflow_and_unclickable_options_task.md": {
   "key": "SCRUM-413",
@@ -2003,5 +2003,10 @@
   "key": "SCRUM-416",
   "status": "Контроль качества",
   "desc_hash": "c66d33c7fdeee668c8ac4df9fa626435"
+ },
+ "bug_character_sprites_increase_size_task.md": {
+  "key": "SCRUM-417",
+  "status": "К выполнению",
+  "desc_hash": "a0066851da56084aa597afb1e3ef3da5"
  }
 }

@@ -7,13 +7,13 @@
 > SCRUM-148 цел). runtime_smoke зелёный. QA SCRUM-385 — PASSED. Этот тикет (SCRUM-386)
 > закрывается как дубликат; действий не требуется.
 
-Статус: superseded
+Статус: done (duplicate/superseded 2026-06-15)
 Приоритет: high
 Роль: Back-end / Animator (тайминг)
 Версия: 0.1.5
 Создано: 2026-06-14
 Автор: QA (затяжной green-gate блокер)
-Jira: pending sync
+Jira: SCRUM-386
 Связано: SCRUM-370 (интеграция death-рядов в .tres), SCRUM-379 (death-lifecycle),
 SCRUM-380 (death-row source-ассеты)
 
@@ -77,3 +77,12 @@ ERROR: Expected victory screen text to include 'Победа'.
 
 ## Документация
 docs/design/systems/combat.md (victory-флоу + death-lifecycle тайминг).
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED — duplicate closure.
+
+SCRUM-386 закрывается как дубликат SCRUM-385. Канонический фикс и QA находятся
+в `bug_victory_flow_runtime_smoke_text_missing_task.md`: runtime smoke ждёт
+появление victory-текста с учётом boss death-анимации; `runtime_smoke_test.gd`
+зелёный; SCRUM-148 victory-text contract сохранён. Отдельного исполнителя для
+SCRUM-386 не требуется.
