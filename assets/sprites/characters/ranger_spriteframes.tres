@@ -1,0 +1,100 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_idle_00.png" id="1_ra1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_idle_01.png" id="2_ra2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_idle_02.png" id="3_ra3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_idle_03.png" id="4_ra4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_idle_04.png" id="5_ra5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_walk_00.png" id="6_ra6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_walk_01.png" id="7_ra7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_walk_02.png" id="8_ra8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_walk_03.png" id="9_ra9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_walk_04.png" id="10_ra10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_attack_primary_00.png" id="11_ra11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_attack_primary_01.png" id="12_ra12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_attack_primary_02.png" id="13_ra13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_attack_primary_03.png" id="14_ra14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/ranger/ranger_attack_primary_04.png" id="15_ra15"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_ra11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_ra12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_ra13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_ra14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_ra15")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_ra11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_ra12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_ra13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_ra14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_ra15")
+}],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ra1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_ra2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ra3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ra4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ra5")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_ra6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_ra7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ra8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_ra9")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_ra10")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+}]

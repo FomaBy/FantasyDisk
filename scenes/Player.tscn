@@ -12,7 +12,7 @@ script = ExtResource("1_player_script")
 [node name="VisualRoot" type="Node2D" parent="."]
 
 [node name="Body" type="AnimatedSprite2D" parent="VisualRoot"]
-scale = Vector2(0.28, 0.28)
+scale = Vector2(0.36, 0.36)
 
 [node name="WeaponSocket" type="Node2D" parent="VisualRoot"]
 

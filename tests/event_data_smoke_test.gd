@@ -63,6 +63,8 @@ func _check_outcome(errors: Array, valid_stats: Dictionary, outcome: Dictionary,
 			errors.append("%s: combat.type '%s' вне %s" % [where, ctype, str(VALID_COMBAT_TYPES)])
 		if combat.has("enemy_health_multiplier") and float(combat["enemy_health_multiplier"]) <= 0.0:
 			errors.append("%s: enemy_health_multiplier <= 0" % where)
+		if combat.has("money_multiplier") and float(combat["money_multiplier"]) <= 0.0:
+			errors.append("%s: money_multiplier <= 0" % where)
 	if outcome.has("cost_money") and int(outcome["cost_money"]) < 0:
 		errors.append("%s: отрицательный cost_money" % where)
 	if outcome.has("money") and int(outcome["money"]) < 0:
@@ -74,6 +76,22 @@ func _check_outcome(errors: Array, valid_stats: Dictionary, outcome: Dictionary,
 	if outcome.has("random_outcomes"):
 		if not (outcome["random_outcomes"] is Array) or (outcome["random_outcomes"] as Array).is_empty():
 			errors.append("%s: random_outcomes пуст/не массив" % where)
+	if outcome.has("heal_percent"):
+		var heal := float(outcome["heal_percent"])
+		if heal <= 0.0 or heal > 1.0:
+			errors.append("%s: heal_percent вне (0,1] (%.2f)" % [where, heal])
+	# post_combat применяет статы ПОСЛЕ боя — его stats тоже должны быть валидными
+	# базовыми статами (раньше не проверялось: опечатка в ключе прошла бы молча).
+	if outcome.has("post_combat"):
+		if not (outcome["post_combat"] is Dictionary):
+			errors.append("%s: post_combat не Dictionary" % where)
+		else:
+			var post: Dictionary = outcome["post_combat"]
+			if post.has("stats"):
+				if not (post["stats"] is Dictionary):
+					errors.append("%s: post_combat.stats не Dictionary" % where)
+				else:
+					_check_stats_keys(errors, valid_stats, post["stats"], where + ".post_combat")
 
 
 func _check_events(errors: Array, valid_stats: Dictionary) -> void:

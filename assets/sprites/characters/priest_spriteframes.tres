@@ -1,0 +1,129 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_idle_00.png" id="1_pri1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_idle_01.png" id="2_pri2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_idle_02.png" id="3_pri3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_idle_03.png" id="4_pri4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_idle_04.png" id="5_pri5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_walk_00.png" id="6_pri6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_walk_01.png" id="7_pri7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_walk_02.png" id="8_pri8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_walk_03.png" id="9_pri9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_walk_04.png" id="10_pri10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_attack_primary_00.png" id="11_pri11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_attack_primary_01.png" id="12_pri12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_attack_primary_02.png" id="13_pri13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_attack_primary_03.png" id="14_pri14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/priest/priest_attack_primary_04.png" id="15_pri15"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_pri1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_pri2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_pri3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_pri4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_pri5")
+}
+],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("6_pri6")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_pri7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_pri8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_pri9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_pri10")
+}
+],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_pri11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_pri12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_pri13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_pri14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_pri15")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_pri11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_pri12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_pri13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_pri14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_pri15")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}
+]

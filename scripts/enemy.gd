@@ -50,7 +50,9 @@ var _knockback_velocity := Vector2.ZERO
 var _cached_player: Node2D = null
 var _cached_body: Sprite2D = null
 var _cached_rig: Node2D = null
+var _cached_full_frame_body: AnimatedSprite2D = null
 var _cached_audio: Node = null
+var _death_lifecycle_started := false
 var elite_attack_state := "idle"
 var elite_attack_id := ""
 var _elite_attack_cooldown := 0.0
@@ -67,6 +69,8 @@ const ARENA_SIZE := Vector2(2560, 1440)
 const ARENA_ENTITY_MARGIN := 48.0
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
+const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
 const ENEMY_PROJECTILE_SCENE := preload("res://scenes/EnemyProjectile.tscn")
 const ELITE_TELEGRAPH_TEXTURE := preload("res://assets/sprites/effects/elite_telegraph_circle.png")
 const POISON_POOL_TEXTURE := preload("res://assets/sprites/effects/poison_pool.png")
@@ -74,46 +78,18 @@ const ELITE_SHOCKWAVE_TEXTURE := preload("res://assets/sprites/effects/elite_sho
 const ELITE_SHADOW_TRAIL_TEXTURE := preload("res://assets/sprites/effects/elite_shadow_trail.png")
 const ELITE_POISON_LOB_TEXTURE := preload("res://assets/sprites/effects/elite_poison_lob.png")
 const ELITE_CRYSTAL_SHARD_TEXTURE := preload("res://assets/sprites/effects/elite_crystal_shard.png")
+const ELITE_SHADOW_MARK_TEXTURE := preload("res://assets/sprites/effects/enemy_shadow_blink_mark.png")
+const ELITE_SHARD_FAN_BURST_TEXTURE := preload("res://assets/sprites/effects/enemy_shard_fan_burst.png")
 
-# Data-driven параметры уникальных атак элиток. Урон атаки считается как
-# contact_damage * damage_factor и дополнительно ограничен 25% max HP игрока.
-const ELITE_ATTACK_CONFIG := {
-	"iron_bastion": {
-		"attack_id": "slam_wave",
-		"cooldown": 6.0, "windup": 0.6, "strike": 0.25, "recover": 0.5,
-		"trigger_range": 340.0, "radius": 260.0,
-		"damage_factor": 2.0, "knockback": 150.0,
-	},
-	"night_stalker": {
-		"attack_id": "shadow_strike",
-		"cooldown": 7.0, "windup": 0.5, "strike": 0.18, "recover": 0.45,
-		"trigger_range": 540.0, "radius": 92.0,
-		"damage_factor": 2.4, "behind_offset": 74.0,
-	},
-	"plague_prophet": {
-		"attack_id": "poison_volley",
-		"cooldown": 8.0, "windup": 0.45, "strike": 0.35, "recover": 0.5,
-		"trigger_range": 560.0, "radius": 56.0,
-		"damage_factor": 0.8, "lob_count": 3, "lob_spread": 130.0,
-		"puddle_duration": 3.0, "tick_interval": 0.6, "lob_travel_time": 0.4,
-	},
-	"shard_marshal": {
-		"attack_id": "shard_fan",
-		"cooldown": 6.0, "windup": 0.5, "strike": 0.2, "recover": 0.4,
-		"trigger_range": 620.0, "radius": 0.0,
-		"damage_factor": 1.0, "shard_count": 5, "spread_degrees": 60.0,
-		"shard_speed": 430.0,
-	},
-}
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
+const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
 
 # Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
 # contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
-# согласованно одним множителем. Авторские body.scale: моб 0.42, элитка/босс 0.52.
-# Элитка 0.52*1.4=0.728 ≈ 1.73x моба; босс 0.52*1.9=0.988 ≈ 2.35x моба.
-const EPIC_ELITE_SCALE := 1.4
-const EPIC_BOSS_SCALE := 1.9
+# согласованно одним множителем. Профиль задается data-driven через
+# ProgressionData.ENEMY_SIZE_PROFILES и meta `epic_scale_profile`.
+const EPIC_SCALE_PROFILE_META := "epic_scale_profile"
 
 
 func _ready() -> void:
@@ -127,22 +103,46 @@ func _ready() -> void:
 		elite_behavior = enemy_type_name.to_lower().replace(" ", "_")
 	if elite_behavior != "":
 		set_meta("elite_behavior", elite_behavior)
+		_apply_unique_encounter_pattern_meta(elite_behavior)
 	_apply_epic_scale()
-	_configure_enemy_rig()
+	if not _configure_full_frame_animation():
+		_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
 	_create_health_bar()
-	if ELITE_ATTACK_CONFIG.has(elite_behavior):
-		elite_attack_id = str(ELITE_ATTACK_CONFIG[elite_behavior]["attack_id"])
+	var config := _elite_attack_config()
+	if not config.is_empty():
+		elite_attack_id = str(config["attack_id"])
 		_elite_attack_cooldown = randf_range(2.2, 3.6)
 
 
+func _apply_unique_encounter_pattern_meta(entity_id: String) -> void:
+	var pattern := ProgressionData.unique_encounter_pattern(entity_id)
+	if pattern.is_empty():
+		return
+	set_meta("unique_pattern_id", entity_id)
+	set_meta("unique_pattern_title", str(pattern.get("title", "")))
+	set_meta("unique_mechanics", (pattern.get("mechanics", []) as Array).duplicate())
+
+
+func _elite_attack_config() -> Dictionary:
+	return ProgressionData.elite_attack_config(elite_behavior)
+
+
 func _epic_scale_factor() -> float:
+	var profile_id := _epic_scale_profile_id()
+	var profile: Dictionary = ProgressionData.enemy_size_profile(profile_id)
+	return float(profile.get("scale", 1.0))
+
+
+func _epic_scale_profile_id() -> String:
+	if has_meta(EPIC_SCALE_PROFILE_META):
+		return str(get_meta(EPIC_SCALE_PROFILE_META, "ordinary"))
 	var lname := enemy_type_name.to_lower()
 	if lname.contains("warden") or lname.contains("devourer") or is_in_group("bosses"):
-		return EPIC_BOSS_SCALE
+		return "boss"
 	if is_in_group("elite_enemies") or elite_behavior != "":
-		return EPIC_ELITE_SCALE
-	return 1.0
+		return "elite"
+	return "ordinary"
 
 
 func _apply_epic_scale() -> void:
@@ -167,6 +167,7 @@ func _apply_collision_profile() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	StatusEffects.tick(self, delta)
 	var player := _player()
 	if player == null:
 		velocity = _consume_knockback(delta)
@@ -189,16 +190,17 @@ func _physics_process(delta: float) -> void:
 		_update_movement_animation(delta)
 		return
 
+	var status_speed := StatusEffects.speed_multiplier(self)
 	if can_summon and distance < desired_summoning_distance * 0.85:
-		velocity = -direction.normalized() * move_speed
+		velocity = -direction.normalized() * move_speed * status_speed
 	elif can_summon and distance <= desired_summoning_distance * 1.15:
 		velocity = Vector2.ZERO
 	elif can_shoot and distance < desired_shooting_distance * 0.85:
-		velocity = -direction.normalized() * move_speed
+		velocity = -direction.normalized() * move_speed * status_speed
 	elif can_shoot and distance <= desired_shooting_distance:
 		velocity = Vector2.ZERO
 	elif direction.length_squared() > 0.0:
-		velocity = direction.normalized() * move_speed
+		velocity = direction.normalized() * move_speed * status_speed
 	else:
 		velocity = Vector2.ZERO
 
@@ -213,9 +215,12 @@ func _physics_process(delta: float) -> void:
 
 
 func take_damage(amount: float) -> void:
-	var final_amount := amount
+	if _death_lifecycle_started:
+		return
+	var final_amount := amount * StatusEffects.damage_taken_multiplier(self)
 	if _elite_shield_active:
 		final_amount *= elite_shield_damage_reduction
+		_apply_elite_reflect_thorns(amount)
 	health -= final_amount
 	_update_health_bar()
 	if is_inside_tree():
@@ -226,12 +231,71 @@ func take_damage(amount: float) -> void:
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_hit"):
 		rig.play_hit()
+	_play_full_frame_state("hit", Vector2.ZERO)
 
 	if health <= 0.0:
-		if rig != null and rig.has_method("spawn_death_ghost"):
-			rig.spawn_death_ghost()
+		_death_lifecycle_started = true
+		health = 0.0
+		# Награды/лут/счёт — сразу через сигнал, независимо от визуала смерти.
 		died.emit(self)
-		queue_free()
+		# SCRUM-379: если есть ЯВНАЯ full-frame death-анимация — проигрываем её до
+		# удаления; иначе прежний death-ghost fallback (rig-призрак).
+		var death_body := _full_frame_body()
+		if death_body != null and death_body.visible and death_body.sprite_frames != null and death_body.sprite_frames.has_animation("death"):
+			_play_full_frame_death_then_free(death_body)
+		else:
+			if rig != null and rig.has_method("spawn_death_ghost"):
+				rig.spawn_death_ghost()
+			queue_free()
+
+
+func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
+	# SCRUM-379: проигрываем death-кадры, отключив поведение/столкновения мёртвого
+	# врага, затем удаляем по длительности анимации. Геймплей-награды уже выданы.
+	set_physics_process(false)
+	set_process(false)
+	velocity = Vector2.ZERO
+	for group_name in ["enemies", "bosses", "elite_enemies", "summoned_enemies"]:
+		if is_in_group(group_name):
+			remove_from_group(group_name)
+	for child in get_children():
+		if child is CollisionShape2D or child is CollisionPolygon2D:
+			child.set_deferred("disabled", true)
+	var health_bar := get_node_or_null("HealthBar") as CanvasItem
+	if health_bar != null:
+		health_bar.visible = false
+	var rig := _cutout_rig()
+	if rig != null:
+		rig.visible = false
+	FullFrameAnimationRegistry.play_state(body, "death", Vector2.ZERO)
+	var frames := body.sprite_frames
+	var fps: float = maxf(frames.get_animation_speed("death"), 1.0)
+	var count: int = maxi(frames.get_frame_count("death"), 1)
+	var duration := clampf(float(count) / fps, 0.25, 1.2)
+	if not is_inside_tree():
+		call_deferred("queue_free")
+		return
+	var tree := get_tree()
+	if tree == null:
+		call_deferred("queue_free")
+		return
+	tree.create_timer(duration + 0.05).timeout.connect(queue_free)
+
+
+func _apply_elite_reflect_thorns(incoming_amount: float) -> void:
+	var mechanics: Array = get_meta("unique_mechanics", []) as Array
+	if not mechanics.has("reflect_thorns"):
+		return
+	var player := _player()
+	if player == null or not player.has_method("take_damage"):
+		return
+	if player.global_position.distance_to(global_position) > 190.0:
+		return
+	var reflected_damage: float = minf(contact_damage * 0.55 + incoming_amount * 0.03, contact_damage * 1.15)
+	if reflected_damage <= 0.0:
+		return
+	HazardVfx.aura_pulse(self, 150.0, Color(0.78, 0.92, 1.0, 0.9))
+	player.take_damage(reflected_damage, "elite_reflect_thorns")
 
 
 func _update_elite_patterns(delta: float, player: Node2D, distance: float) -> void:
@@ -261,6 +325,7 @@ func _update_elite_shield(delta: float) -> void:
 		_elite_shield_active = true
 		_elite_shield_time_left = 1.8
 		_set_body_tint(Color(0.62, 0.86, 1.0, 1.0))
+		HazardVfx.shield_block(self, Color(0.62, 0.86, 1.0, 1.0))
 		_play_rig_action("cast", Vector2.UP)
 
 
@@ -362,7 +427,7 @@ func _set_body_tint(color: Color) -> void:
 
 
 func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool:
-	var config: Dictionary = ELITE_ATTACK_CONFIG.get(elite_behavior, {})
+	var config: Dictionary = _elite_attack_config()
 	if config.is_empty():
 		return false
 
@@ -408,9 +473,15 @@ func _set_elite_attack_phase(phase: String, duration: float) -> void:
 
 
 func _play_elite_attack_phase_animation(phase: String, duration: float) -> void:
-	if elite_attack_id == "" and ELITE_ATTACK_CONFIG.has(elite_behavior):
-		var config: Dictionary = ELITE_ATTACK_CONFIG[elite_behavior]
+	if elite_attack_id == "":
+		var config: Dictionary = _elite_attack_config()
 		elite_attack_id = str(config.get("attack_id", ""))
+	var full_frame_state := "%s:%s:%s" % [elite_behavior, elite_attack_id, phase]
+	if _play_full_frame_state(full_frame_state, _elite_attack_direction):
+		var full_frame_body := _full_frame_body()
+		if full_frame_body != null:
+			full_frame_body.set_meta("phase_duration", duration)
+		return
 	var rig := _cutout_rig()
 	if rig == null:
 		_configure_enemy_rig()
@@ -611,8 +682,14 @@ func _spawn_elite_telegraph(target_position: Vector2, radius: float, duration: f
 	telegraph.global_position = target_position
 
 	var sprite := Sprite2D.new()
-	sprite.texture = ELITE_TELEGRAPH_TEXTURE
-	var texture_radius: float = maxf(ELITE_TELEGRAPH_TEXTURE.get_size().x * 0.5, 1.0)
+	match elite_attack_id:
+		"shadow_strike":
+			sprite.texture = ELITE_SHADOW_MARK_TEXTURE
+		"shard_fan":
+			sprite.texture = ELITE_SHARD_FAN_BURST_TEXTURE
+		_:
+			sprite.texture = ELITE_TELEGRAPH_TEXTURE
+	var texture_radius: float = maxf(float(maxi(sprite.texture.get_width(), sprite.texture.get_height())) * 0.5, 1.0)
 	var target_scale := maxf(radius, 32.0) / texture_radius
 	sprite.scale = Vector2(target_scale, target_scale) * 0.4
 	sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
@@ -775,8 +852,10 @@ func _create_health_bar() -> void:
 	bar.set_script(HEALTH_BAR_SCRIPT)
 	add_child(bar)
 	var sprite_size := _visible_sprite_size()
-	bar.position = Vector2(0.0, -sprite_size.y * 0.5 - 14.0)
+	var desired_position := _health_bar_desired_local_position(sprite_size)
+	bar.position = desired_position
 	bar.setup(max_health, sprite_size.x * 0.72)
+	bar.position = _clamped_health_bar_local_position(desired_position, bar)
 
 
 func refresh_health_bar() -> void:
@@ -790,11 +869,57 @@ func _update_health_bar() -> void:
 	if bar == null:
 		return
 	var sprite_size := _visible_sprite_size()
-	bar.position = Vector2(0.0, -sprite_size.y * 0.5 - 14.0)
+	var desired_position := _health_bar_desired_local_position(sprite_size)
+	bar.position = desired_position
 	if bar.has_method("configure"):
 		bar.configure(max_health, health, sprite_size.x * 0.72)
 	elif bar.has_method("set_value"):
 		bar.set_value(health)
+	bar.position = _clamped_health_bar_local_position(desired_position, bar)
+
+
+func _health_bar_desired_local_position(sprite_size: Vector2) -> Vector2:
+	return Vector2(0.0, -sprite_size.y * 0.5 - 14.0)
+
+
+func _should_clamp_health_bar_to_viewport() -> bool:
+	return is_in_group("bosses") or is_in_group("elite_enemies")
+
+
+func _clamped_health_bar_local_position(desired_position: Vector2, bar: Node2D) -> Vector2:
+	if not _should_clamp_health_bar_to_viewport() or bar == null or not is_inside_tree():
+		return desired_position
+	var viewport := get_viewport()
+	if viewport == null:
+		return desired_position
+	var visible_rect := viewport.get_visible_rect()
+	if visible_rect.size.x <= 1.0 or visible_rect.size.y <= 1.0:
+		return desired_position
+	var canvas_inverse := viewport.get_canvas_transform().affine_inverse()
+	var visible_top_left: Vector2 = canvas_inverse * visible_rect.position
+	var visible_bottom_right: Vector2 = canvas_inverse * (visible_rect.position + visible_rect.size)
+	var desired_global := to_global(desired_position)
+	var half_width := maxf(8.0, float(bar.get("bar_width")) * 0.5)
+	var bar_height := maxf(4.0, float(bar.get("bar_height")))
+	var padding := 8.0
+	var min_x := visible_top_left.x + half_width + padding
+	var max_x := visible_bottom_right.x - half_width - padding
+	var min_y := visible_top_left.y + bar_height + padding
+	var max_y := visible_bottom_right.y - padding
+	if max_x < min_x:
+		var mid_x := (visible_top_left.x + visible_bottom_right.x) * 0.5
+		min_x = mid_x
+		max_x = mid_x
+	if max_y < min_y:
+		var mid_y := (visible_top_left.y + visible_bottom_right.y) * 0.5
+		min_y = mid_y
+		max_y = mid_y
+	var clamped_global := Vector2(
+		clampf(desired_global.x, min_x, max_x),
+		clampf(desired_global.y, min_y, max_y)
+	)
+	bar.set_meta("screen_clamped", not clamped_global.is_equal_approx(desired_global))
+	return to_local(clamped_global)
 
 
 func apply_knockback(impulse: Vector2) -> void:
@@ -917,6 +1042,12 @@ func _body_sprite() -> Sprite2D:
 
 
 func _update_movement_animation(delta: float) -> void:
+	var full_frame_body := _full_frame_body()
+	if full_frame_body != null and full_frame_body.visible:
+		var state := "move" if velocity.length_squared() > 1.0 else "idle"
+		FullFrameAnimationRegistry.play_state(full_frame_body, state, velocity)
+		return
+
 	var body := _body_sprite()
 	if body == null:
 		return
@@ -930,7 +1061,55 @@ func _update_movement_animation(delta: float) -> void:
 		rig.update_animation(delta, velocity, velocity)
 
 
+func _configure_full_frame_animation() -> bool:
+	var entity_kind := _full_frame_entity_kind()
+	var entity_id := _full_frame_entity_id(entity_kind)
+	var static_body_name := "Body" if get_node_or_null("Body") != null else "Sprite2D"
+	var animated_body := FullFrameAnimationRegistry.configure_entity_visual(self, entity_kind, entity_id, "FullFrameBody", static_body_name)
+	if animated_body == null:
+		return false
+	_cached_full_frame_body = animated_body
+	var rig := _cutout_rig()
+	if rig != null:
+		rig.visible = false
+	return true
+
+
+func refresh_full_frame_visual() -> void:
+	_configure_full_frame_animation()
+
+
+func _full_frame_entity_kind() -> String:
+	if is_in_group("bosses"):
+		return "boss"
+	if is_in_group("elite_enemies") or elite_behavior != "":
+		return "elite"
+	return "enemy"
+
+
+func _full_frame_entity_id(entity_kind: String) -> String:
+	if entity_kind == "boss" and get("boss_behavior") != null and str(get("boss_behavior")) != "":
+		return str(get("boss_behavior"))
+	if entity_kind == "elite" and has_meta("mini_elite_kind"):
+		var mini_elite_id := str(get_meta("mini_elite_kind", ""))
+		if mini_elite_id != "" and FullFrameAnimationRegistry.sprite_frames_for("elite", mini_elite_id) != null:
+			return mini_elite_id
+	if entity_kind == "elite" and elite_behavior != "":
+		return elite_behavior
+	return enemy_type_name.to_lower().replace(" ", "_")
+
+
+func _full_frame_body() -> AnimatedSprite2D:
+	if _cached_full_frame_body != null and is_instance_valid(_cached_full_frame_body):
+		return _cached_full_frame_body
+	_cached_full_frame_body = get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	return _cached_full_frame_body
+
+
 func _configure_enemy_rig() -> void:
+	var full_frame_body := _full_frame_body()
+	if full_frame_body != null and full_frame_body.visible:
+		return
 	var body := get_node_or_null("Body") as Sprite2D
 	if body == null:
 		body = get_node_or_null("Sprite2D") as Sprite2D
@@ -960,6 +1139,15 @@ func _cutout_rig() -> Node2D:
 
 
 func _play_rig_action(action_name: String, direction := Vector2.ZERO) -> void:
+	if _play_full_frame_state(action_name, direction):
+		return
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_action"):
 		rig.play_action(action_name, direction)
+
+
+func _play_full_frame_state(state_name: String, direction := Vector2.ZERO) -> bool:
+	var full_frame_body := _full_frame_body()
+	if full_frame_body == null or not full_frame_body.visible:
+		return false
+	return FullFrameAnimationRegistry.play_state(full_frame_body, state_name, direction)

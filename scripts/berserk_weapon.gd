@@ -17,6 +17,13 @@ const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 @export var windup_time := 0.06
 @export var swing_time := 0.14
 @export var recover_time := 0.08
+@export var melee_close_bonus_radius := 0.0
+@export var melee_close_damage_multiplier := 1.0
+@export var melee_execute_threshold := 0.0
+@export var melee_execute_multiplier := 1.0
+@export var melee_stagger_knockback_multiplier := 0.0
+@export var melee_arc_followup_radius := 0.0
+@export var melee_arc_followup_multiplier := 0.0
 @export var visual_color := Color(0.62, 0.82, 1.0, 0.30)
 
 var _cooldown := 0.0
@@ -46,6 +53,13 @@ func configure_weapon(config: Dictionary) -> void:
 	windup_time = float(config.get("windup_time", windup_time))
 	swing_time = float(config.get("swing_time", swing_time))
 	recover_time = float(config.get("recover_time", recover_time))
+	melee_close_bonus_radius = float(config.get("melee_close_bonus_radius", melee_close_bonus_radius))
+	melee_close_damage_multiplier = float(config.get("melee_close_damage_multiplier", melee_close_damage_multiplier))
+	melee_execute_threshold = float(config.get("melee_execute_threshold", melee_execute_threshold))
+	melee_execute_multiplier = float(config.get("melee_execute_multiplier", melee_execute_multiplier))
+	melee_stagger_knockback_multiplier = float(config.get("melee_stagger_knockback_multiplier", melee_stagger_knockback_multiplier))
+	melee_arc_followup_radius = float(config.get("melee_arc_followup_radius", melee_arc_followup_radius))
+	melee_arc_followup_multiplier = float(config.get("melee_arc_followup_multiplier", melee_arc_followup_multiplier))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
 
@@ -162,9 +176,38 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 			enemy_node.take_damage(dealt)
 			if owner_node.has_method("on_weapon_hit"):
 				owner_node.on_weapon_hit(enemy_node, dealt)
+			_apply_unique_melee_hit_effects(owner_node, enemy_node, attack_direction, dealt)
+
+
+func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2, amount: float) -> void:
+	if enemy_node == null or not is_instance_valid(enemy_node):
+		return
+	var distance := owner_node.global_position.distance_to(enemy_node.global_position)
+	if melee_close_bonus_radius > 0.0 and melee_close_damage_multiplier > 1.0 and distance <= melee_close_bonus_radius:
+		enemy_node.take_damage(amount * (melee_close_damage_multiplier - 1.0))
+	if melee_execute_threshold > 0.0 and melee_execute_multiplier > 1.0:
+		var max_hp := float(enemy_node.get("max_health")) if enemy_node.get("max_health") != null else 0.0
+		var health := float(enemy_node.get("health")) if enemy_node.get("health") != null else max_hp
+		if max_hp > 0.0 and health / max_hp <= melee_execute_threshold:
+			enemy_node.take_damage(amount * (melee_execute_multiplier - 1.0))
+	if melee_stagger_knockback_multiplier > 0.0:
+		var push_direction := enemy_node.global_position - owner_node.global_position
+		if push_direction.length_squared() <= 0.001:
+			push_direction = attack_direction
+		if enemy_node.has_method("apply_knockback"):
+			enemy_node.apply_knockback(push_direction.normalized() * 260.0 * melee_stagger_knockback_multiplier)
+	if melee_arc_followup_radius > 0.0 and melee_arc_followup_multiplier > 0.0:
+		var splash_damage := amount * melee_arc_followup_multiplier
+		for nearby in TARGET_QUERY.in_radius(self, enemy_node.global_position, melee_arc_followup_radius):
+			if nearby == enemy_node:
+				continue
+			if nearby.has_method("take_damage"):
+				nearby.take_damage(splash_damage)
 
 
 func _target_direction(owner_node: Node2D) -> Vector2:
+	if owner_node.has_method("attack_aim_mode") and str(owner_node.call("attack_aim_mode")) == "cursor":
+		return owner_node.call("attack_aim_direction", _last_direction, attack_range)
 	var closest_enemy := _find_closest_enemy(owner_node)
 	if closest_enemy == null:
 		closest_enemy = _find_closest_enemy(owner_node, INF)
@@ -231,6 +274,7 @@ func _rolled_damage(owner_node: Node2D) -> float:
 
 
 func _show_hit_area(owner_node: Node2D, attack_direction: Vector2) -> void:
+	_show_weapon_signature(owner_node, attack_direction)
 	if attack_shape == "circle":
 		_show_circle_area(owner_node)
 	elif attack_shape == "sweep":
@@ -239,6 +283,26 @@ func _show_hit_area(owner_node: Node2D, attack_direction: Vector2) -> void:
 		_show_strip_area(owner_node, attack_direction)
 	else:
 		_show_frustum_area(owner_node, attack_direction)
+
+
+func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> void:
+	if owner_node == null or attack_direction.length_squared() <= 0.001:
+		return
+	var direction := attack_direction.normalized()
+	var scene := get_tree().current_scene
+	if scene == null:
+		scene = get_tree().root
+	var center := owner_node.global_position + direction * minf(maxf(attack_range * 0.45, 72.0), 260.0)
+	var radius := maxf(aoe_radius, inner_width * 1.45)
+	if attack_shape == "circle":
+		center = owner_node.global_position
+		radius = maxf(aoe_radius, 96.0)
+	elif attack_shape == "strip":
+		center = owner_node.global_position + direction * ((start_distance + attack_range) * 0.5)
+		radius = maxf(inner_width * 2.0, 96.0)
+	var signature := AttackVfx.weapon_signature(scene, center, weapon_id, radius, visual_color, direction.angle())
+	if signature != null:
+		signature.add_to_group("player_weapon_effects")
 
 
 func _show_strip_area(owner_node: Node2D, attack_direction: Vector2) -> void:

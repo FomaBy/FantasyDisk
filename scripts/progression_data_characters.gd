@@ -139,7 +139,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Ближний бой по области и высокий риск.",
 		"strengths": "урон, здоровье, толпа.",
 		"weaknesses": "нужна близость.",
-		"sprite_path": "res://assets/sprites/characters/berserk_unarmed.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/berserk/berserk_idle_00.png",
 	},
 	"soldier": {
 		"id": "soldier",
@@ -147,7 +147,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Тактика, залпы и контроль позиции.",
 		"strengths": "дальность, стабильность, контроль.",
 		"weaknesses": "нужна линия огня.",
-		"sprite_path": "res://assets/sprites/characters/soldier.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/soldier/soldier_idle_00.png",
 	},
 	"thief": {
 		"id": "thief",
@@ -155,7 +155,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Уловки, рывки и карманная экономика.",
 		"strengths": "мобильность, крит, золото.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/thief.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/thief/thief_idle_00.png",
 	},
 	"elementalist": {
 		"id": "elementalist",
@@ -163,7 +163,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Смена стихий, орбиты и разломы.",
 		"strengths": "области поражения, контроль зон, взрывной урон.",
 		"weaknesses": "хрупкий, требует позицию.",
-		"sprite_path": "res://assets/sprites/characters/elementalist.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_00.png",
 	},
 	"sniper": {
 		"id": "sniper",
@@ -171,7 +171,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Точные выстрелы, метки и зоны поражения.",
 		"strengths": "дальность, одиночные цели, фокус элиток.",
 		"weaknesses": "слабее против плотной толпы рядом.",
-		"sprite_path": "res://assets/sprites/characters/sniper.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/sniper/sniper_idle_00.png",
 	},
 	"priest": {
 		"id": "priest",
@@ -179,7 +179,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Благословения, печати и священное восстановление.",
 		"strengths": "лечение, защита, стабильность.",
 		"weaknesses": "меньше взрывного урона по одиночной цели.",
-		"sprite_path": "res://assets/sprites/characters/priest.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/priest/priest_idle_00.png",
 	},
 	"biologist": {
 		"id": "biologist",
@@ -187,7 +187,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Образцы, споры и симбиотические реакции.",
 		"strengths": "контроль биомассой, периодический урон, адаптация.",
 		"weaknesses": "нужны цели для цепных реакций.",
-		"sprite_path": "res://assets/sprites/characters/biologist.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/biologist/biologist_idle_00.png",
 	},
 	"robot": {
 		"id": "robot",
@@ -195,7 +195,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Тяжелая броня, магнитный контроль и реакторные выбросы.",
 		"strengths": "выживаемость, контроль, стабильный урон.",
 		"weaknesses": "медленный, зависит от позиционирования.",
-		"sprite_path": "res://assets/sprites/characters/robot.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/robot/robot_idle_00.png",
 	},
 	"engineer": {
 		"id": "engineer",
@@ -203,7 +203,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Мастерская устройств, дронов и минных сеток.",
 		"strengths": "устройства, зона контроля, поддержка.",
 		"weaknesses": "нужно заранее ставить позицию.",
-		"sprite_path": "res://assets/sprites/characters/engineer.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/engineer/engineer_idle_00.png",
 	},
 	"dark_mage": {
 		"id": "dark_mage",
@@ -211,7 +211,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Области поражения, лучи и проклятия.",
 		"strengths": "площадь, периодический урон, пробивание.",
 		"weaknesses": "хрупкий.",
-		"sprite_path": "res://assets/sprites/characters/dark_mage.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_00.png",
 	},
 	"guitarist": {
 		"id": "guitarist",
@@ -219,49 +219,49 @@ const CHARACTER_CONFIGS := {
 		"description": "Ритм, волны и контроль.",
 		"strengths": "отталкивание, области поражения, темп.",
 		"weaknesses": "слабее по боссам.",
-		"sprite_path": "res://assets/sprites/characters/guitarist.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_00.png",
 	},
 	"assassin": {
 		"id": "assassin", "title": "Ассасин",
 		"description": "Криты, скорость и яд.",
 		"strengths": "криты, уворот, темп.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/assassin.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/assassin/assassin_idle_00.png",
 	},
 	"ranger": {
 		"id": "ranger", "title": "Рейнджер",
 		"description": "Дальние линии и ловушки.",
 		"strengths": "дальность, пробивание.",
 		"weaknesses": "плох вблизи.",
-		"sprite_path": "res://assets/sprites/characters/ranger.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/ranger/ranger_idle_00.png",
 	},
 	"doctor": {
 		"id": "doctor", "title": "Доктор",
 		"description": "Лечение через урон.",
 		"strengths": "восстановление, яд, стабильность.",
 		"weaknesses": "низкий взрывной урон.",
-		"sprite_path": "res://assets/sprites/characters/doctor.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/doctor/doctor_idle_00.png",
 	},
 	"chemist": {
 		"id": "chemist", "title": "Химик",
 		"description": "Взрывы и ядовитые зоны.",
 		"strengths": "зоны, периодический урон, области поражения.",
 		"weaknesses": "хрупкий.",
-		"sprite_path": "res://assets/sprites/characters/chemist.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/chemist/chemist_idle_00.png",
 	},
 	"knight": {
 		"id": "knight", "title": "Рыцарь",
 		"description": "Танк, копье и щит.",
 		"strengths": "здоровье, защита, контроль.",
 		"weaknesses": "медленный.",
-		"sprite_path": "res://assets/sprites/characters/knight.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/knight/knight_idle_00.png",
 	},
 	"druid": {
 		"id": "druid", "title": "Друид",
 		"description": "Стая, тернии и тотемы.",
 		"strengths": "призывы, зоны.",
 		"weaknesses": "слаб один.",
-		"sprite_path": "res://assets/sprites/characters/druid.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/druid/druid_idle_00.png",
 	},
 }
 
@@ -283,6 +283,196 @@ const ULTIMATE_CONFIGS := {
 	"chemist": {"title": "Цепная реакция", "description": "Алхимический каскад детонирует ближайшие зоны и врагов.", "duration": 0.0, "radius": 420.0, "damage": 1.25, "damage_charge_rate": 0.034, "taken_charge_rate": 1.05, "boss_cap": 0.10},
 	"knight": {"title": "Бастион", "description": "Короткая непробиваемость, таунт давления и усиленная контратака.", "duration": 5.0, "radius": 260.0, "damage": 0.70, "damage_charge_rate": 0.029, "taken_charge_rate": 1.55, "boss_cap": 0.07},
 	"druid": {"title": "Зов стаи", "description": "Временно призывает сверхлимитную стаю союзников.", "duration": 6.0, "radius": 260.0, "damage": 0.80, "target_count": 4, "damage_charge_rate": 0.031, "taken_charge_rate": 1.10, "boss_cap": 0.08},
+}
+
+const CLASS_MECHANIC_IDENTITIES := {
+	"berserk": {
+		"main_attribute": "strength",
+		"identity_title": "Телесный напор",
+		"summary": "Сила превращается в тяжелые ближние замахи, контроль толпы и рискованное удержание дистанции рядом с врагами.",
+		"mechanic_tags": ["melee_geometry", "frontal_pressure", "crowd_control", "echo_weapon"],
+		"weapon_identities": {
+			"sword": "длинный направленный frustum-замах для позиционирования",
+			"axe": "широкая короткая дуга для чистки толпы рядом",
+			"hammer": "центральный AoE slam с сильным ростом от области",
+		},
+	},
+	"soldier": {
+		"main_attribute": "perception",
+		"identity_title": "Тактическая линия огня",
+		"summary": "Восприятие задает линии, дистанции и боевой порядок: солдат выбирает сектор, подавляет толпу и держит позицию.",
+		"mechanic_tags": ["line_control", "suppression", "telegraphed_explosive", "brace"],
+		"weapon_identities": {
+			"soldier_rifle": "подавляющий burst по линии",
+			"soldier_grenade": "задержанная граната с читаемой зоной",
+			"soldier_bayonet": "оборонительная штыковая стойка",
+		},
+	},
+	"thief": {
+		"main_attribute": "agility",
+		"identity_title": "Уловка и темп",
+		"summary": "Ловкость дает быстрые решения: рикошеты, backstab-окна, дым и экономические трюки вместо прямой силы.",
+		"mechanic_tags": ["mobility", "ricochet", "backstab", "smoke_evasion"],
+		"weapon_identities": {
+			"thief_coin_pouch": "золотой рикошет по нескольким целям",
+			"thief_shadow_cloak": "рывок/удар в уязвимое окно",
+			"thief_smoke_bomb": "дымовая зона контроля и уклонения",
+		},
+	},
+	"elementalist": {
+		"main_attribute": "intelligence",
+		"identity_title": "Стихийная формула",
+		"summary": "Интеллект собирает разные стихии в контролируемые схемы: орбиты, разломы и метеорные очереди.",
+		"mechanic_tags": ["element_cycle", "orbit", "rift", "area_combo"],
+		"weapon_identities": {
+			"elementalist_orb_ring": "вращающиеся стихийные орбиты",
+			"elementalist_prism_focus": "разлом-призма с направленным контролем",
+			"elementalist_meteor_core": "осколочный метеорный обстрел",
+		},
+	},
+	"sniper": {
+		"main_attribute": "perception",
+		"identity_title": "Точная ликвидация",
+		"summary": "Восприятие превращает бой в выбор правильной цели: дальность, метки, зоны смерти и пробивающие траектории.",
+		"mechanic_tags": ["precision", "marking", "long_range", "kill_zone"],
+		"weapon_identities": {
+			"sniper_deadeye_rifle": "дальний lockshot по приоритетной цели",
+			"sniper_spotter_scope": "зона смерти, наказывающая проходящих врагов",
+			"sniper_shatter_rounds": "разделяющийся выстрел по нескольким линиям",
+		},
+	},
+	"priest": {
+		"main_attribute": "knowledge",
+		"identity_title": "Священная формула",
+		"summary": "Знание управляет молитвами, печатями, лечением и наказанием: устойчивый магический sustain вместо взрывного бурста.",
+		"mechanic_tags": ["sanctify", "ward", "heal_conversion", "holy_chain"],
+		"weapon_identities": {
+			"priest_reliquary": "освящение зоны вокруг цели",
+			"priest_censer": "ward-пульсы защиты и урона",
+			"priest_chime": "цепная молитва между врагами",
+		},
+	},
+	"biologist": {
+		"main_attribute": "knowledge",
+		"identity_title": "Биореакция",
+		"summary": "Знание превращает врагов в материал эксперимента: споры, анализ образцов и симбиотические сети.",
+		"mechanic_tags": ["sample_analysis", "spores", "biomass", "adaptive_dot"],
+		"weapon_identities": {
+			"biologist_spore_lens": "spore bloom зона с тиками",
+			"biologist_sample_injector": "sample dart для анализа и фокус-урона",
+			"biologist_symbiote_seed": "симбиотическая web-сетка контроля",
+		},
+	},
+	"robot": {
+		"main_attribute": "endurance",
+		"identity_title": "Бронеконтур",
+		"summary": "Выносливость питает тяжелую машину: магнитное удержание, компрессия и реакторные выбросы под давлением.",
+		"mechanic_tags": ["armor_loop", "magnet", "compression", "reactor_heat"],
+		"weapon_identities": {
+			"robot_magnetic_anchor": "магнитный якорь, стягивающий цель",
+			"robot_hydraulic_press": "гидравлическая линия компрессии",
+			"robot_reactor_core": "реакторная зона перегрева",
+		},
+	},
+	"engineer": {
+		"main_attribute": "leadership",
+		"identity_title": "Мастерская приказов",
+		"summary": "Лидерство управляет устройствами: турельные связи, ремонтные дроны и минные сети работают как команда.",
+		"mechanic_tags": ["deployable_network", "device_command", "repair_support", "minefield"],
+		"weapon_identities": {
+			"engineer_sentry_wrench": "sentry link и фокус турели",
+			"engineer_repair_drone": "repair drone с поддержкой",
+			"engineer_pressure_mines": "pressure mines для контроля маршрутов",
+		},
+	},
+	"dark_mage": {
+		"main_attribute": "intelligence",
+		"identity_title": "Темная формула",
+		"summary": "Интеллект усиливает проклятия, лучи, взрывы и DoT-зоны: маг контролирует пространство через распад.",
+		"mechanic_tags": ["curse", "beam", "dot", "aoe_burst"],
+		"weapon_identities": {
+			"dark_book": "двойной AoE projectile",
+			"cursed_skull": "homing curse с DoT",
+			"dark_wand": "двойной pierce beam",
+		},
+	},
+	"guitarist": {
+		"main_attribute": "leadership",
+		"identity_title": "Сценический контроль",
+		"summary": "Лидерство превращает ритм в контроль сцены: волны, пульсы, deploy-усилители и отталкивание.",
+		"mechanic_tags": ["rhythm", "knockback", "aura", "deploy_amp"],
+		"weapon_identities": {
+			"electric_guitar": "направленная звуковая волна",
+			"bass_guitar": "частый круговой бас-пульс",
+			"sound_amp": "deploy-усилитель с самостоятельными пульсами",
+		},
+	},
+	"assassin": {
+		"main_attribute": "agility",
+		"identity_title": "Критический танец",
+		"summary": "Ловкость дает критовые окна, возвращающиеся клинки, теневые всплески и ядовитые линии без автоперемещения.",
+		"mechanic_tags": ["crit_window", "boomerang", "flurry", "poison_line", "shadow_burst"],
+		"weapon_identities": {
+			"chakrams": "boomerang-коридор туда и обратно",
+			"shadow_daggers": "короткая stab flurry серия",
+			"venom_wire": "ядовитая pierce-линия",
+		},
+	},
+	"ranger": {
+		"main_attribute": "perception",
+		"identity_title": "Охотничья стойка",
+		"summary": "Восприятие награждает дальность, подготовку и выбор траектории: заряженные выстрелы и ловушки.",
+		"mechanic_tags": ["stance_charge", "long_range", "trap", "piercing_shot"],
+		"weapon_identities": {
+			"moon_crossbow": "заряжаемый одиночный piercing shot",
+			"storm_longbow": "веер дальних charged beams",
+			"hunter_trap": "deploy trap с burst и knockback",
+		},
+	},
+	"doctor": {
+		"main_attribute": "knowledge",
+		"identity_title": "Клинический drain",
+		"summary": "Знание связывает урон и лечение: доктор выживает через drain-link, чуму и хирургический ближний риск.",
+		"mechanic_tags": ["drain_link", "lifesteal", "plague", "surgical_melee"],
+		"weapon_identities": {
+			"restore_potion": "лечащая drain-связь",
+			"plague_syringe": "чумная DoT-связь",
+			"bone_saw": "ближняя saw flurry с sustain",
+		},
+	},
+	"chemist": {
+		"main_attribute": "intelligence",
+		"identity_title": "Алхимическая цепь",
+		"summary": "Интеллект комбинирует реагенты: взрывы, кислотные pools и гомункулы создают зоны и цепные реакции.",
+		"mechanic_tags": ["cloud_combo", "acid_pool", "explosion", "homunculus"],
+		"weapon_identities": {
+			"blast_powder": "взрывная пыль и spark cloud",
+			"acid_flask": "кислотный DoT pool",
+			"homunculus_vial": "temporary homunculus summon",
+		},
+	},
+	"knight": {
+		"main_attribute": "endurance",
+		"identity_title": "Щитовая клятва",
+		"summary": "Выносливость превращается в блок, контратаку и тяжелый контроль: рыцарь держит линию вместо ухода.",
+		"mechanic_tags": ["block", "counter", "frontal_control", "tank_pressure"],
+		"weapon_identities": {
+			"long_spear": "длинный strip-контроль копьем",
+			"tower_shield": "shield bash и frontal block",
+			"holy_flail": "круговой тяжелый holy control",
+		},
+	},
+	"druid": {
+		"main_attribute": "leadership",
+		"identity_title": "Командование стаей",
+		"summary": "Лидерство управляет зверями и природными зонами: друид дает приказы питомцам, терниям и тотемам.",
+		"mechanic_tags": ["commanded_pets", "briar_zone", "totem", "pack_support"],
+		"weapon_identities": {
+			"summon_amulet": "commanded pet attack target",
+			"briar_staff": "терновая зона контроля",
+			"raven_totem": "raven/totem support pulses",
+		},
+	},
 }
 
 const CLASS_DAMAGE_PARAMETER := {

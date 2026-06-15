@@ -17,7 +17,8 @@ Canonical folders:
 - `assets/sprites/ui/icons/artifact_final_dark_fantasy_40px_preview.png` - legacy 40px artifact preview from the previous pass;
 - `assets/sprites/ui/icons/artifact_generated_concept_40px_preview.png` - legacy preview path updated to the same active icon set;
 - `assets/sprites/ui/icons/artifact_dark_artifacts_40px_preview.png` - legacy preview path updated to the same active icon set;
-- `tools/extract_realistic_dnd_artifact_icons.py` - active raster source sheet extraction and validation pipeline;
+- SCRUM-340 `fantasydisk-asset-generator` pass - active artifact icon source pipeline; source references live in `docs/design/references/icons/artifacts/artifact_<id>_source.png`;
+- `tools/extract_realistic_dnd_artifact_icons.py` - superseded raster source sheet extraction and validation pipeline kept for reference;
 - `tools/regenerate_artifact_icons_per_item.py` - superseded per-item artifact icon regeneration pipeline kept for reference;
 - `tools/validate_artifact_icons.py` - artifact icon technical validation and QA preview builder;
 - `tools/final_redesign_artifact_icons.py` - superseded artifact icon polish/extraction pipeline kept for reference;
@@ -35,7 +36,7 @@ Visual rules:
 - no emoji/default placeholders;
 - no text inside icons;
 - keep artifact silhouettes readable at `40x40`;
-- artifact icons use centered realistic D&D/tabletop fantasy magic items on transparent backgrounds, with one complete painted object per icon; shop-only icons use ornate fantasy-medallion frames, strong dark outlines, fantasy-metal/gem accents, glow and transparent background;
+- artifact icons use centered realistic D&D/tabletop fantasy magic items generated through `fantasydisk-asset-generator` on transparent backgrounds, with one complete painted object per icon, stable `artifact_<id>.png` paths, and 40px readability previews; shop-only icons use ornate fantasy-medallion frames, strong dark outlines, fantasy-metal/gem accents, glow and transparent background;
 - avoid reusing the exact same icon with only a recolor for distinct items.
 
 ## Shop Frames And Cursor
@@ -56,36 +57,226 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
-SCRUM-147 is now **button-only Parchment & Wax Seal** after direct user correction on 2026-06-13. The fixed button reference source is `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: aged parchment bodies, red wax seals, serrated forged-metal end caps, ruby accents, warm gold hover glow, pressed darkening, and disabled grayscale. The full parchment panel rebuild was rejected because sliced interface panels looked strange in game.
+SCRUM-273 supersedes the SCRUM-147 button-only Parchment & Wax Seal kit with the
+active **Red & Gold Dragon button kit** from
+`docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live
+button assets are sliced into `assets/sprites/ui/frames/red_gold/` as 15 button
+types with four states each: idle/base, hover, pressed and disabled. The old
+parchment/wax button kit is backed up outside live assets at
+`build/cleanup_backup_red_gold_buttons_2026_06_14/`.
 
-SCRUM-229 replaces the previously restored legacy non-button panels with the user-provided **leather+gold panel/window kit** from `docs/design/references/interface/`: dark leather/stone interiors, engraved gold edging, corner brackets, rivets and restrained warm glow. Buttons remain parchment+seal; panels/windows/bars/checks now use leather+gold.
+SCRUM-274 supersedes the SCRUM-229 leather+gold runtime panel direction with the
+active **Ornate Dark / Red frame kit** from
+`docs/design/references/UiFrame/frame_kit_ornate_dark_sheet_b_spec.png`.
+Non-button generic panels/windows/cards/tooltips/HUD/timer frames now resolve
+through the SCRUM-382 unified master frame builder. The old leather+gold and
+previous dark_fantasy/escape panel textures are backed up outside live assets at
+`build/cleanup_backup_ornate_frames_2026_06_14/`; the ornate pause/stat family
+remains available for the specialized compact Escape stats menu until that menu
+receives its own safe-area migration.
 
-Canonical dark fantasy assets live in `assets/sprites/ui/frames/dark_fantasy/`:
+SCRUM-373/SCRUM-382 provide the active **Unified Master Frame kit** for
+projectwide generic UI centralization. SCRUM-384 revises the same preserved
+runtime paths into the active thin metallic version: slim dark-steel rails,
+small red corner gems and separate optional dragon overlays. Runtime-ready
+assets live in
+`assets/sprites/ui/frames/unified/`:
+`ui_frame_unified_master.png`, `ui_frame_unified_master_fill.png`,
+`ui_frame_unified_inner_fill.png`, `ui_frame_unified_ornament_top.png`,
+`ui_frame_unified_ornament_bottom.png` and `ui_frame_unified_hover_overlay.png`.
+Back-end integration lives in `UIThemePaths` and `scripts/ui_screens.gd`:
+generic StyleBoxTextures use source size `1024x1024`, texture margins
+`72/72/72/72`, strict content margins `88/88/88/88`, safe rect
+`Rect2(88, 88, 848, 848)` and `AXIS_STRETCH_MODE_TILE` for both axes.
+`ui_frame_unified_master_fill.png` is used for readable filled
+panels/cards/HUD; `ui_frame_unified_master.png` remains the border-only variant.
+The top/bottom ornaments are optional overlays for large windows only and are
+not applied to compact HUD cards/tooltips/chips. Runtime content, click zones,
+labels, portraits, icons and meters must remain inside the frame content area.
 
-- `ui_df_button_primary_idle.png`, `ui_df_button_primary_hover.png`, `ui_df_button_primary_pressed.png`, `ui_df_button_primary_disabled.png`;
-- `ui_df_button_secondary_idle.png`, `ui_df_button_secondary_hover.png`, `ui_df_button_secondary_pressed.png`, `ui_df_button_secondary_disabled.png`;
-- `ui_df_button_danger_idle.png`, `ui_df_button_danger_hover.png`, `ui_df_button_danger_pressed.png`, `ui_df_button_danger_disabled.png`;
-- `ui_df_panel_frame.png`, `ui_df_card_frame.png`, `ui_df_level_panel_frame.png`, `ui_df_hud_panel_frame.png`, `ui_df_hud_card_frame.png`, `ui_df_tooltip_frame.png`;
-- `ui_df_stat_row_frame.png`, `ui_df_stat_chip_frame.png`, `ui_df_shop_frame.png`, `ui_df_section_divider.png`, `ui_df_stat_value_state_swatches.png`.
+SCRUM-390 prepared a dedicated **Combat HUD redraw kit** and SCRUM-400 wires it
+into the live runtime HUD. It was generated through
+`fantasydisk-asset-generator` from current D&D/dark-fantasy UI references, then
+alpha-cleaned and cut into runtime candidates. Source and margins are recorded
+in `docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`;
+previews are `docs/design/previews/combat_hud_redraw_contact.png` and
+`docs/design/previews/combat_hud_redraw_safe_zones.png`; 720p/1080p/1440p mock
+screens live in `build/qa/scrum390/`.
+
+Canonical SCRUM-390 candidate assets:
+
+- `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png`
+  (`1024x144`, texture margins `96/44/96/44`, content margins `92/30/92/30`);
+- `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_hp.png`,
+  `_xp.png`, `_gold.png`, `_ult.png` (`256x144`, texture margins
+  `48/42/48/38`, content margins `32/24/32/22`);
+- `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png`
+  (`384x128`, texture margins `92/42/92/38`, content margins `82/32/82/28`);
+- `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_ascension_badge.png`
+  (`128x128`, content margins `40/34/40/34`);
+- `assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus.png` plus
+  `_hover`, `_pressed`, `_disabled` (`128x128`, content margins `36/34/36/36`);
+- `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`,
+  `_ult.png`, `_gold.png` (`512x32`) and
+  `ui_hud_gold_medallion.png` (`128x128`).
+
+SCRUM-338/SCRUM-404 provide the active **Reward Card frame kit** for battle
+reward offers and elite artifact choices. Runtime assets live in
+`assets/sprites/ui/frames/rewards/`:
+`ui_frame_reward_card.png`, `ui_frame_reward_card_hover.png`,
+`ui_frame_reward_elite_artifact_card.png` and
+`ui_frame_reward_elite_artifact_card_hover.png`. Source size is `768x1024`;
+Back-end uses texture margins `96/112/96/112` and content margins
+`132/170/132/164` for battle reward cards, and texture margins
+`108/130/108/130` plus content margins `150/202/150/190` for elite artifact
+cards. Runtime content containers are proportionally scaled to the card control
+size; labels, icons, artifact tier text and action labels must stay inside the
+safe area while the whole card remains clickable/focusable. Runtime QA dumps are
+written to `build/qa/scrum338/`.
+
+SCRUM-330 provides the Design-ready **Pause / Victory / Defeat modal kit** for
+the pause and result-screen cluster. The accepted runtime candidate is
+`assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png` (`1280x1024`,
+RGBA transparent), derived from `fantasydisk-asset-generator` reference art and
+alpha-cleaned from its magenta key background. Source metadata lives in
+`docs/design/references/ui_overhaul_pause_end/scrum330_pause_end_metadata.json`;
+mockup/spec lives in
+`docs/design/mockups/ui_overhaul_pause_end/scrum330_pause_end_mockup_spec.md`;
+previews are `docs/design/previews/ui_overhaul_pause_end_contact.png` and
+`docs/design/previews/ui_overhaul_pause_end_safe_zones.png`. The modal frame
+must use source safe rect `[170,180,940,670]` / content margins
+`[170,180,170,174]`; runtime content, buttons, labels, click/focus zones and
+icons must stay out of the dragon heads, side columns, ruby gems, bottom crest
+and outer metal. Existing result crests
+`assets/sprites/ui/result_crests/ui_crest_victory.png` and
+`assets/sprites/ui/result_crests/ui_crest_defeat.png` remain decorative header
+art only. SCRUM-407 wires this kit into runtime pause menu, pause dossier/stats,
+victory and death screens through scaled `StyleBoxTexture` margins; result
+screens keep crest art outside text/buttons, and smaller 720p viewports use
+adaptive crest/action button sizing so interactive content stays inside the
+modal safe zone. Runtime QA dump:
+`build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
+
+SCRUM-345/SCRUM-403 provide the active **Codex texture kit** for the in-game
+encyclopedia and glossary tooltip. Assets live in
+`assets/sprites/ui/frames/codex/` and are wired only to Codex runtime surfaces:
+`CodexMainPanel`, `CodexContent`, `CodexTab_*`, Codex entry cards,
+portrait/artifact icon slots and `GlossaryTooltipPanel`. Safe-zone metadata is
+canonical in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`;
+runtime uses those content margins instead of placing labels, icons, portraits
+or click/focus areas on dragon/metal/gem ornament. QA dump:
+`build/qa/scrum345/codex_texture_runtime_dump.md`.
+
+These are live UI paths for the combat HUD after
+`docs/tasks/backend_combat_hud_redraw_integration_task.md`. Back-end keeps
+HP/XP/money/ultimate/timer logic unchanged and keeps labels, icons, bars,
+badges, plus glyph and click/focus zones inside the recorded content zones; QA
+runtime rect dumps live in `build/qa/scrum390/`.
+
+SCRUM-338 adds a Design-ready **reward card frame kit** for battle reward and
+elite artifact reward screens. Assets live in `assets/sprites/ui/frames/rewards/`:
+`ui_frame_reward_card.png`, `ui_frame_reward_card_hover.png`,
+`ui_frame_reward_elite_artifact_card.png` and
+`ui_frame_reward_elite_artifact_card_hover.png`. Each is `768x1024` RGBA with
+transparent corners, a dark empty content field and ornate D&D/dark-fantasy
+metal border. Source and runtime margins live in
+`docs/design/references/rewards/reward_frames_scrum338_metadata.json`; Back-end
+must keep reward text, icons, buttons, hover/focus hit areas and artifact tier
+labels inside those content margins. Runtime integration is handed off in
+`docs/tasks/backend_reward_screens_per_reward_frames_integration_task.md`.
+
+SCRUM-281 adds a screen-specific **Hero Select frame kit** from
+`docs/design/references/herouiframe/`. It is used only by `HeroSelectScreen`,
+because the portrait/dossier/radar ornaments need custom safe areas. Live
+assets resolve to `assets/sprites/ui/frames/hero_select/`; QA screenshots and
+rect dumps live in `build/qa/scrum281/`.
+
+Specialized ornate frame assets remain in `assets/sprites/ui/frames/ornate/`:
+
+- `ui_frame_ornate_global_panel.png`, `ui_frame_ornate_level_panel.png`,
+  `ui_frame_ornate_card_frame.png`, `ui_frame_ornate_hero_card.png`;
+- `ui_frame_ornate_card_hover.png`, `ui_frame_ornate_tooltip.png`,
+  `ui_frame_ornate_hud_panel.png`, `ui_frame_ornate_hud_card.png`,
+  `ui_frame_ornate_timer_panel.png`;
+- `ui_frame_ornate_pause_main.png`, `ui_frame_ornate_pause_stat_group.png`,
+  `ui_frame_ornate_pause_stat_chip.png`, `ui_frame_ornate_pause_stat_tooltip.png`.
+
+Canonical live Hero Select frame assets live in
+`assets/sprites/ui/frames/hero_select/`:
+
+- `ui_frame_hero_select_portrait.png`, `ui_frame_hero_select_dossier.png`,
+  `ui_frame_hero_select_radar.png`, `ui_frame_hero_select_thumbnail_strip.png`;
+- `ui_frame_hero_select_thumbnail.png`, `ui_frame_hero_select_asc_button.png`,
+  `ui_frame_hero_select_asc_label.png`, `ui_frame_hero_select_asc_mods.png`.
+
+Canonical live button assets live in `assets/sprites/ui/frames/red_gold/`:
+
+- `ui_btn_red_gold_standard.png`, `ui_btn_red_gold_max.png`,
+  `ui_btn_red_gold_main_menu.png`, `ui_btn_red_gold_hero_confirm.png`;
+- `ui_btn_red_gold_reset_audio.png`, `ui_btn_red_gold_reset_bindings.png`,
+  `ui_btn_red_gold_codex_tab.png`, `ui_btn_red_gold_rebind.png`;
+- `ui_btn_red_gold_back_s.png`, `ui_btn_red_gold_back_m.png`,
+  `ui_btn_red_gold_back_l.png`, `ui_btn_red_gold_attr_selector.png`;
+- `ui_btn_red_gold_fab.png`, `ui_btn_red_gold_utility.png`,
+  `ui_btn_red_gold_pause.png`;
+- every file has `_hover`, `_pressed` and `_disabled` state variants.
 
 State language:
 
-- all button role paths use one Parchment & Wax Seal base kit cut from the fixed reference sheet;
-- primary/secondary/danger keep separate asset IDs for Back-end role mapping, but they must not switch to unrelated visual kits;
-- hover: warm gold glow and brighter parchment edge, matching the reference;
-- pressed: darker parchment/metal and subtly compressed read, matching the reference;
-- disabled: desaturated grayscale, matching the reference.
+- all visible Button styleboxes use the Red & Gold Dragon kit unless a control is
+  intentionally a card/hit-area rather than an action button;
+- hover: stronger red/gold glow and brighter metal bevel;
+- pressed: darker center and slightly lower-contrast metal read;
+- disabled: desaturated, dimmed version of the same button type.
 
-SCRUM-229 updates the existing live fallback frames in `assets/sprites/ui/frames/global/`, `assets/sprites/ui/frames/escape/`, selected `assets/sprites/ui/shop/` paths and non-button `assets/sprites/ui/frames/dark_fantasy/` paths to leather+gold visuals. SCRUM-222 completed Back-end integration for explicit 4-state button styleboxes: runtime button roles map to `primary`, `secondary`, and `danger` texture sets, while common panels/cards/HUD/tooltip styleboxes resolve through `dark_fantasy/` frame paths that now carry the leather+gold panel kit.
+Runtime button sizing (SCRUM-263/SCRUM-264):
+
+- standard action buttons use a 104px minimum height through `_make_button()` / `_set_action_button_size()`;
+- the main menu uses `main_menu` 380x104 buttons;
+- wide action buttons cap their visual width at 560px so dragon ends do not visibly stretch into a strip;
+- pause menu buttons use 280x60, rebind/dropdown-style controls use 420x62,
+  compact utility uses 54x42 and upgrade FAB uses 50x50;
+- text-heavy choices use an information frame above a short standard button instead of placing paragraphs inside a large button;
+- route nodes, shop item hit areas, hero thumbnails and weapon/reward cards are
+  intentional exceptions and should not receive the heavy action button frame.
+
+Runtime frame sizing (SCRUM-274):
+
+- `UIThemePaths.ORNATE_FRAME_MARGINS` and `ORNATE_FRAME_CONTENT` mirror the
+  signed texture/content margins from the user spec sheet;
+- global panels use 34px texture margins and 28/26 content padding;
+- level panels use 46px texture margins and 34/30 content padding;
+- cards use the card/hero/hover-specific margins from the sheet instead of
+  stretching one generic frame everywhere;
+- HUD and timer panels use their dedicated horizontal frame assets;
+- Escape stats uses `pause_main`, `pause_stat_group`, `pause_stat_chip` and
+  `pause_stat_tooltip` frames; its buttons use the SCRUM-273 `pause` button.
+- Hero Select uses the SCRUM-281 `ui_frame_hero_select_*` kit with custom
+  `HERO_SELECT_FRAME_MARGINS` and `HERO_SELECT_FRAME_CONTENT` in
+  `scripts/ui_screens.gd`; the bottom thumbnail strip uses compressed thumbnail
+  safe margins so 18 class previews fit inside 1280x720.
 
 Rebuild/QA assets:
 
+- `tools/build_red_gold_button_kit.py` - SCRUM-273 active button kit pipeline from the Red & Gold Dragon sheet;
+- `tools/build_ornate_ui_frame_kit.py` - SCRUM-274 active panel/frame pipeline from the Ornate Dark spec sheet;
+- `tools/build_hero_select_frame_kit.py` - SCRUM-281 Hero Select frame pipeline from `references/herouiframe`;
+- `tools/capture_hero_select_qa.gd` - SCRUM-281 screenshot/rect QA capture for 1280x720, 1920x1080 and 2560x1440;
+- `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png` - SCRUM-325 design-ready Settings tab switcher frame (`1280x256`, RGBA);
 - `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
-- `tools/build_leather_gold_ui_kit.py` - active SCRUM-229 panel/window pipeline from user interface references;
+- `tools/build_leather_gold_ui_kit.py` - superseded SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
+- `docs/design/previews/red_gold_button_kit_contact.png` - active SCRUM-273 button state/type contact sheet;
+- `docs/design/previews/ornate_dark_frame_kit_contact.png` - active SCRUM-274 frame contact sheet;
+- `docs/design/previews/hero_select_frame_kit_contact.png` - active SCRUM-281 Hero Select frame contact sheet;
+- `docs/design/previews/settings_tab_switcher_frame_content_zone.png` - SCRUM-325 Settings tab switcher safe-area overlay;
+- `docs/design/previews/unified_master_frame_9slice_contact.png` - SCRUM-373 unified master frame contact sheet;
+- `docs/design/previews/unified_master_frame_safe_zone.png` - SCRUM-373 strict content-zone overlay;
+- `docs/design/previews/unified_master_frame_thin_revision_contact.png` - SCRUM-384 thin metallic unified frame revision contact sheet;
+- `docs/design/previews/unified_master_frame_thin_safe_zone.png` - SCRUM-384 `72px` texture / `88px` content margin overlay;
 - `docs/design/previews/ui_button_only_legacy_panels_contact.png` - SCRUM-147 side-by-side correction sheet;
-- `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - active SCRUM-229 leather+gold panel kit sheet;
-- `build/qa/interface_leather_gold_panel_kit_contact.png` - QA copy of the active leather+gold kit sheet;
+- `docs/design/previews/interface_leather_gold_panel_kit_contact.png` - superseded SCRUM-229 leather+gold panel kit sheet;
+- `build/qa/interface_leather_gold_panel_kit_contact.png` - historical QA copy of the SCRUM-229 leather+gold kit sheet;
 - `docs/design/previews/ui_parchment_wax_scrum147_reference_match_contact.png` - compatibility copy of the active correction sheet;
 - `docs/design/previews/ui_parchment_kit_reference_contact.png` - contact sheet of the six fullscreen parchment-kit references.
 
@@ -93,7 +284,7 @@ System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, a
 
 ## Contextual UI Direction
 
-`docs/design/ui_contextual_concept.md` and the generated contextual kit in `assets/sprites/ui/frames/contextual/` are superseded by SCRUM-147. Their files may remain as historical/reference assets until Back-end cleanup confirms no live references, but they are no longer the UI direction for new screens. Context may still influence role color and button role selection, but only through the new dark fantasy canon.
+`docs/design/ui_contextual_concept.md` and the generated contextual kit in `assets/sprites/ui/frames/contextual/` are superseded by the SCRUM-273/SCRUM-274 UI canon. Their files may remain as historical/reference assets until Back-end cleanup confirms no live references, but they are no longer the UI direction for new screens. Context may still influence role color and button/frame selection, but only through the new Red & Gold Dragon + Ornate Dark canon.
 
 Hard no-junk rule from the user: UI work must not add abstract decorative lines, circles, squares, dots, grids or filler marks. Every visible detail must read as a UI affordance or a believable D&D/tabletop material detail; otherwise it is a Design review defect.
 
@@ -108,6 +299,18 @@ Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_ta
 ## Characters And Weapons
 
 The expanded 0.1.4 class weapon visual set covers 17 classes and 51 starting weapons. New class full-art PNGs live in `assets/sprites/characters/` at `512x512` with transparent background and cutout-ready silhouettes. SCRUM-168 adds Soldier with canonical `soldier.png`, `soldier_rifle.png`, `soldier_grenade.png`, and `soldier_bayonet.png`; rig/cutout/motion is tracked separately in `docs/tasks/animation_soldier_rig_motion_task.md`. SCRUM-169 adds Thief with canonical `thief.png`, `thief_coin_pouch.png`, `thief_shadow_cloak.png`, and `thief_smoke_bomb.png`; rig/cutout/motion is tracked separately in `docs/tasks/animation_thief_rig_motion_task.md`. SCRUM-163 adds Elementalist with canonical `elementalist.png`, `elementalist_orb_ring.png`, `elementalist_prism_focus.png`, and `elementalist_meteor_core.png`; rig/cutout/motion is tracked separately in `docs/tasks/animation_elementalist_rig_motion_task.md`. SCRUM-167 adds Sniper with canonical `sniper.png`, `sniper_deadeye_rifle.png`, `sniper_spotter_scope.png`, and `sniper_shatter_rounds.png`; rig/cutout/motion is tracked separately in `docs/tasks/animation_sniper_rig_motion_task.md`. Later Class Sheet additions Priest, Biologist, Robot and Engineer also have canonical kits; Engineer is the final 17th Back-end class, with rig/cutout/motion tracked in `docs/tasks/animation_engineer_rig_motion_task.md`.
+
+Playable full-frame animation PNGs under
+`assets/sprites/characters/full_frame/<class>/` must be `384x384` RGBA with
+real transparent alpha, not a white/checkerboard matte hidden inside the
+visible bounds. SCRUM-412 cleaned all 255 current playable frames and established
+`tools/alpha_clean_full_frame_characters.py` as the validation/fix tool;
+`tools/build_character_sheet.py` calls the same edge-connected matte removal
+and de-halo pass for future full-frame character sheet slices. QA proof:
+`build/qa/scrum412_character_alpha/final_character_alpha_dark_bg_contact.png`
+and `build/qa/scrum412_character_alpha/final_alpha_validation_report.json`.
+Back-end animation smoke keeps a representative per-class alpha/matte assertion
+so future white or checkerboard matte regressions fail before release QA.
 
 All weapon visuals live in `assets/sprites/weapons/` at `256x256` with transparent background. The active style target is polished cartoon dark fantasy: strong black silhouette, readable object shape at `40x40`, compact controlled glow, material detail, and no text/watermark/built-in UI frame. Weapon art v2 pass 2026-06-12 replaced the Knight trio (`long_spear.png`, `tower_shield.png`, `holy_flail.png`) with polished noble equipment, removed fallback texture links from weapon scenes, and reduced socket display scale across oversized weapons. The raw and socket QA sheets are `docs/design/previews/weapon_v2_assets_contact.png` and `docs/design/previews/weapon_v2_socket_contact.png`.
 
@@ -161,10 +364,25 @@ Attack VFX sprites live in `assets/sprites/effects/` and are transparent PNGs in
 
 SCRUM-181 refreshed the full active VFX set again on 2026-06-13 after the sprite audit: all 19 `assets/sprites/effects/*.png` files now use a restrained painterly D&D/tabletop treatment with softer alpha edges, earthy gold/green/violet accents, readable silhouettes, and no acid-neon or baked pure-white overexposure. Tintable assets (`hazard_zone.png`, `elite_telegraph_circle.png`) remain warm-neutral so code modulation can recolor them. QA/reference previews live in `docs/design/previews/vfx_polish_before_contact.png`, `docs/design/previews/vfx_polish_after_contact.png`, `docs/design/previews/vfx_polish_before_after_contact.png`, `docs/design/previews/vfx_polish_readability_field_meadow.png`, and `docs/design/previews/vfx_polish_readability_field_marsh.png`.
 
+SCRUM-258 extends this with a full unique weapon signature set for sprint 0.1.5: `assets/sprites/effects/vfx_weapon_<weapon_id>.png` for every current weapon ID in `ProgressionData.WEAPONS_BY_CLASS` (51 files, `256x256` RGBA transparent). These are not inventory icons: they are short-lived combat plates used by `AttackVfx.weapon_signature()` to make each unique class/weapon mechanic visually distinct while preserving the exact Back-end mechanics. SCRUM-335 routes the same signature layer through `BerserkWeapon`, covering Berserk and Knight melee scenes that do not use `ClassWeapon`. Style rules: restrained D&D/tabletop magic, readable at combat scale, no UI frame, no text, no watermark, no acid-neon; silhouettes should stay simple enough to read under tint and tween fade. Rebuild pipeline is superseded for new art by `fantasydisk-asset-generator`; the old script remains historical for this existing generated set. Previews: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png` and `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
+
+SCRUM-337 is the current full attack VFX art baseline. Six generated source sheets in `docs/design/references/attack_vfx_realistic_dark_fantasy/` were produced with `fantasydisk-asset-generator` / `gpt-image-2`, then cut and alpha-cleaned by `tools/build_scrum337_attack_vfx_from_sources.py` into all active runtime VFX paths: 83 files in `assets/sprites/effects/` and 2 files in `assets/sprites/projectiles/`. The pack keeps the same filenames/canvas sizes/API expectations while replacing older placeholder-looking circles and flat plates with more dimensional D&D/dark-fantasy slashes, rings, pools, portals, hazards, projectiles and per-weapon combat signatures. Previews: `docs/design/previews/scrum337_attack_vfx_core_contact.png`, `docs/design/previews/scrum337_attack_vfx_weapon_contact.png`; readability QA: `build/qa/scrum337/field_meadow_readability.png`, `build/qa/scrum337/field_marsh_readability.png`.
+
 ## Screen And Map Backgrounds
 
 - `assets/backgrounds/route_map_backdrop.png` - 2560x1440 eerie neutral route map background. It should stay darker and calmer than combat arenas, with low-contrast fog in the central route column and heavier silhouettes pushed to the edges.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. Active compatibility copies were written to `assets/sprites/ui/screens/screen_shop_background.png`, `screen_event_background.png`, and `screen_campfire_background.png`; broader screen-to-role mapping is handed off in `docs/tasks/backend_ui_screen_backdrops_integration_task.md`. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
-- `assets/backgrounds/main_menu_epic_battle.png` is the active start-screen art. SCRUM-158 replaced it with a dark fantasy battle scene using FantasyDisk heroes/bosses as references, keeping the left third calmer for the three menu buttons.
-- `assets/backgrounds/field_stone_garden.png`, `field_marsh.png`, `field_dry_road.png`, `field_meadow.png` - active 2560x1440 combat backgrounds. Redrawn 2026-06-12 as professional D&D tabletop battlemaps (`tools/generate_dnd_battlemaps.py`, supersedes the earlier `generate_detailed_flat_backgrounds.py` circle-pebble pass which the user rejected as amateurish): stone_garden = irregular bevelled flagstone courtyard with dark mortar grooves and moss; dry_road = packed offset cobblestone with earth gaps and faint wheel ruts; meadow = painterly grass turf (layered brush blades) with soil patches, flower clumps and a few flush angular field stones; marsh = wet peat with irregular water pools, reed clumps and moss. Still flat top-down (no tall objects / false perspective), low contrast so characters/enemies/projectiles read on top. Featureless flat versions kept at `build/bg_backup/flat_*.png`.
-- 2026-06-12 D&D expansion backgrounds: `field_ruined_courtyard.png`, `field_misty_marsh.png`, `field_dusty_badlands.png`, `field_enchanted_meadow.png`, `field_ashen_rift.png`, `field_cursed_grove.png`. All are 2560x1440 top-down battlefields with small, flush-to-ground details and fewer large rocks/bushes per user direction. They are connected in `scripts/main.gd::ARENA_BACKGROUND_OPTIONS`; QA sheet: `docs/design/previews/arena_backgrounds_6_dnd_contact.png`.
+- `assets/backgrounds/main_menu_epic_battle_v2.png` is the active start-screen art. SCRUM-316 replaced the previous SCRUM-158 battle scene with a smoother D&D/dark fantasy composition: three new bosses and two heroes fight center-right/lower-right, while the left third stays calmer for the vertical menu buttons and the top-center stays readable for the title.
+- SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
+  `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through
+  `fantasydisk-asset-generator` and normalized for gameplay readability:
+  `field_marsh.png`, `field_meadow.png`, `field_misty_marsh.png`,
+  `field_ruined_courtyard.png`, `field_dusty_badlands.png`,
+  `field_enchanted_meadow.png`, `field_ashen_rift.png`,
+  `field_cursed_grove.png`, `field_dry_road.png`, `field_stone_garden.png`.
+  All are top-down arena floors with richer material detail, restrained central
+  contrast, no tall blockers and no UI/text. The two previously missing runtime
+  files (`field_dry_road`, `field_stone_garden`) now exist. Source references:
+  `docs/design/references/backgrounds/`; previews:
+  `docs/design/previews/arena_backgrounds_scrum369_contact.png` and
+  `docs/design/previews/arena_backgrounds_scrum369_readability.png`.

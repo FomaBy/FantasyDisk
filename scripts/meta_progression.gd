@@ -65,6 +65,19 @@ const SKILL_BRANCH_TITLES := {
 	"endure": "Путь Стойкости",
 }
 
+# Прогрессия ПО КЛАССАМ (SCRUM-360): стимул отыгрывать каждый класс. Прогресс
+# копится за победы над боссами ЭТИМ классом (class_boss_wins per character).
+# Пороги накопительные и ОБЩИЕ для всех классов; бонусы применяются run-модами
+# ТОЛЬКО выбранному классу (ключи class_* — отдельно от аккаунтных skill_modifiers,
+# не пересекаются с ветвями древа). Мелкие, согласованы с балансовым потолком.
+const CLASS_PROGRESSION := [
+	{"wins": 1, "title": "Знакомство с классом", "desc": "Урон этого класса +3%.", "effects": {"class_damage_mult": 0.03}},
+	{"wins": 2, "title": "Уверенная рука", "desc": "Максимум здоровья этого класса +3%.", "effects": {"class_max_health_mult": 0.03}},
+	{"wins": 4, "title": "Боевая привычка", "desc": "Урон этого класса ещё +4%.", "effects": {"class_damage_mult": 0.04}},
+	{"wins": 6, "title": "Отточенный темп", "desc": "Скорость атаки этого класса +4%.", "effects": {"class_attack_speed_mult": 0.04}},
+	{"wins": 9, "title": "Мастерство класса", "desc": "Урон этого класса ещё +5%; +3% HP.", "effects": {"class_damage_mult": 0.05, "class_max_health_mult": 0.03}},
+]
+
 
 static func default_state() -> Dictionary:
 	return {
@@ -72,6 +85,7 @@ static func default_state() -> Dictionary:
 		"ascension_levels": {},
 		"skill_points": 0,
 		"skill_nodes": [],
+		"class_boss_wins": {},
 	}
 
 
@@ -95,6 +109,12 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 			if node_by_id(str(node_id)).size() > 0 and not nodes.has(str(node_id)):
 				nodes.append(str(node_id))
 	state["skill_nodes"] = nodes
+	var raw_class_wins = config.get_value(SECTION, "class_boss_wins", {})
+	var class_wins := {}
+	if raw_class_wins is Dictionary:
+		for character_id in raw_class_wins.keys():
+			class_wins[str(character_id)] = maxi(int(raw_class_wins[character_id]), 0)
+	state["class_boss_wins"] = class_wins
 	return state
 
 
@@ -104,6 +124,7 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 	config.set_value(SECTION, "ascension_levels", state.get("ascension_levels", {}))
 	config.set_value(SECTION, "skill_points", int(state.get("skill_points", 0)))
 	config.set_value(SECTION, "skill_nodes", state.get("skill_nodes", []))
+	config.set_value(SECTION, "class_boss_wins", state.get("class_boss_wins", {}))
 	config.save(save_path)
 
 
@@ -115,19 +136,31 @@ static func ascension_level(state: Dictionary, character_id: String) -> int:
 
 
 static func record_boss_victory(state: Dictionary, character_id: String, run_level := -1) -> Dictionary:
-	state["meta_points"] = int(state.get("meta_points", 0)) + 1
-	# Победа над боссом даёт и очко умений древа меты (та же экономика, не вторая валюта).
-	state["skill_points"] = int(state.get("skill_points", 0)) + 1
 	var levels = state.get("ascension_levels", {})
 	if not (levels is Dictionary):
 		levels = {}
 	var completed := clampi(int(levels.get(character_id, 0)), 0, MAX_ASCENSION_LEVEL)
 	# Разблокировка следующего уровня — только если забег прошёл на текущем максимуме
-	# (или выше). run_level < 0 = старое поведение (всегда +1, для совместимости).
+	# (или выше). run_level < 0 = старое поведение (для совместимости).
+	var unlocked_new_ascension := false
 	if run_level < 0 or run_level >= completed:
+		if completed < MAX_ASCENSION_LEVEL:
+			unlocked_new_ascension = true
 		completed = clampi(completed + 1, 0, MAX_ASCENSION_LEVEL)
 	levels[character_id] = completed
 	state["ascension_levels"] = levels
+	# Очки меты/умений — ТОЛЬКО за НОВОЕ возвышение (любым классом), без фарма
+	# повторных боссов на уже пройденном уровне. На максимуме (10) повторы не дают
+	# очко. class_boss_wins (прогрессия класса) копится отдельно за каждую победу.
+	if unlocked_new_ascension:
+		state["meta_points"] = int(state.get("meta_points", 0)) + 1
+		state["skill_points"] = int(state.get("skill_points", 0)) + 1
+	# Прогрессия по классам (SCRUM-360): победа над боссом этим классом копит его прогресс.
+	var class_wins = state.get("class_boss_wins", {})
+	if not (class_wins is Dictionary):
+		class_wins = {}
+	class_wins[character_id] = maxi(int(class_wins.get(character_id, 0)), 0) + 1
+	state["class_boss_wins"] = class_wins
 	return state
 
 
@@ -243,3 +276,51 @@ static func estimated_power_multiplier(state: Dictionary) -> float:
 	var hp := 1.0 + float(m.get("max_health_mult", 0.0))
 	var mitigation := 1.0 + float(m.get("defense_flat", 0.0)) + float(m.get("dodge_flat", 0.0)) + 0.02 * float(m.get("regeneration_flat", 0.0))
 	return dmg * atk * hp * mitigation
+
+
+# --- Прогрессия по классам (SCRUM-360) ---
+
+static func class_boss_wins(state: Dictionary, character_id: String) -> int:
+	var wins = state.get("class_boss_wins", {})
+	if not (wins is Dictionary):
+		return 0
+	return maxi(int(wins.get(character_id, 0)), 0)
+
+
+static func class_progression() -> Array:
+	return CLASS_PROGRESSION
+
+
+static func class_unlocked_tiers(state: Dictionary, character_id: String) -> Array:
+	# Достигнутые пороги класса (wins <= накопленных побед), по возрастанию.
+	var wins := class_boss_wins(state, character_id)
+	var unlocked := []
+	for tier in CLASS_PROGRESSION:
+		if wins >= int(tier.get("wins", 0)):
+			unlocked.append(tier)
+	return unlocked
+
+
+static func class_level(state: Dictionary, character_id: String) -> int:
+	# Сколько порогов прогрессии класса достигнуто (0..len).
+	return class_unlocked_tiers(state, character_id).size()
+
+
+static func class_next_threshold(state: Dictionary, character_id: String) -> Dictionary:
+	# Следующий ещё не достигнутый порог (для UI прогресса); {} если всё открыто.
+	var wins := class_boss_wins(state, character_id)
+	for tier in CLASS_PROGRESSION:
+		if wins < int(tier.get("wins", 0)):
+			return tier
+	return {}
+
+
+static func class_modifiers(state: Dictionary, character_id: String) -> Dictionary:
+	# Суммарные классовые бонусы (накопительно по достигнутым порогам). Множители
+	# складываются (применяются как 1.0 + sum). Применять run-модами ТОЛЬКО этому
+	# классу (selected_character_id); ключи class_* не пересекаются с аккаунтными.
+	var mods := {}
+	for tier in class_unlocked_tiers(state, character_id):
+		for key in (tier.get("effects", {}) as Dictionary).keys():
+			mods[key] = float(mods.get(key, 0.0)) + float(tier["effects"][key])
+	return mods

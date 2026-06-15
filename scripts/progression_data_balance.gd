@@ -6,18 +6,18 @@ const CLASS_BUDGET_PROFILES := {
 	"berserk": {"profile": "balanced", "survival": "sturdy", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 	"soldier": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 	"thief": {"profile": "balanced", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.00},
-	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.95, "aoe_target": 1.10},
+	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.10},
 	"sniper": {"profile": "solo", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.15, "aoe_target": 0.80},
-	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 0.95, "aoe_target": 1.05},
-	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.82, "aoe_target": 1.18},
-	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 0.95, "aoe_target": 1.05},
-	"engineer": {"profile": "balanced", "survival": "steady", "damage_budget": 0.96, "solo_target": 0.90, "aoe_target": 1.12},
-	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.70, "aoe_target": 1.30},
-	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 0.70, "aoe_target": 1.30},
+	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 1.00, "aoe_target": 1.05},
+	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.92, "aoe_target": 1.18},
+	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 1.00, "aoe_target": 1.05},
+	"engineer": {"profile": "balanced", "survival": "steady", "damage_budget": 0.96, "solo_target": 0.98, "aoe_target": 1.12},
+	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.84, "aoe_target": 1.30},
+	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 0.84, "aoe_target": 1.30},
 	"assassin": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
 	"ranger": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
 	"doctor": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
-	"chemist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.70, "aoe_target": 1.30},
+	"chemist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.84, "aoe_target": 1.30},
 	"knight": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
 	"druid": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 }
@@ -27,6 +27,138 @@ const BALANCE_BASE_SOLO_DPS := 48.0
 const BALANCE_BASE_AOE_DPS := 150.0
 
 const BALANCE_WINDOW_SECONDS := 30.0
+
+const CROWD_CLEAR_TARGET_COUNTS := [5, 10, 20]
+const CROWD_CLEAR_ENEMY_HP := 80.0
+const CROWD_CLEAR_CORRIDOR := 0.30
+const CROWD_CLEAR_SOLO_CORRIDOR := 0.20
+
+const SURVIVABILITY_DEFENSE_CAP := 0.62
+const SURVIVABILITY_DEFENSE_DIMINISH := 0.55
+const SURVIVABILITY_DODGE_CAP := 0.55
+const SURVIVABILITY_DODGE_DIMINISH := 1.15
+const SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION := 0.35
+const SURVIVABILITY_ABSORB_FLAT_DIMINISH := 0.08
+const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := 0.45
+const VAMPIRIC_CHANCE_CAP := 0.22
+const VAMPIRIC_DAMAGE_HEAL_RATIO := 0.035
+const VAMPIRIC_BASE_HEAL_MULTIPLIER := 0.55
+const VAMPIRIC_HEAL_CAP_DEFAULT := 1.4
+const VAMPIRIC_HEAL_CAP_HARD := 2.6
+const WEAPON_DRAIN_HEAL_MULTIPLIER := 0.45
+const CRIT_CHANCE_CAP := 0.55
+const CRIT_CHANCE_DIMINISH := 0.45
+const CRIT_FLAT_EFFECTIVENESS := 0.75
+const CRIT_DAMAGE_BASE_MULTIPLIER := 1.30
+const CRIT_DAMAGE_AGILITY_SCALE := 0.055
+const CRIT_DAMAGE_FLAT_EFFECTIVENESS := 0.75
+const CRIT_DAMAGE_CAP := 2.75
+
+const WEAPON_ARCHETYPE_BY_MODE := {
+	"frustum": "melee",
+	"sweep": "melee",
+	"circle": "melee",
+	"strip": "melee",
+	"bayonet_brace": "melee",
+	"stab_flurry": "melee",
+	"aoe_projectile": "projectile",
+	"homing_curse": "projectile",
+	"suppression_burst": "projectile",
+	"grenade_cook": "projectile",
+	"coin_ricochet": "projectile",
+	"meteor_shards": "projectile",
+	"sniper_lockshot": "projectile",
+	"sniper_kill_zone": "projectile",
+	"sniper_split_round": "projectile",
+	"priest_prayer_chain": "projectile",
+	"bio_sample_dart": "projectile",
+	"robot_reactor_vent": "projectile",
+	"beam": "beam",
+	"boomerang": "beam",
+	"dot_beam": "beam",
+	"drain_link": "beam",
+	"prism_rift": "beam",
+	"robot_compression_line": "beam",
+	"sound_wave": "aura",
+	"amp": "aura",
+	"pulse": "aura",
+	"trap": "aoe",
+	"smoke_bomb": "aoe",
+	"elemental_orbit": "aoe",
+	"priest_sanctify": "aoe",
+	"priest_ward": "aoe",
+	"bio_spore_bloom": "aoe",
+	"bio_symbiote_web": "aoe",
+	"robot_magnetic_anchor": "aoe",
+	"engineer_pressure_mines": "aoe",
+}
+
+const ATTRIBUTE_WEAPON_SYNERGY_MAP := {
+	"strength": {
+		"melee": "Прямой физический вес, stagger и knockback.",
+		"projectile": "Тяжелый снаряд: выше impact damage и отдача.",
+		"beam": "Стабильный канал: больше пробивной импульс.",
+		"aoe": "Ударная волна: сильнее центр взрыва.",
+		"summon": "Сильнее атаки спутников/устройств.",
+		"aura": "Плотнее фронтальная волна и ближний отпор.",
+	},
+	"agility": {
+		"melee": "Темп замаха, crit window и мобильность.",
+		"projectile": "Перезарядка, скорость выстрела и crit.",
+		"beam": "Быстрее повтор каналов и точнее удержание.",
+		"aoe": "Чаще постановка зон и безопасное позиционирование.",
+		"summon": "Быстрее командный цикл и отклик спутников.",
+		"aura": "Чаще ритм pulse/крика и уклонение.",
+	},
+	"intelligence": {
+		"melee": "Зачарование удара и splash.",
+		"projectile": "Руническая начинка снарядов.",
+		"beam": "Основная сила каналов/лучей.",
+		"aoe": "Сила формулы зоны и elemental pool.",
+		"summon": "Качество фамильяров/устройств.",
+		"aura": "Магическая гармоника pulse.",
+	},
+	"perception": {
+		"melee": "Длина, ширина и точность зоны.",
+		"projectile": "Дальность, скорость и выбор цели.",
+		"beam": "Дальность канала и ширина линии.",
+		"aoe": "Радиус зоны и pickup control.",
+		"summon": "Дальность приказа/поиска цели.",
+		"aura": "Радиус сцены и контроль ближней толпы.",
+	},
+	"energy": {
+		"melee": "Темп классовой механики и ultimate.",
+		"projectile": "Стабильнее цикл выстрелов и ultimate.",
+		"beam": "Питание канала и ultimate.",
+		"aoe": "Чаще и сильнее pulse/взрывы.",
+		"summon": "Питание активных спутников.",
+		"aura": "Ритм pulse и сила уникального темпа.",
+	},
+	"knowledge": {
+		"melee": "Bleed/burn след от удара.",
+		"projectile": "Яд/горение на попадании.",
+		"beam": "Длительный DoT после канала.",
+		"aoe": "Дольше и больнее зоны.",
+		"summon": "Умнее поддержка, DoT и sustain.",
+		"aura": "Стабильнее бафф/дебафф и регенерация.",
+	},
+	"endurance": {
+		"melee": "Контактная стойкость, block и тяжелый knockback.",
+		"projectile": "Стабилизация отдачи и безопасная дистанция.",
+		"beam": "Удержание канала под давлением.",
+		"aoe": "Безопасное стояние внутри собственных зон.",
+		"summon": "Прочные deployables и tank-loop.",
+		"aura": "Выживание в центре ауры.",
+	},
+	"leadership": {
+		"melee": "Эхо-оружие и командный клич.",
+		"projectile": "Корректировщик/эхо-залп.",
+		"beam": "Повтор канала спутником.",
+		"aoe": "Командные зоны и тотемный pulse.",
+		"summon": "Главная сила спутников и устройств.",
+		"aura": "Главная сила поддержки, баффов и контроля сцены.",
+	},
+}
 
 const STAGE_SCALE_BASE := 1.18
 

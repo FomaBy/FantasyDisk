@@ -26,6 +26,7 @@ const SLASH_REACH := 176.0
 const RING_RADIUS := 104.0
 # sound_wave.png arc center at x=26.
 const WAVE_ORIGIN_X := 26.0
+const WEAPON_SIGNATURE_PATH := "res://assets/sprites/effects/vfx_weapon_%s.png"
 
 
 static func _additive_sprite(texture: Texture2D, color: Color) -> Sprite2D:
@@ -36,6 +37,49 @@ static func _additive_sprite(texture: Texture2D, color: Color) -> Sprite2D:
 	sprite.material = material
 	sprite.modulate = color
 	return sprite
+
+
+static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String, radius: float, color: Color, rotation := 0.0) -> Node2D:
+	var texture_path := WEAPON_SIGNATURE_PATH % weapon_id
+	if not ResourceLoader.exists(texture_path):
+		return null
+	var texture := load(texture_path) as Texture2D
+	if texture == null:
+		return null
+
+	var holder := Node2D.new()
+	holder.name = "WeaponSignatureVfx_%s" % weapon_id
+	holder.z_index = 9
+	scene.add_child(holder)
+	holder.global_position = global_pos
+	holder.rotation = rotation
+
+	var shadow := Sprite2D.new()
+	shadow.texture = texture
+	shadow.modulate = Color(0.02, 0.015, 0.012, 0.34)
+	shadow.scale = Vector2.ONE * 0.90
+	shadow.z_index = -1
+	holder.add_child(shadow)
+
+	var sprite := _additive_sprite(texture, Color(color.r, color.g, color.b, 0.72))
+	holder.add_child(sprite)
+
+	var rim := _additive_sprite(texture, Color(1.0, 0.88, 0.58, 0.18))
+	rim.scale = Vector2.ONE * 1.04
+	rim.z_index = 1
+	holder.add_child(rim)
+
+	var base_scale := maxf(radius, 70.0) / 176.0
+	holder.scale = Vector2.ONE * clampf(base_scale, 0.42, 1.85)
+
+	var tween := holder.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(holder, "scale", holder.scale * 1.18, 0.24).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(sprite, "modulate:a", 0.0, 0.22).set_delay(0.08)
+	tween.tween_property(rim, "modulate:a", 0.0, 0.18).set_delay(0.06)
+	tween.tween_property(shadow, "modulate:a", 0.0, 0.18).set_delay(0.10)
+	tween.chain().tween_callback(holder.queue_free)
+	return holder
 
 
 static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color) -> Node2D:

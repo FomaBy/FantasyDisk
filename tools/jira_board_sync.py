@@ -16,13 +16,18 @@
 Запуск: python3 tools/jira_board_sync.py [--dry-run] [--no-create]
 """
 import base64
+import fcntl
 import glob
+import hashlib
 import json
 import os
 import re
 import subprocess
 import sys
+import urllib.parse
 import urllib.request
+
+LOCK_PATH = "/tmp/fantasydisk_jira_sync.lock"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TASKS_GLOB = os.path.join(ROOT, "docs/tasks/*.md")
@@ -45,6 +50,10 @@ def epic_for(name: str, title: str) -> str:
     def has(*ks):
         return any(k in f or k in s for k in ks)
 
+    if f.startswith(("cleanup_", "refactor_audit_")) or has("cleanup_pass", "deadcode", "dead_code", "рефакторинг и чистка"):
+        return "CLEANUP"
+    if f.startswith(("qol_", "ux_")) or has("qol", "quality_of_life", "удобств", "качество жизни"):
+        return "QOL"
     if has("add_character", "class_identity", "new_classes", "hero_select", "class_sheet", "three_weapons"):
         return "CHARS"
     if "animation" in f or has("rig", "motion", "cutout", "анимац", "_pose_", "movement"):
@@ -106,6 +115,23 @@ def api(method: str, path: str, payload=None):
     except urllib.error.HTTPError as e:
         sys.stderr.write(f"HTTP {e.code} {path}: {e.read().decode()[:300]}\n")
         raise
+
+
+def find_existing_issue(summary: str):
+    """Дедуп-страж: вернуть ключ уже существующего тикета с ТАКИМ ЖЕ summary
+    (точное совпадение), чтобы повторный/параллельный прогон не плодил дубль,
+    даже если локальная карта (jira_sync_map.json) устарела. None если нет."""
+    esc = summary.replace("\\", "\\\\").replace('"', '\\"')
+    jql = f'project = {PROJECT} AND summary ~ "\\"{esc}\\"" ORDER BY created ASC'
+    try:
+        data = api("GET", "/rest/api/3/search/jql?jql="
+                   + urllib.parse.quote(jql) + "&maxResults=50&fields=summary,status")
+    except Exception:
+        return None
+    for it in data.get("issues", []):
+        if it["fields"]["summary"].strip() == summary.strip():
+            return it["key"]
+    return None
 
 
 def active_sprint():
@@ -174,8 +200,9 @@ def parse_task(path: str) -> dict:
         re.search(r"^(Исполнитель|Executor):.*Codex", text, re.M | re.I))
     executor = "codex" if is_codex else "claude"
     excerpt = text[:4500]
+    desc_hash = hashlib.md5(excerpt.encode("utf-8")).hexdigest()
     return {"file": name, "title": title[:250], "status": status,
-            "role": role, "itype": itype, "excerpt": excerpt,
+            "role": role, "itype": itype, "excerpt": excerpt, "desc_hash": desc_hash,
             "blocked": raw_status.startswith("blocked"),
             "task_version": task_version if not name.startswith("bug_") else None,
             "executor": executor}
@@ -191,6 +218,14 @@ def adf(text: str) -> dict:
 def main():
     dry = "--dry-run" in sys.argv
     no_create = "--no-create" in sys.argv or os.getenv("JIRA_SYNC_NO_CREATE") == "1"
+    # Взаимоисключающий lock: два параллельных синка (PM + воркер) больше не гоняются
+    # по одним task-файлам со стаканной картой и не плодят дубли тикетов.
+    lock_fd = open(LOCK_PATH, "w")
+    try:
+        fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        print("another jira_board_sync is running — abort (lock held)")
+        return
     mapping = json.load(open(MAP_PATH)) if os.path.exists(MAP_PATH) else {}
     created = moved = 0
     sprint_id, sprint_name = (None, "") if dry else active_sprint()
@@ -199,7 +234,9 @@ def main():
     for path in sorted(glob.glob(TASKS_GLOB)):
         t = parse_task(path)
         # Задача будущей версии (не текущего спринта-релиза) -> бэклог:
-        # fixVersion целевой версии есть, active sprint assignment нет.
+        # fixVersion целевой версии есть, active sprint assignment нет. Задачи
+        # текущей версии добавляются в active sprint даже если Jira issue уже
+        # было создано ранее как backlog.
         t["next_version"] = bool(t["task_version"] and fix_version and t["task_version"] != fix_version)
         target_status = STATUS_TARGET[t["status"]]
         entry = mapping.get(t["file"])
@@ -209,32 +246,50 @@ def main():
                 action = "CREATE" if dry else "SKIP_CREATE"
                 print(f"{action} {t['file']} -> [{t['itype']}] {target_status}")
                 continue
-            fields = {
-                "project": {"key": PROJECT},
-                "issuetype": {"name": t["itype"]},
-                "summary": t["title"],
-                "labels": labels,
-                "description": adf(f"Файл: docs/tasks/{t['file']}\n\n" + t["excerpt"]),
-            }
-            if t["next_version"] and t["task_version"]:
-                # Фриз: будущая версия -> бэклог с fixVersion целевой версии (0.1.5),
-                # вне активного спринта.
-                fields["fixVersions"] = [{"name": t["task_version"]}]
-            elif fix_version and not t["next_version"]:
-                fields["fixVersions"] = [{"name": fix_version}]
-            # Аджайл: привязать новый тикет к parent-эпику (кроме самих эпиков).
-            if t["itype"] != "Эпик":
-                ep = EPICS.get(epic_for(t["file"], t["title"]))
-                if ep:
-                    fields["parent"] = {"key": ep}
-            issue = api("POST", "/rest/api/3/issue", {"fields": fields})
-            key = issue["key"]
-            mapping[t["file"]] = {"key": key, "status": "К выполнению"}
-            entry = mapping[t["file"]]
-            created += 1
-            if not t["next_version"]:
-                sprint_queue.append(key)  # текущий release scope попадает в active sprint
-            print(f"created {key}: {t['file']}")
+            # Дедуп-страж: если тикет с таким summary уже есть в Jira (карта устарела
+            # или другой прогон его создал) — переиспользовать ключ, не плодить дубль.
+            existing = find_existing_issue(t["title"])
+            if existing:
+                mapping[t["file"]] = {"key": existing, "status": "К выполнению"}
+                json.dump(mapping, open(MAP_PATH, "w"), ensure_ascii=False, indent=1)
+                entry = mapping[t["file"]]
+                print(f"linked existing {existing}: {t['file']} (dedup, not created)")
+            else:
+                fields = {
+                    "project": {"key": PROJECT},
+                    "issuetype": {"name": t["itype"]},
+                    "summary": t["title"],
+                    "labels": labels,
+                    "description": adf(f"Файл: docs/tasks/{t['file']}\n\n" + t["excerpt"]),
+                }
+                if t["next_version"] and t["task_version"]:
+                    # Фриз: будущая версия -> бэклог с fixVersion целевой версии,
+                    # вне активного спринта.
+                    fields["fixVersions"] = [{"name": t["task_version"]}]
+                elif fix_version and not t["next_version"]:
+                    fields["fixVersions"] = [{"name": fix_version}]
+                # Аджайл: привязать новый тикет к parent-эпику (кроме самих эпиков).
+                if t["itype"] != "Эпик":
+                    ep = EPICS.get(epic_for(t["file"], t["title"]))
+                    if ep:
+                        fields["parent"] = {"key": ep}
+                issue = api("POST", "/rest/api/3/issue", {"fields": fields})
+                key = issue["key"]
+                mapping[t["file"]] = {"key": key, "status": "К выполнению", "desc_hash": t["desc_hash"]}
+                json.dump(mapping, open(MAP_PATH, "w"), ensure_ascii=False, indent=1)
+                entry = mapping[t["file"]]
+                created += 1
+                if not t["next_version"]:
+                    sprint_queue.append(key)  # текущий release scope -> active sprint
+                print(f"created {key}: {t['file']}")
+        elif t["task_version"] and fix_version and t["task_version"] == fix_version:
+            sprint_queue.append(entry["key"])
+        # Описание в Jira держим в синхроне с .md: при изменении контента (хэш)
+        # переписываем description, чтобы текст «Статус: blocked» и т.п. не устаревал.
+        if not dry and entry.get("desc_hash") != t["desc_hash"]:
+            api("PUT", f"/rest/api/3/issue/{entry['key']}",
+                {"fields": {"description": adf(f"Файл: docs/tasks/{t['file']}\n\n" + t["excerpt"])}})
+            entry["desc_hash"] = t["desc_hash"]
         if entry.get("status") == "Готово":
             continue  # финальное состояние: из «Готово» не понижаем
         if entry.get("status") != target_status:

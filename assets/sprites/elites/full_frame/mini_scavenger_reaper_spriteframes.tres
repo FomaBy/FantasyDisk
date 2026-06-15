@@ -1,0 +1,284 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_attack_primary_00.png" id="1_msr1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_attack_primary_01.png" id="2_msr2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_attack_primary_02.png" id="3_msr3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_attack_primary_03.png" id="4_msr4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_attack_primary_04.png" id="5_msr5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_attack_primary_05.png" id="6_msr6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_death_00.png" id="7_msr7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_death_01.png" id="8_msr8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_death_02.png" id="9_msr9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_death_03.png" id="10_msr10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_death_04.png" id="11_msr11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_death_05.png" id="12_msr12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_move_00.png" id="13_msr13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_move_01.png" id="14_msr14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_move_02.png" id="15_msr15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_move_03.png" id="16_msr16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_move_04.png" id="17_msr17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_move_05.png" id="18_msr18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_reaping_dash_00.png" id="19_msr19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_reaping_dash_01.png" id="20_msr20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_reaping_dash_02.png" id="21_msr21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_reaping_dash_03.png" id="22_msr22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_reaping_dash_04.png" id="23_msr23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_reaping_dash_05.png" id="24_msr24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_bleed_finish_00.png" id="25_msr25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_bleed_finish_01.png" id="26_msr26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_bleed_finish_02.png" id="27_msr27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_bleed_finish_03.png" id="28_msr28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_bleed_finish_04.png" id="29_msr29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_scavenger_reaper/mini_scavenger_reaper_skill_bleed_finish_05.png" id="30_msr30"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_msr1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_msr2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_msr3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_msr4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_msr5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_msr6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_msr1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_msr2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_msr3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_msr4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_msr5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_msr6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_msr7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_msr8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_msr9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_msr10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_msr11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_msr12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_msr13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_msr14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_msr15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_msr16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_msr17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_msr18")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_msr19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_msr20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_msr21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_msr22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_msr23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_msr24")
+}
+],
+"loop": false,
+"name": &"skill_reaping_dash",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_msr19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_msr20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_msr21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_msr22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_msr23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_msr24")
+}
+],
+"loop": false,
+"name": &"attack_reaping_dash",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("25_msr25")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_msr26")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_msr27")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_msr28")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_msr29")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_msr30")
+}
+],
+"loop": false,
+"name": &"skill_bleed_finish",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("25_msr25")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_msr26")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_msr27")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_msr28")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_msr29")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_msr30")
+}
+],
+"loop": false,
+"name": &"attack_bleed_finish",
+"speed": 12.0
+}
+]

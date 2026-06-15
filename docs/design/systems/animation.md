@@ -1,6 +1,6 @@
 # Animation
 
-Обновлено: 2026-06-13
+Обновлено: 2026-06-14
 
 Animator ownership описан в `docs/process/agent_role_boundaries_and_handoffs.md`. Back-end должен не полировать motion, а предоставлять стабильные states/API.
 
@@ -11,9 +11,184 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - Source PNG остаются меню/fallback-изображениями.
 - `scripts/sliced_rig_manifest.gd` хранит данные нарезки.
 - Read-only audit SCRUM-173 (2026-06-13) зафиксировал матрицу покрытия в `docs/design/reviews/animation_rig_audit_2026_06.md`: базовый rig/state слой широкий, но 0.1.4 follow-up нужен для legacy player weapon-action hooks, enemy archetype assertions, hit/death coverage, weapon timing/VFX sync и Design-ready parts для новых боссов/мини-элиток.
+- Directive 2026-06-14: future production animation must follow
+  `fantasydisk-animation-director`: every playable character, monster, summon,
+  elite, and boss needs 5+ movement frames and 5+ primary attack frames. Elites
+  and bosses must use smooth full-frame sprite sheets for production animation,
+  not cutout slicing of static sprites, and need multiple skill/phase attack
+  patterns. Audit `docs/design/reviews/animation_full_frame_pipeline_audit_2026_06.md`
+  / SCRUM-350 tracks current compliance and created Design/Back-end handoffs
+  SCRUM-352 and SCRUM-351.
+- SCRUM-351 added `scripts/full_frame_animation_registry.gd`: a Back-end
+  SpriteFrames lookup/state adapter for `hero`, `enemy`, `ally`, `elite`, and
+  `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse
+  `AnimatedBody` (allies) when registry frames exist, while preserving existing
+  cutout/static fallback when frames are missing.
+- SCRUM-363 integrated the first SCRUM-352 enemy pilot: `rift_cutter` now has
+  padded full-frame SpriteFrames at
+  `assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres` with
+  `move` 6f loop and `attack_primary`/runtime `attack`, `hit`, `death` 6f
+  one-shots. The visual override is registry-only and does not change enemy AI,
+  damage, targeting, spawn rules or balance.
+- SCRUM-364 extended the same standard-enemy full-frame integration to
+  `ash_marksman`, `spark_runner`, `stone_bruiser`, `bone_caller`, and
+  `void_mage`. Each uses a padded `384x384` runtime canvas, `move` 6f loop,
+  `attack_primary`/runtime `attack`, `hit`, and `death` 6f one-shots, and
+  registry-only activation on the existing enemy scenes.
+- SCRUM-365 added the next accepted standard-enemy batch: `venom_spitter` and
+  `rift_shieldbearer` use the same padded SpriteFrames contract and registry-only
+  scene activation.
+- SCRUM-366 added `small_biter` to the same full-frame registry path with a
+  compact `0.30` scale and the standard 6-frame move/attack/hit/death contract.
+- SCRUM-367 added `bone_shaman` and `winged_spark` to standard-enemy full-frame
+  registry coverage. `winged_spark` preserves the accepted source `hover_flap`
+  row as a looped runtime state and exposes `hit` as a visual alias to keep the
+  existing enemy hit-state contract.
+
+## Full-Frame State Registry
+
+- `FullFrameAnimationRegistry.registry_config(entity_kind, entity_id)` is the
+  canonical runtime lookup point for full-frame SpriteFrames metadata.
+- `configure_entity_visual()` attaches the animated body, applies scale/offset,
+  hides the static fallback only after a valid SpriteFrames resource exists, and
+  records `entity_kind`, `entity_id`, and `source_faces_left` metadata.
+- `play_state(animated_body, state, direction)` accepts direct states
+  (`move`, `attack`, `hit`, `death`) and variants such as
+  `attack_slam_wave` or `<elite_behavior>:<attack_id>:<phase>`. The helper
+  records `last_requested_state` and `last_resolved_state` for smoke tests and
+  Animator debugging.
+- Missing states resolve through safe aliases (`attack_primary` -> `attack`,
+  `walk/run/levitate` -> `move`, skill variants -> `attack`) before falling
+  back to idle/move. Missing resources return `null` and leave old visuals
+  untouched.
+- Damage windows, targeting, cooldowns, spawn rules, VFX spawn and cleanup
+  remain owned by gameplay code. The registry is a visual state bridge only.
+- SCRUM-379 adds death playback lifecycle ownership for explicit full-frame
+  deaths: enemies with `FullFrameBody.death` play that row before delayed
+  cleanup while leaving combat groups/collisions immediately after rewards are
+  emitted; missing death rows keep the existing death-ghost fallback.
+- SCRUM-380 (2026-06-14) provides the complete Design source pack for explicit
+  full-frame `death` rows: 19 entities, 114 transparent frames, row sheets,
+  manifest `docs/design/references/scrum380_death_rows/scrum380_death_rows_manifest.json`
+  and contact/readability previews. SCRUM-370 consumed all 19 rows into the
+  existing runtime SpriteFrames paths for 4 allies, 4 route elites, all 6
+  mini-elites and all 5 bosses; validation artifacts are under
+  `build/qa/animation_integrate_all_move_attack_death_states/`.
+- SCRUM-394 (2026-06-14) refreshes canonical source-sheet structure only:
+  26 full-frame source sheets are now `1704x1144` RGBA and 19 death-row
+  references are now `1704x304` RGBA, both using `256x256` cells with `24 px`
+  transparent discard-only gutters and `24 px` outer padding. Runtime
+  SpriteFrames, frame counts, states, timings and gameplay behavior were not
+  changed.
 
 ## Player Motion
 
+- SCRUM-298 Design standard: playable character full-frame redraws now use
+  `docs/design/references/character_animation_style_sheet_0_1_5.md` as the
+  source of truth for art direction, sheet rows, pivots and naming. Canonical
+  future sheet path is `assets/sprites/characters/<class_id>_sheet.png`, default
+  cell size is `384x384`, preferred sheet is `1920x1152` with rows
+  `idle` / `walk` / `attack_primary` (5 frames each). Base character sheets are
+  unarmed; weapon visuals stay in socket/weapon assets. Back-end now probes that
+  path at character configure time, builds `idle`/`walk`/`attack_primary` and
+  runtime `attack` SpriteFrames when a sheet exists, and otherwise falls back to
+  the old cutout/static character visuals.
+- SCRUM-411 fixed the runtime visibility switch for playable full-frame sheets:
+  when `assets/sprites/characters/<class_id>_spriteframes.tres` or
+  `<class_id>_sheet.png` exists, `Player/VisualRoot/Body` is visible and plays
+  the full-frame `idle`/`walk`/`attack` states, while `RigRoot` is hidden so the
+  old cutout body cannot cover the accepted redraw. The hidden rig remains only
+  as a compatibility/socket/action-event anchor. Characters without full-frame
+  frames keep the previous fallback: hidden `Body`, visible cutout `RigRoot`.
+- SCRUM-412 cleaned the playable full-frame runtime PNG set at
+  `assets/sprites/characters/full_frame/<class>/`: all 17 classes and all 255
+  `idle` / `walk` / `attack_primary` frames now use real transparent alpha
+  rather than a white/checkerboard matte inside the `384x384` canvas. The
+  `SpriteFrames` resources and animation timings were not changed. Future
+  playable sheet builds must run `tools/build_character_sheet.py`, which now
+  calls `tools/alpha_clean_full_frame_characters.py` to remove edge-connected
+  white/near-white/checkerboard matte from the visible alpha bounds and de-halo
+  the silhouette before writing sliced frames. QA proof lives under
+  `build/qa/scrum412_character_alpha/`; Godot import and animation smoke pass.
+  `tests/animation_smoke_test.gd` now permanently samples one cleaned
+  `*_idle_00.png` per playable class and fails if edge-ring white/checkerboard
+  pixels or floodable matte regress beyond the SCRUM-412 thresholds.
+- SCRUM-283 integrated Berserk's accepted unarmed source sheet
+  `assets/sprites/characters/berserk_sheet.png` into runtime SpriteFrames at
+  `assets/sprites/characters/berserk_spriteframes.tres`: `walk` 5f loop,
+  `attack_primary`/runtime `attack` 5f one-shots, `idle` one-frame fallback,
+  `384x384` canvas, bottom-center pivot guide `[192,348]`. Runtime frames are
+  extracted to `assets/sprites/characters/full_frame/berserk/` so SpriteFrames
+  do not slice neighboring source-sheet pixels; manifest/contact/GIF artifacts
+  live under `build/qa/scrum283/`.
+- SCRUM-286 integrated the accepted unarmed Dark Mage sheet
+  `assets/sprites/characters/dark_mage_sheet.png` into runtime SpriteFrames at
+  `assets/sprites/characters/dark_mage_spriteframes.tres`: `idle` 5f loop,
+  `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`. Runtime frames are extracted to
+  `assets/sprites/characters/full_frame/dark_mage/`; source references, a
+  32px-gutter QA sheet, manifest and GIF previews are under
+  `docs/design/references/characters/dark_mage/` and
+  `build/qa/scrum286_dark_mage/`.
+- SCRUM-291 integrated the accepted unarmed Guitarist sheet
+  `assets/sprites/characters/guitarist_sheet.png` into runtime SpriteFrames at
+  `assets/sprites/characters/guitarist_spriteframes.tres`: `idle` 5f loop,
+  `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`. Runtime frames are extracted to
+  `assets/sprites/characters/full_frame/guitarist/`; Design source references
+  remain under `docs/design/references/characters/guitarist/`, while Animator
+  manifest/contact/GIF artifacts live under `build/qa/scrum291/`. Manifest
+  validation, Godot import, animation smoke and runtime smoke PASS after
+  SCRUM-409.
+- SCRUM-297 accepted the unarmed Thief sheet
+  `assets/sprites/characters/thief_sheet.png`: `idle` 5f loop, `walk` 5f loop,
+  `attack_primary` 5f one-shot, `384x384` canvas, bottom-center pivot guide
+  `[192,348]`, no weapons/coins/smoke/held props. Design source references,
+  alpha-clean sheet, 32px-gutter QA sheet, contact preview, manifest and GIF
+  previews are under `docs/design/references/characters/thief/`,
+  `docs/design/previews/scrum297_thief_sheet_contact.png` and
+  `build/qa/scrum297_thief/`. Parallel Animator output already provides
+  `assets/sprites/characters/thief_spriteframes.tres` and per-frame PNGs under
+  `assets/sprites/characters/full_frame/thief/`.
+- SCRUM-289 accepted the unarmed Elementalist Design source sheet
+  `assets/sprites/characters/elementalist_sheet.png`: `idle` 5f loop source,
+  `walk` 5f loop source, `attack_primary` 5f one-shot source, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`, no staff/wand/orb/focus/held
+  object. Source references, alpha-clean sheet, 32px-gutter QA sheet, contact
+  preview, manifest and GIF previews are under
+  `docs/design/references/characters/elementalist/`,
+  `docs/design/previews/scrum289_elementalist_sheet_contact.png` and
+  `build/qa/scrum289_elementalist/`. Animator pass integrated runtime
+  `assets/sprites/characters/elementalist_spriteframes.tres`: `idle` 5f loop,
+  `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`, and per-frame PNGs under
+  `assets/sprites/characters/full_frame/elementalist/`. Animator
+  manifest/contact/GIF artifacts live under `build/qa/scrum289/`; manifest
+  validation, Godot import, animation smoke and runtime smoke PASS.
+- SCRUM-284 accepted the unarmed Biologist Design source sheet
+  `assets/sprites/characters/biologist_sheet.png`: `idle` 5f loop source,
+  `walk` 5f loop source, `attack_primary` 5f one-shot source, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`, no tools/syringes/flasks/bags/
+  weapons/orbs/held objects. Source references, alpha-clean sheet, 32px-gutter
+  QA sheet, contact preview, manifest and GIF previews are under
+  `docs/design/references/characters/biologist/`,
+  `docs/design/previews/scrum284_biologist_sheet_contact.png` and
+  `build/qa/scrum284_biologist/`. Animator pass integrated runtime
+  `assets/sprites/characters/biologist_spriteframes.tres`: `idle` 5f loop,
+  `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, `384x384`
+  canvas, bottom-center pivot guide `[192,348]`, and per-frame PNGs under
+  `assets/sprites/characters/full_frame/biologist/`. Animator
+  manifest/contact/GIF artifacts live under `build/qa/scrum284/`; manifest
+  validation, Godot import, animation smoke and runtime smoke PASS.
+- SCRUM-282 and SCRUM-294 integrated accepted unarmed Assassin/Ranger sheets
+  into runtime SpriteFrames at
+  `assets/sprites/characters/assassin_spriteframes.tres` and
+  `assets/sprites/characters/ranger_spriteframes.tres`: each has `idle` 5f
+  loop, `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, a
+  `384x384` canvas, and per-frame PNGs under
+  `assets/sprites/characters/full_frame/assassin/` and
+  `assets/sprites/characters/full_frame/ranger/`. Manifest validation,
+  animation smoke and runtime smoke PASS.
 - Movement facing — отдельно от attack targeting.
 - Attack direction приходит из weapon targeting и не перетирается velocity.
 - `WeaponSocket` используется для attached weapons и должен оставаться совместимым с анимацией.
@@ -37,10 +212,44 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - Enemy archetype pass SCRUM-184 (2026-06-13) добавил tailored action readability для partial rigs: marksman weapon recoil, runner coil/burst, bruiser slam, summoner/mage/shaman ritual casts, spitter body-squash shot, shieldbearer brace/shove, biter lunge, winged spark dive, Disk Devourer body chomp. Smoke проверяет movement + action silhouette per archetype.
 - Elite active attacks имеют внешние фазы `windup/strike/recover/idle`.
 - `enemy.gd` передает elite phases в rig как animation variant `<elite_behavior>:<elite_attack_id>:<phase>` вместе с backend duration. `cutout_rig_2d.gd` держит pose layer для `iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`; VFX и damage остаются в backend/effects layer.
+- SCRUM-368 (2026-06-14) перевел route elites `iron_bastion`, `night_stalker` и `plague_prophet` на production full-frame SpriteFrames через `FullFrameAnimationRegistry` kind `elite`. У каждой элитки есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и `attack_*` validator aliases. Backend phase variants (`<elite_behavior>:<attack_id>:<phase>`) резолвятся в соответствующую accepted skill row без изменения damage/VFX timing.
+- SCRUM-371 (2026-06-14) добавил тот же production full-frame contract для `shard_marshal`: `move`, `attack`/`attack_primary`, `skill_shard_fan`, `skill_command_pulse` и matching `attack_*` aliases; backend phase `shard_marshal:shard_fan:*` визуально резолвится в `skill_shard_fan`.
+- SCRUM-376 (2026-06-14) подключил full-frame contract для всех mini-elites через SCRUM-372 `mini_elite_kind` visual-id hook: `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`. У каждого есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и matching `attack_*` aliases; missing mini-specific frames fallback'аются на base `elite_behavior`. SCRUM-370 добавил каждому `death` 6f one-shot.
+- SCRUM-377 (2026-06-14) подключил full-frame contract для боссов `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`: `move`, `attack`/`attack_primary`, две 6f `skill_*` строки и matching `attack_*` aliases. SCRUM-378 добавил Back-end visual-only hooks: boss callbacks запрашивают matching `skill_*` state через `FullFrameAnimationRegistry`, а damage/VFX timing/targeting/cooldowns остаются прежними. SCRUM-370 добавил `death` 6f one-shot rows для всех 5 boss SpriteFrames.
+- SCRUM-372 (2026-06-14) добавил visual-only hook для мини-элиток: если elite instance имеет meta `mini_elite_kind` и `FullFrameAnimationRegistry.sprite_frames_for("elite", mini_elite_kind)` существует, runtime выбирает именно этот full-frame visual ID. Если SpriteFrames для mini-kind еще нет, сохраняется прежний fallback на `elite_behavior` route-элитки.
+
+## Summon / Ally Motion
+
+- SCRUM-353 (2026-06-14) validated all mobile summon creatures through
+  `fantasydisk-animation-director`: `druid_beast`, `druid_pack_spirit`,
+  `homunculus`, and `leadership_echo` use full-frame SpriteFrames on the
+  existing runtime paths. Each has `move` 8f/12fps loop and runtime `attack`
+  6f/14fps non-loop, recorded as `attack_primary` in the skill manifest.
+- SCRUM-370 adds ally `death` rows to those same SpriteFrames paths:
+  6 frames at 10fps, non-loop, with static `ally_*.png` fallback unchanged.
+- SCRUM-399 (2026-06-14) replaced the visual source and runtime PNG frame
+  art for the four mobile summons with an ethereal allied spirit style: blue/
+  cyan translucent bodies, soft inner glow and smoky edges. The pass preserved
+  existing SpriteFrames resources, frame counts, loop flags, timings and
+  registry placement. A follow-up safe-slicing cleanup repacked all 80 animated
+  summon frame PNGs into the existing `256x256` cells with 24px transparent
+  gutters: 0 edge-touch frames, 0 padding failures. Any new motion staging
+  beyond this visual repaint remains Animator scope.
+- `FullFrameAnimationRegistry` owns visual-only SpriteFrames lookup/placement for
+  allies and keeps static `ally_*.png` sprites as fallback. Gameplay damage,
+  targeting, command mode, lifetime, and summon role scaling remain in
+  `SummonerWeapon` / `AllyMinion`.
+- SCRUM-353 padded the wolf (`druid_beast`) frame PNGs to safe `256x256` canvas
+  so transparent alpha no longer touches canvas edges; registry placement is
+  `scale Vector2(0.37, 0.37)`, `position Vector2(0, -37)`.
 
 ## Hit / Death
 
 - SCRUM-185 (2026-06-13) smoke coverage now asserts representative player, standard enemy, elite, and boss rigs entering `hit` and `death` states. `play_hit()` remains a short tint/shake state; `play_death()` keeps the existing collapse/fade; gameplay health, loot, cleanup, and death ownership remain Back-end.
+- SCRUM-379 (2026-06-14) smoke coverage now asserts standard full-frame enemies
+  select explicit `death` animation before cleanup and that fallback enemies
+  still spawn `DeathGhostRig`. Gameplay rewards/death signals fire before the
+  delayed visual cleanup, so loot/score/XP are not delayed or duplicated.
 
 ## Timing / VFX Sync
 

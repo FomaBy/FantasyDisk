@@ -1,6 +1,6 @@
 # FantasyDisk Design Brief
 
-Обновлено: 2026-06-12
+Обновлено: 2026-06-14
 
 Этот файл - короткая рабочая сводка для агентов и разработчиков. Он описывает направление игры и текущее состояние реализации. Подробный снимок всего, что уже есть в проекте, вынесен в `docs/design/current_game_state.md`.
 
@@ -14,7 +14,7 @@
 - `docs/design/systems/combat.md` - бой, арена, камера, атаки, спавн, пауза.
 - `docs/design/systems/route_map.md` - маршрутная карта, узлы, scroll/pan, переходы.
 - `docs/design/systems/menus_ui.md` - меню, HUD, магазин, события, курсор и UI rules.
-- `docs/design/systems/characters_weapons.md` - персонажи, 27 оружий, targeting и cleanup.
+- `docs/design/systems/characters_weapons.md` - персонажи, 51 оружие, targeting и cleanup.
 - `docs/design/systems/enemies_bosses.md` - обычные враги, элитки и боссы.
 - `docs/design/systems/progression_balance.md` - характеристики, награды, артефакты, магазин, ascension.
 - `docs/design/systems/visual_style_assets.md` - визуальный стиль, asset folders и naming.
@@ -40,7 +40,7 @@ FantasyDisk - 2D top-down loot-action survival roguelite с RPG-билдкраф
 
 Версионность:
 - `main` хранит стабильную линию `0.1`;
-- `dev` является активной веткой разработки `0.2`;
+- `dev` является активной веткой разработки текущей линии `0.1.x`; активный sprint target — `0.1.5`;
 - все новые задачи по умолчанию выполняются в `dev`.
 
 Текущая цель проекта - не минимальный MVP, а демонстрационная версия, которую не стыдно показать друзьям: понятный выбор персонажа, разное оружие, маршрутная карта, читаемые бои, элитки, боссы, магазин, события, отдых, прокачка, видимые HP/XP/деньги и стабильная пауза.
@@ -77,13 +77,21 @@ FantasyDisk - 2D top-down loot-action survival roguelite с RPG-билдкраф
 
 ## Персонажи
 
-В игре реализованы 9 игровых классов. Первые три имеют финальный базовый визуал, новые шесть находятся в версии 0.2 foundation с рабочей логикой и временным/переданным Design визуалом.
+В игре реализованы 17 игровых классов. Все классы имеют data-driven базовые характеристики, 3 стартовых оружия, entry в выборе героя/оружия/кодексе и canonical character PNG; motion/cutout polish остается зоной Animator-задач.
 
 | Персонаж | Роль | Ключевая фантазия |
 | --- | --- | --- |
 | Берсерк | Ближний бой, плотность, конусы и AoE | Двуручное оружие, высокий риск, высокий физический урон |
 | Темный маг | Магический урон, AoE, лучи, проклятия | Контроль зоны, взрывы, DoT и пробивание |
 | Гитарист | Звуковые волны, ауры, отталкивание | Ритм, контроль толпы, безопасная дистанция |
+| Солдат | Тактический физический класс | Линия огня, граната, штыковая стойка |
+| Вор | Уловки, рикошеты, дым | Монеты, backstab и мобильная экономика |
+| Элементалист | Стихийный AoE-контроль | Орбиты, разломы, метеорные осколки |
+| Снайпер | Дальний точный класс | Lockshot, kill-zone и split rounds |
+| Священник | Священный sustain | Sanctify, ward-пульсы и молитвенная цепь |
+| Биолог | Биореакции | Споры, образцы и симбиотические сети |
+| Робот | Тяжелый tank-control | Магниты, гидравлика и реакторные выбросы |
+| Инженер | Механический summoner/support | Турели, дроны и минные сети |
 | Ассасин | Быстрый крит-мили | Чакрамы, кинжалы, ядовитые линии |
 | Рейнджер | Дальний точный контроль | Арбалет, грозовые линии, капканы |
 | Доктор | Выживание через урон | Зелья, чума, ближняя хирургия |
@@ -114,7 +122,15 @@ FantasyDisk - 2D top-down loot-action survival roguelite с RPG-билдкраф
 - Бас-гитара: круговой импульс с сильным отталкиванием.
 - Усилитель: пульсирующая зона вокруг игрока.
 
-Новые классы 0.2:
+Расширенные классы:
+- Солдат: `soldier_rifle`, `soldier_grenade`, `soldier_bayonet`.
+- Вор: `thief_coin_pouch`, `thief_shadow_cloak`, `thief_smoke_bomb`.
+- Элементалист: `elementalist_orb_ring`, `elementalist_prism_focus`, `elementalist_meteor_core`.
+- Снайпер: `sniper_deadeye_rifle`, `sniper_spotter_scope`, `sniper_shatter_rounds`.
+- Священник: `priest_reliquary`, `priest_censer`, `priest_chime`.
+- Биолог: `biologist_spore_lens`, `biologist_sample_injector`, `biologist_symbiote_seed`.
+- Робот: `robot_magnetic_anchor`, `robot_hydraulic_press`, `robot_reactor_core`.
+- Инженер: `engineer_sentry_wrench`, `engineer_repair_drone`, `engineer_pressure_mines`.
 - Ассасин: `chakrams`, `shadow_daggers`, `venom_wire`.
 - Рейнджер: `moon_crossbow`, `storm_longbow`, `hunter_trap`.
 - Доктор: `restore_potion`, `plague_syringe`, `bone_saw`.
@@ -122,7 +138,7 @@ FantasyDisk - 2D top-down loot-action survival roguelite с RPG-билдкраф
 - Рыцарь: `long_spear`, `tower_shield`, `holy_flail`.
 - Друид: `summon_amulet`, `briar_staff`, `raven_totem`.
 
-Недостающие финальные PNG для части новых оружий закрыты Design-задачей `docs/tasks/design_all_classes_three_weapons_visual_upgrade_task.md`; Back-end сцены используют documented fallback-текстуры до замены ассетов.
+Канонические weapon PNG для всех 51 стартовых вариантов лежат в `assets/sprites/weapons/`; если новая задача добавит оружие, она должна сразу обновить registry/docs и при необходимости создать Design/Animator handoff.
 
 ## Характеристики И Прогрессия
 
@@ -275,7 +291,7 @@ HP, XP и деньги должны быть видны не только в б�
 
 Все артефакты из `ProgressionData.ARTIFACTS` и shop-only items из `ProgressionData.SHOP_ITEMS` имеют unique stylized fantasy PNG icons. После фидбэка пользователя 2026-06-11 активные artifact icons заменены на final epic dark fantasy transparent item icons: каждый предмет крупно по центру, без встроенной UI-рамки, с эпичным светом, черненым металлом, кристаллами, рунами, трещинами и магическими акцентами. Shop-only items сохраняют fantasy-medallion treatment. Канонический mapping и shop/cursor visual kit описаны в `docs/design/artifact_shop_cursor_visual_kit.md`; ассеты лежат в `assets/sprites/ui/icons/artifacts/`, `assets/sprites/ui/icons/shop/`, `assets/sprites/ui/shop/` и `assets/sprites/ui/cursor/`. Backend hooks подхватывают эти PNG вместо fallback через `scripts/ui_icon_registry.gd`.
 
-У игры есть уникальный курсор FantasyDisk: `assets/sprites/ui/cursor/game_cursor.png`, hover variant и attack variant, hotspot `(5, 4)`. Это fantasy dagger/quill pointer с сильным outline, gem-деталью и state glow; Back-end hook через `Input.set_custom_mouse_cursor` уже подключен.
+У игры есть уникальный курсор FantasyDisk: `assets/sprites/ui/cursor/game_cursor.png`, hover variant и attack variant, hotspot `(2, 2)`. Это dark steel dragon/clawed fire pointer с сильным outline, gem/detail glow и единым hotspot; Back-end hook через `Input.set_custom_mouse_cursor` уже подключен.
 
 Все кнопки в меню, настройках, route/non-combat экранах, Escape stats menu и level-up должны использовать единый FantasyDisk fantasy-metal style: темный фон, золотая bevel-рамка, тень и явные hover/pressed/disabled/focus состояния. Level-up screen должен ощущаться как геройский игровой экран: затемненный бой на фоне, магическая панель, портрет выбранного персонажа и три крупные reward cards с иконками.
 

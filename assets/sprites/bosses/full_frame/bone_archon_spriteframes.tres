@@ -1,0 +1,284 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_attack_primary_00.png" id="1_ba1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_attack_primary_01.png" id="2_ba2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_attack_primary_02.png" id="3_ba3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_attack_primary_03.png" id="4_ba4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_attack_primary_04.png" id="5_ba5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_attack_primary_05.png" id="6_ba6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_00.png" id="7_ba7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_01.png" id="8_ba8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_02.png" id="9_ba9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_03.png" id="10_ba10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_04.png" id="11_ba11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_05.png" id="12_ba12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_move_00.png" id="13_ba13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_move_01.png" id="14_ba14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_move_02.png" id="15_ba15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_move_03.png" id="16_ba16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_move_04.png" id="17_ba17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_move_05.png" id="18_ba18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_skull_volley_00.png" id="19_ba19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_skull_volley_01.png" id="20_ba20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_skull_volley_02.png" id="21_ba21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_skull_volley_03.png" id="22_ba22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_skull_volley_04.png" id="23_ba23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_skull_volley_05.png" id="24_ba24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_bone_prison_00.png" id="25_ba25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_bone_prison_01.png" id="26_ba26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_bone_prison_02.png" id="27_ba27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_bone_prison_03.png" id="28_ba28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_bone_prison_04.png" id="29_ba29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/bone_archon/bone_archon_skill_bone_prison_05.png" id="30_ba30"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_ba1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_ba2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_ba3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_ba4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_ba5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_ba6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_ba1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_ba2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_ba3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_ba4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_ba5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_ba6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_ba7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_ba8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_ba9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_ba10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_ba11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_ba12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_ba13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ba14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_ba15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_ba16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_ba17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ba18")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_ba19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_ba20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_ba21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_ba22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_ba23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_ba24")
+}
+],
+"loop": false,
+"name": &"skill_skull_volley",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_ba19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_ba20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_ba21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_ba22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_ba23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_ba24")
+}
+],
+"loop": false,
+"name": &"attack_skull_volley",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("25_ba25")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_ba26")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_ba27")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_ba28")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_ba29")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_ba30")
+}
+],
+"loop": false,
+"name": &"skill_bone_prison",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("25_ba25")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_ba26")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_ba27")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_ba28")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_ba29")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_ba30")
+}
+],
+"loop": false,
+"name": &"attack_bone_prison",
+"speed": 12.0
+}
+]

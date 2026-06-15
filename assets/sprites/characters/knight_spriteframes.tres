@@ -1,0 +1,129 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_idle_00.png" id="1_kni1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_idle_01.png" id="2_kni2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_idle_02.png" id="3_kni3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_idle_03.png" id="4_kni4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_idle_04.png" id="5_kni5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_walk_00.png" id="6_kni6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_walk_01.png" id="7_kni7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_walk_02.png" id="8_kni8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_walk_03.png" id="9_kni9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_walk_04.png" id="10_kni10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_attack_primary_00.png" id="11_kni11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_attack_primary_01.png" id="12_kni12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_attack_primary_02.png" id="13_kni13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_attack_primary_03.png" id="14_kni14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/knight/knight_attack_primary_04.png" id="15_kni15"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_kni1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_kni2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_kni3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_kni4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_kni5")
+}
+],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("6_kni6")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_kni7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_kni8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_kni9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_kni10")
+}
+],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_kni11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_kni12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_kni13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_kni14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_kni15")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_kni11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_kni12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_kni13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_kni14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_kni15")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}
+]

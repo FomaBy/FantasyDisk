@@ -8,8 +8,8 @@ const SHOP_SLOT_HOVER_PATH := "res://assets/sprites/ui/shop/ui_shop_artifact_slo
 const SHOP_PRICE_BADGE_PATH := "res://assets/sprites/ui/shop/ui_shop_price_badge.png"
 const SHOP_PURCHASED_OVERLAY_PATH := "res://assets/sprites/ui/shop/ui_shop_purchased_overlay.png"
 const SHOP_TOOLTIP_FRAME_PATH := "res://assets/sprites/ui/shop/ui_shop_tooltip_frame.png"
-const SHOP_INLINE_SLOT_SIZE := Vector2(164, 186)
-const SHOP_INLINE_ICON_SIZE := Vector2(112, 112)
+const SHOP_INLINE_SLOT_SIZE := Vector2(148, 148)
+const SHOP_INLINE_ICON_SIZE := Vector2(82, 82)
 const SHOP_CURSOR_VARIANTS := {
 	"arrow": "res://assets/sprites/ui/cursor/game_cursor.png",
 	"pointing_hand": "res://assets/sprites/ui/cursor/game_cursor_hover.png",

@@ -1,10 +1,16 @@
 extends SceneTree
 
+const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := Vector2(0.5, 0.5)
+
 
 func _initialize() -> void:
 	_test_player_animation()
 	_test_enemy_projectile_sprite()
 	_test_enemy_sprite_paths()
+	_test_druid_wolf_ally_animation()
+	_test_character_full_frame_alpha_matte()
+	_test_full_frame_animation_registry()
 	_test_enemy_animation()
 	_test_flying_elite_boss_rigs()
 	_test_elite_attack_phase_animation()
@@ -19,17 +25,183 @@ func _fail(message: String) -> void:
 	quit(1)
 
 
+func _test_character_full_frame_alpha_matte() -> void:
+	for character_id in ProgressionData.character_ids():
+		var path := "res://assets/sprites/characters/full_frame/%s/%s_idle_00.png" % [character_id, character_id]
+		var image := Image.new()
+		var err := image.load(ProjectSettings.globalize_path(path))
+		if err != OK:
+			_fail("Expected representative full-frame alpha smoke image to load: %s." % path)
+			return
+		var edge_white := _alpha_smoke_edge_white_pixels(image)
+		var floodable_matte := _alpha_smoke_floodable_background(image)
+		if edge_white != 0 or floodable_matte > 1500:
+			_fail("Expected %s to have transparent matte-free edges; edge_white=%d floodable_matte=%d." % [path, edge_white, floodable_matte])
+			return
+
+
+func _alpha_smoke_background_candidate(color: Color) -> bool:
+	var alpha := int(round(color.a * 255.0))
+	if alpha <= 8:
+		return false
+	var r := int(round(color.r * 255.0))
+	var g := int(round(color.g * 255.0))
+	var b := int(round(color.b * 255.0))
+	var hi := maxi(r, maxi(g, b))
+	var lo := mini(r, mini(g, b))
+	var neutral_white := hi >= 224 and lo >= 216 and hi - lo <= 42
+	var checker_black := alpha >= 220 and hi <= 20 and hi - lo <= 8
+	return neutral_white or checker_black
+
+
+func _alpha_smoke_visible_bbox(image: Image) -> Array:
+	var x0 := image.get_width()
+	var y0 := image.get_height()
+	var x1 := -1
+	var y1 := -1
+	for y in range(image.get_height()):
+		for x in range(image.get_width()):
+			if int(round(image.get_pixel(x, y).a * 255.0)) <= 8:
+				continue
+			x0 = mini(x0, x)
+			y0 = mini(y0, y)
+			x1 = maxi(x1, x + 1)
+			y1 = maxi(y1, y + 1)
+	if x1 < 0 or y1 < 0:
+		return []
+	return [x0, y0, x1, y1]
+
+
+func _alpha_smoke_neighbors(point: Vector2i, width: int, height: int) -> Array:
+	var neighbors := []
+	if point.x > 0:
+		neighbors.append(Vector2i(point.x - 1, point.y))
+	if point.x + 1 < width:
+		neighbors.append(Vector2i(point.x + 1, point.y))
+	if point.y > 0:
+		neighbors.append(Vector2i(point.x, point.y - 1))
+	if point.y + 1 < height:
+		neighbors.append(Vector2i(point.x, point.y + 1))
+	return neighbors
+
+
+func _alpha_smoke_seed_points(image: Image, bbox: Array) -> Array:
+	var width := image.get_width()
+	var height := image.get_height()
+	var x0: int = bbox[0]
+	var y0: int = bbox[1]
+	var x1: int = bbox[2]
+	var y1: int = bbox[3]
+	var seeds := []
+	var seen := {}
+	for x in range(x0, x1):
+		for y in [y0, y1 - 1]:
+			var point := Vector2i(x, y)
+			if not seen.has(point) and _alpha_smoke_background_candidate(image.get_pixel(x, y)):
+				seeds.append(point)
+				seen[point] = true
+	for y in range(y0, y1):
+		for x in [x0, x1 - 1]:
+			var point := Vector2i(x, y)
+			if not seen.has(point) and _alpha_smoke_background_candidate(image.get_pixel(x, y)):
+				seeds.append(point)
+				seen[point] = true
+	for y in range(y0, y1):
+		for x in range(x0, x1):
+			var point := Vector2i(x, y)
+			if seen.has(point) or not _alpha_smoke_background_candidate(image.get_pixel(x, y)):
+				continue
+			for neighbor in _alpha_smoke_neighbors(point, width, height):
+				var neighbor_point := neighbor as Vector2i
+				if int(round(image.get_pixel(neighbor_point.x, neighbor_point.y).a * 255.0)) <= 8:
+					seeds.append(point)
+					seen[point] = true
+					break
+	return seeds
+
+
+func _alpha_smoke_floodable_background(image: Image) -> int:
+	var bbox := _alpha_smoke_visible_bbox(image)
+	if bbox.is_empty():
+		return 0
+	var width := image.get_width()
+	var height := image.get_height()
+	var seen := {}
+	var queue := []
+	for point in _alpha_smoke_seed_points(image, bbox):
+		var seed := point as Vector2i
+		if not seen.has(seed):
+			seen[seed] = true
+			queue.append(seed)
+	while not queue.is_empty():
+		var point := queue.pop_front() as Vector2i
+		for neighbor in _alpha_smoke_neighbors(point, width, height):
+			var neighbor_point := neighbor as Vector2i
+			if seen.has(neighbor_point):
+				continue
+			if _alpha_smoke_background_candidate(image.get_pixel(neighbor_point.x, neighbor_point.y)):
+				seen[neighbor_point] = true
+				queue.append(neighbor_point)
+	return seen.size()
+
+
+func _alpha_smoke_edge_white_pixels(image: Image, ring_width := 8) -> int:
+	var total := 0
+	var width := image.get_width()
+	var height := image.get_height()
+	for y in range(height):
+		for x in range(width):
+			if not (x < ring_width or y < ring_width or x >= width - ring_width or y >= height - ring_width):
+				continue
+			if _alpha_smoke_background_candidate(image.get_pixel(x, y)):
+				total += 1
+	return total
+
+
 func _test_player_animation() -> void:
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var player := player_scene.instantiate()
 	root.add_child(player)
 	player.configure_character("berserk")
 	var body := player.get_node("VisualRoot/Body") as AnimatedSprite2D
-	if body.visible:
-		_fail("Expected player fallback AnimatedSprite2D to be hidden behind RigRoot.")
+	var rig := player.get_node("VisualRoot/RigRoot") as Node2D
+	if not body.visible:
+		_fail("Expected Berserk full-frame AnimatedSprite2D to be visible.")
+	if rig.visible:
+		_fail("Expected Berserk cutout RigRoot to be hidden behind the full-frame AnimatedSprite2D.")
+	if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
+		_fail("Expected Berserk full-frame visual to use SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(body.scale)])
+	if rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
+		_fail("Expected hidden fallback cutout rig to receive SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(rig.get("base_scale"))])
+	if body.sprite_frames == null or not body.sprite_frames.has_animation("attack") or not body.sprite_frames.has_animation("attack_primary"):
+		_fail("Expected player SpriteFrames to expose attack and attack_primary animations.")
+	if body.sprite_frames.resource_path != "res://assets/sprites/characters/berserk_spriteframes.tres":
+		_fail("Expected Berserk to use the accepted SCRUM-283 SpriteFrames resource.")
+	if body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
+		_fail("Expected Berserk SCRUM-283 SpriteFrames to expose 5 walk/attack/attack_primary frames.")
+	if not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
+		_fail("Expected Berserk walk to loop and attacks to be one-shot.")
+	player.call("play_action_animation", "attack", Vector2.RIGHT)
+	var last_event := player.get("last_weapon_animation_event") as Dictionary
+	if str(last_event.get("action_id", "")) != "attack":
+		_fail("Expected player action playback to emit an attack weapon animation event.")
+	player.set("velocity", Vector2(100, 0))
+	player.call("_update_movement_animation", 0.01)
+	if body.animation == "attack" or body.animation == "attack_primary":
+		_fail("Expected player body attack SpriteFrames to stay disabled while weapon/rig action events run.")
+	player.call("_update_movement_animation", 1.0)
+	if body.animation == "attack" or body.animation == "attack_primary":
+		_fail("Expected player movement animation to remain in a non-attack state after the action window.")
+	var synthetic_sheet := _make_synthetic_character_sheet()
+	var synthetic_frames := player.call("_sprite_frames_from_character_sheet", synthetic_sheet) as SpriteFrames
+	if synthetic_frames == null:
+		_fail("Expected player character sheet builder to accept a 5x3 runtime sheet.")
+	if synthetic_frames.get_frame_count("idle") != 5 or synthetic_frames.get_frame_count("walk") != 5 or synthetic_frames.get_frame_count("attack") != 5:
+		_fail("Expected synthetic character sheet to produce 5 idle/walk/attack frames.")
+	if not synthetic_frames.get_animation_loop("walk") or synthetic_frames.get_animation_loop("attack"):
+		_fail("Expected character sheet walk to loop and attack to be one-shot.")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "player")
 
-	var rig := player.get_node("VisualRoot/RigRoot") as Node2D
 	var pelvis := rig.get_node("Pelvis") as Node2D
 	var leg_l := rig.get_node("Pelvis/Figure/LegL") as Node2D
 	var leg_r := rig.get_node("Pelvis/Figure/LegR") as Node2D
@@ -79,7 +251,10 @@ func _test_player_animation() -> void:
 	if float(hammer_pose["arm_r_y"]) >= float(sword_pose["arm_r_y"]) - 3.0 or float(hammer_pose["pelvis_y"]) >= float(sword_pose["pelvis_y"]) - 2.0:
 		_fail("Expected hammer attack pose to lift into an overhead slam silhouette.")
 
-	player.configure_character("guitarist")
+	var fallback_texture := load("res://assets/sprites/characters/berserk_unarmed.png") as Texture2D
+	var fallback_frames := player.call("_single_texture_sprite_frames", fallback_texture) as SpriteFrames
+	if fallback_frames == null or fallback_frames.get_frame_count("attack") != 1:
+		_fail("Expected non-sheet character fallback attack animation to be safe and static.")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "guitarist")
 	player.call("play_action_animation", "shoot", Vector2.RIGHT)
 	player.call("_update_movement_animation", 0.10)
@@ -88,6 +263,16 @@ func _test_player_animation() -> void:
 		_fail("Expected ranged action animation to recoil the rig pelvis.")
 
 	player.configure_character("dark_mage")
+	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
+	rig = player.get_node("VisualRoot/RigRoot") as Node2D
+	if not body.visible or rig.visible:
+		_fail("Expected Dark Mage full-frame AnimatedSprite2D visible with hidden cutout RigRoot.")
+	if body.sprite_frames == null or body.sprite_frames.resource_path != "res://assets/sprites/characters/dark_mage_spriteframes.tres":
+		_fail("Expected Dark Mage to use the accepted SCRUM-286 SpriteFrames resource.")
+	if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
+		_fail("Expected Dark Mage SCRUM-286 SpriteFrames to expose 5 idle/walk/attack/attack_primary frames.")
+	if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
+		_fail("Expected Dark Mage idle/walk to loop and attacks to be one-shot.")
 	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "dark mage")
 	player.set("velocity", Vector2(100, 0))
 	player.call("_update_movement_animation", 0.18)
@@ -107,6 +292,45 @@ func _test_player_animation() -> void:
 	var mage_arm_r := player.get_node("VisualRoot/RigRoot/Pelvis/Figure/Torso/ArmR") as Node2D
 	if abs(mage_arm_l.rotation - mage_arm_r.rotation) <= 0.25:
 		_fail("Expected cast action animation to raise the rig arms.")
+
+	var accepted_character_spriteframes := {
+		"assassin": "res://assets/sprites/characters/assassin_spriteframes.tres",
+		"berserk": "res://assets/sprites/characters/berserk_spriteframes.tres",
+		"biologist": "res://assets/sprites/characters/biologist_spriteframes.tres",
+		"chemist": "res://assets/sprites/characters/chemist_spriteframes.tres",
+		"dark_mage": "res://assets/sprites/characters/dark_mage_spriteframes.tres",
+		"doctor": "res://assets/sprites/characters/doctor_spriteframes.tres",
+		"druid": "res://assets/sprites/characters/druid_spriteframes.tres",
+		"elementalist": "res://assets/sprites/characters/elementalist_spriteframes.tres",
+		"engineer": "res://assets/sprites/characters/engineer_spriteframes.tres",
+		"guitarist": "res://assets/sprites/characters/guitarist_spriteframes.tres",
+		"knight": "res://assets/sprites/characters/knight_spriteframes.tres",
+		"priest": "res://assets/sprites/characters/priest_spriteframes.tres",
+		"ranger": "res://assets/sprites/characters/ranger_spriteframes.tres",
+		"robot": "res://assets/sprites/characters/robot_spriteframes.tres",
+		"sniper": "res://assets/sprites/characters/sniper_spriteframes.tres",
+		"soldier": "res://assets/sprites/characters/soldier_spriteframes.tres",
+		"thief": "res://assets/sprites/characters/thief_spriteframes.tres",
+	}
+	for sheet_character_id in accepted_character_spriteframes.keys():
+		player.configure_character(sheet_character_id)
+		body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
+		rig = player.get_node("VisualRoot/RigRoot") as Node2D
+		if body.sprite_frames == null or body.sprite_frames.resource_path != str(accepted_character_spriteframes[sheet_character_id]):
+			_fail("Expected %s to use its accepted SpriteFrames resource." % sheet_character_id)
+		if not body.visible or rig.visible:
+			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
+		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
+			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
+		if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
+			_fail("Expected %s accepted SpriteFrames to expose 5 idle/walk/attack/attack_primary frames." % sheet_character_id)
+		if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
+			_fail("Expected %s idle/walk to loop and attacks to be one-shot." % sheet_character_id)
+	player.configure_character("missing_full_frame_test")
+	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
+	rig = player.get_node("VisualRoot/RigRoot") as Node2D
+	if body.visible or not rig.visible:
+		_fail("Expected missing full-frame fallback to hide Body and show cutout RigRoot.")
 
 	var new_class_profiles := {
 		"assassin": 0.08,
@@ -253,6 +477,15 @@ func _test_player_animation() -> void:
 	_test_legacy_player_weapon_pose_hooks(player)
 	_test_unique_attack_phase_pose_hooks(player)
 	player.queue_free()
+
+
+func _make_synthetic_character_sheet() -> Texture2D:
+	var image := Image.create(384 * 5, 384 * 3, false, Image.FORMAT_RGBA8)
+	for row in range(3):
+		for column in range(5):
+			var color := Color(0.12 + 0.18 * column, 0.16 + 0.22 * row, 0.35, 1.0)
+			image.fill_rect(Rect2i(column * 384, row * 384, 384, 384), color)
+	return ImageTexture.create_from_image(image)
 
 
 func _test_weapon_animation_timing_events(player: Node) -> void:
@@ -624,6 +857,474 @@ func _test_enemy_sprite_paths() -> void:
 	disk_boss.queue_free()
 
 
+func _test_druid_wolf_ally_animation() -> void:
+	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
+	var ally := ally_scene.instantiate()
+	root.add_child(ally)
+	ally.call("set_visual_id", "druid_beast")
+
+	var body := ally.get_node("Body") as Sprite2D
+	var animated_body := ally.get_node("AnimatedBody") as AnimatedSprite2D
+	if body.visible:
+		_fail("Expected druid_beast to hide the static ally fallback body.")
+	if not animated_body.visible or not ally.call("is_using_animated_ally_visual"):
+		_fail("Expected druid_beast to use AnimatedSprite2D.")
+	if animated_body.sprite_frames == null:
+		_fail("Expected druid_beast AnimatedSprite2D to have SpriteFrames.")
+	for animation_name in ["move", "attack", "attack_primary", "death"]:
+		if not animated_body.sprite_frames.has_animation(animation_name):
+			_fail("Expected druid_beast SpriteFrames to expose %s animation." % animation_name)
+	if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6 \
+			or animated_body.sprite_frames.get_frame_count("attack_primary") != 6 or animated_body.sprite_frames.get_frame_count("death") != 6:
+		_fail("Expected druid_beast move/attack/death frame counts to match the Design handoff.")
+	if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack") \
+			or animated_body.sprite_frames.get_animation_loop("attack_primary") or animated_body.sprite_frames.get_animation_loop("death"):
+		_fail("Expected druid_beast move to loop and attack/death to be one-shot.")
+	if animated_body.animation != "move" or not animated_body.is_playing():
+		_fail("Expected druid_beast to start in playing move animation.")
+
+	ally.set("velocity", Vector2(120, 0))
+	ally.call("_update_visual_animation")
+	if not animated_body.flip_h:
+		_fail("Expected druid_beast to flip horizontally when moving right.")
+	ally.call("_play_attack_animation", Vector2.LEFT)
+	if animated_body.animation != "attack" or animated_body.flip_h:
+		_fail("Expected druid_beast attack animation to face the attack direction.")
+
+	# SCRUM-336: all summon creatures are now animated like the wolf (move+attack).
+	for summon_visual in ["druid_pack_spirit", "homunculus", "leadership_echo"]:
+		ally.call("set_visual_id", summon_visual)
+		if not animated_body.visible or body.visible or not ally.call("is_using_animated_ally_visual"):
+			_fail("Expected summon '%s' to use the animated AnimatedSprite2D visual." % summon_visual)
+		if animated_body.sprite_frames == null:
+			_fail("Expected summon '%s' AnimatedSprite2D to have SpriteFrames." % summon_visual)
+		for animation_name in ["move", "attack", "attack_primary", "death"]:
+			if not animated_body.sprite_frames.has_animation(animation_name):
+				_fail("Expected summon '%s' SpriteFrames to expose %s animation." % [summon_visual, animation_name])
+		if animated_body.sprite_frames.get_frame_count("move") != 8 or animated_body.sprite_frames.get_frame_count("attack") != 6 \
+				or animated_body.sprite_frames.get_frame_count("attack_primary") != 6 or animated_body.sprite_frames.get_frame_count("death") != 6:
+			_fail("Expected summon '%s' move/attack/death frame counts to match the wolf system (8/6/6)." % summon_visual)
+		if not animated_body.sprite_frames.get_animation_loop("move") or animated_body.sprite_frames.get_animation_loop("attack") \
+				or animated_body.sprite_frames.get_animation_loop("attack_primary") or animated_body.sprite_frames.get_animation_loop("death"):
+			_fail("Expected summon '%s' move to loop and attack/death to be one-shot." % summon_visual)
+	ally.queue_free()
+
+
+func _test_full_frame_animation_registry() -> void:
+	var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", "druid_beast")
+	if frames == null or not frames.has_animation("move") or not frames.has_animation("attack") \
+			or not frames.has_animation("attack_primary") or not frames.has_animation("death"):
+		_fail("Expected full-frame registry to resolve druid_beast move/attack/death SpriteFrames.")
+	var standard_enemy_scenes := {
+		"rift_cutter": "res://scenes/Enemy.tscn",
+		"ash_marksman": "res://scenes/EnemyShooter.tscn",
+		"spark_runner": "res://scenes/EnemyRunner.tscn",
+		"stone_bruiser": "res://scenes/EnemyBruiser.tscn",
+		"bone_caller": "res://scenes/EnemySummoner.tscn",
+		"void_mage": "res://scenes/EnemyMage.tscn",
+		"venom_spitter": "res://scenes/EnemySpitter.tscn",
+		"rift_shieldbearer": "res://scenes/EnemyShield.tscn",
+		"small_biter": "res://scenes/EnemyBiter.tscn",
+		"bone_shaman": "res://scenes/EnemyBoneShaman.tscn",
+		"winged_spark": "res://scenes/EnemyFlyingRunner.tscn",
+	}
+	for enemy_id in standard_enemy_scenes.keys():
+		var enemy_frames := FullFrameAnimationRegistry.sprite_frames_for("enemy", enemy_id)
+		if enemy_frames == null:
+			_fail("Expected full-frame registry to resolve %s SpriteFrames." % enemy_id)
+			continue
+		for animation_name in ["move", "attack", "attack_primary", "hit", "death"]:
+			if not enemy_frames.has_animation(animation_name):
+				_fail("Expected %s SpriteFrames to expose %s animation." % [enemy_id, animation_name])
+			elif enemy_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s %s to have 6 frames." % [enemy_id, animation_name])
+		if not enemy_frames.get_animation_loop("move"):
+			_fail("Expected %s move to loop." % enemy_id)
+		for one_shot_name in ["attack", "attack_primary", "hit", "death"]:
+			if enemy_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s %s to be one-shot." % [enemy_id, one_shot_name])
+		if enemy_id == "winged_spark":
+			if not enemy_frames.has_animation("hover_flap") or enemy_frames.get_frame_count("hover_flap") != 6:
+				_fail("Expected winged_spark hover_flap to have 6 frames.")
+			elif not enemy_frames.get_animation_loop("hover_flap"):
+				_fail("Expected winged_spark hover_flap to loop.")
+	if FullFrameAnimationRegistry.sprite_frames_for("enemy", "missing_test_enemy") != null:
+		_fail("Expected missing full-frame registry entries to return null.")
+
+	var owner := Node2D.new()
+	root.add_child(owner)
+	owner.set_meta("full_frame_spriteframes_path", "res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres")
+	owner.set_meta("full_frame_scale", Vector2(0.34, 0.34))
+	owner.set_meta("full_frame_position", Vector2(0.0, -31.0))
+	owner.set_meta("full_frame_source_faces_left", true)
+	var static_body := Sprite2D.new()
+	static_body.name = "Body"
+	static_body.visible = true
+	owner.add_child(static_body)
+	var animated_body := FullFrameAnimationRegistry.configure_entity_visual(owner, "enemy", "runtime_dummy")
+	if animated_body == null or not animated_body.visible or static_body.visible:
+		_fail("Expected registry to create visible FullFrameBody and hide static Body.")
+	if str(animated_body.get_meta("entity_kind", "")) != "enemy" or str(animated_body.get_meta("entity_id", "")) != "runtime_dummy":
+		_fail("Expected registry to tag entity kind/id on FullFrameBody.")
+	if not FullFrameAnimationRegistry.play_state(animated_body, "attack_slam_wave", Vector2.RIGHT):
+		_fail("Expected registry to accept boss/elite-style skill state names.")
+	if animated_body.animation != "attack":
+		_fail("Expected attack_slam_wave to resolve to existing attack animation.")
+	if not animated_body.flip_h:
+		_fail("Expected source-left full-frame art to flip when facing right.")
+	if str(animated_body.get_meta("last_requested_state", "")) != "attack_slam_wave" or str(animated_body.get_meta("last_resolved_state", "")) != "attack":
+		_fail("Expected FullFrameBody metadata to expose requested/resolved state.")
+	owner.queue_free()
+
+	for enemy_id in standard_enemy_scenes.keys():
+		var enemy_scene := load(str(standard_enemy_scenes[enemy_id])) as PackedScene
+		var enemy := enemy_scene.instantiate()
+		root.add_child(enemy)
+		if enemy.get_node_or_null("FullFrameBody") == null:
+			enemy.call("_configure_full_frame_animation")
+		enemy.call("_update_movement_animation", 0.1)
+		var enemy_full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if enemy_full_frame_body == null or not enemy_full_frame_body.visible:
+			_fail("Expected %s enemies to create a visible FullFrameBody." % enemy_id)
+		if enemy_full_frame_body != null:
+			for animation_name in ["move", "attack_primary", "hit", "death"]:
+				if not enemy_full_frame_body.sprite_frames.has_animation(animation_name):
+					_fail("Expected %s enemy FullFrameBody to use registry SpriteFrames." % enemy_id)
+			if enemy_full_frame_body.animation != "move":
+				_fail("Expected %s enemy FullFrameBody to start in move animation." % enemy_id)
+			if not FullFrameAnimationRegistry.play_state(enemy_full_frame_body, "attack_primary", Vector2.RIGHT):
+				_fail("Expected %s FullFrameBody to play attack_primary." % enemy_id)
+			if enemy_full_frame_body.animation != "attack_primary" or not enemy_full_frame_body.flip_h:
+				_fail("Expected %s attack_primary to resolve and face right." % enemy_id)
+		var enemy_static_body := enemy.get_node_or_null("Body") as CanvasItem
+		if enemy_static_body != null and enemy_static_body.visible:
+			_fail("Expected %s full-frame visual to hide the static body fallback." % enemy_id)
+		enemy.queue_free()
+
+	var elite_full_frame_scenes := {
+		"iron_bastion": {
+			"path": "res://scenes/EliteArmored.tscn",
+			"skill_states": ["skill_shield_block", "skill_slam_wave"],
+			"phase_state": "iron_bastion:slam_wave:windup",
+			"phase_resolved": "skill_slam_wave",
+		},
+		"night_stalker": {
+			"path": "res://scenes/EliteStalker.tscn",
+			"skill_states": ["skill_shadow_strike", "skill_phase_dash"],
+			"phase_state": "night_stalker:shadow_strike:windup",
+			"phase_resolved": "skill_shadow_strike",
+		},
+		"plague_prophet": {
+			"path": "res://scenes/ElitePoisoned.tscn",
+			"skill_states": ["skill_poison_volley", "skill_plague_aura"],
+			"phase_state": "plague_prophet:poison_volley:windup",
+			"phase_resolved": "skill_poison_volley",
+		},
+		"shard_marshal": {
+			"path": "res://scenes/EliteCommander.tscn",
+			"skill_states": ["skill_shard_fan", "skill_command_pulse"],
+			"phase_state": "shard_marshal:shard_fan:windup",
+			"phase_resolved": "skill_shard_fan",
+		},
+	}
+	for elite_id in elite_full_frame_scenes.keys():
+		var elite_info: Dictionary = elite_full_frame_scenes[elite_id]
+		var elite_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", elite_id)
+		if elite_frames == null:
+			_fail("Expected full-frame registry to resolve %s elite SpriteFrames." % elite_id)
+			continue
+		for animation_name in ["move", "attack", "attack_primary"]:
+			if not elite_frames.has_animation(animation_name):
+				_fail("Expected %s elite SpriteFrames to expose %s animation." % [elite_id, animation_name])
+			elif elite_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s elite %s to have 6 frames." % [elite_id, animation_name])
+		if not elite_frames.get_animation_loop("move"):
+			_fail("Expected %s elite move to loop." % elite_id)
+		if elite_id in ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal"]:
+			if not elite_frames.has_animation("death"):
+				_fail("Expected %s elite SpriteFrames to expose death after SCRUM-370 death integration." % elite_id)
+			elif elite_frames.get_frame_count("death") != 6:
+				_fail("Expected %s elite death to have 6 frames." % elite_id)
+		for one_shot_name in ["attack", "attack_primary", "death"]:
+			if not elite_frames.has_animation(one_shot_name):
+				continue
+			if elite_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s elite %s to be one-shot." % [elite_id, one_shot_name])
+		for skill_state in elite_info["skill_states"]:
+			var skill_name := str(skill_state)
+			var attack_alias := "attack_%s" % skill_name.trim_prefix("skill_")
+			if not elite_frames.has_animation(skill_name):
+				_fail("Expected %s elite SpriteFrames to expose %s." % [elite_id, skill_name])
+			elif elite_frames.get_frame_count(skill_name) != 6:
+				_fail("Expected %s elite %s to have 6 frames." % [elite_id, skill_name])
+			if elite_frames.has_animation(skill_name) and elite_frames.get_animation_loop(skill_name):
+				_fail("Expected %s elite %s to be one-shot." % [elite_id, skill_name])
+			if not elite_frames.has_animation(attack_alias):
+				_fail("Expected %s elite SpriteFrames to expose %s validator alias." % [elite_id, attack_alias])
+			elif elite_frames.get_frame_count(attack_alias) != 6:
+				_fail("Expected %s elite %s alias to have 6 frames." % [elite_id, attack_alias])
+			if elite_frames.has_animation(attack_alias) and elite_frames.get_animation_loop(attack_alias):
+				_fail("Expected %s elite %s alias to be one-shot." % [elite_id, attack_alias])
+
+		var elite_scene := load(str(elite_info["path"])) as PackedScene
+		var elite := elite_scene.instantiate()
+		root.add_child(elite)
+		if elite.get_node_or_null("FullFrameBody") == null:
+			elite.call("_configure_full_frame_animation")
+		elite.call("_update_movement_animation", 0.1)
+		var elite_full_frame_body := elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if elite_full_frame_body == null or not elite_full_frame_body.visible:
+			_fail("Expected %s elite scene to create a visible FullFrameBody." % elite_id)
+		if elite_full_frame_body != null:
+			if not FullFrameAnimationRegistry.play_state(elite_full_frame_body, str(elite_info["phase_state"]), Vector2.RIGHT):
+				_fail("Expected %s elite phase state to resolve through the full-frame registry." % elite_id)
+			if elite_full_frame_body.animation != str(elite_info["phase_resolved"]):
+				_fail("Expected %s elite phase to resolve to %s, got %s." % [elite_id, str(elite_info["phase_resolved"]), elite_full_frame_body.animation])
+			if not elite_full_frame_body.flip_h:
+				_fail("Expected %s elite full-frame art to face right via flip_h." % elite_id)
+		var elite_static_body := elite.get_node_or_null("Body") as CanvasItem
+		if elite_static_body != null and elite_static_body.visible:
+			_fail("Expected %s elite full-frame visual to hide the static body fallback." % elite_id)
+		elite.queue_free()
+
+	var mini_elite_full_frame_scenes := {
+		"mini_scavenger_reaper": {
+			"path": "res://scenes/EliteStalker.tscn",
+			"skill_states": ["skill_reaping_dash", "skill_bleed_finish"],
+			"phase_state": "mini_scavenger_reaper:reaping_dash:windup",
+			"phase_resolved": "skill_reaping_dash",
+		},
+		"mini_plague_bellringer": {
+			"path": "res://scenes/ElitePoisoned.tscn",
+			"skill_states": ["skill_bell_toll", "skill_poison_pool"],
+			"phase_state": "mini_plague_bellringer:bell_toll:windup",
+			"phase_resolved": "skill_bell_toll",
+		},
+		"mini_bone_warden": {
+			"path": "res://scenes/EliteArmored.tscn",
+			"skill_states": ["skill_bone_guard", "skill_slam_wave"],
+			"phase_state": "mini_bone_warden:slam_wave:windup",
+			"phase_resolved": "skill_slam_wave",
+		},
+		"mini_spark_wight": {
+			"path": "res://scenes/EliteCommander.tscn",
+			"skill_states": ["skill_spark_fan", "skill_static_field"],
+			"phase_state": "mini_spark_wight:spark_fan:windup",
+			"phase_resolved": "skill_spark_fan",
+		},
+		"mini_rot_hound": {
+			"path": "res://scenes/EliteStalker.tscn",
+			"skill_states": ["skill_rot_lunge", "skill_bleed_howl"],
+			"phase_state": "mini_rot_hound:rot_lunge:windup",
+			"phase_resolved": "skill_rot_lunge",
+		},
+		"mini_shadow_devourer": {
+			"path": "res://scenes/EliteStalker.tscn",
+			"skill_states": ["skill_shadow_blink", "skill_devour_bite"],
+			"phase_state": "mini_shadow_devourer:shadow_blink:windup",
+			"phase_resolved": "skill_shadow_blink",
+		},
+	}
+	for mini_id in mini_elite_full_frame_scenes.keys():
+		var mini_info: Dictionary = mini_elite_full_frame_scenes[mini_id]
+		var mini_frames := FullFrameAnimationRegistry.sprite_frames_for("elite", mini_id)
+		if mini_frames == null:
+			_fail("Expected full-frame registry to resolve %s mini-elite SpriteFrames." % mini_id)
+			continue
+		for animation_name in ["move", "attack", "attack_primary"]:
+			if not mini_frames.has_animation(animation_name):
+				_fail("Expected %s mini-elite SpriteFrames to expose %s animation." % [mini_id, animation_name])
+			elif mini_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, animation_name])
+		if not mini_frames.get_animation_loop("move"):
+			_fail("Expected %s mini-elite move to loop." % mini_id)
+		if mini_id in ["mini_scavenger_reaper", "mini_plague_bellringer", "mini_bone_warden", "mini_spark_wight", "mini_rot_hound", "mini_shadow_devourer"]:
+			if not mini_frames.has_animation("death"):
+				_fail("Expected %s mini-elite SpriteFrames to expose death after SCRUM-370 death integration." % mini_id)
+			elif mini_frames.get_frame_count("death") != 6:
+				_fail("Expected %s mini-elite death to have 6 frames." % mini_id)
+		for one_shot_name in ["attack", "attack_primary", "death"]:
+			if not mini_frames.has_animation(one_shot_name):
+				continue
+			if mini_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, one_shot_name])
+		for skill_state in mini_info["skill_states"]:
+			var mini_skill_name := str(skill_state)
+			var mini_attack_alias := "attack_%s" % mini_skill_name.trim_prefix("skill_")
+			if not mini_frames.has_animation(mini_skill_name):
+				_fail("Expected %s mini-elite SpriteFrames to expose %s." % [mini_id, mini_skill_name])
+			elif mini_frames.get_frame_count(mini_skill_name) != 6:
+				_fail("Expected %s mini-elite %s to have 6 frames." % [mini_id, mini_skill_name])
+			if mini_frames.has_animation(mini_skill_name) and mini_frames.get_animation_loop(mini_skill_name):
+				_fail("Expected %s mini-elite %s to be one-shot." % [mini_id, mini_skill_name])
+			if not mini_frames.has_animation(mini_attack_alias):
+				_fail("Expected %s mini-elite SpriteFrames to expose %s validator alias." % [mini_id, mini_attack_alias])
+			elif mini_frames.get_frame_count(mini_attack_alias) != 6:
+				_fail("Expected %s mini-elite %s alias to have 6 frames." % [mini_id, mini_attack_alias])
+			if mini_frames.has_animation(mini_attack_alias) and mini_frames.get_animation_loop(mini_attack_alias):
+				_fail("Expected %s mini-elite %s alias to be one-shot." % [mini_id, mini_attack_alias])
+
+		var mini_scene := load(str(mini_info["path"])) as PackedScene
+		var mini := mini_scene.instantiate()
+		root.add_child(mini)
+		mini.set_meta("mini_elite_kind", mini_id)
+		mini.call("refresh_full_frame_visual")
+		mini.call("_update_movement_animation", 0.1)
+		var mini_body := mini.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if mini_body == null or not mini_body.visible:
+			_fail("Expected %s mini-elite scene to create a visible FullFrameBody." % mini_id)
+		if mini_body != null:
+			if str(mini_body.get_meta("entity_id", "")) != mini_id:
+				_fail("Expected %s mini_elite_kind to select mini-specific SpriteFrames, got %s." % [mini_id, str(mini_body.get_meta("entity_id", ""))])
+			if not FullFrameAnimationRegistry.play_state(mini_body, str(mini_info["phase_state"]), Vector2.RIGHT):
+				_fail("Expected %s mini-elite phase state to resolve through the full-frame registry." % mini_id)
+			if mini_body.animation != str(mini_info["phase_resolved"]):
+				_fail("Expected %s mini-elite phase to resolve to %s, got %s." % [mini_id, str(mini_info["phase_resolved"]), mini_body.animation])
+			if not mini_body.flip_h:
+				_fail("Expected %s mini-elite full-frame art to face right via flip_h." % mini_id)
+		var mini_static_body := mini.get_node_or_null("Body") as CanvasItem
+		if mini_static_body != null and mini_static_body.visible:
+			_fail("Expected %s mini-elite full-frame visual to hide the static body fallback." % mini_id)
+		mini.queue_free()
+
+	var mini_visual_scene := load("res://scenes/EliteStalker.tscn") as PackedScene
+	var mini_visual_elite := mini_visual_scene.instantiate()
+	root.add_child(mini_visual_elite)
+	mini_visual_elite.set_meta("mini_elite_kind", "mini_scavenger_reaper")
+	mini_visual_elite.call("refresh_full_frame_visual")
+	var mini_visual_body := mini_visual_elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if mini_visual_body == null:
+		_fail("Expected mini-elite metadata refresh to preserve a FullFrameBody.")
+	elif str(mini_visual_body.get_meta("entity_id", "")) != "mini_scavenger_reaper":
+		_fail("Expected mini_elite_kind with registered SpriteFrames to override the base elite visual id.")
+	mini_visual_elite.set_meta("mini_elite_kind", "missing_mini_visual_test")
+	mini_visual_elite.call("refresh_full_frame_visual")
+	mini_visual_body = mini_visual_elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if mini_visual_body == null:
+		_fail("Expected missing mini-elite visual id to keep the route elite fallback FullFrameBody.")
+	elif str(mini_visual_body.get_meta("entity_id", "")) != "night_stalker":
+		_fail("Expected missing mini_elite_kind SpriteFrames to fall back to elite_behavior visual id.")
+	mini_visual_elite.queue_free()
+
+	var boss_full_frame_scenes := {
+		"rift_warden": {
+			"path": "res://scenes/BossWarden.tscn",
+			"skill_states": ["skill_gravity_well", "skill_rift_zone"],
+			"phase_state": "rift_warden:gravity_well:windup",
+			"phase_resolved": "skill_gravity_well",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_gravity_well", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_gravity_well",
+		},
+		"disk_devourer": {
+			"path": "res://scenes/BossDiskDevourer.tscn",
+			"skill_states": ["skill_vampiric_bite", "skill_rift_zone"],
+			"phase_state": "disk_devourer:vampiric_bite:windup",
+			"phase_resolved": "skill_vampiric_bite",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_rift_zone", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_rift_zone",
+		},
+		"bone_archon": {
+			"path": "res://scenes/BossBoneArchon.tscn",
+			"skill_states": ["skill_skull_volley", "skill_bone_prison"],
+			"phase_state": "bone_archon:skull_volley:windup",
+			"phase_resolved": "skill_skull_volley",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_bone_prison", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_bone_prison",
+		},
+		"brood_mother": {
+			"path": "res://scenes/BossBroodMother.tscn",
+			"skill_states": ["skill_brood_spawn", "skill_web_zone"],
+			"phase_state": "brood_mother:brood_spawn:windup",
+			"phase_resolved": "skill_brood_spawn",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_web_zone", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_web_zone",
+		},
+		"ashen_colossus": {
+			"path": "res://scenes/BossAshenColossus.tscn",
+			"skill_states": ["skill_molten_slam", "skill_armor_pulse"],
+			"phase_state": "ashen_colossus:molten_slam:windup",
+			"phase_resolved": "skill_molten_slam",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_molten_slam", "attack", Vector2.RIGHT],
+			"hook_expected": "skill_molten_slam",
+		},
+	}
+	for boss_id in boss_full_frame_scenes.keys():
+		var boss_info: Dictionary = boss_full_frame_scenes[boss_id]
+		var boss_frames := FullFrameAnimationRegistry.sprite_frames_for("boss", boss_id)
+		if boss_frames == null:
+			_fail("Expected full-frame registry to resolve %s boss SpriteFrames." % boss_id)
+			continue
+		for animation_name in ["move", "attack", "attack_primary"]:
+			if not boss_frames.has_animation(animation_name):
+				_fail("Expected %s boss SpriteFrames to expose %s animation." % [boss_id, animation_name])
+			elif boss_frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s boss %s to have 6 frames." % [boss_id, animation_name])
+		if not boss_frames.get_animation_loop("move"):
+			_fail("Expected %s boss move to loop." % boss_id)
+		if not boss_frames.has_animation("death"):
+			_fail("Expected %s boss SpriteFrames to expose death after SCRUM-370 death integration." % boss_id)
+		elif boss_frames.get_frame_count("death") != 6:
+			_fail("Expected %s boss death to have 6 frames." % boss_id)
+		for one_shot_name in ["attack", "attack_primary", "death"]:
+			if not boss_frames.has_animation(one_shot_name):
+				continue
+			if boss_frames.get_animation_loop(one_shot_name):
+				_fail("Expected %s boss %s to be one-shot." % [boss_id, one_shot_name])
+		for skill_state in boss_info["skill_states"]:
+			var boss_skill_name := str(skill_state)
+			var boss_attack_alias := "attack_%s" % boss_skill_name.trim_prefix("skill_")
+			if not boss_frames.has_animation(boss_skill_name):
+				_fail("Expected %s boss SpriteFrames to expose %s." % [boss_id, boss_skill_name])
+			elif boss_frames.get_frame_count(boss_skill_name) != 6:
+				_fail("Expected %s boss %s to have 6 frames." % [boss_id, boss_skill_name])
+			if boss_frames.has_animation(boss_skill_name) and boss_frames.get_animation_loop(boss_skill_name):
+				_fail("Expected %s boss %s to be one-shot." % [boss_id, boss_skill_name])
+			if not boss_frames.has_animation(boss_attack_alias):
+				_fail("Expected %s boss SpriteFrames to expose %s validator alias." % [boss_id, boss_attack_alias])
+			elif boss_frames.get_frame_count(boss_attack_alias) != 6:
+				_fail("Expected %s boss %s alias to have 6 frames." % [boss_id, boss_attack_alias])
+			if boss_frames.has_animation(boss_attack_alias) and boss_frames.get_animation_loop(boss_attack_alias):
+				_fail("Expected %s boss %s alias to be one-shot." % [boss_id, boss_attack_alias])
+
+		var boss_scene := load(str(boss_info["path"])) as PackedScene
+		var boss := boss_scene.instantiate()
+		root.add_child(boss)
+		if boss.get_node_or_null("FullFrameBody") == null:
+			boss.call("_configure_full_frame_animation")
+		boss.call("_update_movement_animation", 0.1)
+		var boss_body := boss.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if boss_body == null or not boss_body.visible:
+			_fail("Expected %s boss scene to create a visible FullFrameBody." % boss_id)
+		if boss_body != null:
+			if str(boss_body.get_meta("entity_id", "")) != boss_id:
+				_fail("Expected %s boss scene to select boss-specific SpriteFrames, got %s." % [boss_id, str(boss_body.get_meta("entity_id", ""))])
+			if not FullFrameAnimationRegistry.play_state(boss_body, str(boss_info["phase_state"]), Vector2.RIGHT):
+				_fail("Expected %s boss phase state to resolve through the full-frame registry." % boss_id)
+			if boss_body.animation != str(boss_info["phase_resolved"]):
+				_fail("Expected %s boss phase to resolve to %s, got %s." % [boss_id, str(boss_info["phase_resolved"]), boss_body.animation])
+			if not boss_body.flip_h:
+				_fail("Expected %s boss full-frame art to face right via flip_h." % boss_id)
+			boss.global_position = Vector2(420.0, 420.0)
+			boss.callv(str(boss_info["hook_method"]), boss_info["hook_args"] as Array)
+			if str(boss_body.get_meta("last_requested_state", "")) != str(boss_info["hook_expected"]):
+				_fail("Expected %s boss skill hook to request %s, got %s." % [boss_id, str(boss_info["hook_expected"]), str(boss_body.get_meta("last_requested_state", ""))])
+			if boss_body.animation != str(boss_info["hook_expected"]):
+				_fail("Expected %s boss skill hook to play %s, got %s." % [boss_id, str(boss_info["hook_expected"]), boss_body.animation])
+		var boss_static_body := boss.get_node_or_null("Sprite2D") as CanvasItem
+		if boss_static_body != null and boss_static_body.visible:
+			_fail("Expected %s boss full-frame visual to hide the static sprite fallback." % boss_id)
+		boss.queue_free()
+		for hazard in get_nodes_in_group("enemy_hazards"):
+			var hazard_node := hazard as Node
+			if hazard_node != null and is_instance_valid(hazard_node):
+				hazard_node.queue_free()
+
+
 func _test_enemy_animation() -> void:
 	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
 	var enemy := enemy_scene.instantiate()
@@ -767,6 +1468,21 @@ func _test_elite_attack_phase_animation() -> void:
 		root.add_child(elite)
 		elite.call("_set_elite_attack_phase", "windup", 0.6)
 		elite.call("_update_movement_animation", 0.3)
+		var full_frame_body := elite.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+		if full_frame_body != null and full_frame_body.visible:
+			var expected_full_frame_state := "skill_%s" % str(info["attack"])
+			if full_frame_body.animation != expected_full_frame_state:
+				_fail("Expected %s windup to resolve to full-frame %s, got %s." % [behavior_id, expected_full_frame_state, full_frame_body.animation])
+			if abs(float(full_frame_body.get_meta("phase_duration", 0.0)) - 0.6) > 0.01:
+				_fail("Expected %s windup to store full-frame phase duration." % behavior_id)
+			elite.call("_set_elite_attack_phase", "strike", 0.25)
+			elite.call("_update_movement_animation", 0.125)
+			if full_frame_body.animation != expected_full_frame_state:
+				_fail("Expected %s strike to keep full-frame %s, got %s." % [behavior_id, expected_full_frame_state, full_frame_body.animation])
+			if abs(float(full_frame_body.get_meta("phase_duration", 0.0)) - 0.25) > 0.01:
+				_fail("Expected %s strike to update full-frame phase duration." % behavior_id)
+			elite.queue_free()
+			continue
 		var rig := elite.get_node("RigRoot") as Node2D
 		var expected_variant := "%s:%s:windup" % [behavior_id, str(info["attack"])]
 		if str(rig.get("action_variant")) != expected_variant:
@@ -844,11 +1560,30 @@ func _test_death_ghost() -> void:
 	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
 	var enemy := enemy_scene.instantiate()
 	holder.add_child(enemy)
+	if enemy.get_node_or_null("FullFrameBody") == null:
+		enemy.call("_configure_full_frame_animation")
 	enemy.call("_update_movement_animation", 0.1)
 	enemy.call("take_damage", 9999.0)
+	var full_frame_body := enemy.get_node_or_null("FullFrameBody") as AnimatedSprite2D
+	if full_frame_body == null or full_frame_body.animation != "death":
+		_fail("Expected full-frame enemy death to play explicit death animation before cleanup.")
+	if holder.get_node_or_null("DeathGhostRig") != null:
+		_fail("Expected full-frame enemy death to avoid duplicate death ghost fallback.")
+	if enemy.is_in_group("enemies"):
+		_fail("Expected full-frame dying enemy to leave combat groups before delayed cleanup.")
+	if enemy.is_queued_for_deletion():
+		_fail("Expected full-frame enemy to delay queue_free until death animation playback ends.")
+	enemy.queue_free()
+
+	var fallback_enemy := enemy_scene.instantiate()
+	fallback_enemy.set("enemy_type_name", "Missing Test Enemy")
+	holder.add_child(fallback_enemy)
+	fallback_enemy.call("_configure_enemy_rig")
+	fallback_enemy.call("_update_movement_animation", 0.1)
+	fallback_enemy.call("take_damage", 9999.0)
 	var ghost := holder.get_node_or_null("DeathGhostRig") as Node2D
 	if ghost == null:
-		_fail("Expected dying enemy to leave a death ghost rig behind.")
+		_fail("Expected dying fallback enemy to leave a death ghost rig behind.")
 	if str(ghost.get("state")) != "death":
 		_fail("Expected the death ghost to play the death animation.")
 	holder.queue_free()

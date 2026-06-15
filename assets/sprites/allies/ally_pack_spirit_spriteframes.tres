@@ -1,0 +1,158 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_00.png" id="1_aps1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_01.png" id="2_aps2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_02.png" id="3_aps3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_03.png" id="4_aps4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_04.png" id="5_aps5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_attack_05.png" id="6_aps6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_death_00.png" id="7_aps7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_death_01.png" id="8_aps8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_death_02.png" id="9_aps9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_death_03.png" id="10_aps10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_death_04.png" id="11_aps11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_death_05.png" id="12_aps12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_00.png" id="13_aps13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_01.png" id="14_aps14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_02.png" id="15_aps15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_03.png" id="16_aps16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_04.png" id="17_aps17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_05.png" id="18_aps18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_06.png" id="19_aps19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/pack_spirit/ally_pack_spirit_move_07.png" id="20_aps20"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_aps1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_aps2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_aps3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_aps4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_aps5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_aps6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_aps1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_aps2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_aps3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_aps4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_aps5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_aps6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_aps7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_aps8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_aps9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_aps10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_aps11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_aps12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_aps13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_aps14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_aps15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_aps16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_aps17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_aps18")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_aps19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_aps20")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 12.0
+}
+]

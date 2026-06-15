@@ -1,0 +1,36 @@
+{
+  "task": "SCRUM-391",
+  "asset": "assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png",
+  "source_reference": "docs/design/references/settings_menu_unified/settings_tab_switcher_3slot_reference.png",
+  "alpha_clean_reference": "docs/design/references/settings_menu_unified/settings_tab_switcher_3slot_reference_alpha_clean.png",
+  "source_size": [
+    1280,
+    256
+  ],
+  "display_size_recommendation": [
+    640,
+    128
+  ],
+  "safe_rects": [
+    {
+      "x": 160,
+      "y": 88,
+      "w": 270,
+      "h": 82
+    },
+    {
+      "x": 506,
+      "y": 88,
+      "w": 270,
+      "h": 82
+    },
+    {
+      "x": 852,
+      "y": 88,
+      "w": 270,
+      "h": 82
+    }
+  ],
+  "runtime_note": "Back-end should replace SETTINGS_TAB_SWITCHER_FRAME_PATH or copy this over the active path and update SETTINGS_TAB_SWITCHER_SAFE_RECTS to these 3 rects only. Existing 4-slot safe rects must not be used with this asset.",
+  "rule": "Runtime text/buttons stay inside safe_rects; no content on dragon heads, metal borders, gemstones, dividers or outer ornament."
+}

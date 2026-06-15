@@ -1,14 +1,22 @@
 # Убрать автоматическое перемещение персонажа при крите/уворота — полный контроль игроком
 
-Статус: new (возвращён в бэклог 0.1.5 PM 2026-06-13 по команде пользователя — фриз: патч 0.1.5 не делается в спринте 0.1.4)
+Статус: done
 Приоритет: high
 Роль: Back-end (бой)
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-253
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
+## Dispatcher Dispatch (2026-06-14)
+
+Queued to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after current
+SCRUM-260 work. Keep reasoning High/no low. SCRUM-253 is independent from enemy
+size balance: avoid SCRUM-260 enemy-scale files unless absolutely required; if
+animation/VFX/art polish appears, create/update Animator or Design handoff
+instead of doing it in Back-end scope.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -45,6 +53,44 @@ Jira: SCRUM-253
 - tests/
 
 ## Acceptance Criteria
-- [ ] Нет авто-смещения игрока по криту/уклонению; позиция = только ввод.
-- [ ] Затронутые классовые механики переделаны на не-перемещающие, задокументированы.
-- [ ] Тест отсутствия скачка позиции; 6 smoke + balance smoke зелёные.
+- [x] Нет авто-смещения игрока по криту/уклонению; позиция = только ввод.
+- [x] Затронутые классовые механики переделаны на не-перемещающие, задокументированы.
+- [x] Тест отсутствия скачка позиции; 6 smoke + balance smoke зелёные.
+
+## Result Summary (2026-06-13, Back-end)
+
+- Убран player-body crit dash Ассасина: `dash_on_crit_distance` заменен на совместимый `crit_shadow_burst_radius`, а крит теперь вызывает неподвижный shadow burst/удар у цели через `trigger_assassin_crit_shadow`.
+- Совместимость сохранена: старый `trigger_assassin_dash()` оставлен wrapper-методом без движения тела.
+- Дополнительно устранён найденный автотелепорт игрока у `thief_shadow_cloak`: `shadow_backstab` стал фантомным ударом за целью без изменения `global_position` Вора.
+- Runtime smoke расширен проверкой, что крит Ассасина, уворот и shadow backstab не меняют `global_position` героя без ввода.
+- Обновлены `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/mechanics_extract.md` и кодексные описания.
+
+Verification:
+- `res://tests/runtime_smoke_weapon_mechanics_test.gd` — passed.
+- `res://tests/runtime_smoke_test.gd` — passed.
+- `res://tests/progression_data_api_surface_test.gd` — passed.
+- `res://tests/global_damage_balance_smoke_test.gd` — passed.
+- `res://tests/global_survivability_balance_smoke_test.gd` — passed.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Проверено (фактически):
+- **Код**: Ассасин crit-dash убран — `dash_on_crit_distance` → совместимый
+  `crit_shadow_burst_radius` (class_weapon.gd:108/205); крит зовёт НЕПОДВИЖНЫЙ
+  `trigger_assassin_crit_shadow` (1953-1954). Старый `trigger_assassin_dash()` —
+  no-move wrapper. `shadow_backstab` (Вор) стал фантомным ударом БЕЗ изменения
+  `global_position`.
+- **Целевой тест acceptance #3**: runtime smoke расширен проверкой, что крит
+  Ассасина / уворот / shadow_backstab НЕ меняют `global_position` героя без
+  ввода — passed.
+- **Регрессия/баланс**: weapon_mechanics / melee_targeting / global_damage (51
+  пара коридор) / runtime — зелёные.
+
+Acceptance:
+- [x] Нет авто-смещения игрока по криту/уклонению; позиция = только ввод.
+- [x] Классовые механики (assassin dash, thief backstab) — не-перемещающие, задокументированы.
+- [x] Тест отсутствия скачка позиции; smoke + balance smoke зелёные.
+
+Баги: нет.

@@ -8,6 +8,7 @@ extends SceneTree
 # Запуск: Godot --headless --path . --script res://tests/enemy_projectile_smoke_test.gd
 
 const EnemyProjectile := preload("res://scripts/enemy_projectile.gd")
+const EnemyProjectileScene := preload("res://scenes/EnemyProjectile.tscn")
 
 const EPS := 0.001
 
@@ -98,6 +99,27 @@ func _initialize() -> void:
 	pc2.free()
 	not_player.free()
 
+	# --- runtime VFX: scene projectile has a textured trail + impact feedback ---
+	await process_frame
+	var pv: Area2D = EnemyProjectileScene.instantiate()
+	root.add_child(pv)
+	await process_frame
+	if pv.get_node_or_null("ProjectileTrailVfx") == null:
+		errors.append("runtime VFX: снаряд без ProjectileTrailVfx")
+	var vfx_player := MockPlayer.new()
+	vfx_player.add_to_group("player")
+	pv.setup(Vector2(64, 64), Vector2(128, 64), 7.0, 300.0)
+	pv.call("_on_body_entered", vfx_player)
+	var found_impact := false
+	for child in root.get_children():
+		if child.name == "EnemyProjectileImpactVfx":
+			found_impact = true
+			child.queue_free()
+	if not found_impact:
+		errors.append("runtime VFX: попадание не создало EnemyProjectileImpactVfx")
+	vfx_player.free()
+	await process_frame
+
 	# --- despawn по истечении lifetime (в дереве) ---
 	await process_frame
 	var holder := Node2D.new()
@@ -121,5 +143,5 @@ func _initialize() -> void:
 		push_error("Enemy projectile smoke test: %d ошибок." % errors.size())
 		quit(1)
 		return
-	print("Enemy projectile smoke test passed (setup/движение/arena/коллизия+однократность/despawn).")
+	print("Enemy projectile smoke test passed (setup/движение/arena/коллизия+однократность/runtime VFX/despawn).")
 	quit(0)

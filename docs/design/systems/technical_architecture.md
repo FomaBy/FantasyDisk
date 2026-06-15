@@ -1,6 +1,6 @@
 # Technical Architecture
 
-Обновлено: 2026-06-13 (0.1.4)
+Обновлено: 2026-06-14 (0.1.5)
 
 Этот файл кратко описывает runtime architecture FantasyDisk для будущих Back-end задач.
 
@@ -17,6 +17,14 @@
 - `scripts/player.gd`: character config, stats, weapon equip, damage, rewards.
 - `scripts/enemy.gd`: enemy AI, contact damage, elite attacks, HP bars.
 - `scripts/boss.gd`: boss patterns and victory flow.
+- `scripts/full_frame_animation_registry.gd`: optional SpriteFrames registry and
+  state adapter for full-frame hero/enemy/ally/elite/boss animation fallback.
+- `scripts/run_autosave.gd`: active-run persistence helper for safe route
+  checkpoint autosaves (`user://fantasydisk_autosave.cfg`), with schema checks
+  and atomic `.tmp` writes.
+- `scripts/feedback_reporter.gd`: in-game feedback/bug-report delivery helper
+  for Discord-compatible webhook multipart sends plus `user://feedback/` local
+  fallback reports.
 
 `scripts/class_weapon.gd` owns non-Berserk class weapon runtime behavior. SCRUM-196
 replaced the old long `attack_mode` dispatch match with `ATTACK_MODE_EXECUTORS`,
@@ -88,11 +96,15 @@ Additional checks:
 - `tests/attack_vfx_smoke_test.gd`;
 - `tests/melee_weapon_targeting_test.gd`;
 - `tests/meta_progression_smoke_test.gd`.
+- `tests/run_autosave_persistence_test.gd`.
+- In-game feedback smoke is embedded in `tests/runtime_smoke_test.gd` and
+  verifies the `P` action, overlay lifecycle, screenshot preview, local fallback
+  files and multipart payload markers.
 
 ## Branching
 
 Follow `docs/process/versioning_and_branching.md`:
 
 - `main` = stable `0.1`;
-- `dev` = active `0.1.x` working line; текущая стабилизация — `0.1.4`;
+- `dev` = active `0.1.x` working line; текущий sprint target — `0.1.5`;
 - new feature work happens in `dev` unless explicitly stated otherwise.

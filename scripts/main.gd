@@ -70,7 +70,7 @@ const ARENA_BACKGROUND_OPTIONS := {
 		"res://assets/backgrounds/field_cursed_grove.png",
 	],
 }
-const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle.png"
+const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle_v2.png"
 const SCREEN_BACKGROUND_PATHS := {
 	"system": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"settings": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
@@ -294,6 +294,12 @@ const INPUT_ACTIONS := [
 		"default_key": KEY_R,
 		"alternate_key": 0,
 	},
+	{
+		"action": "feedback",
+		"label": "Фидбек",
+		"default_key": KEY_P,
+		"alternate_key": 0,
+	},
 ]
 
 var selected_character_id := "berserk"
@@ -308,6 +314,7 @@ var run_player_snapshot := {}
 var ui_layer: CanvasLayer = null
 var hud_layer: CanvasLayer = null
 var pause_overlay_layer: CanvasLayer = null
+var feedback_overlay_layer: CanvasLayer = null
 var timer_label: Label = null
 var status_label: Label = null
 var health_bar: ProgressBar = null
@@ -340,6 +347,9 @@ var pending_rebind_action := ""
 var current_shop_items := []
 var current_shop_purchased := []
 var current_shop_node_key := ""
+var shop_reentry_pending := false
+var shop_reentry_route_stage := -1
+var shop_reentry_branch_index := -1
 var pending_level_ups := 0
 var pause_reasons := {}
 var route_map_pan_active := false
@@ -357,6 +367,8 @@ const ROUTE_MAP_SCRIPT := preload("res://scripts/route_map_screen.gd")
 const COMBAT_DIRECTOR_SCRIPT := preload("res://scripts/combat_director.gd")
 const META_PROGRESSION := preload("res://scripts/meta_progression.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
+const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
+const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 
 var ui
 var route
@@ -382,6 +394,9 @@ var audio_settings := {
 	"sfx_enabled": true,
 }
 var input_bindings := {}
+var aim_mode := "nearest"
+var debug_mode_enabled := false
+var _quit_requested := false
 
 
 func _init() -> void:
@@ -409,6 +424,14 @@ func _notification(what: int) -> void:
 		_release_runtime_texture_refs()
 
 
+func request_game_quit() -> void:
+	_quit_requested = true
+	set_meta("game_quit_requested", true)
+	if bool(get_meta("suppress_game_quit", false)):
+		return
+	get_tree().quit()
+
+
 func _release_runtime_texture_refs() -> void:
 	Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
 	Input.set_custom_mouse_cursor(null, Input.CURSOR_POINTING_HAND)
@@ -424,9 +447,15 @@ func _load_game_settings() -> void:
 	for key in audio_settings.keys():
 		audio_settings[key] = settings[key]
 	input_bindings = (settings.get("input_bindings", {}) as Dictionary).duplicate(true)
+	aim_mode = str(settings.get("aim_mode", "nearest"))
+	if not ["nearest", "cursor"].has(aim_mode):
+		aim_mode = "nearest"
 	screen_shake_enabled = bool(settings.get("screen_shake", true))
+	debug_mode_enabled = bool(settings.get("debug_mode", false))
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
+	get_tree().root.set_meta("aim_mode", aim_mode)
+	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
 		ui._apply_video_settings()
@@ -441,11 +470,118 @@ func save_game_settings() -> void:
 	for key in audio_settings.keys():
 		settings[key] = audio_settings[key]
 	settings["screen_shake"] = screen_shake_enabled
+	settings["debug_mode"] = debug_mode_enabled
+	settings["aim_mode"] = aim_mode
 	if ui != null:
 		settings["input_bindings"] = ui._current_input_bindings()
 	else:
 		settings["input_bindings"] = input_bindings.duplicate(true)
 	GAME_SETTINGS.save_settings(settings)
+	get_tree().root.set_meta("aim_mode", aim_mode)
+	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
+
+
+func run_autosave_has_run() -> bool:
+	return RUN_AUTOSAVE.has_run()
+
+
+func save_run_autosave(reason := "") -> bool:
+	if route_nodes.is_empty():
+		return false
+	var state := _run_autosave_state()
+	state["saved_reason"] = reason
+	return RUN_AUTOSAVE.save_run(state)
+
+
+func load_run_autosave() -> bool:
+	var state: Dictionary = RUN_AUTOSAVE.load_run()
+	if state.is_empty():
+		return false
+	_apply_run_autosave_state(state)
+	return true
+
+
+func clear_run_autosave() -> void:
+	RUN_AUTOSAVE.clear_run()
+
+
+func _run_autosave_state() -> Dictionary:
+	return {
+		"selected_character_id": selected_character_id,
+		"selected_weapon_id": selected_weapon_id,
+		"selected_ascension_level": selected_ascension_level,
+		"route_stage": route_stage,
+		"route_nodes": route_nodes.duplicate(true),
+		"route_selected_indices": route_selected_indices.duplicate(true),
+		"current_route_choice": current_route_choice,
+		"current_node_type": current_node_type,
+		"current_combat_type": current_combat_type,
+		"current_boss_id": current_boss_id,
+		"run_player_snapshot": run_player_snapshot.duplicate(true),
+		"pending_level_ups": pending_level_ups,
+		"level_up_offer": level_up_offer.duplicate(true),
+		"attribute_offer": attribute_offer.duplicate(true),
+		"attribute_rerolls_left": attribute_rerolls_left,
+		"used_event_ids": used_event_ids.duplicate(true),
+		"current_event_definition": current_event_definition.duplicate(true),
+		"run_ascension_difficulty": run_ascension_difficulty.duplicate(true),
+		"current_shop_items": current_shop_items.duplicate(true),
+		"current_shop_purchased": current_shop_purchased.duplicate(true),
+		"current_shop_node_key": current_shop_node_key,
+		"shop_reentry_pending": shop_reentry_pending,
+		"shop_reentry_route_stage": shop_reentry_route_stage,
+		"shop_reentry_branch_index": shop_reentry_branch_index,
+	}
+
+
+func _apply_run_autosave_state(state: Dictionary) -> void:
+	combat_active = false
+	boss_combat_active = false
+	_clear_all_game_pauses()
+	_clear_world()
+	_clear_hud()
+	_clear_ui()
+
+	selected_character_id = str(state.get("selected_character_id", selected_character_id))
+	selected_weapon_id = str(state.get("selected_weapon_id", selected_weapon_id))
+	selected_ascension_level = int(state.get("selected_ascension_level", 0))
+	route_stage = maxi(0, int(state.get("route_stage", 0)))
+	route_nodes = _autosave_array(state.get("route_nodes", []))
+	if route_nodes.is_empty():
+		route_nodes = route._generate_route()
+	route_stage = clampi(route_stage, 0, maxi(route_nodes.size() - 1, 0))
+	route_selected_indices = _autosave_array(state.get("route_selected_indices", []))
+	current_route_choice = str(state.get("current_route_choice", ""))
+	current_node_type = str(state.get("current_node_type", ""))
+	current_combat_type = str(state.get("current_combat_type", "battle"))
+	current_boss_id = str(state.get("current_boss_id", "rift_warden"))
+	run_player_snapshot = _autosave_dictionary(state.get("run_player_snapshot", {}))
+	pending_level_ups = maxi(0, int(state.get("pending_level_ups", 0)))
+	level_up_offer = _autosave_array(state.get("level_up_offer", []))
+	attribute_offer = _autosave_array(state.get("attribute_offer", []))
+	attribute_rerolls_left = maxi(0, int(state.get("attribute_rerolls_left", 0)))
+	used_event_ids = _autosave_array(state.get("used_event_ids", []))
+	current_event_definition = _autosave_dictionary(state.get("current_event_definition", {}))
+	pending_event_combat.clear()
+	run_ascension_difficulty = _autosave_dictionary(state.get("run_ascension_difficulty", {}))
+	current_shop_items = _autosave_array(state.get("current_shop_items", []))
+	current_shop_purchased = _autosave_array(state.get("current_shop_purchased", []))
+	current_shop_node_key = str(state.get("current_shop_node_key", ""))
+	shop_reentry_pending = bool(state.get("shop_reentry_pending", false))
+	shop_reentry_route_stage = int(state.get("shop_reentry_route_stage", -1))
+	shop_reentry_branch_index = int(state.get("shop_reentry_branch_index", -1))
+
+
+func _autosave_array(value: Variant) -> Array:
+	if value is Array:
+		return (value as Array).duplicate(true)
+	return []
+
+
+func _autosave_dictionary(value: Variant) -> Dictionary:
+	if value is Dictionary:
+		return (value as Dictionary).duplicate(true)
+	return {}
 
 
 func _apply_audio_settings() -> void:
@@ -511,6 +647,11 @@ func apply_ascension_bonuses(player: Node) -> void:
 			player._apply_stat_scaling(true)
 	# 3) Мета-древо умений (SCRUM-150): боевое подмножество в run_modifiers + старт-золото забега.
 	var skill_mods: Dictionary = META_PROGRESSION.skill_modifiers(meta_state)
+	# Прогрессия по классам (SCRUM-360): бонусы ТОЛЬКО выбранного класса — мерджим в
+	# skill_mods (ключи class_* не пересекаются с аккаунтными), применяются вместе.
+	var class_mods: Dictionary = META_PROGRESSION.class_modifiers(meta_state, selected_character_id)
+	for class_key in class_mods:
+		skill_mods[class_key] = class_mods[class_key]
 	if player.has_method("apply_meta_skill_modifiers"):
 		player.apply_meta_skill_modifiers(skill_mods)
 	var start_gold := int(round(float(skill_mods.get("start_gold_flat", 0.0))))
@@ -523,12 +664,31 @@ func _input(event: InputEvent) -> void:
 		ui._handle_rebind_input(event)
 		return
 
+	if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():
+		if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
+			ui._close_feedback_overlay()
+			get_viewport().set_input_as_handled()
+		return
+
+	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("feedback"):
+		var screenshot: Image = null
+		if DisplayServer.get_name() != "headless":
+			var viewport_texture := get_viewport().get_texture()
+			if viewport_texture != null:
+				screenshot = viewport_texture.get_image()
+		ui._show_feedback_overlay(screenshot)
+		get_viewport().set_input_as_handled()
+		return
+
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F12:
 		route_debug_free_pick = not route_debug_free_pick
 		if ui_layer != null and is_instance_valid(ui_layer) and ui_layer.get_node_or_null("RouteMapScreen") == null:
 			pass
 		elif not combat_active:
 			route._show_battle_map()
+		return
+
+	if _handle_debug_combat_move_input(event):
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
@@ -538,6 +698,41 @@ func _input(event: InputEvent) -> void:
 			ui._show_pause_menu()
 		elif ui_escape_action.is_valid():
 			ui_escape_action.call()
+
+
+func _handle_debug_combat_move_input(event: InputEvent) -> bool:
+	if not debug_mode_enabled or not combat_active or get_tree().paused:
+		return false
+	if current_player == null or not is_instance_valid(current_player):
+		return false
+	if not (event is InputEventMouseButton):
+		return false
+	var mouse_event := event as InputEventMouseButton
+	if not mouse_event.pressed:
+		return false
+	var is_smooth_move := mouse_event.button_index == MOUSE_BUTTON_RIGHT \
+			or (mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.shift_pressed)
+	var is_instant_move := mouse_event.button_index == MOUSE_BUTTON_MIDDLE
+	if not is_smooth_move and not is_instant_move:
+		return false
+	var world_position := _screen_position_to_arena_world(mouse_event.position)
+	if current_player.has_method("debug_set_move_target"):
+		current_player.call("debug_set_move_target", world_position, is_instant_move)
+	get_viewport().set_input_as_handled()
+	return true
+
+
+func _screen_position_to_arena_world(screen_position: Vector2) -> Vector2:
+	var canvas_transform := get_viewport().get_canvas_transform()
+	var world_position := canvas_transform.affine_inverse() * screen_position
+	return _clamp_arena_point(world_position)
+
+
+func _clamp_arena_point(world_position: Vector2, margin := 32.0) -> Vector2:
+	return Vector2(
+		clampf(world_position.x, margin, ARENA_SIZE.x - margin),
+		clampf(world_position.y, margin, ARENA_SIZE.y - margin)
+	)
 
 
 func _process(delta: float) -> void:

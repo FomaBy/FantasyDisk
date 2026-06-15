@@ -1,6 +1,6 @@
 # Progression And Balance
 
-Обновлено: 2026-06-13 (0.1.4)
+Обновлено: 2026-06-14 (0.1.5)
 
 Source of truth для чисел: `scripts/progression_data.gd` (фасад) + доменные файлы данных `scripts/progression_data_characters.gd`, `progression_data_weapons.gd`, `progression_data_content.gd`, `progression_data_shop.gd`, `progression_data_ascension.gd`, `progression_data_enemies.gd` (доменный сплит SCRUM-198 — фасад реэкспортит их как const, публичный API сохранён), `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -74,11 +74,26 @@ UI обязан показывать эти интерпретации текс�
 - Artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png`.
 - `class_affinity` теперь означает тематику/источник артефакта, а не запрет. `affinity_mods` применяются любому классу через интерпретацию текущего героя.
 
+## Summon Scaling
+
+- `summon_amount = Leadership + Knowledge * 0.18 + Intelligence * 0.12 + Energy * 0.10`.
+- Мобильные summons используют `SummonerWeapon._summon_profile()`:
+  - damage = base derived damage * `summon_damage_multiplier` * role multiplier * Leadership multiplier `1 + min(Leadership * 0.020, 0.42)` * attribute multiplier `1 + min(summon_amount * 0.014 + Knowledge * 0.004 + Intelligence * 0.003 + Energy * 0.003, 0.34)`;
+  - attack interval получает haste `min(summon_amount * 0.014 + Leadership * 0.006, 0.30)`;
+  - max HP получает bulk `min(Leadership * 0.045 + summon_amount * 0.010, 0.75)`;
+  - move speed/lifetime/splash radius также мягко растут от Leadership/`summon_amount`.
+- Уровень 0 сохраняет базовый баланс: все множители начинаются с 1.0, caps ограничивают high-stat runaway.
+- Balance facade `ProgressionData.estimate_weapon_budget()` использует ту же damage/haste формулу для summon DPS estimate, чтобы отчеты 0.1.5 не считали старую слабую версию призывателей.
+
 ## Shop
 
 - Shop items берутся из `ProgressionData.SHOP_ITEMS` и artifact pool.
 - Shop screen показывает 4 предложения на parchment wall.
 - Покупка проверяет money, купленные items получают unavailable state.
+- Сток привязан к конкретному `shop` route node: выход из лавки не очищает
+  stock и не двигает маршрут, поэтому магазин можно открыть повторно до выбора
+  следующего route node. Следующий route node финализирует прошлый магазин и
+  очищает его stock/purchased state.
 - Shop-only icons: `assets/sprites/ui/icons/shop/shop_<shop_item_id>.png`.
 
 ## Meta Progression
@@ -94,6 +109,15 @@ UI обязан показывать эти интерпретации текс�
 - Боевое подмножество модификаторов уходит в `run_modifiers` на старте забега (`player.apply_meta_skill_modifiers`); экономические узлы дают стартовое золото/скидки. Capstone «Вторая жизнь» (Стойкость) — раз за забег смертельный удар оставляет 1 HP.
 - Экран древа доступен в главном меню; данные/состояние — `scripts/meta_progression.gd`.
 
+### Прогрессия По Классам (SCRUM-360)
+
+- Победа над финальным боссом дополнительно увеличивает `class_boss_wins` для выбранного героя.
+- `scripts/meta_progression.gd::CLASS_PROGRESSION` содержит 5 общих накопительных порогов: 1/2/4/6/9 побед этим классом.
+- Пороги дают только class-scoped run modifiers (`class_damage_mult`, `class_max_health_mult`, `class_attack_speed_mult`). `Main.apply_ascension_bonuses()` передает `class_modifiers(meta_state, selected_character_id)` только текущему герою, а `Player.apply_meta_skill_modifiers()` сворачивает их в обычные `run_modifiers` поверх аккаунтного древа.
+- Бонусы не протекают на другие классы: если победы есть у Берсерка, Солдат получает пустой `class_modifiers`, пока сам не победит боссов.
+- Экран «Древо умений» показывает отдельный компактный раздел «Классы» для выбранного героя: число побед, открытые пороги, следующий порог и список активных бонусов.
+- Персистентность использует тот же `user://fantasydisk_meta.cfg`; ключ `class_boss_wins` version-compatible и отсутствующие старые сейвы читаются как пустой прогресс.
+
 ### Патч-ноуты (SCRUM-159)
 
 - Кнопка «Что нового» + бейдж в меню; данные — `scripts/patch_notes_data.gd`, последняя виденная версия — `last_seen_version` в `game_settings`.
@@ -104,6 +128,7 @@ UI обязан показывать эти интерпретации текс�
 - Живой DPS/TTK: `tools/live_combat_harness.gd` + гейт `tests/live_balance_simulation_test.gd`.
 - Выживаемость профилей: `tools/survivability_harness.gd` + гейт `tests/survivability_scenario_test.gd`.
 - Применение бюджет-тюнинга на рантайме: `tests/weapon_tuning_application_test.gd`. Экономика/XP маршрута: `tools/route_economy_xp_model.gd`.
+- Финальный 0.1.5 numeric audit: `tools/balance_harness.gd` также пишет `build/balance_final_audit_0_1_5.md`; `tests/global_damage_balance_smoke_test.gd` проверяет solo DPS ±20% и crowd-clear 5/10/20 ±30% для всех 51 class+weapon pairs.
 
 ## Known Balance Risks
 

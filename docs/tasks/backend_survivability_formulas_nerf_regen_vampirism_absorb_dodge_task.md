@@ -1,14 +1,22 @@
 # Формулы выживаемости — сильно ослабить реген и вампиризм, отбалансить абсорб и уворот
 
-Статус: new (возвращён в бэклог 0.1.5 PM 2026-06-13 по команде пользователя — фриз: патч 0.1.5 не делается в спринте 0.1.4)
+Статус: done
 Приоритет: high
 Роль: Back-end (баланс)
 Версия: 0.1.5
 Создано: 2026-06-13
 Автор: PM (запрос пользователя — патч баланса/механик 0.1.5)
 Jira: SCRUM-255
+QA: in_progress (2026-06-14)
 Эпик-патч: 0.1.5 Бой и баланс (overhaul)
 
+## Dispatcher Dispatch (2026-06-14)
+
+Queued to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` after
+SCRUM-259 close-out. Keep reasoning High/no low. Scope is Back-end
+survivability formulas/balance only: nerf regeneration and vampirism, rebalance
+defense/absorb and dodge, update harness/report/tests/docs, and avoid art/VFX/
+animation ownership.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
@@ -49,7 +57,64 @@ Jira: SCRUM-255
 - Согласование: backend_crit_formula_rebalance, attribute synergy (один патч)
 
 ## Acceptance Criteria
-- [ ] Реген и вампиризм заметно ослаблены (числа в отчёте).
-- [ ] Абсорб/уворот сбалансированы (убывающая отдача, разумные капы).
-- [ ] Сценарии выживаемости в целевых коридорах; глобальный survivability smoke зелёный.
-- [ ] CHANGELOG/доки/отчёт обновлены.
+- [x] Реген и вампиризм заметно ослаблены (числа в отчёте).
+- [x] Абсорб/уворот сбалансированы (убывающая отдача, разумные капы).
+- [x] Сценарии выживаемости в целевых коридорах; глобальный survivability smoke зелёный.
+- [x] CHANGELOG/доки/отчёт обновлены.
+
+## Result Summary (2026-06-14)
+
+Back-end scope complete. Survivability formulas now use shared SCRUM-255 constants
+in `ProgressionData`:
+- defense: diminishing returns, cap 62%;
+- dodge: diminishing returns, cap 55%;
+- absorb: `Endurance*0.16 + softened flat`, min-through 35%;
+- regeneration: `(0.22 + positive_flat*0.45) * (0.45 + Knowledge/12)`;
+- vampirism: chance cap 22%, heal `vampiric_amount*0.55 + 3.5% damage`,
+  default cap 1.4/s and hard cap 2.6/s;
+- direct weapon drain heal is multiplied by 0.45.
+
+Before/after highlights are recorded in
+`build/survivability_rebalance_scrum255_report.md`: synthetic
+`tank/contact_swarm` TTD dropped from 321.0s to 38.5s, and tank regen dropped
+from 1.57/s to 0.30/s. `build/survivability_report.md`,
+`build/survivability_scenarios_report.md`, and `build/balance_report.md` were
+regenerated. Docs updated: `CHANGELOG.md`,
+`docs/design/mechanics_extract.md`, `docs/design/current_game_state.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 2981acf8 (ветка dev)
+
+Проверено (фактически):
+- **Формулы (нерф)**: shared-константы — defense diminishing cap 62%, dodge cap
+  55%, absorb min-through 35%, regen `(0.22+flat*0.45)*(0.45+Knowledge/12)`,
+  vampirism chance cap 22% + heal cap 1.4/2.6/s, weapon drain ×0.45. Числа в
+  отчёте (tank/contact_swarm TTD 321→38.5с, tank regen 1.57→0.30/с).
+- **Целевые тесты**: `survivability_scenario_test` — passed (монотонность TTD по
+  стойкости, вклад слоёв, absorb, **якорь к реальному `Player.take_damage`**);
+  `stat_formulas` — passed.
+- **Гейты**: `global_survivability` — passed (**TTD≤600с, митигация<98%,
+  бессмертие недостижимо** — нерф достиг цели, нет инвинсибл-билдов);
+  `global_damage` (51 пара коридор) + runtime — зелёные.
+
+Acceptance:
+- [x] Реген/вампиризм заметно ослаблены (числа в отчёте).
+- [x] Абсорб/уворот — убывающая отдача, разумные капы.
+- [x] Сценарии выживаемости в коридорах; global survivability smoke зелёный.
+- [x] CHANGELOG/доки/отчёт.
+
+Баги: нет.
+
+Verification:
+- `tests/stat_formulas_smoke_test.gd` passed.
+- `tests/survivability_scenario_test.gd` passed, including real
+  `Player.take_damage` parity.
+- `tests/progression_data_api_surface_test.gd` passed.
+- `tests/global_survivability_balance_smoke_test.gd` passed.
+- `tests/global_damage_balance_smoke_test.gd` passed.
+- `tools/survivability_harness.gd`, `tools/survivability_scenarios.gd`, and
+  `tools/balance_harness.gd` regenerated reports successfully.
+- `tests/runtime_smoke_test.gd` passed after fixing stale duplicate
+  `class_name` registrations from tracked `* 2.gd` legacy copies and refreshing
+  local `.godot/global_script_class_cache.cfg`.

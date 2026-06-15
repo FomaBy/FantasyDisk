@@ -1,0 +1,284 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_attack_primary_00.png" id="1_msw1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_attack_primary_01.png" id="2_msw2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_attack_primary_02.png" id="3_msw3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_attack_primary_03.png" id="4_msw4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_attack_primary_04.png" id="5_msw5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_attack_primary_05.png" id="6_msw6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_death_00.png" id="7_msw7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_death_01.png" id="8_msw8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_death_02.png" id="9_msw9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_death_03.png" id="10_msw10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_death_04.png" id="11_msw11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_death_05.png" id="12_msw12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_move_00.png" id="13_msw13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_move_01.png" id="14_msw14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_move_02.png" id="15_msw15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_move_03.png" id="16_msw16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_move_04.png" id="17_msw17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_move_05.png" id="18_msw18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_spark_fan_00.png" id="19_msw19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_spark_fan_01.png" id="20_msw20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_spark_fan_02.png" id="21_msw21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_spark_fan_03.png" id="22_msw22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_spark_fan_04.png" id="23_msw23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_spark_fan_05.png" id="24_msw24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_static_field_00.png" id="25_msw25"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_static_field_01.png" id="26_msw26"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_static_field_02.png" id="27_msw27"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_static_field_03.png" id="28_msw28"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_static_field_04.png" id="29_msw29"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_spark_wight/mini_spark_wight_skill_static_field_05.png" id="30_msw30"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_msw1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_msw2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_msw3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_msw4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_msw5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_msw6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_msw1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_msw2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_msw3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_msw4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_msw5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_msw6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_msw7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_msw8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_msw9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_msw10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_msw11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_msw12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_msw13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_msw14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_msw15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_msw16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_msw17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_msw18")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_msw19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_msw20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_msw21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_msw22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_msw23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_msw24")
+}
+],
+"loop": false,
+"name": &"skill_spark_fan",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_msw19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_msw20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_msw21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_msw22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_msw23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_msw24")
+}
+],
+"loop": false,
+"name": &"attack_spark_fan",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("25_msw25")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_msw26")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_msw27")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_msw28")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_msw29")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_msw30")
+}
+],
+"loop": false,
+"name": &"skill_static_field",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("25_msw25")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_msw26")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_msw27")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_msw28")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_msw29")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_msw30")
+}
+],
+"loop": false,
+"name": &"attack_static_field",
+"speed": 12.0
+}
+]

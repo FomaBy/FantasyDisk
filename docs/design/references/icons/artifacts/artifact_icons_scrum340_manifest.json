@@ -1,0 +1,1226 @@
+{
+  "task": "SCRUM-340",
+  "count": 53,
+  "failed": [],
+  "icons": [
+    {
+      "id": "warrior_charm",
+      "title": "Warrior Charm",
+      "description": "+5 Сила.",
+      "source": "docs/design/references/icons/artifacts/artifact_warrior_charm_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_warrior_charm.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        53,
+        12,
+        202,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "fox_boots",
+      "title": "Fox Boots",
+      "description": "+5 Ловкость.",
+      "source": "docs/design/references/icons/artifacts/artifact_fox_boots_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_fox_boots.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        38,
+        12,
+        218,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "glass_orb",
+      "title": "Glass Orb",
+      "description": "+5 Интеллект.",
+      "source": "docs/design/references/icons/artifacts/artifact_glass_orb_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_glass_orb.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        43,
+        12,
+        212,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "hawk_lens",
+      "title": "Hawk Lens",
+      "description": "+5 Восприятие.",
+      "source": "docs/design/references/icons/artifacts/artifact_hawk_lens_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_hawk_lens.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        12,
+        31,
+        244,
+        225
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ember_core",
+      "title": "Ember Core",
+      "description": "+5 Энергия.",
+      "source": "docs/design/references/icons/artifacts/artifact_ember_core_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_ember_core.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        46,
+        12,
+        210,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "old_codex",
+      "title": "Old Codex",
+      "description": "+5 Знание.",
+      "source": "docs/design/references/icons/artifacts/artifact_old_codex_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_old_codex.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        24,
+        12,
+        232,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "stone_heart",
+      "title": "Stone Heart",
+      "description": "+5 Выносливость.",
+      "source": "docs/design/references/icons/artifacts/artifact_stone_heart_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_stone_heart.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        44,
+        12,
+        212,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "banner_seed",
+      "title": "Banner Seed",
+      "description": "+5 Лидерство.",
+      "source": "docs/design/references/icons/artifacts/artifact_banner_seed_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_banner_seed.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        71,
+        12,
+        185,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "red_whetstone",
+      "title": "Red Whetstone",
+      "description": "+3 Сила, +3 Ловкость.",
+      "source": "docs/design/references/icons/artifacts/artifact_red_whetstone_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_red_whetstone.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        12,
+        37,
+        244,
+        218
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "star_compass",
+      "title": "Star Compass",
+      "description": "+3 Восприятие, +3 Знание.",
+      "source": "docs/design/references/icons/artifacts/artifact_star_compass_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_star_compass.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        28,
+        12,
+        227,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "living_root",
+      "title": "Living Root",
+      "description": "+3 Выносливость, +3 Энергия.",
+      "source": "docs/design/references/icons/artifacts/artifact_living_root_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_living_root.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        71,
+        12,
+        184,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "captains_coin",
+      "title": "Captain's Coin",
+      "description": "+3 Лидерство, +3 Сила.",
+      "source": "docs/design/references/icons/artifacts/artifact_captains_coin_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_captains_coin.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        13,
+        12,
+        242,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "quickstring",
+      "title": "Quickstring",
+      "description": "+37% скорости атаки.",
+      "source": "docs/design/references/icons/artifacts/artifact_quickstring_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_quickstring.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        44,
+        12,
+        212,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "heavy_totem",
+      "title": "Heavy Totem",
+      "description": "+62% максимального HP, -5% скорости движения.",
+      "source": "docs/design/references/icons/artifacts/artifact_heavy_totem_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_heavy_totem.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        59,
+        12,
+        197,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "splinter_gloves",
+      "title": "Splinter Gloves",
+      "description": "+50% урона.",
+      "source": "docs/design/references/icons/artifacts/artifact_splinter_gloves_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_splinter_gloves.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        21,
+        12,
+        234,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "wide_sigil",
+      "title": "Wide Sigil",
+      "description": "+50% дальности атаки.",
+      "source": "docs/design/references/icons/artifacts/artifact_wide_sigil_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_wide_sigil.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        14,
+        12,
+        242,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "swift_ink",
+      "title": "Swift Ink",
+      "description": "+30% скорости движения.",
+      "source": "docs/design/references/icons/artifacts/artifact_swift_ink_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_swift_ink.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        55,
+        12,
+        201,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "summoners_bell",
+      "title": "Summoner's Bell",
+      "description": "+2 призыв.",
+      "source": "docs/design/references/icons/artifacts/artifact_summoners_bell_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_summoners_bell.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        59,
+        12,
+        197,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "blood_sigil",
+      "title": "Кровавая печать",
+      "description": "+20 max HP. Берсерк: +45% урона.",
+      "source": "docs/design/references/icons/artifacts/artifact_blood_sigil_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_blood_sigil.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        65,
+        12,
+        190,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "void_ink",
+      "title": "Чернила пустоты",
+      "description": "+50% радиуса AoE. Темный маг: +50% урона.",
+      "source": "docs/design/references/icons/artifacts/artifact_void_ink_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_void_ink.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        37,
+        12,
+        218,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "echo_pick",
+      "title": "Медиатор эха",
+      "description": "+40% отталкивания. Гитарист: +45% скорости атаки.",
+      "source": "docs/design/references/icons/artifacts/artifact_echo_pick_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_echo_pick.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        43,
+        12,
+        212,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "sturdy_amulet",
+      "title": "Крепкий амулет",
+      "description": "+60 max HP.",
+      "source": "docs/design/references/icons/artifacts/artifact_sturdy_amulet_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_sturdy_amulet.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        49,
+        12,
+        207,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "fast_boots",
+      "title": "Быстрые сапоги",
+      "description": "+25% скорости движения.",
+      "source": "docs/design/references/icons/artifacts/artifact_fast_boots_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_fast_boots.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        14,
+        12,
+        241,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "magnetic_buckle",
+      "title": "Магнитная пряжка",
+      "description": "+138 радиуса подбора.",
+      "source": "docs/design/references/icons/artifacts/artifact_magnetic_buckle_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_magnetic_buckle.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        12,
+        58,
+        244,
+        197
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "silver_coin",
+      "title": "Серебряная монета",
+      "description": "+62% золота.",
+      "source": "docs/design/references/icons/artifacts/artifact_silver_coin_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_silver_coin.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        14,
+        12,
+        241,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "survival_manual",
+      "title": "Учебник выживания",
+      "description": "+55% опыта.",
+      "source": "docs/design/references/icons/artifacts/artifact_survival_manual_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_survival_manual.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        18,
+        12,
+        237,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "cracked_shield",
+      "title": "Треснувший щит",
+      "description": "+30% защиты, -6% скорости движения.",
+      "source": "docs/design/references/icons/artifacts/artifact_cracked_shield_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_cracked_shield.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        41,
+        12,
+        215,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "sharp_talisman",
+      "title": "Острый талисман",
+      "description": "+20% шанса крита.",
+      "source": "docs/design/references/icons/artifacts/artifact_sharp_talisman_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_sharp_talisman.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        77,
+        12,
+        179,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "jagged_blade",
+      "title": "Зазубренное лезвие",
+      "description": "Берсерк: +45% урона.",
+      "source": "docs/design/references/icons/artifacts/artifact_jagged_blade_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_jagged_blade.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        20,
+        12,
+        236,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "heavy_grip",
+      "title": "Тяжелая рукоять",
+      "description": "-8% скорости атаки. Берсерк: +60% отталкивания.",
+      "source": "docs/design/references/icons/artifacts/artifact_heavy_grip_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_heavy_grip.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        85,
+        12,
+        170,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "war_belt",
+      "title": "Боевой ремень",
+      "description": "Берсерк: +55% радиуса AoE.",
+      "source": "docs/design/references/icons/artifacts/artifact_war_belt_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_war_belt.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        12,
+        46,
+        244,
+        210
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "warriors_rage",
+      "title": "Ярость воина",
+      "description": "-10% максимального HP. Берсерк: +50% урона.",
+      "source": "docs/design/references/icons/artifacts/artifact_warriors_rage_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_warriors_rage.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        43,
+        12,
+        212,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "dark_crystal",
+      "title": "Темный кристалл",
+      "description": "Темный маг: +45% урона.",
+      "source": "docs/design/references/icons/artifacts/artifact_dark_crystal_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_dark_crystal.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        76,
+        12,
+        180,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ash_page",
+      "title": "Пепельная страница",
+      "description": "+25% урона. Темный маг: +45% радиуса AoE.",
+      "source": "docs/design/references/icons/artifacts/artifact_ash_page_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_ash_page.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        32,
+        12,
+        224,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "skull_resonator",
+      "title": "Черепной резонатор",
+      "description": "Темный маг: +50% дальности атаки.",
+      "source": "docs/design/references/icons/artifacts/artifact_skull_resonator_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_skull_resonator.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        16,
+        12,
+        240,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ink_candle",
+      "title": "Чернильная свеча",
+      "description": "-6% скорости движения. Темный маг: +55% урона.",
+      "source": "docs/design/references/icons/artifacts/artifact_ink_candle_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_ink_candle.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        59,
+        12,
+        196,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "copper_string",
+      "title": "Медная струна",
+      "description": "Гитарист: +45% урона.",
+      "source": "docs/design/references/icons/artifacts/artifact_copper_string_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_copper_string.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        12,
+        20,
+        244,
+        236
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "broken_pick",
+      "title": "Сломанный медиатор",
+      "description": "Гитарист: +30% шанса крита.",
+      "source": "docs/design/references/icons/artifacts/artifact_broken_pick_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_broken_pick.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        33,
+        12,
+        222,
+        243
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "loud_amp",
+      "title": "Громкий усилитель",
+      "description": "Гитарист: +50% радиуса AoE.",
+      "source": "docs/design/references/icons/artifacts/artifact_loud_amp_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_loud_amp.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        26,
+        12,
+        230,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "bass_cable",
+      "title": "Басовый кабель",
+      "description": "+25% радиуса AoE. Гитарист: +45% отталкивания.",
+      "source": "docs/design/references/icons/artifacts/artifact_bass_cable_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_bass_cable.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        12,
+        21,
+        244,
+        235
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "cursed_crown",
+      "title": "Проклятая корона",
+      "description": "+75% урона, -18% максимального HP.",
+      "source": "docs/design/references/icons/artifacts/artifact_cursed_crown_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_cursed_crown.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        12,
+        14,
+        244,
+        241
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "fragile_heart",
+      "title": "Хрупкое сердце",
+      "description": "+62% скорости атаки, -10% защиты.",
+      "source": "docs/design/references/icons/artifacts/artifact_fragile_heart_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_fragile_heart.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        34,
+        12,
+        222,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "greedy_purse",
+      "title": "Жадный кошелек",
+      "description": "+112% золота, враги: +37% HP.",
+      "source": "docs/design/references/icons/artifacts/artifact_greedy_purse_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_greedy_purse.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        19,
+        12,
+        236,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "burning_shard",
+      "title": "Горящий осколок",
+      "description": "+50% радиуса AoE, -20% лечения.",
+      "source": "docs/design/references/icons/artifacts/artifact_burning_shard_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_burning_shard.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        75,
+        12,
+        181,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "golden_route_mark",
+      "title": "Золотая метка пути",
+      "description": "+37% опыта, +37% золота.",
+      "source": "docs/design/references/icons/artifacts/artifact_golden_route_mark_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_golden_route_mark.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        74,
+        12,
+        182,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "glass_edge",
+      "title": "Стеклянная кромка",
+      "description": "+50% урона крита, -8 max HP.",
+      "source": "docs/design/references/icons/artifacts/artifact_glass_edge_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_glass_edge.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        16,
+        12,
+        239,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "echo_core",
+      "title": "Эхо Разлома",
+      "description": "Каждый 5-й удар по врагу вызывает взрыв эха: 80% урона по области вокруг цели.",
+      "source": "docs/design/references/icons/artifacts/artifact_echo_core_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_echo_core.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        20,
+        12,
+        235,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "split_core",
+      "title": "Ядро Расщепления",
+      "description": "Темный маг/Гитарист: +1 снаряд и луч всем атакам.",
+      "source": "docs/design/references/icons/artifacts/artifact_split_core_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_split_core.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        37,
+        12,
+        218,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "blood_pact",
+      "title": "Кровавый Рубеж",
+      "description": "Пока здоровье ниже 30% — +50% урона. Риск, достойный награды.",
+      "source": "docs/design/references/icons/artifacts/artifact_blood_pact_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_blood_pact.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        18,
+        12,
+        238,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "leech_heart",
+      "title": "Сердце Пиявки",
+      "description": "Каждое убийство возвращает 2% максимального здоровья.",
+      "source": "docs/design/references/icons/artifacts/artifact_leech_heart_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_leech_heart.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        53,
+        12,
+        202,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "thorn_pact",
+      "title": "Договор Шипов",
+      "description": "Получив урон, выплескиваешь 200% этого урона на всех врагов рядом.",
+      "source": "docs/design/references/icons/artifacts/artifact_thorn_pact_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_thorn_pact.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        27,
+        12,
+        228,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "phantom_step",
+      "title": "Призрачный Шаг",
+      "description": "Успешный уворот дает +40% скорости движения на 2 секунды.",
+      "source": "docs/design/references/icons/artifacts/artifact_phantom_step_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_phantom_step.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        22,
+        12,
+        234,
+        244
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "leech_fang",
+      "title": "Клык Пиявки",
+      "description": "+14% шанса вампиризма, +1 к лечению от вампиризма. Вампиризм ограничен лечением в секунду.",
+      "source": "docs/design/references/icons/artifacts/artifact_leech_fang_source.png",
+      "final": "assets/sprites/ui/icons/artifacts/artifact_leech_fang.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        51,
+        12,
+        204,
+        243
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "status": "ready"
+    }
+  ]
+}

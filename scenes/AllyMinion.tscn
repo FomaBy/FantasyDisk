@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/ally_minion.gd" id="1_ally_minion_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/allies/ally_druid_beast.png" id="2_ally_druid_beast"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres" id="3_druid_wolf_frames"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ally_minion"]
 radius = 10.0
@@ -13,6 +14,13 @@ script = ExtResource("1_ally_minion_script")
 texture = ExtResource("2_ally_druid_beast")
 position = Vector2(0, -10)
 scale = Vector2(0.34, 0.34)
+
+[node name="AnimatedBody" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(0, -31)
+scale = Vector2(0.34, 0.34)
+sprite_frames = ExtResource("3_druid_wolf_frames")
+animation = &"move"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ally_minion")

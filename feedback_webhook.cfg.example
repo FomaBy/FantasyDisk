@@ -1,0 +1,5 @@
+; FantasyDisk — конфиг вебхука внутриигрового фидбека (SCRUM-362).
+; Скопируй в feedback_webhook.cfg (в .gitignore) и вставь свой Discord webhook URL.
+; Формат Godot ConfigFile — комментарии через ';', значение в кавычках.
+[feedback]
+discord_webhook_url="https://discord.com/api/webhooks/XXXX/YYYY"

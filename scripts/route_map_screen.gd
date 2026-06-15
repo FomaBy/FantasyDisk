@@ -451,6 +451,9 @@ func _handle_route_node_input(button: Button, event: InputEvent, scroll: ScrollC
 
 
 func _activate_route_node(step_index: int, branch_index: int, route_node: Dictionary) -> void:
+	if game.shop_reentry_pending and step_index == int(game.shop_reentry_route_stage) + 1:
+		_finalize_pending_shop_reentry()
+		game.route_stage = step_index
 	game.current_route_choice = str(route_node.get("name", ""))
 	game.current_node_type = str(route_node.get("type", "battle"))
 	if game.route_debug_free_pick and step_index != game.route_stage:
@@ -527,6 +530,23 @@ func _map_node_definition(node_type: String) -> Dictionary:
 func _route_node_state(step_index: int, branch_index: int) -> String:
 	if game.route_debug_free_pick:
 		return "available"
+	if game.shop_reentry_pending:
+		var shop_step := int(game.shop_reentry_route_stage)
+		var shop_branch := int(game.shop_reentry_branch_index)
+		if step_index < shop_step:
+			if step_index < game.route_selected_indices.size() and int(game.route_selected_indices[step_index]) == branch_index:
+				return "completed"
+			return "locked"
+		if step_index == shop_step:
+			var route_node: Dictionary = game.route_nodes[step_index][branch_index] if step_index >= 0 and step_index < game.route_nodes.size() and branch_index >= 0 and branch_index < game.route_nodes[step_index].size() else {}
+			if branch_index == shop_branch and str(route_node.get("type", "")) == "shop":
+				return "available"
+			return "locked"
+		if step_index == shop_step + 1:
+			if _route_node_connections(shop_step, shop_branch).has(branch_index):
+				return "available"
+			return "locked"
+		return "locked"
 	if step_index < game.route_stage:
 		if step_index < game.route_selected_indices.size() and int(game.route_selected_indices[step_index]) == branch_index:
 			return "completed"
@@ -607,8 +627,32 @@ func _open_route_node(route_node: Dictionary) -> void:
 
 
 func _advance_route_after_noncombat() -> void:
+	_finalize_pending_shop_reentry()
 	game.route_stage += 1
+	game.save_run_autosave("noncombat_node")
 	_show_battle_map()
+
+
+func _return_to_map_after_shop_visit() -> void:
+	var selected_branch := -1
+	if game.route_stage >= 0 and game.route_stage < game.route_selected_indices.size():
+		selected_branch = int(game.route_selected_indices[game.route_stage])
+	game.shop_reentry_pending = true
+	game.shop_reentry_route_stage = int(game.route_stage)
+	game.shop_reentry_branch_index = selected_branch
+	game.save_run_autosave("shop_visit")
+	_show_battle_map()
+
+
+func _finalize_pending_shop_reentry() -> void:
+	if not game.shop_reentry_pending:
+		return
+	game.current_shop_items.clear()
+	game.current_shop_purchased.clear()
+	game.current_shop_node_key = ""
+	game.shop_reentry_pending = false
+	game.shop_reentry_route_stage = -1
+	game.shop_reentry_branch_index = -1
 
 
 func _style_route_node_button(button: Button, node_type: String, state: String) -> void:

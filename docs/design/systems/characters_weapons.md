@@ -76,13 +76,13 @@
 | `doctor` | `bone_saw` | Костяная пила | `BoneSaw.tscn` | `stab_flurry` | Ближний риск, bleed-like DoT, small heal |
 | `chemist` | `blast_powder` | Взрывная пыль | `BlastPowder.tscn` | `aoe_projectile` | Взрыв + poison cloud |
 | `chemist` | `acid_flask` | Кислотная колба | `AcidFlask.tscn` | `aoe_projectile` | Большая acid pool / stacking DoT feeling |
-| `chemist` | `homunculus_vial` | Склянка гомункула | `HomunculusVial.tscn` | `summon` | Temporary minion scaling from magic damage |
+| `chemist` | `homunculus_vial` | Склянка гомункула | `HomunculusVial.tscn` | `summon` | `tank_control` homunculus scaling from magic damage |
 | `knight` | `long_spear` | Копье | `LongSpear.tscn` | `strip` | Длинный точечный выпад, defense passive |
 | `knight` | `tower_shield` | Башенный щит | `TowerShield.tscn` | `sweep` | Shield bash / frontal control, tank identity |
 | `knight` | `holy_flail` | Освященный кистень | `HolyFlail.tscn` | `circle` | Medium circular heavy swing |
-| `druid` | `summon_amulet` | Амулет призыва | `SummonAmulet.tscn` | `summon` | Beast pack scaling from Leadership |
+| `druid` | `summon_amulet` | Амулет призыва | `SummonAmulet.tscn` | `summon` | `pack_damage` beast pack scaling from Leadership |
 | `druid` | `briar_staff` | Посох терний | `BriarStaff.tscn` | `aoe_projectile` | Thorn zone, AoE DoT, crowd control |
-| `druid` | `raven_totem` | Вороний тотем | `RavenTotem.tscn` | `amp` | Totem pulses, Leadership-scaled deploy limit |
+| `druid` | `raven_totem` | Вороний тотем | `RavenTotem.tscn` | `amp` | `support_totem` pulses, Leadership-scaled deploy limit |
 
 ## Backend Modes
 
@@ -99,7 +99,9 @@ Design visual set is complete for the first 9 classes and 27 weapons as of 2026-
 
 Socket/display status: the original 27 weapon scenes point to matching canonical PNG and use reduced `WeaponVisual.scale` for clearer body/face readability. Soldier scenes point to canonical `soldier_rifle.png`, `soldier_grenade.png`, and `soldier_bayonet.png`. Preview sheets: `docs/design/previews/weapon_v2_assets_contact.png` for raw PNG QA and `docs/design/previews/weapon_v2_socket_contact.png` for class/weapon visual placement. `venom_wire` is intentionally thin and best paired with a separate line/VFX during attacks; `hunter_trap` and several deploy/summon weapons can also serve as world sprite bases.
 
-Source-specific summon/deploy visuals (SCRUM-157): `scripts/summoner_weapon.gd` reads `ally_visual_id` / `ally_visual_ids` and passes the selected ID into `AllyMinion.set_visual_id()`. `summon_amulet` randomly uses `ally_druid_beast` or `ally_druid_pack_spirit`; `homunculus_vial` uses `ally_homunculus`; `leadership_echo` is reserved for future echo-style summons. `scripts/class_weapon.gd` reads optional `deploy_texture_path`: `sound_amp` deploys `deploy_sound_amp_field.png`, while `raven_totem` deploys `deploy_raven_totem_field.png`. Group cleanup and balance values are unchanged.
+Source-specific summon/deploy visuals (SCRUM-157): `scripts/summoner_weapon.gd` reads `ally_visual_id` / `ally_visual_ids` and passes the selected ID into `AllyMinion.set_visual_id()`. `summon_amulet` randomly uses `ally_druid_beast` or `ally_druid_pack_spirit`; `homunculus_vial` uses `ally_homunculus`; `leadership_echo` is reserved for future echo-style summons. `scripts/class_weapon.gd` reads optional `deploy_texture_path`: `sound_amp` deploys `deploy_sound_amp_field.png`, while `raven_totem` deploys `deploy_raven_totem_field.png`.
+
+Summon role runtime (SCRUM-254): summon/deploy configs may define `summon_role` and role coefficients. `SummonerWeapon` builds an `AllyMinion.set_combat_profile()` payload from owner `derived_parameters` and Leadership: damage, move speed, attack interval, lifetime, max HP, control knockback and support healing. Current roles are `pack_damage` (Druid beasts), `tank_control` (Chemist homunculus), `support_totem` (Druid raven totem), `engineer_sentry` and `support_drone`. `ProgressionData.weapon_archetype()` treats `summon_role` weapons as summon archetype, and the balance harness models pure summon DPS through minion output rather than an invisible direct hit.
 
 ## Targeting Rule
 

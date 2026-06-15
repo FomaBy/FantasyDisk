@@ -133,13 +133,16 @@ func _end_combat(victory: bool) -> void:
 			# Новый бой = новое окно докачки: набор и rerolls легально сбрасываются.
 			game.attribute_offer = []
 			game.attribute_rerolls_left = game.ui.ATTRIBUTE_REROLLS_PER_WINDOW
+			var return_to_route_map := func() -> void:
+				game.save_run_autosave("combat_node")
+				game.route._show_battle_map()
 			game.ui._show_victory_banner(func() -> void:
 				if was_elite_fight:
 					game.ui._show_elite_artifact_reward(func() -> void:
-						game.ui._show_attribute_shop(game.route._show_battle_map)
+						game.ui._show_attribute_shop(return_to_route_map)
 					)
 				else:
-					game.ui._show_attribute_shop(game.route._show_battle_map)
+					game.ui._show_attribute_shop(return_to_route_map)
 			)
 	else:
 		game.ui._show_death_screen()
@@ -221,6 +224,8 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 	if elite_scene == null:
 		return 0
 	var elite := elite_scene.instantiate() as Node2D
+	elite.set_meta("epic_scale_profile", "mini_elite")
+	elite.set_meta("drop_class", "mini_elite")
 	elite.add_to_group("elite_enemies")
 	game.add_child(elite)
 	elite.global_position = _random_spawn_position()
@@ -286,6 +291,8 @@ func _apply_mini_elite_kind(elite: Node2D, kind: Dictionary) -> void:
 	var rig := elite.get_node_or_null("RigRoot") as Node2D
 	if rig != null and tint.size() >= 3:
 		rig.modulate = Color(float(tint[0]), float(tint[1]), float(tint[2]), 1.0)
+	if elite.has_method("refresh_full_frame_visual"):
+		elite.call("refresh_full_frame_visual")
 	_apply_drop_rewards(elite, "mini_elite")
 
 
@@ -465,6 +472,7 @@ func _spawn_boss() -> void:
 		return
 
 	var boss := selected_boss_scene.instantiate() as Node2D
+	boss.set_meta("epic_scale_profile", "boss")
 	game.add_child(boss)
 	boss.global_position = game.ARENA_CENTER + Vector2(0, -230)
 	_scale_boss_for_run(boss)
@@ -505,9 +513,10 @@ func _spawn_elite_enemy() -> void:
 	if elite_scene == null:
 		return
 	var elite := elite_scene.instantiate() as Node2D
-	game.add_child(elite)
 	elite.name = "EliteEnemy"
+	elite.set_meta("epic_scale_profile", "elite")
 	elite.add_to_group("elite_enemies")
+	game.add_child(elite)
 	elite.global_position = game.ARENA_CENTER + Vector2(0, -250)
 	if use_fallback_modifier:
 		_apply_elite_modifier(elite)
@@ -573,9 +582,9 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 	if elite.get("elite_behavior") != null:
 		elite.set("elite_behavior", elite_id)
 	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
-	var health_multiplier = float(game.ENEMY_BALANCE["elite"]["hp_multiplier"]) * (25.0 + stage_scale * 4.0)
+	var health_multiplier = float(game.ENEMY_BALANCE["elite"]["hp_multiplier"]) * (25.0 + stage_scale * 4.0) * 1.08
 	var speed_multiplier = float(game.ENEMY_BALANCE["elite"]["speed_multiplier"])
-	var damage_multiplier = float(game.ENEMY_BALANCE["elite"]["damage_multiplier"]) * (1.0 + (stage_scale - 1.0) * 0.78)
+	var damage_multiplier = float(game.ENEMY_BALANCE["elite"]["damage_multiplier"]) * (1.0 + (stage_scale - 1.0) * 0.78) * 1.06
 	if elite_id.contains("armored"):
 		health_multiplier *= 1.35
 		speed_multiplier *= 0.74

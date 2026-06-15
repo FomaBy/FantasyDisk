@@ -1,0 +1,179 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_attack_primary_00.png" id="1_as1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_attack_primary_01.png" id="2_as2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_attack_primary_02.png" id="3_as3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_attack_primary_03.png" id="4_as4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_attack_primary_04.png" id="5_as5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_attack_primary_05.png" id="6_as6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_move_00.png" id="7_as7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_move_01.png" id="8_as8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_move_02.png" id="9_as9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_move_03.png" id="10_as10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_move_04.png" id="11_as11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_move_05.png" id="12_as12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_hit_00.png" id="13_as13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_hit_01.png" id="14_as14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_hit_02.png" id="15_as15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_hit_03.png" id="16_as16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_hit_04.png" id="17_as17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_hit_05.png" id="18_as18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_death_00.png" id="19_as19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_death_01.png" id="20_as20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_death_02.png" id="21_as21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_death_03.png" id="22_as22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_death_04.png" id="23_as23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/ash_marksman/ash_marksman_death_05.png" id="24_as24"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_as1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_as2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_as3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_as4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_as5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_as6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_as1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_as2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_as3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_as4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_as5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_as6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_as19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_as20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_as21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_as22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_as23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_as24")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_as13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_as14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_as15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_as16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_as17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_as18")
+}
+],
+"loop": false,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_as7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_as8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_as9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_as10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_as11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_as12")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+}]

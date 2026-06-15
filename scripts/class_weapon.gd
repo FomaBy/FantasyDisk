@@ -6,6 +6,7 @@ const POISON_POOL_TEXTURE := preload("res://assets/sprites/effects/poison_pool.p
 const SPARK_POOL_TEXTURE := preload("res://assets/sprites/effects/spark_pool.png")
 const BRIAR_POOL_TEXTURE := preload("res://assets/sprites/effects/briar_pool.png")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const ProgressionData := preload("res://scripts/progression_data.gd")
 
 const DEFAULT_ATTACK_MODE := "sound_wave"
 const PRIMARY_CAST_ACTION_MODES := {
@@ -104,7 +105,19 @@ const ATTACK_MODE_EXECUTORS := {
 @export var pool_tick_interval := 0.6
 @export var charge_seconds := 0.0
 @export var charge_max_multiplier := 1.0
-@export var dash_on_crit_distance := 0.0
+@export var crit_shadow_burst_radius := 0.0
+@export var melee_close_bonus_radius := 0.0
+@export var melee_close_damage_multiplier := 1.0
+@export var melee_execute_threshold := 0.0
+@export var melee_execute_multiplier := 1.0
+@export var melee_stagger_knockback_multiplier := 0.0
+@export var melee_arc_followup_radius := 0.0
+@export var melee_arc_followup_multiplier := 0.0
+@export var melee_heal_percent_on_hit := 0.0
+@export var summon_role := ""
+@export var summon_role_damage_multiplier := 1.0
+@export var summon_support_heal_percent := 0.0
+@export var summon_control_knockback := 0.0
 @export var deploy_texture_path := ""
 @export var visual_color := Color(0.5, 0.8, 1.0, 0.35)
 
@@ -189,7 +202,19 @@ func configure_weapon(config: Dictionary) -> void:
 	pool_tick_interval = float(config.get("pool_tick_interval", pool_tick_interval))
 	charge_seconds = float(config.get("charge_seconds", charge_seconds))
 	charge_max_multiplier = float(config.get("charge_max_multiplier", charge_max_multiplier))
-	dash_on_crit_distance = float(config.get("dash_on_crit_distance", dash_on_crit_distance))
+	crit_shadow_burst_radius = float(config.get("crit_shadow_burst_radius", config.get("dash_on_crit_distance", crit_shadow_burst_radius)))
+	melee_close_bonus_radius = float(config.get("melee_close_bonus_radius", melee_close_bonus_radius))
+	melee_close_damage_multiplier = float(config.get("melee_close_damage_multiplier", melee_close_damage_multiplier))
+	melee_execute_threshold = float(config.get("melee_execute_threshold", melee_execute_threshold))
+	melee_execute_multiplier = float(config.get("melee_execute_multiplier", melee_execute_multiplier))
+	melee_stagger_knockback_multiplier = float(config.get("melee_stagger_knockback_multiplier", melee_stagger_knockback_multiplier))
+	melee_arc_followup_radius = float(config.get("melee_arc_followup_radius", melee_arc_followup_radius))
+	melee_arc_followup_multiplier = float(config.get("melee_arc_followup_multiplier", melee_arc_followup_multiplier))
+	melee_heal_percent_on_hit = float(config.get("melee_heal_percent_on_hit", melee_heal_percent_on_hit))
+	summon_role = str(config.get("summon_role", summon_role))
+	summon_role_damage_multiplier = float(config.get("summon_role_damage_multiplier", summon_role_damage_multiplier))
+	summon_support_heal_percent = float(config.get("summon_support_heal_percent", summon_support_heal_percent))
+	summon_control_knockback = float(config.get("summon_control_knockback", summon_control_knockback))
 	deploy_texture_path = str(config.get("deploy_texture_path", deploy_texture_path))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
@@ -211,15 +236,18 @@ func _attack() -> void:
 	if owner_node == null:
 		return
 
-	var target := _find_closest_enemy(owner_node)
+	var cursor_aim := _owner_uses_cursor_aim(owner_node)
+	var target: Node2D = null if cursor_aim else _find_closest_enemy(owner_node)
 	var direction := _last_direction
 	if target != null:
 		direction = (target.global_position - owner_node.global_position).normalized()
-	else:
+	elif not cursor_aim:
 		# Вне радиуса целимся в ближайшего врага на арене, чтобы удар не уходил «в никуда».
 		var distant_enemy := _find_closest_enemy(owner_node, INF)
 		if distant_enemy != null:
 			direction = (distant_enemy.global_position - owner_node.global_position).normalized()
+	if cursor_aim and owner_node.has_method("attack_aim_direction"):
+		direction = owner_node.call("attack_aim_direction", direction, attack_range)
 	if direction.length_squared() <= 0.001:
 		direction = Vector2.RIGHT
 	_last_direction = direction
@@ -230,7 +258,7 @@ func _attack() -> void:
 	_emit_weapon_animation_event(owner_node, "windup", _estimated_windup_duration(), direction)
 
 	if heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent"):
-		owner_node.heal_percent(heal_percent_on_attack)
+		owner_node.heal_percent(heal_percent_on_attack * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER)
 
 	_current_charge_multiplier = _charge_multiplier()
 	_execute_attack_mode(owner_node, target, direction)
@@ -248,8 +276,36 @@ func _event_action_animation_for_mode() -> String:
 
 
 func _execute_attack_mode(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_spawn_weapon_signature(owner_node, target, direction)
 	var executor_name := str(ATTACK_MODE_EXECUTORS.get(attack_mode, ATTACK_MODE_EXECUTORS[DEFAULT_ATTACK_MODE]))
 	call(executor_name, owner_node, target, direction)
+
+
+func _spawn_weapon_signature(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	if owner_node == null or direction.length_squared() <= 0.001:
+		return
+	var center := owner_node.global_position + direction * minf(maxf(aoe_radius * 0.55, 72.0), 180.0)
+	var radius := maxf(aoe_radius, beam_width * 1.4)
+	match attack_mode:
+		"pulse", "priest_ward", "elemental_orbit", "robot_reactor_vent":
+			center = owner_node.global_position
+		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
+			center = owner_node.global_position + direction * minf(attack_range, 150.0)
+		"grenade_cook", "smoke_bomb", "prism_rift", "meteor_shards", "sniper_kill_zone", "priest_sanctify", "bio_spore_bloom", "robot_magnetic_anchor":
+			center = owner_node.global_position + direction * minf(attack_range, 360.0)
+			if target != null:
+				center = target.global_position
+		"beam", "dot_beam", "suppression_burst", "sniper_lockshot", "sniper_split_round", "bayonet_brace", "robot_compression_line":
+			center = owner_node.global_position + direction * minf(attack_range * 0.45, 240.0)
+			radius = maxf(beam_width * 2.2, 86.0)
+		"drain_link", "coin_ricochet", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone":
+			center = owner_node.global_position + direction * minf(attack_range * 0.32, 190.0)
+			if target != null:
+				center = (owner_node.global_position + target.global_position) * 0.5
+			radius = maxf(beam_width * 2.4, 96.0)
+	var signature := AttackVfx.weapon_signature(_projectile_parent(), center, weapon_id, radius, visual_color, direction.angle())
+	if signature != null:
+		_register_effect(signature)
 
 
 func _exec_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -555,6 +611,8 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 	var target_position: Vector2 = owner_node.global_position + direction * min(attack_range, 360.0)
 	if target != null:
 		target_position = target.global_position
+	elif _owner_uses_cursor_aim(owner_node) and owner_node.has_method("attack_aim_position"):
+		target_position = owner_node.call("attack_aim_position", attack_range)
 
 	var projectile := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 28.0, visual_color)
 	_register_effect(projectile)
@@ -720,7 +778,7 @@ func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
 		return
 	if owner_node.get("health") == null or owner_node.get("max_health") == null:
 		return
-	var heal_amount := dealt_damage * heal_percent_of_damage
+	var heal_amount := dealt_damage * heal_percent_of_damage * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER
 	owner_node.set("health", minf(float(owner_node.get("health")) + heal_amount, float(owner_node.get("max_health"))))
 
 
@@ -1024,25 +1082,24 @@ func _fire_shadow_backstab(owner_node: Node2D, target: Node2D, direction: Vector
 		approach = direction
 	var start_position := owner_node.global_position
 	var back_position := backstab_target.global_position + approach * 46.0
-	var dash_distance := start_position.distance_to(back_position)
-	var max_dash := minf(attack_range, 360.0)
-	if dash_distance > max_dash:
-		back_position = start_position + (back_position - start_position).normalized() * max_dash
-	owner_node.global_position = back_position
-	var strike_direction := (backstab_target.global_position - owner_node.global_position).normalized()
+	var shadow_distance := start_position.distance_to(back_position)
+	var max_shadow_reach := minf(attack_range, 360.0)
+	if shadow_distance > max_shadow_reach:
+		back_position = start_position + (back_position - start_position).normalized() * max_shadow_reach
+	var strike_direction := (backstab_target.global_position - back_position).normalized()
 	if strike_direction.length_squared() <= 0.001:
 		strike_direction = -approach
 	var slash := AttackVfx.slash(_projectile_parent(), strike_direction, aoe_radius, visual_color)
 	_register_effect(slash)
-	slash.global_position = owner_node.global_position
+	slash.global_position = back_position
 	_damage_enemy(backstab_target, _rolled_damage(owner_node) * 1.22)
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or enemy_node == backstab_target or not is_instance_valid(enemy_node):
 			continue
-		if owner_node.global_position.distance_squared_to(enemy_node.global_position) <= pow(aoe_radius * 0.55, 2.0):
+		if back_position.distance_squared_to(enemy_node.global_position) <= pow(aoe_radius * 0.55, 2.0):
 			_damage_enemy(enemy_node, damage * 0.35)
-	var vanish := AttackVfx.ring_pulse(_projectile_parent(), start_position, 62.0, visual_color, false)
+	var vanish := AttackVfx.ring_pulse(_projectile_parent(), back_position, 62.0, visual_color, false)
 	_register_effect(vanish)
 
 
@@ -1688,7 +1745,7 @@ func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: 
 		_register_effect(tether)
 		var hit_damage := damage_value * pow(damage_falloff, float(link_index))
 		_damage_enemy(current_target, hit_damage)
-		healed += hit_damage * heal_percent_of_damage
+		healed += hit_damage * heal_percent_of_damage * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER
 		previous_position = current_target.global_position
 		current_target = _find_nearest_enemy_from(previous_position, aoe_radius, used)
 		if current_target != null:
@@ -1698,6 +1755,8 @@ func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: 
 		owner_node.set("health", minf(float(owner_node.get("max_health")), float(owner_node.get("health")) + healed))
 		if owner_node.has_method("_show_heal_vfx"):
 			owner_node.call("_show_heal_vfx")
+	if summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent"):
+		owner_node.heal_percent(summon_support_heal_percent)
 
 
 func _fire_engineer_pressure_mines(owner_node: Node2D, direction: Vector2) -> void:
@@ -1853,6 +1912,10 @@ func _find_closest_enemy(owner_node: Node2D, range_limit := -1.0) -> Node2D:
 	return TARGET_QUERY.nearest(self, owner_node.global_position, max_distance)
 
 
+func _owner_uses_cursor_aim(owner_node: Node) -> bool:
+	return owner_node != null and owner_node.has_method("attack_aim_mode") and str(owner_node.call("attack_aim_mode")) == "cursor"
+
+
 func _enemies_in_corridor(origin: Vector2, direction: Vector2, width: float, range_limit: float) -> Array:
 	return TARGET_QUERY.in_corridor(self, origin, direction, width, range_limit, 24.0)
 
@@ -1880,15 +1943,43 @@ func _is_enemy_inside_wave(origin: Vector2, enemy_position: Vector2, direction: 
 	return abs(to_enemy.dot(perpendicular)) <= half_width
 
 
-func _damage_enemy(enemy: Node, amount: float) -> void:
+func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := true) -> void:
 	if enemy != null and is_instance_valid(enemy) and enemy.has_method("take_damage"):
 		enemy.take_damage(amount)
 		var owner_node := _owner_node()
 		if owner_node != null and owner_node.has_method("on_weapon_hit"):
 			owner_node.on_weapon_hit(enemy, amount)
 		_heal_owner_from_damage(owner_node, amount)
-		if _last_attack_crit and dash_on_crit_distance > 0.0 and owner_node != null and owner_node.has_method("trigger_assassin_dash"):
-			owner_node.trigger_assassin_dash(enemy, dash_on_crit_distance)
+		if _last_attack_crit and crit_shadow_burst_radius > 0.0 and owner_node != null and owner_node.has_method("trigger_assassin_crit_shadow"):
+			owner_node.trigger_assassin_crit_shadow(enemy, crit_shadow_burst_radius)
+		if apply_unique_melee_effects and owner_node != null:
+			_apply_unique_melee_hit_effects(owner_node, enemy, amount)
+
+
+func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy: Node, amount: float) -> void:
+	var enemy_node := enemy as Node2D
+	if enemy_node == null or not is_instance_valid(enemy_node):
+		return
+	var direction := enemy_node.global_position - owner_node.global_position
+	var distance := direction.length()
+	if melee_close_bonus_radius > 0.0 and melee_close_damage_multiplier > 1.0 and distance <= melee_close_bonus_radius:
+		enemy_node.take_damage(amount * (melee_close_damage_multiplier - 1.0))
+	if melee_execute_threshold > 0.0 and melee_execute_multiplier > 1.0:
+		var max_hp := float(enemy_node.get("max_health")) if enemy_node.get("max_health") != null else 0.0
+		var health := float(enemy_node.get("health")) if enemy_node.get("health") != null else max_hp
+		if max_hp > 0.0 and health / max_hp <= melee_execute_threshold:
+			enemy_node.take_damage(amount * (melee_execute_multiplier - 1.0))
+	if melee_stagger_knockback_multiplier > 0.0 and direction.length_squared() > 0.001:
+		_push_enemy_scaled(enemy_node, direction.normalized(), melee_stagger_knockback_multiplier)
+	if melee_arc_followup_radius > 0.0 and melee_arc_followup_multiplier > 0.0:
+		var splash_damage := amount * melee_arc_followup_multiplier
+		for nearby in TARGET_QUERY.in_radius(self, enemy_node.global_position, melee_arc_followup_radius):
+			if nearby == enemy_node:
+				continue
+			if nearby.has_method("take_damage"):
+				nearby.take_damage(splash_damage)
+	if melee_heal_percent_on_hit > 0.0 and owner_node.has_method("heal_percent"):
+		owner_node.heal_percent(melee_heal_percent_on_hit)
 
 
 func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2D) -> void:
@@ -1905,7 +1996,7 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	for tick_index in range(dot_ticks):
 		dot_tween.tween_interval(1.0 / tick_speed)
 		dot_tween.tween_callback(func() -> void:
-			_damage_enemy(enemy, tick_damage)
+			_damage_enemy(enemy, tick_damage, false)
 			if enemy is Node2D:
 				HazardVfx.dot_tick(enemy, dot_color)
 		)
@@ -1938,12 +2029,17 @@ func _has_enemy_in_circle(origin: Vector2, radius: float) -> bool:
 
 
 func _push_enemy(enemy: Node2D, direction: Vector2) -> void:
+	_push_enemy_scaled(enemy, direction, 1.0)
+
+
+func _push_enemy_scaled(enemy: Node2D, direction: Vector2, multiplier: float) -> void:
 	if direction.length_squared() <= 0.001:
 		return
+	var push_strength := knockback * maxf(multiplier, 0.0)
 	if enemy.has_method("apply_knockback"):
-		enemy.apply_knockback(direction.normalized() * knockback * 3.6)
+		enemy.apply_knockback(direction.normalized() * push_strength * 3.6)
 	else:
-		enemy.global_position += direction.normalized() * knockback * 0.12
+		enemy.global_position += direction.normalized() * push_strength * 0.12
 
 
 func _rolled_damage(owner_node: Node2D) -> float:
@@ -1959,7 +2055,14 @@ func _rolled_damage(owner_node: Node2D) -> float:
 		_last_attack_crit = true
 	if charge_seconds > 0.0:
 		result *= _current_charge_multiplier
+	if not summon_role.is_empty():
+		result *= _summon_role_damage_factor(parameters)
 	return result
+
+
+func _summon_role_damage_factor(parameters: Dictionary) -> float:
+	var summon_amount := float(parameters.get("summon_amount", 0.0))
+	return summon_role_damage_multiplier * (1.0 + minf(summon_amount * 0.018, 0.22))
 
 
 func _update_charge(delta: float) -> void:

@@ -1,0 +1,85 @@
+{
+  "task": "SCRUM-338",
+  "source_size": [
+    768,
+    1024
+  ],
+  "assets": {
+    "reward_card": {
+      "path": "assets/sprites/ui/frames/rewards/ui_frame_reward_card.png",
+      "hover_path": "assets/sprites/ui/frames/rewards/ui_frame_reward_card_hover.png",
+      "source_reference": "docs/design/references/rewards/reward_card_common_source.png",
+      "size": [
+        768,
+        1024
+      ],
+      "format": "RGBA PNG transparent",
+      "texture_margins": [
+        96,
+        112,
+        96,
+        112
+      ],
+      "content_margins": [
+        132,
+        170,
+        132,
+        164
+      ],
+      "role": "common battle reward card frame",
+      "safe_rect": [
+        132,
+        170,
+        504,
+        690
+      ]
+    },
+    "reward_elite_artifact_card": {
+      "path": "assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card.png",
+      "hover_path": "assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card_hover.png",
+      "source_reference": "docs/design/references/rewards/reward_card_elite_artifact_source.png",
+      "size": [
+        768,
+        1024
+      ],
+      "format": "RGBA PNG transparent",
+      "texture_margins": [
+        108,
+        130,
+        108,
+        130
+      ],
+      "content_margins": [
+        150,
+        202,
+        150,
+        190
+      ],
+      "role": "elite artifact reward card frame",
+      "safe_rect": [
+        150,
+        202,
+        468,
+        632
+      ]
+    }
+  },
+  "runtime_handoff": {
+    "battle_reward_cards": {
+      "target_control_min_size": [
+        300,
+        430
+      ],
+      "suggested_row": "HFlowContainer or HBoxContainer with 3 cards; card content only inside content margins.",
+      "content_contract": "icon/title/description/action button must stay inside content margins and never overlap ornate border."
+    },
+    "elite_artifact_cards": {
+      "target_control_min_size": [
+        340,
+        502
+      ],
+      "suggested_row": "Existing EliteArtifactRewardRow can keep 3 cards; replace button style with reward elite frame style.",
+      "content_contract": "112px artifact icon, title, tier, description and interpretation must stay inside content margins."
+    }
+  }
+}

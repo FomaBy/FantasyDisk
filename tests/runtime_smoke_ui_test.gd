@@ -19,6 +19,7 @@ func _initialize() -> void:
 		_fail("Expected main menu actions in UI smoke.")
 		return
 	await _test_glossary_terms(main)
+	await _test_main_menu_quit_confirmation(main_scene)
 
 	main.call("_show_settings_menu")
 	await process_frame
@@ -34,6 +35,7 @@ func _initialize() -> void:
 		return
 	await _test_weapon_select_clean_layout(main_scene)
 	await _test_parchment_button_seal_sizes(main_scene)
+	await _test_skill_tree_progression_kit(main_scene)
 	await _test_hero_select_radar_no_overlap_layouts(main_scene)
 	await _test_codex_screen(main_scene)
 	await _test_escape_navigation(main_scene)

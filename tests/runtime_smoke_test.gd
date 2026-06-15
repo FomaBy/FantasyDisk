@@ -8,6 +8,25 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
 const EventData := preload("res://scripts/event_data.gd")
 const Glossary := preload("res://scripts/glossary.gd")
+const RunAutosave := preload("res://scripts/run_autosave.gd")
+const FeedbackReporter := preload("res://scripts/feedback_reporter.gd")
+const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
+const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
+const HERO_SELECT_UNIFIED_SOURCE_SIZE := Vector2(1536.0, 1024.0)
+const HERO_SELECT_UNIFIED_PORTRAIT_RECT := Rect2(130.0, 145.0, 420.0, 560.0)
+const HERO_SELECT_UNIFIED_DESCRIPTION_RECT := Rect2(610.0, 145.0, 786.0, 500.0)
+const HERO_SELECT_UNIFIED_BOTTOM_CONTROLS_RECT := Rect2(570.0, 705.0, 660.0, 178.0)
+const HERO_SELECT_DOSSIER_SOURCE_SIZE := Vector2(1120.0, 1140.0)
+const HERO_SELECT_DOSSIER_SAFE_MARGINS := Vector4(126.0, 160.0, 126.0, 172.0)
+const HERO_SELECT_THUMBNAIL_SOURCE_SIZE := Vector2(1536.0, 255.0)
+const HERO_SELECT_THUMBNAIL_SAFE_MARGINS := Vector4(132.0, 62.0, 132.0, 62.0)
+const REWARD_FRAME_SOURCE_SIZE := Vector2(768.0, 1024.0)
+const REWARD_CARD_SAFE_MARGINS := Vector4(132.0, 170.0, 132.0, 164.0)
+const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(150.0, 202.0, 150.0, 190.0)
+const REWARD_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_card.png"
+const REWARD_ELITE_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card.png"
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.5
+const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -26,8 +45,8 @@ func _initialize() -> void:
 		return
 	await _test_glossary_terms(main)
 	var main_menu_background := main.find_child("MainMenuBackground", true, false) as TextureRect
-	if main_menu_background == null or main_menu_background.texture == null or main_menu_background.texture.resource_path != "res://assets/backgrounds/main_menu_epic_battle.png":
-		push_error("Expected main menu to render the epic battle background image.")
+	if main_menu_background == null or main_menu_background.texture == null or main_menu_background.texture.resource_path != "res://assets/backgrounds/main_menu_epic_battle_v2.png":
+		push_error("Expected main menu to render the v2 epic battle background image.")
 		quit(1)
 		return
 	var main_menu_actions := main.find_child("MainMenuActions", true, false) as VBoxContainer
@@ -43,10 +62,13 @@ func _initialize() -> void:
 	var start_theme_button := main.find_child("MainMenuStartButton", true, false) as Button
 	var settings_theme_button := main.find_child("MainMenuSettingsButton", true, false) as Button
 	var exit_theme_button := main.find_child("MainMenuExitButton", true, false) as Button
-	if not _button_uses_dark_fantasy_role(start_theme_button, "primary") or not _button_uses_dark_fantasy_role(settings_theme_button, "secondary") or not _button_uses_dark_fantasy_role(exit_theme_button, "danger"):
-		push_error("Expected main menu buttons to use canonical dark fantasy primary/secondary/danger state textures.")
+	if not _button_uses_red_gold_type(start_theme_button, "main_menu") or not _button_uses_red_gold_type(settings_theme_button, "main_menu") or not _button_uses_red_gold_type(exit_theme_button, "main_menu"):
+		push_error("Expected main menu buttons to use canonical Red & Gold Dragon state textures.")
 		quit(1)
 		return
+	await _test_back_button_frame_safety(main_scene)
+	await _test_main_menu_quit_confirmation(main_scene)
+	await _test_feedback_overlay_and_local_fallback(main_scene)
 	if main_menu_actions.global_position.x > 140.0:
 		push_error("Expected main menu buttons to stay on the left side of the start screen.")
 		quit(1)
@@ -186,6 +208,8 @@ func _initialize() -> void:
 		return
 	await _test_route_map_start_selection(main_scene)
 	await _test_event_route_node_click(main_scene)
+	await _test_shop_reentry_until_next_level(main_scene)
+	await _test_run_autosave_continue_prompt(main_scene)
 	await _test_random_event_data_and_outcomes(main_scene)
 	var generated_elite := false
 	var generated_disk_boss := false
@@ -266,14 +290,48 @@ func _initialize() -> void:
 		push_error("Expected hero select v3 to show a large selected hero portrait.")
 		quit(1)
 		return
-	var dossier := main.find_child("HeroSelectDossierPanel", true, false) as PanelContainer
+	if large_portrait.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED:
+		push_error("Expected hero select large portrait to use tighter covered scaling inside its content zone.")
+		quit(1)
+		return
+	var dossier := main.find_child("HeroSelectDossierPanel", true, false) as Control
 	if dossier == null:
 		push_error("Expected hero select v3 to show a dossier panel.")
 		quit(1)
 		return
+	var unified_frame := main.find_child("HeroSelectUnifiedFrame", true, false) as Control
+	if unified_frame == null:
+		push_error("Expected hero select to use the SCRUM-356 unified portrait+description frame.")
+		quit(1)
+		return
+	var content_row := main.find_child("HeroSelectContent", true, false) as Control
+	var portrait_panel := main.find_child("HeroSelectPortraitPanel", true, false) as Control
+	if content_row == null or portrait_panel == null:
+		push_error("Expected hero select unified layout to expose content row and portrait safe-zone panel.")
+		quit(1)
+		return
+	var unified_rect := unified_frame.get_global_rect()
+	var unified_ratio := unified_rect.size.x / maxf(unified_rect.size.y, 1.0)
+	var source_ratio := HERO_SELECT_UNIFIED_SOURCE_SIZE.x / HERO_SELECT_UNIFIED_SOURCE_SIZE.y
+	if absf(unified_ratio - source_ratio) > 0.015:
+		push_error("Expected hero select unified frame to stay whole-image proportional.")
+		quit(1)
+		return
+	if not _rect_contains_with_tolerance(_scaled_source_rect(unified_rect, HERO_SELECT_UNIFIED_SOURCE_SIZE, HERO_SELECT_UNIFIED_PORTRAIT_RECT), portrait_panel.get_global_rect(), 2.0):
+		push_error("Expected hero portrait panel to stay inside the unified frame portrait safe-zone.")
+		quit(1)
+		return
 	var radar := main.find_child("HeroStatRadar", true, false) as Control
-	if radar == null or radar.custom_minimum_size.x < 360.0:
+	if radar == null or radar.custom_minimum_size.x < 190.0 or radar.custom_minimum_size.y < 140.0:
 		push_error("Expected hero select v3 to build a readable stat radar.")
+		quit(1)
+		return
+	if main.find_child("HeroStatRadarTitle", true, false) != null:
+		push_error("Expected hero select radar to remove the old 'Характеристики' title label.")
+		quit(1)
+		return
+	if HeroStatRadarScript.HERO_RADAR_RADIUS_FACTOR < 0.36:
+		push_error("Expected hero select radar polygon radius to be enlarged by at least 20%%.")
 		quit(1)
 		return
 	var radar_panel := main.find_child("HeroSelectRadarPanel", true, false) as Control
@@ -307,10 +365,26 @@ func _initialize() -> void:
 		var thumb_button := thumb_node as Button
 		if thumb_button == null:
 			continue
-		if thumb_button.custom_minimum_size.x > 124.0 or thumb_button.custom_minimum_size.x < 64.0:
+		if thumb_button.custom_minimum_size.x > 136.0 or thumb_button.custom_minimum_size.x < 42.0:
 			push_error("Expected hero thumbnail carousel to adapt thumbnail width for the growing roster.")
 			quit(1)
 			return
+		if thumb_button.custom_minimum_size.y < maxf(thumb_button.custom_minimum_size.x * 1.20, 56.0):
+			push_error("Expected hero thumbnail carousel to use taller, more readable portrait slots.")
+			quit(1)
+			return
+	if thumbnail_strip.get_theme_constant("separation") > 2:
+		push_error("Expected hero thumbnail carousel to reduce excessive horizontal separation.")
+		quit(1)
+		return
+	var hero_portrait_dump := PackedStringArray()
+	hero_portrait_dump.append("# SCRUM-416 Hero Select Portrait Runtime Paths")
+	hero_portrait_dump.append("")
+	var scrum417_dump := PackedStringArray()
+	scrum417_dump.append("# SCRUM-417 Character Size Runtime Dump")
+	scrum417_dump.append("")
+	scrum417_dump.append("- `HeroSelectLargePortraitRect`: `%s`" % str(large_portrait.get_global_rect()))
+	scrum417_dump.append("- `HeroSelectLargePortraitStretch`: `%s`" % str(large_portrait.stretch_mode))
 	for character_id in ProgressionData.character_ids():
 		var thumb := main.find_child("HeroThumbnail_%s" % character_id, true, false) as Button
 		if thumb == null or thumb.tooltip_text == "":
@@ -319,6 +393,12 @@ func _initialize() -> void:
 			return
 		if thumb.find_child("HeroThumbnailTitle_%s" % character_id, true, false) != null or thumb.find_children("*", "Label", true, false).size() > 0:
 			push_error("Expected hero thumbnail carousel to contain only images, no visible text for %s." % character_id)
+			quit(1)
+			return
+		var thumb_portrait := thumb.find_child("HeroThumbnailPortrait_%s" % character_id, true, false) as TextureRect
+		var expected_portrait := _expected_character_portrait_path(str(character_id))
+		if thumb_portrait == null or thumb_portrait.texture == null or thumb_portrait.texture.resource_path != expected_portrait:
+			push_error("Expected hero thumbnail %s to use new full-frame portrait %s." % [character_id, expected_portrait])
 			quit(1)
 			return
 		thumb.pressed.emit()
@@ -332,6 +412,24 @@ func _initialize() -> void:
 			push_error("Expected selected hero portrait to update for %s." % character_id)
 			quit(1)
 			return
+		if portrait.texture.resource_path != expected_portrait:
+			push_error("Expected selected hero portrait %s to use new full-frame portrait %s, got %s." % [character_id, expected_portrait, portrait.texture.resource_path])
+			quit(1)
+			return
+		hero_portrait_dump.append("- `%s`: thumbnail `%s`, large `%s`" % [character_id, thumb_portrait.texture.resource_path, portrait.texture.resource_path])
+		scrum417_dump.append("- `%s` hero portrait rect `%s`, texture `%s`" % [character_id, str(portrait.get_global_rect()), portrait.texture.resource_path])
+	var scrum416_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum416")
+	DirAccess.make_dir_recursive_absolute(scrum416_qa_dir)
+	var hero_portrait_dump_file := FileAccess.open("%s/hero_select_portrait_runtime_paths.md" % scrum416_qa_dir, FileAccess.WRITE)
+	if hero_portrait_dump_file != null:
+		hero_portrait_dump_file.store_string("\n".join(hero_portrait_dump))
+		hero_portrait_dump_file.close()
+	var scrum417_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum417")
+	DirAccess.make_dir_recursive_absolute(scrum417_qa_dir)
+	var scrum417_dump_file := FileAccess.open("%s/character_size_runtime_dump.md" % scrum417_qa_dir, FileAccess.WRITE)
+	if scrum417_dump_file != null:
+		scrum417_dump_file.store_string("\n".join(scrum417_dump))
+		scrum417_dump_file.close()
 	var choose_button := main.find_child("HeroSelectChooseButton", true, false) as Button
 	if choose_button == null:
 		push_error("Expected hero select v3 to expose a choose button.")
@@ -403,9 +501,37 @@ func _initialize() -> void:
 		push_error("Expected combat to create the compact resource HUD.")
 		quit(1)
 		return
+	var resource_style := resource_hud.get_theme_stylebox("panel")
+	if _stylebox_texture_path(resource_style) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png":
+		push_error("Expected combat resource HUD to use the SCRUM-390 resource panel frame.")
+		quit(1)
+		return
+	var expected_hud_cards := {
+		"HudHPCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_hp.png",
+		"HudXPCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_xp.png",
+		"HudMoneyCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_gold.png",
+		"HudULTCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_ult.png",
+	}
 	for hud_node_name in ["HudHPCard", "HudXPCard", "HudMoneyCard"]:
 		if resource_hud.find_child(hud_node_name, true, false) == null:
 			push_error("Expected combat resource HUD to include %s." % hud_node_name)
+			quit(1)
+			return
+	for hud_node_name in expected_hud_cards.keys():
+		var hud_card := resource_hud.find_child(str(hud_node_name), true, false) as PanelContainer
+		if hud_card == null or _stylebox_texture_path(hud_card.get_theme_stylebox("panel")) != str(expected_hud_cards[hud_node_name]):
+			push_error("Expected %s to use SCRUM-390 card frame %s." % [hud_node_name, str(expected_hud_cards[hud_node_name])])
+			quit(1)
+			return
+	var expected_hud_fills := {
+		"HudHPBar": "res://assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png",
+		"HudXPBar": "res://assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_xp.png",
+		"HudULTBar": "res://assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_ult.png",
+	}
+	for bar_name in expected_hud_fills.keys():
+		var hud_bar := resource_hud.find_child(str(bar_name), true, false) as ProgressBar
+		if hud_bar == null or _stylebox_texture_path(hud_bar.get_theme_stylebox("fill")) != str(expected_hud_fills[bar_name]):
+			push_error("Expected %s to use SCRUM-390 bar fill %s." % [bar_name, str(expected_hud_fills[bar_name])])
 			quit(1)
 			return
 	for hud_icon_id in ["hp", "xp", "money"]:
@@ -414,6 +540,10 @@ func _initialize() -> void:
 			push_error("Expected combat HUD icon %s to use a PNG texture." % hud_icon_id)
 			quit(1)
 			return
+	if (resource_hud.find_child("UIIcon_money", true, false) as TextureRect).texture.resource_path != "res://assets/sprites/ui/hud/combat_hud/ui_hud_gold_medallion.png":
+		push_error("Expected combat money HUD icon to use the SCRUM-390 gold medallion.")
+		quit(1)
+		return
 	if main.get("status_label") != null:
 		push_error("Expected combat HUD to stay compact and not expose the status label.")
 		quit(1)
@@ -423,6 +553,10 @@ func _initialize() -> void:
 	var timer_text := main.get("timer_label") as Label
 	if timer_panel == null or timer_text == null or timer_panel.get_global_rect().position.y > 24.0:
 		push_error("Expected the combat timer panel to stay in the top HUD band.")
+		quit(1)
+		return
+	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png":
+		push_error("Expected combat timer panel to use the SCRUM-390 timer frame.")
 		quit(1)
 		return
 	main.set("round_time_left", 4.0)
@@ -474,8 +608,13 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var player_body := player.get_node_or_null("VisualRoot/Body") as AnimatedSprite2D
-	if player_body == null or player_body.scale.x > 0.30:
-		push_error("Expected player visual scale to be reduced by another 20-30% for the larger arena view.")
+	if player_body == null or absf(player_body.scale.x - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001 or absf(player_body.scale.y - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001:
+		push_error("Expected player visual scale to use SCRUM-417 enlarged combat scale %.2f." % EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)
+		quit(1)
+		return
+	var player_rig := player.get_node_or_null("VisualRoot/RigRoot") as Node2D
+	if not player_body.visible or player_rig == null or player_rig.visible:
+		push_error("Expected selected full-frame player Body to be visible with hidden cutout RigRoot.")
 		quit(1)
 		return
 	var player_collision := player.get_node_or_null("CollisionShape2D") as CollisionShape2D
@@ -484,6 +623,19 @@ func _initialize() -> void:
 		push_error("Expected player hurtbox to match the smaller character size.")
 		quit(1)
 		return
+	var scrum417_combat_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum417")
+	DirAccess.make_dir_recursive_absolute(scrum417_combat_qa_dir)
+	var scrum417_combat_dump := PackedStringArray()
+	scrum417_combat_dump.append("# SCRUM-417 Combat Character Size Runtime Dump")
+	scrum417_combat_dump.append("")
+	scrum417_combat_dump.append("- `PlayerVisualScale`: `%s`" % str(player_body.scale))
+	scrum417_combat_dump.append("- `PlayerBodyVisible`: `%s`" % str(player_body.visible))
+	scrum417_combat_dump.append("- `PlayerRigVisible`: `%s`" % str(player_rig.visible))
+	scrum417_combat_dump.append("- `PlayerCollisionRadius`: `%.2f`" % player_shape.radius)
+	var scrum417_combat_file := FileAccess.open("%s/combat_character_size_runtime_dump.md" % scrum417_combat_qa_dir, FileAccess.WRITE)
+	if scrum417_combat_file != null:
+		scrum417_combat_file.store_string("\n".join(scrum417_combat_dump))
+		scrum417_combat_file.close()
 	if int(player.get("collision_mask")) & 6 != 0:
 		push_error("Expected player physics mask to ignore enemy collision layers.")
 		quit(1)
@@ -559,6 +711,8 @@ func _initialize() -> void:
 	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
 	var contact_enemy := enemy_scene.instantiate()
 	root.add_child(contact_enemy)
+	contact_enemy.set("max_health", 100000.0)
+	contact_enemy.set("health", 100000.0)
 	contact_enemy.global_position = player.global_position
 	await process_frame
 	if int(contact_enemy.get("collision_mask")) & 1 != 0:
@@ -724,6 +878,63 @@ func _initialize() -> void:
 		push_error("Expected level-up to show a persistent + button.")
 		quit(1)
 		return
+	await process_frame
+	var level_up_plus_rect := level_up_plus.get_global_rect()
+	var level_up_viewport_size := main.get_viewport().get_visible_rect().size
+	if level_up_plus.anchor_left != 1.0 or level_up_plus.anchor_right != 1.0 or level_up_plus.anchor_top != 1.0 or level_up_plus.anchor_bottom != 1.0:
+		push_error("Expected combat level-up return button to use bottom-right anchors.")
+		quit(1)
+		return
+	if level_up_plus_rect.get_center().x < level_up_viewport_size.x * 0.68 or level_up_plus_rect.get_center().y < level_up_viewport_size.y * 0.74:
+		push_error("Expected combat level-up return button to sit in the bottom-right corner, got %s in viewport %s." % [level_up_plus_rect, level_up_viewport_size])
+		quit(1)
+		return
+	if absf(level_up_plus.modulate.a - 1.0) > 0.001:
+		push_error("Expected combat level-up return button modulate alpha to be fully opaque.")
+		quit(1)
+		return
+	var plus_normal_style := level_up_plus.get_theme_stylebox("normal")
+	if plus_normal_style == null or not _button_uses_combat_hud_plus_style(level_up_plus):
+		push_error("Expected combat level-up return button to use the SCRUM-390 combat HUD plus button kit.")
+		quit(1)
+		return
+	if not _is_neutral_button_font(level_up_plus.get_theme_color("font_hover_color")) or not _is_neutral_button_font(level_up_plus.get_theme_color("font_focus_color")):
+		push_error("Expected combat level-up return button hover/focus font colors to be neutral near-white.")
+		quit(1)
+		return
+	if plus_normal_style is StyleBoxTexture and (plus_normal_style as StyleBoxTexture).modulate_color.a < 0.999:
+		push_error("Expected combat level-up return button background style to be opaque.")
+		quit(1)
+		return
+	var plus_layout_controls := [level_up_plus]
+	for control in _visible_hud_top_controls(main):
+		plus_layout_controls.append(control)
+	var upgrade_fab := main.find_child("UpgradeFabButton", true, false) as Control
+	if upgrade_fab != null and upgrade_fab.visible:
+		plus_layout_controls.append(upgrade_fab)
+	var plus_overlap := _first_control_overlap(plus_layout_controls, 2.0)
+	if not plus_overlap.is_empty():
+		push_error("Expected combat level-up return button not to overlap HUD controls, got %s." % plus_overlap)
+		quit(1)
+		return
+	var level_up_badge_panel := level_up_plus.find_child("LevelUpPlusBadgePanel", true, false) as Control
+	var qa_dir_level_up := ProjectSettings.globalize_path("res://build/qa")
+	DirAccess.make_dir_recursive_absolute(qa_dir_level_up)
+	var level_up_dump_text := ""
+	var level_up_dump := FileAccess.open("%s/combat_level_up_button.md" % qa_dir_level_up, FileAccess.WRITE)
+	if level_up_dump != null:
+		var plus_texture := (plus_normal_style as StyleBoxTexture).texture if plus_normal_style is StyleBoxTexture else null
+		level_up_dump_text = "# Combat Level-Up Return Button\n\n- Viewport: `%s`\n- Button: `%s`\n- Badge: `%s`\n- Alpha: `%.3f`\n- Texture: `%s`\n" % [str(level_up_viewport_size), str(level_up_plus_rect), str(level_up_badge_panel.get_global_rect() if level_up_badge_panel != null else Rect2()), level_up_plus.modulate.a, str(plus_texture.resource_path if plus_texture != null else "")]
+		level_up_dump.store_string(level_up_dump_text)
+		level_up_dump.close()
+	var scrum390_level_up_dir := ProjectSettings.globalize_path("res://build/qa/scrum390")
+	DirAccess.make_dir_recursive_absolute(scrum390_level_up_dir)
+	var scrum390_level_up_dump := FileAccess.open("%s/combat_level_up_button.md" % scrum390_level_up_dir, FileAccess.WRITE)
+	if scrum390_level_up_dump != null:
+		if level_up_dump_text == "":
+			level_up_dump_text = "# Combat Level-Up Return Button\n\n- Viewport: `%s`\n- Button: `%s`\n- Badge: `%s`\n- Alpha: `%.3f`\n- Texture: `%s`\n" % [str(level_up_viewport_size), str(level_up_plus_rect), str(level_up_badge_panel.get_global_rect() if level_up_badge_panel != null else Rect2()), level_up_plus.modulate.a, _stylebox_texture_path(plus_normal_style)]
+		scrum390_level_up_dump.store_string(level_up_dump_text)
+		scrum390_level_up_dump.close()
 	var level_up_toast := main.find_child("LevelUpToast", true, false)
 	if level_up_toast == null:
 		push_error("Expected level-up to play a placeholder toast animation.")
@@ -797,6 +1008,11 @@ func _initialize() -> void:
 	var level_up_hero := level_up_overlay.find_child("LevelUpHeroPortrait", true, false) as TextureRect
 	if level_up_hero == null or level_up_hero.texture == null:
 		push_error("Expected level-up screen to include the selected hero portrait.")
+		quit(1)
+		return
+	var level_up_portrait := _expected_character_portrait_path(str(main.get("selected_character_id")))
+	if level_up_hero.texture.resource_path != level_up_portrait:
+		push_error("Expected level-up hero portrait to use new full-frame portrait %s, got %s." % [level_up_portrait, level_up_hero.texture.resource_path])
 		quit(1)
 		return
 	# SCRUM-149: ровно 3 варианта за уровень.
@@ -881,6 +1097,11 @@ func _initialize() -> void:
 		push_error("Expected level-up to expose a bottom button for deferred choice.")
 		quit(1)
 		return
+	var defer_rect := defer_button.get_global_rect()
+	if defer_rect.size.x < 260.0 or defer_rect.size.y < 100.0 or not _button_uses_red_gold_type(defer_button, "back_m"):
+		push_error("Expected level-up Later button to use a non-cropped 260x104 medium back frame, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
+		quit(1)
+		return
 	defer_button.pressed.emit()
 	await process_frame
 	if bool(main.call("_has_pause_reason", "level_up")):
@@ -892,8 +1113,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var return_button := main.find_child("LevelUpPlusButton", true, false) as Button
-	if return_button == null or not String(return_button.text).contains("Повышение"):
-		push_error("Expected a labelled level-up return button after deferring.")
+	if return_button == null or return_button.text != "+" or not _button_uses_combat_hud_plus_style(return_button):
+		push_error("Expected a SCRUM-390 level-up plus return button after deferring.")
 		quit(1)
 		return
 	# Возврат к тому же зафиксированному набору.
@@ -950,6 +1171,11 @@ func _initialize() -> void:
 		push_error("Expected Esc to open the unified run pause menu.")
 		quit(1)
 		return
+	var run_pause_panel := main.find_child("RunPauseMenuPanel", true, false) as PanelContainer
+	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
+		push_error("Expected run pause menu to use the SCRUM-330 pause/end modal frame.")
+		quit(1)
+		return
 	var pause_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
 	if pause_dossier_button == null:
 		push_error("Expected run pause menu to provide a character dossier button.")
@@ -983,8 +1209,8 @@ func _initialize() -> void:
 		push_error("Expected base stats to sit under controls as one compact row per base stat.")
 		quit(1)
 		return
-	if derived_groups.columns != 2 or derived_groups.get_child_count() < 5:
-		push_error("Expected derived stats to be organized into compact logical groups.")
+	if derived_groups.columns < 1 or derived_groups.columns > 2 or derived_groups.get_child_count() < 5:
+		push_error("Expected derived stats to be organized into responsive compact logical groups.")
 		quit(1)
 		return
 	var strength_row := pause_menu.find_child("BaseStatRow_strength", true, false) as Control
@@ -1000,12 +1226,20 @@ func _initialize() -> void:
 		push_error("Expected pause stats menu to expose Design kit hook nodes.")
 		quit(1)
 		return
+	if _stylebox_texture_path(escape_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
+		push_error("Expected pause dossier/stats panel to use the SCRUM-330 pause/end modal frame.")
+		quit(1)
+		return
 	if not (escape_panel.get_theme_stylebox("panel") is StyleBoxTexture):
 		push_error("Expected Escape stats panel to use Design StyleBoxTexture frame.")
 		quit(1)
 		return
 	if not (resume_button.get_theme_stylebox("normal") is StyleBoxTexture):
 		push_error("Expected Escape menu buttons to use Design StyleBoxTexture frame.")
+		quit(1)
+		return
+	if not _button_uses_red_gold_type(resume_button, "pause"):
+		push_error("Expected Escape menu buttons to use neutral non-glow Red&Gold hover/focus states.")
 		quit(1)
 		return
 	if not (strength_row.get_theme_stylebox("panel") is StyleBoxTexture) or not (damage_chip.get_theme_stylebox("panel") is StyleBoxTexture) or not (physical_group.get_theme_stylebox("panel") is StyleBoxTexture):
@@ -1055,9 +1289,13 @@ func _initialize() -> void:
 		push_error("Expected the attribute purchase window after the victory banner.")
 		quit(1)
 		return
-	var attribute_offers := main.find_child("AttributeOffers", true, false) as VBoxContainer
+	var attribute_offers := main.find_child("AttributeOffers", true, false) as Container
 	if attribute_offers == null or attribute_offers.get_child_count() < 2 or attribute_offers.get_child_count() > 8:
 		push_error("Expected 2-8 attribute offers in the post-battle window, including meta skill extra options.")
+		quit(1)
+		return
+	if _stylebox_texture_path((attribute_panel as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_panel.png":
+		push_error("Expected attribute shop panel to use the SCRUM-332 economy panel frame.")
 		quit(1)
 		return
 	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
@@ -1070,6 +1308,10 @@ func _initialize() -> void:
 	var stats_before: Dictionary = (snapshot.get("stats", {}) as Dictionary).duplicate(true)
 	var attr_money_before := int(main.ui._run_money())
 	var first_offer := attribute_offers.get_child(0) as Button
+	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card.png":
+		push_error("Expected attribute offers to use the SCRUM-332 economy choice card frame.")
+		quit(1)
+		return
 	var offered_stat := str(first_offer.name).replace("AttributeOffer_", "")
 	if first_offer.disabled:
 		push_error("Expected the attribute offer to be affordable in the test run (money %d)." % attr_money_before)
@@ -1115,6 +1357,7 @@ func _initialize() -> void:
 	await _test_victory_flow(main)
 	await _test_elite_flow(main_scene)
 	await _test_debug_free_pick(main_scene)
+	await _test_debug_combat_click_to_move(main_scene)
 	await _test_codex_screen(main_scene)
 	await _test_escape_navigation(main_scene)
 	await _test_economy_tiers_and_fab(main_scene)
@@ -1122,6 +1365,7 @@ func _initialize() -> void:
 	await _test_class_relevance_and_offer_fixation(main_scene)
 	_test_settings_persistence_and_audio()
 	await _test_full_attribute_wiring()
+	_test_attribute_weapon_synergy_matrix()
 	await _test_all_playable_classes()
 	await _test_soldier_weapon_mechanics()
 	await _test_thief_weapon_mechanics()
@@ -1131,10 +1375,13 @@ func _initialize() -> void:
 	await _test_biologist_weapon_mechanics()
 	await _test_robot_weapon_mechanics()
 	await _test_engineer_weapon_mechanics()
+	_test_unique_encounter_pattern_catalog()
 	await _test_elite_unique_attacks()
 	await _test_weapon_aiming()
+	await _test_no_auto_player_movement_from_crit_or_dodge()
 	await _test_class_weapon_rework()
 	await _test_unique_class_identity_patterns()
+	_test_class_mechanic_identity_framework()
 	await _test_universal_attribute_interpretations()
 	_test_class_budget_profiles()
 	await _test_enemy_stage_scaling_and_elite_rewards(main_scene)
@@ -1147,6 +1394,7 @@ func _initialize() -> void:
 	await _test_boss_hud_omits_timer(main_scene)
 	await _test_weapon_select_clean_layout(main_scene)
 	await _test_parchment_button_seal_sizes(main_scene)
+	await _test_skill_tree_progression_kit(main_scene)
 	await _test_hero_select_radar_no_overlap_layouts(main_scene)
 	await _test_shop_wall_no_overlap_layouts(main_scene)
 	await _test_hud_no_overlap_layouts(main_scene)
@@ -1183,6 +1431,9 @@ func _test_glossary_terms(main: Node) -> void:
 	if tooltip == null or not _collect_label_text(tooltip).contains("Критический удар"):
 		_fail("Expected glossary hover to create a tooltip panel with the term name.")
 		return
+	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_tooltip.png":
+		_fail("Expected glossary tooltip to use the Codex tooltip frame texture.")
+		return
 	main.ui._hide_glossary_tooltip()
 	button.queue_free()
 	await process_frame
@@ -1195,9 +1446,18 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 	root.add_child(m)
 	await process_frame
 	var expected := {
+		"rift_warden": "",
+		"disk_devourer": "",
 		"bone_archon": "Костяной Архонт",
 		"brood_mother": "Матерь Роя",
 		"ashen_colossus": "Пепельный Колосс",
+	}
+	var expected_unique_nodes := {
+		"rift_warden": "BossGravityWell",
+		"disk_devourer": "BossVampiricBite",
+		"bone_archon": "BossRiftZone",
+		"brood_mother": "BroodWebZone",
+		"ashen_colossus": "BossMoltenArmorPulse",
 	}
 	for boss_id in expected.keys():
 		var scene: PackedScene = m.combat.call("_boss_scene_for_id", boss_id)
@@ -1213,18 +1473,32 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 		if str(boss.get("boss_behavior")) != boss_id:
 			_fail("Expected boss behavior '%s', got '%s'." % [boss_id, str(boss.get("boss_behavior"))])
 			return
-		if str(boss.get("boss_display_name")) != str(expected[boss_id]):
+		if str(expected[boss_id]) != "" and str(boss.get("boss_display_name")) != str(expected[boss_id]):
 			_fail("Expected Russian display name for '%s'." % boss_id)
 			return
-		if absf(boss.scale.x - 1.9) > 0.01:
-			_fail("Expected epic boss scale 1.9 for '%s'." % boss_id)
+		if str(boss.get_meta("unique_pattern_id", "")) != boss_id:
+			_fail("Expected boss '%s' to expose its unique encounter pattern meta." % boss_id)
+			return
+		var boss_mechanics: Array = boss.get_meta("unique_mechanics", []) as Array
+		if boss_mechanics.size() < 3:
+			_fail("Expected boss '%s' to expose at least 3 unique mechanics." % boss_id)
+			return
+		var expected_boss_scale: float = float(ProgressionData.enemy_size_profile("boss").get("scale", 1.9))
+		if absf(boss.scale.x - expected_boss_scale) > 0.01:
+			_fail("Expected epic boss scale %.2f for '%s'." % [expected_boss_scale, boss_id])
 			return
 		# Игрок рядом + прогон атак: хазард-зоны телеграфятся без ошибок.
 		var player := (load("res://scenes/Player.tscn") as PackedScene).instantiate() as Node2D
 		holder.add_child(player)
 		player.add_to_group("player")
-		player.global_position = boss.global_position + Vector2(280, 0)
+		player.global_position = boss.global_position + Vector2(120 if boss_id == "disk_devourer" else 280, 0)
 		await process_frame
+		boss.set("_boss_unique_cooldown", 0.0)
+		boss.call("_update_boss_attacks", 0.1)
+		await process_frame
+		if holder.find_child(str(expected_unique_nodes[boss_id]), true, false) == null:
+			_fail("Expected boss '%s' unique mechanic to spawn %s." % [boss_id, str(expected_unique_nodes[boss_id])])
+			return
 		var hazards_before := holder.find_children("*", "Node2D", true, false).size()
 		for _tick in range(220):
 			boss.call("_update_boss_attacks", 0.05)
@@ -1252,6 +1526,38 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 			return
 	m.queue_free()
 	await process_frame
+
+
+func _test_unique_encounter_pattern_catalog() -> void:
+	var catalog: Dictionary = ProgressionData.enemy_mechanic_catalog()
+	for required_id in ["aura_buff", "summon_retinue", "blink_reposition", "hazard_pool", "poison_dot", "shield_block", "charge_telegraph", "reflect_thorns", "slow_zone", "vampirism", "rift_wave", "mirror_double", "gravity_pull", "weakpoint_shell", "healing_inversion", "split_spawn"]:
+		if not catalog.has(required_id):
+			_fail("Expected enemy mechanic catalog to include %s." % required_id)
+			return
+	var patterns: Dictionary = ProgressionData.unique_encounter_patterns()
+	var expected_entities := ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal", "rift_warden", "disk_devourer", "bone_archon", "brood_mother", "ashen_colossus"]
+	var seen_signatures := {}
+	for entity_id in expected_entities:
+		var pattern: Dictionary = ProgressionData.unique_encounter_pattern(entity_id)
+		if pattern.is_empty():
+			_fail("Expected unique encounter pattern for %s." % entity_id)
+			return
+		var mechanics: Array = pattern.get("mechanics", []) as Array
+		if mechanics.size() < 3:
+			_fail("Expected %s to have at least 3 mechanics." % entity_id)
+			return
+		for mechanic_id in mechanics:
+			if not catalog.has(str(mechanic_id)):
+				_fail("Expected %s mechanic %s to exist in catalog." % [entity_id, str(mechanic_id)])
+				return
+		var signature_parts := PackedStringArray()
+		for mechanic_id in mechanics:
+			signature_parts.append(str(mechanic_id))
+		var signature := ",".join(signature_parts)
+		if seen_signatures.has(signature):
+			_fail("Expected unique mechanic signature for %s; duplicated %s." % [entity_id, str(seen_signatures[signature])])
+			return
+		seen_signatures[signature] = entity_id
 
 
 func _test_mini_elite_roster(main_scene: PackedScene) -> void:
@@ -1396,7 +1702,8 @@ func _test_elite_phase2_escalation() -> void:
 
 
 func _test_epic_elite_boss_scale_hitbox() -> void:
-	# Элитки/боссы крупнее, хитбоксы согласованы: node scale тянет визуал +
+	# Мини-элитки/элитки/боссы разведены по data-driven size profile; хитбоксы
+	# согласованы: node scale тянет визуал +
 	# CollisionShape2D + contact_range вместе. Проверяем масштаб и что collision-
 	# радиус близок к видимому силуэту (нет «урона по воздуху» и непопадания вплотную).
 	var holder := Node2D.new()
@@ -1409,18 +1716,24 @@ func _test_epic_elite_boss_scale_hitbox() -> void:
 	await process_frame
 	var mob_contact := float(mob.get("contact_range"))
 
-	var cases := {
-		"res://scenes/EliteArmored.tscn": 1.4,
-		"res://scenes/BossDiskDevourer.tscn": 1.9,
-	}
-	for scene_path in cases.keys():
-		var expected_scale: float = cases[scene_path]
+	var observed_scales: Dictionary = {}
+	var cases: Array[Dictionary] = [
+		{"scene": "res://scenes/EliteArmored.tscn", "profile": "mini_elite"},
+		{"scene": "res://scenes/EliteArmored.tscn", "profile": "elite"},
+		{"scene": "res://scenes/BossDiskDevourer.tscn", "profile": "boss"},
+	]
+	for case: Dictionary in cases:
+		var scene_path: String = str(case["scene"])
+		var profile: String = str(case["profile"])
+		var expected_scale: float = float(ProgressionData.enemy_size_profile(profile).get("scale", 1.0))
 		var unit := (load(scene_path) as PackedScene).instantiate() as Node2D
+		unit.set_meta("epic_scale_profile", profile)
 		holder.add_child(unit)
 		await process_frame
 		if absf(unit.scale.x - expected_scale) > 0.001 or absf(unit.scale.y - expected_scale) > 0.001:
-			_fail("Expected %s epic node scale %.2f, got %.2f." % [scene_path, expected_scale, unit.scale.x])
+			_fail("Expected %s profile '%s' node scale %.2f, got %.2f." % [scene_path, profile, expected_scale, unit.scale.x])
 			return
+		observed_scales[profile] = unit.scale.x
 		# Хитбокс vs силуэт: эффективный радиус CollisionShape близок к видимому.
 		var shape_node := unit.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if shape_node == null or shape_node.shape == null:
@@ -1440,6 +1753,9 @@ func _test_epic_elite_boss_scale_hitbox() -> void:
 			_fail("Expected %s contact_range to exceed a base mob's (%.1f vs %.1f)." % [scene_path, float(unit.get("contact_range")), mob_contact])
 			return
 		unit.queue_free()
+	if not (float(observed_scales["mini_elite"]) < float(observed_scales["elite"]) and float(observed_scales["elite"]) < float(observed_scales["boss"])):
+		_fail("Expected size order mini_elite < elite < boss, got %s." % str(observed_scales))
+		return
 	holder.queue_free()
 	current_scene = null
 	await process_frame
@@ -1628,6 +1944,277 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 	await process_frame
 
 
+func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
+	var shop_main := main_scene.instantiate()
+	root.add_child(shop_main)
+	await process_frame
+	shop_main.set("selected_character_id", "berserk")
+	shop_main.set("selected_weapon_id", "sword")
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var shop_player := player_scene.instantiate()
+	root.add_child(shop_player)
+	shop_player.configure_character("berserk", "sword")
+	shop_player.set("money", 5000)
+	shop_main.call("_store_player_snapshot", shop_player)
+	shop_player.queue_free()
+	shop_main.set("route_stage", 0)
+	shop_main.set("route_nodes", [
+		[
+			{"type": "shop", "name": "Shop 1: Test Caravan", "row": 0, "branch": 0, "next_branches": [0]},
+		],
+		[
+			{"type": "battle", "name": "Battle 2: Test Road", "row": 1, "branch": 0, "next_branches": [0]},
+		],
+		[
+			{"type": "boss", "name": "Rift Warden", "boss_id": "rift_warden", "row": 2, "branch": 0},
+		],
+	])
+	shop_main.call("_show_battle_map")
+	await process_frame
+	await process_frame
+
+	var route_scroll := shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
+	var shop_button := shop_main.find_child("RouteNode_shop_0_0", true, false) as Button
+	if route_scroll == null or shop_button == null or shop_button.disabled:
+		push_error("Expected test shop route node to start clickable.")
+		quit(1)
+		return
+	var route_nodes: Array = shop_main.get("route_nodes")
+	var shop_route_node: Dictionary = route_nodes[0][0]
+	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	await process_frame
+	if shop_main.find_child("ShopScreen", true, false) == null:
+		push_error("Expected clicking a shop route node to open the shop.")
+		quit(1)
+		return
+	var initial_shop_key := str(shop_main.get("current_shop_node_key"))
+	var initial_shop_ids: Array[String] = []
+	for item in (shop_main.get("current_shop_items") as Array):
+		var item_dict: Dictionary = item
+		initial_shop_ids.append(str(item_dict.get("id", "")))
+	if initial_shop_ids.is_empty():
+		push_error("Expected route shop to generate stock.")
+		quit(1)
+		return
+	if not bool(shop_main.call("_buy_shop_item_at", 0)):
+		push_error("Expected first route-shop item purchase to succeed.")
+		quit(1)
+		return
+	await process_frame
+	var purchased_after_buy: Array = shop_main.get("current_shop_purchased")
+	if purchased_after_buy.is_empty() or not bool(purchased_after_buy[0]):
+		push_error("Expected purchased route-shop item to stay marked.")
+		quit(1)
+		return
+	var money_after_buy := int(shop_main.call("_run_money"))
+	var leave_button := shop_main.find_child("ShopLeaveButton", true, false) as Button
+	if leave_button == null:
+		push_error("Expected route shop to expose a leave button.")
+		quit(1)
+		return
+	leave_button.pressed.emit()
+	await process_frame
+	await process_frame
+	if int(shop_main.get("route_stage")) != 0 or not bool(shop_main.get("shop_reentry_pending")):
+		push_error("Expected leaving shop to keep route_stage=0 and mark shop reentry pending.")
+		quit(1)
+		return
+	if shop_main.find_child("RouteMapScreen", true, false) == null:
+		push_error("Expected leaving shop to return to the route map.")
+		quit(1)
+		return
+	shop_button = shop_main.find_child("RouteNode_shop_0_0", true, false) as Button
+	var next_battle_button := shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	if shop_button == null or shop_button.disabled or next_battle_button == null or next_battle_button.disabled:
+		push_error("Expected both the visited shop and next route node to be clickable before leaving the level. shop=%s next=%s" % [str(shop_button), str(next_battle_button)])
+		quit(1)
+		return
+
+	route_scroll = shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
+	if route_scroll == null:
+		push_error("Expected route map scroll to exist before revisiting shop.")
+		quit(1)
+		return
+	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	await process_frame
+	if shop_main.find_child("ShopScreen", true, false) == null:
+		push_error("Expected revisiting the pending shop to reopen shop screen.")
+		quit(1)
+		return
+	var revisited_ids: Array[String] = []
+	for item in (shop_main.get("current_shop_items") as Array):
+		var item_dict: Dictionary = item
+		revisited_ids.append(str(item_dict.get("id", "")))
+	if revisited_ids != initial_shop_ids or str(shop_main.get("current_shop_node_key")) != initial_shop_key:
+		push_error("Expected revisited shop to keep same stock/key, got %s/%s instead of %s/%s." % [str(revisited_ids), str(shop_main.get("current_shop_node_key")), str(initial_shop_ids), initial_shop_key])
+		quit(1)
+		return
+	var revisited_purchased: Array = shop_main.get("current_shop_purchased")
+	if revisited_purchased.is_empty() or not bool(revisited_purchased[0]):
+		push_error("Expected revisited shop to preserve purchased state.")
+		quit(1)
+		return
+	if bool(shop_main.call("_buy_shop_item_at", 0)) or int(shop_main.call("_run_money")) != money_after_buy:
+		push_error("Expected revisited purchased shop slot to be non-rebuyable.")
+		quit(1)
+		return
+	leave_button = shop_main.find_child("ShopLeaveButton", true, false) as Button
+	leave_button.pressed.emit()
+	await process_frame
+	await process_frame
+	route_scroll = shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
+	next_battle_button = shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	if route_scroll == null or next_battle_button == null or next_battle_button.disabled:
+		push_error("Expected next battle node to stay clickable after a repeated shop visit.")
+		quit(1)
+		return
+	var next_route_node: Dictionary = route_nodes[1][0]
+	_send_route_node_mouse_press(shop_main, next_battle_button, route_scroll, 0, next_route_node, 1)
+	_send_route_node_mouse_release(shop_main, next_battle_button, route_scroll, 0, next_route_node, 1)
+	await process_frame
+	if int(shop_main.get("route_stage")) != 1 or bool(shop_main.get("shop_reentry_pending")):
+		push_error("Expected choosing the next route node to advance route_stage and clear shop reentry pending.")
+		quit(1)
+		return
+	if str(shop_main.get("current_shop_node_key")) != "" or not (shop_main.get("current_shop_items") as Array).is_empty() or not (shop_main.get("current_shop_purchased") as Array).is_empty():
+		push_error("Expected choosing next route node to finalize/clear previous shop stock.")
+		quit(1)
+		return
+	if not bool(shop_main.get("combat_active")) or str(shop_main.get("current_combat_type")) != "battle":
+		push_error("Expected choosing next route node after shop to start that battle.")
+		quit(1)
+		return
+
+	shop_main.queue_free()
+	await process_frame
+
+
+func _test_run_autosave_continue_prompt(main_scene: PackedScene) -> void:
+	RunAutosave.clear_run()
+
+	var save_main := main_scene.instantiate()
+	root.add_child(save_main)
+	await process_frame
+	save_main.set("selected_character_id", "dark_mage")
+	save_main.set("selected_weapon_id", "shadow_orb")
+	save_main.set("selected_ascension_level", 2)
+	save_main.set("route_stage", 3)
+	save_main.set("route_selected_indices", [1, 0, 2])
+	save_main.set("run_player_snapshot", {
+		"character_id": "dark_mage",
+		"weapon_id": "shadow_orb",
+		"health": 77.0,
+		"max_health": 120.0,
+		"stats": {"intelligence": 13, "endurance": 8},
+		"run_modifiers": {"damage_multiplier": 1.15},
+		"artifacts": [{"id": "hawk_eye", "title": "Ястребиный глаз"}],
+		"xp": 21,
+		"xp_to_next": 42,
+		"level": 5,
+		"money": 314,
+	})
+	if not bool(save_main.call("save_run_autosave", "runtime_smoke")):
+		_fail("Expected run autosave to be created from safe route state.")
+		return
+	if not RunAutosave.has_run():
+		_fail("Expected RunAutosave.has_run after save.")
+		return
+	save_main.queue_free()
+	await process_frame
+
+	var continue_main := main_scene.instantiate()
+	root.add_child(continue_main)
+	await process_frame
+	var start_button := continue_main.find_child("MainMenuStartButton", true, false) as Button
+	if start_button == null:
+		_fail("Expected main menu start button before autosave prompt.")
+		return
+	start_button.pressed.emit()
+	await process_frame
+	var dialog := continue_main.find_child("ContinueRunDialog", true, false) as Control
+	var continue_button := continue_main.find_child("ContinueRunButton", true, false) as Button
+	var new_game_button := continue_main.find_child("ContinueRunNewGameButton", true, false) as Button
+	if dialog == null or continue_button == null or new_game_button == null:
+		_fail("Expected autosave prompt with Continue/New Game buttons.")
+		return
+	continue_button.pressed.emit()
+	await process_frame
+	if continue_main.find_child("RouteMapScreen", true, false) == null:
+		_fail("Expected Continue to restore directly to route map.")
+		return
+	if str(continue_main.get("selected_character_id")) != "dark_mage" or int(continue_main.get("route_stage")) != 3:
+		_fail("Expected Continue to restore character and route stage.")
+		return
+	var restored_snapshot: Dictionary = continue_main.get("run_player_snapshot")
+	if int(restored_snapshot.get("money", 0)) != 314 or int(restored_snapshot.get("level", 0)) != 5:
+		_fail("Expected Continue to restore player money/level snapshot.")
+		return
+	continue_main.queue_free()
+	await process_frame
+
+	var fixture_route := [
+		[
+			{"type": "battle", "name": "Autosave Battle", "row": 0, "branch": 0, "next_branches": [0]},
+		],
+		[
+			{"type": "boss", "name": "Rift Warden", "boss_id": "rift_warden", "row": 1, "branch": 0},
+		],
+	]
+	if not RunAutosave.save_run({
+		"selected_character_id": "berserk",
+		"selected_weapon_id": "sword",
+		"route_stage": 0,
+		"route_nodes": fixture_route,
+		"run_player_snapshot": {"character_id": "berserk", "weapon_id": "sword", "money": 99, "level": 3},
+	}):
+		_fail("Expected manual run autosave fixture to save.")
+		return
+	var new_main := main_scene.instantiate()
+	root.add_child(new_main)
+	await process_frame
+	var new_start := new_main.find_child("MainMenuStartButton", true, false) as Button
+	if new_start == null:
+		_fail("Expected start button for New Game autosave prompt.")
+		return
+	new_start.pressed.emit()
+	await process_frame
+	var prompt_new_game := new_main.find_child("ContinueRunNewGameButton", true, false) as Button
+	if prompt_new_game == null:
+		_fail("Expected New Game choice while autosave exists.")
+		return
+	prompt_new_game.pressed.emit()
+	await process_frame
+	if RunAutosave.has_run():
+		_fail("Expected New Game choice to clear existing autosave.")
+		return
+	if new_main.find_child("HeroSelectScreen", true, false) == null or int(new_main.get("route_stage")) != 0:
+		_fail("Expected New Game choice to enter fresh hero select.")
+		return
+	new_main.queue_free()
+	await process_frame
+
+	var clear_main := main_scene.instantiate()
+	root.add_child(clear_main)
+	await process_frame
+	clear_main.call("save_run_autosave", "clear_death")
+	clear_main.ui._show_death_screen("Тестовая смерть.")
+	await process_frame
+	if RunAutosave.has_run():
+		_fail("Expected death screen to clear run autosave.")
+		return
+	clear_main.call("save_run_autosave", "clear_victory")
+	clear_main.ui._show_victory_screen()
+	await process_frame
+	if RunAutosave.has_run():
+		_fail("Expected victory screen to clear run autosave.")
+		return
+	clear_main.queue_free()
+	await process_frame
+	RunAutosave.clear_run()
+
+
 func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 	if EventData.RANDOM_EVENTS.size() < 10:
 		_fail("Expected at least 10 random event scenarios.")
@@ -1696,6 +2283,15 @@ func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 	var checked_combat := false
 	for event in EventData.RANDOM_EVENTS:
 		for choice in (event.get("choices", []) as Array):
+			var formatted_choice_text: String = event_main.ui._event_choice_description_text(choice)
+			if formatted_choice_text.contains("Риск: Риск:"):
+				_fail("Expected event choice risk text to avoid duplicate prefix for %s." % choice.get("id", ""))
+				event_main.queue_free()
+				return
+			if bool(choice.get("risk", false)) and not formatted_choice_text.begins_with("Риск:"):
+				_fail("Expected risk event choice text to include a single player-facing risk prefix for %s." % choice.get("id", ""))
+				event_main.queue_free()
+				return
 			if choice.has("check") and not checked_success:
 				var high_player: Node = event_main.combat._snapshot_player_for_menu()
 				var success_outcome: Dictionary = event_main.ui._resolve_event_choice_outcome(choice, high_player)
@@ -1758,24 +2354,24 @@ func _choice_nested_outcome_has(choice: Dictionary, key: String) -> bool:
 	return false
 
 
-func _send_route_node_mouse_press(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary) -> void:
+func _send_route_node_mouse_press(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary, step_index := 0) -> void:
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
-	main.call("_handle_route_node_input", button, press, scroll, 0, branch_index, route_node)
+	main.call("_handle_route_node_input", button, press, scroll, step_index, branch_index, route_node)
 
 
-func _send_route_node_mouse_release(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary) -> void:
+func _send_route_node_mouse_release(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary, step_index := 0) -> void:
 	var release := InputEventMouseButton.new()
 	release.button_index = MOUSE_BUTTON_LEFT
 	release.pressed = false
-	main.call("_handle_route_node_input", button, release, scroll, 0, branch_index, route_node)
+	main.call("_handle_route_node_input", button, release, scroll, step_index, branch_index, route_node)
 
 
-func _send_route_node_mouse_drag(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary, relative: Vector2) -> void:
+func _send_route_node_mouse_drag(main: Node, button: Button, scroll: ScrollContainer, branch_index: int, route_node: Dictionary, relative: Vector2, step_index := 0) -> void:
 	var motion := InputEventMouseMotion.new()
 	motion.relative = relative
-	main.call("_handle_route_node_input", button, motion, scroll, 0, branch_index, route_node)
+	main.call("_handle_route_node_input", button, motion, scroll, step_index, branch_index, route_node)
 
 
 func _test_arena_generation(main: Node, player: Node) -> void:
@@ -1959,8 +2555,8 @@ func _test_noncombat_nodes(main: Node) -> void:
 		quit(1)
 		return
 	var first_price_badge := first_shop_button.find_child("ShopPriceBadge", true, false) as PanelContainer
-	if first_price_badge == null or first_price_badge.get_theme_stylebox("panel") is StyleBoxTexture:
-		push_error("Expected inline shop price badge to be compact and frameless.")
+	if first_price_badge == null or _stylebox_texture_path(first_price_badge.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_price_badge.png":
+		push_error("Expected inline shop price badge to use the SCRUM-332 economy price badge frame.")
 		quit(1)
 		return
 	main.ui._show_pause_menu()
@@ -2126,14 +2722,15 @@ func _node_sprite_texture_path(node: Node, sprite_name: String) -> String:
 	return sprite.texture.resource_path
 
 
-func _button_uses_dark_fantasy_role(button: Button, role: String) -> bool:
+func _button_uses_red_gold_type(button: Button, button_type: String) -> bool:
 	if button == null:
 		return false
 	var expected := {
-		"normal": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_idle.png" % role,
-		"hover": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_hover.png" % role,
-		"pressed": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_pressed.png" % role,
-		"disabled": "res://assets/sprites/ui/frames/dark_fantasy/ui_df_button_%s_disabled.png" % role,
+		"normal": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
+		"hover": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
+		"focus": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
+		"pressed": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_pressed.png" % button_type,
+		"disabled": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_disabled.png" % button_type,
 	}
 	for state in expected.keys():
 		var style := button.get_theme_stylebox(state)
@@ -2142,7 +2739,51 @@ func _button_uses_dark_fantasy_role(button: Button, role: String) -> bool:
 		var texture := (style as StyleBoxTexture).texture
 		if texture == null or texture.resource_path != str(expected[state]):
 			return false
+	var hover_style := button.get_theme_stylebox("hover") as StyleBoxTexture
+	var focus_style := button.get_theme_stylebox("focus") as StyleBoxTexture
+	if hover_style == null or focus_style == null:
+		return false
+	if not _is_neutral_bright_button_tint(hover_style.modulate_color) or not _is_neutral_bright_button_tint(focus_style.modulate_color):
+		return false
+	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
+		return false
 	return true
+
+
+func _button_uses_combat_hud_plus_style(button: Button) -> bool:
+	if button == null:
+		return false
+	var expected := {
+		"normal": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus.png",
+		"hover": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus_hover.png",
+		"focus": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus_hover.png",
+		"pressed": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus_pressed.png",
+		"disabled": "res://assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus_disabled.png",
+	}
+	for state in expected.keys():
+		var style := button.get_theme_stylebox(state)
+		if not (style is StyleBoxTexture):
+			return false
+		var texture := (style as StyleBoxTexture).texture
+		if texture == null or texture.resource_path != str(expected[state]):
+			return false
+	var hover_style := button.get_theme_stylebox("hover") as StyleBoxTexture
+	var focus_style := button.get_theme_stylebox("focus") as StyleBoxTexture
+	if hover_style == null or focus_style == null:
+		return false
+	if not _is_neutral_bright_button_tint(hover_style.modulate_color) or not _is_neutral_bright_button_tint(focus_style.modulate_color):
+		return false
+	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
+		return false
+	return true
+
+
+func _is_neutral_bright_button_tint(color: Color) -> bool:
+	return color.r >= 1.0 and color.g >= 1.0 and color.b >= 1.0 and absf(color.r - color.g) <= 0.015 and absf(color.g - color.b) <= 0.015
+
+
+func _is_neutral_button_font(color: Color) -> bool:
+	return color.r >= 0.98 and color.g >= 0.98 and color.b >= 0.98 and absf(color.r - color.g) <= 0.015 and absf(color.g - color.b) <= 0.015
 
 
 func _test_stat_artifact_recording() -> void:
@@ -2222,29 +2863,29 @@ func _test_class_weapon_configs() -> void:
 			"soldier_bayonet": {"scene": "SoldierBayonet", "mode": "bayonet_brace", "sprite": "res://assets/sprites/weapons/soldier_bayonet.png"},
 		},
 		"thief": {
-			"thief_coin_pouch": {"scene": "ThiefCoinPouch", "mode": "coin_ricochet", "sprite": "res://assets/sprites/weapons/chakrams.png"},
-			"thief_shadow_cloak": {"scene": "ThiefShadowCloak", "mode": "shadow_backstab", "sprite": "res://assets/sprites/weapons/shadow_daggers.png"},
-			"thief_smoke_bomb": {"scene": "ThiefSmokeBomb", "mode": "smoke_bomb", "sprite": "res://assets/sprites/weapons/blast_powder.png"},
+			"thief_coin_pouch": {"scene": "ThiefCoinPouch", "mode": "coin_ricochet", "sprite": "res://assets/sprites/weapons/thief_coin_pouch.png"},
+			"thief_shadow_cloak": {"scene": "ThiefShadowCloak", "mode": "shadow_backstab", "sprite": "res://assets/sprites/weapons/thief_shadow_cloak.png"},
+			"thief_smoke_bomb": {"scene": "ThiefSmokeBomb", "mode": "smoke_bomb", "sprite": "res://assets/sprites/weapons/thief_smoke_bomb.png"},
 		},
 		"elementalist": {
-			"elementalist_orb_ring": {"scene": "ElementalistOrbRing", "mode": "elemental_orbit", "sprite": "res://assets/sprites/weapons/dark_wand.png"},
-			"elementalist_prism_focus": {"scene": "ElementalistPrismFocus", "mode": "prism_rift", "sprite": "res://assets/sprites/weapons/acid_flask.png"},
-			"elementalist_meteor_core": {"scene": "ElementalistMeteorCore", "mode": "meteor_shards", "sprite": "res://assets/sprites/weapons/blast_powder.png"},
+			"elementalist_orb_ring": {"scene": "ElementalistOrbRing", "mode": "elemental_orbit", "sprite": "res://assets/sprites/weapons/elementalist_orb_ring.png"},
+			"elementalist_prism_focus": {"scene": "ElementalistPrismFocus", "mode": "prism_rift", "sprite": "res://assets/sprites/weapons/elementalist_prism_focus.png"},
+			"elementalist_meteor_core": {"scene": "ElementalistMeteorCore", "mode": "meteor_shards", "sprite": "res://assets/sprites/weapons/elementalist_meteor_core.png"},
 		},
 		"sniper": {
-			"sniper_deadeye_rifle": {"scene": "SniperDeadeyeRifle", "mode": "sniper_lockshot", "sprite": "res://assets/sprites/weapons/moon_crossbow.png"},
-			"sniper_spotter_scope": {"scene": "SniperSpotterScope", "mode": "sniper_kill_zone", "sprite": "res://assets/sprites/weapons/soldier_rifle.png"},
-			"sniper_shatter_rounds": {"scene": "SniperShatterRounds", "mode": "sniper_split_round", "sprite": "res://assets/sprites/weapons/storm_longbow.png"},
+			"sniper_deadeye_rifle": {"scene": "SniperDeadeyeRifle", "mode": "sniper_lockshot", "sprite": "res://assets/sprites/weapons/sniper_deadeye_rifle.png"},
+			"sniper_spotter_scope": {"scene": "SniperSpotterScope", "mode": "sniper_kill_zone", "sprite": "res://assets/sprites/weapons/sniper_spotter_scope.png"},
+			"sniper_shatter_rounds": {"scene": "SniperShatterRounds", "mode": "sniper_split_round", "sprite": "res://assets/sprites/weapons/sniper_shatter_rounds.png"},
 		},
 		"priest": {
-			"priest_reliquary": {"scene": "PriestReliquary", "mode": "priest_sanctify", "sprite": "res://assets/sprites/weapons/restore_potion.png"},
-			"priest_censer": {"scene": "PriestCenser", "mode": "priest_ward", "sprite": "res://assets/sprites/weapons/holy_flail.png"},
-			"priest_chime": {"scene": "PriestChime", "mode": "priest_prayer_chain", "sprite": "res://assets/sprites/weapons/sound_amp.png"},
+			"priest_reliquary": {"scene": "PriestReliquary", "mode": "priest_sanctify", "sprite": "res://assets/sprites/weapons/priest_reliquary.png"},
+			"priest_censer": {"scene": "PriestCenser", "mode": "priest_ward", "sprite": "res://assets/sprites/weapons/priest_censer.png"},
+			"priest_chime": {"scene": "PriestChime", "mode": "priest_prayer_chain", "sprite": "res://assets/sprites/weapons/priest_chime.png"},
 		},
 		"biologist": {
-			"biologist_spore_lens": {"scene": "BiologistSporeLens", "mode": "bio_spore_bloom", "sprite": "res://assets/sprites/weapons/briar_staff.png"},
-			"biologist_sample_injector": {"scene": "BiologistSampleInjector", "mode": "bio_sample_dart", "sprite": "res://assets/sprites/weapons/plague_syringe.png"},
-			"biologist_symbiote_seed": {"scene": "BiologistSymbioteSeed", "mode": "bio_symbiote_web", "sprite": "res://assets/sprites/weapons/homunculus_vial.png"},
+			"biologist_spore_lens": {"scene": "BiologistSporeLens", "mode": "bio_spore_bloom", "sprite": "res://assets/sprites/weapons/biologist_spore_lens.png"},
+			"biologist_sample_injector": {"scene": "BiologistSampleInjector", "mode": "bio_sample_dart", "sprite": "res://assets/sprites/weapons/biologist_sample_injector.png"},
+			"biologist_symbiote_seed": {"scene": "BiologistSymbioteSeed", "mode": "bio_symbiote_web", "sprite": "res://assets/sprites/weapons/biologist_symbiote_seed.png"},
 		},
 		"robot": {
 			"robot_magnetic_anchor": {"scene": "RobotMagneticAnchor", "mode": "robot_magnetic_anchor", "sprite": "res://assets/sprites/weapons/robot_magnetic_anchor.png"},
@@ -2252,9 +2893,9 @@ func _test_class_weapon_configs() -> void:
 			"robot_reactor_core": {"scene": "RobotReactorCore", "mode": "robot_reactor_vent", "sprite": "res://assets/sprites/weapons/robot_reactor_core.png"},
 		},
 		"engineer": {
-			"engineer_sentry_wrench": {"scene": "EngineerSentryWrench", "mode": "engineer_sentry_link", "sprite": "res://assets/sprites/weapons/raven_totem.png"},
-			"engineer_repair_drone": {"scene": "EngineerRepairDrone", "mode": "engineer_repair_drone", "sprite": "res://assets/sprites/weapons/summon_amulet.png"},
-			"engineer_pressure_mines": {"scene": "EngineerPressureMines", "mode": "engineer_pressure_mines", "sprite": "res://assets/sprites/weapons/hunter_trap.png"},
+			"engineer_sentry_wrench": {"scene": "EngineerSentryWrench", "mode": "engineer_sentry_link", "sprite": "res://assets/sprites/weapons/engineer_sentry_wrench.png"},
+			"engineer_repair_drone": {"scene": "EngineerRepairDrone", "mode": "engineer_repair_drone", "sprite": "res://assets/sprites/weapons/engineer_repair_drone.png"},
+			"engineer_pressure_mines": {"scene": "EngineerPressureMines", "mode": "engineer_pressure_mines", "sprite": "res://assets/sprites/weapons/engineer_pressure_mines.png"},
 		},
 		"dark_mage": {
 			"dark_book": {"scene": "DarkBook", "mode": "aoe_projectile", "sprite": "res://assets/sprites/weapons/dark_book.png"},
@@ -2416,6 +3057,37 @@ func _test_weapon_effect_cleanup() -> void:
 	await process_frame
 
 
+func _assert_health_bar_visible_when_near_viewport_top(entity: Node2D, health_bar: Node2D, context: String) -> bool:
+	if entity == null or health_bar == null:
+		return false
+	var viewport := entity.get_viewport()
+	if viewport == null:
+		return false
+	var visible_rect := viewport.get_visible_rect()
+	var canvas_inverse := viewport.get_canvas_transform().affine_inverse()
+	var visible_top_left: Vector2 = canvas_inverse * visible_rect.position
+	var visible_bottom_right: Vector2 = canvas_inverse * (visible_rect.position + visible_rect.size)
+	var original_position := entity.global_position
+	entity.global_position = Vector2((visible_top_left.x + visible_bottom_right.x) * 0.5, visible_top_left.y + 10.0)
+	if entity.has_method("_update_health_bar"):
+		entity.call("_update_health_bar")
+	var screen_position: Vector2 = health_bar.get_global_transform_with_canvas().origin
+	var half_width := maxf(8.0, float(health_bar.get("bar_width")) * 0.5)
+	var bar_height := maxf(4.0, float(health_bar.get("bar_height")))
+	var visible := (
+		screen_position.x - half_width >= -1.0
+		and screen_position.x + half_width <= float(visible_rect.size.x) + 1.0
+		and screen_position.y - bar_height >= -1.0
+		and screen_position.y <= float(visible_rect.size.y) + 1.0
+	)
+	if not visible:
+		print("%s health bar offscreen at %s in viewport %s." % [context, str(screen_position), str(visible_rect.size)])
+	entity.global_position = original_position
+	if entity.has_method("_update_health_bar"):
+		entity.call("_update_health_bar")
+	return visible
+
+
 func _test_victory_flow(main: Node) -> void:
 	paused = false
 	main.set("route_stage", 3)
@@ -2452,6 +3124,10 @@ func _test_victory_flow(main: Node) -> void:
 		push_error("Expected boss to expose HP phase markers for the uber-boss encounter.")
 		quit(1)
 		return
+	if not _assert_health_bar_visible_when_near_viewport_top(boss, boss_health_bar, "boss"):
+		push_error("Expected boss health bar to stay visible when the large boss sprite reaches the viewport top edge.")
+		quit(1)
+		return
 	boss.set("health", float(boss.get("max_health")) * 0.64)
 	boss.call("_update_boss_phase")
 	if int(boss.get("boss_phase")) != 2 or int(boss.get_meta("boss_phase", 0)) != 2:
@@ -2476,8 +3152,12 @@ func _test_victory_flow(main: Node) -> void:
 		quit(1)
 		return
 	boss.take_damage(99999.0)
-	await process_frame
-	await process_frame
+	var victory_text := ""
+	for _attempt in range(120):
+		await process_frame
+		victory_text = _collect_label_text(main)
+		if not bool(main.get("combat_active")) and victory_text.contains("Победа"):
+			break
 	if bool(main.get("combat_active")):
 		push_error("Expected boss death to end combat.")
 		quit(1)
@@ -2486,7 +3166,6 @@ func _test_victory_flow(main: Node) -> void:
 		push_error("Expected boss victory to grant meta progress and Berserk Ascension 1.")
 		quit(1)
 		return
-	var victory_text := _collect_label_text(main)
 	for forbidden in ["Meta points", "asc_", "_id", "berserk_asc"]:
 		if victory_text.contains(forbidden):
 			push_error("Expected victory screen text to hide internal technical token '%s'." % forbidden)
@@ -2497,6 +3176,11 @@ func _test_victory_flow(main: Node) -> void:
 			push_error("Expected victory screen text to include '%s'." % expected)
 			quit(1)
 			return
+	var victory_panel := main.find_child("PauseEndModalPanel_victory", true, false) as PanelContainer
+	if victory_panel == null or _stylebox_texture_path(victory_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
+		push_error("Expected victory screen to use the SCRUM-330 pause/end modal frame.")
+		quit(1)
+		return
 
 
 func _test_elite_flow(main_scene: PackedScene) -> void:
@@ -2532,6 +3216,10 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		return
 	if absf(float(elite_health_bar.get("max_value")) - float(elite_enemy.get("max_health"))) > 0.01:
 		push_error("Expected elite health bar max value to match scaled elite max health.")
+		quit(1)
+		return
+	if not _assert_health_bar_visible_when_near_viewport_top(elite_enemy, elite_health_bar, "elite"):
+		push_error("Expected elite health bar to stay visible when the large elite sprite reaches the viewport top edge.")
 		quit(1)
 		return
 	elite_enemy.call("take_damage", 10.0)
@@ -3002,19 +3690,70 @@ func _test_unique_class_identity_patterns() -> void:
 	assassin.global_position = Vector2(1700, 700)
 	await process_frame
 	assassin.call("configure_character", "assassin", "chakrams")
+	var assassin_weapon: Node = assassin.get("equipped_weapon")
+	if assassin_weapon != null:
+		assassin_weapon.set_process(false)
 	var assassin_enemy := enemy_scene.instantiate()
 	holder.add_child(assassin_enemy)
 	assassin_enemy.global_position = assassin.global_position + Vector2(220, 0)
+	await process_frame
 	var assassin_start: Vector2 = assassin.global_position
-	assassin.call("trigger_assassin_dash", assassin_enemy, 100.0)
-	await create_timer(0.15).timeout
-	if assassin.global_position.distance_to(assassin_start) < 40.0:
-		_fail("Expected Assassin critical mobility hook to dash toward a target.")
+	var vfx_before := {}
+	for existing_vfx in holder.find_children("*Vfx", "Node2D", true, false):
+		vfx_before[int(existing_vfx.get_instance_id())] = true
+	assassin.set("_assassin_crit_shadow_cooldown_left", 0.0)
+	assassin.call("trigger_assassin_crit_shadow", assassin_enemy, 100.0)
+	if assassin.global_position.distance_to(assassin_start) > 0.01:
+		_fail("Expected Assassin critical shadow hook to preserve player-controlled position.")
+		return
+	var spawned_assassin_vfx_names := []
+	for current_vfx in holder.find_children("*Vfx", "Node2D", true, false):
+		if not vfx_before.has(int(current_vfx.get_instance_id())):
+			spawned_assassin_vfx_names.append(String(current_vfx.name))
+	if spawned_assassin_vfx_names.is_empty():
+		_fail("Expected Assassin critical shadow hook to keep a non-moving combat/VFX effect.")
 		return
 
 	holder.queue_free()
 	current_scene = null
 	await process_frame
+
+
+func _test_class_mechanic_identity_framework() -> void:
+	var valid_stats := ProgressionData.STAT_NAMES.keys()
+	var identity_titles := {}
+	for character_id in ProgressionData.character_ids():
+		var identity: Dictionary = ProgressionData.class_mechanic_identity(character_id)
+		if identity.is_empty():
+			_fail("Expected %s to expose a class mechanic identity." % character_id)
+			return
+		var main_attribute := ProgressionData.class_main_attribute(character_id)
+		if not valid_stats.has(main_attribute):
+			_fail("Expected %s main attribute to be a valid base stat, got %s." % [character_id, main_attribute])
+			return
+		var priorities := ProgressionData.attribute_priorities(character_id)
+		if priorities.is_empty() or str(priorities[0]) != main_attribute:
+			_fail("Expected %s main attribute %s to match first attribute priority %s." % [character_id, main_attribute, str(priorities)])
+			return
+		var title := str(identity.get("identity_title", ""))
+		if title == "" or identity_titles.has(title):
+			_fail("Expected unique non-empty identity title for %s, got '%s'." % [character_id, title])
+			return
+		identity_titles[title] = true
+		var tags: Array = identity.get("mechanic_tags", [])
+		if tags.size() < 3:
+			_fail("Expected %s to expose at least three mechanic tags." % character_id)
+			return
+		var weapon_identities: Dictionary = identity.get("weapon_identities", {})
+		var weapon_ids := ProgressionData.weapon_ids(character_id)
+		if weapon_identities.size() != weapon_ids.size():
+			_fail("Expected %s weapon identities to cover exactly %d weapons, got %d." % [character_id, weapon_ids.size(), weapon_identities.size()])
+			return
+		for weapon_id in weapon_ids:
+			var weapon_text := ProgressionData.weapon_mechanic_identity(character_id, str(weapon_id))
+			if weapon_text == "":
+				_fail("Expected %s/%s to expose weapon mechanic identity text." % [character_id, str(weapon_id)])
+				return
 
 
 func _test_universal_attribute_interpretations() -> void:
@@ -3185,12 +3924,28 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 	root.add_child(scaling_main)
 	await process_frame
 	scaling_main.set("route_stage", 6)
+	scaling_main.set("selected_character_id", "berserk")
+	scaling_main.ui._show_reward_screen()
+	await process_frame
+	await process_frame
+	var battle_reward_buttons := scaling_main.find_children("BattleRewardButton*", "Button", true, false)
+	if battle_reward_buttons.size() != 3:
+		_fail("Expected battle reward screen to render 3 SCRUM-338 framed reward cards.")
+		scaling_main.queue_free()
+		return
+	if not _assert_reward_cards_use_scrum338_frames(battle_reward_buttons, "BattleRewardCardContent", REWARD_CARD_TEXTURE, REWARD_CARD_SAFE_MARGINS, "battle_reward"):
+		scaling_main.queue_free()
+		return
 	scaling_main.ui._show_elite_artifact_reward(Callable())
+	await process_frame
 	await process_frame
 	var reward_screen := scaling_main.find_child("EliteArtifactRewardScreen", true, false) as Control
 	var reward_buttons := scaling_main.find_children("EliteArtifactRewardButton*", "Button", true, false)
 	if reward_screen == null or reward_buttons.size() != 3:
 		_fail("Expected elite artifact reward screen to render 3 clickable artifact buttons.")
+		scaling_main.queue_free()
+		return
+	if not _assert_reward_cards_use_scrum338_frames(reward_buttons, "EliteArtifactRewardContent", REWARD_ELITE_CARD_TEXTURE, REWARD_ELITE_CARD_SAFE_MARGINS, "elite_reward"):
 		scaling_main.queue_free()
 		return
 	scaling_main.queue_free()
@@ -3349,6 +4104,51 @@ func _test_weapon_aiming() -> void:
 			return
 		aim_player.queue_free()
 		await process_frame
+
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_no_auto_player_movement_from_crit_or_dodge() -> void:
+	var holder := Node2D.new()
+	holder.name = "NoAutoMovementTestScene"
+	root.add_child(holder)
+	current_scene = holder
+
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
+
+	var assassin := player_scene.instantiate()
+	holder.add_child(assassin)
+	assassin.global_position = Vector2(900, 720)
+	await process_frame
+	assassin.call("configure_character", "assassin", "chakrams")
+	assassin.set("derived_parameters", {"damage": 30.0, "crit_chance": 1.0, "crit_damage_multiplier": 2.0})
+	var weapon: Node = assassin.get("equipped_weapon")
+	weapon.set_process(false)
+
+	var target := enemy_scene.instantiate()
+	holder.add_child(target)
+	target.set("max_health", 100000.0)
+	target.set("health", 100000.0)
+	target.global_position = assassin.global_position + Vector2(160, 0)
+	await process_frame
+
+	var crit_position_before: Vector2 = assassin.global_position
+	weapon.call("_damage_enemy", target, weapon.call("_rolled_damage", assassin))
+	await create_timer(0.16).timeout
+	if assassin.global_position.distance_to(crit_position_before) > 0.01:
+		_fail("Expected critical weapon hooks to preserve player-controlled position.")
+		return
+
+	assassin.set("derived_parameters", {"dodge": 1.0, "defense": 0.0})
+	var dodge_position_before: Vector2 = assassin.global_position
+	assassin.call("take_damage", 12.0)
+	await process_frame
+	if assassin.global_position.distance_to(dodge_position_before) > 0.01:
+		_fail("Expected dodge hooks to preserve player-controlled position.")
+		return
 
 	holder.queue_free()
 	current_scene = null
@@ -3522,10 +4322,14 @@ func _test_thief_weapon_mechanics() -> void:
 		var before_hp := float(enemy.get("health"))
 		var before_money := int(thief.get("money"))
 		var before_dodge := float((thief.get("derived_parameters") as Dictionary).get("dodge", 0.0))
+		var before_position: Vector2 = thief.global_position
 		weapon.call("_attack")
 		await create_timer(0.85).timeout
 		if float(enemy.get("health")) >= before_hp:
 			_fail("Expected Thief weapon %s to damage its target." % weapon_id)
+			return
+		if weapon_id == "thief_shadow_cloak" and thief.global_position.distance_to(before_position) > 0.01:
+			_fail("Expected Thief shadow cloak to strike without moving the player body.")
 			return
 		if weapon_id == "thief_coin_pouch" and int(thief.get("money")) <= before_money:
 			_fail("Expected Thief coin pouch to steal money on hit.")
@@ -3941,8 +4745,9 @@ func _test_full_attribute_wiring() -> void:
 		return
 	var vamp_mods := {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}
 	var vamp: Dictionary = ProgressionData.derived_parameters(stats, vamp_mods, weapon)
-	if absf(float(vamp["vampiric_chance"]) - 0.25) > 0.001 or absf(float(vamp["vampiric_amount"]) - 2.0) > 0.001:
-		_fail("Expected vampiric rewards to feed the vampiric parameters.")
+	if absf(float(vamp["vampiric_chance"]) - ProgressionData.VAMPIRIC_CHANCE_CAP) > 0.001 \
+			or absf(float(vamp["vampiric_amount"]) - 2.0 * ProgressionData.VAMPIRIC_BASE_HEAL_MULTIPLIER) > 0.001:
+		_fail("Expected vampiric rewards to use SCRUM-255 nerfed chance/amount caps.")
 		return
 	var berserk_priorities: Array = ProgressionData.attribute_priorities("berserk")
 	var mage_priorities: Array = ProgressionData.attribute_priorities("dark_mage")
@@ -3997,6 +4802,66 @@ func _test_full_attribute_wiring() -> void:
 	await process_frame
 
 
+func _test_attribute_weapon_synergy_matrix() -> void:
+	var synergy_map: Dictionary = ProgressionData.attribute_weapon_synergy_map()
+	var required_archetypes := ["melee", "projectile", "beam", "aoe", "summon", "aura"]
+	var stat_ids := ProgressionData.STAT_NAMES.keys()
+	for stat_id in stat_ids:
+		var stat_map: Dictionary = synergy_map.get(stat_id, {}) as Dictionary
+		for archetype in required_archetypes:
+			if str(stat_map.get(archetype, "")) == "":
+				_fail("Expected synergy map to explain %s x %s." % [stat_id, archetype])
+				return
+
+	var representatives := {}
+	for character_id in ProgressionData.character_ids():
+		for weapon_id in ProgressionData.weapon_ids(character_id):
+			var weapon_config: Dictionary = ProgressionData.weapon(character_id, weapon_id)
+			var archetype := ProgressionData.weapon_archetype(weapon_config)
+			if not representatives.has(archetype):
+				representatives[archetype] = {
+					"character_id": character_id,
+					"weapon_id": weapon_id,
+					"weapon": weapon_config,
+				}
+	for archetype in required_archetypes:
+		if not representatives.has(archetype):
+			_fail("Expected at least one weapon representative for archetype %s." % archetype)
+			return
+
+	var watched_parameters := [
+		"damage", "magic_damage", "sound_wave_damage", "attack_speed",
+		"crit_chance", "crit_damage_multiplier", "move_speed", "dodge",
+		"defense", "health_point", "attack_range", "aoe_radius",
+		"pickup_radius", "dot_damage", "dot_speed", "projectile_speed",
+		"aura_radius", "buff_power", "knockback_power", "summon_amount",
+		"absorb", "regeneration", "knockback_distance", "ultimate_multiplier",
+	]
+	for archetype in required_archetypes:
+		var rep: Dictionary = representatives[archetype]
+		var character_id := str(rep.get("character_id", "berserk"))
+		var weapon_config: Dictionary = rep.get("weapon", {}) as Dictionary
+		var base_stats: Dictionary = ProgressionData.base_stats(character_id)
+		var base_params: Dictionary = ProgressionData.derived_parameters(base_stats, {}, weapon_config)
+		for stat_id in stat_ids:
+			var boosted_stats := base_stats.duplicate(true)
+			boosted_stats[stat_id] = float(boosted_stats.get(stat_id, 0.0)) + 4.0
+			var boosted_params: Dictionary = ProgressionData.derived_parameters(boosted_stats, {}, weapon_config)
+			var changed := false
+			for parameter_id in watched_parameters:
+				if absf(float(boosted_params.get(parameter_id, 0.0)) - float(base_params.get(parameter_id, 0.0))) > 0.001:
+					changed = true
+					break
+			if not changed:
+				_fail("Expected %s to change at least one effective parameter for %s weapon %s/%s." % [
+					stat_id,
+					archetype,
+					character_id,
+					str(rep.get("weapon_id", "")),
+				])
+				return
+
+
 func _test_settings_persistence_and_audio() -> void:
 	# Save/load roundtrip настроек.
 	var game_settings := load("res://scripts/game_settings.gd")
@@ -4017,7 +4882,8 @@ func _test_settings_persistence_and_audio() -> void:
 	var saved := {
 		"resolution_index": 2, "window_mode_index": 1, "screen_index": 1,
 		"master_volume": 0.85, "music_volume": 0.4, "sfx_volume": 0.65,
-		"music_enabled": false, "sfx_enabled": true,
+		"music_enabled": false, "sfx_enabled": true, "aim_mode": "cursor",
+		"debug_mode": true,
 	}
 	game_settings.save_settings(saved)
 	var loaded: Dictionary = game_settings.load_settings()
@@ -4062,6 +4928,148 @@ func _test_settings_persistence_and_audio() -> void:
 	audio.apply_volume_settings({"master_volume": 1.0, "music_volume": 1.0, "sfx_volume": 1.0, "music_enabled": true, "sfx_enabled": true})
 
 
+func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
+	var feedback_main := main_scene.instantiate()
+	root.add_child(feedback_main)
+	await process_frame
+	if not InputMap.has_action("feedback"):
+		_fail("Expected feedback InputMap action to exist.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var feedback_has_p := false
+	for event in InputMap.action_get_events("feedback"):
+		if event is InputEventKey and int(event.keycode) == KEY_P:
+			feedback_has_p = true
+	if not feedback_has_p:
+		_fail("Expected feedback InputMap action to default to P.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+
+	var feedback_event := InputEventKey.new()
+	feedback_event.keycode = KEY_P
+	feedback_event.physical_keycode = KEY_P
+	feedback_event.pressed = true
+	feedback_main.call("_input", feedback_event)
+	await process_frame
+	var overlay := feedback_main.get("feedback_overlay_layer") as CanvasLayer
+	if overlay == null or not is_instance_valid(overlay):
+		_fail("Expected P to open FeedbackOverlayLayer.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var text_edit := feedback_main.find_child("FeedbackTextEdit", true, false) as TextEdit
+	var preview := feedback_main.find_child("FeedbackScreenshotPreview", true, false) as TextureRect
+	if text_edit == null or preview == null or preview.texture == null:
+		_fail("Expected feedback overlay to show text input and screenshot preview.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+
+	var escape_event := InputEventKey.new()
+	escape_event.keycode = KEY_ESCAPE
+	escape_event.physical_keycode = KEY_ESCAPE
+	escape_event.pressed = true
+	feedback_main.call("_input", escape_event)
+	await process_frame
+	if feedback_main.get("feedback_overlay_layer") != null:
+		_fail("Expected Escape to close feedback overlay.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+
+	var screenshot := Image.create(32, 18, false, Image.FORMAT_RGBA8)
+	screenshot.fill(Color(0.12, 0.18, 0.24, 1.0))
+	var local_path := FeedbackReporter.save_local_report("Smoke feedback fallback", screenshot, {
+		"screen": "runtime_smoke",
+		"version": "test",
+	})
+	if not FileAccess.file_exists("%s/report.txt" % local_path) or not FileAccess.file_exists("%s/screenshot.png" % local_path):
+		_fail("Expected feedback local fallback to write report.txt and screenshot.png under %s." % local_path)
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var boundary := "----FantasyDiskSmokeBoundary"
+	var multipart := FeedbackReporter.multipart_payload("Smoke payload", screenshot, {"screen": "runtime_smoke"}, boundary)
+	if not _packed_bytes_contains(multipart, "payload_json".to_utf8_buffer()) or not _packed_bytes_contains(multipart, "fantasydisk_feedback.png".to_utf8_buffer()):
+		_fail("Expected feedback multipart payload to include Discord payload_json and screenshot file part.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var payload_json := _feedback_multipart_payload_json(multipart, boundary)
+	var multipart_filename := _feedback_multipart_file_filename(multipart)
+	var attachments: Array = payload_json.get("attachments", [])
+	if attachments.size() != 1 or not attachments[0] is Dictionary:
+		_fail("Expected feedback payload_json to declare one Discord attachment.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var attachment := attachments[0] as Dictionary
+	if int(attachment.get("id", -1)) != 0 or str(attachment.get("filename", "")) != multipart_filename or multipart_filename != "fantasydisk_feedback.png":
+		_fail("Expected feedback payload_json attachment filename to match files[0] filename.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	feedback_main.queue_free()
+	await process_frame
+
+
+func _feedback_multipart_payload_json(multipart: PackedByteArray, boundary: String) -> Dictionary:
+	var text := _feedback_multipart_header_text(multipart)
+	var marker := "Content-Type: application/json\r\n\r\n"
+	var start := text.find(marker)
+	if start < 0:
+		return {}
+	start += marker.length()
+	var end := text.find("\r\n--%s" % boundary, start)
+	if end < 0:
+		return {}
+	var parsed = JSON.parse_string(text.substr(start, end - start))
+	return parsed if parsed is Dictionary else {}
+
+
+func _feedback_multipart_file_filename(multipart: PackedByteArray) -> String:
+	var text := _feedback_multipart_header_text(multipart)
+	var marker := "Content-Disposition: form-data; name=\"files[0]\"; filename=\""
+	var start := text.find(marker)
+	if start < 0:
+		return ""
+	start += marker.length()
+	var end := text.find("\"", start)
+	if end < 0:
+		return ""
+	return text.substr(start, end - start)
+
+
+func _feedback_multipart_header_text(multipart: PackedByteArray) -> String:
+	var png_signature := PackedByteArray([0x89, 0x50, 0x4E, 0x47])
+	var png_start := _packed_bytes_find(multipart, png_signature)
+	var header := PackedByteArray()
+	var length := png_start if png_start >= 0 else multipart.size()
+	for index in range(length):
+		header.append(multipart[index])
+	return header.get_string_from_utf8()
+
+
+func _packed_bytes_find(haystack: PackedByteArray, needle: PackedByteArray) -> int:
+	if needle.is_empty() or haystack.size() < needle.size():
+		return -1
+	for index in range(haystack.size() - needle.size() + 1):
+		var matched := true
+		for offset in range(needle.size()):
+			if haystack[index + offset] != needle[offset]:
+				matched = false
+				break
+		if matched:
+			return index
+	return -1
+
+
+func _packed_bytes_contains(haystack: PackedByteArray, needle: PackedByteArray) -> bool:
+	return _packed_bytes_find(haystack, needle) >= 0
+
+
 func _test_settings_tabs_and_rebind(main: Node) -> void:
 	var tabs := main.find_child("SettingsTabs", true, false) as TabContainer
 	if tabs == null or tabs.get_child_count() != 3:
@@ -4071,6 +5079,113 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if tabs.get_node_or_null(tab_name) == null:
 			_fail("Expected settings tab %s to exist." % tab_name)
 			return
+	var tab_switcher := main.find_child("SettingsTabSwitcher", true, false) as Control
+	var tab_switcher_frame := main.find_child("SettingsTabSwitcherFrame", true, false) as TextureRect
+	if tab_switcher == null or tab_switcher_frame == null or tab_switcher_frame.texture == null:
+		_fail("Expected settings screen to use the SettingsTabSwitcher frame texture.")
+		return
+	if tab_switcher_frame.texture.resource_path != "res://assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png":
+		_fail("Expected settings screen to use the 3-slot SettingsTabSwitcher frame texture, got %s." % tab_switcher_frame.texture.resource_path)
+		return
+	var switcher_rect := tab_switcher.get_global_rect()
+	if absf((switcher_rect.size.x / switcher_rect.size.y) - 5.0) > 0.035:
+		_fail("Expected SettingsTabSwitcher to preserve the authored 1280x256 aspect ratio.")
+		return
+	var base_size := Vector2(1280.0, 256.0)
+	var safe_rects := [
+		Rect2(160.0, 88.0, 270.0, 82.0),
+		Rect2(506.0, 88.0, 270.0, 82.0),
+		Rect2(852.0, 88.0, 270.0, 82.0),
+	]
+	if main.find_child("SettingsTabButton_3", true, false) != null:
+		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
+		return
+	var scale := switcher_rect.size / base_size
+	var settings_switcher_dump := PackedStringArray()
+	settings_switcher_dump.append("# SCRUM-396 Settings Tab Switcher")
+	settings_switcher_dump.append("")
+	settings_switcher_dump.append("- frame_path: `%s`" % tab_switcher_frame.texture.resource_path)
+	settings_switcher_dump.append("- switcher_rect: `%s`" % str(switcher_rect))
+	settings_switcher_dump.append("- base_size: `%s`" % str(base_size))
+	settings_switcher_dump.append("- display_size: `%s`" % str(switcher_rect.size))
+	settings_switcher_dump.append("")
+	settings_switcher_dump.append("| tab | actual | expected scaled safe rect | source safe rect |")
+	settings_switcher_dump.append("| --- | --- | --- | --- |")
+	for tab_index in range(3):
+		var tab_button := main.find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
+		if tab_button == null:
+			_fail("Expected SettingsTabButton_%d to exist." % tab_index)
+			return
+		var expected := Rect2(
+			switcher_rect.position + safe_rects[tab_index].position * scale,
+			safe_rects[tab_index].size * scale
+		)
+		var actual := tab_button.get_global_rect()
+		settings_switcher_dump.append("| `%d` | `%s` | `%s` | `%s` |" % [tab_index, str(actual), str(expected), str(safe_rects[tab_index])])
+		if actual.position.distance_to(expected.position) > 3.0 or actual.size.distance_to(expected.size) > 3.0:
+			_fail("Expected SettingsTabButton_%d to stay inside its recorded safe rect. Actual=%s expected=%s" % [tab_index, str(actual), str(expected)])
+			return
+		tab_button.pressed.emit()
+		await process_frame
+		if tabs.current_tab != tab_index:
+			_fail("Expected SettingsTabButton_%d to switch SettingsTabs current_tab." % tab_index)
+			return
+	var settings_switcher_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum396")
+	DirAccess.make_dir_recursive_absolute(settings_switcher_qa_dir)
+	var settings_switcher_file := FileAccess.open("%s/settings_tab_switcher_3slot_rects.md" % settings_switcher_qa_dir, FileAccess.WRITE)
+	if settings_switcher_file != null:
+		settings_switcher_file.store_string("\n".join(settings_switcher_dump))
+		settings_switcher_file.close()
+	if DisplayServer.get_name() != "headless":
+		var settings_switcher_image := main.get_viewport().get_texture().get_image()
+		if settings_switcher_image != null:
+			settings_switcher_image.save_png("%s/settings_tab_switcher_3slot.png" % settings_switcher_qa_dir)
+	var controls_scroll := main.find_child("ControlsScroll", true, false) as ScrollContainer
+	if controls_scroll == null:
+		_fail("Expected controls settings tab to wrap bindings in ControlsScroll.")
+		return
+	if controls_scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or controls_scroll.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_DISABLED:
+		_fail("Expected ControlsScroll to use vertical-only scrolling.")
+		return
+	if not controls_scroll.follow_focus:
+		_fail("Expected ControlsScroll to follow keyboard/gamepad focus.")
+		return
+	var controls_content := controls_scroll.find_child("ControlsContent", true, false) as VBoxContainer
+	if controls_content == null:
+		_fail("Expected ControlsScroll to contain ControlsContent.")
+		return
+	var reset_bindings := controls_content.find_child("SettingsResetBindingsButton", true, false) as Button
+	if reset_bindings == null:
+		_fail("Expected reset bindings button to live inside the scrollable controls content.")
+		return
+	if controls_content.find_child("SettingsAimModeOption", true, false) == null:
+		_fail("Expected aim mode selector to live inside the scrollable controls content.")
+		return
+	var debug_toggle := controls_content.find_child("DebugModeToggle", true, false) as CheckBox
+	if debug_toggle == null:
+		_fail("Expected controls settings to expose the DebugModeToggle.")
+		return
+	debug_toggle.button_pressed = true
+	debug_toggle.toggled.emit(true)
+	await process_frame
+	var game_settings := load("res://scripts/game_settings.gd")
+	var loaded_debug: Dictionary = game_settings.load_settings()
+	if not bool(main.get("debug_mode_enabled")) or not bool(loaded_debug.get("debug_mode", false)):
+		_fail("Expected DebugModeToggle to update runtime state and persist to settings.")
+		return
+	debug_toggle.button_pressed = false
+	debug_toggle.toggled.emit(false)
+	await process_frame
+	loaded_debug = game_settings.load_settings()
+	if bool(main.get("debug_mode_enabled")) or bool(loaded_debug.get("debug_mode", true)):
+		_fail("Expected DebugModeToggle to restore OFF state.")
+		return
+	_write_debug_settings_artifact(main, debug_toggle)
+	if controls_content.get_child_count() < 8:
+		_fail("Expected controls content to include aim mode, binding rows, hint, and reset button.")
+		return
+	tabs.current_tab = 1
+	await process_frame
 	for slider_id in ["master_volume", "music_volume", "sfx_volume"]:
 		var slider := main.find_child("VolumeSlider_%s" % slider_id, true, false) as HSlider
 		if slider == null or not slider.visible or slider.max_value != 100.0:
@@ -4107,7 +5222,6 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		return
 	music_slider.value = 42.0
 	await process_frame
-	var game_settings := load("res://scripts/game_settings.gd")
 	var loaded_audio: Dictionary = game_settings.load_settings()
 	if absf(float(loaded_audio.get("master_volume", 0.0)) - 0.24) > 0.021:
 		_fail("Expected moving the master slider to persist live volume.")
@@ -4158,12 +5272,110 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		return
 
 
+func _write_debug_settings_artifact(main: Node, debug_toggle: CheckBox) -> void:
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum375")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump := PackedStringArray()
+	dump.append("# SCRUM-375 Settings Debug Toggle")
+	dump.append("")
+	dump.append("- toggle: `%s`" % str(debug_toggle.get_global_rect()))
+	dump.append("- text: `%s`" % debug_toggle.text)
+	var viewport := main.get_viewport()
+	if viewport != null and DisplayServer.get_name() != "headless":
+		var image := viewport.get_texture().get_image()
+		if image != null and image.get_width() > 0 and image.get_height() > 0:
+			var png_path := "%s/settings_debug_mode_toggle.png" % qa_dir
+			image.save_png(png_path)
+			dump.append("- screenshot: `%s`" % png_path)
+	else:
+		dump.append("- screenshot: skipped in headless; rect dump is authoritative.")
+	var file := FileAccess.open("%s/settings_debug_mode_toggle.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump))
+		file.close()
+
+
 func _keycodes_for_action(action_name: String) -> Array:
 	var keys := []
 	for event in InputMap.action_get_events(action_name):
 		if event is InputEventKey:
 			keys.append((event as InputEventKey).keycode)
 	return keys
+
+
+func _test_debug_combat_click_to_move(main_scene: PackedScene) -> void:
+	var debug_main := main_scene.instantiate()
+	root.add_child(debug_main)
+	await process_frame
+	debug_main.set("selected_character_id", "berserk")
+	debug_main.set("selected_weapon_id", "sword")
+	debug_main.call("_start_combat")
+	await process_frame
+	await process_frame
+	var player := debug_main.get("current_player") as Node2D
+	if player == null:
+		_fail("Expected debug click-to-move smoke to spawn a player.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	debug_main.set("debug_mode_enabled", false)
+	var screen_target := root.get_visible_rect().size * 0.5 + Vector2(180.0, 0.0)
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_RIGHT
+	click.position = screen_target
+	click.pressed = true
+	debug_main.call("_input", click)
+	await process_frame
+	if bool(player.call("debug_has_move_target")):
+		_fail("Expected debug click-to-move to ignore combat clicks while debug_mode is OFF.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	debug_main.set("debug_mode_enabled", true)
+	var expected_target: Vector2 = debug_main.call("_screen_position_to_arena_world", screen_target)
+	debug_main.call("_input", click)
+	await process_frame
+	if not bool(player.call("debug_has_move_target")):
+		_fail("Expected debug_mode ON right-click to assign a player move target.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	var assigned_target: Vector2 = player.call("debug_move_target_position")
+	if assigned_target.distance_to(expected_target) > 2.0:
+		_fail("Expected assigned debug target %s to match screen-to-world target %s." % [str(assigned_target), str(expected_target)])
+		debug_main.queue_free()
+		await process_frame
+		return
+	var start_position := player.global_position
+	for _step in range(8):
+		player.call("_physics_process", 0.1)
+	if player.global_position.distance_to(expected_target) >= start_position.distance_to(expected_target):
+		_fail("Expected player to move closer to debug click target.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	Input.action_press("move_left")
+	player.call("_physics_process", 0.1)
+	Input.action_release("move_left")
+	if bool(player.call("debug_has_move_target")):
+		_fail("Expected manual movement input to cancel debug click-to-move target.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	var middle := InputEventMouseButton.new()
+	middle.button_index = MOUSE_BUTTON_MIDDLE
+	middle.position = screen_target + Vector2(0.0, 90.0)
+	middle.pressed = true
+	var instant_target: Vector2 = debug_main.call("_screen_position_to_arena_world", middle.position)
+	debug_main.call("_input", middle)
+	await process_frame
+	if player.global_position.distance_to(instant_target) > 2.0:
+		_fail("Expected middle-click debug input to teleport player to the clamped arena target.")
+		debug_main.queue_free()
+		await process_frame
+		return
+	debug_main.queue_free()
+	await process_frame
 
 
 func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
@@ -4181,8 +5393,8 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 	var before: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
 	mage_stats["strength"] = mage_stats["strength"] + 10.0
 	var after: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
-	if float(after.get("magic_damage", 0.0)) != float(before.get("magic_damage", 0.0)):
-		_fail("Expected +10 strength to leave dark mage magic damage unchanged.")
+	if float(after.get("magic_damage", 0.0)) <= float(before.get("magic_damage", 0.0)):
+		_fail("Expected +10 strength to raise dark mage magic damage through weapon synergy.")
 		return
 
 	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.
@@ -4302,8 +5514,8 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 			_fail("Expected ascension level 0 modifier %s to be neutral (%f)." % [key, neutral])
 			return
 	var level3: Dictionary = ProgressionData.ascension_difficulty_mods(3)
-	# L1 enemy hp 1.15, L1 dmg 1.10, L2 price 1.25, L3 spawn density 1.20 — кумулятивно активны.
-	if absf(float(level3["enemy_hp_mult"]) - 1.15) > 0.001 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.20) > 0.001:
+	# SCRUM-358: L1 enemy hp 1.20, L1 dmg 1.14, L2 price 1.25, L3 spawn density 1.26 — кумулятивно активны.
+	if absf(float(level3["enemy_hp_mult"]) - 1.20) > 0.001 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.26) > 0.001:
 		_fail("Expected level 3 to cumulatively include levels 1+2+3 modifiers.")
 		return
 	var level0_change := ProgressionData.ascension_level_change_line(0)
@@ -4368,14 +5580,21 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	root.add_child(delta_main)
 	await process_frame
 	var delta_meta := MetaProgression.default_state()
-	for unlock_level in range(3):
+	for unlock_level in range(2):
 		delta_meta = MetaProgression.record_boss_victory(delta_meta, "berserk", unlock_level)
 	delta_main.set("meta_state", delta_meta)
 	delta_main.set("selected_character_id", "berserk")
-	delta_main.set("selected_ascension_level", 3)
+	delta_main.set("selected_ascension_level", 0)
 	delta_main.call("_show_character_select")
 	await process_frame
 	await process_frame
+	if int(delta_main.get("selected_ascension_level")) != delta_main.call("ascension_selectable_max", "berserk"):
+		_fail("Expected hero select to default ascension to the selected class selectable max.")
+		return
+	var asc_label := delta_main.find_child("AscensionLevelLabel", true, false) as Label
+	if asc_label == null or (not asc_label.text.contains("3 / 3") and not asc_label.text.contains("3/3")):
+		_fail("Expected hero select ascension label to reflect selectable max 3/3, got: %s" % (asc_label.text if asc_label != null else "<missing>"))
+		return
 	var asc_mods_label := delta_main.find_child("AscensionModsLabel", true, false) as Label
 	if asc_mods_label == null:
 		_fail("Expected AscensionModsLabel on hero select.")
@@ -4386,12 +5605,31 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	if asc_mods_label.text.contains("Закалённые враги") or asc_mods_label.text.contains("Жадные торговцы"):
 		_fail("Expected hero select ascension label not to show cumulative lower-level changes, got: %s" % asc_mods_label.text)
 		return
-	delta_main.set("selected_ascension_level", 0)
-	delta_main.call("_show_character_select")
+	var asc_minus_button := delta_main.find_child("AscensionMinusButton", true, false) as Button
+	if asc_minus_button == null:
+		_fail("Expected AscensionMinusButton on hero select.")
+		return
+	asc_minus_button.pressed.emit()
+	await process_frame
+	if int(delta_main.get("selected_ascension_level")) != 2:
+		_fail("Expected manual ascension decrease to remain available after max default.")
+		return
+	asc_minus_button.pressed.emit()
+	asc_minus_button.pressed.emit()
 	await process_frame
 	asc_mods_label = delta_main.find_child("AscensionModsLabel", true, false) as Label
 	if asc_mods_label == null or not asc_mods_label.text.to_lower().contains("без усложнений"):
 		_fail("Expected hero select ascension level 0 label to say no complications.")
+		return
+	var dark_mage_thumb := delta_main.find_child("HeroThumbnail_dark_mage", true, false) as Button
+	if dark_mage_thumb == null:
+		_fail("Expected dark mage hero thumbnail for ascension class-switch smoke.")
+		return
+	dark_mage_thumb.pressed.emit()
+	await process_frame
+	var dark_mage_max: int = int(delta_main.call("ascension_selectable_max", "dark_mage"))
+	if int(delta_main.get("selected_ascension_level")) != dark_mage_max:
+		_fail("Expected hero class switch to recalculate ascension default to dark mage selectable max.")
 		return
 	delta_main.queue_free()
 	await process_frame
@@ -4509,6 +5747,14 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	# Убиваемая, не танк: HP = тот же волновой elite-скейл × data-driven hp_mult вида.
 	var mini_node: Node = spawned[0]
 	var mini_hp: float = float(mini_node.get("max_health"))
+	var expected_mini_scale: float = float(ProgressionData.enemy_size_profile("mini_elite").get("scale", 1.05))
+	var expected_elite_scale: float = float(ProgressionData.enemy_size_profile("elite").get("scale", 1.68))
+	if absf((mini_node as Node2D).scale.x - expected_mini_scale) > 0.01:
+		_fail("Expected spawned ascension mini-elite scale %.2f, got %.2f." % [expected_mini_scale, (mini_node as Node2D).scale.x])
+		return
+	if expected_mini_scale >= expected_elite_scale:
+		_fail("Expected mini-elite size profile to stay smaller than card elite.")
+		return
 	var expected_hp_mult := 0.55
 	var mini_kind_id := str(mini_node.get_meta("mini_elite_kind", ""))
 	for kind in ProgressionData.mini_elite_kinds():
@@ -4703,6 +5949,255 @@ func _test_escape_navigation(main_scene: PackedScene) -> void:
 	await process_frame
 
 
+func _test_main_menu_quit_confirmation(main_scene: PackedScene) -> void:
+	var quit_main := main_scene.instantiate()
+	root.add_child(quit_main)
+	quit_main.set_meta("suppress_game_quit", true)
+	await process_frame
+	await process_frame
+
+	var exit_button := quit_main.find_child("MainMenuExitButton", true, false) as Button
+	if exit_button == null:
+		_fail("Expected main menu exit button for quit confirmation smoke.")
+		return
+	exit_button.pressed.emit()
+	await process_frame
+	await process_frame
+
+	var dialog := quit_main.find_child("QuitConfirmationDialog", true, false) as Control
+	var panel := quit_main.find_child("QuitConfirmationPanel", true, false) as Control
+	var confirm_button := quit_main.find_child("QuitConfirmExitButton", true, false) as Button
+	var cancel_button := quit_main.find_child("QuitConfirmCancelButton", true, false) as Button
+	if dialog == null or panel == null or confirm_button == null or cancel_button == null:
+		_fail("Expected game-styled quit confirmation dialog, panel and two buttons.")
+		return
+	if dialog.mouse_filter != Control.MOUSE_FILTER_STOP or panel.mouse_filter != Control.MOUSE_FILTER_STOP:
+		_fail("Expected quit confirmation dialog to be modal and block clicks below it.")
+		return
+	if quit_main.get_viewport().gui_get_focus_owner() != cancel_button:
+		_fail("Expected quit confirmation dialog to focus safe Cancel by default.")
+		return
+	if not _assert_quit_dialog_button_size(confirm_button, "exit") or not _assert_quit_dialog_button_size(cancel_button, "cancel"):
+		return
+	if bool(quit_main.get_meta("game_quit_requested", false)):
+		_fail("Expected main menu quit request to remain false before explicit confirmation.")
+		return
+
+	_write_quit_confirmation_qa_dump(quit_main, panel)
+	cancel_button.pressed.emit()
+	await process_frame
+	if quit_main.find_child("QuitConfirmationDialog", true, false) != null:
+		_fail("Expected Cancel to close quit confirmation dialog.")
+		return
+	if quit_main.find_child("MainMenuActions", true, false) == null:
+		_fail("Expected Cancel to keep the player on the main menu.")
+		return
+	if bool(quit_main.get_meta("game_quit_requested", false)):
+		_fail("Expected Cancel not to request game quit.")
+		return
+
+	var escape_event := InputEventKey.new()
+	escape_event.keycode = KEY_ESCAPE
+	escape_event.pressed = true
+	quit_main.call("_input", escape_event)
+	await process_frame
+	if quit_main.find_child("QuitConfirmationDialog", true, false) == null:
+		_fail("Expected Escape on main menu to open quit confirmation dialog.")
+		return
+	quit_main.call("_input", escape_event)
+	await process_frame
+	if quit_main.find_child("QuitConfirmationDialog", true, false) != null:
+		_fail("Expected Escape inside quit confirmation dialog to cancel it.")
+		return
+
+	exit_button = quit_main.find_child("MainMenuExitButton", true, false) as Button
+	exit_button.pressed.emit()
+	await process_frame
+	confirm_button = quit_main.find_child("QuitConfirmExitButton", true, false) as Button
+	cancel_button = quit_main.find_child("QuitConfirmCancelButton", true, false) as Button
+	if confirm_button == null or cancel_button == null:
+		_fail("Expected quit confirmation buttons before confirm flow.")
+		return
+	confirm_button.grab_focus()
+	await process_frame
+	confirm_button.pressed.emit()
+	await process_frame
+	if not bool(quit_main.get_meta("game_quit_requested", false)):
+		_fail("Expected explicit Exit confirmation to request game quit.")
+		return
+
+	quit_main.queue_free()
+	await process_frame
+
+
+func _test_back_button_frame_safety(main_scene: PackedScene) -> void:
+	var back_main := main_scene.instantiate()
+	root.add_child(back_main)
+	await process_frame
+	var checked := []
+
+	back_main.call("_show_character_select")
+	await process_frame
+	var hero_back_button := back_main.find_child("HeroSelectBackButton", true, false) as Button
+	if not _assert_back_button_frame_safe(hero_back_button, "hero_select", 240.0, checked):
+		return
+	hero_back_button.pressed.emit()
+	await process_frame
+
+	var skill_tree_button := back_main.find_child("MainMenuSkillTreeButton", true, false) as Button
+	if skill_tree_button == null:
+		_fail("Expected MainMenuSkillTreeButton for back-button frame QA.")
+		return
+	skill_tree_button.pressed.emit()
+	await process_frame
+	var skill_tree_back_button := back_main.find_child("SkillTreeBackButton", true, false) as Button
+	if not _assert_back_button_frame_safe(skill_tree_back_button, "skill_tree", 260.0, checked):
+		return
+	skill_tree_back_button.pressed.emit()
+	await process_frame
+
+	var patch_button := back_main.find_child("MainMenuPatchNotesButton", true, false) as Button
+	if patch_button == null:
+		_fail("Expected MainMenuPatchNotesButton for back-button frame QA.")
+		return
+	patch_button.pressed.emit()
+	await process_frame
+	var patch_back_button := back_main.find_child("PatchNotesBackButton", true, false) as Button
+	if not _assert_back_button_frame_safe(patch_back_button, "patch_notes", 260.0, checked):
+		return
+	patch_back_button.pressed.emit()
+	await process_frame
+
+	var codex_button := back_main.find_child("MainMenuCodexButton", true, false) as Button
+	if codex_button == null:
+		_fail("Expected MainMenuCodexButton for back-button frame QA.")
+		return
+	codex_button.pressed.emit()
+	await process_frame
+	var codex_back_button := back_main.find_child("CodexBackButton", true, false) as Button
+	if not _assert_back_button_frame_safe(codex_back_button, "codex", 260.0, checked):
+		return
+
+	_write_back_button_qa_dump(back_main, checked)
+	back_main.queue_free()
+	await process_frame
+
+
+func _assert_back_button_frame_safe(button: Button, context: String, min_width: float, checked: Array) -> bool:
+	if button == null:
+		_fail("Expected %s back button to exist." % context)
+		return false
+	var rect := button.get_global_rect()
+	var viewport_rect := button.get_viewport().get_visible_rect()
+	if button.custom_minimum_size.x < min_width or rect.size.x < min_width - 1.0:
+		_fail("Expected %s back button to use a non-cropped medium/large frame, got min=%s rect=%s." % [context, str(button.custom_minimum_size), str(rect)])
+		return false
+	if rect.size.y < 92.0:
+		_fail("Expected %s back button height to keep Red&Gold ornament readable, got %s." % [context, str(rect)])
+		return false
+	if rect.position.x < -0.5 or rect.position.y < -0.5 or rect.end.x > viewport_rect.size.x + 0.5 or rect.end.y > viewport_rect.size.y + 0.5:
+		_fail("Expected %s back button to stay inside viewport, got rect=%s viewport=%s." % [context, str(rect), str(viewport_rect)])
+		return false
+	var normal_style := button.get_theme_stylebox("normal")
+	if normal_style == null:
+		_fail("Expected %s back button to have a themed normal stylebox." % context)
+		return false
+	var content_width := rect.size.x - normal_style.get_content_margin(SIDE_LEFT) - normal_style.get_content_margin(SIDE_RIGHT)
+	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
+	var estimated_text_width := float(button.text.length()) * 8.5 + 8.0
+	if content_width < estimated_text_width or content_height < 34.0:
+		_fail("Expected %s back button text to fit inside content zone, got content %.1fx%.1f text_est=%.1f rect=%s." % [context, content_width, content_height, estimated_text_width, str(rect)])
+		return false
+	checked.append({
+		"context": context,
+		"name": button.name,
+		"text": button.text,
+		"rect": rect,
+		"min_size": button.custom_minimum_size,
+		"content_size": Vector2(content_width, content_height),
+	})
+	return true
+
+
+func _write_back_button_qa_dump(main: Node, checked: Array) -> void:
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum343")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump := PackedStringArray()
+	dump.append("# SCRUM-343 Back Button QA")
+	dump.append("")
+	for entry in checked:
+		var item: Dictionary = entry
+		dump.append("- `%s` `%s`: rect `%s`, min `%s`, content `%s`" % [
+			str(item.get("context", "")),
+			str(item.get("name", "")),
+			str(item.get("rect", "")),
+			str(item.get("min_size", "")),
+			str(item.get("content_size", "")),
+		])
+	var file := FileAccess.open("%s/back_button_frames.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump))
+		file.close()
+	if DisplayServer.get_name() != "headless":
+		var image := main.get_viewport().get_texture().get_image()
+		if image != null and image.get_width() > 0 and image.get_height() > 0:
+			image.save_png("%s/back_button_frames.png" % qa_dir)
+
+
+func _write_quit_confirmation_qa_dump(main: Node, panel: Control) -> void:
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum319")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump := PackedStringArray()
+	dump.append("# SCRUM-319 Quit Confirmation QA")
+	dump.append("")
+	dump.append("- dialog: `%s`" % str(main.find_child("QuitConfirmationDialog", true, false) != null))
+	dump.append("- panel_rect: `%s`" % str(panel.get_global_rect()))
+	dump.append("- focus_owner: `%s`" % str(main.get_viewport().gui_get_focus_owner().name if main.get_viewport().gui_get_focus_owner() != null else ""))
+	for button_name in ["QuitConfirmExitButton", "QuitConfirmCancelButton"]:
+		var button := main.find_child(button_name, true, false) as Button
+		if button != null:
+			var style := button.get_theme_stylebox("normal") as StyleBoxTexture
+			dump.append("- %s: rect `%s`, min `%s`, texture `%s`" % [
+				button_name,
+				str(button.get_global_rect()),
+				str(button.custom_minimum_size),
+				str(style.texture.resource_path if style != null and style.texture != null else ""),
+			])
+	var file := FileAccess.open("%s/quit_confirmation_dialog.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump))
+		file.close()
+	if DisplayServer.get_name() != "headless":
+		var image := main.get_viewport().get_texture().get_image()
+		if image != null and image.get_width() > 0 and image.get_height() > 0:
+			image.save_png("%s/quit_confirmation_dialog.png" % qa_dir)
+
+
+func _assert_quit_dialog_button_size(button: Button, context: String) -> bool:
+	if button == null:
+		_fail("Expected quit confirmation %s button." % context)
+		return false
+	var rect := button.get_global_rect()
+	if absf(button.custom_minimum_size.x - 220.0) > 0.5 or absf(button.custom_minimum_size.y - 72.0) > 0.5:
+		_fail("Expected quit confirmation %s button minimum size to stay 220x72, got %s." % [context, str(button.custom_minimum_size)])
+		return false
+	if absf(rect.size.x - 220.0) > 1.0 or absf(rect.size.y - 72.0) > 1.0:
+		_fail("Expected quit confirmation %s button rect to stay 220x72, got %s." % [context, str(rect)])
+		return false
+	if not _button_uses_red_gold_type(button, "pause"):
+		_fail("Expected quit confirmation %s button to use the 72px-safe pause Red&Gold frame." % context)
+		return false
+	var normal_style := button.get_theme_stylebox("normal")
+	if normal_style == null:
+		_fail("Expected quit confirmation %s button to have content margins." % context)
+		return false
+	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
+	if content_height < 48.0:
+		_fail("Expected quit confirmation %s button content height to remain readable, got %.1f." % [context, content_height])
+		return false
+	return true
+
+
 func _test_codex_screen(main_scene: PackedScene) -> void:
 	var codex_main := main_scene.instantiate()
 	root.add_child(codex_main)
@@ -4714,9 +6209,86 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 	codex_button.pressed.emit()
 	await process_frame
-	if codex_main.find_child("CodexScreen", true, false) == null:
+	var codex_screen := codex_main.find_child("CodexScreen", true, false) as Control
+	if codex_screen == null:
 		_fail("Expected the Codex screen to open from the main menu.")
 		return
+	var codex_main_panel := codex_main.find_child("CodexMainPanel", true, false) as PanelContainer
+	var codex_tabs := codex_main.find_child("CodexTabs", true, false) as Control
+	var codex_content := codex_main.find_child("CodexContent", true, false) as PanelContainer
+	var default_section := codex_main.find_child("CodexSection_characters", true, false) as Control
+	var default_entry := codex_main.find_child("CodexEntryCard", true, false) as PanelContainer
+	var default_portrait := codex_main.find_child("CodexPortraitSlot", true, false) as PanelContainer
+	if codex_main_panel == null or codex_content == null or codex_tabs == null or default_section == null or default_entry == null or default_portrait == null:
+		_fail("Expected Codex runtime layout to include main panel, tabs, content, entry card, and portrait slot.")
+		return
+	var expected_codex_textures := {
+		"CodexMainPanel": "res://assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png",
+		"CodexContent": "res://assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png",
+		"CodexEntryCard": "res://assets/sprites/ui/frames/codex/ui_frame_codex_entry_card.png",
+		"CodexPortraitSlot": "res://assets/sprites/ui/frames/codex/ui_frame_codex_portrait_slot.png",
+	}
+	for node_name in expected_codex_textures.keys():
+		var panel := codex_main.find_child(str(node_name), true, false) as PanelContainer
+		if panel == null:
+			_fail("Expected Codex panel %s to exist." % node_name)
+			return
+		var actual_path := _stylebox_texture_path(panel.get_theme_stylebox("panel"))
+		if actual_path != str(expected_codex_textures[node_name]):
+			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
+			return
+	var codex_portrait_texture := _first_child_texture_rect(default_portrait)
+	var expected_default_portrait := _expected_character_portrait_path("berserk")
+	if codex_portrait_texture == null or codex_portrait_texture.texture == null or codex_portrait_texture.texture.resource_path != expected_default_portrait:
+		_fail("Expected default Codex character portrait to use new full-frame portrait %s." % expected_default_portrait)
+		return
+	if codex_portrait_texture.custom_minimum_size != EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE or codex_portrait_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED:
+		_fail("Expected Codex character portrait to use SCRUM-417 tighter %s covered scaling." % str(EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE))
+		return
+	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
+	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_tab.png":
+		_fail("Expected Codex tabs to use the Codex tab texture kit.")
+		return
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum345")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# SCRUM-345 Codex Texture Runtime Dump")
+	dump_lines.append("")
+	for control in [codex_main_panel, codex_tabs, codex_content, default_entry, default_portrait]:
+		var control_node := control as Control
+		var texture_path := ""
+		if control_node is PanelContainer:
+			texture_path = _stylebox_texture_path((control_node as PanelContainer).get_theme_stylebox("panel"))
+		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control_node.name, str(control_node.get_global_rect()), texture_path])
+	dump_lines.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	var dump_file := FileAccess.open("%s/codex_texture_runtime_dump.md" % qa_dir, FileAccess.WRITE)
+	if dump_file != null:
+		dump_file.store_string("\n".join(dump_lines))
+		dump_file.close()
+	var scrum416_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum416")
+	DirAccess.make_dir_recursive_absolute(scrum416_qa_dir)
+	var scrum416_codex_dump := PackedStringArray()
+	scrum416_codex_dump.append("# SCRUM-416 Codex Character Portrait Runtime Paths")
+	scrum416_codex_dump.append("")
+	scrum416_codex_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	var scrum416_codex_file := FileAccess.open("%s/codex_character_portrait_runtime_paths.md" % scrum416_qa_dir, FileAccess.WRITE)
+	if scrum416_codex_file != null:
+		scrum416_codex_file.store_string("\n".join(scrum416_codex_dump))
+		scrum416_codex_file.close()
+	var scrum417_codex_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum417")
+	DirAccess.make_dir_recursive_absolute(scrum417_codex_qa_dir)
+	var scrum417_codex_dump := PackedStringArray()
+	scrum417_codex_dump.append("# SCRUM-417 Codex Character Portrait Runtime Dump")
+	scrum417_codex_dump.append("")
+	scrum417_codex_dump.append("- `CodexPortraitSlot`: `%s`" % str(default_portrait.get_global_rect()))
+	scrum417_codex_dump.append("- `CodexPortraitTextureRect`: `%s`" % str(codex_portrait_texture.get_global_rect()))
+	scrum417_codex_dump.append("- `CodexPortraitMinimumSize`: `%s`" % str(codex_portrait_texture.custom_minimum_size))
+	scrum417_codex_dump.append("- `CodexPortraitStretch`: `%s`" % str(codex_portrait_texture.stretch_mode))
+	scrum417_codex_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	var scrum417_codex_file := FileAccess.open("%s/codex_character_portrait_runtime_dump.md" % scrum417_codex_qa_dir, FileAccess.WRITE)
+	if scrum417_codex_file != null:
+		scrum417_codex_file.store_string("\n".join(scrum417_codex_dump))
+		scrum417_codex_file.close()
 
 	# Полнота данных кодекса.
 	var codex_data := load("res://scripts/codex_data.gd")
@@ -4772,6 +6344,95 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	await process_frame
 
 
+func _test_skill_tree_progression_kit(main_scene: PackedScene) -> void:
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# SCRUM-331 Progression Skill Tree Runtime Dump")
+	dump_lines.append("")
+	for viewport_size in [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]:
+		await _assert_skill_tree_progression_kit_at_size(main_scene, viewport_size, dump_lines)
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum331")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump_file := FileAccess.open("%s/progression_skill_tree_runtime_dump.md" % qa_dir, FileAccess.WRITE)
+	if dump_file != null:
+		dump_file.store_string("\n".join(dump_lines))
+		dump_file.close()
+
+
+func _assert_skill_tree_progression_kit_at_size(main_scene: PackedScene, viewport_size: Vector2i, dump_lines: PackedStringArray) -> void:
+	var viewport := SubViewport.new()
+	viewport.size = viewport_size
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	await process_frame
+
+	var skill_main := main_scene.instantiate()
+	viewport.add_child(skill_main)
+	await process_frame
+	skill_main.ui._show_skill_tree_screen()
+	await process_frame
+	await process_frame
+
+	var context := "skill_tree %s" % str(viewport_size)
+	var screen := skill_main.find_child("SkillTreeScreen", true, false) as Control
+	var main_panel := skill_main.find_child("SkillTreeMainPanel", true, false) as PanelContainer
+	var points_badge := skill_main.find_child("SkillTreePointsBadge", true, false) as PanelContainer
+	var class_panel := skill_main.find_child("SkillTreeClassPanel", true, false) as PanelContainer
+	var branches := skill_main.find_child("SkillTreeBranches", true, false) as Control
+	var branch_panel := skill_main.find_child("SkillTreeBranchPanel_*", true, false) as PanelContainer
+	var node_button := skill_main.find_child("SkillNode_*", true, false) as Button
+	var node_title := skill_main.find_child("SkillNodeTitle_*", true, false) as Label
+	var node_desc := skill_main.find_child("SkillNodeDesc_*", true, false) as Label
+	if screen == null or main_panel == null or points_badge == null or class_panel == null or branches == null or branch_panel == null or node_button == null or node_title == null or node_desc == null:
+		_fail("Expected SCRUM-331 skill tree controls to exist at %s." % context)
+		return
+
+	var expected_panel_textures := {
+		"SkillTreeMainPanel": "res://assets/sprites/ui/frames/progression/ui_frame_progression_main_panel.png",
+		"SkillTreePointsBadge": "res://assets/sprites/ui/frames/progression/ui_frame_progression_points_badge.png",
+		"SkillTreeClassPanel": "res://assets/sprites/ui/frames/progression/ui_frame_progression_class_panel.png",
+		"SkillTreeBranchPanel": "res://assets/sprites/ui/frames/progression/ui_frame_progression_branch_panel.png",
+	}
+	var actual_panel_textures := {
+		"SkillTreeMainPanel": _stylebox_texture_path(main_panel.get_theme_stylebox("panel")),
+		"SkillTreePointsBadge": _stylebox_texture_path(points_badge.get_theme_stylebox("panel")),
+		"SkillTreeClassPanel": _stylebox_texture_path(class_panel.get_theme_stylebox("panel")),
+		"SkillTreeBranchPanel": _stylebox_texture_path(branch_panel.get_theme_stylebox("panel")),
+	}
+	for node_name in expected_panel_textures.keys():
+		if str(actual_panel_textures[node_name]) != str(expected_panel_textures[node_name]):
+			_fail("Expected %s to use `%s`, got `%s` at %s." % [node_name, expected_panel_textures[node_name], actual_panel_textures[node_name], context])
+			return
+
+	var node_texture_path := _stylebox_texture_path(node_button.get_theme_stylebox("normal"))
+	if not node_texture_path.begins_with("res://assets/sprites/ui/frames/progression/ui_frame_progression_node_"):
+		_fail("Expected skill node to use SCRUM-331 circular node frame, got `%s` at %s." % [node_texture_path, context])
+		return
+	if node_button.text.length() > 3 or node_button.text.contains("\n"):
+		_fail("Expected circular skill node to contain only short cost text, got `%s` at %s." % [node_button.text, context])
+		return
+	if node_title.get_global_rect().intersects(node_button.get_global_rect()) or node_desc.get_global_rect().intersects(node_button.get_global_rect()):
+		_fail("Expected skill node title/description labels to stay outside the circular node frame at %s." % context)
+		return
+	if class_panel.get_global_rect().intersects(branches.get_global_rect()):
+		_fail("Expected class panel and branch grid not to overlap at %s." % context)
+		return
+
+	dump_lines.append("## %s" % context)
+	for control in [main_panel, points_badge, class_panel, branches, branch_panel, node_button, node_title, node_desc]:
+		var ctrl := control as Control
+		dump_lines.append("- `%s`: `%s` texture `%s`" % [ctrl.name, str(ctrl.get_global_rect()), _progression_dump_texture(ctrl)])
+	viewport.queue_free()
+	await process_frame
+
+
+func _progression_dump_texture(control: Control) -> String:
+	if control is PanelContainer:
+		return _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel"))
+	if control is Button:
+		return _stylebox_texture_path((control as Button).get_theme_stylebox("normal"))
+	return ""
+
+
 func _test_elite_unique_attacks() -> void:
 	var elite_scenes := {
 		"iron_bastion": "res://scenes/EliteArmored.tscn",
@@ -4798,6 +6459,17 @@ func _test_elite_unique_attacks() -> void:
 
 		if str(elite.get("elite_attack_id")) == "":
 			_fail("Expected elite %s to expose a unique attack id." % behavior_id)
+			return
+		if str(elite.get_meta("unique_pattern_id", "")) != behavior_id:
+			_fail("Expected elite %s to expose its unique encounter pattern meta." % behavior_id)
+			return
+		var mechanics: Array = elite.get_meta("unique_mechanics", []) as Array
+		if mechanics.size() < 3:
+			_fail("Expected elite %s to expose at least 3 unique mechanics." % behavior_id)
+			return
+		var config: Dictionary = ProgressionData.elite_attack_config(behavior_id)
+		if config.is_empty() or str(config.get("attack_id", "")) != str(elite.get("elite_attack_id")):
+			_fail("Expected elite %s attack config to come from ProgressionData." % behavior_id)
 			return
 		var observed_phases := []
 		elite.elite_attack_phase_changed.connect(func(_attack_id: String, phase: String) -> void:
@@ -4868,6 +6540,54 @@ func _assert_elite_reward_panel_centered(main_scene: PackedScene, viewport_size:
 
 	viewport.queue_free()
 	await process_frame
+
+
+func _assert_reward_cards_use_scrum338_frames(buttons: Array, content_name: String, texture_path: String, safe_margins: Vector4, context: String) -> bool:
+	var dump_lines := PackedStringArray()
+	dump_lines.append("# SCRUM-338 Reward Frame Runtime Dump")
+	dump_lines.append("")
+	dump_lines.append("- Context: `%s`" % context)
+	dump_lines.append("- Expected texture: `%s`" % texture_path)
+	for button_node in buttons:
+		var button := button_node as Button
+		if button == null:
+			_fail("Expected %s reward card button." % context)
+			return false
+		var style_path := _stylebox_texture_path(button.get_theme_stylebox("normal"))
+		if style_path != texture_path:
+			_fail("Expected %s to use reward texture %s, got %s." % [button.name, texture_path, style_path])
+			return false
+		var hover_style_path := _stylebox_texture_path(button.get_theme_stylebox("hover"))
+		if not hover_style_path.ends_with("_hover.png"):
+			_fail("Expected %s to use a SCRUM-338 hover reward texture, got %s." % [button.name, hover_style_path])
+			return false
+		var content := button.find_child(content_name, false, false) as Control
+		if content == null:
+			_fail("Expected %s to expose %s inside the reward safe-zone." % [button.name, content_name])
+			return false
+		var card_rect := button.get_global_rect()
+		var content_rect := content.get_global_rect()
+		var safe_rect := _scaled_safe_rect(card_rect, REWARD_FRAME_SOURCE_SIZE, safe_margins)
+		dump_lines.append("- `%s`: card `%s`, safe `%s`, content `%s`, texture `%s`" % [
+			button.name,
+			str(card_rect),
+			str(safe_rect),
+			str(content_rect),
+			style_path,
+		])
+		if not _rect_contains_with_tolerance(safe_rect, content_rect, 2.0):
+			_fail("Expected %s content rect %s to stay inside reward safe rect %s." % [button.name, content_rect, safe_rect])
+			return false
+		if context == "battle_reward" and button.find_child("BattleRewardActionLabel", true, false) == null:
+			_fail("Expected %s to show the player-facing Получить action label." % button.name)
+			return false
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum338")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var file := FileAccess.open("%s/%s_reward_frames.md" % [qa_dir, context], FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump_lines))
+		file.close()
+	return true
 
 
 func _control_center_matches_viewport(control: Control, tolerance_px := 2.0) -> bool:
@@ -4941,13 +6661,30 @@ func _expected_weapon_sprite_path(weapon_id: String) -> String:
 	return "res://assets/sprites/weapons/%s.png" % str(aliases.get(weapon_id, weapon_id))
 
 
+func _expected_character_portrait_path(character_id: String) -> String:
+	return "res://assets/sprites/characters/full_frame/%s/%s_idle_00.png" % [character_id, character_id]
+
+
+func _first_child_texture_rect(parent: Node) -> TextureRect:
+	if parent == null:
+		return null
+	for child in parent.get_children():
+		var texture_rect := child as TextureRect
+		if texture_rect != null:
+			return texture_rect
+		var nested := _first_child_texture_rect(child)
+		if nested != null:
+			return nested
+	return null
+
+
 func _test_parchment_button_seal_sizes(main_scene: PackedScene) -> void:
 	var seal_main := main_scene.instantiate()
 	root.add_child(seal_main)
 	await process_frame
 
 	var dump_lines := PackedStringArray()
-	dump_lines.append("# Parchment Wax-Seal Button Size Dump")
+	dump_lines.append("# Red & Gold Dragon Button Size Dump")
 	dump_lines.append("")
 	_assert_visible_seal_buttons(seal_main, "main menu", dump_lines)
 	seal_main.call("_show_character_select")
@@ -4966,7 +6703,7 @@ func _test_parchment_button_seal_sizes(main_scene: PackedScene) -> void:
 
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
-	var file := FileAccess.open("%s/parchment_button_seal_sizes.md" % qa_dir, FileAccess.WRITE)
+	var file := FileAccess.open("%s/red_gold_button_sizes.md" % qa_dir, FileAccess.WRITE)
 	if file != null:
 		file.store_string("\n".join(dump_lines))
 		file.close()
@@ -4985,20 +6722,49 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 		if button == null or not button.visible:
 			continue
 		var texture_path := _button_normal_texture_path(button)
-		if not texture_path.contains("/ui_df_button_"):
+		if not texture_path.contains("/red_gold/ui_btn_red_gold_"):
 			continue
 		var rect := button.get_global_rect()
 		dump_lines.append("- `%s`: rect=`%s`, min=`%s`, texture=`%s`" % [button.name, str(rect), str(button.custom_minimum_size), texture_path])
+		if texture_path.contains("ui_btn_red_gold_utility"):
+			if absf(button.custom_minimum_size.x - 54.0) > 0.5 or absf(button.custom_minimum_size.y - 42.0) > 0.5:
+				_fail("Expected compact utility button %s on %s to use 54x42 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
+		if texture_path.contains("ui_btn_red_gold_fab"):
+			if absf(button.custom_minimum_size.x - 50.0) > 0.5 or absf(button.custom_minimum_size.y - 50.0) > 0.5:
+				_fail("Expected FAB button %s on %s to use 50x50 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
+		if texture_path.contains("ui_btn_red_gold_pause"):
+			if absf(button.custom_minimum_size.x - 280.0) > 0.5 or absf(button.custom_minimum_size.y - 60.0) > 0.5:
+				_fail("Expected pause button %s on %s to use 280x60 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
+		if texture_path.contains("ui_btn_red_gold_rebind"):
+			if button.custom_minimum_size.y < 62.0:
+				_fail("Expected rebind/dropdown button %s on %s to use at least 62px height, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
+		if texture_path.contains("ui_btn_red_gold_hero_confirm") and button.name == "HeroSelectChooseButton":
+			if button.custom_minimum_size.y < 24.0:
+				_fail("Expected SCRUM-356 compact hero select confirm button %s on %s to stay usable inside the unified bottom safe-zone, got min=%s." % [button.name, context, button.custom_minimum_size])
+				return
+			continue
 		if rect.size.y < 64.0 or button.custom_minimum_size.y < 64.0:
-			_fail("Expected wax-seal button %s on %s to stay tall enough for the seal, rect=%s min=%s." % [button.name, context, rect, button.custom_minimum_size])
+			_fail("Expected Red & Gold button %s on %s to stay tall enough, rect=%s min=%s." % [button.name, context, rect, button.custom_minimum_size])
 			return
-		if button.text.strip_edges().length() <= 2 and rect.size.x < 120.0:
-			_fail("Expected compact utility button %s on %s to avoid wax-seal button texture." % [button.name, context])
+		if absf(button.custom_minimum_size.y - STANDARD_ACTION_BUTTON_HEIGHT) > 0.5:
+			_fail("Expected action button %s on %s to use standard height %.0f, got min=%s." % [button.name, context, STANDARD_ACTION_BUTTON_HEIGHT, button.custom_minimum_size])
 			return
 
 
 func _button_normal_texture_path(button: Button) -> String:
 	var style := button.get_theme_stylebox("normal")
+	return _stylebox_texture_path(style)
+
+
+func _stylebox_texture_path(style: StyleBox) -> String:
 	if not (style is StyleBoxTexture):
 		return ""
 	var texture := (style as StyleBoxTexture).texture
@@ -5039,39 +6805,131 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var hero_screen := hero_main.find_child("HeroSelectScreen", true, false) as Control
 	var radar := hero_main.find_child("HeroStatRadar", true, false) as Control
 	var radar_panel := hero_main.find_child("HeroSelectRadarPanel", true, false) as Control
+	var radar_content := hero_main.find_child("HeroSelectRadarContent", true, false) as Control
+	var radar_title := hero_main.find_child("HeroStatRadarTitle", true, false) as Control
 	var header := hero_main.find_child("HeroSelectHeader", true, false) as Control
+	var unified_frame := hero_main.find_child("HeroSelectUnifiedFrame", true, false) as Control
 	var portrait_panel := hero_main.find_child("HeroSelectPortraitPanel", true, false) as Control
+	var right_region := hero_main.find_child("HeroSelectRightRegion", true, false) as Control
 	var dossier_panel := hero_main.find_child("HeroSelectDossierPanel", true, false) as Control
+	var dossier_frame := hero_main.find_child("HeroSelectDossierFrame", true, false) as Control
+	var dossier_content := hero_main.find_child("HeroSelectDossierContent", true, false) as Control
 	var dossier := hero_main.find_child("HeroSelectDossier", true, false) as Control
 	var dossier_title := hero_main.find_child("HeroSelectInfoTitle", true, false) as Control
 	var dossier_desc := hero_main.find_child("HeroSelectInfoDescription", true, false) as Control
+	var asc_row := hero_main.find_child("AscensionSelectorRow", true, false) as Control
 	var asc_mods := hero_main.find_child("AscensionModsLabel", true, false) as Control
 	var choose_button := hero_main.find_child("HeroSelectChooseButton", true, false) as Control
+	var thumbnail_frame := hero_main.find_child("HeroThumbnailStripFrame", true, false) as Control
+	var thumbnail_content := hero_main.find_child("HeroThumbnailStripContent", true, false) as Control
 	var thumbnail_strip := hero_main.find_child("HeroThumbnailStrip", true, false) as Control
-	if hero_screen == null or radar == null or radar_panel == null or header == null or portrait_panel == null or dossier_panel == null or dossier == null or dossier_desc == null or thumbnail_strip == null:
-		_fail("Expected hero select radar/header/dossier nodes at %s." % context)
+	if hero_screen == null or radar == null or radar_panel == null or radar_content == null or header == null or unified_frame == null or portrait_panel == null or right_region == null or dossier_panel == null or dossier_frame == null or dossier_content == null or dossier == null or dossier_desc == null or asc_row == null or choose_button == null or thumbnail_frame == null or thumbnail_content == null or thumbnail_strip == null:
+		_fail("Expected hero select radar/header/unified-frame/dossier nodes at %s." % context)
+		return
+	if radar_title != null:
+		_fail("Expected hero stat radar title to be removed at %s." % context)
 		return
 	var screen_rect := hero_screen.get_global_rect()
 	var radar_rect := radar.get_global_rect()
 	var radar_panel_rect := radar_panel.get_global_rect()
+	var radar_content_rect := radar_content.get_global_rect()
 	var header_rect := header.get_global_rect()
+	var unified_frame_rect := unified_frame.get_global_rect()
 	var portrait_rect := portrait_panel.get_global_rect()
+	var right_region_rect := right_region.get_global_rect()
+	var dossier_frame_rect := dossier_frame.get_global_rect()
+	var dossier_content_rect := dossier_content.get_global_rect()
 	var dossier_rect := dossier.get_global_rect()
 	var dossier_panel_rect := dossier_panel.get_global_rect()
 	var dossier_desc_rect := dossier_desc.get_global_rect()
+	var thumbnail_frame_rect := thumbnail_frame.get_global_rect()
+	var thumbnail_content_rect := thumbnail_content.get_global_rect()
 	var thumbnail_rect := thumbnail_strip.get_global_rect()
 	dump_lines.append("## %s" % context)
 	dump_lines.append("- `HeroSelectScreen`: `%s`" % str(screen_rect))
 	dump_lines.append("- `HeroSelectHeader`: `%s`" % str(header_rect))
+	dump_lines.append("- `HeroSelectUnifiedFrame`: `%s`" % str(unified_frame_rect))
 	dump_lines.append("- `HeroSelectPortraitPanel`: `%s`" % str(portrait_rect))
+	dump_lines.append("- `HeroSelectRightRegion`: `%s`" % str(right_region_rect))
 	dump_lines.append("- `HeroSelectDossierPanel`: `%s`" % str(dossier_panel_rect))
+	dump_lines.append("- `HeroSelectDossierFrame`: `%s`" % str(dossier_frame_rect))
+	dump_lines.append("- `HeroSelectDossierContent`: `%s`" % str(dossier_content_rect))
 	dump_lines.append("- `HeroSelectDossier`: `%s`" % str(dossier_rect))
 	dump_lines.append("- `HeroSelectInfoDescription`: `%s`" % str(dossier_desc_rect))
 	if asc_mods != null:
 		dump_lines.append("- `AscensionModsLabel`: `%s`" % str(asc_mods.get_global_rect()))
+	dump_lines.append("- `AscensionSelectorRow`: `%s`" % str(asc_row.get_global_rect()))
+	dump_lines.append("- `HeroSelectChooseButton`: `%s`" % str(choose_button.get_global_rect()))
 	dump_lines.append("- `HeroSelectRadarPanel`: `%s`" % str(radar_panel_rect))
+	dump_lines.append("- `HeroSelectRadarContent`: `%s`" % str(radar_content_rect))
 	dump_lines.append("- `HeroStatRadar`: `%s`" % str(radar_rect))
-	dump_lines.append("- `HeroThumbnailStrip`: `%s`" % str(thumbnail_rect))
+	dump_lines.append("- `HeroThumbnailStripFrame`: `%s`" % str(thumbnail_frame_rect))
+	dump_lines.append("- `HeroThumbnailStripContent`: `%s`" % str(thumbnail_content_rect))
+	dump_lines.append("- `HeroThumbnailStrip`: `%s` separation=`%d`" % [str(thumbnail_rect), thumbnail_strip.get_theme_constant("separation")])
+	var thumbnail_buttons := []
+	for child in thumbnail_strip.get_children():
+		var thumb := child as Control
+		if thumb != null:
+			thumbnail_buttons.append(thumb)
+	if thumbnail_buttons.is_empty():
+		_fail("Expected hero thumbnail buttons at %s." % context)
+		return
+	var first_thumb := thumbnail_buttons[0] as Control
+	var first_thumb_rect := first_thumb.get_global_rect()
+	dump_lines.append("- `HeroThumbnailSample`: min=`%s`, rect=`%s`" % [str(first_thumb.custom_minimum_size), str(first_thumb_rect)])
+	var unified_ratio := unified_frame_rect.size.x / maxf(unified_frame_rect.size.y, 1.0)
+	var unified_source_ratio := HERO_SELECT_UNIFIED_SOURCE_SIZE.x / HERO_SELECT_UNIFIED_SOURCE_SIZE.y
+	var portrait_safe_rect := _scaled_source_rect(unified_frame_rect, HERO_SELECT_UNIFIED_SOURCE_SIZE, HERO_SELECT_UNIFIED_PORTRAIT_RECT)
+	var description_safe_rect := _scaled_source_rect(unified_frame_rect, HERO_SELECT_UNIFIED_SOURCE_SIZE, HERO_SELECT_UNIFIED_DESCRIPTION_RECT)
+	var bottom_controls_safe_rect := _scaled_source_rect(unified_frame_rect, HERO_SELECT_UNIFIED_SOURCE_SIZE, HERO_SELECT_UNIFIED_BOTTOM_CONTROLS_RECT)
+	var thumbnail_safe_rect := _scaled_safe_rect(thumbnail_frame_rect, HERO_SELECT_THUMBNAIL_SOURCE_SIZE, HERO_SELECT_THUMBNAIL_SAFE_MARGINS)
+	dump_lines.append("- `HeroSelectUnifiedPortraitSafeRect`: `%s`" % str(portrait_safe_rect))
+	dump_lines.append("- `HeroSelectUnifiedDescriptionSafeRect`: `%s`" % str(description_safe_rect))
+	dump_lines.append("- `HeroSelectUnifiedBottomControlsSafeRect`: `%s`" % str(bottom_controls_safe_rect))
+	dump_lines.append("- `HeroThumbnailStripSafeRect`: `%s`" % str(thumbnail_safe_rect))
+	if absf(unified_ratio - unified_source_ratio) > 0.015:
+		_fail("Expected SCRUM-356 unified frame to stay whole-image proportional at %s, got frame %s." % [context, unified_frame_rect])
+		return
+	if not _rect_contains_with_tolerance(portrait_safe_rect, portrait_rect, 2.0):
+		_fail("Expected hero portrait to stay inside SCRUM-356 portrait safe-zone at %s, got content %s safe %s frame %s." % [context, portrait_rect, portrait_safe_rect, unified_frame_rect])
+		return
+	if not _rect_contains_with_tolerance(description_safe_rect, dossier_rect, 2.0):
+		_fail("Expected hero dossier controls to stay inside SCRUM-356 description safe-zone at %s, got content %s safe %s frame %s." % [context, dossier_rect, description_safe_rect, unified_frame_rect])
+		return
+	if not _rect_contains_with_tolerance(description_safe_rect, dossier_desc_rect, 2.0):
+		_fail("Expected hero description text to stay inside SCRUM-356 description safe-zone at %s, got desc %s safe %s." % [context, dossier_desc_rect, description_safe_rect])
+		return
+	if not _rect_contains_with_tolerance(bottom_controls_safe_rect, asc_row.get_global_rect(), 2.0):
+		_fail("Expected ascension row to stay inside SCRUM-356 bottom controls safe-zone at %s, got row %s safe %s." % [context, asc_row.get_global_rect(), bottom_controls_safe_rect])
+		return
+	if asc_mods != null and asc_mods.visible and not _rect_contains_with_tolerance(bottom_controls_safe_rect, asc_mods.get_global_rect(), 2.0):
+		_fail("Expected ascension delta text to stay inside SCRUM-356 bottom controls safe-zone at %s, got mods %s safe %s." % [context, asc_mods.get_global_rect(), bottom_controls_safe_rect])
+		return
+	if not _rect_contains_with_tolerance(bottom_controls_safe_rect, choose_button.get_global_rect(), 2.0):
+		_fail("Expected hero select choose button to stay inside SCRUM-356 bottom controls safe-zone at %s, got button %s safe %s." % [context, choose_button.get_global_rect(), bottom_controls_safe_rect])
+		return
+	if not _rect_contains_with_tolerance(thumbnail_safe_rect, thumbnail_rect, 2.0):
+		_fail("Expected hero thumbnail row to stay inside SCRUM-355 strict safe-zone at %s, got content %s safe %s frame %s." % [context, thumbnail_rect, thumbnail_safe_rect, thumbnail_frame_rect])
+		return
+	if thumbnail_frame_rect.position.y < unified_frame_rect.end.y + 16.0:
+		_fail("Expected hero unified frame and thumbnail strip frame to keep >=16px vertical gap at %s, got unified %s thumbnail %s." % [context, unified_frame_rect, thumbnail_frame_rect])
+		return
+	var min_expected_thumb_width := 48.0
+	if viewport_size.x >= 1600:
+		min_expected_thumb_width = 52.0
+	if viewport_size.x >= 2560:
+		min_expected_thumb_width = 96.0
+	if first_thumb.custom_minimum_size.x < min_expected_thumb_width or first_thumb.custom_minimum_size.y < maxf(first_thumb.custom_minimum_size.x * 1.20, 56.0):
+		_fail("Expected larger, taller hero thumbnails at %s, got min %s." % [context, first_thumb.custom_minimum_size])
+		return
+	if thumbnail_strip.get_theme_constant("separation") > 2:
+		_fail("Expected compact hero thumbnail separation at %s." % context)
+		return
+	for thumb in thumbnail_buttons:
+		var thumb_rect := (thumb as Control).get_global_rect()
+		if not _rect_contains_with_tolerance(thumbnail_rect, thumb_rect, 1.5):
+			_fail("Expected hero thumbnail %s to stay inside carousel content-zone at %s, got thumb %s content %s." % [(thumb as Control).name, context, thumb_rect, thumbnail_rect])
+			return
 	var min_gap := 12.0
 	if dossier_rect.end.x > radar_panel_rect.position.x - min_gap or dossier_desc_rect.end.x > radar_panel_rect.position.x - min_gap:
 		_fail("Expected hero description/dossier to stay left of radar with >= %.0fpx gap at %s, got dossier %s desc %s radar panel %s." % [min_gap, context, dossier_rect, dossier_desc_rect, radar_panel_rect])
@@ -5079,7 +6937,17 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	if radar_panel.get_parent() != hero_screen or radar_panel.anchor_right < 0.99 or radar_panel.anchor_left < 0.99:
 		_fail("Expected hero radar panel to be a floating top-right widget parented to HeroSelectScreen at %s." % context)
 		return
-	if radar_panel_rect.end.x > screen_rect.end.x - 18.0 or radar_panel_rect.position.x < screen_rect.end.x - 500.0:
+	if absf(radar_panel_rect.size.x - radar_panel_rect.size.y) > 2.0:
+		_fail("Expected hero radar windrose frame to stay square/proportional at %s, got %s." % [context, radar_panel_rect])
+		return
+	if radar_rect.get_center().distance_to(radar_content_rect.get_center()) > 4.0:
+		_fail("Expected hero radar graph to be centered in its windrose content zone at %s, got radar %s content %s." % [context, radar_rect, radar_content_rect])
+		return
+	if HeroStatRadarScript.HERO_RADAR_RADIUS_FACTOR < 0.36:
+		_fail("Expected hero radar polygon radius factor to stay enlarged at %s." % context)
+		return
+	var expected_left_min := screen_rect.end.x - radar_panel_rect.size.x - 48.0
+	if radar_panel_rect.end.x > screen_rect.end.x - 18.0 or radar_panel_rect.position.x < expected_left_min:
 		_fail("Expected hero radar panel to sit near the top-right screen edge at %s, got %s in %s." % [context, radar_panel_rect, screen_rect])
 		return
 	if radar_panel_rect.position.y < header_rect.end.y + 8.0:
@@ -5120,6 +6988,12 @@ func _test_hud_no_overlap_layouts(main_scene: PackedScene) -> void:
 	if file != null:
 		file.store_string("\n".join(dump_lines))
 		file.close()
+	var scrum390_dir := ProjectSettings.globalize_path("res://build/qa/scrum390")
+	DirAccess.make_dir_recursive_absolute(scrum390_dir)
+	var scrum390_file := FileAccess.open("%s/combat_hud_runtime_rects.md" % scrum390_dir, FileAccess.WRITE)
+	if scrum390_file != null:
+		scrum390_file.store_string("\n".join(dump_lines))
+		scrum390_file.close()
 
 
 func _test_shop_wall_no_overlap_layouts(main_scene: PackedScene) -> void:
@@ -5198,8 +7072,8 @@ func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Ve
 		if icon == null or icon.texture == null or price == null or shadow == null:
 			_fail("Expected %s to include icon, contact shadow, and compact price tag." % button.name)
 			return
-		if price.get_theme_stylebox("panel") is StyleBoxTexture:
-			_fail("Expected %s price tag to be compact, not a framed texture badge." % button.name)
+		if _stylebox_texture_path(price.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_price_badge.png":
+			_fail("Expected %s price tag to use the SCRUM-332 economy price badge." % button.name)
 			return
 		visual_controls.append(icon)
 		visual_controls.append(price)
@@ -5273,7 +7147,16 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 	var controls := _visible_hud_top_controls(hud_main)
 	dump_lines.append("## %s" % context)
 	for control in controls:
-		dump_lines.append("- `%s`: `%s`" % [control.name, str(control.get_global_rect())])
+		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control.name, str(control.get_global_rect()), _stylebox_texture_path(control.get_theme_stylebox("panel") if control is PanelContainer else null)])
+		if control.name == "RunResourceHud" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png":
+			_fail("Expected RunResourceHud to use SCRUM-390 resource panel frame at %s." % context)
+			return
+		if control.name == "CombatTimerPanel" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png":
+			_fail("Expected CombatTimerPanel to use SCRUM-390 timer frame at %s." % context)
+			return
+		if control.name == "AscensionHudBadge" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_ascension_badge.png":
+			_fail("Expected AscensionHudBadge to use SCRUM-390 ascension badge frame at %s." % context)
+			return
 	var overlap := _first_control_overlap(controls, 2.0)
 	if not overlap.is_empty():
 		_fail("Expected no top HUD overlap at %s, got %s." % [context, overlap])
@@ -5339,6 +7222,38 @@ func _rect_with_tolerance(rect: Rect2, tolerance_px: float) -> Rect2:
 	var shrink := tolerance_px * 0.5
 	var size := Vector2(maxf(rect.size.x - tolerance_px, 0.0), maxf(rect.size.y - tolerance_px, 0.0))
 	return Rect2(rect.position + Vector2(shrink, shrink), size)
+
+
+func _rect_contains_with_tolerance(outer: Rect2, inner: Rect2, tolerance_px: float) -> bool:
+	return inner.position.x >= outer.position.x - tolerance_px \
+		and inner.position.y >= outer.position.y - tolerance_px \
+		and inner.end.x <= outer.end.x + tolerance_px \
+		and inner.end.y <= outer.end.y + tolerance_px
+
+
+func _scaled_safe_rect(frame_rect: Rect2, source_size: Vector2, margins: Vector4) -> Rect2:
+	var scale_x := frame_rect.size.x / maxf(source_size.x, 1.0)
+	var scale_y := frame_rect.size.y / maxf(source_size.y, 1.0)
+	var margin_left := margins.x * scale_x
+	var margin_top := margins.y * scale_y
+	var margin_right := margins.z * scale_x
+	var margin_bottom := margins.w * scale_y
+	return Rect2(
+		frame_rect.position + Vector2(margin_left, margin_top),
+		Vector2(
+			maxf(frame_rect.size.x - margin_left - margin_right, 0.0),
+			maxf(frame_rect.size.y - margin_top - margin_bottom, 0.0)
+		)
+	)
+
+
+func _scaled_source_rect(frame_rect: Rect2, source_size: Vector2, source_rect: Rect2) -> Rect2:
+	var scale_x := frame_rect.size.x / maxf(source_size.x, 1.0)
+	var scale_y := frame_rect.size.y / maxf(source_size.y, 1.0)
+	return Rect2(
+		frame_rect.position + Vector2(source_rect.position.x * scale_x, source_rect.position.y * scale_y),
+		Vector2(source_rect.size.x * scale_x, source_rect.size.y * scale_y)
+	)
 
 
 func _collect_label_text(node: Node) -> String:
@@ -5416,6 +7331,11 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 	await process_frame
 	if bool(death_main.get("combat_active")):
 		push_error("Expected player death to end combat.")
+		quit(1)
+		return
+	var death_panel := death_main.find_child("PauseEndModalPanel_death", true, false) as PanelContainer
+	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
+		push_error("Expected death screen to use the SCRUM-330 pause/end modal frame.")
 		quit(1)
 		return
 	death_main.queue_free()

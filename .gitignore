@@ -6,3 +6,16 @@ releases/
 
 # Scratch image-gen / temp work dir
 tmp/
+
+# In-game feedback Discord webhook (секрет, не коммитить)
+feedback_webhook.cfg
+
+# Feedback intake state (дедуп, локальный)
+tools/.feedback_intake_state.json
+
+# Release Discord webhook (секрет, не коммитить)
+release_webhook.cfg
+
+# Telethon session релиза (секрет)
+*.session
+fantasydisk_release.session

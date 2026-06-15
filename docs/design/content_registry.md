@@ -1,6 +1,6 @@
 # FantasyDisk Content Registry
 
-Обновлено: 2026-06-13
+Обновлено: 2026-06-14
 
 Этот документ задает правило для всех будущих задач: любая игровая сущность должна иметь понятное имя, стабильный ID и место в документации. Рандом в игре может выбирать только из заранее определенных сущностей, а не создавать безымянный контент, на который потом невозможно сослаться.
 
@@ -63,23 +63,32 @@
 
 | ID | Игровое имя | Роль | Источник | Ассет | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано |
+| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/berserk_sheet.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано |
 | `soldier` | Солдат | Тактический физический класс: залпы, гранаты и удержание линии | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/soldier.png`, `assets/sprites/characters/cutout/soldier_*.png` | Реализовано |
-| `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/cutout/thief_*.png` | Реализовано |
-| `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/cutout/elementalist_*.png` | Реализовано |
+| `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/thief_sheet.png`, `assets/sprites/characters/thief_spriteframes.tres`, `assets/sprites/characters/full_frame/thief/`, `assets/sprites/characters/cutout/thief_*.png` | Реализовано; SCRUM-297 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated |
+| `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/elementalist_sheet.png`, `assets/sprites/characters/elementalist_spriteframes.tres`, `assets/sprites/characters/full_frame/elementalist/`, `assets/sprites/characters/cutout/elementalist_*.png` | Реализовано; SCRUM-289 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `sniper` | Снайпер | Дальний точный класс: lockshot, kill-zone и split rounds | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/sniper.png`, `assets/sprites/characters/cutout/sniper_*.png` | Реализовано |
 | `priest` | Священник | Священный sustain: sanctify, ward-пульсы и молитвенная цепь | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/priest.png`; `assets/sprites/characters/cutout/priest_*.png` | Реализовано |
-| `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`; `assets/sprites/characters/cutout/biologist_*.png` | Реализовано |
+| `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
 | `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer.png`; `assets/sprites/characters/cutout/engineer_*.png` | Реализовано |
-| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/cutout/dark_mage_*.png` | Реализовано |
-| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/cutout/guitarist_*.png` | Реализовано |
-| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано |
-| `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано |
+| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cutout/dark_mage_*.png` | Реализовано; SCRUM-286 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated |
+| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png` | Реализовано; SCRUM-291 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
+| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано; SCRUM-282 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
+| `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
 | `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
 | `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано; v2 unarmed base без встроенного копья/щита |
 | `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
+
+SCRUM-416 runtime portrait rule: for every playable class, `scripts/progression_data_characters.gd`
+uses the accepted cleaned full-frame idle frame as the canonical static UI
+portrait path: `assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`.
+Hero Select, hero thumbnails, Codex and level-up portrait surfaces read this
+single `sprite_path`; legacy `assets/sprites/characters/<class>.png` files remain
+historical/fallback asset references and are not the live static portrait source.
+Regression coverage: `tests/character_sprite_registry_alignment_test.gd` and
+`tests/runtime_smoke_test.gd`; QA dumps under `build/qa/scrum416/`.
 
 ## Расширенный Ростер 0.1.4 (Фундамент, 2026-06-11)
 
@@ -101,6 +110,22 @@
 ## Анимации И Rig-Профили
 
 Канонический контроллер cutout-анимации: `scripts/cutout_rig_2d.gd`.
+
+SCRUM-298 зафиксировал Design standard для будущих full-frame playable character
+sheets: `docs/design/references/character_animation_style_sheet_0_1_5.md`.
+Персонажные redraw-задачи должны класть unarmed sheet по пути
+`assets/sprites/characters/<class_id>_sheet.png`, cell `384x384`, 5 кадров
+`walk` и 5 кадров `attack_primary` минимум; preferred sheet — `1920x1152` с
+дополнительной строкой `idle`. Runtime wiring готов: `Player` автоматически
+подхватывает этот путь при наличии sheet, добавляет runtime alias `attack` для
+`attack_primary` и сохраняет static/cutout fallback для неперерисованных классов.
+SCRUM-283 Design pass подготовил первый принятый playable source sheet:
+`assets/sprites/characters/berserk_sheet.png` (`1920x768`, `384x384` cells,
+5 `walk` + 5 `attack_primary`, transparent, unarmed). Animator pass подключил
+runtime `assets/sprites/characters/berserk_spriteframes.tres` с отдельными
+кадрами `assets/sprites/characters/full_frame/berserk/`, `walk` 5f loop,
+`attack_primary`/`attack` 5f one-shot, manifest/contact/GIF в
+`build/qa/scrum283/`; animation/runtime smoke PASS.
 
 | ID | Тип | Где используется | Назначение | Статус |
 | --- | --- | --- | --- | --- |
@@ -137,15 +162,62 @@ Source-спрайты для rig должны сохранять читаемы�
 
 Sprite quality audit 2026-06-11 (`tools/sprite_quality_audit.py`): по всем активным папкам спрайтов вычищены грязные полупрозрачные пиксели и невидимые островки; в cutout-конечностях 21 части устранены «летающие» обрезки соседних частей тела (фрагменты возвращены в слой торса автопостобработкой `fix_detached_fragments` в `tools/slice_rig_cutouts.py` — повторные нарезки остаются чистыми). Оторванные элементы дизайна (искры иконок, парящие орбы/руны мага) сохранены. Запрещено возвращать активный боевой визуал к квадратным blocky-заглушкам.
 
-Разрешения source-спрайтов: персонажи 512x512, стандартные монстры 192x192, элитки 256x256 (укрупнены 2026-06-11 с аурой статуса), боссы 256x256.
+Разрешения source-спрайтов: персонажи 512x512, стандартные монстры 192x192, активные элитки 512x512 после SCRUM-135, боссы 512x512 для текущего boss roster/source set. Mini-elite source sprites из SCRUM-156 также 512x512.
 
 Спрайт `dark_mage` переработан 2026-06-11 под walk-анимацию: нейтральная стойка с двумя читаемыми симметричными ногами (просвет между ними, стопы на одной линии, низ мантии не скрывает колени/стопы). Инструмент: `tools/rework_dark_mage_legs.py` (оригинал в `build/bg_backup/dark_mage_original.png`). Cutout-части ног (`assets/sprites/characters/cutout/dark_mage_leg_l.png` / `dark_mage_leg_r.png`) пересобраны с полными голень+бедро крупами и пивотами у бедер.
 
+SCRUM-286 (2026-06-14) добавил Design-ready unarmed full-frame sheet
+`assets/sprites/characters/dark_mage_sheet.png`: `1920x1152`, 3 rows
+(`idle`, `walk`, `attack_primary`) x 5 frames, `384x384` cells, transparent
+RGBA, bottom-center pivot guide `[192,348]`. Source/reference files live under
+`docs/design/references/characters/dark_mage/`; QA contact/GIF/manifest files
+live under `docs/design/previews/` and `build/qa/scrum286_dark_mage/`. Animator
+pass подключил runtime `assets/sprites/characters/dark_mage_spriteframes.tres`
+через отдельные кадры `assets/sprites/characters/full_frame/dark_mage/`, чтобы
+live SpriteFrames не резали соседние клетки source sheet; animation/runtime smoke
+PASS.
+
+SCRUM-291 (2026-06-14) добавил unarmed Guitarist sheet
+`assets/sprites/characters/guitarist_sheet.png`: `1920x1152`, 3 rows
+(`idle`, `walk`, `attack_primary`) x 5 frames, `384x384` cells, transparent
+RGBA, bottom-center pivot guide `[192,348]`. Animator pass подключил runtime
+`assets/sprites/characters/guitarist_spriteframes.tres` через отдельные кадры
+`assets/sprites/characters/full_frame/guitarist/`, чтобы live SpriteFrames не
+резали соседние клетки source sheet. Source/reference files live under
+`docs/design/references/characters/guitarist/`; Design QA files live under
+`build/qa/scrum291_guitarist/`, Animator manifest/contact/GIF under
+`build/qa/scrum291/`. Manifest validation, Godot import, animation smoke and
+runtime smoke PASS after SCRUM-409.
+
+SCRUM-289 (2026-06-14) добавил unarmed Elementalist sheet
+`assets/sprites/characters/elementalist_sheet.png`: `1920x1152`, 3 rows
+(`idle`, `walk`, `attack_primary`) x 5 frames, `384x384` cells, transparent
+RGBA, bottom-center pivot guide `[192,348]`. Source/reference files live under
+`docs/design/references/characters/elementalist/`; QA contact preview:
+`docs/design/previews/scrum289_elementalist_sheet_contact.png`; Design
+manifest/report/GIF previews live under `build/qa/scrum289_elementalist/`.
+Character is unarmed: no staff, wand, orb, focus, weapon or held object; only
+close hand fire/ice/lightning energy remains. Animator pass подключил runtime
+`assets/sprites/characters/elementalist_spriteframes.tres` через отдельные
+кадры `assets/sprites/characters/full_frame/elementalist/`; Animator
+manifest/contact/GIF previews live under `build/qa/scrum289/`. Manifest
+validation, Godot import, animation smoke and runtime smoke PASS.
+
+SCRUM-282 / SCRUM-294 (2026-06-14) подключили accepted unarmed Assassin and
+Ranger sheets through runtime SpriteFrames:
+`assets/sprites/characters/assassin_spriteframes.tres` and
+`assets/sprites/characters/ranger_spriteframes.tres`. Both expose `idle` 5f
+loop, `walk` 5f loop, `attack_primary`/runtime `attack` 5f one-shots, with
+per-frame runtime PNGs in `assets/sprites/characters/full_frame/assassin/` and
+`assets/sprites/characters/full_frame/ranger/`; QA manifests/contact/GIFs live
+under `build/qa/scrum282/` and `build/qa/scrum294/`. Manifest validation,
+animation smoke and runtime smoke PASS.
+
 ## VFX-Ассеты Эффектов
 
-Папка: `assets/sprites/effects/`. Генераторы: `tools/generate_attack_vfx.py` (оружие игрока), `tools/generate_elite_vfx.py` (уникальные атаки элиток). Все PNG с прозрачным фоном.
+Папка: `assets/sprites/effects/`. Генераторы: `tools/generate_attack_vfx.py` (оружие игрока), `tools/generate_elite_vfx.py` (уникальные атаки элиток), `tools/generate_elite_boss_vfx_015.py` (SCRUM-261 elite/boss skill VFX), `tools/generate_unique_weapon_vfx_015.py` (SCRUM-258 unique weapon identity plates). Все PNG с прозрачным фоном.
 
-Опасные зоны врагов/босса (2026-06-12) оформлены через `scripts/hazard_vfx.gd` (`HazardVfx.telegraph`/`detonate`): тинтуемая текстура `hazard_zone.png` (ведьмино-кольцо опасности с насечками и мягкой заливкой) на windup, затем `impact_ring`+`impact_flash` детонация, для яда — бурлящая `poison_pool` лужа. Заменены голые `Polygon2D`-круги боссовских зон (rift zone, disk slam, зона смены фазы) и элитного яда (hazard zone + persistent puddle).
+Опасные зоны врагов/босса (2026-06-12, обновлено SCRUM-261) оформлены через `scripts/hazard_vfx.gd` (`HazardVfx.telegraph`/`detonate`): базовый `hazard_zone.png` остается tint-friendly warning circle, затем `impact_ring`+`impact_flash` дают момент детонации, для яда — бурлящая `poison_pool` лужа. После SCRUM-261 `HazardVfx` выбирает dedicated painterly D&D texture по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`, а также shield/summon/aura helpers. Тайминги, урон, радиусы и node names не менялись.
 
 Оружие игрока (используются `scripts/attack_vfx.gd`):
 
@@ -167,9 +239,50 @@ VFX pass 2026-06-12: `ClassWeapon._spawn_damage_pool()` больше не рис
 
 D&D VFX restyle pass 2026-06-12: все 19 PNG в `assets/sprites/effects/` заменены на сдержанный tabletop fantasy style без кислотного неона и пересветов. Размеры/имена/alpha сохранены; `hazard_zone` и `elite_telegraph_circle` оставлены warm-neutral/tintable под кодовую модуляцию. Non-runtime QA preview вынесен из `assets/` в `build/cleanup_backup_2026_06_12/assets/sprites/effects/effects_dnd_preview.png`.
 
-Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (53 шт., 256x256). Финальный Design pass 2026-06-12: все активные артефакты заменены на realistic epic D&D/tabletop fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Пайплайн вырезки из raster source sheets: `tools/extract_realistic_dnd_artifact_icons.py`; QA preview: `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass) superseded.
+SCRUM-261 elite/boss VFX pass 2026-06-14: добавлены dedicated 512x512/256x256 PNG для новых mechanics SCRUM-259: `boss_gravity_well_zone.png`, `boss_vampiric_bite_zone.png`, `boss_rift_zone.png`, `boss_bone_prison_zone.png`, `boss_brood_web_zone.png`, `boss_ash_ember_zone.png`, `boss_molten_armor_pulse.png`, `enemy_summon_portal.png`, `enemy_shield_block_front.png`, `enemy_reflect_thorns_aura.png`, `enemy_command_aura_pulse.png`, `enemy_shadow_blink_mark.png`, `enemy_shard_fan_burst.png`. QA/contact preview: `docs/design/previews/scrum261_elite_boss_vfx_contact.png`.
+
+SCRUM-258 unique weapon VFX pass 2026-06-14: добавлены 51 dedicated `256x256` RGBA PNG `vfx_weapon_<weapon_id>.png` для всех текущих `ProgressionData.WEAPONS_BY_CLASS` weapon IDs. Это короткие D&D/painterly VFX-пластины под реальные mechanics SCRUM-256/251/254/245: melee execute/cleave/stagger, charged shots/traps, drain/status links, summon/deploy identities, auras and buff/debuff reads. `scripts/attack_vfx.gd::weapon_signature()`, `scripts/class_weapon.gd::_spawn_weapon_signature()` и SCRUM-335 `scripts/berserk_weapon.gd::_show_weapon_signature()` подключают их визуально по `weapon_id` без изменения урона, формул, targeting, cooldowns или таймингов. QA previews: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png`, `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
+
+SCRUM-337 attack VFX source regeneration 2026-06-14: весь активный runtime-пак эффектов атак пересобран через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) и deterministic sheet-cut pipeline `tools/build_scrum337_attack_vfx_from_sources.py`. Заменены на месте 83 `assets/sprites/effects/*.png` и 2 `assets/sprites/projectiles/*.png`; имена, размеры, alpha/RGBA и runtime-пути сохранены. Source sheets/manifest: `docs/design/references/attack_vfx_realistic_dark_fantasy/`; QA previews: `docs/design/previews/scrum337_attack_vfx_core_contact.png`, `docs/design/previews/scrum337_attack_vfx_weapon_contact.png`. Gameplay timing, damage, targeting, formulas и Back-end runtime logic не менялись.
+
+Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (53 шт., 256x256). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references: `docs/design/references/icons/artifacts/artifact_<id>_source.png`; manifest: `docs/design/references/icons/artifacts/artifact_icons_scrum340_manifest.json`; QA previews: `docs/design/previews/artifact_icons_scrum340_contact.png` и `docs/design/previews/artifact_icons_scrum340_40px_readability.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
+
+Reward frame kit SCRUM-338 (Design-ready, Back-end integration handoff):
+`assets/sprites/ui/frames/rewards/ui_frame_reward_card.png`,
+`ui_frame_reward_card_hover.png`,
+`ui_frame_reward_elite_artifact_card.png`,
+`ui_frame_reward_elite_artifact_card_hover.png` (`768x1024`, RGBA,
+transparent). Source references and safe-zone metadata:
+`docs/design/references/rewards/reward_frames_scrum338_metadata.json`; QA preview:
+`docs/design/previews/reward_frames_scrum338_contact_safe_zones.png`. Runtime
+content must stay inside documented content margins: battle reward card
+`Vector4(132, 170, 132, 164)`, elite artifact card
+`Vector4(150, 202, 150, 190)`.
+
+Economy node frame kit SCRUM-332 (Design-ready, Back-end integration handoff):
+`assets/sprites/ui/frames/economy/ui_frame_economy_panel.png`,
+`ui_frame_economy_choice_card.png`, `ui_frame_economy_choice_card_hover.png`,
+`ui_frame_economy_dragon_panel.png`, `ui_frame_economy_price_badge.png`,
+`ui_frame_economy_tooltip.png`. Mockup/spec:
+`docs/design/mockups/scrum332_shop_economy/spec.md`; generated references:
+`docs/design/references/ui_overhaul_shop_economy/`; preview:
+`docs/design/previews/scrum332_shop_economy_frame_kit_contact.png`. Content
+must stay inside the documented safe zones, especially for the irregular dragon
+panel.
+
+Progression frame kit SCRUM-331 (Design-ready, Back-end integration handoff):
+`assets/sprites/ui/frames/progression/ui_frame_progression_main_panel.png`,
+`ui_frame_progression_branch_panel.png`, `ui_frame_progression_node_available.png`,
+`ui_frame_progression_node_locked.png`, `ui_frame_progression_node_purchased.png`,
+`ui_frame_progression_node_focus.png`, `ui_frame_progression_class_panel.png`,
+`ui_frame_progression_points_badge.png`, `ui_frame_progression_tooltip.png`.
+Mockup/spec: `docs/design/mockups/scrum331_progression_codex/spec.md`;
+generated references: `docs/design/references/ui_overhaul_progression_codex/`;
+preview: `docs/design/previews/scrum331_progression_frame_kit_contact.png`.
+Circular node content must stay within the documented inner circle; the existing
+SCRUM-345/SCRUM-403 Codex texture kit remains the live Codex baseline.
 
 Уникальные атаки элиток (имена зафиксированы для Back-end интеграции, не переименовывать):
 
@@ -180,6 +293,24 @@ D&D VFX restyle pass 2026-06-12: все 19 PNG в `assets/sprites/effects/` за
 | `elite_poison_lob.png` | 96x96 | Ядовитый снаряд Чумного Пророка | Ассет готов |
 | `elite_crystal_shard.png` | 96x96 | Кристальный осколок Маршала Осколков (острие +X) | Ассет готов |
 | `elite_telegraph_circle.png` | 512x512 | Универсальный круг-предупреждение зоны атаки | Ассет готов |
+| `enemy_shadow_blink_mark.png` | 512x512 | Метка выхода/удара `shadow_strike` Ночного Сталкера | Ассет готов |
+| `enemy_shard_fan_burst.png` | 512x512 | Предупреждение веера/кольца осколков `shard_fan` | Ассет готов |
+| `enemy_shield_block_front.png` | 256x256 | Короткий фронтальный VFX щита для `shield_block` | Ассет готов |
+| `enemy_reflect_thorns_aura.png` | 512x512 | Аура отражающих шипов `reflect_thorns` | Ассет готов |
+| `enemy_command_aura_pulse.png` | 512x512 | Аура усиления `aura_buff` Маршала Осколков | Ассет готов |
+
+VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
+
+| Файл | Runtime node/mechanic | Назначение | Статус |
+| --- | --- | --- | --- |
+| `boss_gravity_well_zone.png` | `BossGravityWell` | Фиолетовая гравитационная воронка Стража Разлома | Ассет готов |
+| `boss_vampiric_bite_zone.png` | `BossVampiricBite` | Кровавый круг укуса/вампиризма Пожирателя Диска | Ассет готов |
+| `boss_rift_zone.png` | `BossRiftZone` | Разломная зона Стража/волны разлома | Ассет готов |
+| `boss_bone_prison_zone.png` | `BossRiftZone` + `boss_behavior=bone_archon` | Костяная тюрьма/стена Архонта | Ассет готов |
+| `boss_brood_web_zone.png` | `BroodWebZone` | Паутинная зона Матери Роя | Ассет готов |
+| `boss_ash_ember_zone.png` | `AshEmberZone` | Тлеющая зона Пепельного Колосса | Ассет готов |
+| `boss_molten_armor_pulse.png` | `BossMoltenArmorPulse` | Раскаленный импульс брони Колосса | Ассет готов |
+| `enemy_summon_portal.png` | summon/retinue helper | Портал призыва свиты | Ассет готов |
 
 ## Оружие
 
@@ -218,9 +349,9 @@ D&D VFX restyle pass 2026-06-12: все 19 PNG в `assets/sprites/effects/` за
 | `electric_guitar` | Электрогитара | Гитарист | Звуковая волна вперед | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `bass_guitar` | Бас-гитара | Гитарист | Частый слабый контроль-пульс с сильным отталкиванием | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
 | `sound_amp` | Звуковой усилитель | Гитарист | Деплойный усилитель: живет ~7с, лимит 1 + floor(Лидерство/4) | `ProgressionData.GUITARIST_WEAPONS` | Реализовано |
-| `chakrams` | Чакрамы | Ассасин | Boomerang-коридор туда и обратно; критовые попадания дают рывок | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
-| `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне + crit dash hook | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
-| `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT + crit dash hook | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `chakrams` | Чакрамы | Ассасин | Boomerang-коридор туда и обратно; критовые попадания дают shadow burst у цели без перемещения героя | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне + crit shadow burst у цели | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
+| `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT + crit shadow burst у цели | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
 | `moon_crossbow` | Лунный арбалет | Рейнджер | Stance-charged piercing shot | `ProgressionData.RANGER_WEAPONS` | Реализовано |
 | `storm_longbow` | Грозовой длинный лук | Рейнджер | Stance-charged веер грозовых лучей | `ProgressionData.RANGER_WEAPONS` | Реализовано |
 | `hunter_trap` | Охотничий капкан | Рейнджер | Deploy trap: burst + knockback; stance charge усиливает | `ProgressionData.RANGER_WEAPONS` | Реализовано |
@@ -237,20 +368,20 @@ D&D VFX restyle pass 2026-06-12: все 19 PNG в `assets/sprites/effects/` за
 | `briar_staff` | Посох терний | Друид | Thorn zone, AoE DoT, crowd control | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `raven_totem` | Вороний тотем | Друид | Totem pulses, Leadership-scaled deploy limit | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 
-Weapon art v2 2026-06-12: первые 27 сцен `WeaponVisual` используют texture path, совпадающий с weapon ID; старые fallback-ссылки (`two_handed_hammer`, `long_spear`, `summon_amulet`, `blast_powder`, `restore_potion`, `moon_crossbow`, `chakrams`) убраны из чужих сцен. `long_spear`, `tower_shield`, `holy_flail` перерисованы как noble knight equipment. Scene scales уменьшены, чтобы оружие занимало примерно 50-65% высоты персонажа и не перекрывало лицо/корпус. Контрольные листы: `docs/design/previews/weapon_v2_assets_contact.png`, `docs/design/previews/weapon_v2_socket_contact.png`. SCRUM-168 добавил 3 Soldier weapon IDs и подключил canonical textures `soldier_rifle.png`, `soldier_grenade.png`, `soldier_bayonet.png`.
+Weapon art v2 2026-06-12: сцены `WeaponVisual` должны использовать texture path, совпадающий с canonical weapon ID (исключение: Berserk `sword/axe/hammer` используют historical файлы `two_handed_sword/axe/hammer.png`). SCRUM-277 закрыл оставшиеся proxy-ссылки новых классов: Вор, Элементалист, Снайпер, Священник, Биолог и Инженер теперь рендерят свои `assets/sprites/weapons/<weapon_id>.png`, а `PriestChime` больше не показывает `sound_amp.png`. `long_spear`, `tower_shield`, `holy_flail` перерисованы как noble knight equipment. Scene scales уменьшены, чтобы оружие занимало примерно 50-65% высоты персонажа и не перекрывало лицо/корпус. Контрольные листы: `docs/design/previews/weapon_v2_assets_contact.png`, `docs/design/previews/weapon_v2_socket_contact.png`. SCRUM-168 добавил 3 Soldier weapon IDs и подключил canonical textures `soldier_rifle.png`, `soldier_grenade.png`, `soldier_bayonet.png`.
 
 Временные visuals классового оружия регистрируются в runtime-группе `player_weapon_effects` и должны удаляться при смене оружия/персонажа, смерти, завершении забега и очистке world state.
 
 ## Призывные Союзники И Deployables
 
-SCRUM-152 Design pass 2026-06-12 добавил канонический raster-набор союзных summon/deployable ассетов в `assets/sprites/allies/`. Все PNG `256x256`, RGBA, transparent, painterly D&D style, с теплым/зеленым allied accent для отличия от врагов.
+SCRUM-152 Design pass 2026-06-12 добавил канонический raster-набор союзных summon/deployable ассетов в `assets/sprites/allies/`. SCRUM-399 (2026-06-14) заменил четыре мобильных summon visuals на эфирный союзный стиль: голубой/циановый ghost tint, прозрачность, мягкое внутреннее свечение и дымчатые края, чтобы призывы мгновенно отличались от плотных темных монстров. Все PNG RGBA/transparent; runtime IDs, SpriteFrames paths, counts and timings сохранены.
 
 | ID | Игровая роль | Ассет | Runtime status |
 | --- | --- | --- | --- |
-| `ally_druid_beast` | Базовый питомец Друида / fallback `AllyMinion` | `assets/sprites/allies/ally_druid_beast.png` | Подключен как fallback и один из runtime вариантов `summon_amulet` |
-| `ally_druid_pack_spirit` | Вариант стаи Друида / ultimate pack visual | `assets/sprites/allies/ally_druid_pack_spirit.png` | Подключен как runtime вариант `summon_amulet` через `ally_visual_ids` |
-| `ally_homunculus` | Химикский гомункул от `homunculus_vial` | `assets/sprites/allies/ally_homunculus.png` | Подключен через `ally_visual_id: homunculus` |
-| `ally_leadership_echo` | Призрачный союзник/эхо от Leadership | `assets/sprites/allies/ally_leadership_echo.png` | Зарезервирован в `AllyMinion` visual map для future Leadership echo |
+| `ally_druid_beast` | Базовый питомец Друида / fallback `AllyMinion` | `assets/sprites/allies/ally_druid_beast.png`; `assets/sprites/allies/ally_druid_wolf_spriteframes.tres` + `assets/sprites/allies/druid_wolf/ally_druid_wolf_{move,attack,death}_*.png` | Full-frame SpriteFrames через `FullFrameAnimationRegistry`: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, safe 256x256 wolf canvas, scale `0.37`, position `(0,-37)`, flip вправо по движению/атаке |
+| `ally_druid_pack_spirit` | Вариант стаи Друида / ultimate pack visual | `assets/sprites/allies/ally_druid_pack_spirit.png`; `assets/sprites/allies/ally_pack_spirit_spriteframes.tres` + `assets/sprites/allies/pack_spirit/ally_pack_spirit_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
+| `ally_homunculus` | Химикский гомункул от `homunculus_vial` | `assets/sprites/allies/ally_homunculus.png`; `assets/sprites/allies/ally_homunculus_spriteframes.tres` + `assets/sprites/allies/homunculus/ally_homunculus_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
+| `ally_leadership_echo` | Призрачный союзник/эхо от Leadership | `assets/sprites/allies/ally_leadership_echo.png`; `assets/sprites/allies/ally_leadership_echo_spriteframes.tres` + `assets/sprites/allies/leadership_echo/ally_leadership_echo_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
 | `deploy_sound_amp_field` | Полевой объект ампа Гитариста | `assets/sprites/allies/deploy_sound_amp_field.png` | Подключен как `deploy_texture_path` для `sound_amp` |
 | `deploy_raven_totem_field` | Полевой объект Вороньего тотема Друида | `assets/sprites/allies/deploy_raven_totem_field.png` | Подключен как `deploy_texture_path` для `raven_totem` |
 
@@ -258,7 +389,9 @@ Preview QA:
 
 - `docs/design/previews/summon_allies_style_references.png` - project style references used for Codex Design generation;
 - `docs/design/previews/summon_allies_asset_contact.png` - transparent asset contact sheet;
-- `docs/design/previews/summon_allies_scale_meadow_preview.png` - scale/readability check on arena background.
+- `docs/design/previews/summon_allies_scale_meadow_preview.png` - scale/readability check on arena background;
+- `docs/design/previews/summons_ethereal_redraw_contact.png` - SCRUM-399 ethereal summon static/frame contact sheet;
+- `docs/design/previews/summons_ethereal_readability_meadow.png` - SCRUM-399 meadow readability preview against current arena colors.
 
 Back-end source-specific integration complete in SCRUM-157: runtime selectors preserve cleanup groups and gameplay balance.
 
@@ -268,30 +401,30 @@ Back-end source-specific integration complete in SCRUM-157: runtime selectors pr
 
 | ID | Игровое имя | Текущая сцена | Архетип | Ассет | Поведение | Статус |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rift_cutter` | Рубака Разлома | `scenes/Enemy.tscn` | Ближний бой | `assets/sprites/enemies/enemy_melee.png` | Идет к игроку, бьет с windup | Реализовано |
-| `ash_marksman` | Пепельный Стрелок | `scenes/EnemyShooter.tscn` | Дальний бой | `assets/sprites/enemies/enemy_ranged.png` | Держит дистанцию и стреляет | Реализовано |
-| `spark_runner` | Искровой Беглец | `scenes/EnemyRunner.tscn` | Быстрый враг | `assets/sprites/enemies/enemy_suicide_runner.png` | Быстро догоняет игрока, может спавниться пачками | Реализовано |
-| `stone_bruiser` | Каменный Громила | `scenes/EnemyBruiser.tscn` | Жирный медленный | `assets/sprites/enemies/enemy_bruiser_slow.png` | Высокий HP, низкая скорость | Реализовано |
-| `bone_caller` | Костяной Зовущий | `scenes/EnemySummoner.tscn` | Суммонер | `assets/sprites/enemies/enemy_summoner.png` | Призывает маленьких мобов | Реализовано |
-| `void_mage` | Маг Пустоты | `scenes/EnemyMage.tscn` | Магический ranged | `assets/sprites/enemies/enemy_void_mage.png` | Давление магическими атаками | Реализовано |
-| `venom_spitter` | Ядовитый Плеватель | `scenes/EnemySpitter.tscn` | Ranged / hazard | `assets/sprites/enemies/enemy_venom_spitter.png` | Дальний плевок, давление зоной | Реализовано |
-| `rift_shieldbearer` | Щитоносец Разлома | `scenes/EnemyShield.tscn` | Защитный враг | `assets/sprites/enemies/enemy_rift_shieldbearer.png` | Более живучий вариант передней линии | Реализовано |
-| `small_biter` | Малый Кусатель | `scenes/EnemyBiter.tscn` | Маленький быстрый | `assets/sprites/enemies/enemy_small_biter.png` | Давит числом и скоростью | Реализовано |
-| `bone_shaman` | Костяной Шаман | `scenes/EnemyBoneShaman.tscn` | Продвинутый суммонер | `assets/sprites/enemies/enemy_bone_shaman.png` | Призыв и поддержка толпы | Реализовано |
-| `winged_spark` | Крылатая Искра | `scenes/EnemyFlyingRunner.tscn` | Летающий враг | `assets/sprites/enemies/enemy_winged_spark.png` | Hover-движение; pit layer отключен вместе с ямами | Реализовано |
+| `rift_cutter` | Рубака Разлома | `scenes/Enemy.tscn` | Ближний бой | `assets/sprites/enemies/enemy_melee.png`; full-frame pilot `assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres` from `assets/sprites/enemies/full_frame/rift_cutter_full_frame_sheet.png` | Идет к игроку, бьет с windup; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `ash_marksman` | Пепельный Стрелок | `scenes/EnemyShooter.tscn` | Дальний бой | `assets/sprites/enemies/enemy_ranged.png`; full-frame `assets/sprites/enemies/full_frame/ash_marksman_spriteframes.tres` from `assets/sprites/enemies/full_frame/ash_marksman_full_frame_sheet.png` | Держит дистанцию и стреляет; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `spark_runner` | Искровой Беглец | `scenes/EnemyRunner.tscn` | Быстрый враг | `assets/sprites/enemies/enemy_suicide_runner.png`; full-frame `assets/sprites/enemies/full_frame/spark_runner_spriteframes.tres` from `assets/sprites/enemies/full_frame/spark_runner_full_frame_sheet.png` | Быстро догоняет игрока, может спавниться пачками; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `stone_bruiser` | Каменный Громила | `scenes/EnemyBruiser.tscn` | Жирный медленный | `assets/sprites/enemies/enemy_bruiser_slow.png`; full-frame `assets/sprites/enemies/full_frame/stone_bruiser_spriteframes.tres` from `assets/sprites/enemies/full_frame/stone_bruiser_full_frame_sheet.png` | Высокий HP, низкая скорость; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `bone_caller` | Костяной Зовущий | `scenes/EnemySummoner.tscn` | Суммонер | `assets/sprites/enemies/enemy_summoner.png`; full-frame `assets/sprites/enemies/full_frame/bone_caller_spriteframes.tres` from `assets/sprites/enemies/full_frame/bone_caller_full_frame_sheet.png` | Призывает маленьких мобов; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `void_mage` | Маг Пустоты | `scenes/EnemyMage.tscn` | Магический ranged | `assets/sprites/enemies/enemy_void_mage.png`; full-frame `assets/sprites/enemies/full_frame/void_mage_spriteframes.tres` from `assets/sprites/enemies/full_frame/void_mage_full_frame_sheet.png` | Давление магическими атаками; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `venom_spitter` | Ядовитый Плеватель | `scenes/EnemySpitter.tscn` | Ranged / hazard | `assets/sprites/enemies/enemy_venom_spitter.png`; full-frame `assets/sprites/enemies/full_frame/venom_spitter_spriteframes.tres` from `assets/sprites/enemies/full_frame/venom_spitter_full_frame_sheet.png` | Дальний плевок, давление зоной; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `rift_shieldbearer` | Щитоносец Разлома | `scenes/EnemyShield.tscn` | Защитный враг | `assets/sprites/enemies/enemy_rift_shieldbearer.png`; full-frame `assets/sprites/enemies/full_frame/rift_shieldbearer_spriteframes.tres` from `assets/sprites/enemies/full_frame/rift_shieldbearer_full_frame_sheet.png` | Более живучий вариант передней линии; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `small_biter` | Малый Кусатель | `scenes/EnemyBiter.tscn` | Маленький быстрый | `assets/sprites/enemies/enemy_small_biter.png`; full-frame `assets/sprites/enemies/full_frame/small_biter_spriteframes.tres` from `assets/sprites/enemies/full_frame/small_biter_full_frame_sheet.png` | Давит числом и скоростью; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `bone_shaman` | Костяной Шаман | `scenes/EnemyBoneShaman.tscn` | Продвинутый суммонер | `assets/sprites/enemies/enemy_bone_shaman.png`; full-frame `assets/sprites/enemies/full_frame/bone_shaman_spriteframes.tres` from `assets/sprites/enemies/full_frame/bone_shaman_full_frame_sheet.png` | Призыв и поддержка толпы; визуально использует registry `move` 6f loop и `attack_primary`/`attack`/`hit`/`death` 6f one-shots | Реализовано |
+| `winged_spark` | Крылатая Искра | `scenes/EnemyFlyingRunner.tscn` | Летающий враг | `assets/sprites/enemies/enemy_winged_spark.png`; full-frame `assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres` from `assets/sprites/enemies/full_frame/winged_spark_full_frame_sheet.png` | Hover-движение; pit layer отключен вместе с ямами; визуально использует registry `move` 6f loop, `attack_primary`/`attack` 6f one-shot, `hover_flap` 6f loop, `hit` alias и `death` 6f one-shot | Реализовано |
 
 ## Элитные Монстры
 
 | ID | Игровое имя | Текущая сцена | Роль | Ассет | Уникальное поведение | Статус |
 | --- | --- | --- | --- | --- | --- | --- |
-| `iron_bastion` | Железный Оплот | `scenes/EliteArmored.tscn` | Танкующая элитка | `assets/sprites/elites/iron_bastion.png` | Пассив: периодический щит. Уникальная атака `slam_wave`: замах 0.6с с telegraph-кругом, затем кольцевая ударная волна (радиус 260, урон + отбрасывание), кулдаун 6с | Реализовано |
-| `night_stalker` | Ночной Сталкер | `scenes/EliteStalker.tscn` | Агрессивная элитка | `assets/sprites/elites/night_stalker.png` | Пассив: рывки к игроку. Уникальная атака `shadow_strike`: уходит в тень на 0.5с с telegraph-меткой за спиной игрока, телепортируется туда и бьет (радиус 92), кулдаун 7с | Реализовано |
-| `plague_prophet` | Чумной Пророк | `scenes/ElitePoisoned.tscn` | Зональная элитка | `assets/sprites/elites/plague_prophet.png` | Пассив: ядовитые зоны. Уникальная атака `poison_volley`: 3 lob-снаряда по дуге в telegraph-метки, в точках падения лужи на 3с (тик 0.6с), кулдаун 8с | Реализовано |
-| `shard_marshal` | Маршал Осколков | `scenes/EliteCommander.tscn` | Командир толпы | `assets/sprites/elites/shard_marshal.png` | Пассив: одноразовая аура усиления ближайших врагов. Уникальная атака `shard_fan`: веер из 5 кристальных снарядов в сторону игрока после замаха 0.5с, кулдаун 6с | Реализовано |
+| `iron_bastion` | Железный Оплот | `scenes/EliteArmored.tscn` | Танкующая элитка | `assets/sprites/elites/iron_bastion.png`; full-frame `assets/sprites/elites/full_frame/iron_bastion_spriteframes.tres` | Пассив: периодический щит. Уникальная атака `slam_wave`: замах 0.6с с telegraph-кругом, затем кольцевая ударная волна (радиус 260, урон + отбрасывание), кулдаун 6с. Визуально: `move` loop, `attack`/`attack_primary`, `death`, `skill_shield_block`, `skill_slam_wave` + `attack_*` aliases | Реализовано |
+| `night_stalker` | Ночной Сталкер | `scenes/EliteStalker.tscn` | Агрессивная элитка | `assets/sprites/elites/night_stalker.png`; full-frame `assets/sprites/elites/full_frame/night_stalker_spriteframes.tres` | Пассив: рывки к игроку. Уникальная атака `shadow_strike`: уходит в тень на 0.5с с telegraph-меткой за спиной игрока, телепортируется туда и бьет (радиус 92), кулдаун 7с. Визуально: `move` loop, `attack`/`attack_primary`, `death`, `skill_shadow_strike`, `skill_phase_dash` + `attack_*` aliases | Реализовано |
+| `plague_prophet` | Чумной Пророк | `scenes/ElitePoisoned.tscn` | Зональная элитка | `assets/sprites/elites/plague_prophet.png`; full-frame `assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres` | Пассив: ядовитые зоны. Уникальная атака `poison_volley`: 3 lob-снаряда по дуге в telegraph-метки, в точках падения лужи на 3с (тик 0.6с), кулдаун 8с. Визуально: `move` loop, `attack`/`attack_primary`, `death`, `skill_poison_volley`, `skill_plague_aura` + `attack_*` aliases | Реализовано |
+| `shard_marshal` | Маршал Осколков | `scenes/EliteCommander.tscn` | Командир толпы | `assets/sprites/elites/shard_marshal.png`; full-frame `assets/sprites/elites/full_frame/shard_marshal_spriteframes.tres` | Пассив: одноразовая аура усиления ближайших врагов. Уникальная атака `shard_fan`: веер из 5 кристальных снарядов в сторону игрока после замаха 0.5с, кулдаун 6с. Визуально: `move` loop, `attack`/`attack_primary`, `death`, `skill_shard_fan`, `skill_command_pulse` + `attack_*` aliases | Реализовано |
 
 Обновление SCRUM-135 от 2026-06-12: все 4 активные элитки используют native `512x512` source PNG и перенарезанные `assets/sprites/elites/cutout/` части под `scripts/sliced_rig_manifest.gd` `size = Vector2(512, 512)`. Поза/силуэт сохранены 1:1 относительно прежних 256px-спрайтов, чтобы epic scale оставался геометрически тем же, но без билинейного мыла на QHD/Retina.
 
-Все уникальные атаки элиток: параметры лежат в `scripts/enemy.gd::ELITE_ATTACK_CONFIG` (data-driven), фазы `windup/strike/recover/idle` доступны Animator через сигнал `elite_attack_phase_changed` и meta `elite_attack_phase`; урон атаки ограничен 25% max HP игрока. VFX: `elite_telegraph_circle.png`, `elite_shockwave_ring.png`, `elite_shadow_trail.png`, `elite_poison_lob.png`, `elite_crystal_shard.png` в `assets/sprites/effects/`.
+Все уникальные атаки элиток: параметры лежат в `ProgressionData.ELITE_ATTACK_CONFIGS` (data-driven), reusable mechanics — в `ProgressionData.ENEMY_MECHANIC_CATALOG`, unique signatures — в `ProgressionData.UNIQUE_ENCOUNTER_PATTERNS`. Фазы `windup/strike/recover/idle` доступны Animator через сигнал `elite_attack_phase_changed` и meta `elite_attack_phase`; урон атаки ограничен 25% max HP игрока. VFX: `elite_telegraph_circle.png`, `elite_shockwave_ring.png`, `elite_shadow_trail.png`, `elite_poison_lob.png`, `elite_crystal_shard.png` в `assets/sprites/effects/`.
 
 ## Умения Монстров (Канонические Имена Кодекса)
 
@@ -331,17 +464,35 @@ Back-end source-specific integration complete in SCRUM-157: runtime selectors pr
 
 ## Мини-Элитки (Свита Возвышения L7, SCRUM-155)
 
-Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 видов): `mini_scavenger_reaper` Жнец-Падальщик, `mini_plague_bellringer` Чумной Звонарь, `mini_bone_warden` Костяной Страж, `mini_spark_wight` Искровик, `mini_rot_hound` Гнилая Гончая, `mini_shadow_devourer` Теневой Пожиратель. Каждый вид: базовая elite-сцена, профиль hp/speed/damage, RGB-тинт различимости, поведение ближайшего elite-паттерна. Свита L7 выбирает вид случайно (`combat_director._maybe_spawn_mini_elite`); kind-мета `mini_elite_kind` на узле. SCRUM-156 подготовил финальные source sprites `assets/sprites/elites/mini_<id>.png` (`512x512`, RGBA, transparent), но runtime wiring базовых elite-сцен/кодекса остается Back-end scope. Кодекс: раздел «Мини-элитки».
+Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 видов): `mini_scavenger_reaper` Жнец-Падальщик, `mini_plague_bellringer` Чумной Звонарь, `mini_bone_warden` Костяной Страж, `mini_spark_wight` Искровик, `mini_rot_hound` Гнилая Гончая, `mini_shadow_devourer` Теневой Пожиратель. Каждый вид: базовая elite-сцена, профиль hp/speed/damage, RGB-тинт различимости, поведение ближайшего elite-паттерна. Свита L7 выбирает вид случайно (`combat_director._maybe_spawn_mini_elite`); kind-мета `mini_elite_kind` на узле. SCRUM-156 подготовил финальные source sprites `assets/sprites/elites/mini_<id>.png` (`512x512`, RGBA, transparent). Runtime использует базовые elite-сцены с mini-elite meta/scale/drop profile, а кодекс имеет отдельный раздел «Мини-элитки». SCRUM-372: full-frame visual lookup теперь предпочитает registered `mini_elite_kind` SpriteFrames entry и fallback'ается на base `elite_behavior`, если mini-specific frames еще не подключены. SCRUM-376 подключил все 6 `assets/sprites/elites/full_frame/mini_*_spriteframes.tres`: у каждого есть `move` loop, `attack`/`attack_primary`, две `skill_*` rows и matching `attack_*` aliases. SCRUM-370 добавил `death` 6f/10fps no-loop rows для всех 6 mini-elite SpriteFrames.
 
 ## Боссы
 
 | ID | Игровое имя | Текущая сцена | Роль | Ассет | Паттерны | Статус |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rift_warden` | Страж Разлома | `scenes/BossWarden.tscn` | Финальный босс контроля | `assets/sprites/bosses/boss_rift_warden.png` | Залпы, зоны разлома, призыв, щит, увороты | Реализовано |
-| `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png` | Рывки, disk slam AoE, radial burst, enrage | Реализовано |
-| `bone_archon` | Костяной Архонт | `scenes/BossBoneArchon.tscn` | Финальный босс-некромант | `assets/sprites/bosses/boss_bone_archon.png` (SCRUM-156 source ready; runtime scene wiring Back-end scope) | Волны скелетов (summon), веер черепов (volley), костяная стена (волна зон с проходом) | Реализовано (механики; арт source ready) |
-| `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png` (SCRUM-156 source ready; runtime scene wiring Back-end scope) | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3 | Реализовано (механики; арт source ready) |
-| `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png` (SCRUM-156 source ready; runtime scene wiring Back-end scope) | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны) | Реализовано (механики; арт source ready) |
+| `rift_warden` | Страж Разлома | `scenes/BossWarden.tscn` | Финальный босс контроля | `assets/sprites/bosses/boss_rift_warden.png`; full-frame `assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres` | Залпы, зоны разлома, призыв, щит, увороты. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_gravity_well`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
+| `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png`; full-frame `assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres` | Рывки, disk slam AoE, radial burst, enrage. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_vampiric_bite`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
+| `bone_archon` | Костяной Архонт | `scenes/BossBoneArchon.tscn` | Финальный босс-некромант | `assets/sprites/bosses/boss_bone_archon.png`; full-frame `assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_*.png` + `bone_archon_death_row.png` | Волны скелетов (summon), веер черепов (volley), костяная стена (волна зон с проходом). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_skull_volley`, `skill_bone_prison` + `attack_*` aliases | Реализовано |
+| `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png`; full-frame `assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_*.png` + `brood_mother_death_row.png` | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_brood_spawn`, `skill_web_zone` + `attack_*` aliases | Реализовано |
+| `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png`; full-frame `assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_*.png` + `ashen_colossus_death_row.png` | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_molten_slam`, `skill_armor_pulse` + `attack_*` aliases | Реализовано |
+
+SCRUM-352/SCRUM-394 Design source для full-frame rows хранится как
+`assets/sprites/{enemies,elites,bosses}/full_frame/<entity_id>_full_frame_sheet.png`
+(`1704x1144`, RGBA, transparent, 6 columns x 4 rows, `256x256` cells, `24px`
+discard-only gutters, `24px` outer padding). Row contract, safe-slicing metadata
+and pivot notes are recorded in
+`docs/design/references/scrum352_full_frame_sheets/scrum352_sheet_manifest.json`.
+SCRUM-378 подключил визуальную маршрутизацию этих boss `skill_*` rows из
+`scripts/boss.gd`: callbacks способностей запрашивают соответствующий full-frame
+state, но урон, телеграфы, cooldowns, targeting и spawn timing остаются
+Back-end mechanics data без изменений.
+SCRUM-380/SCRUM-394 Design source для явных full-frame `death` rows хранится в
+`assets/sprites/bosses/full_frame/<boss_id>/<boss_id>_death_*.png` и
+`<boss_id>_death_row.png`; source references are `1704x304` RGBA with `256x256`
+cells, `24px` discard-only gutters and `24px` outer padding; общий манифест:
+`docs/design/references/scrum380_death_rows/scrum380_death_rows_manifest.json`.
+Для `bone_archon`, `brood_mother` и `ashen_colossus` строки готовы как Design
+source pack и подключены Animator-owned SpriteFrames integration SCRUM-370.
 
 Обновление SCRUM-135 от 2026-06-12: оба boss source PNG заменены на native `512x512` и перенарезаны в `assets/sprites/bosses/cutout/`; `rift_warden` сохраняет отдельный `vortex` part, `disk_devourer` остается single-torso rig по текущему CONFIG. Epic boss scale не менялся.
 
@@ -444,31 +595,81 @@ Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 ви
 | `knight` | Бастион | Реализовано |
 | `druid` | Зов стаи | Реализовано |
 
-## UI Visual Kit 2026-06-13
+## UI Visual Kit 2026-06-14
 
-SCRUM-147 после пользовательской правки 2026-06-13 оставляет Parchment & Wax Seal только для кнопок. Кнопки используют референс `docs/design/references/ui_dark_fantasy_2026_06/button_parchment_wax_seal.png`: состаренный пергамент, красная сургучная печать, зубчатый кованый металл, рубин, золотой hover glow, затемненный pressed state и grayscale disabled state. SCRUM-229 заменяет non-button frame paths в `global/`, `escape/`, selected `shop/` и canonical `dark_fantasy/ui_df_panel/card/HUD/tooltip/stat/shop` на leather+gold panel kit из `docs/design/references/interface/`: тёмная кожа/камень, золотая гравировка, угловые кронштейны, заклёпки и мягкое свечение. No-junk rule: без бессмысленных линий/кружков/квадратиков/дефолтного Godot-декора.
+SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon kit из `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live-кнопки лежат в `assets/sprites/ui/frames/red_gold/`: 15 типов, каждый с idle/base, hover, pressed и disabled. Старый Parchment & Wax Seal button kit скопирован в backup `build/cleanup_backup_red_gold_buttons_2026_06_14/` и больше не является runtime-каноном. SCRUM-274 заменяет non-button panel/frame канон SCRUM-229 на Ornate Dark / Red kit из `docs/design/references/UiFrame/frame_kit_ornate_dark_sheet_b_spec.png`. Live-панели/HUD/tooltips/pause frames лежат в `assets/sprites/ui/frames/ornate/`, а прежний leather+gold/dark_fantasy/escape panel kit скопирован в backup `build/cleanup_backup_ornate_frames_2026_06_14/`. No-junk rule: без бессмысленных линий/кружков/квадратиков/дефолтного Godot-декора.
 
 | ID | Ассет | Роль |
 | --- | --- | --- |
 | `ui_panel_frame` | `assets/sprites/ui/frames/global/ui_panel_frame.png` | Базовые большие панели меню/событий/кодекса |
-| `ui_button_frame` | `assets/sprites/ui/frames/global/ui_button_frame.png` | Legacy/live fallback frame; runtime buttons use SCRUM-222 role-based `ui_df_button_*` 4-state textures |
+| `ui_button_frame` | `assets/sprites/ui/frames/global/ui_button_frame.png` | Legacy/fallback frame; runtime buttons use SCRUM-273 `ui_btn_red_gold_*` 4-state textures |
 | `ui_card_frame` | `assets/sprites/ui/frames/global/ui_card_frame.png` | Карточки персонажей, route node buttons, compact panels |
 | `ui_level_panel_frame` | `assets/sprites/ui/frames/global/ui_level_panel_frame.png` | Level-up / reward panel |
 | `ui_hud_panel_frame` | `assets/sprites/ui/frames/global/ui_hud_panel_frame.png` | Боевой HUD panel |
 | `ui_hud_card_frame` | `assets/sprites/ui/frames/global/ui_hud_card_frame.png` | HP/XP/money HUD cards |
 | `ui_tooltip_frame` | `assets/sprites/ui/frames/global/ui_tooltip_frame.png` | Generic tooltip/system panel frame |
-| `ui_df_button_primary_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_primary_idle.png` + hover/pressed/disabled | Primary 4-state buttons |
-| `ui_df_button_secondary_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_secondary_idle.png` + hover/pressed/disabled | Secondary/navigation 4-state buttons |
-| `ui_df_button_danger_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_danger_idle.png` + hover/pressed/disabled | Exit/end-run/danger 4-state buttons |
-| `ui_df_panel_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png` | Canonical dark fantasy large panel |
-| `ui_df_shop_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png` | Canonical merchant/shop frame |
-| `ui_panel_leather_gold_square` | `assets/sprites/ui/frames/leather_gold/ui_panel_leather_gold_square.png` | SCRUM-229 source square/card frame |
-| `ui_panel_leather_gold_wide` | `assets/sprites/ui/frames/leather_gold/ui_panel_leather_gold_wide.png` | SCRUM-229 source wide panel/frame |
-| `ui_bar_leather_gold_thin` | `assets/sprites/ui/frames/leather_gold/ui_bar_leather_gold_thin.png` | SCRUM-229 source bar/label/divider frame |
-| `ui_window_leather_gold_main` | `assets/sprites/ui/frames/leather_gold/ui_window_leather_gold_main.png` | SCRUM-229 source large window panel |
-| `ui_check_leather_gold` | `assets/sprites/ui/frames/leather_gold/ui_check_leather_gold.png` | SCRUM-229 source checked state frame |
+| `ui_frame_unified_master` | `assets/sprites/ui/frames/unified/ui_frame_unified_master.png` | SCRUM-384 active thin metallic projectwide master frame border, `1024x1024` RGBA, transparent center; use 9-slice tile margins `72/72/72/72`, content margins `88/88/88/88`, strict safe rect `[88,88,848,848]`; paths preserved from SCRUM-373/SCRUM-382 |
+| `ui_frame_unified_master_fill` | `assets/sprites/ui/frames/unified/ui_frame_unified_master_fill.png` | SCRUM-384 full panel-fill variant for rectangular surfaces where a quiet dark fill is acceptable |
+| `ui_frame_unified_inner_fill` | `assets/sprites/ui/frames/unified/ui_frame_unified_inner_fill.png` | SCRUM-384 `1024x1024` inner fill asset with alpha outside strict content zone |
+| `ui_frame_unified_ornament_top_bottom` | `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_top.png`, `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_bottom.png` | SCRUM-384 optional dragon overlays for large-window ornaments only; do not bake into 9-slice stretch zones and do not use on compact HUD, tooltip, chip or button surfaces |
+| `ui_frame_unified_hover_overlay` | `assets/sprites/ui/frames/unified/ui_frame_unified_hover_overlay.png` | SCRUM-384 subtle red/gold hover overlay fallback; preferred runtime hover is neutral modulate/contrast, not yellow glow |
+| `ui_frame_settings_tab_switcher_3slot` | `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png` | SCRUM-391 Design-ready Settings tab switcher candidate, `1280x256` RGBA, exactly 3 slots; safe rects `[160,88,270,82]`, `[506,88,270,82]`, `[852,88,270,82]`; runtime activation handed off to `backend_settings_menu_unified_restyle_integration_task.md` |
+| `ui_frame_combat_hud_resource_panel` | `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png` | SCRUM-390 Design-ready combat HUD resource strip, `1024x144` RGBA; texture margins `[96,44,96,44]`, content margins `[92,30,92,30]`, safe rect `[92,30,840,84]`; runtime activation handed off to `backend_combat_hud_redraw_integration_task.md` |
+| `ui_frame_combat_hud_card_*` | `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_hp.png`, `_xp.png`, `_gold.png`, `_ult.png` | SCRUM-390 Design-ready resource card frames, `256x144` RGBA; texture margins `[48,42,48,38]`, content margins `[32,24,32,22]`, safe rect `[32,24,192,98]` |
+| `ui_frame_combat_hud_timer` | `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png` | SCRUM-390 Design-ready combat timer frame, `384x128` RGBA; texture margins `[92,42,92,38]`, content margins `[82,32,82,28]`, safe rect `[82,32,220,68]` |
+| `ui_frame_combat_hud_ascension_badge` | `assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_ascension_badge.png` | SCRUM-390 Design-ready ascension badge, `128x128` RGBA; content margins `[40,34,40,34]`, safe rect `[40,34,48,60]` |
+| `ui_btn_combat_level_up_plus_*` | `assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus.png` + hover/pressed/disabled | SCRUM-390 opaque bottom-right level-up plus button kit, `128x128` RGBA; safe rect `[36,34,56,58]`; no yellow hover glow |
+| `ui_hud_bar_fill_*` | `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`, `_ult.png`, `_gold.png` | SCRUM-390 painterly resource fill textures, `512x32` RGBA, optional Back-end use for HP/XP/ULT/gold bars |
+| `ui_frame_pause_end_modal` | `assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png` | SCRUM-330 Design-ready pause/victory/death modal frame, `1280x1024` RGBA transparent. Source safe rect `[170,180,940,670]`, content margins `[170,180,170,174]`; use proportional whole-image frame or verified 9-slice only; runtime content must not overlap dragon heads, side columns, gems, bottom crest or metal border. Metadata: `docs/design/references/ui_overhaul_pause_end/scrum330_pause_end_metadata.json`; Back-end integration handoff: `backend_pause_end_ui_overhaul_integration_task.md` |
+| `ui_result_crest_victory_defeat` | `assets/sprites/ui/result_crests/ui_crest_victory.png`, `assets/sprites/ui/result_crests/ui_crest_defeat.png` | SCRUM-330 result-screen decorative crests accepted for victory/death headers; decorative only in this pass, not content containers |
+| `ui_frame_codex_*` | `assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png`, `_section_panel.png`, `_entry_card.png`, `_entry_card_hover.png`, `_portrait_slot.png`, `_tooltip.png`, `_tab.png`, `_tab_hover.png`, `_tab_pressed.png`, `_tab_disabled.png` | SCRUM-345 Design-ready Codex texture kit generated through `fantasydisk-asset-generator`; metadata and safe-zones in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`; runtime activation handed off to `backend_codex_texture_no_overlap_integration_task.md` |
+| `ui_frame_ornate_global_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_global_panel.png` | Live global/menu/event/codex panel frame |
+| `ui_frame_ornate_level_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_level_panel.png` | Live level-up/reward main panel |
+| `ui_frame_ornate_card_frame` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_card_frame.png` | Live list/card frame |
+| `ui_frame_ornate_hero_card` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_hero_card.png` | Live hero portrait/card frame |
+| `ui_frame_ornate_card_hover` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_card_hover.png` | Live hover/selected card frame |
+| `ui_frame_ornate_tooltip` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_tooltip.png` | Live generic tooltip frame |
+| `ui_frame_ornate_hud_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_hud_panel.png` | Live combat HUD panel |
+| `ui_frame_ornate_hud_card` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_hud_card.png` | Live HP/XP/money/ultimate HUD cards |
+| `ui_frame_ornate_timer_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_timer_panel.png` | Live combat timer/ascension timer panel |
+| `ui_frame_ornate_pause_main` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_main.png` | Live Escape stats main panel |
+| `ui_frame_ornate_pause_stat_group` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_group.png` | Live Escape derived stat group |
+| `ui_frame_ornate_pause_stat_chip` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_chip.png` | Live Escape base row / derived chip |
+| `ui_frame_ornate_pause_stat_tooltip` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_tooltip.png` | Live Escape stat tooltip |
+| `ui_frame_hero_select_portrait` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_portrait.png` | Live Hero Select large portrait frame; SCRUM-321 accepted as production heroframe-style PNG and rendered as whole-image proportional `TextureRect` inside `HeroSelectPortraitFrame` (safe content margins `Vector4(128, 230, 128, 330)`, backup in `build/cleanup_backup_hero_select_portrait_2026_06_14/`) |
+| `ui_frame_hero_select_dossier` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_dossier.png` | Live Hero Select dossier frame; SCRUM-355 thin DescriptionHS recomposition, `1120x1140` RGBA, rendered as whole-image proportional `TextureRect` inside `HeroSelectDossierFrame` (base frame `387x394`; strict Design safe margins `Vector4(126, 160, 126, 172)`; backup in `build/qa/scrum355/hero_select_pre_scrum355_frame_assets.zip`; Back-end SCRUM-354 must integrate the new runtime margins) |
+| `ui_frame_hero_select_unified_panel` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_unified_panel.png` | SCRUM-356 Design-ready unified portrait+description frame, `1536x1024` RGBA, generated through OpenAI Images/`fantasydisk-asset-generator` workflow and postprocessed to alpha. Intended to replace separate portrait+dossier runtime frames after Back-end integration; whole-image proportional scaling only. Content zones: portrait `[130,145,420,560]`, description `[610,145,786,500]`, bottom controls `[570,705,660,178]`; metadata in `docs/design/references/hero_select_unified_panel/scrum356_unified_panel_metadata.json` |
+| `ui_frame_hero_select_radar` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_radar.png` | Live Hero Select floating stat radar frame; SCRUM-322 windrose compass frame, 1024x1024 RGBA, rendered as square whole-image proportional `TextureRect` (safe margins `Vector4(245, 245, 245, 235)`, backup in `build/cleanup_backup_hero_select_windrose_2026_06_14/`) |
+| `ui_frame_hero_select_thumbnail_strip` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail_strip.png` | Live Hero Select bottom thumbnail strip frame; SCRUM-355 thin Carusel recomposition, `1536x255` RGBA, rendered as whole-image proportional `TextureRect` (no 9-slice/one-axis stretch; strict Design safe margins `Vector4(132, 62, 132, 62)`; backup in `build/qa/scrum355/hero_select_pre_scrum355_frame_assets.zip`; Back-end SCRUM-354 must integrate the new runtime margins) |
+| `ui_frame_hero_select_thumbnail` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail.png` | Live Hero Select adaptive hero thumbnail button frame |
+| `ui_frame_hero_select_asc_button` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_button.png` | Live Hero Select ascension +/- frame |
+| `ui_frame_hero_select_asc_button_small` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_button_small.png` | SCRUM-356 Design-ready compact ascension +/- button frame, `256x256` RGBA, generated through OpenAI Images/`fantasydisk-asset-generator` workflow and postprocessed to alpha; use for both minus/plus signs with runtime glyph centered inside content margins `[76,74,76,76]` |
+| `ui_frame_hero_select_asc_label` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_label.png` | Live Hero Select ascension level label frame |
+| `ui_frame_hero_select_asc_mods` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_asc_mods.png` | Live Hero Select ascension modifier line frame |
+| `ui_frame_settings_tab_switcher` | `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png` | Design-ready Settings tab switcher frame; SCRUM-325, `1280x256` RGBA, content-zone rects in `docs/tasks/backend_integrate_settings_tab_switcher_frame_task.md`; Back-end runtime integration SCRUM-334 |
+| `ui_btn_red_gold_standard_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_standard.png` + hover/pressed/disabled | Standard 420x104 action buttons |
+| `ui_btn_red_gold_max_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_max.png` + hover/pressed/disabled | Wide 560x104 action buttons |
+| `ui_btn_red_gold_main_menu_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_main_menu.png` + hover/pressed/disabled | Main menu 380x104 buttons |
+| `ui_btn_red_gold_hero_confirm_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_hero_confirm.png` + hover/pressed/disabled | Hero confirm 320x104 buttons |
+| `ui_btn_red_gold_reset_audio_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_reset_audio.png` + hover/pressed/disabled | Settings reset audio 420x104 buttons |
+| `ui_btn_red_gold_reset_bindings_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_reset_bindings.png` + hover/pressed/disabled | Settings reset bindings 440x104 buttons |
+| `ui_btn_red_gold_codex_tab_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_codex_tab.png` + hover/pressed/disabled | Codex tab buttons |
+| `ui_btn_red_gold_back_s/m/l_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_back_s.png` / `back_m.png` / `back_l.png` + states | Navigation/back buttons by width |
+| `ui_btn_red_gold_attr_selector_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_attr_selector.png` + hover/pressed/disabled | Attribute selector 560x104 buttons |
+| `ui_btn_red_gold_fab_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_fab.png` + hover/pressed/disabled | Upgrade FAB 50x50 |
+| `ui_btn_red_gold_utility_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_utility.png` + hover/pressed/disabled | Compact utility 54x42 |
+| `ui_btn_red_gold_pause_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause.png` + hover/pressed/disabled | Pause menu 280x60 |
+| `ui_btn_red_gold_rebind_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_rebind.png` + hover/pressed/disabled | Keybinding/dropdown-style 420x62 controls |
+| `ui_df_button_primary/secondary/danger_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_*` | Superseded SCRUM-147 parchment/wax buttons; retained only as legacy/reference fallback |
+| `ui_df_panel_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png` | Superseded SCRUM-229 panel fallback/reference |
+| `ui_df_shop_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png` | Superseded merchant/shop frame fallback/reference |
+| `ui_panel_leather_gold_square` | `assets/sprites/ui/frames/leather_gold/ui_panel_leather_gold_square.png` | Superseded SCRUM-229 source square/card frame |
+| `ui_panel_leather_gold_wide` | `assets/sprites/ui/frames/leather_gold/ui_panel_leather_gold_wide.png` | Superseded SCRUM-229 source wide panel/frame |
+| `ui_bar_leather_gold_thin` | `assets/sprites/ui/frames/leather_gold/ui_bar_leather_gold_thin.png` | Superseded SCRUM-229 source bar/label/divider frame |
+| `ui_window_leather_gold_main` | `assets/sprites/ui/frames/leather_gold/ui_window_leather_gold_main.png` | Superseded SCRUM-229 source large window panel |
+| `ui_check_leather_gold` | `assets/sprites/ui/frames/leather_gold/ui_check_leather_gold.png` | Superseded SCRUM-229 source checked state frame |
 
-Pipeline/preview: `tools/apply_button_only_ui_revert.py` (SCRUM-147 buttons/legacy correction), `tools/build_leather_gold_ui_kit.py` (SCRUM-229 panels), `docs/design/previews/interface_leather_gold_panel_kit_contact.png`, QA copy `build/qa/interface_leather_gold_panel_kit_contact.png`.
+Pipeline/preview: `tools/build_red_gold_button_kit.py` (SCRUM-273 buttons), `tools/build_ornate_ui_frame_kit.py` (SCRUM-274 panels), `tools/build_hero_select_frame_kit.py` (SCRUM-281 Hero Select frames), `tools/build_hero_select_windrose_frame.py` (SCRUM-322 radar), `tools/build_hero_select_dossier_frame.py` (SCRUM-323 dossier), `tools/build_hero_select_thin_frames.py` (SCRUM-355 dossier/carousel thinning), active previews `docs/design/previews/red_gold_button_kit_contact.png`, `docs/design/previews/ornate_dark_frame_kit_contact.png`, `docs/design/previews/hero_select_frame_kit_contact.png`, `docs/design/previews/hero_select_portrait_frame_content_zone.png`, `docs/design/previews/hero_select_windrose_radar_content_zone.png`, `docs/design/previews/hero_select_dossier_frame_content_zone.png`, `docs/design/previews/hero_select_thin_frames_content_zones.png` and `docs/design/previews/settings_tab_switcher_frame_content_zone.png`. Historical: `tools/apply_button_only_ui_revert.py` (SCRUM-147 buttons/legacy correction), `tools/build_leather_gold_ui_kit.py` (SCRUM-229 panels), `docs/design/previews/interface_leather_gold_panel_kit_contact.png`.
 
 Системные иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_close`, `system_back`, `system_settings`, `system_arrow_left/right/up/down`, `system_checkbox_unchecked`, `system_checkbox_checked`, `system_slider_track`, `system_slider_grabber`. Файлы лежат в `assets/sprites/ui/icons/system/`.
 
@@ -486,7 +687,8 @@ Contextual UI direction 2026-06-12 is superseded by SCRUM-147. Contextual assets
 | ID | Игровое имя | Ассет | Роль |
 | --- | --- | --- | --- |
 | `arena_2k_combat` | Боевая Арена 2K | Generated by `scripts/main.gd` | Прямоугольная арена 2560x1440 с камерой zoom 1.12 |
-| `main_menu_epic_battle` | Эпичный бой стартового экрана | `assets/backgrounds/main_menu_epic_battle.png` | Фон главного меню |
+| `main_menu_epic_battle` | Эпичный бой стартового экрана | `assets/backgrounds/main_menu_epic_battle.png` | Legacy фон главного меню, сохранен как backup/reference |
+| `main_menu_epic_battle_v2` | Новый эпичный бой стартового экрана | `assets/backgrounds/main_menu_epic_battle_v2.png` | Active SCRUM-316 фон главного меню: 3 новых босса + 2 героя, smooth D&D dark fantasy composition, left/top UI-safe zones |
 | `screen_event_background` | Фон экрана события | `assets/sprites/ui/screens/screen_event_background.png` | Активный фон Event, battle reward, upgrade, victory/death fallback screens |
 | `screen_shop_background` | Фон магазина | `assets/sprites/ui/screens/screen_shop_background.png` | Активный фон Shop screen |
 | `screen_campfire_background` | Фон костра | `assets/sprites/ui/screens/screen_campfire_background.png` | Активный фон Rest/Campfire screen |
@@ -496,18 +698,18 @@ Contextual UI direction 2026-06-12 is superseded by SCRUM-147. Contextual assets
 | `ui_backdrop_reward_hall` | Reward/Victory backdrop | `assets/backgrounds/ui/ui_backdrop_reward_hall.png` | Active for `elite_reward`, `victory`, `artifact_reward` |
 | `ui_backdrop_defeat_crypt` | Defeat/Danger backdrop | `assets/backgrounds/ui/ui_backdrop_defeat_crypt.png` | Active for `death`, `defeat`, `end_run_confirm` |
 | `route_map_backdrop` | Жутковатый фон маршрутной карты | `assets/backgrounds/route_map_backdrop.png` | Низкоконтрастный dark fantasy фон full-screen route map, спокойная центральная зона под узлы и линии |
-| `stone_garden` | Каменный Сад | `assets/backgrounds/field_stone_garden.png` | Базовый фон |
-| `marsh` | Топь | `assets/backgrounds/field_marsh.png` | Болотный фон |
-| `dry_road` | Сухая Дорога | `assets/backgrounds/field_dry_road.png` | Дорожный фон |
-| `meadow` | Луг | `assets/backgrounds/field_meadow.png` | Зеленый фон |
-| `ruined_courtyard` | Руинный Двор | `assets/backgrounds/field_ruined_courtyard.png` | D&D top-down руинная каменная арена |
-| `misty_marsh` | Туманная Топь | `assets/backgrounds/field_misty_marsh.png` | D&D top-down болотный грунт с лужами и мхом |
-| `dusty_badlands` | Пыльные Пустоши | `assets/backgrounds/field_dusty_badlands.png` | D&D top-down сухая земля/дорога |
-| `enchanted_meadow` | Зачарованный Луг | `assets/backgrounds/field_enchanted_meadow.png` | D&D top-down травяная поляна с мелкими цветами |
-| `ashen_rift` | Пепельный Разлом | `assets/backgrounds/field_ashen_rift.png` | D&D top-down вулканический пепел с тонкими трещинами |
-| `cursed_grove` | Проклятая Роща | `assets/backgrounds/field_cursed_grove.png` | D&D top-down сине-серый зачарованный лесной грунт |
+| `stone_garden` | Каменный Сад | `assets/backgrounds/field_stone_garden.png` | SCRUM-369 realistic D&D/dark fantasy stone-garden arena, 2560x1440 |
+| `marsh` | Топь | `assets/backgrounds/field_marsh.png` | SCRUM-369 realistic D&D/dark fantasy marsh arena, 2560x1440 |
+| `dry_road` | Сухая Дорога | `assets/backgrounds/field_dry_road.png` | SCRUM-369 realistic D&D/dark fantasy dry-road arena, 2560x1440 |
+| `meadow` | Луг | `assets/backgrounds/field_meadow.png` | SCRUM-369 realistic D&D/dark fantasy meadow arena, 2560x1440 |
+| `ruined_courtyard` | Руинный Двор | `assets/backgrounds/field_ruined_courtyard.png` | SCRUM-369 realistic D&D/dark fantasy ruined-courtyard arena, 2560x1440 |
+| `misty_marsh` | Туманная Топь | `assets/backgrounds/field_misty_marsh.png` | SCRUM-369 realistic D&D/dark fantasy misty-marsh arena, 2560x1440 |
+| `dusty_badlands` | Пыльные Пустоши | `assets/backgrounds/field_dusty_badlands.png` | SCRUM-369 realistic D&D/dark fantasy dusty-badlands arena, 2560x1440 |
+| `enchanted_meadow` | Зачарованный Луг | `assets/backgrounds/field_enchanted_meadow.png` | SCRUM-369 realistic D&D/dark fantasy enchanted-meadow arena, 2560x1440 |
+| `ashen_rift` | Пепельный Разлом | `assets/backgrounds/field_ashen_rift.png` | SCRUM-369 realistic D&D/dark fantasy ashen-rift arena, 2560x1440 |
+| `cursed_grove` | Проклятая Роща | `assets/backgrounds/field_cursed_grove.png` | SCRUM-369 realistic D&D/dark fantasy cursed-grove arena, 2560x1440 |
 
-Все активные боевые фоны — нативные 2560x1440. Pass 2026-06-12 заменил первые 4 на строго плоские top-down ground textures без высоких объектов, ложной перспективы и объемных камней/кустов: только низкоконтрастная почва, мох, трещины, трава, дорожные следы и мелкая наземная фактура. Expansion pass 2026-06-12 добавил еще 6 D&D battlemap-фонов с тем же gameplay-readable правилом: антуражно и красиво, но без крупных камней/кустов и объектов, которые читаются как препятствия. QA preview: `docs/design/previews/arena_backgrounds_6_dnd_contact.png`.
+Все активные боевые фоны — нативные 2560x1440. SCRUM-369 (2026-06-14) заменил весь набор из 10 арен через `fantasydisk-asset-generator`: реалистичные top-down D&D/dark fantasy battlefield floors с приглушенной центральной игровой зоной, без tall blockers, UI/text/watermarks и без битых ссылок. Source references: `docs/design/references/backgrounds/`; QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
 `route_map_backdrop` добавлен 2026-06-11 как отдельный 2560x1440 фон для маршрутной карты: мрачная пустошь/туманное предгорье, детали вынесены к краям, центр приглушен для читаемости узлов.
 
 ## Препятствия
@@ -533,11 +735,17 @@ Contextual UI direction 2026-06-12 is superseded by SCRUM-147. Contextual assets
 | `enemy_magic_projectile` | Магический снаряд монстра | Маленький заметный снаряд врагов/боссов | `assets/sprites/projectiles/enemy_projectile_magic_64.png` | Реализовано |
 | `player_projectile_spark` | Искра игрока | Базовый снаряд игрока вместо Polygon2D placeholder | `assets/sprites/projectiles/player_projectile_spark_64.png` | Реализовано |
 
+SCRUM-335 runtime VFX coverage: `enemy_magic_projectile` дополнительно использует существующие `assets/sprites/effects/beam_strip.png`, `impact_flash.png` и `impact_ring.png` как textured trail/impact feedback в `scripts/enemy_projectile.gd`; gameplay-параметры снаряда не менялись.
+
+SCRUM-337 обновил сами projectile/VFX PNG как часть full attack VFX art pass: `enemy_projectile_magic_64.png` и `player_projectile_spark_64.png` остаются теми же canonical ID/path, но получили новый painterly D&D/dark-fantasy raster treatment с прозрачным фоном.
+
 ## Sprite QA Notes
 
 Активные спрайты персонажей, стандартных монстров, элиток, боссов, оружия, projectiles, pickups, route icons и UI icons проходят quality-audit перед сдачей визуальных задач. После аудита 2026-06-10 у `assets/sprites/enemies/enemy_suicide_runner.png` удален лишний правый фрагмент текстуры; активные pickup/player projectile больше не используют Polygon2D-placeholder как видимый слой.
 
 SCRUM-177 read-only sprite audit 2026-06-13: отчет `docs/design/reviews/sprite_visual_audit_2026_06.md`, contact sheets `docs/design/previews/audit_*.png`, inventory `docs/design/reviews/sprite_visual_audit_inventory_2026_06.*`. Вывод: активные персонажи/оружие/основные враги/артефакты/фоны в целом соответствуют D&D/dark-fantasy канону; отдельные 0.1.4 follow-up задачи заведены для placeholder/tint новых боссов и мини-элиток, polish VFX, унификации derived/shop UI icons и cleanup legacy placeholder sprites.
+
+SCRUM-269 read-only asset/image cleanup audit 2026-06-14: отчет `docs/design/reviews/cleanup_assets_audit_2026_06.md`. Мертвого игрового арта не найдено: 51 `vfx_weapon_<weapon_id>.png`, 18 canonical weapon PNG, новые boss/mini-elite source sprites, marketing collateral и dynamic UI/icon/cutout families защищены от ложных cleanup-срабатываний. Реальный мусор ограничен orphan ` 2.png.import` sidecars после SCRUM-270; cleanup передан и выполнен отдельной Back-end задачей SCRUM-271.
 
 ## UI Иконки И HUD
 
@@ -665,7 +873,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 
 - `leech_fang` (Клык Пиявки) — Tier 2: +25% шанса вампиризма, +2 к силе вампиризма (источник vampiric-атрибутов).
 - Остальные артефакты — Tier 1 (эффекты усилены x2.5 от прежних).
-- Иконки новых tier-3 — временные копии тематически близких (до арт-итерации Codex по тирам).
+- Иконки всех tier-3 артефактов (`echo_core`, `split_core`, `blood_pact`, `leech_heart`, `thorn_pact`, `phantom_step`) пересозданы как уникальные SCRUM-340 magic-item PNG; временные копии больше не используются.
 
 ## Возвышения (Усложнения)
 

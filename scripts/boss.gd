@@ -31,6 +31,7 @@ var _boss_summon_cooldown := 5.0
 var _rift_zone_cooldown := 3.4
 var _slam_cooldown := 4.2
 var _zone_wave_cooldown := 6.0
+var _boss_unique_cooldown := 5.4
 var shield_active := false
 var _enraged := false
 var boss_phase := 1
@@ -42,12 +43,16 @@ func _ready() -> void:
 	if boss_behavior == "":
 		boss_behavior = "disk_devourer" if enemy_type_name == "Disk Devourer" else "rift_warden"
 	set_meta("boss_behavior", boss_behavior)
+	_apply_unique_encounter_pattern_meta(boss_behavior)
+	if _full_frame_body() == null:
+		_configure_full_frame_animation()
 	set_meta("boss_phase", boss_phase)
 	set_meta("boss_phase_markers", BOSS_PHASE_MARKERS)
 	var health_bar := get_node_or_null("HealthBar")
 	if health_bar != null:
 		health_bar.set_meta("phase_markers", BOSS_PHASE_MARKERS)
 	_update_shield_visual()
+	_update_health_bar()
 
 
 func _physics_process(delta: float) -> void:
@@ -143,6 +148,8 @@ func _update_boss_attacks(delta: float) -> void:
 				_summon_riftlings()
 				_boss_summon_cooldown = boss_summon_interval * _phase_interval_multiplier()
 
+	_update_boss_unique_mechanic(delta, player)
+
 	# +1 опасный паттерн (независим от фаз, оба босса): волна зон по периметру с
 	# гарантированным проходом — короче окно безопасности, но коридор всегда есть.
 	_zone_wave_cooldown -= delta
@@ -151,17 +158,167 @@ func _update_boss_attacks(delta: float) -> void:
 		_zone_wave_cooldown = zone_wave_interval * _phase_interval_multiplier()
 
 
+func _update_boss_unique_mechanic(delta: float, player: Node2D) -> void:
+	_boss_unique_cooldown -= delta
+	if _boss_unique_cooldown > 0.0:
+		return
+	match boss_behavior:
+		"rift_warden":
+			_spawn_gravity_well(player.global_position)
+			_boss_unique_cooldown = 8.8 * _phase_interval_multiplier()
+		"disk_devourer":
+			if player.global_position.distance_to(global_position) <= 280.0:
+				_spawn_vampiric_bite(player)
+				_boss_unique_cooldown = 7.2 * _phase_interval_multiplier(0.88 if _enraged else 1.0)
+			else:
+				_boss_unique_cooldown = 1.2
+		"bone_archon":
+			_spawn_bone_prison(player.global_position)
+			_boss_unique_cooldown = 9.5 * _phase_interval_multiplier()
+		"brood_mother":
+			_spawn_web_zone(player.global_position + Vector2.RIGHT.rotated(randf() * TAU) * 120.0)
+			_boss_unique_cooldown = 8.0 * _phase_interval_multiplier()
+		"ashen_colossus":
+			_spawn_molten_armor_pulse()
+			_boss_unique_cooldown = 8.5 * _phase_interval_multiplier(0.82 if _enraged else 1.0)
+		_:
+			_boss_unique_cooldown = 6.0
+
+
 func _spawn_zone_wave(center: Vector2) -> void:
 	# Кольцо зон вокруг игрока с двумя смежными пропущенными секторами —
 	# гарантированный безопасный коридор (safe corridor, req В4+).
 	var count := 8
 	var ring_radius := 360.0
 	var gap_index := randi() % count
+	var rift_wave_skill := _boss_rift_zone_skill_state()
+	if rift_wave_skill != "":
+		_play_boss_skill_visual(rift_wave_skill, "cast", center - global_position)
 	for i in range(count):
 		if i == gap_index or i == (gap_index + 1) % count:
 			continue
 		var angle := TAU * float(i) / float(count)
-		_spawn_rift_zone(_clamp_to_arena(center + Vector2.RIGHT.rotated(angle) * ring_radius, 92.0))
+		_spawn_rift_zone(_clamp_to_arena(center + Vector2.RIGHT.rotated(angle) * ring_radius, 92.0), false)
+
+
+func _spawn_gravity_well(target_position: Vector2) -> void:
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	_play_boss_skill_visual("skill_gravity_well", "cast", target_position - global_position)
+	var well := Node2D.new()
+	well.name = "BossGravityWell"
+	well.add_to_group("enemy_hazards")
+	well.set_meta("boss_behavior", boss_behavior)
+	well.global_position = _clamp_to_arena(target_position, 120.0)
+	well.z_index = 10
+	parent.add_child(well)
+	var radius := _safe_radius(150.0 + float(boss_phase - 1) * 16.0)
+	var well_color := Color(0.42, 0.24, 1.0, 1.0)
+	var windup := _ascension_telegraph(0.72)
+	HazardVfx.telegraph(well, radius, well_color, windup)
+	var well_ref: WeakRef = weakref(well)
+	var tween := well.create_tween()
+	tween.tween_interval(windup)
+	tween.tween_callback(func() -> void:
+		var w: Node2D = well_ref.get_ref()
+		if w == null:
+			return
+		HazardVfx.detonate(w, radius, well_color)
+		var player := get_tree().get_first_node_in_group("player") as Node2D
+		if player == null:
+			return
+		var to_center: Vector2 = w.global_position - player.global_position
+		if to_center.length() > radius:
+			return
+		if to_center.length_squared() > 0.001:
+			player.global_position = _clamp_to_arena(player.global_position + to_center.normalized() * minf(92.0, to_center.length() * 0.45))
+		if player.has_method("take_damage"):
+			player.take_damage(projectile_damage * (0.65 + float(boss_phase - 1) * 0.12), "gravity_well")
+	)
+	tween.tween_interval(0.55)
+	tween.tween_callback(well.queue_free)
+
+
+func _spawn_vampiric_bite(player: Node2D) -> void:
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	_play_boss_skill_visual("skill_vampiric_bite", "attack", player.global_position - global_position)
+	var bite := Node2D.new()
+	bite.name = "BossVampiricBite"
+	bite.add_to_group("enemy_hazards")
+	bite.set_meta("boss_behavior", boss_behavior)
+	bite.global_position = _clamp_to_arena(global_position, 110.0)
+	bite.z_index = 10
+	parent.add_child(bite)
+	var radius := _safe_radius(132.0 + float(boss_phase - 1) * 12.0)
+	var bite_color := Color(0.92, 0.12, 0.20, 1.0)
+	var windup := _ascension_telegraph(0.42)
+	HazardVfx.telegraph(bite, radius, bite_color, windup)
+	var bite_ref: WeakRef = weakref(bite)
+	var tween := bite.create_tween()
+	tween.tween_interval(windup)
+	tween.tween_callback(func() -> void:
+		var b: Node2D = bite_ref.get_ref()
+		if b == null:
+			return
+		HazardVfx.detonate(b, radius, bite_color)
+		var current_player := get_tree().get_first_node_in_group("player") as Node2D
+		if current_player == null or current_player.global_position.distance_to(b.global_position) > radius:
+			return
+		var bite_damage: float = contact_damage * (1.05 + float(boss_phase - 1) * 0.14)
+		if current_player.has_method("take_damage") and current_player.take_damage(bite_damage, "devourer_vampiric_bite"):
+			health = minf(max_health, health + bite_damage * 0.55)
+			_update_health_bar()
+	)
+	tween.tween_interval(0.4)
+	tween.tween_callback(bite.queue_free)
+
+
+func _spawn_bone_prison(center: Vector2) -> void:
+	_play_boss_skill_visual("skill_bone_prison", "cast", center - global_position)
+	var count := 7
+	var gap_index := randi() % count
+	var ring_radius := 230.0
+	for index in range(count):
+		if index == gap_index:
+			continue
+		var angle := TAU * float(index) / float(count)
+		var zone_position := _clamp_to_arena(center + Vector2.RIGHT.rotated(angle) * ring_radius, 92.0)
+		_spawn_rift_zone(zone_position, false)
+
+
+func _spawn_molten_armor_pulse() -> void:
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	_play_boss_skill_visual("skill_armor_pulse", "cast", Vector2.UP)
+	var pulse := Node2D.new()
+	pulse.name = "BossMoltenArmorPulse"
+	pulse.add_to_group("enemy_hazards")
+	pulse.set_meta("boss_behavior", boss_behavior)
+	pulse.global_position = global_position
+	pulse.z_index = 10
+	parent.add_child(pulse)
+	var radius := _safe_radius(170.0 + float(boss_phase - 1) * 14.0)
+	var pulse_color := Color(1.0, 0.48, 0.14, 1.0)
+	var windup := _ascension_telegraph(0.55)
+	HazardVfx.telegraph(pulse, radius, pulse_color, windup)
+	var pulse_ref: WeakRef = weakref(pulse)
+	var tween := pulse.create_tween()
+	tween.tween_interval(windup)
+	tween.tween_callback(func() -> void:
+		var p: Node2D = pulse_ref.get_ref()
+		if p == null:
+			return
+		HazardVfx.detonate(p, radius, pulse_color)
+		var current_player := get_tree().get_first_node_in_group("player") as Node2D
+		if current_player != null and current_player.global_position.distance_to(p.global_position) <= radius and current_player.has_method("take_damage"):
+			current_player.take_damage(contact_damage * 0.75, "molten_armor")
+	)
+	tween.tween_interval(0.55)
+	tween.tween_callback(pulse.queue_free)
 
 
 func _start_dash_toward(player: Node2D) -> void:
@@ -186,6 +343,7 @@ func _update_shield(delta: float) -> void:
 		shield_active = true
 		_shield_time_left = shield_duration
 		_update_shield_visual()
+		HazardVfx.shield_block(self, Color(0.62, 0.85, 1.0, 1.0))
 		_play_rig_action("cast", Vector2.UP)
 
 
@@ -228,7 +386,10 @@ func _fire_targeted_volley(player: Node2D) -> void:
 	var direction := (player.global_position - global_position).normalized()
 	if direction.length_squared() <= 0.0:
 		direction = Vector2.DOWN
-	_play_rig_action("shoot", direction)
+	if boss_behavior == "bone_archon":
+		_play_boss_skill_visual("skill_skull_volley", "shoot", direction)
+	else:
+		_play_rig_action("shoot", direction)
 	var projectile_parent := get_tree().current_scene
 	if projectile_parent == null:
 		projectile_parent = get_tree().root
@@ -244,15 +405,21 @@ func _fire_targeted_volley(player: Node2D) -> void:
 			projectile.setup(global_position, global_position + shot_direction * 160.0, projectile_damage, projectile_speed)
 
 
-func _spawn_rift_zone(target_position: Vector2) -> void:
+func _spawn_rift_zone(target_position: Vector2, play_visual := true) -> void:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	_play_rig_action("cast", target_position - global_position)
+	if play_visual:
+		var rift_skill := _boss_rift_zone_skill_state()
+		if rift_skill != "":
+			_play_boss_skill_visual(rift_skill, "cast", target_position - global_position)
+		else:
+			_play_rig_action("cast", target_position - global_position)
 	var zone_damage := projectile_damage * (1.25 + float(boss_phase - 1) * 0.18)
 	var zone := Node2D.new()
 	zone.name = "BossRiftZone"
 	zone.add_to_group("enemy_hazards")
+	zone.set_meta("boss_behavior", boss_behavior)
 	zone.global_position = _clamp_to_arena(target_position, 92.0)
 	zone.z_index = 9
 	parent.add_child(zone)
@@ -280,11 +447,15 @@ func _spawn_disk_slam() -> void:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	_play_rig_action("attack", Vector2.DOWN)
+	if boss_behavior == "ashen_colossus":
+		_play_boss_skill_visual("skill_molten_slam", "attack", Vector2.DOWN)
+	else:
+		_play_rig_action("attack", Vector2.DOWN)
 	var slam_damage := contact_damage * (1.5 + float(boss_phase - 1) * 0.22)
 	var slam := Node2D.new()
 	slam.name = "DiskSlamZone"
 	slam.add_to_group("enemy_hazards")
+	slam.set_meta("boss_behavior", boss_behavior)
 	slam.global_position = _clamp_to_arena(global_position, 132.0)
 	slam.z_index = 9
 	parent.add_child(slam)
@@ -319,10 +490,11 @@ func _spawn_web_zone(target_position: Vector2) -> void:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	_play_rig_action("cast", target_position - global_position)
+	_play_boss_skill_visual("skill_web_zone", "cast", target_position - global_position)
 	var zone := Node2D.new()
 	zone.name = "BroodWebZone"
 	zone.add_to_group("enemy_hazards")
+	zone.set_meta("boss_behavior", boss_behavior)
 	zone.global_position = _clamp_to_arena(target_position, 92.0)
 	zone.z_index = 9
 	parent.add_child(zone)
@@ -358,6 +530,7 @@ func _spawn_ember_zone(origin: Vector2, radius: float) -> void:
 	var zone := Node2D.new()
 	zone.name = "AshEmberZone"
 	zone.add_to_group("enemy_hazards")
+	zone.set_meta("boss_behavior", boss_behavior)
 	zone.global_position = origin
 	zone.z_index = 8
 	parent.add_child(zone)
@@ -391,13 +564,29 @@ func _summon_riftlings() -> void:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	_play_rig_action("cast", Vector2.UP)
+	if boss_behavior == "brood_mother":
+		_play_boss_skill_visual("skill_brood_spawn", "cast", Vector2.UP)
+	else:
+		_play_rig_action("cast", Vector2.UP)
 	var summon_count := 3 + boss_phase - 1
 	for index in range(summon_count):
 		var summon := scene.instantiate() as Node2D
 		parent.add_child(summon)
 		summon.add_to_group("summoned_enemies")
 		summon.global_position = _clamp_to_arena(global_position + Vector2.RIGHT.rotated(TAU * float(index) / float(summon_count) + randf() * 0.35) * 84.0)
+		HazardVfx.summon_portal(summon, 82.0, Color(0.58, 0.30, 1.0, 1.0))
+
+
+func _play_boss_skill_visual(skill_state: String, fallback_action: String, direction := Vector2.ZERO) -> void:
+	if skill_state != "" and _play_full_frame_state(skill_state, direction):
+		return
+	_play_rig_action(fallback_action, direction)
+
+
+func _boss_rift_zone_skill_state() -> String:
+	if boss_behavior == "rift_warden" or boss_behavior == "disk_devourer":
+		return "skill_rift_zone"
+	return ""
 
 
 func _phase_interval_multiplier(extra_multiplier := 1.0) -> float:

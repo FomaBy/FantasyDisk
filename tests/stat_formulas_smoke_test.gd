@@ -84,11 +84,11 @@ func _check_formulas(errors: Array) -> void:
 		SF.KNOWLEDGE: 4.0, SF.LEADERSHIP: 3.0,
 	}
 	# Точные значения формул.
-	_expect(errors, "physical_damage", SF.physical_damage(stats, 20.0, 0.0), 20.0)        # 20*10/10
-	_expect(errors, "crit_chance", SF.crit_chance(stats, 0.05, 0.0), 0.10)                # 0.05+5/100
-	_expect(errors, "crit_damage", SF.crit_damage_multiplier(stats, 2.0, 0.0), 1.5)       # 1+2*5/20
-	_expect(errors, "attack_speed", SF.attack_speed(stats, 1.0, 0.0), 0.15)               # 1*3*5/100
-	_expect(errors, "dodge", SF.dodge(stats, 0.1, 0.0), 0.05)                             # 0.1*5/10
+	_expect(errors, "physical_damage", SF.physical_damage(stats, 20.0, 0.0), 24.0)        # Strength + SCRUM-243 small cross-scaling
+	_expect(errors, "crit_chance", SF.crit_chance(stats, 0.05, 0.0), 0.0842)              # 0.05+5*0.0075 with diminishing returns
+	_expect(errors, "crit_damage", SF.crit_damage_multiplier(stats, 2.0, 0.0), 1.575)     # 1.30+5*0.055
+	_expect(errors, "attack_speed", SF.attack_speed(stats, 1.0, 0.0), 0.1962)             # 1*3*(Agi+Energy/Per/End support)/100
+	_expect(errors, "dodge", SF.dodge(stats, 0.1, 0.0), 0.0473)                           # 0.1*5/10 with diminishing returns
 	_expect(errors, "move_speed", SF.move_speed(300.0, stats, 0.0), 305.0)                # 300+5
 	_expect(errors, "health_points", SF.health_points(stats, 100.0, 0.0), 200.0)         # 100*8/4
 	_expect(errors, "attack_range", SF.attack_range(240.0, 10.0), 250.0)                  # 240+10
@@ -106,10 +106,10 @@ func _check_formulas(errors: Array) -> void:
 
 	# Границы/клэмпы.
 	var huge := {SF.AGILITY: 100000.0}
-	if SF.crit_chance(huge, 0.05, 0.0) > 1.0 + EPS:
-		errors.append("crit_chance не зажат в <= 1.0")
-	if SF.dodge(huge, 0.1, 0.0) > 0.8 + EPS:
-		errors.append("dodge не зажат в <= 0.8")
+	if SF.crit_chance(huge, 0.05, 0.0) > 0.55 + EPS:
+		errors.append("crit_chance не зажат в <= 0.55")
+	if SF.dodge(huge, 0.1, 0.0) > 0.55 + EPS:
+		errors.append("dodge не зажат в <= 0.55")
 	# attack_speed имеет пол 0.1 при нулевой ловкости.
 	if absf(SF.attack_speed({SF.AGILITY: 0.0}, 1.0, 0.0) - 0.1) > EPS:
 		errors.append("attack_speed не держит пол 0.1 при agility=0")

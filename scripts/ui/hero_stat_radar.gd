@@ -1,6 +1,10 @@
 class_name HeroStatRadar
 extends Control
 
+const HERO_RADAR_RADIUS_FACTOR := 0.36
+const HERO_RADAR_LABEL_OFFSET := 18.0
+const HERO_RADAR_LABEL_WIDTH := 44.0
+
 var stats: Dictionary = {}
 var maxima: Dictionary = {}
 var stat_names: Dictionary = {}
@@ -21,7 +25,7 @@ func _draw() -> void:
 	if stat_ids.is_empty():
 		return
 	var center: Vector2 = size * 0.5
-	var radius: float = min(size.x, size.y) * 0.30
+	var radius: float = min(size.x, size.y) * HERO_RADAR_RADIUS_FACTOR
 	if radius <= 4.0:
 		return
 	var axis_count := stat_ids.size()
@@ -42,9 +46,9 @@ func _draw() -> void:
 		var max_value: float = max(1.0, float(maxima.get(stat_id, 1.0)))
 		var value: float = float(stats.get(stat_id, 0.0))
 		value_points.append(center + direction * radius * clampf(value / max_value, 0.0, 1.0))
-		var label_position: Vector2 = center + direction * (radius + 28.0)
+		var label_position: Vector2 = center + direction * (radius + HERO_RADAR_LABEL_OFFSET)
 		var label := "%s %d" % [str(stat_names.get(stat_id, stat_id)).substr(0, 3), int(round(value))]
-		draw_string(get_theme_default_font(), label_position - Vector2(28.0, -5.0), label, HORIZONTAL_ALIGNMENT_CENTER, 56.0, 12, Color(0.96, 0.90, 0.70, 0.96))
+		draw_string(get_theme_default_font(), label_position - Vector2(HERO_RADAR_LABEL_WIDTH * 0.5, -5.0), label, HORIZONTAL_ALIGNMENT_CENTER, HERO_RADAR_LABEL_WIDTH, 12, Color(0.96, 0.90, 0.70, 0.96))
 	draw_colored_polygon(value_points, Color(fill_color.r, fill_color.g, fill_color.b, 0.30))
 	var closed_values := PackedVector2Array(value_points)
 	closed_values.append(value_points[0])

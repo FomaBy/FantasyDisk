@@ -1,0 +1,158 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png" id="1_adw1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png" id="2_adw2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png" id="3_adw3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png" id="4_adw4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png" id="5_adw5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png" id="6_adw6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_00.png" id="7_adw7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_01.png" id="8_adw8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_02.png" id="9_adw9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_03.png" id="10_adw10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_04.png" id="11_adw11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_05.png" id="12_adw12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png" id="13_adw13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png" id="14_adw14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png" id="15_adw15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png" id="16_adw16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png" id="17_adw17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png" id="18_adw18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png" id="19_adw19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png" id="20_adw20"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_adw1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_adw2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_adw3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_adw4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_adw5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_adw6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_adw1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_adw2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_adw3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_adw4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_adw5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_adw6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_adw7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_adw8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_adw9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_adw10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_adw11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_adw12")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_adw13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_adw14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_adw15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_adw16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_adw17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_adw18")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_adw19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_adw20")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 12.0
+}
+]

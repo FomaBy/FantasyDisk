@@ -1,0 +1,107 @@
+# UX: Подтверждение выхода из игры + выход по Escape из главного меню
+
+Статус: done
+Приоритет: medium
+Роль: Back-end (UI)
+Версия: 0.1.5
+Создано: 2026-06-14
+Автор: PM (запрос пользователя)
+Jira: SCRUM-319
+QA: in_progress (2026-06-14)
+Блокируется: нет; SCRUM-318 завершен и UI-очередь разблокирована.
+
+## Progress 2026-06-14
+- Back-end снял блокировку после завершения SCRUM-318 и взял задачу в работу.
+
+## Result 2026-06-14
+- Реализован custom game-styled `QuitConfirmationDialog` на главном меню: `MainMenuExitButton` и Escape открывают один и тот же модальный overlay; default focus стоит на безопасной кнопке `Отмена`.
+- Реальный выход вынесен в `Main.request_game_quit()` и вызывается только через явную кнопку `Выйти`; smoke использует `suppress_game_quit`, чтобы проверять flow без завершения процесса.
+- Escape внутри диалога и `Отмена` закрывают overlay и оставляют игрока в главном меню; существующая Escape-навигация настроек/кодекса/выбора героя/оружия не изменилась.
+- Опциональный `NOTIFICATION_WM_CLOSE_REQUEST` не перехватывался в этой итерации: текущий handler отвечает за освобождение texture refs при закрытии окна, а требуемые user-facing пути выхода покрыты кнопкой и Escape.
+- QA dump/preview: `build/qa/scrum319/quit_confirmation_dialog.md`, `build/qa/scrum319/quit_confirmation_dialog.png`.
+- Проверки PASS: `dark_fantasy_ui_theme_test.gd`, `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`, `runtime_smoke_test.gd`, `runtime_smoke_combat_test.gd`, `animation_smoke_test.gd`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 817590f9 (ветка dev)
+
+Проверено (фактически):
+- **Код**: `_show_quit_confirmation_dialog` (ui_screens.gd:216); и
+  `MainMenuExitButton.pressed` (211), И Escape (`game.ui_escape_action`, 213)
+  открывают ОДИН модальный `QuitConfirmationDialog` (dim+panel+title+subtitle+
+  кнопки). Реальный выход — только `Main.request_game_quit()` через явную «Выйти»;
+  smoke использует `suppress_game_quit` (тестирует flow без завершения процесса).
+- **Безопасность**: default focus на «Отмена»; Escape/«Отмена» закрывают overlay,
+  оставляют в меню; существующая Escape-навигация (настройки/кодекс/выбор) не
+  изменилась.
+- **Визуал** (`build/qa/scrum319/quit_confirmation_dialog.png`): game-styled тёмная
+  панель (красно-золотая ornate-рамка), «Выйти из игры?» + предупреждение о
+  несохранённом забеге, «Выйти» (danger) + «Отмена» (подсвечена, default focus).
+- **Тесты**: theme/ui/no-overlap/runtime/combat/animation — все PASS.
+
+Acceptance:
+- [x] Окно подтверждения при выходе; выход только после явного «Выйти».
+- [x] Escape из главного меню открывает то же подтверждение; «Отмена»/Escape — назад.
+- [x] Существующая Escape-навигация не сломана; smoke зелёные; дамп/превью.
+
+Баги: нет.
+
+## Autonomy / Approval
+Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Контекст (запрос пользователя)
+«При выходе из игры надо окно подтверждения. Также из главного меню добавить
+возможность выйти по Escape (с подтверждением тоже)».
+
+Сейчас:
+- Кнопка «Выйти из игры» (ui_screens.gd:204-208, MainMenuExitButton) вызывает
+  `game.get_tree().quit()` СРАЗУ, без подтверждения.
+- Escape (KEY_ESCAPE) замаплен на действие «Пауза» (main.gd:288) — в главном меню
+  не обрабатывается.
+- В проекте уже есть паттерн подтверждения (end_run_confirm, ui_screens.gd:1810).
+
+## Dispatcher Note
+2026-06-14: задача оформлена для текущего sprint `0.1.5`, но временно удержана
+как `blocked`, чтобы Back-end не редактировал `scripts/ui_screens.gd` и
+`tests/runtime_smoke_test.gd` поверх активной UI-работы. SCRUM-281 получил
+QA PASSED; dispatcher отправил SCRUM-318 первым как текущий bug/UI hover pass.
+После завершения/QA SCRUM-318 или явного PM override dispatcher должен снять
+blocker и передать SCRUM-319 в существующий Back-end thread
+`019eabd9-780b-78a2-9f4b-e7203d659ef2` с High reasoning/no low.
+
+## Требования
+1. Диалог подтверждения выхода (в стиле игры, тёмное фэнтези — НЕ дефолтный
+   Godot ConfirmationDialog): заголовок типа «Выйти из игры?», две кнопки
+   «Выйти» и «Отмена». Стилизация — общий frame/button-kit (SCRUM-273/274),
+   кнопки единого размера.
+2. Кнопка «Выйти из игры» в главном меню — вместо немедленного quit показывает
+   этот диалог; реальный `get_tree().quit()` только по «Выйти».
+3. **Escape в главном меню** открывает тот же диалог подтверждения выхода
+   (когда активен экран главного меню и НЕ открыт другой модальный экран/диалог).
+   Не ломать Escape=«Пауза» в забеге и Escape=«назад/закрыть» на других экранах.
+4. Поведение диалога: фокус по умолчанию на «Отмена» (безопасно); Escape/клик вне
+   = отмена; Enter подтверждает только при фокусе на «Выйти»; навигация
+   клавиатурой и геймпадом; модальность (блокирует клики под диалогом).
+5. Опционально, если несложно: перехватывать закрытие окна
+   (NOTIFICATION_WM_CLOSE_REQUEST, main.gd:408; `auto_accept_quit=false`) и тоже
+   показывать подтверждение — но не в ущерб корректному освобождению ресурсов
+   (_release_runtime_texture_refs). Если рискованно — оставить как есть и отметить.
+6. Тест (smoke): из главного меню кнопка «Выйти» и Escape открывают диалог (quit
+   не происходит без подтверждения); «Отмена» закрывает диалог и остаётся в меню;
+   диалог модальный, фокус на «Отмена». Скрин в build/qa/.
+7. CHANGELOG; menus_ui; current_game_state.
+
+## Files / Assets / IDs
+- scripts/ui_screens.gd (_show_main_menu 89-210; MainMenuExitButton 204-208;
+  паттерн подтверждения 1810; _make_button/_set_action_button_size)
+- scripts/main.gd (_notification 408; escape/pause экшен 285-290; input routing)
+- tests/runtime_smoke_test.gd
+
+## Acceptance Criteria
+- [x] Выход из главного меню (кнопка) — только через диалог подтверждения.
+- [x] Escape в главном меню открывает тот же диалог; Escape=«Пауза»/назад на других экранах не сломан.
+- [x] Диалог модальный, стиль игры, фокус на «Отмена», клава+геймпад; quit только по «Выйти».
+- [x] 6 smoke зелёные; скрин в build/qa/; CHANGELOG.
+
+## Документация
+docs/design/systems/menus_ui.md, current_game_state.

@@ -1,0 +1,107 @@
+# UX/Flow: Возврат в магазин в любой момент до перехода на след. уровень
+
+Статус: done
+Приоритет: medium
+Роль: Back-end (геймплей/flow)
+Версия: 0.1.5
+Создано: 2026-06-14
+Автор: PM (запрос пользователя)
+Jira: SCRUM-339
+QA: in_progress (2026-06-14)
+
+## Autonomy / Approval
+Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Контекст (запрос пользователя)
+«В магазин можно возвращаться в любой момент до того, как перешёл на следующий
+уровень. При этом при первом закрытии магазина уже должны быть возможности перейти
+на следующий уровень по карте».
+
+Сейчас (scripts): выход из магазина `leave_shop` (ui_screens.gd:2904) сразу делает
+`_clear_current_shop_stock()` + `_advance_route_after_noncombat()`
+(route_map_screen.gd:609 → `route_stage += 1` + `_show_battle_map()`). То есть закрытие
+магазина СРАЗУ продвигает этап и стирает сток — вернуться в магазин нельзя.
+Сток магазина персистентный по ключу `current_shop_node_key`
+(_open_route_node 580-592: при том же ключе items/purchased сохраняются).
+
+## Требования
+1. При **первом закрытии магазина** игрок попадает на карту, где **уже доступны
+   варианты перехода на следующий уровень** (узлы след. этапа активны/выбираемы) —
+   а не «пустая» карта. (Сейчас карта показывается, но вместе с продвижением этапа
+   и стиранием стока — нужно разделить.)
+2. **Магазин остаётся доступен для повторного входа** в любой момент, ПОКА игрок
+   не перешёл на следующий уровень: с карты можно вернуться в этот же магазин
+   (узел магазина остаётся активным/ревизитируемым), его **сток и покупки
+   сохраняются** между заходами (по current_shop_node_key — уже есть, не стирать
+   при закрытии).
+3. **Переход на следующий уровень = точка невозврата**: только когда игрок реально
+   выбирает следующий узел (бой/событие/elite/boss/rest и т.п.) и продвигает этап,
+   магазин финализируется (сток чистится, вернуться нельзя). До этого — можно.
+4. Технически: вынести продвижение этапа (route_stage += 1) из закрытия магазина
+   в момент выбора СЛЕДУЮЩЕГО узла; `leave_shop` показывает карту текущего этапа с
+   доступным след. шагом и НЕ стирает сток; `_clear_current_shop_stock` вызывать
+   при фактическом переходе на след. уровень, не при закрытии магазина.
+   Сохранить инварианты карты (route_selected_indices, current_shop_node_key,
+   деньги/покупки), не сломать другие non-combat узлы (rest/event) и их выход.
+5. Edge-cases: повторные входы не «рероллят» сток и не дублируют покупки; деньги
+   списываются один раз; после боя/перехода магазин недоступен; Escape/кнопка
+   «Выйти из лавки» ведёт на карту, а не сразу на след. этап.
+6. Тест (smoke/flow): открыть магазин → закрыть → на карте доступен след. уровень
+   И узел магазина ревизитируем → вернуться в магазин (сток/покупки те же) →
+   выбрать след. узел → магазин больше недоступен, сток очищен. Зелёный прогон.
+7. CHANGELOG; current_game_state (поток карты/магазина).
+
+## Files / Assets / IDs
+- scripts/ui_screens.gd (_show_shop_screen 2810; leave_shop 2904-2908;
+  _clear_current_shop_stock; ui_escape_action)
+- scripts/route_map_screen.gd (_open_route_node 580; _advance_route_after_noncombat
+  609; current_shop_node_key/current_shop_items/current_shop_purchased; route_stage;
+  route_selected_indices; _show_battle_map 13)
+- tests/runtime_smoke_test.gd
+
+## Acceptance Criteria
+- [ ] При первом закрытии магазина на карте уже доступны узлы следующего уровня.
+- [ ] Магазин ревизитируем до перехода на след. уровень; сток/покупки/деньги сохраняются, без рероллов и двойных списаний.
+- [ ] Переход на след. узел = финализация магазина (недоступен, сток очищен); rest/event-выходы не сломаны.
+- [ ] Flow-smoke + 6 smoke зелёные; CHANGELOG; current_game_state.
+
+## Документация
+docs/design/current_game_state.md (карта забега / магазин), systems/economy|map при наличии.
+
+## Result 2026-06-14
+
+Implemented Back-end route/shop flow:
+- `leave_shop` now returns to the route map through `_return_to_map_after_shop_visit()` without advancing `route_stage` and without clearing node-bound stock;
+- `route_map_screen.gd` keeps the visited shop node revisitable while enabling connected next-row route nodes;
+- choosing a connected next route node finalizes the pending shop re-entry, clears `current_shop_items/current_shop_purchased/current_shop_node_key`, advances route stage and opens the chosen next node;
+- rest/event exits still use the normal non-combat advance path.
+
+Runtime coverage added to `tests/runtime_smoke_test.gd`: shop -> buy -> leave -> route map with both shop and next node clickable -> revisit same stock/purchased state -> no rebuy -> choose next battle -> shop stock cleared and combat starts.
+
+Verification:
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Docs updated: `CHANGELOG.md`, `docs/design/current_game_state.md`, `docs/design/systems/route_map.md`, `docs/design/systems/progression_balance.md`.
+
+## QA-Вердикт (2026-06-14)
+Статус: PASSED
+Коммит: 1f58fd93 (ветка dev)
+
+Проверено (фактически):
+- **Код-инвариант**: `leave_shop` → `_return_to_map_after_shop_visit()` БЕЗ
+  `route_stage++` и без чистки node-bound стока; `route_map_screen.gd` держит
+  посещённый shop-узел ревизитируемым (`shop_reentry_pending`/
+  `shop_reentry_route_stage`, стр.454/534) + открывает следующий ряд; финализация
+  (чистка стока) — на выборе следующего узла.
+- **Целевой тест** `_test_shop_reentry_until_next_level` (runtime_smoke:193) —
+  passed (умбрелла зелёная, 0 shop-reentry ошибок): магазин ревизитируем →
+  вернуться (сток/покупки те же) → выбрать след. узел → магазин финализирован.
+- **Регрессия**: progression_economy / combat / meta_progression / umbrella —
+  зелёные.
+
+Acceptance:
+- [x] Магазин ревизитируем до выбора следующего route node; сток/покупки persists.
+- [x] Закрытие лавки не двигает stage/stock; следующий узел финализирует магазин.
+- [x] Инварианты карты сохранены; smoke зелёные; доки.
+
+Баги: нет.

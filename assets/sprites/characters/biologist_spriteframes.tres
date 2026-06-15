@@ -1,0 +1,129 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_idle_00.png" id="1_bio1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_idle_01.png" id="2_bio2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_idle_02.png" id="3_bio3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_idle_03.png" id="4_bio4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_idle_04.png" id="5_bio5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_walk_00.png" id="6_bio6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_walk_01.png" id="7_bio7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_walk_02.png" id="8_bio8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_walk_03.png" id="9_bio9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_walk_04.png" id="10_bio10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_00.png" id="11_bio11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_01.png" id="12_bio12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_02.png" id="13_bio13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_03.png" id="14_bio14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_04.png" id="15_bio15"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_bio1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_bio2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_bio3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_bio4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_bio5")
+}
+],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("6_bio6")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_bio7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_bio8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_bio9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_bio10")
+}
+],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_bio11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_bio12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_bio13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_bio14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_bio15")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("11_bio11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_bio12")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_bio13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_bio14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_bio15")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}
+]

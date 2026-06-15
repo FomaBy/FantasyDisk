@@ -19,6 +19,18 @@ Autonomy and approval:
 - For every future task that changes functionality, balance, content, UI, progression, visuals, or animation, update the relevant documentation in the same task.
 - After large multi-agent change batches, run the documentation split/update task in `docs/tasks/documentation_post_changes_domain_split_task.md` and keep domain docs under `docs/design/systems/` up to date.
 
+**UI/ВИЗУАЛ — ГЛОБАЛЬНОЕ ПРАВИЛО ФРЕЙМОВ (директива пользователя 2026-06-14, ОБЯЗАТЕЛЬНО для ВСЕХ агентов).**
+Ни при каких обстоятельствах нельзя накладывать элементы интерфейса — кнопки,
+портреты/героев, области выбора (карусели, списки, слоты), иконки, текст — на
+текстуру/окантовку/орнамент рамки (frame). Контент размещается ТОЛЬКО в пустой
+зоне фрейма: в прозрачной/тёмной внутренней области или на подложке фона.
+Декоративная рамка всегда остаётся видимой и не перекрытой контентом.
+- Технически: у текстурных стилей (StyleBoxTexture / 9-slice) **content margins ≥
+  texture margins (толщины окантовки) + запас**. Для радиальных/фигурных рамок
+  content-зона = реальная внутренняя пустая область, не bounding box.
+- Это hard-правило приёмки: наложение контента на орнамент рамки = QA FAILED
+  (см. `docs/process/qa_protocol.md` «Контент только в пустой зоне фрейма»).
+
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`, task statuses are tracked in `docs/process/task_board.md`.
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
@@ -66,24 +78,14 @@ Full autonomy (user directive, 2026-06-12):
   are out of scope for executors anyway.
 
 Feature block:
-- ACTIVE from 2026-06-13 (user directive): стабилизация релиза `0.1.4`.
-- **КРИТИЧНО (исправление 2026-06-13): задачи с `Версия: 0.1.5` НЕ затягивать в
-  0.1.4 и НЕ менять им версию/статус.** Прежняя формулировка «всю board доделать
-  в 0.1.4» была неверно истолкована воркерами — они флипнули патч-задачи 0.1.5 в
-  0.1.4/in_progress. ЭТО ЗАПРЕЩЕНО. Версия в task-файле — закон: `0.1.5` = бэклог,
-  не трогать до снятия фриза.
-- В спринт 0.1.4 берём ТОЛЬКО: задачи без строки `Версия:` или с `Версия: 0.1.4`,
-  которые уже на board и не помечены 0.1.5; баги/QA-дефекты/регрессии/blockers.
-- Любой НОВЫЙ запрос (фича/улучшение/арт/контент) оформляется со строкой
-  `Версия: 0.1.5` → sync уводит в бэклог (Jira fixVersion 0.1.5, вне спринта).
-  НЕ dispatch, НЕ in_progress без явного решения PM.
-- Codex Documentation dispatcher может создавать новые backlog task-файлы/Jira
-  issues только для таких будущих задач: обязательно `Статус: new`, `Версия:
-  0.1.5`, правильная роль, строка на board/backlog, sync в Jira без добавления в
-  активный sprint. Для активного `0.1.4` dispatcher по-прежнему не создаёт новые
-  source tasks, кроме явно обозначенных bugs/QA defects/release blockers.
-- Спорное по умолчанию = backlog `0.1.5`.
-- Фриз СНИМАЕТСЯ сразу после релиза 0.1.4: новый спринт 0.1.5 заберёт бэклог.
+- **ФРИЗ 0.1.5 АКТИВЕН с 2026-06-14 (директива пользователя).** Стабилизируем
+  релиз 0.1.5: доделываем ТОЛЬКО то, что уже на борде (активные задачи 0.1.5 —
+  перерисовки персонажей, UI-кластеры, баги, баланс). Новый функционал в 0.1.5 НЕ
+  добавляем.
+- **Новые НЕ-баговые фичи → `Версия: 0.1.6`** (следующая версия). Sync держит их в
+  бэклоге (fixVersion 0.1.6, вне активного спринта 0.1.5). Баг-фиксы по-прежнему
+  можно брать в 0.1.5.
+- Снять фриз — релизом 0.1.5 (как было с 0.1.4): после выпуска PM открывает 0.1.6.
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.
@@ -95,6 +97,40 @@ Project practices:
 - Keep code split into focused scenes and scripts.
 - Prefer data-driven character/enemy/weapon configuration where practical.
 - Keep prototype visuals simple until art direction exists.
+- **Изменения интерфейса — ТОЛЬКО через скилл `fantasydisk-ui-director`**
+  (Codex skill, `~/.codex/skills/fantasydisk-ui-director/`). Перед любым
+  внедрением/перерисовкой UI сначала создать OpenAI-API-generated mockup страницы
+  со всеми элементами, точными зонами контента, safe margins и responsive-правилами,
+  показать превью в чате при наличии PNG, затем воспроизводить расположение в
+  Godot по mockup/spec. Единый стиль всех экранов: D&D + Dark Fantasy Dragon,
+  отталкиваться от текущих красивых кнопок; старые/ручные пайплайны генерации
+  макетов не использовать как fallback.
+- **Генерация графики/ассетов — ТОЛЬКО скиллом `fantasydisk-asset-generator`**
+  (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`, SCRUM-324):
+  `scripts/generate_asset.py --prompt "<...>" --output <тема/файл> --size <WxH>
+  --quality high` (OpenAI Images API, модель `gpt-image-2`, PNG). Он рисует кратно
+  лучше прежнего пайплайна — старый способ не использовать. Все ассеты — на
+  ПРОЗРАЧНОМ фоне; исходник сохраняется в `docs/design/references/<тема>/` (для
+  единообразия на будущее), затем внедряется в `assets/`. Стиль — D&D + Dark
+  Fantasy Dragon (см. UI Overhaul SCRUM-327).
+- **Анимации персонажей/монстров/элиток/боссов — через скилл
+  `fantasydisk-animation-director`**
+  (Codex skill, `~/.codex/skills/fantasydisk-animation-director/`). Минимум для
+  каждой анимированной сущности: движение `move/walk` 5+ кадров и основная атака
+  `attack_primary` 5+ кадров. Для элиток и боссов обязательны плавные
+  full-frame sprite-sheet анимации без production cutout-разрезания статичного
+  спрайта, плюс отдельные attack-паттерны под разные skill/phase. Animator
+  валидирует manifest bundled-скриптом skill и прогоняет animation smoke.
+- **Баланс классов и оружия — через скилл
+  `fantasydisk-class-balance-director`**
+  (Codex skill, `~/.codex/skills/fantasydisk-class-balance-director/`). Каждый
+  класс балансируется как сумма трёх selectable weapons, а не как отдельное
+  оружие: суммарная эффективность кита должна быть сопоставима по solo-target,
+  AoE/crowd-clear и defensive/survivability механикам. Все классы сравниваются
+  между собой по total kit score трёх оружий. При провале оси сначала менять
+  механику оружия/кита (геометрия удара, target pattern, контроль, sustain,
+  defensive window, summon behavior и т.п.), а не только множители урона; при
+  этом каждое из трёх оружий должно сохранять отличающийся gameplay/niche.
 - Run Godot headless smoke tests after gameplay changes:
   `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
 - Do not commit `.godot/`.

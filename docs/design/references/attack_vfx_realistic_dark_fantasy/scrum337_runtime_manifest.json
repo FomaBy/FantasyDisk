@@ -1,0 +1,856 @@
+{
+  "task": "SCRUM-337",
+  "asset_count": 85,
+  "assets": [
+    {
+      "path": "assets/sprites/effects/slash_arc.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 0,
+      "placement": "slash"
+    },
+    {
+      "path": "assets/sprites/effects/impact_ring.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 1,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/impact_flash.png",
+      "size": [
+        128,
+        128
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 2,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/beam_strip.png",
+      "size": [
+        256,
+        64
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 3,
+      "placement": "beam"
+    },
+    {
+      "path": "assets/sprites/effects/sound_wave.png",
+      "size": [
+        192,
+        192
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 4,
+      "placement": "sound_wave"
+    },
+    {
+      "path": "assets/sprites/effects/void_orb.png",
+      "size": [
+        96,
+        96
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 5,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/music_note.png",
+      "size": [
+        64,
+        64
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 6,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/dust_puff_0.png",
+      "size": [
+        128,
+        128
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 7,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/hazard_zone.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 8,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/poison_pool.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 9,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/spark_pool.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 10,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/briar_pool.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 11,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/projectiles/enemy_projectile_magic_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 12,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/projectiles/player_projectile_spark_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 13,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/elite_crystal_shard.png",
+      "size": [
+        96,
+        96
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 14,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/elite_poison_lob.png",
+      "size": [
+        96,
+        96
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 15,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/boss_ash_ember_zone.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 0,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/boss_bone_prison_zone.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 1,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/boss_brood_web_zone.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 2,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/boss_gravity_well_zone.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 3,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/boss_molten_armor_pulse.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 4,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/boss_rift_zone.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 5,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/boss_vampiric_bite_zone.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 6,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/enemy_command_aura_pulse.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 7,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/enemy_reflect_thorns_aura.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 8,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/enemy_shadow_blink_mark.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 9,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/enemy_shard_fan_burst.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 10,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/enemy_shield_block_front.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 11,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/enemy_summon_portal.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 12,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/elite_shockwave_ring.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 13,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/elite_telegraph_circle.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 14,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/elite_shadow_trail.png",
+      "size": [
+        256,
+        128
+      ],
+      "source": "boss_elite_sheet.png",
+      "cell": 15,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_acid_flask.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 0,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_axe.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 1,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_bass_guitar.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 2,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_biologist_sample_injector.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 3,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_biologist_spore_lens.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 4,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_biologist_symbiote_seed.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 5,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_blast_powder.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 6,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_bone_saw.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 7,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_briar_staff.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 8,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_chakrams.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 9,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_cursed_skull.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 10,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_dark_book.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 11,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_dark_wand.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 12,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_electric_guitar.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 13,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 14,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_elementalist_orb_ring.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_1.png",
+      "cell": 15,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_elementalist_prism_focus.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 0,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_engineer_pressure_mines.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 1,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_engineer_repair_drone.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 2,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 3,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_hammer.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 4,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_holy_flail.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 5,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_homunculus_vial.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 6,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_hunter_trap.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 7,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_long_spear.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 8,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_moon_crossbow.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 9,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_plague_syringe.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 10,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_priest_censer.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 11,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_priest_chime.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 12,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_priest_reliquary.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 13,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_raven_totem.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 14,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_restore_potion.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_2.png",
+      "cell": 15,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 0,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_robot_magnetic_anchor.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 1,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_robot_reactor_core.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 2,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_shadow_daggers.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 3,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_sniper_deadeye_rifle.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 4,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_sniper_shatter_rounds.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 5,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_sniper_spotter_scope.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 6,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_soldier_bayonet.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 7,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_soldier_grenade.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 8,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_soldier_rifle.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 9,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_sound_amp.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 10,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_storm_longbow.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 11,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_summon_amulet.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 12,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_sword.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 13,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 14,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_3.png",
+      "cell": 15,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_4.png",
+      "cell": 0,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_tower_shield.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_4.png",
+      "cell": 1,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_venom_wire.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "weapon_signatures_sheet_4.png",
+      "cell": 2,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/dust_puff_1.png",
+      "size": [
+        128,
+        128
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 7,
+      "placement": "center"
+    },
+    {
+      "path": "assets/sprites/effects/dust_puff_2.png",
+      "size": [
+        128,
+        128
+      ],
+      "source": "generic_core_sheet.png",
+      "cell": 7,
+      "placement": "center"
+    }
+  ]
+}
