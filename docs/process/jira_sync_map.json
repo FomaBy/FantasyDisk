@@ -1987,6 +1987,16 @@
  "bug_attribute_shop_overflow_and_unclickable_options_task.md": {
   "key": "SCRUM-413",
   "status": "К выполнению",
-  "desc_hash": "da7b16e2a8e86d60272b33592eb63248"
+  "desc_hash": "4d4ab1724bd9eff4b1a871bf97dff54e"
+ },
+ "bug_elite_boss_health_bar_offscreen_too_high_task.md": {
+  "key": "SCRUM-414",
+  "status": "К выполнению",
+  "desc_hash": "a053b645c5acc2fbe6a887a9ddae2c6e"
+ },
+ "bug_event_option_text_overflow_double_risk_task.md": {
+  "key": "SCRUM-415",
+  "status": "К выполнению",
+  "desc_hash": "29c37625034e3ecc1c100a6679b3ccdf"
  }
 }
