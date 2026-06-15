@@ -37,7 +37,7 @@ Guitarist v2 is a bright, epic, class-readable stage-warlock performer:
 | --- | --- |
 | Cell size | `512x512` |
 | Pivot | `(256, 470)` |
-| Visible bbox in cell | `[115, 96, 397, 470]` |
+| Visible bbox in cell | `[114, 96, 397, 470]` |
 | Visible height | `374 px` |
 | Target source height from anchor | `360..380 px` |
 | Sheet handoff size | `2560x1024` |
@@ -71,7 +71,12 @@ Pixel report summary:
 - raw source was opaque (`raw_alpha_range: [255, 255]`);
 - alpha-clean source is real RGBA (`clean_alpha_range: [0, 255]`);
 - normalized cell is real RGBA (`cell_alpha_range: [0, 255]`);
-- `edge_white_pixels_after: 0`;
+- cleanup revision `v2_global_near_white_removal` removes checker/halo whites
+  globally, not only edge-connected background;
+- `clean_opaque_white_pixels_after: 0`;
+- `clean_neutral_light_pixels_after: 0`;
+- `cell_opaque_white_pixels_after: 0`;
+- `cell_neutral_light_pixels_after: 0`;
 - `edge_visible_pixels_after: 0`;
 - normalized cell visible height is `374 px`, inside the SCRUM-422 target
   `360..380 px`.

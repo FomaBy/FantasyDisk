@@ -1,13 +1,13 @@
 # ART/ANIM: Перерисовать «Ассасин» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-419
-QA: in_progress (2026-06-15)
+QA: pending (Animator done 2026-06-15)
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
 ## Autonomy / Approval
@@ -61,8 +61,8 @@ reasoning High/no low.
 
 ## Acceptance Criteria
 - [x] «Ассасин» перерисован v2: ярко/эпично по классу, прозрачный фон (нет белого/каймы/карманов).
-- [ ] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
-- [ ] Старое в бэкап; animation+runtime smoke зелёные; превью-гиф; CHANGELOG.
+- [x] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
+- [x] Старое в бэкап; animation+runtime smoke зелёные; превью-гиф; CHANGELOG.
 - [x] Design-source handoff prepared: 512-cell source, pivot/height report, placeholder source-sheet layout, dark-bg preview.
 
 ## Документация
@@ -131,3 +131,47 @@ Acceptance (Design-source scope):
 - [~] idle+move анимация, 2× монстра, виден/анимирован в игре — Animator follow-up (pending).
 
 Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
+
+## Animator Takeover (2026-06-15)
+
+Статус: `in_progress` — беру Animator-фазу после accepted Design-source PASS.
+Scope: собрать реальные idle + move/walk v2 loop-кадры из accepted
+`assassin_v2_idle_cell_512.png`, обновить live SpriteFrames/runtime путь
+`assets/sprites/characters/assassin_spriteframes.tres`, положить старые live
+ассеты в docs backup, создать manifest/contact/GIF QA artifacts, прогнать
+animation smoke и runtime smoke. Attack остаётся отсутствующим по требованиям
+этой v2 строки.
+
+## Animator Result (2026-06-15)
+
+Статус: done.
+
+Animator-фаза SCRUM-419 завершена:
+
+- live `assets/sprites/characters/assassin_spriteframes.tres` заменён на v2
+  full-frame SpriteFrames с `idle`, `walk` и `move` по 5 loop-кадров; `move`
+  использует тот же walk-loop, attack/attack_primary намеренно отсутствуют;
+- runtime PNG кадры обновлены в
+  `assets/sprites/characters/full_frame/assassin/assassin_{idle,walk}_00..04.png`;
+- derived safe source sheet сохранён как
+  `assets/sprites/characters/v2/assassin/assassin_v2_anim_sheet.png`
+  (`512x512` cells, 48px gutter/outer padding, pivot `[256,470]`);
+- старые live SpriteFrames/runtime PNG сохранены вне Godot import scope:
+  `docs/design/backups/scrum419_assassin_v2_pre_anim/` без `.import` sidecars;
+- QA artifacts:
+  `build/qa/scrum419_assassin_v2_anim/animation_manifest.json`,
+  `manifest_validator_output.txt`,
+  `alpha_size_report.json`,
+  `scrum419_assassin_v2_anim_contact.png`,
+  `assassin_v2_idle.gif`,
+  `assassin_v2_walk.gif`.
+
+Validation:
+
+- `python3 ~/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/scrum419_assassin_v2_anim/animation_manifest.json`
+  records expected `missing attack_primary animation`, because this task
+  explicitly excludes attack.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd`
+  PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+  PASS.

@@ -74,6 +74,83 @@ glowing hands, transparent RGBA, visible height `376 px` and pivot `(256,470)`;
 it is a source handoff only until Animator/Back-end builds real idle/move
 SpriteFrames.
 
+SCRUM-429 adds the Guitarist v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/guitarist/guitarist_v2_source_clean.png`,
+`guitarist_v2_idle_cell_512.png`, `guitarist_v2_sheet_source_handoff.png`,
+`guitarist_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum429_guitarist_v2_contact.png` and QA report
+`build/qa/scrum429_guitarist_v2/scrum429_guitarist_v2_alpha_size_report.json`.
+The accepted source is a bright magenta/gold unarmed stage-warlock performer
+with empty hands and no baked guitar/instrument/microphone/weapon, transparent
+RGBA, visible height `374 px` and pivot `(256,470)`. After user feedback, the
+cleanup revision removes white/neutral matte pixels globally (`0` in source and
+cell QA). It is a source handoff only until Animator/Back-end builds real
+idle/move SpriteFrames.
+
+SCRUM-435 adds the Thief v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/thief/thief_v2_source_clean.png`,
+`thief_v2_idle_cell_512.png`, `thief_v2_sheet_source_handoff.png`,
+`thief_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum435_thief_v2_contact.png` and QA report
+`build/qa/scrum435_thief_v2/scrum435_thief_v2_alpha_size_report.json`. The
+accepted source is a bright amber unarmed rogue with empty hands and no baked
+dagger/weapon/tool/coin pouch/bomb, transparent RGBA, visible height `374 px`
+and pivot `(256,470)`. White/neutral matte pixels are `0` in source/cell QA. It
+is a source handoff only until Animator/Back-end builds real idle/move
+SpriteFrames.
+
+SCRUM-427 adds the Elementalist v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/elementalist/elementalist_v2_source_clean.png`,
+`elementalist_v2_idle_cell_512.png`,
+`elementalist_v2_sheet_source_handoff.png`,
+`elementalist_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum427_elementalist_v2_contact.png` and QA report
+`build/qa/scrum427_elementalist_v2/scrum427_elementalist_v2_alpha_size_report.json`.
+The accepted source is a bright multi-element unarmed caster with empty hands
+and no baked staff/orb/focus/weapon, transparent RGBA, visible height `374 px`
+and pivot `(256,470)`. White/neutral matte pixels are `0` in source/cell QA. It
+is a source handoff only until Animator/Back-end builds real idle/move
+SpriteFrames.
+
+SCRUM-433 adds the Sniper v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/sniper/sniper_v2_source_clean.png`,
+`sniper_v2_idle_cell_512.png`, `sniper_v2_sheet_source_handoff.png`,
+`sniper_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum433_sniper_v2_contact.png` and QA report
+`build/qa/scrum433_sniper_v2/scrum433_sniper_v2_alpha_size_report.json`. The
+accepted source is a bright cold blue-steel unarmed marksman with empty hands,
+optical targeting light and no baked rifle/gun/bow/crossbow/scope/weapon,
+transparent RGBA, visible height `374 px` and pivot `(256,470)`. White/neutral
+matte pixels are `0` in source/cell/sheet QA, with `0` edge-visible pixels after
+the edge-alpha fix. It is a source handoff only until Animator/Back-end builds
+real idle/move SpriteFrames.
+
+SCRUM-431 adds the Priest v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/priest/priest_v2_source_clean.png`,
+`priest_v2_idle_cell_512.png`, `priest_v2_sheet_source_handoff.png`,
+`priest_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum431_priest_v2_contact.png` and QA report
+`build/qa/scrum431_priest_v2/scrum431_priest_v2_alpha_size_report.json`. The
+accepted source is a bright white-gold unarmed holy healer with halo, empty hands
+and no baked staff/mace/reliquary/censer/chime/book/weapon, transparent RGBA,
+visible height `376 px` and pivot `(256,470)`. White/neutral matte pixels are
+`0` in source/cell/sheet QA, with `0` edge-visible pixels after strict
+edge-connected checker/white cleanup. It is a source handoff only until
+Animator/Back-end builds real idle/move SpriteFrames.
+
+SCRUM-421 adds the Biologist v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/biologist/biologist_v2_source_clean.png`,
+`biologist_v2_idle_cell_512.png`, `biologist_v2_sheet_source_handoff.png`,
+`biologist_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum421_biologist_v2_contact.png` and QA report
+`build/qa/scrum421_biologist_v2/scrum421_biologist_v2_alpha_size_report.json`.
+The accepted source is a bright emerald bioluminescent scientist-naturalist with
+empty hands and no baked syringe/vial/flask/tool/orb/weapon, transparent RGBA,
+visible height `380 px` and pivot `(256,470)`. White/neutral matte pixels are
+`0` in source/cell/sheet QA, with `0` edge-visible pixels after strict
+edge-connected checker/white cleanup. It is a source handoff only until
+Animator/Back-end builds real idle/move SpriteFrames.
+
 SCRUM-165 adds Priest with canonical Design assets `assets/sprites/characters/priest.png`, `assets/sprites/weapons/priest_reliquary.png`, `assets/sprites/weapons/priest_censer.png`, and `assets/sprites/weapons/priest_chime.png`; source/result details are tracked in `docs/tasks/codex_design_priest_art_task.md`. Priest rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_priest_rig_motion_task.md`.
 
 SCRUM-162 adds Biologist gameplay with canonical Design assets ready: `assets/sprites/characters/biologist.png`, `assets/sprites/weapons/biologist_spore_lens.png`, `assets/sprites/weapons/biologist_sample_injector.png`, and `assets/sprites/weapons/biologist_symbiote_seed.png`; contact preview is `docs/design/previews/biologist_art_contact.png`, and source/result notes live in `docs/tasks/codex_design_biologist_art_task.md`. Biologist rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_biologist_rig_motion_task.md`.

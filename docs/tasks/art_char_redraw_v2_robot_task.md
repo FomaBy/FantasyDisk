@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Робот» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: cancelled
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -49,3 +49,19 @@ Jira: SCRUM-432
 
 ## Документация
 docs/design/content_registry.md (robot), current_game_state.
+
+## Dispatcher Handoff To Design Main (2026-06-15)
+
+Передано Design main thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` как следующий
+свободный 0.1.6 character v2 Design-source row.
+
+Scope for this pass: produce only Robot v2 Design/source artifacts in the
+SCRUM-422 bright/epic style: transparent source PNG, strict alpha/white/neutral
+cleanup validation, normalized 512-cell, source-sheet handoff, contact/dark-bg
+preview, pivot/height report, task/docs/board/Jira updates. Do not build
+SpriteFrames, runtime integration, AnimationPlayer/AnimationTree, animation
+smoke, gameplay logic, balance, or attack frames. Animator starts only after the
+Robot source handoff is accepted. Keep reasoning High/no low.
+
+## ОТМЕНЕНО 2026-06-15 (пользователь)
+Широкий редизайн персонажей v2 отменён — пользователю не нравится подход. Работаем по одному классу заново (старт — Берсерк, отдельная задача).

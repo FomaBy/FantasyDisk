@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Гитарист» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -51,9 +51,9 @@ Back-end handoff после acceptance.
 7. CHANGELOG; content_registry.
 
 ## Acceptance Criteria
-- [ ] «Гитарист» перерисован v2: ярко/эпично по классу, прозрачный фон (нет белого/каймы/карманов).
-- [ ] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
-- [ ] Старое в бэкап; animation+runtime smoke зелёные; превью-гиф; CHANGELOG.
+- [x] «Гитарист» перерисован v2: ярко/эпично по классу, прозрачный фон (нет белого/каймы/карманов).
+- [x] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
+- [x] Старое в бэкап; animation+runtime smoke зелёные; превью-гиф; CHANGELOG.
 
 ## Документация
 docs/design/content_registry.md (guitarist), current_game_state.
@@ -91,10 +91,11 @@ Design acceptance notes:
 - Hands are empty; no guitar, instrument, microphone, staff, weapon, tool or
   held object is baked into the base body art.
 - Source format matches SCRUM-422: `512x512`, pivot `(256,470)`, visible bbox
-  `[115,96,397,470]`, visible height `374 px`.
+  `[114,96,397,470]`, visible height `374 px`.
 - Alpha QA: raw source was opaque/checker-backed; cleaned source and normalized
-  cell are RGBA with alpha extrema `(0,255)`, edge visible pixels after cleanup
-  `0`, edge white pixels after cleanup `0`.
+  cell are RGBA with alpha extrema `(0,255)`. After the v2 cleanup revision,
+  global opaque-white pixels are `0`, neutral-light matte pixels are `0`, and
+  edge visible pixels are `0`.
 - The `2560x1024` source handoff sheet intentionally repeats the accepted source
   in all 5 idle + 5 move placeholder cells. It is a sizing/pivot/layout handoff,
   not final motion.
@@ -121,7 +122,9 @@ Animator/Back-end follow-up:
 
 - **guitarist v2 source прозрачный**: `guitarist_v2_source_clean` (1024²),
   `_idle_cell_512` (512²), `_sheet_source_handoff` / `_sheet` (2560×1024) —
-  все RGBA, edge visible pixels = 0, edge white pixels = 0.
+  все RGBA. После user-feedback revision по белым пикселям: source/cell
+  `opaque_white_pixels_after = 0`, `neutral_light_pixels_after = 0`,
+  `edge_visible_pixels_after = 0`.
 - **Визуал** `scrum429_guitarist_v2_contact.png`: яркий эпичный stage-warlock /
   рок-бард, насыщенный magenta/gold, звуковые волны/искры, hands empty, без
   baked guitar/instrument/mic/weapon, прозрачность на тёмном ✓.
@@ -140,3 +143,47 @@ Acceptance (Design-source scope):
 - [~] animation+runtime smoke + gif — Animator follow-up.
 
 Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
+
+## Animator Takeover (2026-06-15)
+
+Статус: `in_progress` — беру Animator-фазу после accepted Design-source PASS.
+Scope: собрать реальные idle + move/walk v2 loop-кадры из accepted
+`guitarist_v2_idle_cell_512.png`, обновить live SpriteFrames/runtime путь
+`assets/sprites/characters/guitarist_spriteframes.tres`, положить старые live
+ассеты в docs backup, создать manifest/contact/GIF QA artifacts, прогнать
+animation smoke и runtime smoke. Attack остаётся отсутствующим по требованиям
+этой v2 строки.
+
+## Animator Result (2026-06-15)
+
+Статус: done.
+
+Animator-фаза SCRUM-429 завершена в рамках v2 idle/move-only scope:
+
+- live `assets/sprites/characters/guitarist_spriteframes.tres` заменён на v2
+  full-frame SpriteFrames с `idle`, `walk` и `move` по 5 loop-кадров; `move`
+  использует тот же walk-loop, attack/attack_primary намеренно отсутствуют;
+- runtime PNG кадры обновлены в
+  `assets/sprites/characters/full_frame/guitarist/guitarist_{idle,walk}_00..04.png`;
+- derived safe source sheet сохранён как
+  `assets/sprites/characters/v2/guitarist/guitarist_v2_anim_sheet.png`
+  (`512x512` cells, 48px gutter/outer padding, pivot `[256,470]`);
+- старые live SpriteFrames/runtime PNG сохранены вне Godot import scope:
+  `docs/design/backups/scrum429_guitarist_v2_pre_anim/` без `.import` sidecars;
+- QA artifacts:
+  `build/qa/scrum429_guitarist_v2_anim/animation_manifest.json`,
+  `manifest_validator_output.txt`,
+  `alpha_size_report.json`,
+  `scrum429_guitarist_v2_anim_contact.png`,
+  `guitarist_v2_idle.gif`,
+  `guitarist_v2_walk.gif`.
+
+Validation:
+
+- `python3 ~/.codex/skills/fantasydisk-animation-director/scripts/validate_animation_manifest.py build/qa/scrum429_guitarist_v2_anim/animation_manifest.json`
+  records expected `missing attack_primary animation`, because this task
+  explicitly excludes attack.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd`
+  PASS.
+- `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+  PASS.

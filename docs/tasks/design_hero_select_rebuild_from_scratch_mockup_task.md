@@ -1,6 +1,6 @@
 # ART/UX: Экран выбора героя — ПЕРЕРИСОВАТЬ С НУЛЯ по макапу (оставить только розу ветров)
 
-Статус: review
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.6
@@ -127,3 +127,20 @@ Acceptance:
 - [ ] Runtime по макапу + бэкап старого + smoke/no-overlap — Back-end follow-up (pending).
 
 Статус: Design-source PASS, ждёт Back-end integration. Баги: нет (Design-scope).
+
+## Dispatcher Handoff To Back-end Runtime (2026-06-15)
+
+Передано Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2` для runtime
+интеграции SCRUM-436.
+
+Scope: rebuild live Hero Select runtime in `scripts/ui_screens.gd` from
+`docs/design/mockups/scrum436_hero_select_v2/spec.md` and
+`hero_select_v2_layout_metadata.json`; preserve `HeroSelectRadarPanel` /
+`HeroStatRadar` exactly as the live compass-rose contract; rebuild all other
+Hero Select layers from the accepted spec/safe rects; keep all content inside
+empty safe/content zones and off decorative frame ornament.
+
+Back-end must preserve hero selection/ascension/start/back/Escape/focus logic,
+back up old runtime-only Hero Select layers/assets if replaced, run runtime UI
+smoke, full runtime smoke, and UI no-overlap matrix, then update task/board/docs
+and Jira. Keep reasoning High/no low.

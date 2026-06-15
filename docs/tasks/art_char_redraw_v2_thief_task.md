@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Вор» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -11,6 +11,16 @@ Jira: SCRUM-435
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Designer 2 Takeover (2026-06-15)
+
+Взято Designer 2 после heartbeat/board check. SCRUM-422 anchor завершён,
+SCRUM-429 Guitarist v2 Design-source отправлен в review, SCRUM-419 Assassin уже
+занят/готов другим Design-pass, поэтому следующий свободный Design-row — Thief
+v2. Scope этого pass: подготовить accepted bright+epic Design source-pack для
+`thief` с transparent 512-cell source и source-sheet handoff; runtime
+SpriteFrames/Animation smoke остаются Animator / Back-end handoff после
+acceptance.
 
 ## Контекст
 Пер-персонажная задача инициативы «Перерисовка персонажей v2» (0.1.6) — класс **Вор** (`thief`).
@@ -43,9 +53,145 @@ Jira: SCRUM-435
 7. CHANGELOG; content_registry.
 
 ## Acceptance Criteria
-- [ ] «Вор» перерисован v2: ярко/эпично по классу, прозрачный фон (нет белого/каймы/карманов).
-- [ ] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
-- [ ] Старое в бэкап; animation+runtime smoke зелёные; превью-гиф; CHANGELOG.
+- [x] «Вор» перерисован v2: ярко/эпично по классу, прозрачный фон (нет белого/каймы/карманов).
+- [x] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
+- [x] Старое в бэкап; animation+runtime smoke зелёные; превью-гиф; CHANGELOG.
 
 ## Документация
 docs/design/content_registry.md (thief), current_game_state.
+
+## Design Result (Designer 2 / 2026-06-15)
+
+Статус: Design-source ready for review; Animator/Back-end integration pending.
+
+Produced the Thief v2 bright+epic source pack through the required
+`fantasydisk-asset-generator` flow and SCRUM-422 anchor format:
+
+- raw OpenAI source:
+  `docs/design/references/characters_v2/thief/thief_v2_source_raw.png`;
+- alpha-clean source:
+  `docs/design/references/characters_v2/thief/thief_v2_source_clean.png`;
+- normalized 512-cell source:
+  `docs/design/references/characters_v2/thief/thief_v2_idle_cell_512.png`;
+- Design-source sheet handoff:
+  `docs/design/references/characters_v2/thief/thief_v2_sheet_source_handoff.png`;
+- asset-side source copies:
+  `assets/sprites/characters/v2/thief/thief_v2_idle_source.png`,
+  `assets/sprites/characters/v2/thief/thief_v2_sheet_source_handoff.png` and
+  `assets/sprites/characters/v2/thief/thief_v2_sheet.png`;
+- contact / dark-background preview:
+  `docs/design/previews/scrum435_thief_v2_contact.png`;
+- handoff note:
+  `docs/design/references/characters_v2/thief/thief_v2_design_handoff.md`;
+- alpha/size report:
+  `build/qa/scrum435_thief_v2/scrum435_thief_v2_alpha_size_report.json`.
+
+Design acceptance notes:
+
+- Class fantasy: bright epic amber rogue with warm leather, gold accents and
+  agile cunning posture.
+- Hands are empty; no dagger, knife, sword, bow, bomb, coin pouch, lockpick,
+  weapon, tool or held object is baked into the base body art.
+- Source format matches SCRUM-422: `512x512`, pivot `(256,470)`, visible bbox
+  `[152,96,359,470]`, visible height `374 px`.
+- Alpha QA: raw source was opaque/checker-backed; cleaned source and normalized
+  cell are RGBA with alpha extrema `(0,255)`. Global opaque-white pixels are
+  `0`, neutral-light matte pixels are `0`, and edge visible pixels are `0`.
+- The `2560x1024` source handoff sheet intentionally repeats the accepted source
+  in all 5 idle + 5 move placeholder cells. It is a sizing/pivot/layout handoff,
+  not final motion.
+
+Not done in this Designer 2 pass:
+
+- No final idle/move animation frames.
+- No SpriteFrames, player runtime wiring, backups of live assets, Godot
+  animation smoke or runtime smoke.
+
+Animator/Back-end follow-up:
+
+- Derive or redraw real `idle` and `move/walk` loops from the accepted source,
+  then assemble the final v2 sheet/SpriteFrames.
+- Preserve the no-weapon/no-held-object rule and bottom-center pivot.
+- Run manifest validation, animation smoke, runtime smoke and attach GIF/contact
+  previews before replacing live paths.
+
+## QA-Вердикт (2026-06-15)
+
+Статус: PASSED (Design-source: thief v2 bright/epic + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
+
+Проверено (фактически):
+
+- **thief v2 source прозрачный**: `thief_v2_source_clean` (1024²),
+  `_idle_cell_512` (512²), `_sheet_source_handoff` / `_sheet` (2560×1024) —
+  все RGBA. Source/cell `opaque_white_pixels_after = 0`,
+  `neutral_light_pixels_after = 0`, `edge_visible_pixels_after = 0`.
+- **Визуал** `scrum435_thief_v2_contact.png`: яркий эпичный amber rogue,
+  тёплая кожа/золото, лукавая поза, hands empty, без baked weapon/tool/coin
+  pouch/bomb, прозрачность на тёмном ✓.
+- **Source-sheet handoff**: row 0 — 5 idle placeholder, row 1 — 5 move
+  placeholder. Motion drawing — Animator-owned. Handoff-док
+  `thief_v2_design_handoff.md`.
+
+⚠️ **Реальная idle/move анимация + SpriteFrames + runtime ещё НЕ сделаны** —
+Animator/Back-end phase.
+
+Acceptance (Design-source scope):
+
+- [x] thief v2 перерисован ярко/эпично, прозрачный (нет белого/каймы/карманов).
+- [x] Design-source handoff: 512-cell, pivot/report, source-sheet layout, contact preview.
+- [~] idle+move анимация (loop), 2× монстра, виден/анимирован в игре — Animator follow-up (pending).
+- [~] animation+runtime smoke + gif — Animator follow-up.
+
+Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
+
+## Animator Takeover (2026-06-15)
+
+Статус: `in_progress` — беру Animator-фазу после accepted Design-source PASS.
+Scope: собрать реальные idle + move/walk v2 loop-кадры из accepted
+`thief_v2_idle_cell_512.png`, обновить live SpriteFrames/runtime путь
+`assets/sprites/characters/thief_spriteframes.tres`, положить старые live
+ассеты в docs backup, создать manifest/contact/GIF QA artifacts, прогнать
+animation smoke и runtime smoke. Attack остаётся отсутствующим по требованиям
+этой v2 строки.
+
+## Animator Result (2026-06-15)
+
+Статус: done — Thief v2 live Animator integration complete.
+
+Completed Animator-owned scope:
+
+- Consumed accepted Design-source cell
+  `docs/design/references/characters_v2/thief/thief_v2_idle_cell_512.png`
+  without changing source art direction.
+- Built real 5-frame full-frame `idle` loop and 5-frame `walk` / `move` loop
+  from the accepted 512-cell source. Attack remains intentionally absent per
+  SCRUM-435 scope.
+- Updated live runtime resource
+  `assets/sprites/characters/thief_spriteframes.tres`; it now exposes only
+  `idle`, `walk`, and `move`, each looping with 5 frames.
+- Wrote runtime frames under
+  `assets/sprites/characters/full_frame/thief/thief_idle_00..04.png` and
+  `assets/sprites/characters/full_frame/thief/thief_walk_00..04.png`.
+- Exported safe 48px-gutter / 48px-padding QA sheet
+  `assets/sprites/characters/v2/thief/thief_v2_anim_sheet.png`.
+- Backed up previous live SpriteFrames/frame assets outside Godot import scope:
+  `docs/design/backups/scrum435_thief_v2_pre_anim/`.
+- Added QA artifacts under `build/qa/scrum435_thief_v2_anim/`:
+  `animation_manifest.json`, `manifest_validator_output.txt`,
+  `alpha_size_report.json`, `scrum435_thief_v2_anim_contact.png`,
+  `thief_v2_idle.gif`, and `thief_v2_walk.gif`.
+
+Validation:
+
+- Alpha safety: `edge_alpha_pixels = 0`, `below_pivot_alpha_pixels = 0` for all
+  generated runtime frames; pivot remains `(256,470)`.
+- Godot import: PASS.
+- Animation smoke:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd`
+  → PASS.
+- Runtime smoke:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
+  → PASS.
+- Bundled manifest validator was run and recorded the expected generic failure
+  `thief: missing attack_primary animation`; this is accepted for SCRUM-435
+  because the task explicitly excludes attack animation.

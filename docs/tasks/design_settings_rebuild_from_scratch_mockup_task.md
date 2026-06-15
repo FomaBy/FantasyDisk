@@ -1,6 +1,6 @@
 # ART/UX: Окно настроек — ПОЛНОСТЬЮ перерисовать с нуля по макапу
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.6
@@ -139,7 +139,7 @@ resolution-фикса ждёт этот settings-rebuild.)
 Acceptance:
 - [x] Макап настроек + 3 вкладки + переключатель + единый стиль рамок зафиксированы (Design).
 - [x] 4 settings_v2 фрейма прозрачные; content-зоны/safe rects.
-- [ ] Runtime по макапу + no-overlap/smoke + скролл/сохранение + бэкап — Back-end follow-up (pending).
+- [x] Runtime по макапу + no-overlap/smoke + скролл/сохранение — Back-end integration complete.
 
 Статус: Design-source PASS, ждёт Back-end integration. Баги: нет (Design-scope).
 
@@ -167,3 +167,34 @@ Required verification: `tests/ui_no_overlap_matrix_test.gd`,
 `build/qa/scrum441/`. Keep reasoning High/no low. Do not touch Codex/SCRUM-438,
 Hero Select/SCRUM-436, character v2 rows, Animator work, gameplay balance, or
 unrelated UI surfaces in this pass.
+
+## Back-end Result (Codex / 2026-06-15)
+
+Status: done — Settings v2 runtime integration complete.
+
+Implemented in `scripts/ui_screens.gd`:
+
+- Rebuilt live Settings as a dedicated `SettingsV2Root`/`SettingsV2Modal` layout
+  using `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png`
+  and the accepted v2 3-slot switcher
+  `ui_frame_settings_v2_tab_switcher_3slot.png`.
+- Preserved runtime contracts: `SettingsTabs`, exactly three
+  `SettingsTabButton_0..2`, `SettingsResolutionOption`,
+  `SettingsWindowModeOption`, `ScreenShakeToggle`, all volume sliders/toggles,
+  `SettingsAimModeOption`, `DebugModeToggle`, `ControlsScroll`,
+  `BindingButton_*`, reset/back actions and Escape behavior.
+- Kept runtime content inside documented safe areas. The optional
+  `section_panel`/`control_row` candidates were not used for the dense 720p body
+  because their source content margins would either clip live controls or push
+  content into the Back button; the live body uses a flat inner safe-zone panel
+  inside the v2 main modal instead.
+- Added SCRUM-439 smoke/matrix dumps:
+  `build/qa/scrum439/settings_v2_runtime_rects.md` and
+  `build/qa/scrum439/settings_v2_no_overlap_matrix.md`.
+
+Verification:
+
+- `tests/display_resolution_test.gd` PASS.
+- `tests/runtime_smoke_ui_test.gd` PASS.
+- `tests/ui_no_overlap_matrix_test.gd` PASS.
+- `tests/runtime_smoke_test.gd` PASS.

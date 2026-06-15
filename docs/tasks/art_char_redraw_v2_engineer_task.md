@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Инженер» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: cancelled
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -49,3 +49,19 @@ Jira: SCRUM-428
 
 ## Документация
 docs/design/content_registry.md (engineer), current_game_state.
+
+## Dispatcher Handoff To Designer 2 (2026-06-15)
+
+Передано Designer 2 thread `019ec7a6-55a5-7bc3-a397-606ce046308d` как следующий
+свободный 0.1.6 character v2 Design-source row.
+
+Scope for this pass: produce only Engineer v2 Design/source artifacts in the
+SCRUM-422 bright/epic style: transparent source PNG, strict alpha/white/neutral
+cleanup validation, normalized 512-cell, source-sheet handoff, contact/dark-bg
+preview, pivot/height report, task/docs/board/Jira updates. Do not build
+SpriteFrames, runtime integration, AnimationPlayer/AnimationTree, animation
+smoke, gameplay logic, balance, or attack frames. Animator starts only after the
+Engineer source handoff is accepted. Keep reasoning High/no low.
+
+## ОТМЕНЕНО 2026-06-15 (пользователь)
+Широкий редизайн персонажей v2 отменён — пользователю не нравится подход. Работаем по одному классу заново (старт — Берсерк, отдельная задача).

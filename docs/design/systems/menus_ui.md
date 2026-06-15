@@ -121,16 +121,19 @@ with safe rects `Rect2(160,88,270,82)`, `Rect2(506,88,270,82)` and
 `Rect2(852,88,270,82)`. Runtime `SETTINGS_TAB_SWITCHER_FRAME_PATH` points to
 this 3-slot asset, `SETTINGS_TAB_SWITCHER_SAFE_RECTS` contains exactly those
 three rects, and `SettingsTabButton_3` must not exist.
-- SCRUM-439 prepares the Settings v2 rebuild Design package for Sprint 0.1.6:
+- SCRUM-439 integrates the Settings v2 rebuild runtime for Sprint 0.1.6:
 `docs/design/mockups/scrum439_settings_v2/spec.md`,
 `scrum439_settings_v2_mockup.png`, `docs/design/previews/scrum439_settings_v2_safe_zones.png`
 and transparent candidate frames in `assets/sprites/ui/frames/settings_v2/`.
 The mockup covers all three tabs (`Экран`, `Звук`, `Управление`) and records a
 new three-slot tab switcher, modal frame, section panel and control-row safe
-zones. Back-end integration must preserve the existing settings/rebind
-semantics, keep exactly three tab buttons, and place every label, icon, slider,
-dropdown, checkbox, focus ring and scroll bar only inside documented empty safe
-zones.
+zones. Runtime now uses the v2 main modal and v2 proportional 3-slot switcher,
+preserves the existing settings/rebind semantics, keeps exactly three tab
+buttons, and places labels, icons, sliders, dropdowns, checkboxes, focus rings
+and scroll bars only inside modal safe areas. The dense live body uses a flat
+inner safe panel rather than the optional section/control-row frames, because
+those candidates' source margins would clip controls or collide with the Back
+button at 720p.
 
 ## Combat HUD Redraw
 
@@ -318,11 +321,13 @@ multipart payloads, while missing/failed webhook delivery falls back to
 
 ## Settings Tabs
 
-SCRUM-396 uses the design-ready 3-slot Settings tab switcher frame at
-`assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
-(`1280x256`, RGBA transparent, no baked text). It is wired into the runtime
-settings screen as the `SettingsTabSwitcher` control, displayed at a fixed 5:1
-proportional size (`640x128`) so the strip is never stretched on one axis. The
+SCRUM-439 supersedes the older SCRUM-396 switcher-only runtime with the full
+Settings v2 modal. The live settings screen now draws
+`assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` and
+the design-ready 3-slot switcher
+`assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png`
+(`1280x256`, RGBA transparent, no baked text). The switcher is displayed as a
+whole-image proportional 5:1 strip so it is never stretched on one axis. The
 built-in `TabContainer` headers are hidden; `SettingsTabs` still owns the three
 settings pages, while `SettingsTabButton_0..2` switch `current_tab`.
 
@@ -332,9 +337,9 @@ button rects against the scaled safe rects:
 
 | Slot | Safe Rect |
 | --- | --- |
-| `tab_0_screen_safe` | `Rect2(160, 88, 270, 82)` |
-| `tab_1_audio_safe` | `Rect2(506, 88, 270, 82)` |
-| `tab_2_controls_safe` | `Rect2(852, 88, 270, 82)` |
+| `tab_0_screen_safe` | `Rect2(150, 78, 275, 92)` |
+| `tab_1_audio_safe` | `Rect2(502, 78, 275, 92)` |
+| `tab_2_controls_safe` | `Rect2(854, 78, 275, 92)` |
 
 There is no fourth runtime slot and no fourth hit area. If the settings screen
 ever needs another page, Design must provide a new asset and safe-zone metadata
@@ -342,8 +347,9 @@ instead of Back-end placing a tab on the existing ornament.
 
 Do not place text, icons, click zones or focus rings on the tab strip's metal
 bevels, dragon heads, red gems, dividers or lower rail. Preview:
-`docs/design/previews/settings_menu_3slot_switcher_safe_zone.png`; runtime QA
-dump: `build/qa/scrum396/settings_tab_switcher_3slot_rects.md`.
+`docs/design/previews/scrum439_settings_v2_safe_zones.png`; runtime QA dumps:
+`build/qa/scrum439/settings_v2_runtime_rects.md` and
+`build/qa/scrum439/settings_v2_no_overlap_matrix.md`.
 
 The «Управление» tab also contains the `DebugModeToggle` (SCRUM-375). It is a
 normal settings checkbox inside `ControlsScroll`, not a fourth tab. The toggle is
@@ -351,18 +357,14 @@ OFF by default and persists through `scripts/game_settings.gd`; its tooltip
 documents the combat-only debug controls (right-click / Shift+left-click move
 target, middle-click teleport).
 
-SCRUM-439 Settings v2 Design handoff is ready but not live. It introduces
-candidate assets under `assets/sprites/ui/frames/settings_v2/`:
-`ui_frame_settings_v2_main_modal.png`,
-`ui_frame_settings_v2_tab_switcher_3slot.png`,
-`ui_frame_settings_v2_section_panel.png` and
-`ui_frame_settings_v2_control_row.png`. The Back-end rebuild should use
-`docs/design/mockups/scrum439_settings_v2/spec.md` as the contract, not infer
-usable space from image bounds. The Settings v2 main modal reserves source
-content margins `L144 T192 R144 B128`; the v2 switcher safe rects are
-`Rect2(150,78,275,92)`, `Rect2(502,78,275,92)` and
-`Rect2(854,78,275,92)` from its `1280x256` source. Runtime remains on the
-SCRUM-396 switcher until this follow-up lands.
+SCRUM-441 is integrated in the same Settings pass. Resolution options use
+`scripts/display_resolution.gd` to compare requested window sizes against the
+physical usable monitor size (`usable_logical * screen_scale`) instead of only
+logical points; `_apply_video_settings()` clamps with
+`DisplayResolution.clamp_to_physical(...)`, macOS adds a detected logical native
+`(Mac)` option when needed, and `project.godot` enables
+`window/dpi/allow_hidpi=true`. QA evidence:
+`build/qa/scrum441/hidpi_resolution_evidence.md`.
 
 ## Ornate Frame Safe-Area Rule
 

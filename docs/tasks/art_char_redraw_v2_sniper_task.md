@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Снайпер» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: review
+Статус: cancelled
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -114,3 +114,16 @@ Acceptance (Design-source scope):
 - [~] idle+move анимация, 2× монстра, виден/анимирован в игре — Animator follow-up (pending).
 
 Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
+
+## Animator Takeover (2026-06-15)
+
+Статус: `in_progress` — беру Animator-фазу после accepted Design-source PASS.
+Scope: собрать реальные idle + move/walk v2 loop-кадры из accepted
+`sniper_v2_idle_cell_512.png`, обновить live SpriteFrames/runtime путь
+`assets/sprites/characters/sniper_spriteframes.tres`, положить старые live
+ассеты в docs backup, создать manifest/contact/GIF QA artifacts, прогнать
+animation smoke и runtime smoke. Attack остаётся отсутствующим по требованиям
+этой v2 строки.
+
+## ОТМЕНЕНО 2026-06-15 (пользователь)
+Широкий редизайн персонажей v2 отменён — пользователю не нравится подход. Работаем по одному классу заново (старт — Берсерк, отдельная задача).

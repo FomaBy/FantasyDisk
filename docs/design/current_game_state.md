@@ -143,18 +143,24 @@ focused `scripts/ui/*` modules and are exposed through the existing
 
 SCRUM-373 подготовил Design-ready единый master frame kit, SCRUM-382 подключил его к generic runtime UI, а SCRUM-384 заменил те же preserved runtime paths на тонкую металлическую ревизию: `assets/sprites/ui/frames/unified/ui_frame_unified_master.png`, `ui_frame_unified_master_fill.png`, `ui_frame_unified_inner_fill.png`, `ui_frame_unified_ornament_top.png`, `ui_frame_unified_ornament_bottom.png`, `ui_frame_unified_hover_overlay.png`. Source metadata: `docs/design/references/unified_master_frame/unified_master_frame_metadata.json`; previews: `docs/design/previews/unified_master_frame_thin_revision_contact.png` и `docs/design/previews/unified_master_frame_thin_safe_zone.png`. Generic panels/cards/tooltips/HUD/timer frames use a shared tiled 9-slice builder (`72` texture margins; `88` content margins; filled surfaces use `ui_frame_unified_master_fill.png`), while documented whole-image frames like Hero Select SCRUM-356, radar/carousel and Settings tab switcher remain proportional.
 
-SCRUM-396 подключил Design-ready Settings tab switcher из SCRUM-391:
-`assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
-(`1280x256`, RGBA, ровно 3 вкладки). Runtime `SETTINGS_TAB_SWITCHER_FRAME_PATH`
-указывает на 3-slot ассет, `SETTINGS_TAB_SWITCHER_SAFE_RECTS` содержит только
-три source-space safe rects для «Экран», «Звук», «Управление», а smoke пишет
-фактический QA dump в `build/qa/scrum396/settings_tab_switcher_3slot_rects.md`.
-SCRUM-439 подготовил Settings v2 Design package для 0.1.6, но runtime ещё не
-переключён: `docs/design/mockups/scrum439_settings_v2/spec.md` описывает новый
-широкий modal-frame, ровно трёхслотовый switcher, секционные панели, control-row
-safe zones и responsive rules для 1280x720 / 1920x1080 / 2560x1440. Candidate
-assets лежат в `assets/sprites/ui/frames/settings_v2/`; Back-end follow-up
-должен сохранить текущие настройки/ребайнды и пройти no-overlap/smoke.
+SCRUM-439 переключил live Settings на v2 runtime package:
+`assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` и
+`ui_frame_settings_v2_tab_switcher_3slot.png`. Runtime сохраняет ровно три
+вкладки (`SettingsTabButton_0..2`) с source-space safe rects
+`Rect2(150,78,275,92)`, `Rect2(502,78,275,92)`,
+`Rect2(854,78,275,92)`, а `SettingsTabs` продолжает владеть страницами
+«Экран», «Звук», «Управление». Все существующие настройки/ребайнды/Debug Mode
+сохранены; body-контент сидит на плоской внутренней safe-подложке внутри v2
+modal, чтобы не накладываться на frame ornament и Back button на 720p. QA dumps:
+`build/qa/scrum439/settings_v2_runtime_rects.md` и
+`build/qa/scrum439/settings_v2_no_overlap_matrix.md`.
+
+SCRUM-441 подключил Mac/HiDPI resolution fix в live Settings: resolution options
+проверяются через `DisplayResolution.resolution_fits(...)` по физическим пикселям
+(`usable * screen_scale`), `_apply_video_settings()` клэмпит размер окна через
+`DisplayResolution.clamp_to_physical(...)`, macOS добавляет логическую
+native-опцию `(Mac)`, а `project.godot` включает `window/dpi/allow_hidpi=true`.
+QA evidence: `build/qa/scrum441/hidpi_resolution_evidence.md`.
 
 SCRUM-273/274/382 подключили stateful style layer к Red & Gold Dragon buttons + unified generic frames: `scripts/ui/ui_theme_paths.gd` содержит `RED_GOLD_BUTTON_TEXTURES`, unified frame paths/content maps и legacy ornate margins для специализированных мест, а `scripts/ui_screens.gd` выбирает button type по node name/role/size и generic frame role по экранному назначению. `scripts/pause_stats_menu.gd` отдельно остается на ornate pause/stat frames и Red & Gold pause buttons. SCRUM-318 меняет hover/focus semantics: кнопки больше не используют baked `*_hover.png` с желтым свечением, а берут normal texture с нейтральным bright tint (`~1.16/1.20`) и near-white hover/focus font; pressed/disabled state textures сохранены. Runtime smoke проверяет главные кнопки по `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_*`, а `tests/dark_fantasy_ui_theme_test.gd` проверяет unified generic frame styles отдельно.
 
@@ -377,6 +383,22 @@ intentionally absent for this v2 row; animation smoke passes. Full runtime smoke
 is currently blocked before gameplay startup by an unrelated
 `scripts/ui_screens.gd` parse failure from the active UI/settings lane.
 
+SCRUM-419 подготовил per-class Assassin v2 Design-source handoff:
+`docs/design/references/characters_v2/assassin/assassin_v2_source_clean.png`,
+`assassin_v2_idle_cell_512.png`, `assassin_v2_sheet_source_handoff.png`,
+`assassin_v2_design_handoff.md` и QA report
+`build/qa/scrum419_assassin_v2/scrum419_assassin_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный hooded rogue в dark teal/cyan contrast, sharp silhouette,
+без dagger/blade/chakram/weapon в руках, прозрачный RGBA, visible height
+`376 px` в `512x512` cell и pivot `[256,470]`. Animator integration now promotes
+this source into live `assets/sprites/characters/assassin_spriteframes.tres`
+with v2 `idle` / `walk` / `move` loops, 5 frames each, no attack by scope.
+Runtime frames live under `assets/sprites/characters/full_frame/assassin/`,
+derived safe sheet
+`assets/sprites/characters/v2/assassin/assassin_v2_anim_sheet.png`, old live
+assets backup `docs/design/backups/scrum419_assassin_v2_pre_anim/`, QA artifacts
+`build/qa/scrum419_assassin_v2_anim/`; animation/runtime smoke PASS.
+
 SCRUM-286 добавил Dark Mage sheet на этом пути:
 `assets/sprites/characters/dark_mage_sheet.png` (`1920x1152`, 5 `idle`, 5
 `walk`, 5 `attack_primary`, transparent RGBA). Тёмный маг остаётся без
@@ -399,6 +421,87 @@ runtime `assets/sprites/characters/guitarist_spriteframes.tres` и отдель�
 `build/qa/scrum291_guitarist/` and `build/qa/scrum291/`; manifest validation,
 Godot import, animation smoke and runtime smoke PASS after SCRUM-409.
 
+SCRUM-429 подготовил per-class Guitarist v2 Design-source handoff:
+`docs/design/references/characters_v2/guitarist/guitarist_v2_source_clean.png`,
+`guitarist_v2_idle_cell_512.png`, `guitarist_v2_sheet_source_handoff.png`,
+`guitarist_v2_design_handoff.md` и QA report
+`build/qa/scrum429_guitarist_v2/scrum429_guitarist_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный magenta/gold stage-warlock performer, без guitar,
+instrument, microphone, weapon или held object в руках, прозрачный RGBA,
+visible height `374 px` в `512x512` cell и pivot `[256,470]`. После
+user-feedback cleanup revision белые/нейтральные matte pixels в source/cell
+равны `0`. Animator integration now promotes this source into live
+`assets/sprites/characters/guitarist_spriteframes.tres` with v2 `idle` /
+`walk` / `move` loops, 5 frames each, no attack by scope. Runtime frames live
+under `assets/sprites/characters/full_frame/guitarist/`, derived safe sheet
+`assets/sprites/characters/v2/guitarist/guitarist_v2_anim_sheet.png`, old live
+assets backup `docs/design/backups/scrum429_guitarist_v2_pre_anim/`, QA
+artifacts `build/qa/scrum429_guitarist_v2_anim/`; animation/runtime smoke PASS.
+
+SCRUM-435 подготовил per-class Thief v2 Design-source handoff и Animator
+integration: accepted source
+`docs/design/references/characters_v2/thief/thief_v2_idle_cell_512.png`
+продвинут в live `assets/sprites/characters/thief_spriteframes.tres` с v2
+`idle` / `walk` / `move` loops, 5 frames each, no attack by scope. Runtime
+frames live under `assets/sprites/characters/full_frame/thief/`, derived safe
+sheet `assets/sprites/characters/v2/thief/thief_v2_anim_sheet.png`, old live
+assets backup `docs/design/backups/scrum435_thief_v2_pre_anim/`, QA artifacts
+`build/qa/scrum435_thief_v2_anim/`; animation/runtime smoke PASS. Персонаж
+остаётся яркий/эпичный amber rogue, без dagger/knife/weapon/tool/coin pouch/
+bomb или held object в руках, прозрачный RGBA, visible height `374 px` в
+`512x512` cell и pivot `[256,470]`.
+
+SCRUM-427 подготовил per-class Elementalist v2 Design-source handoff и Animator
+integration: accepted source
+`docs/design/references/characters_v2/elementalist/elementalist_v2_idle_cell_512.png`
+продвинут в live `assets/sprites/characters/elementalist_spriteframes.tres` с
+v2 `idle` / `walk` / `move` loops, 5 frames each, no attack by scope. Runtime
+frames live under `assets/sprites/characters/full_frame/elementalist/`, derived
+safe sheet
+`assets/sprites/characters/v2/elementalist/elementalist_v2_anim_sheet.png`, old
+live assets backup `docs/design/backups/scrum427_elementalist_v2_pre_anim/`, QA
+artifacts `build/qa/scrum427_elementalist_v2_anim/`; animation/runtime smoke
+PASS. Персонаж остаётся яркий/эпичный multi-element caster с fire/ice/lightning/
+stone streams, без staff/orb/focus/weapon или held object в руках, прозрачный
+RGBA, visible height `374 px` в `512x512` cell и pivot `[256,470]`.
+
+SCRUM-433 подготовил per-class Sniper v2 Design-source handoff:
+`docs/design/references/characters_v2/sniper/sniper_v2_source_clean.png`,
+`sniper_v2_idle_cell_512.png`, `sniper_v2_sheet_source_handoff.png`,
+`sniper_v2_design_handoff.md` и QA report
+`build/qa/scrum433_sniper_v2/scrum433_sniper_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный cold blue-steel marksman с optical targeting light, без
+rifle/gun/bow/crossbow/scope/weapon/tool или held object в руках, прозрачный
+RGBA, visible height `374 px` в `512x512` cell и pivot `[256,470]`.
+White/neutral matte pixels и edge-visible pixels в source/cell/sheet равны
+`0`. Это не live runtime replacement; current 0.1.5 `sniper_sheet.png` /
+`sniper_spriteframes.tres` остаются активными до Animator/Back-end integration.
+
+SCRUM-431 подготовил per-class Priest v2 Design-source handoff:
+`docs/design/references/characters_v2/priest/priest_v2_source_clean.png`,
+`priest_v2_idle_cell_512.png`, `priest_v2_sheet_source_handoff.png`,
+`priest_v2_design_handoff.md` и QA report
+`build/qa/scrum431_priest_v2/scrum431_priest_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный white-gold holy healer с halo и open-hands posture, без
+staff/mace/reliquary/censer/chime/book/weapon/tool или held object в руках,
+прозрачный RGBA, visible height `376 px` в `512x512` cell и pivot `[256,470]`.
+White/neutral matte pixels и edge-visible pixels в source/cell/sheet равны
+`0`. Это не live runtime replacement; current Priest runtime assets остаются
+активными до Animator/Back-end integration.
+
+SCRUM-421 подготовил per-class Biologist v2 Design-source handoff:
+`docs/design/references/characters_v2/biologist/biologist_v2_source_clean.png`,
+`biologist_v2_idle_cell_512.png`, `biologist_v2_sheet_source_handoff.png`,
+`biologist_v2_design_handoff.md` и QA report
+`build/qa/scrum421_biologist_v2/scrum421_biologist_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный emerald bioluminescent scientist-naturalist в protective
+field suit, без syringe/vial/flask/sample jar/tool/orb/staff/weapon или held
+object в руках, прозрачный RGBA, visible height `380 px` в `512x512` cell и
+pivot `[256,470]`. White/neutral matte pixels и edge-visible pixels в
+source/cell/sheet равны `0`. Это не live runtime replacement; current
+`biologist_sheet.png` / `biologist_spriteframes.tres` остаются активными до
+Animator/Back-end integration.
+
 SCRUM-289 Design pass добавил Elementalist source sheet на этом пути:
 `assets/sprites/characters/elementalist_sheet.png` (`1920x1152`, 5 `idle`, 5
 `walk`, 5 `attack_primary`, transparent RGBA). Элементалист остаётся без
@@ -420,7 +523,9 @@ SpriteFrames on the same 5 idle / 5 walk / 5 attack_primary contract:
 `assets/sprites/characters/ranger_spriteframes.tres` with per-frame PNGs in
 `assets/sprites/characters/full_frame/ranger/`. Both keep weapon visuals
 separate from the base character sheets and pass manifest validation, animation
-smoke and full runtime smoke.
+smoke and full runtime smoke. SCRUM-419 supersedes the live Assassin runtime
+SpriteFrames with the v2 idle/walk/move-only contract; attack remains absent by
+that v2 task scope while weapon/socket gameplay visuals stay unchanged.
 
 SCRUM-283 Design pass 2026-06-14 подготовил принятый source sheet Берсерка:
 `assets/sprites/characters/berserk_sheet.png` (`1920x768`, `384x384` cells,
@@ -534,7 +639,9 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
   `assets/sprites/characters/guitarist_sheet.png`,
   `assets/sprites/characters/guitarist_spriteframes.tres`, per-frame runtime
   PNGs in `assets/sprites/characters/full_frame/guitarist/`, cutout-части
-  `assets/sprites/characters/cutout/guitarist_*.png`.
+  `assets/sprites/characters/cutout/guitarist_*.png`. SCRUM-429 v2 live
+  SpriteFrames expose `idle` / `walk` / `move` 5f loops only; attack remains
+  absent by task scope while weapon/socket gameplay visuals stay unchanged.
 
 Базовые характеристики:
 
@@ -936,7 +1043,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Экран | Описание |
 | --- | --- |
 | Главное меню | Эпичный battle-art фон и левая колонка из шести стандартных action-кнопок: начать новую игру, настройки, древо умений, что нового, кодекс, выйти из игры |
-| Настройки | Вкладки «Экран» / «Звук» / «Управление»: монитор, режим окна, разрешение, full-width audio sliders, mute, rebinding движения/паузы/ultimate; live runtime остаётся на SCRUM-396 3-slot proportional switcher, а SCRUM-439 добавляет Settings v2 Design package/mockup/spec для последующей Back-end перестройки |
+| Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения с Mac-native option, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
 | Выбор персонажа | Fullscreen v3: большой портрет слева без дубля имени, справа единая информ-панель с досье слева от радара характеристик, адаптивная лента героев снизу только картинками |
 | Выбор оружия | Три оружия выбранного класса как легкие кликабельные карточки: спрайт оружия слева, название/описание, русские статы «Дальность/Радиус/Перезарядка»; тяжелая button texture frame не используется |
 | Карта маршрута | Вертикальная карта с иконками и tooltip |

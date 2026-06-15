@@ -65,16 +65,16 @@
 | --- | --- | --- | --- | --- | --- |
 | `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/berserk_sheet.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано |
 | `soldier` | Солдат | Тактический физический класс: залпы, гранаты и удержание линии | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/soldier.png`, `assets/sprites/characters/cutout/soldier_*.png` | Реализовано |
-| `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/thief_sheet.png`, `assets/sprites/characters/thief_spriteframes.tres`, `assets/sprites/characters/full_frame/thief/`, `assets/sprites/characters/cutout/thief_*.png` | Реализовано; SCRUM-297 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated |
-| `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/elementalist_sheet.png`, `assets/sprites/characters/elementalist_spriteframes.tres`, `assets/sprites/characters/full_frame/elementalist/`, `assets/sprites/characters/cutout/elementalist_*.png` | Реализовано; SCRUM-289 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
-| `sniper` | Снайпер | Дальний точный класс: lockshot, kill-zone и split rounds | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/sniper.png`, `assets/sprites/characters/cutout/sniper_*.png` | Реализовано |
-| `priest` | Священник | Священный sustain: sanctify, ward-пульсы и молитвенная цепь | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/priest.png`; `assets/sprites/characters/cutout/priest_*.png` | Реализовано |
-| `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
+| `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/thief_sheet.png`, `assets/sprites/characters/thief_spriteframes.tres`, `assets/sprites/characters/full_frame/thief/`, `assets/sprites/characters/cutout/thief_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/thief/` | Реализовано; SCRUM-435 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
+| `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/elementalist_sheet.png`, `assets/sprites/characters/elementalist_spriteframes.tres`, `assets/sprites/characters/full_frame/elementalist/`, `assets/sprites/characters/cutout/elementalist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/elementalist/` | Реализовано; SCRUM-427 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
+| `sniper` | Снайпер | Дальний точный класс: lockshot, kill-zone и split rounds | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/sniper.png`, `assets/sprites/characters/sniper_sheet.png`, `assets/sprites/characters/sniper_spriteframes.tres`, `assets/sprites/characters/full_frame/sniper/`, `assets/sprites/characters/cutout/sniper_*.png`, v2 source handoff `assets/sprites/characters/v2/sniper/sniper_v2_idle_source.png` | Реализовано; SCRUM-296 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-433 v2 source handoff ready, not live runtime |
+| `priest` | Священник | Священный sustain: sanctify, ward-пульсы и молитвенная цепь | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/priest.png`; `assets/sprites/characters/cutout/priest_*.png`, v2 source handoff `assets/sprites/characters/v2/priest/priest_v2_idle_source.png` | Реализовано; SCRUM-431 v2 source handoff ready, not live runtime |
+| `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png`, v2 source handoff `assets/sprites/characters/v2/biologist/biologist_v2_idle_source.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-421 v2 source handoff ready, not live runtime |
 | `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
 | `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer.png`; `assets/sprites/characters/cutout/engineer_*.png` | Реализовано |
 | `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source/runtime assets under `assets/sprites/characters/v2/dark_mage/` | Реализовано; SCRUM-424 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation smoke PASS, runtime smoke blocked by unrelated `ui_screens.gd` parse failure |
-| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png`, v2 source handoff `assets/sprites/characters/v2/guitarist/guitarist_v2_idle_source.png` | Реализовано; SCRUM-291 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-429 v2 source handoff ready, not live runtime |
-| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано; SCRUM-282 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
+| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/guitarist/` | Реализовано; SCRUM-429 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
+| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/assassin/` | Реализовано; SCRUM-419 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
 | `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
@@ -126,20 +126,87 @@ with v2 `idle` / `walk` / `move` loops in
 `assets/sprites/characters/full_frame/dark_mage/`. The derived safe sheet is
 `assets/sprites/characters/v2/dark_mage/dark_mage_v2_anim_sheet.png`; previous
 live frames are backed up under `docs/design/backups/scrum424_dark_mage_v2_pre_anim/`.
-Attack animation remains absent by SCRUM-424 scope. Animation smoke passes; full
-runtime smoke is currently blocked by an unrelated `scripts/ui_screens.gd` parse
-failure from the active UI/settings lane.
+
+SCRUM-419 adds the per-class v2 Design-source handoff for `assassin` under
+`docs/design/references/characters_v2/assassin/`: raw OpenAI source,
+alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
+source-sheet layout, handoff note and QA report. Animator integration now
+replaces the live Assassin full-frame runtime resource with v2 `idle` / `walk`
+/ `move` loops in `assets/sprites/characters/assassin_spriteframes.tres` and
+per-frame PNGs under `assets/sprites/characters/full_frame/assassin/`. The
+derived safe sheet is
+`assets/sprites/characters/v2/assassin/assassin_v2_anim_sheet.png`; previous
+live frames are backed up under
+`docs/design/backups/scrum419_assassin_v2_pre_anim/`. Attack animation remains
+absent by SCRUM-419 scope; animation/runtime smokes PASS.
 
 SCRUM-429 adds the Guitarist v2 Design-source handoff under
 `docs/design/references/characters_v2/guitarist/`: raw OpenAI source,
 alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
 source-sheet layout, accepted source sheet copy, handoff note and QA report.
+Animator integration now replaces the live Guitarist full-frame runtime resource
+with v2 `idle` / `walk` / `move` loops in
+`assets/sprites/characters/guitarist_spriteframes.tres` and per-frame PNGs under
+`assets/sprites/characters/full_frame/guitarist/`. The derived safe sheet is
+`assets/sprites/characters/v2/guitarist/guitarist_v2_anim_sheet.png`; previous
+live frames are backed up under
+`docs/design/backups/scrum429_guitarist_v2_pre_anim/`. Attack animation remains
+absent by SCRUM-429 scope; animation/runtime smokes PASS.
+
+SCRUM-435 adds the Thief v2 Design-source handoff under
+`docs/design/references/characters_v2/thief/` and promotes the accepted source
+into live `assets/sprites/characters/thief_spriteframes.tres` with v2 `idle` /
+`walk` / `move` loops, 5 frames each, no attack by scope. Runtime frames live
+under `assets/sprites/characters/full_frame/thief/`, the derived safe sheet is
+`assets/sprites/characters/v2/thief/thief_v2_anim_sheet.png`, previous live
+frames are backed up under `docs/design/backups/scrum435_thief_v2_pre_anim/`,
+and QA artifacts live under `build/qa/scrum435_thief_v2_anim/`; animation and
+runtime smokes PASS.
+
+SCRUM-427 adds the Elementalist v2 Design-source handoff under
+`docs/design/references/characters_v2/elementalist/` and promotes the accepted
+source into live `assets/sprites/characters/elementalist_spriteframes.tres` with
+v2 `idle` / `walk` / `move` loops, 5 frames each, no attack by scope. Runtime
+frames live under `assets/sprites/characters/full_frame/elementalist/`, the
+derived safe sheet is
+`assets/sprites/characters/v2/elementalist/elementalist_v2_anim_sheet.png`,
+previous live frames are backed up under
+`docs/design/backups/scrum427_elementalist_v2_pre_anim/`, and QA artifacts live
+under `build/qa/scrum427_elementalist_v2_anim/`; animation and runtime smokes
+PASS.
+
+SCRUM-433 adds the Sniper v2 Design-source handoff under
+`docs/design/references/characters_v2/sniper/`: raw OpenAI source,
+alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
+source-sheet layout, accepted source sheet copy, handoff note and QA report.
 Asset-side handoff copies live in
-`assets/sprites/characters/v2/guitarist/guitarist_v2_idle_source.png`,
-`assets/sprites/characters/v2/guitarist/guitarist_v2_sheet_source_handoff.png`
-and `assets/sprites/characters/v2/guitarist/guitarist_v2_sheet.png`. These are
+`assets/sprites/characters/v2/sniper/sniper_v2_idle_source.png`,
+`assets/sprites/characters/v2/sniper/sniper_v2_sheet_source_handoff.png` and
+`assets/sprites/characters/v2/sniper/sniper_v2_sheet.png`. These are source
+handoff assets only; they do not replace current runtime `sniper_sheet.png` or
+`sniper_spriteframes.tres` until Animator/Back-end integration is accepted.
+
+SCRUM-431 adds the Priest v2 Design-source handoff under
+`docs/design/references/characters_v2/priest/`: raw OpenAI source, alpha-clean
+source, normalized `512x512` idle cell, `2560x1024` placeholder source-sheet
+layout, accepted source sheet copy, handoff note and QA report. Asset-side
+handoff copies live in
+`assets/sprites/characters/v2/priest/priest_v2_idle_source.png`,
+`assets/sprites/characters/v2/priest/priest_v2_sheet_source_handoff.png` and
+`assets/sprites/characters/v2/priest/priest_v2_sheet.png`. These are source
+handoff assets only; they do not replace current runtime Priest cutout/full-frame
+assets until Animator/Back-end integration is accepted.
+
+SCRUM-421 adds the Biologist v2 Design-source handoff under
+`docs/design/references/characters_v2/biologist/`: raw OpenAI source,
+alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
+source-sheet layout, accepted source sheet copy, handoff note and QA report.
+Asset-side handoff copies live in
+`assets/sprites/characters/v2/biologist/biologist_v2_idle_source.png`,
+`assets/sprites/characters/v2/biologist/biologist_v2_sheet_source_handoff.png`
+and `assets/sprites/characters/v2/biologist/biologist_v2_sheet.png`. These are
 source handoff assets only; they do not replace current runtime
-`guitarist_sheet.png` or `guitarist_spriteframes.tres` until Animator/Back-end
+`biologist_sheet.png` or `biologist_spriteframes.tres` until Animator/Back-end
 integration is accepted.
 
 ## Расширенный Ростер 0.1.4 (Фундамент, 2026-06-11)

@@ -128,6 +128,95 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   bundled manifest validator was run and records the expected
   `missing attack_primary animation` failure because SCRUM-424 explicitly
   excludes attack animation.
+- SCRUM-419 adds the Assassin v2 Design-source handoff under
+  `docs/design/references/characters_v2/assassin/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet and QA
+  report. Animator integration now promotes the accepted source into the live
+  runtime resource `assets/sprites/characters/assassin_spriteframes.tres`,
+  exposing `idle`, `walk`, and `move` only, each with 5 looping `512x512`
+  full-frame frames derived from `assassin_v2_idle_cell_512.png`. Runtime
+  frames live under `assets/sprites/characters/full_frame/assassin/`, the safe
+  48px-gutter export sheet lives at
+  `assets/sprites/characters/v2/assassin/assassin_v2_anim_sheet.png`, and
+  previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum419_assassin_v2_pre_anim/`. QA artifacts live under
+  `build/qa/scrum419_assassin_v2_anim/`; animation and runtime smokes pass. The
+  bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-419 explicitly
+  excludes attack animation.
+- SCRUM-429 adds the Guitarist v2 Design-source handoff under
+  `docs/design/references/characters_v2/guitarist/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
+  accepted source sheet copy and QA report. Animator integration now promotes
+  the accepted source into the live runtime resource
+  `assets/sprites/characters/guitarist_spriteframes.tres`, exposing `idle`,
+  `walk`, and `move` only, each with 5 looping `512x512` full-frame frames
+  derived from `guitarist_v2_idle_cell_512.png`. Runtime frames live under
+  `assets/sprites/characters/full_frame/guitarist/`, the safe 48px-gutter
+  export sheet lives at
+  `assets/sprites/characters/v2/guitarist/guitarist_v2_anim_sheet.png`, and
+  previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum429_guitarist_v2_pre_anim/`. QA artifacts live
+  under `build/qa/scrum429_guitarist_v2_anim/`; animation and runtime smokes
+  pass. The bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-429 explicitly
+  excludes attack animation.
+- SCRUM-435 adds the Thief v2 Design-source handoff under
+  `docs/design/references/characters_v2/thief/` and promotes the accepted
+  source into the live runtime resource
+  `assets/sprites/characters/thief_spriteframes.tres`, exposing `idle`, `walk`,
+  and `move` only, each with 5 looping `512x512` full-frame frames derived from
+  `thief_v2_idle_cell_512.png`. Runtime frames live under
+  `assets/sprites/characters/full_frame/thief/`, the safe 48px-gutter export
+  sheet lives at `assets/sprites/characters/v2/thief/thief_v2_anim_sheet.png`,
+  and previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum435_thief_v2_pre_anim/`. QA artifacts live under
+  `build/qa/scrum435_thief_v2_anim/`; animation and runtime smokes pass. The
+  bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-435 explicitly
+  excludes attack animation.
+- SCRUM-427 adds the Elementalist v2 Design-source handoff under
+  `docs/design/references/characters_v2/elementalist/` and promotes the
+  accepted source into the live runtime resource
+  `assets/sprites/characters/elementalist_spriteframes.tres`, exposing `idle`,
+  `walk`, and `move` only, each with 5 looping `512x512` full-frame frames
+  derived from `elementalist_v2_idle_cell_512.png`. Runtime frames live under
+  `assets/sprites/characters/full_frame/elementalist/`, the safe 48px-gutter
+  export sheet lives at
+  `assets/sprites/characters/v2/elementalist/elementalist_v2_anim_sheet.png`,
+  and previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum427_elementalist_v2_pre_anim/`. QA artifacts live
+  under `build/qa/scrum427_elementalist_v2_anim/`; animation and runtime smokes
+  pass. The bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-427 explicitly
+  excludes attack animation.
+- SCRUM-433 adds the Sniper v2 Design-source handoff under
+  `docs/design/references/characters_v2/sniper/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
+  accepted source sheet copy and QA report. Asset-side handoff copies live in
+  `assets/sprites/characters/v2/sniper/`. The sheet repeats the accepted source
+  for idle/move placeholders only; Animator must create real `idle` and
+  `move/walk` frames before SpriteFrames/runtime integration. White/neutral
+  matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
+  and `0` edge-visible pixels in source/cell/sheet outputs.
+- SCRUM-431 adds the Priest v2 Design-source handoff under
+  `docs/design/references/characters_v2/priest/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
+  accepted source sheet copy and QA report. Asset-side handoff copies live in
+  `assets/sprites/characters/v2/priest/`. The sheet repeats the accepted source
+  for idle/move placeholders only; Animator must create real `idle` and
+  `move/walk` frames before SpriteFrames/runtime integration. White/neutral
+  matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
+  and `0` edge-visible pixels in source/cell/sheet outputs.
+- SCRUM-421 adds the Biologist v2 Design-source handoff under
+  `docs/design/references/characters_v2/biologist/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
+  accepted source sheet copy and QA report. Asset-side handoff copies live in
+  `assets/sprites/characters/v2/biologist/`. The sheet repeats the accepted
+  source for idle/move placeholders only; Animator must create real `idle` and
+  `move/walk` frames before SpriteFrames/runtime integration. White/neutral
+  matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
+  and `0` edge-visible pixels in source/cell/sheet outputs.
 - SCRUM-298 Design standard: playable character full-frame redraws now use
   `docs/design/references/character_animation_style_sheet_0_1_5.md` as the
   source of truth for art direction, sheet rows, pivots and naming. Canonical
