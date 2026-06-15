@@ -2375,8 +2375,8 @@
  },
  "design_berserk_sprite_v3_cartoonish_transparent_task.md": {
   "key": "SCRUM-442",
-  "status": "Контроль качества",
-  "desc_hash": "9aab35d784e49ea5f58125a0a7496929"
+  "status": "Готово",
+  "desc_hash": "592196fb4709cbf29040a2b5ad0ebe1c"
  },
  "bug_player_death_does_not_end_combat_task.md": {
   "key": "SCRUM-443",
