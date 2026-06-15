@@ -112,9 +112,22 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `docs/design/references/characters_v2/dark_mage/` with alpha-clean source,
   normalized `512x512` idle cell, `2560x1024` source placeholder sheet and QA
   report. Asset-side handoff copies live in
-  `assets/sprites/characters/v2/dark_mage/`. The sheet repeats the accepted
-  source for idle/move placeholders only; Animator must create real `idle` and
-  `move/walk` frames before SpriteFrames/runtime integration.
+  `assets/sprites/characters/v2/dark_mage/`. Animator integration now promotes
+  the accepted source into the live runtime resource
+  `assets/sprites/characters/dark_mage_spriteframes.tres`, exposing `idle`,
+  `walk`, and `move` only, each with 5 looping `512x512` full-frame frames
+  derived from `dark_mage_v2_idle_cell_512.png`. Runtime frames live under
+  `assets/sprites/characters/full_frame/dark_mage/`, the safe 48px-gutter export
+  sheet lives at
+  `assets/sprites/characters/v2/dark_mage/dark_mage_v2_anim_sheet.png`, and
+  previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum424_dark_mage_v2_pre_anim/`. QA artifacts live under
+  `build/qa/scrum424_dark_mage_v2_anim/`; animation smoke passes. Full runtime
+  smoke is currently blocked before gameplay startup by an unrelated
+  `scripts/ui_screens.gd` parse failure from the active UI/settings lane. The
+  bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-424 explicitly
+  excludes attack animation.
 - SCRUM-298 Design standard: playable character full-frame redraws now use
   `docs/design/references/character_animation_style_sheet_0_1_5.md` as the
   source of truth for art direction, sheet rows, pivots and naming. Canonical

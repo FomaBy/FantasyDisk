@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Ассасин» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -11,6 +11,22 @@ Jira: SCRUM-419
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Dispatcher Design Dispatch (2026-06-15)
+
+Передано Design main (`019eabf1-6d54-7561-8af9-ce25cdf483a9`) как свободная
+per-class v2 Design-source строка после SCRUM-422 source anchor. Designer 2
+сейчас активен на SCRUM-429 Guitarist, Animator получает SCRUM-424 Dark Mage, так
+что этот ряд не конфликтует с активными владельцами.
+
+Scope for this pass: prepare the accepted bright+epic Assassin v2 Design-source
+pack only: transparent source PNG, normalized `512x512` cell/source handoff,
+alpha/halo/pocket validation, visible body height/pivot report, contact/dark-bg
+preview and handoff notes. Use `fantasydisk-asset-generator` and the accepted
+SCRUM-422 style/format anchor. Do not build SpriteFrames, AnimationPlayer,
+runtime player wiring, animation smoke, combat scale/collision, or Back-end
+logic in this Design pass. Animator starts only after source acceptance. Keep
+reasoning High/no low.
 
 ## Контекст
 Пер-персонажная задача инициативы «Перерисовка персонажей v2» (0.1.6) — класс **Ассасин** (`assassin`).

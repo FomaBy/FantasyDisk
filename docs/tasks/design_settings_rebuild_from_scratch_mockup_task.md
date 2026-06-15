@@ -1,6 +1,6 @@
 # ART/UX: Окно настроек — ПОЛНОСТЬЮ перерисовать с нуля по макапу
 
-Статус: review
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Версия: 0.1.6
@@ -142,3 +142,28 @@ Acceptance:
 - [ ] Runtime по макапу + no-overlap/smoke + скролл/сохранение + бэкап — Back-end follow-up (pending).
 
 Статус: Design-source PASS, ждёт Back-end integration. Баги: нет (Design-scope).
+
+## Dispatcher Back-end Dispatch (2026-06-15)
+
+Передано Back-end (`019eabd9-780b-78a2-9f4b-e7203d659ef2`) как Settings v2
+runtime rebuild. Так как SCRUM-441 (Mac/HiDPI resolution fix) специально
+отложен до Settings runtime owner, интегрировать SCRUM-441 в этом же pass.
+
+Scope for this pass: rebuild the live Settings screen from
+`docs/design/mockups/scrum439_settings_v2/spec.md`, wire the accepted
+`assets/sprites/ui/frames/settings_v2/` candidates only where they obey the
+documented safe/content zones, preserve all existing settings semantics
+(`SettingsTabs`, 3-slot tab switcher, resolution/window mode options, volume
+sliders/toggles, aim/debug toggles, controls scroll, binding/reset/back/apply
+actions), and keep content off frame ornaments. Include SCRUM-441 by wiring
+`scripts/display_resolution.gd` into the Settings resolution list/apply flow so
+Mac/Retina Full HD, 2K and native/logical resolution options are selectable and
+applied using physical-pixel/scale-aware fit/clamp.
+
+Required verification: `tests/ui_no_overlap_matrix_test.gd`,
+`tests/runtime_smoke_ui_test.gd`, `tests/runtime_smoke_test.gd`,
+`tests/display_resolution_test.gd`, plus Settings screenshots/dumps under
+`build/qa/scrum439/` and SCRUM-441 resolution evidence under
+`build/qa/scrum441/`. Keep reasoning High/no low. Do not touch Codex/SCRUM-438,
+Hero Select/SCRUM-436, character v2 rows, Animator work, gameplay balance, or
+unrelated UI surfaces in this pass.

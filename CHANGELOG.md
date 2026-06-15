@@ -5,11 +5,25 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- Guitarist v2 Design-source handoff (SCRUM-429): generated the bright+epic
+  unarmed Guitarist source, alpha-cleaned the checker matte, normalized a
+  `512x512` source cell with pivot `[256,470]`, and added source-sheet handoff,
+  accepted source sheet copy, contact preview and QA report under
+  `docs/design/references/characters_v2/guitarist/` and
+  `build/qa/scrum429_guitarist_v2/`; Animator/runtime wiring remains follow-up.
 - Dark Mage v2 Design-source handoff (SCRUM-424): generated the bright+epic
   unarmed Dark Mage source, alpha-cleaned the checker matte, normalized a
   `512x512` source cell with pivot `[256,470]`, and added source-sheet handoff,
   contact preview and QA report under `docs/design/references/characters_v2/dark_mage/`
-  and `build/qa/scrum424_dark_mage_v2/`; Animator/runtime wiring remains follow-up.
+  and `build/qa/scrum424_dark_mage_v2/`. Animator integration now routes live
+  Dark Mage through v2 `idle` / `walk` / `move` SpriteFrames at
+  `assets/sprites/characters/dark_mage_spriteframes.tres`, derived 5-frame loops
+  from the accepted source, backed up the previous live frames under
+  `docs/design/backups/scrum424_dark_mage_v2_pre_anim/`, and added contact/GIF/
+  manifest QA artifacts under `build/qa/scrum424_dark_mage_v2_anim/`. Attack
+  frames remain intentionally absent for this v2 row; animation smoke passes,
+  while full runtime smoke is currently blocked by an unrelated
+  `scripts/ui_screens.gd` parse failure in the active UI/settings lane.
 - Berserk v2 Design-source handoff (SCRUM-420): generated the bright+epic
   unarmed Berserk source, alpha-cleaned the checker matte, normalized a
   `512x512` source cell with pivot `[256,470]`, and added source-sheet handoff,

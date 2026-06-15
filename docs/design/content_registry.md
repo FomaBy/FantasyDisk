@@ -72,8 +72,8 @@
 | `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
 | `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer.png`; `assets/sprites/characters/cutout/engineer_*.png` | Реализовано |
-| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source handoff `assets/sprites/characters/v2/dark_mage/dark_mage_v2_idle_source.png` | Реализовано; SCRUM-286 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-424 v2 source handoff ready, not live runtime |
-| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png` | Реализовано; SCRUM-291 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
+| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source/runtime assets under `assets/sprites/characters/v2/dark_mage/` | Реализовано; SCRUM-424 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation smoke PASS, runtime smoke blocked by unrelated `ui_screens.gd` parse failure |
+| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png`, v2 source handoff `assets/sprites/characters/v2/guitarist/guitarist_v2_idle_source.png` | Реализовано; SCRUM-291 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-429 v2 source handoff ready, not live runtime |
 | `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png` | Реализовано; SCRUM-282 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
@@ -120,8 +120,26 @@ alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
 source-sheet layout, handoff note and QA report. Asset-side handoff copies live
 in `assets/sprites/characters/v2/dark_mage/dark_mage_v2_idle_source.png` and
 `assets/sprites/characters/v2/dark_mage/dark_mage_v2_sheet_source_handoff.png`.
-These are source handoff assets only; they do not replace current runtime
-`dark_mage_sheet.png` or `dark_mage_spriteframes.tres` until Animator/Back-end
+Animator integration now replaces the live Dark Mage full-frame runtime resource
+with v2 `idle` / `walk` / `move` loops in
+`assets/sprites/characters/dark_mage_spriteframes.tres` and per-frame PNGs under
+`assets/sprites/characters/full_frame/dark_mage/`. The derived safe sheet is
+`assets/sprites/characters/v2/dark_mage/dark_mage_v2_anim_sheet.png`; previous
+live frames are backed up under `docs/design/backups/scrum424_dark_mage_v2_pre_anim/`.
+Attack animation remains absent by SCRUM-424 scope. Animation smoke passes; full
+runtime smoke is currently blocked by an unrelated `scripts/ui_screens.gd` parse
+failure from the active UI/settings lane.
+
+SCRUM-429 adds the Guitarist v2 Design-source handoff under
+`docs/design/references/characters_v2/guitarist/`: raw OpenAI source,
+alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
+source-sheet layout, accepted source sheet copy, handoff note and QA report.
+Asset-side handoff copies live in
+`assets/sprites/characters/v2/guitarist/guitarist_v2_idle_source.png`,
+`assets/sprites/characters/v2/guitarist/guitarist_v2_sheet_source_handoff.png`
+and `assets/sprites/characters/v2/guitarist/guitarist_v2_sheet.png`. These are
+source handoff assets only; they do not replace current runtime
+`guitarist_sheet.png` or `guitarist_spriteframes.tres` until Animator/Back-end
 integration is accepted.
 
 ## Расширенный Ростер 0.1.4 (Фундамент, 2026-06-11)

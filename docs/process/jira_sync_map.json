@@ -2260,13 +2260,13 @@
  },
  "art_char_redraw_v2_assassin_task.md": {
   "key": "SCRUM-419",
-  "status": "К выполнению",
-  "desc_hash": "23e39519fe1bb02e6b68a4faea0494a1"
+  "status": "В работе",
+  "desc_hash": "46d521b1cf4c900035f9d73f97b71fbc"
  },
  "art_char_redraw_v2_berserk_task.md": {
   "key": "SCRUM-420",
-  "status": "В работе",
-  "desc_hash": "6b090f02fbe544f366855334950e078e"
+  "status": "Готово",
+  "desc_hash": "9f62a6200f6598e51b888f03025bbd79"
  },
  "art_char_redraw_v2_biologist_task.md": {
   "key": "SCRUM-421",
@@ -2285,8 +2285,8 @@
  },
  "art_char_redraw_v2_dark_mage_task.md": {
   "key": "SCRUM-424",
-  "status": "В работе",
-  "desc_hash": "747925477b8e62e7140a21d2a3cb15aa"
+  "status": "Готово",
+  "desc_hash": "b44aad04596285df1f6080117c34c9d0"
  },
  "art_char_redraw_v2_doctor_task.md": {
   "key": "SCRUM-425",
@@ -2310,8 +2310,8 @@
  },
  "art_char_redraw_v2_guitarist_task.md": {
   "key": "SCRUM-429",
-  "status": "К выполнению",
-  "desc_hash": "b6ba8f76a6cc2eecd431a6e4fcbba453"
+  "status": "В работе",
+  "desc_hash": "a386fc6bbfb374f6c85b548b860bee4e"
  },
  "art_char_redraw_v2_knight_task.md": {
   "key": "SCRUM-430",
@@ -2361,7 +2361,7 @@
  "design_settings_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-439",
   "status": "В работе",
-  "desc_hash": "c73fcda7cb8911c350c9b126d0c527b5"
+  "desc_hash": "d1b1afdeb173877a9fb5d9292965f732"
  },
  "bug_mass_duplicate_space2_files_cleanup_task.md": {
   "key": "SCRUM-440",

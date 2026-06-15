@@ -91,3 +91,19 @@ recorded as delivered/in_progress while runtime integration is deferred until th
 Settings/UI rebuild owner can safely touch `scripts/ui_screens.gd`. Not dispatched
 this heartbeat: Back-end is active on SCRUM-437 and Designer 2 is active on
 SCRUM-439. Keep reasoning High/no low when this resumes.
+
+## Dispatcher Back-end Dispatch (2026-06-15)
+
+SCRUM-441 is now coupled into the SCRUM-439 Settings v2 Back-end runtime pass and
+sent to Back-end (`019eabd9-780b-78a2-9f4b-e7203d659ef2`). The core helper/test
+already exists; remaining scope is live Settings wiring:
+
+- use `DisplayResolution.resolution_fits(...)` with physical pixels/scale when
+  enabling/disabling resolution options;
+- use `DisplayResolution.clamp_to_physical(...)` before applying window size;
+- expose a Mac-native/logical resolution option where applicable;
+- keep window mode and settings persistence behavior intact;
+- validate with `tests/display_resolution_test.gd`, Settings UI smoke/no-overlap,
+  and a QA dump under `build/qa/scrum441/`.
+
+Do this together with SCRUM-439 to avoid conflicting edits in `scripts/ui_screens.gd`.

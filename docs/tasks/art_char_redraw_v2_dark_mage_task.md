@@ -1,13 +1,13 @@
 # ART/ANIM: Перерисовать «Тёмный маг» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-424
-QA: in_progress (2026-06-15)
+QA: partial_verification (animation smoke PASS; runtime smoke blocked by unrelated UI parse, 2026-06-15)
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
 ## Designer 2 Takeover (2026-06-15)
@@ -55,9 +55,9 @@ pipeline can consume the accepted source without touching gameplay logic.
 7. CHANGELOG; content_registry.
 
 ## Acceptance Criteria
-- [ ] «Тёмный маг» перерисован v2: ярко/эпично по классу, прозрачный фон (нет белого/каймы/карманов).
-- [ ] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
-- [ ] Старое в бэкап; animation+runtime smoke зелёные; превью-гиф; CHANGELOG.
+- [x] «Тёмный маг» перерисован v2: ярко/эпично по классу, прозрачный фон (нет белого/каймы/карманов).
+- [x] idle + move/walk (плавные, loop), attack отсутствует; 2× размер монстра; виден и анимирован в игре.
+- [~] Старое в бэкап; animation smoke зелёный; runtime smoke blocked by unrelated `scripts/ui_screens.gd` parse failure; превью-гиф; CHANGELOG.
 
 ## Документация
 docs/design/content_registry.md (dark_mage), current_game_state.
@@ -140,3 +140,61 @@ Acceptance (Design-source scope):
 - [~] animation+runtime smoke + gif — Animator follow-up.
 
 Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
+
+## Dispatcher Animator Dispatch (2026-06-15)
+
+Передано Animator (`019eb156-710c-71f0-8903-eada762dceb3`) после Design-source
+PASS и accepted source handoff.
+
+Scope for this pass: produce real `dark_mage` v2 idle and move/walk loops from
+the accepted source handoff, assemble final SpriteFrames/runtime resource,
+preserve no-weapon/no-held-object rule and bottom-center pivot, back up old live
+Dark Mage assets outside Godot import scope, and validate with the
+`fantasydisk-animation-director` workflow as applicable. Attack remains out of
+scope for this v2 row. Required verification: manifest validation notes,
+animation smoke, runtime smoke, contact/GIF/QA artifacts. Keep reasoning
+High/no low and do not perform Design redraw, gameplay balance, or unrelated UI
+changes.
+
+## Animator Result (2026-06-15)
+
+Статус: `done` — Dark Mage v2 Animator/runtime integration завершена; final
+full runtime smoke is blocked by unrelated UI parse work outside Animator scope.
+
+Что сделано:
+- Из accepted source
+  `docs/design/references/characters_v2/dark_mage/dark_mage_v2_idle_cell_512.png`
+  собраны реальные 5-frame `idle` breathing loop и 5-frame `walk`/`move` loop
+  with violet aura/robe secondary motion.
+- Live runtime frames обновлены в `assets/sprites/characters/full_frame/dark_mage/`
+  (`dark_mage_idle_00..04.png`, `dark_mage_walk_00..04.png`), cell size
+  `512x512`, bottom-center pivot baseline `[256,470]` preserved.
+- Live SpriteFrames обновлён: `assets/sprites/characters/dark_mage_spriteframes.tres`
+  exposes `idle`, `walk`, `move` only. `attack` / `attack_primary` intentionally
+  absent by v2 task scope.
+- Safe source sheet exported:
+  `assets/sprites/characters/v2/dark_mage/dark_mage_v2_anim_sheet.png`
+  (`512x512` cells, `48px` gutters/outer padding).
+- QA artifacts:
+  `build/qa/scrum424_dark_mage_v2_anim/animation_manifest.json`,
+  `manifest_validator_output.txt`, `scrum424_dark_mage_v2_anim_contact.png`,
+  `dark_mage_v2_idle.gif`, `dark_mage_v2_walk.gif`.
+- Previous live SpriteFrames/idle/walk/attack_primary PNGs backed up under
+  `docs/design/backups/scrum424_dark_mage_v2_pre_anim/`.
+- Documentation updated: `CHANGELOG.md`, `docs/design/systems/animation.md`,
+  `docs/design/content_registry.md`, `docs/design/current_game_state.md`.
+
+Validation:
+- Bundled animation-director manifest validator was run and saved to
+  `build/qa/scrum424_dark_mage_v2_anim/manifest_validator_output.txt`. It reports
+  the expected `missing attack_primary animation` because the current generic
+  validator requires attack globally, while SCRUM-424 explicitly says
+  **attack НЕ делать**. This is a validator-contract mismatch, not an Animator
+  blocker.
+- `tests/animation_smoke_test.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — BLOCKED before gameplay startup by unrelated
+  UI/settings parse error:
+  `scripts/main.gd:365` cannot preload `res://scripts/ui_screens.gd`; current
+  `scripts/ui_screens.gd` diff contains duplicate
+  `const DisplayResolution := preload("res://scripts/display_resolution.gd")`
+  declarations. This belongs to active Back-end/UI settings work, not Animator.

@@ -366,9 +366,16 @@ SCRUM-424 подготовил per-class Dark Mage v2 Design-source handoff:
 `build/qa/scrum424_dark_mage_v2/scrum424_dark_mage_v2_alpha_size_report.json`.
 Персонаж яркий/эпичный фиолетовый void-caster, без staff/wand/book/orb/weapon в
 руках, прозрачный RGBA, visible height `376 px` в `512x512` cell и pivot
-`[256,470]`. Это не live runtime replacement; current 0.1.5
-`dark_mage_sheet.png` / `dark_mage_spriteframes.tres` остаются активными до
-Animator/Back-end integration.
+`[256,470]`. Animator pass подключил live
+`assets/sprites/characters/dark_mage_spriteframes.tres` к v2 `idle` / `walk` /
+`move` 5-frame loops, derived from the accepted source, with runtime frames
+under `assets/sprites/characters/full_frame/dark_mage/` and a 48px-gutter
+source sheet at `assets/sprites/characters/v2/dark_mage/dark_mage_v2_anim_sheet.png`.
+Previous live frames are backed up under
+`docs/design/backups/scrum424_dark_mage_v2_pre_anim/`. Attack animation is
+intentionally absent for this v2 row; animation smoke passes. Full runtime smoke
+is currently blocked before gameplay startup by an unrelated
+`scripts/ui_screens.gd` parse failure from the active UI/settings lane.
 
 SCRUM-286 добавил Dark Mage sheet на этом пути:
 `assets/sprites/characters/dark_mage_sheet.png` (`1920x1152`, 5 `idle`, 5
@@ -498,9 +505,11 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: магический урон, AoE, лучи, DoT.
 - Базовое здоровье: 42.
 - Базовая скорость: 250.
-- Спрайт: `assets/sprites/characters/dark_mage.png`, runtime animation sheet
-  `assets/sprites/characters/dark_mage_sheet.png`, cutout-части
-  `assets/sprites/characters/cutout/dark_mage_*.png`.
+- Спрайт: `assets/sprites/characters/dark_mage.png`, historical 0.1.5 source
+  sheet `assets/sprites/characters/dark_mage_sheet.png`, live 0.1.6 v2 runtime
+  `assets/sprites/characters/dark_mage_spriteframes.tres` with `idle` / `walk`
+  / `move` frames under `assets/sprites/characters/full_frame/dark_mage/`,
+  cutout-части `assets/sprites/characters/cutout/dark_mage_*.png`.
 
 Базовые характеристики:
 
