@@ -2346,6 +2346,21 @@
  "design_hero_select_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-436",
   "status": "К выполнению",
-  "desc_hash": "dc97d3ec5f93e23f3b21f1a700d24cf5"
+  "desc_hash": "b0de3b308020f4a69d3159a9f14680c3"
+ },
+ "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
+  "key": "SCRUM-437",
+  "status": "К выполнению",
+  "desc_hash": "70a3f1f144965c817f9809aea9cd7d3b"
+ },
+ "design_codex_rebuild_from_scratch_mockup_task.md": {
+  "key": "SCRUM-438",
+  "status": "К выполнению",
+  "desc_hash": "256bb1a051a9f54f77221cbcba1ded97"
+ },
+ "design_settings_rebuild_from_scratch_mockup_task.md": {
+  "key": "SCRUM-439",
+  "status": "К выполнению",
+  "desc_hash": "6352827641be0b8f89517376a375aa8e"
  }
 }

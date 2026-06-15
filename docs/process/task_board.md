@@ -52,6 +52,9 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [design_codex_rebuild_from_scratch_mockup_task.md](../tasks/design_codex_rebuild_from_scratch_mockup_task.md) | Designer (Codex) → Back-end (UI) | new | UX 0.1.6: кодекс — ПОЛНОСТЬЮ по макапу (ui-director), с нуля |
+| [design_settings_rebuild_from_scratch_mockup_task.md](../tasks/design_settings_rebuild_from_scratch_mockup_task.md) | Designer (Codex) → Back-end (UI) | new | UX 0.1.6: настройки — ПОЛНОСТЬЮ с нуля по макапу (ui-director) |
+| [bug_economy_choice_card_too_narrow_widen_frame_task.md](../tasks/bug_economy_choice_card_too_narrow_widen_frame_task.md) | Designer (Codex) → Back-end (UI) | new | БАГ 0.1.6: рамки наград/событий узкие, текст не влезает — перерисовать ШИРЕ (~360-420px), не экономить место |
 | [design_hero_select_rebuild_from_scratch_mockup_task.md](../tasks/design_hero_select_rebuild_from_scratch_mockup_task.md) | Designer (Codex) → Back-end (UI) | new | UX 0.1.6: выбор героя — ПЕРЕРИСОВАТЬ С НУЛЯ по макапу (ui-director), оставить только розу ветров; всё остальное заново |
 | [art_char_redraw_v2_bright_epic_anchor_task.md](../tasks/art_char_redraw_v2_bright_epic_anchor_task.md) | Designer (Codex) → Animator (Codex) | in_progress | Jira: SCRUM-422. Dispatched to Design main `019eabf1-6d54-7561-8af9-ce25cdf483a9` 2026-06-15; anchor defines bright+epic style/spec/source exemplar before Animator handoff; blocks 16 per-class rows. |
 | [art_char_redraw_v2_berserk_task.md](../tasks/art_char_redraw_v2_berserk_task.md) | Designer (Codex) → Animator (Codex) | new | ART 0.1.6: перерисовать «Берсерк» v2 ярко/эпично, прозрачный фон, move+idle (без attack), 2× монстра; ждёт опорную |
