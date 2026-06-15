@@ -1981,7 +1981,12 @@
  },
  "bug_character_frames_white_background_not_transparent_task.md": {
   "key": "SCRUM-412",
+  "status": "В работе",
+  "desc_hash": "43367842f08e2546a0134aa655ffeb8e"
+ },
+ "bug_attribute_shop_overflow_and_unclickable_options_task.md": {
+  "key": "SCRUM-413",
   "status": "К выполнению",
-  "desc_hash": "9f769c35c12db692e50fb58a2a34aecb"
+  "desc_hash": "da7b16e2a8e86d60272b33592eb63248"
  }
 }

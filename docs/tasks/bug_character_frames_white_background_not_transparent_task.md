@@ -1,6 +1,6 @@
 # BUG(critical): Кадры анимаций персонажей на БЕЛОМ фоне — нужна настоящая прозрачность
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Designer (Codex) → Back-end (анимации)
 Версия: 0.1.5
@@ -11,6 +11,14 @@ Jira: SCRUM-412
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Dispatch
+- 2026-06-15T06:08Z — Board dispatcher routed Design/Codex phase to Design main
+  thread `019eabf1-6d54-7561-8af9-ce25cdf483a9` with reasoning High/no low.
+  Active-owner audit: Back-end, Design main, Designer 2 and Animator threads were
+  idle; no recent dispatch note existed. Design phase owns alpha cleanup,
+  de-fringe/de-halo, import/pipeline fix, and QA evidence. Back-end/Animator
+  follow-up should be created only after Design records a precise handoff.
 
 ## Контекст (отчёт пользователя + диагностика)
 «Все анимации персонажей НЕ на прозрачном фоне, надо все переделать».
