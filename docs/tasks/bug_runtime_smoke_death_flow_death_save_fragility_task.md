@@ -85,10 +85,12 @@ Acceptance:
 - [x] Геймплей death_save не тронут (правка только в тесте).
 
 Статус done. Баги: нет.
-⚠️ **Landing в HEAD отложен (НЕ дефект 444):** фикс лежит в working-tree, намертво
-сцеплен в одном hot-файле с активной перезаписью hero_select v2 (SCRUM-436:
-`HERO_SELECT_V2_*` константы + ассерты `HeroSelectCanvas`, которой в HEAD-коде
-`ui_screens.gd` ещё нет). Коммит теста в одиночку дал бы красный HEAD. Фикс попадёт
-в HEAD вместе с coupled-коммитом SCRUM-436 (test + `ui_screens.gd` v2-реализация)
-владельцем 436. До тех пор HEAD-runtime_smoke остаётся красным по 436-несоответствию,
-НЕ по death-flow.
+
+✅ **Landing в HEAD ВЫПОЛНЕН (2026-06-15, commit `d19fef13`):** фикс был сцеплен в
+одном hot-файле с готовой (уже «Готово» в map) UI-работой SCRUM-436/437/438/439.
+После 4 тиков ожидания QA приземлил coupled-набор из 4 `.gd` (`ui_screens.gd` +
+`runtime_smoke_test.gd` + `ui_no_overlap_matrix_test.gd` + `animation_smoke_test.gd`)
+явным `git add` (без `-A`, без « 2»-clutter; diff без новых res:// ассет-ссылок и
+новых скриптов → HEAD-safe). Проверено **HEAD-isolated** (`git worktree --detach`):
+import без parse-ошибок, green-gate runtime_smoke (3/3) + runtime_smoke_ui +
+ui_no_overlap_matrix + animation_smoke — все PASS. HEAD-red death-артефакт устранён.
