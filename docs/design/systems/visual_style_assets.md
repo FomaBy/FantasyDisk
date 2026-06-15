@@ -408,14 +408,14 @@ System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, a
 
 ## Contextual UI Direction
 
-`docs/design/ui_contextual_concept.md` and the generated contextual kit in `assets/sprites/ui/frames/contextual/` are superseded by the SCRUM-273/SCRUM-274 UI canon. Their files may remain as historical/reference assets until Back-end cleanup confirms no live references, but they are no longer the UI direction for new screens. Context may still influence role color and button/frame selection, but only through the new Red & Gold Dragon + Ornate Dark canon.
+`docs/design/ui_contextual_concept.md` and the generated contextual kit are superseded by the SCRUM-273/SCRUM-274 UI canon. SCRUM-418 confirmed no live references and removed the contextual frame PNGs from runtime `assets/`; historical backup lives under `build/qa/scrum418/removed_assets_backup/`. Context may still influence role color and button/frame selection, but only through the new Red & Gold Dragon + Ornate Dark canon.
 
 Hard no-junk rule from the user: UI work must not add abstract decorative lines, circles, squares, dots, grids or filler marks. Every visible detail must read as a UI affordance or a believable D&D/tabletop material detail; otherwise it is a Design review defect.
 
 Historical assets:
 
-- `ui_wild_*_frame`, `ui_grave_*_frame`, `ui_laurel_*_frame`, `ui_parchment_*_frame` in `assets/sprites/ui/frames/contextual/`;
-- preview sheet: `assets/sprites/ui/frames/contextual/contextual_ui_kits_preview.png`;
+- `ui_wild_*_frame`, `ui_grave_*_frame`, `ui_laurel_*_frame`, `ui_parchment_*_frame` archived under `build/qa/scrum418/removed_assets_backup/assets/sprites/ui/frames/contextual/`;
+- preview sheet archived under `build/qa/scrum418/removed_assets_backup/assets/sprites/ui/frames/contextual/contextual_ui_kits_preview.png`;
 - reference contact sheet: `docs/design/previews/contextual_ui_dnd_reference_contact.png`.
 
 Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md` was completed as historical work; SCRUM-111/SCRUM-118 are superseded by SCRUM-147. Active Back-end integration is `docs/tasks/backend_ui_dark_fantasy_theme_integration_task.md`.
@@ -495,7 +495,7 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
 ## Screen And Map Backgrounds
 
 - `assets/backgrounds/route_map_backdrop.png` - 2560x1440 eerie neutral route map background. It should stay darker and calmer than combat arenas, with low-contrast fog in the central route column and heavier silhouettes pushed to the edges.
-- SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. Active compatibility copies were written to `assets/sprites/ui/screens/screen_shop_background.png`, `screen_event_background.png`, and `screen_campfire_background.png`; broader screen-to-role mapping is handed off in `docs/tasks/backend_ui_screen_backdrops_integration_task.md`. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
+- SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
 - `assets/backgrounds/main_menu_epic_battle_v2.png` is the active start-screen art. SCRUM-316 replaced the previous SCRUM-158 battle scene with a smoother D&D/dark fantasy composition: three new bosses and two heroes fight center-right/lower-right, while the left third stays calmer for the vertical menu buttons and the top-center stays readable for the title.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
   `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through

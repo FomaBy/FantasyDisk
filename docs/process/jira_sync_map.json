@@ -2255,8 +2255,8 @@
  },
  "cleanup_assets_dedup_size_reduction_task.md": {
   "key": "SCRUM-418",
-  "status": "К выполнению",
-  "desc_hash": "92e90154ab7718ddbc107de2863a8d24"
+  "status": "Готово",
+  "desc_hash": "2a2822b2a6b0539832962b3c4104ede4"
  },
  "art_char_redraw_v2_assassin_task.md": {
   "key": "SCRUM-419",
@@ -2345,8 +2345,8 @@
  },
  "design_hero_select_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-436",
-  "status": "Готово",
-  "desc_hash": "2279dc4b150e9f57651ca926218ca6dd"
+  "status": "К выполнению",
+  "desc_hash": "c7d7fd34740112c50c87020738146c33"
  },
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
   "key": "SCRUM-437",
@@ -2365,8 +2365,8 @@
  },
  "bug_mass_duplicate_space2_files_cleanup_task.md": {
   "key": "SCRUM-440",
-  "status": "В работе",
-  "desc_hash": "3500dbff224a7a11acb15733390fdf2c"
+  "status": "Готово",
+  "desc_hash": "2a3df315c38fa5e2834bbaa24066dd0d"
  },
  "bug_settings_resolution_not_working_mac_hidpi_task.md": {
   "key": "SCRUM-441",
