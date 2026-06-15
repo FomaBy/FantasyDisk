@@ -83,6 +83,17 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 
 ## Player Motion
 
+- SCRUM-422 defines the 0.1.6 playable character redraw v2 source contract.
+  Design source sheets for the v2 wave are bright/epic per class, transparent
+  RGBA, `512x512` cells, bottom-center pivot `(256, 470)`, and only
+  `idle` + `move/walk` rows. Attack rows are intentionally out of scope for this
+  initiative. The anchor exemplar is the cleaned Berserk source under
+  `docs/design/references/characters_v2/bright_epic_anchor/` with the
+  asset-side accepted source copy at
+  `assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png`.
+  Animator handoff after source acceptance should build `idle` 4-5f loop and
+  `move` 5+f loop SpriteFrames/GIF/contact previews from the per-class sources,
+  without changing gameplay, attack states, balance, collision, or weapon logic.
 - SCRUM-298 Design standard: playable character full-frame redraws now use
   `docs/design/references/character_animation_style_sheet_0_1_5.md` as the
   source of truth for art direction, sheet rows, pivots and naming. Canonical

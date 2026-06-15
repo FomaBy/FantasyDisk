@@ -47,6 +47,22 @@ SCRUM-182 refreshed the active derived stat icons, shop-only icons, and shop sta
 
 ## Character Pipeline Asset Handoffs
 
+SCRUM-422 starts the 0.1.6 **Character redraw v2 bright+epic anchor** for the
+next playable character art wave. The accepted Design exemplar is Berserk:
+source/raw `docs/design/references/characters_v2/bright_epic_anchor/berserk_v2_source_raw.png`,
+alpha-clean source `docs/design/references/characters_v2/bright_epic_anchor/berserk_v2_source_clean.png`,
+512-cell exemplar `docs/design/references/characters_v2/bright_epic_anchor/berserk_v2_idle_cell_512.png`,
+and asset-side source copy
+`assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png`. The
+canonical v2 style/spec is
+`docs/design/references/characters_v2/bright_epic_anchor/character_v2_bright_epic_style_sheet.md`.
+V2 playable sources use bright class-specific D&D fantasy colors, stronger
+silhouette/readability than the 0.1.5 sheets, transparent RGBA, no baked
+background, no baked weapon/focus/orb in base hero hands, `512x512` cells,
+bottom-center pivot `(256, 470)`, and target body height around `360-380 px`
+inside the cell so runtime scale `0.39-0.40` reads about twice the average
+standard monster screen height.
+
 SCRUM-165 adds Priest with canonical Design assets `assets/sprites/characters/priest.png`, `assets/sprites/weapons/priest_reliquary.png`, `assets/sprites/weapons/priest_censer.png`, and `assets/sprites/weapons/priest_chime.png`; source/result details are tracked in `docs/tasks/codex_design_priest_art_task.md`. Priest rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_priest_rig_motion_task.md`.
 
 SCRUM-162 adds Biologist gameplay with canonical Design assets ready: `assets/sprites/characters/biologist.png`, `assets/sprites/weapons/biologist_spore_lens.png`, `assets/sprites/weapons/biologist_sample_injector.png`, and `assets/sprites/weapons/biologist_symbiote_seed.png`; contact preview is `docs/design/previews/biologist_art_contact.png`, and source/result notes live in `docs/tasks/codex_design_biologist_art_task.md`. Biologist rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_biologist_rig_motion_task.md`.

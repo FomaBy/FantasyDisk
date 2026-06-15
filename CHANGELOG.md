@@ -4,6 +4,14 @@
 
 ## [Unreleased] — ветка dev
 
+### Added
+- Character redraw v2 anchor (SCRUM-422): established the 0.1.6 bright+epic
+  playable-character source style/spec with transparent Berserk exemplar,
+  `512x512` cells, bottom-center pivot, idle/move-only handoff and 2x-monster
+  visual size target. Source, preview and QA artifacts live under
+  `docs/design/references/characters_v2/bright_epic_anchor/` and
+  `build/qa/scrum422_character_v2_anchor/`.
+
 ## [0.1.5] — 2026-06-15
 
 ### Released

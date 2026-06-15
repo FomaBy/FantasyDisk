@@ -90,6 +90,16 @@ historical/fallback asset references and are not the live static portrait source
 Regression coverage: `tests/character_sprite_registry_alignment_test.gd` and
 `tests/runtime_smoke_test.gd`; QA dumps under `build/qa/scrum416/`.
 
+SCRUM-422 adds the first 0.1.6 character redraw v2 Design source anchor. The
+accepted exemplar for the future per-class v2 rows is Berserk, using a bright,
+epic, class-readable unarmed style and transparent RGBA source under
+`docs/design/references/characters_v2/bright_epic_anchor/`; the asset-side
+accepted source copy is
+`assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png`. This does not
+replace live runtime portraits or combat SpriteFrames yet; it defines the
+source-art, size, pivot and handoff contract for the 16 blocked v2 character
+tasks.
+
 ## Расширенный Ростер 0.1.4 (Фундамент, 2026-06-11)
 
 Спрайты всех шести прошли Design art-review (2026-06-11) и приняты как polished dark fantasy full-art (512x512, RGBA). Cutout rig-части нарезаны `tools/slice_rig_cutouts.py` и лежат в `assets/sprites/characters/cutout/` (torso, arm_l, arm_r, leg_l, leg_r для каждого). Манифест обновлён в `scripts/sliced_rig_manifest.gd`. Weapon art v2 pass 2026-06-12 устранил fallback-текстуры в сценах оружия, перерисовал три оружия Рыцаря и заменил `knight.png` на unarmed base sprite без встроенного копья/щита, чтобы все три варианта реально крепились через socket.

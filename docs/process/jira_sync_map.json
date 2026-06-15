@@ -2275,8 +2275,8 @@
  },
  "art_char_redraw_v2_bright_epic_anchor_task.md": {
   "key": "SCRUM-422",
-  "status": "В работе",
-  "desc_hash": "68232e2cabc9dcc9c381dd93fb5cf2fb"
+  "status": "Готово",
+  "desc_hash": "05b269f3575ceeab5c3e476e3eb43c65"
  },
  "art_char_redraw_v2_chemist_task.md": {
   "key": "SCRUM-423",
@@ -2350,17 +2350,17 @@
  },
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
   "key": "SCRUM-437",
-  "status": "К выполнению",
-  "desc_hash": "70a3f1f144965c817f9809aea9cd7d3b"
+  "status": "В работе",
+  "desc_hash": "14ee126890e1b1a20ec2d645e3a4da77"
  },
  "design_codex_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-438",
   "status": "К выполнению",
-  "desc_hash": "256bb1a051a9f54f77221cbcba1ded97"
+  "desc_hash": "721ddbc74425b6256294c6f321fbd423"
  },
  "design_settings_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-439",
   "status": "К выполнению",
-  "desc_hash": "6352827641be0b8f89517376a375aa8e"
+  "desc_hash": "4d10cca9d9c349d2dcf4d4ce2ed20de2"
  }
 }
