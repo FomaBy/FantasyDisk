@@ -151,9 +151,6 @@ func _initialize() -> void:
 			quit(1)
 			return
 	for screen_background_path in [
-		"res://assets/sprites/ui/screens/screen_event_background.png",
-		"res://assets/sprites/ui/screens/screen_shop_background.png",
-		"res://assets/sprites/ui/screens/screen_campfire_background.png",
 		"res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 		"res://assets/backgrounds/ui/ui_backdrop_merchant_archive.png",
 		"res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
