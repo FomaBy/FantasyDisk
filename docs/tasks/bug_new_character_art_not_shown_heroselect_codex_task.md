@@ -85,3 +85,23 @@ docs/design/content_registry.md, docs/design/systems/menus_ui.md, current_game_s
   `runtime_smoke_ui_test.gd`,
   `animation_smoke_test.gd`,
   `runtime_smoke_test.gd`.
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED — новый арт персонажей показан в hero-select/codex/портретах
+
+Проверено (фактически):
+- **Фикс** (`progression_data_characters.gd`): все **17** `sprite_path` обновлены с
+  legacy-PNG на SCRUM-412-очищенные full-frame idle-портреты
+  `full_frame/<class>/<class>_idle_00.png`. Hero Select (крупный портрет + карусель),
+  Codex character-портрет, pause/level-up портреты наследуют через канонический config.
+- **Все 17 idle_00 портретов в HEAD** (0 missing) — фикс не создаёт битых ссылок.
+- **Тесты**: `character_sprite_registry_alignment_test` PASS (17 классов требуют
+  full-frame idle paths); `runtime_smoke_test` PASS (ассертит реальные Hero Select
+  thumbnail/large + Codex + level-up texture paths) — **закрывает красный ассерт в HEAD**.
+- QA-дампы `scrum416/` (registry alignment + hero_select + codex portrait paths).
+
+Acceptance:
+- [x] Новый арт показан в Hero Select (портрет+карусель), Codex, pause/level-up.
+- [x] 17 классов выровнены на full-frame idle; registry + runtime smoke зелёные.
+
+Статус done. Баги: нет. Восстанавливает зелёный HEAD (ассерт hero-thumbnail из 4acba133).

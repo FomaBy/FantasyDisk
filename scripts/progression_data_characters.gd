@@ -139,7 +139,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Ближний бой по области и высокий риск.",
 		"strengths": "урон, здоровье, толпа.",
 		"weaknesses": "нужна близость.",
-		"sprite_path": "res://assets/sprites/characters/berserk_unarmed.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/berserk/berserk_idle_00.png",
 	},
 	"soldier": {
 		"id": "soldier",
@@ -147,7 +147,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Тактика, залпы и контроль позиции.",
 		"strengths": "дальность, стабильность, контроль.",
 		"weaknesses": "нужна линия огня.",
-		"sprite_path": "res://assets/sprites/characters/soldier.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/soldier/soldier_idle_00.png",
 	},
 	"thief": {
 		"id": "thief",
@@ -155,7 +155,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Уловки, рывки и карманная экономика.",
 		"strengths": "мобильность, крит, золото.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/thief.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/thief/thief_idle_00.png",
 	},
 	"elementalist": {
 		"id": "elementalist",
@@ -163,7 +163,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Смена стихий, орбиты и разломы.",
 		"strengths": "области поражения, контроль зон, взрывной урон.",
 		"weaknesses": "хрупкий, требует позицию.",
-		"sprite_path": "res://assets/sprites/characters/elementalist.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_00.png",
 	},
 	"sniper": {
 		"id": "sniper",
@@ -171,7 +171,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Точные выстрелы, метки и зоны поражения.",
 		"strengths": "дальность, одиночные цели, фокус элиток.",
 		"weaknesses": "слабее против плотной толпы рядом.",
-		"sprite_path": "res://assets/sprites/characters/sniper.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/sniper/sniper_idle_00.png",
 	},
 	"priest": {
 		"id": "priest",
@@ -179,7 +179,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Благословения, печати и священное восстановление.",
 		"strengths": "лечение, защита, стабильность.",
 		"weaknesses": "меньше взрывного урона по одиночной цели.",
-		"sprite_path": "res://assets/sprites/characters/priest.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/priest/priest_idle_00.png",
 	},
 	"biologist": {
 		"id": "biologist",
@@ -187,7 +187,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Образцы, споры и симбиотические реакции.",
 		"strengths": "контроль биомассой, периодический урон, адаптация.",
 		"weaknesses": "нужны цели для цепных реакций.",
-		"sprite_path": "res://assets/sprites/characters/biologist.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/biologist/biologist_idle_00.png",
 	},
 	"robot": {
 		"id": "robot",
@@ -195,7 +195,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Тяжелая броня, магнитный контроль и реакторные выбросы.",
 		"strengths": "выживаемость, контроль, стабильный урон.",
 		"weaknesses": "медленный, зависит от позиционирования.",
-		"sprite_path": "res://assets/sprites/characters/robot.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/robot/robot_idle_00.png",
 	},
 	"engineer": {
 		"id": "engineer",
@@ -203,7 +203,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Мастерская устройств, дронов и минных сеток.",
 		"strengths": "устройства, зона контроля, поддержка.",
 		"weaknesses": "нужно заранее ставить позицию.",
-		"sprite_path": "res://assets/sprites/characters/engineer.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/engineer/engineer_idle_00.png",
 	},
 	"dark_mage": {
 		"id": "dark_mage",
@@ -211,7 +211,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Области поражения, лучи и проклятия.",
 		"strengths": "площадь, периодический урон, пробивание.",
 		"weaknesses": "хрупкий.",
-		"sprite_path": "res://assets/sprites/characters/dark_mage.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_00.png",
 	},
 	"guitarist": {
 		"id": "guitarist",
@@ -219,49 +219,49 @@ const CHARACTER_CONFIGS := {
 		"description": "Ритм, волны и контроль.",
 		"strengths": "отталкивание, области поражения, темп.",
 		"weaknesses": "слабее по боссам.",
-		"sprite_path": "res://assets/sprites/characters/guitarist.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_00.png",
 	},
 	"assassin": {
 		"id": "assassin", "title": "Ассасин",
 		"description": "Криты, скорость и яд.",
 		"strengths": "криты, уворот, темп.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/assassin.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/assassin/assassin_idle_00.png",
 	},
 	"ranger": {
 		"id": "ranger", "title": "Рейнджер",
 		"description": "Дальние линии и ловушки.",
 		"strengths": "дальность, пробивание.",
 		"weaknesses": "плох вблизи.",
-		"sprite_path": "res://assets/sprites/characters/ranger.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/ranger/ranger_idle_00.png",
 	},
 	"doctor": {
 		"id": "doctor", "title": "Доктор",
 		"description": "Лечение через урон.",
 		"strengths": "восстановление, яд, стабильность.",
 		"weaknesses": "низкий взрывной урон.",
-		"sprite_path": "res://assets/sprites/characters/doctor.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/doctor/doctor_idle_00.png",
 	},
 	"chemist": {
 		"id": "chemist", "title": "Химик",
 		"description": "Взрывы и ядовитые зоны.",
 		"strengths": "зоны, периодический урон, области поражения.",
 		"weaknesses": "хрупкий.",
-		"sprite_path": "res://assets/sprites/characters/chemist.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/chemist/chemist_idle_00.png",
 	},
 	"knight": {
 		"id": "knight", "title": "Рыцарь",
 		"description": "Танк, копье и щит.",
 		"strengths": "здоровье, защита, контроль.",
 		"weaknesses": "медленный.",
-		"sprite_path": "res://assets/sprites/characters/knight.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/knight/knight_idle_00.png",
 	},
 	"druid": {
 		"id": "druid", "title": "Друид",
 		"description": "Стая, тернии и тотемы.",
 		"strengths": "призывы, зоны.",
 		"weaknesses": "слаб один.",
-		"sprite_path": "res://assets/sprites/characters/druid.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/druid/druid_idle_00.png",
 	},
 }
 

@@ -2001,12 +2001,12 @@
  },
  "bug_new_character_art_not_shown_heroselect_codex_task.md": {
   "key": "SCRUM-416",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "c66d33c7fdeee668c8ac4df9fa626435"
  },
  "bug_character_sprites_increase_size_task.md": {
   "key": "SCRUM-417",
-  "status": "К выполнению",
-  "desc_hash": "a0066851da56084aa597afb1e3ef3da5"
+  "status": "В работе",
+  "desc_hash": "2de71f624c9c69a3d3dacab1e4470b98"
  }
 }
