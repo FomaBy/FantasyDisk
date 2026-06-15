@@ -1,6 +1,6 @@
 # BUG: Настройки — смена разрешения не работает (Mac/HiDPI); нужны Full HD, 2K, Mac-разрешение
 
-Статус: in_progress (core доставлен; интеграция отложена — ui_screens в ребилде)
+Статус: in_progress (core + disable/clamp интеграция в HEAD; осталось Mac-native опция в main.gd)
 Приоритет: high
 Роль: Back-end (UI/настройки/платформа)
 Версия: 0.1.6
@@ -15,12 +15,15 @@ Pure HiDPI-логика: `physical_usable_size(usable_logical, scale)`, `resolut
 `clamp_to_physical(...)`, `native_logical_resolution(...)` — считают ФИЗ.пиксели
 (usable * `screen_get_scale`), на Retina Full HD/2K влезают и не клэмпаются; не-Mac не сломан.
 
-**ИНТЕГРАЦИЯ (осталось, владельцу settings-rebuild / при свободном ui_screens):**
-1. В `ui_screens.gd:2291-2310` build OptionButton: `set_item_disabled(i, not DisplayResolution.resolution_fits(res, DisplayServer.screen_get_usable_rect(screen).size, DisplayServer.screen_get_scale(screen)))`.
-2. В `_apply_video_settings` (`:5005-5028`): заменить логический клэмп на
-   `DisplayResolution.clamp_to_physical(res, usable.size, scale)` перед `window_set_size`.
-3. `main.gd:217` `RESOLUTION_OPTIONS`: добавить Mac-native опцию из `native_logical_resolution(usable.size)` (на macOS).
+**ИНТЕГРАЦИЯ disable/clamp — СДЕЛАНО (в HEAD, commit 2eb3361c):**
+1. ✅ Build OptionButton: `set_item_disabled` теперь через `DisplayResolution.resolution_fits(res, usable_size, screen_scale)` (физ.пиксели) — Full HD/2K на Retina больше НЕ серые.
+2. ✅ `_apply_video_settings`: клэмп через `DisplayResolution.clamp_to_physical(resolution, usable.size, DisplayServer.screen_get_scale(screen))` — окно реально ресайзится.
+   (Прим.: коммит-история — `6dc40eca` core; интеграция слилась с settings-rebuild WIP, дубль const убран emergency-фиксом `2eb3361c`; HEAD зелёный, smoke 4/4.)
+
+**ОСТАЛОСЬ:**
+3. `main.gd:217` `RESOLUTION_OPTIONS`: добавить Mac-native опцию из `native_logical_resolution(usable.size)` (на macOS) — main.gd свободен, можно взять отдельно.
 4. (Опц.) `display/window/dpi/allow_hidpi=true` в project.godot.
+5. Ручная проверка на Mac (выбор 1920x1080/2560x1440 → окно меняется) — может только пользователь.
 Доступ: `const DisplayResolution := preload("res://scripts/display_resolution.gd")`.
 
 ## Контекст (отчёт пользователя)
