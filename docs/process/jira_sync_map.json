@@ -2345,8 +2345,8 @@
  },
  "design_hero_select_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-436",
-  "status": "К выполнению",
-  "desc_hash": "c7d7fd34740112c50c87020738146c33"
+  "status": "Готово",
+  "desc_hash": "d10933e276a901eb8977c4572f9211cd"
  },
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
   "key": "SCRUM-437",
@@ -2392,5 +2392,10 @@
   "key": "SCRUM-445",
   "status": "К выполнению",
   "desc_hash": "d19cf2234f62eddbd29dae55b702d276"
+ },
+ "design_hero_select_v3_mockup_zones_frames_pipeline_task.md": {
+  "key": "SCRUM-446",
+  "status": "В работе",
+  "desc_hash": "6f209fccf568f51a8f74c81f52c2cece"
  }
 }
