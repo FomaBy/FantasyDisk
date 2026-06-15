@@ -63,3 +63,46 @@ combat.»** (строка ~7457). QA-проверка отдельным скр�
 # до фикса: COMBAT STILL ACTIVE; после: COMBAT ENDED after N frames
 ~/Downloads/Godot.app/Contents/MacOS/Godot --headless --user-data-dir /tmp/dc --path "$PWD" --script res://tests/runtime_smoke_test.gd 2>&1 | grep -c "Runtime smoke test passed"  # → 1, 3/3
 ```
+
+## ОКОНЧАТЕЛЬНЫЙ ДИАГНОЗ (Back-end, 2026-06-15 — подтверждён эмпирически)
+
+**Корень найден — это НЕ game-breaking и НЕ гипотезы A/B/C.** Изолированный прогон
+(berserk/sword) печатает фактическое состояние:
+- `death_save: 1.0`, после `take_damage(99999)` → `health: 1.0`, **игрок ЖИВ** (не умирает),
+  `combat_active: true`. То есть **игрок НЕ умирает** — его спасает `death_save`
+  (player.gd:528-534), а не «умирает, но бой не кончается».
+- (A) invuln — НЕ причина: `_damage_invulnerability_left = 0` на старте.
+- (B) сигнал — НЕ причина: при нейтрализации death_save игрок умирает И бой кончается
+  (`combat_active: false`, player freed) → connect/`_end_combat` работают.
+- (C) SCRUM-442 — НЕ причина: 442 не менял .gd.
+
+**Почему death_save активен:** `meta_state.skill_nodes` содержит ВСЕ 38 узлов (включая
+`endure_capstone`). Источник — **реальный dev-сейв** `~/Library/Application Support/Godot/
+app_userdata/FantasyDisk/fantasydisk_meta.cfg` (дерево полностью разблокировано).
+**ВАЖНО: `--headless --user-data-dir <X>` НЕ изолирует** — Godot игнорирует флаг,
+`user://` всегда резолвится в реальный app_userdata. Поэтому тест читает общий сейв.
+
+**Severity на самом деле — НЕ critical/game-breaking:** новый игрок (пустое дерево,
+`default_state().skill_nodes == []`) `death_save=0` → `take_damage(99999)` убивает →
+бой кончается → death-экран. Подтверждено: при пустом/нейтрализованном death_save
+`combat_active → false`. Затронуты ТОЛЬКО окружения с купленным `endure_capstone`.
+
+**Настоящая проблема двойная:**
+1. **Хрупкость теста** `_test_death_flow`: нейтрализует dodge, но не death_save. Фикс
+   (подтверждён) — перед `take_damage` добавить:
+   ```gdscript
+   var run_mods: Dictionary = player.get("run_modifiers")
+   run_mods["death_save"] = 0.0
+   run_mods["death_save_used"] = 1.0
+   player.set("run_modifiers", run_mods)
+   ```
+   (Детали — `docs/tasks/bug_runtime_smoke_death_flow_death_save_fragility_task.md`.)
+2. **Дыра тест-изоляции:** тесты гоняют по общему реальному сейву (`--user-data-dir`
+   не работает). Тест должен грузить чистый `default_state()` или временный конфиг,
+   а не реальный мета-сейв. Иначе ЛЮБОЙ капстон в личном сейве ломает тесты.
+
+**Не game-breaking → можно снизить с critical.** Геймплейный death-flow корректен.
+Правка нужна только в тесте/тест-изоляции, НЕ в `player.gd`/`combat_director.gd`.
+
+**Кто применяет:** правку `_test_death_flow` беру я, как только `runtime_smoke_test.gd`
+освободится (сейчас M у другого воркера). Геймплейный код не трогать.
