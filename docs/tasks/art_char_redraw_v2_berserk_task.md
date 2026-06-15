@@ -7,6 +7,7 @@
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-420
+QA: in_progress (2026-06-15)
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
 ## Autonomy / Approval
@@ -103,3 +104,29 @@ Not done by Design scope:
 - No gameplay scale/collision or Back-end logic changes.
 - No animation/runtime smoke; Animator/Back-end must run those after accepted
   source motion exists.
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED (Design-source: berserk v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
+
+Проверено (фактически):
+- **Berserk v2 source прозрачный**: `berserk_v2_source_clean` (1024²), `_idle_cell_512`
+  (512²), `_sheet_source_handoff` (2560×1024) — все RGBA, corner_alpha=0, прозрачные
+  (raw 1024² opaque — сырьё до чистки, ок). Alpha-report: cell visible height **376px**
+  (спека 422: 360-380px), pivot/bbox.
+- **Визуал** `scrum420_berserk_v2/dark_bg_preview.png`: яркий эпичный огненный варвар —
+  оранж/красное пламя, светящиеся эффекты, насыщенные класс-цвета (консистентно с
+  анкором SCRUM-422, ярче 0.1.5 dark), руки пустые, прозрачность на тёмном ✓.
+- **Source-sheet handoff**: 5 idle placeholder-слотов + 5 move placeholder-слотов
+  (motion drawing — Animator-owned). Handoff-док `berserk_v2_design_handoff.md`.
+
+⚠️ **Реальная idle/move анимация + SpriteFrames + runtime ещё НЕ сделаны** — это
+**Animator-фаза** (placeholder-слоты надо заменить нарисованными кадрами idle/move,
+собрать SpriteFrames, подключить, gif, animation_smoke). НЕ промоутил в Готово.
+
+Acceptance (Design-source scope):
+- [x] Berserk v2 перерисован ярко/эпично, прозрачный (нет белого/каймы/карманов).
+- [x] Design-source handoff: 512-cell, pivot/height report, source-sheet layout, dark-bg preview.
+- [~] idle+move анимация (loop), 2× монстра, виден/анимирован в игре — Animator follow-up (pending).
+- [~] animation+runtime smoke + gif — Animator follow-up.
+
+Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
