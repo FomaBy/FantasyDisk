@@ -2306,7 +2306,7 @@
  "art_char_redraw_v2_engineer_task.md": {
   "key": "SCRUM-428",
   "status": "Готово",
-  "desc_hash": "c93252dc351a5bdee833febb5b3f01ac"
+  "desc_hash": "6aa50b9c9b9209f4e00c07eb7e93626b"
  },
  "art_char_redraw_v2_guitarist_task.md": {
   "key": "SCRUM-429",
@@ -2326,7 +2326,7 @@
  "art_char_redraw_v2_robot_task.md": {
   "key": "SCRUM-432",
   "status": "Готово",
-  "desc_hash": "6e9940ebb4de1bc10f5a01d71d110532"
+  "desc_hash": "1ec8243570cca6ed50ba5dfa878e10e1"
  },
  "art_char_redraw_v2_sniper_task.md": {
   "key": "SCRUM-433",
@@ -2375,7 +2375,17 @@
  },
  "design_berserk_sprite_v3_cartoonish_transparent_task.md": {
   "key": "SCRUM-442",
+  "status": "В работе",
+  "desc_hash": "9b6ce4f16005f92c74e02419d53546fd"
+ },
+ "bug_player_death_does_not_end_combat_task.md": {
+  "key": "SCRUM-443",
   "status": "К выполнению",
-  "desc_hash": "859de1fb68e2d3554b2eeb9afa053425"
+  "desc_hash": "2a10b4040b1befa41e512bd315ba624b"
+ },
+ "bug_runtime_smoke_death_flow_death_save_fragility_task.md": {
+  "key": "SCRUM-444",
+  "status": "К выполнению",
+  "desc_hash": "9ea6ad6c321b0ead7bc6c9c0d350a07d"
  }
 }
