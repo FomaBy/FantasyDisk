@@ -93,6 +93,13 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   path at character configure time, builds `idle`/`walk`/`attack_primary` and
   runtime `attack` SpriteFrames when a sheet exists, and otherwise falls back to
   the old cutout/static character visuals.
+- SCRUM-411 fixed the runtime visibility switch for playable full-frame sheets:
+  when `assets/sprites/characters/<class_id>_spriteframes.tres` or
+  `<class_id>_sheet.png` exists, `Player/VisualRoot/Body` is visible and plays
+  the full-frame `idle`/`walk`/`attack` states, while `RigRoot` is hidden so the
+  old cutout body cannot cover the accepted redraw. The hidden rig remains only
+  as a compatibility/socket/action-event anchor. Characters without full-frame
+  frames keep the previous fallback: hidden `Body`, visible cutout `RigRoot`.
 - SCRUM-283 integrated Berserk's accepted unarmed source sheet
   `assets/sprites/characters/berserk_sheet.png` into runtime SpriteFrames at
   `assets/sprites/characters/berserk_spriteframes.tres`: `walk` 5f loop,

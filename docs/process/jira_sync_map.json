@@ -1978,5 +1978,10 @@
   "key": "SCRUM-411",
   "status": "Готово",
   "desc_hash": "9593251dbd41b7d4b31b669128c1b437"
+ },
+ "bug_character_frames_white_background_not_transparent_task.md": {
+  "key": "SCRUM-412",
+  "status": "К выполнению",
+  "desc_hash": "9f769c35c12db692e50fb58a2a34aecb"
  }
 }

@@ -291,6 +291,15 @@ cell `384x384`, минимум 5 `walk` + 5 `attack_primary` кадров, prefe
 сохраняет старый cutout/static fallback без краша. Motion quality и финальные
 листы остаются за Animator/Design задачами.
 
+SCRUM-411 исправил runtime-слой playable full-frame анимаций: если для класса
+есть `assets/sprites/characters/<class_id>_spriteframes.tres` или
+`<class_id>_sheet.png`, в бою видимым слоем становится
+`Player/VisualRoot/Body` (`AnimatedSprite2D`) с full-frame `idle`/`walk`/
+`attack`, а `RigRoot` скрыт и больше не перекрывает новый redraw. Старый cutout
+rig сохраняется только как невидимый compatibility/socket/action-event anchor;
+для классов без full-frame кадров fallback остаётся прежним: `Body` скрыт,
+cutout `RigRoot` видим.
+
 SCRUM-286 добавил Dark Mage sheet на этом пути:
 `assets/sprites/characters/dark_mage_sheet.png` (`1920x1152`, 5 `idle`, 5
 `walk`, 5 `attack_primary`, transparent RGBA). Тёмный маг остаётся без
@@ -805,8 +814,12 @@ while preserving the existing Codex kit. Mockup/spec:
 `assets/sprites/ui/frames/progression/`; preview:
 `docs/design/previews/scrum331_progression_frame_kit_contact.png`. The kit
 defines main skill-tree panel, branch panel, circular node states, class
-progression panel, points badge and tooltip safe zones. Runtime integration is
-tracked in `docs/tasks/backend_ui_overhaul_progression_codex_integration_task.md`.
+progression panel, points badge and tooltip safe zones. SCRUM-408 integrates
+those frames into the live skill-tree screen: `SkillTreeMainPanel`,
+`SkillTreeClassPanel`, `SkillTreePointsBadge`, `SkillTreeBranchPanel_*` and
+`SkillNode_*` use the progression kit, long node title/description text is kept
+outside circular rings in adjacent labels/tooltips, and Codex remains on the
+accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 
 ## Пауза
 

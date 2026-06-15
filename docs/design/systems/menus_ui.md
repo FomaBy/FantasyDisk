@@ -177,9 +177,12 @@ assets:
 
 Use the safe zones from `docs/design/mockups/scrum331_progression_codex/spec.md`.
 Circular skill-node frames must remain square/proportional; long node text should
-move to tooltip/adjacent labels instead of sitting on the ornate ring. Back-end
-integration is tracked separately in
-`docs/tasks/backend_ui_overhaul_progression_codex_integration_task.md`.
+move to tooltip/adjacent labels instead of sitting on the ornate ring. SCRUM-408
+wires the progression kit into `_show_skill_tree_screen`: the main panel, class
+progress panel, point badge, branch columns and circular node states use
+`assets/sprites/ui/frames/progression/*.png`; Codex stays on the accepted
+SCRUM-345/SCRUM-403 kit. Runtime smoke asserts texture paths and ring-safe node
+text, while UI matrix dumps live under `build/qa/scrum331/`.
 
 The combat/route `LevelUpPlusButton` is an exception to the flat FAB look: in
 combat it uses the SCRUM-390 square plus texture states, remains fully opaque
