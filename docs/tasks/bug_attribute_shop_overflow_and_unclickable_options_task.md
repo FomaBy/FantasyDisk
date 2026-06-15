@@ -1,15 +1,39 @@
 # BUG: Экран «Докачка» переполнен и опции не кликабельны
 
-Статус: new
+Статус: done (2026-06-15, Claude Fable 5)
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
 Создано: 2026-06-15
 Автор: PM (отчёт пользователя + скриншот)
 Jira: SCRUM-413
+QA: in_progress (2026-06-15)
+
+## Результат (2026-06-15)
+`_show_attribute_shop` / `_refresh_attribute_shop` (scripts/ui_screens.gd) — 3 детерминированных фикса:
+1. **Переполнение убрано**: панель `AttributeShopPanel` больше не фикс 660px по высоте —
+   анкоры top=0/bottom=1, поля 40px сверху/снизу → высота = вьюпорт минус поля
+   (вписывается в 1280×720 и уже). Контент обёрнут в `ScrollContainer`
+   (горизонтальный скролл выключен) → все опции + кнопки «Обновить»/«Пропустить»
+   достижимы прокруткой даже при большом числе карточек.
+2. **Недоступные опции явно затемнены**: при `money < buy_cost` карточка-кнопка
+   получает серый `modulate` (0.5,0.5,0.55,0.85) — видно, что купить нельзя
+   (раньше выглядела активной, но не реагировала).
+3. **Клики доходят до кнопки**: иконка карточки `mouse_filter = IGNORE`
+   (оверлеи `_make_economy_choice_card` уже были IGNORE) — ничего не перехватывает
+   нажатие поверх Button.
+Тесты: runtime_smoke + runtime_smoke_ui + ui_no_overlap_matrix — зелёные. HEAD компилируется.
+Связано: SCRUM-275 (scroll настроек — тот же приём).
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Dispatch
+- 2026-06-15T06:13Z — Board dispatcher routed to Back-end thread
+  `019eabd9-780b-78a2-9f4b-e7203d659ef2` as priority 1 in the Back-end bug
+  queue (reasoning High/no low). Active-owner audit: Back-end was idle; Design
+  main was actively working SCRUM-412; Designer 2 and Animator had no eligible
+  owner work. Back-end owns UI/layout/clickability/tests/docs for this bug.
 
 ## Контекст (отчёт пользователя + скриншот + диагностика)
 «Экран докачки не влез на экран и опции НЕ кликабельны».

@@ -1385,24 +1385,32 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
+	# SCRUM-412: высота адаптивна (вьюпорт минус поля сверху/снизу), не фикс 660px —
+	# вписывается в 1280x720 и узкие окна; контент в ScrollContainer (доступны все
+	# опции + кнопки «Обновить»/«Пропустить» прокруткой).
 	var panel := PanelContainer.new()
 	panel.name = "AttributeShopPanel"
 	panel.anchor_left = 0.5
-	panel.anchor_top = 0.5
+	panel.anchor_top = 0.0
 	panel.anchor_right = 0.5
-	panel.anchor_bottom = 0.5
+	panel.anchor_bottom = 1.0
 	panel.offset_left = -340.0
-	panel.offset_top = -330.0
+	panel.offset_top = 40.0
 	panel.offset_right = 340.0
-	panel.offset_bottom = 330.0
+	panel.offset_bottom = -40.0
 	panel.add_theme_stylebox_override("panel", _economy_panel_style())
 	root.add_child(panel)
 
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(scroll)
+
 	var box := VBoxContainer.new()
 	box.name = "AttributeShopContent"
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 12)
-	panel.add_child(box)
+	scroll.add_child(box)
 
 	var title := Label.new()
 	title.text = "Докачка"
@@ -1474,12 +1482,16 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, Vector2(250.0, 330.0))
 		offer_button.name = "AttributeOffer_%s" % stat_id
 		offer_button.disabled = money < buy_cost
+		# SCRUM-412: недоступные (не хватает золота) карточки визуально затемнены —
+		# явно видно, что купить нельзя, а не «активная, но не реагирует».
+		offer_button.modulate = Color(0.5, 0.5, 0.55, 0.85) if offer_button.disabled else Color(1.0, 1.0, 1.0, 1.0)
 		offer_button.tooltip_text = "%s +1\n%s" % [
 			stat_title,
 			interpretation,
 		]
 		var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(36, 36))
 		icon_control.name = "AttributeOfferIcon_%s" % stat_id
+		icon_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_prepend_economy_choice_content(offer_button, icon_control)
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
