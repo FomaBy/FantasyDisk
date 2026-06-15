@@ -48,8 +48,15 @@ const ECONOMY_CHOICE_WIDE_TEXTURE := "res://assets/sprites/ui/frames/economy/ui_
 const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide_hover.png"
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.5
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
+const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
+const DUPLICATE_ARTIFACT_SKIP_PATH_PREFIXES := ["res://build/dmg"]
+const DUPLICATE_ARTIFACT_PATTERN := " 2(\\.|$)"
 
 func _initialize() -> void:
+	if not _test_no_space_number_duplicate_artifacts():
+		quit(1)
+		return
+
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
 	if main_scene == null:
 		push_error("Main scene did not load.")
@@ -7564,3 +7571,60 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 		quit(1)
 		return
 	death_main.queue_free()
+
+
+func _test_no_space_number_duplicate_artifacts() -> bool:
+	var regex := RegEx.new()
+	var err := regex.compile(DUPLICATE_ARTIFACT_PATTERN)
+	if err != OK:
+		push_error("Duplicate-artifact guard regex failed to compile.")
+		return false
+	var hits: Array = []
+	var scanned := _walk_no_duplicate_artifacts("res://", regex, hits)
+	if scanned < 100:
+		push_error("Duplicate-artifact guard scanned too few files (%d)." % scanned)
+		return false
+	if not hits.is_empty():
+		hits.sort()
+		for path in hits:
+			push_error("Duplicate artifact path: %s" % path)
+		push_error("Duplicate-artifact guard found %d Finder/sync ` 2` duplicate paths." % hits.size())
+		return false
+	print("Duplicate-artifact guard passed (%d files scanned)." % scanned)
+	return true
+
+
+func _walk_no_duplicate_artifacts(path: String, regex: RegEx, hits: Array) -> int:
+	var dir := DirAccess.open(path)
+	if dir == null:
+		return 0
+	var count := 0
+	dir.list_dir_begin()
+	var name := dir.get_next()
+	while name != "":
+		if name == "." or name == "..":
+			name = dir.get_next()
+			continue
+		var full := path.path_join(name)
+		if dir.current_is_dir():
+			if regex.search(name) != null:
+				hits.append(full)
+			if _duplicate_artifact_path_is_skipped(full):
+				name = dir.get_next()
+				continue
+			if not DUPLICATE_ARTIFACT_SKIP_DIRS.has(name):
+				count += _walk_no_duplicate_artifacts(full, regex, hits)
+		else:
+			count += 1
+			if regex.search(name) != null:
+				hits.append(full)
+		name = dir.get_next()
+	dir.list_dir_end()
+	return count
+
+
+func _duplicate_artifact_path_is_skipped(path: String) -> bool:
+	for prefix in DUPLICATE_ARTIFACT_SKIP_PATH_PREFIXES:
+		if path == prefix or path.begins_with(prefix + "/"):
+			return true
+	return false
