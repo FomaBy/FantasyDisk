@@ -25,7 +25,7 @@ const REWARD_CARD_SAFE_MARGINS := Vector4(132.0, 170.0, 132.0, 164.0)
 const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(150.0, 202.0, 150.0, 190.0)
 const REWARD_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_card.png"
 const REWARD_ELITE_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card.png"
-const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.5
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.36
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 
 func _initialize() -> void:
