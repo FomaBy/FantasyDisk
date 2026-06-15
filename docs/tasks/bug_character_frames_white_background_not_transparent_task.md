@@ -1,6 +1,6 @@
 # BUG(critical): Кадры анимаций персонажей на БЕЛОМ фоне — нужна настоящая прозрачность
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Back-end (анимации)
 Версия: 0.1.5
@@ -67,7 +67,7 @@ Jira: SCRUM-412
 - [x] У ВСЕХ кадров всех 17 персонажей фон полностью прозрачный (белая подложка и кайма убраны, детали персонажа целы).
 - [x] PNG переимпортированы; пути/.tres не менялись; visual QA на тёмном фоне подтверждает отсутствие белого фона.
 - [x] Пайплайн alpha-clean чинит фон целиком (flood-fill+de-fringe) — будущие генерации без белого фона.
-- [ ] Автопроверка прозрачности в smoke; animation smoke зелёный, runtime smoke сейчас blocked нерелевантным Back-end assert.
+- [x] Автопроверка прозрачности в smoke; animation smoke зелёный, runtime smoke зелёный.
 
 ## Документация
 docs/design/systems/visual_style_assets.md, docs/design/systems/animation.md, current_game_state.
@@ -115,3 +115,41 @@ docs/design/systems/visual_style_assets.md, docs/design/systems/animation.md, cu
   `assets/sprites/characters/full_frame/<class>/*.png`.
 - No gameplay, balance, animation timing, SpriteFrames state names, or runtime
   animation contracts were changed by the Design phase.
+
+## Result / Back-end report
+- 2026-06-15 — Back-end follow-up complete.
+- Added a permanent representative alpha/matte regression gate to
+  `tests/animation_smoke_test.gd`: one cleaned `*_idle_00.png` per playable
+  class is loaded from `assets/sprites/characters/full_frame/<class>/` and
+  checked for zero edge-ring white/checkerboard matte pixels plus floodable
+  matte within the SCRUM-412 Design threshold (`<=1500`).
+- This mirrors the Design QA contract closely enough to catch future white
+  or checkerboard background regressions without re-running asset cleanup.
+- Cleared the unrelated post-battle Attribute Shop runtime-smoke blocker via
+  SCRUM-413; no Animator handoff is needed because no motion/rig/timing issue
+  was exposed.
+- Verification:
+  - `animation_smoke_test.gd` — PASS;
+  - `runtime_smoke_test.gd` — PASS.
+
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED — белый/checkerboard фон убран, кадры прозрачны (17 классов)
+
+Проверено (фактически):
+- **255 кадров прозрачны**: широкий sweep всех модифицированных
+  `full_frame/<class>/*.png` (240 tracked + 15 soldier untracked = 255) —
+  `corner_alpha>40: 0` (фон убран). Validation report
+  `scrum412_character_alpha/final_alpha_validation_report.json`: `frame_count=255`,
+  `failures=[]`, edge-white removed.
+- **Детали сохранены**: метод (flood-fill от alpha-границ + matte removal + de-halo)
+  не съел светлые детали (priest/doctor/robot) — `animation_smoke_test` PASS (все
+  17 классов грузятся/играют).
+- **Контракты стабильны**: `.tres` пути/имена не менялись; pipeline-фикс в
+  `build_character_sheet.py` (вызывает alpha_clean) — будущие листы без matte.
+
+Acceptance:
+- [x] Все full_frame кадры 17 классов прозрачны (без белого/checkerboard matte).
+- [x] Детали персонажей сохранены; animation_smoke зелёный; pipeline исправлен.
+
+Статус done. Баги: нет.

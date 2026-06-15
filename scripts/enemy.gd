@@ -852,8 +852,10 @@ func _create_health_bar() -> void:
 	bar.set_script(HEALTH_BAR_SCRIPT)
 	add_child(bar)
 	var sprite_size := _visible_sprite_size()
-	bar.position = Vector2(0.0, -sprite_size.y * 0.5 - 14.0)
+	var desired_position := _health_bar_desired_local_position(sprite_size)
+	bar.position = desired_position
 	bar.setup(max_health, sprite_size.x * 0.72)
+	bar.position = _clamped_health_bar_local_position(desired_position, bar)
 
 
 func refresh_health_bar() -> void:
@@ -867,11 +869,57 @@ func _update_health_bar() -> void:
 	if bar == null:
 		return
 	var sprite_size := _visible_sprite_size()
-	bar.position = Vector2(0.0, -sprite_size.y * 0.5 - 14.0)
+	var desired_position := _health_bar_desired_local_position(sprite_size)
+	bar.position = desired_position
 	if bar.has_method("configure"):
 		bar.configure(max_health, health, sprite_size.x * 0.72)
 	elif bar.has_method("set_value"):
 		bar.set_value(health)
+	bar.position = _clamped_health_bar_local_position(desired_position, bar)
+
+
+func _health_bar_desired_local_position(sprite_size: Vector2) -> Vector2:
+	return Vector2(0.0, -sprite_size.y * 0.5 - 14.0)
+
+
+func _should_clamp_health_bar_to_viewport() -> bool:
+	return is_in_group("bosses") or is_in_group("elite_enemies")
+
+
+func _clamped_health_bar_local_position(desired_position: Vector2, bar: Node2D) -> Vector2:
+	if not _should_clamp_health_bar_to_viewport() or bar == null or not is_inside_tree():
+		return desired_position
+	var viewport := get_viewport()
+	if viewport == null:
+		return desired_position
+	var visible_rect := viewport.get_visible_rect()
+	if visible_rect.size.x <= 1.0 or visible_rect.size.y <= 1.0:
+		return desired_position
+	var canvas_inverse := viewport.get_canvas_transform().affine_inverse()
+	var visible_top_left: Vector2 = canvas_inverse * visible_rect.position
+	var visible_bottom_right: Vector2 = canvas_inverse * (visible_rect.position + visible_rect.size)
+	var desired_global := to_global(desired_position)
+	var half_width := maxf(8.0, float(bar.get("bar_width")) * 0.5)
+	var bar_height := maxf(4.0, float(bar.get("bar_height")))
+	var padding := 8.0
+	var min_x := visible_top_left.x + half_width + padding
+	var max_x := visible_bottom_right.x - half_width - padding
+	var min_y := visible_top_left.y + bar_height + padding
+	var max_y := visible_bottom_right.y - padding
+	if max_x < min_x:
+		var mid_x := (visible_top_left.x + visible_bottom_right.x) * 0.5
+		min_x = mid_x
+		max_x = mid_x
+	if max_y < min_y:
+		var mid_y := (visible_top_left.y + visible_bottom_right.y) * 0.5
+		min_y = mid_y
+		max_y = mid_y
+	var clamped_global := Vector2(
+		clampf(desired_global.x, min_x, max_x),
+		clampf(desired_global.y, min_y, max_y)
+	)
+	bar.set_meta("screen_clamped", not clamped_global.is_equal_approx(desired_global))
+	return to_local(clamped_global)
 
 
 func apply_knockback(impulse: Vector2) -> void:

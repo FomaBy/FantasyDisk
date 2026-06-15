@@ -22,33 +22,19 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+from PIL import Image
+
+from alpha_clean_full_frame_characters import clean_image
 
 ROOT = Path(__file__).resolve().parents[1]
 CELL = 384
 COLS = 5
 PIVOT = (192, 348)
 MAX_BODY_H = 320
-KEY = (0, 255, 1)
 
 
 def remove_background(im: Image.Image) -> Image.Image:
-    im = im.convert("RGB")
-    W, H = im.size
-    seeds = [(1, 1), (W - 2, 1), (1, H - 2), (W - 2, H - 2),
-             (W // 2, 1), (W // 2, H - 2), (1, H // 2), (W - 2, H // 2)]
-    for s in seeds:
-        try:
-            ImageDraw.floodfill(im, s, KEY, thresh=36)
-        except Exception:
-            pass
-    rgba = im.convert("RGBA")
-    px = rgba.load()
-    for y in range(H):
-        for x in range(W):
-            if px[x, y][:3] == KEY:
-                px[x, y] = (0, 0, 0, 0)
-    return rgba
+    return clean_image(im)[0]
 
 
 def normalize(src: Image.Image) -> Image.Image:
@@ -89,6 +75,7 @@ def slice_frames(class_id: str, sheet: Image.Image) -> list[Path]:
         anim = ROW_ANIMS[ry]
         for cx in range(COLS):
             frame = sheet.crop((cx * CELL, ry * CELL, (cx + 1) * CELL, (ry + 1) * CELL))
+            frame = clean_image(frame)[0]
             fp = out_dir / f"{class_id}_{anim}_{cx:02d}.png"
             frame.save(fp)
             written.append(fp)

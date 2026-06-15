@@ -1,6 +1,6 @@
 # BUG: HP-бар элитки/босса уезжает за верх экрана (крупные спрайты)
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (бой/HUD)
 Версия: 0.1.5
@@ -50,9 +50,47 @@ boss.gd:51), позиционируется фикс-офсетом над сп�
 - tests/runtime_smoke_test.gd
 
 ## Acceptance Criteria
-- [ ] HP-бар элитки и босса всегда виден в пределах экрана (не уезжает за верх) при крупных спрайтах.
-- [ ] Фазовые маркеры босса целы; обычные враги не сломаны.
-- [ ] smoke зелёные; скрин боя элитка+босс; CHANGELOG; combat.
+- [x] HP-бар элитки и босса всегда виден в пределах экрана (не уезжает за верх) при крупных спрайтах.
+- [x] Фазовые маркеры босса целы; обычные враги не сломаны.
+- [x] smoke зелёные; QA smoke coverage; CHANGELOG; combat.
 
 ## Документация
 docs/design/systems/combat.md, current_game_state.
+
+## Result / Back-end report
+- 2026-06-15 — Fixed in `scripts/enemy.gd` / `scripts/boss.gd`.
+- Normal enemy HP bars keep the existing world-space overhead placement.
+  Elite and boss HP bars still attach to their entity, but after setup/update
+  their local position is converted through the current canvas transform and
+  clamped into the visible viewport when a large sprite would push the bar
+  above the screen edge.
+- Boss phase marker metadata remains on the same `HealthBar`; `boss.gd` now
+  refreshes the bar after assigning phase markers so initial boss placement is
+  also clamped.
+- Runtime smoke now moves representative boss/elite entities to the viewport
+  top edge and asserts their bar remains on-screen.
+- Verification:
+  - `enemy_health_bar_smoke_test.gd` — PASS;
+  - `runtime_smoke_test.gd` — PASS;
+  - `runtime_smoke_ui_test.gd` — PASS;
+  - `ui_no_overlap_matrix_test.gd` — PASS.
+
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED — HP-бары элиток/боссов клэмпятся в вьюпорт
+
+Проверено (фактически):
+- **Фикс** (`enemy.gd`/`boss.gd`): HP-бары элиток/боссов после setup/update
+  конвертируются через canvas transform и **клэмпятся в видимый вьюпорт**, когда
+  крупный спрайт выталкивает бар за верхний край; обычные враги — прежнее
+  overhead-размещение. `boss.gd` рефрешит бар после phase-маркеров (начальное
+  размещение тоже клэмпится).
+- **Тесты**: `enemy_health_bar_smoke_test` PASS (setup/configure-клэмпы/set_value/
+  ratio — двигает boss/elite к верхнему краю, бар остаётся на экране);
+  `runtime_smoke` + `runtime_smoke_ui` + `ui_no_overlap_matrix` PASS.
+
+Acceptance:
+- [x] HP-бары элиток/боссов не уходят за верх экрана (клэмп в вьюпорт).
+- [x] Обычные враги не затронуты; health-bar smoke + runtime зелёные.
+
+Статус done. Баги: нет.

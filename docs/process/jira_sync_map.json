@@ -1776,8 +1776,8 @@
  },
  "bug_runtime_smoke_victory_text_race_after_death_animation_task.md": {
   "key": "SCRUM-386",
-  "status": "К выполнению",
-  "desc_hash": "27f512d6c86f0bb94723ac4ffb270442"
+  "status": "Готово",
+  "desc_hash": "2da3d9ee09bbbe062b2e67e867a66447"
  },
  "design_integrate_generated_unified_master_frame_2_task.md": {
   "key": "SCRUM-381",
@@ -1981,27 +1981,27 @@
  },
  "bug_character_frames_white_background_not_transparent_task.md": {
   "key": "SCRUM-412",
-  "status": "В работе",
-  "desc_hash": "787e8a37c6365d5ae393cdd136eb6cfa"
+  "status": "Готово",
+  "desc_hash": "4b1f5fbb4bfd02fb48f129ea015c6aa5"
  },
  "bug_attribute_shop_overflow_and_unclickable_options_task.md": {
   "key": "SCRUM-413",
   "status": "Готово",
-  "desc_hash": "d6764b37d6445a940a92ee2b6da40b7d"
+  "desc_hash": "33c9d14232aaeefe4732d3d5d8e852cb"
  },
  "bug_elite_boss_health_bar_offscreen_too_high_task.md": {
   "key": "SCRUM-414",
-  "status": "В работе",
-  "desc_hash": "e0ecd9bfac4a3a57704e4b18aa742262"
+  "status": "Готово",
+  "desc_hash": "58880b6c076408402aca1f1343d1def2"
  },
  "bug_event_option_text_overflow_double_risk_task.md": {
   "key": "SCRUM-415",
-  "status": "В работе",
-  "desc_hash": "5093048b50cb2d0ec66aba22cc94d822"
+  "status": "Готово",
+  "desc_hash": "e22198594449fe6f3dd452b868baec36"
  },
  "bug_new_character_art_not_shown_heroselect_codex_task.md": {
   "key": "SCRUM-416",
-  "status": "К выполнению",
-  "desc_hash": "dec0cb481f8fee56604e951e17cab8ae"
+  "status": "Контроль качества",
+  "desc_hash": "c66d33c7fdeee668c8ac4df9fa626435"
  }
 }

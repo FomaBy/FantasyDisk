@@ -371,6 +371,9 @@ func _initialize() -> void:
 		push_error("Expected hero thumbnail carousel to reduce excessive horizontal separation.")
 		quit(1)
 		return
+	var hero_portrait_dump := PackedStringArray()
+	hero_portrait_dump.append("# SCRUM-416 Hero Select Portrait Runtime Paths")
+	hero_portrait_dump.append("")
 	for character_id in ProgressionData.character_ids():
 		var thumb := main.find_child("HeroThumbnail_%s" % character_id, true, false) as Button
 		if thumb == null or thumb.tooltip_text == "":
@@ -379,6 +382,12 @@ func _initialize() -> void:
 			return
 		if thumb.find_child("HeroThumbnailTitle_%s" % character_id, true, false) != null or thumb.find_children("*", "Label", true, false).size() > 0:
 			push_error("Expected hero thumbnail carousel to contain only images, no visible text for %s." % character_id)
+			quit(1)
+			return
+		var thumb_portrait := thumb.find_child("HeroThumbnailPortrait_%s" % character_id, true, false) as TextureRect
+		var expected_portrait := _expected_character_portrait_path(str(character_id))
+		if thumb_portrait == null or thumb_portrait.texture == null or thumb_portrait.texture.resource_path != expected_portrait:
+			push_error("Expected hero thumbnail %s to use new full-frame portrait %s." % [character_id, expected_portrait])
 			quit(1)
 			return
 		thumb.pressed.emit()
@@ -392,6 +401,17 @@ func _initialize() -> void:
 			push_error("Expected selected hero portrait to update for %s." % character_id)
 			quit(1)
 			return
+		if portrait.texture.resource_path != expected_portrait:
+			push_error("Expected selected hero portrait %s to use new full-frame portrait %s, got %s." % [character_id, expected_portrait, portrait.texture.resource_path])
+			quit(1)
+			return
+		hero_portrait_dump.append("- `%s`: thumbnail `%s`, large `%s`" % [character_id, thumb_portrait.texture.resource_path, portrait.texture.resource_path])
+	var scrum416_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum416")
+	DirAccess.make_dir_recursive_absolute(scrum416_qa_dir)
+	var hero_portrait_dump_file := FileAccess.open("%s/hero_select_portrait_runtime_paths.md" % scrum416_qa_dir, FileAccess.WRITE)
+	if hero_portrait_dump_file != null:
+		hero_portrait_dump_file.store_string("\n".join(hero_portrait_dump))
+		hero_portrait_dump_file.close()
 	var choose_button := main.find_child("HeroSelectChooseButton", true, false) as Button
 	if choose_button == null:
 		push_error("Expected hero select v3 to expose a choose button.")
@@ -959,6 +979,11 @@ func _initialize() -> void:
 		push_error("Expected level-up screen to include the selected hero portrait.")
 		quit(1)
 		return
+	var level_up_portrait := _expected_character_portrait_path(str(main.get("selected_character_id")))
+	if level_up_hero.texture.resource_path != level_up_portrait:
+		push_error("Expected level-up hero portrait to use new full-frame portrait %s, got %s." % [level_up_portrait, level_up_hero.texture.resource_path])
+		quit(1)
+		return
 	# SCRUM-149: ровно 3 варианта за уровень.
 	var level_up_buttons := level_up_overlay.find_children("LevelUpRewardButton*", "Button", true, false)
 	if level_up_buttons.size() != 3:
@@ -1233,7 +1258,7 @@ func _initialize() -> void:
 		push_error("Expected the attribute purchase window after the victory banner.")
 		quit(1)
 		return
-	var attribute_offers := main.find_child("AttributeOffers", true, false) as BoxContainer
+	var attribute_offers := main.find_child("AttributeOffers", true, false) as Container
 	if attribute_offers == null or attribute_offers.get_child_count() < 2 or attribute_offers.get_child_count() > 8:
 		push_error("Expected 2-8 attribute offers in the post-battle window, including meta skill extra options.")
 		quit(1)
@@ -2227,6 +2252,15 @@ func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 	var checked_combat := false
 	for event in EventData.RANDOM_EVENTS:
 		for choice in (event.get("choices", []) as Array):
+			var formatted_choice_text: String = event_main.ui._event_choice_description_text(choice)
+			if formatted_choice_text.contains("Риск: Риск:"):
+				_fail("Expected event choice risk text to avoid duplicate prefix for %s." % choice.get("id", ""))
+				event_main.queue_free()
+				return
+			if bool(choice.get("risk", false)) and not formatted_choice_text.begins_with("Риск:"):
+				_fail("Expected risk event choice text to include a single player-facing risk prefix for %s." % choice.get("id", ""))
+				event_main.queue_free()
+				return
 			if choice.has("check") and not checked_success:
 				var high_player: Node = event_main.combat._snapshot_player_for_menu()
 				var success_outcome: Dictionary = event_main.ui._resolve_event_choice_outcome(choice, high_player)
@@ -2992,6 +3026,37 @@ func _test_weapon_effect_cleanup() -> void:
 	await process_frame
 
 
+func _assert_health_bar_visible_when_near_viewport_top(entity: Node2D, health_bar: Node2D, context: String) -> bool:
+	if entity == null or health_bar == null:
+		return false
+	var viewport := entity.get_viewport()
+	if viewport == null:
+		return false
+	var visible_rect := viewport.get_visible_rect()
+	var canvas_inverse := viewport.get_canvas_transform().affine_inverse()
+	var visible_top_left: Vector2 = canvas_inverse * visible_rect.position
+	var visible_bottom_right: Vector2 = canvas_inverse * (visible_rect.position + visible_rect.size)
+	var original_position := entity.global_position
+	entity.global_position = Vector2((visible_top_left.x + visible_bottom_right.x) * 0.5, visible_top_left.y + 10.0)
+	if entity.has_method("_update_health_bar"):
+		entity.call("_update_health_bar")
+	var screen_position: Vector2 = health_bar.get_global_transform_with_canvas().origin
+	var half_width := maxf(8.0, float(health_bar.get("bar_width")) * 0.5)
+	var bar_height := maxf(4.0, float(health_bar.get("bar_height")))
+	var visible := (
+		screen_position.x - half_width >= -1.0
+		and screen_position.x + half_width <= float(visible_rect.size.x) + 1.0
+		and screen_position.y - bar_height >= -1.0
+		and screen_position.y <= float(visible_rect.size.y) + 1.0
+	)
+	if not visible:
+		print("%s health bar offscreen at %s in viewport %s." % [context, str(screen_position), str(visible_rect.size)])
+	entity.global_position = original_position
+	if entity.has_method("_update_health_bar"):
+		entity.call("_update_health_bar")
+	return visible
+
+
 func _test_victory_flow(main: Node) -> void:
 	paused = false
 	main.set("route_stage", 3)
@@ -3026,6 +3091,10 @@ func _test_victory_flow(main: Node) -> void:
 	var boss_phase_markers: Array = boss.get_meta("boss_phase_markers", [])
 	if boss_phase_markers.size() < 2 or not boss_health_bar.has_meta("phase_markers"):
 		push_error("Expected boss to expose HP phase markers for the uber-boss encounter.")
+		quit(1)
+		return
+	if not _assert_health_bar_visible_when_near_viewport_top(boss, boss_health_bar, "boss"):
+		push_error("Expected boss health bar to stay visible when the large boss sprite reaches the viewport top edge.")
 		quit(1)
 		return
 	boss.set("health", float(boss.get("max_health")) * 0.64)
@@ -3116,6 +3185,10 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		return
 	if absf(float(elite_health_bar.get("max_value")) - float(elite_enemy.get("max_health"))) > 0.01:
 		push_error("Expected elite health bar max value to match scaled elite max health.")
+		quit(1)
+		return
+	if not _assert_health_bar_visible_when_near_viewport_top(elite_enemy, elite_health_bar, "elite"):
+		push_error("Expected elite health bar to stay visible when the large elite sprite reaches the viewport top edge.")
 		quit(1)
 		return
 	elite_enemy.call("take_damage", 10.0)
@@ -6133,6 +6206,11 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		if actual_path != str(expected_codex_textures[node_name]):
 			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
 			return
+	var codex_portrait_texture := _first_child_texture_rect(default_portrait)
+	var expected_default_portrait := _expected_character_portrait_path("berserk")
+	if codex_portrait_texture == null or codex_portrait_texture.texture == null or codex_portrait_texture.texture.resource_path != expected_default_portrait:
+		_fail("Expected default Codex character portrait to use new full-frame portrait %s." % expected_default_portrait)
+		return
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
 	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_tab.png":
 		_fail("Expected Codex tabs to use the Codex tab texture kit.")
@@ -6148,10 +6226,21 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		if control_node is PanelContainer:
 			texture_path = _stylebox_texture_path((control_node as PanelContainer).get_theme_stylebox("panel"))
 		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control_node.name, str(control_node.get_global_rect()), texture_path])
+	dump_lines.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
 	var dump_file := FileAccess.open("%s/codex_texture_runtime_dump.md" % qa_dir, FileAccess.WRITE)
 	if dump_file != null:
 		dump_file.store_string("\n".join(dump_lines))
 		dump_file.close()
+	var scrum416_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum416")
+	DirAccess.make_dir_recursive_absolute(scrum416_qa_dir)
+	var scrum416_codex_dump := PackedStringArray()
+	scrum416_codex_dump.append("# SCRUM-416 Codex Character Portrait Runtime Paths")
+	scrum416_codex_dump.append("")
+	scrum416_codex_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	var scrum416_codex_file := FileAccess.open("%s/codex_character_portrait_runtime_paths.md" % scrum416_qa_dir, FileAccess.WRITE)
+	if scrum416_codex_file != null:
+		scrum416_codex_file.store_string("\n".join(scrum416_codex_dump))
+		scrum416_codex_file.close()
 
 	# Полнота данных кодекса.
 	var codex_data := load("res://scripts/codex_data.gd")
@@ -6522,6 +6611,23 @@ func _expected_weapon_sprite_path(weapon_id: String) -> String:
 		"hammer": "two_handed_hammer",
 	}
 	return "res://assets/sprites/weapons/%s.png" % str(aliases.get(weapon_id, weapon_id))
+
+
+func _expected_character_portrait_path(character_id: String) -> String:
+	return "res://assets/sprites/characters/full_frame/%s/%s_idle_00.png" % [character_id, character_id]
+
+
+func _first_child_texture_rect(parent: Node) -> TextureRect:
+	if parent == null:
+		return null
+	for child in parent.get_children():
+		var texture_rect := child as TextureRect
+		if texture_rect != null:
+			return texture_rect
+		var nested := _first_child_texture_rect(child)
+		if nested != null:
+			return nested
+	return null
 
 
 func _test_parchment_button_seal_sizes(main_scene: PackedScene) -> void:

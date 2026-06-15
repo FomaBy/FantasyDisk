@@ -85,6 +85,16 @@ func _initialize() -> void:
 	if scrum332_file != null:
 		scrum332_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["_economy"])))
 		scrum332_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum413" % qa_dir)
+	var scrum413_file := FileAccess.open("%s/scrum413/attribute_shop_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum413_file != null:
+		scrum413_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["attribute_shop_economy"])))
+		scrum413_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum415" % qa_dir)
+	var scrum415_file := FileAccess.open("%s/scrum415/event_option_text_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum415_file != null:
+		scrum415_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["event_economy"])))
+		scrum415_file.close()
 	DirAccess.make_dir_recursive_absolute("%s/scrum331" % qa_dir)
 	var scrum331_file := FileAccess.open("%s/scrum331/progression_ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
 	if scrum331_file != null:
@@ -128,9 +138,14 @@ func _check_screen(viewport_size: Vector2i, screen_id: String, open_callable: Ca
 	for control in controls:
 		var rect := (control as Control).get_global_rect()
 		dump_lines.append("- `%s`: `%s`" % [(control as Control).name, str(rect)])
+		if _requires_viewport_fit(screen_id) and not Rect2(Vector2.ZERO, Vector2(viewport_size)).grow(1.0).encloses(rect):
+			errors.append("%s: %s rect %s escapes viewport %s." % [context, (control as Control).name, str(rect), str(viewport_size)])
 	var overlap := _first_peer_overlap(controls, 2.0)
 	if not overlap.is_empty():
 		errors.append("%s: %s" % [context, overlap])
+	var screen_error := _screen_specific_assertions(main, screen_id, context)
+	if screen_error != "":
+		errors.append(screen_error)
 	viewport.queue_free()
 	await process_frame
 
@@ -229,8 +244,42 @@ func _open_event(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
 	main.ui._show_event_screen({
 		"name": "Тестовое событие",
-		"event_id": "wandering_bard",
+		"event_id": "cursed_altar",
 	})
+
+
+func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
+	match screen_id:
+		"attribute_shop_economy":
+			var panel := main.find_child("AttributeShopPanel", true, false) as Control
+			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button
+			if panel == null or not panel.get_global_rect().has_area():
+				return "%s: expected visible AttributeShopPanel." % context
+			if skip_button == null or skip_button.disabled:
+				return "%s: expected AttributeSkipButton to remain reachable and enabled." % context
+			for node in main.find_children("AttributeOffer_*", "Button", true, false):
+				var offer := node as Button
+				if offer == null:
+					continue
+				if not offer.disabled:
+					return "%s: expected zero-money attribute offers to be disabled." % context
+				if not offer.tooltip_text.contains("Недостаточно золота"):
+					return "%s: expected disabled attribute offer tooltip to explain insufficient gold." % context
+		"event_economy":
+			for node in main.find_children("EventChoiceButton*", "Button", true, false):
+				var event_button := node as Button
+				if event_button == null:
+					continue
+				if event_button.tooltip_text.contains("Риск: Риск:"):
+					return "%s: expected event option text to avoid duplicated risk prefix." % context
+				var desc := event_button.find_child("%sDescription" % event_button.name, true, false) as Label
+				if desc != null and not event_button.get_global_rect().grow(1.0).encloses(desc.get_global_rect()):
+					return "%s: event description %s escapes its card safe content rect." % [context, desc.name]
+	return ""
+
+
+func _requires_viewport_fit(screen_id: String) -> bool:
+	return screen_id in ["attribute_shop_economy", "event_economy"]
 
 
 func _first_peer_overlap(controls: Array, tolerance_px: float) -> String:

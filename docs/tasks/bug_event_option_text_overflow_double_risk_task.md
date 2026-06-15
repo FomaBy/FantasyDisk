@@ -1,6 +1,6 @@
 # BUG: События — текст опций не влезает в рамку + дубль «Риск: Риск:»
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.5
@@ -51,9 +51,46 @@ Jira: SCRUM-415
 - tests/runtime_smoke_test.gd, tests/ui_no_overlap_matrix_test.gd
 
 ## Acceptance Criteria
-- [ ] Нет дубля «Риск: Риск:» ни в одном событии; единый источник маркера.
-- [ ] Текст опций целиком помещается в content-зоне карточки, не упирается в рамку/не обрезается на 3 разрешениях.
-- [ ] smoke + no-overlap зелёные; скрин; CHANGELOG.
+- [x] Нет дубля «Риск: Риск:» ни в одном событии; единый источник маркера.
+- [x] Текст опций целиком помещается в content-зоне карточки, не упирается в рамку/не обрезается на 3 разрешениях.
+- [x] smoke + no-overlap зелёные; скрин/QA dump; CHANGELOG.
 
 ## Документация
 docs/design/systems/menus_ui.md, content_registry.
+
+## Result / Back-end report
+- 2026-06-15 — Fixed in `scripts/ui_screens.gd`.
+- Event choice descriptions now pass through `_event_choice_risk_description()`,
+  which keeps existing `Риск:` copy as the single source of truth and only adds
+  the prefix when a risk choice lacks it. Runtime smoke now asserts every event
+  choice has no `Риск: Риск:` duplicate and risk choices keep one visible prefix.
+- Random event cards use SCRUM-332 economy frames at a safer `280x300` size with
+  tighter row spacing and a compact Back action, keeping long descriptions
+  inside the accepted choice-card content zone on the tested viewports.
+- QA dumps:
+  `build/qa/scrum415/event_option_text_no_overlap_matrix.md` plus the shared
+  `build/qa/scrum332/economy_ui_no_overlap_matrix.md`.
+- Verification:
+  - `runtime_smoke_ui_test.gd` — PASS;
+  - `ui_no_overlap_matrix_test.gd` — PASS;
+  - `runtime_smoke_test.gd` — PASS.
+
+
+## QA-Вердикт (2026-06-15)
+Статус: PASSED — дубль «Риск: Риск:» убран, текст опций в content-зоне
+
+Проверено (фактически):
+- **Дедуп «Риск:»** (`ui_screens.gd:_event_choice_risk_description`): если choice
+  не risk → текст как есть; если risk и уже `begins_with("риск:")` → как есть (без
+  второго префикса); иначе добавляет один `Риск: `. Нет двойного. `runtime_smoke`
+  ассертит отсутствие `Риск: Риск:` у всех event-choice — PASS.
+- **Overflow убран**: event-карты на SCRUM-332 economy-фреймах размером `280x300`
+  с компактным spacing + Back; длинные описания в content-зоне карточки. No-overlap
+  дамп `scrum415/event_option_text_no_overlap_matrix.md`.
+- **Тесты**: `runtime_smoke_ui` + `ui_no_overlap_matrix` + `runtime_smoke` PASS.
+
+Acceptance:
+- [x] Нет дубля «Риск: Риск:»; risk-choice один видимый префикс.
+- [x] Текст опций в content-зоне (no-overlap); smoke + matrix зелёные.
+
+Статус done. Баги: нет.

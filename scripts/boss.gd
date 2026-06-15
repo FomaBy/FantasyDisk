@@ -52,6 +52,7 @@ func _ready() -> void:
 	if health_bar != null:
 		health_bar.set_meta("phase_markers", BOSS_PHASE_MARKERS)
 	_update_shield_visual()
+	_update_health_bar()
 
 
 func _physics_process(delta: float) -> void:

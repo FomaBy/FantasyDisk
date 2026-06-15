@@ -1385,31 +1385,37 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
-	# SCRUM-412: высота адаптивна (вьюпорт минус поля сверху/снизу), не фикс 660px —
+	# SCRUM-413: высота адаптивна (вьюпорт минус поля сверху/снизу), не фикс 660px —
 	# вписывается в 1280x720 и узкие окна; контент в ScrollContainer (доступны все
 	# опции + кнопки «Обновить»/«Пропустить» прокруткой).
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	var panel_width: float = minf(680.0, maxf(500.0, viewport_size.x - 48.0))
+	var panel_vertical_margin: float = minf(40.0, maxf(24.0, viewport_size.y * 0.055))
 	var panel := PanelContainer.new()
 	panel.name = "AttributeShopPanel"
 	panel.anchor_left = 0.5
 	panel.anchor_top = 0.0
 	panel.anchor_right = 0.5
 	panel.anchor_bottom = 1.0
-	panel.offset_left = -340.0
-	panel.offset_top = 40.0
-	panel.offset_right = 340.0
-	panel.offset_bottom = -40.0
+	panel.offset_left = -panel_width * 0.5
+	panel.offset_top = panel_vertical_margin
+	panel.offset_right = panel_width * 0.5
+	panel.offset_bottom = -panel_vertical_margin
 	panel.add_theme_stylebox_override("panel", _economy_panel_style())
 	root.add_child(panel)
 
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(scroll)
 
 	var box := VBoxContainer.new()
 	box.name = "AttributeShopContent"
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 12)
+	box.add_theme_constant_override("separation", 8)
 	scroll.add_child(box)
 
 	var title := Label.new()
@@ -1426,18 +1432,24 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	money_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.30, 1.0))
 	box.add_child(money_label)
 
-	var offers_box := HBoxContainer.new()
+	var offers_box := GridContainer.new()
 	offers_box.name = "AttributeOffers"
-	offers_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	offers_box.add_theme_constant_override("separation", 22)
+	offers_box.columns = 1 if panel_width < 600.0 else 2
+	offers_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	offers_box.add_theme_constant_override("h_separation", 18)
+	offers_box.add_theme_constant_override("v_separation", 14)
 	box.add_child(offers_box)
 
 	var reroll_button := _make_button("")
 	reroll_button.name = "AttributeRerollButton"
+	reroll_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_set_action_button_size(reroll_button, STANDARD_ACTION_BUTTON_WIDTH, 62.0)
 	box.add_child(reroll_button)
 
 	var skip_button := _make_button("Пропустить")
 	skip_button.name = "AttributeSkipButton"
+	skip_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_set_action_button_size(skip_button, STANDARD_ACTION_BUTTON_WIDTH, 62.0)
 	box.add_child(skip_button)
 
 	# Набор и счетчик rerolls живут в game-state: переоткрытие окна (FAB)
@@ -1462,7 +1474,7 @@ func _show_attribute_shop(on_done: Callable) -> void:
 func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	if root == null or not is_instance_valid(root):
 		return
-	var offers_box := root.find_child("AttributeOffers", true, false) as BoxContainer
+	var offers_box := root.find_child("AttributeOffers", true, false) as Container
 	var money_label := root.find_child("AttributeShopMoney", true, false) as Label
 	var reroll_button := root.find_child("AttributeRerollButton", true, false) as Button
 	if offers_box == null or money_label == null or reroll_button == null:
@@ -1479,16 +1491,15 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	for stat_id in game.attribute_offer:
 		var stat_title: String = str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
 		var interpretation: String = str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
-		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, Vector2(250.0, 330.0))
+		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, Vector2(236.0, 240.0))
 		offer_button.name = "AttributeOffer_%s" % stat_id
 		offer_button.disabled = money < buy_cost
-		# SCRUM-412: недоступные (не хватает золота) карточки визуально затемнены —
+		# SCRUM-413: недоступные (не хватает золота) карточки визуально затемнены —
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
 		offer_button.modulate = Color(0.5, 0.5, 0.55, 0.85) if offer_button.disabled else Color(1.0, 1.0, 1.0, 1.0)
-		offer_button.tooltip_text = "%s +1\n%s" % [
-			stat_title,
-			interpretation,
-		]
+		offer_button.tooltip_text = "%s +1\n%s" % [stat_title, interpretation]
+		if offer_button.disabled:
+			offer_button.tooltip_text += "\nНедостаточно золота: нужно %d, есть %d." % [buy_cost, money]
 		var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(36, 36))
 		icon_control.name = "AttributeOfferIcon_%s" % stat_id
 		icon_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -4075,12 +4086,13 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, Callable(), false)
 	var event_choices: Array = event_definition.get("choices", _random_event_choices())
 	var choices := _make_economy_choice_row("EventChoiceRow")
+	choices.add_theme_constant_override("separation", 16)
 	box.add_child(choices)
 	var index := 0
 	for event_choice in event_choices:
 		var title_text := str(event_choice.get("title", "Выбор"))
 		var desc_text := _event_choice_description_text(event_choice)
-		var button := _make_economy_choice_card(title_text, desc_text, "Выбрать", "EventChoiceButton%d" % index, Vector2(250.0, 375.0))
+		var button := _make_economy_choice_card(title_text, desc_text, "Выбрать", "EventChoiceButton%d" % index, Vector2(280.0, 300.0))
 		button.name = "EventChoiceButton%d" % index
 		choices.add_child(button)
 		button.pressed.connect(func() -> void:
@@ -4092,7 +4104,8 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		index += 1
 	var back_button := _make_button("Назад")
 	back_button.name = "EventBackButton"
-	_set_action_button_size(back_button, 380.0)
+	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_set_action_button_size(back_button, 380.0, 54.0)
 	var allow_skip := bool(event_definition.get("allow_skip", false))
 	back_button.disabled = not allow_skip
 	back_button.tooltip_text = "Вернуться на карту без исхода события." if allow_skip else "Это событие требует выбрать исход."
@@ -4240,17 +4253,24 @@ func _random_event_choices() -> Array:
 
 
 func _event_choice_button_text(event_choice: Dictionary) -> String:
-	var marker := "Риск: " if bool(event_choice.get("risk", false)) else ""
 	return "%s\n%s%s" % [
 		str(event_choice.get("title", "Выбор")),
-		marker,
-		str(event_choice.get("description", "")),
+		"",
+		_event_choice_description_text(event_choice),
 	]
 
 
 func _event_choice_description_text(event_choice: Dictionary) -> String:
-	var marker := "Риск: " if bool(event_choice.get("risk", false)) else ""
-	return "%s%s" % [marker, str(event_choice.get("description", ""))]
+	return _event_choice_risk_description(str(event_choice.get("description", "")), bool(event_choice.get("risk", false)))
+
+
+func _event_choice_risk_description(description: String, is_risk: bool) -> String:
+	var text := description.strip_edges()
+	if not is_risk:
+		return text
+	if text.to_lower().begins_with("риск:"):
+		return text
+	return "Риск: %s" % text
 
 
 func _apply_event_choice(event_choice: Dictionary) -> bool:
@@ -5237,6 +5257,15 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 		scroll.follow_focus = true
 		panel.add_child(scroll)
 		scroll.add_child(box)
+	elif economy_panel:
+		var scroll := ScrollContainer.new()
+		scroll.name = "EconomyMenuScroll_%s" % screen_background_id
+		scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		scroll.follow_focus = true
+		panel.add_child(scroll)
+		scroll.add_child(box)
 	else:
 		panel.add_child(box)
 
@@ -5905,14 +5934,19 @@ func _pause_end_modal_display_size(screen_background_id: String) -> Vector2:
 
 
 func _economy_menu_panel_half_size(screen_background_id: String) -> Vector2:
+	var target_size := Vector2(1120.0, 660.0)
 	match screen_background_id:
 		"event":
-			return Vector2(600.0, 390.0)
+			target_size = Vector2(1200.0, 780.0)
 		"upgrade":
-			return Vector2(540.0, 365.0)
+			target_size = Vector2(1080.0, 730.0)
 		"campfire":
-			return Vector2(480.0, 358.0)
-	return Vector2(560.0, 330.0)
+			target_size = Vector2(960.0, 716.0)
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	var max_size := Vector2(maxf(520.0, viewport_size.x - 48.0), maxf(420.0, viewport_size.y - 48.0))
+	target_size.x = minf(target_size.x, max_size.x)
+	target_size.y = minf(target_size.y, max_size.y)
+	return target_size * 0.5
 
 
 func _scaled_frame_margins(source_size: Vector2, display_size: Vector2, source_margins: Vector4) -> Vector4:
