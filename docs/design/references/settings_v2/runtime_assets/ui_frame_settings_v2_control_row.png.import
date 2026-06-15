@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cnnlp6w3h67jw"
-path="res://.godot/imported/rift_warden_death_00.png-2b9361e458c58671eed9c2eda921010b.ctex"
+uid="uid://gvfea0qk1ftx"
+path="res://.godot/imported/ui_frame_settings_v2_control_row.png-17b64f5a36989ea1928b4eda226a60a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_death_00.png"
-dest_files=["res://.godot/imported/rift_warden_death_00.png-2b9361e458c58671eed9c2eda921010b.ctex"]
+source_file="res://docs/design/references/settings_v2/runtime_assets/ui_frame_settings_v2_control_row.png"
+dest_files=["res://.godot/imported/ui_frame_settings_v2_control_row.png-17b64f5a36989ea1928b4eda226a60a2.ctex"]
 
 [params]
 

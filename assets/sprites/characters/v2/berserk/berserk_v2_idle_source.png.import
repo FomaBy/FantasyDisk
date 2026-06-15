@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cnnlp6w3h67jw"
-path="res://.godot/imported/rift_warden_death_00.png-2b9361e458c58671eed9c2eda921010b.ctex"
+uid="uid://b05ku7grjvdfe"
+path="res://.godot/imported/berserk_v2_idle_source.png-3a32c4c87a125f96e83ff9cb958b5d3f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_death_00.png"
-dest_files=["res://.godot/imported/rift_warden_death_00.png-2b9361e458c58671eed9c2eda921010b.ctex"]
+source_file="res://assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png"
+dest_files=["res://.godot/imported/berserk_v2_idle_source.png-3a32c4c87a125f96e83ff9cb958b5d3f.ctex"]
 
 [params]
 

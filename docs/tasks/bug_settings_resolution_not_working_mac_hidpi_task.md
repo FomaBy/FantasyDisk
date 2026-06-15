@@ -6,6 +6,7 @@
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (прямой отчёт пользователя)
+Jira: SCRUM-441
 
 ## Прогресс (2026-06-15, Claude Fable 5)
 **Core req 1 доставлен изолированно** (не трогая занятый `ui_screens.gd`, который
@@ -81,3 +82,12 @@ docs/design/systems/menus_ui.md, current_game_state.
 Ручная проверка на Mac: открыть настройки → выбрать 1920x1080, затем 2560x1440 →
 окно ресайзится; Mac-разрешение в списке и применяется. Headless: `runtime_smoke_ui`
 строит экран настроек без ошибок.
+
+## Dispatcher Sync Note (2026-06-15)
+
+Bookkeeping sync only: restored Jira key `SCRUM-441` in the task file and added the
+row to `docs/process/task_board.md` because the core HiDPI helper work is already
+recorded as delivered/in_progress while runtime integration is deferred until the
+Settings/UI rebuild owner can safely touch `scripts/ui_screens.gd`. Not dispatched
+this heartbeat: Back-end is active on SCRUM-437 and Designer 2 is active on
+SCRUM-439. Keep reasoning High/no low when this resumes.

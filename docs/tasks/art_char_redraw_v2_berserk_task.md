@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Берсерк» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: in_progress
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -49,3 +49,15 @@ Jira: SCRUM-420
 
 ## Документация
 docs/design/content_registry.md (berserk), current_game_state.
+
+## Dispatcher Design Dispatch (2026-06-15)
+
+Передано Design main (`019eabf1-6d54-7561-8af9-ce25cdf483a9`) как первая
+per-class v2 строка после принятого SCRUM-422 bright+epic source anchor.
+
+Scope for this pass: Design/source work only. Use `fantasydisk-asset-generator`
+and the SCRUM-422 style/spec to produce accepted Berserk v2 transparent source
+art/source-sheet handoff, alpha/size/pivot QA, previews and documentation. Do not
+perform Animator-owned SpriteFrames/AnimationPlayer/AnimationTree/runtime wiring,
+animation smoke, or Back-end scale/collision changes in this Design pass. Animator
+starts only after the Berserk source handoff is accepted. Keep reasoning High/no low.

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cnnlp6w3h67jw"
-path="res://.godot/imported/rift_warden_death_00.png-2b9361e458c58671eed9c2eda921010b.ctex"
+uid="uid://cbgenbmrqkho5"
+path="res://.godot/imported/ui_frame_economy_choice_card_wide_hover.png-3afd8a5fd82cb097c63187b63bb262b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/bosses/full_frame/rift_warden/rift_warden_death_00.png"
-dest_files=["res://.godot/imported/rift_warden_death_00.png-2b9361e458c58671eed9c2eda921010b.ctex"]
+source_file="res://docs/design/references/scrum437_wide_economy_choice_card/runtime_assets/ui_frame_economy_choice_card_wide_hover.png"
+dest_files=["res://.godot/imported/ui_frame_economy_choice_card_wide_hover.png-3afd8a5fd82cb097c63187b63bb262b9.ctex"]
 
 [params]
 

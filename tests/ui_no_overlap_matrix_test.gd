@@ -2,6 +2,8 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const VIEWPORT_SIZES := [Vector2i(1152, 648), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
+const ECONOMY_CHOICE_WIDE_PATH := "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide.png"
+const ECONOMY_CHOICE_WIDE_HOVER_PATH := "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide_hover.png"
 
 
 func _initialize() -> void:
@@ -95,6 +97,11 @@ func _initialize() -> void:
 	if scrum415_file != null:
 		scrum415_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["event_economy"])))
 		scrum415_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum437" % qa_dir)
+	var scrum437_file := FileAccess.open("%s/scrum437/wide_economy_choice_card_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum437_file != null:
+		scrum437_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["rest_economy", "upgrade_economy", "event_economy", "attribute_shop_economy"])))
+		scrum437_file.close()
 	DirAccess.make_dir_recursive_absolute("%s/scrum331" % qa_dir)
 	var scrum331_file := FileAccess.open("%s/scrum331/progression_ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
 	if scrum331_file != null:
@@ -249,6 +256,14 @@ func _open_event(main: Node) -> void:
 
 
 func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
+	if ["attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"].has(screen_id):
+		for node in main.find_children("*", "Button", true, false):
+			var card := node as Button
+			if card == null or str(card.get_meta("economy_frame_kind", "")) != "choice_card":
+				continue
+			var card_error := _economy_choice_card_contract_error(card, context)
+			if card_error != "":
+				return card_error
 	match screen_id:
 		"attribute_shop_economy":
 			var panel := main.find_child("AttributeShopPanel", true, false) as Control
@@ -279,7 +294,42 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 
 
 func _requires_viewport_fit(screen_id: String) -> bool:
-	return screen_id in ["attribute_shop_economy", "event_economy"]
+	return screen_id in ["attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"]
+
+
+func _economy_choice_card_contract_error(card: Button, context: String) -> String:
+	if str(card.get_meta("economy_frame_path", "")) != ECONOMY_CHOICE_WIDE_PATH:
+		return "%s: expected %s to use SCRUM-437 wide economy choice frame, got %s." % [context, card.name, str(card.get_meta("economy_frame_path", ""))]
+	if str(card.get_meta("economy_hover_frame_path", "")) != ECONOMY_CHOICE_WIDE_HOVER_PATH:
+		return "%s: expected %s hover to use SCRUM-437 wide hover frame." % [context, card.name]
+	if _stylebox_texture_path(card.get_theme_stylebox("normal")) != ECONOMY_CHOICE_WIDE_PATH:
+		return "%s: expected %s normal StyleBox to use wide economy choice frame." % [context, card.name]
+	if _stylebox_texture_path(card.get_theme_stylebox("hover")) != ECONOMY_CHOICE_WIDE_HOVER_PATH:
+		return "%s: expected %s hover StyleBox to use wide economy choice hover frame." % [context, card.name]
+	var expected_min_width := 320.0 if context.contains("(1152, 648)") else 360.0
+	if context.contains("(1920, 1080)"):
+		expected_min_width = 420.0
+	elif context.contains("(2560, 1440)"):
+		expected_min_width = 480.0
+	if card.custom_minimum_size.x < expected_min_width or card.custom_minimum_size.y < 240.0:
+		return "%s: expected %s to use the SCRUM-437 wide-card display target, got %s." % [context, card.name, str(card.custom_minimum_size)]
+	var source_size: Vector2 = card.get_meta("economy_source_size", Vector2.ZERO)
+	var source_safe: Rect2 = card.get_meta("economy_source_safe_rect", Rect2())
+	if source_size != Vector2(960.0, 640.0) or source_safe != Rect2(132.0, 118.0, 696.0, 394.0):
+		return "%s: expected %s to expose SCRUM-437 source size/safe rect metadata." % [context, card.name]
+	var card_rect := card.get_global_rect()
+	var safe_rect := _scaled_source_rect(card_rect, source_size, source_safe).grow(1.0)
+	var content := card.find_child("%sContent" % card.name, true, false) as Control
+	if content != null:
+		for child in content.get_children():
+			var child_control := child as Control
+			if child_control != null and child_control.visible and not safe_rect.encloses(child_control.get_global_rect()):
+				return "%s: expected %s child %s to stay inside scaled wide-card safe rect %s." % [context, card.name, child_control.name, str(safe_rect)]
+	for suffix in ["Title", "Description", "Action"]:
+		var label := card.find_child("%s%s" % [card.name, suffix], true, false) as Label
+		if label != null and not safe_rect.encloses(label.get_global_rect()):
+			return "%s: expected %s label %s to stay inside scaled wide-card safe rect %s." % [context, card.name, label.name, str(safe_rect)]
+	return ""
 
 
 func _first_peer_overlap(controls: Array, tolerance_px: float) -> String:
@@ -313,6 +363,24 @@ func _rect_with_tolerance(rect: Rect2, tolerance_px: float) -> Rect2:
 	var shrink := tolerance_px * 0.5
 	var size := Vector2(maxf(rect.size.x - tolerance_px, 0.0), maxf(rect.size.y - tolerance_px, 0.0))
 	return Rect2(rect.position + Vector2(shrink, shrink), size)
+
+
+func _stylebox_texture_path(style: StyleBox) -> String:
+	if not (style is StyleBoxTexture):
+		return ""
+	var texture := (style as StyleBoxTexture).texture
+	if texture == null:
+		return ""
+	return texture.resource_path
+
+
+func _scaled_source_rect(frame_rect: Rect2, source_size: Vector2, source_rect: Rect2) -> Rect2:
+	var scale_x := frame_rect.size.x / maxf(source_size.x, 1.0)
+	var scale_y := frame_rect.size.y / maxf(source_size.y, 1.0)
+	return Rect2(
+		frame_rect.position + Vector2(source_rect.position.x * scale_x, source_rect.position.y * scale_y),
+		Vector2(source_rect.size.x * scale_x, source_rect.size.y * scale_y)
+	)
 
 
 func _filter_dump_sections(lines: PackedStringArray, markers: Array) -> PackedStringArray:

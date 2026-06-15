@@ -2265,8 +2265,8 @@
  },
  "art_char_redraw_v2_berserk_task.md": {
   "key": "SCRUM-420",
-  "status": "К выполнению",
-  "desc_hash": "b9eccdb4392a4ef2c12db4c792fbd435"
+  "status": "В работе",
+  "desc_hash": "6a2fcfe632bad31c7d8bf8a0c06f1515"
  },
  "art_char_redraw_v2_biologist_task.md": {
   "key": "SCRUM-421",
@@ -2346,12 +2346,12 @@
  "design_hero_select_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-436",
   "status": "В работе",
-  "desc_hash": "b1393cca989530f76e3a1cbc3b8af51e"
+  "desc_hash": "486e18476f1a05ae9364485fcdd17e3a"
  },
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
   "key": "SCRUM-437",
-  "status": "В работе",
-  "desc_hash": "8f6b03243cc8c3528d1ce79566c4aab5"
+  "status": "Готово",
+  "desc_hash": "0818b666600022a00ceb5cc005def454"
  },
  "design_codex_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-438",
@@ -2361,7 +2361,7 @@
  "design_settings_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-439",
   "status": "В работе",
-  "desc_hash": "66f3c486dcb042d6d2cfef115af8bd1e"
+  "desc_hash": "c73fcda7cb8911c350c9b126d0c527b5"
  },
  "bug_mass_duplicate_space2_files_cleanup_task.md": {
   "key": "SCRUM-440",
@@ -2370,7 +2370,7 @@
  },
  "bug_settings_resolution_not_working_mac_hidpi_task.md": {
   "key": "SCRUM-441",
-  "status": "К выполнению",
-  "desc_hash": "10381a5c68985b3d05e395a10834e8b8"
+  "status": "В работе",
+  "desc_hash": "198cc5d89f1dd82869fb2cd247cc6e9b"
  }
 }

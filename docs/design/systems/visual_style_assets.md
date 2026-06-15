@@ -150,6 +150,20 @@ size; labels, icons, artifact tier text and action labels must stay inside the
 safe area while the whole card remains clickable/focusable. Runtime QA dumps are
 written to `build/qa/scrum338/`.
 
+SCRUM-437 adds a Design-ready **wide economy choice-card frame** for long
+reward/event/upgrade/rest option copy. New candidates live in
+`assets/sprites/ui/frames/economy/` as
+`ui_frame_economy_choice_card_wide.png` and
+`ui_frame_economy_choice_card_wide_hover.png` (`960x640`, RGBA transparent).
+Use source size `960x640`, base texture margins `[96,88,96,96]`, base content
+margins `[132,118,132,128]`, hover texture margins `[104,96,104,104]`, hover
+content margins `[140,126,140,136]`, and safe rect `[132,118,696,394]`.
+Back-end integration is pending; do not point live economy choice constants to
+the wide assets until `scripts/ui_screens.gd` source size, display sizes and
+no-overlap matrix are updated. Spec and previews:
+`docs/design/mockups/scrum437_wide_economy_choice_card/spec.md`,
+`docs/design/previews/scrum437_wide_economy_choice_card_safe_zone.png`.
+
 SCRUM-330 provides the Design-ready **Pause / Victory / Defeat modal kit** for
 the pause and result-screen cluster. The accepted runtime candidate is
 `assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png` (`1280x1024`,
@@ -279,6 +293,10 @@ Rebuild/QA assets:
 - `tools/build_hero_select_frame_kit.py` - SCRUM-281 Hero Select frame pipeline from `references/herouiframe`;
 - `tools/capture_hero_select_qa.gd` - SCRUM-281 screenshot/rect QA capture for 1280x720, 1920x1080 and 2560x1440;
 - `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png` - SCRUM-325 design-ready Settings tab switcher frame (`1280x256`, RGBA);
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` - SCRUM-439 Settings v2 main modal candidate (`1536x1024`, RGBA; texture margins `96/118/96/96`, content margins `144/192/144/128`);
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png` - SCRUM-439 Settings v2 three-slot switcher candidate (`1280x256`, RGBA; slot safe rects `Rect2(150,78,275,92)`, `Rect2(502,78,275,92)`, `Rect2(854,78,275,92)`);
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_section_panel.png` - SCRUM-439 Settings v2 nested section panel candidate (`1024x384`, RGBA; content margins `104/96/104/92`);
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_control_row.png` - SCRUM-439 Settings v2 control-row frame candidate (`1536x192`, RGBA; content margins `96/54/96/54`);
 - `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
 - `tools/build_leather_gold_ui_kit.py` - superseded SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
@@ -286,6 +304,8 @@ Rebuild/QA assets:
 - `docs/design/previews/ornate_dark_frame_kit_contact.png` - active SCRUM-274 frame contact sheet;
 - `docs/design/previews/hero_select_frame_kit_contact.png` - active SCRUM-281 Hero Select frame contact sheet;
 - `docs/design/previews/settings_tab_switcher_frame_content_zone.png` - SCRUM-325 Settings tab switcher safe-area overlay;
+- `docs/design/previews/scrum439_settings_v2_safe_zones.png` - SCRUM-439 Settings v2 safe-zone overlay for all three tabs;
+- `docs/design/previews/scrum439_settings_v2_assets_contact.png` - SCRUM-439 Settings v2 transparent frame candidate contact sheet;
 - `docs/design/previews/unified_master_frame_9slice_contact.png` - SCRUM-373 unified master frame contact sheet;
 - `docs/design/previews/unified_master_frame_safe_zone.png` - SCRUM-373 strict content-zone overlay;
 - `docs/design/previews/unified_master_frame_thin_revision_contact.png` - SCRUM-384 thin metallic unified frame revision contact sheet;

@@ -53,6 +53,20 @@ in tooltip. Random event choices keep long descriptions inside the accepted
 choice-card safe zone and normalize risk text so player copy shows a single
 `Риск:` prefix, never `Риск: Риск:`.
 
+SCRUM-437 makes the wide 0.1.6 economy choice-card frame live in runtime for
+rest, upgrade, event and Attribute Shop choices. Runtime now uses
+`assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide.png` and
+`ui_frame_economy_choice_card_wide_hover.png` (`960x640`, RGBA transparent) with
+source size `Vector2(960, 640)`, texture margins `Vector4(96, 88, 96, 96)`,
+content margins `Vector4(132, 118, 132, 128)`, hover content margins
+`Vector4(140, 126, 140, 136)` and safe rect `Rect2(132, 118, 696, 394)`.
+Display targets are `360x240` at 1280x720, `420x300` at 1920x1080 and
+`480x340` at 2560x1440, with a compact 1152px matrix fallback. Attribute Shop
+uses extra vertical card space for stat icon/title/interpretation/price text.
+Runtime labels, icons and focus/click content stay inside the scaled safe rect;
+QA dumps live in `build/qa/scrum437/`. Spec:
+`docs/design/mockups/scrum437_wide_economy_choice_card/spec.md`.
+
 Rules:
 
 - show artifact/shop item icon and price directly on the shop background;
@@ -97,6 +111,7 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_M
 - Hero Select must preserve 720p safe areas: `HeroSelectBackButton` stays inside the top-right viewport, portrait/dossier/radar remain separated, and the bottom thumbnail strip stays fully visible with adaptive image-only previews. The SCRUM-320 Carusel strip is not 9-sliced: it is drawn as one `TextureRect` and scales proportionally (`1024x170` at 720p, `1536x255` at 1080p, `2048x340` at 1440p) so the metal/jewel ornament never stretches on only one axis. SCRUM-342 keeps that proportional frame but uses a tighter runtime content-zone `Vector4(72, 36, 72, 36)` plus 2px thumbnail separation, so portraits grow vertically without touching side stones, crests, spikes, or metal borders; QA rects show sample thumbnails `49x66` at 1280x720, `75x101` at 1920x1080 and `101x136` at 2560x1440. SCRUM-321 applies the same no-one-axis-stretch rule to the left portrait: `HeroSelectPortraitPanel` remains the 1/3 layout column, while inner `HeroSelectPortraitFrame` draws `ui_frame_hero_select_portrait.png` as one proportional image (`249x394`, `423x669`, `596x944` at 720p/1080p/1440p). `HeroSelectLargePortrait` is constrained by `HERO_SELECT_PORTRAIT_CONTENT_BASE = Vector4(128, 230, 128, 330)`, keeping the hero off the top crest, side metal and bottom jewel. SCRUM-323 applies the same rule to center dossier: `HeroSelectDossierPanel` centers `HeroSelectDossierFrame`, which draws DescriptionHS `ui_frame_hero_select_dossier.png` as a whole image (`387x394`, `581x591`, `774x788` at 720p/1080p/1440p), while `HeroSelectDossierContent` uses base margins `Vector4(96, 66, 96, 54)` so title, description, ascension controls and choose button stay on the dark field instead of the decorative frame. SCRUM-322 applies the rule to the top-right radar: `HeroSelectRadarPanel` draws the windrose frame as a square whole-image `TextureRect` (`390x390`, `585x585`, `780x780` at 720p/1080p/1440p). After SCRUM-347 the old `HeroStatRadarTitle` is removed; `HeroStatRadar` is the only content in the compass field, centered in the frame, with polygon radius factor `0.36` (+20% from the old 0.30) and tighter label offsets so graph labels remain inside the frame. Do not put labels or graph lines on red gems/spikes/metal tips. QA capture lives at `build/qa/scrum281/hero_select_*.png`; SCRUM-320 copies its acceptance screenshots to `build/qa/scrum320/`; SCRUM-321 rect dump lives at `build/qa/scrum321/hero_select_portrait_rects.md`; SCRUM-323 rect dump lives at `build/qa/scrum323/hero_select_dossier_rects.md`; SCRUM-322/SCRUM-347/SCRUM-342 rect dump lives at `build/qa/hero_select_radar_rects.md`.
 - SCRUM-355 supersedes the earlier dossier/carousel content-zone guidance for Design-safe ornament avoidance: the live `ui_frame_hero_select_dossier.png` and `ui_frame_hero_select_thumbnail_strip.png` were recomposed thinner/lighter by `tools/build_hero_select_thin_frames.py`; strict source margins are dossier `Vector4(126, 160, 126, 172)` and thumbnail strip `Vector4(132, 62, 132, 62)`. SCRUM-354 wires those exact source-space margins into runtime, scaling the carousel from its actual `1536x255` source image rather than the `1024x170` 720p display size. Labels, description text, ascension controls, the start button, thumbnails, hover states and selection states stay inside the computed safe rects; the 720p runtime dump shows dossier content `[P: (489, 191), S: (299, 280)]` within the 2px test tolerance of safe `[P: (488.5, 191.3), S: (299.9, 279.3)]`, carousel content `[P: (216, 587), S: (848, 88)]` within the same tolerance of safe `[P: (216, 587.3), S: (848, 87.3)]`, and a 22px gap between dossier and carousel frames. QA rects live in `build/qa/hero_select_radar_rects.md`.
 - SCRUM-356 runtime integration: `ui_frame_hero_select_unified_panel.png` is drawn as one proportional `TextureRect`, not 9-sliced or stretched on one axis. Runtime content may only use these source-space safe zones: portrait `Rect2(130,145,420,560)`, description `Rect2(610,145,786,500)`, bottom controls `Rect2(570,705,660,178)`. `ui_frame_hero_select_asc_button_small.png` is the compact `256x256` stepper frame for both `-` and `+`; on compact 720p layouts the ascension delta line is hidden so the row and choose button stay inside `bottom_controls`, while larger layouts show the delta line inside the same safe-zone. QA rects live in `build/qa/hero_select_radar_rects.md`.
+- SCRUM-436 prepares the Hero Select v2 rebuild package for Sprint 0.1.6: `docs/design/mockups/scrum436_hero_select_v2/spec.md`, `hero_select_v2_mockup_1920x1080.png`, `hero_select_v2_safe_zones_annotated_1920x1080.png` and `hero_select_v2_layout_metadata.json`. The new design keeps the live SCRUM-322/SCRUM-347 `HeroSelectRadarPanel` / `HeroStatRadar` exactly, then redraws the rest of the screen from scratch: large left hero preview, central dossier/traits/weapons, bottom ascension selector, Select/Back buttons, wide image-only carousel and tooltip safe area. Back-end runtime integration must rebuild `_show_character_select()` from those rects, use one proportional scale factor for 1280x720 / 1920x1080 / 2560x1440, and keep every label, portrait, icon, button, hover highlight and tooltip inside recorded safe zones rather than on frame ornament.
 - SCRUM-373/SCRUM-382 add and integrate the unified master frame kit in `assets/sprites/ui/frames/unified/`. SCRUM-384 revises the same preserved runtime paths into a thinner metallic frame with small red corner gems and separate optional dragon overlays. Generic panels/cards/tooltips/HUD/timer frames use a shared StyleBoxTexture builder with tile stretch on both axes and texture margins `72/72/72/72`; filled runtime surfaces use `ui_frame_unified_master_fill.png` for readability, while `ui_frame_unified_master.png` remains the border-only variant. Strict content margins are `88/88/88/88` from the `1024x1024` source (`Rect2(88, 88, 848, 848)` safe rect). Screen-specific whole-image frames with authored source safe zones, including Hero Select SCRUM-356, the radar, carousel and settings tab switcher, stay proportional and are not forced into the generic 9-slice builder. Optional top/bottom unified ornaments remain large-window-only; no runtime content may overlap them.
 
 - SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
@@ -106,6 +121,16 @@ with safe rects `Rect2(160,88,270,82)`, `Rect2(506,88,270,82)` and
 `Rect2(852,88,270,82)`. Runtime `SETTINGS_TAB_SWITCHER_FRAME_PATH` points to
 this 3-slot asset, `SETTINGS_TAB_SWITCHER_SAFE_RECTS` contains exactly those
 three rects, and `SettingsTabButton_3` must not exist.
+- SCRUM-439 prepares the Settings v2 rebuild Design package for Sprint 0.1.6:
+`docs/design/mockups/scrum439_settings_v2/spec.md`,
+`scrum439_settings_v2_mockup.png`, `docs/design/previews/scrum439_settings_v2_safe_zones.png`
+and transparent candidate frames in `assets/sprites/ui/frames/settings_v2/`.
+The mockup covers all three tabs (`Экран`, `Звук`, `Управление`) and records a
+new three-slot tab switcher, modal frame, section panel and control-row safe
+zones. Back-end integration must preserve the existing settings/rebind
+semantics, keep exactly three tab buttons, and place every label, icon, slider,
+dropdown, checkbox, focus ring and scroll bar only inside documented empty safe
+zones.
 
 ## Combat HUD Redraw
 
@@ -167,6 +192,17 @@ SCRUM-417 increases character portrait density by rendering character
 `CodexPortraitSlot` textures at `216x216` with covered aspect scaling while
 leaving non-character icon slots centered; runtime smoke writes the rect dump to
 `build/qa/scrum417/codex_character_portrait_runtime_dump.md`.
+SCRUM-438 prepares the Codex v2 rebuild Design package without touching runtime:
+OpenAI mockup `docs/design/mockups/scrum438_codex_v2/codex_v2_mockup_1920x1080.png`,
+safe-zone overlay
+`docs/design/mockups/scrum438_codex_v2/codex_v2_safe_zones_annotated_1920x1080.png`,
+spec `docs/design/mockups/scrum438_codex_v2/spec.md` and metadata
+`docs/design/mockups/scrum438_codex_v2/codex_v2_layout_metadata.json`. The v2
+layout keeps six sections, back navigation, list cards, detail panel, portrait
+slots and glossary tooltip, but moves them into explicit safe rects. Back-end
+must build the screen from real Controls/frames, not as one baked mockup image;
+old Codex textures remain live until the runtime integration pass backs them up
+and replaces the layout.
 
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the accepted Codex baseline. Mockup/spec:
@@ -308,6 +344,19 @@ normal settings checkbox inside `ControlsScroll`, not a fourth tab. The toggle i
 OFF by default and persists through `scripts/game_settings.gd`; its tooltip
 documents the combat-only debug controls (right-click / Shift+left-click move
 target, middle-click teleport).
+
+SCRUM-439 Settings v2 Design handoff is ready but not live. It introduces
+candidate assets under `assets/sprites/ui/frames/settings_v2/`:
+`ui_frame_settings_v2_main_modal.png`,
+`ui_frame_settings_v2_tab_switcher_3slot.png`,
+`ui_frame_settings_v2_section_panel.png` and
+`ui_frame_settings_v2_control_row.png`. The Back-end rebuild should use
+`docs/design/mockups/scrum439_settings_v2/spec.md` as the contract, not infer
+usable space from image bounds. The Settings v2 main modal reserves source
+content margins `L144 T192 R144 B128`; the v2 switcher safe rects are
+`Rect2(150,78,275,92)`, `Rect2(502,78,275,92)` and
+`Rect2(854,78,275,92)` from its `1280x256` source. Runtime remains on the
+SCRUM-396 switcher until this follow-up lands.
 
 ## Ornate Frame Safe-Area Rule
 

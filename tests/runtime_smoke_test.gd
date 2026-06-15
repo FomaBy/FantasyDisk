@@ -25,6 +25,8 @@ const REWARD_CARD_SAFE_MARGINS := Vector4(132.0, 170.0, 132.0, 164.0)
 const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(150.0, 202.0, 150.0, 190.0)
 const REWARD_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_card.png"
 const REWARD_ELITE_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card.png"
+const ECONOMY_CHOICE_WIDE_TEXTURE := "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide.png"
+const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide_hover.png"
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.5
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 
@@ -1308,10 +1310,15 @@ func _initialize() -> void:
 	var stats_before: Dictionary = (snapshot.get("stats", {}) as Dictionary).duplicate(true)
 	var attr_money_before := int(main.ui._run_money())
 	var first_offer := attribute_offers.get_child(0) as Button
-	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card.png":
-		push_error("Expected attribute offers to use the SCRUM-332 economy choice card frame.")
+	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != ECONOMY_CHOICE_WIDE_TEXTURE:
+		push_error("Expected attribute offers to use the SCRUM-437 wide economy choice card frame.")
 		quit(1)
 		return
+	if _stylebox_texture_path(first_offer.get_theme_stylebox("hover")) != ECONOMY_CHOICE_WIDE_HOVER_TEXTURE:
+		push_error("Expected attribute offers to use the SCRUM-437 wide hover economy choice card frame.")
+		quit(1)
+		return
+	_write_scrum437_attribute_offer_dump(attribute_panel as Control, attribute_offers)
 	var offered_stat := str(first_offer.name).replace("AttributeOffer_", "")
 	if first_offer.disabled:
 		push_error("Expected the attribute offer to be affordable in the test run (money %d)." % attr_money_before)
@@ -6771,6 +6778,35 @@ func _stylebox_texture_path(style: StyleBox) -> String:
 	if texture == null:
 		return ""
 	return texture.resource_path
+
+
+func _write_scrum437_attribute_offer_dump(panel: Control, offers: Container) -> void:
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum437")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var dump := PackedStringArray()
+	dump.append("# SCRUM-437 Wide Economy Choice Card Runtime Dump")
+	dump.append("")
+	dump.append("- `AttributeShopPanel`: `%s`" % str(panel.get_global_rect() if panel != null else Rect2()))
+	if offers != null:
+		dump.append("- `AttributeOffers`: `%s`, children `%d`" % [str(offers.get_global_rect()), offers.get_child_count()])
+		for node in offers.get_children():
+			var card := node as Button
+			if card == null:
+				continue
+			dump.append("- `%s`: rect `%s`, min `%s`, normal `%s`, hover `%s`, source `%s`, safe `%s`, content `%s`" % [
+				card.name,
+				str(card.get_global_rect()),
+				str(card.custom_minimum_size),
+				_stylebox_texture_path(card.get_theme_stylebox("normal")),
+				_stylebox_texture_path(card.get_theme_stylebox("hover")),
+				str(card.get_meta("economy_source_size", Vector2.ZERO)),
+				str(card.get_meta("economy_source_safe_rect", Rect2())),
+				str(card.get_meta("economy_content_margins", Vector4.ZERO)),
+			])
+	var file := FileAccess.open("%s/wide_economy_choice_card_runtime_dump.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(dump))
+		file.close()
 
 
 func _test_hero_select_radar_no_overlap_layouts(main_scene: PackedScene) -> void:

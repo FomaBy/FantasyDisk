@@ -5,12 +5,32 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- Settings v2 rebuild mockup/spec (SCRUM-439): added the OpenAI-generated
+  all-tabs Settings redesign package with transparent frame candidates, exact
+  safe zones, responsive rules for 1280x720 / 1920x1080 / 2560x1440, and Back-
+  end handoff notes under `docs/design/mockups/scrum439_settings_v2/`; runtime
+  wiring remains follow-up.
+- Hero Select v2 rebuild mockup/spec (SCRUM-436): added the OpenAI-generated
+  Hero Select redesign package with preserved live compass/radar contract,
+  exact safe zones, responsive rules for 1280x720 / 1920x1080 / 2560x1440, and
+  Back-end handoff notes under `docs/design/mockups/scrum436_hero_select_v2/`;
+  runtime wiring remains follow-up.
+- Codex v2 rebuild mockup/spec (SCRUM-438): added the OpenAI-generated full
+  Codex window redesign package with exact safe zones, responsive rules for
+  1280x720 / 1920x1080 / 2560x1440, and Back-end handoff notes under
+  `docs/design/mockups/scrum438_codex_v2/`; runtime wiring remains follow-up.
 - Character redraw v2 anchor (SCRUM-422): established the 0.1.6 bright+epic
   playable-character source style/spec with transparent Berserk exemplar,
   `512x512` cells, bottom-center pivot, idle/move-only handoff and 2x-monster
   visual size target. Source, preview and QA artifacts live under
   `docs/design/references/characters_v2/bright_epic_anchor/` and
   `build/qa/scrum422_character_v2_anchor/`.
+
+### Fixed
+- Economy choice-card width (SCRUM-437): rest, upgrade, event and Attribute
+  Shop choices now use the wide `ui_frame_economy_choice_card_wide*.png`
+  runtime frames with source-space safe rect metadata, responsive 360/420/480px
+  card targets, compact 1152px fallback and QA dumps under `build/qa/scrum437/`.
 
 ## [0.1.5] — 2026-06-15
 
