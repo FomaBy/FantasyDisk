@@ -29,7 +29,7 @@ const ALLY_MINION_SCENE := preload("res://scenes/AllyMinion.tscn")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_COLUMNS := 5
-const PLAYER_COMBAT_VISUAL_SCALE := 0.36
+const PLAYER_COMBAT_VISUAL_SCALE := 0.5
 const BASE_SPRITE_SCALE := Vector2(PLAYER_COMBAT_VISUAL_SCALE, PLAYER_COMBAT_VISUAL_SCALE)
 # Анимация атаки персонажей отключена по запросу пользователя (2026-06-15).
 const USE_ATTACK_ANIMATION := false
