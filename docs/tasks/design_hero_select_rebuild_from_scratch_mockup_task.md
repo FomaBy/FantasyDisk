@@ -138,7 +138,7 @@ Validation:
 - Runtime smoke/no-overlap not run by design scope; Back-end integration must run them after rebuilding `_show_character_select()`.
 
 ## QA-Вердикт (2026-06-15)
-Статус: PASSED (Design-scope: hero-select v2 rebuild mockup + spec + safe-zones); Back-end runtime build — done ниже
+Статус: FAILED (отменён пользователем 2026-06-15: экран НЕ 1-в-1 с макапом) — было PASSED (Design-scope: hero-select v2 rebuild mockup + spec + safe-zones); Back-end runtime build — done ниже
 
 Проверено (фактически):
 - **Mockup готов** `scrum436_hero_select_v2/hero_select_v2_mockup_1920x1080.png`:
@@ -179,7 +179,7 @@ and Jira. Keep reasoning High/no low.
 
 ## Back-end Runtime Result (2026-06-15)
 
-Статус: done / QA-ready.
+Статус: new — переоткрыто, требуется довести 1-в-1 с макапом
 
 Что сделано:
 - Live `_show_character_select()` rebuilt around the SCRUM-436 proportional
