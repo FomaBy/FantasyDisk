@@ -198,6 +198,28 @@ The top/bottom ornaments are optional overlays for large windows only and are
 not applied to compact HUD cards/tooltips/chips. Runtime content, click zones,
 labels, portraits, icons and meters must remain inside the frame content area.
 
+SCRUM-448/SCRUM-449 make the 0.1.6 **Minimalist UI restyle** the active
+non-button frame direction where safe. Source/mockup assets live under
+`docs/design/references/ui_minimal/` and the UI-director mirror package under
+`docs/design/mockups/scrum448_ui_minimalist/`. Runtime assets live in
+`assets/sprites/ui/frames/minimal/`: `ui_frame_minimal_modal.png`,
+`ui_frame_minimal_panel.png`, `ui_frame_minimal_card.png`,
+`ui_frame_minimal_tooltip.png`, `ui_frame_minimal_hud_strip.png` and
+`ui_frame_minimal_field.png`. Exact source sizes, texture margins, content
+rects and alpha audit are recorded in
+`docs/design/references/ui_minimal/scrum448_minimal_ui_frame_metadata.json`.
+All six frame PNGs are transparent RGBA with `white_opaque_pixels=0` and
+`pale_visible_pixels_after_cleanup=0`; contact preview:
+`docs/design/previews/scrum448_minimal_ui_frame_contact.png`. SCRUM-449 wires
+the kit into live generic panels/cards/tooltips, Settings, Codex, economy
+choice cards/price badges, reward cards, pause/result shells and compact combat
+HUD wrappers. It does **not** replace SCRUM-273 Red & Gold buttons; those remain
+the active button canon under `assets/sprites/ui/frames/red_gold/`. Hero Select
+v3 authored frames, progression circular nodes and combat bar fills stay
+screen-specific exceptions. Old ornamental assets were not archived in this pass
+because several remain live or historical/screen-specific refs; cleanup should
+only remove them after a fresh no-live-ref audit.
+
 SCRUM-390 prepared a dedicated **Combat HUD redraw kit** and SCRUM-400 wires it
 into the live runtime HUD. It was generated through
 `fantasydisk-asset-generator` from current D&D/dark-fantasy UI references, then

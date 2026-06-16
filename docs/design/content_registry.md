@@ -742,6 +742,16 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 
 SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon kit из `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live-кнопки лежат в `assets/sprites/ui/frames/red_gold/`: 15 типов, каждый с idle/base, hover, pressed и disabled. Старый Parchment & Wax Seal button kit скопирован в backup `build/cleanup_backup_red_gold_buttons_2026_06_14/` и больше не является runtime-каноном. SCRUM-274 заменяет non-button panel/frame канон SCRUM-229 на Ornate Dark / Red kit из `docs/design/references/UiFrame/frame_kit_ornate_dark_sheet_b_spec.png`. Live-панели/HUD/tooltips/pause frames лежат в `assets/sprites/ui/frames/ornate/`, а прежний leather+gold/dark_fantasy/escape panel kit скопирован в backup `build/cleanup_backup_ornate_frames_2026_06_14/`. No-junk rule: без бессмысленных линий/кружков/квадратиков/дефолтного Godot-декора.
 
+SCRUM-448/SCRUM-449 делают **Minimalist UI restyle** активным non-button frame
+направлением: `assets/sprites/ui/frames/minimal/` содержит
+`ui_frame_minimal_modal`, `panel`, `card`, `tooltip`, `hud_strip` и `field`.
+Spec/metadata: `docs/design/mockups/scrum448_ui_minimalist/spec.md` и
+`docs/design/references/ui_minimal/scrum448_minimal_ui_frame_metadata.json`;
+preview: `docs/design/previews/scrum448_minimal_ui_frame_contact.png`.
+Все PNG прозрачные (`white_opaque_pixels=0`, `pale_visible_pixels_after_cleanup=0`).
+Live runtime uses this kit for safe non-button panels/cards/tooltips/HUD wrappers;
+SCRUM-273 Red & Gold buttons остаются каноном и не заменяются этим набором.
+
 | ID | Ассет | Роль |
 | --- | --- | --- |
 | `ui_panel_frame` | `assets/sprites/ui/frames/global/ui_panel_frame.png` | Базовые большие панели меню/событий/кодекса |
@@ -756,6 +766,12 @@ SCRUM-273 заменяет button-канон SCRUM-147 на Red & Gold Dragon ki
 | `ui_frame_unified_inner_fill` | `assets/sprites/ui/frames/unified/ui_frame_unified_inner_fill.png` | SCRUM-384 `1024x1024` inner fill asset with alpha outside strict content zone |
 | `ui_frame_unified_ornament_top_bottom` | `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_top.png`, `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_bottom.png` | SCRUM-384 optional dragon overlays for large-window ornaments only; do not bake into 9-slice stretch zones and do not use on compact HUD, tooltip, chip or button surfaces |
 | `ui_frame_unified_hover_overlay` | `assets/sprites/ui/frames/unified/ui_frame_unified_hover_overlay.png` | SCRUM-384 subtle red/gold hover overlay fallback; preferred runtime hover is neutral modulate/contrast, not yellow glow |
+| `ui_frame_minimal_modal` | `assets/sprites/ui/frames/minimal/ui_frame_minimal_modal.png` | SCRUM-448/SCRUM-449 live minimalist modal/window frame, `986x900` RGBA, content rect `[74,94,838,720]`; used for Settings/Codex/pause/result shells where safe |
+| `ui_frame_minimal_panel` | `assets/sprites/ui/frames/minimal/ui_frame_minimal_panel.png` | SCRUM-448/SCRUM-449 live generic minimal panel, `782x716` RGBA, content rect `[59,75,664,573]`; used for inner panels and large sections where safe |
+| `ui_frame_minimal_card` | `assets/sprites/ui/frames/minimal/ui_frame_minimal_card.png` | SCRUM-448/SCRUM-449 live minimal card, `426x486` RGBA, content rect `[45,58,336,372]`; used for reward/economy/Codex cards where safe |
+| `ui_frame_minimal_tooltip` | `assets/sprites/ui/frames/minimal/ui_frame_minimal_tooltip.png` | SCRUM-448/SCRUM-449 live minimal tooltip, `760x242` RGBA, content rect `[68,46,624,155]`; used for glossary/tooltips where safe |
+| `ui_frame_minimal_hud_strip` | `assets/sprites/ui/frames/minimal/ui_frame_minimal_hud_strip.png` | SCRUM-448/SCRUM-449 live minimal HUD/resource strip, `1122x288` RGBA, content rect `[107,65,908,164]`; used for compact resource HUD wrapper |
+| `ui_frame_minimal_field` | `assets/sprites/ui/frames/minimal/ui_frame_minimal_field.png` | SCRUM-448/SCRUM-449 live minimal input/field/tab frame, `616x286` RGBA, content rect `[59,53,498,183]`; used for Settings switcher, HUD cards and compact price badges |
 | `ui_frame_settings_tab_switcher_3slot` | `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png` | SCRUM-391 Design-ready Settings tab switcher candidate, `1280x256` RGBA, exactly 3 slots; safe rects `[160,88,270,82]`, `[506,88,270,82]`, `[852,88,270,82]`; runtime activation handed off to `backend_settings_menu_unified_restyle_integration_task.md` |
 | `ui_frame_settings_v2_main_modal` | `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` | SCRUM-439 Design-ready Settings v2 modal candidate, `1536x1024` RGBA; texture margins `96/118/96/96`, content margins `144/192/144/128`; not live until Back-end integration |
 | `ui_frame_settings_v2_tab_switcher_3slot` | `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png` | SCRUM-439 Design-ready Settings v2 switcher candidate, `1280x256` RGBA, exactly 3 slots; safe rects `[150,78,275,92]`, `[502,78,275,92]`, `[854,78,275,92]`; not live until Back-end integration |

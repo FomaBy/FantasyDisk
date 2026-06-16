@@ -1,6 +1,6 @@
 # Back-end UI: Hero Select v3 runtime rebuild from accepted mockup/spec
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end (UI)
 Версия: 0.1.6
@@ -59,10 +59,42 @@ Rebuild `_show_character_select` from scratch around the v3 zones:
   `docs/design/current_game_state.md` after integration.
 
 ## Acceptance Criteria
-- [ ] `_show_character_select` uses v3 normalized zones and v3 frame assets.
-- [ ] Old Hero Select v2 layout/frame assumptions are no longer the runtime basis.
-- [ ] All runtime content stays inside the corresponding frame content rects.
-- [ ] Existing hero selection/ascension/start/back/focus/radar behavior is preserved.
-- [ ] Screenshot composition matches the v3 mockup closely enough for QA sign-off.
-- [ ] UI no-overlap matrix, runtime UI smoke and full runtime smoke pass.
-- [ ] Jira/task board/docs are synced after completion.
+- [x] `_show_character_select` uses v3 normalized zones and v3 frame assets.
+- [x] Old Hero Select v2 layout/frame assumptions are no longer the runtime basis.
+- [x] All runtime content stays inside the corresponding frame content rects.
+- [x] Existing hero selection/ascension/start/back/focus/radar behavior is preserved.
+- [x] Screenshot composition matches the v3 mockup closely enough for QA sign-off.
+- [x] UI no-overlap matrix, runtime UI smoke and full runtime smoke pass.
+- [x] Jira/task board/docs are synced after completion.
+
+## Dispatcher Handoff To Back-end (2026-06-15)
+Передано в Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
+Причина: SCRUM-446 Design-source package завершён и принят как source of truth;
+runtime phase 4 является Back-end UI scope. Работать с reasoning High/no low,
+без low, только в рамках Back-end UI integration and tests.
+
+## Back-end Result (2026-06-15)
+SCRUM-447 complete. `_show_character_select()` now builds the live Hero Select
+from the SCRUM-446 `1536x864` v3 zones and frame/content rects: preview,
+dossier, square radar, carousel, title and Back button all scale from
+`zones.json` / `frames_spec.json`. Runtime uses the accepted v3 background and
+frame PNGs under `assets/sprites/ui/frames/hero_select_v3/`; Godot import
+sidecars were added for the runtime assets so the screen cannot silently fall
+back to generic panel borders.
+
+Preserved behavior: hero selection, ascension `-`/`+`, Select, Back/Escape,
+keyboard/gamepad focus, tooltip-safe carousel behavior, SCRUM-416 portrait
+routing, SCRUM-417 portrait scaling, and existing `HeroStatRadar` data. The
+radar frame is kept square and is not stretched non-uniformly.
+
+QA evidence:
+- `build/qa/scrum446_hero_select_v3/hero_select_v3_runtime_1536x864.png`
+- `build/qa/scrum446_hero_select_v3/hero_select_v3_mockup_vs_runtime_1536x864.png`
+- `build/qa/scrum446_hero_select_v3/hero_select_v3_diff_x3_1536x864.png`
+- `build/qa/scrum446_hero_select_v3/hero_select_v3_runtime_rects.md`
+- `build/qa/scrum446_hero_select_v3/hero_select_v3_no_overlap_matrix.md`
+
+Verification:
+- PASS: `runtime_smoke_ui_test.gd`
+- PASS: `ui_no_overlap_matrix_test.gd`
+- PASS: `runtime_smoke_test.gd`

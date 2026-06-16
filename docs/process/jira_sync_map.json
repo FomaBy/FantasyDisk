@@ -2400,7 +2400,17 @@
  },
  "backend_hero_select_v3_runtime_from_mockup_task.md": {
   "key": "SCRUM-447",
-  "status": "В работе",
-  "desc_hash": "f5b17a69ce177b73465c2914647a0b1a"
+  "status": "Контроль качества",
+  "desc_hash": "4c832921b735c26547b064ed5b798dbb"
+ },
+ "design_ui_minimalist_restyle_keep_red_buttons_task.md": {
+  "key": "SCRUM-448",
+  "status": "Контроль качества",
+  "desc_hash": "19dc9d19d5822c06a818c14e0617d958"
+ },
+ "backend_ui_minimalist_restyle_keep_red_buttons_integration_task.md": {
+  "key": "SCRUM-449",
+  "status": "Контроль качества",
+  "desc_hash": "3daab65ff31950fb162af78cc25a21b1"
  }
 }
