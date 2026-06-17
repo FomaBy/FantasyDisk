@@ -2511,6 +2511,11 @@
  "backend_cartoon_trial_dark_mage_knight_integration_task.md": {
   "key": "SCRUM-472",
   "status": "Готово",
-  "desc_hash": "4c75c4f802ac0cff06b02ad4c6685a5d"
+  "desc_hash": "c050986af99fd374ee9e837b3a1f788a"
+ },
+ "animation_cartoon2_dark_mage_knight_real_frames_task.md": {
+  "key": "SCRUM-473",
+  "status": "К выполнению",
+  "desc_hash": "d4e15555804610e6f55907eba30b0c6d"
  }
 }
