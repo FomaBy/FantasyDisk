@@ -9,6 +9,13 @@ const WEBHOOK_KEY := "webhook_url"
 const LOCAL_ROOT := "user://feedback"
 const ENV_WEBHOOK := "FANTASYDISK_FEEDBACK_WEBHOOK"
 const SCREENSHOT_FILENAME := "fantasydisk_feedback.png"
+# Вложение в Discord уходит ужатым JPG, а не полноразмерным PNG: скрин 1600x970 в
+# PNG весит ~9.8 МБ, и multipart-тело пробивает лимит загрузки вебхука (~8–10 МБ
+# на не-бустнутом сервере) → HTTP 413 «Payload Too Large» → «Ошибка отправки»
+# (SCRUM-460). Downscale до 1280px по длинной стороне + JPG q0.72 даёт ~150–250 КБ.
+const UPLOAD_FILENAME := "fantasydisk_feedback.jpg"
+const UPLOAD_MAX_DIM := 1280
+const UPLOAD_JPG_QUALITY := 0.72
 
 var _pending_text := ""
 var _pending_metadata := {}
@@ -64,7 +71,7 @@ static func multipart_payload(text: String, screenshot: Image, metadata: Diction
 	var body := PackedByteArray()
 	var payload_json := JSON.stringify({
 		"content": discord_content(text, metadata),
-		"attachments": [{"id": 0, "filename": SCREENSHOT_FILENAME}],
+		"attachments": [{"id": 0, "filename": UPLOAD_FILENAME}],
 	})
 	_append_utf8(body, "--%s\r\n" % boundary)
 	_append_utf8(body, "Content-Disposition: form-data; name=\"payload_json\"\r\n")
@@ -72,11 +79,26 @@ static func multipart_payload(text: String, screenshot: Image, metadata: Diction
 	_append_utf8(body, "%s\r\n" % payload_json)
 
 	_append_utf8(body, "--%s\r\n" % boundary)
-	_append_utf8(body, "Content-Disposition: form-data; name=\"files[0]\"; filename=\"%s\"\r\n" % SCREENSHOT_FILENAME)
-	_append_utf8(body, "Content-Type: image/png\r\n\r\n")
-	body.append_array(_normalized_screenshot(screenshot).save_png_to_buffer())
+	_append_utf8(body, "Content-Disposition: form-data; name=\"files[0]\"; filename=\"%s\"\r\n" % UPLOAD_FILENAME)
+	_append_utf8(body, "Content-Type: image/jpeg\r\n\r\n")
+	body.append_array(_upload_image_buffer(screenshot))
 	_append_utf8(body, "\r\n--%s--\r\n" % boundary)
 	return body
+
+
+static func _upload_image_buffer(screenshot: Image) -> PackedByteArray:
+	# Ужимаем скрин перед отправкой в Discord, чтобы тело запроса не пробивало лимит
+	# вебхука (SCRUM-460). Локальная копия в save_local_report остаётся полным PNG.
+	var img := _normalized_screenshot(screenshot)
+	var longest := maxi(img.get_width(), img.get_height())
+	if longest > UPLOAD_MAX_DIM:
+		var ratio := float(UPLOAD_MAX_DIM) / float(longest)
+		img = img.duplicate() as Image  # resize мутирует на месте — не трогаем оригинал
+		img.resize(
+			maxi(1, int(round(img.get_width() * ratio))),
+			maxi(1, int(round(img.get_height() * ratio))),
+			Image.INTERPOLATE_BILINEAR)
+	return img.save_jpg_to_buffer(UPLOAD_JPG_QUALITY)
 
 
 func _post_to_webhook(webhook_url: String) -> void:
@@ -110,7 +132,8 @@ func _on_request_completed(result: int, response_code: int, _headers: PackedStri
 		report_finished.emit(true, "Отчет отправлен разработчику.", "")
 		return
 	var local_path := save_local_report(_pending_text, _pending_screenshot, _pending_metadata)
-	report_finished.emit(false, "Ошибка отправки. Отчет сохранен локально.", local_path)
+	var detail := "код %d" % response_code if response_code > 0 else "нет ответа (result %d)" % result
+	report_finished.emit(false, "Ошибка отправки (%s). Отчет сохранен локально." % detail, local_path)
 
 
 func _webhook_url() -> String:

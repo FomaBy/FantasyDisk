@@ -5027,7 +5027,7 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		return
 	var boundary := "----FantasyDiskSmokeBoundary"
 	var multipart := FeedbackReporter.multipart_payload("Smoke payload", screenshot, {"screen": "runtime_smoke"}, boundary)
-	if not _packed_bytes_contains(multipart, "payload_json".to_utf8_buffer()) or not _packed_bytes_contains(multipart, "fantasydisk_feedback.png".to_utf8_buffer()):
+	if not _packed_bytes_contains(multipart, "payload_json".to_utf8_buffer()) or not _packed_bytes_contains(multipart, FeedbackReporter.UPLOAD_FILENAME.to_utf8_buffer()):
 		_fail("Expected feedback multipart payload to include Discord payload_json and screenshot file part.")
 		feedback_main.queue_free()
 		await process_frame
@@ -5041,7 +5041,7 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		await process_frame
 		return
 	var attachment := attachments[0] as Dictionary
-	if int(attachment.get("id", -1)) != 0 or str(attachment.get("filename", "")) != multipart_filename or multipart_filename != "fantasydisk_feedback.png":
+	if int(attachment.get("id", -1)) != 0 or str(attachment.get("filename", "")) != multipart_filename or multipart_filename != FeedbackReporter.UPLOAD_FILENAME:
 		_fail("Expected feedback payload_json attachment filename to match files[0] filename.")
 		feedback_main.queue_free()
 		await process_frame
@@ -5078,10 +5078,12 @@ func _feedback_multipart_file_filename(multipart: PackedByteArray) -> String:
 
 
 func _feedback_multipart_header_text(multipart: PackedByteArray) -> String:
-	var png_signature := PackedByteArray([0x89, 0x50, 0x4E, 0x47])
-	var png_start := _packed_bytes_find(multipart, png_signature)
+	# Вложение files[0] теперь JPEG (SOI FF D8 FF), не PNG — отсекаем бинарь по его
+	# сигнатуре, оставляя текстовые заголовки multipart для парсинга (SCRUM-460).
+	var jpeg_signature := PackedByteArray([0xFF, 0xD8, 0xFF])
+	var bin_start := _packed_bytes_find(multipart, jpeg_signature)
 	var header := PackedByteArray()
-	var length := png_start if png_start >= 0 else multipart.size()
+	var length := bin_start if bin_start >= 0 else multipart.size()
 	for index in range(length):
 		header.append(multipart[index])
 	return header.get_string_from_utf8()

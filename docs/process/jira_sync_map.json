@@ -2415,8 +2415,8 @@
  },
  "design_ui_minimal_buttons_from_references_task.md": {
   "key": "SCRUM-450",
-  "status": "К выполнению",
-  "desc_hash": "d943420431ae17067e4b3037517a0cc7"
+  "status": "В работе",
+  "desc_hash": "04cfb6fc41b5651d3fbe9fe144fe26ef"
  },
  "design_ui_minimal_frames_rollout_task.md": {
   "key": "SCRUM-451",
@@ -2425,37 +2425,47 @@
  },
  "design_ui_minimal_metal_anchor_task.md": {
   "key": "SCRUM-452",
-  "status": "В работе",
-  "desc_hash": "8f66027ba7d8c77842f623129c741b5f"
+  "status": "Контроль качества",
+  "desc_hash": "a04a50284fdad20eb2ce3f876ca247d5"
  },
  "backend_class_balance_damage_table_3variants_task.md": {
   "key": "SCRUM-453",
   "status": "К выполнению",
-  "desc_hash": "0b7382dfcebc8039aa90eac9f063405f"
+  "desc_hash": "6b762c0dd928e5fbad81370eeb05e967"
  },
  "backend_full_code_review_fix_backend_task.md": {
   "key": "SCRUM-454",
   "status": "К выполнению",
-  "desc_hash": "e137f418bcf9956eeacd5174cd8de427"
+  "desc_hash": "20a399688b6cd8b004705ac8aff336fd"
  },
  "backend_weapon_orbit_around_character_no_overlap_task.md": {
   "key": "SCRUM-455",
-  "status": "К выполнению",
-  "desc_hash": "b77b2ad3103e8984948f5400120e4c70"
+  "status": "Контроль качества",
+  "desc_hash": "b42a8705536985ab4be14cf502b57d4d"
  },
  "design_chars_cartoon_anime_restyle_anchor_task.md": {
   "key": "SCRUM-456",
-  "status": "К выполнению",
-  "desc_hash": "138ae7fe33e76146ed4fbd86d1c0d0e1"
+  "status": "В работе",
+  "desc_hash": "98f7dfc761410d2b31adb5cd9ac96364"
  },
  "design_reduce_weapon_attack_vfx_intensity_task.md": {
   "key": "SCRUM-457",
-  "status": "К выполнению",
-  "desc_hash": "9277b750ecc697a6d8888620decb6f3d"
+  "status": "Контроль качества",
+  "desc_hash": "1e6a669498c10e16ab0ee5489a481e22"
  },
  "qa_design_review_all_pages_create_bugs_task.md": {
   "key": "SCRUM-458",
   "status": "К выполнению",
-  "desc_hash": "7aa54f9cb931c17e17113c61f2cae09a"
+  "desc_hash": "f7f8520dabef11772a4c3e99228d15a3"
+ },
+ "backend_ui_minimal_metal_anchor_integration_task.md": {
+  "key": "SCRUM-459",
+  "status": "К выполнению",
+  "desc_hash": "0a5d92365ac959f7e785385fcb02f271"
+ },
+ "bug_feedback_overflow_send_error_task.md": {
+  "key": "SCRUM-460",
+  "status": "Готово",
+  "desc_hash": "c8f7aba01623df58d819b50a51941a54"
  }
 }

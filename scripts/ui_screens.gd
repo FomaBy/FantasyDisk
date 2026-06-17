@@ -5550,32 +5550,55 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	root.add_child(dim)
 
+	# Размер панели подгоняется под вьюпорт (минус поля), с потолком — иначе на
+	# 1600x970 контент (~720px) переполнял фиксированную панель 700px и кнопки
+	# уезжали за нижний край экрана (SCRUM-460).
+	var viewport_size: Vector2 = root.get_viewport_rect().size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		viewport_size = Vector2(1280.0, 720.0)
+	var panel_width: float = clampf(viewport_size.x - 80.0, 480.0, 940.0)
+	var panel_height: float = clampf(viewport_size.y - 80.0, 380.0, 780.0)
+
 	var panel := PanelContainer.new()
 	panel.name = "FeedbackPanel"
 	panel.anchor_left = 0.5
 	panel.anchor_top = 0.5
 	panel.anchor_right = 0.5
 	panel.anchor_bottom = 0.5
-	panel.offset_left = -470.0
-	panel.offset_top = -350.0
-	panel.offset_right = 470.0
-	panel.offset_bottom = 350.0
+	panel.offset_left = -panel_width * 0.5
+	panel.offset_top = -panel_height * 0.5
+	panel.offset_right = panel_width * 0.5
+	panel.offset_bottom = panel_height * 0.5
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	panel.add_theme_stylebox_override("panel", _panel_style())
 	root.add_child(panel)
 
 	var box := VBoxContainer.new()
 	box.name = "FeedbackContent"
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 12)
+	box.add_theme_constant_override("separation", 10)
 	panel.add_child(box)
 
 	var title := Label.new()
 	title.text = "Отправить фидбек"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 36)
+	title.add_theme_font_size_override("font_size", 32)
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
+
+	# Середина прокручивается: при любой высоте экрана заголовок сверху, а статус
+	# и кнопки «Отправить»/«Отмена» снизу остаются закреплены и видимы.
+	var scroll := ScrollContainer.new()
+	scroll.name = "FeedbackScroll"
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	box.add_child(scroll)
+
+	var scroll_body := VBoxContainer.new()
+	scroll_body.name = "FeedbackScrollBody"
+	scroll_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll_body.add_theme_constant_override("separation", 10)
+	scroll.add_child(scroll_body)
 
 	var hint := Label.new()
 	hint.text = "Опиши баг или впечатление. Скриншот ниже уже снят до открытия формы."
@@ -5583,31 +5606,31 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.add_theme_font_size_override("font_size", 16)
 	hint.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
-	box.add_child(hint)
+	scroll_body.add_child(hint)
 
 	var text_edit := TextEdit.new()
 	text_edit.name = "FeedbackTextEdit"
-	text_edit.custom_minimum_size = Vector2(780, 150)
+	text_edit.custom_minimum_size = Vector2(0, 130)
 	text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_edit.placeholder_text = "Что случилось? Где ты был в игре? Что ожидал увидеть?"
 	text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	text_edit.add_theme_font_size_override("font_size", 17)
 	text_edit.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84, 1.0))
 	text_edit.add_theme_color_override("font_placeholder_color", Color(0.66, 0.64, 0.58, 1.0))
-	box.add_child(text_edit)
+	scroll_body.add_child(text_edit)
 
 	var preview_frame := PanelContainer.new()
 	preview_frame.name = "FeedbackScreenshotFrame"
-	preview_frame.custom_minimum_size = Vector2(780, 300)
+	preview_frame.custom_minimum_size = Vector2(0, 240)
 	preview_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	preview_frame.add_theme_stylebox_override("panel", _character_card_style())
-	box.add_child(preview_frame)
+	scroll_body.add_child(preview_frame)
 
 	var preview := TextureRect.new()
 	preview.name = "FeedbackScreenshotPreview"
 	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	preview.custom_minimum_size = Vector2(760, 280)
+	preview.custom_minimum_size = Vector2(0, 224)
 	var safe_screenshot: Image = FEEDBACK_REPORTER_SCRIPT._normalized_screenshot(screenshot)
 	preview.texture = ImageTexture.create_from_image(safe_screenshot)
 	preview_frame.add_child(preview)
@@ -5629,12 +5652,12 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 
 	var send_button := _make_button("Отправить")
 	send_button.name = "FeedbackSendButton"
-	_set_action_button_size(send_button, 260.0, 72.0)
+	_set_action_button_size(send_button, 260.0, 64.0)
 	buttons.add_child(send_button)
 
 	var cancel_button := _make_button("Отмена")
 	cancel_button.name = "FeedbackCancelButton"
-	_set_action_button_size(cancel_button, 220.0, 72.0)
+	_set_action_button_size(cancel_button, 220.0, 64.0)
 	cancel_button.pressed.connect(_close_feedback_overlay)
 	buttons.add_child(cancel_button)
 
