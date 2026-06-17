@@ -33,6 +33,11 @@ const PLAYER_COMBAT_VISUAL_SCALE := 0.5
 const BASE_SPRITE_SCALE := Vector2(PLAYER_COMBAT_VISUAL_SCALE, PLAYER_COMBAT_VISUAL_SCALE)
 # Анимация атаки персонажей отключена по запросу пользователя (2026-06-15).
 const USE_ATTACK_ANIMATION := false
+# CARTOON-проба (SCRUM-456): эти классы используют cartoon-спрайт и анимируются
+# legacy-ригом (целый спрайт: bob/lean/breath), минуя v2 full-frame и sliced-нарезку
+# (её hand-tuned боксы не подходят cartoon-пропорциям). Пробный набор — расширяется
+# по мере перерисовки остальных классов.
+const CARTOON_TRIAL_CLASSES := ["dark_mage", "knight"]
 const WEAPON_ORBIT_RADIUS := 104.0
 const WEAPON_ORBIT_VERTICAL_BIAS := -8.0
 const WEAPON_ORBIT_Z_INDEX := -8
@@ -197,7 +202,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		visual_root.scale = Vector2.ONE
 	var body := _animated_sprite()
 	if body != null:
-		var full_frame_frames := _character_full_frame_sprite_frames(character_id)
+		var full_frame_frames: SpriteFrames = null if character_id in CARTOON_TRIAL_CLASSES else _character_full_frame_sprite_frames(character_id)
 		_uses_full_frame_visual = full_frame_frames != null
 		body.sprite_frames = full_frame_frames if _uses_full_frame_visual else _character_sprite_frames(config)
 		body.animation = "idle"
@@ -1610,7 +1615,10 @@ func _configure_player_rig(config: Dictionary, show_cutout := true) -> void:
 		visual_root.add_child(rig)
 	var texture := config.get("sprite", BERSERK_SPRITE) as Texture2D
 	if rig.has_method("configure"):
-		rig.configure(texture, BASE_SPRITE_SCALE, character_id, {"is_player": true})
+		# CARTOON-проба: суффикс профиля уводит риг на legacy (целый спрайт), без
+		# v2-боксов нарезки, не подходящих cartoon-пропорциям (SCRUM-456).
+		var rig_profile: String = character_id + "_cartoon" if character_id in CARTOON_TRIAL_CLASSES else character_id
+		rig.configure(texture, BASE_SPRITE_SCALE, rig_profile, {"is_player": true})
 	rig.visible = show_cutout
 
 
