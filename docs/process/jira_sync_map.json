@@ -2385,8 +2385,8 @@
  },
  "backend_hero_select_v3_runtime_from_mockup_task.md": {
   "key": "SCRUM-447",
-  "status": "Контроль качества",
-  "desc_hash": "4c832921b735c26547b064ed5b798dbb"
+  "status": "Готово",
+  "desc_hash": "bccb6176010b2386c035a33ed86242fd"
  },
  "design_ui_minimalist_restyle_keep_red_buttons_task.md": {
   "key": "SCRUM-448",
@@ -2395,23 +2395,23 @@
  },
  "backend_ui_minimalist_restyle_keep_red_buttons_integration_task.md": {
   "key": "SCRUM-449",
-  "status": "Контроль качества",
-  "desc_hash": "3daab65ff31950fb162af78cc25a21b1"
+  "status": "Готово",
+  "desc_hash": "c724ef37fb225746bafb336c9dadf404"
  },
  "design_ui_minimal_buttons_from_references_task.md": {
   "key": "SCRUM-450",
-  "status": "Контроль качества",
-  "desc_hash": "51b245118525bf5d0d457786355f0c8f"
+  "status": "Готово",
+  "desc_hash": "ffa5734032c27738436ab00a79ed3515"
  },
  "design_ui_minimal_frames_rollout_task.md": {
   "key": "SCRUM-451",
-  "status": "Контроль качества",
-  "desc_hash": "39b55386a6143fbd7b1432b2ec66c9e9"
+  "status": "Готово",
+  "desc_hash": "057c572cc0bc0ce23a6a53e16e533791"
  },
  "design_ui_minimal_metal_anchor_task.md": {
   "key": "SCRUM-452",
-  "status": "Контроль качества",
-  "desc_hash": "a04a50284fdad20eb2ce3f876ca247d5"
+  "status": "Готово",
+  "desc_hash": "6a74a05fffcbd04dddbe2de10e5b487b"
  },
  "backend_class_balance_damage_table_3variants_task.md": {
   "key": "SCRUM-453",
@@ -2440,13 +2440,13 @@
  },
  "qa_design_review_all_pages_create_bugs_task.md": {
   "key": "SCRUM-458",
-  "status": "Контроль качества",
-  "desc_hash": "60b582bcd8620108ff8cf7bb251292cc"
+  "status": "Готово",
+  "desc_hash": "6ce3996766d8493a2b4e44bab5c2395c"
  },
  "backend_ui_minimal_metal_anchor_integration_task.md": {
   "key": "SCRUM-459",
-  "status": "Контроль качества",
-  "desc_hash": "cbda0635dd5cf62b7cb2194d242b3a09"
+  "status": "Готово",
+  "desc_hash": "af8be7015203796ee0601c91e2727100"
  },
  "bug_feedback_overflow_send_error_task.md": {
   "key": "SCRUM-460",
@@ -2455,33 +2455,33 @@
  },
  "animation_chars_cartoon_anime_berserk_anchor_task.md": {
   "key": "SCRUM-461",
-  "status": "К выполнению",
-  "desc_hash": "8ce07eb45f085751957bf6e11deab525"
+  "status": "Контроль качества",
+  "desc_hash": "81d4bb05e810ff85bc908f5f0eb6f5bd"
  },
  "backend_ui_minimal_buttons_from_references_integration_task.md": {
   "key": "SCRUM-462",
-  "status": "Контроль качества",
-  "desc_hash": "78ff448249d2fa881429ab1f9fb50553"
+  "status": "Готово",
+  "desc_hash": "bbc94b1f2c074a1f83d592183877d11a"
  },
  "backend_ui_minimal_frames_rollout_integration_task.md": {
   "key": "SCRUM-463",
-  "status": "Контроль качества",
-  "desc_hash": "9f0f7d48555649d932d609588636f2c3"
+  "status": "Готово",
+  "desc_hash": "ecb343ea67e6696db39c3014f0708193"
  },
  "bug_economy_screens_opaque_matte_washes_content_task.md": {
   "key": "SCRUM-464",
-  "status": "Контроль качества",
-  "desc_hash": "7ed8a63e7f3dbb27b93f017bb49cd217"
+  "status": "Готово",
+  "desc_hash": "bf75a12aa3c775291209b0fb0d144947"
  },
  "bug_levelup_screen_overflows_bottom_at_720p_task.md": {
   "key": "SCRUM-465",
-  "status": "Контроль качества",
-  "desc_hash": "8cc9dd37631a7336e5a15a0dc9111d09"
+  "status": "Готово",
+  "desc_hash": "265548c50ed2dd93b08229b2644981bc"
  },
  "bug_minimal_metal_frames_internal_lines_cross_content_task.md": {
   "key": "SCRUM-466",
-  "status": "Контроль качества",
-  "desc_hash": "78a241cdf5b992bdf43ed48df4031736"
+  "status": "Готово",
+  "desc_hash": "9642cc50edfb96ccd8738b7bc8a9721c"
  },
  "bug_attribute_shop_action_buttons_overflow_720p_task.md": {
   "key": "SCRUM-467",
@@ -2501,6 +2501,11 @@
  "design_hero_select_v4_rebuild_clean_readable_task.md": {
   "key": "SCRUM-470",
   "status": "В работе",
-  "desc_hash": "93ba293d4722ebbd2258e3fbe76220b9"
+  "desc_hash": "435359570a76b3c9ac1d5668b25b497f"
+ },
+ "bug_settings_attribute_shop_overflow_overlap_1152x648_task.md": {
+  "key": "SCRUM-471",
+  "status": "К выполнению",
+  "desc_hash": "f8a598de82197ea39ff00b007cd801d3"
  }
 }
