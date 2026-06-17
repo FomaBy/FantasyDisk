@@ -2507,5 +2507,10 @@
   "key": "SCRUM-468",
   "status": "Готово",
   "desc_hash": "2f1c71a886fa2e02ccd11e41e5f3a15a"
+ },
+ "backend_class_balance_relative_score_optimum_normalize_task.md": {
+  "key": "SCRUM-469",
+  "status": "В работе",
+  "desc_hash": "f2e6d2ed5acd18344f812cf1c13a24b7"
  }
 }
