@@ -2380,8 +2380,8 @@
  },
  "bug_player_death_does_not_end_combat_task.md": {
   "key": "SCRUM-443",
-  "status": "К выполнению",
-  "desc_hash": "aacbf328f47fac37918937ea6546bca4"
+  "status": "Готово",
+  "desc_hash": "77de4e1cc63d366c3919616ff6e92fcd"
  },
  "bug_runtime_smoke_death_flow_death_save_fragility_task.md": {
   "key": "SCRUM-444",

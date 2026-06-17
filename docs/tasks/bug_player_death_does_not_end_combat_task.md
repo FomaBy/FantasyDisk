@@ -1,6 +1,6 @@
 # BUG (CRITICAL): Смерть игрока НЕ завершает бой — game-breaking
 
-Статус: superseded (не game-breaking; реальный фикс — тест/изоляция SCRUM-444)
+Статус: done
 Приоритет: low (понижено: не геймплейный баг, тест-артефакт)
 Роль: Back-end (бой/death-flow)
 Версия: 0.1.6
@@ -116,3 +116,15 @@ player freed). Геймплейный death-flow КОРРЕКТЕН — это �
 `user://`, и тест читал реальный dev-сейв с купленным `endure_capstone` (death_save).
 Понижено до low, помечено superseded: реальная работа — в **SCRUM-444** (фикс
 `_test_death_flow` + тест-изоляция от реального мета-сейва). Геймплейный код НЕ трогать.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-06-17
+Разрешено как НЕ-баг (закрываю, чтобы Jira не держала ложный CRITICAL «К выполнению»).
+Геймплейный death-flow корректен: новый игрок без `death_save` (`default_state().
+skill_nodes == []`) при `take_damage` до 0 HP → `combat_active=false` → death-экран
+(проверено эмпирически). «Critical» был тест-артефактом: тесты читали реальный dev
+мета-сейв с купленным `endure_capstone` (→ `death_save`), а `--user-data-dir` не
+изолирует `user://`. Реальная работа — фикс теста **SCRUM-444 (Готово)**; полный
+`runtime_smoke_test` (вкл. `_test_death_flow`) — зелёный. `player.gd`/
+`combat_director.gd` не трогались.
