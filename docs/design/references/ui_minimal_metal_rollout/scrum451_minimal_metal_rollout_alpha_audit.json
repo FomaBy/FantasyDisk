@@ -1,0 +1,153 @@
+{
+  "task": "SCRUM-451",
+  "assets": {
+    "modal": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png",
+      "mode": "RGBA",
+      "size": [
+        986,
+        900
+      ],
+      "visible_pixels": 877662,
+      "white_opaque_pixels": 0,
+      "pale_visible_pixels": 0,
+      "edge_visible_pixels_2px": 8,
+      "content_rect_xywh": [
+        72,
+        92,
+        842,
+        724
+      ],
+      "texture_margins_ltrb": [
+        46,
+        62,
+        46,
+        58
+      ]
+    },
+    "panel": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png",
+      "mode": "RGBA",
+      "size": [
+        782,
+        716
+      ],
+      "visible_pixels": 552378,
+      "white_opaque_pixels": 0,
+      "pale_visible_pixels": 0,
+      "edge_visible_pixels_2px": 8,
+      "content_rect_xywh": [
+        58,
+        72,
+        666,
+        578
+      ],
+      "texture_margins_ltrb": [
+        38,
+        52,
+        38,
+        48
+      ]
+    },
+    "card": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png",
+      "mode": "RGBA",
+      "size": [
+        426,
+        486
+      ],
+      "visible_pixels": 201568,
+      "white_opaque_pixels": 0,
+      "pale_visible_pixels": 0,
+      "edge_visible_pixels_2px": 0,
+      "content_rect_xywh": [
+        46,
+        58,
+        334,
+        374
+      ],
+      "texture_margins_ltrb": [
+        32,
+        42,
+        32,
+        40
+      ]
+    },
+    "tooltip": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png",
+      "mode": "RGBA",
+      "size": [
+        760,
+        242
+      ],
+      "visible_pixels": 178272,
+      "white_opaque_pixels": 0,
+      "pale_visible_pixels": 0,
+      "edge_visible_pixels_2px": 0,
+      "content_rect_xywh": [
+        66,
+        44,
+        628,
+        158
+      ],
+      "texture_margins_ltrb": [
+        46,
+        30,
+        46,
+        28
+      ]
+    },
+    "hud_strip": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png",
+      "mode": "RGBA",
+      "size": [
+        1122,
+        288
+      ],
+      "visible_pixels": 316884,
+      "white_opaque_pixels": 0,
+      "pale_visible_pixels": 0,
+      "edge_visible_pixels_2px": 8,
+      "content_rect_xywh": [
+        104,
+        62,
+        914,
+        170
+      ],
+      "texture_margins_ltrb": [
+        76,
+        42,
+        76,
+        40
+      ]
+    },
+    "field": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png",
+      "mode": "RGBA",
+      "size": [
+        616,
+        286
+      ],
+      "visible_pixels": 170728,
+      "white_opaque_pixels": 0,
+      "pale_visible_pixels": 0,
+      "edge_visible_pixels_2px": 0,
+      "content_rect_xywh": [
+        58,
+        52,
+        500,
+        186
+      ],
+      "texture_margins_ltrb": [
+        42,
+        38,
+        42,
+        36
+      ]
+    }
+  },
+  "rules": {
+    "white_opaque_threshold": "RGB>=245 and alpha>=245",
+    "pale_visible_threshold": "RGB>=235 and alpha>=20"
+  }
+}

@@ -7,22 +7,24 @@ signal main_menu_requested
 
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
-const ESCAPE_PANEL_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_main.png")
-const STAT_BASIC_ROW_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_chip.png")
-const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_group.png")
-const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_chip.png")
-const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/ornate/ui_frame_ornate_pause_stat_tooltip.png")
+const ESCAPE_PANEL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png")
+const STAT_BASIC_ROW_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png")
+const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png")
+const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png")
+const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png")
 const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
-const PAUSE_END_MODAL_FRAME := preload("res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png")
-const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause.png")
-const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_pressed.png")
-const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause_disabled.png")
+const PAUSE_END_MODAL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png")
+const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause.png")
+const PAUSE_BUTTON_HOVER := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_hover.png")
+const PAUSE_BUTTON_FOCUS := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_focus.png")
+const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_pressed.png")
+const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_disabled.png")
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
-const PAUSE_END_MODAL_SOURCE_SIZE := Vector2(1280.0, 1024.0)
-const PAUSE_END_MODAL_TEXTURE_MARGINS := Vector4(160.0, 170.0, 160.0, 164.0)
-const PAUSE_END_MODAL_CONTENT := Vector4(170.0, 180.0, 170.0, 174.0)
+const PAUSE_END_MODAL_SOURCE_SIZE := Vector2(986.0, 900.0)
+const PAUSE_END_MODAL_TEXTURE_MARGINS := Vector4(46.0, 62.0, 46.0, 58.0)
+const PAUSE_END_MODAL_CONTENT := Vector4(72.0, 92.0, 72.0, 84.0)
 
 const VALUE_HIGH := Color(0.439, 0.949, 0.651, 1.0)
 const VALUE_LOW := Color(1.0, 0.420, 0.420, 1.0)
@@ -682,10 +684,10 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 		normal_tint = Color(1.08, 0.72, 0.72, 1.0)
 		pressed_tint = Color(0.92, 0.55, 0.55, 1.0)
 	button.add_theme_stylebox_override("normal", _button_style(PAUSE_BUTTON_NORMAL, normal_tint))
-	button.add_theme_stylebox_override("hover", _button_style(PAUSE_BUTTON_NORMAL, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("hover", _button_style(PAUSE_BUTTON_HOVER, BUTTON_NEUTRAL_HOVER_TINT))
 	button.add_theme_stylebox_override("pressed", _button_style(PAUSE_BUTTON_PRESSED, pressed_tint))
 	button.add_theme_stylebox_override("disabled", _button_style(PAUSE_BUTTON_DISABLED, Color(0.72, 0.72, 0.72, 1.0)))
-	button.add_theme_stylebox_override("focus", _button_style(PAUSE_BUTTON_NORMAL, BUTTON_NEUTRAL_FOCUS_TINT))
+	button.add_theme_stylebox_override("focus", _button_style(PAUSE_BUTTON_FOCUS, BUTTON_NEUTRAL_FOCUS_TINT))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
@@ -694,7 +696,7 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 
 
 func _panel_style() -> StyleBox:
-	return _texture_style(ESCAPE_PANEL_FRAME, 40, 40, 40, 40, Color.WHITE, Vector4(24, 24, 24, 24))
+	return _texture_style(ESCAPE_PANEL_FRAME, 38, 52, 38, 48, Color.WHITE, Vector4(58, 72, 58, 66))
 
 
 func _pause_end_modal_style(display_size: Vector2) -> StyleBox:
@@ -725,7 +727,7 @@ func _basic_stat_row_style(is_hovered: bool, is_priority := false) -> StyleBox:
 	var tint := Color(1.10, 1.10, 1.10, 1.0) if is_hovered else Color.WHITE
 	if is_priority:
 		tint = Color(1.18, 1.08, 0.72, 1.0) if is_hovered else Color(1.10, 1.02, 0.74, 1.0)
-	return _texture_style(STAT_BASIC_ROW_FRAME, 20, 12, 20, 14, tint, Vector4(8, 4, 8, 4))
+	return _texture_style(STAT_BASIC_ROW_FRAME, 42, 38, 42, 36, tint, Vector4(58, 52, 58, 48))
 
 
 func _group_style(accent: Color) -> StyleBox:
@@ -735,16 +737,16 @@ func _group_style(accent: Color) -> StyleBox:
 		lerpf(1.0, accent.b, 0.12),
 		1.0
 	)
-	return _texture_style(STAT_GROUP_FRAME, 34, 30, 34, 34, tint, Vector4(14, 12, 14, 14))
+	return _texture_style(STAT_GROUP_FRAME, 38, 52, 38, 48, tint, Vector4(58, 72, 58, 66))
 
 
 func _chip_style(is_hovered: bool) -> StyleBox:
 	var tint := Color(1.12, 1.12, 1.12, 1.0) if is_hovered else Color.WHITE
-	return _texture_style(STAT_CHIP_FRAME, 20, 12, 20, 14, tint, Vector4(8, 6, 8, 6))
+	return _texture_style(STAT_CHIP_FRAME, 42, 38, 42, 36, tint, Vector4(58, 52, 58, 48))
 
 
 func _tooltip_style() -> StyleBox:
-	return _texture_style(STAT_TOOLTIP_FRAME, 34, 30, 34, 34, Color.WHITE, Vector4(18, 16, 18, 16))
+	return _texture_style(STAT_TOOLTIP_FRAME, 46, 30, 46, 28, Color.WHITE, Vector4(66, 44, 66, 40))
 
 
 func _make_section_divider() -> TextureRect:
@@ -758,7 +760,7 @@ func _make_section_divider() -> TextureRect:
 
 
 func _button_style(texture: Texture2D, tint: Color) -> StyleBox:
-	var style := _texture_style(texture, 68, 20, 68, 20, tint, Vector4(56, 8, 56, 8))
+	var style := _texture_style(texture, 34, 16, 34, 16, tint, Vector4(46, 18, 46, 18))
 	if style is StyleBoxTexture:
 		(style as StyleBoxTexture).modulate_color.a = 1.0
 	return style
@@ -776,4 +778,6 @@ func _texture_style(texture: Texture2D, left: float, top: float, right: float, b
 	style.content_margin_top = content.y
 	style.content_margin_right = content.z
 	style.content_margin_bottom = content.w
+	style.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
+	style.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
 	return style

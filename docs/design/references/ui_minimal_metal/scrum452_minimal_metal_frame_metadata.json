@@ -1,0 +1,231 @@
+{
+  "task": "SCRUM-452",
+  "source_sheet": "docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_source_sheet.png",
+  "style_board": "docs/design/references/ui_minimal_metal/scrum452_minimal_metal_style_board.png",
+  "contact_preview": "docs/design/previews/scrum452_minimal_metal_anchor_contact.png",
+  "safe_zone_preview": "docs/design/previews/scrum452_minimal_metal_safe_zones.png",
+  "global_rules": {
+    "style": "Minimal strict metal: graphite/obsidian panels, thin steel/brass rails, rare ruby pins, no heavy ornament or dragon curls.",
+    "content_rule": "Runtime content, text, icons, portraits, controls and hit areas must remain inside declared content_rect_xywh only; metal rails, bevels, corner plates and ruby pins are forbidden zones.",
+    "button_rule": "Does not replace SCRUM-273 Red & Gold buttons. SCRUM-450 owns button redraw from references.",
+    "runtime_rule": "Design-source package only; Back-end integration must wire these as a distinct minimal_metal kit or promote them through a reviewed handoff."
+  },
+  "assets": {
+    "ui_frame_minimal_metal_modal": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_modal_raw.png",
+      "role": "Large modal/window frame for Settings, Codex, pause/result and large dialogs.",
+      "size": [
+        986,
+        900
+      ],
+      "texture_margins_ltrb": [
+        46,
+        62,
+        46,
+        58
+      ],
+      "content_margins_ltrb": [
+        72,
+        92,
+        72,
+        84
+      ],
+      "content_rect_xywh": [
+        72,
+        92,
+        842,
+        724
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; borders, ruby pins, bevels and corner plates are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile center for generic surfaces; authored whole-image only when source rects are declared.",
+      "alpha_audit": {
+        "visible_pixels": 877662,
+        "content_rect_visible_pixels": 609608,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_metal_panel": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_panel_raw.png",
+      "role": "Generic inner panel for screen sections and large content panes.",
+      "size": [
+        782,
+        716
+      ],
+      "texture_margins_ltrb": [
+        38,
+        52,
+        38,
+        48
+      ],
+      "content_margins_ltrb": [
+        58,
+        72,
+        58,
+        66
+      ],
+      "content_rect_xywh": [
+        58,
+        72,
+        666,
+        578
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; borders, ruby pins, bevels and corner plates are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile center for generic surfaces; authored whole-image only when source rects are declared.",
+      "alpha_audit": {
+        "visible_pixels": 552378,
+        "content_rect_visible_pixels": 384948,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_metal_card": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_card_raw.png",
+      "role": "Compact card frame for reward/event/upgrade/choice cards.",
+      "size": [
+        426,
+        486
+      ],
+      "texture_margins_ltrb": [
+        32,
+        42,
+        32,
+        40
+      ],
+      "content_margins_ltrb": [
+        46,
+        58,
+        46,
+        54
+      ],
+      "content_rect_xywh": [
+        46,
+        58,
+        334,
+        374
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; borders, ruby pins, bevels and corner plates are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile center for generic surfaces; authored whole-image only when source rects are declared.",
+      "alpha_audit": {
+        "visible_pixels": 201568,
+        "content_rect_visible_pixels": 124916,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_metal_tooltip": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_tooltip_raw.png",
+      "role": "Tooltip and small message panel.",
+      "size": [
+        760,
+        242
+      ],
+      "texture_margins_ltrb": [
+        46,
+        30,
+        46,
+        28
+      ],
+      "content_margins_ltrb": [
+        66,
+        44,
+        66,
+        40
+      ],
+      "content_rect_xywh": [
+        66,
+        44,
+        628,
+        158
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; borders, ruby pins, bevels and corner plates are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile center for generic surfaces; authored whole-image only when source rects are declared.",
+      "alpha_audit": {
+        "visible_pixels": 178272,
+        "content_rect_visible_pixels": 99224,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_metal_hud_strip": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_hud_strip_raw.png",
+      "role": "Long HUD/resource/status strip.",
+      "size": [
+        1122,
+        288
+      ],
+      "texture_margins_ltrb": [
+        76,
+        42,
+        76,
+        40
+      ],
+      "content_margins_ltrb": [
+        104,
+        62,
+        104,
+        56
+      ],
+      "content_rect_xywh": [
+        104,
+        62,
+        914,
+        170
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; borders, ruby pins, bevels and corner plates are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile center for generic surfaces; authored whole-image only when source rects are declared.",
+      "alpha_audit": {
+        "visible_pixels": 316884,
+        "content_rect_visible_pixels": 155380,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_metal_field": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_field_raw.png",
+      "role": "Input field, selector, tab slot or compact section frame.",
+      "size": [
+        616,
+        286
+      ],
+      "texture_margins_ltrb": [
+        42,
+        38,
+        42,
+        36
+      ],
+      "content_margins_ltrb": [
+        58,
+        52,
+        58,
+        48
+      ],
+      "content_rect_xywh": [
+        58,
+        52,
+        500,
+        186
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; borders, ruby pins, bevels and corner plates are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile center for generic surfaces; authored whole-image only when source rects are declared.",
+      "alpha_audit": {
+        "visible_pixels": 170728,
+        "content_rect_visible_pixels": 93000,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,599 @@
+{
+  "task": "SCRUM-451",
+  "status": "ready_for_backend_integration",
+  "based_on": {
+    "frame_anchor": "SCRUM-452",
+    "button_kit": "SCRUM-450",
+    "frame_metadata": "docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json",
+    "button_metadata": "docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json"
+  },
+  "global_contract": {
+    "single_frame_set": "All non-button rectangular UI surfaces resolve to modal/panel/card/tooltip/hud_strip/field from assets/sprites/ui/frames/minimal_metal/.",
+    "button_contract": "Action buttons use SCRUM-450 minimal_metal_buttons in Back-end phase; this rollout does not duplicate button assets.",
+    "content_rule": "Runtime content, labels, icons, portraits, carousel cells, click/focus affordances and hover highlights must remain inside each chosen asset content_rect_xywh after scaling. Texture margins, rails, bevels, corner plates and ruby pins are forbidden content zones.",
+    "legacy_rule": "Old ornate/screen-specific assets may only be backed up/removed after Back-end no-live-ref audit and runtime no-overlap matrix; Design does not delete them in SCRUM-451."
+  },
+  "frame_families": {
+    "modal": {
+      "asset_id": "ui_frame_minimal_metal_modal",
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_modal_raw.png",
+      "size": [
+        986,
+        900
+      ],
+      "texture_margins_ltrb": [
+        46,
+        62,
+        46,
+        58
+      ],
+      "content_margins_ltrb": [
+        72,
+        92,
+        72,
+        84
+      ],
+      "content_rect_xywh": [
+        72,
+        92,
+        842,
+        724
+      ],
+      "rollout_role": "Large shell/window surface for main menus, Settings, Codex, shop, pause/results, major dialogs.",
+      "runtime_style": "StyleBoxTexture or NinePatchRect; tile/stretch center only.",
+      "alpha_audit": {
+        "visible_pixels": 877662,
+        "content_rect_visible_pixels": 609608,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "panel": {
+      "asset_id": "ui_frame_minimal_metal_panel",
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_panel_raw.png",
+      "size": [
+        782,
+        716
+      ],
+      "texture_margins_ltrb": [
+        38,
+        52,
+        38,
+        48
+      ],
+      "content_margins_ltrb": [
+        58,
+        72,
+        58,
+        66
+      ],
+      "content_rect_xywh": [
+        58,
+        72,
+        666,
+        578
+      ],
+      "rollout_role": "Inner content panes, preview/dossier areas, sidebars, section bodies.",
+      "runtime_style": "StyleBoxTexture or NinePatchRect; safe content container from content_rect_xywh.",
+      "alpha_audit": {
+        "visible_pixels": 552378,
+        "content_rect_visible_pixels": 384948,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "card": {
+      "asset_id": "ui_frame_minimal_metal_card",
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_card_raw.png",
+      "size": [
+        426,
+        486
+      ],
+      "texture_margins_ltrb": [
+        32,
+        42,
+        32,
+        40
+      ],
+      "content_margins_ltrb": [
+        46,
+        58,
+        46,
+        54
+      ],
+      "content_rect_xywh": [
+        46,
+        58,
+        334,
+        374
+      ],
+      "rollout_role": "Selectable choice cards, reward cards, codex entry cards, shop item cards, carousel cells.",
+      "runtime_style": "StyleBoxTexture for cards; whole-card hit area may cover full control, content remains in safe rect.",
+      "alpha_audit": {
+        "visible_pixels": 201568,
+        "content_rect_visible_pixels": 124916,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "tooltip": {
+      "asset_id": "ui_frame_minimal_metal_tooltip",
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_tooltip_raw.png",
+      "size": [
+        760,
+        242
+      ],
+      "texture_margins_ltrb": [
+        46,
+        30,
+        46,
+        28
+      ],
+      "content_margins_ltrb": [
+        66,
+        44,
+        66,
+        40
+      ],
+      "content_rect_xywh": [
+        66,
+        44,
+        628,
+        158
+      ],
+      "rollout_role": "Hover tooltips, glossary hints, small helper copy and error hints.",
+      "runtime_style": "StyleBoxTexture; size from copy min-size but content in safe rect.",
+      "alpha_audit": {
+        "visible_pixels": 178272,
+        "content_rect_visible_pixels": 99224,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "hud_strip": {
+      "asset_id": "ui_frame_minimal_metal_hud_strip",
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_hud_strip_raw.png",
+      "size": [
+        1122,
+        288
+      ],
+      "texture_margins_ltrb": [
+        76,
+        42,
+        76,
+        40
+      ],
+      "content_margins_ltrb": [
+        104,
+        62,
+        104,
+        56
+      ],
+      "content_rect_xywh": [
+        104,
+        62,
+        914,
+        170
+      ],
+      "rollout_role": "Combat HUD resource strips, status ribbons, top/bottom compact bands.",
+      "runtime_style": "NinePatch/StyleBoxTexture for long strips; no content in ruby/side caps.",
+      "alpha_audit": {
+        "visible_pixels": 316884,
+        "content_rect_visible_pixels": 155380,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "field": {
+      "asset_id": "ui_frame_minimal_metal_field",
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_field_raw.png",
+      "size": [
+        616,
+        286
+      ],
+      "texture_margins_ltrb": [
+        42,
+        38,
+        42,
+        36
+      ],
+      "content_margins_ltrb": [
+        58,
+        52,
+        58,
+        48
+      ],
+      "content_rect_xywh": [
+        58,
+        52,
+        500,
+        186
+      ],
+      "rollout_role": "Inputs, selectors, tabs, chips, small counters, compact stat fields.",
+      "runtime_style": "StyleBoxTexture for fields/tabs; use content rect for labels/icons.",
+      "alpha_audit": {
+        "visible_pixels": 170728,
+        "content_rect_visible_pixels": 93000,
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    }
+  },
+  "screen_rollout": {
+    "main_menu": {
+      "surfaces": [
+        [
+          "menu_button_column_panel",
+          "panel",
+          "Left button-column backing/optional menu container"
+        ],
+        [
+          "menu_dialogs",
+          "modal",
+          "Continue/new-run confirmation and system dialogs"
+        ],
+        [
+          "menu_tooltips",
+          "tooltip",
+          "Button/helper tooltips"
+        ]
+      ],
+      "notes": "Keep the native main-menu background art and title treatment; minimal-metal frames cover only UI surfaces and dialogs."
+    },
+    "settings": {
+      "surfaces": [
+        [
+          "settings_shell",
+          "modal",
+          "Settings root window"
+        ],
+        [
+          "settings_tab_switcher",
+          "field",
+          "Three-slot display/audio/controls tab switcher"
+        ],
+        [
+          "settings_section_panel",
+          "panel",
+          "Tab content sections"
+        ],
+        [
+          "settings_control_row",
+          "field",
+          "Dropdowns, sliders, rebind rows, checkboxes"
+        ],
+        [
+          "settings_help_tooltip",
+          "tooltip",
+          "Hover/error helper text"
+        ]
+      ],
+      "notes": "Preserve exactly three settings tabs. Content never enters tab rails or ruby pins."
+    },
+    "hero_select": {
+      "surfaces": [
+        [
+          "hero_preview_frame",
+          "panel",
+          "Hero portrait/preview pane"
+        ],
+        [
+          "hero_dossier_frame",
+          "panel",
+          "Description, traits, weapons, ascension and select content pane"
+        ],
+        [
+          "hero_radar_shell",
+          "field",
+          "Square radar backing; preserve HeroSelectRadarPanel/HeroStatRadar drawing inside safe rect"
+        ],
+        [
+          "hero_carousel_rail",
+          "hud_strip",
+          "Large horizontal carousel backing"
+        ],
+        [
+          "hero_thumbnail_card",
+          "card",
+          "Individual hero thumbnail/hit area"
+        ],
+        [
+          "hero_tooltip",
+          "tooltip",
+          "Trait/weapon/locked-state hints"
+        ]
+      ],
+      "notes": "Keep SCRUM-447 geometry and radar semantics. If a generic 9-slice surface cannot preserve the square radar/preview rects, Back-end must request a tiny screen-specific Design slice before wiring."
+    },
+    "codex": {
+      "surfaces": [
+        [
+          "codex_shell",
+          "modal",
+          "Codex root library window"
+        ],
+        [
+          "codex_nav_panel",
+          "panel",
+          "Left nav/filter pane"
+        ],
+        [
+          "codex_detail_panel",
+          "panel",
+          "Right detail pane"
+        ],
+        [
+          "codex_entry_card",
+          "card",
+          "Entry/list cards"
+        ],
+        [
+          "codex_tab",
+          "field",
+          "Tab/filter controls"
+        ],
+        [
+          "codex_glossary_tooltip",
+          "tooltip",
+          "Glossary hover tooltip"
+        ]
+      ],
+      "notes": "Preserve SCRUM-438 Control hierarchy and glossary behavior; swap material/frame family only."
+    },
+    "shop": {
+      "surfaces": [
+        [
+          "shop_shell",
+          "modal",
+          "Shop window/screen shell"
+        ],
+        [
+          "shop_inventory_panel",
+          "panel",
+          "Inventory/equipment/merchant sections"
+        ],
+        [
+          "shop_item_card",
+          "card",
+          "Shop item cards/hit areas"
+        ],
+        [
+          "shop_price_badge",
+          "field",
+          "Price/status badges"
+        ],
+        [
+          "shop_tooltip",
+          "tooltip",
+          "Item detail hover"
+        ]
+      ],
+      "notes": "Item descriptions remain in tooltip/details; do not cover merchant backdrop with oversized modal surfaces."
+    },
+    "rewards": {
+      "surfaces": [
+        [
+          "reward_shell",
+          "modal",
+          "Battle reward / artifact reward shell"
+        ],
+        [
+          "reward_card",
+          "card",
+          "Reward option cards"
+        ],
+        [
+          "reward_status_field",
+          "field",
+          "Tier/status/count chips"
+        ],
+        [
+          "reward_tooltip",
+          "tooltip",
+          "Artifact/choice hints"
+        ]
+      ],
+      "notes": "Whole card may stay clickable, but labels/icons/tier copy stay in safe rect."
+    },
+    "level_up": {
+      "surfaces": [
+        [
+          "level_up_shell",
+          "modal",
+          "Level-up choice window"
+        ],
+        [
+          "level_up_choice_card",
+          "card",
+          "Weapon/stat upgrade option cards"
+        ],
+        [
+          "level_up_stat_field",
+          "field",
+          "Small stat deltas/chips"
+        ],
+        [
+          "level_up_tooltip",
+          "tooltip",
+          "Upgrade hover details"
+        ]
+      ],
+      "notes": "Three-choice layout remains; defer/later button uses SCRUM-450 button kit in Back-end phase."
+    },
+    "events": {
+      "surfaces": [
+        [
+          "event_shell",
+          "modal",
+          "Random event/rest/campfire shell"
+        ],
+        [
+          "event_copy_panel",
+          "panel",
+          "Story/body copy area"
+        ],
+        [
+          "event_choice_card",
+          "card",
+          "Choice card/hit areas"
+        ],
+        [
+          "event_risk_field",
+          "field",
+          "Risk/cost/result chips"
+        ],
+        [
+          "event_tooltip",
+          "tooltip",
+          "Choice effect details"
+        ]
+      ],
+      "notes": "Long copy uses panels/cards with scroll or multiline constraints inside safe rect."
+    },
+    "pause": {
+      "surfaces": [
+        [
+          "pause_shell",
+          "modal",
+          "Pause window"
+        ],
+        [
+          "pause_stats_panel",
+          "panel",
+          "Stats/list sections"
+        ],
+        [
+          "pause_stat_chip",
+          "field",
+          "Compact stat chips"
+        ],
+        [
+          "pause_tooltip",
+          "tooltip",
+          "Stat/setting hints"
+        ]
+      ],
+      "notes": "Do not revive ornate pause/stat families after rollout; use minimal-metal fields/cards."
+    },
+    "results": {
+      "surfaces": [
+        [
+          "results_shell",
+          "modal",
+          "Victory/defeat/result window"
+        ],
+        [
+          "results_summary_panel",
+          "panel",
+          "Run summary and progression sections"
+        ],
+        [
+          "results_reward_card",
+          "card",
+          "Unlocked rewards / summary cards"
+        ],
+        [
+          "results_stat_field",
+          "field",
+          "Score/stat chips"
+        ]
+      ],
+      "notes": "Background result art remains; frames sit over readable shaded panels only."
+    },
+    "combat_hud": {
+      "surfaces": [
+        [
+          "hud_resource_strip",
+          "hud_strip",
+          "HP/XP/gold/ultimate resource strip wrapper"
+        ],
+        [
+          "hud_timer_field",
+          "field",
+          "Timer/status compact field"
+        ],
+        [
+          "hud_artifact_card",
+          "card",
+          "Artifact/status card wrappers when framed"
+        ],
+        [
+          "hud_tooltip",
+          "tooltip",
+          "Combat hover/status hints"
+        ]
+      ],
+      "notes": "Do not replace bar fill textures or gameplay icons; migrate only wrapper frames and compact chips."
+    },
+    "tooltips": {
+      "surfaces": [
+        [
+          "global_tooltip",
+          "tooltip",
+          "All generic tooltip panels"
+        ],
+        [
+          "compact_hint_field",
+          "field",
+          "Small inline hints and badges"
+        ]
+      ],
+      "notes": "Tooltip content min-size derives from safe rect; avoid placing arrows or copy on border rails."
+    },
+    "dialogs": {
+      "surfaces": [
+        [
+          "dialog_modal",
+          "modal",
+          "Confirm/cancel and warning dialogs"
+        ],
+        [
+          "dialog_body_panel",
+          "panel",
+          "Body copy/detail area"
+        ],
+        [
+          "dialog_field",
+          "field",
+          "Small status/shortcut fields"
+        ],
+        [
+          "dialog_tooltip",
+          "tooltip",
+          "Dialog helper hints"
+        ]
+      ],
+      "notes": "Use modal shell for destructive/confirm dialogs; SCRUM-450 buttons provide action controls."
+    }
+  },
+  "responsive_targets": {
+    "1280x720": {
+      "scale_policy": "Prefer existing compact layouts; do not reduce content inset below scaled content_rect + 8px runtime reserve.",
+      "shell_max": "Keep modal shells within 92% viewport width and 88% viewport height; scroll inner panels before shrinking margins.",
+      "card_policy": "Use fewer columns or horizontal scroll for cards before squeezing text onto frame rails."
+    },
+    "1920x1080": {
+      "scale_policy": "Base design target. Use source metadata ratios and 9-slice center stretch for generic surfaces.",
+      "shell_max": "Large shells may use 70-82% viewport width depending on screen density.",
+      "card_policy": "Use native card proportions and current screen-specific layout density."
+    },
+    "2560x1440": {
+      "scale_policy": "Increase spacing and content columns before increasing text size; rails/rubies remain visually thin.",
+      "shell_max": "Cap central shells around 1800-1960px unless the existing screen owns a wider canvas.",
+      "card_policy": "Cards may gain whitespace but should keep content centered inside safe rect."
+    }
+  },
+  "backend_handoff": "docs/tasks/backend_ui_minimal_frames_rollout_integration_task.md"
+}

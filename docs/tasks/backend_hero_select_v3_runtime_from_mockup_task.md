@@ -7,6 +7,7 @@
 Создано: 2026-06-15
 Автор: Designer 2 handoff from SCRUM-446
 Jira: SCRUM-447
+QA: in_progress (2026-06-17)
 Связано: SCRUM-446, SCRUM-436 (superseded v2), ui-director
 
 ## Autonomy / Approval
@@ -98,3 +99,11 @@ Verification:
 - PASS: `runtime_smoke_ui_test.gd`
 - PASS: `ui_no_overlap_matrix_test.gd`
 - PASS: `runtime_smoke_test.gd`
+
+## QA-Вердикт (2026-06-17)
+Статус: PASSED — Hero Select v3 пересобран с нуля по макапу (Фаза 4)
+Проверено: `_show_character_select` строит экран из SCRUM-446 v3 zones/frames (preview/dossier/
+radar/carousel/title/back из zones.json+frames_spec.json, фоны/рамки `hero_select_v3/*.png` +
+import-сайдкары). runtime_smoke (HERO_SELECT_V3_* ассерты) + runtime_smoke_ui зелёные.
+Заменяет провалившийся SCRUM-436. done → Готово.
+⚠️ QA: `ui_no_overlap_matrix` имеет 2 ПРЕД-существующих overflow при 1152×648 (settings + attribute_shop, оба и в HEAD до этой волны) — заведены отдельным багом `bug_settings_attribute_shop_overflow_overlap_1152x648_task.md`, НЕ регрессия этого тикета.

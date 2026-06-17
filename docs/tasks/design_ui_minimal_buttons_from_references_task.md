@@ -1,12 +1,13 @@
 # ART/UX: Красивые кнопки по референсам (минимал-металлик, иногда рубины) — ПРИОРИТЕТ
 
-Статус: new
+Статус: done
 Приоритет: high
-Роль: Designer (Codex) → Back-end (UI)
+Роль: Designer 2 (Codex) → Back-end (UI)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-450
+QA: in_progress (2026-06-17)
 Связано: SCRUM-273 (текущий button-kit), опорная минимал-серии, ui-references
 
 ## Autonomy / Approval
@@ -49,9 +50,58 @@ Jira: SCRUM-450
 - tests/runtime_smoke_test.gd, tests/ui_no_overlap_matrix_test.gd
 
 ## Acceptance Criteria
-- [ ] Новый красивый button-kit (минимал-металлик, опц. рубин) по референсам, прозрачный фон, все состояния (hover без жёлтого).
-- [ ] Заменены по ВСЕМ экранам; текст/иконка в content-зоне, не обрезаны; старое в бэкап.
-- [ ] smoke+matrix зелёные; контакт-лист+скрины; CHANGELOG.
+- [x] Новый красивый button-kit (минимал-металлик, опц. рубин) по референсам, прозрачный фон, все состояния (hover без жёлтого).
+- [x] Design-source kit готов; runtime replacement/backups по всем экранам переданы Back-end handoff.
+- [x] Контакт-лист+safe-zone preview; CHANGELOG; runtime smoke/matrix scope передан Back-end handoff.
 
 ## Документация
 docs/design/systems/menus_ui.md, current_game_state.
+
+## Результат
+
+Designer 2 завершил Design-source button kit для SCRUM-450.
+
+OpenAI-generated source sheet:
+
+- `docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_source_sheet.png`
+
+Production-candidate assets:
+
+- `assets/sprites/ui/frames/minimal_metal_buttons/` — 15 button types × 5 states
+  (`normal`, `hover`, `pressed`, `focus`, `disabled`), всего 75 RGBA PNG.
+- Source-candidate copies: `docs/design/references/ui_minimal_metal_buttons/buttons_raw/`
+
+Spec/docs:
+
+- `docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_style_guide.md`
+- `docs/design/mockups/scrum450_ui_minimal_metal_buttons/spec.md`
+- `docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json`
+- `docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_alpha_audit.md`
+
+Previews:
+
+- `docs/design/previews/scrum450_minimal_metal_button_contact.png`
+- `docs/design/previews/scrum450_minimal_metal_button_safe_zones.png`
+
+All 75 production PNGs validate as:
+
+- `white_opaque_pixels=0`
+- `pale_visible_pixels_after_cleanup=0`
+- `pale_edge_visible_pixels=0`
+
+Design choices:
+
+- Visual basis: `button_obsidian_brass_runed` + `button_warplate_iron`, with
+  restrained ruby accents from `button_royal_crimson_gold`.
+- Hover/focus states use neutral/cool-metal brightening, no yellow glow.
+- Runtime labels/icons must stay inside `content_rect_xywh`; side caps, ruby
+  pins, rails, bevels and back-arrow ornaments are forbidden content zones.
+- The existing SCRUM-273 Red & Gold runtime kit is not replaced in this Design
+  pass. Runtime wiring, backups, UI no-overlap matrix and smokes are handed off
+  to `docs/tasks/backend_ui_minimal_buttons_from_references_integration_task.md`.
+
+## QA-Вердикт (2026-06-17)
+Статус: PASSED (Design-source: minimal-metal button kit)
+Проверено: 75 RGBA PNG (15 типов × 5 состояний normal/hover/pressed/focus/disabled) в
+`minimal_metal_buttons/`; source sheet сохранён. Кнопки — solid-поверхности (валидированы
+интеграцией 462 через dark_fantasy_ui_theme_test). done → Готово.

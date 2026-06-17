@@ -2,8 +2,9 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const VIEWPORT_SIZES := [Vector2i(1152, 648), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
-const ECONOMY_CHOICE_WIDE_PATH := "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide.png"
-const ECONOMY_CHOICE_WIDE_HOVER_PATH := "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide_hover.png"
+const MINIMAL_CARD_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
+const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
+const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 
 
 func _initialize() -> void:
@@ -30,6 +31,10 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
 			"PatchNotesBackButton",
 		], dump_lines, errors, false)
+		await _check_screen(viewport_size, "level_up", Callable(self, "_open_level_up"), [
+			"LevelUpPanel", "LevelUpHeroHeader", "LevelUpRewardButton0",
+			"LevelUpRewardButton1", "LevelUpRewardButton2", "LevelUpLaterButton",
+		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_menu", Callable(self, "_open_pause_menu"), [
 			"RunPauseMenuPanel", "RunPauseContinueButton", "RunPauseDossierButton",
 			"RunPauseSettingsButton", "RunPauseEndRunButton", "RunPauseMainMenuButton",
@@ -40,7 +45,7 @@ func _initialize() -> void:
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "hero_select", Callable(self, "_open_hero_select"), [
 			"HeroSelectHeader", "HeroSelectPortraitPanel", "HeroSelectDossierPanel",
-			"HeroSelectChooseButton",
+			"HeroSelectRadarPanel", "HeroThumbnailStripFrame", "HeroSelectBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "victory", Callable(self, "_open_victory"), [
 			"PauseEndModalPanel_victory", "ResultCrest", "VictoryNewRunButton",
@@ -118,11 +123,21 @@ func _initialize() -> void:
 	if scrum439_file != null:
 		scrum439_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["settings"])))
 		scrum439_file.close()
-	DirAccess.make_dir_recursive_absolute("%s/scrum436" % qa_dir)
-	var scrum436_file := FileAccess.open("%s/scrum436/hero_select_v2_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
-	if scrum436_file != null:
-		scrum436_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["hero_select"])))
-		scrum436_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum448_ui_minimalist" % qa_dir)
+	var scrum448_file := FileAccess.open("%s/scrum448_ui_minimalist/ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum448_file != null:
+		scrum448_file.store_string("\n".join(dump_lines))
+		scrum448_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum451_minimal_metal_rollout" % qa_dir)
+	var scrum451_file := FileAccess.open("%s/scrum451_minimal_metal_rollout/ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum451_file != null:
+		scrum451_file.store_string("\n".join(dump_lines))
+		scrum451_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum446_hero_select_v3" % qa_dir)
+	var scrum446_file := FileAccess.open("%s/scrum446_hero_select_v3/hero_select_v3_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum446_file != null:
+		scrum446_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["hero_select"])))
+		scrum446_file.close()
 
 	if not errors.is_empty():
 		for error in errors:
@@ -191,6 +206,14 @@ func _open_skill_tree(main: Node) -> void:
 
 func _open_patch_notes(main: Node) -> void:
 	main.ui._show_patch_notes_screen()
+
+
+func _open_level_up(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.set("pending_level_ups", 1)
+	main.set("level_up_offer", [])
+	main.ui._show_level_up_screen(false)
 
 
 func _open_pause_menu(main: Node) -> void:
@@ -310,29 +333,29 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 
 
 func _requires_viewport_fit(screen_id: String) -> bool:
-	return screen_id in ["attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"]
+	return screen_id in ["level_up", "attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"]
 
 
 func _economy_choice_card_contract_error(card: Button, context: String) -> String:
 	if str(card.get_meta("economy_frame_path", "")) != ECONOMY_CHOICE_WIDE_PATH:
-		return "%s: expected %s to use SCRUM-437 wide economy choice frame, got %s." % [context, card.name, str(card.get_meta("economy_frame_path", ""))]
+		return "%s: expected %s to use SCRUM-451 minimal-metal economy choice frame, got %s." % [context, card.name, str(card.get_meta("economy_frame_path", ""))]
 	if str(card.get_meta("economy_hover_frame_path", "")) != ECONOMY_CHOICE_WIDE_HOVER_PATH:
-		return "%s: expected %s hover to use SCRUM-437 wide hover frame." % [context, card.name]
+		return "%s: expected %s hover to use SCRUM-451 minimal-metal hover frame." % [context, card.name]
 	if _stylebox_texture_path(card.get_theme_stylebox("normal")) != ECONOMY_CHOICE_WIDE_PATH:
-		return "%s: expected %s normal StyleBox to use wide economy choice frame." % [context, card.name]
+		return "%s: expected %s normal StyleBox to use minimal-metal economy choice frame." % [context, card.name]
 	if _stylebox_texture_path(card.get_theme_stylebox("hover")) != ECONOMY_CHOICE_WIDE_HOVER_PATH:
-		return "%s: expected %s hover StyleBox to use wide economy choice hover frame." % [context, card.name]
+		return "%s: expected %s hover StyleBox to use minimal-metal economy choice hover frame." % [context, card.name]
 	var expected_min_width := 320.0 if context.contains("(1152, 648)") else 360.0
 	if context.contains("(1920, 1080)"):
 		expected_min_width = 420.0
 	elif context.contains("(2560, 1440)"):
 		expected_min_width = 480.0
 	if card.custom_minimum_size.x < expected_min_width or card.custom_minimum_size.y < 240.0:
-		return "%s: expected %s to use the SCRUM-437 wide-card display target, got %s." % [context, card.name, str(card.custom_minimum_size)]
+		return "%s: expected %s to use the SCRUM-451 minimal-metal card display target, got %s." % [context, card.name, str(card.custom_minimum_size)]
 	var source_size: Vector2 = card.get_meta("economy_source_size", Vector2.ZERO)
 	var source_safe: Rect2 = card.get_meta("economy_source_safe_rect", Rect2())
-	if source_size != Vector2(960.0, 640.0) or source_safe != Rect2(132.0, 118.0, 696.0, 394.0):
-		return "%s: expected %s to expose SCRUM-437 source size/safe rect metadata." % [context, card.name]
+	if source_size != Vector2(426.0, 486.0) or source_safe != Rect2(46.0, 58.0, 334.0, 374.0):
+		return "%s: expected %s to expose SCRUM-451 source size/safe rect metadata." % [context, card.name]
 	var card_rect := card.get_global_rect()
 	var safe_rect := _scaled_source_rect(card_rect, source_size, source_safe).grow(1.0)
 	var content := card.find_child("%sContent" % card.name, true, false) as Control

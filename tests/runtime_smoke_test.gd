@@ -16,36 +16,42 @@ const HERO_SELECT_UNIFIED_SOURCE_SIZE := Vector2(1536.0, 1024.0)
 const HERO_SELECT_UNIFIED_PORTRAIT_RECT := Rect2(130.0, 145.0, 420.0, 560.0)
 const HERO_SELECT_UNIFIED_DESCRIPTION_RECT := Rect2(610.0, 145.0, 786.0, 500.0)
 const HERO_SELECT_UNIFIED_BOTTOM_CONTROLS_RECT := Rect2(570.0, 705.0, 660.0, 178.0)
-const HERO_SELECT_V2_SOURCE_SIZE := Vector2(1920.0, 1080.0)
-const HERO_SELECT_V2_OUTER_SAFE := Rect2(92.0, 72.0, 1736.0, 944.0)
-const HERO_SELECT_V2_PORTRAIT_FRAME := Rect2(218.0, 82.0, 552.0, 582.0)
-const HERO_SELECT_V2_PORTRAIT_SAFE := Rect2(262.0, 124.0, 464.0, 496.0)
-const HERO_SELECT_V2_DOSSIER_FRAME := Rect2(800.0, 86.0, 694.0, 578.0)
-const HERO_SELECT_V2_DOSSIER_CONTENT := Rect2(838.0, 138.0, 626.0, 492.0)
-const HERO_SELECT_V2_DOSSIER_TITLE_SAFE := Rect2(876.0, 138.0, 526.0, 56.0)
-const HERO_SELECT_V2_DOSSIER_BODY_SAFE := Rect2(846.0, 214.0, 606.0, 92.0)
-const HERO_SELECT_V2_DOSSIER_DESCRIPTION_SAFE := Rect2(838.0, 340.0, 626.0, 126.0)
-const HERO_SELECT_V2_TRAITS_SAFE := Rect2(864.0, 494.0, 590.0, 58.0)
-const HERO_SELECT_V2_WEAPONS_SAFE := Rect2(840.0, 574.0, 618.0, 56.0)
-const HERO_SELECT_V2_ASC_PANEL := Rect2(232.0, 678.0, 520.0, 70.0)
-const HERO_SELECT_V2_SELECT_SAFE := Rect2(986.0, 692.0, 372.0, 54.0)
-const HERO_SELECT_V2_BACK_SAFE := Rect2(1538.0, 692.0, 292.0, 54.0)
-const HERO_SELECT_V2_RADAR_PANEL := Rect2(1510.0, 92.0, 286.0, 326.0)
-const HERO_SELECT_V2_RADAR_CONTENT := Rect2(1554.0, 122.0, 200.0, 210.0)
-const HERO_SELECT_V2_CAROUSEL_FRAME := Rect2(92.0, 764.0, 1736.0, 204.0)
-const HERO_SELECT_V2_CAROUSEL_SAFE := Rect2(124.0, 790.0, 1672.0, 150.0)
-const HERO_SELECT_V2_TOOLTIP_SAFE := Rect2(540.0, 970.0, 840.0, 80.0)
+const HERO_SELECT_V3_SOURCE_SIZE := Vector2(1536.0, 864.0)
+const HERO_SELECT_V3_OUTER_SAFE := Rect2(0.0, 0.0, 1536.0, 864.0)
+const HERO_SELECT_V3_PORTRAIT_FRAME := Rect2(42.0, 82.0, 342.0, 540.0)
+const HERO_SELECT_V3_PORTRAIT_SAFE := Rect2(112.1, 182.0, 201.7, 329.4)
+const HERO_SELECT_V3_DOSSIER_FRAME := Rect2(388.0, 93.0, 625.0, 467.0)
+const HERO_SELECT_V3_DOSSIER_CONTENT := Rect2(490.9, 174.9, 419.1, 289.6)
+const HERO_SELECT_V3_DOSSIER_TITLE_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
+const HERO_SELECT_V3_DOSSIER_BODY_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
+const HERO_SELECT_V3_DOSSIER_DESCRIPTION_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
+const HERO_SELECT_V3_TRAITS_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
+const HERO_SELECT_V3_WEAPONS_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
+const HERO_SELECT_V3_ASC_PANEL := HERO_SELECT_V3_DOSSIER_CONTENT
+const HERO_SELECT_V3_SELECT_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
+const HERO_SELECT_V3_BACK_SAFE := Rect2(52.0, 28.0, 123.0, 54.0)
+const HERO_SELECT_V3_RADAR_PANEL := Rect2(1086.0, 100.5, 388.0, 388.0)
+const HERO_SELECT_V3_RADAR_CONTENT := Rect2(1173.2, 187.7, 213.7, 213.7)
+const HERO_SELECT_V3_CAROUSEL_FRAME := Rect2(26.0, 626.0, 1488.0, 226.0)
+const HERO_SELECT_V3_CAROUSEL_SAFE := Rect2(197.1, 683.7, 1145.7, 110.6)
+const HERO_SELECT_V3_TOOLTIP_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
 const HERO_SELECT_DOSSIER_SOURCE_SIZE := Vector2(1120.0, 1140.0)
 const HERO_SELECT_DOSSIER_SAFE_MARGINS := Vector4(126.0, 160.0, 126.0, 172.0)
 const HERO_SELECT_THUMBNAIL_SOURCE_SIZE := Vector2(1536.0, 255.0)
 const HERO_SELECT_THUMBNAIL_SAFE_MARGINS := Vector4(132.0, 62.0, 132.0, 62.0)
-const REWARD_FRAME_SOURCE_SIZE := Vector2(768.0, 1024.0)
-const REWARD_CARD_SAFE_MARGINS := Vector4(132.0, 170.0, 132.0, 164.0)
-const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(150.0, 202.0, 150.0, 190.0)
-const REWARD_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_card.png"
-const REWARD_ELITE_CARD_TEXTURE := "res://assets/sprites/ui/frames/rewards/ui_frame_reward_elite_artifact_card.png"
-const ECONOMY_CHOICE_WIDE_TEXTURE := "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide.png"
-const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := "res://assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide_hover.png"
+const MINIMAL_MODAL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png"
+const MINIMAL_PANEL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png"
+const MINIMAL_CARD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
+const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png"
+const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
+const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
+const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
+const REWARD_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
+const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
+const REWARD_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
+const REWARD_ELITE_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
+const ECONOMY_CHOICE_WIDE_TEXTURE := MINIMAL_CARD_TEXTURE
+const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := MINIMAL_CARD_TEXTURE
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.5
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
@@ -90,8 +96,8 @@ func _initialize() -> void:
 	var start_theme_button := main.find_child("MainMenuStartButton", true, false) as Button
 	var settings_theme_button := main.find_child("MainMenuSettingsButton", true, false) as Button
 	var exit_theme_button := main.find_child("MainMenuExitButton", true, false) as Button
-	if not _button_uses_red_gold_type(start_theme_button, "main_menu") or not _button_uses_red_gold_type(settings_theme_button, "main_menu") or not _button_uses_red_gold_type(exit_theme_button, "main_menu"):
-		push_error("Expected main menu buttons to use canonical Red & Gold Dragon state textures.")
+	if not _button_uses_minimal_metal_type(start_theme_button, "main_menu") or not _button_uses_minimal_metal_type(settings_theme_button, "main_menu") or not _button_uses_minimal_metal_type(exit_theme_button, "main_menu"):
+		push_error("Expected main menu buttons to use canonical minimal-metal state textures.")
 		quit(1)
 		return
 	await _test_back_button_frame_safety(main_scene)
@@ -324,36 +330,31 @@ func _initialize() -> void:
 		push_error("Expected hero select v3 to show a dossier panel.")
 		quit(1)
 		return
-	var unified_frame := main.find_child("HeroSelectUnifiedFrame", true, false) as Control
-	if unified_frame == null:
-		push_error("Expected hero select to expose the SCRUM-436 outer safe frame node.")
-		quit(1)
-		return
 	var canvas := main.find_child("HeroSelectCanvas", true, false) as Control
 	if canvas == null:
-		push_error("Expected hero select v2 to use a proportional SCRUM-436 canvas.")
+		push_error("Expected hero select v3 to use a proportional SCRUM-446 canvas.")
 		quit(1)
 		return
 	var content_row := main.find_child("HeroSelectContent", true, false) as Control
 	var portrait_content := main.find_child("HeroSelectPortraitContent", true, false) as Control
 	if content_row == null or portrait_content == null:
-		push_error("Expected hero select v2 layout to expose content row and portrait safe-zone content.")
+		push_error("Expected hero select v3 layout to expose content row and portrait safe-zone content.")
 		quit(1)
 		return
 	var canvas_rect := canvas.get_global_rect()
 	var canvas_ratio := canvas_rect.size.x / maxf(canvas_rect.size.y, 1.0)
-	var source_ratio := HERO_SELECT_V2_SOURCE_SIZE.x / HERO_SELECT_V2_SOURCE_SIZE.y
+	var source_ratio := HERO_SELECT_V3_SOURCE_SIZE.x / HERO_SELECT_V3_SOURCE_SIZE.y
 	if absf(canvas_ratio - source_ratio) > 0.015:
-		push_error("Expected hero select v2 canvas to stay whole-image proportional.")
+		push_error("Expected hero select v3 canvas to stay whole-image proportional.")
 		quit(1)
 		return
-	if not _rect_contains_with_tolerance(_scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_PORTRAIT_SAFE), large_portrait.get_global_rect(), 2.0):
-		push_error("Expected hero portrait texture to stay inside the SCRUM-436 portrait safe-zone.")
+	if not _rect_contains_with_tolerance(_scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_PORTRAIT_SAFE), large_portrait.get_global_rect(), 2.0):
+		push_error("Expected hero portrait texture to stay inside the SCRUM-446 portrait content-zone.")
 		quit(1)
 		return
 	var radar := main.find_child("HeroStatRadar", true, false) as Control
 	if radar == null or radar.custom_minimum_size.x < 120.0 or radar.custom_minimum_size.y < 120.0:
-		push_error("Expected hero select v2 to build a readable preserved stat radar.")
+		push_error("Expected hero select v3 to build a readable preserved stat radar.")
 		quit(1)
 		return
 	if main.find_child("HeroStatRadarTitle", true, false) != null:
@@ -532,15 +533,15 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var resource_style := resource_hud.get_theme_stylebox("panel")
-	if _stylebox_texture_path(resource_style) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png":
-		push_error("Expected combat resource HUD to use the SCRUM-390 resource panel frame.")
+	if _stylebox_texture_path(resource_style) != MINIMAL_HUD_STRIP_TEXTURE:
+		push_error("Expected combat resource HUD to use the SCRUM-448 minimal HUD strip frame.")
 		quit(1)
 		return
 	var expected_hud_cards := {
-		"HudHPCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_hp.png",
-		"HudXPCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_xp.png",
-		"HudMoneyCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_gold.png",
-		"HudULTCard": "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_card_ult.png",
+		"HudHPCard": MINIMAL_FIELD_TEXTURE,
+		"HudXPCard": MINIMAL_FIELD_TEXTURE,
+		"HudMoneyCard": MINIMAL_FIELD_TEXTURE,
+		"HudULTCard": MINIMAL_FIELD_TEXTURE,
 	}
 	for hud_node_name in ["HudHPCard", "HudXPCard", "HudMoneyCard"]:
 		if resource_hud.find_child(hud_node_name, true, false) == null:
@@ -550,7 +551,7 @@ func _initialize() -> void:
 	for hud_node_name in expected_hud_cards.keys():
 		var hud_card := resource_hud.find_child(str(hud_node_name), true, false) as PanelContainer
 		if hud_card == null or _stylebox_texture_path(hud_card.get_theme_stylebox("panel")) != str(expected_hud_cards[hud_node_name]):
-			push_error("Expected %s to use SCRUM-390 card frame %s." % [hud_node_name, str(expected_hud_cards[hud_node_name])])
+			push_error("Expected %s to use SCRUM-448 minimal field frame %s." % [hud_node_name, str(expected_hud_cards[hud_node_name])])
 			quit(1)
 			return
 	var expected_hud_fills := {
@@ -585,8 +586,8 @@ func _initialize() -> void:
 		push_error("Expected the combat timer panel to stay in the top HUD band.")
 		quit(1)
 		return
-	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png":
-		push_error("Expected combat timer panel to use the SCRUM-390 timer frame.")
+	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != MINIMAL_FIELD_TEXTURE:
+		push_error("Expected combat timer panel to use the SCRUM-448 minimal field frame.")
 		quit(1)
 		return
 	main.set("round_time_left", 4.0)
@@ -1128,8 +1129,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var defer_rect := defer_button.get_global_rect()
-	if defer_rect.size.x < 260.0 or defer_rect.size.y < 100.0 or not _button_uses_red_gold_type(defer_button, "back_m"):
-		push_error("Expected level-up Later button to use a non-cropped 260x104 medium back frame, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
+	if defer_rect.size.x < 250.0 or defer_rect.size.y < 70.0 or not _button_uses_minimal_metal_type(defer_button, "back_m"):
+		push_error("Expected level-up Later button to use a non-cropped compact medium back frame, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
 		quit(1)
 		return
 	defer_button.pressed.emit()
@@ -1202,8 +1203,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var run_pause_panel := main.find_child("RunPauseMenuPanel", true, false) as PanelContainer
-	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
-		push_error("Expected run pause menu to use the SCRUM-330 pause/end modal frame.")
+	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
+		push_error("Expected run pause menu to use the SCRUM-448 minimal modal frame.")
 		quit(1)
 		return
 	var pause_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
@@ -1256,8 +1257,8 @@ func _initialize() -> void:
 		push_error("Expected pause stats menu to expose Design kit hook nodes.")
 		quit(1)
 		return
-	if _stylebox_texture_path(escape_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
-		push_error("Expected pause dossier/stats panel to use the SCRUM-330 pause/end modal frame.")
+	if _stylebox_texture_path(escape_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
+		push_error("Expected pause dossier/stats panel shell to use the SCRUM-448 minimal modal frame.")
 		quit(1)
 		return
 	if not (escape_panel.get_theme_stylebox("panel") is StyleBoxTexture):
@@ -1268,8 +1269,8 @@ func _initialize() -> void:
 		push_error("Expected Escape menu buttons to use Design StyleBoxTexture frame.")
 		quit(1)
 		return
-	if not _button_uses_red_gold_type(resume_button, "pause"):
-		push_error("Expected Escape menu buttons to use neutral non-glow Red&Gold hover/focus states.")
+	if not _button_uses_minimal_metal_type(resume_button, "pause"):
+		push_error("Expected Escape menu buttons to use neutral minimal-metal hover/focus states.")
 		quit(1)
 		return
 	if not (strength_row.get_theme_stylebox("panel") is StyleBoxTexture) or not (damage_chip.get_theme_stylebox("panel") is StyleBoxTexture) or not (physical_group.get_theme_stylebox("panel") is StyleBoxTexture):
@@ -1324,8 +1325,8 @@ func _initialize() -> void:
 		push_error("Expected 2-8 attribute offers in the post-battle window, including meta skill extra options.")
 		quit(1)
 		return
-	if _stylebox_texture_path((attribute_panel as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_panel.png":
-		push_error("Expected attribute shop panel to use the SCRUM-332 economy panel frame.")
+	if _stylebox_texture_path((attribute_panel as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_PANEL_TEXTURE:
+		push_error("Expected attribute shop panel to use the SCRUM-448 minimal panel frame.")
 		quit(1)
 		return
 	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
@@ -1339,11 +1340,11 @@ func _initialize() -> void:
 	var attr_money_before := int(main.ui._run_money())
 	var first_offer := attribute_offers.get_child(0) as Button
 	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != ECONOMY_CHOICE_WIDE_TEXTURE:
-		push_error("Expected attribute offers to use the SCRUM-437 wide economy choice card frame.")
+		push_error("Expected attribute offers to use the SCRUM-448 minimal card frame.")
 		quit(1)
 		return
 	if _stylebox_texture_path(first_offer.get_theme_stylebox("hover")) != ECONOMY_CHOICE_WIDE_HOVER_TEXTURE:
-		push_error("Expected attribute offers to use the SCRUM-437 wide hover economy choice card frame.")
+		push_error("Expected attribute offers to use the SCRUM-448 minimal hover card frame.")
 		quit(1)
 		return
 	_write_scrum437_attribute_offer_dump(attribute_panel as Control, attribute_offers)
@@ -1385,6 +1386,7 @@ func _initialize() -> void:
 	_test_noncombat_nodes(main)
 	_test_stat_artifact_recording()
 	_test_berserk_weapon_configs()
+	_test_weapon_orbit_no_overlap()
 	_test_class_weapon_configs()
 	_test_class_weapon_mode_registry()
 	_test_all_weapon_variants_equip()
@@ -1466,8 +1468,8 @@ func _test_glossary_terms(main: Node) -> void:
 	if tooltip == null or not _collect_label_text(tooltip).contains("Критический удар"):
 		_fail("Expected glossary hover to create a tooltip panel with the term name.")
 		return
-	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_tooltip.png":
-		_fail("Expected glossary tooltip to use the Codex tooltip frame texture.")
+	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != MINIMAL_TOOLTIP_TEXTURE:
+		_fail("Expected glossary tooltip to use the SCRUM-448 minimal tooltip frame texture.")
 		return
 	main.ui._hide_glossary_tooltip()
 	button.queue_free()
@@ -1806,6 +1808,71 @@ func _find_player_weapon(player: Node) -> Node:
 		if child.is_in_group("player_weapons"):
 			return child
 	return null
+
+
+func _assert_weapon_orbit_pose(player: Node, expected_direction: Vector2, label: String) -> bool:
+	player.call("play_action_animation", "attack", expected_direction)
+	player.call("_apply_sprite_transform")
+	var socket := player.get_node_or_null("VisualRoot/WeaponSocket") as Node2D
+	if socket == null:
+		_fail("Expected %s to keep a WeaponSocket." % label)
+		return false
+	var body := player.get_node_or_null("VisualRoot/Body") as CanvasItem
+	if body == null:
+		_fail("Expected %s to keep a visible Body sibling for weapon overlap checks." % label)
+		return false
+	var socket_distance := socket.position.length()
+	if socket_distance < 88.0:
+		_fail("Expected %s weapon socket to orbit outside the hero body, got distance %.1f." % [label, socket_distance])
+		return false
+	if socket.z_index >= body.z_index:
+		_fail("Expected %s weapon socket to render behind the hero body (socket z=%d, body z=%d)." % [label, socket.z_index, body.z_index])
+		return false
+	var weapon := _find_player_weapon(player)
+	var weapon_canvas := weapon as CanvasItem
+	if weapon_canvas != null and socket.z_index + weapon_canvas.z_index >= body.z_index:
+		_fail("Expected %s weapon root effective z to stay behind the hero body." % label)
+		return false
+	var weapon_visual: CanvasItem = null
+	if weapon != null:
+		weapon_visual = weapon.get_node_or_null("WeaponVisual") as CanvasItem
+	if weapon_canvas != null and weapon_visual != null and socket.z_index + weapon_canvas.z_index + weapon_visual.z_index >= body.z_index:
+		_fail("Expected %s weapon visual effective z to stay behind the hero body." % label)
+		return false
+	var actual_direction := socket.position.normalized()
+	var expected := expected_direction.normalized()
+	if actual_direction.dot(expected) < 0.82:
+		_fail("Expected %s weapon socket to follow attack direction %s, got %s." % [label, str(expected), str(actual_direction)])
+		return false
+	return true
+
+
+func _write_weapon_orbit_qa_dump(player: Node, weapon: Node) -> void:
+	var socket := player.get_node_or_null("VisualRoot/WeaponSocket") as Node2D
+	var body := player.get_node_or_null("VisualRoot/Body") as CanvasItem
+	var weapon_canvas := weapon as CanvasItem
+	var weapon_visual: CanvasItem = null
+	if weapon != null:
+		weapon_visual = weapon.get_node_or_null("WeaponVisual") as CanvasItem
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum455")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var lines := PackedStringArray()
+	lines.append("# SCRUM-455 Weapon Orbit Runtime Dump")
+	lines.append("")
+	lines.append("- `Character`: `%s`" % str(player.get("character_id")))
+	lines.append("- `Weapon`: `%s`" % str(weapon.name if weapon != null else ""))
+	lines.append("- `WeaponParent`: `%s`" % str(weapon.get_parent().name if weapon != null and weapon.get_parent() != null else ""))
+	lines.append("- `SocketPosition`: `%s`" % str(socket.position if socket != null else Vector2.ZERO))
+	lines.append("- `SocketDistance`: `%.2f`" % (socket.position.length() if socket != null else 0.0))
+	lines.append("- `SocketZIndex`: `%d`" % (socket.z_index if socket != null else 0))
+	lines.append("- `WeaponRootZIndex`: `%d`" % (weapon_canvas.z_index if weapon_canvas != null else 0))
+	lines.append("- `WeaponVisualZIndex`: `%d`" % (weapon_visual.z_index if weapon_visual != null else 0))
+	lines.append("- `BodyZIndex`: `%d`" % (body.z_index if body != null else 0))
+	lines.append("- `OrbitRadiusMeta`: `%.2f`" % (float(socket.get_meta("weapon_orbit_radius", 0.0)) if socket != null else 0.0))
+	var file := FileAccess.open("%s/weapon_orbit_runtime_dump.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(lines))
+		file.close()
 
 
 func _test_route_map_start_selection(main_scene: PackedScene) -> void:
@@ -2313,6 +2380,42 @@ func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 	event_main.combat._store_player_snapshot(event_player)
 	event_player.queue_free()
 
+	var poor_event_player := player_scene.instantiate()
+	root.add_child(poor_event_player)
+	poor_event_player.configure_character("berserk", "sword")
+	poor_event_player.set("money", 0)
+	event_main.combat._store_player_snapshot(poor_event_player)
+	poor_event_player.queue_free()
+	event_main.ui._show_event_screen({"name": "Недоступная лотерея", "event_id": "goblin_lottery"})
+	await process_frame
+	var paid_event_choice := event_main.find_child("EventChoiceButton0", true, false) as Button
+	if paid_event_choice == null or not paid_event_choice.disabled or not paid_event_choice.tooltip_text.contains("Недостаточно золота"):
+		_fail("Expected unaffordable event choices to be disabled with an insufficient-gold tooltip.")
+		event_main.queue_free()
+		return
+	var lottery_event: Dictionary = EventData.event_by_id("goblin_lottery")
+	var lottery_choices: Array = lottery_event.get("choices", [])
+	if lottery_choices.is_empty() or bool(event_main.ui._apply_event_choice(lottery_choices[0])):
+		_fail("Expected direct activation of an unaffordable paid event choice to fail safely.")
+		event_main.queue_free()
+		return
+	var poor_snapshot: Dictionary = event_main.get("run_player_snapshot")
+	if int(poor_snapshot.get("money", -1)) != 0:
+		_fail("Expected failed paid event choice to preserve run money.")
+		event_main.queue_free()
+		return
+
+	event_player = player_scene.instantiate()
+	root.add_child(event_player)
+	event_player.configure_character("berserk", "sword")
+	event_player.set("money", 500)
+	stats = event_player.get("stats")
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		stats[stat_id] = 12
+	event_player.set("stats", stats)
+	event_main.combat._store_player_snapshot(event_player)
+	event_player.queue_free()
+
 	var checked_success := false
 	var checked_failure := false
 	var checked_combat := false
@@ -2590,8 +2693,8 @@ func _test_noncombat_nodes(main: Node) -> void:
 		quit(1)
 		return
 	var first_price_badge := first_shop_button.find_child("ShopPriceBadge", true, false) as PanelContainer
-	if first_price_badge == null or _stylebox_texture_path(first_price_badge.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_price_badge.png":
-		push_error("Expected inline shop price badge to use the SCRUM-332 economy price badge frame.")
+	if first_price_badge == null or _stylebox_texture_path(first_price_badge.get_theme_stylebox("panel")) != MINIMAL_FIELD_TEXTURE:
+		push_error("Expected inline shop price badge to use the SCRUM-448 minimal field frame.")
 		quit(1)
 		return
 	main.ui._show_pause_menu()
@@ -2757,15 +2860,15 @@ func _node_sprite_texture_path(node: Node, sprite_name: String) -> String:
 	return sprite.texture.resource_path
 
 
-func _button_uses_red_gold_type(button: Button, button_type: String) -> bool:
+func _button_uses_minimal_metal_type(button: Button, button_type: String) -> bool:
 	if button == null:
 		return false
 	var expected := {
-		"normal": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
-		"hover": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
-		"focus": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s.png" % button_type,
-		"pressed": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_pressed.png" % button_type,
-		"disabled": "res://assets/sprites/ui/frames/red_gold/ui_btn_red_gold_%s_disabled.png" % button_type,
+		"normal": "res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_%s.png" % button_type,
+		"hover": "res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_%s_hover.png" % button_type,
+		"focus": "res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_%s_focus.png" % button_type,
+		"pressed": "res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_%s_pressed.png" % button_type,
+		"disabled": "res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_%s_disabled.png" % button_type,
 	}
 	for state in expected.keys():
 		var style := button.get_theme_stylebox(state)
@@ -2887,6 +2990,28 @@ func _test_berserk_weapon_configs() -> void:
 			quit(1)
 			return
 		player.queue_free()
+
+
+func _test_weapon_orbit_no_overlap() -> void:
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var player := player_scene.instantiate()
+	root.add_child(player)
+	player.configure_character("berserk")
+	player.equip_weapon("sword")
+	var weapon := _find_player_weapon(player)
+	if weapon == null:
+		_fail("Expected SCRUM-455 weapon orbit smoke to equip Berserk sword.")
+		return
+	if weapon.get_parent() == null or weapon.get_parent().name != "WeaponSocket":
+		_fail("Expected SCRUM-455 weapon to remain directly attached to WeaponSocket.")
+		return
+	if not _assert_weapon_orbit_pose(player, Vector2.RIGHT, "SCRUM-455 right attack"):
+		return
+	weapon.set("_last_direction", Vector2.UP)
+	if not _assert_weapon_orbit_pose(player, Vector2.UP, "SCRUM-455 upward attack"):
+		return
+	_write_weapon_orbit_qa_dump(player, weapon)
+	player.queue_free()
 
 
 func _test_class_weapon_configs() -> void:
@@ -3212,8 +3337,8 @@ func _test_victory_flow(main: Node) -> void:
 			quit(1)
 			return
 	var victory_panel := main.find_child("PauseEndModalPanel_victory", true, false) as PanelContainer
-	if victory_panel == null or _stylebox_texture_path(victory_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
-		push_error("Expected victory screen to use the SCRUM-330 pause/end modal frame.")
+	if victory_panel == null or _stylebox_texture_path(victory_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
+		push_error("Expected victory screen to use the SCRUM-448 minimal modal frame.")
 		quit(1)
 		return
 
@@ -5117,31 +5242,37 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 			_fail("Expected settings tab %s to exist." % tab_name)
 			return
 	var tab_switcher := main.find_child("SettingsTabSwitcher", true, false) as Control
-	var tab_switcher_frame := main.find_child("SettingsTabSwitcherFrame", true, false) as TextureRect
-	if tab_switcher == null or tab_switcher_frame == null or tab_switcher_frame.texture == null:
-		_fail("Expected settings screen to use the SettingsTabSwitcher frame texture.")
+	var tab_switcher_frame := main.find_child("SettingsTabSwitcherFrame", true, false) as Panel
+	if tab_switcher == null or tab_switcher_frame == null:
+		_fail("Expected settings screen to use the SettingsTabSwitcher frame panel.")
 		return
-	if tab_switcher_frame.texture.resource_path != "res://assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png":
-		_fail("Expected settings screen to use the SCRUM-439 Settings v2 3-slot switcher texture, got %s." % tab_switcher_frame.texture.resource_path)
+	var tab_switcher_frame_path := _stylebox_texture_path(tab_switcher_frame.get_theme_stylebox("panel"))
+	if tab_switcher_frame_path != MINIMAL_FIELD_TEXTURE:
+		_fail("Expected settings screen to use the SCRUM-448 minimal field switcher texture, got %s." % tab_switcher_frame_path)
 		return
 	var switcher_rect := tab_switcher.get_global_rect()
-	if absf((switcher_rect.size.x / switcher_rect.size.y) - 5.0) > 0.035:
-		_fail("Expected SettingsTabSwitcher to preserve the authored 1280x256 aspect ratio.")
-		return
-	var base_size := Vector2(1280.0, 256.0)
-	var safe_rects := [
-		Rect2(150.0, 78.0, 275.0, 92.0),
-		Rect2(502.0, 78.0, 275.0, 92.0),
-		Rect2(854.0, 78.0, 275.0, 92.0),
-	]
+	var base_size := Vector2(616.0, 286.0)
+	var content_margins := Vector4(59.0, 53.0, 59.0, 50.0)
+	var content_left := roundf(switcher_rect.size.x * content_margins.x / base_size.x)
+	var content_top := roundf(switcher_rect.size.y * content_margins.y / base_size.y)
+	var content_right := roundf(switcher_rect.size.x * content_margins.z / base_size.x)
+	var content_bottom := roundf(switcher_rect.size.y * content_margins.w / base_size.y)
+	var safe_rect := Rect2(
+		Vector2(content_left, content_top),
+		Vector2(
+			maxf(1.0, switcher_rect.size.x - content_left - content_right),
+			maxf(1.0, switcher_rect.size.y - content_top - content_bottom)
+		)
+	)
+	var tab_gap := maxf(6.0, roundf(switcher_rect.size.x * 0.014))
+	var tab_width := maxf(1.0, (safe_rect.size.x - tab_gap * 2.0) / 3.0)
 	if main.find_child("SettingsTabButton_3", true, false) != null:
 		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
 		return
-	var scale := switcher_rect.size / base_size
 	var settings_switcher_dump := PackedStringArray()
-	settings_switcher_dump.append("# SCRUM-439 Settings v2 Runtime Layout")
+	settings_switcher_dump.append("# SCRUM-448 Settings Minimal Runtime Layout")
 	settings_switcher_dump.append("")
-	settings_switcher_dump.append("- frame_path: `%s`" % tab_switcher_frame.texture.resource_path)
+	settings_switcher_dump.append("- frame_path: `%s`" % tab_switcher_frame_path)
 	settings_switcher_dump.append("- switcher_rect: `%s`" % str(switcher_rect))
 	settings_switcher_dump.append("- base_size: `%s`" % str(base_size))
 	settings_switcher_dump.append("- display_size: `%s`" % str(switcher_rect.size))
@@ -5160,11 +5291,11 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 			_fail("Expected SettingsTabButton_%d to exist." % tab_index)
 			return
 		var expected := Rect2(
-			switcher_rect.position + safe_rects[tab_index].position * scale,
-			safe_rects[tab_index].size * scale
+			switcher_rect.position + safe_rect.position + Vector2(float(tab_index) * (tab_width + tab_gap), 0.0),
+			Vector2(tab_width, safe_rect.size.y)
 		)
 		var actual := tab_button.get_global_rect()
-		settings_switcher_dump.append("| `%d` | `%s` | `%s` | `%s` |" % [tab_index, str(actual), str(expected), str(safe_rects[tab_index])])
+		settings_switcher_dump.append("| `%d` | `%s` | `%s` | `%s` |" % [tab_index, str(actual), str(expected), str(safe_rect)])
 		if actual.position.distance_to(expected.position) > 3.0 or actual.size.distance_to(expected.size) > 3.0:
 			_fail("Expected SettingsTabButton_%d to stay inside its recorded safe rect. Actual=%s expected=%s" % [tab_index, str(actual), str(expected)])
 			return
@@ -5179,6 +5310,12 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	if settings_switcher_file != null:
 		settings_switcher_file.store_string("\n".join(settings_switcher_dump))
 		settings_switcher_file.close()
+	var scrum448_settings_dir := ProjectSettings.globalize_path("res://build/qa/scrum448_ui_minimalist")
+	DirAccess.make_dir_recursive_absolute(scrum448_settings_dir)
+	var scrum448_settings_file := FileAccess.open("%s/settings_minimal_runtime_rects.md" % scrum448_settings_dir, FileAccess.WRITE)
+	if scrum448_settings_file != null:
+		scrum448_settings_file.store_string("\n".join(settings_switcher_dump))
+		scrum448_settings_file.close()
 	if DisplayServer.get_name() != "headless":
 		var settings_switcher_image := main.get_viewport().get_texture().get_image()
 		if settings_switcher_image != null:
@@ -6082,7 +6219,7 @@ func _test_back_button_frame_safety(main_scene: PackedScene) -> void:
 	back_main.call("_show_character_select")
 	await process_frame
 	var hero_back_button := back_main.find_child("HeroSelectBackButton", true, false) as Button
-	if not _assert_hero_select_v2_back_button_safe(hero_back_button, checked):
+	if not _assert_hero_select_v3_back_button_safe(hero_back_button, checked):
 		return
 	hero_back_button.pressed.emit()
 	await process_frame
@@ -6158,26 +6295,26 @@ func _assert_codex_v2_back_button_safe(button: Button, checked: Array) -> bool:
 	return true
 
 
-func _assert_hero_select_v2_back_button_safe(button: Button, checked: Array) -> bool:
+func _assert_hero_select_v3_back_button_safe(button: Button, checked: Array) -> bool:
 	if button == null:
-		_fail("Expected hero select v2 back button to exist.")
+		_fail("Expected hero select v3 back button to exist.")
 		return false
 	var rect := button.get_global_rect()
-	var expected := _hero_select_v2_expected_rect(HERO_SELECT_V2_BACK_SAFE, button.get_viewport_rect().size)
+	var expected := _hero_select_v3_expected_rect(HERO_SELECT_V3_BACK_SAFE, button.get_viewport_rect().size)
 	if rect.position.distance_to(expected.position) > 2.0 or rect.size.distance_to(expected.size) > 2.0:
-		_fail("Expected hero select v2 back button to sit inside SCRUM-436 safe rect %s, got %s." % [str(expected), str(rect)])
+		_fail("Expected hero select v3 back button to sit inside SCRUM-446/SCRUM-447 safe rect %s, got %s." % [str(expected), str(rect)])
 		return false
 	var normal_style := button.get_theme_stylebox("normal")
 	if normal_style == null:
-		_fail("Expected hero select v2 back button to have a themed normal stylebox.")
+		_fail("Expected hero select v3 back button to have a themed normal stylebox.")
 		return false
 	var content_width := rect.size.x - normal_style.get_content_margin(SIDE_LEFT) - normal_style.get_content_margin(SIDE_RIGHT)
 	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
 	if content_width < 34.0 or content_height < 18.0:
-		_fail("Expected hero select v2 back text to fit inside content zone, got %.1fx%.1f." % [content_width, content_height])
+		_fail("Expected hero select v3 back text to fit inside content zone, got %.1fx%.1f." % [content_width, content_height])
 		return false
 	checked.append({
-		"context": "hero_select_v2",
+		"context": "hero_select_v3",
 		"name": button.name,
 		"text": button.text,
 		"rect": rect,
@@ -6187,9 +6324,9 @@ func _assert_hero_select_v2_back_button_safe(button: Button, checked: Array) -> 
 	return true
 
 
-func _hero_select_v2_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
-	var scale := minf(viewport_size.x / HERO_SELECT_V2_SOURCE_SIZE.x, viewport_size.y / HERO_SELECT_V2_SOURCE_SIZE.y)
-	var offset := (viewport_size - HERO_SELECT_V2_SOURCE_SIZE * scale) * 0.5
+func _hero_select_v3_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
+	var scale := minf(viewport_size.x / HERO_SELECT_V3_SOURCE_SIZE.x, viewport_size.y / HERO_SELECT_V3_SOURCE_SIZE.y)
+	var offset := (viewport_size - HERO_SELECT_V3_SOURCE_SIZE * scale) * 0.5
 	return Rect2(offset + base_rect.position * scale, base_rect.size * scale)
 
 
@@ -6210,7 +6347,7 @@ func _assert_back_button_frame_safe(button: Button, context: String, min_width: 
 		_fail("Expected %s back button to use a non-cropped medium/large frame, got min=%s rect=%s." % [context, str(button.custom_minimum_size), str(rect)])
 		return false
 	if rect.size.y < 92.0:
-		_fail("Expected %s back button height to keep Red&Gold ornament readable, got %s." % [context, str(rect)])
+		_fail("Expected %s back button height to keep minimal-metal ornament readable, got %s." % [context, str(rect)])
 		return false
 	if rect.position.x < -0.5 or rect.position.y < -0.5 or rect.end.x > viewport_rect.size.x + 0.5 or rect.end.y > viewport_rect.size.y + 0.5:
 		_fail("Expected %s back button to stay inside viewport, got rect=%s viewport=%s." % [context, str(rect), str(viewport_rect)])
@@ -6301,15 +6438,15 @@ func _assert_quit_dialog_button_size(button: Button, context: String) -> bool:
 	if absf(rect.size.x - 220.0) > 1.0 or absf(rect.size.y - 72.0) > 1.0:
 		_fail("Expected quit confirmation %s button rect to stay 220x72, got %s." % [context, str(rect)])
 		return false
-	if not _button_uses_red_gold_type(button, "pause"):
-		_fail("Expected quit confirmation %s button to use the 72px-safe pause Red&Gold frame." % context)
+	if not _button_uses_minimal_metal_type(button, "pause"):
+		_fail("Expected quit confirmation %s button to use the 72px-safe pause minimal-metal frame." % context)
 		return false
 	var normal_style := button.get_theme_stylebox("normal")
 	if normal_style == null:
 		_fail("Expected quit confirmation %s button to have content margins." % context)
 		return false
 	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
-	if content_height < 48.0:
+	if content_height < 36.0:
 		_fail("Expected quit confirmation %s button content height to remain readable, got %.1f." % [context, content_height])
 		return false
 	return true
@@ -6343,12 +6480,12 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected SCRUM-438 Codex runtime layout to include main/nav/list/detail panels, tabs, entry card, and portrait slots.")
 		return
 	var expected_codex_textures := {
-		"CodexMainPanel": "res://assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png",
-		"CodexNavPanel": "res://assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png",
-		"CodexContent": "res://assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png",
-		"CodexDetailPanel": "res://assets/sprites/ui/frames/codex/ui_frame_codex_section_panel.png",
-		"CodexPortraitSlot": "res://assets/sprites/ui/frames/codex/ui_frame_codex_portrait_slot.png",
-		"CodexDetailPortraitSlot": "res://assets/sprites/ui/frames/codex/ui_frame_codex_portrait_slot.png",
+		"CodexMainPanel": MINIMAL_MODAL_TEXTURE,
+		"CodexNavPanel": MINIMAL_PANEL_TEXTURE,
+		"CodexContent": MINIMAL_PANEL_TEXTURE,
+		"CodexDetailPanel": MINIMAL_PANEL_TEXTURE,
+		"CodexPortraitSlot": MINIMAL_FIELD_TEXTURE,
+		"CodexDetailPortraitSlot": MINIMAL_FIELD_TEXTURE,
 	}
 	for node_name in expected_codex_textures.keys():
 		var panel := codex_main.find_child(str(node_name), true, false) as PanelContainer
@@ -6359,8 +6496,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		if actual_path != str(expected_codex_textures[node_name]):
 			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
 			return
-	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_entry_card.png":
-		_fail("Expected SCRUM-438 Codex list cards to use the Codex entry card frame.")
+	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != MINIMAL_CARD_TEXTURE:
+		_fail("Expected SCRUM-448 Codex list cards to use the minimal card frame.")
 		return
 	var codex_portrait_texture := _first_child_texture_rect(detail_portrait)
 	var expected_default_portrait := _expected_character_portrait_path("berserk")
@@ -6371,8 +6508,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected Codex character detail portrait to preserve SCRUM-417 covered scaling.")
 		return
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
-	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != "res://assets/sprites/ui/frames/codex/ui_frame_codex_tab.png":
-		_fail("Expected Codex tabs to use the Codex tab texture kit.")
+	if character_tab == null or not _button_uses_minimal_metal_type(character_tab, "codex_tab"):
+		_fail("Expected Codex tabs to use the minimal-metal Codex tab texture kit.")
 		return
 	var expected_layout := {
 		"CodexMainPanel": Rect2(24, 20, 1872, 1040),
@@ -6712,10 +6849,10 @@ func _assert_reward_cards_use_scrum338_frames(buttons: Array, content_name: Stri
 		if style_path != texture_path:
 			_fail("Expected %s to use reward texture %s, got %s." % [button.name, texture_path, style_path])
 			return false
-		var hover_style_path := _stylebox_texture_path(button.get_theme_stylebox("hover"))
-		if not hover_style_path.ends_with("_hover.png"):
-			_fail("Expected %s to use a SCRUM-338 hover reward texture, got %s." % [button.name, hover_style_path])
-			return false
+			var hover_style_path := _stylebox_texture_path(button.get_theme_stylebox("hover"))
+			if hover_style_path != texture_path and not hover_style_path.ends_with("_hover.png"):
+				_fail("Expected %s to use a hover reward texture or SCRUM-448 shared minimal card, got %s." % [button.name, hover_style_path])
+				return false
 		var content := button.find_child(content_name, false, false) as Control
 		if content == null:
 			_fail("Expected %s to expose %s inside the reward safe-zone." % [button.name, content_name])
@@ -6839,7 +6976,7 @@ func _test_parchment_button_seal_sizes(main_scene: PackedScene) -> void:
 	await process_frame
 
 	var dump_lines := PackedStringArray()
-	dump_lines.append("# Red & Gold Dragon Button Size Dump")
+	dump_lines.append("# Minimal Metal Button Size Dump")
 	dump_lines.append("")
 	_assert_visible_seal_buttons(seal_main, "main menu", dump_lines)
 	seal_main.call("_show_character_select")
@@ -6856,9 +6993,9 @@ func _test_parchment_button_seal_sizes(main_scene: PackedScene) -> void:
 	await process_frame
 	_assert_visible_seal_buttons(seal_main, "settings", dump_lines)
 
-	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum450_minimal_metal_buttons")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
-	var file := FileAccess.open("%s/red_gold_button_sizes.md" % qa_dir, FileAccess.WRITE)
+	var file := FileAccess.open("%s/minimal_metal_button_sizes.md" % qa_dir, FileAccess.WRITE)
 	if file != null:
 		file.store_string("\n".join(dump_lines))
 		file.close()
@@ -6877,23 +7014,23 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 		if button == null or not button.visible:
 			continue
 		var texture_path := _button_normal_texture_path(button)
-		if not texture_path.contains("/red_gold/ui_btn_red_gold_"):
+		if not texture_path.contains("/minimal_metal_buttons/ui_btn_minimal_metal_"):
 			continue
 		var rect := button.get_global_rect()
 		dump_lines.append("- `%s`: rect=`%s`, min=`%s`, texture=`%s`" % [button.name, str(rect), str(button.custom_minimum_size), texture_path])
-		if texture_path.contains("ui_btn_red_gold_utility"):
+		if texture_path.contains("ui_btn_minimal_metal_utility"):
 			if absf(button.custom_minimum_size.x - 54.0) > 0.5 or absf(button.custom_minimum_size.y - 42.0) > 0.5:
-				_fail("Expected compact utility button %s on %s to use 54x42 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				_fail("Expected compact utility button %s on %s to use 54x42 minimal-metal asset, got min=%s." % [button.name, context, button.custom_minimum_size])
 				return
 			continue
-		if texture_path.contains("ui_btn_red_gold_fab"):
+		if texture_path.contains("ui_btn_minimal_metal_fab"):
 			if absf(button.custom_minimum_size.x - 50.0) > 0.5 or absf(button.custom_minimum_size.y - 50.0) > 0.5:
-				_fail("Expected FAB button %s on %s to use 50x50 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				_fail("Expected FAB button %s on %s to use 50x50 minimal-metal asset, got min=%s." % [button.name, context, button.custom_minimum_size])
 				return
 			continue
-		if texture_path.contains("ui_btn_red_gold_pause"):
+		if texture_path.contains("ui_btn_minimal_metal_pause"):
 			if absf(button.custom_minimum_size.x - 280.0) > 0.5 or absf(button.custom_minimum_size.y - 60.0) > 0.5:
-				_fail("Expected pause button %s on %s to use 280x60 Red & Gold asset, got min=%s." % [button.name, context, button.custom_minimum_size])
+				_fail("Expected pause button %s on %s to use 280x60 minimal-metal asset, got min=%s." % [button.name, context, button.custom_minimum_size])
 				return
 			continue
 		if context == "settings" and button.name == "SettingsBackButton":
@@ -6901,18 +7038,18 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 				_fail("Expected SCRUM-439 SettingsBackButton to use 280x64 inside the v2 modal safe zone, got min=%s." % button.custom_minimum_size)
 				return
 			continue
-		if texture_path.contains("ui_btn_red_gold_rebind"):
+		if texture_path.contains("ui_btn_minimal_metal_rebind"):
 			if button.custom_minimum_size.y < 62.0:
 				_fail("Expected rebind/dropdown button %s on %s to use at least 62px height, got min=%s." % [button.name, context, button.custom_minimum_size])
 				return
 			continue
-		if texture_path.contains("ui_btn_red_gold_hero_confirm") and button.name == "HeroSelectChooseButton":
+		if texture_path.contains("ui_btn_minimal_metal_hero_confirm") and button.name == "HeroSelectChooseButton":
 			if button.custom_minimum_size.y < 24.0:
 				_fail("Expected SCRUM-356 compact hero select confirm button %s on %s to stay usable inside the unified bottom safe-zone, got min=%s." % [button.name, context, button.custom_minimum_size])
 				return
 			continue
 		if rect.size.y < 64.0 or button.custom_minimum_size.y < 64.0:
-			_fail("Expected Red & Gold button %s on %s to stay tall enough, rect=%s min=%s." % [button.name, context, rect, button.custom_minimum_size])
+			_fail("Expected minimal-metal button %s on %s to stay tall enough, rect=%s min=%s." % [button.name, context, rect, button.custom_minimum_size])
 			return
 		if absf(button.custom_minimum_size.y - STANDARD_ACTION_BUTTON_HEIGHT) > 0.5:
 			_fail("Expected action button %s on %s to use standard height %.0f, got min=%s." % [button.name, context, STANDARD_ACTION_BUTTON_HEIGHT, button.custom_minimum_size])
@@ -6974,12 +7111,12 @@ func _test_hero_select_radar_no_overlap_layouts(main_scene: PackedScene) -> void
 	if file != null:
 		file.store_string("\n".join(dump_lines))
 		file.close()
-	var scrum436_dir := "%s/scrum436" % qa_dir
-	DirAccess.make_dir_recursive_absolute(scrum436_dir)
-	var scrum436_file := FileAccess.open("%s/hero_select_v2_runtime_rects.md" % scrum436_dir, FileAccess.WRITE)
-	if scrum436_file != null:
-		scrum436_file.store_string("\n".join(dump_lines))
-		scrum436_file.close()
+	var scrum446_dir := "%s/scrum446_hero_select_v3" % qa_dir
+	DirAccess.make_dir_recursive_absolute(scrum446_dir)
+	var scrum446_file := FileAccess.open("%s/hero_select_v3_runtime_rects.md" % scrum446_dir, FileAccess.WRITE)
+	if scrum446_file != null:
+		scrum446_file.store_string("\n".join(dump_lines))
+		scrum446_file.close()
 
 
 func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_size: Vector2i, dump_lines: PackedStringArray) -> void:
@@ -7003,8 +7140,8 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var radar_panel := hero_main.find_child("HeroSelectRadarPanel", true, false) as Control
 	var radar_content := hero_main.find_child("HeroSelectRadarContent", true, false) as Control
 	var radar_title := hero_main.find_child("HeroStatRadarTitle", true, false) as Control
+	var v3_background := hero_main.find_child("HeroSelectV3Background", true, false) as TextureRect
 	var header := hero_main.find_child("HeroSelectHeader", true, false) as Control
-	var unified_frame := hero_main.find_child("HeroSelectUnifiedFrame", true, false) as Control
 	var portrait_panel := hero_main.find_child("HeroSelectPortraitPanel", true, false) as Control
 	var right_region := hero_main.find_child("HeroSelectRightRegion", true, false) as Control
 	var dossier_panel := hero_main.find_child("HeroSelectDossierPanel", true, false) as Control
@@ -7019,11 +7156,34 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var thumbnail_frame := hero_main.find_child("HeroThumbnailStripFrame", true, false) as Control
 	var thumbnail_content := hero_main.find_child("HeroThumbnailStripContent", true, false) as Control
 	var thumbnail_strip := hero_main.find_child("HeroThumbnailStrip", true, false) as Control
-	if hero_screen == null or canvas == null or radar == null or radar_panel == null or radar_content == null or header == null or unified_frame == null or portrait_panel == null or right_region == null or dossier_panel == null or dossier_frame == null or dossier_content == null or dossier == null or dossier_desc == null or asc_row == null or choose_button == null or thumbnail_frame == null or thumbnail_content == null or thumbnail_strip == null:
-		_fail("Expected hero select radar/header/unified-frame/dossier nodes at %s." % context)
+	var radar_frame_art := hero_main.find_child("HeroSelectRadarFrameArt", true, false) as TextureRect
+	if hero_screen == null or canvas == null or radar == null or radar_panel == null or radar_content == null or header == null or portrait_panel == null or right_region == null or dossier_panel == null or dossier_frame == null or dossier_content == null or dossier == null or dossier_desc == null or asc_row == null or choose_button == null or thumbnail_frame == null or thumbnail_content == null or thumbnail_strip == null:
+		_fail("Expected hero select v3 radar/header/dossier/carousel nodes at %s." % context)
 		return
 	if radar_title != null:
 		_fail("Expected hero stat radar title to be removed at %s." % context)
+		return
+	var expected_v3_textures := {
+		"background": "res://assets/sprites/ui/frames/hero_select_v3/background.png",
+		"portrait": "res://assets/sprites/ui/frames/hero_select_v3/frame_preview.png",
+		"dossier": "res://assets/sprites/ui/frames/hero_select_v3/frame_dossier.png",
+		"radar": "res://assets/sprites/ui/frames/hero_select_v3/frame_radar.png",
+		"carousel": "res://assets/sprites/ui/frames/hero_select_v3/frame_carousel.png",
+	}
+	if v3_background == null or v3_background.texture == null or v3_background.texture.resource_path != expected_v3_textures["background"]:
+		_fail("Expected SCRUM-446 hero select background texture to load at %s, got %s." % [context, str(v3_background.texture.resource_path if v3_background != null and v3_background.texture != null else "")])
+		return
+	if _stylebox_texture_path(portrait_panel.get_theme_stylebox("panel")) != expected_v3_textures["portrait"]:
+		_fail("Expected SCRUM-446 portrait frame texture to load at %s, got %s." % [context, _stylebox_texture_path(portrait_panel.get_theme_stylebox("panel"))])
+		return
+	if _stylebox_texture_path(dossier_panel.get_theme_stylebox("panel")) != expected_v3_textures["dossier"]:
+		_fail("Expected SCRUM-446 dossier frame texture to load at %s, got %s." % [context, _stylebox_texture_path(dossier_panel.get_theme_stylebox("panel"))])
+		return
+	if radar_frame_art == null or radar_frame_art.texture == null or radar_frame_art.texture.resource_path != expected_v3_textures["radar"]:
+		_fail("Expected SCRUM-446 radar frame texture to load at %s, got %s." % [context, str(radar_frame_art.texture.resource_path if radar_frame_art != null and radar_frame_art.texture != null else "")])
+		return
+	if _stylebox_texture_path(thumbnail_frame.get_theme_stylebox("panel")) != expected_v3_textures["carousel"]:
+		_fail("Expected SCRUM-446 carousel frame texture to load at %s, got %s." % [context, _stylebox_texture_path(thumbnail_frame.get_theme_stylebox("panel"))])
 		return
 	var screen_rect := hero_screen.get_global_rect()
 	var canvas_rect := canvas.get_global_rect()
@@ -7031,7 +7191,6 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var radar_panel_rect := radar_panel.get_global_rect()
 	var radar_content_rect := radar_content.get_global_rect()
 	var header_rect := header.get_global_rect()
-	var unified_frame_rect := unified_frame.get_global_rect()
 	var portrait_rect := portrait_panel.get_global_rect()
 	var right_region_rect := right_region.get_global_rect()
 	var dossier_frame_rect := dossier_frame.get_global_rect()
@@ -7046,7 +7205,6 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	dump_lines.append("- `HeroSelectScreen`: `%s`" % str(screen_rect))
 	dump_lines.append("- `HeroSelectCanvas`: `%s`" % str(canvas_rect))
 	dump_lines.append("- `HeroSelectHeader`: `%s`" % str(header_rect))
-	dump_lines.append("- `HeroSelectUnifiedFrame`: `%s`" % str(unified_frame_rect))
 	dump_lines.append("- `HeroSelectPortraitPanel`: `%s`" % str(portrait_rect))
 	dump_lines.append("- `HeroSelectRightRegion`: `%s`" % str(right_region_rect))
 	dump_lines.append("- `HeroSelectDossierPanel`: `%s`" % str(dossier_panel_rect))
@@ -7076,80 +7234,70 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var first_thumb_rect := first_thumb.get_global_rect()
 	dump_lines.append("- `HeroThumbnailSample`: min=`%s`, rect=`%s`" % [str(first_thumb.custom_minimum_size), str(first_thumb_rect)])
 	var canvas_ratio := canvas_rect.size.x / maxf(canvas_rect.size.y, 1.0)
-	var canvas_source_ratio := HERO_SELECT_V2_SOURCE_SIZE.x / HERO_SELECT_V2_SOURCE_SIZE.y
-	var outer_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_OUTER_SAFE)
-	var portrait_frame_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_PORTRAIT_FRAME)
-	var portrait_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_PORTRAIT_SAFE)
-	var dossier_frame_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_DOSSIER_FRAME)
-	var dossier_content_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_DOSSIER_CONTENT)
-	var description_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_DOSSIER_BODY_SAFE)
-	var dossier_summary_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_DOSSIER_DESCRIPTION_SAFE)
-	var traits_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_TRAITS_SAFE)
-	var weapons_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_WEAPONS_SAFE)
-	var ascension_panel_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_ASC_PANEL)
-	var choose_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_SELECT_SAFE)
-	var radar_frame_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_RADAR_PANEL)
-	var radar_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_RADAR_CONTENT)
-	var thumbnail_frame_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_CAROUSEL_FRAME)
-	var thumbnail_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_CAROUSEL_SAFE)
-	var tooltip_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V2_SOURCE_SIZE, HERO_SELECT_V2_TOOLTIP_SAFE)
-	dump_lines.append("- `HeroSelectV2OuterSafeRect`: `%s`" % str(outer_safe_rect))
-	dump_lines.append("- `HeroSelectV2PortraitFrameRect`: `%s`" % str(portrait_frame_safe))
-	dump_lines.append("- `HeroSelectV2PortraitSafeRect`: `%s`" % str(portrait_safe_rect))
-	dump_lines.append("- `HeroSelectV2DossierContentSafeRect`: `%s`" % str(dossier_content_safe))
-	dump_lines.append("- `HeroSelectV2DossierBodySafeRect`: `%s`" % str(description_safe_rect))
-	dump_lines.append("- `HeroSelectV2DossierSummarySafeRect`: `%s`" % str(dossier_summary_safe))
-	dump_lines.append("- `HeroSelectV2TraitsSafeRect`: `%s`" % str(traits_safe_rect))
-	dump_lines.append("- `HeroSelectV2WeaponsSafeRect`: `%s`" % str(weapons_safe_rect))
-	dump_lines.append("- `HeroSelectV2AscensionPanelRect`: `%s`" % str(ascension_panel_rect))
-	dump_lines.append("- `HeroSelectV2ChooseSafeRect`: `%s`" % str(choose_safe_rect))
-	dump_lines.append("- `HeroSelectV2RadarFrameRect`: `%s`" % str(radar_frame_safe))
-	dump_lines.append("- `HeroSelectV2RadarContentSafeRect`: `%s`" % str(radar_safe_rect))
-	dump_lines.append("- `HeroSelectV2CarouselFrameRect`: `%s`" % str(thumbnail_frame_safe))
-	dump_lines.append("- `HeroSelectV2CarouselSafeRect`: `%s`" % str(thumbnail_safe_rect))
-	dump_lines.append("- `HeroSelectV2TooltipSafeRect`: `%s`" % str(tooltip_safe_rect))
+	var canvas_source_ratio := HERO_SELECT_V3_SOURCE_SIZE.x / HERO_SELECT_V3_SOURCE_SIZE.y
+	var outer_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_OUTER_SAFE)
+	var portrait_frame_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_PORTRAIT_FRAME)
+	var portrait_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_PORTRAIT_SAFE)
+	var dossier_frame_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_DOSSIER_FRAME)
+	var dossier_content_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_DOSSIER_CONTENT)
+	var description_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_DOSSIER_BODY_SAFE)
+	var dossier_summary_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_DOSSIER_DESCRIPTION_SAFE)
+	var traits_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_TRAITS_SAFE)
+	var weapons_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_WEAPONS_SAFE)
+	var ascension_panel_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_ASC_PANEL)
+	var choose_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_SELECT_SAFE)
+	var radar_frame_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_RADAR_PANEL)
+	var radar_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_RADAR_CONTENT)
+	var thumbnail_frame_safe := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_CAROUSEL_FRAME)
+	var thumbnail_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_CAROUSEL_SAFE)
+	var tooltip_safe_rect := _scaled_source_rect(canvas_rect, HERO_SELECT_V3_SOURCE_SIZE, HERO_SELECT_V3_TOOLTIP_SAFE)
+	dump_lines.append("- `HeroSelectV3OuterRect`: `%s`" % str(outer_safe_rect))
+	dump_lines.append("- `HeroSelectV3PortraitFrameRect`: `%s`" % str(portrait_frame_safe))
+	dump_lines.append("- `HeroSelectV3PortraitContentRect`: `%s`" % str(portrait_safe_rect))
+	dump_lines.append("- `HeroSelectV3DossierContentRect`: `%s`" % str(dossier_content_safe))
+	dump_lines.append("- `HeroSelectV3RadarFrameRect`: `%s`" % str(radar_frame_safe))
+	dump_lines.append("- `HeroSelectV3RadarContentRect`: `%s`" % str(radar_safe_rect))
+	dump_lines.append("- `HeroSelectV3CarouselFrameRect`: `%s`" % str(thumbnail_frame_safe))
+	dump_lines.append("- `HeroSelectV3CarouselContentRect`: `%s`" % str(thumbnail_safe_rect))
 	if absf(canvas_ratio - canvas_source_ratio) > 0.015:
-		_fail("Expected SCRUM-436 hero select canvas to stay whole-image proportional at %s, got canvas %s." % [context, canvas_rect])
+		_fail("Expected SCRUM-446 hero select canvas to stay whole-image proportional at %s, got canvas %s." % [context, canvas_rect])
 		return
 	var large_portrait := hero_main.find_child("HeroSelectLargePortrait", true, false) as Control
 	if large_portrait == null or not _rect_contains_with_tolerance(portrait_safe_rect, large_portrait.get_global_rect(), 2.0):
-		_fail("Expected hero portrait texture to stay inside SCRUM-436 portrait safe-zone at %s, got content %s safe %s." % [context, (large_portrait.get_global_rect() if large_portrait != null else Rect2()), portrait_safe_rect])
-		return
-	if not _rect_contains_with_tolerance(outer_safe_rect, unified_frame_rect, 2.0):
-		_fail("Expected hero select unified node to mirror SCRUM-436 outer safe rect at %s, got %s safe %s." % [context, unified_frame_rect, outer_safe_rect])
+		_fail("Expected hero portrait texture to stay inside SCRUM-446 portrait content-zone at %s, got content %s safe %s." % [context, (large_portrait.get_global_rect() if large_portrait != null else Rect2()), portrait_safe_rect])
 		return
 	if not _rect_contains_with_tolerance(portrait_frame_safe, portrait_rect, 2.0):
-		_fail("Expected hero portrait frame to stay inside SCRUM-436 frame rect at %s, got content %s safe %s." % [context, portrait_rect, portrait_frame_safe])
+		_fail("Expected hero portrait frame to stay inside SCRUM-446 frame rect at %s, got content %s safe %s." % [context, portrait_rect, portrait_frame_safe])
 		return
 	if not _rect_contains_with_tolerance(dossier_frame_safe, dossier_panel_rect, 2.0):
-		_fail("Expected hero dossier frame to stay inside SCRUM-436 frame rect at %s, got content %s safe %s." % [context, dossier_panel_rect, dossier_frame_safe])
+		_fail("Expected hero dossier frame to stay inside SCRUM-446 frame rect at %s, got content %s safe %s." % [context, dossier_panel_rect, dossier_frame_safe])
 		return
 	if not _rect_contains_with_tolerance(dossier_content_safe, dossier_rect, 2.0):
-		_fail("Expected hero dossier controls to stay inside SCRUM-436 dossier safe-zone at %s, got content %s safe %s." % [context, dossier_rect, dossier_content_safe])
+		_fail("Expected hero dossier controls to stay inside SCRUM-446 dossier content-zone at %s, got content %s safe %s." % [context, dossier_rect, dossier_content_safe])
 		return
 	if not _rect_contains_with_tolerance(description_safe_rect, dossier_desc_rect, 2.0):
-		_fail("Expected hero description text to stay inside SCRUM-436 body safe-zone at %s, got desc %s safe %s." % [context, dossier_desc_rect, description_safe_rect])
+		_fail("Expected hero description text to stay inside SCRUM-446 dossier content-zone at %s, got desc %s safe %s." % [context, dossier_desc_rect, description_safe_rect])
 		return
 	if not _rect_contains_with_tolerance(ascension_panel_rect, asc_row.get_global_rect(), 2.0):
-		_fail("Expected ascension row to stay inside SCRUM-436 ascension safe-zone at %s, got row %s safe %s." % [context, asc_row.get_global_rect(), ascension_panel_rect])
+		_fail("Expected ascension row to stay inside SCRUM-446 dossier content-zone at %s, got row %s safe %s." % [context, asc_row.get_global_rect(), ascension_panel_rect])
 		return
 	if asc_mods != null and asc_mods.visible and not _rect_contains_with_tolerance(tooltip_safe_rect, asc_mods.get_global_rect(), 2.0):
-		_fail("Expected ascension delta text to stay inside SCRUM-436 tooltip safe-zone at %s, got mods %s safe %s." % [context, asc_mods.get_global_rect(), tooltip_safe_rect])
+		_fail("Expected ascension delta text to stay inside SCRUM-446 dossier content-zone at %s, got mods %s safe %s." % [context, asc_mods.get_global_rect(), tooltip_safe_rect])
 		return
 	if not _rect_contains_with_tolerance(choose_safe_rect, choose_button.get_global_rect(), 2.0):
-		_fail("Expected hero select choose button to stay inside SCRUM-436 choose safe-zone at %s, got button %s safe %s." % [context, choose_button.get_global_rect(), choose_safe_rect])
+		_fail("Expected hero select choose button to stay inside SCRUM-446 dossier content-zone at %s, got button %s safe %s." % [context, choose_button.get_global_rect(), choose_safe_rect])
 		return
 	if not _rect_contains_with_tolerance(thumbnail_safe_rect, thumbnail_rect, 2.0):
-		_fail("Expected hero thumbnail row to stay inside SCRUM-436 carousel safe-zone at %s, got content %s safe %s frame %s." % [context, thumbnail_rect, thumbnail_safe_rect, thumbnail_frame_rect])
+		_fail("Expected hero thumbnail row to stay inside SCRUM-446 carousel content-zone at %s, got content %s safe %s frame %s." % [context, thumbnail_rect, thumbnail_safe_rect, thumbnail_frame_rect])
 		return
 	if not _rect_contains_with_tolerance(thumbnail_frame_safe, thumbnail_frame_rect, 2.0):
-		_fail("Expected hero thumbnail frame to mirror SCRUM-436 carousel frame rect at %s, got frame %s safe %s." % [context, thumbnail_frame_rect, thumbnail_frame_safe])
+		_fail("Expected hero thumbnail frame to mirror SCRUM-446 carousel frame rect at %s, got frame %s safe %s." % [context, thumbnail_frame_rect, thumbnail_frame_safe])
 		return
-	var min_expected_thumb_width := 48.0
+	var min_expected_thumb_width := 42.0
 	if viewport_size.x >= 1600:
-		min_expected_thumb_width = 52.0
+		min_expected_thumb_width = 48.0
 	if viewport_size.x >= 2560:
-		min_expected_thumb_width = 96.0
+		min_expected_thumb_width = 72.0
 	if first_thumb.custom_minimum_size.x < min_expected_thumb_width or first_thumb.custom_minimum_size.y < maxf(first_thumb.custom_minimum_size.x * 1.20, 56.0):
 		_fail("Expected larger, taller hero thumbnails at %s, got min %s." % [context, first_thumb.custom_minimum_size])
 		return
@@ -7169,10 +7317,10 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 		_fail("Expected hero radar panel to be a floating top-right widget parented to HeroSelectScreen at %s." % context)
 		return
 	if not _rect_contains_with_tolerance(radar_frame_safe, radar_panel_rect, 2.0):
-		_fail("Expected hero radar panel to mirror SCRUM-436 preserved radar rect at %s, got %s safe %s." % [context, radar_panel_rect, radar_frame_safe])
+		_fail("Expected hero radar panel to mirror SCRUM-446 square radar rect at %s, got %s safe %s." % [context, radar_panel_rect, radar_frame_safe])
 		return
 	if not _rect_contains_with_tolerance(radar_safe_rect, radar_content_rect, 2.0):
-		_fail("Expected hero radar content to stay inside SCRUM-436 radar safe-zone at %s, got %s safe %s." % [context, radar_content_rect, radar_safe_rect])
+		_fail("Expected hero radar content to stay inside SCRUM-446 radar content-zone at %s, got %s safe %s." % [context, radar_content_rect, radar_safe_rect])
 		return
 	if radar_rect.get_center().distance_to(radar_content_rect.get_center()) > 4.0:
 		_fail("Expected hero radar graph to be centered in its windrose content zone at %s, got radar %s content %s." % [context, radar_rect, radar_content_rect])
@@ -7299,9 +7447,9 @@ func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Ve
 		if icon == null or icon.texture == null or price == null or shadow == null:
 			_fail("Expected %s to include icon, contact shadow, and compact price tag." % button.name)
 			return
-		if _stylebox_texture_path(price.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/economy/ui_frame_economy_price_badge.png":
-			_fail("Expected %s price tag to use the SCRUM-332 economy price badge." % button.name)
-			return
+			if _stylebox_texture_path(price.get_theme_stylebox("panel")) != MINIMAL_FIELD_TEXTURE:
+				_fail("Expected %s price tag to use the SCRUM-448 minimal field frame." % button.name)
+				return
 		visual_controls.append(icon)
 		visual_controls.append(price)
 		var money_icon := button.find_child("ShopPriceMoneyIcon", true, false) as TextureRect
@@ -7375,14 +7523,14 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 	dump_lines.append("## %s" % context)
 	for control in controls:
 		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control.name, str(control.get_global_rect()), _stylebox_texture_path(control.get_theme_stylebox("panel") if control is PanelContainer else null)])
-		if control.name == "RunResourceHud" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png":
-			_fail("Expected RunResourceHud to use SCRUM-390 resource panel frame at %s." % context)
+		if control.name == "RunResourceHud" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_HUD_STRIP_TEXTURE:
+			_fail("Expected RunResourceHud to use SCRUM-448 minimal HUD strip frame at %s." % context)
 			return
-		if control.name == "CombatTimerPanel" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png":
-			_fail("Expected CombatTimerPanel to use SCRUM-390 timer frame at %s." % context)
+		if control.name == "CombatTimerPanel" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_FIELD_TEXTURE:
+			_fail("Expected CombatTimerPanel to use SCRUM-448 minimal field frame at %s." % context)
 			return
-		if control.name == "AscensionHudBadge" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_ascension_badge.png":
-			_fail("Expected AscensionHudBadge to use SCRUM-390 ascension badge frame at %s." % context)
+		if control.name == "AscensionHudBadge" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_CARD_TEXTURE:
+			_fail("Expected AscensionHudBadge to use SCRUM-448 minimal card frame at %s." % context)
 			return
 	var overlap := _first_control_overlap(controls, 2.0)
 	if not overlap.is_empty():
@@ -7565,8 +7713,8 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 		quit(1)
 		return
 	var death_panel := death_main.find_child("PauseEndModalPanel_death", true, false) as PanelContainer
-	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != "res://assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png":
-		push_error("Expected death screen to use the SCRUM-330 pause/end modal frame.")
+	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
+		push_error("Expected death screen to use the SCRUM-448 minimal modal frame.")
 		quit(1)
 		return
 	death_main.queue_free()

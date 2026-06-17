@@ -7,6 +7,7 @@
 Создано: 2026-06-15
 Автор: Designer 2 handoff from SCRUM-448
 Jira: SCRUM-449
+QA: in_progress (2026-06-17)
 Связано: SCRUM-448, SCRUM-384, SCRUM-273, SCRUM-447, SCRUM-439, SCRUM-438, SCRUM-437
 
 ## Контекст
@@ -104,3 +105,10 @@ Verification:
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd`
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_ui_test.gd`
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd`
+
+## QA-Вердикт (2026-06-17)
+Статус: PASSED — минимал UI kit интегрирован, красные кнопки сохранены
+Проверено: minimal frame paths/margins в `ui_theme_paths.gd` + StyleBoxTexture builder; minimal
+фреймы заведены в panels/cards/Settings/Codex/economy/reward/pause-поверхности; красные кнопки
+(SCRUM-273) сохранены. runtime_smoke_ui + dark_fantasy_ui_theme зелёные. done → Готово.
+⚠️ QA: `ui_no_overlap_matrix` имеет 2 ПРЕД-существующих overflow при 1152×648 (settings + attribute_shop, оба и в HEAD до этой волны) — заведены отдельным багом `bug_settings_attribute_shop_overflow_overlap_1152x648_task.md`, НЕ регрессия этого тикета.
