@@ -2505,7 +2505,12 @@
  },
  "bug_settings_attribute_shop_overflow_overlap_1152x648_task.md": {
   "key": "SCRUM-471",
-  "status": "К выполнению",
-  "desc_hash": "f8a598de82197ea39ff00b007cd801d3"
+  "status": "Контроль качества",
+  "desc_hash": "33d96b456c48dc6200c9c3189a3339c2"
+ },
+ "backend_cartoon_trial_dark_mage_knight_integration_task.md": {
+  "key": "SCRUM-472",
+  "status": "Готово",
+  "desc_hash": "4c75c4f802ac0cff06b02ad4c6685a5d"
  }
 }
