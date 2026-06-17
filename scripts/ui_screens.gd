@@ -1450,8 +1450,8 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	root.add_child(shade)
 
 	# SCRUM-413: высота адаптивна (вьюпорт минус поля сверху/снизу), не фикс 660px —
-	# вписывается в 1280x720 и узкие окна; контент в ScrollContainer (доступны все
-	# опции + кнопки «Обновить»/«Пропустить» прокруткой).
+	# вписывается в 1280x720 и узкие окна. Карточки опций в ScrollContainer, а кнопки
+	# «Обновить»/«Пропустить» закреплены ВНЕ скролла снизу панели (SCRUM-467).
 	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
 	var panel_width: float = minf(1100.0, maxf(640.0, viewport_size.x - 48.0))
 	var panel_vertical_margin: float = minf(28.0, maxf(18.0, viewport_size.y * 0.045))
@@ -1468,12 +1468,19 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	panel.add_theme_stylebox_override("panel", _economy_panel_style())
 	root.add_child(panel)
 
+	var outer := VBoxContainer.new()
+	outer.name = "AttributeShopOuter"
+	outer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	outer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	outer.add_theme_constant_override("separation", 10)
+	panel.add_child(outer)
+
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_child(scroll)
+	outer.add_child(scroll)
 
 	var box := VBoxContainer.new()
 	box.name = "AttributeShopContent"
@@ -1504,17 +1511,26 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	offers_box.add_theme_constant_override("v_separation", 14)
 	box.add_child(offers_box)
 
+	# Кнопки действий — ВНЕ скролла, закреплены снизу панели: при 4+ опциях докачки
+	# (ветка Знаний мета-древа) на 720p они раньше уезжали под фолд (SCRUM-467).
+	var actions := VBoxContainer.new()
+	actions.name = "AttributeShopActions"
+	actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	actions.alignment = BoxContainer.ALIGNMENT_CENTER
+	actions.add_theme_constant_override("separation", 8)
+	outer.add_child(actions)
+
 	var reroll_button := _make_button("")
 	reroll_button.name = "AttributeRerollButton"
 	reroll_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_set_action_button_size(reroll_button, STANDARD_ACTION_BUTTON_WIDTH, 62.0)
-	box.add_child(reroll_button)
+	actions.add_child(reroll_button)
 
 	var skip_button := _make_button("Пропустить")
 	skip_button.name = "AttributeSkipButton"
 	skip_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_set_action_button_size(skip_button, STANDARD_ACTION_BUTTON_WIDTH, 62.0)
-	box.add_child(skip_button)
+	actions.add_child(skip_button)
 
 	# Набор и счетчик rerolls живут в game-state: переоткрытие окна (FAB)
 	# не дает бесплатного реролла; сброс — только в победном флоу нового боя.
@@ -2615,10 +2631,18 @@ func _settings_v2_tab_switcher_size(modal_size: Vector2) -> Vector2:
 	return Vector2(width, height)
 
 
+func _settings_v2_switcher_top(modal_size: Vector2) -> float:
+	# Свитчер табов («Экран»/«Управление») ставится НИЖЕ заголовка «Настройки».
+	# Заголовок прибит к верхней safe-зоне рамки (mockup y=94 ≈ локально 78–118);
+	# раньше свитчер стоял на y≈40 и наезжал И на орнамент рамки, И на заголовок —
+	# «Настройки» висела в пустой середине таб-бара (SCRUM-468). Теперь под ним.
+	return roundf(maxf(112.0, modal_size.y * 0.172))
+
+
 func _settings_v2_content_panel_rect(modal_size: Vector2) -> Rect2:
 	var main_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, modal_size, SETTINGS_V2_MAIN_CONTENT_MARGINS)
 	var switcher_size := _settings_v2_tab_switcher_size(modal_size)
-	var switcher_top := roundf(maxf(32.0, modal_size.y * 0.052))
+	var switcher_top := _settings_v2_switcher_top(modal_size)
 	var top := switcher_top + switcher_size.y + roundf(maxf(18.0, modal_size.y * 0.028))
 	var back_top := modal_size.y - 64.0 - maxf(28.0, modal_size.y * 0.055)
 	var left := main_margins.x + 24.0
@@ -2720,7 +2744,7 @@ func _show_settings_menu() -> void:
 	var switcher_size := _settings_v2_tab_switcher_size(modal_rect.size)
 	var switcher := _make_settings_tab_switcher(tabs, switcher_size)
 	_apply_control_rect(switcher, Rect2(
-		Vector2(roundf((modal_rect.size.x - switcher_size.x) * 0.5), roundf(maxf(32.0, modal_rect.size.y * 0.052))),
+		Vector2(roundf((modal_rect.size.x - switcher_size.x) * 0.5), _settings_v2_switcher_top(modal_rect.size)),
 		switcher_size
 	))
 	modal.add_child(switcher)
