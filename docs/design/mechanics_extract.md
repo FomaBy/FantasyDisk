@@ -595,6 +595,12 @@ SCRUM-243 закрепил карту «атрибут × архетип ору�
 атрибута теперь меняет хотя бы один фактический параметр для melee/projectile/
 beam/aoe/summon/aura оружия.
 
+SCRUM-469 добавил class/stat-specific скалирование роста выше базовых статов:
+перед формулами derived-параметров `ProgressionData.derived_parameters()` берёт
+только положительный delta от base lvl1 и умножает его на
+`CLASS_LEVEL_STAT_GROWTH_SCALARS`. Базовые статы и Base lvl1 остаются прежними;
+нормализация касается только lvl20 optimum/random прокачки.
+
 | Атрибут | Melee | Projectile | Beam | AoE | Summon | Aura |
 | --- | --- | --- | --- | --- | --- | --- |
 | Strength | Вес удара, stagger, knockback | Тяжелый снаряд и отдача | Стабильный канал | Центр взрыва | Сила спутников | Плотность волны |

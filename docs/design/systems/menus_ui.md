@@ -53,6 +53,12 @@ in tooltip. Random event choices keep long descriptions inside the accepted
 choice-card safe zone and normalize risk text so player copy shows a single
 `Риск:` prefix, never `Риск: Риск:`.
 
+SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
+Attribute Shop uses compact `320x240` offer cards plus shorter bottom action
+buttons only below 660px viewport height, while Settings permits a compressed
+content panel only when the v2 modal is height-constrained. This preserves the
+720p+ layout targets and keeps bottom actions reachable in the no-overlap matrix.
+
 SCRUM-437 makes the wide 0.1.6 economy choice-card frame live in runtime for
 rest, upgrade, event and Attribute Shop choices. Runtime now uses
 `assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide.png` and
@@ -66,6 +72,15 @@ uses extra vertical card space for stat icon/title/interpretation/price text.
 Runtime labels, icons and focus/click content stay inside the scaled safe rect;
 QA dumps live in `build/qa/scrum437/`. Spec:
 `docs/design/mockups/scrum437_wide_economy_choice_card/spec.md`.
+
+SCRUM-464 confirms the Rest/Event opaque-matte defect is resolved by the active
+minimal-metal cleanup from SCRUM-466. Current Rest/Event economy constants route
+panel/card/price/tooltip through `assets/sprites/ui/frames/minimal_metal/`
+(`panel`, `card`, `field`, `tooltip`), and the task-specific audit reports `0`
+pale/white opaque pixels in both content rects and stretch cores. Evidence:
+`build/qa/scrum464/economy_live_frame_matte_audit.md`,
+`docs/design/previews/scrum464_economy_matte_free_live_frames.png`; final
+renderer-capable screenshot recapture remains QA-only.
 
 Rules:
 
@@ -132,6 +147,47 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_M
   v3, progression circular nodes and combat bar fills remain exceptions. QA
   evidence lives in `build/qa/scrum448_ui_minimalist/`.
 
+- SCRUM-452 adds the Design-source anchor for the next strict minimal-metal UI
+  series. Source boards, style guide and metadata live under
+  `docs/design/references/ui_minimal_metal/`, the UI-director spec mirror is
+  `docs/design/mockups/scrum452_ui_minimal_metal/spec.md`, previews are
+  `docs/design/previews/scrum452_minimal_metal_anchor_contact.png` and
+  `docs/design/previews/scrum452_minimal_metal_safe_zones.png`, and runtime
+  candidates live in `assets/sprites/ui/frames/minimal_metal/`. The six frames
+  are RGBA with `white_opaque_pixels=0` and exact `content_rect_xywh` metadata.
+  SCRUM-459 wires them as first-class runtime theme paths/constants plus a shared
+  tiled StyleBoxTexture helper and metadata guard, but does not promote them over
+  SCRUM-448 live generic frames yet. SCRUM-462 separately promotes SCRUM-450
+  minimal-metal buttons as the active action-button contract.
+
+- SCRUM-450 adds the Design-ready minimal-metal button kit. Source/spec assets
+  live under `docs/design/references/ui_minimal_metal_buttons/` and
+  `docs/design/mockups/scrum450_ui_minimal_metal_buttons/spec.md`; runtime
+  assets live in `assets/sprites/ui/frames/minimal_metal_buttons/` as 15
+  button types x 5 states. All candidates are transparent RGBA and audit at
+  `white_opaque_pixels=0`. SCRUM-462 promotes the kit for live action-button
+  families while preserving card/hit-area exceptions. Hover/focus preserve
+  SCRUM-318 no-yellow semantics on dedicated `_hover`/`_focus` PNGs, and runtime
+  labels/icons stay inside the metadata `content_rect_xywh` rather than on caps,
+  bevels or ruby pins. QA evidence lives in
+  `build/qa/scrum450_minimal_metal_buttons/`.
+
+- SCRUM-451 adds the Design-source rollout contract for applying SCRUM-452
+  minimal-metal frames across all UI screens. The screen-family mapping lives in
+  `docs/design/references/ui_minimal_metal_rollout/scrum451_minimal_metal_rollout_matrix.json`
+  with the UI-director spec at
+  `docs/design/mockups/scrum451_ui_minimal_frames_rollout/spec.md`. It maps
+  main menu, Settings, Hero Select, Codex, Shop, Rewards, Level-up, Events,
+  Pause, Results, Combat HUD, tooltips and dialogs onto the six frame families
+  `modal`, `panel`, `card`, `tooltip`, `hud_strip` and `field`. SCRUM-463 makes
+  this rollout live for generic runtime surfaces by promoting the SCRUM-452
+  minimal-metal frame paths/margins/content metadata in `scripts/ui/ui_theme_paths.gd`
+  and `scripts/ui_screens.gd`; `scripts/pause_stats_menu.gd` also uses the
+  minimal-metal modal/panel/field/tooltip family. Hero Select v3 authored frames,
+  progression node rings and combat bar fills/icons remain screen-specific
+  exceptions. Runtime content must use only each frame's `content_rect_xywh`;
+  QA evidence is in `build/qa/scrum451_minimal_metal_rollout/`.
+
 - SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
 (`1280x256` RGBA). It has exactly three slots in the red-gold/dark-steel style,
@@ -179,20 +235,22 @@ safe rects remain the authority and decorative dragon heads, red gems, claw
 tips and bevels must stay unobstructed. Design mocks and Back-end runtime rect
 dumps at `1152x648`, `1280x720` and `2560x1440` live in `build/qa/scrum390/`.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
-- Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button. SCRUM-348 sets `LevelUpLaterButton` to a non-cropped 260x104 medium back frame.
+- Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button. SCRUM-465 makes the overlay viewport-aware: short 720p layouts use compact panel/card/header metrics and a shorter medium back-frame deferral button, while larger viewports keep the same safe-zone contract without bottom cropping. The UI no-overlap matrix covers `LevelUpPanel`, `LevelUpHeroHeader`, all three reward cards and `LevelUpLaterButton`; QA evidence lives under `build/qa/scrum465/`.
 - SCRUM-404 wires the dedicated SCRUM-338 reward-card frame kit for battle rewards and elite artifact rewards: `assets/sprites/ui/frames/rewards/ui_frame_reward_card.png`, `_hover.png`, `ui_frame_reward_elite_artifact_card.png` and `_hover.png`. Runtime uses the metadata in `docs/design/references/rewards/reward_frames_scrum338_metadata.json`, keeps title, icon, description, artifact tier labels and `Получить`/choice content inside the safe content fields, and preserves whole-card click/focus without placing UI content on red gems, top crests, side metal or bottom ornaments. Runtime smoke writes SCRUM-338 card rect dumps to `build/qa/scrum338/`.
 
-## Button Height / Red & Gold Dragon Rule
+## Button Height / Minimal Metal Rule
 
-Controls that use `ui_btn_red_gold_*` textures must keep the authored dragon
-caps and bevel readable. Standard `_make_button()` buttons use the 104px action
-height from SCRUM-263/264, main menu uses 380x104, pause uses 280x60,
+Controls that use `ui_btn_minimal_metal_*` textures must keep the authored caps,
+bevels, ruby pins and back-arrow ornaments readable. Standard `_make_button()`
+buttons use the 104px action height from SCRUM-263/264, main menu uses 380x104,
+pause uses 280x60,
 rebind/dropdown-style controls use 420x62, compact utility uses 54x42 and FAB
 uses 50x50. Route nodes, shop item hit areas, hero thumbnails and
 weapon/reward cards stay as cards/hit areas instead of receiving heavy action
-button frames. Runtime smoke writes `build/qa/red_gold_button_sizes.md`.
+button frames. Runtime smoke writes
+`build/qa/scrum450_minimal_metal_buttons/minimal_metal_button_sizes.md`.
 
-Back buttons use the Red&Gold `back_*` family and must not be squeezed into
+Back buttons use the minimal-metal `back_*` family and must not be squeezed into
 ornament-cropping widths. `HeroSelectBackButton` uses 240x104 so it resolves to
 the medium back frame; longer `Назад в меню` buttons in Skill Tree and Patch
 Notes use 260x104. Codex v2 is the screen-specific exception: SCRUM-438 uses a
@@ -266,11 +324,10 @@ smoke writes `build/qa/combat_level_up_button.md` and
 `build/qa/scrum390/combat_level_up_button.md`.
 
 Hover/focus states after SCRUM-318 are neutral-bright, not golden glow states:
-runtime button themes reuse the normal Red & Gold texture with a neutral tint
-(`1.16` hover / `1.20` focus) and near-white hover/focus text. Baked
-`*_hover.png` textures remain in the asset kit for compatibility but are not
-used by active button themes. Pressed and disabled states keep their dedicated
-textures and semantics.
+runtime button themes use the SCRUM-450 minimal-metal `_hover` / `_focus`
+textures with neutral tint (`1.16` hover / `1.20` focus) and near-white
+hover/focus text. Pressed and disabled states keep their dedicated textures and
+semantics.
 
 ## Main Menu Quit Confirmation
 
@@ -280,9 +337,9 @@ modal overlay, not a default Godot `ConfirmationDialog`: it blocks clicks below
 the dim layer, focuses safe `Отмена` by default, cancels on Escape/outside click
 and calls `Main.request_game_quit()` only from the explicit `Выйти` button.
 
-SCRUM-344 locks the dialog action buttons to 220x72 and routes
-`QuitConfirmExitButton` / `QuitConfirmCancelButton` to the Red&Gold `pause`
-button frame, whose vertical margins are safe at 72px. Do not let these buttons
+SCRUM-344 locks the dialog action buttons to 220x72 and SCRUM-462 routes
+`QuitConfirmExitButton` / `QuitConfirmCancelButton` to the minimal-metal `pause`
+button frame, whose vertical content band is safe at 72px. Do not let these buttons
 fall back to `back_s`: that frame is authored for taller action buttons and
 visually squashes when used in this dialog. Runtime smoke records the actual
 rects and textures in `build/qa/scrum319/quit_confirmation_dialog.md`.

@@ -72,13 +72,13 @@
 | `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png`, v2 source handoff `assets/sprites/characters/v2/biologist/biologist_v2_idle_source.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-421 v2 source handoff ready, not live runtime |
 | `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
 | `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer.png`; `assets/sprites/characters/cutout/engineer_*.png` | Реализовано |
-| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source/runtime assets under `assets/sprites/characters/v2/dark_mage/` | Реализовано; SCRUM-424 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation smoke PASS, runtime smoke blocked by unrelated `ui_screens.gd` parse failure |
+| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cartoon2/dark_mage/dark_mage_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source/runtime assets under `assets/sprites/characters/v2/dark_mage/` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation smoke PASS, runtime smoke blocked by unrelated Hero Select v3 back-button UI assertion |
 | `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/guitarist/` | Реализовано; SCRUM-429 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/assassin/` | Реализовано; SCRUM-419 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
 | `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
-| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано; v2 unarmed base без встроенного копья/щита |
+| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope |
 | `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
 
 SCRUM-416 runtime portrait rule: for every playable class, `scripts/progression_data_characters.gd`
@@ -100,6 +100,25 @@ replace live runtime portraits or combat SpriteFrames yet; it defines the
 source-art, size, pivot and handoff contract for the 16 blocked v2 character
 tasks.
 
+SCRUM-456 replaces the future character-restyle direction with a cartoon/anime
+source anchor after the broad v2 approach was cancelled. The package is
+Design-source only and does not replace live portraits or combat SpriteFrames:
+style sheet `docs/design/references/chars_cartoon/character_cartoon_anime_style_sheet.md`,
+Berserk handoff
+`docs/design/references/chars_cartoon/berserk_cartoon_anchor_design_handoff.md`,
+transparent source/cell
+`docs/design/references/chars_cartoon/berserk_cartoon_anchor_source_clean.png`
+and `docs/design/references/chars_cartoon/berserk_cartoon_anchor_idle_cell_512.png`,
+safe-gutter source sheet
+`docs/design/references/chars_cartoon/berserk_cartoon_anchor_sheet_source_handoff.png`,
+and QA report
+`build/qa/scrum456_chars_cartoon/scrum456_chars_cartoon_alpha_motion_report.json`.
+The contract covers all active registry classes with strongly different
+silhouette/palette/identity directions, `512x512` cells, pivot `(256,470)`,
+`idle` + `walk/move` only, and no attack row. Animator handoff is tracked in
+`docs/tasks/animation_chars_cartoon_anime_berserk_anchor_task.md`; SCRUM-456 QA
+PASSED on 2026-06-17, so SCRUM-461 may consume the accepted source.
+
 SCRUM-420 adds the first per-class v2 Design-source handoff for `berserk` under
 `docs/design/references/characters_v2/berserk/`: raw OpenAI source,
 alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
@@ -113,6 +132,27 @@ with v2 `idle` / `walk` / `move` loops in
 `assets/sprites/characters/v2/berserk/berserk_v2_anim_sheet.png`; previous live
 frames are backed up under `docs/design/backups/scrum420_berserk_v2_pre_anim/`.
 Attack animation remains absent by SCRUM-420 scope.
+
+SCRUM-461 replaces the live Berserk full-frame runtime resource with the
+accepted SCRUM-456 cartoon/anime anchor: `assets/sprites/characters/berserk_spriteframes.tres`
+now exposes `idle` (5f, 7fps), `walk` (5f, 9fps), and `move` (walk alias, 5f,
+9fps) only. Runtime PNGs remain under
+`assets/sprites/characters/full_frame/berserk/`, sliced from
+`docs/design/references/chars_cartoon/berserk_cartoon_anchor_sheet_source_handoff.png`
+with `512x512` cells, `48 px` gutters, transparent RGBA and pivot `(256,470)`.
+Previous live Berserk frames are backed up under
+`docs/design/backups/scrum461_berserk_cartoon_pre_anim/`. Attack animation
+remains absent by SCRUM-461 scope.
+
+SCRUM-473 replaces the Dark Mage/Knight temporary cartoon-trial legacy rig with
+live cartoon2 full-frame SpriteFrames. `assets/sprites/characters/dark_mage_spriteframes.tres`
+and `assets/sprites/characters/knight_spriteframes.tres` now expose 5-frame
+looping `idle`, `walk`, and `move` only, with runtime PNGs under
+`assets/sprites/characters/full_frame/dark_mage/` and
+`assets/sprites/characters/full_frame/knight/`. Safe-gutter sheets live under
+`assets/sprites/characters/cartoon2/{dark_mage,knight}/`; QA artifacts live
+under `build/qa/scrum473_cartoon2_dark_mage_knight_anim/`. Attack animation
+remains absent by SCRUM-473 scope because weapon visuals own attacks.
 
 SCRUM-424 adds the Dark Mage v2 Design-source handoff under
 `docs/design/references/characters_v2/dark_mage/`: raw OpenAI source,
@@ -752,6 +792,39 @@ preview: `docs/design/previews/scrum448_minimal_ui_frame_contact.png`.
 Live runtime uses this kit for safe non-button panels/cards/tooltips/HUD wrappers;
 SCRUM-273 Red & Gold buttons остаются каноном и не заменяются этим набором.
 
+SCRUM-452 добавляет Design-ready **Minimal Metal UI anchor** для следующего
+упрощения интерфейса: `assets/sprites/ui/frames/minimal_metal/` содержит
+`ui_frame_minimal_metal_modal`, `panel`, `card`, `tooltip`, `hud_strip` и
+`field`. Spec/metadata:
+`docs/design/mockups/scrum452_ui_minimal_metal/spec.md` и
+`docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json`;
+previews: `docs/design/previews/scrum452_minimal_metal_anchor_contact.png`,
+`docs/design/previews/scrum452_minimal_metal_safe_zones.png`. Все production PNG
+прозрачные (`white_opaque_pixels=0`, `pale_visible_pixels_after_cleanup=0`).
+Набор не live до Back-end integration handoff; SCRUM-273 buttons остаются
+каноном до SCRUM-450.
+
+SCRUM-450 добавляет Design-ready **Minimal Metal button kit**:
+`assets/sprites/ui/frames/minimal_metal_buttons/` содержит 15 button types x 5
+states (`normal`, `hover`, `pressed`, `focus`, `disabled`). Metadata:
+`docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json`;
+spec: `docs/design/mockups/scrum450_ui_minimal_metal_buttons/spec.md`;
+previews: `docs/design/previews/scrum450_minimal_metal_button_contact.png`,
+`docs/design/previews/scrum450_minimal_metal_button_safe_zones.png`. Все 75 PNG
+прозрачные (`white_opaque_pixels=0`, `pale_visible_pixels_after_cleanup=0`).
+Набор не live до Back-end integration; SCRUM-273 Red & Gold buttons остаются
+активным runtime-каноном.
+
+SCRUM-451 добавляет Design-source **Minimal Metal rollout contract**: все
+целевые UI surfaces по экранам сведены к шести frame families SCRUM-452
+(`modal`, `panel`, `card`, `tooltip`, `hud_strip`, `field`) с отдельным
+подключением SCRUM-450 button kit. Source of truth:
+`docs/design/mockups/scrum451_ui_minimal_frames_rollout/spec.md` и
+`docs/design/references/ui_minimal_metal_rollout/scrum451_minimal_metal_rollout_matrix.json`;
+preview: `docs/design/previews/scrum451_minimal_metal_rollout_contact.png`.
+Контракт не live до Back-end integration; старые frame assets удалять/бэкапить
+можно только после no-live-ref audit.
+
 | ID | Ассет | Роль |
 | --- | --- | --- |
 | `ui_panel_frame` | `assets/sprites/ui/frames/global/ui_panel_frame.png` | Базовые большие панели меню/событий/кодекса |
@@ -772,6 +845,17 @@ SCRUM-273 Red & Gold buttons остаются каноном и не замен�
 | `ui_frame_minimal_tooltip` | `assets/sprites/ui/frames/minimal/ui_frame_minimal_tooltip.png` | SCRUM-448/SCRUM-449 live minimal tooltip, `760x242` RGBA, content rect `[68,46,624,155]`; used for glossary/tooltips where safe |
 | `ui_frame_minimal_hud_strip` | `assets/sprites/ui/frames/minimal/ui_frame_minimal_hud_strip.png` | SCRUM-448/SCRUM-449 live minimal HUD/resource strip, `1122x288` RGBA, content rect `[107,65,908,164]`; used for compact resource HUD wrapper |
 | `ui_frame_minimal_field` | `assets/sprites/ui/frames/minimal/ui_frame_minimal_field.png` | SCRUM-448/SCRUM-449 live minimal input/field/tab frame, `616x286` RGBA, content rect `[59,53,498,183]`; used for Settings switcher, HUD cards and compact price badges |
+| `ui_frame_minimal_metal_modal` | `assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png` | SCRUM-452 Design-ready strict minimal-metal modal/window frame, `986x900` RGBA, content rect `[72,92,842,724]`; not live until Back-end integration |
+| `ui_frame_minimal_metal_panel` | `assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png` | SCRUM-452 Design-ready strict minimal-metal generic panel, `782x716` RGBA, content rect `[58,72,666,578]`; not live until Back-end integration |
+| `ui_frame_minimal_metal_card` | `assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png` | SCRUM-452 Design-ready strict minimal-metal card, `426x486` RGBA, content rect `[46,58,334,374]`; not live until Back-end integration |
+| `ui_frame_minimal_metal_tooltip` | `assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png` | SCRUM-452 Design-ready strict minimal-metal tooltip, `760x242` RGBA, content rect `[66,44,628,158]`; not live until Back-end integration |
+| `ui_frame_minimal_metal_hud_strip` | `assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png` | SCRUM-452 Design-ready strict minimal-metal HUD/status strip, `1122x288` RGBA, content rect `[104,62,914,170]`; not live until Back-end integration |
+| `ui_frame_minimal_metal_field` | `assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png` | SCRUM-452 Design-ready strict minimal-metal input/field frame, `616x286` RGBA, content rect `[58,52,500,186]`; not live until Back-end integration |
+| `ui_btn_minimal_metal_standard` | `assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_standard*.png` | SCRUM-450 Design-ready standard action button family, `420x104` RGBA, 5 states, content rect `[64,32,292,40]`; not live until Back-end integration |
+| `ui_btn_minimal_metal_max` | `assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_max*.png` | SCRUM-450 Design-ready maximum action button family, `560x104` RGBA, 5 states, content rect `[72,32,416,40]`; not live until Back-end integration |
+| `ui_btn_minimal_metal_main_menu` | `assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_main_menu*.png` | SCRUM-450 Design-ready main-menu button family, `380x104` RGBA, 5 states, content rect `[62,32,256,40]`; not live until Back-end integration |
+| `ui_btn_minimal_metal_back_s_m_l` | `assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_*.png` | SCRUM-450 Design-ready back/action variants S/M/L, 5 states each; see metadata for exact content rects; not live until Back-end integration |
+| `ui_btn_minimal_metal_compact` | `assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_fab*.png`, `ui_btn_minimal_metal_utility*.png`, `ui_btn_minimal_metal_pause*.png`, `ui_btn_minimal_metal_rebind*.png` | SCRUM-450 Design-ready compact/slim button families, 5 states each; fixed or 9-slice per metadata; not live until Back-end integration |
 | `ui_frame_settings_tab_switcher_3slot` | `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png` | SCRUM-391 Design-ready Settings tab switcher candidate, `1280x256` RGBA, exactly 3 slots; safe rects `[160,88,270,82]`, `[506,88,270,82]`, `[852,88,270,82]`; runtime activation handed off to `backend_settings_menu_unified_restyle_integration_task.md` |
 | `ui_frame_settings_v2_main_modal` | `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` | SCRUM-439 Design-ready Settings v2 modal candidate, `1536x1024` RGBA; texture margins `96/118/96/96`, content margins `144/192/144/128`; not live until Back-end integration |
 | `ui_frame_settings_v2_tab_switcher_3slot` | `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png` | SCRUM-439 Design-ready Settings v2 switcher candidate, `1280x256` RGBA, exactly 3 slots; safe rects `[150,78,275,92]`, `[502,78,275,92]`, `[854,78,275,92]`; not live until Back-end integration |

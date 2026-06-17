@@ -1,79 +1,79 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_00.png" id="1_scrum420"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_01.png" id="2_scrum420"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_02.png" id="3_scrum420"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_03.png" id="4_scrum420"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_04.png" id="5_scrum420"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_00.png" id="6_scrum420"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_01.png" id="7_scrum420"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_02.png" id="8_scrum420"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_03.png" id="9_scrum420"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_04.png" id="10_scrum420"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_00.png" id="1_scrum461"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_01.png" id="2_scrum461"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_02.png" id="3_scrum461"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_03.png" id="4_scrum461"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_04.png" id="5_scrum461"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_00.png" id="6_scrum461"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_01.png" id="7_scrum461"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_02.png" id="8_scrum461"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_03.png" id="9_scrum461"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_04.png" id="10_scrum461"]
 
 [resource]
 animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_scrum420")
+"texture": ExtResource("1_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("2_scrum420")
+"texture": ExtResource("2_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_scrum420")
+"texture": ExtResource("3_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_scrum420")
+"texture": ExtResource("4_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_scrum420")
+"texture": ExtResource("5_scrum461")
 }],
 "loop": true,
 "name": &"idle",
-"speed": 5.0
+"speed": 7.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_scrum420")
+"texture": ExtResource("6_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("7_scrum420")
+"texture": ExtResource("7_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("8_scrum420")
+"texture": ExtResource("8_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("9_scrum420")
+"texture": ExtResource("9_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("10_scrum420")
+"texture": ExtResource("10_scrum461")
 }],
 "loop": true,
 "name": &"move",
-"speed": 10.0
+"speed": 9.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_scrum420")
+"texture": ExtResource("6_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("7_scrum420")
+"texture": ExtResource("7_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("8_scrum420")
+"texture": ExtResource("8_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("9_scrum420")
+"texture": ExtResource("9_scrum461")
 }, {
 "duration": 1.0,
-"texture": ExtResource("10_scrum420")
+"texture": ExtResource("10_scrum461")
 }],
 "loop": true,
 "name": &"walk",
-"speed": 10.0
+"speed": 9.0
 }
 ]

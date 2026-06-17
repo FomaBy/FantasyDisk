@@ -1,6 +1,6 @@
 # Technical Architecture
 
-Обновлено: 2026-06-14 (0.1.5)
+Обновлено: 2026-06-17 (0.1.6)
 
 Этот файл кратко описывает runtime architecture FantasyDisk для будущих Back-end задач.
 
@@ -100,6 +100,10 @@ Additional checks:
 - In-game feedback smoke is embedded in `tests/runtime_smoke_test.gd` and
   verifies the `P` action, overlay lifecycle, screenshot preview, local fallback
   files and multipart payload markers.
+- SCRUM-454 adds a runtime regression inside `tests/runtime_smoke_test.gd` for
+  paid random-event options: unaffordable `cost_money` choices must render
+  disabled with an insufficient-gold tooltip, and direct activation must fail
+  without mutating the run snapshot.
 
 ## Branching
 

@@ -47,6 +47,24 @@ SCRUM-182 refreshed the active derived stat icons, shop-only icons, and shop sta
 
 ## Character Pipeline Asset Handoffs
 
+SCRUM-456 defines the new 0.1.6 **cartoon/anime playable-character restyle
+anchor** after the broad bright+epic v2 direction was rejected for future rollout.
+The source package lives under `docs/design/references/chars_cartoon/`: style
+sheet `character_cartoon_anime_style_sheet.md`, Berserk handoff
+`berserk_cartoon_anchor_design_handoff.md`, corrected transparent source
+`berserk_cartoon_anchor_source_raw.png`, clean source
+`berserk_cartoon_anchor_source_clean.png`, normalized
+`berserk_cartoon_anchor_idle_cell_512.png`, safe-gutter source handoff
+`berserk_cartoon_anchor_sheet_source_handoff.png`, preview
+`docs/design/previews/scrum456_chars_cartoon_anchor_contact.png`, and QA report
+`build/qa/scrum456_chars_cartoon/scrum456_chars_cartoon_alpha_motion_report.json`.
+The active source style target is D&D dark fantasy adapted into modern
+cartoon/anime cel-shading: thicker contour, saturated class palettes, larger
+readable shapes, strong class-specific silhouettes, transparent RGBA only, empty
+hands/no baked weapons, and visible arms/legs for future idle + walk/move
+animation. The exemplar is Berserk; Animator integration is blocked until this
+source package is accepted.
+
 SCRUM-422 starts the 0.1.6 **Character redraw v2 bright+epic anchor** for the
 next playable character art wave. The accepted Design exemplar is Berserk:
 source/raw `docs/design/references/characters_v2/bright_epic_anchor/berserk_v2_source_raw.png`,
@@ -161,13 +179,15 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
-SCRUM-273 supersedes the SCRUM-147 button-only Parchment & Wax Seal kit with the
-active **Red & Gold Dragon button kit** from
+SCRUM-273 superseded the SCRUM-147 button-only Parchment & Wax Seal kit with the
+historical **Red & Gold Dragon button kit** from
 `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live
-button assets are sliced into `assets/sprites/ui/frames/red_gold/` as 15 button
-types with four states each: idle/base, hover, pressed and disabled. The old
-parchment/wax button kit is backed up outside live assets at
-`build/cleanup_backup_red_gold_buttons_2026_06_14/`.
+Red & Gold button assets remain in `assets/sprites/ui/frames/red_gold/` as 15
+button types with four states each, but SCRUM-462 promotes the SCRUM-450 Minimal
+Metal kit as the active runtime action-button canon. The old parchment/wax
+button kit is backed up outside live assets at
+`build/cleanup_backup_red_gold_buttons_2026_06_14/`; the Red & Gold promotion
+backup lives at `build/qa/scrum450_minimal_metal_buttons/red_gold_button_backup/`.
 
 SCRUM-274 supersedes the SCRUM-229 leather+gold runtime panel direction with the
 active **Ornate Dark / Red frame kit** from
@@ -213,12 +233,77 @@ All six frame PNGs are transparent RGBA with `white_opaque_pixels=0` and
 `docs/design/previews/scrum448_minimal_ui_frame_contact.png`. SCRUM-449 wires
 the kit into live generic panels/cards/tooltips, Settings, Codex, economy
 choice cards/price badges, reward cards, pause/result shells and compact combat
-HUD wrappers. It does **not** replace SCRUM-273 Red & Gold buttons; those remain
-the active button canon under `assets/sprites/ui/frames/red_gold/`. Hero Select
-v3 authored frames, progression circular nodes and combat bar fills stay
+HUD wrappers. SCRUM-462 separately replaces the action-button canon with
+Minimal Metal buttons under `assets/sprites/ui/frames/minimal_metal_buttons/`.
+Hero Select v3 authored frames, progression circular nodes and combat bar fills stay
 screen-specific exceptions. Old ornamental assets were not archived in this pass
 because several remain live or historical/screen-specific refs; cleanup should
 only remove them after a fresh no-live-ref audit.
+
+SCRUM-452 adds the next **Minimal Metal UI anchor** for the UI simplification
+series. SCRUM-459 wires the frame side as runtime-selectable candidates with
+exact metadata-backed helpers in
+`docs/tasks/backend_ui_minimal_metal_anchor_integration_task.md`.
+The style is stricter than SCRUM-448: graphite/obsidian fills, thin dark-steel
+rails, aged-brass hairlines and rare ruby pins only. Source assets live under
+`docs/design/references/ui_minimal_metal/`, the UI-director mirror is
+`docs/design/mockups/scrum452_ui_minimal_metal/spec.md`, and production
+candidates live in `assets/sprites/ui/frames/minimal_metal/`:
+`ui_frame_minimal_metal_modal.png`, `panel.png`, `card.png`, `tooltip.png`,
+`hud_strip.png` and `field.png`. Exact source sizes, texture margins, content
+rects and alpha audit are recorded in
+`docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json`.
+`scripts/ui/ui_theme_paths.gd` exposes the six `MINIMAL_METAL_*` paths, source
+sizes, texture margins, content margins and safe rects; `scripts/ui_screens.gd`
+exposes `_minimal_metal_frame_style()` for future rollout tasks.
+All six frame PNGs are transparent RGBA with `white_opaque_pixels=0` and
+`pale_visible_pixels_after_cleanup=0`; previews:
+`docs/design/previews/scrum452_minimal_metal_anchor_contact.png` and
+`docs/design/previews/scrum452_minimal_metal_safe_zones.png`. SCRUM-459 does not
+promote these frames over the current SCRUM-448 live generic surfaces; SCRUM-462
+separately promotes the SCRUM-450 button redraw, and full frame rollout remains
+SCRUM-451/SCRUM-463.
+
+SCRUM-450 adds a Design-ready **Minimal Metal button kit** for the same series,
+and SCRUM-462 promotes it into live runtime action-button routing.
+The source is an OpenAI-generated sheet at
+`docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_source_sheet.png`;
+the production candidates live in
+`assets/sprites/ui/frames/minimal_metal_buttons/` as 15 current runtime button
+types with five states each: normal, hover, pressed, focus and disabled. Exact
+sizes, texture margins, content rects, state paths and alpha audit are recorded
+in
+`docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json`.
+Previews are `docs/design/previews/scrum450_minimal_metal_button_contact.png`
+and `docs/design/previews/scrum450_minimal_metal_button_safe_zones.png`. All 75
+candidate PNGs are transparent RGBA with `white_opaque_pixels=0` and
+`pale_visible_pixels_after_cleanup=0`. Runtime constants and guards live in
+`scripts/ui/ui_theme_paths.gd`, `scripts/ui_screens.gd`,
+`scripts/pause_stats_menu.gd`, `tests/dark_fantasy_ui_theme_test.gd` and
+`tests/runtime_smoke_test.gd`; QA evidence lives in
+`build/qa/scrum450_minimal_metal_buttons/`.
+
+SCRUM-451 adds the **Minimal Metal frame rollout** Design-source contract for
+all UI frame families/screens. It does not introduce new runtime images beyond
+the accepted SCRUM-452 frame set; instead it maps every target surface to one of
+six families: `modal`, `panel`, `card`, `tooltip`, `hud_strip` and `field`.
+Source of truth:
+`docs/design/mockups/scrum451_ui_minimal_frames_rollout/spec.md` and
+`docs/design/references/ui_minimal_metal_rollout/scrum451_minimal_metal_rollout_matrix.json`;
+preview:
+`docs/design/previews/scrum451_minimal_metal_rollout_contact.png`. The rollout
+covers menu, settings, hero select, codex, shop, rewards, level-up, events,
+pause, results, combat HUD, tooltips and dialogs. Back-end integration,
+old-kit backup/no-live-ref audit, screenshots and no-overlap smokes are tracked
+in `docs/tasks/backend_ui_minimal_frames_rollout_integration_task.md`.
+SCRUM-463 makes the rollout live for generic runtime surfaces: `scripts/ui/ui_theme_paths.gd`
+promotes the six minimal-metal frame paths as the active global generic set,
+`scripts/ui_screens.gd` applies their metadata to menu/Settings/Codex/economy/
+reward/pause/result/HUD wrappers, and `scripts/pause_stats_menu.gd` uses the
+same minimal-metal modal/panel/field/tooltip family. Screen-authored exceptions
+remain for Hero Select v3, progression nodes and combat bar fills/icons. QA and
+the old-kit live-reference audit live under
+`build/qa/scrum451_minimal_metal_rollout/`.
 
 SCRUM-390 prepared a dedicated **Combat HUD redraw kit** and SCRUM-400 wires it
 into the live runtime HUD. It was generated through
@@ -349,31 +434,38 @@ Canonical live Hero Select frame assets live in
 - `ui_frame_hero_select_thumbnail.png`, `ui_frame_hero_select_asc_button.png`,
   `ui_frame_hero_select_asc_label.png`, `ui_frame_hero_select_asc_mods.png`.
 
-Canonical live button assets live in `assets/sprites/ui/frames/red_gold/`:
+Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_buttons/`:
 
-- `ui_btn_red_gold_standard.png`, `ui_btn_red_gold_max.png`,
-  `ui_btn_red_gold_main_menu.png`, `ui_btn_red_gold_hero_confirm.png`;
-- `ui_btn_red_gold_reset_audio.png`, `ui_btn_red_gold_reset_bindings.png`,
-  `ui_btn_red_gold_codex_tab.png`, `ui_btn_red_gold_rebind.png`;
-- `ui_btn_red_gold_back_s.png`, `ui_btn_red_gold_back_m.png`,
-  `ui_btn_red_gold_back_l.png`, `ui_btn_red_gold_attr_selector.png`;
-- `ui_btn_red_gold_fab.png`, `ui_btn_red_gold_utility.png`,
-  `ui_btn_red_gold_pause.png`;
-- every file has `_hover`, `_pressed` and `_disabled` state variants.
+- `ui_btn_minimal_metal_standard.png`, `ui_btn_minimal_metal_max.png`,
+  `ui_btn_minimal_metal_main_menu.png`, `ui_btn_minimal_metal_hero_confirm.png`;
+- `ui_btn_minimal_metal_reset_audio.png`, `ui_btn_minimal_metal_reset_bindings.png`,
+  `ui_btn_minimal_metal_codex_tab.png`, `ui_btn_minimal_metal_rebind.png`;
+- `ui_btn_minimal_metal_back_s.png`, `ui_btn_minimal_metal_back_m.png`,
+  `ui_btn_minimal_metal_back_l.png`, `ui_btn_minimal_metal_attr_selector.png`;
+- `ui_btn_minimal_metal_fab.png`, `ui_btn_minimal_metal_utility.png`,
+  `ui_btn_minimal_metal_pause.png`;
+- every file has `_hover`, `_focus`, `_pressed` and `_disabled` state variants.
 
 State language:
 
-- all visible Button styleboxes use the Red & Gold Dragon kit unless a control is
+- all visible action Button styleboxes use the Minimal Metal kit unless a control is
   intentionally a card/hit-area rather than an action button;
-- hover: stronger red/gold glow and brighter metal bevel;
+- hover/focus: neutral bright metal read, no yellow baked glow;
 - pressed: darker center and slightly lower-contrast metal read;
 - disabled: desaturated, dimmed version of the same button type.
+
+SCRUM-450 minimal-metal button assets mirror the same 15 runtime button types.
+They add a fifth `_focus` PNG state and runtime keeps SCRUM-318 neutral focus
+tint semantics. Use metadata in
+`docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json`
+for content zones; labels/icons must stay inside each `content_rect_xywh` and
+never overlap side caps, rubies, bevels or back-arrow ornaments.
 
 Runtime button sizing (SCRUM-263/SCRUM-264):
 
 - standard action buttons use a 104px minimum height through `_make_button()` / `_set_action_button_size()`;
 - the main menu uses `main_menu` 380x104 buttons;
-- wide action buttons cap their visual width at 560px so dragon ends do not visibly stretch into a strip;
+- wide action buttons cap their visual width at 560px so button ends do not visibly stretch into a strip;
 - pause menu buttons use 280x60, rebind/dropdown-style controls use 420x62,
   compact utility uses 54x42 and upgrade FAB uses 50x50;
 - text-heavy choices use an information frame above a short standard button instead of placing paragraphs inside a large button;
@@ -390,7 +482,8 @@ Runtime frame sizing (SCRUM-274):
   stretching one generic frame everywhere;
 - HUD and timer panels use their dedicated horizontal frame assets;
 - Escape stats uses `pause_main`, `pause_stat_group`, `pause_stat_chip` and
-  `pause_stat_tooltip` frames; its buttons use the SCRUM-273 `pause` button.
+  `pause_stat_tooltip` frames; its buttons use the SCRUM-450 minimal-metal
+  `pause` button.
 - Hero Select uses the SCRUM-281 `ui_frame_hero_select_*` kit with custom
   `HERO_SELECT_FRAME_MARGINS` and `HERO_SELECT_FRAME_CONTENT` in
   `scripts/ui_screens.gd`; the bottom thumbnail strip uses compressed thumbnail

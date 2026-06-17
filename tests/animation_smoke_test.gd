@@ -176,15 +176,15 @@ func _test_player_animation() -> void:
 	if body.sprite_frames == null:
 		_fail("Expected Berserk player SpriteFrames to load.")
 	if body.sprite_frames.resource_path != "res://assets/sprites/characters/berserk_spriteframes.tres":
-		_fail("Expected Berserk to use the accepted SCRUM-420 v2 SpriteFrames resource.")
+		_fail("Expected Berserk to use the accepted SCRUM-461 cartoon/anime SpriteFrames resource.")
 	if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
-		_fail("Expected Berserk SCRUM-420 v2 SpriteFrames to expose idle/walk/move animations.")
+		_fail("Expected Berserk SCRUM-461 cartoon/anime SpriteFrames to expose idle/walk/move animations.")
 	if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
-		_fail("Expected Berserk SCRUM-420 v2 SpriteFrames to omit attack animations by task scope.")
+		_fail("Expected Berserk SCRUM-461 cartoon/anime SpriteFrames to omit attack animations by task scope.")
 	if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:
-		_fail("Expected Berserk SCRUM-420 v2 SpriteFrames to expose 5 idle/walk/move frames.")
+		_fail("Expected Berserk SCRUM-461 cartoon/anime SpriteFrames to expose 5 idle/walk/move frames.")
 	if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or not body.sprite_frames.get_animation_loop("move"):
-		_fail("Expected Berserk SCRUM-420 v2 idle/walk/move animations to loop.")
+		_fail("Expected Berserk SCRUM-461 cartoon/anime idle/walk/move animations to loop.")
 	player.call("play_action_animation", "attack", Vector2.RIGHT)
 	var last_event := player.get("last_weapon_animation_event") as Dictionary
 	if str(last_event.get("action_id", "")) != "attack":
@@ -266,29 +266,6 @@ func _test_player_animation() -> void:
 	if guitarist_pelvis.position.x >= -0.01:
 		_fail("Expected ranged action animation to recoil the rig pelvis.")
 
-	# CARTOON-проба (SCRUM-456): dark_mage рисуется cartoon-спрайтом и анимируется
-	# legacy-ригом (целый спрайт через Pelvis/HeroFull: bob/lean), минуя v2 full-frame
-	# и sliced-нарезку (её hand-tuned боксы не подходят cartoon-пропорциям).
-	player.configure_character("dark_mage")
-	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
-	rig = player.get_node("VisualRoot/RigRoot") as Node2D
-	if body.visible or not rig.visible:
-		_fail("Expected cartoon-trial Dark Mage to show the legacy cutout rig with the full-frame body hidden.")
-	if rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
-		_fail("Expected Dark Mage cartoon rig to use SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(rig.get("base_scale"))])
-	var mage_hero_full := rig.get_node_or_null("Pelvis/HeroFull") as Sprite2D
-	if mage_hero_full == null or mage_hero_full.texture == null:
-		_fail("Expected cartoon-trial Dark Mage legacy rig to render the whole cartoon sprite via Pelvis/HeroFull.")
-	var mage_pelvis := rig.get_node_or_null("Pelvis") as Node2D
-	if mage_pelvis == null:
-		_fail("Expected cartoon-trial Dark Mage legacy rig to expose a Pelvis node.")
-	else:
-		player.set("velocity", Vector2(120, 0))
-		player.call("_update_movement_animation", 0.2)
-		if abs(mage_pelvis.position.y) <= 0.01 and abs(mage_pelvis.rotation) <= 0.01:
-			_fail("Expected cartoon-trial Dark Mage walk to bob/lean the legacy rig pelvis.")
-		player.set("velocity", Vector2.ZERO)
-
 	var accepted_character_spriteframes := {
 		"assassin": "res://assets/sprites/characters/assassin_spriteframes.tres",
 		"berserk": "res://assets/sprites/characters/berserk_spriteframes.tres",
@@ -309,8 +286,6 @@ func _test_player_animation() -> void:
 		"thief": "res://assets/sprites/characters/thief_spriteframes.tres",
 	}
 	for sheet_character_id in accepted_character_spriteframes.keys():
-		if sheet_character_id == "dark_mage" or sheet_character_id == "knight":
-			continue  # CARTOON-проба (SCRUM-456): legacy-риг, проверяется отдельным блоком выше
 		player.configure_character(sheet_character_id)
 		body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
 		rig = player.get_node("VisualRoot/RigRoot") as Node2D
@@ -320,16 +295,20 @@ func _test_player_animation() -> void:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
-		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "dark_mage" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "thief":
+		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "dark_mage" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "thief":
 			var v2_label := "SCRUM-420"
+			if sheet_character_id == "berserk":
+				v2_label = "SCRUM-461"
 			if sheet_character_id == "assassin":
 				v2_label = "SCRUM-419"
 			elif sheet_character_id == "dark_mage":
-				v2_label = "SCRUM-424"
+				v2_label = "SCRUM-473"
 			elif sheet_character_id == "elementalist":
 				v2_label = "SCRUM-427"
 			elif sheet_character_id == "guitarist":
 				v2_label = "SCRUM-429"
+			elif sheet_character_id == "knight":
+				v2_label = "SCRUM-473"
 			elif sheet_character_id == "thief":
 				v2_label = "SCRUM-435"
 			if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
@@ -546,8 +525,8 @@ func _assert_weapon_timing_event(events: Array[Dictionary], attack_mode: String,
 
 
 func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
-	# CARTOON-проба (SCRUM-456): dark_mage на legacy-риге — руки не позируют (атаки
-	# визуализирует оружие), per-arm pose-silhouette проверка к нему неприменима.
+	# Dark Mage/Knight cartoon2 body attack rows intentionally stay absent:
+	# weapon visuals own attacks while hidden rig hooks still support legacy classes.
 
 	var electric_pose: Dictionary = _sample_player_weapon_action_pose(player, "guitarist", "electric_guitar", "shoot", 0.12)
 	var bass_pose: Dictionary = _sample_player_weapon_action_pose(player, "guitarist", "bass_guitar", "shoot", 0.18)
@@ -584,9 +563,6 @@ func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
 	if _pose_distance(acid_pose, powder_pose) <= 5.0 or _pose_distance(vial_pose, powder_pose) <= 5.0:
 		_fail("Expected Chemist powder/flask/vial casts to use different arm heights.")
 
-	# CARTOON-проба (SCRUM-456): knight на legacy-риге — руки не позируют (атаки
-	# визуализирует оружие), per-arm pose-silhouette проверка к нему неприменима.
-
 	var summon_pose: Dictionary = _sample_player_weapon_action_pose(player, "druid", "summon_amulet", "cast", 0.14)
 	var briar_pose: Dictionary = _sample_player_weapon_action_pose(player, "druid", "briar_staff", "cast", 0.14)
 	var raven_pose: Dictionary = _sample_player_weapon_action_pose(player, "druid", "raven_totem", "shoot", 0.14)
@@ -594,7 +570,6 @@ func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
 	if float(summon_pose["arm_l_y"]) >= float(briar_pose["arm_l_y"]) - 5.0 or float(briar_pose["pelvis_y"]) <= float(summon_pose["pelvis_y"]) + 3.0:
 		_fail("Expected Druid summon, briar, and raven totem poses to be distinct.")
 
-	# dark_mage/knight исключены — cartoon-проба на legacy-риге (SCRUM-456).
 	var legacy_samples := [
 		electric_pose, bass_pose, amp_pose,
 		chakram_pose, dagger_pose, wire_pose, moon_pose, storm_pose, trap_pose,
@@ -607,7 +582,8 @@ func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
 
 
 func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
-	# dark_mage/knight исключены — cartoon-проба на legacy-риге (SCRUM-456).
+	# Dark Mage/Knight body attack animation is out of scope here; their weapons
+	# still emit timing events, and body SpriteFrames stay idle/walk/move only.
 	var phase_samples := [
 		["guitarist", "electric_guitar", "sound_wave", "shoot", "windup"],
 		["guitarist", "bass_guitar", "pulse", "shoot", "pulse"],
@@ -624,9 +600,6 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 		["chemist", "blast_powder", "aoe_projectile", "cast", "windup"],
 		["chemist", "acid_flask", "aoe_projectile", "cast", "windup"],
 		["chemist", "homunculus_vial", "summon", "cast", "deploy"],
-		["knight", "long_spear", "strip", "attack", "windup"],
-		["knight", "tower_shield", "sweep", "attack", "windup"],
-		["knight", "holy_flail", "circle", "attack", "windup"],
 		["druid", "summon_amulet", "summon", "cast", "deploy"],
 		["druid", "briar_staff", "aoe_projectile", "cast", "windup"],
 		["druid", "raven_totem", "amp", "shoot", "deploy"],

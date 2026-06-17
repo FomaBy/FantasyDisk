@@ -33,11 +33,14 @@ const PLAYER_COMBAT_VISUAL_SCALE := 0.5
 const BASE_SPRITE_SCALE := Vector2(PLAYER_COMBAT_VISUAL_SCALE, PLAYER_COMBAT_VISUAL_SCALE)
 # Анимация атаки персонажей отключена по запросу пользователя (2026-06-15).
 const USE_ATTACK_ANIMATION := false
-# CARTOON-проба (SCRUM-456): эти классы используют cartoon-спрайт и анимируются
-# legacy-ригом (целый спрайт: bob/lean/breath), минуя v2 full-frame и sliced-нарезку
-# (её hand-tuned боксы не подходят cartoon-пропорциям). Пробный набор — расширяется
-# по мере перерисовки остальных классов.
-const CARTOON_TRIAL_CLASSES := ["dark_mage", "knight"]
+# CARTOON-проба (SCRUM-456/SCRUM-472) завершена для Dark Mage/Knight в SCRUM-473:
+# эти классы теперь грузят реальные full-frame SpriteFrames, а список остаётся
+# пустым как аварийный переключатель для будущих временных cartoon-интеграций.
+const CARTOON_TRIAL_CLASSES := []
+# Доводка cartoon-пробы (SCRUM-472, запрос пользователя): чуть мельче + лёгкий
+# разворот спрайта вокруг своей оси (Z), чтобы не стоял строго анфас. Настраивается.
+const CARTOON_TRIAL_SCALE := 0.82
+const CARTOON_TRIAL_TILT_DEG := 12.0
 const WEAPON_ORBIT_RADIUS := 104.0
 const WEAPON_ORBIT_VERTICAL_BIAS := -8.0
 const WEAPON_ORBIT_Z_INDEX := -8
@@ -1614,11 +1617,18 @@ func _configure_player_rig(config: Dictionary, show_cutout := true) -> void:
 		rig.set_script(CUTOUT_RIG_SCRIPT)
 		visual_root.add_child(rig)
 	var texture := config.get("sprite", BERSERK_SPRITE) as Texture2D
+	var is_cartoon: bool = character_id in CARTOON_TRIAL_CLASSES
 	if rig.has_method("configure"):
 		# CARTOON-проба: суффикс профиля уводит риг на legacy (целый спрайт), без
-		# v2-боксов нарезки, не подходящих cartoon-пропорциям (SCRUM-456).
-		var rig_profile: String = character_id + "_cartoon" if character_id in CARTOON_TRIAL_CLASSES else character_id
-		rig.configure(texture, BASE_SPRITE_SCALE, rig_profile, {"is_player": true})
+		# v2-боксов нарезки, не подходящих cartoon-пропорциям; cartoon чуть мельче (SCRUM-472).
+		var rig_profile: String = character_id + "_cartoon" if is_cartoon else character_id
+		var rig_scale: Vector2 = (BASE_SPRITE_SCALE * CARTOON_TRIAL_SCALE) if is_cartoon else BASE_SPRITE_SCALE
+		rig.configure(texture, rig_scale, rig_profile, {"is_player": true})
+	if is_cartoon:
+		# Лёгкий разворот cartoon-спрайта вокруг своей оси — не строго анфас (SCRUM-472).
+		var hero_full := rig.get_node_or_null("Pelvis/HeroFull") as Node2D
+		if hero_full != null:
+			hero_full.rotation = deg_to_rad(CARTOON_TRIAL_TILT_DEG)
 	rig.visible = show_cutout
 
 

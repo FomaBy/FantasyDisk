@@ -83,6 +83,19 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 
 ## Player Motion
 
+- SCRUM-456 defines the new cartoon/anime playable-character restyle source
+  contract. The Design package lives under
+  `docs/design/references/chars_cartoon/` and establishes Berserk as the
+  accepted exemplar candidate: `512x512` source cells, bottom-center pivot
+  `(256, 470)`, safe source-sheet gutters/outer padding of `48 px`, rows
+  `idle` and `walk` / `move`, 5 frames per row, transparent RGBA, empty hands
+  and no baked weapon/tool. The exemplar source sheet is
+  `docs/design/references/chars_cartoon/berserk_cartoon_anchor_sheet_source_handoff.png`
+  (`2848x1168`). The included GIFs under `build/qa/scrum456_chars_cartoon/`
+  are Design-source motion previews only; Animator must author real `idle` and
+  `walk`/`move` keyframes with visible arm+leg motion before SpriteFrames or
+  runtime integration. `attack_primary` is intentionally out of scope for this
+  initiative.
 - SCRUM-422 defines the 0.1.6 playable character redraw v2 source contract.
   Design source sheets for the v2 wave are bright/epic per class, transparent
   RGBA, `512x512` cells, bottom-center pivot `(256, 470)`, and only
@@ -108,6 +121,36 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   The bundled manifest validator was run and records the expected
   `missing attack_primary animation` failure because SCRUM-420 explicitly
   excludes attack animation.
+- SCRUM-461 (2026-06-17) promotes the accepted SCRUM-456 cartoon/anime Berserk
+  anchor into the same live runtime resource
+  `assets/sprites/characters/berserk_spriteframes.tres`. It exposes `idle`
+  (5f, 7fps), `walk` (5f, 9fps), and `move` (walk alias, 5f, 9fps) only, with
+  transparent `512x512` frames sliced from
+  `docs/design/references/chars_cartoon/berserk_cartoon_anchor_sheet_source_handoff.png`
+  using the documented `48 px` gutters and pivot `(256,470)`. Previous live
+  Berserk frames are backed up under
+  `docs/design/backups/scrum461_berserk_cartoon_pre_anim/`. QA artifacts live
+  under `build/qa/scrum461_berserk_cartoon_anim/`; attack animation remains
+  intentionally absent by SCRUM-461 scope.
+- SCRUM-473 (2026-06-17) replaces the temporary cartoon-trial legacy rig for
+  Dark Mage and Knight with real cartoon2 full-frame SpriteFrames. Runtime
+  resources `assets/sprites/characters/dark_mage_spriteframes.tres` and
+  `assets/sprites/characters/knight_spriteframes.tres` expose `idle` (5f loop),
+  `walk` (5f loop), and `move` (walk alias, 5f loop) only, sourced from the
+  accepted transparent runtime sprites `assets/sprites/characters/dark_mage.png`
+  and `assets/sprites/characters/knight.png` with the 1024 source gate under
+  `docs/design/references/chars_cartoon/trial_v2/`. Runtime frames live under
+  `assets/sprites/characters/full_frame/{dark_mage,knight}/`; safe-gutter
+  cartoon2 sheets live under `assets/sprites/characters/cartoon2/`. QA contact
+  sheets, GIFs, alpha stats and manifest live under
+  `build/qa/scrum473_cartoon2_dark_mage_knight_anim/`. `scripts/player.gd`
+  now leaves `CARTOON_TRIAL_CLASSES` empty, so both classes use the full-frame
+  `AnimatedSprite2D` path and hide the legacy rig. Attack animation remains
+  absent by SCRUM-473 scope because weapons own attacks (`USE_ATTACK_ANIMATION=false`).
+  Animation smoke passes; full runtime smoke is currently blocked by an
+  unrelated Hero Select v3 back-button UI assertion. The bundled manifest
+  validator still reports the expected missing `attack_primary` rows because it
+  does not yet understand `attack_required=false`.
 - SCRUM-424 adds the Dark Mage v2 Design-source handoff under
   `docs/design/references/characters_v2/dark_mage/` with alpha-clean source,
   normalized `512x512` idle cell, `2560x1024` source placeholder sheet and QA

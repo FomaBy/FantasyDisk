@@ -5,12 +5,233 @@
 ## [Unreleased] — ветка dev
 
 ### Added
-- Guitarist v2 Design-source handoff (SCRUM-429): generated the bright+epic
-  unarmed Guitarist source, alpha-cleaned the checker matte, normalized a
+- Cartoon2 Dark Mage/Knight animations (SCRUM-473): live
+  `dark_mage_spriteframes.tres` and `knight_spriteframes.tres` now use real
+  full-frame `idle` / `walk` / `move` loops from the accepted cartoon2 sprites,
+  with no body attack rows because weapon visuals own attacks. Runtime frames
+  live under `assets/sprites/characters/full_frame/{dark_mage,knight}/`,
+  safe-gutter sheets under `assets/sprites/characters/cartoon2/`, and QA
+  contact/GIF/manifest artifacts under
+  `build/qa/scrum473_cartoon2_dark_mage_knight_anim/`. The temporary
+  `CARTOON_TRIAL_CLASSES` legacy rig path is now empty; animation smoke passes.
+- Final UI design review evidence (SCRUM-458): added the
+  `tests/design_review_screenshot_capture_test.gd` harness and captured 23 UI
+  states at 1280x720, 1920x1080 and 2560x1440 under
+  `build/qa/design_review/`. The review filed follow-up defects SCRUM-464 for
+  the opaque economy-screen matte, SCRUM-465 for Level Up viewport overflow and
+  SCRUM-466 for minimal-metal frame seams crossing content; no runtime UI fixes
+  were made in the review pass.
+- Class damage table audit (SCRUM-453): added deterministic
+  `tools/class_damage_table_3variants.gd` plus
+  `tests/class_damage_table_3variants_test.gd` to generate the 17-class /
+  51-weapon DPS table for 1, 5 and 20 targets across base lvl1, lvl20 optimum
+  and lvl20 random-average builds. Evidence is written to
+  `docs/design/reports/class_damage_table_3variants.md` and
+  `build/qa/scrum453/class_damage_table_3variants.csv`; no live balance values
+  were changed.
+- Cartoon/anime character restyle anchor (SCRUM-456): generated the
+  `fantasydisk-asset-generator` Berserk exemplar source, corrected the baked
+  checkerboard output into transparent RGBA, created the
+  `docs/design/references/chars_cartoon/` style-sheet/handoff package with
+  strong per-class silhouette/palette directions, normalized a `512x512`
+  Berserk source cell and safe-gutter `idle`/`walk` source-sheet handoff, and
+  recorded contact/dark-bg/GIF/alpha QA under
+  `build/qa/scrum456_chars_cartoon/`. Animator handoff is created but gated
+  until source acceptance; attack remains out of scope.
+- Minimal-metal button Design-source kit (SCRUM-450): generated an OpenAI
+  source sheet under `docs/design/references/ui_minimal_metal_buttons/`, built
+  15 button types x 5 states as transparent RGBA candidates under
+  `assets/sprites/ui/frames/minimal_metal_buttons/`, added exact
+  texture/content margins in
+  `docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json`,
+  plus style/spec docs and contact/safe-zone previews. All 75 production PNGs
+  audit at `white_opaque_pixels=0`, `pale_visible_pixels_after_cleanup=0`;
+  runtime rollout is handed off to Back-end.
+- Minimal-metal UI anchor Design-source package (SCRUM-452): generated OpenAI
+  minimal-metal style/source boards under
+  `docs/design/references/ui_minimal_metal/`, produced a six-piece transparent
+  RGBA frame candidate kit under `assets/sprites/ui/frames/minimal_metal/`,
+  documented exact texture/content margins in
+  `docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json`,
+  added UI-director spec/style docs and contact/safe-zone previews. All six
+  production PNGs audit at `white_opaque_pixels=0`,
+  `pale_visible_pixels_after_cleanup=0`; runtime integration is handed off to
+  Back-end.
+- Minimal-metal frame rollout Design-source package (SCRUM-451): mapped menu,
+  settings, hero select, codex, shop, rewards, level-up, events, pause, results,
+  combat HUD, tooltips and dialogs to the six SCRUM-452 frame families, recorded
+  exact screen-family metadata in
+  `docs/design/references/ui_minimal_metal_rollout/scrum451_minimal_metal_rollout_matrix.json`,
+  added the UI-director rollout spec and contact preview, and created the
+  Back-end integration handoff. Runtime wiring, old-kit backup/no-live-ref audit,
+  screenshots and Godot UI smokes remain Back-end scope.
+- Minimalist UI restyle Design-source package (SCRUM-448): generated an OpenAI
+  project-wide UI style-board plus a six-piece transparent minimal frame kit
+  under `assets/sprites/ui/frames/minimal/`, with exact texture/content margins
+  in `docs/design/references/ui_minimal/scrum448_minimal_ui_frame_metadata.json`
+  and `docs/design/mockups/scrum448_ui_minimalist/spec.md`. The package keeps
+  SCRUM-273 Red & Gold buttons unchanged and audits all minimal frame PNGs at
+  `white_opaque_pixels=0`, `pale_visible_pixels_after_cleanup=0`.
+- Hero Select v3 Design-source package (SCRUM-446): generated a from-scratch
+  OpenAI mockup for the hero select screen, extracted raw Vision zones and
+  corrected them into non-overlapping source-of-truth `zones.json` /
+  `zones_normalized.json`, generated transparent production frame assets under
+  `assets/sprites/ui/frames/hero_select_v3/`, added `frames_spec.json` with
+  texture/content margins and a UI-director spec package under
+  `docs/design/references/hero_select_v3/` plus `docs/design/mockups/hero_select_v3/`.
+  All transparent v3 frame assets audit at `white_opaque_pixels=0`; runtime
+  rebuild is handed off to Back-end.
+- Hero Select v3 runtime integration (SCRUM-447): `_show_character_select()`
+  now uses the accepted SCRUM-446 1536x864 zones, v3 background and
+  `assets/sprites/ui/frames/hero_select_v3/` production frames. The live screen
+  preserves hero selection, ascension controls, Select/Back/Escape/focus
+  behavior and the existing `HeroStatRadar`, keeps radar square, and writes QA
+  screenshot/rect evidence under `build/qa/scrum446_hero_select_v3/`; runtime UI
+  smoke, UI no-overlap matrix and full runtime smoke pass.
+
+### Changed
+- Settings and Attribute Shop short-viewport fit (SCRUM-471): fixed the
+  1152x648 no-overlap matrix failures by allowing the Settings v2 content panel
+  to compress only on short modals and using compact Attribute Shop offer/action
+  metrics below 660px viewport height. UI no-overlap matrix, runtime UI smoke
+  and full runtime smoke pass; evidence lives under `build/qa/scrum471/`.
+- Class lvl20 optimum balance normalization (SCRUM-469): added class/stat
+  growth scalars that apply only to above-base stat points before derived
+  parameter formulas. The SCRUM-453 report and CSV were regenerated; all
+  17 classes now keep `Lvl20 optimum` `relative_score` inside `0.938..1.097`
+  while `Base lvl1` stays inside `0.982..1.010`, preserving each class'
+  three-weapon kit identities.
+- Level Up viewport fit (SCRUM-465): the reward-choice overlay now uses
+  responsive panel/card/header metrics and a compact `Позже` action height on
+  short 720p layouts, so all three choices and the defer control remain inside
+  the viewport at 1280x720, 1920x1080 and 2560x1440. The UI no-overlap matrix
+  now includes Level Up nodes and QA evidence lives under `build/qa/scrum465/`.
+- Minimal-metal frame rollout runtime integration (SCRUM-463): promoted the
+  SCRUM-452 `assets/sprites/ui/frames/minimal_metal/` six-frame kit as the
+  active generic runtime surface set for menus, Settings, Codex, economy choice
+  cards/price badges/tooltips, rewards, pause/results and compact combat HUD
+  wrappers, while preserving Hero Select v3 authored frames, progression nodes
+  and combat bar fills/icons. QA/no-live-ref evidence lives under
+  `build/qa/scrum451_minimal_metal_rollout/`; dark theme, runtime UI,
+  no-overlap and full runtime smokes pass.
+- Minimal-metal button runtime integration (SCRUM-462): promoted the SCRUM-450
+  `assets/sprites/ui/frames/minimal_metal_buttons/` kit for live action-button
+  families across menu/UI helpers, including main menu, back, pause, Codex tab,
+  reset, rebind, utility/FAB and attribute selector states. Red & Gold PNGs are
+  backed up under `build/qa/scrum450_minimal_metal_buttons/red_gold_button_backup/`;
+  metadata/theme guards and QA dumps live under
+  `build/qa/scrum450_minimal_metal_buttons/`. Card/hit-area exceptions and the
+  SCRUM-390 combat plus button remain unchanged; dark theme, runtime UI,
+  no-overlap and full runtime smokes pass.
+- Minimal-metal frame runtime anchor (SCRUM-459): added the SCRUM-452
+  `assets/sprites/ui/frames/minimal_metal/` six-frame kit as first-class
+  runtime paths/constants plus a reusable tiled `StyleBoxTexture` helper backed
+  by metadata texture/content margins. The kit remains a selectable candidate
+  for the later rollout; SCRUM-273 Red & Gold buttons and current SCRUM-448 live
+  generic frames are unchanged. Added metadata guard coverage and QA evidence
+  under `build/qa/scrum452_minimal_metal/`.
+- Attack VFX calmness pass (SCRUM-457): shared `AttackVfx` helpers now
+  desaturate/dim additive colors, cap flash alpha, narrow beam visuals, reduce
+  trail frequency and cut dust/note clutter so weapon attacks read without
+  flooding the screen. Damage radii, hit queries, cooldowns and targeting are
+  unchanged. `tests/attack_vfx_smoke_test.gd` now asserts the calmer alpha/beam/
+  note contract and writes `build/qa/scrum457/attack_vfx_calmness_dump.md`.
+- Weapon orbit visibility (SCRUM-455): player `WeaponSocket` now sits on a
+  104px orbit around the hero and rotates toward the active aim/attack
+  direction instead of staying on the body/hand center. Equipped weapon roots
+  and `WeaponVisual` layers are normalized behind the hero body so held weapons
+  do not cover playable character sprites; damage, timing and targeting
+  mechanics are unchanged. Added focused gate `tests/weapon_orbit_smoke_test.gd`
+  and QA dump `build/qa/scrum455/weapon_orbit_runtime_dump.md`.
+- SCRUM-449 wires the SCRUM-448 minimalist frame kit into live non-button UI
+  surfaces: generic panels/cards, Settings shell/switcher/content panel, Codex
+  shell/list/detail/tooltip, economy choice cards/price badges, reward cards,
+  pause/result shells and compact combat HUD wrappers now use
+  `assets/sprites/ui/frames/minimal/` where safe. SCRUM-273 Red & Gold buttons,
+  Hero Select v3 authored frames, progression circular nodes, combat bar fills
+  and other screen-specific authored controls remain unchanged. QA evidence lives
+  in `build/qa/scrum448_ui_minimalist/`; runtime UI smoke, UI no-overlap matrix
+  and full runtime smoke pass.
+- Berserk v3 single-sprite candidate (SCRUM-442): generated a slightly
+  cartoonish unarmed 3/4-right Berserk source, cleaned the checker/white matte
+  to strict transparent RGBA with no white/neutral/pale pockets, normalized a
+  `512x512` game candidate at `assets/sprites/characters/berserk_v3_sprite.png`,
+  corrected the generator-source filename so `berserk_v3_source_raw.png` is
+  also transparent RGBA instead of opaque RGB, backed up the old
+  `berserk_unarmed.png`, and added contact/dark-bg previews plus alpha/pose QA
+  under `build/qa/scrum442_berserk_v3/`; animations and runtime wiring remain
+  follow-up scope.
+- Robot v2 Design-source handoff (SCRUM-432): generated the bright+epic
+  unarmed Robot source, removed the baked checker/white matte with strict
+  edge-connected cleanup plus connected-component fringe removal, normalized a
   `512x512` source cell with pivot `[256,470]`, and added source-sheet handoff,
   accepted source sheet copy, contact preview and QA report under
-  `docs/design/references/characters_v2/guitarist/` and
-  `build/qa/scrum429_guitarist_v2/`; Animator/runtime wiring remains follow-up.
+  `docs/design/references/characters_v2/robot/` and
+  `build/qa/scrum432_robot_v2/`; Animator/runtime wiring remains follow-up.
+- Biologist v2 Design-source handoff (SCRUM-421): generated the bright+epic
+  unarmed Biologist source, removed the baked checker/white matte with strict
+  edge-connected cleanup plus bioluminescent neutral clamp, normalized a
+  `512x512` source cell with pivot `[256,470]`, and added source-sheet handoff,
+  accepted source sheet copy, contact preview and QA report under
+  `docs/design/references/characters_v2/biologist/` and
+  `build/qa/scrum421_biologist_v2/`; Animator/runtime wiring remains follow-up.
+- Priest v2 Design-source handoff (SCRUM-431): generated the bright+epic
+  unarmed Priest source, removed the baked checker/white matte with strict
+  edge-connected cleanup plus warm white clamp, normalized a `512x512` source
+  cell with pivot `[256,470]`, and added source-sheet handoff, accepted source
+  sheet copy, contact preview and QA report under
+  `docs/design/references/characters_v2/priest/` and
+  `build/qa/scrum431_priest_v2/`; Animator/runtime wiring remains follow-up.
+- Sniper v2 Design-source handoff (SCRUM-433): generated the bright+epic
+  unarmed Sniper source, alpha-cleaned the checker matte with global white/
+  neutral cleanup plus edge-alpha fix, normalized a `512x512` source cell with
+  pivot `[256,470]`, and added source-sheet handoff, accepted source sheet copy,
+  contact preview and QA report under `docs/design/references/characters_v2/sniper/`
+  and `build/qa/scrum433_sniper_v2/`; Animator/runtime wiring remains follow-up.
+- Elementalist v2 Design-source + Animator integration (SCRUM-427): generated
+  the bright+epic unarmed Elementalist source, alpha-cleaned the checker matte
+  with global white/neutral cleanup, normalized a `512x512` source cell with
+  pivot `[256,470]`, and promoted the accepted source into live v2 `idle` /
+  `walk` / `move` SpriteFrames at
+  `assets/sprites/characters/elementalist_spriteframes.tres`. The pass derives
+  5-frame loops, writes runtime PNGs under
+  `assets/sprites/characters/full_frame/elementalist/`, backs up previous live
+  frames under `docs/design/backups/scrum427_elementalist_v2_pre_anim/`, and
+  adds contact/GIF/manifest QA artifacts under
+  `build/qa/scrum427_elementalist_v2_anim/`. Attack frames remain intentionally
+  absent for this v2 row; animation and runtime smoke pass.
+- Thief v2 Design-source + Animator integration (SCRUM-435): generated the
+  bright+epic unarmed Thief source, alpha-cleaned the checker matte with global
+  white/neutral cleanup, normalized a `512x512` source cell with pivot
+  `[256,470]`, and promoted the accepted source into live v2 `idle` / `walk` /
+  `move` SpriteFrames at `assets/sprites/characters/thief_spriteframes.tres`.
+  The pass derives 5-frame loops, writes runtime PNGs under
+  `assets/sprites/characters/full_frame/thief/`, backs up previous live frames
+  under `docs/design/backups/scrum435_thief_v2_pre_anim/`, and adds contact/GIF/
+  manifest QA artifacts under `build/qa/scrum435_thief_v2_anim/`. Attack frames
+  remain intentionally absent for this v2 row; animation and runtime smoke pass.
+- Assassin v2 Design-source + Animator integration (SCRUM-419): generated the
+  bright+epic unarmed Assassin source, alpha-cleaned the checker matte,
+  normalized a `512x512` source cell with pivot `[256,470]`, and promoted the
+  accepted source into live v2 `idle` / `walk` / `move` SpriteFrames at
+  `assets/sprites/characters/assassin_spriteframes.tres`. The pass derives
+  5-frame loops, writes runtime PNGs under
+  `assets/sprites/characters/full_frame/assassin/`, backs up previous live
+  frames under `docs/design/backups/scrum419_assassin_v2_pre_anim/`, and adds
+  contact/GIF/manifest QA artifacts under `build/qa/scrum419_assassin_v2_anim/`.
+  Attack frames remain intentionally absent for this v2 row; animation and
+  runtime smoke pass.
+- Guitarist v2 Design-source + Animator integration (SCRUM-429): generated the
+  bright+epic unarmed Guitarist source, alpha-cleaned the checker matte,
+  normalized a `512x512` source cell with pivot `[256,470]`, and promoted the
+  accepted source into live v2 `idle` / `walk` / `move` SpriteFrames at
+  `assets/sprites/characters/guitarist_spriteframes.tres`. The pass derives
+  5-frame loops, writes runtime PNGs under
+  `assets/sprites/characters/full_frame/guitarist/`, backs up previous live
+  frames under `docs/design/backups/scrum429_guitarist_v2_pre_anim/`, and adds
+  contact/GIF/manifest QA artifacts under `build/qa/scrum429_guitarist_v2_anim/`.
+  Attack frames remain intentionally absent for this v2 row; animation and
+  runtime smoke pass.
 - Dark Mage v2 Design-source handoff (SCRUM-424): generated the bright+epic
   unarmed Dark Mage source, alpha-cleaned the checker matte, normalized a
   `512x512` source cell with pivot `[256,470]`, and added source-sheet handoff,
@@ -58,6 +279,44 @@
   `build/qa/scrum422_character_v2_anchor/`.
 
 ### Fixed
+- Paid random-event choices (SCRUM-454): `cost_money` options now display the
+  stage-scaled gold cost, disable unaffordable choices with an explanatory
+  tooltip, and the Back-end `_apply_event_choice()` path refuses direct
+  unaffordable activation without mutating the run snapshot or advancing the
+  route. Runtime smoke now covers the `goblin_lottery` insufficient-gold case.
+- Runtime asset size cleanup (SCRUM-418): removed confirmed unused/superseded
+  assets from shipping `assets/`, including the legacy main-menu background,
+  duplicate UI screen backdrop copies, historical contextual/leather-gold frame
+  kits and unreferenced dark modal/menu frames. Canonical UI backdrops now remain
+  the only runtime screen background contract, backups/checksums live under
+  `build/qa/scrum418/`, `assets/` dropped from 393M to 368M, and a local macOS
+  export check now lands at 286M after source-only export excludes.
+- Duplicate ` 2` artifact cleanup (SCRUM-440): removed verified macOS/Finder
+  duplicate files, generated `.import` sidecars, empty duplicate directories,
+  release-staging app/symlink copies and the stale cleanup backup carrier.
+  Added a permanent duplicate-artifact guard and an early runtime smoke check;
+  repository `find`/`git ls-files` counters are now zero, Godot import has no
+  `hides a global` class collisions, and runtime smoke passes 3/3.
+- Runtime smoke death-flow determinism (SCRUM-444): `_test_death_flow` now
+  neutralizes meta `death_save` before the intentional lethal hit, preserving
+  gameplay behavior while keeping the full runtime smoke deterministic.
+- Hero Select v2 runtime rebuild (SCRUM-436): the reopened live screen now uses
+  the accepted `1536x1024` `hero_select_layout_mockup.png` composition, corrected
+  bad runtime frame slices from the mockup for portrait/dossier/ascension/select/
+  carousel/back, and routes `_show_character_select()` through the
+  `assets/sprites/ui/frames/hero_select_v2/` frame kit. The existing
+  `HeroSelectRadarPanel` / `HeroStatRadar` compass contract is preserved in the
+  mockup `stat_radar` slot, all live labels/portraits/buttons stay inside safe
+  content zones, and QA dumps live under `build/qa/scrum436/`; runtime UI smoke,
+  no-overlap matrix and full runtime smoke pass.
+- Settings v2 runtime rebuild + Mac/HiDPI resolution fix (SCRUM-439/SCRUM-441):
+  live Settings now uses the accepted v2 modal frame and three-slot switcher
+  with preserved screen/audio/controls semantics, rebind flow, debug toggle and
+  Escape/back behavior. Resolution choices now use physical-pixel/scale-aware
+  fitting/clamp, append a macOS native logical option when applicable, enable
+  HiDPI in project settings, and write QA evidence under `build/qa/scrum439/`
+  and `build/qa/scrum441/`; display resolution, UI smoke, no-overlap matrix and
+  full runtime smoke pass.
 - Codex v2 runtime rebuild (SCRUM-438): the live Codex screen now follows the
   accepted v2 layout with left section navigation, center scrollable entry list,
   right detail panel, compact safe-zone back arrow, preserved data sections and
@@ -67,6 +326,24 @@
   Shop choices now use the wide `ui_frame_economy_choice_card_wide*.png`
   runtime frames with source-space safe rect metadata, responsive 360/420/480px
   card targets, compact 1152px fallback and QA dumps under `build/qa/scrum437/`.
+
+## [0.1.6] — 2026-06-17
+
+### Released
+- FantasyDisk 0.1.6: экран выбора героя переделан заново (нативная вёрстка — крупный портрет, читаемое досье, роза характеристик и карусель героев с прокруткой), Тёмный маг и Рыцарь перерисованы в более мультяшном стиле с анимацией движения, починены внутриигровой фидбек и форма настроек, ребаланс классов, оружие вращается вокруг героя без перекрытия, приглушены VFX атак, чистка ассетов и десятки UI-фиксов.
+
+### Changed
+- Выбор героя: полностью новая нативная вёрстка без перегруза — крупный портрет слева, читаемое досье (характеристики, возвышение с описанием усложнений, «Выбрать») по центру, роза характеристик справа, карусель всех героев со стрелками-прокруткой снизу.
+- Персонажи: Тёмный маг и Рыцарь перерисованы заметно мультяшнее (тот же мотив) и анимированы в движении; перерисовка остальных классов — в работе.
+- Оружие вращается вокруг персонажа и не перекрывает его; интенсивность VFX атак снижена (не «вырвиглазно»).
+
+### Fixed
+- Внутриигровой фидбек (P): отправка больше не падает на крупных скриншотах (лимит Discord), форма помещается на любом разрешении с прокруткой.
+- Настройки: заголовок «Настройки» больше не сталкивается с переключателем вкладок.
+- Докача характеристик: кнопки «Обновить»/«Пропустить» больше не уезжают за нижний край на 720p.
+
+### Balance
+- Сводная таблица урона классов (1/5/20 целей × без прокачки / lvl20-оптимум / lvl20-случайно) и ребаланс на выравнивание классов по эффективности.
 
 ## [0.1.5] — 2026-06-15
 

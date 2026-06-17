@@ -133,11 +133,11 @@ func _initialize() -> void:
 	if scrum451_file != null:
 		scrum451_file.store_string("\n".join(dump_lines))
 		scrum451_file.close()
-	DirAccess.make_dir_recursive_absolute("%s/scrum446_hero_select_v3" % qa_dir)
-	var scrum446_file := FileAccess.open("%s/scrum446_hero_select_v3/hero_select_v3_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
-	if scrum446_file != null:
-		scrum446_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["hero_select"])))
-		scrum446_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum470_hero_select_v4" % qa_dir)
+	var scrum470_file := FileAccess.open("%s/scrum470_hero_select_v4/hero_select_v4_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum470_file != null:
+		scrum470_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["hero_select"])))
+		scrum470_file.close()
 
 	if not errors.is_empty():
 		for error in errors:

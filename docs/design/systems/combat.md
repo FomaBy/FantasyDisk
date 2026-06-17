@@ -38,6 +38,8 @@
 - Все оружия атакуют автоматически по cooldown.
 - Targeting для оружия игрока: ближайший живой враг в `attack_range`, затем ближайший враг на арене, затем последнее направление атаки. Направление движения не перетирает направление атаки.
 - Анимация, VFX и фактический урон используют одно направление.
+- Held-weapon visual placement (SCRUM-455): `Player/VisualRoot/WeaponSocket` is a runtime orbit anchor, not a body-center/hand overlap point. It sits on a 104px orbit toward the active aim/attack direction and renders behind the hero body (`z_index=-8`, attached weapon/root visual normalized to relative `z_index=0`) so weapon art reads as circling/held around the character without covering the playable sprite. Damage, cooldowns, hit shapes and targeting stay data-driven and unchanged.
+- Attack VFX calmness (SCRUM-457): shared `AttackVfx` helpers apply `_calmed_color()` to additive flashes/signatures/beams/slashes, cap alpha, slightly narrow beam visuals, slow projectile/skull trail ghosting, and reduce dust/note particle counts. This is visual-only: the same damage radii, hit corridors, cooldowns, timings, targeting and VFX center positions remain authoritative.
 
 ## Damage And Feedback
 

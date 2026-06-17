@@ -2501,7 +2501,7 @@
  "design_hero_select_v4_rebuild_clean_readable_task.md": {
   "key": "SCRUM-470",
   "status": "В работе",
-  "desc_hash": "435359570a76b3c9ac1d5668b25b497f"
+  "desc_hash": "a8994e69896bfdfccb25c9ef922a2636"
  },
  "bug_settings_attribute_shop_overflow_overlap_1152x648_task.md": {
   "key": "SCRUM-471",
@@ -2515,7 +2515,7 @@
  },
  "animation_cartoon2_dark_mage_knight_real_frames_task.md": {
   "key": "SCRUM-473",
-  "status": "К выполнению",
-  "desc_hash": "d4e15555804610e6f55907eba30b0c6d"
+  "status": "Контроль качества",
+  "desc_hash": "5752e6ef2fed99bb8df36ed3f8099f6e"
  }
 }

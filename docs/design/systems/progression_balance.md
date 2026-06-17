@@ -1,6 +1,6 @@
 # Progression And Balance
 
-Обновлено: 2026-06-14 (0.1.5)
+Обновлено: 2026-06-17 (0.1.6)
 
 Source of truth для чисел: `scripts/progression_data.gd` (фасад) + доменные файлы данных `scripts/progression_data_characters.gd`, `progression_data_weapons.gd`, `progression_data_content.gd`, `progression_data_shop.gd`, `progression_data_ascension.gd`, `progression_data_enemies.gd` (доменный сплит SCRUM-198 — фасад реэкспортит их как const, публичный API сохранён), `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -125,6 +125,23 @@ UI обязан показывать эти интерпретации текс�
 ## Balance Validation
 
 - Формульный харнесс: `tools/balance_harness.gd` → `build/balance_report.md` (бюджеты классов `CLASS_BUDGET_PROFILES`).
+- Сводная таблица урона классов SCRUM-453:
+  `tools/class_damage_table_3variants.gd` → `docs/design/reports/class_damage_table_3variants.md`
+  и `build/qa/scrum453/class_damage_table_3variants.csv`. Таблица покрывает
+  live roster `ProgressionData.character_ids()` (17 классов / 51 оружие) по
+  сценариям 1 цель, 5 целей рядом, 20 целей вокруг и трём вариантам прокачки:
+  base lvl1, lvl20 optimum (greedy +19 base-stat points по class kit score) и
+  lvl20 random avg (64 seeded samples, seed `45320260617`). После SCRUM-469
+  таблица является контрольным гейтом для lvl20 optimum: все 17 классов должны
+  держать `relative_score` в коридоре `0.90..1.10`. Аудит использует реальные
+  `ProgressionData.weapon()`,
+  `estimate_weapon_budget_for_stats()` и `estimate_crowd_clear_budget_for_stats()`
+  с live balance values.
+- SCRUM-469 нормализует рост optimum-прокачки через
+  `CLASS_LEVEL_STAT_GROWTH_SCALARS`: class/stat-specific скаляры применяются
+  только к очкам выше базовых статов класса перед расчётом derived-параметров.
+  Base lvl1 не меняется, а три оружия класса сохраняют свои разные
+  `budget_tuning`, геометрию, target-pattern и темп.
 - Живой DPS/TTK: `tools/live_combat_harness.gd` + гейт `tests/live_balance_simulation_test.gd`.
 - Выживаемость профилей: `tools/survivability_harness.gd` + гейт `tests/survivability_scenario_test.gd`.
 - Применение бюджет-тюнинга на рантайме: `tests/weapon_tuning_application_test.gd`. Экономика/XP маршрута: `tools/route_economy_xp_model.gd`.
@@ -133,4 +150,9 @@ UI обязан показывать эти интерпретации текс�
 ## Known Balance Risks
 
 - Точный паритет clear speed Темного мага/Гитариста с Берсерком требует ручного плейтеста.
+- SCRUM-469 закрыл SCRUM-453 optimum-выбросы: актуальный `Lvl20 optimum`
+  `relative_score` держится в диапазоне `0.938..1.097`, Base lvl1 — в
+  `0.982..1.010`, Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные
+  различия остаются предметом ручного feel/playtest, а не блокером формульного
+  баланса.
 - Performance/code review считает текущие числа пригодными для demo, но баланс должен продолжать уточняться после игровых прогонов.
