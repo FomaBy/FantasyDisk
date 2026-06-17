@@ -2406,7 +2406,7 @@
  "design_ui_minimalist_restyle_keep_red_buttons_task.md": {
   "key": "SCRUM-448",
   "status": "Готово",
-  "desc_hash": "19dc9d19d5822c06a818c14e0617d958"
+  "desc_hash": "fbd17738b3b0b29c6e1c5a9374647f0d"
  },
  "backend_ui_minimalist_restyle_keep_red_buttons_integration_task.md": {
   "key": "SCRUM-449",
@@ -2416,16 +2416,46 @@
  "design_ui_minimal_buttons_from_references_task.md": {
   "key": "SCRUM-450",
   "status": "К выполнению",
-  "desc_hash": "4340678977783e4269eee7e4a7967e0a"
+  "desc_hash": "d943420431ae17067e4b3037517a0cc7"
  },
  "design_ui_minimal_frames_rollout_task.md": {
   "key": "SCRUM-451",
   "status": "К выполнению",
-  "desc_hash": "b3004110b179872a658336bfaf18b1ca"
+  "desc_hash": "13a99ca32e14032f1acd8a0b424a3b9e"
  },
  "design_ui_minimal_metal_anchor_task.md": {
   "key": "SCRUM-452",
+  "status": "В работе",
+  "desc_hash": "8f66027ba7d8c77842f623129c741b5f"
+ },
+ "backend_class_balance_damage_table_3variants_task.md": {
+  "key": "SCRUM-453",
   "status": "К выполнению",
-  "desc_hash": "3e568ff20cacbae86a98cd574300bd42"
+  "desc_hash": "0b7382dfcebc8039aa90eac9f063405f"
+ },
+ "backend_full_code_review_fix_backend_task.md": {
+  "key": "SCRUM-454",
+  "status": "К выполнению",
+  "desc_hash": "e137f418bcf9956eeacd5174cd8de427"
+ },
+ "backend_weapon_orbit_around_character_no_overlap_task.md": {
+  "key": "SCRUM-455",
+  "status": "К выполнению",
+  "desc_hash": "b77b2ad3103e8984948f5400120e4c70"
+ },
+ "design_chars_cartoon_anime_restyle_anchor_task.md": {
+  "key": "SCRUM-456",
+  "status": "К выполнению",
+  "desc_hash": "138ae7fe33e76146ed4fbd86d1c0d0e1"
+ },
+ "design_reduce_weapon_attack_vfx_intensity_task.md": {
+  "key": "SCRUM-457",
+  "status": "К выполнению",
+  "desc_hash": "9277b750ecc697a6d8888620decb6f3d"
+ },
+ "qa_design_review_all_pages_create_bugs_task.md": {
+  "key": "SCRUM-458",
+  "status": "К выполнению",
+  "desc_hash": "7aa54f9cb931c17e17113c61f2cae09a"
  }
 }
