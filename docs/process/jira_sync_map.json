@@ -2396,7 +2396,7 @@
  "design_hero_select_v3_mockup_zones_frames_pipeline_task.md": {
   "key": "SCRUM-446",
   "status": "Готово",
-  "desc_hash": "f9cf52b1902c7c66e69d23ea530c28bb"
+  "desc_hash": "c951e552686450d3693e4ff2d23748be"
  },
  "backend_hero_select_v3_runtime_from_mockup_task.md": {
   "key": "SCRUM-447",
@@ -2405,12 +2405,27 @@
  },
  "design_ui_minimalist_restyle_keep_red_buttons_task.md": {
   "key": "SCRUM-448",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "19dc9d19d5822c06a818c14e0617d958"
  },
  "backend_ui_minimalist_restyle_keep_red_buttons_integration_task.md": {
   "key": "SCRUM-449",
   "status": "Контроль качества",
   "desc_hash": "3daab65ff31950fb162af78cc25a21b1"
+ },
+ "design_ui_minimal_buttons_from_references_task.md": {
+  "key": "SCRUM-450",
+  "status": "К выполнению",
+  "desc_hash": "4340678977783e4269eee7e4a7967e0a"
+ },
+ "design_ui_minimal_frames_rollout_task.md": {
+  "key": "SCRUM-451",
+  "status": "К выполнению",
+  "desc_hash": "b3004110b179872a658336bfaf18b1ca"
+ },
+ "design_ui_minimal_metal_anchor_task.md": {
+  "key": "SCRUM-452",
+  "status": "К выполнению",
+  "desc_hash": "3e568ff20cacbae86a98cd574300bd42"
  }
 }
