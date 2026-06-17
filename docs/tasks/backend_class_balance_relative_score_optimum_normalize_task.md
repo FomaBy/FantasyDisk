@@ -1,6 +1,6 @@
 # BALANCE: Нормализовать relative_score при lvl20-оптимуме к ≈1 для всех классов
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (баланс)
 Исполнитель: Codex (скилл fantasydisk-class-balance-director)
@@ -8,6 +8,7 @@
 Создано: 2026-06-17
 Автор: PM (запрос пользователя)
 Jira: SCRUM-469
+QA: in_progress (2026-06-17)
 
 ## Dispatch
 2026-06-17T14:12Z — Documentation dispatcher routed this Sprint 0.1.6 Back-end/balance task to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`. Keep reasoning High/no low. Use `fantasydisk-class-balance-director`; do not touch Design/Animator scope.
@@ -64,12 +65,12 @@ Jira: SCRUM-469
   `relative_score` тира «Lvl20 optimum».
 
 ## Acceptance Criteria
-- [ ] Перегенерён `docs/design/reports/class_damage_table_3variants.md` (+ CSV).
-- [ ] Все 17 классов: «Lvl20 optimum» `relative_score` ∈ **[0.90, 1.10]**; нет флагов HIGH/LOW при оптимуме.
-- [ ] Тир «Base lvl1» остаётся в коридоре (не разбалансирован правками).
-- [ ] Тир «Lvl20 random avg» не уехал в крайности (разумные значения).
-- [ ] Три оружия каждого класса сохраняют различающиеся gameplay/нишу.
-- [ ] `runtime_smoke_test` + meta/melee/vfx смоуки зелёные; CHANGELOG + `progression_balance.md` обновлены.
+- [x] Перегенерён `docs/design/reports/class_damage_table_3variants.md` (+ CSV).
+- [x] Все 17 классов: «Lvl20 optimum» `relative_score` ∈ **[0.90, 1.10]**; нет флагов HIGH/LOW при оптимуме.
+- [x] Тир «Base lvl1» остаётся в коридоре (не разбалансирован правками).
+- [x] Тир «Lvl20 random avg» не уехал в крайности (разумные значения).
+- [x] Три оружия каждого класса сохраняют различающиеся gameplay/нишу.
+- [x] `runtime_smoke_test` + meta/melee/vfx смоуки зелёные; CHANGELOG + `progression_balance.md` обновлены.
 
 ## Files
 - `scripts/progression_data.gd`, `scripts/class_weapon.gd`
@@ -83,3 +84,57 @@ Jira: SCRUM-469
 # затем прочитать колонку relative_score тира «Lvl20 optimum» — все в [0.90,1.10]
 ~/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/runtime_smoke_test.gd
 ```
+
+## Result — 2026-06-17 Back-end
+
+Implemented SCRUM-469 through class/stat-specific growth scalars in
+`CLASS_LEVEL_STAT_GROWTH_SCALARS`. The scalars apply only to stat points above a
+class' base stats inside `ProgressionData.derived_parameters()`, so Base lvl1
+budget tuning remains stable while lvl20 optimum growth is normalized. No
+weapon geometry, target pattern, cadence, VFX, Design assets, Animator files or
+class kit composition were changed.
+
+Regenerated SCRUM-453 report/CSV:
+- `docs/design/reports/class_damage_table_3variants.md`
+- `build/qa/scrum453/class_damage_table_3variants.csv`
+
+Final `Lvl20 optimum` relative scores:
+`berserk 0.965`, `soldier 1.024`, `thief 1.003`, `elementalist 1.016`,
+`sniper 1.027`, `priest 1.000`, `biologist 1.006`, `robot 0.969`,
+`engineer 0.988`, `dark_mage 1.050`, `guitarist 1.097`,
+`assassin 1.052`, `ranger 0.972`, `doctor 0.938`, `chemist 0.970`,
+`knight 0.938`, `druid 0.959`.
+
+Corridors:
+- `Lvl20 optimum`: `0.938..1.097`, all ok, no HIGH/LOW flags.
+- `Base lvl1`: `0.982..1.010`, all ok.
+- `Lvl20 random avg`: no HIGH/LOW flags; highest observed values remain below
+  the existing `1.15` outlier threshold.
+
+Verification PASS:
+- `tools/class_damage_table_3variants.gd`
+- `tests/class_damage_table_3variants_test.gd`
+- `tools/balance_harness.gd`
+- `tests/global_damage_balance_smoke_test.gd`
+- `tests/weapon_tuning_application_test.gd`
+- `tests/progression_data_api_surface_test.gd`
+- `tests/class_budget_profiles_integrity_test.gd`
+- `tests/meta_progression_smoke_test.gd`
+- `tests/melee_unique_mechanics_test.gd`
+- `tests/attack_vfx_smoke_test.gd`
+- `tests/runtime_smoke_test.gd`
+
+Docs updated: `CHANGELOG.md`, `docs/design/systems/progression_balance.md`,
+`docs/design/current_game_state.md`, `docs/design/mechanics_extract.md`, and
+`docs/process/task_board.md`. Remaining risk: formula corridor is green, but
+feel/playtest may still tune class identity in later tasks.
+
+## QA-Вердикт (2026-06-17)
+Статус: PASSED — relative_score при Lvl20-оптимуме нормализован к ≈1 для всех 17 классов
+
+Проверено (фактически): перегенерил `tools/class_damage_table_3variants.gd` → CSV;
+**все 17 классов Lvl20 optimum relative_score ∈ [0.90,1.10]** (фактический диапазон
+0.938..1.097, NONE out-of-corridor); `tests/class_damage_table_3variants_test.gd` PASSED
+(17 классов, 153 build-rows); runtime_smoke зелёный. Base lvl1 коридор стабилен,
+geometry/VFX/kit не менялись (только `CLASS_LEVEL_STAT_GROWTH_SCALARS`).
+Acceptance: [x] все пункты. Статус done → Готово.
