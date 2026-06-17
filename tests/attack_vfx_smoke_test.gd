@@ -42,6 +42,23 @@ func _test_vfx_helpers() -> void:
 	if not found_sprite:
 		push_error("Expected slash VFX to use textured sprites.")
 		quit(1)
+	if _max_additive_alpha(slash_node) > 0.69:
+		push_error("Expected slash VFX additive alpha to stay below the SCRUM-457 calmness cap.")
+		quit(1)
+	var beam_node := nodes[4] as Node2D
+	var beam_sprite := _first_textured_sprite(beam_node, "beam_strip.png")
+	if beam_sprite == null or beam_sprite.scale.y > 0.92:
+		push_error("Expected beam VFX to use the narrower SCRUM-457 visual width.")
+		quit(1)
+	var sound_wave_node := nodes[5] as Node2D
+	if _count_textured_sprites(sound_wave_node, "music_note.png") > 1:
+		push_error("Expected sound wave VFX to limit note clutter.")
+		quit(1)
+	var ring_node := nodes[6] as Node2D
+	if _count_textured_sprites(ring_node, "music_note.png") > 2:
+		push_error("Expected ring pulse VFX to limit note clutter.")
+		quit(1)
+	_write_scrum457_dump(slash_node, beam_sprite, sound_wave_node, ring_node)
 	host.queue_free()
 
 
@@ -83,3 +100,55 @@ func _has_vfx_node(node_name: String) -> bool:
 		if child.name == node_name:
 			return true
 	return false
+
+
+func _max_additive_alpha(node: Node) -> float:
+	var max_alpha := 0.0
+	for child in node.get_children():
+		if child is Sprite2D:
+			var sprite := child as Sprite2D
+			var material := sprite.material as CanvasItemMaterial
+			if material != null and material.blend_mode == CanvasItemMaterial.BLEND_MODE_ADD:
+				max_alpha = maxf(max_alpha, sprite.modulate.a)
+		max_alpha = maxf(max_alpha, _max_additive_alpha(child))
+	return max_alpha
+
+
+func _first_textured_sprite(node: Node, texture_suffix: String) -> Sprite2D:
+	for child in node.get_children():
+		if child is Sprite2D:
+			var sprite := child as Sprite2D
+			if sprite.texture != null and sprite.texture.resource_path.ends_with(texture_suffix):
+				return sprite
+		var nested := _first_textured_sprite(child, texture_suffix)
+		if nested != null:
+			return nested
+	return null
+
+
+func _count_textured_sprites(node: Node, texture_suffix: String) -> int:
+	var count := 0
+	for child in node.get_children():
+		if child is Sprite2D:
+			var sprite := child as Sprite2D
+			if sprite.texture != null and sprite.texture.resource_path.ends_with(texture_suffix):
+				count += 1
+		count += _count_textured_sprites(child, texture_suffix)
+	return count
+
+
+func _write_scrum457_dump(slash_node: Node2D, beam_sprite: Sprite2D, sound_wave_node: Node2D, ring_node: Node2D) -> void:
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum457")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var lines := PackedStringArray()
+	lines.append("# SCRUM-457 Attack VFX Calmness Dump")
+	lines.append("")
+	lines.append("- `SlashMaxAdditiveAlpha`: `%.3f`" % _max_additive_alpha(slash_node))
+	lines.append("- `BeamVisualScaleY`: `%.3f`" % (beam_sprite.scale.y if beam_sprite != null else 0.0))
+	lines.append("- `SoundWaveNoteSprites`: `%d`" % _count_textured_sprites(sound_wave_node, "music_note.png"))
+	lines.append("- `RingPulseNoteSprites`: `%d`" % _count_textured_sprites(ring_node, "music_note.png"))
+	lines.append("- `Policy`: additive VFX color is desaturated/dimmed globally in `AttackVfx._calmed_color`; damage radii and hit queries are unchanged.")
+	var file := FileAccess.open("%s/attack_vfx_calmness_dump.md" % qa_dir, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(lines))
+		file.close()

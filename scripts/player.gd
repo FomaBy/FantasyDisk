@@ -33,6 +33,9 @@ const PLAYER_COMBAT_VISUAL_SCALE := 0.5
 const BASE_SPRITE_SCALE := Vector2(PLAYER_COMBAT_VISUAL_SCALE, PLAYER_COMBAT_VISUAL_SCALE)
 # Анимация атаки персонажей отключена по запросу пользователя (2026-06-15).
 const USE_ATTACK_ANIMATION := false
+const WEAPON_ORBIT_RADIUS := 104.0
+const WEAPON_ORBIT_VERTICAL_BIAS := -8.0
+const WEAPON_ORBIT_Z_INDEX := -8
 const DEBUG_MOVE_ARRIVAL_DISTANCE := 10.0
 
 const CHARACTER_CONFIGS := {
@@ -250,6 +253,7 @@ func _attach_weapon_scene(weapon_scene: PackedScene, config: Dictionary) -> void
 	weapon.add_to_group("player_weapons")
 	socket.add_child(weapon)
 	equipped_weapon = weapon
+	_configure_attached_weapon_layer(weapon)
 	if weapon.has_method("configure_weapon") and not config.is_empty():
 		weapon.configure_weapon(config)
 	_apply_weapon_scaling(weapon)
@@ -285,9 +289,11 @@ func _clear_detached_weapon_effects() -> void:
 func _weapon_socket() -> Node2D:
 	var socket := get_node_or_null("VisualRoot/WeaponSocket") as Node2D
 	if socket != null:
+		_configure_weapon_socket_layer(socket)
 		return socket
 	socket = get_node_or_null("WeaponSocket") as Node2D
 	if socket != null:
+		_configure_weapon_socket_layer(socket)
 		return socket
 	var visual_root := _visual_root()
 	if visual_root == null:
@@ -297,7 +303,25 @@ func _weapon_socket() -> Node2D:
 	socket = Node2D.new()
 	socket.name = "WeaponSocket"
 	visual_root.add_child(socket)
+	_configure_weapon_socket_layer(socket)
 	return socket
+
+
+func _configure_weapon_socket_layer(socket: Node2D) -> void:
+	socket.z_as_relative = true
+	socket.z_index = WEAPON_ORBIT_Z_INDEX
+	socket.set_meta("weapon_orbit_radius", WEAPON_ORBIT_RADIUS)
+
+
+func _configure_attached_weapon_layer(weapon: Node) -> void:
+	var weapon_canvas := weapon as CanvasItem
+	if weapon_canvas != null:
+		weapon_canvas.z_as_relative = true
+		weapon_canvas.z_index = 0
+	var visual := weapon.get_node_or_null("WeaponVisual") as CanvasItem
+	if visual != null:
+		visual.z_as_relative = true
+		visual.z_index = 0
 
 
 func _physics_process(_delta: float) -> void:
@@ -1488,14 +1512,30 @@ func _apply_sprite_transform() -> void:
 
 	var weapon_socket := _weapon_socket()
 	if weapon_socket != null:
-		var rig := _cutout_rig()
-		if rig != null and rig.has_method("weapon_socket_position"):
-			weapon_socket.position = rig.weapon_socket_position()
-			weapon_socket.rotation = rig.weapon_socket_rotation()
-		else:
-			weapon_socket.position = Vector2.ZERO
-			weapon_socket.rotation = 0.0
+		var orbit_direction := _weapon_orbit_direction()
+		weapon_socket.position = _weapon_orbit_position(orbit_direction)
+		weapon_socket.rotation = orbit_direction.angle()
 		weapon_socket.scale = Vector2.ONE
+		_configure_weapon_socket_layer(weapon_socket)
+		weapon_socket.set_meta("weapon_orbit_direction", orbit_direction)
+
+
+func _weapon_orbit_direction() -> Vector2:
+	var direction := _facing_direction
+	if equipped_weapon != null and is_instance_valid(equipped_weapon):
+		var weapon_direction = equipped_weapon.get("_last_direction")
+		if weapon_direction is Vector2 and (weapon_direction as Vector2).length_squared() > 0.001:
+			direction = weapon_direction
+	if direction.length_squared() <= 0.001:
+		direction = Vector2.RIGHT
+	return attack_aim_direction(direction, float(weapon_config.get("attack_range", 999999.0)))
+
+
+func _weapon_orbit_position(direction: Vector2) -> Vector2:
+	var normalized := direction.normalized()
+	if normalized.length_squared() <= 0.001:
+		normalized = Vector2.RIGHT
+	return normalized * WEAPON_ORBIT_RADIUS + Vector2(0.0, WEAPON_ORBIT_VERTICAL_BIAS)
 
 
 func _play_hit_feedback() -> void:

@@ -27,6 +27,12 @@ const RING_RADIUS := 104.0
 # sound_wave.png arc center at x=26.
 const WAVE_ORIGIN_X := 26.0
 const WEAPON_SIGNATURE_PATH := "res://assets/sprites/effects/vfx_weapon_%s.png"
+const INTENSITY_RGB_MULT := 0.88
+const INTENSITY_SATURATION := 0.78
+const INTENSITY_ALPHA_MULT := 0.62
+const MAX_ATTACK_VFX_ALPHA := 0.68
+const BEAM_VISUAL_WIDTH_MULT := 1.15
+const PARTICLE_DENSITY_MULT := 0.7
 
 
 static func _additive_sprite(texture: Texture2D, color: Color) -> Sprite2D:
@@ -35,8 +41,18 @@ static func _additive_sprite(texture: Texture2D, color: Color) -> Sprite2D:
 	var material := CanvasItemMaterial.new()
 	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	sprite.material = material
-	sprite.modulate = color
+	sprite.modulate = _calmed_color(color)
 	return sprite
+
+
+static func _calmed_color(color: Color, alpha_multiplier := 1.0) -> Color:
+	var gray := (color.r + color.g + color.b) / 3.0
+	return Color(
+		lerpf(gray, color.r, INTENSITY_SATURATION) * INTENSITY_RGB_MULT,
+		lerpf(gray, color.g, INTENSITY_SATURATION) * INTENSITY_RGB_MULT,
+		lerpf(gray, color.b, INTENSITY_SATURATION) * INTENSITY_RGB_MULT,
+		minf(color.a * INTENSITY_ALPHA_MULT * alpha_multiplier, MAX_ATTACK_VFX_ALPHA)
+	)
 
 
 static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String, radius: float, color: Color, rotation := 0.0) -> Node2D:
@@ -56,7 +72,7 @@ static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String
 
 	var shadow := Sprite2D.new()
 	shadow.texture = texture
-	shadow.modulate = Color(0.02, 0.015, 0.012, 0.34)
+	shadow.modulate = Color(0.02, 0.015, 0.012, 0.24)
 	shadow.scale = Vector2.ONE * 0.90
 	shadow.z_index = -1
 	holder.add_child(shadow)
@@ -64,17 +80,17 @@ static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String
 	var sprite := _additive_sprite(texture, Color(color.r, color.g, color.b, 0.72))
 	holder.add_child(sprite)
 
-	var rim := _additive_sprite(texture, Color(1.0, 0.88, 0.58, 0.18))
-	rim.scale = Vector2.ONE * 1.04
+	var rim := _additive_sprite(texture, Color(0.92, 0.78, 0.54, 0.14))
+	rim.scale = Vector2.ONE * 1.02
 	rim.z_index = 1
 	holder.add_child(rim)
 
 	var base_scale := maxf(radius, 70.0) / 176.0
-	holder.scale = Vector2.ONE * clampf(base_scale, 0.42, 1.85)
+	holder.scale = Vector2.ONE * clampf(base_scale, 0.38, 1.55)
 
 	var tween := holder.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(holder, "scale", holder.scale * 1.18, 0.24).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(holder, "scale", holder.scale * 1.10, 0.24).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.22).set_delay(0.08)
 	tween.tween_property(rim, "modulate:a", 0.0, 0.18).set_delay(0.06)
 	tween.tween_property(shadow, "modulate:a", 0.0, 0.18).set_delay(0.10)
@@ -92,16 +108,16 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 	var body := Sprite2D.new()
 	body.texture = SLASH_TEXTURE
 	body.position = Vector2(SLASH_TEXTURE.get_width() * 0.5 - SLASH_ORIGIN_X, 0.0)
-	body.modulate = Color(color.r * 0.45, color.g * 0.45, color.b * 0.65, 0.5)
+	body.modulate = _calmed_color(Color(color.r * 0.45, color.g * 0.45, color.b * 0.65, 0.44))
 	body.z_index = -1
 	holder.add_child(body)
 
-	var tint := Color(color.r, color.g, color.b, 0.95)
+	var tint := Color(color.r, color.g, color.b, 0.82)
 	var sprite := _additive_sprite(SLASH_TEXTURE, tint)
 	sprite.position = body.position
 	holder.add_child(sprite)
 
-	var ghost := _additive_sprite(SLASH_TEXTURE, Color(color.r, color.g, color.b, 0.40))
+	var ghost := _additive_sprite(SLASH_TEXTURE, Color(color.r, color.g, color.b, 0.28))
 	ghost.position = sprite.position
 	ghost.scale = Vector2(0.92, 1.06)
 	holder.add_child(ghost)
@@ -141,7 +157,7 @@ static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: 
 	holder.add_child(ring)
 
 	var rng := RandomNumberGenerator.new()
-	var dust_count := 8
+	var dust_count := maxi(4, int(round(8.0 * PARTICLE_DENSITY_MULT)))
 	for index in range(dust_count):
 		var dust := Sprite2D.new()
 		dust.texture = DUST_TEXTURES[index % DUST_TEXTURES.size()]
@@ -152,7 +168,7 @@ static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: 
 		dust.flip_h = rng.randf() < 0.5
 		var dust_scale := (radius / 150.0) * rng.randf_range(0.45, 0.65)
 		dust.scale = Vector2.ONE * dust_scale
-		dust.modulate = Color(1.0, 1.0, 1.0, 0.85)
+		dust.modulate = Color(0.88, 0.86, 0.82, 0.58)
 		holder.add_child(dust)
 
 		var dust_tween := dust.create_tween()
@@ -160,7 +176,7 @@ static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: 
 		var travel := Vector2.RIGHT.rotated(angle) * radius * rng.randf_range(0.35, 0.50)
 		var life := rng.randf_range(0.36, 0.50)
 		dust_tween.tween_property(dust, "position", start_offset + travel, life).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		dust_tween.tween_property(dust, "scale", Vector2.ONE * dust_scale * 1.45, life).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		dust_tween.tween_property(dust, "scale", Vector2.ONE * dust_scale * 1.22, life).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		dust_tween.tween_property(dust, "modulate:a", 0.0, life * 0.7).set_delay(life * 0.3)
 		dust_tween.tween_property(dust, "rotation", dust.rotation + rng.randf_range(-0.6, 0.6), life)
 
@@ -199,7 +215,7 @@ static func orb_projectile(scene: Node, start: Vector2, color: Color) -> Node2D:
 
 	var trail := holder.create_tween()
 	trail.set_loops()
-	trail.tween_interval(0.035)
+	trail.tween_interval(0.055)
 	var holder_id := holder.get_instance_id()
 	trail.tween_callback(func() -> void:
 		var current_holder := instance_from_id(holder_id) as Node2D
@@ -207,7 +223,7 @@ static func orb_projectile(scene: Node, start: Vector2, color: Color) -> Node2D:
 			return
 		var ghost := Sprite2D.new()
 		ghost.texture = ORB_TEXTURE
-		ghost.modulate = Color(color.r, color.g, color.b, 0.42)
+		ghost.modulate = _calmed_color(Color(color.r, color.g, color.b, 0.34))
 		ghost.scale = Vector2.ONE * 0.72
 		ghost.z_index = 10
 		current_holder.get_parent().add_child(ghost)
@@ -228,11 +244,11 @@ static func orb_burst(scene: Node, global_pos: Vector2, radius: float, color: Co
 	scene.add_child(holder)
 	holder.global_position = global_pos
 
-	var flash := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 1.0))
+	var flash := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.82))
 	flash.scale = Vector2.ONE * (radius / 110.0)
 	holder.add_child(flash)
 
-	var ring := _additive_sprite(RING_TEXTURE, Color(color.r, color.g, color.b, 0.85))
+	var ring := _additive_sprite(RING_TEXTURE, Color(color.r, color.g, color.b, 0.72))
 	ring.scale = Vector2.ONE * (radius * 0.3 / RING_RADIUS)
 	holder.add_child(ring)
 
@@ -240,7 +256,7 @@ static func orb_burst(scene: Node, global_pos: Vector2, radius: float, color: Co
 	for index in range(5):
 		var wisp := Sprite2D.new()
 		wisp.texture = DUST_TEXTURES[index % DUST_TEXTURES.size()]
-		wisp.modulate = Color(color.r * 0.8, color.g * 0.6, color.b, 0.75)
+		wisp.modulate = _calmed_color(Color(color.r * 0.8, color.g * 0.6, color.b, 0.58))
 		var angle := TAU * float(index) / 5.0 + rng.randf_range(-0.4, 0.4)
 		wisp.position = Vector2.RIGHT.rotated(angle) * radius * 0.3
 		wisp.scale = Vector2.ONE * (radius / 220.0)
@@ -271,16 +287,16 @@ static func beam(scene: Node, start: Vector2, finish: Vector2, width: float, col
 	holder.rotation = delta.angle()
 
 	var length: float = max(delta.length(), 8.0)
-	var sprite := _additive_sprite(BEAM_TEXTURE, Color(color.r, color.g, color.b, 0.95))
+	var sprite := _additive_sprite(BEAM_TEXTURE, Color(color.r, color.g, color.b, 0.78))
 	sprite.position = Vector2(length * 0.5, 0.0)
-	sprite.scale = Vector2(length / 256.0, max(width / 64.0, 0.35) * 1.5)
+	sprite.scale = Vector2(length / 256.0, max(width / 64.0, 0.35) * BEAM_VISUAL_WIDTH_MULT)
 	holder.add_child(sprite)
 
-	var muzzle := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.9))
+	var muzzle := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.65))
 	muzzle.scale = Vector2.ONE * 0.55
 	holder.add_child(muzzle)
 
-	var hit_flash := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.9))
+	var hit_flash := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.65))
 	hit_flash.position = Vector2(length, 0.0)
 	hit_flash.scale = Vector2.ONE * 0.7
 	holder.add_child(hit_flash)
@@ -301,17 +317,17 @@ static func sound_wave_blast(scene: Node, start: Vector2, direction: Vector2, re
 	holder.global_position = start
 	holder.rotation = direction.angle()
 
-	var sprite := _additive_sprite(WAVE_TEXTURE, Color(color.r, color.g, color.b, 0.95))
+	var sprite := _additive_sprite(WAVE_TEXTURE, Color(color.r, color.g, color.b, 0.74))
 	sprite.position = Vector2(WAVE_TEXTURE.get_width() * 0.5 - WAVE_ORIGIN_X, 0.0)
 	holder.add_child(sprite)
 	var wave_scale: float = max(reach, 120.0) / 150.0
 	holder.scale = Vector2.ONE * 0.4
 
 	var rng := RandomNumberGenerator.new()
-	for index in range(2):
+	for index in range(1):
 		var note := Sprite2D.new()
 		note.texture = NOTE_TEXTURE
-		note.modulate = Color(1.0, 1.0, 1.0, 0.95)
+		note.modulate = Color(0.88, 0.86, 0.82, 0.62)
 		note.scale = Vector2.ONE * rng.randf_range(0.5, 0.7)
 		note.position = Vector2(rng.randf_range(40.0, 90.0), rng.randf_range(-36.0, 36.0))
 		note.rotation = rng.randf_range(-0.4, 0.4)
@@ -348,10 +364,11 @@ static func ring_pulse(scene: Node, global_pos: Vector2, radius: float, color: C
 
 	if with_notes:
 		var rng := RandomNumberGenerator.new()
-		for index in range(3):
+		for index in range(2):
 			var note := Sprite2D.new()
 			note.texture = NOTE_TEXTURE
 			note.scale = Vector2.ONE * rng.randf_range(0.45, 0.65)
+			note.modulate = Color(0.88, 0.86, 0.82, 0.62)
 			var angle := TAU * float(index) / 3.0 + rng.randf_range(-0.5, 0.5)
 			note.position = Vector2.RIGHT.rotated(angle) * radius * 0.4
 			holder.add_child(note)
@@ -379,7 +396,7 @@ static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Col
 	scene.add_child(holder)
 	holder.global_position = start
 
-	var glow := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.5))
+	var glow := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.36))
 	glow.scale = Vector2.ONE * 0.6
 	glow.z_index = -1
 	holder.add_child(glow)
@@ -396,7 +413,7 @@ static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Col
 
 	var trail := holder.create_tween()
 	trail.set_loops()
-	trail.tween_interval(0.04)
+	trail.tween_interval(0.06)
 	var holder_id := holder.get_instance_id()
 	var skull_scale := skull.scale
 	trail.tween_callback(func() -> void:
@@ -406,7 +423,7 @@ static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Col
 		var ghost := Sprite2D.new()
 		ghost.texture = SKULL_TEXTURE
 		ghost.scale = skull_scale * 0.85
-		ghost.modulate = Color(color.r, color.g, color.b, 0.40)
+		ghost.modulate = _calmed_color(Color(color.r, color.g, color.b, 0.30))
 		ghost.z_index = 10
 		current_holder.get_parent().add_child(ghost)
 		ghost.global_position = current_holder.global_position
