@@ -1,9 +1,9 @@
 # ART/UX: Минималистичный редизайн ВСЕЙ игры на базе ярких кнопок — фреймы точного размера (без растяжения) — ОПОРНАЯ
 
-Статус: in_progress (dispatched to Design main thread 019eabf1-6d54-7561-8af9-ce25cdf483a9, 2026-06-19 22:04)
+Статус: in_progress (переназначено пользователем на Claude-Designer 2026-06-19)
 Приоритет: high
 Роль: Design (Codex) → Back-end (интеграция) → self-QA
-Исполнитель: Codex (скиллы fantasydisk-ui-director + fantasydisk-asset-generator)
+Исполнитель: Claude-Designer (скиллы fantasydisk-ui-director + fantasydisk-asset-generator)
 Версия: 0.1.6
 Создано: 2026-06-17
 Автор: PM (запрос пользователя)
@@ -90,3 +90,25 @@ use `fantasydisk-ui-director` and `fantasydisk-asset-generator`, define exact
 content zones/safe margins for every frame, and create Back-end/Animator handoffs
 for runtime integration or animation work instead of implementing those scopes in
 the Design thread. Keep reasoning High/no low.
+
+## Прогресс 2026-06-19 (Claude-Designer, фаза 1 — АНКОР)
+ФАЗА 1 ГОТОВА: сгенерён анкор ярких минималистичных кнопок (normal/hover/pressed/disabled)
+скиллом fantasydisk-asset-generator — чистый стиль, яркий ЯНТАРНЫЙ акцент, тонкий кант +
+малые угловые акценты, читаемые состояния (hover-свечение / pressed-затемнение / disabled-серый).
+Превью: `docs/design/previews/ui478_anchor_buttons.png`. Источники:
+`docs/design/references/ui_minimalist_478/`; точные 9-slice-источники 512x160 в
+`assets/sprites/ui/buttons_minimalist/`.
+
+ВАЖНОЕ (методология «точный размер»): gpt-image-2 не делает мелкие точные размеры (мин ~1MP),
+поэтому пер-размерные ассеты = генерим hi-res → даунскейлим/композитим в ТОЧНЫЙ пиксель, ИЛИ
+рендерим процедурно (PIL) под анкор-стиль на каждый размер. Инфраструктура точных размеров
+УЖЕ есть (minimal_metal: 11 размеров 170..560 ×104, пер-вариант текстуры, ui_theme_paths.gd) —
+SCRUM-478 = яркая версия в той же системе (заменить текстуры/добавить тему bright_minimal).
+
+ПЛАН ДАЛЕЕ:
+2. Произвести bright-кнопки на КАЖДЫЙ существующий размер minimal_metal (тот же файл/размер,
+   яркий стиль) — процедурно по анкору или генерацией+даунскейл. Переключить активную тему.
+3. Пер-экранные фреймы/панели/модалки в этом минимал-стиле, точный размер под слот.
+4. SELF-QA: `tests/ui_no_overlap_matrix_test.gd` (УЖЕ покрывает 18 экранов × 5 разрешений:
+   1152/1280/1600/1920/2560, проверка наложений + отчёт build/qa) — гонять после каждого
+   изменения до зелёного; текст ⊆ content-зона, без наложений, без растяжения.
