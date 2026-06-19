@@ -4927,9 +4927,14 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	# На событии докачка недоступна: повторный вход перегенерировал бы выборы события.
 	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, Callable(), false)
 	var event_choices: Array = event_definition.get("choices", _random_event_choices())
+	# Защита от тупика: пустой/битый набор выборов не должен оставлять серый экран без
+	# опций. Подставляем процедурные выборы, чтобы экран всегда был кликабельным.
+	if event_choices.is_empty():
+		event_choices = _random_event_choices()
 	var event_card_size := _economy_choice_display_size(3)
 	var choices := _make_economy_choice_row("EventChoiceRow", event_card_size, 3)
 	box.add_child(choices)
+	var selectable_buttons: Array[Button] = []
 	var index := 0
 	for event_choice in event_choices:
 		var title_text := str(event_choice.get("title", "Выбор"))
@@ -4942,6 +4947,8 @@ func _show_event_screen(route_node: Dictionary) -> void:
 			button.disabled = true
 			button.tooltip_text += "\nНедостаточно золота: нужно %d, есть %d." % [required_money, _run_money()]
 		choices.add_child(button)
+		if not button.disabled:
+			selectable_buttons.append(button)
 		button.pressed.connect(func() -> void:
 			if not _event_choice_is_affordable(event_choice):
 				return
@@ -4956,15 +4963,41 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_set_action_button_size(back_button, 380.0, 54.0)
 	var allow_skip := bool(event_definition.get("allow_skip", false))
-	back_button.disabled = not allow_skip
-	back_button.tooltip_text = "Вернуться на карту без исхода события." if allow_skip else "Это событие требует выбрать исход."
+	# Аварийный выход: если ни один выбор недоступен (например, не хватает золота на все
+	# платные опции), кнопка «Назад» обязана работать, иначе забег застревает навсегда.
+	var no_selectable_choice := selectable_buttons.is_empty()
+	var back_enabled := allow_skip or no_selectable_choice
+	back_button.disabled = not back_enabled
+	if allow_skip:
+		back_button.tooltip_text = "Вернуться на карту без исхода события."
+	elif no_selectable_choice:
+		back_button.tooltip_text = "Нет доступных выборов — вернуться на карту."
+	else:
+		back_button.tooltip_text = "Это событие требует выбрать исход."
 	back_button.pressed.connect(func() -> void:
-		if not allow_skip:
+		if not back_enabled:
 			return
 		game.current_event_definition.clear()
 		game.route._show_battle_map()
 	)
 	box.add_child(back_button)
+
+	# Клавиатура/геймпад: события должны выбираться не только мышью (AC SCRUM-477).
+	# Замыкаем фокус по доступным карточкам стрелками влево/вправо и ставим фокус на
+	# первую выбираемую опцию (иначе при сбое мыши забег невозможно пройти с клавиатуры).
+	var focus_chain: Array[Button] = selectable_buttons.duplicate()
+	if back_enabled:
+		focus_chain.append(back_button)
+	for focus_index in range(focus_chain.size()):
+		var card := focus_chain[focus_index]
+		var prev := focus_chain[(focus_index - 1 + focus_chain.size()) % focus_chain.size()]
+		var next := focus_chain[(focus_index + 1) % focus_chain.size()]
+		card.focus_neighbor_left = prev.get_path()
+		card.focus_neighbor_right = next.get_path()
+		card.focus_neighbor_top = prev.get_path()
+		card.focus_neighbor_bottom = next.get_path()
+	if not focus_chain.is_empty():
+		focus_chain[0].grab_focus()
 
 
 func _show_victory_screen() -> void:
@@ -6309,6 +6342,9 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	dim.name = "LevelUpDim"
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	dim.color = Color(0.01, 0.015, 0.035, 0.0)
+	# ColorRect по умолчанию перехватывает мышь (STOP). Полноэкранная подложка не должна
+	# глотать клики по карточкам — пропускаем ввод насквозь.
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(dim)
 
 	var sparkle_root := Control.new()

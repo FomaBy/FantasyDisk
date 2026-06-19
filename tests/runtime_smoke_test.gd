@@ -1888,6 +1888,34 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		push_error("Expected event screen to include an event background or fallback layer.")
 		quit(1)
 		return
+
+	# SCRUM-477 регресс: экран события не должен быть «серым/некликабельным». Опции обязаны
+	# существовать, иметь хотя бы одну выбираемую (не disabled) карту, быть клавиатурно-
+	# фокусируемыми, и экран должен сразу ставить фокус на опцию — иначе при сбое мыши
+	# (HiDPI/слои/платформа) забег застревает без способа выбрать исход с клавиатуры.
+	var selectable_event_options := 0
+	var option_cursor := 0
+	while true:
+		var probe := route_main.find_child("EventChoiceButton%d" % option_cursor, true, false) as Button
+		if probe == null:
+			break
+		if probe.focus_mode == Control.FOCUS_NONE:
+			push_error("Expected event option %d to be keyboard-focusable." % option_cursor)
+			quit(1)
+			return
+		if not probe.disabled:
+			selectable_event_options += 1
+		option_cursor += 1
+	if selectable_event_options <= 0:
+		push_error("Expected event screen to expose at least one selectable (non-disabled) option.")
+		quit(1)
+		return
+	var event_focus_owner := route_main.get_viewport().gui_get_focus_owner()
+	if event_focus_owner == null or not str(event_focus_owner.name).begins_with("EventChoiceButton"):
+		push_error("Expected event screen to grab keyboard focus on a choice option, got %s." % (str(event_focus_owner.name) if event_focus_owner != null else "<null>"))
+		quit(1)
+		return
+
 	route_main.ui._show_pause_menu()
 	await process_frame
 	if route_main.find_child("RunPauseMenuRoot", true, false) == null:
