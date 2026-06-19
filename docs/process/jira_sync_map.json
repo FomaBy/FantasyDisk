@@ -2530,18 +2530,18 @@
  },
  "balance_event_rewards_worthy_of_risk_task.md": {
   "key": "SCRUM-476",
-  "status": "К выполнению",
-  "desc_hash": "d3a598ba7e3deec3842a8943a1153552"
+  "status": "В работе",
+  "desc_hash": "68ad17439853dc42b19068e458da507a"
  },
  "bug_event_screen_grey_unclickable_task.md": {
   "key": "SCRUM-477",
   "status": "В работе",
-  "desc_hash": "e87a1a3b8c3365964bf5f1a9587e7046"
+  "desc_hash": "a074618085a5f71e7e16b41edd1d1d8e"
  },
  "design_minimalist_full_ui_redesign_exact_size_anchor_task.md": {
   "key": "SCRUM-478",
   "status": "В работе",
-  "desc_hash": "6f6467154faf3206c864013179e64060"
+  "desc_hash": "5e0cc9b9f93c703f8d75dee25d41b4a7"
  },
  "bug_runtime_smoke_hero_select_v4_backbutton_name_task.md": {
   "key": "SCRUM-479",
