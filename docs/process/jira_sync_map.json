@@ -2517,5 +2517,15 @@
   "key": "SCRUM-473",
   "status": "Контроль качества",
   "desc_hash": "5752e6ef2fed99bb8df36ed3f8099f6e"
+ },
+ "animation_skill_skeletal_rework_dark_mage_knight_redraw_task.md": {
+  "key": "SCRUM-474",
+  "status": "К выполнению",
+  "desc_hash": "54c0c57aed02c364aeb22b8d91da009a"
+ },
+ "design_skeleton_friendly_dark_mage_knight_parts_task.md": {
+  "key": "SCRUM-475",
+  "status": "В работе",
+  "desc_hash": "14e97cb103b16491202c312fd5d5a2a2"
  }
 }
