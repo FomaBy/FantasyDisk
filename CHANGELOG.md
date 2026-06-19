@@ -5,6 +5,15 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- Skeleton-source Design handoff for Dark Mage/Knight (SCRUM-475): added
+  transparent separated source packages under
+  `docs/design/references/chars_cartoon/skeleton_parts/{dark_mage,knight}/`
+  with accepted source copies, 19 PNG parts per character, local pivots,
+  manifests, alpha reports, contact sheets and dark-bg previews. Both
+  `skeleton_source_manifest.json` files pass the animation-director validator;
+  this is a Design-source handoff only. SCRUM-474 remains on USER HOLD for
+  runtime rig/timeline work until an explicit newer go-ahead says
+  `делай анимацию`.
 - Cartoon2 Dark Mage/Knight animations (SCRUM-473): live
   `dark_mage_spriteframes.tres` and `knight_spriteframes.tres` now use real
   full-frame `idle` / `walk` / `move` loops from the accepted cartoon2 sprites,
@@ -279,6 +288,16 @@
   `build/qa/scrum422_character_v2_anchor/`.
 
 ### Fixed
+- Event screen grey/unclickable hardening (SCRUM-477): `_show_event_screen()`
+  now keyboard-focuses the first selectable option and wires focus neighbours
+  across the choice cards and Back button, so options are selectable with the
+  keyboard/gamepad even if a mouse click fails to land (HiDPI/layer/platform).
+  Empty/broken choice sets fall back to procedural choices, and when no option
+  is affordable the Back button is force-enabled as an anti-stuck escape so a
+  run can never freeze on an event with no resolvable choice. The full-screen
+  `LevelUpDim` ColorRect no longer swallows clicks (`MOUSE_FILTER_IGNORE`).
+  Runtime smoke now asserts event options exist, at least one is selectable,
+  options are focusable, and the screen grabs keyboard focus on a choice.
 - Paid random-event choices (SCRUM-454): `cost_money` options now display the
   stage-scaled gold cost, disable unaffordable choices with an explanatory
   tooltip, and the Back-end `_apply_event_choice()` path refuses direct
