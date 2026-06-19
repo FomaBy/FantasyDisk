@@ -1,9 +1,9 @@
 # ART/UX: Минималистичный редизайн ВСЕЙ игры на базе ярких кнопок — фреймы точного размера (без растяжения) — ОПОРНАЯ
 
-Статус: in_progress (переназначено пользователем на Claude-Designer 2026-06-19)
+Статус: review (Design-source package ready; runtime integration handed off to Back-end, 2026-06-19)
 Приоритет: high
 Роль: Design (Codex) → Back-end (интеграция) → self-QA
-Исполнитель: Claude-Designer (скиллы fantasydisk-ui-director + fantasydisk-asset-generator)
+Исполнитель: Design main / Codex (скиллы fantasydisk-ui-director + fantasydisk-asset-generator)
 Версия: 0.1.6
 Создано: 2026-06-17
 Автор: PM (запрос пользователя)
@@ -91,6 +91,51 @@ content zones/safe margins for every frame, and create Back-end/Animator handoff
 for runtime integration or animation work instead of implementing those scopes in
 the Design thread. Keep reasoning High/no low.
 
+## Design Result (2026-06-19)
+
+Design-source scope is ready for PM/QA review.
+
+Delivered:
+
+- Bright minimalist button anchor source:
+  `docs/design/references/minimalist_full_ui_redesign/scrum478_bright_minimal_button_anchor_sheet_transparent.png`
+- Exact-size frame family source:
+  `docs/design/references/minimalist_full_ui_redesign/scrum478_exact_size_frame_source_sheet_transparent.png`
+- Full-screen mockup board:
+  `docs/design/references/minimalist_full_ui_redesign/scrum478_full_screen_mockup_board.png`
+- Exact 1280/1600/1920 size and content-zone matrix:
+  `docs/design/references/minimalist_full_ui_redesign/scrum478_minimalist_full_ui_metadata.json`
+- UI-director spec:
+  `docs/design/mockups/scrum478_minimalist_full_ui_redesign/spec.md`
+- Self-QA evidence/plan:
+  `docs/design/references/minimalist_full_ui_redesign/scrum478_self_qa_evidence.md`
+
+Design decisions:
+
+- New direction is bright minimalist dark fantasy: obsidian interiors, thin
+  silver outlines, cyan/magenta button accents and small gold ticks.
+- Existing minimal-metal assets remain live until Back-end integration and QA
+  explicitly promote the new kit.
+- Every family in the matrix defines `texture_margins_ltrb`,
+  `content_margins_ltrb` and `content_rect_xywh`; runtime content must stay
+  inside content rects only.
+
+Self-QA:
+
+- OpenAI source generation completed through `fantasydisk-asset-generator`.
+- Button/frame source sheets were corrected from opaque checkerboard matte to
+  transparent Design-source PNGs.
+- Visual check confirms safe-zone guides are inside empty interiors, not on
+  frame borders or accent ornaments.
+
+Handoff:
+
+- Back-end runtime integration and render/no-overlap/text-overflow verifier:
+  `docs/tasks/backend_minimalist_full_ui_redesign_runtime_handoff_task.md`
+  (Jira: SCRUM-480)
+- No changes were made to `scripts/ui_screens.gd`, runtime theme code,
+  gameplay, balance, animation or tests in this Design thread.
+
 ## Прогресс 2026-06-19 (Claude-Designer, фаза 1 — АНКОР)
 ФАЗА 1 ГОТОВА: сгенерён анкор ярких минималистичных кнопок (normal/hover/pressed/disabled)
 скиллом fantasydisk-asset-generator — чистый стиль, яркий ЯНТАРНЫЙ акцент, тонкий кант +
@@ -112,3 +157,14 @@ SCRUM-478 = яркая версия в той же системе (замени�
 4. SELF-QA: `tests/ui_no_overlap_matrix_test.gd` (УЖЕ покрывает 18 экранов × 5 разрешений:
    1152/1280/1600/1920/2560, проверка наложений + отчёт build/qa) — гонять после каждого
    изменения до зелёного; текст ⊆ content-зона, без наложений, без растяжения.
+
+## Прогресс 2026-06-19 (фаза 2 — кнопки game-wide)
+ФАЗА 2 ГОТОВА: `tools/render_bright_buttons.py` процедурно перерисовал ВСЕ 75 кнопочных
+текстур minimal_metal в ярком янтарном минимал-стиле НА МЕСТАХ — каждая в СВОЁМ точном
+размере (170..560 ×104 и пр.), без растяжения/искажений, без правок кода (пути/размеры те же).
+Состояния по суффиксу (normal/hover-свечение/pressed/disabled/focus). Бэкап оригиналов
+`docs/design/backups/minimal_metal_buttons_pre_bright/`. Превью
+`docs/design/previews/ui478_bright_buttons_applied.png`.
+SELF-QA ЗЕЛЁНЫЙ: ui_no_overlap_matrix (18 экранов × 5 разрешений) + runtime_smoke_ui + runtime.
+ДАЛЕЕ фаза 3: панели/модалки/HUD-фреймы в том же минимал-стиле (точный размер под слот),
+self-QA после каждого экрана.
