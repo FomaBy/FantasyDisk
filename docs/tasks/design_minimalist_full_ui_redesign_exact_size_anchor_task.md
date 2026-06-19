@@ -168,3 +168,12 @@ SCRUM-478 = яркая версия в той же системе (замени�
 SELF-QA ЗЕЛЁНЫЙ: ui_no_overlap_matrix (18 экранов × 5 разрешений) + runtime_smoke_ui + runtime.
 ДАЛЕЕ фаза 3: панели/модалки/HUD-фреймы в том же минимал-стиле (точный размер под слот),
 self-QA после каждого экрана.
+
+## Прогресс 2026-06-19 (фаза 3 — фреймы minimal_metal)
+ФАЗА 3 (ч.1): `tools/render_bright_frames.py` перерисовал 6 фреймов minimal_metal
+(modal/panel/card/tooltip/hud_strip/field) в ярком минимал-стиле НА МЕСТАХ — точный размер,
+9-slice content-margins сохранены (углы/акценты в зоне margin → не искажаются при растяжении
+плоской середины). Бэкап `docs/design/backups/minimal_metal_frames_pre_bright/`. Превью
+`ui478_bright_frames.png`. self-QA: ui_no_overlap_matrix + runtime_smoke_ui зелёные.
+ОСТАЁТСЯ: экраны на ornate/dark_fantasy/unified темах перевести на яркий минимал (пер-экранно),
+финальный self-QA-цикл по всем экранам на всех разрешениях.
