@@ -2515,17 +2515,27 @@
  },
  "animation_cartoon2_dark_mage_knight_real_frames_task.md": {
   "key": "SCRUM-473",
-  "status": "Контроль качества",
-  "desc_hash": "5752e6ef2fed99bb8df36ed3f8099f6e"
+  "status": "Готово",
+  "desc_hash": "27aa922538ccdb4600fe9c0405608b84"
  },
  "animation_skill_skeletal_rework_dark_mage_knight_redraw_task.md": {
   "key": "SCRUM-474",
-  "status": "К выполнению",
-  "desc_hash": "54c0c57aed02c364aeb22b8d91da009a"
+  "status": "В работе",
+  "desc_hash": "cd3f83cd5694f67a297426b0d3086eca"
  },
  "design_skeleton_friendly_dark_mage_knight_parts_task.md": {
   "key": "SCRUM-475",
+  "status": "Контроль качества",
+  "desc_hash": "13ded6df298a74e647e7ee965409518c"
+ },
+ "balance_event_rewards_worthy_of_risk_task.md": {
+  "key": "SCRUM-476",
+  "status": "К выполнению",
+  "desc_hash": "d3a598ba7e3deec3842a8943a1153552"
+ },
+ "bug_event_screen_grey_unclickable_task.md": {
+  "key": "SCRUM-477",
   "status": "В работе",
-  "desc_hash": "14e97cb103b16491202c312fd5d5a2a2"
+  "desc_hash": "e87a1a3b8c3365964bf5f1a9587e7046"
  }
 }
