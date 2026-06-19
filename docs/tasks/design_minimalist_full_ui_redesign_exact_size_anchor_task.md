@@ -185,3 +185,12 @@ _panel_style/_unified_frame_style — настройки/награды/кост
 искажает; тёмная полупрозрачная заливка). GLOBAL_PANEL_FRAME_PATH=minimal_metal panel (уже яркий
 из 3.1). Бэкап `docs/design/backups/unified_frames_pre_bright/`. self-QA: ui_no_overlap_matrix +
 runtime_smoke_ui зелёные. ОСТАЁТСЯ: ornate/dark_fantasy экраны (если ещё используются) + финальный QA.
+
+## Прогресс 2026-06-20 (фаза 3.3-3.4 — все темы фреймов)
+ФАЗА 3 ЗАВЕРШЕНА: перерисованы в яркий минимал ВСЕ темы фреймов на местах (точный размер,
+9-slice углы не искажаются): ornate (13), dark_fantasy (23), hero_select (10), minimal (6) +
+ранее minimal_metal (6) + unified master_fill + 75 кнопок. Бэкапы по каждой теме в
+docs/design/backups/*_pre_bright/. self-QA зелёный: ui_no_overlap_matrix (18×5) + runtime_smoke_ui
++ dark_fantasy_ui_theme. Вся UI-поверхность (кнопки + все фрейм-темы) теперь в едином ярком
+минимал-стиле без растяжения. ОСТАЁТСЯ фаза 4: визуальный прогон ключевых экранов (скрины) +
+финальная сверка текст⊆content / без наложений на 3 разрешениях.
