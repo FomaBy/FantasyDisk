@@ -2520,13 +2520,13 @@
  },
  "animation_skill_skeletal_rework_dark_mage_knight_redraw_task.md": {
   "key": "SCRUM-474",
-  "status": "В работе",
-  "desc_hash": "fb5a0b560acc10741a0079445100c15b"
+  "status": "К выполнению",
+  "desc_hash": "fa81a59f42df8414864263484f024e99"
  },
  "design_skeleton_friendly_dark_mage_knight_parts_task.md": {
   "key": "SCRUM-475",
-  "status": "Контроль качества",
-  "desc_hash": "13ded6df298a74e647e7ee965409518c"
+  "status": "Готово",
+  "desc_hash": "c740e6dd5d8ab266bf257714920d0cb5"
  },
  "balance_event_rewards_worthy_of_risk_task.md": {
   "key": "SCRUM-476",
@@ -2537,5 +2537,15 @@
   "key": "SCRUM-477",
   "status": "В работе",
   "desc_hash": "e87a1a3b8c3365964bf5f1a9587e7046"
+ },
+ "design_minimalist_full_ui_redesign_exact_size_anchor_task.md": {
+  "key": "SCRUM-478",
+  "status": "В работе",
+  "desc_hash": "6f6467154faf3206c864013179e64060"
+ },
+ "bug_runtime_smoke_hero_select_v4_backbutton_name_task.md": {
+  "key": "SCRUM-479",
+  "status": "К выполнению",
+  "desc_hash": "02275493abedd23ef5c72539e6b87081"
  }
 }
