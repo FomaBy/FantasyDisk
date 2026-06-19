@@ -9,6 +9,7 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-473
 Связано: SCRUM-456 (cartoon style), SCRUM-472 (интеграция-проба, legacy-риг)
+QA: in_progress (2026-06-19 21:29)
 
 ## Autonomy / Approval
 Полная автономия. Пользователь одобрил направление.
@@ -97,3 +98,61 @@ Validation:
   `tests/runtime_smoke_test.gd::_assert_hero_select_v3_back_button_safe` with
   `Expected hero select v3 back button to exist`, from active UI work outside
   Animator scope. No UI/gameplay/balance changes were made here.
+
+## QA-Вердикт (2026-06-19 21:35)
+Статус: PASSED
+
+Окружение: ветка dev, HEAD d83f85ac (SCRUM-474/475 — только добавил task-файлы,
+кода/ассетов не трогал → интеграция SCRUM-473 актуальна, не superseded), Godot 4.6.3.
+
+Проверено фактически (по Acceptance Criteria):
+- **AC1 — idle + walk/move настоящими кадрами, ≥5, looping, прозрачные**: PASS.
+  `dark_mage_spriteframes.tres` / `knight_spriteframes.tres` содержат `idle` (5f,
+  loop, speed 7), `move` (5f, loop, speed 9) и `walk` (5f alias на те же кадры,
+  loop, speed 9). Кадры физически существуют в `full_frame/{dark_mage,knight}/`,
+  все PNG `512x512 8-bit RGBA non-interlaced`. md5 всех 10 кадров каждого класса
+  РАЗЛИЧНЫ — нет дублей/статичных кадров. `frame_alpha_stats.json`:
+  `edge_alpha_pixels=0` на всех кадрах (безопасные гуттеры), bbox/visible_height
+  меняется покадрово (реальная секундари-моушн: маг — дыхание робы/орбов 417→423→420,
+  рыцарь — качание плаща/табарда), пивот стабилен bottom-center [256,464].
+- **AC2 — attack нет, масштаб/позиция корректны**: PASS. В обоих .tres нет
+  `attack`/`attack_primary`. Loader `player.gd:1652` строит путь
+  `%s_spriteframes.tres` явно и грузит ТОЛЬКО .tres → осиротевшие на диске
+  `*_attack_primary_*.png` (по 5 на класс) НЕ попадают в игру. animation_smoke
+  ассертит для обоих: idle/walk/move присутствуют, attack/attack_primary
+  отсутствуют, по 5 кадров, все loop=true, Body visible + cutout RigRoot hidden,
+  combat scale SCRUM-417 сохранён.
+- **AC3 — animation_smoke зелёный; runtime смок заблокирован unrelated UI**: PASS.
+  `animation_smoke_test.gd` → `Animation smoke test passed.` (тест не пустышка —
+  явные SCRUM-473-ассерты для dark_mage/knight, строки 304-321). runtime_smoke
+  падает на `_assert_hero_select_v4 back button` — это активная переработка
+  Hero Select v4 (SCRUM-470, статус in_progress на доске), вне зоны SCRUM-473;
+  SCRUM-473 UI не трогал. validate_animation_manifest.py ожидаемо требует
+  `attack_primary` — контрактное расхождение, SCRUM-473 явно `attack_required=false`.
+- **AC4 — тот же мотив, мультяшный стиль**: PASS (глазами, контакт-листы
+  `build/qa/scrum473_*/{dark_mage,knight}_cartoon2_anim_contact.png`): маг —
+  тёмная роба/капюшон + фиолетовые орбы, рыцарь — сине-золотая броня с крестом;
+  стиль мультяшный, мотив прежний.
+
+Регрессия (smoke): animation PASS, meta PASS, sliced_rig_manifest PASS (34 рига/17
+классов), combat_target_query_cache PASS, melee_weapon_targeting PASS.
+runtime_smoke RED — unrelated (SCRUM-470 Hero Select v4 in_progress), НЕ регрессия
+SCRUM-473 (падает на v4 back-button до любой анимационной проверки; dup-artifact
+guard 8817 файлов прошёл).
+
+Краевые случаи:
+1. Осиротевшие `*_attack_primary_*.png` на диске НЕ протекают в игру (loader грузит
+   только .tres; smoke ассертит отсутствие attack-анимаций) — PASS.
+2. Fallback при отсутствии full-frame: `configure_character("missing_full_frame_test")`
+   прячет Body и показывает cutout RigRoot — PASS (покрыто smoke).
+3. Последовательная реконфигурация по всем 17 классам (incl. dark_mage↔knight)
+   через configure_character — каждый класс держит свой .tres, combat scale
+   сохранён — PASS (цикл smoke).
+4. Целостность кадров: 10/10 кадров каждого класса с уникальным md5 — нет
+   статичных/дублей-заглушек — PASS.
+
+Баги: нет.
+
+Примечание (не баг, non-blocking): по 5 неиспользуемых `*_attack_primary_*.png`
+на класс лежат в `full_frame/{dark_mage,knight}/` (артефакт генерации, в .tres не
+ссылаются, в игру не грузятся). Кандидат на уборку в общем cleanup, не дефект.
