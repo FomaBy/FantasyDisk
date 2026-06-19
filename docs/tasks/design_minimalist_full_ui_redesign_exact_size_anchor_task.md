@@ -177,3 +177,11 @@ self-QA после каждого экрана.
 `ui478_bright_frames.png`. self-QA: ui_no_overlap_matrix + runtime_smoke_ui зелёные.
 ОСТАЁТСЯ: экраны на ornate/dark_fantasy/unified темах перевести на яркий минимал (пер-экранно),
 финальный self-QA-цикл по всем экранам на всех разрешениях.
+
+## Прогресс 2026-06-19 (фаза 3.2 — unified-тема)
+ФАЗА 3.2: `ui_frame_unified_master_fill.png` (1024², один файл для ВСЕХ unified-панелей через
+_panel_style/_unified_frame_style — настройки/награды/костёр/победа/смерть/level-up/карточки)
+перерисован в яркий минимал (янтарный кант + угловые акценты в зоне 72px margin → 9-slice не
+искажает; тёмная полупрозрачная заливка). GLOBAL_PANEL_FRAME_PATH=minimal_metal panel (уже яркий
+из 3.1). Бэкап `docs/design/backups/unified_frames_pre_bright/`. self-QA: ui_no_overlap_matrix +
+runtime_smoke_ui зелёные. ОСТАЁТСЯ: ornate/dark_fantasy экраны (если ещё используются) + финальный QA.
