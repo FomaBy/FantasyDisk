@@ -1,6 +1,6 @@
 # ANIM: Переделать animation-скилл на СКЕЛЕТНУЮ анимацию (Skeleton2D/Bone2D) + перерисовать мага и рыцаря под неё
 
-Статус: blocked
+Статус: in_progress (dispatched to Animator thread 019eb156-710c-71f0-8903-eada762dceb3, 2026-06-19 21:38)
 Приоритет: high
 Роль: Animator (Codex)
 Исполнитель: Codex (скилл fantasydisk-animation-director)
@@ -10,8 +10,19 @@
 Jira: SCRUM-474
 Связано: SCRUM-456 (cartoon style-anchor), SCRUM-473 (покадровые кадры мага/рыцаря — РЕДИРЕКТ на скелет), animation-director skill
 
+## ⛔ USER HOLD — АНИМАЦИЮ ПОКА НЕ ДЕЛАТЬ (2026-06-17)
+Пользователь уточнил: «Анимацию пока делать НЕ надо, но надо сделать персонажей
+СОВМЕСТИМЫМИ с этим типом анимации (перерисовать!)».
+Скоуп СЕЙЧАС = только: (1) переделка скилла под Skeleton2D/Bone2D + AnimationPlayer
+пайплайн (нативный Godot-rig: переиспользуемые руки/ноги/оружие/плащи, таймлайны
+anticipation/удар/recovery/VFX-marker/hitbox-marker) и (2) skeleton-friendly
+ПЕРЕРИСОВКА мага/рыцаря (SCRUM-475 — раздельные части, нейтральная поза, пивоты).
+**НЕ собирать idle/walk-анимацию и НЕ подключать рантайм-риг**, пока пользователь
+явно не скажет «делай анимацию». После приёмки перерисовки (475) — ОСТАНОВИТЬСЯ и ждать.
+
 ## Autonomy / Approval
-Полная автономия. Пользователь одобрил направление.
+Полная автономия В РАМКАХ HOLD выше. Пользователь одобрил направление (перерисовка + скилл),
+но анимация — на паузе до явного «go».
 
 ## Контекст (запрос пользователя)
 «Создай тикет на переделку скилла по анимации на анимацию, использующую СКЕЛЕТ
@@ -109,3 +120,21 @@ Jira sync note: attempted `python3 tools/jira_board_sync.py` on 2026-06-19, but
 sync aborted because `/tmp/fantasydisk_jira_sync.lock` is held by an older
 `tools/jira_board_sync.py --no-create` process (PID 44690). Jira mirror remains
 pending until that lock clears.
+
+Follow-up sync note: the lock cleared later on 2026-06-19 and
+`python3 tools/jira_board_sync.py` completed. The Design handoff is mapped as
+SCRUM-475 and is currently in Jira status `В работе`.
+
+Design handoff resolution (2026-06-19): SCRUM-475 is done. Designer 2 delivered
+transparent separated skeleton-source packages for `dark_mage` and `knight`
+under `docs/design/references/chars_cartoon/skeleton_parts/`, including 19 PNG
+parts per character, local pivots, alpha reports, contact sheets, dark-bg
+previews and passing `validate_skeleton_source_manifest.py` results. SCRUM-474
+is unblocked and ready for Animator rig/timeline work; no runtime animation work
+was performed by Design.
+
+Dispatcher routing note (2026-06-19 21:38): SCRUM-474 continuation was sent to
+Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after the SCRUM-475
+Design blocker resolved. Animator should verify the accepted manifests, then
+build the `Skeleton2D`/`Bone2D` + `AnimationPlayer` rigs/timelines only.
+Jira sync completed after the lock cleared; SCRUM-474 is now `В работе`.
