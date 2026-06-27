@@ -115,6 +115,13 @@
   smoke, UI no-overlap matrix and full runtime smoke pass.
 
 ### Changed
+- Berserk hammer live DPS cap (SCRUM-503): reduced only the hammer upgrade
+  runaway by changing `upgrade_aoe_exponent` from `1.8` to `1.25` and
+  `upgrade_damage_exponent` from `1.45` to `1.15`. Base lvl1 hammer stays
+  unchanged, while regenerated `build/character_balance_dps.csv` now reports
+  `berserk/hammer` lvl20 optimum at 2925.81 DPS on 1 target and 61199.86 DPS
+  on 20 targets, down from ~7636 / ~184k. The current class-best 20-target
+  median gate is 74785.73, with max 68574.57.
 - Random event EV rebalance (SCRUM-494 / carry-over SCRUM-476): свёл каждую
   опцию каждого из 12 событий `scripts/event_data.gd` к явной таблице
   risk/cost → reward с EV (см. «Random Events EV» в

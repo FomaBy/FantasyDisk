@@ -200,6 +200,13 @@ event-множители) + `post_combat`.
   только к очкам выше базовых статов класса перед расчётом derived-параметров.
   Base lvl1 не меняется, а три оружия класса сохраняют свои разные
   `budget_tuning`, геометрию, target-pattern и темп.
+- SCRUM-503 срезал live runaway Берсерка с молотом в
+  `tools/character_balance_csv.gd`: стартовый lvl1 молот не менялся, но
+  `upgrade_aoe_exponent` снижен до 1.25, а `upgrade_damage_exponent` до 1.15.
+  Регенерированный `build/character_balance_dps.csv` даёт `berserk/hammer`
+  lvl20 optimum 2925.81 DPS на 1 цели и 61199.86 DPS на 20 целях вместо
+  прежних ~7636 / ~184k; max class-best 20-target DPS теперь 68574.57 при
+  class-best median gate 74785.73.
 - Живой DPS/TTK: `tools/live_combat_harness.gd` + гейт `tests/live_balance_simulation_test.gd`.
 - Выживаемость профилей: `tools/survivability_harness.gd` + гейт `tests/survivability_scenario_test.gd`.
 - Применение бюджет-тюнинга на рантайме: `tests/weapon_tuning_application_test.gd`. Экономика/XP маршрута: `tools/route_economy_xp_model.gd`.
