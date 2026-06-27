@@ -1,7 +1,7 @@
 # SCRUM-503: Срезать runaway-множители Берсерка по живой матрице DPS (hammer-аутлаер 78x)
 
 Jira: SCRUM-503 · Роль: backend (balance) · Контур: codex · Приоритет: P0 · foma · Эпик: —
-Статус: Контроль качества (РЕАЛИЗОВАНО — commit 097531ec: soft-cap забеговых боевых множителей в derived_parameters; berserk/hammer 20t 60451→~14-16k, 1t 2520→~840; формульные гейты зелёные; регресс tests/berserk_dps_runaway_gate.gd. Глобальный max≤2.5x для НЕ-Берсерк аутлаеров (chemist/dark_mage, растут от DoT/projectile) — отдельная ось, вне скоупа P0-Берсерка)
+Статус: К выполнению (QA FAILED 2026-06-27 — Берсерк-specific cap проходит, но literal global live-matrix acceptance не принят: linked bug SCRUM-533 остаётся блокером; см. QA-вердикт ниже)
 
 ## Что и зачем
 
@@ -125,3 +125,20 @@ berserk/hammer 1t = 2520 (медиана 1t ≈ 945, 2.5x ≈ 2363 → моло�
   Генерация матрицы: `... --script res://tools/character_balance_csv.gd`.
 - **Связанные тикеты/системы:** SCRUM-249 (формульный гейт), SCRUM-453/469 (relative_score коридоры), SCRUM-523/524 (изоляция типов урона — НЕ нарушать: cap не должен протекать между типами; он умножает уже-изолированный `damage_multiplier`, общий для всех типов, что инвариант изоляции по атрибутам не задевает), SCRUM-198 (BalanceData split). Частичный фикс — коммит `1e74202b`.
 - **Документация:** при изменении баланса обновить `docs/design/systems/progression_balance.md` (уже трогался в `1e74202b`) и CHANGELOG, как принято в проекте.
+
+## QA-Вердикт (2026-06-27)
+Статус: FAILED
+
+Проверено:
+- `tests/berserk_dps_runaway_gate.gd` — PASS: `berserk/hammer lvl20_ideal 20t=13792 <= 40000`, `1t=922 <= 2363`.
+- `tests/class_damage_table_3variants_test.gd` — PASS: 17 classes / 153 weapon-build rows.
+- `tests/global_damage_balance_smoke_test.gd` — PASS: 51 pairs, combined ±25%, solo ±20%, CCT ±30%.
+- partial fresh `tools/character_balance_csv.gd` foreground run reached `berserk/hammer` and showed the stale checked-in 60k row is gone (`20t=16099.8`, `1t=840.5`), but the full run was terminated by the session cap before completion.
+
+Блокер acceptance:
+- Literal criterion `max(lvl20_ideal_20t) по любому оружию <= 2.5x медианы` is not accepted while linked defect `SCRUM-533` remains live.
+- Context regression gate `tests/pool_dot_runaway_gate.gd` emitted failures on the current dirty dev worktree: `chemist/acid_flask lvl20_ideal_20t=1039203 > 70000`, `chemist/blast_powder=716038 > 70000`.
+- Existing linked bug: `SCRUM-533` (`BUG: SCRUM-503 QA — live DPS cap still fails after Berserk hammer nerf`). No duplicate bug was created.
+
+Ограничение QA:
+- During QA, unrelated production dirty files appeared (`scripts/class_weapon.gd`, `scripts/enemy.gd`, `scripts/status_effects.gd`, `tests/runtime_smoke_test.gd`, `project.godot`, `docs/design/systems/combat.md`, `tests/damage_type_palette_test.gd`). QA stopped further production verification to avoid accepting concurrent dirty work and did not modify production code/assets.

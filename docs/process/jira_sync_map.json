@@ -2570,12 +2570,13 @@
  },
  "SCRUM-536_map_chest_artifact_icon.md": {
   "key": "SCRUM-536",
-  "status": "Контроль качества",
-  "desc_hash": "3bb3d02344a7fcee543ec13498cc5d76"
+  "status": "Готово",
+  "desc_hash": "ea5549ca682e8c4f78858f6702554175"
  },
  "SCRUM-524_damage_attribute_type_isolation.md": {
   "key": "SCRUM-524",
-  "status": "Готово"
+  "status": "Готово",
+  "desc_hash": "a4d1832f581ac500eed9cfac0ed7941e"
  },
  "SCRUM-530_event_option_select_repro_fix.md": {
   "key": "SCRUM-530",
@@ -2584,7 +2585,8 @@
  },
  "SCRUM-526_nerf_defensive_mechanics.md": {
   "key": "SCRUM-526",
-  "status": "Готово"
+  "status": "Готово",
+  "desc_hash": "fdf3345b871ca421535093cc729b2908"
  },
  "SCRUM-517_doctor_drain_regen_softcap.md": {
   "key": "SCRUM-517",
