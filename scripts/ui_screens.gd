@@ -314,6 +314,7 @@ func _show_main_menu() -> void:
 	game._clear_world()
 	game._clear_hud()
 	game._clear_ui()
+	game.current_act = 1
 	game.route_stage = 0
 	game.route_selected_indices.clear()
 	game.used_event_ids.clear()
@@ -634,6 +635,7 @@ func _show_continue_run_dialog() -> void:
 	var character_config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
 	var character_title := str(character_config.get("title", character_id))
 	var route_stage := int(autosave_state.get("route_stage", 0)) + 1
+	var current_act := clampi(int(autosave_state.get("current_act", 1)), 1, game.ACT_COUNT)
 	var snapshot: Dictionary = {}
 	if autosave_state.get("run_player_snapshot", {}) is Dictionary:
 		snapshot = (autosave_state.get("run_player_snapshot", {}) as Dictionary)
@@ -641,7 +643,7 @@ func _show_continue_run_dialog() -> void:
 	var level := int(snapshot.get("level", 1))
 	var subtitle_label := Label.new()
 	subtitle_label.name = "ContinueRunSubtitle"
-	subtitle_label.text = "%s · этап %d · уровень %d · золото %d\nМожно вернуться на карту или начать новый забег." % [character_title, route_stage, level, money]
+	subtitle_label.text = "%s · акт %d/%d · этап %d · уровень %d · золото %d\nМожно вернуться на карту или начать новый забег." % [character_title, current_act, game.ACT_COUNT, route_stage, level, money]
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.add_theme_font_size_override("font_size", 16)
@@ -1038,6 +1040,7 @@ func _build_character_select_v4() -> void:
 func _show_character_select() -> void:
 	game.clear_run_autosave()
 	game.run_player_snapshot.clear()
+	game.current_act = 1
 	game.route_stage = 0
 	game.route_selected_indices.clear()
 	game.used_event_ids.clear()
@@ -1745,11 +1748,13 @@ func _ascension_price(base: int) -> int:
 
 
 func _attribute_buy_cost() -> int:
-	return _ascension_price(game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_BUY_BASE_COST + ATTRIBUTE_BUY_STAGE_COST * game.route_stage, game.route_stage))
+	var scaling_stage: int = game.route_scaling_stage()
+	return _ascension_price(game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_BUY_BASE_COST + ATTRIBUTE_BUY_STAGE_COST * scaling_stage, scaling_stage))
 
 
 func _attribute_reroll_cost() -> int:
-	return _ascension_price(game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_REROLL_BASE_COST + ATTRIBUTE_REROLL_STAGE_COST * game.route_stage, game.route_stage))
+	var scaling_stage: int = game.route_scaling_stage()
+	return _ascension_price(game.PROGRESSION_DATA.stage_scaled_cost(ATTRIBUTE_REROLL_BASE_COST + ATTRIBUTE_REROLL_STAGE_COST * scaling_stage, scaling_stage))
 
 
 func _show_victory_banner(on_continue: Callable) -> void:
@@ -3762,6 +3767,7 @@ func _quit_current_run() -> void:
 	game._clear_all_game_pauses()
 	game.combat_active = false
 	game.boss_combat_active = false
+	game.current_act = 1
 	game.route_stage = 0
 	game.run_player_snapshot.clear()
 	game.route_selected_indices.clear()
@@ -4230,7 +4236,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	rewards_row.add_theme_constant_override("separation", 22)
 	box.add_child(rewards_row)
 
-	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_stage, 3)
+	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_scaling_stage(), 3)
 	var reward_cards: Array[Button] = []
 	for reward in choices:
 		var reward_data: Dictionary = reward
@@ -4491,6 +4497,7 @@ func _resume_combat_after_level_up() -> void:
 
 
 func _current_shop_node_key() -> String:
+	var act := int(game.current_act)
 	var stage := int(game.route_stage)
 	var node_type := str(game.current_node_type)
 	if node_type == "":
@@ -4498,7 +4505,7 @@ func _current_shop_node_key() -> String:
 	var route_choice := str(game.current_route_choice)
 	if route_choice == "":
 		route_choice = "direct"
-	return "%d:%s:%s" % [stage, node_type, route_choice]
+	return "%d:%d:%s:%s" % [act, stage, node_type, route_choice]
 
 
 func _ensure_shop_stock_for_current_node() -> void:
@@ -5161,6 +5168,7 @@ func _show_victory_screen() -> void:
 	var box = _create_menu_box("Победа", subtitle, "victory")
 	_add_result_crest(box, "victory")
 	var finish_run := func() -> void:
+		game.current_act = 1
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
 		game.route_selected_indices.clear()
@@ -5181,10 +5189,11 @@ func _show_death_screen(reason := "") -> void:
 	game.clear_run_autosave()
 	var subtitle := str(reason)
 	if subtitle == "":
-		subtitle = "Забег завершён на этапе маршрута %d." % [game.route_stage + 1]
+		subtitle = "Забег завершён: %s, этап маршрута %d." % [game.act_progress_label(), game.route_stage + 1]
 	var box := _create_menu_box("Поражение", subtitle, "death")
 	_add_result_crest(box, "death")
 	var back_to_menu := func() -> void:
+		game.current_act = 1
 		game.route_stage = 0
 		game.run_player_snapshot.clear()
 		game.route_selected_indices.clear()
@@ -5298,7 +5307,7 @@ func _event_choice_action_text(event_choice: Dictionary) -> String:
 func _event_choice_scaled_cost(event_choice: Dictionary) -> int:
 	if not event_choice.has("cost_money"):
 		return 0
-	return game.PROGRESSION_DATA.stage_scaled_cost(int(event_choice["cost_money"]), game.route_stage)
+	return game.PROGRESSION_DATA.stage_scaled_cost(int(event_choice["cost_money"]), game.route_scaling_stage())
 
 
 func _event_choice_is_affordable(event_choice: Dictionary) -> bool:
@@ -5364,7 +5373,7 @@ func _resolve_event_choice_outcome(event_choice: Dictionary, temp_player: Node) 
 
 func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> bool:
 	if outcome.has("cost_money"):
-		if not temp_player.spend_money(game.PROGRESSION_DATA.stage_scaled_cost(int(outcome["cost_money"]), game.route_stage)):
+		if not temp_player.spend_money(game.PROGRESSION_DATA.stage_scaled_cost(int(outcome["cost_money"]), game.route_scaling_stage())):
 			return false
 	if outcome.has("money"):
 		temp_player.gain_money(int(outcome["money"]))
@@ -5461,7 +5470,8 @@ func _weighted_level_up_index(source: Array) -> int:
 
 
 func _random_shop_items(count: int) -> Array:
-	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(game.route_stage), count)
+	var scaling_stage: int = game.route_scaling_stage()
+	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(scaling_stage), count)
 	var price_mult := float(game.ascension_difficulty()["price_mult"])
 	# Ветвь Богатства мета-древа (SCRUM-150): скидка магазина (shop_price_mult ≤ 0).
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
@@ -5474,7 +5484,7 @@ func _random_shop_items(count: int) -> Array:
 				has_rare = true
 				break
 		if not has_rare:
-			var rares: Array = (game.PROGRESSION_DATA.shop_items(game.route_stage) as Array).filter(
+			var rares: Array = (game.PROGRESSION_DATA.shop_items(scaling_stage) as Array).filter(
 				func(it): return int((it as Dictionary).get("tier", 1)) >= 3)
 			if not rares.is_empty():
 				items[game.rng.randi_range(0, items.size() - 1)] = (rares[game.rng.randi_range(0, rares.size() - 1)] as Dictionary).duplicate(true)
@@ -6369,7 +6379,9 @@ func _feedback_metadata() -> Dictionary:
 		"character": str(game.selected_character_id),
 		"weapon": str(game.selected_weapon_id),
 		"ascension": int(game.selected_ascension_level),
+		"current_act": int(game.current_act),
 		"route_stage": int(game.route_stage),
+		"route_scaling_stage": int(game.route_scaling_stage()),
 		"current_node_type": str(game.current_node_type),
 		"combat_active": bool(game.combat_active),
 		"boss_active": bool(game.boss_combat_active),

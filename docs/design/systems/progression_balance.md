@@ -58,6 +58,19 @@ UI обязан показывать эти интерпретации текс�
 - Pickup radius — улучшаемый параметр.
 - HUD показывает HP/XP/money; детали билда находятся в Escape stats / rewards / tooltips.
 
+## Act Scaling
+
+- Runtime progression uses `current_act` (`1..3`) plus act-local `route_stage`.
+- Route navigation keeps `route_stage` local to the current map (`0..10`) so each
+  act can generate a fresh route and preserve existing route reachability rules.
+- Economy, drops, round duration and enemy/boss scaling read
+  `route_scaling_stage() = route_stage + (current_act - 1) * 4`. This gives Act
+  2/3 controlled pressure and reward growth without the runaway curve of treating
+  all 33 route rows as one exponential stage chain.
+- Autosave persists `current_act`, route nodes, selected route history, shop
+  state and player snapshot. Continue restores Act 2/3 map checkpoints with the
+  same build state.
+
 ## Level-Up
 
 - При достижении XP открывается выбор 1 из 3 reward cards.

@@ -87,7 +87,7 @@ func _show_battle_map() -> void:
 	header_row.add_child(title_box)
 
 	var title_label := Label.new()
-	title_label.text = "Карта маршрута"
+	title_label.text = "%s — карта маршрута" % game.act_progress_label()
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	title_label.add_theme_font_size_override("font_size", 36)
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
@@ -95,9 +95,10 @@ func _show_battle_map() -> void:
 	title_box.add_child(title_label)
 
 	var stage_label := Label.new()
-	stage_label.text = "Прогресс: %d/%d   Следующий бой: %ds   Выбранный путь фиксируется" % [
+	stage_label.text = "Прогресс: %d/%d   Сила маршрута: %d   Следующий бой: %ds   Выбранный путь фиксируется" % [
 		min(game.route_stage, game.route_nodes.size() - 1),
 		game.ROUTE_STEPS_TO_BOSS,
+		game.route_scaling_stage(),
 		int(game.combat._current_round_duration()),
 	]
 	stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -625,7 +626,7 @@ func _open_route_node(route_node: Dictionary) -> void:
 	var node_type := str(route_node.get("type", "battle"))
 	if node_type == "shop":
 		var route_choice := str(route_node.get("name", game.current_route_choice))
-		var shop_node_key := "%d:%s:%s" % [int(game.route_stage), node_type, route_choice]
+		var shop_node_key := "%d:%d:%s:%s" % [int(game.current_act), int(game.route_stage), node_type, route_choice]
 		if game.current_shop_node_key != "" and game.current_shop_node_key != shop_node_key:
 			game.current_shop_items.clear()
 			game.current_shop_purchased.clear()

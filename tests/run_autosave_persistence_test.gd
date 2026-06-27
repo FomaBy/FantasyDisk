@@ -27,6 +27,7 @@ func _initialize() -> void:
 	var state := {
 		"character_id": "berserk",
 		"weapon_id": "sword",
+		"current_act": 2,
 		"route_stage": 3,
 		"route_selected_indices": [0, 2, 1, 4],
 		"current_shop_offers": {"slot_0": "artifact_x", "slot_1": "artifact_y"},

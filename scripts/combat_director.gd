@@ -139,8 +139,12 @@ func _end_combat(victory: bool) -> void:
 	if victory:
 		if was_boss_fight:
 			_grant_boss_completion_rewards()
-			game.record_boss_victory()
-			game.ui._show_victory_screen()
+			if game.advance_to_next_act():
+				game.current_combat_type = "battle"
+				game.route._show_battle_map()
+			else:
+				game.record_boss_victory()
+				game.ui._show_victory_screen()
 		else:
 			game.route_stage += 1
 			game.current_combat_type = "battle"
@@ -203,9 +207,10 @@ func _spawn_weight_for_scene(scene: PackedScene) -> float:
 	if scene == null:
 		return 0.0
 	var base_weight = float(game.ENEMY_SPAWN_WEIGHTS.get(scene.resource_path, 1.0))
-	if game.route_stage <= 0 and _is_shooter_scene(scene):
+	var scaling_stage: int = game.route_scaling_stage()
+	if scaling_stage <= 0 and _is_shooter_scene(scene):
 		base_weight *= 0.35
-	elif game.route_stage >= 2 and _is_shooter_scene(scene):
+	elif scaling_stage >= 2 and _is_shooter_scene(scene):
 		base_weight *= 1.25
 	if game.boss_combat_active and _is_shooter_scene(scene):
 		base_weight *= 0.6
@@ -317,16 +322,17 @@ func _spawn_enemy_wave() -> void:
 		return
 
 	var base_count = int(game.WAVE_SETTINGS["base_spawn_count"])
-	var stage_bonus = game.route_stage * int(game.WAVE_SETTINGS["spawn_count_per_stage"])
+	var scaling_stage: int = game.route_scaling_stage()
+	var stage_bonus = scaling_stage * int(game.WAVE_SETTINGS["spawn_count_per_stage"])
 	var wave_bonus = int(floor(float(game.spawn_wave_index) / float(game.WAVE_SETTINGS["wave_step_size"]))) * int(game.WAVE_SETTINGS["spawn_count_per_wave_step"])
 	var spawn_limit = int(game.WAVE_SETTINGS["normal_spawn_limit"])
 	if game.boss_combat_active:
 		base_count = 1
-		stage_bonus = max(game.route_stage - 2, 0)
+		stage_bonus = max(scaling_stage - 2, 0)
 		spawn_limit = int(game.WAVE_SETTINGS["boss_spawn_limit"])
 	elif game.current_combat_type == "elite":
 		base_count = 1
-		stage_bonus = int(floor(float(game.route_stage) * 0.5))
+		stage_bonus = int(floor(float(scaling_stage) * 0.5))
 		spawn_limit = int(game.WAVE_SETTINGS["elite_spawn_limit"])
 	var asc_spawn: Dictionary = game.ascension_difficulty()
 	# Возвышение 7 «Эхо бездны»: шанс мини-элитки со свитой в обычной волне.
@@ -359,18 +365,19 @@ func _spawn_enemy_wave() -> void:
 
 
 func _active_enemy_cap() -> int:
-	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
+	var scaling_stage: int = game.route_scaling_stage()
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(scaling_stage)
 	if game.boss_combat_active:
 		return int(round(float(game.WAVE_SETTINGS["boss_active_cap"]) * (0.85 + stage_scale * 0.18)))
 	if game.current_combat_type == "elite":
 		return mini(int(round(float(game.WAVE_SETTINGS["elite_active_cap"]) * (0.95 + stage_scale * 0.25))), int(game.WAVE_SETTINGS["max_active_cap"]))
 	var wave_cap_bonus = int(floor(float(game.spawn_wave_index) / 2.0)) * int(game.WAVE_SETTINGS["active_cap_per_wave_step"])
-	var cap = int(round(float(game.WAVE_SETTINGS["base_active_cap"]) * stage_scale)) + game.route_stage * int(game.WAVE_SETTINGS["active_cap_per_stage"]) + wave_cap_bonus
+	var cap = int(round(float(game.WAVE_SETTINGS["base_active_cap"]) * stage_scale)) + scaling_stage * int(game.WAVE_SETTINGS["active_cap_per_stage"]) + wave_cap_bonus
 	return mini(cap, int(game.WAVE_SETTINGS["max_active_cap"]))
 
 
 func _next_spawn_cooldown() -> float:
-	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
 	var wave_pressure: float = float(game.spawn_wave_index) * 0.045 + (stage_scale - 1.0) * 0.42
 	var cooldown_mult := float(game.ascension_difficulty()["spawn_cooldown_mult"])
 	if game.boss_combat_active:
@@ -381,7 +388,7 @@ func _next_spawn_cooldown() -> float:
 func _choose_wave_spawn_edges() -> void:
 	game.active_spawn_edges.clear()
 	var edge_count := 1
-	if game.boss_combat_active or game.current_combat_type == "elite" or game.route_stage >= 2 or game.spawn_wave_index >= 4:
+	if game.boss_combat_active or game.current_combat_type == "elite" or game.route_scaling_stage() >= 2 or game.spawn_wave_index >= 4:
 		edge_count = 2
 	var first_edge = game.rng.randi_range(0, 3)
 	game.active_spawn_edges.append(first_edge)
@@ -389,13 +396,13 @@ func _choose_wave_spawn_edges() -> void:
 		var candidate = game.rng.randi_range(0, 3)
 		if game.active_spawn_edges.has(candidate):
 			continue
-		if game.route_stage <= 1 and game.spawn_wave_index <= 3 and abs(candidate - first_edge) == 2:
+		if game.route_scaling_stage() <= 1 and game.spawn_wave_index <= 3 and abs(candidate - first_edge) == 2:
 			continue
 		game.active_spawn_edges.append(candidate)
 
 
 func _scale_enemy_for_current_wave(enemy: Node) -> void:
-	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
 	var wave_scale: float = float(game.spawn_wave_index)
 	var balance := _enemy_balance_for_node(enemy)
 	var health_multiplier: float = float(balance.get("hp_multiplier", 2.8)) * stage_scale * (1.0 + wave_scale * 0.055)
@@ -449,7 +456,7 @@ func _drop_class_for_enemy(enemy: Node) -> String:
 func _apply_drop_rewards(enemy: Node, drop_class: String) -> void:
 	if enemy == null:
 		return
-	var rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards(drop_class, game.route_stage, game.spawn_wave_index)
+	var rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards(drop_class, game.route_scaling_stage(), game.spawn_wave_index)
 	enemy.set_meta("drop_class", drop_class)
 	enemy.set_meta("reward_money_chance", float(rewards.get("money_chance", 0.75)))
 	if enemy.get("reward_xp") != null:
@@ -564,7 +571,7 @@ func _random_elite_scene() -> PackedScene:
 func _apply_elite_modifier(enemy: Node2D) -> void:
 	enemy.set_meta("elite_modifier", "armored_commander")
 	if enemy.get("max_health") != null:
-		var elite_health = float(enemy.get("max_health")) * (8.0 + float(game.route_stage) * 0.85)
+		var elite_health = float(enemy.get("max_health")) * (8.0 + float(game.route_scaling_stage()) * 0.85)
 		enemy.set("max_health", elite_health)
 		enemy.set("health", elite_health)
 	if enemy.get("move_speed") != null:
@@ -596,7 +603,7 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 	elite.set_meta("elite_phase_reward", "artifact_choice_1_of_3")
 	if elite.get("elite_behavior") != null:
 		elite.set("elite_behavior", elite_id)
-	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
 	var health_multiplier = float(game.ENEMY_BALANCE["elite"]["hp_multiplier"]) * (25.0 + stage_scale * 4.0) * 1.08
 	var speed_multiplier = float(game.ENEMY_BALANCE["elite"]["speed_multiplier"])
 	var damage_multiplier = float(game.ENEMY_BALANCE["elite"]["damage_multiplier"]) * (1.0 + (stage_scale - 1.0) * 0.78) * 1.06
@@ -632,7 +639,7 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 
 func _scale_boss_for_run(boss: Node2D) -> void:
 	boss.set_meta("boss_id", game.current_boss_id)
-	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_stage)
+	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
 	var health_multiplier = float(game.ENEMY_BALANCE["boss"]["hp_multiplier"]) * (4.20 + stage_scale * 1.20)
 	var speed_multiplier = float(game.ENEMY_BALANCE["boss"]["speed_multiplier"])
 	var damage_multiplier = float(game.ENEMY_BALANCE["boss"]["damage_multiplier"]) * (1.0 + (stage_scale - 1.0) * 0.70)
@@ -664,7 +671,7 @@ func _grant_boss_completion_rewards() -> void:
 		var reward: Dictionary = tier3[game.rng.randi_range(0, tier3.size() - 1)].duplicate(true)
 		reward["kind"] = "artifact"
 		game.current_player.apply_reward(reward)
-	var boss_rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards("boss", game.route_stage, game.spawn_wave_index)
+	var boss_rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards("boss", game.route_scaling_stage(), game.spawn_wave_index)
 	game.current_player.gain_xp(int(boss_rewards.get("xp", 1)))
 	game.current_player.gain_money(int(boss_rewards.get("money", 1)))
 
@@ -884,12 +891,13 @@ func _grant_combat_completion_rewards(event_combat := {}) -> void:
 		return
 	var xp_reward: int
 	var money_reward: int
+	var scaling_stage: int = game.route_scaling_stage()
 	if game.current_combat_type == "elite":
-		xp_reward = 7 + game.route_stage * 2
-		money_reward = 10 + game.route_stage * 4
+		xp_reward = 7 + scaling_stage * 2
+		money_reward = 10 + scaling_stage * 4
 	else:
-		xp_reward = 3 + game.route_stage
-		money_reward = 4 + game.route_stage * 2
+		xp_reward = 3 + scaling_stage
+		money_reward = 4 + scaling_stage * 2
 	# Event-бои (и обычные, и элитные) могут нести множители из event_data —
 	# раньше элитная ветка их молча игнорировала, и +50% золота/+25% опыта в
 	# тултипе defile/duel были неправдой. Множители честно применяем к обеим веткам.
@@ -947,7 +955,7 @@ func _restore_player_snapshot(player: Node) -> void:
 
 
 func _current_round_duration() -> float:
-	var base: float = game.BASE_ROUND_DURATION + game.route_stage * game.ROUND_DURATION_STEP
+	var base: float = minf(game.BASE_ROUND_DURATION + game.route_scaling_stage() * game.ROUND_DURATION_STEP, game.ROUND_DURATION_MAX)
 	return base * float(game.ascension_difficulty()["round_duration_mult"])
 
 

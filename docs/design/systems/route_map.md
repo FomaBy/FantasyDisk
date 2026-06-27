@@ -35,6 +35,13 @@ Route map — full-screen экран выбора пути между боями
 
 ## Route Rules
 
+- Забег состоит из 3 актов (`Акт 1/3` → `Акт 2/3` → `Акт 3/3`).
+- Каждый акт генерирует отдельную route map с теми же 10 activity rows + boss
+  row. После победы над boss в Act 1/2 билд игрока сохраняется, создаётся новая
+  route map, `route_stage` сбрасывается в 0 как act-local прогресс, а
+  `current_act` увеличивается на 1. Победа над boss Act 3 завершает забег.
+- UI route map показывает текущий акт и `Сила маршрута`: это глобальный scaling
+  stage для экономики/врагов, чтобы Act 2/3 не превращались в повтор tutorial.
 - Стартовые узлы первого ряда доступны сразу после выбора персонажа и оружия.
 - Первые два selectable ряда после старта маршрута всегда состоят только из
   обычных `battle` узлов. `shop`, `event`, `rest` и `elite_battle` могут
@@ -58,5 +65,5 @@ Route map — full-screen экран выбора пути между боями
 
 - `tests/runtime_smoke_test.gd` проверяет full-screen scroll area, стартовый выбор,
   первые два battle-only ряда, ровно два магазина с half-placement, event click,
-  shop re-entry до следующего узла, drag suppression, thin route lines, tooltips
-  и route branching.
+  shop re-entry до следующего узла, drag suppression, thin route lines, tooltips,
+  route branching, Act 1 boss → Act 2 route transition и Act 3 boss → victory.

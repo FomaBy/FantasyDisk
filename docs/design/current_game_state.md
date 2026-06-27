@@ -42,15 +42,19 @@ Domain docs для подробностей по областям:
 2. Настройки видео и управления, если игрок их открывает.
 3. Выбор персонажа.
 4. Выбор оружия выбранного персонажа.
-5. Генерация вертикальной маршрутной карты.
+5. Генерация вертикальной маршрутной карты текущего акта.
 6. Выбор узла маршрута.
 7. Бой или небоевой экран узла.
 8. Получение опыта, денег, наград и артефактов.
 9. Возврат на карту.
-10. Финальный босс.
-11. Победа или смерть.
+10. Boss текущего акта.
+11. После boss Act 1/2 — переход к новой карте следующего акта с сохранением
+    билда; после boss Act 3 — победа. Смерть завершает забег в любом акте.
 
 Бой длится по таймеру `30 + 3 * route_stage` секунд (максимум 60), кроме босс-файтов, где бой идет до победы или смерти.
+В 3-актном забеге `route_stage` остаётся локальным для карты акта, а длительность,
+спавн, награды, цены и boss/elite scaling читают `route_scaling_stage() =
+route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контролируемо.
 
 ## Разрешения И Окно
 
@@ -63,7 +67,7 @@ Domain docs для подробностей по областям:
 - **Minimal Metal runtime kits**: SCRUM-459 wired the SCRUM-452 strict minimal-metal frame kit under `assets/sprites/ui/frames/minimal_metal/` as first-class runtime paths/constants plus a reusable StyleBoxTexture helper with metadata texture/content margins and safe rects. SCRUM-462 promotes the SCRUM-450 minimal-metal button kit under `assets/sprites/ui/frames/minimal_metal_buttons/` for runtime action-button families, including main menu, back, pause, Codex tab, reset, rebind, utility/FAB and attribute selector states; card/hit-area exceptions remain card-styled. Red & Gold buttons are historical/backup only for this pass. QA: `build/qa/scrum450_minimal_metal_buttons/`, dark theme/runtime UI/no-overlap/full runtime smokes PASS.
 - **Звук**: слайдеры Общая/Музыка/Эффекты (0-100%, шаг 2) вынесены во вкладку «Звук», занимают всю ширину контентной зоны, имеют видимый темный трек, золотую заполненную часть, числовое значение справа и keyboard focus для стрелок. Переключатели музыки/эффектов подписаны «Вкл.»/«Выкл.»; mute не сбрасывает значение слайдера. Кнопка «Сбросить звук по умолчанию» возвращает master/music/sfx к 100% и включает music/SFX. Изменения применяются мгновенно через AudioServer (Master/Music/SFX — шины Music и SFX создаются программно в AudioManager).
 - **Управление**: вкладка «Управление» показывает режим прицеливания (`Автонаводка на ближайшего` / `По курсору`), persisted toggles `Дебаг-режим` и `Боевой фидбек`, а также биндинги движения, паузы и `ultimate` внутри вертикального scroll-контейнера с авто-прокруткой к фокусу. Дефолты: aim mode `nearest`, debug mode `off`, combat feedback `on`, WASD + стрелки для движения, Escape для паузы, R для ультимейта. Ребинд проверяет конфликт с другими действиями и не перезаписывает чужую клавишу молча; есть reset defaults.
-- **Персистенс**: дисплей, звук, `aim_mode`, `debug_mode`, `combat_feedback` и `input_bindings` сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте. Активный забег сохраняется отдельно через `scripts/run_autosave.gd` в `user://fantasydisk_autosave.cfg` после безопасных route checkpoints; главное меню предлагает «Продолжить»/«Новая игра», а смерть/победа очищают autosave.
+- **Персистенс**: дисплей, звук, `aim_mode`, `debug_mode`, `combat_feedback` и `input_bindings` сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте. Активный забег сохраняется отдельно через `scripts/run_autosave.gd` в `user://fantasydisk_autosave.cfg` после безопасных route checkpoints, включая `current_act` для Act 2/3; главное меню предлагает «Продолжить»/«Новая игра», а смерть/финальная победа очищают autosave.
 - **Фидбек/баг-репорт**: SCRUM-362 добавил глобальное действие `feedback` (по умолчанию `P`). Оно открывает отдельный верхний `FeedbackOverlayLayer` с текстовым полем и preview текущего viewport screenshot. Отправка идет через Discord-compatible webhook из `FANTASYDISK_FEEDBACK_WEBHOOK` или `user://feedback_config.cfg`; multipart `payload_json.attachments[0]` ссылается на `files[0]`, чтобы Discord сохранял PNG-скриншот. Без webhook отчет сохраняется в `user://feedback/<timestamp>/`.
 
 В настройках доступны:

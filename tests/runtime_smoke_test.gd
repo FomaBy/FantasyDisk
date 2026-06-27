@@ -2,6 +2,8 @@ extends SceneTree
 
 const EXPECTED_ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: lock-step с ARENA_SIZE (×1.6)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
+const EXPECTED_ROUTE_STEPS_TO_BOSS := 10
+const EXPECTED_ACT_COUNT := 3
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
@@ -1278,7 +1280,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	_test_noncombat_nodes(main)
+	await _test_noncombat_nodes(main)
 	_test_stat_artifact_recording()
 	_test_berserk_weapon_configs()
 	_test_weapon_orbit_no_overlap()
@@ -1286,6 +1288,7 @@ func _initialize() -> void:
 	_test_class_weapon_mode_registry()
 	_test_all_weapon_variants_equip()
 	await _test_weapon_effect_cleanup()
+	await _test_boss_act_transition(main_scene)
 	await _test_victory_flow(main)
 	await _test_elite_flow(main_scene)
 	await _test_debug_free_pick(main_scene)
@@ -1813,6 +1816,12 @@ func _test_route_map_start_selection(main_scene: PackedScene) -> void:
 	var route_map := route_main.find_child("VerticalRouteMap", true, false) as Control
 	if route_scroll == null or route_map == null:
 		push_error("Expected start route selection to use a scrollable map.")
+		quit(1)
+		return
+	var route_header := route_main.find_child("RouteMapHeader", true, false)
+	var header_text := _collect_label_text(route_header) if route_header != null else ""
+	if not header_text.contains("Акт 1/3"):
+		push_error("Expected route map header to show Act 1/3 progress.")
 		quit(1)
 		return
 
@@ -2825,6 +2834,7 @@ func _test_noncombat_nodes(main: Node) -> void:
 		push_error("Expected shop screen to keep the compact run HUD.")
 		quit(1)
 		return
+	await process_frame
 	if not _has_screen_background(main, "shop"):
 		push_error("Expected shop screen to include a shop background or fallback layer. Active UI tree: %s" % _debug_child_tree(main.get("ui_layer") as Node))
 		quit(1)
@@ -3306,8 +3316,62 @@ func _assert_health_bar_visible_when_near_viewport_top(entity: Node2D, health_ba
 	return visible
 
 
+func _test_boss_act_transition(main_scene: PackedScene) -> void:
+	paused = false
+	var act_main := main_scene.instantiate()
+	root.add_child(act_main)
+	await process_frame
+	act_main.set("selected_character_id", "berserk")
+	act_main.set("selected_weapon_id", "sword")
+	act_main.set("current_act", 1)
+	act_main.set("route_stage", EXPECTED_ROUTE_STEPS_TO_BOSS)
+	act_main.call("_start_combat", true)
+	await process_frame
+	var boss := get_first_node_in_group("bosses")
+	if boss == null:
+		push_error("Expected Act 1 boss transition test to spawn a boss.")
+		quit(1)
+		return
+	boss.set("dodge_chance", 0.0)
+	boss.set("shield_active", false)
+	boss.take_damage(999999.0)
+	for _attempt in range(120):
+		await process_frame
+		if not bool(act_main.get("combat_active")) and int(act_main.get("current_act")) == 2:
+			break
+	if bool(act_main.get("combat_active")) or int(act_main.get("current_act")) != 2:
+		push_error("Expected Act 1 boss victory to advance to Act 2 instead of ending the run.")
+		quit(1)
+		return
+	if int(act_main.get("route_stage")) != 0:
+		push_error("Expected next act to reset act-local route_stage to 0.")
+		quit(1)
+		return
+	if (act_main.get("route_selected_indices") as Array).size() != 0:
+		push_error("Expected next act to start with a fresh route selection history.")
+		quit(1)
+		return
+	var route_nodes: Array = act_main.get("route_nodes")
+	if route_nodes.size() != EXPECTED_ROUTE_STEPS_TO_BOSS + 1:
+		push_error("Expected Act 2 to generate a fresh route map.")
+		quit(1)
+		return
+	if act_main.find_child("RouteMapScreen", true, false) == null:
+		push_error("Expected Act 2 transition to return to the route map.")
+		quit(1)
+		return
+	var saved_state: Dictionary = RunAutosave.load_run()
+	if int(saved_state.get("current_act", 0)) != 2 or int(saved_state.get("route_stage", -1)) != 0:
+		push_error("Expected autosave to persist Act 2 route checkpoint after boss transition.")
+		quit(1)
+		return
+	act_main.call("clear_run_autosave")
+	act_main.queue_free()
+
+
 func _test_victory_flow(main: Node) -> void:
 	paused = false
+	main.set("current_act", EXPECTED_ACT_COUNT)
 	main.set("route_stage", 3)
 	main.call("_start_combat", true)
 	await process_frame

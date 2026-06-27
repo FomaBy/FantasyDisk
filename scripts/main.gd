@@ -24,6 +24,8 @@ const BASE_ROUND_DURATION := 30.0
 const ROUND_DURATION_STEP := 3.0
 const ROUND_DURATION_MAX := 60.0
 const ROUTE_STEPS_TO_BOSS := 10
+const ACT_COUNT := 3
+const ACT_SCALING_STAGE_OFFSET := 4
 const MIN_BRANCHES_PER_STEP := 2
 const MAX_BRANCHES_PER_STEP := 4
 const MAP_NODE_SIZE := Vector2(88, 88)
@@ -304,6 +306,7 @@ const INPUT_ACTIONS := [
 
 var selected_character_id := "berserk"
 var selected_weapon_id := "sword"
+var current_act := 1
 var route_stage := 0
 var combat_active := false
 var boss_combat_active := false
@@ -518,6 +521,7 @@ func _run_autosave_state() -> Dictionary:
 		"selected_character_id": selected_character_id,
 		"selected_weapon_id": selected_weapon_id,
 		"selected_ascension_level": selected_ascension_level,
+		"current_act": current_act,
 		"route_stage": route_stage,
 		"route_nodes": route_nodes.duplicate(true),
 		"route_selected_indices": route_selected_indices.duplicate(true),
@@ -553,6 +557,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	selected_character_id = str(state.get("selected_character_id", selected_character_id))
 	selected_weapon_id = str(state.get("selected_weapon_id", selected_weapon_id))
 	selected_ascension_level = int(state.get("selected_ascension_level", 0))
+	current_act = clampi(int(state.get("current_act", 1)), 1, ACT_COUNT)
 	route_stage = maxi(0, int(state.get("route_stage", 0)))
 	route_nodes = _autosave_array(state.get("route_nodes", []))
 	if route_nodes.is_empty():
@@ -590,6 +595,38 @@ func _autosave_dictionary(value: Variant) -> Dictionary:
 	if value is Dictionary:
 		return (value as Dictionary).duplicate(true)
 	return {}
+
+
+func route_scaling_stage() -> int:
+	return maxi(0, route_stage + (clampi(current_act, 1, ACT_COUNT) - 1) * ACT_SCALING_STAGE_OFFSET)
+
+
+func act_progress_label() -> String:
+	return "Акт %d/%d" % [clampi(current_act, 1, ACT_COUNT), ACT_COUNT]
+
+
+func advance_to_next_act() -> bool:
+	if current_act >= ACT_COUNT:
+		return false
+	current_act += 1
+	route_stage = 0
+	route_nodes = route._generate_route()
+	route_selected_indices.clear()
+	current_route_choice = ""
+	current_node_type = ""
+	current_combat_type = "battle"
+	current_boss_id = "rift_warden"
+	pending_event_combat.clear()
+	level_up_return_to_map = false
+	level_up_return_to_event = false
+	shop_reentry_pending = false
+	shop_reentry_route_stage = -1
+	shop_reentry_branch_index = -1
+	current_shop_items.clear()
+	current_shop_purchased.clear()
+	current_shop_node_key = ""
+	save_run_autosave("act_transition")
+	return true
 
 
 func _apply_audio_settings() -> void:

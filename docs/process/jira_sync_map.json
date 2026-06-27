@@ -2597,5 +2597,10 @@
   "key": "SCRUM-523",
   "status": "Контроль качества",
   "desc_hash": "5e086abb4245b381c911580e03a28404"
+ },
+ "SCRUM-538_acts_2_3_route_maps_bosses.md": {
+  "key": "SCRUM-538",
+  "status": "Контроль качества",
+  "desc_hash": "a98b341a0303228d5dffdddf78acb58c"
  }
 }
