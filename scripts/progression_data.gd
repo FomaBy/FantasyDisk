@@ -768,8 +768,11 @@ static func _budget_summon_role_damage_factor(config: Dictionary, params: Dictio
 	var knowledge := float(stats.get("knowledge", 0.0)) if stats is Dictionary else 0.0
 	var intelligence := float(stats.get("intelligence", 0.0)) if stats is Dictionary else 0.0
 	var energy := float(stats.get("energy", 0.0)) if stats is Dictionary else 0.0
-	var leadership_damage := 1.0 + minf(leadership * 0.020, 0.42)
-	var attribute_damage := 1.0 + minf(summon_amount * 0.014 + knowledge * 0.004 + intelligence * 0.003 + energy * 0.003, 0.34)
+	# SCRUM-546: Лидерство — главный драйвер силы саммонов. Коэффициент и потолок
+	# подняты (0.020/0.42 → 0.060/1.15), чтобы прокачка саммонера ощутимо усиливала
+	# питомцев. Зеркалит summoner_weapon._summon_profile (тот же runtime-расчёт).
+	var leadership_damage := 1.0 + minf(leadership * 0.060, 1.15)
+	var attribute_damage := 1.0 + minf(summon_amount * 0.016 + knowledge * 0.004 + intelligence * 0.004 + energy * 0.003, 0.40)
 	return float(config.get("summon_role_damage_multiplier", 1.0)) * leadership_damage * attribute_damage
 
 
@@ -927,6 +930,10 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"buff_power": 1.0 + leadership * 0.025 + knowledge * 0.006 + energy * 0.004 + buff_power_flat,
 		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier,
 		"summon_amount": leadership + knowledge * 0.18 + intelligence * 0.12 + energy * 0.10,
+		# SCRUM-546: профильное (growth-масштабированное) Лидерство как драйвер силы
+		# саммонов — читается runtime deploy/sentry-пайплайном (class_weapon
+		# ._summon_role_damage_factor) и саммон-профилем (summoner_weapon).
+		"leadership": leadership,
 		# Подключение полного набора атрибутов (аудит 2026-06-11):
 		"absorb": effective_absorb(endurance, absorb_flat),
 		"regeneration": effective_regeneration(knowledge, regeneration_flat),

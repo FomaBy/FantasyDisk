@@ -2148,8 +2148,12 @@ func _rolled_damage(owner_node: Node2D) -> float:
 
 
 func _summon_role_damage_factor(parameters: Dictionary) -> float:
+	# SCRUM-546: deploy/sentry-саммоны (turret/totem/drone) масштабируются от
+	# Лидерства так же, как pure-саммоны (summoner_weapon._summon_profile) и
+	# бюджетная модель (progression_data._budget_summon_role_damage_factor).
 	var summon_amount := float(parameters.get("summon_amount", 0.0))
-	return summon_role_damage_multiplier * (1.0 + minf(summon_amount * 0.018, 0.22))
+	var leadership := float(parameters.get("leadership", 0.0))
+	return summon_role_damage_multiplier * (1.0 + minf(leadership * 0.060 + summon_amount * 0.016, 1.15))
 
 
 func _update_charge(delta: float) -> void:

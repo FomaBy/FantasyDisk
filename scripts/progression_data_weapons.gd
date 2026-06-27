@@ -325,16 +325,16 @@ const CHEMIST_WEAPONS := {
 		"description": "Временный алхимический приспешник: лимит небольшой, урон растет от магического урона.",
 		"scene_path": "res://scenes/HomunculusVial.tscn",
 		"damage_parameter": "magic_damage",
-		"summon_damage_multiplier": 0.52,
+		"summon_damage_multiplier": 2.40,  # SCRUM-546: подъём с пола DPS-полосы (был 0.52)
 		"damage_multiplier": 0.90, "fire_interval": 4.0,
 		"attack_range": 420.0, "aoe_radius": 70.0,
-		"summon_aoe_radius": 78.0, "summon_aoe_damage_multiplier": 0.52,
+		"summon_aoe_radius": 78.0, "summon_aoe_damage_multiplier": 0.85,  # SCRUM-546 (был 0.52)
 		"summon_leash_radius": 540.0,
 		"max_summons": 1,
 		"summon_role": "tank_control",
-		"summon_role_damage_multiplier": 0.95,
+		"summon_role_damage_multiplier": 1.25,  # SCRUM-546 (был 0.95)
 		"summon_health_multiplier": 0.42,
-		"summon_attack_interval": 0.56,
+		"summon_attack_interval": 0.40,  # SCRUM-546: чаще бьёт — главный DPS-рычаг capped-саммона (был 0.56)
 		"summon_speed_multiplier": 0.88,
 		"summon_lifetime_multiplier": 1.18,
 		"summon_control_knockback": 95.0,
@@ -392,17 +392,17 @@ const DRUID_WEAPONS := {
 		"description": "Зовет зверей: стая бьется за друида, размер растет от Лидерства.",
 		"scene_path": "res://scenes/SummonAmulet.tscn",
 		"damage_parameter": "sound_wave_damage",
-		"summon_damage_multiplier": 0.58,
+		"summon_damage_multiplier": 1.85,  # SCRUM-546: подъём с пола DPS-полосы (был 0.58)
 		"damage_multiplier": 1.0, "fire_interval": 3.0,
 		"attack_range": 420.0, "aoe_radius": 60.0,
-		"summon_aoe_radius": 72.0, "summon_aoe_damage_multiplier": 0.56,
+		"summon_aoe_radius": 72.0, "summon_aoe_damage_multiplier": 0.80,  # SCRUM-546 (был 0.56)
 		"summon_leash_radius": 560.0,
-		"max_summons": 2,
+		"max_summons": 3,  # SCRUM-546: +1 базовый зверь стае (был 2)
 		"command_mode": "attack_target",
 		"summon_role": "pack_damage",
-		"summon_role_damage_multiplier": 1.06,
+		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.06)
 		"summon_health_multiplier": 0.30,
-		"summon_attack_interval": 0.40,
+		"summon_attack_interval": 0.34,  # SCRUM-546: чаще бьёт (был 0.40)
 		"summon_speed_multiplier": 1.15,
 		"summon_lifetime_multiplier": 1.12,
 		"summon_control_knockback": 34.0,
@@ -723,13 +723,13 @@ const ENGINEER_WEAPONS := {
 		"description": "Sentry link: ставит короткоживущую турель, которая сама выбирает цели и прошивает их точечными лучами.",
 		"scene_path": "res://scenes/EngineerSentryWrench.tscn",
 		"attack_mode": "engineer_sentry_link", "damage_parameter": "damage",
-		"damage_multiplier": 0.72, "fire_interval": 1.32,
+		"damage_multiplier": 1.15, "fire_interval": 1.32,  # SCRUM-546: подъём с пола (был 0.72)
 		"attack_range": 560.0, "aoe_radius": 170.0,
 		"beam_width": 34.0, "projectile_count": 4,
 		"amp_lifetime": 2.8, "amp_pulse_interval": 0.42, "max_summons": 1,
 		"damage_falloff": 0.72, "knockback": 42.0,
 		"summon_role": "engineer_sentry",
-		"summon_role_damage_multiplier": 1.10,
+		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.10)
 		"visual_color": Color(0.88, 0.70, 0.32, 0.42),
 		"passive_mods": {"summon_bonus": 1.0},
 	},

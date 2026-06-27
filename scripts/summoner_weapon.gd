@@ -131,8 +131,10 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 	var energy := float(stats.get("energy", 0.0))
 	var summon_amount := float(parameters.get("summon_amount", 0.0))
 	var base_damage := float(parameters.get(damage_parameter, parameters.get("damage", damage)))
-	var leadership_damage := 1.0 + minf(leadership * 0.020, 0.42)
-	var attribute_damage := 1.0 + minf(summon_amount * 0.014 + knowledge * 0.004 + intelligence * 0.003 + energy * 0.003, 0.34)
+	# SCRUM-546: Лидерство — главный драйвер урона саммонов (см.
+	# progression_data._budget_summon_role_damage_factor — тот же коэффициент/потолок).
+	var leadership_damage := 1.0 + minf(leadership * 0.060, 1.15)
+	var attribute_damage := 1.0 + minf(summon_amount * 0.016 + knowledge * 0.004 + intelligence * 0.004 + energy * 0.003, 0.40)
 	var role_damage := summon_role_damage_multiplier * leadership_damage * attribute_damage
 	var summon_haste := minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
 	var summon_bulk := minf(leadership * 0.045 + summon_amount * 0.010, 0.75)

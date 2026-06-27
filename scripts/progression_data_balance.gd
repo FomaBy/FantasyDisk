@@ -74,8 +74,8 @@ const COMFORT_WEIGHTS := {
 const COMFORT_WEIGHT_OVERRIDES := {
 	"druid/summon_amulet": 0.68,
 	"druid/raven_totem": 0.72,
-	"engineer/sentry_wrench": 0.66,
-	"engineer/repair_drone": 0.66,
+	"engineer/engineer_sentry_wrench": 0.66,  # SCRUM-546: ключ = реальный weapon_id (был engineer/sentry_wrench — не матчился)
+	"engineer/engineer_repair_drone": 0.66,
 	"chemist/homunculus_vial": 0.66,
 	"guitarist/sound_amp": 0.72,
 }
