@@ -2562,5 +2562,10 @@
   "key": "SCRUM-509",
   "status": "Готово",
   "desc_hash": "48b90eda65e97233b88211270445e17a"
+ },
+ "SCRUM-536_map_chest_artifact_icon.md": {
+  "key": "SCRUM-536",
+  "status": "Контроль качества",
+  "desc_hash": "3bb3d02344a7fcee543ec13498cc5d76"
  }
 }

@@ -290,6 +290,7 @@ Event-node открывает один data-driven сценарий из `script
 | Элитный бой | `assets/sprites/map_icons/map_elite_skull_bones.png` |
 | Магазин | `assets/sprites/map_icons/map_shop_tent.png` |
 | Событие | `assets/sprites/map_icons/map_event_question.png` |
+| Сундук / артефакт | `assets/sprites/map_icons/map_chest_artifact.png` (Design-ready SCRUM-536; runtime route hook отдельной Back-end задачей) |
 | Костер | `assets/sprites/map_icons/map_rest_campfire.png` |
 | Rift Warden | `assets/sprites/map_icons/map_boss_rift_warden.png` |
 | Disk Devourer | `assets/sprites/map_icons/map_boss_disk_devourer.png` |
