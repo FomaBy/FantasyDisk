@@ -296,11 +296,20 @@ const XP_CURVE_FLAT := 0.8
 
 const DROP_CLASS_MULTIPLIERS := {
 	"ordinary": {"xp": 1.0, "money": 1.0, "money_chance": 0.75},
-	"complex": {"xp": 1.3, "money": 1.35, "money_chance": 0.85},
-	"heavy": {"xp": 1.75, "money": 1.85, "money_chance": 0.95},
+	# SCRUM-507: complex 1.35→1.6, heavy 1.85→2.2 — перенос веса экономики с boss-дропа на
+	# ранние/средние бои. Поднимает не-boss доход маршрута (~+12%), удерживая покупательную
+	# способность ≥'healthy' после среза boss-money и опуская долю boss-золота ≤50%.
+	"complex": {"xp": 1.3, "money": 1.6, "money_chance": 0.85},
+	"heavy": {"xp": 1.75, "money": 2.2, "money_chance": 0.95},
 	"mini_elite": {"xp": 3.6, "money": 3.8, "money_chance": 1.0},
 	"elite": {"xp": 8.0, "money": 8.5, "money_chance": 1.0},
-	"boss": {"xp": 24.0, "money": 92.0, "money_chance": 1.0},
+	# SCRUM-507: boss-money 92→43. Boss-дроп доминировал в экономике маршрута
+	# (≈64% всего золота: 442/684 balanced, 594/956 combat, 512/768 shop), обесценивая
+	# ранние/средние награды («дожить до босса»). Снижение (в паре с подъёмом complex/heavy)
+	# опускает долю boss-золота до ~47-49% дохода (запас под порогом 50%), возвращая вес
+	# ранним тратам. Boss остаётся самым жирным денежным дропом (43 ≫ elite 8.5 — инвариант
+	# boss.money>elite.money). XP-ветка (xp 24.0) не тронута — темп level-ups сохраняется.
+	"boss": {"xp": 24.0, "money": 43.0, "money_chance": 1.0},
 }
 
 const COST_BY_TIER := {1: 30, 2: 55, 3: 95}
