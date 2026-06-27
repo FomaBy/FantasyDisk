@@ -43,6 +43,10 @@ const CRIT_DAMAGE_BASE_MULTIPLIER := BalanceData.CRIT_DAMAGE_BASE_MULTIPLIER
 const CRIT_DAMAGE_AGILITY_SCALE := BalanceData.CRIT_DAMAGE_AGILITY_SCALE
 const CRIT_DAMAGE_FLAT_EFFECTIVENESS := BalanceData.CRIT_DAMAGE_FLAT_EFFECTIVENESS
 const CRIT_DAMAGE_CAP := BalanceData.CRIT_DAMAGE_CAP
+const RUN_DAMAGE_MULT_SOFTCAP := BalanceData.RUN_DAMAGE_MULT_SOFTCAP
+const RUN_DAMAGE_MULT_KNEE := BalanceData.RUN_DAMAGE_MULT_KNEE
+const RUN_ATTACK_SPEED_MULT_SOFTCAP := BalanceData.RUN_ATTACK_SPEED_MULT_SOFTCAP
+const RUN_ATTACK_SPEED_MULT_KNEE := BalanceData.RUN_ATTACK_SPEED_MULT_KNEE
 const WEAPON_ARCHETYPE_BY_MODE := BalanceData.WEAPON_ARCHETYPE_BY_MODE
 const ATTRIBUTE_WEAPON_SYNERGY_MAP := BalanceData.ATTRIBUTE_WEAPON_SYNERGY_MAP
 const STAGE_SCALE_BASE := BalanceData.STAGE_SCALE_BASE
@@ -239,6 +243,21 @@ static func _diminishing_percent(raw_value: float, cap: float, curve: float) -> 
 	var raw := maxf(raw_value, 0.0)
 	var softened := raw / (1.0 + raw * curve)
 	return clampf(softened, 0.0, cap)
+
+
+# SCRUM-503: diminishing returns на ЗАБЕГОВЫЙ боевой множитель. Сжимает ТОЛЬКО
+# избыток множителя над 1.0 по кривой excess/(1+excess*knee), клампит избыток к
+# (softcap-1.0) и возвращает 1.0 + сжатый_избыток. Тождественно при multiplier
+# <= 1.0 (excess<=0 → возвращает сам множитель): при пустых run_modifiers
+# (estimate_weapon_budget) и на базе lvl1 cap нейтрален, поэтому формульные гейты
+# и стартовые числа не меняются — нерф строго «сверху базы». Понижение множителя
+# (<1.0, напр. замедление атаки оружием) проходит без сжатия.
+static func _soft_capped_run_multiplier(multiplier: float, softcap: float, knee: float) -> float:
+	if multiplier <= 1.0:
+		return multiplier
+	var excess := multiplier - 1.0
+	var softened := excess / (1.0 + excess * knee)
+	return 1.0 + clampf(softened, 0.0, maxf(softcap - 1.0, 0.0))
 
 
 static func effective_defense(raw_defense: float) -> float:
@@ -817,10 +836,16 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# не трогая пассивы оружия и стартовые значения.
 	var upgrade_damage_exponent := float(weapon_config.get("upgrade_damage_exponent", 1.0))
 	var upgrade_aoe_exponent := float(weapon_config.get("upgrade_aoe_exponent", 1.0))
-	var damage_multiplier := pow(float(run_modifiers.get("damage_multiplier", 1.0)), upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
+	# SCRUM-503: diminishing returns на ЗАБЕГОВУЮ часть боевых множителей (до экспоненты
+	# апгрейда и до пассивов оружия) — гасит мультипликативный runaway идеального билда.
+	# Тождественно при множителе 1.0 (пустые run_modifiers формульного гейта) → база и
+	# формульные коридоры не меняются. Пассивы оружия (passive_mods) НЕ капятся — это база.
+	var run_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
+	var run_attack_speed_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("attack_speed_multiplier", 1.0)), RUN_ATTACK_SPEED_MULT_SOFTCAP, RUN_ATTACK_SPEED_MULT_KNEE)
+	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
 	# «Кровавый Рубеж» (tier 3): бонус урона активен, пока HP ниже порога (low_hp_active ставит player).
 	damage_multiplier *= 1.0 + float(run_modifiers.get("low_hp_damage_bonus", 0.0)) * float(run_modifiers.get("low_hp_active", 0.0))
-	var attack_speed_multiplier := float(run_modifiers.get("attack_speed_multiplier", 1.0)) * float(passive_mods.get("attack_speed_multiplier", 1.0))
+	var attack_speed_multiplier := run_attack_speed_multiplier * float(passive_mods.get("attack_speed_multiplier", 1.0))
 	var move_speed_multiplier := float(run_modifiers.get("move_speed_multiplier", 1.0)) * float(passive_mods.get("move_speed_multiplier", 1.0))
 	# «Призрачный Шаг» (tier 3): рывок скорости после уворота (dodge_rush_active ставит player).
 	move_speed_multiplier *= 1.0 + float(run_modifiers.get("dodge_rush_bonus", 0.0)) * float(run_modifiers.get("dodge_rush_active", 0.0))

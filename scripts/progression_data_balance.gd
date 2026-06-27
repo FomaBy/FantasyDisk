@@ -90,6 +90,29 @@ const CRIT_DAMAGE_AGILITY_SCALE := 0.055
 const CRIT_DAMAGE_FLAT_EFFECTIVENESS := 0.75
 const CRIT_DAMAGE_CAP := 2.75
 
+# SCRUM-503: soft-cap (diminishing returns) на ЗАБЕГОВЫЕ боевые множители.
+# Живой замер (build/character_balance_dps.csv) вскрывал runaway: «идеальный» билд
+# к lvl20 застаканивает run_modifiers.damage_multiplier до ~31x (!) — это и есть
+# мультипликативный runaway. У Берсерка/молота он домножается на melee-sweep по 20
+# целям → пик 184356 DPS на 20t (×78 от слабейшего класса) и 7636 на 1t. Частичный
+# фикс (упрощение upgrade_*_exponent молота, коммит 1e74202b) уронил до 60451/2520,
+# но это всё ещё 5.4x медианы — Берсерк остаётся аутлаером. Формульный гейт это НЕ
+# ловит: estimate_weapon_budget гоняет derived_parameters с ПУСТЫМИ run_modifiers →
+# множитель = 1.0. Поэтому cap применяется ТОЛЬКО к забеговой части множителя и
+# ТОЖДЕСТВЕН при значении 1.0: сжимаем лишь превышение над 1.0 по образцу
+# _diminishing_percent → capped = 1.0 + clampf(excess/(1+excess*KNEE), 0, CAP-1).
+# Инвариант: softcap(1.0) == 1.0 → база lvl1 и формульные коридоры не меняются.
+# Значения подобраны по живой матрице (сид генератора для berserk/hammer): cap
+# сжимает забеговый damage_mult и роняет berserk/hammer lvl20_ideal 20t 60451→~14.2k
+# (медиана ≈11.3k → 1.26x, в коридоре ≤2.5x) и 1t 2520→~0.9k (≤2.5x solo-медианы
+# ≈2.36k). Берсерк остаётся крепким AoE верхней половины — не аутлаер и не слабак.
+# Ранний/средний билд (damage_mult 3..6x) почти не задет — DR кусает только хвост.
+# Регресс закреплён tests/berserk_dps_runaway_gate.gd (ЖИВОЙ замер, не формула).
+const RUN_DAMAGE_MULT_SOFTCAP := 20.0   # жёсткий потолок забегового damage_multiplier
+const RUN_DAMAGE_MULT_KNEE := 0.03      # кривизна диминишинга (асимптота избытка = 1/knee)
+const RUN_ATTACK_SPEED_MULT_SOFTCAP := 1.70  # потолок забегового attack_speed_multiplier
+const RUN_ATTACK_SPEED_MULT_KNEE := 0.50
+
 const WEAPON_ARCHETYPE_BY_MODE := {
 	"frustum": "melee",
 	"sweep": "melee",
