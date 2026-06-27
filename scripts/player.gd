@@ -47,6 +47,8 @@ const WEAPON_ORBIT_RADIUS := 104.0
 const WEAPON_ORBIT_VERTICAL_BIAS := -8.0
 const WEAPON_ORBIT_Z_INDEX := -8
 const DEBUG_MOVE_ARRIVAL_DISTANCE := 10.0
+const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
+const COMBAT_FEEDBACK_MAX_LABELS := 42
 
 const CHARACTER_CONFIGS := {
 	"berserk": {
@@ -1129,6 +1131,43 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 	enemy.take_damage(final_amount)
 
 
+func show_combat_feedback_number(amount: float, kind := "heal") -> void:
+	if amount <= 0.0 or not _combat_feedback_enabled() or not is_inside_tree():
+		return
+	if get_tree().get_nodes_in_group(COMBAT_FEEDBACK_LABEL_GROUP).size() >= COMBAT_FEEDBACK_MAX_LABELS:
+		return
+	var parent := _vfx_parent()
+	if parent == null:
+		return
+	var holder := Node2D.new()
+	holder.z_index = 3000
+	holder.global_position = global_position + Vector2(randf_range(-14.0, 14.0), -62.0 + randf_range(-4.0, 4.0))
+	parent.add_child(holder)
+	var label := Label.new()
+	label.name = "CombatHealNumber"
+	label.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
+	label.text = "+%d" % int(round(amount))
+	label.modulate = Color(0.36, 1.0, 0.55, 1.0) if kind == "heal" else Color(1.0, 1.0, 1.0, 1.0)
+	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_color_override("font_outline_color", Color(0.02, 0.04, 0.02, 0.92))
+	label.add_theme_constant_override("outline_size", 5)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.position = Vector2(-36.0, -16.0)
+	label.custom_minimum_size = Vector2(72.0, 0.0)
+	holder.add_child(label)
+	var tween := holder.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(holder, "global_position", holder.global_position + Vector2(0.0, -44.0), 0.62).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.42).set_delay(0.20)
+	tween.chain().tween_callback(holder.queue_free)
+
+
+func _combat_feedback_enabled() -> bool:
+	if not is_inside_tree():
+		return false
+	return bool(get_tree().root.get_meta("combat_feedback", true))
+
+
 func _vfx_parent() -> Node:
 	var scene := get_tree().current_scene
 	if scene is Node2D:
@@ -1330,6 +1369,7 @@ func heal_percent(percent: float) -> void:
 	health = min(max_health, health + max_health * percent * float(run_modifiers.get("healing_multiplier", 1.0)))
 	if health > before + 0.01:
 		_show_heal_vfx()
+		show_combat_feedback_number(health - before, "heal")
 
 
 func _show_heal_vfx() -> void:

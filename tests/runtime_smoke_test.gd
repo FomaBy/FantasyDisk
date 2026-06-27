@@ -5269,6 +5269,24 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		_fail("Expected DebugModeToggle to restore OFF state.")
 		return
 	_write_debug_settings_artifact(main, debug_toggle)
+	var combat_feedback_toggle := controls_content.find_child("CombatFeedbackToggle", true, false) as CheckBox
+	if combat_feedback_toggle == null:
+		_fail("Expected controls settings to expose the CombatFeedbackToggle.")
+		return
+	combat_feedback_toggle.button_pressed = false
+	combat_feedback_toggle.toggled.emit(false)
+	await process_frame
+	var loaded_feedback: Dictionary = game_settings.load_settings()
+	if bool(main.get("combat_feedback_enabled")) or bool(loaded_feedback.get("combat_feedback", true)):
+		_fail("Expected CombatFeedbackToggle to update runtime state and persist OFF.")
+		return
+	combat_feedback_toggle.button_pressed = true
+	combat_feedback_toggle.toggled.emit(true)
+	await process_frame
+	loaded_feedback = game_settings.load_settings()
+	if not bool(main.get("combat_feedback_enabled")) or not bool(loaded_feedback.get("combat_feedback", false)):
+		_fail("Expected CombatFeedbackToggle to restore ON state.")
+		return
 	if controls_content.get_child_count() < 8:
 		_fail("Expected controls content to include aim mode, binding rows, hint, and reset button.")
 		return

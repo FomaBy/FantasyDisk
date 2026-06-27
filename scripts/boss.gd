@@ -71,14 +71,14 @@ func _physics_process(delta: float) -> void:
 	_update_boss_attacks(delta)
 
 
-func take_damage(amount: float) -> void:
+func take_damage(amount: float, feedback := {}) -> void:
 	var final_amount := amount
 	if amount < max_health and randf() < dodge_chance:
 		_flash_dodge()
 		return
 	if shield_active:
 		final_amount *= shield_damage_reduction
-	super(final_amount)
+	super(final_amount, feedback)
 
 
 func _update_boss_attacks(delta: float) -> void:

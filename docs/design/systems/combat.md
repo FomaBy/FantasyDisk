@@ -46,6 +46,15 @@
 - У игрока есть HP, defense и dodge.
 - Враги наносят contact damage по `contact_range`, который подгоняется под видимый размер спрайта.
 - При любом уроне по игроку HUD показывает `DamageFlashOverlay`: alpha peak ~0.20, fade ~0.32с, без стакания до непрозрачности, пауза-aware.
+- SCRUM-497 добавляет visual-only боевой feedback над целями: каждый hit по `Enemy`
+  показывает краткую floating damage number (~0.6с lift/fade), красный
+  outline/flash по видимому телу и, если metadata hit содержит `critical=true`,
+  отдельный красный `!` marker. Лечение игрока (`heal_percent` и vampirism/drain
+  paths) показывает зелёное `+N` над игроком. Gameplay timing, damage, targeting
+  и balance не меняются; плотные AoE ограничены глобальными caps
+  `combat_feedback_labels=42` и `combat_feedback_flashes=36`.
+- Feedback layer управляется persisted setting `combat_feedback` в
+  `user://settings.cfg`; настройка включена по умолчанию.
 - Над обычными врагами, элитками, призванными врагами и боссами рисуются дешевые HP bars через `scripts/enemy_health_bar.gd`.
 - HP bar всегда получает фактическую пару `health / max_health`: враги вызывают `refresh_health_bar()` после runtime-скейлинга волн/элиток/босса и сразу после получения урона. Boss overhead bar не заменяет отдельный boss UI и удаляется вместе с boss node.
 

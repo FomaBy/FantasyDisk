@@ -31,6 +31,7 @@ var _last_direction := Vector2.RIGHT
 var _swinging := false
 var _hit_targets := []
 var _swing_tween: Tween = null
+var _last_attack_crit := false
 
 
 func _ready() -> void:
@@ -173,7 +174,7 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 		if enemy_node.has_method("take_damage"):
 			_hit_targets.append(enemy_node)
 			var dealt := _rolled_damage(owner_node)
-			enemy_node.take_damage(dealt)
+			_call_take_damage(enemy_node, dealt, {"critical": _last_attack_crit, "damage_type": "physical"})
 			if owner_node.has_method("on_weapon_hit"):
 				owner_node.on_weapon_hit(enemy_node, dealt)
 			_apply_unique_melee_hit_effects(owner_node, enemy_node, attack_direction, dealt)
@@ -261,6 +262,21 @@ func _is_enemy_inside_frustum(owner_node: Node2D, enemy_node: Node2D, attack_dir
 	return side_distance <= half_width + 0.001
 
 
+func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
+	if _take_damage_accepts_feedback(enemy):
+		enemy.call("take_damage", amount, feedback)
+	else:
+		enemy.call("take_damage", amount)
+
+
+func _take_damage_accepts_feedback(enemy: Node) -> bool:
+	for method in enemy.get_method_list():
+		if str(method.get("name", "")) == "take_damage":
+			var args: Array = method.get("args", [])
+			return args.size() >= 2
+	return false
+
+
 func _rolled_damage(owner_node: Node2D) -> float:
 	var raw_parameters = owner_node.get("derived_parameters")
 	if not (raw_parameters is Dictionary):
@@ -268,8 +284,10 @@ func _rolled_damage(owner_node: Node2D) -> float:
 
 	var parameters: Dictionary = raw_parameters
 	var result := damage
+	_last_attack_crit = false
 	if randf() < float(parameters.get("crit_chance", 0.0)):
 		result *= float(parameters.get("crit_damage_multiplier", 1.0))
+		_last_attack_crit = true
 	return result
 
 

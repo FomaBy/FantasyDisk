@@ -5,6 +5,10 @@
 ## [Unreleased] — ветка dev (цель: 0.1.7)
 
 ### Added
+- Combat feedback layer (SCRUM-497): enemy hits now show short-lived floating
+  damage numbers, red hit outline/flash, distinct critical `!` markers and
+  green player healing numbers, with a persisted Settings toggle and active
+  label/effect caps for dense AoE.
 - UI render verifier gate (SCRUM-483): expanded `tests/ui_no_overlap_matrix_test.gd`
   to cover 1920x1080, 2560x1440 and 3840x2160 headless screen passes, text
   allocation overflow, parent content containment, peer-control overlap and

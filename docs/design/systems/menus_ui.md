@@ -432,6 +432,11 @@ OFF by default and persists through `scripts/game_settings.gd`; its tooltip
 documents the combat-only debug controls (right-click / Shift+left-click move
 target, middle-click teleport).
 
+SCRUM-497 adds `CombatFeedbackToggle` to the same «Управление» tab. It is a
+normal checkbox row inside `ControlsScroll`, persists as `combat_feedback` in
+`user://settings.cfg`, defaults ON, and controls floating damage/heal numbers,
+critical markers and hit flash/outline visuals without changing gameplay.
+
 SCRUM-441 is integrated in the same Settings pass. Resolution options use
 `scripts/display_resolution.gd` to compare requested window sizes against the
 physical usable monitor size (`usable_logical * screen_scale`) instead of only

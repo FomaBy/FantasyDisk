@@ -779,7 +779,11 @@ func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
 	if owner_node.get("health") == null or owner_node.get("max_health") == null:
 		return
 	var heal_amount := dealt_damage * heal_percent_of_damage * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER
-	owner_node.set("health", minf(float(owner_node.get("health")) + heal_amount, float(owner_node.get("max_health"))))
+	var before := float(owner_node.get("health"))
+	owner_node.set("health", minf(before + heal_amount, float(owner_node.get("max_health"))))
+	var healed := float(owner_node.get("health")) - before
+	if healed > 0.01 and owner_node.has_method("show_combat_feedback_number"):
+		owner_node.show_combat_feedback_number(healed, "heal")
 
 
 func _fire_sound_wave(owner_node: Node2D, direction: Vector2) -> void:
@@ -1752,9 +1756,13 @@ func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: 
 			used[current_target.get_instance_id()] = true
 	AttackVfx.beam(_projectile_parent(), previous_position, owner_node.global_position, beam_width * 0.44, Color(visual_color.r, visual_color.g, visual_color.b, 0.25))
 	if healed > 0.01 and owner_node.get("health") != null and owner_node.get("max_health") != null:
-		owner_node.set("health", minf(float(owner_node.get("max_health")), float(owner_node.get("health")) + healed))
+		var before := float(owner_node.get("health"))
+		owner_node.set("health", minf(float(owner_node.get("max_health")), before + healed))
+		var actual_healed := float(owner_node.get("health")) - before
 		if owner_node.has_method("_show_heal_vfx"):
 			owner_node.call("_show_heal_vfx")
+		if actual_healed > 0.01 and owner_node.has_method("show_combat_feedback_number"):
+			owner_node.show_combat_feedback_number(actual_healed, "heal")
 	if summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(summon_support_heal_percent)
 
@@ -1945,7 +1953,7 @@ func _is_enemy_inside_wave(origin: Vector2, enemy_position: Vector2, direction: 
 
 func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := true) -> void:
 	if enemy != null and is_instance_valid(enemy) and enemy.has_method("take_damage"):
-		enemy.take_damage(amount)
+		_call_take_damage(enemy, amount, {"critical": _last_attack_crit and apply_unique_melee_effects})
 		var owner_node := _owner_node()
 		if owner_node != null and owner_node.has_method("on_weapon_hit"):
 			owner_node.on_weapon_hit(enemy, amount)
@@ -2026,6 +2034,21 @@ func _damage_enemies_in_segment(start: Vector2, finish: Vector2, width: float, a
 
 func _has_enemy_in_circle(origin: Vector2, radius: float) -> bool:
 	return TARGET_QUERY.has_in_radius(self, origin, radius)
+
+
+func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
+	if _take_damage_accepts_feedback(enemy):
+		enemy.call("take_damage", amount, feedback)
+	else:
+		enemy.call("take_damage", amount)
+
+
+func _take_damage_accepts_feedback(enemy: Node) -> bool:
+	for method in enemy.get_method_list():
+		if str(method.get("name", "")) == "take_damage":
+			var args: Array = method.get("args", [])
+			return args.size() >= 2
+	return false
 
 
 func _push_enemy(enemy: Node2D, direction: Vector2) -> void:

@@ -3290,6 +3290,21 @@ func _show_settings_menu() -> void:
 	)
 	_add_settings_control_row(controls_box, "Дебаг-режим", debug_toggle)
 
+	var feedback_toggle := CheckBox.new()
+	feedback_toggle.name = "CombatFeedbackToggle"
+	feedback_toggle.custom_minimum_size = Vector2(300, 42)
+	feedback_toggle.button_pressed = game.combat_feedback_enabled
+	feedback_toggle.text = "Вкл." if feedback_toggle.button_pressed else "Выкл."
+	feedback_toggle.tooltip_text = "Боевые цифры, крит-маркеры, вспышка попадания и зелёные числа лечения."
+	_style_checkbox(feedback_toggle)
+	feedback_toggle.toggled.connect(func(pressed: bool) -> void:
+		game.combat_feedback_enabled = pressed
+		game.get_tree().root.set_meta("combat_feedback", pressed)
+		feedback_toggle.text = "Вкл." if pressed else "Выкл."
+		game.save_game_settings()
+	)
+	_add_settings_control_row(controls_box, "Боевой фидбек", feedback_toggle)
+
 	for input_action in game.INPUT_ACTIONS:
 		var action_name: String = input_action["action"]
 		var row := HBoxContainer.new()

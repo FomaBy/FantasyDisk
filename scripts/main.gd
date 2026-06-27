@@ -376,6 +376,7 @@ var combat
 var meta_state := {}
 # Подача боя: тряска камеры (тумблер в настройках, умеренная по умолчанию).
 var screen_shake_enabled := true
+var combat_feedback_enabled := true
 # Единый Escape-назад: текущий экран регистрирует действие возврата;
 # сбрасывается при каждой очистке UI. В бою Escape обрабатывается отдельно (пауза).
 var ui_escape_action := Callable()
@@ -451,9 +452,11 @@ func _load_game_settings() -> void:
 	if not ["nearest", "cursor"].has(aim_mode):
 		aim_mode = "nearest"
 	screen_shake_enabled = bool(settings.get("screen_shake", true))
+	combat_feedback_enabled = bool(settings.get("combat_feedback", true))
 	debug_mode_enabled = bool(settings.get("debug_mode", false))
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
+	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
 	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
 	_apply_audio_settings()
@@ -470,6 +473,7 @@ func save_game_settings() -> void:
 	for key in audio_settings.keys():
 		settings[key] = audio_settings[key]
 	settings["screen_shake"] = screen_shake_enabled
+	settings["combat_feedback"] = combat_feedback_enabled
 	settings["debug_mode"] = debug_mode_enabled
 	settings["aim_mode"] = aim_mode
 	if ui != null:
@@ -477,6 +481,7 @@ func save_game_settings() -> void:
 	else:
 		settings["input_bindings"] = input_bindings.duplicate(true)
 	GAME_SETTINGS.save_settings(settings)
+	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
 	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
 

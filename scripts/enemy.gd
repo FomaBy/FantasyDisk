@@ -84,6 +84,17 @@ const ELITE_SHARD_FAN_BURST_TEXTURE := preload("res://assets/sprites/effects/ene
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
 const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
+const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
+const COMBAT_FEEDBACK_FLASH_GROUP := "combat_feedback_flashes"
+const COMBAT_FEEDBACK_MAX_LABELS := 42
+const COMBAT_FEEDBACK_MAX_FLASHES := 36
+const COMBAT_FEEDBACK_DAMAGE_COLORS := {
+	"physical": Color(1.0, 0.84, 0.42, 1.0),
+	"magic": Color(0.68, 0.46, 1.0, 1.0),
+	"dot": Color(0.46, 1.0, 0.42, 1.0),
+	"sound": Color(0.30, 0.86, 1.0, 1.0),
+	"true": Color(1.0, 0.96, 0.82, 1.0),
+}
 
 # Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
 # contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
@@ -214,15 +225,17 @@ func _physics_process(delta: float) -> void:
 	_update_elite_patterns(delta, player, distance)
 
 
-func take_damage(amount: float) -> void:
+func take_damage(amount: float, feedback := {}) -> void:
 	if _death_lifecycle_started:
 		return
+	var feedback_data: Dictionary = feedback if feedback is Dictionary else {}
 	var final_amount := amount * StatusEffects.damage_taken_multiplier(self)
 	if _elite_shield_active:
 		final_amount *= elite_shield_damage_reduction
 		_apply_elite_reflect_thorns(amount)
 	health -= final_amount
 	_update_health_bar()
+	_show_combat_feedback(final_amount, feedback_data)
 	if is_inside_tree():
 		if _cached_audio == null or not is_instance_valid(_cached_audio):
 			_cached_audio = get_node_or_null("/root/AudioManager")
@@ -247,6 +260,132 @@ func take_damage(amount: float) -> void:
 			if rig != null and rig.has_method("spawn_death_ghost"):
 				rig.spawn_death_ghost()
 			queue_free()
+
+
+func _show_combat_feedback(amount: float, feedback: Dictionary) -> void:
+	if amount <= 0.0 or not _combat_feedback_enabled():
+		return
+	_show_hit_flash()
+	if bool(feedback.get("suppress_number", false)):
+		return
+	if _feedback_group_count(COMBAT_FEEDBACK_LABEL_GROUP) >= COMBAT_FEEDBACK_MAX_LABELS:
+		return
+	var critical := bool(feedback.get("critical", false))
+	var damage_type := str(feedback.get("damage_type", "true"))
+	var label := Label.new()
+	label.name = "CombatCritNumber" if critical else "CombatDamageNumber"
+	label.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
+	label.text = "! %d" % int(round(amount)) if critical else str(int(round(amount)))
+	label.modulate = Color(1.0, 0.24, 0.16, 1.0) if critical else COMBAT_FEEDBACK_DAMAGE_COLORS.get(damage_type, COMBAT_FEEDBACK_DAMAGE_COLORS["true"])
+	label.add_theme_font_size_override("font_size", 30 if critical else 22)
+	label.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.01, 0.95))
+	label.add_theme_constant_override("outline_size", 6 if critical else 5)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.custom_minimum_size = Vector2(96.0, 34.0)
+	label.z_index = 3000
+	_feedback_parent().add_child(label)
+	label.global_position = global_position + Vector2(randf_range(-18.0, 18.0) - 48.0, -_feedback_height() - 20.0 + randf_range(-6.0, 6.0))
+	var target_position := label.global_position + Vector2(0.0, -44.0)
+	var tween := label.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "global_position", target_position, 0.62).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.42).set_delay(0.20)
+	tween.chain().tween_callback(label.queue_free)
+	if critical:
+		_show_critical_marker()
+
+
+func _show_critical_marker() -> void:
+	if _feedback_group_count(COMBAT_FEEDBACK_LABEL_GROUP) >= COMBAT_FEEDBACK_MAX_LABELS:
+		return
+	var marker := Label.new()
+	marker.name = "CombatCritMarker"
+	marker.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
+	marker.text = "!"
+	marker.modulate = Color(1.0, 0.06, 0.02, 1.0)
+	marker.add_theme_font_size_override("font_size", 34)
+	marker.add_theme_color_override("font_outline_color", Color(1.0, 0.78, 0.20, 0.95))
+	marker.add_theme_constant_override("outline_size", 4)
+	marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	marker.custom_minimum_size = Vector2(34.0, 38.0)
+	marker.z_index = 3001
+	_feedback_parent().add_child(marker)
+	marker.global_position = global_position + Vector2(18.0, -_feedback_height() - 36.0)
+	var tween := marker.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(marker, "global_position", marker.global_position + Vector2(0.0, -28.0), 0.48).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(marker, "modulate:a", 0.0, 0.28).set_delay(0.20)
+	tween.chain().tween_callback(marker.queue_free)
+
+
+func _show_hit_flash() -> void:
+	if _feedback_group_count(COMBAT_FEEDBACK_FLASH_GROUP) >= COMBAT_FEEDBACK_MAX_FLASHES:
+		return
+	var outline := Line2D.new()
+	outline.name = "CombatHitOutline"
+	outline.add_to_group(COMBAT_FEEDBACK_FLASH_GROUP)
+	var sprite_size := _visible_sprite_size()
+	var half_size := Vector2(maxf(sprite_size.x * 0.42, 24.0), maxf(sprite_size.y * 0.42, 24.0))
+	outline.points = PackedVector2Array([
+		Vector2(-half_size.x, -half_size.y),
+		Vector2(half_size.x, -half_size.y),
+		Vector2(half_size.x, half_size.y),
+		Vector2(-half_size.x, half_size.y),
+		Vector2(-half_size.x, -half_size.y),
+	])
+	outline.width = 3.0
+	outline.default_color = Color(1.0, 0.05, 0.02, 0.86)
+	outline.closed = true
+	outline.z_index = 2999
+	_feedback_parent().add_child(outline)
+	outline.global_position = global_position + Vector2(0.0, -sprite_size.y * 0.04)
+	var outline_tween := outline.create_tween()
+	outline_tween.tween_property(outline, "modulate:a", 0.0, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	outline_tween.tween_callback(outline.queue_free)
+
+	var body := _feedback_flash_body()
+	if body == null:
+		return
+	var original_modulate := body.modulate
+	body.modulate = original_modulate.lerp(Color(1.0, 0.15, 0.10, original_modulate.a), 0.62)
+	var body_tween := body.create_tween()
+	body_tween.tween_property(body, "modulate", original_modulate, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+func _combat_feedback_enabled() -> bool:
+	if not is_inside_tree():
+		return false
+	return bool(get_tree().root.get_meta("combat_feedback", true))
+
+
+func _feedback_group_count(group_name: String) -> int:
+	if not is_inside_tree():
+		return 0
+	return get_tree().get_nodes_in_group(group_name).size()
+
+
+func _feedback_parent() -> Node:
+	if is_inside_tree() and get_tree().current_scene != null:
+		return get_tree().current_scene
+	var parent := get_parent()
+	return parent if parent != null else self
+
+
+func _feedback_height() -> float:
+	return maxf(_visible_sprite_size().y * 0.5, contact_range) + 10.0
+
+
+func _feedback_flash_body() -> CanvasItem:
+	var full_frame := _full_frame_body()
+	if full_frame != null and full_frame.visible:
+		return full_frame
+	var rig := _cutout_rig()
+	if rig != null and rig.visible:
+		return rig
+	var body := _body_sprite()
+	if body != null:
+		return body
+	return null
 
 
 func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:

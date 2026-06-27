@@ -1,6 +1,24 @@
 extends "res://tests/runtime_smoke_test.gd"
 
 
+func _combat_feedback_nodes(name_filter := "") -> Array:
+	var nodes := []
+	for node in root.get_tree().get_nodes_in_group("combat_feedback_labels"):
+		if not is_instance_valid(node):
+			continue
+		if name_filter == "" or node.name == name_filter:
+			nodes.append(node)
+	return nodes
+
+
+func _combat_flash_nodes() -> Array:
+	var nodes := []
+	for node in root.get_tree().get_nodes_in_group("combat_feedback_flashes"):
+		if is_instance_valid(node):
+			nodes.append(node)
+	return nodes
+
+
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
 	var enemy_scene := load("res://scenes/Enemy.tscn") as PackedScene
@@ -64,6 +82,44 @@ func _initialize() -> void:
 	contact_enemy.call("take_damage", 1.0)
 	if absf(float(health_bar.get("value")) - float(contact_enemy.get("health"))) > 0.01:
 		_fail("Expected enemy health bar to match current HP.")
+		return
+	await process_frame
+	if _combat_feedback_nodes("CombatDamageNumber").is_empty():
+		_fail("Expected enemy hit to spawn a combat damage number.")
+		return
+	if _combat_flash_nodes().is_empty():
+		_fail("Expected enemy hit to spawn a short red hit outline/flash.")
+		return
+
+	contact_enemy.call("take_damage", 0.25, {"critical": true})
+	await process_frame
+	if _combat_feedback_nodes("CombatCritNumber").is_empty() or _combat_feedback_nodes("CombatCritMarker").is_empty():
+		_fail("Expected critical enemy hit to spawn a distinct crit number and marker.")
+		return
+
+	var player_health_before_heal := float(player.get("health"))
+	player.call("heal_percent", 0.05)
+	await process_frame
+	if float(player.get("health")) <= player_health_before_heal or _combat_feedback_nodes("CombatHealNumber").is_empty():
+		_fail("Expected player healing to spawn a green combat heal number.")
+		return
+
+	root.get_tree().root.set_meta("combat_feedback", false)
+	var disabled_count := _combat_feedback_nodes().size()
+	contact_enemy.call("take_damage", 0.05)
+	await process_frame
+	if _combat_feedback_nodes().size() > disabled_count:
+		_fail("Expected combat_feedback=false to suppress new combat labels.")
+		return
+	root.get_tree().root.set_meta("combat_feedback", true)
+
+	contact_enemy.set("max_health", 999.0)
+	contact_enemy.set("health", 999.0)
+	for index in range(60):
+		contact_enemy.call("take_damage", 0.01)
+	await process_frame
+	if _combat_feedback_nodes().size() > 42:
+		_fail("Expected combat feedback labels to respect the active cap under dense AoE.")
 		return
 
 	player.set("_damage_invulnerability_left", 0.0)

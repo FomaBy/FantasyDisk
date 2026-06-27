@@ -17,6 +17,7 @@ const DEFAULTS := {
 	"music_enabled": true,
 	"sfx_enabled": true,
 	"screen_shake": true,
+	"combat_feedback": true,
 	"debug_mode": false,
 	"aim_mode": "nearest",
 	"last_seen_version": "0.0.0",
@@ -42,6 +43,7 @@ static func load_settings() -> Dictionary:
 	settings["music_enabled"] = bool(settings["music_enabled"])
 	settings["sfx_enabled"] = bool(settings["sfx_enabled"])
 	settings["screen_shake"] = bool(settings["screen_shake"])
+	settings["combat_feedback"] = bool(settings["combat_feedback"])
 	settings["debug_mode"] = bool(settings["debug_mode"])
 	settings["aim_mode"] = str(settings["aim_mode"])
 	if not ["nearest", "cursor"].has(settings["aim_mode"]):
