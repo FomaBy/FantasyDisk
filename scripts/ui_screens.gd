@@ -4083,7 +4083,12 @@ func _show_level_up_screen(return_to_map := false) -> void:
 				if game.combat_active:
 					_create_hud()
 					_update_hud()
+				elif game.level_up_return_to_event and not game.current_event_definition.is_empty():
+					# SCRUM-530: level-up был открыт с узла-события — возвращаемся на него.
+					game.level_up_return_to_event = false
+					_return_from_level_up_to_event()
 				elif return_to_map or not game.combat_active:
+					game.level_up_return_to_event = false
 					game.save_run_autosave("level_up_choice")
 					game.route._show_battle_map()
 		)
@@ -4111,7 +4116,13 @@ func _show_level_up_screen(return_to_map := false) -> void:
 			_create_hud()
 			_update_hud()
 			_update_level_up_button()
+		elif game.level_up_return_to_event and not game.current_event_definition.is_empty():
+			# SCRUM-530: «Позже»/Escape на level-up, открытом с события — пик сохранён,
+			# возвращаемся на то же событие (угловая кнопка level-up появится снова).
+			game.level_up_return_to_event = false
+			_return_from_level_up_to_event()
 		else:
+			game.level_up_return_to_event = false
 			game.save_run_autosave("level_up_deferred")
 			game.route._show_battle_map()
 
@@ -5006,6 +5017,12 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	var event_definition: Dictionary = {}
 	if route_node.has("event_id"):
 		event_definition = game.EVENT_DATA.event_by_id(str(route_node.get("event_id", "")))
+	elif not game.current_event_definition.is_empty():
+		# SCRUM-530: повторный вход в это же случайное (без event_id) событие — с карты,
+		# после отложенного level-up или из автосейв-восстановления — НЕ рероллит набор
+		# опций. current_event_definition очищается при выходе с события (выбор опции / «Назад»
+		# / старт боя), поэтому непустое значение здесь = тот же незавершённый узел-событие.
+		event_definition = game.current_event_definition.duplicate(true)
 	if event_definition.is_empty():
 		event_definition = game.EVENT_DATA.pick_event(game.used_event_ids, game.rng)
 	var event_id := str(event_definition.get("id", ""))
@@ -5092,6 +5109,13 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		card.focus_neighbor_bottom = next.get_path()
 	if not focus_chain.is_empty():
 		focus_chain[0].grab_focus()
+
+	# SCRUM-530: Escape на событии открывает run-pause поверх экрана (консистентно с боем/
+	# другими забеговыми экранами). На практике Escape перехватывается раньше через
+	# _can_open_pause_dossier() (EventScreen в списке), но _create_menu_box→_clear_ui сбрасывает
+	# ui_escape_action в начале функции, поэтому ставим явный фолбэк — если экран события когда-
+	# либо перестанет опознаваться dossier-проверкой, Escape всё равно не станет «тихим тупиком».
+	game.ui_escape_action = _show_pause_menu
 
 
 func _show_victory_screen() -> void:
@@ -5448,8 +5472,30 @@ func _open_pending_level_up() -> void:
 	if game.pending_level_ups <= 0:
 		return
 
+	# SCRUM-530: помним, открыт ли level-up С УЗЛА-СОБЫТИЯ — тогда после выбора/«Позже»
+	# возвращаемся на то же событие, а не на карту (иначе случайное событие рероллится).
+	# Пересчитываем на каждом открытии: нейтрализует устаревший флаг от прошлого узла.
+	game.level_up_return_to_event = _is_event_screen_active()
 	game.push_pause("level_up")
 	_show_level_up_screen(game.level_up_return_to_map)
+
+
+func _is_event_screen_active() -> bool:
+	if game.current_event_definition.is_empty():
+		return false
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	return game.ui_layer.find_child("EventScreen", true, false) != null
+
+
+func _return_from_level_up_to_event() -> void:
+	# SCRUM-530: повторно рендерим тот же узел-событие из сохранённого current_event_definition
+	# (route_node без event_id → ветка переиспользования в _show_event_screen не рероллит).
+	if game.current_event_definition.is_empty():
+		game.save_run_autosave("level_up_choice")
+		game.route._show_battle_map()
+		return
+	_show_event_screen({"type": "event", "name": str(game.current_event_definition.get("title", "Событие"))})
 
 
 func _show_level_up_toast() -> void:

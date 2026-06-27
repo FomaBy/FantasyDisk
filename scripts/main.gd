@@ -337,6 +337,9 @@ var used_event_ids := []
 var current_event_definition := {}
 var pending_event_combat := {}
 var level_up_return_to_map := false
+# SCRUM-530: level-up, открытый с узла-события, должен вернуть на ТО ЖЕ событие, а не на
+# карту (иначе для случайного события происходит «тихий рерол» исходного набора опций).
+var level_up_return_to_event := false
 var meta_points := 0
 var berserk_ascension_unlocked := false
 var spawn_wave_index := 0

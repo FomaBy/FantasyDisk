@@ -63,6 +63,7 @@ const REWARD_ELITE_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
 const ECONOMY_CHOICE_WIDE_TEXTURE := MINIMAL_CARD_TEXTURE
 const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := MINIMAL_CARD_TEXTURE
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.5
+const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
 const DUPLICATE_ARTIFACT_SKIP_PATH_PREFIXES := ["res://build/dmg"]
@@ -129,12 +130,15 @@ func _initialize() -> void:
 		push_error("Expected the last vertical route row to be boss-only.")
 		quit(1)
 		return
-	for early_step_index in range(mini(2, route_nodes.size() - 1)):
+	for early_step_index in range(mini(ROUTE_START_BATTLE_ONLY_ROWS, route_nodes.size() - 1)):
 		for route_node in route_nodes[early_step_index]:
 			if str(route_node.get("type", "")) != "battle":
 				push_error("Expected route row %d to contain only normal battle nodes before noncombat route nodes can appear." % early_step_index)
 				quit(1)
 				return
+	if not _assert_route_shop_distribution(route_nodes, "initial route"):
+		quit(1)
+		return
 	var has_limited_route_branch := false
 	for step_index in range(route_nodes.size() - 1):
 		var next_count := (route_nodes[step_index + 1] as Array).size()
@@ -257,12 +261,15 @@ func _initialize() -> void:
 	(main.get("rng") as RandomNumberGenerator).seed = 8675309
 	for _attempt in range(45):
 		var generated_route: Array = main.call("_generate_route")
-		for early_step_index in range(mini(2, generated_route.size() - 1)):
+		for early_step_index in range(mini(ROUTE_START_BATTLE_ONLY_ROWS, generated_route.size() - 1)):
 			for route_node in generated_route[early_step_index]:
 				if str(route_node.get("type", "")) != "battle":
 					push_error("Expected every generated route row %d to contain only battle nodes." % early_step_index)
 					quit(1)
 					return
+		if not _assert_route_shop_distribution(generated_route, "generated route attempt %d" % _attempt):
+			quit(1)
+			return
 		for row in generated_route:
 			for route_node in row:
 				if str(route_node.get("type", "")) == "elite_battle":
@@ -1759,6 +1766,34 @@ func _write_weapon_orbit_qa_dump(player: Node, weapon: Node) -> void:
 		file.close()
 
 
+func _assert_route_shop_distribution(route_nodes: Array, context: String) -> bool:
+	var non_boss_rows := maxi(route_nodes.size() - 1, 0)
+	var half_split := clampi(ceili(float(non_boss_rows) * 0.5), 1, maxi(non_boss_rows, 1))
+	var shop_count := 0
+	var first_half_shops := 0
+	var second_half_shops := 0
+	for row_index in range(non_boss_rows):
+		var row: Array = route_nodes[row_index]
+		for route_node in row:
+			if str(route_node.get("type", "")) != "shop":
+				continue
+			shop_count += 1
+			if row_index < ROUTE_START_BATTLE_ONLY_ROWS:
+				push_error("Expected no shop in battle-only start row %d for %s." % [row_index, context])
+				return false
+			if row_index < half_split:
+				first_half_shops += 1
+			else:
+				second_half_shops += 1
+	if shop_count != 2:
+		push_error("Expected exactly 2 shop nodes on %s, got %d." % [context, shop_count])
+		return false
+	if first_half_shops != 1 or second_half_shops != 1:
+		push_error("Expected one shop in each route half for %s, got first=%d second=%d." % [context, first_half_shops, second_half_shops])
+		return false
+	return true
+
+
 func _test_route_map_start_selection(main_scene: PackedScene) -> void:
 	var route_main := main_scene.instantiate()
 	root.add_child(route_main)
@@ -1943,6 +1978,81 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		quit(1)
 		return
 
+	# SCRUM-530: Escape на экране события открывает run-pause ПОВЕРХ события (не no-op).
+	# Проверяем через реальный _input/Escape, а не прямой вызов _show_pause_menu.
+	var event_escape := InputEventKey.new()
+	event_escape.keycode = KEY_ESCAPE
+	event_escape.pressed = true
+	route_main.call("_input", event_escape)
+	await process_frame
+	if route_main.find_child("RunPauseMenuRoot", true, false) == null:
+		push_error("Expected Escape on the event screen to open the run pause menu (SCRUM-530).")
+		quit(1)
+		return
+	if route_main.find_child("EventScreen", true, false) == null:
+		push_error("Expected the event screen to remain under the pause menu opened via Escape (SCRUM-530).")
+		quit(1)
+		return
+	route_main.ui._resume_game()
+	await process_frame
+	if route_main.find_child("EventChoiceButton0", true, false) == null:
+		push_error("Expected event choices to survive an Escape→pause→resume cycle (SCRUM-530).")
+		quit(1)
+		return
+
+	# SCRUM-530: level-up, открытый С УЗЛА-СОБЫТИЯ, после выбора возвращает на ТО ЖЕ событие
+	# (тот же набор опций, route_stage не сдвинут, событие не подменено), а не уводит на карту.
+	var event_id_before := str((route_main.get("current_event_definition") as Dictionary).get("id", ""))
+	var event_stage_before := int(route_main.get("route_stage"))
+	route_main.set("pending_level_ups", 1)
+	route_main.ui._update_level_up_button()
+	await process_frame
+	if route_main.find_child("LevelUpPlusButton", true, false) == null:
+		push_error("Expected a pending level-up on the event to surface the corner + button (SCRUM-530).")
+		quit(1)
+		return
+	route_main.call("_open_pending_level_up")
+	await process_frame
+	var event_level_reward := route_main.find_child("LevelUpRewardButton0", true, false) as Button
+	if event_level_reward == null:
+		push_error("Expected opening the pending level-up from the event to show reward choices (SCRUM-530).")
+		quit(1)
+		return
+	event_level_reward.emit_signal("pressed")
+	await process_frame
+	await process_frame
+	if route_main.find_child("RouteMapScreen", true, false) != null:
+		push_error("Expected a level-up chosen from an event to return to the event, not the route map (SCRUM-530).")
+		quit(1)
+		return
+	if route_main.find_child("EventScreen", true, false) == null:
+		push_error("Expected to land back on the event screen after resolving a level-up opened from it (SCRUM-530).")
+		quit(1)
+		return
+	var event_id_after := str((route_main.get("current_event_definition") as Dictionary).get("id", ""))
+	if event_id_after == "" or event_id_after != event_id_before:
+		push_error("Expected the event to keep the same id after a level-up (no silent reroll), got '%s' vs '%s' (SCRUM-530)." % [event_id_after, event_id_before])
+		quit(1)
+		return
+	if int(route_main.get("route_stage")) != event_stage_before:
+		push_error("Expected route_stage to stay put when returning from a level-up to the event (SCRUM-530).")
+		quit(1)
+		return
+	if int(route_main.get("pending_level_ups")) != 0:
+		push_error("Expected the chosen level-up pick to be spent on return to the event (SCRUM-530).")
+		quit(1)
+		return
+	var event_return_focus := route_main.get_viewport().gui_get_focus_owner()
+	if event_return_focus == null or not str(event_return_focus.name).begins_with("EventChoiceButton"):
+		push_error("Expected keyboard focus back on an event option after returning from the level-up (SCRUM-530).")
+		quit(1)
+		return
+
+	event_choice = route_main.find_child("EventChoiceButton0", true, false) as Button
+	if event_choice == null:
+		push_error("Expected event options to be present again after returning from the level-up (SCRUM-530).")
+		quit(1)
+		return
 	event_choice.emit_signal("pressed")
 	await process_frame
 	if int(route_main.get("route_stage")) != 1:
