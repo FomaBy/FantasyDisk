@@ -106,15 +106,22 @@ static func _route_fixtures() -> Array:
 		{
 			"id": "combat_heavy",
 			"title": "Combat-Heavy Route",
+			# SCRUM-507: магазин перенесён со stage 7 на stage 4. Раньше единственная лавка
+			# боевого маршрута выпадала на поздней стадии (stage 7), где экспоненциальный
+			# stage_scaled_cost раздувал среднюю цену до ~183 против 76-97 у других маршрутов
+			# → разброс affordable offers 73% (5.2 vs 9.0): «богат, но купить нечего по карману».
+			# Лавка mid-run (stage 4) репрезентативнее (боевой путь тоже заходит в магазин по ходу)
+			# и выравнивает покупательную способность. Маршрут остаётся combat-heavy: те же 2 элитки
+			# и число боёв, 11 узлов, стадии монотонны 0→10.
 			"nodes": [
 				{"type": "battle", "stage": 0},
 				{"type": "battle", "stage": 1},
 				{"type": "elite", "stage": 2},
 				{"type": "battle", "stage": 3},
-				{"type": "battle", "stage": 4},
-				{"type": "elite", "stage": 5},
-				{"type": "battle", "stage": 6},
-				{"type": "shop", "stage": 7},
+				{"type": "shop", "stage": 4},
+				{"type": "battle", "stage": 5},
+				{"type": "elite", "stage": 6},
+				{"type": "battle", "stage": 7},
 				{"type": "upgrade", "stage": 8},
 				{"type": "battle", "stage": 9},
 				{"type": "boss", "stage": 10},
