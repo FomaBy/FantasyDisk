@@ -266,14 +266,15 @@ Debug-режим карты: клавиша `F12` переключает `route_
 
 ### Случайные События
 
-Event-node открывает один data-driven сценарий из `scripts/event_data.gd`. В пуле 12 сценариев: `wandering_bard`, `cursed_altar`, `road_ambush`, `old_well`, `wounded_mercenary`, `goblin_lottery`, `hot_spring`, `mirror_phantom`, `stone_guardian`, `heroes_graveyard`, `fallen_star`, `training_dummies`.
+Event-node открывает один data-driven сценарий из `scripts/event_data.gd`. В пуле 17 сценариев: `wandering_bard`, `cursed_altar`, `road_ambush`, `old_well`, `wounded_mercenary`, `goblin_lottery`, `hot_spring`, `mirror_phantom`, `stone_guardian`, `heroes_graveyard`, `fallen_star`, `training_dummies`, `warden_gate_trial`, `abandoned_forge`, `merchant_caravan`, `whispering_grove`, `collapsing_mineshaft`.
 
 Правила:
 - один и тот же event ID не повторяется в рамках акта, пока пул не исчерпан;
 - каждый сценарий имеет историю и 2-3 выбора;
 - честные сделки заранее показывают цену HP/золота/стата;
+- часть сценариев класс-реактивны: исход ветвится по «архетипному» атрибуту героя через литеральные stat-checks (endurance=танк, intelligence=маг, leadership=призыватель). «Свой» класс проходит профильную проверку легче и/или получает усиленный профильный бонус, мискласс — рискует. Сейчас класс-реактивны `warden_gate_trial` (3 архетипные створки) и `abandoned_forge` (профильная заготовка танка/мага);
 - hidden-risk варианты помечены как риск и могут дать артефакт, хлам или бой;
-- attribute checks используют текущие базовые характеристики игрока (`strength`, `agility`, `intelligence`, `perception`, `knowledge`, `endurance`);
+- attribute checks используют текущие базовые характеристики игрока (`strength`, `agility`, `intelligence`, `perception`, `knowledge`, `endurance`, `leadership`);
 - платные варианты (`cost_money`) показывают stage-scaled цену в золоте, отключаются при недостатке денег с tooltip-пояснением и дополнительно блокируются в Back-end применении, чтобы прямой вызов не мог бесплатно продвинуть маршрут;
 - боевые исходы стартуют обычный или элитный бой с временным `pending_event_combat` payload: enemy health multiplier, reward multiplier и optional post-combat reward очищаются после боя;
 - небоевые исходы применяются к run snapshot через `stats`, `mods`, `money`, `heal_percent`, `health_percent_cost`, `random_artifact`.

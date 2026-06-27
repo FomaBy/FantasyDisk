@@ -644,6 +644,11 @@ func _initialize() -> void:
 	root.add_child(contact_enemy)
 	contact_enemy.set("max_health", 100000.0)
 	contact_enemy.set("health", 100000.0)
+	# SCRUM-548: реальный спавн скейлит max_health и затем рефрешит health bar
+	# (combat_director._scale_enemy_for_current_wave -> _refresh_enemy_health_bar).
+	# Тест выставляет max_health напрямую, поэтому повторяем тот же refresh, иначе
+	# бар остаётся на дефолтном max_value из _ready и проверка max_value не сходится.
+	contact_enemy.call("refresh_health_bar")
 	contact_enemy.global_position = player.global_position
 	await process_frame
 	if int(contact_enemy.get("collision_mask")) & 1 != 0:
@@ -2390,6 +2395,20 @@ func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 				check_outcomes += 1
 	if combat_outcomes < 3 or reward_outcomes < 3 or rest_outcomes < 1 or check_outcomes < 2:
 		_fail("Expected random events to cover combat, reward, rest and attribute-check outcomes.")
+		return
+
+	# SCRUM-501: класс-реактивность — минимум 2 события ветвят исход по разным
+	# архетипным атрибутам (≥2 различных check.stat среди choices одного события).
+	var class_reactive_events := 0
+	for event in EventData.RANDOM_EVENTS:
+		var check_stats := {}
+		for choice in (event.get("choices", []) as Array):
+			if choice.has("check"):
+				check_stats[str((choice.get("check", {}) as Dictionary).get("stat", ""))] = true
+		if check_stats.size() >= 2:
+			class_reactive_events += 1
+	if class_reactive_events < 2:
+		_fail("Expected at least two class-reactive events branching on different archetype attributes.")
 		return
 
 	var rng := RandomNumberGenerator.new()
