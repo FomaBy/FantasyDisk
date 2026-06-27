@@ -9,6 +9,7 @@ const MetaProgression := preload("res://scripts/meta_progression.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
 const EnemyScript := preload("res://scripts/enemy.gd")
+const ThreatIndicatorsScript := preload("res://scripts/threat_indicators.gd")
 const EventData := preload("res://scripts/event_data.gd")
 const Glossary := preload("res://scripts/glossary.gd")
 const RunAutosave := preload("res://scripts/run_autosave.gd")
@@ -77,6 +78,9 @@ func _initialize() -> void:
 		quit(1)
 		return
 	if not _test_damage_type_palette():
+		quit(1)
+		return
+	if not _test_threat_indicator_edge():
 		quit(1)
 		return
 
@@ -3049,6 +3053,40 @@ func _test_weapon_orbit_no_overlap() -> void:
 		return
 	_write_weapon_orbit_qa_dump(player, weapon)
 	player.queue_free()
+
+
+# SCRUM-498: геометрия off-screen threat-маркера — детерминированно, без боя.
+# Цель внутри inset-области → маркер не нужен; цель за краем → точка клампится на
+# границу inset-прямоугольника в её направлении (учёт camera-clamp у краёв арены).
+func _test_threat_indicator_edge() -> bool:
+	var ThreatOverlay := ThreatIndicatorsScript
+	var inset_min := Vector2(30, 30)
+	var inset_max := Vector2(1250, 690)
+	var center := Vector2(640, 360)
+	# 1) Цель в кадре — не off-screen.
+	var on := ThreatOverlay.screen_edge_point(center, Vector2(700, 400), inset_min, inset_max)
+	if bool(on["offscreen"]):
+		push_error("Threat indicator: on-screen target must not be flagged off-screen.")
+		return false
+	# 2) Цель далеко справа — маркер на правой границе inset, y внутри диапазона.
+	var right = ThreatOverlay.screen_edge_point(center, Vector2(5000, 360), inset_min, inset_max)
+	if not bool(right["offscreen"]):
+		push_error("Threat indicator: far target must be flagged off-screen.")
+		return false
+	if absf(float(right["pos"].x) - inset_max.x) > 0.5:
+		push_error("Threat indicator: edge point must clamp to the inset right border, got %s." % str(right["pos"]))
+		return false
+	if right["pos"].y < inset_min.y or right["pos"].y > inset_max.y:
+		push_error("Threat indicator: clamped edge point must stay inside the viewport band.")
+		return false
+	# 3) Диагональная цель за углом — точка строго на границе inset.
+	var diag = ThreatOverlay.screen_edge_point(center, Vector2(-4000, -4000), inset_min, inset_max)
+	var p: Vector2 = diag["pos"]
+	var on_border := absf(p.x - inset_min.x) <= 0.5 or absf(p.y - inset_min.y) <= 0.5
+	if not (bool(diag["offscreen"]) and on_border):
+		push_error("Threat indicator: diagonal off-screen target must clamp onto an inset border, got %s." % str(p))
+		return false
+	return true
 
 
 # SCRUM-523: единая палитра типов урона + маршрутизация канала оружия в тип.

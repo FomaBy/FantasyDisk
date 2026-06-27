@@ -7728,6 +7728,7 @@ func _create_hud() -> void:
 	_create_artifact_hud_row(root)
 	_create_damage_flash_overlay(root)
 	_create_low_hp_vignette(root)
+	_create_threat_indicator_overlay(root)
 	root.resized.connect(func() -> void:
 		_layout_combat_hud(root)
 	)
@@ -8019,6 +8020,17 @@ const LOW_HP_VIGNETTE_OFF_RATIO := 0.34
 const LOW_HP_VIGNETTE_ALPHA := 0.26
 const LOW_HP_VIGNETTE_FADE_IN := 0.42
 const LOW_HP_VIGNETTE_FADE_OUT := 0.50
+
+
+const ThreatIndicatorOverlay := preload("res://scripts/threat_indicators.gd")
+
+
+func _create_threat_indicator_overlay(root: Control) -> void:
+	# SCRUM-498: edge-стрелки к внеэкранным угрозам (босс/элитки/стреляющие дальнобои).
+	var overlay := ThreatIndicatorOverlay.new()
+	overlay.game = game
+	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(overlay)
 
 
 func _create_low_hp_vignette(root: Control) -> void:

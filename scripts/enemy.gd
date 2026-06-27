@@ -33,6 +33,10 @@ signal elite_attack_phase_changed(attack_id: String, phase: String)
 
 var health := 0.0
 var _shoot_cooldown := 0.0
+# SCRUM-498: сколько ещё секунд враг считается «активно ведущим огонь» после выстрела —
+# питает off-screen threat-маркер только реально стреляющих дальнобоев.
+const THREAT_FIRE_MARKER_DURATION := 2.6
+var _threat_fire_marker_left := 0.0
 var _summon_cooldown := 0.0
 var _contact_cooldown := 0.0
 var _contact_windup_left := -1.0
@@ -195,6 +199,9 @@ func _apply_collision_profile() -> void:
 
 func _physics_process(delta: float) -> void:
 	StatusEffects.tick(self, delta)
+	# SCRUM-498: окно «недавно стрелял» для off-screen threat-маркера дальнобоев.
+	if _threat_fire_marker_left > 0.0:
+		_threat_fire_marker_left = maxf(0.0, _threat_fire_marker_left - delta)
 	var player := _player()
 	if player == null:
 		velocity = _consume_knockback(delta)
@@ -705,6 +712,18 @@ func _execute_elite_strike(config: Dictionary, player: Node2D) -> void:
 			_strike_shard_fan(config, player)
 
 
+# SCRUM-498: ранг угрозы для off-screen edge-индикатора HUD. "" — не значимая угроза
+# (обычные melee-мобы не маркируются). boss > elite > активно стреляющий дальнобой.
+func threat_marker_rank() -> String:
+	if is_in_group("bosses"):
+		return "boss"
+	if elite_behavior != "" or is_in_group("elite_enemies"):
+		return "elite"
+	if can_shoot and _threat_fire_marker_left > 0.0:
+		return "shooter"
+	return ""
+
+
 func _elite_in_phase2() -> bool:
 	# Боевая фаза 2 элитки: ниже порога HP (elite_phase_threshold, по умолч. 0.50).
 	if max_health <= 0.0:
@@ -1114,6 +1133,7 @@ func _update_shooting(delta: float, player: Node2D) -> void:
 
 	_play_rig_action("shoot", player.global_position - global_position)
 	_shoot_cooldown = fire_interval
+	_threat_fire_marker_left = THREAT_FIRE_MARKER_DURATION  # SCRUM-498
 
 
 func _update_summoning(delta: float) -> void:
