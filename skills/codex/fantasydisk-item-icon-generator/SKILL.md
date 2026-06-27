@@ -17,7 +17,7 @@ Use this skill for focused item-icon work after the repository instructions in `
 
 Before generating or specifying icons, record these inputs in the task notes:
 
-- `asset_category`: one of `artifact`, `stat_attribute`, or `weapon`.
+- `asset_category`: one of `artifact`, `base_stat`, `derived_attribute`, or `weapon`. For attribute icons pick `base_stat` (→ `stats/stat_<id>.png`) for the eight core stats, `derived_attribute` (→ `derived/attr_<id>.png`) otherwise.
 - `canonical_id`: snake_case runtime ID from `docs/design/content_registry.md` or the relevant `ProgressionData` table.
 - `display_name`: player-facing name, only for prompt intent; do not bake text into the icon.
 - `target_size`: final PNG size, normally `256x256` unless the issue names another size.
@@ -33,8 +33,11 @@ Use these default paths unless the Jira issue names a newer canonical route:
 | Category | Runtime PNG | Source/reference folder | Preview/evidence |
 | --- | --- | --- | --- |
 | Artifact | `assets/sprites/ui/icons/artifacts/artifact_<canonical_id>.png` | `docs/design/references/icons/artifacts/<canonical_id>/` | `docs/design/previews/artifact_icons_<batch>.png` |
-| Stat/attribute | `assets/sprites/ui/icons/derived/attr_<canonical_id>.png` | `docs/design/references/icons/attributes/<canonical_id>/` | `docs/design/previews/attribute_icons_<batch>.png` |
+| Base stat | `assets/sprites/ui/icons/stats/stat_<canonical_id>.png` (prefix `stat_`) | `docs/design/references/icons/attributes/<canonical_id>/` | `docs/design/previews/attribute_icons_<batch>.png` |
+| Derived attribute | `assets/sprites/ui/icons/derived/attr_<canonical_id>.png` (prefix `attr_`) | `docs/design/references/icons/attributes/<canonical_id>/` | `docs/design/previews/attribute_icons_<batch>.png` |
 | Weapon | `assets/sprites/weapons/<canonical_id>.png` | `docs/design/references/icons/weapons/<canonical_id>/` | `docs/design/previews/weapon_icons_<batch>.png` |
+
+The eight base character attributes live in `stats/` with the `stat_` prefix (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`). All derived/secondary attributes (damage, defense, move_speed, crit_chance, aoe_radius, pickup_radius, …) live in `derived/` with the `attr_` prefix. `scripts/ui_icon_registry.gd` (`ICON_PATHS`) loads base stats from `stats/stat_<id>.png` and derived attributes from `derived/attr_<id>.png` — match the folder/prefix to whether the canonical id is a base stat or a derived attribute, do not write a base stat into `derived/`.
 
 For weapon attack signatures or VFX plates, use the dedicated VFX route only when the Jira issue explicitly asks for it: `assets/sprites/effects/vfx_weapon_<canonical_id>.png`.
 
@@ -49,7 +52,7 @@ For weapon attack signatures or VFX plates, use the dedicated VFX route only whe
 7. Produce a contact sheet at runtime scale and a QA report covering alpha, cropping, readability, and naming.
 8. Update the Jira issue and local mirror with generated paths, evidence paths, and any handoff needed for integration.
 
-Use `tools/artgen/generate_asset.py` when it exists. If the project-local script is absent, use the bundled generator from `$fantasydisk-asset-generator`. Example bundled command, adjusted for the exact source path and size:
+The project-local `tools/artgen/generate_asset.py` is **optional** and is not present in the repository today — do not assume it exists. The canonical generator is the bundled one from `$fantasydisk-asset-generator` at `~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py`; use it as the default. Only prefer a project-local `tools/artgen/generate_asset.py` if it has actually been added to the repo. Example bundled command (the canonical fallback), adjusted for the exact source path and size:
 
 ```bash
 python3 ~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py \
@@ -83,7 +86,7 @@ The icon set is not ready until all checks pass:
 - Silhouette is readable at `32x32`, `40x40`, and `64x64`.
 - No baked text, letters, numbers, watermark, frame, panel, or background scene unless the Jira issue explicitly requests it.
 - Palette/materials match D&D + Dark Fantasy Dragon and are consistent across the batch.
-- Runtime filename matches the canonical ID exactly, including `artifact_` or `attr_` prefixes where required.
+- Runtime filename matches the canonical ID exactly, including the right prefix and folder: `artifact_` (`artifacts/`), `stat_` (`stats/`, base stats), `attr_` (`derived/`, derived attributes), weapon ids unprefixed (`weapons/`).
 - Source PNG, final PNG, prompt notes, contact sheet, and QA report are all recorded in the local task mirror and Jira result comment.
 
 When any check fails, regenerate or revise the icon before handoff. Do not patch failed images by drawing over them with unrelated UI panels or frames.
