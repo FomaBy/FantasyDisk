@@ -1968,9 +1968,25 @@ func _is_enemy_inside_wave(origin: Vector2, enemy_position: Vector2, direction: 
 	return abs(to_enemy.dot(perpendicular)) <= half_width
 
 
-func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := true) -> void:
+# SCRUM-523: КАНАЛ урона оружия → строковый тип для палитры боевых цифр.
+# Источник истины о канале — damage_parameter оружия (см. progression_data_weapons):
+# "magic_damage" → магия, "sound_wave_damage" → звук, всё прочее ("damage") →
+# физика. DoT-тики красятся "dot" в точке тика, а не отсюда. Цвет берёт владелец
+# цифры (enemy.gd) через Enemy.damage_type_color() — здесь только маршрутизация типа.
+func _weapon_damage_type() -> String:
+	match damage_parameter:
+		"magic_damage":
+			return "magic"
+		"sound_wave_damage":
+			return "sound"
+		_:
+			return "physical"
+
+
+func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := true, damage_type := "") -> void:
 	if enemy != null and is_instance_valid(enemy) and enemy.has_method("take_damage"):
-		_call_take_damage(enemy, amount, {"critical": _last_attack_crit and apply_unique_melee_effects})
+		var hit_type := damage_type if damage_type != "" else _weapon_damage_type()
+		_call_take_damage(enemy, amount, {"critical": _last_attack_crit and apply_unique_melee_effects, "damage_type": hit_type})
 		var owner_node := _owner_node()
 		if owner_node != null and owner_node.has_method("on_weapon_hit"):
 			owner_node.on_weapon_hit(enemy, amount)
@@ -1987,13 +2003,15 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy: Node, amount: fl
 		return
 	var direction := enemy_node.global_position - owner_node.global_position
 	var distance := direction.length()
+	# SCRUM-523: добивания/осколки красим тем же каналом, что основное попадание.
+	var hit_type := _weapon_damage_type()
 	if melee_close_bonus_radius > 0.0 and melee_close_damage_multiplier > 1.0 and distance <= melee_close_bonus_radius:
-		enemy_node.take_damage(amount * (melee_close_damage_multiplier - 1.0))
+		_call_take_damage(enemy_node, amount * (melee_close_damage_multiplier - 1.0), {"damage_type": hit_type})
 	if melee_execute_threshold > 0.0 and melee_execute_multiplier > 1.0:
 		var max_hp := float(enemy_node.get("max_health")) if enemy_node.get("max_health") != null else 0.0
 		var health := float(enemy_node.get("health")) if enemy_node.get("health") != null else max_hp
 		if max_hp > 0.0 and health / max_hp <= melee_execute_threshold:
-			enemy_node.take_damage(amount * (melee_execute_multiplier - 1.0))
+			_call_take_damage(enemy_node, amount * (melee_execute_multiplier - 1.0), {"damage_type": hit_type})
 	if melee_stagger_knockback_multiplier > 0.0 and direction.length_squared() > 0.001:
 		_push_enemy_scaled(enemy_node, direction.normalized(), melee_stagger_knockback_multiplier)
 	if melee_arc_followup_radius > 0.0 and melee_arc_followup_multiplier > 0.0:
@@ -2002,7 +2020,7 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy: Node, amount: fl
 			if nearby == enemy_node:
 				continue
 			if nearby.has_method("take_damage"):
-				nearby.take_damage(splash_damage)
+				_call_take_damage(nearby, splash_damage, {"damage_type": hit_type})
 	if melee_heal_percent_on_hit > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(melee_heal_percent_on_hit)
 
@@ -2021,7 +2039,7 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	for tick_index in range(dot_ticks):
 		dot_tween.tween_interval(1.0 / tick_speed)
 		dot_tween.tween_callback(func() -> void:
-			_damage_enemy(enemy, tick_damage, false)
+			_damage_enemy(enemy, tick_damage, false, "dot")
 			if enemy is Node2D:
 				HazardVfx.dot_tick(enemy, dot_color)
 		)

@@ -50,9 +50,17 @@ static func tick(target: Node, delta: float) -> void:
 		if float(status.get("dot_damage", 0.0)) > 0.0 and target.has_method("take_damage"):
 			var interval := maxf(float(status.get("dot_interval", 1.0)), 0.1)
 			status["tick_left"] = float(status.get("tick_left", interval)) - delta
+			var feedback_capable := _take_damage_accepts_feedback(target)
 			while float(status["tick_left"]) <= 0.0 and float(status.get("remaining", 0.0)) > 0.0:
 				status["tick_left"] = float(status["tick_left"]) + interval
-				target.call("take_damage", float(status.get("dot_damage", 0.0)) * float(status.get("stacks", 1)))
+				var tick_total := float(status.get("dot_damage", 0.0)) * float(status.get("stacks", 1))
+				# SCRUM-523: тик статуса — периодический урон → красим цифру как "dot".
+				# Только если цель принимает 2-арг take_damage(amount, feedback) (враг/босс);
+				# у игрока 2-й аргумент — строка-источник, ему feedback не шлём.
+				if feedback_capable:
+					target.call("take_damage", tick_total, {"damage_type": "dot"})
+				else:
+					target.call("take_damage", tick_total)
 		if float(status.get("remaining", 0.0)) <= 0.0:
 			expired.append(str(status_id))
 		else:
@@ -62,6 +70,15 @@ static func tick(target: Node, delta: float) -> void:
 		statuses.erase(status_id)
 	if changed:
 		_set_statuses(target, statuses)
+
+
+# SCRUM-523: принимает ли take_damage второй аргумент (feedback-словарь).
+# Та же проверка арности, что в class_weapon._take_damage_accepts_feedback.
+static func _take_damage_accepts_feedback(target: Node) -> bool:
+	for method in target.get_method_list():
+		if str(method.get("name", "")) == "take_damage":
+			return int((method.get("args", []) as Array).size()) >= 2
+	return false
 
 
 static func has_status(target: Node, status_id: String) -> bool:

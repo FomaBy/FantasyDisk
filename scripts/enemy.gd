@@ -88,6 +88,16 @@ const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
 const COMBAT_FEEDBACK_FLASH_GROUP := "combat_feedback_flashes"
 const COMBAT_FEEDBACK_MAX_LABELS := 42
 const COMBAT_FEEDBACK_MAX_FLASHES := 36
+# SCRUM-523: ЕДИНЫЙ источник правды палитры боевых цифр по ТИПУ урона.
+# Цвет привязан к КАНАЛУ урона (физический/магический/звуковой/периодический-DoT/
+# чистый-true), НЕ к классу или оружию — бой читается одинаково во всех схватках.
+# Итог по цели = сумма типизированных попаданий; каждый вызов take_damage с
+# feedback{"damage_type"} порождает отдельную цветную цифру, поэтому виден вклад
+# каждого типа. Враг (этот файл) — единственный, кто рисует боевые цифры; игрок
+# своих цифр не спавнит. Третьих копий палитры не заводить: все системы
+# (class_weapon/status_effects/boss-наследник) передают строковый damage_type во
+# feedback, а цвет берут через статический Enemy.damage_type_color(). Документация —
+# docs/design/systems/combat.md, раздел «Типы урона и палитра боевых цифр».
 const COMBAT_FEEDBACK_DAMAGE_COLORS := {
 	"physical": Color(1.0, 0.84, 0.42, 1.0),
 	"magic": Color(0.68, 0.46, 1.0, 1.0),
@@ -95,6 +105,12 @@ const COMBAT_FEEDBACK_DAMAGE_COLORS := {
 	"sound": Color(0.30, 0.86, 1.0, 1.0),
 	"true": Color(1.0, 0.96, 0.82, 1.0),
 }
+
+
+# Единый доступ к палитре. Неизвестный/непроставленный тип → "true" (чистый/белый).
+# static — инстанс врага не нужен (зовётся из тестов/оружия/статусов).
+static func damage_type_color(damage_type) -> Color:
+	return COMBAT_FEEDBACK_DAMAGE_COLORS.get(str(damage_type), COMBAT_FEEDBACK_DAMAGE_COLORS["true"])
 
 # Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
 # contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
@@ -276,7 +292,8 @@ func _show_combat_feedback(amount: float, feedback: Dictionary) -> void:
 	label.name = "CombatCritNumber" if critical else "CombatDamageNumber"
 	label.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
 	label.text = "! %d" % int(round(amount)) if critical else str(int(round(amount)))
-	label.modulate = Color(1.0, 0.24, 0.16, 1.0) if critical else COMBAT_FEEDBACK_DAMAGE_COLORS.get(damage_type, COMBAT_FEEDBACK_DAMAGE_COLORS["true"])
+	# Крит перебивает тип красным (ожидаемо, см. combat.md); иначе — цвет по типу.
+	label.modulate = Color(1.0, 0.24, 0.16, 1.0) if critical else damage_type_color(damage_type)
 	label.add_theme_font_size_override("font_size", 30 if critical else 22)
 	label.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.01, 0.95))
 	label.add_theme_constant_override("outline_size", 6 if critical else 5)

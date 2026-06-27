@@ -6,6 +6,7 @@ const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
+const EnemyScript := preload("res://scripts/enemy.gd")
 const EventData := preload("res://scripts/event_data.gd")
 const Glossary := preload("res://scripts/glossary.gd")
 const RunAutosave := preload("res://scripts/run_autosave.gd")
@@ -71,6 +72,9 @@ const DUPLICATE_ARTIFACT_PATTERN := " 2(\\.|$)"
 
 func _initialize() -> void:
 	if not _test_no_space_number_duplicate_artifacts():
+		quit(1)
+		return
+	if not _test_damage_type_palette():
 		quit(1)
 		return
 
@@ -3035,6 +3039,37 @@ func _test_weapon_orbit_no_overlap() -> void:
 		return
 	_write_weapon_orbit_qa_dump(player, weapon)
 	player.queue_free()
+
+
+# SCRUM-523: единая палитра типов урона + маршрутизация канала оружия в тип.
+# Палитра — единственный источник scripts/enemy.gd; цвет через Enemy.damage_type_color().
+func _test_damage_type_palette() -> bool:
+	var expected_colors := {
+		"physical": Color(1.0, 0.84, 0.42, 1.0),
+		"magic": Color(0.68, 0.46, 1.0, 1.0),
+		"dot": Color(0.46, 1.0, 0.42, 1.0),
+		"sound": Color(0.30, 0.86, 1.0, 1.0),
+		"true": Color(1.0, 0.96, 0.82, 1.0),
+	}
+	for damage_type in expected_colors.keys():
+		var got: Color = EnemyScript.damage_type_color(damage_type)
+		if not got.is_equal_approx(expected_colors[damage_type]):
+			push_error("Damage-type palette mismatch for '%s': expected %s, got %s." % [damage_type, expected_colors[damage_type], got])
+			return false
+	if not EnemyScript.damage_type_color("__unknown__").is_equal_approx(expected_colors["true"]):
+		push_error("Damage-type palette fallback for unknown type must be the 'true' color.")
+		return false
+	var channel_to_type := {"magic_damage": "magic", "sound_wave_damage": "sound", "damage": "physical"}
+	var weapon := ClassWeaponScript.new()
+	for channel in channel_to_type.keys():
+		weapon.damage_parameter = channel
+		var resolved := str(weapon.call("_weapon_damage_type"))
+		if resolved != channel_to_type[channel]:
+			push_error("Weapon channel '%s' should resolve damage_type '%s', got '%s'." % [channel, channel_to_type[channel], resolved])
+			weapon.free()
+			return false
+	weapon.free()
+	return true
 
 
 func _test_class_weapon_configs() -> void:
