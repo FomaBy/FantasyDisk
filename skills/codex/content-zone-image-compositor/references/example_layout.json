@@ -1,0 +1,65 @@
+{
+  "canvas": {
+    "width": 1200,
+    "height": 675
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F7E7BD",
+    "stroke_fill": "#160B10",
+    "stroke_width": 2,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "FantasyDisk",
+    "subtitle": "content zones first",
+    "metric": "553",
+    "metric_label": "commits"
+  },
+  "zones": [
+    {
+      "id": "title",
+      "content_key": "title",
+      "x": 80,
+      "y": 60,
+      "w": 620,
+      "h": 82,
+      "align": "left",
+      "max_font": 58,
+      "min_font": 32
+    },
+    {
+      "id": "subtitle",
+      "content_key": "subtitle",
+      "x": 83,
+      "y": 143,
+      "w": 560,
+      "h": 45,
+      "align": "left",
+      "max_font": 28,
+      "min_font": 18
+    },
+    {
+      "id": "metric",
+      "content_key": "metric",
+      "x": 775,
+      "y": 225,
+      "w": 250,
+      "h": 110,
+      "max_font": 78,
+      "min_font": 44
+    },
+    {
+      "id": "metric_label",
+      "content_key": "metric_label",
+      "x": 775,
+      "y": 338,
+      "w": 250,
+      "h": 48,
+      "max_font": 30,
+      "min_font": 18
+    }
+  ]
+}

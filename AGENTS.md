@@ -119,6 +119,15 @@ Project practices:
   ПРОЗРАЧНОМ фоне; исходник сохраняется в `docs/design/references/<тема>/` (для
   единообразия на будущее), затем внедряется в `assets/`. Стиль — D&D + Dark
   Fantasy Dragon (см. UI Overhaul SCRUM-327).
+- **Постеры/инфографика/UI-элементы с текстом поверх AI-картинки — через скилл
+  `content-zone-image-compositor`** (Codex skill,
+  `~/.codex/skills/content-zone-image-compositor/`, repo mirror:
+  `skills/codex/content-zone-image-compositor/`). Сначала создать `layout.json`
+  с точными content zones, затем генерировать картинку как неизменяемый
+  frame/layout layer вокруг этих зон, затем вставлять текст/иконки только внутрь
+  зон bundled-скриптом. После генерации запрещено дорисовывать новые карточки,
+  рамки, панели или подложки поверх красивого layout, если пользователь явно не
+  запросил новый дизайн-проход.
 - **Анимации персонажей/монстров/элиток/боссов — через скилл
   `fantasydisk-animation-director`**
   (Codex skill, `~/.codex/skills/fantasydisk-animation-director/`). Минимум для

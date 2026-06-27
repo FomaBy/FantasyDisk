@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content Zone Image Compositor"
+  short_description: "Generate images around fixed text-safe zones"
+  default_prompt: "Use $content-zone-image-compositor to create a poster from predefined content zones and render text only inside those zones."

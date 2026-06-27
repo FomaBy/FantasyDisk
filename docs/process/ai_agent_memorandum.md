@@ -312,6 +312,7 @@ git rev-list --left-right --count HEAD...origin/dev
 | --- | --- |
 | UI screens, HUD, menus, frames, responsive layout | `fantasydisk-ui-director` |
 | Raster assets, sprites, icons, frames, buttons, VFX PNG | `fantasydisk-asset-generator` |
+| Posters, infographics, report images, or UI mockups with fixed text/content zones over AI art | `content-zone-image-compositor` |
 | Character/enemy/boss animation, SpriteFrames, rigs | `fantasydisk-animation-director` |
 | Class/weapon balance | `fantasydisk-class-balance-director` |
 | Release build/publish | `fantasydisk-release-director` |
@@ -327,6 +328,13 @@ verify screenshots/rects.
 Asset hard rule: generated assets must use transparent background, D&D + Dark
 Fantasy Dragon style when applicable, source saved in `docs/design/references/`,
 runtime asset integrated under `assets/`.
+
+Content-zone image hard rule: when an AI-generated poster/report/UI element will
+receive text, numbers, icons or labels after generation, define exact zones in
+`layout.json` before generating the image. The generated image is the final
+frame/layout layer; post-processing must not draw new cards, frames, panels or
+opaque backing boxes over it. Insert content only inside declared zones and keep
+the debug overlay/report as evidence when the result matters.
 
 Animation hard rule: animated entities need at least `move/walk` 5+ frames and
 main `attack_primary` 5+ frames unless the task explicitly narrows scope.
