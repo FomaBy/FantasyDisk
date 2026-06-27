@@ -1,7 +1,7 @@
 # SCRUM-528: Награда с элитки только если элитка убита (не выжила)
 
 Jira: SCRUM-528 · Роль: backend (codex) · Контур: combat · Приоритет: P1 · foma · Эпик: SCRUM-522
-Статус: К выполнению
+Статус: Контроль качества (реализовано — коммит bb474b91; gate _elite_defeated в combat_director.gd + регресс-тесты; зелёные runtime_smoke/boss_elite)
 
 ## Что и зачем
 
