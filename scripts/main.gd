@@ -30,7 +30,10 @@ const MIN_BRANCHES_PER_STEP := 2
 const MAX_BRANCHES_PER_STEP := 4
 const MAP_NODE_SIZE := Vector2(88, 88)
 const ROUTE_MAP_PADDING := Vector2(170, 72)
-const ROUTE_MAP_HEADER_HEIGHT := 118.0
+# SCRUM-489: 140 (было 118) — хедер карты маршрута (title 36px + stage 18px в PanelContainer)
+# имеет content-min ≈110px; при band 88 (118-12-18) PanelContainer рос вниз до y≈128 и
+# наезжал на скролл (top=118). 140 даёт band 18..128 ровно под контент + зазор 12 до скролла.
+const ROUTE_MAP_HEADER_HEIGHT := 140.0
 const ROUTE_MAP_SCREEN_MARGIN := 28.0
 const ROUTE_MAP_DRAG_THRESHOLD := 8.0
 const ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: ×1.6 от 2560×1440 → площадь ≈ ×2.56, 16:9 сохранён

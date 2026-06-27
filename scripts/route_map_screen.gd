@@ -7,6 +7,27 @@ var game
 
 const START_BATTLE_ONLY_ROWS := 2
 
+# SCRUM-489: координатная спека @2560×1440 — экран «Карта маршрута» (полноэкранный, скролл).
+# Все опорные значения абсолютные (main.gd): ROUTE_MAP_SCREEN_MARGIN=28, ROUTE_MAP_HEADER_HEIGHT=140,
+# MAP_NODE_SIZE=(88,88), ROUTE_MAP_PADDING=(170,72), ROUTE_STEPS_TO_BOSS=10. Из viewport
+# масштабируется только ширина canvas. Header: anchor top, offset L/R=±28, top=18, bottom=140-12=128
+# → @2K (28,18,2504,110) — band ровно под content-min хедера (title 36px + stage 18px). Scroll:
+# L/R=±28, top=140, bottom=-28 → (28,140,2504,1272) (зазор 12 до хедера). Canvas
+# (map_area VerticalRouteMap): width = max(vp.x-56-16, 1000) = 2488 @2K; высота ДИНАМИЧЕСКАЯ:
+# h = ROUTE_MAP_PADDING.y*2 + MAP_NODE_SIZE.y + 165*(row_count-1), row_count=max(route_nodes, 11)
+# → минимум 144+88+165*10 = 1882 (выше viewport — это норма для скролл-карты, не overflow).
+# Узлы 88×88 рисуются процедурно (_draw_route_nodes); ряд-gap 165, padding (170,72).
+const RM_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
+const RM_HEADER_2K := Rect2(28, 18, 2504, 110)
+const RM_HEADER_SAFE_2K := Rect2(28, 18, 2504, 110)         # PanelContainer hud-style, контент = весь header
+const RM_TITLE_2K := Rect2(28, 18, 2200, 44)               # title 36px (HBox, EXPAND_FILL)
+const RM_STAGE_LABEL_2K := Rect2(28, 62, 2200, 24)         # stage 18px под заголовком
+const RM_SCROLL_2K := Rect2(28, 140, 2504, 1272)
+const RM_CANVAS_2K := Rect2(28, 140, 2488, 1882)           # height @ row_count=11 (минимум); см. формулу выше
+const RM_NODE_2K := Rect2(0, 0, 88, 88)                    # шаблон узла маршрута
+const RM_ROW_GAP_2K := 165.0
+const RM_PADDING_2K := Vector2(170.0, 72.0)
+
 
 func _init(game_ref) -> void:
 	game = game_ref

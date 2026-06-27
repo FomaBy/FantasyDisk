@@ -807,6 +807,27 @@ const HS4_CAROUSEL := Rect2(0.020, 0.735, 0.960, 0.215)
 const HS4_CAROUSEL_SLOTS := 9
 const HS4_DOSSIER_STATS := ["strength", "agility", "intelligence", "endurance", "perception"]
 
+# SCRUM-489: координатная спека @2560×1440 — экран «Выбор героя v4» (полноэкранный).
+# ВАЖНО: билдер _build_character_select_v4 НЕ использует нормализованные доли HS4_* (выше,
+# SCRUM-470) — он считает раскладку множителями vp.x/vp.y «на лету». Значения ниже — реальная
+# раскладка билдера @2K (vp=2560×1440): mx=56, my=40, top_h=122, car_h=245, gap=36, pad=29,
+# content_w=2448, mid_y=179, car_y=1155, mid_h=959, left_w=661, right_w=624, center_w=1091.
+# Доли HS4_* (Rect2 в долях) НЕ совпадают с этими px (напр. HS4_PORTRAIT_FRAME долями ≈
+# (51,194,632,835) против реальных (56,179,661,959)) — оставлены для mockup-валидации, НЕ трогать.
+const HS4_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
+const HS4_TITLE_2K := Rect2(56, 40, 2448, 122)
+const HS4_BACK_2K := Rect2(56, 12, 218, 98)                  # width vp.x*0.085≈218, height top_h*0.8≈98
+const HS4_PORTRAIT_FRAME_2K := Rect2(56, 179, 661, 959)
+const HS4_PORTRAIT_SAFE_2K := Rect2(85, 208, 603, 901)        # frame + pad 29
+const HS4_DOSSIER_2K := Rect2(753, 179, 1091, 959)            # x = 56 + 661 + gap 36
+const HS4_RADAR_2K := Rect2(1880, 179, 624, 959)             # x = 753 + 1091 + gap 36
+const HS4_CAROUSEL_2K := Rect2(56, 1155, 2448, 245)
+const HS4_CHOOSE_BTN_2K := Rect2(0, 0, 512, 89)              # шаблон (shrink_center в dossier-VBox)
+const HS4_ASC_BTN_2K := Rect2(0, 0, 102, 72)                 # шаблон ±-кнопок возвышения
+# Карусель: cpad=25, arrow_w=123, slot_h=195, slot_w≈239 (шаг). Слот = 88% ширины слота.
+const HS4_CAROUSEL_SLOT_2K := Rect2(218, 1180, 210, 195)     # первый слот (абс.), шаг по X = 239
+const HS4_CAROUSEL_SLOT_STEP_2K := 239.0
+
 
 func _hs4_scaled_rect(zone: Rect2, canvas_size: Vector2) -> Rect2:
 	return Rect2(
@@ -4029,6 +4050,25 @@ func _update_hero_select_info(info_labels: Dictionary, title: String, descriptio
 		stats_label.text = stats_text
 
 
+# SCRUM-489: координатная спека @2560×1440 — экран «Выбор оружия» (economy-панель).
+# Панель из _economy_menu_panel_half_size("weapon_select"): нет match-ветки → дефолт
+# target 1120×660, clamp по viewport (2K не режет) → 1120×660 центр → top-left (720,390).
+# Рамка _economy_panel_style() = minimal-metal "panel"; content-margins (58,72,58,66, абс. px,
+# не скейлятся) → safe-area (778,462,1004,522). Контент в ScrollContainer→VBox (separation 16):
+# title 42px → subtitle 17px → N карточек оружия (custom_min 860×173, EXPAND_FILL → ширина по
+# safe 1004) → кнопка «Назад». Карточка — фикс высота 173, шаг = 173 + 16 = 189.
+# РИСК overflow по высоте: title+subtitle+(до 4 карточек×189)+back > 522 → ScrollContainer
+# скрывает вылет (берсерк = 3 оружия влезают; персонажи с 4 оружиями уходят в скролл).
+const WS_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
+const WS_PANEL_2K := Rect2(720, 390, 1120, 660)
+const WS_SAFE_2K := Rect2(778, 462, 1004, 522)           # panel минус content (58,72,58,66)
+const WS_TITLE_2K := Rect2(778, 462, 1004, 54)
+const WS_SUBTITLE_2K := Rect2(778, 532, 1004, 24)
+const WS_CARD_2K := Rect2(778, 572, 1004, 173)           # шаблон карточки (EXPAND_FILL по safe-w)
+const WS_CARD_STEP_2K := 189.0                           # высота 173 + separation 16
+const WS_BTN_BACK_2K := Rect2(940, 880, 280, 60)         # под стеком карточек, центр safe-x
+
+
 func _show_weapon_select() -> void:
 	var character_config = game.PROGRESSION_DATA.character_config(game.selected_character_id)
 	var box := _create_menu_box("Выбор оружия", "%s: выбери стартовый подкласс/оружие." % str(character_config["title"]), "weapon_select")
@@ -5252,6 +5292,27 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	# ui_escape_action в начале функции, поэтому ставим явный фолбэк — если экран события когда-
 	# либо перестанет опознаваться dossier-проверкой, Escape всё равно не станет «тихим тупиком».
 	game.ui_escape_action = _show_pause_menu
+
+
+# SCRUM-489: координатная спека @2560×1440 — блок «Результаты» (Победа / Поражение).
+# Геометрия победы и поражения идентична: обе — pause/end-модалки через _create_menu_box
+# (_is_pause_end_screen_background → ["pause","victory","death"]). Размер панели из
+# _pause_end_modal_display_size("victory"/"death"): source 986×900, height clamp [520,820]
+# упирается в 820 → @2K = 898×820, CenterContainer центрирует → top-left (831,310).
+# Content-margins PAUSE_END_MODAL_CONTENT (74,94,74,86) скейлятся ×0.911 → (67,86,67,78) →
+# safe-area (898,396,764,656) — идентична PM_SAFE_2K. Контент в ScrollContainer→VBox
+# (alignment center, separation 12): crest 176×176 → title 42px → subtitle 17px (autowrap,
+# до ~8 строк у победы) → кнопка 420×104. Все элементы по центру safe-x; Y — фиксированные
+# слоты в safe 396..1052 (длинный subtitle победы при переполнении уходит в вертикальный
+# скролл — дизайн-инвариант «помещается до скролла» держится при 2K).
+const RESULT_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
+const RESULT_PANEL_2K := Rect2(831, 310, 898, 820)
+const RESULT_SAFE_2K := Rect2(898, 396, 764, 656)
+const RESULT_CREST_2K := Rect2(1192, 401, 176, 176)      # x = 898 + (764-176)/2
+const RESULT_TITLE_2K := Rect2(898, 589, 764, 54)        # crest_bottom 577 + sep 12
+const RESULT_SUBTITLE_2K := Rect2(898, 655, 764, 220)    # до ~8 строк автопереноса
+const VS_BTN_NEWRUN_2K := Rect2(1070, 948, 420, 104)     # x = 898 + (764-420)/2; нижний слот safe
+const DS_BTN_RETRY_2K := Rect2(1070, 948, 420, 104)      # геометрия = VS_BTN_NEWRUN_2K
 
 
 func _show_victory_screen() -> void:
