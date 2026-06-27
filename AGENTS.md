@@ -3,6 +3,7 @@
 This repository is a Godot 4 project for FantasyDisk.
 
 Before making gameplay, balance, character, enemy, UI, or progression changes, read:
+- `docs/process/ai_agent_memorandum.md` for the compact onboarding protocol for any AI agent.
 - `docs/design/fantasydisk_design_brief.md`
 - `docs/design/gdd_source.md` when exact GDD wording matters.
 - `docs/design/mechanics_extract.md` when formulas, classes, stats, weapons, or MVP screens matter.

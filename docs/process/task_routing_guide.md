@@ -4,8 +4,8 @@
 
 Для кого: PM, Codex Documentation dispatcher, Claude Code/Claude-чаты,
 фоновые воркеры и будущие диспетчеры. Источники процесса:
-`docs/process/pm_workflow.md`, `docs/process/agent_role_boundaries_and_handoffs.md`,
-`docs/process/jira_sync.md`.
+`docs/process/ai_agent_memorandum.md`, `docs/process/pm_workflow.md`,
+`docs/process/agent_role_boundaries_and_handoffs.md`, `docs/process/jira_sync.md`.
 
 ## Главная Модель
 
