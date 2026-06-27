@@ -553,19 +553,8 @@ func _spawn_elite_enemy() -> void:
 
 
 func _random_elite_scene() -> PackedScene:
-	var elite_scenes := [
-		game.elite_armored_scene,
-		game.elite_stalker_scene,
-		game.elite_poisoned_scene,
-		game.elite_commander_scene,
-	]
-	var available_scenes := []
-	for scene in elite_scenes:
-		if scene != null:
-			available_scenes.append(scene)
-	if available_scenes.is_empty():
-		return null
-	return available_scenes[game.rng.randi_range(0, available_scenes.size() - 1)] as PackedScene
+	# SCRUM-499: детерминированный выбор типа элитки от seed узла — совпадает с превью.
+	return game.node_elite_scene(game.current_node_seed)
 
 
 func _apply_elite_modifier(enemy: Node2D) -> void:
@@ -772,11 +761,8 @@ func _spawn_arena_background(is_boss_fight: bool) -> void:
 
 
 func _background_path_for_current_node(is_boss_fight: bool) -> String:
-	var key = "boss" if is_boss_fight else str(game.current_node_type)
-	var options: Array = game.ARENA_BACKGROUND_OPTIONS.get(key, game.ARENA_BACKGROUND_OPTIONS["default"])
-	if options.is_empty():
-		options = game.ARENA_BACKGROUND_OPTIONS["default"]
-	return str(options[game.rng.randi_range(0, options.size() - 1)])
+	# SCRUM-499: детерминированный выбор фона от seed узла — совпадает с превью тултипа.
+	return game.node_background_path(str(game.current_node_type), is_boss_fight, game.current_node_seed)
 
 
 func _create_arena_boundaries() -> void:

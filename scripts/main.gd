@@ -335,6 +335,7 @@ var current_route_choice := ""
 var current_node_type := ""
 var current_combat_type := "battle"
 var current_boss_id := "rift_warden"
+var current_node_seed := 0
 var route_selected_indices := []
 var used_event_ids := []
 var current_event_definition := {}
@@ -529,6 +530,7 @@ func _run_autosave_state() -> Dictionary:
 		"current_node_type": current_node_type,
 		"current_combat_type": current_combat_type,
 		"current_boss_id": current_boss_id,
+		"current_node_seed": current_node_seed,
 		"run_player_snapshot": run_player_snapshot.duplicate(true),
 		"pending_level_ups": pending_level_ups,
 		"level_up_offer": level_up_offer.duplicate(true),
@@ -568,6 +570,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	current_node_type = str(state.get("current_node_type", ""))
 	current_combat_type = str(state.get("current_combat_type", "battle"))
 	current_boss_id = str(state.get("current_boss_id", "rift_warden"))
+	current_node_seed = int(state.get("current_node_seed", 0))
 	run_player_snapshot = _autosave_dictionary(state.get("run_player_snapshot", {}))
 	pending_level_ups = maxi(0, int(state.get("pending_level_ups", 0)))
 	level_up_offer = _autosave_array(state.get("level_up_offer", []))
@@ -601,6 +604,49 @@ func route_scaling_stage() -> int:
 	return maxi(0, route_stage + (clampi(current_act, 1, ACT_COUNT) - 1) * ACT_SCALING_STAGE_OFFSET)
 
 
+# --- SCRUM-499: детерминированное превью узлов маршрута ---
+# Каждый узел несёт стабильный "seed". И бой, и тултип-превью катят выбор биома и
+# типа элитки через эти общие функции от одного сида → превью совпадает с боем
+# by construction (бой делегирует сюда, тултип зовёт то же самое заранее).
+const NODE_SEED_SALT_BIOME := 0x9E3779B1
+const NODE_SEED_SALT_ELITE := 0x85EBCA77
+
+func fallback_node_seed(route_node: Dictionary) -> int:
+	# Старые сейвы без поля "seed": детерминированный сид от позиции/типа узла.
+	var row := int(route_node.get("row", 0))
+	var branch := int(route_node.get("branch", 0))
+	var type_hash := int(str(route_node.get("type", "battle")).hash())
+	return ((row * 73856093) ^ (branch * 19349663) ^ type_hash) & 0x7FFFFFFF
+
+func node_aspect_rng(node_seed: int, salt: int) -> RandomNumberGenerator:
+	var generator := RandomNumberGenerator.new()
+	generator.seed = (int(node_seed) ^ int(salt)) & 0x7FFFFFFFFFFFFFFF
+	return generator
+
+func node_background_path(node_type: String, is_boss_fight: bool, node_seed: int) -> String:
+	var key := "boss" if is_boss_fight else str(node_type)
+	var options: Array = ARENA_BACKGROUND_OPTIONS.get(key, ARENA_BACKGROUND_OPTIONS["default"])
+	if options.is_empty():
+		options = ARENA_BACKGROUND_OPTIONS["default"]
+	var generator := node_aspect_rng(node_seed, NODE_SEED_SALT_BIOME)
+	return str(options[generator.randi_range(0, options.size() - 1)])
+
+func elite_scene_options() -> Array:
+	var scenes := [elite_armored_scene, elite_stalker_scene, elite_poisoned_scene, elite_commander_scene]
+	var available := []
+	for scene in scenes:
+		if scene != null:
+			available.append(scene)
+	return available
+
+func node_elite_scene(node_seed: int) -> PackedScene:
+	var available := elite_scene_options()
+	if available.is_empty():
+		return null
+	var generator := node_aspect_rng(node_seed, NODE_SEED_SALT_ELITE)
+	return available[generator.randi_range(0, available.size() - 1)] as PackedScene
+
+
 func act_progress_label() -> String:
 	return "Акт %d/%d" % [clampi(current_act, 1, ACT_COUNT), ACT_COUNT]
 
@@ -616,6 +662,7 @@ func advance_to_next_act() -> bool:
 	current_node_type = ""
 	current_combat_type = "battle"
 	current_boss_id = "rift_warden"
+	current_node_seed = 0
 	pending_event_combat.clear()
 	level_up_return_to_map = false
 	level_up_return_to_event = false

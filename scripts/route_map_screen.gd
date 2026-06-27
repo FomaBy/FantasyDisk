@@ -202,6 +202,7 @@ func _generate_route() -> Array:
 				"name": _random_route_node_name(branch_index, node_type),
 				"row": step_index,
 				"branch": branch_index,
+				"seed": game.rng.randi(),
 			})
 		route.append(branches)
 	_place_required_shop_nodes(route)
@@ -266,6 +267,7 @@ func _random_boss_route_node() -> Dictionary:
 		"boss_id": boss["boss_id"],
 		"row": game.ROUTE_STEPS_TO_BOSS,
 		"branch": 0,
+		"seed": game.rng.randi(),
 	}
 
 
@@ -427,7 +429,7 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 			var is_clickable := state == "available" or state == "shop_revisit"
 			var button = game.ui._make_button("")
 			button.name = "RouteNode_%s_%d_%d" % [node_type, step_index, branch_index]
-			button.tooltip_text = "%s\n%s" % [str(definition["name"]), str(definition["tooltip"])]
+			button.tooltip_text = _node_preview_tooltip(route_node, definition)
 			if state == "shop_revisit":
 				button.tooltip_text += "\nПосещено — можно вернуться"
 			button.custom_minimum_size = game.MAP_NODE_SIZE
@@ -447,6 +449,126 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 					_handle_route_node_input(button, event, map_area.get_parent() as ScrollContainer, step_index, branch_index, route_node)
 				)
 			map_area.add_child(button)
+
+
+# --- SCRUM-499: детерминированное превью узла в тултипе ---
+
+const _BIOME_NAMES := {
+	"field_marsh": "Болото",
+	"field_dry_road": "Сухая дорога",
+	"field_stone_garden": "Каменный сад",
+	"field_meadow": "Луг",
+	"field_ruined_courtyard": "Разрушенный двор",
+	"field_misty_marsh": "Туманное болото",
+	"field_dusty_badlands": "Пыльные пустоши",
+	"field_enchanted_meadow": "Зачарованный луг",
+	"field_ashen_rift": "Пепельный разлом",
+	"field_cursed_grove": "Проклятая роща",
+}
+
+const _ENEMY_ARCHETYPES := {
+	"res://scenes/Enemy.tscn": "рядовые",
+	"res://scenes/EnemyRunner.tscn": "бегуны",
+	"res://scenes/EnemyBiter.tscn": "кусачи",
+	"res://scenes/EnemyBruiser.tscn": "крупные бронированные",
+	"res://scenes/EnemyShield.tscn": "щитоносцы",
+	"res://scenes/EnemyFlyingRunner.tscn": "летуны",
+	"res://scenes/EnemySummoner.tscn": "призыватели",
+	"res://scenes/EnemyShooter.tscn": "стрелки",
+	"res://scenes/EnemyMage.tscn": "маги",
+	"res://scenes/EnemySpitter.tscn": "плевалы",
+	"res://scenes/EnemyBoneShaman.tscn": "костяные шаманы",
+}
+
+const _ELITE_NAMES := {
+	"res://scenes/EliteArmored.tscn": "Бронированный",
+	"res://scenes/EliteStalker.tscn": "Сталкер",
+	"res://scenes/ElitePoisoned.tscn": "Отравитель",
+	"res://scenes/EliteCommander.tscn": "Командир",
+}
+
+
+func _node_preview_tooltip(route_node: Dictionary, definition: Dictionary) -> String:
+	var node_type := str(route_node.get("type", "battle"))
+	var node_seed := int(route_node.get("seed", game.fallback_node_seed(route_node)))
+	var lines := [str(definition["name"]), str(definition["tooltip"])]
+	match node_type:
+		"battle":
+			lines.append("Арена: " + _biome_display_name(game.node_background_path(node_type, false, node_seed)))
+			lines.append("Угроза: " + _wave_threat_hint(route_node, node_seed))
+		"elite_battle":
+			lines.append("Арена: " + _biome_display_name(game.node_background_path(node_type, false, node_seed)))
+			lines.append("Угроза: " + _wave_threat_hint(route_node, node_seed))
+			lines.append("Элита: " + _elite_archetype_name(game.node_elite_scene(node_seed)))
+			lines.append("Награда: гарантированный артефакт — " + _elite_artifact_tier_hint(route_node))
+		"boss":
+			lines.append("Босс: " + str(route_node.get("name", "?")))
+	return "\n".join(lines)
+
+
+func _biome_display_name(path: String) -> String:
+	var basename := path.get_file().get_basename()
+	if _BIOME_NAMES.has(basename):
+		return str(_BIOME_NAMES[basename])
+	return basename.trim_prefix("field_").replace("_", " ").capitalize()
+
+
+func _enemy_archetype_name(path: String) -> String:
+	return str(_ENEMY_ARCHETYPES.get(path, "враги"))
+
+
+func _elite_archetype_name(scene: PackedScene) -> String:
+	if scene == null:
+		return "элита"
+	return str(_ELITE_NAMES.get(scene.resource_path, scene.resource_path.get_file().get_basename()))
+
+
+func _node_predicted_stage(route_node: Dictionary) -> int:
+	# Глубина, на которой узел реально стартует: его ряд + смещение по акту (как route_scaling_stage).
+	return int(route_node.get("row", 0)) + (clampi(int(game.current_act), 1, int(game.ACT_COUNT)) - 1) * int(game.ACT_SCALING_STAGE_OFFSET)
+
+
+func _wave_threat_hint(route_node: Dictionary, node_seed: int) -> String:
+	var pred_stage := _node_predicted_stage(route_node)
+	# Спец-архетипы с весом как в бою (стрелки/маги/плевалы растут с глубиной); рядовые/бегуны/кусачи — фон.
+	var background_kinds := ["res://scenes/Enemy.tscn", "res://scenes/EnemyRunner.tscn", "res://scenes/EnemyBiter.tscn"]
+	var ranged_kinds := ["res://scenes/EnemyShooter.tscn", "res://scenes/EnemyMage.tscn", "res://scenes/EnemySpitter.tscn"]
+	var specials := {}
+	for path in game.ENEMY_SPAWN_WEIGHTS.keys():
+		if path in background_kinds:
+			continue
+		var weight := float(game.ENEMY_SPAWN_WEIGHTS[path])
+		if path in ranged_kinds:
+			weight *= (0.35 if pred_stage <= 0 else (1.25 if pred_stage >= 2 else 1.0))
+		specials[path] = weight
+	# Детерминированный сид-выбор «фишки» волны среди взвешенных спецов.
+	var generator: RandomNumberGenerator = game.node_aspect_rng(node_seed, 0x27D4EB2F)
+	var total := 0.0
+	for weight in specials.values():
+		total += float(weight)
+	var hint_path := "res://scenes/EnemyBruiser.tscn"
+	if total > 0.0:
+		var roll: float = generator.randf() * total
+		var cursor := 0.0
+		for path in specials.keys():
+			cursor += float(specials[path])
+			if roll <= cursor:
+				hint_path = path
+				break
+	var prefix := "лёгкая волна, " if pred_stage <= 0 else ""
+	return prefix + "в составе — " + _enemy_archetype_name(hint_path)
+
+
+func _elite_artifact_tier_hint(route_node: Dictionary) -> String:
+	var pred_stage := _node_predicted_stage(route_node)
+	# Тот же depth-weighting, что в ProgressionData.elite_artifact_choices.
+	var scale: float = game.PROGRESSION_DATA.stage_scale(pred_stage)
+	var tier3_weight := 0.22 + maxf(float(pred_stage) - 2.0, 0.0) * 0.18
+	if tier3_weight >= 0.6:
+		return "шанс эпического (тир 3)"
+	if scale >= 1.5 or pred_stage >= 3:
+		return "ориентир тир 2"
+	return "ориентир тир 1–2"
 
 
 func _handle_route_node_input(button: Button, event: InputEvent, scroll: ScrollContainer, step_index: int, branch_index: int, route_node: Dictionary) -> void:
@@ -481,6 +603,7 @@ func _activate_route_node(step_index: int, branch_index: int, route_node: Dictio
 		game.route_stage = step_index
 	game.current_route_choice = str(route_node.get("name", ""))
 	game.current_node_type = str(route_node.get("type", "battle"))
+	game.current_node_seed = int(route_node.get("seed", game.fallback_node_seed(route_node)))
 	if game.route_debug_free_pick and step_index != game.route_stage:
 		# Debug-переход: прогресс перематывается к выбранному ряду.
 		game.route_selected_indices.resize(step_index)
