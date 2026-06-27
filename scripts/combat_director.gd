@@ -129,6 +129,10 @@ func _end_combat(victory: bool) -> void:
 	game.combat_active = false
 	game.boss_combat_active = false
 	if victory and game.current_player != null and is_instance_valid(game.current_player):
+		# SCRUM-500 (on_room_clear): «Передышка» — лечение по завершении боя (до снапшота).
+		var room_clear_heal := float((game.current_player.get("run_modifiers") as Dictionary).get("room_clear_heal_percent", 0.0))
+		if room_clear_heal > 0.0 and game.current_player.has_method("heal_percent"):
+			game.current_player.heal_percent(room_clear_heal)
 		if not was_boss_fight:
 			_grant_combat_completion_rewards(event_combat)
 		_store_player_snapshot(game.current_player)
@@ -689,6 +693,11 @@ func _on_enemy_died(enemy: Node2D) -> void:
 		var heal_percent := float((game.current_player.get("run_modifiers") as Dictionary).get("kill_heal_percent", 0.0))
 		if heal_percent > 0.0 and game.current_player.has_method("heal_percent"):
 			game.current_player.heal_percent(heal_percent)
+		# SCRUM-500 (on_kill): триггерные артефакты убийства (взрыв / стак-лечение).
+		# Логика на игроке — там доступны derived_parameters/VFX/таргет-квери. Босса
+		# исключаем из on-kill-взрыва ниже (return), но стак-лечение от него считаем.
+		if game.current_player.has_method("on_enemy_killed"):
+			game.current_player.on_enemy_killed(enemy)
 	if enemy.is_in_group("bosses"):
 		return
 	_spawn_pickup("xp", int(enemy.get("reward_xp")), enemy.global_position + Vector2(-10.0, 0.0))
@@ -907,13 +916,20 @@ func _snapshot_player_for_menu() -> Node:
 
 
 func _store_player_snapshot(player: Node) -> void:
+	# SCRUM-500: снапшот тащит run_modifiers целиком между узлами. Временные *_active-флаги
+	# триггерных/уворотных баффов НЕ должны «застывать» как постоянный бонус в следующем бою.
+	# Обнуляем их в копии перед сохранением (источник истины — игрок, тут только сериализация).
+	var run_modifiers_snapshot := (player.get("run_modifiers") as Dictionary).duplicate(true)
+	for transient_flag in ["dodge_rush_active", "low_hp_active", "crit_speed_burst_active"]:
+		if run_modifiers_snapshot.has(transient_flag):
+			run_modifiers_snapshot[transient_flag] = 0.0
 	game.run_player_snapshot = {
 		"character_id": player.get("character_id"),
 		"weapon_id": player.get("weapon_id"),
 		"health": player.get("health"),
 		"max_health": player.get("max_health"),
 		"stats": (player.get("stats") as Dictionary).duplicate(true),
-		"run_modifiers": (player.get("run_modifiers") as Dictionary).duplicate(true),
+		"run_modifiers": run_modifiers_snapshot,
 		"artifacts": (player.get("artifacts") as Array).duplicate(true),
 		"xp": player.get("xp"),
 		"xp_to_next": player.get("xp_to_next"),

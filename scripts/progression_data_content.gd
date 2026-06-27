@@ -109,6 +109,18 @@ const ARTIFACTS := [
 	{"id": "thorn_pact", "title": "Договор Шипов", "tier": 3, "cost": 95, "class_affinity": [], "description": "Получив урон, выплескиваешь 200% этого урона на всех врагов рядом.", "mods": {"thorn_reflect_multiplier": 2.0}},
 	{"id": "phantom_step", "title": "Призрачный Шаг", "tier": 3, "cost": 95, "class_affinity": [], "description": "Успешный уворот дает +40% скорости движения на 2 секунды.", "mods": {"dodge_rush_bonus": 0.4}},
 	{"id": "leech_fang", "title": "Клык Пиявки", "tier": 2, "cost": 55, "class_affinity": [], "description": "+14% шанса вампиризма, +1 к лечению от вампиризма. Вампиризм ограничен лечением в секунду.", "mods": {"vampiric_chance_flat": 0.14, "vampiric_amount_flat": 1.0, "vampiric_heal_per_second_cap": 1.0}},
+	# SCRUM-500: триггерные (активируемые событием) артефакты — новый под-класс предметов.
+	# Маркер `active:true` + поле `trigger` (семантика события). Эффект — суммируемый флаг в
+	# mods (НЕ *_multiplier), раскладывается _apply_reward_mods как обычно. Пометка «⚡ Активный»
+	# вшита в description (data-driven, без правок карточки). Значения консервативны и ситуативны:
+	# лечение/щит/мув-бафф/ситуативный бурст — НЕ постоянный +damage, чтобы не смещать DPS/TTD-гейты.
+	{"id": "guardian_bulwark", "title": "Рубеж Стража", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_low_hp", "description": "⚡ Активный — при низком HP: впервые упав ниже 30% HP, делаешь нокбэк-волну и получаешь 1.5с неуязвимости. Перезаряд 18с.", "mods": {"lowhp_guard": 1.0}},
+	{"id": "chain_spark", "title": "Цепная Искра", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_kill", "description": "⚡ Активный — при убийстве: 14% шанс взрыва по области у трупа (70% урона).", "mods": {"kill_explosion_chance": 0.14}},
+	{"id": "crit_impulse", "title": "Импульс Крита", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_crit", "description": "⚡ Активный — при крите: +35% скорости движения на 1.8с (короткий рывок).", "mods": {"crit_speed_burst": 0.35}},
+	{"id": "breather_totem", "title": "Передышка", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_room_clear", "description": "⚡ Активный — при зачистке боя: лечит 8% максимального здоровья.", "mods": {"room_clear_heal_percent": 0.08}},
+	{"id": "counterwave_sigil", "title": "Контр-волна", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_take_hit", "description": "⚡ Активный — получив удар: 22% шанс выпустить отталкивающую волну, бьющую врагов рядом (90% полученного урона). Перезаряд 3с.", "mods": {"take_hit_pulse_chance": 0.22}},
+	{"id": "soul_harvest", "title": "Сбор Душ", "tier": 3, "cost": 95, "class_affinity": [], "active": true, "trigger": "on_kill", "description": "⚡ Активный — при убийстве: каждое 6-е убийство лечит 3% максимального здоровья (стак сбрасывается между боями).", "mods": {"kill_streak_heal_every": 6.0}},
+	{"id": "second_wind", "title": "Второе Дыхание", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_low_hp", "description": "⚡ Активный — при низком HP: пока здоровье ниже 30%, реген восстановления усилен (+5 к регенерации).", "mods": {"lowhp_regen_bonus": 5.0}},
 ]
 
 const LEVEL_UP_REWARDS := [

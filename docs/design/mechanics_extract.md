@@ -565,6 +565,20 @@ Escape открывает крупное меню характеристик:
 - **Дроп 0.1.4 (откалибровано SCRUM-507)**: rewards назначаются по `DROP_CLASS_MULTIPLIERS`: ordinary < complex < heavy < mini_elite < elite < boss. Сложные цели дают x1.3 XP / x1.6 золота, жирные (bruiser/shield) около x1.75 XP / x2.2 золота относительно базы; мини-элитки x3.6 / x3.8; элитки x8 / x8.5; босс получает fixed reward `money 43.0`, умноженный на `stage_scale`. SCRUM-507 снизил boss-money 92→43 и поднял complex/heavy золото (1.35→1.6 / 1.85→2.2), чтобы доля boss-дропа в доходе маршрута упала с ~64% до ≤50%, а ранние/средние бои перестали обесцениваться («дожить до босса»). Route-level модель SCRUM-188 (`build/route_economy_xp_model.md`) после калибровки: affordable offers в коридоре ±25% по трём маршрутам (5.7/6.5/6.9), покупательная способность high/high/healthy, доля boss-золота 47/40/49%, XP-темп сохранён (20/25/20 level-up с учётом XP-кривой SCRUM-527).
 - **XP-кривая 0.1.4**: следующий уровень считается через `ceil(current_requirement * 1.42 + 3)` вместо прежнего `ceil(req * 1.35 + 2)`, чтобы усиленный дроп сложных целей не разгонял количество level-up сверх цели.
 - **Сила артефактов**: tier 1 усилен x2.5 от прежних значений (например +2 к стату -> +5, +20% урона -> +50%); даунсайды НЕ усилены. Tier 2 — двойные эффекты (усилены так же). Tier 3 (6 шт.) — билдообразующие механики: `echo_blast_every`, `extra_projectile`, `low_hp_damage_bonus`, `kill_heal_percent`, `thorn_reflect_multiplier`, `dodge_rush_bonus` (реализованы в player/class_weapon/combat_director/derived_parameters).
+- **Триггерные (активные) артефакты (SCRUM-500)**: под-класс предметов с полями `active: true` +
+  `trigger` (`on_low_hp`/`on_kill`/`on_crit`/`on_room_clear`/`on_take_hit`) + эффект-флаг в `mods`
+  (суммируемый скаляр, НЕ `_multiplier`; раскладывается `_apply_reward_mods` как обычно). Это
+  «специи» поверх `run_modifiers` — баланс-нейтральны (лечение/щит/мув-бафф/ситуативный бурст, без
+  постоянного +damage), survivability/DPS-гейты не сдвигаются. Шанс/кулдаун обязательны для
+  `on_kill`/`on_crit`/`on_take_hit` (анти-runaway). Флаги: `lowhp_guard`, `kill_explosion_chance`,
+  `crit_speed_burst`, `room_clear_heal_percent`, `take_hit_pulse_chance`, `kill_streak_heal_every`,
+  `lowhp_regen_bonus`. Runtime-анкеры: `player.take_damage` (on_take_hit/on_low_hp),
+  `player.on_weapon_hit(enemy,dmg,was_crit)` (on_crit), `combat_director._on_enemy_died` →
+  `player.on_enemy_killed` (on_kill), `combat_director._end_combat(victory)` (on_room_clear).
+  Временные `*_active`-флаги (`dodge_rush_active`/`low_hp_active`/`crit_speed_burst_active`)
+  обнуляются в `_store_player_snapshot`, чтобы бафф не «застывал» между узлами; латчи/кулдауны
+  (`_lowhp_guard_used` и т.п.) сбрасываются в `configure_character`. Пометка «⚡ Активный» вшита в
+  `description` (карточка не правилась). Покрытие: `tests/runtime_smoke_triggered_artifacts_test.gd`.
 - **class_affinity**: с 2026-06-12 это тематика/исходная фантазия артефакта, а не запрет. `affinity_mods` применяются любому классу через class interpretation text; UI больше не показывает «Не работает»/«Работает вполсилы», а объясняет, как текущий класс использует эффект.
 
 

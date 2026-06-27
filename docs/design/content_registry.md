@@ -425,7 +425,7 @@ SCRUM-258 unique weapon VFX pass 2026-06-14: добавлены 51 dedicated `25
 
 SCRUM-337 attack VFX source regeneration 2026-06-14: весь активный runtime-пак эффектов атак пересобран через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) и deterministic sheet-cut pipeline `tools/build_scrum337_attack_vfx_from_sources.py`. Заменены на месте 83 `assets/sprites/effects/*.png` и 2 `assets/sprites/projectiles/*.png`; имена, размеры, alpha/RGBA и runtime-пути сохранены. Source sheets/manifest: `docs/design/references/attack_vfx_realistic_dark_fantasy/`; QA previews: `docs/design/previews/scrum337_attack_vfx_core_contact.png`, `docs/design/previews/scrum337_attack_vfx_weapon_contact.png`. Gameplay timing, damage, targeting, formulas и Back-end runtime logic не менялись.
 
-Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (53 шт., 256x256). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references: `docs/design/references/icons/artifacts/artifact_<id>_source.png`; manifest: `docs/design/references/icons/artifacts/artifact_icons_scrum340_manifest.json`; QA previews: `docs/design/previews/artifact_icons_scrum340_contact.png` и `docs/design/previews/artifact_icons_scrum340_40px_readability.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
+Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (60 шт., 256x256; из них 7 placeholder-копий для триггерных артефактов SCRUM-500 — bespoke-арт вынесен в follow-up через `fantasydisk-item-icon-generator`). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references: `docs/design/references/icons/artifacts/artifact_<id>_source.png`; manifest: `docs/design/references/icons/artifacts/artifact_icons_scrum340_manifest.json`; QA previews: `docs/design/previews/artifact_icons_scrum340_contact.png` и `docs/design/previews/artifact_icons_scrum340_40px_readability.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
 
@@ -1135,6 +1135,30 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 - Остальные артефакты — Tier 1 (эффекты усилены x2.5 от прежних).
 - Иконки всех tier-3 артефактов (`echo_core`, `split_core`, `blood_pact`, `leech_heart`, `thorn_pact`, `phantom_step`) пересозданы как уникальные SCRUM-340 magic-item PNG; временные копии больше не используются.
 
+### Триггерные (активные) артефакты — под-класс `active` (SCRUM-500)
+
+Новый под-класс предметов: запись несёт `active: true` + поле `trigger` (семантика игрового
+события) + эффект-флаг в `mods`. Это контент-слой поверх `run_modifiers` — «специи», а не новый
+DPS-множитель (survivability/DPS-гейты не сдвигаются). Пометка «⚡ Активный» вшита в `description`
+(data-driven, карточка `ui_screens.gd` не правилась). Автоподхват в `reward_pool`/`shop_items`/
+`elite_artifact_choices` фактом добавления в `ARTIFACTS`. Иконки — placeholder-копии существующих
+(см. follow-up на бэспоук-арт через `fantasydisk-item-icon-generator`).
+
+| ID | Игровое имя | Триггер | Эффект | Тир |
+| --- | --- | --- | --- | --- |
+| `guardian_bulwark` | Рубеж Стража | `on_low_hp` | Впервые ниже 30% HP: нокбэк-волна + 1.5с неуязвимости (кд 18с) | 2 |
+| `chain_spark` | Цепная Искра | `on_kill` | 14% шанс взрыва по области у трупа (70% урона) | 2 |
+| `crit_impulse` | Импульс Крита | `on_crit` | Крит → +35% скорости движения на 1.8с | 2 |
+| `breather_totem` | Передышка | `on_room_clear` | Победа в бою → лечит 8% max HP | 2 |
+| `counterwave_sigil` | Контр-волна | `on_take_hit` | 22% шанс отталкивающей волны (90% полученного урона, кд 3с) | 2 |
+| `soul_harvest` | Сбор Душ | `on_kill` | Каждое 6-е убийство лечит 3% max HP (стак сбрасывается между боями) | 3 |
+| `second_wind` | Второе Дыхание | `on_low_hp` | Пока HP ниже 30% — +5 к регенерации | 2 |
+
+Runtime-анкеры: `on_take_hit`/`on_low_hp` → `player.take_damage` (+`_trigger_take_hit_pulse`/
+`_trigger_lowhp_guard`); `on_crit` → `player.on_weapon_hit(enemy, dmg, was_crit)` →
+`_trigger_crit_speed_burst`; `on_kill` → `combat_director._on_enemy_died` → `player.on_enemy_killed`;
+`on_room_clear` → `combat_director._end_combat(victory)` ветка победы (до снапшота).
+
 ## Возвышения (Усложнения)
 
 Глобальные кумулятивные модификаторы сложности (`ProgressionData.ASCENSION_MODIFIERS`). Уровень N включает 1..N. Уровень 0 = обычная игра. Прогресс/разблокировка — по персонажу (`meta_progression.gd`): победа над финальным боссом на уровне N открывает N+1.
@@ -1188,7 +1212,7 @@ authoritative for runtime.
 
 | Группа | ID / naming | Каноническая папка / файл | Статус |
 | --- | --- | --- | --- |
-| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 53 шт., 256x256 RGBA, transparent realistic epic D&D/tabletop fantasy raster magic items; QA preview `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (realistic D&D raster redraw 2026-06-12) |
+| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 60 шт., 256x256 RGBA, transparent realistic epic D&D/tabletop fantasy raster magic items (7 — placeholder-копии для триггерных SCRUM-500, bespoke-арт в follow-up); QA preview `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (realistic D&D raster redraw 2026-06-12; SCRUM-500 placeholders 2026-06-28) |
 | Shop-only item icons | `shop_<shop_item_id>.png` для всех `ProgressionData.SHOP_ITEMS` | `assets/sprites/ui/icons/shop/` | Реализовано |
 | Shop slot normal | `ui_shop_artifact_slot_frame` | `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png` | Реализовано |
 | Shop slot hover | `ui_shop_artifact_slot_hover` | `assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png` | Реализовано |
