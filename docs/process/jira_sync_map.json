@@ -2580,5 +2580,10 @@
  "SCRUM-526_nerf_defensive_mechanics.md": {
   "key": "SCRUM-526",
   "status": "Готово"
+ },
+ "SCRUM-517_doctor_drain_regen_softcap.md": {
+  "key": "SCRUM-517",
+  "status": "Готово",
+  "desc_hash": "7161e856ce066bfc4618287b288f1314"
  }
 }

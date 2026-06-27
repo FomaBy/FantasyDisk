@@ -1,7 +1,7 @@
 # SCRUM-517: Doctor — ограничить реген, чтобы класс мог погибнуть при плохой игре
 
 Jira: SCRUM-517 · Роль: backend (balance) · Контур: codex · Приоритет: P0 · foma · Эпик: SCRUM-214
-Статус: К выполнению
+Статус: Готово
 
 ## Что и зачем
 
@@ -124,3 +124,18 @@ owner_node.set("health", minf(before + heal_amount, max_health))
   `~/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/survivability_scenario_test.gd`
   Новый Doctor-гейт запускать аналогично по своему пути.
 - **Документация:** обновить `docs/design/systems/progression_balance.md` и CHANGELOG; зафиксировать новый предел регена Доктора (как принято в проекте при balance-правках).
+
+## QA-Вердикт: PASSED
+
+Проверено на committed origin/dev (6a8eaf3e) в изолированном worktree. Godot 4.6.3 headless.
+
+Прогнаны тесты:
+- `doctor_drain_softcap_test` — PASSED. Doctor[restore_potion] HP 68.8 → -1.1; Doctor[plague_syringe] HP 65.0 → -4.8 под incoming 84.0/с; capped_heal/окно=7.00 (cap 7.00). Инварианты A (capped per-second), B (MORTAL — гибель под плотной толпой), C (sustain-идентичность: drain-cap 7.0/с = 6.4× вампирного 1.1/с) — зелёные.
+- `runtime_smoke_test` — PASSED (изолированный user-data; на общем dev-сейве ложный red «Expected New Game to clear autosave» = известная фрагильность мета-сейва, не связана с задачей).
+- `global_survivability_balance_smoke_test` — PASSED (бессмертие недостижимо, митигация<98%).
+- `survivability_scenario_test` — PASSED.
+- `status_effects_aura_test` — PASSED (healing/vampirism/status других классов целы).
+- `weapon_integrity_test` — PASSED (17 classes / 51 weapons).
+- `weapon_tuning_application_test` — PASSED (51 пара).
+
+Acceptance 5/5 подтверждены фактическим прогоном: Доктор больше не бессмертен в толпе, остаётся сильнейшим детерминированным sustain-классом, drain списывается из per-second бюджета (`apply_drain_heal`), капы других классов не тронуты, dedicated regression фиксирует новый предел. → Готово.
