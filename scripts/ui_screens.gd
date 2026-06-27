@@ -916,8 +916,11 @@ func _build_character_select_v4() -> void:
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HS4BackButton"
-	_set_action_button_size(back_button, vp.x * 0.085, round(top_h * 0.8))
-	back_button.position = Vector2(mx, my + round((top_h - top_h * 0.8) * 0.5))
+	var back_button_size := Vector2(maxf(132.0, round(vp.x * 0.085)), clampf(round(top_h * 0.72), 44.0, 54.0))
+	back_button.custom_minimum_size = back_button_size
+	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
+		back_button.add_theme_stylebox_override(state, _compact_button_style(state == "hover" or state == "focus", state == "pressed", state == "disabled"))
+	back_button.position = Vector2(mx, my + round((top_h - back_button_size.y) * 0.5))
 	root.add_child(back_button)
 	back_button.pressed.connect(_show_main_menu)
 
