@@ -1,7 +1,20 @@
 # SCRUM-520: Level Up: показывать иконку возле персонажа при получении уровня
 
 Jira: SCRUM-520 · Роль: backend (Codex) · Контур: codex · Приоритет: P1 · foma · Эпик: SCRUM-215
-Статус: К выполнению (blocked снят — Design handoff из SCRUM-519 принят 2026-06-27)
+Статус: done (готово к QA — Design handoff из SCRUM-519 принят 2026-06-27)
+
+Owner: backend/codex-background-backend-agent
+Locked paths: `scripts/level_up_effect.gd`, `scripts/level_up_toast.gd`, `assets/sprites/effects/level_up_popup_badge.png.import`, `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`, `docs/tasks/SCRUM-520_level_up_badge_popup.md`
+
+## Result Summary
+
+2026-06-27, backend/codex-background-backend-agent:
+
+- Implemented the accepted SCRUM-519 PNG as the single visible level-up popup badge in `LevelUpEffect`.
+- Display: `224x112` px, normal blend, world-space above the player, `0.9s` pop/float/fade with scale `0.92 -> 1.04 -> 1.0` and 30 px upward movement.
+- Repeated level-ups create short-lived overlapping badges that self-clean; XP, pending reward, pause, and selection semantics are unchanged.
+- `LevelUpToast` now keeps only sparkle/ring feedback, no duplicate procedural text, and joins `level_up_effects` for screen/world cleanup.
+- Validation: PASS `/tmp/scrum520_level_up_popup_check.gd`; PASS `tests/runtime_smoke_test.gd`.
 
 ## Что и зачем
 
@@ -126,3 +139,27 @@ Design asset и handoff (SCRUM-519, статус done — `docs/tasks/design_lev
 - **Версия**: фриз 0.1.5 активен; эта работа идёт в 0.1.7 (по SCRUM-519). Версионную строку (`project.godot config/version`) не трогать в рамках этой задачи.
 - **Связанные тикеты**: SCRUM-519 (Design asset, done — источник PNG/handoff), SCRUM-278 (угловая «+»-кнопка возврата к выбору — НЕ путать с popup-бейджем; кнопку не трогать), эпик SCRUM-215.
 - **Verify**: Godot 4.6.3 headless (`~/Downloads/Godot.app`), smoke-тесты. Учитывать «Godot --user-data-dir не изолирует сейв» — мета-сейв читается реальный; для level-up smoke это не критично (триггерим через `gain_xp` в рантайме), но не эскалировать ложные red'ы от мета-состояния.
+
+## Result
+
+2026-06-27, backend/codex-background-backend-agent:
+
+- Replaced the procedural world-space `Label "LEVEL UP"` in `LevelUpEffect` with the accepted SCRUM-519 PNG `assets/sprites/effects/level_up_popup_badge.png`.
+- Runtime display size is data-driven from the texture to `224x112`, with normal blending so the final badge colors/shadow are preserved.
+- Animation uses a short pop/float/fade: scale `0.92 -> 1.04 -> 1.0`, 30 px upward movement, fade-in/fade-out, total lifetime `0.9s`.
+- The badge remains world-space above the player and keeps the existing `level_up_effects` cleanup group and player-follow behavior.
+- `LevelUpToast` now stays as a textless sparkle/ring layer and is also added to `level_up_effects`, so the accepted PNG is the only visible Level Up callout and screen/world cleanup removes both effect nodes.
+- Quick repeated level-ups intentionally spawn overlapping short-lived badges, matching the existing one-signal-per-level behavior; they self-clean instead of altering XP, pending reward, pause, or selection semantics.
+- Added the missing Godot import sidecar for the accepted runtime badge PNG.
+
+## Validation
+
+- PASS: `/tmp/scrum520_level_up_popup_check.gd`
+  - loads `LevelUpEffect`;
+  - verifies `LevelUpPopupBadge` uses `res://assets/sprites/effects/level_up_popup_badge.png`;
+  - verifies display size near `224x112` and above-player local anchor;
+  - verifies repeated effects create self-cleaning badges;
+  - verifies `LevelUpToast` has no `Label` children and joins `level_up_effects`.
+- PASS: `tests/runtime_smoke_test.gd`.
+
+Note: during validation, unrelated dirty WIP appeared in `scripts/enemy.gd` and `scripts/ui_screens.gd` for other tasks. Those files were not edited, staged, or committed for SCRUM-520.

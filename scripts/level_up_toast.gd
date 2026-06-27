@@ -10,17 +10,16 @@ const GOLD := Color(1.0, 0.82, 0.32, 1.0)
 const CYAN := Color(0.40, 0.92, 1.0, 1.0)
 
 var _player: Node2D = null
-var _level_count := 1
 
 
-func setup(player: Node2D, level_count: int) -> void:
+func setup(player: Node2D, _level_count: int) -> void:
 	_player = player
-	_level_count = max(level_count, 1)
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_to_group("level_up_effects")
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	_build_visual()
 
@@ -49,17 +48,6 @@ func _build_visual() -> void:
 	ring.scale = Vector2.ONE * (36.0 / RING_RADIUS)
 	add_child(ring)
 
-	var label := Label.new()
-	label.text = "LEVEL UP" if _level_count <= 1 else "LEVEL UP x%d" % _level_count
-	label.position = center + Vector2(-122, -94)
-	label.size = Vector2(244, 48)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 34)
-	label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.34, 1.0))
-	label.add_theme_color_override("font_outline_color", Color(0.18, 0.10, 0.02, 1.0))
-	label.add_theme_constant_override("outline_size", 7)
-	add_child(label)
-
 	var sparks: Array[Sprite2D] = []
 	for index in range(18):
 		var spark := _additive(FLASH_TEXTURE, GOLD if index % 2 == 0 else CYAN)
@@ -68,10 +56,10 @@ func _build_visual() -> void:
 		add_child(spark)
 		sparks.append(spark)
 
-	_play(center, flash, ring, label, sparks)
+	_play(center, flash, ring, sparks)
 
 
-func _play(center: Vector2, flash: Sprite2D, ring: Sprite2D, label: Label, sparks: Array[Sprite2D]) -> void:
+func _play(center: Vector2, flash: Sprite2D, ring: Sprite2D, sparks: Array[Sprite2D]) -> void:
 	modulate.a = 0.0
 	var tween := create_tween()
 	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
