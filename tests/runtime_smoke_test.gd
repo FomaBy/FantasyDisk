@@ -644,6 +644,11 @@ func _initialize() -> void:
 	root.add_child(contact_enemy)
 	contact_enemy.set("max_health", 100000.0)
 	contact_enemy.set("health", 100000.0)
+	# SCRUM-548: реальный спавн скейлит max_health и затем рефрешит health bar
+	# (combat_director._scale_enemy_for_current_wave -> _refresh_enemy_health_bar).
+	# Тест выставляет max_health напрямую, поэтому повторяем тот же refresh, иначе
+	# бар остаётся на дефолтном max_value из _ready и проверка max_value не сходится.
+	contact_enemy.call("refresh_health_bar")
 	contact_enemy.global_position = player.global_position
 	await process_frame
 	if int(contact_enemy.get("collision_mask")) & 1 != 0:
