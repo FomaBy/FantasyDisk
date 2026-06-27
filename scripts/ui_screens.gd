@@ -6679,7 +6679,7 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 		return "combat_level_up_plus"
 	if button_name.begins_with("MainMenu"):
 		return "main_menu"
-	if button_name == "HeroSelectChooseButton":
+	if button_name == "HeroSelectChooseButton" or button_name == "HS4ChooseButton":
 		return "hero_confirm"
 	if button_name == "SettingsResetAudioButton":
 		return "reset_audio"
