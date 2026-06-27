@@ -66,7 +66,33 @@
 
 ### Дубликат icon.svg в корне проекта (1)
 
-- `icon 2.svg`
+- `icon 2.svg` — duplicate backup copy purged by SCRUM-440; keep this entry as
+  historical cleanup context only.
+
+## SCRUM-418 Runtime Assets Size Cleanup (2026-06-15)
+
+Back-end cleanup removed only assets with explicit no-runtime-reference evidence
+or duplicate canonical replacements. Source PNGs were copied to
+`build/qa/scrum418/removed_assets_backup/` before deletion; Godot `.import`
+sidecars were intentionally not preserved.
+
+Removed from runtime `assets/`:
+- legacy `assets/backgrounds/main_menu_epic_battle.png`; active start screen uses
+  `assets/backgrounds/main_menu_epic_battle_v2.png`;
+- duplicate compatibility UI backdrops in `assets/sprites/ui/screens/`; runtime
+  uses canonical `assets/backgrounds/ui/*` through `SCREEN_BACKGROUND_PATHS`;
+- historical contextual UI frame kit in `assets/sprites/ui/frames/contextual/`;
+- superseded SCRUM-229 leather/gold frame kit in
+  `assets/sprites/ui/frames/leather_gold/`;
+- unreferenced root legacy `ui_frame_dark_menu.png` and
+  `ui_frame_dark_modal.png`.
+
+Size evidence: `assets/` went from `393M` at SCRUM-418 start to `368M` after this
+pass. macOS export check after excluding source-only marketing plus
+enemy/elite/boss full-frame sheet PNGs from `export_presets.cfg` produced a
+`286M` zip under `build/qa/scrum418/export_check/`. Larger character source
+sheets and dynamic frame packs were left in place when ownership or runtime/source
+status was uncertain.
 
 ## Оставлено Сознательно
 
@@ -76,7 +102,7 @@
 
 ## Сверка С content_registry
 
-Перемещенные файлы — устаревшие прототипные спрайты (svg-болванки, старые elite/enemy версии до редизайна, `*_source.png` исходники до visual redesign, старые варианты снарядов) и дубль `icon 2.svg`. Ни один не является активным ассетом сущности из реестра: активные пути реестра указывают на новые версии в `assets/sprites/elites/`, `assets/sprites/enemies/` и т.д. Расхождений «реестр ссылается на перемещенный файл» не найдено.
+Перемещенные файлы — устаревшие прототипные спрайты (svg-болванки, старые elite/enemy версии до редизайна, `*_source.png` исходники до visual redesign, старые варианты снарядов). Дубль `icon 2.svg` был historical cleanup item и окончательно удалён в SCRUM-440. Ни один не является активным ассетом сущности из реестра: активные пути реестра указывают на новые версии в `assets/sprites/elites/`, `assets/sprites/enemies/` и т.д. Расхождений «реестр ссылается на перемещенный файл» не найдено.
 
 ## Проверка
 

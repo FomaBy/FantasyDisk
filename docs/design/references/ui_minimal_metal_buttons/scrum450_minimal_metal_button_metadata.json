@@ -1,0 +1,1200 @@
+{
+  "task": "SCRUM-450",
+  "source_sheet": "docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_source_sheet.png",
+  "style_anchor": "docs/design/references/ui_minimal_metal/scrum452_minimal_metal_style_guide.md",
+  "contact_preview": "docs/design/previews/scrum450_minimal_metal_button_contact.png",
+  "safe_zone_preview": "docs/design/previews/scrum450_minimal_metal_button_safe_zones.png",
+  "global_rules": {
+    "style": "Strict minimal-metal buttons: graphite/obsidian center, forged dark steel, thin aged brass rails, rare ruby pins.",
+    "state_rule": "normal, hover, pressed, focus, disabled are separate visual PNG states. Hover/focus use neutral brightening and cool steel line, not yellow glow.",
+    "content_rule": "Runtime label/icon/focus hit area must stay inside content_rect_xywh. Metal caps, rails, side rubies, center rubies and bevels are forbidden zones.",
+    "role_boundary": "Design-source package only. Back-end integration, old kit backup, UI smokes and no-overlap matrix are handoff scope."
+  },
+  "button_types": {
+    "ui_btn_minimal_metal_standard": {
+      "role": "Standard action button",
+      "size": [
+        420,
+        104
+      ],
+      "shape": "action",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        50,
+        28,
+        50,
+        28
+      ],
+      "content_margins_ltrb": [
+        64,
+        32,
+        64,
+        32
+      ],
+      "content_rect_xywh": [
+        64,
+        32,
+        292,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_standard.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_standard.png",
+          "alpha_audit": {
+            "visible_pixels": 40748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_standard_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_standard_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 40748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_standard_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_standard_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 40016,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_standard_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_standard_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 40748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_standard_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_standard_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 40748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_max": {
+      "role": "Maximum visual action button",
+      "size": [
+        560,
+        104
+      ],
+      "shape": "action",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        58,
+        28,
+        58,
+        28
+      ],
+      "content_margins_ltrb": [
+        72,
+        32,
+        72,
+        32
+      ],
+      "content_rect_xywh": [
+        72,
+        32,
+        416,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_max.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_max.png",
+          "alpha_audit": {
+            "visible_pixels": 54631,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_max_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_max_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 54631,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_max_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_max_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 53619,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_max_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_max_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 54631,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_max_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_max_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 54580,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_main_menu": {
+      "role": "Main menu action button",
+      "size": [
+        380,
+        104
+      ],
+      "shape": "action",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        48,
+        28,
+        48,
+        28
+      ],
+      "content_margins_ltrb": [
+        62,
+        32,
+        62,
+        32
+      ],
+      "content_rect_xywh": [
+        62,
+        32,
+        256,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_main_menu.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_main_menu.png",
+          "alpha_audit": {
+            "visible_pixels": 36807,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_main_menu_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_main_menu_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 36807,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_main_menu_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_main_menu_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 36155,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_main_menu_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_main_menu_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 36807,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_main_menu_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_main_menu_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 36751,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_hero_confirm": {
+      "role": "Hero select confirm action",
+      "size": [
+        320,
+        104
+      ],
+      "shape": "action",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        42,
+        28,
+        42,
+        28
+      ],
+      "content_margins_ltrb": [
+        56,
+        32,
+        56,
+        32
+      ],
+      "content_rect_xywh": [
+        56,
+        32,
+        208,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_hero_confirm.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_hero_confirm.png",
+          "alpha_audit": {
+            "visible_pixels": 30931,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_hero_confirm_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_hero_confirm_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 30931,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_hero_confirm_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_hero_confirm_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 30399,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_hero_confirm_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_hero_confirm_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 30931,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_hero_confirm_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_hero_confirm_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 30883,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_reset_audio": {
+      "role": "Settings reset audio action",
+      "size": [
+        420,
+        104
+      ],
+      "shape": "action",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        50,
+        28,
+        50,
+        28
+      ],
+      "content_margins_ltrb": [
+        64,
+        32,
+        64,
+        32
+      ],
+      "content_rect_xywh": [
+        64,
+        32,
+        292,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_audio.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_audio.png",
+          "alpha_audit": {
+            "visible_pixels": 40748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_audio_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_audio_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 40748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_audio_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_audio_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 40016,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_audio_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_audio_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 40748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_audio_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_audio_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 40748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_reset_bindings": {
+      "role": "Settings reset bindings action",
+      "size": [
+        440,
+        104
+      ],
+      "shape": "action",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        50,
+        28,
+        50,
+        28
+      ],
+      "content_margins_ltrb": [
+        64,
+        32,
+        64,
+        32
+      ],
+      "content_rect_xywh": [
+        64,
+        32,
+        312,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_bindings.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_bindings.png",
+          "alpha_audit": {
+            "visible_pixels": 42748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_bindings_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_bindings_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 42748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_bindings_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_bindings_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 41976,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_bindings_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_bindings_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 42748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_reset_bindings_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_reset_bindings_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 42748,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_codex_tab": {
+      "role": "Codex tab/action button",
+      "size": [
+        170,
+        104
+      ],
+      "shape": "short",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        34,
+        28,
+        34,
+        28
+      ],
+      "content_margins_ltrb": [
+        48,
+        32,
+        48,
+        32
+      ],
+      "content_rect_xywh": [
+        48,
+        32,
+        74,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_codex_tab.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_codex_tab.png",
+          "alpha_audit": {
+            "visible_pixels": 16085,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_codex_tab_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_codex_tab_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 16085,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_codex_tab_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_codex_tab_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 15853,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_codex_tab_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_codex_tab_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 16085,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_codex_tab_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_codex_tab_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 16049,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_back_s": {
+      "role": "Back/action variant S",
+      "size": [
+        170,
+        104
+      ],
+      "shape": "back",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        34,
+        28,
+        34,
+        28
+      ],
+      "content_margins_ltrb": [
+        48,
+        32,
+        48,
+        32
+      ],
+      "content_rect_xywh": [
+        48,
+        32,
+        74,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_s.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_s.png",
+          "alpha_audit": {
+            "visible_pixels": 16085,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_s_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_s_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 16085,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_s_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_s_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 15853,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_s_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_s_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 16085,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_s_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_s_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 16049,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_back_m": {
+      "role": "Back/action variant M",
+      "size": [
+        280,
+        104
+      ],
+      "shape": "back",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        42,
+        28,
+        42,
+        28
+      ],
+      "content_margins_ltrb": [
+        56,
+        32,
+        56,
+        32
+      ],
+      "content_rect_xywh": [
+        56,
+        32,
+        168,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_m.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_m.png",
+          "alpha_audit": {
+            "visible_pixels": 26931,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_m_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_m_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 26931,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_m_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_m_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 26479,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_m_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_m_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 26931,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_m_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_m_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 26883,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_back_l": {
+      "role": "Back/action variant L",
+      "size": [
+        380,
+        104
+      ],
+      "shape": "back",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        48,
+        28,
+        48,
+        28
+      ],
+      "content_margins_ltrb": [
+        62,
+        32,
+        62,
+        32
+      ],
+      "content_rect_xywh": [
+        62,
+        32,
+        256,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_l.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_l.png",
+          "alpha_audit": {
+            "visible_pixels": 36807,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_l_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_l_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 36807,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_l_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_l_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 36155,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_l_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_l_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 36807,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_l_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_back_l_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 36751,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_attr_selector": {
+      "role": "Attribute selector / long offer action",
+      "size": [
+        560,
+        104
+      ],
+      "shape": "action",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        58,
+        28,
+        58,
+        28
+      ],
+      "content_margins_ltrb": [
+        72,
+        32,
+        72,
+        32
+      ],
+      "content_rect_xywh": [
+        72,
+        32,
+        416,
+        40
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_attr_selector.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_attr_selector.png",
+          "alpha_audit": {
+            "visible_pixels": 54631,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_attr_selector_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_attr_selector_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 54631,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_attr_selector_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_attr_selector_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 53619,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_attr_selector_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_attr_selector_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 54631,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_attr_selector_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_attr_selector_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 54580,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_fab": {
+      "role": "Upgrade FAB / plus icon button",
+      "size": [
+        50,
+        50
+      ],
+      "shape": "round",
+      "supports_9slice": false,
+      "texture_margins_ltrb": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "content_margins_ltrb": [
+        15,
+        15,
+        15,
+        15
+      ],
+      "content_rect_xywh": [
+        15,
+        15,
+        20,
+        20
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_fab.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_fab.png",
+          "alpha_audit": {
+            "visible_pixels": 1921,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_fab_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_fab_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 1925,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_fab_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_fab_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 1871,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_fab_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_fab_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 1923,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_fab_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_fab_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 1916,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_utility": {
+      "role": "Compact utility icon button",
+      "size": [
+        54,
+        42
+      ],
+      "shape": "square",
+      "supports_9slice": false,
+      "texture_margins_ltrb": [
+        12,
+        10,
+        12,
+        10
+      ],
+      "content_margins_ltrb": [
+        15,
+        12,
+        15,
+        12
+      ],
+      "content_rect_xywh": [
+        15,
+        12,
+        24,
+        18
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_utility.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_utility.png",
+          "alpha_audit": {
+            "visible_pixels": 2028,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_utility_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_utility_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 2028,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_utility_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_utility_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 1946,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_utility_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_utility_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 2028,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_utility_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_utility_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 2015,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_pause": {
+      "role": "Pause menu button",
+      "size": [
+        280,
+        60
+      ],
+      "shape": "slim",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        34,
+        16,
+        34,
+        16
+      ],
+      "content_margins_ltrb": [
+        46,
+        18,
+        46,
+        18
+      ],
+      "content_rect_xywh": [
+        46,
+        18,
+        188,
+        24
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_pause.png",
+          "alpha_audit": {
+            "visible_pixels": 15769,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_pause_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 15769,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_pause_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 15269,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_pause_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 15769,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_pause_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 15742,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    },
+    "ui_btn_minimal_metal_rebind": {
+      "role": "Rebind/dropdown-style button",
+      "size": [
+        420,
+        62
+      ],
+      "shape": "slim",
+      "supports_9slice": true,
+      "texture_margins_ltrb": [
+        34,
+        16,
+        34,
+        16
+      ],
+      "content_margins_ltrb": [
+        46,
+        18,
+        46,
+        18
+      ],
+      "content_rect_xywh": [
+        46,
+        18,
+        328,
+        26
+      ],
+      "states": {
+        "normal": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_rebind.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_rebind.png",
+          "alpha_audit": {
+            "visible_pixels": 24723,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "hover": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_rebind_hover.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_rebind_hover.png",
+          "alpha_audit": {
+            "visible_pixels": 24723,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "pressed": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_rebind_pressed.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_rebind_pressed.png",
+          "alpha_audit": {
+            "visible_pixels": 23944,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "focus": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_rebind_focus.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_rebind_focus.png",
+          "alpha_audit": {
+            "visible_pixels": 24723,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        },
+        "disabled": {
+          "path": "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_rebind_disabled.png",
+          "raw_source_path": "docs/design/references/ui_minimal_metal_buttons/buttons_raw/ui_btn_minimal_metal_rebind_disabled.png",
+          "alpha_audit": {
+            "visible_pixels": 24696,
+            "white_opaque_pixels": 0,
+            "pale_visible_pixels_after_cleanup": 0,
+            "pale_edge_visible_pixels": 0
+          }
+        }
+      }
+    }
+  }
+}

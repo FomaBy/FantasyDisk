@@ -1,0 +1,217 @@
+{
+  "task": "SCRUM-448",
+  "source_sheet": "docs/design/references/ui_minimal/scrum448_minimalist_frame_kit_source_sheet.png",
+  "style_board": "docs/design/references/ui_minimal/scrum448_minimalist_ui_style_board.png",
+  "contact_preview": "docs/design/previews/scrum448_minimal_ui_frame_contact.png",
+  "global_rules": {
+    "red_buttons": "Preserve SCRUM-273 assets under assets/sprites/ui/frames/red_gold/ unchanged.",
+    "content_rule": "Runtime content, text, icons, portraits, controls and hit areas must remain inside declared content_rect only; border/gem/brass rail zones are forbidden.",
+    "style": "Minimal dark fantasy: obsidian/graphite fills, thin aged-brass outline, tiny ruby pins only; no heavy ornament or dragon curls."
+  },
+  "assets": {
+    "ui_frame_minimal_modal": {
+      "path": "assets/sprites/ui/frames/minimal/ui_frame_minimal_modal.png",
+      "raw_source_path": "docs/design/references/ui_minimal/frames_raw/ui_frame_minimal_modal_raw.png",
+      "role": "Large window/modal frame for main menu panels, settings/codex/pause/result screens.",
+      "size": [
+        986,
+        900
+      ],
+      "texture_margins_ltrb": [
+        51,
+        70,
+        51,
+        63
+      ],
+      "content_margins_ltrb": [
+        74,
+        94,
+        74,
+        86
+      ],
+      "content_rect_xywh": [
+        74,
+        94,
+        838,
+        720
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; thin brass/ruby outline and all bevel pixels are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile stretch for center where aspect may change; whole-image proportional only for authored screen-specific layouts.",
+      "alpha_audit": {
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_panel": {
+      "path": "assets/sprites/ui/frames/minimal/ui_frame_minimal_panel.png",
+      "raw_source_path": "docs/design/references/ui_minimal/frames_raw/ui_frame_minimal_panel_raw.png",
+      "role": "Generic inner panel/frame for screen sections and large content panes.",
+      "size": [
+        782,
+        716
+      ],
+      "texture_margins_ltrb": [
+        41,
+        56,
+        41,
+        50
+      ],
+      "content_margins_ltrb": [
+        59,
+        75,
+        59,
+        68
+      ],
+      "content_rect_xywh": [
+        59,
+        75,
+        664,
+        573
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; thin brass/ruby outline and all bevel pixels are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile stretch for center where aspect may change; whole-image proportional only for authored screen-specific layouts.",
+      "alpha_audit": {
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_card": {
+      "path": "assets/sprites/ui/frames/minimal/ui_frame_minimal_card.png",
+      "raw_source_path": "docs/design/references/ui_minimal/frames_raw/ui_frame_minimal_card_raw.png",
+      "role": "Compact card frame for reward/event/upgrade/hero/weapon cards.",
+      "size": [
+        426,
+        486
+      ],
+      "texture_margins_ltrb": [
+        34,
+        45,
+        34,
+        44
+      ],
+      "content_margins_ltrb": [
+        45,
+        58,
+        45,
+        56
+      ],
+      "content_rect_xywh": [
+        45,
+        58,
+        336,
+        372
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; thin brass/ruby outline and all bevel pixels are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile stretch for center where aspect may change; whole-image proportional only for authored screen-specific layouts.",
+      "alpha_audit": {
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_tooltip": {
+      "path": "assets/sprites/ui/frames/minimal/ui_frame_minimal_tooltip.png",
+      "raw_source_path": "docs/design/references/ui_minimal/frames_raw/ui_frame_minimal_tooltip_raw.png",
+      "role": "Tooltip and small dialog frame.",
+      "size": [
+        760,
+        242
+      ],
+      "texture_margins_ltrb": [
+        49,
+        31,
+        49,
+        29
+      ],
+      "content_margins_ltrb": [
+        68,
+        46,
+        68,
+        41
+      ],
+      "content_rect_xywh": [
+        68,
+        46,
+        624,
+        155
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; thin brass/ruby outline and all bevel pixels are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile stretch for center where aspect may change; whole-image proportional only for authored screen-specific layouts.",
+      "alpha_audit": {
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_hud_strip": {
+      "path": "assets/sprites/ui/frames/minimal/ui_frame_minimal_hud_strip.png",
+      "raw_source_path": "docs/design/references/ui_minimal/frames_raw/ui_frame_minimal_hud_strip_raw.png",
+      "role": "Combat HUD/resource strip and long status panels.",
+      "size": [
+        1122,
+        288
+      ],
+      "texture_margins_ltrb": [
+        81,
+        46,
+        81,
+        42
+      ],
+      "content_margins_ltrb": [
+        107,
+        65,
+        107,
+        59
+      ],
+      "content_rect_xywh": [
+        107,
+        65,
+        908,
+        164
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; thin brass/ruby outline and all bevel pixels are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile stretch for center where aspect may change; whole-image proportional only for authored screen-specific layouts.",
+      "alpha_audit": {
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    },
+    "ui_frame_minimal_field": {
+      "path": "assets/sprites/ui/frames/minimal/ui_frame_minimal_field.png",
+      "raw_source_path": "docs/design/references/ui_minimal/frames_raw/ui_frame_minimal_field_raw.png",
+      "role": "Input/field/tab switcher/compact section frame.",
+      "size": [
+        616,
+        286
+      ],
+      "texture_margins_ltrb": [
+        44,
+        39,
+        44,
+        37
+      ],
+      "content_margins_ltrb": [
+        59,
+        53,
+        59,
+        50
+      ],
+      "content_rect_xywh": [
+        59,
+        53,
+        498,
+        183
+      ],
+      "safe_zone_policy": "Content only inside content_rect_xywh; thin brass/ruby outline and all bevel pixels are forbidden zones.",
+      "suggested_runtime": "StyleBoxTexture / NinePatchRect with tile stretch for center where aspect may change; whole-image proportional only for authored screen-specific layouts.",
+      "alpha_audit": {
+        "white_opaque_pixels": 0,
+        "pale_visible_pixels_after_cleanup": 0,
+        "pale_edge_visible_pixels": 0
+      }
+    }
+  }
+}

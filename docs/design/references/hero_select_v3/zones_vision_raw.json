@@ -1,0 +1,58 @@
+{
+  "source": "docs/design/references/hero_select_v3/mockup.png",
+  "image_size": {
+    "width": 1536,
+    "height": 864
+  },
+  "method": "OpenAI Vision API (responses.create, gpt-4.1) on generated mockup",
+  "zones": {
+    "hero_preview": {
+      "x": 42,
+      "y": 93,
+      "width": 346,
+      "height": 627,
+      "confidence": 0.99,
+      "note": "Large ornate portrait frame on the left for hero preview."
+    },
+    "dossier": {
+      "x": 388,
+      "y": 93,
+      "width": 625,
+      "height": 467,
+      "confidence": 0.98,
+      "note": "Central frame for hero description, stats, and ascension selection."
+    },
+    "radar": {
+      "x": 1015,
+      "y": 93,
+      "width": 375,
+      "height": 374,
+      "confidence": 0.99,
+      "note": "Upper right square frame for radar/compass stat display."
+    },
+    "carousel": {
+      "x": 36,
+      "y": 670,
+      "width": 1462,
+      "height": 179,
+      "confidence": 0.99,
+      "note": "Bottom horizontal carousel including left/right arrows and full card rail."
+    },
+    "title": {
+      "x": 537,
+      "y": 25,
+      "width": 469,
+      "height": 79,
+      "confidence": 0.98,
+      "note": "Top center ornate 'Hero Select' title banner."
+    },
+    "back_button": {
+      "x": 52,
+      "y": 28,
+      "width": 123,
+      "height": 61,
+      "confidence": 0.99,
+      "note": "Top-left back button with arrow."
+    }
+  }
+}

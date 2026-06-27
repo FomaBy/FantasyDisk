@@ -3,8 +3,87 @@ extends RefCounted
 
 const DF_FRAME_DIR := "res://assets/sprites/ui/frames/dark_fantasy/"
 const RED_GOLD_BUTTON_DIR := "res://assets/sprites/ui/frames/red_gold/"
+const MINIMAL_METAL_BUTTON_DIR := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
 const ORNATE_FRAME_DIR := "res://assets/sprites/ui/frames/ornate/"
 const UNIFIED_FRAME_DIR := "res://assets/sprites/ui/frames/unified/"
+const MINIMAL_FRAME_DIR := "res://assets/sprites/ui/frames/minimal/"
+const MINIMAL_METAL_FRAME_DIR := "res://assets/sprites/ui/frames/minimal_metal/"
+const MINIMAL_MODAL_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_modal.png"
+const MINIMAL_PANEL_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_panel.png"
+const MINIMAL_CARD_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_card.png"
+const MINIMAL_TOOLTIP_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_tooltip.png"
+const MINIMAL_HUD_STRIP_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_hud_strip.png"
+const MINIMAL_FIELD_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_field.png"
+const MINIMAL_METAL_MODAL_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_modal.png"
+const MINIMAL_METAL_PANEL_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_panel.png"
+const MINIMAL_METAL_CARD_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_card.png"
+const MINIMAL_METAL_TOOLTIP_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_tooltip.png"
+const MINIMAL_METAL_HUD_STRIP_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_hud_strip.png"
+const MINIMAL_METAL_FIELD_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_field.png"
+const MINIMAL_FRAME_SOURCE_SIZE := {
+	"modal": Vector2(986, 900),
+	"panel": Vector2(782, 716),
+	"card": Vector2(426, 486),
+	"tooltip": Vector2(760, 242),
+	"hud_strip": Vector2(1122, 288),
+	"field": Vector2(616, 286),
+}
+const MINIMAL_FRAME_TEXTURE_MARGINS := {
+	"modal": Vector4(51, 70, 51, 63),
+	"panel": Vector4(41, 56, 41, 50),
+	"card": Vector4(34, 45, 34, 44),
+	"tooltip": Vector4(49, 31, 49, 29),
+	"hud_strip": Vector4(81, 46, 81, 42),
+	"field": Vector4(44, 39, 44, 37),
+}
+const MINIMAL_FRAME_CONTENT := {
+	"modal": Vector4(74, 94, 74, 86),
+	"panel": Vector4(59, 75, 59, 68),
+	"card": Vector4(45, 58, 45, 56),
+	"tooltip": Vector4(68, 46, 68, 41),
+	"hud_strip": Vector4(107, 65, 107, 59),
+	"field": Vector4(59, 53, 59, 50),
+}
+const MINIMAL_METAL_FRAME_PATHS := {
+	"modal": MINIMAL_METAL_MODAL_PATH,
+	"panel": MINIMAL_METAL_PANEL_PATH,
+	"card": MINIMAL_METAL_CARD_PATH,
+	"tooltip": MINIMAL_METAL_TOOLTIP_PATH,
+	"hud_strip": MINIMAL_METAL_HUD_STRIP_PATH,
+	"field": MINIMAL_METAL_FIELD_PATH,
+}
+const MINIMAL_METAL_FRAME_SOURCE_SIZE := {
+	"modal": Vector2(986, 900),
+	"panel": Vector2(782, 716),
+	"card": Vector2(426, 486),
+	"tooltip": Vector2(760, 242),
+	"hud_strip": Vector2(1122, 288),
+	"field": Vector2(616, 286),
+}
+const MINIMAL_METAL_FRAME_TEXTURE_MARGINS := {
+	"modal": Vector4(46, 62, 46, 58),
+	"panel": Vector4(38, 52, 38, 48),
+	"card": Vector4(32, 42, 32, 40),
+	"tooltip": Vector4(46, 30, 46, 28),
+	"hud_strip": Vector4(76, 42, 76, 40),
+	"field": Vector4(42, 38, 42, 36),
+}
+const MINIMAL_METAL_FRAME_CONTENT := {
+	"modal": Vector4(72, 92, 72, 84),
+	"panel": Vector4(58, 72, 58, 66),
+	"card": Vector4(46, 58, 46, 54),
+	"tooltip": Vector4(66, 44, 66, 40),
+	"hud_strip": Vector4(104, 62, 104, 56),
+	"field": Vector4(58, 52, 58, 48),
+}
+const MINIMAL_METAL_FRAME_SAFE_RECTS := {
+	"modal": Rect2(72, 92, 842, 724),
+	"panel": Rect2(58, 72, 666, 578),
+	"card": Rect2(46, 58, 334, 374),
+	"tooltip": Rect2(66, 44, 628, 158),
+	"hud_strip": Rect2(104, 62, 914, 170),
+	"field": Rect2(58, 52, 500, 186),
+}
 const UNIFIED_MASTER_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master.png"
 const UNIFIED_MASTER_FILL_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master_fill.png"
 const UNIFIED_INNER_FILL_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_inner_fill.png"
@@ -26,16 +105,16 @@ const UNIFIED_FRAME_CONTENT := {
 	"timer_panel": Vector4(14, 4, 14, 4),
 }
 
-const GLOBAL_PANEL_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
-const GLOBAL_BUTTON_FRAME_PATH := RED_GOLD_BUTTON_DIR + "ui_btn_red_gold_standard.png"
-const GLOBAL_CARD_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
-const GLOBAL_HERO_CARD_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
-const GLOBAL_CARD_HOVER_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
-const GLOBAL_LEVEL_PANEL_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
-const GLOBAL_HUD_PANEL_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
-const GLOBAL_HUD_CARD_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
-const GLOBAL_TOOLTIP_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
-const GLOBAL_TIMER_PANEL_FRAME_PATH := UNIFIED_MASTER_FRAME_PATH
+const GLOBAL_PANEL_FRAME_PATH := MINIMAL_METAL_PANEL_PATH
+const GLOBAL_BUTTON_FRAME_PATH := MINIMAL_METAL_BUTTON_DIR + "ui_btn_minimal_metal_standard.png"
+const GLOBAL_CARD_FRAME_PATH := MINIMAL_METAL_CARD_PATH
+const GLOBAL_HERO_CARD_FRAME_PATH := MINIMAL_METAL_CARD_PATH
+const GLOBAL_CARD_HOVER_FRAME_PATH := MINIMAL_METAL_CARD_PATH
+const GLOBAL_LEVEL_PANEL_FRAME_PATH := MINIMAL_METAL_PANEL_PATH
+const GLOBAL_HUD_PANEL_FRAME_PATH := MINIMAL_METAL_HUD_STRIP_PATH
+const GLOBAL_HUD_CARD_FRAME_PATH := MINIMAL_METAL_FIELD_PATH
+const GLOBAL_TOOLTIP_FRAME_PATH := MINIMAL_METAL_TOOLTIP_PATH
+const GLOBAL_TIMER_PANEL_FRAME_PATH := MINIMAL_METAL_FIELD_PATH
 
 const ORNATE_FRAME_MARGINS := {
 	"global_panel": Vector4(34, 34, 34, 34),
@@ -214,4 +293,40 @@ const RED_GOLD_BUTTON_CONTENT := {
 	"utility": Vector4(8, 6, 8, 6),
 	"pause": Vector4(56, 8, 56, 8),
 	"rebind": Vector4(72, 8, 72, 8),
+}
+
+const MINIMAL_METAL_BUTTON_MARGINS := {
+	"standard": Vector4(50, 28, 50, 28),
+	"max": Vector4(58, 28, 58, 28),
+	"main_menu": Vector4(48, 28, 48, 28),
+	"hero_confirm": Vector4(42, 28, 42, 28),
+	"reset_audio": Vector4(50, 28, 50, 28),
+	"reset_bindings": Vector4(50, 28, 50, 28),
+	"codex_tab": Vector4(34, 28, 34, 28),
+	"back_s": Vector4(34, 28, 34, 28),
+	"back_m": Vector4(42, 28, 42, 28),
+	"back_l": Vector4(48, 28, 48, 28),
+	"attr_selector": Vector4(58, 28, 58, 28),
+	"fab": Vector4(12, 12, 12, 12),
+	"utility": Vector4(12, 10, 12, 10),
+	"pause": Vector4(34, 16, 34, 16),
+	"rebind": Vector4(34, 16, 34, 16),
+}
+
+const MINIMAL_METAL_BUTTON_CONTENT := {
+	"standard": Vector4(64, 32, 64, 32),
+	"max": Vector4(72, 32, 72, 32),
+	"main_menu": Vector4(62, 32, 62, 32),
+	"hero_confirm": Vector4(56, 32, 56, 32),
+	"reset_audio": Vector4(64, 32, 64, 32),
+	"reset_bindings": Vector4(64, 32, 64, 32),
+	"codex_tab": Vector4(48, 32, 48, 32),
+	"back_s": Vector4(48, 32, 48, 32),
+	"back_m": Vector4(56, 32, 56, 32),
+	"back_l": Vector4(62, 32, 62, 32),
+	"attr_selector": Vector4(72, 32, 72, 32),
+	"fab": Vector4(15, 15, 15, 15),
+	"utility": Vector4(15, 12, 15, 12),
+	"pause": Vector4(46, 18, 46, 18),
+	"rebind": Vector4(46, 18, 46, 18),
 }

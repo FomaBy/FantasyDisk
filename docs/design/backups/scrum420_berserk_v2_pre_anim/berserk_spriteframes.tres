@@ -1,0 +1,100 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_00.png" id="1_be1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_01.png" id="2_be2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_02.png" id="3_be3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_03.png" id="4_be4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_idle_04.png" id="5_be5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_00.png" id="6_be6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_01.png" id="7_be7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_02.png" id="8_be8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_03.png" id="9_be9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_walk_04.png" id="10_be10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_attack_primary_00.png" id="11_be11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_attack_primary_01.png" id="12_be12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_attack_primary_02.png" id="13_be13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_attack_primary_03.png" id="14_be14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk/berserk_attack_primary_04.png" id="15_be15"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_be11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_be12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_be13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_be14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_be15")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_be11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_be12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_be13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_be14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_be15")
+}],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_be1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_be2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_be3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_be4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_be5")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_be6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_be7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_be8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_be9")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_be10")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+}]

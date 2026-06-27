@@ -2,6 +2,9 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const VIEWPORT_SIZES := [Vector2i(1152, 648), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
+const MINIMAL_CARD_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
+const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
+const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 
 
 func _initialize() -> void:
@@ -15,10 +18,11 @@ func _initialize() -> void:
 			"MainMenuPatchNotesButton", "MainMenuCodexButton", "MainMenuExitButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "settings", Callable(self, "_open_settings"), [
-			"SettingsResolutionOption", "SettingsWindowModeOption",
+			"SettingsTabSwitcher", "SettingsContentPanel",
+			"SettingsResolutionOption", "SettingsWindowModeOption", "SettingsBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
-			"CodexBackButton", "CodexTabs", "CodexContent",
+			"CodexBackButton", "CodexTabs", "CodexContent", "CodexDetailPanel",
 		], dump_lines, errors, false)
 		await _check_screen(viewport_size, "skill_tree", Callable(self, "_open_skill_tree"), [
 			"SkillTreeBackButton", "SkillTreePointsBadge", "SkillTreeClassPanel",
@@ -27,6 +31,10 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
 			"PatchNotesBackButton",
 		], dump_lines, errors, false)
+		await _check_screen(viewport_size, "level_up", Callable(self, "_open_level_up"), [
+			"LevelUpPanel", "LevelUpHeroHeader", "LevelUpRewardButton0",
+			"LevelUpRewardButton1", "LevelUpRewardButton2", "LevelUpLaterButton",
+		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_menu", Callable(self, "_open_pause_menu"), [
 			"RunPauseMenuPanel", "RunPauseContinueButton", "RunPauseDossierButton",
 			"RunPauseSettingsButton", "RunPauseEndRunButton", "RunPauseMainMenuButton",
@@ -36,8 +44,7 @@ func _initialize() -> void:
 			"DerivedStatsGroups",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "hero_select", Callable(self, "_open_hero_select"), [
-			"HeroSelectHeader", "HeroSelectPortraitPanel", "HeroSelectDossierPanel",
-			"HeroSelectChooseButton",
+			"HS4Portrait", "HS4Radar", "HS4Carousel", "HS4ChooseButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "victory", Callable(self, "_open_victory"), [
 			"PauseEndModalPanel_victory", "ResultCrest", "VictoryNewRunButton",
@@ -95,11 +102,41 @@ func _initialize() -> void:
 	if scrum415_file != null:
 		scrum415_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["event_economy"])))
 		scrum415_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum437" % qa_dir)
+	var scrum437_file := FileAccess.open("%s/scrum437/wide_economy_choice_card_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum437_file != null:
+		scrum437_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["rest_economy", "upgrade_economy", "event_economy", "attribute_shop_economy"])))
+		scrum437_file.close()
 	DirAccess.make_dir_recursive_absolute("%s/scrum331" % qa_dir)
 	var scrum331_file := FileAccess.open("%s/scrum331/progression_ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
 	if scrum331_file != null:
 		scrum331_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["skill_tree"])))
 		scrum331_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum438" % qa_dir)
+	var scrum438_file := FileAccess.open("%s/scrum438/codex_v2_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum438_file != null:
+		scrum438_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["codex"])))
+		scrum438_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum439" % qa_dir)
+	var scrum439_file := FileAccess.open("%s/scrum439/settings_v2_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum439_file != null:
+		scrum439_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["settings"])))
+		scrum439_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum448_ui_minimalist" % qa_dir)
+	var scrum448_file := FileAccess.open("%s/scrum448_ui_minimalist/ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum448_file != null:
+		scrum448_file.store_string("\n".join(dump_lines))
+		scrum448_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum451_minimal_metal_rollout" % qa_dir)
+	var scrum451_file := FileAccess.open("%s/scrum451_minimal_metal_rollout/ui_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum451_file != null:
+		scrum451_file.store_string("\n".join(dump_lines))
+		scrum451_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum470_hero_select_v4" % qa_dir)
+	var scrum470_file := FileAccess.open("%s/scrum470_hero_select_v4/hero_select_v4_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum470_file != null:
+		scrum470_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["hero_select"])))
+		scrum470_file.close()
 
 	if not errors.is_empty():
 		for error in errors:
@@ -168,6 +205,14 @@ func _open_skill_tree(main: Node) -> void:
 
 func _open_patch_notes(main: Node) -> void:
 	main.ui._show_patch_notes_screen()
+
+
+func _open_level_up(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.set("pending_level_ups", 1)
+	main.set("level_up_offer", [])
+	main.ui._show_level_up_screen(false)
 
 
 func _open_pause_menu(main: Node) -> void:
@@ -249,6 +294,14 @@ func _open_event(main: Node) -> void:
 
 
 func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
+	if ["attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"].has(screen_id):
+		for node in main.find_children("*", "Button", true, false):
+			var card := node as Button
+			if card == null or str(card.get_meta("economy_frame_kind", "")) != "choice_card":
+				continue
+			var card_error := _economy_choice_card_contract_error(card, context)
+			if card_error != "":
+				return card_error
 	match screen_id:
 		"attribute_shop_economy":
 			var panel := main.find_child("AttributeShopPanel", true, false) as Control
@@ -279,7 +332,42 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 
 
 func _requires_viewport_fit(screen_id: String) -> bool:
-	return screen_id in ["attribute_shop_economy", "event_economy"]
+	return screen_id in ["level_up", "attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"]
+
+
+func _economy_choice_card_contract_error(card: Button, context: String) -> String:
+	if str(card.get_meta("economy_frame_path", "")) != ECONOMY_CHOICE_WIDE_PATH:
+		return "%s: expected %s to use SCRUM-451 minimal-metal economy choice frame, got %s." % [context, card.name, str(card.get_meta("economy_frame_path", ""))]
+	if str(card.get_meta("economy_hover_frame_path", "")) != ECONOMY_CHOICE_WIDE_HOVER_PATH:
+		return "%s: expected %s hover to use SCRUM-451 minimal-metal hover frame." % [context, card.name]
+	if _stylebox_texture_path(card.get_theme_stylebox("normal")) != ECONOMY_CHOICE_WIDE_PATH:
+		return "%s: expected %s normal StyleBox to use minimal-metal economy choice frame." % [context, card.name]
+	if _stylebox_texture_path(card.get_theme_stylebox("hover")) != ECONOMY_CHOICE_WIDE_HOVER_PATH:
+		return "%s: expected %s hover StyleBox to use minimal-metal economy choice hover frame." % [context, card.name]
+	var expected_min_width := 320.0 if context.contains("(1152, 648)") else 360.0
+	if context.contains("(1920, 1080)"):
+		expected_min_width = 420.0
+	elif context.contains("(2560, 1440)"):
+		expected_min_width = 480.0
+	if card.custom_minimum_size.x < expected_min_width or card.custom_minimum_size.y < 240.0:
+		return "%s: expected %s to use the SCRUM-451 minimal-metal card display target, got %s." % [context, card.name, str(card.custom_minimum_size)]
+	var source_size: Vector2 = card.get_meta("economy_source_size", Vector2.ZERO)
+	var source_safe: Rect2 = card.get_meta("economy_source_safe_rect", Rect2())
+	if source_size != Vector2(426.0, 486.0) or source_safe != Rect2(46.0, 58.0, 334.0, 374.0):
+		return "%s: expected %s to expose SCRUM-451 source size/safe rect metadata." % [context, card.name]
+	var card_rect := card.get_global_rect()
+	var safe_rect := _scaled_source_rect(card_rect, source_size, source_safe).grow(1.0)
+	var content := card.find_child("%sContent" % card.name, true, false) as Control
+	if content != null:
+		for child in content.get_children():
+			var child_control := child as Control
+			if child_control != null and child_control.visible and not safe_rect.encloses(child_control.get_global_rect()):
+				return "%s: expected %s child %s to stay inside scaled wide-card safe rect %s." % [context, card.name, child_control.name, str(safe_rect)]
+	for suffix in ["Title", "Description", "Action"]:
+		var label := card.find_child("%s%s" % [card.name, suffix], true, false) as Label
+		if label != null and not safe_rect.encloses(label.get_global_rect()):
+			return "%s: expected %s label %s to stay inside scaled wide-card safe rect %s." % [context, card.name, label.name, str(safe_rect)]
+	return ""
 
 
 func _first_peer_overlap(controls: Array, tolerance_px: float) -> String:
@@ -313,6 +401,24 @@ func _rect_with_tolerance(rect: Rect2, tolerance_px: float) -> Rect2:
 	var shrink := tolerance_px * 0.5
 	var size := Vector2(maxf(rect.size.x - tolerance_px, 0.0), maxf(rect.size.y - tolerance_px, 0.0))
 	return Rect2(rect.position + Vector2(shrink, shrink), size)
+
+
+func _stylebox_texture_path(style: StyleBox) -> String:
+	if not (style is StyleBoxTexture):
+		return ""
+	var texture := (style as StyleBoxTexture).texture
+	if texture == null:
+		return ""
+	return texture.resource_path
+
+
+func _scaled_source_rect(frame_rect: Rect2, source_size: Vector2, source_rect: Rect2) -> Rect2:
+	var scale_x := frame_rect.size.x / maxf(source_size.x, 1.0)
+	var scale_y := frame_rect.size.y / maxf(source_size.y, 1.0)
+	return Rect2(
+		frame_rect.position + Vector2(source_rect.position.x * scale_x, source_rect.position.y * scale_y),
+		Vector2(source_rect.size.x * scale_x, source_rect.size.y * scale_y)
+	)
 
 
 func _filter_dump_sections(lines: PackedStringArray, markers: Array) -> PackedStringArray:

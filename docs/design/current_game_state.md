@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-06-14 (0.1.5 dev snapshot)
+Обновлено: 2026-06-15 (0.1.6 dev snapshot)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -22,10 +22,10 @@ Domain docs для подробностей по областям:
 
 - Движок: Godot 4.
 - Жанр: 2D top-down loot-action survival roguelite с RPG-билдкрафтом.
-- Текущий sprint target: стабилизация `0.1.5` на ветке `dev`; release `v0.1.4`
-  уже выпущен, feature block 0.1.5 активен с 2026-06-14. Новые не-баговые фичи
-  уходят в `0.1.6`, текущая версия дожимает уже заведённые board-задачи и
-  bug/QA defect/regression/release blockers.
+- Текущий sprint target: `0.1.6` на ветке `dev`; release `v0.1.5` уже выпущен,
+  feature block 0.1.5 снят. Основное активное арт-направление 0.1.6 начинается с
+  bright+epic character redraw v2 anchor (SCRUM-422) перед пер-классовыми
+  redraw-задачами.
 - Основная рабочая платформа: macOS. Релизные платформы: macOS (dmg) и Windows (x86_64 exe c embed_pck + NSIS-инсталлер).
 - Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
 - Основная сцена: `scenes/Main.tscn`.
@@ -59,6 +59,8 @@ Domain docs для подробностей по областям:
 - **Оконные разрешения** применяются честно: размер клампится по `screen_get_usable_rect` выбранного монитора (учет масштаба ОС/дока/меню-бара), окно центрируется от origin usable rect (раньше центрирование игнорировало origin — на втором мониторе окно уезжало); разрешения больше монитора задизейблены в списке. Borderless занимает usable rect экрана.
 - **Вкладки**: экран настроек разделен на `TabContainer`-вкладки «Экран», «Звук», «Управление». «Экран» и «Звук» помещаются в окно, а «Управление» использует внутренний `ControlsScroll`, чтобы список прицеливания/биндингов/сброса был доступен на 1280x720 без перекрытия кнопки «Назад».
 - **Tab switcher art**: SCRUM-396 подключил live 3-slot Settings strip `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png` (`1280x256`, RGBA, без baked text) как `SettingsTabSwitcher`. Built-in headers у `SettingsTabs` скрыты, а `SettingsTabButton_0..2` переключают страницы «Экран», «Звук», «Управление» строго из scaled Design safe rects `Rect2(160,88,270,82)`, `Rect2(506,88,270,82)` и `Rect2(852,88,270,82)`; четвертого визуального/кликабельного слота больше нет.
+- **Minimalist UI kit**: SCRUM-449 подключил SCRUM-448 minimal non-button frame kit (`assets/sprites/ui/frames/minimal/`) к runtime Settings shell/switcher/content panel, Codex panels/cards/tooltips, economy choice cards/price badges, reward cards, pause/result shells, generic panels/cards/tooltips и компактным HUD wrappers. Hero Select v3 frames, progression node rings and combat bar fills остаются screen-specific exceptions. QA: `build/qa/scrum448_ui_minimalist/`, runtime smoke/UI/no-overlap PASS.
+- **Minimal Metal runtime kits**: SCRUM-459 wired the SCRUM-452 strict minimal-metal frame kit under `assets/sprites/ui/frames/minimal_metal/` as first-class runtime paths/constants plus a reusable StyleBoxTexture helper with metadata texture/content margins and safe rects. SCRUM-462 promotes the SCRUM-450 minimal-metal button kit under `assets/sprites/ui/frames/minimal_metal_buttons/` for runtime action-button families, including main menu, back, pause, Codex tab, reset, rebind, utility/FAB and attribute selector states; card/hit-area exceptions remain card-styled. Red & Gold buttons are historical/backup only for this pass. QA: `build/qa/scrum450_minimal_metal_buttons/`, dark theme/runtime UI/no-overlap/full runtime smokes PASS.
 - **Звук**: слайдеры Общая/Музыка/Эффекты (0-100%, шаг 2) вынесены во вкладку «Звук», занимают всю ширину контентной зоны, имеют видимый темный трек, золотую заполненную часть, числовое значение справа и keyboard focus для стрелок. Переключатели музыки/эффектов подписаны «Вкл.»/«Выкл.»; mute не сбрасывает значение слайдера. Кнопка «Сбросить звук по умолчанию» возвращает master/music/sfx к 100% и включает music/SFX. Изменения применяются мгновенно через AudioServer (Master/Music/SFX — шины Music и SFX создаются программно в AudioManager).
 - **Управление**: вкладка «Управление» показывает режим прицеливания (`Автонаводка на ближайшего` / `По курсору`), persisted toggle `Дебаг-режим` и биндинги движения, паузы и `ultimate` внутри вертикального scroll-контейнера с авто-прокруткой к фокусу. Дефолты: aim mode `nearest`, debug mode `off`, WASD + стрелки для движения, Escape для паузы, R для ультимейта. Ребинд проверяет конфликт с другими действиями и не перезаписывает чужую клавишу молча; есть reset defaults.
 - **Персистенс**: дисплей, звук, `aim_mode`, `debug_mode` и `input_bindings` сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте. Активный забег сохраняется отдельно через `scripts/run_autosave.gd` в `user://fantasydisk_autosave.cfg` после безопасных route checkpoints; главное меню предлагает «Продолжить»/«Новая игра», а смерть/победа очищают autosave.
@@ -96,9 +98,9 @@ Domain docs для подробностей по областям:
 | Фон | Путь |
 | --- | --- |
 | Main Menu Epic Battle V2 | `assets/backgrounds/main_menu_epic_battle_v2.png` |
-| Event Screen | `assets/sprites/ui/screens/screen_event_background.png` |
-| Shop Screen | `assets/sprites/ui/screens/screen_shop_background.png` |
-| Campfire Screen | `assets/sprites/ui/screens/screen_campfire_background.png` |
+| Event / Upgrade / Meta Progression | `assets/backgrounds/ui/ui_backdrop_arcane_lab.png` |
+| Shop Screen | `assets/backgrounds/ui/ui_backdrop_merchant_archive.png` |
+| Campfire / System Screens | `assets/backgrounds/ui/ui_backdrop_system_cathedral.png` |
 | Route Map Backdrop | `assets/backgrounds/route_map_backdrop.png` |
 | Stone Garden | `assets/backgrounds/field_stone_garden.png` |
 | Marsh | `assets/backgrounds/field_marsh.png` |
@@ -114,7 +116,7 @@ Domain docs для подробностей по областям:
 Фон арены выбирается случайно из доступного набора и может зависеть от типа узла карты.
 
 Все 10 боевых фонов нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. SCRUM-369 (2026-06-14) заменил весь набор через `fantasydisk-asset-generator`: `field_marsh`, `field_meadow`, `field_misty_marsh`, `field_ruined_courtyard`, `field_dusty_badlands`, `field_enchanted_meadow`, `field_ashen_rift`, `field_cursed_grove`, `field_dry_road`, `field_stone_garden`. Новый стиль — реалистичный D&D/dark fantasy top-down battlefield floor с богатым материалом по биомам, но приглушенной центральной зоной для читаемости героев, монстров, projectile/VFX и анимаций. `field_dry_road` и `field_stone_garden` теперь существуют как реальные PNG, поэтому live links из `ARENA_BACKGROUND_OPTIONS` больше не битые. QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
-`main_menu_epic_battle_v2.png` используется стартовым экраном с SCRUM-316: новый smooth D&D dark fantasy battle art с тремя новыми боссами и двумя героями, спокойной левой третью под колонку кнопок и более спокойной top-center областью под логотип. Старый `main_menu_epic_battle.png` сохранён как legacy/reference. `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` используются небоевыми экранами поверх читаемого затемнения; SCRUM-158 заменил их на dark fantasy подложки из нового набора, сохранив существующие пути для совместимости.
+`main_menu_epic_battle_v2.png` используется стартовым экраном с SCRUM-316: новый smooth D&D dark fantasy battle art с тремя новыми боссами и двумя героями, спокойной левой третью под колонку кнопок и более спокойной top-center областью под логотип. SCRUM-418 удалил старый `main_menu_epic_battle.png` из runtime assets как legacy-дубль; backup лежит вне shipping scope в `build/qa/scrum418/removed_assets_backup/`. Старые совместимые копии `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` также удалены из `assets/sprites/ui/screens/` как дубли canonical UI backdrop set.
 
 SCRUM-158/170 добавили и подключили canonical UI backdrop set `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Все `2560x1440`, с низкоконтрастным спокойным центром под центральные окна и более богатым dark fantasy материалом по краям. Runtime mapping идет через `SCREEN_BACKGROUND_PATHS`: `system/settings/codex/hero_select/weapon_select/pause_stats/meta_tree/campfire` -> cathedral, `shop` -> merchant archive, `event/upgrade/level_up/meta_progression` -> arcane lab, `elite_reward/victory/artifact_reward` -> reward hall, `death/defeat/end_run_confirm` -> defeat crypt. Фоны ставятся `TextureRect` cover-scaling под читаемое затемнение, без замены route map/combat backgrounds.
 `route_map_backdrop.png` используется full-screen route map hook-ом: это темный низкоконтрастный фон пустоши с туманным спокойным центром под узлы и линиями, а детали/силуэты вынесены к краям.
@@ -137,28 +139,55 @@ hero-select constants, shop UI constants and dark-fantasy theme paths live in
 focused `scripts/ui/*` modules and are exposed through the existing
 `scripts/ui_screens.gd` facade.
 
-Основной UI button pass SCRUM-273 заменил SCRUM-147 Parchment & Wax Seal на Red & Gold Dragon kit из `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live button textures лежат в `assets/sprites/ui/frames/red_gold/`: 15 типов (`standard`, `max`, `main_menu`, `hero_confirm`, `reset_audio`, `reset_bindings`, `codex_tab`, `back_s`, `back_m`, `back_l`, `attr_selector`, `fab`, `utility`, `pause`, `rebind`) и 4 состояния (`base/hover/pressed/disabled`). Contact preview: `docs/design/previews/red_gold_button_kit_contact.png`; pipeline: `tools/build_red_gold_button_kit.py`; old parchment/wax button backup: `build/cleanup_backup_red_gold_buttons_2026_06_14/`.
+SCRUM-447 made Hero Select v3 live from the accepted SCRUM-446 Design-source
+package. `_show_character_select()` now builds a centered proportional
+`1536x864` canvas from `docs/design/references/hero_select_v3/zones.json`,
+`zones_normalized.json` and `frames_spec.json`, using
+`assets/sprites/ui/frames/hero_select_v3/background.png`,
+`frame_preview.png`, `frame_dossier.png`, square `frame_radar.png` and
+`frame_carousel.png`. Runtime content stays inside each documented content rect:
+large portrait in preview, name/description/traits/weapons/ascension/select in
+dossier, `HeroStatRadar` inside a square radar frame, and image-only hero
+thumbnails inside the carousel. SCRUM-416 portrait routing, SCRUM-417 covered
+portrait scaling, ascension controls, Select, Back/Escape and focus behavior are
+preserved. QA evidence lives under `build/qa/scrum446_hero_select_v3/`, including
+the `1536x864` mockup-vs-runtime screenshot comparison, rect dump and no-overlap
+matrix.
+
+Основной UI button pass SCRUM-273 заменил SCRUM-147 Parchment & Wax Seal на Red & Gold Dragon kit из `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`; SCRUM-462 затем promoted SCRUM-450 Minimal Metal as the live action-button kit. Live button textures now лежат в `assets/sprites/ui/frames/minimal_metal_buttons/`: 15 типов (`standard`, `max`, `main_menu`, `hero_confirm`, `reset_audio`, `reset_bindings`, `codex_tab`, `back_s`, `back_m`, `back_l`, `attr_selector`, `fab`, `utility`, `pause`, `rebind`) и 5 состояний (`normal/hover/focus/pressed/disabled`). Metadata/source: `docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json`; old Red & Gold backup for the promotion pass: `build/qa/scrum450_minimal_metal_buttons/red_gold_button_backup/`; old parchment/wax button backup: `build/cleanup_backup_red_gold_buttons_2026_06_14/`.
 
 Основной UI frame pass SCRUM-274 заменил SCRUM-229 leather+gold runtime panel direction на Ornate Dark / Red kit из `docs/design/references/UiFrame/frame_kit_ornate_dark_sheet_b_spec.png`. Live panel textures лежат в `assets/sprites/ui/frames/ornate/`: `global_panel`, `level_panel`, `card_frame`, `hero_card`, `card_hover`, `tooltip`, `hud_panel`, `hud_card`, `timer_panel`, `pause_main`, `pause_stat_group`, `pause_stat_chip`, `pause_stat_tooltip`. Contact preview: `docs/design/previews/ornate_dark_frame_kit_contact.png`; pipeline: `tools/build_ornate_ui_frame_kit.py`; old leather/gold + dark_fantasy/escape panel backup: `build/cleanup_backup_ornate_frames_2026_06_14/`.
 
 SCRUM-373 подготовил Design-ready единый master frame kit, SCRUM-382 подключил его к generic runtime UI, а SCRUM-384 заменил те же preserved runtime paths на тонкую металлическую ревизию: `assets/sprites/ui/frames/unified/ui_frame_unified_master.png`, `ui_frame_unified_master_fill.png`, `ui_frame_unified_inner_fill.png`, `ui_frame_unified_ornament_top.png`, `ui_frame_unified_ornament_bottom.png`, `ui_frame_unified_hover_overlay.png`. Source metadata: `docs/design/references/unified_master_frame/unified_master_frame_metadata.json`; previews: `docs/design/previews/unified_master_frame_thin_revision_contact.png` и `docs/design/previews/unified_master_frame_thin_safe_zone.png`. Generic panels/cards/tooltips/HUD/timer frames use a shared tiled 9-slice builder (`72` texture margins; `88` content margins; filled surfaces use `ui_frame_unified_master_fill.png`), while documented whole-image frames like Hero Select SCRUM-356, radar/carousel and Settings tab switcher remain proportional.
 
-SCRUM-396 подключил Design-ready Settings tab switcher из SCRUM-391:
-`assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
-(`1280x256`, RGBA, ровно 3 вкладки). Runtime `SETTINGS_TAB_SWITCHER_FRAME_PATH`
-указывает на 3-slot ассет, `SETTINGS_TAB_SWITCHER_SAFE_RECTS` содержит только
-три source-space safe rects для «Экран», «Звук», «Управление», а smoke пишет
-фактический QA dump в `build/qa/scrum396/settings_tab_switcher_3slot_rects.md`.
+SCRUM-439 переключил live Settings на v2 runtime package:
+`assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` и
+`ui_frame_settings_v2_tab_switcher_3slot.png`. Runtime сохраняет ровно три
+вкладки (`SettingsTabButton_0..2`) с source-space safe rects
+`Rect2(150,78,275,92)`, `Rect2(502,78,275,92)`,
+`Rect2(854,78,275,92)`, а `SettingsTabs` продолжает владеть страницами
+«Экран», «Звук», «Управление». Все существующие настройки/ребайнды/Debug Mode
+сохранены; body-контент сидит на плоской внутренней safe-подложке внутри v2
+modal, чтобы не накладываться на frame ornament и Back button на 720p. QA dumps:
+`build/qa/scrum439/settings_v2_runtime_rects.md` и
+`build/qa/scrum439/settings_v2_no_overlap_matrix.md`.
 
-SCRUM-273/274/382 подключили stateful style layer к Red & Gold Dragon buttons + unified generic frames: `scripts/ui/ui_theme_paths.gd` содержит `RED_GOLD_BUTTON_TEXTURES`, unified frame paths/content maps и legacy ornate margins для специализированных мест, а `scripts/ui_screens.gd` выбирает button type по node name/role/size и generic frame role по экранному назначению. `scripts/pause_stats_menu.gd` отдельно остается на ornate pause/stat frames и Red & Gold pause buttons. SCRUM-318 меняет hover/focus semantics: кнопки больше не используют baked `*_hover.png` с желтым свечением, а берут normal texture с нейтральным bright tint (`~1.16/1.20`) и near-white hover/focus font; pressed/disabled state textures сохранены. Runtime smoke проверяет главные кнопки по `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_*`, а `tests/dark_fantasy_ui_theme_test.gd` проверяет unified generic frame styles отдельно.
+SCRUM-441 подключил Mac/HiDPI resolution fix в live Settings: resolution options
+проверяются через `DisplayResolution.resolution_fits(...)` по физическим пикселям
+(`usable * screen_scale`), `_apply_video_settings()` клэмпит размер окна через
+`DisplayResolution.clamp_to_physical(...)`, macOS добавляет логическую
+native-опцию `(Mac)`, а `project.godot` включает `window/dpi/allow_hidpi=true`.
+QA evidence: `build/qa/scrum441/hidpi_resolution_evidence.md`.
+
+SCRUM-273/274/382 подключили stateful style layer к Red & Gold Dragon buttons + unified generic frames; SCRUM-462 switches active action-button routing to the SCRUM-450 minimal-metal kit, and SCRUM-463 promotes the SCRUM-452 six-frame `minimal_metal` kit as the active generic non-button surface set. `scripts/ui/ui_theme_paths.gd` now contains `MINIMAL_METAL_BUTTON_DIR`, metadata-backed button margins/content maps, minimal-metal frame paths/margins/content/safe rects and legacy Red & Gold/minimal/ornate constants for backup/history. `scripts/ui_screens.gd` chooses button type by node name/role/size and routes generic frame roles through minimal-metal `modal`, `panel`, `card`, `tooltip`, `hud_strip` and `field`; `scripts/pause_stats_menu.gd` uses minimal-metal modal/panel/field/tooltip frames plus SCRUM-450 `pause` buttons. SCRUM-318 no-yellow semantics are preserved with neutral bright hover/focus tint and near-white hover/focus font, now on dedicated SCRUM-450 `_hover`/`_focus` PNGs; pressed/disabled use dedicated state textures. Runtime/theme tests check main buttons, all 15 SCRUM-450 button families and SCRUM-451 frame rollout paths; QA lives in `build/qa/scrum450_minimal_metal_buttons/` and `build/qa/scrum451_minimal_metal_rollout/`.
 
 SCRUM-281 добавил отдельный Hero Select frame kit из `docs/design/references/herouiframe/`: `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_{portrait,dossier,radar,thumbnail_strip,thumbnail,asc_button,asc_label,asc_mods}.png`. SCRUM-320 заменил только bottom `thumbnail_strip` на Carusel reference frame из `docs/design/references/carusel/`: live PNG `ui_frame_hero_select_thumbnail_strip.png` теперь 1536x255 RGBA, старый SCRUM-281 strip лежит в `build/cleanup_backup_hero_select_carousel_2026_06_14/`, pipeline `tools/build_hero_select_carousel_frame.py`, preview `docs/design/previews/hero_select_carousel_frame_contact.png`. В runtime эта нижняя рамка не 9-slice и не растягивается по одной оси: она рисуется цельным `TextureRect` в пропорциональном контейнере (`1024x170` at 720p, `1536x255` at 1080p, `2048x340` at 1440p). SCRUM-342 увеличил читаемость миниатюр без нарушения frame-rule; SCRUM-355 затем пересобрал live dossier + thumbnail strip более тонкими/спокойными вариантами через `tools/build_hero_select_thin_frames.py`, preview `docs/design/previews/hero_select_thin_frames_content_zones.png`, QA/handoff `build/qa/scrum355/hero_select_thin_frames_qa.md`, backup `build/qa/scrum355/hero_select_pre_scrum355_frame_assets.zip`. SCRUM-354 подключил строгие Design safe margins в runtime: dossier `Vector4(126, 160, 126, 172)` и thumbnail strip `Vector4(132, 62, 132, 62)`, причём карусельные отступы масштабируются от source `1536x255`, а не от 720p display `1024x170`. Фактические QA rects теперь показывают dossier content `299x280` и thumbnail row `848x88` внутри strict safe zones на 1280x720 с 2px tolerance для дробного масштабирования и 22px gap между frame’ами; 1600x900 и 2560x1440 также проходят safe-zone/no-overlap assertions. SCRUM-321 принял live `ui_frame_hero_select_portrait.png` как production heroframe-style ассет и перевел левую рамку портрета на такой же принцип: `HeroSelectPortraitPanel` сохраняет левую треть master layout, но внутренний `HeroSelectPortraitFrame` рисуется цельным `TextureRect` и масштабируется пропорционально (`249x394` / `423x669` / `596x944` на 720p/1080p/1440p). Портрет героя лежит только в content-zone с base margins `Vector4(128, 230, 128, 330)`; нижний самоцвет, верхний гребень и боковой металл остаются свободны. SCRUM-323 пересобрал live `ui_frame_hero_select_dossier.png` из DescriptionHS reference pack как `1120x1140` RGBA, pipeline `tools/build_hero_select_dossier_frame.py`, backup в `build/cleanup_backup_hero_select_dossier_2026_06_14/`, preview `docs/design/previews/hero_select_dossier_frame_content_zone.png`. В runtime центральное досье больше не `StyleBox`: `HeroSelectDossierPanel` центрирует цельный `HeroSelectDossierFrame` (`387x394`, `581x591`, `774x788` на 720p/1080p/1440p), а текст, Возвышение и кнопка лежат в `HeroSelectDossierContent` внутри strict zones. SCRUM-322 заменил live `ui_frame_hero_select_radar.png` на windrose compass frame из `docs/design/references/windrose/`: production PNG `1024x1024` RGBA, pipeline `tools/build_hero_select_windrose_frame.py`, backup в `build/cleanup_backup_hero_select_windrose_2026_06_14/`, preview `docs/design/previews/hero_select_windrose_radar_content_zone.png`. В runtime floating `HeroSelectRadarPanel` теперь квадратный whole-image layer (`390x390`, `585x585`, `780x780` на 720p/1080p/1440p). SCRUM-347 убрал старый `HeroStatRadarTitle`, центрировал `HeroStatRadar` в compass field и увеличил radius factor полигона `0.30 -> 0.36`; подписи подтянуты ближе, чтобы оставаться внутри safe frame. Остальные Hero Select frame assets подключены только в `HeroSelectScreen` через локальные `HERO_SELECT_FRAME_*` dictionaries, потому что требуют своих safe-area margins. QA screenshots/rect dump: `build/qa/scrum281/hero_select_1280x720.png`, `hero_select_1920x1080.png`, `hero_select_2560x1440.png`, `hero_select_capture_rects.md`; SCRUM-320 копии: `build/qa/scrum320/hero_select_carousel_*.png`; SCRUM-321 rect dump: `build/qa/scrum321/hero_select_portrait_rects.md`; SCRUM-323 rect dump: `build/qa/scrum323/hero_select_dossier_rects.md`; SCRUM-355 rect dump: `build/qa/scrum355/hero_select_thin_frames_runtime_rects.md`; SCRUM-354/SCRUM-322/SCRUM-347/SCRUM-342 rect dump lives at `build/qa/hero_select_radar_rects.md`.
 
 SCRUM-356 подключил unified Hero Select frame в runtime: `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_unified_panel.png` (`1536x1024` RGBA) теперь рисуется цельным proportional `TextureRect` как `HeroSelectUnifiedFrame` и объединяет portrait + description + bottom controls без 9-slice/one-axis stretch. `HeroSelectPortraitPanel`, `HeroSelectDossierPanel`, `AscensionSelectorRow` и `HeroSelectChooseButton` размещаются только в source-space safe zones из `docs/design/references/hero_select_unified_panel/scrum356_unified_panel_metadata.json`: portrait `Rect2(130,145,420,560)`, description `Rect2(610,145,786,500)`, bottom controls `Rect2(570,705,660,178)`. `AscensionMinusButton`/`AscensionPlusButton` используют compact `ui_frame_hero_select_asc_button_small.png`; на 720p delta-строка Возвышения скрывается, чтобы controls не заходили на орнамент, а на больших окнах остается внутри bottom safe-zone. Radar остается отдельным floating top-right `HeroSelectRadarPanel`, carousel — отдельным bottom strip.
 
-SCRUM-263/264 остаются правилом размеров: стандартные action-кнопки 104px высотой через `_make_button()` и `_set_action_button_size()`, main menu использует 380x104, wide action capped до 560px, pause menu 280x60, rebind/dropdown-style controls 420x62, compact utility 54x42 и FAB 50x50. Text-heavy choices используют паттерн «инфо-рамка над + короткая стандартная кнопка под». Route nodes, shop item hit areas, hero thumbnails, reward/weapon cards остаются карточками/hit areas без heavy action button frame. SCRUM-281 добавляет локальное исключение: `HeroSelectChooseButton` использует compact `hero_confirm` 260x72, чтобы screen-specific herouiframe layout оставался внутри 1280x720. Runtime smoke пишет фактический dump размеров в `build/qa/red_gold_button_sizes.md`.
+SCRUM-263/264 остаются правилом размеров: стандартные action-кнопки 104px высотой через `_make_button()` и `_set_action_button_size()`, main menu использует 380x104, wide action capped до 560px, pause menu 280x60, rebind/dropdown-style controls 420x62, compact utility 54x42 и FAB 50x50. Text-heavy choices используют паттерн «инфо-рамка над + короткая стандартная кнопка под». Route nodes, shop item hit areas, hero thumbnails, reward/weapon cards остаются карточками/hit areas без heavy action button frame. SCRUM-281 добавляет локальное исключение: `HeroSelectChooseButton` использует compact `hero_confirm` 260x72, чтобы screen-specific herouiframe layout оставался внутри 1280x720. Runtime smoke пишет фактический dump размеров в `build/qa/scrum450_minimal_metal_buttons/minimal_metal_button_sizes.md`.
 
-Contextual UI frame kits в `assets/sprites/ui/frames/contextual/` остаются historical/reference only и не являются активным runtime theme direction.
+Contextual UI frame kits removed from runtime `assets/sprites/ui/frames/contextual/` by SCRUM-418 after no live references were found; historical backup lives under `build/qa/scrum418/removed_assets_backup/` and active UI direction remains Red & Gold Dragon + Ornate Dark canon.
 
 Settings controls получили системные fantasy assets из `assets/sprites/ui/icons/system/`: checkbox checked/unchecked, slider track/grabber, arrows/back/settings/close icons. Иконки зарегистрированы в `scripts/ui_icon_registry.gd` как `system_*`. SCRUM-396 подключил design-ready 3-slot tab switcher frame `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png` к экрану настроек как proportional strip с runtime hit areas внутри recorded safe rects и без obsolete fourth slot.
 
@@ -174,9 +203,25 @@ merchant wall layout remains readable. Mockup/spec:
 dump: `build/qa/scrum332/economy_ui_no_overlap_matrix.md`. The irregular dragon
 panel still must not use its full bounding box as content space.
 
+SCRUM-437 makes the 0.1.6 wide economy choice-card runtime live for rest,
+upgrade, event and Attribute Shop choices. The old narrow option-card paths are
+replaced by `ui_frame_economy_choice_card_wide.png` and
+`ui_frame_economy_choice_card_wide_hover.png` (`960x640`, RGBA transparent),
+with source size `Vector2(960,640)`, content margins
+`Vector4(132,118,132,128)` and safe rect `Rect2(132,118,696,394)` carried as
+runtime metadata. Choice rows use 360/420/480px responsive targets at
+1280/1920/2560 widths, with a compact 1152px matrix fallback; Attribute Shop
+cards get extra vertical room for icon/title/interpretation/price copy. QA dumps
+live under `build/qa/scrum437/`. Spec:
+`docs/design/mockups/scrum437_wide_economy_choice_card/spec.md`.
+
 ## Combat VFX
 
 Активные атаки оружия используют raster/fantasy VFX из `assets/sprites/effects/` через `scripts/attack_vfx.gd`, `scripts/class_weapon.gd` и melee-пути `scripts/berserk_weapon.gd`. Persistent pools больше не выглядят как программные круги: `poison_pool.png`, `spark_pool.png` и `briar_pool.png` подключены к Химику/Друиду как Sprite2D с мягкой пульсацией и fade-out, при этом урон, радиус и интервалы тиков остаются в data-driven weapon config.
+
+SCRUM-455 изменил runtime placement экипированного оружия игрока: `VisualRoot/WeaponSocket` теперь стоит на орбите 104px по направлению активной атаки/aim, а не в центре тела/старом hand mount. Сокет и `WeaponVisual` рендерятся за телом героя, поэтому held-оружие визуально облетает персонажа и не закрывает playable sprite; урон, cooldown, hit shapes, VFX spawn и targeting не менялись. QA evidence: `build/qa/scrum455/weapon_orbit_runtime_dump.md`; focused gate: `tests/weapon_orbit_smoke_test.gd`.
+
+SCRUM-457 приглушил attack-VFX на общем runtime уровне: `AttackVfx._calmed_color()` снижает saturation/brightness/additive alpha, beam visuals уже, trails реже, dust/music-note clutter меньше. Зоны урона остаются читаемыми и совпадают с прежними gameplay радиусами/коридорами: hit queries, cooldowns, timing и targeting не менялись. QA evidence: `build/qa/scrum457/attack_vfx_calmness_dump.md`; smoke gate: `tests/attack_vfx_smoke_test.gd`.
 
 SCRUM-261 обновил enemy/boss skill VFX под runtime mechanics SCRUM-259. `HazardVfx` теперь выбирает отдельные D&D/painterly PNG по node name (`BossGravityWell`, `BossVampiricBite`, `BossRiftZone`, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`) и даёт отдельные helpers для shield block, summon portal, reflect-thorns aura и command aura. Это визуальная маршрутизация: gameplay timing, damage, node names и balance не менялись. Preview-лист: `docs/design/previews/scrum261_elite_boss_vfx_contact.png`.
 
@@ -225,6 +270,7 @@ Event-node открывает один data-driven сценарий из `script
 - честные сделки заранее показывают цену HP/золота/стата;
 - hidden-risk варианты помечены как риск и могут дать артефакт, хлам или бой;
 - attribute checks используют текущие базовые характеристики игрока (`strength`, `agility`, `intelligence`, `perception`, `knowledge`, `endurance`);
+- платные варианты (`cost_money`) показывают stage-scaled цену в золоте, отключаются при недостатке денег с tooltip-пояснением и дополнительно блокируются в Back-end применении, чтобы прямой вызов не мог бесплатно продвинуть маршрут;
 - боевые исходы стартуют обычный или элитный бой с временным `pending_event_combat` payload: enemy health multiplier, reward multiplier и optional post-combat reward очищаются после боя;
 - небоевые исходы применяются к run snapshot через `stats`, `mods`, `money`, `heal_percent`, `health_percent_cost`, `random_artifact`.
 
@@ -314,6 +360,104 @@ SCRUM-412 очистил полный playable full-frame runtime set от бе�
 edge-connected alpha-clean/de-halo из
 `tools/alpha_clean_full_frame_characters.py`.
 
+SCRUM-422 задаёт опорный Design source-anchor для новой волны 0.1.6 character
+redraw v2: яркий/эпичный, class-readable стиль, прозрачный RGBA, `512x512`
+cells, bottom-center pivot `(256, 470)`, только `idle` + `move/walk` строки
+без attack-анимации, целевая высота тела `360-380 px` в ячейке и runtime scale
+`0.39-0.40`, чтобы герой читался примерно в 2 раза выше среднего обычного
+монстра на экране. Принятый exemplar: Berserk source under
+`docs/design/references/characters_v2/bright_epic_anchor/`, asset-side source
+copy `assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png`. Это
+пока не заменяет runtime SpriteFrames; Animator подключает idle/move после
+принятия per-class source.
+
+SCRUM-420 подготовил отдельный per-class Berserk v2 Design-source handoff:
+`docs/design/references/characters_v2/berserk/berserk_v2_source_clean.png`,
+`berserk_v2_idle_cell_512.png`, `berserk_v2_sheet_source_handoff.png`,
+`berserk_v2_design_handoff.md` и QA report
+`build/qa/scrum420_berserk_v2/scrum420_berserk_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный, без оружия в руках, с battle paint/fur/rage aura,
+прозрачный RGBA, visible height `376 px` в `512x512` cell и pivot `[256,470]`.
+Animator pass подключил live `assets/sprites/characters/berserk_spriteframes.tres`
+к v2 `idle` / `walk` / `move` 5-frame loops, derived from the accepted source,
+with runtime frames under `assets/sprites/characters/full_frame/berserk/` and a
+48px-gutter source sheet at
+`assets/sprites/characters/v2/berserk/berserk_v2_anim_sheet.png`. Previous live
+frames are backed up under `docs/design/backups/scrum420_berserk_v2_pre_anim/`.
+Attack animation is intentionally absent for this v2 row; animation and runtime
+smoke pass.
+
+SCRUM-461 (2026-06-17) replaced the live Berserk full-frame runtime resource
+with the accepted SCRUM-456 cartoon/anime anchor. `assets/sprites/characters/berserk_spriteframes.tres`
+still exposes only `idle`, `walk`, and `move`, but now uses 5-frame `512x512`
+transparent runtime PNGs sliced from
+`docs/design/references/chars_cartoon/berserk_cartoon_anchor_sheet_source_handoff.png`
+with pivot `[256,470]`, idle at 7fps and walk/move at 9fps. Previous live frames
+are backed up under `docs/design/backups/scrum461_berserk_cartoon_pre_anim/`.
+Attack animation remains intentionally absent for this cartoon/anime anchor.
+
+SCRUM-442 подготовил узкий Berserk v3 single-sprite candidate после отмены
+широкого character v2 подхода: новый чуть более мультяшный unarmed barbarian
+source в `docs/design/references/characters_v3/berserk/`, normalized game
+candidate `assets/sprites/characters/berserk_v3_sprite.png`, backup старого
+`berserk_unarmed.png` под
+`docs/design/backups/scrum442_berserk_v3_pre_sprite/`, contact/dark-bg previews
+и strict alpha/pose QA report
+`build/qa/scrum442_berserk_v3/scrum442_berserk_v3_alpha_pose_report.json`.
+После review исправлен ambiguous source artifact: `berserk_v3_source_raw.png`
+теперь тоже transparent RGBA `1024x1024`, как `berserk_v3_source.png` и
+`berserk_v3_source_clean.png`, без opaque checker/RGB фона.
+Это Design-only sprite candidate: анимации, SpriteFrames и runtime wiring не
+входили в scope.
+
+SCRUM-424 подготовил per-class Dark Mage v2 Design-source handoff:
+`docs/design/references/characters_v2/dark_mage/dark_mage_v2_source_clean.png`,
+`dark_mage_v2_idle_cell_512.png`, `dark_mage_v2_sheet_source_handoff.png`,
+`dark_mage_v2_design_handoff.md` и QA report
+`build/qa/scrum424_dark_mage_v2/scrum424_dark_mage_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный фиолетовый void-caster, без staff/wand/book/orb/weapon в
+руках, прозрачный RGBA, visible height `376 px` в `512x512` cell и pivot
+`[256,470]`. Animator pass подключил live
+`assets/sprites/characters/dark_mage_spriteframes.tres` к v2 `idle` / `walk` /
+`move` 5-frame loops, derived from the accepted source, with runtime frames
+under `assets/sprites/characters/full_frame/dark_mage/` and a 48px-gutter
+source sheet at `assets/sprites/characters/v2/dark_mage/dark_mage_v2_anim_sheet.png`.
+Previous live frames are backed up under
+`docs/design/backups/scrum424_dark_mage_v2_pre_anim/`. Attack animation is
+intentionally absent for this v2 row; animation smoke passes. Full runtime smoke
+is currently blocked before gameplay startup by an unrelated
+`scripts/ui_screens.gd` parse failure from the active UI/settings lane.
+
+SCRUM-473 replaces the temporary cartoon-trial legacy rig for Dark Mage and
+Knight with real cartoon2 full-frame SpriteFrames. Runtime resources
+`assets/sprites/characters/dark_mage_spriteframes.tres` and
+`assets/sprites/characters/knight_spriteframes.tres` now expose only `idle`,
+`walk`, and `move` (5 looping frames each, no body attack rows). Frame PNGs live
+under `assets/sprites/characters/full_frame/dark_mage/` and
+`assets/sprites/characters/full_frame/knight/`; safe-gutter cartoon2 sheets live
+under `assets/sprites/characters/cartoon2/{dark_mage,knight}/`. `Player`
+leaves `CARTOON_TRIAL_CLASSES` empty, so both classes render through the
+full-frame `AnimatedSprite2D` path at the normal combat scale while weapon
+visuals continue to own attacks (`USE_ATTACK_ANIMATION=false`). Animation smoke
+passes; full runtime smoke is currently blocked by an unrelated Hero Select v3
+back-button UI assertion.
+
+SCRUM-419 подготовил per-class Assassin v2 Design-source handoff:
+`docs/design/references/characters_v2/assassin/assassin_v2_source_clean.png`,
+`assassin_v2_idle_cell_512.png`, `assassin_v2_sheet_source_handoff.png`,
+`assassin_v2_design_handoff.md` и QA report
+`build/qa/scrum419_assassin_v2/scrum419_assassin_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный hooded rogue в dark teal/cyan contrast, sharp silhouette,
+без dagger/blade/chakram/weapon в руках, прозрачный RGBA, visible height
+`376 px` в `512x512` cell и pivot `[256,470]`. Animator integration now promotes
+this source into live `assets/sprites/characters/assassin_spriteframes.tres`
+with v2 `idle` / `walk` / `move` loops, 5 frames each, no attack by scope.
+Runtime frames live under `assets/sprites/characters/full_frame/assassin/`,
+derived safe sheet
+`assets/sprites/characters/v2/assassin/assassin_v2_anim_sheet.png`, old live
+assets backup `docs/design/backups/scrum419_assassin_v2_pre_anim/`, QA artifacts
+`build/qa/scrum419_assassin_v2_anim/`; animation/runtime smoke PASS.
+
 SCRUM-286 добавил Dark Mage sheet на этом пути:
 `assets/sprites/characters/dark_mage_sheet.png` (`1920x1152`, 5 `idle`, 5
 `walk`, 5 `attack_primary`, transparent RGBA). Тёмный маг остаётся без
@@ -336,6 +480,99 @@ runtime `assets/sprites/characters/guitarist_spriteframes.tres` и отдель�
 `build/qa/scrum291_guitarist/` and `build/qa/scrum291/`; manifest validation,
 Godot import, animation smoke and runtime smoke PASS after SCRUM-409.
 
+SCRUM-429 подготовил per-class Guitarist v2 Design-source handoff:
+`docs/design/references/characters_v2/guitarist/guitarist_v2_source_clean.png`,
+`guitarist_v2_idle_cell_512.png`, `guitarist_v2_sheet_source_handoff.png`,
+`guitarist_v2_design_handoff.md` и QA report
+`build/qa/scrum429_guitarist_v2/scrum429_guitarist_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный magenta/gold stage-warlock performer, без guitar,
+instrument, microphone, weapon или held object в руках, прозрачный RGBA,
+visible height `374 px` в `512x512` cell и pivot `[256,470]`. После
+user-feedback cleanup revision белые/нейтральные matte pixels в source/cell
+равны `0`. Animator integration now promotes this source into live
+`assets/sprites/characters/guitarist_spriteframes.tres` with v2 `idle` /
+`walk` / `move` loops, 5 frames each, no attack by scope. Runtime frames live
+under `assets/sprites/characters/full_frame/guitarist/`, derived safe sheet
+`assets/sprites/characters/v2/guitarist/guitarist_v2_anim_sheet.png`, old live
+assets backup `docs/design/backups/scrum429_guitarist_v2_pre_anim/`, QA
+artifacts `build/qa/scrum429_guitarist_v2_anim/`; animation/runtime smoke PASS.
+
+SCRUM-435 подготовил per-class Thief v2 Design-source handoff и Animator
+integration: accepted source
+`docs/design/references/characters_v2/thief/thief_v2_idle_cell_512.png`
+продвинут в live `assets/sprites/characters/thief_spriteframes.tres` с v2
+`idle` / `walk` / `move` loops, 5 frames each, no attack by scope. Runtime
+frames live under `assets/sprites/characters/full_frame/thief/`, derived safe
+sheet `assets/sprites/characters/v2/thief/thief_v2_anim_sheet.png`, old live
+assets backup `docs/design/backups/scrum435_thief_v2_pre_anim/`, QA artifacts
+`build/qa/scrum435_thief_v2_anim/`; animation/runtime smoke PASS. Персонаж
+остаётся яркий/эпичный amber rogue, без dagger/knife/weapon/tool/coin pouch/
+bomb или held object в руках, прозрачный RGBA, visible height `374 px` в
+`512x512` cell и pivot `[256,470]`.
+
+SCRUM-427 подготовил per-class Elementalist v2 Design-source handoff и Animator
+integration: accepted source
+`docs/design/references/characters_v2/elementalist/elementalist_v2_idle_cell_512.png`
+продвинут в live `assets/sprites/characters/elementalist_spriteframes.tres` с
+v2 `idle` / `walk` / `move` loops, 5 frames each, no attack by scope. Runtime
+frames live under `assets/sprites/characters/full_frame/elementalist/`, derived
+safe sheet
+`assets/sprites/characters/v2/elementalist/elementalist_v2_anim_sheet.png`, old
+live assets backup `docs/design/backups/scrum427_elementalist_v2_pre_anim/`, QA
+artifacts `build/qa/scrum427_elementalist_v2_anim/`; animation/runtime smoke
+PASS. Персонаж остаётся яркий/эпичный multi-element caster с fire/ice/lightning/
+stone streams, без staff/orb/focus/weapon или held object в руках, прозрачный
+RGBA, visible height `374 px` в `512x512` cell и pivot `[256,470]`.
+
+SCRUM-433 подготовил per-class Sniper v2 Design-source handoff:
+`docs/design/references/characters_v2/sniper/sniper_v2_source_clean.png`,
+`sniper_v2_idle_cell_512.png`, `sniper_v2_sheet_source_handoff.png`,
+`sniper_v2_design_handoff.md` и QA report
+`build/qa/scrum433_sniper_v2/scrum433_sniper_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный cold blue-steel marksman с optical targeting light, без
+rifle/gun/bow/crossbow/scope/weapon/tool или held object в руках, прозрачный
+RGBA, visible height `374 px` в `512x512` cell и pivot `[256,470]`.
+White/neutral matte pixels и edge-visible pixels в source/cell/sheet равны
+`0`. Это не live runtime replacement; current 0.1.5 `sniper_sheet.png` /
+`sniper_spriteframes.tres` остаются активными до Animator/Back-end integration.
+
+SCRUM-431 подготовил per-class Priest v2 Design-source handoff:
+`docs/design/references/characters_v2/priest/priest_v2_source_clean.png`,
+`priest_v2_idle_cell_512.png`, `priest_v2_sheet_source_handoff.png`,
+`priest_v2_design_handoff.md` и QA report
+`build/qa/scrum431_priest_v2/scrum431_priest_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный white-gold holy healer с halo и open-hands posture, без
+staff/mace/reliquary/censer/chime/book/weapon/tool или held object в руках,
+прозрачный RGBA, visible height `376 px` в `512x512` cell и pivot `[256,470]`.
+White/neutral matte pixels и edge-visible pixels в source/cell/sheet равны
+`0`. Это не live runtime replacement; current Priest runtime assets остаются
+активными до Animator/Back-end integration.
+
+SCRUM-421 подготовил per-class Biologist v2 Design-source handoff:
+`docs/design/references/characters_v2/biologist/biologist_v2_source_clean.png`,
+`biologist_v2_idle_cell_512.png`, `biologist_v2_sheet_source_handoff.png`,
+`biologist_v2_design_handoff.md` и QA report
+`build/qa/scrum421_biologist_v2/scrum421_biologist_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный emerald bioluminescent scientist-naturalist в protective
+field suit, без syringe/vial/flask/sample jar/tool/orb/staff/weapon или held
+object в руках, прозрачный RGBA, visible height `380 px` в `512x512` cell и
+pivot `[256,470]`. White/neutral matte pixels и edge-visible pixels в
+source/cell/sheet равны `0`. Это не live runtime replacement; current
+`biologist_sheet.png` / `biologist_spriteframes.tres` остаются активными до
+Animator/Back-end integration.
+
+SCRUM-432 подготовил per-class Robot v2 Design-source handoff:
+`docs/design/references/characters_v2/robot/robot_v2_source_clean.png`,
+`robot_v2_idle_cell_512.png`, `robot_v2_sheet_source_handoff.png`,
+`robot_v2_design_handoff.md` и QA report
+`build/qa/scrum432_robot_v2/scrum432_robot_v2_alpha_size_report.json`.
+Персонаж яркий/эпичный polished mechanical guardian с cyan/blue sensors, core
+glow and rune seams, без weapon/tool/gun/cannon/shield/orb/focus или held
+object в руках, прозрачный RGBA, visible height `376 px` в `512x512` cell и
+pivot `[256,470]`. Edge-visible pixels и floodable neutral/checker pixels после
+cleanup равны `0`. Это не live runtime replacement; current Robot runtime
+assets остаются активными до Animator/Back-end integration.
+
 SCRUM-289 Design pass добавил Elementalist source sheet на этом пути:
 `assets/sprites/characters/elementalist_sheet.png` (`1920x1152`, 5 `idle`, 5
 `walk`, 5 `attack_primary`, transparent RGBA). Элементалист остаётся без
@@ -357,7 +594,9 @@ SpriteFrames on the same 5 idle / 5 walk / 5 attack_primary contract:
 `assets/sprites/characters/ranger_spriteframes.tres` with per-frame PNGs in
 `assets/sprites/characters/full_frame/ranger/`. Both keep weapon visuals
 separate from the base character sheets and pass manifest validation, animation
-smoke and full runtime smoke.
+smoke and full runtime smoke. SCRUM-419 supersedes the live Assassin runtime
+SpriteFrames with the v2 idle/walk/move-only contract; attack remains absent by
+that v2 task scope while weapon/socket gameplay visuals stay unchanged.
 
 SCRUM-283 Design pass 2026-06-14 подготовил принятый source sheet Берсерка:
 `assets/sprites/characters/berserk_sheet.png` (`1920x768`, `384x384` cells,
@@ -398,7 +637,7 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: ближний бой, физический урон, выживаемость.
 - Базовое здоровье: 88.
 - Базовая скорость: 235.
-- Спрайты: `assets/sprites/characters/berserk_unarmed.png`, Design-ready source sheet `assets/sprites/characters/berserk_sheet.png`, legacy fallback `assets/sprites/characters/berserk_walk_sheet_v2.png`, cutout-части `assets/sprites/characters/cutout/berserk_*.png`.
+- Спрайты: `assets/sprites/characters/berserk_unarmed.png`, historical 0.1.5 source sheet `assets/sprites/characters/berserk_sheet.png`, legacy fallback `assets/sprites/characters/berserk_walk_sheet_v2.png`, cutout-части `assets/sprites/characters/cutout/berserk_*.png`. Live 0.1.6 v2 runtime uses `assets/sprites/characters/berserk_spriteframes.tres` with 5-frame `idle` / `walk` / `move` loops from `assets/sprites/characters/full_frame/berserk/`; source/handoff assets live under `assets/sprites/characters/v2/berserk/`.
 - Особенность: оружие отделено от персонажа и крепится к `WeaponSocket`.
 
 Базовые характеристики:
@@ -442,9 +681,12 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: магический урон, AoE, лучи, DoT.
 - Базовое здоровье: 42.
 - Базовая скорость: 250.
-- Спрайт: `assets/sprites/characters/dark_mage.png`, runtime animation sheet
-  `assets/sprites/characters/dark_mage_sheet.png`, cutout-части
-  `assets/sprites/characters/cutout/dark_mage_*.png`.
+- Спрайт: `assets/sprites/characters/dark_mage.png`, historical 0.1.5 source
+  sheet `assets/sprites/characters/dark_mage_sheet.png`, live 0.1.6 cartoon2 runtime
+  `assets/sprites/characters/dark_mage_spriteframes.tres` with `idle` / `walk`
+  / `move` frames under `assets/sprites/characters/full_frame/dark_mage/`,
+  safe-gutter sheet `assets/sprites/characters/cartoon2/dark_mage/dark_mage_cartoon2_anim_sheet.png`,
+  cutout-части `assets/sprites/characters/cutout/dark_mage_*.png`.
 
 Базовые характеристики:
 
@@ -469,7 +711,9 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
   `assets/sprites/characters/guitarist_sheet.png`,
   `assets/sprites/characters/guitarist_spriteframes.tres`, per-frame runtime
   PNGs in `assets/sprites/characters/full_frame/guitarist/`, cutout-части
-  `assets/sprites/characters/cutout/guitarist_*.png`.
+  `assets/sprites/characters/cutout/guitarist_*.png`. SCRUM-429 v2 live
+  SpriteFrames expose `idle` / `walk` / `move` 5f loops only; attack remains
+  absent by task scope while weapon/socket gameplay visuals stay unchanged.
 
 Базовые характеристики:
 
@@ -530,6 +774,13 @@ SCRUM-251 усилил ближние классы через data-driven melee 
 | `chemist` | Химик | AoE/DoT зоны и алхимический summon | Str 2, Agi 4, Int 9, Per 6, Energy 7, Know 7, End 3, Lead 2 |
 | `knight` | Рыцарь | Танк и тяжелый melee-control | Str 8, Agi 3, Int 2, Per 4, Energy 3, Know 4, End 10, Lead 6 |
 | `druid` | Друид | Призыв, тернии, тотемы | Str 3, Agi 4, Int 4, Per 7, Energy 6, Know 5, End 5, Lead 9 |
+
+SCRUM-473 adds live cartoon2 Knight animation resources at
+`assets/sprites/characters/knight_spriteframes.tres`,
+`assets/sprites/characters/full_frame/knight/` and
+`assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`.
+The body animation contract is `idle` / `walk` / `move` only; weapon visuals own
+Knight attacks.
 
 ## Оружие Берсерка
 
@@ -720,7 +971,7 @@ Status hooks SCRUM-245: weapon hit дополнительно может нал�
 - классовые артефакты;
 - риск-награда артефакты.
 
-Магазин показывает четыре случайных предложения inline поверх `screen_shop_background.png` / shop backdrop в центральной свободной области экрана и позволяет купить несколько предметов за один визит, если хватает денег. Сток генерируется один раз на конкретный `shop`-узел маршрута и сохраняет purchased-состояние при повторном открытии того же экрана через меню/досье/FAB; новый `shop`-узел получает свежий набор. SCRUM-339 расширяет это на flow карты: выход из магазина возвращает на route map без продвижения `route_stage`, этот же shop-узел остается доступен для повторного входа, а узлы следующего ряда уже кликабельны. Выбор следующего route node считается точкой невозврата: только тогда старый shop stock/purchased state очищается и начинается следующий этап. Предметы висят без карточных рамок: прозрачная clickable area, предметная иконка, контактная тень и компактный ценник с иконкой монеты. Название, описание, цену, class restriction и причину недоступности игрок видит только в hover tooltip. Недоступные товары затемняются и получают красноватый ценник; купленные товары снимаются со стены и заменяются маленьким empty-hook состоянием «снято». Runtime smoke проверяет фактический центр группы товаров, no-overlap на 1280x720/2560x1440 и re-entry flow магазина до выбора следующего уровня; dump пишется в `build/qa/shop_wall_frameless_rects.md`.
+Магазин показывает четыре случайных предложения inline поверх canonical shop backdrop `ui_backdrop_merchant_archive.png` в центральной свободной области экрана и позволяет купить несколько предметов за один визит, если хватает денег. Сток генерируется один раз на конкретный `shop`-узел маршрута и сохраняет purchased-состояние при повторном открытии того же экрана через меню/досье/FAB; новый `shop`-узел получает свежий набор. SCRUM-339 расширяет это на flow карты: выход из магазина возвращает на route map без продвижения `route_stage`, этот же shop-узел остается доступен для повторного входа, а узлы следующего ряда уже кликабельны. Выбор следующего route node считается точкой невозврата: только тогда старый shop stock/purchased state очищается и начинается следующий этап. Предметы висят без карточных рамок: прозрачная clickable area, предметная иконка, контактная тень и компактный ценник с иконкой монеты. Название, описание, цену, class restriction и причину недоступности игрок видит только в hover tooltip. Недоступные товары затемняются и получают красноватый ценник; купленные товары снимаются со стены и заменяются маленьким empty-hook состоянием «снято». Runtime smoke проверяет фактический центр группы товаров, no-overlap на 1280x720/2560x1440 и re-entry flow магазина до выбора следующего уровня; dump пишется в `build/qa/shop_wall_frameless_rects.md`.
 
 Экономика 0.1.4: магазин, докачка атрибутов, reroll и платные event-исходы проходят через `ProgressionData.stage_scaled_cost()`, где поверх stage scale применяется глобальный `ECONOMY_PRICE_MULTIPLIER = 1.10`. Дроп назначается по классам целей (`DROP_CLASS_MULTIPLIERS`): обычные враги остаются базой, сложные ranged/summoner получают умеренный бонус, bruiser/shield дают около x1.75 XP и x1.85 золота, мини-элитки x3.6/x3.8, элитки x8/x8.5, босс получает fixed reward, умноженный на `stage_scale`. XP-кривая усилена до `ceil(req * 1.42 + 3)`, чтобы общий темп level-up оставался близким к прежнему. Проверка SCRUM-188 (`build/route_economy_xp_model.md`) моделирует balanced/combat-heavy/shop-heavy маршруты: 8-9 level-up до/включая босса, healthy/high покупательная способность; текущий +7.1% XP fixture оставлен без дополнительного повышения.
 
@@ -763,7 +1014,7 @@ scroll safe-zone, а victory/death crest и action button адаптивно у�
 720p без попадания на орнамент. QA dump:
 `build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
 
-Level-up показывает 3 фиксированных варианта на каждый полученный уровень: обычные улучшения оружия/параметров и очень редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с визуальной rare-пометкой. Вес обычных наград считается от единого источника `ProgressionData.ATTRIBUTE_PRIORITIES` и зависимости награды от базовой характеристики: профильные параметры класса выпадают чаще, но у каждого варианта есть floor. Один уровень дает ровно один выбор; если накопилось несколько уровней, окна открываются последовательно. Окно можно закрыть через «Позже» без потери выбора: тот же набор остается в `level_up_offer`, а нижняя SCRUM-390 plus-кнопка с pending-бейджем возвращает игрока к сохраненному пику. Level-up и докачка атрибутов показывают иконки через `UIIconRegistry` и добавляют текст «Интерпретация» для выбранного героя. Артефакты с `class_affinity` больше не считаются нерабочими для чужого класса: affinity теперь описывает тематику, а `affinity_mods` применяются через интерпретацию текущего героя.
+Level-up показывает 3 фиксированных варианта на каждый полученный уровень: обычные улучшения оружия/параметров и очень редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с визуальной rare-пометкой. Вес обычных наград считается от единого источника `ProgressionData.ATTRIBUTE_PRIORITIES` и зависимости награды от базовой характеристики: профильные параметры класса выпадают чаще, но у каждого варианта есть floor. Один уровень дает ровно один выбор; если накопилось несколько уровней, окна открываются последовательно. Окно можно закрыть через «Позже» без потери выбора: тот же набор остается в `level_up_offer`, а нижняя SCRUM-390 plus-кнопка с pending-бейджем возвращает игрока к сохраненному пику. SCRUM-465 сделал окно выбора viewport-aware: на коротких 720p-экранах панель, hero header, три карточки и `Позже` получают компактные размеры/отступы и проходят no-overlap matrix без нижнего кропа; QA evidence лежит в `build/qa/scrum465/`. Level-up и докачка атрибутов показывают иконки через `UIIconRegistry` и добавляют текст «Интерпретация» для выбранного героя. Артефакты с `class_affinity` больше не считаются нерабочими для чужого класса: affinity теперь описывает тематику, а `affinity_mods` применяются через интерпретацию текущего героя.
 
 ## Ультимейты
 
@@ -794,19 +1045,19 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 - После элитного победного боя: «ПОБЕДА» -> экран выбора 1 из 3 артефактов -> окно докачки атрибутов -> карта.
 - Босс ведет на отдельный экран победы, как раньше; дополнительно игрок получает гарантированный tier-3 артефакт и крупное золото.
 - Окно докачки: выбор 1 из 2 случайных характеристик (+1) за `ProgressionData.stage_scaled_cost(18 + 6 * route_stage, route_stage)` золота; «Обновить» пары за `stage_scaled_cost(6 + 2 * route_stage, route_stage)` (2 раза за окно); «Пропустить»; Escape = пропуск.
-- Кнопка возврата к level-up появляется при непотраченных выборах в бою и на небоевых экранах; она открывает тот же зафиксированный набор из 3 карт и показывает pending-бейдж. В бою это SCRUM-390 квадратная `LevelUpPlusButton` с символом `+`, закрепленная в правом нижнем углу, полностью непрозрачная и использующая dedicated combat HUD plus textures с нейтральным hover/focus без желтого свечения. При `pending_level_ups > 0` это единственная точка входа в level-up: `UpgradeFabButton` скрывается, чтобы не дублировать действие. Когда pending-уровней нет, FAB остается доступен для докачки характеристик за золото. На событии докачка отключена (повторный вход перегенерировал бы выборы события). Кнопка «Позже» на самом level-up окне использует необрезанный 260x104 `back_m` frame, чтобы текст и орнамент оставались внутри content-зоны.
+- Кнопка возврата к level-up появляется при непотраченных выборах в бою и на небоевых экранах; она открывает тот же зафиксированный набор из 3 карт и показывает pending-бейдж. В бою это SCRUM-390 квадратная `LevelUpPlusButton` с символом `+`, закрепленная в правом нижнем углу, полностью непрозрачная и использующая dedicated combat HUD plus textures с нейтральным hover/focus без желтого свечения. При `pending_level_ups > 0` это единственная точка входа в level-up: `UpgradeFabButton` скрывается, чтобы не дублировать действие. Когда pending-уровней нет, FAB остается доступен для докачки характеристик за золото. На событии докачка отключена (повторный вход перегенерировал бы выборы события). Кнопка «Позже» на самом level-up окне использует компактный medium `back_m` frame в responsive layout, чтобы текст, орнамент и весь контрол оставались внутри viewport/content-зоны даже на 1280x720.
 
 ## Навигация И UX
 
 - Escape = назад на меню/предзабеговых экранах через единый стек: главное меню -> игровой диалог подтверждения выхода, настройки/кодекс/выбор персонажа -> меню; выбор оружия -> выбор персонажа. Кнопка «Выйти из игры» в главном меню открывает тот же `QuitConfirmationDialog`; реальный quit вызывается только по «Выйти», а «Отмена» в фокусе по умолчанию. В активном забеге Escape открывает единое меню паузы поверх текущего состояния: бой, route map, магазин, level-up, докачка атрибутов, событие, награда элитки. Повторный Escape закрывает меню и оставляет подлежащий экран без reroll/сброса; досье персонажа открывается отдельной кнопкой «Досье персонажа» внутри pause menu. Событие по-прежнему требует выбора действия; если skip не разрешен, кнопка «Назад» на событии видна, но disabled и объясняет это в tooltip.
 - `P` открывает фидбек/bug-report overlay поверх текущего экрана через отдельный top-level `FeedbackOverlayLayer`, не очищая текущий UI и не сбрасывая состояние магазина/карты/level-up. Escape внутри overlay закрывает только форму фидбека, а ввод текста остается в `FeedbackTextEdit`.
-- Экран выбора героя — fullscreen `HeroSelectScreen`: `HeroSelectUnifiedFrame` объединяет портрет, досье и нижний блок Возвышения/«Выбрать» в одном цельном `1536x1024` PNG, масштабируемом единым коэффициентом. Runtime соблюдает safe-zones SCRUM-356: портрет `Rect2(130,145,420,560)`, описание `Rect2(610,145,786,500)`, controls `Rect2(570,705,660,178)`; плюс/минус используют compact `ui_frame_hero_select_asc_button_small.png`, а кнопка «Выбрать» получила compact text-field style, чтобы не выходить на орнамент на 720p. SCRUM-416 uses the accepted cleaned full-frame idle frame as the static portrait source for both the large portrait and carousel thumbnails across all 17 classes. SCRUM-417 keeps that source and makes `HeroSelectLargePortrait` use covered aspect scaling inside its content-zone, so the hero fills the safe area more tightly without touching the unified frame ornament. `HeroSelectRadarPanel` остается отдельным floating top-right windrose frame, `HeroThumbnailStripFrame` остается отдельным bottom carousel. Runtime smoke проверяет whole-image proportional aspect, containment всех Hero Select content rects в SCRUM-356 safe zones, gap до radar, square radar aspect, carousel safe-zone, SCRUM-416 portrait texture paths, SCRUM-417 covered portrait scaling and no-overlap on 1280x720, 1600x900 and 2560x1440; dumps: `build/qa/hero_select_radar_rects.md`, `build/qa/scrum416/hero_select_portrait_runtime_paths.md`, `build/qa/scrum417/character_size_runtime_dump.md`. Все кнопки игры используют pointer-курсор.
+- Экран выбора героя — fullscreen `HeroSelectScreen`: SCRUM-447 является live runtime layout из принятого SCRUM-446 Hero Select v3 package. `_show_character_select()` строит centered proportional `1536x864` `HeroSelectCanvas` по `docs/design/references/hero_select_v3/zones.json`, `zones_normalized.json` и `frames_spec.json`, использует runtime frames `assets/sprites/ui/frames/hero_select_v3/background.png`, `frame_preview.png`, `frame_dossier.png`, square `frame_radar.png` и `frame_carousel.png`, и больше не базируется на v2 layout assumptions. `HeroSelectRadarPanel` / `HeroStatRadar` сохранены как существующий SCRUM-322/SCRUM-347 compass-rose contract, но размещены внутри square v3 radar content rect without non-uniform stretch. SCRUM-416 uses the accepted cleaned full-frame idle frame as the static portrait source for both the large portrait and carousel thumbnails across all 17 classes; SCRUM-417 covered portrait scaling remains inside the SCRUM-447 preview content zone. Runtime smoke проверяет v3 texture loading, proportional aspect, containment всех Hero Select content rects, preserved radar placement, carousel safe-zone, SCRUM-416 portrait texture paths, SCRUM-417 covered portrait scaling and no-overlap on responsive sizes; QA evidence: `build/qa/scrum446_hero_select_v3/hero_select_v3_runtime_rects.md`, `hero_select_v3_no_overlap_matrix.md`, and `hero_select_v3_mockup_vs_runtime_1536x864.png`. Все кнопки игры используют pointer-курсор.
 - Размеры изображений: кодекс — персонажи 216px with covered scaling (SCRUM-417), монстры 150px, артефакты 96px; HUD-артефакты 48px; пауза-артефакты 56px; иконки магазина 112px внутри frameless hit area 164x186.
 - Фон маршрутной карты: если существует `assets/backgrounds/route_map_backdrop.png`, он подключается с cover-растяжением и затемнением 0.62 для читаемости узлов; иначе — прежний однотонный фон (graceful fallback до выхода арта).
 
 ## Кодекс (Энциклопедия)
 
-Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»). Character portraits in Codex use the same SCRUM-416 full-frame idle `sprite_path` source as Hero Select; SCRUM-417 renders the character portrait texture at `216x216` with covered scaling inside the Codex portrait slot. QA path/rect dumps: `build/qa/scrum416/codex_character_portrait_runtime_paths.md`, `build/qa/scrum417/codex_character_portrait_runtime_dump.md`.
+Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»). SCRUM-438 rebuild сделал live Codex v2: единый main frame, шесть вертикальных вкладок слева, центральный scrollable список записей и правый detail panel с портретом/чипами/текстом. Layout масштабируется uniform-scale из `docs/design/mockups/scrum438_codex_v2/codex_v2_layout_metadata.json`; mockup PNG не используется как runtime atlas. Character portraits in Codex use the same SCRUM-416 full-frame idle `sprite_path` source as Hero Select; SCRUM-417 covered scaling preserved in the right detail portrait. QA path/rect dumps: `build/qa/scrum416/codex_character_portrait_runtime_paths.md`, `build/qa/scrum417/codex_character_portrait_runtime_dump.md`, `build/qa/scrum438/codex_v2_runtime_dump.md`, `build/qa/scrum438/codex_v2_no_overlap_matrix.md`.
 
 Разделы: Персонажи (17 игровых классов, стиль игры, сильные/слабые стороны, оружие), Монстры (11 обычных + 4 элитки + 6 мини-элиток + 5 боссов, поведение и названные умения), Артефакты (все из ARTIFACTS + SHOP_ITEMS с иконками), Характеристики (8 базовых + производные из STAT_DEFINITIONS с влияниями). Разделы строятся лениво при первом открытии вкладки и кэшируются — меню не фризит.
 
@@ -821,6 +1072,17 @@ safe-zone metadata
 `GlossaryTooltipPanel`; остальной UI остается на своих глобальных рамках. Smoke
 проверяет фактические texture paths, а QA dump пишется в
 `build/qa/scrum345/codex_texture_runtime_dump.md`.
+
+SCRUM-438 подключил Codex v2 rebuild в runtime по OpenAI-generated package:
+mockup `docs/design/mockups/scrum438_codex_v2/codex_v2_mockup_1920x1080.png`,
+safe-zone overlay
+`docs/design/mockups/scrum438_codex_v2/codex_v2_safe_zones_annotated_1920x1080.png`,
+spec `docs/design/mockups/scrum438_codex_v2/spec.md` and machine-readable
+layout metadata
+`docs/design/mockups/scrum438_codex_v2/codex_v2_layout_metadata.json`. Runtime
+uses real Controls and the accepted Codex frame kit paths, not the full mockup
+PNG as a baked atlas; old texture paths remain because the v2 pass reuses them
+as component frames instead of replacing art.
 
 SCRUM-331 prepared a Design-ready progression/skill-tree frame kit and mockup
 while preserving the existing Codex kit. Mockup/spec:
@@ -860,16 +1122,16 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Экран | Описание |
 | --- | --- |
 | Главное меню | Эпичный battle-art фон и левая колонка из шести стандартных action-кнопок: начать новую игру, настройки, древо умений, что нового, кодекс, выйти из игры |
-| Настройки | Вкладки «Экран» / «Звук» / «Управление»: монитор, режим окна, разрешение, full-width audio sliders, mute, rebinding движения/паузы/ultimate; SCRUM-334 подключил design-ready tab switcher frame as proportional strip with safe-rect runtime labels/click zones |
+| Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения с Mac-native option, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
 | Выбор персонажа | Fullscreen v3: большой портрет слева без дубля имени, справа единая информ-панель с досье слева от радара характеристик, адаптивная лента героев снизу только картинками |
 | Выбор оружия | Три оружия выбранного класса как легкие кликабельные карточки: спрайт оружия слева, название/описание, русские статы «Дальность/Радиус/Перезарядка»; тяжелая button texture frame не используется |
 | Карта маршрута | Вертикальная карта с иконками и tooltip |
 | Боевой HUD | SCRUM-390 ресурсная панель: HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |
 | Level-up | Геройский экран выбора 1 из 3 наград с портретом персонажа, частицами, редким main-stat акцентом и отложенным выбором через нижнюю кнопку; reward варианты выглядят как text-field/panel карточки, оставаясь кликабельными |
 | Награда за бой / элитку | Боевые награды и трофеи элитки показывают 3 отдельные framed-карточки SCRUM-338; иконка, заголовок, описание, тир артефакта и `Получить`/choice content сидят внутри metadata safe-zone, а вся карточка остается кликабельной и фокусируемой |
-| Магазин | Frameless wall-предметы поверх `screen_shop_background.png`: иконка, тень, компактная цена, описание только hover tooltip, unavailable dim/price и empty-hook после покупки |
-| Событие | Выбор одного из вариантов события поверх `screen_event_background.png`; длинный текст исхода находится внутри SCRUM-332 economy choice-card safe-zone, риск маркируется один раз без дубля `Риск: Риск:` |
-| Отдых | Лечение или защитный бонус поверх `screen_campfire_background.png`; описание бонуса находится в рамке над стандартной action-кнопкой |
+| Магазин | Frameless wall-предметы поверх canonical shop backdrop `ui_backdrop_merchant_archive.png`: иконка, тень, компактная цена, описание только hover tooltip, unavailable dim/price и empty-hook после покупки |
+| Событие | Выбор одного из вариантов события поверх canonical event backdrop `ui_backdrop_arcane_lab.png`; длинный текст исхода находится внутри SCRUM-437 wide economy choice-card safe-zone, риск маркируется один раз без дубля `Риск: Риск:` |
+| Отдых | Лечение или защитный бонус поверх canonical system/campfire backdrop `ui_backdrop_system_cathedral.png`; описание бонуса находится внутри SCRUM-437 wide economy choice-card content-zone |
 | Pause menu / stats | Escape открывает компактное run menu с Continue/Досье/Settings/End Run/Main Menu; досье персонажа открывается из него и показывает кнопки слева, приоритетные базовые характеристики сверху с бейджем/tooltip, производные параметры справа в логических группах; SCRUM-330 Design kit готовит новый modal frame с safe-zone, runtime wiring передан Back-end |
 | Смерть | Завершение забега; SCRUM-330 result crest/modal kit подготовлен как Design package |
 | Победа | Русский пользовательский итог без внутренних ID: победа над боссом, очки наследия, прогресс Возвышения и смысл новой награды; SCRUM-330 result crest/modal kit подготовлен как Design package |
@@ -1071,7 +1333,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 Игрок:
 - `scenes/Player.tscn` сохраняет `VisualRoot/Body` как скрытый `AnimatedSprite2D` fallback и источник кадров.
 - Видимое движение строится через `VisualRoot/RigRoot` (нарезанный риг из манифеста).
-- `WeaponSocket` остается в `VisualRoot` для совместимости с оружием, но его позиция и вращение следуют за `WeaponSocketMount` (закреплен на руке атаки в `Torso`).
+- `WeaponSocket` остается в `VisualRoot` для совместимости с оружием, но после SCRUM-455 его позиция и вращение вычисляются как 104px orbit anchor по активному aim/attack direction; root оружия и `WeaponVisual` нормализуются за слой тела, чтобы не перекрывать full-frame героя.
 - Берсерк, Темный маг и Гитарист переведены на общий нарезанный rig.
 - Берсерк по-прежнему имеет `berserk_walk_sheet_v2.png` как fallback/resource animation sheet.
 - Движение: сглаженный `walk_blend`, противофазные ноги с подъемом стопы, маховые руки, body bob, наклон в сторону движения, idle breathing. У Темного мага отдельный более спокойный walk profile с меньшим bob/lean и читаемым переносом веса после rework ног.
@@ -1163,6 +1425,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 - Уворот игрока работает: `dodge` из `derived_parameters` проверяется в `Player.take_damage`, при успехе показывается всплывающий текст «Промах!» и звук уворота; урон и invulnerability window не применяются. С 0.1.5 defense/dodge/absorb используют SCRUM-255 diminishing returns: defense cap 62%, dodge cap 55%, absorb пропускает минимум 35% каждого удара.
 - Регенерация и вампиризм после SCRUM-255 стали поддержкой, а не основным sustain: `regeneration = (0.22 + flat*0.45) * (0.45 + Knowledge/12)`, vampiric chance cap 22%, vampiric heal = `vampiric_amount*0.55 + 3.5% dealt damage`, cap 1.4/с с hard cap 2.6/с. Synthetic tank contact swarm в `tools/survivability_harness.gd` теперь 38.5с TTD вместо 321.0с.
 - Формулы атрибутов после SCRUM-243 используют универсальный cross-scaling: Strength/Intelligence/Knowledge/Leadership больше не являются «мертвыми» на чужих archetype-оружиях, а Perception/Energy/Endurance дают не только профильные, но и малые темп/стабилизационные эффекты. Тест `runtime_smoke_test.gd::_test_attribute_weapon_synergy_matrix` проверяет все 8 атрибутов против 6 weapon archetypes.
+- После SCRUM-469 рост статов выше базового значения класса проходит через class/stat-specific `CLASS_LEVEL_STAT_GROWTH_SCALARS` перед расчётом derived-параметров. Это нормализует lvl20 optimum relative score для 17 классов без изменения Base lvl1 и без замены уникальной тройки оружия класса.
 - Скорость атаки оружия считается как `base_fire_interval / attack_speed` (минимум 0.18с): базовый `fire_interval` каждого оружия из `progression_data.gd` снова значим, оружия одного класса различаются темпом.
 - Ребаланс 2026-06-10: базовые `fire_interval` первых 9 оружий увеличены в 1.6 раза, чтобы итоговый темп после фикса формулы остался близким к прежнему ощущению, но с различиями между оружиями; оружие расширенного ростера 0.1.4 балансируется в своих конфигах.
 - Pulse-режим бас-гитары и усилителя использует `_rolled_damage` (учитывает `damage_parameter` и криты), как остальные режимы классового оружия.
@@ -1194,7 +1457,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 - Inline shop item icons, shop slot frames and cursor variants используют тот же texture cache; отсутствующие Design PNG кэшируются как `null` и не вызывают повторный `load()` при перестроении магазина.
 - Компактный HUD обновляет HP/XP/деньги только когда значения реально изменились; при создании нового HUD snapshot сбрасывается.
 - Временные визуальные эффекты классового оружия должны регистрироваться в группе `player_weapon_effects`. `ClassWeapon.cleanup_effects()`, `Player._clear_equipped_weapon()`, `_freeze_gameplay_state()` и `_clear_world()` учитывают эту группу.
-- Event/shop/campfire экраны поддерживают screen background hook-и: если PNG в `assets/sprites/ui/screens/` еще нет, используется цветной fallback-слой, который не блокирует клики.
+- Event/shop/campfire экраны используют canonical `assets/backgrounds/ui/` mapping через `SCREEN_BACKGROUND_PATHS`; если PNG отсутствует, fallback-слой не блокирует клики.
 - World cleanup чистит врагов, боссов, projectiles, enemy hazards, pickups, player weapons, weapon effects, level-up effects, arena boundaries/backgrounds.
 
 ## Известные Ограничения

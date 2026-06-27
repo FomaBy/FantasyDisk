@@ -173,14 +173,18 @@ func _test_player_animation() -> void:
 		_fail("Expected Berserk full-frame visual to use SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(body.scale)])
 	if rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 		_fail("Expected hidden fallback cutout rig to receive SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(rig.get("base_scale"))])
-	if body.sprite_frames == null or not body.sprite_frames.has_animation("attack") or not body.sprite_frames.has_animation("attack_primary"):
-		_fail("Expected player SpriteFrames to expose attack and attack_primary animations.")
+	if body.sprite_frames == null:
+		_fail("Expected Berserk player SpriteFrames to load.")
 	if body.sprite_frames.resource_path != "res://assets/sprites/characters/berserk_spriteframes.tres":
-		_fail("Expected Berserk to use the accepted SCRUM-283 SpriteFrames resource.")
-	if body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
-		_fail("Expected Berserk SCRUM-283 SpriteFrames to expose 5 walk/attack/attack_primary frames.")
-	if not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
-		_fail("Expected Berserk walk to loop and attacks to be one-shot.")
+		_fail("Expected Berserk to use the accepted SCRUM-461 cartoon/anime SpriteFrames resource.")
+	if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
+		_fail("Expected Berserk SCRUM-461 cartoon/anime SpriteFrames to expose idle/walk/move animations.")
+	if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
+		_fail("Expected Berserk SCRUM-461 cartoon/anime SpriteFrames to omit attack animations by task scope.")
+	if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:
+		_fail("Expected Berserk SCRUM-461 cartoon/anime SpriteFrames to expose 5 idle/walk/move frames.")
+	if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or not body.sprite_frames.get_animation_loop("move"):
+		_fail("Expected Berserk SCRUM-461 cartoon/anime idle/walk/move animations to loop.")
 	player.call("play_action_animation", "attack", Vector2.RIGHT)
 	var last_event := player.get("last_weapon_animation_event") as Dictionary
 	if str(last_event.get("action_id", "")) != "attack":
@@ -262,37 +266,6 @@ func _test_player_animation() -> void:
 	if guitarist_pelvis.position.x >= -0.01:
 		_fail("Expected ranged action animation to recoil the rig pelvis.")
 
-	player.configure_character("dark_mage")
-	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
-	rig = player.get_node("VisualRoot/RigRoot") as Node2D
-	if not body.visible or rig.visible:
-		_fail("Expected Dark Mage full-frame AnimatedSprite2D visible with hidden cutout RigRoot.")
-	if body.sprite_frames == null or body.sprite_frames.resource_path != "res://assets/sprites/characters/dark_mage_spriteframes.tres":
-		_fail("Expected Dark Mage to use the accepted SCRUM-286 SpriteFrames resource.")
-	if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
-		_fail("Expected Dark Mage SCRUM-286 SpriteFrames to expose 5 idle/walk/attack/attack_primary frames.")
-	if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
-		_fail("Expected Dark Mage idle/walk to loop and attacks to be one-shot.")
-	_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], "dark mage")
-	player.set("velocity", Vector2(100, 0))
-	player.call("_update_movement_animation", 0.18)
-	var mage_pelvis := player.get_node("VisualRoot/RigRoot/Pelvis") as Node2D
-	var mage_leg_l := player.get_node("VisualRoot/RigRoot/Pelvis/Figure/LegL") as Node2D
-	var mage_leg_r := player.get_node("VisualRoot/RigRoot/Pelvis/Figure/LegR") as Node2D
-	if abs(mage_leg_l.rotation - mage_leg_r.rotation) <= 0.04:
-		_fail("Expected Dark Mage walk to use readable alternating leg motion.")
-	if abs(mage_leg_l.position.y - mage_leg_r.position.y) <= 0.02:
-		_fail("Expected Dark Mage walk to show foot contact through subtle lift.")
-	if abs(mage_pelvis.rotation) >= 0.08:
-		_fail("Expected Dark Mage walk to keep a controlled robe/body lean.")
-	player.set("velocity", Vector2.ZERO)
-	player.call("play_action_animation", "cast", Vector2.UP)
-	player.call("_update_movement_animation", 0.15)
-	var mage_arm_l := player.get_node("VisualRoot/RigRoot/Pelvis/Figure/Torso/ArmL") as Node2D
-	var mage_arm_r := player.get_node("VisualRoot/RigRoot/Pelvis/Figure/Torso/ArmR") as Node2D
-	if abs(mage_arm_l.rotation - mage_arm_r.rotation) <= 0.25:
-		_fail("Expected cast action animation to raise the rig arms.")
-
 	var accepted_character_spriteframes := {
 		"assassin": "res://assets/sprites/characters/assassin_spriteframes.tres",
 		"berserk": "res://assets/sprites/characters/berserk_spriteframes.tres",
@@ -318,14 +291,43 @@ func _test_player_animation() -> void:
 		rig = player.get_node("VisualRoot/RigRoot") as Node2D
 		if body.sprite_frames == null or body.sprite_frames.resource_path != str(accepted_character_spriteframes[sheet_character_id]):
 			_fail("Expected %s to use its accepted SpriteFrames resource." % sheet_character_id)
-		if not body.visible or rig.visible:
+		if sheet_character_id == "dark_mage" or sheet_character_id == "knight":
+			if body.visible or rig.visible:
+				_fail("Expected %s to hide full-frame Body and legacy cutout RigRoot while the skeletal rig is live." % sheet_character_id)
+			_assert_skeletal_player_rig(player, sheet_character_id)
+		elif not body.visible or rig.visible:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
-		if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
-			_fail("Expected %s accepted SpriteFrames to expose 5 idle/walk/attack/attack_primary frames." % sheet_character_id)
-		if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
-			_fail("Expected %s idle/walk to loop and attacks to be one-shot." % sheet_character_id)
+		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "dark_mage" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "thief":
+			var v2_label := "SCRUM-420"
+			if sheet_character_id == "berserk":
+				v2_label = "SCRUM-461"
+			if sheet_character_id == "assassin":
+				v2_label = "SCRUM-419"
+			elif sheet_character_id == "dark_mage":
+				v2_label = "SCRUM-473"
+			elif sheet_character_id == "elementalist":
+				v2_label = "SCRUM-427"
+			elif sheet_character_id == "guitarist":
+				v2_label = "SCRUM-429"
+			elif sheet_character_id == "knight":
+				v2_label = "SCRUM-473"
+			elif sheet_character_id == "thief":
+				v2_label = "SCRUM-435"
+			if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
+				_fail("Expected %s %s v2 SpriteFrames to expose idle/walk/move frames." % [sheet_character_id, v2_label])
+			if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
+				_fail("Expected %s %s v2 accepted SpriteFrames to omit attack animations." % [sheet_character_id, v2_label])
+			if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:
+				_fail("Expected %s %s v2 accepted SpriteFrames to expose 5 idle/walk/move frames." % [sheet_character_id, v2_label])
+			if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or not body.sprite_frames.get_animation_loop("move"):
+				_fail("Expected %s %s v2 idle/walk/move to loop." % [sheet_character_id, v2_label])
+		else:
+			if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("attack") != 5 or body.sprite_frames.get_frame_count("attack_primary") != 5:
+				_fail("Expected %s accepted SpriteFrames to expose 5 idle/walk/attack/attack_primary frames." % sheet_character_id)
+			if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or body.sprite_frames.get_animation_loop("attack") or body.sprite_frames.get_animation_loop("attack_primary"):
+				_fail("Expected %s idle/walk to loop and attacks to be one-shot." % sheet_character_id)
 	player.configure_character("missing_full_frame_test")
 	body = player.get_node("VisualRoot/Body") as AnimatedSprite2D
 	rig = player.get_node("VisualRoot/RigRoot") as Node2D
@@ -337,7 +339,6 @@ func _test_player_animation() -> void:
 		"ranger": 0.06,
 		"doctor": 0.035,
 		"chemist": 0.045,
-		"knight": 0.035,
 		"druid": 0.035,
 		"soldier": 0.04,
 		"thief": 0.05,
@@ -350,6 +351,7 @@ func _test_player_animation() -> void:
 	}
 	for character_id in new_class_profiles.keys():
 		player.configure_character(character_id)
+		player.set("_animation_time", 0.0)
 		_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], character_id)
 		player.set("velocity", Vector2(120, 0))
 		player.call("_update_movement_animation", 0.20)
@@ -359,8 +361,10 @@ func _test_player_animation() -> void:
 		var class_leg_r := class_rig.get_node("Pelvis/Figure/LegR") as Node2D
 		if abs(class_pelvis.position.y) <= 0.01:
 			_fail("Expected %s movement profile to move the pelvis." % character_id)
-		if abs(class_leg_l.rotation - class_leg_r.rotation) <= float(new_class_profiles[character_id]):
-			_fail("Expected %s to use a distinct readable walk profile." % character_id)
+		var leg_delta: float = abs(class_leg_l.rotation - class_leg_r.rotation)
+		var min_leg_delta: float = float(new_class_profiles[character_id])
+		if leg_delta <= min_leg_delta:
+			_fail("Expected %s to use a distinct readable walk profile; leg_delta=%.4f min=%.4f." % [character_id, leg_delta, min_leg_delta])
 
 	var rifle_pose: Dictionary = _sample_player_weapon_action_pose(player, "soldier", "soldier_rifle", "shoot", 0.12)
 	var grenade_pose: Dictionary = _sample_player_weapon_action_pose(player, "soldier", "soldier_grenade", "shoot", 0.12)
@@ -528,12 +532,8 @@ func _assert_weapon_timing_event(events: Array[Dictionary], attack_mode: String,
 
 
 func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
-	var dark_book_pose: Dictionary = _sample_player_weapon_action_pose(player, "dark_mage", "dark_book", "cast", 0.14)
-	var skull_pose: Dictionary = _sample_player_weapon_action_pose(player, "dark_mage", "cursed_skull", "cast", 0.14)
-	var wand_pose: Dictionary = _sample_player_weapon_action_pose(player, "dark_mage", "dark_wand", "cast", 0.14)
-	_assert_three_pose_variants("dark_mage", dark_book_pose, skull_pose, wand_pose)
-	if float(dark_book_pose["arm_l_y"]) >= float(wand_pose["arm_l_y"]) - 3.0 or float(wand_pose["arm_r_x"]) <= float(dark_book_pose["arm_r_x"]) + 2.0:
-		_fail("Expected Dark Mage book/wand poses to read as different cast silhouettes.")
+	# Dark Mage/Knight cartoon2 body attack rows intentionally stay absent:
+	# weapon visuals own attacks while hidden rig hooks still support legacy classes.
 
 	var electric_pose: Dictionary = _sample_player_weapon_action_pose(player, "guitarist", "electric_guitar", "shoot", 0.12)
 	var bass_pose: Dictionary = _sample_player_weapon_action_pose(player, "guitarist", "bass_guitar", "shoot", 0.18)
@@ -570,13 +570,6 @@ func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
 	if _pose_distance(acid_pose, powder_pose) <= 5.0 or _pose_distance(vial_pose, powder_pose) <= 5.0:
 		_fail("Expected Chemist powder/flask/vial casts to use different arm heights.")
 
-	var spear_pose: Dictionary = _sample_player_weapon_action_pose(player, "knight", "long_spear", "attack", 0.12)
-	var shield_pose: Dictionary = _sample_player_weapon_action_pose(player, "knight", "tower_shield", "attack", 0.12)
-	var flail_pose: Dictionary = _sample_player_weapon_action_pose(player, "knight", "holy_flail", "attack", 0.18)
-	_assert_three_pose_variants("knight", spear_pose, shield_pose, flail_pose)
-	if float(spear_pose["arm_r_x"]) <= float(shield_pose["arm_r_x"]) + 3.0 or _pose_distance(flail_pose, spear_pose) <= 6.0:
-		_fail("Expected Knight spear thrust, shield bash, and flail sweep silhouettes.")
-
 	var summon_pose: Dictionary = _sample_player_weapon_action_pose(player, "druid", "summon_amulet", "cast", 0.14)
 	var briar_pose: Dictionary = _sample_player_weapon_action_pose(player, "druid", "briar_staff", "cast", 0.14)
 	var raven_pose: Dictionary = _sample_player_weapon_action_pose(player, "druid", "raven_totem", "shoot", 0.14)
@@ -585,10 +578,10 @@ func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
 		_fail("Expected Druid summon, briar, and raven totem poses to be distinct.")
 
 	var legacy_samples := [
-		dark_book_pose, skull_pose, wand_pose, electric_pose, bass_pose, amp_pose,
+		electric_pose, bass_pose, amp_pose,
 		chakram_pose, dagger_pose, wire_pose, moon_pose, storm_pose, trap_pose,
 		potion_pose, syringe_pose, saw_pose, powder_pose, acid_pose, vial_pose,
-		spear_pose, shield_pose, flail_pose, summon_pose, briar_pose, raven_pose,
+		summon_pose, briar_pose, raven_pose,
 	]
 	for sample in legacy_samples:
 		if float(sample["socket_x"]) <= -120.0 or float(sample["socket_x"]) >= 180.0 or abs(float(sample["socket_y"])) >= 180.0:
@@ -596,10 +589,9 @@ func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
 
 
 func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
+	# Dark Mage/Knight body attack animation is out of scope here; their weapons
+	# still emit timing events, and body SpriteFrames stay idle/walk/move only.
 	var phase_samples := [
-		["dark_mage", "dark_book", "aoe_projectile", "cast", "windup"],
-		["dark_mage", "cursed_skull", "homing_curse", "cast", "windup"],
-		["dark_mage", "dark_wand", "beam", "cast", "channel"],
 		["guitarist", "electric_guitar", "sound_wave", "shoot", "windup"],
 		["guitarist", "bass_guitar", "pulse", "shoot", "pulse"],
 		["guitarist", "sound_amp", "amp", "shoot", "deploy"],
@@ -615,9 +607,6 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 		["chemist", "blast_powder", "aoe_projectile", "cast", "windup"],
 		["chemist", "acid_flask", "aoe_projectile", "cast", "windup"],
 		["chemist", "homunculus_vial", "summon", "cast", "deploy"],
-		["knight", "long_spear", "strip", "attack", "windup"],
-		["knight", "tower_shield", "sweep", "attack", "windup"],
-		["knight", "holy_flail", "circle", "attack", "windup"],
 		["druid", "summon_amulet", "summon", "cast", "deploy"],
 		["druid", "briar_staff", "aoe_projectile", "cast", "windup"],
 		["druid", "raven_totem", "amp", "shoot", "deploy"],
@@ -798,6 +787,66 @@ func _assert_sliced_rig(root_node: Node, rig_path: String, texture_fragment: Str
 			_fail("Expected %s rig leg part %s." % [label, part_name])
 	if rig.get_node_or_null("Pelvis/Figure/Torso/WeaponSocketMount") == null:
 		_fail("Expected %s rig WeaponSocketMount." % label)
+
+
+func _assert_skeletal_player_rig(player: Node, character_id: String) -> void:
+	var previous_velocity = player.get("velocity")
+	var previous_animation_time := float(player.get("_animation_time"))
+	var rig := player.get_node_or_null("VisualRoot/SkeletalRigRoot") as Node2D
+	if rig == null or not rig.visible:
+		_fail("Expected %s live SkeletalRigRoot." % character_id)
+	var skeleton := rig.get_node_or_null("Skeleton2D") as Skeleton2D
+	var animation_player := rig.get_node_or_null("AnimationPlayer") as AnimationPlayer
+	if skeleton == null or animation_player == null:
+		_fail("Expected %s Skeleton2D and AnimationPlayer nodes." % character_id)
+	if not animation_player.has_animation("idle") or not animation_player.has_animation("walk") or not animation_player.has_animation("move"):
+		_fail("Expected %s skeletal rig to expose idle/walk/move clips." % character_id)
+	if animation_player.has_animation("attack") or animation_player.has_animation("attack_primary"):
+		_fail("Expected %s skeletal body rig to omit attack clips." % character_id)
+	for bone_path in [
+		"Root",
+		"Root/Pelvis",
+		"Root/Pelvis/Torso",
+		"Root/Pelvis/Torso/Head",
+		"Root/Pelvis/Torso/UpperArmL",
+		"Root/Pelvis/Torso/UpperArmR",
+		"Root/Pelvis/ThighL",
+		"Root/Pelvis/ThighR",
+	]:
+		if skeleton.get_node_or_null(bone_path) == null:
+			_fail("Expected %s skeletal bone %s." % [character_id, bone_path])
+	var torso_sprite := skeleton.get_node_or_null("Root/Pelvis/Torso/Sprite") as Sprite2D
+	if torso_sprite == null or torso_sprite.texture == null:
+		_fail("Expected %s skeletal torso sprite texture." % character_id)
+	if not torso_sprite.texture.resource_path.contains("assets/sprites/characters/skeleton_parts/%s/parts/" % character_id):
+		_fail("Expected %s skeletal rig to use asset-side accepted parts, got %s." % [character_id, torso_sprite.texture.resource_path])
+	var root_bone := skeleton.get_node("Root") as Bone2D
+	var thigh_l := skeleton.get_node("Root/Pelvis/ThighL") as Bone2D
+	var thigh_r := skeleton.get_node("Root/Pelvis/ThighR") as Bone2D
+	var idle_root_y := root_bone.position.y
+	player.set("velocity", Vector2(120, 0))
+	player.call("_update_movement_animation", 0.20)
+	if str(rig.get("active_animation")) != "walk":
+		_fail("Expected %s skeletal rig to switch to walk while moving." % character_id)
+	if abs(root_bone.position.y - idle_root_y) <= 0.01:
+		_fail("Expected %s skeletal walk to move the root bone." % character_id)
+	if abs(thigh_l.rotation - thigh_r.rotation) <= 0.05:
+		_fail("Expected %s skeletal walk to use opposing leg rotations." % character_id)
+	if rig.scale.x <= 0.0:
+		_fail("Expected %s skeletal rig to face right with positive scale." % character_id)
+	player.set("velocity", Vector2(-120, 0))
+	player.call("_update_movement_animation", 0.20)
+	if rig.scale.x >= 0.0:
+		_fail("Expected %s skeletal rig to mirror when facing left." % character_id)
+	player.set("velocity", Vector2.ZERO)
+	player.call("_update_movement_animation", 0.20)
+	if str(rig.get("active_animation")) != "idle":
+		_fail("Expected %s skeletal rig to return to idle when stopped." % character_id)
+	var weapon_socket := player.get_node_or_null("VisualRoot/WeaponSocket") as Node2D
+	if weapon_socket == null or not weapon_socket.has_meta("weapon_orbit_radius"):
+		_fail("Expected %s weapon socket orbit behavior to remain configured." % character_id)
+	player.set("velocity", previous_velocity)
+	player.set("_animation_time", previous_animation_time)
 
 
 func _test_enemy_projectile_sprite() -> void:

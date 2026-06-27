@@ -1,21 +1,19 @@
 # Agent Role Boundaries And Handoffs
 
-Обновлено: 2026-06-14
+Обновлено: 2026-06-23
 
 Этот документ задает правило работы для всех специализированных чатов FantasyDisk:
 `Design`, `Back-end`, `Animator`, `QA`.
 
 Задачи формирует PM-чат/другая LLM по регламенту `docs/process/pm_workflow.md`.
-Codex Documentation dispatcher может создавать новые задачи в active sprint
-`0.1.5` только в рамках feature block: уже заведенные строки доски, активные
-bug/QA defect/regression/release blocker задачи или явно разрешенные PM
-исключения. Новые не-баговые feature requests уходят в backlog следующей версии
-как `Версия: 0.1.6` и не добавляются в текущий sprint. Статусы всех задач
-отслеживаются на доске `docs/process/task_board.md`: при взятии задачи
-исполнитель ставит в файле задачи `Статус: in_progress`, по завершении —
-`done` (или `review`) с коротким резюме результата. Закрытие задачи —
-ответственность исполнителя/ревьюера: dispatcher не ставит `done` за агента, а
-только синхронизирует уже записанный результат или QA-вердикт.
+Активен `Спринт 0.1.6`: v0.1.5 выпущен, feature block 0.1.5 снят. Новые
+задачи 0.1.6 можно маршрутизировать обычным порядком, но только через
+PM/Documentation dispatcher, с проверкой зависимостей и активного владельца.
+Статусы всех задач отслеживаются на доске `docs/process/task_board.md`: при
+взятии задачи исполнитель ставит в файле задачи `Статус: in_progress`, по
+завершении — `done` (или `review`) с коротким резюме результата. Закрытие
+задачи — ответственность исполнителя/ревьюера: dispatcher не ставит `done` за
+агента, а только синхронизирует уже записанный результат или QA-вердикт.
 
 Все задачи также синхронизируются с Jira проектом `SCRUM` по
 `docs/process/jira_sync.md`. Любой агент, меняющий task status или создающий
@@ -47,6 +45,100 @@ status/comment или явно передать это dispatcher/PM. Jira API t
 5. В своей финалке указать, что передано и куда.
 
 Пользователь заранее одобрил in-scope изменения, поэтому агенты не спрашивают разрешение на работу. Но cross-discipline работу нужно передавать правильному агенту.
+
+## Single-owner / Dispatch-lock
+
+Новая работа попадает к исполнителю только через PM/Documentation dispatcher.
+Роль-агенты не разбирают общий backlog самостоятельно: их heartbeat может
+продолжать активную задачу, закрывать явно записанный результат, или ждать
+следующего dispatch. Исключение возможно только если PM/dispatcher явно написал
+в сам task-файл или чат: какой task, какой thread, какая роль.
+
+Для параллельной работы Codex и Claude каждая активная задача должна иметь
+execution-lane metadata:
+
+```text
+Контур: Codex | Claude
+Owner: <роль>/<thread или worker> | unassigned
+Thread: <Codex thread id> | <Claude chat/worker id> | n/a
+Locked paths: <основные файлы/папки/ассеты/экраны>
+```
+
+Перед dispatch или взятием задачи обязательно проверить:
+
+- строку `docs/process/task_board.md`;
+- `Статус`, `Исполнитель`, `Dispatch`, `Owner`, `Thread` и свежие логи в task-файле;
+- `Контур` и `Locked paths` в task-файле или board note;
+- Jira key/status/комментарии через `docs/process/jira_sync.md` и локальный sync map;
+- последние сообщения всех role threads этой роли;
+- dirty worktree и пересекающиеся файлы/ассеты/экраны.
+
+Задачу нельзя брать или повторно отправлять, если есть хотя бы один сигнал
+активного владельца: `in_progress`, свежий dispatch note, thread id, Jira
+assignee/comment, незавершённый role-thread heartbeat по этой задаче, или
+пересечение основных файлов/ассетов с активной задачей. В сомнительном случае
+dispatcher оставляет задачу без dispatch и пишет PM/board note вместо параллельной
+работы.
+
+При dispatch dispatcher фиксирует owner в явном виде:
+
+- в task-файле: `Dispatch: отправлено <Role>/<Thread name> (<thread id>) <YYYY-MM-DD HH:MM>`;
+- в task-файле: `Контур`, `Owner`, `Thread`, `Locked paths` должны совпадать с
+  фактическим исполнителем и scope;
+- на board: роль/примечание должны показывать конкретного владельца, если таких
+  владельцев несколько;
+- в Jira: статус/комментарий должен отражать, кто взял работу и какой handoff
+  создан, если работа передана.
+
+## Codex И Claude Параллельно
+
+Codex и Claude могут работать одновременно в одной ветке `dev`, но не над одной
+задачей, проблемой или locked path.
+
+- Codex role thread работает автономно только если задача явно помечена
+  `Контур: Codex`, содержит dispatch на этот thread и не имеет свежего Claude
+  owner/comment по тому же scope.
+- Claude Code/Claude worker работает автономно только если задача явно помечена
+  `Контур: Claude` или является отдельной review/bug задачей после Codex-result.
+- Нельзя превращать review в параллельную реализацию. Claude review Codex-работы
+  начинается после Codex `done/review`, а найденные проблемы оформляются как
+  отдельные `bug_` или follow-up tasks с собственным owner.
+- Если Codex видит, что Claude уже изменяет один из locked paths, Codex не
+  начинает работу: помечает задачу `blocked` или оставляет `new` с note о
+  конфликте owner/scope.
+- Если Claude видит `Контур: Codex`, `Dispatch` на Codex thread или Codex WIP в
+  task-файле/Jira, он не берёт эту строку из board и не правит те же файлы без
+  отдельной review/bug задачи.
+- Если оба контура нужны в одной фиче, PM делит работу на цепочку задач:
+  source/design -> runtime/backend -> animation -> QA/review. Каждая задача имеет
+  свой owner и свои locked paths; handoff связывает их через Jira comments.
+- Documentation dispatcher не делает реализацию и не закрывает работу за role
+  agents. Его автономия ограничена routing/sync/dedupe/owner notes.
+
+Dirty worktree считается активным контекстом разработки. Агент может продолжать
+только свои изменения или явно связанные файлы своей задачи. Любые чужие dirty
+files в locked paths другого контура блокируют старт до результата owner или
+новой dispatcher-разбивки.
+
+## Design Pool: Design main и Designer 2
+
+`Design main` и `Designer 2` — два отдельных исполнителя, а не одна общая
+очередь. У Design-задачи в любой момент может быть только один активный владелец.
+
+- `Design main` обычно получает крупные visual direction/UI-source/style-anchor
+  задачи, где важны цельный арт-дирекшен, mockup/spec, источники и handoff.
+- `Designer 2` обычно получает параллельные, файл-изолированные Design-задачи:
+  cleanup, отдельные asset packs, visual QA fixes, source-sheet preparation,
+  повторяемые генерации по уже принятому стилю.
+- Designer 2 не берёт задачу, если Design main уже упомянут в `Dispatch`,
+  `Исполнитель`, результате или свежей role-thread истории, даже если board row
+  всё ещё выглядит `new/review`.
+- Design main не берёт задачу, если Designer 2 уже указан владельцем или есть
+  активная Designer 2 работа с тем же экраном, source pack, frame kit, character
+  set или asset directory.
+- Второй дизайнер может делать review только по явному dispatch/review note от
+  PM/dispatcher. Review не означает право переписывать source package без новой
+  задачи или handoff.
 
 ## Asset Backup Hygiene
 
@@ -231,6 +323,13 @@ docs/tasks/<role>_<short_task_name>.md
 
 ```md
 # Задача Для <Role>-Агента: <Название>
+
+Статус: new
+Контур: Codex | Claude
+Owner: unassigned
+Thread: n/a
+Locked paths: <ключевые файлы/папки/ассеты/экраны>
+Jira: SCRUM-<номер>
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения в рамках этой задачи...

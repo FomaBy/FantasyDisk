@@ -1,100 +1,97 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_00.png" id="1_dm1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_01.png" id="2_dm2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_02.png" id="3_dm3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_03.png" id="4_dm4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_04.png" id="5_dm5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_00.png" id="6_dm6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_01.png" id="7_dm7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_02.png" id="8_dm8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_03.png" id="9_dm9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_04.png" id="10_dm10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_00.png" id="11_dm11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_01.png" id="12_dm12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_02.png" id="13_dm13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_03.png" id="14_dm14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_04.png" id="15_dm15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_00.png" id="1_scrum473"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_01.png" id="2_scrum473"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_02.png" id="3_scrum473"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_03.png" id="4_scrum473"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_04.png" id="5_scrum473"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_00.png" id="6_scrum473"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_01.png" id="7_scrum473"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_02.png" id="8_scrum473"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_03.png" id="9_scrum473"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/dark_mage/dark_mage_walk_04.png" id="10_scrum473"]
 
 [resource]
-animations = [{
-"frames": [{
+animations = [
+{
+"frames": [
+{
 "duration": 1.0,
-"texture": ExtResource("11_dm11")
-}, {
+"texture": ExtResource("1_scrum473")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("12_dm12")
-}, {
+"texture": ExtResource("2_scrum473")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("13_dm13")
-}, {
+"texture": ExtResource("3_scrum473")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("14_dm14")
-}, {
+"texture": ExtResource("4_scrum473")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("15_dm15")
-}],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("11_dm11")
-}, {
-"duration": 1.0,
-"texture": ExtResource("12_dm12")
-}, {
-"duration": 1.0,
-"texture": ExtResource("13_dm13")
-}, {
-"duration": 1.0,
-"texture": ExtResource("14_dm14")
-}, {
-"duration": 1.0,
-"texture": ExtResource("15_dm15")
-}],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("1_dm1")
-}, {
-"duration": 1.0,
-"texture": ExtResource("2_dm2")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_dm3")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_dm4")
-}, {
-"duration": 1.0,
-"texture": ExtResource("5_dm5")
-}],
+"texture": ExtResource("5_scrum473")
+}
+],
 "loop": true,
 "name": &"idle",
-"speed": 5.0
-}, {
-"frames": [{
+"speed": 7.0
+},
+{
+"frames": [
+{
 "duration": 1.0,
-"texture": ExtResource("6_dm6")
-}, {
+"texture": ExtResource("6_scrum473")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("7_dm7")
-}, {
+"texture": ExtResource("7_scrum473")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("8_dm8")
-}, {
+"texture": ExtResource("8_scrum473")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("9_dm9")
-}, {
+"texture": ExtResource("9_scrum473")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("10_dm10")
-}],
+"texture": ExtResource("10_scrum473")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 9.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("6_scrum473")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_scrum473")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_scrum473")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_scrum473")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_scrum473")
+}
+],
 "loop": true,
 "name": &"walk",
-"speed": 10.0
-}]
+"speed": 9.0
+}
+]

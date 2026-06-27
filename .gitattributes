@@ -1,0 +1,34 @@
+# Единые переносы строк: в репозитории LF (Godot/GDScript-конвенция).
+# На Windows checkout НЕ конвертирует в CRLF — нет ложных диффов и проблем в Godot.
+* text=auto eol=lf
+
+# Явный текст с LF
+*.gd     text eol=lf
+*.tscn   text eol=lf
+*.tres   text eol=lf
+*.godot  text eol=lf
+*.cfg    text eol=lf
+*.import text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+*.sh     text eol=lf
+*.py     text eol=lf
+*.txt    text eol=lf
+
+# Бинарные ассеты — git их не нормализует и не diff'ит
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.gif  binary
+*.svg  binary
+*.wav  binary
+*.ogg  binary
+*.mp3  binary
+*.ttf  binary
+*.otf  binary
+*.ico  binary
+*.dmg  binary
+*.exe  binary
+*.zip  binary
+*.res  binary

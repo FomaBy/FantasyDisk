@@ -14,6 +14,8 @@ const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berser
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const DARK_MAGE_SKELETON_RIG_SCENE := preload("res://scenes/characters/DarkMageSkeletonRig.tscn")
+const KNIGHT_SKELETON_RIG_SCENE := preload("res://scenes/characters/KnightSkeletonRig.tscn")
 const DARK_MAGE_SPRITE := preload("res://assets/sprites/characters/dark_mage.png")
 const GUITARIST_SPRITE := preload("res://assets/sprites/characters/guitarist.png")
 const ASSASSIN_SPRITE := preload("res://assets/sprites/characters/assassin.png")
@@ -33,6 +35,17 @@ const PLAYER_COMBAT_VISUAL_SCALE := 0.5
 const BASE_SPRITE_SCALE := Vector2(PLAYER_COMBAT_VISUAL_SCALE, PLAYER_COMBAT_VISUAL_SCALE)
 # Анимация атаки персонажей отключена по запросу пользователя (2026-06-15).
 const USE_ATTACK_ANIMATION := false
+# CARTOON-проба (SCRUM-456/SCRUM-472) завершена для Dark Mage/Knight в SCRUM-473:
+# эти классы теперь грузят реальные full-frame SpriteFrames, а список остаётся
+# пустым как аварийный переключатель для будущих временных cartoon-интеграций.
+const CARTOON_TRIAL_CLASSES := []
+# Доводка cartoon-пробы (SCRUM-472, запрос пользователя): чуть мельче + лёгкий
+# разворот спрайта вокруг своей оси (Z), чтобы не стоял строго анфас. Настраивается.
+const CARTOON_TRIAL_SCALE := 0.82
+const CARTOON_TRIAL_TILT_DEG := 12.0
+const WEAPON_ORBIT_RADIUS := 104.0
+const WEAPON_ORBIT_VERTICAL_BIAS := -8.0
+const WEAPON_ORBIT_Z_INDEX := -8
 const DEBUG_MOVE_ARRIVAL_DISTANCE := 10.0
 
 const CHARACTER_CONFIGS := {
@@ -121,6 +134,7 @@ var _action_tween: Tween = null
 var _hit_flash_tween: Tween = null
 var _facing_direction := Vector2.RIGHT
 var _uses_full_frame_visual := false
+var _uses_skeletal_visual := false
 var _damage_invulnerability_left := 0.0
 # Паутинное замедление (Матерь Роя): фактор скорости до отметки времени.
 var _web_slow_until := 0.0
@@ -194,7 +208,9 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		visual_root.scale = Vector2.ONE
 	var body := _animated_sprite()
 	if body != null:
-		var full_frame_frames := _character_full_frame_sprite_frames(character_id)
+		var skeleton_scene := _character_skeleton_rig_scene(character_id)
+		_uses_skeletal_visual = skeleton_scene != null
+		var full_frame_frames: SpriteFrames = null if character_id in CARTOON_TRIAL_CLASSES or _uses_skeletal_visual else _character_full_frame_sprite_frames(character_id)
 		_uses_full_frame_visual = full_frame_frames != null
 		body.sprite_frames = full_frame_frames if _uses_full_frame_visual else _character_sprite_frames(config)
 		body.animation = "idle"
@@ -204,7 +220,8 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		body.scale = BASE_SPRITE_SCALE
 		body.flip_h = false
 		body.visible = _uses_full_frame_visual
-	_configure_player_rig(config, not _uses_full_frame_visual)
+		_configure_skeletal_player_rig(skeleton_scene)
+	_configure_player_rig(config, not _uses_full_frame_visual and not _uses_skeletal_visual)
 	var weapon_socket := _weapon_socket()
 	if weapon_socket != null:
 		weapon_socket.position = Vector2.ZERO
@@ -250,6 +267,7 @@ func _attach_weapon_scene(weapon_scene: PackedScene, config: Dictionary) -> void
 	weapon.add_to_group("player_weapons")
 	socket.add_child(weapon)
 	equipped_weapon = weapon
+	_configure_attached_weapon_layer(weapon)
 	if weapon.has_method("configure_weapon") and not config.is_empty():
 		weapon.configure_weapon(config)
 	_apply_weapon_scaling(weapon)
@@ -285,9 +303,11 @@ func _clear_detached_weapon_effects() -> void:
 func _weapon_socket() -> Node2D:
 	var socket := get_node_or_null("VisualRoot/WeaponSocket") as Node2D
 	if socket != null:
+		_configure_weapon_socket_layer(socket)
 		return socket
 	socket = get_node_or_null("WeaponSocket") as Node2D
 	if socket != null:
+		_configure_weapon_socket_layer(socket)
 		return socket
 	var visual_root := _visual_root()
 	if visual_root == null:
@@ -297,7 +317,25 @@ func _weapon_socket() -> Node2D:
 	socket = Node2D.new()
 	socket.name = "WeaponSocket"
 	visual_root.add_child(socket)
+	_configure_weapon_socket_layer(socket)
 	return socket
+
+
+func _configure_weapon_socket_layer(socket: Node2D) -> void:
+	socket.z_as_relative = true
+	socket.z_index = WEAPON_ORBIT_Z_INDEX
+	socket.set_meta("weapon_orbit_radius", WEAPON_ORBIT_RADIUS)
+
+
+func _configure_attached_weapon_layer(weapon: Node) -> void:
+	var weapon_canvas := weapon as CanvasItem
+	if weapon_canvas != null:
+		weapon_canvas.z_as_relative = true
+		weapon_canvas.z_index = 0
+	var visual := weapon.get_node_or_null("WeaponVisual") as CanvasItem
+	if visual != null:
+		visual.z_as_relative = true
+		visual.z_index = 0
 
 
 func _physics_process(_delta: float) -> void:
@@ -1466,6 +1504,9 @@ func _update_movement_animation(delta: float) -> void:
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("update_animation"):
 		rig.update_animation(delta, velocity, _facing_direction)
+	var skeletal_rig := _skeletal_rig()
+	if skeletal_rig != null and skeletal_rig.has_method("update_animation"):
+		skeletal_rig.update_animation(delta, velocity, _facing_direction)
 	_apply_sprite_transform()
 
 
@@ -1488,14 +1529,30 @@ func _apply_sprite_transform() -> void:
 
 	var weapon_socket := _weapon_socket()
 	if weapon_socket != null:
-		var rig := _cutout_rig()
-		if rig != null and rig.has_method("weapon_socket_position"):
-			weapon_socket.position = rig.weapon_socket_position()
-			weapon_socket.rotation = rig.weapon_socket_rotation()
-		else:
-			weapon_socket.position = Vector2.ZERO
-			weapon_socket.rotation = 0.0
+		var orbit_direction := _weapon_orbit_direction()
+		weapon_socket.position = _weapon_orbit_position(orbit_direction)
+		weapon_socket.rotation = orbit_direction.angle()
 		weapon_socket.scale = Vector2.ONE
+		_configure_weapon_socket_layer(weapon_socket)
+		weapon_socket.set_meta("weapon_orbit_direction", orbit_direction)
+
+
+func _weapon_orbit_direction() -> Vector2:
+	var direction := _facing_direction
+	if equipped_weapon != null and is_instance_valid(equipped_weapon):
+		var weapon_direction = equipped_weapon.get("_last_direction")
+		if weapon_direction is Vector2 and (weapon_direction as Vector2).length_squared() > 0.001:
+			direction = weapon_direction
+	if direction.length_squared() <= 0.001:
+		direction = Vector2.RIGHT
+	return attack_aim_direction(direction, float(weapon_config.get("attack_range", 999999.0)))
+
+
+func _weapon_orbit_position(direction: Vector2) -> Vector2:
+	var normalized := direction.normalized()
+	if normalized.length_squared() <= 0.001:
+		normalized = Vector2.RIGHT
+	return normalized * WEAPON_ORBIT_RADIUS + Vector2(0.0, WEAPON_ORBIT_VERTICAL_BIAS)
 
 
 func _play_hit_feedback() -> void:
@@ -1508,6 +1565,9 @@ func _play_hit_feedback() -> void:
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_hit"):
 		rig.play_hit()
+	var skeletal_rig := _skeletal_rig()
+	if skeletal_rig != null and skeletal_rig.has_method("play_hit"):
+		skeletal_rig.play_hit()
 	_hit_flash_tween = create_tween()
 	_hit_flash_tween.tween_property(body, "modulate", Color.WHITE, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
@@ -1558,6 +1618,10 @@ func _cutout_rig() -> Node2D:
 	return get_node_or_null("VisualRoot/RigRoot") as Node2D
 
 
+func _skeletal_rig() -> Node2D:
+	return get_node_or_null("VisualRoot/SkeletalRigRoot") as Node2D
+
+
 func _configure_player_rig(config: Dictionary, show_cutout := true) -> void:
 	var visual_root := _visual_root()
 	if visual_root == null:
@@ -1569,9 +1633,54 @@ func _configure_player_rig(config: Dictionary, show_cutout := true) -> void:
 		rig.set_script(CUTOUT_RIG_SCRIPT)
 		visual_root.add_child(rig)
 	var texture := config.get("sprite", BERSERK_SPRITE) as Texture2D
+	var is_cartoon: bool = character_id in CARTOON_TRIAL_CLASSES
 	if rig.has_method("configure"):
-		rig.configure(texture, BASE_SPRITE_SCALE, character_id, {"is_player": true})
+		# CARTOON-проба: суффикс профиля уводит риг на legacy (целый спрайт), без
+		# v2-боксов нарезки, не подходящих cartoon-пропорциям; cartoon чуть мельче (SCRUM-472).
+		var rig_profile: String = character_id + "_cartoon" if is_cartoon else character_id
+		var rig_scale: Vector2 = (BASE_SPRITE_SCALE * CARTOON_TRIAL_SCALE) if is_cartoon else BASE_SPRITE_SCALE
+		rig.configure(texture, rig_scale, rig_profile, {"is_player": true})
+	if is_cartoon:
+		# Лёгкий разворот cartoon-спрайта вокруг своей оси — не строго анфас (SCRUM-472).
+		var hero_full := rig.get_node_or_null("Pelvis/HeroFull") as Node2D
+		if hero_full != null:
+			hero_full.rotation = deg_to_rad(CARTOON_TRIAL_TILT_DEG)
 	rig.visible = show_cutout
+
+
+func _configure_skeletal_player_rig(skeleton_scene: PackedScene) -> void:
+	var visual_root := _visual_root()
+	if visual_root == null:
+		return
+	var existing := _skeletal_rig()
+	if existing != null:
+		visual_root.remove_child(existing)
+		existing.queue_free()
+	if skeleton_scene == null:
+		_uses_skeletal_visual = false
+		return
+	var rig := skeleton_scene.instantiate() as Node2D
+	if rig == null:
+		_uses_skeletal_visual = false
+		return
+	rig.name = "SkeletalRigRoot"
+	rig.z_index = 0
+	visual_root.add_child(rig)
+	rig.visible = true
+	if rig.has_method("configure"):
+		var manifest := str(rig.get("manifest_path"))
+		rig.configure(manifest, character_id, BASE_SPRITE_SCALE)
+	if rig.has_method("update_animation"):
+		rig.update_animation(0.0, Vector2.ZERO, _facing_direction)
+
+
+func _character_skeleton_rig_scene(class_id: String) -> PackedScene:
+	match class_id:
+		"dark_mage":
+			return DARK_MAGE_SKELETON_RIG_SCENE
+		"knight":
+			return KNIGHT_SKELETON_RIG_SCENE
+	return null
 
 
 func _character_sprite_frames(config: Dictionary) -> SpriteFrames:

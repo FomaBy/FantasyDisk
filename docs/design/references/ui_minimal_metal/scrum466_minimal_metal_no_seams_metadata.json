@@ -1,0 +1,233 @@
+{
+  "task": "SCRUM-466",
+  "created": "2026-06-17T12:03:01",
+  "cleanup_rule": "Runtime/source PNGs keep outer 9-slice border regions intact; the stretch core inside texture_margins_ltrb is flattened to a quiet dark translucent fill so no gold rails or divider pixels can be stretched through content.",
+  "global_frame_rule": "All labels, controls, icons, cards and text must remain inside content_rect_xywh. Ornament is allowed only outside the stretch core and outside content safe zones.",
+  "assets": {
+    "modal": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png",
+      "clean_source_path": "docs/design/references/ui_minimal_metal/scrum466_no_seams/frames_clean/ui_frame_minimal_metal_modal.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_modal_raw.png",
+      "backup_path": "docs/design/backups/scrum466_minimal_metal_preclean/assets/ui_frame_minimal_metal_modal.png",
+      "size": [
+        986,
+        900
+      ],
+      "texture_margins_ltrb": [
+        46,
+        62,
+        46,
+        58
+      ],
+      "content_margins_ltrb": [
+        72,
+        92,
+        72,
+        84
+      ],
+      "content_rect_xywh": [
+        72,
+        92,
+        842,
+        724
+      ],
+      "stretch_core_rect_xyxy": [
+        46,
+        62,
+        940,
+        842
+      ],
+      "gold_or_bright_pixels_in_stretch_core": 0,
+      "pale_opaque_pixels_in_content_rect": 0,
+      "visible_pixels_in_content_rect": 609608
+    },
+    "panel": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png",
+      "clean_source_path": "docs/design/references/ui_minimal_metal/scrum466_no_seams/frames_clean/ui_frame_minimal_metal_panel.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_panel_raw.png",
+      "backup_path": "docs/design/backups/scrum466_minimal_metal_preclean/assets/ui_frame_minimal_metal_panel.png",
+      "size": [
+        782,
+        716
+      ],
+      "texture_margins_ltrb": [
+        38,
+        52,
+        38,
+        48
+      ],
+      "content_margins_ltrb": [
+        58,
+        72,
+        58,
+        66
+      ],
+      "content_rect_xywh": [
+        58,
+        72,
+        666,
+        578
+      ],
+      "stretch_core_rect_xyxy": [
+        38,
+        52,
+        744,
+        668
+      ],
+      "gold_or_bright_pixels_in_stretch_core": 0,
+      "pale_opaque_pixels_in_content_rect": 0,
+      "visible_pixels_in_content_rect": 384948
+    },
+    "card": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png",
+      "clean_source_path": "docs/design/references/ui_minimal_metal/scrum466_no_seams/frames_clean/ui_frame_minimal_metal_card.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_card_raw.png",
+      "backup_path": "docs/design/backups/scrum466_minimal_metal_preclean/assets/ui_frame_minimal_metal_card.png",
+      "size": [
+        426,
+        486
+      ],
+      "texture_margins_ltrb": [
+        32,
+        42,
+        32,
+        40
+      ],
+      "content_margins_ltrb": [
+        46,
+        58,
+        46,
+        54
+      ],
+      "content_rect_xywh": [
+        46,
+        58,
+        334,
+        374
+      ],
+      "stretch_core_rect_xyxy": [
+        32,
+        42,
+        394,
+        446
+      ],
+      "gold_or_bright_pixels_in_stretch_core": 0,
+      "pale_opaque_pixels_in_content_rect": 0,
+      "visible_pixels_in_content_rect": 124916
+    },
+    "tooltip": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png",
+      "clean_source_path": "docs/design/references/ui_minimal_metal/scrum466_no_seams/frames_clean/ui_frame_minimal_metal_tooltip.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_tooltip_raw.png",
+      "backup_path": "docs/design/backups/scrum466_minimal_metal_preclean/assets/ui_frame_minimal_metal_tooltip.png",
+      "size": [
+        760,
+        242
+      ],
+      "texture_margins_ltrb": [
+        46,
+        30,
+        46,
+        28
+      ],
+      "content_margins_ltrb": [
+        66,
+        44,
+        66,
+        40
+      ],
+      "content_rect_xywh": [
+        66,
+        44,
+        628,
+        158
+      ],
+      "stretch_core_rect_xyxy": [
+        46,
+        30,
+        714,
+        214
+      ],
+      "gold_or_bright_pixels_in_stretch_core": 0,
+      "pale_opaque_pixels_in_content_rect": 0,
+      "visible_pixels_in_content_rect": 99224
+    },
+    "hud_strip": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png",
+      "clean_source_path": "docs/design/references/ui_minimal_metal/scrum466_no_seams/frames_clean/ui_frame_minimal_metal_hud_strip.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_hud_strip_raw.png",
+      "backup_path": "docs/design/backups/scrum466_minimal_metal_preclean/assets/ui_frame_minimal_metal_hud_strip.png",
+      "size": [
+        1122,
+        288
+      ],
+      "texture_margins_ltrb": [
+        76,
+        42,
+        76,
+        40
+      ],
+      "content_margins_ltrb": [
+        104,
+        62,
+        104,
+        56
+      ],
+      "content_rect_xywh": [
+        104,
+        62,
+        914,
+        170
+      ],
+      "stretch_core_rect_xyxy": [
+        76,
+        42,
+        1046,
+        248
+      ],
+      "gold_or_bright_pixels_in_stretch_core": 0,
+      "pale_opaque_pixels_in_content_rect": 0,
+      "visible_pixels_in_content_rect": 155380
+    },
+    "field": {
+      "path": "assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png",
+      "clean_source_path": "docs/design/references/ui_minimal_metal/scrum466_no_seams/frames_clean/ui_frame_minimal_metal_field.png",
+      "raw_source_path": "docs/design/references/ui_minimal_metal/frames_raw/ui_frame_minimal_metal_field_raw.png",
+      "backup_path": "docs/design/backups/scrum466_minimal_metal_preclean/assets/ui_frame_minimal_metal_field.png",
+      "size": [
+        616,
+        286
+      ],
+      "texture_margins_ltrb": [
+        42,
+        38,
+        42,
+        36
+      ],
+      "content_margins_ltrb": [
+        58,
+        52,
+        58,
+        48
+      ],
+      "content_rect_xywh": [
+        58,
+        52,
+        500,
+        186
+      ],
+      "stretch_core_rect_xyxy": [
+        42,
+        38,
+        574,
+        250
+      ],
+      "gold_or_bright_pixels_in_stretch_core": 0,
+      "pale_opaque_pixels_in_content_rect": 0,
+      "visible_pixels_in_content_rect": 93000
+    }
+  },
+  "contact_preview": "docs/design/previews/scrum466_minimal_metal_no_seams_contact.png",
+  "qa_contact_preview": "build/qa/scrum466/minimal_metal_after_contact.jpg",
+  "source_sheet": "docs/design/references/ui_minimal_metal/scrum466_minimal_metal_frame_source_sheet_no_seams.png"
+}

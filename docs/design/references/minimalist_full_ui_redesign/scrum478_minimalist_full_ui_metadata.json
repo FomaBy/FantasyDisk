@@ -1,0 +1,156 @@
+{
+  "task": "SCRUM-478",
+  "status": "design_source_ready_for_review",
+  "style_name": "bright_minimal_dark_fantasy",
+  "generated_with": "fantasydisk-asset-generator / OpenAI Images API gpt-image-2",
+  "source_pngs": {
+    "button_anchor_raw": {
+      "path": "docs/design/references/minimalist_full_ui_redesign/scrum478_bright_minimal_button_anchor_sheet.png",
+      "size": [1792, 1024],
+      "alpha_note": "API output was opaque with a model-drawn checkerboard matte; kept only as raw generation proof."
+    },
+    "button_anchor_transparent": {
+      "path": "docs/design/references/minimalist_full_ui_redesign/scrum478_bright_minimal_button_anchor_sheet_transparent.png",
+      "size": [1792, 1024],
+      "alpha_audit": {
+        "transparent_pixels": 967901,
+        "opaque_pixels": 867107,
+        "visible_pixels": 867107
+      },
+      "role": "Design-source reference for bright minimalist buttons: normal, hover, pressed, disabled and focus."
+    },
+    "frame_source_raw": {
+      "path": "docs/design/references/minimalist_full_ui_redesign/scrum478_exact_size_frame_source_sheet.png",
+      "size": [1792, 1024],
+      "alpha_note": "API output was opaque with a model-drawn checkerboard matte; kept only as raw generation proof."
+    },
+    "frame_source_transparent": {
+      "path": "docs/design/references/minimalist_full_ui_redesign/scrum478_exact_size_frame_source_sheet_transparent.png",
+      "size": [1792, 1024],
+      "alpha_audit": {
+        "transparent_pixels": 652761,
+        "opaque_pixels": 1182247,
+        "visible_pixels": 1182247
+      },
+      "role": "Design-source reference for exact-size modal/panel/card/tooltip/HUD/field/chip families."
+    },
+    "full_screen_mockup_board": {
+      "path": "docs/design/references/minimalist_full_ui_redesign/scrum478_full_screen_mockup_board.png",
+      "size": [1792, 1024],
+      "role": "Opaque full-screen reference board covering main menu, hero select, combat HUD, shop/event, level-up/reward and settings/codex families."
+    }
+  },
+  "global_contract": {
+    "visual_direction": "Modern bright minimalist dark fantasy: obsidian panels, thin silver edges, vivid cyan/magenta accents, small gold ticks, no parchment, no beige, no heavy dragon ornament.",
+    "hard_frame_rule": "Runtime content, labels, icons, portraits, click/focus areas, meters and hover states must stay inside each content_rect_xywh. Border rails, accent diamonds, gold corner ticks and glow caps are forbidden content zones.",
+    "exact_size_rule": "Back-end should prefer exact-size PNGs from the matrix for each viewport and surface. If a StyleBoxTexture/NinePatchRect is unavoidable, texture_margins_ltrb and content_margins_ltrb below are mandatory and only flat centers may stretch.",
+    "screen_targets": ["1280x720", "1600x900", "1920x1080"]
+  },
+  "resolutions": {
+    "1280x720": {
+      "viewport_safe_margin": 24,
+      "font_caps": {
+        "title_px": 42,
+        "section_px": 26,
+        "body_px": 18,
+        "button_px": 24
+      },
+      "buttons": {
+        "primary": {"size": [380, 78], "texture_margins_ltrb": [46, 24, 46, 24], "content_margins_ltrb": [62, 28, 62, 28], "content_rect_xywh": [62, 28, 256, 22]},
+        "standard": {"size": [320, 70], "texture_margins_ltrb": [42, 22, 42, 22], "content_margins_ltrb": [56, 26, 56, 26], "content_rect_xywh": [56, 26, 208, 18]},
+        "compact": {"size": [220, 58], "texture_margins_ltrb": [34, 18, 34, 18], "content_margins_ltrb": [46, 22, 46, 22], "content_rect_xywh": [46, 22, 128, 14]},
+        "icon": {"size": [64, 64], "texture_margins_ltrb": [16, 16, 16, 16], "content_margins_ltrb": [22, 22, 22, 22], "content_rect_xywh": [22, 22, 20, 20]}
+      },
+      "frames": {
+        "shell_full": {"size": [1160, 640], "texture_margins_ltrb": [42, 46, 42, 42], "content_margins_ltrb": [56, 64, 56, 56], "content_rect_xywh": [56, 64, 1048, 520]},
+        "shell_compact": {"size": [980, 560], "texture_margins_ltrb": [38, 42, 38, 38], "content_margins_ltrb": [52, 58, 52, 52], "content_rect_xywh": [52, 58, 876, 450]},
+        "side_panel": {"size": [360, 600], "texture_margins_ltrb": [30, 40, 30, 36], "content_margins_ltrb": [42, 56, 42, 50], "content_rect_xywh": [42, 56, 276, 494]},
+        "content_panel": {"size": [760, 520], "texture_margins_ltrb": [34, 40, 34, 36], "content_margins_ltrb": [48, 56, 48, 50], "content_rect_xywh": [48, 56, 664, 414]},
+        "card_large": {"size": [280, 420], "texture_margins_ltrb": [26, 34, 26, 32], "content_margins_ltrb": [38, 48, 38, 44], "content_rect_xywh": [38, 48, 204, 328]},
+        "card_medium": {"size": [240, 330], "texture_margins_ltrb": [24, 30, 24, 28], "content_margins_ltrb": [34, 42, 34, 38], "content_rect_xywh": [34, 42, 172, 250]},
+        "hud_strip": {"size": [1120, 96], "texture_margins_ltrb": [54, 24, 54, 22], "content_margins_ltrb": [72, 32, 72, 30], "content_rect_xywh": [72, 32, 976, 34]},
+        "hud_chip": {"size": [160, 56], "texture_margins_ltrb": [20, 16, 20, 16], "content_margins_ltrb": [28, 20, 28, 20], "content_rect_xywh": [28, 20, 104, 16]},
+        "field": {"size": [340, 72], "texture_margins_ltrb": [28, 18, 28, 18], "content_margins_ltrb": [40, 24, 40, 24], "content_rect_xywh": [40, 24, 260, 24]},
+        "tooltip": {"size": [520, 160], "texture_margins_ltrb": [34, 24, 34, 22], "content_margins_ltrb": [48, 34, 48, 30], "content_rect_xywh": [48, 34, 424, 96]},
+        "dialog": {"size": [620, 340], "texture_margins_ltrb": [36, 40, 36, 36], "content_margins_ltrb": [52, 56, 52, 50], "content_rect_xywh": [52, 56, 516, 234]},
+        "badge": {"size": [96, 44], "texture_margins_ltrb": [18, 12, 18, 12], "content_margins_ltrb": [24, 16, 24, 16], "content_rect_xywh": [24, 16, 48, 12]}
+      }
+    },
+    "1600x900": {
+      "viewport_safe_margin": 30,
+      "font_caps": {
+        "title_px": 52,
+        "section_px": 30,
+        "body_px": 21,
+        "button_px": 28
+      },
+      "buttons": {
+        "primary": {"size": [470, 92], "texture_margins_ltrb": [56, 28, 56, 28], "content_margins_ltrb": [74, 34, 74, 34], "content_rect_xywh": [74, 34, 322, 24]},
+        "standard": {"size": [400, 82], "texture_margins_ltrb": [50, 26, 50, 26], "content_margins_ltrb": [66, 32, 66, 32], "content_rect_xywh": [66, 32, 268, 18]},
+        "compact": {"size": [280, 68], "texture_margins_ltrb": [40, 22, 40, 22], "content_margins_ltrb": [54, 26, 54, 26], "content_rect_xywh": [54, 26, 172, 16]},
+        "icon": {"size": [76, 76], "texture_margins_ltrb": [18, 18, 18, 18], "content_margins_ltrb": [26, 26, 26, 26], "content_rect_xywh": [26, 26, 24, 24]}
+      },
+      "frames": {
+        "shell_full": {"size": [1450, 800], "texture_margins_ltrb": [52, 58, 52, 52], "content_margins_ltrb": [70, 80, 70, 70], "content_rect_xywh": [70, 80, 1310, 650]},
+        "shell_compact": {"size": [1220, 700], "texture_margins_ltrb": [48, 52, 48, 48], "content_margins_ltrb": [64, 72, 64, 64], "content_rect_xywh": [64, 72, 1092, 564]},
+        "side_panel": {"size": [450, 760], "texture_margins_ltrb": [38, 50, 38, 46], "content_margins_ltrb": [52, 68, 52, 62], "content_rect_xywh": [52, 68, 346, 630]},
+        "content_panel": {"size": [960, 650], "texture_margins_ltrb": [42, 50, 42, 46], "content_margins_ltrb": [60, 70, 60, 62], "content_rect_xywh": [60, 70, 840, 518]},
+        "card_large": {"size": [350, 520], "texture_margins_ltrb": [32, 42, 32, 40], "content_margins_ltrb": [46, 60, 46, 54], "content_rect_xywh": [46, 60, 258, 406]},
+        "card_medium": {"size": [300, 412], "texture_margins_ltrb": [30, 38, 30, 34], "content_margins_ltrb": [42, 54, 42, 48], "content_rect_xywh": [42, 54, 216, 310]},
+        "hud_strip": {"size": [1400, 116], "texture_margins_ltrb": [68, 30, 68, 28], "content_margins_ltrb": [88, 40, 88, 36], "content_rect_xywh": [88, 40, 1224, 40]},
+        "hud_chip": {"size": [200, 68], "texture_margins_ltrb": [24, 20, 24, 20], "content_margins_ltrb": [34, 26, 34, 24], "content_rect_xywh": [34, 26, 132, 18]},
+        "field": {"size": [420, 84], "texture_margins_ltrb": [34, 22, 34, 22], "content_margins_ltrb": [48, 30, 48, 28], "content_rect_xywh": [48, 30, 324, 26]},
+        "tooltip": {"size": [650, 196], "texture_margins_ltrb": [42, 30, 42, 28], "content_margins_ltrb": [60, 42, 60, 38], "content_rect_xywh": [60, 42, 530, 116]},
+        "dialog": {"size": [780, 420], "texture_margins_ltrb": [46, 50, 46, 46], "content_margins_ltrb": [64, 70, 64, 62], "content_rect_xywh": [64, 70, 652, 288]},
+        "badge": {"size": [116, 52], "texture_margins_ltrb": [20, 14, 20, 14], "content_margins_ltrb": [28, 18, 28, 18], "content_rect_xywh": [28, 18, 60, 16]}
+      }
+    },
+    "1920x1080": {
+      "viewport_safe_margin": 36,
+      "font_caps": {
+        "title_px": 62,
+        "section_px": 34,
+        "body_px": 24,
+        "button_px": 32
+      },
+      "buttons": {
+        "primary": {"size": [560, 104], "texture_margins_ltrb": [66, 32, 66, 32], "content_margins_ltrb": [88, 38, 88, 38], "content_rect_xywh": [88, 38, 384, 28]},
+        "standard": {"size": [480, 94], "texture_margins_ltrb": [60, 30, 60, 30], "content_margins_ltrb": [78, 36, 78, 36], "content_rect_xywh": [78, 36, 324, 22]},
+        "compact": {"size": [336, 78], "texture_margins_ltrb": [48, 24, 48, 24], "content_margins_ltrb": [64, 30, 64, 30], "content_rect_xywh": [64, 30, 208, 18]},
+        "icon": {"size": [88, 88], "texture_margins_ltrb": [22, 22, 22, 22], "content_margins_ltrb": [30, 30, 30, 30], "content_rect_xywh": [30, 30, 28, 28]}
+      },
+      "frames": {
+        "shell_full": {"size": [1740, 920], "texture_margins_ltrb": [64, 70, 64, 64], "content_margins_ltrb": [84, 96, 84, 84], "content_rect_xywh": [84, 96, 1572, 740]},
+        "shell_compact": {"size": [1460, 820], "texture_margins_ltrb": [58, 64, 58, 58], "content_margins_ltrb": [78, 88, 78, 78], "content_rect_xywh": [78, 88, 1304, 654]},
+        "side_panel": {"size": [540, 900], "texture_margins_ltrb": [46, 60, 46, 54], "content_margins_ltrb": [62, 80, 62, 72], "content_rect_xywh": [62, 80, 416, 748]},
+        "content_panel": {"size": [1152, 780], "texture_margins_ltrb": [52, 60, 52, 54], "content_margins_ltrb": [72, 84, 72, 72], "content_rect_xywh": [72, 84, 1008, 624]},
+        "card_large": {"size": [420, 624], "texture_margins_ltrb": [38, 50, 38, 46], "content_margins_ltrb": [56, 72, 56, 64], "content_rect_xywh": [56, 72, 308, 488]},
+        "card_medium": {"size": [360, 496], "texture_margins_ltrb": [36, 46, 36, 42], "content_margins_ltrb": [50, 64, 50, 56], "content_rect_xywh": [50, 64, 260, 376]},
+        "hud_strip": {"size": [1680, 136], "texture_margins_ltrb": [82, 36, 82, 34], "content_margins_ltrb": [106, 48, 106, 44], "content_rect_xywh": [106, 48, 1468, 44]},
+        "hud_chip": {"size": [240, 80], "texture_margins_ltrb": [30, 22, 30, 22], "content_margins_ltrb": [40, 30, 40, 28], "content_rect_xywh": [40, 30, 160, 22]},
+        "field": {"size": [500, 96], "texture_margins_ltrb": [40, 26, 40, 24], "content_margins_ltrb": [56, 34, 56, 32], "content_rect_xywh": [56, 34, 388, 30]},
+        "tooltip": {"size": [780, 232], "texture_margins_ltrb": [50, 36, 50, 32], "content_margins_ltrb": [70, 50, 70, 44], "content_rect_xywh": [70, 50, 640, 138]},
+        "dialog": {"size": [940, 500], "texture_margins_ltrb": [54, 60, 54, 54], "content_margins_ltrb": [76, 84, 76, 72], "content_rect_xywh": [76, 84, 788, 344]},
+        "badge": {"size": [140, 60], "texture_margins_ltrb": [24, 16, 24, 16], "content_margins_ltrb": [34, 22, 34, 20], "content_rect_xywh": [34, 22, 72, 18]}
+      }
+    }
+  },
+  "screen_family_mapping": {
+    "main_menu": ["shell_full", "button_primary", "button_standard", "dialog", "tooltip"],
+    "hero_select": ["shell_full", "side_panel", "card_large", "button_primary", "tooltip"],
+    "weapon_select": ["shell_compact", "card_medium", "button_primary", "tooltip"],
+    "combat_hud": ["hud_strip", "hud_chip", "button_icon", "tooltip"],
+    "level_up": ["shell_compact", "card_large", "button_primary", "badge", "tooltip"],
+    "rewards": ["shell_compact", "card_large", "button_primary", "badge", "tooltip"],
+    "shop": ["shell_full", "side_panel", "card_medium", "field", "button_standard", "tooltip"],
+    "attribute_shop": ["shell_compact", "card_medium", "field", "button_standard", "tooltip"],
+    "event": ["shell_compact", "content_panel", "card_medium", "button_standard", "tooltip"],
+    "codex": ["shell_full", "side_panel", "content_panel", "card_medium", "field", "tooltip"],
+    "settings": ["shell_full", "side_panel", "content_panel", "field", "button_standard", "tooltip"],
+    "whats_new": ["shell_compact", "content_panel", "button_standard", "tooltip"],
+    "feedback": ["dialog", "content_panel", "button_standard", "tooltip"],
+    "pause": ["shell_compact", "content_panel", "button_standard", "tooltip"],
+    "results": ["shell_full", "content_panel", "card_medium", "button_primary", "badge"],
+    "tooltips_badges": ["tooltip", "badge", "hud_chip"]
+  }
+}

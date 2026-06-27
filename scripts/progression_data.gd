@@ -15,6 +15,7 @@ const ATTRIBUTE_PRIORITY_REASONS := CharacterData.ATTRIBUTE_PRIORITY_REASONS
 
 const BalanceData := preload("res://scripts/progression_data_balance.gd")
 const CLASS_BUDGET_PROFILES := BalanceData.CLASS_BUDGET_PROFILES
+const CLASS_LEVEL_STAT_GROWTH_SCALARS := BalanceData.CLASS_LEVEL_STAT_GROWTH_SCALARS
 const BALANCE_BASE_SOLO_DPS := BalanceData.BALANCE_BASE_SOLO_DPS
 const BALANCE_BASE_AOE_DPS := BalanceData.BALANCE_BASE_AOE_DPS
 const BALANCE_WINDOW_SECONDS := BalanceData.BALANCE_WINDOW_SECONDS
@@ -458,11 +459,15 @@ static func budget_tuning_for(character_id: String, weapon_config: Dictionary) -
 
 
 static func estimate_weapon_budget(character_id: String, weapon_config: Dictionary, apply_budget := true) -> Dictionary:
+	return estimate_weapon_budget_for_stats(character_id, weapon_config, base_stats(character_id), apply_budget)
+
+
+static func estimate_weapon_budget_for_stats(character_id: String, weapon_config: Dictionary, stats: Dictionary, apply_budget := true) -> Dictionary:
 	var config := weapon_config.duplicate(true)
+	config["character_id"] = character_id
 	if not apply_budget:
 		config.erase("budget_damage_multiplier")
 		config.erase("budget_tuning")
-	var stats := base_stats(character_id)
 	var params := derived_parameters(stats, {}, config)
 	var damage_parameter := str(config.get("damage_parameter", damage_parameter_for(character_id)))
 	var base_damage := float(params.get(damage_parameter, params.get("damage", 1.0)))
@@ -497,9 +502,13 @@ static func estimate_weapon_budget(character_id: String, weapon_config: Dictiona
 
 
 static func estimate_crowd_clear_budget(character_id: String, weapon_config: Dictionary, target_count: int, apply_budget := true) -> Dictionary:
+	return estimate_crowd_clear_budget_for_stats(character_id, weapon_config, target_count, base_stats(character_id), apply_budget)
+
+
+static func estimate_crowd_clear_budget_for_stats(character_id: String, weapon_config: Dictionary, target_count: int, stats: Dictionary, apply_budget := true) -> Dictionary:
 	var count: int = maxi(target_count, 1)
 	var profile := class_budget_profile(character_id)
-	var metrics := estimate_weapon_budget(character_id, weapon_config, apply_budget)
+	var metrics := estimate_weapon_budget_for_stats(character_id, weapon_config, stats, apply_budget)
 	var tuning: Dictionary = weapon_config.get("budget_tuning", {})
 	var aoe_target := float(tuning.get(
 		"aoe_target",
@@ -772,6 +781,7 @@ static func weapon(character_id: String, weapon_id: String) -> Dictionary:
 	var fallback_id := str(weapons.keys()[0])
 	var config: Dictionary = weapons.get(weapon_id, weapons[fallback_id]).duplicate(true)
 	var tuning := budget_tuning_for(character_id, config)
+	config["character_id"] = character_id
 	config["budget_profile"] = class_budget_profile(character_id)
 	config["budget_damage_multiplier"] = float(tuning.get("damage_multiplier", 1.0))
 	config["budget_solo_multiplier"] = float(tuning.get("solo_budget_multiplier", 1.0))
@@ -780,7 +790,24 @@ static func weapon(character_id: String, weapon_id: String) -> Dictionary:
 	return config
 
 
+static func _class_stat_growth_scalar(character_id: String, stat_id: String) -> float:
+	var class_scalars = CLASS_LEVEL_STAT_GROWTH_SCALARS.get(character_id, 1.0)
+	if class_scalars is Dictionary:
+		return float((class_scalars as Dictionary).get(stat_id, 1.0))
+	return float(class_scalars)
+
+
+static func _scaled_stat_growth(character_id: String, stat_id: String, value: float, base_stats_map: Dictionary) -> float:
+	var base_value := float(base_stats_map.get(stat_id, value))
+	var delta := value - base_value
+	if delta <= 0.0:
+		return value
+	return base_value + delta * _class_stat_growth_scalar(character_id, stat_id)
+
+
 static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, weapon_config := {}) -> Dictionary:
+	var character_id := str(weapon_config.get("character_id", ""))
+	var base_for_growth := base_stats(character_id) if character_id != "" else {}
 	var strength := float(stats.get("strength", 0.0))
 	var agility := float(stats.get("agility", 0.0))
 	var intelligence := float(stats.get("intelligence", 0.0))
@@ -789,6 +816,15 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var knowledge := float(stats.get("knowledge", 0.0))
 	var endurance := float(stats.get("endurance", 0.0))
 	var leadership := float(stats.get("leadership", 0.0))
+	if character_id != "":
+		strength = _scaled_stat_growth(character_id, "strength", strength, base_for_growth)
+		agility = _scaled_stat_growth(character_id, "agility", agility, base_for_growth)
+		intelligence = _scaled_stat_growth(character_id, "intelligence", intelligence, base_for_growth)
+		perception = _scaled_stat_growth(character_id, "perception", perception, base_for_growth)
+		energy = _scaled_stat_growth(character_id, "energy", energy, base_for_growth)
+		knowledge = _scaled_stat_growth(character_id, "knowledge", knowledge, base_for_growth)
+		endurance = _scaled_stat_growth(character_id, "endurance", endurance, base_for_growth)
+		leadership = _scaled_stat_growth(character_id, "leadership", leadership, base_for_growth)
 	var weapon_damage_multiplier := float(weapon_config.get("damage_multiplier", 1.0)) * float(weapon_config.get("budget_damage_multiplier", 1.0))
 	var passive_mods: Dictionary = weapon_config.get("passive_mods", {})
 

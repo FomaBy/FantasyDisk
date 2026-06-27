@@ -1,6 +1,6 @@
 # ART: UI Overhaul (Боевой HUD, баннеры и тосты) — D&D + Dark Fantasy Dragon, новым скиллом
 
-Статус: done
+Статус: superseded (PM 2026-06-14: широкий UI-overhaul закрыт как дубль, покрыто SCRUM-390)
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5

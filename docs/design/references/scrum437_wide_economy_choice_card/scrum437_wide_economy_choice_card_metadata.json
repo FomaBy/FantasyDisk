@@ -1,0 +1,59 @@
+{
+  "task": "SCRUM-437",
+  "assets": {
+    "base": "assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide.png",
+    "hover": "assets/sprites/ui/frames/economy/ui_frame_economy_choice_card_wide_hover.png",
+    "reference_base": "docs/design/references/scrum437_wide_economy_choice_card/runtime_assets/ui_frame_economy_choice_card_wide.png",
+    "reference_hover": "docs/design/references/scrum437_wide_economy_choice_card/runtime_assets/ui_frame_economy_choice_card_wide_hover.png",
+    "source": "docs/design/references/scrum437_wide_economy_choice_card/scrum437_wide_option_card_frame_source.png"
+  },
+  "source_size": [
+    960,
+    640
+  ],
+  "texture_margins": [
+    96,
+    88,
+    96,
+    96
+  ],
+  "content_margins": [
+    132,
+    118,
+    132,
+    128
+  ],
+  "safe_rect": [
+    132,
+    118,
+    696,
+    394
+  ],
+  "recommended_display": {
+    "1280x720": {
+      "card": [
+        360,
+        240
+      ],
+      "row_gap": 24,
+      "row_width_3_cards": 1128
+    },
+    "1920x1080": {
+      "card": [
+        420,
+        300
+      ],
+      "row_gap": 36,
+      "row_width_3_cards": 1332
+    },
+    "2560x1440": {
+      "card": [
+        480,
+        340
+      ],
+      "row_gap": 48,
+      "row_width_3_cards": 1536
+    }
+  },
+  "notes": "Wide card is source 3:2 and intended for StyleBoxTexture/9-slice. Runtime content must use content_margins or stricter; no text/icons/click zones on border ornaments."
+}

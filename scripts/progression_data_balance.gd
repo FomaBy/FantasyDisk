@@ -22,6 +22,21 @@ const CLASS_BUDGET_PROFILES := {
 	"druid": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 }
 
+const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
+	"soldier": {"strength": 0.95, "agility": 0.95},
+	"elementalist": {"agility": 0.92, "intelligence": 0.92},
+	"priest": {"agility": 0.88, "intelligence": 0.88},
+	"robot": {"strength": 0.78, "agility": 0.78},
+	"engineer": {"strength": 0.90, "agility": 0.90},
+	"dark_mage": {"agility": 0.84, "intelligence": 0.84},
+	"guitarist": {"energy": 1.90},
+	"assassin": {"strength": 2.05, "agility": 2.05},
+	"doctor": {"agility": 1.10, "intelligence": 1.80},
+	"chemist": {"agility": 1.60, "intelligence": 1.60},
+	"knight": {"strength": 0.66, "agility": 0.66},
+	"druid": {"energy": 1.85},
+}
+
 const BALANCE_BASE_SOLO_DPS := 48.0
 
 const BALANCE_BASE_AOE_DPS := 150.0

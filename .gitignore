@@ -19,3 +19,14 @@ release_webhook.cfg
 # Telethon session релиза (секрет)
 *.session
 fantasydisk_release.session
+
+# OS / редакторы
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.tmp
+
+# Build-артефакты (помимо build/ и releases/ — на всякий случай)
+*.dmg
+*.exe

@@ -1,0 +1,378 @@
+{
+  "entity_id": "knight",
+  "source": "docs/design/references/chars_cartoon/skeleton_parts/knight/source/knight_skeleton_source_from_runtime.png",
+  "manifest": "docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json",
+  "summary": {
+    "parts_count": 19,
+    "required_parts_present": true,
+    "transparent_rgba": true,
+    "canvas_edge_alpha_clean": true,
+    "no_background_or_matte": true
+  },
+  "files": [
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/source/knight_skeleton_source_from_runtime.png",
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 88238,
+      "bbox": [
+        116,
+        32,
+        395,
+        502
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 976,
+      "translucent_near_white_pixels": 726
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/head.png",
+      "size": [
+        122,
+        127
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 6993,
+      "bbox": [
+        14,
+        14,
+        108,
+        113
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 34,
+      "translucent_near_white_pixels": 18
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/torso.png",
+      "size": [
+        236,
+        196
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 27376,
+      "bbox": [
+        14,
+        14,
+        222,
+        182
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 213,
+      "translucent_near_white_pixels": 154
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/pelvis.png",
+      "size": [
+        174,
+        152
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 15189,
+      "bbox": [
+        14,
+        14,
+        160,
+        138
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 33,
+      "translucent_near_white_pixels": 4
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/upper_arm_l.png",
+      "size": [
+        142,
+        172
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 10553,
+      "bbox": [
+        14,
+        14,
+        128,
+        158
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 200,
+      "translucent_near_white_pixels": 123
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/lower_arm_l.png",
+      "size": [
+        100,
+        143
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 4909,
+      "bbox": [
+        14,
+        14,
+        86,
+        129
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 93,
+      "translucent_near_white_pixels": 69
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/hand_l.png",
+      "size": [
+        79,
+        140
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 2185,
+      "bbox": [
+        14,
+        14,
+        65,
+        126
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 48,
+      "translucent_near_white_pixels": 31
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/upper_arm_r.png",
+      "size": [
+        141,
+        173
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 11026,
+      "bbox": [
+        14,
+        14,
+        127,
+        159
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 112,
+      "translucent_near_white_pixels": 85
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/lower_arm_r.png",
+      "size": [
+        102,
+        144
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 5558,
+      "bbox": [
+        14,
+        14,
+        88,
+        130
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 99,
+      "translucent_near_white_pixels": 86
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/hand_r.png",
+      "size": [
+        80,
+        140
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 2387,
+      "bbox": [
+        14,
+        14,
+        66,
+        126
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 50,
+      "translucent_near_white_pixels": 37
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/thigh_l.png",
+      "size": [
+        131,
+        158
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 10091,
+      "bbox": [
+        14,
+        14,
+        117,
+        144
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 53,
+      "translucent_near_white_pixels": 27
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/shin_l.png",
+      "size": [
+        113,
+        138
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 5745,
+      "bbox": [
+        14,
+        14,
+        99,
+        124
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 68,
+      "translucent_near_white_pixels": 54
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/foot_l.png",
+      "size": [
+        104,
+        81
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 3016,
+      "bbox": [
+        14,
+        14,
+        90,
+        71
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 58,
+      "translucent_near_white_pixels": 53
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/thigh_r.png",
+      "size": [
+        131,
+        158
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 10143,
+      "bbox": [
+        14,
+        14,
+        117,
+        144
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 33,
+      "translucent_near_white_pixels": 29
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/shin_r.png",
+      "size": [
+        114,
+        137
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 5680,
+      "bbox": [
+        14,
+        14,
+        100,
+        123
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 85,
+      "translucent_near_white_pixels": 83
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/foot_r.png",
+      "size": [
+        111,
+        75
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 2716,
+      "bbox": [
+        14,
+        14,
+        97,
+        61
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 36,
+      "translucent_near_white_pixels": 36
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/shoulder_armor_l.png",
+      "size": [
+        134,
+        136
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 7584,
+      "bbox": [
+        14,
+        14,
+        120,
+        122
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 135,
+      "translucent_near_white_pixels": 65
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/shoulder_armor_r.png",
+      "size": [
+        127,
+        136
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 6987,
+      "bbox": [
+        14,
+        14,
+        113,
+        122
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 59,
+      "translucent_near_white_pixels": 37
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/cape_l.png",
+      "size": [
+        134,
+        261
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 14441,
+      "bbox": [
+        14,
+        14,
+        120,
+        247
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 206,
+      "translucent_near_white_pixels": 155
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts/cape_r.png",
+      "size": [
+        133,
+        264
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 15309,
+      "bbox": [
+        14,
+        14,
+        119,
+        250
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 157,
+      "translucent_near_white_pixels": 140
+    }
+  ],
+  "notes": [
+    "White/near-white pixels are audit-only; Knight armor highlights are intentional interior pixels, not edge-connected matte.",
+    "All part PNGs include transparent padding so alpha does not touch the image border."
+  ]
+}

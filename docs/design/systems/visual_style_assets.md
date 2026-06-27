@@ -47,6 +47,128 @@ SCRUM-182 refreshed the active derived stat icons, shop-only icons, and shop sta
 
 ## Character Pipeline Asset Handoffs
 
+SCRUM-456 defines the new 0.1.6 **cartoon/anime playable-character restyle
+anchor** after the broad bright+epic v2 direction was rejected for future rollout.
+The source package lives under `docs/design/references/chars_cartoon/`: style
+sheet `character_cartoon_anime_style_sheet.md`, Berserk handoff
+`berserk_cartoon_anchor_design_handoff.md`, corrected transparent source
+`berserk_cartoon_anchor_source_raw.png`, clean source
+`berserk_cartoon_anchor_source_clean.png`, normalized
+`berserk_cartoon_anchor_idle_cell_512.png`, safe-gutter source handoff
+`berserk_cartoon_anchor_sheet_source_handoff.png`, preview
+`docs/design/previews/scrum456_chars_cartoon_anchor_contact.png`, and QA report
+`build/qa/scrum456_chars_cartoon/scrum456_chars_cartoon_alpha_motion_report.json`.
+The active source style target is D&D dark fantasy adapted into modern
+cartoon/anime cel-shading: thicker contour, saturated class palettes, larger
+readable shapes, strong class-specific silhouettes, transparent RGBA only, empty
+hands/no baked weapons, and visible arms/legs for future idle + walk/move
+animation. The exemplar is Berserk; Animator integration is blocked until this
+source package is accepted.
+
+SCRUM-422 starts the 0.1.6 **Character redraw v2 bright+epic anchor** for the
+next playable character art wave. The accepted Design exemplar is Berserk:
+source/raw `docs/design/references/characters_v2/bright_epic_anchor/berserk_v2_source_raw.png`,
+alpha-clean source `docs/design/references/characters_v2/bright_epic_anchor/berserk_v2_source_clean.png`,
+512-cell exemplar `docs/design/references/characters_v2/bright_epic_anchor/berserk_v2_idle_cell_512.png`,
+and asset-side source copy
+`assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png`. The
+canonical v2 style/spec is
+`docs/design/references/characters_v2/bright_epic_anchor/character_v2_bright_epic_style_sheet.md`.
+V2 playable sources use bright class-specific D&D fantasy colors, stronger
+silhouette/readability than the 0.1.5 sheets, transparent RGBA, no baked
+background, no baked weapon/focus/orb in base hero hands, `512x512` cells,
+bottom-center pivot `(256, 470)`, and target body height around `360-380 px`
+inside the cell so runtime scale `0.39-0.40` reads about twice the average
+standard monster screen height.
+
+SCRUM-424 adds the Dark Mage v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/dark_mage/dark_mage_v2_source_clean.png`,
+`dark_mage_v2_idle_cell_512.png`, `dark_mage_v2_sheet_source_handoff.png`,
+`dark_mage_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum424_dark_mage_v2_contact.png` and QA report
+`build/qa/scrum424_dark_mage_v2/scrum424_dark_mage_v2_alpha_size_report.json`.
+The accepted source is a bright violet/purple unarmed void caster with empty
+glowing hands, transparent RGBA, visible height `376 px` and pivot `(256,470)`;
+it is a source handoff only until Animator/Back-end builds real idle/move
+SpriteFrames.
+
+SCRUM-429 adds the Guitarist v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/guitarist/guitarist_v2_source_clean.png`,
+`guitarist_v2_idle_cell_512.png`, `guitarist_v2_sheet_source_handoff.png`,
+`guitarist_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum429_guitarist_v2_contact.png` and QA report
+`build/qa/scrum429_guitarist_v2/scrum429_guitarist_v2_alpha_size_report.json`.
+The accepted source is a bright magenta/gold unarmed stage-warlock performer
+with empty hands and no baked guitar/instrument/microphone/weapon, transparent
+RGBA, visible height `374 px` and pivot `(256,470)`. After user feedback, the
+cleanup revision removes white/neutral matte pixels globally (`0` in source and
+cell QA). It is a source handoff only until Animator/Back-end builds real
+idle/move SpriteFrames.
+
+SCRUM-435 adds the Thief v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/thief/thief_v2_source_clean.png`,
+`thief_v2_idle_cell_512.png`, `thief_v2_sheet_source_handoff.png`,
+`thief_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum435_thief_v2_contact.png` and QA report
+`build/qa/scrum435_thief_v2/scrum435_thief_v2_alpha_size_report.json`. The
+accepted source is a bright amber unarmed rogue with empty hands and no baked
+dagger/weapon/tool/coin pouch/bomb, transparent RGBA, visible height `374 px`
+and pivot `(256,470)`. White/neutral matte pixels are `0` in source/cell QA. It
+is a source handoff only until Animator/Back-end builds real idle/move
+SpriteFrames.
+
+SCRUM-427 adds the Elementalist v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/elementalist/elementalist_v2_source_clean.png`,
+`elementalist_v2_idle_cell_512.png`,
+`elementalist_v2_sheet_source_handoff.png`,
+`elementalist_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum427_elementalist_v2_contact.png` and QA report
+`build/qa/scrum427_elementalist_v2/scrum427_elementalist_v2_alpha_size_report.json`.
+The accepted source is a bright multi-element unarmed caster with empty hands
+and no baked staff/orb/focus/weapon, transparent RGBA, visible height `374 px`
+and pivot `(256,470)`. White/neutral matte pixels are `0` in source/cell QA. It
+is a source handoff only until Animator/Back-end builds real idle/move
+SpriteFrames.
+
+SCRUM-433 adds the Sniper v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/sniper/sniper_v2_source_clean.png`,
+`sniper_v2_idle_cell_512.png`, `sniper_v2_sheet_source_handoff.png`,
+`sniper_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum433_sniper_v2_contact.png` and QA report
+`build/qa/scrum433_sniper_v2/scrum433_sniper_v2_alpha_size_report.json`. The
+accepted source is a bright cold blue-steel unarmed marksman with empty hands,
+optical targeting light and no baked rifle/gun/bow/crossbow/scope/weapon,
+transparent RGBA, visible height `374 px` and pivot `(256,470)`. White/neutral
+matte pixels are `0` in source/cell/sheet QA, with `0` edge-visible pixels after
+the edge-alpha fix. It is a source handoff only until Animator/Back-end builds
+real idle/move SpriteFrames.
+
+SCRUM-431 adds the Priest v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/priest/priest_v2_source_clean.png`,
+`priest_v2_idle_cell_512.png`, `priest_v2_sheet_source_handoff.png`,
+`priest_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum431_priest_v2_contact.png` and QA report
+`build/qa/scrum431_priest_v2/scrum431_priest_v2_alpha_size_report.json`. The
+accepted source is a bright white-gold unarmed holy healer with halo, empty hands
+and no baked staff/mace/reliquary/censer/chime/book/weapon, transparent RGBA,
+visible height `376 px` and pivot `(256,470)`. White/neutral matte pixels are
+`0` in source/cell/sheet QA, with `0` edge-visible pixels after strict
+edge-connected checker/white cleanup. It is a source handoff only until
+Animator/Back-end builds real idle/move SpriteFrames.
+
+SCRUM-421 adds the Biologist v2 per-class source handoff in the same format:
+`docs/design/references/characters_v2/biologist/biologist_v2_source_clean.png`,
+`biologist_v2_idle_cell_512.png`, `biologist_v2_sheet_source_handoff.png`,
+`biologist_v2_design_handoff.md`, contact preview
+`docs/design/previews/scrum421_biologist_v2_contact.png` and QA report
+`build/qa/scrum421_biologist_v2/scrum421_biologist_v2_alpha_size_report.json`.
+The accepted source is a bright emerald bioluminescent scientist-naturalist with
+empty hands and no baked syringe/vial/flask/tool/orb/weapon, transparent RGBA,
+visible height `380 px` and pivot `(256,470)`. White/neutral matte pixels are
+`0` in source/cell/sheet QA, with `0` edge-visible pixels after strict
+edge-connected checker/white cleanup. It is a source handoff only until
+Animator/Back-end builds real idle/move SpriteFrames.
+
 SCRUM-165 adds Priest with canonical Design assets `assets/sprites/characters/priest.png`, `assets/sprites/weapons/priest_reliquary.png`, `assets/sprites/weapons/priest_censer.png`, and `assets/sprites/weapons/priest_chime.png`; source/result details are tracked in `docs/tasks/codex_design_priest_art_task.md`. Priest rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_priest_rig_motion_task.md`.
 
 SCRUM-162 adds Biologist gameplay with canonical Design assets ready: `assets/sprites/characters/biologist.png`, `assets/sprites/weapons/biologist_spore_lens.png`, `assets/sprites/weapons/biologist_sample_injector.png`, and `assets/sprites/weapons/biologist_symbiote_seed.png`; contact preview is `docs/design/previews/biologist_art_contact.png`, and source/result notes live in `docs/tasks/codex_design_biologist_art_task.md`. Biologist rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_biologist_rig_motion_task.md`.
@@ -57,13 +179,15 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
-SCRUM-273 supersedes the SCRUM-147 button-only Parchment & Wax Seal kit with the
-active **Red & Gold Dragon button kit** from
+SCRUM-273 superseded the SCRUM-147 button-only Parchment & Wax Seal kit with the
+historical **Red & Gold Dragon button kit** from
 `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live
-button assets are sliced into `assets/sprites/ui/frames/red_gold/` as 15 button
-types with four states each: idle/base, hover, pressed and disabled. The old
-parchment/wax button kit is backed up outside live assets at
-`build/cleanup_backup_red_gold_buttons_2026_06_14/`.
+Red & Gold button assets remain in `assets/sprites/ui/frames/red_gold/` as 15
+button types with four states each, but SCRUM-462 promotes the SCRUM-450 Minimal
+Metal kit as the active runtime action-button canon. The old parchment/wax
+button kit is backed up outside live assets at
+`build/cleanup_backup_red_gold_buttons_2026_06_14/`; the Red & Gold promotion
+backup lives at `build/qa/scrum450_minimal_metal_buttons/red_gold_button_backup/`.
 
 SCRUM-274 supersedes the SCRUM-229 leather+gold runtime panel direction with the
 active **Ornate Dark / Red frame kit** from
@@ -93,6 +217,110 @@ panels/cards/HUD; `ui_frame_unified_master.png` remains the border-only variant.
 The top/bottom ornaments are optional overlays for large windows only and are
 not applied to compact HUD cards/tooltips/chips. Runtime content, click zones,
 labels, portraits, icons and meters must remain inside the frame content area.
+
+SCRUM-448/SCRUM-449 make the 0.1.6 **Minimalist UI restyle** the active
+non-button frame direction where safe. Source/mockup assets live under
+`docs/design/references/ui_minimal/` and the UI-director mirror package under
+`docs/design/mockups/scrum448_ui_minimalist/`. Runtime assets live in
+`assets/sprites/ui/frames/minimal/`: `ui_frame_minimal_modal.png`,
+`ui_frame_minimal_panel.png`, `ui_frame_minimal_card.png`,
+`ui_frame_minimal_tooltip.png`, `ui_frame_minimal_hud_strip.png` and
+`ui_frame_minimal_field.png`. Exact source sizes, texture margins, content
+rects and alpha audit are recorded in
+`docs/design/references/ui_minimal/scrum448_minimal_ui_frame_metadata.json`.
+All six frame PNGs are transparent RGBA with `white_opaque_pixels=0` and
+`pale_visible_pixels_after_cleanup=0`; contact preview:
+`docs/design/previews/scrum448_minimal_ui_frame_contact.png`. SCRUM-449 wires
+the kit into live generic panels/cards/tooltips, Settings, Codex, economy
+choice cards/price badges, reward cards, pause/result shells and compact combat
+HUD wrappers. SCRUM-462 separately replaces the action-button canon with
+Minimal Metal buttons under `assets/sprites/ui/frames/minimal_metal_buttons/`.
+Hero Select v3 authored frames, progression circular nodes and combat bar fills stay
+screen-specific exceptions. Old ornamental assets were not archived in this pass
+because several remain live or historical/screen-specific refs; cleanup should
+only remove them after a fresh no-live-ref audit.
+
+SCRUM-452 adds the next **Minimal Metal UI anchor** for the UI simplification
+series. SCRUM-459 wires the frame side as runtime-selectable candidates with
+exact metadata-backed helpers in
+`docs/tasks/backend_ui_minimal_metal_anchor_integration_task.md`.
+The style is stricter than SCRUM-448: graphite/obsidian fills, thin dark-steel
+rails, aged-brass hairlines and rare ruby pins only. Source assets live under
+`docs/design/references/ui_minimal_metal/`, the UI-director mirror is
+`docs/design/mockups/scrum452_ui_minimal_metal/spec.md`, and production
+candidates live in `assets/sprites/ui/frames/minimal_metal/`:
+`ui_frame_minimal_metal_modal.png`, `panel.png`, `card.png`, `tooltip.png`,
+`hud_strip.png` and `field.png`. Exact source sizes, texture margins, content
+rects and alpha audit are recorded in
+`docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json`.
+`scripts/ui/ui_theme_paths.gd` exposes the six `MINIMAL_METAL_*` paths, source
+sizes, texture margins, content margins and safe rects; `scripts/ui_screens.gd`
+exposes `_minimal_metal_frame_style()` for future rollout tasks.
+All six frame PNGs are transparent RGBA with `white_opaque_pixels=0` and
+`pale_visible_pixels_after_cleanup=0`; previews:
+`docs/design/previews/scrum452_minimal_metal_anchor_contact.png` and
+`docs/design/previews/scrum452_minimal_metal_safe_zones.png`. SCRUM-459 does not
+promote these frames over the current SCRUM-448 live generic surfaces; SCRUM-462
+separately promotes the SCRUM-450 button redraw, and full frame rollout remains
+SCRUM-451/SCRUM-463.
+
+SCRUM-450 adds a Design-ready **Minimal Metal button kit** for the same series,
+and SCRUM-462 promotes it into live runtime action-button routing.
+The source is an OpenAI-generated sheet at
+`docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_source_sheet.png`;
+the production candidates live in
+`assets/sprites/ui/frames/minimal_metal_buttons/` as 15 current runtime button
+types with five states each: normal, hover, pressed, focus and disabled. Exact
+sizes, texture margins, content rects, state paths and alpha audit are recorded
+in
+`docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json`.
+Previews are `docs/design/previews/scrum450_minimal_metal_button_contact.png`
+and `docs/design/previews/scrum450_minimal_metal_button_safe_zones.png`. All 75
+candidate PNGs are transparent RGBA with `white_opaque_pixels=0` and
+`pale_visible_pixels_after_cleanup=0`. Runtime constants and guards live in
+`scripts/ui/ui_theme_paths.gd`, `scripts/ui_screens.gd`,
+`scripts/pause_stats_menu.gd`, `tests/dark_fantasy_ui_theme_test.gd` and
+`tests/runtime_smoke_test.gd`; QA evidence lives in
+`build/qa/scrum450_minimal_metal_buttons/`.
+
+SCRUM-451 adds the **Minimal Metal frame rollout** Design-source contract for
+all UI frame families/screens. It does not introduce new runtime images beyond
+the accepted SCRUM-452 frame set; instead it maps every target surface to one of
+six families: `modal`, `panel`, `card`, `tooltip`, `hud_strip` and `field`.
+Source of truth:
+`docs/design/mockups/scrum451_ui_minimal_frames_rollout/spec.md` and
+`docs/design/references/ui_minimal_metal_rollout/scrum451_minimal_metal_rollout_matrix.json`;
+preview:
+`docs/design/previews/scrum451_minimal_metal_rollout_contact.png`. The rollout
+covers menu, settings, hero select, codex, shop, rewards, level-up, events,
+pause, results, combat HUD, tooltips and dialogs. Back-end integration,
+old-kit backup/no-live-ref audit, screenshots and no-overlap smokes are tracked
+in `docs/tasks/backend_ui_minimal_frames_rollout_integration_task.md`.
+SCRUM-463 makes the rollout live for generic runtime surfaces: `scripts/ui/ui_theme_paths.gd`
+promotes the six minimal-metal frame paths as the active global generic set,
+`scripts/ui_screens.gd` applies their metadata to menu/Settings/Codex/economy/
+reward/pause/result/HUD wrappers, and `scripts/pause_stats_menu.gd` uses the
+same minimal-metal modal/panel/field/tooltip family. Screen-authored exceptions
+remain for Hero Select v3, progression nodes and combat bar fills/icons. QA and
+the old-kit live-reference audit live under
+`build/qa/scrum451_minimal_metal_rollout/`.
+
+SCRUM-478 starts the next **Bright Minimalist full-game UI redesign** direction.
+It is a Design-source anchor only, not a runtime promotion. Source references
+live under `docs/design/references/minimalist_full_ui_redesign/`: a bright
+button anchor sheet, an exact-size frame family sheet, a full-screen mockup
+board, `scrum478_minimalist_full_ui_metadata.json` with exact dimensions for
+`1280x720`, `1600x900` and `1920x1080`, and
+`scrum478_self_qa_evidence.md`. The UI-director spec is
+`docs/design/mockups/scrum478_minimalist_full_ui_redesign/spec.md`. The visual
+target is obsidian/charcoal interiors, thin silver outlines, vivid cyan/magenta
+button accents and small gold ticks. It deliberately moves away from beige,
+parchment, heavy dragon ornament and the older metal-heavy frame look. Runtime
+content may only use the declared `content_rect_xywh`; frame rails, accent
+diamonds, glow caps and gold ticks are forbidden content zones. Final runtime
+slicing, `ui_screens.gd` integration, screenshot capture and no-overlap/text
+overflow verification are Back-end scope via
+`docs/tasks/backend_minimalist_full_ui_redesign_runtime_handoff_task.md`.
 
 SCRUM-390 prepared a dedicated **Combat HUD redraw kit** and SCRUM-400 wires it
 into the live runtime HUD. It was generated through
@@ -133,6 +361,20 @@ cards. Runtime content containers are proportionally scaled to the card control
 size; labels, icons, artifact tier text and action labels must stay inside the
 safe area while the whole card remains clickable/focusable. Runtime QA dumps are
 written to `build/qa/scrum338/`.
+
+SCRUM-437 adds a Design-ready **wide economy choice-card frame** for long
+reward/event/upgrade/rest option copy. New candidates live in
+`assets/sprites/ui/frames/economy/` as
+`ui_frame_economy_choice_card_wide.png` and
+`ui_frame_economy_choice_card_wide_hover.png` (`960x640`, RGBA transparent).
+Use source size `960x640`, base texture margins `[96,88,96,96]`, base content
+margins `[132,118,132,128]`, hover texture margins `[104,96,104,104]`, hover
+content margins `[140,126,140,136]`, and safe rect `[132,118,696,394]`.
+Back-end integration is pending; do not point live economy choice constants to
+the wide assets until `scripts/ui_screens.gd` source size, display sizes and
+no-overlap matrix are updated. Spec and previews:
+`docs/design/mockups/scrum437_wide_economy_choice_card/spec.md`,
+`docs/design/previews/scrum437_wide_economy_choice_card_safe_zone.png`.
 
 SCRUM-330 provides the Design-ready **Pause / Victory / Defeat modal kit** for
 the pause and result-screen cluster. The accepted runtime candidate is
@@ -209,31 +451,38 @@ Canonical live Hero Select frame assets live in
 - `ui_frame_hero_select_thumbnail.png`, `ui_frame_hero_select_asc_button.png`,
   `ui_frame_hero_select_asc_label.png`, `ui_frame_hero_select_asc_mods.png`.
 
-Canonical live button assets live in `assets/sprites/ui/frames/red_gold/`:
+Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_buttons/`:
 
-- `ui_btn_red_gold_standard.png`, `ui_btn_red_gold_max.png`,
-  `ui_btn_red_gold_main_menu.png`, `ui_btn_red_gold_hero_confirm.png`;
-- `ui_btn_red_gold_reset_audio.png`, `ui_btn_red_gold_reset_bindings.png`,
-  `ui_btn_red_gold_codex_tab.png`, `ui_btn_red_gold_rebind.png`;
-- `ui_btn_red_gold_back_s.png`, `ui_btn_red_gold_back_m.png`,
-  `ui_btn_red_gold_back_l.png`, `ui_btn_red_gold_attr_selector.png`;
-- `ui_btn_red_gold_fab.png`, `ui_btn_red_gold_utility.png`,
-  `ui_btn_red_gold_pause.png`;
-- every file has `_hover`, `_pressed` and `_disabled` state variants.
+- `ui_btn_minimal_metal_standard.png`, `ui_btn_minimal_metal_max.png`,
+  `ui_btn_minimal_metal_main_menu.png`, `ui_btn_minimal_metal_hero_confirm.png`;
+- `ui_btn_minimal_metal_reset_audio.png`, `ui_btn_minimal_metal_reset_bindings.png`,
+  `ui_btn_minimal_metal_codex_tab.png`, `ui_btn_minimal_metal_rebind.png`;
+- `ui_btn_minimal_metal_back_s.png`, `ui_btn_minimal_metal_back_m.png`,
+  `ui_btn_minimal_metal_back_l.png`, `ui_btn_minimal_metal_attr_selector.png`;
+- `ui_btn_minimal_metal_fab.png`, `ui_btn_minimal_metal_utility.png`,
+  `ui_btn_minimal_metal_pause.png`;
+- every file has `_hover`, `_focus`, `_pressed` and `_disabled` state variants.
 
 State language:
 
-- all visible Button styleboxes use the Red & Gold Dragon kit unless a control is
+- all visible action Button styleboxes use the Minimal Metal kit unless a control is
   intentionally a card/hit-area rather than an action button;
-- hover: stronger red/gold glow and brighter metal bevel;
+- hover/focus: neutral bright metal read, no yellow baked glow;
 - pressed: darker center and slightly lower-contrast metal read;
 - disabled: desaturated, dimmed version of the same button type.
+
+SCRUM-450 minimal-metal button assets mirror the same 15 runtime button types.
+They add a fifth `_focus` PNG state and runtime keeps SCRUM-318 neutral focus
+tint semantics. Use metadata in
+`docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json`
+for content zones; labels/icons must stay inside each `content_rect_xywh` and
+never overlap side caps, rubies, bevels or back-arrow ornaments.
 
 Runtime button sizing (SCRUM-263/SCRUM-264):
 
 - standard action buttons use a 104px minimum height through `_make_button()` / `_set_action_button_size()`;
 - the main menu uses `main_menu` 380x104 buttons;
-- wide action buttons cap their visual width at 560px so dragon ends do not visibly stretch into a strip;
+- wide action buttons cap their visual width at 560px so button ends do not visibly stretch into a strip;
 - pause menu buttons use 280x60, rebind/dropdown-style controls use 420x62,
   compact utility uses 54x42 and upgrade FAB uses 50x50;
 - text-heavy choices use an information frame above a short standard button instead of placing paragraphs inside a large button;
@@ -250,7 +499,8 @@ Runtime frame sizing (SCRUM-274):
   stretching one generic frame everywhere;
 - HUD and timer panels use their dedicated horizontal frame assets;
 - Escape stats uses `pause_main`, `pause_stat_group`, `pause_stat_chip` and
-  `pause_stat_tooltip` frames; its buttons use the SCRUM-273 `pause` button.
+  `pause_stat_tooltip` frames; its buttons use the SCRUM-450 minimal-metal
+  `pause` button.
 - Hero Select uses the SCRUM-281 `ui_frame_hero_select_*` kit with custom
   `HERO_SELECT_FRAME_MARGINS` and `HERO_SELECT_FRAME_CONTENT` in
   `scripts/ui_screens.gd`; the bottom thumbnail strip uses compressed thumbnail
@@ -263,6 +513,10 @@ Rebuild/QA assets:
 - `tools/build_hero_select_frame_kit.py` - SCRUM-281 Hero Select frame pipeline from `references/herouiframe`;
 - `tools/capture_hero_select_qa.gd` - SCRUM-281 screenshot/rect QA capture for 1280x720, 1920x1080 and 2560x1440;
 - `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher.png` - SCRUM-325 design-ready Settings tab switcher frame (`1280x256`, RGBA);
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` - SCRUM-439 Settings v2 main modal candidate (`1536x1024`, RGBA; texture margins `96/118/96/96`, content margins `144/192/144/128`);
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png` - SCRUM-439 Settings v2 three-slot switcher candidate (`1280x256`, RGBA; slot safe rects `Rect2(150,78,275,92)`, `Rect2(502,78,275,92)`, `Rect2(854,78,275,92)`);
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_section_panel.png` - SCRUM-439 Settings v2 nested section panel candidate (`1024x384`, RGBA; content margins `104/96/104/92`);
+- `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_control_row.png` - SCRUM-439 Settings v2 control-row frame candidate (`1536x192`, RGBA; content margins `96/54/96/54`);
 - `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
 - `tools/build_leather_gold_ui_kit.py` - superseded SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
@@ -270,6 +524,8 @@ Rebuild/QA assets:
 - `docs/design/previews/ornate_dark_frame_kit_contact.png` - active SCRUM-274 frame contact sheet;
 - `docs/design/previews/hero_select_frame_kit_contact.png` - active SCRUM-281 Hero Select frame contact sheet;
 - `docs/design/previews/settings_tab_switcher_frame_content_zone.png` - SCRUM-325 Settings tab switcher safe-area overlay;
+- `docs/design/previews/scrum439_settings_v2_safe_zones.png` - SCRUM-439 Settings v2 safe-zone overlay for all three tabs;
+- `docs/design/previews/scrum439_settings_v2_assets_contact.png` - SCRUM-439 Settings v2 transparent frame candidate contact sheet;
 - `docs/design/previews/unified_master_frame_9slice_contact.png` - SCRUM-373 unified master frame contact sheet;
 - `docs/design/previews/unified_master_frame_safe_zone.png` - SCRUM-373 strict content-zone overlay;
 - `docs/design/previews/unified_master_frame_thin_revision_contact.png` - SCRUM-384 thin metallic unified frame revision contact sheet;
@@ -284,14 +540,14 @@ System icons live in `assets/sprites/ui/icons/system/`: close, back, settings, a
 
 ## Contextual UI Direction
 
-`docs/design/ui_contextual_concept.md` and the generated contextual kit in `assets/sprites/ui/frames/contextual/` are superseded by the SCRUM-273/SCRUM-274 UI canon. Their files may remain as historical/reference assets until Back-end cleanup confirms no live references, but they are no longer the UI direction for new screens. Context may still influence role color and button/frame selection, but only through the new Red & Gold Dragon + Ornate Dark canon.
+`docs/design/ui_contextual_concept.md` and the generated contextual kit are superseded by the SCRUM-273/SCRUM-274 UI canon. SCRUM-418 confirmed no live references and removed the contextual frame PNGs from runtime `assets/`; historical backup lives under `build/qa/scrum418/removed_assets_backup/`. Context may still influence role color and button/frame selection, but only through the new Red & Gold Dragon + Ornate Dark canon.
 
 Hard no-junk rule from the user: UI work must not add abstract decorative lines, circles, squares, dots, grids or filler marks. Every visible detail must read as a UI affordance or a believable D&D/tabletop material detail; otherwise it is a Design review defect.
 
 Historical assets:
 
-- `ui_wild_*_frame`, `ui_grave_*_frame`, `ui_laurel_*_frame`, `ui_parchment_*_frame` in `assets/sprites/ui/frames/contextual/`;
-- preview sheet: `assets/sprites/ui/frames/contextual/contextual_ui_kits_preview.png`;
+- `ui_wild_*_frame`, `ui_grave_*_frame`, `ui_laurel_*_frame`, `ui_parchment_*_frame` archived under `build/qa/scrum418/removed_assets_backup/assets/sprites/ui/frames/contextual/`;
+- preview sheet archived under `build/qa/scrum418/removed_assets_backup/assets/sprites/ui/frames/contextual/contextual_ui_kits_preview.png`;
 - reference contact sheet: `docs/design/previews/contextual_ui_dnd_reference_contact.png`.
 
 Generation task: `docs/tasks/codex_design_contextual_ui_frame_kits_generation_task.md` was completed as historical work; SCRUM-111/SCRUM-118 are superseded by SCRUM-147. Active Back-end integration is `docs/tasks/backend_ui_dark_fantasy_theme_integration_task.md`.
@@ -371,7 +627,7 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
 ## Screen And Map Backgrounds
 
 - `assets/backgrounds/route_map_backdrop.png` - 2560x1440 eerie neutral route map background. It should stay darker and calmer than combat arenas, with low-contrast fog in the central route column and heavier silhouettes pushed to the edges.
-- SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. Active compatibility copies were written to `assets/sprites/ui/screens/screen_shop_background.png`, `screen_event_background.png`, and `screen_campfire_background.png`; broader screen-to-role mapping is handed off in `docs/tasks/backend_ui_screen_backdrops_integration_task.md`. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
+- SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
 - `assets/backgrounds/main_menu_epic_battle_v2.png` is the active start-screen art. SCRUM-316 replaced the previous SCRUM-158 battle scene with a smoother D&D/dark fantasy composition: three new bosses and two heroes fight center-right/lower-right, while the left third stays calmer for the vertical menu buttons and the top-center stays readable for the title.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
   `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through

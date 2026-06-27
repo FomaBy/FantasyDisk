@@ -1,20 +1,15 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_00.png" id="1_thi1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_01.png" id="2_thi2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_02.png" id="3_thi3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_03.png" id="4_thi4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_04.png" id="5_thi5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_00.png" id="6_thi6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_01.png" id="7_thi7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_02.png" id="8_thi8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_03.png" id="9_thi9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_04.png" id="10_thi10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_attack_primary_00.png" id="11_thi11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_attack_primary_01.png" id="12_thi12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_attack_primary_02.png" id="13_thi13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_attack_primary_03.png" id="14_thi14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_attack_primary_04.png" id="15_thi15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_00.png" id="1_scrum435"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_01.png" id="2_scrum435"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_02.png" id="3_scrum435"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_03.png" id="4_scrum435"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_idle_04.png" id="5_scrum435"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_00.png" id="6_scrum435"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_01.png" id="7_scrum435"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_02.png" id="8_scrum435"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_03.png" id="9_scrum435"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief/thief_walk_04.png" id="10_scrum435"]
 
 [resource]
 animations = [
@@ -22,23 +17,23 @@ animations = [
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("1_thi1")
+"texture": ExtResource("1_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("2_thi2")
+"texture": ExtResource("2_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("3_thi3")
+"texture": ExtResource("3_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("4_thi4")
+"texture": ExtResource("4_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("5_thi5")
+"texture": ExtResource("5_scrum435")
 }
 ],
 "loop": true,
@@ -49,81 +44,54 @@ animations = [
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("6_thi6")
+"texture": ExtResource("6_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("7_thi7")
+"texture": ExtResource("7_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("8_thi8")
+"texture": ExtResource("8_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("9_thi9")
+"texture": ExtResource("9_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("10_thi10")
+"texture": ExtResource("10_scrum435")
 }
 ],
 "loop": true,
-"name": &"walk",
+"name": &"move",
 "speed": 10.0
 },
 {
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("11_thi11")
+"texture": ExtResource("6_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("12_thi12")
+"texture": ExtResource("7_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("13_thi13")
+"texture": ExtResource("8_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("14_thi14")
+"texture": ExtResource("9_scrum435")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("15_thi15")
+"texture": ExtResource("10_scrum435")
 }
 ],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("11_thi11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_thi12")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("13_thi13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_thi14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_thi15")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
+"loop": true,
+"name": &"walk",
+"speed": 10.0
 }
 ]

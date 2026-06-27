@@ -1,6 +1,6 @@
 # ART: UI Overhaul (Повышение уровня и награды) — D&D + Dark Fantasy Dragon, новым скиллом
 
-Статус: done
+Статус: superseded (PM 2026-06-14: широкий UI-overhaul закрыт как дубль, покрыто SCRUM-338/348)
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5

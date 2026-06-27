@@ -1,0 +1,687 @@
+{
+  "task": "SCRUM-438",
+  "status": "design_mockup_ready",
+  "base_resolution": "1920x1080",
+  "mockup_png": "docs/design/mockups/scrum438_codex_v2/codex_v2_mockup_1920x1080.png",
+  "source_generated_png": "docs/design/references/codex_v2/codex_v2_full_window_mockup_1920x1088.png",
+  "annotated_png": "docs/design/mockups/scrum438_codex_v2/codex_v2_safe_zones_annotated_1920x1080.png",
+  "frame_rule": "Runtime text, icons, portraits, cards, tabs, tooltips and click/focus zones must stay inside *_safe rects only; decorative borders/gems/metal/ornament are forbidden zones.",
+  "base_rects_1920x1080": {
+    "viewport": [
+      1920,
+      1080
+    ],
+    "outer_frame_rect": [
+      24,
+      20,
+      1872,
+      1040
+    ],
+    "outer_safe": [
+      72,
+      64,
+      1776,
+      980
+    ],
+    "header_title_safe": [
+      112,
+      74,
+      1120,
+      64
+    ],
+    "back_button_safe": [
+      1684,
+      60,
+      126,
+      96
+    ],
+    "nav_panel_rect": [
+      72,
+      170,
+      304,
+      872
+    ],
+    "nav_safe": [
+      88,
+      198,
+      258,
+      720
+    ],
+    "tab_button_safe_each": [
+      [
+        92,
+        212,
+        250,
+        86
+      ],
+      [
+        92,
+        340,
+        250,
+        86
+      ],
+      [
+        92,
+        468,
+        250,
+        86
+      ],
+      [
+        92,
+        596,
+        250,
+        86
+      ],
+      [
+        92,
+        724,
+        250,
+        86
+      ],
+      [
+        92,
+        852,
+        250,
+        86
+      ]
+    ],
+    "list_panel_rect": [
+      388,
+      170,
+      835,
+      872
+    ],
+    "list_safe": [
+      424,
+      204,
+      736,
+      796
+    ],
+    "entry_card_safe_example": [
+      428,
+      214,
+      722,
+      110
+    ],
+    "entry_icon_safe_example": [
+      452,
+      235,
+      92,
+      76
+    ],
+    "entry_text_safe_example": [
+      568,
+      232,
+      540,
+      70
+    ],
+    "scroll_rail_safe": [
+      1176,
+      198,
+      34,
+      812
+    ],
+    "detail_panel_rect": [
+      1242,
+      170,
+      606,
+      872
+    ],
+    "detail_safe": [
+      1290,
+      214,
+      514,
+      780
+    ],
+    "portrait_safe": [
+      1396,
+      226,
+      320,
+      300
+    ],
+    "chip_row_safe": [
+      1298,
+      548,
+      486,
+      80
+    ],
+    "detail_text_safe": [
+      1298,
+      660,
+      486,
+      300
+    ],
+    "tooltip_rect": [
+      1038,
+      512,
+      230,
+      154
+    ],
+    "tooltip_safe": [
+      1058,
+      540,
+      192,
+      92
+    ]
+  },
+  "responsive_rects": {
+    "1280x720": {
+      "viewport": [
+        1280,
+        720
+      ],
+      "outer_frame_rect": [
+        16,
+        13,
+        1248,
+        693
+      ],
+      "outer_safe": [
+        48,
+        43,
+        1184,
+        653
+      ],
+      "header_title_safe": [
+        75,
+        49,
+        747,
+        43
+      ],
+      "back_button_safe": [
+        1123,
+        40,
+        84,
+        64
+      ],
+      "nav_panel_rect": [
+        48,
+        113,
+        203,
+        581
+      ],
+      "nav_safe": [
+        59,
+        132,
+        172,
+        480
+      ],
+      "tab_button_safe_each": [
+        [
+          61,
+          141,
+          167,
+          57
+        ],
+        [
+          61,
+          227,
+          167,
+          57
+        ],
+        [
+          61,
+          312,
+          167,
+          57
+        ],
+        [
+          61,
+          397,
+          167,
+          57
+        ],
+        [
+          61,
+          483,
+          167,
+          57
+        ],
+        [
+          61,
+          568,
+          167,
+          57
+        ]
+      ],
+      "list_panel_rect": [
+        259,
+        113,
+        557,
+        581
+      ],
+      "list_safe": [
+        283,
+        136,
+        491,
+        531
+      ],
+      "entry_card_safe_example": [
+        285,
+        143,
+        481,
+        73
+      ],
+      "entry_icon_safe_example": [
+        301,
+        157,
+        61,
+        51
+      ],
+      "entry_text_safe_example": [
+        379,
+        155,
+        360,
+        47
+      ],
+      "scroll_rail_safe": [
+        784,
+        132,
+        23,
+        541
+      ],
+      "detail_panel_rect": [
+        828,
+        113,
+        404,
+        581
+      ],
+      "detail_safe": [
+        860,
+        143,
+        343,
+        520
+      ],
+      "portrait_safe": [
+        931,
+        151,
+        213,
+        200
+      ],
+      "chip_row_safe": [
+        865,
+        365,
+        324,
+        53
+      ],
+      "detail_text_safe": [
+        865,
+        440,
+        324,
+        200
+      ],
+      "tooltip_rect": [
+        692,
+        341,
+        153,
+        103
+      ],
+      "tooltip_safe": [
+        705,
+        360,
+        128,
+        61
+      ]
+    },
+    "1920x1080": {
+      "viewport": [
+        1920,
+        1080
+      ],
+      "outer_frame_rect": [
+        24,
+        20,
+        1872,
+        1040
+      ],
+      "outer_safe": [
+        72,
+        64,
+        1776,
+        980
+      ],
+      "header_title_safe": [
+        112,
+        74,
+        1120,
+        64
+      ],
+      "back_button_safe": [
+        1684,
+        60,
+        126,
+        96
+      ],
+      "nav_panel_rect": [
+        72,
+        170,
+        304,
+        872
+      ],
+      "nav_safe": [
+        88,
+        198,
+        258,
+        720
+      ],
+      "tab_button_safe_each": [
+        [
+          92,
+          212,
+          250,
+          86
+        ],
+        [
+          92,
+          340,
+          250,
+          86
+        ],
+        [
+          92,
+          468,
+          250,
+          86
+        ],
+        [
+          92,
+          596,
+          250,
+          86
+        ],
+        [
+          92,
+          724,
+          250,
+          86
+        ],
+        [
+          92,
+          852,
+          250,
+          86
+        ]
+      ],
+      "list_panel_rect": [
+        388,
+        170,
+        835,
+        872
+      ],
+      "list_safe": [
+        424,
+        204,
+        736,
+        796
+      ],
+      "entry_card_safe_example": [
+        428,
+        214,
+        722,
+        110
+      ],
+      "entry_icon_safe_example": [
+        452,
+        235,
+        92,
+        76
+      ],
+      "entry_text_safe_example": [
+        568,
+        232,
+        540,
+        70
+      ],
+      "scroll_rail_safe": [
+        1176,
+        198,
+        34,
+        812
+      ],
+      "detail_panel_rect": [
+        1242,
+        170,
+        606,
+        872
+      ],
+      "detail_safe": [
+        1290,
+        214,
+        514,
+        780
+      ],
+      "portrait_safe": [
+        1396,
+        226,
+        320,
+        300
+      ],
+      "chip_row_safe": [
+        1298,
+        548,
+        486,
+        80
+      ],
+      "detail_text_safe": [
+        1298,
+        660,
+        486,
+        300
+      ],
+      "tooltip_rect": [
+        1038,
+        512,
+        230,
+        154
+      ],
+      "tooltip_safe": [
+        1058,
+        540,
+        192,
+        92
+      ]
+    },
+    "2560x1440": {
+      "viewport": [
+        2560,
+        1440
+      ],
+      "outer_frame_rect": [
+        32,
+        27,
+        2496,
+        1387
+      ],
+      "outer_safe": [
+        96,
+        85,
+        2368,
+        1307
+      ],
+      "header_title_safe": [
+        149,
+        99,
+        1493,
+        85
+      ],
+      "back_button_safe": [
+        2245,
+        80,
+        168,
+        128
+      ],
+      "nav_panel_rect": [
+        96,
+        227,
+        405,
+        1163
+      ],
+      "nav_safe": [
+        117,
+        264,
+        344,
+        960
+      ],
+      "tab_button_safe_each": [
+        [
+          123,
+          283,
+          333,
+          115
+        ],
+        [
+          123,
+          453,
+          333,
+          115
+        ],
+        [
+          123,
+          624,
+          333,
+          115
+        ],
+        [
+          123,
+          795,
+          333,
+          115
+        ],
+        [
+          123,
+          965,
+          333,
+          115
+        ],
+        [
+          123,
+          1136,
+          333,
+          115
+        ]
+      ],
+      "list_panel_rect": [
+        517,
+        227,
+        1113,
+        1163
+      ],
+      "list_safe": [
+        565,
+        272,
+        981,
+        1061
+      ],
+      "entry_card_safe_example": [
+        571,
+        285,
+        963,
+        147
+      ],
+      "entry_icon_safe_example": [
+        603,
+        313,
+        123,
+        101
+      ],
+      "entry_text_safe_example": [
+        757,
+        309,
+        720,
+        93
+      ],
+      "scroll_rail_safe": [
+        1568,
+        264,
+        45,
+        1083
+      ],
+      "detail_panel_rect": [
+        1656,
+        227,
+        808,
+        1163
+      ],
+      "detail_safe": [
+        1720,
+        285,
+        685,
+        1040
+      ],
+      "portrait_safe": [
+        1861,
+        301,
+        427,
+        400
+      ],
+      "chip_row_safe": [
+        1731,
+        731,
+        648,
+        107
+      ],
+      "detail_text_safe": [
+        1731,
+        880,
+        648,
+        400
+      ],
+      "tooltip_rect": [
+        1384,
+        683,
+        307,
+        205
+      ],
+      "tooltip_safe": [
+        1411,
+        720,
+        256,
+        123
+      ]
+    }
+  },
+  "frame_margins": {
+    "outer_main_frame_texture_margins": [
+      48,
+      44,
+      72,
+      38
+    ],
+    "outer_main_frame_content_margins": [
+      72,
+      64,
+      72,
+      36
+    ],
+    "nav_panel_content_margins": [
+      16,
+      28,
+      30,
+      124
+    ],
+    "list_panel_content_margins": [
+      36,
+      34,
+      63,
+      42
+    ],
+    "detail_panel_content_margins": [
+      48,
+      44,
+      44,
+      48
+    ],
+    "entry_card_content_margins": [
+      36,
+      26,
+      40,
+      24
+    ],
+    "tooltip_content_margins": [
+      20,
+      28,
+      18,
+      34
+    ]
+  }
+}

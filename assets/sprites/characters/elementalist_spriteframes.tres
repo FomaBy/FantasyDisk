@@ -1,20 +1,15 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_00.png" id="1_ele1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_01.png" id="2_ele2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_02.png" id="3_ele3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_03.png" id="4_ele4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_04.png" id="5_ele5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_00.png" id="6_ele6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_01.png" id="7_ele7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_02.png" id="8_ele8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_03.png" id="9_ele9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_04.png" id="10_ele10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_attack_primary_00.png" id="11_ele11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_attack_primary_01.png" id="12_ele12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_attack_primary_02.png" id="13_ele13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_attack_primary_03.png" id="14_ele14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_attack_primary_04.png" id="15_ele15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_00.png" id="1_scrum427"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_01.png" id="2_scrum427"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_02.png" id="3_scrum427"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_03.png" id="4_scrum427"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_04.png" id="5_scrum427"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_00.png" id="6_scrum427"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_01.png" id="7_scrum427"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_02.png" id="8_scrum427"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_03.png" id="9_scrum427"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/elementalist/elementalist_walk_04.png" id="10_scrum427"]
 
 [resource]
 animations = [
@@ -22,23 +17,23 @@ animations = [
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("1_ele1")
+"texture": ExtResource("1_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("2_ele2")
+"texture": ExtResource("2_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("3_ele3")
+"texture": ExtResource("3_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("4_ele4")
+"texture": ExtResource("4_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("5_ele5")
+"texture": ExtResource("5_scrum427")
 }
 ],
 "loop": true,
@@ -49,81 +44,54 @@ animations = [
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("6_ele6")
+"texture": ExtResource("6_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("7_ele7")
+"texture": ExtResource("7_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("8_ele8")
+"texture": ExtResource("8_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("9_ele9")
+"texture": ExtResource("9_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("10_ele10")
+"texture": ExtResource("10_scrum427")
 }
 ],
 "loop": true,
-"name": &"walk",
+"name": &"move",
 "speed": 10.0
 },
 {
 "frames": [
 {
 "duration": 1.0,
-"texture": ExtResource("11_ele11")
+"texture": ExtResource("6_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("12_ele12")
+"texture": ExtResource("7_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("13_ele13")
+"texture": ExtResource("8_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("14_ele14")
+"texture": ExtResource("9_scrum427")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("15_ele15")
+"texture": ExtResource("10_scrum427")
 }
 ],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("11_ele11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_ele12")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("13_ele13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_ele14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_ele15")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
+"loop": true,
+"name": &"walk",
+"speed": 10.0
 }
 ]

@@ -34,6 +34,10 @@ Autonomy and approval:
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`, task statuses are tracked in `docs/process/task_board.md`.
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
+- New work is assigned by PM/Documentation dispatcher only. Role agents may continue an active task already assigned to their thread, but must not self-select an unowned `new` row from the board unless the dispatcher/PM explicitly names that row and thread.
+- Single-owner rule: before taking or routing work, check the task file, board row, Jira mirror/status, recent role-thread messages, and dirty worktree. If any recent dispatch note, `in_progress` status, owner/thread id, Jira assignee/comment, or overlapping active file/asset scope exists, do not take or resend the task.
+- Parallel Codex/Claude rule: every active task belongs to exactly one execution lane, `Контур: Codex` or `Контур: Claude`, and must record `Owner`, `Thread/Worker`, and locked files/assets/screens before work starts. Codex works autonomously only on tasks explicitly dispatched to a Codex role thread; Claude Code/workers must skip Codex-owned tasks and Codex must skip Claude-owned or worker-owned tasks. Review/fix work across lanes requires a separate review or bug task after the owner records a result; do not edit the same files in both lanes at the same time.
+- Design pool rule: Design main and Designer 2 are separate owners, not a shared queue. A Design task must name exactly one active Design owner/thread while in progress. The other Design thread may review only when explicitly asked, and must not start the same task or a task with overlapping source assets/screens.
 - If a task needs another discipline, create/update a `.md` handoff task in `docs/tasks/` and send it to the correct chat instead of doing that specialist's work directly.
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
 - When taking a task, set `Статус: in_progress` in its file; when finishing, set `done` (or `review`) and append a short result summary so the PM can sync the task board.
@@ -78,14 +82,11 @@ Full autonomy (user directive, 2026-06-12):
   are out of scope for executors anyway.
 
 Feature block:
-- **ФРИЗ 0.1.5 АКТИВЕН с 2026-06-14 (директива пользователя).** Стабилизируем
-  релиз 0.1.5: доделываем ТОЛЬКО то, что уже на борде (активные задачи 0.1.5 —
-  перерисовки персонажей, UI-кластеры, баги, баланс). Новый функционал в 0.1.5 НЕ
-  добавляем.
-- **Новые НЕ-баговые фичи → `Версия: 0.1.6`** (следующая версия). Sync держит их в
-  бэклоге (fixVersion 0.1.6, вне активного спринта 0.1.5). Баг-фиксы по-прежнему
-  можно брать в 0.1.5.
-- Снять фриз — релизом 0.1.5 (как было с 0.1.4): после выпуска PM открывает 0.1.6.
+- **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Активен `Спринт 0.1.6` (Jira board 1) —
+  задачи 0.1.6 в работе обычным порядком (перерисовка персонажей v2, чистка ассетов,
+  QoL, доводка визуала).
+- Механизм сохраняется: перед стабилизацией следующего релиза PM снова включает
+  фриз (новые не-баги → `Версия: <следующая>`, sync держит их в бэклоге).
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.

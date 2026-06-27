@@ -1,6 +1,6 @@
 # ART/ТЕХ: Полный апдейт интерфейса в стиле D&D + Dark Fantasy Dragon — ОПОРНАЯ
 
-Статус: done
+Статус: superseded (PM 2026-06-14: широкий UI-overhaul закрыт как дубль, покрыто SCRUM-373/384/273)
 Приоритет: high
 Роль: Designer (Codex) + Back-end (UI)
 Версия: 0.1.5

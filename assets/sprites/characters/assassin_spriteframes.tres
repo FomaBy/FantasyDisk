@@ -1,100 +1,79 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_00.png" id="1_as1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_01.png" id="2_as2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_02.png" id="3_as3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_03.png" id="4_as4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_04.png" id="5_as5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_00.png" id="6_as6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_01.png" id="7_as7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_02.png" id="8_as8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_03.png" id="9_as9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_04.png" id="10_as10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_attack_primary_00.png" id="11_as11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_attack_primary_01.png" id="12_as12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_attack_primary_02.png" id="13_as13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_attack_primary_03.png" id="14_as14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_attack_primary_04.png" id="15_as15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_00.png" id="1_scrum419"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_01.png" id="2_scrum419"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_02.png" id="3_scrum419"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_03.png" id="4_scrum419"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_idle_04.png" id="5_scrum419"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_00.png" id="6_scrum419"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_01.png" id="7_scrum419"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_02.png" id="8_scrum419"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_03.png" id="9_scrum419"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/assassin/assassin_walk_04.png" id="10_scrum419"]
 
 [resource]
-animations = [{
+animations = [
+{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("11_as11")
+"texture": ExtResource("1_scrum419")
 }, {
 "duration": 1.0,
-"texture": ExtResource("12_as12")
+"texture": ExtResource("2_scrum419")
 }, {
 "duration": 1.0,
-"texture": ExtResource("13_as13")
+"texture": ExtResource("3_scrum419")
 }, {
 "duration": 1.0,
-"texture": ExtResource("14_as14")
+"texture": ExtResource("4_scrum419")
 }, {
 "duration": 1.0,
-"texture": ExtResource("15_as15")
-}],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("11_as11")
-}, {
-"duration": 1.0,
-"texture": ExtResource("12_as12")
-}, {
-"duration": 1.0,
-"texture": ExtResource("13_as13")
-}, {
-"duration": 1.0,
-"texture": ExtResource("14_as14")
-}, {
-"duration": 1.0,
-"texture": ExtResource("15_as15")
-}],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("1_as1")
-}, {
-"duration": 1.0,
-"texture": ExtResource("2_as2")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_as3")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_as4")
-}, {
-"duration": 1.0,
-"texture": ExtResource("5_as5")
+"texture": ExtResource("5_scrum419")
 }],
 "loop": true,
 "name": &"idle",
 "speed": 5.0
-}, {
+},
+{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_as6")
+"texture": ExtResource("6_scrum419")
 }, {
 "duration": 1.0,
-"texture": ExtResource("7_as7")
+"texture": ExtResource("7_scrum419")
 }, {
 "duration": 1.0,
-"texture": ExtResource("8_as8")
+"texture": ExtResource("8_scrum419")
 }, {
 "duration": 1.0,
-"texture": ExtResource("9_as9")
+"texture": ExtResource("9_scrum419")
 }, {
 "duration": 1.0,
-"texture": ExtResource("10_as10")
+"texture": ExtResource("10_scrum419")
+}],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_scrum419")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_scrum419")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_scrum419")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_scrum419")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_scrum419")
 }],
 "loop": true,
 "name": &"walk",
 "speed": 10.0
-}]
+}
+]

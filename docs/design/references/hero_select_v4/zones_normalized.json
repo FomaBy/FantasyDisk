@@ -1,0 +1,26 @@
+{
+  "source": "docs/design/references/hero_select_v4/mockup.png",
+  "runtime_asset": "res://assets/sprites/ui/hero_select_v4/background.png",
+  "image_size": {"width": 1536, "height": 1024},
+  "method": "PM визуальная разметка + аннотированный оверлей /tmp/v4_annotated.png; макап используется как фон (contain-fit), живой контент накладывается по нормализованным зонам.",
+  "approach": "mockup-as-background + overlay; зоны нормализованы 0..1 относительно отображаемого прямоугольника макапа -> ровно на 1280x720 и 1600x900",
+  "zones": {
+    "title":    {"nx": 0.265, "ny": 0.018, "nw": 0.470, "nh": 0.105, "content": "Label ВЫБОР ГЕРОЯ (поверх плашки)"},
+    "back":     {"nx": 0.022, "ny": 0.028, "nw": 0.110, "nh": 0.070, "content": "Button Назад (прозрачный)"},
+    "portrait": {"nx": 0.020, "ny": 0.135, "nw": 0.247, "nh": 0.580, "safe": {"nx": 0.035, "ny": 0.168, "nw": 0.217, "nh": 0.512}, "content": "TextureRect спрайт героя (sprite_path), KEEP_ASPECT"},
+    "dossier":  {"nx": 0.288, "ny": 0.138, "nw": 0.362, "nh": 0.555, "content": "имя, 5 строк статов (значения в бары), оружие, возвышение, ВЫБРАТЬ"},
+    "radar":    {"nx": 0.715, "ny": 0.175, "nw": 0.230, "nh": 0.320, "content": "HeroStatRadar.setup(8 статов)"},
+    "carousel": {"nx": 0.020, "ny": 0.735, "nw": 0.960, "nh": 0.215, "arrows_nw": 0.045, "slots": 9, "content": "9 видимых слотов из 17 героев, ◄► прокрутка"}
+  },
+  "dossier_subzones_note": "имя=верхняя плашка; 5 строк статов равномерно ниже; ОРУЖИЕ row; ВОЗВЫШЕНИЕ row с пунктами; ВЫБРАТЬ внизу. Подписи статов 1-4 совпадают (Сила/Ловкость/Интеллект/Живучесть); 5-я строка (УДАЧА) перекрывается живой подписью.",
+  "data_accessors": {
+    "roster": "game.PROGRESSION_DATA.character_ids()",
+    "config": "game.PROGRESSION_DATA.character_config(id) -> title, description, strengths, weaknesses, sprite_path",
+    "stats": "game.PROGRESSION_DATA.base_stats(id)",
+    "stat_names": "game.PROGRESSION_DATA.STAT_NAMES",
+    "weapons": "game.PROGRESSION_DATA.weapon_ids(id)",
+    "ascension": "game.selected_ascension_level / game.ascension_selectable_max(id)",
+    "portrait_texture": "game._cached_texture(config.sprite_path)",
+    "select_action": "_show_weapon_select()"
+  }
+}

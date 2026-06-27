@@ -83,6 +83,195 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 
 ## Player Motion
 
+- SCRUM-456 defines the new cartoon/anime playable-character restyle source
+  contract. The Design package lives under
+  `docs/design/references/chars_cartoon/` and establishes Berserk as the
+  accepted exemplar candidate: `512x512` source cells, bottom-center pivot
+  `(256, 470)`, safe source-sheet gutters/outer padding of `48 px`, rows
+  `idle` and `walk` / `move`, 5 frames per row, transparent RGBA, empty hands
+  and no baked weapon/tool. The exemplar source sheet is
+  `docs/design/references/chars_cartoon/berserk_cartoon_anchor_sheet_source_handoff.png`
+  (`2848x1168`). The included GIFs under `build/qa/scrum456_chars_cartoon/`
+  are Design-source motion previews only; Animator must author real `idle` and
+  `walk`/`move` keyframes with visible arm+leg motion before SpriteFrames or
+  runtime integration. `attack_primary` is intentionally out of scope for this
+  initiative.
+- SCRUM-422 defines the 0.1.6 playable character redraw v2 source contract.
+  Design source sheets for the v2 wave are bright/epic per class, transparent
+  RGBA, `512x512` cells, bottom-center pivot `(256, 470)`, and only
+  `idle` + `move/walk` rows. Attack rows are intentionally out of scope for this
+  initiative. The anchor exemplar is the cleaned Berserk source under
+  `docs/design/references/characters_v2/bright_epic_anchor/` with the
+  asset-side accepted source copy at
+  `assets/sprites/characters/v2/berserk/berserk_v2_idle_source.png`.
+  Animator handoff after source acceptance should build `idle` 4-5f loop and
+  `move` 5+f loop SpriteFrames/GIF/contact previews from the per-class sources,
+  without changing gameplay, attack states, balance, collision, or weapon logic.
+- SCRUM-420 Animator pass promotes Berserk's accepted v2 source into the live
+  runtime resource `assets/sprites/characters/berserk_spriteframes.tres`.
+  The resource now exposes `idle`, `walk`, and `move` only, each with 5 looping
+  `512x512` full-frame frames derived from
+  `docs/design/references/characters_v2/berserk/berserk_v2_idle_cell_512.png`.
+  Runtime frames live under `assets/sprites/characters/full_frame/berserk/`,
+  the safe 48px-gutter export sheet lives at
+  `assets/sprites/characters/v2/berserk/berserk_v2_anim_sheet.png`, and the
+  previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum420_berserk_v2_pre_anim/`. QA artifacts live under
+  `build/qa/scrum420_berserk_v2_anim/`; animation and runtime smokes pass.
+  The bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-420 explicitly
+  excludes attack animation.
+- SCRUM-461 (2026-06-17) promotes the accepted SCRUM-456 cartoon/anime Berserk
+  anchor into the same live runtime resource
+  `assets/sprites/characters/berserk_spriteframes.tres`. It exposes `idle`
+  (5f, 7fps), `walk` (5f, 9fps), and `move` (walk alias, 5f, 9fps) only, with
+  transparent `512x512` frames sliced from
+  `docs/design/references/chars_cartoon/berserk_cartoon_anchor_sheet_source_handoff.png`
+  using the documented `48 px` gutters and pivot `(256,470)`. Previous live
+  Berserk frames are backed up under
+  `docs/design/backups/scrum461_berserk_cartoon_pre_anim/`. QA artifacts live
+  under `build/qa/scrum461_berserk_cartoon_anim/`; attack animation remains
+  intentionally absent by SCRUM-461 scope.
+- SCRUM-473 (2026-06-17) replaces the temporary cartoon-trial legacy rig for
+  Dark Mage and Knight with real cartoon2 full-frame SpriteFrames. Runtime
+  resources `assets/sprites/characters/dark_mage_spriteframes.tres` and
+  `assets/sprites/characters/knight_spriteframes.tres` expose `idle` (5f loop),
+  `walk` (5f loop), and `move` (walk alias, 5f loop) only, sourced from the
+  accepted transparent runtime sprites `assets/sprites/characters/dark_mage.png`
+  and `assets/sprites/characters/knight.png` with the 1024 source gate under
+  `docs/design/references/chars_cartoon/trial_v2/`. Runtime frames live under
+  `assets/sprites/characters/full_frame/{dark_mage,knight}/`; safe-gutter
+  cartoon2 sheets live under `assets/sprites/characters/cartoon2/`. QA contact
+  sheets, GIFs, alpha stats and manifest live under
+  `build/qa/scrum473_cartoon2_dark_mage_knight_anim/`. `scripts/player.gd`
+  now leaves `CARTOON_TRIAL_CLASSES` empty, so both classes use the full-frame
+  `AnimatedSprite2D` path and hide the legacy rig. Attack animation remains
+  absent by SCRUM-473 scope because weapons own attacks (`USE_ATTACK_ANIMATION=false`).
+  Animation smoke passes; full runtime smoke is currently blocked by an
+  unrelated Hero Select v3 back-button UI assertion. The bundled manifest
+  validator still reports the expected missing `attack_primary` rows because it
+  does not yet understand `attack_required=false`.
+- SCRUM-475 (2026-06-19) delivers the Design-source blocker for the next
+  Skeleton2D/Bone2D source gate: Dark Mage and Knight now have transparent
+  skeleton-source packages under
+  `docs/design/references/chars_cartoon/skeleton_parts/{dark_mage,knight}/`.
+  Each package contains a source copy, 19 separated PNG parts, local pivots,
+  a `skeleton_source_manifest.json`, alpha report, contact sheet and dark-bg
+  preview. Both manifests pass the animation-director
+  `validate_skeleton_source_manifest.py` validator. No runtime rig,
+  SpriteFrames or AnimationPlayer clips were changed by this Design handoff.
+  SCRUM-474 remains under the explicit USER HOLD after this delivery: runtime
+  Skeleton2D/Bone2D rig assembly, `AnimationPlayer` timelines and player
+  integration must wait for a newer user/PM go-ahead saying `делай анимацию`.
+- SCRUM-424 adds the Dark Mage v2 Design-source handoff under
+  `docs/design/references/characters_v2/dark_mage/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet and QA
+  report. Asset-side handoff copies live in
+  `assets/sprites/characters/v2/dark_mage/`. Animator integration now promotes
+  the accepted source into the live runtime resource
+  `assets/sprites/characters/dark_mage_spriteframes.tres`, exposing `idle`,
+  `walk`, and `move` only, each with 5 looping `512x512` full-frame frames
+  derived from `dark_mage_v2_idle_cell_512.png`. Runtime frames live under
+  `assets/sprites/characters/full_frame/dark_mage/`, the safe 48px-gutter export
+  sheet lives at
+  `assets/sprites/characters/v2/dark_mage/dark_mage_v2_anim_sheet.png`, and
+  previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum424_dark_mage_v2_pre_anim/`. QA artifacts live under
+  `build/qa/scrum424_dark_mage_v2_anim/`; animation smoke passes. Full runtime
+  smoke is currently blocked before gameplay startup by an unrelated
+  `scripts/ui_screens.gd` parse failure from the active UI/settings lane. The
+  bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-424 explicitly
+  excludes attack animation.
+- SCRUM-419 adds the Assassin v2 Design-source handoff under
+  `docs/design/references/characters_v2/assassin/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet and QA
+  report. Animator integration now promotes the accepted source into the live
+  runtime resource `assets/sprites/characters/assassin_spriteframes.tres`,
+  exposing `idle`, `walk`, and `move` only, each with 5 looping `512x512`
+  full-frame frames derived from `assassin_v2_idle_cell_512.png`. Runtime
+  frames live under `assets/sprites/characters/full_frame/assassin/`, the safe
+  48px-gutter export sheet lives at
+  `assets/sprites/characters/v2/assassin/assassin_v2_anim_sheet.png`, and
+  previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum419_assassin_v2_pre_anim/`. QA artifacts live under
+  `build/qa/scrum419_assassin_v2_anim/`; animation and runtime smokes pass. The
+  bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-419 explicitly
+  excludes attack animation.
+- SCRUM-429 adds the Guitarist v2 Design-source handoff under
+  `docs/design/references/characters_v2/guitarist/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
+  accepted source sheet copy and QA report. Animator integration now promotes
+  the accepted source into the live runtime resource
+  `assets/sprites/characters/guitarist_spriteframes.tres`, exposing `idle`,
+  `walk`, and `move` only, each with 5 looping `512x512` full-frame frames
+  derived from `guitarist_v2_idle_cell_512.png`. Runtime frames live under
+  `assets/sprites/characters/full_frame/guitarist/`, the safe 48px-gutter
+  export sheet lives at
+  `assets/sprites/characters/v2/guitarist/guitarist_v2_anim_sheet.png`, and
+  previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum429_guitarist_v2_pre_anim/`. QA artifacts live
+  under `build/qa/scrum429_guitarist_v2_anim/`; animation and runtime smokes
+  pass. The bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-429 explicitly
+  excludes attack animation.
+- SCRUM-435 adds the Thief v2 Design-source handoff under
+  `docs/design/references/characters_v2/thief/` and promotes the accepted
+  source into the live runtime resource
+  `assets/sprites/characters/thief_spriteframes.tres`, exposing `idle`, `walk`,
+  and `move` only, each with 5 looping `512x512` full-frame frames derived from
+  `thief_v2_idle_cell_512.png`. Runtime frames live under
+  `assets/sprites/characters/full_frame/thief/`, the safe 48px-gutter export
+  sheet lives at `assets/sprites/characters/v2/thief/thief_v2_anim_sheet.png`,
+  and previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum435_thief_v2_pre_anim/`. QA artifacts live under
+  `build/qa/scrum435_thief_v2_anim/`; animation and runtime smokes pass. The
+  bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-435 explicitly
+  excludes attack animation.
+- SCRUM-427 adds the Elementalist v2 Design-source handoff under
+  `docs/design/references/characters_v2/elementalist/` and promotes the
+  accepted source into the live runtime resource
+  `assets/sprites/characters/elementalist_spriteframes.tres`, exposing `idle`,
+  `walk`, and `move` only, each with 5 looping `512x512` full-frame frames
+  derived from `elementalist_v2_idle_cell_512.png`. Runtime frames live under
+  `assets/sprites/characters/full_frame/elementalist/`, the safe 48px-gutter
+  export sheet lives at
+  `assets/sprites/characters/v2/elementalist/elementalist_v2_anim_sheet.png`,
+  and previous live SpriteFrames/frames are backed up under
+  `docs/design/backups/scrum427_elementalist_v2_pre_anim/`. QA artifacts live
+  under `build/qa/scrum427_elementalist_v2_anim/`; animation and runtime smokes
+  pass. The bundled manifest validator was run and records the expected
+  `missing attack_primary animation` failure because SCRUM-427 explicitly
+  excludes attack animation.
+- SCRUM-433 adds the Sniper v2 Design-source handoff under
+  `docs/design/references/characters_v2/sniper/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
+  accepted source sheet copy and QA report. Asset-side handoff copies live in
+  `assets/sprites/characters/v2/sniper/`. The sheet repeats the accepted source
+  for idle/move placeholders only; Animator must create real `idle` and
+  `move/walk` frames before SpriteFrames/runtime integration. White/neutral
+  matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
+  and `0` edge-visible pixels in source/cell/sheet outputs.
+- SCRUM-431 adds the Priest v2 Design-source handoff under
+  `docs/design/references/characters_v2/priest/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
+  accepted source sheet copy and QA report. Asset-side handoff copies live in
+  `assets/sprites/characters/v2/priest/`. The sheet repeats the accepted source
+  for idle/move placeholders only; Animator must create real `idle` and
+  `move/walk` frames before SpriteFrames/runtime integration. White/neutral
+  matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
+  and `0` edge-visible pixels in source/cell/sheet outputs.
+- SCRUM-421 adds the Biologist v2 Design-source handoff under
+  `docs/design/references/characters_v2/biologist/` with alpha-clean source,
+  normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
+  accepted source sheet copy and QA report. Asset-side handoff copies live in
+  `assets/sprites/characters/v2/biologist/`. The sheet repeats the accepted
+  source for idle/move placeholders only; Animator must create real `idle` and
+  `move/walk` frames before SpriteFrames/runtime integration. White/neutral
+  matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
+  and `0` edge-visible pixels in source/cell/sheet outputs.
 - SCRUM-298 Design standard: playable character full-frame redraws now use
   `docs/design/references/character_animation_style_sheet_0_1_5.md` as the
   source of truth for art direction, sheet rows, pivots and naming. Canonical

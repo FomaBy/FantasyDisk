@@ -1,0 +1,227 @@
+{
+  "entity_id": "knight",
+  "kind": "hero",
+  "pose": "neutral_front",
+  "source": "source/knight_skeleton_source_from_runtime.png",
+  "parts": {
+    "head": "parts/head.png",
+    "torso": "parts/torso.png",
+    "pelvis": "parts/pelvis.png",
+    "upper_arm_l": "parts/upper_arm_l.png",
+    "lower_arm_l": "parts/lower_arm_l.png",
+    "hand_l": "parts/hand_l.png",
+    "upper_arm_r": "parts/upper_arm_r.png",
+    "lower_arm_r": "parts/lower_arm_r.png",
+    "hand_r": "parts/hand_r.png",
+    "thigh_l": "parts/thigh_l.png",
+    "shin_l": "parts/shin_l.png",
+    "foot_l": "parts/foot_l.png",
+    "thigh_r": "parts/thigh_r.png",
+    "shin_r": "parts/shin_r.png",
+    "foot_r": "parts/foot_r.png",
+    "shoulder_armor_l": "parts/shoulder_armor_l.png",
+    "shoulder_armor_r": "parts/shoulder_armor_r.png",
+    "cape_l": "parts/cape_l.png",
+    "cape_r": "parts/cape_r.png"
+  },
+  "pivots": {
+    "head": {
+      "x": 61,
+      "y": 99
+    },
+    "torso": {
+      "x": 118,
+      "y": 103
+    },
+    "pelvis": {
+      "x": 87,
+      "y": 76
+    },
+    "upper_arm_l": {
+      "x": 73,
+      "y": 41
+    },
+    "lower_arm_l": {
+      "x": 58,
+      "y": 55
+    },
+    "hand_l": {
+      "x": 24,
+      "y": 74
+    },
+    "upper_arm_r": {
+      "x": 69,
+      "y": 41
+    },
+    "lower_arm_r": {
+      "x": 45,
+      "y": 53
+    },
+    "hand_r": {
+      "x": 57,
+      "y": 74
+    },
+    "thigh_l": {
+      "x": 82,
+      "y": 37
+    },
+    "shin_l": {
+      "x": 71,
+      "y": 42
+    },
+    "foot_l": {
+      "x": 76,
+      "y": 32
+    },
+    "thigh_r": {
+      "x": 49,
+      "y": 37
+    },
+    "shin_r": {
+      "x": 42,
+      "y": 42
+    },
+    "foot_r": {
+      "x": 34,
+      "y": 32
+    },
+    "shoulder_armor_l": {
+      "x": 72,
+      "y": 46
+    },
+    "shoulder_armor_r": {
+      "x": 62,
+      "y": 46
+    },
+    "cape_l": {
+      "x": 97,
+      "y": 32
+    },
+    "cape_r": {
+      "x": 37,
+      "y": 33
+    }
+  },
+  "source_pivots": {
+    "head": {
+      "x": 256,
+      "y": 138
+    },
+    "torso": {
+      "x": 256,
+      "y": 210
+    },
+    "pelvis": {
+      "x": 256,
+      "y": 307
+    },
+    "upper_arm_l": {
+      "x": 176,
+      "y": 148
+    },
+    "lower_arm_l": {
+      "x": 160,
+      "y": 246
+    },
+    "hand_l": {
+      "x": 126,
+      "y": 301
+    },
+    "upper_arm_r": {
+      "x": 336,
+      "y": 148
+    },
+    "lower_arm_r": {
+      "x": 352,
+      "y": 246
+    },
+    "hand_r": {
+      "x": 386,
+      "y": 301
+    },
+    "thigh_l": {
+      "x": 213,
+      "y": 317
+    },
+    "shin_l": {
+      "x": 202,
+      "y": 408
+    },
+    "foot_l": {
+      "x": 194,
+      "y": 463
+    },
+    "thigh_r": {
+      "x": 299,
+      "y": 317
+    },
+    "shin_r": {
+      "x": 310,
+      "y": 408
+    },
+    "foot_r": {
+      "x": 318,
+      "y": 463
+    },
+    "shoulder_armor_l": {
+      "x": 177,
+      "y": 135
+    },
+    "shoulder_armor_r": {
+      "x": 335,
+      "y": 135
+    },
+    "cape_l": {
+      "x": 205,
+      "y": 260
+    },
+    "cape_r": {
+      "x": 307,
+      "y": 260
+    }
+  },
+  "root_pivot_source": {
+    "x": 256,
+    "y": 488
+  },
+  "left_right_convention": "front-view image-space: _l is screen-left/source-left, _r is screen-right/source-right; Animator may remap to character-local bones during rigging.",
+  "style_anchor": "docs/design/references/chars_cartoon/character_cartoon_anime_style_sheet.md",
+  "style_notes": "Knight cartoon2 accepted source: broad blue-gold armored guardian, empty fists, no baked shield or weapon.",
+  "z_order_hint_back_to_front": [
+    "cape_l",
+    "cape_r",
+    "thigh_l",
+    "thigh_r",
+    "shin_l",
+    "shin_r",
+    "foot_l",
+    "foot_r",
+    "pelvis",
+    "torso",
+    "shoulder_armor_l",
+    "shoulder_armor_r",
+    "upper_arm_l",
+    "upper_arm_r",
+    "lower_arm_l",
+    "lower_arm_r",
+    "hand_l",
+    "hand_r",
+    "head"
+  ],
+  "checks": {
+    "transparent_rgba": true,
+    "no_background": true,
+    "joint_overlap": true,
+    "empty_hands": true
+  },
+  "qa": {
+    "alpha_report": "qa/knight_alpha_report.json",
+    "parts_contact": "qa/knight_parts_contact.png",
+    "source_dark_bg_preview": "qa/knight_source_dark_bg_preview.png"
+  },
+  "limitations": [
+    "Separated parts are derived from the accepted cartoon2 runtime source to preserve approved identity and transparency.",
+    "Hidden back-side limb pixels are not invented; masks include deliberate joint overlap and duplicated visible pixels for Animator rig blocking.",
+    "No runtime Skeleton2D/Bone2D scene or AnimationPlayer clips are included in this Design-source package."
+  ]
+}
