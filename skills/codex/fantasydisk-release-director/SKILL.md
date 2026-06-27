@@ -34,16 +34,31 @@ description: "Use this skill to cut a FantasyDisk release: bump version, build h
 - **Сборки (mac dmg + win setup.exe/zip) выкладываются в Telegram** (канал/группа загрузок).
 - **В Discord постится НОВОСТЬ + ключевые изменения + ссылка на скачивание в Telegram** + SHA256.
   Discord webhook принимает ≤25 МБ — инсталлеры ~200 МБ туда НЕ кладём, только ссылку.
-- Telegram-ссылка хранится в `release_webhook.cfg` ([release] telegram_download_url);
-  можно переопределить флагом `--download-base <URL>`.
-- Шаг загрузки в Telegram: пока вручную (положить файлы из `releases/vX.Y.Z/` в Telegram-канал),
-  либо авто-аплоад через Telegram-бота (если задан bot token + бот админ канала) — TODO.
-- Секреты (webhook URL, telegram link) — в `release_webhook.cfg` (в `.gitignore`), не коммитить.
-  В запрос к Discord ОБЯЗАТЕЛЕН заголовок `User-Agent` (иначе 403).
+- Telegram-ссылка для скачивания (в новости Discord) хранится в `release_webhook.cfg`
+  ([release] telegram_download_url); можно переопределить флагом `--download-base <URL>`.
+- Авто-аплоад сборок в Telegram: `telegram_publish.py --version X.Y.Z` (userbot/Telethon,
+  до 2 ГБ). API-доступ (api_id/api_hash/session) — в `release_webhook.cfg` [telegram].
+- Секреты (webhook URL, telegram link, api_id/api_hash) — в `release_webhook.cfg` (в `.gitignore`),
+  не коммитить. В запрос к Discord ОБЯЗАТЕЛЕН заголовок `User-Agent` (иначе 403).
+
+## Канал Telegram для аплоада сборок (настройка на каждой машине)
+Канал-приёмник сборок (`chat`) **НЕ хранится в git** — задаётся локально на каждой машине,
+приоритет сверху вниз:
+1. **Переменная окружения** `FANTASYDISK_RELEASE_TG_CHANNEL` (рекомендуется):
+   ```bash
+   export FANTASYDISK_RELEASE_TG_CHANNEL='https://t.me/+ВАШ_ИНВАЙТ'   # или @username, или -100…id
+   ```
+2. **Локальный файл** `release_tg.cfg` в корне репозитория (рядом с `release_webhook.cfg`,
+   уже в `.gitignore`) — одна строка с ссылкой/`@username`/id (или строка вида `chat = "..."`).
+Если канал не задан ни одним способом — `telegram_publish.py` завершится с понятной ошибкой.
+Узнать id своих каналов: `python3 telegram_publish.py --list-chats`.
+Проверить резолв канала без отправки: `python3 telegram_publish.py --version X.Y.Z --dry-run`.
 
 ## Проверки
-- `release_publish.py --help` показывает параметры.
-- Скрипт компилируется python без ошибок.
+- `release_publish.py --help` / `telegram_publish.py --help` показывают параметры.
+- Скрипты компилируются python без ошибок.
+- `telegram_publish.py --version X.Y.Z --dry-run` показывает канал и список файлов без отправки
+  (заодно проверяет, что канал задан через env/`release_tg.cfg`).
 - Перед публикацией убедиться, что `releases/vX.Y.Z/` существует и содержит артефакты.
 
 ## Документация

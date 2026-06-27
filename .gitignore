@@ -16,6 +16,14 @@ tools/.feedback_intake_state.json
 # Release Discord webhook (секрет, не коммитить)
 release_webhook.cfg
 
+# Telegram-канал релизов (секрет): env FANTASYDISK_RELEASE_TG_CHANNEL или этот файл
+release_tg.cfg
+
+# Любые локальные секрет-конфиги *.cfg — кроме коммитируемых ниже
+*.cfg
+!export_presets.cfg
+!*.cfg.example
+
 # Telethon session релиза (секрет)
 *.session
 fantasydisk_release.session
