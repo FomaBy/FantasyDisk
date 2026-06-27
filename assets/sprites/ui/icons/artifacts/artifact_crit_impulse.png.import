@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3kx5xtxy0ivp"
-path="res://.godot/imported/ui_frame_minimal_hud_strip.png-194bbded2e7f25c012f6c64db6c5fd9c.ctex"
+uid="uid://b3km2j0j07mt0"
+path="res://.godot/imported/artifact_crit_impulse.png-db5a126b7459a56361f5aab64dee4473.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/frames/minimal/ui_frame_minimal_hud_strip.png"
-dest_files=["res://.godot/imported/ui_frame_minimal_hud_strip.png-194bbded2e7f25c012f6c64db6c5fd9c.ctex"]
+source_file="res://assets/sprites/ui/icons/artifacts/artifact_crit_impulse.png"
+dest_files=["res://.godot/imported/artifact_crit_impulse.png-db5a126b7459a56361f5aab64dee4473.ctex"]
 
 [params]
 

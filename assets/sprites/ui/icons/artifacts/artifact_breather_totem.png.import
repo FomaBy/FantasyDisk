@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://buterod16jm7e"
-path="res://.godot/imported/ui_frame_minimal_tooltip.png-2b6d067e4afa86be343c26b8eed7c243.ctex"
+uid="uid://ck7w58mbe3s2a"
+path="res://.godot/imported/artifact_breather_totem.png-9730e7039c40488099e71faca33c6401.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/frames/minimal/ui_frame_minimal_tooltip.png"
-dest_files=["res://.godot/imported/ui_frame_minimal_tooltip.png-2b6d067e4afa86be343c26b8eed7c243.ctex"]
+source_file="res://assets/sprites/ui/icons/artifacts/artifact_breather_totem.png"
+dest_files=["res://.godot/imported/artifact_breather_totem.png-9730e7039c40488099e71faca33c6401.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3cfn0frsfht0"
-path="res://.godot/imported/ui_frame_minimal_card.png-e1b292f9b5b02300b48857a5c2afa5d4.ctex"
+uid="uid://b0kcxhc3qhvc3"
+path="res://.godot/imported/artifact_counterwave_sigil.png-e225e354648f9f09d7d0b69b68034378.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/frames/minimal/ui_frame_minimal_card.png"
-dest_files=["res://.godot/imported/ui_frame_minimal_card.png-e1b292f9b5b02300b48857a5c2afa5d4.ctex"]
+source_file="res://assets/sprites/ui/icons/artifacts/artifact_counterwave_sigil.png"
+dest_files=["res://.godot/imported/artifact_counterwave_sigil.png-e225e354648f9f09d7d0b69b68034378.ctex"]
 
 [params]
 

@@ -1997,7 +1997,7 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 		_call_take_damage(enemy, amount, {"critical": _last_attack_crit and apply_unique_melee_effects, "damage_type": hit_type})
 		var owner_node := _owner_node()
 		if owner_node != null and owner_node.has_method("on_weapon_hit"):
-			owner_node.on_weapon_hit(enemy, amount)
+			owner_node.on_weapon_hit(enemy, amount, _last_attack_crit)  # SCRUM-500: прокидываем крит-флаг
 		_heal_owner_from_damage(owner_node, amount)
 		if _last_attack_crit and crit_shadow_burst_radius > 0.0 and owner_node != null and owner_node.has_method("trigger_assassin_crit_shadow"):
 			owner_node.trigger_assassin_crit_shadow(enemy, crit_shadow_burst_radius)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhkdiwg8dhx1l"
-path="res://.godot/imported/ui_frame_minimal_panel.png-a718f63d78437f602cb693aba605280b.ctex"
+uid="uid://dex0cfeycx3ik"
+path="res://.godot/imported/artifact_guardian_bulwark.png-fa69970f55a3cb3743607329af1b43e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/frames/minimal/ui_frame_minimal_panel.png"
-dest_files=["res://.godot/imported/ui_frame_minimal_panel.png-a718f63d78437f602cb693aba605280b.ctex"]
+source_file="res://assets/sprites/ui/icons/artifacts/artifact_guardian_bulwark.png"
+dest_files=["res://.godot/imported/artifact_guardian_bulwark.png-fa69970f55a3cb3743607329af1b43e8.ctex"]
 
 [params]
 

@@ -155,6 +155,13 @@ var _echo_hit_counter := 0
 var _leadership_echo_hit_counter := 0
 var _dodge_rush_tween: Tween = null
 var _low_hp_active := false
+# SCRUM-500: триггерные артефакты — латчи/кулдауны/счётчики (не часть run_modifiers,
+# поэтому сбрасываются явно в configure_character и при run-start).
+var _crit_burst_tween: Tween = null      # «Импульс Крита»: tween снятия бафа скорости
+var _lowhp_guard_used := false           # «Рубеж Стража»: латч одноразового щита за порог
+var _lowhp_guard_cooldown_left := 0.0    # перезаряд щита (раз в N сек)
+var _take_hit_pulse_cooldown_left := 0.0 # «Контр-волна»: перезаряд отталкивающей волны
+var _kill_streak_counter := 0            # «Сбор Душ»: счётчик убийств до лечения
 var _assassin_crit_shadow_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
@@ -217,6 +224,16 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	money = 0
 	ultimate_charge = 0.0
 	_ultimate_active = false
+	# SCRUM-500: сброс триггер-латчей при смене персонажа/старте забега (run_modifiers
+	# уже пересоздан выше, флаги артефактов исчезли; здесь добиваем non-run_modifiers латчи).
+	_low_hp_active = false
+	_lowhp_guard_used = false
+	_lowhp_guard_cooldown_left = 0.0
+	_take_hit_pulse_cooldown_left = 0.0
+	_kill_streak_counter = 0
+	if _crit_burst_tween != null and _crit_burst_tween.is_valid():
+		_crit_burst_tween.kill()
+	_crit_burst_tween = null
 	_apply_stat_scaling(true)
 
 	var visual_root := _visual_root()
@@ -377,6 +394,9 @@ func _physics_process(_delta: float) -> void:
 	_knight_counter_cooldown_left = max(_knight_counter_cooldown_left - _delta, 0.0)
 	_battle_shout_cooldown_left = max(_battle_shout_cooldown_left - _delta, 0.0)
 	_status_aura_cooldown_left = max(_status_aura_cooldown_left - _delta, 0.0)
+	# SCRUM-500: триггер-кулдауны (Рубеж Стража / Контр-волна).
+	_lowhp_guard_cooldown_left = max(_lowhp_guard_cooldown_left - _delta, 0.0)
+	_take_hit_pulse_cooldown_left = max(_take_hit_pulse_cooldown_left - _delta, 0.0)
 	var direction := Vector2.ZERO
 
 	if Input.is_action_pressed("move_left"):
@@ -592,6 +612,10 @@ func take_damage(amount: float, _source := "") -> bool:
 	damaged.emit(amount)
 	_gain_ultimate_charge(final_damage * float(_ultimate_config().get("taken_charge_rate", 1.0)))
 	_trigger_thorn_reflect(final_damage)
+	# SCRUM-500 (on_take_hit): «Контр-волна» — шанс выпустить отталкивающую волну.
+	_trigger_take_hit_pulse(final_damage)
+	# SCRUM-500 (on_low_hp): «Рубеж Стража» — одноразовый щит при падении ниже порога.
+	_trigger_lowhp_guard()
 
 	# Capstone «Вторая жизнь» (мета-древо, Стойкость): раз за забег смертельный удар
 	# оставляет 1 HP и даёт 2с неуязвимости. Использование — run-persistent через snapshot.
@@ -683,10 +707,83 @@ func _trigger_dodge_rush() -> void:
 	)
 
 
-func _update_low_hp_state() -> void:
-	if float(run_modifiers.get("low_hp_damage_bonus", 0.0)) <= 0.0:
+# SCRUM-500 (on_crit): «Импульс Крита» — короткий бафф скорости движения по криту.
+# Эталон — _trigger_dodge_rush: флаг *_active + tween на снятие + пересчёт скейла.
+# crit_speed_burst (доля) консумится в derived_parameters как dodge_rush.
+func _trigger_crit_speed_burst() -> void:
+	if float(run_modifiers.get("crit_speed_burst", 0.0)) <= 0.0:
 		return
-	var active := health < max_health * 0.3
+	run_modifiers["crit_speed_burst_active"] = 1.0
+	_apply_stat_scaling(false, max_health)
+	if _crit_burst_tween != null and _crit_burst_tween.is_valid():
+		_crit_burst_tween.kill()
+	_crit_burst_tween = create_tween()
+	_crit_burst_tween.tween_interval(1.8)
+	_crit_burst_tween.tween_callback(func() -> void:
+		run_modifiers["crit_speed_burst_active"] = 0.0
+		_apply_stat_scaling(false, max_health)
+	)
+
+
+# SCRUM-500 (on_low_hp): «Рубеж Стража» — одноразовый (на порог) щит при падении ниже 30% HP:
+# нокбэк-волна + краткая неуязвимость. Латч _lowhp_guard_used + перезаряд, перевооружение
+# при подъёме HP выше порога (в _update_low_hp_state).
+func _trigger_lowhp_guard() -> void:
+	if float(run_modifiers.get("lowhp_guard", 0.0)) <= 0.0:
+		return
+	if _lowhp_guard_used or _lowhp_guard_cooldown_left > 0.0:
+		return
+	if max_health <= 0.0 or health <= 0.0 or health >= max_health * 0.3:
+		return
+	_lowhp_guard_used = true
+	_lowhp_guard_cooldown_left = 18.0
+	_damage_invulnerability_left = maxf(_damage_invulnerability_left, 1.5)
+	_play_sfx("dodge")
+	if is_inside_tree():
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 210.0, Color(0.55, 0.85, 1.0, 0.55), false)
+		# Нокбэк-волна: отталкивает врагов рядом (через их take_knockback при наличии).
+		for enemy in get_tree().get_nodes_in_group("enemies"):
+			var enemy_node := enemy as Node2D
+			if enemy_node == null or not is_instance_valid(enemy_node):
+				continue
+			if global_position.distance_squared_to(enemy_node.global_position) <= 230.0 * 230.0:
+				if enemy_node.has_method("apply_knockback"):
+					enemy_node.apply_knockback((enemy_node.global_position - global_position).normalized() * 240.0)
+
+
+# SCRUM-500 (on_take_hit): «Контр-волна» — шанс по получению удара выпустить отталкивающую
+# волну, бьющую врагов рядом частью полученного урона. Шанс + перезаряд против runaway.
+func _trigger_take_hit_pulse(received_damage: float) -> void:
+	if float(run_modifiers.get("take_hit_pulse_chance", 0.0)) <= 0.0 or received_damage <= 0.0:
+		return
+	if _take_hit_pulse_cooldown_left > 0.0 or not is_inside_tree():
+		return
+	if randf() >= clampf(float(run_modifiers.get("take_hit_pulse_chance", 0.0)), 0.0, 1.0):
+		return
+	_take_hit_pulse_cooldown_left = 3.0
+	var pulse_damage := received_damage * 0.9
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, 180.0, Color(1.0, 0.8, 0.4, 0.45), true)
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		if global_position.distance_squared_to(enemy_node.global_position) <= 190.0 * 190.0:
+			if enemy_node.has_method("take_damage"):
+				enemy_node.take_damage(pulse_damage)
+			if enemy_node.has_method("apply_knockback"):
+				enemy_node.apply_knockback((enemy_node.global_position - global_position).normalized() * 180.0)
+
+
+func _update_low_hp_state() -> void:
+	# SCRUM-500: low_hp_active нужен не только «Кровавому Рубежу» (low_hp_damage_bonus),
+	# но и «Второму Дыханию» (lowhp_regen_bonus). Трекаем порог, если есть любой low-HP флаг.
+	var has_low_hp_artifact := float(run_modifiers.get("low_hp_damage_bonus", 0.0)) > 0.0 \
+		or float(run_modifiers.get("lowhp_regen_bonus", 0.0)) > 0.0 \
+		or float(run_modifiers.get("lowhp_guard", 0.0)) > 0.0
+	var active := has_low_hp_artifact and health < max_health * 0.3
+	# Перевооружаем одноразовый щит «Рубеж Стража», когда HP поднялось выше порога.
+	if not active and max_health > 0.0 and health >= max_health * 0.3:
+		_lowhp_guard_used = false
 	if active == _low_hp_active:
 		return
 	_low_hp_active = active
@@ -785,13 +882,19 @@ func _apply_regeneration(delta: float) -> void:
 	var drain_cap := _effective_drain_heal_cap()
 	_drain_heal_budget = minf(_drain_heal_budget + drain_cap * delta, drain_cap)
 	var regeneration := float(derived_parameters.get("regeneration", 0.0))
+	# SCRUM-500 (on_low_hp): «Второе Дыхание» — усиленный реген, пока HP ниже порога.
+	if _low_hp_active:
+		regeneration += float(run_modifiers.get("lowhp_regen_bonus", 0.0))
 	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
 		return
 	health = minf(health + regeneration * float(run_modifiers.get("healing_multiplier", 1.0)) * delta, max_health)
 
 
-func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
+func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false) -> void:
 	_gain_ultimate_charge(maxf(dealt_damage, 0.0) * float(_ultimate_config().get("damage_charge_rate", 0.03)))
+	# SCRUM-500 (on_crit): «Импульс Крита» — короткий бафф скорости движения по криту.
+	if was_crit:
+		_trigger_crit_speed_burst()
 	# Вампиризм теперь sustain, а не бессмертие: малая доля урона + per-second cap.
 	var vampiric_chance := float(derived_parameters.get("vampiric_chance", 0.0))
 	if vampiric_chance > 0.0 and dealt_damage > 0.0 and _vampiric_heal_budget > 0.0 and randf() < vampiric_chance:
@@ -1401,6 +1504,31 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 	for other_node in TARGET_QUERY.in_radius(self, blast_position, 140.0):
 		if other_node.has_method("take_damage"):
 			other_node.take_damage(blast_damage)
+
+
+# SCRUM-500 (on_kill): диспетчер триггеров убийства. Вызывается combat_director из
+# _on_enemy_died. Взрыв «Цепная Искра» (шанс) + лечение-стак «Сбор Душ» (каждое N-е).
+# Шанс/счётчик — анти-runaway: взрыв не рекурсивно усиливается, урон одноразовый.
+func on_enemy_killed(enemy: Node2D) -> void:
+	# «Цепная Искра»: шанс взрыва по области у трупа.
+	var explosion_chance := clampf(float(run_modifiers.get("kill_explosion_chance", 0.0)), 0.0, 1.0)
+	if explosion_chance > 0.0 and enemy != null and is_instance_valid(enemy) and is_inside_tree() and randf() < explosion_chance:
+		var blast_position := enemy.global_position
+		var blast_damage := float(derived_parameters.get("damage", 10.0)) * 0.7
+		var scene := get_tree().current_scene
+		if scene == null:
+			scene = get_tree().root
+		AttackVfx.orb_burst(scene, blast_position, 150.0, Color(1.0, 0.55, 0.20, 0.55))
+		for other_node in TARGET_QUERY.in_radius(self, blast_position, 150.0):
+			if other_node != enemy and other_node.has_method("take_damage"):
+				other_node.take_damage(blast_damage)
+	# «Сбор Душ»: каждое N-е убийство лечит процент max HP.
+	var streak_every := int(run_modifiers.get("kill_streak_heal_every", 0.0))
+	if streak_every > 0:
+		_kill_streak_counter += 1
+		if _kill_streak_counter >= streak_every:
+			_kill_streak_counter = 0
+			heal_percent(0.03)
 
 
 func gain_xp(amount: int) -> void:

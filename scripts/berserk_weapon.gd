@@ -178,7 +178,7 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 			var dealt := _rolled_damage(owner_node)
 			_call_take_damage(enemy_node, dealt, {"critical": _last_attack_crit, "damage_type": "physical"})
 			if owner_node.has_method("on_weapon_hit"):
-				owner_node.on_weapon_hit(enemy_node, dealt)
+				owner_node.on_weapon_hit(enemy_node, dealt, _last_attack_crit)  # SCRUM-500: прокидываем крит-флаг
 			_apply_unique_melee_hit_effects(owner_node, enemy_node, attack_direction, dealt)
 
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmrmr33plasan"
-path="res://.godot/imported/ui_frame_minimal_field.png-0ffcd8df38d84d14765c5846eb29d0f8.ctex"
+uid="uid://c61nsnr20kntg"
+path="res://.godot/imported/artifact_soul_harvest.png-d44bbc559988a494c21ea718b129be25.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/frames/minimal/ui_frame_minimal_field.png"
-dest_files=["res://.godot/imported/ui_frame_minimal_field.png-0ffcd8df38d84d14765c5846eb29d0f8.ctex"]
+source_file="res://assets/sprites/ui/icons/artifacts/artifact_soul_harvest.png"
+dest_files=["res://.godot/imported/artifact_soul_harvest.png-d44bbc559988a494c21ea718b129be25.ctex"]
 
 [params]
 
