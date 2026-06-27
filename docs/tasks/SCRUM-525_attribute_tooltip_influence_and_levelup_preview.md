@@ -1,7 +1,24 @@
 # SCRUM-525: Понятные подсказки характеристик: на что влияет + предпросмотр прокачки
 
 Jira: SCRUM-525 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: SCRUM-522
-Статус: Контроль качества (реализовано, dev e2ef8760; claude-backend-routine 2026-06-27)
+Статус: Готово (QA PASSED, dev e2ef8760; QA 2026-06-27)
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED · QA 2026-06-27 (Godot 4.6.3 headless, ветка dev, HEAD e2ef8760)
+
+Green-gate / смоуки — все зелёные: runtime_smoke_test, ui_no_overlap_matrix_test
+(overflow-допуск 6px, контракт choice_card, форс attribute_offer=[damage,attack_speed]),
+runtime_smoke_ui_test, stat_formulas_smoke_test (35/8/27).
+
+Функциональная проба (экран докачки, base-оффер strength/agility, money=9000):
+- Tooltip AttributeOffer_* содержит «Влияет на: …» с RU-подписями производных.
+- Живой предпросмотр «было -> станет» через derived_parameters от снапшота игрока:
+  Урон 12->13; Скорость атаки 1.75->2.05; Шанс крита 7%->8%; Скорость 313->320; Уклонение 6%->7%.
+- Изоляция типов урона (SCRUM-524): berserk показывает только «Урон» (damage_parameter_for).
+- Небазовые id ([damage,attack_speed]) — graceful fallback без падения.
+- Ветка disabled «Недостаточно золота» сохранена; economy_frame_kind=choice_card цел.
+Все acceptance подтверждены фактической проверкой.
 
 ## Что и зачем
 
