@@ -54,7 +54,7 @@ const RANDOM_EVENTS := [
 		"title": "Гоблин-лотерейщик",
 		"story": "Гоблин в цилиндре трясет мешок, из которого то звенит стекло, то шепчет чужой голос. На табличке написано: «Возвратов нет, проклятий тоже почти нет».",
 		"choices": [
-			{"id": "buy_bag", "title": "Купить мешок вслепую", "description": "Цена: 12 золота. Риск: артефакт, 8 золота или мимик.", "risk": true, "cost_money": 12, "random_outcomes": [{"random_artifact": true}, {"money": 8}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.20, "money_multiplier": 1.4}}]},
+			{"id": "buy_bag", "title": "Купить мешок вслепую", "description": "Цена: 8 золота. Риск: артефакт, 16 золота или мимик.", "risk": true, "cost_money": 8, "random_outcomes": [{"random_artifact": true}, {"money": 16}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.20, "money_multiplier": 1.5}}]},
 			{"id": "haggle", "title": "Торговаться", "description": "Проверка Восприятия 8: успех +30 золота, провал -10 золота.", "check": {"stat": "perception", "difficulty": 8}, "success": {"money": 30}, "failure": {"cost_money": 10}},
 		],
 	},
@@ -63,7 +63,7 @@ const RANDOM_EVENTS := [
 		"title": "Горячий источник",
 		"story": "В каменной чаше кипит вода цвета янтаря. Пар складывается в лица прежних путников, которые выглядят слишком довольными и слишком сонными.",
 		"choices": [
-			{"id": "full_rest", "title": "Отдохнуть", "description": "Полное лечение. Следующий бой: враги на 25% живучее.", "heal_percent": 1.0, "mods": {"enemy_health_multiplier": 1.25}},
+			{"id": "full_rest", "title": "Отдохнуть", "description": "Полное лечение. Следующий бой: враги на 8% живучее.", "heal_percent": 1.0, "mods": {"enemy_health_multiplier": 1.08}},
 			{"id": "quick_dip", "title": "Быстро окунуться", "description": "Лечение 35% HP без побочного эффекта.", "heal_percent": 0.35},
 		],
 	},
