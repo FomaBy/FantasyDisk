@@ -2557,5 +2557,10 @@
   "key": "SCRUM-519",
   "status": "Контроль качества",
   "desc_hash": "16166f9acd2c96d7247803f20d051205"
+ },
+ "SCRUM-509_skeleton_rig_det0_spam.md": {
+  "key": "SCRUM-509",
+  "status": "Готово",
+  "desc_hash": "48b90eda65e97233b88211270445e17a"
  }
 }
