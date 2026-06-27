@@ -33,28 +33,32 @@ Autonomy and approval:
   (см. `docs/process/qa_protocol.md` «Контент только в пустой зоне фрейма»).
 
 Role boundaries:
-- A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`, task statuses are tracked in `docs/process/task_board.md`.
+- A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`. Since 2026-06-27 Jira is the authoritative task queue/status/ownership source; `docs/process/task_board.md` and `docs/tasks/*.md` are local mirrors/spec/evidence, not the source of new work.
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
-- New work is assigned by PM/Documentation dispatcher only. Role agents may continue an active task already assigned to their thread, but must not self-select an unowned `new` row from the board unless the dispatcher/PM explicitly names that row and thread.
-- Single-owner rule: before taking or routing work, check the task file, board row, Jira mirror/status, recent role-thread messages, and dirty worktree. If any recent dispatch note, `in_progress` status, owner/thread id, Jira assignee/comment, or overlapping active file/asset scope exists, do not take or resend the task.
+- New work is assigned from Jira by PM/Documentation dispatcher only. Role agents may continue an active Jira issue already assigned to their thread, but must not self-select an unowned local `new` row or unassigned Jira issue unless the dispatcher/PM explicitly names that Jira key and thread.
+- Single-owner rule: before taking or routing work, check the Jira issue/status/comments/assignee/labels first, then local task file, board row, recent role-thread messages, and dirty worktree. If any recent dispatch note, `in_progress` status, owner/thread id, Jira assignee/comment, or overlapping active file/asset scope exists, do not take or resend the task.
 - Parallel Codex/Claude rule: every active task belongs to exactly one execution lane, `Контур: Codex` or `Контур: Claude`, and must record `Owner`, `Thread/Worker`, and locked files/assets/screens before work starts. Codex works autonomously only on tasks explicitly dispatched to a Codex role thread; Claude Code/workers must skip Codex-owned tasks and Codex must skip Claude-owned or worker-owned tasks. Review/fix work across lanes requires a separate review or bug task after the owner records a result; do not edit the same files in both lanes at the same time.
 - Design pool rule: Design main and Designer 2 are separate owners, not a shared queue. A Design task must name exactly one active Design owner/thread while in progress. The other Design thread may review only when explicitly asked, and must not start the same task or a task with overlapping source assets/screens.
 - If a task needs another discipline, create/update a `.md` handoff task in `docs/tasks/` and send it to the correct chat instead of doing that specialist's work directly.
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
-- When taking a task, set `Статус: in_progress` in its file; when finishing, set `done` (or `review`) and append a short result summary so the PM can sync the task board.
-- Jira is mandatory for task tracking. Follow `docs/process/jira_sync.md`: every task must have a `Jira: SCRUM-*` link, current sprint membership, and Jira status/comment updates matching `.md` status changes. Never store Jira API tokens in the repository.
+- When taking a task, update Jira status/comment first, then set local mirror `Статус: in_progress` if a task file exists; when finishing, update Jira and set local mirror `done` (or `review`) with a short result summary so PM/dispatcher can sync mirrors.
+- Jira is mandatory and authoritative for task tracking. Follow `docs/process/jira_sync.md`: every task starts as a Jira issue (`SCRUM-*`), belongs to the current sprint/backlog there, and only then may have a local `.md` spec/evidence mirror. Jira status/comment/assignee/labels must match reality. Never store Jira API tokens in the repository.
 
 **ЖИВАЯ СИНХРОНИЗАЦИЯ JIRA — ОБЯЗАТЕЛЬНА (директива пользователя 2026-06-13).**
 Пользователь управляет разработкой по Jira, поэтому Jira ВСЕГДА должна отражать
 реальность. Каждый агент, который берёт, двигает или завершает работу, ОБЯЗАН:
-1. **Взял в работу** → задача в `.md` `in_progress` + `python3 tools/jira_board_sync.py`
-   (тикет уходит в «В работе»). Не работать «в тени», не отразив это в Jira.
-2. **Завершил** → `.md` `done` с резюме + sync (тикет → «Контроль качества»;
+0. **Новая задача** → сначала Jira issue в проекте `SCRUM`; локальные `.md` и
+   task board обновляются только как spec/evidence mirror. Не брать работу из
+   локальной доски, если Jira не содержит эту задачу и owner/status.
+1. **Взял в работу** → Jira issue переведён/прокомментирован как «В работе»
+   с owner/thread/locked paths + локальный `.md` mirror `in_progress` при наличии.
+   Не работать «в тени», не отразив это в Jira.
+2. **Завершил** → Jira comment/status + `.md` mirror `done` с резюме, если есть
+   локальная спецификация (тикет → «Контроль качества»;
    после QA-вердикта PASSED → «Готово»). Закрытая работа ОБЯЗАНА быть закрыта в Jira.
-3. **Передаёшь работу другому агенту (handoff)** → создай handoff-`.md`, и его
-   тикет в Jira создаётся синком автоматически с нужным эпиком/ролью; в исходном
-   тикете комментарием отметь, КОМУ и ЧТО передано (Jira-ключ handoff'а). Передача
-   основной задачи без отражения в Jira запрещена.
+3. **Передаёшь работу другому агенту (handoff)** → сначала создай/обнови Jira
+   issue handoff'а и комментарий в исходном тикете, затем локальный handoff-`.md`
+   как mirror/spec при необходимости. Передача основной задачи без отражения в Jira запрещена.
 4. **Заблокировал / переименовал / дублировал** → отрази статус и причину в Jira
    (status/comment), не оставляй расхождений `.md`↔Jira.
 5. В КОНЦЕ ЛЮБОГО прогона со сменой статусов — `python3 tools/jira_board_sync.py`

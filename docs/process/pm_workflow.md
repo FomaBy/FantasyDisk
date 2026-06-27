@@ -1,6 +1,6 @@
 # PM Workflow — FantasyDisk
 
-Обновлено: 2026-06-23
+Обновлено: 2026-06-27
 
 Этот документ описывает работу PM-чата (проджект-менеджер) и правила, по которым формируются и выдаются задачи чатам `Design`, `Back-end` и `Animator`.
 
@@ -12,32 +12,50 @@
 фиксируются в отчёте задачи. Невозможность продолжить = `blocked` с точной
 причиной + handoff, затем следующая задача; blocked разбирает PM.
 
+## Jira-first Workflow (директива пользователя, 2026-06-27)
+
+С этого момента все задачи создаются, назначаются и берутся из Jira. Jira
+является единым источником очереди, статуса, владельца, sprint/release tracking
+и cross-device синхронизации для всех AI-агентов.
+
+Локальные файлы:
+
+- `docs/tasks/*.md` — подробная спецификация, handoff/evidence и результат,
+  привязанные к Jira issue;
+- `docs/process/task_board.md` — локальный dashboard/cache для удобства аудита;
+- `docs/process/jira_sync_map.json` — техническая карта соответствия.
+
+Они не являются источником новых задач. Если Jira и локальный mirror расходятся,
+агент обязан считать Jira authoritative, затем привести `.md`/board mirror в
+соответствие.
+
 ## Роль PM
 
 PM-чат:
 
 1. Принимает пожелания и требования от пользователя в свободной форме.
 2. Превращает их в четкие, проверяемые требования.
-3. Создает задачи в формате `.md` в `docs/tasks/` по шаблону ниже.
+3. Создает задачу в Jira проекте `SCRUM`; локальный `.md` создаётся/обновляется
+   только как spec/evidence mirror после появления Jira key.
 4. Назначает каждую задачу правильному исполнителю (Design / Back-end / Animator).
-5. Ведет доску задач `docs/process/task_board.md` и следит за статусами.
-6. Синхронизирует каждую задачу с Jira проектом `SCRUM` по правилам
-   `docs/process/jira_sync.md`: issue key в `.md`, строка на доске, активный
-   спринт и комментарии/статусы.
+5. Ведет Jira board как источник очереди и статусов; локальную доску
+   `docs/process/task_board.md` держит как read-only dashboard/cache.
+6. Синхронизирует локальные mirrors с Jira по правилам `docs/process/jira_sync.md`:
+   issue key в `.md`, строка на локальном dashboard, активный спринт и комментарии/статусы.
 7. Следит, чтобы документация в `docs/design/` обновлялась вместе с изменениями.
 8. Работает автономно: не задает пользователю вопросы, если требование можно разумно доформулировать самому. Спрашивает только при противоречии с текущим дизайном игры или при выборе, меняющем направление продукта.
 9. Проверяет себя: перед выдачей задачи сверяется с `current_game_state.md`, `content_registry.md` и `mechanics_extract.md`, чтобы требования не противоречили уже реализованному.
 
 PM не пишет код, не рисует ассеты и не делает анимацию сам — только требования, декомпозиция, приоритеты и документация процесса.
 PM/dispatcher не закрывает задачи за исполнителя. Исполнитель сам переводит
-свой task-файл, строку board и Jira issue в `done`/`review` с результатом.
-PM/dispatcher может только синхронизировать Jira/board, если в task-файле уже
-есть явный результат исполнителя или QA-вердикт, либо пометить расхождение.
-Codex Documentation dispatcher может создавать новые `.md` task-файлы и Jira
-issues для активного `Спринт 0.1.6` по обычному порядку после проверки
-зависимостей, дублей и активных владельцев. Dispatcher маршрутизирует
-существующие задачи в конкретные role threads, проверяет дубли и синхронизирует
-статусы/комментарии.
+Jira issue и локальные mirrors в `done`/`review` с результатом. PM/dispatcher
+может только синхронизировать Jira/board, если в Jira или task-файле уже есть
+явный результат исполнителя или QA-вердикт, либо пометить расхождение.
+Codex Documentation dispatcher может создавать новые Jira issues для активного
+`Спринт 0.1.6` по обычному порядку после проверки зависимостей, дублей и активных
+владельцев; `.md` task-файл создаётся после Jira key как mirror/spec.
+Dispatcher маршрутизирует существующие Jira issues в конкретные role threads,
+проверяет дубли и синхронизирует статусы/комментарии.
 
 ## Распределение Ролей (краткая памятка)
 
@@ -131,11 +149,12 @@ bug-тасками на доску (секция «Баги от QA») — их 
 
 ## Jira Sync (с 2026-06-12, обязательный)
 
-Все task-файлы дополнительно дублируются в Jira проект `SCRUM`. Source-of-truth
-по деталям остается `.md`, но Jira является обязательным sprint/release tracker.
-Задачи текущего релиза добавляются в активный спринт. PM/другая LLM создает
-обычные задачи; Codex Documentation dispatcher может создавать/sync'ить
-0.1.6 задачи по обычному порядку только после lane/owner/locked-path audit.
+Все задачи ведутся в Jira проекте `SCRUM`; локальные task-файлы дополнительно
+дублируют подробную спецификацию и evidence. Source-of-truth по очереди,
+статусу, owner и sprint/release tracking — Jira. Задачи текущего релиза
+добавляются в активный спринт. PM/другая LLM создает обычные задачи в Jira;
+Codex Documentation dispatcher может создавать/sync'ить 0.1.6 Jira issues по
+обычному порядку только после lane/owner/locked-path audit.
 Если перед будущим релизом PM снова включает freeze, новые не-баговые feature
 requests уходят в backlog следующей версии. При dispatch, блокировке, review,
 done и QA verdict dispatcher обновляет соответствующие Jira issue status/comment
@@ -153,10 +172,11 @@ blockers и owner nudges; новые не-баговые запросы уход
 
 ## Зеркало В Jira (с 2026-06-12)
 
-Доска зеркалируется в Jira: https://fantasydisk.atlassian.net (проект SCRUM, доска 1).
-md-файлы в docs/tasks/ — источник истины; Jira — витрина. Синхронизация —
-`python3 tools/jira_board_sync.py` (идемпотентен, map в docs/process/jira_sync_map.json),
-автоматически выполняется QA-воркером в конце каждого прогона (~5 мин).
+Jira board: https://fantasydisk.atlassian.net (проект SCRUM, доска 1) —
+источник истины для задач. `docs/tasks/*.md` и `docs/process/task_board.md` —
+локальные mirrors/spec/evidence. Синхронизация — `python3 tools/jira_board_sync.py`
+(идемпотентен, map в docs/process/jira_sync_map.json), автоматически выполняется
+QA-воркером в конце каждого прогона (~5 мин).
 Статусы: new/blocked → «К выполнению», in_progress/review → «В работе»,
 done → «Контроль качества», done+QA PASSED → «Готово»; bug_* → тип «Баг».
 Креды: macOS Keychain, сервис `fantasydisk-jira` (НЕ хранить токен в файлах репозитория).
@@ -192,17 +212,18 @@ done → «Контроль качества», done+QA PASSED → «Готов�
 в несведённом дереве). Release-гейт: пост-коммит smoke на ЧИСТОМ
 `git worktree HEAD` (+ `--import`), а не только на рабочем дереве.
 
-Следствия для PM: чтобы задача ушла в Claude-воркеры, недостаточно просто
-поставить `new`; нужно явно указать `Контур: Claude` и locked paths. Claude
-воркеры не трогают `Контур: Codex`, `in_progress`, `blocked`, review-gated или
-чужие owner rows. Один прогон — одна задача.
+Следствия для PM: чтобы задача ушла в Claude-воркеры, недостаточно локально
+поставить `new`; нужно создать/обновить Jira issue и явно указать `Контур: Claude`
+и locked paths в Jira + local mirror. Claude воркеры не трогают `Контур: Codex`,
+`in_progress`, `blocked`, review-gated или чужие owner issues. Один прогон — одна задача.
 
 ## Documentation Dispatcher И Role Heartbeats (Codex)
 
 Codex Documentation dispatcher — единственный Codex-thread, который регулярно
-смотрит весь board/Jira и раздаёт новые задачи существующим role windows. Он не
+смотрит Jira как authoritative queue и сверяет local mirrors, затем раздаёт
+новые задачи существующим role windows. Он не
 пишет код, не рисует ассеты, не делает анимации и не запускает release flow; он
-только проверяет зависимости, дубли, active owner state, Jira/board sync и
+только проверяет зависимости, дубли, active owner state, Jira/local mirror sync и
 отправляет eligible работу нужному окну.
 
 Существующие role windows:
@@ -249,16 +270,19 @@ dispatcher/PM, после чего в task-файле, board и Jira появл�
 PM: уточнение требований против docs/design/*
         │
         ▼
-PM: задача .md в docs/tasks/ + строка в task_board.md
+PM: Jira issue SCRUM-* как источник очереди/status/owner
+        │
+        ▼
+PM: локальный .md/task_board mirror при необходимости
         │
         ▼
 PM/dispatcher выбирает контур: Codex или Claude, owner, locked paths
         │
         ▼
-Codex Documentation dispatcher ИЛИ Claude worker берёт только свой контур
+Codex Documentation dispatcher ИЛИ Claude worker берёт только свой Jira issue/контур
         │
         ▼
-Исполнитель: работа + обновление статуса в файле задачи + обновление docs/design/*
+Исполнитель: работа + обновление Jira + local mirror + docs/design/*
         │
         ▼
 QA/review: отдельная проверка после результата owner, без параллельной правки тех же файлов
@@ -266,7 +290,9 @@ QA/review: отдельная проверка после результата o
 
 ## Шаблон Задачи
 
-Файл: `docs/tasks/<role>_<short_task_name>_task.md`, где `<role>` — `design`, `backend` или `animation`.
+Локальный mirror/spec-файл: `docs/tasks/<role>_<short_task_name>_task.md`,
+где `<role>` — `design`, `backend` или `animation`. Создаётся после Jira issue
+и всегда содержит `Jira: SCRUM-<номер>`.
 
 ```md
 # Задача Для <Role>-Агента: <Название>
@@ -311,21 +337,26 @@ docs/process/agent_role_boundaries_and_handoffs.md и укажи это в фи�
 
 ## Правила Статусов
 
-- Новая задача создается со статусом `new`.
-- Исполнитель при взятии в работу меняет статус на `in_progress`, по завершении — на `done` (или `review`, если нужна проверка PM) и пишет короткое резюме результата в конец файла задачи.
+- Новая задача создается в Jira со статусом To Do/`new`; локальный mirror
+  получает `Статус: new` только после Jira key.
+- Исполнитель при взятии в работу обновляет Jira first (`in_progress`/comment),
+  затем локальный mirror. По завершении — Jira + mirror `done` (или `review`,
+  если нужна проверка PM) и короткое резюме результата.
 - При взятии задачи исполнитель или dispatcher добавляет явный owner/dispatch:
   роль, thread name/id, дата и краткая причина. Для Design это обязательно,
   потому что Design main и Designer 2 работают параллельно.
-- PM синхронизирует `docs/process/task_board.md` при каждом изменении.
+- PM синхронизирует Jira при каждом изменении; `docs/process/task_board.md`
+  обновляется как dashboard/cache.
 - Заблокированные задачи получают `blocked` с указанием, чего ждут.
 - Закрытие задачи — ответственность владельца задачи. Dispatcher не ставит
-  `done` вместо исполнителя, если нет подтвержденного результата в task-файле
-  или QA-вердикта. При расхождении dispatcher добавляет комментарий/заметку и
+  `done` вместо исполнителя, если нет подтвержденного результата в Jira/task mirror
+  или QA-вердикта. При расхождении dispatcher добавляет Jira comment/заметку и
   возвращает задачу владельцу.
-- При регулярной сверке dispatcher проверяет возможные дубли: одинаковые Jira
+- При регулярной сверке dispatcher проверяет возможные дубли в Jira first:
+  одинаковые Jira
   summary, одинаковые source task paths, одинаковые зоны файлов/ассетов или две
-  активные задачи на одну проблему. Дубли не раздаются повторно: один issue
-  остается source of truth, остальные помечаются `duplicate`/`superseded` с
+  активные задачи на одну проблему. Дубли не раздаются повторно: один Jira issue
+  остается canonical, остальные помечаются `duplicate`/`superseded` с
   ссылкой на основной task/Jira.
 
 ## Документация
@@ -344,4 +375,4 @@ docs/process/agent_role_boundaries_and_handoffs.md и укажи это в фи�
 3. Acceptance Criteria проверяемы без догадок.
 4. Указаны точные пути/ID, а не «где-то в проекте».
 5. Указано, какую документацию обновить.
-6. Задача добавлена на доску.
+6. Задача создана/обновлена в Jira и только затем отражена в локальном mirror/dashboard.

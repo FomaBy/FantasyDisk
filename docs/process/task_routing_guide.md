@@ -1,6 +1,6 @@
 # Гид Диспетчера: Как Формировать Задачи И Куда Их Направлять (Claude vs Codex)
 
-Обновлено: 2026-06-23
+Обновлено: 2026-06-27
 
 Для кого: PM, Codex Documentation dispatcher, Claude Code/Claude-чаты,
 фоновые воркеры и будущие диспетчеры. Источники процесса:
@@ -18,27 +18,31 @@ execution lane:
 | `Claude` | архитектура, баланс с продуктовыми решениями, неочевидная отладка, широкий refactor, конфликт-резолюция, release decisions, review | получает `Контур: Claude`; Codex dispatcher/role threads пропускают эту задачу |
 | `QA` | приемка после результата owner, регрессии, создание bug/follow-up задач | не чинит код/арт/анимацию в исходной задаче |
 
-Codex должен быть автономным внутри своих задач: после dispatch он сам берёт
-задачу, меняет статус, синхронизирует Jira, реализует scope, запускает проверки,
+С 2026-06-27 маршрутизация начинается из Jira: все задачи создаются и берутся из
+Jira project `SCRUM`. Локальные `docs/tasks/*.md` и `docs/process/task_board.md`
+служат spec/evidence mirror и dashboard/cache, но не являются очередью задач.
+
+Codex должен быть автономным внутри своих задач: после Jira dispatch он сам берёт
+задачу, меняет Jira status/comment и локальный mirror, реализует scope, запускает проверки,
 обновляет docs/CHANGELOG/task report и завершает или блокирует задачу. Его
 автономия ограничена owner/locked-path правилами, а не ожиданием ручного
 подтверждения.
 
 ## Обязательная Метадата Задачи
 
-Каждая active row должна иметь в task-файле:
+Каждый active Jira issue и его локальный mirror должны иметь:
 
 ```text
 Статус: new | in_progress | review | done | blocked
-Контур: Codex | Claude
+Контур: Codex | Claude | OtherAI
 Owner: <роль>/<thread или worker> | unassigned
 Thread: <Codex thread id> | <Claude chat/worker id> | n/a
 Locked paths: <основные файлы/папки/ассеты/экраны>
 Jira: SCRUM-<номер>
 ```
 
-Если `Контур`, `Owner/Thread` или `Locked paths` отсутствуют, dispatcher не
-маршрутизирует задачу до заполнения. Board note и Jira comment должны отражать
+Если `Контур`, `Owner/Thread` или `Locked paths` отсутствуют в Jira, dispatcher
+не маршрутизирует задачу до заполнения. Local mirror/board note должны отражать
 ту же информацию кратко.
 
 ## Правило Маршрутизации
@@ -65,17 +69,18 @@ Jira: SCRUM-<номер>
 
 ## Dispatch Protocol
 
-1. Dispatcher читает task-файл, board row, Jira/sync map, dirty worktree, recent
-   role-thread status и active owners по той же роли.
+1. Dispatcher читает Jira issue/status/comments/assignee/labels/links first,
+   затем local task mirror, board row, sync map, dirty worktree, recent role-thread
+   status и active owners по той же роли.
 2. Dispatcher выбирает `Контур` и locked paths. Нельзя оставлять active task без
    lane.
-3. Для `Контур: Codex` dispatcher добавляет/обновляет `Dispatch`, `Owner`,
-   `Thread`, `Locked paths`, board note и Jira comment, затем отправляет ровно
+3. Для `Контур: Codex` dispatcher добавляет/обновляет в Jira и local mirror
+   `Dispatch`, `Owner`, `Thread`, `Locked paths`, board note/Jira comment, затем отправляет ровно
    один handoff в нужный Codex role thread.
 4. Для `Контур: Claude` task остаётся доступной Claude Code/Claude worker only;
    Codex Documentation dispatcher не отправляет её в Codex.
-5. Исполнитель перед первой правкой ставит `Статус: in_progress`, сохраняет
-   owner metadata, запускает Jira sync и только потом работает.
+5. Исполнитель перед первой правкой переводит Jira issue/comment в `in_progress`,
+   сохраняет owner metadata в Jira/local mirror, запускает sync и только потом работает.
 6. По завершении owner пишет результат, проверки, docs changes и переводит
    задачу в `done` или `review`. Если scope не может быть завершён, ставит
    `blocked` с точной причиной и handoff/follow-up.
@@ -99,13 +104,13 @@ Jira: SCRUM-<номер>
 
 ## Как Доставить Задачу
 
-- `Codex`: PM отправляет в Codex Documentation dispatcher путь task-файла и
-  краткий scope. Documentation dispatcher делает audit и сам отправляет задачу
-  в существующий role thread. Прямой dispatch в role thread допустим только если
-  PM сразу заполняет `Контур: Codex`, `Owner`, `Thread`, `Locked paths` и Jira
-  comment.
-- `Claude`: PM/другая LLM создаёт task-файл и board row с `Контур: Claude`.
-  Claude Code/воркеры могут self-claim только такие rows и только если нет
+- `Codex`: PM отправляет в Codex Documentation dispatcher Jira key и краткий
+  scope. Documentation dispatcher делает audit и сам отправляет задачу в
+  существующий role thread. Прямой dispatch в role thread допустим только если
+  PM сразу заполняет в Jira/local mirror `Контур: Codex`, `Owner`, `Thread`,
+  `Locked paths` и Jira comment.
+- `Claude`: PM/другая LLM создаёт Jira issue с `Контур: Claude` и local mirror
+  при необходимости. Claude Code/воркеры могут self-claim только такие issues и только если нет
   active owner/locked-path конфликта.
 - `QA`: QA выбирает `done` без QA verdict по `docs/process/qa_protocol.md`.
   QA не редактирует реализацию, а создаёт bug/follow-up задачи.
@@ -125,7 +130,7 @@ Codex-работа не требует параллельного Claude вме�
 ## Чего Диспетчеру Делать Нельзя
 
 - Отправлять одну и ту же задачу в Codex и Claude.
-- Оставлять active `new` row без `Контур` и locked paths.
+- Оставлять active Jira issue/local `new` row без `Контур` и locked paths.
 - Давать Codex задачу, где уже есть Claude owner, worker note, `in_progress`,
   Jira ownership или dirty overlap.
 - Давать Claude worker задачу с `Контур: Codex` или dispatch на Codex thread.

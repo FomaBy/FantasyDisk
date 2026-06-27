@@ -1,6 +1,6 @@
 # Versioning And Branching Policy
 
-Обновлено: 2026-06-23
+Обновлено: 2026-06-27
 
 ## Текущее Правило
 
@@ -8,6 +8,8 @@ FantasyDisk переходит на версионность:
 
 - `main` - стабильная линия версии `0.1`;
 - `dev` - активная рабочая ветка текущей линии `0.1.x`;
+- Jira project `SCRUM` - authoritative task queue/status/owner source; local
+  task files and task board are mirrors/spec/evidence only.
 - текущая разработка: `Спринт 0.1.6` на `dev`; feature block 0.1.5 снят
   релизом `v0.1.5` 2026-06-15.
 
@@ -68,7 +70,8 @@ dev
 Документы должны явно понимать текущую линию разработки:
 
 - `docs/design/current_game_state.md` описывает активное состояние `dev`, если не указано иначе.
-- `docs/tasks/*.md` по умолчанию создаются для `dev`.
+- Jira issues по умолчанию создаются для `dev`/активного sprint; `docs/tasks/*.md`
+  создаются только как local spec/evidence mirrors.
 - release/finalization tasks должны явно указывать, какую версию готовят.
 
 ## Запреты

@@ -14,6 +14,10 @@
 понять задачу, проверить владельцев, выполнить свою часть, протестировать,
 задокументировать, синхронизировать Jira и GitHub.
 
+С 2026-06-27 Jira является единым источником задач, статусов, owner и sprint state.
+Все задачи ставятся в Jira и берутся из Jira. Локальные `docs/tasks/*.md` и
+`docs/process/task_board.md` — только spec/evidence mirrors и dashboard/cache.
+
 Перед любыми изменениями прочитай:
 
 - `AGENTS.md`;
@@ -30,7 +34,7 @@
 
 - текущую ветку и GitHub sync;
 - dirty worktree;
-- task status, Jira key/status, board row;
+- Jira issue/status/comments/assignee/labels/sprint, затем local task mirror/board row;
 - `Контур`, `Owner`, `Thread/Worker`, `Locked paths`;
 - свежие dispatch/result/QA notes;
 - пересечение файлов, ассетов, экранов или задачи с другим активным owner.
@@ -44,9 +48,10 @@ locked paths. Codex, Claude, DeepSeek, Gemini или любой другой AI 
 | Область | Источник |
 | --- | --- |
 | Общие правила агента | `AGENTS.md` |
-| Активная доска | `docs/process/task_board.md` |
-| Детали задачи | `docs/tasks/<task>.md` |
-| Jira mirror | Jira проект `SCRUM` + `docs/process/jira_sync_map.json` |
+| Очередь задач/status/owner | Jira проект `SCRUM` |
+| Локальный dashboard/cache | `docs/process/task_board.md` |
+| Детали задачи/spec/evidence mirror | `docs/tasks/<task>.md` |
+| Jira sync map | `docs/process/jira_sync_map.json` |
 | Роли и handoff | `docs/process/agent_role_boundaries_and_handoffs.md` |
 | PM процесс | `docs/process/pm_workflow.md` |
 | QA процесс | `docs/process/qa_protocol.md` |
@@ -54,8 +59,8 @@ locked paths. Codex, Claude, DeepSeek, Gemini или любой другой AI 
 | Дизайн/механики | `docs/design/*.md` |
 | GitHub | `https://github.com/FomaBy/FantasyDisk` |
 
-Если источники расходятся, не угадывай молча. Сначала проверь task file,
-board, Jira map/status и recent owner notes. Если конфликт остаётся, зафиксируй
+Если источники расходятся, не угадывай молча. Сначала проверь Jira issue,
+comments/status/assignee/labels, затем task file, board, sync map и recent owner notes. Если конфликт остаётся, зафиксируй
 blocked/PM note или создай handoff, но не стартуй параллельную реализацию.
 
 ## Типы Агентов
@@ -67,15 +72,15 @@ PM формирует требования, заводит `.md` задачи, �
 
 PM обязан:
 
-- превращать запрос пользователя в проверяемую задачу;
+- превращать запрос пользователя в проверяемый Jira issue;
 - выбрать роль и execution lane;
 - указать `Контур`, `Owner`, `Thread/Worker`, `Locked paths`;
-- добавить Jira key и board row;
+- создать/обновить local `.md`/board mirror только после Jira key;
 - декомпозировать cross-discipline работу на handoff tasks.
 
 ### Documentation Dispatcher
 
-Dispatcher читает board/Jira и раздаёт eligible задачи в существующие role
+Dispatcher читает Jira as authoritative queue, сверяет local mirrors и раздаёт eligible задачи в существующие role
 threads. Он не реализует gameplay, UI, art, animation, balance, release builds.
 
 Dispatcher обязан:
@@ -169,7 +174,7 @@ release skill только когда задача явно про релиз.
 
 ## Execution Lanes
 
-Каждая активная задача должна содержать:
+Каждый активный Jira issue и его local mirror должны содержать:
 
 ```text
 Статус: new | in_progress | review | done | blocked
@@ -193,14 +198,15 @@ Codex и Claude могут работать одновременно тольк�
 
 ## Запрет На Самовыбор
 
-Role agents не выбирают себе любую `new` строку из board. Они продолжают только:
+Role agents не выбирают себе любую `new` строку из локального board или
+неassigned Jira backlog. Они продолжают только:
 
-- задачу, явно dispatched в их thread/worker;
+- Jira issue, явно dispatched в их thread/worker;
 - активную задачу с совпадающим owner/thread;
 - bug/regression/release blocker, явно assigned им;
 - результат/QA verdict, который нужно синхронизировать.
 
-Если задача выглядит подходящей по роли, но не имеет явного owner/dispatch,
+Если Jira issue выглядит подходящим по роли, но не имеет явного owner/dispatch,
 агент ждёт dispatcher/PM.
 
 ## Task Lifecycle
@@ -214,21 +220,22 @@ new -> in_progress -> done/review -> QA -> QA PASSED -> Jira Done
 Перед первой правкой executor обязан:
 
 1. Проверить branch/status/fetch state.
-2. Проверить owner/locked paths/Jira.
-3. Убедиться, что task ему явно assigned.
-4. Поставить `Статус: in_progress`.
-5. Запустить/обновить Jira sync.
+2. Найти Jira issue и проверить owner/locked paths/status/comments.
+3. Убедиться, что Jira issue явно assigned ему.
+4. Поставить Jira `in_progress`/comment и только затем local mirror `Статус: in_progress`.
+5. Запустить/обновить sync.
 6. Только потом менять код/ассеты/docs.
 
 Завершая задачу, executor обязан:
 
-1. Обновить task file результатом.
-2. Обновить docs/design docs, если изменились functionality/balance/UI/content.
-3. Прогнать нужные smokes/tests/validators.
-4. Поставить `done` или `review`.
-5. Синхронизировать Jira.
-6. Закоммитить и запушить работу или открыть PR по GitHub workflow.
-7. Оставить рабочее дерево чистым либо явно описать оставшийся WIP/blocker.
+1. Обновить Jira status/comment результатом.
+2. Обновить task file mirror результатом.
+3. Обновить docs/design docs, если изменились functionality/balance/UI/content.
+4. Прогнать нужные smokes/tests/validators.
+5. Поставить Jira + mirror `done` или `review`.
+6. Синхронизировать local mirrors.
+7. Закоммитить и запушить работу или открыть PR по GitHub workflow.
+8. Оставить рабочее дерево чистым либо явно описать оставшийся WIP/blocker.
 
 ## Jira Правила
 
@@ -236,8 +243,9 @@ Jira обязательна. Работа не считается сделанн
 
 Обязательные действия:
 
-- взял задачу: `.md` `in_progress` + Jira status/comment;
-- завершил: `.md` `done/review` + Jira sync;
+- новая задача: Jira issue first, local `.md`/board mirror second;
+- взял задачу: Jira status/comment + `.md` mirror `in_progress`;
+- завершил: Jira status/comment + `.md` mirror `done/review`;
 - QA passed: Jira в «Готово»;
 - blocked: Jira comment/status с точной причиной;
 - handoff: отдельный `.md` task + Jira issue/comment в исходном тикете;
@@ -434,12 +442,12 @@ Use this before every task:
 1. Read AGENTS.md and relevant process/task/design docs.
 2. Confirm branch and GitHub sync.
 3. Check dirty worktree.
-4. Check task status, board row, Jira key/status.
+4. Find Jira issue and check status, comments, assignee, labels, sprint.
 5. Check Contour/Owner/Thread/Locked paths.
-6. Check recent owner/dispatch/QA notes.
+6. Check local task/board mirror only after Jira, plus recent owner/dispatch/QA notes.
 7. Verify required skill and read its SKILL.md if using Codex.
-8. If not explicitly assigned, do not start.
-9. If assigned, set in_progress + sync Jira.
+8. If Jira issue is not explicitly assigned, do not start.
+9. If assigned, set Jira in_progress/comment + sync local mirror.
 10. Work only inside role scope.
 11. Test, update docs/task report.
 12. Commit/push or open PR.
@@ -455,7 +463,7 @@ Executor final report should state:
 - files changed;
 - tests/validators run and results;
 - docs updated;
-- Jira sync result;
+- Jira status/comment/sync result;
 - GitHub state: commit/branch/push/PR or no changes;
 - blockers/handoffs if any.
 

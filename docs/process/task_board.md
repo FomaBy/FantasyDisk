@@ -1,19 +1,22 @@
 # Task Board — FantasyDisk (живой дашборд)
 
-Обновлено: 2026-06-23
-Ведёт: PM. Доска показывает активную работу, review/QA gates и важные recent
-rows, которые нужны диспетчеру для anti-duplicate/owner audit. Завершённые
-задачи остаются в Jira (эпики SCRUM-212..221, статус «Готово») и git-истории.
-Статусы: `new` | `in_progress` | `review` | `blocked` | `done`. Источник истины по деталям —
-файлы `docs/tasks/*.md`; управление и отчётность — Jira.
-Новые или обновляемые active rows обязаны иметь lane/owner metadata: `Контур:
-Codex|Claude`, `Owner`, `Thread/Worker`, `Locked paths`.
+Обновлено: 2026-06-27
+Ведёт: PM/dispatcher как локальный dashboard/cache. С 2026-06-27 Jira проект
+`SCRUM` является authoritative task queue/status/owner source. Эта доска
+показывает активную работу, review/QA gates и важные recent rows только для
+anti-duplicate/owner audit и локального удобства. Новые задачи нельзя брать
+из этого файла напрямую: они должны существовать и назначаться в Jira.
+Статусы: `new` | `in_progress` | `review` | `blocked` | `done`. Источник истины
+по очереди/status/owner — Jira; `docs/tasks/*.md` содержит подробную спецификацию
+и evidence mirror.
+Новые или обновляемые active Jira issues/mirror rows обязаны иметь lane/owner
+metadata: `Контур: Codex|Claude|OtherAI`, `Owner`, `Thread/Worker`, `Locked paths`.
 
 ## Спринт 0.1.6 — активная разработка
 
 Релиз v0.1.5 выпущен 2026-06-15, feature block 0.1.5 снят. Активен
-`Спринт 0.1.6`: задачи 0.1.6 можно маршрутизировать обычным порядком после
-проверки зависимостей, дублей, active owner, dirty worktree и locked paths.
+`Спринт 0.1.6`: задачи 0.1.6 можно маршрутизировать обычным порядком из Jira
+после проверки зависимостей, дублей, active owner, dirty worktree и locked paths.
 Перед следующим релизом PM может снова включить freeze отдельной директивой.
 
 Исторический контекст 0.1.5 оставлен только для сверки старых зависимостей:

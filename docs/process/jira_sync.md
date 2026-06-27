@@ -1,18 +1,25 @@
 # Jira Sync — FantasyDisk
 
-Обновлено: 2026-06-23
+Обновлено: 2026-06-27
 
 ## Назначение
 
-Все задачи FantasyDisk ведутся в двух местах:
+С 2026-06-27 Jira является единым authoritative task queue/status/ownership
+source для FantasyDisk. Это нужно, чтобы AI-агенты могли работать с разных
+устройств и не зависели от локального состояния одного Mac.
 
-- `.md` task-файлы в `docs/tasks/` — полный источник требований, acceptance criteria,
-  handoff notes, QA verdict и детальный результат.
-- Jira проект `SCRUM` (`FantasyDisk`) — sprint board, статус, release tracking и
-  общий PM-обзор.
+Все задачи ведутся так:
 
-Новая или измененная задача считается корректно оформленной только если `.md`,
-`docs/process/task_board.md` и Jira синхронизированы.
+- Jira проект `SCRUM` (`FantasyDisk`) — источник очереди, статуса, owner,
+  labels, sprint/release tracking и cross-device PM overview.
+- `.md` task-файлы в `docs/tasks/` — локальные spec/evidence mirrors для
+  подробного ТЗ, acceptance criteria, handoff notes, QA evidence и результата.
+- `docs/process/task_board.md` — локальный read-only dashboard/cache для
+  удобства агентов; он не является источником новых задач.
+
+Новая или измененная задача считается корректно оформленной только если сначала
+есть Jira issue `SCRUM-*`, а локальные `.md`/board mirrors синхронизированы с
+этим issue. Агенты берут работу из Jira, не из локальной доски.
 
 ## Jira Проект
 
@@ -93,25 +100,33 @@ Jira sync/dispatcher rules:
 released, создаётся следующая. Игровые патч-ноуты для игрока — экран
 «Что нового» (данные обновляются в релизном чек-листе).
 
-## Правила Создания И Обновления
+## Jira-first Intake И Обновления
 
-1. Новые `.md` task-файлы и Jira issues создает PM/другая LLM. Codex
-   Documentation dispatcher может создавать active-sprint 0.1.6 задачи только
-   после duplicate/owner/lane/locked-path audit. Обычная сверка dispatcher может
-   идти через `python3 tools/jira_board_sync.py --no-create`; после намеренного
-   создания задачи нужно запускать sync без `--no-create`, чтобы появился Jira
-   issue.
-2. Во время будущего feature block задачи текущей версии остаются current-sprint
+1. Новые задачи создаются сначала в Jira. PM/другая LLM/dispatcher формирует
+   Jira issue с summary, role, lane, owner/unassigned state, locked paths,
+   acceptance criteria и sprint/release context.
+2. Локальный `.md` task-файл создаётся или обновляется только после появления
+   Jira key и служит подробной спецификацией/evidence mirror. Нельзя создавать
+   исполнимую задачу только в `docs/tasks/` без Jira issue.
+3. `docs/process/task_board.md` обновляется как кэш/дашборд по Jira, но не
+   используется как источник очереди. Если board и Jira расходятся, Jira
+   побеждает, а board/task mirror нужно привести в соответствие.
+4. Codex Documentation dispatcher может создавать active-sprint 0.1.6 Jira
+   issues только после duplicate/owner/lane/locked-path audit. Обычная сверка
+   dispatcher может идти через `python3 tools/jira_board_sync.py --no-create`;
+   после намеренного создания Jira issue нужно синхронизировать локальные
+   mirrors.
+5. Во время будущего feature block задачи текущей версии остаются current-sprint
    work только если они уже есть на board или являются bug/QA defect/regression/
    release blocker. Новые не-баговые задачи получают следующую `Версия` и
    остаются без active sprint assignment до PM override.
-3. В `.md` task-файле рядом с метаданными добавить строку:
+6. В `.md` task-файле рядом с метаданными добавить строку:
 
    ```text
    Jira: SCRUM-123
    ```
 
-4. В `docs/process/task_board.md` в примечании к строке задачи добавить Jira key:
+7. В `docs/process/task_board.md` в примечании к строке задачи добавить Jira key:
 
    ```text
    Jira: SCRUM-123
@@ -120,7 +135,7 @@ released, создаётся следующая. Игровые патч-ноу�
    Для active rows board note также должна показывать `Контур`, owner/thread и
    главные locked paths, если они не очевидны из названия задачи.
 
-5. При изменении статуса `.md` обновить Jira:
+8. При изменении статуса сначала обновить Jira, затем локальные mirrors:
    - `new` — issue создана и находится в backlog/sprint To Do.
    - `in_progress` — перевести issue в In Progress, если переход доступен.
    - `review` — перевести в review/QA статус, если такой статус есть; иначе оставить
@@ -128,24 +143,25 @@ released, создаётся следующая. Игровые патч-ноу�
    - `done` — перевести в Done, если acceptance/QA позволяют.
    - `blocked` — оставить в текущем workflow status и добавить comment с причиной.
 
-6. При добавлении `## Результат` или `## QA-Вердикт` в `.md` добавить Jira comment
+9. При добавлении `## Результат` или `## QA-Вердикт` в `.md` добавить Jira comment
    с кратким резюме и ссылкой на локальный task-файл.
-7. При релизе версии все связанные Jira issues должны иметь release note/комментарий
+10. При релизе версии все связанные Jira issues должны иметь release note/комментарий
    или Fix Version, если версия заведена в Jira.
 
 ## Обязательство Агентов
 
 Каждый агент, который берет задачу в работу или завершает ее, обязан:
 
-1. Проверить наличие `Jira: SCRUM-*` в task-файле.
-2. Если Jira key отсутствует — передать PM/owner задачу на создание issue до
-   начала работы. Исключение: Codex Documentation dispatcher может сам создать
-   Jira issue для 0.1.6 task после duplicate/owner/lane/locked-path audit или
-   для текущего bug/QA defect/regression/release blocker.
-3. При изменении `.md` статуса обновить Jira status/comment.
-4. Если задача переносится, блокируется или требует handoff — отразить это и в
-   `.md`, и в Jira comment/status.
-5. Не закрывать задачу полностью без синхронизации Jira.
+1. Начинать с Jira: найти issue `SCRUM-*`, проверить status, assignee, labels,
+   comments, sprint, lane/owner/locked paths.
+2. Если Jira issue отсутствует — не начинать реализацию. Создать Jira issue
+   через PM/dispatcher или самому, если роль это разрешает, и только затем
+   создать/обновить локальный `.md` mirror.
+3. При изменении статуса обновить Jira status/comment первым, затем `.md` и
+   board mirror.
+4. Если задача переносится, блокируется или требует handoff — отразить это
+   сначала в Jira comment/status, затем в локальном mirror.
+5. Не закрывать задачу полностью без синхронизации Jira и QA state.
 6. Закрывать только свои задачи или задачи своего ревью-контура. Dispatcher/PM
    не закрывает задачу за исполнителя; он синхронизирует Jira только после того,
    как исполнитель записал результат в task-файл/board или QA добавил verdict.
@@ -157,7 +173,7 @@ released, создаётся следующая. Игровые патч-ноу�
 
 ## Проверка Дубликатов
 
-Dispatcher при регулярной сверке обязан искать дубли в `.md` board и Jira:
+Dispatcher при регулярной сверке обязан искать дубли сначала в Jira, затем в local mirrors:
 
 - одинаковый task-файл или source task path;
 - одинаковый Jira summary/почти одинаковая формулировка проблемы;
@@ -165,9 +181,9 @@ Dispatcher при регулярной сверке обязан искать д
 - backlog-задача будущей версии, случайно продублированная в active sprint.
 
 Если найден дубль, dispatcher не раздает его исполнителю. Нужно оставить один
-source of truth, а остальные пометить `duplicate` или `superseded`, добавить
-ссылку на основной `.md`/Jira issue и комментарий в Jira. Если непонятно, какая
-задача главная, оставить обе без dispatch и эскалировать PM.
+canonical Jira issue, а остальные пометить `duplicate` или `superseded`, добавить
+ссылку на основной Jira issue/local mirror и комментарий в Jira. Если непонятно,
+какая задача главная, оставить обе без dispatch и эскалировать PM.
 
 ## Feature Block / Sprint Policy
 
