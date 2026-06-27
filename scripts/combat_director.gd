@@ -866,17 +866,22 @@ func _is_shooter_scene(packed_scene: PackedScene) -> bool:
 func _grant_combat_completion_rewards(event_combat := {}) -> void:
 	if game.current_player == null or not is_instance_valid(game.current_player):
 		return
+	var xp_reward: int
+	var money_reward: int
 	if game.current_combat_type == "elite":
-		game.current_player.gain_xp(7 + game.route_stage * 2)
-		game.current_player.gain_money(10 + game.route_stage * 4)
+		xp_reward = 7 + game.route_stage * 2
+		money_reward = 10 + game.route_stage * 4
 	else:
-		var xp_reward: int = 3 + game.route_stage
-		var money_reward: int = 4 + game.route_stage * 2
-		if not event_combat.is_empty():
-			xp_reward = int(round(float(xp_reward) * float(event_combat.get("xp_multiplier", 1.0))))
-			money_reward = int(round(float(money_reward) * float(event_combat.get("money_multiplier", 1.0))))
-		game.current_player.gain_xp(xp_reward)
-		game.current_player.gain_money(money_reward)
+		xp_reward = 3 + game.route_stage
+		money_reward = 4 + game.route_stage * 2
+	# Event-бои (и обычные, и элитные) могут нести множители из event_data —
+	# раньше элитная ветка их молча игнорировала, и +50% золота/+25% опыта в
+	# тултипе defile/duel были неправдой. Множители честно применяем к обеим веткам.
+	if not event_combat.is_empty():
+		xp_reward = int(round(float(xp_reward) * float(event_combat.get("xp_multiplier", 1.0))))
+		money_reward = int(round(float(money_reward) * float(event_combat.get("money_multiplier", 1.0))))
+	game.current_player.gain_xp(xp_reward)
+	game.current_player.gain_money(money_reward)
 	if not event_combat.is_empty() and event_combat.has("post_combat"):
 		game.current_player.apply_reward(event_combat["post_combat"])
 

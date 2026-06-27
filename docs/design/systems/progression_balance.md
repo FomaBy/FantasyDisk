@@ -1,6 +1,6 @@
 # Progression And Balance
 
-Обновлено: 2026-06-17 (0.1.6)
+Обновлено: 2026-06-27 (0.1.7)
 
 Source of truth для чисел: `scripts/progression_data.gd` (фасад) + доменные файлы данных `scripts/progression_data_characters.gd`, `progression_data_weapons.gd`, `progression_data_content.gd`, `progression_data_shop.gd`, `progression_data_ascension.gd`, `progression_data_enemies.gd` (доменный сплит SCRUM-198 — фасад реэкспортит их как const, публичный API сохранён), `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -95,6 +95,64 @@ UI обязан показывать эти интерпретации текс�
   следующего route node. Следующий route node финализирует прошлый магазин и
   очищает его stock/purchased state.
 - Shop-only icons: `assets/sprites/ui/icons/shop/shop_<shop_item_id>.png`.
+
+## Random Events EV (SCRUM-494)
+
+Случайные события (`scripts/event_data.gd`, применение в
+`ui_screens._apply_event_choice/_resolve_event_choice_outcome`,
+наградные множители боя — `combat_director._grant_combat_completion_rewards`).
+EV-ребаланс свёл каждую опцию к `EV = P(успех) × награда − стоимость/штраф`.
+
+**Принцип:** рискованные/платные опции дают заметно больший апсайд (статы,
+артефакты, run-long моды), безопасные — скромную гарантию (мелкое золото/хил).
+Награды-статы/артефакты/моды предпочтительны для риск-опций, т.к. их
+gold-equivalent растёт вместе с экономикой; плоское `money` со стадией не
+масштабируется (а `cost_money` — масштабируется через `stage_scaled_cost`),
+поэтому крупное плоское золото на риск-опции не вешаем.
+
+**Шкала ценности (gold-value, GV, ранний забег):** 1 GV = 1 золото; 1 стат ≈
+20 GV (цена покупки атрибута stage0 ≈ `ceil(18×1.10)`); random_artifact ≈ 45 GV
+(взвешенное среднее `COST_BY_TIER` {1:30,2:55,3:95} по `TIER_WEIGHTS`);
+run-long damage/attack_speed ≈ 3 GV/1%; xp_gain ≈ 1.5 GV/1%; heal ≈ 0.35 GV/1%
+(контекстно); −HP ≈ 0.45 GV/1%. P(check) ≈ 0.55 при difficulty 7, ≈ 0.45 при 8
+(база раннего забега). combat-опции дают полный лут боя + completion-бонус
+(`elite`: 10+stage×4 зол / 7+stage×2 xp; `battle`: 4+stage×2 / 3+stage, ×
+event-множители) + `post_combat`.
+
+| Событие / опция | Тип | Cost/Risk | Reward (GV) | EV (GV) |
+| --- | --- | --- | --- | --- |
+| bard / pay_ballad | платная | 18 зол | +12% atk_speed (36) | +16 |
+| bard / sing_yourself | проверка kn7 | −1 Знание при провале | +1 Зн/Воспр/Лид (60) | +24 |
+| bard / walk_away | безопасная | — | 6 зол +4% xp (12) | +12 |
+| altar / blood_price | платная (HP) | −30% HP (−14) | артефакт (45) | +31 |
+| altar / defile | риск (elite) | элита 1.12 HP | элит-лут +50% зол/+25% xp +Сила/Вынос (40) | топ-риск |
+| altar / quiet_prayer | безопасная | −10% HP (−5) | +1 Выносливость (20) | +15 |
+| ambush / stand_ground | риск (battle) | бой 1.18 HP | бой-лут +50% зол +Сила (20) | риск+ |
+| ambush / break_through | проверка agi8 | −15% HP при провале | +1 Лов +6% atk_spd (38) | +13 |
+| well / throw_coin | платная (рандом) | 8 зол | хил30%/28 зол/бой (avg ~19) | +10 |
+| well / listen | проверка per7 | провал +5 зол | +1 Восприятие (20) | +13 |
+| mercenary / help | платная | 20 зол | +1 Лид +1 призыв (35) | +13 |
+| mercenary / loot | безопасная (жадная) | −1 Знание (−20) | 30 зол | +10 |
+| mercenary / bind_wounds | проверка end7 | −6 зол при провале | defense_flat 0.06 (18) | +7 |
+| goblin / buy_bag | риск+платная | 12 зол | артефакт/8 зол/мимик (avg ~25) | +13 |
+| goblin / haggle | проверка per8 | −10 зол при провале | 30 зол | +7 |
+| hot_spring / full_rest | безопасная (трейд) | след. бой 1.25 HP (−15) | полный хил (35) | +20 (контекст) |
+| hot_spring / quick_dip | безопасная | — | хил 35% (12) | +12 |
+| mirror / duel | риск (elite) | элита 1.05 HP | элит-лут +30% зол +Инт +8% урон (44) | топ-риск |
+| mirror / study | проверка int8 | −12% HP при провале | +1 Инт +8% урон (44) | +17 |
+| guardian / answer_riddle | проверка kn8 | бой при провале | артефакт (45) | +26 |
+| guardian / fight_guardian | риск (battle) | бой 1.25 HP | бой-лут +30% зол +Сила/Вынос (40) | риск+ |
+| graveyard / dig | риск (рандом) | бой 1.22 HP | артефакт ИЛИ бой+Вынос (avg ~33) | +33 |
+| graveyard / pay_respects | безопасная | — | +1 Вынос +хил15% (24) | +24 |
+| star / take_shard | платная (HP) | −12% HP (−5) | +2 Энергия (40) | +35 |
+| star / observe | проверка int7 | −8% HP при провале | +1 Энергия +1 Знание (40) | +20 |
+| dummies / speed_trial | проверка agi7 | −10% HP при провале | +1 Лов +8% atk_spd (44) | +22 |
+| dummies / power_trial | проверка str7 | −10% HP при провале | +1 Сила +8% урон (44) | +22 |
+
+Разнообразие исходов сохранено (статы, артефакты, моды, хил, золото, бои) —
+не всё сведено к золоту. Тултипы в `event_data.gd` синхронизированы с
+фактическими эффектами; `event_data_smoke_test.gd` + балансные/economy смоуки
+зелёные.
 
 ## Meta Progression
 

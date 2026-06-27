@@ -115,6 +115,21 @@
   smoke, UI no-overlap matrix and full runtime smoke pass.
 
 ### Changed
+- Random event EV rebalance (SCRUM-494 / carry-over SCRUM-476): свёл каждую
+  опцию каждого из 12 событий `scripts/event_data.gd` к явной таблице
+  risk/cost → reward с EV (см. «Random Events EV» в
+  `docs/design/systems/progression_balance.md`). Рискованные/платные опции
+  теперь дают заметно более ценный апсайд (статы, артефакты, run-long моды),
+  безопасные — скромную гарантию. Ключевые правки: `full_rest` больше не даёт
+  бесплатно полный хил + Выносливость (убрана Выносливость, штраф следующему
+  бою 1.20→1.25); `defile`/`duel` (elite) получили честные `post_combat`-награды
+  и работающие денежные множители; `goblin_lottery`/`well`-исходы выровнены
+  (дешевле вход, «хлам» 3→8 зол, провалы дают консолацию); проверочные опции
+  получили мелкие добивки. Денежные множители event-боёв теперь применяются и
+  к elite-ветке (`combat_director._grant_combat_completion_rewards`) — раньше
+  они молча игнорировались, делая тултипы defile/duel неправдой. Экономика
+  сверена против `stage_scaled_cost`/`COST_BY_TIER`/`DROP_CLASS_MULTIPLIERS`;
+  `event_data_smoke_test.gd`, runtime/economy и балансные смоуки зелёные.
 - Settings and Attribute Shop short-viewport fit (SCRUM-471): fixed the
   1152x648 no-overlap matrix failures by allowing the Settings v2 content panel
   to compress only on short modals and using compact Attribute Shop offer/action
