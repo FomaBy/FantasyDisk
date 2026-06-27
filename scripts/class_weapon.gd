@@ -554,7 +554,7 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 			var current_weapon := instance_from_id(weapon_id) as Node
 			var current_pool := instance_from_id(pool_id) as Node2D
 			if current_weapon != null and current_pool != null:
-				current_weapon.call("_damage_enemies_in_circle", current_pool.global_position, aoe_radius * 0.7, tick_damage)
+				current_weapon.call("_damage_enemies_in_pool", current_pool.global_position, aoe_radius * 0.7, tick_damage)
 		)
 	pool_tween.tween_property(pool_sprite, "modulate:a", 0.0, 0.2)
 	pool_tween.tween_callback(func() -> void:
@@ -2030,6 +2030,35 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 func _damage_enemies_in_circle(origin: Vector2, radius: float, amount: float) -> void:
 	for enemy_node in TARGET_QUERY.in_radius(self, origin, radius):
 		_damage_enemy(enemy_node, amount)
+
+
+# SCRUM-533: тик ЛУЖИ (DoT-облако) с диминишингом по числу целей. Раньше каждый
+# тик лужи лил ПОЛНЫЙ tick_damage всем врагам в круге без потолка, поэтому на
+# плотном паке из 20 целей throughput рос линейно (chemist/acid_flask lvl20_ideal
+# 20t ≈ 112k — кратно выше budget'а). Формула же бюджетит лужу как pool_targets ≤ 4
+# (estimate_weapon_budget → _budget_hit_model, mode aoe_projectile), так что живой
+# замер выбивался из формульного коридора. Здесь живой урон лужи приводится к тому
+# же бюджету: ближайшие POOL_FULL_TARGETS целей получают полный урон, каждая
+# следующая (по удалённости от центра) — убывающий 1/(1+(rank-knee)*decay). Облако
+# конечной потенции: типичный бой 1-5 целей не задет, плотная толпа не даёт runaway.
+const POOL_FULL_TARGETS := 4
+const POOL_TARGET_DIMINISH := 0.6
+
+func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float) -> void:
+	var enemies: Array = TARGET_QUERY.in_radius(self, origin, radius)
+	if enemies.size() <= POOL_FULL_TARGETS:
+		for enemy_node in enemies:
+			_damage_enemy(enemy_node, amount)
+		return
+	# Сортировка по близости к центру лужи — полный урон достаётся «ядру» пака.
+	enemies.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return origin.distance_squared_to(a.global_position) < origin.distance_squared_to(b.global_position)
+	)
+	for index in range(enemies.size()):
+		var factor := 1.0
+		if index >= POOL_FULL_TARGETS:
+			factor = 1.0 / (1.0 + float(index - POOL_FULL_TARGETS + 1) * POOL_TARGET_DIMINISH)
+		_damage_enemy(enemies[index] as Node2D, amount * factor)
 
 
 func _damage_enemies_in_circle_falloff(origin: Vector2, radius: float, amount: float, minimum_factor: float) -> void:
