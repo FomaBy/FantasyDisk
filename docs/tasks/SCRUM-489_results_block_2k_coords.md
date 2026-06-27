@@ -223,3 +223,25 @@ MAP_NODE_SIZE=(88,88), main.gd:29-30; row_count=max(route_nodes, ROUTE_STEPS_TO_
   расширяем его матрицу), SCRUM-484 (образец блока Меню/Навигация), SCRUM-470 (hero select v4 mockup/доли).
 - После правок верификатора пишутся дампы в `build/qa/...` — добавить в `.gitignore`-исключения уже учтено
   (билд-артефакты); коммитить эвиденс по правилам проекта (явный `git add` своих файлов при churn, green-gate ДО коммита).
+
+## QA-Вердикт (2026-06-28)
+Статус: PASSED
+
+Проверено:
+- Jira issue/current sprint/status/labels/result comment: SCRUM-489, `Контроль качества` -> `Готово`, current `Спринт 0.1.7`, result commit noted by implementer; QA target was current `dev` HEAD `1671e521`.
+- Code/docs audit: `RESULT_*`/`VS_*`/`DS_*`, `HS4_*_2K`, `WS_*_2K`, `RM_*_2K`, `ROUTE_MAP_HEADER_HEIGHT := 140.0`, `tests/ui_no_overlap_matrix_test.gd` cases `weapon_select`/`route_map`, and `docs/design/ui_screens_inventory.md` SCRUM-489 section are present.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/ui_no_overlap_matrix_test.gd` — PASS; SCRUM-489 dump: `build/qa/scrum489/results_block_no_overlap_matrix.md`.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_combat_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_progression_economy_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — PASS (exit 0; existing non-fatal `data.tree is null` warnings during weapon-attachment sampling).
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/meta_progression_smoke_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/melee_weapon_targeting_test.gd` — PASS (exit 0; same non-fatal `data.tree is null` warning pattern).
+- Monolithic `runtime_smoke_test.gd`: two normal runs returned code 247 with no assertion output after duplicate-artifact guard; isolated rerun with `--user-data-dir /tmp/fsd_qa_489_runtime` PASS. Treated as environment/user-data noise, not a SCRUM-489 defect.
+
+Краевые случаи:
+- Matrix covers `1152x648`, `1280x720`, `1600x900`, `1920x1080`, `2560x1440`, `3840x2160`.
+- Verified new SCRUM-489 surfaces specifically: victory, death, hero_select, weapon_select, route_map.
+- Route map canvas taller than viewport is accepted as scroll-content; overlap uses visible clipped rects inside `ScrollContainer`.
+
+Баги: нет.
