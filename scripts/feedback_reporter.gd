@@ -17,10 +17,43 @@ const UPLOAD_FILENAME := "fantasydisk_feedback.jpg"
 const UPLOAD_MAX_DIM := 1280
 const UPLOAD_JPG_QUALITY := 0.72
 
+# SCRUM-547: у тестеров отправка падала с «нет ответа (result 13)» = RESULT_TIMEOUT —
+# сервер не успевал ответить за жёсткие 12 с, и единственная попытка без ретрая сразу
+# сохраняла локально, до нас фидбек не доходил. Поднимаем таймаут и добавляем ретрай с
+# бэкоффом на временных (сетевых/таймаут/5xx/429) ошибках; 4xx (кроме 429) НЕ ретраим —
+# это не временная ошибка. Финальный провал, как и раньше, сохраняет локальный снапшот.
+const REQUEST_TIMEOUT := 25.0
+const MAX_ATTEMPTS := 3
+# Пауза перед попытками №2 и №3 (попытка №1 — без задержки). Нарастающий бэкофф,
+# чтобы не долбить сервер и пережить короткую деградацию сети.
+const RETRY_BACKOFF_SECONDS := [2.0, 5.0]
+# При 429 без заголовка Retry-After и как потолок ожидания при больших Retry-After.
+const RATE_LIMIT_FALLBACK_SECONDS := 3.0
+const RATE_LIMIT_MAX_WAIT_SECONDS := 15.0
+# Временные результаты HTTPRequest — их имеет смысл ретраить (в отличие от, например,
+# RESULT_BODY_SIZE_LIMIT_EXCEEDED или явного HTTP 4xx).
+const TRANSIENT_RESULTS := [
+	HTTPRequest.RESULT_TIMEOUT,
+	HTTPRequest.RESULT_CANT_CONNECT,
+	HTTPRequest.RESULT_CANT_RESOLVE,
+	HTTPRequest.RESULT_CONNECTION_ERROR,
+	HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR,
+	HTTPRequest.RESULT_NO_RESPONSE,
+]
+# Результаты «нет сети/не достучались» — для отдельного, более точного сообщения.
+const NO_NETWORK_RESULTS := [
+	HTTPRequest.RESULT_CANT_CONNECT,
+	HTTPRequest.RESULT_CANT_RESOLVE,
+	HTTPRequest.RESULT_CONNECTION_ERROR,
+	HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR,
+]
+
 var _pending_text := ""
 var _pending_metadata := {}
 var _pending_screenshot: Image = null
 var _request: HTTPRequest = null
+var _pending_webhook_url := ""
+var _attempt := 0
 
 
 func submit_report(text: String, screenshot: Image, metadata: Dictionary) -> void:
@@ -102,12 +135,24 @@ static func _upload_image_buffer(screenshot: Image) -> PackedByteArray:
 
 
 func _post_to_webhook(webhook_url: String) -> void:
+	# Стартуем серию попыток: одна сетевая отправка = _dispatch_request(); ретраи по
+	# таймеру внутри, без промежуточных эмитов report_finished — сигнал уходит ровно один
+	# раз за submit_report (success или финальный провал после всех попыток).
+	_pending_webhook_url = webhook_url
+	_attempt = 0
+	_dispatch_request()
+
+
+func _dispatch_request() -> void:
+	_attempt += 1
 	if _request != null and is_instance_valid(_request):
 		_request.queue_free()
 	_request = HTTPRequest.new()
 	_request.name = "FeedbackHTTPRequest"
+	# Форма ставит игру на паузу (push_pause): и сам запрос, и таймер ретрая должны
+	# тикать на паузе, иначе отправка/ретрай «зависнут» до снятия паузы.
 	_request.process_mode = Node.PROCESS_MODE_ALWAYS
-	_request.timeout = 12.0
+	_request.timeout = REQUEST_TIMEOUT
 	add_child(_request)
 	_request.request_completed.connect(_on_request_completed)
 
@@ -118,22 +163,93 @@ func _post_to_webhook(webhook_url: String) -> void:
 		"Content-Type: multipart/form-data; boundary=%s" % boundary,
 		"User-Agent: FantasyDisk-Feedback/1.0",
 	]
-	var error := _request.request_raw(webhook_url, headers, HTTPClient.METHOD_POST, body)
+	var error := _request.request_raw(_pending_webhook_url, headers, HTTPClient.METHOD_POST, body)
 	if error != OK:
-		var local_path := save_local_report(_pending_text, _pending_screenshot, _pending_metadata)
-		report_finished.emit(false, "Сеть недоступна. Отчет сохранен локально.", local_path)
+		# Не удалось даже стартовать запрос (нет сети/занят клиент) — это временный сбой:
+		# ретраим по той же логике, что и таймаут, чтобы пережить короткую недоступность.
+		_request.queue_free()
+		_request = null
+		if _attempt < MAX_ATTEMPTS:
+			_schedule_retry(_backoff_for_attempt())
+		else:
+			_finalize_failure(HTTPRequest.RESULT_CANT_CONNECT, 0)
 
 
-func _on_request_completed(result: int, response_code: int, _headers: PackedStringArray, _body: PackedByteArray) -> void:
+func _on_request_completed(result: int, response_code: int, headers: PackedStringArray, _body: PackedByteArray) -> void:
 	if _request != null and is_instance_valid(_request):
 		_request.queue_free()
 	_request = null
 	if result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300:
 		report_finished.emit(true, "Отчет отправлен разработчику.", "")
 		return
+
+	if _attempt < MAX_ATTEMPTS and _is_retryable(result, response_code):
+		var delay := _backoff_for_attempt()
+		# 429 Too Many Requests — уважаем Retry-After, иначе рискуем баном вебхука.
+		if response_code == 429:
+			delay = maxf(delay, _retry_after_seconds(headers))
+		_schedule_retry(delay)
+		return
+
+	_finalize_failure(result, response_code)
+
+
+func _is_retryable(result: int, response_code: int) -> bool:
+	if result != HTTPRequest.RESULT_SUCCESS:
+		return TRANSIENT_RESULTS.has(result)
+	# Ответ получен, но код ошибочный: 429 и 5xx — временные, прочие 4xx — нет.
+	if response_code == 429:
+		return true
+	return response_code >= 500 and response_code < 600
+
+
+func _schedule_retry(delay_seconds: float) -> void:
+	var tree := get_tree()
+	if tree == null:
+		# Без дерева таймер не создать — не зависаем, проваливаемся сразу.
+		_finalize_failure(HTTPRequest.RESULT_TIMEOUT, 0)
+		return
+	# process_always=true: таймер тикает даже на паузе (форма фидбека ставит игру на паузу).
+	var timer := tree.create_timer(maxf(delay_seconds, 0.0), true)
+	timer.timeout.connect(_dispatch_request, CONNECT_ONE_SHOT)
+
+
+func _finalize_failure(result: int, response_code: int) -> void:
 	var local_path := save_local_report(_pending_text, _pending_screenshot, _pending_metadata)
-	var detail := "код %d" % response_code if response_code > 0 else "нет ответа (result %d)" % result
-	report_finished.emit(false, "Ошибка отправки (%s). Отчет сохранен локально." % detail, local_path)
+	report_finished.emit(false, _failure_message(result, response_code), local_path)
+
+
+func _failure_message(result: int, response_code: int) -> String:
+	# Понятные, различимые сообщения (короткие — помещаются в FeedbackStatusLabel).
+	if response_code >= 400:
+		return "Ошибка сервера (код %d). Отчет сохранен локально." % response_code
+	if NO_NETWORK_RESULTS.has(result):
+		return "Не удалось связаться с сервером (нет сети). Отчет сохранен локально."
+	if result == HTTPRequest.RESULT_TIMEOUT or result == HTTPRequest.RESULT_NO_RESPONSE:
+		return "Сервер не ответил (таймаут после %d попыток). Отчет сохранен локально." % MAX_ATTEMPTS
+	if response_code > 0:
+		return "Ошибка отправки (код %d). Отчет сохранен локально." % response_code
+	return "Ошибка отправки (нет ответа, result %d). Отчет сохранен локально." % result
+
+
+func _backoff_for_attempt() -> float:
+	# _attempt уже инкрементнут на текущую попытку; пауза перед СЛЕДУЮЩЕЙ берётся по
+	# индексу совершённых попыток (1→RETRY_BACKOFF_SECONDS[0], 2→[1], ...).
+	var idx := _attempt - 1
+	if idx >= 0 and idx < RETRY_BACKOFF_SECONDS.size():
+		return float(RETRY_BACKOFF_SECONDS[idx])
+	return float(RETRY_BACKOFF_SECONDS[RETRY_BACKOFF_SECONDS.size() - 1]) if not RETRY_BACKOFF_SECONDS.is_empty() else 0.0
+
+
+func _retry_after_seconds(headers: PackedStringArray) -> float:
+	for header in headers:
+		var lower := header.to_lower()
+		if lower.begins_with("retry-after:"):
+			var value := header.substr(header.find(":") + 1).strip_edges()
+			if value.is_valid_float() or value.is_valid_int():
+				return clampf(float(value), 0.0, RATE_LIMIT_MAX_WAIT_SECONDS)
+			break
+	return RATE_LIMIT_FALLBACK_SECONDS
 
 
 func _webhook_url() -> String:
