@@ -1,7 +1,10 @@
 # SCRUM-529: Пройденный магазин помечать галочкой на карте (с возвратом)
 
 Jira: SCRUM-529 · Роль: backend · Контур: codex · Приоритет: P2 · foma · Эпик: SCRUM-522 (Ребаланс боёвки и прогрессии)
-Статус: К выполнению
+Статус: review
+
+Owner: backend/codex-background-backend-agent
+Locked paths: `scripts/main.gd`, `scripts/route_map_screen.gd`, `docs/design/systems/route_map.md`, `docs/tasks/SCRUM-529_shop_node_completed_mark_with_return.md`
 
 ## Что и зачем
 
@@ -163,6 +166,16 @@ re-entry уже есть. `ui_screens.gd` НЕ трогать (locked path; вы
       затронуты.
 - [ ] `tests/runtime_smoke_test.gd` дополнен ассертом галочки и проходит:
       `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script res://tests/runtime_smoke_test.gd` — зелёный.
+
+## Результат
+
+2026-06-27, backend/codex-background-backend-agent:
+
+- В `scripts/route_map_screen.gd` добавлен гибридный state `shop_revisit`: текущий магазин после выхода из shop получает completed-галочку/стиль, но остается кликабельным через существующий route-node input path.
+- Re-entry/finalization logic не менялась: повторный вход в тот же shop не финализирует re-entry, а выбор следующего ряда по-прежнему вызывает `_finalize_pending_shop_reentry()`.
+- `docs/design/systems/route_map.md` обновлён: visited shop отображается как completed, но остается returnable до выбора следующего route node.
+- Проверка: focused Godot check `/tmp/scrum529_route_shop_check.gd` PASS — `RouteNode_shop_0_0` имеет `RouteNodeCompletedMark`, `disabled == false`, tooltip visited-return, следующий узел доступен.
+- Umbrella runtime smoke был запущен без правок `tests/runtime_smoke_test.gd`, но остановился на unrelated arena/player-start assertion при наличии чужих dirty gameplay files (`scripts/player.gd` и соседние balance/combat files). SCRUM-529 route-map code скомпилировался до этой проверки.
 
 ## Files / точки входа
 

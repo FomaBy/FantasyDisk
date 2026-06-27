@@ -423,22 +423,25 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 			var node_type: String = route_node["type"]
 			var definition := _map_node_definition(node_type)
 			var state := _route_node_state(step_index, branch_index)
+			var is_clickable := state == "available" or state == "shop_revisit"
 			var button = game.ui._make_button("")
 			button.name = "RouteNode_%s_%d_%d" % [node_type, step_index, branch_index]
 			button.tooltip_text = "%s\n%s" % [str(definition["name"]), str(definition["tooltip"])]
+			if state == "shop_revisit":
+				button.tooltip_text += "\nПосещено — можно вернуться"
 			button.custom_minimum_size = game.MAP_NODE_SIZE
 			button.size = game.MAP_NODE_SIZE
 			button.position = node_positions[step_index][branch_index]
-			button.disabled = state != "available"
+			button.disabled = not is_clickable
 			button.focus_mode = Control.FOCUS_NONE
-			button.z_index = 20 if state == "available" else 10
+			button.z_index = 20 if is_clickable else 10
 			_style_route_node_button(button, node_type, state)
 			_add_route_node_icon(button, _route_node_icon_path(route_node, definition), str(definition["icon"]))
-			if state == "completed":
+			if state == "completed" or state == "shop_revisit":
 				_add_route_node_completed_mark(button)
 			elif state == "locked":
 				button.modulate = Color(0.55, 0.58, 0.62, 0.72)
-			if state == "available":
+			if is_clickable:
 				button.gui_input.connect(func(event: InputEvent) -> void:
 					_handle_route_node_input(button, event, map_area.get_parent() as ScrollContainer, step_index, branch_index, route_node)
 				)
@@ -561,7 +564,7 @@ func _route_node_state(step_index: int, branch_index: int) -> String:
 		if step_index == shop_step:
 			var route_node: Dictionary = game.route_nodes[step_index][branch_index] if step_index >= 0 and step_index < game.route_nodes.size() and branch_index >= 0 and branch_index < game.route_nodes[step_index].size() else {}
 			if branch_index == shop_branch and str(route_node.get("type", "")) == "shop":
-				return "available"
+				return "shop_revisit"
 			return "locked"
 		if step_index == shop_step + 1:
 			if _route_node_connections(shop_step, shop_branch).has(branch_index):
@@ -683,7 +686,7 @@ func _style_route_node_button(button: Button, node_type: String, state: String) 
 	if state == "locked":
 		background = Color(0.08, 0.09, 0.12, 0.78)
 		border = Color(0.25, 0.28, 0.33, 0.85)
-	elif state == "completed":
+	elif state == "completed" or state == "shop_revisit":
 		background = Color(0.13, 0.16, 0.18, 0.90)
 		border = Color(0.95, 0.78, 0.32, 0.82)
 	elif state == "available":
