@@ -31,7 +31,7 @@ const ROUTE_MAP_PADDING := Vector2(170, 72)
 const ROUTE_MAP_HEADER_HEIGHT := 118.0
 const ROUTE_MAP_SCREEN_MARGIN := 28.0
 const ROUTE_MAP_DRAG_THRESHOLD := 8.0
-const ARENA_SIZE := Vector2(2560, 1440)
+const ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: ×1.6 от 2560×1440 → площадь ≈ ×2.56, 16:9 сохранён
 const ARENA_CENTER := ARENA_SIZE * 0.5
 const COMBAT_CAMERA_ZOOM := Vector2(1.12, 1.12)
 const COLLISION_LAYER_PLAYER := 1
@@ -168,7 +168,7 @@ const MAP_NODE_DEFINITIONS := {
 }
 const OBSTACLE_MAX_ATTEMPTS := 150
 const SPAWN_EDGE_PADDING := 72.0
-const SPAWN_PLAYER_SAFE_RADIUS := 340.0
+const SPAWN_PLAYER_SAFE_RADIUS := 420.0  # SCRUM-518: чуть шире на просторной арене (4096×2304) для комфорта старта
 const SMALL_PACK_CHANCE := 0.22
 const WAVE_SETTINGS := {
 	"base_spawn_count": 2,

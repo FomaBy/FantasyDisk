@@ -1,6 +1,6 @@
 extends SceneTree
 
-const EXPECTED_ARENA_SIZE := Vector2(2560, 1440)
+const EXPECTED_ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: lock-step с ARENA_SIZE (×1.6)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
@@ -62,7 +62,7 @@ const REWARD_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
 const REWARD_ELITE_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
 const ECONOMY_CHOICE_WIDE_TEXTURE := MINIMAL_CARD_TEXTURE
 const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := MINIMAL_CARD_TEXTURE
-const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.5
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.425  # SCRUM-518: −15% от 0.5 (lock-step с player.gd)
 const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
@@ -530,7 +530,7 @@ func _initialize() -> void:
 		return
 	var player_body := player.get_node_or_null("VisualRoot/Body") as AnimatedSprite2D
 	if player_body == null or absf(player_body.scale.x - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001 or absf(player_body.scale.y - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001:
-		push_error("Expected player visual scale to use SCRUM-417 enlarged combat scale %.2f." % EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)
+		push_error("Expected player visual scale to match combat scale %.3f (SCRUM-518 −15%%)." % EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)
 		quit(1)
 		return
 	var player_rig := player.get_node_or_null("VisualRoot/RigRoot") as Node2D
@@ -570,7 +570,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 	if player.global_position.distance_to(EXPECTED_ARENA_CENTER) > 1.0:
-		push_error("Expected player to start at the center of the 2560x1440 arena.")
+		push_error("Expected player to start at the center of the arena.")
 		quit(1)
 		return
 	var camera := player.get_node_or_null("Camera2D") as Camera2D
@@ -579,7 +579,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 	if camera.zoom.x < 1.05 or camera.zoom.y < 1.05:
-		push_error("Expected player camera to be zoomed in enough that the 2K arena is not fully visible.")
+		push_error("Expected player camera to be zoomed in enough that the arena is not fully visible.")
 		quit(1)
 		return
 	var visible_at_1600 := Vector2(1600.0 / camera.zoom.x, 900.0 / camera.zoom.y)
@@ -729,12 +729,12 @@ func _initialize() -> void:
 	await process_frame
 	var cleanup_enemy_projectile := enemy_projectile_scene.instantiate()
 	root.add_child(cleanup_enemy_projectile)
-	cleanup_enemy_projectile.global_position = Vector2(2300, 1200)
+	cleanup_enemy_projectile.global_position = Vector2(3600, 2000)  # SCRUM-518: внутри расширенной арены 4096×2304
 	if bool(cleanup_enemy_projectile.call("_is_outside_arena")):
 		push_error("Expected enemy projectile cleanup bounds to include the expanded arena.")
 		quit(1)
 		return
-	cleanup_enemy_projectile.global_position = Vector2(2800, 1700)
+	cleanup_enemy_projectile.global_position = Vector2(4400, 2600)  # SCRUM-518: за пределами 4096×2304 + margin
 	if not bool(cleanup_enemy_projectile.call("_is_outside_arena")):
 		push_error("Expected enemy projectile cleanup bounds to remove shots outside the expanded arena.")
 		quit(1)
@@ -748,12 +748,12 @@ func _initialize() -> void:
 		push_error("Expected player projectile to use the stylized spark PNG.")
 		quit(1)
 		return
-	cleanup_player_projectile.global_position = Vector2(2300, 1200)
+	cleanup_player_projectile.global_position = Vector2(3600, 2000)  # SCRUM-518: внутри расширенной арены 4096×2304
 	if bool(cleanup_player_projectile.call("_is_outside_arena")):
 		push_error("Expected player projectile cleanup bounds to include the expanded arena.")
 		quit(1)
 		return
-	cleanup_player_projectile.global_position = Vector2(2800, 1700)
+	cleanup_player_projectile.global_position = Vector2(4400, 2600)  # SCRUM-518: за пределами 4096×2304 + margin
 	if not bool(cleanup_player_projectile.call("_is_outside_arena")):
 		push_error("Expected player projectile cleanup bounds to remove shots outside the expanded arena.")
 		quit(1)
@@ -1567,7 +1567,8 @@ func _test_boss_zone_wave_safe_corridor() -> void:
 	holder.add_child(boss)
 	await process_frame
 	# safe_radius капит огромный радиус (коридор гарантирован даже на В4+).
-	if float(boss.call("_safe_radius", 9999.0)) > 1440.0 * 0.34 + 0.5:
+	# SCRUM-518: cap = ARENA_SIZE.y * 0.34 — берём из EXPECTED_ARENA_SIZE (lock-step с ареной).
+	if float(boss.call("_safe_radius", 9999.0)) > EXPECTED_ARENA_SIZE.y * 0.34 + 0.5:
 		_fail("Expected _safe_radius to cap hazard radius for a safe corridor.")
 		return
 	# Волна зон: кольцо с двумя пропущенными секторами -> проход всегда есть.

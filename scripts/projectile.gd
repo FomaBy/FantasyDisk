@@ -3,7 +3,7 @@ extends Area2D
 @export var speed := 600.0
 @export var lifetime := 2.0
 
-const ARENA_SIZE := Vector2(2560, 1440)
+const ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: синхронно с main.gd (×1.6)
 const CLEANUP_MARGIN := 180.0
 
 const TRAIL_POINTS := 9

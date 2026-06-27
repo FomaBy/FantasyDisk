@@ -82,11 +82,11 @@ Domain docs для подробностей по областям:
 
 ## Игровая Карта И Камера
 
-- Текущий размер боевой арены: 2560x1440.
-- Центр арены считается от размера карты: `ARENA_SIZE * 0.5`, сейчас 1280x720.
+- Текущий размер боевой арены: 4096x2304 (SCRUM-518 увеличил ×1.6 от прежних 2560x1440 — площадь ≈ ×2.56, соотношение 16:9 сохранено; больше простора для кайтинга и читаемости толпы).
+- Центр арены считается от размера карты: `ARENA_SIZE * 0.5`, сейчас 2048x1152.
 - Камера использует combat zoom 1.12 и ограничена границами арены.
-- На 1600x900 и 2560x1440 камера показывает только часть карты вокруг персонажа, а не всю арену целиком.
-- При подходе к краям камера clamp-ится по 0..2560 и 0..1440 и не должна показывать пространство за картой.
+- На 1600x900 и 2560x1440 камера показывает только часть карты вокруг персонажа, а не всю арену целиком (на увеличенной арене — тем более).
+- При подходе к краям камера clamp-ится по 0..4096 и 0..2304 и не должна показывать пространство за картой.
 - Границы карты рисуются видимой линией.
 - Вокруг арены создаются физические стены.
 - Зум камеры выбран так, чтобы карта ощущалась крупной, но угрозы вокруг игрока оставались читаемыми.
@@ -115,7 +115,7 @@ Domain docs для подробностей по областям:
 
 Фон арены выбирается случайно из доступного набора и может зависеть от типа узла карты.
 
-Все 10 боевых фонов нарисованы в нативном 2560x1440 — 1:1 к размеру арены, движок их не растягивает и они не мылятся. SCRUM-369 (2026-06-14) заменил весь набор через `fantasydisk-asset-generator`: `field_marsh`, `field_meadow`, `field_misty_marsh`, `field_ruined_courtyard`, `field_dusty_badlands`, `field_enchanted_meadow`, `field_ashen_rift`, `field_cursed_grove`, `field_dry_road`, `field_stone_garden`. Новый стиль — реалистичный D&D/dark fantasy top-down battlefield floor с богатым материалом по биомам, но приглушенной центральной зоной для читаемости героев, монстров, projectile/VFX и анимаций. `field_dry_road` и `field_stone_garden` теперь существуют как реальные PNG, поэтому live links из `ARENA_BACKGROUND_OPTIONS` больше не битые. QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
+Все 10 боевых фонов нарисованы в нативном 2560x1440. С SCRUM-518 арена увеличена до 4096x2304, поэтому `_spawn_arena_background` апскейлит фон под арену (scale ≈ 1.6) — фоны теперь слегка мылятся (ожидаемый компромисс ради простора; перерисовка набора под 4K вынесена в отдельную арт-задачу через `fantasydisk-asset-generator`). SCRUM-369 (2026-06-14) заменил весь набор через `fantasydisk-asset-generator`: `field_marsh`, `field_meadow`, `field_misty_marsh`, `field_ruined_courtyard`, `field_dusty_badlands`, `field_enchanted_meadow`, `field_ashen_rift`, `field_cursed_grove`, `field_dry_road`, `field_stone_garden`. Новый стиль — реалистичный D&D/dark fantasy top-down battlefield floor с богатым материалом по биомам, но приглушенной центральной зоной для читаемости героев, монстров, projectile/VFX и анимаций. `field_dry_road` и `field_stone_garden` теперь существуют как реальные PNG, поэтому live links из `ARENA_BACKGROUND_OPTIONS` больше не битые. QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
 `main_menu_epic_battle_v2.png` используется стартовым экраном с SCRUM-316: новый smooth D&D dark fantasy battle art с тремя новыми боссами и двумя героями, спокойной левой третью под колонку кнопок и более спокойной top-center областью под логотип. SCRUM-418 удалил старый `main_menu_epic_battle.png` из runtime assets как legacy-дубль; backup лежит вне shipping scope в `build/qa/scrum418/removed_assets_backup/`. Старые совместимые копии `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` также удалены из `assets/sprites/ui/screens/` как дубли canonical UI backdrop set.
 
 SCRUM-158/170 добавили и подключили canonical UI backdrop set `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Все `2560x1440`, с низкоконтрастным спокойным центром под центральные окна и более богатым dark fantasy материалом по краям. Runtime mapping идет через `SCREEN_BACKGROUND_PATHS`: `system/settings/codex/hero_select/weapon_select/pause_stats/meta_tree/campfire` -> cathedral, `shop` -> merchant archive, `event/upgrade/level_up/meta_progression` -> arcane lab, `elite_reward/victory/artifact_reward` -> reward hall, `death/defeat/end_run_confirm` -> defeat crypt. Фоны ставятся `TextureRect` cover-scaling под читаемое затемнение, без замены route map/combat backgrounds.
@@ -348,8 +348,12 @@ rig сохраняется только как невидимый compatibility/
 cutout `RigRoot` видим.
 SCRUM-417 увеличил playable combat visual scale до `Vector2(0.36, 0.36)` для
 full-frame `Body` и cutout fallback rig (+28.6% от исходного `0.28`), не меняя
-player collision radius `10.5`, gameplay ranges, pivot, flip или weapon socket.
+player collision radius, gameplay ranges, pivot, flip или weapon socket.
 QA dump: `build/qa/scrum417/combat_character_size_runtime_dump.md`.
+SCRUM-518 (увеличение арены) ужал персонажа на −15%: рантайм-визуал
+`PLAYER_COMBAT_VISUAL_SCALE` `0.5 → 0.425` (тянет `Body` и скелет/cutout риги
+через `BASE_SPRITE_SCALE`) и согласованно коллизию `CircleShape2D radius`
+`10.5 → 8.9` — sprite и collision уменьшены на один процент, без рассинхрона.
 
 SCRUM-412 очистил полный playable full-frame runtime set от белой/checkerboard
 подложки: все `255` PNG в
