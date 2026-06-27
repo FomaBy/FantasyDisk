@@ -2602,5 +2602,10 @@
   "key": "SCRUM-538",
   "status": "Контроль качества",
   "desc_hash": "a98b341a0303228d5dffdddf78acb58c"
+ },
+ "SCRUM-489_results_block_2k_coords.md": {
+  "key": "SCRUM-489",
+  "status": "Готово",
+  "desc_hash": "aa73e445bec6b7d90efe71315299b0a5"
  }
 }
