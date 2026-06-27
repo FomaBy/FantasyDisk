@@ -30,3 +30,7 @@ desktop.ini
 # Build-артефакты (помимо build/ и releases/ — на всякий случай)
 *.dmg
 *.exe
+
+# Локальные секреты-окружения (OpenAI key и пр.)
+.env
+*.env

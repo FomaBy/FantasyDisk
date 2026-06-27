@@ -1,0 +1,4 @@
+interface:
+  display_name: "FantasyDisk Animation Director"
+  short_description: "Rig-first Godot Skeleton2D/Bone2D animation pipeline"
+  default_prompt: "Use $fantasydisk-animation-director to plan and produce FantasyDisk rig-first Skeleton2D/Bone2D + AnimationPlayer timelines, timeline markers, hybrid rig-to-sprite-sheet exports, and walk/attack animations for heroes, enemies, summons, elites, and bosses."

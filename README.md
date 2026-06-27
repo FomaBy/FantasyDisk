@@ -3,6 +3,18 @@
 2D top-down loot-action рогалик на **Godot 4 (GDScript)**: играбельные классы,
 процедурные забеги, события, прокачка, кодекс.
 
+## 🚀 Онбординг (1 строка)
+Любой агент/человек после клонирования выполняет одну команду — она подключает все
+скиллы проекта и печатает стартовый протокол:
+```bash
+bash scripts/onboard.sh
+```
+Дальше: AI-агенты автоматически видят мастер-скилл **`fantasydisk-onboarding`**
+(в `.claude/skills/`), люди читают [`docs/process/ai_agent_memorandum.md`](docs/process/ai_agent_memorandum.md).
+**Правило №1:** все задачи создаются в и берутся из **Jira** (проект SCRUM) —
+`docs/tasks/*.md` и `docs/process/task_board.md` лишь зеркала/кэш. Ветки: `main`=релиз,
+`dev`=работа (default), теги `vX.Y.Z`=версии.
+
 ## Требования
 - **Godot 4.6.3** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
 - **Git** — для клонирования и работы с GitHub.

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Jira Create Ticket"
+  short_description: "Create structured Jira tickets"
+  default_prompt: "Use $jira-create-ticket to create ticket from these notes: ..."
+
+policy:
+  allow_implicit_invocation: true
