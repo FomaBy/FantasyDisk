@@ -5,6 +5,8 @@ extends RefCounted
 
 var game
 
+const START_BATTLE_ONLY_ROWS := 2
+
 
 func _init(game_ref) -> void:
 	game = game_ref
@@ -175,8 +177,8 @@ func _route_map_canvas_size() -> Vector2:
 
 
 func _node_pool_for_step(step_index: int) -> Array:
-	if step_index == 0:
-		return ["battle", "battle", "battle", "event"]
+	if step_index < START_BATTLE_ONLY_ROWS:
+		return ["battle"]
 	if step_index <= 2:
 		return ["battle", "battle", "battle", "event", "shop"]
 	if step_index == game.ROUTE_STEPS_TO_BOSS - 1:
@@ -200,14 +202,6 @@ func _generate_route() -> Array:
 				"row": step_index,
 				"branch": branch_index,
 			})
-		if step_index == 0:
-			var has_battle := false
-			for branch in branches:
-				if str(branch["type"]) == "battle":
-					has_battle = true
-			if not has_battle:
-				branches[0]["type"] = "battle"
-				branches[0]["name"] = _random_route_node_name(0, "battle")
 		route.append(branches)
 	route.append([_random_boss_route_node()])
 	_assign_route_connections(route)

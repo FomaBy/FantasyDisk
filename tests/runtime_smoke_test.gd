@@ -122,21 +122,19 @@ func _initialize() -> void:
 	var route_nodes: Array = main.get("route_nodes")
 	# 10 рядов активностей + финальный ряд босса.
 	if route_nodes.size() != 11:
-		push_error("Expected the vertical route to have 3 choice rows plus a boss row.")
+		push_error("Expected the vertical route to have 10 activity rows plus a boss row.")
 		quit(1)
 		return
 	if str(route_nodes[route_nodes.size() - 1][0].get("type", "")) != "boss":
 		push_error("Expected the last vertical route row to be boss-only.")
 		quit(1)
 		return
-	var first_row_has_battle := false
-	for route_node in route_nodes[0]:
-		if str(route_node.get("type", "")) == "battle":
-			first_row_has_battle = true
-	if not first_row_has_battle:
-		push_error("Expected the first route row to include at least one normal battle.")
-		quit(1)
-		return
+	for early_step_index in range(mini(2, route_nodes.size() - 1)):
+		for route_node in route_nodes[early_step_index]:
+			if str(route_node.get("type", "")) != "battle":
+				push_error("Expected route row %d to contain only normal battle nodes before noncombat route nodes can appear." % early_step_index)
+				quit(1)
+				return
 	var has_limited_route_branch := false
 	for step_index in range(route_nodes.size() - 1):
 		var next_count := (route_nodes[step_index + 1] as Array).size()
@@ -259,6 +257,12 @@ func _initialize() -> void:
 	(main.get("rng") as RandomNumberGenerator).seed = 8675309
 	for _attempt in range(45):
 		var generated_route: Array = main.call("_generate_route")
+		for early_step_index in range(mini(2, generated_route.size() - 1)):
+			for route_node in generated_route[early_step_index]:
+				if str(route_node.get("type", "")) != "battle":
+					push_error("Expected every generated route row %d to contain only battle nodes." % early_step_index)
+					quit(1)
+					return
 		for row in generated_route:
 			for route_node in row:
 				if str(route_node.get("type", "")) == "elite_battle":
