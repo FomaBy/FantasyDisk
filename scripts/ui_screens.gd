@@ -204,6 +204,57 @@ const VBN_DIM_2K := Rect2(0, 0, 2560, 1440)
 const VBN_LABEL_2K := Rect2(0, 0, 2560, 1440)
 # === конец спеки SCRUM-487 ===
 
+# === SCRUM-488: координатная спека @2560×1440 — блок Прогрессия/Экономика ===
+# Те же правила и стиль, что у блока Меню (SCRUM-484) и Боевые (SCRUM-487): значения
+# вычислены из фактической раскладки билдеров при базе 2560×1440 и сверены с рантайм-дампом
+# верификатора (build/qa/ui_no_overlap_matrix.md, секции *_2560×1440). Контейнер-зависимые
+# слоты-шаблоны заданы как Rect2(0, 0, w, h). Кодекс/Настройки — путь (б) из ТЗ: рантайм-
+# масштабирование V2 НЕ трогаем (оно уже uniform-заполняет вьюпорт: на 2K даёт ровно эти
+# rect — codex = CODEX_V2_* × 4/3), здесь — документирующий 2K-вход для рисующего скрипта.
+
+# #8 Магазин — _show_shop_screen (backdrop-лавка; контент в центральной зоне «стены»)
+const SHOP_TITLE_2K := Rect2(900, 104, 760, 86)            # ShopHeader (заголовок+подзаголовок)
+const SHOP_WALL_2K := Rect2(512, 547, 1536, 533)           # ShopParchmentWall (anchor-фракции 0.20/0.38/0.80/0.75)
+const SHOP_SAFE_2K := Rect2(512, 547, 1536, 533)           # пустая зона лавки под слоты
+const SHOP_SLOT_2K := Rect2(0, 0, 148, 148)                # ShopItemButton{0..3} (anchors 0.30/0.70 × 0.18/0.84 внутри стены)
+const SHOP_BACK_2K := Rect2(1100, 1314, 360, 104)          # ShopLeaveButton (anchor bottom-center)
+
+# #9 Докача — _show_attribute_shop (панель full-height; скролл опций + фикс-низ)
+const ATTR_PANEL_2K := Rect2(730, 28, 1124, 1384)
+const ATTR_SAFE_2K := Rect2(788, 100, 1008, 1246)          # панель − content 58/72/58/66
+const ATTR_OFFER_2K := Rect2(0, 0, 480, 340)               # AttributeOffer_* = ECONOMY_CHOICE_TARGET_1440 (грид 2 кол)
+const ATTR_ACTION_BUTTON_2K := Rect2(0, 0, 420, 62)        # AttributeReroll/Skip (фикс ВНЕ скролла снизу)
+
+# #10 Дерево навыков — _show_skill_tree_screen (самый плотный: класс-панель + N веток)
+const SKILL_MAIN_PANEL_2K := Rect2(48, 26, 2464, 1388)
+const SKILL_SAFE_2K := Rect2(136, 118, 2288, 1214)         # layout-VBox (header→hint→body)
+const SKILL_POINTS_BADGE_2K := Rect2(0, 0, 215, 96)        # SkillTreePointsBadge (ширина растёт под текст очков)
+const SKILL_BACK_2K := Rect2(0, 0, 260, 104)               # SkillTreeBackButton
+const SKILL_CLASS_PANEL_2K := Rect2(136, 262, 330, 1070)   # SkillTreeClassPanel (левая колонка)
+const SKILL_BRANCHES_2K := Rect2(484, 262, 1932, 1276)     # SkillTreeBranches (ряд веток; @2K без гориз-скролла)
+const SKILL_BRANCH_2K := Rect2(0, 0, 164, 430)             # SkillTreeBranchPanel_* (шаблон ветки, separation 14)
+
+# #15 Кодекс — _show_codex_screen / _show_codex_section (3 колонки; V2-база 1920 × 4/3 → 2K)
+const CODEX_OUTER_FRAME_2K := Rect2(32, 27, 2496, 1387)
+const CODEX_HEADER_TITLE_2K := Rect2(149, 99, 1493, 85)
+const CODEX_BACK_BUTTON_2K := Rect2(2245, 80, 168, 128)
+const CODEX_NAV_PANEL_2K := Rect2(96, 227, 405, 1163)      # колонка навигации (панель)
+const CODEX_NAV_SAFE_2K := Rect2(117, 264, 344, 960)
+const CODEX_LIST_PANEL_2K := Rect2(517, 227, 1113, 1163)   # колонка списка (CodexContent)
+const CODEX_DETAIL_PANEL_2K := Rect2(1656, 227, 808, 1163) # колонка детали (CodexDetailPanel)
+const CODEX_PORTRAIT_SAFE_2K := Rect2(1861, 301, 427, 400)
+const CODEX_CHIP_ROW_SAFE_2K := Rect2(1731, 731, 648, 107)
+
+# #16 Настройки — _show_settings_menu (V2-модалка, scaled fill → 2K)
+const SETTINGS_PANEL_2K := Rect2(256, 104, 2048, 1232)
+const SETTINGS_SAFE_2K := Rect2(430, 229, 1700, 1062)
+const SETTINGS_TITLE_2K := Rect2(448, 229, 1664, 64)
+const SETTINGS_TAB_SWITCHER_2K := Rect2(730, 316, 1100, 220)
+const SETTINGS_CONTENT_PANEL_2K := Rect2(430, 570, 1700, 610)
+const SETTINGS_CONTROL_ROW_2K := Rect2(658, 602, 1438, 62) # строка контрола (разрешение/режим окна; шаблон h)
+const SETTINGS_BACK_2K := Rect2(1140, 1204, 280, 87)
+# === конец спеки SCRUM-488 ===
+
 const ECONOMY_FRAME_DIR := "res://assets/sprites/ui/frames/economy/"
 const ECONOMY_PANEL_PATH := MINIMAL_PANEL_PATH
 const ECONOMY_CHOICE_CARD_PATH := MINIMAL_CARD_PATH
