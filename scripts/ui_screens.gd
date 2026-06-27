@@ -3967,6 +3967,7 @@ func _quit_current_run() -> void:
 	game.pending_event_combat.clear()
 	game.pending_level_ups = 0
 	game.current_route_choice = ""
+	game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 	game.route_nodes = game.route._generate_route()
 	game._clear_world()
 	game._clear_hud()
@@ -3978,6 +3979,13 @@ func _end_current_run_by_player() -> void:
 	game._clear_all_game_pauses()
 	game.combat_active = false
 	game.boss_combat_active = false
+	# SCRUM-502: ручное завершение забега — снять метрики-финалы с живого игрока ДО очистки
+	# снапшота (иначе экран итогов был бы пуст), затем причина исхода.
+	if game.current_player != null and is_instance_valid(game.current_player):
+		game.combat._store_player_snapshot(game.current_player)
+	game.capture_run_metrics_finals(game.run_player_snapshot)
+	if str(game.run_metrics.get("outcome_reason", "")) == "":
+		game.run_metrics["outcome_reason"] = "Забег завершён игроком на этапе маршрута %d" % (game.route_stage + 1)
 	game.run_player_snapshot.clear()
 	game.route_selected_indices.clear()
 	game.used_event_ids.clear()
@@ -4142,6 +4150,9 @@ func _show_weapon_select() -> void:
 		var button := _make_weapon_select_card(config)
 		button.pressed.connect(func() -> void:
 			game.selected_weapon_id = str(config["id"])
+			# SCRUM-502: фактический старт нового забега (герой+оружие выбраны) — обнулить
+			# метрики сводки, чтобы они не текли из прошлого прогона/autosave.
+			game.reset_run_metrics()
 			game.route._show_battle_map()
 		)
 		box.add_child(button)
@@ -5398,6 +5409,7 @@ func _show_victory_screen() -> void:
 	]
 	var box = _create_menu_box("Победа", subtitle, "victory")
 	_add_result_crest(box, "victory")
+	_add_run_summary_rows(box, true)  # SCRUM-502: сводка прогона
 	var finish_run := func() -> void:
 		game.current_act = 1
 		game.route_stage = 0
@@ -5406,6 +5418,7 @@ func _show_victory_screen() -> void:
 		game.used_event_ids.clear()
 		game.current_event_definition.clear()
 		game.pending_event_combat.clear()
+		game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
 	var restart_button := _make_button("Новый забег")
@@ -5423,6 +5436,7 @@ func _show_death_screen(reason := "") -> void:
 		subtitle = "Забег завершён: %s, этап маршрута %d." % [game.act_progress_label(), game.route_stage + 1]
 	var box := _create_menu_box("Поражение", subtitle, "death")
 	_add_result_crest(box, "death")
+	_add_run_summary_rows(box, false)  # SCRUM-502: сводка прогона
 	var back_to_menu := func() -> void:
 		game.current_act = 1
 		game.route_stage = 0
@@ -5431,6 +5445,7 @@ func _show_death_screen(reason := "") -> void:
 		game.used_event_ids.clear()
 		game.current_event_definition.clear()
 		game.pending_event_combat.clear()
+		game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
 	var retry_button := _make_button("Начать заново")
@@ -5439,6 +5454,85 @@ func _show_death_screen(reason := "") -> void:
 	retry_button.pressed.connect(back_to_menu)
 	box.add_child(retry_button)
 	game.ui_escape_action = back_to_menu
+
+
+# SCRUM-502: блок сводки прогона на экранах победы/смерти. Кладётся в box (VBox внутри
+# PauseEndModalScroll_*) после crest/subtitle, до кнопки. Все строки MOUSE_FILTER_IGNORE,
+# чтобы не перехватывать клик кнопки и Escape. Стабильные имена узлов — для matrix-теста.
+func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
+	var metrics: Dictionary = game.run_metrics if not game.run_metrics.is_empty() else {}
+	var outcome := str(metrics.get("outcome_reason", ""))
+
+	if outcome != "":
+		var outcome_label := Label.new()
+		outcome_label.name = "RunSummaryOutcome"
+		outcome_label.text = outcome
+		outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		outcome_label.add_theme_font_size_override("font_size", 17)
+		outcome_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
+		outcome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(outcome_label)
+
+	var grid := GridContainer.new()
+	grid.name = "RunSummaryStats"
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 28)
+	grid.add_theme_constant_override("v_separation", 6)
+	grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(grid)
+
+	var artifacts: Array = metrics.get("artifacts", []) as Array
+	var rows := [
+		["time", "Время забега", _format_run_duration(float(metrics.get("time_seconds", 0.0)))],
+		["route", "Дошёл до этапа", str(int(metrics.get("route_stage_reached", 0)) + 1)],
+		["kills", "Убийств", str(int(metrics.get("kills", 0)))],
+		["damage_dealt", "Урон по врагам", str(int(round(float(metrics.get("damage_dealt", 0.0)))))],
+		["damage_taken", "Получено урона", str(int(round(float(metrics.get("damage_taken", 0.0)))))],
+		["gold", "Собрано золота", str(int(metrics.get("gold_collected", 0)))],
+		["level", "Финальный уровень", str(int(metrics.get("final_level", 0)))],
+		["artifacts", "Артефактов", str(artifacts.size())],
+	]
+	for row in rows:
+		var name_label := Label.new()
+		name_label.name = "RunSummaryStatName_%s" % str(row[0])
+		name_label.text = "%s:" % str(row[1])
+		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		name_label.add_theme_font_size_override("font_size", 16)
+		name_label.add_theme_color_override("font_color", Color(0.82, 0.86, 0.94, 0.92))
+		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		grid.add_child(name_label)
+		var value_label := Label.new()
+		value_label.name = "RunSummaryStat_%s" % str(row[0])
+		value_label.text = str(row[2])
+		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		value_label.add_theme_font_size_override("font_size", 16)
+		value_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.78, 1.0))
+		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		grid.add_child(value_label)
+
+	if not artifacts.is_empty():
+		var names := []
+		for artifact in artifacts:
+			if artifact is Dictionary:
+				names.append(str((artifact as Dictionary).get("title", (artifact as Dictionary).get("name", "Артефакт"))))
+			else:
+				names.append(str(artifact))
+		var artifacts_label := Label.new()
+		artifacts_label.name = "RunSummaryArtifacts"
+		artifacts_label.text = ", ".join(names)
+		artifacts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		artifacts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		artifacts_label.add_theme_font_size_override("font_size", 14)
+		artifacts_label.add_theme_color_override("font_color", Color(0.86, 0.82, 0.96, 0.95))
+		artifacts_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(artifacts_label)
+
+
+func _format_run_duration(total_seconds: float) -> String:
+	var secs := int(maxf(0.0, total_seconds))
+	return "%02d:%02d" % [secs / 60, secs % 60]
 
 
 func _victory_ascension_summary(character_id: String, run_level: int, unlocked_level: int) -> String:
@@ -8345,7 +8439,10 @@ func _set_low_hp_vignette_active(vignette: ColorRect, active: bool, immediate :=
 	vignette.set_meta("vignette_tween", tween)
 
 
-func _on_player_damaged(_amount: float) -> void:
+func _on_player_damaged(amount: float) -> void:
+	# SCRUM-502: аккумулируем полученный урон для экрана итогов. amount = входящий урон
+	# (как эмитится player.gd:damaged), до индивидуальных мультипликаторов — приемлемо для сводки.
+	game.add_run_damage_taken(amount)
 	if game.hud_layer == null or not is_instance_valid(game.hud_layer):
 		return
 	var flash := game.hud_layer.find_child("DamageFlashOverlay", true, false) as ColorRect

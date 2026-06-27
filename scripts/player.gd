@@ -1541,7 +1541,13 @@ func gain_xp(amount: int) -> void:
 
 
 func gain_money(amount: int) -> void:
-	money += maxi(1, int(round(float(amount) * float(run_modifiers.get("money_gain_multiplier", 1.0)))))
+	var gained := maxi(1, int(round(float(amount) * float(run_modifiers.get("money_gain_multiplier", 1.0)))))
+	money += gained
+	# SCRUM-502: учёт собранного за забег золота для экрана итогов. Main = current_scene.
+	if is_inside_tree():
+		var game_node := get_tree().current_scene
+		if game_node != null and game_node.has_method("add_run_gold_collected"):
+			game_node.add_run_gold_collected(gained)
 
 
 func spend_money(amount: int) -> bool:

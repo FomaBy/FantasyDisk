@@ -136,6 +136,10 @@ func _end_combat(victory: bool) -> void:
 		if not was_boss_fight:
 			_grant_combat_completion_rewards(event_combat)
 		_store_player_snapshot(game.current_player)
+	elif not victory and game.current_player != null and is_instance_valid(game.current_player):
+		# SCRUM-502: на смерти снять актуальные данные игрока (level/money/artifacts) ДО
+		# _clear_world/queue_free — иначе run_player_snapshot был бы от прошлого узла.
+		_store_player_snapshot(game.current_player)
 	game._clear_world()
 	game._clear_hud()
 	game.pending_event_combat.clear()
@@ -147,6 +151,10 @@ func _end_combat(victory: bool) -> void:
 				game.current_combat_type = "battle"
 				game.route._show_battle_map()
 			else:
+				# SCRUM-502: финальный босс повержен — снять метрики-финалы + причину исхода.
+				game.capture_run_metrics_finals(game.run_player_snapshot)
+				var final_boss_name := str(game.run_metrics.get("last_boss_name", "финальный босс"))
+				game.run_metrics["outcome_reason"] = "Повержен финальный босс: %s" % final_boss_name
 				game.record_boss_victory()
 				game.ui._show_victory_screen()
 		else:
@@ -168,6 +176,14 @@ func _end_combat(victory: bool) -> void:
 					game.ui._show_attribute_shop(return_to_route_map)
 			)
 	else:
+		# SCRUM-502: смерть — снять метрики-финалы из обновлённого снапшота + причину исхода.
+		game.capture_run_metrics_finals(game.run_player_snapshot)
+		if str(game.run_metrics.get("outcome_reason", "")) == "":
+			if was_boss_fight:
+				var killer_boss := str(game.run_metrics.get("last_boss_name", "босс"))
+				game.run_metrics["outcome_reason"] = "Пал в бою с боссом: %s" % killer_boss
+			else:
+				game.run_metrics["outcome_reason"] = "Пал в бою на этапе маршрута %d" % (game.route_stage + 1)
 		game.ui._show_death_screen()
 
 
@@ -508,6 +524,10 @@ func _spawn_boss() -> void:
 	var boss_name := str(boss.get("boss_display_name"))
 	if boss_name == "":
 		boss_name = str(boss.get("enemy_type_name"))
+	# SCRUM-502: запомнить имя текущего босса для причины исхода на экране итогов
+	# (на смерти/победе сам узел уже удалён; имя резолвится здесь, пока он жив).
+	if not game.run_metrics.is_empty():
+		game.run_metrics["last_boss_name"] = boss_name if boss_name != "" else "БОСС"
 	game.ui._show_combat_title_banner(boss_name if boss_name != "" else "БОСС", Color(1.0, 0.34, 0.3), true)
 
 
@@ -680,6 +700,8 @@ func _connect_enemy_rewards(enemy: Node) -> void:
 
 
 func _on_enemy_died(enemy: Node2D) -> void:
+	# SCRUM-502: учёт убийств для экрана итогов (до раннего return для боссов ниже).
+	game.record_run_kill(enemy.is_in_group("bosses"))
 	# Подача триумфа: hit-stop + тряска на смерти элитки/босса (масштаб по рангу).
 	if enemy.is_in_group("bosses"):
 		_hit_stop(0.42, 0.26)

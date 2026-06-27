@@ -317,6 +317,9 @@ var round_time_left := 0.0
 var spawn_cooldown := 0.0
 var current_player: Node2D = null
 var run_player_snapshot := {}
+# SCRUM-502: метрики забега для экрана итогов (run summary). НЕ персистятся (нет в
+# _run_autosave_state) — обнуляются на старте нового забега, не текут из autosave.
+var run_metrics := {}
 var ui_layer: CanvasLayer = null
 var hud_layer: CanvasLayer = null
 var pause_overlay_layer: CanvasLayer = null
@@ -518,6 +521,76 @@ func load_run_autosave() -> bool:
 
 func clear_run_autosave() -> void:
 	RUN_AUTOSAVE.clear_run()
+
+
+# SCRUM-502 · Метрики забега (run summary). Аккумулируются по ходу прогона, обнуляются
+# на старте нового забега. НЕ входят в _run_autosave_state — не персистятся и не текут
+# из загруженного autosave (после «Продолжить» метрики считаются с нуля за новый прогон).
+func reset_run_metrics() -> void:
+	run_metrics = {
+		"kills": 0,
+		"boss_kills": 0,
+		"damage_dealt": 0.0,
+		"damage_taken": 0.0,
+		"gold_collected": 0,
+		"time_seconds": 0.0,
+		"route_stage_reached": 0,
+		"final_level": 0,
+		"artifacts": [],
+		"outcome_reason": "",
+	}
+
+
+func record_run_kill(is_boss: bool) -> void:
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["kills"] = int(run_metrics.get("kills", 0)) + 1
+	if is_boss:
+		run_metrics["boss_kills"] = int(run_metrics.get("boss_kills", 0)) + 1
+
+
+func add_run_damage_dealt(amount: float) -> void:
+	if amount <= 0.0:
+		return
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["damage_dealt"] = float(run_metrics.get("damage_dealt", 0.0)) + amount
+
+
+func add_run_damage_taken(amount: float) -> void:
+	if amount <= 0.0:
+		return
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["damage_taken"] = float(run_metrics.get("damage_taken", 0.0)) + amount
+
+
+func add_run_time(delta: float) -> void:
+	if delta <= 0.0:
+		return
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["time_seconds"] = float(run_metrics.get("time_seconds", 0.0)) + delta
+
+
+func add_run_gold_collected(amount: int) -> void:
+	if amount <= 0:
+		return
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["gold_collected"] = int(run_metrics.get("gold_collected", 0)) + amount
+
+
+# Снять финальные значения игрока (уровень/золото/артефакты) и достигнутый ряд в метрики.
+# Зовётся на завершении забега (победа/смерть) до удаления игрока. snapshot = run_player_snapshot
+# или живой игрок; берём из переданного словаря, чтобы не зависеть от queue_free.
+func capture_run_metrics_finals(source: Dictionary) -> void:
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["final_level"] = int(source.get("level", run_metrics.get("final_level", 0)))
+	run_metrics["gold_collected"] = int(source.get("money", run_metrics.get("gold_collected", 0)))
+	run_metrics["artifacts"] = (source.get("artifacts", run_metrics.get("artifacts", [])) as Array).duplicate(true)
+	run_metrics["route_stage_reached"] = maxi(int(run_metrics.get("route_stage_reached", 0)), route_stage)
 
 
 func _run_autosave_state() -> Dictionary:
@@ -836,6 +909,9 @@ func _process(delta: float) -> void:
 
 	if not combat_active:
 		return
+
+	# SCRUM-502: суммарное время забега (только в активном бою, не в паузе — оба гарда выше).
+	add_run_time(delta)
 
 	if not boss_combat_active:
 		round_time_left -= delta

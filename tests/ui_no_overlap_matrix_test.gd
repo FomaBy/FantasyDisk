@@ -61,9 +61,11 @@ func _initialize() -> void:
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "victory", Callable(self, "_open_victory"), [
 			"PauseEndModalPanel_victory", "ResultCrest", "VictoryNewRunButton",
+			"RunSummaryOutcome", "RunSummaryStat_kills", "RunSummaryStat_time",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "death", Callable(self, "_open_death"), [
 			"PauseEndModalPanel_death", "ResultCrest", "DeathRetryButton",
+			"RunSummaryOutcome", "RunSummaryStat_kills", "RunSummaryStat_time",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "battle_reward", Callable(self, "_open_battle_reward"), [
 			"BattleRewardButton0", "BattleRewardButton1", "BattleRewardButton2",
@@ -287,11 +289,23 @@ func _open_hero_select(main: Node) -> void:
 
 func _open_victory(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
+	main.set("run_metrics", _sample_run_metrics("Повержен финальный босс: Лорд Бездны"))
 	main.ui._show_victory_screen()
 
 
 func _open_death(main: Node) -> void:
+	main.set("run_metrics", _sample_run_metrics("Пал в бою на этапе маршрута 6"))
 	main.ui._show_death_screen("Тестовое поражение.")
+
+
+func _sample_run_metrics(outcome: String) -> Dictionary:
+	# SCRUM-502: непустые метрики, чтобы строки сводки рендерились на всех разрешениях.
+	return {
+		"kills": 137, "boss_kills": 1, "damage_dealt": 48213.0, "damage_taken": 6042.0,
+		"gold_collected": 1840, "time_seconds": 742.0, "route_stage_reached": 5,
+		"final_level": 12, "artifacts": [{"title": "Сердце Пиявки"}, {"title": "Шип Бездны"}],
+		"outcome_reason": outcome, "last_boss_name": "Лорд Бездны",
+	}
 
 
 func _open_battle_reward(main: Node) -> void:
