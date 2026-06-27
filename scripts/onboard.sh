@@ -42,9 +42,14 @@ link_skills() {
     name="$(basename "$skill_path")"
     dest="$dest_dir/$name"
 
-    # Remove whatever is currently at the destination, then relink to repo.
-    # rm -rf handles a stale symlink, a plain file, or a real directory.
-    if [ -e "$dest" ] || [ -h "$dest" ]; then
+    # SAFETY: never destroy an existing REAL directory (it may be the machine's
+    # own skill copy holding local secrets, e.g. the real Telegram channel). Skip
+    # it. Only (re)link when the destination is absent or already a symlink.
+    if [ -d "$dest" ] && [ ! -h "$dest" ]; then
+      printf '  SKIP %s (existing real dir — kept; remove it manually to relink)\n' "$dest"
+      continue
+    fi
+    if [ -h "$dest" ] || [ -e "$dest" ]; then
       rm -rf "$dest"
     fi
     ln -s "$skill_path" "$dest"
