@@ -88,6 +88,17 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "event_economy", Callable(self, "_open_event"), [
 			"EventChoiceButton0", "EventChoiceButton1", "EventChoiceButton2", "EventBackButton",
 		], dump_lines, errors, false)
+		# SCRUM-487: боевой HUD (ресурс-панель/таймер/бейдж возвышения/ряд артефактов/кнопка
+		# повышения) — детерминированная 2K-сетка не пересекается и держится во вьюпорте.
+		await _check_screen(viewport_size, "combat_hud", Callable(self, "_open_combat_hud"), [
+			"RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "ArtifactHudRow",
+			"LevelUpPlusButton",
+		], dump_lines, errors)
+		# SCRUM-487: баннер появления босса — ширина из CTB_*_2K (фикс легаси 1280=720p),
+		# текст центрируется по 2K-базе и помещается в рамку. Транзиентный — один контрол.
+		await _check_screen(viewport_size, "combat_title_banner", Callable(self, "_open_combat_title_banner"), [
+			"CombatIntroBanner",
+		], dump_lines, errors, false)
 
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
@@ -155,6 +166,11 @@ func _initialize() -> void:
 	if scrum483_file != null:
 		scrum483_file.store_string("\n".join(_filter_dump_viewport_sections(dump_lines, SCRUM483_GATE_SIZES)))
 		scrum483_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum487" % qa_dir)
+	var scrum487_file := FileAccess.open("%s/scrum487/combat_block_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum487_file != null:
+		scrum487_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["combat_hud", "combat_title_banner", "level_up", "battle_reward", "elite_reward", "event_economy"])))
+		scrum487_file.close()
 
 	if not errors.is_empty():
 		for error in errors:
@@ -313,6 +329,22 @@ func _open_event(main: Node) -> void:
 	})
 
 
+func _open_combat_hud(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.set("selected_ascension_level", 1)
+	main.set("pending_level_ups", 1)
+	main.call("_start_combat")
+	main.ui._update_level_up_button()
+
+
+func _open_combat_title_banner(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.call("_start_combat")
+	main.ui._show_combat_title_banner("Лорд Бездны", Color(1.0, 0.4, 0.3, 1.0), true)
+
+
 func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
 	if ["attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"].has(screen_id):
 		for node in main.find_children("*", "Button", true, false):
@@ -352,7 +384,7 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 
 
 func _requires_viewport_fit(screen_id: String) -> bool:
-	return screen_id in ["level_up", "attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"]
+	return screen_id in ["level_up", "attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy", "combat_hud"]
 
 
 func _economy_choice_card_contract_error(card: Button, context: String) -> String:

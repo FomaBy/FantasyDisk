@@ -150,6 +150,60 @@ const COMBAT_HUD_TIMER_CONTENT := Vector4(58.0, 52.0, 58.0, 48.0)
 const COMBAT_HUD_ASCENSION_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
 const COMBAT_HUD_LEVEL_UP_MARGINS := Vector4(34.0, 34.0, 34.0, 34.0)
 const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(36.0, 34.0, 36.0, 36.0)
+
+# === SCRUM-487: координатная спека @2560×1440 — блок Боевые ===
+# Источник правды для рисующего скрипта (рисует рамки/панели ровно в эти размеры) и
+# документ-спека раскладки. Значения вычислены из фактической раскладки билдеров при
+# базе 2560×1440 (window/stretch=canvas_items, aspect=keep → рантайм всегда лэйаутит в
+# этой базе, окно скейлится автоматически). Стиль и инварианты — как у блока Меню (MM_*/
+# QC_*/PM_* в SCRUM-484): панели с рамкой держат пустую safe-area под контент.
+# Шаблонные размеры контейнер-зависимых слотов (карточки/кнопки/ряды) заданы как
+# Rect2(0, 0, w, h) — позиция считается контейнером в рантайме (центрирование).
+const COMBAT_BLOCK_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
+
+# #5 Бой / HUD — _create_hud / _layout_combat_hud (процентная раскладка → детерминированная 2K-сетка)
+const CHUD_RESOURCE_PANEL_2K := Rect2(18, 18, 820, 84)      # RunResourceHud (clampf 0.54·w → 820)
+const CHUD_TIMER_2K := Rect2(1136, 14, 288, 96)             # CombatTimerPanel (центр; нет на боссе)
+const CHUD_ASCENSION_BADGE_2K := Rect2(1432, 18, 64, 64)    # AscensionHudBadge (только при asc>0)
+const CHUD_ARTIFACT_ROW_2K := Rect2(2140, 16, 402, 104)     # ArtifactHudRow (clampf 0.28·w → 402, прижат вправо)
+const CHUD_LEVELUP_BUTTON_2K := Rect2(2436, 1316, 96, 117)  # LevelUpPlusButton (якорь bottom-right; min-size темы → h≈117)
+const CHUD_LEVELUP_BADGE_2K := Rect2(2498, 1306, 28, 28)    # LevelUpPlusBadgePanel (счётчик пиков)
+const CHUD_DAMAGE_FLASH_2K := Rect2(0, 0, 2560, 1440)       # DamageFlashOverlay (full-rect)
+
+# #6 Событие — _show_event_screen (economy-панель "event"; safe = панель − content 58/72/58/66)
+const EVT_PANEL_2K := Rect2(420, 330, 1720, 780)
+const EVT_SAFE_2K := Rect2(478, 402, 1604, 642)
+const EVT_CARD_2K := Rect2(0, 0, 480, 340)                  # EventChoiceButton{0..2} (3 в ряд, gap 48)
+const EVT_BACK_BUTTON_2K := Rect2(0, 0, 380, 54)            # EventBackButton
+
+# #11 Повышение уровня — _show_level_up_screen / _level_up_layout_metrics
+const LU_PANEL_2K := Rect2(760, 420, 1040, 600)
+const LU_SAFE_2K := Rect2(818, 492, 924, 462)
+const LU_CARD_2K := Rect2(0, 0, 238, 210)                   # LevelUpRewardButton{0..2} (3 в ряд, gap 12)
+const LU_LATER_BUTTON_2K := Rect2(0, 0, 260, 72)            # LevelUpLaterButton
+
+# #12 Награда обычная — _show_reward_screen (_create_menu_box, панель 1120×660)
+const RWD_PANEL_2K := Rect2(720, 390, 1120, 660)
+const RWD_SAFE_2K := Rect2(778, 462, 1004, 522)
+const RWD_CARD_2K := Rect2(0, 0, 300, 430)                  # BattleRewardButton{0..2} = REWARD_CARD_SIZE (gap 18)
+
+# #13 Награда элитки — _show_elite_artifact_reward (панель 1140×640)
+const ELR_PANEL_2K := Rect2(710, 400, 1140, 640)
+const ELR_SAFE_2K := Rect2(768, 472, 1024, 502)
+const ELR_CARD_2K := Rect2(0, 0, 320, 430)                  # EliteArtifactRewardButton{0..2} = REWARD_ELITE_CARD_SIZE (gap 22)
+
+# #28 Тост повышения — _show_level_up_toast (транзиентный full-rect burst на позиции игрока/центра)
+const LUT_OVERLAY_2K := Rect2(0, 0, 2560, 1440)
+
+# #29 Баннер заголовка боя — _show_combat_title_banner (center-top; ширина была 1280 = 720p-баг → 2K)
+const CTB_BIG_2K := Rect2(100, 120, 2360, 90)              # появление босса (big)
+const CTB_SMALL_2K := Rect2(100, 92, 2360, 56)             # появление элитки
+
+# #30 Баннер победы — _show_victory_banner (dim + "ПОБЕДА" 96pt по центру)
+const VBN_DIM_2K := Rect2(0, 0, 2560, 1440)
+const VBN_LABEL_2K := Rect2(0, 0, 2560, 1440)
+# === конец спеки SCRUM-487 ===
+
 const ECONOMY_FRAME_DIR := "res://assets/sprites/ui/frames/economy/"
 const ECONOMY_PANEL_PATH := MINIMAL_PANEL_PATH
 const ECONOMY_CHOICE_CARD_PATH := MINIMAL_CARD_PATH
@@ -5584,17 +5638,20 @@ func _show_combat_title_banner(title: String, color: Color, big := false) -> voi
 	banner.add_theme_color_override("font_color", color)
 	banner.add_theme_color_override("font_outline_color", Color(0.06, 0.03, 0.02, 1.0))
 	banner.add_theme_constant_override("outline_size", 9 if big else 6)
+	# SCRUM-487: ширина баннера берётся из 2K-спеки (CTB_*_2K), а не из легаси 1280 (720p).
+	var ctb_spec: Rect2 = CTB_BIG_2K if big else CTB_SMALL_2K
+	var ctb_half_width := ctb_spec.size.x * 0.5
 	banner.anchor_left = 0.5
 	banner.anchor_right = 0.5
 	banner.anchor_top = 0.0
 	banner.anchor_bottom = 0.0
-	banner.offset_left = -640.0
-	banner.offset_right = 640.0
-	banner.offset_top = 120.0 if big else 92.0
-	banner.offset_bottom = banner.offset_top + (90.0 if big else 56.0)
+	banner.offset_left = -ctb_half_width
+	banner.offset_right = ctb_half_width
+	banner.offset_top = ctb_spec.position.y
+	banner.offset_bottom = ctb_spec.position.y + ctb_spec.size.y
 	banner.modulate.a = 0.0
 	banner.scale = Vector2(0.9, 0.9)
-	banner.pivot_offset = Vector2(640.0, 0.0)
+	banner.pivot_offset = Vector2(ctb_half_width, 0.0)
 	game.hud_layer.add_child(banner)
 	var tween := banner.create_tween()
 	tween.set_parallel(true)
