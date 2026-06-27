@@ -1,7 +1,27 @@
 # SCRUM-513: Tech-debt: вынести скелетный риг из незакоммиченного рабочего дерева в репозиторий
 
 Jira: SCRUM-513 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: —
-Статус: К выполнению
+Статус: Контроль качества (verified — r1i4, 2026-06-28)
+
+## Вердикт верификации (r1i4, 2026-06-28)
+
+VERIFIED — код менять не потребовалось, добор не нужен (весь рантайм-стек уже в git).
+Сверка по **origin/dev** (источник истины; локальное дерево в churn параллельных воркеров):
+- Рантайм-стек TRACKED на origin/dev: `scripts/skeleton_player_rig_2d.gd`(+`.uid`), обе сцены
+  `scenes/characters/{DarkMage,Knight}SkeletonRig.tscn`, оба рантайм-манифеста
+  `assets/.../skeleton_parts/{dark_mage,knight}/skeleton_source_manifest.json`. Всего 82 файла
+  `assets/.../skeleton_parts/` + 93 reference `docs/.../chars_cartoon/skeleton_parts/`.
+- Preload-цепочка цела: `player.gd:17-18` preload обеих `.tscn` → `_character_skeleton_rig_scene`
+  (1776) возвращает их; `.tscn` ext_resource → `skeleton_player_rig_2d.gd`, `manifest_path` → tracked JSON.
+- Untracked-кусков рига нет (ни в основном дереве, ни в `.claude/worktrees/*`). Finder-дублей
+  `« 2.<ext>»` нет нигде (вне `.git`/`.godot`).
+- Гейты зелёные: `no_duplicate_artifact_files_test` exit 0 (9346 файлов, дублей нет);
+  `animation_smoke_test` exit 0 (рантайм рига `update_animation` отрабатывает); `runtime_smoke_test`
+  exit 0 (прогон #2; преоды резолвятся — проект грузится). Эвиденс: `build/qa/scrum513/`.
+- История НЕ переписывалась (стек уехал в checkpoint-коммит миграции `c55610c0` + фикс `205fe13e`,
+  уже в `dev`) — по спеке достаточно зафиксировать факт и верифицировать целостность.
+
+Acceptance закрыты по факту; коммита нет (нечего добирать — diff пуст).
 
 ## Что и зачем
 
