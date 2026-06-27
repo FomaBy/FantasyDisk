@@ -1,26 +1,55 @@
-# Кит кнопок «Red & Gold Dragon» (референс пользователя, 2026-06-14)
+# FantasyDisk
 
-`button_kit_red_gold_dragon_sheet.png` — полный лист кнопок в красно-золотом
-драконьем dark fantasy стиле, с ТОЧНЫМИ размерами под каждый тип кнопки игры
-(совпадают с унифицированной системой SCRUM-263/264: высота action-кнопок 104px).
+2D top-down loot-action рогалик на **Godot 4 (GDScript)**: играбельные классы,
+процедурные забеги, события, прокачка, кодекс.
 
-Состав листа (тип → размер px):
-1. Standard action button — 420×104
-2. Maximum visual action button — 560×104
-3. Main menu action button — 380×104
-4. Hero select confirm — 320×104
-5. Settings reset audio — 420×104
-6. Settings reset bindings — 440×104
-7. Codex tab action button — 170×104
-8. Back/action variant S — 170×104
-9. Back/action variant M — 280×104
-10. Back/action variant L — 380×104
-11. Attribute selector button — 560×104
-12. Upgrade FAB — 50×50
-13. Compact utility button — 54×42
-14. Pause menu button — 280×60
-15. Rebind button — 420×62
+## Требования
+- **Godot 4.6.3** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
+- **Git** — для клонирования и работы с GitHub.
 
-Стиль: тёмный фон-капсула, золотая окантовка, красные драконьи когти/орнамент
-по краям, рубиновые акценты. Прозрачный фон. Применить ко всем кнопкам игры
-(заменяет/дополняет текущий button-стиль).
+## Запуск
+1. Клонировать репозиторий (см. GitHub-инструкцию).
+2. Открыть `project.godot` в Godot 4.6.3.
+3. Нажать ▶ (F5) — откроется главное меню.
+
+## Ветки
+- `main` — стабильная версия.
+- `dev` — активная разработка; мержится в `main` на релизе.
+
+Работай в `dev`: правки → коммит → push в `dev`. На другой машине — `git pull`.
+
+## Headless smoke-тесты
+macOS:
+```bash
+~/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/runtime_smoke_test.gd
+```
+Windows (путь под свою установку Godot):
+```powershell
+& "C:\Godot\Godot_v4.6.3-stable_win64.exe" --headless --path . --script res://tests/runtime_smoke_test.gd
+```
+Другие наборы: `animation_smoke_test.gd`, `attack_vfx_smoke_test.gd`, `meta_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`.
+
+## Локальные секреты (НЕ в git — создать на каждой машине)
+Эти файлы в `.gitignore`; нужны только для фидбека/релиза, на саму игру не влияют:
+- `feedback_webhook.cfg` — Discord-webhook внутриигрового фидбека (шаблон: `feedback_webhook.cfg.example`).
+- `release_webhook.cfg` — Discord-webhook публикации релизов.
+- `fantasydisk_release.session` — Telethon-сессия (создаётся при первом логине).
+
+## Сборка релиза (macOS)
+```bash
+tools/build_release.sh <версия>    # напр. 0.1.6 — собирает из git-тега
+```
+
+## Структура
+- `scripts/` — игровая логика (GDScript)
+- `scenes/` — сцены Godot (`.tscn`)
+- `assets/` — спрайты, фоны, аудио, шрифты, UI
+- `tests/` — headless smoke-тесты
+- `tools/` — утилиты (сборка, Jira-синк, фидбек)
+- `docs/` — дизайн-доки, процессы, задачи
+
+## AI-автоматизация (только macOS)
+Агентная оркестрация (Codex-скиллы в `~/.codex/`, scheduled-task рутины,
+`tools/jira_board_sync.py` через macOS Keychain) специфична для Mac-машины и **не
+переносится в репозиторий**. На Windows работает сама игра — Godot кросс-платформенный;
+AI-оркестрация остаётся на Mac.
