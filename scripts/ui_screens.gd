@@ -1946,6 +1946,15 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
 		offer_button.modulate = Color(0.5, 0.5, 0.55, 0.85) if offer_button.disabled else Color(1.0, 1.0, 1.0, 1.0)
 		offer_button.tooltip_text = "%s +1\n%s" % [stat_title, interpretation]
+		# SCRUM-525: в тултип — на что влияет атрибут и живой предпросмотр производных при +1.
+		# Подробности держим в tooltip_text (Godot клампит его в экран сам), тело карточки
+		# оставляем компактным, чтобы не ловить overflow на 720p (ui_no_overlap_matrix_test).
+		var influence_text := _attribute_influence_text(stat_id)
+		if influence_text != "":
+			offer_button.tooltip_text += "\nВлияет на: %s" % influence_text
+		var preview_lines := _attribute_upgrade_preview_lines(stat_id)
+		if not preview_lines.is_empty():
+			offer_button.tooltip_text += "\nПредпросмотр при +1:\n• %s" % "\n• ".join(preview_lines)
 		if offer_button.disabled:
 			offer_button.tooltip_text += "\nНедостаточно золота: нужно %d, есть %d." % [buy_cost, money]
 		var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(30, 30))
@@ -5611,6 +5620,74 @@ func _reward_icon_id(reward: Dictionary) -> String:
 	return "buff_power"
 
 
+# SCRUM-525: какие производные статы реально двигает +1 к базовому атрибуту.
+# Список — самые значимые производные (порядок = приоритет показа), чтобы тултип
+# докачки не разрастался и не давал overflow на 720p. Damage-типы тут приводятся к
+# «своему» типу класса в _attribute_upgrade_preview_lines/_attribute_influence_text
+# (изоляция типов урона SCRUM-524): чужой тип урона в превью не показываем.
+const STAT_DERIVED_PREVIEW := {
+	"strength": ["damage"],
+	"intelligence": ["magic_damage"],
+	"perception": ["sound_wave_damage", "attack_range", "aoe_radius", "pickup_radius"],
+	"energy": ["sound_wave_damage", "ultimate_multiplier", "projectile_speed"],
+	"knowledge": ["dot_damage", "regeneration", "dot_speed", "summon_amount"],
+	"agility": ["attack_speed", "crit_chance", "move_speed", "dodge"],
+	"endurance": ["health_point", "defense", "absorb", "knockback_power"],
+	"leadership": ["summon_amount", "aura_radius", "buff_power"],
+}
+
+const _DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage", "sound_wave_damage"]
+
+
+# SCRUM-525: RU-список производных, на которые влияет атрибут (для блока «Влияет на: …»
+# в тултипе докачки). Damage-типы фильтруем по «своему» типу класса (SCRUM-524).
+# Для небазовых id (например форс ["damage","attack_speed"] из теста) — пустая строка.
+func _attribute_influence_text(stat_id: String) -> String:
+	var parameters: Array = STAT_DERIVED_PREVIEW.get(stat_id, [])
+	if parameters.is_empty():
+		return ""
+	var class_damage: String = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
+	var labels: Array = []
+	for parameter_id in parameters:
+		if parameter_id in _DAMAGE_TYPE_PARAMETERS and parameter_id != class_damage:
+			continue
+		var label := _level_up_parameter_label(parameter_id)
+		if not labels.has(label):
+			labels.append(label)
+	return ", ".join(labels)
+
+
+# SCRUM-525: честный предпросмотр «было -> станет» для производных при +1 к базовому
+# атрибуту. Считаем через derived_parameters от ЖИВОГО состояния игрока (тот же путь,
+# что и боевые формулы), безопасно и вне боя (через снапшоты). Возвращаем только строки,
+# где отображаемое значение реально меняется; список ограничен 4 строками (overflow на 720p).
+func _attribute_upgrade_preview_lines(stat_id: String, delta := 1.0) -> Array:
+	var parameters: Array = STAT_DERIVED_PREVIEW.get(stat_id, [])
+	if parameters.is_empty():
+		return []
+	var before_stats := _active_stats_snapshot()
+	var before_mods := _active_modifiers_snapshot()
+	var after_stats := before_stats.duplicate(true)
+	after_stats[stat_id] = float(after_stats.get(stat_id, 0.0)) + delta
+	var weapon_config = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id)
+	var before_parameters: Dictionary = game.PROGRESSION_DATA.derived_parameters(before_stats, before_mods, weapon_config)
+	var after_parameters: Dictionary = game.PROGRESSION_DATA.derived_parameters(after_stats, before_mods, weapon_config)
+	var class_damage: String = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
+	var lines: Array = []
+	for parameter_id in parameters:
+		# Изоляция типов урона: показываем только «свой» damage-тип класса.
+		if parameter_id in _DAMAGE_TYPE_PARAMETERS and parameter_id != class_damage:
+			continue
+		var before_text := _format_level_up_value(parameter_id, float(before_parameters.get(parameter_id, 0.0)))
+		var after_text := _format_level_up_value(parameter_id, float(after_parameters.get(parameter_id, 0.0)))
+		if before_text == after_text:
+			continue
+		lines.append("%s: %s -> %s" % [_level_up_parameter_label(parameter_id), before_text, after_text])
+		if lines.size() >= 4:
+			break
+	return lines
+
+
 func _level_up_reward_preview(reward: Dictionary) -> String:
 	var kind := "Параметр"
 	if reward.has("stats"):
@@ -5710,6 +5787,8 @@ func _level_up_parameter_label(parameter_id: String) -> String:
 			return "Макс. здоровье"
 		"move_speed":
 			return "Скорость"
+		"dodge":
+			return "Уклонение"
 		"aoe_radius":
 			return "Радиус области"
 		"pickup_radius":
