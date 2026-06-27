@@ -54,15 +54,23 @@ const SURVIVABILITY_DEFENSE_CAP := 0.62
 const SURVIVABILITY_DEFENSE_DIMINISH := 0.55
 const SURVIVABILITY_DODGE_CAP := 0.55
 const SURVIVABILITY_DODGE_DIMINISH := 1.15
-const SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION := 0.35
-const SURVIVABILITY_ABSORB_FLAT_DIMINISH := 0.08
-const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := 0.45
-const VAMPIRIC_CHANCE_CAP := 0.22
-const VAMPIRIC_DAMAGE_HEAL_RATIO := 0.035
-const VAMPIRIC_BASE_HEAL_MULTIPLIER := 0.55
-const VAMPIRIC_HEAL_CAP_DEFAULT := 1.4
-const VAMPIRIC_HEAL_CAP_HARD := 2.6
-const WEAPON_DRAIN_HEAL_MULTIPLIER := 0.45
+# SCRUM-526: нерф защитной оси (absorb/regen/vampiric). Защитные механики были
+# супер-имбовыми — «закопаться в выживаемость» доминировало над уроном. Ослаблены
+# измеримо, чтобы выживаемость была полезной, но не доминирующей стратегией.
+# До→после: absorb min-fraction 0.35→0.42 (больше доля удара всегда проходит),
+# flat-diminish 0.08→0.11 (быстрее насыщение стака), regen-flat-mult 0.45→0.35.
+const SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION := 0.42
+const SURVIVABILITY_ABSORB_FLAT_DIMINISH := 0.11
+const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := 0.35
+# SCRUM-526: оба канала вампиризма ослаблены. Стат-вампиризм: chance-cap 0.22→0.20,
+# damage-heal-ratio 0.035→0.025, base-heal-mult 0.55→0.48, per-second капы 1.4→1.1 и
+# 2.6→2.0. Оружейный drain: множитель 0.45→0.35.
+const VAMPIRIC_CHANCE_CAP := 0.20
+const VAMPIRIC_DAMAGE_HEAL_RATIO := 0.025
+const VAMPIRIC_BASE_HEAL_MULTIPLIER := 0.48
+const VAMPIRIC_HEAL_CAP_DEFAULT := 1.1
+const VAMPIRIC_HEAL_CAP_HARD := 2.0
+const WEAPON_DRAIN_HEAL_MULTIPLIER := 0.35
 const CRIT_CHANCE_CAP := 0.55
 const CRIT_CHANCE_DIMINISH := 0.45
 const CRIT_FLAT_EFFECTIVENESS := 0.75

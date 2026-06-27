@@ -250,7 +250,7 @@ static func effective_dodge(raw_dodge: float) -> float:
 
 
 static func effective_absorb(endurance: float, flat_absorb: float) -> float:
-	var base_absorb := maxf(endurance, 0.0) * 0.16
+	var base_absorb := maxf(endurance, 0.0) * 0.145  # SCRUM-526: 0.16→0.145, поджать базовый absorb стойкости (танк остаётся крепче fragile)
 	var positive_flat := maxf(flat_absorb, 0.0)
 	var negative_flat := minf(flat_absorb, 0.0)
 	var softened_flat := positive_flat / (1.0 + positive_flat * SURVIVABILITY_ABSORB_FLAT_DIMINISH)
@@ -260,7 +260,7 @@ static func effective_absorb(endurance: float, flat_absorb: float) -> float:
 static func effective_regeneration(knowledge: float, flat_regeneration: float) -> float:
 	var positive_flat := maxf(flat_regeneration, 0.0) * SURVIVABILITY_REGEN_FLAT_MULTIPLIER
 	var negative_flat := minf(flat_regeneration, 0.0)
-	var regen_base := maxf(0.0, 0.22 + positive_flat + negative_flat)
+	var regen_base := maxf(0.0, 0.16 + positive_flat + negative_flat)  # SCRUM-526: база реген 0.22→0.16
 	var knowledge_scale := 0.45 + maxf(knowledge, 0.0) / 12.0
 	return regen_base * knowledge_scale
 
