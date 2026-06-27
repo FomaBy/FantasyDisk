@@ -2576,5 +2576,9 @@
   "key": "SCRUM-530",
   "status": "Контроль качества",
   "desc_hash": "49eefea1eede3f41aa442895d867a0ea"
+ },
+ "SCRUM-526_nerf_defensive_mechanics.md": {
+  "key": "SCRUM-526",
+  "status": "Готово"
  }
 }

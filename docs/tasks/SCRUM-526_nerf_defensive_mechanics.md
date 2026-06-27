@@ -1,7 +1,31 @@
 # SCRUM-526: Нерф защитных механик: вампиризм / реген / абсорб (имба)
 
 Jira: SCRUM-526 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: SCRUM-522 (Ребаланс боёвки и прогрессии)
-Статус: Контроль качества
+Статус: Готово (QA PASSED, dev 8ebe4d20; QA 2026-06-27)
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED · QA 2026-06-27 (Godot 4.6.3 headless, ветка dev, HEAD 8ebe4d20)
+
+Green-gate / balance-смоуки — все зелёные: runtime_smoke_test,
+global_survivability_balance_smoke_test (16 строк: TTD<=600с, митигация<98%, бессмертие
+недостижимо), global_damage_balance_smoke_test (51 пара), survivability_scenario_test
+(якорь take_damage 33.055 == формула 33.055), live_balance_simulation_test,
+ascension_curve_balance_test, damage_type_isolation_test (изоляция SCRUM-523/524 цела).
+
+HEAD-изоляция: ключевые гейты перепрогнаны в чистом worktree на коммите 8ebe4d20 (после
+`--import`) — все зелёные; правки SCRUM-526 не зависят от чужих незакоммиченных хунков
+(SCRUM-517/503 WIP в рабочем дереве не трогает absorb/regen/vampiric-константы).
+
+Acceptance подтверждён фактической проверкой:
+- Absorb ослаблен: min-fraction 0.35→0.42, flat-diminish 0.08→0.11, база END*0.16→*0.145.
+- Regen ослаблен: база 0.22→0.16, flat-mult 0.45→0.35 → effective regen tank 0.30→0.20/с.
+- Вампиризм ослаблен (оба канала): chance-cap 0.22→0.20, damage-ratio 0.035→0.025 (−29%),
+  base-mult 0.55→0.48, per-sec капы 1.4→1.1 / 2.6→2.0, оружейный drain 0.45→0.35.
+- Защитная ось не доминирует: харнесс перегенерён, tank/contact_swarm TTD 38.5→33.4с (−13%),
+  разрыв tank↔sturdy 2.79×→2.57×; монотонность fragile<steady<sturdy<tank во всех 4 сценариях.
+- Инвариант «бессмертие недостижимо» держится с запасом по всем 16 строкам; fragile не задет.
+- Изоляция типов урона (SCRUM-523/524) не нарушена — правки только в защитной оси.
 
 ## Результат (до→после, 2026-06-27)
 
