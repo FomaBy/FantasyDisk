@@ -1,0 +1,635 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        220,
+        104,
+        720,
+        76
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 64,
+      "lines": [
+        "FantasyDisk"
+      ],
+      "text_bbox": [
+        220,
+        110,
+        359,
+        65
+      ]
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        220,
+        236,
+        870,
+        40
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "7 дней AI-разработки • GitHub/Jira/repo scan • 27 июня 2026"
+      ],
+      "text_bbox": [
+        220,
+        242,
+        662,
+        27
+      ]
+    },
+    {
+      "id": "days_number",
+      "rect": [
+        180,
+        374,
+        440,
+        142
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 142,
+      "lines": [
+        "7"
+      ],
+      "text_bbox": [
+        356,
+        390,
+        89,
+        110
+      ]
+    },
+    {
+      "id": "days_label",
+      "rect": [
+        180,
+        522,
+        440,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 34,
+      "lines": [
+        "дней разработки"
+      ],
+      "text_bbox": [
+        264,
+        530,
+        272,
+        39
+      ]
+    },
+    {
+      "id": "days_caption",
+      "rect": [
+        168,
+        664,
+        470,
+        36
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 23,
+      "lines": [
+        "AI-марафон: дизайн, код, арт, QA и GitHub"
+      ],
+      "text_bbox": [
+        168,
+        669,
+        461,
+        26
+      ]
+    },
+    {
+      "id": "commits_number",
+      "rect": [
+        1222,
+        142,
+        230,
+        74
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 62,
+      "lines": [
+        "560"
+      ],
+      "text_bbox": [
+        1283,
+        153,
+        108,
+        52
+      ]
+    },
+    {
+      "id": "commits_label",
+      "rect": [
+        1222,
+        254,
+        230,
+        32
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "коммитов"
+      ],
+      "text_bbox": [
+        1282,
+        262,
+        109,
+        16
+      ]
+    },
+    {
+      "id": "code_number",
+      "rect": [
+        1514,
+        142,
+        230,
+        74
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 50,
+      "lines": [
+        "64 853"
+      ],
+      "text_bbox": [
+        1549,
+        158,
+        160,
+        43
+      ]
+    },
+    {
+      "id": "code_label",
+      "rect": [
+        1514,
+        254,
+        230,
+        32
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 23,
+      "lines": [
+        "строки кода"
+      ],
+      "text_bbox": [
+        1564,
+        260,
+        131,
+        21
+      ]
+    },
+    {
+      "id": "gd_number",
+      "rect": [
+        795,
+        386,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 44,
+      "lines": [
+        "47 744"
+      ],
+      "text_bbox": [
+        841,
+        397,
+        138,
+        38
+      ]
+    },
+    {
+      "id": "gd_label",
+      "rect": [
+        795,
+        478,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "строки GDScript"
+      ],
+      "text_bbox": [
+        827,
+        484,
+        166,
+        24
+      ]
+    },
+    {
+      "id": "files_number",
+      "rect": [
+        1100,
+        386,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 46,
+      "lines": [
+        "7 410"
+      ],
+      "text_bbox": [
+        1154,
+        396,
+        123,
+        40
+      ]
+    },
+    {
+      "id": "files_label",
+      "rect": [
+        1100,
+        478,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "файлов в Git"
+      ],
+      "text_bbox": [
+        1148,
+        484,
+        135,
+        24
+      ]
+    },
+    {
+      "id": "images_number",
+      "rect": [
+        1407,
+        386,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 46,
+      "lines": [
+        "3 360"
+      ],
+      "text_bbox": [
+        1460,
+        396,
+        123,
+        40
+      ]
+    },
+    {
+      "id": "images_label",
+      "rect": [
+        1407,
+        478,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "картинок в Git"
+      ],
+      "text_bbox": [
+        1449,
+        484,
+        146,
+        24
+      ]
+    },
+    {
+      "id": "refs_number",
+      "rect": [
+        795,
+        592,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 48,
+      "lines": [
+        "512"
+      ],
+      "text_bbox": [
+        866,
+        602,
+        87,
+        41
+      ]
+    },
+    {
+      "id": "refs_label",
+      "rect": [
+        795,
+        684,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "референсов"
+      ],
+      "text_bbox": [
+        846,
+        690,
+        129,
+        24
+      ]
+    },
+    {
+      "id": "assets_number",
+      "rect": [
+        1100,
+        592,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 46,
+      "lines": [
+        "1 945"
+      ],
+      "text_bbox": [
+        1154,
+        602,
+        123,
+        40
+      ]
+    },
+    {
+      "id": "assets_label",
+      "rect": [
+        1100,
+        684,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "игровых image assets"
+      ],
+      "text_bbox": [
+        1106,
+        690,
+        219,
+        23
+      ]
+    },
+    {
+      "id": "qa_number",
+      "rect": [
+        1407,
+        592,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 48,
+      "lines": [
+        "700"
+      ],
+      "text_bbox": [
+        1478,
+        602,
+        87,
+        41
+      ]
+    },
+    {
+      "id": "qa_label",
+      "rect": [
+        1407,
+        684,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "QA/report screenshots"
+      ],
+      "text_bbox": [
+        1419,
+        691,
+        206,
+        22
+      ]
+    },
+    {
+      "id": "tasks_number",
+      "rect": [
+        330,
+        854,
+        240,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 44,
+      "lines": [
+        "460"
+      ],
+      "text_bbox": [
+        411,
+        862,
+        78,
+        39
+      ]
+    },
+    {
+      "id": "tasks_label",
+      "rect": [
+        330,
+        918,
+        240,
+        28
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "task specs"
+      ],
+      "text_bbox": [
+        400,
+        921,
+        99,
+        22
+      ]
+    },
+    {
+      "id": "mirrors_number",
+      "rect": [
+        662,
+        854,
+        240,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 44,
+      "lines": [
+        "511"
+      ],
+      "text_bbox": [
+        743,
+        862,
+        78,
+        38
+      ]
+    },
+    {
+      "id": "mirrors_label",
+      "rect": [
+        662,
+        918,
+        240,
+        28
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "task mirrors"
+      ],
+      "text_bbox": [
+        727,
+        923,
+        110,
+        18
+      ]
+    },
+    {
+      "id": "releases_number",
+      "rect": [
+        994,
+        854,
+        240,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 50,
+      "lines": [
+        "7"
+      ],
+      "text_bbox": [
+        1097,
+        860,
+        34,
+        42
+      ]
+    },
+    {
+      "id": "releases_label",
+      "rect": [
+        994,
+        918,
+        240,
+        28
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "релизных тегов"
+      ],
+      "text_bbox": [
+        1040,
+        923,
+        148,
+        18
+      ]
+    },
+    {
+      "id": "size_number",
+      "rect": [
+        1326,
+        854,
+        250,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 42,
+      "lines": [
+        "1.2 GB"
+      ],
+      "text_bbox": [
+        1382,
+        862,
+        137,
+        37
+      ]
+    },
+    {
+      "id": "size_label",
+      "rect": [
+        1326,
+        918,
+        250,
+        28
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "tracked project"
+      ],
+      "text_bbox": [
+        1383,
+        921,
+        136,
+        22
+      ]
+    },
+    {
+      "id": "footer",
+      "rect": [
+        300,
+        1006,
+        1320,
+        30
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "Зоны контента заданы до генерации • текст вставлен без новых фреймов поверх изображения"
+      ],
+      "text_bbox": [
+        514,
+        1010,
+        892,
+        23
+      ]
+    }
+  ]
+}

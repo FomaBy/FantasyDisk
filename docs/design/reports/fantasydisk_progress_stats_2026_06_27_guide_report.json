@@ -1,0 +1,335 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        220,
+        104,
+        720,
+        76
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        220,
+        236,
+        870,
+        40
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "days_number",
+      "rect": [
+        180,
+        374,
+        440,
+        142
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "days_label",
+      "rect": [
+        180,
+        522,
+        440,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "days_caption",
+      "rect": [
+        168,
+        664,
+        470,
+        36
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "commits_number",
+      "rect": [
+        1222,
+        142,
+        230,
+        74
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "commits_label",
+      "rect": [
+        1222,
+        254,
+        230,
+        32
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "code_number",
+      "rect": [
+        1514,
+        142,
+        230,
+        74
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "code_label",
+      "rect": [
+        1514,
+        254,
+        230,
+        32
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "gd_number",
+      "rect": [
+        795,
+        386,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "gd_label",
+      "rect": [
+        795,
+        478,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "files_number",
+      "rect": [
+        1100,
+        386,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "files_label",
+      "rect": [
+        1100,
+        478,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "images_number",
+      "rect": [
+        1407,
+        386,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "images_label",
+      "rect": [
+        1407,
+        478,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "refs_number",
+      "rect": [
+        795,
+        592,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "refs_label",
+      "rect": [
+        795,
+        684,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "assets_number",
+      "rect": [
+        1100,
+        592,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "assets_label",
+      "rect": [
+        1100,
+        684,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "qa_number",
+      "rect": [
+        1407,
+        592,
+        230,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "qa_label",
+      "rect": [
+        1407,
+        684,
+        230,
+        36
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tasks_number",
+      "rect": [
+        330,
+        854,
+        240,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tasks_label",
+      "rect": [
+        330,
+        918,
+        240,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "mirrors_number",
+      "rect": [
+        662,
+        854,
+        240,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "mirrors_label",
+      "rect": [
+        662,
+        918,
+        240,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "releases_number",
+      "rect": [
+        994,
+        854,
+        240,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "releases_label",
+      "rect": [
+        994,
+        918,
+        240,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "size_number",
+      "rect": [
+        1326,
+        854,
+        250,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "size_label",
+      "rect": [
+        1326,
+        918,
+        250,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "footer",
+      "rect": [
+        300,
+        1006,
+        1320,
+        30
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}
