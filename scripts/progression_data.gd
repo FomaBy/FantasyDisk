@@ -286,24 +286,9 @@ static func effective_crit_damage_multiplier(agility: float, flat_bonus: float) 
 	return clampf(multiplier, 1.0, CRIT_DAMAGE_CAP)
 
 
-static func _archetype_damage_multiplier(archetype: String, strength: float, agility: float, intelligence: float, perception: float, energy: float, knowledge: float, endurance: float, leadership: float) -> float:
-	var bonus := 0.0
-	match archetype:
-		"melee":
-			bonus = strength * 0.004 + endurance * 0.003 + agility * 0.002
-		"projectile":
-			bonus = perception * 0.004 + agility * 0.003 + strength * 0.002
-		"beam":
-			bonus = intelligence * 0.004 + energy * 0.003 + perception * 0.002
-		"aoe":
-			bonus = perception * 0.004 + intelligence * 0.003 + knowledge * 0.002
-		"summon":
-			bonus = leadership * 0.004 + knowledge * 0.003 + intelligence * 0.002
-		"aura":
-			bonus = leadership * 0.004 + energy * 0.003 + perception * 0.002
-		_:
-			bonus = perception * 0.002 + agility * 0.002
-	return 1.0 + bonus
+# SCRUM-524: архетип-множитель урона удалён. Он зависел от ВСЕХ атрибутов и
+# одинаково домножал все типы урона, из-за чего прокачка одного атрибута протекала
+# в чужие типы. Классовый баланс по DPS теперь полностью держит budget_tuning_for.
 
 
 static func base_stats(character_id: String) -> Dictionary:
@@ -857,19 +842,28 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + float(passive_mods.get("crit_damage_flat", 0.0))
 	if passive_mods.has("crit_damage_multiplier"):
 		crit_damage_flat += float(passive_mods.get("crit_damage_multiplier", 1.0)) - 1.0
-	var archetype := weapon_archetype(weapon_config)
-	var archetype_damage_multiplier := _archetype_damage_multiplier(archetype, strength, agility, intelligence, perception, energy, knowledge, endurance, leadership)
+	# SCRUM-524: урон каждого ТИПА масштабируется ТОЛЬКО от своего атрибута.
+	# Изоляция по типам урона — жёсткий инвариант: прокачка атрибута типа X меняет
+	# урон ТОЛЬКО типа X и НИКАК не влияет на остальные типы (см. систему типов
+	# урона SCRUM-523 и гейт tests/damage_type_isolation_test.gd). Поэтому здесь
+	# НЕТ «splash»-вкладов чужих атрибутов и НЕТ архетип-множителя: он зависел от
+	# ВСЕХ атрибутов и одинаково домножал все три типа, протекая между ними.
+	# Владельцы атрибутов по типам: сила→физический, интеллект→магический,
+	# восприятие+энергия→звуковой, знание→периодический (DoT). damage_flat и
+	# dot_damage_flat — забеговые/пассивные модификаторы (не атрибуты), поэтому
+	# общий вклад в типы инвариант изоляции не нарушает (тест проверяет атрибуты).
+	# Баланс по DPS добирается классовым budget-множителем (budget_tuning_for).
 	var universal_damage_flat := float(run_modifiers.get("damage_flat", 0.0))
-	var physical_base := 15.0 * strength / 10.0 + intelligence * 0.18 + perception * 0.10 + energy * 0.12 + knowledge * 0.09 + endurance * 0.08 + leadership * 0.10
-	var magic_base := 14.0 * intelligence / 10.0 + energy * 0.65 + strength * 0.16 + agility * 0.08 + perception * 0.12 + knowledge * 0.14 + endurance * 0.06 + leadership * 0.10
-	var sound_base := 12.0 * (perception + energy) / 12.0 + leadership * 0.45 + strength * 0.08 + agility * 0.08 + intelligence * 0.09 + knowledge * 0.10 + endurance * 0.05
+	var physical_base := 15.0 * strength / 10.0
+	var magic_base := 14.0 * intelligence / 10.0
+	var sound_base := perception + energy
 	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
-	var universal_dot_base := 4.0 + knowledge * 0.65 + intelligence * 0.18 + strength * 0.12 + perception * 0.10 + energy * 0.10 + leadership * 0.10 + dot_damage_flat
+	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat
 
 	return {
-		"damage": physical_base * weapon_damage_multiplier * damage_multiplier * archetype_damage_multiplier + universal_damage_flat,
-		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier * archetype_damage_multiplier + universal_damage_flat,
-		"sound_wave_damage": sound_base * weapon_damage_multiplier * damage_multiplier * archetype_damage_multiplier + universal_damage_flat,
+		"damage": physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
+		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
+		"sound_wave_damage": sound_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
 		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
 		"crit_chance": effective_crit_chance(0.04 + agility * 0.0075 + crit_chance_flat),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
@@ -880,7 +874,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + perception * 2.5 + intelligence * 0.35 + endurance * 0.25 + leadership * 0.35) * range_multiplier,
 		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + perception * 3.5 + intelligence * 0.45 + knowledge * 0.35 + leadership * 0.30) * aoe_radius_multiplier,
 		"pickup_radius": 105.0 + perception * 7.0 + pickup_radius_flat,
-		"dot_damage": max(1.0, universal_dot_base * damage_multiplier),
+		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier),
 		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010 + dot_speed_flat),
 		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + energy * 4.0 + knowledge * 2.0 + projectile_speed_flat,
 		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + perception * 0.80 + energy * 0.65 + knowledge * 0.45 + aura_radius_flat) * aoe_radius_multiplier,

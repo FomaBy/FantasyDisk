@@ -5499,8 +5499,14 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 	var before: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
 	mage_stats["strength"] = mage_stats["strength"] + 10.0
 	var after: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
-	if float(after.get("magic_damage", 0.0)) <= float(before.get("magic_damage", 0.0)):
-		_fail("Expected +10 strength to raise dark mage magic damage through weapon synergy.")
+	# SCRUM-524: типы урона изолированы по атрибутам. Сила — атрибут ФИЗИЧЕСКОГО
+	# урона, поэтому остаётся универсально полезной (поднимает physical damage даже
+	# магу), но НЕ протекает в магический урон (изоляция по типам).
+	if float(after.get("damage", 0.0)) <= float(before.get("damage", 0.0)):
+		_fail("Expected +10 strength to raise dark mage physical damage (universal stat usefulness).")
+		return
+	if absf(float(after.get("magic_damage", 0.0)) - float(before.get("magic_damage", 0.0))) > 0.0001:
+		_fail("Expected +10 strength NOT to change dark mage magic damage (SCRUM-524 damage-type isolation).")
 		return
 
 	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.

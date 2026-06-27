@@ -27,14 +27,16 @@ const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
 	"elementalist": {"agility": 0.92, "intelligence": 0.92},
 	"priest": {"agility": 0.88, "intelligence": 0.88},
 	"robot": {"strength": 0.78, "agility": 0.78},
-	"engineer": {"strength": 0.90, "agility": 0.90},
+	"engineer": {"strength": 0.72, "agility": 0.72, "leadership": 0.80},
 	"dark_mage": {"agility": 0.84, "intelligence": 0.84},
-	"guitarist": {"energy": 1.90},
+	"guitarist": {"energy": 1.56},
 	"assassin": {"strength": 2.05, "agility": 2.05},
 	"doctor": {"agility": 1.10, "intelligence": 1.80},
-	"chemist": {"agility": 1.60, "intelligence": 1.60},
-	"knight": {"strength": 0.66, "agility": 0.66},
-	"druid": {"energy": 1.85},
+	"chemist": {"agility": 1.52, "intelligence": 1.52},
+	"knight": {"strength": 0.73, "agility": 0.73},
+	"druid": {"energy": 1.70, "perception": 0.55, "leadership": 0.70},
+	"berserk": {"strength": 1.18, "agility": 1.10},
+	"thief": {"strength": 0.86, "agility": 0.86},
 }
 
 const BALANCE_BASE_SOLO_DPS := 48.0
