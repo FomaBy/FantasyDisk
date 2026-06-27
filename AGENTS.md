@@ -122,12 +122,18 @@ Project practices:
 - **Постеры/инфографика/UI-элементы с текстом поверх AI-картинки — через скилл
   `content-zone-image-compositor`** (Codex skill,
   `~/.codex/skills/content-zone-image-compositor/`, repo mirror:
-  `skills/codex/content-zone-image-compositor/`). Сначала создать `layout.json`
-  с точными content zones, затем генерировать картинку как неизменяемый
-  frame/layout layer вокруг этих зон, затем вставлять текст/иконки только внутрь
-  зон bundled-скриптом. После генерации запрещено дорисовывать новые карточки,
-  рамки, панели или подложки поверх красивого layout, если пользователь явно не
-  запросил новый дизайн-проход.
+  `skills/codex/content-zone-image-compositor/`). Для UI-элементов сначала
+  создать `ui_plan.json`: что где находится, размеры, min/max шрифты,
+  content-зоны, нужен ли scrollbar, помещается ли весь контент или задачу нужно
+  пересмотреть. Прогнать `validate_ui_layout_plan.py` и продолжать генерацию
+  только при `decision: ready_for_image`; при `revise_task` сначала менять
+  размеры/скролл/состав. Затем создать `layout.json` с точными content zones,
+  генерировать картинку как неизменяемый frame/layout layer вокруг этих зон и
+  вставлять текст/иконки только внутрь зон bundled-скриптом. Стиль UI-элементов:
+  dark fantasy / dragon specific / D&D, строго, красиво, брутально, эпично, но
+  без крика и лишней детализации. После генерации запрещено дорисовывать новые
+  карточки, рамки, панели или подложки поверх красивого layout, если пользователь
+  явно не запросил новый дизайн-проход.
 - **Анимации персонажей/монстров/элиток/боссов — через скилл
   `fantasydisk-animation-director`**
   (Codex skill, `~/.codex/skills/fantasydisk-animation-director/`). Минимум для

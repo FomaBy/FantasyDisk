@@ -1,7 +1,9 @@
 # Layout Schema
 
 Use one JSON file per output image. Coordinates are absolute pixels in the final
-canvas.
+canvas. For game UI elements, first create and validate a `ui_plan.json` using
+`ui_plan_schema.md`; then convert approved content surfaces into this render
+layout for final text/icon compositing.
 
 ## Fields
 
@@ -113,4 +115,12 @@ leave their interiors empty. Use phrasing like:
 The rectangles listed below are strict empty content interiors. Do not place
 ornaments, highlights, characters, texture seams, symbols, text, or pseudo-text
 inside them. Decorative frames may surround them but must stay outside.
+```
+
+For UI work, include the approved plan decision in the task evidence:
+
+```text
+Planning gate: ready_for_image
+Scrollbars: body_scroll auto, content_h=560, viewport_h=330
+Generation may start because all required content zones fit or have declared scrolling.
 ```

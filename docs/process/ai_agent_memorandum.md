@@ -312,7 +312,7 @@ git rev-list --left-right --count HEAD...origin/dev
 | --- | --- |
 | UI screens, HUD, menus, frames, responsive layout | `fantasydisk-ui-director` |
 | Raster assets, sprites, icons, frames, buttons, VFX PNG | `fantasydisk-asset-generator` |
-| Posters, infographics, report images, or UI mockups with fixed text/content zones over AI art | `content-zone-image-compositor` |
+| Posters, infographics, report images, or UI elements/mockups with fixed text/content zones over AI art | `content-zone-image-compositor` |
 | Character/enemy/boss animation, SpriteFrames, rigs | `fantasydisk-animation-director` |
 | Class/weapon balance | `fantasydisk-class-balance-director` |
 | Release build/publish | `fantasydisk-release-director` |
@@ -330,11 +330,18 @@ Fantasy Dragon style when applicable, source saved in `docs/design/references/`,
 runtime asset integrated under `assets/`.
 
 Content-zone image hard rule: when an AI-generated poster/report/UI element will
-receive text, numbers, icons or labels after generation, define exact zones in
+receive text, numbers, icons, portraits, lists, controls or labels after
+generation, first prove the geometry. For UI elements create `ui_plan.json`
+with exact rectangles, min/max fonts, content zones, required/auto/never
+scrollbars, and a fit decision. Run `validate_ui_layout_plan.py` and continue to
+image generation only on `decision: ready_for_image`; on `revise_task`, revise
+size/content/scroll/tab split before art. Then define exact zones in
 `layout.json` before generating the image. The generated image is the final
 frame/layout layer; post-processing must not draw new cards, frames, panels or
 opaque backing boxes over it. Insert content only inside declared zones and keep
-the debug overlay/report as evidence when the result matters.
+the guide/debug overlay/report as evidence when the result matters. FantasyDisk
+UI elements use strict dark fantasy / dragon specific / D&D styling: beautiful,
+brutal and epic, but restrained and not over-detailed.
 
 Animation hard rule: animated entities need at least `move/walk` 5+ frames and
 main `attack_primary` 5+ frames unless the task explicitly narrows scope.
