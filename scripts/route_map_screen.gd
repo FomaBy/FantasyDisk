@@ -180,12 +180,12 @@ func _node_pool_for_step(step_index: int) -> Array:
 	if step_index < START_BATTLE_ONLY_ROWS:
 		return ["battle"]
 	if step_index <= 2:
-		return ["battle", "battle", "battle", "event", "shop"]
+		return ["battle", "battle", "battle", "event"]
 	if step_index == game.ROUTE_STEPS_TO_BOSS - 1:
-		return ["rest", "shop", "battle", "rest", "elite_battle"]
+		return ["rest", "battle", "rest", "elite_battle"]
 	if step_index >= game.ROUTE_STEPS_TO_BOSS - 3:
-		return ["battle", "elite_battle", "elite_battle", "event", "battle", "shop"]
-	return ["battle", "battle", "battle", "shop", "rest", "event", "elite_battle"]
+		return ["battle", "elite_battle", "elite_battle", "event", "battle"]
+	return ["battle", "battle", "battle", "rest", "event", "elite_battle"]
 
 
 func _generate_route() -> Array:
@@ -203,9 +203,36 @@ func _generate_route() -> Array:
 				"branch": branch_index,
 			})
 		route.append(branches)
+	_place_required_shop_nodes(route)
 	route.append([_random_boss_route_node()])
 	_assign_route_connections(route)
 	return route
+
+
+func _place_required_shop_nodes(route: Array) -> void:
+	var non_boss_rows := route.size()
+	if non_boss_rows <= START_BATTLE_ONLY_ROWS:
+		return
+	var second_half_start: int = clampi(ceili(float(non_boss_rows) * 0.5), START_BATTLE_ONLY_ROWS, non_boss_rows - 1)
+	var first_half_start := START_BATTLE_ONLY_ROWS
+	var first_half_end := maxi(first_half_start, second_half_start - 1)
+	_place_shop_node_in_row_range(route, first_half_start, first_half_end)
+	_place_shop_node_in_row_range(route, second_half_start, non_boss_rows - 1)
+
+
+func _place_shop_node_in_row_range(route: Array, row_start: int, row_end: int) -> void:
+	var clamped_start := clampi(row_start, 0, route.size() - 1)
+	var clamped_end := clampi(row_end, clamped_start, route.size() - 1)
+	var row_index: int = game.rng.randi_range(clamped_start, clamped_end)
+	var row: Array = route[row_index]
+	if row.is_empty():
+		return
+	var branch_index: int = game.rng.randi_range(0, row.size() - 1)
+	var route_node: Dictionary = row[branch_index]
+	route_node["type"] = "shop"
+	route_node["name"] = _random_route_node_name(branch_index, "shop")
+	row[branch_index] = route_node
+	route[row_index] = row
 
 
 func _random_boss_route_node() -> Dictionary:

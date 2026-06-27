@@ -40,6 +40,9 @@ Route map — full-screen экран выбора пути между боями
   обычных `battle` узлов. `shop`, `event`, `rest` и `elite_battle` могут
   появляться только начиная с третьего selectable ряда, чтобы ранний забег
   сначала дал базовый combat tempo, XP и золото.
+- На каждой generated route map ровно два `shop` узла: один в первой половине
+  non-boss рядов и один во второй половине. Магазины размещаются через тот же
+  seeded RNG, не попадают в первые два battle-only ряда и не заменяют boss row.
 - Пути ограничены через `next_branches`; карта не должна быть all-to-all.
 - Назад возвращаться нельзя, кроме текущего `shop`-узла после выхода из лавки:
   магазин можно повторно открыть до выбора следующего route node.
@@ -53,5 +56,6 @@ Route map — full-screen экран выбора пути между боями
 ## Tests
 
 - `tests/runtime_smoke_test.gd` проверяет full-screen scroll area, стартовый выбор,
-  event click, shop re-entry до следующего узла, drag suppression, thin route
-  lines, tooltips и route branching.
+  первые два battle-only ряда, ровно два магазина с half-placement, event click,
+  shop re-entry до следующего узла, drag suppression, thin route lines, tooltips
+  и route branching.
