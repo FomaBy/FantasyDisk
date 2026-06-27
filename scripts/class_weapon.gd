@@ -8,6 +8,10 @@ const BRIAR_POOL_TEXTURE := preload("res://assets/sprites/effects/briar_pool.png
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 
+# SCRUM-553: абсолютный z-слой наземных луж/декалей (summon-пулы химика и пр.).
+# Ниже сущностей (игрок/монстры/пикапы z≈0), но выше фона арены (-100) и бордера (-20).
+const GROUND_POOL_Z := -3
+
 const DEFAULT_ATTACK_MODE := "sound_wave"
 const PRIMARY_CAST_ACTION_MODES := {
 	"aoe_projectile": true,
@@ -521,7 +525,11 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	pool.add_to_group("chemist_clouds")
 	if pool_element != "":
 		pool.set_meta("pool_element", pool_element)
-	pool.z_index = 5
+	# SCRUM-553: наземная декаль — пул рисуется ПОД всеми боевыми сущностями
+	# (игрок/монстры/пикапы z≈0), но над фоном (-100) и бордером (-20) арены.
+	# Абсолютный слой (z_as_relative=false), чтобы не зависеть от z родителя-контейнера.
+	pool.z_as_relative = false
+	pool.z_index = GROUND_POOL_Z
 	var visual := Node2D.new()
 	visual.name = "PoolVisual"
 	var pool_sprite := Sprite2D.new()
