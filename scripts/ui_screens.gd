@@ -4165,7 +4165,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	content.offset_right = -12.0
 	content.offset_bottom = -10.0
 	content.alignment = BoxContainer.ALIGNMENT_CENTER
-	content.add_theme_constant_override("separation", 3 if compact else 6)
+	content.add_theme_constant_override("separation", 3 if compact else 4)
 	button.add_child(content)
 
 	if is_rare:
@@ -4207,7 +4207,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	description_label.text = str(reward.get("description", ""))
 	description_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description_label.add_theme_font_size_override("font_size", 11 if compact else 13)
+	description_label.add_theme_font_size_override("font_size", 10 if compact else 12)
 	description_label.add_theme_color_override("font_color", Color(0.64, 0.72, 0.80, 1.0))
 	content.add_child(description_label)
 	return button

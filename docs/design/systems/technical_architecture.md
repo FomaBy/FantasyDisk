@@ -94,6 +94,11 @@ Additional checks:
 
 - `tests/animation_smoke_test.gd`;
 - `tests/attack_vfx_smoke_test.gd`;
+- `tests/ui_no_overlap_matrix_test.gd` — SCRUM-483 UI render gate for headless
+  1920x1080 / 2560x1440 / 3840x2160 screen passes, text allocation overflow,
+  peer-control overlap, parent content containment and exact UI frame
+  TextureRect no-stretch checks. The focused runner includes this standalone
+  SceneTree test.
 - `tests/melee_weapon_targeting_test.gd`;
 - `tests/meta_progression_smoke_test.gd`.
 - `tests/run_autosave_persistence_test.gd`.

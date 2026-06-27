@@ -1,7 +1,17 @@
 extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
-const VIEWPORT_SIZES := [Vector2i(1152, 648), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
+const VIEWPORT_SIZES := [
+	Vector2i(1152, 648),
+	Vector2i(1280, 720),
+	Vector2i(1600, 900),
+	Vector2i(1920, 1080),
+	Vector2i(2560, 1440),
+	Vector2i(3840, 2160),
+]
+const SCRUM483_GATE_SIZES := [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160)]
+const TEXT_OVERFLOW_TOLERANCE := 6.0
+const UI_FRAME_TEXTURE_PREFIX := "res://assets/sprites/ui/frames/"
 const MINIMAL_CARD_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
 const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
@@ -10,6 +20,9 @@ const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 func _initialize() -> void:
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# UI No-Overlap Matrix")
+	dump_lines.append("")
+	dump_lines.append("SCRUM-483 render verifier gates: 1920x1080, 2560x1440, 3840x2160.")
+	dump_lines.append("Checks: viewport fit, peer overlap, text allocation overflow, parent content containment, and exact-frame TextureRect stretch mode.")
 	dump_lines.append("")
 	var errors := []
 	for viewport_size in VIEWPORT_SIZES:
@@ -137,6 +150,11 @@ func _initialize() -> void:
 	if scrum470_file != null:
 		scrum470_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["hero_select"])))
 		scrum470_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum483_ui_render_verifier" % qa_dir)
+	var scrum483_file := FileAccess.open("%s/scrum483_ui_render_verifier/ui_render_verifier_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum483_file != null:
+		scrum483_file.store_string("\n".join(_filter_dump_viewport_sections(dump_lines, SCRUM483_GATE_SIZES)))
+		scrum483_file.close()
 
 	if not errors.is_empty():
 		for error in errors:
@@ -180,6 +198,8 @@ func _check_screen(viewport_size: Vector2i, screen_id: String, open_callable: Ca
 	var overlap := _first_peer_overlap(controls, 2.0)
 	if not overlap.is_empty():
 		errors.append("%s: %s" % [context, overlap])
+	_append_text_overflow_errors(main, context, errors, dump_lines)
+	_append_texture_stretch_errors(main, context, errors, dump_lines)
 	var screen_error := _screen_specific_assertions(main, screen_id, context)
 	if screen_error != "":
 		errors.append(screen_error)
@@ -388,6 +408,114 @@ func _first_peer_overlap(controls: Array, tolerance_px: float) -> String:
 	return ""
 
 
+func _append_text_overflow_errors(root_node: Node, context: String, errors: Array, dump_lines: PackedStringArray) -> void:
+	var text_controls := _visible_text_controls(root_node)
+	if text_controls.is_empty():
+		return
+	var checked_count := 0
+	for control in text_controls:
+		var text_control := control as Control
+		if text_control == null:
+			continue
+		var error := _text_control_contract_error(text_control, context)
+		if error != "":
+			errors.append(error)
+		checked_count += 1
+	dump_lines.append("- text controls checked: `%d`" % checked_count)
+
+
+func _visible_text_controls(root_node: Node) -> Array:
+	var results := []
+	for node in root_node.find_children("*", "Control", true, false):
+		var control := node as Control
+		if control == null or not control.is_visible_in_tree():
+			continue
+		if not control.get_global_rect().has_area():
+			continue
+		if _control_text(control).strip_edges() == "":
+			continue
+		if control is Label or control is Button or control is RichTextLabel:
+			results.append(control)
+	return results
+
+
+func _control_text(control: Control) -> String:
+	if control is Label:
+		return str((control as Label).text)
+	if control is Button:
+		return str((control as Button).text)
+	if control is RichTextLabel:
+		return str((control as RichTextLabel).text)
+	return ""
+
+
+func _text_control_contract_error(control: Control, context: String) -> String:
+	var rect := control.get_global_rect()
+	var parent_control := control.get_parent() as Control
+	if parent_control != null and parent_control.is_visible_in_tree() and parent_control.get_global_rect().has_area():
+		var parent_rect := parent_control.get_global_rect().grow(TEXT_OVERFLOW_TOLERANCE)
+		if not parent_rect.encloses(rect):
+			return "%s: text control %s rect %s escapes parent content rect %s." % [context, control.name, str(rect), str(parent_control.get_global_rect())]
+
+	var needed := _text_control_needed_size(control)
+	if needed.y > rect.size.y + TEXT_OVERFLOW_TOLERANCE:
+		return "%s: text control %s needs height %.1f but has %.1f." % [context, control.name, needed.y, rect.size.y]
+	if not _text_control_wraps(control) and needed.x > rect.size.x + TEXT_OVERFLOW_TOLERANCE:
+		return "%s: text control %s needs width %.1f but has %.1f." % [context, control.name, needed.x, rect.size.x]
+	return ""
+
+
+func _text_control_needed_size(control: Control) -> Vector2:
+	if control is Button:
+		var button := control as Button
+		var font := button.get_theme_font("font")
+		var font_size := button.get_theme_font_size("font_size")
+		if font != null:
+			var text_size := font.get_string_size(button.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size)
+			return text_size + Vector2(8.0, 8.0)
+		return Vector2.ZERO
+	if control is RichTextLabel:
+		var rich := control as RichTextLabel
+		return Vector2(maxf(rich.get_content_width(), rich.get_combined_minimum_size().x), maxf(rich.get_content_height(), rich.get_combined_minimum_size().y))
+	return control.get_combined_minimum_size()
+
+
+func _text_control_wraps(control: Control) -> bool:
+	if control is Label:
+		return (control as Label).autowrap_mode != TextServer.AUTOWRAP_OFF
+	if control is RichTextLabel:
+		return bool((control as RichTextLabel).fit_content)
+	return false
+
+
+func _append_texture_stretch_errors(root_node: Node, context: String, errors: Array, dump_lines: PackedStringArray) -> void:
+	var checked_count := 0
+	for node in root_node.find_children("*", "TextureRect", true, false):
+		var texture_rect := node as TextureRect
+		if texture_rect == null or not texture_rect.is_visible_in_tree():
+			continue
+		var texture := texture_rect.texture
+		if texture == null:
+			continue
+		var path := texture.resource_path
+		if not _is_exact_frame_texture_path(path):
+			continue
+		checked_count += 1
+		if texture_rect.stretch_mode == TextureRect.STRETCH_SCALE:
+			errors.append("%s: exact UI frame TextureRect %s uses STRETCH_SCALE for %s." % [context, texture_rect.name, path])
+	dump_lines.append("- exact frame TextureRects checked: `%d`" % checked_count)
+
+
+func _is_exact_frame_texture_path(path: String) -> bool:
+	if not path.begins_with(UI_FRAME_TEXTURE_PREFIX):
+		return false
+	# Decorative dividers are intentionally line-scaled; they are not content
+	# containers and do not carry the no-stretch frame contract.
+	if path.get_file().contains("divider"):
+		return false
+	return true
+
+
 func _is_ancestor(parent: Control, child: Control) -> bool:
 	var node := child.get_parent()
 	while node != null:
@@ -431,6 +559,25 @@ func _filter_dump_sections(lines: PackedStringArray, markers: Array) -> PackedSt
 			keep = false
 			for marker in markers:
 				if line.contains(str(marker)):
+					keep = true
+					break
+		if keep:
+			filtered.append(line)
+	return filtered
+
+
+func _filter_dump_viewport_sections(lines: PackedStringArray, viewport_sizes: Array) -> PackedStringArray:
+	var filtered := PackedStringArray()
+	filtered.append("# SCRUM-483 UI Render Verifier Matrix")
+	filtered.append("")
+	filtered.append("Gate sizes: 1920x1080, 2560x1440, 3840x2160.")
+	filtered.append("")
+	var keep := false
+	for line in lines:
+		if line.begins_with("## "):
+			keep = false
+			for viewport_size in viewport_sizes:
+				if line.contains(str(viewport_size)):
 					keep = true
 					break
 		if keep:

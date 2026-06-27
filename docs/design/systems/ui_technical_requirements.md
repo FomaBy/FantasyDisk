@@ -386,7 +386,10 @@ For any implementation change touching UI, run the relevant checks:
 
 - Headless smoke:
   `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
-- UI no-overlap matrix test for viewport regressions.
+- UI no-overlap matrix test for viewport regressions. SCRUM-483 makes it the
+  UI render gate for 1920x1080, 2560x1440 and 3840x2160: text controls must fit
+  their allocated rect/content parent, peer controls must not overlap, and exact
+  frame TextureRect assets must not use raw `STRETCH_SCALE`.
 - Dark fantasy UI theme/import validation for RGBA, alpha, missing imports and frame assets.
 - Shop/HUD/hero select targeted tests when those screens change.
 - Manual screenshot review at `1280x720` and `2560x1440` for any new screen or major layout change.

@@ -40,6 +40,9 @@ Windows (путь под свою установку Godot):
 & "C:\Godot\Godot_v4.6.3-stable_win64.exe" --headless --path . --script res://tests/runtime_smoke_test.gd
 ```
 Другие наборы: `animation_smoke_test.gd`, `attack_vfx_smoke_test.gd`, `meta_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`.
+`ui_no_overlap_matrix_test.gd` является UI render gate: открывает экраны headless
+на 1080p/2K/4K, ловит overflow текста, overlap контролов и некорректный stretch
+точноразмерных UI frame TextureRect.
 
 ## Локальные секреты (НЕ в git — создать на каждой машине)
 Эти файлы в `.gitignore`; нужны только для фидбека/релиза, на саму игру не влияют:

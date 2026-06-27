@@ -5,6 +5,14 @@
 ## [Unreleased] — ветка dev (цель: 0.1.7)
 
 ### Added
+- UI render verifier gate (SCRUM-483): expanded `tests/ui_no_overlap_matrix_test.gd`
+  to cover 1920x1080, 2560x1440 and 3840x2160 headless screen passes, text
+  allocation overflow, parent content containment, peer-control overlap and
+  exact UI frame TextureRect no-stretch checks. The test writes dedicated QA
+  evidence to `build/qa/scrum483_ui_render_verifier/ui_render_verifier_matrix.md`
+  and remains part of the standalone focused smoke set. The new gate also
+  tightened Level Up reward-card spacing/font sizing so wrapped reward
+  descriptions fit the existing layout.
 - Bright minimalist full-game UI Design anchor (SCRUM-478): generated the
   OpenAI source package under
   `docs/design/references/minimalist_full_ui_redesign/`, alpha-cleaned the
