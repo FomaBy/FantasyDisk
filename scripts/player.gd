@@ -46,6 +46,15 @@ const CARTOON_TRIAL_TILT_DEG := 12.0
 const WEAPON_ORBIT_RADIUS := 104.0
 const WEAPON_ORBIT_VERTICAL_BIAS := -8.0
 const WEAPON_ORBIT_Z_INDEX := -8
+# SCRUM-515: держимый (orbit) спрайт оружия не показываем в бою. Скрываем ТОЛЬКО
+# рендер корня оружия (visible=false) — узел/группа player_weapons/текстура
+# WeaponVisual остаются (нужны для снарядов/ловушек/орбов через
+# class_weapon._weapon_visual_texture()). Снаряды/VFX/хазарды/саммоны парентятся
+# к current_scene (class_weapon._projectile_parent()), не к оружию, поэтому не
+# гаснут. Переинстанс при смене оружия снова применит скрытие через
+# _configure_attached_weapon_layer. Флаг (+ root-meta override для тестов/превью)
+# даёт единую точку вернуть визуал обратно вне боя/для отладки.
+const SHOW_HELD_WEAPON_VISUAL := false
 const DEBUG_MOVE_ARRIVAL_DISTANCE := 10.0
 const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
 const COMBAT_FEEDBACK_MAX_LABELS := 42
@@ -345,6 +354,20 @@ func _configure_attached_weapon_layer(weapon: Node) -> void:
 	if visual != null:
 		visual.z_as_relative = true
 		visual.z_index = 0
+	# SCRUM-515: скрыть держимый визуал оружия (рендер корня + WeaponVisual), не
+	# трогая узел/текстуру. Override через root-meta «show_held_weapon» (как aim_mode)
+	# позволяет тестам/превью вернуть визуал без правки кода. Механика оружия
+	# (_process/_attack/cooldown) от visible не зависит — урон/паттерн не меняются.
+	# get_tree() может быть null, если оружие цепляется до входа игрока в дерево —
+	# тогда берём дефолт-константу (override применится при следующем re-attach в дереве).
+	var show_weapon := SHOW_HELD_WEAPON_VISUAL
+	var tree := get_tree()
+	if tree != null and tree.root != null:
+		show_weapon = bool(tree.root.get_meta("show_held_weapon", SHOW_HELD_WEAPON_VISUAL))
+	if weapon_canvas != null:
+		weapon_canvas.visible = show_weapon
+	if visual != null:
+		visual.visible = show_weapon
 
 
 func _physics_process(_delta: float) -> void:

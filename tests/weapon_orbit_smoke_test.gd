@@ -1,6 +1,10 @@
 extends SceneTree
 
-# SCRUM-455: Back-end smoke for held weapon orbit/visibility.
+# SCRUM-455 / SCRUM-515: Back-end smoke for held weapon orbit + visibility.
+# SCRUM-455 ввёл орбиту держимого оружия; SCRUM-515 прячет держимый визуал в бою.
+# Тест проверяет: оружие инстанцируется, лежит в группе player_weapons под
+# WeaponSocket, орбита считается (механика жива), НО держимый визуал скрыт
+# (visible_in_tree == false) и текстура WeaponVisual сохранена (нужна снарядам).
 # Run: Godot --headless --path . --script res://tests/weapon_orbit_smoke_test.gd
 
 
@@ -42,7 +46,7 @@ func _assert_weapon_orbit_pose(player: Node, expected_direction: Vector2, label:
 		return false
 	var body := player.get_node_or_null("VisualRoot/Body") as CanvasItem
 	if body == null:
-		_fail("Expected %s pose to keep a Body for layer checks." % label)
+		_fail("Expected %s pose to keep a Body node." % label)
 		return false
 	var socket_distance := socket.position.length()
 	if socket_distance < 88.0:
@@ -53,14 +57,19 @@ func _assert_weapon_orbit_pose(player: Node, expected_direction: Vector2, label:
 	var weapon_visual: CanvasItem = null
 	if weapon != null:
 		weapon_visual = weapon.get_node_or_null("WeaponVisual") as CanvasItem
-	if socket.z_index >= body.z_index:
-		_fail("Expected %s pose socket z-index to stay behind Body." % label)
+	# SCRUM-515: держимый визуал оружия скрыт в бою (рендер корня + WeaponVisual),
+	# но узел/группа player_weapons/орбита WeaponSocket живы — механика не меняется.
+	# Используем is_visible_in_tree() (ловит скрытого родителя) вместо z-порядка
+	# под Body (прежняя проверка SCRUM-455 теперь неактуальна — скрытое не рисуется).
+	if weapon_canvas != null and weapon_canvas.is_visible_in_tree():
+		_fail("Expected %s held weapon root to be hidden in combat (SCRUM-515)." % label)
 		return false
-	if weapon_canvas != null and socket.z_index + weapon_canvas.z_index >= body.z_index:
-		_fail("Expected %s pose weapon root effective z to stay behind Body." % label)
+	if weapon_visual != null and weapon_visual.is_visible_in_tree():
+		_fail("Expected %s WeaponVisual sprite to be hidden in combat (SCRUM-515)." % label)
 		return false
-	if weapon_canvas != null and weapon_visual != null and socket.z_index + weapon_canvas.z_index + weapon_visual.z_index >= body.z_index:
-		_fail("Expected %s pose WeaponVisual effective z to stay behind Body." % label)
+	# Текстуру НЕ обнуляем — снаряды/ловушки/орбы берут её через _weapon_visual_texture().
+	if weapon_visual != null and weapon_visual.texture == null:
+		_fail("Expected %s WeaponVisual texture to remain set (used by projectiles/traps/orbs)." % label)
 		return false
 	var actual_direction := socket.position.normalized()
 	var expected := expected_direction.normalized()
@@ -89,7 +98,7 @@ func _write_qa_dump(player: Node, weapon: Node) -> void:
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum455")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
 	var lines := PackedStringArray()
-	lines.append("# SCRUM-455 Weapon Orbit Runtime Dump")
+	lines.append("# SCRUM-455 / SCRUM-515 Weapon Orbit + Visibility Runtime Dump")
 	lines.append("")
 	lines.append("- `Character`: `%s`" % str(player.get("character_id")))
 	lines.append("- `Weapon`: `%s`" % str(weapon.name if weapon != null else ""))
@@ -100,6 +109,10 @@ func _write_qa_dump(player: Node, weapon: Node) -> void:
 	lines.append("- `WeaponRootZIndex`: `%d`" % (weapon_canvas.z_index if weapon_canvas != null else 0))
 	lines.append("- `WeaponVisualZIndex`: `%d`" % (visual.z_index if visual != null else 0))
 	lines.append("- `BodyZIndex`: `%d`" % (body.z_index if body != null else 0))
+	# SCRUM-515: подтверждение скрытости держимого визуала + сохранности текстуры.
+	lines.append("- `WeaponRootVisible`: `%s`" % str(weapon_canvas.is_visible_in_tree() if weapon_canvas != null else false))
+	lines.append("- `WeaponVisualVisible`: `%s`" % str(visual.is_visible_in_tree() if visual != null else false))
+	lines.append("- `WeaponVisualTextureSet`: `%s`" % str(visual != null and visual.texture != null))
 	lines.append("- `OrbitRadiusMeta`: `%.2f`" % (float(socket.get_meta("weapon_orbit_radius", 0.0)) if socket != null else 0.0))
 	var file := FileAccess.open("%s/weapon_orbit_runtime_dump.md" % qa_dir, FileAccess.WRITE)
 	if file != null:
