@@ -197,18 +197,43 @@ Codex и Claude могут работать одновременно тольк�
 - task/Jira/board явно показывают разных owner;
 - review/fix не идёт параллельно с реализацией.
 
-## Запрет На Самовыбор
+## Jira-pull Вместо Локального Самовыбора
 
-Role agents не выбирают себе любую `new` строку из локального board или
-неassigned Jira backlog. Они продолжают только:
+Role agents не выбирают себе любую `new` строку из локального board. Локальная
+доска — dashboard/cache, а не очередь. Обычная новая работа берётся только из
+активного Jira sprint через claim-first.
 
-- Jira issue, явно dispatched в их thread/worker;
-- активную задачу с совпадающим owner/thread;
-- bug/regression/release blocker, явно assigned им;
+Разрешённый auto-pull:
+
+```bash
+python3 tools/jira_next_task.py \
+  --role <backend|design|animator|qa> \
+  --lane <codex|claude|otherai> \
+  [--required-label <worker-scope>] \
+  --claim \
+  --worker <thread-or-worker-id> \
+  --json
+```
+
+Агент может начинать только после успешного Jira claim: issue в активном sprint,
+status category `To Do`, role label совпадает, lane label совпадает, нет
+assignee/owner, нет `hold/user-hold/blocked`, нет review/QA gate и нет
+locked-path overlap. Если helper вернул `task: null` или claim не удался, агент
+ничего не меняет и завершает прогон.
+
+Агент также может продолжать:
+
+- активную Jira issue с совпадающим owner/thread/worker;
+- bug/regression/release blocker, явно assigned или успешно claimed им;
 - результат/QA verdict, который нужно синхронизировать.
 
-Если Jira issue выглядит подходящим по роли, но не имеет явного owner/dispatch,
-агент ждёт dispatcher/PM.
+Если Jira issue выглядит подходящим по роли, но не имеет matching lane label,
+агент не берёт его, кроме случая явного PM/dispatcher разрешения
+`--allow-unlabeled-lane`.
+
+Design pool exception: Design main and Designer 2 must require an extra Jira
+label (`design-main` or `designer2`) before auto-pull. Generic `design` issues
+without a worker-scope label wait for PM/dispatcher split.
 
 ## Task Lifecycle
 
@@ -222,7 +247,7 @@ new -> in_progress -> done/review -> QA -> QA PASSED -> Jira Done
 
 1. Проверить branch/status/fetch state.
 2. Найти Jira issue и проверить owner/locked paths/status/comments.
-3. Убедиться, что Jira issue явно assigned ему.
+3. Убедиться, что Jira issue явно assigned ему или успешно claimed через Jira-pull.
 4. Поставить Jira `in_progress`/comment и только затем local mirror `Статус: in_progress`.
 5. Запустить/обновить sync.
 6. Только потом менять код/ассеты/docs.
@@ -439,7 +464,7 @@ Common blockers:
 ## What Not To Do
 
 - Do not ask the user for routine approvals; decide autonomously in scope.
-- Do not self-select unowned board rows.
+- Do not self-select local board rows; use Jira-pull claim-first for current-sprint work.
 - Do not route one task to multiple agents.
 - Do not edit files locked by another owner/lane.
 - Do not use destructive git commands without explicit instruction.
@@ -458,12 +483,12 @@ Use this before every task:
 1. Read AGENTS.md and relevant process/task/design docs.
 2. Confirm branch and GitHub sync.
 3. Check dirty worktree.
-4. Find Jira issue and check status, comments, assignee, labels, sprint.
-5. Check Contour/Owner/Thread/Locked paths.
+4. Find or claim a current-sprint Jira issue for your role/lane with `tools/jira_next_task.py`.
+5. Check status, comments, assignee, labels, sprint, Contour/Owner/Thread/Locked paths.
 6. Check local task/board mirror only after Jira, plus recent owner/dispatch/QA notes.
 7. Verify required skill and read its SKILL.md if using Codex.
-8. If Jira issue is not explicitly assigned, do not start.
-9. If assigned, set Jira in_progress/comment + sync local mirror.
+8. If Jira issue is neither explicitly assigned to you nor successfully claimed, do not start.
+9. If assigned/claimed, set Jira in_progress/comment + sync local mirror.
 10. Work only inside role scope.
 11. Test, update docs/task report.
 12. Commit/push or open PR.

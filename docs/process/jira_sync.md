@@ -26,12 +26,12 @@ source для FantasyDisk. Это нужно, чтобы AI-агенты мог�
 - Site: `https://fantasydisk.atlassian.net`
 - Project key: `SCRUM`
 - Board: `1`
-- Current active sprint: `Спринт 0.1.6`
-- Current active sprint id: Jira board `1` current sprint (check live Jira/map before
-  dispatch if the numeric id matters).
+- Current active sprint: Jira board `1` active sprint (on 2026-06-27 local mirrors
+  show `Спринт 0.1.7`; check live Jira before dispatch/claim if the numeric id matters).
 - Feature block: v0.1.5 freeze is lifted by the v0.1.5 release (2026-06-15).
-  0.1.6 rows may be dispatched in dependency order after duplicate and active-owner
-  audit. The freeze mechanism remains for the next release stabilization window.
+  Current-sprint Jira issues may be claimed/dispatched in dependency order after
+  duplicate and active-owner audit. The freeze mechanism remains for the next
+  release stabilization window.
 
 ## Безопасность Доступа
 
@@ -47,6 +47,11 @@ export JIRA_API_TOKEN="<token>"
 
 Если токен был случайно опубликован в чате или файле, его нужно отозвать в
 Atlassian и создать новый.
+
+Для кросс-девайсного Jira-pull helper `tools/jira_next_task.py` сначала читает
+`JIRA_API_TOKEN`, `JIRA_EMAIL`, `JIRA_BASE_URL` и optional `JIRA_ACCOUNT_ID`.
+На macOS допускается fallback через Keychain service `fantasydisk-jira`. Токены
+и account ids не коммитить.
 
 ## Маппинг Задач
 
@@ -89,6 +94,9 @@ Jira sync/dispatcher rules:
   без результата owner.
 - Blocked по причине пересечения dirty worktree/locked paths должен иметь Jira
   comment с конфликтующим owner или файлом.
+- Role agents may claim new current-sprint work directly from Jira only through
+  Jira-pull claim-first (`tools/jira_next_task.py`). Local board rows never grant
+  ownership.
 
 ## Спринт = Релиз (правило пользователя, 2026-06-12)
 
@@ -111,22 +119,43 @@ released, создаётся следующая. Игровые патч-ноу�
 3. `docs/process/task_board.md` обновляется как кэш/дашборд по Jira, но не
    используется как источник очереди. Если board и Jira расходятся, Jira
    побеждает, а board/task mirror нужно привести в соответствие.
-4. Codex Documentation dispatcher может создавать active-sprint 0.1.6 Jira
+4. Codex Documentation dispatcher может создавать active-sprint Jira
    issues только после duplicate/owner/lane/locked-path audit. Обычная сверка
    dispatcher может идти через `python3 tools/jira_board_sync.py --no-create`;
    после намеренного создания Jira issue нужно синхронизировать локальные
    mirrors.
-5. Во время будущего feature block задачи текущей версии остаются current-sprint
+5. Role agents/heartbeats/Claude workers may auto-take one eligible current-sprint
+   Jira issue when it has the matching role label and execution-lane label, no
+   assignee, no hold/blocker and no locked-path overlap. They must claim in Jira
+   before touching files:
+
+   ```bash
+   python3 tools/jira_next_task.py \
+     --role <backend|design|animator|qa> \
+     --lane <codex|claude|otherai> \
+     [--required-label <worker-scope>] \
+     --claim \
+     --worker <thread-or-worker-id> \
+     --json
+   ```
+
+   The helper reads the active sprint from Jira board `1`, filters To Do issues,
+   transitions the selected issue to «В работе», optionally assigns via
+   `JIRA_ACCOUNT_ID`, and adds a Jira-pull owner comment.
+   Design pool workers must use `--required-label design-main` or
+   `--required-label designer2` so Design main and Designer 2 do not race for a
+   generic `design` issue.
+6. Во время будущего feature block задачи текущей версии остаются current-sprint
    work только если они уже есть на board или являются bug/QA defect/regression/
    release blocker. Новые не-баговые задачи получают следующую `Версия` и
    остаются без active sprint assignment до PM override.
-6. В `.md` task-файле рядом с метаданными добавить строку:
+7. В `.md` task-файле рядом с метаданными добавить строку:
 
    ```text
    Jira: SCRUM-123
    ```
 
-7. В `docs/process/task_board.md` в примечании к строке задачи добавить Jira key:
+8. В `docs/process/task_board.md` в примечании к строке задачи добавить Jira key:
 
    ```text
    Jira: SCRUM-123
@@ -135,7 +164,7 @@ released, создаётся следующая. Игровые патч-ноу�
    Для active rows board note также должна показывать `Контур`, owner/thread и
    главные locked paths, если они не очевидны из названия задачи.
 
-8. При изменении статуса сначала обновить Jira, затем локальные mirrors:
+9. При изменении статуса сначала обновить Jira, затем локальные mirrors:
    - `new` — issue создана и находится в backlog/sprint To Do.
    - `in_progress` — перевести issue в In Progress, если переход доступен.
    - `review` — перевести в review/QA статус, если такой статус есть; иначе оставить
@@ -143,9 +172,9 @@ released, создаётся следующая. Игровые патч-ноу�
    - `done` — перевести в Done, если acceptance/QA позволяют.
    - `blocked` — оставить в текущем workflow status и добавить comment с причиной.
 
-9. При добавлении `## Результат` или `## QA-Вердикт` в `.md` добавить Jira comment
+10. При добавлении `## Результат` или `## QA-Вердикт` в `.md` добавить Jira comment
    с кратким резюме и ссылкой на локальный task-файл.
-10. При релизе версии все связанные Jira issues должны иметь release note/комментарий
+11. При релизе версии все связанные Jira issues должны иметь release note/комментарий
    или Fix Version, если версия заведена в Jira.
 
 ## Обязательство Агентов
@@ -168,7 +197,11 @@ released, создаётся следующая. Игровые патч-ноу�
 7. Codex Documentation dispatcher не маршрутизирует задачу без `Контур`, owner
    state и locked-path проверки. Во время будущего feature block он не создает
    новые active-sprint feature tasks без PM override.
-8. Codex role agents и Claude Code/воркеры обязаны пропускать задачи чужого
+8. Role agents may claim unowned current-sprint Jira issues for their role/lane
+   through `tools/jira_next_task.py`, but must not start from local board rows
+   or from Jira issues missing matching lane metadata unless PM explicitly allows
+   `--allow-unlabeled-lane`.
+9. Codex role agents и Claude Code/воркеры обязаны пропускать задачи чужого
    `Контур` или чужого `Owner`, даже если Jira status выглядит как To Do.
 
 ## Проверка Дубликатов
@@ -187,14 +220,15 @@ canonical Jira issue, а остальные пометить `duplicate` или 
 
 ## Feature Block / Sprint Policy
 
-Фриз 0.1.5 снят релизом v0.1.5 (2026-06-15). Сейчас активен `Спринт 0.1.6`.
+Фриз 0.1.5 снят релизом v0.1.5 (2026-06-15). Сейчас активен live Jira sprint
+на board 1 (на 2026-06-27 локальные mirrors показывают `Спринт 0.1.7`).
 Агенты и dispatcher обязаны:
 
 1. Проверять тип задачи перед dispatch.
 2. Дожимать активные задачи текущего sprint, баги, QA-дефекты, регрессии,
    release blockers и уже записанные executor results до Jira/QA sync.
-3. Маршрутизировать 0.1.6 rows обычным порядком только после проверки дублей,
-   зависимостей и active owner.
+3. Маршрутизировать/current-sprint claim обычным порядком только после проверки
+   дублей, зависимостей и active owner.
 4. Если PM включает новый freeze перед релизом, новые не-баговые задачи
    следующей версии остаются в backlog без dispatch до PM override.
 5. Для багов, QA-дефектов, регрессий и release blockers текущего scope

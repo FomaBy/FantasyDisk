@@ -52,7 +52,7 @@ Jira issue и локальные mirrors в `done`/`review` с результа�
 может только синхронизировать Jira/board, если в Jira или task-файле уже есть
 явный результат исполнителя или QA-вердикт, либо пометить расхождение.
 Codex Documentation dispatcher может создавать новые Jira issues для активного
-`Спринт 0.1.6` по обычному порядку после проверки зависимостей, дублей и активных
+Jira sprint по обычному порядку после проверки зависимостей, дублей и активных
 владельцев; `.md` task-файл создаётся после Jira key как mirror/spec.
 Dispatcher маршрутизирует существующие Jira issues в конкретные role threads,
 проверяет дубли и синхронизирует статусы/комментарии.
@@ -73,10 +73,10 @@ Dispatcher маршрутизирует существующие Jira issues в 
 - **Codex** — автономный исполнитель для задач с исчерпывающим ТЗ, точными
   файлами/ассетами, проверяемыми acceptance criteria, рутинной интеграцией,
   механическими правками, генерацией ассетов, animation batches и тестовыми
-  фиксациями. Codex работает самостоятельно после явного dispatch в конкретный
-  role thread. Все задачи для Codex PM отправляет в Codex-тред
-  **Documentation** — он диспетчер и раздает работу нужным Codex-агентам
-  (Animator / Back-end / Design треды Codex).
+  фиксациями. Codex работает самостоятельно после успешного Jira-pull claim в
+  конкретном role thread или после явного dispatch в этот thread. Codex
+  Documentation остаётся диспетчером для ручной разбивки, handoff, спорных owner
+  cases и синхронизации зеркал.
   Команда отправки (CLI из приложения Codex):
   ```bash
   /Applications/Codex.app/Contents/Resources/codex exec resume \
@@ -110,8 +110,9 @@ Locked paths: <основные файлы/папки/ассеты/экраны>
    Codex-owner не запишет результат или не пометит `blocked/handoff`.
 2. `Контур: Claude` означает: Codex dispatcher и role heartbeats не маршрутизируют
    эту строку в Codex, кроме отдельной handoff/review-задачи.
-3. Если контур не указан, PM/dispatcher обязан выбрать его перед dispatch. До
-   этого задача считается неготовой к автономному исполнению.
+3. Если контур не указан, PM/dispatcher обязан выбрать его перед dispatch или
+   разрешением auto-pull. До этого задача считается неготовой к автономному
+   исполнению.
 4. `Locked paths` обязательны для задач, которые меняют код, тесты, UI layout,
    frame/source pack, character set или asset directory. Второй контур не берёт
    задачу с пересекающимися locked paths, даже если роль формально подходит.
@@ -122,10 +123,12 @@ Locked paths: <основные файлы/папки/ассеты/экраны>
 
 ## Feature Freeze / Sprint Policy
 
-Фриз 0.1.5 снят релизом v0.1.5 (2026-06-15). Активен `Спринт 0.1.6`.
-Задачи 0.1.6 можно брать в работу обычным порядком, если они не заблокированы,
-не ждут PM/QA acceptance и не имеют активного владельца. Перед стабилизацией
-следующего релиза PM снова включает фриз отдельной директивой.
+Фриз 0.1.5 снят релизом v0.1.5 (2026-06-15). Активен live Jira sprint
+на board 1 (на 2026-06-27 локальные mirrors показывают `Спринт 0.1.7`).
+Задачи текущего sprint можно брать в работу обычным порядком через Jira-pull
+claim-first, если они не заблокированы, не ждут PM/QA acceptance и не имеют
+активного владельца. Перед стабилизацией следующего релиза PM снова включает
+фриз отдельной директивой.
 
 ## Этап QA (с 2026-06-12, обязательный)
 
@@ -154,8 +157,8 @@ Locked paths: <основные файлы/папки/ассеты/экраны>
 дублируют подробную спецификацию и evidence. Source-of-truth по очереди,
 статусу, owner и sprint/release tracking — Jira. Задачи текущего релиза
 добавляются в активный спринт. PM/другая LLM создает обычные задачи в Jira;
-Codex Documentation dispatcher может создавать/sync'ить 0.1.6 Jira issues по
-обычному порядку только после lane/owner/locked-path audit.
+Codex Documentation dispatcher может создавать/sync'ить current-sprint Jira
+issues по обычному порядку только после lane/owner/locked-path audit.
 Если перед будущим релизом PM снова включает freeze, новые не-баговые feature
 requests уходят в backlog следующей версии. При dispatch, блокировке, review,
 done и QA verdict dispatcher обновляет соответствующие Jira issue status/comment
@@ -165,7 +168,8 @@ done и QA verdict dispatcher обновляет соответствующие 
 
 ## Feature Block / Freeze
 
-На 2026-06-23 feature block 0.1.5 снят; текущий активный sprint — 0.1.6. Если
+На 2026-06-27 feature block 0.1.5 снят; текущий активный sprint берётся из Jira
+board 1 (локальные mirrors показывают `Спринт 0.1.7`). Если
 PM включает новый freeze перед релизом, dispatcher и role agents возвращаются к
 режиму: только уже заведённые rows, баги, QA defects, regressions, release
 blockers и owner nudges; новые не-баговые запросы уходят в backlog следующей
@@ -187,10 +191,9 @@ done → «Контроль качества», done+QA PASSED → «Готов�
 
 ## Фоновые Воркеры (с 2026-06-11; ИСТОЧНИК ЗАДАЧ — JIRA)
 
-> **Статус 2026-06-27:** авто-флот ОТКЛЮЧЁН; единственная рутина
-> `fantasydisk-backend-developer` на паузе на время GitHub-миграции. Когда воркер
-> активен — он берёт задачи **только из Jira** (issue, явно назначенный его контуру/
-> owner), а НЕ «разбирает доску»: доска — сверочный кэш, не очередь задач.
+> **Статус 2026-06-27:** Jira-pull включён как стандартный режим. Активные
+> role workers/heartbeats берут задачи **только из Jira current sprint** через
+> claim-first, а НЕ из локальной доски. Доска — сверочный кэш, не очередь задач.
 
 Когда флот активен, запланированные воркера (Claude Desktop → раздел Scheduled;
 работают, пока приложение открыто):
@@ -198,10 +201,13 @@ done → «Контроль качества», done+QA PASSED → «Готов�
 - backend-воркеры ×3: `fantasydisk-backend-board-worker` (0),
   `-worker-2` (+3), `-worker-3` (+1, добавлен 2026-06-13 под Quality Pass 0.1.4) —
   каждые
-  ~5 минут: берут по одному **Jira-issue**, назначенному их контуру (assignee/owner
-  + `Контур`), выполняют полностью (клейм в Jira → код → тесты → документация →
-  коммит/push в dev → done).
+  ~5 минут: берут по одному **Jira-issue** из active sprint с matching role/lane
+  label, claim-first через Jira (`tools/jira_next_task.py`), выполняют полностью
+  (клейм в Jira → код → тесты → документация → коммит/push в dev → done).
 - `fantasydisk-designer-board-worker` (+2) — то же для роли Design + Design-ревью.
+  Для Codex Design pool auto-pull PM обязан добавлять worker-scope label:
+  `design-main` или `designer2`; общий label `design` без этого не забирается
+  автоматически.
 - QA-воркеры ×2: `fantasydisk-qa-board-worker` (+4) и `-worker-2` (+2, добавлен
   2026-06-13) — приёмка done по qa_protocol, claim-first против гонок.
   Итого флот: backend×3, design×1, qa×2 (работают пока открыт Claude Desktop).
@@ -221,17 +227,17 @@ done → «Контроль качества», done+QA PASSED → «Готов�
 
 Следствия для PM: чтобы задача ушла в Claude-воркеры, недостаточно локально
 поставить `new`; нужно создать/обновить Jira issue и явно указать `Контур: Claude`
-и locked paths в Jira + local mirror. Claude воркеры не трогают `Контур: Codex`,
-`in_progress`, `blocked`, review-gated или чужие owner issues. Один прогон — одна задача.
+и locked paths в Jira + local mirror. Claude воркеры берут её через Jira-pull
+(`--lane claude`) и не трогают `Контур: Codex`, `in_progress`, `blocked`,
+review-gated или чужие owner issues. Один прогон — одна задача.
 
 ## Documentation Dispatcher И Role Heartbeats (Codex)
 
-Codex Documentation dispatcher — единственный Codex-thread, который регулярно
-смотрит Jira как authoritative queue и сверяет local mirrors, затем раздаёт
-новые задачи существующим role windows. Он не
-пишет код, не рисует ассеты, не делает анимации и не запускает release flow; он
-только проверяет зависимости, дубли, active owner state, Jira/local mirror sync и
-отправляет eligible работу нужному окну.
+Codex Documentation dispatcher регулярно смотрит Jira как authoritative queue и
+сверяет local mirrors, но обычные свободные current-sprint задачи role windows
+могут брать сами через Jira-pull claim-first. Dispatcher не пишет код, не рисует
+ассеты, не делает анимации и не запускает release flow; он проверяет зависимости,
+дубли, active owner state, Jira/local mirror sync, спорные cases и ручные handoff.
 
 Существующие role windows:
 
@@ -240,17 +246,21 @@ Codex Documentation dispatcher — единственный Codex-thread, кот
 - Designer 2: `019ec7a6-55a5-7bc3-a397-606ce046308d`;
 - Animator: `019eb156-710c-71f0-8903-eada762dceb3`.
 
-Role heartbeat в этих окнах не является разрешением брать любую свободную строку.
-Он может:
+Role heartbeat в этих окнах не является разрешением брать любую свободную строку
+из локальной доски. Он может:
 
-- продолжать уже назначенную этому thread задачу (`Контур: Codex`, совпадающий
-  `Owner/Thread`, непересекающиеся dirty files);
+- claim'ить одну eligible Jira issue из active sprint через
+  `python3 tools/jira_next_task.py --role <role> --lane codex --claim --worker <thread-id> --json`
+  (для Design main/Designer 2 добавить `--required-label design-main|designer2`);
+- продолжать уже назначенную/claimed этому thread задачу (`Контур: Codex`,
+  совпадающий `Owner/Thread`, непересекающиеся dirty files);
 - синхронизировать явно записанный результат/QA verdict;
-- отвечать `DONT_NOTIFY`, если нет dispatch именно для этого thread.
+- отвечать `DONT_NOTIFY`, если Jira-pull не нашёл eligible issue и нет активной
+  continuation.
 
-Он не должен self-select'ить `new` rows из общей доски. Новую строку назначает
-dispatcher/PM, после чего в task-файле, board и Jira появляются `Контур: Codex`,
-явный owner/dispatch, thread id и locked paths.
+Он не должен self-select'ить `new` rows из общей доски. Ownership появляется
+только после Jira claim/comment/status или явного dispatcher/PM dispatch; затем
+task-файл/board обновляются как зеркало.
 
 ### Design Collision Rules
 
@@ -283,10 +293,11 @@ PM: Jira issue SCRUM-* как источник очереди/status/owner
 PM: локальный .md/task_board mirror при необходимости
         │
         ▼
-PM/dispatcher выбирает контур: Codex или Claude, owner, locked paths
+PM/dispatcher указывает role/lane/locked paths; owner может быть unassigned
+до Jira-pull claim или задан вручную
         │
         ▼
-Codex Documentation dispatcher ИЛИ Claude worker берёт только свой Jira issue/контур
+Codex role heartbeat / Claude worker / dispatcher берёт только matching Jira issue/контур
         │
         ▼
 Исполнитель: работа + обновление Jira + local mirror + docs/design/*
@@ -349,8 +360,8 @@ docs/process/agent_role_boundaries_and_handoffs.md и укажи это в фи�
 - Исполнитель при взятии в работу обновляет Jira first (`in_progress`/comment),
   затем локальный mirror. По завершении — Jira + mirror `done` (или `review`,
   если нужна проверка PM) и короткое резюме результата.
-- При взятии задачи исполнитель или dispatcher добавляет явный owner/dispatch:
-  роль, thread name/id, дата и краткая причина. Для Design это обязательно,
+- При взятии задачи исполнитель или dispatcher добавляет явный owner/claim note:
+  роль, thread/worker id, lane, дата и краткая причина. Для Design это обязательно,
   потому что Design main и Designer 2 работают параллельно.
 - PM синхронизирует Jira при каждом изменении; `docs/process/task_board.md`
   обновляется как dashboard/cache.

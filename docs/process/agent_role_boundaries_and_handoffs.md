@@ -6,10 +6,13 @@
 `Design`, `Back-end`, `Animator`, `QA`.
 
 Задачи формирует PM-чат/другая LLM по регламенту `docs/process/pm_workflow.md`.
-Активен `Спринт 0.1.6`: v0.1.5 выпущен, feature block 0.1.5 снят. С 2026-06-27
+Активен текущий Jira sprint на board 1 (на 2026-06-27 локальные mirrors показывают
+`Спринт 0.1.7`): v0.1.5 выпущен, feature block 0.1.5 снят. С 2026-06-27
 Jira проект `SCRUM` является authoritative task queue/status/owner source.
-Новые задачи 0.1.6 можно маршрутизировать обычным порядком, но только через
-Jira и PM/Documentation dispatcher, с проверкой зависимостей и активного владельца.
+Новые задачи текущего спринта берутся только из активного Jira sprint. PM/Documentation
+dispatcher может маршрутизировать задачи вручную, но role agents также могут
+автоматически брать одну eligible задачу своей роли/контура через Jira-pull
+claim-first, с проверкой зависимостей и активного владельца.
 `docs/tasks/*.md` и `docs/process/task_board.md` — локальные mirrors/spec/evidence
 и dashboard/cache.
 
@@ -51,14 +54,32 @@ task-файлы.
 
 Пользователь заранее одобрил in-scope изменения, поэтому агенты не спрашивают разрешение на работу. Но cross-discipline работу нужно передавать правильному агенту.
 
-## Single-owner / Dispatch-lock
+## Single-owner / Jira-pull Lock
 
-Новая работа попадает к исполнителю только через Jira + PM/Documentation dispatcher.
-Роль-агенты не разбирают общий Jira backlog самостоятельно: их heartbeat может
-продолжать активную задачу, закрывать явно записанный результат, или ждать
-следующего dispatch. Исключение возможно только если PM/dispatcher явно написал
-в Jira issue/comment и local mirror/чат: какой Jira key/task, какой thread,
-какая роль.
+Новая работа попадает к исполнителю только из Jira current sprint. Локальная
+доска не является очередью. Роль-агенты не выбирают `new` rows из
+`docs/process/task_board.md`, но могут автоматически claim'ить ровно одну
+eligible Jira issue своей роли/контура через:
+
+```bash
+python3 tools/jira_next_task.py \
+  --role <backend|design|animator|qa> \
+  --lane <codex|claude|otherai> \
+  [--required-label <worker-scope>] \
+  --claim \
+  --worker <thread-or-worker-id> \
+  --json
+```
+
+Jira-pull разрешён только для issue в активном sprint, status category `To Do`,
+с role label, matching lane label, без `hold/user-hold/blocked`, без assignee и
+без признаков чужого owner/locked-path overlap. Claim-first comment/status в
+Jira является lock. После успешного claim агент обновляет локальный `.md`/board
+mirror только как bookkeeping.
+
+PM/Documentation dispatcher остаётся нужен для декомпозиции, handoff, спорных
+owner cases, duplicate cleanup, зеркал и ручного назначения задач, но он больше
+не является единственным способом выдать обычную unowned current-sprint задачу.
 
 Для параллельной работы Codex и Claude каждая активная задача должна иметь
 execution-lane metadata:
@@ -87,14 +108,15 @@ assignee/comment, незавершённый role-thread heartbeat по этой
 dispatcher оставляет задачу без dispatch и пишет Jira/PM/board note вместо параллельной
 работы.
 
-При dispatch dispatcher фиксирует owner в явном виде:
+При dispatch или Jira-pull claim owner фиксируется в явном виде:
 
 - в task-файле: `Dispatch: отправлено <Role>/<Thread name> (<thread id>) <YYYY-MM-DD HH:MM>`;
 - в task-файле: `Контур`, `Owner`, `Thread`, `Locked paths` должны совпадать с
   фактическим исполнителем и scope;
 - на board: роль/примечание должны показывать конкретного владельца, если таких
   владельцев несколько;
-- в Jira: статус/комментарий должен отражать, кто взял работу и какой handoff
+- в Jira: status/comment должен отражать, кто взял работу, каким способом
+  (`dispatch` или `Jira-pull`), lane/role/thread-or-worker и какой handoff
   создан, если работа передана.
 
 ## Codex И Claude Параллельно
@@ -103,10 +125,12 @@ Codex и Claude могут работать одновременно в одно
 задачей, проблемой или locked path.
 
 - Codex role thread работает автономно только если задача явно помечена
-  `Контур: Codex`, содержит dispatch на этот thread и не имеет свежего Claude
+  `Контур: Codex`/label `codex`, была dispatched на этот thread или успешно
+  claimed этим thread через Jira-pull, и не имеет свежего Claude/OtherAI
   owner/comment по тому же scope.
 - Claude Code/Claude worker работает автономно только если задача явно помечена
-  `Контур: Claude` или является отдельной review/bug задачей после Codex-result.
+  `Контур: Claude`/label `claude`, была assigned/claimed этим worker, или
+  является отдельной review/bug задачей после Codex-result.
 - Нельзя превращать review в параллельную реализацию. Claude review Codex-работы
   начинается после Codex `done/review`, а найденные проблемы оформляются как
   отдельные `bug_` или follow-up tasks с собственным owner.
@@ -131,6 +155,10 @@ files в locked paths другого контура блокируют стар�
 
 `Design main` и `Designer 2` — два отдельных исполнителя, а не одна общая
 очередь. У Design-задачи в любой момент может быть только один активный владелец.
+Для auto-pull Design-задачи должны иметь дополнительный Jira label:
+`design-main` для Design main или `designer2` для Designer 2. Обычный общий
+label `design` без worker-scope label не даёт права автоматического взятия
+Design-задачи; её должен разметить PM/dispatcher.
 
 - `Design main` обычно получает крупные visual direction/UI-source/style-anchor
   задачи, где важны цельный арт-дирекшен, mockup/spec, источники и handoff.

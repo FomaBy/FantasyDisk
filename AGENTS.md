@@ -35,9 +35,9 @@ Autonomy and approval:
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`. Since 2026-06-27 Jira is the authoritative task queue/status/ownership source; `docs/process/task_board.md` and `docs/tasks/*.md` are local mirrors/spec/evidence, not the source of new work.
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
-- New work is assigned from Jira by PM/Documentation dispatcher only. Role agents may continue an active Jira issue already assigned to their thread, but must not self-select an unowned local `new` row or unassigned Jira issue unless the dispatcher/PM explicitly names that Jira key and thread.
+- New work is taken from Jira current sprint, not from the local board. Role agents may auto-pull exactly one eligible Jira issue for their role/lane by running `python3 tools/jira_next_task.py --role <backend|design|animator|qa> --lane <codex|claude|otherai> --claim --worker <agent-id> --json`, then updating local mirrors only as bookkeeping. They must not self-select a local `new` row, a wrong-lane Jira issue, a blocked/hold/review-gated issue, or any issue with active owner/locked-path overlap.
 - Single-owner rule: before taking or routing work, check the Jira issue/status/comments/assignee/labels first, then local task file, board row, recent role-thread messages, and dirty worktree. If any recent dispatch note, `in_progress` status, owner/thread id, Jira assignee/comment, or overlapping active file/asset scope exists, do not take or resend the task.
-- Parallel Codex/Claude rule: every active task belongs to exactly one execution lane, `Контур: Codex` or `Контур: Claude`, and must record `Owner`, `Thread/Worker`, and locked files/assets/screens before work starts. Codex works autonomously only on tasks explicitly dispatched to a Codex role thread; Claude Code/workers must skip Codex-owned tasks and Codex must skip Claude-owned or worker-owned tasks. Review/fix work across lanes requires a separate review or bug task after the owner records a result; do not edit the same files in both lanes at the same time.
+- Parallel Codex/Claude rule: every active task belongs to exactly one execution lane, `Контур: Codex`, `Контур: Claude`, or `Контур: OtherAI`, and must record `Owner`, `Thread/Worker`, and locked files/assets/screens before work starts. Codex/Claude/other AI work autonomously only on tasks whose Jira labels/comments match their lane and which they have claimed in Jira; every other lane must skip them. Review/fix work across lanes requires a separate review or bug task after the owner records a result; do not edit the same files in both lanes at the same time.
 - Design pool rule: Design main and Designer 2 are separate owners, not a shared queue. A Design task must name exactly one active Design owner/thread while in progress. The other Design thread may review only when explicitly asked, and must not start the same task or a task with overlapping source assets/screens.
 - If a task needs another discipline, create/update a `.md` handoff task in `docs/tasks/` and send it to the correct chat instead of doing that specialist's work directly.
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
@@ -53,6 +53,8 @@ Role boundaries:
 1. **Взял в работу** → Jira issue переведён/прокомментирован как «В работе»
    с owner/thread/locked paths + локальный `.md` mirror `in_progress` при наличии.
    Не работать «в тени», не отразив это в Jira.
+   Авто-взятие задач делается только через Jira current sprint и claim-first:
+   `python3 tools/jira_next_task.py --role <role> --lane <lane> --claim --worker <id> --json`.
 2. **Завершил** → Jira comment/status + `.md` mirror `done` с резюме, если есть
    локальная спецификация (тикет → «Контроль качества»;
    после QA-вердикта PASSED → «Готово»). Закрытая работа ОБЯЗАНА быть закрыта в Jira.
@@ -87,9 +89,10 @@ Full autonomy (user directive, 2026-06-12):
   are out of scope for executors anyway.
 
 Feature block:
-- **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Активен `Спринт 0.1.6` (Jira board 1) —
-  задачи 0.1.6 в работе обычным порядком (перерисовка персонажей v2, чистка ассетов,
-  QoL, доводка визуала).
+- **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Активен текущий Jira sprint на board 1
+  (на 2026-06-27 локальные mirrors показывают `Спринт 0.1.7`; всегда проверяй live
+  Jira active sprint перед auto-pull/dispatch). Current-sprint Jira issues берутся
+  обычным порядком через Jira-pull claim-first.
 - Механизм сохраняется: перед стабилизацией следующего релиза PM снова включает
   фриз (новые не-баги → `Версия: <следующая>`, sync держит их в бэклоге).
 
