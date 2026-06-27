@@ -2571,5 +2571,10 @@
  "SCRUM-524_damage_attribute_type_isolation.md": {
   "key": "SCRUM-524",
   "status": "Готово"
+ },
+ "SCRUM-530_event_option_select_repro_fix.md": {
+  "key": "SCRUM-530",
+  "status": "Контроль качества",
+  "desc_hash": "49eefea1eede3f41aa442895d867a0ea"
  }
 }
