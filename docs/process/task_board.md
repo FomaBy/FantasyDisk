@@ -1,21 +1,22 @@
 # Task Board — FantasyDisk (живой дашборд)
 
-Обновлено: 2026-06-14
-Ведёт: PM. Доска показывает ТОЛЬКО активную работу. Завершённые задачи (≈222) не
-дублируются здесь — они в Jira (эпики SCRUM-212..221, статус «Готово») и git-истории.
+Обновлено: 2026-06-23
+Ведёт: PM. Доска показывает активную работу, review/QA gates и важные recent
+rows, которые нужны диспетчеру для anti-duplicate/owner audit. Завершённые
+задачи остаются в Jira (эпики SCRUM-212..221, статус «Готово») и git-истории.
 Статусы: `new` | `in_progress` | `review` | `blocked` | `done`. Источник истины по деталям —
 файлы `docs/tasks/*.md`; управление и отчётность — Jira.
+Новые или обновляемые active rows обязаны иметь lane/owner metadata: `Контур:
+Codex|Claude`, `Owner`, `Thread/Worker`, `Locked paths`.
 
-## Спринт 0.1.5 — патч «Бой и баланс» (АКТИВЕН, FEATURE BLOCK с 2026-06-14)
+## Спринт 0.1.6 — активная разработка
 
-Релиз v0.1.4 выпущен. Активен Спринт 0.1.5 (эпик SCRUM-232). PM включил
-feature block 2026-06-14: в 0.1.5 доделываются только уже заведенные строки этой
-доски, текущие bug/QA defect/regression/release blocker задачи и уже записанные
-результаты исполнителей. Новые не-баговые фичи больше не добавляются в 0.1.5:
-они оформляются как `Версия: 0.1.6` и остаются вне активного спринта до открытия
-следующей версии.
+Релиз v0.1.5 выпущен 2026-06-15, feature block 0.1.5 снят. Активен
+`Спринт 0.1.6`: задачи 0.1.6 можно маршрутизировать обычным порядком после
+проверки зависимостей, дублей, active owner, dirty worktree и locked paths.
+Перед следующим релизом PM может снова включить freeze отдельной директивой.
 
-Очередь патча сериализована по зависимостям/общим файлам:
+Исторический контекст 0.1.5 оставлен только для сверки старых зависимостей:
 - СТАРТ: SCRUM-256 framework механик — done; SCRUM-260 монстры/размеры —
   done/QA; SCRUM-253 авто-движение — done; SCRUM-259 скилы элиток/боссов —
   done/QA; SCRUM-255 формулы выживаемости — done; SCRUM-247/243
@@ -29,7 +30,7 @@ feature block 2026-06-14: в 0.1.5 доделываются только уже 
 class_weapon). «done = чистый HEAD зелёный».
 
 
-## Прогресс по эпикам (снимок Jira, 2026-06-13)
+## Прогресс по эпикам (исторический снимок Jira, 2026-06-13)
 
 | Эпик | Готово | КК | В работе | Кв | Всего |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -52,7 +53,8 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
-| [design_minimalist_full_ui_redesign_exact_size_anchor_task.md](../tasks/design_minimalist_full_ui_redesign_exact_size_anchor_task.md) | Design (Codex) → Back-end → self-QA | in_progress | Jira: SCRUM-478. Dispatched 2026-06-19 22:04 to Design main thread `019eabf1-6d54-7561-8af9-ce25cdf483a9`: НОВЫЙ минимал-дизайн ВСЕЙ игры на базе ярких стильных кнопок; Design owns mockups/assets/specs/exact content zones first, with Back-end handoffs for runtime integration. |
+| [design_minimalist_full_ui_redesign_exact_size_anchor_task.md](../tasks/design_minimalist_full_ui_redesign_exact_size_anchor_task.md) | Design (Codex) → Back-end → self-QA | review | Jira: SCRUM-478. Design-source package ready for PM/QA review: bright button anchor, exact-size frame source, full-screen mockup board, 1280/1600/1920 size+content-zone matrix, self-QA evidence and Back-end handoff `backend_minimalist_full_ui_redesign_runtime_handoff_task.md`. Runtime integration/tests remain Back-end scope. |
+| [backend_minimalist_full_ui_redesign_runtime_handoff_task.md](../tasks/backend_minimalist_full_ui_redesign_runtime_handoff_task.md) | Back-end (UI/runtime/tests) | new | Jira: SCRUM-480. Handoff from SCRUM-478: slice/import exact-size bright minimalist UI assets, wire screens, and add 1280/1600/1920 render/no-overlap/text-overflow/content-zone verification. |
 | [bug_event_screen_grey_unclickable_task.md](../tasks/bug_event_screen_grey_unclickable_task.md) | Back-end | review | Jira: SCRUM-477. Worker-2 done→review (commit f2628eec): экран события теперь выбирается с клавиатуры (focus+neighbors на опциях — корень «застревания» был в отсутствии клавиатурного пути при сбое мыши); анти-тупик (пустой набор→fallback, нет опций→«Назад» включается); `LevelUpDim` STOP→IGNORE. Регресс-ассерт в runtime_smoke (event-флоу зелёный). Полный green-gate ждёт отдельный pre-existing hero-select-v4 red (`bug_runtime_smoke_hero_select_v4_backbutton_name_task.md`). QA: визуальный клик мышью на сборке. |
 | [balance_event_rewards_worthy_of_risk_task.md](../tasks/balance_event_rewards_worthy_of_risk_task.md) | Back-end (баланс/контент) | in_progress | Jira: SCRUM-476. Worker взял 2026-06-19 22:32: EV-ребаланс исходов событий в `event_data.gd` (рискованные/платные → весомее, безопасные → скромнее), сверка с reward_pool/ценами. Файл-изолировано от SCRUM-477 (ui_screens). Финальная ручная in-game проверка — за QA после SCRUM-477. |
 | [animation_skill_skeletal_rework_dark_mage_knight_redraw_task.md](../tasks/animation_skill_skeletal_rework_dark_mage_knight_redraw_task.md) | Animator (Codex) | blocked | Jira: SCRUM-474. USER HOLD reconfirmed 2026-06-19 after dispatcher correction: SCRUM-475 delivered accepted skeleton-friendly source packages, but runtime Skeleton2D/Bone2D rig assembly, AnimationPlayer timelines, idle/walk loops and player integration remain paused until explicit newer user/PM instruction says `делай анимацию`. Superseded Animator dispatch WIP is documented in the task and is unclaimed/not accepted. Jira sync completed: SCRUM-474 moved to `К выполнению` as the Jira-side hold/backlog state. |
@@ -271,7 +273,7 @@ class_weapon). «done = чистый HEAD зелёный».
 | [bug_feedback_overflow_send_error_task.md](../tasks/bug_feedback_overflow_send_error_task.md) | Back-end (UI + сеть) | done | Jira: SCRUM-460. **QA: passed** (2026-06-17) — фидбек из плейтеста: (1) ошибка отправки = скрин уходил PNG ~9.8 МБ → Discord 413; теперь downscale ≤1280px + JPG q0.72 (~250 КБ), end-to-end на живом вебхуке **200** (тест-сообщение удалено 204); (2) форма не влезала → панель адаптивна под вьюпорт + ScrollContainer, кнопки/статус всегда видимы. runtime_smoke + новый `feedback_upload_size_test` зелёные. |
 | [bug_settings_v2_title_collides_tab_switcher_task.md](../tasks/bug_settings_v2_title_collides_tab_switcher_task.md) | Back-end (UI) | done | Jira: SCRUM-468. **QA: passed** (2026-06-17, headless-рендер) — заголовок «Настройки» сталкивался с таб-свитчером (висел в пустой середине бара). Свитчер+контент сдвинуты ниже заголовка через единый `_settings_v2_switcher_top`; заголовок остался чётким сверху. Находка QA-ревью SCRUM-439 против макапа. |
 | [bug_attribute_shop_action_buttons_overflow_720p_task.md](../tasks/bug_attribute_shop_action_buttons_overflow_720p_task.md) | Back-end (UI) | done | Jira: SCRUM-467. **QA: passed** (2026-06-17, рендер 1280×720) — при 4+ опциях докачки (ветка Знаний) кнопки «Обновить»/«Пропустить» уезжали под фолд. Вынесены ВНЕ ScrollContainer, закреплены снизу панели; карточки скроллятся. |
-| [bug_runtime_smoke_hero_select_v4_backbutton_name_task.md](../tasks/bug_runtime_smoke_hero_select_v4_backbutton_name_task.md) | Back-end (UI) | in_progress | Jira: SCRUM-479. Dispatched 2026-06-19 22:29 to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`: QA/runtime-smoke blocker after SCRUM-475; `_test_back_button_frame_safety` still looks for old v3 `HeroSelectBackButton`, while active Hero Select v4 builds `HS4BackButton`. Fix test/contract only, preserve v4 behavior, run runtime/focused UI smoke. |
+| [bug_runtime_smoke_hero_select_v4_backbutton_name_task.md](../tasks/bug_runtime_smoke_hero_select_v4_backbutton_name_task.md) | Back-end (UI) | done | Jira: SCRUM-479. QA 2026-06-23 initially BLOCKED because the v4 smoke fix was only in working tree; Back-end follow-up committed isolated `tests/runtime_smoke_test.gd` fix as `d59f80a9` and reran `runtime_smoke_test.gd` successfully. Remains in Контроль качества for clean-HEAD QA recheck before Jira can move to Готово. |
 
 ## 0.1.5 — blocked / dependency-gated
 

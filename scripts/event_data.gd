@@ -6,7 +6,7 @@ const RANDOM_EVENTS := [
 		"title": "Странствующий бард",
 		"story": "У развилки сидит бард с лютней, струны которой светятся как тонкие лезвия. Он знает песни о каждом герое, но за хорошую балладу просит звонкую монету.",
 		"choices": [
-			{"id": "pay_ballad", "title": "Заплатить за балладу", "description": "Цена: 18 золота. Следующий бой: +12% скорость атаки.", "cost_money": 18, "mods": {"attack_speed_multiplier": 1.12}},
+			{"id": "pay_ballad", "title": "Заплатить за балладу", "description": "Цена: 18 золота. На весь забег: +12% к скорости атаки.", "cost_money": 18, "mods": {"attack_speed_multiplier": 1.12}},
 			{"id": "sing_yourself", "title": "Спеть самому", "description": "Проверка Знания 7: успех дает +1 ко всем базовым характеристикам, провал -1 Знание.", "check": {"stat": "knowledge", "difficulty": 7}, "success": {"stats": {"strength": 1, "agility": 1, "intelligence": 1, "perception": 1, "energy": 1, "knowledge": 1, "endurance": 1, "leadership": 1}}, "failure": {"stats": {"knowledge": -1}}},
 			{"id": "walk_away", "title": "Попросить припев на удачу", "description": "Без цены: +4 золота и немного вдохновения.", "money": 4, "mods": {"xp_gain_multiplier": 1.04}},
 		],
@@ -17,7 +17,7 @@ const RANDOM_EVENTS := [
 		"story": "Черный алтарь дышит теплым воздухом, хотя вокруг стелется холод. На камне видна выемка в форме ладони, и где-то под землей шевелятся цепи.",
 		"choices": [
 			{"id": "blood_price", "title": "Отдать кровь", "description": "Цена: 30% текущего HP. Получить случайный артефакт.", "health_percent_cost": 0.30, "random_artifact": true},
-			{"id": "defile", "title": "Осквернить алтарь", "description": "Риск: элитный бой с тенью-стражем. Победа ведет к обычным наградам элитки.", "risk": true, "combat": {"type": "elite", "enemy_health_multiplier": 1.12}},
+			{"id": "defile", "title": "Осквернить алтарь", "description": "Риск: элитный бой с тенью-стражем. Победа: элитная добыча, +50% золота и +25% опыта за бой.", "risk": true, "combat": {"type": "elite", "enemy_health_multiplier": 1.12, "money_multiplier": 1.5, "xp_multiplier": 1.25}},
 			{"id": "quiet_prayer", "title": "Тихая молитва", "description": "Получить +1 Выносливость, но потерять 10% HP.", "stats": {"endurance": 1}, "health_percent_cost": 0.10},
 		],
 	},

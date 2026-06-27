@@ -94,3 +94,17 @@ Validation:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` -> PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/character_sprite_registry_alignment_test.gd` -> PASS.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` -> PASS.
+
+## QA-Вердикт (2026-06-23)
+
+Статус: PASSED
+
+Независимый QA-прогон на актуальном рабочем дереве (live `berserk_spriteframes.tres`
+закоммичен и чист):
+
+- `tests/animation_smoke_test.gd` → EXIT=0, «Animation smoke test passed.»
+- `tests/character_sprite_registry_alignment_test.gd` → EXIT=0, «… passed (17 characters).»
+- `tests/runtime_smoke_test.gd` → EXIT=0, «Runtime smoke test passed.»
+
+Логи: `build/qa/qa_session_20260623/`. Berserk: 5f looping idle/walk(move) без
+attack-строки — соответствует scope. Закрываю → «Готово».

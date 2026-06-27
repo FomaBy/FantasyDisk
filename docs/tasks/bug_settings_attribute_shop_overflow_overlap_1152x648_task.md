@@ -8,6 +8,8 @@
 Автор: QA (находка при batch-QA 0.1.6 — ui_no_overlap_matrix красный)
 Jira: SCRUM-471
 
+QA: in_progress (2026-06-19 14:00)
+
 ## Dispatch
 2026-06-17T15:10Z — Documentation dispatcher routed this Sprint 0.1.6
 Back-end/UI bug to Back-end thread `019eabd9-780b-78a2-9f4b-e7203d659ef2`.
@@ -88,3 +90,17 @@ Verification PASS:
 - `tests/ui_no_overlap_matrix_test.gd`
 - `tests/runtime_smoke_ui_test.gd`
 - `tests/runtime_smoke_test.gd`
+
+## QA-Вердикт (2026-06-23)
+
+Статус: PASSED
+
+Независимый QA-прогон на актуальном рабочем дереве (фикс в `scripts/ui_screens.gd`
+закоммичен и чист):
+
+- `tests/ui_no_overlap_matrix_test.gd` → EXIT=0, «UI no-overlap matrix test passed.»
+- `tests/runtime_smoke_ui_test.gd` → EXIT=0, «Runtime UI smoke suite passed.»
+- `tests/runtime_smoke_test.gd` → EXIT=0, «Runtime smoke test passed.»
+
+Логи: `build/qa/qa_session_20260623/`. Перекрытий Settings/Attribute Shop при
+1152×648 нет; семантика сохранена. Закрываю → «Готово».

@@ -5,6 +5,14 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- Bright minimalist full-game UI Design anchor (SCRUM-478): generated the
+  OpenAI source package under
+  `docs/design/references/minimalist_full_ui_redesign/`, alpha-cleaned the
+  button/frame source sheets into transparent PNGs, added a full-screen mockup
+  board, exact 1280x720 / 1600x900 / 1920x1080 size matrix, self-QA evidence
+  and the UI-director spec at
+  `docs/design/mockups/scrum478_minimalist_full_ui_redesign/spec.md`. Runtime
+  integration and render/no-overlap verification are handed off to Back-end.
 - Skeleton-source Design handoff for Dark Mage/Knight (SCRUM-475): added
   transparent separated source packages under
   `docs/design/references/chars_cartoon/skeleton_parts/{dark_mage,knight}/`
@@ -288,6 +296,11 @@
   `build/qa/scrum422_character_v2_anchor/`.
 
 ### Fixed
+- Hero Select v4 runtime smoke blocker (SCRUM-479): runtime/UI smoke tests now
+  target the native v4 node contract (`HS4BackButton`, `HS4Portrait`,
+  `HS4Radar`, `HS4Carousel`, `HS4ChooseButton`) instead of stale v3/mockup-era
+  names, with a legacy back-button fallback and responsive carousel assertions.
+  Full runtime smoke, UI no-overlap matrix and animation smoke pass.
 - Event screen grey/unclickable hardening (SCRUM-477): `_show_event_screen()`
   now keyboard-focuses the first selectable option and wires focus neighbours
   across the choice cards and Back button, so options are selectable with the

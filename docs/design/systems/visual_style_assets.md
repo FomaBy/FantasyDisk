@@ -305,6 +305,23 @@ remain for Hero Select v3, progression nodes and combat bar fills/icons. QA and
 the old-kit live-reference audit live under
 `build/qa/scrum451_minimal_metal_rollout/`.
 
+SCRUM-478 starts the next **Bright Minimalist full-game UI redesign** direction.
+It is a Design-source anchor only, not a runtime promotion. Source references
+live under `docs/design/references/minimalist_full_ui_redesign/`: a bright
+button anchor sheet, an exact-size frame family sheet, a full-screen mockup
+board, `scrum478_minimalist_full_ui_metadata.json` with exact dimensions for
+`1280x720`, `1600x900` and `1920x1080`, and
+`scrum478_self_qa_evidence.md`. The UI-director spec is
+`docs/design/mockups/scrum478_minimalist_full_ui_redesign/spec.md`. The visual
+target is obsidian/charcoal interiors, thin silver outlines, vivid cyan/magenta
+button accents and small gold ticks. It deliberately moves away from beige,
+parchment, heavy dragon ornament and the older metal-heavy frame look. Runtime
+content may only use the declared `content_rect_xywh`; frame rails, accent
+diamonds, glow caps and gold ticks are forbidden content zones. Final runtime
+slicing, `ui_screens.gd` integration, screenshot capture and no-overlap/text
+overflow verification are Back-end scope via
+`docs/tasks/backend_minimalist_full_ui_redesign_runtime_handoff_task.md`.
+
 SCRUM-390 prepared a dedicated **Combat HUD redraw kit** and SCRUM-400 wires it
 into the live runtime HUD. It was generated through
 `fantasydisk-asset-generator` from current D&D/dark-fantasy UI references, then

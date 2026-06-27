@@ -1,0 +1,17 @@
+{
+  "task": "design_skeleton_friendly_dark_mage_knight_parts_task.md",
+  "entities": {
+    "dark_mage": {
+      "manifest": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/skeleton_source_manifest.json",
+      "source": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/source/dark_mage_skeleton_source_from_runtime.png",
+      "parts_dir": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts",
+      "qa_dir": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/qa"
+    },
+    "knight": {
+      "manifest": "docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json",
+      "source": "docs/design/references/chars_cartoon/skeleton_parts/knight/source/knight_skeleton_source_from_runtime.png",
+      "parts_dir": "docs/design/references/chars_cartoon/skeleton_parts/knight/parts",
+      "qa_dir": "docs/design/references/chars_cartoon/skeleton_parts/knight/qa"
+    }
+  }
+}

@@ -151,6 +151,18 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   unrelated Hero Select v3 back-button UI assertion. The bundled manifest
   validator still reports the expected missing `attack_primary` rows because it
   does not yet understand `attack_required=false`.
+- SCRUM-475 (2026-06-19) delivers the Design-source blocker for the next
+  Skeleton2D/Bone2D source gate: Dark Mage and Knight now have transparent
+  skeleton-source packages under
+  `docs/design/references/chars_cartoon/skeleton_parts/{dark_mage,knight}/`.
+  Each package contains a source copy, 19 separated PNG parts, local pivots,
+  a `skeleton_source_manifest.json`, alpha report, contact sheet and dark-bg
+  preview. Both manifests pass the animation-director
+  `validate_skeleton_source_manifest.py` validator. No runtime rig,
+  SpriteFrames or AnimationPlayer clips were changed by this Design handoff.
+  SCRUM-474 remains under the explicit USER HOLD after this delivery: runtime
+  Skeleton2D/Bone2D rig assembly, `AnimationPlayer` timelines and player
+  integration must wait for a newer user/PM go-ahead saying `делай анимацию`.
 - SCRUM-424 adds the Dark Mage v2 Design-source handoff under
   `docs/design/references/characters_v2/dark_mage/` with alpha-clean source,
   normalized `512x512` idle cell, `2560x1024` source placeholder sheet and QA

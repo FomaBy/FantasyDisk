@@ -441,6 +441,31 @@ logical points; `_apply_video_settings()` clamps with
 `window/dpi/allow_hidpi=true`. QA evidence:
 `build/qa/scrum441/hidpi_resolution_evidence.md`.
 
+## SCRUM-478 Bright Minimalist Full UI Anchor
+
+SCRUM-478 is the Design-source anchor for the next full-game minimalist UI
+redesign. The source package is not wired into runtime yet. Back-end must use
+`docs/design/mockups/scrum478_minimalist_full_ui_redesign/spec.md` and
+`docs/design/references/minimalist_full_ui_redesign/scrum478_minimalist_full_ui_metadata.json`
+before changing live menus.
+
+Covered screen families: main menu, hero select, weapon select, combat HUD,
+level-up, rewards, shop, attribute shop, event, codex, settings, patch notes,
+feedback, pause, results, global tooltips and badges.
+
+The anchor keeps the global hard frame rule:
+
+- every frame/button/chip has an exact `content_rect_xywh` for `1280x720`,
+  `1600x900` and `1920x1080`;
+- runtime labels, icons, portraits, meters, focus rings and hit areas must stay
+  inside that content rect;
+- border rails, accent diamonds, gold ticks and glow caps are decoration only;
+- exact-size PNGs are preferred; if Back-end uses 9-slice, only the flat center
+  may stretch and the metadata margins are mandatory.
+
+Runtime integration and render/no-overlap/text-overflow QA are tracked in
+`docs/tasks/backend_minimalist_full_ui_redesign_runtime_handoff_task.md`.
+
 ## Ornate Frame Safe-Area Rule
 
 Controls that use `ui_frame_ornate_*` textures must use the signed

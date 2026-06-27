@@ -14,6 +14,8 @@ const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berser
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const DARK_MAGE_SKELETON_RIG_SCENE := preload("res://scenes/characters/DarkMageSkeletonRig.tscn")
+const KNIGHT_SKELETON_RIG_SCENE := preload("res://scenes/characters/KnightSkeletonRig.tscn")
 const DARK_MAGE_SPRITE := preload("res://assets/sprites/characters/dark_mage.png")
 const GUITARIST_SPRITE := preload("res://assets/sprites/characters/guitarist.png")
 const ASSASSIN_SPRITE := preload("res://assets/sprites/characters/assassin.png")
@@ -132,6 +134,7 @@ var _action_tween: Tween = null
 var _hit_flash_tween: Tween = null
 var _facing_direction := Vector2.RIGHT
 var _uses_full_frame_visual := false
+var _uses_skeletal_visual := false
 var _damage_invulnerability_left := 0.0
 # Паутинное замедление (Матерь Роя): фактор скорости до отметки времени.
 var _web_slow_until := 0.0
@@ -205,7 +208,9 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		visual_root.scale = Vector2.ONE
 	var body := _animated_sprite()
 	if body != null:
-		var full_frame_frames: SpriteFrames = null if character_id in CARTOON_TRIAL_CLASSES else _character_full_frame_sprite_frames(character_id)
+		var skeleton_scene := _character_skeleton_rig_scene(character_id)
+		_uses_skeletal_visual = skeleton_scene != null
+		var full_frame_frames: SpriteFrames = null if character_id in CARTOON_TRIAL_CLASSES or _uses_skeletal_visual else _character_full_frame_sprite_frames(character_id)
 		_uses_full_frame_visual = full_frame_frames != null
 		body.sprite_frames = full_frame_frames if _uses_full_frame_visual else _character_sprite_frames(config)
 		body.animation = "idle"
@@ -215,7 +220,8 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		body.scale = BASE_SPRITE_SCALE
 		body.flip_h = false
 		body.visible = _uses_full_frame_visual
-	_configure_player_rig(config, not _uses_full_frame_visual)
+		_configure_skeletal_player_rig(skeleton_scene)
+	_configure_player_rig(config, not _uses_full_frame_visual and not _uses_skeletal_visual)
 	var weapon_socket := _weapon_socket()
 	if weapon_socket != null:
 		weapon_socket.position = Vector2.ZERO
@@ -1498,6 +1504,9 @@ func _update_movement_animation(delta: float) -> void:
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("update_animation"):
 		rig.update_animation(delta, velocity, _facing_direction)
+	var skeletal_rig := _skeletal_rig()
+	if skeletal_rig != null and skeletal_rig.has_method("update_animation"):
+		skeletal_rig.update_animation(delta, velocity, _facing_direction)
 	_apply_sprite_transform()
 
 
@@ -1556,6 +1565,9 @@ func _play_hit_feedback() -> void:
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_hit"):
 		rig.play_hit()
+	var skeletal_rig := _skeletal_rig()
+	if skeletal_rig != null and skeletal_rig.has_method("play_hit"):
+		skeletal_rig.play_hit()
 	_hit_flash_tween = create_tween()
 	_hit_flash_tween.tween_property(body, "modulate", Color.WHITE, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
@@ -1606,6 +1618,10 @@ func _cutout_rig() -> Node2D:
 	return get_node_or_null("VisualRoot/RigRoot") as Node2D
 
 
+func _skeletal_rig() -> Node2D:
+	return get_node_or_null("VisualRoot/SkeletalRigRoot") as Node2D
+
+
 func _configure_player_rig(config: Dictionary, show_cutout := true) -> void:
 	var visual_root := _visual_root()
 	if visual_root == null:
@@ -1630,6 +1646,41 @@ func _configure_player_rig(config: Dictionary, show_cutout := true) -> void:
 		if hero_full != null:
 			hero_full.rotation = deg_to_rad(CARTOON_TRIAL_TILT_DEG)
 	rig.visible = show_cutout
+
+
+func _configure_skeletal_player_rig(skeleton_scene: PackedScene) -> void:
+	var visual_root := _visual_root()
+	if visual_root == null:
+		return
+	var existing := _skeletal_rig()
+	if existing != null:
+		visual_root.remove_child(existing)
+		existing.queue_free()
+	if skeleton_scene == null:
+		_uses_skeletal_visual = false
+		return
+	var rig := skeleton_scene.instantiate() as Node2D
+	if rig == null:
+		_uses_skeletal_visual = false
+		return
+	rig.name = "SkeletalRigRoot"
+	rig.z_index = 0
+	visual_root.add_child(rig)
+	rig.visible = true
+	if rig.has_method("configure"):
+		var manifest := str(rig.get("manifest_path"))
+		rig.configure(manifest, character_id, BASE_SPRITE_SCALE)
+	if rig.has_method("update_animation"):
+		rig.update_animation(0.0, Vector2.ZERO, _facing_direction)
+
+
+func _character_skeleton_rig_scene(class_id: String) -> PackedScene:
+	match class_id:
+		"dark_mage":
+			return DARK_MAGE_SKELETON_RIG_SCENE
+		"knight":
+			return KNIGHT_SKELETON_RIG_SCENE
+	return null
 
 
 func _character_sprite_frames(config: Dictionary) -> SpriteFrames:

@@ -291,7 +291,11 @@ func _test_player_animation() -> void:
 		rig = player.get_node("VisualRoot/RigRoot") as Node2D
 		if body.sprite_frames == null or body.sprite_frames.resource_path != str(accepted_character_spriteframes[sheet_character_id]):
 			_fail("Expected %s to use its accepted SpriteFrames resource." % sheet_character_id)
-		if not body.visible or rig.visible:
+		if sheet_character_id == "dark_mage" or sheet_character_id == "knight":
+			if body.visible or rig.visible:
+				_fail("Expected %s to hide full-frame Body and legacy cutout RigRoot while the skeletal rig is live." % sheet_character_id)
+			_assert_skeletal_player_rig(player, sheet_character_id)
+		elif not body.visible or rig.visible:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
@@ -347,6 +351,7 @@ func _test_player_animation() -> void:
 	}
 	for character_id in new_class_profiles.keys():
 		player.configure_character(character_id)
+		player.set("_animation_time", 0.0)
 		_assert_sliced_rig(player, "VisualRoot/RigRoot", "characters/cutout", ["Torso", "ArmL", "ArmR"], ["LegL", "LegR"], character_id)
 		player.set("velocity", Vector2(120, 0))
 		player.call("_update_movement_animation", 0.20)
@@ -356,8 +361,10 @@ func _test_player_animation() -> void:
 		var class_leg_r := class_rig.get_node("Pelvis/Figure/LegR") as Node2D
 		if abs(class_pelvis.position.y) <= 0.01:
 			_fail("Expected %s movement profile to move the pelvis." % character_id)
-		if abs(class_leg_l.rotation - class_leg_r.rotation) <= float(new_class_profiles[character_id]):
-			_fail("Expected %s to use a distinct readable walk profile." % character_id)
+		var leg_delta: float = abs(class_leg_l.rotation - class_leg_r.rotation)
+		var min_leg_delta: float = float(new_class_profiles[character_id])
+		if leg_delta <= min_leg_delta:
+			_fail("Expected %s to use a distinct readable walk profile; leg_delta=%.4f min=%.4f." % [character_id, leg_delta, min_leg_delta])
 
 	var rifle_pose: Dictionary = _sample_player_weapon_action_pose(player, "soldier", "soldier_rifle", "shoot", 0.12)
 	var grenade_pose: Dictionary = _sample_player_weapon_action_pose(player, "soldier", "soldier_grenade", "shoot", 0.12)
@@ -780,6 +787,66 @@ func _assert_sliced_rig(root_node: Node, rig_path: String, texture_fragment: Str
 			_fail("Expected %s rig leg part %s." % [label, part_name])
 	if rig.get_node_or_null("Pelvis/Figure/Torso/WeaponSocketMount") == null:
 		_fail("Expected %s rig WeaponSocketMount." % label)
+
+
+func _assert_skeletal_player_rig(player: Node, character_id: String) -> void:
+	var previous_velocity = player.get("velocity")
+	var previous_animation_time := float(player.get("_animation_time"))
+	var rig := player.get_node_or_null("VisualRoot/SkeletalRigRoot") as Node2D
+	if rig == null or not rig.visible:
+		_fail("Expected %s live SkeletalRigRoot." % character_id)
+	var skeleton := rig.get_node_or_null("Skeleton2D") as Skeleton2D
+	var animation_player := rig.get_node_or_null("AnimationPlayer") as AnimationPlayer
+	if skeleton == null or animation_player == null:
+		_fail("Expected %s Skeleton2D and AnimationPlayer nodes." % character_id)
+	if not animation_player.has_animation("idle") or not animation_player.has_animation("walk") or not animation_player.has_animation("move"):
+		_fail("Expected %s skeletal rig to expose idle/walk/move clips." % character_id)
+	if animation_player.has_animation("attack") or animation_player.has_animation("attack_primary"):
+		_fail("Expected %s skeletal body rig to omit attack clips." % character_id)
+	for bone_path in [
+		"Root",
+		"Root/Pelvis",
+		"Root/Pelvis/Torso",
+		"Root/Pelvis/Torso/Head",
+		"Root/Pelvis/Torso/UpperArmL",
+		"Root/Pelvis/Torso/UpperArmR",
+		"Root/Pelvis/ThighL",
+		"Root/Pelvis/ThighR",
+	]:
+		if skeleton.get_node_or_null(bone_path) == null:
+			_fail("Expected %s skeletal bone %s." % [character_id, bone_path])
+	var torso_sprite := skeleton.get_node_or_null("Root/Pelvis/Torso/Sprite") as Sprite2D
+	if torso_sprite == null or torso_sprite.texture == null:
+		_fail("Expected %s skeletal torso sprite texture." % character_id)
+	if not torso_sprite.texture.resource_path.contains("assets/sprites/characters/skeleton_parts/%s/parts/" % character_id):
+		_fail("Expected %s skeletal rig to use asset-side accepted parts, got %s." % [character_id, torso_sprite.texture.resource_path])
+	var root_bone := skeleton.get_node("Root") as Bone2D
+	var thigh_l := skeleton.get_node("Root/Pelvis/ThighL") as Bone2D
+	var thigh_r := skeleton.get_node("Root/Pelvis/ThighR") as Bone2D
+	var idle_root_y := root_bone.position.y
+	player.set("velocity", Vector2(120, 0))
+	player.call("_update_movement_animation", 0.20)
+	if str(rig.get("active_animation")) != "walk":
+		_fail("Expected %s skeletal rig to switch to walk while moving." % character_id)
+	if abs(root_bone.position.y - idle_root_y) <= 0.01:
+		_fail("Expected %s skeletal walk to move the root bone." % character_id)
+	if abs(thigh_l.rotation - thigh_r.rotation) <= 0.05:
+		_fail("Expected %s skeletal walk to use opposing leg rotations." % character_id)
+	if rig.scale.x <= 0.0:
+		_fail("Expected %s skeletal rig to face right with positive scale." % character_id)
+	player.set("velocity", Vector2(-120, 0))
+	player.call("_update_movement_animation", 0.20)
+	if rig.scale.x >= 0.0:
+		_fail("Expected %s skeletal rig to mirror when facing left." % character_id)
+	player.set("velocity", Vector2.ZERO)
+	player.call("_update_movement_animation", 0.20)
+	if str(rig.get("active_animation")) != "idle":
+		_fail("Expected %s skeletal rig to return to idle when stopped." % character_id)
+	var weapon_socket := player.get_node_or_null("VisualRoot/WeaponSocket") as Node2D
+	if weapon_socket == null or not weapon_socket.has_meta("weapon_orbit_radius"):
+		_fail("Expected %s weapon socket orbit behavior to remain configured." % character_id)
+	player.set("velocity", previous_velocity)
+	player.set("_animation_time", previous_animation_time)
 
 
 func _test_enemy_projectile_sprite() -> void:

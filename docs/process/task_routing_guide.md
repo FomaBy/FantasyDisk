@@ -1,143 +1,135 @@
 # Гид Диспетчера: Как Формировать Задачи И Куда Их Направлять (Claude vs Codex)
 
-Обновлено: 2026-06-14
-Для кого: любой диспетчер задач FantasyDisk (PM-чат Claude, Codex-тред Documentation,
-будущие диспетчеры). Источник процесса: `docs/process/pm_workflow.md`.
+Обновлено: 2026-06-23
 
-## Два Контура Исполнителей
+Для кого: PM, Codex Documentation dispatcher, Claude Code/Claude-чаты,
+фоновые воркеры и будущие диспетчеры. Источники процесса:
+`docs/process/pm_workflow.md`, `docs/process/agent_role_boundaries_and_handoffs.md`,
+`docs/process/jira_sync.md`.
 
-| | **Claude** (чаты Backend/Designer + фоновые воркеры доски) | **Codex** (треды Animator/Back-end/Design + exec-сессии) |
+## Главная Модель
+
+FantasyDisk работает в одной ветке `dev`, но задачи делятся на два независимых
+execution lane:
+
+| Контур | Когда использовать | Как не конфликтует |
 | --- | --- | --- |
-| Сильная сторона | Суждение, архитектура, отладка, баланс, ревью | Объем, механическая работа по ТЗ, **генерация изображений** |
-| Слабая сторона | Дороже на больших объемах рутины | Слабее в неоднозначных решениях; не умеет коммитить (sandbox) |
+| `Codex` | автономные задачи с точным ТЗ, bounded scope, известными файлами, проверяемыми acceptance criteria, генерацией ассетов, механическими batch-правками, scoped bug/test fixes | получает явный dispatch в Codex role thread и locked paths; Claude пропускает эту задачу |
+| `Claude` | архитектура, баланс с продуктовыми решениями, неочевидная отладка, широкий refactor, конфликт-резолюция, release decisions, review | получает `Контур: Claude`; Codex dispatcher/role threads пропускают эту задачу |
+| `QA` | приемка после результата owner, регрессии, создание bug/follow-up задач | не чинит код/арт/анимацию в исходной задаче |
+
+Codex должен быть автономным внутри своих задач: после dispatch он сам берёт
+задачу, меняет статус, синхронизирует Jira, реализует scope, запускает проверки,
+обновляет docs/CHANGELOG/task report и завершает или блокирует задачу. Его
+автономия ограничена owner/locked-path правилами, а не ожиданием ручного
+подтверждения.
+
+## Обязательная Метадата Задачи
+
+Каждая active row должна иметь в task-файле:
+
+```text
+Статус: new | in_progress | review | done | blocked
+Контур: Codex | Claude
+Owner: <роль>/<thread или worker> | unassigned
+Thread: <Codex thread id> | <Claude chat/worker id> | n/a
+Locked paths: <основные файлы/папки/ассеты/экраны>
+Jira: SCRUM-<номер>
+```
+
+Если `Контур`, `Owner/Thread` или `Locked paths` отсутствуют, dispatcher не
+маршрутизирует задачу до заполнения. Board note и Jira comment должны отражать
+ту же информацию кратко.
 
 ## Правило Маршрутизации
 
-## ЖЕЛЕЗНОЕ ПРАВИЛО АРТА (решение пользователя, 2026-06-12)
+Задача идёт в `Codex`, если выполняются все условия:
 
-ВСЕ задачи, связанные с рисовкой — фреймы, спрайты, иконки, фоны, VFX-кадры,
-любые изображения — отдаются исполнителю **Codex Design** (генерация изображений)
-и выполняются в **стиле D&D** (актуальный dark fantasy/tabletop канон проекта:
-реалистичные магические предметы, painterly character/enemy art, а UI — по
-SCRUM-147 Parchment & Wax Seal dark fantasy canon: aged parchment, red wax seal,
-serrated forged metal, ruby accents and realistic D&D material detail; см.
-актуальные референсы в docs/design/systems/visual_style_assets.md и
-content_registry). К каждому запуску генерации ОБЯЗАТЕЛЬНО прикладываются
-референсы-изображения. Claude-Designer остается ревьюером, интегратором и
-коммитером результата (Codex в .git писать не может).
+1. ТЗ можно выполнить без продуктовой развилки: точные файлы, expected behavior,
+   acceptance criteria и проверки.
+2. Scope ограничен и locked paths не пересекаются с активной Claude-задачей.
+3. Ошибка результата обнаруживается тестом, валидатором, screenshot/manifest
+   проверкой или чёткой визуальной QA.
+4. Нужен Codex skill/pipeline: UI mockup, asset generation, animation director,
+   class-balance harness, batch integration, scoped test update.
 
-Задача идет в **Codex**, если выполняются ВСЕ три условия:
-1. **ТЗ можно записать исчерпывающе** — точные файлы, размеры, имена, формат
-   результата; исполнителю не нужно принимать продуктовых решений.
-2. **Работа объемная или механическая** — много однотипных единиц (N иконок,
-   N спрайтов, массовые правки по шаблону) ИЛИ генерация изображений
-   (у Codex есть image generation — это его монополия в проекте).
-3. **Ошибку легко обнаружить проверкой** — размеры, имена, тесты, визуальный
-   контрольный лист.
+Задача идёт в `Claude`, если выполняется хотя бы одно условие:
 
-Задача идет в **Claude**, если выполняется ХОТЯ БЫ ОДНО:
-1. Нужны **решения**: архитектура, баланс, UX-выбор, интерпретация
-   противоречивых требований, «сделай красиво/правильно на твое усмотрение».
-2. Нужна **отладка/поиск причины**: баги, тесты, производительность,
-   «почему не работает».
-3. Затрагивается **много систем сразу** (логика + UI + данные + тесты).
-4. Это **ревью работы Codex** (обязательный шаг — см. ниже).
-5. Это **git-операции** (Codex не может писать в .git из своего sandbox).
+1. Нужны архитектурные, балансные, UX или продуктовые решения.
+2. Нужно исследовать неизвестную причину бага или широкий runtime/regression
+   конфликт.
+3. Задача затрагивает много подсистем и не делится на безопасные handoffs.
+4. Нужно review/acceptance Codex-результата с возможной правкой.
+5. Нужно разрешить конфликт dirty worktree, locked paths, Jira ownership или
+   противоречие в требованиях.
 
-### Примеры
+## Dispatch Protocol
 
-| Задача | Контур | Почему |
-| --- | --- | --- |
-| Сгенерировать 46 иконок по спецификации | Codex | объем + image gen + проверяемо |
-| Сгенерировать один фон по спецификации | Codex | image gen |
-| Анимации фаз атак по готовой схеме windup/strike/recover | Codex | механика по точному ТЗ |
-| Переработать баланс класса | Claude Backend | решения |
-| Найти и исправить баг прицеливания | Claude Backend | отладка |
-| Новый экран UI (кодекс, окно докачки) | Claude Backend |多 систем + UX-решения |
-| Перерисовать спрайт персонажа под анимацию | Claude Designer | художественное суждение |
-| Аудит качества спрайтов | Claude Designer | суждение |
-| Ревью любой Codex-задачи | Claude (роль по типу работы) | обязательное правило |
+1. Dispatcher читает task-файл, board row, Jira/sync map, dirty worktree, recent
+   role-thread status и active owners по той же роли.
+2. Dispatcher выбирает `Контур` и locked paths. Нельзя оставлять active task без
+   lane.
+3. Для `Контур: Codex` dispatcher добавляет/обновляет `Dispatch`, `Owner`,
+   `Thread`, `Locked paths`, board note и Jira comment, затем отправляет ровно
+   один handoff в нужный Codex role thread.
+4. Для `Контур: Claude` task остаётся доступной Claude Code/Claude worker only;
+   Codex Documentation dispatcher не отправляет её в Codex.
+5. Исполнитель перед первой правкой ставит `Статус: in_progress`, сохраняет
+   owner metadata, запускает Jira sync и только потом работает.
+6. По завершении owner пишет результат, проверки, docs changes и переводит
+   задачу в `done` или `review`. Если scope не может быть завершён, ставит
+   `blocked` с точной причиной и handoff/follow-up.
 
-## Обязательные Правила Для Любой Задачи (оба контура)
+## Interlock Между Codex И Claude
 
-1. **Файл задачи**: `docs/tasks/<role>_<short_name>_task.md` по шаблону из
-   `docs/process/pm_workflow.md` (Статус, Autonomy, Роль и границы, Контекст,
-   Требования, Files/IDs, Acceptance Criteria, Документация, Самопроверка).
-   Для Codex-задач префикс `codex_` и максимально детальное ТЗ: точные пути,
-   размеры, имена файлов, что НЕЛЬЗЯ делать, порядок работы по шагам.
-2. **Доска**: строка в `docs/process/task_board.md` (роль, статус, примечание).
-   Статусы: new → in_progress → review/done; blocked с причиной.
-3. **Перед выдачей сверься** с `docs/design/current_game_state.md` и
-   `docs/design/content_registry.md` — требования не должны противоречить
-   реализованному; имена сущностей — только канонические ID из реестра.
-4. **Зависимости указывай явно** (какая задача чего ждет, кто снимает blocked).
-5. Правила исполнения едины: ветка dev, smoke-тесты, обновление документации,
-   CHANGELOG (Unreleased), handoff при чужой работе.
-6. Codex Documentation dispatcher во время feature block 0.1.5 не создает новые
-   active-sprint feature tasks. Он может создавать/маршрутизировать только уже
-   заведённые board-задачи, текущие bug/QA defect/regression/release blocker или
-   явно разрешённые PM строки. Новые не-баговые requests получают
-   `Версия: 0.1.6` и остаются вне active sprint до PM override.
-7. Каждая задача должна быть синхронизирована с Jira `SCRUM` по
-   `docs/process/jira_sync.md`: issue в активном спринте, `Jira: SCRUM-*` в
-   task-файле, Jira key/ссылка в `task_board.md`, status/comment updates при
-   изменениях. API token не хранить в репозитории.
-8. Закрывает задачу тот агент, который ее выполнял: он обновляет task-файл,
-   board-строку и Jira status/comment. Dispatcher не ставит `done` за агента,
-   кроме чистой синхронизации уже записанного результата или QA-вердикта.
-9. Перед dispatch и при регулярной сверке dispatcher ищет дубли задач:
-   совпадающие Jira summaries, одинаковые source task paths, одинаковые файлы/
-   ассеты в acceptance scope или повтор одной пользовательской проблемы. Дубли
-   не отправлять исполнителям; оставить один source of truth, остальные пометить
-   `duplicate`/`superseded` с ссылкой на основной task/Jira.
-10. Для любой UI-frame/UI-panel задачи в ТЗ обязательно фиксировать
-    content-zone/safe-area. Кнопки, герои/портреты, области выбора, иконки,
-    тексты, карточки, радары, миниатюры и другой контент нельзя размещать на
-    декоративной рамке; он кладется только в пустую внутреннюю область фрейма
-    (прозрачный центр, плоская подложка или явно заданные margins). Design
-    задает margins, Back-end соблюдает layout, QA заваливает любое наложение на
-    рамку.
+- Один task = один owner = один контур. Нельзя, чтобы Codex и Claude одновременно
+  выполняли одну задачу или одну проблему.
+- Locked paths сильнее роли. Если `scripts/ui_screens.gd` уже locked Claude task,
+  Codex не берёт UI integration task по этому файлу, даже если задача подходит
+  Back-end.
+- Dirty worktree считается сигналом активной работы. Если dirty files
+  пересекаются с locked paths другого owner, новый исполнитель не стартует.
+- Review не является разрешением на параллельную правку. Review создаётся после
+  owner-result и оформляется отдельной review/bug/follow-up задачей.
+- Если Codex во время работы обнаружил, что нужен Claude-level decision, он
+  фиксирует результат своей части, создаёт Claude handoff и ставит исходную
+  задачу `blocked` или `review`.
+- Если Claude нужен asset/image/animation batch от Codex, Claude создаёт Codex
+  handoff с точным ТЗ, locked paths и acceptance criteria.
 
-## Feature Block Routing (АКТИВЕН: стабилизация 0.1.5)
+## Как Доставить Задачу
 
-Feature block 0.1.5 включён 2026-06-14. Активен `Спринт 0.1.5` (id 67), но
-его scope закрыт: dispatcher/воркеры дожимают только существующие board rows,
-текущие bug/QA defect/regression/release blocker задачи и уже записанные
-executor results. Новые не-баговые feature requests оформляются как
-`Версия: 0.1.6`, остаются вне active sprint и не dispatch'ятся до открытия
-следующей версии или явного PM override. Задачи, помеченные `blocked`, остаются
-закрытыми до выполнения указанной предпосылки.
+- `Codex`: PM отправляет в Codex Documentation dispatcher путь task-файла и
+  краткий scope. Documentation dispatcher делает audit и сам отправляет задачу
+  в существующий role thread. Прямой dispatch в role thread допустим только если
+  PM сразу заполняет `Контур: Codex`, `Owner`, `Thread`, `Locked paths` и Jira
+  comment.
+- `Claude`: PM/другая LLM создаёт task-файл и board row с `Контур: Claude`.
+  Claude Code/воркеры могут self-claim только такие rows и только если нет
+  active owner/locked-path конфликта.
+- `QA`: QA выбирает `done` без QA verdict по `docs/process/qa_protocol.md`.
+  QA не редактирует реализацию, а создаёт bug/follow-up задачи.
 
-## Как Доставить Задачу Исполнителю
+## Review Policy
 
-- **Claude-контур**: достаточно положить файл задачи + строку на доску со
-  статусом `new` — фоновые воркеры (`fantasydisk-backend-board-worker`,
-  `fantasydisk-designer-board-worker`, раз в ~20 минут) сами возьмут в работу.
-  Срочное — сообщением в чат Backend/Designer.
-- **Codex-контур**: сообщение в Codex-тред Documentation (резюме + путь к файлу
-  задачи) или прямой запуск:
-  `/Applications/Codex.app/Contents/Resources/codex exec --full-auto "Выполни задачу docs/tasks/<файл> строго по инструкции" `
-  (запускать из каталога проекта). В ТЗ для Codex всегда писать: «коммит НЕ делать
-  (sandbox), статус review + резюме в файле задачи».
-- **QA-контур Claude**: через task board/автоматический QA process. Новые QA
-  defects/release blockers оформляются по Jira sync rules; новые запросы вне
-  текущего release scope уходят в следующую версию и не dispatch'ятся до PM
-  override.
+Codex-работа не требует параллельного Claude вмешательства во время исполнения.
+После результата:
 
-## Обязательное Ревью За Codex
-
-Каждая закрытая Codex-задача получает ревью Claude-агентом соответствующей роли
-(код — Backend, визуал — Designer) с правом исправлять. Ревьюер же коммитит
-принятый результат в dev. Без ревью Codex-работа не считается done.
+- high-risk code/runtime/balance/release changes получают отдельный Claude review
+  или QA gate;
+- isolated asset/source-pack/mechanical changes могут идти сразу в QA, если
+  acceptance и валидаторы зелёные;
+- любые найденные проблемы оформляются отдельной bug/follow-up task с новым
+  owner и locked paths.
 
 ## Чего Диспетчеру Делать Нельзя
 
-- Выдавать одну и ту же зону ответственности обоим контурам параллельно
-  (две задачи на одни файлы = конфликт в рабочем каталоге).
-- Создавать новые active-sprint `.md` task-файлы или Jira issues для
-  не-баговых feature requests во время feature block 0.1.5. Такие задачи
-  уходят в backlog `0.1.6` без dispatch.
-- Закрывать задачу за исполнителя без результата в task-файле или QA-вердикта.
-- Менять арт-направление без отметки superseded в старой задаче.
-- Отдавать Codex задачи с продуктовыми развилками («реши сам, как лучше для игры»).
-- Забывать строку на доске — задача вне доски невидима для воркеров и сверок.
+- Отправлять одну и ту же задачу в Codex и Claude.
+- Оставлять active `new` row без `Контур` и locked paths.
+- Давать Codex задачу, где уже есть Claude owner, worker note, `in_progress`,
+  Jira ownership или dirty overlap.
+- Давать Claude worker задачу с `Контур: Codex` или dispatch на Codex thread.
+- Закрывать задачу за исполнителя без результата owner или QA-вердикта.
+- Смешивать Design main и Designer 2 в одной Design-задаче без явной PM-разбивки.
+- Игнорировать USER HOLD, blocked reason, PM/QA acceptance gate или superseded
+  note, даже если зависимость формально выглядит готовой.
