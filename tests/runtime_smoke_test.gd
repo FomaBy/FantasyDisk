@@ -4394,8 +4394,8 @@ func _test_all_playable_classes() -> void:
 		_fail("Expected playable class data to match the signature smoke list.")
 		return
 	for class_id in signature.keys():
-		if ProgressionData.ascension_levels(class_id).size() != 10:
-			_fail("Expected 10 ascension levels for %s." % class_id)
+		if ProgressionData.ascension_levels(class_id).size() != 5:
+			_fail("Expected 5 ascension levels for %s." % class_id)
 			return
 
 	var holder := Node2D.new()
@@ -4461,8 +4461,8 @@ func _test_soldier_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Soldier weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-		if ProgressionData.ascension_levels("soldier").size() != 10:
-			_fail("Expected Soldier to have 10 ascension levels.")
+		if ProgressionData.ascension_levels("soldier").size() != 5:
+			_fail("Expected Soldier to have 5 ascension levels.")
 			return
 
 	var holder := Node2D.new()
@@ -4520,8 +4520,8 @@ func _test_thief_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Thief weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("thief").size() != 10:
-		_fail("Expected Thief to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("thief").size() != 5:
+		_fail("Expected Thief to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4590,8 +4590,8 @@ func _test_elementalist_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Elementalist weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("elementalist").size() != 10:
-		_fail("Expected Elementalist to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("elementalist").size() != 5:
+		_fail("Expected Elementalist to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4646,8 +4646,8 @@ func _test_sniper_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Sniper weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("sniper").size() != 10:
-		_fail("Expected Sniper to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("sniper").size() != 5:
+		_fail("Expected Sniper to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4702,8 +4702,8 @@ func _test_priest_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Priest weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("priest").size() != 10:
-		_fail("Expected Priest to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("priest").size() != 5:
+		_fail("Expected Priest to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4763,8 +4763,8 @@ func _test_biologist_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Biologist weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("biologist").size() != 10:
-		_fail("Expected Biologist to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("biologist").size() != 5:
+		_fail("Expected Biologist to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4829,8 +4829,8 @@ func _test_robot_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Robot weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("robot").size() != 10:
-		_fail("Expected Robot to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("robot").size() != 5:
+		_fail("Expected Robot to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4895,8 +4895,8 @@ func _test_engineer_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Engineer weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("engineer").size() != 10:
-		_fail("Expected Engineer to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("engineer").size() != 5:
+		_fail("Expected Engineer to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -5775,9 +5775,9 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 
 
 func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
-	# Данные: 10 кумулятивных усложнений, уровень 0 нейтрален, кумулятивность.
-	if ProgressionData.ascension_modifiers().size() != 10:
-		_fail("Expected 10 ascension difficulty modifiers.")
+	# Данные: 5 кумулятивных усложнений (SCRUM-516), уровень 0 нейтрален, кумулятивность.
+	if ProgressionData.ascension_modifiers().size() != 5:
+		_fail("Expected 5 ascension difficulty modifiers.")
 		return
 	var level0: Dictionary = ProgressionData.ascension_difficulty_mods(0)
 	for key in level0.keys():
@@ -5786,28 +5786,30 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 			_fail("Expected ascension level 0 modifier %s to be neutral (%f)." % [key, neutral])
 			return
 	var level3: Dictionary = ProgressionData.ascension_difficulty_mods(3)
-	# SCRUM-358: L1 enemy hp 1.20, L1 dmg 1.14, L2 price 1.25, L3 spawn density 1.26 — кумулятивно активны.
-	if absf(float(level3["enemy_hp_mult"]) - 1.20) > 0.001 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.26) > 0.001:
-		_fail("Expected level 3 to cumulatively include levels 1+2+3 modifiers.")
+	# SCRUM-516 (5-ступенчатая лестница): L1 enemy hp 1.25 + price 1.25, L2 hp 1.15 + spawn 1.30,
+	# L3 hp 1.12 — кумулятив hp 1.25*1.15*1.12=1.61, price 1.25 (L1), spawn 1.30 (L2).
+	if absf(float(level3["enemy_hp_mult"]) - 1.61) > 0.002 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.30) > 0.001:
+		_fail("Expected level 3 to cumulatively include levels 1+2+3 modifiers (hp×1.61, price×1.25, spawn×1.30).")
 		return
 	var level0_change := ProgressionData.ascension_level_change_line(0)
 	if not level0_change.to_lower().contains("без усложнений"):
 		_fail("Expected ascension level 0 delta text to say no complications, got: %s" % level0_change)
 		return
 	var level3_change := ProgressionData.ascension_level_change_line(3)
-	if not level3_change.contains("Уровень 3") or not level3_change.contains("Быстрая орда"):
+	if not level3_change.contains("Уровень 3") or not level3_change.contains("Свирепые элитки"):
 		_fail("Expected ascension level 3 delta text to describe only level 3, got: %s" % level3_change)
 		return
-	if level3_change.contains("Закалённые враги") or level3_change.contains("Жадные торговцы"):
+	if level3_change.contains("Закалённые враги") or level3_change.contains("Быстрая орда"):
 		_fail("Expected ascension level 3 delta text not to include lower-level changes, got: %s" % level3_change)
 		return
-	# L4+ модификаторы НЕ активны на уровне 3.
-	if float(level3["elite_instant_phase"]) > 0.0 or absf(float(level3["healing_mult"]) - 1.0) > 0.001:
+	# L4+ модификаторы НЕ активны на уровне 3 (healing — L4, boss_extra_phase — L5).
+	if absf(float(level3["healing_mult"]) - 1.0) > 0.001 or float(level3["boss_extra_phase"]) > 0.0:
 		_fail("Expected level 3 to exclude level 4+ modifiers.")
 		return
-	var level10: Dictionary = ProgressionData.ascension_difficulty_mods(10)
-	if float(level10["boss_extra_phase"]) <= 0.0 or absf(float(level10["player_max_hp_mult"]) - 0.80) > 0.001 or absf(float(level10["healing_mult"]) - 0.70) > 0.001:
-		_fail("Expected level 10 to include boss extra phase, -20%% HP and -30%% healing.")
+	# Капстоун теперь L5 (был L10): босс-фаза, -20%% HP игрока, ослабленное лечение.
+	var level5: Dictionary = ProgressionData.ascension_difficulty_mods(5)
+	if float(level5["boss_extra_phase"]) <= 0.0 or absf(float(level5["player_max_hp_mult"]) - 0.80) > 0.001 or absf(float(level5["healing_mult"]) - 0.68) > 0.001:
+		_fail("Expected level 5 to include boss extra phase, -20%% HP and reduced healing.")
 		return
 
 	# Разблокировка по персонажу: победа на уровне N открывает N+1.
@@ -5871,7 +5873,7 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	if asc_mods_label == null:
 		_fail("Expected AscensionModsLabel on hero select.")
 		return
-	if not asc_mods_label.text.contains("Уровень 3") or not asc_mods_label.text.contains("Быстрая орда"):
+	if not asc_mods_label.text.contains("Уровень 3") or not asc_mods_label.text.contains("Свирепые элитки"):
 		_fail("Expected hero select ascension label to show selected level delta, got: %s" % asc_mods_label.text)
 		return
 	if asc_mods_label.text.contains("Закалённые враги") or asc_mods_label.text.contains("Жадные торговцы"):

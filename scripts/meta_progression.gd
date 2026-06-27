@@ -1,10 +1,14 @@
 extends RefCounted
 
-# Персистентная метапрогрессия: meta points и уровни возвышения (1-10)
+# Персистентная метапрогрессия: meta points и уровни возвышения (1-5)
 # на персонажа. Сохранение через ConfigFile в user://.
 
 const DEFAULT_SAVE_PATH := "user://fantasydisk_meta.cfg"
-const MAX_ASCENSION_LEVEL := 10
+# SCRUM-516: лестница возвышений сжата 10→5 (короче и острее). Единый кап и для
+# дорожки сложности (ASCENSION_MODIFIERS), и для наградной лестницы
+# (ASCENSION_LEVELS). Старые сейвы с ascension>5 молча клампятся в [0..5] через
+# load_state/ascension_level/selectable_max — без краша.
+const MAX_ASCENSION_LEVEL := 5
 const SECTION := "meta"
 
 # Общее древо умений (SCRUM-150), 4 независимые ветви; внутри ветви узлы

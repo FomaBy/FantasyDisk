@@ -160,7 +160,7 @@ event-множители) + `post_combat`.
 
 ## Meta Progression
 
-- Ascension levels: 10 уровней на персонажа.
+- Ascension levels: 5 уровней на персонажа (SCRUM-516: лестница сжата 10→5, монстерский пресс заметно усилен — кумулятив enemy_hp_mult на L5 = 1.80, было 1.32 на L10).
 - Победа над финальным боссом увеличивает ascension выбранного героя.
 - Сохранение: `scripts/meta_progression.gd`, `user://fantasydisk_meta.cfg`.
 

@@ -3886,7 +3886,7 @@ func _add_character_button(box: Container, character_id: String, info_labels: Di
 	if ascension_level > 0:
 		var ascension_label := Label.new()
 		ascension_label.name = "CharacterAscension_%s" % character_id
-		ascension_label.text = "Возвышение: %d/10" % ascension_level
+		ascension_label.text = "Возвышение: %d/%d" % [ascension_level, game.META_PROGRESSION.MAX_ASCENSION_LEVEL]  # SCRUM-516: динамический кап (5) вместо хардкода /10
 		ascension_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		ascension_label.add_theme_font_size_override("font_size", 11)
 		ascension_label.add_theme_color_override("font_color", Color(0.78, 0.58, 1.0, 1.0))

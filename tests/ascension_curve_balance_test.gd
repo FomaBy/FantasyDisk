@@ -66,8 +66,8 @@ func _initialize() -> void:
 	if elite[max_level] > peak * 0.5:
 		errors.append("спад элиток на высоких недостаточный (L%d %.3f > половины пика %.3f)" % [max_level, elite[max_level], peak])
 
-	# Анти-вакуум.
-	if max_level < 8:
+	# Анти-вакуум. SCRUM-516: лестница сжата до 5 ступеней — порог снижен 8→5.
+	if max_level < 5:
 		errors.append("уровней возвышения подозрительно мало (%d)" % max_level)
 
 	if not errors.is_empty():
