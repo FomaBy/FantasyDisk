@@ -2,7 +2,7 @@
 
 Формат: [Keep a Changelog](https://keepachangelog.com/), версии: [SemVer](https://semver.org/) (0.MINOR.PATCH до релиза 1.0).
 
-## [Unreleased] — ветка dev
+## [Unreleased] — ветка dev (цель: 0.1.7)
 
 ### Added
 - Bright minimalist full-game UI Design anchor (SCRUM-478): generated the
