@@ -2552,5 +2552,10 @@
   "key": "SCRUM-480",
   "status": "Готово",
   "desc_hash": "9518edc5c645878fc3e69431df159d13"
+ },
+ "design_level_up_popup_badge_task.md": {
+  "key": "SCRUM-519",
+  "status": "Контроль качества",
+  "desc_hash": "16166f9acd2c96d7247803f20d051205"
  }
 }
