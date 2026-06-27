@@ -717,6 +717,11 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `heroes_graveyard` | Кладбище героев | hidden risk, artifact/combat, rest | Грабеж могилы или почтение павшим | Реализовано |
 | `fallen_star` | Падшая звезда | Energy, HP cost, check Intelligence | Сильный ресурсный апгрейд с ожогом | Реализовано |
 | `training_dummies` | Тренировочные манекены | check Agility/Strength, stat+mods | Испытания скорости и силы | Реализовано |
+| `warden_gate_trial` | Врата Хранителя | class-reactive checks Endurance/Intelligence/Leadership | Архетипная развилка: танк/маг/призыватель открывают свою створку | Реализовано |
+| `abandoned_forge` | Заброшенная кузница | class-reactive checks Endurance/Intelligence, money | Профильная заготовка под танка/мага или сбор лома | Реализовано |
+| `merchant_caravan` | Торговый караван | цена, artifact, rest, check Perception | Лавка артефакта/тоника или торг за сдачу | Реализовано |
+| `whispering_grove` | Шепчущая роща | rest, check Knowledge, hidden risk combat | Источник, шёпот-чек или потревоженные стражи | Реализовано |
+| `collapsing_mineshaft` | Обвалившаяся шахта | HP cost, artifact/money/combat random, check Endurance | Разбор завала вслепую или укрепление балок | Реализовано |
 
 ## UI Иконки Характеристик
 

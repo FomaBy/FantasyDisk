@@ -2392,6 +2392,20 @@ func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 		_fail("Expected random events to cover combat, reward, rest and attribute-check outcomes.")
 		return
 
+	# SCRUM-501: класс-реактивность — минимум 2 события ветвят исход по разным
+	# архетипным атрибутам (≥2 различных check.stat среди choices одного события).
+	var class_reactive_events := 0
+	for event in EventData.RANDOM_EVENTS:
+		var check_stats := {}
+		for choice in (event.get("choices", []) as Array):
+			if choice.has("check"):
+				check_stats[str((choice.get("check", {}) as Dictionary).get("stat", ""))] = true
+		if check_stats.size() >= 2:
+			class_reactive_events += 1
+	if class_reactive_events < 2:
+		_fail("Expected at least two class-reactive events branching on different archetype attributes.")
+		return
+
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 41
 	var used := []

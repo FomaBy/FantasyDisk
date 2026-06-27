@@ -112,6 +112,55 @@ const RANDOM_EVENTS := [
 			{"id": "power_trial", "title": "Испытание силы", "description": "Проверка Силы 7: успех +1 Сила и +8% урон, провал -10% HP.", "check": {"stat": "strength", "difficulty": 7}, "success": {"stats": {"strength": 1}, "mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.10}},
 		],
 	},
+	{
+		"id": "warden_gate_trial",
+		"title": "Врата Хранителя",
+		"story": "Тройные врата перегораживают тропу: бронзовая плита, светящаяся руна и пустой трон с венцом. Хранитель шепчет, что каждый герой открывает свою створку — и платит свою цену за чужую.",
+		"choices": [
+			{"id": "brace_plate", "title": "Танк: упереться в плиту", "description": "Проверка Выносливости 7: танк держит вес — успех +1 Выносливость и +0.08 Защита, провал -12% HP.", "check": {"stat": "endurance", "difficulty": 7}, "success": {"stats": {"endurance": 1}, "mods": {"defense_flat": 0.08}}, "failure": {"health_percent_cost": 0.12}},
+			{"id": "read_rune", "title": "Маг: распутать руну", "description": "Проверка Интеллекта 7: маг читает формулу — успех +1 Интеллект и +8% урон, провал -12% HP.", "check": {"stat": "intelligence", "difficulty": 7}, "success": {"stats": {"intelligence": 1}, "mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.12}},
+			{"id": "claim_throne", "title": "Призыватель: занять трон", "description": "Проверка Лидерства 7: призыватель командует венцом — успех +1 Лидерство и +1 призыв, провал -12% HP.", "check": {"stat": "leadership", "difficulty": 7}, "success": {"stats": {"leadership": 1}, "mods": {"summon_bonus": 1}}, "failure": {"health_percent_cost": 0.12}},
+		],
+	},
+	{
+		"id": "abandoned_forge",
+		"title": "Заброшенная кузница",
+		"story": "Горн остыл века назад, но молот сам качается над наковальней, будто кто-то невидимый всё ещё кует. На стене висят три заготовки, и каждая отзывается на свою руку.",
+		"choices": [
+			{"id": "temper_armor", "title": "Танк: закалить броню", "description": "Проверка Выносливости 8: успех усиленная пластина (+0.10 Защита и +6% HP), провал -10% HP.", "check": {"stat": "endurance", "difficulty": 8}, "success": {"mods": {"defense_flat": 0.10, "max_health_multiplier": 1.06}}, "failure": {"health_percent_cost": 0.10}},
+			{"id": "etch_sigil", "title": "Маг: вытравить сигил", "description": "Проверка Интеллекта 8: успех боевой сигил (+12% урон и +6% скорость атаки), провал -10% HP.", "check": {"stat": "intelligence", "difficulty": 8}, "success": {"mods": {"damage_multiplier": 1.12, "attack_speed_multiplier": 1.06}}, "failure": {"health_percent_cost": 0.10}},
+			{"id": "salvage_scrap", "title": "Собрать лом", "description": "Без проверки: +22 золота из старых инструментов.", "money": 22},
+		],
+	},
+	{
+		"id": "merchant_caravan",
+		"title": "Торговый караван",
+		"story": "Из пыли выкатывается крытая повозка, увешанная амулетами и медными колокольчиками. Купец улыбается слишком широко и раскладывает товар прямо на дорожной пыли.",
+		"choices": [
+			{"id": "buy_relic", "title": "Купить реликвию", "description": "Цена: 26 золота. Получить случайный артефакт из запасов каравана.", "cost_money": 26, "random_artifact": true},
+			{"id": "buy_tonic", "title": "Купить тоник", "description": "Цена: 14 золота. Лечение 45% HP и +4% к лечению на забег.", "cost_money": 14, "heal_percent": 0.45, "mods": {"healing_multiplier": 1.04}},
+			{"id": "haggle_caravan", "title": "Сбить цену", "description": "Проверка Восприятия 8: успех +28 золота сдачи, провал -10 золота.", "check": {"stat": "perception", "difficulty": 8}, "success": {"money": 28}, "failure": {"cost_money": 10}},
+		],
+	},
+	{
+		"id": "whispering_grove",
+		"title": "Шепчущая роща",
+		"story": "Деревья смыкают кроны в зелёный купол, и листва шепчет имена на языке, который ты почти понимаешь. В центре поляны бьёт родник, а тени между стволами слишком уж осмысленны.",
+		"choices": [
+			{"id": "drink_spring", "title": "Испить из родника", "description": "Лечение 40% HP и +1 Знание от шёпота рощи.", "heal_percent": 0.40, "stats": {"knowledge": 1}},
+			{"id": "follow_whisper", "title": "Пойти на шёпот", "description": "Проверка Знания 7: успех +1 Знание и +6% опыта, провал -8% HP.", "check": {"stat": "knowledge", "difficulty": 7}, "success": {"stats": {"knowledge": 1}, "mods": {"xp_gain_multiplier": 1.06}}, "failure": {"health_percent_cost": 0.08}},
+			{"id": "disturb_grove", "title": "Потревожить тени", "description": "Риск: бой с лесными стражами. Победа: +35% золота и +1 Восприятие.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.16, "money_multiplier": 1.35}, "post_combat": {"stats": {"perception": 1}}},
+		],
+	},
+	{
+		"id": "collapsing_mineshaft",
+		"title": "Обвалившаяся шахта",
+		"story": "Вход в шахту наполовину завален, изнутри тянет рудной сыростью и слышен далёкий стук кирки. Балки скрипят, и пыль сыплется на ржавую вагонетку с чем-то блестящим внутри.",
+		"choices": [
+			{"id": "dig_through", "title": "Разобрать завал", "description": "Цена: 10% HP. Случайно: артефакт, 26 золота или обрушение в бой.", "health_percent_cost": 0.10, "random_outcomes": [{"random_artifact": true}, {"money": 26}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.18, "money_multiplier": 1.3}}]},
+			{"id": "brace_beams", "title": "Укрепить балки", "description": "Проверка Выносливости 7: успех вынести руду (+24 золота), провал -10% HP под обвалом.", "check": {"stat": "endurance", "difficulty": 7}, "success": {"money": 24}, "failure": {"health_percent_cost": 0.10}},
+		],
+	},
 ]
 
 
