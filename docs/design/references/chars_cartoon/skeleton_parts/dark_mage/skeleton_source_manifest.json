@@ -1,0 +1,227 @@
+{
+  "entity_id": "dark_mage",
+  "kind": "hero",
+  "pose": "neutral_front",
+  "source": "source/dark_mage_skeleton_source_from_runtime.png",
+  "parts": {
+    "head": "parts/head.png",
+    "torso": "parts/torso.png",
+    "pelvis": "parts/pelvis.png",
+    "upper_arm_l": "parts/upper_arm_l.png",
+    "lower_arm_l": "parts/lower_arm_l.png",
+    "hand_l": "parts/hand_l.png",
+    "upper_arm_r": "parts/upper_arm_r.png",
+    "lower_arm_r": "parts/lower_arm_r.png",
+    "hand_r": "parts/hand_r.png",
+    "thigh_l": "parts/thigh_l.png",
+    "shin_l": "parts/shin_l.png",
+    "foot_l": "parts/foot_l.png",
+    "thigh_r": "parts/thigh_r.png",
+    "shin_r": "parts/shin_r.png",
+    "foot_r": "parts/foot_r.png",
+    "robe_front": "parts/robe_front.png",
+    "cloak_back_l": "parts/cloak_back_l.png",
+    "cloak_back_r": "parts/cloak_back_r.png",
+    "hood_shadow": "parts/hood_shadow.png"
+  },
+  "pivots": {
+    "head": {
+      "x": 62,
+      "y": 124
+    },
+    "torso": {
+      "x": 108,
+      "y": 125
+    },
+    "pelvis": {
+      "x": 85,
+      "y": 67
+    },
+    "upper_arm_l": {
+      "x": 71,
+      "y": 39
+    },
+    "lower_arm_l": {
+      "x": 86,
+      "y": 54
+    },
+    "hand_l": {
+      "x": 54,
+      "y": 71
+    },
+    "upper_arm_r": {
+      "x": 72,
+      "y": 39
+    },
+    "lower_arm_r": {
+      "x": 44,
+      "y": 52
+    },
+    "hand_r": {
+      "x": 58,
+      "y": 68
+    },
+    "thigh_l": {
+      "x": 70,
+      "y": 33
+    },
+    "shin_l": {
+      "x": 72,
+      "y": 39
+    },
+    "foot_l": {
+      "x": 68,
+      "y": 32
+    },
+    "thigh_r": {
+      "x": 43,
+      "y": 33
+    },
+    "shin_r": {
+      "x": 41,
+      "y": 39
+    },
+    "foot_r": {
+      "x": 26,
+      "y": 30
+    },
+    "robe_front": {
+      "x": 89,
+      "y": 67
+    },
+    "cloak_back_l": {
+      "x": 108,
+      "y": 30
+    },
+    "cloak_back_r": {
+      "x": 48,
+      "y": 30
+    },
+    "hood_shadow": {
+      "x": 46,
+      "y": 46
+    }
+  },
+  "source_pivots": {
+    "head": {
+      "x": 256,
+      "y": 142
+    },
+    "torso": {
+      "x": 256,
+      "y": 220
+    },
+    "pelvis": {
+      "x": 256,
+      "y": 310
+    },
+    "upper_arm_l": {
+      "x": 185,
+      "y": 158
+    },
+    "lower_arm_l": {
+      "x": 178,
+      "y": 254
+    },
+    "hand_l": {
+      "x": 133,
+      "y": 292
+    },
+    "upper_arm_r": {
+      "x": 327,
+      "y": 158
+    },
+    "lower_arm_r": {
+      "x": 334,
+      "y": 254
+    },
+    "hand_r": {
+      "x": 379,
+      "y": 292
+    },
+    "thigh_l": {
+      "x": 226,
+      "y": 330
+    },
+    "shin_l": {
+      "x": 214,
+      "y": 404
+    },
+    "foot_l": {
+      "x": 198,
+      "y": 451
+    },
+    "thigh_r": {
+      "x": 286,
+      "y": 330
+    },
+    "shin_r": {
+      "x": 298,
+      "y": 404
+    },
+    "foot_r": {
+      "x": 314,
+      "y": 451
+    },
+    "robe_front": {
+      "x": 256,
+      "y": 300
+    },
+    "cloak_back_l": {
+      "x": 190,
+      "y": 235
+    },
+    "cloak_back_r": {
+      "x": 322,
+      "y": 235
+    },
+    "hood_shadow": {
+      "x": 256,
+      "y": 112
+    }
+  },
+  "root_pivot_source": {
+    "x": 256,
+    "y": 478
+  },
+  "left_right_convention": "front-view image-space: _l is screen-left/source-left, _r is screen-right/source-right; Animator may remap to character-local bones during rigging.",
+  "style_anchor": "docs/design/references/chars_cartoon/character_cartoon_anime_style_sheet.md",
+  "style_notes": "Dark Mage cartoon2 accepted source: hooded violet void caster, empty glowing hands, robe/cloak silhouette.",
+  "z_order_hint_back_to_front": [
+    "cloak_back_l",
+    "cloak_back_r",
+    "thigh_l",
+    "thigh_r",
+    "shin_l",
+    "shin_r",
+    "foot_l",
+    "foot_r",
+    "pelvis",
+    "robe_front",
+    "torso",
+    "upper_arm_l",
+    "upper_arm_r",
+    "lower_arm_l",
+    "lower_arm_r",
+    "hand_l",
+    "hand_r",
+    "head",
+    "hood_shadow"
+  ],
+  "checks": {
+    "transparent_rgba": true,
+    "no_background": true,
+    "joint_overlap": true,
+    "empty_hands": true
+  },
+  "qa": {
+    "alpha_report": "qa/dark_mage_alpha_report.json",
+    "parts_contact": "qa/dark_mage_parts_contact.png",
+    "source_dark_bg_preview": "qa/dark_mage_source_dark_bg_preview.png"
+  },
+  "limitations": [
+    "Separated parts are derived from the accepted cartoon2 runtime source to preserve approved identity and transparency.",
+    "Hidden back-side limb pixels are not invented; masks include deliberate joint overlap and duplicated visible pixels for Animator rig blocking.",
+    "No runtime Skeleton2D/Bone2D scene or AnimationPlayer clips are included in this Design-source package."
+  ]
+}

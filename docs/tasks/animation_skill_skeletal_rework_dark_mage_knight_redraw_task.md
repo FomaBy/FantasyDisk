@@ -1,6 +1,6 @@
 # ANIM: Переделать animation-скилл на СКЕЛЕТНУЮ анимацию (Skeleton2D/Bone2D) + перерисовать мага и рыцаря под неё
 
-Статус: in_progress (dispatched to Animator thread 019eb156-710c-71f0-8903-eada762dceb3, 2026-06-19 21:38)
+Статус: blocked (USER HOLD after SCRUM-475 source delivery; waiting for explicit "делай анимацию")
 Приоритет: high
 Роль: Animator (Codex)
 Исполнитель: Codex (скилл fantasydisk-animation-director)
@@ -123,18 +123,52 @@ pending until that lock clears.
 
 Follow-up sync note: the lock cleared later on 2026-06-19 and
 `python3 tools/jira_board_sync.py` completed. The Design handoff is mapped as
-SCRUM-475 and is currently in Jira status `В работе`.
+SCRUM-475; see the later Design handoff resolution note for its completed
+source-delivery state.
 
 Design handoff resolution (2026-06-19): SCRUM-475 is done. Designer 2 delivered
 transparent separated skeleton-source packages for `dark_mage` and `knight`
 under `docs/design/references/chars_cartoon/skeleton_parts/`, including 19 PNG
 parts per character, local pivots, alpha reports, contact sheets, dark-bg
 previews and passing `validate_skeleton_source_manifest.py` results. SCRUM-474
-is unblocked and ready for Animator rig/timeline work; no runtime animation work
-was performed by Design.
+has the required source packages, but remains blocked by the USER HOLD below; no
+runtime animation work was performed by Design and Animator rig/timeline work is
+not authorized yet.
 
-Dispatcher routing note (2026-06-19 21:38): SCRUM-474 continuation was sent to
-Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after the SCRUM-475
-Design blocker resolved. Animator should verify the accepted manifests, then
-build the `Skeleton2D`/`Bone2D` + `AnimationPlayer` rigs/timelines only.
-Jira sync completed after the lock cleared; SCRUM-474 is now `В работе`.
+Dispatcher routing note (2026-06-19 21:38, SUPERSEDED): SCRUM-474 continuation
+was sent to Animator thread `019eb156-710c-71f0-8903-eada762dceb3` after the
+SCRUM-475 Design blocker resolved. This routing is superseded by the USER HOLD
+correction below.
+
+## Dispatcher Correction / USER HOLD Reconfirmed (2026-06-19)
+
+Documentation dispatcher re-audited this task and confirmed that the
+`⛔ USER HOLD — АНИМАЦИЮ ПОКА НЕ ДЕЛАТЬ` block still applies after SCRUM-475.
+SCRUM-475 source delivery resolves the Design-source blocker only; it does not
+authorize runtime `Skeleton2D`/`Bone2D` rig assembly, `AnimationPlayer`
+timelines, idle/walk loops, or player runtime integration. SCRUM-474 is therefore
+blocked/on hold until a newer explicit user/PM instruction says
+`делай анимацию`.
+
+Animator WIP from the superseded dispatch is left unclaimed and not accepted:
+- runtime integration WIP: `scripts/player.gd`,
+  `scripts/skeleton_player_rig_2d.gd`,
+  `scenes/characters/DarkMageSkeletonRig.tscn`,
+  `scenes/characters/KnightSkeletonRig.tscn`;
+- animation/test WIP: `scripts/cutout_rig_2d.gd`,
+  `tests/animation_smoke_test.gd`;
+- copied runtime source-part WIP:
+  `assets/sprites/characters/skeleton_parts/`;
+- QA/manifest WIP:
+  `build/qa/scrum474_skeleton_dark_mage_knight_rig/`.
+
+These files must not be treated as delivered SCRUM-474 scope unless the HOLD is
+lifted explicitly. No further animation/timeline/runtime integration should
+continue from this task in the current state. Runtime smoke was attempted before
+the correction and failed on an unrelated Hero Select v4 back-button assertion;
+no SCRUM-474 acceptance claim is made from that run.
+
+Jira sync note (2026-06-19): `python3 tools/jira_board_sync.py` completed after
+the correction and moved SCRUM-474 to `К выполнению`, which is the Jira-side
+hold/backlog state for this blocked task. The sync also created SCRUM-478 for an
+unrelated existing task file discovered on the board.

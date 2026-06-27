@@ -72,13 +72,13 @@
 | `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png`, v2 source handoff `assets/sprites/characters/v2/biologist/biologist_v2_idle_source.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-421 v2 source handoff ready, not live runtime |
 | `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
 | `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer.png`; `assets/sprites/characters/cutout/engineer_*.png` | Реализовано |
-| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cartoon2/dark_mage/dark_mage_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source/runtime assets under `assets/sprites/characters/v2/dark_mage/` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation smoke PASS, runtime smoke blocked by unrelated Hero Select v3 back-button UI assertion |
+| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cartoon2/dark_mage/dark_mage_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source/runtime assets under `assets/sprites/characters/v2/dark_mage/`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/dark_mage/skeleton_source_manifest.json` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; SCRUM-475 skeleton-source parts package delivered for Animator rig work; animation smoke PASS, runtime smoke blocked by unrelated Hero Select v3 back-button UI assertion |
 | `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/guitarist/` | Реализовано; SCRUM-429 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/assassin/` | Реализовано; SCRUM-419 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
 | `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
-| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope |
+| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; SCRUM-475 skeleton-source parts package delivered for Animator rig work |
 | `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
 
 SCRUM-416 runtime portrait rule: for every playable class, `scripts/progression_data_characters.gd`
@@ -153,6 +153,14 @@ looping `idle`, `walk`, and `move` only, with runtime PNGs under
 `assets/sprites/characters/cartoon2/{dark_mage,knight}/`; QA artifacts live
 under `build/qa/scrum473_cartoon2_dark_mage_knight_anim/`. Attack animation
 remains absent by SCRUM-473 scope because weapon visuals own attacks.
+
+SCRUM-475 adds Design-source skeleton packages for Dark Mage and Knight under
+`docs/design/references/chars_cartoon/skeleton_parts/`. Each character has a
+transparent accepted source copy, 19 separated PNG parts, documented local
+pivots, a `skeleton_source_manifest.json`, alpha report, contact sheet and
+dark-background source preview. Both manifests pass
+`validate_skeleton_source_manifest.py`. These packages are Animator handoff
+sources only; no runtime rig, SpriteFrames or gameplay wiring changed.
 
 SCRUM-424 adds the Dark Mage v2 Design-source handoff under
 `docs/design/references/characters_v2/dark_mage/`: raw OpenAI source,
@@ -1151,6 +1159,22 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | `shop_weapon_cooldown` | Масло темпа | +10% attack speed |
 | `shop_range` | Линза охоты | +12% attack range |
 | `shop_artifact` | Пыльный артефакт | +1 Восприятие |
+
+## SCRUM-478 Bright Minimalist UI Source Package
+
+This is a Design-source package, not live runtime content yet.
+
+| Группа | ID / naming | Каноническая папка / файл | Статус |
+| --- | --- | --- | --- |
+| Bright minimalist button anchor | `scrum478_bright_minimal_button_anchor_sheet_transparent` | `docs/design/references/minimalist_full_ui_redesign/scrum478_bright_minimal_button_anchor_sheet_transparent.png` | Design-source review |
+| Exact-size frame source | `scrum478_exact_size_frame_source_sheet_transparent` | `docs/design/references/minimalist_full_ui_redesign/scrum478_exact_size_frame_source_sheet_transparent.png` | Design-source review |
+| Full-screen mockup board | `scrum478_full_screen_mockup_board` | `docs/design/references/minimalist_full_ui_redesign/scrum478_full_screen_mockup_board.png` | Design-source review |
+| Exact-size metadata | `scrum478_minimalist_full_ui_metadata` | `docs/design/references/minimalist_full_ui_redesign/scrum478_minimalist_full_ui_metadata.json` | Source of truth for 1280/1600/1920 content zones |
+| UI-director spec | `scrum478_minimalist_full_ui_spec` | `docs/design/mockups/scrum478_minimalist_full_ui_redesign/spec.md` | Design-source review |
+
+Runtime asset IDs/paths must be assigned by the Back-end handoff after slicing
+or importing final exact-size PNGs. Until then, existing live UI registries stay
+authoritative for runtime.
 
 ## Иконки Артефактов, Shop UI И Курсор
 

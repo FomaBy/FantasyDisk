@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/skeleton_player_rig_2d.gd" id="1_skeleton_rig"]
+
+[node name="KnightSkeletonRig" type="Node2D"]
+script = ExtResource("1_skeleton_rig")
+entity_id = "knight"
+manifest_path = "res://assets/sprites/characters/skeleton_parts/knight/skeleton_source_manifest.json"
+base_scale = Vector2(0.5, 0.5)

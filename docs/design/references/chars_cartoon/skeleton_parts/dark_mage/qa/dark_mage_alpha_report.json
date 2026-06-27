@@ -1,0 +1,378 @@
+{
+  "entity_id": "dark_mage",
+  "source": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/source/dark_mage_skeleton_source_from_runtime.png",
+  "manifest": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/skeleton_source_manifest.json",
+  "summary": {
+    "parts_count": 19,
+    "required_parts_present": true,
+    "transparent_rgba": true,
+    "canvas_edge_alpha_clean": true,
+    "no_background_or_matte": true
+  },
+  "files": [
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/source/dark_mage_skeleton_source_from_runtime.png",
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 79262,
+      "bbox": [
+        87,
+        32,
+        424,
+        502
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 1192,
+      "translucent_near_white_pixels": 1154
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/head.png",
+      "size": [
+        123,
+        154
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 7709,
+      "bbox": [
+        14,
+        14,
+        109,
+        140
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 59,
+      "translucent_near_white_pixels": 59
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/torso.png",
+      "size": [
+        217,
+        222
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 28132,
+      "bbox": [
+        14,
+        14,
+        203,
+        208
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 249,
+      "translucent_near_white_pixels": 249
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/pelvis.png",
+      "size": [
+        169,
+        150
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 14083,
+      "bbox": [
+        14,
+        14,
+        155,
+        136
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 22,
+      "translucent_near_white_pixels": 22
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/upper_arm_l.png",
+      "size": [
+        143,
+        168
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 8911,
+      "bbox": [
+        14,
+        14,
+        129,
+        154
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 112,
+      "translucent_near_white_pixels": 112
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/lower_arm_l.png",
+      "size": [
+        130,
+        148
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 6956,
+      "bbox": [
+        14,
+        14,
+        116,
+        134
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 177,
+      "translucent_near_white_pixels": 177
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/hand_l.png",
+      "size": [
+        112,
+        152
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 4195,
+      "bbox": [
+        14,
+        14,
+        98,
+        138
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 139,
+      "translucent_near_white_pixels": 139
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/upper_arm_r.png",
+      "size": [
+        142,
+        167
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 8228,
+      "bbox": [
+        14,
+        14,
+        128,
+        153
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 84,
+      "translucent_near_white_pixels": 84
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/lower_arm_r.png",
+      "size": [
+        113,
+        141
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 5813,
+      "bbox": [
+        14,
+        14,
+        99,
+        127
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 134,
+      "translucent_near_white_pixels": 96
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/hand_r.png",
+      "size": [
+        107,
+        145
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 3504,
+      "bbox": [
+        14,
+        14,
+        93,
+        131
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 124,
+      "translucent_near_white_pixels": 124
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/thigh_l.png",
+      "size": [
+        113,
+        147
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 7942,
+      "bbox": [
+        14,
+        14,
+        99,
+        133
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 43,
+      "translucent_near_white_pixels": 43
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/shin_l.png",
+      "size": [
+        113,
+        121
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 4815,
+      "bbox": [
+        14,
+        14,
+        99,
+        107
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 95,
+      "translucent_near_white_pixels": 95
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/foot_l.png",
+      "size": [
+        113,
+        79
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 1892,
+      "bbox": [
+        14,
+        14,
+        99,
+        65
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 44,
+      "translucent_near_white_pixels": 44
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/thigh_r.png",
+      "size": [
+        114,
+        147
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 7729,
+      "bbox": [
+        14,
+        14,
+        100,
+        133
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 31,
+      "translucent_near_white_pixels": 31
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/shin_r.png",
+      "size": [
+        111,
+        120
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 3918,
+      "bbox": [
+        14,
+        14,
+        97,
+        106
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 80,
+      "translucent_near_white_pixels": 80
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/foot_r.png",
+      "size": [
+        91,
+        90
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 1851,
+      "bbox": [
+        14,
+        14,
+        77,
+        76
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 53,
+      "translucent_near_white_pixels": 53
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/robe_front.png",
+      "size": [
+        178,
+        241
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 21782,
+      "bbox": [
+        14,
+        14,
+        164,
+        227
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 153,
+      "translucent_near_white_pixels": 153
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/cloak_back_l.png",
+      "size": [
+        156,
+        257
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 18013,
+      "bbox": [
+        14,
+        14,
+        142,
+        243
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 294,
+      "translucent_near_white_pixels": 294
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/cloak_back_r.png",
+      "size": [
+        153,
+        260
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 16931,
+      "bbox": [
+        14,
+        14,
+        139,
+        246
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 280,
+      "translucent_near_white_pixels": 242
+    },
+    {
+      "path": "docs/design/references/chars_cartoon/skeleton_parts/dark_mage/parts/hood_shadow.png",
+      "size": [
+        92,
+        86
+      ],
+      "mode": "RGBA",
+      "nontransparent_pixels": 3363,
+      "bbox": [
+        14,
+        14,
+        78,
+        72
+      ],
+      "alpha_on_canvas_edge_pixels": 0,
+      "opaque_or_translucent_near_white_pixels": 2,
+      "translucent_near_white_pixels": 2
+    }
+  ],
+  "notes": [
+    "White/near-white pixels are audit-only; Knight armor highlights are intentional interior pixels, not edge-connected matte.",
+    "All part PNGs include transparent padding so alpha does not touch the image border."
+  ]
+}

@@ -79,6 +79,7 @@ func configure(texture: Texture2D, visual_scale: Vector2, new_profile_id: String
 	_walk_blend = 0.0
 	_direction_pose = Vector2.RIGHT
 	_death_started = false
+	animation_time = 0.0
 	state = "idle"
 	action_id = ""
 	action_variant = ""
