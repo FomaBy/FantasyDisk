@@ -962,18 +962,76 @@ func _build_character_select_v4() -> void:
 	desc_label.add_theme_color_override("font_color", Color(0.86, 0.89, 0.96, 1.0))
 	dossier.add_child(desc_label)
 
-	var stats_grid := GridContainer.new()
-	stats_grid.columns = 2
-	stats_grid.add_theme_constant_override("h_separation", maxi(12, int(round(vp.x * 0.02))))
-	stats_grid.add_theme_constant_override("v_separation", maxi(3, int(round(vp.y * 0.007))))
-	dossier.add_child(stats_grid)
+	# SCRUM-493: строка стартового оружия класса (бриф v4). Trim-ellipsis, чтобы 3 названия
+	# не вылезали за панель на 1280. Заполняется в refresh через _hero_weapon_names.
+	var weapon_label := Label.new()
+	weapon_label.name = "HS4Weapon"
+	weapon_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	weapon_label.max_lines_visible = 1
+	weapon_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	weapon_label.add_theme_font_size_override("font_size", maxi(11, int(round(vp.y * 0.019))))
+	weapon_label.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 1.0))
+	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dossier.add_child(weapon_label)
+
+	# SCRUM-493: 5 строк статов = [иконка] [название] [бар до глобального максимума] [значение],
+	# вместо плоского GridContainer "%s: %d". Бар красится в цвет стата (ICON_COLORS), как радар.
+	var stats_box := VBoxContainer.new()
+	stats_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stats_box.add_theme_constant_override("separation", maxi(3, int(round(vp.y * 0.007))))
+	stats_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dossier.add_child(stats_box)
 	var stat_value_labels := {}
+	var stat_bars := {}
+	var stat_icon_px := maxi(18, int(round(vp.y * 0.028)))
+	var stat_font_px := maxi(11, int(round(vp.y * 0.019)))
+	var stat_name_min_w := maxf(float(center_w) * 0.30, 96.0)
+	var stat_value_min_w := maxf(float(center_w) * 0.10, 36.0)
+	var stat_bar_min_h := maxi(8, int(round(vp.y * 0.016)))
 	for sid in HS4_DOSSIER_STATS:
-		var srow := Label.new()
-		srow.add_theme_font_size_override("font_size", maxi(12, int(round(vp.y * 0.021))))
-		srow.add_theme_color_override("font_color", Color(0.92, 0.94, 0.98, 1.0))
-		stats_grid.add_child(srow)
-		stat_value_labels[sid] = srow
+		var srow := HBoxContainer.new()
+		srow.name = "HS4StatRow_%s" % sid
+		srow.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		srow.add_theme_constant_override("separation", maxi(6, int(round(vp.x * 0.008))))
+		srow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var icon: Control = game.UIIconRegistry.make_icon(sid, Vector2(stat_icon_px, stat_icon_px))
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		srow.add_child(icon)
+		var name_lbl := Label.new()
+		name_lbl.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
+		name_lbl.custom_minimum_size = Vector2(stat_name_min_w, 0.0)
+		name_lbl.add_theme_font_size_override("font_size", stat_font_px)
+		name_lbl.add_theme_color_override("font_color", Color(0.86, 0.89, 0.96, 1.0))
+		name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		srow.add_child(name_lbl)
+		var bar := ProgressBar.new()
+		bar.show_percentage = false
+		bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		bar.custom_minimum_size = Vector2(0.0, stat_bar_min_h)
+		bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var bar_bg := StyleBoxFlat.new()
+		bar_bg.bg_color = Color(0.10, 0.12, 0.16, 0.85)
+		bar_bg.set_corner_radius_all(maxi(2, stat_bar_min_h / 3))
+		var bar_fill := StyleBoxFlat.new()
+		bar_fill.bg_color = game.UIIconRegistry.ICON_COLORS.get(sid, Color(0.95, 0.78, 0.34, 1.0))
+		bar_fill.set_corner_radius_all(maxi(2, stat_bar_min_h / 3))
+		bar.add_theme_stylebox_override("background", bar_bg)
+		bar.add_theme_stylebox_override("fill", bar_fill)
+		srow.add_child(bar)
+		var value_lbl := Label.new()
+		value_lbl.custom_minimum_size = Vector2(stat_value_min_w, 0.0)
+		value_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		value_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		value_lbl.add_theme_font_size_override("font_size", stat_font_px)
+		value_lbl.add_theme_color_override("font_color", Color(0.92, 0.94, 0.98, 1.0))
+		value_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		srow.add_child(value_lbl)
+		stats_box.add_child(srow)
+		stat_bars[sid] = bar
+		stat_value_labels[sid] = value_lbl
 
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -1102,9 +1160,16 @@ func _build_character_select_v4() -> void:
 		portrait.texture = game._cached_texture(str(config.get("sprite_path", config.get("sprite", ""))))
 		name_label.text = str(config.get("title", cid))
 		desc_label.text = str(config.get("description", ""))
+		weapon_label.text = "Оружие: %s" % _hero_weapon_names(cid)
+		# SCRUM-493: бар каждого стата масштабируется к глобальному максимуму (stat_maxima,
+		# захвачен выше из _hero_radar_global_maxima); значение — справа. Не пересчитывать maxima.
 		for sid in HS4_DOSSIER_STATS:
-			var nm: String = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
-			(stat_value_labels[sid] as Label).text = "%s: %d" % [nm, int(stats.get(sid, 0))]
+			var sval := float(stats.get(sid, 0.0))
+			var smax := maxf(float(stat_maxima.get(sid, 1.0)), 1.0)
+			var sbar := stat_bars[sid] as ProgressBar
+			sbar.max_value = smax
+			sbar.value = clampf(sval, 0.0, smax)
+			(stat_value_labels[sid] as Label).text = "%d" % int(round(sval))
 		var maxl: int = game.ascension_selectable_max(cid)
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, maxl)
 		asc_label.text = "Возв.: %d / %d" % [game.selected_ascension_level, maxl]
