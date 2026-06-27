@@ -68,3 +68,17 @@ Back-end handoff:
   fade out over about 0.85 seconds.
 
 No runtime UI/code/gameplay changes were made.
+
+## QA-Вердикт 2026-06-27
+Статус: PASSED
+
+Проверено:
+- Final asset exists: `assets/sprites/effects/level_up_popup_badge.png`.
+- Runtime asset is byte-identical to `docs/design/references/level_up_popup/level_up_popup_badge_final.png`.
+- Independent PIL audit: 512x256 RGBA, alpha extrema `[0, 255]`, nontransparent bbox `[66, 12, 447, 246]`, edge alpha max `0`, safe padding left/top/right/bottom `66/12/65/10`, green spill `0`.
+- Broad white-like scan found one fully opaque highlight/text pixel at `(404, 133)` and zero low/partial-alpha white pixels, so no matte/halo background issue.
+- Layout plan/report valid: `decision=ready_for_image`, `label_zone x=92 y=83 w=328 h=88`, `fit_font_size=72`.
+- Visual QA: final badge has clean transparent edges and remains readable at 224x112 and 160x80 on dark, light, and busy gameplay-like backgrounds.
+- SCRUM-520 handoff is present with asset path, display size, pivot/anchor, offset and animation notes.
+
+Product call: lower empty badge area accepted as intentional reserve for future level-number/subtext; not a blocker for this source asset.
