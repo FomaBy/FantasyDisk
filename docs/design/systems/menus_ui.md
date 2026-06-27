@@ -241,6 +241,12 @@ Runtime uses compact content margins only to fit the live 720p HUD band; source
 safe rects remain the authority and decorative dragon heads, red gems, claw
 tips and bevels must stay unobstructed. Design mocks and Back-end runtime rect
 dumps at `1152x648`, `1280x720` and `2560x1440` live in `build/qa/scrum390/`.
+SCRUM-521 adds `LowHpVignetteOverlay` as a procedural combat HUD warning:
+when player HP drops below 30%, a shader vignette fades in with a transparent
+center and light red edges; it fades out only after HP recovers to 34%+ to avoid
+threshold flicker. The overlay is drawn behind HUD cards, ignores mouse input,
+uses the shared `combat_feedback` setting, and is covered by the HUD smoke
+matrix.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
 - Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button. SCRUM-465 makes the overlay viewport-aware: short 720p layouts use compact panel/card/header metrics and a shorter medium back-frame deferral button, while larger viewports keep the same safe-zone contract without bottom cropping. The UI no-overlap matrix covers `LevelUpPanel`, `LevelUpHeroHeader`, all three reward cards and `LevelUpLaterButton`; QA evidence lives under `build/qa/scrum465/`.
 - SCRUM-404 wires the dedicated SCRUM-338 reward-card frame kit for battle rewards and elite artifact rewards: `assets/sprites/ui/frames/rewards/ui_frame_reward_card.png`, `_hover.png`, `ui_frame_reward_elite_artifact_card.png` and `_hover.png`. Runtime uses the metadata in `docs/design/references/rewards/reward_frames_scrum338_metadata.json`, keeps title, icon, description, artifact tier labels and `Получить`/choice content inside the safe content fields, and preserves whole-card click/focus without placing UI content on red gems, top crests, side metal or bottom ornaments. Runtime smoke writes SCRUM-338 card rect dumps to `build/qa/scrum338/`.

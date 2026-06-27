@@ -1,7 +1,10 @@
 # SCRUM-521: Low HP warning: лёгкая красная виньетка при HP < 30%
 
-Jira: SCRUM-521 · Роль: backend (codex) · Контур: combat/ui · Приоритет: P1 · foma · Эпик: SCRUM-215
-Статус: К выполнению
+Jira: SCRUM-521 · Роль: backend (codex) · Контур: codex · Приоритет: P1 · foma · Эпик: SCRUM-215
+Статус: done
+
+Owner: backend/codex-background-backend-agent
+Locked paths: `scripts/ui_screens.gd`, `tests/runtime_smoke_test.gd`, `docs/design/systems/menus_ui.md`, `docs/design/current_game_state.md`, `docs/tasks/SCRUM-521_low_hp_red_vignette.md`
 
 ## Что и зачем
 
@@ -70,16 +73,32 @@ Jira: SCRUM-521 · Роль: backend (codex) · Контур: combat/ui · Пр�
 
 ## Acceptance Criteria
 
-- [ ] При HP игрока ниже 30% (`hp < max_hp * 0.30`) по краям экрана плавно проявляется лёгкая красная виньетка.
-- [ ] При восстановлении HP до 30%+ (с гистерезисом — до 34%) виньетка плавно исчезает.
-- [ ] Эффект — градиент с прозрачным центром: НЕ перекрывает монстров, projectiles, loot и критичные HUD-элементы (таймер, HP/XP/gold карты, артефакты, кнопка level-up); текст HUD остаётся читаемым.
-- [ ] Виньетка не появляется/не висит на экранах level-up, reward-flow, pause, route-map и в главном меню (живёт только в боевом `hud_layer`, чистится `_clear_hud` при выходе из боя).
-- [ ] Виньетка не мигает при частых изменениях HP около порога: гистерезис (30%/34%) + fade-твин на появление и исчезновение; состояние не перезапускается каждый кадр.
-- [ ] Эффект уважает тумблер «боевой фидбек» (`root` meta `combat_feedback`): при выключенном — виньетки нет.
-- [ ] Пиковая интенсивность лёгкая (альфа края ≈ 0.22–0.30, к центру → 0); это не «red screen», а атмосферный периферийный сигнал.
-- [ ] Runtime/UI smoke (или focused low-HP visual smoke) подтверждает: виньетка активна ниже порога и отсутствует выше порога. Тест PASS headless.
-- [ ] Баланс, урон, regen, вампиризм, death-flow и input-handling НЕ изменены. Существующий `_low_hp_active`/`blood_pact` (`scripts/player.gd:682`) не тронут и не конфликтует.
-- [ ] Существующие smoke-тесты (включая проверку `DamageFlashOverlay`) не сломаны.
+- [x] При HP игрока ниже 30% (`hp < max_hp * 0.30`) по краям экрана плавно проявляется лёгкая красная виньетка.
+- [x] При восстановлении HP до 30%+ (с гистерезисом — до 34%) виньетка плавно исчезает.
+- [x] Эффект — градиент с прозрачным центром: НЕ перекрывает монстров, projectiles, loot и критичные HUD-элементы (таймер, HP/XP/gold карты, артефакты, кнопка level-up); текст HUD остаётся читаемым.
+- [x] Виньетка не появляется/не висит на экранах level-up, reward-flow, pause, route-map и в главном меню (живёт только в боевом `hud_layer`, чистится `_clear_hud` при выходе из боя).
+- [x] Виньетка не мигает при частых изменениях HP около порога: гистерезис (30%/34%) + fade-твин на появление и исчезновение; состояние не перезапускается каждый кадр.
+- [x] Эффект уважает тумблер «боевой фидбек» (`root` meta `combat_feedback`): при выключенном — виньетки нет.
+- [x] Пиковая интенсивность лёгкая (альфа края ≈ 0.22–0.30, к центру → 0); это не «red screen», а атмосферный периферийный сигнал.
+- [x] Runtime/UI smoke (или focused low-HP visual smoke) подтверждает: виньетка активна ниже порога и отсутствует выше порога. Тест PASS headless.
+- [x] Баланс, урон, regen, вампиризм, death-flow и input-handling НЕ изменены. Существующий `_low_hp_active`/`blood_pact` (`scripts/player.gd:682`) не тронут и не конфликтует.
+- [x] Существующие smoke-тесты (включая проверку `DamageFlashOverlay`) не сломаны.
+
+## Результат
+
+2026-06-27, backend/codex-background-backend-agent:
+
+- Добавлен `LowHpVignetteOverlay` в боевой `CombatHudRoot`: полноэкранный `ColorRect` с инлайн radial-vignette `ShaderMaterial`, прозрачным центром и мягкими красными краями.
+- Виньетка включается при `hp / max_hp < 0.30`, выключается при `>= 0.34`, хранит target-state в meta и не перезапускает fade-твин каждый кадр.
+- Overlay рисуется за HUD-карточками (`root.move_child(vignette, 0)`), игнорирует мышь, использует `PROCESS_MODE_PAUSABLE`, уважает `combat_feedback=false` и гасится сразу при отключённом боевом фидбеке.
+- `_update_hud()` вызывает `_update_low_hp_vignette(hp, max_hp)` до snapshot early-return; HP/XP/reward/death/balance логика не менялась, `player.gd` не тронут.
+- UI-director note: нового mockup/art pass не делалось, потому что задача реализует процедурный runtime combat overlay без frame/content placement и без новых raster assets; применён существующий HUD safe-zone contract, overlay находится за HUD content.
+- Документация обновлена: `docs/design/systems/menus_ui.md`, `docs/design/current_game_state.md`.
+
+Проверки:
+
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script res://tests/runtime_smoke_test.gd`
+- PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script res://tests/runtime_smoke_ui_test.gd`
 
 ## Files / точки входа
 

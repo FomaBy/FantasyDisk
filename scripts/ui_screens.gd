@@ -7715,6 +7715,7 @@ func _create_hud() -> void:
 	_create_combat_timer_panel(root)
 	_create_artifact_hud_row(root)
 	_create_damage_flash_overlay(root)
+	_create_low_hp_vignette(root)
 	root.resized.connect(func() -> void:
 		_layout_combat_hud(root)
 	)
@@ -8001,6 +8002,91 @@ func _create_damage_flash_overlay(root: Control) -> void:
 	root.add_child(flash)
 
 
+const LOW_HP_VIGNETTE_ON_RATIO := 0.30
+const LOW_HP_VIGNETTE_OFF_RATIO := 0.34
+const LOW_HP_VIGNETTE_ALPHA := 0.26
+const LOW_HP_VIGNETTE_FADE_IN := 0.42
+const LOW_HP_VIGNETTE_FADE_OUT := 0.50
+
+
+func _create_low_hp_vignette(root: Control) -> void:
+	var vignette := ColorRect.new()
+	vignette.name = "LowHpVignetteOverlay"
+	vignette.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vignette.color = Color.WHITE
+	vignette.modulate.a = 0.0
+	vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Fade animation should pause together with combat even though the HUD layer is ALWAYS.
+	vignette.process_mode = Node.PROCESS_MODE_PAUSABLE
+	var shader := Shader.new()
+	shader.code = """
+shader_type canvas_item;
+
+uniform vec3 vignette_color = vec3(0.72, 0.035, 0.035);
+uniform float inner_radius = 0.50;
+uniform float outer_radius = 0.92;
+
+void fragment() {
+	vec2 centered_uv = UV - vec2(0.5);
+	centered_uv.x *= 1.7777778;
+	float distance_from_center = length(centered_uv);
+	float edge_alpha = smoothstep(inner_radius, outer_radius, distance_from_center);
+	COLOR = vec4(vignette_color, edge_alpha * COLOR.a);
+}
+"""
+	var material := ShaderMaterial.new()
+	material.shader = shader
+	vignette.material = material
+	vignette.set_meta("vignette_active", false)
+	vignette.set_meta("vignette_target_alpha", 0.0)
+	root.add_child(vignette)
+	# Keep the long-lived warning behind the HUD cards; DamageFlashOverlay remains an intentional flash above them.
+	root.move_child(vignette, 0)
+
+
+func _update_low_hp_vignette(hp: float, max_hp: float) -> void:
+	if game.hud_layer == null or not is_instance_valid(game.hud_layer):
+		return
+	var vignette := game.hud_layer.find_child("LowHpVignetteOverlay", true, false) as ColorRect
+	if vignette == null:
+		return
+	var feedback_enabled := true
+	if game.get_tree() != null:
+		feedback_enabled = bool(game.get_tree().root.get_meta("combat_feedback", true))
+	var active := bool(vignette.get_meta("vignette_active", false))
+	if not feedback_enabled:
+		_set_low_hp_vignette_active(vignette, false, true)
+		return
+	var hp_ratio := hp / maxf(max_hp, 1.0)
+	var target_active := active
+	if hp_ratio < LOW_HP_VIGNETTE_ON_RATIO:
+		target_active = true
+	elif hp_ratio >= LOW_HP_VIGNETTE_OFF_RATIO:
+		target_active = false
+	if target_active == active:
+		return
+	_set_low_hp_vignette_active(vignette, target_active)
+
+
+func _set_low_hp_vignette_active(vignette: ColorRect, active: bool, immediate := false) -> void:
+	var target_alpha := LOW_HP_VIGNETTE_ALPHA if active else 0.0
+	var current_target := float(vignette.get_meta("vignette_target_alpha", -1.0))
+	if not immediate and bool(vignette.get_meta("vignette_active", false)) == active and is_equal_approx(current_target, target_alpha):
+		return
+	var existing_tween: Tween = vignette.get_meta("vignette_tween") if vignette.has_meta("vignette_tween") else null
+	if existing_tween != null and existing_tween.is_valid():
+		existing_tween.kill()
+	vignette.set_meta("vignette_active", active)
+	vignette.set_meta("vignette_target_alpha", target_alpha)
+	if immediate:
+		vignette.modulate.a = target_alpha
+		return
+	var duration := LOW_HP_VIGNETTE_FADE_IN if active else LOW_HP_VIGNETTE_FADE_OUT
+	var tween := vignette.create_tween()
+	tween.tween_property(vignette, "modulate:a", target_alpha, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	vignette.set_meta("vignette_tween", tween)
+
+
 func _on_player_damaged(_amount: float) -> void:
 	if game.hud_layer == null or not is_instance_valid(game.hud_layer):
 		return
@@ -8179,6 +8265,7 @@ func _update_hud() -> void:
 	var values: Dictionary = _run_resource_values()
 	var max_hp: float = max(float(values["max_hp"]), 1.0)
 	var hp: float = clamp(float(values["hp"]), 0.0, max_hp)
+	_update_low_hp_vignette(hp, max_hp)
 	var xp_to_next: int = max(int(values["xp_to_next"]), 1)
 	var xp: int = clamp(int(values["xp"]), 0, xp_to_next)
 	var money: int = int(values["money"])

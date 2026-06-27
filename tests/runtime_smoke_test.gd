@@ -7551,6 +7551,47 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 	hud_main.ui._update_hud()
 	await process_frame
 	await process_frame
+	var low_hp_vignette := hud_main.find_child("LowHpVignetteOverlay", true, false) as ColorRect
+	if low_hp_vignette == null:
+		_fail("Expected combat HUD to include LowHpVignetteOverlay at %s." % str(viewport_size))
+		return
+	if low_hp_vignette.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		_fail("Expected LowHpVignetteOverlay not to intercept input at %s." % str(viewport_size))
+		return
+	var combat_root := hud_main.find_child("CombatHudRoot", true, false) as Control
+	if combat_root == null or combat_root.get_child(0) != low_hp_vignette:
+		_fail("Expected LowHpVignetteOverlay to render behind HUD controls at %s." % str(viewport_size))
+		return
+	if player != null:
+		var max_hp := float(player.get("max_health"))
+		player.set("health", max_hp * 0.90)
+		hud_main.ui._update_hud()
+		if bool(low_hp_vignette.get_meta("vignette_active", true)):
+			_fail("Expected low-HP vignette to stay inactive above threshold at %s." % str(viewport_size))
+			return
+		player.set("health", max_hp * 0.20)
+		hud_main.ui._update_hud()
+		if not bool(low_hp_vignette.get_meta("vignette_active", false)) or float(low_hp_vignette.get_meta("vignette_target_alpha", 0.0)) < 0.20:
+			_fail("Expected low-HP vignette to activate below 30%% HP at %s." % str(viewport_size))
+			return
+		player.set("health", max_hp * 0.32)
+		hud_main.ui._update_hud()
+		if not bool(low_hp_vignette.get_meta("vignette_active", false)):
+			_fail("Expected low-HP vignette hysteresis to remain active below 34%% HP at %s." % str(viewport_size))
+			return
+		player.set("health", max_hp * 0.36)
+		hud_main.ui._update_hud()
+		if bool(low_hp_vignette.get_meta("vignette_active", true)) or float(low_hp_vignette.get_meta("vignette_target_alpha", -1.0)) > 0.01:
+			_fail("Expected low-HP vignette to fade out above hysteresis threshold at %s." % str(viewport_size))
+			return
+		var previous_feedback := bool(hud_main.get_tree().root.get_meta("combat_feedback", true))
+		hud_main.get_tree().root.set_meta("combat_feedback", false)
+		player.set("health", max_hp * 0.20)
+		hud_main.ui._update_hud()
+		if bool(low_hp_vignette.get_meta("vignette_active", true)) or low_hp_vignette.modulate.a > 0.01:
+			_fail("Expected low-HP vignette to respect disabled combat feedback at %s." % str(viewport_size))
+			return
+		hud_main.get_tree().root.set_meta("combat_feedback", previous_feedback)
 	var context := "%s %s" % ["boss" if boss_fight else "battle", str(viewport_size)]
 	var controls := _visible_hud_top_controls(hud_main)
 	dump_lines.append("## %s" % context)
