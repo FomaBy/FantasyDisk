@@ -16,12 +16,12 @@ bash scripts/onboard.sh
 `dev`=работа (default), теги `vX.Y.Z`=версии.
 
 ## Требования
-- **Godot 4.6.3** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
+- **Godot 4.7** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
 - **Git** — для клонирования и работы с GitHub.
 
 ## Запуск
 1. Клонировать репозиторий (см. GitHub-инструкцию).
-2. Открыть `project.godot` в Godot 4.6.3.
+2. Открыть `project.godot` в Godot 4.7.
 3. Нажать ▶ (F5) — откроется главное меню.
 
 ## Ветки
@@ -37,7 +37,7 @@ macOS:
 ```
 Windows (путь под свою установку Godot):
 ```powershell
-& "C:\Godot\Godot_v4.6.3-stable_win64.exe" --headless --path . --script res://tests/runtime_smoke_test.gd
+& "C:\Godot\Godot_v4.7-stable_win64.exe" --headless --path . --script res://tests/runtime_smoke_test.gd
 ```
 Другие наборы: `animation_smoke_test.gd`, `attack_vfx_smoke_test.gd`, `meta_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`.
 `ui_no_overlap_matrix_test.gd` является UI render gate: открывает экраны headless
