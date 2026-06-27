@@ -99,6 +99,16 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "combat_title_banner", Callable(self, "_open_combat_title_banner"), [
 			"CombatIntroBanner",
 		], dump_lines, errors, false)
+		# SCRUM-489: блок «Результаты/Старт» — экран выбора оружия (economy-панель WS_*_2K):
+		# карточки оружия не пересекаются, текст в рамках, рамка не на STRETCH_SCALE.
+		await _check_screen(viewport_size, "weapon_select", Callable(self, "_open_weapon_select"), [
+			"WeaponOption_sword", "WeaponOption_axe", "WeaponOption_hammer",
+		], dump_lines, errors)
+		# SCRUM-489: карта маршрута (полноэкранный скролл RM_*_2K) — хедер/скролл/canvas не
+		# наслаиваются; canvas выше viewport — это норма (скролл), viewport-fit не требуется.
+		await _check_screen(viewport_size, "route_map", Callable(self, "_open_route_map"), [
+			"RouteMapHeader", "RouteMapScroll", "VerticalRouteMap",
+		], dump_lines, errors)
 
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
@@ -171,6 +181,11 @@ func _initialize() -> void:
 	if scrum487_file != null:
 		scrum487_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["combat_hud", "combat_title_banner", "level_up", "battle_reward", "elite_reward", "event_economy"])))
 		scrum487_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum489" % qa_dir)
+	var scrum489_file := FileAccess.open("%s/scrum489/results_block_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum489_file != null:
+		scrum489_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["victory", "death", "hero_select", "weapon_select", "route_map"])))
+		scrum489_file.close()
 
 	if not errors.is_empty():
 		for error in errors:
@@ -345,6 +360,19 @@ func _open_combat_title_banner(main: Node) -> void:
 	main.ui._show_combat_title_banner("Лорд Бездны", Color(1.0, 0.4, 0.3, 1.0), true)
 
 
+func _open_weapon_select(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.ui._show_weapon_select()
+
+
+func _open_route_map(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.set("route_stage", 0)
+	main.set("route_nodes", main.route._generate_route())
+	main.route._show_battle_map()
+
+
 func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
 	if ["attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"].has(screen_id):
 		for node in main.find_children("*", "Button", true, false):
@@ -427,17 +455,32 @@ func _first_peer_overlap(controls: Array, tolerance_px: float) -> String:
 		var first := controls[first_index] as Control
 		if first == null:
 			continue
-		var first_rect := _rect_with_tolerance(first.get_global_rect(), tolerance_px)
+		var first_rect := _rect_with_tolerance(_effective_rect(first), tolerance_px)
 		for second_index in range(first_index + 1, controls.size()):
 			var second := controls[second_index] as Control
 			if second == null:
 				continue
 			if _is_ancestor(first, second) or _is_ancestor(second, first):
 				continue
-			var second_rect := _rect_with_tolerance(second.get_global_rect(), tolerance_px)
+			var second_rect := _rect_with_tolerance(_effective_rect(second), tolerance_px)
 			if first_rect.intersects(second_rect):
-				return "%s %s intersects %s %s" % [first.name, first.get_global_rect(), second.name, second.get_global_rect()]
+				return "%s %s intersects %s %s" % [first.name, _effective_rect(first), second.name, _effective_rect(second)]
 	return ""
+
+
+# SCRUM-489: контрол внутри ScrollContainer визуально обрезается клип-прямоугольником скролла.
+# Для проверки наслоений берём ВИДИМУЮ часть (пересечение с rect ближайшего ScrollContainer),
+# иначе авто-центрированный длинный canvas карты маршрута (глоб. rect уходит выше вьюпорта)
+# даёт ложное пересечение с хедером. Для контролов без скролл-предка — это no-op.
+func _effective_rect(control: Control) -> Rect2:
+	var rect := control.get_global_rect()
+	var ancestor := control.get_parent()
+	while ancestor != null:
+		if ancestor is ScrollContainer:
+			rect = rect.intersection((ancestor as ScrollContainer).get_global_rect())
+			break
+		ancestor = ancestor.get_parent()
+	return rect
 
 
 func _append_text_overflow_errors(root_node: Node, context: String, errors: Array, dump_lines: PackedStringArray) -> void:
