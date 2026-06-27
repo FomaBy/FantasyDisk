@@ -4379,7 +4379,8 @@ func _show_level_up_screen(return_to_map := false) -> void:
 
 	var later_button := _make_button("Позже")
 	later_button.name = "LevelUpLaterButton"
-	_set_action_button_size(later_button, 260.0, 72.0)
+	var later_button_size: Vector2 = layout.get("later_button_size", Vector2(260.0, 72.0))
+	_set_action_button_size(later_button, later_button_size.x, later_button_size.y)
 	later_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	later_button.tooltip_text = "Закрыть без выбора — пик сохранится, вернуться можно кнопкой повышения внизу."
 	later_button.pressed.connect(defer_choice)
@@ -6904,6 +6905,7 @@ func _level_up_layout_metrics() -> Dictionary:
 		"panel_size": Vector2(roundf(panel_width), roundf(panel_height)),
 		"card_size": Vector2(roundf(card_width), roundf(card_height)),
 		"card_gap": 8 if compact else 12,
+		"later_button_size": Vector2(240.0, 56.0) if compact else Vector2(260.0, 72.0),
 		"box_separation": 2 if compact else 8,
 		"hero_size": Vector2(36, 36) if compact else Vector2(64, 64),
 		"title_font": 26 if compact else 38,
