@@ -6,44 +6,16 @@ const RED_GOLD_BUTTON_DIR := "res://assets/sprites/ui/frames/red_gold/"
 const MINIMAL_METAL_BUTTON_DIR := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
 const ORNATE_FRAME_DIR := "res://assets/sprites/ui/frames/ornate/"
 const UNIFIED_FRAME_DIR := "res://assets/sprites/ui/frames/unified/"
-const MINIMAL_FRAME_DIR := "res://assets/sprites/ui/frames/minimal/"
+# SCRUM-490: ретайр мёртвого bright-minimal кита (frames/minimal/) — на MINIMAL_FRAME_DIR
+# и MINIMAL_*_PATH/SOURCE_SIZE/TEXTURE_MARGINS/CONTENT (без суффикса _METAL) не было ни одной
+# внешней ссылки; ассеты удалены. Активный 2K-кит — minimal_metal ниже, НЕ трогать.
 const MINIMAL_METAL_FRAME_DIR := "res://assets/sprites/ui/frames/minimal_metal/"
-const MINIMAL_MODAL_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_modal.png"
-const MINIMAL_PANEL_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_panel.png"
-const MINIMAL_CARD_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_card.png"
-const MINIMAL_TOOLTIP_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_tooltip.png"
-const MINIMAL_HUD_STRIP_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_hud_strip.png"
-const MINIMAL_FIELD_PATH := MINIMAL_FRAME_DIR + "ui_frame_minimal_field.png"
 const MINIMAL_METAL_MODAL_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_modal.png"
 const MINIMAL_METAL_PANEL_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_panel.png"
 const MINIMAL_METAL_CARD_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_card.png"
 const MINIMAL_METAL_TOOLTIP_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_tooltip.png"
 const MINIMAL_METAL_HUD_STRIP_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_METAL_FIELD_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_field.png"
-const MINIMAL_FRAME_SOURCE_SIZE := {
-	"modal": Vector2(986, 900),
-	"panel": Vector2(782, 716),
-	"card": Vector2(426, 486),
-	"tooltip": Vector2(760, 242),
-	"hud_strip": Vector2(1122, 288),
-	"field": Vector2(616, 286),
-}
-const MINIMAL_FRAME_TEXTURE_MARGINS := {
-	"modal": Vector4(51, 70, 51, 63),
-	"panel": Vector4(41, 56, 41, 50),
-	"card": Vector4(34, 45, 34, 44),
-	"tooltip": Vector4(49, 31, 49, 29),
-	"hud_strip": Vector4(81, 46, 81, 42),
-	"field": Vector4(44, 39, 44, 37),
-}
-const MINIMAL_FRAME_CONTENT := {
-	"modal": Vector4(74, 94, 74, 86),
-	"panel": Vector4(59, 75, 59, 68),
-	"card": Vector4(45, 58, 45, 56),
-	"tooltip": Vector4(68, 46, 68, 41),
-	"hud_strip": Vector4(107, 65, 107, 59),
-	"field": Vector4(59, 53, 59, 50),
-}
 const MINIMAL_METAL_FRAME_PATHS := {
 	"modal": MINIMAL_METAL_MODAL_PATH,
 	"panel": MINIMAL_METAL_PANEL_PATH,
