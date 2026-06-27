@@ -71,6 +71,17 @@ const VAMPIRIC_BASE_HEAL_MULTIPLIER := 0.48
 const VAMPIRIC_HEAL_CAP_DEFAULT := 1.1
 const VAMPIRIC_HEAL_CAP_HARD := 2.0
 const WEAPON_DRAIN_HEAL_MULTIPLIER := 0.35
+# SCRUM-517: per-second потолок DRAIN-heal (drain_link/lifesteal оружия). Раньше
+# _heal_owner_from_damage лил лечение прямо в health БЕЗ потолка/с, поэтому Доктор
+# с restore_potion/plague_syringe в плотной толпе хилился на сотни HP/с (DoT-стак
+# чумы × число целей) и был бессмертен. Теперь drain списывается из общего бюджета
+# по тому же принципу, что вампиризм (player._drain_heal_budget), но с собственным,
+# более высоким лимитом — drain детерминирован и составляет идентичность Доктора
+# как sustain-класса, поэтому больше вампирного (1.1/с), но конечен: при достаточном
+# входящем DPS чистый HP убывает. DEFAULT 7.0/с держит Доктора в верхе tank-коридора,
+# HARD 11.0/с — потолок для run-модификаторов (healing_multiplier и т.п.).
+const DRAIN_HEAL_PER_SECOND_CAP_DEFAULT := 7.0
+const DRAIN_HEAL_PER_SECOND_CAP_HARD := 11.0
 const CRIT_CHANCE_CAP := 0.55
 const CRIT_CHANCE_DIMINISH := 0.45
 const CRIT_FLAT_EFFECTIVENESS := 0.75

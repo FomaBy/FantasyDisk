@@ -779,9 +779,19 @@ func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
 	if owner_node.get("health") == null or owner_node.get("max_health") == null:
 		return
 	var heal_amount := dealt_damage * heal_percent_of_damage * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER
-	var before := float(owner_node.get("health"))
-	owner_node.set("health", minf(before + heal_amount, float(owner_node.get("max_health"))))
-	var healed := float(owner_node.get("health")) - before
+	if heal_amount <= 0.0:
+		return
+	# SCRUM-517: drain-heal обязан уважать per-second бюджет (как вампиризм), иначе
+	# Доктор бессмертен (DoT-стак чумы × число целей лил сотни HP/с прямо в health).
+	# Маршрутизируем через capped-метод игрока; для owner-ов без него (саммоны и т.п.)
+	# сохраняем прежнее прямое поведение, чтобы не сломать чужой sustain.
+	var healed := 0.0
+	if owner_node.has_method("apply_drain_heal"):
+		healed = float(owner_node.call("apply_drain_heal", heal_amount))
+	else:
+		var before := float(owner_node.get("health"))
+		owner_node.set("health", minf(before + heal_amount, float(owner_node.get("max_health"))))
+		healed = float(owner_node.get("health")) - before
 	if healed > 0.01 and owner_node.has_method("show_combat_feedback_number"):
 		owner_node.show_combat_feedback_number(healed, "heal")
 
@@ -1756,10 +1766,17 @@ func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: 
 			used[current_target.get_instance_id()] = true
 	AttackVfx.beam(_projectile_parent(), previous_position, owner_node.global_position, beam_width * 0.44, Color(visual_color.r, visual_color.g, visual_color.b, 0.25))
 	if healed > 0.01 and owner_node.get("health") != null and owner_node.get("max_health") != null:
-		var before := float(owner_node.get("health"))
-		owner_node.set("health", minf(float(owner_node.get("max_health")), before + healed))
-		var actual_healed := float(owner_node.get("health")) - before
-		if owner_node.has_method("_show_heal_vfx"):
+		# SCRUM-517: _damage_enemy выше уже провёл drain через capped apply_drain_heal,
+		# поэтому этот батч-heal — двойное лечение в обход бюджета. Маршрутизируем его
+		# через тот же per-second бюджет (для owner-ов без метода — прежнее поведение).
+		var actual_healed := 0.0
+		if owner_node.has_method("apply_drain_heal"):
+			actual_healed = float(owner_node.call("apply_drain_heal", healed))
+		else:
+			var before := float(owner_node.get("health"))
+			owner_node.set("health", minf(float(owner_node.get("max_health")), before + healed))
+			actual_healed = float(owner_node.get("health")) - before
+		if actual_healed > 0.01 and owner_node.has_method("_show_heal_vfx"):
 			owner_node.call("_show_heal_vfx")
 		if actual_healed > 0.01 and owner_node.has_method("show_combat_feedback_number"):
 			owner_node.show_combat_feedback_number(actual_healed, "heal")

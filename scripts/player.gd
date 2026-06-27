@@ -114,6 +114,7 @@ var run_modifiers := {
 	"money_gain_multiplier": 1.0,
 	"healing_multiplier": 1.0,
 	"vampiric_heal_per_second_cap": ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT,
+	"drain_heal_per_second_cap": ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT,
 	"enemy_health_multiplier": 1.0,
 	"knockback_multiplier": 1.0,
 }
@@ -150,6 +151,11 @@ var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
 var _status_aura_cooldown_left := 0.0
 var _vampiric_heal_budget := 0.0
+# SCRUM-517: per-second бюджет для DRAIN-heal оружия (drain_link/lifesteal). Раньше
+# drain лился в health без потолка/с → Доктор был бессмертен. Теперь оружие зовёт
+# apply_drain_heal(), который списывает из этого бюджета (пополняется в
+# _apply_regeneration по тому же принципу, что вампирный).
+var _drain_heal_budget := 0.0
 var ultimate_charge := 0.0
 var ultimate_max_charge := 100.0
 var _ultimate_active := false
@@ -192,6 +198,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		"money_gain_multiplier": 1.0,
 		"healing_multiplier": 1.0,
 		"vampiric_heal_per_second_cap": ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT,
+		"drain_heal_per_second_cap": ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT,
 		"enemy_health_multiplier": 1.0,
 		"knockback_multiplier": 1.0,
 	}
@@ -750,6 +757,10 @@ func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 func _apply_regeneration(delta: float) -> void:
 	var vampiric_cap := ProgressionData.effective_vampiric_cap(float(run_modifiers.get("vampiric_heal_per_second_cap", ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT)))
 	_vampiric_heal_budget = minf(_vampiric_heal_budget + vampiric_cap * delta, vampiric_cap)
+	# SCRUM-517: пополняем drain-бюджет до его per-second потолка (отдельно от регена,
+	# т.к. sustain Доктора — это drain, а не пассивный реген; бюджет нужен даже при regen=0).
+	var drain_cap := _effective_drain_heal_cap()
+	_drain_heal_budget = minf(_drain_heal_budget + drain_cap * delta, drain_cap)
 	var regeneration := float(derived_parameters.get("regeneration", 0.0))
 	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
 		return
@@ -771,6 +782,31 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
 	_trigger_class_status_effects(enemy)
 	_trigger_berserk_ultimate_echo(enemy)
 	_on_weapon_hit_echo(enemy)
+
+
+# SCRUM-517: единая точка DRAIN-heal оружия (drain_link/lifesteal). Раньше
+# class_weapon._heal_owner_from_damage писал лечение прямо в health БЕЗ потолка/с,
+# из-за чего Доктор (restore_potion/plague_syringe) в толпе хилился на сотни HP/с
+# (DoT-стак × число целей) и становился бессмертным. Теперь лечение списывается из
+# per-second бюджета — drain остаётся сильнейшим в игре детерминированным sustain
+# (потолок выше вампирного), но конечен: при достаточном входящем DPS HP убывает.
+# Возвращает фактически вылеченное (для combat-feedback на стороне оружия).
+func apply_drain_heal(amount: float) -> float:
+	if amount <= 0.0 or health <= 0.0 or _drain_heal_budget <= 0.0:
+		return 0.0
+	var allowed := minf(amount, _drain_heal_budget)
+	var before := health
+	health = minf(health + allowed * float(run_modifiers.get("healing_multiplier", 1.0)), max_health)
+	var healed := health - before
+	# Списываем из бюджета по «сырому» allowed (до healing_multiplier и до клампа об
+	# max_health), чтобы стоять у полного HP не позволяло копить и сливать бюджет залпом.
+	_drain_heal_budget = maxf(_drain_heal_budget - allowed, 0.0)
+	return healed
+
+
+func _effective_drain_heal_cap() -> float:
+	var raw_cap := float(run_modifiers.get("drain_heal_per_second_cap", ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT))
+	return clampf(raw_cap, 0.0, ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_HARD)
 
 
 func _ultimate_config() -> Dictionary:
