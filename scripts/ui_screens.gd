@@ -288,6 +288,25 @@ func _init(game_ref) -> void:
 	game = game_ref
 
 
+# SCRUM-484: координатная спека @2560×1440 — блок Меню/Навигация (главное меню).
+# Документирующие const рядом с билдером: x,y,w,h каждого слота контента @2K, плюс
+# safe-area (пустая зона внутри рамки, куда можно класть контент). База дизайна 2K
+# (project.godot viewport 2560×1440, stretch=canvas_items/keep). Эти прямоугольники —
+# вход для рисующего скрипта: он рисует ассеты ровно в эти размеры.
+const MENU_NAV_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
+# Колонка кнопок слева (MarginContainer offset_left=72..452, VBox по центру вертикали,
+# 6 кнопок 380×104, separation 10 → высота 674, центр 1440 → top=383).
+const MM_BUTTON_COLUMN_2K := Rect2(72, 383, 380, 674)
+const MM_BTN_START_2K := Rect2(72, 383, 380, 104)
+const MM_BTN_SETTINGS_2K := Rect2(72, 497, 380, 104)
+const MM_BTN_SKILLTREE_2K := Rect2(72, 611, 380, 104)
+const MM_BTN_PATCHNOTES_2K := Rect2(72, 725, 380, 104)
+const MM_BTN_CODEX_2K := Rect2(72, 839, 380, 104)
+const MM_BTN_EXIT_2K := Rect2(72, 953, 380, 104)
+const MM_VERSION_LABEL_2K := Rect2(2440, 1406, 104, 24)  # якорь bottom-right
+const MM_SAFE_2K := Rect2(72, 383, 380, 674)  # фон обязан держать эту колонку пустой
+
+
 func _show_main_menu() -> void:
 	game._play_music("menu")
 	game._clear_all_game_pauses()
@@ -420,6 +439,19 @@ func _show_main_menu() -> void:
 	game.ui_escape_action = _show_quit_confirmation_dialog
 
 
+# SCRUM-484: координатная спека @2560×1440 — подтверждение выхода (модалка).
+# Панель PanelContainer (offset ±300×±170 от центра → 600×340), _panel_style content
+# margins (58,72,58,66) → safe-area. Контент: заголовок, подзаголовок, ряд из двух
+# кнопок 220×72 (separation 18). Всё помещается внутри safe-area без наслоений.
+const QC_DIM_2K := Rect2(0, 0, 2560, 1440)
+const QC_PANEL_2K := Rect2(980, 550, 600, 340)
+const QC_SAFE_2K := Rect2(1038, 622, 484, 202)
+const QC_TITLE_2K := Rect2(1038, 627, 484, 44)
+const QC_SUBTITLE_2K := Rect2(1038, 687, 484, 44)
+const QC_BTN_EXIT_2K := Rect2(1051, 747, 220, 72)
+const QC_BTN_CANCEL_2K := Rect2(1289, 747, 220, 72)
+
+
 func _show_quit_confirmation_dialog() -> void:
 	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
 		return
@@ -527,6 +559,19 @@ func _cancel_quit_confirmation_dialog() -> void:
 		if overlay != null:
 			overlay.queue_free()
 	game.ui_escape_action = _show_quit_confirmation_dialog
+
+
+# SCRUM-484: координатная спека @2560×1440 — продолжить забег (модалка).
+# Панель (offset ±340×±190 → 680×380), _panel_style margins (58,72,58,66) → safe-area.
+# Контент: заголовок, подзаголовок (2 строки, autowrap), ряд из двух кнопок 240×72
+# (separation 18). Текст в рамках, кнопки не уезжают за нижний край.
+const CR_DIM_2K := Rect2(0, 0, 2560, 1440)
+const CR_PANEL_2K := Rect2(940, 530, 680, 380)
+const CR_SAFE_2K := Rect2(998, 602, 564, 242)
+const CR_TITLE_2K := Rect2(998, 614, 564, 44)
+const CR_SUBTITLE_2K := Rect2(998, 674, 564, 66)
+const CR_BTN_CONTINUE_2K := Rect2(1031, 758, 240, 72)
+const CR_BTN_NEWGAME_2K := Rect2(1289, 758, 240, 72)
 
 
 func _show_continue_run_dialog() -> void:
@@ -2719,6 +2764,15 @@ func _glossary_tooltip_text(term_id: String) -> String:
 	return "%s\n%s" % [str(definition.get("name", term_id)), str(definition.get("desc", ""))]
 
 
+# SCRUM-484: координатная спека @2560×1440 — тултип глоссария (транзиентный).
+# Плавающая панель шириной 460, высота по контенту (заголовок + описание autowrap).
+# Позиция динамическая (под якорем +8), но всегда внутри viewport с отступом 16 от
+# краёв (clamp). Шаблон-размер ниже + правила размещения для рисующего скрипта.
+const GT_PANEL_2K := Rect2(0, 0, 460, 140)  # w фикс, h по контенту (шаблон ~140)
+const GT_VIEWPORT_MARGIN_2K := 16.0  # минимальный отступ панели от краёв экрана
+const GT_ANCHOR_GAP_2K := 8.0  # зазор от низа якоря до верха тултипа
+
+
 func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	_hide_glossary_tooltip()
 	if game.ui_layer == null:
@@ -3508,6 +3562,22 @@ func _show_pause_menu() -> void:
 	game.add_child(game.pause_overlay_layer)
 	game.pause_stats_menu = null
 	_build_run_pause_menu()
+
+
+# SCRUM-484: координатная спека @2560×1440 — пауза в забеге (модалка).
+# Панель _pause_end_modal_display_size("pause"): source 986×900, высота клампится в
+# [520,820] → @2K = 898×820, CenterContainer центрирует. Content margins (74,94,74,86)
+# скейлятся ×0.911 → safe-area ≈ (67,86,67,78). Контент: заголовок, подзаголовок,
+# 5 кнопок 280×60 (separation 8). Всё внутри safe-area без наслоений.
+const PM_PANEL_2K := Rect2(831, 310, 898, 820)
+const PM_SAFE_2K := Rect2(898, 396, 764, 656)
+const PM_TITLE_2K := Rect2(898, 509, 764, 58)
+const PM_SUBTITLE_2K := Rect2(898, 575, 764, 24)
+const PM_BTN_CONTINUE_2K := Rect2(1140, 607, 280, 60)
+const PM_BTN_DOSSIER_2K := Rect2(1140, 675, 280, 60)
+const PM_BTN_SETTINGS_2K := Rect2(1140, 743, 280, 60)
+const PM_BTN_ENDRUN_2K := Rect2(1140, 811, 280, 60)
+const PM_BTN_MAINMENU_2K := Rect2(1140, 879, 280, 60)
 
 
 func _build_run_pause_menu() -> void:
@@ -5935,6 +6005,23 @@ func _apply_video_settings() -> void:
 			DisplayServer.window_set_position(usable.position + (usable.size - logical_window_size) / 2)
 
 	game.save_game_settings()
+
+
+# SCRUM-484: координатная спека @2560×1440 — форма фидбэка (модалка со скроллом).
+# Панель clamp(viewport-80, [480,940] × [380,780]) → @2K = 940×780, центрирована.
+# _panel_style margins (58,72,58,66) → safe-area. Сверху фикс заголовок, снизу фикс
+# статус + ряд кнопок (Отправить 260×64, Отмена 220×64, sep 18); середина (ScrollContainer)
+# тянется и прокручивает поле ввода (h≥130) и превью скриншота (h 240). Кнопки никогда
+# не уезжают за нижний край (SCRUM-460).
+const FB_PANEL_2K := Rect2(810, 330, 940, 780)
+const FB_SAFE_2K := Rect2(868, 402, 824, 642)
+const FB_TITLE_2K := Rect2(868, 402, 824, 42)
+const FB_SCROLL_2K := Rect2(868, 454, 824, 470)
+const FB_TEXTEDIT_2K := Rect2(868, 508, 824, 130)
+const FB_SCREENSHOT_2K := Rect2(868, 648, 824, 240)
+const FB_STATUS_2K := Rect2(868, 934, 824, 36)
+const FB_BTN_SEND_2K := Rect2(1031, 980, 260, 64)
+const FB_BTN_CANCEL_2K := Rect2(1309, 980, 220, 64)
 
 
 func _show_feedback_overlay(screenshot: Image = null) -> void:

@@ -100,6 +100,19 @@ func setup(player: Node) -> void:
 	_refresh_artifacts()
 
 
+# SCRUM-484: координатная спека @2560×1440 — пауза-досье (двухколоночная модалка).
+# Панель почти на весь экран (offset 20/18/-20/-18 → 2520×1404), _pause_end_modal_style
+# margins (74,94,74,86)×1.56 → safe-area Rect2(135,165,2290,1123). Внутри ScrollContainer
+# HBox(sep18): левая колонка управления (ширина 330, кнопки 280×60) + правая область
+# статов/артефактов (группы-панели шириной 430). Контент list-driven, тянется по высоте.
+const PD_PANEL_2K := Rect2(20, 18, 2520, 1404)
+const PD_SAFE_2K := Rect2(135, 165, 2290, 1123)
+const PD_LEFT_COLUMN_2K := Rect2(135, 165, 330, 1123)
+const PD_RIGHT_AREA_2K := Rect2(483, 165, 1942, 1123)
+const PD_BTN_2K := Rect2(0, 0, 280, 60)  # шаблон-размер кнопки управления
+const PD_STAT_GROUP_2K := Rect2(0, 0, 430, 0)  # шаблон-ширина панели группы статов
+
+
 func _build_layout() -> void:
 	var overlay := ColorRect.new()
 	overlay.name = "PauseStatsDim"
@@ -604,6 +617,14 @@ func _show_end_run_confirm() -> void:
 	_apply_fantasy_button_theme(dialog.get_ok_button(), "danger")
 	_apply_fantasy_button_theme(dialog.get_cancel_button())
 	dialog.popup_centered(Vector2i(360, 140))
+
+
+# SCRUM-484: координатная спека @2560×1440 — тултип статов (транзиентный).
+# Плавающая панель шириной TOOLTIP_MAX_WIDTH=430, высота по контенту (label autowrap,
+# внутренний инсет 20 с каждой стороны → ширина текста 390). Позиция у курсора/слота
+# (стандартный tooltip Godot, клампится в экран движком).
+const ST_PANEL_2K := Rect2(0, 0, 430, 0)  # w фикс (TOOLTIP_MAX_WIDTH), h по контенту
+const ST_LABEL_INSET_2K := 20.0  # инсет текста от краёв панели (×2 = 40)
 
 
 func _make_custom_tooltip(for_text: String) -> Object:
