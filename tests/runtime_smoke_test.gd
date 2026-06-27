@@ -3463,10 +3463,22 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		quit(1)
 		return
 
-	# Краевой кейс: победа в элитном бою (в т.ч. элитка пала на последней секунде
-	# таймера) -> окно награды показывается ДО экрана докачки/победы.
+	# SCRUM-528 happy-path: элитка УБИТА -> окно награды показывается ДО докачки.
+	# (Раньше тест добивал не элитку, а сразу звал _end_combat с живой элиткой —
+	# это закрепляло баг. Теперь добиваем элитку, чтобы выставился _elite_defeated.)
 	elite_main.call("_start_combat", false, "elite")
 	await process_frame
+	var killed_elite := elite_main.get_tree().get_first_node_in_group("elite_enemies")
+	if killed_elite == null:
+		push_error("Expected elite combat restart to spawn an elite enemy.")
+		quit(1)
+		return
+	killed_elite.call("take_damage", 1.0e9)  # достоверный сигнал died -> _elite_defeated=true
+	await process_frame
+	if not bool(elite_main.combat.get("_elite_defeated")):
+		push_error("Expected killing the elite to mark _elite_defeated on the combat director.")
+		quit(1)
+		return
 	elite_main.combat.call("_end_combat", true)
 	await process_frame
 	var victory_banner := elite_main.find_child("VictoryBanner", true, false) as Button
@@ -3477,7 +3489,40 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	victory_banner.emit_signal("pressed")
 	await process_frame
 	if elite_main.find_child("EliteArtifactRewardScreen", true, false) == null:
-		push_error("Expected elite reward window to appear before the attribute shop on elite victory.")
+		push_error("Expected elite reward window to appear after the elite is killed.")
+		quit(1)
+		return
+
+	# SCRUM-528 регресс: элитка ВЫЖИЛА (победа по таймеру с живой элиткой) ->
+	# артефакт-награды НЕТ, сразу идёт обычный победный флоу (докачка атрибутов).
+	elite_main.call("_start_combat", false, "elite")
+	await process_frame
+	var survivor_elite := elite_main.get_tree().get_first_node_in_group("elite_enemies")
+	if survivor_elite == null:
+		push_error("Expected elite combat to spawn an elite enemy for the survival regression case.")
+		quit(1)
+		return
+	if bool(elite_main.combat.get("_elite_defeated")):
+		push_error("Expected _elite_defeated to reset to false at the start of a fresh elite fight.")
+		quit(1)
+		return
+	# Моделируем победу по истечении таймера с ЖИВОЙ элиткой.
+	elite_main.set("round_time_left", 0.0)
+	elite_main.combat.call("_end_combat", true)
+	await process_frame
+	var survivor_banner := elite_main.find_child("VictoryBanner", true, false) as Button
+	if survivor_banner == null:
+		push_error("Expected victory banner even when the elite survived the timer.")
+		quit(1)
+		return
+	survivor_banner.emit_signal("pressed")
+	await process_frame
+	if elite_main.find_child("EliteArtifactRewardScreen", true, false) != null:
+		push_error("Expected NO elite reward window when the elite survived (timer victory with a live elite).")
+		quit(1)
+		return
+	if elite_main.find_child("AttributeShopScreen", true, false) == null and elite_main.find_child("AttributeShopPanel", true, false) == null:
+		push_error("Expected the normal victory flow (attribute shop) when the elite survived.")
 		quit(1)
 		return
 	elite_main.queue_free()

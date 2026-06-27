@@ -5,6 +5,15 @@ extends RefCounted
 
 var game
 
+# SCRUM-528: «элитка реально убита в этом бою». Награда элитного узла (выбор
+# артефакта 1 из 3) гейтится этим флагом — победа по таймеру с ЖИВОЙ элиткой
+# награду не выдаёт. Сбрасывается в начале каждого боя (_start_combat),
+# выставляется в _on_enemy_died по достоверному сигналу `died` (а не по
+# наивному подсчёту группы elite_enemies — узел освобождается с задержкой).
+# Живёт в боевом состоянии (не в сейве): при load элитного боя элитка
+# восстанавливается живой, поэтому флаг честно стартует с false.
+var _elite_defeated := false
+
 
 func _init(game_ref) -> void:
 	game = game_ref
@@ -25,6 +34,7 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game.combat_active = true
 	game.boss_combat_active = is_boss_fight
 	game.current_combat_type = "boss" if is_boss_fight else combat_type
+	_elite_defeated = false  # SCRUM-528: чистый старт — без протечки из прошлого узла
 	game.ui._create_hud()
 
 	game.current_player = game.player_scene.instantiate() as Node2D
@@ -110,6 +120,11 @@ func _end_combat(victory: bool) -> void:
 
 	var was_boss_fight = game.boss_combat_active
 	var was_elite_fight := str(game.current_combat_type) == "elite"
+	# SCRUM-528: артефакт-награда элитного узла — только если элитка реально убита.
+	# Победа по таймеру с живой элиткой (round_time_left <= 0) даёт обычный
+	# победный флоу без артефакта. Снимаем значение здесь (до закрытия баннера),
+	# чтобы замыкание не зависело от последующей мутации поля.
+	var grant_elite_reward := was_elite_fight and _elite_defeated
 	var event_combat: Dictionary = game.pending_event_combat.duplicate(true)
 	game.combat_active = false
 	game.boss_combat_active = false
@@ -137,7 +152,7 @@ func _end_combat(victory: bool) -> void:
 				game.save_run_autosave("combat_node")
 				game.route._show_battle_map()
 			game.ui._show_victory_banner(func() -> void:
-				if was_elite_fight:
+				if grant_elite_reward:
 					game.ui._show_elite_artifact_reward(func() -> void:
 						game.ui._show_attribute_shop(return_to_route_map)
 					)
@@ -672,6 +687,7 @@ func _on_enemy_died(enemy: Node2D) -> void:
 	elif enemy.is_in_group("elite_enemies"):
 		_hit_stop(0.3, 0.34)
 		_shake_camera(11.0, 0.26)
+		_elite_defeated = true  # SCRUM-528: достоверная точка «элитка убита» (сигнал died)
 	# «Сердце Пиявки» (tier 3): убийство лечит процент max HP.
 	if game.current_player != null and is_instance_valid(game.current_player):
 		var heal_percent := float((game.current_player.get("run_modifiers") as Dictionary).get("kill_heal_percent", 0.0))
