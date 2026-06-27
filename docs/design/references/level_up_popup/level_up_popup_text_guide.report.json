@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "label_zone",
+      "rect": [
+        92,
+        83,
+        328,
+        88
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

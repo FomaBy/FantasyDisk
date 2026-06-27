@@ -1,0 +1,33 @@
+{
+  "canvas": {
+    "width": 512,
+    "height": 256
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/BigCaslon.ttf",
+    "color": "#FFE6A6",
+    "stroke_fill": "#26100B",
+    "stroke_width": 4,
+    "line_spacing": 1.0,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "label": "Level Up"
+  },
+  "zones": [
+    {
+      "id": "label_zone",
+      "content_key": "label",
+      "x": 92,
+      "y": 83,
+      "w": 328,
+      "h": 88,
+      "role": "badge",
+      "max_font": 72,
+      "min_font": 42,
+      "uppercase": false,
+      "debug_color": "#66D9EF"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "badge_outer",
+      "kind": "panel",
+      "rect": [
+        24,
+        32,
+        464,
+        192
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "label_zone",
+      "kind": "text",
+      "rect": [
+        92,
+        83,
+        328,
+        88
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 72
+    }
+  ]
+}
