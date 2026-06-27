@@ -2585,5 +2585,10 @@
   "key": "SCRUM-517",
   "status": "Готово",
   "desc_hash": "7161e856ce066bfc4618287b288f1314"
+ },
+ "SCRUM-523_typed_damage_color_coding.md": {
+  "key": "SCRUM-523",
+  "status": "Контроль качества",
+  "desc_hash": "5e086abb4245b381c911580e03a28404"
  }
 }
