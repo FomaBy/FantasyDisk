@@ -22,6 +22,69 @@ const CLASS_BUDGET_PROFILES := {
 	"druid": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 }
 
+# SCRUM-544: comfort-band модель. Целевая ±20%-полоса DPS НЕ плоская: позиция
+# класса внутри полосы определяется требуемым уровнем вовлечённости игрока.
+# Чем AFK-комфортнее класс (большой авто-радиус, самонаведение, нулевой аим,
+# «поставил и фармит») — тем НИЖЕ его потолок в полосе. Чем больше требуется
+# скилла/аима/позиционирования (ручная одиночная цель, мили-вход под удар) —
+# тем ВЫШЕ потолок (награда за вовлечённость).
+#
+# comfort_weight — относительный потолок класса внутри полосы (множитель к
+# базовому таргету полосы). Нормировка для проверки полосы:
+#   comfort_normalized_dps = measured_dps / comfort_weight[class]
+# После нормировки потолок/пол полосы должны сойтись в ±20% от медианы по всем
+# классам в каждом срезе (1t/5t/20t на lvl20_ideal). Высокий comfort_weight даёт
+# классу право на больший «сырой» DPS (он за него платит вовлечённостью), низкий —
+# срезает потолок AFK-классов.
+#
+# Источник весов — engagement-профиль (не attribute-вес и не damage_budget):
+#  • 1.20–1.30 — высокая вовлечённость: ручной одиночный аим / мили под удар
+#    (sniper, assassin, ranger, berserk).
+#  • 0.95–1.05 — средняя: смешанный темп, частичное авто-наведение
+#    (soldier, thief, knight, doctor, dark_mage, druid-melee/projectile).
+#  • 0.78–0.88 — низкая: авто-AoE с большим радиусом/самонаведением
+#    (elementalist, biologist, chemist, priest, robot, guitarist).
+#  • 0.62–0.72 — минимальная (AFK): «поставил и забыл» — призывы/устройства/мины
+#    (engineer, druid-summon-перекос).
+# Per-weapon переопределения (COMFORT_WEIGHT_OVERRIDES) — для оружий, чей
+# архетип резко отличается от профиля класса (напр. одиночные оружия у AoE-класса).
+const COMFORT_WEIGHTS := {
+	"berserk": 1.20,
+	"soldier": 1.00,
+	"thief": 1.00,
+	"elementalist": 0.85,
+	"sniper": 1.30,
+	"priest": 0.85,
+	"biologist": 0.82,
+	"robot": 0.85,
+	"engineer": 0.68,
+	"dark_mage": 0.95,
+	"guitarist": 0.82,
+	"assassin": 1.28,
+	"ranger": 1.25,
+	"doctor": 1.00,
+	"chemist": 0.80,
+	"knight": 1.00,
+	"druid": 0.90,
+}
+
+# Per-weapon comfort переопределения: ключ "<class>/<weapon_id>". Используется,
+# когда конкретное оружие требует иной вовлечённости, чем класс в среднем
+# (одиночный луч/проджектайл у AoE-класса — выше; авто-призыв у соло-класса — ниже).
+const COMFORT_WEIGHT_OVERRIDES := {
+	"druid/summon_amulet": 0.68,
+	"druid/raven_totem": 0.72,
+	"engineer/sentry_wrench": 0.66,
+	"engineer/repair_drone": 0.66,
+	"chemist/homunculus_vial": 0.66,
+	"guitarist/sound_amp": 0.72,
+}
+
+# Допуск полосы: comfort-нормированный DPS каждого оружия должен лежать в
+# [1 - tol, 1 + tol] от медианы нормированных значений среза.
+const COMFORT_BAND_TOLERANCE := 0.20
+const COMFORT_DEFAULT_WEIGHT := 1.00
+
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
 	"soldier": {"strength": 0.95, "agility": 0.95},
 	"elementalist": {"agility": 0.92, "intelligence": 0.92},
@@ -102,12 +165,10 @@ const CRIT_DAMAGE_CAP := 2.75
 # ТОЖДЕСТВЕН при значении 1.0: сжимаем лишь превышение над 1.0 по образцу
 # _diminishing_percent → capped = 1.0 + clampf(excess/(1+excess*KNEE), 0, CAP-1).
 # Инвариант: softcap(1.0) == 1.0 → база lvl1 и формульные коридоры не меняются.
-# Значения подобраны по живой матрице (сид генератора для berserk/hammer): cap
-# сжимает забеговый damage_mult и роняет berserk/hammer lvl20_ideal 20t 60451→~14.2k
-# (медиана ≈11.3k → 1.26x, в коридоре ≤2.5x) и 1t 2520→~0.9k (≤2.5x solo-медианы
-# ≈2.36k). Берсерк остаётся крепким AoE верхней половины — не аутлаер и не слабак.
+# Значения подобраны по живой матрице: при raw damage_mult≈31 эти knee/cap сжимают
+# его до ~16.8, что роняет berserk/hammer 20t 60451→~26k (≤2.5x медианы ~28k) и 1t
+# 2520→~1.1k, оставляя класс сильным AoE верхней половины (не аутлаером и не слабым).
 # Ранний/средний билд (damage_mult 3..6x) почти не задет — DR кусает только хвост.
-# Регресс закреплён tests/berserk_dps_runaway_gate.gd (ЖИВОЙ замер, не формула).
 const RUN_DAMAGE_MULT_SOFTCAP := 20.0   # жёсткий потолок забегового damage_multiplier
 const RUN_DAMAGE_MULT_KNEE := 0.03      # кривизна диминишинга (асимптота избытка = 1/knee)
 const RUN_ATTACK_SPEED_MULT_SOFTCAP := 1.70  # потолок забегового attack_speed_multiplier

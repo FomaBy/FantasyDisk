@@ -38,6 +38,9 @@ const OFFER_SIZE := 3               # карт в оффере уровня
 const BASE_SEED := 20260620
 const CSV_PATH := "res://build/character_balance_dps.csv"
 const README_PATH := "res://build/character_balance_dps_README.md"
+const BAND_REPORT_PATH := "res://build/character_balance_band.md"
+# SCRUM-544: срезы, по которым гейтится comfort-нормированная полоса (lvl20-оптимум).
+const BAND_SLICES := ["ideal_1", "ideal_5", "ideal_20"]
 
 var _holder: Node2D
 
@@ -87,6 +90,7 @@ func _initialize() -> void:
 
 	_write_csv(rows)
 	_write_readme(rows)
+	_validate_band(rows)
 	_holder.queue_free()
 	await process_frame
 	quit(0)
@@ -306,6 +310,83 @@ func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:
 		enemy.set("contact_damage", 0.0)
 		dummies.append(enemy)
 	return dummies
+
+
+# --- SCRUM-544: детерминированная валидация comfort-нормированной полосы -------
+
+# Для каждого среза (1t/5t/20t на lvl20_ideal) считает comfort-нормированный DPS
+# каждого оружия (= measured / comfort_weight), медиану по всем оружиям и проверяет,
+# что max/min лежат в [1-tol, 1+tol] от медианы (acceptance ±20%). Печатает сводку
+# и пишет build/character_balance_band.md. Детерминировано (те же сиды, что и CSV).
+func _validate_band(rows: Array) -> void:
+	var tol: float = ProgressionData.COMFORT_BAND_TOLERANCE
+	var lines := PackedStringArray()
+	lines.append("# Character Balance — comfort-нормированная полоса (SCRUM-544)")
+	lines.append("")
+	lines.append("Сгенерировано `tools/character_balance_csv.gd`. Допуск полосы: ±%.0f%% от медианы." % (tol * 100.0))
+	lines.append("Нормировка: `comfort_normalized = measured_dps / comfort_weight[class]` (см. `progression_data_balance.gd` COMFORT_WEIGHTS).")
+	lines.append("")
+	var all_pass := true
+	for slice in BAND_SLICES:
+		var entries: Array = []
+		var values: Array = []
+		for row in rows:
+			var cid: String = str(row["class"])
+			var wid: String = str(row["weapon"])
+			var raw: float = float(row[slice])
+			var norm: float = ProgressionData.comfort_normalized_dps(cid, wid, raw)
+			entries.append({"class": cid, "weapon": wid, "raw": raw, "norm": norm})
+			values.append(norm)
+		values.sort()
+		var median: float = _median(values)
+		var lo: float = median * (1.0 - tol)
+		var hi: float = median * (1.0 + tol)
+		entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			return float(a["norm"]) > float(b["norm"]))
+		var min_norm: float = float(entries[entries.size() - 1]["norm"])
+		var max_norm: float = float(entries[0]["norm"])
+		var spread: float = max_norm / maxf(min_norm, 0.001)
+		var slice_pass: bool = min_norm >= lo and max_norm <= hi
+		all_pass = all_pass and slice_pass
+		var violations: Array = entries.filter(func(e: Dictionary) -> bool:
+			return float(e["norm"]) < lo or float(e["norm"]) > hi)
+		print("[BAND %s] median=%.1f band=[%.1f..%.1f] min=%.1f max=%.1f spread=%.1fx → %s (нарушений %d/%d)" % [
+			slice, median, lo, hi, min_norm, max_norm, spread,
+			("PASS" if slice_pass else "FAIL"), violations.size(), entries.size()])
+		lines.append("## Срез `%s` — %s" % [slice, ("PASS" if slice_pass else "FAIL")])
+		lines.append("")
+		lines.append("- медиана нормированного DPS: **%.1f**, полоса [%.1f .. %.1f]" % [median, lo, hi])
+		lines.append("- факт: min **%.1f**, max **%.1f**, разброс **%.1fx** (цель ≤ %.2fx)" % [
+			min_norm, max_norm, spread, (1.0 + tol) / (1.0 - tol)])
+		lines.append("- нарушений полосы: **%d / %d**" % [violations.size(), entries.size()])
+		if not violations.is_empty():
+			lines.append("")
+			lines.append("| класс/оружие | raw DPS | comfort | norm DPS | ×медиана |")
+			lines.append("|---|--:|--:|--:|--:|")
+			for e in violations:
+				var w: float = ProgressionData.comfort_weight(str(e["class"]), str(e["weapon"]))
+				lines.append("| %s/%s | %.0f | %.2f | %.0f | %.2fx |" % [
+					e["class"], e["weapon"], float(e["raw"]), w, float(e["norm"]),
+					float(e["norm"]) / maxf(median, 0.001)])
+		lines.append("")
+	lines.append("---")
+	lines.append("")
+	lines.append("**Итог полосы: %s**" % ("ПОЛОСА ВЫДЕРЖАНА (±%.0f%%)" % (tol * 100.0) if all_pass else "ПОЛОСА НЕ ВЫДЕРЖАНА — требуется тюнинг"))
+	print("[BAND] Итог: %s" % ("PASS" if all_pass else "FAIL"))
+	var file := FileAccess.open(BAND_REPORT_PATH, FileAccess.WRITE)
+	if file != null:
+		file.store_string("\n".join(lines))
+		file.close()
+		print("Band report: %s" % ProjectSettings.globalize_path(BAND_REPORT_PATH))
+
+
+func _median(sorted_values: Array) -> float:
+	if sorted_values.is_empty():
+		return 0.0
+	var n := sorted_values.size()
+	if n % 2 == 1:
+		return float(sorted_values[n / 2])
+	return (float(sorted_values[n / 2 - 1]) + float(sorted_values[n / 2])) * 0.5
 
 
 # --- Вывод --------------------------------------------------------------------

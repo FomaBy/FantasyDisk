@@ -18,6 +18,10 @@ const CLASS_BUDGET_PROFILES := BalanceData.CLASS_BUDGET_PROFILES
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := BalanceData.CLASS_LEVEL_STAT_GROWTH_SCALARS
 const BALANCE_BASE_SOLO_DPS := BalanceData.BALANCE_BASE_SOLO_DPS
 const BALANCE_BASE_AOE_DPS := BalanceData.BALANCE_BASE_AOE_DPS
+const COMFORT_WEIGHTS := BalanceData.COMFORT_WEIGHTS
+const COMFORT_WEIGHT_OVERRIDES := BalanceData.COMFORT_WEIGHT_OVERRIDES
+const COMFORT_BAND_TOLERANCE := BalanceData.COMFORT_BAND_TOLERANCE
+const COMFORT_DEFAULT_WEIGHT := BalanceData.COMFORT_DEFAULT_WEIGHT
 const BALANCE_WINDOW_SECONDS := BalanceData.BALANCE_WINDOW_SECONDS
 const CROWD_CLEAR_TARGET_COUNTS := BalanceData.CROWD_CLEAR_TARGET_COUNTS
 const CROWD_CLEAR_ENEMY_HP := BalanceData.CROWD_CLEAR_ENEMY_HP
@@ -434,6 +438,23 @@ static func weapon_ids(character_id: String) -> Array:
 
 static func class_budget_profile(character_id: String) -> Dictionary:
 	return CLASS_BUDGET_PROFILES.get(character_id, CLASS_BUDGET_PROFILES["berserk"]).duplicate(true)
+
+
+# SCRUM-544: comfort-вес класса/оружия — относительный потолок внутри ±20%-полосы.
+# Per-weapon override > class weight > дефолт. Чем выше — тем больше «сырого» DPS
+# классу позволено (плата за вовлечённость игрока).
+static func comfort_weight(character_id: String, weapon_id := "") -> float:
+	if weapon_id != "":
+		var key := "%s/%s" % [character_id, weapon_id]
+		if COMFORT_WEIGHT_OVERRIDES.has(key):
+			return float(COMFORT_WEIGHT_OVERRIDES[key])
+	return float(COMFORT_WEIGHTS.get(character_id, COMFORT_DEFAULT_WEIGHT))
+
+
+# Comfort-нормированный DPS: measured / comfort_weight. Для проверки полосы все
+# классы/оружия сравниваются в этой нормированной шкале.
+static func comfort_normalized_dps(character_id: String, weapon_id: String, measured_dps: float) -> float:
+	return measured_dps / maxf(comfort_weight(character_id, weapon_id), 0.001)
 
 
 static func budget_tuning_for(character_id: String, weapon_config: Dictionary) -> Dictionary:
