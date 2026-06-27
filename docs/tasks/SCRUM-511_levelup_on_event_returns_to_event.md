@@ -1,7 +1,47 @@
 # SCRUM-511: UX-quirk: level-up на узле события возвращает на карту, а не к экрану события
 
 Jira: SCRUM-511 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: SCRUM-213 (через карри-овер SCRUM-477)
-Статус: К выполнению
+Статус: Контроль качества — SUPERSEDED by SCRUM-530 (поведение уже реализовано и покрыто smoke-регрессом на HEAD)
+
+## РЕЗОЛЮЦИЯ (r2i2, 2026-06-28): SUPERSEDED by SCRUM-530
+
+Весь объём SCRUM-511 уже реализован и закоммичен в рамках **SCRUM-530** (fix 63799742,
+эпик SCRUM-522), который явным пунктом acceptance держал «выбор на событии работает
+**включая случай отложенного level-up**». На текущем `dev` HEAD:
+
+- `scripts/ui_screens.gd:5831 _open_pending_level_up()` ставит
+  `game.level_up_return_to_event = _is_event_screen_active()` (детект: непустой
+  `current_event_definition` + узел `EventScreen` в дереве, `:5843`).
+- Обе точки возврата из `_show_level_up_screen` ветвятся на событие:
+  путь выбора усиления `:4337-4340`, путь «Позже»/Escape `:4370-4374` →
+  `_return_from_level_up_to_event()` (`:5851`), иначе fallback `_show_battle_map()`.
+- `_return_from_level_up_to_event()` рендерит тот же узел через
+  `_show_event_screen({"type":"event","name":...})` БЕЗ `event_id` → срабатывает
+  reuse-guard `_show_event_screen` (`:5273-5278`, тоже SCRUM-530): процедурное событие
+  НЕ рероллится, набор опций сохраняется.
+- Флаг `level_up_return_to_event` объявлен в `scripts/main.gd:352`, сбрасывается в
+  run-reset (`:744`). Боевой путь не затронут (`:4334-4336`). Множественные пики:
+  навигация только после последнего (`:4328-4329`).
+
+Smoke-регресс на ровно эти AC уже есть в `tests/runtime_smoke_test.gd:2026-2076`
+(SCRUM-530): возврат на EventScreen после выбора (`:2048/:2052`), без реролла
+(`:2057`), route_stage не двигается (`:2061`), пик потрачен (`:2065`), путь «Позже»
++ фокус + опции снова на месте (`:2070-2076`).
+
+Подход SCRUM-530 (`level_up_return_to_event` + детект `EventScreen` в дереве) надёжнее
+предложенного в этой спеке `current_event_route_node`: он не требует отдельной
+сериализации узла и закрывает reroll процедурного события тем же reuse-guard. Поэтому
+поля `current_event_route_node` в коде НЕТ и оно не нужно.
+
+Доп. побочная очистка тем же воркером: удалены 26 untracked Finder/iCloud
+`«… 2.import»` дублей (sync-мусор), на которые краснел duplicate-artifact guard smoke
+(`tests/runtime_smoke_test.gd:7967`); теперь guard зелёный (9356 файлов).
+
+Кода под SCRUM-511 не пишется — дубликат уже на HEAD. Тикет передан в Контроль
+качества как superseded (сослаться на SCRUM-530).
+
+---
+(оригинальная спека ниже сохранена для истории)
 
 ## Что и зачем
 
