@@ -919,10 +919,12 @@ func _build_character_select_v4() -> void:
 	var slot_w: float = (content_w - arrow_w * 2.0 - cpad * 2.0) / float(HS4_CAROUSEL_SLOTS)
 
 	var left_arrow := _make_button("◄")
+	left_arrow.name = "HS4CarouselPrevButton"
 	_set_action_button_size(left_arrow, arrow_w, slot_h * 0.8)
 	left_arrow.position = Vector2(cpad, round((car_h - slot_h * 0.8) * 0.5))
 	carousel.add_child(left_arrow)
 	var right_arrow := _make_button("►")
+	right_arrow.name = "HS4CarouselNextButton"
 	_set_action_button_size(right_arrow, arrow_w, slot_h * 0.8)
 	right_arrow.position = Vector2(content_w - cpad - arrow_w, round((car_h - slot_h * 0.8) * 0.5))
 	carousel.add_child(right_arrow)
@@ -948,7 +950,24 @@ func _build_character_select_v4() -> void:
 	state["offset"] = clampi(sel0 - HS4_CAROUSEL_SLOTS / 2, 0, maxi(0, roster.size() - HS4_CAROUSEL_SLOTS))
 	var stat_maxima := _hero_radar_global_maxima()
 
+	var keep_selected_visible := func() -> void:
+		var selected_index: int = roster.find(game.selected_character_id)
+		if selected_index < 0:
+			selected_index = 0
+			game.selected_character_id = str(roster[0])
+		var max_offset: int = maxi(0, roster.size() - HS4_CAROUSEL_SLOTS)
+		if roster.size() <= HS4_CAROUSEL_SLOTS:
+			state["offset"] = 0
+			return
+		var offset: int = int(state["offset"])
+		if selected_index < offset:
+			offset = selected_index
+		elif selected_index >= offset + HS4_CAROUSEL_SLOTS:
+			offset = selected_index - HS4_CAROUSEL_SLOTS + 1
+		state["offset"] = clampi(offset, 0, max_offset)
+
 	var refresh := func() -> void:
+		keep_selected_visible.call()
 		var cid: String = game.selected_character_id
 		var config: Dictionary = game.PROGRESSION_DATA.character_config(cid)
 		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(cid)
@@ -981,6 +1000,13 @@ func _build_character_select_v4() -> void:
 		game.selected_ascension_level = game.ascension_selectable_max(cid)
 		refresh.call()
 
+	var select_relative_hero := func(direction: int) -> void:
+		var selected_index: int = roster.find(game.selected_character_id)
+		if selected_index < 0:
+			selected_index = 0
+		var next_index: int = posmod(selected_index + direction, roster.size())
+		select_hero.call(str(roster[next_index]))
+
 	for i in range(HS4_CAROUSEL_SLOTS):
 		var slot_index := i
 		slot_buttons[i].pressed.connect(func() -> void:
@@ -989,12 +1015,10 @@ func _build_character_select_v4() -> void:
 				select_hero.call(str(roster[idx]))
 		)
 	left_arrow.pressed.connect(func() -> void:
-		state["offset"] = clampi(int(state["offset"]) - 1, 0, maxi(0, roster.size() - HS4_CAROUSEL_SLOTS))
-		refresh.call()
+		select_relative_hero.call(-1)
 	)
 	right_arrow.pressed.connect(func() -> void:
-		state["offset"] = clampi(int(state["offset"]) + 1, 0, maxi(0, roster.size() - HS4_CAROUSEL_SLOTS))
-		refresh.call()
+		select_relative_hero.call(1)
 	)
 	asc_minus.pressed.connect(func() -> void:
 		game.selected_ascension_level = maxi(game.selected_ascension_level - 1, 0)
