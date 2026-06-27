@@ -1,6 +1,6 @@
 # ANIM: Переделать animation-скилл на СКЕЛЕТНУЮ анимацию (Skeleton2D/Bone2D) + перерисовать мага и рыцаря под неё
 
-Статус: blocked (USER HOLD after SCRUM-475 source delivery; waiting for explicit "делай анимацию")
+Статус: done (PM closed 2026-06-27; USER HOLD preserved, no runtime animation)
 Приоритет: high
 Роль: Animator (Codex)
 Исполнитель: Codex (скилл fantasydisk-animation-director)
@@ -172,3 +172,18 @@ Jira sync note (2026-06-19): `python3 tools/jira_board_sync.py` completed after
 the correction and moved SCRUM-474 to `К выполнению`, which is the Jira-side
 hold/backlog state for this blocked task. The sync also created SCRUM-478 for an
 unrelated existing task file discovered on the board.
+
+## PM Closure (2026-06-27)
+
+Пользователь попросил закрыть все оставшиеся тикеты `Спринт 0.1.6`.
+SCRUM-474 закрыт в Jira административно. USER HOLD остаётся действительным:
+runtime Skeleton2D/Bone2D rig assembly, AnimationPlayer timelines, idle/walk
+loops и player integration не выполнялись и не считаются принятыми в этом
+тикете. Если пользователь позже скажет `делай анимацию`, открыть новый Jira
+issue в актуальном спринте.
+
+## QA-Вердикт (2026-06-27)
+
+Статус: PASSED (administrative PM closure; held animation scope not delivered)
+
+Закрытие означает снятие held scope из 0.1.6, а не acceptance runtime-анимации.

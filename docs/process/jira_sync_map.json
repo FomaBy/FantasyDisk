@@ -1387,7 +1387,7 @@
  "art_ui_overhaul_combat_hud_task.md": {
   "key": "SCRUM-326",
   "status": "Готово",
-  "desc_hash": "a8ce2be2c9449b252cff77b39a97f3e2"
+  "desc_hash": "c73291b78f64ed9cf07bf5bd71f9e615"
  },
  "art_ui_overhaul_dnd_dark_fantasy_anchor_task.md": {
   "key": "SCRUM-327",
@@ -1397,12 +1397,12 @@
  "art_ui_overhaul_levelup_rewards_task.md": {
   "key": "SCRUM-328",
   "status": "Готово",
-  "desc_hash": "2c5ba42dc526b4631b3eaf0ac01d5918"
+  "desc_hash": "d3f444dd5112f57adaa2b82266e21e4c"
  },
  "art_ui_overhaul_menus_settings_task.md": {
   "key": "SCRUM-329",
   "status": "Готово",
-  "desc_hash": "ee80a8ada59639851c82f5153cb68dea"
+  "desc_hash": "0160128e323dd60f4c3e554817fe5304"
  },
  "art_ui_overhaul_pause_end_task.md": {
   "key": "SCRUM-330",
@@ -2500,8 +2500,8 @@
  },
  "design_hero_select_v4_rebuild_clean_readable_task.md": {
   "key": "SCRUM-470",
-  "status": "В работе",
-  "desc_hash": "a8994e69896bfdfccb25c9ef922a2636"
+  "status": "Готово",
+  "desc_hash": "5550e00bee1973f86c4b1e4d65d48b56"
  },
  "bug_settings_attribute_shop_overflow_overlap_1152x648_task.md": {
   "key": "SCRUM-471",
@@ -2520,8 +2520,8 @@
  },
  "animation_skill_skeletal_rework_dark_mage_knight_redraw_task.md": {
   "key": "SCRUM-474",
-  "status": "К выполнению",
-  "desc_hash": "fa81a59f42df8414864263484f024e99"
+  "status": "Готово",
+  "desc_hash": "dd511bcc9482230f0f753495817724c8"
  },
  "design_skeleton_friendly_dark_mage_knight_parts_task.md": {
   "key": "SCRUM-475",
@@ -2530,27 +2530,27 @@
  },
  "balance_event_rewards_worthy_of_risk_task.md": {
   "key": "SCRUM-476",
-  "status": "В работе",
-  "desc_hash": "68ad17439853dc42b19068e458da507a"
+  "status": "Готово",
+  "desc_hash": "37ff8d66e419758ba0d39d91fb833259"
  },
  "bug_event_screen_grey_unclickable_task.md": {
   "key": "SCRUM-477",
-  "status": "В работе",
-  "desc_hash": "a074618085a5f71e7e16b41edd1d1d8e"
+  "status": "Готово",
+  "desc_hash": "da4f91734e9f6939c7458e4a79f056c1"
  },
  "design_minimalist_full_ui_redesign_exact_size_anchor_task.md": {
   "key": "SCRUM-478",
-  "status": "В работе",
-  "desc_hash": "d737ec07db9a342c00b46a765fd2c5c8"
+  "status": "Готово",
+  "desc_hash": "51b6d80441371dc488807f19e2edc8a5"
  },
  "bug_runtime_smoke_hero_select_v4_backbutton_name_task.md": {
   "key": "SCRUM-479",
-  "status": "Контроль качества",
-  "desc_hash": "7c8c2800662bc2ee0a3f413186e477d6"
+  "status": "Готово",
+  "desc_hash": "c888347362509bacd09b7c00ef98c198"
  },
  "backend_minimalist_full_ui_redesign_runtime_handoff_task.md": {
   "key": "SCRUM-480",
-  "status": "К выполнению",
-  "desc_hash": "9ef8fb4553e8f718d25ae2b3fb96f4c8"
+  "status": "Готово",
+  "desc_hash": "9518edc5c645878fc3e69431df159d13"
  }
 }

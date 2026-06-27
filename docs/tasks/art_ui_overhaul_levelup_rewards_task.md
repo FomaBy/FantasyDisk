@@ -1,6 +1,6 @@
 # ART: UI Overhaul (Повышение уровня и награды) — D&D + Dark Fantasy Dragon, новым скиллом
 
-Статус: superseded (PM 2026-06-14: широкий UI-overhaul закрыт как дубль, покрыто SCRUM-338/348)
+Статус: done (superseded/closed by PM; covered by SCRUM-338/348)
 Приоритет: medium
 Роль: Designer (Codex)
 Версия: 0.1.5
@@ -72,3 +72,10 @@ docs/design/systems/menus_ui.md, docs/design/content_registry.md, current_game_s
 
 ## Superseded 2026-06-14 (PM)
 Широкий UI-Overhaul кластер закрыт как покрытый более конкретными задачами: SCRUM-338 (редизайн наград) + SCRUM-348 (кнопки повышения). Дубль не нужен.
+
+## QA-Вердикт (2026-06-27)
+
+Статус: PASSED (administrative PM closure)
+
+SCRUM-328 закрыт в Jira как дубль/широкий кластер, покрытый более конкретными
+тикетами 0.1.6. Дополнительной работы в этом тикете не требуется.

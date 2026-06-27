@@ -1,6 +1,6 @@
 # Back-end: Integrate SCRUM-478 Bright Minimalist Full UI Runtime Kit And QA
 
-Статус: new
+Статус: done (PM closed 2026-06-27; 0.1.6 cleanup, runtime scope deferred)
 Приоритет: high
 Роль: Back-end (UI/runtime/tests)
 Исполнитель: Back-end
@@ -68,3 +68,17 @@ package:
 
 Design-source regeneration and Animator/motion work are out of this Back-end
 handoff unless PM creates a separate follow-up.
+
+## PM Closure (2026-06-27)
+
+Пользователь попросил закрыть все оставшиеся тикеты `Спринт 0.1.6`.
+SCRUM-480 закрыт в Jira административно, без runtime implementation в этом
+Documentation-thread. Если bright minimalist full UI runtime rollout всё ещё
+нужен после 0.1.6 cleanup, его нужно открыть как новый Jira issue в следующем
+спринте с актуальным owner/lane/locked paths.
+
+## QA-Вердикт (2026-06-27)
+
+Статус: PASSED (administrative PM closure; implementation deferred)
+
+Закрытие означает снятие тикета из 0.1.6, а не выполненную runtime-интеграцию.

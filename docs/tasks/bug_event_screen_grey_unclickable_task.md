@@ -1,6 +1,6 @@
 # BUG: Экран события серый — ничего нельзя кликнуть (нельзя выбрать опцию)
 
-Статус: review (worker-2 2026-06-19 — фикс закоммичен f2628eec, event-флоу зелёный; полный green-gate ждёт отдельный hero-select-v4 red)
+Статус: done
 Приоритет: high
 Роль: Back-end
 Версия: 0.1.6
@@ -78,3 +78,11 @@ level-up). При сбое мыши забег невозможно пройти
 ```bash
 ~/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/runtime_smoke_test.gd
 ```
+
+## QA-Вердикт (2026-06-27)
+
+Статус: PASSED (PM closure after dependent smoke blocker SCRUM-479 was closed)
+
+Фикс события был закоммичен ранее (`f2628eec`), event-flow regression проходил,
+а отдельный blocker SCRUM-479 закрыт в рамках 0.1.6 cleanup. SCRUM-477 закрыт в
+Jira как не требующий дальнейшей работы в 0.1.6.
