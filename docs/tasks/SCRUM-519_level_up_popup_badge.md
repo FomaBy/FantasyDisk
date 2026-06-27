@@ -1,7 +1,7 @@
 # SCRUM-519: Level Up — создать красивую всплывающую иконку/бейдж
 
 Jira: SCRUM-519 · Роль: Designer 2 (designer/art) · Контур: Codex · Приоритет: P1 · foma · Эпик: SCRUM-216
-Статус: Контроль качества (QA)
+Статус: done (QA PASSED)
 
 ## Что и зачем
 При получении уровня игрок должен получать яркий, мгновенно читаемый визуальный сигнал «Level Up» — короткий popup возле персонажа. Цель с точки зрения продукта: усилить петлю прогрессии (kill → XP → level up), дать игроку приятный «джус»-момент и подсказку «пора зайти в экран прокачки». Сейчас рантайм рисует процедурную текстовую плашку (Label + кольцо/вспышка/искры), что выглядит дёшево и не в стиле игры.
@@ -80,3 +80,30 @@ QA-метрики из `level_up_popup_badge_alpha_report.json` (заявлен�
 - **Связанные тикеты**: SCRUM-520 (Back-end runtime-показ — потребитель этого asset), эпик SCRUM-216. Текст в `level_up_toast.gd` сейчас «LEVEL UP» (uppercase), а на бейдже «Level Up» (mixed case, `uppercase:false`) — при интеграции в SCRUM-520 проследить за консистентностью кейса.
 - **Версия/спринт**: дизайнер пометил v0.1.7 / Спринт 0.1.7. Учитывать активный feature-freeze 0.1.5 (новые фичи → 0.1.6+); это полировка прогрессии, не новая механика.
 - **Jira live-sync mandate**: держать Jira синхронной на каждом шаге; при reopen менять статус и в .md, и в Jira (не только метки).
+
+## QA-Вердикт 2026-06-27
+Статус: PASSED
+
+Проверил QA-воркер (Designer 2 / QA-приёмка), фоновый прогон. Что прогнано фактически:
+
+**Целостность файлов** — все пути на месте, `.import` присутствуют (Godot заимпортил):
+- `assets/sprites/effects/level_up_popup_badge.png` (512×256, 143 KB) + `.import`.
+- `docs/design/references/level_up_popup/`: base / base_alpha / final / final_debug / layout(.json/plan/report) / text_guide / layout_guide / alpha_report.
+- `docs/design/previews/level_up_popup_badge_contact_sheet.png` + `.import`.
+
+**Независимый PIL-аудит** `assets/sprites/effects/level_up_popup_badge.png` (не доверяя JSON дизайнера):
+- size `512×256`, mode `RGBA`, alpha extrema `[0,255]`.
+- edge alpha max = `0` по всем 4 краям → НЕ обрезан.
+- nontransparent bbox `[66,12,446,245]` (≈ заявленному `[66,12,447,246]`, разница 1px — inclusive/exclusive границы).
+- safe padding left/top/right/bottom = `66/12/65/10` — совпадает с отчётом.
+- `green_spill_pixels_alpha_gt_8 = 0`. `white_matte`: найден ровно 1 полностью непрозрачный светлый пиксель (highlight/блик ~`(404,133)`) — это НЕ матовый фон/гало, не дефект. Сходится с дизайнерским отчётом (он же пометил 1 highlight-пиксель).
+
+**Читаемость** — отрендерил бейдж на 3 реальных игровых фона (`field_enchanted_meadow` светлый / `field_ashen_rift` тёмный / `field_cursed_grove` пёстрый) при `224×112` (recommended) и `160×80` (min). `Level Up` читается на всех — золото текста контрастит за счёт собственной тёмной картуш-панели бейджа, независимо от фона. Contact sheet подтверждает читаемость вплоть до `128×64`.
+
+**Handoff для Back-end (SCRUM-520)** в `docs/tasks/design_level_up_popup_badge_task.md` полон: финальный asset path, display size `224×112` (min `160×80`), pivot center-bottom (10–18px над головой), анимация (scale `0.92→1.04→1.0`, float up 24–36px, fade ~0.85s). SCRUM-520 прокомментирован/разблокирован.
+
+**Green-gate**: `runtime_smoke_test.gd` headless — `Runtime smoke test passed` (duplicate-artifact guard 9272 files OK). Импорт ассета проект не ломает.
+
+**Product-решение по пустой нижней зоне**: ПРИНЯТО как есть — нижняя половина картуша зарезервирована под будущий sub-text (номер уровня «Level N»); это намеренный резерв, не блокер для source-ассета. Rework НЕ требуется.
+
+Все acceptance-критерии выполнены. Вердикт: **PASSED → Готово**.
