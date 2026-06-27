@@ -90,3 +90,16 @@ The icon set is not ready until all checks pass:
 - Source PNG, final PNG, prompt notes, contact sheet, and QA report are all recorded in the local task mirror and Jira result comment.
 
 When any check fails, regenerate or revise the icon before handoff. Do not patch failed images by drawing over them with unrelated UI panels or frames.
+
+## Validation / Example Prompt
+
+Use this short prompt to verify that another agent can apply the skill without extra user clarification:
+
+```text
+Use $fantasydisk-item-icon-generator for a FantasyDisk artifact icon.
+asset_category=artifact, canonical_id=ember_oath, display_name=Ember Oath,
+target_size=256x256, final_path=assets/sprites/ui/icons/artifacts/artifact_ember_oath.png.
+Create the prompt, source/reference path, final runtime path, and QA evidence checklist only; do not generate production art unless the Jira issue explicitly asks for generation.
+```
+
+Expected result: the agent identifies the artifact matrix row, keeps the icon textless and transparent, saves sources under `docs/design/references/icons/artifacts/ember_oath/`, and records contact-sheet/readability/alpha evidence paths before calling the task complete.
