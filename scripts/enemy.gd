@@ -958,7 +958,10 @@ func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: 
 	var puddle := Node2D.new()
 	puddle.name = "ElitePoisonPuddle"
 	puddle.add_to_group("enemy_hazards")
-	puddle.z_index = 5
+	# SCRUM-553: наземная декаль — лужа под всеми сущностями (z≈0), над фоном(-100)/бордером(-20)
+	# арены. Абсолютный слой, чтобы не зависеть от z родителя (current_scene/root).
+	puddle.z_as_relative = false
+	puddle.z_index = -3
 	parent.add_child(puddle)
 	puddle.global_position = puddle_position
 	var radius := float(config["radius"])
