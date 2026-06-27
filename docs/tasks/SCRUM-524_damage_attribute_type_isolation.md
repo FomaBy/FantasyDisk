@@ -1,7 +1,7 @@
 # SCRUM-524: Атрибуты урона изолированы по типу (маг качает только маг)
 
 Jira: SCRUM-524 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: SCRUM-522 (Ребаланс боёвки и прогрессии)
-Статус: В работе
+Статус: done (QA PASSED)
 
 ## Что и зачем
 
@@ -177,3 +177,33 @@ player.gd под 524 НЕ требуется — не трогать его пр
   плавающей точки быть не должно. Если красный — это реальная протечка атрибута.
 - Сейв-изоляция: тест чисто формульный, мета-сейв не читает — ложных red'ов от dev-сейва
   тут не будет (в отличие от рантайм-смоуков; см. memory о `--user-data-dir`).
+
+## QA-Вердикт 2026-06-27
+Статус: PASSED
+
+Проверил QA-воркер (фоновая приёмка). Реализация закоммичена в `c2adff76`
+(`balance(SCRUM-524): изолировать атрибуты урона по типу`), рабочее дерево чистое.
+
+**Сверка кода** (`scripts/progression_data.gd`):
+- `physical_base := 15.0 * strength / 10.0` — только сила (строка 857).
+- `magic_base := 14.0 * intelligence / 10.0` — только интеллект (строка 858).
+- `sound_base := perception + energy` — только восприятие+энергия (строка 859).
+- `dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat` — только знание (строка 861).
+- Три выхода `damage`/`magic_damage`/`sound_wave_damage` (строки 864–866) без
+  `* archetype_damage_multiplier`; `dot_damage` от `dot_attribute_base` (строка 877).
+  `_archetype_damage_multiplier` отсутствует (выпотрошен). Splash-вкладов чужих
+  атрибутов нет.
+
+**Гейт-тесты (Godot 4.6.3 headless, все exit 0):**
+- `damage_type_isolation_test` → `Damage type isolation test passed (5 атрибут-владельцев, 4 типов урона)` — свой тип растёт, чужие неизменны (|Δ| ≤ 1e-4) для всех владельцев; не-владельцы (ловкость/выносливость/лидерство) инертны.
+- `global_damage_balance_smoke_test` → `passed (51 пар; combined ±25%, solo ±20%, CCT ±30%; худшее CCT +22% — doctor/restore_potion/20)` — бюджет-коридор держится без возврата splash.
+- `runtime_smoke_combat_test` → `Runtime combat smoke suite passed`.
+- `runtime_smoke_test` → `Runtime smoke test passed` (duplicate-artifact guard 9282 files OK).
+- `live_balance_simulation_test` → `passed (5 архетипов покрыто, 0 мягких заметок)`.
+
+**Парсинг**: `progression_data.gd` без новых ворнингов/ошибок (grep по error/warning/orphan/unused — чисто); `weapon_archetype()` остаётся используемым.
+
+**Изоляция коммита**: коммит SCRUM-524 не затронул правки `player.gd` (SCRUM-523) —
+они остаются отдельной незакоммиченной работой.
+
+Все acceptance-критерии выполнены фактической проверкой. Вердикт: **PASSED → Готово**.

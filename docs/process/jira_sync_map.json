@@ -2567,5 +2567,9 @@
   "key": "SCRUM-536",
   "status": "Контроль качества",
   "desc_hash": "3bb3d02344a7fcee543ec13498cc5d76"
+ },
+ "SCRUM-524_damage_attribute_type_isolation.md": {
+  "key": "SCRUM-524",
+  "status": "Готово"
  }
 }
