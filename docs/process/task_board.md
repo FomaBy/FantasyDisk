@@ -11,6 +11,9 @@ anti-duplicate/owner audit и локального удобства. Новые 
 и evidence mirror.
 Новые или обновляемые active Jira issues/mirror rows обязаны иметь lane/owner
 metadata: `Контур: Codex|Claude|OtherAI`, `Owner`, `Thread/Worker`, `Locked paths`.
+Автоматическая работа role agents разрешена только по Jira issues с label `foma`
+(задачи от пользователя/PM/dispatcher для AI-автоматики); остальные issues
+запускаются вручную явным поручением пользователя конкретному агенту.
 
 ## Спринт 0.1.7 — активная разработка
 
@@ -283,6 +286,7 @@ class_weapon). «done = чистый HEAD зелёный».
 | [bug_settings_v2_title_collides_tab_switcher_task.md](../tasks/bug_settings_v2_title_collides_tab_switcher_task.md) | Back-end (UI) | done | Jira: SCRUM-468. **QA: passed** (2026-06-17, headless-рендер) — заголовок «Настройки» сталкивался с таб-свитчером (висел в пустой середине бара). Свитчер+контент сдвинуты ниже заголовка через единый `_settings_v2_switcher_top`; заголовок остался чётким сверху. Находка QA-ревью SCRUM-439 против макапа. |
 | [bug_attribute_shop_action_buttons_overflow_720p_task.md](../tasks/bug_attribute_shop_action_buttons_overflow_720p_task.md) | Back-end (UI) | done | Jira: SCRUM-467. **QA: passed** (2026-06-17, рендер 1280×720) — при 4+ опциях докачки (ветка Знаний) кнопки «Обновить»/«Пропустить» уезжали под фолд. Вынесены ВНЕ ScrollContainer, закреплены снизу панели; карточки скроллятся. |
 | [bug_runtime_smoke_hero_select_v4_backbutton_name_task.md](../tasks/bug_runtime_smoke_hero_select_v4_backbutton_name_task.md) | Back-end (UI) | done | Jira: SCRUM-479. Closed in Jira by PM cleanup directive 2026-06-27 after follow-up commit `d59f80a9` and recorded runtime smoke rerun. |
+| [bug_scrum514_item_icon_skill_task.md](../tasks/bug_scrum514_item_icon_skill_task.md) | Design main / Codex | new | Jira: SCRUM-543. **QA: failed** (2026-06-27) на приёмке SCRUM-514 (вернулась в «К выполнению»). (1) БЛОКЕР AC №1: нет local skill mirror `~/.codex/skills/fantasydisk-item-icon-generator/`; (2) Asset Matrix не покрывает `assets/sprites/ui/icons/stats/stat_<id>.png` (базовые атрибуты, 8 шт.) — только `derived/attr_*`; `ui_icon_registry.gd:51-70` грузит обе папки. Skill не генерит картинки (read-only проверки). |
 
 ## 0.1.5 — blocked / dependency-gated
 
