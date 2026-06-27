@@ -887,8 +887,10 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var projectile_speed_flat := float(run_modifiers.get("projectile_speed_flat", 0.0)) + float(passive_mods.get("projectile_speed_flat", 0.0))
 	var aura_radius_flat := float(run_modifiers.get("aura_radius_flat", 0.0)) + float(passive_mods.get("aura_radius_flat", 0.0))
 	var buff_power_flat := float(run_modifiers.get("buff_power_flat", 0.0)) + float(passive_mods.get("buff_power_flat", 0.0))
-	var dot_damage_flat := float(run_modifiers.get("dot_damage_flat", 0.0)) + float(passive_mods.get("dot_damage_flat", 0.0))
-	var dot_speed_flat := float(run_modifiers.get("dot_speed_flat", 0.0)) + float(passive_mods.get("dot_speed_flat", 0.0))
+	var run_dot_damage_flat := minf(maxf(float(run_modifiers.get("dot_damage_flat", 0.0)), 0.0), 12.0) + minf(float(run_modifiers.get("dot_damage_flat", 0.0)), 0.0)
+	var run_dot_speed_flat := minf(maxf(float(run_modifiers.get("dot_speed_flat", 0.0)), 0.0), 1.0) + minf(float(run_modifiers.get("dot_speed_flat", 0.0)), 0.0)
+	var dot_damage_flat := run_dot_damage_flat + float(passive_mods.get("dot_damage_flat", 0.0))
+	var dot_speed_flat := run_dot_speed_flat + float(passive_mods.get("dot_speed_flat", 0.0))
 	var crit_chance_flat := (float(run_modifiers.get("crit_chance_flat", 0.0)) + float(passive_mods.get("crit_chance_flat", 0.0))) * CRIT_FLAT_EFFECTIVENESS
 	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + float(passive_mods.get("crit_damage_flat", 0.0))
 	if passive_mods.has("crit_damage_multiplier"):

@@ -107,6 +107,7 @@ const ATTACK_MODE_EXECUTORS := {
 @export var combo_clouds := false
 @export var pool_duration := 3.0
 @export var pool_tick_interval := 0.6
+@export var pool_direct_damage_multiplier := 1.0
 @export var charge_seconds := 0.0
 @export var charge_max_multiplier := 1.0
 @export var crit_shadow_burst_radius := 0.0
@@ -204,6 +205,7 @@ func configure_weapon(config: Dictionary) -> void:
 	combo_clouds = bool(config.get("combo_clouds", combo_clouds))
 	pool_duration = float(config.get("pool_duration", pool_duration))
 	pool_tick_interval = float(config.get("pool_tick_interval", pool_tick_interval))
+	pool_direct_damage_multiplier = float(config.get("pool_direct_damage_multiplier", pool_direct_damage_multiplier))
 	charge_seconds = float(config.get("charge_seconds", charge_seconds))
 	charge_max_multiplier = float(config.get("charge_max_multiplier", charge_max_multiplier))
 	crit_shadow_burst_radius = float(config.get("crit_shadow_burst_radius", config.get("dash_on_crit_distance", crit_shadow_burst_radius)))
@@ -518,11 +520,13 @@ func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: fl
 
 func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	# Ядовитое облако химика: тики по врагам в радиусе, группа player_weapon_effects.
+	tick_damage *= POOL_TICK_DAMAGE_MULTIPLIER
 	var combo_target := _find_combo_cloud(pool_position)
 	var pool := Node2D.new()
 	pool.name = "ChemistPoisonPool"
 	_register_effect(pool)
 	pool.add_to_group("chemist_clouds")
+	pool.set_meta("pool_weapon_owner", get_instance_id())
 	if pool_element != "":
 		pool.set_meta("pool_element", pool_element)
 	# SCRUM-553: наземная декаль — пул рисуется ПОД всеми боевыми сущностями
@@ -542,6 +546,7 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	pool.add_child(visual)
 	_projectile_parent().add_child(pool)
 	pool.global_position = pool_position
+	_retire_excess_damage_pools(pool)
 	if combo_target != null:
 		_trigger_chemist_combo(pool, combo_target, tick_damage)
 
@@ -606,9 +611,9 @@ func _find_combo_cloud(pool_position: Vector2) -> Node2D:
 func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: float) -> void:
 	var combo_position := (new_cloud.global_position + old_cloud.global_position) * 0.5
 	var combo_radius := aoe_radius * 1.05
-	var combo_damage := maxf(damage, tick_damage * 5.5)
+	var combo_damage := maxf(damage, tick_damage * 5.5) * pool_direct_damage_multiplier
 	AttackVfx.orb_burst(_projectile_parent(), combo_position, combo_radius, Color(1.0, 0.75, 0.16, 0.50))
-	_damage_enemies_in_circle(combo_position, combo_radius, combo_damage)
+	_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
 
 
 func _find_closest_enemies(owner_node: Node2D, count: int) -> Array:
@@ -636,7 +641,7 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 		if current_weapon != null:
 			var current_owner := instance_from_id(owner_id) as Node2D
 			var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
-			current_weapon.call("_damage_enemies_in_circle", target_position, aoe_radius, explosion_damage)
+			current_weapon.call("_damage_aoe_projectile_explosion", target_position, aoe_radius, explosion_damage)
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, visual_color)
 			if leaves_pool:
 				var parameters_raw = current_owner.get("derived_parameters") if current_owner != null else null
@@ -1991,12 +1996,12 @@ func _weapon_damage_type() -> String:
 			return "physical"
 
 
-func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := true, damage_type := "") -> void:
+func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := true, damage_type := "", notify_owner_hit := true) -> void:
 	if enemy != null and is_instance_valid(enemy) and enemy.has_method("take_damage"):
 		var hit_type := damage_type if damage_type != "" else _weapon_damage_type()
 		_call_take_damage(enemy, amount, {"critical": _last_attack_crit and apply_unique_melee_effects, "damage_type": hit_type})
 		var owner_node := _owner_node()
-		if owner_node != null and owner_node.has_method("on_weapon_hit"):
+		if notify_owner_hit and owner_node != null and owner_node.has_method("on_weapon_hit"):
 			owner_node.on_weapon_hit(enemy, amount, _last_attack_crit)  # SCRUM-500: прокидываем крит-флаг
 		_heal_owner_from_damage(owner_node, amount)
 		if _last_attack_crit and crit_shadow_burst_radius > 0.0 and owner_node != null and owner_node.has_method("trigger_assassin_crit_shadow"):
@@ -2047,7 +2052,7 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	for tick_index in range(dot_ticks):
 		dot_tween.tween_interval(1.0 / tick_speed)
 		dot_tween.tween_callback(func() -> void:
-			_damage_enemy(enemy, tick_damage, false, "dot")
+			_damage_enemy(enemy, tick_damage, false, "dot", false)
 			if enemy is Node2D:
 				HazardVfx.dot_tick(enemy, dot_color)
 		)
@@ -2058,17 +2063,56 @@ func _damage_enemies_in_circle(origin: Vector2, radius: float, amount: float) ->
 		_damage_enemy(enemy_node, amount)
 
 
+func _damage_aoe_projectile_explosion(origin: Vector2, radius: float, amount: float) -> void:
+	if leaves_pool:
+		_damage_enemies_in_circle_capped(origin, radius, amount * POOL_PROJECTILE_DAMAGE_MULTIPLIER * pool_direct_damage_multiplier, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
+		return
+	_damage_enemies_in_circle_capped(origin, radius, amount, AOE_PROJECTILE_FULL_TARGETS, AOE_PROJECTILE_TARGET_DIMINISH)
+
+
 # SCRUM-533: тик ЛУЖИ (DoT-облако) с диминишингом по числу целей. Раньше каждый
 # тик лужи лил ПОЛНЫЙ tick_damage всем врагам в круге без потолка, поэтому на
 # плотном паке из 20 целей throughput рос линейно (chemist/acid_flask lvl20_ideal
 # 20t ≈ 112k — кратно выше budget'а). Формула же бюджетит лужу как pool_targets ≤ 4
 # (estimate_weapon_budget → _budget_hit_model, mode aoe_projectile), так что живой
 # замер выбивался из формульного коридора. Здесь живой урон лужи приводится к тому
-# же бюджету: ближайшие POOL_FULL_TARGETS целей получают полный урон, каждая
-# следующая (по удалённости от центра) — убывающий 1/(1+(rank-knee)*decay). Облако
-# конечной потенции: типичный бой 1-5 целей не задет, плотная толпа не даёт runaway.
-const POOL_FULL_TARGETS := 4
-const POOL_TARGET_DIMINISH := 0.6
+# же бюджету: центральная цель получает полный урон, каждая следующая (по удалённости
+# от центра) — резко убывающий 1/(1+(rank-knee)*decay). Облако остаётся area-denial
+# оружием, но плотная толпа больше не умножает один тик почти на весь экран.
+const POOL_FULL_TARGETS := 1
+const POOL_TARGET_DIMINISH := 1.5
+const MAX_ACTIVE_DAMAGE_POOLS := 1
+const AOE_PROJECTILE_FULL_TARGETS := 5
+const AOE_PROJECTILE_TARGET_DIMINISH := 2.0
+const POOL_PROJECTILE_FULL_TARGETS := 1
+const POOL_PROJECTILE_TARGET_DIMINISH := 3.0
+const POOL_TICK_DAMAGE_MULTIPLIER := 0.55
+const POOL_PROJECTILE_DAMAGE_MULTIPLIER := 0.55
+
+
+func _retire_excess_damage_pools(new_pool: Node2D) -> void:
+	var active_pools: Array[Node2D] = []
+	for cloud_node in get_tree().get_nodes_in_group("chemist_clouds"):
+		if not (cloud_node is Node2D):
+			continue
+		if int(cloud_node.get_meta("pool_weapon_owner", 0)) != get_instance_id():
+			continue
+		active_pools.append(cloud_node as Node2D)
+	active_pools.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		if a == new_pool:
+			return false
+		if b == new_pool:
+			return true
+		return int(a.get_instance_id()) < int(b.get_instance_id())
+	)
+	while active_pools.size() > MAX_ACTIVE_DAMAGE_POOLS:
+		var stale_pool := active_pools.pop_front() as Node2D
+		if stale_pool == new_pool:
+			active_pools.append(stale_pool)
+			continue
+		stale_pool.remove_from_group("chemist_clouds")
+		_release_effect(stale_pool)
+		stale_pool.queue_free()
 
 func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float) -> void:
 	var enemies: Array = TARGET_QUERY.in_radius(self, origin, radius)
@@ -2084,7 +2128,23 @@ func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float) -> v
 		var factor := 1.0
 		if index >= POOL_FULL_TARGETS:
 			factor = 1.0 / (1.0 + float(index - POOL_FULL_TARGETS + 1) * POOL_TARGET_DIMINISH)
-		_damage_enemy(enemies[index] as Node2D, amount * factor)
+		_damage_enemy(enemies[index] as Node2D, amount * factor, false, "dot", false)
+
+
+func _damage_enemies_in_circle_capped(origin: Vector2, radius: float, amount: float, full_targets: int, diminish: float) -> void:
+	var enemies: Array = TARGET_QUERY.in_radius(self, origin, radius)
+	if enemies.size() <= full_targets:
+		for enemy_node in enemies:
+			_damage_enemy(enemy_node, amount)
+		return
+	enemies.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return origin.distance_squared_to(a.global_position) < origin.distance_squared_to(b.global_position)
+	)
+	for index in range(enemies.size()):
+		var factor := 1.0
+		if index >= full_targets:
+			factor = 1.0 / (1.0 + float(index - full_targets + 1) * diminish)
+		_damage_enemy(enemies[index] as Node2D, amount * factor, index < full_targets)
 
 
 func _damage_enemies_in_circle_falloff(origin: Vector2, radius: float, amount: float, minimum_factor: float) -> void:

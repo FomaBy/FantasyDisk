@@ -95,7 +95,7 @@ const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
 	"guitarist": {"energy": 1.56},
 	"assassin": {"strength": 2.05, "agility": 2.05},
 	"doctor": {"agility": 1.10, "intelligence": 1.80},
-	"chemist": {"agility": 1.52, "intelligence": 1.52},
+	"chemist": {"agility": 1.70, "intelligence": 1.70},
 	"knight": {"strength": 0.73, "agility": 0.73},
 	"druid": {"energy": 1.70, "perception": 0.55, "leadership": 0.70},
 	"berserk": {"strength": 1.18, "agility": 1.10},
@@ -169,7 +169,7 @@ const CRIT_DAMAGE_CAP := 2.75
 # его до ~16.8, что роняет berserk/hammer 20t 60451→~26k (≤2.5x медианы ~28k) и 1t
 # 2520→~1.1k, оставляя класс сильным AoE верхней половины (не аутлаером и не слабым).
 # Ранний/средний билд (damage_mult 3..6x) почти не задет — DR кусает только хвост.
-const RUN_DAMAGE_MULT_SOFTCAP := 20.0   # жёсткий потолок забегового damage_multiplier
+const RUN_DAMAGE_MULT_SOFTCAP := 12.0   # жёсткий потолок забегового damage_multiplier
 const RUN_DAMAGE_MULT_KNEE := 0.03      # кривизна диминишинга (асимптота избытка = 1/knee)
 const RUN_ATTACK_SPEED_MULT_SOFTCAP := 1.70  # потолок забегового attack_speed_multiplier
 const RUN_ATTACK_SPEED_MULT_KNEE := 0.50

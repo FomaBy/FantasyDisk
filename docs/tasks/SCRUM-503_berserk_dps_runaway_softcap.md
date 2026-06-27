@@ -1,7 +1,7 @@
 # SCRUM-503: Срезать runaway-множители Берсерка по живой матрице DPS (hammer-аутлаер 78x)
 
 Jira: SCRUM-503 · Роль: backend (balance) · Контур: codex · Приоритет: P0 · foma · Эпик: —
-Статус: К выполнению (QA FAILED 2026-06-27 — Берсерк-specific cap проходит, но literal global live-matrix acceptance не принят: linked bug SCRUM-533 остаётся блокером; см. QA-вердикт ниже)
+Статус: review / готово к QA (2026-06-28 — backend continuation закрыл live pool DoT blocker SCRUM-533; см. результат ниже)
 
 ## Что и зачем
 
@@ -142,3 +142,25 @@ berserk/hammer 1t = 2520 (медиана 1t ≈ 945, 2.5x ≈ 2363 → моло�
 
 Ограничение QA:
 - During QA, unrelated production dirty files appeared (`scripts/class_weapon.gd`, `scripts/enemy.gd`, `scripts/status_effects.gd`, `tests/runtime_smoke_test.gd`, `project.godot`, `docs/design/systems/combat.md`, `tests/damage_type_palette_test.gd`). QA stopped further production verification to avoid accepting concurrent dirty work and did not modify production code/assets.
+
+## Backend-result / continuation (2026-06-28)
+Статус: READY FOR QA.
+
+Продолжение после backend worker `019f0afa-7d3b-7f93-957e-a8d625d039e3`: Berserk runaway gate уже был зелёным, но QA-блокер оставался в live pool DoT матрице (`chemist/acid_flask`, `chemist/blast_powder`). Правка расширена на общий live damage runaway путь без ослабления тестов.
+
+Что изменено:
+- `scripts/class_weapon.gd`: pool/chemist cloud теперь держит максимум 1 активную damage-pool на владельца оружия; pool tick и leaves-pool projectile explosion получают отдельные runtime-множители и target falloff; secondary DoT/pool/splash урон больше не вызывает recursive `owner_node.on_weapon_hit`, чтобы универсальные proc-эффекты не умножались от каждого тика/вторичной цели.
+- `scripts/progression_data.gd`: положительный run-only `dot_damage_flat` capped до `12.0`, `dot_speed_flat` capped до `1.0`; отрицательные run-моды и passive-моды сохраняются без усечения.
+- `scripts/progression_data_balance.gd`: run damage multiplier softcap tightened `20.0 -> 12.0`; Chemist level stat growth scalars подняты `1.52 -> 1.70`, чтобы трёхоружейный class-kit остался в формульном коридоре после live pool cap.
+- `scripts/progression_data_weapons.gd`: `chemist/blast_powder` и `chemist/acid_flask` получили сниженный raw `damage_multiplier` плюс отдельный `pool_direct_damage_multiplier`, чтобы live splash/pool throughput вошёл в acceptance без превращения всего Chemist kit в клон одного слабого оружия.
+- `docs/design/reports/class_damage_table_3variants.md`: перегенерирован формульный class table report.
+
+Проверено на Windows через Godot 4.7 stable console (`C:\Users\FomaE\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe`; Godot 4.6.3 локально недоступен):
+- `tests/berserk_dps_runaway_gate.gd` — PASS: `berserk/hammer lvl20_ideal: 20t=5763 (≤12000), 1t=626 (≤2363)`.
+- `tests/pool_dot_runaway_gate.gd` — PASS: `chemist/acid_flask lvl20_ideal 20t=68085 (≤70000)`, `chemist/blast_powder lvl20_ideal 20t=62631 (≤70000)`.
+- `tests/global_damage_balance_smoke_test.gd` — PASS: `51 пар; combined ±25%, solo ±20%, CCT ±30%; худшее CCT +22% — doctor/restore_potion/20`.
+- `tests/class_damage_table_3variants_test.gd` — PASS: `17 classes, 153 weapon-build rows`.
+
+Residual risk / QA note:
+- Это backend/balance fix; визуальные/анимационные области не затрагивались.
+- `tools/jira_board_sync.py` на Windows всё ещё требует отдельной совместимости из-за Unix-only `fcntl`; Jira обновлена прямым REST-комментарием.
