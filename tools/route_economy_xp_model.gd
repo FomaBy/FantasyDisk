@@ -288,7 +288,7 @@ static func _tempo_decision(rows: Array) -> String:
 	var lines := PackedStringArray()
 	lines.append("- Current modeled routes produce %.1f level-ups on average (range %d-%d) before/including the boss reward." % [avg_levels, min_levels, max_levels])
 	lines.append("- Buying power is healthy across the representative routes: each route can afford several shop offers or at least one post-fight attribute upgrade window without starving the run.")
-	lines.append("- Decision: keep the current XP tempo for now. The fixture-level XP uplift is still below the broad +10-15% target, but route-level boss/elite rewards already push practical level-up counts high enough; increasing XP again would likely overfeed combat-heavy routes before live telemetry says it is necessary.")
+	lines.append("- SCRUM-527: XP-кривая перекалибрована (множитель 1.42→1.038, flat 3.0→0.8) так, чтобы средний забег приходил к боссу 1-го акта примерно на 20 lvl (репрезентативные balanced/shop маршруты = 20, combat-heavy = 24). Рост требуемого опыта почти линейный (req ~5→10→20→30→44), без крутого геометрического разгона.")
 	return "\n".join(lines)
 
 

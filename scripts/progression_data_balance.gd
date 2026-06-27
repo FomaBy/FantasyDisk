@@ -286,9 +286,13 @@ const STAGE_SCALE_LINEAR := 0.075
 
 const ECONOMY_PRICE_MULTIPLIER := 1.10
 
-const XP_CURVE_MULTIPLIER := 1.42
+# SCRUM-527: XP-кривая перекалибрована — к боссу 1-го акта средний забег ~20 lvl
+# (было ~8-9). Множитель резко снижен (1.42→1.038): рост требуемого опыта плавный,
+# почти линейный (req ~5→10→20→30→44 к lvl20, макс. скачок ~3), без крутого
+# геометрического разгона. Подтверждено tools/route_economy_xp_model.gd.
+const XP_CURVE_MULTIPLIER := 1.038
 
-const XP_CURVE_FLAT := 3.0
+const XP_CURVE_FLAT := 0.8
 
 const DROP_CLASS_MULTIPLIERS := {
 	"ordinary": {"xp": 1.0, "money": 1.0, "money_chance": 0.75},
