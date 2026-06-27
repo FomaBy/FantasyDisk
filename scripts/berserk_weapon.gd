@@ -13,6 +13,7 @@ const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 @export var inner_width := 54.0
 @export var outer_width := 300.0
 @export var aoe_radius := 190.0
+@export var max_aoe_radius := 0.0
 @export var sweep_degrees := 70.0
 @export var windup_time := 0.06
 @export var swing_time := 0.14
@@ -50,6 +51,7 @@ func configure_weapon(config: Dictionary) -> void:
 	inner_width = float(config.get("inner_width", inner_width))
 	outer_width = float(config.get("outer_width", outer_width))
 	aoe_radius = float(config.get("aoe_radius", aoe_radius))
+	max_aoe_radius = float(config.get("max_aoe_radius", max_aoe_radius))
 	sweep_degrees = float(config.get("sweep_degrees", sweep_degrees))
 	windup_time = float(config.get("windup_time", windup_time))
 	swing_time = float(config.get("swing_time", swing_time))
@@ -228,7 +230,8 @@ func _find_closest_enemy(owner_node: Node2D, range_limit := -1.0) -> Node2D:
 
 func _is_enemy_inside_attack(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2) -> bool:
 	if attack_shape == "circle":
-		return owner_node.global_position.distance_squared_to(enemy_node.global_position) <= aoe_radius * aoe_radius
+		var radius := _effective_circle_radius()
+		return owner_node.global_position.distance_squared_to(enemy_node.global_position) <= radius * radius
 	if attack_shape == "sweep":
 		return _is_enemy_inside_sweep(owner_node, enemy_node, attack_direction)
 	# "strip" — прямоугольная полоса: frustum с равными inner/outer width.
@@ -314,7 +317,7 @@ func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> vo
 	var radius := maxf(aoe_radius, inner_width * 1.45)
 	if attack_shape == "circle":
 		center = owner_node.global_position
-		radius = maxf(aoe_radius, 96.0)
+		radius = maxf(_effective_circle_radius(), 96.0)
 	elif attack_shape == "strip":
 		center = owner_node.global_position + direction * ((start_distance + attack_range) * 0.5)
 		radius = maxf(inner_width * 2.0, 96.0)
@@ -379,7 +382,13 @@ func _show_circle_area(owner_node: Node2D) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		scene = get_tree().root
-	AttackVfx.hammer_slam(scene, owner_node.global_position, aoe_radius, visual_color)
+	AttackVfx.hammer_slam(scene, owner_node.global_position, _effective_circle_radius(), visual_color)
+
+
+func _effective_circle_radius() -> float:
+	if max_aoe_radius > 0.0:
+		return minf(aoe_radius, max_aoe_radius)
+	return aoe_radius
 
 
 func _owner_node() -> CharacterBody2D:
@@ -400,6 +409,8 @@ func _capture_base_values() -> void:
 		set_meta("base_attack_range", attack_range)
 	if not has_meta("base_aoe_radius"):
 		set_meta("base_aoe_radius", aoe_radius)
+	if not has_meta("base_max_aoe_radius"):
+		set_meta("base_max_aoe_radius", max_aoe_radius)
 	if not has_meta("base_inner_width"):
 		set_meta("base_inner_width", inner_width)
 	if not has_meta("base_outer_width"):

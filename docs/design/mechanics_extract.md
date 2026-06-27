@@ -136,7 +136,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | --- | --- | --- | --- | --- |
 | Берсерк | Двуручный меч | `sword` | `frustum` | Усеченный замах 90°, радиус 600, base width 150, outer width 1200, interval 0.58, damage x1.15 |
 | Берсерк | Двуручный топор | `axe` | `sweep` | Дуга 140 градусов радиуса 320, damage x0.85 |
-| Берсерк | Двуручный молот | `hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.25 (AoE) / 1.15 (damage) — слабый старт, controlled top-tier AoE к концу забега |
+| Берсерк | Двуручный молот | `hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.25 (AoE) / 1.15 (damage), фактическая круговая зона capped at 145 px — сильный ближний AoE без экранного AFK-радиуса |
 | Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 быстрых выстрела по линии: первая цель получает полный урон, соседи в коридоре получают reduced suppression damage |
 | Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф зоны, короткая задержка фитиля, взрыв с falloff урона к краю |
 | Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Оборонительный forward brace: враг получает один укол за стойку и knockback |

@@ -224,6 +224,15 @@ event-множители) + `post_combat`.
   lvl20 optimum 2925.81 DPS на 1 цели и 61199.86 DPS на 20 целях вместо
   прежних ~7636 / ~184k; max class-best 20-target DPS теперь 68574.57 при
   class-best median gate 74785.73.
+- SCRUM-545 дополнил это геометрическим cap'ом молота: `BerserkWeapon` поддерживает
+  `max_aoe_radius`, а `berserk/hammer` ограничен close-ring radius 145px. Это не
+  меняет damage multipliers SCRUM-503 и не трогает меч/топор. Focused live gate
+  после cap'а: `berserk/hammer lvl20_ideal` примерно 8.9k DPS на 20 целях и
+  840-922 DPS на 1 цели; soft-cap-only baseline без radius cap был ~13.9k/922.
+  Full `tools/character_balance_csv.gd` pass in the SCRUM-545 run reached the
+  hammer row (`ideal_20=9518.7`, `ideal_1=922.4`) but exited nonzero later in the
+  roster before rewriting the CSV; use the focused live gate as the accepted
+  scoped regression until the full-matrix runner is stabilized.
 - Живой DPS/TTK: `tools/live_combat_harness.gd` + гейт `tests/live_balance_simulation_test.gd`.
 - Выживаемость профилей: `tools/survivability_harness.gd` + гейт `tests/survivability_scenario_test.gd`.
 - Применение бюджет-тюнинга на рантайме: `tests/weapon_tuning_application_test.gd`. Экономика/XP маршрута: `tools/route_economy_xp_model.gd`.

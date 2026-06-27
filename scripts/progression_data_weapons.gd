@@ -60,6 +60,7 @@ const BERSERK_WEAPONS := {
 		"inner_width": 180.0,
 		"outer_width": 360.0,
 		"aoe_radius": 100.0,
+		"max_aoe_radius": 145.0,
 		"sweep_degrees": 360.0,
 		"damage_multiplier": 0.55,
 		"melee_close_bonus_radius": 115.0,
