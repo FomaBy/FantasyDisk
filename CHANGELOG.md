@@ -152,6 +152,12 @@
   они молча игнорировались, делая тултипы defile/duel неправдой. Экономика
   сверена против `stage_scaled_cost`/`COST_BY_TIER`/`DROP_CLASS_MULTIPLIERS`;
   `event_data_smoke_test.gd`, runtime/economy и балансные смоуки зелёные.
+  Восстановлен фактический штраф `full_rest` (1.10→1.25) в `event_data.gd` после
+  regression и согласован EV-инвариант SCRUM-508: чисто-штрафная ветка без боевой
+  добычи (`hot_spring/full_rest`) больше не классифицируется как «рисковая» в
+  `tools/route_economy_xp_model.gd` — это безопасный хил с побочкой, а не выбор
+  «риск ради апсайда», поэтому safe-only событие `hot_spring` исключено из
+  инварианта risk>=safe (16 событий-пар, все зелёные).
 - Settings and Attribute Shop short-viewport fit (SCRUM-471): fixed the
   1152x648 no-overlap matrix failures by allowing the Settings v2 content panel
   to compress only on short modals and using compact Attribute Shop offer/action

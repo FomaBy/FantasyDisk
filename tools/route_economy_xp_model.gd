@@ -199,10 +199,13 @@ static func _branch_is_risk(branch: Dictionary) -> bool:
 		return true
 	if branch.has("combat"):
 		return true
-	# Ветка с ЧИСТЫМ штрафом-модом (enemy_health_multiplier > 1.0, напр. full_rest)
-	# тоже «рисковая»: повышает опасность будущего боя без боевой добычи.
-	if branch.has("mods") and float((branch["mods"] as Dictionary).get("enemy_health_multiplier", 1.0)) > 1.0:
-		return true
+	# SCRUM-494: ветка с ЧИСТЫМ штрафом-модом (enemy_health_multiplier > 1.0) и БЕЗ
+	# боевой/артефактной/статовой добычи (напр. hot_spring/full_rest) — это НЕ
+	# рисковый выбор «риск ради апсайда», а безопасный хил с побочкой. После нерфа
+	# full_rest до штрафа 1.25 (SCRUM-494 AC) он сознательно слабее clean-хила
+	# quick_dip, поэтому не должен учитываться как «рисковая» ветка инварианта
+	# SCRUM-508 (иначе безопасная пара hot_spring ложно проваливает risk>=safe).
+	# Настоящие рисковые ветки уже помечены risk:true или несут combat.
 	if branch.has("random_outcomes"):
 		for outcome in (branch["random_outcomes"] as Array):
 			if (outcome as Dictionary).has("combat"):

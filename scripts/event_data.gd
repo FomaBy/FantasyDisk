@@ -76,7 +76,7 @@ const RANDOM_EVENTS := [
 		"title": "Горячий источник",
 		"story": "В каменной чаше кипит вода цвета янтаря. Пар складывается в лица прежних путников, которые выглядят слишком довольными и слишком сонными.",
 		"choices": [
-			{"id": "full_rest", "title": "Отдохнуть", "description": "Полное лечение. Следующий бой: враги на 10% живучее.", "heal_percent": 1.0, "mods": {"enemy_health_multiplier": 1.10}},
+			{"id": "full_rest", "title": "Отдохнуть", "description": "Полное лечение. Следующий бой: враги на 25% живучее.", "heal_percent": 1.0, "mods": {"enemy_health_multiplier": 1.25}},
 			{"id": "quick_dip", "title": "Быстро окунуться", "description": "Лечение 35% HP без побочного эффекта.", "heal_percent": 0.35},
 		],
 	},
