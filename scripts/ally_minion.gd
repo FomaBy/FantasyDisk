@@ -35,6 +35,7 @@ var owner_node: Node2D = null
 var command_target: Node2D = null
 var health := 18.0
 var _death_lifecycle_started := false
+var _death_tween: Tween = null
 
 
 func _ready() -> void:
@@ -233,11 +234,30 @@ func _begin_death_lifecycle() -> void:
 	health = 0.0
 	if _play_full_frame_death():
 		_disable_dead_ally_runtime()
-		var tween := create_tween()
-		tween.tween_interval(_full_frame_death_duration())
-		tween.tween_callback(queue_free)
+		# Деферим free до конца death-анимации, но через ГВАРД-колбэк и со ссылкой на
+		# твин: если узел успеют форс-фрильнуть раньше (каскад queue_free родителя —
+		# напр. mass-free между замерами в character_balance_csv.gd), _exit_tree убьёт
+		# твин, и колбэк не дёрнет queue_free на уже освобождённом self. Без этого
+		# tween_callback(queue_free) интермиттентно валит нативный SIGABRT (freed object).
+		_death_tween = create_tween()
+		_death_tween.tween_interval(_full_frame_death_duration())
+		_death_tween.tween_callback(_finish_death_lifecycle)
 		return
 	queue_free()
+
+
+func _finish_death_lifecycle() -> void:
+	if is_queued_for_deletion():
+		return
+	queue_free()
+
+
+func _exit_tree() -> void:
+	# Узел покидает дерево (death-free ИЛИ каскадный force-free родителя) —
+	# гасим отложенный death-твин, чтобы его колбэк не сработал по freed-self.
+	if _death_tween != null and _death_tween.is_valid():
+		_death_tween.kill()
+	_death_tween = null
 
 
 func _play_full_frame_death() -> bool:
