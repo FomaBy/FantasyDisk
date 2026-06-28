@@ -39,6 +39,7 @@ const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/u
 const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
+const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
 # SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
@@ -52,6 +53,8 @@ const REWARD_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
 const REWARD_ELITE_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
 const ECONOMY_CHOICE_WIDE_TEXTURE := MINIMAL_CARD_TEXTURE
 const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := MINIMAL_CARD_TEXTURE
+# SCRUM-568: карточки опций докачи переехали на overhaul_2k evt_card-рамку.
+const ATTRIBUTE_OFFER_CARD_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.425  # SCRUM-518: −15% от 0.5 (lock-step с player.gd)
 const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
@@ -1256,8 +1259,8 @@ func _initialize() -> void:
 		push_error("Expected 2-8 attribute offers in the post-battle window, including meta skill extra options.")
 		quit(1)
 		return
-	if _stylebox_texture_path((attribute_panel as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_PANEL_TEXTURE:
-		push_error("Expected attribute shop panel to use the SCRUM-448 minimal panel frame.")
+	if _stylebox_texture_path((attribute_panel as PanelContainer).get_theme_stylebox("panel")) != ATTRIBUTE_SHOP_PANEL_TEXTURE_2K:
+		push_error("Expected attribute shop panel to use the SCRUM-568 attr_panel @2K frame.")
 		quit(1)
 		return
 	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
@@ -1270,12 +1273,12 @@ func _initialize() -> void:
 	var stats_before: Dictionary = (snapshot.get("stats", {}) as Dictionary).duplicate(true)
 	var attr_money_before := int(main.ui._run_money())
 	var first_offer := attribute_offers.get_child(0) as Button
-	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != ECONOMY_CHOICE_WIDE_TEXTURE:
-		push_error("Expected attribute offers to use the SCRUM-448 minimal card frame.")
+	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != ATTRIBUTE_OFFER_CARD_TEXTURE_2K:
+		push_error("Expected attribute offers to use the SCRUM-568 evt_card @2K frame.")
 		quit(1)
 		return
-	if _stylebox_texture_path(first_offer.get_theme_stylebox("hover")) != ECONOMY_CHOICE_WIDE_HOVER_TEXTURE:
-		push_error("Expected attribute offers to use the SCRUM-448 minimal hover card frame.")
+	if _stylebox_texture_path(first_offer.get_theme_stylebox("hover")) != ATTRIBUTE_OFFER_CARD_TEXTURE_2K:
+		push_error("Expected attribute offers to use the SCRUM-568 evt_card @2K hover frame.")
 		quit(1)
 		return
 	_write_scrum437_attribute_offer_dump(attribute_panel as Control, attribute_offers)

@@ -1379,7 +1379,10 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	panel.offset_top = panel_vertical_margin
 	panel.offset_right = panel_width * 0.5
 	panel.offset_bottom = -panel_vertical_margin
-	panel.add_theme_stylebox_override("panel", _economy_panel_style())
+	# SCRUM-568: высокая панель докачи использует per-слот attr_panel @2K-рамку
+	# (1124×1384, нарисована 1:1 под слот; 9-slice тянет только плоскую середину).
+	var attr_panel_display := Vector2(panel_width, maxf(1.0, viewport_size.y - panel_vertical_margin * 2.0))
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("attr_panel", attr_panel_display))
 	root.add_child(panel)
 
 	var outer := VBoxContainer.new()
@@ -1486,8 +1489,13 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	for stat_id in game.attribute_offer:
 		var stat_title: String = str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
 		var interpretation: String = str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
-		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, _economy_attribute_choice_display_size())
+		var attr_offer_size := _economy_attribute_choice_display_size()
+		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, attr_offer_size)
 		offer_button.name = "AttributeOffer_%s" % stat_id
+		# SCRUM-568: карточка опции докачи переодета в evt_card @2K-рамку (480×340, тот же
+		# card-тип) и переинсечена под её content-зону — единый дарк-фэнтези стиль с Событием.
+		_apply_overhaul_choice_2k_theme(offer_button, "evt_card", attr_offer_size)
+		_reinset_overhaul_choice_content(offer_button, "evt_card", attr_offer_size)
 		offer_button.disabled = money < buy_cost
 		# SCRUM-413: недоступные (не хватает золота) карточки визуально затемнены —
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
@@ -4719,8 +4727,8 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		button.name = "EventChoiceButton%d" % index
 		# SCRUM-565: переодеть карточку выбора в per-слот evt_card @2K-рамку и пере-инсетить
 		# контент под её content-зону (46/58/46/54 source → display), чтобы текст не лез на орнамент.
-		_apply_event_choice_2k_theme(button, event_card_size)
-		_reinset_event_choice_content(button, event_card_size)
+		_apply_overhaul_choice_2k_theme(button, "evt_card", event_card_size)
+		_reinset_overhaul_choice_content(button, "evt_card", event_card_size)
 		var required_money := _event_choice_scaled_cost(event_choice)
 		if required_money > 0 and _run_money() < required_money:
 			button.disabled = true
@@ -7045,14 +7053,16 @@ func _event_panel_2k_style() -> StyleBox:
 	return _overhaul_2k_frame_style("evt_panel", display_size)
 
 
-func _reinset_event_choice_content(button: Button, display_size: Vector2) -> void:
-	if button == null:
+# SCRUM-565/568: переинсет контента карточки выбора под content-зону её overhaul_2k-рамки
+# (slot), чтобы текст/иконки держались внутри safe-зоны и не лезли на орнамент.
+func _reinset_overhaul_choice_content(button: Button, slot: String, display_size: Vector2) -> void:
+	if button == null or not UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE.has(slot):
 		return
 	var content := button.find_child("%sContent" % button.name, true, false) as Control
 	if content == null:
 		return
-	var source_size: Vector2 = UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE["evt_card"]
-	var base_content: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_CONTENT["evt_card"]
+	var source_size: Vector2 = UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE[slot]
+	var base_content: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_CONTENT.get(slot, Vector4.ZERO)
 	var margins := _scaled_frame_margins_xy(source_size, display_size, base_content)
 	content.offset_left = margins.x
 	content.offset_top = margins.y
@@ -7061,12 +7071,14 @@ func _reinset_event_choice_content(button: Button, display_size: Vector2) -> voi
 	button.set_meta("economy_content_margins", margins)
 
 
-func _apply_event_choice_2k_theme(button: Button, display_size: Vector2) -> void:
-	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style("evt_card", display_size))
-	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style("evt_card", display_size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style("evt_card", display_size, Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style("evt_card", display_size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style("evt_card", display_size, Color(0.58, 0.58, 0.58, 0.82)))
+# SCRUM-565/568: переодеть карточку выбора в overhaul_2k-рамку slot (normal/hover/
+# pressed/focus/disabled) с теми же нейтральными тинтами, что у economy-карт.
+func _apply_overhaul_choice_2k_theme(button: Button, slot: String, display_size: Vector2) -> void:
+	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))
+	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style(slot, display_size, Color(0.90, 0.84, 0.76, 1.0)))
+	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style(slot, display_size, Color(0.58, 0.58, 0.58, 0.82)))
 	button.add_theme_color_override("font_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)

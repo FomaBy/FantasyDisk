@@ -18,6 +18,7 @@ const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
 const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
+const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 
 
 func _initialize() -> void:
@@ -391,10 +392,10 @@ func _open_route_map(main: Node) -> void:
 
 
 func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
-	# SCRUM-565: Событие переехало на собственную evt_card @2K-рамку, поэтому общий
-	# minimal-metal card-контракт к event_economy больше не применяется (проверка
-	# evt_card-рамки — в match-ветке event_economy ниже).
-	if ["attribute_shop_economy", "rest_economy", "upgrade_economy"].has(screen_id):
+	# SCRUM-565/568: Событие и Докача переехали на overhaul_2k card-рамку (evt_card),
+	# поэтому общий minimal-metal card-контракт к ним больше не применяется (проверка
+	# evt_card-рамки — в их match-ветках ниже).
+	if ["rest_economy", "upgrade_economy"].has(screen_id):
 		for node in main.find_children("*", "Button", true, false):
 			var card := node as Button
 			if card == null or str(card.get_meta("economy_frame_kind", "")) != "choice_card":
@@ -408,12 +409,20 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button
 			if panel == null or not panel.get_global_rect().has_area():
 				return "%s: expected visible AttributeShopPanel." % context
+			# SCRUM-568: панель докачи рисуется собственной attr_panel @2K-рамкой.
+			if _stylebox_texture_path(panel.get_theme_stylebox("panel")) != ATTR_PANEL_2K_FRAME_PATH:
+				return "%s: expected AttributeShopPanel to use attr_panel @2K frame." % context
 			if skip_button == null or skip_button.disabled:
 				return "%s: expected AttributeSkipButton to remain reachable and enabled." % context
 			for node in main.find_children("AttributeOffer_*", "Button", true, false):
 				var offer := node as Button
 				if offer == null:
 					continue
+				# SCRUM-568: карточки опций используют evt_card @2K-рамку (normal+hover).
+				if _stylebox_texture_path(offer.get_theme_stylebox("normal")) != EVT_CARD_2K_FRAME_PATH:
+					return "%s: expected %s normal StyleBox to use evt_card @2K frame." % [context, offer.name]
+				if _stylebox_texture_path(offer.get_theme_stylebox("hover")) != EVT_CARD_2K_FRAME_PATH:
+					return "%s: expected %s hover StyleBox to use evt_card @2K frame." % [context, offer.name]
 				if not offer.disabled:
 					return "%s: expected zero-money attribute offers to be disabled." % context
 				if not offer.tooltip_text.contains("Недостаточно золота"):
