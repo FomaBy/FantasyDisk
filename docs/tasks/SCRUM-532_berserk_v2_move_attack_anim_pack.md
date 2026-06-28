@@ -309,3 +309,38 @@ gameplay, balance, UI, or class changes». Значит:
   структура манифеста/`frame_stats`/`qa_artifacts` для копирования; thief v2
   (`build/qa/scrum435_thief_v2_anim/`) — тот же «idle/walk/move без attack» паттern, который
   SCRUM-532 как раз достраивает атакой.
+
+## Animator Result - 2026-06-28
+
+Status: ready for QA. Owner: Animator/Codex `anim-loop-1`.
+
+Implemented Berserk v2 animation asset pack from accepted SCRUM-531 source,
+without wiring it into live runtime:
+
+- Entity: `berserk`, kind `hero`, full-frame spritesheet pipeline.
+- Source: `docs/design/references/berserk_v2/berserk_v2_idle_cell_512.png`.
+- Runtime-candidate sheet: `assets/sprites/characters/berserk_v2/berserk_v2_anim_sheet.png`.
+- Frame folders:
+  - `assets/sprites/characters/berserk_v2/frames/move/` - 5 frames.
+  - `assets/sprites/characters/berserk_v2/frames/attack_primary/` - 6 frames.
+- Canvas: `512x512`, pivot `(256, 470)`, 3/4-right flip-friendly direction.
+- Safe source sheet: `48 px` outer padding and `48 px` discard-only gutters.
+- `move`/`walk`: 5 frames, 9 fps, looping; contact/passing/opposite-contact/passing/settle cycle with secondary cloak and arm motion.
+- `attack_primary`: 6 frames, 12 fps, non-looping; anticipation, windup, active empty-fist strike, impact/follow-through, recoil, recovery.
+- No weapon is baked into the frames; the attack reads as an empty-fist/body strike to preserve SCRUM-531 handoff constraints.
+- Live runtime intentionally untouched: no changes to `assets/sprites/characters/berserk_spriteframes.tres`, `assets/sprites/characters/full_frame/berserk/*`, `scripts/player.gd`, or `tests/animation_smoke_test.gd`.
+
+QA evidence:
+
+- Manifest: `build/qa/scrum532_berserk_v2_anim/animation_manifest.json`.
+- Manifest validator output: `build/qa/scrum532_berserk_v2_anim/manifest_validator_output.txt`.
+- Contact sheet: `build/qa/scrum532_berserk_v2_anim/berserk_v2_contact.png`.
+- GIF previews: `build/qa/scrum532_berserk_v2_anim/berserk_v2_move.gif`, `build/qa/scrum532_berserk_v2_anim/berserk_v2_attack_primary.gif`.
+- Alpha/slicing report: `build/qa/scrum532_berserk_v2_anim/frame_alpha_slicing_report.json`.
+
+Validation:
+
+- `python C:\Users\FomaE\.codex\skills\fantasydisk-animation-director\scripts\validate_animation_manifest.py build\qa\scrum532_berserk_v2_anim\animation_manifest.json` PASS: `FantasyDisk animation manifest OK: 1 entities`.
+- Static alpha/slicing QA checked 12 PNG/sheet entries: `edge_alpha_pixels = 0` for all generated frame PNGs and sheet.
+- `git diff -- assets/sprites/characters/berserk_spriteframes.tres scripts/player.gd tests/animation_smoke_test.gd` is empty.
+- `animation_smoke_test.gd` was attempted with Godot 4.7 on Windows and is recorded in `build/qa/scrum532_berserk_v2_anim/animation_smoke_output.txt`; it failed before execution on pre-existing parse/class visibility issue: `Identifier "ProgressionData" not declared in the current scope` at `tests/animation_smoke_test.gd:29`.

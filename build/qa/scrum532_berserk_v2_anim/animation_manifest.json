@@ -1,0 +1,208 @@
+{
+  "entities": [
+    {
+      "id": "berserk",
+      "kind": "hero",
+      "production_pipeline": "full_frame_spritesheet",
+      "sprite_sheet": "assets/sprites/characters/berserk_v2/berserk_v2_anim_sheet.png",
+      "spriteframes": null,
+      "rig_scene": null,
+      "source_parts": [],
+      "canvas": {
+        "width": 512,
+        "height": 512,
+        "pivot_x": 256,
+        "pivot_y": 470
+      },
+      "frame_gutter_px": 48,
+      "outer_padding_px": 48,
+      "pivot": "bottom_center_feet_256_470",
+      "cutout_used": false,
+      "transparent_background_checked": true,
+      "no_crop_checked": true,
+      "safe_slicing_checked": true,
+      "direction_facing": "3/4-right flip-friendly",
+      "attack_required": true,
+      "runtime_integration": "not connected to live berserk_spriteframes.tres by SCRUM-532 scope",
+      "animations": [
+        {
+          "name": "move",
+          "frames": 5,
+          "fps": 9,
+          "loop": true,
+          "phase_notes": "contact/passing/opposite contact/passing/settle loop; full-frame secondary cloak and arm motion"
+        },
+        {
+          "name": "walk",
+          "frames": 5,
+          "fps": 9,
+          "loop": true,
+          "alias_of": "move"
+        },
+        {
+          "name": "attack_primary",
+          "frames": 6,
+          "fps": 12,
+          "loop": false,
+          "phase_notes": "anticipation, windup, active empty-fist strike, impact/follow-through, recoil, recovery"
+        }
+      ],
+      "frame_paths": {
+        "move": [
+          "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_00.png",
+          "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_01.png",
+          "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_02.png",
+          "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_03.png",
+          "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_04.png"
+        ],
+        "attack_primary": [
+          "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_00.png",
+          "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_01.png",
+          "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_02.png",
+          "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_03.png",
+          "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_04.png",
+          "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_05.png"
+        ]
+      },
+      "frame_stats": [
+        {
+          "animation": "move",
+          "frame": 0,
+          "path": "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_00.png",
+          "bbox": [
+            60,
+            68,
+            436,
+            473
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "move",
+          "frame": 1,
+          "path": "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_01.png",
+          "bbox": [
+            68,
+            51,
+            438,
+            470
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "move",
+          "frame": 2,
+          "path": "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_02.png",
+          "bbox": [
+            73,
+            68,
+            450,
+            469
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "move",
+          "frame": 3,
+          "path": "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_03.png",
+          "bbox": [
+            75,
+            53,
+            442,
+            471
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "move",
+          "frame": 4,
+          "path": "assets/sprites/characters/berserk_v2/frames/move/berserk_v2_move_04.png",
+          "bbox": [
+            63,
+            67,
+            438,
+            473
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 0,
+          "path": "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_00.png",
+          "bbox": [
+            58,
+            54,
+            431,
+            476
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 1,
+          "path": "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_01.png",
+          "bbox": [
+            51,
+            49,
+            420,
+            478
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 2,
+          "path": "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_02.png",
+          "bbox": [
+            83,
+            66,
+            503,
+            484
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 3,
+          "path": "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_03.png",
+          "bbox": [
+            87,
+            74,
+            503,
+            497
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 4,
+          "path": "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_04.png",
+          "bbox": [
+            87,
+            67,
+            461,
+            481
+          ],
+          "edge_alpha_pixels": 0
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 5,
+          "path": "assets/sprites/characters/berserk_v2/frames/attack_primary/berserk_v2_attack_primary_05.png",
+          "bbox": [
+            71,
+            61,
+            444,
+            472
+          ],
+          "edge_alpha_pixels": 0
+        }
+      ],
+      "qa_artifacts": [
+        "build/qa/scrum532_berserk_v2_anim/berserk_v2_contact.png",
+        "build/qa/scrum532_berserk_v2_anim/berserk_v2_move.gif",
+        "build/qa/scrum532_berserk_v2_anim/berserk_v2_attack_primary.gif"
+      ]
+    }
+  ]
+}

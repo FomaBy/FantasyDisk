@@ -132,6 +132,19 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `docs/design/backups/scrum461_berserk_cartoon_pre_anim/`. QA artifacts live
   under `build/qa/scrum461_berserk_cartoon_anim/`; attack animation remains
   intentionally absent by SCRUM-461 scope.
+- SCRUM-532 (2026-06-28) produces the Berserk v2 dark-fantasy animation asset
+  pack from the accepted SCRUM-531 source without wiring it into live runtime.
+  Candidate assets live under `assets/sprites/characters/berserk_v2/`:
+  `move`/`walk` has 5 looping `512x512` frames at 9 fps, and
+  `attack_primary` has 6 non-looping empty-fist/body-strike frames at 12 fps.
+  The safe-gutter sheet is
+  `assets/sprites/characters/berserk_v2/berserk_v2_anim_sheet.png` with `48 px`
+  outer padding/gutters and pivot `(256,470)`. QA artifacts and manifest live
+  under `build/qa/scrum532_berserk_v2_anim/`; the animation manifest validator
+  passes. Live `assets/sprites/characters/berserk_spriteframes.tres`,
+  `scripts/player.gd`, and `tests/animation_smoke_test.gd` remain unchanged by
+  scope, so runtime still uses the SCRUM-461 idle/walk/move-only Berserk until a
+  separate wiring task.
 - SCRUM-473 (2026-06-17) replaces the temporary cartoon-trial legacy rig for
   Dark Mage and Knight with real cartoon2 full-frame SpriteFrames. Runtime
   resources `assets/sprites/characters/dark_mage_spriteframes.tres` and
