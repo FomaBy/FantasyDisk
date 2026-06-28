@@ -234,13 +234,16 @@ updates. Active assets:
 
 Runtime keeps the combat HUD compact and readable: resource panel top-left,
 timer near top center, artifact row top-right with adaptive vertical fallback,
-and opaque level-up plus button bottom-right. Text, icons, bars, count badges,
+compact character stat chips below the resource panel, and opaque level-up plus button bottom-right. Text, icons, bars, count badges,
 focus/click zones and the plus glyph stay inside the safe rects documented in
 `docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`.
 Runtime uses compact content margins only to fit the live 720p HUD band; source
 safe rects remain the authority and decorative dragon heads, red gems, claw
 tips and bevels must stay unobstructed. Design mocks and Back-end runtime rect
 dumps at `1152x648`, `1280x720` and `2560x1440` live in `build/qa/scrum390/`.
+SCRUM-556 moves the in-run Escape pause panel to the upper-left gameplay area and
+adds `CharacterStatsHud`, a compact four-chip base-stat strip under
+`RunResourceHud`, using existing minimal-metal frames and runtime stat data.
 SCRUM-521 adds `LowHpVignetteOverlay` as a procedural combat HUD warning:
 when player HP drops below 30%, a shader vignette fades in with a transparent
 center and light red edges; it fades out only after HP recovers to 34%+ to avoid

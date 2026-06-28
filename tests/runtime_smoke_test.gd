@@ -1072,6 +1072,11 @@ func _initialize() -> void:
 		push_error("Expected combat HUD to be restored as compact HP/XP/money resources.")
 		quit(1)
 		return
+	var character_stats_hud := main.find_child("CharacterStatsHud", true, false) as PanelContainer
+	if character_stats_hud == null or character_stats_hud.find_children("CharacterStatChip_*", "PanelContainer", true, false).size() < 3:
+		push_error("Expected combat HUD to expose compact character stat chips on the main gameplay screen.")
+		quit(1)
+		return
 	if main.get("status_label") != null or main.get("artifact_label") != null:
 		push_error("Expected combat HUD to omit status/debug text labels.")
 		quit(1)
@@ -1092,6 +1097,12 @@ func _initialize() -> void:
 	var run_pause_panel := main.find_child("RunPauseMenuPanel", true, false) as PanelContainer
 	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != RUN_PAUSE_PANEL_TEXTURE_2K:
 		push_error("Expected run pause menu to use the SCRUM-486 @2K pm_panel frame.")
+		quit(1)
+		return
+	var pause_rect := run_pause_panel.get_global_rect()
+	var viewport_rect := main.get_viewport().get_visible_rect()
+	if pause_rect.position.x > viewport_rect.size.x * 0.12 or pause_rect.position.y > viewport_rect.size.y * 0.12:
+		push_error("Expected run pause menu to be anchored in the upper-left gameplay area, got %s." % str(pause_rect))
 		quit(1)
 		return
 	var pause_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
@@ -7761,7 +7772,7 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 
 func _visible_hud_top_controls(main: Node) -> Array:
 	var controls := []
-	for node_name in ["RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "ArtifactHudRow"]:
+	for node_name in ["RunResourceHud", "CharacterStatsHud", "CombatTimerPanel", "AscensionHudBadge", "ArtifactHudRow"]:
 		var control := main.find_child(node_name, true, false) as Control
 		if control != null and control.visible:
 			controls.append(control)

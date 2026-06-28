@@ -94,7 +94,7 @@ func _initialize() -> void:
 		# повышения) — детерминированная 2K-сетка не пересекается и держится во вьюпорте.
 		await _check_screen(viewport_size, "combat_hud", Callable(self, "_open_combat_hud"), [
 			"RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "ArtifactHudRow",
-			"LevelUpPlusButton",
+			"CharacterStatsHud", "LevelUpPlusButton",
 		], dump_lines, errors)
 		# SCRUM-487: баннер появления босса — ширина из CTB_*_2K (фикс легаси 1280=720p),
 		# текст центрируется по 2K-базе и помещается в рамку. Транзиентный — один контрол.
