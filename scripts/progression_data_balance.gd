@@ -90,7 +90,12 @@ const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
 	"soldier": {"strength": 0.95, "agility": 0.95},
 	"elementalist": {"agility": 0.92, "intelligence": 0.92},
 	"priest": {"agility": 0.88, "intelligence": 0.88},
-	"robot": {"strength": 0.78, "agility": 0.78},
+	# SCRUM-504: robot был дном solo-оси (best-weapon lvl20_ideal_1t ≈0.79x межклассовой
+	# медианы — двойное дно: и solo, и aoe ниже среднего у tank-класса с damage_budget 0.88).
+	# Подъём роста str/agi 0.78→0.86 поднимает его lvl20-потолок по обеим осям, не трогая
+	# base lvl1 (скаляры влияют только на очки сверх базы → comfort_band/base-гейт не затронут).
+	# Формульный gate lvl20_optimum остаётся в 0.90..1.10.
+	"robot": {"strength": 0.86, "agility": 0.86},
 	"engineer": {"strength": 0.72, "agility": 0.72, "leadership": 0.80},
 	"dark_mage": {"agility": 0.84, "intelligence": 0.84},
 	"guitarist": {"energy": 1.56},
