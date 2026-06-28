@@ -130,6 +130,14 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_M
   selected thumbnail state. The arrows remain inside the existing carousel
   content zone; no frame art or safe-zone geometry changes are part of this
   behavior.
+- SCRUM-561 updates the live HS4 Hero Select v4 2K pass. Slot-exact assets now
+  live under `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_hs4_*.png` and are
+  registered in `UIThemePaths.OVERHAUL_2K_FRAME_*`. Runtime content uses scaled
+  frame content margins via `_overhaul_2k_content_margins()`: portrait/dossier/radar
+  panels use `58/72/58/66`, the carousel uses the horizontal `hud_strip` safe band
+  `104/62/104/56`, and choose/ascension buttons use their own 2K button slots.
+  No portrait, radar, dossier text/stat row, carousel arrow or thumbnail may be
+  positioned against the outer frame bounds.
 - The older SCRUM-436 v2 Hero Select contract is superseded by SCRUM-447. Its corrected v2 frame slices and `build/qa/scrum436/` evidence remain historical references only; do not base new runtime Hero Select layout work on `assets/sprites/ui/frames/hero_select_v2/`.
 - Historical SCRUM-436 720p safe-area notes: the v2 `HeroSelectBackButton`, portrait/dossier/radar separation and bottom thumbnail strip were fixed with corrected slices in `assets/sprites/ui/frames/hero_select_v2/`. Those files and QA dumps in `build/qa/scrum436/` remain reference evidence only; the active runtime frame kit is SCRUM-447 v3.
 - SCRUM-355 supersedes the earlier dossier/carousel content-zone guidance for Design-safe ornament avoidance: the live `ui_frame_hero_select_dossier.png` and `ui_frame_hero_select_thumbnail_strip.png` were recomposed thinner/lighter by `tools/build_hero_select_thin_frames.py`; strict source margins are dossier `Vector4(126, 160, 126, 172)` and thumbnail strip `Vector4(132, 62, 132, 62)`. SCRUM-354 wires those exact source-space margins into runtime, scaling the carousel from its actual `1536x255` source image rather than the `1024x170` 720p display size. Labels, description text, ascension controls, the start button, thumbnails, hover states and selection states stay inside the computed safe rects; the 720p runtime dump shows dossier content `[P: (489, 191), S: (299, 280)]` within the 2px test tolerance of safe `[P: (488.5, 191.3), S: (299.9, 279.3)]`, carousel content `[P: (216, 587), S: (848, 88)]` within the same tolerance of safe `[P: (216, 587.3), S: (848, 87.3)]`, and a 22px gap between dossier and carousel frames. QA rects live in `build/qa/hero_select_radar_rects.md`.

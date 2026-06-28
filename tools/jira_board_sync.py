@@ -16,7 +16,6 @@
 Запуск: python3 tools/jira_board_sync.py [--dry-run] [--no-create]
 """
 import base64
-import fcntl
 import glob
 import hashlib
 import json
@@ -24,19 +23,25 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import urllib.parse
 import urllib.request
+try:
+    import fcntl  # type: ignore
+except ImportError:
+    fcntl = None
+    import msvcrt  # type: ignore
 
-LOCK_PATH = "/tmp/fantasydisk_jira_sync.lock"
+LOCK_PATH = os.path.join(tempfile.gettempdir(), "fantasydisk_jira_sync.lock")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TASKS_GLOB = os.path.join(ROOT, "docs/tasks/*.md")
 MAP_PATH = os.path.join(ROOT, "docs/process/jira_sync_map.json")
 EPICS_PATH = os.path.join(ROOT, "docs/process/jira_epics.json")
-SITE = "https://fantasydisk.atlassian.net"
+SITE = os.getenv("JIRA_BASE_URL", "https://fantasydisk.atlassian.net").rstrip("/")
 PROJECT = "SCRUM"
-EMAIL = "fomamoney@gmail.com"
-KEYCHAIN_SERVICE = "fantasydisk-jira"
+EMAIL = os.getenv("JIRA_EMAIL", "fomamoney@gmail.com")
+KEYCHAIN_SERVICE = os.getenv("JIRA_KEYCHAIN_SERVICE", "fantasydisk-jira")
 
 # Аджайл-эпики: новые тикеты привязываются к parent-эпику по имени файла/заголовку.
 EPICS = json.load(open(EPICS_PATH)).get("epics", {}) if os.path.exists(EPICS_PATH) else {}
@@ -97,9 +102,18 @@ STATUS_TARGET = {
 
 
 def token() -> str:
-    return subprocess.check_output(
-        ["security", "find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"],
-        text=True).strip()
+    env_token = os.getenv("JIRA_API_TOKEN")
+    if env_token:
+        return env_token.strip()
+    try:
+        return subprocess.check_output(
+            ["security", "find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"],
+            text=True).strip()
+    except FileNotFoundError as exc:
+        raise RuntimeError(
+            "Jira token not found. Set JIRA_API_TOKEN or configure macOS Keychain "
+            f"service '{KEYCHAIN_SERVICE}'."
+        ) from exc
 
 
 def api(method: str, path: str, payload=None):
@@ -222,7 +236,10 @@ def main():
     # по одним task-файлам со стаканной картой и не плодят дубли тикетов.
     lock_fd = open(LOCK_PATH, "w")
     try:
-        fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        if fcntl is not None:
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        else:
+            msvcrt.locking(lock_fd.fileno(), msvcrt.LK_NBLCK, 1)
     except OSError:
         print("another jira_board_sync is running — abort (lock held)")
         return

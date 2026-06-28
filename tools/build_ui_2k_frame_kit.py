@@ -71,7 +71,13 @@ SLOTS = [
     {"slug": "chud_resource_panel", "file": "ui_screens", "const": "CHUD_RESOURCE_PANEL_2K", "kind": "frame", "margin_key": "hud_resource", "w": 820, "h": 84},
     {"slug": "chud_timer", "file": "ui_screens", "const": "CHUD_TIMER_2K", "kind": "frame", "margin_key": "hud_timer", "w": 288, "h": 96},
     {"slug": "chud_artifact_row", "file": "ui_screens", "const": "CHUD_ARTIFACT_ROW_2K", "kind": "frame", "margin_key": "hud_artifact", "w": 402, "h": 104},
+    {"slug": "hs4_portrait_panel", "file": "ui_screens", "const": "HS4_PORTRAIT_FRAME_2K", "kind": "frame", "margin_key": "panel", "w": 661, "h": 959},
+    {"slug": "hs4_dossier_panel", "file": "ui_screens", "const": "HS4_DOSSIER_2K", "kind": "frame", "margin_key": "panel", "w": 1091, "h": 959},
+    {"slug": "hs4_radar_panel", "file": "ui_screens", "const": "HS4_RADAR_2K", "kind": "frame", "margin_key": "panel", "w": 624, "h": 959},
+    {"slug": "hs4_carousel_panel", "file": "ui_screens", "const": "HS4_CAROUSEL_2K", "kind": "frame", "margin_key": "hud_strip", "w": 2448, "h": 245},
     # кнопки (button-маргины)
+    {"slug": "hs4_choose_btn", "file": "ui_screens", "const": "HS4_CHOOSE_BTN_2K", "kind": "button", "margin_key": "hero_confirm", "w": 512, "h": 89},
+    {"slug": "hs4_asc_btn", "file": "ui_screens", "const": "HS4_ASC_BTN_2K", "kind": "button", "margin_key": "utility", "w": 102, "h": 72},
     {"slug": "mm_btn", "file": "ui_screens", "const": "MM_BTN_START_2K", "kind": "button", "margin_key": "main_menu", "w": 380, "h": 104},
     {"slug": "qc_btn", "file": "ui_screens", "const": "QC_BTN_EXIT_2K", "kind": "button", "margin_key": "standard", "w": 220, "h": 72},
     {"slug": "cr_btn", "file": "ui_screens", "const": "CR_BTN_CONTINUE_2K", "kind": "button", "margin_key": "standard", "w": 240, "h": 72},

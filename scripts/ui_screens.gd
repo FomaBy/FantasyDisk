@@ -765,17 +765,17 @@ const HS4_DOSSIER_STATS := ["strength", "agility", "intelligence", "endurance", 
 # (51,194,632,835) против реальных (56,179,661,959)) — оставлены для mockup-валидации, НЕ трогать.
 const HS4_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
 const HS4_TITLE_2K := Rect2(56, 40, 2448, 122)
-const HS4_BACK_2K := Rect2(56, 12, 218, 98)                  # width vp.x*0.085≈218, height top_h*0.8≈98
+const HS4_BACK_2K := Rect2(56, 74, 218, 54)                  # compact runtime back button centered inside title band
 const HS4_PORTRAIT_FRAME_2K := Rect2(56, 179, 661, 959)
-const HS4_PORTRAIT_SAFE_2K := Rect2(85, 208, 603, 901)        # frame + pad 29
+const HS4_PORTRAIT_SAFE_2K := Rect2(114, 251, 545, 821)       # frame content margins: 58/72/58/66
 const HS4_DOSSIER_2K := Rect2(753, 179, 1091, 959)            # x = 56 + 661 + gap 36
 const HS4_RADAR_2K := Rect2(1880, 179, 624, 959)             # x = 753 + 1091 + gap 36
 const HS4_CAROUSEL_2K := Rect2(56, 1155, 2448, 245)
 const HS4_CHOOSE_BTN_2K := Rect2(0, 0, 512, 89)              # шаблон (shrink_center в dossier-VBox)
 const HS4_ASC_BTN_2K := Rect2(0, 0, 102, 72)                 # шаблон ±-кнопок возвышения
-# Карусель: cpad=25, arrow_w=123, slot_h=195, slot_w≈239 (шаг). Слот = 88% ширины слота.
-const HS4_CAROUSEL_SLOT_2K := Rect2(218, 1180, 210, 195)     # первый слот (абс.), шаг по X = 239
-const HS4_CAROUSEL_SLOT_STEP_2K := 239.0
+# Карусель SCRUM-561: content-zone comes from hs4_carousel_panel; thumbnails stay square inside the safe band.
+const HS4_CAROUSEL_SLOT_2K := Rect2(237, 1230, 101, 101)     # square slot inside hud-strip content safe area
+const HS4_CAROUSEL_SLOT_STEP_2K := 248.0
 
 
 func _hs4_scaled_rect(zone: Rect2, canvas_size: Vector2) -> Rect2:
@@ -876,27 +876,29 @@ func _build_character_select_v4() -> void:
 	var portrait_panel := Panel.new()
 	portrait_panel.position = Vector2(mx, mid_y)
 	portrait_panel.size = Vector2(left_w, mid_h)
-	portrait_panel.add_theme_stylebox_override("panel", _panel_style())
+	portrait_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_portrait_panel", portrait_panel.size))
 	portrait_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(portrait_panel)
+	var portrait_safe := _overhaul_2k_content_margins("hs4_portrait_panel", portrait_panel.size)
 	var portrait := TextureRect.new()
 	portrait.name = "HS4Portrait"
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	portrait.position = Vector2(pad, pad)
-	portrait.size = Vector2(left_w - pad * 2.0, mid_h - pad * 2.0)
+	portrait.position = Vector2(portrait_safe.x, portrait_safe.y)
+	portrait.size = Vector2(left_w - portrait_safe.x - portrait_safe.z, mid_h - portrait_safe.y - portrait_safe.w)
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_panel.add_child(portrait)
 
 	var dossier_panel := Panel.new()
 	dossier_panel.position = Vector2(mx + left_w + gap, mid_y)
 	dossier_panel.size = Vector2(center_w, mid_h)
-	dossier_panel.add_theme_stylebox_override("panel", _panel_style())
+	dossier_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_dossier_panel", dossier_panel.size))
 	dossier_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(dossier_panel)
+	var dossier_safe := _overhaul_2k_content_margins("hs4_dossier_panel", dossier_panel.size)
 	var dossier := VBoxContainer.new()
-	dossier.position = Vector2(pad, pad)
-	dossier.size = Vector2(center_w - pad * 2.0, mid_h - pad * 2.0)
+	dossier.position = Vector2(dossier_safe.x, dossier_safe.y)
+	dossier.size = Vector2(center_w - dossier_safe.x - dossier_safe.z, mid_h - dossier_safe.y - dossier_safe.w)
 	dossier.add_theme_constant_override("separation", maxi(4, int(round(vp.y * 0.012))))
 	dossier.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_panel.add_child(dossier)
@@ -997,6 +999,7 @@ func _build_character_select_v4() -> void:
 	var asc_minus := _make_button("−")
 	asc_minus.name = "AscensionMinusButton"
 	_set_action_button_size(asc_minus, vp.x * 0.04, vp.y * 0.05)
+	_apply_overhaul_2k_button_theme(asc_minus, "hs4_asc_btn", asc_minus.custom_minimum_size)
 	asc_box.add_child(asc_minus)
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
@@ -1009,6 +1012,7 @@ func _build_character_select_v4() -> void:
 	var asc_plus := _make_button("+")
 	asc_plus.name = "AscensionPlusButton"
 	_set_action_button_size(asc_plus, vp.x * 0.04, vp.y * 0.05)
+	_apply_overhaul_2k_button_theme(asc_plus, "hs4_asc_btn", asc_plus.custom_minimum_size)
 	asc_box.add_child(asc_plus)
 
 	var asc_mods := Label.new()
@@ -1024,47 +1028,55 @@ func _build_character_select_v4() -> void:
 	select_button.name = "HS4ChooseButton"
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_set_action_button_size(select_button, vp.x * 0.2, vp.y * 0.062)
+	_apply_overhaul_2k_button_theme(select_button, "hs4_choose_btn", select_button.custom_minimum_size)
 	dossier.add_child(select_button)
 
 	var radar_panel := Panel.new()
 	radar_panel.position = Vector2(mx + left_w + gap + center_w + gap, mid_y)
 	radar_panel.size = Vector2(right_w, mid_h)
-	radar_panel.add_theme_stylebox_override("panel", _panel_style())
+	radar_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_radar_panel", radar_panel.size))
 	radar_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(radar_panel)
+	var radar_safe := _overhaul_2k_content_margins("hs4_radar_panel", radar_panel.size)
 	var radar := HeroStatRadar.new()
 	radar.name = "HS4Radar"
-	radar.position = Vector2(pad, pad)
-	radar.size = Vector2(right_w - pad * 2.0, mid_h - pad * 2.0)
+	radar.position = Vector2(radar_safe.x, radar_safe.y)
+	radar.size = Vector2(right_w - radar_safe.x - radar_safe.z, mid_h - radar_safe.y - radar_safe.w)
 	radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	radar_panel.add_child(radar)
 
 	var carousel_panel := Panel.new()
 	carousel_panel.position = Vector2(mx, car_y)
 	carousel_panel.size = Vector2(content_w, car_h)
-	carousel_panel.add_theme_stylebox_override("panel", _panel_style())
+	carousel_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_carousel_panel", carousel_panel.size))
 	carousel_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(carousel_panel)
+	var carousel_safe := _overhaul_2k_content_margins("hs4_carousel_panel", carousel_panel.size)
 	var carousel := Control.new()
 	carousel.name = "HS4Carousel"
-	carousel.position = Vector2.ZERO
-	carousel.size = Vector2(content_w, car_h)
+	carousel.position = Vector2(carousel_safe.x, carousel_safe.y)
+	carousel.size = Vector2(content_w - carousel_safe.x - carousel_safe.z, car_h - carousel_safe.y - carousel_safe.w)
 	carousel.mouse_filter = Control.MOUSE_FILTER_PASS
 	carousel_panel.add_child(carousel)
-	var cpad: float = round(car_h * 0.1)
-	var arrow_w: float = round(car_h * 0.5)
-	var slot_h: float = car_h - cpad * 2.0
-	var slot_w: float = (content_w - arrow_w * 2.0 - cpad * 2.0) / float(HS4_CAROUSEL_SLOTS)
+	var carousel_w: float = carousel.size.x
+	var carousel_h: float = carousel.size.y
+	var cpad: float = round(carousel_h * 0.1)
+	var arrow_w: float = round(carousel_h * 0.5)
+	var slot_h: float = carousel_h - cpad * 2.0
+	var slot_w: float = slot_h
+	var slot_gap: float = maxf(0.0, (carousel_w - arrow_w * 2.0 - cpad * 2.0 - slot_w * float(HS4_CAROUSEL_SLOTS)) / float(maxi(1, HS4_CAROUSEL_SLOTS - 1)))
 
 	var left_arrow := _make_button("◄")
 	left_arrow.name = "HS4CarouselPrevButton"
 	_set_action_button_size(left_arrow, arrow_w, slot_h * 0.8)
-	left_arrow.position = Vector2(cpad, round((car_h - slot_h * 0.8) * 0.5))
+	_apply_overhaul_2k_button_theme(left_arrow, "hs4_asc_btn", left_arrow.custom_minimum_size)
+	left_arrow.position = Vector2(cpad, round((carousel_h - slot_h * 0.8) * 0.5))
 	carousel.add_child(left_arrow)
 	var right_arrow := _make_button("►")
 	right_arrow.name = "HS4CarouselNextButton"
 	_set_action_button_size(right_arrow, arrow_w, slot_h * 0.8)
-	right_arrow.position = Vector2(content_w - cpad - arrow_w, round((car_h - slot_h * 0.8) * 0.5))
+	_apply_overhaul_2k_button_theme(right_arrow, "hs4_asc_btn", right_arrow.custom_minimum_size)
+	right_arrow.position = Vector2(carousel_w - cpad - arrow_w, round((carousel_h - slot_h * 0.8) * 0.5))
 	carousel.add_child(right_arrow)
 
 	var roster: Array = game.PROGRESSION_DATA.character_ids()
@@ -1078,8 +1090,8 @@ func _build_character_select_v4() -> void:
 		var slot := TextureButton.new()
 		slot.ignore_texture_size = true
 		slot.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		slot.position = Vector2(cpad + arrow_w + i * slot_w + slot_w * 0.06, cpad)
-		slot.size = Vector2(slot_w * 0.88, slot_h)
+		slot.position = Vector2(cpad + arrow_w + i * (slot_w + slot_gap), cpad)
+		slot.size = Vector2(slot_w, slot_h)
 		carousel.add_child(slot)
 		slot_buttons.append(slot)
 
@@ -6990,6 +7002,27 @@ func _overhaul_2k_frame_style(slot: String, display_size: Vector2, tint := Color
 	var texture_margins := _scaled_frame_margins_xy(source_size, display_size, base_margins)
 	var content_margins := _scaled_frame_margins_xy(source_size, display_size, base_content)
 	return _global_texture_style(str(OVERHAUL_2K_FRAME_PATHS[slot]), texture_margins, tint, content_margins, false)
+
+
+func _overhaul_2k_content_margins(slot: String, display_size: Vector2) -> Vector4:
+	if not OVERHAUL_2K_FRAME_SOURCE_SIZE.has(slot):
+		return Vector4.ZERO
+	var source_size: Vector2 = OVERHAUL_2K_FRAME_SOURCE_SIZE[slot]
+	var base_content: Vector4 = OVERHAUL_2K_FRAME_CONTENT.get(slot, Vector4.ZERO)
+	return _scaled_frame_margins_xy(source_size, display_size, base_content)
+
+
+func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size: Vector2) -> void:
+	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))
+	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style(slot, display_size, Color(0.90, 0.84, 0.76, 1.0)))
+	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style(slot, display_size, Color(0.58, 0.58, 0.58, 0.82)))
+	button.add_theme_color_override("font_color", Color(0.98, 0.92, 0.72, 1.0))
+	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
 func _economy_panel_style() -> StyleBox:
