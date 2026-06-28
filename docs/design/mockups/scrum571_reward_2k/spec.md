@@ -18,6 +18,16 @@ Design-only stage for the ordinary reward screen: create a 2K OpenAI-API-generat
 
 The geometry package passed the content-zone planning gate and the OpenAI Images API base layer was generated successfully after loading `OPENAI_API_KEY` from the Windows User environment. Runtime sample text was composited only inside the declared zones. The final render report is `ok=true` for all 15 zones.
 
+## SCRUM-648 QA Defect Fix
+
+QA found that the original final mockup placed subtitle/body/footer text over decorative frame bars even though JSON fit checks passed. This revision keeps the same OpenAI-generated base image and recomposites content only after moving affected zones into visibly empty dark interiors:
+
+- subtitle moved from the upper ornamental rail to the lower empty interior of the subtitle frame;
+- reward icons were compacted, card titles moved into the calm top-card interior, and body zones moved below the decorative divider bars;
+- footer moved from the card/bottom ornament overlap area to the empty lower modal field.
+
+No new base image, runtime integration, backing panels, or manual frame overlays were introduced.
+
 ## Screen Elements
 
 | ID | Type | Runtime content | Rect @ 2560x1440 | Anchors | Min size | Z | States | Safe-zone parent |
@@ -25,23 +35,23 @@ The geometry package passed the content-zone planning gate and the OpenAI Images
 | screen_background | Decor | reward hall backdrop | 0,0,2560,1440 | full | 1920x1080 | 0 | static | n/a |
 | reward_modal_frame | Panel | ordinary reward modal | 250,120,2060,1180 | center | 1540x880 | 10 | static | screen |
 | title_zone | Text | `Награда` | 600,188,1360,92 | top-center | 1020x69 | 20 | static | reward_modal_frame |
-| subtitle_zone | Text | instruction line | 560,292,1440,56 | top-center | 1080x42 | 20 | static | reward_modal_frame |
+| subtitle_zone | Text | instruction line | 620,342,1320,44 | top-center | 990x33 | 20 | static | reward_modal_frame |
 | card_1_frame | Card | reward option 1 | 410,410,500,650 | modal-left | 360x470 | 30 | default/hover/focus/pressed | reward_modal_frame |
-| card_1_icon_zone | Icon | reward icon | 560,512,200,200 | card-center | 128x128 | 40 | default/hover/focus | card_1_frame |
-| card_1_title_zone | Text | reward title | 492,744,336,58 | card-center | 250x44 | 40 | default/hover/focus | card_1_frame |
-| card_1_body_zone | Text | reward effect copy | 486,824,348,124 | card-center | 260x92 | 40 | default/hover/focus | card_1_frame |
+| card_1_icon_zone | Icon | reward icon | 580,500,160,160 | card-center | 128x128 | 40 | default/hover/focus | card_1_frame |
+| card_1_title_zone | Text | reward title | 500,680,320,48 | card-center | 240x36 | 40 | default/hover/focus | card_1_frame |
+| card_1_body_zone | Text | reward effect copy | 486,882,348,82 | card-center | 260x62 | 40 | default/hover/focus | card_1_frame |
 | card_1_button_frame | Button | choose action | 530,980,260,76 | card-bottom | 196x58 | 50 | default/hover/focus/pressed | card_1_frame |
 | card_2_frame | Card | emphasized reward option 2 | 1030,380,500,690 | modal-center | 360x500 | 30 | default/hover/focus/pressed/selected | reward_modal_frame |
-| card_2_icon_zone | Icon | reward icon | 1180,498,200,200 | card-center | 128x128 | 40 | default/hover/focus | card_2_frame |
-| card_2_title_zone | Text | reward title | 1112,736,336,58 | card-center | 250x44 | 40 | default/hover/focus | card_2_frame |
-| card_2_body_zone | Text | reward effect copy | 1106,818,348,136 | card-center | 260x102 | 40 | default/hover/focus | card_2_frame |
+| card_2_icon_zone | Icon | reward icon | 1200,486,160,160 | card-center | 128x128 | 40 | default/hover/focus | card_2_frame |
+| card_2_title_zone | Text | reward title | 1120,672,320,48 | card-center | 240x36 | 40 | default/hover/focus | card_2_frame |
+| card_2_body_zone | Text | reward effect copy | 1106,882,348,82 | card-center | 260x62 | 40 | default/hover/focus | card_2_frame |
 | card_2_button_frame | Button | choose action | 1150,988,260,76 | card-bottom | 196x58 | 50 | default/hover/focus/pressed | card_2_frame |
 | card_3_frame | Card | reward option 3 | 1650,410,500,650 | modal-right | 360x470 | 30 | default/hover/focus/pressed | reward_modal_frame |
-| card_3_icon_zone | Icon | reward icon | 1800,512,200,200 | card-center | 128x128 | 40 | default/hover/focus | card_3_frame |
-| card_3_title_zone | Text | reward title | 1732,744,336,58 | card-center | 250x44 | 40 | default/hover/focus | card_3_frame |
-| card_3_body_zone | Text | reward effect copy | 1726,824,348,124 | card-center | 260x92 | 40 | default/hover/focus | card_3_frame |
+| card_3_icon_zone | Icon | reward icon | 1820,500,160,160 | card-center | 128x128 | 40 | default/hover/focus | card_3_frame |
+| card_3_title_zone | Text | reward title | 1740,680,320,48 | card-center | 240x36 | 40 | default/hover/focus | card_3_frame |
+| card_3_body_zone | Text | reward effect copy | 1726,882,348,82 | card-center | 260x62 | 40 | default/hover/focus | card_3_frame |
 | card_3_button_frame | Button | choose action | 1770,980,260,76 | card-bottom | 196x58 | 50 | default/hover/focus/pressed | card_3_frame |
-| footer_zone | Text | control hint | 700,1152,1160,44 | modal-bottom | 870x33 | 20 | static | reward_modal_frame |
+| footer_zone | Text | control hint | 780,1258,1000,38 | modal-bottom | 750x29 | 20 | static | reward_modal_frame |
 
 ## Frames And Safe Zones
 
@@ -69,7 +79,7 @@ Content margins are intentionally larger than texture margins. The planned conte
 
 ## Responsive Rules
 
-- 1920x1080: scale the 2560x1440 design by `0.75`. Modal becomes `1545x885` at `(188,90)`. Cards become `375x488`; center card `375x518`. Minimum card content still supports `150x150` icons, `252px` title width, and `57px` button height.
+- 1920x1080: scale the 2560x1440 design by `0.75`. Modal becomes `1545x885` at `(188,90)`. Cards become `375x488`; center card `375x518`. Minimum card content still supports `120x120` icons, `240px` title width, and `57px` button height.
 - 2560x1440: use base coordinates from this spec.
 - 3840x2160: scale by `1.5` with max modal width `3090` and max card width `750`. Keep cards centered as a group; do not expand text zones beyond 1.5x unless copy length demands it.
 - If a 16:10 or narrow viewport is introduced later, keep the three cards as a centered horizontal group until card width would fall below `360`; then switch to a 1+2 stacked layout in a Back-end runtime task.
@@ -99,7 +109,7 @@ Content margins are intentionally larger than texture margins. The planned conte
 - [x] Preview shown in chat when generated.
 - [x] All visible elements are listed in the elements table.
 - [x] Every planned frame has texture/content margin estimates.
-- [x] No planned UI content overlaps frame border, ornament, gem, metal, or decorative corner.
+- [x] No planned or final composited UI content overlaps frame border, ornament, gem, metal, decorative separator bar, or decorative corner.
 - [x] Runtime content fits inside safe zones at every responsive target by scale math.
 - [x] Hover/focus/pressed/disabled states are specified not to resize or shift layout.
 - [ ] Screenshot comparison completed after implementation. Not in Design-only stage.
