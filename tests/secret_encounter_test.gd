@@ -16,6 +16,7 @@ extends SceneTree
 # Запуск: Godot --headless --path . --script res://tests/secret_encounter_test.gd
 
 const Meta := preload("res://scripts/meta_progression.gd")
+const ContentData := preload("res://scripts/progression_data_content.gd")
 const TEST_PATH := "user://test_secret_encounter.cfg"
 
 
@@ -66,7 +67,26 @@ func _initialize() -> void:
 	# --- 2. Артефакт-ключ открывает даже при большом уроне; граница порога урона ---
 	var key_metrics := {"damage_taken": max_dmg + 999.0, "artifacts": [key]}
 	if not Meta.secret_encounter_unlocked(asc_ok, key_metrics, "berserk"):
-		errors.append("артефакт-ключ должен открывать бой при любом уроне (возвышение OK)")
+		errors.append("артефакт-ключ (строка) должен открывать бой при любом уроне (возвышение OK)")
+	# SCRUM-623: LIVE формат артефактов — словари {id,title} (player.gd/combat_director/main).
+	# Гейт обязан матчить ключ по dict["id"], иначе ветка не работает в живой игре.
+	var live_key_metrics := {"damage_taken": max_dmg + 999.0,
+		"artifacts": [{"id": "warrior_charm", "title": "Warrior Charm"}, {"id": key, "title": "Rift Key"}]}
+	if not Meta.secret_encounter_unlocked(asc_ok, live_key_metrics, "berserk"):
+		errors.append("SCRUM-623: ключ-артефакт в live dict-формате [{id:rift_key}] должен открывать бой")
+	# Контроль: словари без ключа — не открывают (при большом уроне).
+	var no_key_dicts := {"damage_taken": max_dmg + 999.0,
+		"artifacts": [{"id": "warrior_charm", "title": "Warrior Charm"}]}
+	if Meta.secret_encounter_unlocked(asc_ok, no_key_dicts, "berserk"):
+		errors.append("SCRUM-623: словари без ключа не должны открывать бой при большом уроне")
+	# SCRUM-623: ключ-артефакт должен СУЩЕСТВОВАТЬ в реальном контенте (иначе ветку не активировать).
+	var key_in_content := false
+	for artifact in ContentData.ARTIFACTS:
+		if str((artifact as Dictionary).get("id", "")) == key:
+			key_in_content = true
+			break
+	if not key_in_content:
+		errors.append("SCRUM-623: артефакт '%s' отсутствует в ContentData.ARTIFACTS — ветка недостижима в игре" % key)
 	# Граница: ровно порог открывает (<=), порог+эпсилон — нет.
 	if not Meta.secret_encounter_unlocked(asc_ok, {"damage_taken": max_dmg}, "berserk"):
 		errors.append("damage_taken == порог должен открывать (<=)")

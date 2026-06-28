@@ -230,10 +230,24 @@ static func secret_encounter_unlocked(state: Dictionary, run_metrics: Dictionary
 	if asc < SECRET_ENCOUNTER_MIN_ASCENSION:
 		return false
 	var low_damage: bool = float(run_metrics.get("damage_taken", 0.0)) <= SECRET_ENCOUNTER_MAX_DAMAGE_TAKEN
-	var raw_artifacts = run_metrics.get("artifacts", [])
-	var artifacts: Array = raw_artifacts if raw_artifacts is Array else []
-	var has_key: bool = artifacts.has(SECRET_ENCOUNTER_ARTIFACT_KEY)
+	var has_key := _artifacts_contain_key(run_metrics.get("artifacts", []), SECRET_ENCOUNTER_ARTIFACT_KEY)
 	return low_damage or has_key
+
+
+# SCRUM-623: live run/player артефакты хранятся как СЛОВАРИ {id, title}
+# (player.gd, combat_director.gd, main.gd run_metrics.artifacts), а тесты/контент
+# могут передавать просто строки-id. Матчим ключ в ОБОИХ форматах (по dict["id"]
+# или по самой строке), иначе artifact-ветка гейта не срабатывает в живой игре.
+static func _artifacts_contain_key(raw_artifacts, key: String) -> bool:
+	if not (raw_artifacts is Array):
+		return false
+	for entry in raw_artifacts:
+		if entry is Dictionary:
+			if str(entry.get("id", "")) == key:
+				return true
+		elif str(entry) == key:
+			return true
+	return false
 
 
 # Разовая фиксация победы над секретным боссом + награда meta_points. Идемпотентна:
