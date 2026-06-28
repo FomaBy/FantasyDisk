@@ -1,7 +1,7 @@
 # SCRUM-498: Индикатор внеэкранных угроз (стрелки к боссу/элиткам/шутерам)
 
 Jira: SCRUM-498 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: —
-Статус: К выполнению (Feature)
+Статус: На QA (re-verified 2026-06-28 claude-backend-3 против origin/dev). Фича реализована в dev: `scripts/threat_indicators.gd` (`ThreatIndicatorOverlay`, full-rect Control в `CombatHudRoot`, mouse_filter IGNORE, проекция world→screen через `camera.get_screen_center_position()`+zoom — camera-clamp-aware, edge-геометрия `screen_edge_point`, дедуп близких маркеров, цвет/глиф по рангу boss/elite/shooter); `scripts/enemy.gd` (`threat_marker_rank()` boss>elite>активный shooter, метка `_threat_fire_marker_left=THREAT_FIRE_MARKER_DURATION` после выстрела); врезка в HUD `_create_threat_indicator_overlay` зовётся из `_create_hud()` (ui_screens.gd:7837). Overlay self-driven (`_process`→`queue_redraw`), отдельный драйвер в main.gd не нужен. Тесты зелёные: `runtime_smoke_test.gd` (вкл. геометрию `_test_threat_indicator_edge`), `runtime_smoke_ui_test.gd`, верификатор `ui_no_overlap_matrix_test.gd`. NB для QA: анти-«ёлка» сделана через proximity-дедуп, а не жёсткий числовой cap (6-8) — функционально достаточно, но отличается от формулировки AC.
 
 ## Что и зачем
 
