@@ -87,9 +87,7 @@ func _measure_20t(cid: String, wid: String, lvl1: bool) -> float:
 
 
 func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array) -> float:
-	_teardown()
-	await process_frame
-	await process_frame
+	await _teardown()
 	var player := PLAYER_SCENE.instantiate() as Node2D
 	_holder.add_child(player)
 	player.add_to_group("player")
@@ -126,17 +124,36 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 
 
 func _teardown() -> void:
-	for ally in get_nodes_in_group("allies"):
-		if is_instance_valid(ally):
-			ally.remove_from_group("allies")
-			var n := ally as Node
-			if n.get_parent() != null:
-				n.get_parent().remove_child(n)
-			n.free()
+	# Stop every weapon's _process FIRST so no new summon / sentry-turret tween is
+	# spawned while we tear the scene down. Without this a fresh sentry tween can be
+	# created on the very frame we free its node.
+	for w in get_nodes_in_group("player_weapons"):
+		if is_instance_valid(w):
+			(w as Node).process_mode = Node.PROCESS_MODE_DISABLED
+	# Free transient combat nodes via queue_free (deferred), NOT immediate free().
+	# engineer_sentry_wrench deploys a sentry Node2D that owns a node-bound
+	# SceneTreeTween (the pulse/expiry tween, class_weapon.gd:1733). Immediate free()
+	# here races that tween's callback on the same frame → the freed-lambda SIGABRT
+	# that made the full CSV harness flaky on the engineer row. queue_free() lets the
+	# engine pull the node from the tree (which kills its bound tween) before the node
+	# is actually released, so the callback never fires against a dead object.
+	for group_name in ["allies", "engineer_devices", "player_weapon_effects"]:
+		for member in get_nodes_in_group(group_name):
+			if is_instance_valid(member):
+				var node := member as Node
+				node.remove_from_group(group_name)
+				node.set_process(false)
+				node.set_physics_process(false)
+				node.queue_free()
 	for child in _holder.get_children():
 		if is_instance_valid(child):
-			_holder.remove_child(child)
-			child.free()
+			child.set_process(false)
+			child.queue_free()
+	# Two idle frames: frame 1 reaps the queued nodes (killing bound tweens cleanly),
+	# frame 2 lets any deferred tween teardown settle before the next measurement.
+	await process_frame
+	await process_frame
+	await process_frame
 
 
 func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:
