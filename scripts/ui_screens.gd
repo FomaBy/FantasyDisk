@@ -6961,7 +6961,11 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	panel.offset_top = -panel_size.y * 0.5
 	panel.offset_right = panel_size.x * 0.5
 	panel.offset_bottom = panel_size.y * 0.5
-	panel.scale = Vector2(0.86, 0.86)
+	# SCRUM-552: панель НЕ масштабируем на интро (scale<1 сжимал глобальные rect'ы
+	# текстовых лейблов → ui_no_overlap_matrix флачил «needs height X but has 0.86*X»).
+	# Раскрытие — через fade (modulate.a) ниже в _start_level_up_intro, геометрия с
+	# первого кадра финальная и детерминированная.
+	panel.scale = Vector2.ONE
 	panel.modulate.a = 0.0
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
@@ -7062,12 +7066,13 @@ func _start_level_up_intro(panel: Node, title_label: Node, reward_buttons: Array
 		dim_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		dim_tween.tween_property(dim, "color:a", 0.68, 0.16)
 
+	# SCRUM-552: панель раскрываем только fade'ом (modulate.a). Scale-«поп» убран —
+	# он сжимал глобальные rect'ы текстовых лейблов (LevelUpTitle/RewardDescription),
+	# из-за чего ui_no_overlap_matrix интермиттентно краснел на оверфлоу высоты.
 	var panel_tween = level_up_panel.create_tween()
 	panel_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	panel_tween.set_trans(Tween.TRANS_BACK)
 	panel_tween.set_ease(Tween.EASE_OUT)
-	panel_tween.tween_property(level_up_panel, "scale", Vector2.ONE, 0.34)
-	panel_tween.parallel().tween_property(level_up_panel, "modulate:a", 1.0, 0.18)
+	panel_tween.tween_property(level_up_panel, "modulate:a", 1.0, 0.18)
 
 	var title := title_label as Label
 	if title != null and is_instance_valid(title):
