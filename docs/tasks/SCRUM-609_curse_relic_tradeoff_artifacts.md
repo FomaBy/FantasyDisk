@@ -1,7 +1,7 @@
 # SCRUM-609: Реликвии-проклятия (trade-off артефакты)
 
 Jira: SCRUM-609
-Статус: review
+Статус: done
 Контур: Codex
 Owner: Back-end / backend-codex-artifacts-606-609-integrate
 Branch: `dev`
@@ -36,5 +36,11 @@ downside, using only currently supported runtime mod keys.
 
 - Integrated onto fresh `origin/dev` from `codex/scrum-606-609-artifacts` /
   `codex/artifact-icon-unblock-worker` without taking unrelated branch changes.
-- Ready for QA after commit/push to `dev`; final commit and test output are recorded
-  in Jira comments.
+- Pushed to `origin/dev` in commit `162e1797`.
+- Jira target status: `Контроль качества`.
+- Final tests passed:
+  `tests/artifacts_606_609_test.gd`,
+  `tests/content_rewards_integrity_test.gd`,
+  `tests/no_duplicate_artifact_files_test.gd`,
+  `tests/runtime_smoke_triggered_artifacts_test.gd`,
+  `tests/runtime_smoke_test.gd`.
