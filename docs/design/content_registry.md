@@ -133,6 +133,22 @@ with v2 `idle` / `walk` / `move` loops in
 frames are backed up under `docs/design/backups/scrum420_berserk_v2_pre_anim/`.
 Attack animation remains absent by SCRUM-420 scope.
 
+SCRUM-531 adds a new dark-fantasy / D&D dragon Berserk v2 Design-source pack
+under `docs/design/references/berserk_v2/` (note: a different folder from the
+SCRUM-420 `characters_v2/berserk/`): raw `gpt-image-2` source, alpha-clean RGBA
+source, normalized `512x512` idle cell (pivot `256,470`, visible height
+`408 px`), `2848x1168` idle/walk×5 placeholder source-sheet handoff (48px
+gutters, attack row excluded), and an alpha/size/pivot QA report under
+`build/qa/scrum531_berserk_v2/`. Asset-side candidate exports live under
+`assets/sprites/characters/berserk_v2/`; Animator handoff is
+`docs/design/references/berserk_v2/berserk_v2_design_handoff.md`. The new look is
+a brutal painterly dragonslayer (dragon-skull pauldron, horns, scale armor, fur
+cloak, oxblood/charcoal palette), intentionally distinct from the live
+cartoon-anchor; hands are empty with no weapon baked. This is Design-source only
+and is NOT the live runtime — the live Berserk still renders the SCRUM-461
+cartoon-anchor SpriteFrames. Animation is the follow-up Animator ticket
+SCRUM-532.
+
 SCRUM-461 replaces the live Berserk full-frame runtime resource with the
 accepted SCRUM-456 cartoon/anime anchor: `assets/sprites/characters/berserk_spriteframes.tres`
 now exposes `idle` (5f, 7fps), `walk` (5f, 9fps), and `move` (walk alias, 5f,

@@ -5,6 +5,17 @@
 ## [Unreleased] — ветка dev (цель: 0.1.7)
 
 ### Added
+- Berserk v2 dark-fantasy dragon Design source pack (SCRUM-531): generated a new
+  brutal painterly D&D dragonslayer berserker source via `gpt-image-2`,
+  alpha-cleaned it to true RGBA, normalized a `512x512` cell (pivot `256,470`,
+  visible height `408 px`), assembled the idle/walk×5 source-sheet handoff
+  (`2848x1168`, 48px gutters, attack row excluded), dark-bg + game-scale contact
+  previews and an alpha/size/pivot QA report. Source under
+  `docs/design/references/berserk_v2/`, candidate exports under
+  `assets/sprites/characters/berserk_v2/`, with `berserk_v2_design_handoff.md`
+  for the Animator (SCRUM-532). Visually distinct from the current
+  cartoon-anchor; empty fists, no weapon baked in. No runtime, balance or
+  animation logic changed.
 - Combat feedback layer (SCRUM-497): enemy hits now show short-lived floating
   damage numbers, red hit outline/flash, distinct critical `!` markers and
   green player healing numbers, with a persisted Settings toggle and active
