@@ -22,6 +22,9 @@ const COMFORT_WEIGHTS := BalanceData.COMFORT_WEIGHTS
 const COMFORT_WEIGHT_OVERRIDES := BalanceData.COMFORT_WEIGHT_OVERRIDES
 const COMFORT_BAND_TOLERANCE := BalanceData.COMFORT_BAND_TOLERANCE
 const COMFORT_DEFAULT_WEIGHT := BalanceData.COMFORT_DEFAULT_WEIGHT
+const COMFORT_BAND_SLICES := BalanceData.COMFORT_BAND_SLICES
+const COMFORT_BAND_SLICE_WEIGHTS := BalanceData.COMFORT_BAND_SLICE_WEIGHTS
+const COMFORT_BAND_SLICE_OVERRIDES := BalanceData.COMFORT_BAND_SLICE_OVERRIDES
 const BALANCE_WINDOW_SECONDS := BalanceData.BALANCE_WINDOW_SECONDS
 const CROWD_CLEAR_TARGET_COUNTS := BalanceData.CROWD_CLEAR_TARGET_COUNTS
 const CROWD_CLEAR_ENEMY_HP := BalanceData.CROWD_CLEAR_ENEMY_HP
@@ -479,6 +482,28 @@ static func comfort_weight(character_id: String, weapon_id := "") -> float:
 # классы/оружия сравниваются в этой нормированной шкале.
 static func comfort_normalized_dps(character_id: String, weapon_id: String, measured_dps: float) -> float:
 	return measured_dps / maxf(comfort_weight(character_id, weapon_id), 0.001)
+
+
+# SCRUM-544: per-slice comfort-вес для CSV-полосы (ось вовлечённости зависит от
+# числа целей). Per-weapon override > class slice-вес > плоский comfort_weight.
+# slice ∈ COMFORT_BAND_SLICES ("ideal_1"/"ideal_5"/"ideal_20").
+static func comfort_slice_weight(character_id: String, weapon_id: String, slice: String) -> float:
+	var override_key := "%s/%s" % [character_id, weapon_id]
+	if COMFORT_BAND_SLICE_OVERRIDES.has(override_key):
+		var ov: Dictionary = COMFORT_BAND_SLICE_OVERRIDES[override_key]
+		if ov.has(slice):
+			return float(ov[slice])
+	if COMFORT_BAND_SLICE_WEIGHTS.has(character_id):
+		var cw: Dictionary = COMFORT_BAND_SLICE_WEIGHTS[character_id]
+		if cw.has(slice):
+			return float(cw[slice])
+	# Фоллбэк на плоский вес, если срез не задан в таблице.
+	return comfort_weight(character_id, weapon_id)
+
+
+# Per-slice comfort-нормированный DPS: measured / comfort_slice_weight.
+static func comfort_slice_normalized_dps(character_id: String, weapon_id: String, slice: String, measured_dps: float) -> float:
+	return measured_dps / maxf(comfort_slice_weight(character_id, weapon_id, slice), 0.001)
 
 
 static func budget_tuning_for(character_id: String, weapon_config: Dictionary) -> Dictionary:

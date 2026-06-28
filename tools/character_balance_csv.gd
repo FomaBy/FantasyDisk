@@ -647,7 +647,7 @@ func _validate_band(rows: Array) -> void:
 	lines.append("# Character Balance — comfort-нормированная полоса (SCRUM-544)")
 	lines.append("")
 	lines.append("Сгенерировано `tools/character_balance_csv.gd`. Допуск полосы: ±%.0f%% от медианы." % (tol * 100.0))
-	lines.append("Нормировка: `comfort_normalized = measured_dps / comfort_weight[class]` (см. `progression_data_balance.gd` COMFORT_WEIGHTS).")
+	lines.append("Нормировка: `comfort_normalized = measured_dps / comfort_slice_weight[class][slice]` (см. `progression_data_balance.gd` COMFORT_BAND_SLICE_WEIGHTS / COMFORT_BAND_SLICE_OVERRIDES). Полоса НЕ плоская: вес зависит от среза (ось вовлечённости single-target↔crowd).")
 	lines.append("")
 	var all_pass := true
 	for slice in BAND_SLICES:
@@ -657,7 +657,7 @@ func _validate_band(rows: Array) -> void:
 			var cid: String = str(row["class"])
 			var wid: String = str(row["weapon"])
 			var raw: float = float(row[slice])
-			var norm: float = ProgressionData.comfort_normalized_dps(cid, wid, raw)
+			var norm: float = ProgressionData.comfort_slice_normalized_dps(cid, wid, slice, raw)
 			entries.append({"class": cid, "weapon": wid, "raw": raw, "norm": norm})
 			values.append(norm)
 		values.sort()
@@ -688,7 +688,7 @@ func _validate_band(rows: Array) -> void:
 			lines.append("| класс/оружие | raw DPS | comfort | norm DPS | ×медиана |")
 			lines.append("|---|--:|--:|--:|--:|")
 			for e in violations:
-				var w: float = ProgressionData.comfort_weight(str(e["class"]), str(e["weapon"]))
+				var w: float = ProgressionData.comfort_slice_weight(str(e["class"]), str(e["weapon"]), slice)
 				lines.append("| %s/%s | %.0f | %.2f | %.0f | %.2fx |" % [
 					e["class"], e["weapon"], float(e["raw"]), w, float(e["norm"]),
 					float(e["norm"]) / maxf(median, 0.001)])

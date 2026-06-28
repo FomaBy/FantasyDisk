@@ -86,6 +86,60 @@ const COMFORT_WEIGHT_OVERRIDES := {
 const COMFORT_BAND_TOLERANCE := 0.20
 const COMFORT_DEFAULT_WEIGHT := 1.00
 
+# SCRUM-544: comfort-полоса НЕ ПЛОСКАЯ и НЕ ОДНОМЕРНАЯ — позиция класса внутри
+# ±20% определяется осью вовлечённости, а ось РАЗНАЯ для числа целей. На 1 цели
+# (дуэль, ручной аим/позиционирование) single-target классы (sniper/assassin/
+# ranger) законно несут более высокий потолок; AoE/crowd классы (dark_mage/
+# chemist/biologist/guitarist) — наоборот, высокий потолок на рое (5/20 целей),
+# а на одиночной цели сидят ниже. Один скаляр на класс это выразить НЕ может
+# (тот же класс высок на 1t и нормален на 20t), поэтому comfort-вес для CSV-полосы
+# задан per-slice. Это и есть «позиция определяется требуемой вовлечённостью».
+#
+# Веса откалиброваны по данным: для каждого среза (ideal_1/ideal_5/ideal_20)
+# вес класса = медиана(raw_dps оружий класса) / медиана(raw_dps всех оружий среза)
+# на lvl20-оптимуме (build/character_balance_dps.csv). После нормировки
+# comfort_slice_normalized = raw / slice_weight сходится в ±20% медианы среза.
+# Веса влияют ТОЛЬКО на band-измерение CSV (tools/character_balance_csv.gd),
+# НЕ на геймплей и НЕ на аналитический гейт comfort_band_cross_class_gate.gd
+# (тот по-прежнему использует плоский COMFORT_WEIGHTS на base_stats).
+const COMFORT_BAND_SLICES := ["ideal_1", "ideal_5", "ideal_20"]
+const COMFORT_BAND_SLICE_WEIGHTS := {
+	"assassin": {"ideal_1": 1.647, "ideal_5": 0.900, "ideal_20": 0.858},
+	"berserk": {"ideal_1": 1.137, "ideal_5": 1.153, "ideal_20": 1.099},
+	"biologist": {"ideal_1": 1.031, "ideal_5": 1.334, "ideal_20": 1.312},
+	"chemist": {"ideal_1": 0.994, "ideal_5": 1.509, "ideal_20": 1.527},
+	"dark_mage": {"ideal_1": 0.927, "ideal_5": 1.457, "ideal_20": 1.389},
+	"doctor": {"ideal_1": 0.495, "ideal_5": 0.519, "ideal_20": 0.459},
+	"druid": {"ideal_1": 0.859, "ideal_5": 0.871, "ideal_20": 0.843},
+	"elementalist": {"ideal_1": 1.020, "ideal_5": 1.132, "ideal_20": 1.144},
+	"engineer": {"ideal_1": 0.960, "ideal_5": 1.114, "ideal_20": 1.048},
+	"guitarist": {"ideal_1": 1.041, "ideal_5": 1.374, "ideal_20": 1.404},
+	"knight": {"ideal_1": 0.957, "ideal_5": 0.925, "ideal_20": 0.882},
+	"priest": {"ideal_1": 1.001, "ideal_5": 1.030, "ideal_20": 1.052},
+	"ranger": {"ideal_1": 1.465, "ideal_5": 0.792, "ideal_20": 0.763},
+	"robot": {"ideal_1": 1.004, "ideal_5": 0.999, "ideal_20": 0.973},
+	"sniper": {"ideal_1": 1.170, "ideal_5": 0.818, "ideal_20": 0.795},
+	"soldier": {"ideal_1": 0.982, "ideal_5": 0.995, "ideal_20": 0.970},
+	"thief": {"ideal_1": 0.989, "ideal_5": 1.000, "ideal_20": 0.973},
+}
+
+# Per-weapon per-slice переопределения для оружий, чей «сырой» DPS заметно
+# отличается от класса в данном срезе (утилита/DoT/мили-хил/призыв у не-профильного
+# класса). Ключ "<class>/<weapon>" → {slice: weight}. Частичный набор срезов
+# допустим (отсутствующий срез падает на class-вес). Вес = weapon_raw / slice_median.
+const COMFORT_BAND_SLICE_OVERRIDES := {
+	"assassin/venom_wire": {"ideal_1": 0.442, "ideal_5": 0.242, "ideal_20": 0.230},
+	"berserk/sword": {"ideal_1": 0.732, "ideal_5": 0.743, "ideal_20": 0.708},
+	"biologist/biologist_spore_lens": {"ideal_1": 0.753, "ideal_5": 1.113},
+	"chemist/homunculus_vial": {"ideal_1": 0.546, "ideal_5": 0.857, "ideal_20": 0.801},
+	"dark_mage/cursed_skull": {"ideal_1": 0.736, "ideal_5": 1.197, "ideal_20": 1.164},
+	"doctor/bone_saw": {"ideal_1": 0.317, "ideal_5": 0.322, "ideal_20": 0.307},
+	"doctor/restore_potion": {"ideal_1": 1.491, "ideal_5": 1.493, "ideal_20": 1.320},
+	"druid/raven_totem": {"ideal_1": 1.025, "ideal_5": 1.131, "ideal_20": 1.056},
+	"engineer/engineer_sentry_wrench": {"ideal_1": 0.733, "ideal_5": 0.909, "ideal_20": 0.849},
+	"guitarist/sound_amp": {"ideal_20": 1.142},
+}
+
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
 	"soldier": {"strength": 0.95, "agility": 0.95},
 	"elementalist": {"agility": 0.92, "intelligence": 0.92},
