@@ -345,6 +345,11 @@ func _check_accessors(errors: Array) -> void:
 		errors.append("event_by_id('%s') не вернул событие" % first_id)
 	if not EventData.event_by_id("__nonexistent_event__").is_empty():
 		errors.append("event_by_id неизвестного id вернул не-{}")
+	# SCRUM-610: узел «Алтарь жертвы» штампует event_id 'sacrifice_altar' — событие
+	# обязано резолвиться по id (иначе клик по алтарю откроет случайное событие).
+	var altar_event := EventData.event_by_id("sacrifice_altar")
+	if altar_event.is_empty() or str(altar_event.get("id", "")) != "sacrifice_altar":
+		errors.append("event_by_id('sacrifice_altar') не вернул событие алтаря жертвы")
 
 	# pick_event: с сидированным rng -> валидное событие не из used_ids.
 	var rng := RandomNumberGenerator.new()

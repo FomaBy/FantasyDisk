@@ -230,9 +230,52 @@ func _generate_route() -> Array:
 		route.append(branches)
 	_place_required_shop_nodes(route)
 	_place_central_chest_node(route)
+	_place_altar_node(route)
 	route.append([_random_boss_route_node()])
 	_assign_route_connections(route)
 	return route
+
+
+func _place_altar_node(route: Array) -> void:
+	# SCRUM-610: ровно один «Алтарь жертвы» на маршрут (постоянная сделка тело-за-силу).
+	# По образцу _place_central_chest_node: переопределяем один уже сгенерированный узел.
+	# Стартовые ряды (только бои) исключаем; не затираем обязательные shop/chest, чтобы
+	# не сломать их гарантии. Вызывается ДО _assign_route_connections — узел получает
+	# связи как обычный узел маршрута.
+	var non_boss_rows := route.size()
+	if non_boss_rows <= START_BATTLE_ONLY_ROWS:
+		return
+	# Кандидаты: внутренние ряды (после стартовых, до последнего не-босс ряда),
+	# в которых есть хотя бы одна свободная ветка (не shop/chest).
+	var candidate_rows := []
+	for row_index in range(START_BATTLE_ONLY_ROWS, non_boss_rows):
+		var row: Array = route[row_index]
+		if row.is_empty():
+			continue
+		for route_node in row:
+			var node_type := str(route_node.get("type", ""))
+			if node_type != "shop" and node_type != "chest":
+				candidate_rows.append(row_index)
+				break
+	if candidate_rows.is_empty():
+		return
+	var chosen_row_index: int = candidate_rows[game.rng.randi_range(0, candidate_rows.size() - 1)]
+	var chosen_row: Array = route[chosen_row_index]
+	# Свободные ветки в выбранном ряду (не shop/chest), затем случайная из них.
+	var free_branches := []
+	for branch_index in range(chosen_row.size()):
+		var branch_type := str((chosen_row[branch_index] as Dictionary).get("type", ""))
+		if branch_type != "shop" and branch_type != "chest":
+			free_branches.append(branch_index)
+	if free_branches.is_empty():
+		return
+	var altar_branch: int = free_branches[game.rng.randi_range(0, free_branches.size() - 1)]
+	var altar_node: Dictionary = chosen_row[altar_branch]
+	altar_node["type"] = "altar"
+	altar_node["name"] = _random_route_node_name(altar_branch, "altar")
+	altar_node["event_id"] = "sacrifice_altar"
+	chosen_row[altar_branch] = altar_node
+	route[chosen_row_index] = chosen_row
 
 
 func _place_required_shop_nodes(route: Array) -> void:
@@ -400,6 +443,8 @@ func _random_route_node_name(index: int, node_type: String) -> String:
 		return "Hazard %d: Dangerous Fork" % [index + 1]
 	if node_type == "chest":
 		return "Chest %d: Relic Cache" % [index + 1]
+	if node_type == "altar":
+		return "Алтарь жертвы"
 	if node_type == "elite_battle":
 		return "Elite %d: Crowned Threat" % [index + 1]
 	if node_type == "boss":
@@ -578,6 +623,11 @@ func _node_preview_tooltip(route_node: Dictionary, definition: Dictionary) -> St
 			lines.append("Безопасно: золото + лечение")
 			lines.append("Риск: бой — " + _wave_threat_hint(route_node, node_seed))
 			lines.append("Победа: +золото, +1 Сила, +урон")
+		"altar":
+			# SCRUM-610: превью сделки — без боя, цена в HP, постоянный бонус.
+			lines.append("Без боя: сделка тело-за-силу")
+			lines.append("Цена: часть макс. HP")
+			lines.append("Награда: постоянные статы/моды на забег")
 	return "\n".join(lines)
 
 
@@ -890,6 +940,13 @@ func _open_route_node(route_node: Dictionary) -> void:
 			var hazard_node := route_node.duplicate(true)
 			hazard_node["event_id"] = "sudden_fork"
 			game.ui._show_event_screen(hazard_node)
+		"altar":
+			# SCRUM-610: «Алтарь жертвы» — детерминированное спец-событие sacrifice_altar
+			# (сделка тело-за-силу, без боя/арта). Штампуем event_id, чтобы
+			# _show_event_screen загрузил именно его, а не случайное событие.
+			var altar_node := route_node.duplicate(true)
+			altar_node["event_id"] = "sacrifice_altar"
+			game.ui._show_event_screen(altar_node)
 		"chest":
 			game.ui._show_elite_artifact_reward(Callable(self, "_advance_route_after_noncombat"))
 		"elite_battle":

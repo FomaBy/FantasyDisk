@@ -143,6 +143,28 @@ func _initialize() -> void:
 		push_error("Expected the last vertical route row to be boss-only.")
 		quit(1)
 		return
+	# SCRUM-610: ровно один «Алтарь жертвы» на маршрут — в середине (после стартовых
+	# боёв, до ряда босса), несёт event_id фиксированной сделки sacrifice_altar.
+	for _altar_iter in range(12):
+		var generated_route: Array = main.call("_generate_route")
+		var altar_count := 0
+		for gen_step_index in range(generated_route.size()):
+			for generated_node in generated_route[gen_step_index]:
+				if str(generated_node.get("type", "")) != "altar":
+					continue
+				altar_count += 1
+				if gen_step_index < ROUTE_START_BATTLE_ONLY_ROWS or gen_step_index == generated_route.size() - 1:
+					push_error("Expected the altar node to avoid start-only rows and the boss row.")
+					quit(1)
+					return
+				if str(generated_node.get("event_id", "")) != "sacrifice_altar":
+					push_error("Expected the altar node to carry the sacrifice_altar fixed event id.")
+					quit(1)
+					return
+		if altar_count != 1:
+			push_error("Expected exactly one sacrifice altar per route, got %d." % altar_count)
+			quit(1)
+			return
 	for early_step_index in range(mini(ROUTE_START_BATTLE_ONLY_ROWS, route_nodes.size() - 1)):
 		for route_node in route_nodes[early_step_index]:
 			if str(route_node.get("type", "")) != "battle":
@@ -167,7 +189,7 @@ func _initialize() -> void:
 		push_error("Expected route generation to create limited paths instead of all-to-all map connections.")
 		quit(1)
 		return
-	for node_type in ["battle", "elite_battle", "shop", "event", "rest", "boss"]:
+	for node_type in ["battle", "elite_battle", "shop", "event", "rest", "altar", "boss"]:
 		var definition: Dictionary = main.call("_map_node_definition", node_type)
 		if str(definition.get("name", "")) == "" or str(definition.get("icon", "")) == "" or str(definition.get("tooltip", "")) == "":
 			push_error("Expected map node definition %s to include name/icon/tooltip." % node_type)
