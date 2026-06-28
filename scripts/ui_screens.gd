@@ -4960,7 +4960,7 @@ func _format_run_duration(total_seconds: float) -> String:
 
 
 func _victory_ascension_summary(character_id: String, run_level: int, unlocked_level: int) -> String:
-	var lines := ["Текущий предел Возвышения: %d из 10." % unlocked_level]
+	var lines := ["Текущий предел Возвышения: %d из %d." % [unlocked_level, game.META_PROGRESSION.MAX_ASCENSION_LEVEL]]  # SCRUM-622: динамический кап (SCRUM-516: 10→5), не хардкод
 	if run_level >= unlocked_level - 1 and unlocked_level > 0:
 		lines.append("Открыт следующий уровень Возвышения.")
 		var reward_text := _ascension_reward_summary(character_id, unlocked_level)
@@ -5012,25 +5012,45 @@ func _modifier_summary_text(mods_value) -> String:
 
 
 func _random_event_choices() -> Array:
+	# SCRUM-597: пул наград может исчерпаться (_weighted_sample отдаёт меньше
+	# count при пустом пуле) — индексировать rewards[0]/[1] вслепую нельзя
+	# (Index out of bounds). Строим reward-варианты только под реально выпавшие
+	# награды, иначе подставляем детерминированный фолбэк, чтобы всегда было
+	# 3 осмысленных выбора и «Отдых» как гарантированный безопасный вариант.
 	var rewards := _random_rewards(2)
-	var choices := [
-		{
-			"title": "Train",
-			"description": "Gain a random characteristic upgrade.",
+	var choices := []
+	if rewards.size() >= 1:
+		choices.append({
+			"title": "Тренировка",
+			"description": "Получить случайное улучшение характеристики.",
 			"reward": rewards[0],
-		},
-		{
-			"title": "Risky Relic",
+		})
+	else:
+		# Фолбэк без награды из пула: маленький гарантированный прирост.
+		choices.append({
+			"title": "Тренировка",
+			"description": "Небольшой прирост характеристики.",
+			"mods": {"defense_flat": 0.04},
+		})
+	if rewards.size() >= 2:
+		choices.append({
+			"title": "Рискованная реликвия",
 			"description": "Потерять 15% здоровья и получить артефакт или характеристику.",
 			"reward": rewards[1],
 			"health_percent_cost": 0.15,
-		},
-		{
-			"title": "Rest",
-			"description": "Восстановить 25% максимального здоровья.",
-			"heal_percent": 0.25,
-		},
-	]
+		})
+	else:
+		# Нет второй награды — не берём плату за HP впустую; даём безопасный прирост.
+		choices.append({
+			"title": "Закалка",
+			"description": "Небольшой прирост максимального здоровья.",
+			"mods": {"max_health_flat": 8.0},
+		})
+	choices.append({
+		"title": "Отдых",
+		"description": "Восстановить 25% максимального здоровья.",
+		"heal_percent": 0.25,
+	})
 	return choices
 
 
@@ -7584,7 +7604,7 @@ func _create_combat_timer_panel(root: Control) -> void:
 		asc_badge.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
 		root.add_child(asc_badge)
 		var asc_text := Label.new()
-		asc_text.text = ROMAN_NUMERALS[clampi(game.selected_ascension_level, 0, 10)]
+		asc_text.text = ROMAN_NUMERALS[clampi(game.selected_ascension_level, 0, game.META_PROGRESSION.MAX_ASCENSION_LEVEL)]  # SCRUM-622: клампить по динамическому капу (5), не хардкод 10
 		asc_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		asc_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		asc_text.add_theme_font_size_override("font_size", 24)
