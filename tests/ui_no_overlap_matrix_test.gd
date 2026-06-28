@@ -439,12 +439,24 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 		"event_economy":
 			# SCRUM-565: панель события рисуется собственной evt_panel @2K-рамкой.
 			var event_panel := main.find_child("MenuPanel_event", true, false) as Control
-			if event_panel != null and _stylebox_texture_path(event_panel.get_theme_stylebox("panel")) != EVT_PANEL_2K_FRAME_PATH:
+			if event_panel == null or not event_panel.visible or not event_panel.get_global_rect().has_area():
+				return "%s: expected visible event panel instead of an empty event shell." % context
+			if _stylebox_texture_path(event_panel.get_theme_stylebox("panel")) != EVT_PANEL_2K_FRAME_PATH:
 				return "%s: expected event MenuPanel to use evt_panel @2K frame." % context
+			var event_title := main.find_child("EventTitle", true, false) as Label
+			var event_story := main.find_child("EventStory", true, false) as Label
+			for label in [event_title, event_story]:
+				if label == null or not label.visible or label.text.strip_edges() == "" or not label.get_global_rect().has_area():
+					return "%s: expected event title/story labels to be visible and non-empty." % context
+				if not event_panel.get_global_rect().grow(1.0).encloses(label.get_global_rect()):
+					return "%s: expected %s to stay inside the event panel safe layout." % [context, label.name]
+			var visible_event_choices := 0
 			for node in main.find_children("EventChoiceButton*", "Button", true, false):
 				var event_button := node as Button
 				if event_button == null:
 					continue
+				if event_button.visible and event_button.get_global_rect().has_area():
+					visible_event_choices += 1
 				# SCRUM-565: карточки выбора используют evt_card @2K-рамку (normal+hover).
 				if _stylebox_texture_path(event_button.get_theme_stylebox("normal")) != EVT_CARD_2K_FRAME_PATH:
 					return "%s: expected %s normal StyleBox to use evt_card @2K frame." % [context, event_button.name]
@@ -452,9 +464,13 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected %s hover StyleBox to use evt_card @2K frame." % [context, event_button.name]
 				if event_button.tooltip_text.contains("Риск: Риск:"):
 					return "%s: expected event option text to avoid duplicated risk prefix." % context
+				if not event_panel.get_global_rect().grow(1.0).encloses(event_button.get_global_rect()):
+					return "%s: expected %s to stay inside the event panel instead of being clipped away." % [context, event_button.name]
 				var desc := event_button.find_child("%sDescription" % event_button.name, true, false) as Label
 				if desc != null and not event_button.get_global_rect().grow(1.0).encloses(desc.get_global_rect()):
 					return "%s: event description %s escapes its card safe content rect." % [context, desc.name]
+			if visible_event_choices < 2:
+				return "%s: expected at least two visible event choices, got %d." % [context, visible_event_choices]
 	return ""
 
 

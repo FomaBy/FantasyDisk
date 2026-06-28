@@ -53,6 +53,15 @@ in tooltip. Random event choices keep long descriptions inside the accepted
 choice-card safe zone and normalize risk text so player copy shows a single
 `Риск:` prefix, never `Риск: Риск:`.
 
+SCRUM-629 keeps the random event panel from rendering as an empty shell: the
+screen root is `EventScreen`, the actual frame stays named `MenuPanel_event`,
+and the content column is fixed to the `evt_panel` safe zone as `EventContent`
+with visible `EventTitle`, `EventStory`, event choice cards and the back action.
+Event scroll no longer follows focus on open, so focusing the first choice
+cannot auto-scroll title/story/options out of the initial viewport. The UI
+no-overlap matrix now fails if the event panel, title/story, or at least two
+choices are missing, empty, clipped, or outside the event frame.
+
 SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
 Attribute Shop uses compact `320x240` offer cards plus shorter bottom action
 buttons only below 660px viewport height, while Settings permits a compressed

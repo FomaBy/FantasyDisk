@@ -4861,7 +4861,9 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	game.current_event_definition = event_definition.duplicate(true)
 
 	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event", _event_panel_2k_style())
-	var event_root := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
+	_configure_event_menu_layout(box)
+	var event_panel := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
+	var event_root := event_panel.get_parent() as Control if event_panel != null and event_panel.get_parent() != null else null
 	if event_root != null:
 		event_root.name = "EventScreen"
 	_create_menu_run_hud()
@@ -6419,16 +6421,20 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 		panel.add_child(box)
 
 	var title_label := Label.new()
+	title_label.name = "MenuTitle_%s" % screen_background_id if screen_background_id != "" else "MenuTitle"
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title_label.add_theme_font_size_override("font_size", 34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42)
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	box.add_child(title_label)
 
 	var subtitle_label := Label.new()
+	subtitle_label.name = "MenuSubtitle_%s" % screen_background_id if screen_background_id != "" else "MenuSubtitle"
 	subtitle_label.text = subtitle
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	subtitle_label.add_theme_font_size_override("font_size", 15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17)
 	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	box.add_child(subtitle_label)
@@ -7229,6 +7235,41 @@ func _economy_panel_style() -> StyleBox:
 func _event_panel_2k_style() -> StyleBox:
 	var display_size := _economy_menu_panel_half_size("event") * 2.0
 	return _overhaul_2k_frame_style("evt_panel", display_size)
+
+
+func _configure_event_menu_layout(box: VBoxContainer) -> void:
+	if box == null:
+		return
+	var display_size := _economy_menu_panel_half_size("event") * 2.0
+	var margins := _overhaul_2k_content_margins("evt_panel", display_size)
+	var content_size := Vector2(
+		maxf(320.0, display_size.x - margins.x - margins.z),
+		maxf(240.0, display_size.y - margins.y - margins.w)
+	)
+	var compact := display_size.y < 680.0
+	box.name = "EventContent"
+	box.alignment = BoxContainer.ALIGNMENT_BEGIN
+	box.custom_minimum_size = content_size
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_theme_constant_override("separation", 12 if compact else 16)
+	var scroll := box.get_parent() as ScrollContainer
+	if scroll != null:
+		scroll.follow_focus = false
+		scroll.scroll_vertical = 0
+		scroll.custom_minimum_size = content_size
+	var title_label := box.find_child("MenuTitle_event", false, false) as Label
+	if title_label != null:
+		title_label.name = "EventTitle"
+		title_label.custom_minimum_size = Vector2(content_size.x, 38.0 if compact else 52.0)
+		title_label.add_theme_font_size_override("font_size", 30 if compact else 36)
+	var story_label := box.find_child("MenuSubtitle_event", false, false) as Label
+	if story_label != null:
+		story_label.name = "EventStory"
+		story_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		story_label.custom_minimum_size = Vector2(content_size.x, 58.0 if compact else 92.0)
+		story_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		story_label.add_theme_font_size_override("font_size", 14 if compact else 17)
 
 
 # SCRUM-573: Улучшение @2K. Панель экрана улучшения — per-слот overhaul_2k-рамка
