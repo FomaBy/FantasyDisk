@@ -581,14 +581,18 @@ func add_run_gold_collected(amount: int) -> void:
 	run_metrics["gold_collected"] = int(run_metrics.get("gold_collected", 0)) + amount
 
 
-# Снять финальные значения игрока (уровень/золото/артефакты) и достигнутый ряд в метрики.
+# Снять финальные значения игрока (уровень/артефакты) и достигнутый ряд в метрики.
 # Зовётся на завершении забега (победа/смерть) до удаления игрока. snapshot = run_player_snapshot
 # или живой игрок; берём из переданного словаря, чтобы не зависеть от queue_free.
+# NB: gold_collected НЕ снимается из snapshot — это аккумулятор «собрано за забег»
+# (add_run_gold_collected), а не остаток кошелька (см. SCRUM-555).
 func capture_run_metrics_finals(source: Dictionary) -> void:
 	if run_metrics.is_empty():
 		reset_run_metrics()
 	run_metrics["final_level"] = int(source.get("level", run_metrics.get("final_level", 0)))
-	run_metrics["gold_collected"] = int(source.get("money", run_metrics.get("gold_collected", 0)))
+	# SCRUM-555: не перезаписывать gold_collected кошельком (source.money). Перезапись
+	# показывала на экране итогов ОСТАТОК (после трат в магазине), расходясь с подписью
+	# «Собрано золота». Источник правды — накопитель add_run_gold_collected.
 	run_metrics["artifacts"] = (source.get("artifacts", run_metrics.get("artifacts", [])) as Array).duplicate(true)
 	run_metrics["route_stage_reached"] = maxi(int(run_metrics.get("route_stage_reached", 0)), route_stage)
 
