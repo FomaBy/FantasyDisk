@@ -98,7 +98,11 @@ const SCREEN_BACKGROUND_PATHS := {
 	"end_run_confirm": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 }
 const GAME_CURSOR_PATH := "res://assets/sprites/ui/cursor/game_cursor.png"
-const GAME_CURSOR_HOTSPOT := Vector2(2, 2)
+# SCRUM-592: hotspot сидит на самом верхнем-левом ВИДИМОМ пикселе острия
+# (включая сглаживание апекса в (1,1)). Прежний (2,2) указывал на первый
+# полностью-непрозрачный пиксель, на 1px НИЖЕ воспринимаемого кончика —
+# поэтому OS-клик на Windows регистрировался чуть ниже видимого острия.
+const GAME_CURSOR_HOTSPOT := Vector2(1, 1)
 const SCREEN_BACKGROUND_FALLBACK_COLORS := {
 	"system": Color(0.045, 0.052, 0.070, 1.0),
 	"settings": Color(0.045, 0.052, 0.070, 1.0),

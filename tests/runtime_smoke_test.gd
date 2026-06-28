@@ -394,6 +394,35 @@ func _initialize() -> void:
 			push_error("Expected shop/cursor UI asset to exist: %s" % ui_asset_path)
 			quit(1)
 			return
+	# SCRUM-592: OS-курсор должен кликать ровно остриём. Hotspot обязан сидеть на
+	# самом верхнем-левом ВИДИМОМ (включая сглаживание) пикселе нарисованного
+	# острия — иначе клик регистрируется чуть НИЖЕ видимого кончика (Windows).
+	var cursor_texture := load(main.GAME_CURSOR_PATH) as Texture2D
+	if cursor_texture == null:
+		push_error("Expected game cursor texture to load for hotspot check.")
+		quit(1)
+		return
+	var cursor_image := cursor_texture.get_image()
+	if cursor_image == null:
+		push_error("Expected game cursor image data for hotspot check.")
+		quit(1)
+		return
+	var cursor_tip := Vector2i(-1, -1)
+	for tip_y in cursor_image.get_height():
+		for tip_x in cursor_image.get_width():
+			if cursor_image.get_pixel(tip_x, tip_y).a > 0.0:
+				cursor_tip = Vector2i(tip_x, tip_y)
+				break
+		if cursor_tip.x >= 0:
+			break
+	if cursor_tip.x < 0:
+		push_error("Game cursor image appears fully transparent — cannot locate tip.")
+		quit(1)
+		return
+	if Vector2i(main.GAME_CURSOR_HOTSPOT) != cursor_tip:
+		push_error("Cursor hotspot %s must sit on the visible tip pixel %s (else clicks land below the point)." % [str(main.GAME_CURSOR_HOTSPOT), str(cursor_tip)])
+		quit(1)
+		return
 	for character_id in ProgressionData.character_ids():
 		if not ProgressionData.character_ids().has(character_id):
 			push_error("Expected playable character %s in progression data." % character_id)
