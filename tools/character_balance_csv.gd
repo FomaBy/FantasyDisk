@@ -256,12 +256,13 @@ func _build_artifacts(character_id: String, archetype: String, ideal: bool, rng:
 # --- Замер фактического DPS ---------------------------------------------------
 
 func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array) -> float:
-	# SCRUM-551: детерминированный teardown предыдущего пэка ДО следующего инстанса.
-	# Раньше дети висели на queue_free (deferred) — между кадрами оставался GC-окно,
-	# в которое tween_callback/filter-лямбда могла дёрнуться на уже-освобождаемом
-	# player/ally → intermittent freed-lambda SIGABRT (CSV не собирался под нагрузкой).
-	# Теперь: глушим tween'ы, снимаем из дерева (auto-kill SceneTreeTween) и free() сразу.
+	# SCRUM-551: teardown предыдущего пэка ДО следующего инстанса. Глушим ВСЕ tween'ы
+	# в поддереве (известные поля игрока + cleanup_effects() оружия + рекурсивный обход),
+	# снимаем из дерева и free() сразу — чтобы ни один SceneTreeTween/Callable не
+	# дёрнулся на освобождаемом узле (это давало нативный use-after-free SIGABRT на
+	# случайной строке, из-за чего полный CSV не собирался).
 	_teardown_holder_children()
+	await process_frame
 	await process_frame
 
 	var player := PLAYER_SCENE.instantiate() as Node2D
@@ -309,28 +310,49 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 
 
 # Жёсткий синхронный снос всех детей холдера (player/враги/призывы) без deferred-окна.
-# Глушит tween'ы игрока, сносит призывы из группы allies, снимает из дерева и free()
-# немедленно — чтобы ни одна лямбда/tween_callback не сработала на освобождаемом узле.
+# Глушит tween'ы игрока/оружия (в т.ч. рекурсивно в поддереве), сносит призывы из
+# группы allies, снимает из дерева и free() сразу — чтобы ни один SceneTreeTween/
+# Callable не дёрнулся на освобождаемом узле (нативный use-after-free SIGABRT).
 func _teardown_holder_children() -> void:
-	# Сначала прибиваем «висящих» призывов (они держат свой tween/lambda на ally-узле).
-	# NB: скрипт extends SceneTree → get_nodes_in_group вызывается на self (дереве).
+	# Сначала прибиваем «висящих» призывов (они держат свой death-tween на ally-узле;
+	# ally._exit_tree гасит его при free). NB: extends SceneTree → группа на self (дереве).
 	for ally in get_nodes_in_group("allies"):
 		if is_instance_valid(ally):
 			ally.remove_from_group("allies")
 			var ally_node := ally as Node
+			_quiet_node_tweens(ally_node)
 			if ally_node.get_parent() != null:
 				ally_node.get_parent().remove_child(ally_node)
 			ally_node.free()
 	for child in _holder.get_children():
 		if not is_instance_valid(child):
 			continue
-		# Глушим известные tween'ы игрока до снятия из дерева.
-		for tween_field in ["_dodge_rush_tween", "_crit_burst_tween", "_ultimate_tween", "_action_tween"]:
-			var tw = child.get(tween_field)
-			if tw is Tween and (tw as Tween).is_valid():
-				(tw as Tween).kill()
+		_quiet_subtree_tweens(child)
 		_holder.remove_child(child)
 		child.free()
+
+
+# Гасит известные tween-поля узла и зовёт cleanup_effects() (оружие), если есть.
+func _quiet_node_tweens(node: Node) -> void:
+	if node == null or not is_instance_valid(node):
+		return
+	for tween_field in ["_dodge_rush_tween", "_crit_burst_tween", "_ultimate_tween",
+			"_action_tween", "_hit_flash_tween", "_swing_tween", "_swing_timing_tween",
+			"_death_tween"]:
+		var tw = node.get(tween_field)
+		if tw is Tween and (tw as Tween).is_valid():
+			(tw as Tween).kill()
+	if node.has_method("cleanup_effects"):
+		node.call("cleanup_effects")
+
+
+# Рекурсивно гасит tween'ы во всём поддереве (player → weapon/visual/прочие дети).
+func _quiet_subtree_tweens(node: Node) -> void:
+	if node == null or not is_instance_valid(node):
+		return
+	_quiet_node_tweens(node)
+	for sub in node.get_children():
+		_quiet_subtree_tweens(sub)
 
 
 func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:

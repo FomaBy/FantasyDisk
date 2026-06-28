@@ -32,6 +32,7 @@ var _last_direction := Vector2.RIGHT
 var _swinging := false
 var _hit_targets := []
 var _swing_tween: Tween = null
+var _swing_timing_tween: Tween = null
 var _last_attack_crit := false
 
 
@@ -104,19 +105,38 @@ func _start_swing(immediate_damage := false) -> void:
 		return
 
 	# Tween на оружии замораживается паузой, чтобы окно урона не тикало в level-up/Escape.
-	var swing_timing_tween := create_tween()
-	swing_timing_tween.tween_interval(windup_time)
-	swing_timing_tween.tween_callback(func() -> void:
+	# SCRUM-551: храним ссылку и гасим прошлый таймер-твин — иначе при force-free оружия
+	# (mass-free между замерами в character_balance_csv.gd) висящий swing-таймер дёргал
+	# _finish_swing/lambda на уже освобождённом узле → нативный SIGABRT (freed object/lambda),
+	# из-за чего balance-CSV падал на berserk-строках и не собирался.
+	if _swing_timing_tween != null and _swing_timing_tween.is_valid():
+		_swing_timing_tween.kill()
+	_swing_timing_tween = create_tween()
+	_swing_timing_tween.tween_interval(windup_time)
+	_swing_timing_tween.tween_callback(func() -> void:
 		if is_instance_valid(owner_node):
 			_damage_window(owner_node, _last_direction)
 	)
-	swing_timing_tween.tween_interval(swing_time + recover_time)
-	swing_timing_tween.tween_callback(_finish_swing)
+	_swing_timing_tween.tween_interval(swing_time + recover_time)
+	_swing_timing_tween.tween_callback(_finish_swing)
 
 
 func _finish_swing() -> void:
+	if is_queued_for_deletion():
+		return
 	_swinging = false
 	_hit_targets.clear()
+
+
+func _exit_tree() -> void:
+	# Оружие покидает дерево (смена оружия ИЛИ каскадный force-free игрока) —
+	# гасим оба твина, чтобы их отложенные колбэки не сработали по freed-self.
+	if _swing_tween != null and _swing_tween.is_valid():
+		_swing_tween.kill()
+	if _swing_timing_tween != null and _swing_timing_tween.is_valid():
+		_swing_timing_tween.kill()
+	_swing_tween = null
+	_swing_timing_tween = null
 
 
 func _animate_weapon(direction: Vector2) -> void:

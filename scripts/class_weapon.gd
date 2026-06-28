@@ -475,10 +475,19 @@ func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
 	var orb_tween := create_tween()
 	orb_tween.tween_property(orb, "global_position", far_point, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	orb_tween.tween_property(orb, "global_position", origin, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	# SCRUM-551: захват owner_node/orb (Node) в lambda интермиттентно «освобождался»
+	# под быстрым create/free в balance-CSV. Резолвим по instance_id внутри + гвард.
+	var owner_id := owner_node.get_instance_id()
+	var orb_id := orb.get_instance_id()
+	var weapon_self_id := get_instance_id()
 	orb_tween.tween_callback(func() -> void:
-		if is_instance_valid(self) and is_instance_valid(owner_node):
-			_damage_enemies_in_corridor(owner_node.global_position, direction, _rolled_damage(owner_node))
-		_release_effect(orb)
+		var w := instance_from_id(weapon_self_id) as Node
+		var o := instance_from_id(owner_id) as Node2D
+		if w != null and o != null and is_instance_valid(w) and is_instance_valid(o):
+			w.call("_damage_enemies_in_corridor", o.global_position, direction, w.call("_rolled_damage", o))
+		var orb_node := instance_from_id(orb_id) as Node
+		if w != null and is_instance_valid(w) and orb_node != null and is_instance_valid(orb_node):
+			w.call("_release_effect", orb_node)
 	)
 
 
@@ -1066,8 +1075,14 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 		_register_effect(miss)
 		var miss_tween := create_tween()
 		miss_tween.tween_property(miss, "global_position", owner_node.global_position + direction * min(attack_range, 280.0), 0.18)
+		# SCRUM-551: резолвим miss/self по instance_id (захват Node в lambda «освобождался» в CSV).
+		var miss_id := miss.get_instance_id()
+		var weapon_miss_self_id := get_instance_id()
 		miss_tween.tween_callback(func() -> void:
-			_release_effect(miss)
+			var w := instance_from_id(weapon_miss_self_id) as Node
+			var m := instance_from_id(miss_id) as Node
+			if w != null and is_instance_valid(w) and m != null and is_instance_valid(m):
+				w.call("_release_effect", m)
 		)
 		return
 
@@ -2051,11 +2066,20 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	var dot_tween := create_tween()
 	for tick_index in range(dot_ticks):
 		dot_tween.tween_interval(1.0 / tick_speed)
-		dot_tween.tween_callback(func() -> void:
-			_damage_enemy(enemy, tick_damage, false, "dot", false)
-			if enemy is Node2D:
-				HazardVfx.dot_tick(enemy, dot_color)
-		)
+		# SCRUM-551: bound-метод вместо лямбды с захватом локала `enemy` (Node). Захват
+		# узла в lambda-callable интермиттентно «освобождался» под быстрым create/free
+		# оружия и врагов в balance-CSV (ERROR: Lambda capture at index 1 was freed,
+		# gdscript_lambda_callable.cpp:110) и валил прогон. Callable.bind держит self
+		# (живёт пока жив tween) + value-args; гвард is_instance_valid внутри метода.
+		dot_tween.tween_callback(Callable(self, "_apply_weapon_dot_tick").bind(enemy, tick_damage, dot_color))
+
+
+func _apply_weapon_dot_tick(enemy: Node, tick_damage: float, dot_color: Color) -> void:
+	if enemy == null or not is_instance_valid(enemy):
+		return
+	_damage_enemy(enemy, tick_damage, false, "dot", false)
+	if enemy is Node2D:
+		HazardVfx.dot_tick(enemy, dot_color)
 
 
 func _damage_enemies_in_circle(origin: Vector2, radius: float, amount: float) -> void:
