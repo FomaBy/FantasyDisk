@@ -2668,12 +2668,11 @@
   "status": "Готово",
   "desc_hash": "451f063bad14edee04830459e7a1db40"
  },
-<<<<<<< Updated upstream
  "SCRUM-485_drawing_script_2k_coord_assets.md": {
   "key": "SCRUM-485",
   "status": "Готово",
   "desc_hash": "590a4641907ba3b06a1ca182b06fd1e3"
-=======
+ },
  "SCRUM-509_anim_worker_a_reverify_2026-06-28.md": {
   "key": "SCRUM-509",
   "status": "Контроль качества",
@@ -2693,6 +2692,10 @@
   "key": "SCRUM-528",
   "status": "Контроль качества",
   "desc_hash": "70693595f4d9f5ae78af2cd2c9ea2dd3"
->>>>>>> Stashed changes
+ },
+ "SCRUM-590_victory_banner_2k_frame.md": {
+  "key": "SCRUM-590",
+  "status": "Контроль качества",
+  "desc_hash": "7dcb93945506b6f8a64f394cce914c56"
  }
 }
