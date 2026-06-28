@@ -15,6 +15,8 @@
 Креды: macOS Keychain, сервис `fantasydisk-jira` (security find-generic-password).
 Запуск: python3 tools/jira_board_sync.py [--dry-run] [--no-create]
 """
+from __future__ import annotations
+
 import base64
 import argparse
 import glob
