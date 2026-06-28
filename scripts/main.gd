@@ -1140,12 +1140,45 @@ func _cached_texture(path: String) -> Texture2D:
 		return null
 	if texture_cache.has(path):
 		return texture_cache[path]
-	if not ResourceLoader.exists(path):
-		texture_cache[path] = null
-		return null
-	var texture := load(path) as Texture2D
+	var texture: Texture2D = null
+	var can_load_import := not path.ends_with(".png") or _png_import_texture_ready(path)
+	if can_load_import and ResourceLoader.exists(path):
+		texture = load(path) as Texture2D
+	if texture == null and path.ends_with(".png") and FileAccess.file_exists(path):
+		var image := Image.new()
+		if image.load(path) == OK:
+			var image_texture := ImageTexture.create_from_image(image)
+			image_texture.resource_path = path
+			texture = image_texture
 	texture_cache[path] = texture
 	return texture
+
+
+func _png_import_texture_ready(path: String) -> bool:
+	var import_path := "%s.import" % path
+	if not FileAccess.file_exists(import_path):
+		return false
+	var import_file := FileAccess.open(import_path, FileAccess.READ)
+	if import_file == null:
+		return false
+	var import_text := import_file.get_as_text()
+	import_file.close()
+	var cursor := 0
+	var found_imported_texture := false
+	while true:
+		var start := import_text.find("res://.godot/imported/", cursor)
+		if start == -1:
+			break
+		var end := import_text.find(".ctex", start)
+		if end == -1:
+			break
+		end += 5
+		found_imported_texture = true
+		var imported_path := import_text.substr(start, end - start)
+		if not FileAccess.file_exists(imported_path):
+			return false
+		cursor = end
+	return found_imported_texture
 
 
 func _clear_world() -> void:

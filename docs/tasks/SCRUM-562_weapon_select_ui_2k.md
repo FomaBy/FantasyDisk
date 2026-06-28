@@ -1,8 +1,8 @@
 # SCRUM-562 - Weapon Select UI @2K
 
 Status: done, ready for QA
-Owner: Codex Design / scrum562_20260628192115
-Branch: codex/SCRUM-562-weapon-select-ui-2k-20260628192115
+Owner: Codex Design / design_562_codex562_201933
+Branch: codex/scrum-562-ui-texture-load
 Jira: SCRUM-562
 
 ## Result
@@ -28,3 +28,20 @@ Weapon Select now uses a dedicated 2K frame package and larger safe layout:
 - PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
 - PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/display_resolution_test.gd`
 - PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+
+## RED QA follow-up 2026-06-28
+
+Fresh-checkout/headless QA reported that `runtime_smoke_ui_test.gd` could not
+load the SCRUM-562 `ws_*` frame textures from `.godot/imported`, causing
+`_test_weapon_select_clean_layout` to see untextured card styles. The fix is
+scoped to runtime texture loading: `_cached_texture()` now falls back to loading
+an existing `res://*.png` source file through `Image.load()` when the imported
+resource is not available yet, while preserving `resource_path` for the existing
+texture-path assertions.
+
+Validation on fresh worktree `C:\Users\FomaE\FantasyDisk_agents\design_562_codex562_201933`:
+
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --import`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/display_resolution_test.gd`
