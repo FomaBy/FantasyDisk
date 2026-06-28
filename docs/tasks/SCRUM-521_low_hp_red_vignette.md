@@ -100,6 +100,23 @@ Locked paths: `scripts/ui_screens.gd`, `tests/runtime_smoke_test.gd`, `docs/desi
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script res://tests/runtime_smoke_test.gd`
 - PASS: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path "/Users/sergeyfomin/Documents/AI Agent" --script res://tests/runtime_smoke_ui_test.gd`
 
+## QA-Вердикт (2026-06-28)
+Статус: PASSED
+Проверено:
+- Jira SCRUM-521 comments/evidence прочитаны: executor указал pushed origin/dev commit `2bad5510`, но этот SHA больше не доступен в локальных/remote refs; независимая QA выполнена на текущем `origin/dev` HEAD `bef946b8`, где реализация SCRUM-521 присутствует.
+- Static inspection: `LowHpVignetteOverlay` создаётся только в combat HUD, расположен за HUD-картами (`move_child(vignette, 0)`), `mouse_filter = MOUSE_FILTER_IGNORE`, прозрачный центр задаётся radial shader; пороги `0.30`/`0.34`, alpha `0.26`, fade-in/out `0.42`/`0.50`.
+- Threshold behavior: automated smoke проверяет inactive at 90% HP, active at 20% HP, hysteresis stays active at 32%, fades out at 36%, and `combat_feedback=false` forces off.
+- UI/no-overlap: HUD smoke matrix покрывает 1152x648, 1280x720, 2560x1440 в battle и boss HUD; overlay не участвует в layout и расположен под карточками, поэтому не создаёт пересечений controls.
+- Obstruction/perf: прозрачный центр и мягкий edge alpha не закрывают центр боя; shader/material создаются один раз, tween запускается только при смене состояния, per-frame allocation loop не найден.
+Команды:
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_combat_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd`
+Краевые случаи:
+- Cold disposable worktree сначала требовал import-cache warm-up (`--editor --quit`); после прогрева все required smokes прошли.
+- Проверены HP above/below threshold, heal/damage-style threshold transitions, hysteresis band, disabled combat feedback, z-order, input ignore.
+Баги: нет.
+
 ## Files / точки входа
 
 - `scripts/ui_screens.gd:7553` `_create_hud()` — добавить вызов `_create_low_hp_vignette(root)` после `_create_damage_flash_overlay(root)` (рядом со строкой 7568).

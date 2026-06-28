@@ -2627,5 +2627,10 @@
   "key": "SCRUM-623",
   "status": "К выполнению",
   "desc_hash": "70824cff19f50c53aea62934a1a0d767"
+ },
+ "SCRUM-521_low_hp_red_vignette.md": {
+  "key": "SCRUM-521",
+  "status": "Готово",
+  "desc_hash": "6964c18b445d870220e21de727085b9c"
  }
 }
