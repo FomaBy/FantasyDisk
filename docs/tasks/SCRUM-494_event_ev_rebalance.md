@@ -203,3 +203,16 @@ Jira: SCRUM-494 · Роль: backend (balance) · Контур: claude · При
 - **Связанные тикеты:** carry-over из эпика `SCRUM-476` (закрыт административно
   без выполнения EV-ребаланса). Смежная балансовая правка — `SCRUM-503` (cap
   berserk hammer DPS), отдельный коммит; конфликтов по файлам событий нет.
+
+## QA Reverify - 2026-06-28
+
+anim-loop-1 reverified SCRUM-494 read-only on fresh `origin/dev`.
+
+- `tests/event_data_smoke_test.gd` PASS.
+- `tests/runtime_smoke_progression_economy_test.gd` PASS.
+- `tests/live_balance_simulation_test.gd` PASS.
+- `tests/global_damage_balance_smoke_test.gd` PASS.
+- `tests/global_survivability_balance_smoke_test.gd` PASS.
+- `tests/runtime_smoke_test.gd` PASS (`Runtime smoke test passed.`).
+
+Evidence: `build/qa/scrum494_anim_loop_qa/`.
