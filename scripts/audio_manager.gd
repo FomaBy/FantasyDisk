@@ -63,7 +63,13 @@ func _ready() -> void:
 			if stream is AudioStreamWAV:
 				stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 				stream.loop_begin = 0
-				stream.loop_end = int(stream.data.size() / 2.0)
+				# SCRUM-646: loop_end измеряется в КАДРАХ, а data — в байтах. Размер кадра =
+				# channels * (bits/8). Раньше делилось на 2 (как 16-бит моно), из-за чего для
+				# 16-бит СТЕРЕО точка лупа уходила вдвое за пределы данных (глитчи лупа).
+				var bytes_per_sample := 2 if stream.format == AudioStreamWAV.FORMAT_16_BITS else 1
+				var channel_count := 2 if stream.stereo else 1
+				var frame_bytes := maxi(1, channel_count * bytes_per_sample)
+				stream.loop_end = int(stream.data.size() / frame_bytes)
 			elif stream is AudioStreamMP3:
 				stream.loop = true
 			_music_streams[music_id] = stream
