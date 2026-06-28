@@ -38,3 +38,17 @@ Used the existing exact-slot `overhaul_2k` frame kit builder for this narrow HUD
 ## Result
 
 Combat title banner now uses dedicated exact-size 2K frame assets and runtime text is constrained to verified content margins. `ui_no_overlap_matrix_test.gd` asserts the big banner frame path, slot metadata, safe content rect, and label containment.
+
+## QA Verdict (2026-06-28)
+
+Status: PASSED
+
+Checked on fresh `origin/dev` worktree `C:\Users\FomaE\FantasyDisk_agents\qa_563_codex20260628193932` with Godot 4.7 stable after explicit headless import.
+
+- `python tools\build_ui_2k_frame_kit.py --verify` - PASS; `ctb_big` is `2360x90`, `ctb_small` is `2360x56`.
+- PNG dimension/alpha check - PASS; both CTB frame assets are exact-size RGBA PNGs.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` - PASS.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/display_resolution_test.gd` - PASS.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd` - PASS.
+
+Frame/content safe-zone result: `CombatIntroBanner` uses `ctb_big` metadata with strict content margins `Vector4(86, 10, 86, 10)` and the matrix test verifies `CombatIntroBannerLabel` containment inside the scaled safe rect at the checked viewport matrix, including 1080p, 2K, and 4K coverage. No overlap, overflow, or ornament-content collision found.
