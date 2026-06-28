@@ -355,6 +355,9 @@ var current_route_choice := ""
 var current_node_type := ""
 var current_combat_type := "battle"
 var current_boss_id := "rift_warden"
+# SCRUM-619: текущий бой — секретный апекс-босс конца Акта 3 (выставляется
+# resolve_act3_boss_id при входе в боссовый узел, читается record_boss_victory).
+var secret_boss_active := false
 var current_node_seed := 0
 var route_selected_indices := []
 var used_event_ids := []
@@ -624,6 +627,7 @@ func _run_autosave_state() -> Dictionary:
 		"current_node_type": current_node_type,
 		"current_combat_type": current_combat_type,
 		"current_boss_id": current_boss_id,
+		"secret_boss_active": secret_boss_active,
 		"current_node_seed": current_node_seed,
 		"run_player_snapshot": run_player_snapshot.duplicate(true),
 		"pending_level_ups": pending_level_ups,
@@ -664,6 +668,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	current_node_type = str(state.get("current_node_type", ""))
 	current_combat_type = str(state.get("current_combat_type", "battle"))
 	current_boss_id = str(state.get("current_boss_id", "rift_warden"))
+	secret_boss_active = bool(state.get("secret_boss_active", false))
 	current_node_seed = int(state.get("current_node_seed", 0))
 	run_player_snapshot = _autosave_dictionary(state.get("run_player_snapshot", {}))
 	pending_level_ups = maxi(0, int(state.get("pending_level_ups", 0)))
@@ -756,6 +761,7 @@ func advance_to_next_act() -> bool:
 	current_node_type = ""
 	current_combat_type = "battle"
 	current_boss_id = "rift_warden"
+	secret_boss_active = false
 	current_node_seed = 0
 	pending_event_combat.clear()
 	level_up_return_to_map = false
@@ -786,8 +792,32 @@ func ascension_level_for(character_id: String) -> int:
 	return META_PROGRESSION.ascension_level(meta_state, character_id)
 
 
+# SCRUM-619: разблокирован ли секретный бой В ТЕКУЩЕМ ЗАБЕГЕ (Акт 3 + гейт меты).
+# Чистая проверка состояния — без сайд-эффектов (override выставляет resolve_act3_boss_id).
+func secret_encounter_pending() -> bool:
+	if current_act < ACT_COUNT:
+		return false
+	return META_PROGRESSION.secret_encounter_unlocked(meta_state, run_metrics, selected_character_id)
+
+
+# Решает id боссового узла на входе в бой. На финальном акте при выполненном гейте
+# подменяет на секретного апекс-босса (existing codex id, более тяжёлый профиль +
+# фаза ярости) и поднимает флаг забега. Иначе возвращает базовый id и гасит флаг.
+# Вызывается из route_map_screen на входе в боссовый узел (см. _enter_route_node).
+func resolve_act3_boss_id(base_boss_id: String) -> String:
+	if secret_encounter_pending():
+		secret_boss_active = true
+		return META_PROGRESSION.SECRET_BOSS_ID
+	secret_boss_active = false
+	return base_boss_id
+
+
 func record_boss_victory() -> void:
 	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level)
+	# SCRUM-619: если это был секретный бой Акта 3 — разовая мета-награда (идемпотентно).
+	if secret_boss_active:
+		meta_state = META_PROGRESSION.record_secret_boss_victory(meta_state)
+		secret_boss_active = false
 	META_PROGRESSION.save_state(meta_state)
 	meta_points = int(meta_state.get("meta_points", 0))
 	berserk_ascension_unlocked = ascension_level_for("berserk") >= 1

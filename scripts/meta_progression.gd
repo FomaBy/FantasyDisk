@@ -61,6 +61,19 @@ const SKILL_TREE := [
 	{"id": "endure_capstone", "branch": "endure", "tier": 10, "cost": 2, "title": "Вторая жизнь", "desc": "Раз за забег смертельный удар оставляет 1 HP и даёт 2с неуязвимости.", "effects": {"death_save": 1.0}},
 ]
 
+# Секретный бой конца Акта 3 (SCRUM-619): скрытая цель для мастеров. Чистая ЛОГИКА
+# разблокировки и разовой награды — без нового арта (переиспользует апекс-босса из
+# codex). Гейт: возвышение >= 3 И (босс повержен с малым полученным уроном ИЛИ в
+# забеге есть артефакт-ключ). Награда meta_points начисляется РОВНО один раз
+# (secret_boss_defeated в персистентном состоянии).
+const SECRET_ENCOUNTER_MIN_ASCENSION := 3
+# «low-damage-boss»: суммарно получено <= порога за забег (флоулесс-ишь прохождение).
+const SECRET_ENCOUNTER_MAX_DAMAGE_TAKEN := 60.0
+const SECRET_ENCOUNTER_ARTIFACT_KEY := "rift_key"
+const SECRET_ENCOUNTER_REWARD_META_POINTS := 3
+# Апекс-босс из codex (самый тяжёлый профиль + фаза ярости в последней четверти).
+const SECRET_BOSS_ID := "ashen_colossus"
+
 const SKILL_BRANCHES := ["wealth", "lore", "might", "endure"]
 const SKILL_BRANCH_TITLES := {
 	"wealth": "Путь Богатства",
@@ -90,6 +103,8 @@ static func default_state() -> Dictionary:
 		"skill_points": 0,
 		"skill_nodes": [],
 		"class_boss_wins": {},
+		# SCRUM-619: одноразовый флаг победы над секретным боссом конца Акта 3.
+		"secret_boss_defeated": false,
 	}
 
 
@@ -119,6 +134,7 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 		for character_id in raw_class_wins.keys():
 			class_wins[str(character_id)] = maxi(int(raw_class_wins[character_id]), 0)
 	state["class_boss_wins"] = class_wins
+	state["secret_boss_defeated"] = bool(config.get_value(SECTION, "secret_boss_defeated", false))
 	return state
 
 
@@ -129,6 +145,7 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 	config.set_value(SECTION, "skill_points", int(state.get("skill_points", 0)))
 	config.set_value(SECTION, "skill_nodes", state.get("skill_nodes", []))
 	config.set_value(SECTION, "class_boss_wins", state.get("class_boss_wins", {}))
+	config.set_value(SECTION, "secret_boss_defeated", bool(state.get("secret_boss_defeated", false)))
 	config.save(save_path)
 
 
@@ -171,6 +188,51 @@ static func record_boss_victory(state: Dictionary, character_id: String, run_lev
 static func selectable_max(state: Dictionary, character_id: String) -> int:
 	# Можно выбрать 0..(пройдено+1), но не выше 10.
 	return clampi(ascension_level(state, character_id) + 1, 0, MAX_ASCENSION_LEVEL)
+
+
+# --- Секретный бой конца Акта 3 (SCRUM-619) ---
+
+static func secret_boss_defeated(state: Dictionary) -> bool:
+	return bool(state.get("secret_boss_defeated", false))
+
+
+# Максимальный достигнутый уровень возвышения среди ВСЕХ классов (для гейта, когда
+# конкретный класс забега неизвестен/не передан).
+static func _max_ascension_any(state: Dictionary) -> int:
+	var levels = state.get("ascension_levels", {})
+	if not (levels is Dictionary):
+		return 0
+	var best := 0
+	for character_id in levels.keys():
+		best = maxi(best, clampi(int(levels[character_id]), 0, MAX_ASCENSION_LEVEL))
+	return best
+
+
+# Гейт разблокировки секретного боя. Чистая функция (без сайд-эффектов).
+# Условие: возвышение >= SECRET_ENCOUNTER_MIN_ASCENSION  И
+#   (low-damage-boss: получено урона за забег <= порога  ИЛИ  есть артефакт-ключ).
+# character_id опционален: если задан — берём возвышение этого класса; иначе —
+# максимум по всем классам (любой класс на нужном возвышении открывает контент).
+static func secret_encounter_unlocked(state: Dictionary, run_metrics: Dictionary, character_id := "") -> bool:
+	var asc := ascension_level(state, character_id) if character_id != "" else _max_ascension_any(state)
+	if asc < SECRET_ENCOUNTER_MIN_ASCENSION:
+		return false
+	var low_damage: bool = float(run_metrics.get("damage_taken", 0.0)) <= SECRET_ENCOUNTER_MAX_DAMAGE_TAKEN
+	var raw_artifacts = run_metrics.get("artifacts", [])
+	var artifacts: Array = raw_artifacts if raw_artifacts is Array else []
+	var has_key: bool = artifacts.has(SECRET_ENCOUNTER_ARTIFACT_KEY)
+	return low_damage or has_key
+
+
+# Разовая фиксация победы над секретным боссом + награда meta_points. Идемпотентна:
+# повторный вызов на уже взятом флаге НЕ начисляет очки второй раз. Мутирует state
+# (как record_boss_victory) и возвращает его.
+static func record_secret_boss_victory(state: Dictionary) -> Dictionary:
+	if secret_boss_defeated(state):
+		return state
+	state["secret_boss_defeated"] = true
+	state["meta_points"] = int(state.get("meta_points", 0)) + SECRET_ENCOUNTER_REWARD_META_POINTS
+	return state
 
 
 # --- Древо умений (SCRUM-150) ---

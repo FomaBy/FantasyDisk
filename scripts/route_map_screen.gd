@@ -830,7 +830,9 @@ func _open_route_node(route_node: Dictionary) -> void:
 		"elite_battle":
 			game.combat._start_combat(false, "elite")
 		"boss":
-			game.current_boss_id = str(route_node.get("boss_id", "rift_warden"))
+			# SCRUM-619: на финальном акте при выполненном гейте подменяется на
+			# секретного апекс-босса (логика и флаг забега — в main.resolve_act3_boss_id).
+			game.current_boss_id = game.resolve_act3_boss_id(str(route_node.get("boss_id", "rift_warden")))
 			game.combat._start_combat(true, "boss")
 		_:
 			game.combat._start_combat(false, "battle")
