@@ -31,3 +31,17 @@ Reused existing exact-size `overhaul_2k` assets (`cr_panel`, `cr_btn`) instead o
 ## Result
 
 Continue-run dialog now uses the exact `cr_panel` panel frame and `cr_btn` action frames. The UI no-overlap matrix opens a temporary autosave-backed dialog and asserts panel metadata, safe content rect, and both button frame paths.
+
+## QA Verdict
+
+Status: PASSED (2026-06-28, codex-qa-582-193932)
+
+Evidence:
+
+- PASS: `python tools\build_ui_2k_frame_kit.py --verify`
+- PASS: PNG dimensions/format check for `ui_frame_2k_cr_panel.png` (680x380 RGBA) and `ui_frame_2k_cr_btn.png` (240x72 RGBA)
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/display_resolution_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+
+Safe-zone result: `ContinueRunPanel` uses exact `cr_panel` metadata with content margins `Vector4(58, 72, 58, 66)` and `Rect2(58, 72, 564, 242)` safe content rect. Both `ContinueRunButton` and `ContinueRunNewGameButton` use exact `cr_btn` frames. The UI no-overlap matrix covers 1080p, 2K, and 4K practical viewport checks; all text/buttons stay inside the content zone with no frame ornament overlap.
