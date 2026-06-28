@@ -51,3 +51,42 @@ Generated `.godot` cache and untracked Godot `.import`/`.uid` sidecars from the
 disposable checkout were removed before committing. The disposable checkout
 `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/SCRUM-655` will be removed
 after final Jira sync and push.
+
+## QA-Вердикт (2026-06-29)
+
+Статус: PASSED
+
+Проверено:
+- Clean isolated checkout `/Users/sergeyfomin/Documents/FantasyDisk-QA-SCRUM-655`
+  on `dev` at `a754c7af`; confirmed target commits `37e7897b` and `d7c7b369`
+  are present in `origin/dev`.
+- Inspected `tools/godot_gate.py`, `tools/jira_board_sync.py`,
+  `tests/weapon_orbit_smoke_test.gd`, SCRUM-655 evidence, and SCRUM-515 context.
+- `python3 -m py_compile tools/godot_gate.py tools/jira_board_sync.py` passed on
+  Python 3.9.6.
+- Fresh/deleted-cache gate run:
+  `python3 tools/godot_gate.py --headless --path . --script res://tests/weapon_orbit_smoke_test.gd`
+  exited 0 in 40.99s; gate printed `import cache missing, running headless import first`;
+  test printed `Weapon orbit smoke test passed.`
+- Warm-cache gate rerun of `weapon_orbit_smoke_test.gd` exited 0 in 0.56s and
+  printed `Weapon orbit smoke test passed.`
+- Direct deleted-cache Godot run without the gate:
+  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/weapon_orbit_smoke_test.gd`
+  exited 1 in 0.25s with the new fail-fast message instructing use of
+  `tools/godot_gate.py`; it did not hang.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/weapon_scene_integrity_test.gd`
+  exited 0 in 0.26s; `Weapon scene integrity passed (51 оружий, все scene_path резолвятся, id уникальны, активны).`
+
+Краевые случаи:
+- Deleted `.godot` cache before the main gate run to force import-cache recovery.
+- Verified warm-cache rerun skips the import path and remains fast.
+- Verified the smoke still catches real SCRUM-515 behavior: QA dump shows
+  `WeaponRootVisible=false`, `WeaponVisualVisible=false`,
+  `WeaponVisualTextureSet=true`, `WeaponParent=WeaponSocket`, and
+  `SocketDistance=112.00`.
+
+Баги: нет.
+
+Disk cleanup: QA disposable checkout
+`/Users/sergeyfomin/Documents/FantasyDisk-QA-SCRUM-655` will be removed after
+this QA evidence commit/push and final Jira sync.
