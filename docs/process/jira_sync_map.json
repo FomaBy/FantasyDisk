@@ -2677,5 +2677,10 @@
   "key": "SCRUM-571",
   "status": "Контроль качества",
   "desc_hash": "468413dc32ddd703078a6458fb82399a"
+ },
+ "SCRUM-589_combat_title_banner_2k_frame.md": {
+  "key": "SCRUM-589",
+  "status": "Контроль качества",
+  "desc_hash": "ed4c329976369a6c37985bf4c27a3523"
  }
 }
