@@ -4621,7 +4621,7 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		game.used_event_ids.append(event_id)
 	game.current_event_definition = event_definition.duplicate(true)
 
-	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event")
+	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event", _event_panel_2k_style())
 	var event_root := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
 	if event_root != null:
 		event_root.name = "EventScreen"
@@ -4644,6 +4644,10 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		var action_text := _event_choice_action_text(event_choice)
 		var button := _make_economy_choice_card(title_text, desc_text, action_text, "EventChoiceButton%d" % index, event_card_size)
 		button.name = "EventChoiceButton%d" % index
+		# SCRUM-565: переодеть карточку выбора в per-слот evt_card @2K-рамку и пере-инсетить
+		# контент под её content-зону (46/58/46/54 source → display), чтобы текст не лез на орнамент.
+		_apply_event_choice_2k_theme(button, event_card_size)
+		_reinset_event_choice_content(button, event_card_size)
 		var required_money := _event_choice_scaled_cost(event_choice)
 		if required_money > 0 and _run_money() < required_money:
 			button.disabled = true
@@ -6090,7 +6094,7 @@ func _current_ui_screen_name() -> String:
 	return "World"
 
 
-func _create_menu_box(title: String, subtitle: String, screen_background_id := "") -> VBoxContainer:
+func _create_menu_box(title: String, subtitle: String, screen_background_id := "", panel_style_override: StyleBox = null) -> VBoxContainer:
 	game._clear_ui()
 
 	game.ui_layer = CanvasLayer.new()
@@ -6123,6 +6127,8 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 		panel.name = "PauseEndModalPanel_%s" % screen_background_id
 		panel.clip_contents = true
 		panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size))
+	elif panel_style_override != null:
+		panel.add_theme_stylebox_override("panel", panel_style_override)
 	else:
 		panel.add_theme_stylebox_override("panel", _economy_panel_style() if economy_panel else _panel_style())
 	root.add_child(panel)
@@ -6935,6 +6941,43 @@ func _overhaul_2k_frame_style(slot: String, display_size: Vector2, tint := Color
 
 func _economy_panel_style() -> StyleBox:
 	return _minimal_frame_style("panel")
+
+
+# SCRUM-565: Событие @2K. Панель и карточки выбора используют per-слот overhaul_2k-рамки
+# (evt_panel 1720×780, evt_card 480×340), нарисованные РОВНО в свой пиксельный размер →
+# на 2K рендерятся 1:1, на 1080p/4K юниформ-скейлятся вьюпортом без растяжения орнамента.
+func _event_panel_2k_style() -> StyleBox:
+	var display_size := _economy_menu_panel_half_size("event") * 2.0
+	return _overhaul_2k_frame_style("evt_panel", display_size)
+
+
+func _reinset_event_choice_content(button: Button, display_size: Vector2) -> void:
+	if button == null:
+		return
+	var content := button.find_child("%sContent" % button.name, true, false) as Control
+	if content == null:
+		return
+	var source_size: Vector2 = UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE["evt_card"]
+	var base_content: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_CONTENT["evt_card"]
+	var margins := _scaled_frame_margins_xy(source_size, display_size, base_content)
+	content.offset_left = margins.x
+	content.offset_top = margins.y
+	content.offset_right = -margins.z
+	content.offset_bottom = -margins.w
+	button.set_meta("economy_content_margins", margins)
+
+
+func _apply_event_choice_2k_theme(button: Button, display_size: Vector2) -> void:
+	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style("evt_card", display_size))
+	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style("evt_card", display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style("evt_card", display_size, Color(0.90, 0.84, 0.76, 1.0)))
+	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style("evt_card", display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style("evt_card", display_size, Color(0.58, 0.58, 0.58, 0.82)))
+	button.add_theme_color_override("font_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
 
 
 func _pause_end_modal_style(display_size: Vector2) -> StyleBox:

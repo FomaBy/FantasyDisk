@@ -61,6 +61,11 @@ SLOTS = [
     {"slug": "pd_panel", "file": "pause_stats", "const": "PD_PANEL_2K", "kind": "frame", "margin_key": "modal", "w": 2520, "h": 1404},
     {"slug": "gt_panel", "file": "ui_screens", "const": "GT_PANEL_2K", "kind": "frame", "margin_key": "tooltip", "w": 460, "h": 140},
     {"slug": "st_panel", "file": "pause_stats", "const": "ST_PANEL_2K", "kind": "frame", "margin_key": "tooltip", "w": 430, "h": None},
+    # SCRUM-565 (Событие): панель события (economy-panel слот) + карточка выбора.
+    # Hover переиспользует evt_card с нейтральным рантайм-тинтом (как economy-карты
+    # переиспользуют base card-арт под hover) — отдельный идентичный PNG не нужен.
+    {"slug": "evt_panel", "file": "ui_screens", "const": "EVT_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 780},
+    {"slug": "evt_card", "file": "ui_screens", "const": "EVT_CARD_2K", "kind": "frame", "margin_key": "card", "w": 480, "h": 340},
     # кнопки (button-маргины)
     {"slug": "mm_btn", "file": "ui_screens", "const": "MM_BTN_START_2K", "kind": "button", "margin_key": "main_menu", "w": 380, "h": 104},
     {"slug": "qc_btn", "file": "ui_screens", "const": "QC_BTN_EXIT_2K", "kind": "button", "margin_key": "standard", "w": 220, "h": 72},

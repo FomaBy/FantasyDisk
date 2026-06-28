@@ -75,6 +75,8 @@ const OVERHAUL_2K_FRAME_PATHS := {
 	"pd_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_pd_panel.png",
 	"gt_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_gt_panel.png",
 	"st_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_st_panel.png",
+	"evt_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_evt_panel.png",
+	"evt_card": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_evt_card.png",
 	"mm_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_mm_btn.png",
 	"qc_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_qc_btn.png",
 	"cr_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_cr_btn.png",
@@ -91,6 +93,8 @@ const OVERHAUL_2K_FRAME_SOURCE_SIZE := {
 	"pd_panel": Vector2(2520, 1404),
 	"gt_panel": Vector2(460, 140),
 	"st_panel": Vector2(430, 220),
+	"evt_panel": Vector2(1720, 780),
+	"evt_card": Vector2(480, 340),
 	"mm_btn": Vector2(380, 104),
 	"qc_btn": Vector2(220, 72),
 	"cr_btn": Vector2(240, 72),
@@ -109,6 +113,8 @@ const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := {
 	"pd_panel": Vector4(46, 62, 46, 58),
 	"gt_panel": Vector4(46, 30, 46, 28),
 	"st_panel": Vector4(46, 30, 46, 28),
+	"evt_panel": Vector4(38, 52, 38, 48),
+	"evt_card": Vector4(32, 42, 32, 40),
 	"mm_btn": Vector4(48, 28, 48, 28),
 	"qc_btn": Vector4(50, 28, 50, 28),
 	"cr_btn": Vector4(50, 28, 50, 28),
@@ -127,6 +133,8 @@ const OVERHAUL_2K_FRAME_CONTENT := {
 	"pd_panel": Vector4(72, 92, 72, 84),
 	"gt_panel": Vector4(66, 44, 66, 40),
 	"st_panel": Vector4(66, 44, 66, 40),
+	"evt_panel": Vector4(58, 72, 58, 66),
+	"evt_card": Vector4(46, 58, 46, 54),
 }
 const UNIFIED_MASTER_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master.png"
 const UNIFIED_MASTER_FILL_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master_fill.png"

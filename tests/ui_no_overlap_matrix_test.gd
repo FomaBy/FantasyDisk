@@ -15,6 +15,9 @@ const UI_FRAME_TEXTURE_PREFIX := "res://assets/sprites/ui/frames/"
 const MINIMAL_CARD_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
 const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
+# SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
+const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
+const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
 
 
 func _initialize() -> void:
@@ -388,7 +391,10 @@ func _open_route_map(main: Node) -> void:
 
 
 func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
-	if ["attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"].has(screen_id):
+	# SCRUM-565: Событие переехало на собственную evt_card @2K-рамку, поэтому общий
+	# minimal-metal card-контракт к event_economy больше не применяется (проверка
+	# evt_card-рамки — в match-ветке event_economy ниже).
+	if ["attribute_shop_economy", "rest_economy", "upgrade_economy"].has(screen_id):
 		for node in main.find_children("*", "Button", true, false):
 			var card := node as Button
 			if card == null or str(card.get_meta("economy_frame_kind", "")) != "choice_card":
@@ -413,10 +419,19 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				if not offer.tooltip_text.contains("Недостаточно золота"):
 					return "%s: expected disabled attribute offer tooltip to explain insufficient gold." % context
 		"event_economy":
+			# SCRUM-565: панель события рисуется собственной evt_panel @2K-рамкой.
+			var event_panel := main.find_child("MenuPanel_event", true, false) as Control
+			if event_panel != null and _stylebox_texture_path(event_panel.get_theme_stylebox("panel")) != EVT_PANEL_2K_FRAME_PATH:
+				return "%s: expected event MenuPanel to use evt_panel @2K frame." % context
 			for node in main.find_children("EventChoiceButton*", "Button", true, false):
 				var event_button := node as Button
 				if event_button == null:
 					continue
+				# SCRUM-565: карточки выбора используют evt_card @2K-рамку (normal+hover).
+				if _stylebox_texture_path(event_button.get_theme_stylebox("normal")) != EVT_CARD_2K_FRAME_PATH:
+					return "%s: expected %s normal StyleBox to use evt_card @2K frame." % [context, event_button.name]
+				if _stylebox_texture_path(event_button.get_theme_stylebox("hover")) != EVT_CARD_2K_FRAME_PATH:
+					return "%s: expected %s hover StyleBox to use evt_card @2K frame." % [context, event_button.name]
 				if event_button.tooltip_text.contains("Риск: Риск:"):
 					return "%s: expected event option text to avoid duplicated risk prefix." % context
 				var desc := event_button.find_child("%sDescription" % event_button.name, true, false) as Label
