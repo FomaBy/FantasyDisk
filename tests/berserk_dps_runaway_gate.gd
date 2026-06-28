@@ -36,11 +36,11 @@ const WEAPON_ID := "hammer"
 # Без SCRUM-503 пик был 184356/7636, после soft-cap без radius-cap — ~13850/922.
 # SCRUM-545 ограничивает позднюю круговую зону молота до close-ring 145px.
 # SCRUM-602 дожимает AoE-потолок к медиане: сжаты upgrade-экспоненты молота
-# (aoe 1.25→1.12, dmg 1.15→1.08) + max_aoe_radius 145→130 — экспоненты больше не
-# обходят softcap. Живой пик сел до ~3358/526 (20t падает геометрией+ростом, solo
-# в 80px сохраняется). Потолки затянуты под новый коридор (с запасом на дискретность).
-const MAX_IDEAL_20T := 4200.0    # SCRUM-602 band (~3358); откат экспонент/радиуса (≥4988) → FAIL
-const MAX_IDEAL_1T := 720.0      # solo-пик (~526) в коридоре; раздувание damage-роста → FAIL
+# (aoe 1.25→1.08, dmg 1.15→1.05) + max_aoe_radius 145→115 — экспоненты больше не
+# обходят softcap. Живой пик остается в close-ring band, solo в 80px сохраняется.
+# Потолки затянуты под новый коридор с запасом на QA-флап 8s окна.
+const MAX_IDEAL_20T := 3600.0    # SCRUM-602 restart band; rollback to old radius/exponents (>=4200) fails.
+const MAX_IDEAL_1T := 650.0      # Solo peak stays in corridor; damage-growth runaway fails.
 const ZERO_EPS := 0.01
 
 var _holder: Node2D

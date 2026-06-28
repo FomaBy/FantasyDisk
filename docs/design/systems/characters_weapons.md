@@ -34,7 +34,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `frustum` | Широкий усеченный замах 90 градусов, радиус 600, надежно достает врагов рядом |
 | `berserk` | `axe` | Двуручный топор | `TwoHandedAxe.tscn` | `sweep` | Широкая дуга, контроль ближней толпы |
-| `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Малый стартовый круг с close-ring cap 145px; late-game AoE stays local instead of screen-wide |
+| `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Малый стартовый круг с close-ring cap 115px; late-game AoE stays local instead of screen-wide |
 | `soldier` | `soldier_rifle` | Аркебуза строя | `SoldierRifle.tscn` | `suppression_burst` | Три коротких выстрела по линии: primary full damage, соседние цели reduced suppression damage |
 | `soldier` | `soldier_grenade` | Граната с фитилем | `SoldierGrenade.tscn` | `grenade_cook` | Телеграф ground-zone, задержка фитиля, взрыв с falloff |
 | `soldier` | `soldier_bayonet` | Штык-стойка | `SoldierBayonet.tscn` | `bayonet_brace` | Короткая defensive corridor-стойка: один укол на врага и knockback |

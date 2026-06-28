@@ -1488,7 +1488,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 - При любом уроне по игроку боевой HUD показывает легкое покраснение экрана (`DamageFlashOverlay`): фиксированный пик alpha 0.20 без стакания, затухание ~0.32с, эффект замирает на паузе (PROCESS_MODE_PAUSABLE). Сигнал: `Player.damaged`.
 - SCRUM-521: при HP игрока ниже 30% боевой HUD показывает мягкую красную виньетку по краям (`LowHpVignetteOverlay`) с прозрачным центром, чтобы не закрывать бой и HUD. Виньетка гаснет после восстановления до 34%+ HP, уважает persisted toggle `combat_feedback`, не перехватывает ввод и рисуется за HUD-карточками.
 - Нерф 2026-06-11: стартовый радиус молота Берсерка уменьшен вдвое — `aoe_radius` и `attack_range` 200 -> 100, пассив +20% AoE сохранен.
-- SCRUM-545 (2026-06-28): позднеигровая круговая зона молота дополнительно capped через `max_aoe_radius=145`, чтобы апгрейды AoE не раздували удар до экранного AFK-фарма. Урон/множители SCRUM-503 не менялись; live-гейт `tests/berserk_dps_runaway_gate.gd` tightened to `lvl20_ideal_20t <= 12000`.
+- SCRUM-545/SCRUM-602 (2026-06-28): позднеигровая круговая зона молота capped через `max_aoe_radius=115`, чтобы апгрейды AoE не раздували удар до экранного AFK-фарма. SCRUM-602 также сжал рост молота до `upgrade_aoe_exponent=1.08` и `upgrade_damage_exponent=1.05`; меч/топор не менялись. Live-гейт `tests/berserk_dps_runaway_gate.gd` tightened to `lvl20_ideal_20t <= 3600` and `lvl20_ideal_1t <= 650`.
 
 ## Runtime И Performance Hygiene
 
