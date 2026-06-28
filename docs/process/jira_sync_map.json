@@ -2852,5 +2852,10 @@
   "key": "SCRUM-490",
   "status": "К выполнению",
   "desc_hash": "d2a8ec0dee1b597ab50fb6ccb44c665a"
+ },
+ "SCRUM-512_qa_triage_open_quirks_bugtasks_freeze_017.md": {
+  "key": "SCRUM-512",
+  "status": "Готово",
+  "desc_hash": "63c3e5b3e53516f898a64fcfac5b4377"
  }
 }

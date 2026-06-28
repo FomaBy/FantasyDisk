@@ -1,7 +1,7 @@
 # SCRUM-512: QA: триаж незакрытых quirks в bug_*_task.md перед фризом 0.1.7
 
 Jira: SCRUM-512 · Роль: qa · Контур: claude · Приоритет: p2 · foma · Эпик: (нет — standalone tech-debt)
-Статус: К выполнению
+Статус: done
 
 ## Что и зачем
 
@@ -200,3 +200,8 @@ SCRUM-477**, и в нём один актуальный квирк без тик
   переоткрывают — менять статус и в `.md`, и в Jira (через sync), не только метки (память «Reopen change status»).
 - **Связанные тикеты:** SCRUM-477 (event screen), SCRUM-479 (back-button v4, блокер снят), SCRUM-454
   (раннее код-ревью события), SCRUM-415 (нормализация «Риск:»), SCRUM-519 (level-up badge, висит в КК).
+
+## QA-Вердикт (2026-06-28 release-tail reconcile)
+Статус: PASSED
+Проверено: existing Jira QA PASS evidence plus later runtime_smoke green evidence after SCRUM-658 closure.
+Баги: нет active blocker; SCRUM-512 moved to Jira Done.
