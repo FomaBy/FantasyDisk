@@ -222,6 +222,18 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_M
   `docs/design/previews/scrum585_glossary_tooltip_*`. Runtime text stays inside
   the empty center and never covers the metal rails, ruby pins, or corner claws.
 
+- SCRUM-588 refreshes the transient `LevelUpToast` as an isolated generated @2K
+  frame asset. Runtime uses
+  `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png` through
+  `UIThemePaths.OVERHAUL_2K_FRAME_*["lut_toast"]` at source size `480x300`,
+  texture margins `58/48/58/48`, and strict content margins `70/112/70/112`.
+  The toast remains textless; the existing world-space level-up badge is still
+  the single `Level Up` text/icon callout. Sparkle/ring content starts inside
+  the frame safe rect only. Mockup/spec and audit evidence live in
+  `docs/design/mockups/scrum588_levelup_toast/`,
+  `docs/design/references/scrum588_levelup_toast/`, and
+  `docs/design/previews/scrum588_levelup_toast_safe_zone.png`.
+
 - SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
 (`1280x256` RGBA). It has exactly three slots in the red-gold/dark-steel style,

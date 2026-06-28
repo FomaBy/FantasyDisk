@@ -42,6 +42,7 @@ func _initialize() -> void:
 	await _test_escape_navigation(main_scene)
 	await _test_shop_wall_no_overlap_layouts(main_scene)
 	await _test_hud_no_overlap_layouts(main_scene)
+	await _test_level_up_toast_frame(main_scene)
 
 	main.queue_free()
 	await process_frame
@@ -97,6 +98,36 @@ func _test_settings_return_origins(main_scene: PackedScene) -> void:
 		return
 	if not bool(run_main.get("combat_active")) or int(run_main.get("route_stage")) != 2:
 		_fail("Expected run-origin Settings return to preserve active run state.")
+		return
+	run_main.queue_free()
+	await process_frame
+
+
+func _test_level_up_toast_frame(main_scene: PackedScene) -> void:
+	var run_main := main_scene.instantiate()
+	root.add_child(run_main)
+	await process_frame
+	run_main.set("selected_character_id", "berserk")
+	run_main.set("selected_weapon_id", "sword")
+	run_main.set("pending_level_ups", 1)
+	run_main.call("_start_combat")
+	run_main.ui._show_level_up_toast()
+	await process_frame
+	await process_frame
+	var toast_frame := run_main.find_child("LevelUpToastFrame", true, false) as PanelContainer
+	if toast_frame == null:
+		_fail("Expected LevelUpToastFrame in runtime UI smoke.")
+		return
+	var style := toast_frame.get_theme_stylebox("panel") as StyleBoxTexture
+	if style == null or style.texture == null or style.texture.resource_path != "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png":
+		_fail("Expected LevelUpToastFrame to use SCRUM-588 @2K frame.")
+		return
+	var toast := run_main.find_child("LevelUpToast", true, false)
+	if toast == null:
+		_fail("Expected LevelUpToast effect node in runtime UI smoke.")
+		return
+	if not toast.find_children("*", "Label", true, false).is_empty():
+		_fail("Expected LevelUpToast to stay textless in runtime UI smoke.")
 		return
 	run_main.queue_free()
 	await process_frame

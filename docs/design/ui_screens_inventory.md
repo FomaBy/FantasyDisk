@@ -265,11 +265,16 @@ Economy-панель «event»; safe-area по фикс content-margins (58/72/5
 
 ### 28. Тост повышения — `_show_level_up_toast` · `LUT_*`
 Транзиентный full-rect burst (вспышка/кольцо/искры) на экранной позиции игрока (или центр).
-Координаты внутри `LevelUpToast.tscn` (FULL_RECT); параметризуется позицией игрока.
+SCRUM-588 добавляет generated @2K frame `lut_toast` вокруг textless sparkle/ring
+акцента. Единственная текстовая подпись `Level Up` остаётся в world-space badge
+`LevelUpEffect`; HUD-toast не содержит Label/icon и держит эффекты только в
+пустой safe-зоне, не на ornament frame.
 
 | Параметр | const | значение |
 |---|---|---|
 | Overlay (full-rect) | `LUT_OVERLAY_2K` | 0, 0, 2560, 1440 |
+| Toast frame template | `LUT_TOAST_FRAME_2K` / `lut_toast` | 480 × 300, dynamic center |
+| Toast safe content | `LUT_TOAST_SAFE_2K` | frame + 70/112/70/112 → 340 × 76 |
 
 ### 29. Баннер заголовка боя — `_show_combat_title_banner` · `CTB_*`
 Имя/титул элитки/босса вспыхивает над ареной и гаснет (бой не на паузе, самоосвобождается).

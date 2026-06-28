@@ -1,0 +1,53 @@
+{
+  "source": "docs/design/references/scrum588_levelup_toast/ui_frame_2k_lut_toast_source.png",
+  "alpha_source": "docs/design/references/scrum588_levelup_toast/ui_frame_2k_lut_toast_alpha.png",
+  "runtime": "assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png",
+  "safe_zone_preview": "docs/design/previews/scrum588_levelup_toast_safe_zone.png",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "source_subject_bbox": [
+    21,
+    312,
+    1513,
+    713
+  ],
+  "runtime_size": [
+    480,
+    300
+  ],
+  "runtime_alpha_extrema": [
+    0,
+    255
+  ],
+  "runtime_alpha_bbox": [
+    14,
+    91,
+    466,
+    209
+  ],
+  "edge_alpha_max": 0,
+  "white_opaque_pixels": 0,
+  "pale_opaque_pixels": 0,
+  "texture_margins": [
+    58,
+    48,
+    58,
+    48
+  ],
+  "content_margins": [
+    64,
+    58,
+    64,
+    58
+  ],
+  "content_rect_xywh": [
+    64,
+    58,
+    352,
+    184
+  ],
+  "sha256": "db921a2ff86202c9abcce6a2d0263e72aa5afa91438e7db542a721845df3af3a",
+  "notes": "OpenAI-generated source alpha-cleaned from checkerboard/matte to transparent 480x300 runtime frame. Runtime sparks/ring must stay inside content_rect and not overlap border ornaments."
+}

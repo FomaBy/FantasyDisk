@@ -192,6 +192,13 @@ runtime asset at
 `UIThemePaths.OVERHAUL_2K_FRAME_*`, and the tooltip label uses the documented
 `342 px` safe width.
 
+SCRUM-588 adds `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png`,
+the level-up toast frame. It is a generated transparent RGBA `480x300` asset
+with texture margins `58/48/58/48` and content margins `70/112/70/112`. It must
+remain textless: runtime `LevelUpToast` draws only a small sparkle/ring inside
+the empty safe zone, while `LevelUpEffect` remains the single source of the
+visible `Level Up` badge.
+
 SCRUM-273 superseded the SCRUM-147 button-only Parchment & Wax Seal kit with the
 historical **Red & Gold Dragon button kit** from
 `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live

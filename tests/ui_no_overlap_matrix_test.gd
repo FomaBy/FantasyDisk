@@ -20,6 +20,7 @@ const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
 const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
+const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 
 
 func _initialize() -> void:
@@ -105,6 +106,11 @@ func _initialize() -> void:
 		# текст центрируется по 2K-базе и помещается в рамку. Транзиентный — один контрол.
 		await _check_screen(viewport_size, "combat_title_banner", Callable(self, "_open_combat_title_banner"), [
 			"CombatIntroBanner",
+		], dump_lines, errors, false)
+		# SCRUM-588: transient level-up toast uses an isolated @2K frame and keeps sparkle content inside
+		# the documented safe zone; the world-space badge remains the only text/icon callout.
+		await _check_screen(viewport_size, "level_up_toast", Callable(self, "_open_level_up_toast"), [
+			"LevelUpToastFrame",
 		], dump_lines, errors, false)
 		# SCRUM-489: блок «Результаты/Старт» — экран выбора оружия (economy-панель WS_*_2K):
 		# карточки оружия не пересекаются, текст в рамках, рамка не на STRETCH_SCALE.
@@ -379,6 +385,14 @@ func _open_combat_title_banner(main: Node) -> void:
 	main.ui._show_combat_title_banner("Лорд Бездны", Color(1.0, 0.4, 0.3, 1.0), true)
 
 
+func _open_level_up_toast(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.call("_start_combat")
+	main.set("pending_level_ups", 1)
+	main.ui._show_level_up_toast()
+
+
 func _open_weapon_select(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
 	main.ui._show_weapon_select()
@@ -471,6 +485,26 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: event description %s escapes its card safe content rect." % [context, desc.name]
 			if visible_event_choices < 2:
 				return "%s: expected at least two visible event choices, got %d." % [context, visible_event_choices]
+		"level_up_toast":
+			var toast_frame := main.find_child("LevelUpToastFrame", true, false) as PanelContainer
+			if toast_frame == null or not toast_frame.visible or not toast_frame.get_global_rect().has_area():
+				return "%s: expected visible LevelUpToastFrame." % context
+			if _stylebox_texture_path(toast_frame.get_theme_stylebox("panel")) != LUT_TOAST_2K_FRAME_PATH:
+				return "%s: expected LevelUpToastFrame to use lut_toast @2K frame." % context
+			if Vector4(toast_frame.get_meta("toast_content_margins", Vector4.ZERO)) != Vector4(70, 112, 70, 112):
+				return "%s: expected LevelUpToastFrame to expose strict SCRUM-588 content margins." % context
+			var safe_rect: Rect2 = toast_frame.get_meta("toast_content_rect", Rect2()) as Rect2
+			if not safe_rect.has_area():
+				return "%s: expected LevelUpToastFrame to expose content safe rect metadata." % context
+			var toast := main.find_child("LevelUpToast", true, false)
+			if toast == null:
+				return "%s: expected LevelUpToast node." % context
+			if not toast.find_children("*", "Label", true, false).is_empty():
+				return "%s: expected LevelUpToast to remain textless." % context
+			for node in toast.get_children():
+				var sprite := node as Sprite2D
+				if sprite != null and not safe_rect.grow(4.0).has_point(sprite.position):
+					return "%s: toast sparkle %s starts outside safe rect %s." % [context, sprite.name, str(safe_rect)]
 	return ""
 
 
