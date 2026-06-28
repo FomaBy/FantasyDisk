@@ -14,7 +14,7 @@ Result:
 - Added `open_level_up` to `INPUT_ACTIONS` with Space as the default key.
 - `_input` now opens pending level-up choices from the registered action while combat remains unpaused until player input.
 - Settings Controls exposes the new binding row through the existing input settings pipeline.
-- Fixed linked SCRUM-658 runtime blocker: rapid level-up world-effect replacement no longer deletes `LevelUpToast`, and old world-effect nodes are removed before replacement so the live `LevelUpEffect` keeps its exact testable name.
+- Rebased onto the linked SCRUM-654/SCRUM-658 level-up cleanup on `origin/dev`; verified rapid level-up world-effect replacement no longer blocks runtime smoke.
 
 Tests:
 - PASS `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd`
