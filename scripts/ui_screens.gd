@@ -1578,7 +1578,9 @@ func _show_skill_tree_screen() -> void:
 	root.name = "SkillTreeScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
-	_add_screen_background(root, "codex")
+	# SCRUM-569: выделенный тематичный бэкдроп «святилище умений» (дракон-колонны +
+	# руны-созвездие веток, тёмный центр под панели) вместо общего codex-собора.
+	_add_screen_background(root, "skill_tree")
 
 	var main_panel := PanelContainer.new()
 	main_panel.name = "SkillTreeMainPanel"
