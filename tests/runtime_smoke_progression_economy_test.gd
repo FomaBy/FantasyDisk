@@ -1,5 +1,9 @@
 extends "res://tests/runtime_smoke_test.gd"
 
+# SCRUM-508: EV-инвариант риск/награды random-событий считается ТЕМ ЖЕ калькулятором,
+# что и отчёт route_economy_xp_model.md (единый источник истины, без расхождений).
+const RouteEconomyModel := preload("res://tools/route_economy_xp_model.gd")
+
 
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -27,8 +31,27 @@ func _initialize() -> void:
 	await _test_economy_tiers_and_fab(main_scene)
 	await _test_ascension_difficulty_ladder(main_scene)
 	_test_class_budget_profiles()
+	_test_event_ev_risk_reward_invariant()
 
 	main.queue_free()
 	await process_frame
 	print("Runtime progression/economy smoke suite passed.")
 	quit()
+
+
+func _test_event_ev_risk_reward_invariant() -> void:
+	# SCRUM-508: для каждого события с парой ветвей EV(risk/combat) >= EV(лучшей безопасной).
+	# Использует общий калькулятор RouteEconomyModel.event_ev_rows (тот же, что и отчёт).
+	var rows: Array = RouteEconomyModel.event_ev_rows()
+	if rows.size() < 10:
+		_fail("Expected EV invariant rows for risk events (got %d) — SCRUM-508 calculator regressed." % rows.size())
+		return
+	for row in rows:
+		var risk_ev := float(row["risk_ev"])
+		var safe_ev := float(row["safe_ev"])
+		if risk_ev < safe_ev - 0.01:
+			_fail("Event '%s' violates risk/reward EV invariant: EV(risk %s)=%.1f < EV(safe %s)=%.1f (SCRUM-508)." % [
+				str(row["event"]), str(row["risk_id"]), risk_ev, str(row["safe_id"]), safe_ev,
+			])
+			return
+	print("Event risk/reward EV invariant passed (%d events, all EV(risk) >= EV(safe))." % rows.size())

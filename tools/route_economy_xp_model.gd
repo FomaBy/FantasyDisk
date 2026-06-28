@@ -1,6 +1,7 @@
 extends SceneTree
 
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const EventData := preload("res://scripts/event_data.gd")
 
 const REPORT_PATH := "res://build/route_economy_xp_model.md"
 const START_XP_TO_NEXT := 5
@@ -8,6 +9,28 @@ const ATTRIBUTE_BUY_BASE_COST := 18
 const ATTRIBUTE_BUY_STAGE_COST := 6
 const ATTRIBUTE_REROLL_BASE_COST := 6
 const ATTRIBUTE_REROLL_STAGE_COST := 2
+
+# --- SCRUM-508: EV-в-золото для random-событий (единый источник истины для отчёта и
+# теста tests/runtime_smoke_progression_economy_test.gd). Веса заземлены на реальные
+# числа экономики, опорная стадия зафиксирована (EV не зависит от глубины, чтобы
+# инвариант был стабилен). Инвариант: EV(risk/combat-ветки) >= EV(лучшей безопасной).
+const EV_REF_STAGE := 4                 # опорная route_scaling_stage для базовой награды боя
+const EV_REF_CHECK_STAT := 7            # опорный стат игрока для оценки шанса успеха check-ветки
+const EV_HEAL_GOLD := 80.0             # shop_heal: 28 золота за 0.35 хила -> 80 за 1.0
+const EV_HP_COST_GOLD := 80.0          # симметрично хилу: цена потери доли HP
+const EV_STAT_GOLD := 24.0             # ~цена +1 атрибута (attribute shop / докачка)
+const EV_XP_GOLD := 1.4                # золото-эквивалент 1 ед. опыта
+const EV_ARTIFACT_GOLD := 60.0         # среднее COST_BY_TIER {30,55,95} = 60
+const EV_MOD_PCT_GOLD := 4.0           # множительный мод (+1%): shop +10% урон=42g -> ~4.2/pct
+const EV_DEFENSE_FLAT_GOLD := 150.0    # defense_flat (0.08 -> 12 золота)
+const EV_SUMMON_GOLD := 22.0           # +1 призыв ~ как стат
+const EV_PICKUP_FLAT_GOLD := 0.3       # pickup_radius_flat (shop +35=35g -> 1.0/ед., берём скромнее)
+# Цена риска. Combat-ветка даёт ЦЕЛУЮ добычу боя, её повышенная живучесть — лишь
+# опциональная надбавка к бою, на который игрок согласился -> низкая ставка за %.
+# mods.enemy_health_multiplier (напр. full_rest) — ЧИСТЫЙ штраф на будущий бой без
+# компенсирующей добычи -> высокая ставка за %.
+const EV_COMBAT_RISK_PER_PCT := 0.8
+const EV_PENALTY_RISK_PER_PCT := 2.4
 
 
 func _init() -> void:
@@ -82,6 +105,170 @@ static func build_report() -> String:
 	lines.append("")
 	lines.append(_fixture_delta())
 	lines.append("")
+	lines.append(_event_ev_section())
+	lines.append("")
+	return "\n".join(lines)
+
+
+# --- SCRUM-508: EV-калькулятор random-событий (общий для отчёта и smoke-теста) ---
+
+static func _stats_ev(stats: Dictionary) -> float:
+	var sum := 0.0
+	for key in stats.keys():
+		sum += float(stats[key])
+	return sum * EV_STAT_GOLD
+
+
+static func _mods_ev(mods: Dictionary) -> float:
+	var ev := 0.0
+	for key in mods.keys():
+		var val := float(mods[key])
+		match str(key):
+			"enemy_health_multiplier":
+				ev -= (val - 1.0) * 100.0 * EV_PENALTY_RISK_PER_PCT
+			"damage_multiplier", "attack_speed_multiplier", "move_speed_multiplier", \
+			"range_multiplier", "healing_multiplier", "xp_gain_multiplier", \
+			"xp_multiplier", "max_health_multiplier", "crit_chance_multiplier":
+				ev += (val - 1.0) * 100.0 * EV_MOD_PCT_GOLD
+			"defense_flat":
+				ev += val * EV_DEFENSE_FLAT_GOLD
+			"summon_bonus":
+				ev += val * EV_SUMMON_GOLD
+			"pickup_radius_flat":
+				ev += val * EV_PICKUP_FLAT_GOLD
+			_:
+				pass
+	return ev
+
+
+static func _combat_ev(combat: Dictionary, stage: int) -> float:
+	# Базовая награда боя из combat_director._grant_combat_completion_rewards, множители события.
+	var is_elite := str(combat.get("type", "battle")) == "elite"
+	var base_xp := (7.0 + float(stage) * 2.0) if is_elite else (3.0 + float(stage))
+	var base_money := (10.0 + float(stage) * 4.0) if is_elite else (4.0 + float(stage) * 2.0)
+	var money := base_money * float(combat.get("money_multiplier", 1.0))
+	var xp := base_xp * float(combat.get("xp_multiplier", 1.0))
+	var ev := money + xp * EV_XP_GOLD
+	ev -= (float(combat.get("enemy_health_multiplier", 1.0)) - 1.0) * 100.0 * EV_COMBAT_RISK_PER_PCT
+	if combat.has("post_combat"):
+		ev += branch_ev(combat["post_combat"] as Dictionary, stage)
+	return ev
+
+
+static func _check_ev(branch: Dictionary, stage: int) -> float:
+	var check: Dictionary = branch["check"]
+	var difficulty := float(check.get("difficulty", 7))
+	# Шанс успеха грубо из difficulty против опорного стата игрока (допущение, задокументировано).
+	var p := clampf(0.55 + (float(EV_REF_CHECK_STAT) - difficulty) * 0.08, 0.2, 0.85)
+	var success_ev := branch_ev(branch.get("success", {}) as Dictionary, stage)
+	var failure_ev := branch_ev(branch.get("failure", {}) as Dictionary, stage)
+	return p * success_ev + (1.0 - p) * failure_ev
+
+
+static func branch_ev(branch: Dictionary, stage: int) -> float:
+	# Золото-эквивалент одной ветки/исхода. Рекурсивно: random_outcomes (среднее),
+	# combat (добыча боя), check (взвешено по шансу), post_combat (награда за победу).
+	var ev := 0.0
+	ev += float(branch.get("money", 0.0))
+	ev -= float(branch.get("cost_money", 0.0))
+	ev += float(branch.get("heal_percent", 0.0)) * EV_HEAL_GOLD
+	ev -= float(branch.get("health_percent_cost", 0.0)) * EV_HP_COST_GOLD
+	if bool(branch.get("random_artifact", false)):
+		ev += EV_ARTIFACT_GOLD
+	if branch.has("stats"):
+		ev += _stats_ev(branch["stats"] as Dictionary)
+	if branch.has("mods"):
+		ev += _mods_ev(branch["mods"] as Dictionary)
+	if branch.has("post_combat"):
+		ev += branch_ev(branch["post_combat"] as Dictionary, stage)
+	if branch.has("combat"):
+		ev += _combat_ev(branch["combat"] as Dictionary, stage)
+	if branch.has("random_outcomes"):
+		var outcomes: Array = branch["random_outcomes"]
+		var sum := 0.0
+		for outcome in outcomes:
+			sum += branch_ev(outcome as Dictionary, stage)
+		ev += sum / maxf(float(outcomes.size()), 1.0)
+	if branch.has("check"):
+		ev += _check_ev(branch, stage)
+	return ev
+
+
+static func _branch_is_risk(branch: Dictionary) -> bool:
+	if bool(branch.get("risk", false)):
+		return true
+	if branch.has("combat"):
+		return true
+	# Ветка с ЧИСТЫМ штрафом-модом (enemy_health_multiplier > 1.0, напр. full_rest)
+	# тоже «рисковая»: повышает опасность будущего боя без боевой добычи.
+	if branch.has("mods") and float((branch["mods"] as Dictionary).get("enemy_health_multiplier", 1.0)) > 1.0:
+		return true
+	if branch.has("random_outcomes"):
+		for outcome in (branch["random_outcomes"] as Array):
+			if (outcome as Dictionary).has("combat"):
+				return true
+	return false
+
+
+static func event_ev_rows() -> Array:
+	# По одной строке на событие, у которого есть И рисковая, И безопасная ветка.
+	# risk_ev — лучшая рисковая ветка; safe_ev — лучшая безопасная (рациональная альтернатива).
+	var rows := []
+	for event in EventData.RANDOM_EVENTS:
+		var choices: Array = (event as Dictionary).get("choices", [])
+		var best_risk := -1.0e9
+		var best_safe := -1.0e9
+		var risk_id := ""
+		var safe_id := ""
+		var has_risk := false
+		var has_safe := false
+		for choice in choices:
+			var choice_dict: Dictionary = choice
+			var ev := branch_ev(choice_dict, EV_REF_STAGE)
+			if _branch_is_risk(choice_dict):
+				has_risk = true
+				if ev > best_risk:
+					best_risk = ev
+					risk_id = str(choice_dict.get("id", ""))
+			else:
+				has_safe = true
+				if ev > best_safe:
+					best_safe = ev
+					safe_id = str(choice_dict.get("id", ""))
+		if not (has_risk and has_safe):
+			continue
+		rows.append({
+			"event": str((event as Dictionary).get("id", "")),
+			"risk_id": risk_id,
+			"risk_ev": best_risk,
+			"safe_id": safe_id,
+			"safe_ev": best_safe,
+			"delta": best_risk - best_safe,
+			"ok": best_risk >= best_safe - 0.01,
+		})
+	return rows
+
+
+static func _event_ev_section() -> String:
+	var lines := PackedStringArray()
+	lines.append("## Event Risk/Reward EV")
+	lines.append("")
+	lines.append("SCRUM-508: для каждого события с парой ветвей EV считается в золото-эквиваленте")
+	lines.append("при опорной стадии %d (`branch_ev`, общий калькулятор с smoke-тестом). Инвариант:" % EV_REF_STAGE)
+	lines.append("EV рисковой/боевой ветки >= EV лучшей безопасной ветки того же события.")
+	lines.append("")
+	lines.append("| Event | Risk branch | EV(risk) | Safe branch | EV(safe) | Δ vs safe | Verdict |")
+	lines.append("| --- | --- | ---: | --- | ---: | ---: | --- |")
+	for row in event_ev_rows():
+		lines.append("| %s | %s | %.1f | %s | %.1f | %+.1f | %s |" % [
+			str(row["event"]),
+			str(row["risk_id"]),
+			float(row["risk_ev"]),
+			str(row["safe_id"]),
+			float(row["safe_ev"]),
+			float(row["delta"]),
+			"ok" if bool(row["ok"]) else "VIOLATES",
+		])
 	return "\n".join(lines)
 
 

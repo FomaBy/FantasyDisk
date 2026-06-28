@@ -48,7 +48,7 @@ const RANDOM_EVENTS := [
 		"title": "Старый колодец",
 		"story": "Колодец стоит посреди дороги так, будто дорогу построили вокруг него. Из глубины пахнет дождем, монетами и чем-то, что слишком долго ждало.",
 		"choices": [
-			{"id": "throw_coin", "title": "Бросить монету", "description": "Цена: 8 золота. Случайно: лечение 30% HP, 28 золота или бой.", "cost_money": 8, "random_outcomes": [{"heal_percent": 0.30}, {"money": 28}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.10, "money_multiplier": 1.25}}]},
+			{"id": "throw_coin", "title": "Бросить монету", "description": "Цена: 6 золота. Случайно: лечение 30% HP, 28 золота или бой с повышенной наградой.", "cost_money": 6, "random_outcomes": [{"heal_percent": 0.30}, {"money": 28}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.10, "money_multiplier": 1.4}}]},
 			{"id": "listen", "title": "Прислушаться", "description": "Проверка Восприятия 7: успех +1 Восприятие, провал +5 золота.", "check": {"stat": "perception", "difficulty": 7}, "success": {"stats": {"perception": 1}}, "failure": {"money": 5}},
 		],
 	},
@@ -76,7 +76,7 @@ const RANDOM_EVENTS := [
 		"title": "Горячий источник",
 		"story": "В каменной чаше кипит вода цвета янтаря. Пар складывается в лица прежних путников, которые выглядят слишком довольными и слишком сонными.",
 		"choices": [
-			{"id": "full_rest", "title": "Отдохнуть", "description": "Полное лечение. Следующий бой: враги на 25% живучее.", "heal_percent": 1.0, "mods": {"enemy_health_multiplier": 1.25}},
+			{"id": "full_rest", "title": "Отдохнуть", "description": "Полное лечение. Следующий бой: враги на 10% живучее.", "heal_percent": 1.0, "mods": {"enemy_health_multiplier": 1.10}},
 			{"id": "quick_dip", "title": "Быстро окунуться", "description": "Лечение 35% HP без побочного эффекта.", "heal_percent": 0.35},
 		],
 	},
@@ -162,7 +162,7 @@ const RANDOM_EVENTS := [
 		"choices": [
 			{"id": "drink_spring", "title": "Испить из родника", "description": "Лечение 40% HP и +1 Знание от шёпота рощи.", "heal_percent": 0.40, "stats": {"knowledge": 1}},
 			{"id": "follow_whisper", "title": "Пойти на шёпот", "description": "Проверка Знания 7: успех +1 Знание и +6% опыта, провал -8% HP.", "check": {"stat": "knowledge", "difficulty": 7}, "success": {"stats": {"knowledge": 1}, "mods": {"xp_gain_multiplier": 1.06}}, "failure": {"health_percent_cost": 0.08}},
-			{"id": "disturb_grove", "title": "Потревожить тени", "description": "Риск: бой с лесными стражами. Победа: +35% золота и +1 Восприятие.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.16, "money_multiplier": 1.35}, "post_combat": {"stats": {"perception": 1}}},
+			{"id": "disturb_grove", "title": "Потревожить тени", "description": "Риск: бой с лесными стражами. Победа: +35% золота, +1 Восприятие и +1 Сила.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.16, "money_multiplier": 1.35}, "post_combat": {"stats": {"perception": 1, "strength": 1}}},
 		],
 	},
 	{
