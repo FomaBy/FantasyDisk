@@ -205,6 +205,8 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2, amount: float) -> void:
 	if enemy_node == null or not is_instance_valid(enemy_node):
 		return
+	if owner_node == null or not is_instance_valid(owner_node):  # SCRUM-631: owner_node мог быть освобождён между _damage_window и колбэком
+		return
 	var distance := owner_node.global_position.distance_to(enemy_node.global_position)
 	if melee_close_bonus_radius > 0.0 and melee_close_damage_multiplier > 1.0 and distance <= melee_close_bonus_radius:
 		enemy_node.take_damage(amount * (melee_close_damage_multiplier - 1.0))
