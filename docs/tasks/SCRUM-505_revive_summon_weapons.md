@@ -1,7 +1,7 @@
 # SCRUM-505: Оживить summon-оружие (druid/chemist/engineer): минимум жизнеспособности ≥ 0.5x профильной медианы
 
 Jira: SCRUM-505 · Роль: backend · Контур: balance · Приоритет: P1 · foma · Эпик: —
-Статус: К выполнению
+Статус: К выполнению — PM-блокер (backend-actionable часть исчерпана). 2026-06-28 claude-backend HEAD=dbd7f483: закрыл QA-блокер (а) — `tests/summon_weapon_crowd_floor_test.gd` теперь SIGABRT-safe на sentry-турельном teardown (queue_free вместо free() + disable weapon _process + idle-settle), 4/4 чистых прогона (sentry проходит каждый раз, было 2/4). Остаётся ТОЛЬКО блокер (б): числовая AC устарела vs живой CSV/comfort-band SCRUM-544/546 — формальная правка AC = PM-решение, как у сестёр 504/506. Рекомендация: адъюдицировать 504/505/506 связкой с 544/546 одним PM-решением. (2026-06-28 r4-impl5 ре-верифицировал на HEAD=dbd7f483, single-Godot: runtime_smoke PASS + summon_weapon_crowd_floor PASS детерминированно — amulet 20t lvl1=35/lvl20=429.8, homunculus 14/94.9, sentry 29.5/56.1, lvl1 baseline цел, sentry-флак не воспроизводится; код-часть зелёная и исчерпана, остаётся блокер (б) — SCRUM-544 на [hold], SCRUM-546 Готово.) ⟪Прежний QA-вердикт ниже сохранён.⟫ (QA FAIL 2026-06-28 r3-qa1 на HEAD=bd89b73e: AC-арбитр character_balance_csv.gd воспроизводимо SIGABRT-ит, build/character_balance_dps.csv не перегенерён → буквальный AC «≥0.5x класс-лучшего по 20t» нечем доказать; числа AC устарели (druid класс-лучший = raven_totem 4270, не briar 30591); AC ре-скоунут на comfort-полосу SCRUM-544, которая сама ещё «К выполнению»; engineer_sentry_wrench ниже полосы даже по проекции импла; сёстры SCRUM-504/506 с тем же блокером тоже «К выполнению». Зелёное: weapon_tuning_application/summoner_strengthening/class_budget_profiles_integrity/progression_data_api_surface/global_damage_balance_smoke; summon_weapon_crowd_floor PASS когда завершается, но флак 2/4. Нужно: стабильный CSV-арбитр без SIGABRT (покрыть sentry) + PM-решение по числовой AC, лучше связкой с 504/506/544.)
 
 ## Что и зачем
 
@@ -106,3 +106,10 @@ Summon-оружие трёх классов — мёртвые слоты в her
 - **CSV нестабилен по абсолюту** (RNG-сиды фиксированы, но класс-лучшие плавают между ревизиями) — критерий жёстко относительный (≥0.5x факта в ТОМ ЖЕ перегенерённом CSV), не хардкодить абсолютные пороги в тестах, где можно завязаться на отношение.
 - **Связанные тикеты:** SCRUM-357 (предыдущий summoner rebalance — он недодал по 20t-оси, это его продолжение), SCRUM-191 (регрессия применения budget-тюнинга — `weapon_tuning_application_test.gd` оттуда, не сломать его гейты 1-3).
 - Запуск тестов headless: `~/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/<file>.gd` (Godot 4.6.3).
+
+## QA-Вердикт: НЕ ПРИНЯТО — возврат в «К выполнению» (claude-qa 2026-06-28)
+
+Не дефект кода — блокер приёмки, идентичный сёстрам SCRUM-504/506 (обе в «К выполнению»).
+Проверено и здраво: lvl1-инвариант цел ((level-1)=0 на lvl1), weapon_tuning_application_test PASS (51 пар), summon_weapon_crowd_floor_test поймал 1 чистый прогон (amulet 35/430, homunculus 14/95, sentry 28/56 — все пороги ✓).
+Блокеры: (1) буквальный AC недостижим + числа устарели (briar=30591 в AC vs реальный raven_totem=4270, ×13); (2) CSV-арбитр SIGABRT (CSV остался pre-505 04:24); (3) sentry-гейт флаки-крашится на турельном teardown.
+Нужно: (а) стабильный CSV/band-тест с покрытием sentry без SIGABRT; (б) PM-правка числовой AC под живой CSV + comfort-band (SCRUM-544/546).
