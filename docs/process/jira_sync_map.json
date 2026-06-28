@@ -2773,14 +2773,14 @@
   "status": "Р“РѕС‚РѕРІРѕ",
   "desc_hash": "0d8ccc0a2ae8197851d04442cd9e4eb5"
  },
- "SCRUM-501_expand_random_events_class_reactive.md": {
+"SCRUM-501_expand_random_events_class_reactive.md": {
   "key": "SCRUM-501",
-  "status": "Р“РѕС‚РѕРІРѕ",
-  "desc_hash": "472cb65f8d31fee2b0cdb45b8fd04a7f"
+  "status": "??????",
+  "desc_hash": "c00dc7ef75513a7aac22d166f4cf3f85"
  },
- "SCRUM-516_ascension_5_steps_stronger_monsters.md": {
-  "key": "SCRUM-516",
-  "status": "Р“РѕС‚РѕРІРѕ",
+ "SCRUM-530_event_option_select_repro_fix.md": {
+  "key": "SCRUM-530",
+  "status": "??????",
   "desc_hash": "0b3a805bb61d4ddfe08de8b1bde11012"
  },
  "SCRUM-529_shop_node_completed_mark_with_return.md": {
@@ -2788,19 +2788,19 @@
   "status": "???????? ????????",
   "desc_hash": "75c03e1d5abfc5fb5af0da76c75494da"
  },
- "SCRUM-511_levelup_on_event_returns_to_event.md": {
-  "key": "SCRUM-511",
-  "status": "Готово",
-  "desc_hash": "6469fdf4a65079cae5eb0f104cbd0b05"
+ "SCRUM-526_xp_money_curve_levelup_shop_frequency.md": {
+  "key": "SCRUM-526",
+  "status": "??????",
+  "desc_hash": "86fd43a6bcf1c2cbe1c96bbe131a785c"
  },
  "SCRUM-527_xp_curve_level20_act1_boss.md": {
   "key": "SCRUM-527",
-  "status": "Готово",
+  "status": "??????",
   "desc_hash": "d684f771b2a076e6e96e5967fadb21cd"
  },
  "SCRUM-525_attribute_tooltip_influence_and_levelup_preview.md": {
   "key": "SCRUM-525",
-  "status": "Готово",
-  "desc_hash": "fb8581d2b9f4c33673548fe4db9ba98a"
+  "status": "??????",
+  "desc_hash": "09bee8a2941356266ea57e19caf9ca2a"
  }
 }

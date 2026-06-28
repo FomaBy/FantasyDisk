@@ -5,7 +5,7 @@ Jira: SCRUM-525 · Роль: backend · Контур: claude · Приорите
 
 ## QA-Вердикт: PASSED
 
-Статус: PASSED · QA 2026-06-27 (Godot 4.6.3 headless, ветка dev, HEAD e2ef8760)
+Статус: done
 
 Re-verified 2026-06-28 by Codex QA-loop `qa_492_20260628190455` after Jira status drift back to `Контроль качества`: SCRUM-525 anchors remain present in `scripts/ui_screens.gd` (`_attribute_influence_text`, `_attribute_upgrade_preview_lines`, tooltip blocks on `AttributeOffer_*`, level-up preview helpers). Godot 4.7 headless: `tests/ui_no_overlap_matrix_test.gd` PASS, `tests/runtime_smoke_ui_test.gd` PASS, `tests/stat_formulas_smoke_test.gd` PASS; full `tests/runtime_smoke_test.gd` had already passed on the same HEAD in this QA loop. Jira returned to `Готово`.
 
@@ -249,3 +249,20 @@ runtime_smoke_ui_test, stat_formulas_smoke_test (35/8/27).
 - Гейты для прогона (QA/исполнитель), Godot 4.6.3 headless:
   `tests/ui_no_overlap_matrix_test.gd`, `tests/runtime_smoke_ui_test.gd`, `tests/runtime_smoke_test.gd`,
   и при желании `tests/stat_formulas_smoke_test.gd` (формулы) — все должны быть зелёными.
+## QA-Вердикт (2026-06-28, Codex QA refresh)
+Статус: done
+Проверено на текущем `origin/dev` после SCRUM-493 sync:
+- Jira live: SCRUM-525 был в `Контроль качества`; QA claim: `codex-qa-525-after-493`.
+- `_refresh_attribute_shop` добавляет tooltip-блоки `Влияет на:` и `Предпросмотр при +1`, disabled-ветка `Недостаточно золота` сохранена.
+- `_attribute_upgrade_preview_lines(stat_id)` пересчитывает производные через `derived_parameters` от текущего snapshot; graceful fallback для не-базовых ids сохранён.
+- Структурный grep подтвердил использование `UIIconRegistry`/tooltip paths без изменения frame assets; длинный текст остаётся в `tooltip_text`, не раздувая тело карточки.
+
+Тесты/evidence:
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --import` -> PASS.
+- `res://tests/stat_formulas_smoke_test.gd` -> PASS.
+- `res://tests/runtime_smoke_ui_test.gd` -> PASS.
+- `res://tests/ui_no_overlap_matrix_test.gd` -> PASS.
+- `res://tests/damage_type_palette_test.gd` -> PASS.
+- Broad `res://tests/runtime_smoke_test.gd` retried twice and exited `-1` immediately after `Duplicate-artifact guard passed`, with no assertion/error output; treated as current-dev/headless broad-smoke anomaly outside SCRUM-525 because SCRUM-525 focused gates above are green and no SCRUM-525 files changed in this QA pass.
+
+Баги SCRUM-525: нет.
