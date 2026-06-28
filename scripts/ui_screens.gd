@@ -11,6 +11,7 @@ const ShopUIConstants := preload("res://scripts/ui/shop_ui_constants.gd")
 const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DisplayResolution := preload("res://scripts/display_resolution.gd")
+const StatFormulas := preload("res://scripts/stat_formulas.gd")
 
 const ARTIFACT_ICON_DIR := ShopUIConstants.ARTIFACT_ICON_DIR
 const SHOP_ICON_DIR := ShopUIConstants.SHOP_ICON_DIR
@@ -2703,19 +2704,23 @@ func _show_settings_menu() -> void:
 	resolution_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_apply_compact_button_theme(resolution_options)
 	var usable_size := Vector2i(99999, 99999)
+	var screen_full_size := Vector2i(99999, 99999)
 	var screen_scale := 1.0
 	if DisplayServer.get_name() != "headless":
 		var res_screen := clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))
 		usable_size = DisplayServer.screen_get_usable_rect(res_screen).size
+		screen_full_size = DisplayServer.screen_get_size(res_screen)
 		screen_scale = DisplayServer.screen_get_scale(res_screen)
 	var resolution_entries := _settings_resolution_entries(usable_size)
 	for option_index in range(resolution_entries.size()):
 		var entry: Dictionary = resolution_entries[option_index]
 		var resolution: Vector2i = entry["resolution"]
 		resolution_options.add_item(str(entry["label"]))
-		# SCRUM-441: доступность считаем в ФИЗ.пикселях (usable * Retina scale), не в
-		# логических точках — иначе Full HD/2K зря отключаются на Mac/HiDPI.
-		if not DisplayResolution.resolution_fits(resolution, usable_size, screen_scale):
+		# SCRUM-591: доступность считаем по ПОЛНОМУ размеру экрана (фуллскрин использует
+		# весь экран), а не usable-rect минус таскбар — иначе нативное разрешение (2K на
+		# Windows 2560×1440) зря отключается. usable_size остаётся для «Mac»-нативной опции.
+		# Физпиксели (× Retina scale) сохраняют корректность Mac/HiDPI (SCRUM-441).
+		if not DisplayResolution.resolution_fits(resolution, screen_full_size, screen_scale):
 			resolution_options.set_item_disabled(option_index, true)
 	resolution_options.selected = clampi(game.selected_resolution_index, 0, resolution_entries.size() - 1)
 	resolution_options.item_selected.connect(func(index: int) -> void:
@@ -3147,9 +3152,10 @@ func _build_run_pause_menu() -> void:
 	dim.color = Color(0.01, 0.015, 0.025, 0.70)
 	game.pause_overlay_layer.add_child(dim)
 
-	var root := CenterContainer.new()
+	var root := Control.new()
 	root.name = "RunPauseMenuRoot"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.pause_overlay_layer.add_child(root)
 
 	var panel := PanelContainer.new()
@@ -3160,7 +3166,17 @@ func _build_run_pause_menu() -> void:
 	# общей _pause_end_modal_display_size (на 2K ≈898×820), но стиль — собственный pm_panel,
 	# чтобы НЕ трогать общий PAUSE_END_MODAL_* (его делят победа/смерть).
 	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("pm_panel", panel_size))
+	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	panel.position = _pause_menu_top_left_position(panel_size)
+	panel.size = panel_size
 	root.add_child(panel)
+	root.resized.connect(func() -> void:
+		if panel != null and is_instance_valid(panel):
+			var next_size := _pause_end_modal_display_size("pause")
+			panel.custom_minimum_size = next_size
+			panel.size = next_size
+			panel.position = _pause_menu_top_left_position(next_size)
+	)
 
 	var box := VBoxContainer.new()
 	box.name = "RunPauseMenuContent"
@@ -3213,6 +3229,14 @@ func _build_run_pause_menu() -> void:
 	_set_action_button_size(main_menu_button, 280.0, 60.0)
 	main_menu_button.pressed.connect(_quit_current_run)
 	box.add_child(main_menu_button)
+
+
+func _pause_menu_top_left_position(panel_size: Vector2) -> Vector2:
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	var margin := clampf(viewport_size.y * 0.025, 18.0, 28.0)
+	var max_x := maxf(margin, viewport_size.x - panel_size.x - margin)
+	var max_y := maxf(margin, viewport_size.y - panel_size.y - margin)
+	return Vector2(minf(margin, max_x), minf(margin, max_y))
 
 
 func _show_pause_dossier_menu() -> void:
@@ -5801,6 +5825,8 @@ func _apply_video_settings() -> void:
 	var screen: int = game.selected_screen_index
 	# usable rect учитывает масштаб ОС, док и меню-бар: окно не вылезет за экран.
 	var usable := DisplayServer.screen_get_usable_rect(screen)
+	# SCRUM-591: полный размер экрана — база доступности/клэмпа нативного разрешения.
+	var screen_full := DisplayServer.screen_get_size(screen)
 	var screen_scale := DisplayServer.screen_get_scale(screen)
 	var resolution_entries := _settings_resolution_entries(usable.size)
 	game.selected_resolution_index = clampi(game.selected_resolution_index, 0, resolution_entries.size() - 1)
@@ -5820,9 +5846,10 @@ func _apply_video_settings() -> void:
 			_sync_window_content_scale(DisplayServer.screen_get_size(screen))
 		_:
 			var resolution: Vector2i = resolution_entries[game.selected_resolution_index]["resolution"]
-			# SCRUM-441: клэмп к ФИЗ.пикселям (usable * Retina scale), не к лог.точкам —
-			# иначе окно на Retina клэмпится до ~логического размера и «не меняется».
-			resolution = DisplayResolution.clamp_to_physical(resolution, usable.size, screen_scale)
+			# SCRUM-441: клэмп к ФИЗ.пикселям (× Retina scale), не к лог.точкам.
+			# SCRUM-591: база клэмпа — ПОЛНЫЙ размер экрана (screen_full), а не usable-rect
+			# минус таскбар, иначе выбранное нативное разрешение (2K) ужимается при применении.
+			resolution = DisplayResolution.clamp_to_physical(resolution, screen_full, screen_scale)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
 			DisplayServer.window_set_current_screen(screen)
@@ -7378,6 +7405,7 @@ func _create_hud() -> void:
 	game.hud_layer.add_child(root)
 
 	_create_resource_hud_panel(root, Vector2(20, 18))
+	_create_character_stats_hud(root, Vector2(20, 110))
 	_create_combat_timer_panel(root)
 	_create_artifact_hud_row(root)
 	_create_damage_flash_overlay(root)
@@ -7485,6 +7513,20 @@ func _layout_combat_hud(root: Control) -> void:
 	var resource_right := margin
 	if resource != null:
 		resource_right = resource.position.x + resource.custom_minimum_size.x
+
+	var stats_hud := root.find_child("CharacterStatsHud", true, false) as PanelContainer
+	if stats_hud != null:
+		var stats_width := 690.0
+		if resource != null:
+			stats_width = resource.custom_minimum_size.x
+		else:
+			stats_width = clampf(viewport_width * 0.54, 650.0, 820.0)
+			if viewport_width <= 1280.0:
+				stats_width = minf(stats_width, 690.0)
+		stats_hud.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		stats_hud.position = Vector2(margin, 110.0)
+		stats_hud.custom_minimum_size = Vector2(stats_width, 58.0)
+		stats_hud.size = stats_hud.custom_minimum_size
 
 	var timer_panel := root.find_child("CombatTimerPanel", true, false) as PanelContainer
 	var timer_left := viewport_width * 0.5 - timer_size.x * 0.5
@@ -7818,6 +7860,96 @@ func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
 	game.ultimate_bar = _add_hud_resource_card(row, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
 
 
+func _create_character_stats_hud(parent: Control, position: Vector2) -> void:
+	var panel := PanelContainer.new()
+	panel.name = "CharacterStatsHud"
+	panel.position = position
+	panel.custom_minimum_size = Vector2(690, 58)
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", _character_stats_hud_style())
+	parent.add_child(panel)
+
+	var row := HBoxContainer.new()
+	row.name = "CharacterStatsHudRow"
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 8)
+	panel.add_child(row)
+
+	for entry in _compact_character_stat_entries():
+		row.add_child(_make_character_stat_chip(entry))
+
+
+func _compact_character_stat_entries(limit := 4) -> Array:
+	var entries: Array = []
+	var character_id := str(game.selected_character_id)
+	if game.current_player != null and is_instance_valid(game.current_player):
+		character_id = str(game.current_player.get("character_id"))
+		var sections: Dictionary = StatFormulas.stat_sections_for_player(game.current_player)
+		entries = sections.get("base", [])
+	else:
+		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(character_id)
+		for stat_id in game.PROGRESSION_DATA.STAT_NAMES.keys():
+			entries.append({
+				"id": str(stat_id),
+				"name_ru": str(game.PROGRESSION_DATA.STAT_NAMES[stat_id]),
+				"value": float(stats.get(stat_id, 0.0)),
+				"value_text": "%.0f" % float(stats.get(stat_id, 0.0)),
+			})
+	var priority_ids: Array = game.PROGRESSION_DATA.attribute_priorities(character_id)
+	entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var ai: int = priority_ids.find(str(a.get("id", "")))
+		var bi: int = priority_ids.find(str(b.get("id", "")))
+		if ai == -1:
+			ai = 999
+		if bi == -1:
+			bi = 999
+		if ai == bi:
+			return str(a.get("name_ru", "")) < str(b.get("name_ru", ""))
+		return ai < bi
+	)
+	return entries.slice(0, mini(limit, entries.size()))
+
+
+func _make_character_stat_chip(entry: Dictionary) -> Control:
+	var stat_id := str(entry.get("id", ""))
+	var chip := PanelContainer.new()
+	chip.name = "CharacterStatChip_%s" % stat_id
+	chip.custom_minimum_size = Vector2(132, 38)
+	chip.mouse_filter = Control.MOUSE_FILTER_PASS
+	chip.tooltip_text = "%s: %s" % [str(entry.get("name_ru", stat_id)), _compact_stat_value_text(entry)]
+	chip.add_theme_stylebox_override("panel", _hud_card_style(stat_id))
+
+	var line := HBoxContainer.new()
+	line.alignment = BoxContainer.ALIGNMENT_CENTER
+	line.add_theme_constant_override("separation", 5)
+	chip.add_child(line)
+
+	line.add_child(game.UIIconRegistry.make_icon(stat_id, Vector2(22, 22)))
+
+	var value := Label.new()
+	value.name = "CharacterStatValue_%s" % stat_id
+	value.text = _compact_stat_value_text(entry)
+	value.clip_text = true
+	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	value.add_theme_font_size_override("font_size", 15)
+	value.add_theme_color_override("font_color", _hud_stat_value_color(entry))
+	line.add_child(value)
+	return chip
+
+
+func _compact_stat_value_text(entry: Dictionary) -> String:
+	return str(entry.get("value_text", "N/A")).replace(" / sec", "/s").replace(" units", "")
+
+
+func _hud_stat_value_color(entry: Dictionary) -> Color:
+	var raw_value: Variant = entry.get("value", null)
+	if raw_value == null:
+		return Color(0.91, 0.86, 0.65, 1.0)
+	var value := float(raw_value)
+	return Color(0.44, 0.95, 0.65, 1.0) if value >= 8.0 else Color(0.91, 0.86, 0.65, 1.0)
+
+
 func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: String, fill_color: Color) -> ProgressBar:
 	var card := PanelContainer.new()
 	card.name = "Hud%sCard" % label_text
@@ -7889,6 +8021,10 @@ func _hud_panel_style() -> StyleBox:
 	var texture_margins := _scaled_frame_margins_xy(Vector2(1122.0, 288.0), display_size, COMBAT_HUD_RESOURCE_PANEL_MARGINS)
 	var content_margins := _scaled_frame_margins_xy(Vector2(1122.0, 288.0), display_size, COMBAT_HUD_RESOURCE_PANEL_CONTENT)
 	return _global_texture_style(COMBAT_HUD_RESOURCE_PANEL_PATH, texture_margins, Color.WHITE, content_margins, true)
+
+
+func _character_stats_hud_style() -> StyleBox:
+	return _global_texture_style(MINIMAL_FIELD_PATH, Vector4(10, 10, 10, 10), Color(1.0, 1.0, 1.0, 0.95), Vector4(16, 12, 16, 12), true)
 
 
 func _hud_card_style(icon_id := "hp") -> StyleBox:

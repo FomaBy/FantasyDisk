@@ -65,6 +65,12 @@ func _test_non_retina_not_broken(errors: Array) -> void:
 		"Full HD должно влезать на 1080p-экране")
 	_expect(errors, not DisplayResolution.resolution_fits(K2, FULL_HD, 1.0),
 		"2K НЕ должно влезать на 1080p-экране (scale=1.0) — не-Mac поведение цело")
+	# SCRUM-591: на мониторе 2560×1440 (Windows, scale=1.0) 2K влезает в ПОЛНЫЙ размер
+	# экрана — call-site обязан сравнивать с screen_get_size, а не usable-rect минус таскбар.
+	_expect(errors, DisplayResolution.resolution_fits(K2, K2, 1.0),
+		"2K должно влезать на 2K-мониторе (full screen size, scale=1.0)")
+	_expect(errors, DisplayResolution.resolution_fits(FULL_HD, K2, 1.0),
+		"Full HD должно влезать на 2K-мониторе (scale=1.0)")
 
 
 func _test_clamp(errors: Array) -> void:
