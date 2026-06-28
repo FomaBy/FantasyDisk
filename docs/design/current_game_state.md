@@ -80,7 +80,7 @@ route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контро
   Runtime records monsters/bosses when they are encountered in combat and
   artifacts when the reward is applied, giving the Codex a save/load-backed
   unlock source without changing the visual Codex layout.
-- **Фидбек/баг-репорт**: SCRUM-362 добавил глобальное действие `feedback` (по умолчанию `P`). Оно открывает отдельный верхний `FeedbackOverlayLayer` с текстовым полем и preview текущего viewport screenshot. Отправка идет через Discord-compatible webhook из `FANTASYDISK_FEEDBACK_WEBHOOK` или `user://feedback_config.cfg`; multipart `payload_json.attachments[0]` ссылается на `files[0]`, чтобы Discord сохранял PNG-скриншот. Без webhook отчет сохраняется в `user://feedback/<timestamp>/`.
+- **Фидбек/баг-репорт**: SCRUM-362 добавил глобальное действие `feedback` (по умолчанию `P`). Оно открывает отдельный верхний `FeedbackOverlayLayer` с текстовым полем и preview текущего viewport screenshot. Отправка идет через Discord-compatible webhook из `FANTASYDISK_FEEDBACK_WEBHOOK`, bundled `res://feedback_webhook.cfg` (release-сборка генерирует его из секрета/env) или legacy `user://feedback_config.cfg`; multipart `payload_json.attachments[0]` ссылается на `files[0]`, чтобы Discord сохранял ужатый JPG-скриншот, а локальный fallback хранит полный PNG. Без валидного webhook/сети отчет сохраняется в `user://feedback/<timestamp>/`, UI показывает config/offline/send failure, а успех показывается только после HTTP success.
 
 В настройках доступны:
 

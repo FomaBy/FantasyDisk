@@ -22,7 +22,7 @@ func _check(cond: bool, msg: String) -> void:
 
 
 func _init() -> void:
-	var r: FeedbackReporter = Reporter.new()
+	var r: Node = Reporter.new()
 
 	# --- 1. Таймаут поднят и не равен старому хардкоду 12 с ---
 	_check(Reporter.REQUEST_TIMEOUT >= 20.0,
@@ -50,15 +50,15 @@ func _init() -> void:
 		"RESULT_BODY_SIZE_LIMIT_EXCEEDED НЕ должен ретраиться")
 
 	# --- 3. Различимые сообщения ---
-	var msg_timeout := r._failure_message(HTTPRequest.RESULT_TIMEOUT, 0)
+	var msg_timeout: String = r._failure_message(HTTPRequest.RESULT_TIMEOUT, 0)
 	_check("таймаут" in msg_timeout.to_lower(),
 		"сообщение таймаута без слова 'таймаут': %s" % msg_timeout)
 	_check(str(Reporter.MAX_ATTEMPTS) in msg_timeout,
 		"сообщение таймаута не упоминает число попыток (%d): %s" % [Reporter.MAX_ATTEMPTS, msg_timeout])
-	var msg_net := r._failure_message(HTTPRequest.RESULT_CANT_CONNECT, 0)
+	var msg_net: String = r._failure_message(HTTPRequest.RESULT_CANT_CONNECT, 0)
 	_check("сет" in msg_net.to_lower(), "сообщение 'нет сети' не про сеть: %s" % msg_net)
 	_check(msg_net != msg_timeout, "сообщения 'нет сети' и 'таймаут' не должны совпадать")
-	var msg_server := r._failure_message(HTTPRequest.RESULT_SUCCESS, 500)
+	var msg_server: String = r._failure_message(HTTPRequest.RESULT_SUCCESS, 500)
 	_check("500" in msg_server, "сообщение серверной ошибки не содержит код 500: %s" % msg_server)
 	# Все сообщения должны сообщать про локальное сохранение (контракт fallback'а).
 	for m in [msg_timeout, msg_net, msg_server]:
@@ -67,19 +67,19 @@ func _init() -> void:
 
 	# --- 4. Бэкофф нарастающий ---
 	r._attempt = 1
-	var b1 := r._backoff_for_attempt()
+	var b1: float = r._backoff_for_attempt()
 	r._attempt = 2
-	var b2 := r._backoff_for_attempt()
+	var b2: float = r._backoff_for_attempt()
 	_check(b1 >= 0.0 and b2 >= b1,
 		"бэкофф не нарастает: попытка1=%.1f попытка2=%.1f" % [b1, b2])
 
 	# --- 4b. Retry-After на 429 ---
-	var ra := r._retry_after_seconds(PackedStringArray(["Retry-After: 4", "X-Foo: bar"]))
+	var ra: float = r._retry_after_seconds(PackedStringArray(["Retry-After: 4", "X-Foo: bar"]))
 	_check(absf(ra - 4.0) < 0.01, "Retry-After:4 не распознан, получено %.2f" % ra)
-	var ra_cap := r._retry_after_seconds(PackedStringArray(["retry-after: 999"]))
+	var ra_cap: float = r._retry_after_seconds(PackedStringArray(["retry-after: 999"]))
 	_check(ra_cap <= Reporter.RATE_LIMIT_MAX_WAIT_SECONDS + 0.01,
 		"Retry-After без потолка: %.1f > %.1f" % [ra_cap, Reporter.RATE_LIMIT_MAX_WAIT_SECONDS])
-	var ra_none := r._retry_after_seconds(PackedStringArray(["X-Foo: bar"]))
+	var ra_none: float = r._retry_after_seconds(PackedStringArray(["X-Foo: bar"]))
 	_check(ra_none >= 0.0, "Retry-After fallback отрицателен: %.2f" % ra_none)
 
 	r.free()

@@ -1,6 +1,6 @@
 # In-Game Feedback Reporting
 
-Обновлено: 2026-06-14 (0.1.5)
+Обновлено: 2026-06-29 (0.1.7)
 
 SCRUM-362 adds an in-game feedback and bug report tool. It is a Back-end/runtime system: no webhook secret is stored in the repository, and reports are sent only after explicit player confirmation.
 
@@ -18,14 +18,20 @@ SCRUM-362 adds an in-game feedback and bug report tool. It is a Back-end/runtime
 
 - `payload_json.content` contains the player text plus runtime metadata.
 - `payload_json.attachments[0]` declares `id: 0` and filename
-  `fantasydisk_feedback.png`, matching multipart part `files[0]`. Discord API
+  `fantasydisk_feedback.jpg`, matching multipart part `files[0]`. Discord API
   v10 needs this explicit attachment reference when `payload_json` is present.
-- `files[0]` contains `fantasydisk_feedback.png`.
+- `files[0]` contains a downscaled JPG upload copy; the local fallback keeps the
+  full PNG screenshot.
 
 Webhook URL lookup order:
 
-1. Environment variable `FANTASYDISK_FEEDBACK_WEBHOOK`.
-2. `user://feedback_config.cfg`, section `[feedback]`, key `webhook_url`.
+1. Environment variable `FANTASYDISK_FEEDBACK_WEBHOOK` for dev/CI.
+2. Bundled `res://feedback_webhook.cfg`, section `[feedback]`, key
+   `discord_webhook_url`. `tools/build_release.sh` copies the ignored local file
+   or generates it from `FANTASYDISK_FEEDBACK_WEBHOOK` before export; release
+   builds fail early if neither source exists.
+3. Legacy/player override `user://feedback_config.cfg`, section `[feedback]`, key
+   `webhook_url`.
 
 Example local config:
 
@@ -35,6 +41,8 @@ webhook_url="https://discord.com/api/webhooks/..."
 ```
 
 The project must never commit a real webhook URL. On macOS, `user://` normally resolves under the app data folder managed by Godot, not inside the repository.
+Runtime rejects blank, placeholder and non-Discord URLs as build/config errors;
+the UI still saves a local fallback and never prints the URL.
 
 ## Local Fallback
 
@@ -55,6 +63,8 @@ Headless runs cannot read a real viewport screenshot, so the overlay uses a smal
 - the overlay opens and closes;
 - screenshot preview texture exists;
 - local fallback writes `report.txt` and `screenshot.png`;
-- multipart payload contains `payload_json` and `fantasydisk_feedback.png`;
+- multipart payload contains `payload_json` and `fantasydisk_feedback.jpg`;
 - `payload_json.attachments[0].filename` matches the `files[0]` multipart
   `Content-Disposition` filename, so Discord keeps the screenshot attachment.
+- `tests/feedback_webhook_config_test.gd` rejects missing/placeholder/invalid
+  webhook config without leaking the URL.

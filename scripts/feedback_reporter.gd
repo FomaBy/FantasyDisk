@@ -4,8 +4,10 @@ extends Node
 signal report_finished(success: bool, message: String, local_path: String)
 
 const CONFIG_PATH := "user://feedback_config.cfg"
+const BUNDLED_CONFIG_PATH := "res://feedback_webhook.cfg"
 const CONFIG_SECTION := "feedback"
 const WEBHOOK_KEY := "webhook_url"
+const BUNDLED_WEBHOOK_KEY := "discord_webhook_url"
 const LOCAL_ROOT := "user://feedback"
 const ENV_WEBHOOK := "FANTASYDISK_FEEDBACK_WEBHOOK"
 const SCREENSHOT_FILENAME := "fantasydisk_feedback.png"
@@ -60,10 +62,11 @@ func submit_report(text: String, screenshot: Image, metadata: Dictionary) -> voi
 	_pending_text = text.strip_edges()
 	_pending_metadata = metadata.duplicate(true)
 	_pending_screenshot = _normalized_screenshot(screenshot)
-	var webhook_url := _webhook_url()
+	var webhook_resolution := _webhook_resolution()
+	var webhook_url := str(webhook_resolution.get("url", ""))
 	if webhook_url == "":
 		var local_path := save_local_report(_pending_text, _pending_screenshot, _pending_metadata)
-		report_finished.emit(false, "Вебхук не настроен. Отчет сохранен локально.", local_path)
+		report_finished.emit(false, _configuration_failure_message(str(webhook_resolution.get("error", "missing"))), local_path)
 		return
 
 	_post_to_webhook(webhook_url)
@@ -232,6 +235,12 @@ func _failure_message(result: int, response_code: int) -> String:
 	return "Ошибка отправки (нет ответа, result %d). Отчет сохранен локально." % result
 
 
+static func _configuration_failure_message(error: String) -> String:
+	if error == "invalid":
+		return "Ошибка сборки: вебхук фидбека некорректен. Отчет сохранен локально."
+	return "Ошибка сборки: вебхук фидбека не настроен. Отчет сохранен локально."
+
+
 func _backoff_for_attempt() -> float:
 	# _attempt уже инкрементнут на текущую попытку; пауза перед СЛЕДУЮЩЕЙ берётся по
 	# индексу совершённых попыток (1→RETRY_BACKOFF_SECONDS[0], 2→[1], ...).
@@ -253,23 +262,42 @@ func _retry_after_seconds(headers: PackedStringArray) -> float:
 
 
 func _webhook_url() -> String:
-	# Источник URL по приоритету (SCRUM-362):
-	# 1) env (дев-машина); 2) res://feedback_webhook.cfg (бандлится в сборку — у
-	# тестеров; ключ discord_webhook_url); 3) user://feedback_config.cfg (legacy/override).
+	return str(_webhook_resolution().get("url", ""))
+
+
+func _webhook_resolution() -> Dictionary:
+	# Источник URL по приоритету (SCRUM-665):
+	# 1) env (дев-машина/CI); 2) res://feedback_webhook.cfg, который release-сборка
+	# генерирует из секрета и бандлит; 3) user://feedback_config.cfg (legacy/override).
 	var env_url := OS.get_environment(ENV_WEBHOOK).strip_edges()
 	if env_url != "":
-		return env_url
+		return _webhook_result(env_url, "env")
 	var bundled := ConfigFile.new()
-	if bundled.load("res://feedback_webhook.cfg") == OK:
-		var u := str(bundled.get_value("feedback", "discord_webhook_url", "")).strip_edges()
+	if bundled.load(BUNDLED_CONFIG_PATH) == OK:
+		var u := str(bundled.get_value(CONFIG_SECTION, BUNDLED_WEBHOOK_KEY, "")).strip_edges()
 		if u != "":
-			return u
+			return _webhook_result(u, "bundled")
 	var config := ConfigFile.new()
 	if config.load(CONFIG_PATH) == OK:
 		var u2 := str(config.get_value(CONFIG_SECTION, WEBHOOK_KEY, "")).strip_edges()
 		if u2 != "":
-			return u2
-	return ""
+			return _webhook_result(u2, "user")
+	return {"url": "", "source": "", "error": "missing"}
+
+
+static func _webhook_result(url: String, source: String) -> Dictionary:
+	if _is_valid_webhook_url(url):
+		return {"url": url, "source": source, "error": ""}
+	return {"url": "", "source": source, "error": "invalid"}
+
+
+static func _is_valid_webhook_url(url: String) -> bool:
+	var clean := url.strip_edges()
+	if clean == "":
+		return false
+	if "XXXX" in clean or "YYYY" in clean or "..." in clean:
+		return false
+	return clean.begins_with("https://discord.com/api/webhooks/") or clean.begins_with("https://discordapp.com/api/webhooks/")
 
 
 static func _report_body(text: String, metadata: Dictionary) -> String:
