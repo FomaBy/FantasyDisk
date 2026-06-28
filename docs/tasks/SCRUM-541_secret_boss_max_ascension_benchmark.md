@@ -81,6 +81,27 @@ Because `runtime_smoke_boss_elite_test.gd` is an explicit SCRUM-541 acceptance
 gate, QA cannot accept the task. Jira bug filed and linked: SCRUM-656.
 SCRUM-541 was returned to `К выполнению`.
 
+## Backend Recheck: PASS (2026-06-28, backend_517_20260628193938)
+
+Clean Windows worktree from fresh `origin/dev`, branch
+`codex/backend_517_20260628193938`. The QA RED blocker did not reproduce after
+explicit Godot import; no gameplay/code changes were required.
+
+Validation:
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --import`
+  (known unrelated duplicate UID warnings for copied skeleton reference art).
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_boss_elite_test.gd`
+  (`Runtime boss/elite smoke suite passed.`)
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/secret_encounter_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/boss_elite_ttk_gate.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tools/balance_harness.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tools/class_damage_table_3variants.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Result: SCRUM-541 is ready for QA recheck. The previous
+`runtime_smoke_boss_elite_test.gd` failure is treated as a stale/cold-import
+runner issue unless QA can reproduce it again on a freshly imported worktree.
+
 ## Follow-up
 
 Final visual identity, sprite, animation rows and polished localized boss name
