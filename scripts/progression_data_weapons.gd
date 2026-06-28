@@ -331,13 +331,16 @@ const CHEMIST_WEAPONS := {
 		"summon_damage_multiplier": 2.40,  # SCRUM-546: подъём с пола DPS-полосы (был 0.52)
 		"damage_multiplier": 0.90, "fire_interval": 4.0,
 		"attack_range": 420.0, "aoe_radius": 70.0,
-		"summon_aoe_radius": 78.0, "summon_aoe_damage_multiplier": 0.85,  # SCRUM-546 (был 0.52)
+		# SCRUM-505: один гомункул не виден на 20t. Расширяем алхимический splash
+		# (кислотное облако) и добавляем тело, но основной прирост покрытия — от
+		# Лидерства в _summon_profile, чтобы lvl1 (LDR~0) не раздулся. flat-base умеренный.
+		"summon_aoe_radius": 84.0, "summon_aoe_damage_multiplier": 0.86,  # SCRUM-505 lvl1-нейтральный base (было 78/0.85); рост покрытия splash — от (level-1) в _summon_profile
 		"summon_leash_radius": 540.0,
-		"max_summons": 1,
+		"max_summons": 2,  # SCRUM-505: 2 базовых (было 1); рой растёт от Лидерства
 		"summon_role": "tank_control",
 		"summon_role_damage_multiplier": 1.25,  # SCRUM-546 (был 0.95)
 		"summon_health_multiplier": 0.42,
-		"summon_attack_interval": 0.40,  # SCRUM-546: чаще бьёт — главный DPS-рычаг capped-саммона (был 0.56)
+		"summon_attack_interval": 0.38,  # SCRUM-505: чуть чаще (было 0.40)
 		"summon_speed_multiplier": 0.88,
 		"summon_lifetime_multiplier": 1.18,
 		"summon_control_knockback": 95.0,
@@ -398,14 +401,19 @@ const DRUID_WEAPONS := {
 		"summon_damage_multiplier": 1.85,  # SCRUM-546: подъём с пола DPS-полосы (был 0.58)
 		"damage_multiplier": 1.0, "fire_interval": 3.0,
 		"attack_range": 420.0, "aoe_radius": 60.0,
-		"summon_aoe_radius": 72.0, "summon_aoe_damage_multiplier": 0.80,  # SCRUM-546 (был 0.56)
+		# SCRUM-505: мобильная стая мертва на 20t-оси. per-summon урон зажат budget-флором
+		# (budget_damage_multiplier=0.28), поэтому 20t тянем ПОКРЫТИЕМ роя. Чтобы НЕ
+		# раздуть lvl1 (стартовый баланс уже ок), основной прирост покрытия splash
+		# масштабируется от (level-1) в _summon_profile (=0 на lvl1, растёт к lvl20) —
+		# здесь только lvl1-нейтральный flat-base. См. summoner_weapon._summon_profile.
+		"summon_aoe_radius": 78.0, "summon_aoe_damage_multiplier": 0.82,  # SCRUM-505 lvl1-нейтральный base (было 72/0.80); рост покрытия splash — от (level-1) в _summon_profile
 		"summon_leash_radius": 560.0,
-		"max_summons": 3,  # SCRUM-546: +1 базовый зверь стае (был 2)
+		"max_summons": 3,  # base 3 (lvl1-safe); рой растёт от Лидерства через floor(summon_amount/4)
 		"command_mode": "attack_target",
 		"summon_role": "pack_damage",
 		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.06)
 		"summon_health_multiplier": 0.30,
-		"summon_attack_interval": 0.34,  # SCRUM-546: чаще бьёт (был 0.40)
+		"summon_attack_interval": 0.34,  # SCRUM-546 (lvl1-нейтрально); темп растёт от haste
 		"summon_speed_multiplier": 1.15,
 		"summon_lifetime_multiplier": 1.12,
 		"summon_control_knockback": 34.0,
@@ -728,9 +736,14 @@ const ENGINEER_WEAPONS := {
 		"attack_mode": "engineer_sentry_link", "damage_parameter": "damage",
 		"damage_multiplier": 1.15, "fire_interval": 1.32,  # SCRUM-546: подъём с пола (был 0.72)
 		"attack_range": 560.0, "aoe_radius": 170.0,
-		"beam_width": 34.0, "projectile_count": 4,
-		"amp_lifetime": 2.8, "amp_pulse_interval": 0.42, "max_summons": 1,
-		"damage_falloff": 0.72, "knockback": 42.0,
+		# SCRUM-505: турель — мультишот по РАЗНЫМ ближайшим целям (used-dict). 1 турель ×
+		# 4 шота за цикл не покрывает 20t. Турель не использует _summon_profile (прямой
+		# engineer_sentry_link в class_weapon), её count флат — поэтому буст УМЕРЕННЫЙ
+		# (2 турели, +шоты, чаще пульс, мягче falloff), чтобы не раздуть lvl1. Доп.
+		# шоты на lvl20 идут от run_modifiers.extra_projectile (level-карты).
+		"beam_width": 34.0, "projectile_count": 8,  # SCRUM-505: +шоты/цикл (было 4)
+		"amp_lifetime": 3.6, "amp_pulse_interval": 0.28, "max_summons": 2,  # SCRUM-505: 2 турели, быстрее пульс (было 2.8/0.42/1)
+		"damage_falloff": 0.90, "knockback": 42.0,  # SCRUM-505: мягче спад урона по шотам (было 0.72)
 		"summon_role": "engineer_sentry",
 		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.10)
 		"visual_color": Color(0.88, 0.70, 0.32, 0.42),
