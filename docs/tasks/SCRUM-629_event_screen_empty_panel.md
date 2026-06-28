@@ -28,3 +28,10 @@ Jira: SCRUM-629
 - `Godot_v4.7-stable_win64_console.exe --headless --path D:\FantasyDisk_worktrees\event-ui-bugfix-wt --script tests/ui_no_overlap_matrix_test.gd`
 - `Godot_v4.7-stable_win64_console.exe --headless --path D:\FantasyDisk_worktrees\event-ui-bugfix-wt --script tests/runtime_smoke_ui_test.gd`
 - `Godot_v4.7-stable_win64_console.exe --headless --path D:\FantasyDisk_worktrees\event-ui-bugfix-wt --script tests/runtime_smoke_test.gd`
+
+## QA-Вердикт (2026-06-28)
+Статус: PASSED
+Проверено: live Jira already had QA PASSED by `qa-codex-ui-batch-560-629` on 2026-06-28 against fresh `origin/dev` @ `0bd54a6e`; replacement loop confirmed no active owner conflict and closed the stale QA gate.
+Команды из Jira evidence: `--import`, `tests/ui_no_overlap_matrix_test.gd`, `tests/runtime_smoke_ui_test.gd`, `tests/runtime_smoke_test.gd` - PASS.
+Покрытие: visible `MenuPanel_event`, non-empty visible `EventTitle`/`EventStory`, at least two visible choices, event controls inside panel, event empty-pool targeted gates.
+Баги: нет в текущем SCRUM-629 gate; earlier empty-story fallback regression was split to SCRUM-641.

@@ -2737,5 +2737,10 @@
   "key": "SCRUM-498",
   "status": "Готово",
   "desc_hash": "e79dc3892693f5cac3c437d4476ee5ee"
+ },
+ "SCRUM-629_event_screen_empty_panel.md": {
+  "key": "SCRUM-629",
+  "status": "Готово",
+  "desc_hash": "3846ac71cb187677093a9f1b4bdf2ca5"
  }
 }
