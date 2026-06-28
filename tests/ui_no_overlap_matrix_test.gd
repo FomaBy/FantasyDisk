@@ -21,6 +21,7 @@ const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_f
 const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
 const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
+const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
 
 
 func _initialize() -> void:
@@ -505,6 +506,25 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				var sprite := node as Sprite2D
 				if sprite != null and not safe_rect.grow(4.0).has_point(sprite.position):
 					return "%s: toast sparkle %s starts outside safe rect %s." % [context, sprite.name, str(safe_rect)]
+		"combat_title_banner":
+			var banner := main.find_child("CombatIntroBanner", true, false) as PanelContainer
+			if banner == null or not banner.visible or not banner.get_global_rect().has_area():
+				return "%s: expected visible CombatIntroBanner frame." % context
+			if _stylebox_texture_path(banner.get_theme_stylebox("panel")) != CTB_BIG_2K_FRAME_PATH:
+				return "%s: expected CombatIntroBanner to use ctb_big @2K frame." % context
+			if str(banner.get_meta("combat_title_slot", "")) != "ctb_big":
+				return "%s: expected CombatIntroBanner slot metadata to be ctb_big." % context
+			if Vector4(banner.get_meta("combat_title_content_margins", Vector4.ZERO)) != Vector4(86, 10, 86, 10):
+				return "%s: expected CombatIntroBanner strict SCRUM-589 content margins." % context
+			var banner_safe: Rect2 = banner.get_meta("combat_title_content_rect", Rect2()) as Rect2
+			if banner_safe != Rect2(86, 10, 2188, 70):
+				return "%s: expected CombatIntroBanner safe rect to match CTB_BIG_2K content zone." % context
+			var banner_label := banner.find_child("CombatIntroBannerLabel", true, false) as Label
+			if banner_label == null or banner_label.text.strip_edges() == "":
+				return "%s: expected CombatIntroBannerLabel runtime text inside the frame." % context
+			var scaled_safe := _scaled_source_rect(banner.get_global_rect(), Vector2(2360, 90), banner_safe).grow(1.0)
+			if not scaled_safe.encloses(banner_label.get_global_rect()):
+				return "%s: expected CombatIntroBannerLabel to stay inside scaled safe rect %s." % [context, str(scaled_safe)]
 	return ""
 
 

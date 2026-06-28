@@ -81,6 +81,9 @@ SLOTS = [
     {"slug": "chud_resource_panel", "file": "ui_screens", "const": "CHUD_RESOURCE_PANEL_2K", "kind": "frame", "margin_key": "hud_resource", "w": 820, "h": 84},
     {"slug": "chud_timer", "file": "ui_screens", "const": "CHUD_TIMER_2K", "kind": "frame", "margin_key": "hud_timer", "w": 288, "h": 96},
     {"slug": "chud_artifact_row", "file": "ui_screens", "const": "CHUD_ARTIFACT_ROW_2K", "kind": "frame", "margin_key": "hud_artifact", "w": 402, "h": 104},
+    # SCRUM-589: combat title banner, with narrow frame margins so runtime text stays in the safe zone.
+    {"slug": "ctb_big", "file": "ui_screens", "const": "CTB_BIG_2K", "kind": "frame", "margin_key": "combat_title_big", "w": 2360, "h": 90},
+    {"slug": "ctb_small", "file": "ui_screens", "const": "CTB_SMALL_2K", "kind": "frame", "margin_key": "combat_title_small", "w": 2360, "h": 56},
     {"slug": "hs4_portrait_panel", "file": "ui_screens", "const": "HS4_PORTRAIT_FRAME_2K", "kind": "frame", "margin_key": "panel", "w": 661, "h": 959},
     {"slug": "hs4_dossier_panel", "file": "ui_screens", "const": "HS4_DOSSIER_2K", "kind": "frame", "margin_key": "panel", "w": 1091, "h": 959},
     {"slug": "hs4_radar_panel", "file": "ui_screens", "const": "HS4_RADAR_2K", "kind": "frame", "margin_key": "panel", "w": 624, "h": 959},

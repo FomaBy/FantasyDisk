@@ -5546,18 +5546,15 @@ func _show_combat_title_banner(title: String, color: Color, big := false) -> voi
 	var existing: Node = game.hud_layer.get_node_or_null("CombatIntroBanner")
 	if existing != null:
 		existing.queue_free()
-	var banner := Label.new()
-	banner.name = "CombatIntroBanner"
-	banner.process_mode = Node.PROCESS_MODE_ALWAYS
-	banner.text = title
-	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	banner.add_theme_font_size_override("font_size", 66 if big else 40)
-	banner.add_theme_color_override("font_color", color)
-	banner.add_theme_color_override("font_outline_color", Color(0.06, 0.03, 0.02, 1.0))
-	banner.add_theme_constant_override("outline_size", 9 if big else 6)
-	# SCRUM-487: ширина баннера берётся из 2K-спеки (CTB_*_2K), а не из легаси 1280 (720p).
+	var ctb_slot := "ctb_big" if big else "ctb_small"
 	var ctb_spec: Rect2 = CTB_BIG_2K if big else CTB_SMALL_2K
 	var ctb_half_width := ctb_spec.size.x * 0.5
+	var banner := PanelContainer.new()
+	banner.name = "CombatIntroBanner"
+	banner.process_mode = Node.PROCESS_MODE_ALWAYS
+	banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	banner.add_theme_stylebox_override("panel", _overhaul_2k_frame_style(ctb_slot, ctb_spec.size))
+	# SCRUM-487: ширина баннера берётся из 2K-спеки (CTB_*_2K), а не из легаси 1280 (720p).
 	banner.anchor_left = 0.5
 	banner.anchor_right = 0.5
 	banner.anchor_top = 0.0
@@ -5569,6 +5566,30 @@ func _show_combat_title_banner(title: String, color: Color, big := false) -> voi
 	banner.modulate.a = 0.0
 	banner.scale = Vector2(0.9, 0.9)
 	banner.pivot_offset = Vector2(ctb_half_width, 0.0)
+	var content_margins := _overhaul_2k_content_margins(ctb_slot, ctb_spec.size)
+	var content_rect := Rect2(
+		Vector2(content_margins.x, content_margins.y),
+		Vector2(
+			ctb_spec.size.x - content_margins.x - content_margins.z,
+			ctb_spec.size.y - content_margins.y - content_margins.w
+		)
+	)
+	banner.set_meta("combat_title_slot", ctb_slot)
+	banner.set_meta("combat_title_content_margins", content_margins)
+	banner.set_meta("combat_title_content_rect", content_rect)
+	var label := Label.new()
+	label.name = "CombatIntroBannerLabel"
+	label.text = title
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 54 if big else 34)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color(0.06, 0.03, 0.02, 1.0))
+	label.add_theme_constant_override("outline_size", 6 if big else 4)
+	banner.add_child(label)
 	game.hud_layer.add_child(banner)
 	var tween := banner.create_tween()
 	tween.set_parallel(true)

@@ -286,6 +286,12 @@ Center-top. **Фикс SCRUM-487:** ширина была 1280 (720p-база) �
 | Баннер босса (big) | `CTB_BIG_2K` | 100 | 120 | 2360 | 90 |
 | Баннер элитки | `CTB_SMALL_2K` | 100 | 92 | 2360 | 56 |
 
+**SCRUM-589 frame integration:** runtime uses `PanelContainer` frame assets
+`ui_frame_2k_ctb_big.png` / `ui_frame_2k_ctb_small.png`. Texture margins are
+`70/20/70/20` for big and `56/12/56/12` for small; content margins are
+`86/10/86/10` and `72/8/72/8`. Title text lives only inside the safe content
+zone (`CombatIntroBannerLabel` child), leaving all ornament/corners visible.
+
 ### 30. Баннер победы — `_show_victory_banner` · `VBN_*`
 Свой `CanvasLayer` (layer 80): затемнение + «ПОБЕДА» 96pt по центру; авто-продолжение 1.3с.
 
