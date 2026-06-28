@@ -22,6 +22,7 @@ const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
 const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
+const VBN_FRAME_2K_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_vbn_frame.png"
 
 
 func _initialize() -> void:
@@ -107,6 +108,9 @@ func _initialize() -> void:
 		# текст центрируется по 2K-базе и помещается в рамку. Транзиентный — один контрол.
 		await _check_screen(viewport_size, "combat_title_banner", Callable(self, "_open_combat_title_banner"), [
 			"CombatIntroBanner",
+		], dump_lines, errors, false)
+		await _check_screen(viewport_size, "victory_banner", Callable(self, "_open_victory_banner"), [
+			"VictoryBannerFrame",
 		], dump_lines, errors, false)
 		# SCRUM-588: transient level-up toast uses an isolated @2K frame and keeps sparkle content inside
 		# the documented safe zone; the world-space badge remains the only text/icon callout.
@@ -386,6 +390,10 @@ func _open_combat_title_banner(main: Node) -> void:
 	main.ui._show_combat_title_banner("Лорд Бездны", Color(1.0, 0.4, 0.3, 1.0), true)
 
 
+func _open_victory_banner(main: Node) -> void:
+	main.ui._show_victory_banner(Callable())
+
+
 func _open_level_up_toast(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
 	main.set("selected_weapon_id", "sword")
@@ -525,6 +533,25 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var scaled_safe := _scaled_source_rect(banner.get_global_rect(), Vector2(2360, 90), banner_safe).grow(1.0)
 			if not scaled_safe.encloses(banner_label.get_global_rect()):
 				return "%s: expected CombatIntroBannerLabel to stay inside scaled safe rect %s." % [context, str(scaled_safe)]
+		"victory_banner":
+			var frame := main.find_child("VictoryBannerFrame", true, false) as PanelContainer
+			if frame == null or not frame.visible or not frame.get_global_rect().has_area():
+				return "%s: expected visible VictoryBannerFrame." % context
+			if _stylebox_texture_path(frame.get_theme_stylebox("panel")) != VBN_FRAME_2K_PATH:
+				return "%s: expected VictoryBannerFrame to use vbn_frame @2K asset." % context
+			if str(frame.get_meta("victory_banner_slot", "")) != "vbn_frame":
+				return "%s: expected VictoryBannerFrame slot metadata to be vbn_frame." % context
+			if Vector4(frame.get_meta("victory_banner_content_margins", Vector4.ZERO)) != Vector4(112, 52, 112, 52):
+				return "%s: expected VictoryBannerFrame strict SCRUM-590 content margins." % context
+			var frame_safe: Rect2 = frame.get_meta("victory_banner_content_rect", Rect2()) as Rect2
+			if frame_safe != Rect2(112, 52, 1216, 136):
+				return "%s: expected VictoryBannerFrame safe rect to match VBN_FRAME_2K content zone." % context
+			var victory_label := frame.find_child("VictoryBannerLabel", true, false) as Label
+			if victory_label == null or victory_label.text.strip_edges() == "":
+				return "%s: expected VictoryBannerLabel runtime text inside the frame." % context
+			var scaled_victory_safe := _scaled_source_rect(frame.get_global_rect(), Vector2(1440, 240), frame_safe).grow(1.0)
+			if not scaled_victory_safe.encloses(victory_label.get_global_rect()):
+				return "%s: expected VictoryBannerLabel to stay inside scaled safe rect %s." % [context, str(scaled_victory_safe)]
 	return ""
 
 

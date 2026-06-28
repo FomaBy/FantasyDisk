@@ -293,12 +293,18 @@ Center-top. **Фикс SCRUM-487:** ширина была 1280 (720p-база) �
 zone (`CombatIntroBannerLabel` child), leaving all ornament/corners visible.
 
 ### 30. Баннер победы — `_show_victory_banner` · `VBN_*`
-Свой `CanvasLayer` (layer 80): затемнение + «ПОБЕДА» 96pt по центру; авто-продолжение 1.3с.
+Свой `CanvasLayer` (layer 80): затемнение + framed «ПОБЕДА» по центру; авто-продолжение 1.3с.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|
 | Затемнение | `VBN_DIM_2K` | 0 | 0 | 2560 | 1440 |
-| Лейбл «ПОБЕДА» (центр) | `VBN_LABEL_2K` | 0 | 0 | 2560 | 1440 |
+| Рамка победы | `VBN_FRAME_2K` | 560 | 600 | 1440 | 240 |
+| Safe content | `VBN_SAFE_2K` | 672 | 652 | 1216 | 136 |
+
+**SCRUM-590 frame integration:** runtime uses `PanelContainer` frame asset
+`ui_frame_2k_vbn_frame.png`. Texture margins are `84/44/84/44`; content margins
+are `112/52/112/52`. The `VictoryBannerLabel` child stays inside the safe
+content zone, preserving all decorative frame ornament.
 
 > **Покрытие верификатором.** `tests/ui_no_overlap_matrix_test.gd` покрывает боевой HUD
 > (`combat_hud`: ресурс-панель/таймер/бейдж/ряд артефактов/кнопка повышения — fit во вьюпорт
