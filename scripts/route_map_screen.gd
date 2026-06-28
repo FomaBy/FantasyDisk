@@ -499,8 +499,14 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 			_add_route_node_icon(button, _route_node_icon_path(route_node, definition), str(definition["icon"]))
 			if state == "completed" or state == "shop_revisit":
 				_add_route_node_completed_mark(button)
-			elif state == "locked":
-				button.modulate = Color(0.55, 0.58, 0.62, 0.72)
+			else:
+				# SCRUM-616: компактный угловой бейдж-превью угрозы поверх кнопки для
+				# battle/elite_battle/chest — детерминированный хинт без наведения и без
+				# нового арта (только Label). На completed/shop_revisit не вешаем (там ✓);
+				# на locked бейдж остаётся, но гаснет вместе с modulate кнопки.
+				_add_route_node_threat_badge(button, route_node)
+				if state == "locked":
+					button.modulate = Color(0.55, 0.58, 0.62, 0.72)
 			if is_clickable:
 				button.gui_input.connect(func(event: InputEvent) -> void:
 					_handle_route_node_input(button, event, map_area.get_parent() as ScrollContainer, step_index, branch_index, route_node)
@@ -709,6 +715,49 @@ func _add_route_node_completed_mark(button: Button) -> void:
 	mark.offset_left = 42.0
 	mark.offset_top = -6.0
 	button.add_child(mark)
+
+
+# SCRUM-616: текст + цвет углового бейджа-превью угрозы для узла.
+# Возвращает пустую строку для типов без бейджа (boss/shop/event/rest/...).
+func _route_node_threat_badge(route_node: Dictionary) -> Dictionary:
+	match str(route_node.get("type", "")):
+		"elite_battle":
+			# Гарантированная элита + артефакт — «звезда».
+			return {"text": "★", "color": Color(0.98, 0.80, 0.30, 1.0)}
+		"chest":
+			# Выбор 1 из 3 артефактов.
+			return {"text": "1/3", "color": Color(0.55, 0.85, 0.95, 1.0)}
+		"battle":
+			# Буква-хинт силы волны по предсказанной глубине (детерминированно):
+			# Л — лёгкая (старт), С — средняя, Т — тяжёлая (глубокие ряды/акты).
+			var pred_stage := _node_predicted_stage(route_node)
+			if pred_stage <= 0:
+				return {"text": "Л", "color": Color(0.62, 0.86, 0.55, 1.0)}
+			if pred_stage >= 4:
+				return {"text": "Т", "color": Color(0.95, 0.55, 0.45, 1.0)}
+			return {"text": "С", "color": Color(0.92, 0.82, 0.45, 1.0)}
+	return {}
+
+
+func _add_route_node_threat_badge(button: Button, route_node: Dictionary) -> void:
+	var badge_info := _route_node_threat_badge(route_node)
+	if badge_info.is_empty():
+		return
+	var badge := Label.new()
+	badge.name = "RouteNodeThreatBadge"
+	badge.text = str(badge_info["text"])
+	badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE  # не перехватывает клик/hover узла
+	badge.add_theme_font_size_override("font_size", 17)
+	badge.add_theme_color_override("font_color", badge_info["color"])
+	# Тёмная подложка-обводка для читаемости поверх иконки.
+	badge.add_theme_color_override("font_outline_color", Color(0.05, 0.06, 0.08, 0.92))
+	badge.add_theme_constant_override("outline_size", 5)
+	badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	badge.position = Vector2(4.0, 1.0)  # верхний-левый угол, не на центральной иконке
+	badge.z_index = 30  # поверх иконки (icon z неявно 0), но не мешает тултипу кнопки
+	button.add_child(badge)
 
 
 func _route_node_icon_path(route_node: Dictionary, definition: Dictionary) -> String:
