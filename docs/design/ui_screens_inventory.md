@@ -241,6 +241,7 @@ Economy-панель «event»; safe-area по фикс content-margins (58/72/5
 
 ### 11. Повышение уровня — `_show_level_up_screen` · `LU_*`
 Оверлей; панель из `_level_up_layout_metrics` (1040×600 @2K). 3 карточки 238×210 + «Позже».
+SCRUM-570 design-source package: `docs/design/mockups/scrum570_levelup_2k_redesign/` with `ui_plan.json`, `spec.md`, OpenAI mockup sources and safe-zone previews. Runtime integration must treat the plan/spec rectangles as authoritative and must not sample frame/content bounds from the generated mockup pixels.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|

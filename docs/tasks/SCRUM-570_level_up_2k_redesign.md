@@ -1,53 +1,52 @@
 # SCRUM-570: UI Redesign - Level-Up Overlay @2K
 
-Status: blocked
+Status: done
 Contour: Codex
-Owner: Design/Codex ui-design-level-up
-Thread: current Codex Design worker
-Locked paths: docs/design/mockups/scrum570_levelup_2k_redesign/, docs/design/references/scrum570_levelup_2k_redesign/, docs/design/previews/scrum570_*, optional assets/sprites/ui/frames/overhaul_2k/level_up*
+Owner: Design/Codex design-loop-2
+Thread: design-loop-2
+Locked paths: docs/design/mockups/scrum570_levelup_2k_redesign/, docs/design/references/scrum570_levelup_2k_redesign/, docs/design/previews/scrum570_*
 Jira: SCRUM-570
 
 ## Scope
 
-Design-only stage for the level-up overlay redesign. Required deliverables were an OpenAI-API-generated 2K mockup PNG, source references, preview/evidence, and a geometry spec for safe zones/frame margins/responsive behavior. Runtime integration files are out of scope for this stage.
+Design-only stage for the level-up overlay redesign. Required deliverables: an OpenAI-API-generated 2K mockup PNG, source references, preview/evidence, and a geometry spec for safe zones/frame margins/responsive behavior. Runtime integration files are out of scope for this stage.
 
 ## Work Performed
 
-- Read `AGENTS.md`, `docs/process/ai_agent_memorandum.md`, `docs/process/agent_role_boundaries_and_handoffs.md`, `docs/process/versioning_and_branching.md`, `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`, `docs/design/systems/visual_style_assets.md`.
-- Read `fantasydisk-ui-director` and relevant references: `ui-change-workflow.md`, `mockup-spec.md`, `fantasydisk-ui-style.md`, `common-pitfalls.md`.
-- Read `fantasydisk-asset-generator` because UI mockup generation requires the OpenAI Images API project pipeline.
 - Checked Jira SCRUM-570 status/comments and confirmed the latest dispatch is for Codex Design, design-only, no runtime file edits.
-- Created a blocked mockup/spec package with the intended 2K geometry and prompt: `docs/design/mockups/scrum570_levelup_2k_redesign/spec.md`.
+- Recovered the prior blocked geometry/spec package from `codex/scrum-570-level-up-ui`.
+- Added `ui_plan.json`, ran the content-zone planning validator, and saved `ui_plan_report.json` plus `ui_plan_guide.png`.
+- Generated two OpenAI Images API mockups. The first pass is retained as rejected geometry evidence; the second pass is accepted as the visual style/mockup source.
+- Created safe-zone and contact previews under `docs/design/previews/`.
 
-## Blocker
+## Result
 
-OpenAI Images API generation cannot run because no `OPENAI_API_KEY` is configured:
+OpenAI Images API generation is now unblocked and complete. The design package is ready for QA / Back-end integration handoff.
 
-```text
-error: OPENAI_API_KEY is not set (looked in env and C:\Users\FomaE\.codex\.env, C:\Users\FomaE\OneDrive\Documents\Fantasy Disk SCRUM-570\.env)
-```
-
-Per `fantasydisk-ui-director`, this must be blocked rather than replaced with a manual or non-API mockup.
-
-## Attempted Command
-
-```powershell
-python skills\codex\fantasydisk-asset-generator\scripts\generate_asset.py --prompt "<SCRUM-570 level-up overlay prompt>" --output scrum570_levelup_2k_redesign/levelup_overlay_mockup_source.png --size 2560x1440 --quality high --no-task
-```
+Important caveat: the accepted v2 mockup is a visual source, not a slice-ready runtime atlas. The model preserved the hierarchy and material direction but is not exact enough to cut directly into runtime frames. The implementation contract is `ui_plan.json` and the element/safe-zone table in `spec.md`.
 
 ## Deliverables
 
-- Mockup PNG: not produced, blocked by missing OpenAI API key.
-- Preview PNG: not produced.
-- Generated source assets: not produced.
-- Spec/blocker evidence: `docs/design/mockups/scrum570_levelup_2k_redesign/spec.md`.
+- Mockup PNG: `docs/design/references/scrum570_levelup_2k_redesign/levelup_overlay_2k_mockup_v2.png`
+- Rejected first pass: `docs/design/references/scrum570_levelup_2k_redesign/levelup_overlay_2k_mockup.png`
+- Spec: `docs/design/mockups/scrum570_levelup_2k_redesign/spec.md`
+- UI plan: `docs/design/mockups/scrum570_levelup_2k_redesign/ui_plan.json`
+- Planning report: `docs/design/mockups/scrum570_levelup_2k_redesign/ui_plan_report.json`
+- Planning guide: `docs/design/mockups/scrum570_levelup_2k_redesign/ui_plan_guide.png`
+- Safe-zone preview: `docs/design/previews/scrum570_levelup_2k_safe_zones_v2.png`
+- Contact sheet: `docs/design/previews/scrum570_levelup_2k_contact.png`
 
 ## Validation
 
-- `git status --short --branch`: clean for SCRUM-570 after task edits are committed, with unrelated `source_docs/FantasyDisk_GDD.txt` line-ending noise hidden locally and not staged.
-- Runtime tests: not run; no Godot runtime files, scenes, scripts, or assets were changed.
-- Jira board sync: attempted `python tools/jira_board_sync.py --help`, but this script does not implement help and attempted a real sync; it failed on an existing `fixVersions` Jira configuration error before this task was updated.
+- PASS: content-zone planning validator, `decision: ready_for_image`.
+- PASS: OpenAI Images API generation through `fantasydisk-asset-generator`.
+- PASS: safe-zone preview/contact sheet generated.
+- Runtime tests: not run; no Godot runtime files, scenes, scripts, or runtime assets were changed in this Design-only stage.
 
 ## Next Step
 
-Configure the OpenAI API key for the project environment, then rerun the exact prompt/package flow from `spec.md`. After successful generation, update this task to `done`, attach preview paths, and move SCRUM-570 to `Контроль качества`.
+Back-end integration should follow `spec.md` and `ui_plan.json`, not slice the mockup directly. Runtime content must stay inside the declared safe zones and off frame ornament.
+
+## Disk Cleanup
+
+Removed transient `tools/__pycache__/`. No `.godot/` cache or disposable QA clone was created.
