@@ -427,7 +427,7 @@ func _scale_enemy_for_current_wave(enemy: Node) -> void:
 	var balance := _enemy_balance_for_node(enemy)
 	var health_multiplier: float = float(balance.get("hp_multiplier", 2.8)) * stage_scale * (1.0 + wave_scale * 0.055)
 	var speed_multiplier: float = float(balance.get("speed_multiplier", 0.84)) * (1.0 + (stage_scale - 1.0) * 0.18 + wave_scale * 0.008)
-	var damage_multiplier: float = float(balance.get("damage_multiplier", 1.16)) * (1.0 + (stage_scale - 1.0) * 0.62 + wave_scale * 0.030)
+	var damage_multiplier: float = float(balance.get("damage_multiplier", 1.16)) * (1.0 + (stage_scale - 1.0) * 0.46 + wave_scale * 0.024)
 	if game.boss_combat_active:
 		health_multiplier *= 0.72
 		speed_multiplier *= 0.82
