@@ -1,7 +1,22 @@
 # SCRUM-501: Расширение пула случайных событий +5 сценариев с классовой реактивностью
 
 Jira: SCRUM-501 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: (не указан в тикете)
-Статус: К выполнению (Feature)
+Статус: done (QA PASSED, Codex QA `codex-qa-501-20260628190507`, 2026-06-28)
+
+## QA-Вердикт 2026-06-28
+
+Статус: PASSED
+
+Verdict: PASSED on a clean worktree from `origin/dev` (`C:\Users\FomaE\FantasyDisk_agents\qa_501_20260628190507`); fresh SCRUM-501 commit `cce17cbf` is present.
+
+Checks:
+- `tests/event_data_contract_check.gd` PASS: `pool=28`, `combat=17`, `reward=20`, `rest=10`, `check=30`, `class_reactive=5`.
+- `tests/event_data_smoke_test.gd` PASS: 28 events, EV invariant checked on 12 risky/safe pairs.
+- `tests/event_choices_empty_pool_test.gd` PASS.
+- `tests/event_random_artifact_empty_pool_test.gd` PASS.
+- `tests/event_risk_reward_ev_test.gd` PASS: 17 risky/safe pairs, 0 violations.
+
+Full `tests/runtime_smoke_test.gd` was run after headless import and failed on an unrelated autosave check: `Expected New Game choice to clear existing autosave` (`tests/runtime_smoke_test.gd:2452`). Separate bug created: `SCRUM-653`; this does not block SCRUM-501 event-data acceptance.
 
 ## Что и зачем
 

@@ -2772,5 +2772,10 @@
   "key": "SCRUM-493",
   "status": "Готово",
   "desc_hash": "0d8ccc0a2ae8197851d04442cd9e4eb5"
+ },
+ "SCRUM-501_expand_random_events_class_reactive.md": {
+  "key": "SCRUM-501",
+  "status": "Готово",
+  "desc_hash": "472cb65f8d31fee2b0cdb45b8fd04a7f"
  }
 }
