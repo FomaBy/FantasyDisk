@@ -1,7 +1,20 @@
 # SCRUM-511: UX-quirk: level-up на узле события возвращает на карту, а не к экрану события
 
 Jira: SCRUM-511 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: SCRUM-213 (через карри-овер SCRUM-477)
-Статус: Контроль качества — SUPERSEDED by SCRUM-530 (поведение уже реализовано и покрыто smoke-регрессом на HEAD)
+Статус: done
+
+## QA-Вердикт 2026-06-28
+
+Статус: PASSED
+
+Codex QA-loop `qa_492_20260628190455` подтвердил резолюцию **SUPERSEDED by SCRUM-530** на свежем `origin/dev`: кодовые якоря `level_up_return_to_event` в `scripts/main.gd`, возврат из level-up на активный `EventScreen` в `scripts/ui_screens.gd`, reuse текущего `current_event_definition` и regression-блок SCRUM-530 в `tests/runtime_smoke_test.gd` присутствуют.
+
+Проверки:
+- статическая сверка якорей SCRUM-530/SCRUM-511 по `scripts/main.gd`, `scripts/ui_screens.gd`, `tests/runtime_smoke_test.gd`;
+- Godot 4.7 headless `--import` exit 0;
+- `tests/runtime_smoke_test.gd` PASS: `Duplicate-artifact guard passed (7987 files scanned). Runtime smoke test passed.`
+
+Вердикт: отдельный код под SCRUM-511 не нужен, весь объём закрыт SCRUM-530; Jira переведена в `Готово`.
 
 ## РЕЗОЛЮЦИЯ (r2i2, 2026-06-28): SUPERSEDED by SCRUM-530
 

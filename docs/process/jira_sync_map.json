@@ -2787,5 +2787,10 @@
   "key": "SCRUM-529",
   "status": "???????? ????????",
   "desc_hash": "75c03e1d5abfc5fb5af0da76c75494da"
+ },
+ "SCRUM-511_levelup_on_event_returns_to_event.md": {
+  "key": "SCRUM-511",
+  "status": "Готово",
+  "desc_hash": "6469fdf4a65079cae5eb0f104cbd0b05"
  }
 }
