@@ -1,6 +1,6 @@
 # SCRUM-656 Secret Boss Gate QA RED Reverify
 
-Status: Контроль качества
+Статус: done (QA PASS 2026-06-29)
 Jira: SCRUM-656
 Parent: SCRUM-541
 Owner: backend_656_codex195956
@@ -41,3 +41,26 @@ Residual unrelated runtime smoke note:
   errors.
 
 SCRUM-656 is ready for QA recheck.
+
+## QA-Вердикт (2026-06-29, codex-worker-qa-scrum656)
+
+Статус: PASSED
+
+Fresh macOS QA worktree from `origin/dev`:
+`/Users/sergeyfomin/Documents/FantasyDisk-QA-SCRUM-656` at commit `5de31bc0`.
+
+Verified after explicit Godot 4.7 import through the semaphore gate:
+- PASS: `python3 tools/godot_gate.py --headless --path . --user-data-dir /Users/sergeyfomin/Documents/FantasyDisk-QA-SCRUM-656-userdata --import --quit`
+  (known unrelated duplicate UID warnings for copied skeleton/reference art).
+- PASS: `python3 tools/godot_gate.py --headless --path . --user-data-dir /Users/sergeyfomin/Documents/FantasyDisk-QA-SCRUM-656-userdata --script res://tests/runtime_smoke_boss_elite_test.gd`
+  (`Runtime boss/elite smoke suite passed.`)
+- PASS: `python3 tools/godot_gate.py --headless --path . --user-data-dir /Users/sergeyfomin/Documents/FantasyDisk-QA-SCRUM-656-userdata --script res://tests/secret_encounter_test.gd`
+  (`Secret encounter test passed`).
+- PASS: `python3 tools/godot_gate.py --headless --path . --user-data-dir /Users/sergeyfomin/Documents/FantasyDisk-QA-SCRUM-656-userdata --script res://tests/boss_elite_ttk_gate.gd`
+  (`Boss/elite TTK gate passed`).
+
+The original QA RED blocker does not reproduce on current `origin/dev`: no
+`iron_bastion` unique-pattern meta failure and no `combat_director.gd` /
+`ui_screens.gd` runtime errors appeared in the focused boss/elite gate.
+
+QA result: PASS for SCRUM-656.
