@@ -114,6 +114,31 @@ comment proves current ownership.
 5. Force push, destructive reset/checkout и переписывание чужой истории запрещены
    без явной пользовательской команды.
 
+**DISK HYGIENE — MANDATORY (user directive 2026-06-28).**
+Agents must clean up their own temporary disk usage before reporting a task as
+done, blocked, or handed off. Disk space is part of task completion.
+- Prefer one clearly named task worktree/clone under `D:\FantasyDisk_worktrees\`
+  or `D:\FantasyDisk-QA-<issue>`; do not create multiple abandoned clones for
+  retries. Reuse the task worktree when possible.
+- At the end of the task, remove transient caches created only for the task:
+  `.godot/` in disposable worktrees, Godot `--user-data-dir` folders, temporary
+  QA clones, generated import caches, `%TEMP%` scratch files, Python
+  `__pycache__`, and tool logs that are not committed evidence.
+- If the worktree contains no unpushed task result and is not needed for an
+  active handoff, remove it with `git worktree remove --force <path>` (for
+  registered worktrees) or delete the disposable clone directory. Then run
+  `git worktree prune` from the main repository.
+- Never delete the main project checkout, another active worker's worktree,
+  locked Claude/Codex worktrees, or any directory with uncommitted/unpushed
+  task-owned changes. If unsure, leave it and record the path/status in the Jira
+  final comment.
+- QA agents that only verify code should delete their disposable QA worktree or
+  at least its `.godot/` cache after posting the Jira verdict. Implementation
+  agents should keep only committed/pushed source changes and committed evidence;
+  local build/import/userdata artifacts must not remain as disk debt.
+- Final Jira/task reports must include either `Disk cleanup: done` or a precise
+  reason why a worktree/cache was kept.
+
 Versioning:
 - `main` is the stable `0.1` line.
 - `dev` is the active working branch for the current `0.1.x` line.
