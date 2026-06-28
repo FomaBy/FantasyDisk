@@ -2882,5 +2882,10 @@
   "key": "SCRUM-655",
   "status": "Готово",
   "desc_hash": "2625f4889396414393041bec86949af4"
+ },
+ "SCRUM-670_ui_windows_integration_2k_frames.md": {
+  "key": "SCRUM-670",
+  "status": "Контроль качества",
+  "desc_hash": "fa3f12f867c76a01d7b7c245590c3e00"
  }
 }

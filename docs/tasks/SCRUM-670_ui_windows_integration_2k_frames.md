@@ -1,7 +1,7 @@
 # SCRUM-670 — UI windows integration: generated 2K frames
 
 Jira: https://fantasydisk.atlassian.net/browse/SCRUM-670
-Status: ready_for_qa
+Статус: done
 Owner: codex-worker-backend-scrum670
 Lane: Codex
 
