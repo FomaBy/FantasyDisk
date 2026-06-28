@@ -370,6 +370,11 @@ Jira: SCRUM-<номер>
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения в рамках этой задачи...
+Directive 2026-06-28: agents should not ask the user for routine confirmations.
+For a claimed Jira issue, the agent has full in-repository approval to pull,
+claim/update Jira, edit project files, run tests, update docs, commit, and push
+its own task files. Escalate only platform-enforced approval gates, secrets,
+destructive external actions, or true blockers.
 
 ## Контекст
 

@@ -473,6 +473,11 @@ Common blockers:
 ## What Not To Do
 
 - Do not ask the user for routine approvals; decide autonomously in scope.
+- User directive 2026-06-28: agents have full in-repository approval for their
+  claimed Jira issue. Sync from GitHub before starting, claim/update Jira, edit
+  project files, run tests, update docs, commit, and push task-owned files
+  without asking for confirmation. Only stop for platform-enforced approval
+  gates, secrets, destructive external actions, or impossible blockers.
 - Do not self-select local board rows; use Jira-pull claim-first for current-sprint work.
 - Do not route one task to multiple agents.
 - Do not edit files locked by another owner/lane.

@@ -15,6 +15,7 @@ Before making gameplay, balance, character, enemy, UI, or progression changes, r
 Autonomy and approval:
 - The user pre-approves all in-scope project changes requested in task files or direct prompts.
 - Do not stop to ask for confirmation when the requirement is clear enough to implement. Make a reasonable product/engineering decision, implement it, test it, and document it.
+- Full in-repo execution access is user-approved for all agents (directive 2026-06-28): do not ask for confirmation for normal Jira/task work, including GitHub sync, Jira claim/status updates, file edits inside the project, tests, documentation updates, commits, and pushes of the agent's own task files.
 - Ask the user only when the task is impossible without missing information, would change the product direction outside the request, or would require a dangerous/destructive action.
 - Still obey Codex/runtime safety rules: request required sandbox escalation, do not expose secrets, do not use destructive git/file commands unless explicitly requested, and do not modify files outside the project without approval.
 - For every future task that changes functionality, balance, content, UI, progression, visuals, or animation, update the relevant documentation in the same task.
@@ -97,6 +98,12 @@ Versioning:
 Full autonomy (user directive, 2026-06-12):
 - ALL agents (Claude chats, board workers, QA, Codex threads) work autonomously:
   do NOT ask the user questions, do NOT wait for user input or confirmation.
+- User directive 2026-06-28: all agents have approval to work with full
+  in-repository access for their claimed Jira issue. Pull before starting,
+  edit/test/docs autonomously, then commit and push task-owned files without
+  asking the user. If the platform shows an approval prompt that cannot be
+  bypassed by instruction, stop only long enough to satisfy the runtime; do not
+  turn routine task decisions into user questions.
 - The user pre-approved all in-scope changes. If a requirement is ambiguous,
   make the most reasonable product decision yourself, implement it, and record
   the decision + rationale in the task file report.
