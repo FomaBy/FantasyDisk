@@ -4,6 +4,7 @@ extends RefCounted
 const DF_FRAME_DIR := "res://assets/sprites/ui/frames/dark_fantasy/"
 const RED_GOLD_BUTTON_DIR := "res://assets/sprites/ui/frames/red_gold/"
 const MINIMAL_METAL_BUTTON_DIR := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
+const TEXT_BUTTON_UNIQUE_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
 const ORNATE_FRAME_DIR := "res://assets/sprites/ui/frames/ornate/"
 const UNIFIED_FRAME_DIR := "res://assets/sprites/ui/frames/unified/"
 const MINIMAL_METAL_FRAME_DIR := "res://assets/sprites/ui/frames/minimal_metal/"
@@ -510,4 +511,148 @@ const MINIMAL_METAL_BUTTON_CONTENT := {
 	"utility": Vector4(15, 12, 15, 12),
 	"pause": Vector4(46, 18, 46, 18),
 	"rebind": Vector4(46, 18, 46, 18),
+}
+
+const TEXT_BUTTON_UNIQUE_TEXTURES := {
+	"main_menu_380x104": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_main_menu_380x104_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_main_menu_380x104_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_main_menu_380x104_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_main_menu_380x104_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_main_menu_380x104_disabled.png",
+	},
+	"standard_420x104": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_standard_420x104_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_standard_420x104_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_standard_420x104_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_standard_420x104_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_standard_420x104_disabled.png",
+	},
+	"wide_440x104": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_wide_440x104_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_wide_440x104_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_wide_440x104_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_wide_440x104_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_wide_440x104_disabled.png",
+	},
+	"back_260x104": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_back_260x104_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_back_260x104_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_back_260x104_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_back_260x104_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_back_260x104_disabled.png",
+	},
+	"quit_220x72": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_quit_220x72_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_quit_220x72_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_quit_220x72_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_quit_220x72_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_quit_220x72_disabled.png",
+	},
+	"continue_240x72": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_240x72_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_240x72_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_240x72_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_240x72_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_240x72_disabled.png",
+	},
+	"later_260x72": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_later_260x72_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_later_260x72_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_later_260x72_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_later_260x72_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_later_260x72_disabled.png",
+	},
+	"settings_back_280x64": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_settings_back_280x64_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_settings_back_280x64_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_settings_back_280x64_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_settings_back_280x64_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_settings_back_280x64_disabled.png",
+	},
+	"feedback_260x64": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_260x64_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_260x64_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_260x64_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_260x64_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_260x64_disabled.png",
+	},
+	"feedback_cancel_220x64": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_cancel_220x64_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_cancel_220x64_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_cancel_220x64_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_cancel_220x64_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_feedback_cancel_220x64_disabled.png",
+	},
+	"pause_280x60": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_pause_280x60_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_pause_280x60_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_pause_280x60_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_pause_280x60_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_pause_280x60_disabled.png",
+	},
+	"event_back_380x54": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_event_back_380x54_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_event_back_380x54_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_event_back_380x54_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_event_back_380x54_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_event_back_380x54_disabled.png",
+	},
+	"rebind_420x62": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_rebind_420x62_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_rebind_420x62_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_rebind_420x62_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_rebind_420x62_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_rebind_420x62_disabled.png",
+	},
+	"reset_bindings_long_560x104": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_reset_bindings_long_560x104_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_reset_bindings_long_560x104_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_reset_bindings_long_560x104_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_reset_bindings_long_560x104_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_reset_bindings_long_560x104_disabled.png",
+	},
+	"continue_run_long_420x72": {
+		"normal": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_run_long_420x72_normal.png",
+		"hover": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_run_long_420x72_hover.png",
+		"pressed": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_run_long_420x72_pressed.png",
+		"focus": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_run_long_420x72_focus.png",
+		"disabled": TEXT_BUTTON_UNIQUE_DIR + "ui_btn_text_unique_continue_run_long_420x72_disabled.png",
+	},
+}
+
+const TEXT_BUTTON_UNIQUE_MARGINS := {
+	"main_menu_380x104": Vector4(54, 21, 54, 21),
+	"standard_420x104": Vector4(54, 21, 54, 21),
+	"wide_440x104": Vector4(54, 21, 54, 21),
+	"back_260x104": Vector4(54, 21, 54, 21),
+	"quit_220x72": Vector4(37, 14, 37, 14),
+	"continue_240x72": Vector4(37, 14, 37, 14),
+	"later_260x72": Vector4(37, 14, 37, 14),
+	"settings_back_280x64": Vector4(34, 13, 34, 13),
+	"feedback_260x64": Vector4(34, 13, 34, 13),
+	"feedback_cancel_220x64": Vector4(34, 13, 34, 13),
+	"pause_280x60": Vector4(34, 12, 34, 12),
+	"event_back_380x54": Vector4(34, 11, 34, 11),
+	"rebind_420x62": Vector4(34, 12, 34, 12),
+	"reset_bindings_long_560x104": Vector4(54, 21, 54, 21),
+	"continue_run_long_420x72": Vector4(37, 14, 37, 14),
+}
+
+const TEXT_BUTTON_UNIQUE_CONTENT := {
+	"main_menu_380x104": Vector4(69, 21, 69, 21),
+	"standard_420x104": Vector4(71, 21, 71, 21),
+	"wide_440x104": Vector4(72, 21, 72, 21),
+	"back_260x104": Vector4(64, 21, 64, 21),
+	"quit_220x72": Vector4(47, 14, 47, 14),
+	"continue_240x72": Vector4(47, 14, 47, 14),
+	"later_260x72": Vector4(47, 14, 47, 14),
+	"settings_back_280x64": Vector4(45, 13, 45, 13),
+	"feedback_260x64": Vector4(44, 13, 44, 13),
+	"feedback_cancel_220x64": Vector4(44, 13, 44, 13),
+	"pause_280x60": Vector4(45, 12, 45, 12),
+	"event_back_380x54": Vector4(49, 11, 49, 11),
+	"rebind_420x62": Vector4(51, 12, 51, 12),
+	"reset_bindings_long_560x104": Vector4(76, 21, 76, 21),
+	"continue_run_long_420x72": Vector4(54, 14, 54, 14),
 }

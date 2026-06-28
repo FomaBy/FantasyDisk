@@ -39,8 +39,9 @@ const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/u
 const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png"
 const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
+const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
 # SCRUM-579: кнопки паузы переехали на выделенный pm_btn @2K-фрейм.
-const RUN_PAUSE_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_btn.png"
+const RUN_PAUSE_BUTTON_TEXTURE_2K := TEXT_BUTTON_DIR + "ui_btn_text_unique_pause_280x60_normal.png"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 # SCRUM-580: кнопки управления досье-паузы на выделенном pd_btn @2K-фрейме.
 const PAUSE_DOSSIER_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_btn.png"
@@ -120,8 +121,8 @@ func _initialize() -> void:
 	var start_theme_button := main.find_child("MainMenuStartButton", true, false) as Button
 	var settings_theme_button := main.find_child("MainMenuSettingsButton", true, false) as Button
 	var exit_theme_button := main.find_child("MainMenuExitButton", true, false) as Button
-	if not _button_uses_minimal_metal_type(start_theme_button, "main_menu") or not _button_uses_minimal_metal_type(settings_theme_button, "main_menu") or not _button_uses_minimal_metal_type(exit_theme_button, "main_menu"):
-		push_error("Expected main menu buttons to use canonical minimal-metal state textures.")
+	if not _button_uses_text_button_unique_id(start_theme_button, "main_menu_380x104") or not _button_uses_text_button_unique_id(settings_theme_button, "main_menu_380x104") or not _button_uses_text_button_unique_id(exit_theme_button, "main_menu_380x104"):
+		push_error("Expected main menu buttons to use canonical SCRUM-657 text-button state textures.")
 		quit(1)
 		return
 	await _test_back_button_frame_safety(main_scene)
@@ -1091,8 +1092,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var defer_rect := defer_button.get_global_rect()
-	if defer_rect.size.x < 250.0 or defer_rect.size.y < 70.0 or not _button_uses_minimal_metal_type(defer_button, "back_m"):
-		push_error("Expected level-up Later button to use a non-cropped compact medium back frame, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
+	if defer_rect.size.x < 250.0 or defer_rect.size.y < 70.0 or not _button_uses_text_button_unique_id(defer_button, "later_260x72"):
+		push_error("Expected level-up Later button to use SCRUM-657 later_260x72 frame, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
 		quit(1)
 		return
 	defer_button.pressed.emit()
@@ -3095,6 +3096,29 @@ func _button_uses_minimal_metal_type(button: Button, button_type: String) -> boo
 		return false
 	if not _is_neutral_bright_button_tint(hover_style.modulate_color) or not _is_neutral_bright_button_tint(focus_style.modulate_color):
 		return false
+	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
+		return false
+	return true
+
+
+func _button_uses_text_button_unique_id(button: Button, button_id: String) -> bool:
+	if button == null:
+		return false
+	var expected_prefix := "%sui_btn_text_unique_%s" % [TEXT_BUTTON_DIR, button_id]
+	var expected := {
+		"normal": "%s_normal.png" % expected_prefix,
+		"hover": "%s_hover.png" % expected_prefix,
+		"focus": "%s_focus.png" % expected_prefix,
+		"pressed": "%s_pressed.png" % expected_prefix,
+		"disabled": "%s_disabled.png" % expected_prefix,
+	}
+	for state in expected.keys():
+		var style := button.get_theme_stylebox(state)
+		if not (style is StyleBoxTexture):
+			return false
+		var texture := (style as StyleBoxTexture).texture
+		if texture == null or texture.resource_path != str(expected[state]):
+			return false
 	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
 		return false
 	return true
@@ -6921,8 +6945,8 @@ func _assert_quit_dialog_button_size(button: Button, context: String) -> bool:
 	if absf(rect.size.x - 220.0) > 1.0 or absf(rect.size.y - 72.0) > 1.0:
 		_fail("Expected quit confirmation %s button rect to stay 220x72, got %s." % [context, str(rect)])
 		return false
-	if not _button_uses_minimal_metal_type(button, "pause"):
-		_fail("Expected quit confirmation %s button to use the 72px-safe pause minimal-metal frame." % context)
+	if not _button_uses_text_button_unique_id(button, "quit_220x72"):
+		_fail("Expected quit confirmation %s button to use the SCRUM-657 quit_220x72 frame." % context)
 		return false
 	var normal_style := button.get_theme_stylebox("normal")
 	if normal_style == null:
@@ -7430,8 +7454,8 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		_fail("Expected weapon select back button to use SCRUM-562 2K frame texture.")
 		return
 	var back_texture := (back_style as StyleBoxTexture).texture
-	if back_texture == null or back_texture.resource_path != "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_btn_back.png":
-		_fail("Expected weapon select back button to use ws_btn_back frame texture.")
+	if back_texture == null or back_texture.resource_path != TEXT_BUTTON_DIR + "ui_btn_text_unique_pause_280x60_normal.png":
+		_fail("Expected weapon select back button to use SCRUM-657 pause_280x60 text-button texture.")
 		return
 	var first_button := weapon_main.find_child("WeaponOption_%s" % str(weapon_ids[0]), true, false) as Button
 	first_button.pressed.emit()

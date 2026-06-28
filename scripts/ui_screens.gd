@@ -58,6 +58,9 @@ const RED_GOLD_BUTTON_MARGINS := UIThemePaths.RED_GOLD_BUTTON_MARGINS
 const RED_GOLD_BUTTON_CONTENT := UIThemePaths.RED_GOLD_BUTTON_CONTENT
 const MINIMAL_METAL_BUTTON_MARGINS := UIThemePaths.MINIMAL_METAL_BUTTON_MARGINS
 const MINIMAL_METAL_BUTTON_CONTENT := UIThemePaths.MINIMAL_METAL_BUTTON_CONTENT
+const TEXT_BUTTON_UNIQUE_TEXTURES := UIThemePaths.TEXT_BUTTON_UNIQUE_TEXTURES
+const TEXT_BUTTON_UNIQUE_MARGINS := UIThemePaths.TEXT_BUTTON_UNIQUE_MARGINS
+const TEXT_BUTTON_UNIQUE_CONTENT := UIThemePaths.TEXT_BUTTON_UNIQUE_CONTENT
 # SCRUM-486: per-слот @2K-ассеты блока Меню/Навигация (см. UIThemePaths.OVERHAUL_2K_*).
 const OVERHAUL_2K_FRAME_PATHS := UIThemePaths.OVERHAUL_2K_FRAME_PATHS
 const OVERHAUL_2K_FRAME_SOURCE_SIZE := UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE
@@ -3020,7 +3023,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var reset_button := _make_button("Сбросить управление по умолчанию")
 	reset_button.name = "SettingsResetBindingsButton"
-	_set_action_button_size(reset_button, 440.0)
+	_set_action_button_size(reset_button, 560.0)
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
 		_show_settings_menu()
@@ -7183,12 +7186,88 @@ func _button_state_style(button: Button, _role: String, state: String, tint := C
 	var texture_state := state
 	if not ["normal", "hover", "pressed", "focus", "disabled"].has(texture_state):
 		texture_state = "normal"
+	var text_button_id := _text_button_unique_id(button)
+	if text_button_id != "" and TEXT_BUTTON_UNIQUE_TEXTURES.has(text_button_id):
+		var text_textures: Dictionary = TEXT_BUTTON_UNIQUE_TEXTURES[text_button_id]
+		var text_path := str(text_textures.get(texture_state, text_textures["normal"]))
+		var text_margins: Vector4 = TEXT_BUTTON_UNIQUE_MARGINS.get(text_button_id, TEXT_BUTTON_UNIQUE_MARGINS["standard_420x104"])
+		var text_content: Vector4 = TEXT_BUTTON_UNIQUE_CONTENT.get(text_button_id, TEXT_BUTTON_UNIQUE_CONTENT["standard_420x104"])
+		return _global_texture_style(text_path, text_margins, tint, text_content)
 	var suffix := "" if texture_state == "normal" else "_%s" % texture_state
 	var path := "%sui_btn_minimal_metal_%s%s.png" % [MINIMAL_METAL_BUTTON_DIR, button_type, suffix]
 	var final_tint := tint
 	var margins: Vector4 = MINIMAL_METAL_BUTTON_MARGINS.get(button_type, MINIMAL_METAL_BUTTON_MARGINS["standard"])
 	var content: Vector4 = MINIMAL_METAL_BUTTON_CONTENT.get(button_type, MINIMAL_METAL_BUTTON_CONTENT["standard"])
 	return _global_texture_style(path, margins, final_tint, content)
+
+
+func _text_button_unique_id(button: Button) -> String:
+	if button == null:
+		return ""
+	var button_name := button.name
+	var text := button.text.to_lower()
+	var size := button.custom_minimum_size
+	if button_name == "LevelUpPlusButton" or button_name == "UpgradeFabButton":
+		return ""
+	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 70.0:
+		return ""
+	if button_name.begins_with("MainMenu"):
+		return "main_menu_380x104"
+	if button_name.begins_with("RunPause"):
+		return "pause_280x60"
+	if button_name.begins_with("QuitConfirm"):
+		return "quit_220x72"
+	if button_name == "ContinueRunButton":
+		if size.x >= 360.0:
+			return "continue_run_long_420x72"
+		return "continue_240x72"
+	if button_name == "ContinueRunNewGameButton":
+		return "continue_240x72"
+	if button_name == "LevelUpLaterButton":
+		return "later_260x72"
+	if button_name == "SettingsBackButton":
+		return "settings_back_280x64"
+	if button_name == "SettingsResetBindingsButton":
+		if size.x >= 540.0:
+			return "reset_bindings_long_560x104"
+		return "wide_440x104"
+	if button_name == "SettingsResetAudioButton":
+		return "standard_420x104"
+	if button_name == "FeedbackSendButton":
+		return "feedback_260x64"
+	if button_name == "FeedbackCancelButton":
+		return "feedback_cancel_220x64"
+	if button_name == "EventBackButton":
+		return "event_back_380x54"
+	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
+		return "rebind_420x62"
+	if button_name in ["RebindConflictRetryButton", "RebindConflictBackButton"]:
+		return "continue_240x72"
+	if button_name == "WeaponSelectBackButton":
+		return "pause_280x60"
+	if button_name in ["SkillTreeBackButton", "PatchNotesBackButton"]:
+		return "back_260x104"
+	if button_name in ["AttributeRerollButton", "AttributeSkipButton", "VictoryNewRunButton", "DeathRetryButton"]:
+		return "standard_420x104"
+	if size.y <= 56.0 and size.x >= 340.0:
+		return "event_back_380x54"
+	if size.y <= 66.0 and size.x >= 360.0:
+		return "rebind_420x62"
+	if size.y <= 66.0 and size.x >= 240.0:
+		return "settings_back_280x64"
+	if size.y <= 76.0 and size.x <= 230.0:
+		return "quit_220x72"
+	if size.y <= 76.0 and size.x <= 250.0:
+		return "continue_240x72"
+	if size.y <= 76.0 and size.x <= 300.0:
+		return "later_260x72"
+	if size.y >= 96.0 and size.x >= 430.0:
+		return "wide_440x104"
+	if size.y >= 96.0 and size.x >= 400.0:
+		return "standard_420x104"
+	if size.y >= 96.0 and size.x >= 240.0:
+		return "back_260x104"
+	return ""
 
 
 func _apply_compact_button_theme(button: Button) -> void:
@@ -7428,6 +7507,9 @@ func _overhaul_2k_content_margins(slot: String, display_size: Vector2) -> Vector
 
 
 func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size: Vector2) -> void:
+	if slot in ["cr_btn", "pm_btn", "rc_btn", "ws_btn_back"] and _text_button_unique_id(button) != "":
+		_apply_fantasy_button_theme(button)
+		return
 	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))
 	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
 	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
