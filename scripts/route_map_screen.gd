@@ -206,8 +206,10 @@ func _node_pool_for_step(step_index: int) -> Array:
 	if step_index == game.ROUTE_STEPS_TO_BOSS - 1:
 		return ["rest", "battle", "rest", "elite_battle"]
 	if step_index >= game.ROUTE_STEPS_TO_BOSS - 3:
-		return ["battle", "elite_battle", "elite_battle", "event", "battle"]
-	return ["battle", "battle", "battle", "rest", "event", "elite_battle"]
+		# SCRUM-608: «Опасная развилка» (hazard) в поздних рядах — риск/награда.
+		return ["battle", "elite_battle", "elite_battle", "event", "battle", "hazard"]
+	# SCRUM-608: hazard в средних рядах.
+	return ["battle", "battle", "battle", "rest", "event", "elite_battle", "hazard"]
 
 
 func _generate_route() -> Array:
@@ -394,6 +396,8 @@ func _random_route_node_name(index: int, node_type: String) -> String:
 		return "Rest %d: Moon Well" % [index + 1]
 	if node_type == "event":
 		return "Event %d: Strange Stone" % [index + 1]
+	if node_type == "hazard":
+		return "Hazard %d: Dangerous Fork" % [index + 1]
 	if node_type == "chest":
 		return "Chest %d: Relic Cache" % [index + 1]
 	if node_type == "elite_battle":
@@ -569,6 +573,11 @@ func _node_preview_tooltip(route_node: Dictionary, definition: Dictionary) -> St
 		"chest":
 			lines.append("Награда: выбор 1 из 3 артефактов")
 			lines.append("Вес тиров: как у трофея элитки на этой глубине")
+		"hazard":
+			# SCRUM-608: превью развилки — безопасный исход и угроза рискового боя.
+			lines.append("Безопасно: золото + лечение")
+			lines.append("Риск: бой — " + _wave_threat_hint(route_node, node_seed))
+			lines.append("Победа: +золото, +1 Сила, +урон")
 	return "\n".join(lines)
 
 
@@ -874,6 +883,13 @@ func _open_route_node(route_node: Dictionary) -> void:
 			game.ui._show_rest_screen()
 		"event":
 			game.ui._show_event_screen(route_node)
+		"hazard":
+			# SCRUM-608: «Опасная развилка» — детерминированное спец-событие
+			# sudden_fork (безопасный обход / рискованный срез). Штампуем event_id,
+			# чтобы _show_event_screen загрузил именно его, а не случайное событие.
+			var hazard_node := route_node.duplicate(true)
+			hazard_node["event_id"] = "sudden_fork"
+			game.ui._show_event_screen(hazard_node)
 		"chest":
 			game.ui._show_elite_artifact_reward(Callable(self, "_advance_route_after_noncombat"))
 		"elite_battle":
