@@ -47,8 +47,8 @@ func _scan_outcome(branch: Dictionary, ctx: String) -> void:
 
 func _initialize() -> void:
 	var events: Array = EventData.RANDOM_EVENTS
-	if events.size() != 18:  # SCRUM-608: +1 sudden_fork (Опасная развилка / hazard-узел)
-		_fail("expected pool size 18, got %d" % events.size())
+	if events.size() != 23:  # SCRUM-608: +1 sudden_fork; SCRUM-605: +5 risk/reward событий (пул 18→23)
+		_fail("expected pool size 23, got %d" % events.size())
 
 	var ids := {}
 	var combat_outcomes := 0
@@ -111,7 +111,7 @@ func _initialize() -> void:
 		print("[event_data_contract] FAILED")
 		quit(1)
 	else:
-		print("[event_data_contract] PASSED — pool=18 combat=%d reward=%d rest=%d check=%d class_reactive=%d" % [combat_outcomes, reward_outcomes, rest_outcomes, check_outcomes, class_reactive])
+		print("[event_data_contract] PASSED — pool=%d combat=%d reward=%d rest=%d check=%d class_reactive=%d" % [events.size(), combat_outcomes, reward_outcomes, rest_outcomes, check_outcomes, class_reactive])
 		quit(0)
 
 

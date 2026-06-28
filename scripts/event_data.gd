@@ -174,6 +174,59 @@ const RANDOM_EVENTS := [
 			{"id": "brace_beams", "title": "Укрепить балки", "description": "Проверка Выносливости 7: успех вынести руду (+24 золота), провал -10% HP под обвалом.", "check": {"stat": "endurance", "difficulty": 7}, "success": {"money": 24}, "failure": {"health_percent_cost": 0.10}},
 		],
 	},
+	# SCRUM-605: +5 сценариев риск/награды (data-driven, только существующие ключи
+	# choice; рисковая ветка каждого события держит апсайд ≥ безопасной — EV-инвариант
+	# SCRUM-495/508). Моды — только из VALID_MODS контракта (event_data_contract_check).
+	{
+		"id": "crystal_geode_vault",
+		"title": "Кристальная жеода",
+		"story": "В стене пещеры раскрылась исполинская жеода — частокол светящихся кристаллов в человеческий рост. Внутри пульсирует тёплый свет, но грани остры как бритвы, а в глубине что-то отзывается на каждый шаг.",
+		"choices": [
+			{"id": "chip_outer_shards", "title": "Отколоть с краю", "description": "Без риска: +16 золота кристальной крошки и лечение 18% HP от тёплого свечения.", "money": 16, "heal_percent": 0.18},
+			{"id": "breach_the_core", "title": "Пробиться к ядру", "description": "Риск: бой с кристальным стражем жеоды. Победа: +60% золота, случайный артефакт, +1 Сила и +1 Выносливость.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.18, "money_multiplier": 1.6}, "post_combat": {"random_artifact": true, "stats": {"strength": 1, "endurance": 1}}},
+			{"id": "pry_with_care", "title": "Аккуратно выломать", "description": "Проверка Силы 7: успех +1 Сила, +1 Выносливость и +14 золота, провал -12% HP о грани.", "check": {"stat": "strength", "difficulty": 7}, "success": {"stats": {"strength": 1, "endurance": 1}, "money": 14}, "failure": {"health_percent_cost": 0.12}},
+		],
+	},
+	{
+		"id": "starlit_observatory",
+		"title": "Звёздная обсерватория",
+		"story": "На вершине утёса стоит покинутая обсерватория. Огромная линза ловит свет давно погасших звёзд, и в её фокусе дрожит знание, к которому опасно прикасаться без подготовки.",
+		"choices": [
+			{"id": "copy_notes", "title": "Переписать заметки", "description": "Без риска: +1 Знание и +8 золота из оставленных журналов.", "stats": {"knowledge": 1}, "money": 8},
+			{"id": "gaze_through_lens", "title": "Взглянуть сквозь линзу", "description": "Проверка Знания 8: успех +1 Знание, +1 Восприятие, +1 Интеллект и случайный артефакт, провал -1 Знание и -10% HP.", "check": {"stat": "knowledge", "difficulty": 8}, "success": {"stats": {"knowledge": 1, "perception": 1, "intelligence": 1}, "random_artifact": true}, "failure": {"stats": {"knowledge": -1}, "health_percent_cost": 0.10}},
+			{"id": "align_the_mirrors", "title": "Настроить зеркала", "description": "Цена: 20 золота. На весь забег: +10% опыта и +1 Восприятие.", "cost_money": 20, "mods": {"xp_gain_multiplier": 1.10}, "stats": {"perception": 1}},
+		],
+	},
+	{
+		"id": "sunken_caravan",
+		"title": "Затонувший караван",
+		"story": "Болото поглотило торговый караван — над тиной торчат осями вверх повозки. Сундуки ещё видны под мутной водой, но в глубине что-то медленно ворочается и пускает пузыри.",
+		"choices": [
+			{"id": "skim_the_surface", "title": "Снять, что плавает", "description": "Без риска: +18 золота с поверхности трясины.", "money": 18},
+			{"id": "dive_for_chest", "title": "Нырнуть за сундуком", "description": "Риск: бой с болотной тварью в воде. Победа: +50% золота, +35% опыта, случайный артефакт и +1 Ловкость.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.14, "money_multiplier": 1.5, "xp_multiplier": 1.35}, "post_combat": {"random_artifact": true, "stats": {"agility": 1}}},
+			{"id": "probe_with_pole", "title": "Прощупать шестом", "description": "Проверка Восприятия 6: успех +20 золота и +1 Ловкость, провал -10% HP в трясине.", "check": {"stat": "perception", "difficulty": 6}, "success": {"money": 20, "stats": {"agility": 1}}, "failure": {"health_percent_cost": 0.10}},
+		],
+	},
+	{
+		"id": "war_drums_camp",
+		"title": "Покинутый лагерь воинов",
+		"story": "Догорающие костры брошенного лагеря ещё хранят тепло. На стойках висят боевые барабаны и точильные камни, а у поваленного знамени поблёскивает чей-то припрятанный паёк.",
+		"choices": [
+			{"id": "share_rations", "title": "Подкрепиться пайком", "description": "Без риска: лечение 22% HP и +6 золота из забытого кошеля.", "heal_percent": 0.22, "money": 6},
+			{"id": "beat_the_drums", "title": "Ударить в барабаны", "description": "Риск: на грохот сбегается элитный загонщик. Победа: элитная добыча, +50% золота, +25% опыта, +1 Сила и +1 Лидерство.", "risk": true, "combat": {"type": "elite", "enemy_health_multiplier": 1.12, "money_multiplier": 1.5, "xp_multiplier": 1.25}, "post_combat": {"stats": {"strength": 1, "leadership": 1}}},
+			{"id": "whet_your_blade", "title": "Наточить оружие", "description": "Цена: 16 золота за камни и масло. На весь забег: +8% скорости атаки и +6% урон.", "cost_money": 16, "mods": {"attack_speed_multiplier": 1.08, "damage_multiplier": 1.06}},
+		],
+	},
+	{
+		"id": "twin_offering_shrine",
+		"title": "Святилище двойного подношения",
+		"story": "Две каменные чаши стоят перед безликим идолом: одна просит монету, другая — кровь. Над ними мерцает наградной свет, но идол принимает дар лишь от того, кто действительно рискнёт.",
+		"choices": [
+			{"id": "leave_token_coin", "title": "Оставить монетку", "description": "Без риска: бросить +4 золота на удачу, +4% опыта на забег.", "money": 4, "mods": {"xp_gain_multiplier": 1.04}},
+			{"id": "coin_offering", "title": "Подношение золотом", "description": "Цена: 26 золота. Получить случайный артефакт и +1 Лидерство.", "cost_money": 26, "random_artifact": true, "stats": {"leadership": 1}},
+			{"id": "blood_offering", "title": "Подношение кровью", "description": "Цена: 22% текущего HP. Случайный исход: либо случайный артефакт и +1 Выносливость, либо +1 Сила и +12 золота.", "health_percent_cost": 0.22, "random_outcomes": [{"random_artifact": true, "stats": {"endurance": 1}}, {"stats": {"strength": 1}, "money": 12}]},
+		],
+	},
 ]
 
 
