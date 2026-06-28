@@ -88,7 +88,6 @@ EV рисковой/боевой ветки >= EV лучшей безопасн�
 | road_ambush | stand_ground | 37.4 | break_through | 16.2 | +21.2 | ok |
 | old_well | throw_coin | 17.5 | listen | 15.5 | +2.1 | ok |
 | goblin_lottery | buy_bag | 21.3 | haggle | 8.8 | +12.5 | ok |
-| hot_spring | full_rest | 56.0 | quick_dip | 28.0 | +28.0 | ok |
 | mirror_phantom | duel | 106.8 | study | 21.2 | +85.6 | ok |
 | stone_guardian | fight_guardian | 53.4 | answer_riddle | 33.4 | +20.0 | ok |
 | heroes_graveyard | dig | 46.2 | pay_respects | 36.0 | +10.2 | ok |
