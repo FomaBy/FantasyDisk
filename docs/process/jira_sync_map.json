@@ -2822,5 +2822,10 @@
   "key": "SCRUM-657",
   "status": "Контроль качества",
   "desc_hash": "e407a3df4d1e4e196d1ff9e7bca25d53"
+ },
+ "SCRUM-518_enlarge_arena_shrink_player.md": {
+  "key": "SCRUM-518",
+  "status": "К выполнению",
+  "desc_hash": "6a537b90677ceef87eb264568d36b21d"
  }
 }
