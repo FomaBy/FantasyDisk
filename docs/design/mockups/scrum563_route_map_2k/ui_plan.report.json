@@ -1,0 +1,166 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "screen_safe",
+      "kind": "screen",
+      "rect": [
+        0,
+        0,
+        2560,
+        1440
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header_frame",
+      "kind": "frame",
+      "rect": [
+        28,
+        18,
+        2504,
+        110
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header_title_zone",
+      "kind": "text",
+      "rect": [
+        88,
+        34,
+        1550,
+        40
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 36
+    },
+    {
+      "id": "header_stats_zone",
+      "kind": "text",
+      "rect": [
+        88,
+        76,
+        1750,
+        30
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "header_legend_zone",
+      "kind": "text",
+      "rect": [
+        1840,
+        43,
+        620,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 19
+    },
+    {
+      "id": "route_scroll_viewport",
+      "kind": "scroll_viewport",
+      "rect": [
+        28,
+        140,
+        2504,
+        1272
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 1882,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        2514,
+        140,
+        18,
+        1272
+      ]
+    },
+    {
+      "id": "route_scroll_content_safe",
+      "kind": "map_content",
+      "rect": [
+        188,
+        202,
+        2168,
+        1148
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "resource_hud_strip",
+      "kind": "hud_strip",
+      "rect": [
+        64,
+        164,
+        820,
+        84
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "tooltip_panel",
+      "kind": "tooltip",
+      "rect": [
+        1838,
+        200,
+        560,
+        170
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "upgrade_fab",
+      "kind": "button",
+      "rect": [
+        2426,
+        1308,
+        68,
+        68
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 38
+    },
+    {
+      "id": "visible_node_grid",
+      "kind": "node_grid_safe",
+      "rect": [
+        246,
+        296,
+        2020,
+        956
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_hit_area",
+      "kind": "repeatable_button",
+      "rect": [
+        372,
+        1092,
+        88,
+        88
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

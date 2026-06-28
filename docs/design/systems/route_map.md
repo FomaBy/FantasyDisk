@@ -93,6 +93,22 @@ Route map — full-screen экран выбора пути между боями
     depth-weighting из `ProgressionData.elite_artifact_choices`;
   - boss-узел: имя финального босса (`Босс:`), один из 5.
 
+## SCRUM-563 Route Map 2K Source Package
+
+SCRUM-563 adds the Route Map 2K UI Director source package. The approved
+geometry and safe-zone plan lives in `docs/design/mockups/scrum563_route_map_2k/`,
+the OpenAI Images API mockup is
+`docs/design/references/scrum563_route_map_2k/route_map_2k_mockup.png`, and QA
+previews are `docs/design/previews/scrum563_route_map_2k_plan_guide.png` plus
+`docs/design/previews/scrum563_route_map_2k_mockup_safe_zones.png`.
+
+The package keeps the existing SCRUM-489 runtime geometry: full-screen header,
+full-width vertical scroll viewport, dynamic route canvas height, 88x88 route
+nodes, and no horizontal scrolling. Future runtime wiring must keep header
+labels, HUD text, tooltip text, node icons, route lines and the upgrade FAB
+inside the declared interiors, never on frame rails, dragon ornaments, ruby pins
+or corner metal.
+
 ## Tests
 
 - `tests/route_node_preview_test.gd` (SCRUM-499) проверяет, что превью биома и

@@ -659,6 +659,13 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
 ## Screen And Map Backgrounds
 
 - `assets/backgrounds/route_map_backdrop.png` - 2560x1440 eerie neutral route map background. It should stay darker and calmer than combat arenas, with low-contrast fog in the central route column and heavier silhouettes pushed to the edges.
+- SCRUM-563 adds the route-map 2K UI Director mockup/source package:
+  `docs/design/references/scrum563_route_map_2k/route_map_2k_mockup.png` with
+  safe-zone previews in `docs/design/previews/scrum563_route_map_2k_*` and the
+  exact geometry/spec in `docs/design/mockups/scrum563_route_map_2k/`. This is
+  the visual source for future route-map 2K frame/runtime wiring; it contains no
+  baked runtime text and preserves empty interiors for header, HUD, tooltip,
+  route nodes/lines and FAB content.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen art. SCRUM-560 refreshed the 2560x1440 D&D/dark fantasy composition: the left column stays calm for the six runtime menu buttons, the top-center stays readable for the title, and the battle detail sits center-right/lower-right. The runtime background contains no baked UI text/buttons/frames.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10

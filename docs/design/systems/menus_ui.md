@@ -129,6 +129,18 @@ Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable sh
 
 Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. SCRUM-560 refreshed the 2560x1440 runtime background with a calm left button-safe column, readable title area, and center-right/lower-right battle focus. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames.
 
+## Route Map 2K Source
+
+Route Map has a SCRUM-563 2K UI Director source package for the global UI
+overhaul. The package is design-source, not a broad runtime rewrite: geometry is
+defined in `docs/design/mockups/scrum563_route_map_2k/ui_plan.json` and
+`spec.md`, the OpenAI source mockup is
+`docs/design/references/scrum563_route_map_2k/route_map_2k_mockup.png`, and the
+safe-zone evidence is under `docs/design/previews/scrum563_route_map_2k_*`.
+The visual direction is a full-screen scroll field with a thin framed header,
+compact run HUD, clamped tooltip panel, centered vertical node lane and small
+bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
+
 ## Hero / Weapon / Level-Up Layout Rules
 
 - Hero select now uses the SCRUM-447 v3 fullscreen runtime contract. `_show_character_select()` builds a centered proportional `1536x864` `HeroSelectCanvas` from the accepted SCRUM-446 source package in `docs/design/references/hero_select_v3/`: `mockup.png`, corrected `zones.json` / `zones_normalized.json`, `frames_spec.json`, and `hero_select_v3_mockup_spec.md`. The live runtime uses `assets/sprites/ui/frames/hero_select_v3/background.png`, `frame_preview.png`, `frame_dossier.png`, square `frame_radar.png`, and `frame_carousel.png`; Godot import sidecars are required for these runtime assets. Title, Back, preview, dossier, radar and carousel are placed from the v3 source rects, while all labels, portraits, controls, hover highlights and thumbnails stay inside each frame's documented content rect. The live SCRUM-322/SCRUM-347 `HeroSelectRadarPanel` / `HeroStatRadar` compass-rose contract is preserved and rendered inside the square v3 radar content zone without non-uniform stretch. SCRUM-389 ascension selection, SCRUM-416 full-frame portrait routing and SCRUM-417 portrait scaling remain live. Runtime smoke asserts v3 texture loading, proportional canvas aspect, safe-zone containment, preserved radar placement, carousel containment, portrait texture paths/scaling and no-overlap at responsive sizes; QA evidence lives in `build/qa/scrum446_hero_select_v3/`.

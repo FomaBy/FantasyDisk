@@ -460,6 +460,13 @@ safe) в ScrollContainer→VBox (sep 16). Берсерк = 3 оружия вле
 | Кнопка «Назад» | `WS_BTN_BACK_2K` | 940 | 880 | 280 | 60 |
 
 ### 5. Карта маршрута — `_show_battle_map` · `RM_*_2K` (**scripts/route_map_screen.gd**)
+
+SCRUM-563 source package: `docs/design/mockups/scrum563_route_map_2k/spec.md`,
+OpenAI mockup `docs/design/references/scrum563_route_map_2k/route_map_2k_mockup.png`,
+and safe-zone previews `docs/design/previews/scrum563_route_map_2k_*`. The
+package keeps the SCRUM-489 runtime geometry but defines strict empty zones for
+the header, scroll field, HUD strip, tooltip, node lane and FAB before any
+route-map 2K runtime asset wiring.
 Полноэкранный со скроллом: хедер сверху + вертикальный скролл canvas с узлами. Все опорные
 значения абсолютные (не скейлятся от viewport, кроме ширины canvas). **Фикс SCRUM-489:**
 `ROUTE_MAP_HEADER_HEIGHT` 118→140 — хедер (title 36px + stage 18px, content-min ≈110px) рос
