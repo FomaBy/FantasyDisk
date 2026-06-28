@@ -2702,5 +2702,10 @@
   "key": "SCRUM-582",
   "status": "Контроль качества",
   "desc_hash": "1a6a5e5cb3b3c7d0ebcb3970d3c7d0b0"
+ },
+ "SCRUM-583_feedback_form_2k_task.md": {
+  "key": "SCRUM-583",
+  "status": "Контроль качества",
+  "desc_hash": "cc6b9433b005d6610527d19f16bd1d55"
  }
 }

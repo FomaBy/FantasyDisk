@@ -1,6 +1,6 @@
 # SCRUM-583: UI redesign - Feedback Form @2K
 
-Status: done
+Статус: done
 Contour: Codex
 Owner: Design/ui-worker-h
 Thread: ui-worker-h
