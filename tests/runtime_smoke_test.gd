@@ -6613,6 +6613,10 @@ func _test_escape_navigation(main_scene: PackedScene) -> void:
 	if v4_carousel == null:
 		_fail("Expected hero select v4 to expose a scrollable carousel.")
 		return
+	var focus_owner := nav_main.get_viewport().gui_get_focus_owner()
+	if focus_owner == null or not str(focus_owner.name).begins_with("HS4CarouselSlot_"):
+		_fail("Expected hero select v4 to focus a visible hero carousel slot by default, got %s." % (str(focus_owner.name) if focus_owner != null else "<null>"))
+		return
 	var carousel_slot: TextureButton = null
 	for slot_child in v4_carousel.get_children():
 		if slot_child is TextureButton and (slot_child as TextureButton).visible:
@@ -6620,6 +6624,21 @@ func _test_escape_navigation(main_scene: PackedScene) -> void:
 			break
 	if carousel_slot == null:
 		_fail("Expected hero select v4 carousel to expose clickable hero slots.")
+		return
+	if carousel_slot.focus_mode != Control.FOCUS_ALL:
+		_fail("Expected hero select v4 carousel slots to be keyboard/gamepad focusable.")
+		return
+	if carousel_slot.focus_neighbor_left == NodePath("") or carousel_slot.focus_neighbor_right == NodePath("") or carousel_slot.focus_neighbor_top == NodePath(""):
+		_fail("Expected hero select v4 carousel slots to wire directional focus neighbors.")
+		return
+	var left_arrow := nav_main.find_child("HS4CarouselPrevButton", true, false) as Button
+	var right_arrow := nav_main.find_child("HS4CarouselNextButton", true, false) as Button
+	var back_button := nav_main.find_child("HS4BackButton", true, false) as Button
+	if left_arrow == null or right_arrow == null or back_button == null:
+		_fail("Expected hero select v4 to keep carousel arrows and Back button.")
+		return
+	if left_arrow.focus_neighbor_right == NodePath("") or right_arrow.focus_neighbor_left == NodePath("") or back_button.focus_neighbor_bottom == NodePath(""):
+		_fail("Expected hero select v4 arrows/back to wire directional focus neighbors.")
 		return
 	carousel_slot.pressed.emit()
 	await process_frame

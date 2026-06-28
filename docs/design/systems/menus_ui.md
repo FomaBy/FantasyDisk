@@ -152,6 +152,11 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   selected thumbnail state. The arrows remain inside the existing carousel
   content zone; no frame art or safe-zone geometry changes are part of this
   behavior.
+- SCRUM-664 fixes HS4 keyboard/gamepad focus for the same screen: the visible
+  carousel hero slots are focusable, the selected visible slot receives default
+  focus, carousel arrows/slots/Ascension/Choose/Back have explicit directional
+  focus neighbors, and Escape/Back still returns to the main menu. This is a
+  runtime input fix only; no frame art or safe-zone geometry changed.
 - SCRUM-561 updates the live HS4 Hero Select v4 2K pass. Slot-exact assets now
   live under `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_hs4_*.png` and are
   registered in `UIThemePaths.OVERHAUL_2K_FRAME_*`. Runtime content uses scaled

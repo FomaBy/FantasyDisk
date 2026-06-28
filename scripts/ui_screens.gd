@@ -1152,8 +1152,11 @@ func _build_character_select_v4() -> void:
 	var slot_buttons: Array = []
 	for i in range(HS4_CAROUSEL_SLOTS):
 		var slot := TextureButton.new()
+		slot.name = "HS4CarouselSlot_%02d" % i
+		slot.focus_mode = Control.FOCUS_ALL
 		slot.ignore_texture_size = true
 		slot.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		slot.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		slot.position = Vector2(cpad + arrow_w + i * (slot_w + slot_gap), cpad)
 		slot.size = Vector2(slot_w, slot_h)
 		carousel.add_child(slot)
@@ -1163,6 +1166,48 @@ func _build_character_select_v4() -> void:
 	var sel0: int = roster.find(game.selected_character_id)
 	state["offset"] = clampi(sel0 - HS4_CAROUSEL_SLOTS / 2, 0, maxi(0, roster.size() - HS4_CAROUSEL_SLOTS))
 	var stat_maxima := _hero_radar_global_maxima()
+
+	var refresh_focus_graph := func(grab_default := false) -> void:
+		var visible_slots: Array = []
+		for slot in slot_buttons:
+			var slot_button := slot as TextureButton
+			slot_button.focus_mode = Control.FOCUS_ALL
+			if slot_button.visible:
+				visible_slots.append(slot_button)
+		var row_controls: Array = [left_arrow]
+		row_controls.append_array(visible_slots)
+		row_controls.append(right_arrow)
+		var default_focus: Control = select_button
+		if not visible_slots.is_empty():
+			var selected_index: int = roster.find(game.selected_character_id)
+			var visible_index: int = clampi(selected_index - int(state["offset"]), 0, visible_slots.size() - 1)
+			default_focus = visible_slots[visible_index] as Control
+		for i in range(row_controls.size()):
+			var ctrl := row_controls[i] as Control
+			var left := row_controls[posmod(i - 1, row_controls.size())] as Control
+			var right := row_controls[posmod(i + 1, row_controls.size())] as Control
+			ctrl.focus_neighbor_left = left.get_path()
+			ctrl.focus_neighbor_right = right.get_path()
+			ctrl.focus_neighbor_top = select_button.get_path()
+			ctrl.focus_neighbor_bottom = ctrl.get_path()
+		back_button.focus_neighbor_left = back_button.get_path()
+		back_button.focus_neighbor_right = back_button.get_path()
+		back_button.focus_neighbor_top = back_button.get_path()
+		back_button.focus_neighbor_bottom = select_button.get_path()
+		asc_minus.focus_neighbor_left = asc_plus.get_path()
+		asc_minus.focus_neighbor_right = asc_plus.get_path()
+		asc_minus.focus_neighbor_top = back_button.get_path()
+		asc_minus.focus_neighbor_bottom = select_button.get_path()
+		asc_plus.focus_neighbor_left = asc_minus.get_path()
+		asc_plus.focus_neighbor_right = asc_minus.get_path()
+		asc_plus.focus_neighbor_top = back_button.get_path()
+		asc_plus.focus_neighbor_bottom = select_button.get_path()
+		select_button.focus_neighbor_left = asc_minus.get_path()
+		select_button.focus_neighbor_right = asc_plus.get_path()
+		select_button.focus_neighbor_top = asc_minus.get_path()
+		select_button.focus_neighbor_bottom = default_focus.get_path()
+		if grab_default:
+			default_focus.grab_focus()
 
 	var keep_selected_visible := func() -> void:
 		var selected_index: int = roster.find(game.selected_character_id)
@@ -1215,6 +1260,7 @@ func _build_character_select_v4() -> void:
 				slot.modulate = Color(1.0, 1.0, 1.0, 1.0) if rid == cid else Color(0.5, 0.52, 0.58, 0.78)
 			else:
 				slot.visible = false
+		refresh_focus_graph.call(false)
 
 	var select_hero := func(cid: String) -> void:
 		game.selected_character_id = cid
@@ -1255,6 +1301,7 @@ func _build_character_select_v4() -> void:
 	game.selected_ascension_level = game.ascension_selectable_max(game.selected_character_id)
 	game.ui_escape_action = _show_main_menu
 	refresh.call()
+	refresh_focus_graph.call(true)
 
 func _show_character_select() -> void:
 	game.clear_run_autosave()
