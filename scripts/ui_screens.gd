@@ -78,17 +78,6 @@ const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
-const HERO_SELECT_PORTRAIT_FRAME_SOURCE_SIZE := Vector2(734.0, 1162.0)
-const HERO_SELECT_PORTRAIT_CONTENT_BASE := Vector4(128.0, 230.0, 128.0, 330.0)
-const HERO_SELECT_RADAR_FRAME_SOURCE_SIZE := Vector2(1024.0, 1024.0)
-const HERO_SELECT_RADAR_FRAME_BASE_SIZE := Vector2(390.0, 390.0)
-const HERO_SELECT_RADAR_CONTENT_BASE := Vector4(245.0, 245.0, 245.0, 235.0)
-const HERO_SELECT_RADAR_GRAPH_BASE_SIZE := Vector2(200.0, 150.0)
-const HERO_SELECT_DOSSIER_FRAME_SOURCE_SIZE := Vector2(1120.0, 1140.0)
-const HERO_SELECT_DOSSIER_FRAME_BASE_SIZE := Vector2(387.0, 394.0)
-const HERO_SELECT_DOSSIER_CONTENT_BASE := Vector4(126.0, 160.0, 126.0, 172.0)
-const HERO_SELECT_CAROUSEL_FRAME_SOURCE_SIZE := Vector2(1536.0, 255.0)
-const HERO_SELECT_CAROUSEL_FRAME_BASE_SIZE := Vector2(1024.0, 170.0)
 const SETTINGS_V2_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v2/"
 const SETTINGS_V2_MAIN_MODAL_PATH := MINIMAL_MODAL_PATH
 const SETTINGS_V2_TAB_SWITCHER_PATH := MINIMAL_FIELD_PATH
@@ -751,8 +740,6 @@ func _show_continue_run_dialog() -> void:
 
 # ВЫБОР ГЕРОЯ v4 (SCRUM-470): принятый макап-фон (contain-fit) + живой контент по
 # нормализованным зонам. Контент размещается только в пустых content/safe зонах.
-const HERO_SELECT_V4_BG := "res://assets/sprites/ui/hero_select_v4/background.png"
-const HERO_SELECT_V4_SOURCE_SIZE := Vector2(1536.0, 1024.0)
 const HS4_TITLE := Rect2(0.265, 0.018, 0.470, 0.105)
 const HS4_BACK := Rect2(0.022, 0.028, 0.110, 0.070)
 const HS4_PORTRAIT_FRAME := Rect2(0.020, 0.135, 0.247, 0.580)
