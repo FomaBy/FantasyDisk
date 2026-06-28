@@ -249,6 +249,7 @@ func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_positio
 	game.add_child(enemy)
 	enemy.global_position = _clamp_spawn_position(spawn_position) if use_given_position else _random_spawn_position()
 	_scale_enemy_for_current_wave(enemy)
+	game.record_codex_enemy_discovery(enemy)
 	_connect_enemy_rewards(enemy)
 	return enemy
 
@@ -285,6 +286,7 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 		_apply_drop_rewards(elite, "mini_elite")
 	else:
 		_apply_mini_elite_kind(elite, kind)
+	game.record_codex_enemy_discovery(elite)
 	_connect_enemy_rewards(elite)
 	var used := 1
 	# Свита: 1-2 обычных врага рядом.
@@ -521,6 +523,7 @@ func _spawn_boss() -> void:
 	game.add_child(boss)
 	boss.global_position = game.ARENA_CENTER + Vector2(0, -230)
 	_scale_boss_for_run(boss)
+	game.record_codex_enemy_discovery(boss)
 	_connect_enemy_rewards(boss)
 	# Появление босса: затемнение+тряска (через камеру) и крупный титул-баннер.
 	_shake_camera(18.0, 0.5)
@@ -576,6 +579,7 @@ func _spawn_elite_enemy() -> void:
 		elite.set_meta("elite_modifier", elite_scene.resource_path.get_file().get_basename())
 	if not use_fallback_modifier:
 		_scale_elite_enemy(elite)
+	game.record_codex_enemy_discovery(elite)
 	_connect_enemy_rewards(elite)
 	# Появление элитки: краткая вспышка имени над ареной.
 	var elite_name := str(elite.get("enemy_type_name"))
@@ -697,6 +701,7 @@ func _grant_boss_completion_rewards() -> void:
 		var reward: Dictionary = tier3[game.rng.randi_range(0, tier3.size() - 1)].duplicate(true)
 		reward["kind"] = "artifact"
 		game.current_player.apply_reward(reward)
+		game.record_codex_artifact_discovery(reward)
 	var boss_rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards("boss", game.route_scaling_stage(), game.spawn_wave_index)
 	game.current_player.gain_xp(int(boss_rewards.get("xp", 1)))
 	game.current_player.gain_money(int(boss_rewards.get("money", 1)))
@@ -713,6 +718,7 @@ func _connect_enemy_rewards(enemy: Node) -> void:
 
 
 func _on_enemy_died(enemy: Node2D) -> void:
+	game.record_codex_enemy_discovery(enemy)
 	# SCRUM-502: учёт убийств для экрана итогов (до раннего return для боссов ниже).
 	game.record_run_kill(enemy.is_in_group("bosses"))
 	# Подача триумфа: hit-stop + тряска на смерти элитки/босса (масштаб по рангу).
@@ -941,6 +947,7 @@ func _grant_combat_completion_rewards(event_combat := {}) -> void:
 	game.current_player.gain_money(money_reward)
 	if not event_combat.is_empty() and event_combat.has("post_combat"):
 		game.current_player.apply_reward(event_combat["post_combat"])
+		game.record_codex_artifact_discovery(event_combat["post_combat"])
 
 
 func _snapshot_player_for_menu() -> Node:

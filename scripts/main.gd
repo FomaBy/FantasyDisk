@@ -347,6 +347,28 @@ const INPUT_ACTIONS := [
 		"alternate_key": 0,
 	},
 ]
+const CODEX_ENEMY_NAME_TO_ID := {
+	"Rift Cutter": "rift_cutter",
+	"Ash Marksman": "ash_marksman",
+	"Spark Runner": "spark_runner",
+	"Stone Bruiser": "stone_bruiser",
+	"Bone Caller": "bone_caller",
+	"Void Mage": "void_mage",
+	"Venom Spitter": "venom_spitter",
+	"Rift Shieldbearer": "rift_shieldbearer",
+	"Small Biter": "small_biter",
+	"Bone Shaman": "bone_shaman",
+	"Winged Spark": "winged_spark",
+	"Iron Bastion": "iron_bastion",
+	"Night Stalker": "night_stalker",
+	"Plague Prophet": "plague_prophet",
+	"Shard Marshal": "shard_marshal",
+	"Rift Warden": "rift_warden",
+	"Disk Devourer": "disk_devourer",
+	"Bone Archon": "bone_archon",
+	"Brood Mother": "brood_mother",
+	"Ashen Colossus": "ashen_colossus",
+}
 
 var selected_character_id := "berserk"
 var selected_weapon_id := "sword"
@@ -835,6 +857,42 @@ func _load_meta_progression() -> void:
 	meta_state = META_PROGRESSION.load_state()
 	meta_points = int(meta_state.get("meta_points", 0))
 	berserk_ascension_unlocked = ascension_level_for("berserk") >= 1
+
+
+func record_codex_discovery(category: String, content_id: String) -> void:
+	var id := content_id.strip_edges()
+	if id == "":
+		return
+	if meta_state.is_empty():
+		meta_state = META_PROGRESSION.load_state()
+	if META_PROGRESSION.is_codex_discovered(meta_state, category, id):
+		return
+	meta_state = META_PROGRESSION.record_codex_discovery(meta_state, category, id)
+	META_PROGRESSION.save_state(meta_state)
+
+
+func record_codex_artifact_discovery(reward: Dictionary) -> void:
+	if str(reward.get("kind", "")) != "artifact":
+		return
+	record_codex_discovery("artifacts", str(reward.get("id", "")))
+
+
+func record_codex_enemy_discovery(enemy: Node) -> void:
+	if enemy == null:
+		return
+	var content_id := ""
+	var category := "monsters"
+	if enemy.is_in_group("bosses"):
+		category = "bosses"
+		content_id = str(enemy.get_meta("boss_id", current_boss_id))
+	elif enemy.has_meta("mini_elite_kind"):
+		content_id = str(enemy.get_meta("mini_elite_kind"))
+	else:
+		var enemy_name := ""
+		if enemy.get("enemy_type_name") != null:
+			enemy_name = str(enemy.get("enemy_type_name"))
+		content_id = str(CODEX_ENEMY_NAME_TO_ID.get(enemy_name, ""))
+	record_codex_discovery(category, content_id)
 
 
 func ascension_level_for(character_id: String) -> int:

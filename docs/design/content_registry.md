@@ -638,6 +638,11 @@ Back-end source-specific integration complete in SCRUM-157: runtime selectors pr
 Зарегистрированы задачей «Кодекс» 2026-06-11. Это ссылочные имена: задачи и обсуждения
 ссылаются на них. Источник данных кодекса: `scripts/codex_data.gd::MONSTERS`.
 
+SCRUM-621 unlock tracking stores canonical Codex entry IDs, not ability IDs:
+standard, elite and mini-elite monsters go to `discovered_monsters`, boss IDs go
+to `discovered_bosses`, and artifact IDs from `ProgressionData.ARTIFACTS` go to
+`discovered_artifacts` in `MetaProgression`.
+
 | ID умения | Игровое имя | Носитель | Что делает |
 | --- | --- | --- | --- |
 | `ragged_lunge` | Рваный Выпад | Рубака Разлома | Контактный удар с замахом (windup) |

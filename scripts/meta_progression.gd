@@ -4,6 +4,7 @@ extends RefCounted
 # на персонажа. Сохранение через ConfigFile в user://.
 
 const DEFAULT_SAVE_PATH := "user://fantasydisk_meta.cfg"
+const CODEX_DATA := preload("res://scripts/codex_data.gd")
 # SCRUM-516: лестница возвышений сжата 10→5 (короче и острее). Единый кап и для
 # дорожки сложности (ASCENSION_MODIFIERS), и для наградной лестницы
 # (ASCENSION_LEVELS). Старые сейвы с ascension>5 молча клампятся в [0..5] через
@@ -103,6 +104,11 @@ const CLASS_PROGRESSION := [
 #     "no_shop_wins"     — число побед БЕЗ покупок в магазине >= threshold.
 # Жёсткий потолок суммарного вклада челленджей на один class_*-ключ (анти-крип).
 const CLASS_CHALLENGE_MAX_BONUS := 0.05
+const CODEX_DISCOVERY_CATEGORIES := {
+	"monsters": "discovered_monsters",
+	"bosses": "discovered_bosses",
+	"artifacts": "discovered_artifacts",
+}
 const CLASS_CHALLENGES := [
 	{"id": "weapon_master", "title": "Мастер арсенала", "desc": "Победы 3 разными оружиями этого класса: +3% урона.", "condition_metric": "weapon_diversity", "threshold": 3, "effects": {"class_damage_mult": 0.03}},
 	{"id": "peak_climber", "title": "Покоритель вершин", "desc": "Победа на возвышении 3+: +3% максимума HP.", "condition_metric": "best_ascension", "threshold": 3, "effects": {"class_max_health_mult": 0.03}},
@@ -125,6 +131,12 @@ static func default_state() -> Dictionary:
 		# best_ascension:int, no_shop_wins:int}} и выполненные {char:[challenge_id]}.
 		"class_challenge_progress": {},
 		"class_challenges_done": {},
+		# SCRUM-621: persistent Codex unlock/discovery tracking. Monsters include
+		# standard, elite and mini-elite Codex entries; bosses and artifacts are
+		# tracked separately so future Codex filters can unlock per category.
+		"discovered_monsters": [],
+		"discovered_bosses": [],
+		"discovered_artifacts": [],
 	}
 
 
@@ -202,6 +214,9 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 					done.append(cs)
 			cc_done[str(char_id)] = done
 	state["class_challenges_done"] = cc_done
+	for category in CODEX_DISCOVERY_CATEGORIES.keys():
+		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
+		state[save_key] = _normalized_id_list(config.get_value(SECTION, save_key, []), category)
 	return state
 
 
@@ -217,7 +232,75 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 	# SCRUM-620: метрики и выполненные челленджи класса.
 	config.set_value(SECTION, "class_challenge_progress", state.get("class_challenge_progress", {}))
 	config.set_value(SECTION, "class_challenges_done", state.get("class_challenges_done", {}))
+	for category in CODEX_DISCOVERY_CATEGORIES.keys():
+		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
+		config.set_value(SECTION, save_key, _normalized_id_list(state.get(save_key, []), category))
 	config.save(save_path)
+
+
+static func _normalized_id_list(raw, category := "") -> Array:
+	var result := []
+	if not (raw is Array):
+		return result
+	for value in raw:
+		var id := str(value).strip_edges()
+		if id != "" and (category == "" or _is_valid_codex_discovery_id(category, id)) and not result.has(id):
+			result.append(id)
+	return result
+
+
+static func _canonical_codex_ids(category: String) -> Dictionary:
+	var ids := {}
+	match category:
+		"monsters":
+			for entry in CODEX_DATA.monsters():
+				if str(entry.get("kind", "")) != "boss":
+					ids[str(entry.get("id", ""))] = true
+		"bosses":
+			for entry in CODEX_DATA.monsters():
+				if str(entry.get("kind", "")) == "boss":
+					ids[str(entry.get("id", ""))] = true
+		"artifacts":
+			for entry in CODEX_DATA.artifacts():
+				ids[str(entry.get("id", ""))] = true
+	return ids
+
+
+static func _is_valid_codex_discovery_id(category: String, content_id: String) -> bool:
+	return _canonical_codex_ids(category).has(content_id)
+
+
+static func _discovery_save_key(category: String) -> String:
+	return str(CODEX_DISCOVERY_CATEGORIES.get(category, ""))
+
+
+static func discovered_ids(state: Dictionary, category: String) -> Array:
+	var save_key := _discovery_save_key(category)
+	if save_key == "":
+		return []
+	return _normalized_id_list(state.get(save_key, []), category)
+
+
+static func is_codex_discovered(state: Dictionary, category: String, content_id: String) -> bool:
+	return discovered_ids(state, category).has(content_id)
+
+
+static func record_codex_discovery(state: Dictionary, category: String, content_id: String) -> Dictionary:
+	var save_key := _discovery_save_key(category)
+	var id := content_id.strip_edges()
+	if save_key == "" or id == "" or not _is_valid_codex_discovery_id(category, id):
+		return state
+	var ids := _normalized_id_list(state.get(save_key, []), category)
+	if not ids.has(id):
+		ids.append(id)
+	state[save_key] = ids
+	return state
+
+
+static func record_codex_discoveries(state: Dictionary, category: String, content_ids: Array) -> Dictionary:
+	for content_id in content_ids:
+		state = record_codex_discovery(state, category, str(content_id))
+	return state
 
 
 static func ascension_level(state: Dictionary, character_id: String) -> int:

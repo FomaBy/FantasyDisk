@@ -5393,6 +5393,7 @@ func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> b
 		temp_player.gain_money(int(outcome["money"]))
 	if outcome.has("reward"):
 		temp_player.apply_reward(outcome["reward"])
+		game.record_codex_artifact_discovery(outcome["reward"])
 	if outcome.has("stats") or outcome.has("mods") or outcome.has("heal_percent"):
 		temp_player.apply_reward({
 			"kind": "event",
@@ -5407,6 +5408,7 @@ func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> b
 		), 1)
 		if not artifacts.is_empty():
 			temp_player.apply_reward(artifacts[0])
+			game.record_codex_artifact_discovery(artifacts[0])
 		else:
 			# SCRUM-634: пул артефактов пуст. Игрок уже мог заплатить цену события
 			# (HP/золото выше/ниже), поэтому компенсируем золотом и пишем варн —
@@ -5996,6 +5998,7 @@ func _buy_shop_item(item: Dictionary) -> bool:
 		return false
 
 	temp_player.apply_reward(item)
+	game.record_codex_artifact_discovery(item)
 	game.combat._store_player_snapshot(temp_player)
 	temp_player.queue_free()
 	return true
@@ -6004,6 +6007,7 @@ func _buy_shop_item(item: Dictionary) -> bool:
 func _apply_reward_to_active_run(reward: Dictionary) -> void:
 	if game.current_player != null and is_instance_valid(game.current_player):
 		game.current_player.apply_reward(reward)
+		game.record_codex_artifact_discovery(reward)
 		game.combat._store_player_snapshot(game.current_player)
 	else:
 		_apply_reward_to_run(reward)
@@ -6012,6 +6016,7 @@ func _apply_reward_to_active_run(reward: Dictionary) -> void:
 func _apply_reward_to_run(reward: Dictionary) -> void:
 	var temp_player = game.combat._snapshot_player_for_menu()
 	temp_player.apply_reward(reward)
+	game.record_codex_artifact_discovery(reward)
 	game.combat._store_player_snapshot(temp_player)
 	temp_player.queue_free()
 
