@@ -1,7 +1,13 @@
 # SCRUM-502: Экран итогов забега (run summary) при победе и смерти
 
 Jira: SCRUM-502 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: (не задан в тикете)
-Статус: К выполнению
+Статус: Выполнено — QA PASSED 2026-06-28 (claude-qa)
+
+## QA-Вердикт: SCRUM-502 (финальный)
+
+Статус: PASSED — claude-qa, 2026-06-28
+
+Приёмка фикса dealt-damage (commit 2fe432b4) после подтверждённого дефекта AC#1. Хук в scripts/enemy.gd::take_damage (final_amount → current_scene.add_run_damage_dealt) в единой точке схода всех путей урона; настоящая регрессия _test_run_damage_dealt_metric (реальный Main+Enemy, ассерт damage_dealt>0). Гейты через godot_gate (Godot 4.7): runtime_smoke_test PASS (death+victory+dealt-damage), ui_no_overlap_matrix 10/10 PASS (victory/death секции, 6 разрешений). AC 1–7 выполнены. Семантика gold_collected (finals-перезапись) вынесена отдельным non-blocker тикетом SCRUM-555.
 
 ## Что и зачем
 

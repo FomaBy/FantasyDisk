@@ -1,7 +1,7 @@
 # SCRUM-531: Berserk visual redesign — новый animation-ready source sprite pack
 
 Jira: SCRUM-531 · Роль: Design (Codex) · Контур: design-main · Приоритет: P1 · foma · Эпик: Character art / Berserk visual identity
-Статус: Готово — QA PASSED 2026-06-28 (claude-qa)
+Статус: Выполнено — QA PASSED 2026-06-28 (claude-qa)
 
 > Метки Jira: `animation-source, berserk, character-art, codex, design, design-main, fantasydisk, foma, p1`
 

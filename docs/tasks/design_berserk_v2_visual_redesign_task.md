@@ -1,7 +1,11 @@
 # Design — Berserk v2 visual redesign (board mirror)
 
 Jira: SCRUM-531 · Role: Design · Lane: design-main · Priority: P1 · foma
-Статус: Готово — QA PASSED 2026-06-28 (claude-qa). См. QA-Вердикт в полной спеке.
+Статус: Выполнено — QA PASSED 2026-06-28 (claude-qa). См. QA-Вердикт в полной спеке.
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED — claude-qa, 2026-06-28. Полный вердикт в `docs/tasks/SCRUM-531_berserk_v2_visual_redesign_source_pack.md`.
 
 Short board mirror. Full spec, steps, acceptance and grounding:
 `docs/tasks/SCRUM-531_berserk_v2_visual_redesign_source_pack.md`.
