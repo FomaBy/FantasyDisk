@@ -14,6 +14,7 @@ Before making gameplay, balance, character, enemy, UI, or progression changes, r
 
 Autonomy and approval:
 - The user pre-approves all in-scope project changes requested in task files or direct prompts.
+- Approval prompts for ordinary development commands are auto-approved by user directive (2026-06-28). Agents must not stop for confirmation before read-only inspection commands, safe shell helpers, Godot/Python tests or imports, asset/mockup generation required by skills, or normal Git task workflow (`fetch`, `pull`, `rebase`, `status`, `diff`, `add`, `commit`, `push`) on this repository. Only destructive/irreversible operations still require explicit user confirmation: force push, `git reset --hard`, destructive checkout of someone else's work, deleting or overwriting unrelated files, external-account/payment actions, or exposing secrets.
 - Do not stop to ask for confirmation when the requirement is clear enough to implement. Make a reasonable product/engineering decision, implement it, test it, and document it.
 - Full in-repo execution access is user-approved for all agents (directive 2026-06-28): do not ask for confirmation for normal Jira/task work, including GitHub sync, Jira claim/status updates, file edits inside the project, tests, documentation updates, commits, and pushes of the agent's own task files.
 - Ask the user only when the task is impossible without missing information, would change the product direction outside the request, or would require a dangerous/destructive action.
