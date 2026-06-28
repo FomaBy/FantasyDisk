@@ -2642,5 +2642,15 @@
   "key": "SCRUM-506",
   "status": "Контроль качества",
   "desc_hash": "8a7729dcd6bf59d8ecf1e2dc4d45f4f6"
+ },
+ "SCRUM-606_triggered_artifacts_existing_hooks.md": {
+  "key": "SCRUM-606",
+  "status": "В работе",
+  "desc_hash": "b73eeb98f2f197cb1dbbe8409fdb91d7"
+ },
+ "SCRUM-609_curse_relic_tradeoff_artifacts.md": {
+  "key": "SCRUM-609",
+  "status": "В работе",
+  "desc_hash": "cd59cf6bcb80108962a40b6e778e1f3a"
  }
 }

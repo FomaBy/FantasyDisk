@@ -10,13 +10,17 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 
 ## Summary
 
-- Artifact icons: `53` unique PNG, `256x256`, transparent realistic D&D/tabletop fantasy raster magic item pictures.
+- Artifact icons: `70` unique PNG, `256x256`, transparent realistic D&D/tabletop fantasy raster magic item pictures.
 - Shop-only icons: `7` unique PNG, `128x128`, transparent background.
 - Shop frame assets: slot, hover, price badge, purchased/unavailable overlay, tooltip frame.
 - Cursor assets: normal, hover and attack variants, `48x48`, transparent background.
 - Artifact pipeline: `tools/extract_realistic_dnd_artifact_icons.py`; older deterministic/per-item/concept-sheet generators are superseded reference tooling.
 - Shop/cursor generator: `tools/generate_artifact_shop_cursor_assets.py`.
 - Preview: `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png` with large and 40px samples for every active artifact.
+- SCRUM-606/SCRUM-609 integration adds 10 dedicated icons with source references
+  under `docs/design/references/icons/artifacts/<id>/`, contact sheet
+  `docs/design/previews/artifact_icons_606_609_contact.png`, and QA report
+  `docs/design/reports/artifact_icons_606_609_qa.md`.
 
 ## Artifact Icon Mapping
 
@@ -75,6 +79,21 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 | `thorn_pact` | Договор Шипов | `assets/sprites/ui/icons/artifacts/artifact_thorn_pact.png` |
 | `phantom_step` | Призрачный Шаг | `assets/sprites/ui/icons/artifacts/artifact_phantom_step.png` |
 | `leech_fang` | Клык Пиявки | `assets/sprites/ui/icons/artifacts/artifact_leech_fang.png` |
+
+### SCRUM-606 / SCRUM-609 Artifact Icons
+
+| Artifact ID | Name | Icon path |
+| --- | --- | --- |
+| `field_kit` | Полевой набор | `assets/sprites/ui/icons/artifacts/artifact_field_kit.png` |
+| `vital_siphon` | Живой сифон | `assets/sprites/ui/icons/artifacts/artifact_vital_siphon.png` |
+| `powder_charge` | Пороховой заряд | `assets/sprites/ui/icons/artifacts/artifact_powder_charge.png` |
+| `bulwark_echo` | Эхо бастиона | `assets/sprites/ui/icons/artifacts/artifact_bulwark_echo.png` |
+| `duelist_spur` | Шпора дуэлянта | `assets/sprites/ui/icons/artifacts/artifact_duelist_spur.png` |
+| `sacrifice_seal` | Печать жертвы | `assets/sprites/ui/icons/artifacts/artifact_sacrifice_seal.png` |
+| `hungry_amulet` | Голодный амулет | `assets/sprites/ui/icons/artifacts/artifact_hungry_amulet.png` |
+| `berserk_totem` | Тотем берсерка | `assets/sprites/ui/icons/artifacts/artifact_berserk_totem.png` |
+| `focus_lens` | Линза фокуса | `assets/sprites/ui/icons/artifacts/artifact_focus_lens.png` |
+| `stone_hide` | Каменная шкура | `assets/sprites/ui/icons/artifacts/artifact_stone_hide.png` |
 
 ## Shop-Only Icon Mapping
 

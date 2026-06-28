@@ -579,6 +579,12 @@ Escape открывает крупное меню характеристик:
   обнуляются в `_store_player_snapshot`, чтобы бафф не «застывал» между узлами; латчи/кулдауны
   (`_lowhp_guard_used` и т.п.) сбрасываются в `configure_character`. Пометка «⚡ Активный» вшита в
   `description` (карточка не правилась). Покрытие: `tests/runtime_smoke_triggered_artifacts_test.gd`.
+- **SCRUM-606 active artifacts**: `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`
+  add tier-2/cost55 variants on existing hooks with `room_clear_heal_percent`, `kill_heal_percent`,
+  `kill_explosion_chance`, `take_hit_pulse_chance`, and `crit_speed_burst`.
+- **SCRUM-609 curse relics**: `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`
+  are tier-2/cost55 passive trade-off artifacts using supported mod keys only:
+  crit/max HP, money/healing, damage/move speed, range/AoE, and defense/attack speed.
 - **class_affinity**: с 2026-06-12 это тематика/исходная фантазия артефакта, а не запрет. `affinity_mods` применяются любому классу через class interpretation text; UI больше не показывает «Не работает»/«Работает вполсилы», а объясняет, как текущий класс использует эффект.
 
 

@@ -140,6 +140,8 @@ func _test_on_take_hit_pulse() -> void:
 	var enemy := _make_dummy_enemy(Vector2(player.global_position) + Vector2(60.0, 0.0))
 	await process_frame
 	player.set("health", float(player.get("max_health")))  # не дать low-HP щиту перехватить
+	var derived := player.get("derived_parameters") as Dictionary
+	derived["dodge"] = 0.0  # детерминизм: dodge early-return не должен маскировать on_take_hit.
 	player.call("take_damage", 20.0)
 	if float(enemy.get_meta("damage_taken", 0.0)) <= 0.0:
 		_fail("on_take_hit pulse (counterwave_sigil) should damage nearby enemy.")

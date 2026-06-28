@@ -102,6 +102,14 @@ UI обязан показывать эти интерпретации текс�
 - Pause stats menu имеет отдельный блок «Артефакты».
 - Artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png`.
 - `class_affinity` теперь означает тематику/источник артефакта, а не запрет. `affinity_mods` применяются любому классу через интерпретацию текущего героя.
+- SCRUM-606 adds five tier-2/cost55 active artifacts on existing hooks:
+  `field_kit` (`room_clear_heal_percent`), `vital_siphon` (`kill_heal_percent`),
+  `powder_charge` (`kill_explosion_chance`), `bulwark_echo` (`take_hit_pulse_chance`),
+  and `duelist_spur` (`crit_speed_burst`).
+- SCRUM-609 adds five tier-2/cost55 passive curse relics with explicit upside/downside:
+  `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, and `stone_hide`.
+  They use only supported runtime mod keys and are available through the normal
+  reward/shop artifact paths.
 - Route `chest` node (SCRUM-537) использует тот же weighted artifact sampler, что
   elite reward: `ProgressionData.elite_artifact_choices(route_scaling_stage(), 3)`.
   Выбор всегда содержит 3 разных artifact IDs, выбранный артефакт применяется к
