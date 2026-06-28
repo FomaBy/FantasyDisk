@@ -102,6 +102,31 @@ Result: SCRUM-541 is ready for QA recheck. The previous
 `runtime_smoke_boss_elite_test.gd` failure is treated as a stale/cold-import
 runner issue unless QA can reproduce it again on a freshly imported worktree.
 
+## Backend Follow-up Fix: PASS (2026-06-28, backend_scrum541_codex_20260628195911)
+
+Claimed SCRUM-541 again from Jira to harden the QA RED runtime-error lines while
+preserving the accepted secret boss behavior. No balance numbers changed.
+
+Changes:
+- `combat_director.gd`: nullable `pickup_radius` reads now fall back to `0.0`
+  instead of calling `float(null)` in test stubs/cold runner states.
+- `ui_screens.gd`: HUD resource reads now tolerate missing snapshot/player
+  values and avoid `float(null)`, `int(null)`, and non-Dictionary snapshot access.
+
+Validation:
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --import`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_boss_elite_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/secret_encounter_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/boss_elite_ttk_gate.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tools/balance_harness.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tools/class_damage_table_3variants.gd`
+- PASS: `git diff --check -- scripts/combat_director.gd scripts/ui_screens.gd`
+- FAIL unrelated: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd`
+  at `runtime_smoke_test.gd:908`, `Expected level-up to play a placeholder toast
+  animation.`
+
+Result: ready for QA recheck of SCRUM-541/SCRUM-656 blocker path.
+
 ## Follow-up
 
 Final visual identity, sprite, animation rows and polished localized boss name

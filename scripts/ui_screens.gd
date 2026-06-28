@@ -8529,21 +8529,24 @@ func _hud_bar_fill_style(icon_id: String, fallback_color: Color) -> StyleBox:
 
 
 func _run_resource_values() -> Dictionary:
-	var hp = float(game.run_player_snapshot.get("health", game.run_player_snapshot.get("max_health", 0.0)))
-	var max_hp = float(game.run_player_snapshot.get("max_health", 0.0))
-	var xp = int(game.run_player_snapshot.get("xp", 0))
-	var xp_to_next = int(game.run_player_snapshot.get("xp_to_next", 5))
+	var snapshot := {}
+	if typeof(game.run_player_snapshot) == TYPE_DICTIONARY:
+		snapshot = game.run_player_snapshot
+	var hp = _number_value(snapshot.get("health", snapshot.get("max_health", 0.0)), 0.0)
+	var max_hp = _number_value(snapshot.get("max_health", 0.0), 0.0)
+	var xp = _int_value(snapshot.get("xp", 0), 0)
+	var xp_to_next = _int_value(snapshot.get("xp_to_next", 5), 5)
 	var money := _run_money()
 	var ultimate_charge := 0.0
 	var ultimate_max := 100.0
 	if game.current_player != null and is_instance_valid(game.current_player):
-		hp = float(game.current_player.get("health"))
-		max_hp = float(game.current_player.get("max_health"))
-		xp = int(game.current_player.get("xp"))
-		xp_to_next = int(game.current_player.get("xp_to_next"))
-		money = int(game.current_player.get("money"))
-		ultimate_charge = float(game.current_player.get("ultimate_charge"))
-		ultimate_max = float(game.current_player.get("ultimate_max_charge"))
+		hp = _number_value(game.current_player.get("health"), hp)
+		max_hp = _number_value(game.current_player.get("max_health"), max_hp)
+		xp = _int_value(game.current_player.get("xp"), xp)
+		xp_to_next = _int_value(game.current_player.get("xp_to_next"), xp_to_next)
+		money = _int_value(game.current_player.get("money"), money)
+		ultimate_charge = _number_value(game.current_player.get("ultimate_charge"), ultimate_charge)
+		ultimate_max = _number_value(game.current_player.get("ultimate_max_charge"), ultimate_max)
 	return {
 		"hp": hp,
 		"max_hp": max_hp,
@@ -8557,8 +8560,22 @@ func _run_resource_values() -> Dictionary:
 
 func _run_money() -> int:
 	if game.current_player != null and is_instance_valid(game.current_player):
-		return int(game.current_player.get("money"))
-	return int(game.run_player_snapshot.get("money", 0))
+		return _int_value(game.current_player.get("money"), 0)
+	if typeof(game.run_player_snapshot) == TYPE_DICTIONARY:
+		return _int_value(game.run_player_snapshot.get("money", 0), 0)
+	return 0
+
+
+func _number_value(value, fallback: float = 0.0) -> float:
+	if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
+		return float(value)
+	return fallback
+
+
+func _int_value(value, fallback: int = 0) -> int:
+	if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
+		return int(value)
+	return fallback
 
 
 func _update_hud() -> void:

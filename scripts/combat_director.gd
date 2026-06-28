@@ -755,7 +755,10 @@ func _update_pickups(delta: float) -> void:
 	if game.current_player == null or not is_instance_valid(game.current_player):
 		return
 
-	var pickup_radius = float(game.current_player.get("pickup_radius"))
+	var raw_pickup_radius = game.current_player.get("pickup_radius")
+	var pickup_radius := 0.0
+	if typeof(raw_pickup_radius) == TYPE_INT or typeof(raw_pickup_radius) == TYPE_FLOAT:
+		pickup_radius = float(raw_pickup_radius)
 	for pickup in game.get_tree().get_nodes_in_group("pickups"):
 		var pickup_node := pickup as Node2D
 		if pickup_node == null or not is_instance_valid(pickup_node):
