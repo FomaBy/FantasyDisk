@@ -93,6 +93,7 @@ const OVERHAUL_2K_FRAME_PATHS := {
 	"hs4_choose_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_hs4_choose_btn.png",
 	"hs4_asc_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_hs4_asc_btn.png",
 	"attr_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_attr_panel.png",
+	"pn_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_pn_panel.png",
 	"mm_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_mm_btn.png",
 	"qc_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_qc_btn.png",
 	"cr_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_cr_btn.png",
@@ -122,6 +123,7 @@ const OVERHAUL_2K_FRAME_SOURCE_SIZE := {
 	"hs4_choose_btn": Vector2(512, 89),
 	"hs4_asc_btn": Vector2(102, 72),
 	"attr_panel": Vector2(1124, 1384),
+	"pn_panel": Vector2(2464, 1388),
 	"mm_btn": Vector2(380, 104),
 	"qc_btn": Vector2(220, 72),
 	"cr_btn": Vector2(240, 72),
@@ -153,6 +155,7 @@ const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := {
 	"hs4_choose_btn": Vector4(42, 28, 42, 28),
 	"hs4_asc_btn": Vector4(12, 10, 12, 10),
 	"attr_panel": Vector4(38, 52, 38, 48),
+	"pn_panel": Vector4(38, 52, 38, 48),
 	"mm_btn": Vector4(48, 28, 48, 28),
 	"qc_btn": Vector4(50, 28, 50, 28),
 	"cr_btn": Vector4(50, 28, 50, 28),
@@ -184,6 +187,7 @@ const OVERHAUL_2K_FRAME_CONTENT := {
 	"hs4_choose_btn": Vector4(56, 32, 56, 32),
 	"hs4_asc_btn": Vector4(15, 12, 15, 12),
 	"attr_panel": Vector4(58, 72, 58, 66),
+	"pn_panel": Vector4(58, 72, 58, 66),
 }
 const UNIFIED_MASTER_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master.png"
 const UNIFIED_MASTER_FILL_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master_fill.png"

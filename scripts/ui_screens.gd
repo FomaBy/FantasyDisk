@@ -237,6 +237,16 @@ const SETTINGS_CONTROL_ROW_2K := Rect2(658, 602, 1438, 62) # строка кон
 const SETTINGS_BACK_2K := Rect2(1140, 1204, 280, 87)
 # === конец спеки SCRUM-488 ===
 
+# #17 Что нового / патч-ноуты — _show_patch_notes_screen (SCRUM-576). Полноэкранная панель
+# (как skill-tree main), хедер «Что нового» + «Назад в меню» сверху, скролл версий/буллетов
+# внутри safe-area. Текст длинных версий уходит в вертикальный скролл (рамка не растягивается).
+const PN_PANEL_2K := Rect2(48, 26, 2464, 1388)             # PatchNotesPanel (фрейм)
+const PN_SAFE_2K := Rect2(136, 118, 2288, 1214)            # layout-VBox (header → scroll), панель − content 58/72/58/66 (масштаб)
+const PN_HEADER_2K := Rect2(136, 118, 2288, 104)           # хедер (title EXPAND + back)
+const PN_TITLE_2K := Rect2(136, 118, 1900, 104)            # «Что нового» (38px)
+const PN_BACK_2K := Rect2(2164, 118, 260, 104)             # PatchNotesBackButton
+const PN_SCROLL_2K := Rect2(136, 234, 2288, 1098)          # скролл версий/буллетов (под хедером)
+
 const ECONOMY_FRAME_DIR := "res://assets/sprites/ui/frames/economy/"
 const ECONOMY_PANEL_PATH := MINIMAL_PANEL_PATH
 const ECONOMY_CHOICE_CARD_PATH := MINIMAL_CARD_PATH
@@ -1842,14 +1852,24 @@ func _show_patch_notes_screen() -> void:
 	game.ui_layer.add_child(root)
 	_add_screen_background(root, "codex")
 
+	# SCRUM-576: полноэкранная панель-фрейм @2K (PN_PANEL_2K 2464×1388), нарисована per-слот
+	# рисующим пайплайном (9-slice-safe, орнамент в margin-band). Контент — внутри content-зоны
+	# панели (58/72/58/66 source→display); хедер + скролл версий не лезут на рамку.
+	var panel := PanelContainer.new()
+	panel.name = "PatchNotesPanel"
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = PN_PANEL_2K.position.x
+	panel.offset_top = PN_PANEL_2K.position.y
+	panel.offset_right = -(2560.0 - PN_PANEL_2K.end.x)
+	panel.offset_bottom = -(1440.0 - PN_PANEL_2K.end.y)
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("pn_panel", PN_PANEL_2K.size))
+	root.add_child(panel)
+
 	var layout := VBoxContainer.new()
-	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
-	layout.offset_left = 48.0
-	layout.offset_top = 26.0
-	layout.offset_right = -48.0
-	layout.offset_bottom = -26.0
+	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	layout.add_theme_constant_override("separation", 12)
-	root.add_child(layout)
+	panel.add_child(layout)
 
 	var header := HBoxContainer.new()
 	header.add_theme_constant_override("separation", 18)

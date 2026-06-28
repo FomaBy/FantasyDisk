@@ -81,6 +81,8 @@ SLOTS = [
     # SCRUM-568 (Докача/атрибут-шоп): высокая панель full-height. Карточки опций
     # (ATTR_OFFER_2K 480×340) переиспользуют evt_card-рамку (тот же размер/тип card).
     {"slug": "attr_panel", "file": "ui_screens", "const": "ATTR_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1124, "h": 1384},
+    # SCRUM-576 (Что нового/патч-ноуты): полноэкранная панель-фрейм (как skill-tree main).
+    {"slug": "pn_panel", "file": "ui_screens", "const": "PN_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 2464, "h": 1388},
     # кнопки (button-маргины)
     {"slug": "hs4_choose_btn", "file": "ui_screens", "const": "HS4_CHOOSE_BTN_2K", "kind": "button", "margin_key": "hero_confirm", "w": 512, "h": 89},
     {"slug": "hs4_asc_btn", "file": "ui_screens", "const": "HS4_ASC_BTN_2K", "kind": "button", "margin_key": "utility", "w": 102, "h": 72},

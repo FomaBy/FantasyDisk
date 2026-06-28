@@ -19,6 +19,7 @@ const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
 const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
+const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
 
 
 func _initialize() -> void:
@@ -46,7 +47,7 @@ func _initialize() -> void:
 			"SkillTreeBranches",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
-			"PatchNotesBackButton",
+			"PatchNotesPanel", "PatchNotesBackButton",
 		], dump_lines, errors, false)
 		await _check_screen(viewport_size, "level_up", Callable(self, "_open_level_up"), [
 			"LevelUpPanel", "LevelUpHeroHeader", "LevelUpRewardButton0",
@@ -427,6 +428,14 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected zero-money attribute offers to be disabled." % context
 				if not offer.tooltip_text.contains("Недостаточно золота"):
 					return "%s: expected disabled attribute offer tooltip to explain insufficient gold." % context
+		"patch_notes":
+			# SCRUM-576: панель «Что нового» рисуется собственной pn_panel @2K-рамкой,
+			# контент держится в её content-зоне (хедер + скролл версий не на орнаменте).
+			var pn_panel := main.find_child("PatchNotesPanel", true, false) as Control
+			if pn_panel == null or not pn_panel.get_global_rect().has_area():
+				return "%s: expected visible PatchNotesPanel." % context
+			if _stylebox_texture_path(pn_panel.get_theme_stylebox("panel")) != PN_PANEL_2K_FRAME_PATH:
+				return "%s: expected PatchNotesPanel to use pn_panel @2K frame." % context
 		"event_economy":
 			# SCRUM-565: панель события рисуется собственной evt_panel @2K-рамкой.
 			var event_panel := main.find_child("MenuPanel_event", true, false) as Control
