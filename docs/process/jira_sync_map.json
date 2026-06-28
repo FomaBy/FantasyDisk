@@ -2792,5 +2792,10 @@
   "key": "SCRUM-511",
   "status": "Готово",
   "desc_hash": "6469fdf4a65079cae5eb0f104cbd0b05"
+ },
+ "SCRUM-527_xp_curve_level20_act1_boss.md": {
+  "key": "SCRUM-527",
+  "status": "Готово",
+  "desc_hash": "d684f771b2a076e6e96e5967fadb21cd"
  }
 }

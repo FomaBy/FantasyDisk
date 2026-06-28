@@ -1,7 +1,25 @@
 # SCRUM-527: Кривая опыта: ~20 lvl к боссу 1-го акта
 
 Jira: SCRUM-527 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: SCRUM-522
-Статус: К выполнению
+Статус: Готово
+
+## QA 2026-06-28
+
+Статус: PASSED -> Jira `Готово`.
+
+Проверено Codex QA в worktree `qa_508_codex190526` на текущем `origin/dev`.
+Контекст: реализация `31a53ae9`, свежая backend reverify 2026-06-28 подтверждает,
+что `XP_CURVE_MULTIPLIER = 1.038`, `XP_CURVE_FLAT = 0.8`, а route-level модель
+SCRUM-507/SCRUM-527 держит XP-темп около целевого уровня к боссу.
+
+Focused checks:
+- `tests/runtime_smoke_progression_economy_test.gd` — PASS.
+- `tests/progression_data_api_surface_test.gd` — PASS.
+- `tests/rewards_data_integrity_test.gd` — PASS.
+
+Примечание: после cleanup `.godot` Godot direct run печатает import-cache resource
+noise, но focused scripts завершаются PASS; это тот же локальный runner artifact,
+что и в предыдущих QA прогонах.
 
 ## Что и зачем
 
