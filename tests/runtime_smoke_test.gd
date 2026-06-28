@@ -40,11 +40,7 @@ const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k
 const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
-# SCRUM-579: кнопки паузы переехали на выделенный pm_btn @2K-фрейм.
-const RUN_PAUSE_BUTTON_TEXTURE_2K := TEXT_BUTTON_DIR + "ui_btn_text_unique_pause_280x60_normal.png"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
-# SCRUM-580: кнопки управления досье-паузы на выделенном pd_btn @2K-фрейме.
-const PAUSE_DOSSIER_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_btn.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
@@ -1178,11 +1174,11 @@ func _initialize() -> void:
 		push_error("Expected run pause menu to use the SCRUM-486 @2K pm_panel frame.")
 		quit(1)
 		return
-	# SCRUM-579: все 5 кнопок паузы используют выделенный pm_btn @2K-фрейм.
+	# SCRUM-669: all 5 run-pause text actions use the generated pause_280x60 state kit.
 	for pause_btn_name in ["RunPauseContinueButton", "RunPauseDossierButton", "RunPauseSettingsButton", "RunPauseEndRunButton", "RunPauseMainMenuButton"]:
 		var pause_btn := main.find_child(pause_btn_name, true, false) as Button
-		if pause_btn == null or _stylebox_texture_path(pause_btn.get_theme_stylebox("normal")) != RUN_PAUSE_BUTTON_TEXTURE_2K:
-			push_error("Expected %s to use the SCRUM-579 @2K pm_btn frame." % pause_btn_name)
+		if pause_btn == null or not _button_uses_text_button_unique_id(pause_btn, "pause_280x60"):
+			push_error("Expected %s to use the SCRUM-657 pause_280x60 text-button state kit." % pause_btn_name)
 			quit(1)
 			return
 	var pause_rect := run_pause_panel.get_global_rect()
@@ -1253,15 +1249,15 @@ func _initialize() -> void:
 		push_error("Expected Escape menu buttons to use Design StyleBoxTexture frame.")
 		quit(1)
 		return
-	# SCRUM-580: 4 кнопки управления досье-паузы используют выделенный pd_btn @2K-фрейм.
+	# SCRUM-669: 4 pause-dossier text actions use the same generated pause_280x60 kit.
 	for pd_btn_name in ["PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton"]:
 		var pd_button := pause_menu.find_child(pd_btn_name, true, false) as Button
 		if pd_button == null:
 			push_error("Expected pause dossier control button %s." % pd_btn_name)
 			quit(1)
 			return
-		if _stylebox_texture_path(pd_button.get_theme_stylebox("normal")) != PAUSE_DOSSIER_BUTTON_TEXTURE_2K:
-			push_error("Expected %s to use the SCRUM-580 @2K pd_btn frame." % pd_btn_name)
+		if not _button_uses_text_button_unique_id(pd_button, "pause_280x60"):
+			push_error("Expected %s to use the SCRUM-657 pause_280x60 text-button state kit." % pd_btn_name)
 			quit(1)
 			return
 	if not (strength_row.get_theme_stylebox("panel") is StyleBoxTexture) or not (damage_chip.get_theme_stylebox("panel") is StyleBoxTexture) or not (physical_group.get_theme_stylebox("panel") is StyleBoxTexture):

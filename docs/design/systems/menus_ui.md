@@ -218,13 +218,18 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   dragon button package under
   `docs/design/references/ui_text_buttons_unique_size_redraw/` and
   `assets/sprites/ui/frames/text_buttons_unique/`. Each final size group has its
-  own OpenAI source PNG; the runtime set is not one stretched master. The package
-  is not a runtime integration pass. Future Back-end wiring must measure each localized label and
-  keep text inside the declared `content_rect_xywh`, between the decorative end
+  own OpenAI source PNG; the runtime set is not one stretched master. SCRUM-669
+  promotes this package for normal text/action buttons through
+  `UIThemePaths.TEXT_BUTTON_UNIQUE_*` and the runtime button resolver, including
+  main menu, standard/back/quit/continue/later/settings/feedback/pause/event/
+  rebind text actions and the pause dossier's local button helper. Runtime labels
+  must stay inside the declared `content_rect_xywh`, between the decorative end
   shutters/caps. If a label does not fit, increase the button width or use the
   expanded long-label variants; text may not overlap claws, bevels, ruby pins or
   scale caps. Left/right caps are fixed-size ornaments and must not be scaled
-  horizontally; only the center rail may stretch.
+  horizontally; only the center rail may stretch. Icon-only controls, cards,
+  slots, portraits, plus/minus steppers, route nodes, weapon/reward cards and
+  non-text decorative frames remain excluded.
 
 - SCRUM-451 adds the Design-source rollout contract for applying SCRUM-452
   minimal-metal frames across all UI screens. The screen-family mapping lives in
@@ -442,10 +447,11 @@ smoke writes `build/qa/combat_level_up_button.md` and
 `build/qa/scrum390/combat_level_up_button.md`.
 
 Hover/focus states after SCRUM-318 are neutral-bright, not golden glow states:
-runtime button themes use the SCRUM-450 minimal-metal `_hover` / `_focus`
-textures with neutral tint (`1.16` hover / `1.20` focus) and near-white
-hover/focus text. Pressed and disabled states keep their dedicated textures and
-semantics.
+runtime normal text/action button themes use the SCRUM-657 text-button `_hover`
+/ `_focus` textures with neutral hover/focus font treatment; pressed and
+disabled states keep their dedicated generated textures. SCRUM-450 minimal-metal
+button textures remain available for compact/icon-like exceptions and historical
+metadata tests.
 
 ## Main Menu Quit Confirmation
 
@@ -455,12 +461,12 @@ modal overlay, not a default Godot `ConfirmationDialog`: it blocks clicks below
 the dim layer, focuses safe `Отмена` by default, cancels on Escape/outside click
 and calls `Main.request_game_quit()` only from the explicit `Выйти` button.
 
-SCRUM-344 locks the dialog action buttons to 220x72 and SCRUM-462 routes
-`QuitConfirmExitButton` / `QuitConfirmCancelButton` to the minimal-metal `pause`
-button frame, whose vertical content band is safe at 72px. Do not let these buttons
-fall back to `back_s`: that frame is authored for taller action buttons and
-visually squashes when used in this dialog. Runtime smoke records the actual
-rects and textures in `build/qa/scrum319/quit_confirmation_dialog.md`.
+SCRUM-344 locks the dialog action buttons to 220x72; SCRUM-669 routes
+`QuitConfirmExitButton` / `QuitConfirmCancelButton` to the generated
+`quit_220x72` SCRUM-657 text-button state kit. Do not let these buttons fall
+back to compact/back/icon families: their text must remain inside the
+`quit_220x72` content band. Runtime smoke records the actual rects and textures
+in `build/qa/scrum319/quit_confirmation_dialog.md`.
 
 ## Pause And Result Screens
 

@@ -14,17 +14,16 @@ const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/u
 const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png")
 # SCRUM-486/SCRUM-593: per-slot @2K pause dossier plus dedicated SCRUM-586 stat tooltip.
 const ESCAPE_PANEL_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png")
-# SCRUM-580: выделенный pd_btn @2K-фрейм (280×60, нарисован ровно под слот PD_BTN_2K,
-# 9-slice-margins 34/16/34/16) для кнопок управления досье-паузы.
-const PD_BTN_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_btn.png")
 const STAT_TOOLTIP_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png")
 const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
 const PAUSE_END_MODAL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png")
-const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause.png")
-const PAUSE_BUTTON_HOVER := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_hover.png")
-const PAUSE_BUTTON_FOCUS := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_focus.png")
-const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_pressed.png")
-const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_disabled.png")
+const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_normal.png")
+const PAUSE_BUTTON_HOVER := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_hover.png")
+const PAUSE_BUTTON_FOCUS := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_focus.png")
+const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_pressed.png")
+const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_disabled.png")
+const PAUSE_BUTTON_TEXTURE_MARGINS := Vector4(34.0, 12.0, 34.0, 12.0)
+const PAUSE_BUTTON_CONTENT_MARGINS := Vector4(45.0, 12.0, 45.0, 12.0)
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
@@ -726,25 +725,10 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
-# SCRUM-580: кнопки управления досье-паузы на выделенном pd_btn @2K-фрейме (один ассет +
-# state-тинты, как overhaul_2k-кнопки в ui_screens.gd). Margins/content — те же 34/16/34/16,
-# что у общего pause-кнопочного стиля, поэтому safe-зона текста сохраняется.
+# SCRUM-669: pause-dossier text actions use the generated SCRUM-657 exact-size
+# pause_280x60 state kit. The helper remains for call-site compatibility.
 func _apply_pd_2k_button_theme(button: Button, variant := "default") -> void:
-	var normal_tint := Color.WHITE
-	var pressed_tint := Color(0.92, 0.88, 0.82, 1.0)
-	if variant == "danger":
-		normal_tint = Color(1.08, 0.72, 0.72, 1.0)
-		pressed_tint = Color(0.92, 0.55, 0.55, 1.0)
-	button.add_theme_stylebox_override("normal", _button_style(PD_BTN_FRAME_2K, normal_tint))
-	button.add_theme_stylebox_override("hover", _button_style(PD_BTN_FRAME_2K, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _button_style(PD_BTN_FRAME_2K, pressed_tint))
-	button.add_theme_stylebox_override("disabled", _button_style(PD_BTN_FRAME_2K, Color(0.72, 0.72, 0.72, 1.0)))
-	button.add_theme_stylebox_override("focus", _button_style(PD_BTN_FRAME_2K, BUTTON_NEUTRAL_FOCUS_TINT))
-	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
-	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
-	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+	_apply_fantasy_button_theme(button, variant)
 
 
 func _panel_style() -> StyleBox:
@@ -822,7 +806,15 @@ func _make_section_divider() -> TextureRect:
 
 
 func _button_style(texture: Texture2D, tint: Color) -> StyleBox:
-	var style := _texture_style(texture, 34, 16, 34, 16, tint, Vector4(46, 18, 46, 18))
+	var style := _texture_style(
+		texture,
+		PAUSE_BUTTON_TEXTURE_MARGINS.x,
+		PAUSE_BUTTON_TEXTURE_MARGINS.y,
+		PAUSE_BUTTON_TEXTURE_MARGINS.z,
+		PAUSE_BUTTON_TEXTURE_MARGINS.w,
+		tint,
+		PAUSE_BUTTON_CONTENT_MARGINS
+	)
 	if style is StyleBoxTexture:
 		(style as StyleBoxTexture).modulate_color.a = 1.0
 	return style

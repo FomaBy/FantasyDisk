@@ -517,8 +517,11 @@ Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_but
 
 State language:
 
-- all visible action Button styleboxes use the Minimal Metal kit unless a control is
-  intentionally a card/hit-area rather than an action button;
+- all normal text/action Button styleboxes use the SCRUM-657
+  `text_buttons_unique` kit unless a control is intentionally a card, slot,
+  icon-only hit area, portrait, stepper, route node or other non-text exception;
+- SCRUM-450 Minimal Metal button textures remain available for compact/icon-like
+  exceptions and historical metadata checks;
 - hover/focus: neutral bright metal read, no yellow baked glow;
 - pressed: darker center and slightly lower-contrast metal read;
 - disabled: desaturated, dimmed version of the same button type.
@@ -537,12 +540,14 @@ live in `assets/sprites/ui/frames/text_buttons_unique/`, and preview sheets live
 at `docs/design/previews/scrum_text_buttons_unique_size_dark_contact.png` and
 `docs/design/previews/scrum_text_buttons_unique_size_light_contact.png`. These
 PNGs have no baked text. Each final size group has its own OpenAI source PNG,
-so the package is a per-size redraw rather than a single stretched master. For
-implementation, localized labels must fit inside the central content zone
-between the decorative end shutters/caps; if measured text exceeds the safe
-width, increase the button width or use an expanded variant instead of shrinking
-text onto ornament. Left/right caps are fixed-size ornaments and must not be
-scaled horizontally; only the center rail may stretch.
+so the package is a per-size redraw rather than a single stretched master.
+SCRUM-669 makes these assets live for normal text/action buttons via the global
+runtime resolver and the pause dossier's local helper. Localized labels must fit
+inside the central content zone between the decorative end shutters/caps; if
+measured text exceeds the safe width, increase the button width or use an
+expanded variant instead of shrinking text onto ornament. Left/right caps are
+fixed-size ornaments and must not be scaled horizontally; only the center rail
+may stretch.
 
 Runtime button sizing (SCRUM-263/SCRUM-264):
 
@@ -565,8 +570,8 @@ Runtime frame sizing (SCRUM-274):
   stretching one generic frame everywhere;
 - HUD and timer panels use their dedicated horizontal frame assets;
 - Escape stats uses `pause_main`, `pause_stat_group`, `pause_stat_chip` and
-  `pause_stat_tooltip` frames; its buttons use the SCRUM-450 minimal-metal
-  `pause` button.
+  `pause_stat_tooltip` frames; its normal text buttons use the SCRUM-657
+  `pause_280x60` generated state kit.
 - Hero Select uses the SCRUM-281 `ui_frame_hero_select_*` kit with custom
   `HERO_SELECT_FRAME_MARGINS` and `HERO_SELECT_FRAME_CONTENT` in
   `scripts/ui_screens.gd`; the bottom thumbnail strip uses compressed thumbnail
