@@ -1,7 +1,7 @@
 # SCRUM-500: Триггерные (активируемые событием) артефакты как новый класс предметов
 
 Jira: SCRUM-500 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: —
-Статус: К выполнению (Feature)
+Статус: done (QA PASSED 2026-06-28; stale QA gate closed by Codex replacement loop)
 
 ## Что и зачем
 
@@ -142,3 +142,10 @@ Jira: SCRUM-500 · Роль: backend · Контур: claude · Приорите
 - **Связанные тикеты/референс**: tier-3 «активные» (`echo_core`, `blood_pact`, `leech_heart`, `thorn_pact`, `phantom_step`) — уже работающий прецедент; новый формат должен быть с ними согласован (по-хорошему — ретро-пометить их `active:true`/`trigger:...` тоже, но это опционально и не ломать их текущую работу). SCRUM-503 (cap berserk hammer DPS runaway, недавний коммит) — пример того, как runaway-эффекты ловят на гейтах; быть аккуратным с DPS-вкладом on_kill/on_crit.
 - **Балансовая нейтральность**: триггерные эффекты — ситуативные «специи». Прямой постоянный +damage/+attack_speed запрещён (это сместит DPS-гейт). Лечение/щит/мув-бафф/ситуативный бурст-урон — ок. После реализации прогнать survivability+DPS smoke и сверить, что TTD/TTK-гейты зелёные.
 - **Godot 4.6.3 headless smoke**: тесты гонять как в `qa-test-runner` памяти (Godot.app в ~/Downloads, headless). Focused-тест на триггеры держать детерминированным: для шанс-эффектов либо мокать rng/seed, либо ставить шанс=1.0 в тестовом артефакте.
+
+## QA-Вердикт (2026-06-28)
+Статус: PASSED
+Проверено: live Jira already had QA PASSED on 2026-06-28 against `origin/dev` commit `49e51e3c`, plus later backend re-verification against `620d8402`; replacement loop confirmed no active owner conflict and closed the stale QA gate.
+Команды из Jira evidence: `tests/runtime_smoke_triggered_artifacts_test.gd` - PASS, `tests/global_survivability_balance_smoke_test.gd` - PASS, `tests/global_damage_balance_smoke_test.gd` - PASS, `tests/runtime_smoke_test.gd` - PASS, `tests/runtime_smoke_ui_test.gd` - PASS.
+Покрытие: active/trigger artifact data, on_low_hp/on_kill/on_crit/on_room_clear/on_take_hit hooks, reward pool pickup, cleanup/reset contract, snapshot transient flag cleanup, DPS/TTD balance gates.
+Баги: нет.

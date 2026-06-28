@@ -2747,5 +2747,10 @@
   "key": "SCRUM-499",
   "status": "Готово",
   "desc_hash": "89c7dd99978d1f05ca78fb37e3a99eab"
+ },
+ "SCRUM-500_triggered_artifacts.md": {
+  "key": "SCRUM-500",
+  "status": "Готово",
+  "desc_hash": "9a791612e39395e3ac02081da31a6f3d"
  }
 }
