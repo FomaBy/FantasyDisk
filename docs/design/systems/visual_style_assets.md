@@ -187,7 +187,10 @@ visual target is compact combat instrumentation: blackened iron, worn leather,
 small brass/ruby accents and calm dark interiors. It is essential-only by
 contract: HP, XP, money, ULT, timer, ascension/elevation and one bottom-right
 level-up plus button. Use the validated plan/layout files for frame-safe
-content zones; do not place runtime text/icons on generated ornament.
+content zones; do not place runtime text/icons on generated ornament. The
+QA-red geometry revision keeps all accepted zones inside visible dark interiors
+and separates the level-up plus/count zones, replacing the earlier mechanically
+valid but visually unsafe rail positions.
 
 SCRUM-586 adds the Design-source package for the 2K stat tooltip frame used by
 `StatTooltipPanel` / `_make_custom_tooltip` in `scripts/pause_stats_menu.gd`;

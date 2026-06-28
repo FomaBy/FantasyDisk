@@ -1260,10 +1260,11 @@ live runtime content yet.
 | Group | ID / naming | Canonical folder / file | Status |
 | --- | --- | --- | --- |
 | Combat HUD 2K spec | `scrum666_combat_hud_2k_spec` | `docs/design/mockups/scrum666_combat_hud_2k/spec.md` | Design-source review |
-| Combat HUD 2K plan | `scrum666_combat_hud_2k_ui_plan` | `docs/design/mockups/scrum666_combat_hud_2k/ui_plan.json` | Authoritative geometry |
-| Combat HUD 2K layout | `scrum666_combat_hud_2k_layout` | `docs/design/mockups/scrum666_combat_hud_2k/layout.json` | Authoritative content zones |
+| Combat HUD 2K plan | `scrum666_combat_hud_2k_ui_plan` | `docs/design/mockups/scrum666_combat_hud_2k/ui_plan.json` | Authoritative QA-red revised geometry: content zones inside generated dark interiors |
+| Combat HUD 2K layout | `scrum666_combat_hud_2k_layout` | `docs/design/mockups/scrum666_combat_hud_2k/layout.json` | Authoritative content zones; level plus/count zones separated |
+| Combat HUD 2K visual audit | `scrum666_combat_hud_2k_visual_frame_zone_audit` | `docs/design/mockups/scrum666_combat_hud_2k/visual_frame_zone_audit.md` | Human QA-red note for clean interior placement |
 | Combat HUD 2K OpenAI mockup | `scrum666_combat_hud_2k_mockup_base` | `docs/design/references/scrum666_combat_hud_2k/combat_hud_2k_mockup_base.png` | Visual source only |
-| Combat HUD 2K safe-zone previews | `scrum666_combat_hud_2k_previews` | `docs/design/previews/scrum666_combat_hud_2k_*` | QA evidence |
+| Combat HUD 2K safe-zone previews | `scrum666_combat_hud_2k_previews` | `docs/design/previews/scrum666_combat_hud_2k_*` | QA evidence; accepted overlay demonstrates zones avoid rails/ornament |
 
 Runtime asset IDs/paths must be assigned by a Back-end integration task after
 slot-exact slicing or redraw. Until then, existing live combat HUD registries

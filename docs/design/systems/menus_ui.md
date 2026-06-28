@@ -334,8 +334,10 @@ omits artifact rows, duplicate FABs and extra HUD panels. Source and geometry
 live under `docs/design/mockups/scrum666_combat_hud_2k/`, OpenAI reference art
 under `docs/design/references/scrum666_combat_hud_2k/`, and safe-zone previews
 under `docs/design/previews/scrum666_combat_hud_2k_*`. Runtime integration must
-use the validated `ui_plan.json` rectangles as authoritative, because the
-generated mockup is visual direction only and not a pixel-exact atlas.
+use the validated `ui_plan.json` rectangles as authoritative. The QA-red
+revision moved accepted content zones into the generated dark interiors and out
+of the old rail/ornament positions; level-up plus and pending-count zones are
+separate and non-overlapping at 2560x1440.
 when player HP drops below 30%, a shader vignette fades in with a transparent
 center and light red edges; it fades out only after HP recovers to 34%+ to avoid
 threshold flicker. The overlay is drawn behind HUD cards, ignores mouse input,

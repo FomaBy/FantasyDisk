@@ -12,18 +12,18 @@
     "level_badge": "2"
   },
   "elements": [
-    {"id": "resource_strip_frame", "kind": "panel", "x": 32, "y": 24, "w": 1048, "h": 104, "min_w": 760, "min_h": 80},
-    {"id": "hp_zone", "kind": "text", "parent": "resource_strip_frame", "content_zone": true, "x": 92, "y": 50, "w": 244, "h": 52, "text_key": "hp", "max_font": 36, "min_font": 22},
-    {"id": "xp_zone", "kind": "text", "parent": "resource_strip_frame", "content_zone": true, "x": 354, "y": 50, "w": 212, "h": 52, "text_key": "xp", "max_font": 34, "min_font": 22},
-    {"id": "gold_zone", "kind": "text", "parent": "resource_strip_frame", "content_zone": true, "x": 588, "y": 50, "w": 144, "h": 52, "text_key": "gold", "max_font": 36, "min_font": 22},
-    {"id": "ult_zone", "kind": "text", "parent": "resource_strip_frame", "content_zone": true, "x": 754, "y": 50, "w": 254, "h": 52, "text_key": "ult", "max_font": 34, "min_font": 22},
-    {"id": "timer_frame", "kind": "panel", "x": 1140, "y": 22, "w": 280, "h": 104, "min_w": 220, "min_h": 80},
-    {"id": "timer_zone", "kind": "text", "parent": "timer_frame", "content_zone": true, "x": 1196, "y": 50, "w": 168, "h": 50, "text_key": "timer", "max_font": 42, "min_font": 26},
-    {"id": "ascension_frame", "kind": "panel", "x": 1464, "y": 38, "w": 72, "h": 72, "min_w": 56, "min_h": 56},
-    {"id": "ascension_zone", "kind": "text", "parent": "ascension_frame", "content_zone": true, "x": 1482, "y": 55, "w": 36, "h": 38, "text_key": "ascension", "max_font": 28, "min_font": 18},
-    {"id": "level_button_frame", "kind": "button", "x": 2428, "y": 1300, "w": 100, "h": 116, "min_w": 84, "min_h": 96},
-    {"id": "level_button_zone", "kind": "text", "parent": "level_button_frame", "content_zone": true, "x": 2454, "y": 1324, "w": 48, "h": 54, "text_key": "level", "max_font": 52, "min_font": 30},
-    {"id": "level_badge_frame", "kind": "panel", "parent": "level_button_frame", "collision": false, "x": 2490, "y": 1302, "w": 36, "h": 36, "min_w": 28, "min_h": 28},
-    {"id": "level_badge_zone", "kind": "text", "parent": "level_badge_frame", "content_zone": true, "x": 2498, "y": 1309, "w": 20, "h": 22, "text_key": "level_badge", "max_font": 18, "min_font": 12}
+    {"id": "resource_strip_frame", "kind": "panel", "x": 40, "y": 84, "w": 1488, "h": 212, "min_w": 1080, "min_h": 150},
+    {"id": "hp_zone", "kind": "text", "parent": "resource_strip_frame", "content_zone": true, "x": 150, "y": 140, "w": 300, "h": 58, "text_key": "hp", "max_font": 36, "min_font": 22},
+    {"id": "xp_zone", "kind": "text", "parent": "resource_strip_frame", "content_zone": true, "x": 520, "y": 140, "w": 260, "h": 58, "text_key": "xp", "max_font": 34, "min_font": 22},
+    {"id": "gold_zone", "kind": "text", "parent": "resource_strip_frame", "content_zone": true, "x": 850, "y": 140, "w": 235, "h": 58, "text_key": "gold", "max_font": 36, "min_font": 22},
+    {"id": "ult_zone", "kind": "text", "parent": "resource_strip_frame", "content_zone": true, "x": 1138, "y": 140, "w": 296, "h": 58, "text_key": "ult", "max_font": 34, "min_font": 22},
+    {"id": "timer_frame", "kind": "panel", "x": 1592, "y": 82, "w": 424, "h": 218, "min_w": 300, "min_h": 150},
+    {"id": "timer_zone", "kind": "text", "parent": "timer_frame", "content_zone": true, "x": 1690, "y": 145, "w": 232, "h": 62, "text_key": "timer", "max_font": 42, "min_font": 26},
+    {"id": "ascension_frame", "kind": "panel", "x": 2165, "y": 55, "w": 330, "h": 322, "min_w": 240, "min_h": 240},
+    {"id": "ascension_zone", "kind": "text", "parent": "ascension_frame", "content_zone": true, "x": 2265, "y": 150, "w": 128, "h": 94, "text_key": "ascension", "max_font": 28, "min_font": 18},
+    {"id": "level_button_frame", "kind": "button", "x": 2190, "y": 1010, "w": 366, "h": 428, "min_w": 260, "min_h": 300},
+    {"id": "level_button_zone", "kind": "text", "parent": "level_button_frame", "content_zone": true, "x": 2308, "y": 1148, "w": 124, "h": 104, "text_key": "level", "max_font": 52, "min_font": 30},
+    {"id": "level_badge_frame", "kind": "panel", "parent": "level_button_frame", "collision": false, "x": 2400, "y": 1036, "w": 132, "h": 132, "min_w": 92, "min_h": 92},
+    {"id": "level_badge_zone", "kind": "text", "parent": "level_badge_frame", "content_zone": true, "x": 2442, "y": 1079, "w": 48, "h": 40, "text_key": "level_badge", "max_font": 18, "min_font": 12}
   ]
 }
