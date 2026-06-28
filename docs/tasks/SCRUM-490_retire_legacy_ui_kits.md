@@ -1,7 +1,7 @@
 # SCRUM-490: Ретайр старых UI-китов после переезда на 2K
 
 Jira: SCRUM-490 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: SCRUM-481
-Статус: К выполнению
+Статус: blocked
 
 ## Что и зачем
 
@@ -94,3 +94,20 @@ const MINIMAL_PANEL_PATH := UIThemePaths.MINIMAL_METAL_PANEL_PATH
 - **Прочие потенциально-легаси папки** (`hero_select_v2`, `hero_select_v3`, `settings`, `settings_v2`) НЕ входят в скоуп этого тикета — не расширять задачу. Скоуп: только bright-minimal + мёртвые константы в `ui_theme_paths.gd`.
 - **Связанные тикеты эпика SCRUM-481 (ui-overhaul-2k):** SCRUM-450 (minimal-metal buttons), SCRUM-451/452 (minimal-metal frame kit), SCRUM-392 (unified frame margins) — их артефакты-метаданные (`docs/design/references/ui_minimal_metal*`, `unified_master_frame`) активны и нужны тестам, НЕ удалять.
 - **После правок** прогнать `tools/jira_board_sync.py`, чтобы держать Jira синхронной (статус → по факту выполнения; правило live-sync).
+
+## Result 2026-06-28
+
+Status: blocked.
+
+Done:
+- Removed stale in-code comment that mentioned the retired `frames/minimal/` path and deleted `MINIMAL_*` constants, so the ticket grep gates are clean.
+- Verified `assets/sprites/ui/frames/minimal/` is absent and has no tracked files.
+- Verified no `frames/minimal/` references remain in `*.gd`, `*.tscn`, `*.tres`, or `*.theme`.
+- Verified no external `UIThemePaths.MINIMAL_*` references remain for the retired bright-minimal constants.
+- Left active `minimal_metal`, `minimal_metal_buttons`, `unified`, `ornate`, and `red_gold` assets/constants untouched.
+
+Blocked by pre-existing red gates on fresh `origin/dev`:
+- `tests/dark_fantasy_ui_theme_test.gd` fails because current `dev` HUD uses `res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png`, while the test still expects the SCRUM-451 minimal-metal HUD frame.
+- `tests/asset_reference_integrity_test.gd` fails on missing `res://feedback_webhook.cfg` from `scripts/feedback_reporter.gd`.
+
+Disk cleanup: `.godot/` and disposable worktree scheduled for removal after push/sync.

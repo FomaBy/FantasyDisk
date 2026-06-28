@@ -2847,5 +2847,10 @@
   "key": "SCRUM-584",
   "status": "Контроль качества",
   "desc_hash": "ca3232d1a681ee60a88bb6f67a5bce17"
+ },
+ "SCRUM-490_retire_legacy_ui_kits.md": {
+  "key": "SCRUM-490",
+  "status": "К выполнению",
+  "desc_hash": "d2a8ec0dee1b597ab50fb6ccb44c665a"
  }
 }

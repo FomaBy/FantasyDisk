@@ -6,9 +6,6 @@ const RED_GOLD_BUTTON_DIR := "res://assets/sprites/ui/frames/red_gold/"
 const MINIMAL_METAL_BUTTON_DIR := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
 const ORNATE_FRAME_DIR := "res://assets/sprites/ui/frames/ornate/"
 const UNIFIED_FRAME_DIR := "res://assets/sprites/ui/frames/unified/"
-# SCRUM-490: ретайр мёртвого bright-minimal кита (frames/minimal/) — на MINIMAL_FRAME_DIR
-# и MINIMAL_*_PATH/SOURCE_SIZE/TEXTURE_MARGINS/CONTENT (без суффикса _METAL) не было ни одной
-# внешней ссылки; ассеты удалены. Активный 2K-кит — minimal_metal ниже, НЕ трогать.
 const MINIMAL_METAL_FRAME_DIR := "res://assets/sprites/ui/frames/minimal_metal/"
 const MINIMAL_METAL_MODAL_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_modal.png"
 const MINIMAL_METAL_PANEL_PATH := MINIMAL_METAL_FRAME_DIR + "ui_frame_minimal_metal_panel.png"
