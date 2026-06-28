@@ -2817,5 +2817,10 @@
   "key": "SCRUM-587",
   "status": "Контроль качества",
   "desc_hash": "ceac0df597ab3f66b4a73203e2cdbbe2"
+ },
+ "design_text_buttons_unique_size_redraw_task.md": {
+  "key": "SCRUM-657",
+  "status": "Контроль качества",
+  "desc_hash": "e407a3df4d1e4e196d1ff9e7bca25d53"
  }
 }
