@@ -2,7 +2,7 @@
 
 Jira: SCRUM-654
 Role: backend/UI runtime
-Status: review
+Статус: done
 
 Locked paths:
 - `scripts/level_up_effect.gd`

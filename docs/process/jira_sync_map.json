@@ -2807,5 +2807,10 @@
   "key": "SCRUM-542",
   "status": "Готово",
   "desc_hash": "049026550d881483f3cfd305629f8402"
+ },
+ "bug_level_up_single_compact_head_badge_task.md": {
+  "key": "SCRUM-654",
+  "status": "Контроль качества",
+  "desc_hash": "7b5244bc2f0bb21953f4e8383b448593"
  }
 }
