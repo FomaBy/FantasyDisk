@@ -16,6 +16,9 @@ func _initialize() -> void:
 
 	var player := player_scene.instantiate()
 	root.add_child(player)
+	if not player.has_method("configure_character"):
+		_fail("Player scene loaded without scripts; run through tools/godot_gate.py so Godot imports resources and global classes first.")
+		return
 	player.call("configure_character", "berserk", "sword")
 	await process_frame
 
