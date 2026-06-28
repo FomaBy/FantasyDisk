@@ -116,3 +116,25 @@ static func level_up_reward_weight(reward: Dictionary, character_id: String) -> 
 - **Детерминизм:** CSV использует фиксированные сиды (`BASE_SEED=20260620`). После правки веса числа сместятся детерминированно — это норма. lvl20_random — один «невезучий» прогон на пару, не усреднение, поэтому отдельные значения могут прыгать; ориентируйся на агрегаты (max/min/медиана), а не на одну ячейку.
 - **Связанные тикеты:** SCRUM-469 (формульный класс-гейт коридор 0.90–1.10), SCRUM-453 (3variants регрессионный гейт), SCRUM-249 (legacy budget gate в global_damage_balance_smoke). SCRUM-503 (недавний cap berserk hammer DPS) — пример точечной балансной правки в этом же домене.
 - **Godot:** 4.6.3 в `~/Downloads/Godot.app`. Запуск генератора и тестов — headless (см. память `qa-test-runner`).
+
+## unblock-csv-worker result 2026-06-28
+
+Status: ready for QA for SCRUM-506 CSV/random-spread acceptance. Jira owner/lane: `unblock-csv-worker` / `backend` / `codex`.
+
+Decision: replaced the default CSV arbiter path with deterministic fast mode in `tools/character_balance_csv.gd`, using the live `ProgressionData.estimate_weapon_budget_for_stats()` and `estimate_crowd_clear_budget_for_stats()` model. The old real-scene measurement remains available as `--mode=live` for targeted spot checks and now supports `--class`, `--weapon`, `--pair`, `--offset`, and `--limit`.
+
+CSV command: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tools/character_balance_csv.gd`.
+
+Generated evidence: `build/character_balance_dps.csv` has 51 weapon rows across 17 classes. Best-weapon-per-class random spread from the regenerated CSV:
+- `lvl20_random_1t`: min 76.85, median 97.15, max 150.40, spread 1.96x.
+- `lvl20_random_20t`: min 206.64, median 263.87, max 447.71, spread 2.17x.
+- Weak-class floors are above the required 0.4x median on both axes: robot 0.79x median on 1t, sniper 0.78x median on 20t; knight/soldier/robot are all above 0.4x.
+
+Focused validation:
+- `tests/comfort_band_cross_class_gate.gd` passed: 153 checks, 0 violations.
+- `tests/class_damage_table_3variants_test.gd` passed: 17 classes, 153 weapon-build rows.
+- `tests/global_damage_balance_smoke_test.gd` passed: 51 pairs; worst CCT +22%.
+- `tests/summon_weapon_crowd_floor_test.gd` passed: druid 307.2, chemist 93.7, engineer 86.2 lvl20 ideal 20t gates.
+- `tests/damage_type_isolation_test.gd` passed.
+
+Remaining balance note: `build/character_balance_band.md` produced by the regenerated CSV still reports SCRUM-544 comfort-band failures on the `lvl20_ideal` slices; that is a balance-tuning follow-up, not a CSV generator blocker.

@@ -50,15 +50,15 @@ Note: the current roster contains 17 classes, while the original task text menti
 | doctor | Base lvl1 | strength 2.00; agility 4.00; intelligence 8.00; perception 5.00; energy 6.00; knowledge 8.00; endurance 5.00; leadership 2.00 | 40.79 | 127.48 | 107.27 | 0.947 | 0.982 | ok |
 | doctor | Lvl20 optimum | strength 2.00; agility 14.00; intelligence 17.00; perception 5.00; energy 6.00; knowledge 8.00; endurance 5.00; leadership 2.00 | 205.39 | 640.85 | 531.19 | 4.742 | 0.930 | ok |
 | doctor | Lvl20 random avg | strength 4.36; agility 6.33; intelligence 10.48; perception 7.11; energy 8.33; knowledge 10.41; endurance 7.45; leadership 4.53 | 85.07 | 265.72 | 223.11 | 1.973 | 1.075 | ok |
-| chemist | Base lvl1 | strength 2.00; agility 4.00; intelligence 9.00; perception 6.00; energy 7.00; knowledge 7.00; endurance 3.00; leadership 2.00 | 46.39 | 224.31 | 205.11 | 0.968 | 1.004 | ok |
-| chemist | Lvl20 optimum | strength 2.00; agility 13.00; intelligence 19.00; perception 6.00; energy 7.00; knowledge 7.00; endurance 3.00; leadership 2.00 | 240.36 | 1132.95 | 1046.25 | 4.955 | 0.972 | ok |
-| chemist | Lvl20 random avg | strength 4.20; agility 6.34; intelligence 11.50; perception 8.48; energy 9.72; knowledge 9.11; endurance 5.13; leadership 4.52 | 93.15 | 446.42 | 406.95 | 1.930 | 1.052 | ok |
+| chemist | Base lvl1 | strength 2.00; agility 4.00; intelligence 9.00; perception 6.00; energy 7.00; knowledge 7.00; endurance 3.00; leadership 2.00 | 46.37 | 224.22 | 205.04 | 0.968 | 1.004 | ok |
+| chemist | Lvl20 optimum | strength 2.00; agility 13.00; intelligence 19.00; perception 6.00; energy 7.00; knowledge 7.00; endurance 3.00; leadership 2.00 | 240.30 | 1132.67 | 1046.02 | 4.954 | 0.972 | ok |
+| chemist | Lvl20 random avg | strength 4.20; agility 6.34; intelligence 11.50; perception 8.48; energy 9.72; knowledge 9.11; endurance 5.13; leadership 4.52 | 94.75 | 454.17 | 413.66 | 1.962 | 1.069 | ok |
 | knight | Base lvl1 | strength 8.00; agility 3.00; intelligence 2.00; perception 4.00; energy 3.00; knowledge 4.00; endurance 10.00; leadership 6.00 | 40.81 | 127.55 | 112.80 | 0.962 | 0.998 | ok |
 | knight | Lvl20 optimum | strength 14.00; agility 16.00; intelligence 2.00; perception 4.00; energy 3.00; knowledge 4.00; endurance 10.00; leadership 6.00 | 218.72 | 682.30 | 603.39 | 5.148 | 1.010 | ok |
 | knight | Lvl20 random avg | strength 10.42; agility 5.19; intelligence 4.56; perception 6.36; energy 5.64; knowledge 6.31; endurance 12.33; leadership 8.19 | 77.90 | 243.27 | 215.14 | 1.835 | 1.000 | ok |
-| druid | Base lvl1 | strength 3.00; agility 4.00; intelligence 4.00; perception 7.00; energy 6.00; knowledge 5.00; endurance 5.00; leadership 9.00 | 47.97 | 150.01 | 133.56 | 0.956 | 0.992 | ok |
-| druid | Lvl20 optimum | strength 3.00; agility 4.00; intelligence 4.00; perception 7.00; energy 24.00; knowledge 5.00; endurance 5.00; leadership 10.00 | 238.68 | 767.51 | 681.40 | 4.837 | 0.949 | ok |
-| druid | Lvl20 random avg | strength 5.22; agility 6.05; intelligence 6.42; perception 9.56; energy 8.77; knowledge 7.33; endurance 7.33; leadership 11.33 | 102.36 | 322.22 | 286.05 | 2.046 | 1.115 | ok |
+| druid | Base lvl1 | strength 3.00; agility 4.00; intelligence 4.00; perception 7.00; energy 6.00; knowledge 5.00; endurance 5.00; leadership 9.00 | 47.97 | 149.91 | 133.48 | 0.955 | 0.991 | ok |
+| druid | Lvl20 optimum | strength 3.00; agility 4.00; intelligence 4.00; perception 7.00; energy 24.00; knowledge 5.00; endurance 5.00; leadership 10.00 | 242.35 | 778.45 | 690.88 | 4.907 | 0.963 | ok |
+| druid | Lvl20 random avg | strength 5.22; agility 6.05; intelligence 6.42; perception 9.56; energy 8.77; knowledge 7.33; endurance 7.33; leadership 11.33 | 104.05 | 327.29 | 290.44 | 2.078 | 1.132 | ok |
 
 ## Outlier Summary
 
@@ -202,13 +202,13 @@ Note: the current roster contains 17 classes, while the original task text menti
 | doctor | bone_saw | Lvl20 random avg | 77.88 | 243.41 | 215.26 | 1.835 |
 | chemist | blast_powder | Base lvl1 | 46.38 | 224.26 | 210.47 | 0.980 |
 | chemist | acid_flask | Base lvl1 | 46.36 | 224.24 | 210.45 | 0.979 |
-| chemist | homunculus_vial | Base lvl1 | 46.43 | 224.42 | 194.42 | 0.945 |
+| chemist | homunculus_vial | Base lvl1 | 46.37 | 224.17 | 194.20 | 0.944 |
 | chemist | blast_powder | Lvl20 optimum | 308.89 | 1448.95 | 1359.83 | 6.396 |
 | chemist | acid_flask | Lvl20 optimum | 265.95 | 1243.02 | 1166.57 | 5.493 |
-| chemist | homunculus_vial | Lvl20 optimum | 146.23 | 706.87 | 612.36 | 2.977 |
+| chemist | homunculus_vial | Lvl20 optimum | 146.05 | 706.04 | 611.65 | 2.974 |
 | chemist | blast_powder | Lvl20 random avg | 91.12 | 434.69 | 407.96 | 1.908 |
 | chemist | acid_flask | Lvl20 random avg | 85.00 | 405.18 | 380.26 | 1.779 |
-| chemist | homunculus_vial | Lvl20 random avg | 103.32 | 499.40 | 432.63 | 2.103 |
+| chemist | homunculus_vial | Lvl20 random avg | 108.13 | 522.63 | 452.75 | 2.201 |
 | knight | long_spear | Base lvl1 | 40.84 | 127.56 | 112.81 | 0.962 |
 | knight | tower_shield | Base lvl1 | 40.80 | 127.53 | 112.78 | 0.962 |
 | knight | holy_flail | Base lvl1 | 40.80 | 127.57 | 112.82 | 0.962 |
@@ -218,13 +218,13 @@ Note: the current roster contains 17 classes, while the original task text menti
 | knight | long_spear | Lvl20 random avg | 77.96 | 242.80 | 214.72 | 1.833 |
 | knight | tower_shield | Lvl20 random avg | 77.92 | 243.37 | 215.22 | 1.835 |
 | knight | holy_flail | Lvl20 random avg | 77.84 | 243.66 | 215.48 | 1.836 |
-| druid | summon_amulet | Base lvl1 | 47.94 | 150.08 | 130.01 | 0.944 |
+| druid | summon_amulet | Base lvl1 | 47.95 | 149.78 | 129.76 | 0.943 |
 | druid | briar_staff | Base lvl1 | 47.98 | 149.95 | 140.73 | 0.979 |
 | druid | raven_totem | Base lvl1 | 47.98 | 150.01 | 129.95 | 0.944 |
-| druid | summon_amulet | Lvl20 optimum | 218.78 | 684.88 | 593.31 | 4.309 |
+| druid | summon_amulet | Lvl20 optimum | 229.77 | 717.69 | 621.74 | 4.519 |
 | druid | briar_staff | Lvl20 optimum | 223.05 | 685.95 | 643.76 | 4.504 |
 | druid | raven_totem | Lvl20 optimum | 274.22 | 931.71 | 807.14 | 5.699 |
-| druid | summon_amulet | Lvl20 random avg | 97.64 | 305.64 | 264.78 | 1.923 |
+| druid | summon_amulet | Lvl20 random avg | 102.73 | 320.86 | 277.96 | 2.020 |
 | druid | briar_staff | Lvl20 random avg | 92.58 | 286.86 | 269.22 | 1.879 |
 | druid | raven_totem | Lvl20 random avg | 116.86 | 374.16 | 324.14 | 2.336 |
 
