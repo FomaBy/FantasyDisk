@@ -20,6 +20,8 @@ const SHOP_SLOT_HOVER_PATH := ShopUIConstants.SHOP_SLOT_HOVER_PATH
 const SHOP_PRICE_BADGE_PATH := ShopUIConstants.SHOP_PRICE_BADGE_PATH
 const SHOP_PURCHASED_OVERLAY_PATH := ShopUIConstants.SHOP_PURCHASED_OVERLAY_PATH
 const SHOP_TOOLTIP_FRAME_PATH := ShopUIConstants.SHOP_TOOLTIP_FRAME_PATH
+const SHOP_CAPTION_PLATE_PATH := ShopUIConstants.SHOP_CAPTION_PLATE_PATH
+const SHOP_CAPTION_PLATE_MARGINS := ShopUIConstants.SHOP_CAPTION_PLATE_MARGINS
 const DF_FRAME_DIR := UIThemePaths.DF_FRAME_DIR
 const RED_GOLD_BUTTON_DIR := UIThemePaths.RED_GOLD_BUTTON_DIR
 const MINIMAL_METAL_BUTTON_DIR := UIThemePaths.MINIMAL_METAL_BUTTON_DIR
@@ -67,6 +69,9 @@ const SYSTEM_SLIDER_TRACK_PATH := "res://assets/sprites/ui/icons/system/ui_slide
 const SYSTEM_SLIDER_GRABBER_PATH := "res://assets/sprites/ui/icons/system/ui_slider_grabber.png"
 const SHOP_INLINE_SLOT_SIZE := ShopUIConstants.SHOP_INLINE_SLOT_SIZE
 const SHOP_INLINE_ICON_SIZE := ShopUIConstants.SHOP_INLINE_ICON_SIZE
+const SHOP_INLINE_CAPTION_SIZE := ShopUIConstants.SHOP_INLINE_CAPTION_SIZE
+const SHOP_INLINE_CAPTION_TOP := ShopUIConstants.SHOP_INLINE_CAPTION_TOP
+const SHOP_INLINE_ICON_TOP := ShopUIConstants.SHOP_INLINE_ICON_TOP
 const SHOP_CURSOR_VARIANTS := ShopUIConstants.SHOP_CURSOR_VARIANTS
 const HERO_RADAR_STATS := HeroSelectConstants.HERO_RADAR_STATS
 const HERO_CLASS_COLORS := HeroSelectConstants.HERO_CLASS_COLORS
@@ -4260,14 +4265,62 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	icon.anchor_right = 0.5
 	icon.anchor_bottom = 0.0
 	icon.offset_left = -SHOP_INLINE_ICON_SIZE.x * 0.5
-	icon.offset_top = 12.0
+	icon.offset_top = SHOP_INLINE_ICON_TOP
 	icon.offset_right = SHOP_INLINE_ICON_SIZE.x * 0.5
-	icon.offset_bottom = 12.0 + SHOP_INLINE_ICON_SIZE.y
+	icon.offset_bottom = SHOP_INLINE_ICON_TOP + SHOP_INLINE_ICON_SIZE.y
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.modulate = Color(1.0, 1.0, 1.0, 1.0) if affordable else Color(0.52, 0.48, 0.45, 0.82)
 	content.add_child(icon)
+
+	# SCRUM-567: фикс-размерная подпись названия товара в верхней полосе слота —
+	# превращает «голую стену иконок» в читаемую сетку товаров (название видно
+	# сразу, полное описание по-прежнему в тултипе). Размер фиксирован
+	# (SHOP_INLINE_CAPTION_SIZE), длинный текст ужимается clip в 1 строку, рамку
+	# не растягивает и из слота не вылазит.
+	# 9-slice плашка-нейм-плейт под подписью (отдельный ассет в едином стиле).
+	var plate_texture: Texture2D = game._cached_texture(SHOP_CAPTION_PLATE_PATH)
+	if plate_texture != null:
+		var plate := NinePatchRect.new()
+		plate.name = "ShopItemCaptionPlate"
+		plate.texture = plate_texture
+		plate.patch_margin_left = int(SHOP_CAPTION_PLATE_MARGINS.x)
+		plate.patch_margin_top = int(SHOP_CAPTION_PLATE_MARGINS.y)
+		plate.patch_margin_right = int(SHOP_CAPTION_PLATE_MARGINS.z)
+		plate.patch_margin_bottom = int(SHOP_CAPTION_PLATE_MARGINS.w)
+		plate.anchor_left = 0.5
+		plate.anchor_top = 0.0
+		plate.anchor_right = 0.5
+		plate.anchor_bottom = 0.0
+		plate.offset_left = -SHOP_INLINE_CAPTION_SIZE.x * 0.5
+		plate.offset_top = SHOP_INLINE_CAPTION_TOP
+		plate.offset_right = SHOP_INLINE_CAPTION_SIZE.x * 0.5
+		plate.offset_bottom = SHOP_INLINE_CAPTION_TOP + SHOP_INLINE_CAPTION_SIZE.y
+		plate.modulate = Color(1.0, 1.0, 1.0, 1.0) if affordable else Color(0.82, 0.78, 0.72, 0.82)
+		plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		content.add_child(plate)
+
+	var caption := Label.new()
+	caption.name = "ShopItemCaption"
+	caption.text = str(item.get("title", "Предмет"))
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	caption.clip_text = true
+	# Текст ужимаем по ширине парчмент-центра плашки (≈ −16px от полной ширины).
+	caption.custom_minimum_size = Vector2(SHOP_INLINE_CAPTION_SIZE.x - 16.0, SHOP_INLINE_CAPTION_SIZE.y)
+	caption.anchor_left = 0.5
+	caption.anchor_top = 0.0
+	caption.anchor_right = 0.5
+	caption.anchor_bottom = 0.0
+	caption.offset_left = -(SHOP_INLINE_CAPTION_SIZE.x - 16.0) * 0.5
+	caption.offset_top = SHOP_INLINE_CAPTION_TOP
+	caption.offset_right = (SHOP_INLINE_CAPTION_SIZE.x - 16.0) * 0.5
+	caption.offset_bottom = SHOP_INLINE_CAPTION_TOP + SHOP_INLINE_CAPTION_SIZE.y
+	caption.add_theme_font_size_override("font_size", 13)
+	caption.add_theme_color_override("font_color", Color(0.30, 0.20, 0.10, 1.0) if affordable else Color(0.42, 0.36, 0.30, 0.86))
+	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(caption)
 
 	var price_badge := PanelContainer.new()
 	price_badge.name = "ShopPriceBadge"
