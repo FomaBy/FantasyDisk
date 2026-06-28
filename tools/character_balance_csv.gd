@@ -161,6 +161,16 @@ func _dps_score(reward: Dictionary, archetype: String) -> float:
 	return score
 
 
+# Метод-компараторы (Callable(self, ...)) для sort_custom вместо лямбд: ссылка на
+# self (живёт весь прогон) — не подвержена freed-lambda SIGABRT (SCRUM-551).
+func _artifact_score_desc(a: Dictionary, b: Dictionary) -> bool:
+	return float(a["score"]) > float(b["score"])
+
+
+func _band_norm_desc(a: Dictionary, b: Dictionary) -> bool:
+	return float(a["norm"]) > float(b["norm"])
+
+
 func _stat_dps_value(stat_id: String, archetype: String) -> float:
 	# Профильность main-stat по архетипу (грубо отражает derived_parameters).
 	match stat_id:
@@ -217,18 +227,24 @@ func _weighted_index(source: Array, character_id: String, rng: RandomNumberGener
 
 
 func _build_artifacts(character_id: String, archetype: String, ideal: bool, rng: RandomNumberGenerator) -> Array:
-	var pool: Array = ProgressionData.reward_pool(character_id).filter(func(reward: Dictionary) -> bool:
-		return str(reward.get("kind", "")) == "artifact"
-	)
+	# NB: без лямбд с захватом локалов (archetype/self). Intermittent SIGABRT
+	# (freed-lambda) при sort_custom/filter под нагрузкой (SCRUM-551) — заменено
+	# на decorate-sort-undecorate на чистых массивах: ноль замыканий.
+	var pool: Array = []
+	for reward in ProgressionData.reward_pool(character_id):
+		if str((reward as Dictionary).get("kind", "")) == "artifact":
+			pool.append(reward)
 	if pool.is_empty():
 		return []
 	var chosen: Array = []
 	if ideal:
-		pool.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-			return _dps_score(a, archetype) > _dps_score(b, archetype)
-		)
-		for index in range(mini(ARTIFACT_COUNT, pool.size())):
-			chosen.append(pool[index])
+		# Декорируем (score, reward) и сортируем массив пар обычным методом-компаратором.
+		var scored: Array = []
+		for reward in pool:
+			scored.append({"score": _dps_score(reward, archetype), "reward": reward})
+		scored.sort_custom(Callable(self, "_artifact_score_desc"))
+		for index in range(mini(ARTIFACT_COUNT, scored.size())):
+			chosen.append(scored[index]["reward"])
 	else:
 		while chosen.size() < ARTIFACT_COUNT and not pool.is_empty():
 			var index := rng.randi_range(0, pool.size() - 1)
@@ -240,8 +256,12 @@ func _build_artifacts(character_id: String, archetype: String, ideal: bool, rng:
 # --- Замер фактического DPS ---------------------------------------------------
 
 func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array) -> float:
-	for child in _holder.get_children():
-		child.queue_free()
+	# SCRUM-551: детерминированный teardown предыдущего пэка ДО следующего инстанса.
+	# Раньше дети висели на queue_free (deferred) — между кадрами оставался GC-окно,
+	# в которое tween_callback/filter-лямбда могла дёрнуться на уже-освобождаемом
+	# player/ally → intermittent freed-lambda SIGABRT (CSV не собирался под нагрузкой).
+	# Теперь: глушим tween'ы, снимаем из дерева (auto-kill SceneTreeTween) и free() сразу.
+	_teardown_holder_children()
 	await process_frame
 
 	var player := PLAYER_SCENE.instantiate() as Node2D
@@ -286,6 +306,31 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 		if is_instance_valid(enemy):
 			hp_after += float(enemy.get("health"))
 	return maxf(hp_before - hp_after, 0.0) / WINDOW_SECONDS
+
+
+# Жёсткий синхронный снос всех детей холдера (player/враги/призывы) без deferred-окна.
+# Глушит tween'ы игрока, сносит призывы из группы allies, снимает из дерева и free()
+# немедленно — чтобы ни одна лямбда/tween_callback не сработала на освобождаемом узле.
+func _teardown_holder_children() -> void:
+	# Сначала прибиваем «висящих» призывов (они держат свой tween/lambda на ally-узле).
+	# NB: скрипт extends SceneTree → get_nodes_in_group вызывается на self (дереве).
+	for ally in get_nodes_in_group("allies"):
+		if is_instance_valid(ally):
+			ally.remove_from_group("allies")
+			var ally_node := ally as Node
+			if ally_node.get_parent() != null:
+				ally_node.get_parent().remove_child(ally_node)
+			ally_node.free()
+	for child in _holder.get_children():
+		if not is_instance_valid(child):
+			continue
+		# Глушим известные tween'ы игрока до снятия из дерева.
+		for tween_field in ["_dodge_rush_tween", "_crit_burst_tween", "_ultimate_tween", "_action_tween"]:
+			var tw = child.get(tween_field)
+			if tw is Tween and (tw as Tween).is_valid():
+				(tw as Tween).kill()
+		_holder.remove_child(child)
+		child.free()
 
 
 func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:
@@ -341,15 +386,16 @@ func _validate_band(rows: Array) -> void:
 		var median: float = _median(values)
 		var lo: float = median * (1.0 - tol)
 		var hi: float = median * (1.0 + tol)
-		entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-			return float(a["norm"]) > float(b["norm"]))
+		entries.sort_custom(Callable(self, "_band_norm_desc"))
 		var min_norm: float = float(entries[entries.size() - 1]["norm"])
 		var max_norm: float = float(entries[0]["norm"])
 		var spread: float = max_norm / maxf(min_norm, 0.001)
 		var slice_pass: bool = min_norm >= lo and max_norm <= hi
 		all_pass = all_pass and slice_pass
-		var violations: Array = entries.filter(func(e: Dictionary) -> bool:
-			return float(e["norm"]) < lo or float(e["norm"]) > hi)
+		var violations: Array = []
+		for e in entries:
+			if float(e["norm"]) < lo or float(e["norm"]) > hi:
+				violations.append(e)
 		print("[BAND %s] median=%.1f band=[%.1f..%.1f] min=%.1f max=%.1f spread=%.1fx → %s (нарушений %d/%d)" % [
 			slice, median, lo, hi, min_norm, max_norm, spread,
 			("PASS" if slice_pass else "FAIL"), violations.size(), entries.size()])
