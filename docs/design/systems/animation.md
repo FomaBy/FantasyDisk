@@ -145,6 +145,20 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `scripts/player.gd`, and `tests/animation_smoke_test.gd` remain unchanged by
   scope, so runtime still uses the SCRUM-461 idle/walk/move-only Berserk until a
   separate wiring task.
+- SCRUM-540 (2026-06-28) produces the Secret Ascension Boss full-frame animation
+  pack from the accepted SCRUM-539 source. Candidate assets live under
+  `assets/sprites/bosses/full_frame/secret_ascension_boss/` with a 512x512
+  canvas, pivot `(256,480)`, 48px sheet gutters, and stable bottom-center
+  framing. The SpriteFrames resource is
+  `assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres`
+  and exposes 6f looping `idle`/`move`, 6f `attack_primary` plus
+  `attack_primary_windup`/`attack_primary_release`, four cast pairs
+  (`skill_ring`/`attack_ring`, `skill_cone`/`attack_cone`,
+  `skill_beam`/`attack_beam`, `skill_rupture`/`attack_rupture`), `hit`, and
+  `death`. QA artifacts and manifest live under
+  `build/qa/scrum540_secret_ascension_boss_anim/`; manifest, alpha/slicing,
+  Godot import, and focused SpriteFrames smoke pass. Back-end runtime encounter
+  wiring remains separate from this Animator pack.
 - SCRUM-473 (2026-06-17) replaces the temporary cartoon-trial legacy rig for
   Dark Mage and Knight with real cartoon2 full-frame SpriteFrames. Runtime
   resources `assets/sprites/characters/dark_mage_spriteframes.tres` and

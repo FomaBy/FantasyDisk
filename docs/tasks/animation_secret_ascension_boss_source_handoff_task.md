@@ -46,3 +46,21 @@ Recommended source/pivot notes:
 - Manifest/SpriteFrames use stable `secret_ascension_boss` IDs.
 - Animation smoke passes.
 - Handoff back to Back-end lists final SpriteFrames path and state names.
+
+## Animator Result - 2026-06-28
+
+SCRUM-540 delivered the full-frame animation pack from the accepted SCRUM-539
+source. Final assets:
+
+- Frames: `assets/sprites/bosses/full_frame/secret_ascension_boss/`
+- Sheet: `assets/sprites/bosses/full_frame/secret_ascension_boss_full_frame_sheet.png`
+- SpriteFrames: `assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres`
+- Manifest/evidence: `build/qa/scrum540_secret_ascension_boss_anim/`
+
+States: `idle`, `move`, `attack`, `attack_primary`,
+`attack_primary_windup`, `attack_primary_release`, `skill_ring`,
+`attack_ring`, `skill_cone`, `attack_cone`, `skill_beam`, `attack_beam`,
+`skill_rupture`, `attack_rupture`, `hit`, and `death`.
+
+Back-end runtime wiring remains a separate task; add the boss to
+`FullFrameAnimationRegistry` when the encounter implementation is ready.
