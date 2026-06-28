@@ -12,10 +12,9 @@ const STAT_BASIC_ROW_FRAME := preload("res://assets/sprites/ui/frames/minimal_me
 const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png")
 const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png")
 const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png")
-# SCRUM-486: per-слот @2K-ассеты экранов паузы-досье (PD_PANEL_2K 2520×1404) и тултипа
-# статов (ST_PANEL_2K шир.430), сгенерированы build_ui_2k_frame_kit.py РОВНО в размер слота.
+# SCRUM-486/SCRUM-593: per-slot @2K pause dossier plus dedicated SCRUM-586 stat tooltip.
 const ESCAPE_PANEL_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png")
-const STAT_TOOLTIP_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_st_panel.png")
+const STAT_TOOLTIP_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png")
 const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
 const PAUSE_END_MODAL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png")
 const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause.png")
@@ -623,12 +622,12 @@ func _show_end_run_confirm() -> void:
 	dialog.popup_centered(Vector2i(360, 140))
 
 
-# SCRUM-484: координатная спека @2560×1440 — тултип статов (транзиентный).
+# SCRUM-593: координатная спека @2560×1440 — тултип статов (транзиентный).
 # Плавающая панель шириной TOOLTIP_MAX_WIDTH=430, высота по контенту (label autowrap,
-# внутренний инсет 20 с каждой стороны → ширина текста 390). Позиция у курсора/слота
-# (стандартный tooltip Godot, клампится в экран движком).
+# content margins 44/42/44/42 from SCRUM-586 safe-zone spec). Позиция у курсора/слота
+# стандартным tooltip Godot клампится в экран движком.
 const ST_PANEL_2K := Rect2(0, 0, 430, 0)  # w фикс (TOOLTIP_MAX_WIDTH), h по контенту
-const ST_LABEL_INSET_2K := 20.0  # инсет текста от краёв панели (×2 = 40)
+const ST_LABEL_CONTENT_2K := Vector4(44.0, 42.0, 44.0, 42.0)
 
 
 func _make_custom_tooltip(for_text: String) -> Object:
@@ -639,7 +638,7 @@ func _make_custom_tooltip(for_text: String) -> Object:
 
 	var label := Label.new()
 	label.name = "StatTooltipLabel"
-	label.custom_minimum_size = Vector2(TOOLTIP_MAX_WIDTH - 40.0, 0.0)
+	label.custom_minimum_size = Vector2(TOOLTIP_MAX_WIDTH - ST_LABEL_CONTENT_2K.x - ST_LABEL_CONTENT_2K.z, 0.0)
 	label.text = for_text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.add_theme_font_size_override("font_size", 14)
@@ -778,9 +777,10 @@ func _chip_style(is_hovered: bool) -> StyleBox:
 
 
 func _tooltip_style() -> StyleBox:
-	# SCRUM-486: @2K-ассет тултипа статов st_panel (430×220, tooltip-маргины). Ширина фикс
-	# TOOLTIP_MAX_WIDTH=430 == ширина ассета, высота content-driven (9-slice по px-бордюрам).
-	return _texture_style(STAT_TOOLTIP_FRAME_2K, 46, 30, 46, 28, Color.WHITE, Vector4(66, 44, 66, 40))
+	# SCRUM-593: SCRUM-586 tooltip frame (430x288) has stricter safe content than old st_panel.
+	var margins: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_TEXTURE_MARGINS["stat_tooltip"]
+	var content: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_CONTENT["stat_tooltip"]
+	return _texture_style(STAT_TOOLTIP_FRAME_2K, margins.x, margins.y, margins.z, margins.w, Color.WHITE, content)
 
 
 func _make_section_divider() -> TextureRect:

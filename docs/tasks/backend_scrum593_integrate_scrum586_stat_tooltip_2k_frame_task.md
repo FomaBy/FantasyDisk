@@ -1,11 +1,11 @@
 # SCRUM-593: Integrate SCRUM-586 stat tooltip 2K frame
 
 Jira: SCRUM-593
-Статус: new
+Статус: in_progress
 Роль: backend
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Back-end / codex-background-backend-agent
+Thread/Worker: codex-background-backend-agent
 Locked paths: `scripts/ui/ui_theme_paths.gd`, `scripts/pause_stats_menu.gd`, `tests/ui_no_overlap_matrix_test.gd`, `docs/design/mockups/scrum586_stat_tooltip/spec.md`, `build/qa/scrum586_stat_tooltip/`
 Source: SCRUM-586
 

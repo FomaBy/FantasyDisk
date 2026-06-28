@@ -37,6 +37,7 @@ const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/u
 # SCRUM-486 (UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация (build_ui_2k_frame_kit.py),
 # заменили общие minimal-фреймы SCRUM-448 на экранах паузы/досье/тултипов.
 const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png"
+const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
@@ -1214,6 +1215,20 @@ func _initialize() -> void:
 	var tooltip := pause_menu.call("_make_custom_tooltip", strength_row.tooltip_text) as PanelContainer
 	if tooltip == null or not (tooltip.get_theme_stylebox("panel") is StyleBoxTexture) or tooltip.custom_minimum_size.x > 430.0:
 		push_error("Expected custom stat tooltip to use Design frame and stay clamped to target width.")
+		quit(1)
+		return
+	var tooltip_style := tooltip.get_theme_stylebox("panel") as StyleBoxTexture
+	if _stylebox_texture_path(tooltip_style) != STAT_TOOLTIP_TEXTURE_2K:
+		push_error("Expected custom stat tooltip to use the SCRUM-586 2K stat tooltip frame.")
+		quit(1)
+		return
+	if tooltip_style.content_margin_left < 44.0 or tooltip_style.content_margin_top < 42.0 or tooltip_style.content_margin_right < 44.0 or tooltip_style.content_margin_bottom < 42.0:
+		push_error("Expected custom stat tooltip content margins to keep text inside the SCRUM-586 safe zone.")
+		quit(1)
+		return
+	var tooltip_label := tooltip.find_child("StatTooltipLabel", true, false) as Label
+	if tooltip_label == null or tooltip_label.custom_minimum_size.x > 342.0:
+		push_error("Expected custom stat tooltip label width to fit the SCRUM-586 safe rect.")
 		quit(1)
 		return
 	tooltip.queue_free()
