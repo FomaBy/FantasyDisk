@@ -1,5 +1,8 @@
 extends CharacterBody2D
 
+# SCRUM-611: мягкий радиальный тик попадания вместо квадратной красной рамки.
+const HIT_FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
+
 signal died(enemy: Node2D)
 # Фазы уникальной атаки элитки для Animator: windup -> strike -> recover -> idle.
 signal elite_attack_phase_changed(attack_id: String, phase: String)
@@ -354,33 +357,33 @@ func _show_critical_marker() -> void:
 func _show_hit_flash() -> void:
 	if _feedback_group_count(COMBAT_FEEDBACK_FLASH_GROUP) >= COMBAT_FEEDBACK_MAX_FLASHES:
 		return
-	var outline := Line2D.new()
-	outline.name = "CombatHitOutline"
-	outline.add_to_group(COMBAT_FEEDBACK_FLASH_GROUP)
+	# SCRUM-611: мягкий радиальный тёплый тик вместо чёрно-красной рамки (Line2D
+	# читалась как UI-артефакт). Аддитивный impact_flash, низкая alpha, быстрый угас.
 	var sprite_size := _visible_sprite_size()
-	var half_size := Vector2(maxf(sprite_size.x * 0.42, 24.0), maxf(sprite_size.y * 0.42, 24.0))
-	outline.points = PackedVector2Array([
-		Vector2(-half_size.x, -half_size.y),
-		Vector2(half_size.x, -half_size.y),
-		Vector2(half_size.x, half_size.y),
-		Vector2(-half_size.x, half_size.y),
-		Vector2(-half_size.x, -half_size.y),
-	])
-	outline.width = 3.0
-	outline.default_color = Color(1.0, 0.05, 0.02, 0.86)
-	outline.closed = true
-	outline.z_index = 2999
-	_feedback_parent().add_child(outline)
-	outline.global_position = global_position + Vector2(0.0, -sprite_size.y * 0.04)
-	var outline_tween := outline.create_tween()
-	outline_tween.tween_property(outline, "modulate:a", 0.0, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	outline_tween.tween_callback(outline.queue_free)
+	var tick := Sprite2D.new()
+	tick.name = "CombatHitTick"
+	tick.add_to_group(COMBAT_FEEDBACK_FLASH_GROUP)
+	tick.texture = HIT_FLASH_TEXTURE
+	var tick_material := CanvasItemMaterial.new()
+	tick_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	tick.material = tick_material
+	tick.modulate = Color(1.0, 0.46, 0.36, 0.40)
+	# impact_flash 128px; масштабируем под видимый размер цели (мягкое покрытие).
+	var tick_reach := maxf(maxf(sprite_size.x, sprite_size.y) * 0.95, 48.0)
+	tick.scale = Vector2.ONE * (tick_reach / 128.0)
+	tick.z_index = 2999
+	_feedback_parent().add_child(tick)
+	tick.global_position = global_position + Vector2(0.0, -sprite_size.y * 0.04)
+	var tick_tween := tick.create_tween()
+	tick_tween.tween_property(tick, "modulate:a", 0.0, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tick_tween.tween_callback(tick.queue_free)
 
 	var body := _feedback_flash_body()
 	if body == null:
 		return
+	# Смягчённая body-вспышка: меньше lerp и тёплый цвет (не слепит на светлых аренах).
 	var original_modulate := body.modulate
-	body.modulate = original_modulate.lerp(Color(1.0, 0.15, 0.10, original_modulate.a), 0.62)
+	body.modulate = original_modulate.lerp(Color(1.0, 0.42, 0.34, original_modulate.a), 0.40)
 	var body_tween := body.create_tween()
 	body_tween.tween_property(body, "modulate", original_modulate, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 

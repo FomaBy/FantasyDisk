@@ -1694,8 +1694,10 @@ func _pose_legacy(profile: Dictionary) -> void:
 func _apply_hit_feedback() -> void:
 	var tint := status_tint
 	if hit_time_left > 0.0:
-		tint = Color(1.0, 0.42, 0.36, 1.0)
-		_pelvis.position.x += sin(hit_time_left * 60.0) * 1.4
+		# SCRUM-611: мягче и теплее tint, срезанный джиттер — толчок без резкого
+		# чёрно-красного удара (синхронно со смягчённой body-вспышкой enemy.gd).
+		tint = Color(1.0, 0.55, 0.50, 1.0)
+		_pelvis.position.x += sin(hit_time_left * 60.0) * 0.6
 	elif state == "death":
 		tint = Color(0.74, 0.72, 0.78, 1.0)
 	for part_name in _parts.keys():

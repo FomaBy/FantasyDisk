@@ -88,7 +88,20 @@ func _initialize() -> void:
 		_fail("Expected enemy hit to spawn a combat damage number.")
 		return
 	if _combat_flash_nodes().is_empty():
-		_fail("Expected enemy hit to spawn a short red hit outline/flash.")
+		_fail("Expected enemy hit to spawn a short hit flash.")
+		return
+	# SCRUM-611: вспышка попадания — мягкий радиальный Sprite2D (CombatHitTick), а НЕ
+	# квадратная рамка Line2D (CombatHitOutline читалась как UI-артефакт).
+	for flash in _combat_flash_nodes():
+		if flash is Line2D or flash.name == "CombatHitOutline":
+			_fail("SCRUM-611: hit-flash должен быть мягким тиком, а не квадратной рамкой Line2D.")
+			return
+	var has_tick := false
+	for flash in _combat_flash_nodes():
+		if flash is Sprite2D and flash.name == "CombatHitTick":
+			has_tick = true
+	if not has_tick:
+		_fail("SCRUM-611: ожидался радиальный Sprite2D 'CombatHitTick' как вспышка попадания.")
 		return
 
 	contact_enemy.call("take_damage", 0.25, {"critical": true})
