@@ -6,7 +6,7 @@ const RING_TEXTURE := preload("res://assets/sprites/effects/impact_ring.png")
 const FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
 const BADGE_TEXTURE := preload("res://assets/sprites/effects/level_up_popup_badge.png")
 const RING_RADIUS := 104.0
-const BADGE_DISPLAY_SIZE := Vector2(224.0, 112.0)
+const BADGE_DISPLAY_SIZE := Vector2(160.0, 80.0)
 const BADGE_START_POSITION := Vector2(0.0, -118.0)
 # SCRUM-614: показ Level Up дольше и весомее (просьба игрока — момент роста почти
 # незаметен при ~0.86с). Окно эффекта расширено до 1.35с, бейдж дольше держится и

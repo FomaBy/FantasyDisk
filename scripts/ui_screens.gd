@@ -5565,6 +5565,12 @@ func _spawn_level_up_effect() -> void:
 	if game.current_player == null or not is_instance_valid(game.current_player):
 		return
 
+	for existing in game.get_tree().get_nodes_in_group("level_up_effects"):
+		if existing != null and is_instance_valid(existing):
+			if existing is CanvasItem:
+				(existing as CanvasItem).visible = false
+			existing.queue_free()
+
 	var effect = game.LEVEL_UP_EFFECT_SCENE.instantiate() as Node2D
 	if effect == null:
 		return

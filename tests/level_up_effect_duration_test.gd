@@ -19,6 +19,9 @@ func _fail(msg: String) -> void:
 
 
 func _initialize() -> void:
+	if Vector2(EffectScript.BADGE_DISPLAY_SIZE) != Vector2(160.0, 80.0):
+		_fail("BADGE_DISPLAY_SIZE expected 160x80, got %s" % str(EffectScript.BADGE_DISPLAY_SIZE))
+		return
 	# --- Контракт констант (статически, без рантайма) ---
 	if absf(float(EffectScript.EFFECT_DURATION) - 1.35) > 0.001:
 		_fail("EFFECT_DURATION ожидался 1.35, получено %s" % str(EffectScript.EFFECT_DURATION))

@@ -246,6 +246,12 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   `docs/design/references/scrum588_levelup_toast/`, and
   `docs/design/previews/scrum588_levelup_toast_safe_zone.png`.
 
+- SCRUM-654 keeps the overhead level-up callout compact and singular. Runtime
+  uses the accepted `LevelUpPopupBadge` at `160x80`; when multiple level-ups
+  arrive quickly, `_spawn_level_up_effect()` removes older live nodes in the
+  `level_up_effects` group before spawning the replacement. `LevelUpToast` remains a
+  textless sparkle/ring cue, so there is only one visible `Level Up` text badge.
+
 - SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
 (`1280x256` RGBA). It has exactly three slots in the red-gold/dark-steel style,
