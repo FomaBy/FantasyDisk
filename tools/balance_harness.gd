@@ -335,7 +335,9 @@ static func _enemy_scaling_ttk_table() -> String:
 		var scale := ProgressionData.stage_scale(stage)
 		var ordinary_wave_ttk := (980.0 * scale) / maxf(ProgressionData.BALANCE_BASE_AOE_DPS, 1.0)
 		var elite_ttk := (18.5 * 4.6 * (25.0 + scale * 4.0)) / maxf(ProgressionData.BALANCE_BASE_SOLO_DPS, 1.0)
-		var boss_ttk := (350.0 * 1.9 * (4.20 + scale * 1.20)) / maxf(ProgressionData.BALANCE_BASE_SOLO_DPS, 1.0)
+		# SCRUM-600: boss-коэффициент HP синхронизирован с combat_director._scale_boss_for_run
+		# (5.40 + scale*1.55), boss остаётся апексом (boss TTK ≥1.35× elite).
+		var boss_ttk := (350.0 * 1.9 * (5.40 + scale * 1.55)) / maxf(ProgressionData.BALANCE_BASE_SOLO_DPS, 1.0)
 		lines.append("| %d | %.3f | %.1fs | %.1fs | %.1fs | %.2fx |" % [
 			stage,
 			scale,

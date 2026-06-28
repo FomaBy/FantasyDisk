@@ -653,7 +653,10 @@ func _scale_elite_enemy(elite: Node2D) -> void:
 func _scale_boss_for_run(boss: Node2D) -> void:
 	boss.set_meta("boss_id", game.current_boss_id)
 	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
-	var health_multiplier = float(game.ENEMY_BALANCE["boss"]["hp_multiplier"]) * (4.20 + stage_scale * 1.20)
+	# SCRUM-600: boss-коэффициент HP поднят 4.20+scale*1.20 → 5.40+scale*1.55, чтобы
+	# boss оставался апексом (boss TTK ≥1.35× elite). ENEMY_BALANCE['boss']['hp_multiplier']
+	# НЕ трогаем — правка только в run-скейле. Зеркало: tools/balance_harness.gd TTK-секция.
+	var health_multiplier = float(game.ENEMY_BALANCE["boss"]["hp_multiplier"]) * (5.40 + stage_scale * 1.55)
 	var speed_multiplier = float(game.ENEMY_BALANCE["boss"]["speed_multiplier"])
 	var damage_multiplier = float(game.ENEMY_BALANCE["boss"]["damage_multiplier"]) * (1.0 + (stage_scale - 1.0) * 0.70)
 	if boss.get("max_health") != null:
