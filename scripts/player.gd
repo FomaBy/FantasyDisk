@@ -31,6 +31,9 @@ const ALLY_MINION_SCENE := preload("res://scenes/AllyMinion.tscn")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_COLUMNS := 5
+# SCRUM-595: потолок суммарного absorb_flat от оверхил-ульты Доктора за забег,
+# как доля от max_health (раньше копился безгранично → пауэр-крип/эксплойт).
+const DOCTOR_ULT_ABSORB_CAP_FRACTION := 0.5
 const PLAYER_COMBAT_VISUAL_SCALE := 0.425  # SCRUM-518: −15% от 0.5 (тело меньше на просторной арене)
 const BASE_SPRITE_SCALE := Vector2(PLAYER_COMBAT_VISUAL_SCALE, PLAYER_COMBAT_VISUAL_SCALE)
 # Анимация атаки персонажей отключена по запросу пользователя (2026-06-15).
@@ -162,6 +165,7 @@ var _lowhp_guard_used := false           # «Рубеж Стража»: латч
 var _lowhp_guard_cooldown_left := 0.0    # перезаряд щита (раз в N сек)
 var _take_hit_pulse_cooldown_left := 0.0 # «Контр-волна»: перезаряд отталкивающей волны
 var _kill_streak_counter := 0            # «Сбор Душ»: счётчик убийств до лечения
+var _doctor_ult_absorb_total := 0.0      # SCRUM-595: суммарный absorb от ульты Доктора за забег (капится)
 var _assassin_crit_shadow_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
@@ -231,6 +235,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_lowhp_guard_cooldown_left = 0.0
 	_take_hit_pulse_cooldown_left = 0.0
 	_kill_streak_counter = 0
+	_doctor_ult_absorb_total = 0.0  # SCRUM-595: сброс накопленного доктор-щита при смене персонажа/старте забега
 	if _crit_burst_tween != null and _crit_burst_tween.is_valid():
 		_crit_burst_tween.kill()
 	_crit_burst_tween = null
@@ -1241,8 +1246,17 @@ func _activate_doctor_ultimate(config: Dictionary, multiplier: float) -> void:
 	health = minf(max_health, health + healed)
 	var overflow := maxf((before + healed) - max_health, 0.0)
 	if overflow > 0.0:
-		run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + overflow * 0.08
-		_apply_stat_scaling(false, max_health)
+		# SCRUM-595: раньше каждый оверхил-каст НАВСЕГДА добавлял absorb_flat и
+		# никогда не снимал — за забег щит копился безгранично (эксплойт/пауэр-крип;
+		# робо-ульта свой absorb возвращает, доктор только add). Идентичность Доктора
+		# (overheal → постоянный щит) сохраняем, но КАПИМ суммарный доктор-вклад
+		# потолком, привязанным к max_health, чтобы рост был ограничен.
+		var cap := max_health * DOCTOR_ULT_ABSORB_CAP_FRACTION
+		var gain := minf(overflow * 0.08, maxf(cap - _doctor_ult_absorb_total, 0.0))
+		if gain > 0.0:
+			_doctor_ult_absorb_total += gain
+			run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + gain
+			_apply_stat_scaling(false, max_health)
 
 
 func _activate_chemist_ultimate(config: Dictionary, multiplier: float) -> void:
