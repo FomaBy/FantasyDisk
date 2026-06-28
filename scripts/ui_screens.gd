@@ -365,6 +365,7 @@ func _init(game_ref) -> void:
 # (project.godot viewport 2560×1440, stretch=canvas_items/keep). Эти прямоугольники —
 # вход для рисующего скрипта: он рисует ассеты ровно в эти размеры.
 const MENU_NAV_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
+const MM_TITLE_2K := Rect2(640, 72, 1280, 150)
 # Колонка кнопок слева (MarginContainer offset_left=72..452, VBox по центру вертикали,
 # 6 кнопок 380×104, separation 10 → высота 674, центр 1440 → top=383).
 const MM_BUTTON_COLUMN_2K := Rect2(72, 383, 380, 674)
@@ -418,6 +419,27 @@ func _show_main_menu() -> void:
 	global_shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	global_shade.color = Color(0.02, 0.02, 0.04, 0.18)
 	root.add_child(global_shade)
+
+	var title_label := Label.new()
+	title_label.name = "MainMenuTitleLabel"
+	title_label.text = "FANTASY DISK"
+	title_label.anchor_left = 0.25
+	title_label.anchor_top = 0.0
+	title_label.anchor_right = 0.75
+	title_label.anchor_bottom = 0.0
+	title_label.offset_left = 0.0
+	title_label.offset_top = 72.0
+	title_label.offset_right = 0.0
+	title_label.offset_bottom = 222.0
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 72)
+	title_label.add_theme_color_override("font_color", Color(0.92, 0.78, 0.46, 0.94))
+	title_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.82))
+	title_label.add_theme_constant_override("shadow_offset_x", 3)
+	title_label.add_theme_constant_override("shadow_offset_y", 4)
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(title_label)
 
 	var layout := MarginContainer.new()
 	layout.anchor_left = 0.0

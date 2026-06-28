@@ -127,7 +127,7 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
-Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_MENU_BACKGROUND`. SCRUM-316 keeps the battle focus center-right/lower-right, leaving the left third for the vertical button stack and the top-center area for the title. The asset is native 2560x1440 and was prepared with proportional cover-crop, not one-axis stretching.
+Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. SCRUM-560 refreshed the 2560x1440 runtime background with a calm left button-safe column, readable title area, and center-right/lower-right battle focus. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames.
 
 ## Hero / Weapon / Level-Up Layout Rules
 
