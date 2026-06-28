@@ -1367,10 +1367,17 @@ func _trigger_universal_dot(enemy: Node2D) -> void:
 	var dot_tween := create_tween()
 	for tick_index in range(2):
 		dot_tween.tween_interval(1.0 / dot_speed)
-		dot_tween.tween_callback(func() -> void:
-			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
-				enemy.take_damage(tick_damage)
-		)
+		# SCRUM-551: bound-метод вместо лямбды с захватом локалов `enemy`/`tick_damage`.
+		# Захват в lambda-callable интермиттентно «освобождался» под быстрым create/free
+		# игрока и врагов в balance-CSV (ERROR: Lambda capture at index 1 was freed,
+		# gdscript_lambda_callable.cpp:110) и валил прогон. Callable.bind держит self
+		# (живёт пока жив tween, привязанный к ноде игрока) + value-args; гвард внутри метода.
+		dot_tween.tween_callback(Callable(self, "_apply_dot_tick").bind(enemy, tick_damage))
+
+
+func _apply_dot_tick(enemy: Node2D, tick_damage: float) -> void:
+	if is_instance_valid(enemy) and enemy.has_method("take_damage"):
+		enemy.take_damage(tick_damage)
 
 
 func _trigger_class_status_effects(enemy: Node2D) -> void:
