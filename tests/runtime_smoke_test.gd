@@ -57,6 +57,11 @@ const MINIMAL_MODAL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_
 const MINIMAL_PANEL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png"
 const MINIMAL_CARD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png"
+# SCRUM-486 (UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация (build_ui_2k_frame_kit.py),
+# заменили общие minimal-фреймы SCRUM-448 на экранах паузы/досье/тултипов.
+const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png"
+const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
+const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
 const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
@@ -1108,8 +1113,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var run_pause_panel := main.find_child("RunPauseMenuPanel", true, false) as PanelContainer
-	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
-		push_error("Expected run pause menu to use the SCRUM-448 minimal modal frame.")
+	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != RUN_PAUSE_PANEL_TEXTURE_2K:
+		push_error("Expected run pause menu to use the SCRUM-486 @2K pm_panel frame.")
 		quit(1)
 		return
 	var pause_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
@@ -1162,8 +1167,8 @@ func _initialize() -> void:
 		push_error("Expected pause stats menu to expose Design kit hook nodes.")
 		quit(1)
 		return
-	if _stylebox_texture_path(escape_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
-		push_error("Expected pause dossier/stats panel shell to use the SCRUM-448 minimal modal frame.")
+	if _stylebox_texture_path(escape_panel.get_theme_stylebox("panel")) != PAUSE_DOSSIER_PANEL_TEXTURE_2K:
+		push_error("Expected pause dossier/stats panel shell to use the SCRUM-486 @2K pd_panel frame.")
 		quit(1)
 		return
 	if not (escape_panel.get_theme_stylebox("panel") is StyleBoxTexture):
@@ -1376,8 +1381,8 @@ func _test_glossary_terms(main: Node) -> void:
 	if tooltip == null or not _collect_label_text(tooltip).contains("Критический удар"):
 		_fail("Expected glossary hover to create a tooltip panel with the term name.")
 		return
-	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != MINIMAL_TOOLTIP_TEXTURE:
-		_fail("Expected glossary tooltip to use the SCRUM-448 minimal tooltip frame texture.")
+	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != GLOSSARY_TOOLTIP_TEXTURE_2K:
+		_fail("Expected glossary tooltip to use the SCRUM-486 @2K gt_panel frame texture.")
 		return
 	main.ui._hide_glossary_tooltip()
 	button.queue_free()

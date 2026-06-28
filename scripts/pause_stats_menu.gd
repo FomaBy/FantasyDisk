@@ -12,6 +12,10 @@ const STAT_BASIC_ROW_FRAME := preload("res://assets/sprites/ui/frames/minimal_me
 const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png")
 const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png")
 const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png")
+# SCRUM-486: per-слот @2K-ассеты экранов паузы-досье (PD_PANEL_2K 2520×1404) и тултипа
+# статов (ST_PANEL_2K шир.430), сгенерированы build_ui_2k_frame_kit.py РОВНО в размер слота.
+const ESCAPE_PANEL_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png")
+const STAT_TOOLTIP_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_st_panel.png")
 const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
 const PAUSE_END_MODAL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png")
 const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause.png")
@@ -720,11 +724,18 @@ func _panel_style() -> StyleBox:
 	return _texture_style(ESCAPE_PANEL_FRAME, 38, 52, 38, 48, Color.WHITE, Vector4(58, 72, 58, 66))
 
 
+# SCRUM-486: панель паузы-досье на @2K-ассете pd_panel (нарисован ровно 2520×1404 c
+# modal-маргинами). Бордюры скейлятся от source 2520×1404 → на 2K display==source (1:1),
+# на 1080p/4K — uniform-скейл вьюпорта. Ассет несёт свой орнамент, центр тянется 9-slice.
+const PD_PANEL_SOURCE_SIZE := Vector2(2520.0, 1404.0)
+const PD_PANEL_TEXTURE_MARGINS := Vector4(46.0, 62.0, 46.0, 58.0)
+const PD_PANEL_CONTENT := Vector4(72.0, 92.0, 72.0, 84.0)
+
 func _pause_end_modal_style(display_size: Vector2) -> StyleBox:
-	var texture_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_TEXTURE_MARGINS)
-	var content_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
+	var texture_margins := _scaled_frame_margins(PD_PANEL_SOURCE_SIZE, display_size, PD_PANEL_TEXTURE_MARGINS)
+	var content_margins := _scaled_frame_margins(PD_PANEL_SOURCE_SIZE, display_size, PD_PANEL_CONTENT)
 	return _texture_style(
-		PAUSE_END_MODAL_FRAME,
+		ESCAPE_PANEL_FRAME_2K,
 		texture_margins.x,
 		texture_margins.y,
 		texture_margins.z,
@@ -767,7 +778,9 @@ func _chip_style(is_hovered: bool) -> StyleBox:
 
 
 func _tooltip_style() -> StyleBox:
-	return _texture_style(STAT_TOOLTIP_FRAME, 46, 30, 46, 28, Color.WHITE, Vector4(66, 44, 66, 40))
+	# SCRUM-486: @2K-ассет тултипа статов st_panel (430×220, tooltip-маргины). Ширина фикс
+	# TOOLTIP_MAX_WIDTH=430 == ширина ассета, высота content-driven (9-slice по px-бордюрам).
+	return _texture_style(STAT_TOOLTIP_FRAME_2K, 46, 30, 46, 28, Color.WHITE, Vector4(66, 44, 66, 40))
 
 
 func _make_section_divider() -> TextureRect:

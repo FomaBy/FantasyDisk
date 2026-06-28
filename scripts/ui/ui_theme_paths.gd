@@ -56,6 +56,78 @@ const MINIMAL_METAL_FRAME_SAFE_RECTS := {
 	"hud_strip": Rect2(104, 62, 914, 170),
 	"field": Rect2(58, 52, 500, 186),
 }
+
+# SCRUM-486 (эпик SCRUM-481 UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация,
+# сгенерированы рисующим скриптом tools/build_ui_2k_frame_kit.py (SCRUM-485) РОВНО в
+# пиксельный размер слота из координатной спеки SCRUM-484. В отличие от общих
+# minimal_metal-фреймов (которые ужимались под слот и мылили орнамент), эти нарисованы
+# 1:1 под слот с нативными 9-slice бордюрами → при рантайм-9-slice тянется только плоская
+# середина, орнамент резкий на 1080p/2K/4K. SOURCE_SIZE = фактический размер PNG;
+# TEXTURE_MARGINS = тот же margin-профиль, которым их рисовал генератор (frame: panel/
+# modal/tooltip из MINIMAL_METAL_FRAME_TEXTURE_MARGINS; button: main_menu/standard/pause
+# из MINIMAL_METAL_BUTTON_MARGINS) — единый источник, anti-drift сверяется в --verify.
+const OVERHAUL_2K_FRAME_DIR := "res://assets/sprites/ui/frames/overhaul_2k/"
+const OVERHAUL_2K_FRAME_PATHS := {
+	"qc_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_qc_panel.png",
+	"cr_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_cr_panel.png",
+	"pm_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_pm_panel.png",
+	"fb_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_fb_panel.png",
+	"pd_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_pd_panel.png",
+	"gt_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_gt_panel.png",
+	"st_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_st_panel.png",
+	"mm_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_mm_btn.png",
+	"qc_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_qc_btn.png",
+	"cr_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_cr_btn.png",
+	"pm_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_pm_btn.png",
+	"fb_btn_send": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_fb_btn_send.png",
+	"fb_btn_cancel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_fb_btn_cancel.png",
+	"pd_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_pd_btn.png",
+}
+const OVERHAUL_2K_FRAME_SOURCE_SIZE := {
+	"qc_panel": Vector2(600, 340),
+	"cr_panel": Vector2(680, 380),
+	"pm_panel": Vector2(898, 820),
+	"fb_panel": Vector2(940, 780),
+	"pd_panel": Vector2(2520, 1404),
+	"gt_panel": Vector2(460, 140),
+	"st_panel": Vector2(430, 220),
+	"mm_btn": Vector2(380, 104),
+	"qc_btn": Vector2(220, 72),
+	"cr_btn": Vector2(240, 72),
+	"pm_btn": Vector2(280, 60),
+	"fb_btn_send": Vector2(260, 64),
+	"fb_btn_cancel": Vector2(220, 64),
+	"pd_btn": Vector2(280, 60),
+}
+# 9-slice бордюры: frame-слоты наследуют профиль panel/modal/tooltip, button-слоты —
+# main_menu/standard/pause (см. SLOTS-таблицу build_ui_2k_frame_kit.py).
+const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := {
+	"qc_panel": Vector4(38, 52, 38, 48),
+	"cr_panel": Vector4(38, 52, 38, 48),
+	"pm_panel": Vector4(38, 52, 38, 48),
+	"fb_panel": Vector4(38, 52, 38, 48),
+	"pd_panel": Vector4(46, 62, 46, 58),
+	"gt_panel": Vector4(46, 30, 46, 28),
+	"st_panel": Vector4(46, 30, 46, 28),
+	"mm_btn": Vector4(48, 28, 48, 28),
+	"qc_btn": Vector4(50, 28, 50, 28),
+	"cr_btn": Vector4(50, 28, 50, 28),
+	"pm_btn": Vector4(34, 16, 34, 16),
+	"fb_btn_send": Vector4(50, 28, 50, 28),
+	"fb_btn_cancel": Vector4(50, 28, 50, 28),
+	"pd_btn": Vector4(34, 16, 34, 16),
+}
+# content-инсет = бордюр + небольшой воздух (как соотношение margins→content в
+# MINIMAL_METAL_*); safe-area внутри этих инсетов держит текст/кнопки от орнамента.
+const OVERHAUL_2K_FRAME_CONTENT := {
+	"qc_panel": Vector4(58, 72, 58, 66),
+	"cr_panel": Vector4(58, 72, 58, 66),
+	"pm_panel": Vector4(58, 72, 58, 66),
+	"fb_panel": Vector4(58, 72, 58, 66),
+	"pd_panel": Vector4(72, 92, 72, 84),
+	"gt_panel": Vector4(66, 44, 66, 40),
+	"st_panel": Vector4(66, 44, 66, 40),
+}
 const UNIFIED_MASTER_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master.png"
 const UNIFIED_MASTER_FILL_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master_fill.png"
 const UNIFIED_INNER_FILL_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_inner_fill.png"

@@ -54,6 +54,11 @@ const RED_GOLD_BUTTON_MARGINS := UIThemePaths.RED_GOLD_BUTTON_MARGINS
 const RED_GOLD_BUTTON_CONTENT := UIThemePaths.RED_GOLD_BUTTON_CONTENT
 const MINIMAL_METAL_BUTTON_MARGINS := UIThemePaths.MINIMAL_METAL_BUTTON_MARGINS
 const MINIMAL_METAL_BUTTON_CONTENT := UIThemePaths.MINIMAL_METAL_BUTTON_CONTENT
+# SCRUM-486: per-слот @2K-ассеты блока Меню/Навигация (см. UIThemePaths.OVERHAUL_2K_*).
+const OVERHAUL_2K_FRAME_PATHS := UIThemePaths.OVERHAUL_2K_FRAME_PATHS
+const OVERHAUL_2K_FRAME_SOURCE_SIZE := UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE
+const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := UIThemePaths.OVERHAUL_2K_FRAME_TEXTURE_MARGINS
+const OVERHAUL_2K_FRAME_CONTENT := UIThemePaths.OVERHAUL_2K_FRAME_CONTENT
 const GLOSSARY := preload("res://scripts/glossary.gd")
 const SYSTEM_CHECKBOX_UNCHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_unchecked.png"
 const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_checked.png"
@@ -593,7 +598,8 @@ func _show_quit_confirmation_dialog() -> void:
 	panel.offset_right = 300.0
 	panel.offset_bottom = 170.0
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _panel_style())
+	# SCRUM-486: @2K per-слот фрейм (qc_panel 600×340, ровно размер панели).
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("qc_panel", Vector2(600.0, 340.0)))
 	overlay.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -720,7 +726,8 @@ func _show_continue_run_dialog() -> void:
 	panel.offset_right = 340.0
 	panel.offset_bottom = 190.0
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _panel_style())
+	# SCRUM-486: @2K per-слот фрейм (cr_panel 680×380, ровно размер панели).
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("cr_panel", Vector2(680.0, 380.0)))
 	overlay.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -3017,7 +3024,9 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tooltip.custom_minimum_size = Vector2(460, 0)
-	tooltip.add_theme_stylebox_override("panel", _codex_tooltip_style())
+	# SCRUM-486: @2K per-слот фрейм тултипа глоссария (gt_panel 460×140; ширина фикс 460,
+	# высота content-driven — 9-slice бордюры абсолютны в px, центр тянется по высоте).
+	tooltip.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("gt_panel", Vector2(460.0, 140.0)))
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
 	tooltip.add_child(box)
@@ -3848,7 +3857,10 @@ func _build_run_pause_menu() -> void:
 	panel.name = "RunPauseMenuPanel"
 	var panel_size := _pause_end_modal_display_size("pause")
 	panel.custom_minimum_size = panel_size
-	panel.add_theme_stylebox_override("panel", _pause_end_modal_style(panel_size))
+	# SCRUM-486: @2K per-слот фрейм паузы (pm_panel 898×820). Размер панели берётся из
+	# общей _pause_end_modal_display_size (на 2K ≈898×820), но стиль — собственный pm_panel,
+	# чтобы НЕ трогать общий PAUSE_END_MODAL_* (его делят победа/смерть).
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("pm_panel", panel_size))
 	root.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -6575,7 +6587,9 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	panel.offset_right = panel_width * 0.5
 	panel.offset_bottom = panel_height * 0.5
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _panel_style())
+	# SCRUM-486: @2K per-слот фрейм формы фидбэка (fb_panel 940×780; на 2K панель ровно
+	# 940×780, на меньших вьюпортах 9-slice бордюры скейлятся от source 940×780).
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("fb_panel", Vector2(panel_width, panel_height)))
 	root.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -7560,6 +7574,23 @@ func _minimal_metal_frame_style(frame_type: String, tint := Color.WHITE) -> Styl
 	var margins: Vector4 = MINIMAL_METAL_FRAME_TEXTURE_MARGINS.get(key, MINIMAL_METAL_FRAME_TEXTURE_MARGINS["panel"])
 	var content: Vector4 = MINIMAL_METAL_FRAME_CONTENT.get(key, MINIMAL_METAL_FRAME_CONTENT["panel"])
 	return _global_texture_style(str(MINIMAL_METAL_FRAME_PATHS[key]), margins, tint, content, true)
+
+
+# SCRUM-486: построить StyleBoxTexture для @2K-слота блока Меню/Навигация. Ассет нарисован
+# РОВНО в свой пиксельный размер (OVERHAUL_2K_FRAME_SOURCE_SIZE[slot]); 9-slice-бордюры
+# масштабируются от source→display (на 2K display==source, на 1080p/4K — uniform-скейл
+# вьюпорта), поэтому орнамент держится в margin-band, а тянется только плоская середина.
+# tile_edges=false: бордюры стретчатся по margins (как в minimal_metal panel-стиле), не тайлятся
+# — для гладкого градиента, без STRETCH_SCALE на самой текстуре (верификатор SCRUM-483 чист).
+func _overhaul_2k_frame_style(slot: String, display_size: Vector2, tint := Color.WHITE) -> StyleBox:
+	if not OVERHAUL_2K_FRAME_PATHS.has(slot):
+		return _minimal_metal_frame_style("panel", tint)
+	var source_size: Vector2 = OVERHAUL_2K_FRAME_SOURCE_SIZE[slot]
+	var base_margins: Vector4 = OVERHAUL_2K_FRAME_TEXTURE_MARGINS[slot]
+	var base_content: Vector4 = OVERHAUL_2K_FRAME_CONTENT.get(slot, Vector4.ZERO)
+	var texture_margins := _scaled_frame_margins_xy(source_size, display_size, base_margins)
+	var content_margins := _scaled_frame_margins_xy(source_size, display_size, base_content)
+	return _global_texture_style(str(OVERHAUL_2K_FRAME_PATHS[slot]), texture_margins, tint, content_margins, false)
 
 
 func _economy_panel_style() -> StyleBox:
