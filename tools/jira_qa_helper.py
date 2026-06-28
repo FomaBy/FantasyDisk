@@ -8,16 +8,28 @@ Usage:
 """
 import sys, os, json, base64, subprocess, urllib.request, urllib.parse, urllib.error
 
-SITE = "https://fantasydisk.atlassian.net"
+SITE = os.getenv("JIRA_BASE_URL", "https://fantasydisk.atlassian.net").rstrip("/")
 PROJECT = "SCRUM"
-EMAIL = "fomamoney@gmail.com"
-KEYCHAIN_SERVICE = "fantasydisk-jira"
+EMAIL = os.getenv("JIRA_EMAIL", "fomamoney@gmail.com")
+KEYCHAIN_SERVICE = os.getenv("JIRA_KEYCHAIN_SERVICE", "fantasydisk-jira")
 
 
 def token():
-    return subprocess.check_output(
-        ["security", "find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"],
-        text=True).strip()
+    env_token = os.getenv("JIRA_API_TOKEN")
+    if env_token:
+        return env_token.strip()
+    try:
+        found = subprocess.run(
+            ["security", "find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"],
+            capture_output=True, text=True, check=False)
+    except FileNotFoundError:
+        found = None
+    keychain_token = found.stdout.strip() if found else ""
+    if not keychain_token:
+        raise RuntimeError(
+            "Jira token not found. Set JIRA_API_TOKEN or configure macOS Keychain "
+            f"service '{KEYCHAIN_SERVICE}'.")
+    return keychain_token
 
 
 def api(method, path, payload=None):
