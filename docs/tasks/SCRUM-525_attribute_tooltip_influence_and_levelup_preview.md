@@ -7,6 +7,8 @@ Jira: SCRUM-525 · Роль: backend · Контур: claude · Приорите
 
 Статус: PASSED · QA 2026-06-27 (Godot 4.6.3 headless, ветка dev, HEAD e2ef8760)
 
+Re-verified 2026-06-28 by Codex QA-loop `qa_492_20260628190455` after Jira status drift back to `Контроль качества`: SCRUM-525 anchors remain present in `scripts/ui_screens.gd` (`_attribute_influence_text`, `_attribute_upgrade_preview_lines`, tooltip blocks on `AttributeOffer_*`, level-up preview helpers). Godot 4.7 headless: `tests/ui_no_overlap_matrix_test.gd` PASS, `tests/runtime_smoke_ui_test.gd` PASS, `tests/stat_formulas_smoke_test.gd` PASS; full `tests/runtime_smoke_test.gd` had already passed on the same HEAD in this QA loop. Jira returned to `Готово`.
+
 Green-gate / смоуки — все зелёные: runtime_smoke_test, ui_no_overlap_matrix_test
 (overflow-допуск 6px, контракт choice_card, форс attribute_offer=[damage,attack_speed]),
 runtime_smoke_ui_test, stat_formulas_smoke_test (35/8/27).
