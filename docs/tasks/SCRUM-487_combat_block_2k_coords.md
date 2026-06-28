@@ -1,7 +1,7 @@
 # SCRUM-487: Блок Боевые: координаты @2K + интеграция (HUD/событие/награды/level-up)
 
 Jira: SCRUM-487 · Роль: backend+design (claude) · Контур: ui-overhaul-2k · Приоритет: P1 · foma · Эпик: SCRUM-481
-Статус: К выполнению
+Статус: done (QA PASSED 2026-06-28 Codex QA-loop; independent reverify on origin/dev ae684592)
 
 ## Что и зачем
 
@@ -240,3 +240,17 @@ SCRUM-484). Эти прямоугольники — единственный и�
   стиля const и секции инвентаря), SCRUM-483 (render-verifier гейт 1080p/2K/4K, на который ссылается AC).
 - **QA / Godot 4.6.3** в `~/Downloads/Godot.app`, smoke-тесты гонять headless
   (`--headless --script tests/<name>.gd`); после вердикта прогнать `tools/jira_board_sync.py`.
+
+## QA-Вердикт 2026-06-28 — PASSED
+
+Статус: PASSED
+
+Codex QA-loop independently rechecked SCRUM-487 on `origin/dev`/`ae684592`.
+
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --import` — PASS for clean worktree import cache; only known unrelated duplicate UID warnings for reference/source skeleton art were observed.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASS, `UI no-overlap matrix test passed`.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASS, `Runtime UI smoke suite passed`.
+- First `runtime_smoke_test.gd` run hit a single Act 2 boss autosave checkpoint failure after duplicate-artifact guard passed; immediate rerun passed.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd` rerun — PASS, `Runtime smoke test passed`, duplicate-artifact guard scanned 7932 files.
+
+Result: PASS. Combat UI frame/safe-zone gates are green; the single runtime smoke failure did not reproduce and is recorded as a non-blocking flake.

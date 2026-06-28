@@ -2712,5 +2712,11 @@
   "key": "SCRUM-572",
   "status": "Контроль качества",
   "desc_hash": "fade7a34639ab0983f07f8a9ad3ffdc1"
+ } ,
+ "SCRUM-487_combat_block_2k_coords.md": {
+  "key": "SCRUM-487",
+  "status": "??????",
+  "desc_hash": "c406137bfc46a4f1424cba6417366678"
  }
+
 }
