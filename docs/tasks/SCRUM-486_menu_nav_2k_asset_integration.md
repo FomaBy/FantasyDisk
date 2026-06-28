@@ -3,7 +3,7 @@
 Jira: SCRUM-486 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: SCRUM-481 (UI Overhaul 2K)
 Статус: done (QA PASSED → Готово, 2026-06-28 Codex QA-loop). Re-verified 2026-06-28 claude-backend-3 против origin/dev bef946b8 — verifier `tests/ui_no_overlap_matrix_test.gd` зелёный 1080p/2K/4K + оба смоука зелёные; независимая QA-приёмка Codex против origin/dev cce17cbf также зелёная. Интеграция @2K блока Меню/Навигация доставлена в dev пер-экранными тикетами SCRUM-579/580/581 (+SCRUM-560 для кнопок главного меню), которые суперсед-нули потерянный бандл-коммит 011a0005 (остался dangling, не дошёл до dev из-за churn воркеров; повторно НЕ применять — он откатывал бы более новую работу).
 
-QA: in_progress 2026-06-28 17:35 Europe/Kiev, Codex QA-loop `qa_loop_20260628_1727`; независимая приёмка против `origin/dev`/`cce17cbf`.
+QA: done 2026-06-28 19:35 Europe/Kiev, Codex QA-loop `qa_loop_20260628_1935`; повторная приёмка против `origin/dev`/`b1ecbca7` после Jira status drift обратно в `Контроль качества`.
 
 ## QA-Вердикт (2026-06-28, Codex QA-loop)
 
@@ -27,6 +27,18 @@ Acceptance:
 - Verified 1080p/2K/4K matrix via `tests/ui_no_overlap_matrix_test.gd`; full runtime smoke also covers run flow around menu/navigation entry points.
 
 Баги: нет.
+
+## QA-Вердикт (2026-06-28, Codex QA-loop reverify)
+
+Статус: PASSED
+
+Проверено на `origin/dev`/`b1ecbca7`:
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --import` — PASS для чистого worktree import cache; известные UID duplicate warnings по reference/source skeleton parts остаются нерелевантными SCRUM-486.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASS, `UI no-overlap matrix test passed`.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASS, `Runtime UI smoke suite passed`.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS, duplicate-artifact guard 7922 files.
+
+Result: PASS. Jira status drift was rechecked; no product blocker found.
 
 ## Что и зачем
 
