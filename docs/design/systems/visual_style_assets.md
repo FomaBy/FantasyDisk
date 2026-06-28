@@ -211,6 +211,16 @@ The older `assets/sprites/ui/frames/codex/` package remains a historical Codex
 component kit, while runtime `CodexScreen` now uses the slot-exact 2K family for
 its shell, panels, entry cards, tabs and compact back button.
 
+SCRUM-584 adds the live rebind-conflict 2K frame pair under
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png` and
+`ui_frame_2k_rc_btn.png`. Slots are `rc_panel` and `rc_btn`, registered in
+`scripts/ui/ui_theme_paths.gd` and generated through
+`tools/build_ui_2k_frame_kit.py --all`. The accepted textless OpenAI style
+reference is
+`docs/design/references/scrum584_rebind_conflict_2k/rebind_conflict_2k_mockup_reference_v2.png`;
+the exact content-zone contract lives at
+`docs/design/mockups/scrum584_rebind_conflict_2k/spec.md`.
+
 SCRUM-273 superseded the SCRUM-147 button-only Parchment & Wax Seal kit with the
 historical **Red & Gold Dragon button kit** from
 `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live

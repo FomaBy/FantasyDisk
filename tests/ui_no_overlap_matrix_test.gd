@@ -17,6 +17,8 @@ const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
 const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 const CR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_panel.png"
 const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_btn.png"
+const RC_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png"
+const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_btn.png"
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
 const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
@@ -53,6 +55,10 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "settings", Callable(self, "_open_settings"), [
 			"SettingsTabSwitcher", "SettingsContentPanel",
 			"SettingsResolutionOption", "SettingsWindowModeOption", "SettingsBackButton",
+		], dump_lines, errors)
+		await _check_screen(viewport_size, "rebind_conflict", Callable(self, "_open_rebind_conflict"), [
+			"RebindConflictPanel", "RebindConflictTitle", "RebindConflictMessage",
+			"RebindConflictRetryButton", "RebindConflictBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
 			"CodexBackButton", "CodexTabs", "CodexContent", "CodexDetailPanel",
@@ -290,6 +296,10 @@ func _open_settings(main: Node) -> void:
 	main.call("_show_settings_menu")
 
 
+func _open_rebind_conflict(main: Node) -> void:
+	main.ui._show_rebind_conflict("move_up", KEY_W, "move_down")
+
+
 func _open_codex(main: Node) -> void:
 	main.ui._show_codex_screen()
 
@@ -472,6 +482,32 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected %s in ContinueRunPanel." % [context, button_name]
 				if _stylebox_texture_path(cr_button.get_theme_stylebox("normal")) != CR_BTN_2K_FRAME_PATH:
 					return "%s: expected %s to use cr_btn @2K frame." % [context, button_name]
+		"rebind_conflict":
+			var rebind_panel := main.find_child("RebindConflictPanel", true, false) as Control
+			if rebind_panel == null or not rebind_panel.visible or not rebind_panel.get_global_rect().has_area():
+				return "%s: expected visible RebindConflictPanel." % context
+			if _stylebox_texture_path(rebind_panel.get_theme_stylebox("panel")) != RC_PANEL_2K_FRAME_PATH:
+				return "%s: expected RebindConflictPanel to use rc_panel @2K frame." % context
+			if str(rebind_panel.get_meta("rebind_conflict_stage", "")) != "openai_mockup_ready_runtime_rc_assets":
+				return "%s: expected RebindConflictPanel to expose completed SCRUM-584 stage metadata." % context
+			if Vector4(rebind_panel.get_meta("rebind_conflict_content_margins", Vector4.ZERO)) != Vector4(58, 72, 58, 66):
+				return "%s: expected RebindConflictPanel strict SCRUM-584 content margins." % context
+			var rebind_safe: Rect2 = rebind_panel.get_meta("rebind_conflict_content_rect", Rect2()) as Rect2
+			if rebind_safe != Rect2(58, 72, 564, 242):
+				return "%s: expected RebindConflictPanel safe rect to match RC_SAFE_2K." % context
+			var scaled_rebind_safe := _scaled_source_rect(rebind_panel.get_global_rect(), Vector2(680, 380), rebind_safe).grow(1.0)
+			for child_name in ["RebindConflictTitle", "RebindConflictMessage", "RebindConflictRetryButton", "RebindConflictBackButton"]:
+				var child := main.find_child(child_name, true, false) as Control
+				if child == null or not child.visible or not child.get_global_rect().has_area():
+					return "%s: expected visible %s." % [context, child_name]
+				if not scaled_rebind_safe.encloses(child.get_global_rect()):
+					return "%s: expected %s to stay inside scaled rebind conflict safe rect %s." % [context, child_name, str(scaled_rebind_safe)]
+			for button_name in ["RebindConflictRetryButton", "RebindConflictBackButton"]:
+				var rebind_button := main.find_child(button_name, true, false) as Button
+				if rebind_button == null:
+					return "%s: expected %s button." % [context, button_name]
+				if _stylebox_texture_path(rebind_button.get_theme_stylebox("normal")) != RC_BTN_2K_FRAME_PATH:
+					return "%s: expected %s to use rc_btn @2K button frame." % [context, button_name]
 		"codex":
 			var expected_panels := {
 				"CodexMainPanel": CODEX_MAIN_2K_FRAME_PATH,

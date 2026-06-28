@@ -545,6 +545,34 @@ normal checkbox row inside `ControlsScroll`, persists as `combat_feedback` in
 `user://settings.cfg`, defaults ON, and controls floating damage/heal numbers,
 critical markers and hit flash/outline visuals without changing gameplay.
 
+### SCRUM-584. Key Rebind Conflict Dialog
+
+SCRUM-584 completes the `_show_rebind_conflict` 2K pass. The dialog is now a
+dedicated `RebindConflictDialog` / `RebindConflictPanel`, not the generic menu
+box, with a textless OpenAI mockup reference and dedicated runtime
+`rc_panel`/`rc_btn` frame assets. The generated mockup is visual direction only;
+exact content geometry is enforced by the `RC_*_2K` constants and verifier.
+
+| Slot | const | x | y | w | h |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Panel frame | `RC_PANEL_2K` | 940 | 530 | 680 | 380 |
+| Safe-area | `RC_SAFE_2K` | 998 | 602 | 564 | 242 |
+| Title | `RC_TITLE_2K` | 998 | 614 | 564 | 44 |
+| Message | `RC_MESSAGE_2K` | 998 | 674 | 564 | 66 |
+| Button: choose another | `RC_BTN_RETRY_2K` | 1031 | 758 | 240 | 72 |
+| Button: settings | `RC_BTN_BACK_2K` | 1289 | 758 | 240 | 72 |
+
+Frame contract: content margins are `58/72/58/66` on the `680x380` source
+`ui_frame_2k_rc_panel.png`, so title/message/buttons must stay inside local
+`Rect2(58, 72, 564, 242)`. The ornament, rails and dividers of the frame are not
+usable content space. Both actions use the dedicated `240x72`
+`ui_frame_2k_rc_btn.png` button frame. OpenAI/source and safe-zone evidence live
+under `docs/design/references/scrum584_rebind_conflict_2k/`,
+`docs/design/mockups/scrum584_rebind_conflict_2k/`, and
+`docs/design/previews/scrum584_rebind_conflict_2k_safe_zones.png`. Verifier
+coverage: `tests/ui_no_overlap_matrix_test.gd`, screen id `rebind_conflict`,
+across 1080p/2K/4K.
+
 SCRUM-441 is integrated in the same Settings pass. Resolution options use
 `scripts/display_resolution.gd` to compare requested window sizes against the
 physical usable monitor size (`usable_logical * screen_scale`) instead of only

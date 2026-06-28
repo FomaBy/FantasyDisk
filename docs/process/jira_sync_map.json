@@ -2842,5 +2842,10 @@
   "key": "SCRUM-621",
   "status": "Контроль качества",
   "desc_hash": "6d78c3ced9af0f582216e3bac1770982"
+ },
+ "design_scrum584_rebind_conflict_ui_2k_task.md": {
+  "key": "SCRUM-584",
+  "status": "Контроль качества",
+  "desc_hash": "ca3232d1a681ee60a88bb6f67a5bce17"
  }
 }

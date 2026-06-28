@@ -675,6 +675,16 @@ const CR_SUBTITLE_2K := Rect2(998, 674, 564, 66)
 const CR_BTN_CONTINUE_2K := Rect2(1031, 758, 240, 72)
 const CR_BTN_NEWGAME_2K := Rect2(1289, 758, 240, 72)
 
+# SCRUM-584: координатная спека @2560x1440 — конфликт переназначения клавиши.
+# Mockup/art source: docs/design/references/scrum584_rebind_conflict_2k/.
+const RC_DIM_2K := Rect2(0, 0, 2560, 1440)
+const RC_PANEL_2K := Rect2(940, 530, 680, 380)
+const RC_SAFE_2K := Rect2(998, 602, 564, 242)
+const RC_TITLE_2K := Rect2(998, 614, 564, 44)
+const RC_MESSAGE_2K := Rect2(998, 674, 564, 66)
+const RC_BTN_RETRY_2K := Rect2(1031, 758, 240, 72)
+const RC_BTN_BACK_2K := Rect2(1289, 758, 240, 72)
+
 
 func _show_continue_run_dialog() -> void:
 	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
@@ -6152,18 +6162,89 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	var target_label := _action_label(target_action)
 	var conflict_label := _action_label(conflict_action)
 	var key_name := OS.get_keycode_string(keycode)
-	var box := _create_menu_box("Клавиша занята", "%s уже используется для «%s». Выбери другую клавишу для «%s»." % [key_name, conflict_label, target_label], "settings")
+	game._clear_ui()
+
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "RebindConflictDialog"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	game.ui_layer.add_child(root)
+	_add_screen_background(root, "settings")
+
+	var panel := Panel.new()
+	panel.name = "RebindConflictPanel"
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -RC_PANEL_2K.size.x * 0.5
+	panel.offset_top = -RC_PANEL_2K.size.y * 0.5
+	panel.offset_right = RC_PANEL_2K.size.x * 0.5
+	panel.offset_bottom = RC_PANEL_2K.size.y * 0.5
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("rc_panel", RC_PANEL_2K.size))
+	panel.set_meta("rebind_conflict_stage", "openai_mockup_ready_runtime_rc_assets")
+	panel.set_meta("rebind_conflict_slot", "rc_panel")
+	panel.set_meta("rebind_conflict_content_margins", _overhaul_2k_content_margins("rc_panel", RC_PANEL_2K.size))
+	panel.set_meta("rebind_conflict_content_rect", Rect2(RC_SAFE_2K.position - RC_PANEL_2K.position, RC_SAFE_2K.size))
+	root.add_child(panel)
+
+	var title_label := Label.new()
+	title_label.name = "RebindConflictTitle"
+	title_label.text = "Клавиша занята"
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 36)
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	panel.add_child(title_label)
+	title_label.position = RC_TITLE_2K.position - RC_PANEL_2K.position
+	title_label.size = RC_TITLE_2K.size
+
+	var message_label := Label.new()
+	message_label.name = "RebindConflictMessage"
+	message_label.text = "%s занята: «%s». Для «%s» выбери другую." % [key_name, conflict_label, target_label]
+	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	message_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	message_label.clip_text = true
+	message_label.add_theme_font_size_override("font_size", 18)
+	message_label.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
+	panel.add_child(message_label)
+	message_label.position = RC_MESSAGE_2K.position - RC_PANEL_2K.position
+	message_label.size = RC_MESSAGE_2K.size
+
 	var retry_button := _make_button("Выбрать другую")
+	retry_button.name = "RebindConflictRetryButton"
+	_set_action_button_size(retry_button, RC_BTN_RETRY_2K.size.x, RC_BTN_RETRY_2K.size.y)
+	_apply_overhaul_2k_button_theme(retry_button, "rc_btn", RC_BTN_RETRY_2K.size)
+	retry_button.add_theme_font_size_override("font_size", 18)
 	retry_button.pressed.connect(func() -> void:
 		_begin_rebind(target_action)
 	)
-	box.add_child(retry_button)
-	var back_button := _make_button("Назад к настройкам")
+	panel.add_child(retry_button)
+	retry_button.position = RC_BTN_RETRY_2K.position - RC_PANEL_2K.position
+	retry_button.size = RC_BTN_RETRY_2K.size
+	var back_button := _make_button("Настройки")
+	back_button.name = "RebindConflictBackButton"
+	_set_action_button_size(back_button, RC_BTN_BACK_2K.size.x, RC_BTN_BACK_2K.size.y)
+	_apply_overhaul_2k_button_theme(back_button, "rc_btn", RC_BTN_BACK_2K.size)
+	back_button.add_theme_font_size_override("font_size", 18)
 	back_button.pressed.connect(func() -> void:
 		game.pending_rebind_action = ""
 		_show_settings_menu()
 	)
-	box.add_child(back_button)
+	panel.add_child(back_button)
+	back_button.position = RC_BTN_BACK_2K.position - RC_PANEL_2K.position
+	back_button.size = RC_BTN_BACK_2K.size
+	retry_button.focus_neighbor_right = back_button.get_path()
+	retry_button.focus_neighbor_left = back_button.get_path()
+	back_button.focus_neighbor_left = retry_button.get_path()
+	back_button.focus_neighbor_right = retry_button.get_path()
+	retry_button.grab_focus()
 
 
 func _reset_input_bindings_to_defaults() -> void:

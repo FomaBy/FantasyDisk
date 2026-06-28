@@ -56,6 +56,7 @@ SLOTS = [
     # панели/модалки/тултипы (frame-маргины)
     {"slug": "qc_panel", "file": "ui_screens", "const": "QC_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 600, "h": 340},
     {"slug": "cr_panel", "file": "ui_screens", "const": "CR_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 680, "h": 380},
+    {"slug": "rc_panel", "file": "ui_screens", "const": "RC_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 680, "h": 380},
     {"slug": "pm_panel", "file": "ui_screens", "const": "PM_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 898, "h": 820},
     {"slug": "fb_panel", "file": "ui_screens", "const": "FB_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 940, "h": 780},
     {"slug": "pd_panel", "file": "pause_stats", "const": "PD_PANEL_2K", "kind": "frame", "margin_key": "modal", "w": 2520, "h": 1404},
@@ -113,6 +114,7 @@ SLOTS = [
     {"slug": "mm_btn", "file": "ui_screens", "const": "MM_BTN_START_2K", "kind": "button", "margin_key": "main_menu", "w": 380, "h": 104},
     {"slug": "qc_btn", "file": "ui_screens", "const": "QC_BTN_EXIT_2K", "kind": "button", "margin_key": "standard", "w": 220, "h": 72},
     {"slug": "cr_btn", "file": "ui_screens", "const": "CR_BTN_CONTINUE_2K", "kind": "button", "margin_key": "standard", "w": 240, "h": 72},
+    {"slug": "rc_btn", "file": "ui_screens", "const": "RC_BTN_RETRY_2K", "kind": "button", "margin_key": "standard", "w": 240, "h": 72},
     {"slug": "pm_btn", "file": "ui_screens", "const": "PM_BTN_CONTINUE_2K", "kind": "button", "margin_key": "pause", "w": 280, "h": 60},
     {"slug": "fb_btn_send", "file": "ui_screens", "const": "FB_BTN_SEND_2K", "kind": "button", "margin_key": "standard", "w": 260, "h": 64},
     {"slug": "fb_btn_cancel", "file": "ui_screens", "const": "FB_BTN_CANCEL_2K", "kind": "button", "margin_key": "standard", "w": 220, "h": 64},

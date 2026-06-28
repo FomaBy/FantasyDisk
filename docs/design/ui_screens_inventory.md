@@ -56,7 +56,7 @@
 | 22 | Подтверждение выхода | `QuitConfirmationPanel` | `_show_quit_confirmation_dialog` | ui_screens.gd:423 |
 | 23 | Продолжить забег | `ContinueRunPanel` | `_show_continue_run_dialog` | ui_screens.gd:532 |
 | 24 | Форма фидбэка | `FeedbackOverlay` / `FeedbackPanel` | `_show_feedback_overlay` | ui_screens.gd:5940 |
-| 25 | Конфликт переназначения клавиш | — | `_show_rebind_conflict` (в настройках) | ui_screens.gd:5846 |
+| 25 | Конфликт переназначения клавиш | `RebindConflictPanel` | `_show_rebind_conflict` (в настройках) | ui_screens.gd:6131 |
 
 ## C. Тултипы / транзиентные баннеры (5)
 
@@ -124,6 +124,13 @@
 assets from `assets/sprites/ui/frames/overhaul_2k/`. Panel content margins are
 `58/72/58/66`; both actions use the `240x72` `ui_frame_2k_cr_btn.png` button
 frame. Title, subtitle, and buttons stay inside `CR_SAFE_2K`.
+
+**SCRUM-584 rebind conflict integration:** `_show_rebind_conflict()` uses
+`RebindConflictDialog` / `RebindConflictPanel` with the dedicated @2K
+`rc_panel` and `rc_btn` frames. Runtime geometry is `RC_PANEL_2K = 940,530,680,380`,
+`RC_SAFE_2K = 998,602,564,242`, and two `240x72` action buttons inside the safe
+zone. Source/mockup evidence lives in `docs/design/references/scrum584_rebind_conflict_2k/`
+and `docs/design/mockups/scrum584_rebind_conflict_2k/spec.md`.
 
 ### 4. Пауза в забеге — `_build_run_pause_menu` · `PM_*`
 Панель из `_pause_end_modal_display_size("pause")` → 898×820; safe-area по

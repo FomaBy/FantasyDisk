@@ -78,6 +78,7 @@ const OVERHAUL_2K_FRAME_DIR := "res://assets/sprites/ui/frames/overhaul_2k/"
 const OVERHAUL_2K_FRAME_PATHS := {
 	"qc_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_qc_panel.png",
 	"cr_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_cr_panel.png",
+	"rc_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_rc_panel.png",
 	"pm_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_pm_panel.png",
 	"fb_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_fb_panel.png",
 	"pd_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_pd_panel.png",
@@ -117,6 +118,7 @@ const OVERHAUL_2K_FRAME_PATHS := {
 	"mm_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_mm_btn.png",
 	"qc_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_qc_btn.png",
 	"cr_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_cr_btn.png",
+	"rc_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_rc_btn.png",
 	"pm_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_pm_btn.png",
 	"fb_btn_send": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_fb_btn_send.png",
 	"fb_btn_cancel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_fb_btn_cancel.png",
@@ -125,6 +127,7 @@ const OVERHAUL_2K_FRAME_PATHS := {
 const OVERHAUL_2K_FRAME_SOURCE_SIZE := {
 	"qc_panel": Vector2(600, 340),
 	"cr_panel": Vector2(680, 380),
+	"rc_panel": Vector2(680, 380),
 	"pm_panel": Vector2(898, 820),
 	"fb_panel": Vector2(940, 780),
 	"pd_panel": Vector2(2520, 1404),
@@ -164,6 +167,7 @@ const OVERHAUL_2K_FRAME_SOURCE_SIZE := {
 	"mm_btn": Vector2(380, 104),
 	"qc_btn": Vector2(220, 72),
 	"cr_btn": Vector2(240, 72),
+	"rc_btn": Vector2(240, 72),
 	"pm_btn": Vector2(280, 60),
 	"fb_btn_send": Vector2(260, 64),
 	"fb_btn_cancel": Vector2(220, 64),
@@ -174,6 +178,7 @@ const OVERHAUL_2K_FRAME_SOURCE_SIZE := {
 const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := {
 	"qc_panel": Vector4(38, 52, 38, 48),
 	"cr_panel": Vector4(38, 52, 38, 48),
+	"rc_panel": Vector4(38, 52, 38, 48),
 	"pm_panel": Vector4(38, 52, 38, 48),
 	"fb_panel": Vector4(38, 52, 38, 48),
 	"pd_panel": Vector4(46, 62, 46, 58),
@@ -213,6 +218,7 @@ const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := {
 	"mm_btn": Vector4(48, 28, 48, 28),
 	"qc_btn": Vector4(50, 28, 50, 28),
 	"cr_btn": Vector4(50, 28, 50, 28),
+	"rc_btn": Vector4(50, 28, 50, 28),
 	"pm_btn": Vector4(34, 16, 34, 16),
 	"fb_btn_send": Vector4(50, 28, 50, 28),
 	"fb_btn_cancel": Vector4(50, 28, 50, 28),
@@ -223,6 +229,7 @@ const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := {
 const OVERHAUL_2K_FRAME_CONTENT := {
 	"qc_panel": Vector4(58, 72, 58, 66),
 	"cr_panel": Vector4(58, 72, 58, 66),
+	"rc_panel": Vector4(58, 72, 58, 66),
 	"pm_panel": Vector4(58, 72, 58, 66),
 	"fb_panel": Vector4(58, 72, 58, 66),
 	"pd_panel": Vector4(72, 92, 72, 84),
@@ -259,6 +266,7 @@ const OVERHAUL_2K_FRAME_CONTENT := {
 	"codex_entry_card": Vector4(48, 35, 53, 32),
 	"codex_tab_btn": Vector4(48, 32, 48, 32),
 	"codex_back_btn": Vector4(20, 16, 20, 16),
+	"rc_btn": Vector4(34, 8, 34, 8),
 }
 const UNIFIED_MASTER_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master.png"
 const UNIFIED_MASTER_FILL_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master_fill.png"
