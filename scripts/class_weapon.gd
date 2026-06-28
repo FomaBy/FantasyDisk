@@ -1689,7 +1689,7 @@ func _fire_robot_compression_line(owner_node: Node2D, target: Node2D, direction:
 
 
 func _fire_robot_reactor_vent(owner_node: Node2D, direction: Vector2) -> void:
-	var vent_count := maxi(projectile_count, 4)
+	var vent_count := maxi(projectile_count + _extra_projectiles(), 4)
 	var damage_value := _rolled_damage(owner_node) / float(maxi(vent_count, 1))
 	AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, aoe_radius * 0.62, visual_color, true)
 	for vent_index in range(vent_count):
