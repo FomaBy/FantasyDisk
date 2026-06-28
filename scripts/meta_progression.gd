@@ -328,7 +328,7 @@ static func _class_challenge_met(challenge: Dictionary, prog: Dictionary) -> boo
 
 
 static func selectable_max(state: Dictionary, character_id: String) -> int:
-	# Можно выбрать 0..(пройдено+1), но не выше 10.
+	# Можно выбрать 0..(пройдено+1), но не выше 5 (MAX_ASCENSION_LEVEL).
 	return clampi(ascension_level(state, character_id) + 1, 0, MAX_ASCENSION_LEVEL)
 
 
