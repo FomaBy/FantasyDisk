@@ -2622,5 +2622,10 @@
   "key": "SCRUM-585",
   "status": "Контроль качества",
   "desc_hash": "4256c8a113f7a067806131c0997e9a54"
+ },
+ "bug_scrum619_secret_encounter_artifact_key_unlock_task.md": {
+  "key": "SCRUM-623",
+  "status": "К выполнению",
+  "desc_hash": "70824cff19f50c53aea62934a1a0d767"
  }
 }
