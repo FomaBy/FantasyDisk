@@ -102,7 +102,6 @@ func _build_rig() -> void:
 
 	_skeleton = Skeleton2D.new()
 	_skeleton.name = "Skeleton2D"
-	add_child(_skeleton)
 
 	var root_source := _source_point("root_pivot_source", SOURCE_CENTER)
 	var root := _spawn_bone("root", "Root", _skeleton, root_source - SOURCE_CENTER)
@@ -122,6 +121,7 @@ func _build_rig() -> void:
 	torso.add_child(marker)
 	marker.set_meta("socket_behavior", "runtime_orbit_preserved")
 	_finalize_bone_setup()
+	add_child(_skeleton)
 
 
 func _spawn_limb(side: String, torso: Bone2D, pelvis: Bone2D) -> void:
