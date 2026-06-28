@@ -270,6 +270,10 @@ active but has no result/heartbeat is a process failure.
 6. Синхронизировать local mirrors.
 7. Закоммитить и запушить работу или открыть PR по GitHub workflow.
 8. Оставить рабочее дерево чистым либо явно описать оставшийся WIP/blocker.
+9. Убрать за собой временное место на диске: удалить disposable worktree/clone
+   после push, удалить `.godot/`, `.import`, `.uid`, `__pycache__/` и временные
+   логи/скриншоты вне committed evidence. Если cleanup невозможен из-за lock,
+   записать в Jira/final report точный путь, примерный размер и причину.
 
 Mandatory final Jira comment before any worker stops:
 
@@ -279,6 +283,7 @@ Branch/commit/PR: <branch and commit hash or explicit none>
 Tests/evidence: <commands run or why impossible>
 Docs/mirrors: <updated files or not needed>
 Next owner/status: <QA, To Do, blocked reason, or handoff issue>
+Disk cleanup: <removed worktree/cache paths or locked leftovers with size>
 ```
 
 If branch/commit/tests are missing, the task is not complete; keep it out of
@@ -360,6 +365,30 @@ git pull --ff-only origin dev
 `AGENTS.md`/task instructions. Но даже при direct-`dev` работе не оставлять
 результат локально: pull перед стартом новой задачи, commit + push после
 проверок каждой завершённой задачи.
+
+## Disk Cleanup
+
+Свободное место на диске является частью definition of done. Любой агент, который
+создаёт отдельный worktree, clone, QA checkout, image/mockup temp directory,
+Godot import cache или test user-data cache, обязан убрать это после завершения.
+
+Обязательный cleanup после push/Jira final comment:
+
+```bash
+git -C <main_repo> worktree remove --force <agent_worktree>
+git -C <main_repo> worktree prune
+```
+
+Также удалить в своём disposable checkout generated caches: `.godot/`, `.vs/`,
+`__pycache__/`, untracked `.import`/`.uid`, transient logs and temp screenshots.
+Committed evidence under `docs/design/previews`, `docs/design/references`,
+`docs/tasks`, `build/qa/<task>` is not temporary and must remain if it is part
+of the result.
+
+Never delete the user's main repository, unrelated user folders, secrets, or
+external application data. If cleanup fails because a process locks a file,
+report the exact path and approximate size in Jira/final output so the next
+dispatcher can remove it after the process exits.
 
 ## Обязательные Скиллы
 

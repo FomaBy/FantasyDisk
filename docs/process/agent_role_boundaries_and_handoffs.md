@@ -136,6 +136,14 @@ responsible now, not that somebody once intended to work on the issue.
   lacks a fresh heartbeat/result, active worker evidence, or single-owner
   consistency.
 
+Disk cleanup is also mandatory. Any role agent or QA worker that creates a
+separate worktree/clone/cache must delete it after the result is pushed and Jira
+is updated. The final task report must include `Disk cleanup:` with removed
+paths or locked leftovers. Disposable paths include `D:\FantasyDisk_worktrees\*`,
+`D:\FantasyDisk_qa\*`, `*SCRUM-*` worktrees, `.godot/`, `.vs/`, `__pycache__/`,
+and untracked Godot `.import`/`.uid` sidecars. Do not remove committed evidence,
+runtime assets, the main repository, or unrelated user files.
+
 ## Codex И Claude Параллельно
 
 Codex и Claude могут работать одновременно в одной ветке `dev`, но не над одной

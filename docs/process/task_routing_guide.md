@@ -106,6 +106,22 @@ Heartbeat policy:
 - no heartbeat/result means the issue is eligible for dispatcher release back to
   `К выполнению`.
 
+## Disk Cleanup Handoff
+
+Dispatcher must include cleanup expectations in every worker/QA handoff that
+creates a separate checkout. Worker final status is incomplete unless it says
+what happened to the disposable worktree/cache.
+
+Required final line:
+
+```text
+Disk cleanup: removed <paths> | none created | blocked by lock <path> <size>
+```
+
+If a worker leaves a disposable checkout behind without this note, dispatcher
+may treat the task as process-incomplete and either ask the same worker to clean
+it or perform cleanup after confirming the branch/commit/evidence is pushed.
+
 ## Interlock Между Codex И Claude
 
 - Один task = один owner = один контур. Нельзя, чтобы Codex и Claude одновременно

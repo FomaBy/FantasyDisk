@@ -136,8 +136,10 @@ done, blocked, or handed off. Disk space is part of task completion.
   at least its `.godot/` cache after posting the Jira verdict. Implementation
   agents should keep only committed/pushed source changes and committed evidence;
   local build/import/userdata artifacts must not remain as disk debt.
-- Final Jira/task reports must include either `Disk cleanup: done` or a precise
-  reason why a worktree/cache was kept.
+- Final Jira/task reports must include `Disk cleanup:` with one of:
+  `removed <paths>`, `none created`, or `blocked by lock <path> <approx size>`.
+  A task is process-incomplete if it leaves a disposable FantasyDisk checkout or
+  multi-hundred-MB cache without this note.
 
 Versioning:
 - `main` is the stable `0.1` line.
