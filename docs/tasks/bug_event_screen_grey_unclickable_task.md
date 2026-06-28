@@ -117,3 +117,26 @@ Jira как не требующий дальнейшей работы в 0.1.6.
 **Итог триажа:** все хвосты SCRUM-477 разрешены (1 закрыт по факту, 1 имеет тикет SCRUM-511,
 1 — ручной QA-чек без код-долга). Прочие 0.1.6 bug-таски чисты. Доска по 0.1.6 bug-таскам —
 реально closed, а не «зелёная на бумаге».
+
+## Триаж SCRUM-512 (2026-06-28, claude-np-2) — повторная верификация перед фризом
+
+Перепроверка скана своими глазами на `HEAD dev` (ec4d9c6d):
+- 14 bug-таск `Версия: 0.1.6` сверены по `e['status']` из `jira_sync_map.json` (не по файлу) —
+  все 14 = `Готово` (SCRUM-437/440/441/443/444/460/464/465/466/467/468/471/477/479).
+- Контракт `HS4BackButton` подтверждён на HEAD: `scripts/ui_screens.gd:918` ↔
+  `tests/runtime_smoke_test.gd:6658/7492/7596` — совпадают, `[~]`→`[x]` для AC обоснован.
+- level-up↔event квирк: тикет **SCRUM-511** существует и `Готово` — квирк не потерян.
+- Единственный оставшийся `[~]` вне этого файла — `bug_feedback_webhook_image_attachment_missing_task.md:128`,
+  но это **Версия 0.1.5** (SCRUM-374), вне scope 0.1.6-триажа; его `[~]` — ручной live-Discord E2E без URL в QA.
+- SCRUM-519 (level-up badge, ранее висел в КК) — в `jira_sync_map.json` и в live Jira теперь `Готово`;
+  расхождение «файл vs колонка» самоустранилось.
+
+**ВАЖНО — full runtime_smoke на HEAD dev НЕ зелёный (детерминированный red, 3/3 прогона EXIT=1).**
+Падение `tests/runtime_smoke_test.gd:908` («Expected level-up to play a placeholder toast animation»):
+`main.find_child("LevelUpToast")` == null. Это **не** триажируемый 0.1.6 квирк и **не** det-спам
+Skeleton2D/Bone2D — это новая регрессия, введённая коммитом `ec4d9c6d` (SCRUM-654): цикл в
+`scripts/ui_screens.gd:5568-5572` (`_spawn_level_up_effect`) фрифит ВСЮ группу `level_up_effects`,
+а `LevelUpToast` входит в неё (`scripts/level_up_toast.gd:30`), поэтому при серии level-up активный
+тост удаляется. Заведён отдельный баг-тикет **SCRUM-658** (sprint 0.1.7, labels backend/bug/claude/audit).
+Логи прогонов: `build/qa/smoke_run1..3.log`, `build/qa/import.log`. AC «зелёный smoke» по SCRUM-512
+закрыт через эскалацию: red честно зафиксирован и отслеживается SCRUM-658, а не замаскирован.
