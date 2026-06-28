@@ -263,7 +263,10 @@ func _attack() -> void:
 		owner_node.play_action_animation(_primary_action_animation_for_mode(), direction)
 	_emit_weapon_animation_event(owner_node, "windup", _estimated_windup_duration(), direction)
 
-	if heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent"):
+	# SCRUM-603: лечение-от-атаки идёт через per-second бюджет (capped), как drain.
+	if heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent_capped"):
+		owner_node.heal_percent_capped(heal_percent_on_attack * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER)
+	elif heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(heal_percent_on_attack * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER)
 
 	_current_charge_multiplier = _charge_multiplier()
@@ -1808,7 +1811,10 @@ func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: 
 			owner_node.call("_show_heal_vfx")
 		if actual_healed > 0.01 and owner_node.has_method("show_combat_feedback_number"):
 			owner_node.show_combat_feedback_number(actual_healed, "heal")
-	if summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent"):
+	# SCRUM-603: summon-support лечение тоже через per-second бюджет (capped).
+	if summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent_capped"):
+		owner_node.heal_percent_capped(summon_support_heal_percent)
+	elif summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(summon_support_heal_percent)
 
 
@@ -2049,7 +2055,10 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy: Node, amount: fl
 				continue
 			if nearby.has_method("take_damage"):
 				_call_take_damage(nearby, splash_damage, {"damage_type": hit_type})
-	if melee_heal_percent_on_hit > 0.0 and owner_node.has_method("heal_percent"):
+	# SCRUM-603: мили лечение-при-ударе тоже через per-second бюджет (capped).
+	if melee_heal_percent_on_hit > 0.0 and owner_node.has_method("heal_percent_capped"):
+		owner_node.heal_percent_capped(melee_heal_percent_on_hit)
+	elif melee_heal_percent_on_hit > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(melee_heal_percent_on_hit)
 
 

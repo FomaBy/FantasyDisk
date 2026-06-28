@@ -1576,6 +1576,21 @@ func heal_percent(percent: float) -> void:
 		show_combat_feedback_number(health - before, "heal")
 
 
+# SCRUM-603: БОЕВОЕ лечение-от-атаки (heal_percent_on_attack/melee_heal_percent_on_hit/
+# summon_support_heal_percent) обязано уважать тот же per-second бюджет, что и drain
+# (SCRUM-517), иначе на толпе суммарное лечение/с обходит cap и появляется второй
+# «бессмертный» класс (priest/biologist/engineer/bone_saw). Конвертируем percent в
+# абсолют (×max_health) и списываем из ЕДИНОГО drain-heal бюджета. VFX/цифра — только
+# когда реально вылечили. Out-of-combat heal_percent (награды/левелап) НЕ трогаем.
+func heal_percent_capped(percent: float) -> void:
+	if percent <= 0.0:
+		return
+	var healed := apply_drain_heal(max_health * percent)
+	if healed > 0.01:
+		_show_heal_vfx()
+		show_combat_feedback_number(healed, "heal")
+
+
 func _show_heal_vfx() -> void:
 	# Зелёный восстановительный отклик: мягкий пульс у ног + всплывающие искры.
 	if not is_inside_tree():
