@@ -105,6 +105,8 @@ static func default_state() -> Dictionary:
 		"class_boss_wins": {},
 		# SCRUM-619: одноразовый флаг победы над секретным боссом конца Акта 3.
 		"secret_boss_defeated": false,
+		# SCRUM-617: id разблокированных персистентных ачивок забега.
+		"achievements": [],
 	}
 
 
@@ -135,6 +137,15 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 			class_wins[str(character_id)] = maxi(int(raw_class_wins[character_id]), 0)
 	state["class_boss_wins"] = class_wins
 	state["secret_boss_defeated"] = bool(config.get_value(SECTION, "secret_boss_defeated", false))
+	# SCRUM-617: разблокированные ачивки (массив строк-id; нормализуем к строкам и дедупим).
+	var raw_achievements = config.get_value(SECTION, "achievements", [])
+	var achievements := []
+	if raw_achievements is Array:
+		for achievement_id in raw_achievements:
+			var sid := str(achievement_id)
+			if not achievements.has(sid):
+				achievements.append(sid)
+	state["achievements"] = achievements
 	return state
 
 
@@ -146,6 +157,7 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 	config.set_value(SECTION, "skill_nodes", state.get("skill_nodes", []))
 	config.set_value(SECTION, "class_boss_wins", state.get("class_boss_wins", {}))
 	config.set_value(SECTION, "secret_boss_defeated", bool(state.get("secret_boss_defeated", false)))
+	config.set_value(SECTION, "achievements", state.get("achievements", []))
 	config.save(save_path)
 
 

@@ -396,6 +396,7 @@ const UI_SCREENS_SCRIPT := preload("res://scripts/ui_screens.gd")
 const ROUTE_MAP_SCRIPT := preload("res://scripts/route_map_screen.gd")
 const COMBAT_DIRECTOR_SCRIPT := preload("res://scripts/combat_director.gd")
 const META_PROGRESSION := preload("res://scripts/meta_progression.gd")
+const ACHIEVEMENTS_DATA := preload("res://scripts/achievements_data.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
@@ -612,6 +613,19 @@ func capture_run_metrics_finals(source: Dictionary) -> void:
 	# «Собрано золота». Источник правды — накопитель add_run_gold_collected.
 	run_metrics["artifacts"] = (source.get("artifacts", run_metrics.get("artifacts", [])) as Array).duplicate(true)
 	run_metrics["route_stage_reached"] = maxi(int(run_metrics.get("route_stage_reached", 0)), route_stage)
+	# SCRUM-617: финальные метрики собраны → оценить персистентные ачивки забега
+	# (зовётся на ЛЮБОМ завершении: победа над финальным боссом, смерть, экран итогов).
+	evaluate_run_achievements()
+
+
+# SCRUM-617: разблокировать достигнутые ачивки по финальным метрикам забега и
+# начислить разовую награду meta_points. Идемпотентно (уже открытые не начисляются).
+# Сохраняет мету только если что-то реально открылось.
+func evaluate_run_achievements() -> void:
+	var result: Dictionary = ACHIEVEMENTS_DATA.evaluate_run(meta_state, run_metrics)
+	if int(result.get("awarded", 0)) > 0 or not (result.get("newly_unlocked", []) as Array).is_empty():
+		META_PROGRESSION.save_state(meta_state)
+		meta_points = int(meta_state.get("meta_points", 0))
 
 
 func _run_autosave_state() -> Dictionary:
