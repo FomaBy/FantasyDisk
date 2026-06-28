@@ -1,7 +1,7 @@
 # BUG SCRUM-543: item-icon skill — нет local mirror + Asset Matrix не покрывает stats/
 
-Jira: SCRUM-543 (Баг) · Эпик: SCRUM-216 · labels: qa, bug, claude, foma, skill, asset-pipeline
-Статус: new
+Jira: SCRUM-543 (Баг) · Эпик: SCRUM-216 · labels: qa, bug, codex, design, foma, skill, asset-pipeline
+Статус: review
 Приоритет: high (БЛОКЕР AC №1)
 Роль: Design main / Codex (по зоне skill)
 Найдено QA при тестировании: docs/tasks/SCRUM-514_item_icon_generator_skill.md
