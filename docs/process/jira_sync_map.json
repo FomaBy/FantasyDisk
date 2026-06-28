@@ -2715,7 +2715,7 @@
  },
  "SCRUM-487_combat_block_2k_coords.md": {
   "key": "SCRUM-487",
-  "status": "??????",
+  "status": "Готово",
   "desc_hash": "c406137bfc46a4f1424cba6417366678"
  },
  "SCRUM-541_secret_boss_max_ascension_benchmark.md": {
@@ -2777,5 +2777,10 @@
   "key": "SCRUM-501",
   "status": "Готово",
   "desc_hash": "472cb65f8d31fee2b0cdb45b8fd04a7f"
+ },
+ "SCRUM-516_ascension_5_steps_stronger_monsters.md": {
+  "key": "SCRUM-516",
+  "status": "Готово",
+  "desc_hash": "0b3a805bb61d4ddfe08de8b1bde11012"
  }
 }
