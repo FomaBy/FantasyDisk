@@ -958,6 +958,10 @@ func _store_player_snapshot(player: Node) -> void:
 	for transient_flag in ["dodge_rush_active", "low_hp_active", "crit_speed_burst_active"]:
 		if run_modifiers_snapshot.has(transient_flag):
 			run_modifiers_snapshot[transient_flag] = 0.0
+	var artifacts_raw = player.get("artifacts")
+	var artifacts_snapshot: Array = []
+	if artifacts_raw is Array:
+		artifacts_snapshot = artifacts_raw as Array
 	game.run_player_snapshot = {
 		"character_id": player.get("character_id"),
 		"weapon_id": player.get("weapon_id"),
@@ -965,7 +969,7 @@ func _store_player_snapshot(player: Node) -> void:
 		"max_health": player.get("max_health"),
 		"stats": (player.get("stats") as Dictionary).duplicate(true),
 		"run_modifiers": run_modifiers_snapshot,
-		"artifacts": (player.get("artifacts") as Array).duplicate(true),
+		"artifacts": artifacts_snapshot.duplicate(true),
 		"xp": player.get("xp"),
 		"xp_to_next": player.get("xp_to_next"),
 		"level": player.get("level"),

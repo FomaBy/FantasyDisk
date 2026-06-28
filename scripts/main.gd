@@ -623,7 +623,11 @@ func capture_run_metrics_finals(source: Dictionary) -> void:
 	# SCRUM-555: не перезаписывать gold_collected кошельком (source.money). Перезапись
 	# показывала на экране итогов ОСТАТОК (после трат в магазине), расходясь с подписью
 	# «Собрано золота». Источник правды — накопитель add_run_gold_collected.
-	run_metrics["artifacts"] = (source.get("artifacts", run_metrics.get("artifacts", [])) as Array).duplicate(true)
+	var artifacts_raw = source.get("artifacts", run_metrics.get("artifacts", []))
+	var artifacts_snapshot: Array = []
+	if artifacts_raw is Array:
+		artifacts_snapshot = artifacts_raw as Array
+	run_metrics["artifacts"] = artifacts_snapshot.duplicate(true)
 	run_metrics["route_stage_reached"] = maxi(int(run_metrics.get("route_stage_reached", 0)), route_stage)
 	# SCRUM-617: финальные метрики собраны → оценить персистентные ачивки забега
 	# (зовётся на ЛЮБОМ завершении: победа над финальным боссом, смерть, экран итогов).
