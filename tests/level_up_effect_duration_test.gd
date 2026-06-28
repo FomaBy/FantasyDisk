@@ -39,6 +39,9 @@ func _initialize() -> void:
 	if badge == null:
 		_fail("LevelUpPopupBadge не создан в _ready")
 		return
+	if not effect.find_children("*", "Label", true, false).is_empty():
+		_fail("LevelUpEffect must not create old standalone Label text; badge sprite is the only Level Up text source")
+		return
 	var start_y := badge.position.y
 
 	# Середина окна (~0.7с): эффект ещё жив, бейдж поднялся выше старта.

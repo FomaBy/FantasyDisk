@@ -27,6 +27,7 @@ func setup(player: Node2D, _level_count: int) -> void:
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_to_group("level_up_effects")
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	_build_visual()
 
