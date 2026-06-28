@@ -33,51 +33,52 @@ const CLASS_BUDGET_PROFILES := {
 # базовому таргету полосы). Нормировка для проверки полосы:
 #   comfort_normalized_dps = measured_dps / comfort_weight[class]
 # После нормировки потолок/пол полосы должны сойтись в ±20% от медианы по всем
-# классам в каждом срезе (1t/5t/20t на lvl20_ideal). Высокий comfort_weight даёт
-# классу право на больший «сырой» DPS (он за него платит вовлечённостью), низкий —
-# срезает потолок AFK-классов.
+# классам в каждом срезе (1t/5t/20t).
 #
-# Источник весов — engagement-профиль (не attribute-вес и не damage_budget):
-#  • 1.20–1.30 — высокая вовлечённость: ручной одиночный аим / мили под удар
-#    (sniper, assassin, ranger, berserk).
-#  • 0.95–1.05 — средняя: смешанный темп, частичное авто-наведение
-#    (soldier, thief, knight, doctor, dark_mage, druid-melee/projectile).
-#  • 0.78–0.88 — низкая: авто-AoE с большим радиусом/самонаведением
-#    (elementalist, biologist, chemist, priest, robot, guitarist).
-#  • 0.62–0.72 — минимальная (AFK): «поставил и забыл» — призывы/устройства/мины
-#    (engineer, druid-summon-перекос).
-# Per-weapon переопределения (COMFORT_WEIGHT_OVERRIDES) — для оружий, чей
-# архетип резко отличается от профиля класса (напр. одиночные оружия у AoE-класса).
+# SCRUM-601: веса ОТКАЛИБРОВАНЫ как band-эквалайзер против детерминированной
+# аналитической метрики crowd_dps (ProgressionData.estimate_crowd_clear_budget_for_stats
+# на base_stats, срезы 1/5/20 целей). Раньше вес = engagement-профиль (ручной аим →
+# высокий, AFK-призыв → низкий), но solo/aoe_target классов калибровались НЕЗАВИСИМО,
+# поэтому «сырой» crowd_dps (~100..205) шёл ВРАЗРЕЗ с engagement-весом, и кросс-класс
+# вылетал из полосы (3.8x разброс). Так как solo/aoe_target трогать нельзя (держат
+# внутриклассовый budget), comfort_weight — единственный рычаг: вес ≈ class_mean_raw /
+# median_all_raw, чтобы comfort_normalized сошёлся в ±20% (факт ~±6%). Гейт:
+# tests/comfort_band_cross_class_gate.gd. Вес влияет ТОЛЬКО на band-измерение, не на
+# геймплей. Внутриклассовый порядок (engagement) теперь несёт raw budget, не вес.
+# Будущее выравнивание engagement↔raw — через solo/aoe_target (отдельный тикет).
+# Per-weapon переопределения (COMFORT_WEIGHT_OVERRIDES) — для оружий, чей «сырой»
+# crowd_dps заметно отличается от среднего по классу (призыв/устройство у соло-класса
+# или наоборот): вес = weapon_raw / median_all_raw.
 const COMFORT_WEIGHTS := {
-	"berserk": 1.20,
-	"soldier": 1.00,
-	"thief": 1.00,
-	"elementalist": 0.85,
-	"sniper": 1.30,
-	"priest": 0.85,
-	"biologist": 0.82,
-	"robot": 0.85,
-	"engineer": 0.68,
-	"dark_mage": 0.95,
-	"guitarist": 0.82,
-	"assassin": 1.28,
-	"ranger": 1.25,
-	"doctor": 1.00,
-	"chemist": 0.80,
-	"knight": 1.00,
-	"druid": 0.90,
+	"berserk": 0.98,
+	"soldier": 1.01,
+	"thief": 1.11,
+	"elementalist": 1.22,
+	"sniper": 0.78,
+	"priest": 1.00,
+	"biologist": 1.33,
+	"robot": 0.93,
+	"engineer": 1.17,
+	"dark_mage": 1.50,
+	"guitarist": 1.36,
+	"assassin": 0.79,
+	"ranger": 0.81,
+	"doctor": 0.79,
+	"chemist": 1.55,
+	"knight": 0.83,
+	"druid": 1.04,
 }
 
 # Per-weapon comfort переопределения: ключ "<class>/<weapon_id>". Используется,
 # когда конкретное оружие требует иной вовлечённости, чем класс в среднем
 # (одиночный луч/проджектайл у AoE-класса — выше; авто-призыв у соло-класса — ниже).
 const COMFORT_WEIGHT_OVERRIDES := {
-	"druid/summon_amulet": 0.68,
-	"druid/raven_totem": 0.72,
-	"engineer/engineer_sentry_wrench": 0.66,  # SCRUM-546: ключ = реальный weapon_id (был engineer/sentry_wrench — не матчился)
-	"engineer/engineer_repair_drone": 0.66,
-	"chemist/homunculus_vial": 0.66,
-	"guitarist/sound_amp": 0.72,
+	"druid/summon_amulet": 0.96,
+	"druid/raven_totem": 0.96,
+	"engineer/engineer_sentry_wrench": 1.03,  # SCRUM-546: ключ = реальный weapon_id (был engineer/sentry_wrench — не матчился)
+	"engineer/engineer_repair_drone": 1.03,
+	"chemist/homunculus_vial": 1.43,
+	"guitarist/sound_amp": 1.25,
 }
 
 # Допуск полосы: comfort-нормированный DPS каждого оружия должен лежать в
