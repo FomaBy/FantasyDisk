@@ -119,6 +119,23 @@ dispatcher оставляет задачу без dispatch и пишет Jira/PM
   (`dispatch` или `Jira-pull`), lane/role/thread-or-worker и какой handoff
   создан, если работа передана.
 
+Active claim health is mandatory. `В работе` means a live worker is still
+responsible now, not that somebody once intended to work on the issue.
+
+- The claim/start comment must include owner/thread, lane, locked paths,
+  branch/worktree, and next verification step.
+- Long work requires a Jira heartbeat at least every 60 minutes and before the
+  worker switches context or ends the run.
+- A worker may hold only one unrelated active issue. Multiple active Jira issues
+  require an explicit dispatcher comment that they are one combined scope with
+  shared locked paths.
+- Before stopping, the worker must move the issue to a truthful state:
+  `Контроль качества` with branch/commit/tests, `Готово` only after QA PASSED,
+  `К выполнению` if released, or blocked/handoff with a precise reason.
+- Dispatcher cleanup may release stale claims back to `К выполнению` when Jira
+  lacks a fresh heartbeat/result, active worker evidence, or single-owner
+  consistency.
+
 ## Codex И Claude Параллельно
 
 Codex и Claude могут работать одновременно в одной ветке `dev`, но не над одной

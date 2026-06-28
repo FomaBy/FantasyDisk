@@ -84,6 +84,27 @@ Jira: SCRUM-<номер>
 6. По завершении owner пишет результат, проверки, docs changes и переводит
    задачу в `done` или `review`. Если scope не может быть завершён, ставит
    `blocked` с точной причиной и handoff/follow-up.
+7. Dispatcher keeps Jira truthful. If a task in `В работе` has no fresh
+   heartbeat/result, no active reachable worker, missing locked paths, or the
+   same worker is holding multiple unrelated issues, dispatcher returns it to
+   `К выполнению` with a cleanup comment. Combined multi-issue work is allowed
+   only when one dispatcher comment explicitly lists the combined scope and
+   shared locked paths.
+
+## Active Claim Health
+
+Every active claim must be readable from Jira without opening the worker chat.
+The latest active-owner comment must include owner/thread, lane, locked paths,
+branch/worktree, and next verification step.
+
+Heartbeat policy:
+
+- heartbeat at least every 60 minutes for long-running work;
+- heartbeat before switching context or ending the agent run;
+- final comment must include result, branch/commit or PR, tests/evidence, docs
+  changes, and next status/owner;
+- no heartbeat/result means the issue is eligible for dispatcher release back to
+  `К выполнению`.
 
 ## Interlock Между Codex И Claude
 
@@ -135,6 +156,8 @@ Codex-работа не требует параллельного Claude вме�
   Jira ownership или dirty overlap.
 - Давать Claude worker задачу с `Контур: Codex` или dispatch на Codex thread.
 - Закрывать задачу за исполнителя без результата owner или QA-вердикта.
+- Оставлять зависшие `В работе` claims без heartbeat/result; такие задачи нужно
+  вернуть в `К выполнению` или явно заблокировать/передать.
 - Смешивать Design main и Designer 2 в одной Design-задаче без явной PM-разбивки.
 - Игнорировать USER HOLD, blocked reason, PM/QA acceptance gate или superseded
   note, даже если зависимость формально выглядит готовой.

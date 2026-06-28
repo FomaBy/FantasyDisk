@@ -70,6 +70,30 @@ Role boundaries:
 Правило: «не закрыл/не передал в Jira — работа не считается сделанной». Держи
 синхронизацию Jira с реальностью в голове на каждом шаге.
 
+**NO STALE IN-PROGRESS — MANDATORY (user directive 2026-06-28).**
+Jira must show the live truth, not old intent. An issue may stay in `В работе`
+only while a named worker is actively responsible for it and the latest Jira
+comment proves current ownership.
+- When claiming, the first Jira comment must include: `Owner`, `Thread/Worker`,
+  `Lane`, `Locked paths/screens/assets`, branch/worktree, and the next concrete
+  verification step.
+- During long work, post a Jira heartbeat at least every 60 minutes or before
+  switching context. The heartbeat must say whether work is continuing, blocked,
+  handed off, pushed, or ready for QA.
+- A worker may not keep more than one active `В работе` issue unless the
+  dispatcher comment explicitly states a combined scope and identical locked
+  paths, as with paired backend/data tasks. Otherwise claim only one issue,
+  finish or release it, then take the next.
+- Before ending any run, the worker must leave the Jira issue in one truthful
+  state: `Контроль качества` with branch/commit/tests evidence, `Готово` only
+  after QA PASSED, `К выполнению` if released for another worker, or blocked
+  with a precise reason and handoff. Leaving a stale `В работе` claim is a
+  process failure.
+- Dispatcher/PM cleanup is allowed and expected: if an issue has no fresh
+  heartbeat/result, no reachable active worker, or a worker owns multiple
+  unrelated issues, return it to `К выполнению` with a cleanup comment instead
+  of letting Jira lie.
+
 **ЖИВАЯ СИНХРОНИЗАЦИЯ GITHUB — ОБЯЗАТЕЛЬНА (директива пользователя 2026-06-28).**
 Разработка ведётся с разных устройств и разными AI-агентами, поэтому GitHub
 должен быть синхронизирован на границах КАЖДОЙ задачи:

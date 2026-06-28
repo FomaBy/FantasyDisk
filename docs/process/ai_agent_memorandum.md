@@ -243,6 +243,14 @@ without a worker-scope label wait for PM/dispatcher split.
 new -> in_progress -> done/review -> QA -> QA PASSED -> Jira Done
 ```
 
+`in_progress` is a live lock, not a parking lot. A Jira issue may remain in
+`В работе` only when the latest comments identify an active worker, branch or
+worktree, locked paths, and a recent heartbeat. Long-running agents must update
+Jira at least every 60 minutes and before switching away. If the agent cannot
+finish, it must release the claim to `К выполнению`, mark `blocked` with a
+specific blocker, or create a handoff. Ending a run while the issue still looks
+active but has no result/heartbeat is a process failure.
+
 Перед первой правкой executor обязан:
 
 1. Проверить branch/status/fetch state.
@@ -263,6 +271,19 @@ new -> in_progress -> done/review -> QA -> QA PASSED -> Jira Done
 7. Закоммитить и запушить работу или открыть PR по GitHub workflow.
 8. Оставить рабочее дерево чистым либо явно описать оставшийся WIP/blocker.
 
+Mandatory final Jira comment before any worker stops:
+
+```text
+Result: done | qa-ready | released | blocked | handoff
+Branch/commit/PR: <branch and commit hash or explicit none>
+Tests/evidence: <commands run or why impossible>
+Docs/mirrors: <updated files or not needed>
+Next owner/status: <QA, To Do, blocked reason, or handoff issue>
+```
+
+If branch/commit/tests are missing, the task is not complete; keep it out of
+`Контроль качества` unless the Jira comment clearly records a blocker.
+
 ## Jira Правила
 
 Jira обязательна. Работа не считается сделанной, если Jira не отражает реальность.
@@ -276,6 +297,9 @@ Jira обязательна. Работа не считается сделанн
 - blocked: Jira comment/status с точной причиной;
 - handoff: отдельный `.md` task + Jira issue/comment в исходном тикете;
 - duplicate/superseded: отметить в `.md`, board и Jira.
+- stale cleanup: dispatcher may return an issue from `В работе` to
+  `К выполнению` when there is no fresh heartbeat/result, no reachable active
+  worker, or the same worker owns multiple unrelated active issues.
 
 Не хранить Jira token в репозитории. Использовать Keychain/env/секреты среды.
 
