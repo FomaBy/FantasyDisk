@@ -95,7 +95,28 @@ UI обязан показывать эти интерпретации текс�
   - attack interval получает haste `min(summon_amount * 0.014 + Leadership * 0.006, 0.30)`;
   - max HP получает bulk `min(Leadership * 0.045 + summon_amount * 0.010, 0.75)`;
   - move speed/lifetime/splash radius также мягко растут от Leadership/`summon_amount`.
+- **Crowd-clear scaling (SCRUM-505):** мобильные summons (`summon_amulet`, `homunculus_vial`)
+  на 20-target оси были «мёртвыми слотами»: per-summon урон зажат budget-флором
+  (`budget_damage_multiplier` = floor 0.28), поэтому 20t-throughput нельзя поднять через
+  per-hit damage. Вместо этого `_summon_profile` множит splash-покрытие роя
+  (`aoe_damage_multiplier` и `aoe_radius`) на `summon_crowd_scale = 1 + min((level-1) * 0.135, 2.40)`.
+  Драйвер — `(level-1)`, а НЕ Leadership/`summon_amount`: последние равны базовому Лидерству
+  на lvl1 (у друида/инженера 9-10), что раздуло бы стартовый баланс; `(level-1)` ровно 0 на
+  1-м уровне → lvl1 неприкосновенен, рост идёт только по ходу забега. Покрытие splash —
+  чисто рантайм-величина: budget-формула (`_budget_summon_dps`/role/haste) его НЕ моделирует,
+  поэтому инвариант «runtime == budget» по per-summon DPS сохраняется.
+- `engineer_sentry_wrench` — НЕ pure-summon (прямая турель `engineer_sentry_link` в
+  `class_weapon.gd`, не `_summon_profile`): его 20t-покрытие подняли флат-данными (больше
+  турелей `max_summons`, шотов `projectile_count` по разным ближайшим целям, быстрее пульс,
+  мягче `damage_falloff`), доп. шоты на lvl20 — от `run_modifiers.extra_projectile`.
 - Уровень 0 сохраняет базовый баланс: все множители начинаются с 1.0, caps ограничивают high-stat runaway.
+- **Принцип «summon не дед-слот» (SCRUM-505, согласован с comfort-полосой SCRUM-544/546):**
+  цель — поднять каждое summon-оружие в **comfort-полосу своего среза** на 20t-оси (а не к
+  буквальным 0.5x класс-лучшего из исходной спеки: у chemist/engineer класс-лучший —
+  экстремальный outlier 17x/5.9x медианы, и 0.5x от него сломал бы полосу). Полоса —
+  актуальный источник правды баланса. Live-арбитр — `tools/character_balance_csv.gd`;
+  когда он недоступен (SIGABRT под нагрузкой), регресс-гейт — детерминированный
+  `tests/summon_weapon_crowd_floor_test.gd` (lvl20-подъём + lvl1-инвариант на реальном бою).
 - Balance facade `ProgressionData.estimate_weapon_budget()` использует ту же damage/haste формулу для summon DPS estimate, чтобы отчеты 0.1.5 не считали старую слабую версию призывателей.
 
 ## Shop

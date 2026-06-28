@@ -138,7 +138,16 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 	var role_damage := summon_role_damage_multiplier * leadership_damage * attribute_damage
 	var summon_haste := minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
 	var summon_bulk := minf(leadership * 0.045 + summon_amount * 0.010, 0.75)
-	var summon_radius := summon_aoe_radius * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18))
+	# SCRUM-505: рой чистит толпу (20t-ось) тем шире, чем дальше ПРОКАЧАН забег.
+	# КРИТИЧНО для lvl1-инварианта: драйвер = (level-1), РОВНО 0 на 1-м уровне (стартовый
+	# баланс НЕ трогаем), растёт к lvl20. summon_amount/Лидерство как драйвер НЕ годятся:
+	# summon_amount = leadership + … (derived_parameters:936), а базовое Лидерство
+	# друида/инженера 9-10 → раздуло бы lvl1. Это РАНТАЙМ-покрытие splash — budget его
+	# не моделирует (per-summon DPS-формула/haste остаются зеркалом budget, инвариант цел).
+	var level_progress := maxf(float(owner_node.get("level")) - 1.0, 0.0) if owner_node.get("level") != null else 0.0
+	var summon_crowd_scale := 1.0 + minf(level_progress * 0.135, 2.40)
+	var summon_radius := summon_aoe_radius * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
+	var summon_splash_damage := summon_aoe_damage_multiplier * summon_crowd_scale
 	var owner_max_hp := float(owner_node.get("max_health")) if owner_node.get("max_health") != null else 80.0
 	return {
 		"damage": maxf(base_damage * damage_multiplier * role_damage, 1.0),
@@ -151,7 +160,7 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 		"control_knockback": summon_control_knockback,
 		"support_heal_percent": summon_support_heal_percent,
 		"aoe_radius": summon_radius,
-		"aoe_damage_multiplier": summon_aoe_damage_multiplier,
+		"aoe_damage_multiplier": summon_splash_damage,
 		"leash_radius": summon_leash_radius,
 	}
 
