@@ -39,3 +39,32 @@ workflow (SKILL.md:52) ссылается на `tools/artgen/generate_asset.py` 
 
 ## Definition of done
 Создать/засинкать зеркало `~/.codex/skills/fantasydisk-item-icon-generator/` (идентично репо); развести Asset Matrix на stats/ vs derived/; пометить `tools/artgen/` опциональным. После — обратно на QA.
+
+## Codex result 2026-06-28
+
+Status: done, ready for QA.
+Owner: Codex design SCRUM-543 skill mirror fix.
+Worktree: `C:\FantasyDisk_agents\scrum543_skill_icon_matrix`.
+Locked paths:
+- `skills/codex/fantasydisk-item-icon-generator/`
+- `docs/tasks/bug_scrum514_item_icon_skill_task.md`
+- local mirror `C:\Users\FomaE\.codex\skills\fantasydisk-item-icon-generator/`
+
+Result:
+- Repo skill and local mirror are present and byte-equivalent for `SKILL.md`.
+- Asset Matrix separates base stats and derived attributes:
+  - base stats: `assets/sprites/ui/icons/stats/stat_<canonical_id>.png`
+  - derived attributes: `assets/sprites/ui/icons/derived/attr_<canonical_id>.png`
+- Required inputs use `stat_basic` and `stat_derived`, matching the matrix.
+- Workflow documents `tools/artgen/generate_asset.py` as optional and names the bundled `$fantasydisk-asset-generator` script as the canonical available generator in this repo.
+
+Verification:
+- `Compare-Object` between repo and local mirror `SKILL.md`: no differences.
+- Repo and local mirror both contain `agents/openai.yaml`.
+- `assets/sprites/ui/icons/stats/` contains the eight `stat_*.png` base stat icons.
+- `assets/sprites/ui/icons/derived/` contains `attr_*.png` derived attribute icons.
+- `scripts/ui_icon_registry.gd` maps base stats to `stats/stat_*.png` and derived attributes to `derived/attr_*.png`.
+- `scripts/stat_formulas.gd` exposes `BASE_STAT_ORDER` and `DERIVED_STAT_ORDER` for ID validation.
+- `quick_validate.py` passes for the repo skill.
+
+No production icon pack was generated for this bug.
