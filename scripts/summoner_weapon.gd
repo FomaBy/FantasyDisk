@@ -33,7 +33,9 @@ var ally_visual_ids: Array[String] = []
 
 func configure_weapon(config: Dictionary) -> void:
 	weapon_id = str(config.get("id", weapon_id))
-	summon_interval = float(config.get("fire_interval", summon_interval))
+	# SCRUM-644: clamp to a positive floor — a non-positive interval would make
+	# _cooldown perpetually <= 0 in _process() and _summon() fire every frame.
+	summon_interval = maxf(float(config.get("fire_interval", summon_interval)), 0.05)
 	max_summons = int(config.get("max_summons", max_summons))
 	damage_parameter = str(config.get("damage_parameter", damage_parameter))
 	damage_multiplier = float(config.get("summon_damage_multiplier", damage_multiplier))
