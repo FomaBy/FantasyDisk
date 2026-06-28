@@ -1,7 +1,7 @@
 # SCRUM-499: Превью узлов маршрута: показать награду/угрозу до входа
 
 Jira: SCRUM-499 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: —
-Статус: К выполнению (Feature)
+Статус: done (QA PASSED 2026-06-28; stale QA gate closed by Codex replacement loop)
 
 ## Что и зачем
 
@@ -113,3 +113,10 @@ Jira: SCRUM-499 · Роль: backend · Контур: claude · Приорите
 - **Save-compat**: новые поля переживают autosave автоматически (`route_nodes.duplicate(true)`), но узлы из СТАРОГО сейва их не содержат — обязателен fallback в combat_director (`node.get("arena_bg", "")` пусто → rng-логика).
 - **Safe-зона**: системный `tooltip_text` многострочный может выходить за край у узлов в верхнем ряду на больших разрешениях; держать строки короткими / проверить на 3 разрешениях. Соблюсти правило frame content safe-area (AGENTS.md + qa_protocol).
 - **Связанные системы**: shop-reentry логика (`shop_reentry_*`) и `route_selected_indices` определяют «текущий выбранный узел» — если читать узел в combat_director через индексы, аккуратно учесть эти состояния; проще прокинуть выбранный узел через `game.current_route_node` в `_activate_route_node`/`_open_route_node`.
+
+## QA-Вердикт (2026-06-28)
+Статус: PASSED
+Проверено: live Jira already had QA PASSED on 2026-06-28 against dev commit `8a52c99e`, plus later backend re-verification against `620d8402`; replacement loop confirmed no active owner conflict and closed the stale QA gate.
+Команды из Jira evidence: `tests/route_node_preview_test.gd` - PASS, `tests/route_node_threat_badge_test.gd` - PASS, `tests/runtime_smoke_test.gd` - PASS.
+Покрытие: deterministic route node preview seed, preview==combat biome/elite selection, boss identity tooltip, elite reward/tier hint, autosave/fallback seed compatibility, native tooltip safe-zone behavior.
+Баги: нет в SCRUM-499 gate; unrelated continue-run flaky assertion was noted separately by implementer.

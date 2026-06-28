@@ -2742,5 +2742,10 @@
   "key": "SCRUM-629",
   "status": "Готово",
   "desc_hash": "3846ac71cb187677093a9f1b4bdf2ca5"
+ },
+ "SCRUM-499_route_node_preview.md": {
+  "key": "SCRUM-499",
+  "status": "Готово",
+  "desc_hash": "89c7dd99978d1f05ca78fb37e3a99eab"
  }
 }
