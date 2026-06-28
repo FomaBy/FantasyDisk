@@ -4,6 +4,7 @@ extends RefCounted
 # level-up, победа/смерть, HUD и общие UI-стили.
 
 var game
+var settings_return_origin := "main_menu"
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
@@ -84,6 +85,8 @@ const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
+const SETTINGS_RETURN_MAIN_MENU := "main_menu"
+const SETTINGS_RETURN_RUN_PAUSE := "run_pause"
 const SETTINGS_V2_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v2/"
 const SETTINGS_V2_MAIN_MODAL_PATH := MINIMAL_MODAL_PATH
 const SETTINGS_V2_TAB_SWITCHER_PATH := MINIMAL_FIELD_PATH
@@ -452,7 +455,9 @@ func _show_main_menu() -> void:
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "MainMenuSettingsButton"
 	_set_action_button_size(settings_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
-	settings_button.pressed.connect(_show_settings_menu)
+	settings_button.pressed.connect(func() -> void:
+		_show_settings_menu(SETTINGS_RETURN_MAIN_MENU)
+	)
 	action_box.add_child(settings_button)
 
 	var version_label := Label.new()
@@ -2662,7 +2667,8 @@ func _settings_resolution_entries(usable_logical: Vector2i) -> Array[Dictionary]
 	return entries
 
 
-func _show_settings_menu() -> void:
+func _show_settings_menu(requested_return_origin := "") -> void:
+	settings_return_origin = _resolve_settings_return_origin(str(requested_return_origin))
 	game._clear_ui()
 
 	game.ui_layer = CanvasLayer.new()
@@ -2951,10 +2957,7 @@ func _show_settings_menu() -> void:
 	controls_box.add_child(reset_button)
 
 	var settings_back := func() -> void:
-		if game._is_gameplay_paused() and game.combat_active:
-			_show_pause_menu()
-		else:
-			_show_main_menu()
+		_return_from_settings()
 	var back_button := _make_button("Назад")
 	back_button.name = "SettingsBackButton"
 	_set_action_button_size(back_button, 280.0, 64.0)
@@ -2966,6 +2969,40 @@ func _show_settings_menu() -> void:
 	))
 	modal.add_child(back_button)
 	game.ui_escape_action = settings_back
+
+
+func _resolve_settings_return_origin(requested_return_origin: String) -> String:
+	if requested_return_origin == SETTINGS_RETURN_RUN_PAUSE:
+		return SETTINGS_RETURN_RUN_PAUSE
+	if requested_return_origin == SETTINGS_RETURN_MAIN_MENU:
+		return SETTINGS_RETURN_MAIN_MENU
+	if settings_return_origin == SETTINGS_RETURN_RUN_PAUSE and game._is_gameplay_paused():
+		return SETTINGS_RETURN_RUN_PAUSE
+	if _is_run_settings_context():
+		return SETTINGS_RETURN_RUN_PAUSE
+	return SETTINGS_RETURN_MAIN_MENU
+
+
+func _is_run_settings_context() -> bool:
+	if _is_run_pause_overlay_open():
+		return true
+	if game._has_pause_reason("escape_menu"):
+		return true
+	return game._is_gameplay_paused() and game.combat_active
+
+
+func _return_from_settings() -> void:
+	var return_origin := settings_return_origin
+	settings_return_origin = SETTINGS_RETURN_MAIN_MENU
+	if return_origin == SETTINGS_RETURN_RUN_PAUSE:
+		game.pending_rebind_action = ""
+		game.ui_escape_action = Callable()
+		if game.ui_layer != null and is_instance_valid(game.ui_layer):
+			game.ui_layer.queue_free()
+		game.ui_layer = null
+		_show_pause_menu(true)
+		return
+	_show_main_menu()
 
 
 func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZERO) -> Control:
@@ -3167,8 +3204,8 @@ func _reset_audio_to_defaults() -> void:
 	game.save_game_settings()
 
 
-func _show_pause_menu() -> void:
-	if not _can_open_pause_dossier():
+func _show_pause_menu(force := false) -> void:
+	if not force and not _can_open_pause_dossier():
 		return
 
 	game.push_pause("escape_menu")
@@ -3280,7 +3317,9 @@ func _build_run_pause_menu() -> void:
 	settings_button.name = "RunPauseSettingsButton"
 	_set_action_button_size(settings_button, 280.0, 60.0)
 	_apply_overhaul_2k_button_theme(settings_button, "pm_btn", PM_BTN_SETTINGS_2K.size)
-	settings_button.pressed.connect(_show_settings_menu)
+	settings_button.pressed.connect(func() -> void:
+		_show_settings_menu(SETTINGS_RETURN_RUN_PAUSE)
+	)
 	box.add_child(settings_button)
 
 	var end_run_button := _make_button("Покинуть забег")
@@ -3317,7 +3356,9 @@ func _show_pause_dossier_menu() -> void:
 	if game.pause_stats_menu.has_method("setup"):
 		game.pause_stats_menu.setup(_pause_dossier_player())
 	game.pause_stats_menu.resume_requested.connect(_resume_game)
-	game.pause_stats_menu.settings_requested.connect(_show_settings_menu)
+	game.pause_stats_menu.settings_requested.connect(func() -> void:
+		_show_settings_menu(SETTINGS_RETURN_RUN_PAUSE)
+	)
 	game.pause_stats_menu.end_run_confirmed.connect(_end_current_run_by_player)
 	game.pause_stats_menu.main_menu_requested.connect(_quit_current_run)
 

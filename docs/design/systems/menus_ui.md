@@ -444,6 +444,11 @@ Runtime labels/click/focus zones must stay inside these base safe rects and
 scale proportionally with the whole image. Runtime smoke validates the actual
 button rects against the scaled safe rects:
 
+SCRUM-626 fixes Settings return-origin tracking. Settings opened from the main
+menu returns to the main menu on Back/Escape, while Settings opened from the
+in-run pause/dossier flow returns to the run pause menu and preserves the active
+run state instead of rebuilding the start screen.
+
 | Slot | Safe Rect |
 | --- | --- |
 | `tab_0_screen_safe` | `Rect2(150, 78, 275, 92)` |
