@@ -86,6 +86,7 @@ const ContentData := preload("res://scripts/progression_data_content.gd")
 const STAT_REWARDS := ContentData.STAT_REWARDS
 const ARTIFACTS := ContentData.ARTIFACTS
 const LEVEL_UP_REWARDS := ContentData.LEVEL_UP_REWARDS
+const START_BOONS := ContentData.START_BOONS  # SCRUM-618: стартовые бооны забега
 
 const AscensionData := preload("res://scripts/progression_data_ascension.gd")
 const ASCENSION_MODIFIERS := AscensionData.ASCENSION_MODIFIERS
@@ -110,6 +111,29 @@ static func artifact_definition(artifact_id: String) -> Dictionary:
 		if str(item.get("id", "")) == artifact_id:
 			return item
 	return {}
+
+
+# --- Стартовые бооны забега (SCRUM-618) ---
+
+static func start_boons() -> Array:
+	return START_BOONS
+
+
+static func start_boon_definition(boon_id: String) -> Dictionary:
+	for boon in START_BOONS:
+		if str(boon.get("id", "")) == boon_id:
+			return boon
+	return {}
+
+
+# Mods выбранного боона (пустой dict, если боон не выбран/неизвестен — тождественность).
+static func start_boon_mods(boon_id: String) -> Dictionary:
+	if boon_id == "":
+		return {}
+	var boon := start_boon_definition(boon_id)
+	if boon.is_empty():
+		return {}
+	return (boon.get("mods", {}) as Dictionary).duplicate(true)
 
 
 static func damage_parameter_for(character_id: String) -> String:

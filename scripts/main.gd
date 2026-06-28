@@ -333,6 +333,8 @@ const INPUT_ACTIONS := [
 
 var selected_character_id := "berserk"
 var selected_weapon_id := "sword"
+# SCRUM-618: выбранный стартовый боон забега ("" = без боона, тождественность).
+var selected_start_boon_id := ""
 var current_act := 1
 var route_stage := 0
 var combat_active := false
@@ -642,6 +644,7 @@ func _run_autosave_state() -> Dictionary:
 	return {
 		"selected_character_id": selected_character_id,
 		"selected_weapon_id": selected_weapon_id,
+		"selected_start_boon_id": selected_start_boon_id,
 		"selected_ascension_level": selected_ascension_level,
 		"current_act": current_act,
 		"route_stage": route_stage,
@@ -680,6 +683,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 
 	selected_character_id = str(state.get("selected_character_id", selected_character_id))
 	selected_weapon_id = str(state.get("selected_weapon_id", selected_weapon_id))
+	selected_start_boon_id = str(state.get("selected_start_boon_id", ""))
 	selected_ascension_level = int(state.get("selected_ascension_level", 0))
 	current_act = clampi(int(state.get("current_act", 1)), 1, ACT_COUNT)
 	route_stage = maxi(0, int(state.get("route_stage", 0)))
@@ -892,6 +896,12 @@ func apply_ascension_bonuses(player: Node) -> void:
 	var class_mods: Dictionary = META_PROGRESSION.class_modifiers(meta_state, selected_character_id)
 	for class_key in class_mods:
 		skill_mods[class_key] = class_mods[class_key]
+	# SCRUM-618: стартовый боон забега — мелкие mods в том же ключевом словаре (damage_mult,
+	# *_flat и т.п.). Складываем с накопленными (множители суммируются как доли, эффект 1.0+sum;
+	# плоские — сложением), как и древо/класс. "" = без боона (тождественность).
+	var boon_mods: Dictionary = PROGRESSION_DATA.start_boon_mods(selected_start_boon_id)
+	for boon_key in boon_mods:
+		skill_mods[boon_key] = float(skill_mods.get(boon_key, 0.0)) + float(boon_mods[boon_key])
 	if player.has_method("apply_meta_skill_modifiers"):
 		player.apply_meta_skill_modifiers(skill_mods)
 	var start_gold := int(round(float(skill_mods.get("start_gold_flat", 0.0))))
@@ -1207,6 +1217,9 @@ func _show_battle_map() -> void:
 
 
 func _show_character_select() -> void:
+	# SCRUM-618: новый забег начинается без боона — выбор будет сделан в пикере после
+	# выбора оружия. Сброс защищает от переноса боона из прошлого/прерванного забега.
+	selected_start_boon_id = ""
 	ui._show_character_select()
 
 

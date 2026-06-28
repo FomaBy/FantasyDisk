@@ -3558,7 +3558,8 @@ func _show_weapon_select() -> void:
 			# SCRUM-502: фактический старт нового забега (герой+оружие выбраны) — обнулить
 			# метрики сводки, чтобы они не текли из прошлого прогона/autosave.
 			game.reset_run_metrics()
-			game.route._show_battle_map()
+			# SCRUM-618: между выбором оружия и стартом — пикер стартового боона.
+			_show_start_boon_select()
 		)
 		box.add_child(button)
 
@@ -3645,6 +3646,88 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	stats_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
 	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(stats_label)
+	return button
+
+
+# SCRUM-618: пикер стартового боона. Показывает 3 случайных боона (карточный паттерн)
+# между выбором оружия и стартом забега. Выбор → game.selected_start_boon_id + автосейв
+# + карта. «Без боона» завершает выбор тождественно (selected_start_boon_id="").
+func _show_start_boon_select() -> void:
+	var all_boons: Array = game.PROGRESSION_DATA.start_boons()
+	# Случайная выборка 3 без повторов (детерминирована текущим состоянием game.rng).
+	var pool: Array = all_boons.duplicate()
+	for i in range(pool.size() - 1, 0, -1):
+		var j: int = game.rng.randi_range(0, i)
+		var tmp = pool[i]
+		pool[i] = pool[j]
+		pool[j] = tmp
+	var offered: Array = pool.slice(0, mini(3, pool.size()))
+
+	var box := _create_menu_box("Стартовый боон", "Выбери одно благословение на этот забег.", "weapon_select")
+	for boon in offered:
+		var boon_dict: Dictionary = boon
+		var button := _make_start_boon_card(boon_dict)
+		button.pressed.connect(func() -> void:
+			game.selected_start_boon_id = str(boon_dict.get("id", ""))
+			game.save_run_autosave("start_boon")
+			game.route._show_battle_map()
+		)
+		box.add_child(button)
+
+	# «Без боона» — пропустить (тождественность). Возможность не брать ничего.
+	var skip_button := _make_button("Без боона")
+	skip_button.pressed.connect(func() -> void:
+		game.selected_start_boon_id = ""
+		game.save_run_autosave("start_boon")
+		game.route._show_battle_map()
+	)
+	box.add_child(skip_button)
+	game.ui_escape_action = _show_weapon_select
+
+
+func _make_start_boon_card(boon: Dictionary) -> Button:
+	var boon_id := str(boon.get("id", ""))
+	var button := Button.new()
+	button.name = "StartBoonOption_%s" % boon_id
+	button.set_meta("boon_id", boon_id)
+	button.text = ""
+	button.custom_minimum_size = Vector2(860, 116)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.tooltip_text = "%s\n%s" % [str(boon.get("title", boon_id)), str(boon.get("description", ""))]
+	button.add_theme_stylebox_override("normal", _weapon_card_style(false))
+	button.add_theme_stylebox_override("hover", _weapon_card_style(true))
+	button.add_theme_stylebox_override("pressed", _weapon_card_style(true, true))
+	button.add_theme_stylebox_override("focus", _weapon_card_style(true))
+
+	var text_box := VBoxContainer.new()
+	text_box.name = "StartBoonText_%s" % boon_id
+	text_box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	text_box.offset_left = 22.0
+	text_box.offset_top = 12.0
+	text_box.offset_right = -22.0
+	text_box.offset_bottom = -12.0
+	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_theme_constant_override("separation", 6)
+	button.add_child(text_box)
+
+	var title_label := Label.new()
+	title_label.name = "StartBoonTitle_%s" % boon_id
+	title_label.text = str(boon.get("title", boon_id))
+	title_label.add_theme_font_size_override("font_size", 21)
+	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(title_label)
+
+	var desc_label := Label.new()
+	desc_label.name = "StartBoonDescription_%s" % boon_id
+	desc_label.text = str(boon.get("description", ""))
+	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.add_theme_font_size_override("font_size", 14)
+	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
+	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(desc_label)
 	return button
 
 

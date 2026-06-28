@@ -126,6 +126,34 @@ const ARTIFACTS := [
 	{"id": "rift_key", "title": "Ключ Разлома", "tier": 3, "cost": 95, "class_affinity": [], "description": "+4 Восприятие, +4 Знание. Открывает тайную тропу в конце Акта 3.", "stats": {"perception": 4.0, "knowledge": 4.0}},
 ]
 
+# SCRUM-618: стартовые модификаторы забега («бооны»). Перед стартом игрок выбирает
+# один из 3 случайных боонов — забег начинается чуть иначе, ломая однообразие
+# первых волн. Взаимоисключающие; каждый — МЕЛКИЙ набор mods. Ключи mods совпадают
+# со словарём дерева умений (player.apply_meta_skill_modifiers): множители
+# (*_mult — доли, эффект 1.0+значение) и плоские (*_flat). Боевая «эффективная
+# сила» каждого боона держится в пределах +10% (тест start_boons_test); много
+# утилити-боонов (золото/опыт/подбор/скорость) с ~нулевым боевым весом.
+const START_BOONS := [
+	{"id": "glass_edge", "title": "Хрупкое Лезвие",
+	 "description": "+8% урона, но −5% максимального HP. Бей сильнее, живи осторожнее.",
+	 "mods": {"damage_mult": 0.08, "max_health_mult": -0.05}},
+	{"id": "zealot", "title": "Фанатик",
+	 "description": "+7% скорости атаки. Чаще бьёшь — плотнее напор.",
+	 "mods": {"attack_speed_mult": 0.07}},
+	{"id": "veteran", "title": "Ветеран",
+	 "description": "+15% опыта за бои. Качаешься быстрее с первых волн.",
+	 "mods": {"xp_gain_mult": 0.15}},
+	{"id": "scavenger", "title": "Старьёвщик",
+	 "description": "+20% золота с врагов. Больше монет — раньше покупки в лавке.",
+	 "mods": {"money_gain_mult": 0.20}},
+	{"id": "ironhide", "title": "Железная Шкура",
+	 "description": "+5% снижения урона. Сглаживает ранние спайки.",
+	 "mods": {"defense_flat": 0.05}},
+	{"id": "swiftfoot", "title": "Быстрая Поступь",
+	 "description": "+3% уклонения и +6 восстановления здоровья отдыхом. Манёвреннее в начале.",
+	 "mods": {"dodge_flat": 0.03, "regeneration_flat": 0.6}},
+]
+
 const LEVEL_UP_REWARDS := [
 	{"id": "damage_up", "title": "+Урон", "description": "+15% к урону.", "kind": "upgrade", "mods": {"damage_multiplier": 1.15}},
 	{"id": "attack_speed_up", "title": "+Скорость атаки", "description": "+12% к скорости атаки.", "kind": "upgrade", "mods": {"attack_speed_multiplier": 1.12}},
