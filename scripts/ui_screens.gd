@@ -2325,8 +2325,12 @@ func _glossary_tooltip_text(term_id: String) -> String:
 # Позиция динамическая (под якорем +8), но всегда внутри viewport с отступом 16 от
 # краёв (clamp). Шаблон-размер ниже + правила размещения для рисующего скрипта.
 const GT_PANEL_2K := Rect2(0, 0, 460, 140)  # w фикс, h по контенту (шаблон ~140)
+const GT_PANEL_CONTENT_2K := Vector4(66, 44, 66, 40)
 const GT_VIEWPORT_MARGIN_2K := 16.0  # минимальный отступ панели от краёв экрана
 const GT_ANCHOR_GAP_2K := 8.0  # зазор от низа якоря до верха тултипа
+const GT_TITLE_FONT_SIZE := 16
+const GT_DESC_FONT_SIZE := 13
+const GT_TEXT_SEPARATION := 4
 
 
 func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
@@ -2340,33 +2344,35 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	tooltip.name = "GlossaryTooltipPanel"
 	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tooltip.custom_minimum_size = Vector2(460, 0)
+	tooltip.custom_minimum_size = Vector2(GT_PANEL_2K.size.x, 0)
 	# SCRUM-486: @2K per-слот фрейм тултипа глоссария (gt_panel 460×140; ширина фикс 460,
 	# высота content-driven — 9-slice бордюры абсолютны в px, центр тянется по высоте).
-	tooltip.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("gt_panel", Vector2(460.0, 140.0)))
+	# SCRUM-585: content margins GT_PANEL_CONTENT_2K = real empty center; runtime text must
+	# stay inside this zone and never cover the corner claws, ruby pins or metal rails.
+	tooltip.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("gt_panel", GT_PANEL_2K.size))
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 4)
+	box.add_theme_constant_override("separation", GT_TEXT_SEPARATION)
 	tooltip.add_child(box)
 	var title := Label.new()
 	title.text = str(definition.get("name", term_id))
-	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_font_size_override("font_size", GT_TITLE_FONT_SIZE)
 	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.48, 1.0))
 	box.add_child(title)
 	var desc := Label.new()
 	desc.text = str(definition.get("desc", ""))
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", 13)
+	desc.add_theme_font_size_override("font_size", GT_DESC_FONT_SIZE)
 	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.80, 1.0))
 	box.add_child(desc)
 	game.ui_layer.add_child(tooltip)
 	var anchor_rect := anchor.get_global_rect()
 	var viewport_size := anchor.get_viewport_rect().size
-	tooltip.position = anchor_rect.position + Vector2(0, anchor_rect.size.y + 8.0)
-	tooltip.size = Vector2(460, 0)
+	tooltip.position = anchor_rect.position + Vector2(0, anchor_rect.size.y + GT_ANCHOR_GAP_2K)
+	tooltip.size = Vector2(GT_PANEL_2K.size.x, 0)
 	await game.get_tree().process_frame
 	var rect := tooltip.get_global_rect()
-	tooltip.position.x = clampf(tooltip.position.x, 16.0, maxf(16.0, viewport_size.x - rect.size.x - 16.0))
-	tooltip.position.y = clampf(tooltip.position.y, 16.0, maxf(16.0, viewport_size.y - rect.size.y - 16.0))
+	tooltip.position.x = clampf(tooltip.position.x, GT_VIEWPORT_MARGIN_2K, maxf(GT_VIEWPORT_MARGIN_2K, viewport_size.x - rect.size.x - GT_VIEWPORT_MARGIN_2K))
+	tooltip.position.y = clampf(tooltip.position.y, GT_VIEWPORT_MARGIN_2K, maxf(GT_VIEWPORT_MARGIN_2K, viewport_size.y - rect.size.y - GT_VIEWPORT_MARGIN_2K))
 
 
 func _hide_glossary_tooltip() -> void:

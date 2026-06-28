@@ -2617,5 +2617,10 @@
   "key": "SCRUM-545",
   "status": "Готово",
   "desc_hash": "9de5172752edc4313d68c6a7298a79d3"
+ },
+ "SCRUM-585_glossary_tooltip_redesign.md": {
+  "key": "SCRUM-585",
+  "status": "Контроль качества",
+  "desc_hash": "4256c8a113f7a067806131c0997e9a54"
  }
 }

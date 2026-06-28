@@ -1,0 +1,54 @@
+{
+  "source": "docs/design/references/scrum585_glossary_tooltip/scrum585_glossary_tooltip_frame_source.png",
+  "alpha_source": "docs/design/references/scrum585_glossary_tooltip/scrum585_glossary_tooltip_frame_alpha.png",
+  "runtime": "assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png",
+  "backup_previous_runtime": "docs/design/references/scrum585_glossary_tooltip/ui_frame_2k_gt_panel_pre_scrum585.png",
+  "safe_zone_preview": "docs/design/previews/scrum585_glossary_tooltip_safe_zone.png",
+  "contact_preview": "docs/design/previews/scrum585_glossary_tooltip_contact.png",
+  "source_size": [
+    1776,
+    592
+  ],
+  "source_subject_bbox": [
+    16,
+    44,
+    1760,
+    532
+  ],
+  "runtime_size": [
+    460,
+    140
+  ],
+  "runtime_alpha_extrema": [
+    0,
+    255
+  ],
+  "runtime_alpha_bbox": [
+    1,
+    1,
+    459,
+    139
+  ],
+  "edge_alpha_max": 0,
+  "white_opaque_pixels": 0,
+  "green_opaque_pixels": 0,
+  "texture_margins": [
+    46,
+    30,
+    46,
+    28
+  ],
+  "content_margins": [
+    66,
+    44,
+    66,
+    40
+  ],
+  "content_rect_xywh": [
+    66,
+    44,
+    328,
+    56
+  ],
+  "notes": "OpenAI-generated source cleaned to transparent 460x140 runtime frame. Content zone stays inside empty center and clear of border ornaments."
+}

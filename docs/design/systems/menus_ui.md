@@ -203,6 +203,16 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_M
   exceptions. Runtime content must use only each frame's `content_rect_xywh`;
   QA evidence is in `build/qa/scrum451_minimal_metal_rollout/`.
 
+- SCRUM-585 refreshes the `GlossaryTooltipPanel` as an isolated 2K tooltip
+  frame. Runtime keeps the existing dynamic placement contract (`460` fixed
+  width, content-driven height, `8px` anchor gap, `16px` viewport clamp) and now
+  uses the regenerated `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png`
+  with strict content margins `Vector4(66, 44, 66, 40)`. Generated mockup/spec
+  and safe-zone evidence live under
+  `docs/design/mockups/scrum585_glossary_tooltip/` and
+  `docs/design/previews/scrum585_glossary_tooltip_*`. Runtime text stays inside
+  the empty center and never covers the metal rails, ruby pins, or corner claws.
+
 - SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
 (`1280x256` RGBA). It has exactly three slots in the red-gold/dark-steel style,
