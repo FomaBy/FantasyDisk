@@ -78,7 +78,7 @@ const ARENA_BACKGROUND_OPTIONS := {
 const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle_v3.png"
 const SCREEN_BACKGROUND_PATHS := {
 	"system": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
-	"settings": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"settings": "res://assets/backgrounds/ui/ui_backdrop_settings.png",
 	"codex": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"hero_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"weapon_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
@@ -106,7 +106,7 @@ const GAME_CURSOR_PATH := "res://assets/sprites/ui/cursor/game_cursor.png"
 const GAME_CURSOR_HOTSPOT := Vector2(1, 1)
 const SCREEN_BACKGROUND_FALLBACK_COLORS := {
 	"system": Color(0.045, 0.052, 0.070, 1.0),
-	"settings": Color(0.045, 0.052, 0.070, 1.0),
+	"settings": Color(0.050, 0.044, 0.038, 1.0),
 	"codex": Color(0.045, 0.052, 0.070, 1.0),
 	"hero_select": Color(0.045, 0.052, 0.070, 1.0),
 	"weapon_select": Color(0.045, 0.052, 0.070, 1.0),
