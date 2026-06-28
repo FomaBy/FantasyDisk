@@ -177,4 +177,9 @@ Project practices:
   этом каждое из трёх оружий должно сохранять отличающийся gameplay/niche.
 - Run Godot headless smoke tests after gameplay changes:
   `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
+  (бинарь сейчас **Godot 4.7**; `config/features="4.7"`).
+- ПАРАЛЛЕЛЬНЫЕ прогоны (несколько агентов/смоуков разом) — ТОЛЬКО через семафор, иначе OOM-kill
+  (exit 137): `python3 tools/godot_gate.py --headless --path . --script res://tests/<smoke>.gd`.
+  Гейт ограничивает число одновременных Godot (по умолчанию 3, env `FSD_GODOT_SLOTS`); аргументы
+  прокидываются в Godot 1:1. Одиночный прогон можно и напрямую (выше).
 - Do not commit `.godot/`.
