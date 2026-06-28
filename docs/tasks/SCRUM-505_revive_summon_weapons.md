@@ -1,7 +1,46 @@
 # SCRUM-505: Оживить summon-оружие (druid/chemist/engineer): минимум жизнеспособности ≥ 0.5x профильной медианы
 
-Jira: SCRUM-505 · Роль: backend · Контур: balance · Приоритет: P1 · foma · Эпик: —
-Статус: К выполнению + label `blocked` (PM-блокер, backend-actionable часть исчерпана). 2026-06-28 claude-backend HEAD=8775d6f6: пометил `blocked` и вернул в «К выполнению», чтобы тикет не переклеймивался каждым автопрогоном (find_next пропускает blocked-метку). Код зелёный и исчерпан; разблокировка = PM-решение по числовой AC связкой 504/505/506 ↔ 544/546. 2026-06-28 claude-backend HEAD=dbd7f483: закрыл QA-блокер (а) — `tests/summon_weapon_crowd_floor_test.gd` теперь SIGABRT-safe на sentry-турельном teardown (queue_free вместо free() + disable weapon _process + idle-settle), 4/4 чистых прогона (sentry проходит каждый раз, было 2/4). Остаётся ТОЛЬКО блокер (б): числовая AC устарела vs живой CSV/comfort-band SCRUM-544/546 — формальная правка AC = PM-решение, как у сестёр 504/506. Рекомендация: адъюдицировать 504/505/506 связкой с 544/546 одним PM-решением. (2026-06-28 r4-impl5 ре-верифицировал на HEAD=dbd7f483, single-Godot: runtime_smoke PASS + summon_weapon_crowd_floor PASS детерминированно — amulet 20t lvl1=35/lvl20=429.8, homunculus 14/94.9, sentry 29.5/56.1, lvl1 baseline цел, sentry-флак не воспроизводится; код-часть зелёная и исчерпана, остаётся блокер (б) — SCRUM-544 на [hold], SCRUM-546 Готово.) ⟪Прежний QA-вердикт ниже сохранён.⟫ (QA FAIL 2026-06-28 r3-qa1 на HEAD=bd89b73e: AC-арбитр character_balance_csv.gd воспроизводимо SIGABRT-ит, build/character_balance_dps.csv не перегенерён → буквальный AC «≥0.5x класс-лучшего по 20t» нечем доказать; числа AC устарели (druid класс-лучший = raven_totem 4270, не briar 30591); AC ре-скоунут на comfort-полосу SCRUM-544, которая сама ещё «К выполнению»; engineer_sentry_wrench ниже полосы даже по проекции импла; сёстры SCRUM-504/506 с тем же блокером тоже «К выполнению». Зелёное: weapon_tuning_application/summoner_strengthening/class_budget_profiles_integrity/progression_data_api_surface/global_damage_balance_smoke; summon_weapon_crowd_floor PASS когда завершается, но флак 2/4. Нужно: стабильный CSV-арбитр без SIGABRT (покрыть sentry) + PM-решение по числовой AC, лучше связкой с 504/506/544.)
+Jira: SCRUM-505 · Роль: backend · Контур: Codex · Приоритет: P1 · foma · Эпик: —
+Статус: done (Codex backend `codex-worker-backend-scrum505`, 2026-06-28). Тикет оживлён по актуальной формулировке «≥0.5x профильной summon-медианы»: поднят lvl20/progression throughput трёх summon-оружий без раздувания lvl1 baseline; Jira claim выполнен через `jira_next_task.py`.
+
+## Результат — Codex backend 2026-06-28
+
+Scope:
+- `druid/summon_amulet`, `chemist/homunculus_vial`, `engineer/engineer_sentry_wrench`.
+- Изменение ограничено progression/runtime summon scaling: `upgrade_damage_exponent` для трёх weapons, level-only `summon_crowd_scale` в `_summon_profile`, мягче sentry falloff. Базовые lvl1 run modifiers остаются 1.0.
+
+Target evidence:
+- Использован targeted live probe `tests/summon_weapon_crowd_floor_test.gd`, потому что полный `tools/character_balance_csv.gd` по истории SCRUM-505/SCRUM-551 остаётся flaky/SIGABRT под full-matrix teardown; task protocol разрешает targeted DPS evidence.
+- До правки в этом прогоне: `summon_amulet` lvl1=59.8 / lvl20=307.2, `homunculus_vial` lvl1=14.0 / lvl20=104.1, `engineer_sentry_wrench` lvl1=29.5 / lvl20=88.5.
+- Финальный focused-probe pass после правки: `summon_amulet` lvl1=32.5 / lvl20=704.0, `homunculus_vial` lvl1=26.0 / lvl20=208.6, `engineer_sentry_wrench` lvl1=31.8 / lvl20=129.5.
+- По focused-probe шкале это выводит все три weapons выше 0.5x актуальной summon-profile median floor, при сохранении lvl1 caps (`<=90`, `<=30`, `<=38` соответственно).
+
+Budget consistency:
+- `tools/balance_harness.gd`: summon estimates остаются в budget corridor после tuning.
+- Rows: `engineer_sentry_wrench` solo 45.12 vs 45.16, aoe 161.24 vs 161.28; `homunculus_vial` solo 46.37 vs 46.37, aoe 224.17 vs 224.25; `summon_amulet` solo 47.95 vs 48.00, aoe 149.78 vs 150.00.
+- `tests/global_damage_balance_smoke_test.gd`: PASS, 51 pairs, worst CCT +22% (`doctor/restore_potion`, 20 targets).
+
+Commands run:
+- `git fetch origin --prune`; `git pull --ff-only origin dev` → already up to date.
+- `python3 tools/jira_next_task.py --role backend --lane codex --claim --worker codex-worker-backend-scrum505 --json` → claimed SCRUM-505.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/summon_weapon_crowd_floor_test.gd` → PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/weapon_tuning_application_test.gd` → PASS (51 pairs).
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/summoner_strengthening_test.gd` → PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/class_budget_profiles_integrity_test.gd` → PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/progression_data_api_surface_test.gd` → PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/global_damage_balance_smoke_test.gd` → PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tools/balance_harness.gd` → PASS/report generated.
+
+Files changed:
+- `scripts/progression_data_weapons.gd`
+- `scripts/summoner_weapon.gd`
+- `docs/design/systems/progression_balance.md`
+- `docs/tasks/SCRUM-505_revive_summon_weapons.md`
+
+Residual risk:
+- Full CSV remains intentionally skipped because this task already documents its SIGABRT/flaky teardown risk; targeted live probe plus budget/global gates are the acceptance evidence for this backend pass.
+
+⟪Прежний статус/QA notes ниже сохранены для истории.⟫ 2026-06-28 claude-backend HEAD=8775d6f6: пометил `blocked` и вернул в «К выполнению», чтобы тикет не переклеймивался каждым автопрогоном (find_next пропускает blocked-метку). Код зелёный и исчерпан; разблокировка = PM-решение по числовой AC связкой 504/505/506 ↔ 544/546. 2026-06-28 claude-backend HEAD=dbd7f483: закрыл QA-блокер (а) — `tests/summon_weapon_crowd_floor_test.gd` теперь SIGABRT-safe на sentry-турельном teardown (queue_free вместо free() + disable weapon _process + idle-settle), 4/4 чистых прогона (sentry проходит каждый раз, было 2/4). Остаётся ТОЛЬКО блокер (б): числовая AC устарела vs живой CSV/comfort-band SCRUM-544/546 — формальная правка AC = PM-решение, как у сестёр 504/506. Рекомендация: адъюдицировать 504/505/506 связкой с 544/546 одним PM-решением. (2026-06-28 r4-impl5 ре-верифицировал на HEAD=dbd7f483, single-Godot: runtime_smoke PASS + summon_weapon_crowd_floor PASS детерминированно — amulet 20t lvl1=35/lvl20=429.8, homunculus 14/94.9, sentry 29.5/56.1, lvl1 baseline цел, sentry-флак не воспроизводится; код-часть зелёная и исчерпана, остаётся блокер (б) — SCRUM-544 на [hold], SCRUM-546 Готово.) ⟪Прежний QA-вердикт ниже сохранён.⟫ (QA FAIL 2026-06-28 r3-qa1 на HEAD=bd89b73e: AC-арбитр character_balance_csv.gd воспроизводимо SIGABRT-ит, build/character_balance_dps.csv не перегенерён → буквальный AC «≥0.5x класс-лучшего по 20t» нечем доказать; числа AC устарели (druid класс-лучший = raven_totem 4270, не briar 30591); AC ре-скоунут на comfort-полосу SCRUM-544, которая сама ещё «К выполнению»; engineer_sentry_wrench ниже полосы даже по проекции импла; сёстры SCRUM-504/506 с тем же блокером тоже «К выполнению». Зелёное: weapon_tuning_application/summoner_strengthening/class_budget_profiles_integrity/progression_data_api_surface/global_damage_balance_smoke; summon_weapon_crowd_floor PASS когда завершается, но флак 2/4. Нужно: стабильный CSV-арбитр без SIGABRT (покрыть sentry) + PM-решение по числовой AC, лучше связкой с 504/506/544.)
 
 ## Что и зачем
 

@@ -332,6 +332,7 @@ const CHEMIST_WEAPONS := {
 		"damage_parameter": "magic_damage",
 		"summon_damage_multiplier": 2.40,  # SCRUM-546: подъём с пола DPS-полосы (был 0.52)
 		"damage_multiplier": 0.90, "fire_interval": 4.0,
+		"upgrade_damage_exponent": 1.40,  # SCRUM-505: lvl20 summon-profile lift; empty run_modifiers stay 1.0
 		"attack_range": 420.0, "aoe_radius": 70.0,
 		# SCRUM-505: один гомункул не виден на 20t. Расширяем алхимический splash
 		# (кислотное облако) и добавляем тело, но основной прирост покрытия — от
@@ -402,6 +403,7 @@ const DRUID_WEAPONS := {
 		"damage_parameter": "sound_wave_damage",
 		"summon_damage_multiplier": 1.85,  # SCRUM-546: подъём с пола DPS-полосы (был 0.58)
 		"damage_multiplier": 1.0, "fire_interval": 3.0,
+		"upgrade_damage_exponent": 1.22,  # SCRUM-505: lvl20 summon-profile lift; empty run_modifiers stay 1.0
 		"attack_range": 420.0, "aoe_radius": 60.0,
 		# SCRUM-505: мобильная стая мертва на 20t-оси. per-summon урон зажат budget-флором
 		# (budget_damage_multiplier=0.28), поэтому 20t тянем ПОКРЫТИЕМ роя. Чтобы НЕ
@@ -736,7 +738,8 @@ const ENGINEER_WEAPONS := {
 		"description": "Sentry link: ставит короткоживущую турель, которая сама выбирает цели и прошивает их точечными лучами.",
 		"scene_path": "res://scenes/EngineerSentryWrench.tscn",
 		"attack_mode": "engineer_sentry_link", "damage_parameter": "damage",
-		"damage_multiplier": 1.15, "fire_interval": 1.32,  # SCRUM-546: подъём с пола (был 0.72)
+		"damage_multiplier": 1.32, "fire_interval": 1.32,  # SCRUM-505: профильная медиана при lvl20, lvl1 guard сохранён
+		"upgrade_damage_exponent": 2.45,  # SCRUM-505: sentry scales from lvl20 DPS upgrades, not lvl1 flat damage
 		"attack_range": 560.0, "aoe_radius": 170.0,
 		# SCRUM-505: турель — мультишот по РАЗНЫМ ближайшим целям (used-dict). 1 турель ×
 		# 4 шота за цикл не покрывает 20t. Турель не использует _summon_profile (прямой
@@ -745,7 +748,7 @@ const ENGINEER_WEAPONS := {
 		# шоты на lvl20 идут от run_modifiers.extra_projectile (level-карты).
 		"beam_width": 34.0, "projectile_count": 8,  # SCRUM-505: +шоты/цикл (было 4)
 		"amp_lifetime": 3.6, "amp_pulse_interval": 0.28, "max_summons": 2,  # SCRUM-505: 2 турели, быстрее пульс (было 2.8/0.42/1)
-		"damage_falloff": 0.90, "knockback": 42.0,  # SCRUM-505: мягче спад урона по шотам (было 0.72)
+		"damage_falloff": 0.94, "knockback": 42.0,  # SCRUM-505: мягче спад урона по шотам (было 0.72)
 		"summon_role": "engineer_sentry",
 		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.10)
 		"visual_color": Color(0.88, 0.70, 0.32, 0.42),

@@ -145,7 +145,7 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 	# друида/инженера 9-10 → раздуло бы lvl1. Это РАНТАЙМ-покрытие splash — budget его
 	# не моделирует (per-summon DPS-формула/haste остаются зеркалом budget, инвариант цел).
 	var level_progress := maxf(float(owner_node.get("level")) - 1.0, 0.0) if owner_node.get("level") != null else 0.0
-	var summon_crowd_scale := 1.0 + minf(level_progress * 0.135, 2.40)
+	var summon_crowd_scale := 1.0 + minf(level_progress * 0.275, 5.20)
 	var summon_radius := summon_aoe_radius * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
 	var summon_splash_damage := summon_aoe_damage_multiplier * summon_crowd_scale
 	var owner_max_hp := float(owner_node.get("max_health")) if owner_node.get("max_health") != null else 80.0
