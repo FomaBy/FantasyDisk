@@ -2722,11 +2722,15 @@
   "key": "SCRUM-541",
   "status": "Контроль качества",
   "desc_hash": "63cc2d01ecd52bc3cd0824f8961b5196"
- } ,
+ },
  "SCRUM-488_progression_block_coords_2k.md": {
   "key": "SCRUM-488",
   "status": "??????",
   "desc_hash": "fe0bcf32a0e5c6396c2c2fe61e0ccd14"
+ },
+ "SCRUM-574_codex_2k_redesign.md": {
+  "key": "SCRUM-574",
+  "status": "Контроль качества",
+  "desc_hash": "834c77b23bb808370163b5c2a9d79774"
  }
-
 }

@@ -1,7 +1,7 @@
 # SCRUM-574 Codex 2K Redesign
 
-Jira: https://fantasydisk.atlassian.net/browse/SCRUM-574
-Status: qa-ready
+Jira: SCRUM-574
+Статус: done (qa-ready; pushed to dev at 60fcc8c7)
 Owner: flex-loop
 Lane: Codex / Design
 
