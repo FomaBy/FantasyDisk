@@ -1,6 +1,6 @@
 # Back-end Task: SCRUM-671 Combat HUD Integration
 
-Статус: review
+Статус: done
 Jira: SCRUM-671
 Контур: Codex
 Owner: Back-end/UI integration
@@ -43,6 +43,7 @@ remain reserved for actual asset-slot anti-drift verification.
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASS
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/dark_fantasy_ui_theme_test.gd` — PASS
 - `python3 tools/build_ui_2k_frame_kit.py --verify` — PASS
+- Pushed to `origin/dev`: `10fcaa0f fix(SCRUM-671): integrate clean combat HUD`
 
 Known unrelated noise: first Godot import in the disposable worktree reported
 pre-existing UID duplicate warnings in character reference assets; the focused
@@ -50,6 +51,6 @@ tests above passed after import.
 
 ## Disk Cleanup
 
-Pending final closure. Disposable `.godot/` import cache was created by Godot
-verification and must be removed before final task report if the worktree is
-removed or left clean.
+Disk cleanup: removed `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-671/.godot`
+and generated Godot import sidecars created during verification. No multi-hundred-MB
+cache remains in the SCRUM-671 worktree.

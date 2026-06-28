@@ -2887,5 +2887,10 @@
   "key": "SCRUM-670",
   "status": "Готово",
   "desc_hash": "ad2f3bc4bd745bab6c6f2f4c8513ab56"
+ },
+ "backend_scrum671_combat_hud_integration.md": {
+  "key": "SCRUM-671",
+  "status": "Контроль качества",
+  "desc_hash": "1cb3fa22d1aaa78a5e70afd7ed610661"
  }
 }
