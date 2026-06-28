@@ -49,6 +49,8 @@ const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_
 # нарисованы 1:1 под слот (CHUD_*_2K) build_ui_2k_frame_kit.py → резкий орнамент.
 const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png"
 const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
+# SCRUM-578: экран «Смерть» — per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820).
+const RESULT_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_result_panel.png"
 const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
 const REWARD_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
 const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
@@ -8003,8 +8005,8 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 		quit(1)
 		return
 	var death_panel := death_main.find_child("PauseEndModalPanel_death", true, false) as PanelContainer
-	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
-		push_error("Expected death screen to use the SCRUM-448 minimal modal frame.")
+	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != RESULT_PANEL_TEXTURE_2K:
+		push_error("Expected death screen to use the SCRUM-578 @2K result modal frame.")
 		quit(1)
 		return
 	death_main.queue_free()

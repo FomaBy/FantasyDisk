@@ -69,6 +69,9 @@ SLOTS = [
     # SCRUM-573 (Улучшение): per-слот @2K-рамка панели улучшения (economy-panel "upgrade").
     # Карточки выбора переиспользуют общий economy-choice-арт (как остальные economy-экраны).
     {"slug": "upgrade_panel", "file": "ui_screens", "const": "UPGRADE_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 730},
+    # SCRUM-578 (Смерть): per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820,
+    # pause-end-модалка). Геометрия общая с победой; здесь редизайнится только путь смерти.
+    {"slug": "result_panel", "file": "ui_screens", "const": "RESULT_PANEL_2K", "kind": "frame", "margin_key": "modal", "w": 898, "h": 820},
     # боевой HUD-блок (SCRUM-564, эпик SCRUM-481): per-слот @2K-рамки из CHUD_*_2K.
     # Тонкие горизонтальные стрипы → margin-профили hud_resource/hud_timer/hud_artifact.
     {"slug": "chud_resource_panel", "file": "ui_screens", "const": "CHUD_RESOURCE_PANEL_2K", "kind": "frame", "margin_key": "hud_resource", "w": 820, "h": 84},

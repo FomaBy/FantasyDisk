@@ -6259,7 +6259,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	if pause_end_panel:
 		panel.name = "PauseEndModalPanel_%s" % screen_background_id
 		panel.clip_contents = true
-		panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size))
+		panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size, screen_background_id))
 	elif panel_style_override != null:
 		panel.add_theme_stylebox_override("panel", panel_style_override)
 	else:
@@ -7147,7 +7147,12 @@ func _apply_overhaul_choice_2k_theme(button: Button, slot: String, display_size:
 	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
 
 
-func _pause_end_modal_style(display_size: Vector2) -> StyleBox:
+func _pause_end_modal_style(display_size: Vector2, screen_background_id := "") -> StyleBox:
+	# SCRUM-578: экран «Смерть» (end-модалка результата) получает per-слот @2K-рамку
+	# result_panel (RESULT_PANEL_2K 898×820), нарисованную РОВНО в свой размер → резкий
+	# орнамент на 1080p/2K/4K. Победа/пауза пока на общем PAUSE_END_MODAL_PATH (свои таски).
+	if screen_background_id == "death":
+		return _overhaul_2k_frame_style("result_panel", display_size)
 	var texture_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_TEXTURE_MARGINS)
 	var content_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
 	return _global_texture_style(PAUSE_END_MODAL_PATH, texture_margins, Color.WHITE, content_margins, true)
