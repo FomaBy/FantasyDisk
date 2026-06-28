@@ -39,6 +39,8 @@ const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/u
 const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png"
 const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
+# SCRUM-579: кнопки паузы переехали на выделенный pm_btn @2K-фрейм.
+const RUN_PAUSE_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_btn.png"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
@@ -1136,6 +1138,13 @@ func _initialize() -> void:
 		push_error("Expected run pause menu to use the SCRUM-486 @2K pm_panel frame.")
 		quit(1)
 		return
+	# SCRUM-579: все 5 кнопок паузы используют выделенный pm_btn @2K-фрейм.
+	for pause_btn_name in ["RunPauseContinueButton", "RunPauseDossierButton", "RunPauseSettingsButton", "RunPauseEndRunButton", "RunPauseMainMenuButton"]:
+		var pause_btn := main.find_child(pause_btn_name, true, false) as Button
+		if pause_btn == null or _stylebox_texture_path(pause_btn.get_theme_stylebox("normal")) != RUN_PAUSE_BUTTON_TEXTURE_2K:
+			push_error("Expected %s to use the SCRUM-579 @2K pm_btn frame." % pause_btn_name)
+			quit(1)
+			return
 	var pause_rect := run_pause_panel.get_global_rect()
 	var viewport_rect := main.get_viewport().get_visible_rect()
 	if pause_rect.position.x > viewport_rect.size.x * 0.12 or pause_rect.position.y > viewport_rect.size.y * 0.12:

@@ -3257,33 +3257,41 @@ func _build_run_pause_menu() -> void:
 	subtitle.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
 	box.add_child(subtitle)
 
+	# SCRUM-579: 5 кнопок паузы переодеты в выделенный pm_btn @2K-фрейм (280×60),
+	# нарисованный РОВНО под слот (9-slice-safe) — единый дарк-фэнтези стиль с панелью pm_panel,
+	# вместо общего minimal-metal standard-кнопочного фрейма.
 	var continue_button := _make_button("Продолжить")
 	continue_button.name = "RunPauseContinueButton"
 	_set_action_button_size(continue_button, 280.0, 60.0)
+	_apply_overhaul_2k_button_theme(continue_button, "pm_btn", PM_BTN_CONTINUE_2K.size)
 	continue_button.pressed.connect(_resume_game)
 	box.add_child(continue_button)
 
 	var dossier_button := _make_button("Досье персонажа")
 	dossier_button.name = "RunPauseDossierButton"
 	_set_action_button_size(dossier_button, 280.0, 60.0)
+	_apply_overhaul_2k_button_theme(dossier_button, "pm_btn", PM_BTN_DOSSIER_2K.size)
 	dossier_button.pressed.connect(_show_pause_dossier_menu)
 	box.add_child(dossier_button)
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "RunPauseSettingsButton"
 	_set_action_button_size(settings_button, 280.0, 60.0)
+	_apply_overhaul_2k_button_theme(settings_button, "pm_btn", PM_BTN_SETTINGS_2K.size)
 	settings_button.pressed.connect(_show_settings_menu)
 	box.add_child(settings_button)
 
 	var end_run_button := _make_button("Покинуть забег")
 	end_run_button.name = "RunPauseEndRunButton"
 	_set_action_button_size(end_run_button, 280.0, 60.0)
+	_apply_overhaul_2k_button_theme(end_run_button, "pm_btn", PM_BTN_ENDRUN_2K.size)
 	end_run_button.pressed.connect(_end_current_run_by_player)
 	box.add_child(end_run_button)
 
 	var main_menu_button := _make_button("Главное меню")
 	main_menu_button.name = "RunPauseMainMenuButton"
 	_set_action_button_size(main_menu_button, 280.0, 60.0)
+	_apply_overhaul_2k_button_theme(main_menu_button, "pm_btn", PM_BTN_MAINMENU_2K.size)
 	main_menu_button.pressed.connect(_quit_current_run)
 	box.add_child(main_menu_button)
 
