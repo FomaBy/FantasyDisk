@@ -1,7 +1,7 @@
 # SCRUM-493: Hero Select v4: добавить строку оружия и иконки/бары статов в досье
 
 Jira: SCRUM-493 · Роль: backend (UI/GDScript) · Контур: claude · Приоритет: P2 · foma · Эпик: SCRUM-470 (Hero Select v4)
-Статус: К выполнению
+Статус: done
 
 ## Что и зачем
 
@@ -120,3 +120,21 @@ Jira: SCRUM-493 · Роль: backend (UI/GDScript) · Контур: claude · П
 - **Матрица peer-overlap** сравнивает контролы попарно с tolerance 2px — строки статов в одном VBox не пересекаются по построению, но следить, чтобы внутри `HBox` бар (EXPAND_FILL) не «вылезал» за границы строки при экстремально длинном названии стата (использовать min-width у бара/значения, либо clip).
 - **Не менять имена** `HS4Portrait/HS4Radar/HS4Carousel/HS4ChooseButton` — на них завязаны оба теста.
 - **Связанные тикеты:** эпик SCRUM-470 (Hero Select v4), carry-over из него. Координатная спека панели — `HS4_DOSSIER` (697); если double-проверяется UI-render-verifier (SCRUM-483), убедиться, что новые узлы попадают в безопасную зону панели, а не на орнамент рамки.
+
+## QA-Вердикт (2026-06-28, Codex QA)
+Статус: PASSED
+Проверено:
+- Live Jira: SCRUM-493 был в `Контроль качества`; QA claim: `codex-qa-493-codex190501`.
+- Структура `scripts/ui_screens.gd`: `HS4Weapon` добавлен после описания, заполняется через `_hero_weapon_names(cid)`, single-line trim ellipsis.
+- 5 строк `HS4StatRow_<sid>` для `strength/agility/intelligence/endurance/perception`: иконка через `UIIconRegistry.make_icon`, имя стата, `ProgressBar`, числовое значение.
+- `ProgressBar.max_value` берётся из `_hero_radar_global_maxima()`, `value` = текущий стат с clamp.
+- Цвет fill берётся из `UIIconRegistry.ICON_COLORS`.
+- Выбор/смена героя обновляет weapon row и значения статов.
+
+Тесты/evidence:
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --import` -> PASS.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/qa_scrum493_check.gd` -> PASS (временный QA-only скрипт удалён после проверки).
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd` -> PASS.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` -> PASS.
+
+Баги: нет.

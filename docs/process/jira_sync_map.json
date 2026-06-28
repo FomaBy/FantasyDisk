@@ -2767,5 +2767,10 @@
   "key": "SCRUM-492",
   "status": "Готово",
   "desc_hash": "80e9f7de4b09a46aead0c1bad90006d0"
+ },
+ "SCRUM-493_dossier_weapon_row_stat_icons_bars.md": {
+  "key": "SCRUM-493",
+  "status": "Готово",
+  "desc_hash": "0d8ccc0a2ae8197851d04442cd9e4eb5"
  }
 }
