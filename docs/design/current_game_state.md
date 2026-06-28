@@ -292,7 +292,7 @@ Debug-режим карты: клавиша `F12` переключает `route_
 
 ### Случайные События
 
-Event-node открывает один data-driven сценарий из `scripts/event_data.gd`. В пуле 17 сценариев: `wandering_bard`, `cursed_altar`, `road_ambush`, `old_well`, `wounded_mercenary`, `goblin_lottery`, `hot_spring`, `mirror_phantom`, `stone_guardian`, `heroes_graveyard`, `fallen_star`, `training_dummies`, `warden_gate_trial`, `abandoned_forge`, `merchant_caravan`, `whispering_grove`, `collapsing_mineshaft`.
+Event-node открывает один data-driven сценарий из `scripts/event_data.gd`. В пуле 23 сценария: `sudden_fork`, `wandering_bard`, `cursed_altar`, `road_ambush`, `old_well`, `wounded_mercenary`, `goblin_lottery`, `hot_spring`, `mirror_phantom`, `stone_guardian`, `heroes_graveyard`, `fallen_star`, `training_dummies`, `warden_gate_trial`, `abandoned_forge`, `merchant_caravan`, `whispering_grove`, `collapsing_mineshaft`, `crystal_geode_vault`, `starlit_observatory`, `sunken_caravan`, `war_drums_camp`, `twin_offering_shrine`.
 
 Правила:
 - один и тот же event ID не повторяется в рамках акта, пока пул не исчерпан;

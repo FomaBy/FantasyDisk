@@ -738,6 +738,12 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `merchant_caravan` | Торговый караван | цена, artifact, rest, check Perception | Лавка артефакта/тоника или торг за сдачу | Реализовано |
 | `whispering_grove` | Шепчущая роща | rest, check Knowledge, hidden risk combat | Источник, шёпот-чек или потревоженные стражи | Реализовано |
 | `collapsing_mineshaft` | Обвалившаяся шахта | HP cost, artifact/money/combat random, check Endurance | Разбор завала вслепую или укрепление балок | Реализовано |
+| `sudden_fork` | Опасная развилка | safe money/heal, risk combat, check Perception | Hazard-узел: безопасный обход или рискованный срез | Реализовано |
+| `crystal_geode_vault` | Кристальная жеода | safe money/heal, risk combat+artifact, check Strength | Сбор с краю или прорыв к ядру за артефактом | Реализовано |
+| `starlit_observatory` | Звёздная обсерватория | stat/money, check Knowledge+artifact, цена+xp | Запись знаний, чек линзы или настройка зеркал | Реализовано |
+| `sunken_caravan` | Затонувший караван | safe money, risk combat+artifact, check Perception | Снять с поверхности или нырнуть за сундуком | Реализовано |
+| `war_drums_camp` | Покинутый лагерь воинов | rest/money, risk elite combat, цена attack-баффы | Паёк, призыв элитки барабанами или заточка | Реализовано |
+| `twin_offering_shrine` | Святилище двойного подношения | money/xp, цена artifact, HP-жертва random | Монетка, золотое или кровавое подношение | Реализовано |
 
 ## UI Иконки Характеристик
 
