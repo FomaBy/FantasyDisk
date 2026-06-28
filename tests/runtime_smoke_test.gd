@@ -1330,6 +1330,7 @@ func _initialize() -> void:
 	_test_class_budget_profiles()
 	await _test_enemy_stage_scaling_and_elite_rewards(main_scene)
 	await _test_ultimate_framework()
+	await _test_run_damage_dealt_metric(main_scene)
 	await _test_death_flow(main_scene)
 	await _test_epic_elite_boss_scale_hitbox()
 	await _test_elite_phase2_escalation()
@@ -4428,6 +4429,41 @@ func _test_ultimate_framework() -> void:
 				enemy.queue_free()
 		await process_frame
 	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
+func _test_run_damage_dealt_metric(main_scene: PackedScene) -> void:
+	# SCRUM-502 регрессия: нанесённый по врагу урон ДОЛЖЕН копиться в
+	# run_metrics.damage_dealt (строка «Урон по врагам» на экране итогов). Прежний QA
+	# пропустил дыру, т.к. ui_no_overlap_matrix_test инжектил фейковую метрику
+	# (damage_dealt=48213.0) и не проверял реальный бой. Здесь — НАСТОЯЩИЙ
+	# enemy.take_damage через хук enemy.gd -> current_scene.add_run_damage_dealt.
+	var game := main_scene.instantiate()
+	root.add_child(game)
+	current_scene = game
+	await process_frame
+	if not game.has_method("add_run_damage_dealt"):
+		_fail("Expected Main to expose add_run_damage_dealt aggregator (SCRUM-502).")
+		game.queue_free()
+		current_scene = null
+		await process_frame
+		return
+	game.call("reset_run_metrics")
+	var enemy := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate()
+	game.add_child(enemy)
+	enemy.set("max_health", 10000.0)
+	enemy.set("health", 10000.0)
+	await process_frame
+	enemy.call("take_damage", 250.0)
+	await process_frame
+	var metrics: Dictionary = game.get("run_metrics")
+	var dealt := float(metrics.get("damage_dealt", 0.0))
+	if dealt <= 0.0:
+		_fail("Expected enemy.take_damage to accumulate run_metrics.damage_dealt (got %.1f) — SCRUM-502 dealt-damage hook missing." % dealt)
+	if is_instance_valid(enemy):
+		enemy.queue_free()
+	game.queue_free()
 	current_scene = null
 	await process_frame
 

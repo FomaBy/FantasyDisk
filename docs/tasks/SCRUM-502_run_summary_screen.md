@@ -120,3 +120,40 @@ Jira: SCRUM-502 · Роль: backend · Контур: claude · Приорите
 - **Локализация.** UI на русском — подписи метрик по-русски, в стиле `_modifier_summary_text`/существующих subtitle.
 - **Не трогать** победную ветку обычного/элитного боя (`scripts/combat_director.gd:129-146`) — там экран итогов не нужен; только финальный босс и смерть.
 - Связанные системы: result crests (`_add_result_crest`, SCRUM-330), pause-end модалки (общий стиль), мета-награды на победе (`record_boss_victory`) — экран итогов добавляется НАД ними, не ломая существующий мета-текст subtitle.
+
+## QA-Вердикт (2026-06-28)
+Статус: FAILED
+
+Воркер: r1-qa1. Цель проверки — `origin/dev` HEAD `b69b85a5` (feat SCRUM-502).
+
+ВНИМАНИЕ: предыдущий PASSED-вердикт (r1-qa2, параллельный прогон без claim-lock) — ЛОЖНЫЙ ПРОПУСК и перекрыт. Он перечислил `add_run_damage_dealt` в списке функций, но НЕ проверил, что её кто-то вызывает, и доверился matrix-тесту, который подсовывает фейковую метрику `damage_dealt=48213.0`. Тикет уже был ошибочно переведён в «Готово» — возвращён в «К выполнению» (прямой API-переход + коммент с воспроизведением).
+
+### Дефект (блокер AC #1): нанесённый урон НЕ собирается — всегда 0
+Acceptance #1 требует сбор «нанесённого ... урона». Агрегатор `game.add_run_damage_dealt(amount)` (`scripts/main.gd:552`) определён, но **не вызывается НИГДЕ** во всём проекте:
+```
+$ grep -rn "add_run_damage_dealt" . --include="*.gd"
+scripts/main.gd:552:func add_run_damage_dealt(amount: float) -> void:   # ← единственная ссылка = само определение
+```
+Игрок наносит урон через десятки путей `enemy.take_damage(...)` (`scripts/projectile.gd:89`, `scripts/player.gd:1293,1356,1372,1464,1506,678,692,772`) — НИ ОДИН не зовёт `add_run_damage_dealt`. В `scripts/enemy.gd::take_damage` (`:251`) обратного хука к `game` тоже нет. Коммит-месседж утверждает «dealt damage — через current_scene», но такого кода нет.
+
+Следствие: строка «Урон по врагам» (`scripts/ui_screens.gd:5491`) в реальной игре ВСЕГДА показывает 0. Это и победный, и смертный экран итогов.
+
+### Эмпирическое подтверждение (headless-проба через gate)
+Прогнал реальный бой: `player.take_damage(40)` + `enemy.take_damage(75)` (тот же путь, что projectile.gd:89), затем читал `game.run_metrics`:
+```
+PROBE_RESULT enemy_take_damage_called=true damage_dealt=0.0 damage_taken=40.0 kills=1
+PROBE_VERDICT: BUG CONFIRMED -> player dealt damage to enemy but damage_dealt stayed 0.0
+```
+`damage_taken` и `kills` копятся корректно; `damage_dealt` остаётся 0 после нанесённого урона.
+
+### Почему гейты зелёные, но это не PASS
+`ui_no_overlap_matrix_test` инжектит фейковые метрики (`_sample_run_metrics`, `damage_dealt: 48213.0`, `tests/ui_no_overlap_matrix_test.gd:304`) → проверяет только наличие/overlap узлов, НЕ что реальный бой их наполняет. `runtime_smoke_test` не ассертит значение `damage_dealt`. Оба PASS, но дефект не покрыт.
+
+### Что зелёное (для справки — НЕ блокеры)
+- Kills (`_on_enemy_died` → `record_run_kill`, до boss-return), taken damage (`_on_player_damaged` → `add_run_damage_taken`), время (в `_process` после гардов), золото, финалы (level/money/artifacts/route_stage), причина исхода, reset на старте/quit/finish, отсутствие autosave-протечки (`run_metrics` нет в `_run_autosave_state`) — реализованы корректно.
+- `ui_no_overlap_matrix_test` PASS, `runtime_smoke_test` PASS (артефактные `.ctex` ERROR — несвязанный SCRUM-500 import-cache шум).
+
+### Доп. замечание (не блокер, на усмотрение разработчика)
+`capture_run_metrics_finals` (`scripts/main.gd:587`) ПЕРЕЗАПИСЫВАЕТ `gold_collected` текущим `money` игрока (`:591`), затирая значение, накопленное `add_run_gold_collected`. Если игрок тратил золото в магазинах, «Собрано золота» покажет остаток на руках, а не собранное за забег. Семантику стоит уточнить (собрано vs на руках).
+
+→ FAILED. Возврат в «К выполнению». Баг-спека: `docs/tasks/bug_SCRUM-502_dealt_damage_never_collected_task.md`.

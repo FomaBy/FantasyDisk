@@ -258,6 +258,15 @@ func take_damage(amount: float, feedback := {}) -> void:
 		_apply_elite_reflect_thorns(amount)
 	health -= final_amount
 	_update_health_bar()
+	# SCRUM-502: репортим нанесённый врагу урон в агрегатор забега (экран итогов).
+	# enemy.take_damage(...) — единая точка схода ВСЕХ источников урона по врагу
+	# (снаряды projectile.gd, прямой удар/enchant/echo/blast/контратаки player.gd,
+	# DoT-тики, урон саммонов), поэтому один хук здесь покрывает все пути. Берём
+	# final_amount = фактически снятое HP (после damage_taken_multiplier и elite-щита).
+	if final_amount > 0.0 and is_inside_tree():
+		var game_node := get_tree().current_scene
+		if game_node != null and game_node.has_method("add_run_damage_dealt"):
+			game_node.add_run_damage_dealt(final_amount)
 	_show_combat_feedback(final_amount, feedback_data)
 	if is_inside_tree():
 		if _cached_audio == null or not is_instance_valid(_cached_audio):
