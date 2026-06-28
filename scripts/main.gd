@@ -84,7 +84,7 @@ const SCREEN_BACKGROUND_PATHS := {
 	"weapon_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"pause_stats": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"meta_tree": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
-	"campfire": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"campfire": "res://assets/backgrounds/ui/ui_backdrop_rest_campfire.png",
 	"shop": "res://assets/backgrounds/ui/ui_backdrop_merchant_archive.png",
 	"event": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
 	"upgrade": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
