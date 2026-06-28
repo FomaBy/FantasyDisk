@@ -2585,8 +2585,8 @@
  },
  "SCRUM-530_event_option_select_repro_fix.md": {
   "key": "SCRUM-530",
-  "status": "Р“РѕС‚РѕРІРѕ",
-  "desc_hash": "49eefea1eede3f41aa442895d867a0ea"
+  "status": "??????",
+  "desc_hash": "0b3a805bb61d4ddfe08de8b1bde11012"
  },
  "SCRUM-526_nerf_defensive_mechanics.md": {
   "key": "SCRUM-526",
@@ -2620,7 +2620,7 @@
  },
  "SCRUM-585_glossary_tooltip_redesign.md": {
   "key": "SCRUM-585",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "4256c8a113f7a067806131c0997e9a54"
  },
  "bug_scrum619_secret_encounter_artifact_key_unlock_task.md": {
@@ -2645,12 +2645,12 @@
  },
  "SCRUM-606_triggered_artifacts_existing_hooks.md": {
   "key": "SCRUM-606",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "87a3081c46d99bec54e1899a8e3a946c"
  },
  "SCRUM-609_curse_relic_tradeoff_artifacts.md": {
   "key": "SCRUM-609",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "c4ba7625186111e16f5476ada0041a6e"
  },
  "design_scrum586_stat_tooltip_2k_redesign_task.md": {
@@ -2660,7 +2660,7 @@
  },
  "SCRUM-588_levelup_toast_2k_redesign.md": {
   "key": "SCRUM-588",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "951334138b86f90b7f7fa1d1f494eba6"
  },
  "SCRUM-486_menu_nav_2k_asset_integration.md": {
@@ -2773,15 +2773,10 @@
   "status": "Р“РѕС‚РѕРІРѕ",
   "desc_hash": "0d8ccc0a2ae8197851d04442cd9e4eb5"
  },
-"SCRUM-501_expand_random_events_class_reactive.md": {
+ "SCRUM-501_expand_random_events_class_reactive.md": {
   "key": "SCRUM-501",
   "status": "??????",
   "desc_hash": "c00dc7ef75513a7aac22d166f4cf3f85"
- },
- "SCRUM-530_event_option_select_repro_fix.md": {
-  "key": "SCRUM-530",
-  "status": "??????",
-  "desc_hash": "0b3a805bb61d4ddfe08de8b1bde11012"
  },
  "SCRUM-529_shop_node_completed_mark_with_return.md": {
   "key": "SCRUM-529",
@@ -2802,5 +2797,15 @@
   "key": "SCRUM-525",
   "status": "??????",
   "desc_hash": "09bee8a2941356266ea57e19caf9ca2a"
+ },
+ "backend_scrum593_integrate_scrum586_stat_tooltip_2k_frame_task.md": {
+  "key": "SCRUM-593",
+  "status": "Готово",
+  "desc_hash": "9db6137a341fc3658b1e41fc4ce0a7ea"
+ },
+ "SCRUM-635_jira_board_sync_safe_scope.md": {
+  "key": "SCRUM-635",
+  "status": "Готово",
+  "desc_hash": "fa62db2549b112f19d6400bdf0619183"
  }
 }
