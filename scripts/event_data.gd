@@ -227,6 +227,58 @@ const RANDOM_EVENTS := [
 			{"id": "blood_offering", "title": "Подношение кровью", "description": "Цена: 22% текущего HP. Случайный исход: либо случайный артефакт и +1 Выносливость, либо +1 Сила и +12 золота.", "health_percent_cost": 0.22, "random_outcomes": [{"random_artifact": true, "stats": {"endurance": 1}}, {"stats": {"strength": 1}, "money": 12}]},
 		],
 	},
+	# SCRUM-501: +5 сценариев, ≥2 класс-реактивны (несколько check-веток по разным
+	# архетипным атрибутам — endurance=танк, intelligence=маг, leadership=призыватель,
+	# strength=берсерк, knowledge=учёный). Только существующие ключи choice; difficulty
+	# строго в 1..12; рисковый апсайд ≥ безопасного (EV-инвариант SCRUM-495/508).
+	{
+		"id": "oracle_crossroads",
+		"title": "Перекрёсток оракула",
+		"story": "На скрещении трёх дорог сидит слепой оракул и чертит на песке знаки. «Каждому — своя тропа, — шепчет он, — телу, разуму или воле. Чужая тропа покарает самозванца».",
+		"choices": [
+			{"id": "path_of_body", "title": "Танк: тропа тела", "description": "Проверка Выносливости 7: танк выдерживает испытание плоти — успех +1 Выносливость и +0.08 Защита, провал -12% HP.", "check": {"stat": "endurance", "difficulty": 7}, "success": {"stats": {"endurance": 1}, "mods": {"defense_flat": 0.08}}, "failure": {"health_percent_cost": 0.12}},
+			{"id": "path_of_mind", "title": "Маг: тропа разума", "description": "Проверка Интеллекта 7: маг читает знаки на песке — успех +1 Интеллект и +8% урон, провал -12% HP.", "check": {"stat": "intelligence", "difficulty": 7}, "success": {"stats": {"intelligence": 1}, "mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.12}},
+			{"id": "path_of_will", "title": "Призыватель: тропа воли", "description": "Проверка Лидерства 7: призыватель подчиняет видение — успех +1 Лидерство и +1 призыв, провал -12% HP.", "check": {"stat": "leadership", "difficulty": 7}, "success": {"stats": {"leadership": 1}, "mods": {"summon_bonus": 1}}, "failure": {"health_percent_cost": 0.12}},
+		],
+	},
+	{
+		"id": "runed_menhir",
+		"title": "Рунный менгир",
+		"story": "Среди вереска торчит замшелый камень выше человека, испещрённый рунами. Часть знаков можно выбить силой, часть — лишь прочитать; камень глухо гудит, ожидая, чем именно его потревожат.",
+		"choices": [
+			{"id": "shatter_menhir", "title": "Берсерк: расколоть силой", "description": "Проверка Силы 7: грубая сила вскрывает тайник — успех +1 Сила и +20 золота, провал -12% HP от отдачи.", "check": {"stat": "strength", "difficulty": 7}, "success": {"stats": {"strength": 1}, "money": 20}, "failure": {"health_percent_cost": 0.12}},
+			{"id": "decipher_runes", "title": "Учёный: прочесть руны", "description": "Проверка Знания 7: знаток разбирает древнее письмо — успех +1 Знание и +8% опыта, провал -1 Знание.", "check": {"stat": "knowledge", "difficulty": 7}, "success": {"stats": {"knowledge": 1}, "mods": {"xp_gain_multiplier": 1.08}}, "failure": {"stats": {"knowledge": -1}}},
+			{"id": "leave_offering_menhir", "title": "Оставить подношение", "description": "Цена: 10 золота. Камень благодарит лечением 25% HP.", "cost_money": 10, "heal_percent": 0.25},
+		],
+	},
+	{
+		"id": "gilded_gambler",
+		"title": "Позолоченный шулер",
+		"story": "За складным столиком сидит щёголь в золочёном плаще и тасует три карты быстрее, чем успевает глаз. «Удвою ставку или заберу всё, — мурлычет он, — выбор за тобой, герой».",
+		"choices": [
+			{"id": "place_bet", "title": "Сделать ставку", "description": "Цена: 12 золота. Удвоить или потерять: артефакт, 30 золота или подставной громила.", "risk": true, "cost_money": 12, "random_outcomes": [{"random_artifact": true}, {"money": 30}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.18, "money_multiplier": 1.4}}]},
+			{"id": "read_the_tell", "title": "Раскусить шулера", "description": "Проверка Восприятия 8: успех +26 золота с пойманного на жульничестве, провал -10 золота отступного.", "check": {"stat": "perception", "difficulty": 8}, "success": {"money": 26}, "failure": {"cost_money": 10}},
+		],
+	},
+	{
+		"id": "tidewater_grotto",
+		"title": "Приливный грот",
+		"story": "Морская пещера дышит в такт прибою: вода то отступает, обнажая жемчужный песок, то с рёвом врывается обратно. В дальнем гроте поблёскивает что-то, оставленное отливом.",
+		"choices": [
+			{"id": "bathe_in_pool", "title": "Омыться в заводи", "description": "Без риска: лечение 30% HP и +4% к лечению на забег от целебной соли.", "heal_percent": 0.30, "mods": {"healing_multiplier": 1.04}},
+			{"id": "raid_the_grotto", "title": "Добраться до грота", "description": "Прилив запирает в бою с глубинной тварью. Победа: +50% золота, +30% опыта и случайный артефакт.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.16, "money_multiplier": 1.5, "xp_multiplier": 1.3}, "post_combat": {"random_artifact": true}},
+			{"id": "time_the_waves", "title": "Поймать отлив", "description": "Проверка Ловкости 7: успех +18 золота с обнажённого дна, провал -10% HP под накатившей волной.", "check": {"stat": "agility", "difficulty": 7}, "success": {"money": 18}, "failure": {"health_percent_cost": 0.10}},
+		],
+	},
+	{
+		"id": "wandering_emberwisp",
+		"title": "Блуждающий огонёк",
+		"story": "В сумерках над болотом качается тёплый огонёк размером с кулак. Он манит в сторону от тропы, обещая то ли клад, то ли трясину, и подрагивает, стоит подойти чуть ближе.",
+		"choices": [
+			{"id": "follow_emberwisp", "title": "Пойти за огоньком", "description": "Цена: 8% HP по топкой тропе. Случайно: +28 золота, случайный артефакт или засада в трясине.", "health_percent_cost": 0.08, "random_outcomes": [{"money": 28}, {"random_artifact": true}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.14, "money_multiplier": 1.3}}]},
+			{"id": "snare_the_ember", "title": "Поймать искру", "description": "Проверка Интеллекта 7: успех приручённый огонёк даёт +8% урон на весь забег, провал -8% HP от ожога.", "check": {"stat": "intelligence", "difficulty": 7}, "success": {"mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.08}},
+		],
+	},
 ]
 
 

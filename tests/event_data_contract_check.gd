@@ -47,8 +47,8 @@ func _scan_outcome(branch: Dictionary, ctx: String) -> void:
 
 func _initialize() -> void:
 	var events: Array = EventData.RANDOM_EVENTS
-	if events.size() != 23:  # SCRUM-608: +1 sudden_fork; SCRUM-605: +5 risk/reward событий (пул 18→23)
-		_fail("expected pool size 23, got %d" % events.size())
+	if events.size() != 28:  # SCRUM-608: +1 sudden_fork; SCRUM-605: +5 risk/reward (18→23); SCRUM-501: +5 класс-реактивных (23→28)
+		_fail("expected pool size 28, got %d" % events.size())
 
 	var ids := {}
 	var combat_outcomes := 0

@@ -744,6 +744,11 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `sunken_caravan` | Затонувший караван | safe money, risk combat+artifact, check Perception | Снять с поверхности или нырнуть за сундуком | Реализовано |
 | `war_drums_camp` | Покинутый лагерь воинов | rest/money, risk elite combat, цена attack-баффы | Паёк, призыв элитки барабанами или заточка | Реализовано |
 | `twin_offering_shrine` | Святилище двойного подношения | money/xp, цена artifact, HP-жертва random | Монетка, золотое или кровавое подношение | Реализовано |
+| `oracle_crossroads` | Перекрёсток оракула | class-reactive checks Endurance/Intelligence/Leadership | Архетипные тропы тела/разума/воли с профильным бонусом | Реализовано |
+| `runed_menhir` | Рунный менгир | class-reactive checks Strength/Knowledge, цена heal | Силовой раскол берсерка vs чтение рун учёного | Реализовано |
+| `gilded_gambler` | Позолоченный шулер | цена hidden risk artifact/money/combat, check Perception | Ставка вслепую или раскус шулера | Реализовано |
+| `tidewater_grotto` | Приливный грот | rest+heal mod, risk combat+artifact, check Agility | Целебная заводь, рейд в грот или ловля отлива | Реализовано |
+| `wandering_emberwisp` | Блуждающий огонёк | HP cost money/artifact/combat random, check Intelligence | Погоня за огоньком или приручение искры | Реализовано |
 
 ## UI Иконки Характеристик
 
