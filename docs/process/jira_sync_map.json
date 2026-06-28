@@ -2823,7 +2823,7 @@
   "status": "Контроль качества",
   "desc_hash": "e407a3df4d1e4e196d1ff9e7bca25d53"
  },
-"SCRUM-518_enlarge_arena_shrink_player.md": {
+ "SCRUM-518_enlarge_arena_shrink_player.md": {
   "key": "SCRUM-518",
   "status": "К выполнению",
   "desc_hash": "6a537b90677ceef87eb264568d36b21d"
@@ -2831,6 +2831,6 @@
  "SCRUM-570_level_up_2k_redesign.md": {
   "key": "SCRUM-570",
   "status": "К выполнению",
-  "desc_hash": "a43931cd6261fa1f7776d311815757e1"
+  "desc_hash": "dd10eaa63eeda5d6e9fe133c2866d585"
  }
 }
