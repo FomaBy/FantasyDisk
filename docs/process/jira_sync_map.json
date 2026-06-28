@@ -2862,5 +2862,10 @@
   "key": "SCRUM-543",
   "status": "Контроль качества",
   "desc_hash": "bd1352183cc009847a8ccc77af969ea3"
+ },
+ "SCRUM-656_secret_boss_gate_reverify.md": {
+  "key": "SCRUM-656",
+  "status": "Контроль качества",
+  "desc_hash": "cbf6b4d43a602dd75a62ee819e76d0f7"
  }
 }
