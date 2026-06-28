@@ -92,7 +92,7 @@ const SCREEN_BACKGROUND_PATHS := {
 	"level_up": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
 	"meta_progression": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
 	"elite_reward": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
-	"victory": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+	"victory": "res://assets/backgrounds/ui/ui_backdrop_victory.png",
 	"artifact_reward": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
 	"death": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 	"defeat": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",

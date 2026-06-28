@@ -66,6 +66,9 @@ SLOTS = [
     # переиспользуют base card-арт под hover) — отдельный идентичный PNG не нужен.
     {"slug": "evt_panel", "file": "ui_screens", "const": "EVT_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 780},
     {"slug": "evt_card", "file": "ui_screens", "const": "EVT_CARD_2K", "kind": "frame", "margin_key": "card", "w": 480, "h": 340},
+    # SCRUM-573 (Улучшение): per-слот @2K-рамка панели улучшения (economy-panel "upgrade").
+    # Карточки выбора переиспользуют общий economy-choice-арт (как остальные economy-экраны).
+    {"slug": "upgrade_panel", "file": "ui_screens", "const": "UPGRADE_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 730},
     # боевой HUD-блок (SCRUM-564, эпик SCRUM-481): per-слот @2K-рамки из CHUD_*_2K.
     # Тонкие горизонтальные стрипы → margin-профили hud_resource/hud_timer/hud_artifact.
     {"slug": "chud_resource_panel", "file": "ui_screens", "const": "CHUD_RESOURCE_PANEL_2K", "kind": "frame", "margin_key": "hud_resource", "w": 820, "h": 84},
@@ -78,6 +81,8 @@ SLOTS = [
     # SCRUM-568 (Докача/атрибут-шоп): высокая панель full-height. Карточки опций
     # (ATTR_OFFER_2K 480×340) переиспользуют evt_card-рамку (тот же размер/тип card).
     {"slug": "attr_panel", "file": "ui_screens", "const": "ATTR_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1124, "h": 1384},
+    # SCRUM-576 (Что нового/патч-ноуты): полноэкранная панель-фрейм (как skill-tree main).
+    {"slug": "pn_panel", "file": "ui_screens", "const": "PN_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 2464, "h": 1388},
     # кнопки (button-маргины)
     {"slug": "hs4_choose_btn", "file": "ui_screens", "const": "HS4_CHOOSE_BTN_2K", "kind": "button", "margin_key": "hero_confirm", "w": 512, "h": 89},
     {"slug": "hs4_asc_btn", "file": "ui_screens", "const": "HS4_ASC_BTN_2K", "kind": "button", "margin_key": "utility", "w": 102, "h": 72},

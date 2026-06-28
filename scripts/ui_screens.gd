@@ -154,6 +154,10 @@ const EVT_SAFE_2K := Rect2(478, 402, 1604, 642)
 const EVT_CARD_2K := Rect2(0, 0, 480, 340)                  # EventChoiceButton{0..2} (3 в ряд, gap 48)
 const EVT_BACK_BUTTON_2K := Rect2(0, 0, 380, 54)            # EventBackButton
 
+# #14 Улучшение — _show_upgrade_screen (economy-панель "upgrade"; target 1720×730, центр)
+const UPGRADE_PANEL_2K := Rect2(420, 355, 1720, 730)        # MenuPanel_upgrade (centered economy panel)
+const UPGRADE_SAFE_2K := Rect2(478, 427, 1604, 592)         # safe = панель − content 58/72/58/66
+
 # #11 Повышение уровня — _show_level_up_screen / _level_up_layout_metrics
 const LU_PANEL_2K := Rect2(760, 420, 1040, 600)
 const LU_SAFE_2K := Rect2(818, 492, 924, 462)
@@ -232,6 +236,16 @@ const SETTINGS_CONTENT_PANEL_2K := Rect2(430, 570, 1700, 610)
 const SETTINGS_CONTROL_ROW_2K := Rect2(658, 602, 1438, 62) # строка контрола (разрешение/режим окна; шаблон h)
 const SETTINGS_BACK_2K := Rect2(1140, 1204, 280, 87)
 # === конец спеки SCRUM-488 ===
+
+# #17 Что нового / патч-ноуты — _show_patch_notes_screen (SCRUM-576). Полноэкранная панель
+# (как skill-tree main), хедер «Что нового» + «Назад в меню» сверху, скролл версий/буллетов
+# внутри safe-area. Текст длинных версий уходит в вертикальный скролл (рамка не растягивается).
+const PN_PANEL_2K := Rect2(48, 26, 2464, 1388)             # PatchNotesPanel (фрейм)
+const PN_SAFE_2K := Rect2(136, 118, 2288, 1214)            # layout-VBox (header → scroll), панель − content 58/72/58/66 (масштаб)
+const PN_HEADER_2K := Rect2(136, 118, 2288, 104)           # хедер (title EXPAND + back)
+const PN_TITLE_2K := Rect2(136, 118, 1900, 104)            # «Что нового» (38px)
+const PN_BACK_2K := Rect2(2164, 118, 260, 104)             # PatchNotesBackButton
+const PN_SCROLL_2K := Rect2(136, 234, 2288, 1098)          # скролл версий/буллетов (под хедером)
 
 const ECONOMY_FRAME_DIR := "res://assets/sprites/ui/frames/economy/"
 const ECONOMY_PANEL_PATH := MINIMAL_PANEL_PATH
@@ -1838,14 +1852,24 @@ func _show_patch_notes_screen() -> void:
 	game.ui_layer.add_child(root)
 	_add_screen_background(root, "codex")
 
+	# SCRUM-576: полноэкранная панель-фрейм @2K (PN_PANEL_2K 2464×1388), нарисована per-слот
+	# рисующим пайплайном (9-slice-safe, орнамент в margin-band). Контент — внутри content-зоны
+	# панели (58/72/58/66 source→display); хедер + скролл версий не лезут на рамку.
+	var panel := PanelContainer.new()
+	panel.name = "PatchNotesPanel"
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = PN_PANEL_2K.position.x
+	panel.offset_top = PN_PANEL_2K.position.y
+	panel.offset_right = -(2560.0 - PN_PANEL_2K.end.x)
+	panel.offset_bottom = -(1440.0 - PN_PANEL_2K.end.y)
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("pn_panel", PN_PANEL_2K.size))
+	root.add_child(panel)
+
 	var layout := VBoxContainer.new()
-	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
-	layout.offset_left = 48.0
-	layout.offset_top = 26.0
-	layout.offset_right = -48.0
-	layout.offset_bottom = -26.0
+	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	layout.add_theme_constant_override("separation", 12)
-	root.add_child(layout)
+	panel.add_child(layout)
 
 	var header := HBoxContainer.new()
 	header.add_theme_constant_override("separation", 18)
@@ -4669,7 +4693,7 @@ func _show_rest_screen() -> void:
 
 
 func _show_upgrade_screen() -> void:
-	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade")
+	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade", _upgrade_panel_2k_style())
 	_create_menu_run_hud()
 	var upgrade_card_size := _economy_choice_display_size(3)
 	var choices := _make_economy_choice_row("UpgradeChoiceRow", upgrade_card_size, 3)
@@ -7071,6 +7095,15 @@ func _economy_panel_style() -> StyleBox:
 func _event_panel_2k_style() -> StyleBox:
 	var display_size := _economy_menu_panel_half_size("event") * 2.0
 	return _overhaul_2k_frame_style("evt_panel", display_size)
+
+
+# SCRUM-573: Улучшение @2K. Панель экрана улучшения — per-слот overhaul_2k-рамка
+# (upgrade_panel 1720×730), нарисованная РОВНО в свой пиксельный размер → на 2K 1:1,
+# на 1080p/4K юниформ-скейл вьюпортом без растяжения орнамента. Карточки выбора —
+# общий economy-choice-арт (как остальные economy-экраны кроме события).
+func _upgrade_panel_2k_style() -> StyleBox:
+	var display_size := _economy_menu_panel_half_size("upgrade") * 2.0
+	return _overhaul_2k_frame_style("upgrade_panel", display_size)
 
 
 # SCRUM-565/568: переинсет контента карточки выбора под content-зону её overhaul_2k-рамки
