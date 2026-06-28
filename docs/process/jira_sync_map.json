@@ -2652,5 +2652,10 @@
   "key": "SCRUM-609",
   "status": "Контроль качества",
   "desc_hash": "c4ba7625186111e16f5476ada0041a6e"
+ },
+ "design_scrum586_stat_tooltip_2k_redesign_task.md": {
+  "key": "SCRUM-586",
+  "status": "Контроль качества",
+  "desc_hash": "622db00da2aee56fb39b7f38fa04e913"
  }
 }

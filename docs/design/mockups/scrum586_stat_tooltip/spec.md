@@ -1,6 +1,6 @@
 # UI Mockup Spec - Stat Tooltip 2K
 
-Status: ready_for_integration
+Status: implemented
 Role owner: Design
 Task: docs/tasks/design_scrum586_stat_tooltip_2k_redesign_task.md
 Jira: SCRUM-586
@@ -69,7 +69,7 @@ content zone.
 - [x] No UI content overlaps frame border, ornament, gem, metal, or decorative corner in the spec.
 - [x] Runtime content fit estimated for responsive targets.
 - [x] Hover/focus/pressed/disabled states do not resize or shift layout.
-- [ ] Screenshot comparison completed after Back-end implementation.
+- [x] Screenshot/runtime comparison completed after Back-end implementation.
 - [x] Task/Jira updated; Back-end handoff created as SCRUM-593.
 
 ## Deviations
@@ -78,3 +78,13 @@ Jira description names `scripts/ui_screens.gd`, but the current inventory and
 runtime code place `StatTooltipPanel` / `_make_custom_tooltip` in
 `scripts/pause_stats_menu.gd`. The Back-end handoff targets the actual runtime
 file.
+
+## 2026-06-28 Runtime Verification
+
+- Runtime integration re-verified in `scripts/pause_stats_menu.gd` and
+  `scripts/ui/ui_theme_paths.gd`.
+- Target content rect remains `x=44, y=42, w=342, h=204`; the text label width
+  is capped to the safe inner zone.
+- Passed targeted UI smoke checks after a headless Godot import cache refresh:
+  `tests/display_resolution_test.gd`, `tests/ui_no_overlap_matrix_test.gd`,
+  `tests/runtime_smoke_ui_test.gd`, and `tests/runtime_smoke_test.gd`.
