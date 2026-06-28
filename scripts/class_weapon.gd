@@ -569,7 +569,9 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	visual_tween.tween_property(pool_sprite, "scale", Vector2.ONE * pool_scale * 0.985, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	visual_tween.parallel().tween_property(pool_sprite, "rotation", -0.035, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
-	var tick_count := int(floor(pool_duration / maxf(pool_tick_interval, 0.2)))
+	# SCRUM-649: гарантируем минимум 1 тик — при коротком pool_duration (< tick interval)
+	# floor давал 0, и заспавненный пул не наносил урона (потраченная впустую атака).
+	var tick_count := maxi(int(floor(pool_duration / maxf(pool_tick_interval, 0.2))), 1)
 	var pool_tween := pool.create_tween()
 	var pool_id := pool.get_instance_id()
 	var weapon_id := get_instance_id()
