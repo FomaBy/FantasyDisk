@@ -14,6 +14,9 @@ const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/u
 const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png")
 # SCRUM-486/SCRUM-593: per-slot @2K pause dossier plus dedicated SCRUM-586 stat tooltip.
 const ESCAPE_PANEL_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png")
+# SCRUM-580: выделенный pd_btn @2K-фрейм (280×60, нарисован ровно под слот PD_BTN_2K,
+# 9-slice-margins 34/16/34/16) для кнопок управления досье-паузы.
+const PD_BTN_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_btn.png")
 const STAT_TOOLTIP_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png")
 const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
 const PAUSE_END_MODAL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png")
@@ -289,8 +292,10 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 	button_box.add_theme_constant_override("separation", 8)
 	left_column.add_child(button_box)
 
+	# SCRUM-580: 4 кнопки управления досье-паузы переодеты в выделенный pd_btn @2K-фрейм.
 	var resume_button := _make_button("Продолжить")
 	resume_button.name = "PauseResumeButton"
+	_apply_pd_2k_button_theme(resume_button)
 	resume_button.pressed.connect(func() -> void:
 		resume_requested.emit()
 	)
@@ -298,6 +303,7 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "PauseSettingsButton"
+	_apply_pd_2k_button_theme(settings_button)
 	settings_button.pressed.connect(func() -> void:
 		settings_requested.emit()
 	)
@@ -305,12 +311,13 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 
 	var end_run_button := _make_button("Завершить забег")
 	end_run_button.name = "PauseEndRunButton"
-	_apply_fantasy_button_theme(end_run_button, "danger")
+	_apply_pd_2k_button_theme(end_run_button, "danger")
 	end_run_button.pressed.connect(_show_end_run_confirm)
 	button_box.add_child(end_run_button)
 
 	var menu_button := _make_button("Выйти в главное меню")
 	menu_button.name = "PauseMainMenuButton"
+	_apply_pd_2k_button_theme(menu_button)
 	menu_button.pressed.connect(func() -> void:
 		main_menu_requested.emit()
 	)
@@ -712,6 +719,27 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 	button.add_theme_stylebox_override("pressed", _button_style(PAUSE_BUTTON_PRESSED, pressed_tint))
 	button.add_theme_stylebox_override("disabled", _button_style(PAUSE_BUTTON_DISABLED, Color(0.72, 0.72, 0.72, 1.0)))
 	button.add_theme_stylebox_override("focus", _button_style(PAUSE_BUTTON_FOCUS, BUTTON_NEUTRAL_FOCUS_TINT))
+	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
+	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+# SCRUM-580: кнопки управления досье-паузы на выделенном pd_btn @2K-фрейме (один ассет +
+# state-тинты, как overhaul_2k-кнопки в ui_screens.gd). Margins/content — те же 34/16/34/16,
+# что у общего pause-кнопочного стиля, поэтому safe-зона текста сохраняется.
+func _apply_pd_2k_button_theme(button: Button, variant := "default") -> void:
+	var normal_tint := Color.WHITE
+	var pressed_tint := Color(0.92, 0.88, 0.82, 1.0)
+	if variant == "danger":
+		normal_tint = Color(1.08, 0.72, 0.72, 1.0)
+		pressed_tint = Color(0.92, 0.55, 0.55, 1.0)
+	button.add_theme_stylebox_override("normal", _button_style(PD_BTN_FRAME_2K, normal_tint))
+	button.add_theme_stylebox_override("hover", _button_style(PD_BTN_FRAME_2K, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("pressed", _button_style(PD_BTN_FRAME_2K, pressed_tint))
+	button.add_theme_stylebox_override("disabled", _button_style(PD_BTN_FRAME_2K, Color(0.72, 0.72, 0.72, 1.0)))
+	button.add_theme_stylebox_override("focus", _button_style(PD_BTN_FRAME_2K, BUTTON_NEUTRAL_FOCUS_TINT))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)

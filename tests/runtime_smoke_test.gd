@@ -42,6 +42,8 @@ const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/
 # SCRUM-579: кнопки паузы переехали на выделенный pm_btn @2K-фрейм.
 const RUN_PAUSE_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_btn.png"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
+# SCRUM-580: кнопки управления досье-паузы на выделенном pd_btn @2K-фрейме.
+const PAUSE_DOSSIER_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_btn.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
@@ -1215,10 +1217,17 @@ func _initialize() -> void:
 		push_error("Expected Escape menu buttons to use Design StyleBoxTexture frame.")
 		quit(1)
 		return
-	if not _button_uses_minimal_metal_type(resume_button, "pause"):
-		push_error("Expected Escape menu buttons to use neutral minimal-metal hover/focus states.")
-		quit(1)
-		return
+	# SCRUM-580: 4 кнопки управления досье-паузы используют выделенный pd_btn @2K-фрейм.
+	for pd_btn_name in ["PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton"]:
+		var pd_button := pause_menu.find_child(pd_btn_name, true, false) as Button
+		if pd_button == null:
+			push_error("Expected pause dossier control button %s." % pd_btn_name)
+			quit(1)
+			return
+		if _stylebox_texture_path(pd_button.get_theme_stylebox("normal")) != PAUSE_DOSSIER_BUTTON_TEXTURE_2K:
+			push_error("Expected %s to use the SCRUM-580 @2K pd_btn frame." % pd_btn_name)
+			quit(1)
+			return
 	if not (strength_row.get_theme_stylebox("panel") is StyleBoxTexture) or not (damage_chip.get_theme_stylebox("panel") is StyleBoxTexture) or not (physical_group.get_theme_stylebox("panel") is StyleBoxTexture):
 		push_error("Expected base rows, derived chips, and derived groups to use Design StyleBoxTexture frames.")
 		quit(1)
