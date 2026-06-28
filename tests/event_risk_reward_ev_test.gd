@@ -130,9 +130,14 @@ func _is_risk(choice: Dictionary) -> bool:
 	for o in choice.get("random_outcomes", []):
 		if (o as Dictionary).get("combat") is Dictionary:
 			return true
-	var mods: Dictionary = choice.get("mods", {})
-	if float(mods.get("enemy_health_multiplier", 1.0)) > 1.0:
-		return true
+	# SCRUM-494: ветка с ЧИСТЫМ штрафом-модом (enemy_health_multiplier > 1.0) и БЕЗ
+	# боевой/артефактной/статовой добычи (напр. hot_spring/full_rest) — это НЕ
+	# рисковый выбор «риск ради апсайда», а безопасный хил с побочкой. После нерфа
+	# full_rest до штрафа 1.25 (SCRUM-494 AC) он сознательно слабее clean-хила
+	# quick_dip, поэтому не должен считаться «рисковой» веткой инварианта SCRUM-508
+	# (иначе безопасная пара hot_spring ложно проваливает risk>=safe). Зеркалит
+	# реконсиляцию в tools/route_economy_xp_model.gd::_branch_is_risk.
+	# Настоящие рисковые ветки уже помечены risk:true или несут combat.
 	return false
 
 
