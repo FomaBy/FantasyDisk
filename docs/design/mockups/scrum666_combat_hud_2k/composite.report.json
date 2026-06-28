@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "hp_zone",
+      "rect": [
+        92,
+        50,
+        244,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 36,
+      "lines": [
+        "HP 120 / 140"
+      ],
+      "text_bbox": [
+        182,
+        68,
+        65,
+        15
+      ]
+    },
+    {
+      "id": "xp_zone",
+      "rect": [
+        354,
+        50,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 34,
+      "lines": [
+        "XP 68%"
+      ],
+      "text_bbox": [
+        440,
+        69,
+        39,
+        14
+      ]
+    },
+    {
+      "id": "gold_zone",
+      "rect": [
+        588,
+        50,
+        144,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 36,
+      "lines": [
+        "345"
+      ],
+      "text_bbox": [
+        648,
+        69,
+        24,
+        14
+      ]
+    },
+    {
+      "id": "ult_zone",
+      "rect": [
+        754,
+        50,
+        254,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 34,
+      "lines": [
+        "ULT 82%"
+      ],
+      "text_bbox": [
+        858,
+        69,
+        46,
+        14
+      ]
+    },
+    {
+      "id": "timer_zone",
+      "rect": [
+        1196,
+        50,
+        168,
+        50
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 42,
+      "lines": [
+        "02:41"
+      ],
+      "text_bbox": [
+        1264,
+        68,
+        32,
+        14
+      ]
+    },
+    {
+      "id": "ascension_zone",
+      "rect": [
+        1482,
+        55,
+        36,
+        38
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 28,
+      "lines": [
+        "A3"
+      ],
+      "text_bbox": [
+        1491,
+        67,
+        18,
+        14
+      ]
+    },
+    {
+      "id": "level_button_zone",
+      "rect": [
+        2454,
+        1324,
+        48,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 52,
+      "lines": [
+        "+"
+      ],
+      "text_bbox": [
+        2472,
+        1345,
+        13,
+        12
+      ]
+    },
+    {
+      "id": "level_badge_zone",
+      "rect": [
+        2498,
+        1309,
+        20,
+        22
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "2"
+      ],
+      "text_bbox": [
+        2505,
+        1316,
+        6,
+        8
+      ]
+    }
+  ]
+}

@@ -1252,6 +1252,23 @@ Runtime asset IDs/paths must be assigned by the Back-end handoff after slicing
 or importing final exact-size PNGs. Until then, existing live UI registries stay
 authoritative for runtime.
 
+## SCRUM-666 Combat HUD 2K Source Package
+
+This is a Design-source package for a future clean combat HUD integration, not
+live runtime content yet.
+
+| Group | ID / naming | Canonical folder / file | Status |
+| --- | --- | --- | --- |
+| Combat HUD 2K spec | `scrum666_combat_hud_2k_spec` | `docs/design/mockups/scrum666_combat_hud_2k/spec.md` | Design-source review |
+| Combat HUD 2K plan | `scrum666_combat_hud_2k_ui_plan` | `docs/design/mockups/scrum666_combat_hud_2k/ui_plan.json` | Authoritative geometry |
+| Combat HUD 2K layout | `scrum666_combat_hud_2k_layout` | `docs/design/mockups/scrum666_combat_hud_2k/layout.json` | Authoritative content zones |
+| Combat HUD 2K OpenAI mockup | `scrum666_combat_hud_2k_mockup_base` | `docs/design/references/scrum666_combat_hud_2k/combat_hud_2k_mockup_base.png` | Visual source only |
+| Combat HUD 2K safe-zone previews | `scrum666_combat_hud_2k_previews` | `docs/design/previews/scrum666_combat_hud_2k_*` | QA evidence |
+
+Runtime asset IDs/paths must be assigned by a Back-end integration task after
+slot-exact slicing or redraw. Until then, existing live combat HUD registries
+remain authoritative.
+
 ## Иконки Артефактов, Shop UI И Курсор
 
 Каноническая спецификация и полный mapping `artifact_id -> icon_path`, `shop_item_id -> icon_path`: `docs/design/artifact_shop_cursor_visual_kit.md`.

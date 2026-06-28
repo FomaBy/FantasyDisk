@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "hp_zone",
+      "rect": [
+        92,
+        50,
+        244,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "xp_zone",
+      "rect": [
+        354,
+        50,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "gold_zone",
+      "rect": [
+        588,
+        50,
+        144,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "ult_zone",
+      "rect": [
+        754,
+        50,
+        254,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "timer_zone",
+      "rect": [
+        1196,
+        50,
+        168,
+        50
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "ascension_zone",
+      "rect": [
+        1482,
+        55,
+        36,
+        38
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "level_button_zone",
+      "rect": [
+        2454,
+        1324,
+        48,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "level_badge_zone",
+      "rect": [
+        2498,
+        1309,
+        20,
+        22
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

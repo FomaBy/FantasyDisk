@@ -321,6 +321,16 @@ SCRUM-556 moves the in-run Escape pause panel to the upper-left gameplay area an
 adds `CharacterStatsHud`, a compact four-chip base-stat strip under
 `RunResourceHud`, using existing minimal-metal frames and runtime stat data.
 SCRUM-521 adds `LowHpVignetteOverlay` as a procedural combat HUD warning:
+
+SCRUM-666 adds a Design-source package for the next clean essential-only 2K
+combat HUD pass. The package keeps only HP, XP, money, ULT charge, timer,
+ascension/elevation and the bottom-right level-up plus button. It intentionally
+omits artifact rows, duplicate FABs and extra HUD panels. Source and geometry
+live under `docs/design/mockups/scrum666_combat_hud_2k/`, OpenAI reference art
+under `docs/design/references/scrum666_combat_hud_2k/`, and safe-zone previews
+under `docs/design/previews/scrum666_combat_hud_2k_*`. Runtime integration must
+use the validated `ui_plan.json` rectangles as authoritative, because the
+generated mockup is visual direction only and not a pixel-exact atlas.
 when player HP drops below 30%, a shader vignette fades in with a transparent
 center and light red edges; it fades out only after HP recovers to 34%+ to avoid
 threshold flicker. The overlay is drawn behind HUD cards, ignores mouse input,

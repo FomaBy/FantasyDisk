@@ -2867,5 +2867,10 @@
   "key": "SCRUM-656",
   "status": "Контроль качества",
   "desc_hash": "cbf6b4d43a602dd75a62ee819e76d0f7"
+ },
+ "design_scrum666_combat_hud_redesign.md": {
+  "key": "SCRUM-666",
+  "status": "К выполнению",
+  "desc_hash": "4814349b2647ec2c73317bcceccad6ec"
  }
 }

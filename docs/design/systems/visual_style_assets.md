@@ -179,6 +179,16 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
+SCRUM-666 adds the Design-source combat HUD 2K package:
+`docs/design/mockups/scrum666_combat_hud_2k/spec.md`,
+`docs/design/references/scrum666_combat_hud_2k/combat_hud_2k_mockup_base.png`,
+and safe-zone previews `docs/design/previews/scrum666_combat_hud_2k_*`. The
+visual target is compact combat instrumentation: blackened iron, worn leather,
+small brass/ruby accents and calm dark interiors. It is essential-only by
+contract: HP, XP, money, ULT, timer, ascension/elevation and one bottom-right
+level-up plus button. Use the validated plan/layout files for frame-safe
+content zones; do not place runtime text/icons on generated ornament.
+
 SCRUM-586 adds the Design-source package for the 2K stat tooltip frame used by
 `StatTooltipPanel` / `_make_custom_tooltip` in `scripts/pause_stats_menu.gd`;
 SCRUM-593 makes it live in runtime.

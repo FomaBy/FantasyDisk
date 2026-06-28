@@ -1,0 +1,31 @@
+{
+  "canvas": {"width": 2560, "height": 1440},
+  "defaults": {
+    "color": "#F5E6C4",
+    "stroke_fill": "#150B0A",
+    "stroke_width": 3,
+    "line_spacing": 1.06,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "hp": "HP 120 / 140",
+    "xp": "XP 68%",
+    "gold": "345",
+    "ult": "ULT 82%",
+    "timer": "02:41",
+    "ascension": "A3",
+    "level": "+",
+    "level_badge": "2"
+  },
+  "zones": [
+    {"id": "hp_zone", "content_key": "hp", "role": "metric", "x": 92, "y": 50, "w": 244, "h": 52, "max_font": 36, "min_font": 22, "debug_color": "#FF4F4F"},
+    {"id": "xp_zone", "content_key": "xp", "role": "metric", "x": 354, "y": 50, "w": 212, "h": 52, "max_font": 34, "min_font": 22, "debug_color": "#4FA4FF"},
+    {"id": "gold_zone", "content_key": "gold", "role": "metric", "x": 588, "y": 50, "w": 144, "h": 52, "max_font": 36, "min_font": 22, "color": "#FFD66B", "debug_color": "#FFD66B"},
+    {"id": "ult_zone", "content_key": "ult", "role": "metric", "x": 754, "y": 50, "w": 254, "h": 52, "max_font": 34, "min_font": 22, "color": "#E9C3FF", "debug_color": "#C66DFF"},
+    {"id": "timer_zone", "content_key": "timer", "role": "timer", "x": 1196, "y": 50, "w": 168, "h": 50, "max_font": 42, "min_font": 26, "debug_color": "#F5E6C4"},
+    {"id": "ascension_zone", "content_key": "ascension", "role": "badge", "x": 1482, "y": 55, "w": 36, "h": 38, "max_font": 28, "min_font": 18, "color": "#FFDFA0", "debug_color": "#FFDFA0"},
+    {"id": "level_button_zone", "content_key": "level", "role": "button_icon", "x": 2454, "y": 1324, "w": 48, "h": 54, "max_font": 52, "min_font": 30, "color": "#FFF1CF", "debug_color": "#FFF1CF"},
+    {"id": "level_badge_zone", "content_key": "level_badge", "role": "badge", "x": 2498, "y": 1309, "w": 20, "h": 22, "max_font": 18, "min_font": 12, "color": "#150B0A", "stroke_width": 0, "debug_color": "#FFD66B"}
+  ]
+}

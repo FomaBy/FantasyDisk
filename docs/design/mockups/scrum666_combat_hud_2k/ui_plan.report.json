@@ -1,0 +1,172 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "resource_strip_frame",
+      "kind": "panel",
+      "rect": [
+        32,
+        24,
+        1048,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hp_zone",
+      "kind": "text",
+      "rect": [
+        92,
+        50,
+        244,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 36
+    },
+    {
+      "id": "xp_zone",
+      "kind": "text",
+      "rect": [
+        354,
+        50,
+        212,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "gold_zone",
+      "kind": "text",
+      "rect": [
+        588,
+        50,
+        144,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 36
+    },
+    {
+      "id": "ult_zone",
+      "kind": "text",
+      "rect": [
+        754,
+        50,
+        254,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "timer_frame",
+      "kind": "panel",
+      "rect": [
+        1140,
+        22,
+        280,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "timer_zone",
+      "kind": "text",
+      "rect": [
+        1196,
+        50,
+        168,
+        50
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 42
+    },
+    {
+      "id": "ascension_frame",
+      "kind": "panel",
+      "rect": [
+        1464,
+        38,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ascension_zone",
+      "kind": "text",
+      "rect": [
+        1482,
+        55,
+        36,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "level_button_frame",
+      "kind": "button",
+      "rect": [
+        2428,
+        1300,
+        100,
+        116
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "level_button_zone",
+      "kind": "text",
+      "rect": [
+        2454,
+        1324,
+        48,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 52
+    },
+    {
+      "id": "level_badge_frame",
+      "kind": "panel",
+      "rect": [
+        2490,
+        1302,
+        36,
+        36
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "level_badge_zone",
+      "kind": "text",
+      "rect": [
+        2498,
+        1309,
+        20,
+        22
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    }
+  ]
+}
