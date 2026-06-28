@@ -1,7 +1,7 @@
 # SCRUM-517: Doctor — ограничить реген, чтобы класс мог погибнуть при плохой игре
 
 Jira: SCRUM-517 · Роль: backend (balance) · Контур: codex · Приоритет: P0 · foma · Эпик: SCRUM-214
-Статус: Готово
+Статус: done
 
 ## Что и зачем
 
@@ -126,6 +126,8 @@ owner_node.set("health", minf(before + heal_amount, max_health))
 - **Документация:** обновить `docs/design/systems/progression_balance.md` и CHANGELOG; зафиксировать новый предел регена Доктора (как принято в проекте при balance-правках).
 
 ## QA-Вердикт: PASSED
+
+Статус: PASSED
 
 Проверено на committed origin/dev (6a8eaf3e) в изолированном worktree. Godot 4.6.3 headless.
 

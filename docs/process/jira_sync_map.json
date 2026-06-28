@@ -2595,8 +2595,8 @@
  },
  "SCRUM-517_doctor_drain_regen_softcap.md": {
   "key": "SCRUM-517",
-  "status": "Р“РѕС‚РѕРІРѕ",
-  "desc_hash": "7161e856ce066bfc4618287b288f1314"
+  "status": "Готово",
+  "desc_hash": "72a917e29c95e5a4cdc1739ecb979253"
  },
  "SCRUM-523_typed_damage_color_coding.md": {
   "key": "SCRUM-523",
@@ -2620,7 +2620,7 @@
  },
  "SCRUM-585_glossary_tooltip_redesign.md": {
   "key": "SCRUM-585",
-  "status": "Готово",
+  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
   "desc_hash": "4256c8a113f7a067806131c0997e9a54"
  },
  "bug_scrum619_secret_encounter_artifact_key_unlock_task.md": {
@@ -2645,12 +2645,12 @@
  },
  "SCRUM-606_triggered_artifacts_existing_hooks.md": {
   "key": "SCRUM-606",
-  "status": "Готово",
+  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
   "desc_hash": "87a3081c46d99bec54e1899a8e3a946c"
  },
  "SCRUM-609_curse_relic_tradeoff_artifacts.md": {
   "key": "SCRUM-609",
-  "status": "Готово",
+  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
   "desc_hash": "c4ba7625186111e16f5476ada0041a6e"
  },
  "design_scrum586_stat_tooltip_2k_redesign_task.md": {
@@ -2660,7 +2660,7 @@
  },
  "SCRUM-588_levelup_toast_2k_redesign.md": {
   "key": "SCRUM-588",
-  "status": "Готово",
+  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
   "desc_hash": "951334138b86f90b7f7fa1d1f494eba6"
  },
  "SCRUM-486_menu_nav_2k_asset_integration.md": {
@@ -2798,14 +2798,9 @@
   "status": "??????",
   "desc_hash": "09bee8a2941356266ea57e19caf9ca2a"
  },
- "backend_scrum593_integrate_scrum586_stat_tooltip_2k_frame_task.md": {
-  "key": "SCRUM-593",
-  "status": "Готово",
-  "desc_hash": "9db6137a341fc3658b1e41fc4ce0a7ea"
- },
- "SCRUM-635_jira_board_sync_safe_scope.md": {
-  "key": "SCRUM-635",
-  "status": "Готово",
-  "desc_hash": "fa62db2549b112f19d6400bdf0619183"
+ "SCRUM-515_hide_combat_weapon_visual.md": {
+  "key": "SCRUM-515",
+  "status": "Контроль качества",
+  "desc_hash": "8d2e2ab1a59634868025931adf071688"
  }
 }
