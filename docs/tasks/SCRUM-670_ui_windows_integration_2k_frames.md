@@ -36,3 +36,26 @@ Lane: Codex
 ## Disk Cleanup
 
 Transient unrelated `.import` files created by Godot preview imports were removed. `.godot/` cache removal is deferred until after commit/push.
+
+## QA-Вердикт (2026-06-29)
+
+Статус: PASSED
+
+Проверено:
+- `origin/dev` head `f7d1f9db` contains implementation commit `d4b399d0`.
+- `sips -g pixelWidth -g pixelHeight` confirms `ui_frame_2k_level_up_panel.png` is `1040x600` and `ui_frame_2k_level_up_card.png` is `238x210`.
+- Code review confirms `scripts/ui/ui_theme_paths.gd` registers `level_up_panel`/`level_up_card` paths, source sizes, 9-slice margins and content margins; `LevelUpPanel` uses `level_up_panel`; all `LevelUpRewardButton*` use `level_up_card` with safe-rect metadata.
+- Reward and elite reward screens intentionally remain on the SCRUM-338 reward-card runtime kit because SCRUM-571/SCRUM-572 provide full-screen mockup packages, not isolated alpha runtime frames.
+
+Команды:
+- `python3 tools/build_ui_2k_frame_kit.py --verify` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/dark_fantasy_ui_theme_test.gd` — PASS.
+
+Краевые случаи:
+- UI no-overlap matrix covered `1152x648`, `1280x720`, `1600x900`, `1920x1080`, `2560x1440`, and `3840x2160` for `level_up`, `battle_reward`, and `elite_reward` sections in `build/qa/ui_no_overlap_matrix.md`.
+- Frame content-zone assertions checked `LevelUpPanel` children and each `LevelUpRewardButton*` content rect against generated frame safe areas.
+- First Godot run rebuilt import cache in the disposable QA worktree and emitted existing UID duplicate warnings from reference/runtime sprite copies; all scoped tests still passed.
+
+Баги: нет.
