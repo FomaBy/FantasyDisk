@@ -154,6 +154,10 @@ const EVT_SAFE_2K := Rect2(478, 402, 1604, 642)
 const EVT_CARD_2K := Rect2(0, 0, 480, 340)                  # EventChoiceButton{0..2} (3 в ряд, gap 48)
 const EVT_BACK_BUTTON_2K := Rect2(0, 0, 380, 54)            # EventBackButton
 
+# #14 Улучшение — _show_upgrade_screen (economy-панель "upgrade"; target 1720×730, центр)
+const UPGRADE_PANEL_2K := Rect2(420, 355, 1720, 730)        # MenuPanel_upgrade (centered economy panel)
+const UPGRADE_SAFE_2K := Rect2(478, 427, 1604, 592)         # safe = панель − content 58/72/58/66
+
 # #11 Повышение уровня — _show_level_up_screen / _level_up_layout_metrics
 const LU_PANEL_2K := Rect2(760, 420, 1040, 600)
 const LU_SAFE_2K := Rect2(818, 492, 924, 462)
@@ -4669,7 +4673,7 @@ func _show_rest_screen() -> void:
 
 
 func _show_upgrade_screen() -> void:
-	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade")
+	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade", _upgrade_panel_2k_style())
 	_create_menu_run_hud()
 	var upgrade_card_size := _economy_choice_display_size(3)
 	var choices := _make_economy_choice_row("UpgradeChoiceRow", upgrade_card_size, 3)
@@ -7051,6 +7055,15 @@ func _economy_panel_style() -> StyleBox:
 func _event_panel_2k_style() -> StyleBox:
 	var display_size := _economy_menu_panel_half_size("event") * 2.0
 	return _overhaul_2k_frame_style("evt_panel", display_size)
+
+
+# SCRUM-573: Улучшение @2K. Панель экрана улучшения — per-слот overhaul_2k-рамка
+# (upgrade_panel 1720×730), нарисованная РОВНО в свой пиксельный размер → на 2K 1:1,
+# на 1080p/4K юниформ-скейл вьюпортом без растяжения орнамента. Карточки выбора —
+# общий economy-choice-арт (как остальные economy-экраны кроме события).
+func _upgrade_panel_2k_style() -> StyleBox:
+	var display_size := _economy_menu_panel_half_size("upgrade") * 2.0
+	return _overhaul_2k_frame_style("upgrade_panel", display_size)
 
 
 # SCRUM-565/568: переинсет контента карточки выбора под content-зону её overhaul_2k-рамки

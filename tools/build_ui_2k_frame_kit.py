@@ -66,6 +66,9 @@ SLOTS = [
     # переиспользуют base card-арт под hover) — отдельный идентичный PNG не нужен.
     {"slug": "evt_panel", "file": "ui_screens", "const": "EVT_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 780},
     {"slug": "evt_card", "file": "ui_screens", "const": "EVT_CARD_2K", "kind": "frame", "margin_key": "card", "w": 480, "h": 340},
+    # SCRUM-573 (Улучшение): per-слот @2K-рамка панели улучшения (economy-panel "upgrade").
+    # Карточки выбора переиспользуют общий economy-choice-арт (как остальные economy-экраны).
+    {"slug": "upgrade_panel", "file": "ui_screens", "const": "UPGRADE_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 730},
     # боевой HUD-блок (SCRUM-564, эпик SCRUM-481): per-слот @2K-рамки из CHUD_*_2K.
     # Тонкие горизонтальные стрипы → margin-профили hud_resource/hud_timer/hud_artifact.
     {"slug": "chud_resource_panel", "file": "ui_screens", "const": "CHUD_RESOURCE_PANEL_2K", "kind": "frame", "margin_key": "hud_resource", "w": 820, "h": 84},
