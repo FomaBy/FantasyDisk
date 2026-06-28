@@ -1,7 +1,7 @@
 # SCRUM-528: Награда с элитки только если элитка убита (не выжила)
 
 Jira: SCRUM-528 · Роль: backend (codex) · Контур: combat · Приоритет: P1 · foma · Эпик: SCRUM-522
-Статус: Контроль качества (реализовано — коммит bb474b91; gate _elite_defeated в combat_director.gd + регресс-тесты; зелёные runtime_smoke/boss_elite)
+Статус: done (qa-ready; реализовано — коммит bb474b91; reverified backend-loop-rawls-peer 2026-06-28). Gate `_elite_defeated` в `combat_director.gd` и регресс-тесты уже на `dev`; follow-up reverify: `runtime_smoke_boss_elite_test.gd` passed on Godot 4.7 headless. Full `runtime_smoke_test.gd` is currently blocked by unrelated upstream main-menu autosave prompt regression noted in SCRUM-516.
 
 ## Что и зачем
 
