@@ -1,6 +1,6 @@
 # SCRUM-541 Secret Boss: max Ascension Act 3 follow-up
 
-Status: К выполнению (QA RED 2026-06-28; blocker filed as SCRUM-656).
+Статус: Готово (QA PASS 2026-06-28; SCRUM-656 blocker reverified).
 
 Owner: backend-loop-rawls-peer. Locked paths:
 `scripts/meta_progression.gd`, `scripts/main.gd`, `scripts/combat_director.gd`,
@@ -131,3 +131,32 @@ Result: ready for QA recheck of SCRUM-541/SCRUM-656 blocker path.
 
 Final visual identity, sprite, animation rows and polished localized boss name
 are Design/Animation scope unless PM explicitly accepts the placeholder.
+
+## QA Verdict: PASS (2026-06-28, qa_541_codex_20260628_200927)
+
+Fresh Windows QA worktree from `origin/dev`:
+`C:\Users\FomaE\FantasyDisk_agents\qa_541_codex_20260628_200927`
+at commit `9b3db158`.
+
+Verified after explicit Godot 4.7 import:
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --import`
+  (known unrelated duplicate UID warnings for copied skeleton reference art).
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/secret_encounter_test.gd`
+  (`Secret encounter test passed`).
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_boss_elite_test.gd`
+  (`Runtime boss/elite smoke suite passed`).
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/boss_elite_ttk_gate.gd`
+  (boss TTK remains >= 1.35x elite at stages 0/2/4/6/8/10).
+
+The previous SCRUM-656 RED blocker did not reproduce: no `iron_bastion`
+pattern-meta failure and no `combat_director.gd` / `ui_screens.gd` runtime
+errors in the focused boss/elite gate.
+
+Residual unrelated blocker documented, not counted against SCRUM-541:
+- FAIL: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd`
+  at `tests/runtime_smoke_test.gd:930`,
+  `Expected level-up to play a placeholder toast animation.`
+- This matches the known SCRUM-654/SCRUM-658 level-up toast umbrella-smoke issue
+  and does not touch the secret boss gate.
+
+QA result: PASS for SCRUM-541 secret boss gate.
