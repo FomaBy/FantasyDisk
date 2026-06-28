@@ -61,18 +61,15 @@ const SKILL_TREE := [
 	{"id": "endure_capstone", "branch": "endure", "tier": 10, "cost": 2, "title": "Вторая жизнь", "desc": "Раз за забег смертельный удар оставляет 1 HP и даёт 2с неуязвимости.", "effects": {"death_save": 1.0}},
 ]
 
-# Секретный бой конца Акта 3 (SCRUM-619): скрытая цель для мастеров. Чистая ЛОГИКА
-# разблокировки и разовой награды — без нового арта (переиспользует апекс-босса из
-# codex). Гейт: возвышение >= 3 И (босс повержен с малым полученным уроном ИЛИ в
-# забеге есть артефакт-ключ). Награда meta_points начисляется РОВНО один раз
-# (secret_boss_defeated в персистентном состоянии).
-const SECRET_ENCOUNTER_MIN_ASCENSION := 3
-# «low-damage-boss»: суммарно получено <= порога за забег (флоулесс-ишь прохождение).
+# Secret boss endcap (SCRUM-541): after the normal Act 3 boss, only when the run
+# was launched at the maximum available Ascension level. Old SCRUM-619 low-damage
+# and key-artifact branches are kept as retired constants for save/content
+# compatibility, but they no longer unlock the fight.
+const SECRET_ENCOUNTER_MIN_ASCENSION := MAX_ASCENSION_LEVEL
 const SECRET_ENCOUNTER_MAX_DAMAGE_TAKEN := 60.0
 const SECRET_ENCOUNTER_ARTIFACT_KEY := "rift_key"
 const SECRET_ENCOUNTER_REWARD_META_POINTS := 3
-# Апекс-босс из codex (самый тяжёлый профиль + фаза ярости в последней четверти).
-const SECRET_BOSS_ID := "ashen_colossus"
+const SECRET_BOSS_ID := "secret_ascension_boss"
 
 const SKILL_BRANCHES := ["wealth", "lore", "might", "endure"]
 const SKILL_BRANCH_TITLES := {
@@ -355,13 +352,16 @@ static func _max_ascension_any(state: Dictionary) -> int:
 #   (low-damage-boss: получено урона за забег <= порога  ИЛИ  есть артефакт-ключ).
 # character_id опционален: если задан — берём возвышение этого класса; иначе —
 # максимум по всем классам (любой класс на нужном возвышении открывает контент).
+static func secret_encounter_unlocked_for_level(run_level: int) -> bool:
+	return clampi(run_level, 0, MAX_ASCENSION_LEVEL) >= MAX_ASCENSION_LEVEL
+
+
 static func secret_encounter_unlocked(state: Dictionary, run_metrics: Dictionary, character_id := "") -> bool:
+	var selected_level := int(run_metrics.get("selected_ascension_level", -1))
+	if selected_level >= 0:
+		return secret_encounter_unlocked_for_level(selected_level)
 	var asc := ascension_level(state, character_id) if character_id != "" else _max_ascension_any(state)
-	if asc < SECRET_ENCOUNTER_MIN_ASCENSION:
-		return false
-	var low_damage: bool = float(run_metrics.get("damage_taken", 0.0)) <= SECRET_ENCOUNTER_MAX_DAMAGE_TAKEN
-	var has_key := _artifacts_contain_key(run_metrics.get("artifacts", []), SECRET_ENCOUNTER_ARTIFACT_KEY)
-	return low_damage or has_key
+	return secret_encounter_unlocked_for_level(asc)
 
 
 # SCRUM-623: live run/player артефакты хранятся как СЛОВАРИ {id, title}

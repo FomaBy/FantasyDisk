@@ -1555,3 +1555,19 @@ Animation smoke test:
 ```
 
 Документационные правки не требуют запуска тестов, если не меняют код, сцены или ассеты.
+
+## SCRUM-541 Current Secret Boss State
+
+After SCRUM-541, Act 3 has two possible endings:
+
+- below max Ascension: defeating the normal Act 3 boss ends the run with the
+  normal victory flow;
+- at max Ascension L5: defeating the normal Act 3 boss immediately starts the
+  secret follow-up boss `secret_ascension_boss`.
+
+The secret boss is backend-ready in `scenes/BossSecretAscension.tscn` and
+`scripts/boss.gd` with placeholder visuals, separate canonical id, sector/ring
+AoE pressure, delayed rift eruptions and phase-2 pressure/adds at 50% HP. Final
+art/animation remains Design/Animation scope. Balance benchmark at Act 3 L5
+stage 18: about `47.6k` HP; L20 optimum estimated TTK `121.5s..231.8s`, L20
+random-average estimated TTK `347.3s..559.6s`.

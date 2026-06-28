@@ -1322,3 +1322,9 @@ Shop-only icons имеют прозрачный фон, размер `128x128`, 
 - Новое оружие получает `id`, игровое имя, класс, форму атаки, параметры урона, сцену, ассет и описание геймплейной роли.
 
 Если новая сущность участвует в случайном выборе, ее нужно добавить в этот реестр в той же задаче.
+
+## SCRUM-541 Secret Boss Registry Addendum
+
+| ID | Game name | Current scene | Role | Asset | Patterns | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | Placeholder: existing `boss_disk_devourer.png` tint until Design/Animation handoff | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | Backend implemented; final art/animation pending |

@@ -368,7 +368,7 @@ var current_node_type := ""
 var current_combat_type := "battle"
 var current_boss_id := "rift_warden"
 # SCRUM-619: текущий бой — секретный апекс-босс конца Акта 3 (выставляется
-# resolve_act3_boss_id при входе в боссовый узел, читается record_boss_victory).
+# SCRUM-541: set only while the post-Act-3 secret boss follow-up is active.
 var secret_boss_active := false
 var current_node_seed := 0
 var route_selected_indices := []
@@ -820,24 +820,30 @@ func ascension_level_for(character_id: String) -> int:
 	return META_PROGRESSION.ascension_level(meta_state, character_id)
 
 
-# SCRUM-619: разблокирован ли секретный бой В ТЕКУЩЕМ ЗАБЕГЕ (Акт 3 + гейт меты).
-# Чистая проверка состояния — без сайд-эффектов (override выставляет resolve_act3_boss_id).
 func secret_encounter_pending() -> bool:
 	if current_act < ACT_COUNT:
 		return false
-	return META_PROGRESSION.secret_encounter_unlocked(meta_state, run_metrics, selected_character_id)
+	return META_PROGRESSION.secret_encounter_unlocked_for_level(selected_ascension_level)
 
 
-# Решает id боссового узла на входе в бой. На финальном акте при выполненном гейте
-# подменяет на секретного апекс-босса (existing codex id, более тяжёлый профиль +
-# фаза ярости) и поднимает флаг забега. Иначе возвращает базовый id и гасит флаг.
-# Вызывается из route_map_screen на входе в боссовый узел (см. _enter_route_node).
 func resolve_act3_boss_id(base_boss_id: String) -> String:
-	if secret_encounter_pending():
-		secret_boss_active = true
-		return META_PROGRESSION.SECRET_BOSS_ID
 	secret_boss_active = false
 	return base_boss_id
+
+
+func should_start_secret_boss_after_act3() -> bool:
+	if secret_boss_active:
+		return false
+	return current_act >= ACT_COUNT and secret_encounter_pending()
+
+
+func start_secret_boss_encounter() -> void:
+	secret_boss_active = true
+	current_boss_id = META_PROGRESSION.SECRET_BOSS_ID
+	current_node_type = "boss"
+	current_combat_type = "boss"
+	save_run_autosave("secret_boss")
+	combat._start_combat(true, "boss")
 
 
 func record_boss_victory() -> void:

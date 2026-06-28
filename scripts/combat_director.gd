@@ -150,6 +150,9 @@ func _end_combat(victory: bool) -> void:
 			if game.advance_to_next_act():
 				game.current_combat_type = "battle"
 				game.route._show_battle_map()
+			elif game.should_start_secret_boss_after_act3():
+				game.current_combat_type = "boss"
+				game.start_secret_boss_encounter()
 			else:
 				# SCRUM-502: финальный босс повержен — снять метрики-финалы + причину исхода.
 				game.capture_run_metrics_finals(game.run_player_snapshot)
@@ -534,6 +537,7 @@ func _spawn_boss() -> void:
 const BONE_ARCHON_BOSS_SCENE := preload("res://scenes/BossBoneArchon.tscn")
 const BROOD_MOTHER_BOSS_SCENE := preload("res://scenes/BossBroodMother.tscn")
 const ASHEN_COLOSSUS_BOSS_SCENE := preload("res://scenes/BossAshenColossus.tscn")
+const SECRET_ASCENSION_BOSS_SCENE := preload("res://scenes/BossSecretAscension.tscn")
 
 
 func _boss_scene_for_id(boss_id: String) -> PackedScene:
@@ -546,6 +550,8 @@ func _boss_scene_for_id(boss_id: String) -> PackedScene:
 			return BROOD_MOTHER_BOSS_SCENE
 		"ashen_colossus":
 			return ASHEN_COLOSSUS_BOSS_SCENE
+		"secret_ascension_boss":
+			return SECRET_ASCENSION_BOSS_SCENE
 		_:
 			return game.boss_scene
 
@@ -659,6 +665,10 @@ func _scale_boss_for_run(boss: Node2D) -> void:
 	var health_multiplier = float(game.ENEMY_BALANCE["boss"]["hp_multiplier"]) * (5.40 + stage_scale * 1.55)
 	var speed_multiplier = float(game.ENEMY_BALANCE["boss"]["speed_multiplier"])
 	var damage_multiplier = float(game.ENEMY_BALANCE["boss"]["damage_multiplier"]) * (1.0 + (stage_scale - 1.0) * 0.70)
+	if game.current_boss_id == game.META_PROGRESSION.SECRET_BOSS_ID:
+		health_multiplier *= 1.18
+		speed_multiplier *= 1.08
+		damage_multiplier *= 1.18
 	if boss.get("max_health") != null:
 		var asc_boss: Dictionary = game.ascension_difficulty()
 		var scaled_health = float(boss.get("max_health")) * health_multiplier * float(asc_boss["boss_hp_mult"])

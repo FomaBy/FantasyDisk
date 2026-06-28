@@ -1412,6 +1412,7 @@ func _initialize() -> void:
 	await _test_hud_no_overlap_layouts(main_scene)
 	await _test_mini_elite_roster(main_scene)
 	await _test_new_boss_roster(main_scene)
+	await _test_secret_boss_after_act3_flow(main_scene)
 
 	print("Runtime smoke test passed.")
 	quit()
@@ -1463,6 +1464,7 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 		"bone_archon": "Костяной Архонт",
 		"brood_mother": "Матерь Роя",
 		"ashen_colossus": "Пепельный Колосс",
+		"secret_ascension_boss": "Secret Ascension Boss",
 	}
 	var expected_unique_nodes := {
 		"rift_warden": "BossGravityWell",
@@ -1470,6 +1472,7 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 		"bone_archon": "BossRiftZone",
 		"brood_mother": "BroodWebZone",
 		"ashen_colossus": "BossMoltenArmorPulse",
+		"secret_ascension_boss": "SecretBossSectorRing",
 	}
 	for boss_id in expected.keys():
 		var scene: PackedScene = m.combat.call("_boss_scene_for_id", boss_id)
@@ -1521,9 +1524,19 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 		# Фазы переключаются от потери HP.
 		boss.set("health", float(boss.get("max_health")) * 0.30)
 		boss.call("_update_boss_phase")
-		if int(boss.get("boss_phase")) < 3:
-			_fail("Expected boss '%s' to reach phase 3 at 30%% HP." % boss_id)
-			return
+		if boss_id == "secret_ascension_boss":
+			if int(boss.get("boss_phase")) < 2:
+				_fail("Expected secret boss to reach phase 2 at 30%% HP.")
+				return
+			boss.set("health", float(boss.get("max_health")) * 0.24)
+			boss.call("_update_boss_phase")
+			if int(boss.get("boss_phase")) < 3:
+				_fail("Expected secret boss to reach phase 3 below 25%% HP.")
+				return
+		else:
+			if int(boss.get("boss_phase")) < 3:
+				_fail("Expected boss '%s' to reach phase 3 at 30%% HP." % boss_id)
+				return
 		holder.queue_free()
 		current_scene = null
 		await process_frame
@@ -1540,6 +1553,33 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 	await process_frame
 
 
+func _test_secret_boss_after_act3_flow(main_scene: PackedScene) -> void:
+	var m := main_scene.instantiate()
+	root.add_child(m)
+	await process_frame
+	m.current_act = m.ACT_COUNT
+	m.selected_ascension_level = m.META_PROGRESSION.MAX_ASCENSION_LEVEL - 1
+	m.secret_boss_active = false
+	if m.should_start_secret_boss_after_act3():
+		_fail("Expected below-max Ascension to end Act 3 normally.")
+		return
+	var base_boss := "ashen_colossus"
+	var resolved: String = m.resolve_act3_boss_id(base_boss)
+	if resolved != base_boss or bool(m.secret_boss_active):
+		_fail("Expected Act 3 route boss id to remain normal before the post-boss secret flow.")
+		return
+	m.selected_ascension_level = m.META_PROGRESSION.MAX_ASCENSION_LEVEL
+	if not m.should_start_secret_boss_after_act3():
+		_fail("Expected max Ascension Act 3 victory to arm the secret boss follow-up.")
+		return
+	resolved = m.resolve_act3_boss_id(base_boss)
+	if resolved != base_boss or bool(m.secret_boss_active):
+		_fail("Expected route entry to keep normal Act 3 boss even when secret follow-up is armed.")
+		return
+	m.queue_free()
+	await process_frame
+
+
 func _test_unique_encounter_pattern_catalog() -> void:
 	var catalog: Dictionary = ProgressionData.enemy_mechanic_catalog()
 	for required_id in ["aura_buff", "summon_retinue", "blink_reposition", "hazard_pool", "poison_dot", "shield_block", "charge_telegraph", "reflect_thorns", "slow_zone", "vampirism", "rift_wave", "mirror_double", "gravity_pull", "weakpoint_shell", "healing_inversion", "split_spawn"]:
@@ -1547,7 +1587,7 @@ func _test_unique_encounter_pattern_catalog() -> void:
 			_fail("Expected enemy mechanic catalog to include %s." % required_id)
 			return
 	var patterns: Dictionary = ProgressionData.unique_encounter_patterns()
-	var expected_entities := ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal", "rift_warden", "disk_devourer", "bone_archon", "brood_mother", "ashen_colossus"]
+	var expected_entities := ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal", "rift_warden", "disk_devourer", "bone_archon", "brood_mother", "ashen_colossus", "secret_ascension_boss"]
 	var seen_signatures := {}
 	for entity_id in expected_entities:
 		var pattern: Dictionary = ProgressionData.unique_encounter_pattern(entity_id)
@@ -3498,6 +3538,8 @@ func _test_victory_flow(main: Node) -> void:
 	paused = false
 	main.set("current_act", EXPECTED_ACT_COUNT)
 	main.set("route_stage", 3)
+	main.set("selected_ascension_level", 0)
+	main.set("secret_boss_active", false)
 	main.call("_start_combat", true)
 	await process_frame
 	var boss := get_first_node_in_group("bosses")

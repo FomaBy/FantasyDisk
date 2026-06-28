@@ -896,7 +896,8 @@ func _open_route_node(route_node: Dictionary) -> void:
 			game.combat._start_combat(false, "elite")
 		"boss":
 			# SCRUM-619: на финальном акте при выполненном гейте подменяется на
-			# секретного апекс-босса (логика и флаг забега — в main.resolve_act3_boss_id).
+			# SCRUM-541: route always starts the normal Act 3 boss; the optional
+			# secret boss is spawned only after Act 3 victory in combat_director.
 			game.current_boss_id = game.resolve_act3_boss_id(str(route_node.get("boss_id", "rift_warden")))
 			game.combat._start_combat(true, "boss")
 		_:

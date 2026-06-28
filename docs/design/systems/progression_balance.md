@@ -301,3 +301,25 @@ event-множители) + `post_combat`.
   различия остаются предметом ручного feel/playtest, а не блокером формульного
   баланса.
 - Performance/code review считает текущие числа пригодными для demo, но баланс должен продолжать уточняться после игровых прогонов.
+
+## SCRUM-541 Secret Boss Progression Gate
+
+The secret boss no longer uses the old low-damage/key-artifact SCRUM-619 gate.
+`MetaProgression.secret_encounter_unlocked_for_level(run_level)` unlocks the
+post-Act-3 secret encounter only when the selected run Ascension is the current
+maximum (`MAX_ASCENSION_LEVEL`, 5 after SCRUM-516).
+
+Flow:
+
+- Act 3 route boss remains the normal boss id from the route node.
+- If that boss is defeated below max Ascension, the run ends with the normal
+  victory flow.
+- If defeated at max Ascension, `CombatDirector` immediately starts
+  `secret_ascension_boss` as a follow-up boss encounter.
+- The one-time persistent secret reward still uses
+  `record_secret_boss_victory`; repeat wins do not grant the bonus twice.
+
+Balance benchmark, Act 3 L5/stage 18: secret boss HP is about `47.6k`.
+L20 optimum class kits estimate `121.5s..231.8s` TTK by 1-target DPS range;
+L20 random-average kits estimate `347.3s..559.6s`, so the fight is intended as
+a brutal capstone for tuned builds rather than a global class rebalance.
