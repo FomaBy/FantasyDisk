@@ -54,10 +54,7 @@ a global class rebalance. Random-average builds are expected to struggle hard.
 - PASS: `Godot --headless --path . --script res://tools/balance_harness.gd`
 - PASS: `Godot --headless --path . --script res://tests/boss_elite_ttk_gate.gd`
 - PASS: `Godot --headless --path . --script res://tools/class_damage_table_3variants.gd`
-
-Known unrelated full umbrella status on current `origin/dev`: full
-`tests/runtime_smoke_test.gd` still has the pre-existing autosave continue/new
-game failure observed before SCRUM-541.
+- PASS: `Godot --headless --path . --script res://tests/runtime_smoke_test.gd`
 
 ## Follow-up
 
