@@ -1200,7 +1200,13 @@ func _update_contact_damage(delta: float, player: Node2D, distance: float) -> vo
 		return
 
 	if player.has_method("take_damage"):
-		player.take_damage(contact_damage, "contact")
+		# Кап контактного урона долей max HP игрока (как у элитных атак, SCRUM-599):
+		# на поздних стадиях множитель ~5x ваншотил fragile-класс одним тычком.
+		var contact_hit := contact_damage
+		var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
+		if player_max_health > 0.0:
+			contact_hit = minf(contact_hit, player_max_health * 0.20)
+		player.take_damage(contact_hit, "contact")
 
 	_contact_cooldown = contact_interval
 	_contact_windup_left = -1.0
