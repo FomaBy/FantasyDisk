@@ -1,7 +1,32 @@
 # SCRUM-486: Блок Меню/Навигация — интеграция ассетов @2K + верификация
 
 Jira: SCRUM-486 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: SCRUM-481 (UI Overhaul 2K)
-Статус: На QA (re-verified 2026-06-28 claude-backend-3 против origin/dev bef946b8 — verifier `tests/ui_no_overlap_matrix_test.gd` зелёный 1080p/2K/4K + оба смоука зелёные). Интеграция @2K блока Меню/Навигация доставлена в dev пер-экранными тикетами SCRUM-579/580/581 (+SCRUM-560 для кнопок главного меню), которые суперсед-нули потерянный бандл-коммит 011a0005 (остался dangling, не дошёл до dev из-за churn воркеров; повторно НЕ применять — он откатывал бы более новую работу).
+Статус: done (QA PASSED → Готово, 2026-06-28 Codex QA-loop). Re-verified 2026-06-28 claude-backend-3 против origin/dev bef946b8 — verifier `tests/ui_no_overlap_matrix_test.gd` зелёный 1080p/2K/4K + оба смоука зелёные; независимая QA-приёмка Codex против origin/dev cce17cbf также зелёная. Интеграция @2K блока Меню/Навигация доставлена в dev пер-экранными тикетами SCRUM-579/580/581 (+SCRUM-560 для кнопок главного меню), которые суперсед-нули потерянный бандл-коммит 011a0005 (остался dangling, не дошёл до dev из-за churn воркеров; повторно НЕ применять — он откатывал бы более новую работу).
+
+QA: in_progress 2026-06-28 17:35 Europe/Kiev, Codex QA-loop `qa_loop_20260628_1727`; независимая приёмка против `origin/dev`/`cce17cbf`.
+
+## QA-Вердикт (2026-06-28, Codex QA-loop)
+
+Статус: PASSED
+
+Проверено:
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --import` — PASS для прогрева чистого worktree import cache; были только известные UID duplicate warnings по reference/source skeleton parts, не по SCRUM-486.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASS, `UI no-overlap matrix test passed`.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS, duplicate-artifact guard 7889 files.
+- `python tools\build_ui_2k_frame_kit.py --verify` — PASS for 30/30 overhaul_2k frame/button assets.
+
+Acceptance:
+- Menu/navigation @2K frame assets are present under `assets/sprites/ui/frames/overhaul_2k/` with `.import` sidecars.
+- `scripts/ui/ui_theme_paths.gd` is the central source for `OVERHAUL_2K_FRAME_PATHS`, source sizes, texture margins and content margins.
+- Runtime integration uses `_overhaul_2k_frame_style()` / 9-slice StyleBoxTexture paths; no exact frame `TextureRect.STRETCH_SCALE` regression was reported by the matrix gate.
+- Frame-content hard rule accepted: matrix gate reported no overflow/overlap/escape; content remains inside safe zones for the checked resolutions.
+
+Краевые случаи:
+- Cold worktree first matrix attempt failed before assertions because `.godot/imported/*.ctex` did not exist yet; after explicit headless import, the same gate passed. This is disposable QA environment setup, not a product defect.
+- Verified 1080p/2K/4K matrix via `tests/ui_no_overlap_matrix_test.gd`; full runtime smoke also covers run flow around menu/navigation entry points.
+
+Баги: нет.
 
 ## Что и зачем
 

@@ -2628,7 +2628,6 @@
   "status": "К выполнению",
   "desc_hash": "70824cff19f50c53aea62934a1a0d767"
  },
-
  "SCRUM-521_low_hp_red_vignette.md": {
   "key": "SCRUM-521",
   "status": "Готово",
@@ -2644,7 +2643,6 @@
   "status": "Контроль качества",
   "desc_hash": "8a7729dcd6bf59d8ecf1e2dc4d45f4f6"
  },
-
  "SCRUM-606_triggered_artifacts_existing_hooks.md": {
   "key": "SCRUM-606",
   "status": "Контроль качества",
@@ -2655,7 +2653,6 @@
   "status": "Контроль качества",
   "desc_hash": "c4ba7625186111e16f5476ada0041a6e"
  },
-
  "design_scrum586_stat_tooltip_2k_redesign_task.md": {
   "key": "SCRUM-586",
   "status": "Контроль качества",
@@ -2665,5 +2662,10 @@
   "key": "SCRUM-588",
   "status": "Контроль качества",
   "desc_hash": "951334138b86f90b7f7fa1d1f494eba6"
+ },
+ "SCRUM-486_menu_nav_2k_asset_integration.md": {
+  "key": "SCRUM-486",
+  "status": "Готово",
+  "desc_hash": "451f063bad14edee04830459e7a1db40"
  }
 }
