@@ -5307,6 +5307,12 @@ func _resolve_event_choice_outcome(event_choice: Dictionary, temp_player: Node) 
 	return outcome
 
 
+# SCRUM-634: золотая компенсация (база, масштабируется по этапу маршрута), если
+# событие обещало random_artifact, но пул артефактов пуст — чтобы заплаченная
+# цена события не превращалась в молчаливую потерю награды.
+const EMPTY_ARTIFACT_POOL_FALLBACK_MONEY := 40
+
+
 func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> bool:
 	if outcome.has("cost_money"):
 		if not temp_player.spend_money(game.PROGRESSION_DATA.stage_scaled_cost(int(outcome["cost_money"]), game.route_scaling_stage())):
@@ -5329,6 +5335,13 @@ func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> b
 		), 1)
 		if not artifacts.is_empty():
 			temp_player.apply_reward(artifacts[0])
+		else:
+			# SCRUM-634: пул артефактов пуст. Игрок уже мог заплатить цену события
+			# (HP/золото выше/ниже), поэтому компенсируем золотом и пишем варн —
+			# вместо тихой деградации «цена списана, награда не выдана».
+			var fallback_money: int = game.PROGRESSION_DATA.stage_scaled_cost(EMPTY_ARTIFACT_POOL_FALLBACK_MONEY, game.route_scaling_stage())
+			temp_player.gain_money(fallback_money)
+			push_warning("Event random_artifact: пул артефактов пуст — выдана золотая компенсация %d вместо артефакта." % fallback_money)
 	if outcome.has("health_percent_cost"):
 		var cost := float(temp_player.get("max_health")) * float(outcome["health_percent_cost"])
 		temp_player.set("health", max(1.0, float(temp_player.get("health")) - cost))
