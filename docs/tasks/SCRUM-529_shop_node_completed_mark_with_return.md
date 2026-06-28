@@ -1,7 +1,7 @@
 # SCRUM-529: Пройденный магазин помечать галочкой на карте (с возвратом)
 
 Jira: SCRUM-529 · Роль: backend · Контур: codex · Приоритет: P2 · foma · Эпик: SCRUM-522 (Ребаланс боёвки и прогрессии)
-Статус: review
+Статус: done (QA PASSED -> Готово)
 
 Owner: backend/codex-background-backend-agent
 Locked paths: `scripts/main.gd`, `scripts/route_map_screen.gd`, `docs/design/systems/route_map.md`, `docs/tasks/SCRUM-529_shop_node_completed_mark_with_return.md`
