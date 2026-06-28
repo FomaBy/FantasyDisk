@@ -6306,7 +6306,13 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	t3_player.call("apply_reward", ProgressionData.artifact_definition("thorn_pact"))
 	var thorn_enemy := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate()
 	holder.add_child(thorn_enemy)
+	# Здоровый враг (как реальный спавн): max_health И health выставляем явно, иначе
+	# _ready оставляет health=max_health дефолтным и проверка «отражение сняло HP»
+	# проходила бы лишь потому, что 3-HP враг умирает от ЛЮБОГО урона. Здесь enemy_hp_before
+	# большой, поэтому ассерт честно меряет, что отражение сняло урон с живого врага.
 	thorn_enemy.set("max_health", 100000.0)
+	thorn_enemy.set("health", 100000.0)
+	thorn_enemy.call("refresh_health_bar")
 	thorn_enemy.global_position = t3_player.global_position + Vector2(80, 0)
 	await process_frame
 	var enemy_hp_before := float(thorn_enemy.get("health"))
