@@ -2757,5 +2757,10 @@
   "key": "SCRUM-505",
   "status": "Готово",
   "desc_hash": "7b6ea3aed683ae4e56f1f98283e7233a"
+ },
+ "SCRUM-508_event_risk_reward_ev_invariant.md": {
+  "key": "SCRUM-508",
+  "status": "Готово",
+  "desc_hash": "abb0416857044abab54899d094c7bcbb"
  }
 }

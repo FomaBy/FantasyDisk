@@ -1,7 +1,28 @@
 # SCRUM-508: Выровнять риск-награду random-событий: ожидаемая ценность опасных веток ≥ безопасных
 
 Jira: SCRUM-508 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: —
-Статус: К выполнению
+Статус: Готово
+
+## QA 2026-06-28
+
+Статус: PASSED -> Jira `Готово`.
+
+Проверено Codex QA в worktree `qa_508_codex190526` на `origin/dev` после commit
+`3b131ea9`:
+- `tests/event_data_smoke_test.gd` — PASS: 28 событий, EV-инвариант проверен на
+  12 событиях с парой risky+safe.
+- `tests/event_risk_reward_ev_test.gd` — PASS: 17 событий с парой
+  риск/безопасная, 0 нарушений.
+- `tools/route_economy_xp_model.gd` — PASS: секция
+  `## Event Risk/Reward EV` сгенерирована, строк `VIOLATES` нет.
+- `tests/runtime_smoke_progression_economy_test.gd` — PASS после headless
+  import: общий `RouteEconomyModel.event_ev_rows()` даёт 17 событий, все
+  `EV(risk) >= EV(safe)`.
+
+Примечание: `tools/godot_gate.py` на Windows не запустился из-за отсутствия
+`fcntl`, поэтому Godot-проверки выполнены напрямую через Godot 4.7 console.
+Оставшиеся UID duplicate warnings после импорта относятся к существующим
+reference/assets character parts и не связаны с SCRUM-508.
 
 ## Что и зачем
 
