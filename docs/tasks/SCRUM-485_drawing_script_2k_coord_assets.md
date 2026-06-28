@@ -1,7 +1,7 @@
 # SCRUM-485: Рисующий скрипт: генерация UI-ассетов по координатам @2K
 
 Jira: SCRUM-485 · Роль: backend · Контур: integration · Приоритет: P1 · foma · Эпик: SCRUM-481 (UI Overhaul 2K)
-Статус: К выполнению
+Статус: done (QA PASSED 2026-06-28 Codex QA-loop; verified after SCRUM-642 fix)
 
 ## Что и зачем
 
@@ -224,3 +224,19 @@ panel/button-ассеты ровно в нужный пиксельный раз
   будут зафиксированы — закладывать API скрипта расширяемым (словарь блок→слоты).
 - **Стек.** Python 3 + Pillow (PIL) — уже используется во всех `tools/build_*`/`render_*`.
   Запуск из корня репо: `python3 tools/build_ui_2k_frame_kit.py` и `--verify`.
+
+## QA-Вердикт 2026-06-28
+
+Статус: PASSED
+
+## QA verdict 2026-06-28 — PASSED
+
+Codex QA-loop rechecked SCRUM-485 after the SCRUM-642 fix and accepts the task.
+
+- `python tools\build_ui_2k_frame_kit.py --verify` passed: all 30/30 `overhaul_2k` assets validated.
+- `python tools\build_ui_2k_frame_kit.py --all` passed and left no tracked diff in `assets/sprites/ui/frames/overhaul_2k/`, `docs/design/previews/ui_2k_frame_kit_contact.png`, `tools/build_ui_2k_frame_kit.py`, or `docs/design/ui_screens_inventory.md`.
+- A second consecutive `--all` run also passed and left the same scoped paths unchanged, confirming deterministic output.
+- Godot import completed successfully; only known unrelated duplicate UID warnings for source/reference skeleton art were observed.
+- Runtime smoke passed: `Runtime smoke test passed`; duplicate-artifact guard scanned 7859 files.
+
+Result: PASS. No new bug filed; prior blocker is covered by SCRUM-642.
