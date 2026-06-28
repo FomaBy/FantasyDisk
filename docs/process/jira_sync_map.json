@@ -2802,5 +2802,10 @@
   "key": "SCRUM-515",
   "status": "Контроль качества",
   "desc_hash": "8d2e2ab1a59634868025931adf071688"
+ },
+ "SCRUM-542_hero_select_carousel_arrows.md": {
+  "key": "SCRUM-542",
+  "status": "Готово",
+  "desc_hash": "049026550d881483f3cfd305629f8402"
  }
 }

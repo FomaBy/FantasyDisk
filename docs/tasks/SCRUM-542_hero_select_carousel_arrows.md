@@ -1,7 +1,7 @@
 # SCRUM-542: Hero Select carousel arrows select heroes cyclically
 
 Jira: SCRUM-542
-Status: done
+Статус: done
 Role: backend
 Lane: codex
 Owner: backend/codex-background-backend-agent
