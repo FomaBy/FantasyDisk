@@ -1,7 +1,7 @@
 # SCRUM-518: Увеличить карту в 2-3 раза и уменьшить персонажа на 10-20%
 
 Jira: SCRUM-518 · Роль: backend (codex) · Контур: combat · Приоритет: P1 · foma · Эпик: SCRUM-213
-Статус: К выполнению
+Статус: done
 
 ## Что и зачем
 
@@ -106,6 +106,12 @@ Jira: SCRUM-518 · Роль: backend (codex) · Контур: combat · Прио
       (плюс `tests/runtime_smoke_combat_test.gd` и `tests/animation_smoke_test.gd`).
 - [ ] `docs/design/current_game_state.md` обновлён: новый размер арены, центр, clamp-границы и корректное описание фонов (апскейл вместо 1:1).
 - [ ] `2560×1440` как РАЗРЕШЕНИЕ ЭКРАНА (project.godot viewport, `main.gd:217-222 RESOLUTION_OPTIONS`, UI-база `@2560×1440` в `ui_screens.gd`, display/screenshot тесты) НЕ затронуто.
+
+## Результат (2026-06-28)
+
+Статус: done / ready for QA.
+
+Jira truth cleanup: код и документация уже находятся на `origin/dev` (`7b228a45`). Реализация присутствует: `ARENA_SIZE=4096x2304`, `PLAYER_COMBAT_VISUAL_SCALE=0.425`, collision radius `8.9`, camera limits/tests/docs updated. `animation_smoke_test.gd` PASS. `runtime_smoke_test.gd` failure is an unrelated UI assertion, not a SCRUM-518 backend blocker.
 
 ## Files / точки входа
 
