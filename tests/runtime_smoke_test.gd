@@ -6191,10 +6191,9 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	delta_main.queue_free()
 	await process_frame
 
-	# Уровень 10 урезает макс HP. Берсерк разблокирован до 10, сравниваем L0 vs L10
-	# при ОДНОМ мета-сейве — наградные баффы одинаковы, разница = чистый difficulty -20%.
+	# Capstone ascension reduces max HP. Compare L0 vs max level with the same meta rewards.
 	var hp_meta := MetaProgression.default_state()
-	for unlock_level in range(10):
+	for unlock_level in range(MetaProgression.MAX_ASCENSION_LEVEL):
 		hp_meta = MetaProgression.record_boss_victory(hp_meta, "berserk", unlock_level)
 	asc_main.set("meta_state", hp_meta)
 	asc_main.set("selected_ascension_level", 0)
@@ -6205,16 +6204,16 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	asc_main.call("apply_ascension_bonuses", asc_player_l0)
 	var hp_l0 := float(asc_player_l0.get("max_health"))
 	asc_player_l0.queue_free()
-	asc_main.set("selected_ascension_level", 10)
+	asc_main.set("selected_ascension_level", MetaProgression.MAX_ASCENSION_LEVEL)
 	asc_main.call("reset_run_ascension")
-	var asc_player10 := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
-	root.add_child(asc_player10)
-	asc_player10.call("configure_character", "berserk", "sword")
-	asc_main.call("apply_ascension_bonuses", asc_player10)
-	if float(asc_player10.get("max_health")) >= hp_l0 * 0.95:
-		_fail("Expected ascension 10 to reduce player max HP vs level 0 (%f vs %f)." % [float(asc_player10.get("max_health")), hp_l0])
+	var asc_player_cap := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	root.add_child(asc_player_cap)
+	asc_player_cap.call("configure_character", "berserk", "sword")
+	asc_main.call("apply_ascension_bonuses", asc_player_cap)
+	if float(asc_player_cap.get("max_health")) >= hp_l0 * 0.95:
+		_fail("Expected max ascension level %d to reduce player max HP vs level 0 (%f vs %f)." % [MetaProgression.MAX_ASCENSION_LEVEL, float(asc_player_cap.get("max_health")), hp_l0])
 		return
-	asc_player10.queue_free()
+	asc_player_cap.queue_free()
 
 	# Багфикс 3: селектор не даёт уйти выше selectable_max — reset_run_ascension клампит.
 	asc_main.set("meta_state", MetaProgression.default_state())
@@ -6246,9 +6245,9 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	current_scene = null
 	await process_frame
 
-	# Багфикс 2 (данные): на возвышении 7 mini_elite_chance > 0.
-	if float(ProgressionData.ascension_difficulty_mods(7)["mini_elite_chance"]) <= 0.0:
-		_fail("Expected ascension level 7 to expose a mini-elite chance.")
+	# Багфикс 2 (данные): на пиковом возвышении 3 mini_elite_chance > 0.
+	if float(ProgressionData.ascension_difficulty_mods(3)["mini_elite_chance"]) <= 0.0:
+		_fail("Expected ascension level 3 to expose a mini-elite chance.")
 		return
 
 	# Багфикс 2 (поведение): mini_elite_chance реально ПОТРЕБЛЯЕТСЯ — мини-элитка

@@ -112,7 +112,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Магический урон | `magic_damage` | Урон Темного мага |
 | Урон звуковой волны | `sound_wave_damage` | Урон Гитариста |
 | Скорость атаки | `attack_speed` | Уменьшает интервалы атак: итоговый интервал = `base_fire_interval / attack_speed`, минимум 0.18с |
-| Возвышение | `ascension_level` | Метапрогрессия 1-10 на персонажа; кумулятивные модификаторы из `ASCENSION_LEVELS` применяются при старте забега |
+| Возвышение | `ascension_level` | Метапрогрессия 1-5 на персонажа; кумулятивные модификаторы из `ASCENSION_LEVELS` применяются при старте забега |
 | Шанс крита | `crit_chance` | Вероятность критического удара |
 | Множитель крита | `crit_damage_multiplier` | Сила критического удара |
 | Скорость движения | `move_speed` | Скорость игрока |
@@ -838,9 +838,9 @@ Integrated systems: `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary e
 AoE/DoT/саммоны — зачистка волны; точные замеры — плейтест.
 
 
-### Возвышения 2.0 — Лестница Усложнений (2026-06-12)
+### Возвышения 2.1 — Лестница Усложнений (SCRUM-516, 2026-06-28)
 
-10 кумулятивных модификаторов в `ProgressionData.ASCENSION_MODIFIERS`; `ascension_difficulty_mods(level)` сворачивает 1..N в словарь (множители перемножаются, флаги — max). Нейтраль = `ASCENSION_DIFFICULTY_DEFAULTS` (уровень 0). Применение:
+5 кумулятивных модификаторов в `ProgressionData.ASCENSION_MODIFIERS`; `ascension_difficulty_mods(level)` сворачивает 1..N в словарь (множители перемножаются, флаги — max). SCRUM-516 сжал прежние 10 тонких шагов в 5 более плотных: кумулятивно L5 даёт `enemy_hp_mult = 1.80` и `enemy_damage_mult = 1.66`. Нейтраль = `ASCENSION_DIFFICULTY_DEFAULTS` (уровень 0). Применение:
 - enemy_hp_mult/enemy_damage_mult → `combat_director._scale_enemy_for_current_wave`;
 - elite_hp_mult + elite_instant_phase (meta) → `_scale_elite_enemy`; boss_hp_mult/boss_extra_phase/boss_telegraph_mult (meta) → `_scale_boss_for_run`, читаются в `boss.gd` (4-я фаза при extra_phase, `_ascension_telegraph` укорачивает зоны);
 - spawn_count_mult/spawn_cooldown_mult + first_wave_boost → `_spawn_enemy_wave`/`_next_spawn_cooldown`;
@@ -848,7 +848,7 @@ AoE/DoT/саммоны — зачистка волны; точные замер�
 - price_mult → цены магазина (при генерации) и докачки (`_ascension_price`);
 - reward_mult/healing_mult/player_max_hp_mult сворачиваются в `run_modifiers` игрока в `main.apply_ascension_bonuses` (на старте забега).
 
-Прогресс: `meta_progression.record_boss_victory(state, char, run_level)` повышает уровень только если `run_level >= completed`; `selectable_max = completed + 1` (cap 10). Наградный трек меты — старые per-class `ASCENSION_LEVELS`, применяются за пройденные уровни постоянно. Выбор уровня — селектор в hero select (клампится к `ascension_selectable_max` героя при пике), HUD-индикатор римской цифрой у таймера, кодекс-раздел «Возвышения».
+Прогресс: `meta_progression.record_boss_victory(state, char, run_level)` повышает уровень только если `run_level >= completed`; `selectable_max = completed + 1` (cap 5). Наградный трек меты — per-class `ASCENSION_LEVELS` по 5 уровней, применяются за пройденные уровни постоянно. Выбор уровня — селектор в hero select (клампится к `ascension_selectable_max` героя при пике), HUD-индикатор римской цифрой у таймера, кодекс-раздел «Возвышения».
 
 ### Мета-древо умений (SCRUM-150)
 
