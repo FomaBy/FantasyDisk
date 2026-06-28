@@ -1,14 +1,14 @@
 # UI Mockup Spec - SCRUM-571 Ordinary Reward 2K
 
-Status: blocked_generation_credentials
+Status: ready_for_qa_design_package
 Role owner: Design
 Task: docs/tasks/design_scrum571_reward_ui_2k_mockup_task.md
 Jira: SCRUM-571
 Base resolution: 2560x1440
 Responsive targets: 1920x1080, 2560x1440, 3840x2160
-Mockup PNG: blocked - OpenAI Images API key unavailable
-Preview PNG: docs/design/previews/scrum571_reward_2k_layout_guide.png
-Generated with: planned for OpenAI Images API via skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py
+Mockup PNG: docs/design/mockups/scrum571_reward_2k/reward_ordinary_2k_mockup.png
+Preview PNG: docs/design/previews/scrum571_reward_2k_mockup.png
+Generated with: OpenAI Images API via skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py, then content composited with content-zone-image-compositor
 
 ## Source Request
 
@@ -16,7 +16,7 @@ Design-only stage for the ordinary reward screen: create a 2K OpenAI-API-generat
 
 ## Current Result
 
-The geometry package is ready for image generation and passed the content-zone planning gate. The actual OpenAI mockup PNG is blocked because `OPENAI_API_KEY` is not set in the shell and was not found in `C:/Users/FomaE/.codex/.env`; the required generator exited before calling the API. Per `fantasydisk-ui-director`, no manual or non-API fallback image was substituted.
+The geometry package passed the content-zone planning gate and the OpenAI Images API base layer was generated successfully after loading `OPENAI_API_KEY` from the Windows User environment. Runtime sample text was composited only inside the declared zones. The final render report is `ok=true` for all 15 zones.
 
 ## Screen Elements
 
@@ -62,8 +62,10 @@ Content margins are intentionally larger than texture margins. The planned conte
 | scrum571_ui_plan_guide | docs/design/mockups/scrum571_reward_2k/ui_plan_guide.png | visual zone guide | 2560x1440 | opaque guide | n/a | exact rects | Also copied to previews. |
 | scrum571_layout | docs/design/mockups/scrum571_reward_2k/layout.json | final content compositor layout | json | n/a | n/a | exact text zones | Ready for renderer once base exists. |
 | scrum571_layout_guide | docs/design/mockups/scrum571_reward_2k/layout_guide.png | pre-generation text-zone guide | 2560x1440 | opaque guide | n/a | exact text zones | Also copied to previews. |
-| scrum571_base_mockup | docs/design/references/scrum571_reward_2k/reward_ordinary_2k_base.png | OpenAI base layer | 2560x1440 | png | TBD | TBD | Blocked by missing `OPENAI_API_KEY`. |
-| scrum571_final_mockup | docs/design/mockups/scrum571_reward_2k/reward_ordinary_2k_mockup.png | composited preview | 2560x1440 | png | n/a | declared zones only | Pending base layer. |
+| scrum571_base_mockup | docs/design/references/scrum571_reward_2k/reward_ordinary_2k_base.png | OpenAI base layer | 2560x1440 | RGB PNG | measured from guide | declared zones | No baked text; dark empty interiors for runtime content. |
+| scrum571_final_mockup | docs/design/mockups/scrum571_reward_2k/reward_ordinary_2k_mockup.png | composited preview | 2560x1440 | RGB PNG | n/a | declared zones only | Renderer report `ok=true`. |
+| scrum571_final_debug | docs/design/mockups/scrum571_reward_2k/reward_ordinary_2k_mockup_debug.png | zone debug overlay | 2560x1440 | RGB PNG | n/a | declared zones only | Shows all text/icon zones. |
+| scrum571_final_report | docs/design/mockups/scrum571_reward_2k/reward_ordinary_2k_mockup_report.json | compositor fit report | json | n/a | n/a | all 15 zones | `ok=true`. |
 
 ## Responsive Rules
 
@@ -86,22 +88,23 @@ Content margins are intentionally larger than texture margins. The planned conte
 - Runtime content containers must use the content-zone rectangles, scaled uniformly from the 2K base.
 - Choice card click/focus hit areas may cover the card frame, but labels/icons/descriptions/focus visuals must stay inside safe zones.
 - If final generated frames are irregular, measure alpha/interior and update this spec before implementation.
+- The OpenAI base layer is a full-screen mockup/reference, not a sliced runtime asset. If production frames are cut from it later, re-measure exact texture/content margins per resulting PNG before wiring.
 
 ## Acceptance Checks
 
 - [x] UI plan exists before image generation.
 - [x] Planning report: `decision=ready_for_image`, `ok=true`.
 - [x] Layout guide/report exists and all zones are valid.
-- [ ] Mockup generated through OpenAI Images API. Blocked: API key unavailable.
-- [ ] Preview shown in chat when generated. Only geometry guide exists.
+- [x] Mockup generated through OpenAI Images API.
+- [x] Preview shown in chat when generated.
 - [x] All visible elements are listed in the elements table.
 - [x] Every planned frame has texture/content margin estimates.
 - [x] No planned UI content overlaps frame border, ornament, gem, metal, or decorative corner.
 - [x] Runtime content fits inside safe zones at every responsive target by scale math.
 - [x] Hover/focus/pressed/disabled states are specified not to resize or shift layout.
 - [ ] Screenshot comparison completed after implementation. Not in Design-only stage.
-- [ ] Jira moved to QA. Blocked until OpenAI API generation succeeds.
+- [x] Design package ready for Jira QA.
 
 ## Deviations
 
-OpenAI image generation was attempted with the required project generator, but failed before API call because no OpenAI key was available. The task is blocked rather than completed with a substitute mockup.
+This is a Design-only mockup/spec/source package. No runtime GDScript integration was performed, and no `.import` sidecars were created. The generated base is RGB because it is a full-screen mockup/reference layer; any future isolated frame assets must be exported as alpha-ready PNGs and rechecked before runtime use.

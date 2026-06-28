@@ -2672,5 +2672,10 @@
   "key": "SCRUM-509",
   "status": "Контроль качества",
   "desc_hash": "edef7f9c2139ef86a268e6a65f605549"
+ },
+ "design_scrum571_reward_ui_2k_mockup_task.md": {
+  "key": "SCRUM-571",
+  "status": "Контроль качества",
+  "desc_hash": "468413dc32ddd703078a6458fb82399a"
  }
 }
