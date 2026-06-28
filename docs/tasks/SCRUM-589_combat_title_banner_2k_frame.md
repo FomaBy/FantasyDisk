@@ -3,7 +3,7 @@
 Jira: SCRUM-589
 Role: Design/UI
 Owner: codex-design-loop2-20260628_172833
-Status: review
+Статус: done
 Locked paths:
 
 - `scripts/ui_screens.gd`
