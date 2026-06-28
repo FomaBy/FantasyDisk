@@ -199,6 +199,18 @@ remain textless: runtime `LevelUpToast` draws only a small sparkle/ring inside
 the empty safe zone, while `LevelUpEffect` remains the single source of the
 visible `Level Up` badge.
 
+SCRUM-574 adds the live Codex v2 2K frame family under
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_*.png`. Slots are
+`codex_main`, `codex_nav`, `codex_list`, `codex_detail`, `codex_entry_card`,
+`codex_tab_btn` and `codex_back_btn`, all registered in
+`scripts/ui/ui_theme_paths.gd` and generated through
+`tools/build_ui_2k_frame_kit.py --all`. Source/mockup evidence lives at
+`docs/design/references/scrum574_codex_2k/codex_2k_mockup.png`; the layout and
+content-margin contract lives at `docs/design/mockups/scrum574_codex_2k/spec.md`.
+The older `assets/sprites/ui/frames/codex/` package remains a historical Codex
+component kit, while runtime `CodexScreen` now uses the slot-exact 2K family for
+its shell, panels, entry cards, tabs and compact back button.
+
 SCRUM-273 superseded the SCRUM-147 button-only Parchment & Wax Seal kit with the
 historical **Red & Gold Dragon button kit** from
 `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live

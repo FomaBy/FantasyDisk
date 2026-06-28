@@ -94,7 +94,15 @@ SLOTS = [
     {"slug": "attr_panel", "file": "ui_screens", "const": "ATTR_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1124, "h": 1384},
     # SCRUM-576 (Что нового/патч-ноуты): полноэкранная панель-фрейм (как skill-tree main).
     {"slug": "pn_panel", "file": "ui_screens", "const": "PN_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 2464, "h": 1388},
+    # SCRUM-574: Codex gets its own @2K frame kit instead of sharing generic minimal-metal frames.
+    {"slug": "codex_main", "file": "ui_screens", "const": "CODEX_OUTER_FRAME_2K", "kind": "frame", "margin_key": "modal", "w": 2496, "h": 1387},
+    {"slug": "codex_nav", "file": "ui_screens", "const": "CODEX_NAV_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 405, "h": 1163},
+    {"slug": "codex_list", "file": "ui_screens", "const": "CODEX_LIST_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1113, "h": 1163},
+    {"slug": "codex_detail", "file": "ui_screens", "const": "CODEX_DETAIL_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 808, "h": 1163},
+    {"slug": "codex_entry_card", "file": "ui_screens", "const": "CODEX_ENTRY_CARD_2K", "kind": "frame", "margin_key": "card", "w": 963, "h": 147},
     # кнопки (button-маргины)
+    {"slug": "codex_tab_btn", "file": "ui_screens", "const": "CODEX_TAB_BUTTON_2K", "kind": "button", "margin_key": "codex_tab", "w": 333, "h": 115},
+    {"slug": "codex_back_btn", "file": "ui_screens", "const": "CODEX_BACK_BUTTON_2K", "kind": "button", "margin_key": "utility", "w": 168, "h": 128},
     {"slug": "hs4_choose_btn", "file": "ui_screens", "const": "HS4_CHOOSE_BTN_2K", "kind": "button", "margin_key": "hero_confirm", "w": 512, "h": 89},
     {"slug": "hs4_asc_btn", "file": "ui_screens", "const": "HS4_ASC_BTN_2K", "kind": "button", "margin_key": "utility", "w": 102, "h": 72},
     {"slug": "mm_btn", "file": "ui_screens", "const": "MM_BTN_START_2K", "kind": "button", "margin_key": "main_menu", "w": 380, "h": 104},

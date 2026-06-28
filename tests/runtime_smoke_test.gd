@@ -53,6 +53,13 @@ const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_
 const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
 # SCRUM-578: экран «Смерть» — per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820).
 const RESULT_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_result_panel.png"
+const CODEX_MAIN_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_main.png"
+const CODEX_NAV_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_nav.png"
+const CODEX_LIST_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_list.png"
+const CODEX_DETAIL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_detail.png"
+const CODEX_ENTRY_CARD_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_entry_card.png"
+const CODEX_TAB_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_tab_btn.png"
+const CODEX_BACK_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_back_btn.png"
 const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
 const REWARD_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
 const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
@@ -6905,10 +6912,10 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected SCRUM-438 Codex runtime layout to include main/nav/list/detail panels, tabs, entry card, and portrait slots.")
 		return
 	var expected_codex_textures := {
-		"CodexMainPanel": MINIMAL_MODAL_TEXTURE,
-		"CodexNavPanel": MINIMAL_PANEL_TEXTURE,
-		"CodexContent": MINIMAL_PANEL_TEXTURE,
-		"CodexDetailPanel": MINIMAL_PANEL_TEXTURE,
+		"CodexMainPanel": CODEX_MAIN_TEXTURE_2K,
+		"CodexNavPanel": CODEX_NAV_TEXTURE_2K,
+		"CodexContent": CODEX_LIST_TEXTURE_2K,
+		"CodexDetailPanel": CODEX_DETAIL_TEXTURE_2K,
 		"CodexPortraitSlot": MINIMAL_FIELD_TEXTURE,
 		"CodexDetailPortraitSlot": MINIMAL_FIELD_TEXTURE,
 	}
@@ -6921,8 +6928,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		if actual_path != str(expected_codex_textures[node_name]):
 			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
 			return
-	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != MINIMAL_CARD_TEXTURE:
-		_fail("Expected SCRUM-448 Codex list cards to use the minimal card frame.")
+	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != CODEX_ENTRY_CARD_TEXTURE_2K:
+		_fail("Expected SCRUM-574 Codex list cards to use the Codex @2K entry card frame.")
 		return
 	var codex_portrait_texture := _first_child_texture_rect(detail_portrait)
 	var expected_default_portrait := _expected_character_portrait_path("berserk")
@@ -6933,8 +6940,12 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected Codex character detail portrait to preserve SCRUM-417 covered scaling.")
 		return
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
-	if character_tab == null or not _button_uses_minimal_metal_type(character_tab, "codex_tab"):
-		_fail("Expected Codex tabs to use the minimal-metal Codex tab texture kit.")
+	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != CODEX_TAB_BUTTON_TEXTURE_2K:
+		_fail("Expected SCRUM-574 Codex tabs to use the Codex @2K tab frame.")
+		return
+	var codex_back_button := codex_main.find_child("CodexBackButton", true, false) as Button
+	if codex_back_button == null or _stylebox_texture_path(codex_back_button.get_theme_stylebox("normal")) != CODEX_BACK_BUTTON_TEXTURE_2K:
+		_fail("Expected SCRUM-574 Codex back button to use the Codex @2K back button frame.")
 		return
 	var expected_layout := {
 		"CodexMainPanel": Rect2(24, 20, 1872, 1040),

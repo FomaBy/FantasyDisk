@@ -22,6 +22,13 @@ const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
 const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
+const CODEX_MAIN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_main.png"
+const CODEX_NAV_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_nav.png"
+const CODEX_LIST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_list.png"
+const CODEX_DETAIL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_detail.png"
+const CODEX_ENTRY_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_entry_card.png"
+const CODEX_TAB_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_tab_btn.png"
+const CODEX_BACK_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_back_btn.png"
 const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
 const VBN_FRAME_2K_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_vbn_frame.png"
@@ -465,6 +472,28 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected %s in ContinueRunPanel." % [context, button_name]
 				if _stylebox_texture_path(cr_button.get_theme_stylebox("normal")) != CR_BTN_2K_FRAME_PATH:
 					return "%s: expected %s to use cr_btn @2K frame." % [context, button_name]
+		"codex":
+			var expected_panels := {
+				"CodexMainPanel": CODEX_MAIN_2K_FRAME_PATH,
+				"CodexNavPanel": CODEX_NAV_2K_FRAME_PATH,
+				"CodexContent": CODEX_LIST_2K_FRAME_PATH,
+				"CodexDetailPanel": CODEX_DETAIL_2K_FRAME_PATH,
+			}
+			for node_name in expected_panels.keys():
+				var panel := main.find_child(str(node_name), true, false) as Control
+				if panel == null or not panel.get_global_rect().has_area():
+					return "%s: expected visible %s." % [context, node_name]
+				if _stylebox_texture_path(panel.get_theme_stylebox("panel")) != str(expected_panels[node_name]):
+					return "%s: expected %s to use its Codex @2K frame." % [context, node_name]
+			var entry_card := main.find_child("CodexEntryCard", true, false) as Control
+			if entry_card == null or _stylebox_texture_path(entry_card.get_theme_stylebox("normal")) != CODEX_ENTRY_CARD_2K_FRAME_PATH:
+				return "%s: expected CodexEntryCard to use codex_entry_card @2K frame." % context
+			var tab_button := main.find_child("CodexTab_characters", true, false) as Button
+			if tab_button == null or _stylebox_texture_path(tab_button.get_theme_stylebox("normal")) != CODEX_TAB_BTN_2K_FRAME_PATH:
+				return "%s: expected CodexTab_characters to use codex_tab_btn @2K frame." % context
+			var back_button := main.find_child("CodexBackButton", true, false) as Button
+			if back_button == null or _stylebox_texture_path(back_button.get_theme_stylebox("normal")) != CODEX_BACK_BTN_2K_FRAME_PATH:
+				return "%s: expected CodexBackButton to use codex_back_btn @2K frame." % context
 		"attribute_shop_economy":
 			var panel := main.find_child("AttributeShopPanel", true, false) as Control
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button

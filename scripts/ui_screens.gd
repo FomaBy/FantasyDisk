@@ -230,6 +230,8 @@ const CODEX_LIST_PANEL_2K := Rect2(517, 227, 1113, 1163)   # колонка сп
 const CODEX_DETAIL_PANEL_2K := Rect2(1656, 227, 808, 1163) # колонка детали (CodexDetailPanel)
 const CODEX_PORTRAIT_SAFE_2K := Rect2(1861, 301, 427, 400)
 const CODEX_CHIP_ROW_SAFE_2K := Rect2(1731, 731, 648, 107)
+const CODEX_ENTRY_CARD_2K := Rect2(0, 0, 963, 147)
+const CODEX_TAB_BUTTON_2K := Rect2(0, 0, 333, 115)
 
 # #16 Настройки — _show_settings_menu (V2-модалка, scaled fill → 2K)
 const SETTINGS_PANEL_2K := Rect2(256, 104, 2048, 1232)
@@ -2007,6 +2009,7 @@ func _show_codex_screen() -> void:
 
 	var back_button := _make_compact_button("←")
 	back_button.name = "CodexBackButton"
+	_apply_overhaul_2k_button_theme(back_button, "codex_back_btn", CODEX_V2_BACK_BUTTON_SAFE.size)
 	back_button.tooltip_text = "Назад в меню"
 	back_button.add_theme_font_size_override("font_size", 28)
 	back_button.pressed.connect(_show_main_menu)
@@ -2254,7 +2257,7 @@ func _codex_v2_apply_tab_metrics(tabs_row: VBoxContainer) -> void:
 			continue
 		button.custom_minimum_size = tab_size
 		button.add_theme_font_size_override("font_size", 13 if scale < 0.8 else 15)
-		_apply_fantasy_button_theme(button)
+		_apply_overhaul_2k_button_theme(button, "codex_tab_btn", tab_size)
 
 
 func _codex_section_title(section_id: String) -> String:
@@ -7671,19 +7674,19 @@ func _codex_main_panel_style() -> StyleBox:
 
 
 func _codex_v2_main_panel_style() -> StyleBox:
-	return _global_texture_style(CODEX_MAIN_PANEL_PATH, CODEX_V2_MAIN_PANEL_MARGINS, Color.WHITE, CODEX_V2_MAIN_PANEL_CONTENT, true)
+	return _overhaul_2k_frame_style("codex_main", CODEX_V2_OUTER_FRAME_RECT.size)
 
 
 func _codex_v2_nav_panel_style() -> StyleBox:
-	return _global_texture_style(CODEX_SECTION_PANEL_PATH, CODEX_V2_NAV_PANEL_CONTENT, Color.WHITE, CODEX_V2_NAV_PANEL_CONTENT, true)
+	return _overhaul_2k_frame_style("codex_nav", CODEX_V2_NAV_PANEL_RECT.size)
 
 
 func _codex_v2_list_panel_style() -> StyleBox:
-	return _global_texture_style(CODEX_SECTION_PANEL_PATH, CODEX_V2_LIST_PANEL_CONTENT, Color.WHITE, CODEX_V2_LIST_PANEL_CONTENT, true)
+	return _overhaul_2k_frame_style("codex_list", CODEX_V2_LIST_PANEL_RECT.size)
 
 
 func _codex_v2_detail_panel_style() -> StyleBox:
-	return _global_texture_style(CODEX_SECTION_PANEL_PATH, CODEX_V2_DETAIL_PANEL_CONTENT, Color.WHITE, CODEX_V2_DETAIL_PANEL_CONTENT, true)
+	return _overhaul_2k_frame_style("codex_detail", CODEX_V2_DETAIL_PANEL_RECT.size)
 
 
 func _codex_section_panel_style() -> StyleBox:
@@ -7691,9 +7694,8 @@ func _codex_section_panel_style() -> StyleBox:
 
 
 func _codex_entry_card_style(hovered := false) -> StyleBox:
-	var path := CODEX_ENTRY_CARD_HOVER_PATH if hovered else CODEX_ENTRY_CARD_PATH
 	var tint := BUTTON_NEUTRAL_HOVER_TINT if hovered else Color.WHITE
-	return _global_texture_style(path, CODEX_ENTRY_CARD_MARGINS, tint, CODEX_ENTRY_CARD_CONTENT, true)
+	return _overhaul_2k_frame_style("codex_entry_card", CODEX_V2_ENTRY_CARD_SOURCE_SIZE, tint)
 
 
 func _codex_portrait_slot_style() -> StyleBox:
