@@ -2762,5 +2762,10 @@
   "key": "SCRUM-508",
   "status": "Готово",
   "desc_hash": "abb0416857044abab54899d094c7bcbb"
+ },
+ "SCRUM-492_hero_select_v4_remove_dead_v3_code.md": {
+  "key": "SCRUM-492",
+  "status": "Готово",
+  "desc_hash": "80e9f7de4b09a46aead0c1bad90006d0"
  }
 }

@@ -1,7 +1,7 @@
 # SCRUM-492: Hero Select v4: удалить мёртвый v3-код и legacy-константы
 
 Jira: SCRUM-492 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: SCRUM-470 (Hero Select v4)
-Статус: К выполнению
+Статус: done
 
 ## Что и зачем
 
@@ -105,3 +105,16 @@ Jira: SCRUM-492 · Роль: backend · Контур: claude · Приорите
 - Edge-case тестов: в `tests/runtime_smoke_test.gd` и `tests/ui_no_overlap_matrix_test.gd` остаются ЖИВЫЕ ссылки на каталог отчётов `scrum470_hero_select_v4` (runtime_smoke_test.gd:7115, ui_no_overlap_matrix_test.gd:148–149) — это v4-артефакты, их НЕ трогать.
 - Связанные тикеты эпика SCRUM-470: вёрстка v4 уже в проде (`bug_runtime_smoke_hero_select_v4_backbutton_name_task.md`, `design_hero_select_v4_rebuild_clean_readable_task.md`). Чистка не должна менять видимое поведение — это строго tech-debt без фич (учитывая фриз 0.1.5).
 - Проверка зелёного gate ДО коммита; после коммита — перепроверить HEAD в worktree (2–3 прогона смоука), чтобы не поймать красный из-за чужого `git add -A`.
+
+## QA-Вердикт 2026-06-28
+
+Статус: PASSED
+
+Codex QA-loop `qa_492_20260628190455` перепроверил тикет в чистом worktree от свежего `origin/dev` (`b57410a9`). Jira live status перед проверкой: `Контроль качества`; активного QA-owner не было.
+
+Проверено:
+- forbidden v3/dead grep по `scripts/` и `tests/`: `HERO_SELECT_V3`, `_hero_select_v3`, `_hero_select_unified`, `HERO_SELECT_UNIFIED`, `_apply_hero_select_button_frame`, `_hero_thumbnail_size`, `_make_hero_thumbnail_button`, `_hero_select_thumbnail_style`, `_hero_select_frame_style`, `HERO_SELECT_FRAME_DIR/TEXTURES/MARGINS/CONTENT` -> 0 совпадений;
+- v4-path жив: `_build_character_select_v4()`, `HS4BackButton`, `HS4_CAROUSEL_SLOTS = 9`, `HeroStatRadar`, `HERO_SELECT_V4_SOURCE_SIZE`, `_hero_select_v4_expected_rect`;
+- Godot 4.7 headless: `--import` exit 0; `tests/runtime_smoke_test.gd` PASS; `tests/ui_no_overlap_matrix_test.gd` PASS; `tests/runtime_smoke_ui_test.gd` PASS.
+
+Вердикт: все acceptance criteria SCRUM-492 подтверждены, поведение Hero Select v4 не менялось. Jira переведена в `Готово`.
