@@ -1,7 +1,19 @@
 # SCRUM-513: Tech-debt: вынести скелетный риг из незакоммиченного рабочего дерева в репозиторий
 
 Jira: SCRUM-513 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: —
-Статус: Контроль качества (verified — r1i4, 2026-06-28)
+Статус: Контроль качества (re-verified — claude-sub-1, 2026-06-28)
+
+## Ре-верификация (claude-sub-1, 2026-06-28)
+
+RE-VERIFIED на origin/dev (HEAD a70c1d72). Кода не менял — diff по рантайм-стеку рига пуст.
+- Инвентарь tracked: скрипт+`.uid`, обе `.tscn`, оба `skeleton_source_manifest.json` — все TRACKED;
+  82 файла `assets/.../skeleton_parts/` + 93 reference `chars_cartoon/skeleton_parts/`.
+- Untracked-кусков рига нет (`git ls-files --others` по skeleton/scenes/characters/chars_cartoon — пусто).
+- Preload-цепочка цела: `player.gd:17-18` preload обеих `.tscn` → `_character_skeleton_rig_scene`
+  (1950) → manifest_path в `.tscn` → tracked JSON.
+- Гейты зелёные: `runtime_smoke_test` exit 0 (проект грузится, преоды резолвятся);
+  `animation_smoke_test` exit 0; `no_duplicate_artifact_files_test` exit 0 (8463 файла, дублей нет);
+  finder-dup scan `« 2.<ext>»` — 0 совпадений.
 
 ## Вердикт верификации (r1i4, 2026-06-28)
 
