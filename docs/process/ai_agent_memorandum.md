@@ -294,18 +294,26 @@ git branch --show-current
 git status --short --branch
 git fetch origin --prune
 git rev-list --left-right --count HEAD...origin/dev
+git pull --ff-only origin dev
 ```
 
 Правила:
 
 - `main` — стабильная линия, обычную разработку туда не делать.
 - `dev` — активная рабочая ветка текущей линии `0.1.x`.
+- Перед началом каждой новой задачи агент обязан подтянуть GitHub: `git fetch
+  origin --prune` + `git pull --ff-only origin dev` или эквивалентная безопасная
+  интеграция. Если pull невозможен из-за dirty WIP, diverged history или
+  конфликтов, новую задачу не начинать: записать blocker/owner note в Jira.
 - Не переключать ветку и не делать destructive git commands без явного права.
 - Не коммитить `.godot/`, local caches, secrets, private tokens.
 - Не делать force push.
 - Не переписывать чужой WIP.
 - Не закрывать task как `done`, если нужный код остался только в dirty tree.
-- После значимой работы commit + push обязательны, если среда/роль разрешает.
+- После любой выполненной задачи commit + push обязательны сразу после проверок и
+  Jira/mirror sync. Jira `done`/`review` допустимы только если результат уже
+  запушен или push failure явно записан blocker-комментарием.
+- Коммитить только свои locked paths; чужой WIP/sidecars не добавлять.
 
 Желаемые exit states любого executor:
 
@@ -326,7 +334,8 @@ git rev-list --left-right --count HEAD...origin/dev
 
 Пока repo process прямо требует работу на `dev`, следовать локальному
 `AGENTS.md`/task instructions. Но даже при direct-`dev` работе не оставлять
-результат локально: commit + push после проверок.
+результат локально: pull перед стартом новой задачи, commit + push после
+проверок каждой завершённой задачи.
 
 ## Обязательные Скиллы
 

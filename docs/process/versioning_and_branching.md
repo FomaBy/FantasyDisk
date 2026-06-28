@@ -35,6 +35,9 @@ Feature block 0.1.5 снят релизом `v0.1.5` (2026-06-15). Сейчас 
 
 ```bash
 git branch --show-current
+git status --short --branch
+git fetch origin --prune
+git pull --ff-only origin dev
 ```
 
 Ожидаемая ветка для разработки:
@@ -53,6 +56,26 @@ dev
 
 - создать `dev` от актуального `main`, если это безопасно и соответствует задаче;
 - зафиксировать действие в финальном ответе.
+
+## GitHub Sync На Границах Задачи
+
+Директива пользователя 2026-06-28: вся работа AI-агентов должна сразу
+синхронизироваться с GitHub.
+
+- Перед началом новой задачи агент обязан подтянуть актуальный `dev` из GitHub:
+  `git fetch origin --prune` и `git pull --ff-only origin dev` или эквивалентная
+  безопасная интеграция без переписывания истории.
+- Если pull невозможен из-за dirty WIP, diverged history, locked-path overlap или
+  конфликта, агент не начинает новую задачу. Он фиксирует blocker/owner note в
+  Jira и ждёт routing/sync решения.
+- После завершения задачи агент обязан обновить Jira/local mirrors, выполнить
+  проверки, затем сделать intentional commit и `git push` сразу в рамках того же
+  прогона.
+- Задача не считается завершённой, если изменения остались только локально в
+  dirty tree. Jira `done`/`review` разрешены только после успешного push или
+  после явного blocker-комментария о failed push.
+- Коммитить можно только файлы своей задачи/locked paths. Чужой WIP, `.godot/`,
+  caches, secrets, tokens и случайные generated sidecars не добавлять.
 
 ## Release Flow
 
@@ -81,6 +104,8 @@ dev
 - Не делать обычные feature changes напрямую в `main`.
 - Не переносить изменения между `main` и `dev` destructive-командами без явного запроса.
 - Не делать `git reset --hard`, `git checkout -- <file>` или похожие destructive operations без явного разрешения.
+- Не начинать новую задачу без предварительного безопасного pull из GitHub.
+- Не оставлять завершённую задачу незапушенной.
 
 ## Текущий Статус На 2026-06-27
 

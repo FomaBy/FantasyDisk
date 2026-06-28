@@ -2375,8 +2375,8 @@
  },
  "design_integrate_generated_hero_select_mockup_task.md": {
   "key": "SCRUM-445",
-  "status": "К выполнению",
-  "desc_hash": "d19cf2234f62eddbd29dae55b702d276"
+  "status": "Контроль качества",
+  "desc_hash": "6dd1f8afd198c79983f56b309c7da3e3"
  },
  "design_hero_select_v3_mockup_zones_frames_pipeline_task.md": {
   "key": "SCRUM-446",
@@ -2536,7 +2536,7 @@
  "bug_event_screen_grey_unclickable_task.md": {
   "key": "SCRUM-477",
   "status": "Готово",
-  "desc_hash": "da4f91734e9f6939c7458e4a79f056c1"
+  "desc_hash": "3e8e5646876aa86957012a3fea14a3ca"
  },
  "design_minimalist_full_ui_redesign_exact_size_anchor_task.md": {
   "key": "SCRUM-478",
@@ -2560,7 +2560,7 @@
  },
  "SCRUM-520_level_up_badge_popup.md": {
   "key": "SCRUM-520",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "f4ad3646a783e82aa98cfca0492cbd7f"
  },
  "SCRUM-509_skeleton_rig_det0_spam.md": {
@@ -2575,7 +2575,7 @@
  },
  "SCRUM-537_route_map_chest_artifact_node.md": {
   "key": "SCRUM-537",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "29fa85f23d0a3cd07f1a51862c680bd3"
  },
  "SCRUM-524_damage_attribute_type_isolation.md": {
@@ -2585,7 +2585,7 @@
  },
  "SCRUM-530_event_option_select_repro_fix.md": {
   "key": "SCRUM-530",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "49eefea1eede3f41aa442895d867a0ea"
  },
  "SCRUM-526_nerf_defensive_mechanics.md": {
@@ -2600,12 +2600,12 @@
  },
  "SCRUM-523_typed_damage_color_coding.md": {
   "key": "SCRUM-523",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "5e086abb4245b381c911580e03a28404"
  },
  "SCRUM-538_acts_2_3_route_maps_bosses.md": {
   "key": "SCRUM-538",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "a98b341a0303228d5dffdddf78acb58c"
  },
  "SCRUM-489_results_block_2k_coords.md": {

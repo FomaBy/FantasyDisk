@@ -188,6 +188,10 @@ SCRUM-441 подключил Mac/HiDPI resolution fix в live Settings: resoluti
 (`usable * screen_scale`), `_apply_video_settings()` клэмпит размер окна через
 `DisplayResolution.clamp_to_physical(...)`, macOS добавляет логическую
 native-опцию `(Mac)`, а `project.godot` включает `window/dpi/allow_hidpi=true`.
+SCRUM-441 follow-up: при смене video settings runtime синхронизирует
+`Window.content_scale_size` с фактическим выбранным оконным/полноэкранным размером,
+чтобы Godot preview/Windows показывали реальный viewport выбранного разрешения,
+а не только масштабировали базовый 2K canvas.
 QA evidence: `build/qa/scrum441/hidpi_resolution_evidence.md`.
 
 SCRUM-273/274/382 подключили stateful style layer к Red & Gold Dragon buttons + unified generic frames; SCRUM-462 switches active action-button routing to the SCRUM-450 minimal-metal kit, and SCRUM-463 promotes the SCRUM-452 six-frame `minimal_metal` kit as the active generic non-button surface set. `scripts/ui/ui_theme_paths.gd` now contains `MINIMAL_METAL_BUTTON_DIR`, metadata-backed button margins/content maps, minimal-metal frame paths/margins/content/safe rects and legacy Red & Gold/minimal/ornate constants for backup/history. `scripts/ui_screens.gd` chooses button type by node name/role/size and routes generic frame roles through minimal-metal `modal`, `panel`, `card`, `tooltip`, `hud_strip` and `field`; `scripts/pause_stats_menu.gd` uses minimal-metal modal/panel/field/tooltip frames plus SCRUM-450 `pause` buttons. SCRUM-318 no-yellow semantics are preserved with neutral bright hover/focus tint and near-white hover/focus font, now on dedicated SCRUM-450 `_hover`/`_focus` PNGs; pressed/disabled use dedicated state textures. Runtime/theme tests check main buttons, all 15 SCRUM-450 button families and SCRUM-451 frame rollout paths; QA lives in `build/qa/scrum450_minimal_metal_buttons/` and `build/qa/scrum451_minimal_metal_rollout/`.

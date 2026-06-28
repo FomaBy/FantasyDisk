@@ -5778,6 +5778,17 @@ func _action_label(action_name: String) -> String:
 	return action_name
 
 
+func _sync_window_content_scale(content_size: Vector2i) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	if content_size.x <= 0 or content_size.y <= 0:
+		return
+	var window: Window = game.get_window()
+	if window == null:
+		return
+	window.content_scale_size = content_size
+
+
 func _apply_video_settings() -> void:
 	game.selected_window_mode_index = clampi(game.selected_window_mode_index, 0, game.WINDOW_MODE_OPTIONS.size() - 1)
 	if DisplayServer.get_name() == "headless":
@@ -5801,10 +5812,12 @@ func _apply_video_settings() -> void:
 			DisplayServer.window_set_current_screen(screen)
 			DisplayServer.window_set_position(usable.position)
 			DisplayServer.window_set_size(usable.size)
+			_sync_window_content_scale(usable.size)
 		2:
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
 			DisplayServer.window_set_current_screen(screen)
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+			_sync_window_content_scale(DisplayServer.screen_get_size(screen))
 		_:
 			var resolution: Vector2i = resolution_entries[game.selected_resolution_index]["resolution"]
 			# SCRUM-441: клэмп к ФИЗ.пикселям (usable * Retina scale), не к лог.точкам —
@@ -5814,6 +5827,7 @@ func _apply_video_settings() -> void:
 			DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
 			DisplayServer.window_set_current_screen(screen)
 			DisplayServer.window_set_size(resolution)
+			_sync_window_content_scale(resolution)
 			var logical_window_size := Vector2i(
 				int(round(float(resolution.x) / maxf(screen_scale, 1.0))),
 				int(round(float(resolution.y) / maxf(screen_scale, 1.0)))
