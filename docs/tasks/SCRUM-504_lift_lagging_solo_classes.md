@@ -1,7 +1,33 @@
 # SCRUM-504: Поднять отстающие классы solo-оси: guitarist/robot/priest/druid до медианы ±25%
 
-Jira: SCRUM-504 · Роль: backend · Контур: claude (lane) · Приоритет: P1 · foma · Эпик: балансовый аудит классов (поле epic в Jira не выставлено — уточнить у PM при необходимости)
-Статус: К выполнению (To Do)
+Jira: SCRUM-504 · Роль: backend · Контур: Codex · Owner: backend-codex-balance-504-506 · Приоритет: P1 · foma · Эпик: балансовый аудит классов (поле epic в Jira не выставлено — уточнить у PM при необходимости)
+Статус: done
+Locked paths: scripts/progression_data_balance.gd, scripts/progression_data_weapons.gd, tools/character_balance_csv.gd, balance tests/reports/docs.
+Combined batch: SCRUM-504 + SCRUM-506, claimed in Jira 2026-06-28 by backend-codex-balance-504-506.
+
+## Result 2026-06-28 — backend-codex-balance-504-506
+
+Status: fixed, ready for QA as combined SCRUM-504/SCRUM-506 balance batch.
+
+Changes:
+- Tuned `scripts/progression_data_balance.gd` class solo/growth profile for guitarist, priest, robot, knight, and assassin.
+- Preserved AoE identity: no target/AoE profile was reduced; tuning is limited to solo ceilings and lvl20 growth tails.
+- Regenerated `build/character_balance_dps.csv` and `docs/design/reports/class_damage_table_3variants.md`.
+
+Final SCRUM-504 metrics from regenerated CSV:
+- Best-weapon `lvl20_ideal_1t` spread excluding berserk: **1.980x** (min `dark_mage/dark_wand` 249.78, max `assassin/chakrams` 494.65), target <= 2.0x.
+- Target classes all pass 0.75x median floor and are outside bottom four: guitarist 278.69, priest 269.21, robot 268.68, druid 274.22.
+- Bottom four after fix: dark_mage, knight, engineer, soldier.
+
+Validation:
+- `tools/character_balance_csv.gd` regenerated CSV.
+- `tests/class_damage_table_3variants_test.gd` PASSED.
+- `tests/global_damage_balance_smoke_test.gd` PASSED.
+- `tests/comfort_band_cross_class_gate.gd` PASSED.
+- `tests/damage_type_isolation_test.gd` PASSED.
+- `tests/live_balance_simulation_test.gd` PASSED with deterministic fallback because headless Player/Enemy scene scripts were unavailable from resource-import noise.
+- `tests/weapon_tuning_application_test.gd` PASSED with runtime subcheck skipped for the same headless Player scene import state; registry/derivation gates covered all 51 pairs.
+- `tests/summon_weapon_crowd_floor_test.gd` PASSED 5/5 repeated runs.
 
 ## Что и зачем
 

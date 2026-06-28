@@ -2632,5 +2632,15 @@
   "key": "SCRUM-521",
   "status": "Готово",
   "desc_hash": "6964c18b445d870220e21de727085b9c"
+ },
+ "SCRUM-504_lift_lagging_solo_classes.md": {
+  "key": "SCRUM-504",
+  "status": "Контроль качества",
+  "desc_hash": "07a69dd6c54e7911d9ec226c4dfd2506"
+ },
+ "SCRUM-506_random_build_spread_compression.md": {
+  "key": "SCRUM-506",
+  "status": "Контроль качества",
+  "desc_hash": "8a7729dcd6bf59d8ecf1e2dc4d45f4f6"
  }
 }

@@ -8,17 +8,17 @@ const CLASS_BUDGET_PROFILES := {
 	"thief": {"profile": "balanced", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.00},
 	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.10},
 	"sniper": {"profile": "solo", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.15, "aoe_target": 0.80},
-	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 1.00, "aoe_target": 1.05},
+	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 1.03, "aoe_target": 1.05},
 	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.92, "aoe_target": 1.18},
-	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 1.00, "aoe_target": 1.05},
+	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 1.07, "aoe_target": 1.05},
 	"engineer": {"profile": "balanced", "survival": "steady", "damage_budget": 0.96, "solo_target": 0.98, "aoe_target": 1.12},
 	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.84, "aoe_target": 1.30},
-	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 0.84, "aoe_target": 1.30},
+	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.30},
 	"assassin": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
 	"ranger": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
 	"doctor": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
 	"chemist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.84, "aoe_target": 1.30},
-	"knight": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
+	"knight": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.05, "aoe_target": 1.00},
 	"druid": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 }
 
@@ -89,20 +89,19 @@ const COMFORT_DEFAULT_WEIGHT := 1.00
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
 	"soldier": {"strength": 0.95, "agility": 0.95},
 	"elementalist": {"agility": 0.92, "intelligence": 0.92},
-	"priest": {"agility": 0.88, "intelligence": 0.88},
-	# SCRUM-504: robot был дном solo-оси (best-weapon lvl20_ideal_1t ≈0.79x межклассовой
-	# медианы — двойное дно: и solo, и aoe ниже среднего у tank-класса с damage_budget 0.88).
-	# Подъём роста str/agi 0.78→0.86 поднимает его lvl20-потолок по обеим осям, не трогая
-	# base lvl1 (скаляры влияют только на очки сверх базы → comfort_band/base-гейт не затронут).
-	# Формульный gate lvl20_optimum остаётся в 0.90..1.10.
-	"robot": {"strength": 0.86, "agility": 0.86},
+	"priest": {"agility": 0.95, "intelligence": 0.95},
+	# SCRUM-504/SCRUM-506: two-sided balance pass. Priest/robot/knight get enough
+	# lvl20 stat growth to leave the solo bottom pack without breaching class-kit
+	# corridors; guitarist keeps its AoE identity but uses a fair solo_target;
+	# assassin loses the excessive lvl20 growth tail that drove solo spread.
+	"robot": {"strength": 0.88, "agility": 0.88},
 	"engineer": {"strength": 0.72, "agility": 0.72, "leadership": 0.80},
 	"dark_mage": {"agility": 0.84, "intelligence": 0.84},
-	"guitarist": {"energy": 1.56},
-	"assassin": {"strength": 2.05, "agility": 2.05},
+	"guitarist": {"energy": 1.68},
+	"assassin": {"strength": 1.668, "agility": 1.668},
 	"doctor": {"agility": 1.10, "intelligence": 1.80},
 	"chemist": {"agility": 1.70, "intelligence": 1.70},
-	"knight": {"strength": 0.73, "agility": 0.73},
+	"knight": {"strength": 0.801, "agility": 0.801},
 	"druid": {"energy": 1.70, "perception": 0.55, "leadership": 0.70},
 	"berserk": {"strength": 1.18, "agility": 1.10},
 	"thief": {"strength": 0.86, "agility": 0.86},

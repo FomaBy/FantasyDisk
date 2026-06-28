@@ -9,56 +9,56 @@ Note: the current roster contains 17 classes, while the original task text menti
 | Class | Build | Stats | 1 Target DPS | 5 Targets DPS | 20 Targets DPS | Budget score | Relative score | Flag |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
 | berserk | Base lvl1 | strength 10.00; agility 5.00; intelligence 2.00; perception 5.00; energy 4.00; knowledge 4.00; endurance 7.00; leadership 3.00 | 48.00 | 149.95 | 132.61 | 0.961 | 0.997 | ok |
-| berserk | Lvl20 optimum | strength 18.00; agility 16.00; intelligence 2.00; perception 5.00; energy 4.00; knowledge 4.00; endurance 7.00; leadership 3.00 | 268.03 | 838.09 | 741.16 | 5.371 | 1.043 | ok |
-| berserk | Lvl20 random avg | strength 12.25; agility 7.36; intelligence 4.28; perception 7.30; energy 6.44; knowledge 6.39; endurance 9.47; leadership 5.52 | 93.64 | 292.66 | 258.82 | 1.876 | 1.021 | ok |
+| berserk | Lvl20 optimum | strength 18.00; agility 16.00; intelligence 2.00; perception 5.00; energy 4.00; knowledge 4.00; endurance 7.00; leadership 3.00 | 268.03 | 838.09 | 741.16 | 5.371 | 1.027 | ok |
+| berserk | Lvl20 random avg | strength 12.25; agility 7.36; intelligence 4.28; perception 7.30; energy 6.44; knowledge 6.39; endurance 9.47; leadership 5.52 | 93.64 | 292.66 | 258.82 | 1.876 | 1.000 | ok |
 | soldier | Base lvl1 | strength 7.00; agility 6.00; intelligence 2.00; perception 8.00; energy 4.00; knowledge 5.00; endurance 6.00; leadership 5.00 | 47.98 | 149.96 | 136.22 | 0.969 | 1.005 | ok |
-| soldier | Lvl20 optimum | strength 15.00; agility 17.00; intelligence 2.00; perception 8.00; energy 4.00; knowledge 5.00; endurance 6.00; leadership 5.00 | 262.85 | 818.47 | 743.47 | 5.296 | 1.029 | ok |
-| soldier | Lvl20 random avg | strength 9.00; agility 8.13; intelligence 4.34; perception 10.73; energy 6.28; knowledge 7.52; endurance 8.28; leadership 7.72 | 84.48 | 263.81 | 239.65 | 1.705 | 0.928 | ok |
+| soldier | Lvl20 optimum | strength 15.00; agility 17.00; intelligence 2.00; perception 8.00; energy 4.00; knowledge 5.00; endurance 6.00; leadership 5.00 | 262.85 | 818.47 | 743.47 | 5.296 | 1.013 | ok |
+| soldier | Lvl20 random avg | strength 9.00; agility 8.13; intelligence 4.34; perception 10.73; energy 6.28; knowledge 7.52; endurance 8.28; leadership 7.72 | 84.48 | 263.81 | 239.65 | 1.705 | 0.909 | ok |
 | thief | Base lvl1 | strength 5.00; agility 9.00; intelligence 3.00; perception 8.00; energy 5.00; knowledge 4.00; endurance 4.00; leadership 5.00 | 51.84 | 162.00 | 150.68 | 0.973 | 1.009 | ok |
-| thief | Lvl20 optimum | strength 16.00; agility 17.00; intelligence 3.00; perception 8.00; energy 5.00; knowledge 4.00; endurance 4.00; leadership 5.00 | 264.77 | 822.35 | 764.78 | 4.947 | 0.961 | ok |
-| thief | Lvl20 random avg | strength 7.13; agility 11.22; intelligence 5.73; perception 10.16; energy 7.20; knowledge 6.38; endurance 6.59; leadership 7.59 | 89.47 | 279.14 | 259.61 | 1.677 | 0.912 | ok |
+| thief | Lvl20 optimum | strength 16.00; agility 17.00; intelligence 3.00; perception 8.00; energy 5.00; knowledge 4.00; endurance 4.00; leadership 5.00 | 264.77 | 822.35 | 764.78 | 4.947 | 0.946 | ok |
+| thief | Lvl20 random avg | strength 7.13; agility 11.22; intelligence 5.73; perception 10.16; energy 7.20; knowledge 6.38; endurance 6.59; leadership 7.59 | 89.47 | 279.14 | 259.61 | 1.677 | 0.894 | ok |
 | elementalist | Base lvl1 | strength 2.00; agility 4.00; intelligence 9.00; perception 7.00; energy 8.00; knowledge 6.00; endurance 3.00; leadership 5.00 | 51.84 | 178.21 | 164.56 | 0.970 | 1.006 | ok |
-| elementalist | Lvl20 optimum | strength 2.00; agility 17.00; intelligence 15.00; perception 7.00; energy 8.00; knowledge 6.00; endurance 3.00; leadership 5.00 | 273.15 | 933.10 | 861.71 | 5.092 | 0.989 | ok |
-| elementalist | Lvl20 random avg | strength 4.27; agility 6.28; intelligence 11.53; perception 8.95; energy 10.45; knowledge 8.83; endurance 5.16; leadership 7.53 | 95.73 | 328.40 | 303.27 | 1.790 | 0.974 | ok |
+| elementalist | Lvl20 optimum | strength 2.00; agility 17.00; intelligence 15.00; perception 7.00; energy 8.00; knowledge 6.00; endurance 3.00; leadership 5.00 | 273.15 | 933.10 | 861.71 | 5.092 | 0.974 | ok |
+| elementalist | Lvl20 random avg | strength 4.27; agility 6.28; intelligence 11.53; perception 8.95; energy 10.45; knowledge 8.83; endurance 5.16; leadership 7.53 | 95.73 | 328.40 | 303.27 | 1.790 | 0.954 | ok |
 | sniper | Base lvl1 | strength 6.00; agility 8.00; intelligence 2.00; perception 10.00; energy 3.00; knowledge 3.00; endurance 7.00; leadership 1.00 | 55.21 | 119.96 | 105.36 | 0.959 | 0.995 | ok |
-| sniper | Lvl20 optimum | strength 15.00; agility 18.00; intelligence 2.00; perception 10.00; energy 3.00; knowledge 3.00; endurance 7.00; leadership 1.00 | 313.07 | 674.04 | 592.05 | 5.407 | 1.050 | ok |
-| sniper | Lvl20 random avg | strength 8.17; agility 10.59; intelligence 4.64; perception 12.41; energy 5.11; knowledge 5.47; endurance 9.28; leadership 3.33 | 102.78 | 222.65 | 195.56 | 1.782 | 0.970 | ok |
-| priest | Base lvl1 | strength 2.00; agility 4.00; intelligence 8.00; perception 6.00; energy 7.00; knowledge 9.00; endurance 5.00; leadership 6.00 | 44.17 | 144.90 | 135.11 | 0.970 | 1.006 | ok |
-| priest | Lvl20 optimum | strength 2.00; agility 16.00; intelligence 15.00; perception 6.00; energy 7.00; knowledge 9.00; endurance 5.00; leadership 6.00 | 236.99 | 772.56 | 720.42 | 5.180 | 1.006 | ok |
-| priest | Lvl20 random avg | strength 4.61; agility 6.50; intelligence 10.28; perception 8.38; energy 9.36; knowledge 11.42; endurance 7.11; leadership 8.34 | 83.29 | 272.69 | 254.28 | 1.826 | 0.993 | ok |
+| sniper | Lvl20 optimum | strength 15.00; agility 18.00; intelligence 2.00; perception 10.00; energy 3.00; knowledge 3.00; endurance 7.00; leadership 1.00 | 313.07 | 674.04 | 592.05 | 5.407 | 1.034 | ok |
+| sniper | Lvl20 random avg | strength 8.17; agility 10.59; intelligence 4.64; perception 12.41; energy 5.11; knowledge 5.47; endurance 9.28; leadership 3.33 | 102.78 | 222.65 | 195.56 | 1.782 | 0.950 | ok |
+| priest | Base lvl1 | strength 2.00; agility 4.00; intelligence 8.00; perception 6.00; energy 7.00; knowledge 9.00; endurance 5.00; leadership 6.00 | 45.49 | 144.87 | 135.09 | 0.969 | 1.005 | ok |
+| priest | Lvl20 optimum | strength 2.00; agility 16.00; intelligence 15.00; perception 6.00; energy 7.00; knowledge 9.00; endurance 5.00; leadership 6.00 | 268.17 | 848.55 | 791.28 | 5.690 | 1.088 | ok |
+| priest | Lvl20 random avg | strength 4.61; agility 6.50; intelligence 10.28; perception 8.38; energy 9.36; knowledge 11.42; endurance 7.11; leadership 8.34 | 88.95 | 282.67 | 263.58 | 1.893 | 1.009 | ok |
 | biologist | Base lvl1 | strength 2.00; agility 5.00; intelligence 8.00; perception 7.00; energy 6.00; knowledge 10.00; endurance 4.00; leadership 4.00 | 47.68 | 191.13 | 180.63 | 0.973 | 1.009 | ok |
-| biologist | Lvl20 optimum | strength 2.00; agility 18.00; intelligence 14.00; perception 7.00; energy 6.00; knowledge 10.00; endurance 4.00; leadership 4.00 | 251.99 | 1041.91 | 982.11 | 5.247 | 1.019 | ok |
-| biologist | Lvl20 random avg | strength 4.36; agility 7.53; intelligence 10.00; perception 9.23; energy 8.16; knowledge 12.33; endurance 6.44; leadership 6.95 | 87.24 | 351.80 | 332.30 | 1.788 | 0.973 | ok |
-| robot | Base lvl1 | strength 8.00; agility 3.00; intelligence 5.00; perception 5.00; energy 7.00; knowledge 4.00; endurance 10.00; leadership 4.00 | 42.24 | 138.59 | 126.32 | 0.966 | 1.002 | ok |
-| robot | Lvl20 optimum | strength 14.00; agility 16.00; intelligence 5.00; perception 5.00; energy 7.00; knowledge 4.00; endurance 10.00; leadership 4.00 | 243.93 | 799.64 | 728.81 | 5.577 | 1.083 | ok |
-| robot | Lvl20 random avg | strength 10.67; agility 5.38; intelligence 7.22; perception 7.23; energy 9.31; knowledge 6.52; endurance 12.25; leadership 6.42 | 83.88 | 275.13 | 250.76 | 1.919 | 1.044 | ok |
+| biologist | Lvl20 optimum | strength 2.00; agility 18.00; intelligence 14.00; perception 7.00; energy 6.00; knowledge 10.00; endurance 4.00; leadership 4.00 | 251.99 | 1041.91 | 982.11 | 5.247 | 1.004 | ok |
+| biologist | Lvl20 random avg | strength 4.36; agility 7.53; intelligence 10.00; perception 9.23; energy 8.16; knowledge 12.33; endurance 6.44; leadership 6.95 | 87.24 | 351.80 | 332.30 | 1.788 | 0.953 | ok |
+| robot | Base lvl1 | strength 8.00; agility 3.00; intelligence 5.00; perception 5.00; energy 7.00; knowledge 4.00; endurance 10.00; leadership 4.00 | 45.22 | 138.66 | 126.37 | 0.967 | 1.003 | ok |
+| robot | Lvl20 optimum | strength 14.00; agility 16.00; intelligence 5.00; perception 5.00; energy 7.00; knowledge 4.00; endurance 10.00; leadership 4.00 | 268.55 | 822.84 | 749.96 | 5.739 | 1.098 | ok |
+| robot | Lvl20 random avg | strength 10.67; agility 5.38; intelligence 7.22; perception 7.23; energy 9.31; knowledge 6.52; endurance 12.25; leadership 6.42 | 90.79 | 278.35 | 253.70 | 1.941 | 1.035 | ok |
 | engineer | Base lvl1 | strength 4.00; agility 5.00; intelligence 7.00; perception 6.00; energy 6.00; knowledge 6.00; endurance 5.00; leadership 10.00 | 45.15 | 161.27 | 146.11 | 0.957 | 0.993 | ok |
-| engineer | Lvl20 optimum | strength 15.00; agility 13.00; intelligence 7.00; perception 6.00; energy 6.00; knowledge 6.00; endurance 5.00; leadership 10.00 | 237.42 | 863.46 | 784.45 | 5.096 | 0.990 | ok |
-| engineer | Lvl20 random avg | strength 6.38; agility 7.53; intelligence 9.50; perception 8.22; energy 8.17; knowledge 8.30; endurance 7.38; leadership 12.53 | 94.70 | 340.83 | 307.87 | 2.015 | 1.096 | ok |
+| engineer | Lvl20 optimum | strength 15.00; agility 13.00; intelligence 7.00; perception 6.00; energy 6.00; knowledge 6.00; endurance 5.00; leadership 10.00 | 237.42 | 863.46 | 784.45 | 5.096 | 0.975 | ok |
+| engineer | Lvl20 random avg | strength 6.38; agility 7.53; intelligence 9.50; perception 8.22; energy 8.17; knowledge 8.30; endurance 7.38; leadership 12.53 | 94.70 | 340.83 | 307.87 | 2.015 | 1.074 | ok |
 | dark_mage | Base lvl1 | strength 2.00; agility 3.00; intelligence 10.00; perception 5.00; energy 7.00; knowledge 6.00; endurance 2.00; leadership 5.00 | 46.36 | 224.25 | 203.72 | 0.969 | 1.005 | ok |
-| dark_mage | Lvl20 optimum | strength 2.00; agility 19.00; intelligence 13.00; perception 5.00; energy 7.00; knowledge 6.00; endurance 2.00; leadership 5.00 | 231.56 | 1128.98 | 1026.02 | 4.868 | 0.946 | ok |
-| dark_mage | Lvl20 random avg | strength 4.36; agility 5.39; intelligence 12.09; perception 7.31; energy 9.14; knowledge 8.77; endurance 4.56; leadership 7.38 | 86.66 | 418.03 | 379.73 | 1.809 | 0.984 | ok |
-| guitarist | Base lvl1 | strength 4.00; agility 6.00; intelligence 4.00; perception 7.00; energy 6.00; knowledge 5.00; endurance 4.00; leadership 7.00 | 40.31 | 195.01 | 179.50 | 0.961 | 0.997 | ok |
-| guitarist | Lvl20 optimum | strength 4.00; agility 10.00; intelligence 4.00; perception 7.00; energy 20.00; knowledge 5.00; endurance 4.00; leadership 8.00 | 208.19 | 1022.37 | 944.33 | 5.021 | 0.975 | ok |
-| guitarist | Lvl20 random avg | strength 6.16; agility 8.61; intelligence 6.16; perception 9.80; energy 7.94; knowledge 7.47; endurance 6.66; leadership 9.22 | 86.11 | 416.75 | 383.71 | 2.055 | 1.118 | ok |
+| dark_mage | Lvl20 optimum | strength 2.00; agility 19.00; intelligence 13.00; perception 5.00; energy 7.00; knowledge 6.00; endurance 2.00; leadership 5.00 | 231.56 | 1128.98 | 1026.02 | 4.868 | 0.931 | ok |
+| dark_mage | Lvl20 random avg | strength 4.36; agility 5.39; intelligence 12.09; perception 7.31; energy 9.14; knowledge 8.77; endurance 4.56; leadership 7.38 | 86.66 | 418.03 | 379.73 | 1.809 | 0.964 | ok |
+| guitarist | Base lvl1 | strength 4.00; agility 6.00; intelligence 4.00; perception 7.00; energy 6.00; knowledge 5.00; endurance 4.00; leadership 7.00 | 47.99 | 194.99 | 179.48 | 0.961 | 0.997 | ok |
+| guitarist | Lvl20 optimum | strength 4.00; agility 8.00; intelligence 4.00; perception 7.00; energy 22.00; knowledge 5.00; endurance 4.00; leadership 8.00 | 265.82 | 1090.41 | 1005.91 | 5.364 | 1.026 | ok |
+| guitarist | Lvl20 random avg | strength 6.16; agility 8.61; intelligence 6.16; perception 9.80; energy 7.94; knowledge 7.47; endurance 6.66; leadership 9.22 | 104.08 | 423.13 | 389.60 | 2.086 | 1.112 | ok |
 | assassin | Base lvl1 | strength 6.00; agility 10.00; intelligence 2.00; perception 6.00; energy 3.00; knowledge 4.00; endurance 5.00; leadership 4.00 | 71.75 | 120.80 | 106.83 | 0.962 | 0.998 | ok |
-| assassin | Lvl20 optimum | strength 24.00; agility 11.00; intelligence 2.00; perception 6.00; energy 3.00; knowledge 4.00; endurance 5.00; leadership 4.00 | 416.57 | 701.14 | 620.05 | 5.582 | 1.084 | ok |
-| assassin | Lvl20 random avg | strength 8.66; agility 12.27; intelligence 4.16; perception 8.19; energy 5.19; knowledge 6.38; endurance 7.55; leadership 6.63 | 143.93 | 242.30 | 214.28 | 1.929 | 1.050 | ok |
+| assassin | Lvl20 optimum | strength 24.00; agility 11.00; intelligence 2.00; perception 6.00; energy 3.00; knowledge 4.00; endurance 5.00; leadership 4.00 | 351.12 | 590.98 | 522.63 | 4.705 | 0.900 | ok |
+| assassin | Lvl20 random avg | strength 8.66; agility 12.27; intelligence 4.16; perception 8.19; energy 5.19; knowledge 6.38; endurance 7.55; leadership 6.63 | 132.55 | 223.15 | 197.34 | 1.776 | 0.947 | ok |
 | ranger | Base lvl1 | strength 7.00; agility 7.00; intelligence 2.00; perception 9.00; energy 4.00; knowledge 4.00; endurance 4.00; leadership 3.00 | 71.76 | 120.76 | 109.34 | 0.964 | 1.000 | ok |
-| ranger | Lvl20 optimum | strength 16.00; agility 17.00; intelligence 2.00; perception 9.00; energy 4.00; knowledge 4.00; endurance 4.00; leadership 3.00 | 391.83 | 652.08 | 590.40 | 5.228 | 1.016 | ok |
-| ranger | Lvl20 random avg | strength 9.67; agility 9.34; intelligence 4.30; perception 11.42; energy 6.42; knowledge 6.22; endurance 6.45; leadership 5.17 | 137.09 | 229.83 | 208.09 | 1.838 | 1.000 | ok |
+| ranger | Lvl20 optimum | strength 16.00; agility 17.00; intelligence 2.00; perception 9.00; energy 4.00; knowledge 4.00; endurance 4.00; leadership 3.00 | 391.83 | 652.08 | 590.40 | 5.228 | 1.000 | ok |
+| ranger | Lvl20 random avg | strength 9.67; agility 9.34; intelligence 4.30; perception 11.42; energy 6.42; knowledge 6.22; endurance 6.45; leadership 5.17 | 137.09 | 229.83 | 208.09 | 1.838 | 0.980 | ok |
 | doctor | Base lvl1 | strength 2.00; agility 4.00; intelligence 8.00; perception 5.00; energy 6.00; knowledge 8.00; endurance 5.00; leadership 2.00 | 40.79 | 127.48 | 107.27 | 0.947 | 0.982 | ok |
-| doctor | Lvl20 optimum | strength 2.00; agility 14.00; intelligence 17.00; perception 5.00; energy 6.00; knowledge 8.00; endurance 5.00; leadership 2.00 | 205.39 | 640.85 | 531.19 | 4.742 | 0.921 | ok |
-| doctor | Lvl20 random avg | strength 4.36; agility 6.33; intelligence 10.48; perception 7.11; energy 8.33; knowledge 10.41; endurance 7.45; leadership 4.53 | 85.07 | 265.72 | 223.11 | 1.973 | 1.073 | ok |
+| doctor | Lvl20 optimum | strength 2.00; agility 14.00; intelligence 17.00; perception 5.00; energy 6.00; knowledge 8.00; endurance 5.00; leadership 2.00 | 205.39 | 640.85 | 531.19 | 4.742 | 0.907 | ok |
+| doctor | Lvl20 random avg | strength 4.36; agility 6.33; intelligence 10.48; perception 7.11; energy 8.33; knowledge 10.41; endurance 7.45; leadership 4.53 | 85.07 | 265.72 | 223.11 | 1.973 | 1.052 | ok |
 | chemist | Base lvl1 | strength 2.00; agility 4.00; intelligence 9.00; perception 6.00; energy 7.00; knowledge 7.00; endurance 3.00; leadership 2.00 | 46.37 | 224.22 | 205.04 | 0.968 | 1.004 | ok |
-| chemist | Lvl20 optimum | strength 2.00; agility 13.00; intelligence 19.00; perception 6.00; energy 7.00; knowledge 7.00; endurance 3.00; leadership 2.00 | 240.30 | 1132.67 | 1046.02 | 4.954 | 0.962 | ok |
-| chemist | Lvl20 random avg | strength 4.20; agility 6.34; intelligence 11.50; perception 8.48; energy 9.72; knowledge 9.11; endurance 5.13; leadership 4.52 | 94.75 | 454.17 | 413.66 | 1.962 | 1.067 | ok |
-| knight | Base lvl1 | strength 8.00; agility 3.00; intelligence 2.00; perception 4.00; energy 3.00; knowledge 4.00; endurance 10.00; leadership 6.00 | 40.81 | 127.55 | 112.80 | 0.962 | 0.998 | ok |
-| knight | Lvl20 optimum | strength 14.00; agility 16.00; intelligence 2.00; perception 4.00; energy 3.00; knowledge 4.00; endurance 10.00; leadership 6.00 | 218.72 | 682.30 | 603.39 | 5.148 | 1.000 | ok |
-| knight | Lvl20 random avg | strength 10.42; agility 5.19; intelligence 4.56; perception 6.36; energy 5.64; knowledge 6.31; endurance 12.33; leadership 8.19 | 77.90 | 243.27 | 215.14 | 1.835 | 0.998 | ok |
+| chemist | Lvl20 optimum | strength 2.00; agility 13.00; intelligence 19.00; perception 6.00; energy 7.00; knowledge 7.00; endurance 3.00; leadership 2.00 | 240.30 | 1132.67 | 1046.02 | 4.954 | 0.948 | ok |
+| chemist | Lvl20 random avg | strength 4.20; agility 6.34; intelligence 11.50; perception 8.48; energy 9.72; knowledge 9.11; endurance 5.13; leadership 4.52 | 94.75 | 454.17 | 413.66 | 1.962 | 1.046 | ok |
+| knight | Base lvl1 | strength 8.00; agility 3.00; intelligence 2.00; perception 4.00; energy 3.00; knowledge 4.00; endurance 10.00; leadership 6.00 | 42.82 | 127.52 | 112.78 | 0.961 | 0.997 | ok |
+| knight | Lvl20 optimum | strength 14.00; agility 16.00; intelligence 2.00; perception 4.00; energy 3.00; knowledge 4.00; endurance 10.00; leadership 6.00 | 256.06 | 761.07 | 673.06 | 5.742 | 1.098 | ok |
+| knight | Lvl20 random avg | strength 10.42; agility 5.19; intelligence 4.56; perception 6.36; energy 5.64; knowledge 6.31; endurance 12.33; leadership 8.19 | 85.18 | 253.43 | 224.12 | 1.911 | 1.019 | ok |
 | druid | Base lvl1 | strength 3.00; agility 4.00; intelligence 4.00; perception 7.00; energy 6.00; knowledge 5.00; endurance 5.00; leadership 9.00 | 47.97 | 149.91 | 133.48 | 0.955 | 0.991 | ok |
-| druid | Lvl20 optimum | strength 3.00; agility 4.00; intelligence 4.00; perception 7.00; energy 24.00; knowledge 5.00; endurance 5.00; leadership 10.00 | 242.35 | 778.45 | 690.88 | 4.907 | 0.953 | ok |
-| druid | Lvl20 random avg | strength 5.22; agility 6.05; intelligence 6.42; perception 9.56; energy 8.77; knowledge 7.33; endurance 7.33; leadership 11.33 | 104.05 | 327.29 | 290.44 | 2.078 | 1.131 | ok |
+| druid | Lvl20 optimum | strength 3.00; agility 4.00; intelligence 4.00; perception 7.00; energy 24.00; knowledge 5.00; endurance 5.00; leadership 10.00 | 242.35 | 778.45 | 690.88 | 4.907 | 0.939 | ok |
+| druid | Lvl20 random avg | strength 5.22; agility 6.05; intelligence 6.42; perception 9.56; energy 8.77; knowledge 7.33; endurance 7.33; leadership 11.33 | 104.05 | 327.29 | 290.44 | 2.078 | 1.108 | ok |
 
 ## Outlier Summary
 
@@ -119,15 +119,15 @@ Note: the current roster contains 17 classes, while the original task text menti
 | sniper | sniper_deadeye_rifle | Lvl20 random avg | 102.96 | 222.60 | 184.80 | 1.753 |
 | sniper | sniper_spotter_scope | Lvl20 random avg | 102.62 | 222.54 | 200.82 | 1.796 |
 | sniper | sniper_shatter_rounds | Lvl20 random avg | 102.76 | 222.80 | 201.06 | 1.798 |
-| priest | priest_reliquary | Base lvl1 | 44.17 | 144.85 | 137.25 | 0.970 |
-| priest | priest_censer | Base lvl1 | 44.17 | 144.92 | 137.31 | 0.971 |
-| priest | priest_chime | Base lvl1 | 44.16 | 144.93 | 130.78 | 0.968 |
-| priest | priest_reliquary | Lvl20 optimum | 236.46 | 771.82 | 731.31 | 5.178 |
-| priest | priest_censer | Lvl20 optimum | 237.96 | 775.15 | 734.47 | 5.204 |
-| priest | priest_chime | Lvl20 optimum | 236.55 | 770.71 | 695.49 | 5.158 |
-| priest | priest_reliquary | Lvl20 random avg | 83.23 | 272.54 | 258.24 | 1.826 |
-| priest | priest_censer | Lvl20 random avg | 83.40 | 273.00 | 258.67 | 1.830 |
-| priest | priest_chime | Lvl20 random avg | 83.23 | 272.53 | 245.93 | 1.821 |
+| priest | priest_reliquary | Base lvl1 | 45.48 | 144.85 | 137.25 | 0.970 |
+| priest | priest_censer | Base lvl1 | 45.48 | 144.84 | 137.24 | 0.970 |
+| priest | priest_chime | Base lvl1 | 45.50 | 144.93 | 130.78 | 0.968 |
+| priest | priest_reliquary | Lvl20 optimum | 267.53 | 847.89 | 803.39 | 5.688 |
+| priest | priest_censer | Lvl20 optimum | 269.21 | 851.14 | 806.47 | 5.715 |
+| priest | priest_chime | Lvl20 optimum | 267.78 | 846.62 | 763.99 | 5.668 |
+| priest | priest_reliquary | Lvl20 random avg | 88.87 | 282.56 | 267.73 | 1.894 |
+| priest | priest_censer | Lvl20 random avg | 89.06 | 282.92 | 268.07 | 1.896 |
+| priest | priest_chime | Lvl20 random avg | 88.93 | 282.52 | 254.95 | 1.888 |
 | biologist | biologist_spore_lens | Base lvl1 | 47.67 | 191.09 | 188.30 | 0.982 |
 | biologist | biologist_sample_injector | Base lvl1 | 47.68 | 191.17 | 172.51 | 0.967 |
 | biologist | biologist_symbiote_seed | Base lvl1 | 47.70 | 191.12 | 181.09 | 0.970 |
@@ -137,15 +137,15 @@ Note: the current roster contains 17 classes, while the original task text menti
 | biologist | biologist_spore_lens | Lvl20 random avg | 83.59 | 342.79 | 337.79 | 1.748 |
 | biologist | biologist_sample_injector | Lvl20 random avg | 89.19 | 356.88 | 322.05 | 1.807 |
 | biologist | biologist_symbiote_seed | Lvl20 random avg | 88.95 | 355.72 | 337.06 | 1.807 |
-| robot | robot_magnetic_anchor | Base lvl1 | 42.25 | 138.60 | 131.33 | 0.970 |
-| robot | robot_hydraulic_press | Base lvl1 | 42.24 | 138.56 | 122.54 | 0.961 |
-| robot | robot_reactor_core | Base lvl1 | 42.24 | 138.62 | 125.09 | 0.968 |
-| robot | robot_magnetic_anchor | Lvl20 optimum | 243.95 | 799.65 | 757.68 | 5.600 |
-| robot | robot_hydraulic_press | Lvl20 optimum | 243.84 | 798.60 | 706.24 | 5.543 |
-| robot | robot_reactor_core | Lvl20 optimum | 244.01 | 800.67 | 722.52 | 5.589 |
-| robot | robot_magnetic_anchor | Lvl20 random avg | 83.89 | 275.14 | 260.70 | 1.927 |
-| robot | robot_hydraulic_press | Lvl20 random avg | 83.87 | 274.97 | 243.17 | 1.908 |
-| robot | robot_reactor_core | Lvl20 random avg | 83.88 | 275.28 | 248.41 | 1.921 |
+| robot | robot_magnetic_anchor | Base lvl1 | 45.21 | 138.67 | 131.39 | 0.971 |
+| robot | robot_hydraulic_press | Base lvl1 | 45.22 | 138.68 | 122.64 | 0.962 |
+| robot | robot_reactor_core | Base lvl1 | 45.22 | 138.62 | 125.09 | 0.968 |
+| robot | robot_magnetic_anchor | Lvl20 optimum | 268.49 | 822.89 | 779.70 | 5.762 |
+| robot | robot_hydraulic_press | Lvl20 optimum | 268.47 | 822.09 | 727.02 | 5.705 |
+| robot | robot_reactor_core | Lvl20 optimum | 268.68 | 823.53 | 743.15 | 5.749 |
+| robot | robot_magnetic_anchor | Lvl20 random avg | 90.78 | 278.38 | 263.77 | 1.949 |
+| robot | robot_hydraulic_press | Lvl20 random avg | 90.79 | 278.30 | 246.12 | 1.931 |
+| robot | robot_reactor_core | Lvl20 random avg | 90.81 | 278.38 | 251.21 | 1.943 |
 | engineer | engineer_sentry_wrench | Base lvl1 | 45.12 | 161.24 | 139.68 | 0.944 |
 | engineer | engineer_repair_drone | Base lvl1 | 45.15 | 161.23 | 139.67 | 0.944 |
 | engineer | engineer_pressure_mines | Base lvl1 | 45.17 | 161.33 | 158.98 | 0.983 |
@@ -164,24 +164,24 @@ Note: the current roster contains 17 classes, while the original task text menti
 | dark_mage | dark_book | Lvl20 random avg | 85.89 | 415.75 | 390.18 | 1.815 |
 | dark_mage | cursed_skull | Lvl20 random avg | 87.95 | 422.77 | 381.51 | 1.828 |
 | dark_mage | dark_wand | Lvl20 random avg | 86.14 | 415.57 | 367.51 | 1.783 |
-| guitarist | electric_guitar | Base lvl1 | 40.32 | 195.03 | 184.79 | 0.970 |
-| guitarist | bass_guitar | Base lvl1 | 40.31 | 194.99 | 184.76 | 0.970 |
-| guitarist | sound_amp | Base lvl1 | 40.29 | 195.02 | 168.95 | 0.944 |
-| guitarist | electric_guitar | Lvl20 optimum | 223.98 | 1082.87 | 1026.04 | 5.389 |
-| guitarist | bass_guitar | Lvl20 optimum | 223.94 | 1083.33 | 1026.48 | 5.390 |
-| guitarist | sound_amp | Lvl20 optimum | 176.66 | 900.92 | 780.47 | 4.283 |
-| guitarist | electric_guitar | Lvl20 random avg | 86.62 | 418.82 | 396.84 | 2.084 |
-| guitarist | bass_guitar | Lvl20 random avg | 86.60 | 418.94 | 396.96 | 2.085 |
-| guitarist | sound_amp | Lvl20 random avg | 85.12 | 412.48 | 357.34 | 1.996 |
+| guitarist | electric_guitar | Base lvl1 | 47.97 | 195.01 | 184.78 | 0.970 |
+| guitarist | bass_guitar | Base lvl1 | 48.01 | 194.99 | 184.76 | 0.970 |
+| guitarist | sound_amp | Base lvl1 | 47.99 | 194.98 | 168.91 | 0.944 |
+| guitarist | electric_guitar | Lvl20 optimum | 278.45 | 1131.67 | 1072.28 | 5.631 |
+| guitarist | bass_guitar | Lvl20 optimum | 278.69 | 1132.06 | 1072.65 | 5.634 |
+| guitarist | sound_amp | Lvl20 optimum | 240.31 | 1007.49 | 872.79 | 4.826 |
+| guitarist | electric_guitar | Lvl20 random avg | 104.70 | 425.52 | 403.18 | 2.117 |
+| guitarist | bass_guitar | Lvl20 random avg | 104.80 | 425.69 | 403.35 | 2.118 |
+| guitarist | sound_amp | Lvl20 random avg | 102.74 | 418.18 | 362.27 | 2.024 |
 | assassin | chakrams | Base lvl1 | 71.72 | 120.77 | 106.80 | 0.961 |
 | assassin | shadow_daggers | Base lvl1 | 71.75 | 120.69 | 106.73 | 0.961 |
 | assassin | venom_wire | Base lvl1 | 71.79 | 120.94 | 106.95 | 0.963 |
-| assassin | chakrams | Lvl20 optimum | 592.01 | 996.65 | 881.39 | 7.934 |
-| assassin | shadow_daggers | Lvl20 optimum | 527.42 | 887.25 | 784.64 | 7.065 |
-| assassin | venom_wire | Lvl20 optimum | 130.27 | 219.52 | 194.13 | 1.747 |
-| assassin | chakrams | Lvl20 random avg | 162.27 | 273.20 | 241.60 | 2.175 |
-| assassin | shadow_daggers | Lvl20 random avg | 145.90 | 245.45 | 217.06 | 1.955 |
-| assassin | venom_wire | Lvl20 random avg | 123.61 | 208.24 | 184.16 | 1.657 |
+| assassin | chakrams | Lvl20 optimum | 494.65 | 832.73 | 736.43 | 6.629 |
+| assassin | shadow_daggers | Lvl20 optimum | 440.55 | 741.11 | 655.40 | 5.902 |
+| assassin | venom_wire | Lvl20 optimum | 118.15 | 199.09 | 176.07 | 1.584 |
+| assassin | chakrams | Lvl20 random avg | 146.13 | 246.04 | 217.58 | 1.959 |
+| assassin | shadow_daggers | Lvl20 random avg | 131.33 | 220.94 | 195.39 | 1.759 |
+| assassin | venom_wire | Lvl20 random avg | 120.18 | 202.47 | 179.06 | 1.611 |
 | ranger | moon_crossbow | Base lvl1 | 71.73 | 120.77 | 106.80 | 0.961 |
 | ranger | storm_longbow | Base lvl1 | 71.76 | 120.70 | 106.74 | 0.961 |
 | ranger | hunter_trap | Base lvl1 | 71.79 | 120.82 | 114.48 | 0.971 |
@@ -209,15 +209,15 @@ Note: the current roster contains 17 classes, while the original task text menti
 | chemist | blast_powder | Lvl20 random avg | 91.12 | 434.69 | 407.96 | 1.908 |
 | chemist | acid_flask | Lvl20 random avg | 85.00 | 405.18 | 380.26 | 1.779 |
 | chemist | homunculus_vial | Lvl20 random avg | 108.13 | 522.63 | 452.75 | 2.201 |
-| knight | long_spear | Base lvl1 | 40.84 | 127.56 | 112.81 | 0.962 |
-| knight | tower_shield | Base lvl1 | 40.80 | 127.53 | 112.78 | 0.962 |
-| knight | holy_flail | Base lvl1 | 40.80 | 127.57 | 112.82 | 0.962 |
-| knight | long_spear | Lvl20 optimum | 218.88 | 679.16 | 600.62 | 5.134 |
-| knight | tower_shield | Lvl20 optimum | 218.91 | 683.04 | 604.05 | 5.153 |
-| knight | holy_flail | Lvl20 optimum | 218.37 | 684.69 | 605.51 | 5.157 |
-| knight | long_spear | Lvl20 random avg | 77.96 | 242.80 | 214.72 | 1.833 |
-| knight | tower_shield | Lvl20 random avg | 77.92 | 243.37 | 215.22 | 1.835 |
-| knight | holy_flail | Lvl20 random avg | 77.84 | 243.66 | 215.48 | 1.836 |
+| knight | long_spear | Base lvl1 | 42.82 | 127.47 | 112.73 | 0.961 |
+| knight | tower_shield | Base lvl1 | 42.82 | 127.53 | 112.78 | 0.961 |
+| knight | holy_flail | Base lvl1 | 42.83 | 127.57 | 112.82 | 0.962 |
+| knight | long_spear | Lvl20 optimum | 256.07 | 757.12 | 669.56 | 5.722 |
+| knight | tower_shield | Lvl20 optimum | 256.37 | 762.11 | 673.97 | 5.749 |
+| knight | holy_flail | Lvl20 optimum | 255.75 | 763.99 | 675.64 | 5.754 |
+| knight | long_spear | Lvl20 random avg | 85.17 | 252.79 | 223.56 | 1.908 |
+| knight | tower_shield | Lvl20 random avg | 85.22 | 253.59 | 224.26 | 1.912 |
+| knight | holy_flail | Lvl20 random avg | 85.14 | 253.91 | 224.54 | 1.913 |
 | druid | summon_amulet | Base lvl1 | 47.95 | 149.78 | 129.76 | 0.943 |
 | druid | briar_staff | Base lvl1 | 47.98 | 149.95 | 140.73 | 0.979 |
 | druid | raven_totem | Base lvl1 | 47.98 | 150.01 | 129.95 | 0.944 |
