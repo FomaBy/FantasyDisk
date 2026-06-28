@@ -383,8 +383,8 @@ func _configure_attached_weapon_layer(weapon: Node) -> void:
 	# get_tree() может быть null, если оружие цепляется до входа игрока в дерево —
 	# тогда берём дефолт-константу (override применится при следующем re-attach в дереве).
 	var show_weapon := SHOW_HELD_WEAPON_VISUAL
-	var tree := get_tree()
-	if tree != null and tree.root != null:
+	if is_inside_tree() and get_tree().root != null:
+		var tree := get_tree()
 		show_weapon = bool(tree.root.get_meta("show_held_weapon", SHOW_HELD_WEAPON_VISUAL))
 	if weapon_canvas != null:
 		weapon_canvas.visible = show_weapon
