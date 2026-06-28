@@ -2832,5 +2832,15 @@
   "key": "SCRUM-570",
   "status": "К выполнению",
   "desc_hash": "dd10eaa63eeda5d6e9fe133c2866d585"
+ },
+ "SCRUM-610_sacrifice_altar.md": {
+  "key": "SCRUM-610",
+  "status": "Контроль качества",
+  "desc_hash": "bb6d8cd1fb2eacc66a732b08c46d73cc"
+ },
+ "SCRUM-621_codex_unlock_tracking.md": {
+  "key": "SCRUM-621",
+  "status": "Контроль качества",
+  "desc_hash": "6d78c3ced9af0f582216e3bac1770982"
  }
 }
