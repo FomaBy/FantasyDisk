@@ -255,10 +255,8 @@ const ENEMY_SPAWN_WEIGHTS := {
 	"res://scenes/EnemyBoneShaman.tscn": 0.34,
 }
 const RESOLUTION_OPTIONS := [
-	Vector2i(1280, 720),
-	Vector2i(1600, 900),
-	Vector2i(1920, 1080),
 	Vector2i(2560, 1440),
+	Vector2i(1920, 1080),
 ]
 const WINDOW_MODE_OPTIONS := [
 	"Windowed",
@@ -422,7 +420,7 @@ var meta_points := 0
 var berserk_ascension_unlocked := false
 var spawn_wave_index := 0
 var active_spawn_edges := []
-var selected_resolution_index := 1
+var selected_resolution_index := 0
 var selected_window_mode_index := 0
 var pending_rebind_action := ""
 var current_shop_items := []

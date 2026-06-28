@@ -72,13 +72,13 @@ func _run(errors: Array) -> void:
 	# 2) Round-trip нормальных значений.
 	_clear()
 	GameSettings.save_settings({
-		"resolution_index": 2, "window_mode_index": 1, "screen_index": 0,
+		"resolution_index": 1, "window_mode_index": 1, "screen_index": 0,
 		"master_volume": 0.7, "music_volume": 0.4, "sfx_volume": 0.9,
 		"master_zero_intent": false, "music_enabled": false, "sfx_enabled": true,
 		"screen_shake": false, "aim_mode": "cursor", "last_seen_version": "0.1.4", "input_bindings": {"jump": 32},
 	})
 	s = GameSettings.load_settings()
-	if int(s["resolution_index"]) != 2 or int(s["window_mode_index"]) != 1:
+	if int(s["resolution_index"]) != 1 or int(s["window_mode_index"]) != 1:
 		errors.append("round-trip индексов разрешения/режима не сохранился")
 	if not is_equal_approx(float(s["master_volume"]), 0.7) or not is_equal_approx(float(s["music_volume"]), 0.4):
 		errors.append("round-trip громкостей не сохранился (%s/%s)" % [s["master_volume"], s["music_volume"]])
@@ -99,8 +99,8 @@ func _run(errors: Array) -> void:
 		"master_zero_intent": true,
 	})
 	s = GameSettings.load_settings()
-	if typeof(s["resolution_index"]) != TYPE_INT or int(s["resolution_index"]) != 3:
-		errors.append("коэрция resolution_index в int не сработала (%s)" % [s["resolution_index"]])
+	if typeof(s["resolution_index"]) != TYPE_INT or int(s["resolution_index"]) != 1:
+		errors.append("коэрция/clamp resolution_index в allowed range не сработала (%s)" % [s["resolution_index"]])
 	if float(s["master_volume"]) > 1.0 or float(s["music_volume"]) < 0.0:
 		errors.append("клэмп громкостей в 0..1 не сработал (%s/%s)" % [s["master_volume"], s["music_volume"]])
 	if typeof(s["last_seen_version"]) != TYPE_STRING:

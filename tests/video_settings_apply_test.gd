@@ -22,7 +22,7 @@ const SAVE_PATH := "user://settings.cfg"
 # 14" MBP Retina: лог.usable ≈ 1512x982, scale 2.0 → физ 3024x1964 (всё влезает).
 const MAC_LOGICAL := Vector2i(1512, 982)
 const RETINA_SCALE := 2.0
-# Маленький не-Retina монитор: HD влезает, всё выше — нет.
+# Маленький не-Retina монитор: оба разрешения списка больше экрана; runtime fallback всё равно хранит Full HD.
 const SMALL_LOGICAL := Vector2i(1280, 720)
 
 
@@ -81,7 +81,7 @@ func _run(errors: Array) -> void:
 
 
 # (4) Список UI-энтри ровно соответствует RESOLUTION_OPTIONS с корректными подписями.
-# Headless: get_name()!="macos", поэтому Mac-native-опция не добавляется — ровно N энтри.
+# Headless uses the same two allowed resolution entries as runtime.
 func _test_entries_match_options(main, ui, errors: Array) -> void:
 	var entries: Array = ui._settings_resolution_entries(Vector2i(99999, 99999))
 	var options: Array = main.RESOLUTION_OPTIONS
@@ -101,16 +101,13 @@ func _test_entries_match_options(main, ui, errors: Array) -> void:
 func _test_disable_decision(errors: Array) -> void:
 	var full_hd := Vector2i(1920, 1080)
 	var k2 := Vector2i(2560, 1440)
-	var hd := Vector2i(1280, 720)
-	# Маленький не-Retina: HD влезает (НЕ disabled), Full HD/2K — нет (disabled).
-	_expect(errors, DisplayResolution.resolution_fits(hd, SMALL_LOGICAL, 1.0),
-		"HD должно быть доступно (НЕ disabled) на 1280x720 мониторе")
+	# Маленький не-Retina: legacy HD больше не является вариантом; Full HD/2K disabled.
 	_expect(errors, not DisplayResolution.resolution_fits(full_hd, SMALL_LOGICAL, 1.0),
 		"Full HD должно быть disabled на 1280x720 мониторе")
 	_expect(errors, not DisplayResolution.resolution_fits(k2, SMALL_LOGICAL, 1.0),
 		"2K должно быть disabled на 1280x720 мониторе")
 	# Retina: всё из списка доступно (НЕ disabled).
-	for res in [hd, full_hd, k2]:
+	for res in [full_hd, k2]:
 		_expect(errors, DisplayResolution.resolution_fits(res, MAC_LOGICAL, RETINA_SCALE),
 			"%s должно быть доступно (НЕ disabled) на Retina" % res)
 
@@ -137,11 +134,11 @@ func _test_clamp_and_persist(main, ui, errors: Array) -> void:
 		"персист: window_mode_index=%s != 0" % s1["window_mode_index"])
 
 	# Валидный выбор (2K-индекс, режим «без рамки») round-trip-ит как есть.
-	main.selected_resolution_index = max_res
+	main.selected_resolution_index = 0
 	main.selected_window_mode_index = max_mode
 	ui._apply_video_settings()
 	var s2: Dictionary = GameSettings.load_settings()
-	_expect(errors, int(s2["resolution_index"]) == max_res and int(s2["window_mode_index"]) == max_mode,
+	_expect(errors, int(s2["resolution_index"]) == 0 and int(s2["window_mode_index"]) == max_mode,
 		"персист валидного выбора (res=%d/mode=%d) не сохранился (%s/%s)" % [
-			max_res, max_mode, s2["resolution_index"], s2["window_mode_index"]])
+			0, max_mode, s2["resolution_index"], s2["window_mode_index"]])
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))

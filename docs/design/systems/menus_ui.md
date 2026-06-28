@@ -588,12 +588,12 @@ under `docs/design/references/scrum584_rebind_conflict_2k/`,
 coverage: `tests/ui_no_overlap_matrix_test.gd`, screen id `rebind_conflict`,
 across 1080p/2K/4K.
 
-SCRUM-441 is integrated in the same Settings pass. Resolution options use
-`scripts/display_resolution.gd` to compare requested window sizes against the
-physical usable monitor size (`usable_logical * screen_scale`) instead of only
-logical points; `_apply_video_settings()` clamps with
-`DisplayResolution.clamp_to_physical(...)`, macOS adds a detected logical native
-`(Mac)` option when needed, and `project.godot` enables
+SCRUM-667 limits Settings to two windowed resolution choices: `2560x1440` first
+when supported and `1920x1080` as fallback. SCRUM-441 remains integrated in the
+same Settings pass: options use `scripts/display_resolution.gd` to compare
+requested window sizes against physical monitor pixels (`screen_size *
+screen_scale`) instead of only logical points, `_apply_video_settings()` clamps
+with `DisplayResolution.clamp_to_physical(...)`, and `project.godot` enables
 `window/dpi/allow_hidpi=true`. QA evidence:
 `build/qa/scrum441/hidpi_resolution_evidence.md`.
 

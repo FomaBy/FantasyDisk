@@ -86,10 +86,8 @@ route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контро
 
 | Разрешение | Статус |
 | --- | --- |
-| 1280x720 | Реализовано |
-| 1600x900 | Реализовано |
-| 1920x1080 | Реализовано |
-| 2560x1440 | Реализовано |
+| 2560x1440 | Оконный default, если помещается |
+| 1920x1080 | Оконный fallback |
 
 Режимы окна:
 - Windowed
@@ -196,11 +194,13 @@ modal, чтобы не накладываться на frame ornament и Back bu
 `build/qa/scrum439/settings_v2_runtime_rects.md` и
 `build/qa/scrum439/settings_v2_no_overlap_matrix.md`.
 
-SCRUM-441 подключил Mac/HiDPI resolution fix в live Settings: resolution options
-проверяются через `DisplayResolution.resolution_fits(...)` по физическим пикселям
-(`usable * screen_scale`), `_apply_video_settings()` клэмпит размер окна через
-`DisplayResolution.clamp_to_physical(...)`, macOS добавляет логическую
-native-опцию `(Mac)`, а `project.godot` включает `window/dpi/allow_hidpi=true`.
+SCRUM-667 ограничил live Settings двумя оконными разрешениями: 2560x1440 по
+умолчанию, если оно помещается на выбранном мониторе, и 1920x1080 как fallback.
+SCRUM-441 HiDPI logic remains: resolution options проверяются через
+`DisplayResolution.resolution_fits(...)` по физическим пикселям
+(`screen_size * screen_scale`), `_apply_video_settings()` клэмпит размер окна через
+`DisplayResolution.clamp_to_physical(...)`, а `project.godot` включает
+`window/dpi/allow_hidpi=true`.
 SCRUM-441 follow-up: при смене video settings runtime синхронизирует
 `Window.content_scale_size` с фактическим выбранным оконным/полноэкранным размером,
 чтобы Godot preview/Windows показывали реальный viewport выбранного разрешения,
@@ -1180,7 +1180,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Экран | Описание |
 | --- | --- |
 | Главное меню | Эпичный battle-art фон и левая колонка из шести стандартных action-кнопок: начать новую игру, настройки, древо умений, что нового, кодекс, выйти из игры |
-| Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения с Mac-native option, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
+| Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
 | Выбор персонажа | Fullscreen v3: большой портрет слева без дубля имени, справа единая информ-панель с досье слева от радара характеристик, адаптивная лента героев снизу только картинками |
 | Выбор оружия | Три оружия выбранного класса как легкие кликабельные карточки: спрайт оружия слева, название/описание, русские статы «Дальность/Радиус/Перезарядка»; тяжелая button texture frame не используется |
 | Карта маршрута | Вертикальная карта с иконками и tooltip |

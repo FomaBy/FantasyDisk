@@ -2772,19 +2772,6 @@ func _settings_resolution_entries(usable_logical: Vector2i) -> Array[Dictionary]
 			"resolution": resolution,
 			"label": "%dx%d" % [resolution.x, resolution.y],
 		})
-	if DisplayServer.get_name() == "macos":
-		var native_resolution := DisplayResolution.native_logical_resolution(usable_logical)
-		if native_resolution.x > 0 and native_resolution.y > 0:
-			var duplicate := false
-			for entry in entries:
-				if entry["resolution"] == native_resolution:
-					duplicate = true
-					break
-			if not duplicate:
-				entries.append({
-					"resolution": native_resolution,
-					"label": "%dx%d (Mac)" % [native_resolution.x, native_resolution.y],
-				})
 	return entries
 
 
@@ -2930,7 +2917,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	_add_settings_control_row(screen_box, "Режим окна", mode_options)
 
 	var screen_hint := Label.new()
-	screen_hint.text = "Оконные разрешения проверяются по физическим пикселям монитора; на Retina Full HD и 2K остаются доступными, если помещаются."
+	screen_hint.text = "Оконные разрешения ограничены 2560x1440 и 1920x1080; 2K выбирается по умолчанию, если помещается."
 	screen_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	screen_hint.add_theme_font_size_override("font_size", 14)
 	screen_hint.add_theme_color_override("font_color", Color(0.70, 0.76, 0.82, 1.0))
@@ -6360,6 +6347,9 @@ func _apply_video_settings() -> void:
 	var screen_scale := DisplayServer.screen_get_scale(screen)
 	var resolution_entries := _settings_resolution_entries(usable.size)
 	game.selected_resolution_index = clampi(game.selected_resolution_index, 0, resolution_entries.size() - 1)
+	var selected_resolution: Vector2i = resolution_entries[game.selected_resolution_index]["resolution"]
+	if not DisplayResolution.resolution_fits(selected_resolution, screen_full, screen_scale):
+		game.selected_resolution_index = DisplayResolution.default_resolution_index(screen_full, screen_scale)
 
 	match game.selected_window_mode_index:
 		1:

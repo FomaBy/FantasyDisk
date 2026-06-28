@@ -34,8 +34,23 @@ static func clamp_to_physical(resolution: Vector2i, usable_logical: Vector2i, sc
 	return Vector2i(mini(resolution.x, phys.x), mini(resolution.y, phys.y))
 
 
-# «Mac-native» опция: логический размер рабочего стола монитора (то, что реально
-# отдаёт usable_logical) — корректное родное оконное разрешение для добавления в
-# список как «Mac». На не-Mac вызывать не обязательно.
-static func native_logical_resolution(usable_logical: Vector2i) -> Vector2i:
-	return usable_logical
+const DEFAULT_RESOLUTION := Vector2i(2560, 1440)
+const FALLBACK_RESOLUTION := Vector2i(1920, 1080)
+const ALLOWED_RESOLUTIONS := [
+	DEFAULT_RESOLUTION,
+	FALLBACK_RESOLUTION,
+]
+
+
+static func allowed_resolutions() -> Array:
+	return ALLOWED_RESOLUTIONS.duplicate()
+
+
+static func default_resolution_index(screen_size: Vector2i, scale: float) -> int:
+	if resolution_fits(DEFAULT_RESOLUTION, screen_size, scale):
+		return 0
+	return 1
+
+
+static func sanitize_resolution_index(index: int) -> int:
+	return clampi(index, 0, ALLOWED_RESOLUTIONS.size() - 1)
