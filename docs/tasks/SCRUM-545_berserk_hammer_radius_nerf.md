@@ -1,7 +1,7 @@
 # SCRUM-545: Нерф радиуса берсерк-хаммера: убрать AFK-фарм
 
 Jira: SCRUM-545
-Статус: review
+Статус: done
 Роль: backend
 Контур: Codex
 Owner: Back-end / codex-background-backend-agent
@@ -25,6 +25,7 @@ Locked paths: scripts/berserk_weapon.gd, scripts/progression_data_weapons.gd, te
 - 2026-06-28 EEST — Claimed in Jira by `codex-background-backend-agent`. Dirty worktree contains Claude-owned SCRUM-498 files (`scripts/enemy.gd`, `scripts/ui_screens.gd`, `tests/runtime_smoke_test.gd`, `scripts/threat_indicators.gd`, `scratchpad_jira.py`); this task avoids those paths.
 - 2026-06-28 EEST — Decision: solve with hammer-specific geometry cap in `BerserkWeapon`, not damage multipliers. Rationale: SCRUM-545 scope is AFK radius, while SCRUM-503 already owns DPS multiplier runaway.
 - 2026-06-28 EEST — Jira moved to `Контроль качества`; local mirror set to `review`.
+- 2026-06-28 EEST — QA PASSED in Jira and issue moved to `Готово`; local mirror updated from `review` to `done`.
 
 ## Result
 
@@ -43,3 +44,15 @@ Balance result:
   - `tools/character_balance_csv.gd` — INCOMPLETE/nonzero after reaching Elementalist rows; hammer row was printed with accepted numbers, but the CSV file was not rewritten.
 - Docs updated: mechanics extract, current game state, characters/weapons system doc, progression balance system doc.
 - Remaining risk: full matrix runner still needs a clean complete pass in QA; current worktree also contains Claude-owned SCRUM-498 dirty files, so this task did not touch HUD/threat-indicator paths.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+Jira `SCRUM-545` is `Готово` with QA PASSED on 2026-06-28. QA verified commit
+`8b462357` on `dev/origin-dev`: hammer radius is geometry-capped at close-ring
+145px through `max_aoe_radius`, hit-check and VFX use the capped radius,
+damage/cooldown/attack-speed/SCRUM-503 multipliers are unchanged, and sword/axe
+are untouched. QA evidence includes `tests/berserk_dps_runaway_gate.gd` PASS
+with `berserk/hammer lvl20_ideal` around `20t=8776 <= 12000` and
+`1t=1004 <= 2363`, plus targeted melee/radius regression coverage.

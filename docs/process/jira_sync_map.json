@@ -2612,5 +2612,10 @@
   "key": "SCRUM-489",
   "status": "Готово",
   "desc_hash": "aa73e445bec6b7d90efe71315299b0a5"
+ },
+ "SCRUM-545_berserk_hammer_radius_nerf.md": {
+  "key": "SCRUM-545",
+  "status": "Готово",
+  "desc_hash": "9de5172752edc4313d68c6a7298a79d3"
  }
 }
