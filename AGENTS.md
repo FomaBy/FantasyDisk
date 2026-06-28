@@ -185,6 +185,9 @@ Project practices:
 - Keep code split into focused scenes and scripts.
 - Prefer data-driven character/enemy/weapon configuration where practical.
 - Keep prototype visuals simple until art direction exists.
+- **Создание/редактирование скиллов — через `skill-creator`.** Держи
+  `SKILL.md` коротким, переносимым между Windows/Mac/Linux, и синхронизируй
+  локальные скиллы в git под `skills/`.
 - **Изменения интерфейса — ТОЛЬКО через скилл `fantasydisk-ui-director`**
   (Codex skill, `~/.codex/skills/fantasydisk-ui-director/`). Перед любым
   внедрением/перерисовкой UI сначала создать OpenAI-API-generated mockup страницы

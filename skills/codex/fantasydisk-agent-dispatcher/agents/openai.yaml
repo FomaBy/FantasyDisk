@@ -1,0 +1,4 @@
+interface:
+  display_name: "FantasyDisk Agent Dispatcher"
+  short_description: "Run continuous Jira-driven FantasyDisk agents"
+  default_prompt: "Use $fantasydisk-agent-dispatcher to keep FantasyDisk sprint agents claiming, finishing, pushing, syncing, and cleaning tasks continuously."

@@ -1,121 +1,35 @@
 ---
 name: add-character
-description: Полный конвейер добавления нового играбельного персонажа FantasyDisk — строго из Class Sheet исходного файла механик — дизайн в стиле существующих героев, 3 оружия с уникальными скиллсетами, анимация движения, баланс на существующих атрибутах. Используй, когда пользователь просит добавить нового персонажа/класс; аргумент — имя класса из файла механик.
+description: Add one FantasyDisk playable class from the official Class Sheet. Use only when the user explicitly asks to add a new class/character.
 ---
 
-# Добавление Нового Персонажа FantasyDisk
+# Add Character
 
-Ты выполняешь полный конвейер добавления одного нового играбельного класса.
-Аргумент скилла — имя класса. Работай автономно по шагам ниже, не пропуская ни одного.
+This is a routing skill, not a full prompt dump. Follow `AGENTS.md` first.
 
-## Шаг 0 — Валидация класса (ЖЕСТКОЕ ПРАВИЛО)
+## Hard Gate
 
-Новые персонажи берутся ТОЛЬКО из Class Sheet исходного файла механик
-(`docs/design/mechanics_extract.md`, строки таблицы классов; первоисточник —
-`source_docs/FantasyDisk_Mechanics.xlsx`). Линейки архетипов файла:
+New playable classes must come from the Class Sheet in
+`docs/design/mechanics_extract.md` / `source_docs/FantasyDisk_Mechanics.xlsx`.
+Do not invent classes or attributes. Check `docs/design/content_registry.md`
+before starting to confirm the class is not already implemented.
 
-| Архетип | Реализовано | Доступные кандидаты |
-| --- | --- | --- |
-| Воин | Берсерк | Солдат |
-| Вор | Ассасин | Вор |
-| Маг | Темный маг | Элементалист |
-| Лучник | Рейнджер | Снайпер |
-| Лекарь | Доктор | Священник |
-| Ученый | Химик | Биолог |
-| Танк | Рыцарь | Робот |
-| Призыватель | Друид | Инженер |
+## Required Work Split
 
-Если запрошенный класс отсутствует в Class Sheet — ОСТАНОВИСЬ и сообщи, что класс
-вне исходного файла механик, предложи список доступных кандидатов. Не выдумывай классы.
-Перед стартом сверь со списком «Персонажи» в `docs/design/content_registry.md`,
-что класс еще не реализован.
+- Back-end: class config, three selectable weapons, data-driven mechanics,
+  balance, tests, docs.
+- Design: character/weapon source art through `fantasydisk-asset-generator`.
+- Animator: SpriteFrames/rig/motion through `fantasydisk-animation-director`.
+- QA: separate acceptance pass.
 
-## Шаг 1 — Данные и баланс (Back-end зона)
+Create Jira tasks/handoffs for each discipline instead of doing all roles in one
+task unless the user explicitly assigned a full pipeline owner.
 
-1. Статы из Class Sheet (HP, attack speed, crit, базовые атрибуты колонки класса);
-   пробелы заполняй по соседям линейки и фиксируй в mechanics_extract.
-2. `scripts/progression_data.gd`: BASE_STATS, CHARACTER_CONFIGS (имя RU, краткое
-   описание в одну строку, сильные/слабые по строке — формат hero select),
-   CLASS_DAMAGE_PARAMETER («свой» урон по архетипу), WEAPONS_BY_CLASS,
-   ASCENSION_LEVELS (10 уровней, тематические имена).
-3. Матрица классовых интерпретаций (CLASS_INTERPRETATIONS): добавь интерпретацию
-   КАЖДОГО «чужого» атрибута для нового класса (эхо/клич/зачарование-паттерн —
-   см. mechanics_extract «универсальная полезность») и интерпретации ЕГО
-   атрибутов для остальных. Только существующие атрибуты — новых не вводить.
+## Acceptance Summary
 
-## Шаг 2 — Три оружия с уникальными скиллсетами (Back-end зона)
-
-1. РОВНО 3 оружия. Каждое — свой стиль игры внутри класса, А ГЛАВНОЕ: уникальная
-   механика, не повторяющая ни одно существующее оружие ЛЮБОГО класса. Перед
-   дизайном прочитай реестр паттернов в mechanics_extract (boomerang, charge,
-   drain, combo-clouds, block/counter, петы, strip/arc/circle, pulse, beam,
-   curse, deploy и т.д.) — твои механики обязаны отличаться от ВСЕХ.
-2. Скиллсет зависит от оружия: оружие диктует паттерн (например Снайпер:
-   рельсовый выстрел сквозь стену укрытий / расставляемая турель-прицел /
-   мина-растяжка — придумай свое, интересное и читаемое в бою).
-3. Data-driven конфиг каждого оружия + сцена; переиспользуй базовые системы
-   (melee_weapon/class_weapon/summoner_weapon/projectile), новые режимы — в
-   class_weapon по образцу существующих. VFX через AttackVfx читаемо: telegraph
-   там, где есть задержка/зона.
-4. Баланс: зачистка стандартной волны каждым оружием в пределах ±20% от Берсерка
-   с мечом. Замеры — в отчет и mechanics_extract.
-
-## Шаг 3 — Арт (ОБЯЗАТЕЛЬНО Codex Design генерация → Claude-Designer ревью)
-
-ЖЕЛЕЗНОЕ ПРАВИЛО (пользователь, 2026-06-12): вся рисовка — только через Codex Design,
-стиль — D&D-канон проекта.
-
-1. Создай codex-задачу `docs/tasks/codex_design_<class_id>_art_task.md` по образцу
-   `codex_design_new_classes_art_task.md`: спрайт персонажа 512x512 RGBA
-   (`assets/sprites/characters/<class_id>.png`) + 3 спрайта оружия 256x256
-   (`assets/sprites/weapons/<weapon_id>.png`).
-2. ОБЯЗАТЕЛЬНО в ТЗ: стиль D&D-канона проекта, согласованный с актуальными
-   персонажами (см. visual_style_assets.md), РЕФЕРЕНСЫ-ИЗОБРАЖЕНИЯ
-   прикладывать к запуску генерации (без визуальных референсов Codex стабильно
-   уходит во флэт/гримдарк), нейтральная стойка с разделенными ногами.
-3. До прихода арта используй hue-shift placeholder ближайшего по архетипу
-   спрайта с пометкой в registry.
-4. После генерации — Design-ревью по эталону, при провале стиля — повторный
-   запуск с фидбеком и референсами.
-
-## Шаг 4 — Анимация движения (Design/Animator зона)
-
-1. Нарежь cutout-части `tools/slice_rig_cutouts.py` (torso/arm_l/arm_r/leg_l/leg_r),
-   обнови `scripts/sliced_rig_manifest.gd`; сборка в покое — пиксель-в-пиксель
-   с full-art спрайтом.
-2. `scripts/cutout_rig_2d.gd`: персональный motion-профиль по типажу (вес/темп:
-   тяжелый инертный или легкий суетливый — НЕ копируй чужой профиль 1-в-1),
-   GroundShadow обязательна.
-3. Атакующие позы: вариант замаха/каста под каждый из 3 паттернов оружия
-   (windup читаемый, тайминги из конфигов оружия — код источник истины).
-
-## Шаг 5 — Интеграция и контент
-
-1. Экран выбора героя: проверить раскладку сетки с новым числом классов
-   (без скролла, карточки не переполняются текстом).
-2. Кодекс: запись класса и 3 оружий генерируется data-driven (codex_data).
-3. `docs/design/content_registry.md`: класс, оружия, ассеты, rig-профиль —
-   канонические ID и имена. Артефактные affinity-темы — добавить класс куда уместно.
-
-## Шаг 6 — Тесты и самопроверка (обязательно)
-
-1. Расширь тесты: выбор класса кликом, экипировка и урон каждым из 3 оружий,
-   уникальные механики оружий (по точечному тесту на механику), 10 уровней
-   вознесения, наличие в кодексе.
-2. Все 4 smoke-теста зеленые: runtime, animation, meta_progression, melee_targeting.
-3. Оконный запуск: бой новым классом каждым оружием, скриншот для лога.
-4. Найденные собственные огрехи — чини сразу, фиксируй в логе задачи.
-
-## Шаг 7 — Документация и сдача
-
-1. mechanics_extract (статы, формулы, паттерны оружий, замеры баланса),
-   current_game_state, CHANGELOG (Unreleased).
-2. Коммит(ы) в dev осмысленными сообщениями; статусы задач и доска
-   (`docs/process/task_board.md`) синхронизированы.
-3. Финальный отчет: класс, 3 оружия с механиками, замеры баланса, что осталось
-   (например, арт на ревью).
-
-## Запреты
-
-- Классы вне Class Sheet; новые атрибуты; дублирование механик существующих оружий.
-- Коммит при красных тестах. Вопросы пользователю (работай автономно; блокер — в отчет).
+- Exactly three weapons, each with a distinct gameplay niche and no copied
+  existing weapon pattern.
+- Uses existing attributes; cross-class stat interpretations stay documented.
+- Hero select, Codex, content registry, and relevant balance docs updated.
+- Required focused tests and Godot smokes pass.
+- Jira/mirrors reflect owner, status, locked paths, results, and QA state.
