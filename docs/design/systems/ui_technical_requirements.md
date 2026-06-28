@@ -99,7 +99,8 @@ State alpha для compact fallback controls:
 | Pause main panel | `40, 40, 40, 40` | `24, 24, 24, 24` |
 | Pause stat group | `34, 30, 34, 34` | `14, 12, 14, 14` |
 | Pause stat chip/basic row | `20, 12, 20, 14` | `8, 4-6, 8, 4-6` |
-| Pause stat tooltip | `34, 30, 34, 34` | `18, 16, 18, 16` |
+| Pause stat tooltip (legacy ornate) | `34, 30, 34, 34` | `18, 16, 18, 16` |
+| Pause stat tooltip 2K (SCRUM-593 live) | `32, 32, 32, 32` | `44, 42, 44, 42` |
 
 Fallback texture style, если PNG не найден: background `alpha=0.94`, border `alpha=0.85`, border width `2`, radius `8`.
 

@@ -1,7 +1,7 @@
 # SCRUM-593: Integrate SCRUM-586 stat tooltip 2K frame
 
 Jira: SCRUM-593
-Статус: in_progress
+Статус: done
 Роль: backend
 Контур: Codex
 Owner: Back-end / codex-background-backend-agent
@@ -34,10 +34,29 @@ verification.
 
 ## Acceptance
 
-- [ ] New frame renders in `StatTooltipPanel`.
-- [ ] Tooltip text stays inside safe content zone at 1080p, 2K and 4K.
-- [ ] No `STRETCH_SCALE` on exact frame textures.
-- [ ] `tests/ui_no_overlap_matrix_test.gd` passes.
-- [ ] `tests/display_resolution_test.gd` passes.
-- [ ] UI smoke passes if runtime UI files changed.
-- [ ] Jira SCRUM-586 comment/result stays linked to this handoff.
+- [x] New frame renders in `StatTooltipPanel`.
+- [x] Tooltip text stays inside safe content zone at 1080p, 2K and 4K.
+- [x] No `STRETCH_SCALE` on exact frame textures.
+- [x] `tests/ui_no_overlap_matrix_test.gd` passes.
+- [x] `tests/display_resolution_test.gd` passes.
+- [x] UI smoke passes if runtime UI files changed.
+- [x] Jira SCRUM-586 comment/result stays linked to this handoff.
+
+## Result
+
+Back-end integration complete. `StatTooltipPanel` now uses
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png`, registered
+through `UIThemePaths.OVERHAUL_2K_FRAME_*` as `stat_tooltip` with source size
+`430x288`, texture margins `32/32/32/32`, and content margins `44/42/44/42`.
+`_make_custom_tooltip` sizes `StatTooltipLabel` to the documented `342 px` safe
+text width and the runtime smoke now asserts the exact frame path and safe
+content margins.
+
+Validation:
+
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/display_resolution_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Evidence: `build/qa/scrum586_stat_tooltip/scrum593_runtime_integration_evidence.md`.

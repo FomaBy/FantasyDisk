@@ -141,14 +141,13 @@ SCRUM-158/170 добавили и подключили canonical UI backdrop set
 
 ## UI Visual Style
 
-SCRUM-586 prepared a Design-source package for the 2K stat tooltip
-(`StatTooltipPanel` / `_make_custom_tooltip`). The candidate frame is
+SCRUM-586/SCRUM-593 make the dedicated 2K stat tooltip live for
+`StatTooltipPanel` / `_make_custom_tooltip`. The runtime frame is
 `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png`
-(`430x288` RGBA, transparent edge alpha, no baked text) with spec and previews
-under `docs/design/mockups/scrum586_stat_tooltip/` and
-`docs/design/previews/scrum586_stat_tooltip_*`. It is not live runtime until
-Back-end integrates SCRUM-593 and updates tooltip padding to the documented safe
-content margins.
+(`430x288` RGBA, transparent edge alpha, no baked text) with texture margins
+`32/32/32/32`, content margins `44/42/44/42`, and a `342 px` runtime label safe
+width. Spec and previews live under `docs/design/mockups/scrum586_stat_tooltip/`
+and `docs/design/previews/scrum586_stat_tooltip_*`.
 
 Hero select v3 keeps the hero portrait on the left, dossier/details in the main
 right-side information area, and `HeroSelectRadarPanel` as a separate floating
