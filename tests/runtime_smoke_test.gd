@@ -1106,7 +1106,10 @@ func _initialize() -> void:
 		quit(1)
 		return
 	Input.action_release("move_right")
-	await create_timer(1.0).timeout
+	# SCRUM-614: окно показа Level Up расширено до EFFECT_DURATION=1.35с — буфер
+	# ожидания самоосвобождения ноды поднят с 1.0 до 1.6с, чтобы перекрыть новую
+	# длительность эффекта (иначе ложный red «не убрался»).
+	await create_timer(1.6).timeout
 	if main.find_child("LevelUpEffect", true, false) != null:
 		push_error("Expected level-up world effect to clean itself up.")
 		quit(1)

@@ -8,8 +8,12 @@ const BADGE_TEXTURE := preload("res://assets/sprites/effects/level_up_popup_badg
 const RING_RADIUS := 104.0
 const BADGE_DISPLAY_SIZE := Vector2(224.0, 112.0)
 const BADGE_START_POSITION := Vector2(0.0, -118.0)
-const BADGE_FLOAT_DISTANCE := 30.0
-const EFFECT_DURATION := 0.9
+# SCRUM-614: показ Level Up дольше и весомее (просьба игрока — момент роста почти
+# незаметен при ~0.86с). Окно эффекта расширено до 1.35с, бейдж дольше держится и
+# выше всплывает, добавлен второй пульс масштаба на пике. Фейд бейджа (delay 1.05 +
+# 0.30) укладывается ровно в EFFECT_DURATION — нода самоосвобождается без обрезки.
+const BADGE_FLOAT_DISTANCE := 40.0
+const EFFECT_DURATION := 1.35
 
 const GOLD := Color(1.0, 0.82, 0.32, 1.0)
 const CYAN := Color(0.46, 0.92, 1.0, 1.0)
@@ -99,13 +103,17 @@ func _play(flash: Sprite2D, ring: Sprite2D, badge: Sprite2D, sparks: Array[Sprit
 	badge_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	badge_tween.set_parallel(true)
 	badge_tween.tween_property(badge, "modulate:a", 1.0, 0.12)
-	badge_tween.tween_property(badge, "position:y", BADGE_START_POSITION.y - BADGE_FLOAT_DISTANCE, 0.72).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	badge_tween.tween_property(badge, "modulate:a", 0.0, 0.24).set_delay(0.62)
+	badge_tween.tween_property(badge, "position:y", BADGE_START_POSITION.y - BADGE_FLOAT_DISTANCE, 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	badge_tween.tween_property(badge, "modulate:a", 0.0, 0.30).set_delay(1.05)
 
 	var badge_scale_tween := badge.create_tween()
 	badge_scale_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	badge_scale_tween.tween_property(badge, "scale", _badge_display_scale(1.04), 0.14).from(_badge_display_scale(0.92)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	badge_scale_tween.tween_property(badge, "scale", _badge_display_scale(), 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	# Второй мягкий пульс масштаба на пике подъёма (вес/акцент момента роста, SCRUM-614).
+	badge_scale_tween.tween_interval(0.40)
+	badge_scale_tween.tween_property(badge, "scale", _badge_display_scale(1.06), 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	badge_scale_tween.tween_property(badge, "scale", _badge_display_scale(), 0.20).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 	for index in range(sparks.size()):
 		var spark := sparks[index]
