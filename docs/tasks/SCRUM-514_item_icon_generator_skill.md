@@ -1,7 +1,7 @@
 # SCRUM-514: Codex skill — генератор артефактов, иконок характеристик/атрибутов и оружия
 
 Jira: SCRUM-514 · Роль: Design main / Codex · Контур: design-main · Приоритет: P1 · foma · Эпик: SCRUM-216
-Статус: К выполнению (Задача) — QA: failed (2 бага, см. SCRUM-543)
+Статус: done (готово к QA после фикса SCRUM-543)
 
 ## Что и зачем
 
@@ -113,3 +113,21 @@ Skill уже существует и в целом покрывает требо
 Мелочь (не блокер): workflow:52 `tools/artgen/generate_asset.py` «when it exists» — каталога нет; пометить опциональным с каноничным bundled-фоллбэком.
 
 Bug-issue: SCRUM-543. Задача возвращена в «К выполнению».
+
+## Fix Result (2026-06-28)
+
+Status: fixed, ready for QA.
+Owner: Design/Codex `codex-design-scrum514-item-icon-skill`.
+No production icon pack was generated; this pass changed only reusable skill/tooling/spec text and the installed local skill mirror.
+
+Changed:
+- `skills/codex/fantasydisk-item-icon-generator/SKILL.md` now separates `asset_category` into `artifact`, `stat_basic`, `stat_derived`, and `weapon`.
+- Asset Matrix now matches real runtime paths: `stats/stat_<id>.png` for base stats, `derived/attr_<id>.png` for derived attributes, `artifacts/artifact_<id>.png`, and `assets/sprites/weapons/<id>.png`.
+- Workflow now states that current repo has no `tools/artgen/` primary script and that the bundled `$fantasydisk-asset-generator` command is canonical here; no legacy generator fallback is allowed.
+- Canonical ID validation notes now name `content_registry.md`, `scripts/stat_formulas.gd`, and `scripts/ui_icon_registry.gd`.
+- QA/reporting requirements now require local/Jira evidence, exact IDs, paths, prompt notes, contact sheet/report paths, and explicit confirmation that no production pack was generated unless Jira asks for it.
+- Synced `C:\Users\FomaE\.codex\skills\fantasydisk-item-icon-generator\SKILL.md` and `agents/openai.yaml` from the repo mirror; file compare returned no diff.
+
+Verification:
+- Confirmed runtime stat paths from `assets/sprites/ui/icons/stats/`, `assets/sprites/ui/icons/derived/`, and `scripts/ui_icon_registry.gd:51-85`.
+- No OpenAI API call and no PNG generation performed.

@@ -1,7 +1,7 @@
 # BUG SCRUM-543: item-icon skill — нет local mirror + Asset Matrix не покрывает stats/
 
 Jira: SCRUM-543 (Баг) · Эпик: SCRUM-216 · labels: qa, bug, claude, foma, skill, asset-pipeline
-Статус: new
+Статус: done (готово к QA)
 Приоритет: high (БЛОКЕР AC №1)
 Роль: Design main / Codex (по зоне skill)
 Найдено QA при тестировании: docs/tasks/SCRUM-514_item_icon_generator_skill.md
@@ -39,3 +39,20 @@ workflow (SKILL.md:52) ссылается на `tools/artgen/generate_asset.py` 
 
 ## Definition of done
 Создать/засинкать зеркало `~/.codex/skills/fantasydisk-item-icon-generator/` (идентично репо); развести Asset Matrix на stats/ vs derived/; пометить `tools/artgen/` опциональным. После — обратно на QA.
+
+## Fix Result (2026-06-28)
+
+Status: fixed, ready for QA.
+Owner: Design/Codex `codex-design-scrum514-item-icon-skill`.
+
+Fixed:
+- Local mirror exists and is synced: `C:\Users\FomaE\.codex\skills\fantasydisk-item-icon-generator\SKILL.md` matches `skills/codex/fantasydisk-item-icon-generator/SKILL.md`.
+- Asset Matrix now has separate rows for `stat_basic` -> `assets/sprites/ui/icons/stats/stat_<canonical_id>.png` and `stat_derived` -> `assets/sprites/ui/icons/derived/attr_<canonical_id>.png`.
+- Workflow now treats `tools/artgen/generate_asset.py` as optional and names bundled `$fantasydisk-asset-generator` as canonical for this checkout.
+- Canonical ID validation and reporting requirements were added.
+
+Checks:
+- `git diff --check -- skills/codex/fantasydisk-item-icon-generator/SKILL.md docs/tasks/SCRUM-514_item_icon_generator_skill.md` PASS.
+- Structural text checks PASS for categories, paths, `scripts/ui_icon_registry.gd`, reporting requirements, and legacy-generator ban.
+- Repo/local SKILL.md compare PASS.
+- No OpenAI API call and no production PNG/icon pack generated.
