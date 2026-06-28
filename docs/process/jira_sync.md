@@ -267,3 +267,20 @@ Jira issue должна содержать:
 привязываются к parent-эпику классификатором `epic_for()` в
 `tools/jira_board_sync.py` (по имени task-файла + заголовку). При добавлении
 новых тем эпиков — обновить `jira_epics.json` и классификатор.
+## SCRUM-635 Safe Scoped `jira_board_sync.py`
+
+Since SCRUM-635, `python3 tools/jira_board_sync.py --no-create` is safe for
+routine broad checks: without `--task` or `--issue`, it does not move Jira
+statuses and does not rewrite Jira descriptions. Dispatcher-only maintenance
+that intentionally wants broad mutation must pass `--allow-broad-status-sync`.
+
+Worker completion sync must be scoped to the worker's own task:
+
+```bash
+python3 tools/jira_board_sync.py --no-create --issue SCRUM-123
+python3 tools/jira_board_sync.py --no-create --task docs/tasks/SCRUM-123_short_name.md
+```
+
+If Jira returns HTTP 404 or the issue is otherwise inaccessible, the helper logs
+`SKIP_INACCESSIBLE`, skips that item, and continues. This prevents stale local
+mirrors such as unavailable historical issues from aborting the whole safe sync.
