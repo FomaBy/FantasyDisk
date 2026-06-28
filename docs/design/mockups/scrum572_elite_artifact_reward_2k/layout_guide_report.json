@@ -1,0 +1,203 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        660,
+        250,
+        1240,
+        112
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        720,
+        370,
+        1120,
+        58
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "icon1",
+      "rect": [
+        658,
+        544,
+        140,
+        140
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card1_title",
+      "rect": [
+        576,
+        710,
+        304,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card1_tier",
+      "rect": [
+        636,
+        770,
+        184,
+        38
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card1_body",
+      "rect": [
+        538,
+        876,
+        380,
+        118
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card1_button",
+      "rect": [
+        562,
+        1096,
+        332,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "icon2",
+      "rect": [
+        1210,
+        544,
+        140,
+        140
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card2_title",
+      "rect": [
+        1128,
+        710,
+        304,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card2_tier",
+      "rect": [
+        1188,
+        770,
+        184,
+        38
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card2_body",
+      "rect": [
+        1090,
+        876,
+        380,
+        118
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card2_button",
+      "rect": [
+        1114,
+        1096,
+        332,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "icon3",
+      "rect": [
+        1762,
+        544,
+        140,
+        140
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card3_title",
+      "rect": [
+        1680,
+        710,
+        304,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card3_tier",
+      "rect": [
+        1740,
+        770,
+        184,
+        38
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card3_body",
+      "rect": [
+        1642,
+        876,
+        380,
+        118
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card3_button",
+      "rect": [
+        1666,
+        1096,
+        332,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "footer",
+      "rect": [
+        830,
+        1260,
+        900,
+        50
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

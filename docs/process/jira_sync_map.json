@@ -2707,5 +2707,10 @@
   "key": "SCRUM-583",
   "status": "Контроль качества",
   "desc_hash": "cc6b9433b005d6610527d19f16bd1d55"
+ },
+ "SCRUM-572_elite_artifact_reward_2k_design.md": {
+  "key": "SCRUM-572",
+  "status": "Контроль качества",
+  "desc_hash": "fade7a34639ab0983f07f8a9ad3ffdc1"
  }
 }

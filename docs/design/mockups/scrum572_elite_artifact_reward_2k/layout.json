@@ -1,0 +1,52 @@
+{
+  "canvas": {"width": 2560, "height": 1440},
+  "defaults": {
+    "font": "C:/Windows/Fonts/arial.ttf",
+    "color": "#F4E4BC",
+    "stroke_fill": "#160B0E",
+    "stroke_width": 3,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "НАГРАДА ЭЛИТКИ",
+    "subtitle": "Выберите один артефакт из трёх",
+    "icon1": "DEF",
+    "icon2": "RIFT",
+    "icon3": "SPD",
+    "card1_title": "Печать бастиона",
+    "card1_tier": "Редкий артефакт",
+    "card1_body": "+12% к защите\nПосле элитки щит крепче",
+    "card1_button": "ПОЛУЧИТЬ",
+    "card2_title": "Осколок разлома",
+    "card2_tier": "Эпический артефакт",
+    "card2_body": "+10% к урону\nУсиливает текущий билд",
+    "card2_button": "ПОЛУЧИТЬ",
+    "card3_title": "Сердце охоты",
+    "card3_tier": "Редкий артефакт",
+    "card3_body": "+8% к скорости\nБыстрее чистит маршрут",
+    "card3_button": "ПОЛУЧИТЬ",
+    "footer": "Выбор обязателен перед возвратом на маршрут"
+  },
+  "zones": [
+    {"id": "title", "content_key": "title", "role": "title", "x": 660, "y": 250, "w": 1240, "h": 112, "max_font": 78, "min_font": 48, "debug_color": "#ffcc66"},
+    {"id": "subtitle", "content_key": "subtitle", "role": "subtitle", "x": 720, "y": 370, "w": 1120, "h": 58, "max_font": 36, "min_font": 22, "color": "#CDBB91", "debug_color": "#e0aa66"},
+    {"id": "icon1", "content_key": "icon1", "role": "icon_placeholder", "x": 658, "y": 544, "w": 140, "h": 140, "max_font": 34, "min_font": 20, "color": "#AFC9D9", "debug_color": "#78b8ff"},
+    {"id": "card1_title", "content_key": "card1_title", "role": "card_title", "x": 576, "y": 710, "w": 304, "h": 48, "max_font": 32, "min_font": 20, "debug_color": "#66ff99"},
+    {"id": "card1_tier", "content_key": "card1_tier", "role": "tier", "x": 636, "y": 770, "w": 184, "h": 38, "max_font": 22, "min_font": 16, "color": "#D8B568", "debug_color": "#d6bd58"},
+    {"id": "card1_body", "content_key": "card1_body", "role": "body", "x": 538, "y": 876, "w": 380, "h": 118, "max_font": 27, "min_font": 18, "color": "#D6C8A6", "debug_color": "#66ffaa"},
+    {"id": "card1_button", "content_key": "card1_button", "role": "button_label", "x": 562, "y": 1096, "w": 332, "h": 54, "max_font": 28, "min_font": 18, "debug_color": "#ff6666"},
+    {"id": "icon2", "content_key": "icon2", "role": "icon_placeholder", "x": 1210, "y": 544, "w": 140, "h": 140, "max_font": 30, "min_font": 18, "color": "#E8A57B", "debug_color": "#78b8ff"},
+    {"id": "card2_title", "content_key": "card2_title", "role": "card_title", "x": 1128, "y": 710, "w": 304, "h": 48, "max_font": 32, "min_font": 20, "debug_color": "#66ff99"},
+    {"id": "card2_tier", "content_key": "card2_tier", "role": "tier", "x": 1188, "y": 770, "w": 184, "h": 38, "max_font": 22, "min_font": 16, "color": "#D8B568", "debug_color": "#d6bd58"},
+    {"id": "card2_body", "content_key": "card2_body", "role": "body", "x": 1090, "y": 876, "w": 380, "h": 118, "max_font": 27, "min_font": 18, "color": "#D6C8A6", "debug_color": "#66ffaa"},
+    {"id": "card2_button", "content_key": "card2_button", "role": "button_label", "x": 1114, "y": 1096, "w": 332, "h": 54, "max_font": 28, "min_font": 18, "debug_color": "#ff6666"},
+    {"id": "icon3", "content_key": "icon3", "role": "icon_placeholder", "x": 1762, "y": 544, "w": 140, "h": 140, "max_font": 34, "min_font": 20, "color": "#B7D987", "debug_color": "#78b8ff"},
+    {"id": "card3_title", "content_key": "card3_title", "role": "card_title", "x": 1680, "y": 710, "w": 304, "h": 48, "max_font": 32, "min_font": 20, "debug_color": "#66ff99"},
+    {"id": "card3_tier", "content_key": "card3_tier", "role": "tier", "x": 1740, "y": 770, "w": 184, "h": 38, "max_font": 22, "min_font": 16, "color": "#D8B568", "debug_color": "#d6bd58"},
+    {"id": "card3_body", "content_key": "card3_body", "role": "body", "x": 1642, "y": 876, "w": 380, "h": 118, "max_font": 27, "min_font": 18, "color": "#D6C8A6", "debug_color": "#66ffaa"},
+    {"id": "card3_button", "content_key": "card3_button", "role": "button_label", "x": 1666, "y": 1096, "w": 332, "h": 54, "max_font": 28, "min_font": 18, "debug_color": "#ff6666"},
+    {"id": "footer", "content_key": "footer", "role": "footer", "x": 830, "y": 1260, "w": 900, "h": 50, "max_font": 24, "min_font": 16, "color": "#B8A98A", "debug_color": "#cccccc"}
+  ]
+}

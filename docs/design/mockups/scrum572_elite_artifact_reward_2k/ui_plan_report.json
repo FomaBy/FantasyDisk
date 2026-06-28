@@ -1,0 +1,299 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "reward_backdrop",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        2560,
+        1440
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "modal_frame",
+      "kind": "panel",
+      "rect": [
+        320,
+        126,
+        1920,
+        1188
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title_band",
+      "kind": "text",
+      "rect": [
+        660,
+        250,
+        1240,
+        112
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 78
+    },
+    {
+      "id": "subtitle_band",
+      "kind": "text",
+      "rect": [
+        720,
+        370,
+        1120,
+        58
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 36
+    },
+    {
+      "id": "artifact_card_0",
+      "kind": "panel",
+      "rect": [
+        496,
+        466,
+        464,
+        700
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_0_icon",
+      "kind": "icon",
+      "rect": [
+        658,
+        544,
+        140,
+        140
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_0_title",
+      "kind": "text",
+      "rect": [
+        576,
+        710,
+        304,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "card_0_tier",
+      "kind": "text",
+      "rect": [
+        636,
+        770,
+        184,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "card_0_body",
+      "kind": "text",
+      "rect": [
+        538,
+        876,
+        380,
+        118
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 27
+    },
+    {
+      "id": "card_0_button",
+      "kind": "button",
+      "rect": [
+        562,
+        1096,
+        332,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "artifact_card_1",
+      "kind": "panel",
+      "rect": [
+        1048,
+        466,
+        464,
+        700
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_1_icon",
+      "kind": "icon",
+      "rect": [
+        1210,
+        544,
+        140,
+        140
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_1_title",
+      "kind": "text",
+      "rect": [
+        1128,
+        710,
+        304,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "card_1_tier",
+      "kind": "text",
+      "rect": [
+        1188,
+        770,
+        184,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "card_1_body",
+      "kind": "text",
+      "rect": [
+        1090,
+        876,
+        380,
+        118
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 27
+    },
+    {
+      "id": "card_1_button",
+      "kind": "button",
+      "rect": [
+        1114,
+        1096,
+        332,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "artifact_card_2",
+      "kind": "panel",
+      "rect": [
+        1600,
+        466,
+        464,
+        700
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2_icon",
+      "kind": "icon",
+      "rect": [
+        1762,
+        544,
+        140,
+        140
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2_title",
+      "kind": "text",
+      "rect": [
+        1680,
+        710,
+        304,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "card_2_tier",
+      "kind": "text",
+      "rect": [
+        1740,
+        770,
+        184,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "card_2_body",
+      "kind": "text",
+      "rect": [
+        1642,
+        876,
+        380,
+        118
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 27
+    },
+    {
+      "id": "card_2_button",
+      "kind": "button",
+      "rect": [
+        1666,
+        1096,
+        332,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "footer_hint",
+      "kind": "text",
+      "rect": [
+        830,
+        1260,
+        900,
+        50
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    }
+  ]
+}

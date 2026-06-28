@@ -1,9 +1,9 @@
 # SCRUM-572 - UI Redesign: Elite Artifact Reward 2K
 
-Статус: blocked
+Статус: done
 Контур: Codex
-Owner: Design/Codex
-Thread: Codex current thread
+Owner: Design/Codex design-loop
+Thread: design-loop
 Locked paths: `docs/design/mockups/scrum572_elite_artifact_reward_2k/`, `docs/design/references/scrum572_elite_artifact_reward_2k/`, `docs/design/previews/scrum572_*`, local SCRUM-572 evidence docs
 Jira: SCRUM-572
 
@@ -13,37 +13,41 @@ Design-only stage for the elite artifact reward screen: create an OpenAI-API-gen
 
 ## Result
 
-Blocked before image generation. The required `fantasydisk-asset-generator` command failed because `OPENAI_API_KEY` is not configured in this environment.
+Completed the elite artifact reward 2K mockup package. The OpenAI Images API base layer was generated after loading `OPENAI_API_KEY` from the Windows User environment, then runtime sample content was composited strictly inside declared content zones. No manual or non-API substitute was used.
 
-Generated PNG paths are therefore intentionally absent:
-
-- `docs/design/references/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_mockup_source.png`
-- `docs/design/mockups/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_mockup.png`
-- `docs/design/previews/scrum572_elite_artifact_reward_2k_safe_zones.png`
-
-Created design/spec evidence:
+## Completed Evidence
 
 - `docs/design/mockups/scrum572_elite_artifact_reward_2k/spec.md`
-
-## Attempted Command
-
-```powershell
-python C:\Users\FomaE\.codex\skills\fantasydisk-asset-generator\scripts\generate_asset.py --prompt "<see spec.md>" --output scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_mockup_source.png --size 2560x1440 --quality high --no-task
-```
-
-Output:
-
-```text
-error: OPENAI_API_KEY is not set (looked in env and C:\Users\FomaE\.codex\.env, C:\Users\FomaE\OneDrive\Documents\Fantasy Disk SCRUM-572\.env)
-```
+- `docs/design/mockups/scrum572_elite_artifact_reward_2k/ui_plan.json`
+- `docs/design/mockups/scrum572_elite_artifact_reward_2k/ui_plan_report.json` (`ok=true`, `decision=ready_for_image`)
+- `docs/design/mockups/scrum572_elite_artifact_reward_2k/ui_plan_guide.png`
+- `docs/design/mockups/scrum572_elite_artifact_reward_2k/layout.json`
+- `docs/design/mockups/scrum572_elite_artifact_reward_2k/layout_guide.png`
+- `docs/design/mockups/scrum572_elite_artifact_reward_2k/layout_guide_report.json` (`ok=true`)
+- `docs/design/references/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_base.png`
+- `docs/design/mockups/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_mockup.png`
+- `docs/design/mockups/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_mockup_debug.png`
+- `docs/design/mockups/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_mockup_report.json` (`ok=true`, 18 zones)
+- `docs/design/previews/scrum572_elite_artifact_reward_2k_ui_plan_guide.png`
+- `docs/design/previews/scrum572_elite_artifact_reward_2k_layout_guide.png`
+- `docs/design/previews/scrum572_elite_artifact_reward_2k_base.png`
+- `docs/design/previews/scrum572_elite_artifact_reward_2k_mockup.png`
+- `docs/design/previews/scrum572_elite_artifact_reward_2k_mockup_debug.png`
 
 ## Validation
 
-- Read required project docs: `AGENTS.md`, `docs/process/ai_agent_memorandum.md`, `docs/process/agent_role_boundaries_and_handoffs.md`, `docs/process/versioning_and_branching.md`, `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`, `docs/design/systems/visual_style_assets.md`.
-- Read `fantasydisk-ui-director` and required references: `ui-change-workflow.md`, `mockup-spec.md`, `fantasydisk-ui-style.md`, `common-pitfalls.md`.
-- Confirmed existing reward screen context: `elite_reward` / `artifact_reward` use `assets/backgrounds/ui/ui_backdrop_reward_hall.png`; SCRUM-338/SCRUM-404 reward-card safe-zone rule remains relevant.
+- Read required dispatcher/UI skills: `fantasydisk-agent-dispatcher`, `fantasydisk-ui-director`, `fantasydisk-asset-generator`, and `content-zone-image-compositor`.
+- `validate_ui_layout_plan.py` passed for `ui_plan.json` with `ok=true`, `decision=ready_for_image`.
+- `render_content_zones.py` layout guide passed with `ok=true`.
+- OpenAI asset generator produced the 2560x1440 base layer.
+- Final compositor report passed with `ok=true` for 18 zones.
+- PNG audit confirmed base, mockup, debug, and preview images are 2560x1440.
 - No runtime scripts, scenes, gameplay, balance, or integration files were edited.
 
-## Next Step
+## Pending Deliverables
 
-Restore `OPENAI_API_KEY` for the OpenAI Images API generator and rerun the command/prompt recorded in `spec.md`. After generation, copy the accepted mockup into the mockup folder, create a safe-zone preview, update this task to `review`, and move SCRUM-572 to `Контроль качества`.
+Runtime Godot integration is out of scope for this Design-only ticket. Create a separate Back-end/UI integration task if the elite reward screen should consume this package in-game.
+
+## Rationale / Notes
+
+The base image is a full-screen UI mockup/reference layer, so RGB is acceptable for this Design package. Future isolated runtime frame assets must be exported separately as alpha-ready PNGs with measured texture/content margins before Godot wiring.
