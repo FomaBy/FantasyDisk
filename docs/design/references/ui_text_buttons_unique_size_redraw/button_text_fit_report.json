@@ -1,0 +1,2342 @@
+[
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 242,
+    "required_button_width_px": 194,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 242,
+    "required_button_width_px": 189,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 242,
+    "required_button_width_px": 200,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 242,
+    "required_button_width_px": 225,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 242,
+    "required_button_width_px": 231,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 242,
+    "required_button_width_px": 227,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 242,
+    "required_button_width_px": 305,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 242,
+    "required_button_width_px": 354,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 242,
+    "required_button_width_px": 536,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 242,
+    "required_button_width_px": 350,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 242,
+    "required_button_width_px": 353,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "main_menu_380x104",
+    "size": [
+      380,
+      104
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 242,
+    "required_button_width_px": 459,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 278,
+    "required_button_width_px": 198,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 278,
+    "required_button_width_px": 193,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 278,
+    "required_button_width_px": 204,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 278,
+    "required_button_width_px": 229,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 278,
+    "required_button_width_px": 235,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 278,
+    "required_button_width_px": 231,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 278,
+    "required_button_width_px": 309,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 278,
+    "required_button_width_px": 358,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 278,
+    "required_button_width_px": 540,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 278,
+    "required_button_width_px": 354,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 278,
+    "required_button_width_px": 357,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "standard_420x104",
+    "size": [
+      420,
+      104
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 278,
+    "required_button_width_px": 463,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 296,
+    "required_button_width_px": 200,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 296,
+    "required_button_width_px": 195,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 296,
+    "required_button_width_px": 206,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 296,
+    "required_button_width_px": 231,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 296,
+    "required_button_width_px": 237,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 296,
+    "required_button_width_px": 233,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 296,
+    "required_button_width_px": 311,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 296,
+    "required_button_width_px": 360,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 296,
+    "required_button_width_px": 542,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 296,
+    "required_button_width_px": 356,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 296,
+    "required_button_width_px": 359,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "wide_440x104",
+    "size": [
+      440,
+      104
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 296,
+    "required_button_width_px": 465,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 132,
+    "required_button_width_px": 184,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 132,
+    "required_button_width_px": 179,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 132,
+    "required_button_width_px": 190,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 132,
+    "required_button_width_px": 215,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 132,
+    "required_button_width_px": 221,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 132,
+    "required_button_width_px": 217,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 132,
+    "required_button_width_px": 295,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 132,
+    "required_button_width_px": 344,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 132,
+    "required_button_width_px": 526,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 132,
+    "required_button_width_px": 340,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 132,
+    "required_button_width_px": 343,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "back_260x104",
+    "size": [
+      260,
+      104
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 132,
+    "required_button_width_px": 449,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 126,
+    "required_button_width_px": 150,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 126,
+    "required_button_width_px": 145,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 126,
+    "required_button_width_px": 156,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 126,
+    "required_button_width_px": 181,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 126,
+    "required_button_width_px": 187,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 126,
+    "required_button_width_px": 183,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 126,
+    "required_button_width_px": 261,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 126,
+    "required_button_width_px": 310,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 126,
+    "required_button_width_px": 492,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 126,
+    "required_button_width_px": 306,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 126,
+    "required_button_width_px": 309,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "quit_220x72",
+    "size": [
+      220,
+      72
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 126,
+    "required_button_width_px": 415,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 146,
+    "required_button_width_px": 150,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 146,
+    "required_button_width_px": 145,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 146,
+    "required_button_width_px": 156,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 146,
+    "required_button_width_px": 181,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 146,
+    "required_button_width_px": 187,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 146,
+    "required_button_width_px": 183,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 146,
+    "required_button_width_px": 261,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 146,
+    "required_button_width_px": 310,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 146,
+    "required_button_width_px": 492,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 146,
+    "required_button_width_px": 306,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 146,
+    "required_button_width_px": 309,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "continue_240x72",
+    "size": [
+      240,
+      72
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 146,
+    "required_button_width_px": 415,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 166,
+    "required_button_width_px": 150,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 166,
+    "required_button_width_px": 145,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 166,
+    "required_button_width_px": 156,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 166,
+    "required_button_width_px": 181,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 166,
+    "required_button_width_px": 187,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 166,
+    "required_button_width_px": 183,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 166,
+    "required_button_width_px": 261,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 166,
+    "required_button_width_px": 310,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 166,
+    "required_button_width_px": 492,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 166,
+    "required_button_width_px": 306,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 166,
+    "required_button_width_px": 309,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "later_260x72",
+    "size": [
+      260,
+      72
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 166,
+    "required_button_width_px": 415,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 190,
+    "required_button_width_px": 146,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 190,
+    "required_button_width_px": 141,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 190,
+    "required_button_width_px": 152,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 190,
+    "required_button_width_px": 177,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 190,
+    "required_button_width_px": 183,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 190,
+    "required_button_width_px": 179,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 190,
+    "required_button_width_px": 257,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 190,
+    "required_button_width_px": 306,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 190,
+    "required_button_width_px": 488,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 190,
+    "required_button_width_px": 302,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 190,
+    "required_button_width_px": 305,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "settings_back_280x64",
+    "size": [
+      280,
+      64
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 190,
+    "required_button_width_px": 411,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 172,
+    "required_button_width_px": 144,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 172,
+    "required_button_width_px": 139,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 172,
+    "required_button_width_px": 150,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 172,
+    "required_button_width_px": 175,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 172,
+    "required_button_width_px": 181,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 172,
+    "required_button_width_px": 177,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 172,
+    "required_button_width_px": 255,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 172,
+    "required_button_width_px": 304,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 172,
+    "required_button_width_px": 486,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 172,
+    "required_button_width_px": 300,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 172,
+    "required_button_width_px": 303,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_260x64",
+    "size": [
+      260,
+      64
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 172,
+    "required_button_width_px": 409,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 132,
+    "required_button_width_px": 144,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 132,
+    "required_button_width_px": 139,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 132,
+    "required_button_width_px": 150,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 132,
+    "required_button_width_px": 175,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 132,
+    "required_button_width_px": 181,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 132,
+    "required_button_width_px": 177,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 132,
+    "required_button_width_px": 255,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 132,
+    "required_button_width_px": 304,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 132,
+    "required_button_width_px": 486,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 132,
+    "required_button_width_px": 300,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 132,
+    "required_button_width_px": 303,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "feedback_cancel_220x64",
+    "size": [
+      220,
+      64
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 132,
+    "required_button_width_px": 409,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 190,
+    "required_button_width_px": 146,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 190,
+    "required_button_width_px": 141,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 190,
+    "required_button_width_px": 152,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 190,
+    "required_button_width_px": 177,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 190,
+    "required_button_width_px": 183,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 190,
+    "required_button_width_px": 179,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 190,
+    "required_button_width_px": 257,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 190,
+    "required_button_width_px": 306,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 190,
+    "required_button_width_px": 488,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 190,
+    "required_button_width_px": 302,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 190,
+    "required_button_width_px": 305,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "pause_280x60",
+    "size": [
+      280,
+      60
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 190,
+    "required_button_width_px": 411,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "OK",
+    "font_px": 20,
+    "text_width_px": 30,
+    "safe_width_px": 282,
+    "required_button_width_px": 152,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Да",
+    "font_px": 20,
+    "text_width_px": 25,
+    "safe_width_px": 282,
+    "required_button_width_px": 147,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Нет",
+    "font_px": 20,
+    "text_width_px": 34,
+    "safe_width_px": 282,
+    "required_button_width_px": 156,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Назад",
+    "font_px": 20,
+    "text_width_px": 57,
+    "safe_width_px": 282,
+    "required_button_width_px": 179,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Играть",
+    "font_px": 20,
+    "text_width_px": 62,
+    "safe_width_px": 282,
+    "required_button_width_px": 184,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Позже",
+    "font_px": 20,
+    "text_width_px": 58,
+    "safe_width_px": 282,
+    "required_button_width_px": 180,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Назад в меню",
+    "font_px": 20,
+    "text_width_px": 131,
+    "safe_width_px": 282,
+    "required_button_width_px": 253,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 20,
+    "text_width_px": 174,
+    "safe_width_px": 282,
+    "required_button_width_px": 296,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 20,
+    "text_width_px": 342,
+    "safe_width_px": 282,
+    "required_button_width_px": 464,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Продолжить забег",
+    "font_px": 20,
+    "text_width_px": 170,
+    "safe_width_px": 282,
+    "required_button_width_px": 292,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Начать новую игру",
+    "font_px": 20,
+    "text_width_px": 174,
+    "safe_width_px": 282,
+    "required_button_width_px": 296,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "event_back_380x54",
+    "size": [
+      380,
+      54
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 20,
+    "text_width_px": 271,
+    "safe_width_px": 282,
+    "required_button_width_px": 393,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 318,
+    "required_button_width_px": 158,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 318,
+    "required_button_width_px": 153,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 318,
+    "required_button_width_px": 164,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 318,
+    "required_button_width_px": 189,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 318,
+    "required_button_width_px": 195,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 318,
+    "required_button_width_px": 191,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 318,
+    "required_button_width_px": 269,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 318,
+    "required_button_width_px": 318,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 318,
+    "required_button_width_px": 500,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 318,
+    "required_button_width_px": 314,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 318,
+    "required_button_width_px": 317,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "rebind_420x62",
+    "size": [
+      420,
+      62
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 318,
+    "required_button_width_px": 423,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 408,
+    "required_button_width_px": 208,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 408,
+    "required_button_width_px": 203,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 408,
+    "required_button_width_px": 214,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 408,
+    "required_button_width_px": 239,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 408,
+    "required_button_width_px": 245,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 408,
+    "required_button_width_px": 241,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 408,
+    "required_button_width_px": 319,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 408,
+    "required_button_width_px": 368,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 408,
+    "required_button_width_px": 550,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 408,
+    "required_button_width_px": 364,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 408,
+    "required_button_width_px": 367,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "reset_bindings_long_560x104",
+    "size": [
+      560,
+      104
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 408,
+    "required_button_width_px": 473,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "OK",
+    "font_px": 22,
+    "text_width_px": 32,
+    "safe_width_px": 312,
+    "required_button_width_px": 164,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Да",
+    "font_px": 22,
+    "text_width_px": 27,
+    "safe_width_px": 312,
+    "required_button_width_px": 159,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Нет",
+    "font_px": 22,
+    "text_width_px": 38,
+    "safe_width_px": 312,
+    "required_button_width_px": 170,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Назад",
+    "font_px": 22,
+    "text_width_px": 63,
+    "safe_width_px": 312,
+    "required_button_width_px": 195,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Играть",
+    "font_px": 22,
+    "text_width_px": 69,
+    "safe_width_px": 312,
+    "required_button_width_px": 201,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Позже",
+    "font_px": 22,
+    "text_width_px": 65,
+    "safe_width_px": 312,
+    "required_button_width_px": 197,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Назад в меню",
+    "font_px": 22,
+    "text_width_px": 143,
+    "safe_width_px": 312,
+    "required_button_width_px": 275,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Сбросить клавиши",
+    "font_px": 22,
+    "text_width_px": 192,
+    "safe_width_px": 312,
+    "required_button_width_px": 324,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Сбросить управление по умолчанию",
+    "font_px": 22,
+    "text_width_px": 374,
+    "safe_width_px": 312,
+    "required_button_width_px": 506,
+    "fits_current_safe_zone": false
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Продолжить забег",
+    "font_px": 22,
+    "text_width_px": 188,
+    "safe_width_px": 312,
+    "required_button_width_px": 320,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Начать новую игру",
+    "font_px": 22,
+    "text_width_px": 191,
+    "safe_width_px": 312,
+    "required_button_width_px": 323,
+    "fits_current_safe_zone": true
+  },
+  {
+    "button_id": "continue_run_long_420x72",
+    "size": [
+      420,
+      72
+    ],
+    "label": "Сбросить звук по умолчанию",
+    "font_px": 22,
+    "text_width_px": 297,
+    "safe_width_px": 312,
+    "required_button_width_px": 429,
+    "fits_current_safe_zone": true
+  }
+]

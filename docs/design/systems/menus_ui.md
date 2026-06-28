@@ -209,6 +209,18 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   bevels or ruby pins. QA evidence lives in
   `build/qa/scrum450_minimal_metal_buttons/`.
 
+- SCRUM-657 adds a Design-ready text-button size audit and unified dark fantasy
+  dragon button package under
+  `docs/design/references/ui_text_buttons_unique_size_redraw/` and
+  `assets/sprites/ui/frames/text_buttons_unique/`. Each final size group has its
+  own OpenAI source PNG; the runtime set is not one stretched master. The package
+  is not a runtime integration pass. Future Back-end wiring must measure each localized label and
+  keep text inside the declared `content_rect_xywh`, between the decorative end
+  shutters/caps. If a label does not fit, increase the button width or use the
+  expanded long-label variants; text may not overlap claws, bevels, ruby pins or
+  scale caps. Left/right caps are fixed-size ornaments and must not be scaled
+  horizontally; only the center rail may stretch.
+
 - SCRUM-451 adds the Design-source rollout contract for applying SCRUM-452
   minimal-metal frames across all UI screens. The screen-family mapping lives in
   `docs/design/references/ui_minimal_metal_rollout/scrum451_minimal_metal_rollout_matrix.json`

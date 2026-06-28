@@ -510,6 +510,20 @@ tint semantics. Use metadata in
 for content zones; labels/icons must stay inside each `content_rect_xywh` and
 never overlap side caps, rubies, bevels or back-arrow ornaments.
 
+SCRUM-657 adds a text-button audit/redraw package for the unique runtime
+text-button sizes: source and audit files live in
+`docs/design/references/ui_text_buttons_unique_size_redraw/`, runtime candidates
+live in `assets/sprites/ui/frames/text_buttons_unique/`, and preview sheets live
+at `docs/design/previews/scrum_text_buttons_unique_size_dark_contact.png` and
+`docs/design/previews/scrum_text_buttons_unique_size_light_contact.png`. These
+PNGs have no baked text. Each final size group has its own OpenAI source PNG,
+so the package is a per-size redraw rather than a single stretched master. For
+implementation, localized labels must fit inside the central content zone
+between the decorative end shutters/caps; if measured text exceeds the safe
+width, increase the button width or use an expanded variant instead of shrinking
+text onto ornament. Left/right caps are fixed-size ornaments and must not be
+scaled horizontally; only the center rail may stretch.
+
 Runtime button sizing (SCRUM-263/SCRUM-264):
 
 - standard action buttons use a 104px minimum height through `_make_button()` / `_set_action_button_size()`;
