@@ -1,6 +1,6 @@
 # SCRUM-621 - Codex Unlock Tracking
 
-Status: Контроль качества (backend-loop-2 restart 2026-06-28).
+Статус: done (backend-loop-2 restart 2026-06-28; ready for QA).
 Jira: SCRUM-621
 Role: Backend/progression
 Lane: Codex

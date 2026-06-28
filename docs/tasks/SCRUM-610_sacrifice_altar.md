@@ -1,6 +1,6 @@
 # SCRUM-610 - Sacrifice Altar Route Node
 
-Status: Контроль качества (backend-loop-2 reverify 2026-06-28).
+Статус: done (backend-loop-2 reverify 2026-06-28; ready for QA).
 Jira: SCRUM-610
 Role: Backend
 Lane: Codex rescue/follow-up
