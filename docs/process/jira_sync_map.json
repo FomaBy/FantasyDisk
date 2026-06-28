@@ -2667,5 +2667,10 @@
   "key": "SCRUM-486",
   "status": "Готово",
   "desc_hash": "451f063bad14edee04830459e7a1db40"
+ },
+ "SCRUM-509_anim_worker_a_reverify_2026-06-28.md": {
+  "key": "SCRUM-509",
+  "status": "Контроль качества",
+  "desc_hash": "edef7f9c2139ef86a268e6a65f605549"
  }
 }
