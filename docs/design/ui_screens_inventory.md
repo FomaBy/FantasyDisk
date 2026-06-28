@@ -120,6 +120,11 @@
 | Кнопка «Продолжить» | `CR_BTN_CONTINUE_2K` | 1031 | 758 | 240 | 72 |
 | Кнопка «Новая игра» | `CR_BTN_NEWGAME_2K` | 1289 | 758 | 240 | 72 |
 
+**SCRUM-582 frame integration:** runtime uses exact @2K `cr_panel` and `cr_btn`
+assets from `assets/sprites/ui/frames/overhaul_2k/`. Panel content margins are
+`58/72/58/66`; both actions use the `240x72` `ui_frame_2k_cr_btn.png` button
+frame. Title, subtitle, and buttons stay inside `CR_SAFE_2K`.
+
 ### 4. Пауза в забеге — `_build_run_pause_menu` · `PM_*`
 Панель из `_pause_end_modal_display_size("pause")` → 898×820; safe-area по
 масштабированным content-margins (≈67/86/67/78). 5 кнопок 280×60.

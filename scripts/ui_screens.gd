@@ -716,6 +716,9 @@ func _show_continue_run_dialog() -> void:
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	# SCRUM-486: @2K per-слот фрейм (cr_panel 680×380, ровно размер панели).
 	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("cr_panel", Vector2(680.0, 380.0)))
+	panel.set_meta("continue_run_slot", "cr_panel")
+	panel.set_meta("continue_run_content_margins", _overhaul_2k_content_margins("cr_panel", CR_PANEL_2K.size))
+	panel.set_meta("continue_run_content_rect", Rect2(CR_SAFE_2K.position - CR_PANEL_2K.position, CR_SAFE_2K.size))
 	overlay.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -760,6 +763,7 @@ func _show_continue_run_dialog() -> void:
 	var continue_button := _make_button("Продолжить")
 	continue_button.name = "ContinueRunButton"
 	_set_action_button_size(continue_button, 240.0, 72.0)
+	_apply_overhaul_2k_button_theme(continue_button, "cr_btn", CR_BTN_CONTINUE_2K.size)
 	continue_button.pressed.connect(func() -> void:
 		if game.load_run_autosave():
 			game.route._show_battle_map()
@@ -771,6 +775,7 @@ func _show_continue_run_dialog() -> void:
 	var new_game_button := _make_button("Новая игра")
 	new_game_button.name = "ContinueRunNewGameButton"
 	_set_action_button_size(new_game_button, 240.0, 72.0)
+	_apply_overhaul_2k_button_theme(new_game_button, "cr_btn", CR_BTN_NEWGAME_2K.size)
 	new_game_button.pressed.connect(func() -> void:
 		game.clear_run_autosave()
 		_show_character_select()

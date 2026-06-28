@@ -15,6 +15,8 @@ const UI_FRAME_TEXTURE_PREFIX := "res://assets/sprites/ui/frames/"
 const MINIMAL_CARD_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
 const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
+const CR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_panel.png"
+const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_btn.png"
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
 const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
@@ -37,6 +39,9 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "main_menu", Callable(self, "_open_main_menu"), [
 			"MainMenuStartButton", "MainMenuSettingsButton", "MainMenuSkillTreeButton",
 			"MainMenuPatchNotesButton", "MainMenuCodexButton", "MainMenuExitButton",
+		], dump_lines, errors)
+		await _check_screen(viewport_size, "continue_run_dialog", Callable(self, "_open_continue_run_dialog"), [
+			"ContinueRunPanel", "ContinueRunButton", "ContinueRunNewGameButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "settings", Callable(self, "_open_settings"), [
 			"SettingsTabSwitcher", "SettingsContentPanel",
@@ -260,6 +265,20 @@ func _open_main_menu(main: Node) -> void:
 	main.ui._show_main_menu()
 
 
+func _open_continue_run_dialog(main: Node) -> void:
+	main.RUN_AUTOSAVE.save_run({
+		"selected_character_id": "berserk",
+		"current_act": 1,
+		"route_stage": 2,
+		"run_player_snapshot": {
+			"money": 240,
+			"level": 5,
+		},
+	})
+	main.ui._show_continue_run_dialog()
+	main.RUN_AUTOSAVE.clear_run()
+
+
 func _open_settings(main: Node) -> void:
 	main.call("_show_settings_menu")
 
@@ -428,6 +447,24 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if card_error != "":
 				return card_error
 	match screen_id:
+		"continue_run_dialog":
+			var continue_panel := main.find_child("ContinueRunPanel", true, false) as PanelContainer
+			if continue_panel == null or not continue_panel.visible or not continue_panel.get_global_rect().has_area():
+				return "%s: expected visible ContinueRunPanel." % context
+			if _stylebox_texture_path(continue_panel.get_theme_stylebox("panel")) != CR_PANEL_2K_FRAME_PATH:
+				return "%s: expected ContinueRunPanel to use cr_panel @2K frame." % context
+			if str(continue_panel.get_meta("continue_run_slot", "")) != "cr_panel":
+				return "%s: expected ContinueRunPanel slot metadata to be cr_panel." % context
+			if Vector4(continue_panel.get_meta("continue_run_content_margins", Vector4.ZERO)) != Vector4(58, 72, 58, 66):
+				return "%s: expected ContinueRunPanel strict SCRUM-582 content margins." % context
+			if (continue_panel.get_meta("continue_run_content_rect", Rect2()) as Rect2) != Rect2(58, 72, 564, 242):
+				return "%s: expected ContinueRunPanel safe rect to match CR_SAFE_2K." % context
+			for button_name in ["ContinueRunButton", "ContinueRunNewGameButton"]:
+				var cr_button := main.find_child(button_name, true, false) as Button
+				if cr_button == null:
+					return "%s: expected %s in ContinueRunPanel." % [context, button_name]
+				if _stylebox_texture_path(cr_button.get_theme_stylebox("normal")) != CR_BTN_2K_FRAME_PATH:
+					return "%s: expected %s to use cr_btn @2K frame." % [context, button_name]
 		"attribute_shop_economy":
 			var panel := main.find_child("AttributeShopPanel", true, false) as Control
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button
