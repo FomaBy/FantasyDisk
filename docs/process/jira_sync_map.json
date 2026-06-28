@@ -2573,6 +2573,11 @@
   "status": "Готово",
   "desc_hash": "ea5549ca682e8c4f78858f6702554175"
  },
+ "SCRUM-537_route_map_chest_artifact_node.md": {
+  "key": "SCRUM-537",
+  "status": "Контроль качества",
+  "desc_hash": "29fa85f23d0a3cd07f1a51862c680bd3"
+ },
  "SCRUM-524_damage_attribute_type_isolation.md": {
   "key": "SCRUM-524",
   "status": "Готово",

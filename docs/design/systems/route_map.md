@@ -28,6 +28,7 @@ Route map — full-screen экран выбора пути между боями
 | `elite_battle` | усиленный бой с элиткой |
 | `shop` | магазин |
 | `event` | событие / question mark |
+| `chest` | гарантированный сундук с выбором артефакта |
 | `rest` | костер / отдых |
 | `boss` | финальная битва маршрута |
 
@@ -50,6 +51,12 @@ Route map — full-screen экран выбора пути между боями
 - На каждой generated route map ровно два `shop` узла: один в первой половине
   non-boss рядов и один во второй половине. Магазины размещаются через тот же
   seeded RNG, не попадают в первые два battle-only ряда и не заменяют boss row.
+- На каждой generated route map ровно один `chest` узел: он ставится в
+  lower-middle ряд non-boss маршрута после размещения магазинов и не заменяет
+  shop. Для текущих 10 activity rows это row index `4` (пятый selectable ряд),
+  то есть после двух battle-only рядов и максимально близко к геометрическому
+  центру между рядами 4/5. Сундук открывает обязательный выбор 1 из 3
+  артефактов и после выбора продвигает маршрут как noncombat node.
 - Пути ограничены через `next_branches`; карта не должна быть all-to-all.
 - Назад возвращаться нельзя, кроме текущего `shop`-узла после выхода из лавки:
   магазин можно повторно открыть до выбора следующего route node.
@@ -92,6 +99,10 @@ Route map — full-screen экран выбора пути между боями
   типа элитки, посчитанное из `node["seed"]`, совпадает с реальным выбором
   `combat` для каждого узла; что каждый узел несёт `seed`; и что tooltip содержит
   ожидаемые поля (Арена/Угроза/Элита/артефакт/Босс).
+- `tests/route_chest_artifact_test.gd` (SCRUM-537) проверяет ровно один chest в
+  lower-middle row, сохранение двух shops и первых двух battle-only rows,
+  canonical chest icon, tooltip, 3 artifact choice buttons, уникальные artifact
+  IDs, применение одного артефакта и переход completed → следующий row.
 - `tests/runtime_smoke_test.gd` проверяет full-screen scroll area, стартовый выбор,
   первые два battle-only ряда, ровно два магазина с half-placement, event click,
   shop re-entry до следующего узла, drag suppression, thin route lines, tooltips,

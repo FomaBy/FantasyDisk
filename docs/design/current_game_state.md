@@ -302,10 +302,19 @@ Event-node открывает один data-driven сценарий из `script
 | Элитный бой | `assets/sprites/map_icons/map_elite_skull_bones.png` |
 | Магазин | `assets/sprites/map_icons/map_shop_tent.png` |
 | Событие | `assets/sprites/map_icons/map_event_question.png` |
-| Сундук / артефакт | `assets/sprites/map_icons/map_chest_artifact.png` (Design-ready SCRUM-536; runtime route hook отдельной Back-end задачей) |
+| Сундук / артефакт | `assets/sprites/map_icons/map_chest_artifact.png` |
 | Костер | `assets/sprites/map_icons/map_rest_campfire.png` |
 | Rift Warden | `assets/sprites/map_icons/map_boss_rift_warden.png` |
 | Disk Devourer | `assets/sprites/map_icons/map_boss_disk_devourer.png` |
+
+SCRUM-537 добавляет runtime `chest` route node: на каждой карте акта ровно один
+сундук размещается в lower-middle non-boss row (при 10 activity rows это row
+index `4`, пятый selectable ряд), не заменяет два гарантированных shop nodes и
+не попадает в первые два battle-only ряда. Открытие сундука использует
+существующий выбор 1 из 3 артефактов с depth-weighting
+`ProgressionData.elite_artifact_choices(route_scaling_stage(), 3)`;
+после выбора артефакт применяется к run snapshot, route node помечается
+completed, `route_stage` продвигается и autosave сохраняет checkpoint карты.
 
 ## Игрок
 

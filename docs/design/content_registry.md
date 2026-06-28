@@ -711,7 +711,7 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `elite_battle` | Бой с элиткой | Сложный бой с элитным врагом | `assets/sprites/map_icons/map_elite_skull_bones.png` | Реализовано |
 | `shop` | Магазин | Покупка нескольких предметов | `assets/sprites/map_icons/map_shop_tent.png` | Реализовано |
 | `event` | Событие | Выбор с наградой/риском | `assets/sprites/map_icons/map_event_question.png` | Реализовано |
-| `chest` | Сундук | Special node для выбора артефакта; runtime hook ведется отдельной Back-end задачей | `assets/sprites/map_icons/map_chest_artifact.png` | Design asset ready (SCRUM-536) |
+| `chest` | Сундук | Mid-route special node: выбор 1 из 3 артефактов, затем возврат на карту | `assets/sprites/map_icons/map_chest_artifact.png` | Реализовано (SCRUM-537; icon SCRUM-536) |
 | `rest` | Костер | Лечение или защитный бонус | `assets/sprites/map_icons/map_rest_campfire.png` | Реализовано |
 | `boss` | Босс | Финальный бой акта | `map_boss_rift_warden.png` / `map_boss_disk_devourer.png` | Реализовано |
 

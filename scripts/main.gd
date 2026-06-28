@@ -153,6 +153,14 @@ const MAP_NODE_DEFINITIONS := {
 		"color": Color(0.18, 0.18, 0.38, 0.96),
 		"border": Color(0.58, 0.54, 1.0, 1.0),
 	},
+	"chest": {
+		"name": "Сундук",
+		"icon": "CHEST",
+		"icon_path": "res://assets/sprites/map_icons/map_chest_artifact.png",
+		"tooltip": "Сундук\nГарантированный выбор 1 из 3 артефактов в середине маршрута.",
+		"color": Color(0.30, 0.18, 0.07, 0.96),
+		"border": Color(1.0, 0.78, 0.30, 1.0),
+	},
 	"rest": {
 		"name": "Костер",
 		"icon": "REST",

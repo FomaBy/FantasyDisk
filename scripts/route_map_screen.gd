@@ -227,6 +227,7 @@ func _generate_route() -> Array:
 			})
 		route.append(branches)
 	_place_required_shop_nodes(route)
+	_place_central_chest_node(route)
 	route.append([_random_boss_route_node()])
 	_assign_route_connections(route)
 	return route
@@ -256,6 +257,39 @@ func _place_shop_node_in_row_range(route: Array, row_start: int, row_end: int) -
 	route_node["name"] = _random_route_node_name(branch_index, "shop")
 	row[branch_index] = route_node
 	route[row_index] = row
+
+
+func _place_central_chest_node(route: Array) -> void:
+	var non_boss_rows := route.size()
+	if non_boss_rows <= START_BATTLE_ONLY_ROWS:
+		return
+	var row_index: int = clampi(int(floor(float(non_boss_rows - 1) * 0.5)), START_BATTLE_ONLY_ROWS, non_boss_rows - 1)
+	var row: Array = route[row_index]
+	if row.is_empty():
+		return
+	var branch_index := _central_chest_branch_index(row)
+	var route_node: Dictionary = row[branch_index]
+	route_node["type"] = "chest"
+	route_node["name"] = _random_route_node_name(branch_index, "chest")
+	row[branch_index] = route_node
+	route[row_index] = row
+
+
+func _central_chest_branch_index(row: Array) -> int:
+	var center_index := clampi(int(floor(float(row.size() - 1) * 0.5)), 0, maxi(row.size() - 1, 0))
+	if str((row[center_index] as Dictionary).get("type", "")) != "shop":
+		return center_index
+	var best_index := center_index
+	var best_distance := 99999
+	for index in range(row.size()):
+		var route_node: Dictionary = row[index]
+		if str(route_node.get("type", "")) == "shop":
+			continue
+		var distance := absi(index - center_index)
+		if distance < best_distance:
+			best_distance = distance
+			best_index = index
+	return best_index
 
 
 func _random_boss_route_node() -> Dictionary:
@@ -360,6 +394,8 @@ func _random_route_node_name(index: int, node_type: String) -> String:
 		return "Rest %d: Moon Well" % [index + 1]
 	if node_type == "event":
 		return "Event %d: Strange Stone" % [index + 1]
+	if node_type == "chest":
+		return "Chest %d: Relic Cache" % [index + 1]
 	if node_type == "elite_battle":
 		return "Elite %d: Crowned Threat" % [index + 1]
 	if node_type == "boss":
@@ -524,6 +560,9 @@ func _node_preview_tooltip(route_node: Dictionary, definition: Dictionary) -> St
 			lines.append("Награда: гарантированный артефакт — " + _elite_artifact_tier_hint(route_node))
 		"boss":
 			lines.append("Босс: " + str(route_node.get("name", "?")))
+		"chest":
+			lines.append("Награда: выбор 1 из 3 артефактов")
+			lines.append("Вес тиров: как у трофея элитки на этой глубине")
 	return "\n".join(lines)
 
 
@@ -786,6 +825,8 @@ func _open_route_node(route_node: Dictionary) -> void:
 			game.ui._show_rest_screen()
 		"event":
 			game.ui._show_event_screen(route_node)
+		"chest":
+			game.ui._show_elite_artifact_reward(Callable(self, "_advance_route_after_noncombat"))
 		"elite_battle":
 			game.combat._start_combat(false, "elite")
 		"boss":

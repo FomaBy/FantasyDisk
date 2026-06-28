@@ -86,6 +86,10 @@ UI обязан показывать эти интерпретации текс�
 - Pause stats menu имеет отдельный блок «Артефакты».
 - Artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png`.
 - `class_affinity` теперь означает тематику/источник артефакта, а не запрет. `affinity_mods` применяются любому классу через интерпретацию текущего героя.
+- Route `chest` node (SCRUM-537) использует тот же weighted artifact sampler, что
+  elite reward: `ProgressionData.elite_artifact_choices(route_scaling_stage(), 3)`.
+  Выбор всегда содержит 3 разных artifact IDs, выбранный артефакт применяется к
+  run snapshot через общий reward path, затем маршрут продвигается на следующий row.
 
 ## Summon Scaling
 
