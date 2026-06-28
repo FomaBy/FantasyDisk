@@ -499,7 +499,9 @@ static func dodge(stats: Dictionary, default_dodge: float, addition := 0.0) -> f
 
 
 static func move_speed(default_speed: float, stats: Dictionary, addition := 0.0) -> float:
-	return default_speed + addition + float(stats.get(AGILITY, 0.0))
+	# SCRUM-661: вклад Agility масштабируется коэффициентом 5.5 согласно
+	# задокументированной формуле STAT_DEFINITIONS['move_speed'] (:197).
+	return default_speed + addition + float(stats.get(AGILITY, 0.0)) * 5.5
 
 
 static func health_points(stats: Dictionary, default_health: float, addition := 0.0) -> float:
