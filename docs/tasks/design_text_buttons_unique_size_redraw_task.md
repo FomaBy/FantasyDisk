@@ -1,6 +1,6 @@
 # Design Task: UI Buttons Audit + Unified Dark Fantasy Text-Button Kit
 
-Status: done
+РЎС‚Р°С‚СѓСЃ: done
 Agent: Codex
 Owner: Design/Codex worker Nietzsche
 Thread: 019f0f2d-2132-7393-a5f2-69ce2cfb16b3
