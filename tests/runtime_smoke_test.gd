@@ -82,8 +82,8 @@ func _initialize() -> void:
 		return
 	await _test_glossary_terms(main)
 	var main_menu_background := main.find_child("MainMenuBackground", true, false) as TextureRect
-	if main_menu_background == null or main_menu_background.texture == null or main_menu_background.texture.resource_path != "res://assets/backgrounds/main_menu_epic_battle_v2.png":
-		push_error("Expected main menu to render the v2 epic battle background image.")
+	if main_menu_background == null or main_menu_background.texture == null or main_menu_background.texture.resource_path != "res://assets/backgrounds/main_menu_epic_battle_v3.png":
+		push_error("Expected main menu to render the v3 epic battle background image.")
 		quit(1)
 		return
 	var main_menu_actions := main.find_child("MainMenuActions", true, false) as VBoxContainer

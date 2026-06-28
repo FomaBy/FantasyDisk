@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cxqkfdjwj6o2g"
-path="res://.godot/imported/main_menu_epic_battle_v2.png-3a2a8ceb5ba208a52db7056912569177.ctex"
+uid="uid://bbywmblpefcgx"
+path="res://.godot/imported/main_menu_epic_battle_v3.png-40fe05472cb2c274f4c2c07a994bfc83.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/backgrounds/main_menu_epic_battle_v2.png"
-dest_files=["res://.godot/imported/main_menu_epic_battle_v2.png-3a2a8ceb5ba208a52db7056912569177.ctex"]
+source_file="res://assets/backgrounds/main_menu_epic_battle_v3.png"
+dest_files=["res://.godot/imported/main_menu_epic_battle_v3.png-40fe05472cb2c274f4c2c07a994bfc83.ctex"]
 
 [params]
 
