@@ -476,6 +476,7 @@ func _initialize() -> void:
 	main.call("_show_weapon_select")
 	await process_frame
 	main.set("selected_weapon_id", "axe")
+	main.set("selected_ascension_level", 1)
 	main.call("_start_combat")
 	await create_timer(1.0).timeout
 	var resource_hud := main.find_child("RunResourceHud", true, false) as PanelContainer
@@ -543,11 +544,11 @@ func _initialize() -> void:
 		push_error("Expected combat HUD to stay compact and not expose the status label.")
 		quit(1)
 		return
-	# Таймер боя: по центру сверху, при <=5с переходит в alarm-состояние (PM 2026-06-11).
+	# SCRUM-671: timer is part of the accepted SCRUM-666 essential-only HUD geometry.
 	var timer_panel := main.find_child("CombatTimerPanel", true, false) as PanelContainer
 	var timer_text := main.get("timer_label") as Label
-	if timer_panel == null or timer_text == null or timer_panel.get_global_rect().position.y > 24.0:
-		push_error("Expected the combat timer panel to stay in the top HUD band.")
+	if timer_panel == null or timer_text == null:
+		push_error("Expected SCRUM-671 combat HUD to include the timer panel and label.")
 		quit(1)
 		return
 	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != HUD_TIMER_PANEL_TEXTURE_2K:
@@ -555,6 +556,11 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var timer_zone: Rect2 = timer_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2
+	var timer_frame: Rect2 = timer_panel.get_meta("scrum666_frame_rect", Rect2()) as Rect2
+	if not timer_frame.has_area() or not timer_frame.grow(1.0).encloses(timer_panel.get_global_rect()):
+		push_error("Expected combat timer panel to occupy its SCRUM-666 frame rect %s, got %s." % [timer_frame, timer_panel.get_global_rect()])
+		quit(1)
+		return
 	if not timer_zone.has_area() or not timer_zone.grow(1.0).encloses(timer_text.get_global_rect()):
 		push_error("Expected combat timer text to stay inside SCRUM-666 timer zone %s, got %s." % [timer_zone, timer_text.get_global_rect()])
 		quit(1)
@@ -573,19 +579,30 @@ func _initialize() -> void:
 		push_error("Expected the combat timer alarm to reset above 5 seconds.")
 		quit(1)
 		return
-	# HUD артефактов: подбор артефакта добавляет иконку с tooltip.
+	var ascension_badge := main.find_child("AscensionHudBadge", true, false) as PanelContainer
+	var ascension_label := main.find_child("AscensionHudLabel", true, false) as Label
+	if ascension_badge == null or ascension_label == null:
+		push_error("Expected SCRUM-671 combat HUD to show the ascension badge for an elevated run.")
+		quit(1)
+		return
+	var ascension_zone: Rect2 = ascension_badge.get_meta("scrum666_content_zone", Rect2()) as Rect2
+	if not ascension_zone.has_area() or not ascension_zone.grow(1.0).encloses(ascension_label.get_global_rect()):
+		push_error("Expected ascension label to stay inside SCRUM-666 ascension zone %s, got %s." % [ascension_zone, ascension_label.get_global_rect()])
+		quit(1)
+		return
+	var hud_overlap := _first_control_overlap(_visible_hud_top_controls(main), 2.0)
+	if not hud_overlap.is_empty():
+		push_error("Expected SCRUM-671 top combat HUD controls not to overlap, got %s." % hud_overlap)
+		quit(1)
+		return
+	# SCRUM-671 essential-only HUD: artifacts remain in run state, not in a combat HUD row.
 	var hud_player: Node = main.get("current_player")
 	hud_player.call("apply_reward", {"kind": "artifact", "id": "cracked_shield", "title": "Треснувший щит", "mods": {"defense_flat": 0.12}})
 	main.set("_last_hud_snapshot", {})
 	main.ui._update_hud()
 	var artifact_row := main.find_child("ArtifactHudRow", true, false) as HFlowContainer
-	if artifact_row == null or artifact_row.get_child_count() != 1:
-		push_error("Expected one artifact icon on the HUD after pickup.")
-		quit(1)
-		return
-	var hud_artifact_icon := artifact_row.get_child(0) as TextureRect
-	if hud_artifact_icon == null or hud_artifact_icon.texture == null or hud_artifact_icon.tooltip_text == "":
-		push_error("Expected the artifact HUD icon to carry a texture and tooltip.")
+	if artifact_row != null:
+		push_error("Expected SCRUM-671 combat HUD to keep ArtifactHudRow removed after artifact pickup.")
 		quit(1)
 		return
 	var stored_artifacts: Array = hud_player.get("artifacts")
@@ -923,6 +940,16 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var level_up_badge_panel := level_up_plus.find_child("LevelUpPlusBadgePanel", true, false) as Control
+	var level_up_badge := level_up_plus.find_child("LevelUpPlusBadge", true, false) as Label
+	if level_up_badge_panel == null or level_up_badge == null or level_up_badge.text != str(main.get("pending_level_ups")):
+		push_error("Expected combat level-up return button to show a pending-count badge.")
+		quit(1)
+		return
+	var level_up_badge_zone: Rect2 = level_up_badge_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2
+	if not level_up_badge_zone.has_area() or not level_up_badge_zone.grow(1.0).encloses(level_up_badge.get_global_rect()):
+		push_error("Expected level-up count badge to stay inside SCRUM-666 count zone %s, got %s." % [level_up_badge_zone, level_up_badge.get_global_rect()])
+		quit(1)
+		return
 	var qa_dir_level_up := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir_level_up)
 	var level_up_dump_text := ""
@@ -1161,17 +1188,35 @@ func _initialize() -> void:
 		push_error("Expected level-up world effect to clean itself up.")
 		quit(1)
 		return
-	if main.find_child("RunResourceHud", true, false) == null or main.get("health_bar") == null or main.get("xp_bar") == null or main.get("money_label") == null:
+	var restored_resource_hud := main.find_child("RunResourceHud", true, false) as PanelContainer
+	if restored_resource_hud == null or main.get("health_bar") == null or main.get("xp_bar") == null or main.get("money_label") == null:
 		push_error("Expected combat HUD to be restored as compact HP/XP/money resources.")
 		quit(1)
 		return
-	var character_stats_hud := main.find_child("CharacterStatsHud", true, false) as PanelContainer
-	if character_stats_hud == null or character_stats_hud.find_children("CharacterStatChip_*", "PanelContainer", true, false).size() < 3:
-		push_error("Expected combat HUD to expose compact character stat chips on the main gameplay screen.")
+	for restored_card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
+		var restored_card := restored_resource_hud.find_child(restored_card_name, true, false) as PanelContainer
+		if restored_card == null or not restored_card.visible or not restored_card.get_global_rect().has_area():
+			push_error("Expected restored SCRUM-671 combat HUD to include visible %s." % restored_card_name)
+			quit(1)
+			return
+	if main.find_child("CharacterStatsHud", true, false) != null:
+		push_error("Expected restored SCRUM-671 combat HUD to keep CharacterStatsHud removed.")
+		quit(1)
+		return
+	if main.find_child("ArtifactHudRow", true, false) != null:
+		push_error("Expected restored SCRUM-671 combat HUD to keep ArtifactHudRow removed.")
 		quit(1)
 		return
 	if main.get("status_label") != null or main.get("artifact_label") != null:
 		push_error("Expected combat HUD to omit status/debug text labels.")
+		quit(1)
+		return
+	if main.find_child("CombatTimerPanel", true, false) == null:
+		push_error("Expected restored SCRUM-671 combat HUD to keep the combat timer.")
+		quit(1)
+		return
+	if main.find_child("LevelUpPlusButton", true, false) != null:
+		push_error("Expected combat level-up plus button to disappear after all queued choices are spent.")
 		quit(1)
 		return
 
