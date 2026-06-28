@@ -16,6 +16,12 @@ const MINI_ELITE_KINDS := [
 	{"id": "mini_spark_wight", "title": "Искровик", "scene": "commander", "behavior": "shard_marshal", "hp_mult": 0.50, "speed_mult": 0.92, "damage_mult": 0.95, "tint": [0.72, 0.86, 1.0], "desc": "Дальнобойный дух искр: бьёт залпом веером с предупреждающим телеграфом."},
 	{"id": "mini_rot_hound", "title": "Гнилая Гончая", "scene": "stalker", "behavior": "night_stalker", "hp_mult": 0.40, "speed_mult": 1.32, "damage_mult": 1.0, "tint": [0.82, 0.70, 0.60], "desc": "Стайная гончая гнили: налетает рывком, оставляя кровоточащие раны."},
 	{"id": "mini_shadow_devourer", "title": "Теневой Пожиратель", "scene": "stalker", "behavior": "night_stalker", "hp_mult": 0.52, "speed_mult": 1.08, "damage_mult": 1.12, "tint": [0.56, 0.50, 0.76], "desc": "Тень-пожиратель: телепортируется к жертве после короткого телеграфа."},
+	# SCRUM-607: +4 новых вида с перевешенными статами (танк-таран / рой-снайпер /
+	# чумной-берсерк / фантом). Только tint существующих rig, без нового арта.
+	{"id": "mini_siege_rammer", "title": "Осадный Таран", "scene": "armored", "behavior": "iron_bastion", "hp_mult": 1.18, "speed_mult": 0.78, "damage_mult": 1.35, "tint": [0.96, 0.74, 0.42], "desc": "Бронированный таран: толстый панцирь и тяжёлая ударная волна, но медлителен."},
+	{"id": "mini_swarm_sniper", "title": "Роевой Снайпер", "scene": "commander", "behavior": "shard_marshal", "hp_mult": 0.38, "speed_mult": 1.04, "damage_mult": 1.22, "tint": [0.52, 0.94, 0.90], "desc": "Хрупкий дальнобой роя: бьёт точным залпом издали, но падает от пары ударов."},
+	{"id": "mini_plague_berserker", "title": "Чумной Берсерк", "scene": "poisoned", "behavior": "plague_prophet", "hp_mult": 0.64, "speed_mult": 1.14, "damage_mult": 1.18, "tint": [0.60, 0.82, 0.34], "desc": "Бешеный носитель чумы: напористо лезет вплотную и заливает ядом по площади."},
+	{"id": "mini_void_phantom", "title": "Фантом Бездны", "scene": "stalker", "behavior": "night_stalker", "hp_mult": 0.34, "speed_mult": 1.42, "damage_mult": 1.28, "tint": [0.46, 0.40, 0.86], "desc": "Стремительный фантом: молниеносные блинк-удары, но тает под фокусом."},
 ]
 
 const ENEMY_MECHANIC_CATALOG := {
