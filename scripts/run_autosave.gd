@@ -61,7 +61,11 @@ static func load_run(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 	if err != OK:
 		return {}
 	# Несовместимая/отсутствующая версия схемы — игнорируем сейв целиком.
-	if int(config.get_value(META_SECTION, "schema_version", -1)) != SCHEMA_VERSION:
+	# SCRUM-650: строгий type-check вместо lossy int()-каста. int("001")==1,
+	# int("1abc")==1, int("1.5")==1 ошибочно проходили валидацию повреждённого
+	# сейва. Принимаем только настоящий int, равный текущей схеме.
+	var schema_value: Variant = config.get_value(META_SECTION, "schema_version", null)
+	if not (schema_value is int) or schema_value != SCHEMA_VERSION:
 		return {}
 	var state := {}
 	if config.has_section(RUN_SECTION):

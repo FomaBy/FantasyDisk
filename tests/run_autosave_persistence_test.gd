@@ -81,6 +81,17 @@ func _initialize() -> void:
 	if not RunAutosave.load_run(TEST_PATH).is_empty():
 		errors.append("несовместимая схема должна дать {}")
 
+	# 8. SCRUM-650: строковый/нечисловой schema_version → {}. Старый lossy int()-каст
+	# парсил "001"→1, "1abc"→1, "1.5"→1 и ошибочно принимал повреждённый сейв.
+	for bogus_version in ["%03d" % RunAutosave.SCHEMA_VERSION, "%dabc" % RunAutosave.SCHEMA_VERSION, "%d.5" % RunAutosave.SCHEMA_VERSION]:
+		var tainted := ConfigFile.new()
+		tainted.set_value("meta", "schema_version", bogus_version)
+		tainted.set_value("run", "character_id", "berserk")
+		tainted.save(TEST_PATH)
+		if not RunAutosave.load_run(TEST_PATH).is_empty():
+			errors.append("строковый schema_version '%s' должен дать {}" % bogus_version)
+		RunAutosave.clear_run(TEST_PATH)
+
 	_cleanup()
 
 	if not errors.is_empty():
