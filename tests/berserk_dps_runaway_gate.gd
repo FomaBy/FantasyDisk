@@ -32,12 +32,15 @@ const BASE_SEED := 20260620         # тот же сид, что в генера
 const CHARACTER_ID := "berserk"
 const WEAPON_ID := "hammer"
 
-# Потолки коридора лидеров (после SCRUM-503 soft-cap и SCRUM-545 radius-cap).
+# Потолки коридора лидеров (после SCRUM-503 soft-cap, SCRUM-545 + SCRUM-602).
 # Без SCRUM-503 пик был 184356/7636, после soft-cap без radius-cap — ~13850/922.
-# SCRUM-545 ограничивает позднюю круговую зону молота до close-ring 145px и даёт
-# ~8700/840: 20t падает именно геометрией, а solo-цель в 80px сохраняется.
-const MAX_IDEAL_20T := 12000.0   # radius-cap rollback (~13850) → FAIL
-const MAX_IDEAL_1T := 2363.0     # 2.5x медианы solo-лидеров; 2520 (частичный фикс) → FAIL
+# SCRUM-545 ограничивает позднюю круговую зону молота до close-ring 145px.
+# SCRUM-602 дожимает AoE-потолок к медиане: сжаты upgrade-экспоненты молота
+# (aoe 1.25→1.12, dmg 1.15→1.08) + max_aoe_radius 145→130 — экспоненты больше не
+# обходят softcap. Живой пик сел до ~3358/526 (20t падает геометрией+ростом, solo
+# в 80px сохраняется). Потолки затянуты под новый коридор (с запасом на дискретность).
+const MAX_IDEAL_20T := 4200.0    # SCRUM-602 band (~3358); откат экспонент/радиуса (≥4988) → FAIL
+const MAX_IDEAL_1T := 720.0      # solo-пик (~526) в коридоре; раздувание damage-роста → FAIL
 const ZERO_EPS := 0.01
 
 var _holder: Node2D
