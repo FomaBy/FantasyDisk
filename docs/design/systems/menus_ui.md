@@ -313,36 +313,36 @@ updates. Active assets:
 - `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`,
   `_ult.png`, `_gold.png` and `ui_hud_gold_medallion.png`.
 
-Runtime keeps the combat HUD compact and readable: resource panel top-left,
-timer near top center, artifact row top-right with adaptive vertical fallback,
-compact character stat chips below the resource panel, and opaque level-up plus button bottom-right. Text, icons, bars, count badges,
-focus/click zones and the plus glyph stay inside the safe rects documented in
-`docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`.
-Runtime uses compact content margins only to fit the live 720p HUD band; source
-safe rects remain the authority and decorative dragon heads, red gems, claw
-tips and bevels must stay unobstructed. Design mocks and Back-end runtime rect
-dumps at `1152x648`, `1280x720` and `2560x1440` live in `build/qa/scrum390/`.
-SCRUM-556 moves the in-run Escape pause panel to the upper-left gameplay area and
-adds `CharacterStatsHud`, a compact four-chip base-stat strip under
-`RunResourceHud`, using existing minimal-metal frames and runtime stat data.
-SCRUM-521 adds `LowHpVignetteOverlay` as a procedural combat HUD warning:
+SCRUM-671 makes the SCRUM-666 clean essential-only HUD live in runtime. Combat
+now shows only HP, XP, money, ULT charge, timer, ascension/elevation and the
+bottom-right level-up plus/count control. The previous artifact row and compact
+character stat chip strip are not created in combat HUD anymore. Runtime uses
+the existing generated frame assets (`chud_resource_panel`, `chud_timer`,
+minimal-metal metric cards, ascension badge and combat plus button), but places
+them from the accepted SCRUM-666 `ui_plan.json`/`layout.json` rectangles because
+SCRUM-666 shipped as a full-screen OpenAI mockup/source package rather than
+transparent per-slot runtime slices. Text, icons, bars, count badges,
+focus/click zones and the plus glyph stay inside the accepted dark interiors;
+decorative rails, gems, rims and bevels stay unobstructed. UI smoke/no-overlap
+coverage now fails if `CharacterStatsHud` or `ArtifactHudRow` appears in combat,
+or if HUD content escapes the SCRUM-666 safe-zone metadata.
 
-SCRUM-666 adds a Design-source package for the next clean essential-only 2K
-combat HUD pass. The package keeps only HP, XP, money, ULT charge, timer,
-ascension/elevation and the bottom-right level-up plus button. It intentionally
-omits artifact rows, duplicate FABs and extra HUD panels. Source and geometry
-live under `docs/design/mockups/scrum666_combat_hud_2k/`, OpenAI reference art
-under `docs/design/references/scrum666_combat_hud_2k/`, and safe-zone previews
-under `docs/design/previews/scrum666_combat_hud_2k_*`. Runtime integration must
-use the validated `ui_plan.json` rectangles as authoritative. The QA-red
-revision moved accepted content zones into the generated dark interiors and out
-of the old rail/ornament positions; level-up plus and pending-count zones are
-separate and non-overlapping at 2560x1440.
+SCRUM-521 adds `LowHpVignetteOverlay` as a procedural combat HUD warning:
 when player HP drops below 30%, a shader vignette fades in with a transparent
 center and light red edges; it fades out only after HP recovers to 34%+ to avoid
 threshold flicker. The overlay is drawn behind HUD cards, ignores mouse input,
 uses the shared `combat_feedback` setting, and is covered by the HUD smoke
 matrix.
+
+SCRUM-666 is the Design-source package behind this pass. It keeps only HP, XP,
+money, ULT charge, timer, ascension/elevation and the bottom-right level-up plus
+button. Source and geometry live under
+`docs/design/mockups/scrum666_combat_hud_2k/`, OpenAI reference art under
+`docs/design/references/scrum666_combat_hud_2k/`, and safe-zone previews under
+`docs/design/previews/scrum666_combat_hud_2k_*`. The QA-red revision moved
+accepted content zones into generated dark interiors and out of rail/ornament
+positions; level-up plus and pending-count zones are separate and
+non-overlapping at 2560x1440.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
 - Level-up reward options remain full-card clickable Buttons for input/focus and now use SCRUM-670 generated 2K runtime frames from the SCRUM-570 source package: `level_up_panel` (`1040x600`) for the overlay and `level_up_card` (`238x210`) for all three reward choices. The screen still presents exactly 3 variants and the `Позже` deferral button. SCRUM-465 keeps the overlay viewport-aware for short 720p layouts, while SCRUM-670 records source-space safe rect metadata and keeps hero header, title, subtitle, card content, and deferral button inside the generated-frame interiors. The UI no-overlap matrix covers `LevelUpPanel`, `LevelUpHeroHeader`, all three reward cards and `LevelUpLaterButton`; QA evidence lives under `build/qa/ui_no_overlap_matrix.md`.
 - SCRUM-570 is the live 2K level-up overlay source package. Source geometry and planning gate files live under `docs/design/mockups/scrum570_levelup_2k_redesign/`, the OpenAI source mockups under `docs/design/references/scrum570_levelup_2k_redesign/`, and previews under `docs/design/previews/scrum570_levelup_2k_*`. Runtime wiring follows `ui_plan.json` / `spec.md` rather than slicing the mockup directly.

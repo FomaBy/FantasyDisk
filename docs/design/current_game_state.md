@@ -1070,7 +1070,20 @@ Level-up показывает 3 фиксированных варианта на
 
 У каждого из 17 игровых классов есть ultimate ability, описанная в `ProgressionData.ULTIMATE_CONFIGS` и показанная в Кодексе. Заряд копится от нанесенного и полученного урона до 100, масштабируется от Energy и активируется InputMap action `ultimate` (default R, ребиндится в настройках). После активации заряд сбрасывается.
 
-Боевой HUD содержит компактные SCRUM-390 карточки HP/XP/money/ULT; tooltip ULT показывает текущую клавишу и состояние готовности. `ultimate_multiplier` больше не зарезервирован: он усиливает урон, радиус, длительность или число целей ульты. По боссам действует per-hit cap от max HP босса. Верхний HUD обязан проходить no-overlap проверку фактических `global_rect`: ресурсная панель, таймер/бейдж Возвышения и ряд артефактов адаптивно размещаются без пересечений на 1152x648, 1280x720 и 2560x1440. SCRUM-400 подключил live runtime к SCRUM-390 combat HUD kit: ресурсная панель, карточки, bar fill текстуры, таймер, ascension badge, золотой money medallion и bottom-right level-up plus button берутся из `assets/sprites/ui/frames/combat_hud/` и `assets/sprites/ui/hud/combat_hud/`; metadata/safe-зоны живут в `docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`, QA dumps — в `build/qa/scrum390/`.
+Боевой HUD содержит clean essential-only набор SCRUM-671/SCRUM-666: HP, XP,
+money, ULT, таймер, бейдж Возвышения и bottom-right level-up plus/count control.
+Старые `ArtifactHudRow` и `CharacterStatsHud` в боевом overlay больше не
+создаются. Tooltip ULT показывает текущую клавишу и состояние готовности.
+`ultimate_multiplier` больше не зарезервирован: он усиливает урон, радиус,
+длительность или число целей ульты. По боссам действует per-hit cap от max HP
+босса. Верхний HUD обязан проходить no-overlap проверку фактических
+`global_rect`: ресурсная панель, таймер/бейдж Возвышения и plus/count control
+адаптивно размещаются без пересечений на 1152x648, 1280x720 и 2560x1440.
+Runtime использует существующие generated HUD/theme assets, но размещает
+контент по accepted safe zones из
+`docs/design/mockups/scrum666_combat_hud_2k/ui_plan.json` /
+`layout.json`; тесты падают, если контент выходит на рамки/орнамент или если
+старые HUD-полосы возвращаются.
 
 UI no-overlap coverage 0.1.4: `tests/ui_no_overlap_matrix_test.gd` проверяет peer-controls main menu, settings, Codex, patch notes, hero select, victory и death на 1152x648, 1280x720, 1600x900 и 2560x1440, а `runtime_smoke_test.gd` дополнительно держит специализированные проверки HUD, shop wall, hero radar, route/level-up/elite reward flows. Matrix dump пишется в `build/qa/ui_no_overlap_matrix.md`.
 

@@ -191,6 +191,10 @@ content zones; do not place runtime text/icons on generated ornament. The
 QA-red geometry revision keeps all accepted zones inside visible dark interiors
 and separates the level-up plus/count zones, replacing the earlier mechanically
 valid but visually unsafe rail positions.
+SCRUM-671 makes that clean contract live in runtime using existing generated
+HUD/theme assets mapped into the SCRUM-666 safe zones. The combat HUD is now
+essential-only: no artifact row, character stat strip, duplicate FAB or extra
+combat panel belongs in the in-run overlay.
 
 SCRUM-586 adds the Design-source package for the 2K stat tooltip frame used by
 `StatTooltipPanel` / `_make_custom_tooltip` in `scripts/pause_stats_menu.gd`;

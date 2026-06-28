@@ -483,6 +483,14 @@ func _initialize() -> void:
 		push_error("Expected combat to create the compact resource HUD.")
 		quit(1)
 		return
+	if main.find_child("CharacterStatsHud", true, false) != null:
+		push_error("Expected SCRUM-671 combat HUD to remove the non-essential CharacterStatsHud strip.")
+		quit(1)
+		return
+	if main.find_child("ArtifactHudRow", true, false) != null:
+		push_error("Expected SCRUM-671 combat HUD to remove the non-essential ArtifactHudRow.")
+		quit(1)
+		return
 	var resource_style := resource_hud.get_theme_stylebox("panel")
 	if _stylebox_texture_path(resource_style) != HUD_RESOURCE_PANEL_TEXTURE_2K:
 		push_error("Expected combat resource HUD to use the SCRUM-564 @2K HUD resource frame.")
@@ -503,6 +511,11 @@ func _initialize() -> void:
 		var hud_card := resource_hud.find_child(str(hud_node_name), true, false) as PanelContainer
 		if hud_card == null or _stylebox_texture_path(hud_card.get_theme_stylebox("panel")) != str(expected_hud_cards[hud_node_name]):
 			push_error("Expected %s to use SCRUM-448 minimal field frame %s." % [hud_node_name, str(expected_hud_cards[hud_node_name])])
+			quit(1)
+			return
+		var card_zone: Rect2 = hud_card.get_meta("scrum666_content_zone", Rect2()) as Rect2
+		if not card_zone.has_area() or not card_zone.grow(1.0).encloses(hud_card.get_global_rect()):
+			push_error("Expected %s to expose and occupy its SCRUM-666 metric zone, got card=%s zone=%s." % [hud_node_name, hud_card.get_global_rect(), card_zone])
 			quit(1)
 			return
 	var expected_hud_fills := {
@@ -539,6 +552,11 @@ func _initialize() -> void:
 		return
 	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != HUD_TIMER_PANEL_TEXTURE_2K:
 		push_error("Expected combat timer panel to use the SCRUM-564 @2K HUD timer frame.")
+		quit(1)
+		return
+	var timer_zone: Rect2 = timer_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2
+	if not timer_zone.has_area() or not timer_zone.grow(1.0).encloses(timer_text.get_global_rect()):
+		push_error("Expected combat timer text to stay inside SCRUM-666 timer zone %s, got %s." % [timer_zone, timer_text.get_global_rect()])
 		quit(1)
 		return
 	main.set("round_time_left", 4.0)
@@ -8006,7 +8024,7 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 
 func _visible_hud_top_controls(main: Node) -> Array:
 	var controls := []
-	for node_name in ["RunResourceHud", "CharacterStatsHud", "CombatTimerPanel", "AscensionHudBadge", "ArtifactHudRow"]:
+	for node_name in ["RunResourceHud", "CombatTimerPanel", "AscensionHudBadge"]:
 		var control := main.find_child(node_name, true, false) as Control
 		if control != null and control.visible:
 			controls.append(control)

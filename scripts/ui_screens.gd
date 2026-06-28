@@ -132,8 +132,8 @@ const COMBAT_HUD_CARD_CONTENT := Vector4(58.0, 52.0, 58.0, 48.0)
 const COMBAT_HUD_TIMER_MARGINS := Vector4(42.0, 38.0, 42.0, 36.0)
 const COMBAT_HUD_TIMER_CONTENT := Vector4(58.0, 52.0, 58.0, 48.0)
 const COMBAT_HUD_ASCENSION_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
-const COMBAT_HUD_LEVEL_UP_MARGINS := Vector4(34.0, 34.0, 34.0, 34.0)
-const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(36.0, 34.0, 36.0, 36.0)
+const COMBAT_HUD_LEVEL_UP_MARGINS := Vector4(8.0, 8.0, 8.0, 8.0)
+const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(6.0, 6.0, 6.0, 6.0)
 
 # === SCRUM-487: координатная спека @2560×1440 — блок Боевые ===
 # Источник правды для рисующего скрипта (рисует рамки/панели ровно в эти размеры) и
@@ -145,14 +145,30 @@ const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(36.0, 34.0, 36.0, 36.0)
 # Rect2(0, 0, w, h) — позиция считается контейнером в рантайме (центрирование).
 const COMBAT_BLOCK_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
 
-# #5 Бой / HUD — _create_hud / _layout_combat_hud (процентная раскладка → детерминированная 2K-сетка)
-const CHUD_RESOURCE_PANEL_2K := Rect2(18, 18, 820, 84)      # RunResourceHud (clampf 0.54·w → 820)
-const CHUD_TIMER_2K := Rect2(1136, 14, 288, 96)             # CombatTimerPanel (центр; нет на боссе)
-const CHUD_ASCENSION_BADGE_2K := Rect2(1432, 18, 64, 64)    # AscensionHudBadge (только при asc>0)
-const CHUD_ARTIFACT_ROW_2K := Rect2(2140, 16, 402, 104)     # ArtifactHudRow (clampf 0.28·w → 402, прижат вправо)
-const CHUD_LEVELUP_BUTTON_2K := Rect2(2436, 1316, 96, 117)  # LevelUpPlusButton (якорь bottom-right; min-size темы → h≈117)
-const CHUD_LEVELUP_BADGE_2K := Rect2(2498, 1306, 28, 28)    # LevelUpPlusBadgePanel (счётчик пиков)
+# #5 Бой / HUD — generated 2K frame-kit slots. Keep these in sync with
+# tools/build_ui_2k_frame_kit.py; SCRUM-671 runtime placement uses the SCRUM666_*
+# geometry below because SCRUM-666 is a full-screen mockup/source package.
+const CHUD_RESOURCE_PANEL_2K := Rect2(18, 18, 820, 84)
+const CHUD_TIMER_2K := Rect2(1136, 14, 288, 96)
+const CHUD_ASCENSION_BADGE_2K := Rect2(1432, 18, 64, 64)
+const CHUD_ARTIFACT_ROW_2K := Rect2(2140, 16, 402, 104)
+const CHUD_LEVELUP_BUTTON_2K := Rect2(2436, 1316, 96, 117)
+const CHUD_LEVELUP_BADGE_2K := Rect2(2498, 1306, 28, 28)
 const CHUD_DAMAGE_FLASH_2K := Rect2(0, 0, 2560, 1440)       # DamageFlashOverlay (full-rect)
+
+# SCRUM-671 / SCRUM-666 clean essential-only runtime HUD geometry.
+const SCRUM666_CHUD_RESOURCE_PANEL_2K := Rect2(40, 84, 1488, 212)
+const SCRUM666_CHUD_HP_ZONE_2K := Rect2(150, 140, 300, 58)
+const SCRUM666_CHUD_XP_ZONE_2K := Rect2(520, 140, 260, 58)
+const SCRUM666_CHUD_GOLD_ZONE_2K := Rect2(850, 140, 235, 58)
+const SCRUM666_CHUD_ULT_ZONE_2K := Rect2(1138, 140, 296, 58)
+const SCRUM666_CHUD_TIMER_2K := Rect2(1592, 82, 424, 218)
+const SCRUM666_CHUD_TIMER_ZONE_2K := Rect2(1690, 145, 232, 62)
+const SCRUM666_CHUD_ASCENSION_BADGE_2K := Rect2(2165, 55, 330, 322)
+const SCRUM666_CHUD_ASCENSION_ZONE_2K := Rect2(2265, 150, 128, 94)
+const SCRUM666_CHUD_LEVELUP_FRAME_2K := Rect2(2190, 1010, 366, 428)
+const SCRUM666_CHUD_LEVELUP_BUTTON_2K := Rect2(2308, 1148, 124, 104)
+const SCRUM666_CHUD_LEVELUP_BADGE_2K := Rect2(2442, 1079, 48, 40)
 
 # #6 Событие — _show_event_screen (economy-панель "event"; safe = панель − content 58/72/58/66)
 const EVT_PANEL_2K := Rect2(420, 330, 1720, 780)
@@ -5748,11 +5764,6 @@ func _update_level_up_button() -> void:
 		game.level_up_button.anchor_right = 1.0
 		game.level_up_button.anchor_top = 1.0
 		game.level_up_button.anchor_bottom = 1.0
-		game.level_up_button.offset_left = -124.0
-		game.level_up_button.offset_right = -28.0
-		game.level_up_button.offset_top = -124.0
-		game.level_up_button.offset_bottom = -26.0
-		game.level_up_button.custom_minimum_size = Vector2(96, 98)
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
 		game.level_up_button.add_theme_font_size_override("font_size", 34)
 		_apply_fantasy_button_theme(game.level_up_button)
@@ -5762,14 +5773,7 @@ func _update_level_up_button() -> void:
 		var badge_panel := PanelContainer.new()
 		badge_panel.name = "LevelUpPlusBadgePanel"
 		badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		badge_panel.anchor_left = 1.0
-		badge_panel.anchor_top = 0.0
-		badge_panel.anchor_right = 1.0
-		badge_panel.anchor_bottom = 0.0
-		badge_panel.offset_left = -34.0
-		badge_panel.offset_top = -10.0
-		badge_panel.offset_right = -6.0
-		badge_panel.offset_bottom = 18.0
+		badge_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		var badge_style := StyleBoxFlat.new()
 		badge_style.bg_color = Color(1.0, 0.84, 0.22, 1.0)
 		badge_style.set_corner_radius_all(12)
@@ -5786,9 +5790,36 @@ func _update_level_up_button() -> void:
 
 	game.level_up_button.text = "+"
 	game.level_up_button.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	var scale := _scrum666_hud_scale_for_size(viewport_size)
+	var plus_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BUTTON_2K, scale)
+	var base_size := COMBAT_BLOCK_DESIGN_BASE_2K * scale
+	game.level_up_button.offset_left = plus_rect.position.x - base_size.x
+	game.level_up_button.offset_right = plus_rect.position.x + plus_rect.size.x - base_size.x
+	game.level_up_button.offset_top = plus_rect.position.y - base_size.y
+	game.level_up_button.offset_bottom = plus_rect.position.y + plus_rect.size.y - base_size.y
+	game.level_up_button.custom_minimum_size = plus_rect.size
+	game.level_up_button.size = plus_rect.size
+	game.level_up_button.set_meta("scrum666_frame_rect", _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_FRAME_2K, scale))
+	game.level_up_button.set_meta("scrum666_content_zone", plus_rect)
+	game.level_up_button.clip_text = true
+	game.level_up_button.add_theme_font_size_override("font_size", maxi(18, int(roundf(24.0 * scale))))
+	_apply_fantasy_button_theme(game.level_up_button)
+
+	var badge_panel := game.level_up_button.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
+	if badge_panel != null:
+		var badge_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BADGE_2K, scale)
+		var local_badge_pos := badge_rect.position - plus_rect.position
+		badge_panel.offset_left = local_badge_pos.x
+		badge_panel.offset_top = local_badge_pos.y
+		badge_panel.offset_right = local_badge_pos.x + badge_rect.size.x
+		badge_panel.offset_bottom = local_badge_pos.y + badge_rect.size.y
+		badge_panel.custom_minimum_size = badge_rect.size
+		badge_panel.set_meta("scrum666_content_zone", badge_rect)
 	var badge_label := game.level_up_button.find_child("LevelUpPlusBadge", true, false) as Label
 	if badge_label != null:
 		badge_label.text = str(game.pending_level_ups)
+		badge_label.add_theme_font_size_override("font_size", maxi(9, int(roundf(14.0 * scale))))
 
 
 func _level_up_affinity_suffix(reward: Dictionary) -> String:
@@ -8189,10 +8220,8 @@ func _create_hud() -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
 
-	_create_resource_hud_panel(root, Vector2(20, 18))
-	_create_character_stats_hud(root, Vector2(20, 110))
+	_create_resource_hud_panel(root, Vector2(20, 18), true)
 	_create_combat_timer_panel(root)
-	_create_artifact_hud_row(root)
 	_create_damage_flash_overlay(root)
 	_create_low_hp_vignette(root)
 	_create_threat_indicator_overlay(root)
@@ -8220,6 +8249,7 @@ func _create_combat_timer_panel(root: Control) -> void:
 		asc_badge.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
 		root.add_child(asc_badge)
 		var asc_text := Label.new()
+		asc_text.name = "AscensionHudLabel"
 		asc_text.text = ROMAN_NUMERALS[clampi(game.selected_ascension_level, 0, game.META_PROGRESSION.MAX_ASCENSION_LEVEL)]  # SCRUM-622: клампить по динамическому капу (5), не хардкод 10
 		asc_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		asc_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -8237,7 +8267,7 @@ func _create_combat_timer_panel(root: Control) -> void:
 	panel.position = Vector2(0, 14)
 	panel.custom_minimum_size = Vector2(192, 64)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel", _timer_panel_style(false))
+	panel.add_theme_stylebox_override("panel", _timer_panel_style(false, SCRUM666_CHUD_TIMER_2K.size, _scrum666_content_margins(SCRUM666_CHUD_TIMER_2K, SCRUM666_CHUD_TIMER_ZONE_2K, 1.0)))
 	root.add_child(panel)
 
 	var label := Label.new()
@@ -8252,15 +8282,19 @@ func _create_combat_timer_panel(root: Control) -> void:
 	game.timer_label = label
 
 
-func _timer_panel_style(alarm: bool) -> StyleBox:
-	# SCRUM-564: per-слот @2K-рамка таймера (CHUD_TIMER_2K=288×96), нарисованная 1:1 под слот
+func _timer_panel_style(alarm: bool, display_size := Vector2(288.0, 96.0), content_margins := Vector4.ZERO) -> StyleBox:
+	# SCRUM-564: per-слот @2K-рамка таймера (SCRUM666_CHUD_TIMER_2K=288×96), нарисованная 1:1 под слот
 	# с нативными 9-slice бордюрами — резкий орнамент на 1080p/2K/4K вместо ужатого field-фрейма.
 	var tint := Color(1.20, 0.78, 0.72, 1.0) if alarm else Color.WHITE
-	return _overhaul_2k_frame_style("chud_timer", Vector2(288.0, 96.0), tint)
+	var style := _overhaul_2k_frame_style("chud_timer", display_size, tint)
+	if content_margins != Vector4.ZERO:
+		_apply_stylebox_content_margins(style, content_margins)
+	return style
 
 
-func _ascension_badge_style() -> StyleBox:
-	return _global_texture_style(COMBAT_HUD_ASCENSION_BADGE_PATH, Vector4(6, 8, 6, 8), Color.WHITE, Vector4(10, 10, 10, 10), true)
+func _ascension_badge_style(display_size := Vector2(128.0, 128.0), content_margins := Vector4(10, 10, 10, 10)) -> StyleBox:
+	var texture_margins := _scaled_frame_margins_xy(Vector2(128.0, 128.0), display_size, Vector4(6, 8, 6, 8))
+	return _global_texture_style(COMBAT_HUD_ASCENSION_BADGE_PATH, texture_margins, Color.WHITE, content_margins, true)
 
 
 func _create_artifact_hud_row(root: Control) -> void:
@@ -8276,101 +8310,125 @@ func _create_artifact_hud_row(root: Control) -> void:
 	root.add_child(row)
 
 
+func _scrum666_hud_scale_for_size(viewport_size: Vector2) -> float:
+	var scale_x := viewport_size.x / COMBAT_BLOCK_DESIGN_BASE_2K.x
+	var scale_y := viewport_size.y / COMBAT_BLOCK_DESIGN_BASE_2K.y
+	var scale := minf(scale_x, scale_y)
+	if scale <= 0.0:
+		return 0.5
+	return scale
+
+
+func _scrum666_hud_scale(root: Control) -> float:
+	var viewport_size := root.get_viewport_rect().size
+	if root.size.x > 0.0 and root.size.y > 0.0:
+		viewport_size = root.size
+	return _scrum666_hud_scale_for_size(viewport_size)
+
+
+func _scrum666_scaled_rect(base_rect: Rect2, scale: float) -> Rect2:
+	return Rect2(
+		Vector2(roundf(base_rect.position.x * scale), roundf(base_rect.position.y * scale)),
+		Vector2(roundf(base_rect.size.x * scale), roundf(base_rect.size.y * scale))
+	)
+
+
+func _scrum666_content_margins(frame_rect: Rect2, zone_rect: Rect2, scale: float) -> Vector4:
+	return Vector4(
+		roundf((zone_rect.position.x - frame_rect.position.x) * scale),
+		roundf((zone_rect.position.y - frame_rect.position.y) * scale),
+		roundf((frame_rect.position.x + frame_rect.size.x - zone_rect.position.x - zone_rect.size.x) * scale),
+		roundf((frame_rect.position.y + frame_rect.size.y - zone_rect.position.y - zone_rect.size.y) * scale)
+	)
+
+
+func _apply_stylebox_content_margins(style: StyleBox, margins: Vector4) -> void:
+	if style == null:
+		return
+	style.content_margin_left = margins.x
+	style.content_margin_top = margins.y
+	style.content_margin_right = margins.z
+	style.content_margin_bottom = margins.w
+
+
+func _apply_chud_rect(control: Control, rect: Rect2, meta_key := "") -> void:
+	if control == null:
+		return
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = rect.position
+	control.custom_minimum_size = rect.size
+	control.size = rect.size
+	if meta_key != "":
+		control.set_meta(meta_key, rect)
+
+
+func _apply_chud_card_rect(card: PanelContainer, resource_rect: Rect2, zone_rect: Rect2, scale: float, icon_id: String) -> void:
+	if card == null:
+		return
+	var zone := _scrum666_scaled_rect(zone_rect, scale)
+	card.position = zone.position - resource_rect.position
+	card.custom_minimum_size = zone.size
+	card.size = zone.size
+	card.set_meta("scrum666_content_zone", zone)
+	card.add_theme_stylebox_override("panel", _hud_card_style(icon_id, zone.size))
+	_apply_chud_card_content_scale(card, scale)
+
+
+func _apply_chud_card_content_scale(card: PanelContainer, scale: float) -> void:
+	for node in card.find_children("*", "BoxContainer", true, false):
+		var box := node as BoxContainer
+		if box != null:
+			box.add_theme_constant_override("separation", 1)
+	var icon_size := maxf(10.0, roundf(22.0 * scale))
+	for node in card.find_children("*", "TextureRect", true, false):
+		var icon := node as TextureRect
+		if icon != null:
+			icon.custom_minimum_size = Vector2(icon_size, icon_size)
+	var label_size := maxi(8, int(roundf(14.0 * scale)))
+	for node in card.find_children("*", "Label", true, false):
+		var label := node as Label
+		if label != null:
+			label.add_theme_font_size_override("font_size", label_size)
+	var bar_height := maxf(3.0, roundf(6.0 * scale))
+	for node in card.find_children("*", "ProgressBar", true, false):
+		var bar := node as ProgressBar
+		if bar != null:
+			bar.custom_minimum_size.y = bar_height
+
+
 func _layout_combat_hud(root: Control) -> void:
 	if root == null or not is_instance_valid(root):
 		return
-	var viewport_width := maxf(root.size.x, root.get_viewport_rect().size.x)
-	if viewport_width <= 0.0:
-		viewport_width = 1280.0
-	var margin := 18.0
-	var gap := 14.0
-	var timer_size := Vector2(288, 96)
+	var scale := _scrum666_hud_scale(root)
 	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
 	if resource != null:
-		var resource_width := clampf(viewport_width * 0.54, 650.0, 820.0)
-		if viewport_width <= 1280.0:
-			resource_width = minf(resource_width, 690.0)
-		resource.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		resource.position = Vector2(margin, 18.0)
-		resource.custom_minimum_size = Vector2(resource_width, 84.0)
-		resource.size = resource.custom_minimum_size
-	var resource_right := margin
-	if resource != null:
-		resource_right = resource.position.x + resource.custom_minimum_size.x
-
-	var stats_hud := root.find_child("CharacterStatsHud", true, false) as PanelContainer
-	if stats_hud != null:
-		var stats_width := 690.0
-		if resource != null:
-			stats_width = resource.custom_minimum_size.x
-		else:
-			stats_width = clampf(viewport_width * 0.54, 650.0, 820.0)
-			if viewport_width <= 1280.0:
-				stats_width = minf(stats_width, 690.0)
-		stats_hud.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		stats_hud.position = Vector2(margin, 110.0)
-		stats_hud.custom_minimum_size = Vector2(stats_width, 58.0)
-		stats_hud.size = stats_hud.custom_minimum_size
+		var resource_rect := _scrum666_scaled_rect(SCRUM666_CHUD_RESOURCE_PANEL_2K, scale)
+		_apply_chud_rect(resource, resource_rect, "scrum666_frame_rect")
+		resource.add_theme_stylebox_override("panel", _hud_panel_style(resource_rect.size, true))
+		_apply_chud_card_rect(resource.find_child("HudHPCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_HP_ZONE_2K, scale, "hp")
+		_apply_chud_card_rect(resource.find_child("HudXPCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_XP_ZONE_2K, scale, "xp")
+		_apply_chud_card_rect(resource.find_child("HudMoneyCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_GOLD_ZONE_2K, scale, "money")
+		_apply_chud_card_rect(resource.find_child("HudULTCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_ULT_ZONE_2K, scale, "ultimate_multiplier")
 
 	var timer_panel := root.find_child("CombatTimerPanel", true, false) as PanelContainer
-	var timer_left := viewport_width * 0.5 - timer_size.x * 0.5
 	if timer_panel != null:
-		var right_limit := viewport_width - timer_size.x - margin
-		if timer_left < resource_right + gap:
-			timer_left = minf(resource_right + gap, right_limit)
-			if timer_left < resource_right + gap:
-				var narrow_resource_width := maxf(480.0, timer_left - gap - margin)
-				if resource != null:
-					resource.custom_minimum_size.x = narrow_resource_width
-					resource.size.x = narrow_resource_width
-					resource_right = resource.position.x + resource.custom_minimum_size.x
-				timer_left = maxf(resource_right + gap, margin)
-		timer_left = minf(timer_left, right_limit)
-		timer_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		timer_panel.position = Vector2(timer_left, 14.0)
-		timer_panel.custom_minimum_size = timer_size
-		timer_panel.size = timer_size
+		var timer_rect := _scrum666_scaled_rect(SCRUM666_CHUD_TIMER_2K, scale)
+		var timer_content := _scrum666_content_margins(SCRUM666_CHUD_TIMER_2K, SCRUM666_CHUD_TIMER_ZONE_2K, scale)
+		_apply_chud_rect(timer_panel, timer_rect, "scrum666_frame_rect")
+		timer_panel.set_meta("scrum666_content_margins", timer_content)
+		timer_panel.set_meta("scrum666_content_zone", _scrum666_scaled_rect(SCRUM666_CHUD_TIMER_ZONE_2K, scale))
+		timer_panel.add_theme_stylebox_override("panel", _timer_panel_style(bool(game.timer_label != null and game.timer_label.get_meta("alarm_active", false)), timer_rect.size, timer_content))
+		if game.timer_label != null:
+			game.timer_label.add_theme_font_size_override("font_size", maxi(16, int(roundf(34.0 * scale))))
 
 	var asc_badge := root.find_child("AscensionHudBadge", true, false) as PanelContainer
 	if asc_badge != null:
-		var badge_size := 64.0
-		var anchor_left := timer_left + timer_size.x + 8.0
-		var badge_top := 18.0
-		if timer_panel == null:
-			anchor_left = maxf(viewport_width * 0.5 - badge_size * 0.5, resource_right + gap)
-		if anchor_left + badge_size > viewport_width - margin:
-			anchor_left = maxf(margin, timer_left - badge_size - 8.0)
-		var badge_would_overlap_resource := false
-		if resource != null:
-			badge_would_overlap_resource = Rect2(Vector2(anchor_left, badge_top), Vector2(badge_size, badge_size)).intersects(Rect2(resource.position, resource.size))
-		if anchor_left < resource_right + gap and badge_would_overlap_resource:
-			badge_top = 110.0
-		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		asc_badge.position = Vector2(anchor_left, badge_top)
-		asc_badge.custom_minimum_size = Vector2(badge_size, badge_size)
-		asc_badge.size = asc_badge.custom_minimum_size
-
-	var artifact_row := root.find_child("ArtifactHudRow", true, false) as HFlowContainer
-	if artifact_row != null:
-		var row_width := clampf(viewport_width * 0.28, 220.0, 402.0)
-		var row_left := viewport_width - row_width - margin
-		var row_top := 16.0
-		var occupied_right := resource_right
-		var occupied_bottom := 0.0
-		if resource != null:
-			occupied_bottom = maxf(occupied_bottom, resource.position.y + resource.size.y)
-		if timer_panel != null:
-			occupied_right = maxf(occupied_right, timer_panel.position.x + timer_size.x)
-			occupied_bottom = maxf(occupied_bottom, timer_panel.position.y + timer_size.y)
-		if asc_badge != null:
-			occupied_right = maxf(occupied_right, asc_badge.position.x + asc_badge.custom_minimum_size.x)
-			occupied_bottom = maxf(occupied_bottom, asc_badge.position.y + asc_badge.custom_minimum_size.y)
-		if row_left < occupied_right + gap:
-			row_top = occupied_bottom + 8.0
-		artifact_row.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		artifact_row.position = Vector2(row_left, row_top)
-		artifact_row.custom_minimum_size = Vector2(row_width, 104.0)
-		artifact_row.size = artifact_row.custom_minimum_size
+		var asc_rect := _scrum666_scaled_rect(SCRUM666_CHUD_ASCENSION_BADGE_2K, scale)
+		var asc_content := _scrum666_content_margins(SCRUM666_CHUD_ASCENSION_BADGE_2K, SCRUM666_CHUD_ASCENSION_ZONE_2K, scale)
+		_apply_chud_rect(asc_badge, asc_rect, "scrum666_frame_rect")
+		asc_badge.set_meta("scrum666_content_margins", asc_content)
+		asc_badge.set_meta("scrum666_content_zone", _scrum666_scaled_rect(SCRUM666_CHUD_ASCENSION_ZONE_2K, scale))
+		asc_badge.add_theme_stylebox_override("panel", _ascension_badge_style(asc_rect.size, asc_content))
 
 
 func _refresh_artifact_hud_row() -> void:
@@ -8625,23 +8683,33 @@ func _create_menu_run_hud() -> void:
 	_update_level_up_button()
 
 
-func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
+func _create_resource_hud_panel(parent: Control, position: Vector2, combat_layout := false) -> void:
 	game._last_hud_snapshot.clear()
 	var panel := PanelContainer.new()
 	panel.name = "RunResourceHud"
 	panel.position = position
-	panel.custom_minimum_size = Vector2(690, 72)
-	panel.add_theme_stylebox_override("panel", _hud_panel_style())
+	panel.custom_minimum_size = SCRUM666_CHUD_RESOURCE_PANEL_2K.size if combat_layout else Vector2(690, 72)
+	panel.add_theme_stylebox_override("panel", _hud_panel_style(SCRUM666_CHUD_RESOURCE_PANEL_2K.size, true) if combat_layout else _hud_panel_style())
 	parent.add_child(panel)
 
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 6)
-	panel.add_child(row)
+	var content: Control
+	if combat_layout:
+		content = Control.new()
+		content.name = "RunResourceHudContent"
+		content.set_anchors_preset(Control.PRESET_FULL_RECT)
+		content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		panel.add_child(content)
+	else:
+		var row := HBoxContainer.new()
+		row.name = "RunResourceHudContent"
+		row.add_theme_constant_override("separation", 6)
+		panel.add_child(row)
+		content = row
 
-	game.health_bar = _add_hud_resource_card(row, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
-	game.xp_bar = _add_hud_resource_card(row, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
-	_add_hud_money_card(row)
-	game.ultimate_bar = _add_hud_resource_card(row, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
+	game.health_bar = _add_hud_resource_card(content, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
+	game.xp_bar = _add_hud_resource_card(content, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
+	_add_hud_money_card(content)
+	game.ultimate_bar = _add_hud_resource_card(content, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
 
 
 func _create_character_stats_hud(parent: Control, position: Vector2) -> void:
@@ -8734,7 +8802,7 @@ func _hud_stat_value_color(entry: Dictionary) -> Color:
 	return Color(0.44, 0.95, 0.65, 1.0) if value >= 8.0 else Color(0.91, 0.86, 0.65, 1.0)
 
 
-func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: String, fill_color: Color) -> ProgressBar:
+func _add_hud_resource_card(parent: Control, icon_id: String, label_text: String, fill_color: Color) -> ProgressBar:
 	var card := PanelContainer.new()
 	card.name = "Hud%sCard" % label_text
 	card.custom_minimum_size = Vector2(132, 48)
@@ -8773,7 +8841,7 @@ func _add_hud_resource_card(parent: HBoxContainer, icon_id: String, label_text: 
 	return bar
 
 
-func _add_hud_money_card(parent: HBoxContainer) -> void:
+func _add_hud_money_card(parent: Control) -> void:
 	var card := PanelContainer.new()
 	card.name = "HudMoneyCard"
 	card.custom_minimum_size = Vector2(104, 48)
@@ -8800,21 +8868,26 @@ func _add_hud_money_card(parent: HBoxContainer) -> void:
 	line.add_child(game.money_label)
 
 
-func _hud_panel_style() -> StyleBox:
-	# SCRUM-564: per-слот @2K-рамка ресурс-панели (CHUD_RESOURCE_PANEL_2K=820×84) — узкие
+func _hud_panel_style(display_size := Vector2(820.0, 84.0), zero_content := false) -> StyleBox:
+	# SCRUM-564: per-слот @2K-рамка ресурс-панели (SCRUM666_CHUD_RESOURCE_PANEL_2K=820×84) — узкие
 	# верт. бордюры (hud_resource), плоский центр под HP/XP/Gold/ULT-карточки, орнамент не мылится.
-	return _overhaul_2k_frame_style("chud_resource_panel", Vector2(820.0, 84.0))
+	var style := _overhaul_2k_frame_style("chud_resource_panel", display_size)
+	if zero_content:
+		_apply_stylebox_content_margins(style, Vector4.ZERO)
+	return style
 
 
 func _character_stats_hud_style() -> StyleBox:
 	return _global_texture_style(MINIMAL_FIELD_PATH, Vector4(10, 10, 10, 10), Color(1.0, 1.0, 1.0, 0.95), Vector4(16, 12, 16, 12), true)
 
 
-func _hud_card_style(icon_id := "hp") -> StyleBox:
+func _hud_card_style(icon_id := "hp", display_size := Vector2.ZERO) -> StyleBox:
 	var path := str(COMBAT_HUD_CARD_PATHS.get(icon_id, COMBAT_HUD_CARD_PATHS["hp"]))
-	var display_size := Vector2(104.0, 48.0) if icon_id == "money" else Vector2(132.0, 48.0)
-	var texture_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), display_size, COMBAT_HUD_CARD_MARGINS)
-	var content_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), display_size, COMBAT_HUD_CARD_CONTENT)
+	var resolved_size := display_size
+	if resolved_size == Vector2.ZERO:
+		resolved_size = Vector2(104.0, 48.0) if icon_id == "money" else Vector2(132.0, 48.0)
+	var texture_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), resolved_size, COMBAT_HUD_CARD_MARGINS)
+	var content_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), resolved_size, COMBAT_HUD_CARD_CONTENT)
 	return _global_texture_style(path, texture_margins, Color.WHITE, content_margins, true)
 
 
@@ -8945,7 +9018,8 @@ func _update_combat_timer(timer_seconds: int) -> void:
 	game.timer_label.set_meta("alarm_active", alarm)
 	game.timer_label.add_theme_color_override("font_color", Color(1.0, 0.32, 0.26, 1.0) if alarm else Color(0.96, 0.92, 0.74, 1.0))
 	if panel != null:
-		panel.add_theme_stylebox_override("panel", _timer_panel_style(alarm))
+		var content_margins: Vector4 = panel.get_meta("scrum666_content_margins", _scrum666_content_margins(SCRUM666_CHUD_TIMER_2K, SCRUM666_CHUD_TIMER_ZONE_2K, _scrum666_hud_scale_for_size(panel.get_viewport_rect().size))) as Vector4
+		panel.add_theme_stylebox_override("panel", _timer_panel_style(alarm, panel.size, content_margins))
 	if alarm:
 		var tween: Tween = game.timer_label.create_tween()
 		tween.set_loops(timer_seconds)

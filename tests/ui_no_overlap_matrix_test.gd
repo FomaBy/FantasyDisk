@@ -36,6 +36,10 @@ const CODEX_BACK_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2
 const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
 const VBN_FRAME_2K_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_vbn_frame.png"
+const CHUD_RESOURCE_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png"
+const CHUD_TIMER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
+const CHUD_FIELD_FRAME_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
+const CHUD_ASCENSION_FRAME_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 
 
 func _initialize() -> void:
@@ -118,11 +122,10 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "event_economy", Callable(self, "_open_event"), [
 			"EventChoiceButton0", "EventChoiceButton1", "EventChoiceButton2", "EventBackButton",
 		], dump_lines, errors, false)
-		# SCRUM-487: боевой HUD (ресурс-панель/таймер/бейдж возвышения/ряд артефактов/кнопка
-		# повышения) — детерминированная 2K-сетка не пересекается и держится во вьюпорте.
+		# SCRUM-671: боевой HUD — clean essential-only set from SCRUM-666:
+		# HP/XP/money/ULT, timer, ascension/elevation and bottom-right level-up plus only.
 		await _check_screen(viewport_size, "combat_hud", Callable(self, "_open_combat_hud"), [
-			"RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "ArtifactHudRow",
-			"CharacterStatsHud", "LevelUpPlusButton",
+			"RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "LevelUpPlusButton",
 		], dump_lines, errors)
 		# SCRUM-487: баннер появления босса — ширина из CTB_*_2K (фикс легаси 1280=720p),
 		# текст центрируется по 2K-базе и помещается в рамку. Транзиентный — один контрол.
@@ -466,6 +469,48 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if card_error != "":
 				return card_error
 	match screen_id:
+		"combat_hud":
+			if main.find_child("CharacterStatsHud", true, false) != null:
+				return "%s: SCRUM-671 essential-only HUD must not show CharacterStatsHud." % context
+			if main.find_child("ArtifactHudRow", true, false) != null:
+				return "%s: SCRUM-671 essential-only HUD must not show ArtifactHudRow." % context
+			var resource := main.find_child("RunResourceHud", true, false) as PanelContainer
+			if resource == null or _stylebox_texture_path(resource.get_theme_stylebox("panel")) != CHUD_RESOURCE_2K_FRAME_PATH:
+				return "%s: expected RunResourceHud to use chud_resource_panel @2K frame." % context
+			for card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
+				var card := main.find_child(card_name, true, false) as PanelContainer
+				if card == null or not card.visible or not card.get_global_rect().has_area():
+					return "%s: expected visible %s metric card." % [context, card_name]
+				if _stylebox_texture_path(card.get_theme_stylebox("panel")) != CHUD_FIELD_FRAME_PATH:
+					return "%s: expected %s to use minimal-metal field frame." % [context, card_name]
+				var card_zone: Rect2 = card.get_meta("scrum666_content_zone", Rect2()) as Rect2
+				if not card_zone.has_area() or not card_zone.grow(1.0).encloses(card.get_global_rect()):
+					return "%s: expected %s to occupy SCRUM-666 metric zone %s, got %s." % [context, card_name, str(card_zone), str(card.get_global_rect())]
+			var timer_panel := main.find_child("CombatTimerPanel", true, false) as PanelContainer
+			if timer_panel == null or _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != CHUD_TIMER_2K_FRAME_PATH:
+				return "%s: expected CombatTimerPanel to use chud_timer @2K frame." % context
+			var timer_label := main.find_child("CombatTimerLabel", true, false) as Label
+			var timer_zone: Rect2 = timer_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2
+			if timer_label == null or not timer_zone.has_area() or not timer_zone.grow(1.0).encloses(timer_label.get_global_rect()):
+				return "%s: expected CombatTimerLabel to stay inside SCRUM-666 timer zone %s." % [context, str(timer_zone)]
+			var ascension := main.find_child("AscensionHudBadge", true, false) as PanelContainer
+			if ascension == null or _stylebox_texture_path(ascension.get_theme_stylebox("panel")) != CHUD_ASCENSION_FRAME_PATH:
+				return "%s: expected AscensionHudBadge to use the live compact ascension frame." % context
+			var ascension_label := ascension.find_child("AscensionHudLabel", true, false) as Label
+			var ascension_zone: Rect2 = ascension.get_meta("scrum666_content_zone", Rect2()) as Rect2
+			if ascension_label == null or not ascension_zone.has_area() or not ascension_zone.grow(1.0).encloses(ascension_label.get_global_rect()):
+				return "%s: expected ascension label to stay inside SCRUM-666 ascension zone %s." % [context, str(ascension_zone)]
+			var plus := main.find_child("LevelUpPlusButton", true, false) as Button
+			if plus == null or plus.text != "+":
+				return "%s: expected bottom-right LevelUpPlusButton." % context
+			var plus_zone: Rect2 = plus.get_meta("scrum666_content_zone", Rect2()) as Rect2
+			if not plus_zone.has_area() or not plus_zone.grow(1.0).encloses(plus.get_global_rect()):
+				return "%s: expected LevelUpPlusButton to occupy SCRUM-666 plus zone %s, got %s." % [context, str(plus_zone), str(plus.get_global_rect())]
+			var badge_panel := plus.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
+			var badge_zone: Rect2 = badge_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2 if badge_panel != null else Rect2()
+			var badge_label := plus.find_child("LevelUpPlusBadge", true, false) as Label
+			if badge_panel == null or badge_label == null or not badge_zone.has_area() or not badge_zone.grow(1.0).encloses(badge_label.get_global_rect()):
+				return "%s: expected LevelUpPlusBadge label to stay inside SCRUM-666 count zone %s." % [context, str(badge_zone)]
 		"continue_run_dialog":
 			var continue_panel := main.find_child("ContinueRunPanel", true, false) as PanelContainer
 			if continue_panel == null or not continue_panel.visible or not continue_panel.get_global_rect().has_area():
