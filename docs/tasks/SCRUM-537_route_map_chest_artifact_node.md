@@ -41,3 +41,9 @@ Implemented central route chest runtime hook:
 - chosen artifact is applied once through the shared run reward path;
 - after choosing, the route advances, autosave writes the checkpoint, and the
   completed chest node is no longer available.
+
+
+## QA-Вердикт
+Статус: PASSED
+
+claude-qa 2026-06-28: верифицировано на origin/dev (коммит-под-задачу — ancestor HEAD), профильные гейты/смоук зелёные. Переведено в «Готово». Блок добавлен, чтобы jira_board_sync (done+PASSED→Готово) не реверти задачу обратно в «Контроль качества».

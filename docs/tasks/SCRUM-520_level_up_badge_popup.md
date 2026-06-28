@@ -163,3 +163,9 @@ Design asset и handoff (SCRUM-519, статус done — `docs/tasks/design_lev
 - PASS: `tests/runtime_smoke_test.gd`.
 
 Note: during validation, unrelated dirty WIP appeared in `scripts/enemy.gd` and `scripts/ui_screens.gd` for other tasks. Those files were not edited, staged, or committed for SCRUM-520.
+
+
+## QA-Вердикт
+Статус: PASSED
+
+claude-qa 2026-06-28: верифицировано на origin/dev (коммит-под-задачу — ancestor HEAD), профильные гейты/смоук зелёные. Переведено в «Готово». Блок добавлен, чтобы jira_board_sync (done+PASSED→Готово) не реверти задачу обратно в «Контроль качества».

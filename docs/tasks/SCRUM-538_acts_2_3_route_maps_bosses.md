@@ -38,3 +38,9 @@ Locked paths: scripts/main.gd, scripts/route_map_screen.gd, scripts/combat_direc
 - Player build state is preserved between acts; `current_act` is persisted in autosave and restored with route checkpoints.
 - Act 2/3 use `route_scaling_stage()` for controlled combat/economy/reward pressure while keeping each route map act-local.
 - Route, combat, progression balance and current state docs were updated.
+
+
+## QA-Вердикт
+Статус: PASSED
+
+claude-qa 2026-06-28: верифицировано на origin/dev (коммит-под-задачу — ancestor HEAD), профильные гейты/смоук зелёные. Переведено в «Готово». Блок добавлен, чтобы jira_board_sync (done+PASSED→Готово) не реверти задачу обратно в «Контроль качества».
