@@ -1568,8 +1568,12 @@ After SCRUM-541, Act 3 has two possible endings:
   secret follow-up boss `secret_ascension_boss`.
 
 The secret boss is backend-ready in `scenes/BossSecretAscension.tscn` and
-`scripts/boss.gd` with placeholder visuals, separate canonical id, sector/ring
-AoE pressure, delayed rift eruptions and phase-2 pressure/adds at 50% HP. Final
-art/animation remains Design/Animation scope. Balance benchmark at Act 3 L5
+`scripts/boss.gd` with separate canonical id, sector/ring AoE pressure, delayed
+rift eruptions and phase-2 pressure/adds at 50% HP. SCRUM-539 delivered the
+Design source pack and static/VFX runtime candidates under
+`docs/design/references/bosses/secret_ascension_boss/`,
+`assets/sprites/bosses/secret_ascension_boss.png`, and
+`assets/sprites/effects/secret_ascension_boss_*_telegraph.png`; final animation
+and runtime wiring remain Animator/Back-end scope. Balance benchmark at Act 3 L5
 stage 18: about `47.6k` HP; L20 optimum estimated TTK `121.5s..231.8s`, L20
 random-average estimated TTK `347.3s..559.6s`.

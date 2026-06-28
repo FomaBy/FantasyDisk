@@ -654,6 +654,16 @@ Review previews:
 - `docs/design/previews/new_bosses_mini_elites_contact.png`;
 - `docs/design/previews/new_bosses_mini_elites_scale_preview.png`.
 
+SCRUM-539 adds the optional final-ascension secret boss source pack. The boss is
+a large dragon-disk rift titan, intentionally distinct from `rift_warden`,
+`disk_devourer`, `bone_archon`, `brood_mother`, and `ashen_colossus`. Source and
+runtime candidates live under
+`docs/design/references/bosses/secret_ascension_boss/`,
+`assets/sprites/bosses/secret_ascension_boss.png`, and
+`assets/sprites/effects/secret_ascension_boss_*_telegraph.png`; preview sheets:
+`docs/design/previews/scrum539_secret_ascension_boss_contact.png` and
+`docs/design/previews/scrum539_secret_ascension_boss_scale_preview.png`.
+
 ## Combat VFX Assets
 
 Attack VFX sprites live in `assets/sprites/effects/` and are transparent PNGs intended for tinted `Sprite2D`/tween-based effects, not raw Godot primitive circles. On 2026-06-12 the first weapon VFX polish block replaced the visible persistent pool placeholders with raster fantasy effects:

@@ -1,65 +1,46 @@
 # Design Task: Secret Ascension Boss Source Pack
 
-Status: blocked
+Status: done
 Contour: Codex
-Owner: Design / design-codex-auto-1
-Thread: design-codex-auto-1
-Locked paths: docs/design/references/bosses/secret_ascension_boss/, assets/sprites/bosses/secret_ascension_boss*
+Owner: Design / Codex
+Thread: SCRUM-539 worktree delivery
+Locked paths: docs/design/references/bosses/secret_ascension_boss/, assets/sprites/bosses/secret_ascension_boss*, assets/sprites/effects/secret_ascension_boss_*_telegraph.png, docs/design/previews/scrum539_secret_ascension_boss_*.png
 Jira: SCRUM-539
 
-## Context
+## Result
 
-Jira SCRUM-539 asks for a Design source pack for the optional endgame secret
-ascension boss: a huge, readable, visually distinct boss plus large AoE
-telegraph language. Scope is Design-only: no boss logic, unlocks, balance,
-AnimationPlayer, SpriteFrames, or combat mechanics.
+SCRUM-539 source pack is delivered. The package uses D&D + Dark Fantasy Dragon
+direction, transparent PNGs, no baked text, and a large readable top-down
+three-quarter boss silhouette.
 
-## Attempted Work
+Delivered files:
 
-On 2026-06-28, Codex worker `design-codex-auto-1` claimed SCRUM-539 from the
-active sprint and attempted to generate the first source image through the
-mandatory `fantasydisk-asset-generator` workflow:
+- Source/reference pack: `docs/design/references/bosses/secret_ascension_boss/`
+- Runtime boss candidate: `assets/sprites/bosses/secret_ascension_boss.png`
+- Runtime telegraph candidates:
+  - `assets/sprites/effects/secret_ascension_boss_ring_telegraph.png`
+  - `assets/sprites/effects/secret_ascension_boss_cone_telegraph.png`
+  - `assets/sprites/effects/secret_ascension_boss_beam_telegraph.png`
+  - `assets/sprites/effects/secret_ascension_boss_rupture_telegraph.png`
+- Evidence previews:
+  - `docs/design/previews/scrum539_secret_ascension_boss_contact.png`
+  - `docs/design/previews/scrum539_secret_ascension_boss_scale_preview.png`
+- Source report: `docs/design/references/bosses/secret_ascension_boss/secret_ascension_boss_source_pack_report.json`
 
-```powershell
-python C:\Users\FomaE\.codex\skills\fantasydisk-asset-generator\scripts\generate_asset.py --no-task --quality high --size 1536x1536 --output bosses/secret_ascension_boss/secret_ascension_boss_source_raw.png --prompt "<see reference README>"
-```
+## Handoff
 
-The generator failed before making any PNG:
+Animator: prefer a full-frame boss spritesheet path. Use `1024x1024` source,
+recommended pivot `(512, 960)`, alpha bbox `[180, 42, 843, 984]`, visual radius
+about `390px`, and keep the halo disk/claws within a stable frame envelope.
 
-```text
-error: OPENAI_API_KEY is not set (looked in env and C:\Users\FomaE\.codex\.env, D:\FantasyDisk_worktrees\design-codex-auto-1\.env)
-```
-
-The Python `openai` package is available, but the current worker environment
-only exposes `JIRA_API_TOKEN`; it does not expose `OPENAI_API_KEY`.
-
-## Blocker
-
-Blocked by missing OpenAI Images API credentials in the worker environment.
-Project rules require `fantasydisk-asset-generator` / OpenAI Images API for this
-asset work and forbid replacing it with an ad hoc/manual fallback. No runtime
-candidate PNG or source reference PNG was generated in this pass.
-
-## Prepared Spec
-
-The generation prompt, intended deliverables, telegraph palette, pivot/radius
-notes, and handoff contract are recorded in:
-
-- `docs/design/references/bosses/secret_ascension_boss/README.md`
-
-## Next Step
-
-Unblock by making `OPENAI_API_KEY` available to the worker environment or
-`C:\Users\FomaE\.codex\.env`, then rerun the generator commands from the README.
-After successful generation, alpha-clean/crop the source, create a runtime
-candidate under `assets/sprites/bosses/`, build a preview/contact sheet, update
-`docs/design/content_registry.md` and `docs/design/systems/enemies_bosses.md`,
-then move SCRUM-539 to quality control with the generated paths.
+Back-end: static-plus-VFX is acceptable only as an interim. Use the delivered
+telegraph candidates for ring, cone, beam, and rupture warning overlays; keep
+hits delayed/fair and avoid fallback primitive circles where these assets fit.
 
 ## Verification
 
-- `python -c "import importlib.util; ..."`: `openai=available`.
-- `fantasydisk-asset-generator` invocation: blocked before image generation by
-  missing `OPENAI_API_KEY`.
-- No Godot smoke was run because no runtime assets, scripts, scenes, imports, or
-  UI changed.
+- PNG metadata verified with Pillow: runtime/source candidates are RGBA with
+  transparent alpha.
+- Contact and scale previews regenerated without baked text.
+- No Godot smoke required: design asset/docs handoff only; no scripts, scenes,
+  SpriteFrames, AnimationPlayer, combat logic, or balance changed.
