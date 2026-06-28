@@ -60,6 +60,10 @@ func _initialize() -> void:
 		# Применяем профиль вида (как combat_director). Базу берём после готовности.
 		var base_hp := float(elite.get("max_health")) if elite.get("max_health") != null else 0.0
 		var hp_mult := float(kind.get("hp_mult", 0.55))
+		# Инвариант «мини» (SCRUM-155/SCRUM-607, зеркало runtime_smoke._test_mini_elite_roster):
+		# 0 < hp_mult < 1 — мини убиваема, не толще полной элитки. Ловит регресс умбрелла-ассерта.
+		if hp_mult <= 0.0 or hp_mult >= 1.0:
+			errors.append("вид '%s': hp_mult %.2f вне (0,1) — не 'мини'" % [kid, hp_mult])
 		if elite.get("max_health") != null:
 			elite.set("max_health", base_hp * hp_mult)
 			elite.set("health", base_hp * hp_mult)

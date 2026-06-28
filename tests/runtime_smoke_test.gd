@@ -1570,14 +1570,14 @@ func _test_unique_encounter_pattern_catalog() -> void:
 
 
 func _test_mini_elite_roster(main_scene: PackedScene) -> void:
-	# SCRUM-155: 6 data-driven видов мини-элиток — валидные поля, маппинг сцен,
-	# HP-бюджет «мини» (0 < hp_mult < 1: убиваемы, не полная элитка).
+	# SCRUM-155 / SCRUM-607: 10 data-driven видов мини-элиток — валидные поля,
+	# маппинг сцен, HP-бюджет «мини» (0 < hp_mult < 1: убиваемы, не полная элитка).
 	var m := main_scene.instantiate()
 	root.add_child(m)
 	await process_frame
 	var kinds: Array = m.get("PROGRESSION_DATA").call("mini_elite_kinds")
-	if kinds.size() != 6:
-		_fail("Expected 6 mini-elite kinds in the roster, got %d." % kinds.size())
+	if kinds.size() != 10:
+		_fail("Expected 10 mini-elite kinds in the roster, got %d." % kinds.size())
 		return
 	var seen := {}
 	for entry in kinds:
