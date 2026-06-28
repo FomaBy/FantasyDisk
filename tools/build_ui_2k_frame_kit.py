@@ -72,6 +72,10 @@ SLOTS = [
     # SCRUM-578 (Смерть): per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820,
     # pause-end-модалка). Геометрия общая с победой; здесь редизайнится только путь смерти.
     {"slug": "result_panel", "file": "ui_screens", "const": "RESULT_PANEL_2K", "kind": "frame", "margin_key": "modal", "w": 898, "h": 820},
+    # SCRUM-581 (Подтверждение выхода): свежий @2K-фрейм модалки с modal-профилем (более
+    # ornate бордюр, befitting confirm-диалога) поверх QC_PANEL_2K 600×340. SCRUM-486
+    # держал qc_panel на panel-профиле (общий с меню/нав) — qc_modal даёт диалогу свою рамку.
+    {"slug": "qc_modal", "file": "ui_screens", "const": "QC_PANEL_2K", "kind": "frame", "margin_key": "modal", "w": 600, "h": 340},
     # боевой HUD-блок (SCRUM-564, эпик SCRUM-481): per-слот @2K-рамки из CHUD_*_2K.
     # Тонкие горизонтальные стрипы → margin-профили hud_resource/hud_timer/hud_artifact.
     {"slug": "chud_resource_panel", "file": "ui_screens", "const": "CHUD_RESOURCE_PANEL_2K", "kind": "frame", "margin_key": "hud_resource", "w": 820, "h": 84},

@@ -556,8 +556,10 @@ func _show_quit_confirmation_dialog() -> void:
 	panel.offset_right = 300.0
 	panel.offset_bottom = 170.0
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-486: @2K per-слот фрейм (qc_panel 600×340, ровно размер панели).
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("qc_panel", Vector2(600.0, 340.0)))
+	# SCRUM-581: свежий @2K per-слот фрейм диалога подтверждения (qc_modal 600×340, modal-
+	# профиль — более ornate бордюр befitting confirm-модалки; SCRUM-486 держал qc_panel
+	# на общем panel-профиле). Кнопки остаются на унифицированном 4-state minimal_metal.
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("qc_modal", Vector2(600.0, 340.0)))
 	overlay.add_child(panel)
 
 	var box := VBoxContainer.new()
