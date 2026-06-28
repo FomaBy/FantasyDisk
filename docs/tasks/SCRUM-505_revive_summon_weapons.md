@@ -40,6 +40,25 @@ Files changed:
 Residual risk:
 - Full CSV remains intentionally skipped because this task already documents its SIGABRT/flaky teardown risk; targeted live probe plus budget/global gates are the acceptance evidence for this backend pass.
 
+## QA-Вердикт — PASSED (Codex QA replacement, 2026-06-28)
+
+Статус: PASSED
+
+Проверено в чистом worktree `D:\FantasyDisk_agents\qa_replacement_codex_20260628_181718` на `origin/dev` после rebase. Jira live status перед проверкой: `Контроль качества`; свежий конфликтный QA FAIL от 16:29 проверял старый критерий `0.5x class-best`, тогда как актуальные Jira summary и `docs/design/systems/progression_balance.md` фиксируют критерий `>=0.5x профильной summon-медианы`.
+
+CSV arbiter теперь генерируется без SIGABRT: `tools/character_balance_csv.gd` PASS/exit 0, `build/character_balance_dps.csv` обновлен локально для проверки. По актуальному summon-profile median floor: summon median `lvl20_ideal_20t=724.61`, floor `0.5x=362.30`; `druid/summon_amulet=621.74` (`0.858x`), `chemist/homunculus_vial=611.65` (`0.844x`), `engineer/engineer_sentry_wrench=648.54` (`0.895x`) — все выше floor. Старый class-best check для `chemist/homunculus_vial` остается ниже `0.5x` (`611.65/1359.83=0.450x`), но он явно superseded текущей формулировкой и design doc.
+
+Команды/результаты:
+- `git fetch origin dev`; `git pull --rebase origin dev` → already up to date.
+- `Godot --headless --path . --import` → PASS, только известные duplicate UID warnings.
+- `tests/summon_weapon_crowd_floor_test.gd` → PASS (`summon_amulet` lvl1=129.8/lvl20=621.7; `homunculus_vial` lvl1=194.2/lvl20=611.6; `engineer_sentry_wrench` lvl1=139.7/lvl20=648.5).
+- `tests/weapon_tuning_application_test.gd` → PASS (51 pairs).
+- `tests/summoner_strengthening_test.gd` → PASS.
+- `tests/class_budget_profiles_integrity_test.gd` → PASS (17 classes).
+- `tests/progression_data_api_surface_test.gd` → PASS.
+- `tests/global_damage_balance_smoke_test.gd` → PASS (51 pairs; worst CCT +22%).
+- `tools/balance_harness.gd` → PASS/exit 0, reports generated.
+
 ⟪Прежний статус/QA notes ниже сохранены для истории.⟫ 2026-06-28 claude-backend HEAD=8775d6f6: пометил `blocked` и вернул в «К выполнению», чтобы тикет не переклеймивался каждым автопрогоном (find_next пропускает blocked-метку). Код зелёный и исчерпан; разблокировка = PM-решение по числовой AC связкой 504/505/506 ↔ 544/546. 2026-06-28 claude-backend HEAD=dbd7f483: закрыл QA-блокер (а) — `tests/summon_weapon_crowd_floor_test.gd` теперь SIGABRT-safe на sentry-турельном teardown (queue_free вместо free() + disable weapon _process + idle-settle), 4/4 чистых прогона (sentry проходит каждый раз, было 2/4). Остаётся ТОЛЬКО блокер (б): числовая AC устарела vs живой CSV/comfort-band SCRUM-544/546 — формальная правка AC = PM-решение, как у сестёр 504/506. Рекомендация: адъюдицировать 504/505/506 связкой с 544/546 одним PM-решением. (2026-06-28 r4-impl5 ре-верифицировал на HEAD=dbd7f483, single-Godot: runtime_smoke PASS + summon_weapon_crowd_floor PASS детерминированно — amulet 20t lvl1=35/lvl20=429.8, homunculus 14/94.9, sentry 29.5/56.1, lvl1 baseline цел, sentry-флак не воспроизводится; код-часть зелёная и исчерпана, остаётся блокер (б) — SCRUM-544 на [hold], SCRUM-546 Готово.) ⟪Прежний QA-вердикт ниже сохранён.⟫ (QA FAIL 2026-06-28 r3-qa1 на HEAD=bd89b73e: AC-арбитр character_balance_csv.gd воспроизводимо SIGABRT-ит, build/character_balance_dps.csv не перегенерён → буквальный AC «≥0.5x класс-лучшего по 20t» нечем доказать; числа AC устарели (druid класс-лучший = raven_totem 4270, не briar 30591); AC ре-скоунут на comfort-полосу SCRUM-544, которая сама ещё «К выполнению»; engineer_sentry_wrench ниже полосы даже по проекции импла; сёстры SCRUM-504/506 с тем же блокером тоже «К выполнению». Зелёное: weapon_tuning_application/summoner_strengthening/class_budget_profiles_integrity/progression_data_api_surface/global_damage_balance_smoke; summon_weapon_crowd_floor PASS когда завершается, но флак 2/4. Нужно: стабильный CSV-арбитр без SIGABRT (покрыть sentry) + PM-решение по числовой AC, лучше связкой с 504/506/544.)
 
 ## Что и зачем

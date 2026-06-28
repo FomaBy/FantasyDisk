@@ -2752,5 +2752,10 @@
   "key": "SCRUM-500",
   "status": "Готово",
   "desc_hash": "9a791612e39395e3ac02081da31a6f3d"
+ },
+ "SCRUM-505_revive_summon_weapons.md": {
+  "key": "SCRUM-505",
+  "status": "Готово",
+  "desc_hash": "7b6ea3aed683ae4e56f1f98283e7233a"
  }
 }
