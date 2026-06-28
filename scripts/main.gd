@@ -428,6 +428,7 @@ var pending_rebind_action := ""
 var current_shop_items := []
 var current_shop_purchased := []
 var current_shop_node_key := ""
+var run_used_shop := false
 var shop_reentry_pending := false
 var shop_reentry_route_stage := -1
 var shop_reentry_branch_index := -1
@@ -710,6 +711,7 @@ func _run_autosave_state() -> Dictionary:
 		"current_shop_items": current_shop_items.duplicate(true),
 		"current_shop_purchased": current_shop_purchased.duplicate(true),
 		"current_shop_node_key": current_shop_node_key,
+		"run_used_shop": run_used_shop,
 		"shop_reentry_pending": shop_reentry_pending,
 		"shop_reentry_route_stage": shop_reentry_route_stage,
 		"shop_reentry_branch_index": shop_reentry_branch_index,
@@ -753,6 +755,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	current_shop_items = _autosave_array(state.get("current_shop_items", []))
 	current_shop_purchased = _autosave_array(state.get("current_shop_purchased", []))
 	current_shop_node_key = str(state.get("current_shop_node_key", ""))
+	run_used_shop = bool(state.get("run_used_shop", false))
 	shop_reentry_pending = bool(state.get("shop_reentry_pending", false))
 	shop_reentry_route_stage = int(state.get("shop_reentry_route_stage", -1))
 	shop_reentry_branch_index = int(state.get("shop_reentry_branch_index", -1))
@@ -930,7 +933,7 @@ func record_boss_victory() -> void:
 	# used_shop=false только если за ВЕСЬ забег не куплено ни одного предмета.
 	var run_context := {
 		"weapon_id": selected_weapon_id,
-		"used_shop": not current_shop_purchased.is_empty(),
+		"used_shop": run_used_shop,
 	}
 	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level, run_context)
 	# SCRUM-619: если это был секретный бой Акта 3 — разовая мета-награда (идемпотентно).

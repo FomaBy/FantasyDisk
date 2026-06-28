@@ -2389,6 +2389,7 @@ func _test_run_autosave_continue_prompt(main_scene: PackedScene) -> void:
 	save_main.set("selected_ascension_level", 2)
 	save_main.set("route_stage", 3)
 	save_main.set("route_selected_indices", [1, 0, 2])
+	save_main.set("run_used_shop", true)
 	save_main.set("run_player_snapshot", {
 		"character_id": "dark_mage",
 		"weapon_id": "shadow_orb",
@@ -2437,6 +2438,9 @@ func _test_run_autosave_continue_prompt(main_scene: PackedScene) -> void:
 	var restored_snapshot: Dictionary = continue_main.get("run_player_snapshot")
 	if int(restored_snapshot.get("money", 0)) != 314 or int(restored_snapshot.get("level", 0)) != 5:
 		_fail("Expected Continue to restore player money/level snapshot.")
+		return
+	if not bool(continue_main.get("run_used_shop")):
+		_fail("Expected Continue to restore whole-run shop usage for class challenges.")
 		return
 	continue_main.queue_free()
 	await process_frame
@@ -2928,6 +2932,10 @@ func _test_noncombat_nodes(main: Node) -> void:
 		quit(1)
 		return
 	await process_frame
+	if not bool(main.get("run_used_shop")):
+		push_error("Expected successful shop purchase to mark whole-run shop usage.")
+		quit(1)
+		return
 	if not bool(main.get("current_shop_purchased")[0]):
 		push_error("Expected bought shop item to be marked as purchased.")
 		quit(1)
@@ -2993,6 +3001,10 @@ func _test_noncombat_nodes(main: Node) -> void:
 			push_error("Expected new shop node stock to start unpurchased.")
 			quit(1)
 			return
+	if not bool(main.get("run_used_shop")):
+		push_error("Expected whole-run shop usage to survive transient shop stock reset.")
+		quit(1)
+		return
 	if main.get("hud_layer") == null:
 		push_error("Expected shop screen to keep the compact run HUD.")
 		quit(1)

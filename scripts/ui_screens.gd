@@ -1262,6 +1262,7 @@ func _show_character_select() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.run_used_shop = false
 	game.shop_reentry_pending = false
 	game.shop_reentry_route_stage = -1
 	game.shop_reentry_branch_index = -1
@@ -3483,6 +3484,7 @@ func _quit_current_run() -> void:
 	game.pending_event_combat.clear()
 	game.pending_level_ups = 0
 	game.current_route_choice = ""
+	game.run_used_shop = false
 	game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 	game.route_nodes = game.route._generate_route()
 	game._clear_world()
@@ -5084,6 +5086,7 @@ func _show_victory_screen() -> void:
 		game.used_event_ids.clear()
 		game.current_event_definition.clear()
 		game.pending_event_combat.clear()
+		game.run_used_shop = false
 		game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
@@ -5111,6 +5114,7 @@ func _show_death_screen(reason := "") -> void:
 		game.used_event_ids.clear()
 		game.current_event_definition.clear()
 		game.pending_event_combat.clear()
+		game.run_used_shop = false
 		game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
@@ -6010,6 +6014,7 @@ func _buy_shop_item(item: Dictionary) -> bool:
 	temp_player.apply_reward(item)
 	game.record_codex_artifact_discovery(item)
 	game.combat._store_player_snapshot(temp_player)
+	game.run_used_shop = true
 	temp_player.queue_free()
 	return true
 
