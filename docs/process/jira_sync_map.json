@@ -2797,5 +2797,10 @@
   "key": "SCRUM-527",
   "status": "Готово",
   "desc_hash": "d684f771b2a076e6e96e5967fadb21cd"
+ },
+ "SCRUM-525_attribute_tooltip_influence_and_levelup_preview.md": {
+  "key": "SCRUM-525",
+  "status": "Готово",
+  "desc_hash": "fb8581d2b9f4c33673548fe4db9ba98a"
  }
 }
