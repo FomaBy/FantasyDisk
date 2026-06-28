@@ -1,0 +1,40 @@
+{
+  "canvas": {"width": 2560, "height": 1440},
+  "policy": {"min_gap": 16, "allow_overlap": false},
+  "content": {
+    "title": "Выбор оружия",
+    "subtitle": "Бесерк: выбери стартовое оружие.",
+    "card1_title": "Двуручный меч",
+    "card1_desc": "Широкие рубящие удары по ближней дуге.",
+    "card1_stats": "Дальность 100 | Радиус 100 | Перезарядка 1.20с",
+    "card2_title": "Двуручный топор",
+    "card2_desc": "Тяжёлый круговой замах для плотной толпы.",
+    "card2_stats": "Дальность 110 | Радиус 125 | Перезарядка 1.45с",
+    "card3_title": "Двуручный молот",
+    "card3_desc": "Медленный удар с высоким отбрасыванием.",
+    "card3_stats": "Дальность 100 | Радиус 100 | Перезарядка 1.70с",
+    "back": "Назад"
+  },
+  "elements": [
+    {"id": "ws_panel", "kind": "frame", "x": 420, "y": 190, "w": 1720, "h": 1060, "min_w": 1280, "min_h": 795},
+    {"id": "ws_safe", "kind": "safe_zone", "parent": "ws_panel", "content_zone": true, "collision": false, "x": 498, "y": 286, "w": 1564, "h": 898, "min_w": 1040, "min_h": 674},
+    {"id": "ws_title", "kind": "label", "parent": "ws_safe", "content_zone": true, "collision": false, "x": 498, "y": 296, "w": 1564, "h": 64, "text_key": "title", "max_font": 54, "min_font": 34},
+    {"id": "ws_subtitle", "kind": "label", "parent": "ws_safe", "content_zone": true, "collision": false, "x": 498, "y": 376, "w": 1564, "h": 42, "text_key": "subtitle", "max_font": 26, "min_font": 18},
+    {"id": "ws_card_0", "kind": "button", "parent": "ws_safe", "content_zone": true, "x": 498, "y": 446, "w": 1564, "h": 190, "min_w": 1040, "min_h": 160},
+    {"id": "ws_card_0_icon", "kind": "icon", "parent": "ws_card_0", "content_zone": true, "collision": false, "x": 546, "y": 481, "w": 120, "h": 120},
+    {"id": "ws_card_0_title", "kind": "label", "parent": "ws_card_0", "content_zone": true, "collision": false, "x": 700, "y": 470, "w": 720, "h": 38, "text_key": "card1_title", "max_font": 28, "min_font": 20},
+    {"id": "ws_card_0_desc", "kind": "label", "parent": "ws_card_0", "content_zone": true, "collision": false, "x": 700, "y": 516, "w": 720, "h": 54, "text_key": "card1_desc", "max_font": 22, "min_font": 16},
+    {"id": "ws_card_0_stats", "kind": "label", "parent": "ws_card_0", "content_zone": true, "collision": false, "x": 700, "y": 578, "w": 880, "h": 32, "text_key": "card1_stats", "max_font": 20, "min_font": 14},
+    {"id": "ws_card_1", "kind": "button", "parent": "ws_safe", "content_zone": true, "x": 498, "y": 664, "w": 1564, "h": 190, "min_w": 1040, "min_h": 160},
+    {"id": "ws_card_1_icon", "kind": "icon", "parent": "ws_card_1", "content_zone": true, "collision": false, "x": 546, "y": 699, "w": 120, "h": 120},
+    {"id": "ws_card_1_title", "kind": "label", "parent": "ws_card_1", "content_zone": true, "collision": false, "x": 700, "y": 688, "w": 720, "h": 38, "text_key": "card2_title", "max_font": 28, "min_font": 20},
+    {"id": "ws_card_1_desc", "kind": "label", "parent": "ws_card_1", "content_zone": true, "collision": false, "x": 700, "y": 734, "w": 720, "h": 54, "text_key": "card2_desc", "max_font": 22, "min_font": 16},
+    {"id": "ws_card_1_stats", "kind": "label", "parent": "ws_card_1", "content_zone": true, "collision": false, "x": 700, "y": 796, "w": 880, "h": 32, "text_key": "card2_stats", "max_font": 20, "min_font": 14},
+    {"id": "ws_card_2", "kind": "button", "parent": "ws_safe", "content_zone": true, "x": 498, "y": 882, "w": 1564, "h": 190, "min_w": 1040, "min_h": 160},
+    {"id": "ws_card_2_icon", "kind": "icon", "parent": "ws_card_2", "content_zone": true, "collision": false, "x": 546, "y": 917, "w": 120, "h": 120},
+    {"id": "ws_card_2_title", "kind": "label", "parent": "ws_card_2", "content_zone": true, "collision": false, "x": 700, "y": 906, "w": 720, "h": 38, "text_key": "card3_title", "max_font": 28, "min_font": 20},
+    {"id": "ws_card_2_desc", "kind": "label", "parent": "ws_card_2", "content_zone": true, "collision": false, "x": 700, "y": 952, "w": 720, "h": 54, "text_key": "card3_desc", "max_font": 22, "min_font": 16},
+    {"id": "ws_card_2_stats", "kind": "label", "parent": "ws_card_2", "content_zone": true, "collision": false, "x": 700, "y": 1014, "w": 880, "h": 32, "text_key": "card3_stats", "max_font": 20, "min_font": 14},
+    {"id": "ws_back", "kind": "button", "parent": "ws_safe", "content_zone": true, "x": 1140, "y": 1120, "w": 280, "h": 60, "text_key": "back", "max_font": 26, "min_font": 18}
+  ]
+}

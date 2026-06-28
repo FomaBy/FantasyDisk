@@ -7374,8 +7374,14 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		if rect.size.y < 110.0:
 			_fail("Expected weapon select card %s to keep readable row height, got %s." % [weapon_id, rect])
 			return
-		if button.get_theme_stylebox("normal") is StyleBoxTexture or button.get_theme_stylebox("hover") is StyleBoxTexture:
-			_fail("Expected weapon select card %s to use lightweight flat styling, not heavy button textures." % weapon_id)
+		var normal_style := button.get_theme_stylebox("normal")
+		var hover_style := button.get_theme_stylebox("hover")
+		if not normal_style is StyleBoxTexture or not hover_style is StyleBoxTexture:
+			_fail("Expected weapon select card %s to use SCRUM-562 2K frame textures." % weapon_id)
+			return
+		var normal_texture := (normal_style as StyleBoxTexture).texture
+		if normal_texture == null or normal_texture.resource_path != "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_card.png":
+			_fail("Expected weapon select card %s to use ws_card frame texture." % weapon_id)
 			return
 		var sprite := button.find_child("WeaponSelectSprite_%s" % weapon_id, true, false) as TextureRect
 		var expected_sprite := _expected_weapon_sprite_path(weapon_id)
@@ -7386,6 +7392,18 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		if stats == null or not stats.text.contains("Дальность") or not stats.text.contains("Перезарядка"):
 			_fail("Expected weapon select card %s to show Russian stat labels." % weapon_id)
 			return
+	var back_button := weapon_main.find_child("WeaponSelectBackButton", true, false) as Button
+	if back_button == null:
+		_fail("Expected SCRUM-562 weapon select back button.")
+		return
+	var back_style := back_button.get_theme_stylebox("normal")
+	if not back_style is StyleBoxTexture:
+		_fail("Expected weapon select back button to use SCRUM-562 2K frame texture.")
+		return
+	var back_texture := (back_style as StyleBoxTexture).texture
+	if back_texture == null or back_texture.resource_path != "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_btn_back.png":
+		_fail("Expected weapon select back button to use ws_btn_back frame texture.")
+		return
 	var first_button := weapon_main.find_child("WeaponOption_%s" % str(weapon_ids[0]), true, false) as Button
 	first_button.pressed.emit()
 	await process_frame

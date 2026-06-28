@@ -3639,18 +3639,25 @@ func _update_hero_select_info(info_labels: Dictionary, title: String, descriptio
 # РИСК overflow по высоте: title+subtitle+(до 4 карточек×189)+back > 522 → ScrollContainer
 # скрывает вылет (берсерк = 3 оружия влезают; персонажи с 4 оружиями уходят в скролл).
 const WS_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const WS_PANEL_2K := Rect2(720, 390, 1120, 660)
-const WS_SAFE_2K := Rect2(778, 462, 1004, 522)           # panel минус content (58,72,58,66)
-const WS_TITLE_2K := Rect2(778, 462, 1004, 54)
-const WS_SUBTITLE_2K := Rect2(778, 532, 1004, 24)
-const WS_CARD_2K := Rect2(778, 572, 1004, 173)           # шаблон карточки (EXPAND_FILL по safe-w)
-const WS_CARD_STEP_2K := 189.0                           # высота 173 + separation 16
-const WS_BTN_BACK_2K := Rect2(940, 880, 280, 60)         # под стеком карточек, центр safe-x
+const WS_PANEL_2K := Rect2(420, 190, 1720, 1060)
+const WS_SAFE_2K := Rect2(498, 286, 1564, 898)
+const WS_TITLE_2K := Rect2(498, 296, 1564, 64)
+const WS_SUBTITLE_2K := Rect2(498, 376, 1564, 42)
+const WS_CARD_2K := Rect2(498, 446, 1564, 190)
+const WS_CARD_STEP_2K := 218.0
+const WS_BTN_BACK_2K := Rect2(1140, 1120, 280, 60)
 
 
 func _show_weapon_select() -> void:
 	var character_config = game.PROGRESSION_DATA.character_config(game.selected_character_id)
-	var box := _create_menu_box("Выбор оружия", "%s: выбери стартовый подкласс/оружие." % str(character_config["title"]), "weapon_select")
+	var box := _create_menu_box(
+		"Выбор оружия",
+		"%s: выбери стартовое оружие." % str(character_config["title"]),
+		"weapon_select",
+		_overhaul_2k_frame_style("ws_panel", WS_PANEL_2K.size),
+		WS_PANEL_2K.size
+	)
+	box.add_theme_constant_override("separation", 24)
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
 		var button := _make_weapon_select_card(config)
@@ -3665,6 +3672,10 @@ func _show_weapon_select() -> void:
 		box.add_child(button)
 
 	var back_button := _make_button("Назад")
+	back_button.name = "WeaponSelectBackButton"
+	back_button.custom_minimum_size = WS_BTN_BACK_2K.size
+	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_apply_overhaul_2k_button_theme(back_button, "ws_btn_back", WS_BTN_BACK_2K.size)
 	back_button.pressed.connect(_show_character_select)
 	box.add_child(back_button)
 	game.ui_escape_action = _show_character_select
@@ -3676,31 +3687,32 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	button.name = "WeaponOption_%s" % weapon_id
 	button.set_meta("weapon_id", weapon_id)
 	button.text = ""
-	button.custom_minimum_size = Vector2(860, 173)
+	button.custom_minimum_size = WS_CARD_2K.size
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [str(config.get("title", weapon_id)), str(config.get("description", ""))]
-	button.add_theme_stylebox_override("normal", _weapon_card_style(false))
-	button.add_theme_stylebox_override("hover", _weapon_card_style(true))
-	button.add_theme_stylebox_override("pressed", _weapon_card_style(true, true))
-	button.add_theme_stylebox_override("focus", _weapon_card_style(true))
-	button.add_theme_stylebox_override("disabled", _weapon_card_style(false, false, true))
+	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size))
+	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, Color(0.90, 0.84, 0.76, 1.0)))
+	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, Color(0.58, 0.58, 0.58, 0.82)))
 
 	var row := HBoxContainer.new()
 	row.name = "WeaponOptionContent_%s" % weapon_id
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.set_anchors_preset(Control.PRESET_FULL_RECT)
-	row.offset_left = 18.0
-	row.offset_top = 12.0
-	row.offset_right = -18.0
-	row.offset_bottom = -12.0
-	row.add_theme_constant_override("separation", 18)
+	var card_content := _overhaul_2k_content_margins("ws_card", WS_CARD_2K.size)
+	row.offset_left = card_content.x
+	row.offset_top = card_content.y
+	row.offset_right = -card_content.z
+	row.offset_bottom = -card_content.w
+	row.add_theme_constant_override("separation", 34)
 	button.add_child(row)
 
 	var sprite := TextureRect.new()
 	sprite.name = "WeaponSelectSprite_%s" % weapon_id
-	sprite.custom_minimum_size = Vector2(112, 112)
+	sprite.custom_minimum_size = Vector2(120, 120)
 	sprite.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	sprite.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -3719,7 +3731,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	var title_label := Label.new()
 	title_label.name = "WeaponSelectTitle_%s" % weapon_id
 	title_label.text = str(config.get("title", weapon_id))
-	title_label.add_theme_font_size_override("font_size", 21)
+	title_label.add_theme_font_size_override("font_size", 28)
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
@@ -3728,22 +3740,22 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	desc_label.name = "WeaponSelectDescription_%s" % weapon_id
 	desc_label.text = str(config.get("description", ""))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 14)
+	desc_label.add_theme_font_size_override("font_size", 20)
 	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
 
 	var stats_label := Label.new()
 	stats_label.name = "WeaponSelectStats_%s" % weapon_id
-	stats_label.custom_minimum_size = Vector2(190, 0)
+	stats_label.custom_minimum_size = Vector2(360, 0)
 	stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	stats_label.text = "Дальность: %.0f\nРадиус: %.0f\nПерезарядка: %.2fс" % [
+	stats_label.text = "Дальность %.0f\nРадиус %.0f\nПерезарядка %.2fс" % [
 		float(config.get("attack_range", 0.0)),
 		float(config.get("aoe_radius", 0.0)),
 		float(config.get("fire_interval", 0.0)),
 	]
-	stats_label.add_theme_font_size_override("font_size", 14)
+	stats_label.add_theme_font_size_override("font_size", 18)
 	stats_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
 	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(stats_label)
@@ -6462,7 +6474,7 @@ func _current_ui_screen_name() -> String:
 	return "World"
 
 
-func _create_menu_box(title: String, subtitle: String, screen_background_id := "", panel_style_override: StyleBox = null) -> VBoxContainer:
+func _create_menu_box(title: String, subtitle: String, screen_background_id := "", panel_style_override: StyleBox = null, panel_display_size := Vector2.ZERO) -> VBoxContainer:
 	game._clear_ui()
 
 	game.ui_layer = CanvasLayer.new()
@@ -6486,7 +6498,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	var economy_panel := _is_economy_screen_background(screen_background_id)
 	var pause_end_panel := _is_pause_end_screen_background(screen_background_id)
 	var display_size := _pause_end_modal_display_size(screen_background_id) if pause_end_panel else Vector2.ZERO
-	var half_size := display_size * 0.5 if pause_end_panel else (_economy_menu_panel_half_size(screen_background_id) if economy_panel else Vector2(560.0, 330.0))
+	var half_size := panel_display_size * 0.5 if panel_display_size != Vector2.ZERO else (display_size * 0.5 if pause_end_panel else (_economy_menu_panel_half_size(screen_background_id) if economy_panel else Vector2(560.0, 330.0)))
 	panel.offset_left = -half_size.x
 	panel.offset_top = -half_size.y
 	panel.offset_right = half_size.x

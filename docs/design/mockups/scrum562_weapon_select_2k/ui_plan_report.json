@@ -1,0 +1,260 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "ws_panel",
+      "kind": "frame",
+      "rect": [
+        420,
+        190,
+        1720,
+        1060
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ws_safe",
+      "kind": "safe_zone",
+      "rect": [
+        498,
+        286,
+        1564,
+        898
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ws_title",
+      "kind": "label",
+      "rect": [
+        498,
+        296,
+        1564,
+        64
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 54
+    },
+    {
+      "id": "ws_subtitle",
+      "kind": "label",
+      "rect": [
+        498,
+        376,
+        1564,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "ws_card_0",
+      "kind": "button",
+      "rect": [
+        498,
+        446,
+        1564,
+        190
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ws_card_0_icon",
+      "kind": "icon",
+      "rect": [
+        546,
+        481,
+        120,
+        120
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ws_card_0_title",
+      "kind": "label",
+      "rect": [
+        700,
+        470,
+        720,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "ws_card_0_desc",
+      "kind": "label",
+      "rect": [
+        700,
+        516,
+        720,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "ws_card_0_stats",
+      "kind": "label",
+      "rect": [
+        700,
+        578,
+        880,
+        32
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "ws_card_1",
+      "kind": "button",
+      "rect": [
+        498,
+        664,
+        1564,
+        190
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ws_card_1_icon",
+      "kind": "icon",
+      "rect": [
+        546,
+        699,
+        120,
+        120
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ws_card_1_title",
+      "kind": "label",
+      "rect": [
+        700,
+        688,
+        720,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "ws_card_1_desc",
+      "kind": "label",
+      "rect": [
+        700,
+        734,
+        720,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "ws_card_1_stats",
+      "kind": "label",
+      "rect": [
+        700,
+        796,
+        880,
+        32
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "ws_card_2",
+      "kind": "button",
+      "rect": [
+        498,
+        882,
+        1564,
+        190
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ws_card_2_icon",
+      "kind": "icon",
+      "rect": [
+        546,
+        917,
+        120,
+        120
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ws_card_2_title",
+      "kind": "label",
+      "rect": [
+        700,
+        906,
+        720,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "ws_card_2_desc",
+      "kind": "label",
+      "rect": [
+        700,
+        952,
+        720,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "ws_card_2_stats",
+      "kind": "label",
+      "rect": [
+        700,
+        1014,
+        880,
+        32
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "ws_back",
+      "kind": "button",
+      "rect": [
+        1140,
+        1120,
+        280,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    }
+  ]
+}

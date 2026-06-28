@@ -446,6 +446,7 @@ clamp 820). Контент в ScrollContainer→VBox (center, sep 12): crest→t
 | Слот карусели (первый; шаг X=248) | `HS4_CAROUSEL_SLOT_2K` | 237 | 1230 | 101 | 101 |
 
 ### 4. Выбор оружия — `_show_weapon_select` · `WS_*_2K`
+SCRUM-562 live 2K pass: Weapon Select now has a dedicated frame contract instead of the old generic `1120x660` economy panel. Runtime uses `WS_PANEL_2K = Rect2(420,190,1720,1060)`, `WS_SAFE_2K = Rect2(498,286,1564,898)`, `WS_CARD_2K = Rect2(498,446,1564,190)` with step `218`, and `WS_BTN_BACK_2K = Rect2(1140,1120,280,60)`. The `ws_panel`, `ws_card`, and `ws_btn_back` assets are generated in `assets/sprites/ui/frames/overhaul_2k/`; content margins keep all title/card/button text and weapon sprites inside the empty frame interiors. The start-boon picker keeps the old shared `weapon_select` panel, and SCRUM-563 route-map layout is not part of this scope.
 Economy-панель 1120×660 по центру. Карточки оружия (фикс высота 173, EXPAND_FILL по ширине
 safe) в ScrollContainer→VBox (sep 16). Берсерк = 3 оружия влезают; персонажи с 4 оружиями
 уходят в вертикальный скролл (дизайн-инвариант сохранён через скролл).

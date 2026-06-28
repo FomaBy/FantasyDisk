@@ -69,6 +69,11 @@ SLOTS = [
     # SCRUM-573 (Улучшение): per-слот @2K-рамка панели улучшения (economy-panel "upgrade").
     # Карточки выбора переиспользуют общий economy-choice-арт (как остальные economy-экраны).
     {"slug": "upgrade_panel", "file": "ui_screens", "const": "UPGRADE_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 730},
+    # SCRUM-562 (Выбор оружия): Weapon Select gets a larger dedicated panel and card/button frames.
+    # Start-boon still uses the generic weapon_select economy panel; do not route-map these slots into SCRUM-563.
+    {"slug": "ws_panel", "file": "ui_screens", "const": "WS_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 1060},
+    {"slug": "ws_card", "file": "ui_screens", "const": "WS_CARD_2K", "kind": "frame", "margin_key": "card", "w": 1564, "h": 190},
+    {"slug": "ws_btn_back", "file": "ui_screens", "const": "WS_BTN_BACK_2K", "kind": "button", "margin_key": "pause", "w": 280, "h": 60},
     # SCRUM-578 (Смерть): per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820,
     # pause-end-модалка). Геометрия общая с победой; здесь редизайнится только путь смерти.
     {"slug": "result_panel", "file": "ui_screens", "const": "RESULT_PANEL_2K", "kind": "frame", "margin_key": "modal", "w": 898, "h": 820},
