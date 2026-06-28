@@ -44,3 +44,16 @@ hits delayed/fair and avoid fallback primitive circles where these assets fit.
 - Contact and scale previews regenerated without baked text.
 - No Godot smoke required: design asset/docs handoff only; no scripts, scenes,
   SpriteFrames, AnimationPlayer, combat logic, or balance changed.
+
+## QA Verdict - 2026-06-28
+
+Status: QA PASSED by `anim-loop-1` fallback QA.
+
+Read-only verification on current `origin/dev`:
+
+- Required runtime candidate exists: `assets/sprites/bosses/secret_ascension_boss.png`.
+- Required telegraph candidates exist: ring, cone, beam, rupture under `assets/sprites/effects/`.
+- Checked boss + 4 telegraph PNGs with Pillow: all RGBA, alpha extrema include `0` and `255`, and `edge_alpha_pixels = 0`.
+- Boss candidate is `1024x1024`; alpha bbox `[180, 42, 843, 984]` matches `secret_ascension_boss_source_pack_report.json`.
+- Contact preview `docs/design/previews/scrum539_secret_ascension_boss_contact.png` is readable and contains the boss plus all four VFX candidates.
+- No script/scene/runtime logic changed by this QA pass.
