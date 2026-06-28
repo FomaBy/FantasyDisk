@@ -1,6 +1,6 @@
 # SCRUM-541 Secret Boss: max Ascension Act 3 follow-up
 
-Status: done 2026-06-28.
+Status: К выполнению (QA RED 2026-06-28; blocker filed as SCRUM-656).
 
 Owner: backend-loop-rawls-peer. Locked paths:
 `scripts/meta_progression.gd`, `scripts/main.gd`, `scripts/combat_director.gd`,
@@ -55,6 +55,31 @@ a global class rebalance. Random-average builds are expected to struggle hard.
 - PASS: `Godot --headless --path . --script res://tests/boss_elite_ttk_gate.gd`
 - PASS: `Godot --headless --path . --script res://tools/class_damage_table_3variants.gd`
 - PASS: `Godot --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+## QA Verdict: RED (2026-06-28, qa_508_codex190526)
+
+Current `origin/dev` was checked in clean QA worktree
+`C:\Users\FomaE\FantasyDisk_agents\qa_508_codex190526` with Godot 4.7 headless.
+
+Passed:
+- `tests/secret_encounter_test.gd` - PASS: max selected Ascension gate,
+  separate boss id, one-time reward.
+- `tests/boss_elite_ttk_gate.gd` - PASS: boss TTK stays at least 1.35x elite
+  at stages 0/2/4/6/8/10.
+- `tools/balance_harness.gd` - PASS.
+- `tools/class_damage_table_3variants.gd` - PASS.
+
+Failed blocker:
+- `tests/runtime_smoke_boss_elite_test.gd` - FAIL, exit 1.
+- Key assertion: `Expected elite iron_bastion to expose its unique encounter
+  pattern meta.`
+- Same gate repeatedly logs runtime errors in `combat_director.gd:758` and
+  `ui_screens.gd:8554/8534/8563` (`float`/`int` constructor calls and `max_hp`
+  Dictionary access).
+
+Because `runtime_smoke_boss_elite_test.gd` is an explicit SCRUM-541 acceptance
+gate, QA cannot accept the task. Jira bug filed and linked: SCRUM-656.
+SCRUM-541 was returned to `К выполнению`.
 
 ## Follow-up
 
