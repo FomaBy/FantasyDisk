@@ -167,6 +167,13 @@ clamp 16px от краёв экрана.
 | Размер-шаблон (w×h) | `ST_PANEL_2K` | 430 × авто |
 | Инсет текста | `ST_LABEL_INSET_2K` | 20 (×2 = 40) |
 
+SCRUM-586 подготовил новый Design-source package для 2K tooltip frame:
+`docs/design/mockups/scrum586_stat_tooltip/spec.md`,
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png`.
+Новый ассет требует safe content margins `44,42,44,42`; старый `20` px inset
+нельзя переносить на этот frame без Back-end интеграции/верификатора (handoff
+SCRUM-593).
+
 ### 8. Форма фидбэка — `_show_feedback_overlay` · `FB_*`
 Модалка со скроллом: фикс заголовок сверху, фикс статус + кнопки снизу, прокрутка в
 середине (поле ввода + превью скриншота). Панель clamp → 940×780.

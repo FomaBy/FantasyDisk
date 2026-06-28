@@ -179,6 +179,16 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
+SCRUM-586 adds the Design-source package for the 2K stat tooltip frame used by
+`StatTooltipPanel` / `_make_custom_tooltip` in `scripts/pause_stats_menu.gd`.
+The OpenAI source lives at
+`docs/design/references/scrum586_stat_tooltip/stat_tooltip_frame_source.png`,
+the spec at `docs/design/mockups/scrum586_stat_tooltip/spec.md`, and the
+runtime candidate at
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png`
+(`430x288` RGBA, texture margins `32/32/32/32`, content margins
+`44/42/44/42`). Runtime wiring is tracked separately in SCRUM-593.
+
 SCRUM-273 superseded the SCRUM-147 button-only Parchment & Wax Seal kit with the
 historical **Red & Gold Dragon button kit** from
 `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live
