@@ -74,6 +74,75 @@ func _initialize() -> void:
 	if Meta.class_progression().size() < 3:
 		errors.append("порогов прогрессии класса подозрительно мало")
 
+	# --- SCRUM-620: челленджи класса за разнообразие забега ---
+	# Бэк-совместимость: thief выше набрал 3 победы БЕЗ weapon_id (run_context пуст) —
+	# weapon_diversity НЕ должен сработать (пустой набор оружий).
+	if Meta.class_challenges_done(state, "thief").has("weapon_master"):
+		errors.append("620: weapon_master не должен срабатывать без weapon_id (legacy-вызовы)")
+
+	var ch := Meta.default_state()
+	# 1. Diversity: победы 3 РАЗНЫМИ оружиями → weapon_master done.
+	ch = Meta.record_boss_victory(ch, "ranger", 0, {"weapon_id": "bow", "used_shop": true})
+	ch = Meta.record_boss_victory(ch, "ranger", 0, {"weapon_id": "bow", "used_shop": true})  # дубль оружия — не считается новым
+	if Meta.class_challenges_done(ch, "ranger").has("weapon_master"):
+		errors.append("620: weapon_master не должен срабатывать на 1 уникальном оружии (2 победы одним bow)")
+	ch = Meta.record_boss_victory(ch, "ranger", 0, {"weapon_id": "rifle", "used_shop": true})
+	ch = Meta.record_boss_victory(ch, "ranger", 0, {"weapon_id": "crossbow", "used_shop": true})
+	if not Meta.class_challenges_done(ch, "ranger").has("weapon_master"):
+		errors.append("620: 3 разных оружия должны выполнить weapon_master")
+	# Прогресс-метрики: ровно 3 уникальных оружия.
+	if Meta.class_challenge_progress_for(ch, "ranger")["weapons"].size() != 3:
+		errors.append("620: weapons прогресс должен содержать 3 уникальных, получено %d" % Meta.class_challenge_progress_for(ch, "ranger")["weapons"].size())
+
+	# 2. Дедуп: повторное выполнение НЕ дублирует id в done.
+	var done_before := Meta.class_challenges_done(ch, "ranger").size()
+	ch = Meta.record_boss_victory(ch, "ranger", 0, {"weapon_id": "bow", "used_shop": true})
+	if Meta.class_challenges_done(ch, "ranger").size() != done_before:
+		errors.append("620: повторная победа дублирует выполненный челлендж (было %d, стало %d)" % [done_before, Meta.class_challenges_done(ch, "ranger").size()])
+
+	# 3. Изоляция: бонусы челленджей не протекают на другой класс.
+	if not Meta.class_challenge_modifiers(ch, "berserk").is_empty():
+		errors.append("620: class_challenge_modifiers протекает на чужой класс")
+
+	# 4. Модификаторы выполненного weapon_master → class_damage_mult 0.03.
+	var ranger_ch_mods := Meta.class_challenge_modifiers(ch, "ranger")
+	if not is_equal_approx(float(ranger_ch_mods.get("class_damage_mult", 0.0)), 0.03):
+		errors.append("620: weapon_master должен давать class_damage_mult 0.03, получено %.3f" % float(ranger_ch_mods.get("class_damage_mult", 0.0)))
+
+	# 5. high_asc_win по run_level; no_shop_win по used_shop=false.
+	var ch2 := Meta.default_state()
+	ch2 = Meta.record_boss_victory(ch2, "doctor", 3, {"weapon_id": "scalpel", "used_shop": false})
+	if not Meta.class_challenges_done(ch2, "doctor").has("peak_climber"):
+		errors.append("620: победа на возвышении 3 должна выполнить peak_climber")
+	if not Meta.class_challenges_done(ch2, "doctor").has("lone_wolf"):
+		errors.append("620: победа без магазина должна выполнить lone_wolf")
+	# used_shop=true НЕ должен засчитывать lone_wolf новому классу.
+	var ch3 := Meta.default_state()
+	ch3 = Meta.record_boss_victory(ch3, "knight", 0, {"weapon_id": "sword", "used_shop": true})
+	if Meta.class_challenges_done(ch3, "knight").has("lone_wolf"):
+		errors.append("620: с покупкой в магазине lone_wolf не должен выполняться")
+	if Meta.class_challenges_done(ch3, "knight").has("peak_climber"):
+		errors.append("620: возвышение 0 не должно выполнять peak_climber")
+
+	# 6. Анти-крип: суммарный вклад челленджей на ключ не превышает потолок +5%.
+	for key in ranger_ch_mods.keys():
+		if float(ranger_ch_mods[key]) > Meta.CLASS_CHALLENGE_MAX_BONUS + 0.0001:
+			errors.append("620: вклад челленджа '%s' %.3f превышает потолок %.3f" % [str(key), float(ranger_ch_mods[key]), Meta.CLASS_CHALLENGE_MAX_BONUS])
+
+	# 7. save/load round-trip челленджей (метрики + выполненные).
+	Meta.save_state(ch, TEST_PATH)
+	var loaded_ch := Meta.load_state(TEST_PATH)
+	if not Meta.class_challenges_done(loaded_ch, "ranger").has("weapon_master"):
+		errors.append("620: weapon_master не пережил save/load")
+	if Meta.class_challenge_progress_for(loaded_ch, "ranger")["weapons"].size() != 3:
+		errors.append("620: weapons-прогресс не пережил save/load")
+
+	# Анти-вакуум: челленджей >= 3, и свежий state пуст по челленджам.
+	if Meta.CLASS_CHALLENGES.size() < 3:
+		errors.append("620: челленджей класса подозрительно мало")
+	if not Meta.class_challenges_done(Meta.default_state(), "ranger").is_empty():
+		errors.append("620: свежий state должен иметь пустые челленджи")
+
 	_cleanup()
 
 	if not errors.is_empty():
@@ -82,7 +151,7 @@ func _initialize() -> void:
 		push_error("Class progression: %d нарушений." % errors.size())
 		quit(1)
 		return
-	print("Class progression passed (накопление per-class, изоляция бонусов, save/load, %d порогов)." % Meta.class_progression().size())
+	print("Class progression passed (per-class накопление, изоляция, save/load, %d порогов, %d челленджей SCRUM-620)." % [Meta.class_progression().size(), Meta.CLASS_CHALLENGES.size()])
 	quit(0)
 
 

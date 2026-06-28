@@ -841,7 +841,13 @@ func resolve_act3_boss_id(base_boss_id: String) -> String:
 
 
 func record_boss_victory() -> void:
-	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level)
+	# SCRUM-620: контекст забега для челленджей класса — какое оружие и был ли магазин.
+	# used_shop=false только если за ВЕСЬ забег не куплено ни одного предмета.
+	var run_context := {
+		"weapon_id": selected_weapon_id,
+		"used_shop": not current_shop_purchased.is_empty(),
+	}
+	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level, run_context)
 	# SCRUM-619: если это был секретный бой Акта 3 — разовая мета-награда (идемпотентно).
 	if secret_boss_active:
 		meta_state = META_PROGRESSION.record_secret_boss_victory(meta_state)
@@ -896,6 +902,12 @@ func apply_ascension_bonuses(player: Node) -> void:
 	var class_mods: Dictionary = META_PROGRESSION.class_modifiers(meta_state, selected_character_id)
 	for class_key in class_mods:
 		skill_mods[class_key] = class_mods[class_key]
+	# SCRUM-620: бонусы выполненных челленджей класса — те же class_*-ключи,
+	# складываем ПОВЕРХ прогрессии (доли суммируются, эффект 1.0+sum). Вклад челленджей
+	# уже клампнут на +5%/ключ в class_challenge_modifiers (анти-крип).
+	var challenge_mods: Dictionary = META_PROGRESSION.class_challenge_modifiers(meta_state, selected_character_id)
+	for challenge_key in challenge_mods:
+		skill_mods[challenge_key] = float(skill_mods.get(challenge_key, 0.0)) + float(challenge_mods[challenge_key])
 	# SCRUM-618: стартовый боон забега — мелкие mods в том же ключевом словаре (damage_mult,
 	# *_flat и т.п.). Складываем с накопленными (множители суммируются как доли, эффект 1.0+sum;
 	# плоские — сложением), как и древо/класс. "" = без боона (тождественность).

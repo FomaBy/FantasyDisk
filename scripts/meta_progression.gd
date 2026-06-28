@@ -95,6 +95,23 @@ const CLASS_PROGRESSION := [
 	{"wins": 9, "title": "Мастерство класса", "desc": "Урон этого класса ещё +5%; +3% HP.", "effects": {"class_damage_mult": 0.05, "class_max_health_mult": 0.03}},
 ]
 
+# SCRUM-620: челленджи класса за РАЗНООБРАЗИЕ забега. Стимулируют менять оружие/
+# тактику внутри класса (а не фармить один билд), расширяя CLASS_PROGRESSION без UI.
+# Выполняется один раз на класс (дедуп в class_challenges_done), бонус — те же
+# class_*-ключи, что и прогрессия (player.gd мапит их в *_multiplier). Суммарный
+# вклад челленджей держим в пределах +5% на ключ (анти-пауэр-крип).
+#   condition_metric — какое поле class_challenge_progress оценивать:
+#     "weapon_diversity" — число РАЗНЫХ weapon_id побед >= threshold;
+#     "best_ascension"   — лучшее возвышение победы >= threshold;
+#     "no_shop_wins"     — число побед БЕЗ покупок в магазине >= threshold.
+# Жёсткий потолок суммарного вклада челленджей на один class_*-ключ (анти-крип).
+const CLASS_CHALLENGE_MAX_BONUS := 0.05
+const CLASS_CHALLENGES := [
+	{"id": "weapon_master", "title": "Мастер арсенала", "desc": "Победы 3 разными оружиями этого класса: +3% урона.", "condition_metric": "weapon_diversity", "threshold": 3, "effects": {"class_damage_mult": 0.03}},
+	{"id": "peak_climber", "title": "Покоритель вершин", "desc": "Победа на возвышении 3+: +3% максимума HP.", "condition_metric": "best_ascension", "threshold": 3, "effects": {"class_max_health_mult": 0.03}},
+	{"id": "lone_wolf", "title": "Без посредников", "desc": "Победа без покупок в магазине: +3% скорости атаки.", "condition_metric": "no_shop_wins", "threshold": 1, "effects": {"class_attack_speed_mult": 0.03}},
+]
+
 
 static func default_state() -> Dictionary:
 	return {
@@ -107,6 +124,10 @@ static func default_state() -> Dictionary:
 		"secret_boss_defeated": false,
 		# SCRUM-617: id разблокированных персистентных ачивок забега.
 		"achievements": [],
+		# SCRUM-620: накопленные метрики челленджей класса {char:{weapons:[],
+		# best_ascension:int, no_shop_wins:int}} и выполненные {char:[challenge_id]}.
+		"class_challenge_progress": {},
+		"class_challenges_done": {},
 	}
 
 
@@ -146,6 +167,44 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 			if not achievements.has(sid):
 				achievements.append(sid)
 	state["achievements"] = achievements
+	# SCRUM-620: челленджи класса — метрики и выполненные (нормализуем по классам).
+	var raw_cc_progress = config.get_value(SECTION, "class_challenge_progress", {})
+	var cc_progress := {}
+	if raw_cc_progress is Dictionary:
+		for char_id in raw_cc_progress.keys():
+			var p = raw_cc_progress[char_id]
+			if not (p is Dictionary):
+				continue
+			var weapons := []
+			var raw_weapons = p.get("weapons", [])
+			if raw_weapons is Array:
+				for w in raw_weapons:
+					var ws := str(w)
+					if ws != "" and not weapons.has(ws):
+						weapons.append(ws)
+			cc_progress[str(char_id)] = {
+				"weapons": weapons,
+				"best_ascension": clampi(int(p.get("best_ascension", 0)), 0, MAX_ASCENSION_LEVEL),
+				"no_shop_wins": maxi(int(p.get("no_shop_wins", 0)), 0),
+			}
+	state["class_challenge_progress"] = cc_progress
+	var raw_cc_done = config.get_value(SECTION, "class_challenges_done", {})
+	var cc_done := {}
+	var valid_challenge_ids := {}
+	for challenge in CLASS_CHALLENGES:
+		valid_challenge_ids[str(challenge.get("id", ""))] = true
+	if raw_cc_done is Dictionary:
+		for char_id in raw_cc_done.keys():
+			var raw_list = raw_cc_done[char_id]
+			if not (raw_list is Array):
+				continue
+			var done := []
+			for cid in raw_list:
+				var cs := str(cid)
+				if valid_challenge_ids.has(cs) and not done.has(cs):
+					done.append(cs)
+			cc_done[str(char_id)] = done
+	state["class_challenges_done"] = cc_done
 	return state
 
 
@@ -158,6 +217,9 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 	config.set_value(SECTION, "class_boss_wins", state.get("class_boss_wins", {}))
 	config.set_value(SECTION, "secret_boss_defeated", bool(state.get("secret_boss_defeated", false)))
 	config.set_value(SECTION, "achievements", state.get("achievements", []))
+	# SCRUM-620: метрики и выполненные челленджи класса.
+	config.set_value(SECTION, "class_challenge_progress", state.get("class_challenge_progress", {}))
+	config.set_value(SECTION, "class_challenges_done", state.get("class_challenges_done", {}))
 	config.save(save_path)
 
 
@@ -168,7 +230,7 @@ static func ascension_level(state: Dictionary, character_id: String) -> int:
 	return clampi(int(levels.get(character_id, 0)), 0, MAX_ASCENSION_LEVEL)
 
 
-static func record_boss_victory(state: Dictionary, character_id: String, run_level := -1) -> Dictionary:
+static func record_boss_victory(state: Dictionary, character_id: String, run_level := -1, run_context := {}) -> Dictionary:
 	var levels = state.get("ascension_levels", {})
 	if not (levels is Dictionary):
 		levels = {}
@@ -194,7 +256,75 @@ static func record_boss_victory(state: Dictionary, character_id: String, run_lev
 		class_wins = {}
 	class_wins[character_id] = maxi(int(class_wins.get(character_id, 0)), 0) + 1
 	state["class_boss_wins"] = class_wins
+	# SCRUM-620: челленджи класса за разнообразие — копим метрики из run_context и
+	# отмечаем выполненные пороги (одноразово). run_context опционален (старые вызовы
+	# с 3 аргументами не трекают — backward-compatible).
+	state = _record_class_challenge_progress(state, character_id, run_level, run_context)
 	return state
+
+
+# SCRUM-620: обновить метрики челленджей класса и отметить достигнутые пороги.
+# run_context: {"weapon_id": String, "used_shop": bool}. Чистая мутация state.
+static func _record_class_challenge_progress(state: Dictionary, character_id: String, run_level: int, run_context: Dictionary) -> Dictionary:
+	if character_id == "":
+		return state
+	var all_progress = state.get("class_challenge_progress", {})
+	if not (all_progress is Dictionary):
+		all_progress = {}
+	var prog = all_progress.get(character_id, {})
+	if not (prog is Dictionary):
+		prog = {}
+	var weapons = prog.get("weapons", [])
+	if not (weapons is Array):
+		weapons = []
+	var weapon_id := str(run_context.get("weapon_id", ""))
+	if weapon_id != "" and not weapons.has(weapon_id):
+		weapons.append(weapon_id)
+	prog["weapons"] = weapons
+	# Лучшее возвышение победы (run_level<0 = неизвестно/легаси, не засчитываем).
+	var best_ascension := int(prog.get("best_ascension", 0))
+	if run_level >= 0:
+		best_ascension = maxi(best_ascension, run_level)
+	prog["best_ascension"] = best_ascension
+	# Победы без покупок в магазине (явный сигнал used_shop=false).
+	var no_shop_wins := int(prog.get("no_shop_wins", 0))
+	if run_context.has("used_shop") and not bool(run_context.get("used_shop")):
+		no_shop_wins += 1
+	prog["no_shop_wins"] = no_shop_wins
+	all_progress[character_id] = prog
+	state["class_challenge_progress"] = all_progress
+	# Отметить достигнутые пороги (дедуп).
+	var all_done = state.get("class_challenges_done", {})
+	if not (all_done is Dictionary):
+		all_done = {}
+	var done = all_done.get(character_id, [])
+	if not (done is Array):
+		done = []
+	for challenge in CLASS_CHALLENGES:
+		var cid := str(challenge.get("id", ""))
+		if cid == "" or done.has(cid):
+			continue
+		if _class_challenge_met(challenge, prog):
+			done.append(cid)
+	all_done[character_id] = done
+	state["class_challenges_done"] = all_done
+	return state
+
+
+# Достигнут ли порог челленджа по накопленным метрикам класса.
+static func _class_challenge_met(challenge: Dictionary, prog: Dictionary) -> bool:
+	var metric := str(challenge.get("condition_metric", ""))
+	var threshold := int(challenge.get("threshold", 0))
+	match metric:
+		"weapon_diversity":
+			var weapons = prog.get("weapons", [])
+			return (weapons is Array) and (weapons as Array).size() >= threshold
+		"best_ascension":
+			return int(prog.get("best_ascension", 0)) >= threshold
+		"no_shop_wins":
+			return int(prog.get("no_shop_wins", 0)) >= threshold
+		_:
+			return false
 
 
 static func selectable_max(state: Dictionary, character_id: String) -> int:
@@ -415,4 +545,46 @@ static func class_modifiers(state: Dictionary, character_id: String) -> Dictiona
 	for tier in class_unlocked_tiers(state, character_id):
 		for key in (tier.get("effects", {}) as Dictionary).keys():
 			mods[key] = float(mods.get(key, 0.0)) + float(tier["effects"][key])
+	return mods
+
+
+# SCRUM-620: id выполненных челленджей класса (для UI/тестов; дедуп гарантирован
+# при записи). Всегда массив строк.
+static func class_challenges_done(state: Dictionary, character_id: String) -> Array:
+	var all_done = state.get("class_challenges_done", {})
+	if not (all_done is Dictionary):
+		return []
+	var done = all_done.get(character_id, [])
+	return done if done is Array else []
+
+
+# SCRUM-620: накопленные метрики челленджей класса (для UI прогресса). Нормализованный
+# словарь {weapons:[], best_ascension:int, no_shop_wins:int}.
+static func class_challenge_progress_for(state: Dictionary, character_id: String) -> Dictionary:
+	var all_progress = state.get("class_challenge_progress", {})
+	var prog = all_progress.get(character_id, {}) if all_progress is Dictionary else {}
+	if not (prog is Dictionary):
+		prog = {}
+	var weapons = prog.get("weapons", [])
+	return {
+		"weapons": weapons if weapons is Array else [],
+		"best_ascension": int(prog.get("best_ascension", 0)),
+		"no_shop_wins": int(prog.get("no_shop_wins", 0)),
+	}
+
+
+# SCRUM-620: суммарные модификаторы выполненных челленджей класса. Те же class_*-
+# ключи, что и прогрессия (мерджатся в apply_ascension_bonuses). Суммарный вклад на
+# ключ КЛАМПИТСЯ на +5% — жёсткий потолок против пауэр-крипа.
+static func class_challenge_modifiers(state: Dictionary, character_id: String) -> Dictionary:
+	var done := class_challenges_done(state, character_id)
+	var mods := {}
+	for challenge in CLASS_CHALLENGES:
+		var cid := str(challenge.get("id", ""))
+		if not done.has(cid):
+			continue
+		for key in (challenge.get("effects", {}) as Dictionary).keys():
+			mods[key] = float(mods.get(key, 0.0)) + float(challenge["effects"][key])
+	for key in mods.keys():
+		mods[key] = minf(float(mods[key]), CLASS_CHALLENGE_MAX_BONUS)
 	return mods
