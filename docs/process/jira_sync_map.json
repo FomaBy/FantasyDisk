@@ -2857,5 +2857,10 @@
   "key": "SCRUM-512",
   "status": "Готово",
   "desc_hash": "63c3e5b3e53516f898a64fcfac5b4377"
+ },
+ "bug_scrum514_item_icon_skill_task.md": {
+  "key": "SCRUM-543",
+  "status": "Контроль качества",
+  "desc_hash": "bd1352183cc009847a8ccc77af969ea3"
  }
 }
