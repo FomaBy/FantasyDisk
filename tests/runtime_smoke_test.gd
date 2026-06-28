@@ -41,6 +41,10 @@ const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
+# SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
+# нарисованы 1:1 под слот (CHUD_*_2K) build_ui_2k_frame_kit.py → резкий орнамент.
+const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png"
+const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
 const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
 const REWARD_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
 const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
@@ -444,8 +448,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var resource_style := resource_hud.get_theme_stylebox("panel")
-	if _stylebox_texture_path(resource_style) != MINIMAL_HUD_STRIP_TEXTURE:
-		push_error("Expected combat resource HUD to use the SCRUM-448 minimal HUD strip frame.")
+	if _stylebox_texture_path(resource_style) != HUD_RESOURCE_PANEL_TEXTURE_2K:
+		push_error("Expected combat resource HUD to use the SCRUM-564 @2K HUD resource frame.")
 		quit(1)
 		return
 	var expected_hud_cards := {
@@ -497,8 +501,8 @@ func _initialize() -> void:
 		push_error("Expected the combat timer panel to stay in the top HUD band.")
 		quit(1)
 		return
-	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != MINIMAL_FIELD_TEXTURE:
-		push_error("Expected combat timer panel to use the SCRUM-448 minimal field frame.")
+	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != HUD_TIMER_PANEL_TEXTURE_2K:
+		push_error("Expected combat timer panel to use the SCRUM-564 @2K HUD timer frame.")
 		quit(1)
 		return
 	main.set("round_time_left", 4.0)
@@ -7782,11 +7786,11 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 	dump_lines.append("## %s" % context)
 	for control in controls:
 		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control.name, str(control.get_global_rect()), _stylebox_texture_path(control.get_theme_stylebox("panel") if control is PanelContainer else null)])
-		if control.name == "RunResourceHud" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_HUD_STRIP_TEXTURE:
-			_fail("Expected RunResourceHud to use SCRUM-448 minimal HUD strip frame at %s." % context)
+		if control.name == "RunResourceHud" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != HUD_RESOURCE_PANEL_TEXTURE_2K:
+			_fail("Expected RunResourceHud to use SCRUM-564 @2K HUD resource frame at %s." % context)
 			return
-		if control.name == "CombatTimerPanel" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_FIELD_TEXTURE:
-			_fail("Expected CombatTimerPanel to use SCRUM-448 minimal field frame at %s." % context)
+		if control.name == "CombatTimerPanel" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != HUD_TIMER_PANEL_TEXTURE_2K:
+			_fail("Expected CombatTimerPanel to use SCRUM-564 @2K HUD timer frame at %s." % context)
 			return
 		if control.name == "AscensionHudBadge" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_CARD_TEXTURE:
 			_fail("Expected AscensionHudBadge to use SCRUM-448 minimal card frame at %s." % context)

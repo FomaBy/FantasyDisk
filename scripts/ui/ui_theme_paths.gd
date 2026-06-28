@@ -39,6 +39,11 @@ const MINIMAL_METAL_FRAME_TEXTURE_MARGINS := {
 	"tooltip": Vector4(46, 30, 46, 28),
 	"hud_strip": Vector4(76, 42, 76, 40),
 	"field": Vector4(42, 38, 42, 36),
+	# SCRUM-564: тонкие боевые HUD-стрипы — узкие верт. бордюры, чтобы остался плоский центр
+	# и панель не вырастала за свой слот (resource ≤84, иначе наезжает на CharacterStatsHud).
+	"hud_resource": Vector4(60, 16, 60, 16),
+	"hud_timer": Vector4(56, 22, 56, 22),
+	"hud_artifact": Vector4(60, 24, 60, 24),
 }
 const MINIMAL_METAL_FRAME_CONTENT := {
 	"modal": Vector4(72, 92, 72, 84),
@@ -77,6 +82,9 @@ const OVERHAUL_2K_FRAME_PATHS := {
 	"st_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_st_panel.png",
 	"evt_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_evt_panel.png",
 	"evt_card": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_evt_card.png",
+	"chud_resource_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_chud_resource_panel.png",
+	"chud_timer": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_chud_timer.png",
+	"chud_artifact_row": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_chud_artifact_row.png",
 	"mm_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_mm_btn.png",
 	"qc_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_qc_btn.png",
 	"cr_btn": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_cr_btn.png",
@@ -95,6 +103,9 @@ const OVERHAUL_2K_FRAME_SOURCE_SIZE := {
 	"st_panel": Vector2(430, 220),
 	"evt_panel": Vector2(1720, 780),
 	"evt_card": Vector2(480, 340),
+	"chud_resource_panel": Vector2(820, 84),
+	"chud_timer": Vector2(288, 96),
+	"chud_artifact_row": Vector2(402, 104),
 	"mm_btn": Vector2(380, 104),
 	"qc_btn": Vector2(220, 72),
 	"cr_btn": Vector2(240, 72),
@@ -115,6 +126,9 @@ const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := {
 	"st_panel": Vector4(46, 30, 46, 28),
 	"evt_panel": Vector4(38, 52, 38, 48),
 	"evt_card": Vector4(32, 42, 32, 40),
+	"chud_resource_panel": Vector4(60, 16, 60, 16),
+	"chud_timer": Vector4(56, 22, 56, 22),
+	"chud_artifact_row": Vector4(60, 24, 60, 24),
 	"mm_btn": Vector4(48, 28, 48, 28),
 	"qc_btn": Vector4(50, 28, 50, 28),
 	"cr_btn": Vector4(50, 28, 50, 28),
@@ -135,6 +149,9 @@ const OVERHAUL_2K_FRAME_CONTENT := {
 	"st_panel": Vector4(66, 44, 66, 40),
 	"evt_panel": Vector4(58, 72, 58, 66),
 	"evt_card": Vector4(46, 58, 46, 54),
+	"chud_resource_panel": Vector4(72, 18, 72, 18),
+	"chud_timer": Vector4(64, 26, 64, 24),
+	"chud_artifact_row": Vector4(70, 28, 70, 28),
 }
 const UNIFIED_MASTER_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master.png"
 const UNIFIED_MASTER_FILL_FRAME_PATH := UNIFIED_FRAME_DIR + "ui_frame_unified_master_fill.png"

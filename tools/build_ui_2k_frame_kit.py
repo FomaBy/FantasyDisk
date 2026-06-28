@@ -66,6 +66,11 @@ SLOTS = [
     # переиспользуют base card-арт под hover) — отдельный идентичный PNG не нужен.
     {"slug": "evt_panel", "file": "ui_screens", "const": "EVT_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 780},
     {"slug": "evt_card", "file": "ui_screens", "const": "EVT_CARD_2K", "kind": "frame", "margin_key": "card", "w": 480, "h": 340},
+    # боевой HUD-блок (SCRUM-564, эпик SCRUM-481): per-слот @2K-рамки из CHUD_*_2K.
+    # Тонкие горизонтальные стрипы → margin-профили hud_resource/hud_timer/hud_artifact.
+    {"slug": "chud_resource_panel", "file": "ui_screens", "const": "CHUD_RESOURCE_PANEL_2K", "kind": "frame", "margin_key": "hud_resource", "w": 820, "h": 84},
+    {"slug": "chud_timer", "file": "ui_screens", "const": "CHUD_TIMER_2K", "kind": "frame", "margin_key": "hud_timer", "w": 288, "h": 96},
+    {"slug": "chud_artifact_row", "file": "ui_screens", "const": "CHUD_ARTIFACT_ROW_2K", "kind": "frame", "margin_key": "hud_artifact", "w": 402, "h": 104},
     # кнопки (button-маргины)
     {"slug": "mm_btn", "file": "ui_screens", "const": "MM_BTN_START_2K", "kind": "button", "margin_key": "main_menu", "w": 380, "h": 104},
     {"slug": "qc_btn", "file": "ui_screens", "const": "QC_BTN_EXIT_2K", "kind": "button", "margin_key": "standard", "w": 220, "h": 72},

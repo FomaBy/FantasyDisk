@@ -7564,11 +7564,10 @@ func _create_combat_timer_panel(root: Control) -> void:
 
 
 func _timer_panel_style(alarm: bool) -> StyleBox:
+	# SCRUM-564: per-слот @2K-рамка таймера (CHUD_TIMER_2K=288×96), нарисованная 1:1 под слот
+	# с нативными 9-slice бордюрами — резкий орнамент на 1080p/2K/4K вместо ужатого field-фрейма.
 	var tint := Color(1.20, 0.78, 0.72, 1.0) if alarm else Color.WHITE
-	var display_size := Vector2(192.0, 64.0)
-	var texture_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), display_size, COMBAT_HUD_TIMER_MARGINS)
-	var content_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), display_size, COMBAT_HUD_TIMER_CONTENT)
-	return _global_texture_style(COMBAT_HUD_TIMER_PATH, texture_margins, tint, content_margins, true)
+	return _overhaul_2k_frame_style("chud_timer", Vector2(288.0, 96.0), tint)
 
 
 func _ascension_badge_style() -> StyleBox:
@@ -8113,10 +8112,9 @@ func _add_hud_money_card(parent: HBoxContainer) -> void:
 
 
 func _hud_panel_style() -> StyleBox:
-	var display_size := Vector2(690.0, 72.0)
-	var texture_margins := _scaled_frame_margins_xy(Vector2(1122.0, 288.0), display_size, COMBAT_HUD_RESOURCE_PANEL_MARGINS)
-	var content_margins := _scaled_frame_margins_xy(Vector2(1122.0, 288.0), display_size, COMBAT_HUD_RESOURCE_PANEL_CONTENT)
-	return _global_texture_style(COMBAT_HUD_RESOURCE_PANEL_PATH, texture_margins, Color.WHITE, content_margins, true)
+	# SCRUM-564: per-слот @2K-рамка ресурс-панели (CHUD_RESOURCE_PANEL_2K=820×84) — узкие
+	# верт. бордюры (hud_resource), плоский центр под HP/XP/Gold/ULT-карточки, орнамент не мылится.
+	return _overhaul_2k_frame_style("chud_resource_panel", Vector2(820.0, 84.0))
 
 
 func _character_stats_hud_style() -> StyleBox:
