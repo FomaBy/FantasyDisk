@@ -189,8 +189,11 @@ func _try_attack(target: Node2D) -> void:
 				var splash_direction := enemy_node.global_position - target.global_position
 				if splash_direction.length_squared() > 0.001:
 					enemy_node.apply_knockback(splash_direction.normalized() * control_knockback * 0.45)
-	if support_heal_percent > 0.0 and owner_node != null and is_instance_valid(owner_node) and owner_node.has_method("heal_percent"):
-		owner_node.heal_percent(support_heal_percent)
+	if support_heal_percent > 0.0 and owner_node != null and is_instance_valid(owner_node):
+		if owner_node.has_method("heal_percent_capped"):
+			owner_node.heal_percent_capped(support_heal_percent)
+		elif owner_node.has_method("heal_percent"):
+			owner_node.heal_percent(support_heal_percent)
 
 	_attack_cooldown = attack_interval
 	_play_attack_animation(target.global_position - global_position)
