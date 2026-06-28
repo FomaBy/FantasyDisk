@@ -20,6 +20,10 @@ extends "res://scripts/enemy.gd"
 @export var enrage_health_ratio := 0.35
 
 const BOSS_PHASE_MARKERS := [0.66, 0.33]
+# SCRUM-596: жёсткий потолок одновременно живых призывов босса. _summon_riftlings
+# обязан только ДОЗАПОЛНЯТЬ до этого числа (учитывая уже живых), а не спавнить
+# безусловную пачку поверх лимита.
+const MAX_SUMMONED_RIFTLINGS := 8
 
 var _burst_cooldown := 2.0
 var _dash_cooldown := 3.0
@@ -552,6 +556,15 @@ func _spawn_ember_zone(origin: Vector2, radius: float) -> void:
 	tween.tween_callback(zone.queue_free)
 
 
+# Чистая функция (без SceneTree): сколько НОВЫХ призывов добавить, чтобы не
+# превысить MAX_SUMMONED_RIFTLINGS. База = 3 + (фаза-1), но обрезается остатком
+# свободных слотов и никогда не отрицательна (защищает /float(count) у вызывающего).
+static func riftling_summon_count(phase: int, active_summons: int) -> int:
+	var base := 3 + phase - 1
+	var room := MAX_SUMMONED_RIFTLINGS - active_summons
+	return maxi(mini(base, room), 0)
+
+
 func _summon_riftlings() -> void:
 	var scene := boss_summon_scene
 	if scene == null:
@@ -559,7 +572,10 @@ func _summon_riftlings() -> void:
 	if scene == null:
 		return
 	var active_summons := get_tree().get_nodes_in_group("summoned_enemies").size()
-	if active_summons >= 8:
+	# SCRUM-596: только дозаполняем до потолка (учитывая уже живых призывов), иначе
+	# на поздних фазах при почти полном поле спавнилось >8 (3+phase-1 безусловно).
+	var summon_count := riftling_summon_count(boss_phase, active_summons)
+	if summon_count <= 0:
 		return
 	var parent := get_tree().current_scene
 	if parent == null:
@@ -568,7 +584,6 @@ func _summon_riftlings() -> void:
 		_play_boss_skill_visual("skill_brood_spawn", "cast", Vector2.UP)
 	else:
 		_play_rig_action("cast", Vector2.UP)
-	var summon_count := 3 + boss_phase - 1
 	for index in range(summon_count):
 		var summon := scene.instantiate() as Node2D
 		parent.add_child(summon)
