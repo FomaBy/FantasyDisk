@@ -16,29 +16,6 @@ const RunAutosave := preload("res://scripts/run_autosave.gd")
 const FeedbackReporter := preload("res://scripts/feedback_reporter.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
-const HERO_SELECT_UNIFIED_SOURCE_SIZE := Vector2(1536.0, 1024.0)
-const HERO_SELECT_UNIFIED_PORTRAIT_RECT := Rect2(130.0, 145.0, 420.0, 560.0)
-const HERO_SELECT_UNIFIED_DESCRIPTION_RECT := Rect2(610.0, 145.0, 786.0, 500.0)
-const HERO_SELECT_UNIFIED_BOTTOM_CONTROLS_RECT := Rect2(570.0, 705.0, 660.0, 178.0)
-const HERO_SELECT_V3_SOURCE_SIZE := Vector2(1536.0, 864.0)
-const HERO_SELECT_V3_OUTER_SAFE := Rect2(0.0, 0.0, 1536.0, 864.0)
-const HERO_SELECT_V3_PORTRAIT_FRAME := Rect2(42.0, 82.0, 342.0, 540.0)
-const HERO_SELECT_V3_PORTRAIT_SAFE := Rect2(112.1, 182.0, 201.7, 329.4)
-const HERO_SELECT_V3_DOSSIER_FRAME := Rect2(388.0, 93.0, 625.0, 467.0)
-const HERO_SELECT_V3_DOSSIER_CONTENT := Rect2(490.9, 174.9, 419.1, 289.6)
-const HERO_SELECT_V3_DOSSIER_TITLE_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_DOSSIER_BODY_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_DOSSIER_DESCRIPTION_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_TRAITS_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_WEAPONS_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_ASC_PANEL := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_SELECT_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_BACK_SAFE := Rect2(52.0, 28.0, 123.0, 54.0)
-const HERO_SELECT_V3_RADAR_PANEL := Rect2(1086.0, 100.5, 388.0, 388.0)
-const HERO_SELECT_V3_RADAR_CONTENT := Rect2(1173.2, 187.7, 213.7, 213.7)
-const HERO_SELECT_V3_CAROUSEL_FRAME := Rect2(26.0, 626.0, 1488.0, 226.0)
-const HERO_SELECT_V3_CAROUSEL_SAFE := Rect2(197.1, 683.7, 1145.7, 110.6)
-const HERO_SELECT_V3_TOOLTIP_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
 const HERO_SELECT_V4_BG := "res://assets/sprites/ui/hero_select_v4/background.png"
 const HERO_SELECT_V4_SOURCE_SIZE := Vector2(1536.0, 1024.0)
 const HERO_SELECT_V4_TITLE := Rect2(0.265, 0.018, 0.470, 0.105)
@@ -6625,41 +6602,6 @@ func _assert_codex_v2_back_button_safe(button: Button, checked: Array) -> bool:
 		"content_size": Vector2(content_width, content_height),
 	})
 	return true
-
-
-func _assert_hero_select_v3_back_button_safe(button: Button, checked: Array) -> bool:
-	if button == null:
-		_fail("Expected hero select v3 back button to exist.")
-		return false
-	var rect := button.get_global_rect()
-	var expected := _hero_select_v3_expected_rect(HERO_SELECT_V3_BACK_SAFE, button.get_viewport_rect().size)
-	if rect.position.distance_to(expected.position) > 2.0 or rect.size.distance_to(expected.size) > 2.0:
-		_fail("Expected hero select v3 back button to sit inside SCRUM-446/SCRUM-447 safe rect %s, got %s." % [str(expected), str(rect)])
-		return false
-	var normal_style := button.get_theme_stylebox("normal")
-	if normal_style == null:
-		_fail("Expected hero select v3 back button to have a themed normal stylebox.")
-		return false
-	var content_width := rect.size.x - normal_style.get_content_margin(SIDE_LEFT) - normal_style.get_content_margin(SIDE_RIGHT)
-	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
-	if content_width < 34.0 or content_height < 18.0:
-		_fail("Expected hero select v3 back text to fit inside content zone, got %.1fx%.1f." % [content_width, content_height])
-		return false
-	checked.append({
-		"context": "hero_select_v3",
-		"name": button.name,
-		"text": button.text,
-		"rect": rect,
-		"min_size": button.custom_minimum_size,
-		"content_size": Vector2(content_width, content_height),
-	})
-	return true
-
-
-func _hero_select_v3_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
-	var scale := minf(viewport_size.x / HERO_SELECT_V3_SOURCE_SIZE.x, viewport_size.y / HERO_SELECT_V3_SOURCE_SIZE.y)
-	var offset := (viewport_size - HERO_SELECT_V3_SOURCE_SIZE * scale) * 0.5
-	return Rect2(offset + base_rect.position * scale, base_rect.size * scale)
 
 
 func _hero_select_v4_expected_rect(zone: Rect2, viewport_size: Vector2) -> Rect2:
