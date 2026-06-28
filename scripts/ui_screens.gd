@@ -5292,8 +5292,15 @@ func _resolve_event_choice_outcome(event_choice: Dictionary, temp_player: Node) 
 		var check: Dictionary = outcome.get("check", {})
 		var stats: Dictionary = temp_player.get("stats")
 		var stat_id := str(check.get("stat", "knowledge"))
-		var difficulty := float(check.get("difficulty", 0.0))
-		var passed := float(stats.get(stat_id, 0.0)) >= difficulty
+		# SCRUM-633: при отсутствии difficulty НЕ давать тихий success — порог 0.0
+		# проходит всегда (базовые статы положительны). Логируем и трактуем как провал.
+		var passed: bool
+		if not check.has("difficulty"):
+			push_error("Event check missing 'difficulty' for stat '%s'; treating as failure" % stat_id)
+			passed = false
+		else:
+			var difficulty := float(check.get("difficulty", 0.0))
+			passed = float(stats.get(stat_id, 0.0)) >= difficulty
 		var branch: Dictionary = outcome.get("success" if passed else "failure", {})
 		outcome.merge(branch.duplicate(true), true)
 		outcome["check_passed"] = passed
