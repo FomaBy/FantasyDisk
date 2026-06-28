@@ -1,7 +1,7 @@
 # SCRUM-488: Блок Прогрессия: координаты @2K + интеграция (магазин/докача/дерево/кодекс/настройки)
 
 Jira: SCRUM-488 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: SCRUM-481 (UI Overhaul 2K)
-Статус: К выполнению / To Do
+Статус: На QA (re-verified 2026-06-28 claude-backend-3 против origin/dev). Все 6 экранов имеют `*_2K`-const рядом с билдерами (`SHOP_*_2K` ui_screens.gd:201-205, `ATTR_*_2K` 208-211, `SKILL_*_2K` 214-220, `CODEX_*_2K` 223-231, `SETTINGS_*_2K` 234-240) с `*_SAFE_2K`; Кодекс/Настройки — путь (б) (документирующий 2K-блок поверх V2, рантайм не тронут). Секция «@2560×1440 — блок Прогрессия/Экономика (SCRUM-488)» в `docs/design/ui_screens_inventory.md:300`, «Следующий шаг» обновлён. Верификатор `tests/ui_no_overlap_matrix_test.gd` зелёный 1080p/2K/4K (shop_economy/attribute_shop_economy/skill_tree/codex/settings); смоуки зелёные. Деливери присутствует в dev — тикет не был переведён.
 
 ## Что и зачем
 
