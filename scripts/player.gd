@@ -1233,6 +1233,10 @@ func _activate_doctor_ultimate(config: Dictionary, multiplier: float) -> void:
 	for enemy in _enemies_in_radius(global_position, radius):
 		_apply_ultimate_damage(enemy, damage_amount)
 		healed += damage_amount * 0.45
+	# SCRUM-594: ульта Доктора — единственный хил, не уважавший healing_multiplier;
+	# артефакты/мета на +лечение её не усиливали, хотя усиливают все прочие хилы.
+	# Множим хил ОДИН раз и используем и для health, и для overflow→absorb.
+	healed *= float(run_modifiers.get("healing_multiplier", 1.0))
 	var before := health
 	health = minf(max_health, health + healed)
 	var overflow := maxf((before + healed) - max_health, 0.0)
