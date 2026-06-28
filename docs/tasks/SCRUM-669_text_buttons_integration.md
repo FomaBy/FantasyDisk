@@ -1,6 +1,6 @@
 # SCRUM-669: UI buttons integration - SCRUM-657 text-button kit
 
-Статус: review
+Статус: done
 Роль: Back-end/UI integration
 Контур: Codex
 Owner: Back-end/Codex
@@ -49,3 +49,23 @@ Verification:
 - BLOCKED unrelated before UI assertions: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` fails on existing combat socket assertion: `Expected SCRUM-455 right attack weapon socket to follow attack direction (1.0, 0.0), got (0.0, -1.0).`
 
 Disk cleanup: `.godot/` and untracked Godot import sidecars removed before final report; disposable clone retained only until commit/push/report are complete.
+
+## QA-Вердикт (2026-06-29)
+
+Статус: PASSED
+
+Проверено:
+- Live Jira SCRUM-669 was in `Контроль качества`; QA claim posted as `codex-worker-qa-scrum669`.
+- Clean isolated worktree `/Users/sergeyfomin/Documents/FantasyDisk-QA-SCRUM-669` checked out at pushed `origin/dev` commit `a754c7af`.
+- Inspected SCRUM-669 mirror, SCRUM-657 design context, UI/theme docs, runtime resolver and representative card/slot/exclusion construction paths.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/dark_fantasy_ui_theme_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` PASS, including 1920x1080 and 2560x1440 gate sections.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` remains blocked by unrelated SCRUM-455 weapon socket direction assertion before later UI checks; not counted against SCRUM-669 because focused UI gates pass.
+
+Acceptance:
+- Generated `text_buttons_unique` kit is wired through the global normal text/action button resolver and pause dossier helper.
+- Representative normal text/action buttons use SCRUM-657 state textures rather than old Red & Gold, minimal-metal, or overhaul button art.
+- Exclusions are respected by construction path and/or resolver guards: icon-only plus/FAB controls, cards, slots, portraits, plus/minus steppers, route nodes, weapon/reward cards, shop item hit areas, and decorative frames are not forced into text-button art.
+
+Баги: нет.
