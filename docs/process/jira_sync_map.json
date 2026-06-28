@@ -2863,7 +2863,7 @@
   "status": "Контроль качества",
   "desc_hash": "bd1352183cc009847a8ccc77af969ea3"
  },
- "SCRUM-656_secret_boss_gate_reverify.md": {
+"SCRUM-656_secret_boss_gate_reverify.md": {
   "key": "SCRUM-656",
   "status": "Контроль качества",
   "desc_hash": "cbf6b4d43a602dd75a62ee819e76d0f7"
@@ -2872,5 +2872,10 @@
   "key": "SCRUM-666",
   "status": "К выполнению",
   "desc_hash": "4814349b2647ec2c73317bcceccad6ec"
+ },
+ "SCRUM-643_hero_select_mockup_evidence.md": {
+  "key": "SCRUM-643",
+  "status": "Контроль качества",
+  "desc_hash": "69908a38c33210a56a0cd5000de1524f"
  }
 }

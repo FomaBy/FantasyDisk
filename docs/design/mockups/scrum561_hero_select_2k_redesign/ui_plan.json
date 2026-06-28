@@ -1,0 +1,147 @@
+{
+  "canvas": {
+    "width": 2560,
+    "height": 1440
+  },
+  "policy": {
+    "min_gap": 8,
+    "allow_overlap": false
+  },
+  "content": {
+    "title": "Hero Select",
+    "back": "Back",
+    "hero_name": "Berserk",
+    "hero_body": "Class dossier, starting weapons, ascension line, and five stat rows.",
+    "choose": "Choose",
+    "carousel_hint": "Nine hero thumbnails plus left and right arrows."
+  },
+  "elements": [
+    {
+      "id": "title_content",
+      "kind": "text_zone",
+      "x": 360,
+      "y": 58,
+      "w": 1840,
+      "h": 86,
+      "text_key": "title",
+      "max_font": 72,
+      "min_font": 40,
+      "collision": false
+    },
+    {
+      "id": "back_button_content",
+      "kind": "button_content",
+      "x": 88,
+      "y": 84,
+      "w": 154,
+      "h": 34,
+      "text_key": "back",
+      "max_font": 30,
+      "min_font": 18,
+      "collision": false
+    },
+    {
+      "id": "portrait_frame",
+      "kind": "frame",
+      "x": 56,
+      "y": 179,
+      "w": 661,
+      "h": 959,
+      "min_w": 520,
+      "min_h": 760
+    },
+    {
+      "id": "portrait_content",
+      "kind": "portrait_content",
+      "parent": "portrait_frame",
+      "x": 114,
+      "y": 251,
+      "w": 545,
+      "h": 821,
+      "min_w": 420,
+      "min_h": 640,
+      "collision": false
+    },
+    {
+      "id": "dossier_frame",
+      "kind": "frame",
+      "x": 753,
+      "y": 179,
+      "w": 1091,
+      "h": 959,
+      "min_w": 860,
+      "min_h": 760
+    },
+    {
+      "id": "dossier_content",
+      "kind": "text_zone",
+      "parent": "dossier_frame",
+      "x": 811,
+      "y": 251,
+      "w": 975,
+      "h": 821,
+      "text_key": "hero_body",
+      "max_font": 42,
+      "min_font": 22,
+      "collision": false
+    },
+    {
+      "id": "choose_button_content",
+      "kind": "button_content",
+      "parent": "dossier_frame",
+      "x": 1042,
+      "y": 1000,
+      "w": 400,
+      "h": 48,
+      "text_key": "choose",
+      "max_font": 36,
+      "min_font": 22,
+      "collision": false
+    },
+    {
+      "id": "radar_frame",
+      "kind": "frame",
+      "x": 1880,
+      "y": 179,
+      "w": 624,
+      "h": 959,
+      "min_w": 500,
+      "min_h": 760
+    },
+    {
+      "id": "radar_content",
+      "kind": "chart_content",
+      "parent": "radar_frame",
+      "x": 1938,
+      "y": 251,
+      "w": 508,
+      "h": 821,
+      "min_w": 400,
+      "min_h": 640,
+      "collision": false
+    },
+    {
+      "id": "carousel_frame",
+      "kind": "frame",
+      "x": 56,
+      "y": 1155,
+      "w": 2448,
+      "h": 245,
+      "min_w": 1900,
+      "min_h": 180
+    },
+    {
+      "id": "carousel_content",
+      "kind": "thumbnail_strip",
+      "parent": "carousel_frame",
+      "x": 160,
+      "y": 1217,
+      "w": 2240,
+      "h": 127,
+      "text_key": "carousel_hint",
+      "max_font": 28,
+      "min_font": 16,
+      "collision": false
+    }
+  ]
+}

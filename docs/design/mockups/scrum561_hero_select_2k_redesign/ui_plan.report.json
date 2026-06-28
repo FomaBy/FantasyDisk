@@ -1,0 +1,145 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "title_content",
+      "kind": "text_zone",
+      "rect": [
+        360,
+        58,
+        1840,
+        86
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 72
+    },
+    {
+      "id": "back_button_content",
+      "kind": "button_content",
+      "rect": [
+        88,
+        84,
+        154,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "portrait_frame",
+      "kind": "frame",
+      "rect": [
+        56,
+        179,
+        661,
+        959
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "portrait_content",
+      "kind": "portrait_content",
+      "rect": [
+        114,
+        251,
+        545,
+        821
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "dossier_frame",
+      "kind": "frame",
+      "rect": [
+        753,
+        179,
+        1091,
+        959
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "dossier_content",
+      "kind": "text_zone",
+      "rect": [
+        811,
+        251,
+        975,
+        821
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 42
+    },
+    {
+      "id": "choose_button_content",
+      "kind": "button_content",
+      "rect": [
+        1042,
+        1000,
+        400,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 36
+    },
+    {
+      "id": "radar_frame",
+      "kind": "frame",
+      "rect": [
+        1880,
+        179,
+        624,
+        959
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "radar_content",
+      "kind": "chart_content",
+      "rect": [
+        1938,
+        251,
+        508,
+        821
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "carousel_frame",
+      "kind": "frame",
+      "rect": [
+        56,
+        1155,
+        2448,
+        245
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "carousel_content",
+      "kind": "thumbnail_strip",
+      "rect": [
+        160,
+        1217,
+        2240,
+        127
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    }
+  ]
+}

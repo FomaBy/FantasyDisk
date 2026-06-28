@@ -1,15 +1,39 @@
 # SCRUM-561 Hero Select v4 2K Redesign Spec
 
-Status: implemented for runtime integration.
+Status: implemented for runtime integration; mandatory UI-director mockup
+evidence added by SCRUM-643.
 
 Source screen: `HeroSelectScreen`, `_build_character_select_v4()` in `scripts/ui_screens.gd`.
 
 Design base: `2560x1440`.
 
-Generation note: this checkout does not contain the mandated `tools/artgen/generate_asset.py` OpenAI Images wrapper. To avoid inventing a parallel art path, this pass uses the existing project-approved SCRUM-485 `tools/build_ui_2k_frame_kit.py` pipeline, which renders exact 2K slot PNGs from Godot constants and validates 9-slice margins/content bands with anti-drift checks.
+Generation note: SCRUM-561 runtime assets were originally produced through the
+existing project-approved SCRUM-485 `tools/build_ui_2k_frame_kit.py` pipeline,
+which renders exact 2K slot PNGs from Godot constants and validates 9-slice
+margins/content bands with anti-drift checks. SCRUM-643 adds the missing
+mandatory UI-director / OpenAI Images mockup evidence package for the same
+Hero Select 2K geometry.
+
+OpenAI mockup evidence:
+- Source mockup PNG: `docs/design/references/scrum561_hero_select_2k_redesign/hero_select_2k_mockup.png`
+- Geometry plan: `docs/design/mockups/scrum561_hero_select_2k_redesign/ui_plan.json`
+- Planning report: `docs/design/mockups/scrum561_hero_select_2k_redesign/ui_plan.report.json`
+- Render layout: `docs/design/mockups/scrum561_hero_select_2k_redesign/layout.json`
+- Layout guide report: `docs/design/mockups/scrum561_hero_select_2k_redesign/layout.guide.report.json`
+- Mockup render report: `docs/design/mockups/scrum561_hero_select_2k_redesign/mockup_render.report.json`
+- UI plan guide: `docs/design/previews/scrum561_hero_select_2k_ui_plan_guide.png`
+- Layout guide: `docs/design/previews/scrum561_hero_select_2k_layout_guide.png`
+- Labeled preview: `docs/design/previews/scrum561_hero_select_2k_mockup_labeled_preview.png`
+- Debug overlay: `docs/design/previews/scrum561_hero_select_2k_mockup_debug_overlay.png`
+
+Planning gate: `python C:\Users\FomaE\.codex\skills\content-zone-image-compositor\scripts\validate_ui_layout_plan.py --plan docs\design\mockups\scrum561_hero_select_2k_redesign\ui_plan.json --guide-output docs\design\previews\scrum561_hero_select_2k_ui_plan_guide.png --report docs\design\mockups\scrum561_hero_select_2k_redesign\ui_plan.report.json` -> `decision: ready_for_image`, `ok: true`.
+
+Mockup render gate: `python C:\Users\FomaE\.codex\skills\content-zone-image-compositor\scripts\render_content_zones.py --input docs\design\references\scrum561_hero_select_2k_redesign\hero_select_2k_mockup.png --layout docs\design\mockups\scrum561_hero_select_2k_redesign\layout.json --output docs\design\previews\scrum561_hero_select_2k_mockup_labeled_preview.png --debug-output docs\design\previews\scrum561_hero_select_2k_mockup_debug_overlay.png --report docs\design\mockups\scrum561_hero_select_2k_redesign\mockup_render.report.json` -> `ok: true`.
 
 Preview evidence:
 - Frame contact sheet: `docs/design/previews/ui_2k_frame_kit_contact.png`
+- OpenAI source mockup: `docs/design/references/scrum561_hero_select_2k_redesign/hero_select_2k_mockup.png`
+- Safe-zone/debug preview: `docs/design/previews/scrum561_hero_select_2k_mockup_debug_overlay.png`
 - Render verifier: `python tools/build_ui_2k_frame_kit.py --all`
 
 ## 2K Slots
@@ -52,9 +76,18 @@ Preview evidence:
 
 ## QA Evidence
 
+- PASS: OpenAI Images API generated textless Hero Select 2K mockup:
+  `docs/design/references/scrum561_hero_select_2k_redesign/hero_select_2k_mockup.png`
+- PASS: `python C:\Users\FomaE\.codex\skills\content-zone-image-compositor\scripts\validate_ui_layout_plan.py --plan docs\design\mockups\scrum561_hero_select_2k_redesign\ui_plan.json --guide-output docs\design\previews\scrum561_hero_select_2k_ui_plan_guide.png --report docs\design\mockups\scrum561_hero_select_2k_redesign\ui_plan.report.json`
+- PASS: `python C:\Users\FomaE\.codex\skills\content-zone-image-compositor\scripts\render_content_zones.py --input docs\design\references\scrum561_hero_select_2k_redesign\hero_select_2k_mockup.png --layout docs\design\mockups\scrum561_hero_select_2k_redesign\layout.json --output docs\design\previews\scrum561_hero_select_2k_mockup_labeled_preview.png --debug-output docs\design\previews\scrum561_hero_select_2k_mockup_debug_overlay.png --report docs\design\mockups\scrum561_hero_select_2k_redesign\mockup_render.report.json`
 - PASS: `python tools\build_ui_2k_frame_kit.py --verify`
 - PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
 - PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/display_resolution_test.gd`
 - PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+
+SCRUM-643 result: missing mandatory Hero Select mockup evidence is resolved by
+the OpenAI source mockup, validated `ui_plan.json`, `layout.json`, preview guide,
+debug overlay and renderer reports listed above. No runtime UI scripts, combat
+HUD files, or button wiring were changed.
 
 Jira sync note: `SCRUM-561` was commented and transitioned to QA directly. A repository-wide `jira_board_sync.py` run required Windows compatibility fixes, then hit an unrelated Jira create/fixVersion problem and a long no-create sync timeout; no unrelated Jira statuses were intentionally changed by this task.
