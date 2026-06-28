@@ -1,7 +1,7 @@
 # SCRUM-488: Блок Прогрессия: координаты @2K + интеграция (магазин/докача/дерево/кодекс/настройки)
 
 Jira: SCRUM-488 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: SCRUM-481 (UI Overhaul 2K)
-Статус: На QA (re-verified 2026-06-28 claude-backend-3 против origin/dev). Все 6 экранов имеют `*_2K`-const рядом с билдерами (`SHOP_*_2K` ui_screens.gd:201-205, `ATTR_*_2K` 208-211, `SKILL_*_2K` 214-220, `CODEX_*_2K` 223-231, `SETTINGS_*_2K` 234-240) с `*_SAFE_2K`; Кодекс/Настройки — путь (б) (документирующий 2K-блок поверх V2, рантайм не тронут). Секция «@2560×1440 — блок Прогрессия/Экономика (SCRUM-488)» в `docs/design/ui_screens_inventory.md:300`, «Следующий шаг» обновлён. Верификатор `tests/ui_no_overlap_matrix_test.gd` зелёный 1080p/2K/4K (shop_economy/attribute_shop_economy/skill_tree/codex/settings); смоуки зелёные. Деливери присутствует в dev — тикет не был переведён.
+Статус: done (QA PASSED 2026-06-28 Codex QA-loop; independent reverify on origin/dev 488013a3)
 
 ## Что и зачем
 
@@ -217,3 +217,17 @@ Jira: SCRUM-488 · Роль: backend · Контур: claude · Приорите
 - **Верификация headless:** Godot 4.6.3 в `~/Downloads/Godot.app` (см. MEMORY qa-test-runner);
   парсить `ui_screens.gd` и гонять верификатор headless; помнить про `--user-data-dir` не
   изолирующий мета-сейв (ложные red'ы из реального unlocks-сейва — нейтрализовать мету при сомнении).
+
+
+## QA-Вердикт 2026-06-28 - PASSED
+
+Статус: PASSED
+
+Codex QA-loop independently rechecked SCRUM-488 on `origin/dev`/`488013a3`.
+
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --import` - PASS for clean worktree import cache; known unrelated duplicate UID warnings for reference/source skeleton art were observed.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` - PASS, `UI no-overlap matrix test passed`.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd` - PASS, `Runtime UI smoke suite passed`.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd` - PASS, `Runtime smoke test passed`; duplicate-artifact guard scanned 7955 files.
+
+Result: PASS. Progression/economy UI safe-zone and no-overlap gates are green; trailing Unicode parsing warnings did not fail the process.
