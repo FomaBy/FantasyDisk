@@ -2812,5 +2812,10 @@
   "key": "SCRUM-654",
   "status": "Контроль качества",
   "desc_hash": "58286fe1220d5f2c7fd9370b50a35bad"
+ },
+ "SCRUM-587_input_level_up_space_rebind.md": {
+  "key": "SCRUM-587",
+  "status": "Контроль качества",
+  "desc_hash": "ceac0df597ab3f66b4a73203e2cdbbe2"
  }
 }

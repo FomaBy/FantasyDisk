@@ -335,6 +335,12 @@ const INPUT_ACTIONS := [
 		"alternate_key": 0,
 	},
 	{
+		"action": "open_level_up",
+		"label": "Level Up",
+		"default_key": KEY_SPACE,
+		"alternate_key": 0,
+	},
+	{
 		"action": "feedback",
 		"label": "Фидбек",
 		"default_key": KEY_P,
@@ -973,6 +979,12 @@ func _input(event: InputEvent) -> void:
 
 	if _handle_debug_combat_move_input(event):
 		return
+
+	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("open_level_up"):
+		if pending_level_ups > 0 and not _has_pause_reason("level_up"):
+			ui._open_pending_level_up()
+			get_viewport().set_input_as_handled()
+			return
 
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
 		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():

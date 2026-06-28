@@ -945,7 +945,10 @@ func _initialize() -> void:
 	var spawn_before_level_pause := int(get_nodes_in_group("enemies").size())
 	var player_position_before_pause: Vector2 = player.global_position
 	var enemy_position_before_pause: Vector2 = freeze_enemy.global_position
-	main.call("_open_pending_level_up")
+	var open_level_up_event := InputEventKey.new()
+	open_level_up_event.keycode = KEY_SPACE
+	open_level_up_event.pressed = true
+	main.call("_input", open_level_up_event)
 	await process_frame
 	if (player.get("velocity") as Vector2).length_squared() > 0.001:
 		push_error("Expected level-up pause to zero player velocity even if movement input is held.")
@@ -5779,6 +5782,20 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		return
 	if controls_content.get_child_count() < 8:
 		_fail("Expected controls content to include aim mode, binding rows, hint, and reset button.")
+		return
+	if not InputMap.has_action("open_level_up"):
+		_fail("Expected settings to register the open_level_up input action.")
+		return
+	var level_up_binding := controls_content.find_child("BindingButton_open_level_up", true, false) as Button
+	if level_up_binding == null:
+		_fail("Expected controls settings to expose a rebind row for open_level_up.")
+		return
+	var level_up_key_found := false
+	for level_up_event in InputMap.action_get_events("open_level_up"):
+		if level_up_event is InputEventKey and int(level_up_event.keycode) == KEY_SPACE:
+			level_up_key_found = true
+	if not level_up_key_found:
+		_fail("Expected open_level_up to default to Space.")
 		return
 	tabs.current_tab = 1
 	await process_frame
