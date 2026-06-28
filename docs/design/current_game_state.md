@@ -1185,7 +1185,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Выбор оружия | Три оружия выбранного класса как легкие кликабельные карточки: спрайт оружия слева, название/описание, русские статы «Дальность/Радиус/Перезарядка»; тяжелая button texture frame не используется |
 | Карта маршрута | Вертикальная карта с иконками и tooltip |
 | Боевой HUD | SCRUM-390 ресурсная панель: HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |
-| Level-up | Геройский экран выбора 1 из 3 наград с портретом персонажа, частицами, редким main-stat акцентом и отложенным выбором через нижнюю кнопку; reward варианты выглядят как text-field/panel карточки, оставаясь кликабельными |
+| Level-up | Геройский экран выбора 1 из 3 наград с портретом персонажа, частицами, редким main-stat акцентом и отложенным выбором через нижнюю кнопку; SCRUM-670 использует generated 2K `level_up_panel` и `level_up_card` frames, при этом содержимое карточек остается внутри safe-zone и вся карточка кликабельна |
 | Награда за бой / элитку | Боевые награды и трофеи элитки показывают 3 отдельные framed-карточки SCRUM-338; иконка, заголовок, описание, тир артефакта и `Получить`/choice content сидят внутри metadata safe-zone, а вся карточка остается кликабельной и фокусируемой |
 | Магазин | Frameless wall-предметы поверх canonical shop backdrop `ui_backdrop_merchant_archive.png`: иконка, тень, компактная цена, описание только hover tooltip, unavailable dim/price и empty-hook после покупки |
 | Событие | Выбор одного из вариантов события поверх canonical event backdrop `ui_backdrop_arcane_lab.png`; длинный текст исхода находится внутри SCRUM-437 wide economy choice-card safe-zone, риск маркируется один раз без дубля `Риск: Риск:` |
@@ -1229,7 +1229,7 @@ Escape stats menu layout:
 - Fantasy visual kit для `EscapeStatsPanelFrame`, кнопок, stat rows, groups, chips, divider и tooltip подключен через `StyleBoxTexture` / `TextureRect` из `assets/sprites/ui/frames/escape/`; точные paths, colors, margins и spacing описаны в `docs/design/escape_stats_visual_kit.md`.
 - Custom tooltip создается в `scripts/pause_stats_menu.gd::_make_custom_tooltip()` и ограничен целевой шириной 430px, чтобы Godot мог удерживать его внутри viewport.
 
-Все стандартные UI-кнопки используют единый FantasyDisk style: темный fantasy-metal фон, золотая bevel-рамка, readable hover/pressed/disabled/focus состояния и тень. Level-up reward cards используют отдельный магический вариант этого стиля с фиолетово-золотой рамкой, портретом выбранного героя в header и частицами поверх затемненного боя.
+Все стандартные UI-кнопки используют единый FantasyDisk style: темный fantasy-metal фон, золотая bevel-рамка, readable hover/pressed/disabled/focus состояния и тень. Level-up reward cards используют SCRUM-670 generated 2K card frames with source-safe metadata, портрет выбранного героя в header и частицами поверх затемненного боя; full reward text remains available through tooltip when compact card text is line-limited.
 
 Escape stats visual kit assets:
 - `ui_escape_panel_frame.png` - outer menu frame;

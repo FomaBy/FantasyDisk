@@ -22,6 +22,8 @@ const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_uniqu
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
 const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
+const LEVEL_UP_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_level_up_panel.png"
+const LEVEL_UP_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_level_up_card.png"
 const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
 const CODEX_MAIN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_main.png"
@@ -561,6 +563,39 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected visible PatchNotesPanel." % context
 			if _stylebox_texture_path(pn_panel.get_theme_stylebox("panel")) != PN_PANEL_2K_FRAME_PATH:
 				return "%s: expected PatchNotesPanel to use pn_panel @2K frame." % context
+		"level_up":
+			var level_panel := main.find_child("LevelUpPanel", true, false) as Control
+			if level_panel == null or not level_panel.visible or not level_panel.get_global_rect().has_area():
+				return "%s: expected visible LevelUpPanel." % context
+			if _stylebox_texture_path(level_panel.get_theme_stylebox("panel")) != LEVEL_UP_PANEL_2K_FRAME_PATH:
+				return "%s: expected LevelUpPanel to use level_up_panel @2K frame." % context
+			if str(level_panel.get_meta("level_up_slot", "")) != "level_up_panel":
+				return "%s: expected LevelUpPanel slot metadata to be level_up_panel." % context
+			var level_safe: Rect2 = level_panel.get_meta("level_up_content_rect", Rect2()) as Rect2
+			if not level_safe.has_area():
+				return "%s: expected LevelUpPanel to expose content safe rect metadata." % context
+			var scaled_level_safe := _scaled_source_rect(level_panel.get_global_rect(), Vector2(1040, 600), level_safe).grow(1.0)
+			for child_name in ["LevelUpHeroHeader", "LevelUpTitle", "LevelUpSubtitle", "LevelUpRewardsRow", "LevelUpLaterButton"]:
+				var child := main.find_child(child_name, true, false) as Control
+				if child == null or not child.visible or not child.get_global_rect().has_area():
+					return "%s: expected visible %s." % [context, child_name]
+				if not scaled_level_safe.encloses(child.get_global_rect()):
+					return "%s: expected %s to stay inside LevelUpPanel safe rect %s." % [context, child_name, str(scaled_level_safe)]
+			for node in main.find_children("LevelUpRewardButton*", "Button", true, false):
+				var reward_button := node as Button
+				if reward_button == null:
+					continue
+				if _stylebox_texture_path(reward_button.get_theme_stylebox("normal")) != LEVEL_UP_CARD_2K_FRAME_PATH:
+					return "%s: expected %s to use level_up_card @2K frame." % [context, reward_button.name]
+				if str(reward_button.get_meta("level_up_card_slot", "")) != "level_up_card":
+					return "%s: expected %s slot metadata to be level_up_card." % [context, reward_button.name]
+				var card_safe: Rect2 = reward_button.get_meta("level_up_card_content_rect", Rect2()) as Rect2
+				if not card_safe.has_area():
+					return "%s: expected %s to expose content safe rect." % [context, reward_button.name]
+				var scaled_card_safe := _scaled_source_rect(reward_button.get_global_rect(), reward_button.custom_minimum_size, card_safe).grow(1.0)
+				var content := reward_button.find_child("LevelUpRewardContent", true, false) as Control
+				if content == null or not scaled_card_safe.encloses(content.get_global_rect()):
+					return "%s: expected %s content to stay inside card safe rect %s." % [context, reward_button.name, str(scaled_card_safe)]
 		"event_economy":
 			# SCRUM-565: панель события рисуется собственной evt_panel @2K-рамкой.
 			var event_panel := main.find_child("MenuPanel_event", true, false) as Control

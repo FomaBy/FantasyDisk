@@ -248,17 +248,26 @@ Economy-панель «event»; safe-area по фикс content-margins (58/72/5
 
 ### 11. Повышение уровня — `_show_level_up_screen` · `LU_*`
 Оверлей; панель из `_level_up_layout_metrics` (1040×600 @2K). 3 карточки 238×210 + «Позже».
-SCRUM-570 design-source package: `docs/design/mockups/scrum570_levelup_2k_redesign/` with `ui_plan.json`, `spec.md`, OpenAI mockup sources and safe-zone previews. Runtime integration must treat the plan/spec rectangles as authoritative and must not sample frame/content bounds from the generated mockup pixels.
+SCRUM-670 integrates the SCRUM-570 generated 2K runtime frame slots:
+`level_up_panel` (`ui_frame_2k_level_up_panel.png`, 1040×600) and
+`level_up_card` (`ui_frame_2k_level_up_card.png`, 238×210). The implementation
+uses the SCRUM-570 `ui_plan.json` / `spec.md` safe-zone rectangles as
+authoritative and does not sample frame/content bounds from the generated mockup
+pixels.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|
 | Панель (фрейм) | `LU_PANEL_2K` | 760 | 420 | 1040 | 600 |
 | Safe-area | `LU_SAFE_2K` | 818 | 492 | 924 | 462 |
 | Карточка награды (×3, gap 12) | `LU_CARD_2K` | — | — | 238 | 210 |
-| Кнопка «Позже» | `LU_LATER_BUTTON_2K` | — | — | 260 | 72 |
+| Кнопка «Позже» | `LU_LATER_BUTTON_2K` | — | — | 260 | 56 |
 
 ### 12. Награда обычная — `_show_reward_screen` · `RWD_*`
 `_create_menu_box` (панель 1120×660). 3 карточки `REWARD_CARD_SIZE` 300×430, separation 18.
+SCRUM-571 is design-source only as of SCRUM-670: it provides full-screen mockup
+and safe-zone planning, but no isolated alpha runtime frames. Runtime therefore
+continues to use the SCRUM-338 reward-card frame kit rather than slicing the
+mockup.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|
@@ -269,6 +278,10 @@ SCRUM-570 design-source package: `docs/design/mockups/scrum570_levelup_2k_redesi
 ### 13. Награда элитки — `_show_elite_artifact_reward` · `ELR_*`
 Свой `CanvasLayer` + центрированная панель 1140×640. 3 карточки `REWARD_ELITE_CARD_SIZE`
 320×430, separation 22.
+SCRUM-572 is design-source only as of SCRUM-670: it provides full-screen mockup
+and safe-zone planning, but no isolated alpha runtime frames. Runtime therefore
+continues to use the SCRUM-338 elite reward-card frame kit rather than slicing
+the mockup.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|

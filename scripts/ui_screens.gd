@@ -3956,9 +3956,15 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	var rewards_row := HFlowContainer.new()
 	rewards_row.name = "LevelUpRewardsRow"
 	rewards_row.alignment = FlowContainer.ALIGNMENT_CENTER
-	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rewards_row.custom_minimum_size = Vector2(0.0, float(layout["card_size"].y))
-	rewards_row.add_theme_constant_override("h_separation", int(layout["card_gap"]))
+	var level_up_card_size: Vector2 = layout.get("card_size", Vector2(238.0, 210.0))
+	var level_up_card_gap := float(layout.get("card_gap", 12.0))
+	rewards_row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	rewards_row.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	rewards_row.custom_minimum_size = Vector2(
+		level_up_card_size.x * 3.0 + level_up_card_gap * 2.0,
+		level_up_card_size.y
+	)
+	rewards_row.add_theme_constant_override("h_separation", int(level_up_card_gap))
 	rewards_row.add_theme_constant_override("v_separation", 8)
 	box.add_child(rewards_row)
 
@@ -4148,31 +4154,30 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	var button := Button.new()
 	button.text = ""
 	button.custom_minimum_size = card_size
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
 	button.clip_text = false
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = _format_level_up_reward_text(reward)
 	button.set_meta("level_up_text_field_card", true)
-	button.add_theme_stylebox_override("normal", _level_up_text_field_style(false, is_rare))
-	button.add_theme_stylebox_override("hover", _level_up_text_field_style(true, is_rare))
-	button.add_theme_stylebox_override("pressed", _level_up_text_field_style(true, is_rare, true))
-	button.add_theme_stylebox_override("focus", _level_up_text_field_style(true, is_rare))
-	button.add_theme_stylebox_override("disabled", _level_up_text_field_style(false, is_rare, false, true))
+	_apply_level_up_card_2k_theme(button, card_size, is_rare)
 	button.add_theme_color_override("font_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
 
 	var content := VBoxContainer.new()
+	content.name = "LevelUpRewardContent"
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.clip_contents = true
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content.offset_left = 12.0
-	content.offset_top = 10.0
-	content.offset_right = -12.0
-	content.offset_bottom = -10.0
+	var content_margins := _overhaul_2k_content_margins("level_up_card", card_size)
+	content.offset_left = content_margins.x
+	content.offset_top = content_margins.y
+	content.offset_right = -content_margins.z
+	content.offset_bottom = -content_margins.w
 	content.alignment = BoxContainer.ALIGNMENT_CENTER
-	content.add_theme_constant_override("separation", 3 if compact else 4)
+	content.add_theme_constant_override("separation", 1 if compact else 2)
 	button.add_child(content)
 
 	if is_rare:
@@ -4180,7 +4185,8 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 		rare_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		rare_tag.text = "★ ХАРАКТЕРИСТИКА"
 		rare_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		rare_tag.add_theme_font_size_override("font_size", 10 if compact else 12)
+		rare_tag.clip_text = true
+		rare_tag.add_theme_font_size_override("font_size", 7 if compact else 10)
 		rare_tag.add_theme_color_override("font_color", rare_color)
 		content.add_child(rare_tag)
 
@@ -4188,14 +4194,16 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(42, 42) if compact else Vector2(56, 56)))
+	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(20, 20) if compact else Vector2(36, 36)))
 
 	var title_label := Label.new()
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text = str(reward.get("title", "Upgrade"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 14 if compact else 17)
+	title_label.clip_text = true
+	title_label.max_lines_visible = 1 if compact else 2
+	title_label.add_theme_font_size_override("font_size", 10 if compact else 13)
 	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(1.0, 0.91, 0.58, 1.0))
 	content.add_child(title_label)
 
@@ -4204,7 +4212,9 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	preview_label.text = _level_up_reward_preview(reward)
 	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	preview_label.add_theme_font_size_override("font_size", 12 if compact else 15)
+	preview_label.clip_text = true
+	preview_label.max_lines_visible = 1
+	preview_label.add_theme_font_size_override("font_size", 8 if compact else 10)
 	preview_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1.0))
 	content.add_child(preview_label)
 
@@ -4214,7 +4224,9 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	description_label.text = str(reward.get("description", ""))
 	description_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description_label.add_theme_font_size_override("font_size", 10 if compact else 12)
+	description_label.clip_text = true
+	description_label.max_lines_visible = 1 if compact else 2
+	description_label.add_theme_font_size_override("font_size", 7 if compact else 9)
 	description_label.add_theme_color_override("font_color", Color(0.64, 0.72, 0.80, 1.0))
 	content.add_child(description_label)
 	return button
@@ -6788,8 +6800,8 @@ func _level_up_layout_metrics() -> Dictionary:
 		"panel_size": Vector2(roundf(panel_width), roundf(panel_height)),
 		"card_size": Vector2(roundf(card_width), roundf(card_height)),
 		"card_gap": 8 if compact else 12,
-		"later_button_size": Vector2(240.0, 56.0) if compact else Vector2(260.0, 72.0),
-		"box_separation": 2 if compact else 8,
+		"later_button_size": Vector2(240.0, 56.0) if compact else Vector2(260.0, 56.0),
+		"box_separation": 2 if compact else 4,
 		"hero_size": Vector2(36, 36) if compact else Vector2(64, 64),
 		"title_font": 26 if compact else 38,
 		"title_scale": Vector2.ONE,
@@ -6833,6 +6845,9 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	var panel := PanelContainer.new()
 	panel.name = "LevelUpPanel"
 	var panel_size: Vector2 = layout.get("panel_size", Vector2(1120, 660))
+	var panel_source_size: Vector2 = OVERHAUL_2K_FRAME_SOURCE_SIZE.get("level_up_panel", Vector2(1040, 600))
+	var panel_source_content: Vector4 = OVERHAUL_2K_FRAME_CONTENT.get("level_up_panel", Vector4(58, 72, 58, 66))
+	var panel_display_content := _overhaul_2k_content_margins("level_up_panel", panel_size)
 	panel.anchor_left = 0.5
 	panel.anchor_top = 0.5
 	panel.anchor_right = 0.5
@@ -6847,19 +6862,36 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	# первого кадра финальная и детерминированная.
 	panel.scale = Vector2.ONE
 	panel.modulate.a = 0.0
+	panel.custom_minimum_size = panel_size
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
+	panel.add_theme_stylebox_override("panel", _level_up_panel_2k_style(panel_size))
+	panel.set_meta("level_up_slot", "level_up_panel")
+	panel.set_meta("level_up_content_margins", panel_source_content)
+	panel.set_meta("level_up_content_rect", Rect2(
+		panel_source_content.x,
+		panel_source_content.y,
+		panel_source_size.x - panel_source_content.x - panel_source_content.z,
+		panel_source_size.y - panel_source_content.y - panel_source_content.w
+	))
 	root.add_child(panel)
 
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", int(layout.get("box_separation", 14)))
+	box.custom_minimum_size = Vector2(
+		maxf(0.0, panel_size.x - panel_display_content.x - panel_display_content.z),
+		maxf(0.0, panel_size.y - panel_display_content.y - panel_display_content.w)
+	)
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(box)
 
 	var badge_label := Label.new()
 	badge_label.name = "LevelUpBadge"
 	badge_label.text = _level_up_badge_text()
 	badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	badge_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	badge_label.add_theme_font_size_override("font_size", int(layout.get("badge_font", 18)))
 	badge_label.add_theme_color_override("font_color", Color(0.38, 0.95, 1.0, 1.0))
 	box.add_child(badge_label)
@@ -6868,12 +6900,17 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	hero_header.name = "LevelUpHeroHeader"
 	hero_header.alignment = BoxContainer.ALIGNMENT_CENTER
 	hero_header.add_theme_constant_override("separation", int(layout.get("box_separation", 14)))
+	hero_header.custom_minimum_size = Vector2(minf(680.0, box.custom_minimum_size.x), float((layout.get("hero_size", Vector2(92, 92)) as Vector2).y))
+	hero_header.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	hero_header.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	box.add_child(hero_header)
 
 	var hero_size: Vector2 = layout.get("hero_size", Vector2(92, 92))
 	var hero_frame := PanelContainer.new()
 	hero_frame.name = "LevelUpHeroFrame"
 	hero_frame.custom_minimum_size = hero_size
+	hero_frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	hero_frame.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	hero_frame.add_theme_stylebox_override("panel", _level_up_hero_style())
 	hero_header.add_child(hero_frame)
 
@@ -6891,6 +6928,8 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.scale = layout.get("title_scale", Vector2(1.18, 1.18))
 	title_label.modulate.a = 0.0
+	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	title_label.add_theme_font_size_override("font_size", int(layout.get("title_font", 50)))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.30, 1.0))
 	box.add_child(title_label)
@@ -6900,6 +6939,8 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	subtitle_label.text = subtitle
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	subtitle_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	subtitle_label.add_theme_font_size_override("font_size", int(layout.get("subtitle_font", 17)))
 	subtitle_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
 	box.add_child(subtitle_label)
@@ -6974,15 +7015,15 @@ func _start_level_up_button_intro(reward_buttons: Array) -> void:
 		if button == null or not is_instance_valid(button):
 			continue
 		button.modulate.a = 0.0
-		button.scale = Vector2(0.94, 0.94)
+		# Keep generated frame geometry exact for safe-zone QA; reveal cards with fade only.
+		button.scale = Vector2.ONE
 		button.pivot_offset = button.size * 0.5
 		var button_tween = button.create_tween()
 		button_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		button_tween.set_trans(Tween.TRANS_CUBIC)
 		button_tween.set_ease(Tween.EASE_OUT)
 		button_tween.tween_interval(0.10 + float(index) * 0.07)
-		button_tween.tween_property(button, "scale", Vector2.ONE, 0.22)
-		button_tween.parallel().tween_property(button, "modulate:a", 1.0, 0.18)
+		button_tween.tween_property(button, "modulate:a", 1.0, 0.18)
 
 
 func _start_level_up_burst_intro(sparkle_root: Node) -> void:
@@ -7418,8 +7459,19 @@ func _level_up_panel_style() -> StyleBox:
 	return _minimal_frame_style("panel", Color(1.06, 1.03, 1.08, 1.0))
 
 
+func _level_up_panel_2k_style(display_size: Vector2) -> StyleBox:
+	return _overhaul_2k_frame_style("level_up_panel", display_size, Color(1.06, 1.03, 1.08, 1.0))
+
+
 func _level_up_hero_style() -> StyleBox:
-	return _minimal_frame_style("card", Color(0.88, 1.04, 1.06, 1.0))
+	var style := _level_up_text_field_style(false, false)
+	style.bg_color = Color(0.045, 0.070, 0.085, 0.88)
+	style.border_color = Color(0.38, 0.80, 0.92, 0.82)
+	style.content_margin_left = 6
+	style.content_margin_top = 6
+	style.content_margin_right = 6
+	style.content_margin_bottom = 6
+	return style
 
 
 func _hero_portrait_style() -> StyleBox:
@@ -7646,6 +7698,24 @@ func _apply_overhaul_choice_2k_theme(button: Button, slot: String, display_size:
 	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
+
+
+func _apply_level_up_card_2k_theme(button: Button, display_size: Vector2, is_rare := false) -> void:
+	var accent := Color(1.08, 1.04, 1.12, 1.0) if is_rare else Color.WHITE
+	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style("level_up_card", display_size, accent))
+	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style("level_up_card", display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style("level_up_card", display_size, Color(0.90, 0.84, 0.76, 1.0)))
+	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style("level_up_card", display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style("level_up_card", display_size, Color(0.58, 0.58, 0.58, 0.82)))
+	var content_margins := _overhaul_2k_content_margins("level_up_card", display_size)
+	button.set_meta("level_up_card_slot", "level_up_card")
+	button.set_meta("level_up_card_content_margins", content_margins)
+	button.set_meta("level_up_card_content_rect", Rect2(
+		content_margins.x,
+		content_margins.y,
+		display_size.x - content_margins.x - content_margins.z,
+		display_size.y - content_margins.y - content_margins.w
+	))
 
 
 func _pause_end_modal_style(display_size: Vector2, screen_background_id := "") -> StyleBox:
