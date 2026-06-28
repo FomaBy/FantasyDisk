@@ -1,7 +1,7 @@
 # SCRUM-498: Индикатор внеэкранных угроз (стрелки к боссу/элиткам/шутерам)
 
 Jira: SCRUM-498 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: —
-Статус: На QA (re-verified 2026-06-28 claude-backend-3 против origin/dev). Фича реализована в dev: `scripts/threat_indicators.gd` (`ThreatIndicatorOverlay`, full-rect Control в `CombatHudRoot`, mouse_filter IGNORE, проекция world→screen через `camera.get_screen_center_position()`+zoom — camera-clamp-aware, edge-геометрия `screen_edge_point`, дедуп близких маркеров, цвет/глиф по рангу boss/elite/shooter); `scripts/enemy.gd` (`threat_marker_rank()` boss>elite>активный shooter, метка `_threat_fire_marker_left=THREAT_FIRE_MARKER_DURATION` после выстрела); врезка в HUD `_create_threat_indicator_overlay` зовётся из `_create_hud()` (ui_screens.gd:7837). Overlay self-driven (`_process`→`queue_redraw`), отдельный драйвер в main.gd не нужен. Тесты зелёные: `runtime_smoke_test.gd` (вкл. геометрию `_test_threat_indicator_edge`), `runtime_smoke_ui_test.gd`, верификатор `ui_no_overlap_matrix_test.gd`. NB для QA: анти-«ёлка» сделана через proximity-дедуп, а не жёсткий числовой cap (6-8) — функционально достаточно, но отличается от формулировки AC.
+Статус: done (QA PASSED 2026-06-28 Codex replacement loop против origin/dev @ `1dd3f2da`). Фича реализована в dev: `scripts/threat_indicators.gd` (`ThreatIndicatorOverlay`, full-rect Control в `CombatHudRoot`, mouse_filter IGNORE, проекция world→screen через `camera.get_screen_center_position()`+zoom — camera-clamp-aware, edge-геометрия `screen_edge_point`, дедуп близких маркеров, цвет/глиф по рангу boss/elite/shooter); `scripts/enemy.gd` (`threat_marker_rank()` boss>elite>активный shooter, метка `_threat_fire_marker_left=THREAT_FIRE_MARKER_DURATION` после выстрела); врезка в HUD `_create_threat_indicator_overlay` зовётся из `_create_hud()` (ui_screens.gd:7837). Overlay self-driven (`_process`→`queue_redraw`), отдельный драйвер в main.gd не нужен. Тесты зелёные: `runtime_smoke_test.gd` (вкл. геометрию `_test_threat_indicator_edge`), `runtime_smoke_ui_test.gd`, верификатор `ui_no_overlap_matrix_test.gd`. NB для QA: анти-«ёлка» сделана через proximity-дедуп, а не жёсткий числовой cap (6-8) — функционально достаточно, но отличается от формулировки AC.
 
 ## Что и зачем
 
@@ -104,3 +104,14 @@ Jira: SCRUM-498 · Роль: backend · Контур: claude · Приорите
 - **Связанные тикеты / эпик:** Jira `epic` у тикета не проставлен (вернулся пустым) — если родительский эпик «боевой UX/HUD» существует, привязать при синке. Тематически рядом с боевыми HUD-задачами SCRUM-487 (combat block 2K coords) и общими HUD-доработками — координаты/safe-area рамки боевого HUD не нарушать.
 - **Safe-area:** маркеры держать в пустой зоне фрейма боевого HUD (правило frame-content safe-area, AGENTS.md+qa_protocol). Отступ `margin` подобрать так, чтобы стрелка не наезжала на углы/орнамент рамки на всех трёх целевых разрешениях.
 - **Не менять баланс/спавн:** задача чисто презентационная (read-only по геймплею врага, кроме добавления метки времени выстрела). Урон, кайтинг, спавн не трогать.
+
+## QA-Вердикт (2026-06-28)
+Статус: PASSED
+Проверено: независимая QA-проверка Codex replacement loop против свежего `origin/dev` @ `1dd3f2da`.
+Команды:
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --import` - PASS; были только существующие duplicate UID warnings по skeleton reference/runtime copies.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd` - PASS, включая `_test_threat_indicator_edge`.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd` - PASS.
+- `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` - PASS.
+Краевые случаи: offscreen/on-screen edge geometry, camera-clamp-aware projection through camera center + zoom, HUD `mouse_filter = IGNORE`, safe viewport inset, boss/elite/active-shooter rank filtering, melee non-marking, marker cleanup by living group membership/HUD lifecycle.
+Баги: нет.

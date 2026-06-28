@@ -2732,5 +2732,10 @@
   "key": "SCRUM-574",
   "status": "Контроль качества",
   "desc_hash": "834c77b23bb808370163b5c2a9d79774"
+ },
+ "SCRUM-498_offscreen_threat_indicators.md": {
+  "key": "SCRUM-498",
+  "status": "Готово",
+  "desc_hash": "e79dc3892693f5cac3c437d4476ee5ee"
  }
 }
