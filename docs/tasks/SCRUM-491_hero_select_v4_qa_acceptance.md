@@ -1,7 +1,7 @@
 # SCRUM-491: Hero Select v4: финальный QA-прогон и приёмка против брифа
 
 Jira: SCRUM-491 · Роль: qa · Контур: integration · Приоритет: P1 · foma · Эпик: SCRUM-470
-Статус: К выполнению
+Статус: done
 
 ## Что и зачем
 
@@ -168,3 +168,21 @@ Godot для headless: `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Go
 - **Связанные тикеты/контекст:** эпик SCRUM-470 (Hero Select v4), предыдущие итерации
   hero_select v2 (SCRUM-436) и v3 (SCRUM-446) — их QA-артефакты в `build/qa/scrum436_*`,
   `build/qa/scrum446_*` как референс формата.
+
+## QA-Вердикт (2026-06-28 rerun)
+Статус: PASSED
+
+Проверено:
+- Commit: `84e66c9597f7a6a1fe9c11befb5e10e25119707b` (`dev`, `git pull --ff-only` -> `Already up to date`).
+- Godot: `C:\Users\FomaE\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe`, версия `4.7.stable.official.5b4e0cb0f`; Godot 4.6.3 на Windows worker недоступен.
+- `tests/runtime_smoke_test.gd`: PASSED, exit 0. Лог: `build/qa/SCRUM-491-rerun/runtime_smoke_test.log`, success marker `Runtime smoke test passed.`
+- `tests/runtime_smoke_ui_test.gd`: PASSED, exit 0. Лог: `build/qa/SCRUM-491-rerun/runtime_smoke_ui_test.log`, success marker `Runtime UI smoke suite passed.`
+- `tests/ui_no_overlap_matrix_test.gd`: PASSED, exit 0. Лог: `build/qa/SCRUM-491-rerun/ui_no_overlap_matrix_test.log`, success marker `UI no-overlap matrix test passed.`
+
+Hero Select evidence:
+- `build/qa/scrum470_hero_select_v4/hero_select_v4_runtime_rects.md`: 1280x720 `HS4BackButton` = `[P: (28.0, 29.0), S: (132.0, 44.0)]`, portrait starts at `y=104`; 1600x900 `HS4BackButton` = `[P: (35.0, 37.0), S: (136.0, 54.0)]`, portrait starts at `y=131`. Back button no longer overlaps portrait/title zones.
+- `build/qa/scrum470_hero_select_v4/hero_select_v4_no_overlap_matrix.md`: hero_select sections for 1152x648, 1280x720, 1600x900, 1920x1080, 2560x1440, 3840x2160 are present; `text controls checked: 22`; no reported hero_select overlap/overflow.
+
+Jira:
+- Verified fixed and moved to `Готово`: SCRUM-548, SCRUM-549, SCRUM-550.
+- SCRUM-491 moved to `Готово` with QA PASSED comment.
