@@ -239,6 +239,21 @@ Codex Documentation dispatcher регулярно смотрит Jira как aut
 ассеты, не делает анимации и не запускает release flow; он проверяет зависимости,
 дубли, active owner state, Jira/local mirror sync, спорные cases и ручные handoff.
 
+### No-idle Sprint Loop (директива пользователя, 2026-06-28)
+
+Пока в текущем Jira sprint есть eligible unowned задачи, агентские слоты не
+должны простаивать. После каждого завершения, блокировки или handoff исполнитель
+обязан сначала обновить Jira/status/comment, очистить временные файлы своего
+прогона, затем сразу попытаться взять следующую задачу своей роли/контура через
+`tools/jira_next_task.py --claim`. Если подходящей задачи нет, он отвечает
+`DONT_NOTIFY` с причиной, чтобы dispatcher мог переиспользовать слот для другой
+роли, QA или bug-fix.
+
+Dispatcher/PM loop: регулярно закрывать завершённые Codex subagents, синхронизировать
+Jira/local mirrors, запускать QA для задач в `Контроль качества`, раздавать
+свободные non-overlapping задачи backend/design/animator/qa и продолжать цикл до
+состояния: `no eligible current-sprint issues`.
+
 Существующие role windows:
 
 - Back-end: `019eabd9-780b-78a2-9f4b-e7203d659ef2`;

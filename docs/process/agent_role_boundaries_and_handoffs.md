@@ -77,6 +77,23 @@ Jira-pull разрешён только для issue в активном sprint,
 Jira является lock. После успешного claim агент обновляет локальный `.md`/board
 mirror только как bookkeeping.
 
+### No-idle Execution Loop
+
+Пока в текущем Jira sprint есть eligible задачи, исполнитель не заканчивает
+прогон пассивным ожиданием. После завершения, блокировки или handoff текущей
+задачи он обязан:
+
+1. Обновить Jira status/comment и локальный mirror при наличии.
+2. Очистить временные файлы, worktree/cache/scratch artifacts своего прогона.
+3. Сразу выполнить Jira-pull claim следующей eligible задачи своей роли/контура.
+4. Если eligible задачи нет, ответить `DONT_NOTIFY` с точной причиной, чтобы
+   dispatcher мог закрыть/переиспользовать слот.
+
+Dispatcher/PM обязан регулярно reaping'ить завершённых subagents, закрывать их
+потоки, синхронизировать Jira/local mirrors и заполнять свободные слоты
+непересекающимися backend/design/animator/qa задачами до тех пор, пока Jira
+current sprint не вернёт `no eligible current-sprint issues`.
+
 PM/Documentation dispatcher остаётся нужен для декомпозиции, handoff, спорных
 owner cases, duplicate cleanup, зеркал и ручного назначения задач, но он больше
 не является единственным способом выдать обычную unowned current-sprint задачу.

@@ -20,6 +20,11 @@ Autonomy and approval:
 - For every future task that changes functionality, balance, content, UI, progression, visuals, or animation, update the relevant documentation in the same task.
 - After large multi-agent change batches, run the documentation split/update task in `docs/tasks/documentation_post_changes_domain_split_task.md` and keep domain docs under `docs/design/systems/` up to date.
 
+Disk hygiene:
+- Every agent must clean up after itself before finishing a run: remove temporary files, logs, screenshots, generated scratch assets, partial downloads, and disposable clones/worktrees that are not part of committed evidence or the requested deliverable.
+- If a task requires a separate clean clone/worktree, delete or prune failed/partial clones and stale build/import caches created by that run once QA/reporting is complete. Keep only intentional evidence files referenced from Jira/local task mirrors.
+- Never delete user-owned files, shared working checkouts, Jira evidence, committed assets, or files outside the project/explicit temporary workspace unless the user explicitly requested that exact cleanup.
+
 **UI/ВИЗУАЛ — ГЛОБАЛЬНОЕ ПРАВИЛО ФРЕЙМОВ (директива пользователя 2026-06-14, ОБЯЗАТЕЛЬНО для ВСЕХ агентов).**
 Ни при каких обстоятельствах нельзя накладывать элементы интерфейса — кнопки,
 портреты/героев, области выбора (карусели, списки, слоты), иконки, текст — на
@@ -87,6 +92,19 @@ Full autonomy (user directive, 2026-06-12):
 - Questions for the user are allowed ONLY for destructive/irreversible actions
   outside the repo (deleting user files, external accounts, payments) — these
   are out of scope for executors anyway.
+
+No-idle sprint execution (user directive, 2026-06-28):
+- Agent slots must not sit idle while the current Jira sprint has eligible work.
+- After finishing, blocking, or handing off a task, an executor must update Jira,
+  clean up its temporary files, then immediately try to claim the next eligible
+  Jira current-sprint issue for its role/lane with `tools/jira_next_task.py`.
+- If no eligible issue is available for that role/lane, the agent must report
+  `DONT_NOTIFY` with the reason (`no eligible issue`, `blocked by owner overlap`,
+  `waiting for QA`, etc.) so the dispatcher can reuse the slot elsewhere.
+- Dispatcher/PM agents must continuously reap completed workers, close finished
+  Codex subagents, sync Jira/local mirrors, and refill free slots with non-
+  overlapping backend/design/animator/qa work until the sprint has no eligible
+  unowned tasks left.
 
 Feature block:
 - **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Активен текущий Jira sprint на board 1
