@@ -1,6 +1,6 @@
 # Задача Для Design-Агента: Внедрить сгенерированный ассет hero select mockup
 
-Статус: new
+Статус: done / superseded by Hero Select v4 runtime
 Создано: 2026-06-15
 Автор: Codex asset generator
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
@@ -36,3 +36,10 @@ UI mockup / layout template for a fantasy roguelite HERO SELECT screen, dark fan
 - [ ] Не тронуты `.import` файлы без необходимости.
 - [ ] При runtime-интеграции пройдены релевантные Godot smoke/UI checks.
 - [ ] Jira и task-файл синхронизированы после смены статуса.
+
+## Result / Closure
+- Reviewed source reference: `docs/design/references/hero_select_mockup/hero_select_layout_mockup.png`.
+- Layout metadata exists beside the source image as `elements.json` and `elements_normalized.json`.
+- Closed as approved historical reference only: the active runtime implementation is Hero Select v4 from SCRUM-470/SCRUM-491, so this legacy mockup does not need a separate runtime integration pass.
+- No final runtime asset was copied into `assets/sprites/...`; no `.import` files were intentionally modified.
+- Related runtime/UI coverage is handled by the Hero Select v4 QA path (`runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`, `runtime_smoke_test.gd`).
