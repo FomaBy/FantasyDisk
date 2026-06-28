@@ -19,7 +19,16 @@ Result:
 - Kept `LevelUpToast` textless; no duplicate procedural `Label` is introduced.
 - Added focused assertions for compact badge size and single live effect.
 
+Follow-up result (2026-06-28, SCRUM-654 QA RED fix):
+- Fixed the full runtime smoke regression at `tests/runtime_smoke_test.gd:908`.
+- Kept `LevelUpToast` out of the `level_up_effects` world-effect cleanup group so rapid same-frame level-ups cannot delete the HUD toast animation.
+- `_spawn_level_up_effect()` now targets only `LevelUpEffect` nodes and detaches older effects before `queue_free()`, keeping the replacement node name stable for runtime smoke checks.
+
 Tests:
 - PASS: `tests/level_up_effect_duration_test.gd`
 - PASS: `tests/level_up_toast_smoke_test.gd`
 - PASS: `tests/runtime_smoke_ui_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --import`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/level_up_effect_duration_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+- PASS: `Godot_v4.7-stable_win64_console.exe --headless --path . --script res://tests/runtime_smoke_test.gd`

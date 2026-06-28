@@ -5579,8 +5579,13 @@ func _spawn_level_up_effect() -> void:
 
 	for existing in game.get_tree().get_nodes_in_group("level_up_effects"):
 		if existing != null and is_instance_valid(existing):
+			if existing.name != "LevelUpEffect":
+				continue
 			if existing is CanvasItem:
 				(existing as CanvasItem).visible = false
+			var parent: Node = existing.get_parent()
+			if parent != null:
+				parent.remove_child(existing)
 			existing.queue_free()
 
 	var effect = game.LEVEL_UP_EFFECT_SCENE.instantiate() as Node2D

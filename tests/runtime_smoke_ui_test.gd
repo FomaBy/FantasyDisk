@@ -175,6 +175,9 @@ func _test_level_up_toast_frame(main_scene: PackedScene) -> void:
 	if toast == null:
 		_fail("Expected LevelUpToast effect node in runtime UI smoke.")
 		return
+	if toast.is_in_group("level_up_effects"):
+		_fail("Expected LevelUpToast to stay out of the world-effect cleanup group.")
+		return
 	if not toast.find_children("*", "Label", true, false).is_empty():
 		_fail("Expected LevelUpToast to stay textless in runtime UI smoke.")
 		return

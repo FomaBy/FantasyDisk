@@ -4,10 +4,10 @@ SCRUM-654 is a backend/runtime cleanup for the accepted level-up visual language
 
 Runtime requirements:
 
-- One visible overhead node in the `level_up_effects` group at a time.
-- Rapid level-ups replace older live group members before spawning the next one.
+- One visible overhead `LevelUpEffect` node in the `level_up_effects` group at a time.
+- Rapid level-ups replace older live `LevelUpEffect` group members before spawning the next one.
 - Badge display size is `160x80`, within the accepted compact range `144x72..180x90`.
-- `LevelUpToast` remains textless: sparkle/ring feedback only, with no duplicate `Label` child.
+- `LevelUpToast` remains outside the world-effect cleanup group and stays textless: sparkle/ring feedback only, with no duplicate `Label` child.
 - The badge follows the player through `LevelUpEffect.setup(player)` and keeps frame content inside the authored empty badge zone.
 
 Acceptance evidence is covered by focused runtime tests and the UI smoke assertion for duplicate effects.
