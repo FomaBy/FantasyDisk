@@ -1,0 +1,262 @@
+{
+  "base_resolution": [
+    2560,
+    1440
+  ],
+  "elements": {
+    "main_frame": [
+      32,
+      27,
+      2496,
+      1387
+    ],
+    "header_title": [
+      128,
+      74,
+      1660,
+      110
+    ],
+    "back_button": [
+      2172,
+      74,
+      260,
+      104
+    ],
+    "category_panel": [
+      96,
+      220,
+      430,
+      1130
+    ],
+    "category_safe": [
+      148,
+      290,
+      326,
+      990
+    ],
+    "category_button": [
+      0,
+      0,
+      326,
+      118
+    ],
+    "grid_panel": [
+      552,
+      220,
+      1120,
+      1130
+    ],
+    "grid_safe": [
+      626,
+      290,
+      972,
+      990
+    ],
+    "grid_icon_cell": [
+      0,
+      0,
+      144,
+      144
+    ],
+    "detail_panel": [
+      1700,
+      220,
+      764,
+      1130
+    ],
+    "detail_safe": [
+      1776,
+      294,
+      612,
+      980
+    ],
+    "detail_portrait_zone": [
+      1830,
+      318,
+      504,
+      360
+    ],
+    "detail_chip_row": [
+      1788,
+      704,
+      588,
+      88
+    ],
+    "detail_text_zone": [
+      1788,
+      824,
+      588,
+      430
+    ]
+  },
+  "frames": {
+    "cg_main": {
+      "asset": "assets/sprites/ui/frames/codex_glossary/ui_frame_cg_main.png",
+      "size": [
+        2496,
+        1387
+      ],
+      "texture_margins": [
+        70,
+        82,
+        70,
+        76
+      ],
+      "content_margins": [
+        96,
+        106,
+        96,
+        92
+      ]
+    },
+    "cg_nav": {
+      "asset": "assets/sprites/ui/frames/codex_glossary/ui_frame_cg_nav.png",
+      "size": [
+        430,
+        1130
+      ],
+      "texture_margins": [
+        42,
+        58,
+        42,
+        54
+      ],
+      "content_margins": [
+        52,
+        70,
+        52,
+        70
+      ]
+    },
+    "cg_grid": {
+      "asset": "assets/sprites/ui/frames/codex_glossary/ui_frame_cg_grid.png",
+      "size": [
+        1120,
+        1130
+      ],
+      "texture_margins": [
+        42,
+        58,
+        42,
+        54
+      ],
+      "content_margins": [
+        74,
+        70,
+        74,
+        70
+      ]
+    },
+    "cg_detail": {
+      "asset": "assets/sprites/ui/frames/codex_glossary/ui_frame_cg_detail.png",
+      "size": [
+        764,
+        1130
+      ],
+      "texture_margins": [
+        42,
+        58,
+        42,
+        54
+      ],
+      "content_margins": [
+        76,
+        74,
+        76,
+        76
+      ]
+    },
+    "cg_category_button": {
+      "asset": "assets/sprites/ui/frames/codex_glossary/ui_btn_cg_category_<state>.png",
+      "size": [
+        326,
+        118
+      ],
+      "texture_margins": [
+        34,
+        30,
+        34,
+        30
+      ],
+      "content_margins": [
+        50,
+        34,
+        50,
+        34
+      ],
+      "states": [
+        "normal",
+        "hover",
+        "pressed",
+        "active"
+      ]
+    },
+    "cg_back_button": {
+      "asset": "assets/sprites/ui/frames/codex_glossary/ui_btn_cg_back_<state>.png",
+      "size": [
+        260,
+        104
+      ],
+      "texture_margins": [
+        34,
+        26,
+        34,
+        26
+      ],
+      "content_margins": [
+        48,
+        30,
+        48,
+        30
+      ],
+      "states": [
+        "normal",
+        "hover",
+        "pressed",
+        "disabled"
+      ]
+    },
+    "cg_grid_hover": {
+      "asset": "assets/sprites/ui/frames/codex_glossary/ui_frame_cg_grid_hover_glow.png",
+      "size": [
+        144,
+        144
+      ],
+      "texture_margins": [
+        18,
+        18,
+        18,
+        18
+      ],
+      "content_margins": [
+        20,
+        20,
+        20,
+        20
+      ]
+    },
+    "cg_entry_separator": {
+      "asset": "assets/sprites/ui/frames/codex_glossary/ui_frame_cg_entry_separator.png",
+      "size": [
+        972,
+        6
+      ],
+      "texture_margins": [
+        8,
+        0,
+        8,
+        0
+      ],
+      "content_margins": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "accepted_mockup": "docs/design/references/codex_glossary_scrum678/codex_glossary_2k_mockup_v2.png",
+  "rejected_mockup_notes": {
+    "docs/design/references/codex_glossary_scrum678/codex_glossary_2k_mockup.png": "center placeholders read too much like individual icon frames"
+  }
+}

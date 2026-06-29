@@ -112,7 +112,7 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 	body.z_index = -1
 	holder.add_child(body)
 
-	var tint := Color(color.r, color.g, color.b, 0.82)
+	var tint := Color(color.r, color.g, color.b, 0.9)
 	var sprite := _additive_sprite(SLASH_TEXTURE, tint)
 	sprite.position = body.position
 	holder.add_child(sprite)
@@ -130,11 +130,11 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 
 	var tween := holder.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(holder, "rotation", base_angle + 0.10, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(holder, "scale", Vector2(figure_scale, figure_scale), 0.18).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(sprite, "modulate:a", 0.0, 0.13).set_delay(0.09)
-	tween.tween_property(ghost, "modulate:a", 0.0, 0.10).set_delay(0.12)
-	tween.tween_property(body, "modulate:a", 0.0, 0.12).set_delay(0.10)
+	tween.tween_property(holder, "rotation", base_angle + 0.10, 0.24).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(holder, "scale", Vector2(figure_scale, figure_scale), 0.24).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(sprite, "modulate:a", 0.0, 0.17).set_delay(0.09)
+	tween.tween_property(ghost, "modulate:a", 0.0, 0.13).set_delay(0.12)
+	tween.tween_property(body, "modulate:a", 0.0, 0.15).set_delay(0.10)
 	tween.chain().tween_callback(holder.queue_free)
 	return holder
 

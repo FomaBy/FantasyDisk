@@ -1,0 +1,33 @@
+{
+  "canvas": {
+    "width": 2560,
+    "height": 1440
+  },
+  "policy": {
+    "min_gap": 12,
+    "allow_overlap": false
+  },
+  "content": {
+    "level_badge": "Level 7",
+    "level_title": "Level Up",
+    "level_subtitle": "Choose one upgrade",
+    "later": "Later"
+  },
+  "elements": [
+    {"id": "level_up_overlay", "kind": "decor", "x": 0, "y": 0, "w": 2560, "h": 1440, "collision": false},
+    {"id": "level_up_panel", "kind": "panel", "x": 760, "y": 420, "w": 1040, "h": 600, "min_w": 960, "min_h": 560},
+    {"id": "level_up_safe", "kind": "zone", "parent": "level_up_panel", "content_zone": true, "collision": false, "x": 818, "y": 492, "w": 924, "h": 462, "min_w": 820, "min_h": 396},
+    {"id": "hero_header", "kind": "zone", "parent": "level_up_panel", "content_zone": true, "x": 940, "y": 504, "w": 680, "h": 118, "min_w": 520, "min_h": 88},
+    {"id": "hero_portrait", "kind": "portrait", "parent": "hero_header", "content_zone": true, "x": 1002, "y": 512, "w": 88, "h": 88, "min_w": 64, "min_h": 64},
+    {"id": "level_badge", "kind": "text", "parent": "hero_header", "content_zone": true, "x": 1112, "y": 506, "w": 336, "h": 28, "text_key": "level_badge", "max_font": 22, "min_font": 16},
+    {"id": "level_title", "kind": "text", "parent": "hero_header", "content_zone": true, "x": 1112, "y": 540, "w": 336, "h": 54, "text_key": "level_title", "max_font": 42, "min_font": 28},
+    {"id": "level_subtitle", "kind": "text", "parent": "level_up_panel", "content_zone": true, "x": 896, "y": 620, "w": 768, "h": 42, "text_key": "level_subtitle", "max_font": 28, "min_font": 20},
+    {"id": "reward_card_0", "kind": "button", "parent": "level_up_panel", "content_zone": true, "x": 865, "y": 684, "w": 238, "h": 210, "min_w": 202, "min_h": 160},
+    {"id": "reward_card_0_content", "kind": "zone", "parent": "reward_card_0", "content_zone": true, "collision": false, "x": 905, "y": 728, "w": 158, "h": 124, "min_w": 136, "min_h": 104},
+    {"id": "reward_card_1", "kind": "button", "parent": "level_up_panel", "content_zone": true, "x": 1115, "y": 684, "w": 238, "h": 210, "min_w": 202, "min_h": 160},
+    {"id": "reward_card_1_content", "kind": "zone", "parent": "reward_card_1", "content_zone": true, "collision": false, "x": 1155, "y": 728, "w": 158, "h": 124, "min_w": 136, "min_h": 104},
+    {"id": "reward_card_2", "kind": "button", "parent": "level_up_panel", "content_zone": true, "x": 1365, "y": 684, "w": 238, "h": 210, "min_w": 202, "min_h": 160},
+    {"id": "reward_card_2_content", "kind": "zone", "parent": "reward_card_2", "content_zone": true, "collision": false, "x": 1405, "y": 728, "w": 158, "h": 124, "min_w": 136, "min_h": 104},
+    {"id": "later_button", "kind": "button", "parent": "level_up_panel", "content_zone": true, "x": 1150, "y": 908, "w": 260, "h": 72, "text_key": "later", "max_font": 28, "min_font": 18, "min_w": 240, "min_h": 56}
+  ]
+}

@@ -17,6 +17,12 @@
 - The file stores meta points, unlocked Ascension levels and purchased skill-tree
   nodes. Combat-facing bonuses are applied at run start through
   `Main.apply_ascension_bonuses()` and player meta-skill hooks.
+- SCRUM-621 adds Codex discovery state to the same persistent meta file:
+  `discovered_monsters`, `discovered_bosses` and `discovered_artifacts`.
+  Runtime records monsters and bosses when they are encountered/spawned in
+  gameplay, and records artifacts when an artifact reward is actually applied.
+  The lists are normalized, deduplicated and filtered against canonical
+  Codex/ProgressionData ids; missing keys in old saves load as empty lists.
 
 ## Run Autosave
 

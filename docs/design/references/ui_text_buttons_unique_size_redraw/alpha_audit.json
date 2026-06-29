@@ -1,0 +1,902 @@
+[
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_back_260x104_disabled.png",
+    "size": [
+      260,
+      104
+    ],
+    "transparent_pixels": 7087,
+    "partial_alpha_pixels": 19953,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_back_260x104_focus.png",
+    "size": [
+      260,
+      104
+    ],
+    "transparent_pixels": 190,
+    "partial_alpha_pixels": 9310,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_back_260x104_hover.png",
+    "size": [
+      260,
+      104
+    ],
+    "transparent_pixels": 6957,
+    "partial_alpha_pixels": 2552,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_back_260x104_normal.png",
+    "size": [
+      260,
+      104
+    ],
+    "transparent_pixels": 6957,
+    "partial_alpha_pixels": 2552,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_back_260x104_pressed.png",
+    "size": [
+      260,
+      104
+    ],
+    "transparent_pixels": 6958,
+    "partial_alpha_pixels": 2551,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_disabled.png",
+    "size": [
+      240,
+      72
+    ],
+    "transparent_pixels": 4182,
+    "partial_alpha_pixels": 13098,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_focus.png",
+    "size": [
+      240,
+      72
+    ],
+    "transparent_pixels": 336,
+    "partial_alpha_pixels": 5599,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_hover.png",
+    "size": [
+      240,
+      72
+    ],
+    "transparent_pixels": 4059,
+    "partial_alpha_pixels": 1885,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png",
+    "size": [
+      240,
+      72
+    ],
+    "transparent_pixels": 4059,
+    "partial_alpha_pixels": 1885,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_pressed.png",
+    "size": [
+      240,
+      72
+    ],
+    "transparent_pixels": 4076,
+    "partial_alpha_pixels": 1868,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_disabled.png",
+    "size": [
+      420,
+      72
+    ],
+    "transparent_pixels": 7002,
+    "partial_alpha_pixels": 23238,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_focus.png",
+    "size": [
+      420,
+      72
+    ],
+    "transparent_pixels": 219,
+    "partial_alpha_pixels": 9576,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_hover.png",
+    "size": [
+      420,
+      72
+    ],
+    "transparent_pixels": 6586,
+    "partial_alpha_pixels": 3209,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_normal.png",
+    "size": [
+      420,
+      72
+    ],
+    "transparent_pixels": 6586,
+    "partial_alpha_pixels": 3209,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_pressed.png",
+    "size": [
+      420,
+      72
+    ],
+    "transparent_pixels": 6590,
+    "partial_alpha_pixels": 3205,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_event_back_380x54_disabled.png",
+    "size": [
+      380,
+      54
+    ],
+    "transparent_pixels": 3839,
+    "partial_alpha_pixels": 16681,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_event_back_380x54_focus.png",
+    "size": [
+      380,
+      54
+    ],
+    "transparent_pixels": 136,
+    "partial_alpha_pixels": 6160,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_event_back_380x54_hover.png",
+    "size": [
+      380,
+      54
+    ],
+    "transparent_pixels": 3742,
+    "partial_alpha_pixels": 2585,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_event_back_380x54_normal.png",
+    "size": [
+      380,
+      54
+    ],
+    "transparent_pixels": 3742,
+    "partial_alpha_pixels": 2585,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_event_back_380x54_pressed.png",
+    "size": [
+      380,
+      54
+    ],
+    "transparent_pixels": 3753,
+    "partial_alpha_pixels": 2574,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_260x64_disabled.png",
+    "size": [
+      260,
+      64
+    ],
+    "transparent_pixels": 4177,
+    "partial_alpha_pixels": 12463,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_260x64_focus.png",
+    "size": [
+      260,
+      64
+    ],
+    "transparent_pixels": 182,
+    "partial_alpha_pixels": 5723,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_260x64_hover.png",
+    "size": [
+      260,
+      64
+    ],
+    "transparent_pixels": 3899,
+    "partial_alpha_pixels": 2008,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_260x64_normal.png",
+    "size": [
+      260,
+      64
+    ],
+    "transparent_pixels": 3899,
+    "partial_alpha_pixels": 2008,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_260x64_pressed.png",
+    "size": [
+      260,
+      64
+    ],
+    "transparent_pixels": 3901,
+    "partial_alpha_pixels": 2006,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_cancel_220x64_disabled.png",
+    "size": [
+      220,
+      64
+    ],
+    "transparent_pixels": 4671,
+    "partial_alpha_pixels": 9409,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_cancel_220x64_focus.png",
+    "size": [
+      220,
+      64
+    ],
+    "transparent_pixels": 910,
+    "partial_alpha_pixels": 5288,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_cancel_220x64_hover.png",
+    "size": [
+      220,
+      64
+    ],
+    "transparent_pixels": 4550,
+    "partial_alpha_pixels": 1652,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_cancel_220x64_normal.png",
+    "size": [
+      220,
+      64
+    ],
+    "transparent_pixels": 4550,
+    "partial_alpha_pixels": 1652,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_feedback_cancel_220x64_pressed.png",
+    "size": [
+      220,
+      64
+    ],
+    "transparent_pixels": 4551,
+    "partial_alpha_pixels": 1651,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_later_260x72_disabled.png",
+    "size": [
+      260,
+      72
+    ],
+    "transparent_pixels": 5208,
+    "partial_alpha_pixels": 13512,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_later_260x72_focus.png",
+    "size": [
+      260,
+      72
+    ],
+    "transparent_pixels": 316,
+    "partial_alpha_pixels": 6693,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_later_260x72_hover.png",
+    "size": [
+      260,
+      72
+    ],
+    "transparent_pixels": 5039,
+    "partial_alpha_pixels": 1977,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_later_260x72_normal.png",
+    "size": [
+      260,
+      72
+    ],
+    "transparent_pixels": 5039,
+    "partial_alpha_pixels": 1977,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_later_260x72_pressed.png",
+    "size": [
+      260,
+      72
+    ],
+    "transparent_pixels": 5045,
+    "partial_alpha_pixels": 1971,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_disabled.png",
+    "size": [
+      380,
+      104
+    ],
+    "transparent_pixels": 14329,
+    "partial_alpha_pixels": 25191,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_focus.png",
+    "size": [
+      380,
+      104
+    ],
+    "transparent_pixels": 1959,
+    "partial_alpha_pixels": 15315,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_hover.png",
+    "size": [
+      380,
+      104
+    ],
+    "transparent_pixels": 14129,
+    "partial_alpha_pixels": 3153,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_normal.png",
+    "size": [
+      380,
+      104
+    ],
+    "transparent_pixels": 14129,
+    "partial_alpha_pixels": 3153,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_pressed.png",
+    "size": [
+      380,
+      104
+    ],
+    "transparent_pixels": 14129,
+    "partial_alpha_pixels": 3153,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_disabled.png",
+    "size": [
+      280,
+      60
+    ],
+    "transparent_pixels": 3557,
+    "partial_alpha_pixels": 13243,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_focus.png",
+    "size": [
+      280,
+      60
+    ],
+    "transparent_pixels": 126,
+    "partial_alpha_pixels": 5241,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_hover.png",
+    "size": [
+      280,
+      60
+    ],
+    "transparent_pixels": 3285,
+    "partial_alpha_pixels": 2084,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_normal.png",
+    "size": [
+      280,
+      60
+    ],
+    "transparent_pixels": 3285,
+    "partial_alpha_pixels": 2084,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_pressed.png",
+    "size": [
+      280,
+      60
+    ],
+    "transparent_pixels": 3294,
+    "partial_alpha_pixels": 2075,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_quit_220x72_disabled.png",
+    "size": [
+      220,
+      72
+    ],
+    "transparent_pixels": 4483,
+    "partial_alpha_pixels": 11357,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_quit_220x72_focus.png",
+    "size": [
+      220,
+      72
+    ],
+    "transparent_pixels": 371,
+    "partial_alpha_pixels": 5695,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_quit_220x72_hover.png",
+    "size": [
+      220,
+      72
+    ],
+    "transparent_pixels": 4364,
+    "partial_alpha_pixels": 1731,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_quit_220x72_normal.png",
+    "size": [
+      220,
+      72
+    ],
+    "transparent_pixels": 4364,
+    "partial_alpha_pixels": 1731,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_quit_220x72_pressed.png",
+    "size": [
+      220,
+      72
+    ],
+    "transparent_pixels": 4370,
+    "partial_alpha_pixels": 1725,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_rebind_420x62_disabled.png",
+    "size": [
+      420,
+      62
+    ],
+    "transparent_pixels": 6258,
+    "partial_alpha_pixels": 19782,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_rebind_420x62_focus.png",
+    "size": [
+      420,
+      62
+    ],
+    "transparent_pixels": 335,
+    "partial_alpha_pixels": 8680,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_rebind_420x62_hover.png",
+    "size": [
+      420,
+      62
+    ],
+    "transparent_pixels": 5964,
+    "partial_alpha_pixels": 3070,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_rebind_420x62_normal.png",
+    "size": [
+      420,
+      62
+    ],
+    "transparent_pixels": 5964,
+    "partial_alpha_pixels": 3070,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_rebind_420x62_pressed.png",
+    "size": [
+      420,
+      62
+    ],
+    "transparent_pixels": 5970,
+    "partial_alpha_pixels": 3064,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_reset_bindings_long_560x104_disabled.png",
+    "size": [
+      560,
+      104
+    ],
+    "transparent_pixels": 19884,
+    "partial_alpha_pixels": 38356,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_reset_bindings_long_560x104_focus.png",
+    "size": [
+      560,
+      104
+    ],
+    "transparent_pixels": 2582,
+    "partial_alpha_pixels": 21343,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_reset_bindings_long_560x104_hover.png",
+    "size": [
+      560,
+      104
+    ],
+    "transparent_pixels": 19607,
+    "partial_alpha_pixels": 4318,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_reset_bindings_long_560x104_normal.png",
+    "size": [
+      560,
+      104
+    ],
+    "transparent_pixels": 19607,
+    "partial_alpha_pixels": 4318,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_reset_bindings_long_560x104_pressed.png",
+    "size": [
+      560,
+      104
+    ],
+    "transparent_pixels": 19609,
+    "partial_alpha_pixels": 4316,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_settings_back_280x64_disabled.png",
+    "size": [
+      280,
+      64
+    ],
+    "transparent_pixels": 4726,
+    "partial_alpha_pixels": 13194,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_settings_back_280x64_focus.png",
+    "size": [
+      280,
+      64
+    ],
+    "transparent_pixels": 498,
+    "partial_alpha_pixels": 6058,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_settings_back_280x64_hover.png",
+    "size": [
+      280,
+      64
+    ],
+    "transparent_pixels": 4619,
+    "partial_alpha_pixels": 1974,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_settings_back_280x64_normal.png",
+    "size": [
+      280,
+      64
+    ],
+    "transparent_pixels": 4619,
+    "partial_alpha_pixels": 1974,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_settings_back_280x64_pressed.png",
+    "size": [
+      280,
+      64
+    ],
+    "transparent_pixels": 4621,
+    "partial_alpha_pixels": 1972,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_disabled.png",
+    "size": [
+      420,
+      104
+    ],
+    "transparent_pixels": 16119,
+    "partial_alpha_pixels": 27561,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_focus.png",
+    "size": [
+      420,
+      104
+    ],
+    "transparent_pixels": 3130,
+    "partial_alpha_pixels": 15659,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_hover.png",
+    "size": [
+      420,
+      104
+    ],
+    "transparent_pixels": 15924,
+    "partial_alpha_pixels": 2874,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_normal.png",
+    "size": [
+      420,
+      104
+    ],
+    "transparent_pixels": 15924,
+    "partial_alpha_pixels": 2874,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_pressed.png",
+    "size": [
+      420,
+      104
+    ],
+    "transparent_pixels": 15928,
+    "partial_alpha_pixels": 2870,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_wide_440x104_disabled.png",
+    "size": [
+      440,
+      104
+    ],
+    "transparent_pixels": 12104,
+    "partial_alpha_pixels": 33656,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_wide_440x104_focus.png",
+    "size": [
+      440,
+      104
+    ],
+    "transparent_pixels": 511,
+    "partial_alpha_pixels": 14827,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_wide_440x104_hover.png",
+    "size": [
+      440,
+      104
+    ],
+    "transparent_pixels": 11940,
+    "partial_alpha_pixels": 3416,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_wide_440x104_normal.png",
+    "size": [
+      440,
+      104
+    ],
+    "transparent_pixels": 11940,
+    "partial_alpha_pixels": 3416,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  },
+  {
+    "file": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_wide_440x104_pressed.png",
+    "size": [
+      440,
+      104
+    ],
+    "transparent_pixels": 11944,
+    "partial_alpha_pixels": 3412,
+    "corner_visible_pixels_3px": 0,
+    "visible_near_white_low_sat_pixels": 0,
+    "pass": true
+  }
+]

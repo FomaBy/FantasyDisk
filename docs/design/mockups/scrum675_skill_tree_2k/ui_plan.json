@@ -1,0 +1,334 @@
+{
+  "canvas": {
+    "width": 2560,
+    "height": 1440
+  },
+  "policy": {
+    "min_gap": 18,
+    "allow_overlap": false
+  },
+  "content": {
+    "title": "ДРЕВО УМЕНИЙ",
+    "points_btn": "Очки умений",
+    "points_badge": "5",
+    "class_select": "Берсерк",
+    "class_popup": "Бонусы класса",
+    "path_wealth": "Богатство",
+    "path_lore": "Знание",
+    "path_might": "Мощь",
+    "path_endure": "Стойкость"
+  },
+  "elements": [
+    {
+      "id": "main_panel_frame",
+      "kind": "panel",
+      "x": 48,
+      "y": 26,
+      "w": 2464,
+      "h": 1388,
+      "min_w": 1800,
+      "min_h": 1100,
+      "asset": "ui_frame_skill_tree_main.png",
+      "texture_margin": [
+        74,
+        86,
+        74,
+        82
+      ],
+      "content_margin": [
+        120,
+        118,
+        120,
+        108
+      ]
+    },
+    {
+      "id": "points_button_frame",
+      "kind": "button",
+      "x": 168,
+      "y": 88,
+      "w": 340,
+      "h": 114,
+      "min_w": 240,
+      "min_h": 90,
+      "asset": "ui_btn_skill_points.png",
+      "texture_margin": [
+        48,
+        40,
+        48,
+        42
+      ],
+      "content_margin": [
+        30,
+        22,
+        30,
+        22
+      ]
+    },
+    {
+      "id": "points_button_zone",
+      "kind": "text",
+      "parent": "points_button_frame",
+      "content_zone": true,
+      "x": 196,
+      "y": 96,
+      "w": 280,
+      "h": 92,
+      "text_key": "points_btn",
+      "max_font": 34,
+      "min_font": 22
+    },
+    {
+      "id": "points_badge_frame",
+      "kind": "panel",
+      "x": 520,
+      "y": 78,
+      "w": 176,
+      "h": 128,
+      "min_w": 132,
+      "min_h": 96,
+      "asset": "ui_badge_skill_points.png",
+      "texture_margin": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "content_margin": [
+        40,
+        46,
+        40,
+        34
+      ]
+    },
+    {
+      "id": "points_badge_zone",
+      "kind": "text",
+      "parent": "points_badge_frame",
+      "content_zone": true,
+      "x": 540,
+      "y": 100,
+      "w": 132,
+      "h": 96,
+      "text_key": "points_badge",
+      "max_font": 48,
+      "min_font": 28
+    },
+    {
+      "id": "class_select_frame",
+      "kind": "dropdown",
+      "x": 2096,
+      "y": 92,
+      "w": 372,
+      "h": 96,
+      "min_w": 300,
+      "min_h": 78,
+      "asset": "ui_frame_skill_tree_class_select.png",
+      "texture_margin": [
+        44,
+        40,
+        72,
+        40
+      ],
+      "content_margin": [
+        30,
+        18,
+        60,
+        18
+      ]
+    },
+    {
+      "id": "class_select_zone",
+      "kind": "text",
+      "parent": "class_select_frame",
+      "content_zone": true,
+      "x": 2120,
+      "y": 100,
+      "w": 300,
+      "h": 78,
+      "text_key": "class_select",
+      "max_font": 30,
+      "min_font": 20
+    },
+    {
+      "id": "class_popup_frame",
+      "kind": "panel",
+      "x": 168,
+      "y": 300,
+      "w": 520,
+      "h": 940,
+      "min_w": 420,
+      "min_h": 600,
+      "asset": "ui_frame_skill_tree_class_popup.png",
+      "texture_margin": [
+        56,
+        64,
+        56,
+        60
+      ],
+      "content_margin": [
+        40,
+        52,
+        40,
+        46
+      ]
+    },
+    {
+      "id": "class_popup_zone",
+      "kind": "text",
+      "parent": "class_popup_frame",
+      "content_zone": true,
+      "x": 196,
+      "y": 320,
+      "w": 460,
+      "h": 900,
+      "text_key": "class_popup",
+      "max_font": 26,
+      "min_font": 16
+    },
+    {
+      "id": "path_wealth_frame",
+      "kind": "branch",
+      "x": 736,
+      "y": 282,
+      "w": 410,
+      "h": 940,
+      "min_w": 300,
+      "min_h": 600,
+      "asset": "ui_frame_skill_tree_path_wealth.png",
+      "texture_margin": [
+        40,
+        52,
+        40,
+        52
+      ],
+      "content_margin": [
+        30,
+        46,
+        30,
+        40
+      ]
+    },
+    {
+      "id": "path_wealth_zone",
+      "kind": "text",
+      "parent": "path_wealth_frame",
+      "content_zone": true,
+      "x": 760,
+      "y": 318,
+      "w": 362,
+      "h": 880,
+      "text_key": "path_wealth",
+      "max_font": 24,
+      "min_font": 15
+    },
+    {
+      "id": "path_lore_frame",
+      "kind": "branch",
+      "x": 1184,
+      "y": 282,
+      "w": 410,
+      "h": 940,
+      "min_w": 300,
+      "min_h": 600,
+      "asset": "ui_frame_skill_tree_path_lore.png",
+      "texture_margin": [
+        40,
+        52,
+        40,
+        52
+      ],
+      "content_margin": [
+        30,
+        46,
+        30,
+        40
+      ]
+    },
+    {
+      "id": "path_lore_zone",
+      "kind": "text",
+      "parent": "path_lore_frame",
+      "content_zone": true,
+      "x": 1208,
+      "y": 318,
+      "w": 362,
+      "h": 880,
+      "text_key": "path_lore",
+      "max_font": 24,
+      "min_font": 15
+    },
+    {
+      "id": "path_might_frame",
+      "kind": "branch",
+      "x": 1632,
+      "y": 282,
+      "w": 410,
+      "h": 940,
+      "min_w": 300,
+      "min_h": 600,
+      "asset": "ui_frame_skill_tree_path_might.png",
+      "texture_margin": [
+        40,
+        52,
+        40,
+        52
+      ],
+      "content_margin": [
+        30,
+        46,
+        30,
+        40
+      ]
+    },
+    {
+      "id": "path_might_zone",
+      "kind": "text",
+      "parent": "path_might_frame",
+      "content_zone": true,
+      "x": 1656,
+      "y": 318,
+      "w": 362,
+      "h": 880,
+      "text_key": "path_might",
+      "max_font": 24,
+      "min_font": 15
+    },
+    {
+      "id": "path_endure_frame",
+      "kind": "branch",
+      "x": 2080,
+      "y": 282,
+      "w": 410,
+      "h": 940,
+      "min_w": 300,
+      "min_h": 600,
+      "asset": "ui_frame_skill_tree_path_endure.png",
+      "texture_margin": [
+        40,
+        52,
+        40,
+        52
+      ],
+      "content_margin": [
+        30,
+        46,
+        30,
+        40
+      ]
+    },
+    {
+      "id": "path_endure_zone",
+      "kind": "text",
+      "parent": "path_endure_frame",
+      "content_zone": true,
+      "x": 2104,
+      "y": 318,
+      "w": 362,
+      "h": 880,
+      "text_key": "path_endure",
+      "max_font": 24,
+      "min_font": 15
+    }
+  ]
+}

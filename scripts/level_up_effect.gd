@@ -4,7 +4,16 @@ signal finished
 
 const RING_TEXTURE := preload("res://assets/sprites/effects/impact_ring.png")
 const FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
+const BADGE_TEXTURE := preload("res://assets/sprites/effects/level_up_popup_badge.png")
 const RING_RADIUS := 104.0
+const BADGE_DISPLAY_SIZE := Vector2(160.0, 80.0)
+const BADGE_START_POSITION := Vector2(0.0, -118.0)
+# SCRUM-614: показ Level Up дольше и весомее (просьба игрока — момент роста почти
+# незаметен при ~0.86с). Окно эффекта расширено до 1.35с, бейдж дольше держится и
+# выше всплывает, добавлен второй пульс масштаба на пике. Фейд бейджа (delay 1.05 +
+# 0.30) укладывается ровно в EFFECT_DURATION — нода самоосвобождается без обрезки.
+const BADGE_FLOAT_DISTANCE := 40.0
+const EFFECT_DURATION := 1.35
 
 const GOLD := Color(1.0, 0.82, 0.32, 1.0)
 const CYAN := Color(0.46, 0.92, 1.0, 1.0)
@@ -35,7 +44,7 @@ func _additive(texture: Texture2D, color: Color) -> Sprite2D:
 
 func _build_visual() -> void:
 	# Текстурный праздничный бурст: золотая вспышка + расходящееся кольцо +
-	# радиальные искры + поднимающаяся подпись (вместо Polygon2D/ColorRect).
+	# радиальные искры + готовый Level Up badge из SCRUM-519.
 	var flash := _additive(FLASH_TEXTURE, GOLD)
 	flash.scale = Vector2.ONE * 0.5
 	add_child(flash)
@@ -44,16 +53,13 @@ func _build_visual() -> void:
 	ring.scale = Vector2.ONE * (28.0 / RING_RADIUS)
 	add_child(ring)
 
-	var label := Label.new()
-	label.text = "LEVEL UP"
-	label.position = Vector2(-86, -104)
-	label.size = Vector2(172, 34)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 24)
-	label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.28, 1.0))
-	label.add_theme_color_override("font_outline_color", Color(0.18, 0.10, 0.02, 1.0))
-	label.add_theme_constant_override("outline_size", 6)
-	add_child(label)
+	var badge := Sprite2D.new()
+	badge.name = "LevelUpPopupBadge"
+	badge.texture = BADGE_TEXTURE
+	badge.position = BADGE_START_POSITION
+	badge.scale = _badge_display_scale()
+	badge.modulate.a = 0.0
+	add_child(badge)
 
 	var sparks: Array[Sprite2D] = []
 	for index in range(16):
@@ -62,13 +68,20 @@ func _build_visual() -> void:
 		add_child(spark)
 		sparks.append(spark)
 
-	_play(flash, ring, label, sparks)
+	_play(flash, ring, badge, sparks)
 
 
-func _play(flash: Sprite2D, ring: Sprite2D, label: Label, sparks: Array[Sprite2D]) -> void:
+func _badge_display_scale(multiplier := 1.0) -> Vector2:
+	var texture_size := BADGE_TEXTURE.get_size()
+	if texture_size.x <= 0.0 or texture_size.y <= 0.0:
+		return Vector2.ONE * multiplier
+	return Vector2(BADGE_DISPLAY_SIZE.x / texture_size.x, BADGE_DISPLAY_SIZE.y / texture_size.y) * multiplier
+
+
+func _play(flash: Sprite2D, ring: Sprite2D, badge: Sprite2D, sparks: Array[Sprite2D]) -> void:
 	var root_tween := create_tween()
 	root_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	root_tween.tween_interval(0.85)
+	root_tween.tween_interval(EFFECT_DURATION)
 	root_tween.tween_callback(func() -> void:
 		finished.emit()
 		queue_free()
@@ -86,13 +99,21 @@ func _play(flash: Sprite2D, ring: Sprite2D, label: Label, sparks: Array[Sprite2D
 	ring_tween.tween_property(ring, "scale", Vector2.ONE * (96.0 / RING_RADIUS), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	ring_tween.tween_property(ring, "modulate:a", 0.0, 0.45).set_delay(0.12)
 
-	label.modulate.a = 0.0
-	var label_tween := label.create_tween()
-	label_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	label_tween.set_parallel(true)
-	label_tween.tween_property(label, "modulate:a", 1.0, 0.18)
-	label_tween.tween_property(label, "position:y", -120.0, 0.7).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	label_tween.tween_property(label, "modulate:a", 0.0, 0.3).set_delay(0.5)
+	var badge_tween := badge.create_tween()
+	badge_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	badge_tween.set_parallel(true)
+	badge_tween.tween_property(badge, "modulate:a", 1.0, 0.12)
+	badge_tween.tween_property(badge, "position:y", BADGE_START_POSITION.y - BADGE_FLOAT_DISTANCE, 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	badge_tween.tween_property(badge, "modulate:a", 0.0, 0.30).set_delay(1.05)
+
+	var badge_scale_tween := badge.create_tween()
+	badge_scale_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	badge_scale_tween.tween_property(badge, "scale", _badge_display_scale(1.04), 0.14).from(_badge_display_scale(0.92)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	badge_scale_tween.tween_property(badge, "scale", _badge_display_scale(), 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	# Второй мягкий пульс масштаба на пике подъёма (вес/акцент момента роста, SCRUM-614).
+	badge_scale_tween.tween_interval(0.40)
+	badge_scale_tween.tween_property(badge, "scale", _badge_display_scale(1.06), 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	badge_scale_tween.tween_property(badge, "scale", _badge_display_scale(), 0.20).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 	for index in range(sparks.size()):
 		var spark := sparks[index]

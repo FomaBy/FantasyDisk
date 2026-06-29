@@ -1,40 +1,21 @@
 extends SceneTree
 
-const EXPECTED_ARENA_SIZE := Vector2(2560, 1440)
+const EXPECTED_ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: lock-step с ARENA_SIZE (×1.6)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
+const EXPECTED_ROUTE_STEPS_TO_BOSS := 10
+const EXPECTED_ACT_COUNT := 3
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
+const EnemyScript := preload("res://scripts/enemy.gd")
+const ThreatIndicatorsScript := preload("res://scripts/threat_indicators.gd")
 const EventData := preload("res://scripts/event_data.gd")
 const Glossary := preload("res://scripts/glossary.gd")
 const RunAutosave := preload("res://scripts/run_autosave.gd")
 const FeedbackReporter := preload("res://scripts/feedback_reporter.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
-const HERO_SELECT_UNIFIED_SOURCE_SIZE := Vector2(1536.0, 1024.0)
-const HERO_SELECT_UNIFIED_PORTRAIT_RECT := Rect2(130.0, 145.0, 420.0, 560.0)
-const HERO_SELECT_UNIFIED_DESCRIPTION_RECT := Rect2(610.0, 145.0, 786.0, 500.0)
-const HERO_SELECT_UNIFIED_BOTTOM_CONTROLS_RECT := Rect2(570.0, 705.0, 660.0, 178.0)
-const HERO_SELECT_V3_SOURCE_SIZE := Vector2(1536.0, 864.0)
-const HERO_SELECT_V3_OUTER_SAFE := Rect2(0.0, 0.0, 1536.0, 864.0)
-const HERO_SELECT_V3_PORTRAIT_FRAME := Rect2(42.0, 82.0, 342.0, 540.0)
-const HERO_SELECT_V3_PORTRAIT_SAFE := Rect2(112.1, 182.0, 201.7, 329.4)
-const HERO_SELECT_V3_DOSSIER_FRAME := Rect2(388.0, 93.0, 625.0, 467.0)
-const HERO_SELECT_V3_DOSSIER_CONTENT := Rect2(490.9, 174.9, 419.1, 289.6)
-const HERO_SELECT_V3_DOSSIER_TITLE_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_DOSSIER_BODY_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_DOSSIER_DESCRIPTION_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_TRAITS_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_WEAPONS_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_ASC_PANEL := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_SELECT_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
-const HERO_SELECT_V3_BACK_SAFE := Rect2(52.0, 28.0, 123.0, 54.0)
-const HERO_SELECT_V3_RADAR_PANEL := Rect2(1086.0, 100.5, 388.0, 388.0)
-const HERO_SELECT_V3_RADAR_CONTENT := Rect2(1173.2, 187.7, 213.7, 213.7)
-const HERO_SELECT_V3_CAROUSEL_FRAME := Rect2(26.0, 626.0, 1488.0, 226.0)
-const HERO_SELECT_V3_CAROUSEL_SAFE := Rect2(197.1, 683.7, 1145.7, 110.6)
-const HERO_SELECT_V3_TOOLTIP_SAFE := HERO_SELECT_V3_DOSSIER_CONTENT
 const HERO_SELECT_V4_BG := "res://assets/sprites/ui/hero_select_v4/background.png"
 const HERO_SELECT_V4_SOURCE_SIZE := Vector2(1536.0, 1024.0)
 const HERO_SELECT_V4_TITLE := Rect2(0.265, 0.018, 0.470, 0.105)
@@ -53,8 +34,34 @@ const MINIMAL_MODAL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_
 const MINIMAL_PANEL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png"
 const MINIMAL_CARD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png"
+# SCRUM-486 (UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация (build_ui_2k_frame_kit.py),
+# заменили общие minimal-фреймы SCRUM-448 на экранах паузы/досье/тултипов.
+const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png"
+const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
+const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
+const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
+const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
+const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
+const LEVEL_UP_LATER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
+const LEVEL_UP_LATER_HOVER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_hover.png"
+const LEVEL_UP_LATER_PRESSED_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_pressed.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
+# SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
+# нарисованы 1:1 под слот (CHUD_*_2K) build_ui_2k_frame_kit.py → резкий орнамент.
+const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png"
+const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
+# SCRUM-578: экран «Смерть» — per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820).
+const RESULT_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_result_panel.png"
+# SCRUM-684: Dark Fantasy pixel-art кодекс (Pixel Lab); рамки берутся из
+# codex_pl/fit/ (обрезанные по орнаменту 9-slice копии).
+const CODEX_MAIN_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_main_shell.png"
+const CODEX_NAV_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_nav_panel.png"
+const CODEX_LIST_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_grid_panel.png"
+const CODEX_DETAIL_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_detail_panel.png"
+const CODEX_ENTRY_CARD_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_entry_card.png"
+const CODEX_TAB_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_category_button.png"
+const CODEX_BACK_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_back_button.png"
 const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
 const REWARD_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
 const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
@@ -62,7 +69,10 @@ const REWARD_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
 const REWARD_ELITE_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
 const ECONOMY_CHOICE_WIDE_TEXTURE := MINIMAL_CARD_TEXTURE
 const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := MINIMAL_CARD_TEXTURE
-const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.5
+# SCRUM-568: карточки опций докачи переехали на overhaul_2k evt_card-рамку.
+const ATTRIBUTE_OFFER_CARD_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.425  # SCRUM-518: −15% от 0.5 (lock-step с player.gd)
+const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
 const DUPLICATE_ARTIFACT_SKIP_PATH_PREFIXES := ["res://build/dmg"]
@@ -70,6 +80,12 @@ const DUPLICATE_ARTIFACT_PATTERN := " 2(\\.|$)"
 
 func _initialize() -> void:
 	if not _test_no_space_number_duplicate_artifacts():
+		quit(1)
+		return
+	if not _test_damage_type_palette():
+		quit(1)
+		return
+	if not _test_threat_indicator_edge():
 		quit(1)
 		return
 
@@ -89,8 +105,8 @@ func _initialize() -> void:
 		return
 	await _test_glossary_terms(main)
 	var main_menu_background := main.find_child("MainMenuBackground", true, false) as TextureRect
-	if main_menu_background == null or main_menu_background.texture == null or main_menu_background.texture.resource_path != "res://assets/backgrounds/main_menu_epic_battle_v2.png":
-		push_error("Expected main menu to render the v2 epic battle background image.")
+	if main_menu_background == null or main_menu_background.texture == null or main_menu_background.texture.resource_path != "res://assets/backgrounds/main_menu_epic_battle_v3.png":
+		push_error("Expected main menu to render the v3 epic battle background image.")
 		quit(1)
 		return
 	var main_menu_actions := main.find_child("MainMenuActions", true, false) as VBoxContainer
@@ -106,8 +122,8 @@ func _initialize() -> void:
 	var start_theme_button := main.find_child("MainMenuStartButton", true, false) as Button
 	var settings_theme_button := main.find_child("MainMenuSettingsButton", true, false) as Button
 	var exit_theme_button := main.find_child("MainMenuExitButton", true, false) as Button
-	if not _button_uses_minimal_metal_type(start_theme_button, "main_menu") or not _button_uses_minimal_metal_type(settings_theme_button, "main_menu") or not _button_uses_minimal_metal_type(exit_theme_button, "main_menu"):
-		push_error("Expected main menu buttons to use canonical minimal-metal state textures.")
+	if not _button_uses_text_button_unique_id(start_theme_button, "main_menu_380x104") or not _button_uses_text_button_unique_id(settings_theme_button, "main_menu_380x104") or not _button_uses_text_button_unique_id(exit_theme_button, "main_menu_380x104"):
+		push_error("Expected main menu buttons to use canonical SCRUM-657 text-button state textures.")
 		quit(1)
 		return
 	await _test_back_button_frame_safety(main_scene)
@@ -122,19 +138,42 @@ func _initialize() -> void:
 	var route_nodes: Array = main.get("route_nodes")
 	# 10 рядов активностей + финальный ряд босса.
 	if route_nodes.size() != 11:
-		push_error("Expected the vertical route to have 3 choice rows plus a boss row.")
+		push_error("Expected the vertical route to have 10 activity rows plus a boss row.")
 		quit(1)
 		return
 	if str(route_nodes[route_nodes.size() - 1][0].get("type", "")) != "boss":
 		push_error("Expected the last vertical route row to be boss-only.")
 		quit(1)
 		return
-	var first_row_has_battle := false
-	for route_node in route_nodes[0]:
-		if str(route_node.get("type", "")) == "battle":
-			first_row_has_battle = true
-	if not first_row_has_battle:
-		push_error("Expected the first route row to include at least one normal battle.")
+	# SCRUM-610: ровно один «Алтарь жертвы» на маршрут — в середине (после стартовых
+	# боёв, до ряда босса), несёт event_id фиксированной сделки sacrifice_altar.
+	for _altar_iter in range(12):
+		var generated_route: Array = main.call("_generate_route")
+		var altar_count := 0
+		for gen_step_index in range(generated_route.size()):
+			for generated_node in generated_route[gen_step_index]:
+				if str(generated_node.get("type", "")) != "altar":
+					continue
+				altar_count += 1
+				if gen_step_index < ROUTE_START_BATTLE_ONLY_ROWS or gen_step_index == generated_route.size() - 1:
+					push_error("Expected the altar node to avoid start-only rows and the boss row.")
+					quit(1)
+					return
+				if str(generated_node.get("event_id", "")) != "sacrifice_altar":
+					push_error("Expected the altar node to carry the sacrifice_altar fixed event id.")
+					quit(1)
+					return
+		if altar_count != 1:
+			push_error("Expected exactly one sacrifice altar per route, got %d." % altar_count)
+			quit(1)
+			return
+	for early_step_index in range(mini(ROUTE_START_BATTLE_ONLY_ROWS, route_nodes.size() - 1)):
+		for route_node in route_nodes[early_step_index]:
+			if str(route_node.get("type", "")) != "battle":
+				push_error("Expected route row %d to contain only normal battle nodes before noncombat route nodes can appear." % early_step_index)
+				quit(1)
+				return
+	if not _assert_route_shop_distribution(route_nodes, "initial route"):
 		quit(1)
 		return
 	var has_limited_route_branch := false
@@ -152,7 +191,7 @@ func _initialize() -> void:
 		push_error("Expected route generation to create limited paths instead of all-to-all map connections.")
 		quit(1)
 		return
-	for node_type in ["battle", "elite_battle", "shop", "event", "rest", "boss"]:
+	for node_type in ["battle", "elite_battle", "shop", "event", "rest", "altar", "boss"]:
 		var definition: Dictionary = main.call("_map_node_definition", node_type)
 		if str(definition.get("name", "")) == "" or str(definition.get("icon", "")) == "" or str(definition.get("tooltip", "")) == "":
 			push_error("Expected map node definition %s to include name/icon/tooltip." % node_type)
@@ -259,6 +298,15 @@ func _initialize() -> void:
 	(main.get("rng") as RandomNumberGenerator).seed = 8675309
 	for _attempt in range(45):
 		var generated_route: Array = main.call("_generate_route")
+		for early_step_index in range(mini(ROUTE_START_BATTLE_ONLY_ROWS, generated_route.size() - 1)):
+			for route_node in generated_route[early_step_index]:
+				if str(route_node.get("type", "")) != "battle":
+					push_error("Expected every generated route row %d to contain only battle nodes." % early_step_index)
+					quit(1)
+					return
+		if not _assert_route_shop_distribution(generated_route, "generated route attempt %d" % _attempt):
+			quit(1)
+			return
 		for row in generated_route:
 			for route_node in row:
 				if str(route_node.get("type", "")) == "elite_battle":
@@ -391,6 +439,35 @@ func _initialize() -> void:
 			push_error("Expected shop/cursor UI asset to exist: %s" % ui_asset_path)
 			quit(1)
 			return
+	# SCRUM-592: OS-курсор должен кликать ровно остриём. Hotspot обязан сидеть на
+	# самом верхнем-левом ВИДИМОМ (включая сглаживание) пикселе нарисованного
+	# острия — иначе клик регистрируется чуть НИЖЕ видимого кончика (Windows).
+	var cursor_texture := load(main.GAME_CURSOR_PATH) as Texture2D
+	if cursor_texture == null:
+		push_error("Expected game cursor texture to load for hotspot check.")
+		quit(1)
+		return
+	var cursor_image := cursor_texture.get_image()
+	if cursor_image == null:
+		push_error("Expected game cursor image data for hotspot check.")
+		quit(1)
+		return
+	var cursor_tip := Vector2i(-1, -1)
+	for tip_y in cursor_image.get_height():
+		for tip_x in cursor_image.get_width():
+			if cursor_image.get_pixel(tip_x, tip_y).a > 0.0:
+				cursor_tip = Vector2i(tip_x, tip_y)
+				break
+		if cursor_tip.x >= 0:
+			break
+	if cursor_tip.x < 0:
+		push_error("Game cursor image appears fully transparent — cannot locate tip.")
+		quit(1)
+		return
+	if Vector2i(main.GAME_CURSOR_HOTSPOT) != cursor_tip:
+		push_error("Cursor hotspot %s must sit on the visible tip pixel %s (else clicks land below the point)." % [str(main.GAME_CURSOR_HOTSPOT), str(cursor_tip)])
+		quit(1)
+		return
 	for character_id in ProgressionData.character_ids():
 		if not ProgressionData.character_ids().has(character_id):
 			push_error("Expected playable character %s in progression data." % character_id)
@@ -404,6 +481,7 @@ func _initialize() -> void:
 	main.call("_show_weapon_select")
 	await process_frame
 	main.set("selected_weapon_id", "axe")
+	main.set("selected_ascension_level", 1)
 	main.call("_start_combat")
 	await create_timer(1.0).timeout
 	var resource_hud := main.find_child("RunResourceHud", true, false) as PanelContainer
@@ -411,9 +489,17 @@ func _initialize() -> void:
 		push_error("Expected combat to create the compact resource HUD.")
 		quit(1)
 		return
+	if main.find_child("CharacterStatsHud", true, false) != null:
+		push_error("Expected SCRUM-671 combat HUD to remove the non-essential CharacterStatsHud strip.")
+		quit(1)
+		return
+	if main.find_child("ArtifactHudRow", true, false) != null:
+		push_error("Expected SCRUM-671 combat HUD to remove the non-essential ArtifactHudRow.")
+		quit(1)
+		return
 	var resource_style := resource_hud.get_theme_stylebox("panel")
-	if _stylebox_texture_path(resource_style) != MINIMAL_HUD_STRIP_TEXTURE:
-		push_error("Expected combat resource HUD to use the SCRUM-448 minimal HUD strip frame.")
+	if _stylebox_texture_path(resource_style) != HUD_RESOURCE_PANEL_TEXTURE_2K:
+		push_error("Expected combat resource HUD to use the SCRUM-564 @2K HUD resource frame.")
 		quit(1)
 		return
 	var expected_hud_cards := {
@@ -431,6 +517,11 @@ func _initialize() -> void:
 		var hud_card := resource_hud.find_child(str(hud_node_name), true, false) as PanelContainer
 		if hud_card == null or _stylebox_texture_path(hud_card.get_theme_stylebox("panel")) != str(expected_hud_cards[hud_node_name]):
 			push_error("Expected %s to use SCRUM-448 minimal field frame %s." % [hud_node_name, str(expected_hud_cards[hud_node_name])])
+			quit(1)
+			return
+		var card_zone: Rect2 = hud_card.get_meta("scrum666_content_zone", Rect2()) as Rect2
+		if not card_zone.has_area() or not card_zone.grow(1.0).encloses(hud_card.get_global_rect()):
+			push_error("Expected %s to expose and occupy its SCRUM-666 metric zone, got card=%s zone=%s." % [hud_node_name, hud_card.get_global_rect(), card_zone])
 			quit(1)
 			return
 	var expected_hud_fills := {
@@ -458,15 +549,25 @@ func _initialize() -> void:
 		push_error("Expected combat HUD to stay compact and not expose the status label.")
 		quit(1)
 		return
-	# Таймер боя: по центру сверху, при <=5с переходит в alarm-состояние (PM 2026-06-11).
+	# SCRUM-671: timer is part of the accepted SCRUM-666 essential-only HUD geometry.
 	var timer_panel := main.find_child("CombatTimerPanel", true, false) as PanelContainer
 	var timer_text := main.get("timer_label") as Label
-	if timer_panel == null or timer_text == null or timer_panel.get_global_rect().position.y > 24.0:
-		push_error("Expected the combat timer panel to stay in the top HUD band.")
+	if timer_panel == null or timer_text == null:
+		push_error("Expected SCRUM-671 combat HUD to include the timer panel and label.")
 		quit(1)
 		return
-	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != MINIMAL_FIELD_TEXTURE:
-		push_error("Expected combat timer panel to use the SCRUM-448 minimal field frame.")
+	if _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != HUD_TIMER_PANEL_TEXTURE_2K:
+		push_error("Expected combat timer panel to use the SCRUM-564 @2K HUD timer frame.")
+		quit(1)
+		return
+	var timer_zone: Rect2 = timer_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2
+	var timer_frame: Rect2 = timer_panel.get_meta("scrum666_frame_rect", Rect2()) as Rect2
+	if not timer_frame.has_area() or not timer_frame.grow(1.0).encloses(timer_panel.get_global_rect()):
+		push_error("Expected combat timer panel to occupy its SCRUM-666 frame rect %s, got %s." % [timer_frame, timer_panel.get_global_rect()])
+		quit(1)
+		return
+	if not timer_zone.has_area() or not timer_zone.grow(1.0).encloses(timer_text.get_global_rect()):
+		push_error("Expected combat timer text to stay inside SCRUM-666 timer zone %s, got %s." % [timer_zone, timer_text.get_global_rect()])
 		quit(1)
 		return
 	main.set("round_time_left", 4.0)
@@ -483,19 +584,30 @@ func _initialize() -> void:
 		push_error("Expected the combat timer alarm to reset above 5 seconds.")
 		quit(1)
 		return
-	# HUD артефактов: подбор артефакта добавляет иконку с tooltip.
+	var ascension_badge := main.find_child("AscensionHudBadge", true, false) as PanelContainer
+	var ascension_label := main.find_child("AscensionHudLabel", true, false) as Label
+	if ascension_badge == null or ascension_label == null:
+		push_error("Expected SCRUM-671 combat HUD to show the ascension badge for an elevated run.")
+		quit(1)
+		return
+	var ascension_zone: Rect2 = ascension_badge.get_meta("scrum666_content_zone", Rect2()) as Rect2
+	if not ascension_zone.has_area() or not ascension_zone.grow(1.0).encloses(ascension_label.get_global_rect()):
+		push_error("Expected ascension label to stay inside SCRUM-666 ascension zone %s, got %s." % [ascension_zone, ascension_label.get_global_rect()])
+		quit(1)
+		return
+	var hud_overlap := _first_control_overlap(_visible_hud_top_controls(main), 2.0)
+	if not hud_overlap.is_empty():
+		push_error("Expected SCRUM-671 top combat HUD controls not to overlap, got %s." % hud_overlap)
+		quit(1)
+		return
+	# SCRUM-671 essential-only HUD: artifacts remain in run state, not in a combat HUD row.
 	var hud_player: Node = main.get("current_player")
 	hud_player.call("apply_reward", {"kind": "artifact", "id": "cracked_shield", "title": "Треснувший щит", "mods": {"defense_flat": 0.12}})
 	main.set("_last_hud_snapshot", {})
 	main.ui._update_hud()
 	var artifact_row := main.find_child("ArtifactHudRow", true, false) as HFlowContainer
-	if artifact_row == null or artifact_row.get_child_count() != 1:
-		push_error("Expected one artifact icon on the HUD after pickup.")
-		quit(1)
-		return
-	var hud_artifact_icon := artifact_row.get_child(0) as TextureRect
-	if hud_artifact_icon == null or hud_artifact_icon.texture == null or hud_artifact_icon.tooltip_text == "":
-		push_error("Expected the artifact HUD icon to carry a texture and tooltip.")
+	if artifact_row != null:
+		push_error("Expected SCRUM-671 combat HUD to keep ArtifactHudRow removed after artifact pickup.")
 		quit(1)
 		return
 	var stored_artifacts: Array = hud_player.get("artifacts")
@@ -519,7 +631,7 @@ func _initialize() -> void:
 		return
 	var player_body := player.get_node_or_null("VisualRoot/Body") as AnimatedSprite2D
 	if player_body == null or absf(player_body.scale.x - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001 or absf(player_body.scale.y - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001:
-		push_error("Expected player visual scale to use SCRUM-417 enlarged combat scale %.2f." % EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)
+		push_error("Expected player visual scale to match combat scale %.3f (SCRUM-518 −15%%)." % EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)
 		quit(1)
 		return
 	var player_rig := player.get_node_or_null("VisualRoot/RigRoot") as Node2D
@@ -559,7 +671,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 	if player.global_position.distance_to(EXPECTED_ARENA_CENTER) > 1.0:
-		push_error("Expected player to start at the center of the 2560x1440 arena.")
+		push_error("Expected player to start at the center of the arena.")
 		quit(1)
 		return
 	var camera := player.get_node_or_null("Camera2D") as Camera2D
@@ -568,7 +680,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 	if camera.zoom.x < 1.05 or camera.zoom.y < 1.05:
-		push_error("Expected player camera to be zoomed in enough that the 2K arena is not fully visible.")
+		push_error("Expected player camera to be zoomed in enough that the arena is not fully visible.")
 		quit(1)
 		return
 	var visible_at_1600 := Vector2(1600.0 / camera.zoom.x, 900.0 / camera.zoom.y)
@@ -623,6 +735,11 @@ func _initialize() -> void:
 	root.add_child(contact_enemy)
 	contact_enemy.set("max_health", 100000.0)
 	contact_enemy.set("health", 100000.0)
+	# SCRUM-548: реальный спавн скейлит max_health и затем рефрешит health bar
+	# (combat_director._scale_enemy_for_current_wave -> _refresh_enemy_health_bar).
+	# Тест выставляет max_health напрямую, поэтому повторяем тот же refresh, иначе
+	# бар остаётся на дефолтном max_value из _ready и проверка max_value не сходится.
+	contact_enemy.call("refresh_health_bar")
 	contact_enemy.global_position = player.global_position
 	await process_frame
 	if int(contact_enemy.get("collision_mask")) & 1 != 0:
@@ -718,12 +835,12 @@ func _initialize() -> void:
 	await process_frame
 	var cleanup_enemy_projectile := enemy_projectile_scene.instantiate()
 	root.add_child(cleanup_enemy_projectile)
-	cleanup_enemy_projectile.global_position = Vector2(2300, 1200)
+	cleanup_enemy_projectile.global_position = Vector2(3600, 2000)  # SCRUM-518: внутри расширенной арены 4096×2304
 	if bool(cleanup_enemy_projectile.call("_is_outside_arena")):
 		push_error("Expected enemy projectile cleanup bounds to include the expanded arena.")
 		quit(1)
 		return
-	cleanup_enemy_projectile.global_position = Vector2(2800, 1700)
+	cleanup_enemy_projectile.global_position = Vector2(4400, 2600)  # SCRUM-518: за пределами 4096×2304 + margin
 	if not bool(cleanup_enemy_projectile.call("_is_outside_arena")):
 		push_error("Expected enemy projectile cleanup bounds to remove shots outside the expanded arena.")
 		quit(1)
@@ -737,12 +854,12 @@ func _initialize() -> void:
 		push_error("Expected player projectile to use the stylized spark PNG.")
 		quit(1)
 		return
-	cleanup_player_projectile.global_position = Vector2(2300, 1200)
+	cleanup_player_projectile.global_position = Vector2(3600, 2000)  # SCRUM-518: внутри расширенной арены 4096×2304
 	if bool(cleanup_player_projectile.call("_is_outside_arena")):
 		push_error("Expected player projectile cleanup bounds to include the expanded arena.")
 		quit(1)
 		return
-	cleanup_player_projectile.global_position = Vector2(2800, 1700)
+	cleanup_player_projectile.global_position = Vector2(4400, 2600)  # SCRUM-518: за пределами 4096×2304 + margin
 	if not bool(cleanup_player_projectile.call("_is_outside_arena")):
 		push_error("Expected player projectile cleanup bounds to remove shots outside the expanded arena.")
 		quit(1)
@@ -828,6 +945,16 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var level_up_badge_panel := level_up_plus.find_child("LevelUpPlusBadgePanel", true, false) as Control
+	var level_up_badge := level_up_plus.find_child("LevelUpPlusBadge", true, false) as Label
+	if level_up_badge_panel == null or level_up_badge == null or level_up_badge.text != str(main.get("pending_level_ups")):
+		push_error("Expected combat level-up return button to show a pending-count badge.")
+		quit(1)
+		return
+	var level_up_badge_zone: Rect2 = level_up_badge_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2
+	if not level_up_badge_zone.has_area() or not level_up_badge_zone.grow(1.0).encloses(level_up_badge.get_global_rect()):
+		push_error("Expected level-up count badge to stay inside SCRUM-666 count zone %s, got %s." % [level_up_badge_zone, level_up_badge.get_global_rect()])
+		quit(1)
+		return
 	var qa_dir_level_up := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir_level_up)
 	var level_up_dump_text := ""
@@ -865,7 +992,10 @@ func _initialize() -> void:
 	var spawn_before_level_pause := int(get_nodes_in_group("enemies").size())
 	var player_position_before_pause: Vector2 = player.global_position
 	var enemy_position_before_pause: Vector2 = freeze_enemy.global_position
-	main.call("_open_pending_level_up")
+	var open_level_up_event := InputEventKey.new()
+	open_level_up_event.keycode = KEY_SPACE
+	open_level_up_event.pressed = true
+	main.call("_input", open_level_up_event)
 	await process_frame
 	if (player.get("velocity") as Vector2).length_squared() > 0.001:
 		push_error("Expected level-up pause to zero player velocity even if movement input is held.")
@@ -946,13 +1076,18 @@ func _initialize() -> void:
 			push_error("Expected level-up reward cards to be styled as clickable text-field panels.")
 			quit(1)
 			return
-		if reward_button.get_theme_stylebox("normal") is StyleBoxTexture or reward_button.get_theme_stylebox("hover") is StyleBoxTexture:
-			push_error("Expected level-up reward cards to avoid heavy reward button frame textures.")
+		if not (reward_button.get_theme_stylebox("normal") is StyleBoxTexture) or not (reward_button.get_theme_stylebox("hover") is StyleBoxTexture):
+			push_error("Expected level-up reward cards to use SCRUM-682 frame textures.")
 			quit(1)
 			return
 		var description_label := reward_button.find_child("LevelUpRewardDescription", true, false) as Label
 		if description_label == null or description_label.text.strip_edges() == "":
 			push_error("Expected level-up reward cards to expose readable description text.")
+			quit(1)
+			return
+		var effect_label := reward_button.find_child("LevelUpRewardEffectText", true, false) as Label
+		if effect_label == null or effect_label.text.strip_edges() == "" or not effect_label.text.contains("->"):
+			push_error("Expected level-up reward cards to expose visible effective before/after previews.")
 			quit(1)
 			return
 
@@ -1008,8 +1143,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var defer_rect := defer_button.get_global_rect()
-	if defer_rect.size.x < 250.0 or defer_rect.size.y < 70.0 or not _button_uses_minimal_metal_type(defer_button, "back_m"):
-		push_error("Expected level-up Later button to use a non-cropped compact medium back frame, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
+	if defer_rect.size.x < 300.0 or defer_rect.size.y < 82.0 or not _button_uses_level_up_later_style(defer_button):
+		push_error("Expected level-up Later button to use SCRUM-682 later-button art, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
 		quit(1)
 		return
 	defer_button.pressed.emit()
@@ -1055,17 +1190,43 @@ func _initialize() -> void:
 		quit(1)
 		return
 	Input.action_release("move_right")
-	await create_timer(1.0).timeout
+	# SCRUM-614: окно показа Level Up расширено до EFFECT_DURATION=1.35с — буфер
+	# ожидания самоосвобождения ноды поднят с 1.0 до 1.6с, чтобы перекрыть новую
+	# длительность эффекта (иначе ложный red «не убрался»).
+	await create_timer(1.6).timeout
 	if main.find_child("LevelUpEffect", true, false) != null:
 		push_error("Expected level-up world effect to clean itself up.")
 		quit(1)
 		return
-	if main.find_child("RunResourceHud", true, false) == null or main.get("health_bar") == null or main.get("xp_bar") == null or main.get("money_label") == null:
+	var restored_resource_hud := main.find_child("RunResourceHud", true, false) as PanelContainer
+	if restored_resource_hud == null or main.get("health_bar") == null or main.get("xp_bar") == null or main.get("money_label") == null:
 		push_error("Expected combat HUD to be restored as compact HP/XP/money resources.")
+		quit(1)
+		return
+	for restored_card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
+		var restored_card := restored_resource_hud.find_child(restored_card_name, true, false) as PanelContainer
+		if restored_card == null or not restored_card.visible or not restored_card.get_global_rect().has_area():
+			push_error("Expected restored SCRUM-671 combat HUD to include visible %s." % restored_card_name)
+			quit(1)
+			return
+	if main.find_child("CharacterStatsHud", true, false) != null:
+		push_error("Expected restored SCRUM-671 combat HUD to keep CharacterStatsHud removed.")
+		quit(1)
+		return
+	if main.find_child("ArtifactHudRow", true, false) != null:
+		push_error("Expected restored SCRUM-671 combat HUD to keep ArtifactHudRow removed.")
 		quit(1)
 		return
 	if main.get("status_label") != null or main.get("artifact_label") != null:
 		push_error("Expected combat HUD to omit status/debug text labels.")
+		quit(1)
+		return
+	if main.find_child("CombatTimerPanel", true, false) == null:
+		push_error("Expected restored SCRUM-671 combat HUD to keep the combat timer.")
+		quit(1)
+		return
+	if main.find_child("LevelUpPlusButton", true, false) != null:
+		push_error("Expected combat level-up plus button to disappear after all queued choices are spent.")
 		quit(1)
 		return
 
@@ -1082,8 +1243,21 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var run_pause_panel := main.find_child("RunPauseMenuPanel", true, false) as PanelContainer
-	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
-		push_error("Expected run pause menu to use the SCRUM-448 minimal modal frame.")
+	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != RUN_PAUSE_PANEL_TEXTURE_2K:
+		push_error("Expected run pause menu to use the SCRUM-486 @2K pm_panel frame.")
+		quit(1)
+		return
+	# SCRUM-669: all 5 run-pause text actions use the generated pause_280x60 state kit.
+	for pause_btn_name in ["RunPauseContinueButton", "RunPauseDossierButton", "RunPauseSettingsButton", "RunPauseEndRunButton", "RunPauseMainMenuButton"]:
+		var pause_btn := main.find_child(pause_btn_name, true, false) as Button
+		if pause_btn == null or not _button_uses_text_button_unique_id(pause_btn, "pause_280x60"):
+			push_error("Expected %s to use the SCRUM-657 pause_280x60 text-button state kit." % pause_btn_name)
+			quit(1)
+			return
+	var pause_rect := run_pause_panel.get_global_rect()
+	var viewport_rect := main.get_viewport().get_visible_rect()
+	if pause_rect.position.x > viewport_rect.size.x * 0.12 or pause_rect.position.y > viewport_rect.size.y * 0.12:
+		push_error("Expected run pause menu to be anchored in the upper-left gameplay area, got %s." % str(pause_rect))
 		quit(1)
 		return
 	var pause_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
@@ -1136,8 +1310,8 @@ func _initialize() -> void:
 		push_error("Expected pause stats menu to expose Design kit hook nodes.")
 		quit(1)
 		return
-	if _stylebox_texture_path(escape_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
-		push_error("Expected pause dossier/stats panel shell to use the SCRUM-448 minimal modal frame.")
+	if _stylebox_texture_path(escape_panel.get_theme_stylebox("panel")) != PAUSE_DOSSIER_PANEL_TEXTURE_2K:
+		push_error("Expected pause dossier/stats panel shell to use the SCRUM-486 @2K pd_panel frame.")
 		quit(1)
 		return
 	if not (escape_panel.get_theme_stylebox("panel") is StyleBoxTexture):
@@ -1148,10 +1322,17 @@ func _initialize() -> void:
 		push_error("Expected Escape menu buttons to use Design StyleBoxTexture frame.")
 		quit(1)
 		return
-	if not _button_uses_minimal_metal_type(resume_button, "pause"):
-		push_error("Expected Escape menu buttons to use neutral minimal-metal hover/focus states.")
-		quit(1)
-		return
+	# SCRUM-669: 4 pause-dossier text actions use the same generated pause_280x60 kit.
+	for pd_btn_name in ["PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton"]:
+		var pd_button := pause_menu.find_child(pd_btn_name, true, false) as Button
+		if pd_button == null:
+			push_error("Expected pause dossier control button %s." % pd_btn_name)
+			quit(1)
+			return
+		if not _button_uses_text_button_unique_id(pd_button, "pause_280x60"):
+			push_error("Expected %s to use the SCRUM-657 pause_280x60 text-button state kit." % pd_btn_name)
+			quit(1)
+			return
 	if not (strength_row.get_theme_stylebox("panel") is StyleBoxTexture) or not (damage_chip.get_theme_stylebox("panel") is StyleBoxTexture) or not (physical_group.get_theme_stylebox("panel") is StyleBoxTexture):
 		push_error("Expected base rows, derived chips, and derived groups to use Design StyleBoxTexture frames.")
 		quit(1)
@@ -1159,6 +1340,20 @@ func _initialize() -> void:
 	var tooltip := pause_menu.call("_make_custom_tooltip", strength_row.tooltip_text) as PanelContainer
 	if tooltip == null or not (tooltip.get_theme_stylebox("panel") is StyleBoxTexture) or tooltip.custom_minimum_size.x > 430.0:
 		push_error("Expected custom stat tooltip to use Design frame and stay clamped to target width.")
+		quit(1)
+		return
+	var tooltip_style := tooltip.get_theme_stylebox("panel") as StyleBoxTexture
+	if _stylebox_texture_path(tooltip_style) != STAT_TOOLTIP_TEXTURE_2K:
+		push_error("Expected custom stat tooltip to use the SCRUM-586 2K stat tooltip frame.")
+		quit(1)
+		return
+	if tooltip_style.content_margin_left < 44.0 or tooltip_style.content_margin_top < 42.0 or tooltip_style.content_margin_right < 44.0 or tooltip_style.content_margin_bottom < 42.0:
+		push_error("Expected custom stat tooltip content margins to keep text inside the SCRUM-586 safe zone.")
+		quit(1)
+		return
+	var tooltip_label := tooltip.find_child("StatTooltipLabel", true, false) as Label
+	if tooltip_label == null or tooltip_label.custom_minimum_size.x > 342.0:
+		push_error("Expected custom stat tooltip label width to fit the SCRUM-586 safe rect.")
 		quit(1)
 		return
 	tooltip.queue_free()
@@ -1204,8 +1399,8 @@ func _initialize() -> void:
 		push_error("Expected 2-8 attribute offers in the post-battle window, including meta skill extra options.")
 		quit(1)
 		return
-	if _stylebox_texture_path((attribute_panel as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_PANEL_TEXTURE:
-		push_error("Expected attribute shop panel to use the SCRUM-448 minimal panel frame.")
+	if _stylebox_texture_path((attribute_panel as PanelContainer).get_theme_stylebox("panel")) != ATTRIBUTE_SHOP_PANEL_TEXTURE_2K:
+		push_error("Expected attribute shop panel to use the SCRUM-568 attr_panel @2K frame.")
 		quit(1)
 		return
 	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
@@ -1218,12 +1413,12 @@ func _initialize() -> void:
 	var stats_before: Dictionary = (snapshot.get("stats", {}) as Dictionary).duplicate(true)
 	var attr_money_before := int(main.ui._run_money())
 	var first_offer := attribute_offers.get_child(0) as Button
-	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != ECONOMY_CHOICE_WIDE_TEXTURE:
-		push_error("Expected attribute offers to use the SCRUM-448 minimal card frame.")
+	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != ATTRIBUTE_OFFER_CARD_TEXTURE_2K:
+		push_error("Expected attribute offers to use the SCRUM-568 evt_card @2K frame.")
 		quit(1)
 		return
-	if _stylebox_texture_path(first_offer.get_theme_stylebox("hover")) != ECONOMY_CHOICE_WIDE_HOVER_TEXTURE:
-		push_error("Expected attribute offers to use the SCRUM-448 minimal hover card frame.")
+	if _stylebox_texture_path(first_offer.get_theme_stylebox("hover")) != ATTRIBUTE_OFFER_CARD_TEXTURE_2K:
+		push_error("Expected attribute offers to use the SCRUM-568 evt_card @2K hover frame.")
 		quit(1)
 		return
 	_write_scrum437_attribute_offer_dump(attribute_panel as Control, attribute_offers)
@@ -1263,7 +1458,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	_test_noncombat_nodes(main)
+	await _test_noncombat_nodes(main)
 	_test_stat_artifact_recording()
 	_test_berserk_weapon_configs()
 	_test_weapon_orbit_no_overlap()
@@ -1271,6 +1466,7 @@ func _initialize() -> void:
 	_test_class_weapon_mode_registry()
 	_test_all_weapon_variants_equip()
 	await _test_weapon_effect_cleanup()
+	await _test_boss_act_transition(main_scene)
 	await _test_victory_flow(main)
 	await _test_elite_flow(main_scene)
 	await _test_debug_free_pick(main_scene)
@@ -1303,6 +1499,7 @@ func _initialize() -> void:
 	_test_class_budget_profiles()
 	await _test_enemy_stage_scaling_and_elite_rewards(main_scene)
 	await _test_ultimate_framework()
+	await _test_run_damage_dealt_metric(main_scene)
 	await _test_death_flow(main_scene)
 	await _test_epic_elite_boss_scale_hitbox()
 	await _test_elite_phase2_escalation()
@@ -1317,6 +1514,7 @@ func _initialize() -> void:
 	await _test_hud_no_overlap_layouts(main_scene)
 	await _test_mini_elite_roster(main_scene)
 	await _test_new_boss_roster(main_scene)
+	await _test_secret_boss_after_act3_flow(main_scene)
 
 	print("Runtime smoke test passed.")
 	quit()
@@ -1348,8 +1546,8 @@ func _test_glossary_terms(main: Node) -> void:
 	if tooltip == null or not _collect_label_text(tooltip).contains("Критический удар"):
 		_fail("Expected glossary hover to create a tooltip panel with the term name.")
 		return
-	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != MINIMAL_TOOLTIP_TEXTURE:
-		_fail("Expected glossary tooltip to use the SCRUM-448 minimal tooltip frame texture.")
+	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != GLOSSARY_TOOLTIP_TEXTURE_2K:
+		_fail("Expected glossary tooltip to use the SCRUM-486 @2K gt_panel frame texture.")
 		return
 	main.ui._hide_glossary_tooltip()
 	button.queue_free()
@@ -1368,6 +1566,7 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 		"bone_archon": "Костяной Архонт",
 		"brood_mother": "Матерь Роя",
 		"ashen_colossus": "Пепельный Колосс",
+		"secret_ascension_boss": "Secret Ascension Boss",
 	}
 	var expected_unique_nodes := {
 		"rift_warden": "BossGravityWell",
@@ -1375,6 +1574,7 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 		"bone_archon": "BossRiftZone",
 		"brood_mother": "BroodWebZone",
 		"ashen_colossus": "BossMoltenArmorPulse",
+		"secret_ascension_boss": "SecretBossSectorRing",
 	}
 	for boss_id in expected.keys():
 		var scene: PackedScene = m.combat.call("_boss_scene_for_id", boss_id)
@@ -1426,9 +1626,19 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 		# Фазы переключаются от потери HP.
 		boss.set("health", float(boss.get("max_health")) * 0.30)
 		boss.call("_update_boss_phase")
-		if int(boss.get("boss_phase")) < 3:
-			_fail("Expected boss '%s' to reach phase 3 at 30%% HP." % boss_id)
-			return
+		if boss_id == "secret_ascension_boss":
+			if int(boss.get("boss_phase")) < 2:
+				_fail("Expected secret boss to reach phase 2 at 30%% HP.")
+				return
+			boss.set("health", float(boss.get("max_health")) * 0.24)
+			boss.call("_update_boss_phase")
+			if int(boss.get("boss_phase")) < 3:
+				_fail("Expected secret boss to reach phase 3 below 25%% HP.")
+				return
+		else:
+			if int(boss.get("boss_phase")) < 3:
+				_fail("Expected boss '%s' to reach phase 3 at 30%% HP." % boss_id)
+				return
 		holder.queue_free()
 		current_scene = null
 		await process_frame
@@ -1445,6 +1655,33 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 	await process_frame
 
 
+func _test_secret_boss_after_act3_flow(main_scene: PackedScene) -> void:
+	var m := main_scene.instantiate()
+	root.add_child(m)
+	await process_frame
+	m.current_act = m.ACT_COUNT
+	m.selected_ascension_level = m.META_PROGRESSION.MAX_ASCENSION_LEVEL - 1
+	m.secret_boss_active = false
+	if m.should_start_secret_boss_after_act3():
+		_fail("Expected below-max Ascension to end Act 3 normally.")
+		return
+	var base_boss := "ashen_colossus"
+	var resolved: String = m.resolve_act3_boss_id(base_boss)
+	if resolved != base_boss or bool(m.secret_boss_active):
+		_fail("Expected Act 3 route boss id to remain normal before the post-boss secret flow.")
+		return
+	m.selected_ascension_level = m.META_PROGRESSION.MAX_ASCENSION_LEVEL
+	if not m.should_start_secret_boss_after_act3():
+		_fail("Expected max Ascension Act 3 victory to arm the secret boss follow-up.")
+		return
+	resolved = m.resolve_act3_boss_id(base_boss)
+	if resolved != base_boss or bool(m.secret_boss_active):
+		_fail("Expected route entry to keep normal Act 3 boss even when secret follow-up is armed.")
+		return
+	m.queue_free()
+	await process_frame
+
+
 func _test_unique_encounter_pattern_catalog() -> void:
 	var catalog: Dictionary = ProgressionData.enemy_mechanic_catalog()
 	for required_id in ["aura_buff", "summon_retinue", "blink_reposition", "hazard_pool", "poison_dot", "shield_block", "charge_telegraph", "reflect_thorns", "slow_zone", "vampirism", "rift_wave", "mirror_double", "gravity_pull", "weakpoint_shell", "healing_inversion", "split_spawn"]:
@@ -1452,7 +1689,7 @@ func _test_unique_encounter_pattern_catalog() -> void:
 			_fail("Expected enemy mechanic catalog to include %s." % required_id)
 			return
 	var patterns: Dictionary = ProgressionData.unique_encounter_patterns()
-	var expected_entities := ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal", "rift_warden", "disk_devourer", "bone_archon", "brood_mother", "ashen_colossus"]
+	var expected_entities := ["iron_bastion", "night_stalker", "plague_prophet", "shard_marshal", "rift_warden", "disk_devourer", "bone_archon", "brood_mother", "ashen_colossus", "secret_ascension_boss"]
 	var seen_signatures := {}
 	for entity_id in expected_entities:
 		var pattern: Dictionary = ProgressionData.unique_encounter_pattern(entity_id)
@@ -1478,14 +1715,14 @@ func _test_unique_encounter_pattern_catalog() -> void:
 
 
 func _test_mini_elite_roster(main_scene: PackedScene) -> void:
-	# SCRUM-155: 6 data-driven видов мини-элиток — валидные поля, маппинг сцен,
-	# HP-бюджет «мини» (0 < hp_mult < 1: убиваемы, не полная элитка).
+	# SCRUM-155 / SCRUM-607: 10 data-driven видов мини-элиток — валидные поля,
+	# маппинг сцен, HP-бюджет «мини» (0 < hp_mult < 1: убиваемы, не полная элитка).
 	var m := main_scene.instantiate()
 	root.add_child(m)
 	await process_frame
 	var kinds: Array = m.get("PROGRESSION_DATA").call("mini_elite_kinds")
-	if kinds.size() != 6:
-		_fail("Expected 6 mini-elite kinds in the roster, got %d." % kinds.size())
+	if kinds.size() != 10:
+		_fail("Expected 10 mini-elite kinds in the roster, got %d." % kinds.size())
 		return
 	var seen := {}
 	for entry in kinds:
@@ -1556,7 +1793,8 @@ func _test_boss_zone_wave_safe_corridor() -> void:
 	holder.add_child(boss)
 	await process_frame
 	# safe_radius капит огромный радиус (коридор гарантирован даже на В4+).
-	if float(boss.call("_safe_radius", 9999.0)) > 1440.0 * 0.34 + 0.5:
+	# SCRUM-518: cap = ARENA_SIZE.y * 0.34 — берём из EXPECTED_ARENA_SIZE (lock-step с ареной).
+	if float(boss.call("_safe_radius", 9999.0)) > EXPECTED_ARENA_SIZE.y * 0.34 + 0.5:
 		_fail("Expected _safe_radius to cap hazard radius for a safe corridor.")
 		return
 	# Волна зон: кольцо с двумя пропущенными секторами -> проход всегда есть.
@@ -1755,6 +1993,34 @@ func _write_weapon_orbit_qa_dump(player: Node, weapon: Node) -> void:
 		file.close()
 
 
+func _assert_route_shop_distribution(route_nodes: Array, context: String) -> bool:
+	var non_boss_rows := maxi(route_nodes.size() - 1, 0)
+	var half_split := clampi(ceili(float(non_boss_rows) * 0.5), 1, maxi(non_boss_rows, 1))
+	var shop_count := 0
+	var first_half_shops := 0
+	var second_half_shops := 0
+	for row_index in range(non_boss_rows):
+		var row: Array = route_nodes[row_index]
+		for route_node in row:
+			if str(route_node.get("type", "")) != "shop":
+				continue
+			shop_count += 1
+			if row_index < ROUTE_START_BATTLE_ONLY_ROWS:
+				push_error("Expected no shop in battle-only start row %d for %s." % [row_index, context])
+				return false
+			if row_index < half_split:
+				first_half_shops += 1
+			else:
+				second_half_shops += 1
+	if shop_count != 2:
+		push_error("Expected exactly 2 shop nodes on %s, got %d." % [context, shop_count])
+		return false
+	if first_half_shops != 1 or second_half_shops != 1:
+		push_error("Expected one shop in each route half for %s, got first=%d second=%d." % [context, first_half_shops, second_half_shops])
+		return false
+	return true
+
+
 func _test_route_map_start_selection(main_scene: PackedScene) -> void:
 	var route_main := main_scene.instantiate()
 	root.add_child(route_main)
@@ -1769,6 +2035,12 @@ func _test_route_map_start_selection(main_scene: PackedScene) -> void:
 	var route_map := route_main.find_child("VerticalRouteMap", true, false) as Control
 	if route_scroll == null or route_map == null:
 		push_error("Expected start route selection to use a scrollable map.")
+		quit(1)
+		return
+	var route_header := route_main.find_child("RouteMapHeader", true, false)
+	var header_text := _collect_label_text(route_header) if route_header != null else ""
+	if not header_text.contains("Акт 1/3"):
+		push_error("Expected route map header to show Act 1/3 progress.")
 		quit(1)
 		return
 
@@ -1939,6 +2211,81 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		quit(1)
 		return
 
+	# SCRUM-530: Escape на экране события открывает run-pause ПОВЕРХ события (не no-op).
+	# Проверяем через реальный _input/Escape, а не прямой вызов _show_pause_menu.
+	var event_escape := InputEventKey.new()
+	event_escape.keycode = KEY_ESCAPE
+	event_escape.pressed = true
+	route_main.call("_input", event_escape)
+	await process_frame
+	if route_main.find_child("RunPauseMenuRoot", true, false) == null:
+		push_error("Expected Escape on the event screen to open the run pause menu (SCRUM-530).")
+		quit(1)
+		return
+	if route_main.find_child("EventScreen", true, false) == null:
+		push_error("Expected the event screen to remain under the pause menu opened via Escape (SCRUM-530).")
+		quit(1)
+		return
+	route_main.ui._resume_game()
+	await process_frame
+	if route_main.find_child("EventChoiceButton0", true, false) == null:
+		push_error("Expected event choices to survive an Escape→pause→resume cycle (SCRUM-530).")
+		quit(1)
+		return
+
+	# SCRUM-530: level-up, открытый С УЗЛА-СОБЫТИЯ, после выбора возвращает на ТО ЖЕ событие
+	# (тот же набор опций, route_stage не сдвинут, событие не подменено), а не уводит на карту.
+	var event_id_before := str((route_main.get("current_event_definition") as Dictionary).get("id", ""))
+	var event_stage_before := int(route_main.get("route_stage"))
+	route_main.set("pending_level_ups", 1)
+	route_main.ui._update_level_up_button()
+	await process_frame
+	if route_main.find_child("LevelUpPlusButton", true, false) == null:
+		push_error("Expected a pending level-up on the event to surface the corner + button (SCRUM-530).")
+		quit(1)
+		return
+	route_main.call("_open_pending_level_up")
+	await process_frame
+	var event_level_reward := route_main.find_child("LevelUpRewardButton0", true, false) as Button
+	if event_level_reward == null:
+		push_error("Expected opening the pending level-up from the event to show reward choices (SCRUM-530).")
+		quit(1)
+		return
+	event_level_reward.emit_signal("pressed")
+	await process_frame
+	await process_frame
+	if route_main.find_child("RouteMapScreen", true, false) != null:
+		push_error("Expected a level-up chosen from an event to return to the event, not the route map (SCRUM-530).")
+		quit(1)
+		return
+	if route_main.find_child("EventScreen", true, false) == null:
+		push_error("Expected to land back on the event screen after resolving a level-up opened from it (SCRUM-530).")
+		quit(1)
+		return
+	var event_id_after := str((route_main.get("current_event_definition") as Dictionary).get("id", ""))
+	if event_id_after == "" or event_id_after != event_id_before:
+		push_error("Expected the event to keep the same id after a level-up (no silent reroll), got '%s' vs '%s' (SCRUM-530)." % [event_id_after, event_id_before])
+		quit(1)
+		return
+	if int(route_main.get("route_stage")) != event_stage_before:
+		push_error("Expected route_stage to stay put when returning from a level-up to the event (SCRUM-530).")
+		quit(1)
+		return
+	if int(route_main.get("pending_level_ups")) != 0:
+		push_error("Expected the chosen level-up pick to be spent on return to the event (SCRUM-530).")
+		quit(1)
+		return
+	var event_return_focus := route_main.get_viewport().gui_get_focus_owner()
+	if event_return_focus == null or not str(event_return_focus.name).begins_with("EventChoiceButton"):
+		push_error("Expected keyboard focus back on an event option after returning from the level-up (SCRUM-530).")
+		quit(1)
+		return
+
+	event_choice = route_main.find_child("EventChoiceButton0", true, false) as Button
+	if event_choice == null:
+		push_error("Expected event options to be present again after returning from the level-up (SCRUM-530).")
+		quit(1)
+		return
 	event_choice.emit_signal("pressed")
 	await process_frame
 	if int(route_main.get("route_stage")) != 1:
@@ -2112,6 +2459,7 @@ func _test_run_autosave_continue_prompt(main_scene: PackedScene) -> void:
 	save_main.set("selected_ascension_level", 2)
 	save_main.set("route_stage", 3)
 	save_main.set("route_selected_indices", [1, 0, 2])
+	save_main.set("run_used_shop", true)
 	save_main.set("run_player_snapshot", {
 		"character_id": "dark_mage",
 		"weapon_id": "shadow_orb",
@@ -2160,6 +2508,9 @@ func _test_run_autosave_continue_prompt(main_scene: PackedScene) -> void:
 	var restored_snapshot: Dictionary = continue_main.get("run_player_snapshot")
 	if int(restored_snapshot.get("money", 0)) != 314 or int(restored_snapshot.get("level", 0)) != 5:
 		_fail("Expected Continue to restore player money/level snapshot.")
+		return
+	if not bool(continue_main.get("run_used_shop")):
+		_fail("Expected Continue to restore whole-run shop usage for class challenges.")
 		return
 	continue_main.queue_free()
 	await process_frame
@@ -2258,6 +2609,20 @@ func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 				check_outcomes += 1
 	if combat_outcomes < 3 or reward_outcomes < 3 or rest_outcomes < 1 or check_outcomes < 2:
 		_fail("Expected random events to cover combat, reward, rest and attribute-check outcomes.")
+		return
+
+	# SCRUM-501: класс-реактивность — минимум 2 события ветвят исход по разным
+	# архетипным атрибутам (≥2 различных check.stat среди choices одного события).
+	var class_reactive_events := 0
+	for event in EventData.RANDOM_EVENTS:
+		var check_stats := {}
+		for choice in (event.get("choices", []) as Array):
+			if choice.has("check"):
+				check_stats[str((choice.get("check", {}) as Dictionary).get("stat", ""))] = true
+		if check_stats.size() >= 2:
+			class_reactive_events += 1
+	if class_reactive_events < 2:
+		_fail("Expected at least two class-reactive events branching on different archetype attributes.")
 		return
 
 	var rng := RandomNumberGenerator.new()
@@ -2637,6 +3002,10 @@ func _test_noncombat_nodes(main: Node) -> void:
 		quit(1)
 		return
 	await process_frame
+	if not bool(main.get("run_used_shop")):
+		push_error("Expected successful shop purchase to mark whole-run shop usage.")
+		quit(1)
+		return
 	if not bool(main.get("current_shop_purchased")[0]):
 		push_error("Expected bought shop item to be marked as purchased.")
 		quit(1)
@@ -2702,10 +3071,15 @@ func _test_noncombat_nodes(main: Node) -> void:
 			push_error("Expected new shop node stock to start unpurchased.")
 			quit(1)
 			return
+	if not bool(main.get("run_used_shop")):
+		push_error("Expected whole-run shop usage to survive transient shop stock reset.")
+		quit(1)
+		return
 	if main.get("hud_layer") == null:
 		push_error("Expected shop screen to keep the compact run HUD.")
 		quit(1)
 		return
+	await process_frame
 	if not _has_screen_background(main, "shop"):
 		push_error("Expected shop screen to include a shop background or fallback layer. Active UI tree: %s" % _debug_child_tree(main.get("ui_layer") as Node))
 		quit(1)
@@ -2791,6 +3165,51 @@ func _button_uses_minimal_metal_type(button: Button, button_type: String) -> boo
 		return false
 	if not _is_neutral_bright_button_tint(hover_style.modulate_color) or not _is_neutral_bright_button_tint(focus_style.modulate_color):
 		return false
+	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
+		return false
+	return true
+
+
+func _button_uses_text_button_unique_id(button: Button, button_id: String) -> bool:
+	if button == null:
+		return false
+	var expected_prefix := "%sui_btn_text_unique_%s" % [TEXT_BUTTON_DIR, button_id]
+	var expected := {
+		"normal": "%s_normal.png" % expected_prefix,
+		"hover": "%s_hover.png" % expected_prefix,
+		"focus": "%s_focus.png" % expected_prefix,
+		"pressed": "%s_pressed.png" % expected_prefix,
+		"disabled": "%s_disabled.png" % expected_prefix,
+	}
+	for state in expected.keys():
+		var style := button.get_theme_stylebox(state)
+		if not (style is StyleBoxTexture):
+			return false
+		var texture := (style as StyleBoxTexture).texture
+		if texture == null or texture.resource_path != str(expected[state]):
+			return false
+	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
+		return false
+	return true
+
+
+func _button_uses_level_up_later_style(button: Button) -> bool:
+	if button == null:
+		return false
+	var expected := {
+		"normal": LEVEL_UP_LATER_TEXTURE,
+		"hover": LEVEL_UP_LATER_HOVER_TEXTURE,
+		"focus": LEVEL_UP_LATER_HOVER_TEXTURE,
+		"pressed": LEVEL_UP_LATER_PRESSED_TEXTURE,
+		"disabled": LEVEL_UP_LATER_TEXTURE,
+	}
+	for state in expected.keys():
+		var style := button.get_theme_stylebox(state)
+		if not (style is StyleBoxTexture):
+			return false
+		var texture := (style as StyleBoxTexture).texture
+		if texture == null or texture.resource_path != str(expected[state]):
+			return false
 	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
 		return false
 	return true
@@ -2920,6 +3339,71 @@ func _test_weapon_orbit_no_overlap() -> void:
 		return
 	_write_weapon_orbit_qa_dump(player, weapon)
 	player.queue_free()
+
+
+# SCRUM-498: геометрия off-screen threat-маркера — детерминированно, без боя.
+# Цель внутри inset-области → маркер не нужен; цель за краем → точка клампится на
+# границу inset-прямоугольника в её направлении (учёт camera-clamp у краёв арены).
+func _test_threat_indicator_edge() -> bool:
+	var ThreatOverlay := ThreatIndicatorsScript
+	var inset_min := Vector2(30, 30)
+	var inset_max := Vector2(1250, 690)
+	var center := Vector2(640, 360)
+	# 1) Цель в кадре — не off-screen.
+	var on := ThreatOverlay.screen_edge_point(center, Vector2(700, 400), inset_min, inset_max)
+	if bool(on["offscreen"]):
+		push_error("Threat indicator: on-screen target must not be flagged off-screen.")
+		return false
+	# 2) Цель далеко справа — маркер на правой границе inset, y внутри диапазона.
+	var right = ThreatOverlay.screen_edge_point(center, Vector2(5000, 360), inset_min, inset_max)
+	if not bool(right["offscreen"]):
+		push_error("Threat indicator: far target must be flagged off-screen.")
+		return false
+	if absf(float(right["pos"].x) - inset_max.x) > 0.5:
+		push_error("Threat indicator: edge point must clamp to the inset right border, got %s." % str(right["pos"]))
+		return false
+	if right["pos"].y < inset_min.y or right["pos"].y > inset_max.y:
+		push_error("Threat indicator: clamped edge point must stay inside the viewport band.")
+		return false
+	# 3) Диагональная цель за углом — точка строго на границе inset.
+	var diag = ThreatOverlay.screen_edge_point(center, Vector2(-4000, -4000), inset_min, inset_max)
+	var p: Vector2 = diag["pos"]
+	var on_border := absf(p.x - inset_min.x) <= 0.5 or absf(p.y - inset_min.y) <= 0.5
+	if not (bool(diag["offscreen"]) and on_border):
+		push_error("Threat indicator: diagonal off-screen target must clamp onto an inset border, got %s." % str(p))
+		return false
+	return true
+
+
+# SCRUM-523: единая палитра типов урона + маршрутизация канала оружия в тип.
+# Палитра — единственный источник scripts/enemy.gd; цвет через Enemy.damage_type_color().
+func _test_damage_type_palette() -> bool:
+	var expected_colors := {
+		"physical": Color(1.0, 0.84, 0.42, 1.0),
+		"magic": Color(0.68, 0.46, 1.0, 1.0),
+		"dot": Color(0.46, 1.0, 0.42, 1.0),
+		"sound": Color(0.30, 0.86, 1.0, 1.0),
+		"true": Color(1.0, 0.96, 0.82, 1.0),
+	}
+	for damage_type in expected_colors.keys():
+		var got: Color = EnemyScript.damage_type_color(damage_type)
+		if not got.is_equal_approx(expected_colors[damage_type]):
+			push_error("Damage-type palette mismatch for '%s': expected %s, got %s." % [damage_type, expected_colors[damage_type], got])
+			return false
+	if not EnemyScript.damage_type_color("__unknown__").is_equal_approx(expected_colors["true"]):
+		push_error("Damage-type palette fallback for unknown type must be the 'true' color.")
+		return false
+	var channel_to_type := {"magic_damage": "magic", "sound_wave_damage": "sound", "damage": "physical"}
+	var weapon := ClassWeaponScript.new()
+	for channel in channel_to_type.keys():
+		weapon.damage_parameter = channel
+		var resolved := str(weapon.call("_weapon_damage_type"))
+		if resolved != channel_to_type[channel]:
+			push_error("Weapon channel '%s' should resolve damage_type '%s', got '%s'." % [channel, channel_to_type[channel], resolved])
+			weapon.free()
+			return false
+	weapon.free()
+	return true
 
 
 func _test_class_weapon_configs() -> void:
@@ -3156,9 +3640,65 @@ func _assert_health_bar_visible_when_near_viewport_top(entity: Node2D, health_ba
 	return visible
 
 
+func _test_boss_act_transition(main_scene: PackedScene) -> void:
+	paused = false
+	var act_main := main_scene.instantiate()
+	root.add_child(act_main)
+	await process_frame
+	act_main.set("selected_character_id", "berserk")
+	act_main.set("selected_weapon_id", "sword")
+	act_main.set("current_act", 1)
+	act_main.set("route_stage", EXPECTED_ROUTE_STEPS_TO_BOSS)
+	act_main.call("_start_combat", true)
+	await process_frame
+	var boss := get_first_node_in_group("bosses")
+	if boss == null:
+		push_error("Expected Act 1 boss transition test to spawn a boss.")
+		quit(1)
+		return
+	boss.set("dodge_chance", 0.0)
+	boss.set("shield_active", false)
+	boss.take_damage(999999.0)
+	for _attempt in range(120):
+		await process_frame
+		if not bool(act_main.get("combat_active")) and int(act_main.get("current_act")) == 2:
+			break
+	if bool(act_main.get("combat_active")) or int(act_main.get("current_act")) != 2:
+		push_error("Expected Act 1 boss victory to advance to Act 2 instead of ending the run.")
+		quit(1)
+		return
+	if int(act_main.get("route_stage")) != 0:
+		push_error("Expected next act to reset act-local route_stage to 0.")
+		quit(1)
+		return
+	if (act_main.get("route_selected_indices") as Array).size() != 0:
+		push_error("Expected next act to start with a fresh route selection history.")
+		quit(1)
+		return
+	var route_nodes: Array = act_main.get("route_nodes")
+	if route_nodes.size() != EXPECTED_ROUTE_STEPS_TO_BOSS + 1:
+		push_error("Expected Act 2 to generate a fresh route map.")
+		quit(1)
+		return
+	if act_main.find_child("RouteMapScreen", true, false) == null:
+		push_error("Expected Act 2 transition to return to the route map.")
+		quit(1)
+		return
+	var saved_state: Dictionary = RunAutosave.load_run()
+	if int(saved_state.get("current_act", 0)) != 2 or int(saved_state.get("route_stage", -1)) != 0:
+		push_error("Expected autosave to persist Act 2 route checkpoint after boss transition.")
+		quit(1)
+		return
+	act_main.call("clear_run_autosave")
+	act_main.queue_free()
+
+
 func _test_victory_flow(main: Node) -> void:
 	paused = false
+	main.set("current_act", EXPECTED_ACT_COUNT)
 	main.set("route_stage", 3)
+	main.set("selected_ascension_level", 0)
+	main.set("secret_boss_active", false)
 	main.call("_start_combat", true)
 	await process_frame
 	var boss := get_first_node_in_group("bosses")
@@ -3349,10 +3889,22 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		quit(1)
 		return
 
-	# Краевой кейс: победа в элитном бою (в т.ч. элитка пала на последней секунде
-	# таймера) -> окно награды показывается ДО экрана докачки/победы.
+	# SCRUM-528 happy-path: элитка УБИТА -> окно награды показывается ДО докачки.
+	# (Раньше тест добивал не элитку, а сразу звал _end_combat с живой элиткой —
+	# это закрепляло баг. Теперь добиваем элитку, чтобы выставился _elite_defeated.)
 	elite_main.call("_start_combat", false, "elite")
 	await process_frame
+	var killed_elite := elite_main.get_tree().get_first_node_in_group("elite_enemies")
+	if killed_elite == null:
+		push_error("Expected elite combat restart to spawn an elite enemy.")
+		quit(1)
+		return
+	killed_elite.call("take_damage", 1.0e9)  # достоверный сигнал died -> _elite_defeated=true
+	await process_frame
+	if not bool(elite_main.combat.get("_elite_defeated")):
+		push_error("Expected killing the elite to mark _elite_defeated on the combat director.")
+		quit(1)
+		return
 	elite_main.combat.call("_end_combat", true)
 	await process_frame
 	var victory_banner := elite_main.find_child("VictoryBanner", true, false) as Button
@@ -3363,7 +3915,40 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	victory_banner.emit_signal("pressed")
 	await process_frame
 	if elite_main.find_child("EliteArtifactRewardScreen", true, false) == null:
-		push_error("Expected elite reward window to appear before the attribute shop on elite victory.")
+		push_error("Expected elite reward window to appear after the elite is killed.")
+		quit(1)
+		return
+
+	# SCRUM-528 регресс: элитка ВЫЖИЛА (победа по таймеру с живой элиткой) ->
+	# артефакт-награды НЕТ, сразу идёт обычный победный флоу (докачка атрибутов).
+	elite_main.call("_start_combat", false, "elite")
+	await process_frame
+	var survivor_elite := elite_main.get_tree().get_first_node_in_group("elite_enemies")
+	if survivor_elite == null:
+		push_error("Expected elite combat to spawn an elite enemy for the survival regression case.")
+		quit(1)
+		return
+	if bool(elite_main.combat.get("_elite_defeated")):
+		push_error("Expected _elite_defeated to reset to false at the start of a fresh elite fight.")
+		quit(1)
+		return
+	# Моделируем победу по истечении таймера с ЖИВОЙ элиткой.
+	elite_main.set("round_time_left", 0.0)
+	elite_main.combat.call("_end_combat", true)
+	await process_frame
+	var survivor_banner := elite_main.find_child("VictoryBanner", true, false) as Button
+	if survivor_banner == null:
+		push_error("Expected victory banner even when the elite survived the timer.")
+		quit(1)
+		return
+	survivor_banner.emit_signal("pressed")
+	await process_frame
+	if elite_main.find_child("EliteArtifactRewardScreen", true, false) != null:
+		push_error("Expected NO elite reward window when the elite survived (timer victory with a live elite).")
+		quit(1)
+		return
+	if elite_main.find_child("AttributeShopScreen", true, false) == null and elite_main.find_child("AttributeShopPanel", true, false) == null:
+		push_error("Expected the normal victory flow (attribute shop) when the elite survived.")
 		quit(1)
 		return
 	elite_main.queue_free()
@@ -4116,6 +4701,41 @@ func _test_ultimate_framework() -> void:
 	await process_frame
 
 
+func _test_run_damage_dealt_metric(main_scene: PackedScene) -> void:
+	# SCRUM-502 регрессия: нанесённый по врагу урон ДОЛЖЕН копиться в
+	# run_metrics.damage_dealt (строка «Урон по врагам» на экране итогов). Прежний QA
+	# пропустил дыру, т.к. ui_no_overlap_matrix_test инжектил фейковую метрику
+	# (damage_dealt=48213.0) и не проверял реальный бой. Здесь — НАСТОЯЩИЙ
+	# enemy.take_damage через хук enemy.gd -> current_scene.add_run_damage_dealt.
+	var game := main_scene.instantiate()
+	root.add_child(game)
+	current_scene = game
+	await process_frame
+	if not game.has_method("add_run_damage_dealt"):
+		_fail("Expected Main to expose add_run_damage_dealt aggregator (SCRUM-502).")
+		game.queue_free()
+		current_scene = null
+		await process_frame
+		return
+	game.call("reset_run_metrics")
+	var enemy := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate()
+	game.add_child(enemy)
+	enemy.set("max_health", 10000.0)
+	enemy.set("health", 10000.0)
+	await process_frame
+	enemy.call("take_damage", 250.0)
+	await process_frame
+	var metrics: Dictionary = game.get("run_metrics")
+	var dealt := float(metrics.get("damage_dealt", 0.0))
+	if dealt <= 0.0:
+		_fail("Expected enemy.take_damage to accumulate run_metrics.damage_dealt (got %.1f) — SCRUM-502 dealt-damage hook missing." % dealt)
+	if is_instance_valid(enemy):
+		enemy.queue_free()
+	game.queue_free()
+	current_scene = null
+	await process_frame
+
+
 func _test_weapon_aiming() -> void:
 	var holder := Node2D.new()
 	holder.name = "AimTestScene"
@@ -4234,8 +4854,8 @@ func _test_all_playable_classes() -> void:
 		_fail("Expected playable class data to match the signature smoke list.")
 		return
 	for class_id in signature.keys():
-		if ProgressionData.ascension_levels(class_id).size() != 10:
-			_fail("Expected 10 ascension levels for %s." % class_id)
+		if ProgressionData.ascension_levels(class_id).size() != 5:
+			_fail("Expected 5 ascension levels for %s." % class_id)
 			return
 
 	var holder := Node2D.new()
@@ -4301,8 +4921,8 @@ func _test_soldier_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Soldier weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-		if ProgressionData.ascension_levels("soldier").size() != 10:
-			_fail("Expected Soldier to have 10 ascension levels.")
+		if ProgressionData.ascension_levels("soldier").size() != 5:
+			_fail("Expected Soldier to have 5 ascension levels.")
 			return
 
 	var holder := Node2D.new()
@@ -4360,8 +4980,8 @@ func _test_thief_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Thief weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("thief").size() != 10:
-		_fail("Expected Thief to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("thief").size() != 5:
+		_fail("Expected Thief to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4430,8 +5050,8 @@ func _test_elementalist_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Elementalist weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("elementalist").size() != 10:
-		_fail("Expected Elementalist to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("elementalist").size() != 5:
+		_fail("Expected Elementalist to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4486,8 +5106,8 @@ func _test_sniper_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Sniper weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("sniper").size() != 10:
-		_fail("Expected Sniper to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("sniper").size() != 5:
+		_fail("Expected Sniper to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4542,8 +5162,8 @@ func _test_priest_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Priest weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("priest").size() != 10:
-		_fail("Expected Priest to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("priest").size() != 5:
+		_fail("Expected Priest to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4603,8 +5223,8 @@ func _test_biologist_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Biologist weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("biologist").size() != 10:
-		_fail("Expected Biologist to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("biologist").size() != 5:
+		_fail("Expected Biologist to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4669,8 +5289,8 @@ func _test_robot_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Robot weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("robot").size() != 10:
-		_fail("Expected Robot to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("robot").size() != 5:
+		_fail("Expected Robot to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4735,8 +5355,8 @@ func _test_engineer_weapon_mechanics() -> void:
 		if str(config.get("attack_mode", "")) != str(expected_modes[weapon_id]):
 			_fail("Expected Engineer weapon %s to use unique mode %s." % [weapon_id, expected_modes[weapon_id]])
 			return
-	if ProgressionData.ascension_levels("engineer").size() != 10:
-		_fail("Expected Engineer to have 10 ascension levels.")
+	if ProgressionData.ascension_levels("engineer").size() != 5:
+		_fail("Expected Engineer to have 5 ascension levels.")
 		return
 
 	var holder := Node2D.new()
@@ -4948,7 +5568,7 @@ func _test_settings_persistence_and_audio() -> void:
 		_fail("Expected legacy master_volume=0 without explicit intent to migrate back to 100%.")
 		return
 	var saved := {
-		"resolution_index": 2, "window_mode_index": 1, "screen_index": 1,
+		"resolution_index": 1, "window_mode_index": 1, "screen_index": 1,
 		"master_volume": 0.85, "music_volume": 0.4, "sfx_volume": 0.65,
 		"music_enabled": false, "sfx_enabled": true, "aim_mode": "cursor",
 		"debug_mode": true,
@@ -5228,6 +5848,72 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		var settings_switcher_image := main.get_viewport().get_texture().get_image()
 		if settings_switcher_image != null:
 			settings_switcher_image.save_png("%s/settings_v2_runtime.png" % settings_switcher_qa_dir)
+	var resolution_option := main.find_child("SettingsResolutionOption", true, false) as OptionButton
+	var apply_button := main.find_child("SettingsApplyButton", true, false) as Button
+	var revert_button := main.find_child("SettingsRevertButton", true, false) as Button
+	var pending_label := main.find_child("SettingsPendingLabel", true, false) as Label
+	if resolution_option == null or apply_button == null or revert_button == null or pending_label == null:
+		_fail("Expected screen settings to expose pending Apply/Revert controls.")
+		return
+	if not apply_button.disabled or not revert_button.disabled:
+		_fail("Expected screen Apply/Revert buttons to start disabled when no screen changes are pending.")
+		return
+	var original_resolution := int(main.get("selected_resolution_index"))
+	var target_resolution := 1 if original_resolution == 0 else 0
+	resolution_option.item_selected.emit(target_resolution)
+	await process_frame
+	await process_frame
+	if int(main.get("selected_resolution_index")) != original_resolution:
+		_fail("Expected resolution dropdown to stage pending value without applying immediately.")
+		return
+	apply_button = main.find_child("SettingsApplyButton", true, false) as Button
+	if apply_button == null or apply_button.disabled:
+		_fail("Expected screen Apply button to enable after a pending resolution change.")
+		return
+	apply_button.pressed.emit()
+	await process_frame
+	await process_frame
+	if int(main.get("selected_resolution_index")) != target_resolution:
+		_fail("Expected screen Apply button to commit the pending resolution change.")
+		return
+	resolution_option = main.find_child("SettingsResolutionOption", true, false) as OptionButton
+	if resolution_option == null:
+		_fail("Expected SettingsResolutionOption after applying screen settings.")
+		return
+	resolution_option.item_selected.emit(original_resolution)
+	await process_frame
+	await process_frame
+	revert_button = main.find_child("SettingsRevertButton", true, false) as Button
+	if revert_button == null or revert_button.disabled:
+		_fail("Expected screen Revert button to enable after staging a second resolution change.")
+		return
+	revert_button.pressed.emit()
+	await process_frame
+	await process_frame
+	if int(main.get("selected_resolution_index")) != target_resolution:
+		_fail("Expected screen Revert button to discard pending resolution changes.")
+		return
+	resolution_option = main.find_child("SettingsResolutionOption", true, false) as OptionButton
+	if resolution_option == null:
+		_fail("Expected SettingsResolutionOption after reverting screen settings.")
+		return
+	resolution_option.item_selected.emit(original_resolution)
+	await process_frame
+	await process_frame
+	apply_button = main.find_child("SettingsApplyButton", true, false) as Button
+	if apply_button == null:
+		_fail("Expected SettingsApplyButton while restoring original resolution.")
+		return
+	apply_button.pressed.emit()
+	await process_frame
+	await process_frame
+	if int(main.get("selected_resolution_index")) != original_resolution:
+		_fail("Expected screen Apply button to restore the original resolution for later smoke checks.")
+		return
+	tabs = main.find_child("SettingsTabs", true, false) as TabContainer
+	if tabs == null:
+		_fail("Expected SettingsTabs after screen pending apply flow.")
+		return
 	var controls_scroll := main.find_child("ControlsScroll", true, false) as ScrollContainer
 	if controls_scroll == null:
 		_fail("Expected controls settings tab to wrap bindings in ControlsScroll.")
@@ -5269,8 +5955,40 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		_fail("Expected DebugModeToggle to restore OFF state.")
 		return
 	_write_debug_settings_artifact(main, debug_toggle)
+	var combat_feedback_toggle := controls_content.find_child("CombatFeedbackToggle", true, false) as CheckBox
+	if combat_feedback_toggle == null:
+		_fail("Expected controls settings to expose the CombatFeedbackToggle.")
+		return
+	combat_feedback_toggle.button_pressed = false
+	combat_feedback_toggle.toggled.emit(false)
+	await process_frame
+	var loaded_feedback: Dictionary = game_settings.load_settings()
+	if bool(main.get("combat_feedback_enabled")) or bool(loaded_feedback.get("combat_feedback", true)):
+		_fail("Expected CombatFeedbackToggle to update runtime state and persist OFF.")
+		return
+	combat_feedback_toggle.button_pressed = true
+	combat_feedback_toggle.toggled.emit(true)
+	await process_frame
+	loaded_feedback = game_settings.load_settings()
+	if not bool(main.get("combat_feedback_enabled")) or not bool(loaded_feedback.get("combat_feedback", false)):
+		_fail("Expected CombatFeedbackToggle to restore ON state.")
+		return
 	if controls_content.get_child_count() < 8:
 		_fail("Expected controls content to include aim mode, binding rows, hint, and reset button.")
+		return
+	if not InputMap.has_action("open_level_up"):
+		_fail("Expected settings to register the open_level_up input action.")
+		return
+	var level_up_binding := controls_content.find_child("BindingButton_open_level_up", true, false) as Button
+	if level_up_binding == null:
+		_fail("Expected controls settings to expose a rebind row for open_level_up.")
+		return
+	var level_up_key_found := false
+	for level_up_event in InputMap.action_get_events("open_level_up"):
+		if level_up_event is InputEventKey and int(level_up_event.keycode) == KEY_SPACE:
+			level_up_key_found = true
+	if not level_up_key_found:
+		_fail("Expected open_level_up to default to Space.")
 		return
 	tabs.current_tab = 1
 	await process_frame
@@ -5279,8 +5997,8 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if slider == null or not slider.visible or slider.max_value != 100.0:
 			_fail("Expected visible 0-100 settings slider for %s." % slider_id)
 			return
-		if not bool(slider.size_flags_horizontal & Control.SIZE_EXPAND_FILL):
-			_fail("Expected %s slider to expand across the audio tab." % slider_id)
+		if slider.custom_minimum_size.x > 460.0 or slider.custom_minimum_size.y > 46.0:
+			_fail("Expected %s slider to use the shorter SCRUM-674 compact sound row size." % slider_id)
 			return
 		var track := slider.get_theme_stylebox("slider")
 		var fill := slider.get_theme_stylebox("grabber_area")
@@ -5481,8 +6199,14 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 	var before: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
 	mage_stats["strength"] = mage_stats["strength"] + 10.0
 	var after: Dictionary = ProgressionData.derived_parameters(mage_stats, {}, mage_weapon)
-	if float(after.get("magic_damage", 0.0)) <= float(before.get("magic_damage", 0.0)):
-		_fail("Expected +10 strength to raise dark mage magic damage through weapon synergy.")
+	# SCRUM-524: типы урона изолированы по атрибутам. Сила — атрибут ФИЗИЧЕСКОГО
+	# урона, поэтому остаётся универсально полезной (поднимает physical damage даже
+	# магу), но НЕ протекает в магический урон (изоляция по типам).
+	if float(after.get("damage", 0.0)) <= float(before.get("damage", 0.0)):
+		_fail("Expected +10 strength to raise dark mage physical damage (universal stat usefulness).")
+		return
+	if absf(float(after.get("magic_damage", 0.0)) - float(before.get("magic_damage", 0.0))) > 0.0001:
+		_fail("Expected +10 strength NOT to change dark mage magic damage (SCRUM-524 damage-type isolation).")
 		return
 
 	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.
@@ -5591,9 +6315,9 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 
 
 func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
-	# Данные: 10 кумулятивных усложнений, уровень 0 нейтрален, кумулятивность.
-	if ProgressionData.ascension_modifiers().size() != 10:
-		_fail("Expected 10 ascension difficulty modifiers.")
+	# Данные: 5 кумулятивных усложнений (SCRUM-516), уровень 0 нейтрален, кумулятивность.
+	if ProgressionData.ascension_modifiers().size() != 5:
+		_fail("Expected 5 ascension difficulty modifiers.")
 		return
 	var level0: Dictionary = ProgressionData.ascension_difficulty_mods(0)
 	for key in level0.keys():
@@ -5602,28 +6326,30 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 			_fail("Expected ascension level 0 modifier %s to be neutral (%f)." % [key, neutral])
 			return
 	var level3: Dictionary = ProgressionData.ascension_difficulty_mods(3)
-	# SCRUM-358: L1 enemy hp 1.20, L1 dmg 1.14, L2 price 1.25, L3 spawn density 1.26 — кумулятивно активны.
-	if absf(float(level3["enemy_hp_mult"]) - 1.20) > 0.001 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.26) > 0.001:
-		_fail("Expected level 3 to cumulatively include levels 1+2+3 modifiers.")
+	# SCRUM-516 (5-ступенчатая лестница): L1 enemy hp 1.25 + price 1.25, L2 hp 1.15 + spawn 1.30,
+	# L3 hp 1.12 — кумулятив hp 1.25*1.15*1.12=1.61, price 1.25 (L1), spawn 1.30 (L2).
+	if absf(float(level3["enemy_hp_mult"]) - 1.61) > 0.002 or absf(float(level3["price_mult"]) - 1.25) > 0.001 or absf(float(level3["spawn_count_mult"]) - 1.30) > 0.001:
+		_fail("Expected level 3 to cumulatively include levels 1+2+3 modifiers (hp×1.61, price×1.25, spawn×1.30).")
 		return
 	var level0_change := ProgressionData.ascension_level_change_line(0)
 	if not level0_change.to_lower().contains("без усложнений"):
 		_fail("Expected ascension level 0 delta text to say no complications, got: %s" % level0_change)
 		return
 	var level3_change := ProgressionData.ascension_level_change_line(3)
-	if not level3_change.contains("Уровень 3") or not level3_change.contains("Быстрая орда"):
+	if not level3_change.contains("Уровень 3") or not level3_change.contains("Свирепые элитки"):
 		_fail("Expected ascension level 3 delta text to describe only level 3, got: %s" % level3_change)
 		return
-	if level3_change.contains("Закалённые враги") or level3_change.contains("Жадные торговцы"):
+	if level3_change.contains("Закалённые враги") or level3_change.contains("Быстрая орда"):
 		_fail("Expected ascension level 3 delta text not to include lower-level changes, got: %s" % level3_change)
 		return
-	# L4+ модификаторы НЕ активны на уровне 3.
-	if float(level3["elite_instant_phase"]) > 0.0 or absf(float(level3["healing_mult"]) - 1.0) > 0.001:
+	# L4+ модификаторы НЕ активны на уровне 3 (healing — L4, boss_extra_phase — L5).
+	if absf(float(level3["healing_mult"]) - 1.0) > 0.001 or float(level3["boss_extra_phase"]) > 0.0:
 		_fail("Expected level 3 to exclude level 4+ modifiers.")
 		return
-	var level10: Dictionary = ProgressionData.ascension_difficulty_mods(10)
-	if float(level10["boss_extra_phase"]) <= 0.0 or absf(float(level10["player_max_hp_mult"]) - 0.80) > 0.001 or absf(float(level10["healing_mult"]) - 0.70) > 0.001:
-		_fail("Expected level 10 to include boss extra phase, -20%% HP and -30%% healing.")
+	# Капстоун теперь L5 (был L10): босс-фаза, -20%% HP игрока, ослабленное лечение.
+	var level5: Dictionary = ProgressionData.ascension_difficulty_mods(5)
+	if float(level5["boss_extra_phase"]) <= 0.0 or absf(float(level5["player_max_hp_mult"]) - 0.80) > 0.001 or absf(float(level5["healing_mult"]) - 0.68) > 0.001:
+		_fail("Expected level 5 to include boss extra phase, -20%% HP and reduced healing.")
 		return
 
 	# Разблокировка по персонажу: победа на уровне N открывает N+1.
@@ -5687,7 +6413,7 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	if asc_mods_label == null:
 		_fail("Expected AscensionModsLabel on hero select.")
 		return
-	if not asc_mods_label.text.contains("Уровень 3") or not asc_mods_label.text.contains("Быстрая орда"):
+	if not asc_mods_label.text.contains("Уровень 3") or not asc_mods_label.text.contains("Свирепые элитки"):
 		_fail("Expected hero select ascension label to show selected level delta, got: %s" % asc_mods_label.text)
 		return
 	if asc_mods_label.text.contains("Закалённые враги") or asc_mods_label.text.contains("Жадные торговцы"):
@@ -5746,10 +6472,9 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	delta_main.queue_free()
 	await process_frame
 
-	# Уровень 10 урезает макс HP. Берсерк разблокирован до 10, сравниваем L0 vs L10
-	# при ОДНОМ мета-сейве — наградные баффы одинаковы, разница = чистый difficulty -20%.
+	# Capstone ascension reduces max HP. Compare L0 vs max level with the same meta rewards.
 	var hp_meta := MetaProgression.default_state()
-	for unlock_level in range(10):
+	for unlock_level in range(MetaProgression.MAX_ASCENSION_LEVEL):
 		hp_meta = MetaProgression.record_boss_victory(hp_meta, "berserk", unlock_level)
 	asc_main.set("meta_state", hp_meta)
 	asc_main.set("selected_ascension_level", 0)
@@ -5760,16 +6485,16 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	asc_main.call("apply_ascension_bonuses", asc_player_l0)
 	var hp_l0 := float(asc_player_l0.get("max_health"))
 	asc_player_l0.queue_free()
-	asc_main.set("selected_ascension_level", 10)
+	asc_main.set("selected_ascension_level", MetaProgression.MAX_ASCENSION_LEVEL)
 	asc_main.call("reset_run_ascension")
-	var asc_player10 := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
-	root.add_child(asc_player10)
-	asc_player10.call("configure_character", "berserk", "sword")
-	asc_main.call("apply_ascension_bonuses", asc_player10)
-	if float(asc_player10.get("max_health")) >= hp_l0 * 0.95:
-		_fail("Expected ascension 10 to reduce player max HP vs level 0 (%f vs %f)." % [float(asc_player10.get("max_health")), hp_l0])
+	var asc_player_cap := (load("res://scenes/Player.tscn") as PackedScene).instantiate()
+	root.add_child(asc_player_cap)
+	asc_player_cap.call("configure_character", "berserk", "sword")
+	asc_main.call("apply_ascension_bonuses", asc_player_cap)
+	if float(asc_player_cap.get("max_health")) >= hp_l0 * 0.95:
+		_fail("Expected max ascension level %d to reduce player max HP vs level 0 (%f vs %f)." % [MetaProgression.MAX_ASCENSION_LEVEL, float(asc_player_cap.get("max_health")), hp_l0])
 		return
-	asc_player10.queue_free()
+	asc_player_cap.queue_free()
 
 	# Багфикс 3: селектор не даёт уйти выше selectable_max — reset_run_ascension клампит.
 	asc_main.set("meta_state", MetaProgression.default_state())
@@ -5801,9 +6526,9 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	current_scene = null
 	await process_frame
 
-	# Багфикс 2 (данные): на возвышении 7 mini_elite_chance > 0.
-	if float(ProgressionData.ascension_difficulty_mods(7)["mini_elite_chance"]) <= 0.0:
-		_fail("Expected ascension level 7 to expose a mini-elite chance.")
+	# Багфикс 2 (данные): на пиковом возвышении 3 mini_elite_chance > 0.
+	if float(ProgressionData.ascension_difficulty_mods(3)["mini_elite_chance"]) <= 0.0:
+		_fail("Expected ascension level 3 to expose a mini-elite chance.")
 		return
 
 	# Багфикс 2 (поведение): mini_elite_chance реально ПОТРЕБЛЯЕТСЯ — мини-элитка
@@ -5946,7 +6671,13 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	t3_player.call("apply_reward", ProgressionData.artifact_definition("thorn_pact"))
 	var thorn_enemy := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate()
 	holder.add_child(thorn_enemy)
+	# Здоровый враг (как реальный спавн): max_health И health выставляем явно, иначе
+	# _ready оставляет health=max_health дефолтным и проверка «отражение сняло HP»
+	# проходила бы лишь потому, что 3-HP враг умирает от ЛЮБОГО урона. Здесь enemy_hp_before
+	# большой, поэтому ассерт честно меряет, что отражение сняло урон с живого врага.
 	thorn_enemy.set("max_health", 100000.0)
+	thorn_enemy.set("health", 100000.0)
+	thorn_enemy.call("refresh_health_bar")
 	thorn_enemy.global_position = t3_player.global_position + Vector2(80, 0)
 	await process_frame
 	var enemy_hp_before := float(thorn_enemy.get("health"))
@@ -6039,6 +6770,10 @@ func _test_escape_navigation(main_scene: PackedScene) -> void:
 	if v4_carousel == null:
 		_fail("Expected hero select v4 to expose a scrollable carousel.")
 		return
+	var focus_owner := nav_main.get_viewport().gui_get_focus_owner()
+	if focus_owner == null or not str(focus_owner.name).begins_with("HS4CarouselSlot_"):
+		_fail("Expected hero select v4 to focus a visible hero carousel slot by default, got %s." % (str(focus_owner.name) if focus_owner != null else "<null>"))
+		return
 	var carousel_slot: TextureButton = null
 	for slot_child in v4_carousel.get_children():
 		if slot_child is TextureButton and (slot_child as TextureButton).visible:
@@ -6046,6 +6781,21 @@ func _test_escape_navigation(main_scene: PackedScene) -> void:
 			break
 	if carousel_slot == null:
 		_fail("Expected hero select v4 carousel to expose clickable hero slots.")
+		return
+	if carousel_slot.focus_mode != Control.FOCUS_ALL:
+		_fail("Expected hero select v4 carousel slots to be keyboard/gamepad focusable.")
+		return
+	if carousel_slot.focus_neighbor_left == NodePath("") or carousel_slot.focus_neighbor_right == NodePath("") or carousel_slot.focus_neighbor_top == NodePath(""):
+		_fail("Expected hero select v4 carousel slots to wire directional focus neighbors.")
+		return
+	var left_arrow := nav_main.find_child("HS4CarouselPrevButton", true, false) as Button
+	var right_arrow := nav_main.find_child("HS4CarouselNextButton", true, false) as Button
+	var back_button := nav_main.find_child("HS4BackButton", true, false) as Button
+	if left_arrow == null or right_arrow == null or back_button == null:
+		_fail("Expected hero select v4 to keep carousel arrows and Back button.")
+		return
+	if left_arrow.focus_neighbor_right == NodePath("") or right_arrow.focus_neighbor_left == NodePath("") or back_button.focus_neighbor_bottom == NodePath(""):
+		_fail("Expected hero select v4 arrows/back to wire directional focus neighbors.")
 		return
 	carousel_slot.pressed.emit()
 	await process_frame
@@ -6217,9 +6967,9 @@ func _assert_codex_v2_back_button_safe(button: Button, checked: Array) -> bool:
 		_fail("Expected codex v2 back button to exist.")
 		return false
 	var rect := button.get_global_rect()
-	var expected := _codex_v2_expected_rect(Rect2(1684, 60, 126, 96), button.get_viewport_rect().size)
+	var expected := _codex_v2_expected_rect(Rect2(1636, 104, 168, 84), button.get_viewport_rect().size)
 	if rect.position.distance_to(expected.position) > 2.0 or rect.size.distance_to(expected.size) > 2.0:
-		_fail("Expected codex v2 compact back button to sit inside SCRUM-438 safe rect %s, got %s." % [str(expected), str(rect)])
+		_fail("Expected codex v2 compact back button to sit inside SCRUM-684 safe rect %s, got %s." % [str(expected), str(rect)])
 		return false
 	if button.text != "←":
 		_fail("Expected codex v2 compact back button to use icon text, got `%s`." % button.text)
@@ -6244,41 +6994,6 @@ func _assert_codex_v2_back_button_safe(button: Button, checked: Array) -> bool:
 	return true
 
 
-func _assert_hero_select_v3_back_button_safe(button: Button, checked: Array) -> bool:
-	if button == null:
-		_fail("Expected hero select v3 back button to exist.")
-		return false
-	var rect := button.get_global_rect()
-	var expected := _hero_select_v3_expected_rect(HERO_SELECT_V3_BACK_SAFE, button.get_viewport_rect().size)
-	if rect.position.distance_to(expected.position) > 2.0 or rect.size.distance_to(expected.size) > 2.0:
-		_fail("Expected hero select v3 back button to sit inside SCRUM-446/SCRUM-447 safe rect %s, got %s." % [str(expected), str(rect)])
-		return false
-	var normal_style := button.get_theme_stylebox("normal")
-	if normal_style == null:
-		_fail("Expected hero select v3 back button to have a themed normal stylebox.")
-		return false
-	var content_width := rect.size.x - normal_style.get_content_margin(SIDE_LEFT) - normal_style.get_content_margin(SIDE_RIGHT)
-	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
-	if content_width < 34.0 or content_height < 18.0:
-		_fail("Expected hero select v3 back text to fit inside content zone, got %.1fx%.1f." % [content_width, content_height])
-		return false
-	checked.append({
-		"context": "hero_select_v3",
-		"name": button.name,
-		"text": button.text,
-		"rect": rect,
-		"min_size": button.custom_minimum_size,
-		"content_size": Vector2(content_width, content_height),
-	})
-	return true
-
-
-func _hero_select_v3_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
-	var scale := minf(viewport_size.x / HERO_SELECT_V3_SOURCE_SIZE.x, viewport_size.y / HERO_SELECT_V3_SOURCE_SIZE.y)
-	var offset := (viewport_size - HERO_SELECT_V3_SOURCE_SIZE * scale) * 0.5
-	return Rect2(offset + base_rect.position * scale, base_rect.size * scale)
-
-
 func _hero_select_v4_expected_rect(zone: Rect2, viewport_size: Vector2) -> Rect2:
 	var scale := minf(viewport_size.x / HERO_SELECT_V4_SOURCE_SIZE.x, viewport_size.y / HERO_SELECT_V4_SOURCE_SIZE.y)
 	var canvas_size := HERO_SELECT_V4_SOURCE_SIZE * scale
@@ -6300,7 +7015,11 @@ func _visible_texture_button_count(parent: Node) -> int:
 
 func _codex_v2_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
 	var base_size := Vector2(1920.0, 1080.0)
-	var scale := minf(viewport_size.x / base_size.x, viewport_size.y / base_size.y)
+	# SCRUM-684: композиция вписана в инсет-область вьюпорта (поля со всех сторон),
+	# чтобы рамка не клипалась краем экрана — повторяем тот же инсет, что в коде.
+	var screen_inset := Vector2(28.0, 30.0)
+	var avail := viewport_size - screen_inset * 2.0
+	var scale := minf(avail.x / base_size.x, avail.y / base_size.y)
 	var offset := (viewport_size - base_size * scale) * 0.5
 	return Rect2(offset + base_rect.position * scale, base_rect.size * scale)
 
@@ -6406,8 +7125,8 @@ func _assert_quit_dialog_button_size(button: Button, context: String) -> bool:
 	if absf(rect.size.x - 220.0) > 1.0 or absf(rect.size.y - 72.0) > 1.0:
 		_fail("Expected quit confirmation %s button rect to stay 220x72, got %s." % [context, str(rect)])
 		return false
-	if not _button_uses_minimal_metal_type(button, "pause"):
-		_fail("Expected quit confirmation %s button to use the 72px-safe pause minimal-metal frame." % context)
+	if not _button_uses_text_button_unique_id(button, "quit_220x72"):
+		_fail("Expected quit confirmation %s button to use the SCRUM-657 quit_220x72 frame." % context)
 		return false
 	var normal_style := button.get_theme_stylebox("normal")
 	if normal_style == null:
@@ -6448,11 +7167,10 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected SCRUM-438 Codex runtime layout to include main/nav/list/detail panels, tabs, entry card, and portrait slots.")
 		return
 	var expected_codex_textures := {
-		"CodexMainPanel": MINIMAL_MODAL_TEXTURE,
-		"CodexNavPanel": MINIMAL_PANEL_TEXTURE,
-		"CodexContent": MINIMAL_PANEL_TEXTURE,
-		"CodexDetailPanel": MINIMAL_PANEL_TEXTURE,
-		"CodexPortraitSlot": MINIMAL_FIELD_TEXTURE,
+		"CodexMainPanel": CODEX_MAIN_TEXTURE_2K,
+		"CodexNavPanel": CODEX_NAV_TEXTURE_2K,
+		"CodexContent": CODEX_LIST_TEXTURE_2K,
+		"CodexDetailPanel": CODEX_DETAIL_TEXTURE_2K,
 		"CodexDetailPortraitSlot": MINIMAL_FIELD_TEXTURE,
 	}
 	for node_name in expected_codex_textures.keys():
@@ -6464,8 +7182,15 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		if actual_path != str(expected_codex_textures[node_name]):
 			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
 			return
-	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != MINIMAL_CARD_TEXTURE:
-		_fail("Expected SCRUM-448 Codex list cards to use the minimal card frame.")
+	# SCRUM-684: строковый портрет-слот больше НЕ чёрный MINIMAL_FIELD-бокс —
+	# это лёгкая parchment-inset StyleBoxFlat-подложка (без texture-стиля).
+	if default_portrait != null:
+		var slot_style := default_portrait.get_theme_stylebox("panel")
+		if not (slot_style is StyleBoxFlat):
+			_fail("Expected SCRUM-684 Codex entry portrait slot to use a parchment inset StyleBoxFlat, not a dark field texture.")
+			return
+	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != CODEX_ENTRY_CARD_TEXTURE_2K:
+		_fail("Expected SCRUM-574 Codex list cards to use the Codex @2K entry card frame.")
 		return
 	var codex_portrait_texture := _first_child_texture_rect(detail_portrait)
 	var expected_default_portrait := _expected_character_portrait_path("berserk")
@@ -6476,8 +7201,12 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected Codex character detail portrait to preserve SCRUM-417 covered scaling.")
 		return
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
-	if character_tab == null or not _button_uses_minimal_metal_type(character_tab, "codex_tab"):
-		_fail("Expected Codex tabs to use the minimal-metal Codex tab texture kit.")
+	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != CODEX_TAB_BUTTON_TEXTURE_2K:
+		_fail("Expected SCRUM-574 Codex tabs to use the Codex @2K tab frame.")
+		return
+	var codex_back_button := codex_main.find_child("CodexBackButton", true, false) as Button
+	if codex_back_button == null or _stylebox_texture_path(codex_back_button.get_theme_stylebox("normal")) != CODEX_BACK_BUTTON_TEXTURE_2K:
+		_fail("Expected SCRUM-574 Codex back button to use the Codex @2K back button frame.")
 		return
 	var expected_layout := {
 		"CodexMainPanel": Rect2(24, 20, 1872, 1040),
@@ -6884,8 +7613,14 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		if rect.size.y < 110.0:
 			_fail("Expected weapon select card %s to keep readable row height, got %s." % [weapon_id, rect])
 			return
-		if button.get_theme_stylebox("normal") is StyleBoxTexture or button.get_theme_stylebox("hover") is StyleBoxTexture:
-			_fail("Expected weapon select card %s to use lightweight flat styling, not heavy button textures." % weapon_id)
+		var normal_style := button.get_theme_stylebox("normal")
+		var hover_style := button.get_theme_stylebox("hover")
+		if not normal_style is StyleBoxTexture or not hover_style is StyleBoxTexture:
+			_fail("Expected weapon select card %s to use SCRUM-562 2K frame textures." % weapon_id)
+			return
+		var normal_texture := (normal_style as StyleBoxTexture).texture
+		if normal_texture == null or normal_texture.resource_path != "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_card.png":
+			_fail("Expected weapon select card %s to use ws_card frame texture." % weapon_id)
 			return
 		var sprite := button.find_child("WeaponSelectSprite_%s" % weapon_id, true, false) as TextureRect
 		var expected_sprite := _expected_weapon_sprite_path(weapon_id)
@@ -6896,6 +7631,18 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		if stats == null or not stats.text.contains("Дальность") or not stats.text.contains("Перезарядка"):
 			_fail("Expected weapon select card %s to show Russian stat labels." % weapon_id)
 			return
+	var back_button := weapon_main.find_child("WeaponSelectBackButton", true, false) as Button
+	if back_button == null:
+		_fail("Expected SCRUM-562 weapon select back button.")
+		return
+	var back_style := back_button.get_theme_stylebox("normal")
+	if not back_style is StyleBoxTexture:
+		_fail("Expected weapon select back button to use SCRUM-562 2K frame texture.")
+		return
+	var back_texture := (back_style as StyleBoxTexture).texture
+	if back_texture == null or back_texture.resource_path != TEXT_BUTTON_DIR + "ui_btn_text_unique_pause_280x60_normal.png":
+		_fail("Expected weapon select back button to use SCRUM-657 pause_280x60 text-button texture.")
+		return
 	var first_button := weapon_main.find_child("WeaponOption_%s" % str(weapon_ids[0]), true, false) as Button
 	first_button.pressed.emit()
 	await process_frame
@@ -6922,6 +7669,12 @@ func _expected_weapon_sprite_path(weapon_id: String) -> String:
 
 
 func _expected_character_portrait_path(character_id: String) -> String:
+	# Портрет берётся из данных персонажа (sprite_path), а не из жёсткого пути —
+	# полное-кадровые портреты живут в разных подкаталогах (…/<id>_pixellab/…).
+	var config: Dictionary = ProgressionData.character_config(character_id)
+	var path := str(config.get("sprite_path", config.get("sprite", "")))
+	if path != "":
+		return path
 	return "res://assets/sprites/characters/full_frame/%s/%s_idle_00.png" % [character_id, character_id]
 
 
@@ -7365,16 +8118,57 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 	hud_main.ui._update_hud()
 	await process_frame
 	await process_frame
+	var low_hp_vignette := hud_main.find_child("LowHpVignetteOverlay", true, false) as ColorRect
+	if low_hp_vignette == null:
+		_fail("Expected combat HUD to include LowHpVignetteOverlay at %s." % str(viewport_size))
+		return
+	if low_hp_vignette.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		_fail("Expected LowHpVignetteOverlay not to intercept input at %s." % str(viewport_size))
+		return
+	var combat_root := hud_main.find_child("CombatHudRoot", true, false) as Control
+	if combat_root == null or combat_root.get_child(0) != low_hp_vignette:
+		_fail("Expected LowHpVignetteOverlay to render behind HUD controls at %s." % str(viewport_size))
+		return
+	if player != null:
+		var max_hp := float(player.get("max_health"))
+		player.set("health", max_hp * 0.90)
+		hud_main.ui._update_hud()
+		if bool(low_hp_vignette.get_meta("vignette_active", true)):
+			_fail("Expected low-HP vignette to stay inactive above threshold at %s." % str(viewport_size))
+			return
+		player.set("health", max_hp * 0.20)
+		hud_main.ui._update_hud()
+		if not bool(low_hp_vignette.get_meta("vignette_active", false)) or float(low_hp_vignette.get_meta("vignette_target_alpha", 0.0)) < 0.20:
+			_fail("Expected low-HP vignette to activate below 30%% HP at %s." % str(viewport_size))
+			return
+		player.set("health", max_hp * 0.32)
+		hud_main.ui._update_hud()
+		if not bool(low_hp_vignette.get_meta("vignette_active", false)):
+			_fail("Expected low-HP vignette hysteresis to remain active below 34%% HP at %s." % str(viewport_size))
+			return
+		player.set("health", max_hp * 0.36)
+		hud_main.ui._update_hud()
+		if bool(low_hp_vignette.get_meta("vignette_active", true)) or float(low_hp_vignette.get_meta("vignette_target_alpha", -1.0)) > 0.01:
+			_fail("Expected low-HP vignette to fade out above hysteresis threshold at %s." % str(viewport_size))
+			return
+		var previous_feedback := bool(hud_main.get_tree().root.get_meta("combat_feedback", true))
+		hud_main.get_tree().root.set_meta("combat_feedback", false)
+		player.set("health", max_hp * 0.20)
+		hud_main.ui._update_hud()
+		if bool(low_hp_vignette.get_meta("vignette_active", true)) or low_hp_vignette.modulate.a > 0.01:
+			_fail("Expected low-HP vignette to respect disabled combat feedback at %s." % str(viewport_size))
+			return
+		hud_main.get_tree().root.set_meta("combat_feedback", previous_feedback)
 	var context := "%s %s" % ["boss" if boss_fight else "battle", str(viewport_size)]
 	var controls := _visible_hud_top_controls(hud_main)
 	dump_lines.append("## %s" % context)
 	for control in controls:
 		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control.name, str(control.get_global_rect()), _stylebox_texture_path(control.get_theme_stylebox("panel") if control is PanelContainer else null)])
-		if control.name == "RunResourceHud" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_HUD_STRIP_TEXTURE:
-			_fail("Expected RunResourceHud to use SCRUM-448 minimal HUD strip frame at %s." % context)
+		if control.name == "RunResourceHud" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != HUD_RESOURCE_PANEL_TEXTURE_2K:
+			_fail("Expected RunResourceHud to use SCRUM-564 @2K HUD resource frame at %s." % context)
 			return
-		if control.name == "CombatTimerPanel" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_FIELD_TEXTURE:
-			_fail("Expected CombatTimerPanel to use SCRUM-448 minimal field frame at %s." % context)
+		if control.name == "CombatTimerPanel" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != HUD_TIMER_PANEL_TEXTURE_2K:
+			_fail("Expected CombatTimerPanel to use SCRUM-564 @2K HUD timer frame at %s." % context)
 			return
 		if control.name == "AscensionHudBadge" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_CARD_TEXTURE:
 			_fail("Expected AscensionHudBadge to use SCRUM-448 minimal card frame at %s." % context)
@@ -7389,7 +8183,7 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 
 func _visible_hud_top_controls(main: Node) -> Array:
 	var controls := []
-	for node_name in ["RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "ArtifactHudRow"]:
+	for node_name in ["RunResourceHud", "CombatTimerPanel", "AscensionHudBadge"]:
 		var control := main.find_child(node_name, true, false) as Control
 		if control != null and control.visible:
 			controls.append(control)
@@ -7560,8 +8354,8 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 		quit(1)
 		return
 	var death_panel := death_main.find_child("PauseEndModalPanel_death", true, false) as PanelContainer
-	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
-		push_error("Expected death screen to use the SCRUM-448 minimal modal frame.")
+	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != RESULT_PANEL_TEXTURE_2K:
+		push_error("Expected death screen to use the SCRUM-578 @2K result modal frame.")
 		quit(1)
 		return
 	death_main.queue_free()

@@ -63,8 +63,8 @@ func _test_save_load_roundtrip() -> void:
 func _test_ascension_levels_data() -> void:
 	for character_id in ["berserk", "dark_mage", "guitarist"]:
 		var levels: Array = PROGRESSION_DATA.ascension_levels(character_id)
-		if levels.size() != 10:
-			push_error("Expected 10 ascension levels for %s, got %d." % [character_id, levels.size()])
+		if levels.size() != 5:
+			push_error("Expected 5 ascension levels for %s, got %d." % [character_id, levels.size()])
 			quit(1)
 			return
 		var seen_ids := {}

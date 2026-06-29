@@ -8,6 +8,10 @@ const BRIAR_POOL_TEXTURE := preload("res://assets/sprites/effects/briar_pool.png
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 
+# SCRUM-553: абсолютный z-слой наземных луж/декалей (summon-пулы химика и пр.).
+# Ниже сущностей (игрок/монстры/пикапы z≈0), но выше фона арены (-100) и бордера (-20).
+const GROUND_POOL_Z := -3
+
 const DEFAULT_ATTACK_MODE := "sound_wave"
 const PRIMARY_CAST_ACTION_MODES := {
 	"aoe_projectile": true,
@@ -103,6 +107,7 @@ const ATTACK_MODE_EXECUTORS := {
 @export var combo_clouds := false
 @export var pool_duration := 3.0
 @export var pool_tick_interval := 0.6
+@export var pool_direct_damage_multiplier := 1.0
 @export var charge_seconds := 0.0
 @export var charge_max_multiplier := 1.0
 @export var crit_shadow_burst_radius := 0.0
@@ -200,6 +205,7 @@ func configure_weapon(config: Dictionary) -> void:
 	combo_clouds = bool(config.get("combo_clouds", combo_clouds))
 	pool_duration = float(config.get("pool_duration", pool_duration))
 	pool_tick_interval = float(config.get("pool_tick_interval", pool_tick_interval))
+	pool_direct_damage_multiplier = float(config.get("pool_direct_damage_multiplier", pool_direct_damage_multiplier))
 	charge_seconds = float(config.get("charge_seconds", charge_seconds))
 	charge_max_multiplier = float(config.get("charge_max_multiplier", charge_max_multiplier))
 	crit_shadow_burst_radius = float(config.get("crit_shadow_burst_radius", config.get("dash_on_crit_distance", crit_shadow_burst_radius)))
@@ -257,7 +263,10 @@ func _attack() -> void:
 		owner_node.play_action_animation(_primary_action_animation_for_mode(), direction)
 	_emit_weapon_animation_event(owner_node, "windup", _estimated_windup_duration(), direction)
 
-	if heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent"):
+	# SCRUM-603: лечение-от-атаки идёт через per-second бюджет (capped), как drain.
+	if heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent_capped"):
+		owner_node.heal_percent_capped(heal_percent_on_attack * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER)
+	elif heal_percent_on_attack > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(heal_percent_on_attack * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER)
 
 	_current_charge_multiplier = _charge_multiplier()
@@ -469,10 +478,19 @@ func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
 	var orb_tween := create_tween()
 	orb_tween.tween_property(orb, "global_position", far_point, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	orb_tween.tween_property(orb, "global_position", origin, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	# SCRUM-551: захват owner_node/orb (Node) в lambda интермиттентно «освобождался»
+	# под быстрым create/free в balance-CSV. Резолвим по instance_id внутри + гвард.
+	var owner_id := owner_node.get_instance_id()
+	var orb_id := orb.get_instance_id()
+	var weapon_self_id := get_instance_id()
 	orb_tween.tween_callback(func() -> void:
-		if is_instance_valid(self) and is_instance_valid(owner_node):
-			_damage_enemies_in_corridor(owner_node.global_position, direction, _rolled_damage(owner_node))
-		_release_effect(orb)
+		var w := instance_from_id(weapon_self_id) as Node
+		var o := instance_from_id(owner_id) as Node2D
+		if w != null and o != null and is_instance_valid(w) and is_instance_valid(o):
+			w.call("_damage_enemies_in_corridor", o.global_position, direction, w.call("_rolled_damage", o))
+		var orb_node := instance_from_id(orb_id) as Node
+		if w != null and is_instance_valid(w) and orb_node != null and is_instance_valid(orb_node):
+			w.call("_release_effect", orb_node)
 	)
 
 
@@ -514,14 +532,20 @@ func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: fl
 
 func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	# Ядовитое облако химика: тики по врагам в радиусе, группа player_weapon_effects.
+	tick_damage *= POOL_TICK_DAMAGE_MULTIPLIER
 	var combo_target := _find_combo_cloud(pool_position)
 	var pool := Node2D.new()
 	pool.name = "ChemistPoisonPool"
 	_register_effect(pool)
 	pool.add_to_group("chemist_clouds")
+	pool.set_meta("pool_weapon_owner", get_instance_id())
 	if pool_element != "":
 		pool.set_meta("pool_element", pool_element)
-	pool.z_index = 5
+	# SCRUM-553: наземная декаль — пул рисуется ПОД всеми боевыми сущностями
+	# (игрок/монстры/пикапы z≈0), но над фоном (-100) и бордером (-20) арены.
+	# Абсолютный слой (z_as_relative=false), чтобы не зависеть от z родителя-контейнера.
+	pool.z_as_relative = false
+	pool.z_index = GROUND_POOL_Z
 	var visual := Node2D.new()
 	visual.name = "PoolVisual"
 	var pool_sprite := Sprite2D.new()
@@ -534,6 +558,7 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	pool.add_child(visual)
 	_projectile_parent().add_child(pool)
 	pool.global_position = pool_position
+	_retire_excess_damage_pools(pool)
 	if combo_target != null:
 		_trigger_chemist_combo(pool, combo_target, tick_damage)
 
@@ -544,7 +569,9 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	visual_tween.tween_property(pool_sprite, "scale", Vector2.ONE * pool_scale * 0.985, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	visual_tween.parallel().tween_property(pool_sprite, "rotation", -0.035, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
-	var tick_count := int(floor(pool_duration / maxf(pool_tick_interval, 0.2)))
+	# SCRUM-649: гарантируем минимум 1 тик — при коротком pool_duration (< tick interval)
+	# floor давал 0, и заспавненный пул не наносил урона (потраченная впустую атака).
+	var tick_count := maxi(int(floor(pool_duration / maxf(pool_tick_interval, 0.2))), 1)
 	var pool_tween := pool.create_tween()
 	var pool_id := pool.get_instance_id()
 	var weapon_id := get_instance_id()
@@ -554,7 +581,7 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 			var current_weapon := instance_from_id(weapon_id) as Node
 			var current_pool := instance_from_id(pool_id) as Node2D
 			if current_weapon != null and current_pool != null:
-				current_weapon.call("_damage_enemies_in_circle", current_pool.global_position, aoe_radius * 0.7, tick_damage)
+				current_weapon.call("_damage_enemies_in_pool", current_pool.global_position, aoe_radius * 0.7, tick_damage)
 		)
 	pool_tween.tween_property(pool_sprite, "modulate:a", 0.0, 0.2)
 	pool_tween.tween_callback(func() -> void:
@@ -598,9 +625,9 @@ func _find_combo_cloud(pool_position: Vector2) -> Node2D:
 func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: float) -> void:
 	var combo_position := (new_cloud.global_position + old_cloud.global_position) * 0.5
 	var combo_radius := aoe_radius * 1.05
-	var combo_damage := maxf(damage, tick_damage * 5.5)
+	var combo_damage := maxf(damage, tick_damage * 5.5) * pool_direct_damage_multiplier
 	AttackVfx.orb_burst(_projectile_parent(), combo_position, combo_radius, Color(1.0, 0.75, 0.16, 0.50))
-	_damage_enemies_in_circle(combo_position, combo_radius, combo_damage)
+	_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
 
 
 func _find_closest_enemies(owner_node: Node2D, count: int) -> Array:
@@ -628,7 +655,7 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 		if current_weapon != null:
 			var current_owner := instance_from_id(owner_id) as Node2D
 			var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
-			current_weapon.call("_damage_enemies_in_circle", target_position, aoe_radius, explosion_damage)
+			current_weapon.call("_damage_aoe_projectile_explosion", target_position, aoe_radius, explosion_damage)
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, visual_color)
 			if leaves_pool:
 				var parameters_raw = current_owner.get("derived_parameters") if current_owner != null else null
@@ -779,7 +806,21 @@ func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
 	if owner_node.get("health") == null or owner_node.get("max_health") == null:
 		return
 	var heal_amount := dealt_damage * heal_percent_of_damage * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER
-	owner_node.set("health", minf(float(owner_node.get("health")) + heal_amount, float(owner_node.get("max_health"))))
+	if heal_amount <= 0.0:
+		return
+	# SCRUM-517: drain-heal обязан уважать per-second бюджет (как вампиризм), иначе
+	# Доктор бессмертен (DoT-стак чумы × число целей лил сотни HP/с прямо в health).
+	# Маршрутизируем через capped-метод игрока; для owner-ов без него (саммоны и т.п.)
+	# сохраняем прежнее прямое поведение, чтобы не сломать чужой sustain.
+	var healed := 0.0
+	if owner_node.has_method("apply_drain_heal"):
+		healed = float(owner_node.call("apply_drain_heal", heal_amount))
+	else:
+		var before := float(owner_node.get("health"))
+		owner_node.set("health", minf(before + heal_amount, float(owner_node.get("max_health"))))
+		healed = float(owner_node.get("health")) - before
+	if healed > 0.01 and owner_node.has_method("show_combat_feedback_number"):
+		owner_node.show_combat_feedback_number(healed, "heal")
 
 
 func _fire_sound_wave(owner_node: Node2D, direction: Vector2) -> void:
@@ -1039,8 +1080,14 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 		_register_effect(miss)
 		var miss_tween := create_tween()
 		miss_tween.tween_property(miss, "global_position", owner_node.global_position + direction * min(attack_range, 280.0), 0.18)
+		# SCRUM-551: резолвим miss/self по instance_id (захват Node в lambda «освобождался» в CSV).
+		var miss_id := miss.get_instance_id()
+		var weapon_miss_self_id := get_instance_id()
 		miss_tween.tween_callback(func() -> void:
-			_release_effect(miss)
+			var w := instance_from_id(weapon_miss_self_id) as Node
+			var m := instance_from_id(miss_id) as Node
+			if w != null and is_instance_valid(w) and m != null and is_instance_valid(m):
+				w.call("_release_effect", m)
 		)
 		return
 
@@ -1644,7 +1691,7 @@ func _fire_robot_compression_line(owner_node: Node2D, target: Node2D, direction:
 
 
 func _fire_robot_reactor_vent(owner_node: Node2D, direction: Vector2) -> void:
-	var vent_count := maxi(projectile_count, 4)
+	var vent_count := maxi(projectile_count + _extra_projectiles(), 4)
 	var damage_value := _rolled_damage(owner_node) / float(maxi(vent_count, 1))
 	AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, aoe_radius * 0.62, visual_color, true)
 	for vent_index in range(vent_count):
@@ -1752,10 +1799,24 @@ func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: 
 			used[current_target.get_instance_id()] = true
 	AttackVfx.beam(_projectile_parent(), previous_position, owner_node.global_position, beam_width * 0.44, Color(visual_color.r, visual_color.g, visual_color.b, 0.25))
 	if healed > 0.01 and owner_node.get("health") != null and owner_node.get("max_health") != null:
-		owner_node.set("health", minf(float(owner_node.get("max_health")), float(owner_node.get("health")) + healed))
-		if owner_node.has_method("_show_heal_vfx"):
+		# SCRUM-517: _damage_enemy выше уже провёл drain через capped apply_drain_heal,
+		# поэтому этот батч-heal — двойное лечение в обход бюджета. Маршрутизируем его
+		# через тот же per-second бюджет (для owner-ов без метода — прежнее поведение).
+		var actual_healed := 0.0
+		if owner_node.has_method("apply_drain_heal"):
+			actual_healed = float(owner_node.call("apply_drain_heal", healed))
+		else:
+			var before := float(owner_node.get("health"))
+			owner_node.set("health", minf(float(owner_node.get("max_health")), before + healed))
+			actual_healed = float(owner_node.get("health")) - before
+		if actual_healed > 0.01 and owner_node.has_method("_show_heal_vfx"):
 			owner_node.call("_show_heal_vfx")
-	if summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent"):
+		if actual_healed > 0.01 and owner_node.has_method("show_combat_feedback_number"):
+			owner_node.show_combat_feedback_number(actual_healed, "heal")
+	# SCRUM-603: summon-support лечение тоже через per-second бюджет (capped).
+	if summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent_capped"):
+		owner_node.heal_percent_capped(summon_support_heal_percent)
+	elif summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(summon_support_heal_percent)
 
 
@@ -1943,12 +2004,28 @@ func _is_enemy_inside_wave(origin: Vector2, enemy_position: Vector2, direction: 
 	return abs(to_enemy.dot(perpendicular)) <= half_width
 
 
-func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := true) -> void:
+# SCRUM-523: КАНАЛ урона оружия → строковый тип для палитры боевых цифр.
+# Источник истины о канале — damage_parameter оружия (см. progression_data_weapons):
+# "magic_damage" → магия, "sound_wave_damage" → звук, всё прочее ("damage") →
+# физика. DoT-тики красятся "dot" в точке тика, а не отсюда. Цвет берёт владелец
+# цифры (enemy.gd) через Enemy.damage_type_color() — здесь только маршрутизация типа.
+func _weapon_damage_type() -> String:
+	match damage_parameter:
+		"magic_damage":
+			return "magic"
+		"sound_wave_damage":
+			return "sound"
+		_:
+			return "physical"
+
+
+func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := true, damage_type := "", notify_owner_hit := true) -> void:
 	if enemy != null and is_instance_valid(enemy) and enemy.has_method("take_damage"):
-		enemy.take_damage(amount)
+		var hit_type := damage_type if damage_type != "" else _weapon_damage_type()
+		_call_take_damage(enemy, amount, {"critical": _last_attack_crit and apply_unique_melee_effects, "damage_type": hit_type})
 		var owner_node := _owner_node()
-		if owner_node != null and owner_node.has_method("on_weapon_hit"):
-			owner_node.on_weapon_hit(enemy, amount)
+		if notify_owner_hit and owner_node != null and owner_node.has_method("on_weapon_hit"):
+			owner_node.on_weapon_hit(enemy, amount, _last_attack_crit)  # SCRUM-500: прокидываем крит-флаг
 		_heal_owner_from_damage(owner_node, amount)
 		if _last_attack_crit and crit_shadow_burst_radius > 0.0 and owner_node != null and owner_node.has_method("trigger_assassin_crit_shadow"):
 			owner_node.trigger_assassin_crit_shadow(enemy, crit_shadow_burst_radius)
@@ -1962,13 +2039,15 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy: Node, amount: fl
 		return
 	var direction := enemy_node.global_position - owner_node.global_position
 	var distance := direction.length()
+	# SCRUM-523: добивания/осколки красим тем же каналом, что основное попадание.
+	var hit_type := _weapon_damage_type()
 	if melee_close_bonus_radius > 0.0 and melee_close_damage_multiplier > 1.0 and distance <= melee_close_bonus_radius:
-		enemy_node.take_damage(amount * (melee_close_damage_multiplier - 1.0))
+		_call_take_damage(enemy_node, amount * (melee_close_damage_multiplier - 1.0), {"damage_type": hit_type})
 	if melee_execute_threshold > 0.0 and melee_execute_multiplier > 1.0:
 		var max_hp := float(enemy_node.get("max_health")) if enemy_node.get("max_health") != null else 0.0
 		var health := float(enemy_node.get("health")) if enemy_node.get("health") != null else max_hp
 		if max_hp > 0.0 and health / max_hp <= melee_execute_threshold:
-			enemy_node.take_damage(amount * (melee_execute_multiplier - 1.0))
+			_call_take_damage(enemy_node, amount * (melee_execute_multiplier - 1.0), {"damage_type": hit_type})
 	if melee_stagger_knockback_multiplier > 0.0 and direction.length_squared() > 0.001:
 		_push_enemy_scaled(enemy_node, direction.normalized(), melee_stagger_knockback_multiplier)
 	if melee_arc_followup_radius > 0.0 and melee_arc_followup_multiplier > 0.0:
@@ -1977,8 +2056,11 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy: Node, amount: fl
 			if nearby == enemy_node:
 				continue
 			if nearby.has_method("take_damage"):
-				nearby.take_damage(splash_damage)
-	if melee_heal_percent_on_hit > 0.0 and owner_node.has_method("heal_percent"):
+				_call_take_damage(nearby, splash_damage, {"damage_type": hit_type})
+	# SCRUM-603: мили лечение-при-ударе тоже через per-second бюджет (capped).
+	if melee_heal_percent_on_hit > 0.0 and owner_node.has_method("heal_percent_capped"):
+		owner_node.heal_percent_capped(melee_heal_percent_on_hit)
+	elif melee_heal_percent_on_hit > 0.0 and owner_node.has_method("heal_percent"):
 		owner_node.heal_percent(melee_heal_percent_on_hit)
 
 
@@ -1995,16 +2077,109 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	var dot_tween := create_tween()
 	for tick_index in range(dot_ticks):
 		dot_tween.tween_interval(1.0 / tick_speed)
-		dot_tween.tween_callback(func() -> void:
-			_damage_enemy(enemy, tick_damage, false)
-			if enemy is Node2D:
-				HazardVfx.dot_tick(enemy, dot_color)
-		)
+		# SCRUM-551: bound-метод вместо лямбды с захватом локала `enemy` (Node). Захват
+		# узла в lambda-callable интермиттентно «освобождался» под быстрым create/free
+		# оружия и врагов в balance-CSV (ERROR: Lambda capture at index 1 was freed,
+		# gdscript_lambda_callable.cpp:110) и валил прогон. Callable.bind держит self
+		# (живёт пока жив tween) + value-args; гвард is_instance_valid внутри метода.
+		dot_tween.tween_callback(Callable(self, "_apply_weapon_dot_tick").bind(enemy, tick_damage, dot_color))
+
+
+func _apply_weapon_dot_tick(enemy: Node, tick_damage: float, dot_color: Color) -> void:
+	if enemy == null or not is_instance_valid(enemy):
+		return
+	_damage_enemy(enemy, tick_damage, false, "dot", false)
+	if enemy is Node2D:
+		HazardVfx.dot_tick(enemy, dot_color)
 
 
 func _damage_enemies_in_circle(origin: Vector2, radius: float, amount: float) -> void:
 	for enemy_node in TARGET_QUERY.in_radius(self, origin, radius):
 		_damage_enemy(enemy_node, amount)
+
+
+func _damage_aoe_projectile_explosion(origin: Vector2, radius: float, amount: float) -> void:
+	if leaves_pool:
+		_damage_enemies_in_circle_capped(origin, radius, amount * POOL_PROJECTILE_DAMAGE_MULTIPLIER * pool_direct_damage_multiplier, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
+		return
+	_damage_enemies_in_circle_capped(origin, radius, amount, AOE_PROJECTILE_FULL_TARGETS, AOE_PROJECTILE_TARGET_DIMINISH)
+
+
+# SCRUM-533: тик ЛУЖИ (DoT-облако) с диминишингом по числу целей. Раньше каждый
+# тик лужи лил ПОЛНЫЙ tick_damage всем врагам в круге без потолка, поэтому на
+# плотном паке из 20 целей throughput рос линейно (chemist/acid_flask lvl20_ideal
+# 20t ≈ 112k — кратно выше budget'а). Формула же бюджетит лужу как pool_targets ≤ 4
+# (estimate_weapon_budget → _budget_hit_model, mode aoe_projectile), так что живой
+# замер выбивался из формульного коридора. Здесь живой урон лужи приводится к тому
+# же бюджету: центральная цель получает полный урон, каждая следующая (по удалённости
+# от центра) — резко убывающий 1/(1+(rank-knee)*decay). Облако остаётся area-denial
+# оружием, но плотная толпа больше не умножает один тик почти на весь экран.
+const POOL_FULL_TARGETS := 1
+const POOL_TARGET_DIMINISH := 1.5
+const MAX_ACTIVE_DAMAGE_POOLS := 1
+const AOE_PROJECTILE_FULL_TARGETS := 5
+const AOE_PROJECTILE_TARGET_DIMINISH := 2.0
+const POOL_PROJECTILE_FULL_TARGETS := 1
+const POOL_PROJECTILE_TARGET_DIMINISH := 3.0
+const POOL_TICK_DAMAGE_MULTIPLIER := 0.55
+const POOL_PROJECTILE_DAMAGE_MULTIPLIER := 0.55
+
+
+func _retire_excess_damage_pools(new_pool: Node2D) -> void:
+	var active_pools: Array[Node2D] = []
+	for cloud_node in get_tree().get_nodes_in_group("chemist_clouds"):
+		if not (cloud_node is Node2D):
+			continue
+		if int(cloud_node.get_meta("pool_weapon_owner", 0)) != get_instance_id():
+			continue
+		active_pools.append(cloud_node as Node2D)
+	active_pools.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		if a == new_pool:
+			return false
+		if b == new_pool:
+			return true
+		return int(a.get_instance_id()) < int(b.get_instance_id())
+	)
+	while active_pools.size() > MAX_ACTIVE_DAMAGE_POOLS:
+		var stale_pool := active_pools.pop_front() as Node2D
+		if stale_pool == new_pool:
+			active_pools.append(stale_pool)
+			continue
+		stale_pool.remove_from_group("chemist_clouds")
+		_release_effect(stale_pool)
+		stale_pool.queue_free()
+
+func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float) -> void:
+	var enemies: Array = TARGET_QUERY.in_radius(self, origin, radius)
+	if enemies.size() <= POOL_FULL_TARGETS:
+		for enemy_node in enemies:
+			_damage_enemy(enemy_node, amount)
+		return
+	# Сортировка по близости к центру лужи — полный урон достаётся «ядру» пака.
+	enemies.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return origin.distance_squared_to(a.global_position) < origin.distance_squared_to(b.global_position)
+	)
+	for index in range(enemies.size()):
+		var factor := 1.0
+		if index >= POOL_FULL_TARGETS:
+			factor = 1.0 / (1.0 + float(index - POOL_FULL_TARGETS + 1) * POOL_TARGET_DIMINISH)
+		_damage_enemy(enemies[index] as Node2D, amount * factor, false, "dot", false)
+
+
+func _damage_enemies_in_circle_capped(origin: Vector2, radius: float, amount: float, full_targets: int, diminish: float) -> void:
+	var enemies: Array = TARGET_QUERY.in_radius(self, origin, radius)
+	if enemies.size() <= full_targets:
+		for enemy_node in enemies:
+			_damage_enemy(enemy_node, amount)
+		return
+	enemies.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return origin.distance_squared_to(a.global_position) < origin.distance_squared_to(b.global_position)
+	)
+	for index in range(enemies.size()):
+		var factor := 1.0
+		if index >= full_targets:
+			factor = 1.0 / (1.0 + float(index - full_targets + 1) * diminish)
+		_damage_enemy(enemies[index] as Node2D, amount * factor, index < full_targets)
 
 
 func _damage_enemies_in_circle_falloff(origin: Vector2, radius: float, amount: float, minimum_factor: float) -> void:
@@ -2026,6 +2201,21 @@ func _damage_enemies_in_segment(start: Vector2, finish: Vector2, width: float, a
 
 func _has_enemy_in_circle(origin: Vector2, radius: float) -> bool:
 	return TARGET_QUERY.has_in_radius(self, origin, radius)
+
+
+func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
+	if _take_damage_accepts_feedback(enemy):
+		enemy.call("take_damage", amount, feedback)
+	else:
+		enemy.call("take_damage", amount)
+
+
+func _take_damage_accepts_feedback(enemy: Node) -> bool:
+	for method in enemy.get_method_list():
+		if str(method.get("name", "")) == "take_damage":
+			var args: Array = method.get("args", [])
+			return args.size() >= 2
+	return false
 
 
 func _push_enemy(enemy: Node2D, direction: Vector2) -> void:
@@ -2061,8 +2251,12 @@ func _rolled_damage(owner_node: Node2D) -> float:
 
 
 func _summon_role_damage_factor(parameters: Dictionary) -> float:
+	# SCRUM-546: deploy/sentry-саммоны (turret/totem/drone) масштабируются от
+	# Лидерства так же, как pure-саммоны (summoner_weapon._summon_profile) и
+	# бюджетная модель (progression_data._budget_summon_role_damage_factor).
 	var summon_amount := float(parameters.get("summon_amount", 0.0))
-	return summon_role_damage_multiplier * (1.0 + minf(summon_amount * 0.018, 0.22))
+	var leadership := float(parameters.get("leadership", 0.0))
+	return summon_role_damage_multiplier * (1.0 + minf(leadership * 0.060 + summon_amount * 0.016, 1.15))
 
 
 func _update_charge(delta: float) -> void:

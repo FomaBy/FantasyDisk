@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_player_script"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
-radius = 10.5
+radius = 8.9
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_mask = 32
@@ -24,7 +24,7 @@ enabled = true
 zoom = Vector2(1.12, 1.12)
 limit_left = 0
 limit_top = 0
-limit_right = 2560
-limit_bottom = 1440
+limit_right = 4096
+limit_bottom = 2304
 position_smoothing_enabled = true
 position_smoothing_speed = 7.0

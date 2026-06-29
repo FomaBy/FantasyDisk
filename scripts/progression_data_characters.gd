@@ -139,7 +139,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Ближний бой по области и высокий риск.",
 		"strengths": "урон, здоровье, толпа.",
 		"weaknesses": "нужна близость.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/berserk/berserk_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south.png",
 	},
 	"soldier": {
 		"id": "soldier",

@@ -1,0 +1,38 @@
+{
+  "jira": "SCRUM-586",
+  "source": "/Users/sergeyfomin/Documents/AI Agent/docs/design/references/scrum586_stat_tooltip/stat_tooltip_frame_source.png",
+  "candidate_asset": "/Users/sergeyfomin/Documents/AI Agent/assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png",
+  "candidate_size": [
+    430,
+    288
+  ],
+  "mode": "RGBA",
+  "texture_margins_ltrb": [
+    32,
+    32,
+    32,
+    32
+  ],
+  "content_margins_ltrb": [
+    44,
+    42,
+    44,
+    42
+  ],
+  "content_safe_rect_xywh": [
+    44,
+    42,
+    342,
+    204
+  ],
+  "runtime_slot": "ST_PANEL_2K width 430, height auto; recommended ST_LABEL_INSET_2K changes from 20 to horizontal 44 / vertical 42 content padding for this asset.",
+  "edge_alpha_max": 0,
+  "transparent_pixel_count": 10328,
+  "opaque_pixel_count": 110792,
+  "notes": [
+    "Derived from OpenAI-generated source via approved fantasydisk-asset-generator.",
+    "No baked text/icons/labels.",
+    "Content must stay inside content_safe_rect_xywh; border/ornament forbidden zone is outside that rect.",
+    "Back-end integration should update tooltip padding from the old 20px inset to this asset metadata."
+  ]
+}

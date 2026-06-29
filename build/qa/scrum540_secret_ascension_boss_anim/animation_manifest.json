@@ -1,0 +1,986 @@
+{
+  "entities": [
+    {
+      "id": "secret_ascension_boss",
+      "kind": "boss",
+      "production_pipeline": "full_frame_spritesheet",
+      "sprite_sheet": "assets/sprites/bosses/full_frame/secret_ascension_boss_full_frame_sheet.png",
+      "spriteframes": "assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres",
+      "rig_scene": null,
+      "source_parts": [],
+      "canvas": {
+        "width": 512,
+        "height": 512,
+        "pivot_x": 256,
+        "pivot_y": 480
+      },
+      "frame_gutter_px": 48,
+      "outer_padding_px": 48,
+      "pivot": "bottom_center_256_480_from_source_512_960",
+      "cutout_used": false,
+      "transparent_background_checked": true,
+      "no_crop_checked": true,
+      "safe_slicing_checked": true,
+      "direction_facing": "front 3/4 boss, flip-safe for runtime if needed",
+      "attack_required": true,
+      "runtime_integration": "SpriteFrames asset delivered; Back-end hook should add secret_ascension_boss to FullFrameAnimationRegistry when boss AI/runtime ticket wires the encounter.",
+      "skills": [
+        "ring",
+        "cone",
+        "beam",
+        "rupture"
+      ],
+      "animations": [
+        {
+          "name": "move",
+          "frames": 6,
+          "fps": 9,
+          "loop": true,
+          "phase_notes": "hover/presence loop with stable bottom-center pivot and rift glow pulse"
+        },
+        {
+          "name": "idle",
+          "frames": 6,
+          "fps": 7,
+          "loop": true,
+          "alias_of": "move"
+        },
+        {
+          "name": "attack_primary",
+          "frames": 6,
+          "fps": 12,
+          "loop": false,
+          "phase_notes": "AoE windup, lift, release, recoil and recovery"
+        },
+        {
+          "name": "attack_primary_windup",
+          "frames": 6,
+          "fps": 10,
+          "loop": false,
+          "sync_marker": "windup_start_to_charge_peak"
+        },
+        {
+          "name": "attack_primary_release",
+          "frames": 6,
+          "fps": 13,
+          "loop": false,
+          "sync_marker": "release/impact on frame 0-1"
+        },
+        {
+          "name": "attack_ring",
+          "frames": 6,
+          "fps": 12,
+          "loop": false,
+          "alias_of": "skill_ring"
+        },
+        {
+          "name": "attack_cone",
+          "frames": 6,
+          "fps": 12,
+          "loop": false,
+          "alias_of": "skill_cone"
+        },
+        {
+          "name": "attack_beam",
+          "frames": 6,
+          "fps": 12,
+          "loop": false,
+          "alias_of": "skill_beam"
+        },
+        {
+          "name": "attack_rupture",
+          "frames": 6,
+          "fps": 12,
+          "loop": false,
+          "alias_of": "skill_rupture"
+        },
+        {
+          "name": "hit",
+          "frames": 6,
+          "fps": 12,
+          "loop": false
+        },
+        {
+          "name": "death",
+          "frames": 6,
+          "fps": 10,
+          "loop": false
+        }
+      ],
+      "frame_paths": {
+        "move": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_05.png"
+        ],
+        "attack_primary": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_05.png"
+        ],
+        "attack_primary_windup": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_05.png"
+        ],
+        "attack_primary_release": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_05.png"
+        ],
+        "skill_ring": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_05.png"
+        ],
+        "skill_cone": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_05.png"
+        ],
+        "skill_beam": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_05.png"
+        ],
+        "skill_rupture": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_05.png"
+        ],
+        "hit": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_05.png"
+        ],
+        "death": [
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_00.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_01.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_02.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_03.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_04.png",
+          "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_05.png"
+        ]
+      },
+      "frame_stats": [
+        {
+          "animation": "move",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_00.png",
+          "bbox": [
+            101,
+            68,
+            410,
+            491
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "73dc52f5a04d80ef8dba62a2e8d82290"
+        },
+        {
+          "animation": "move",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_01.png",
+          "bbox": [
+            101,
+            63,
+            410,
+            491
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "7f9d9c45b3bdeaa5ab3f3ae5aab985d6"
+        },
+        {
+          "animation": "move",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_02.png",
+          "bbox": [
+            100,
+            57,
+            410,
+            492
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "ccdacd03b304c5d6a1de9fdbfeb0b5cd"
+        },
+        {
+          "animation": "move",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_03.png",
+          "bbox": [
+            100,
+            63,
+            411,
+            492
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "ba0ca6e7d99578d0360a2bdad2f2bd45"
+        },
+        {
+          "animation": "move",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_04.png",
+          "bbox": [
+            100,
+            67,
+            411,
+            492
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "d97c0c59d167836f5f72c024e5fe9e56"
+        },
+        {
+          "animation": "move",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_move_05.png",
+          "bbox": [
+            100,
+            67,
+            411,
+            492
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "aed7480905648c19b614cb569f5c0207"
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_00.png",
+          "bbox": [
+            101,
+            79,
+            392,
+            491
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "8d3ab9b43b573d5e34a206aededfcc6f"
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_01.png",
+          "bbox": [
+            91,
+            60,
+            419,
+            495
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "61762e967a7809c9e9bfde17c3cc644a"
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_02.png",
+          "bbox": [
+            83,
+            50,
+            419,
+            495
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "8cdcfaaf920bab03b17337d880b6ebb2"
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_03.png",
+          "bbox": [
+            91,
+            59,
+            428,
+            497
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "f1d0416aeb07ff68107f2c50a9428fda"
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_04.png",
+          "bbox": [
+            90,
+            58,
+            420,
+            496
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "0bae07992250718faefaf8249b075bed"
+        },
+        {
+          "animation": "attack_primary",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_05.png",
+          "bbox": [
+            90,
+            58,
+            421,
+            496
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "98acc9f2349b729e4360cc4b529e98eb"
+        },
+        {
+          "animation": "attack_primary_windup",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_00.png",
+          "bbox": [
+            97,
+            65,
+            414,
+            492
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "d8ee0a82b494e586c71b1618326fdb62"
+        },
+        {
+          "animation": "attack_primary_windup",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_01.png",
+          "bbox": [
+            97,
+            64,
+            414,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "48bcbcdaabec012364a822e5ec044a2c"
+        },
+        {
+          "animation": "attack_primary_windup",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_02.png",
+          "bbox": [
+            96,
+            64,
+            415,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "73722dcc9a97859e9a6eccda4ee60482"
+        },
+        {
+          "animation": "attack_primary_windup",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_03.png",
+          "bbox": [
+            91,
+            63,
+            415,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "c23f09e72053985664ac489df78ab528"
+        },
+        {
+          "animation": "attack_primary_windup",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_04.png",
+          "bbox": [
+            87,
+            60,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "f6b7628d0d9b1bed86dfc90f5f6d7cc5"
+        },
+        {
+          "animation": "attack_primary_windup",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_windup_05.png",
+          "bbox": [
+            83,
+            56,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "fc3217637532f024c27fe1ba02ab3e7b"
+        },
+        {
+          "animation": "attack_primary_release",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_00.png",
+          "bbox": [
+            95,
+            62,
+            428,
+            497
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "4be3ab32a35998586a8e84bfd85cdec7"
+        },
+        {
+          "animation": "attack_primary_release",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_01.png",
+          "bbox": [
+            94,
+            62,
+            422,
+            496
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "4ec6d5edd2d0b606a03d9ec1766690bf"
+        },
+        {
+          "animation": "attack_primary_release",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_02.png",
+          "bbox": [
+            94,
+            61,
+            419,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "69099b99be460fdc61761be2356acfb2"
+        },
+        {
+          "animation": "attack_primary_release",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_03.png",
+          "bbox": [
+            93,
+            61,
+            418,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "b741dddad81599409d7c93590c6f3a59"
+        },
+        {
+          "animation": "attack_primary_release",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_04.png",
+          "bbox": [
+            93,
+            60,
+            418,
+            495
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "9f3ba003034fccd07d89dbd3d1661d57"
+        },
+        {
+          "animation": "attack_primary_release",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_attack_primary_release_05.png",
+          "bbox": [
+            93,
+            60,
+            418,
+            495
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "281a2fa1a3c1a99133996d76bb89bf6a"
+        },
+        {
+          "animation": "skill_ring",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_00.png",
+          "bbox": [
+            97,
+            64,
+            414,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "d7015c2ba2bd0f7c624060941ef54161"
+        },
+        {
+          "animation": "skill_ring",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_01.png",
+          "bbox": [
+            96,
+            64,
+            415,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "560f377b86371e2bd0527a3b8da57eca"
+        },
+        {
+          "animation": "skill_ring",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_02.png",
+          "bbox": [
+            96,
+            57,
+            415,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "25e740241cb9e8bfc876cbf873514bda"
+        },
+        {
+          "animation": "skill_ring",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_03.png",
+          "bbox": [
+            95,
+            61,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "670146c1c34e31d7f70b069d21dc74eb"
+        },
+        {
+          "animation": "skill_ring",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_04.png",
+          "bbox": [
+            95,
+            62,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "92fde18d8f9aa0f8fce85626c642076d"
+        },
+        {
+          "animation": "skill_ring",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_ring_05.png",
+          "bbox": [
+            94,
+            62,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "777671e0dcadcb22ca2b04a88de43f41"
+        },
+        {
+          "animation": "skill_cone",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_00.png",
+          "bbox": [
+            97,
+            64,
+            414,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "31671c0005bf5c168ac32d6600c320a7"
+        },
+        {
+          "animation": "skill_cone",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_01.png",
+          "bbox": [
+            95,
+            63,
+            415,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "2c0c214e1bc04893a946b61b44b2fe1a"
+        },
+        {
+          "animation": "skill_cone",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_02.png",
+          "bbox": [
+            88,
+            54,
+            415,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "0c38f71632ad9d7c701c849585b7fb91"
+        },
+        {
+          "animation": "skill_cone",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_03.png",
+          "bbox": [
+            93,
+            57,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "cacb2fff8969095675451ae67e56c314"
+        },
+        {
+          "animation": "skill_cone",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_04.png",
+          "bbox": [
+            95,
+            62,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "c989a348d3a8015ce9d9d9c417f29006"
+        },
+        {
+          "animation": "skill_cone",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_cone_05.png",
+          "bbox": [
+            94,
+            62,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "1a9c3b5a321f045fbad6a6552e19832b"
+        },
+        {
+          "animation": "skill_beam",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_00.png",
+          "bbox": [
+            97,
+            64,
+            414,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "1c84109bf110085b744a4c5f50de6004"
+        },
+        {
+          "animation": "skill_beam",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_01.png",
+          "bbox": [
+            96,
+            64,
+            415,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "c1c5da561f16228c741b6050acd9c718"
+        },
+        {
+          "animation": "skill_beam",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_02.png",
+          "bbox": [
+            96,
+            60,
+            417,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "5c14d719159f7be11002bcb06f8f4fed"
+        },
+        {
+          "animation": "skill_beam",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_03.png",
+          "bbox": [
+            95,
+            61,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "3586e4a8ba9bd2d3617f14a7048f0dce"
+        },
+        {
+          "animation": "skill_beam",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_04.png",
+          "bbox": [
+            95,
+            62,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "20828524724c74c71e23ec67adc75b34"
+        },
+        {
+          "animation": "skill_beam",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_beam_05.png",
+          "bbox": [
+            94,
+            62,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "44676c519eeb44a86c5b6bf2bbe3484a"
+        },
+        {
+          "animation": "skill_rupture",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_00.png",
+          "bbox": [
+            97,
+            64,
+            414,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "41438e08aeb18985851323e7bd9f31db"
+        },
+        {
+          "animation": "skill_rupture",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_01.png",
+          "bbox": [
+            96,
+            64,
+            415,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "1a26fa305db325ab2439399cda3bd5e8"
+        },
+        {
+          "animation": "skill_rupture",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_02.png",
+          "bbox": [
+            96,
+            61,
+            415,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "b5d89419a51f9ae7eef91d399bbe0b8d"
+        },
+        {
+          "animation": "skill_rupture",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_03.png",
+          "bbox": [
+            95,
+            59,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "645e893e72f07530363fb5bcdc553637"
+        },
+        {
+          "animation": "skill_rupture",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_04.png",
+          "bbox": [
+            95,
+            62,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "da0c67edac11906b8786379153b0902c"
+        },
+        {
+          "animation": "skill_rupture",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_skill_rupture_05.png",
+          "bbox": [
+            94,
+            62,
+            416,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "bd2db790b802f5c7e4ac763efc9dcbed"
+        },
+        {
+          "animation": "hit",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_00.png",
+          "bbox": [
+            105,
+            72,
+            406,
+            489
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "4894f2d9e790b300ac456f1ae0319707"
+        },
+        {
+          "animation": "hit",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_01.png",
+          "bbox": [
+            101,
+            68,
+            410,
+            492
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "5f553461b46220e3403d2359a84e58d3"
+        },
+        {
+          "animation": "hit",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_02.png",
+          "bbox": [
+            101,
+            68,
+            410,
+            492
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "5cca518d2d0dab655205e24bb89f347b"
+        },
+        {
+          "animation": "hit",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_03.png",
+          "bbox": [
+            105,
+            72,
+            406,
+            490
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "b68d20e5b9fa4f65f45c66f7d0c7e7bb"
+        },
+        {
+          "animation": "hit",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_04.png",
+          "bbox": [
+            105,
+            72,
+            406,
+            489
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "930fbac1ea3e22ebc53ad24a724775bc"
+        },
+        {
+          "animation": "hit",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_hit_05.png",
+          "bbox": [
+            105,
+            72,
+            406,
+            489
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "4894f2d9e790b300ac456f1ae0319707"
+        },
+        {
+          "animation": "death",
+          "frame": 0,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_00.png",
+          "bbox": [
+            94,
+            62,
+            417,
+            493
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "009b18a91d67958ba69244e38c298406"
+        },
+        {
+          "animation": "death",
+          "frame": 1,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_01.png",
+          "bbox": [
+            92,
+            60,
+            419,
+            494
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "e93b33c73fb60a668fb3dd02b6521af6"
+        },
+        {
+          "animation": "death",
+          "frame": 2,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_02.png",
+          "bbox": [
+            90,
+            56,
+            421,
+            495
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "e1647fde13da4a6c3845a01da2481244"
+        },
+        {
+          "animation": "death",
+          "frame": 3,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_03.png",
+          "bbox": [
+            87,
+            47,
+            424,
+            495
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "5909f20cd86cab93e38d2138d8a33d93"
+        },
+        {
+          "animation": "death",
+          "frame": 4,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_04.png",
+          "bbox": [
+            85,
+            38,
+            427,
+            496
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "9b3f62d9dface8f352d47556de729939"
+        },
+        {
+          "animation": "death",
+          "frame": 5,
+          "path": "assets/sprites/bosses/full_frame/secret_ascension_boss/secret_ascension_boss_death_05.png",
+          "bbox": [
+            82,
+            30,
+            429,
+            496
+          ],
+          "edge_alpha_pixels": 0,
+          "md5": "707f4fb8962928da77c90f216329e346"
+        }
+      ],
+      "qa_artifacts": [
+        "build/qa/scrum540_secret_ascension_boss_anim/secret_ascension_boss_contact.png",
+        "build/qa/scrum540_secret_ascension_boss_anim/secret_ascension_boss_move.gif",
+        "build/qa/scrum540_secret_ascension_boss_anim/secret_ascension_boss_attack_primary.gif",
+        "build/qa/scrum540_secret_ascension_boss_anim/secret_ascension_boss_skill_ring.gif",
+        "build/qa/scrum540_secret_ascension_boss_anim/secret_ascension_boss_skill_cone.gif",
+        "build/qa/scrum540_secret_ascension_boss_anim/secret_ascension_boss_skill_beam.gif",
+        "build/qa/scrum540_secret_ascension_boss_anim/secret_ascension_boss_skill_rupture.gif",
+        "build/qa/scrum540_secret_ascension_boss_anim/secret_ascension_boss_death.gif"
+      ]
+    }
+  ]
+}

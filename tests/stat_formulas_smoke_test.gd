@@ -89,7 +89,8 @@ func _check_formulas(errors: Array) -> void:
 	_expect(errors, "crit_damage", SF.crit_damage_multiplier(stats, 2.0, 0.0), 1.575)     # 1.30+5*0.055
 	_expect(errors, "attack_speed", SF.attack_speed(stats, 1.0, 0.0), 0.1962)             # 1*3*(Agi+Energy/Per/End support)/100
 	_expect(errors, "dodge", SF.dodge(stats, 0.1, 0.0), 0.0473)                           # 0.1*5/10 with diminishing returns
-	_expect(errors, "move_speed", SF.move_speed(300.0, stats, 0.0), 305.0)                # 300+5
+	_expect(errors, "move_speed", SF.move_speed(300.0, stats, 0.0), 327.5)                # SCRUM-661: 300+5*5.5
+	_expect(errors, "move_speed_doc", SF.move_speed(245.0, {SF.AGILITY: 10.0}, 0.0), 300.0)  # SCRUM-661: 245+10*5.5 по doc-формуле
 	_expect(errors, "health_points", SF.health_points(stats, 100.0, 0.0), 200.0)         # 100*8/4
 	_expect(errors, "attack_range", SF.attack_range(240.0, 10.0), 250.0)                  # 240+10
 

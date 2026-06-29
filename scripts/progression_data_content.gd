@@ -79,7 +79,7 @@ const ARTIFACTS := [
 	{"id": "echo_pick", "title": "Медиатор эха", "tier": 2, "cost": 55, "class_affinity": ["guitarist"], "description": "+40% отталкивания. Гитарист: +45% скорости атаки.", "mods": {"knockback_multiplier": 1.4}, "affinity_mods": {"attack_speed_multiplier": 1.45}},
 	{"id": "sturdy_amulet", "title": "Крепкий амулет", "tier": 1, "cost": 30, "class_affinity": [], "description": "+60 max HP.", "mods": {"max_health_flat": 60.0}},
 	{"id": "fast_boots", "title": "Быстрые сапоги", "tier": 1, "cost": 30, "class_affinity": [], "description": "+25% скорости движения.", "mods": {"move_speed_multiplier": 1.25}},
-	{"id": "magnetic_buckle", "title": "Магнитная пряжка", "tier": 1, "cost": 30, "class_affinity": [], "description": "+138 радиуса подбора.", "mods": {"pickup_radius_flat": 137.5}},
+	{"id": "magnetic_buckle", "title": "Магнитная пряжка", "tier": 1, "cost": 30, "class_affinity": [], "description": "+138 радиуса подбора.", "mods": {"pickup_radius_flat": 138.0}},
 	{"id": "silver_coin", "title": "Серебряная монета", "tier": 1, "cost": 30, "class_affinity": [], "description": "+62% золота.", "mods": {"money_gain_multiplier": 1.62}},
 	{"id": "survival_manual", "title": "Учебник выживания", "tier": 1, "cost": 30, "class_affinity": [], "description": "+55% опыта.", "mods": {"xp_gain_multiplier": 1.55}},
 	{"id": "cracked_shield", "title": "Треснувший щит", "tier": 2, "cost": 55, "class_affinity": [], "description": "+30% защиты, -6% скорости движения.", "mods": {"defense_flat": 0.3, "move_speed_multiplier": 0.94}},
@@ -102,6 +102,11 @@ const ARTIFACTS := [
 	{"id": "burning_shard", "title": "Горящий осколок", "tier": 2, "cost": 55, "class_affinity": [], "description": "+50% радиуса AoE, -20% лечения.", "mods": {"aoe_radius_multiplier": 1.5, "healing_multiplier": 0.8}},
 	{"id": "golden_route_mark", "title": "Золотая метка пути", "tier": 2, "cost": 55, "class_affinity": [], "description": "+37% опыта, +37% золота.", "mods": {"xp_gain_multiplier": 1.37, "money_gain_multiplier": 1.37}},
 	{"id": "glass_edge", "title": "Стеклянная кромка", "tier": 2, "cost": 55, "class_affinity": [], "description": "+50% урона крита, -8 max HP.", "mods": {"crit_damage_flat": 0.5, "max_health_flat": -8.0}},
+	{"id": "sacrifice_seal", "title": "Печать жертвы", "tier": 2, "cost": 55, "class_affinity": [], "description": "+30% шанса крита, -22% максимального HP.", "mods": {"crit_chance_flat": 0.30, "max_health_multiplier": 0.78}},
+	{"id": "hungry_amulet", "title": "Голодный амулет", "tier": 2, "cost": 55, "class_affinity": [], "description": "+85% золота, -35% лечения.", "mods": {"money_gain_multiplier": 1.85, "healing_multiplier": 0.65}},
+	{"id": "berserk_totem", "title": "Тотем берсерка", "tier": 2, "cost": 55, "class_affinity": [], "description": "+60% урона, -20% скорости движения.", "mods": {"damage_multiplier": 1.60, "move_speed_multiplier": 0.80}},
+	{"id": "focus_lens", "title": "Линза фокуса", "tier": 2, "cost": 55, "class_affinity": [], "description": "+70% дальности атаки, -25% радиуса AoE.", "mods": {"range_multiplier": 1.70, "aoe_radius_multiplier": 0.75}},
+	{"id": "stone_hide", "title": "Каменная шкура", "tier": 2, "cost": 55, "class_affinity": [], "description": "+40% защиты, -25% скорости атаки.", "mods": {"defense_flat": 0.40, "attack_speed_multiplier": 0.75}},
 	{"id": "echo_core", "title": "Эхо Разлома", "tier": 3, "cost": 95, "class_affinity": [], "description": "Каждый 5-й удар по врагу вызывает взрыв эха: 80% урона по области вокруг цели.", "mods": {"echo_blast_every": 5.0}},
 	{"id": "split_core", "title": "Ядро Расщепления", "tier": 3, "cost": 95, "class_affinity": ["dark_mage", "guitarist"], "description": "Темный маг/Гитарист: +1 снаряд и луч всем атакам.", "affinity_mods": {"extra_projectile": 1.0}},
 	{"id": "blood_pact", "title": "Кровавый Рубеж", "tier": 3, "cost": 95, "class_affinity": [], "description": "Пока здоровье ниже 30% — +50% урона. Риск, достойный награды.", "mods": {"low_hp_damage_bonus": 0.5}},
@@ -109,6 +114,54 @@ const ARTIFACTS := [
 	{"id": "thorn_pact", "title": "Договор Шипов", "tier": 3, "cost": 95, "class_affinity": [], "description": "Получив урон, выплескиваешь 200% этого урона на всех врагов рядом.", "mods": {"thorn_reflect_multiplier": 2.0}},
 	{"id": "phantom_step", "title": "Призрачный Шаг", "tier": 3, "cost": 95, "class_affinity": [], "description": "Успешный уворот дает +40% скорости движения на 2 секунды.", "mods": {"dodge_rush_bonus": 0.4}},
 	{"id": "leech_fang", "title": "Клык Пиявки", "tier": 2, "cost": 55, "class_affinity": [], "description": "+14% шанса вампиризма, +1 к лечению от вампиризма. Вампиризм ограничен лечением в секунду.", "mods": {"vampiric_chance_flat": 0.14, "vampiric_amount_flat": 1.0, "vampiric_heal_per_second_cap": 1.0}},
+	# SCRUM-500: триггерные (активируемые событием) артефакты — новый под-класс предметов.
+	# Маркер `active:true` + поле `trigger` (семантика события). Эффект — суммируемый флаг в
+	# mods (НЕ *_multiplier), раскладывается _apply_reward_mods как обычно. Пометка «⚡ Активный»
+	# вшита в description (data-driven, без правок карточки). Значения консервативны и ситуативны:
+	# лечение/щит/мув-бафф/ситуативный бурст — НЕ постоянный +damage, чтобы не смещать DPS/TTD-гейты.
+	{"id": "field_kit", "title": "Полевой набор", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_room_clear", "description": "⚡ Активный — при зачистке боя: лечит 5% максимального здоровья.", "mods": {"room_clear_heal_percent": 0.05}},
+	{"id": "vital_siphon", "title": "Живой сифон", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_kill", "description": "⚡ Активный — при убийстве: возвращает 1% максимального здоровья.", "mods": {"kill_heal_percent": 0.01}},
+	{"id": "powder_charge", "title": "Пороховой заряд", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_kill", "description": "⚡ Активный — при убийстве: 10% шанс взрыва по области у трупа (70% урона).", "mods": {"kill_explosion_chance": 0.10}},
+	{"id": "bulwark_echo", "title": "Эхо бастиона", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_take_hit", "description": "⚡ Активный — получив удар: 16% шанс выпустить отталкивающую волну рядом. Перезаряд 3с.", "mods": {"take_hit_pulse_chance": 0.16}},
+	{"id": "duelist_spur", "title": "Шпора дуэлянта", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_crit", "description": "⚡ Активный — при крите: +22% скорости движения на 1.8с.", "mods": {"crit_speed_burst": 0.22}},
+	{"id": "guardian_bulwark", "title": "Рубеж Стража", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_low_hp", "description": "⚡ Активный — при низком HP: впервые упав ниже 30% HP, делаешь нокбэк-волну и получаешь 1.5с неуязвимости. Перезаряд 18с.", "mods": {"lowhp_guard": 1.0}},
+	{"id": "chain_spark", "title": "Цепная Искра", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_kill", "description": "⚡ Активный — при убийстве: 14% шанс взрыва по области у трупа (70% урона).", "mods": {"kill_explosion_chance": 0.14}},
+	{"id": "crit_impulse", "title": "Импульс Крита", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_crit", "description": "⚡ Активный — при крите: +35% скорости движения на 1.8с (короткий рывок).", "mods": {"crit_speed_burst": 0.35}},
+	{"id": "breather_totem", "title": "Передышка", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_room_clear", "description": "⚡ Активный — при зачистке боя: лечит 8% максимального здоровья.", "mods": {"room_clear_heal_percent": 0.08}},
+	{"id": "counterwave_sigil", "title": "Контр-волна", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_take_hit", "description": "⚡ Активный — получив удар: 22% шанс выпустить отталкивающую волну, бьющую врагов рядом (90% полученного урона). Перезаряд 3с.", "mods": {"take_hit_pulse_chance": 0.22}},
+	{"id": "soul_harvest", "title": "Сбор Душ", "tier": 3, "cost": 95, "class_affinity": [], "active": true, "trigger": "on_kill", "description": "⚡ Активный — при убийстве: каждое 6-е убийство лечит 3% максимального здоровья (стак сбрасывается между боями).", "mods": {"kill_streak_heal_every": 6.0}},
+	{"id": "second_wind", "title": "Второе Дыхание", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_low_hp", "description": "⚡ Активный — при низком HP: пока здоровье ниже 30%, реген восстановления усилен (+5 к регенерации).", "mods": {"lowhp_regen_bonus": 5.0}},
+	# SCRUM-619/623: «ключ» к секретному бою конца Акта 3 (Meta.SECRET_ENCOUNTER_ARTIFACT_KEY).
+	# Редкий (tier 3), скромный стат-бонус — ценность в разблокировке скрытого контента, не в силе.
+	{"id": "rift_key", "title": "Ключ Разлома", "tier": 3, "cost": 95, "class_affinity": [], "description": "+4 Восприятие, +4 Знание. Открывает тайную тропу в конце Акта 3.", "stats": {"perception": 4.0, "knowledge": 4.0}},
+]
+
+# SCRUM-618: стартовые модификаторы забега («бооны»). Перед стартом игрок выбирает
+# один из 3 случайных боонов — забег начинается чуть иначе, ломая однообразие
+# первых волн. Взаимоисключающие; каждый — МЕЛКИЙ набор mods. Ключи mods совпадают
+# со словарём дерева умений (player.apply_meta_skill_modifiers): множители
+# (*_mult — доли, эффект 1.0+значение) и плоские (*_flat). Боевая «эффективная
+# сила» каждого боона держится в пределах +10% (тест start_boons_test); много
+# утилити-боонов (золото/опыт/подбор/скорость) с ~нулевым боевым весом.
+const START_BOONS := [
+	{"id": "glass_edge", "title": "Хрупкое Лезвие",
+	 "description": "+8% урона, но −5% максимального HP. Бей сильнее, живи осторожнее.",
+	 "mods": {"damage_mult": 0.08, "max_health_mult": -0.05}},
+	{"id": "zealot", "title": "Фанатик",
+	 "description": "+7% скорости атаки. Чаще бьёшь — плотнее напор.",
+	 "mods": {"attack_speed_mult": 0.07}},
+	{"id": "veteran", "title": "Ветеран",
+	 "description": "+15% опыта за бои. Качаешься быстрее с первых волн.",
+	 "mods": {"xp_gain_mult": 0.15}},
+	{"id": "scavenger", "title": "Старьёвщик",
+	 "description": "+20% золота с врагов. Больше монет — раньше покупки в лавке.",
+	 "mods": {"money_gain_mult": 0.20}},
+	{"id": "ironhide", "title": "Железная Шкура",
+	 "description": "+5% снижения урона. Сглаживает ранние спайки.",
+	 "mods": {"defense_flat": 0.05}},
+	{"id": "swiftfoot", "title": "Быстрая Поступь",
+	 "description": "+3% уклонения и +6 восстановления здоровья отдыхом. Манёвреннее в начале.",
+	 "mods": {"dodge_flat": 0.03, "regeneration_flat": 0.6}},
 ]
 
 const LEVEL_UP_REWARDS := [

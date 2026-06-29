@@ -15,8 +15,10 @@
 Креды: macOS Keychain, сервис `fantasydisk-jira` (security find-generic-password).
 Запуск: python3 tools/jira_board_sync.py [--dry-run] [--no-create]
 """
+from __future__ import annotations
+
 import base64
-import fcntl
+import argparse
 import glob
 import hashlib
 import json
@@ -24,22 +26,33 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
+import urllib.error
 import urllib.parse
 import urllib.request
+try:
+    import fcntl  # type: ignore
+except ImportError:
+    fcntl = None
+    import msvcrt  # type: ignore
 
-LOCK_PATH = "/tmp/fantasydisk_jira_sync.lock"
+LOCK_PATH = os.path.join(tempfile.gettempdir(), "fantasydisk_jira_sync.lock")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TASKS_GLOB = os.path.join(ROOT, "docs/tasks/*.md")
 MAP_PATH = os.path.join(ROOT, "docs/process/jira_sync_map.json")
 EPICS_PATH = os.path.join(ROOT, "docs/process/jira_epics.json")
-SITE = "https://fantasydisk.atlassian.net"
+SITE = os.getenv("JIRA_BASE_URL", "https://fantasydisk.atlassian.net").rstrip("/")
 PROJECT = "SCRUM"
-EMAIL = "fomamoney@gmail.com"
-KEYCHAIN_SERVICE = "fantasydisk-jira"
+EMAIL = os.getenv("JIRA_EMAIL", "fomamoney@gmail.com")
+KEYCHAIN_SERVICE = os.getenv("JIRA_KEYCHAIN_SERVICE", "fantasydisk-jira")
 
 # Аджайл-эпики: новые тикеты привязываются к parent-эпику по имени файла/заголовку.
-EPICS = json.load(open(EPICS_PATH)).get("epics", {}) if os.path.exists(EPICS_PATH) else {}
+if os.path.exists(EPICS_PATH):
+    with open(EPICS_PATH, encoding="utf-8") as f:
+        EPICS = json.load(f).get("epics", {})
+else:
+    EPICS = {}
 
 
 def epic_for(name: str, title: str) -> str:
@@ -96,13 +109,34 @@ STATUS_TARGET = {
 }
 
 
+class JiraApiError(RuntimeError):
+    def __init__(self, code: int, path: str, body: str):
+        super().__init__(f"Jira HTTP {code} {path}: {body[:300]}")
+        self.code = code
+        self.path = path
+        self.body = body
+
+
+class JiraNotFound(JiraApiError):
+    pass
+
+
 def token() -> str:
-    return subprocess.check_output(
-        ["security", "find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"],
-        text=True).strip()
+    env_token = os.getenv("JIRA_API_TOKEN")
+    if env_token:
+        return env_token.strip()
+    try:
+        return subprocess.check_output(
+            ["security", "find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"],
+            text=True).strip()
+    except FileNotFoundError as exc:
+        raise RuntimeError(
+            "Jira token not found. Set JIRA_API_TOKEN or configure macOS Keychain "
+            f"service '{KEYCHAIN_SERVICE}'."
+        ) from exc
 
 
-def api(method: str, path: str, payload=None):
+def api(method: str, path: str, payload=None, *, tolerate_not_found: bool = False):
     req = urllib.request.Request(SITE + path, method=method)
     auth = base64.b64encode(f"{EMAIL}:{token()}".encode()).decode()
     req.add_header("Authorization", f"Basic {auth}")
@@ -113,8 +147,14 @@ def api(method: str, path: str, payload=None):
             body = r.read().decode()
             return json.loads(body) if body else {}
     except urllib.error.HTTPError as e:
-        sys.stderr.write(f"HTTP {e.code} {path}: {e.read().decode()[:300]}\n")
-        raise
+        body = e.read().decode(errors="replace")
+        if e.code == 404:
+            sys.stderr.write(f"SKIP_INACCESSIBLE {path}: HTTP 404 {body[:300]}\n")
+            if tolerate_not_found:
+                return None
+            raise JiraNotFound(e.code, path, body) from e
+        sys.stderr.write(f"HTTP {e.code} {path}: {body[:300]}\n")
+        raise JiraApiError(e.code, path, body) from e
 
 
 def find_existing_issue(summary: str):
@@ -165,7 +205,8 @@ def add_to_sprint(sprint_id, keys):
 
 
 def parse_task(path: str) -> dict:
-    text = open(path, encoding="utf-8", errors="replace").read()
+    with open(path, encoding="utf-8", errors="replace") as f:
+        text = f.read()
     name = os.path.basename(path)
     title_m = re.search(r"^#\s+(.+)$", text, re.M)
     title = title_m.group(1).strip() if title_m else name
@@ -201,11 +242,16 @@ def parse_task(path: str) -> dict:
     executor = "codex" if is_codex else "claude"
     excerpt = text[:4500]
     desc_hash = hashlib.md5(excerpt.encode("utf-8")).hexdigest()
+    jira_m = re.search(r"^Jira:\s*(SCRUM-\d+)", text, re.M | re.I)
+    jira_key = jira_m.group(1).upper() if jira_m else None
+    if jira_key is None:
+        file_key = re.match(r"^(SCRUM-\d+)[_-]", name, re.I)
+        jira_key = file_key.group(1).upper() if file_key else None
     return {"file": name, "title": title[:250], "status": status,
             "role": role, "itype": itype, "excerpt": excerpt, "desc_hash": desc_hash,
             "blocked": raw_status.startswith("blocked"),
             "task_version": task_version if not name.startswith("bug_") else None,
-            "executor": executor}
+            "executor": executor, "jira_key": jira_key}
 
 
 def adf(text: str) -> dict:
@@ -215,6 +261,56 @@ def adf(text: str) -> dict:
         for p in paras]}
 
 
+def build_arg_parser() -> argparse.ArgumentParser:
+    ap = argparse.ArgumentParser(
+        description="Sync docs/tasks mirrors to Jira SCRUM with safe scoped guards."
+    )
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--no-create", action="store_true",
+                    help="Do not create Jira issues. Without --task/--issue this is status-safe.")
+    ap.add_argument("--task", action="append", default=[],
+                    help="Limit sync to a task path or basename. May be repeated.")
+    ap.add_argument("--issue", action="append", default=[],
+                    help="Limit sync to a Jira key, for example SCRUM-635. May be repeated.")
+    ap.add_argument("--allow-broad-status-sync", action="store_true",
+                    help="Dispatcher-only escape hatch: allow broad status/description updates without --task/--issue.")
+    return ap
+
+
+def norm_task_filters(tasks: list[str]) -> set[str]:
+    out = set()
+    for task in tasks:
+        norm = os.path.normpath(task)
+        out.add(norm)
+        out.add(os.path.basename(norm))
+    return out
+
+
+def in_scope(path: str, task: dict, entry: dict | None, task_filters: set[str], issue_filters: set[str]) -> bool:
+    if not task_filters and not issue_filters:
+        return True
+    norm = os.path.normpath(path)
+    if norm in task_filters or os.path.basename(norm) in task_filters or task["file"] in task_filters:
+        return True
+    keys = {task.get("jira_key")}
+    if entry:
+        keys.add(entry.get("key"))
+    keys = {str(k).upper() for k in keys if k}
+    return bool(keys.intersection(issue_filters))
+
+
+def load_mapping() -> dict:
+    if not os.path.exists(MAP_PATH):
+        return {}
+    with open(MAP_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_mapping(mapping: dict) -> None:
+    with open(MAP_PATH, "w", encoding="utf-8") as f:
+        json.dump(mapping, f, ensure_ascii=False, indent=1)
+
+
 def main():
     dry = "--dry-run" in sys.argv
     no_create = "--no-create" in sys.argv or os.getenv("JIRA_SYNC_NO_CREATE") == "1"
@@ -222,7 +318,10 @@ def main():
     # по одним task-файлам со стаканной картой и не плодят дубли тикетов.
     lock_fd = open(LOCK_PATH, "w")
     try:
-        fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        if fcntl is not None:
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        else:
+            msvcrt.locking(lock_fd.fileno(), msvcrt.LK_NBLCK, 1)
     except OSError:
         print("another jira_board_sync is running — abort (lock held)")
         return
@@ -309,6 +408,136 @@ def main():
         add_to_sprint(sprint_id, sprint_queue)
         json.dump(mapping, open(MAP_PATH, "w"), ensure_ascii=False, indent=1)
     print(f"done: created {created}, moved {moved}, total tracked {len(mapping)}")
+
+
+def safe_main():
+    args = build_arg_parser().parse_args()
+    dry = args.dry_run
+    no_create = args.no_create or os.getenv("JIRA_SYNC_NO_CREATE") == "1"
+    task_filters = norm_task_filters(args.task)
+    issue_filters = {issue.upper() for issue in args.issue}
+    broad_status_guard = no_create and not (task_filters or issue_filters) and not args.allow_broad_status_sync
+
+    lock_fd = open(LOCK_PATH, "w")
+    try:
+        if fcntl is not None:
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        else:
+            msvcrt.locking(lock_fd.fileno(), msvcrt.LK_NBLCK, 1)
+    except OSError:
+        lock_fd.close()
+        print("another jira_board_sync is running - abort (lock held)")
+        return
+
+    mapping = load_mapping()
+    created = moved = guarded = inaccessible = scanned = 0
+    if broad_status_guard:
+        print("SAFE_GUARD --no-create without --task/--issue: broad status/description updates are disabled. "
+              "Use --task/--issue for worker sync or --allow-broad-status-sync for dispatcher maintenance.")
+
+    needs_live_sprint = not dry and not no_create
+    sprint_id, sprint_name = (None, "") if not needs_live_sprint else active_sprint()
+    fix_version = sprint_version(sprint_name)
+    sprint_queue = []
+
+    for path in sorted(glob.glob(TASKS_GLOB)):
+        t = parse_task(path)
+        entry = mapping.get(t["file"])
+        if not in_scope(path, t, entry, task_filters, issue_filters):
+            continue
+        scanned += 1
+        t["next_version"] = bool(t["task_version"] and fix_version and t["task_version"] != fix_version)
+        target_status = STATUS_TARGET[t["status"]]
+        labels = ["fantasydisk", t["role"], t["executor"]] + (["blocked"] if t["blocked"] else [])
+
+        if entry is None and t.get("jira_key") and not broad_status_guard:
+            entry = {"key": t["jira_key"], "status": None, "desc_hash": None}
+            if not dry:
+                mapping[t["file"]] = entry
+                save_mapping(mapping)
+            print(f"linked declared {t['jira_key']}: {t['file']}")
+
+        if entry is None:
+            if dry or no_create:
+                action = "CREATE" if dry else "SKIP_CREATE"
+                print(f"{action} {t['file']} -> [{t['itype']}] {target_status}")
+                continue
+            existing = find_existing_issue(t["title"])
+            if existing:
+                mapping[t["file"]] = {"key": existing, "status": STATUS_TARGET["new"]}
+                save_mapping(mapping)
+                entry = mapping[t["file"]]
+                print(f"linked existing {existing}: {t['file']} (dedup, not created)")
+            else:
+                fields = {
+                    "project": {"key": PROJECT},
+                    "issuetype": {"name": t["itype"]},
+                    "summary": t["title"],
+                    "labels": labels,
+                    "description": adf(f"File: docs/tasks/{t['file']}\n\n" + t["excerpt"]),
+                }
+                if t["next_version"] and t["task_version"]:
+                    fields["fixVersions"] = [{"name": t["task_version"]}]
+                elif fix_version and not t["next_version"]:
+                    fields["fixVersions"] = [{"name": fix_version}]
+                ep = EPICS.get(epic_for(t["file"], t["title"]))
+                if ep:
+                    fields["parent"] = {"key": ep}
+                issue = api("POST", "/rest/api/3/issue", {"fields": fields})
+                key = issue["key"]
+                mapping[t["file"]] = {"key": key, "status": STATUS_TARGET["new"], "desc_hash": t["desc_hash"]}
+                save_mapping(mapping)
+                entry = mapping[t["file"]]
+                created += 1
+                if needs_live_sprint and not t["next_version"]:
+                    sprint_queue.append(key)
+                print(f"created {key}: {t['file']}")
+        elif needs_live_sprint and t["task_version"] and fix_version and t["task_version"] == fix_version:
+            sprint_queue.append(entry["key"])
+
+        if not dry and not broad_status_guard and entry.get("desc_hash") != t["desc_hash"]:
+            res = api("PUT", f"/rest/api/3/issue/{entry['key']}",
+                      {"fields": {"description": adf(f"File: docs/tasks/{t['file']}\n\n" + t["excerpt"])}},
+                      tolerate_not_found=True)
+            if res is None:
+                inaccessible += 1
+                continue
+            entry["desc_hash"] = t["desc_hash"]
+
+        if entry.get("status") == STATUS_TARGET["qa_passed"]:
+            continue
+        if entry.get("status") != target_status:
+            if dry:
+                print(f"MOVE {entry.get('key','?')} {entry.get('status')} -> {target_status}")
+                continue
+            if broad_status_guard:
+                guarded += 1
+                print(f"GUARD_SKIP_MOVE {entry.get('key','?')} {entry.get('status')} -> {target_status}")
+                continue
+            trs = api("GET", f"/rest/api/3/issue/{entry['key']}/transitions", tolerate_not_found=True)
+            if trs is None:
+                inaccessible += 1
+                continue
+            tr = next((x for x in trs.get("transitions", []) if x["to"]["name"] == target_status), None)
+            if tr:
+                moved_res = api("POST", f"/rest/api/3/issue/{entry['key']}/transitions",
+                                {"transition": {"id": tr["id"]}}, tolerate_not_found=True)
+                if moved_res is None:
+                    inaccessible += 1
+                    continue
+                entry["status"] = target_status
+                moved += 1
+                print(f"moved {entry['key']} -> {target_status}")
+
+    if not dry and needs_live_sprint:
+        add_to_sprint(sprint_id, sprint_queue)
+    if not dry:
+        save_mapping(mapping)
+    lock_fd.close()
+    print(f"done: scanned {scanned}, created {created}, moved {moved}, "
+          f"guarded {guarded}, inaccessible {inaccessible}, total tracked {len(mapping)}")
+
+main = safe_main
 
 
 if __name__ == "__main__":

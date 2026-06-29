@@ -1,0 +1,102 @@
+{
+  "canvas": {
+    "width": 2560,
+    "height": 1440
+  },
+  "defaults": {
+    "color": "#F7E7BD",
+    "stroke_fill": "#1B0D12",
+    "stroke_width": 3,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "HERO SELECT",
+    "back": "BACK",
+    "portrait": "PORTRAIT SAFE ZONE",
+    "dossier": "DOSSIER SAFE ZONE",
+    "radar": "RADAR SAFE ZONE",
+    "choose": "CHOOSE",
+    "carousel": "CAROUSEL SAFE ZONE"
+  },
+  "zones": [
+    {
+      "id": "title_content",
+      "content_key": "title",
+      "role": "title",
+      "x": 360,
+      "y": 58,
+      "w": 1840,
+      "h": 86,
+      "max_font": 72,
+      "min_font": 40
+    },
+    {
+      "id": "back_button_content",
+      "content_key": "back",
+      "role": "button",
+      "x": 88,
+      "y": 84,
+      "w": 154,
+      "h": 34,
+      "max_font": 30,
+      "min_font": 18
+    },
+    {
+      "id": "portrait_content",
+      "content_key": "portrait",
+      "role": "portrait",
+      "x": 114,
+      "y": 251,
+      "w": 545,
+      "h": 821,
+      "max_font": 34,
+      "min_font": 18
+    },
+    {
+      "id": "dossier_content",
+      "content_key": "dossier",
+      "role": "body",
+      "x": 811,
+      "y": 251,
+      "w": 975,
+      "h": 821,
+      "max_font": 42,
+      "min_font": 22
+    },
+    {
+      "id": "radar_content",
+      "content_key": "radar",
+      "role": "chart",
+      "x": 1938,
+      "y": 251,
+      "w": 508,
+      "h": 821,
+      "max_font": 34,
+      "min_font": 18
+    },
+    {
+      "id": "choose_button_content",
+      "content_key": "choose",
+      "role": "button",
+      "x": 1042,
+      "y": 1000,
+      "w": 400,
+      "h": 48,
+      "max_font": 36,
+      "min_font": 22
+    },
+    {
+      "id": "carousel_content",
+      "content_key": "carousel",
+      "role": "thumbnail_strip",
+      "x": 160,
+      "y": 1217,
+      "w": 2240,
+      "h": 127,
+      "max_font": 28,
+      "min_font": 16
+    }
+  ]
+}

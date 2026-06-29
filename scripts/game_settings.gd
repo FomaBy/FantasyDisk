@@ -5,9 +5,10 @@ extends RefCounted
 const SAVE_PATH := "user://settings.cfg"
 const SECTION := "settings"
 const MASTER_ZERO_INTENT_KEY := "master_zero_intent"
+const MAX_RESOLUTION_INDEX := 1
 
 const DEFAULTS := {
-	"resolution_index": 1,
+	"resolution_index": 0,
 	"window_mode_index": 0,
 	"screen_index": 0,
 	"master_volume": 1.0,
@@ -17,6 +18,7 @@ const DEFAULTS := {
 	"music_enabled": true,
 	"sfx_enabled": true,
 	"screen_shake": true,
+	"combat_feedback": true,
 	"debug_mode": false,
 	"aim_mode": "nearest",
 	"last_seen_version": "0.0.0",
@@ -32,7 +34,7 @@ static func load_settings() -> Dictionary:
 	var has_master_zero_intent := config.has_section_key(SECTION, MASTER_ZERO_INTENT_KEY)
 	for key in DEFAULTS.keys():
 		settings[key] = config.get_value(SECTION, key, DEFAULTS[key])
-	settings["resolution_index"] = int(settings["resolution_index"])
+	settings["resolution_index"] = clampi(int(settings["resolution_index"]), 0, MAX_RESOLUTION_INDEX)
 	settings["window_mode_index"] = int(settings["window_mode_index"])
 	settings["screen_index"] = int(settings["screen_index"])
 	settings["master_volume"] = clampf(float(settings["master_volume"]), 0.0, 1.0)
@@ -42,6 +44,7 @@ static func load_settings() -> Dictionary:
 	settings["music_enabled"] = bool(settings["music_enabled"])
 	settings["sfx_enabled"] = bool(settings["sfx_enabled"])
 	settings["screen_shake"] = bool(settings["screen_shake"])
+	settings["combat_feedback"] = bool(settings["combat_feedback"])
 	settings["debug_mode"] = bool(settings["debug_mode"])
 	settings["aim_mode"] = str(settings["aim_mode"])
 	if not ["nearest", "cursor"].has(settings["aim_mode"]):

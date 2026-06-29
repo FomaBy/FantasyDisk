@@ -53,6 +53,41 @@ in tooltip. Random event choices keep long descriptions inside the accepted
 choice-card safe zone and normalize risk text so player copy shows a single
 `Риск:` prefix, never `Риск: Риск:`.
 
+SCRUM-629 keeps the random event panel from rendering as an empty shell: the
+screen root is `EventScreen`, the actual frame stays named `MenuPanel_event`,
+and the content column is fixed to the `evt_panel` safe zone as `EventContent`
+with visible `EventTitle`, `EventStory`, event choice cards and the back action.
+Event scroll no longer follows focus on open, so focusing the first choice
+cannot auto-scroll title/story/options out of the initial viewport. The UI
+no-overlap matrix now fails if the event panel, title/story, or at least two
+choices are missing, empty, clipped, or outside the event frame.
+SCRUM-639 fixes the follow-up visual regression from the release gate: Event no
+longer creates the disabled `UpgradeFabButton` inside `MenuPanel_event`. That
+extra child made the `PanelContainer` lay out a lone upgrade arrow over an empty
+gray interior in screenshots, hiding title/story/choices/back even though basic
+rect checks still passed. The matrix now explicitly forbids `UpgradeFabButton`
+on Event and requires `EventContent`, title, story, choices and back to remain
+inside the scaled `evt_panel` content safe rect.
+SCRUM-672 applies the same release-gate lesson to Rest: `_show_rest_screen()`
+must keep `UpgradeFabButton` on the screen root, never inside
+`MenuPanel_campfire`, so the campfire panel continues to show `RestContent`,
+`RestTitle`, `RestSubtitle`, the two rest choice cards and `RestBackButton`.
+The UI matrix now fails if Rest regresses to a blank panel/up-arrow-only shell or
+if the Rest content disappears from the campfire panel.
+
+SCRUM-674 rebuilds the live Settings apply flow inside the existing dark-fantasy
+frame contract. The screen still has exactly three custom tabs: `Экран`, `Звук`
+and `Управление`, with built-in `TabContainer` headers hidden and
+`SettingsTabButton_0..2` inside the switcher safe rects. Screen settings
+(`SettingsScreenOption`, `SettingsResolutionOption`, `SettingsWindowModeOption`)
+now stage values in a pending buffer and do not call `_apply_video_settings()`
+until `SettingsApplyButton` is pressed; `SettingsRevertButton` discards the
+pending buffer. `ScreenShakeToggle`, sound controls and controls/rebind settings
+remain immediate-apply. Sound sliders are compact `420x42` rows with the same
+dark track/gold fill/focus behavior, so they no longer stretch across the whole
+content panel. Mockup/spec: `docs/design/mockups/scrum674_settings_ui/spec.md`;
+OpenAI reference: `docs/design/references/scrum674_settings_ui/settings_apply_flow_mockup.png`.
+
 SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
 Attribute Shop uses compact `320x240` offer cards plus shorter bottom action
 buttons only below 660px viewport height, while Settings permits a compressed
@@ -118,11 +153,50 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
-Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_MENU_BACKGROUND`. SCRUM-316 keeps the battle focus center-right/lower-right, leaving the left third for the vertical button stack and the top-center area for the title. The asset is native 2560x1440 and was prepared with proportional cover-crop, not one-axis stretching.
+Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. SCRUM-560 refreshed the 2560x1440 runtime background with a calm left button-safe column, readable title area, and center-right/lower-right battle focus. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames.
+
+## Route Map 2K Source
+
+Route Map has a SCRUM-563 2K UI Director source package for the global UI
+overhaul. The package is design-source, not a broad runtime rewrite: geometry is
+defined in `docs/design/mockups/scrum563_route_map_2k/ui_plan.json` and
+`spec.md`, the OpenAI source mockup is
+`docs/design/references/scrum563_route_map_2k/route_map_2k_mockup.png`, and the
+safe-zone evidence is under `docs/design/previews/scrum563_route_map_2k_*`.
+The visual direction is a full-screen scroll field with a thin framed header,
+compact run HUD, clamped tooltip panel, centered vertical node lane and small
+bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
 
 ## Hero / Weapon / Level-Up Layout Rules
 
 - Hero select now uses the SCRUM-447 v3 fullscreen runtime contract. `_show_character_select()` builds a centered proportional `1536x864` `HeroSelectCanvas` from the accepted SCRUM-446 source package in `docs/design/references/hero_select_v3/`: `mockup.png`, corrected `zones.json` / `zones_normalized.json`, `frames_spec.json`, and `hero_select_v3_mockup_spec.md`. The live runtime uses `assets/sprites/ui/frames/hero_select_v3/background.png`, `frame_preview.png`, `frame_dossier.png`, square `frame_radar.png`, and `frame_carousel.png`; Godot import sidecars are required for these runtime assets. Title, Back, preview, dossier, radar and carousel are placed from the v3 source rects, while all labels, portraits, controls, hover highlights and thumbnails stay inside each frame's documented content rect. The live SCRUM-322/SCRUM-347 `HeroSelectRadarPanel` / `HeroStatRadar` compass-rose contract is preserved and rendered inside the square v3 radar content zone without non-uniform stretch. SCRUM-389 ascension selection, SCRUM-416 full-frame portrait routing and SCRUM-417 portrait scaling remain live. Runtime smoke asserts v3 texture loading, proportional canvas aspect, safe-zone containment, preserved radar placement, carousel containment, portrait texture paths/scaling and no-overlap at responsive sizes; QA evidence lives in `build/qa/scrum446_hero_select_v3/`.
+- SCRUM-562 updates the live Weapon Select 2K pass. `_show_weapon_select()` now uses a dedicated `WS_PANEL_2K` frame at `420,190,1720,1060` with `WS_SAFE_2K` `498,286,1564,898`; the start-boon screen continues to use the generic `weapon_select` economy panel. Runtime frames are `ws_panel`, `ws_card`, and `ws_btn_back` in `assets/sprites/ui/frames/overhaul_2k/`, registered through `UIThemePaths.OVERHAUL_2K_FRAME_*`. OpenAI/source and safe-zone evidence live under `docs/design/references/scrum562_weapon_select_2k/`, `docs/design/mockups/scrum562_weapon_select_2k/`, and `docs/design/previews/scrum562_weapon_select_2k_*`. Route Map/SCRUM-563 geometry is intentionally untouched.
+- Live HS4 Hero Select keeps the same runtime selection contract: carousel arrow
+  buttons select previous/next character cyclically in
+  `ProgressionData.character_ids()` order and use the same refresh path as
+  thumbnail/slot clicks for portrait, dossier, radar, ascension label and
+  selected thumbnail state. The arrows remain inside the existing carousel
+  content zone; no frame art or safe-zone geometry changes are part of this
+  behavior.
+- 2026-06-29: `HS4Portrait` can render an animated class preview when the
+  selected character exposes directional SpriteFrames. Berserk uses the new
+  PixelLab `walk_<direction>` rows and cycles `south -> south_west -> west ->
+  north_west -> north -> north_east -> east -> south_east` so the preview turns
+  clockwise while staying inside the existing portrait content zone. Other
+  characters keep the static `sprite_path` portrait fallback.
+- SCRUM-664 fixes HS4 keyboard/gamepad focus for the same screen: the visible
+  carousel hero slots are focusable, the selected visible slot receives default
+  focus, carousel arrows/slots/Ascension/Choose/Back have explicit directional
+  focus neighbors, and Escape/Back still returns to the main menu. This is a
+  runtime input fix only; no frame art or safe-zone geometry changed.
+- SCRUM-561 updates the live HS4 Hero Select v4 2K pass. Slot-exact assets now
+  live under `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_hs4_*.png` and are
+  registered in `UIThemePaths.OVERHAUL_2K_FRAME_*`. Runtime content uses scaled
+  frame content margins via `_overhaul_2k_content_margins()`: portrait/dossier/radar
+  panels use `58/72/58/66`, the carousel uses the horizontal `hud_strip` safe band
+  `104/62/104/56`, and choose/ascension buttons use their own 2K button slots.
+  No portrait, radar, dossier text/stat row, carousel arrow or thumbnail may be
+  positioned against the outer frame bounds.
 - The older SCRUM-436 v2 Hero Select contract is superseded by SCRUM-447. Its corrected v2 frame slices and `build/qa/scrum436/` evidence remain historical references only; do not base new runtime Hero Select layout work on `assets/sprites/ui/frames/hero_select_v2/`.
 - Historical SCRUM-436 720p safe-area notes: the v2 `HeroSelectBackButton`, portrait/dossier/radar separation and bottom thumbnail strip were fixed with corrected slices in `assets/sprites/ui/frames/hero_select_v2/`. Those files and QA dumps in `build/qa/scrum436/` remain reference evidence only; the active runtime frame kit is SCRUM-447 v3.
 - SCRUM-355 supersedes the earlier dossier/carousel content-zone guidance for Design-safe ornament avoidance: the live `ui_frame_hero_select_dossier.png` and `ui_frame_hero_select_thumbnail_strip.png` were recomposed thinner/lighter by `tools/build_hero_select_thin_frames.py`; strict source margins are dossier `Vector4(126, 160, 126, 172)` and thumbnail strip `Vector4(132, 62, 132, 62)`. SCRUM-354 wires those exact source-space margins into runtime, scaling the carousel from its actual `1536x255` source image rather than the `1024x170` 720p display size. Labels, description text, ascension controls, the start button, thumbnails, hover states and selection states stay inside the computed safe rects; the 720p runtime dump shows dossier content `[P: (489, 191), S: (299, 280)]` within the 2px test tolerance of safe `[P: (488.5, 191.3), S: (299.9, 279.3)]`, carousel content `[P: (216, 587), S: (848, 88)]` within the same tolerance of safe `[P: (216, 587.3), S: (848, 87.3)]`, and a 22px gap between dossier and carousel frames. QA rects live in `build/qa/hero_select_radar_rects.md`.
@@ -172,6 +246,23 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_M
   bevels or ruby pins. QA evidence lives in
   `build/qa/scrum450_minimal_metal_buttons/`.
 
+- SCRUM-657 adds a Design-ready text-button size audit and unified dark fantasy
+  dragon button package under
+  `docs/design/references/ui_text_buttons_unique_size_redraw/` and
+  `assets/sprites/ui/frames/text_buttons_unique/`. Each final size group has its
+  own OpenAI source PNG; the runtime set is not one stretched master. SCRUM-669
+  promotes this package for normal text/action buttons through
+  `UIThemePaths.TEXT_BUTTON_UNIQUE_*` and the runtime button resolver, including
+  main menu, standard/back/quit/continue/later/settings/feedback/pause/event/
+  rebind text actions and the pause dossier's local button helper. Runtime labels
+  must stay inside the declared `content_rect_xywh`, between the decorative end
+  shutters/caps. If a label does not fit, increase the button width or use the
+  expanded long-label variants; text may not overlap claws, bevels, ruby pins or
+  scale caps. Left/right caps are fixed-size ornaments and must not be scaled
+  horizontally; only the center rail may stretch. Icon-only controls, cards,
+  slots, portraits, plus/minus steppers, route nodes, weapon/reward cards and
+  non-text decorative frames remain excluded.
+
 - SCRUM-451 adds the Design-source rollout contract for applying SCRUM-452
   minimal-metal frames across all UI screens. The screen-family mapping lives in
   `docs/design/references/ui_minimal_metal_rollout/scrum451_minimal_metal_rollout_matrix.json`
@@ -187,6 +278,35 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v2.png` through `MAIN_M
   progression node rings and combat bar fills/icons remain screen-specific
   exceptions. Runtime content must use only each frame's `content_rect_xywh`;
   QA evidence is in `build/qa/scrum451_minimal_metal_rollout/`.
+
+- SCRUM-585 refreshes the `GlossaryTooltipPanel` as an isolated 2K tooltip
+  frame. Runtime keeps the existing dynamic placement contract (`460` fixed
+  width, content-driven height, `8px` anchor gap, `16px` viewport clamp) and now
+  uses the regenerated `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png`
+  with strict content margins `Vector4(66, 44, 66, 40)`. Generated mockup/spec
+  and safe-zone evidence live under
+  `docs/design/mockups/scrum585_glossary_tooltip/` and
+  `docs/design/previews/scrum585_glossary_tooltip_*`. Runtime text stays inside
+  the empty center and never covers the metal rails, ruby pins, or corner claws.
+
+- SCRUM-588 refreshes the transient `LevelUpToast` as an isolated generated @2K
+  frame asset. Runtime uses
+  `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png` through
+  `UIThemePaths.OVERHAUL_2K_FRAME_*["lut_toast"]` at source size `480x300`,
+  texture margins `58/48/58/48`, and strict content margins `70/112/70/112`.
+  The toast remains textless; the existing world-space level-up badge is still
+  the single `Level Up` text/icon callout. Sparkle/ring content starts inside
+  the frame safe rect only. Mockup/spec and audit evidence live in
+  `docs/design/mockups/scrum588_levelup_toast/`,
+  `docs/design/references/scrum588_levelup_toast/`, and
+  `docs/design/previews/scrum588_levelup_toast_safe_zone.png`.
+
+- SCRUM-654 keeps the overhead level-up callout compact and singular. Runtime
+  uses the accepted `LevelUpPopupBadge` at `160x80`; when multiple level-ups
+  arrive quickly, `_spawn_level_up_effect()` removes older live `LevelUpEffect`
+  nodes from the `level_up_effects` group before spawning the replacement.
+  `LevelUpToast` stays outside that cleanup group and remains a textless
+  sparkle/ring cue, so there is only one visible `Level Up` text badge.
 
 - SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
@@ -225,17 +345,58 @@ updates. Active assets:
 - `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`,
   `_ult.png`, `_gold.png` and `ui_hud_gold_medallion.png`.
 
-Runtime keeps the combat HUD compact and readable: resource panel top-left,
-timer near top center, artifact row top-right with adaptive vertical fallback,
-and opaque level-up plus button bottom-right. Text, icons, bars, count badges,
-focus/click zones and the plus glyph stay inside the safe rects documented in
-`docs/design/references/combat_hud_redraw/combat_hud_redraw_metadata.json`.
-Runtime uses compact content margins only to fit the live 720p HUD band; source
-safe rects remain the authority and decorative dragon heads, red gems, claw
-tips and bevels must stay unobstructed. Design mocks and Back-end runtime rect
-dumps at `1152x648`, `1280x720` and `2560x1440` live in `build/qa/scrum390/`.
+SCRUM-671 makes the SCRUM-666 clean essential-only HUD live in runtime. Combat
+now shows only HP, XP, money, ULT charge, timer, ascension/elevation and the
+bottom-right level-up plus/count control. The previous artifact row and compact
+character stat chip strip are not created in combat HUD anymore. Runtime uses
+the existing generated frame assets (`chud_resource_panel`, `chud_timer`,
+minimal-metal metric cards, ascension badge and combat plus button), but places
+them from the accepted SCRUM-666 `ui_plan.json`/`layout.json` rectangles because
+SCRUM-666 shipped as a full-screen OpenAI mockup/source package rather than
+transparent per-slot runtime slices. Text, icons, bars, count badges,
+focus/click zones and the plus glyph stay inside the accepted dark interiors;
+decorative rails, gems, rims and bevels stay unobstructed. UI smoke/no-overlap
+coverage now fails if `CharacterStatsHud` or `ArtifactHudRow` appears in combat,
+or if HUD content escapes the SCRUM-666 safe-zone metadata.
+
+SCRUM-521 adds `LowHpVignetteOverlay` as a procedural combat HUD warning:
+when player HP drops below 30%, a shader vignette fades in with a transparent
+center and light red edges; it fades out only after HP recovers to 34%+ to avoid
+threshold flicker. The overlay is drawn behind HUD cards, ignores mouse input,
+uses the shared `combat_feedback` setting, and is covered by the HUD smoke
+matrix.
+
+SCRUM-666 is the Design-source package behind this pass. It keeps only HP, XP,
+money, ULT charge, timer, ascension/elevation and the bottom-right level-up plus
+button. Source and geometry live under
+`docs/design/mockups/scrum666_combat_hud_2k/`, OpenAI reference art under
+`docs/design/references/scrum666_combat_hud_2k/`, and safe-zone previews under
+`docs/design/previews/scrum666_combat_hud_2k_*`. The QA-red revision moved
+accepted content zones into generated dark interiors and out of rail/ornament
+positions; level-up plus and pending-count zones are separate and
+non-overlapping at 2560x1440.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
-- Level-up reward options remain full-card clickable Buttons for input/focus, but visually use flat text-field/panel styling with rare gold accent instead of the heavy reward button texture. The screen still presents exactly 3 variants and the `Позже` deferral button. SCRUM-465 makes the overlay viewport-aware: short 720p layouts use compact panel/card/header metrics and a shorter medium back-frame deferral button, while larger viewports keep the same safe-zone contract without bottom cropping. The UI no-overlap matrix covers `LevelUpPanel`, `LevelUpHeroHeader`, all three reward cards and `LevelUpLaterButton`; QA evidence lives under `build/qa/scrum465/`.
+- Level-up reward options remain full-card clickable Buttons for input/focus and
+  now use the larger SCRUM-682 runtime frame family from
+  `assets/sprites/ui/frames/level_up_scrum682/`: `ui_frame_lu682_panel.png`
+  (`1720x1040`), `ui_frame_lu682_card.png` (`470x560`), hover/selected card
+  states, portrait frame, effect-preview field, and dedicated `Позже` button
+  states. The screen still presents exactly 3 variants and preserves deferred
+  choice through `level_up_offer`.
+- SCRUM-683 is the live runtime wiring for the SCRUM-682 Level Up package.
+  Source geometry lives under `docs/design/mockups/level_up_scrum682/spec.md`,
+  and runtime scales it from 2560x1440 while keeping hero header, portrait,
+  title, subtitle, three cards, card content, and `Позже` inside frame content
+  zones. The runtime raises the `Позже` button slightly inside the panel safe
+  area because the source handoff button y-position exceeded the declared
+  content bottom. Card interiors show a large icon, readable title, short
+  description, and framed visible effect preview; tooltip text is overflow only,
+  not the primary explanation. The UI no-overlap matrix covers
+  `LevelUpPanel`, `LevelUpHeroHeader`, all three reward cards,
+  `LevelUpRewardEffectPreview`, and `LevelUpLaterButton`; focused SCRUM-683 QA
+  evidence writes `build/qa/scrum683/level_up_no_overlap_matrix.md`.
+- SCRUM-571 adds the Design-source 2K ordinary reward mockup/spec package for the post-battle reward selection screen. Source geometry and safe-zone files live under `docs/design/mockups/scrum571_reward_2k/`, the OpenAI base layer under `docs/design/references/scrum571_reward_2k/reward_ordinary_2k_base.png`, and previews under `docs/design/previews/scrum571_reward_2k_*.png`. As of SCRUM-670 this package has no isolated alpha runtime frames, so runtime intentionally keeps the SCRUM-338 reward-card kit instead of slicing the full-screen mockup.
+- SCRUM-572 adds the Design-source 2K elite artifact reward mockup/spec package for the elite victory artifact-choice screen. Source geometry and safe-zone files live under `docs/design/mockups/scrum572_elite_artifact_reward_2k/`, the OpenAI base layer under `docs/design/references/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_base.png`, and previews under `docs/design/previews/scrum572_elite_artifact_reward_2k_*.png`. As of SCRUM-670 this package has no isolated alpha runtime frames, so runtime intentionally keeps the SCRUM-338 elite reward-card kit instead of slicing the full-screen mockup.
 - SCRUM-404 wires the dedicated SCRUM-338 reward-card frame kit for battle rewards and elite artifact rewards: `assets/sprites/ui/frames/rewards/ui_frame_reward_card.png`, `_hover.png`, `ui_frame_reward_elite_artifact_card.png` and `_hover.png`. Runtime uses the metadata in `docs/design/references/rewards/reward_frames_scrum338_metadata.json`, keeps title, icon, description, artifact tier labels and `Получить`/choice content inside the safe content fields, and preserves whole-card click/focus without placing UI content on red gems, top crests, side metal or bottom ornaments. Runtime smoke writes SCRUM-338 card rect dumps to `build/qa/scrum338/`.
 
 ## Button Height / Minimal Metal Rule
@@ -289,8 +450,21 @@ tooltip frame, and character detail portraits keep SCRUM-416 full-frame
 `build/qa/scrum438/codex_v2_runtime_dump.md` and
 `build/qa/scrum438/codex_v2_no_overlap_matrix.md`.
 
+SCRUM-574 refreshes the live Codex v2 frame material to a dedicated 2K kit while
+preserving the SCRUM-438 three-column geometry. The accepted mockup/spec lives
+at `docs/design/mockups/scrum574_codex_2k/spec.md`, with the OpenAI API source
+mockup at `docs/design/references/scrum574_codex_2k/codex_2k_mockup.png`.
+Runtime assets are generated by `tools/build_ui_2k_frame_kit.py --all` into
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_*.png` for main, nav,
+list, detail, entry card, tab button and back button slots. `CodexMainPanel`,
+`CodexNavPanel`, `CodexContent`, `CodexDetailPanel`, `CodexEntryCard`,
+`CodexTab_*` and `CodexBackButton` must use those slot-exact frames; portraits
+and text still stay inside the recorded content margins and never overlap the
+ornamental rails.
+
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
-the SCRUM-345/SCRUM-403 Codex kit as the accepted Codex baseline. Mockup/spec:
+the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.
+SCRUM-574 is the live Codex 2K frame baseline. Mockup/spec:
 `docs/design/mockups/scrum331_progression_codex/`; generated references:
 `docs/design/references/ui_overhaul_progression_codex/`; preview:
 `docs/design/previews/scrum331_progression_frame_kit_contact.png`. Runtime-ready
@@ -324,10 +498,11 @@ smoke writes `build/qa/combat_level_up_button.md` and
 `build/qa/scrum390/combat_level_up_button.md`.
 
 Hover/focus states after SCRUM-318 are neutral-bright, not golden glow states:
-runtime button themes use the SCRUM-450 minimal-metal `_hover` / `_focus`
-textures with neutral tint (`1.16` hover / `1.20` focus) and near-white
-hover/focus text. Pressed and disabled states keep their dedicated textures and
-semantics.
+runtime normal text/action button themes use the SCRUM-657 text-button `_hover`
+/ `_focus` textures with neutral hover/focus font treatment; pressed and
+disabled states keep their dedicated generated textures. SCRUM-450 minimal-metal
+button textures remain available for compact/icon-like exceptions and historical
+metadata tests.
 
 ## Main Menu Quit Confirmation
 
@@ -337,12 +512,12 @@ modal overlay, not a default Godot `ConfirmationDialog`: it blocks clicks below
 the dim layer, focuses safe `Отмена` by default, cancels on Escape/outside click
 and calls `Main.request_game_quit()` only from the explicit `Выйти` button.
 
-SCRUM-344 locks the dialog action buttons to 220x72 and SCRUM-462 routes
-`QuitConfirmExitButton` / `QuitConfirmCancelButton` to the minimal-metal `pause`
-button frame, whose vertical content band is safe at 72px. Do not let these buttons
-fall back to `back_s`: that frame is authored for taller action buttons and
-visually squashes when used in this dialog. Runtime smoke records the actual
-rects and textures in `build/qa/scrum319/quit_confirmation_dialog.md`.
+SCRUM-344 locks the dialog action buttons to 220x72; SCRUM-669 routes
+`QuitConfirmExitButton` / `QuitConfirmCancelButton` to the generated
+`quit_220x72` SCRUM-657 text-button state kit. Do not let these buttons fall
+back to compact/back/icon families: their text must remain inside the
+`quit_220x72` content band. Runtime smoke records the actual rects and textures
+in `build/qa/scrum319/quit_confirmation_dialog.md`.
 
 ## Pause And Result Screens
 
@@ -410,6 +585,11 @@ Runtime labels/click/focus zones must stay inside these base safe rects and
 scale proportionally with the whole image. Runtime smoke validates the actual
 button rects against the scaled safe rects:
 
+SCRUM-626 fixes Settings return-origin tracking. Settings opened from the main
+menu returns to the main menu on Back/Escape, while Settings opened from the
+in-run pause/dossier flow returns to the run pause menu and preserves the active
+run state instead of rebuilding the start screen.
+
 | Slot | Safe Rect |
 | --- | --- |
 | `tab_0_screen_safe` | `Rect2(150, 78, 275, 92)` |
@@ -432,12 +612,45 @@ OFF by default and persists through `scripts/game_settings.gd`; its tooltip
 documents the combat-only debug controls (right-click / Shift+left-click move
 target, middle-click teleport).
 
-SCRUM-441 is integrated in the same Settings pass. Resolution options use
-`scripts/display_resolution.gd` to compare requested window sizes against the
-physical usable monitor size (`usable_logical * screen_scale`) instead of only
-logical points; `_apply_video_settings()` clamps with
-`DisplayResolution.clamp_to_physical(...)`, macOS adds a detected logical native
-`(Mac)` option when needed, and `project.godot` enables
+SCRUM-497 adds `CombatFeedbackToggle` to the same «Управление» tab. It is a
+normal checkbox row inside `ControlsScroll`, persists as `combat_feedback` in
+`user://settings.cfg`, defaults ON, and controls floating damage/heal numbers,
+critical markers and hit flash/outline visuals without changing gameplay.
+
+### SCRUM-584. Key Rebind Conflict Dialog
+
+SCRUM-584 completes the `_show_rebind_conflict` 2K pass. The dialog is now a
+dedicated `RebindConflictDialog` / `RebindConflictPanel`, not the generic menu
+box, with a textless OpenAI mockup reference and dedicated runtime
+`rc_panel`/`rc_btn` frame assets. The generated mockup is visual direction only;
+exact content geometry is enforced by the `RC_*_2K` constants and verifier.
+
+| Slot | const | x | y | w | h |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Panel frame | `RC_PANEL_2K` | 940 | 530 | 680 | 380 |
+| Safe-area | `RC_SAFE_2K` | 998 | 602 | 564 | 242 |
+| Title | `RC_TITLE_2K` | 998 | 614 | 564 | 44 |
+| Message | `RC_MESSAGE_2K` | 998 | 674 | 564 | 66 |
+| Button: choose another | `RC_BTN_RETRY_2K` | 1031 | 758 | 240 | 72 |
+| Button: settings | `RC_BTN_BACK_2K` | 1289 | 758 | 240 | 72 |
+
+Frame contract: content margins are `58/72/58/66` on the `680x380` source
+`ui_frame_2k_rc_panel.png`, so title/message/buttons must stay inside local
+`Rect2(58, 72, 564, 242)`. The ornament, rails and dividers of the frame are not
+usable content space. Both actions use the dedicated `240x72`
+`ui_frame_2k_rc_btn.png` button frame. OpenAI/source and safe-zone evidence live
+under `docs/design/references/scrum584_rebind_conflict_2k/`,
+`docs/design/mockups/scrum584_rebind_conflict_2k/`, and
+`docs/design/previews/scrum584_rebind_conflict_2k_safe_zones.png`. Verifier
+coverage: `tests/ui_no_overlap_matrix_test.gd`, screen id `rebind_conflict`,
+across 1080p/2K/4K.
+
+SCRUM-667 limits Settings to two windowed resolution choices: `2560x1440` first
+when supported and `1920x1080` as fallback. SCRUM-441 remains integrated in the
+same Settings pass: options use `scripts/display_resolution.gd` to compare
+requested window sizes against physical monitor pixels (`screen_size *
+screen_scale`) instead of only logical points, `_apply_video_settings()` clamps
+with `DisplayResolution.clamp_to_physical(...)`, and `project.godot` enables
 `window/dpi/allow_hidpi=true`. QA evidence:
 `build/qa/scrum441/hidpi_resolution_evidence.md`.
 

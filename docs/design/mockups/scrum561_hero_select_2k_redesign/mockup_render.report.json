@@ -1,0 +1,152 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title_content",
+      "rect": [
+        360,
+        58,
+        1840,
+        86
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 72,
+      "lines": [
+        "HERO SELECT"
+      ],
+      "text_bbox": [
+        1244,
+        94,
+        73,
+        14
+      ]
+    },
+    {
+      "id": "back_button_content",
+      "rect": [
+        88,
+        84,
+        154,
+        34
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "BACK"
+      ],
+      "text_bbox": [
+        149,
+        94,
+        32,
+        14
+      ]
+    },
+    {
+      "id": "portrait_content",
+      "rect": [
+        114,
+        251,
+        545,
+        821
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 34,
+      "lines": [
+        "PORTRAIT SAFE ZONE"
+      ],
+      "text_bbox": [
+        332,
+        654,
+        108,
+        14
+      ]
+    },
+    {
+      "id": "dossier_content",
+      "rect": [
+        811,
+        251,
+        975,
+        821
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 42,
+      "lines": [
+        "DOSSIER SAFE ZONE"
+      ],
+      "text_bbox": [
+        1247,
+        654,
+        103,
+        14
+      ]
+    },
+    {
+      "id": "radar_content",
+      "rect": [
+        1938,
+        251,
+        508,
+        821
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 34,
+      "lines": [
+        "RADAR SAFE ZONE"
+      ],
+      "text_bbox": [
+        2146,
+        654,
+        93,
+        14
+      ]
+    },
+    {
+      "id": "choose_button_content",
+      "rect": [
+        1042,
+        1000,
+        400,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 36,
+      "lines": [
+        "CHOOSE"
+      ],
+      "text_bbox": [
+        1218,
+        1017,
+        47,
+        14
+      ]
+    },
+    {
+      "id": "carousel_content",
+      "rect": [
+        160,
+        1217,
+        2240,
+        127
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 28,
+      "lines": [
+        "CAROUSEL SAFE ZONE"
+      ],
+      "text_bbox": [
+        1224,
+        1274,
+        113,
+        14
+      ]
+    }
+  ]
+}

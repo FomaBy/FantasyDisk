@@ -1,0 +1,41 @@
+{
+  "source": "docs/design/references/map_icons/chest_artifact/map_chest_artifact_source.png",
+  "alpha_source": "docs/design/references/map_icons/chest_artifact/map_chest_artifact_alpha.png",
+  "runtime": "assets/sprites/map_icons/map_chest_artifact.png",
+  "preview": "docs/design/previews/map_chest_artifact_contact_sheet.png",
+  "source_size": [
+    1024,
+    1024
+  ],
+  "source_subject_bbox": [
+    108,
+    153,
+    975,
+    949
+  ],
+  "runtime_size": [
+    128,
+    128
+  ],
+  "runtime_alpha_bbox": [
+    7,
+    12,
+    121,
+    116
+  ],
+  "runtime_alpha_extrema": [
+    0,
+    255
+  ],
+  "edge_alpha_max": 0,
+  "white_opaque_pixels": 0,
+  "green_opaque_pixels": 0,
+  "clipped_important_silhouette": false,
+  "readability_sizes_checked": [
+    96,
+    64,
+    40,
+    32
+  ],
+  "notes": "Generated with fantasydisk-asset-generator; white connected background removed; fitted to 128x128 RGBA map icon."
+}

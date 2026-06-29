@@ -1,0 +1,144 @@
+{
+  "canvas": {
+    "width": 2560,
+    "height": 1440
+  },
+  "defaults": {
+    "color": "#F5E6C4",
+    "stroke_fill": "#05040A",
+    "stroke_width": 3,
+    "line_spacing": 1.06,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "ДРЕВО УМЕНИЙ",
+    "points_btn": "Очки умений",
+    "points_badge": "5",
+    "class_select": "Берсерк",
+    "class_popup": "Бонусы класса",
+    "path_wealth": "Богатство",
+    "path_lore": "Знание",
+    "path_might": "Мощь",
+    "path_endure": "Стойкость"
+  },
+  "zones": [
+    {
+      "id": "title_zone",
+      "content_key": "title",
+      "role": "title",
+      "x": 980,
+      "y": 88,
+      "w": 600,
+      "h": 70,
+      "max_font": 56,
+      "min_font": 36,
+      "color": "#FFF3C4",
+      "debug_color": "#F0B64A"
+    },
+    {
+      "id": "points_button_zone",
+      "content_key": "points_btn",
+      "role": "button",
+      "x": 196,
+      "y": 96,
+      "w": 280,
+      "h": 92,
+      "max_font": 34,
+      "min_font": 22,
+      "color": "#FFF1CF",
+      "debug_color": "#FFD66B"
+    },
+    {
+      "id": "points_badge_zone",
+      "content_key": "points_badge",
+      "role": "badge",
+      "x": 540,
+      "y": 100,
+      "w": 132,
+      "h": 96,
+      "max_font": 48,
+      "min_font": 28,
+      "color": "#FFF3C4",
+      "debug_color": "#F0B64A"
+    },
+    {
+      "id": "class_select_zone",
+      "content_key": "class_select",
+      "role": "dropdown",
+      "x": 2120,
+      "y": 100,
+      "w": 300,
+      "h": 78,
+      "max_font": 30,
+      "min_font": 20,
+      "color": "#FFF1CF",
+      "debug_color": "#FFD66B"
+    },
+    {
+      "id": "class_popup_zone",
+      "content_key": "class_popup",
+      "role": "panel_text",
+      "x": 196,
+      "y": 320,
+      "w": 460,
+      "h": 900,
+      "max_font": 26,
+      "min_font": 16,
+      "color": "#D8F0E0",
+      "debug_color": "#62C089"
+    },
+    {
+      "id": "path_wealth_zone",
+      "content_key": "path_wealth",
+      "role": "branch",
+      "x": 760,
+      "y": 300,
+      "w": 420,
+      "h": 900,
+      "max_font": 24,
+      "min_font": 15,
+      "color": "#FFD76B",
+      "debug_color": "#F0B64A"
+    },
+    {
+      "id": "path_lore_zone",
+      "content_key": "path_lore",
+      "role": "branch",
+      "x": 1208,
+      "y": 300,
+      "w": 420,
+      "h": 900,
+      "max_font": 24,
+      "min_font": 15,
+      "color": "#BCD8FF",
+      "debug_color": "#7FB4FF"
+    },
+    {
+      "id": "path_might_zone",
+      "content_key": "path_might",
+      "role": "branch",
+      "x": 1656,
+      "y": 300,
+      "w": 420,
+      "h": 900,
+      "max_font": 24,
+      "min_font": 15,
+      "color": "#FF8A6C",
+      "debug_color": "#E2563C"
+    },
+    {
+      "id": "path_endure_zone",
+      "content_key": "path_endure",
+      "role": "branch",
+      "x": 2104,
+      "y": 300,
+      "w": 420,
+      "h": 900,
+      "max_font": 24,
+      "min_font": 15,
+      "color": "#A7E8C0",
+      "debug_color": "#62C089"
+    }
+  ]
+}

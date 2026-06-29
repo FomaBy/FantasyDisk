@@ -1,0 +1,36 @@
+Artifact: rift_key ("Ключ Разлома" / Rift Key)
+Context: rare tier-3 artifact (SCRUM-619 / SCRUM-623). Unlocks a secret end-of-Act-3
+encounter; the visual reads as an arcane / dimensional key.
+
+Generated via the fantasydisk-asset-generator workflow (OpenAI Images API).
+  model:   gpt-image-2
+  size:    1024x1024
+  quality: high
+  background: requested transparent -> REJECTED by gpt-image-2
+             ("Transparent background is not supported for this model"),
+             so the model painted a light checkerboard; alpha was cut out in
+             postprocess (saturation-aware soft key + border-connected flood fill),
+             then framed to 256x256 RGBA at 90.6% height to match sibling icons.
+
+rift_key_gpt_image_source.png = chosen raw model output (candidate 1 of 3),
+still carrying the painted checkerboard background.
+Final runtime asset: assets/sprites/ui/icons/artifacts/artifact_rift_key.png
+
+Prompt:
+---
+Dark fantasy video game inventory icon, a single ornate magical relic object
+centered on a fully transparent background. The object is a rare ancient arcane
+Rift Key: an ornate ceremonial skeleton key forged from weathered dark iron and
+tarnished antique bronze with intricate filigree and engraved glowing runes along
+the shaft. The key's bow (the head/handle ring at the top) is a circular ornate
+frame enclosing a small swirling dimensional rift portal of luminous arcane energy
+in violet-blue with bright cyan highlights, with faint glowing cracks of light
+radiating outward like a tear in reality. The bit and teeth at the bottom of the key
+are shaped like jagged interlocking geometric arcane wards. Painterly semi-realistic
+3D render, high detail, dramatic rim lighting and subtle magical inner glow,
+battle-worn weathered metal, slightly desaturated moody dark-fantasy palette,
+ominous mystical mood. Vertical orientation, symmetrical hero-relic presentation,
+object fills about 85 percent of the frame with a small even margin, centered.
+Transparent background, no scene, no shadow on ground, no text, no letters, no labels,
+no border, no frame, no user interface elements.
+---

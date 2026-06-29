@@ -1,0 +1,192 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "level_up_overlay",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        2560,
+        1440
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "level_up_panel",
+      "kind": "panel",
+      "rect": [
+        760,
+        420,
+        1040,
+        600
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "level_up_safe",
+      "kind": "zone",
+      "rect": [
+        818,
+        492,
+        924,
+        462
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hero_header",
+      "kind": "zone",
+      "rect": [
+        940,
+        504,
+        680,
+        118
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hero_portrait",
+      "kind": "portrait",
+      "rect": [
+        1002,
+        512,
+        88,
+        88
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "level_badge",
+      "kind": "text",
+      "rect": [
+        1112,
+        506,
+        336,
+        28
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "level_title",
+      "kind": "text",
+      "rect": [
+        1112,
+        540,
+        336,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 42
+    },
+    {
+      "id": "level_subtitle",
+      "kind": "text",
+      "rect": [
+        896,
+        620,
+        768,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "reward_card_0",
+      "kind": "button",
+      "rect": [
+        865,
+        684,
+        238,
+        210
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reward_card_0_content",
+      "kind": "zone",
+      "rect": [
+        905,
+        728,
+        158,
+        124
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reward_card_1",
+      "kind": "button",
+      "rect": [
+        1115,
+        684,
+        238,
+        210
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reward_card_1_content",
+      "kind": "zone",
+      "rect": [
+        1155,
+        728,
+        158,
+        124
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reward_card_2",
+      "kind": "button",
+      "rect": [
+        1365,
+        684,
+        238,
+        210
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reward_card_2_content",
+      "kind": "zone",
+      "rect": [
+        1405,
+        728,
+        158,
+        124
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "later_button",
+      "kind": "button",
+      "rect": [
+        1150,
+        908,
+        260,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    }
+  ]
+}

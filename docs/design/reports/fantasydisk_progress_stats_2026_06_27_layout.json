@@ -1,0 +1,85 @@
+{
+  "canvas": {
+    "width": 1920,
+    "height": 1080
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F7E7BD",
+    "stroke_fill": "#170A0E",
+    "stroke_width": 3,
+    "line_spacing": 1.07,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "FantasyDisk",
+    "subtitle": "7 дней AI-разработки • GitHub/Jira/repo scan • 27 июня 2026",
+    "days_number": "7",
+    "days_label": "дней разработки",
+    "days_caption": "AI-марафон: дизайн, код, арт, QA и GitHub",
+    "commits_number": "560",
+    "commits_label": "коммитов",
+    "code_number": "64 853",
+    "code_label": "строки кода",
+    "gd_number": "47 744",
+    "gd_label": "строки GDScript",
+    "files_number": "7 410",
+    "files_label": "файлов в Git",
+    "images_number": "3 360",
+    "images_label": "картинок в Git",
+    "refs_number": "512",
+    "refs_label": "референсов",
+    "assets_number": "1 945",
+    "assets_label": "игровых image assets",
+    "qa_number": "700",
+    "qa_label": "QA/report screenshots",
+    "tasks_number": "460",
+    "tasks_label": "task specs",
+    "mirrors_number": "511",
+    "mirrors_label": "task mirrors",
+    "releases_number": "7",
+    "releases_label": "релизных тегов",
+    "size_number": "1.2 GB",
+    "size_label": "tracked project",
+    "footer": "Зоны контента заданы до генерации • текст вставлен без новых фреймов поверх изображения"
+  },
+  "zones": [
+    {"id": "title", "content_key": "title", "x": 220, "y": 104, "w": 720, "h": 76, "align": "left", "max_font": 64, "min_font": 38},
+    {"id": "subtitle", "content_key": "subtitle", "x": 220, "y": 236, "w": 870, "h": 40, "align": "left", "max_font": 24, "min_font": 17, "color": "#D8C28A", "stroke_width": 2},
+
+    {"id": "days_number", "content_key": "days_number", "x": 180, "y": 374, "w": 440, "h": 142, "max_font": 142, "min_font": 96, "color": "#FFE2A1", "stroke_width": 5},
+    {"id": "days_label", "content_key": "days_label", "x": 180, "y": 522, "w": 440, "h": 54, "max_font": 34, "min_font": 22},
+    {"id": "days_caption", "content_key": "days_caption", "x": 168, "y": 664, "w": 470, "h": 36, "max_font": 23, "min_font": 15, "align": "left", "valign": "middle", "color": "#D8C28A", "stroke_width": 2},
+
+    {"id": "commits_number", "content_key": "commits_number", "x": 1222, "y": 142, "w": 230, "h": 74, "max_font": 62, "min_font": 40, "color": "#FFE2A1"},
+    {"id": "commits_label", "content_key": "commits_label", "x": 1222, "y": 254, "w": 230, "h": 32, "max_font": 24, "min_font": 16, "color": "#D8C28A", "stroke_width": 2},
+    {"id": "code_number", "content_key": "code_number", "x": 1514, "y": 142, "w": 230, "h": 74, "max_font": 50, "min_font": 34, "color": "#FFE2A1"},
+    {"id": "code_label", "content_key": "code_label", "x": 1514, "y": 254, "w": 230, "h": 32, "max_font": 23, "min_font": 16, "color": "#D8C28A", "stroke_width": 2},
+
+    {"id": "gd_number", "content_key": "gd_number", "x": 795, "y": 386, "w": 230, "h": 60, "max_font": 44, "min_font": 30, "color": "#FFE2A1"},
+    {"id": "gd_label", "content_key": "gd_label", "x": 795, "y": 478, "w": 230, "h": 36, "max_font": 22, "min_font": 15, "color": "#D8C28A", "stroke_width": 2},
+    {"id": "files_number", "content_key": "files_number", "x": 1100, "y": 386, "w": 230, "h": 60, "max_font": 46, "min_font": 30, "color": "#FFE2A1"},
+    {"id": "files_label", "content_key": "files_label", "x": 1100, "y": 478, "w": 230, "h": 36, "max_font": 22, "min_font": 15, "color": "#D8C28A", "stroke_width": 2},
+    {"id": "images_number", "content_key": "images_number", "x": 1407, "y": 386, "w": 230, "h": 60, "max_font": 46, "min_font": 30, "color": "#FFE2A1"},
+    {"id": "images_label", "content_key": "images_label", "x": 1407, "y": 478, "w": 230, "h": 36, "max_font": 22, "min_font": 15, "color": "#D8C28A", "stroke_width": 2},
+
+    {"id": "refs_number", "content_key": "refs_number", "x": 795, "y": 592, "w": 230, "h": 60, "max_font": 48, "min_font": 32, "color": "#FFE2A1"},
+    {"id": "refs_label", "content_key": "refs_label", "x": 795, "y": 684, "w": 230, "h": 36, "max_font": 22, "min_font": 15, "color": "#D8C28A", "stroke_width": 2},
+    {"id": "assets_number", "content_key": "assets_number", "x": 1100, "y": 592, "w": 230, "h": 60, "max_font": 46, "min_font": 30, "color": "#FFE2A1"},
+    {"id": "assets_label", "content_key": "assets_label", "x": 1100, "y": 684, "w": 230, "h": 36, "max_font": 21, "min_font": 14, "color": "#D8C28A", "stroke_width": 2},
+    {"id": "qa_number", "content_key": "qa_number", "x": 1407, "y": 592, "w": 230, "h": 60, "max_font": 48, "min_font": 32, "color": "#FFE2A1"},
+    {"id": "qa_label", "content_key": "qa_label", "x": 1407, "y": 684, "w": 230, "h": 36, "max_font": 20, "min_font": 13, "color": "#D8C28A", "stroke_width": 2},
+
+    {"id": "tasks_number", "content_key": "tasks_number", "x": 330, "y": 854, "w": 240, "h": 54, "max_font": 44, "min_font": 30, "color": "#FFE2A1"},
+    {"id": "tasks_label", "content_key": "tasks_label", "x": 330, "y": 918, "w": 240, "h": 28, "max_font": 20, "min_font": 14, "color": "#D8C28A", "stroke_width": 2},
+    {"id": "mirrors_number", "content_key": "mirrors_number", "x": 662, "y": 854, "w": 240, "h": 54, "max_font": 44, "min_font": 30, "color": "#FFE2A1"},
+    {"id": "mirrors_label", "content_key": "mirrors_label", "x": 662, "y": 918, "w": 240, "h": 28, "max_font": 20, "min_font": 14, "color": "#D8C28A", "stroke_width": 2},
+    {"id": "releases_number", "content_key": "releases_number", "x": 994, "y": 854, "w": 240, "h": 54, "max_font": 50, "min_font": 34, "color": "#FFE2A1"},
+    {"id": "releases_label", "content_key": "releases_label", "x": 994, "y": 918, "w": 240, "h": 28, "max_font": 20, "min_font": 14, "color": "#D8C28A", "stroke_width": 2},
+    {"id": "size_number", "content_key": "size_number", "x": 1326, "y": 854, "w": 250, "h": 54, "max_font": 42, "min_font": 28, "color": "#FFE2A1"},
+    {"id": "size_label", "content_key": "size_label", "x": 1326, "y": 918, "w": 250, "h": 28, "max_font": 20, "min_font": 14, "color": "#D8C28A", "stroke_width": 2},
+
+    {"id": "footer", "content_key": "footer", "x": 300, "y": 1006, "w": 1320, "h": 30, "max_font": 20, "min_font": 14, "color": "#BCA56F", "stroke_width": 2}
+  ]
+}

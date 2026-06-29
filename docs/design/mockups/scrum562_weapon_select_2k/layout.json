@@ -1,0 +1,39 @@
+{
+  "canvas": {"width": 2560, "height": 1440},
+  "defaults": {
+    "color": "#F7E7BD",
+    "stroke_fill": "#160D10",
+    "stroke_width": 2,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "Выбор оружия",
+    "subtitle": "Бесерк: выбери стартовое оружие.",
+    "card1_title": "Двуручный меч",
+    "card1_desc": "Широкие рубящие удары по ближней дуге.",
+    "card1_stats": "Дальность 100 | Радиус 100 | Перезарядка 1.20с",
+    "card2_title": "Двуручный топор",
+    "card2_desc": "Тяжёлый круговой замах для плотной толпы.",
+    "card2_stats": "Дальность 110 | Радиус 125 | Перезарядка 1.45с",
+    "card3_title": "Двуручный молот",
+    "card3_desc": "Медленный удар с высоким отбрасыванием.",
+    "card3_stats": "Дальность 100 | Радиус 100 | Перезарядка 1.70с",
+    "back": "Назад"
+  },
+  "zones": [
+    {"id": "title", "content_key": "title", "role": "title", "x": 498, "y": 296, "w": 1564, "h": 64, "max_font": 54, "min_font": 34},
+    {"id": "subtitle", "content_key": "subtitle", "role": "subtitle", "x": 498, "y": 376, "w": 1564, "h": 42, "max_font": 26, "min_font": 18},
+    {"id": "card1_title", "content_key": "card1_title", "role": "card_title", "x": 700, "y": 470, "w": 720, "h": 38, "align": "left", "max_font": 28, "min_font": 20},
+    {"id": "card1_desc", "content_key": "card1_desc", "role": "card_desc", "x": 700, "y": 516, "w": 720, "h": 54, "align": "left", "max_font": 22, "min_font": 16},
+    {"id": "card1_stats", "content_key": "card1_stats", "role": "card_stats", "x": 700, "y": 578, "w": 880, "h": 32, "align": "left", "max_font": 20, "min_font": 14, "color": "#BDEEFF"},
+    {"id": "card2_title", "content_key": "card2_title", "role": "card_title", "x": 700, "y": 688, "w": 720, "h": 38, "align": "left", "max_font": 28, "min_font": 20},
+    {"id": "card2_desc", "content_key": "card2_desc", "role": "card_desc", "x": 700, "y": 734, "w": 720, "h": 54, "align": "left", "max_font": 22, "min_font": 16},
+    {"id": "card2_stats", "content_key": "card2_stats", "role": "card_stats", "x": 700, "y": 796, "w": 880, "h": 32, "align": "left", "max_font": 20, "min_font": 14, "color": "#BDEEFF"},
+    {"id": "card3_title", "content_key": "card3_title", "role": "card_title", "x": 700, "y": 906, "w": 720, "h": 38, "align": "left", "max_font": 28, "min_font": 20},
+    {"id": "card3_desc", "content_key": "card3_desc", "role": "card_desc", "x": 700, "y": 952, "w": 720, "h": 54, "align": "left", "max_font": 22, "min_font": 16},
+    {"id": "card3_stats", "content_key": "card3_stats", "role": "card_stats", "x": 700, "y": 1014, "w": 880, "h": 32, "align": "left", "max_font": 20, "min_font": 14, "color": "#BDEEFF"},
+    {"id": "back", "content_key": "back", "role": "button", "x": 1140, "y": 1120, "w": 280, "h": 60, "max_font": 26, "min_font": 18}
+  ]
+}

@@ -3,7 +3,7 @@ extends SceneTree
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
 const DF_DIR := "res://assets/sprites/ui/frames/dark_fantasy/"
-const MINIMAL_METAL_BUTTON_DIR := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
+const TEXT_BUTTON_UNIQUE_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
 const ORNATE_DIR := "res://assets/sprites/ui/frames/ornate/"
 const UNIFIED_DIR := "res://assets/sprites/ui/frames/unified/"
 const UNIFIED_METADATA_PATH := "res://docs/design/references/unified_master_frame/unified_master_frame_metadata.json"
@@ -21,9 +21,9 @@ func _initialize() -> void:
 	var start_button := main.find_child("MainMenuStartButton", true, false) as Button
 	var settings_button := main.find_child("MainMenuSettingsButton", true, false) as Button
 	var exit_button := main.find_child("MainMenuExitButton", true, false) as Button
-	_expect_button_state_paths(start_button, "main_menu", errors)
-	_expect_button_state_paths(settings_button, "main_menu", errors)
-	_expect_button_state_paths(exit_button, "main_menu", errors)
+	_expect_text_button_state_paths(start_button, "main_menu_380x104", errors)
+	_expect_text_button_state_paths(settings_button, "main_menu_380x104", errors)
+	_expect_text_button_state_paths(exit_button, "main_menu_380x104", errors)
 
 	var ui = main.get("ui")
 	if ui == null:
@@ -36,6 +36,7 @@ func _initialize() -> void:
 		_expect_runtime_frame_style(ui.call("_hud_card_style"), "HUD card", errors, unified_texture_margin)
 		_expect_minimal_metal_frame_kit(ui, errors)
 		_expect_minimal_metal_button_kit(errors)
+		_expect_text_button_unique_kit(errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -45,23 +46,28 @@ func _initialize() -> void:
 	_write_unified_margin_dump(unified_texture_margin)
 	_write_minimal_metal_dump()
 	_write_minimal_metal_button_dump()
+	_write_text_button_unique_dump()
 	print("Dark fantasy UI theme test passed.")
 	quit(0)
 
 
-func _expect_button_state_paths(button: Button, button_type: String, errors: Array[String]) -> void:
+func _expect_text_button_state_paths(button: Button, button_id: String, errors: Array[String]) -> void:
 	if button == null:
-		errors.append("Expected %s button to exist." % button_type)
+		errors.append("Expected %s button to exist." % button_id)
+		return
+	var textures: Dictionary = UIThemePaths.TEXT_BUTTON_UNIQUE_TEXTURES.get(button_id, {})
+	if textures.is_empty():
+		errors.append("TEXT_BUTTON_UNIQUE_TEXTURES missing %s." % button_id)
 		return
 	var expected := {
-		"normal": "ui_btn_minimal_metal_%s.png" % button_type,
-		"hover": "ui_btn_minimal_metal_%s_hover.png" % button_type,
-		"focus": "ui_btn_minimal_metal_%s_focus.png" % button_type,
-		"pressed": "ui_btn_minimal_metal_%s_pressed.png" % button_type,
-		"disabled": "ui_btn_minimal_metal_%s_disabled.png" % button_type,
+		"normal": str(textures.get("normal", "")),
+		"hover": str(textures.get("hover", "")),
+		"focus": str(textures.get("focus", "")),
+		"pressed": str(textures.get("pressed", "")),
+		"disabled": str(textures.get("disabled", "")),
 	}
 	for state in expected.keys():
-		_expect_style_path(button.get_theme_stylebox(state), str(expected[state]), "%s %s" % [button.name, state], errors, MINIMAL_METAL_BUTTON_DIR)
+		_expect_style_path(button.get_theme_stylebox(state), str(expected[state]), "%s %s" % [button.name, state], errors, "")
 	_expect_neutral_button_hover(button, errors)
 
 
@@ -93,13 +99,16 @@ func _expect_runtime_frame_style(style: StyleBox, context: String, errors: Array
 		var expected_margins := {}
 		for frame_type in UIThemePaths.MINIMAL_METAL_FRAME_PATHS.keys():
 			expected_margins[UIThemePaths.MINIMAL_METAL_FRAME_PATHS[frame_type]] = UIThemePaths.MINIMAL_METAL_FRAME_TEXTURE_MARGINS[frame_type]
+		if context.begins_with("HUD "):
+			for frame_type in ["chud_resource_panel", "chud_timer", "chud_artifact_row"]:
+				expected_margins[UIThemePaths.OVERHAUL_2K_FRAME_PATHS[frame_type]] = UIThemePaths.OVERHAUL_2K_FRAME_TEXTURE_MARGINS[frame_type]
 		if not expected_margins.has(texture_style.texture.resource_path):
-			errors.append("%s texture mismatch: got %s, expected SCRUM-451 minimal-metal runtime kit." % [context, texture_style.texture.resource_path])
+			errors.append("%s texture mismatch: got %s, expected active minimal-metal or @2K HUD runtime kit." % [context, texture_style.texture.resource_path])
 		elif not context.begins_with("HUD "):
 			var margins: Vector4 = expected_margins[texture_style.texture.resource_path]
 			if texture_style.texture_margin_left != margins.x or texture_style.texture_margin_top != margins.y or texture_style.texture_margin_right != margins.z or texture_style.texture_margin_bottom != margins.w:
 				errors.append("%s minimal-metal frame margins mismatch: got %s,%s,%s,%s expected %s." % [context, texture_style.texture_margin_left, texture_style.texture_margin_top, texture_style.texture_margin_right, texture_style.texture_margin_bottom, str(margins)])
-	if texture_style.axis_stretch_horizontal != StyleBoxTexture.AXIS_STRETCH_MODE_TILE or texture_style.axis_stretch_vertical != StyleBoxTexture.AXIS_STRETCH_MODE_TILE:
+	if not context.begins_with("HUD ") and (texture_style.axis_stretch_horizontal != StyleBoxTexture.AXIS_STRETCH_MODE_TILE or texture_style.axis_stretch_vertical != StyleBoxTexture.AXIS_STRETCH_MODE_TILE):
 		errors.append("%s runtime frame should tile both axes." % context)
 
 
@@ -162,6 +171,23 @@ func _expect_minimal_metal_button_kit(errors: Array[String]) -> void:
 			errors.append("Minimal-metal button %s content margins mismatch: got %s expected %s." % [button_type, str(UIThemePaths.MINIMAL_METAL_BUTTON_CONTENT.get(button_type, Vector4.ZERO)), str(expected_content)])
 		if not _content_encloses_texture(expected_content, expected_texture):
 			errors.append("Minimal-metal button %s content margins must be >= texture margins: content=%s texture=%s." % [button_type, str(expected_content), str(expected_texture)])
+
+
+func _expect_text_button_unique_kit(errors: Array[String]) -> void:
+	for button_id in UIThemePaths.TEXT_BUTTON_UNIQUE_TEXTURES.keys():
+		var textures: Dictionary = UIThemePaths.TEXT_BUTTON_UNIQUE_TEXTURES.get(button_id, {})
+		for state in ["normal", "hover", "focus", "pressed", "disabled"]:
+			var path := str(textures.get(state, ""))
+			if not path.begins_with(TEXT_BUTTON_UNIQUE_DIR):
+				errors.append("Text-button %s %s path should live under SCRUM-657 dir, got %s." % [button_id, state, path])
+			if not ResourceLoader.exists(path):
+				errors.append("Text-button texture missing: %s." % path)
+		var texture_margins: Vector4 = UIThemePaths.TEXT_BUTTON_UNIQUE_MARGINS.get(button_id, Vector4.ZERO)
+		var content_margins: Vector4 = UIThemePaths.TEXT_BUTTON_UNIQUE_CONTENT.get(button_id, Vector4.ZERO)
+		if texture_margins == Vector4.ZERO or content_margins == Vector4.ZERO:
+			errors.append("Text-button %s should define texture/content margins." % button_id)
+		if not _content_encloses_texture(content_margins, texture_margins):
+			errors.append("Text-button %s content margins must protect ornament: content=%s texture=%s." % [button_id, str(content_margins), str(texture_margins)])
 
 
 func _expect_neutral_button_hover(button: Button, errors: Array[String]) -> void:
@@ -291,5 +317,22 @@ func _write_minimal_metal_button_dump() -> void:
 			button_type,
 			str(UIThemePaths.MINIMAL_METAL_BUTTON_MARGINS.get(button_type, Vector4.ZERO)),
 			str(UIThemePaths.MINIMAL_METAL_BUTTON_CONTENT.get(button_type, Vector4.ZERO)),
+		])
+	file.close()
+
+
+func _write_text_button_unique_dump() -> void:
+	var dir := ProjectSettings.globalize_path("res://build/qa/scrum669_text_buttons")
+	DirAccess.make_dir_recursive_absolute(dir)
+	var file := FileAccess.open(dir.path_join("text_button_unique_runtime_kit.md"), FileAccess.WRITE)
+	if file == null:
+		return
+	file.store_line("# SCRUM-657 Text Button Runtime Kit")
+	file.store_line("")
+	for button_id in UIThemePaths.TEXT_BUTTON_UNIQUE_TEXTURES.keys():
+		file.store_line("- `%s`: texture `%s`, content `%s`" % [
+			button_id,
+			str(UIThemePaths.TEXT_BUTTON_UNIQUE_MARGINS.get(button_id, Vector4.ZERO)),
+			str(UIThemePaths.TEXT_BUTTON_UNIQUE_CONTENT.get(button_id, Vector4.ZERO)),
 		])
 	file.close()

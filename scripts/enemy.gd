@@ -1,5 +1,8 @@
 extends CharacterBody2D
 
+# SCRUM-611: мягкий радиальный тик попадания вместо квадратной красной рамки.
+const HIT_FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
+
 signal died(enemy: Node2D)
 # Фазы уникальной атаки элитки для Animator: windup -> strike -> recover -> idle.
 signal elite_attack_phase_changed(attack_id: String, phase: String)
@@ -33,6 +36,10 @@ signal elite_attack_phase_changed(attack_id: String, phase: String)
 
 var health := 0.0
 var _shoot_cooldown := 0.0
+# SCRUM-498: сколько ещё секунд враг считается «активно ведущим огонь» после выстрела —
+# питает off-screen threat-маркер только реально стреляющих дальнобоев.
+const THREAT_FIRE_MARKER_DURATION := 2.6
+var _threat_fire_marker_left := 0.0
 var _summon_cooldown := 0.0
 var _contact_cooldown := 0.0
 var _contact_windup_left := -1.0
@@ -65,7 +72,7 @@ const COLLISION_LAYER_PLAYER := 1
 const COLLISION_LAYER_GROUND_ENEMY := 2
 const COLLISION_LAYER_FLYING_ENEMY := 4
 const COLLISION_LAYER_SOLID := 32
-const ARENA_SIZE := Vector2(2560, 1440)
+const ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: синхронно с main.gd (×1.6)
 const ARENA_ENTITY_MARGIN := 48.0
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
@@ -84,6 +91,33 @@ const ELITE_SHARD_FAN_BURST_TEXTURE := preload("res://assets/sprites/effects/ene
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
 const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
+const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
+const COMBAT_FEEDBACK_FLASH_GROUP := "combat_feedback_flashes"
+const COMBAT_FEEDBACK_MAX_LABELS := 42
+const COMBAT_FEEDBACK_MAX_FLASHES := 36
+# SCRUM-523: ЕДИНЫЙ источник правды палитры боевых цифр по ТИПУ урона.
+# Цвет привязан к КАНАЛУ урона (физический/магический/звуковой/периодический-DoT/
+# чистый-true), НЕ к классу или оружию — бой читается одинаково во всех схватках.
+# Итог по цели = сумма типизированных попаданий; каждый вызов take_damage с
+# feedback{"damage_type"} порождает отдельную цветную цифру, поэтому виден вклад
+# каждого типа. Враг (этот файл) — единственный, кто рисует боевые цифры; игрок
+# своих цифр не спавнит. Третьих копий палитры не заводить: все системы
+# (class_weapon/status_effects/boss-наследник) передают строковый damage_type во
+# feedback, а цвет берут через статический Enemy.damage_type_color(). Документация —
+# docs/design/systems/combat.md, раздел «Типы урона и палитра боевых цифр».
+const COMBAT_FEEDBACK_DAMAGE_COLORS := {
+	"physical": Color(1.0, 0.84, 0.42, 1.0),
+	"magic": Color(0.68, 0.46, 1.0, 1.0),
+	"dot": Color(0.46, 1.0, 0.42, 1.0),
+	"sound": Color(0.30, 0.86, 1.0, 1.0),
+	"true": Color(1.0, 0.96, 0.82, 1.0),
+}
+
+
+# Единый доступ к палитре. Неизвестный/непроставленный тип → "true" (чистый/белый).
+# static — инстанс врага не нужен (зовётся из тестов/оружия/статусов).
+static func damage_type_color(damage_type) -> Color:
+	return COMBAT_FEEDBACK_DAMAGE_COLORS.get(str(damage_type), COMBAT_FEEDBACK_DAMAGE_COLORS["true"])
 
 # Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
 # contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
@@ -111,7 +145,7 @@ func _ready() -> void:
 	_create_health_bar()
 	var config := _elite_attack_config()
 	if not config.is_empty():
-		elite_attack_id = str(config["attack_id"])
+		elite_attack_id = str(config.get("attack_id", ""))
 		_elite_attack_cooldown = randf_range(2.2, 3.6)
 
 
@@ -168,6 +202,9 @@ func _apply_collision_profile() -> void:
 
 func _physics_process(delta: float) -> void:
 	StatusEffects.tick(self, delta)
+	# SCRUM-498: окно «недавно стрелял» для off-screen threat-маркера дальнобоев.
+	if _threat_fire_marker_left > 0.0:
+		_threat_fire_marker_left = maxf(0.0, _threat_fire_marker_left - delta)
 	var player := _player()
 	if player == null:
 		velocity = _consume_knockback(delta)
@@ -214,15 +251,26 @@ func _physics_process(delta: float) -> void:
 	_update_elite_patterns(delta, player, distance)
 
 
-func take_damage(amount: float) -> void:
+func take_damage(amount: float, feedback := {}) -> void:
 	if _death_lifecycle_started:
 		return
+	var feedback_data: Dictionary = feedback if feedback is Dictionary else {}
 	var final_amount := amount * StatusEffects.damage_taken_multiplier(self)
 	if _elite_shield_active:
 		final_amount *= elite_shield_damage_reduction
 		_apply_elite_reflect_thorns(amount)
 	health -= final_amount
 	_update_health_bar()
+	# SCRUM-502: репортим нанесённый врагу урон в агрегатор забега (экран итогов).
+	# enemy.take_damage(...) — единая точка схода ВСЕХ источников урона по врагу
+	# (снаряды projectile.gd, прямой удар/enchant/echo/blast/контратаки player.gd,
+	# DoT-тики, урон саммонов), поэтому один хук здесь покрывает все пути. Берём
+	# final_amount = фактически снятое HP (после damage_taken_multiplier и elite-щита).
+	if final_amount > 0.0 and is_inside_tree():
+		var game_node := get_tree().current_scene
+		if game_node != null and game_node.has_method("add_run_damage_dealt"):
+			game_node.add_run_damage_dealt(final_amount)
+	_show_combat_feedback(final_amount, feedback_data)
 	if is_inside_tree():
 		if _cached_audio == null or not is_instance_valid(_cached_audio):
 			_cached_audio = get_node_or_null("/root/AudioManager")
@@ -247,6 +295,133 @@ func take_damage(amount: float) -> void:
 			if rig != null and rig.has_method("spawn_death_ghost"):
 				rig.spawn_death_ghost()
 			queue_free()
+
+
+func _show_combat_feedback(amount: float, feedback: Dictionary) -> void:
+	if amount <= 0.0 or not _combat_feedback_enabled():
+		return
+	_show_hit_flash()
+	if bool(feedback.get("suppress_number", false)):
+		return
+	if _feedback_group_count(COMBAT_FEEDBACK_LABEL_GROUP) >= COMBAT_FEEDBACK_MAX_LABELS:
+		return
+	var critical := bool(feedback.get("critical", false))
+	var damage_type := str(feedback.get("damage_type", "true"))
+	var label := Label.new()
+	label.name = "CombatCritNumber" if critical else "CombatDamageNumber"
+	label.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
+	label.text = "! %d" % int(round(amount)) if critical else str(int(round(amount)))
+	# Крит перебивает тип красным (ожидаемо, см. combat.md); иначе — цвет по типу.
+	label.modulate = Color(1.0, 0.24, 0.16, 1.0) if critical else damage_type_color(damage_type)
+	label.add_theme_font_size_override("font_size", 30 if critical else 22)
+	label.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.01, 0.95))
+	label.add_theme_constant_override("outline_size", 6 if critical else 5)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.custom_minimum_size = Vector2(96.0, 34.0)
+	label.z_index = 3000
+	_feedback_parent().add_child(label)
+	label.global_position = global_position + Vector2(randf_range(-18.0, 18.0) - 48.0, -_feedback_height() - 20.0 + randf_range(-6.0, 6.0))
+	var target_position := label.global_position + Vector2(0.0, -44.0)
+	var tween := label.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "global_position", target_position, 0.62).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.42).set_delay(0.20)
+	tween.chain().tween_callback(label.queue_free)
+	if critical:
+		_show_critical_marker()
+
+
+func _show_critical_marker() -> void:
+	if _feedback_group_count(COMBAT_FEEDBACK_LABEL_GROUP) >= COMBAT_FEEDBACK_MAX_LABELS:
+		return
+	var marker := Label.new()
+	marker.name = "CombatCritMarker"
+	marker.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
+	marker.text = "!"
+	marker.modulate = Color(1.0, 0.06, 0.02, 1.0)
+	marker.add_theme_font_size_override("font_size", 34)
+	marker.add_theme_color_override("font_outline_color", Color(1.0, 0.78, 0.20, 0.95))
+	marker.add_theme_constant_override("outline_size", 4)
+	marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	marker.custom_minimum_size = Vector2(34.0, 38.0)
+	marker.z_index = 3001
+	_feedback_parent().add_child(marker)
+	marker.global_position = global_position + Vector2(18.0, -_feedback_height() - 36.0)
+	var tween := marker.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(marker, "global_position", marker.global_position + Vector2(0.0, -28.0), 0.48).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(marker, "modulate:a", 0.0, 0.28).set_delay(0.20)
+	tween.chain().tween_callback(marker.queue_free)
+
+
+func _show_hit_flash() -> void:
+	if _feedback_group_count(COMBAT_FEEDBACK_FLASH_GROUP) >= COMBAT_FEEDBACK_MAX_FLASHES:
+		return
+	# SCRUM-611: мягкий радиальный тёплый тик вместо чёрно-красной рамки (Line2D
+	# читалась как UI-артефакт). Аддитивный impact_flash, низкая alpha, быстрый угас.
+	var sprite_size := _visible_sprite_size()
+	var tick := Sprite2D.new()
+	tick.name = "CombatHitTick"
+	tick.add_to_group(COMBAT_FEEDBACK_FLASH_GROUP)
+	tick.texture = HIT_FLASH_TEXTURE
+	var tick_material := CanvasItemMaterial.new()
+	tick_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	tick.material = tick_material
+	tick.modulate = Color(1.0, 0.46, 0.36, 0.40)
+	# impact_flash 128px; масштабируем под видимый размер цели (мягкое покрытие).
+	var tick_reach := maxf(maxf(sprite_size.x, sprite_size.y) * 0.95, 48.0)
+	tick.scale = Vector2.ONE * (tick_reach / 128.0)
+	tick.z_index = 2999
+	_feedback_parent().add_child(tick)
+	tick.global_position = global_position + Vector2(0.0, -sprite_size.y * 0.04)
+	var tick_tween := tick.create_tween()
+	tick_tween.tween_property(tick, "modulate:a", 0.0, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tick_tween.tween_callback(tick.queue_free)
+
+	var body := _feedback_flash_body()
+	if body == null:
+		return
+	# Смягчённая body-вспышка: меньше lerp и тёплый цвет (не слепит на светлых аренах).
+	var original_modulate := body.modulate
+	body.modulate = original_modulate.lerp(Color(1.0, 0.42, 0.34, original_modulate.a), 0.40)
+	var body_tween := body.create_tween()
+	body_tween.tween_property(body, "modulate", original_modulate, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+func _combat_feedback_enabled() -> bool:
+	if not is_inside_tree():
+		return false
+	return bool(get_tree().root.get_meta("combat_feedback", true))
+
+
+func _feedback_group_count(group_name: String) -> int:
+	if not is_inside_tree():
+		return 0
+	return get_tree().get_nodes_in_group(group_name).size()
+
+
+func _feedback_parent() -> Node:
+	if is_inside_tree() and get_tree().current_scene != null:
+		return get_tree().current_scene
+	var parent := get_parent()
+	return parent if parent != null else self
+
+
+func _feedback_height() -> float:
+	return maxf(_visible_sprite_size().y * 0.5, contact_range) + 10.0
+
+
+func _feedback_flash_body() -> CanvasItem:
+	var full_frame := _full_frame_body()
+	if full_frame != null and full_frame.visible:
+		return full_frame
+	var rig := _cutout_rig()
+	if rig != null and rig.visible:
+		return rig
+	var body := _body_sprite()
+	if body != null:
+		return body
+	return null
 
 
 func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
@@ -438,7 +613,7 @@ func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool
 			_elite_instant_phase_applied = true
 			_elite_attack_cooldown = 0.0
 		_elite_attack_cooldown -= delta
-		if _elite_attack_cooldown > 0.0 or distance > float(config["trigger_range"]):
+		if _elite_attack_cooldown > 0.0 or distance > float(config.get("trigger_range", 360.0)):
 			return false
 		_begin_elite_attack_windup(config, player)
 		return true
@@ -450,15 +625,15 @@ func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool
 	match elite_attack_state:
 		"windup":
 			_execute_elite_strike(config, player)
-			_set_elite_attack_phase("strike", float(config["strike"]))
+			_set_elite_attack_phase("strike", float(config.get("strike", 0.25)))
 		"strike":
-			_set_elite_attack_phase("recover", float(config["recover"]))
+			_set_elite_attack_phase("recover", float(config.get("recover", 0.45)))
 			if elite_behavior == "night_stalker":
 				_set_body_alpha(1.0)
 		"recover":
 			elite_attack_state = "idle"
 			# Фаза 2 (HP ≤ порога): ротация уникальных атак ускоряется (~-20%).
-			_elite_attack_cooldown = float(config["cooldown"]) * (0.8 if _elite_in_phase2() else 1.0)
+			_elite_attack_cooldown = float(config.get("cooldown", 6.0)) * (0.8 if _elite_in_phase2() else 1.0)
 			elite_attack_phase_changed.emit(elite_attack_id, "idle")
 			set_meta("elite_attack_phase", "idle")
 	return elite_attack_state != "idle"
@@ -506,7 +681,8 @@ func _play_elite_attack_phase_animation(phase: String, duration: float) -> void:
 
 func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 	_elite_attack_targets.clear()
-	_set_elite_attack_phase("windup", float(config["windup"]))
+	var windup := float(config.get("windup", 0.5))
+	_set_elite_attack_phase("windup", windup)
 	var to_player := player.global_position - global_position
 	if to_player.length_squared() > 0.001:
 		_elite_attack_direction = to_player.normalized()
@@ -515,26 +691,26 @@ func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 	match elite_behavior:
 		"iron_bastion":
 			# Телеграф совпадает с фаза-2 расширением волны (честное окно уворота).
-			_spawn_elite_telegraph(global_position, _safe_radius(float(config["radius"]) * (1.3 if phase2 else 1.0)), float(config["windup"]))
+			_spawn_elite_telegraph(global_position, _safe_radius(float(config.get("radius", 260.0)) * (1.3 if phase2 else 1.0)), windup)
 		"night_stalker":
-			var behind := player.global_position + _elite_attack_direction * float(config["behind_offset"])
+			var behind := player.global_position + _elite_attack_direction * float(config.get("behind_offset", 74.0))
 			_elite_attack_targets.append(_clamp_to_arena(behind))
-			_spawn_elite_telegraph(_elite_attack_targets[0], float(config["radius"]), float(config["windup"]))
+			_spawn_elite_telegraph(_elite_attack_targets[0], float(config.get("radius", 92.0)), windup)
 			_set_body_alpha(0.25)
-			_spawn_shadow_trail(global_position, _elite_attack_targets[0], float(config["windup"]))
+			_spawn_shadow_trail(global_position, _elite_attack_targets[0], windup)
 		"plague_prophet":
 			_play_rig_action("cast", _elite_attack_direction)
-			var spread := float(config["lob_spread"])
+			var spread := float(config.get("lob_spread", 130.0))
 			# Фаза 2: больше луж яда (второе применение) — +2 лоба.
-			for lob_index in range(int(config["lob_count"]) + (2 if phase2 else 0)):
+			for lob_index in range(int(config.get("lob_count", 3)) + (2 if phase2 else 0)):
 				var offset := Vector2.ZERO
 				if lob_index > 0:
 					offset = Vector2.RIGHT.rotated(randf() * TAU) * randf_range(spread * 0.35, spread)
 				var target := _clamp_to_arena(player.global_position + offset, 92.0)
 				_elite_attack_targets.append(target)
-				_spawn_elite_telegraph(target, float(config["radius"]), float(config["windup"]) + float(config["lob_travel_time"]))
+				_spawn_elite_telegraph(target, float(config.get("radius", 56.0)), windup + float(config.get("lob_travel_time", 0.4)))
 		"shard_marshal":
-			_spawn_elite_telegraph(global_position + _elite_attack_direction * 120.0, 64.0, float(config["windup"]))
+			_spawn_elite_telegraph(global_position + _elite_attack_direction * 120.0, 64.0, windup)
 
 
 func _execute_elite_strike(config: Dictionary, player: Node2D) -> void:
@@ -547,6 +723,18 @@ func _execute_elite_strike(config: Dictionary, player: Node2D) -> void:
 			_strike_poison_volley(config, player)
 		"shard_marshal":
 			_strike_shard_fan(config, player)
+
+
+# SCRUM-498: ранг угрозы для off-screen edge-индикатора HUD. "" — не значимая угроза
+# (обычные melee-мобы не маркируются). boss > elite > активно стреляющий дальнобой.
+func threat_marker_rank() -> String:
+	if is_in_group("bosses"):
+		return "boss"
+	if elite_behavior != "" or is_in_group("elite_enemies"):
+		return "elite"
+	if can_shoot and _threat_fire_marker_left > 0.0:
+		return "shooter"
+	return ""
 
 
 func _elite_in_phase2() -> bool:
@@ -584,7 +772,7 @@ func _shake_player_camera(intensity: float, duration := 0.18) -> void:
 
 
 func _elite_attack_damage(config: Dictionary, player: Node2D) -> float:
-	var damage := contact_damage * float(config["damage_factor"])
+	var damage := contact_damage * float(config.get("damage_factor", 1.0))
 	var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
 	if player_max_health > 0.0:
 		damage = minf(damage, player_max_health * 0.25)
@@ -594,8 +782,8 @@ func _elite_attack_damage(config: Dictionary, player: Node2D) -> float:
 func _strike_slam_wave(config: Dictionary, player: Node2D) -> void:
 	var phase2 := _elite_in_phase2()
 	# Фаза 2: «двойная волна» — шире и сильнее, но в пределах безопасного коридора.
-	var radius := _safe_radius(float(config["radius"]) * (1.3 if phase2 else 1.0))
-	var knockback := float(config["knockback"]) * (1.3 if phase2 else 1.0)
+	var radius := _safe_radius(float(config.get("radius", 260.0)) * (1.3 if phase2 else 1.0))
+	var knockback := float(config.get("knockback", 150.0)) * (1.3 if phase2 else 1.0)
 	_spawn_shockwave_ring(global_position, radius)
 	_shake_player_camera(9.0 if phase2 else 7.0, 0.2)
 	if phase2:
@@ -617,16 +805,16 @@ func _strike_shadow_strike(config: Dictionary, player: Node2D) -> void:
 	global_position = strike_position
 	_set_body_alpha(1.0)
 	_play_rig_action("attack", player.global_position - global_position)
-	if player.global_position.distance_to(global_position) <= float(config["radius"]):
+	if player.global_position.distance_to(global_position) <= float(config.get("radius", 92.0)):
 		if player.has_method("take_damage"):
 			player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
 	# Фаза 2: серия из двух ударов из тени — второй заход с другой стороны.
 	if _elite_in_phase2():
-		var second := _clamp_to_arena(player.global_position - _elite_attack_direction * float(config["behind_offset"]))
+		var second := _clamp_to_arena(player.global_position - _elite_attack_direction * float(config.get("behind_offset", 74.0)))
 		_spawn_shadow_trail(global_position, second, 0.18)
 		global_position = second
 		_play_rig_action("attack", player.global_position - global_position)
-		if player.global_position.distance_to(global_position) <= float(config["radius"]):
+		if player.global_position.distance_to(global_position) <= float(config.get("radius", 92.0)):
 			if player.has_method("take_damage"):
 				player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
 
@@ -634,12 +822,12 @@ func _strike_shadow_strike(config: Dictionary, player: Node2D) -> void:
 func _strike_poison_volley(config: Dictionary, player: Node2D) -> void:
 	var damage := _elite_attack_damage(config, player)
 	for target in _elite_attack_targets:
-		_spawn_poison_lob(target, float(config["lob_travel_time"]), damage, config)
+		_spawn_poison_lob(target, float(config.get("lob_travel_time", 0.4)), damage, config)
 
 
 func _strike_shard_fan(config: Dictionary, player: Node2D) -> void:
-	var shard_count := int(config["shard_count"])
-	var spread := deg_to_rad(float(config["spread_degrees"]))
+	var shard_count := maxi(int(config.get("shard_count", 5)), 1)
+	var spread := deg_to_rad(float(config.get("spread_degrees", 60.0)))
 	var damage := _elite_attack_damage(config, player)
 	for shard_index in range(shard_count):
 		var t := 0.0 if shard_count == 1 else float(shard_index) / float(shard_count - 1)
@@ -667,7 +855,7 @@ func _spawn_shard(direction: Vector2, damage: float, config: Dictionary) -> void
 		shard_sprite.texture = ELITE_CRYSTAL_SHARD_TEXTURE
 		shard_sprite.rotation = direction.angle()
 	if projectile.has_method("setup"):
-		projectile.setup(global_position, global_position + direction * 200.0, damage, float(config["shard_speed"]))
+		projectile.setup(global_position, global_position + direction * 200.0, damage, float(config.get("shard_speed", 430.0)))
 
 
 func _spawn_elite_telegraph(target_position: Vector2, radius: float, duration: float) -> void:
@@ -783,10 +971,13 @@ func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: 
 	var puddle := Node2D.new()
 	puddle.name = "ElitePoisonPuddle"
 	puddle.add_to_group("enemy_hazards")
-	puddle.z_index = 5
+	# SCRUM-553: наземная декаль — лужа под всеми сущностями (z≈0), над фоном(-100)/бордером(-20)
+	# арены. Абсолютный слой, чтобы не зависеть от z родителя (current_scene/root).
+	puddle.z_as_relative = false
+	puddle.z_index = -3
 	parent.add_child(puddle)
 	puddle.global_position = puddle_position
-	var radius := float(config["radius"])
+	var radius := float(config.get("radius", 56.0))
 
 	# Оформленная бурлящая лужа яда (raster pool) вместо голого Polygon2D-круга.
 	var visual := Sprite2D.new()
@@ -802,8 +993,10 @@ func _spawn_poison_puddle(puddle_position: Vector2, tick_damage: float, config: 
 	bubble.tween_property(visual, "scale", visual.scale * 1.06, 0.7).set_trans(Tween.TRANS_SINE)
 	bubble.tween_property(visual, "scale", visual.scale, 0.7).set_trans(Tween.TRANS_SINE)
 
-	var duration := float(config["puddle_duration"])
-	var tick_interval := float(config["tick_interval"])
+	var duration := float(config.get("puddle_duration", 3.0))
+	# Защита от div0/KeyError: неполный config (без tick_interval или =0) больше
+	# не роняет бой и не уходит в бесконечный tick_count (SCRUM-598).
+	var tick_interval := maxf(float(config.get("tick_interval", 0.6)), 0.05)
 	var tween := puddle.create_tween()
 	var tick_count := int(floor(duration / tick_interval))
 	for tick_index in range(tick_count):
@@ -958,6 +1151,7 @@ func _update_shooting(delta: float, player: Node2D) -> void:
 
 	_play_rig_action("shoot", player.global_position - global_position)
 	_shoot_cooldown = fire_interval
+	_threat_fire_marker_left = THREAT_FIRE_MARKER_DURATION  # SCRUM-498
 
 
 func _update_summoning(delta: float) -> void:
@@ -1012,7 +1206,13 @@ func _update_contact_damage(delta: float, player: Node2D, distance: float) -> vo
 		return
 
 	if player.has_method("take_damage"):
-		player.take_damage(contact_damage, "contact")
+		# Кап контактного урона долей max HP игрока (как у элитных атак, SCRUM-599):
+		# на поздних стадиях множитель ~5x ваншотил fragile-класс одним тычком.
+		var contact_hit := contact_damage
+		var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
+		if player_max_health > 0.0:
+			contact_hit = minf(contact_hit, player_max_health * 0.20)
+		player.take_damage(contact_hit, "contact")
 
 	_contact_cooldown = contact_interval
 	_contact_windup_left = -1.0

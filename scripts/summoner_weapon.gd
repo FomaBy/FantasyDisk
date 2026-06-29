@@ -33,7 +33,9 @@ var ally_visual_ids: Array[String] = []
 
 func configure_weapon(config: Dictionary) -> void:
 	weapon_id = str(config.get("id", weapon_id))
-	summon_interval = float(config.get("fire_interval", summon_interval))
+	# SCRUM-644: clamp to a positive floor — a non-positive interval would make
+	# _cooldown perpetually <= 0 in _process() and _summon() fire every frame.
+	summon_interval = maxf(float(config.get("fire_interval", summon_interval)), 0.05)
 	max_summons = int(config.get("max_summons", max_summons))
 	damage_parameter = str(config.get("damage_parameter", damage_parameter))
 	damage_multiplier = float(config.get("summon_damage_multiplier", damage_multiplier))
@@ -131,12 +133,23 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 	var energy := float(stats.get("energy", 0.0))
 	var summon_amount := float(parameters.get("summon_amount", 0.0))
 	var base_damage := float(parameters.get(damage_parameter, parameters.get("damage", damage)))
-	var leadership_damage := 1.0 + minf(leadership * 0.020, 0.42)
-	var attribute_damage := 1.0 + minf(summon_amount * 0.014 + knowledge * 0.004 + intelligence * 0.003 + energy * 0.003, 0.34)
+	# SCRUM-546: Лидерство — главный драйвер урона саммонов (см.
+	# progression_data._budget_summon_role_damage_factor — тот же коэффициент/потолок).
+	var leadership_damage := 1.0 + minf(leadership * 0.060, 1.15)
+	var attribute_damage := 1.0 + minf(summon_amount * 0.016 + knowledge * 0.004 + intelligence * 0.004 + energy * 0.003, 0.40)
 	var role_damage := summon_role_damage_multiplier * leadership_damage * attribute_damage
 	var summon_haste := minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
 	var summon_bulk := minf(leadership * 0.045 + summon_amount * 0.010, 0.75)
-	var summon_radius := summon_aoe_radius * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18))
+	# SCRUM-505: рой чистит толпу (20t-ось) тем шире, чем дальше ПРОКАЧАН забег.
+	# КРИТИЧНО для lvl1-инварианта: драйвер = (level-1), РОВНО 0 на 1-м уровне (стартовый
+	# баланс НЕ трогаем), растёт к lvl20. summon_amount/Лидерство как драйвер НЕ годятся:
+	# summon_amount = leadership + … (derived_parameters:936), а базовое Лидерство
+	# друида/инженера 9-10 → раздуло бы lvl1. Это РАНТАЙМ-покрытие splash — budget его
+	# не моделирует (per-summon DPS-формула/haste остаются зеркалом budget, инвариант цел).
+	var level_progress := maxf(float(owner_node.get("level")) - 1.0, 0.0) if owner_node.get("level") != null else 0.0
+	var summon_crowd_scale := 1.0 + minf(level_progress * 0.275, 5.20)
+	var summon_radius := summon_aoe_radius * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
+	var summon_splash_damage := summon_aoe_damage_multiplier * summon_crowd_scale
 	var owner_max_hp := float(owner_node.get("max_health")) if owner_node.get("max_health") != null else 80.0
 	return {
 		"damage": maxf(base_damage * damage_multiplier * role_damage, 1.0),
@@ -149,7 +162,7 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 		"control_knockback": summon_control_knockback,
 		"support_heal_percent": summon_support_heal_percent,
 		"aoe_radius": summon_radius,
-		"aoe_damage_multiplier": summon_aoe_damage_multiplier,
+		"aoe_damage_multiplier": summon_splash_damage,
 		"leash_radius": summon_leash_radius,
 	}
 

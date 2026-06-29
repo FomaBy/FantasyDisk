@@ -12,13 +12,18 @@ const STAT_BASIC_ROW_FRAME := preload("res://assets/sprites/ui/frames/minimal_me
 const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png")
 const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png")
 const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png")
+# SCRUM-486/SCRUM-593: per-slot @2K pause dossier plus dedicated SCRUM-586 stat tooltip.
+const ESCAPE_PANEL_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png")
+const STAT_TOOLTIP_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png")
 const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
 const PAUSE_END_MODAL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png")
-const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause.png")
-const PAUSE_BUTTON_HOVER := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_hover.png")
-const PAUSE_BUTTON_FOCUS := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_focus.png")
-const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_pressed.png")
-const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_pause_disabled.png")
+const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_normal.png")
+const PAUSE_BUTTON_HOVER := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_hover.png")
+const PAUSE_BUTTON_FOCUS := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_focus.png")
+const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_pressed.png")
+const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_disabled.png")
+const PAUSE_BUTTON_TEXTURE_MARGINS := Vector4(34.0, 12.0, 34.0, 12.0)
+const PAUSE_BUTTON_CONTENT_MARGINS := Vector4(45.0, 12.0, 45.0, 12.0)
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
@@ -98,6 +103,19 @@ func setup(player: Node) -> void:
 	_refresh_dossier()
 	_refresh_stats()
 	_refresh_artifacts()
+
+
+# SCRUM-484: координатная спека @2560×1440 — пауза-досье (двухколоночная модалка).
+# Панель почти на весь экран (offset 20/18/-20/-18 → 2520×1404), _pause_end_modal_style
+# margins (74,94,74,86)×1.56 → safe-area Rect2(135,165,2290,1123). Внутри ScrollContainer
+# HBox(sep18): левая колонка управления (ширина 330, кнопки 280×60) + правая область
+# статов/артефактов (группы-панели шириной 430). Контент list-driven, тянется по высоте.
+const PD_PANEL_2K := Rect2(20, 18, 2520, 1404)
+const PD_SAFE_2K := Rect2(135, 165, 2290, 1123)
+const PD_LEFT_COLUMN_2K := Rect2(135, 165, 330, 1123)
+const PD_RIGHT_AREA_2K := Rect2(483, 165, 1942, 1123)
+const PD_BTN_2K := Rect2(0, 0, 280, 60)  # шаблон-размер кнопки управления
+const PD_STAT_GROUP_2K := Rect2(0, 0, 430, 0)  # шаблон-ширина панели группы статов
 
 
 func _build_layout() -> void:
@@ -273,8 +291,10 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 	button_box.add_theme_constant_override("separation", 8)
 	left_column.add_child(button_box)
 
+	# SCRUM-580: 4 кнопки управления досье-паузы переодеты в выделенный pd_btn @2K-фрейм.
 	var resume_button := _make_button("Продолжить")
 	resume_button.name = "PauseResumeButton"
+	_apply_pd_2k_button_theme(resume_button)
 	resume_button.pressed.connect(func() -> void:
 		resume_requested.emit()
 	)
@@ -282,6 +302,7 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "PauseSettingsButton"
+	_apply_pd_2k_button_theme(settings_button)
 	settings_button.pressed.connect(func() -> void:
 		settings_requested.emit()
 	)
@@ -289,12 +310,13 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 
 	var end_run_button := _make_button("Завершить забег")
 	end_run_button.name = "PauseEndRunButton"
-	_apply_fantasy_button_theme(end_run_button, "danger")
+	_apply_pd_2k_button_theme(end_run_button, "danger")
 	end_run_button.pressed.connect(_show_end_run_confirm)
 	button_box.add_child(end_run_button)
 
 	var menu_button := _make_button("Выйти в главное меню")
 	menu_button.name = "PauseMainMenuButton"
+	_apply_pd_2k_button_theme(menu_button)
 	menu_button.pressed.connect(func() -> void:
 		main_menu_requested.emit()
 	)
@@ -606,6 +628,14 @@ func _show_end_run_confirm() -> void:
 	dialog.popup_centered(Vector2i(360, 140))
 
 
+# SCRUM-593: координатная спека @2560×1440 — тултип статов (транзиентный).
+# Плавающая панель шириной TOOLTIP_MAX_WIDTH=430, высота по контенту (label autowrap,
+# content margins 44/42/44/42 from SCRUM-586 safe-zone spec). Позиция у курсора/слота
+# стандартным tooltip Godot клампится в экран движком.
+const ST_PANEL_2K := Rect2(0, 0, 430, 0)  # w фикс (TOOLTIP_MAX_WIDTH), h по контенту
+const ST_LABEL_CONTENT_2K := Vector4(44.0, 42.0, 44.0, 42.0)
+
+
 func _make_custom_tooltip(for_text: String) -> Object:
 	var tooltip := PanelContainer.new()
 	tooltip.name = "StatTooltipPanel"
@@ -614,7 +644,7 @@ func _make_custom_tooltip(for_text: String) -> Object:
 
 	var label := Label.new()
 	label.name = "StatTooltipLabel"
-	label.custom_minimum_size = Vector2(TOOLTIP_MAX_WIDTH - 40.0, 0.0)
+	label.custom_minimum_size = Vector2(TOOLTIP_MAX_WIDTH - ST_LABEL_CONTENT_2K.x - ST_LABEL_CONTENT_2K.z, 0.0)
 	label.text = for_text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.add_theme_font_size_override("font_size", 14)
@@ -695,15 +725,28 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
+# SCRUM-669: pause-dossier text actions use the generated SCRUM-657 exact-size
+# pause_280x60 state kit. The helper remains for call-site compatibility.
+func _apply_pd_2k_button_theme(button: Button, variant := "default") -> void:
+	_apply_fantasy_button_theme(button, variant)
+
+
 func _panel_style() -> StyleBox:
 	return _texture_style(ESCAPE_PANEL_FRAME, 38, 52, 38, 48, Color.WHITE, Vector4(58, 72, 58, 66))
 
 
+# SCRUM-486: панель паузы-досье на @2K-ассете pd_panel (нарисован ровно 2520×1404 c
+# modal-маргинами). Бордюры скейлятся от source 2520×1404 → на 2K display==source (1:1),
+# на 1080p/4K — uniform-скейл вьюпорта. Ассет несёт свой орнамент, центр тянется 9-slice.
+const PD_PANEL_SOURCE_SIZE := Vector2(2520.0, 1404.0)
+const PD_PANEL_TEXTURE_MARGINS := Vector4(46.0, 62.0, 46.0, 58.0)
+const PD_PANEL_CONTENT := Vector4(72.0, 92.0, 72.0, 84.0)
+
 func _pause_end_modal_style(display_size: Vector2) -> StyleBox:
-	var texture_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_TEXTURE_MARGINS)
-	var content_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
+	var texture_margins := _scaled_frame_margins(PD_PANEL_SOURCE_SIZE, display_size, PD_PANEL_TEXTURE_MARGINS)
+	var content_margins := _scaled_frame_margins(PD_PANEL_SOURCE_SIZE, display_size, PD_PANEL_CONTENT)
 	return _texture_style(
-		PAUSE_END_MODAL_FRAME,
+		ESCAPE_PANEL_FRAME_2K,
 		texture_margins.x,
 		texture_margins.y,
 		texture_margins.z,
@@ -746,7 +789,10 @@ func _chip_style(is_hovered: bool) -> StyleBox:
 
 
 func _tooltip_style() -> StyleBox:
-	return _texture_style(STAT_TOOLTIP_FRAME, 46, 30, 46, 28, Color.WHITE, Vector4(66, 44, 66, 40))
+	# SCRUM-593: SCRUM-586 tooltip frame (430x288) has stricter safe content than old st_panel.
+	var margins: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_TEXTURE_MARGINS["stat_tooltip"]
+	var content: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_CONTENT["stat_tooltip"]
+	return _texture_style(STAT_TOOLTIP_FRAME_2K, margins.x, margins.y, margins.z, margins.w, Color.WHITE, content)
 
 
 func _make_section_divider() -> TextureRect:
@@ -760,7 +806,15 @@ func _make_section_divider() -> TextureRect:
 
 
 func _button_style(texture: Texture2D, tint: Color) -> StyleBox:
-	var style := _texture_style(texture, 34, 16, 34, 16, tint, Vector4(46, 18, 46, 18))
+	var style := _texture_style(
+		texture,
+		PAUSE_BUTTON_TEXTURE_MARGINS.x,
+		PAUSE_BUTTON_TEXTURE_MARGINS.y,
+		PAUSE_BUTTON_TEXTURE_MARGINS.z,
+		PAUSE_BUTTON_TEXTURE_MARGINS.w,
+		tint,
+		PAUSE_BUTTON_CONTENT_MARGINS
+	)
 	if style is StyleBoxTexture:
 		(style as StyleBoxTexture).modulate_color.a = 1.0
 	return style

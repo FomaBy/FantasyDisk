@@ -22,6 +22,7 @@ func _initialize() -> void:
 	await _test_boss_hud_omits_timer(main_scene)
 	await _test_mini_elite_roster(main_scene)
 	await _test_new_boss_roster(main_scene)
+	await _test_secret_boss_after_act3_flow(main_scene)
 	await _test_victory_flow(main)
 
 	main.queue_free()

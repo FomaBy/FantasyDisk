@@ -1,6 +1,6 @@
 # ART/UX: Минималистичный редизайн ВСЕЙ игры на базе ярких кнопок — фреймы точного размера (без растяжения) — ОПОРНАЯ
 
-Статус: review (Design-source package ready; runtime integration handed off to Back-end, 2026-06-19)
+Статус: done
 Приоритет: high
 Роль: Design (Codex) → Back-end (интеграция) → self-QA
 Исполнитель: Design main / Codex (скиллы fantasydisk-ui-director + fantasydisk-asset-generator)
@@ -206,3 +206,11 @@ runtime_smoke_ui + dark_fantasy_ui_theme также зелёные. Размер
 Автоматический self-QA чистый на всех экранах/разрешениях.
 ОСТАТОК (опционально): реальные PNG-скрины ключевых экранов требуют оконного рендер-харнесса
 (headless не снимает пиксели) — это визуальное доказательство поверх уже зелёной авто-проверки.
+
+## QA-Вердикт (2026-06-27)
+
+Статус: PASSED (PM closure)
+
+Design-source package и автоматический self-QA закрыты. Связанный runtime handoff
+SCRUM-480 также закрыт административно в рамках 0.1.6 cleanup; если runtime
+rollout нужен позже, нужен новый Jira issue.

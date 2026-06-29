@@ -38,11 +38,35 @@ mkdir -p "${WORKTREE_DIR}/assets"
 cp "${REPO_DIR}/assets/icon.ico" "${WORKTREE_DIR}/assets/icon.ico"
 # Бандлим gitignored секрет вебхука фидбека в билд (иначе на чужих ПК «вебхук не
 # настроен» → локальное сохранение). include_filter в export_presets.cfg его включает.
+# URL не пишется в git и не печатается в лог; при CI/чистой машине используем env.
 if [[ -f "${REPO_DIR}/feedback_webhook.cfg" ]]; then
+  if ! grep -Eq 'discord_webhook_url="https://(discord\.com|discordapp\.com)/api/webhooks/[^"]+"' "${REPO_DIR}/feedback_webhook.cfg" \
+      || grep -Eq 'XXXX|YYYY|\.\.\.' "${REPO_DIR}/feedback_webhook.cfg"; then
+    echo "    ERROR: feedback_webhook.cfg найден, но не содержит валидный Discord webhook URL"
+    exit 2
+  fi
   cp "${REPO_DIR}/feedback_webhook.cfg" "${WORKTREE_DIR}/feedback_webhook.cfg"
   echo "    feedback_webhook.cfg скопирован в worktree (фидбек заработает на тестерских ПК)"
+elif [[ -n "${FANTASYDISK_FEEDBACK_WEBHOOK:-}" ]]; then
+  case "${FANTASYDISK_FEEDBACK_WEBHOOK}" in
+    https://discord.com/api/webhooks/*|https://discordapp.com/api/webhooks/*) ;;
+    *)
+      echo "    ERROR: FANTASYDISK_FEEDBACK_WEBHOOK задан, но не похож на Discord webhook URL"
+      exit 2
+      ;;
+  esac
+  if [[ "${FANTASYDISK_FEEDBACK_WEBHOOK}" == *\"* || "${FANTASYDISK_FEEDBACK_WEBHOOK}" == *$'\n'* || "${FANTASYDISK_FEEDBACK_WEBHOOK}" == *$'\r'* ]]; then
+    echo "    ERROR: FANTASYDISK_FEEDBACK_WEBHOOK содержит недопустимые символы для ConfigFile"
+    exit 2
+  fi
+  cat > "${WORKTREE_DIR}/feedback_webhook.cfg" <<EOF
+[feedback]
+discord_webhook_url="${FANTASYDISK_FEEDBACK_WEBHOOK}"
+EOF
+  echo "    feedback_webhook.cfg сгенерирован из FANTASYDISK_FEEDBACK_WEBHOOK (секрет не печатается)"
 else
-  echo "    ВНИМАНИЕ: feedback_webhook.cfg не найден — фидбек в сборке будет сохранять локально"
+  echo "    ERROR: нет feedback_webhook.cfg и FANTASYDISK_FEEDBACK_WEBHOOK — player-build feedback не сможет отправлять в Discord"
+  exit 2
 fi
 
 echo "==> Импорт ресурсов (headless)"

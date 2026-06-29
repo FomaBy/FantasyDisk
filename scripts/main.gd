@@ -24,14 +24,19 @@ const BASE_ROUND_DURATION := 30.0
 const ROUND_DURATION_STEP := 3.0
 const ROUND_DURATION_MAX := 60.0
 const ROUTE_STEPS_TO_BOSS := 10
+const ACT_COUNT := 3
+const ACT_SCALING_STAGE_OFFSET := 4
 const MIN_BRANCHES_PER_STEP := 2
 const MAX_BRANCHES_PER_STEP := 4
 const MAP_NODE_SIZE := Vector2(88, 88)
 const ROUTE_MAP_PADDING := Vector2(170, 72)
-const ROUTE_MAP_HEADER_HEIGHT := 118.0
+# SCRUM-489: 140 (было 118) — хедер карты маршрута (title 36px + stage 18px в PanelContainer)
+# имеет content-min ≈110px; при band 88 (118-12-18) PanelContainer рос вниз до y≈128 и
+# наезжал на скролл (top=118). 140 даёт band 18..128 ровно под контент + зазор 12 до скролла.
+const ROUTE_MAP_HEADER_HEIGHT := 140.0
 const ROUTE_MAP_SCREEN_MARGIN := 28.0
 const ROUTE_MAP_DRAG_THRESHOLD := 8.0
-const ARENA_SIZE := Vector2(2560, 1440)
+const ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: ×1.6 от 2560×1440 → площадь ≈ ×2.56, 16:9 сохранён
 const ARENA_CENTER := ARENA_SIZE * 0.5
 const COMBAT_CAMERA_ZOOM := Vector2(1.12, 1.12)
 const COLLISION_LAYER_PLAYER := 1
@@ -70,38 +75,44 @@ const ARENA_BACKGROUND_OPTIONS := {
 		"res://assets/backgrounds/field_cursed_grove.png",
 	],
 }
-const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle_v2.png"
+const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle_v3.png"
 const SCREEN_BACKGROUND_PATHS := {
 	"system": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
-	"settings": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
-	"codex": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"settings": "res://assets/backgrounds/ui/ui_backdrop_settings.png",
+	"codex": "res://assets/sprites/ui/frames/codex_pl/codex_pl_backdrop.png",
 	"hero_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"weapon_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"pause_stats": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"meta_tree": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
-	"campfire": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"skill_tree": "res://assets/backgrounds/ui/ui_backdrop_skill_tree.png",
+	"campfire": "res://assets/backgrounds/ui/ui_backdrop_rest_campfire.png",
 	"shop": "res://assets/backgrounds/ui/ui_backdrop_merchant_archive.png",
 	"event": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
 	"upgrade": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
 	"level_up": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
 	"meta_progression": "res://assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
 	"elite_reward": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
-	"victory": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+	"victory": "res://assets/backgrounds/ui/ui_backdrop_victory.png",
 	"artifact_reward": "res://assets/backgrounds/ui/ui_backdrop_reward_hall.png",
 	"death": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 	"defeat": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 	"end_run_confirm": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 }
 const GAME_CURSOR_PATH := "res://assets/sprites/ui/cursor/game_cursor.png"
-const GAME_CURSOR_HOTSPOT := Vector2(2, 2)
+# SCRUM-592: hotspot сидит на самом верхнем-левом ВИДИМОМ пикселе острия
+# (включая сглаживание апекса в (1,1)). Прежний (2,2) указывал на первый
+# полностью-непрозрачный пиксель, на 1px НИЖЕ воспринимаемого кончика —
+# поэтому OS-клик на Windows регистрировался чуть ниже видимого острия.
+const GAME_CURSOR_HOTSPOT := Vector2(1, 1)
 const SCREEN_BACKGROUND_FALLBACK_COLORS := {
 	"system": Color(0.045, 0.052, 0.070, 1.0),
-	"settings": Color(0.045, 0.052, 0.070, 1.0),
+	"settings": Color(0.050, 0.044, 0.038, 1.0),
 	"codex": Color(0.045, 0.052, 0.070, 1.0),
 	"hero_select": Color(0.045, 0.052, 0.070, 1.0),
 	"weapon_select": Color(0.045, 0.052, 0.070, 1.0),
 	"pause_stats": Color(0.045, 0.052, 0.070, 1.0),
 	"meta_tree": Color(0.045, 0.052, 0.070, 1.0),
+	"skill_tree": Color(0.030, 0.034, 0.062, 1.0),
 	"event": Color(0.055, 0.045, 0.105, 1.0),
 	"shop": Color(0.070, 0.052, 0.030, 1.0),
 	"campfire": Color(0.080, 0.045, 0.025, 1.0),
@@ -148,6 +159,24 @@ const MAP_NODE_DEFINITIONS := {
 		"color": Color(0.18, 0.18, 0.38, 0.96),
 		"border": Color(0.58, 0.54, 1.0, 1.0),
 	},
+	# SCRUM-608: «Опасная развилка» — узел риск/безопасность. Переиспользует
+	# event-иконку (без нового арта), но отдельный цвет/рамка под опасный тон.
+	"hazard": {
+		"name": "Опасная развилка",
+		"icon": "!",
+		"icon_path": "res://assets/sprites/map_icons/map_event_question.png",
+		"tooltip": "Опасная развилка\nВыбор: безопасный обход (золото/лечение) или рискованный срез через бой.",
+		"color": Color(0.34, 0.20, 0.10, 0.96),
+		"border": Color(0.96, 0.58, 0.22, 1.0),
+	},
+	"chest": {
+		"name": "Сундук",
+		"icon": "CHEST",
+		"icon_path": "res://assets/sprites/map_icons/map_chest_artifact.png",
+		"tooltip": "Сундук\nГарантированный выбор 1 из 3 артефактов в середине маршрута.",
+		"color": Color(0.30, 0.18, 0.07, 0.96),
+		"border": Color(1.0, 0.78, 0.30, 1.0),
+	},
 	"rest": {
 		"name": "Костер",
 		"icon": "REST",
@@ -155,6 +184,17 @@ const MAP_NODE_DEFINITIONS := {
 		"tooltip": "Костер\nОтдых. Можно восстановить здоровье или получить защитный бонус.",
 		"color": Color(0.28, 0.18, 0.09, 0.96),
 		"border": Color(1.0, 0.60, 0.22, 1.0),
+	},
+	# SCRUM-610: «Алтарь жертвы» — узел постоянной сделки тело-за-силу (без боя,
+	# без арта). Переиспользует иконку костей элиты (без нового арта), отдельный
+	# кроваво-пурпурный тон под жертвенный мотив.
+	"altar": {
+		"name": "Алтарь жертвы",
+		"icon": "ALT",
+		"icon_path": "res://assets/sprites/map_icons/map_elite_skull_bones.png",
+		"tooltip": "Алтарь жертвы\nСделка без боя: отдай часть здоровья за постоянную силу на весь забег.",
+		"color": Color(0.30, 0.06, 0.12, 0.97),
+		"border": Color(0.86, 0.20, 0.46, 1.0),
 	},
 	"boss": {
 		"name": "Босс",
@@ -168,7 +208,7 @@ const MAP_NODE_DEFINITIONS := {
 }
 const OBSTACLE_MAX_ATTEMPTS := 150
 const SPAWN_EDGE_PADDING := 72.0
-const SPAWN_PLAYER_SAFE_RADIUS := 340.0
+const SPAWN_PLAYER_SAFE_RADIUS := 420.0  # SCRUM-518: чуть шире на просторной арене (4096×2304) для комфорта старта
 const SMALL_PACK_CHANCE := 0.22
 const WAVE_SETTINGS := {
 	"base_spawn_count": 2,
@@ -215,10 +255,8 @@ const ENEMY_SPAWN_WEIGHTS := {
 	"res://scenes/EnemyBoneShaman.tscn": 0.34,
 }
 const RESOLUTION_OPTIONS := [
-	Vector2i(1280, 720),
-	Vector2i(1600, 900),
-	Vector2i(1920, 1080),
 	Vector2i(2560, 1440),
+	Vector2i(1920, 1080),
 ]
 const WINDOW_MODE_OPTIONS := [
 	"Windowed",
@@ -295,15 +333,46 @@ const INPUT_ACTIONS := [
 		"alternate_key": 0,
 	},
 	{
+		"action": "open_level_up",
+		"label": "Level Up",
+		"default_key": KEY_SPACE,
+		"alternate_key": 0,
+	},
+	{
 		"action": "feedback",
 		"label": "Фидбек",
 		"default_key": KEY_P,
 		"alternate_key": 0,
 	},
 ]
+const CODEX_ENEMY_NAME_TO_ID := {
+	"Rift Cutter": "rift_cutter",
+	"Ash Marksman": "ash_marksman",
+	"Spark Runner": "spark_runner",
+	"Stone Bruiser": "stone_bruiser",
+	"Bone Caller": "bone_caller",
+	"Void Mage": "void_mage",
+	"Venom Spitter": "venom_spitter",
+	"Rift Shieldbearer": "rift_shieldbearer",
+	"Small Biter": "small_biter",
+	"Bone Shaman": "bone_shaman",
+	"Winged Spark": "winged_spark",
+	"Iron Bastion": "iron_bastion",
+	"Night Stalker": "night_stalker",
+	"Plague Prophet": "plague_prophet",
+	"Shard Marshal": "shard_marshal",
+	"Rift Warden": "rift_warden",
+	"Disk Devourer": "disk_devourer",
+	"Bone Archon": "bone_archon",
+	"Brood Mother": "brood_mother",
+	"Ashen Colossus": "ashen_colossus",
+}
 
 var selected_character_id := "berserk"
 var selected_weapon_id := "sword"
+# SCRUM-618: выбранный стартовый боон забега ("" = без боона, тождественность).
+var selected_start_boon_id := ""
+var current_act := 1
 var route_stage := 0
 var combat_active := false
 var boss_combat_active := false
@@ -311,6 +380,9 @@ var round_time_left := 0.0
 var spawn_cooldown := 0.0
 var current_player: Node2D = null
 var run_player_snapshot := {}
+# SCRUM-502: метрики забега для экрана итогов (run summary). НЕ персистятся (нет в
+# _run_autosave_state) — обнуляются на старте нового забега, не текут из autosave.
+var run_metrics := {}
 var ui_layer: CanvasLayer = null
 var hud_layer: CanvasLayer = null
 var pause_overlay_layer: CanvasLayer = null
@@ -332,21 +404,29 @@ var current_route_choice := ""
 var current_node_type := ""
 var current_combat_type := "battle"
 var current_boss_id := "rift_warden"
+# SCRUM-619: текущий бой — секретный апекс-босс конца Акта 3 (выставляется
+# SCRUM-541: set only while the post-Act-3 secret boss follow-up is active.
+var secret_boss_active := false
+var current_node_seed := 0
 var route_selected_indices := []
 var used_event_ids := []
 var current_event_definition := {}
 var pending_event_combat := {}
 var level_up_return_to_map := false
+# SCRUM-530: level-up, открытый с узла-события, должен вернуть на ТО ЖЕ событие, а не на
+# карту (иначе для случайного события происходит «тихий рерол» исходного набора опций).
+var level_up_return_to_event := false
 var meta_points := 0
 var berserk_ascension_unlocked := false
 var spawn_wave_index := 0
 var active_spawn_edges := []
-var selected_resolution_index := 1
+var selected_resolution_index := 0
 var selected_window_mode_index := 0
 var pending_rebind_action := ""
 var current_shop_items := []
 var current_shop_purchased := []
 var current_shop_node_key := ""
+var run_used_shop := false
 var shop_reentry_pending := false
 var shop_reentry_route_stage := -1
 var shop_reentry_branch_index := -1
@@ -366,6 +446,7 @@ const UI_SCREENS_SCRIPT := preload("res://scripts/ui_screens.gd")
 const ROUTE_MAP_SCRIPT := preload("res://scripts/route_map_screen.gd")
 const COMBAT_DIRECTOR_SCRIPT := preload("res://scripts/combat_director.gd")
 const META_PROGRESSION := preload("res://scripts/meta_progression.gd")
+const ACHIEVEMENTS_DATA := preload("res://scripts/achievements_data.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
@@ -376,6 +457,7 @@ var combat
 var meta_state := {}
 # Подача боя: тряска камеры (тумблер в настройках, умеренная по умолчанию).
 var screen_shake_enabled := true
+var combat_feedback_enabled := true
 # Единый Escape-назад: текущий экран регистрирует действие возврата;
 # сбрасывается при каждой очистке UI. В бою Escape обрабатывается отдельно (пауза).
 var ui_escape_action := Callable()
@@ -451,9 +533,11 @@ func _load_game_settings() -> void:
 	if not ["nearest", "cursor"].has(aim_mode):
 		aim_mode = "nearest"
 	screen_shake_enabled = bool(settings.get("screen_shake", true))
+	combat_feedback_enabled = bool(settings.get("combat_feedback", true))
 	debug_mode_enabled = bool(settings.get("debug_mode", false))
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
+	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
 	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
 	_apply_audio_settings()
@@ -470,6 +554,7 @@ func save_game_settings() -> void:
 	for key in audio_settings.keys():
 		settings[key] = audio_settings[key]
 	settings["screen_shake"] = screen_shake_enabled
+	settings["combat_feedback"] = combat_feedback_enabled
 	settings["debug_mode"] = debug_mode_enabled
 	settings["aim_mode"] = aim_mode
 	if ui != null:
@@ -477,6 +562,7 @@ func save_game_settings() -> void:
 	else:
 		settings["input_bindings"] = input_bindings.duplicate(true)
 	GAME_SETTINGS.save_settings(settings)
+	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
 	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
 
@@ -505,11 +591,104 @@ func clear_run_autosave() -> void:
 	RUN_AUTOSAVE.clear_run()
 
 
+# SCRUM-502 · Метрики забега (run summary). Аккумулируются по ходу прогона, обнуляются
+# на старте нового забега. НЕ входят в _run_autosave_state — не персистятся и не текут
+# из загруженного autosave (после «Продолжить» метрики считаются с нуля за новый прогон).
+func reset_run_metrics() -> void:
+	run_metrics = {
+		"kills": 0,
+		"boss_kills": 0,
+		"damage_dealt": 0.0,
+		"damage_taken": 0.0,
+		"gold_collected": 0,
+		"time_seconds": 0.0,
+		"route_stage_reached": 0,
+		"final_level": 0,
+		"artifacts": [],
+		"outcome_reason": "",
+	}
+
+
+func record_run_kill(is_boss: bool) -> void:
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["kills"] = int(run_metrics.get("kills", 0)) + 1
+	if is_boss:
+		run_metrics["boss_kills"] = int(run_metrics.get("boss_kills", 0)) + 1
+
+
+func add_run_damage_dealt(amount: float) -> void:
+	if amount <= 0.0:
+		return
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["damage_dealt"] = float(run_metrics.get("damage_dealt", 0.0)) + amount
+
+
+func add_run_damage_taken(amount: float) -> void:
+	if amount <= 0.0:
+		return
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["damage_taken"] = float(run_metrics.get("damage_taken", 0.0)) + amount
+
+
+func add_run_time(delta: float) -> void:
+	if delta <= 0.0:
+		return
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["time_seconds"] = float(run_metrics.get("time_seconds", 0.0)) + delta
+
+
+func add_run_gold_collected(amount: int) -> void:
+	if amount <= 0:
+		return
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["gold_collected"] = int(run_metrics.get("gold_collected", 0)) + amount
+
+
+# Снять финальные значения игрока (уровень/артефакты) и достигнутый ряд в метрики.
+# Зовётся на завершении забега (победа/смерть) до удаления игрока. snapshot = run_player_snapshot
+# или живой игрок; берём из переданного словаря, чтобы не зависеть от queue_free.
+# NB: gold_collected НЕ снимается из snapshot — это аккумулятор «собрано за забег»
+# (add_run_gold_collected), а не остаток кошелька (см. SCRUM-555).
+func capture_run_metrics_finals(source: Dictionary) -> void:
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics["final_level"] = int(source.get("level", run_metrics.get("final_level", 0)))
+	# SCRUM-555: не перезаписывать gold_collected кошельком (source.money). Перезапись
+	# показывала на экране итогов ОСТАТОК (после трат в магазине), расходясь с подписью
+	# «Собрано золота». Источник правды — накопитель add_run_gold_collected.
+	var artifacts_raw = source.get("artifacts", run_metrics.get("artifacts", []))
+	var artifacts_snapshot: Array = []
+	if artifacts_raw is Array:
+		artifacts_snapshot = artifacts_raw as Array
+	run_metrics["artifacts"] = artifacts_snapshot.duplicate(true)
+	run_metrics["route_stage_reached"] = maxi(int(run_metrics.get("route_stage_reached", 0)), route_stage)
+	# SCRUM-617: финальные метрики собраны → оценить персистентные ачивки забега
+	# (зовётся на ЛЮБОМ завершении: победа над финальным боссом, смерть, экран итогов).
+	evaluate_run_achievements()
+
+
+# SCRUM-617: разблокировать достигнутые ачивки по финальным метрикам забега и
+# начислить разовую награду meta_points. Идемпотентно (уже открытые не начисляются).
+# Сохраняет мету только если что-то реально открылось.
+func evaluate_run_achievements() -> void:
+	var result: Dictionary = ACHIEVEMENTS_DATA.evaluate_run(meta_state, run_metrics)
+	if int(result.get("awarded", 0)) > 0 or not (result.get("newly_unlocked", []) as Array).is_empty():
+		META_PROGRESSION.save_state(meta_state)
+		meta_points = int(meta_state.get("meta_points", 0))
+
+
 func _run_autosave_state() -> Dictionary:
 	return {
 		"selected_character_id": selected_character_id,
 		"selected_weapon_id": selected_weapon_id,
+		"selected_start_boon_id": selected_start_boon_id,
 		"selected_ascension_level": selected_ascension_level,
+		"current_act": current_act,
 		"route_stage": route_stage,
 		"route_nodes": route_nodes.duplicate(true),
 		"route_selected_indices": route_selected_indices.duplicate(true),
@@ -517,6 +696,8 @@ func _run_autosave_state() -> Dictionary:
 		"current_node_type": current_node_type,
 		"current_combat_type": current_combat_type,
 		"current_boss_id": current_boss_id,
+		"secret_boss_active": secret_boss_active,
+		"current_node_seed": current_node_seed,
 		"run_player_snapshot": run_player_snapshot.duplicate(true),
 		"pending_level_ups": pending_level_ups,
 		"level_up_offer": level_up_offer.duplicate(true),
@@ -528,6 +709,7 @@ func _run_autosave_state() -> Dictionary:
 		"current_shop_items": current_shop_items.duplicate(true),
 		"current_shop_purchased": current_shop_purchased.duplicate(true),
 		"current_shop_node_key": current_shop_node_key,
+		"run_used_shop": run_used_shop,
 		"shop_reentry_pending": shop_reentry_pending,
 		"shop_reentry_route_stage": shop_reentry_route_stage,
 		"shop_reentry_branch_index": shop_reentry_branch_index,
@@ -544,7 +726,9 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 
 	selected_character_id = str(state.get("selected_character_id", selected_character_id))
 	selected_weapon_id = str(state.get("selected_weapon_id", selected_weapon_id))
+	selected_start_boon_id = str(state.get("selected_start_boon_id", ""))
 	selected_ascension_level = int(state.get("selected_ascension_level", 0))
+	current_act = clampi(int(state.get("current_act", 1)), 1, ACT_COUNT)
 	route_stage = maxi(0, int(state.get("route_stage", 0)))
 	route_nodes = _autosave_array(state.get("route_nodes", []))
 	if route_nodes.is_empty():
@@ -555,6 +739,8 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	current_node_type = str(state.get("current_node_type", ""))
 	current_combat_type = str(state.get("current_combat_type", "battle"))
 	current_boss_id = str(state.get("current_boss_id", "rift_warden"))
+	secret_boss_active = bool(state.get("secret_boss_active", false))
+	current_node_seed = int(state.get("current_node_seed", 0))
 	run_player_snapshot = _autosave_dictionary(state.get("run_player_snapshot", {}))
 	pending_level_ups = maxi(0, int(state.get("pending_level_ups", 0)))
 	level_up_offer = _autosave_array(state.get("level_up_offer", []))
@@ -567,6 +753,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	current_shop_items = _autosave_array(state.get("current_shop_items", []))
 	current_shop_purchased = _autosave_array(state.get("current_shop_purchased", []))
 	current_shop_node_key = str(state.get("current_shop_node_key", ""))
+	run_used_shop = bool(state.get("run_used_shop", false))
 	shop_reentry_pending = bool(state.get("shop_reentry_pending", false))
 	shop_reentry_route_stage = int(state.get("shop_reentry_route_stage", -1))
 	shop_reentry_branch_index = int(state.get("shop_reentry_branch_index", -1))
@@ -584,6 +771,83 @@ func _autosave_dictionary(value: Variant) -> Dictionary:
 	return {}
 
 
+func route_scaling_stage() -> int:
+	return maxi(0, route_stage + (clampi(current_act, 1, ACT_COUNT) - 1) * ACT_SCALING_STAGE_OFFSET)
+
+
+# --- SCRUM-499: детерминированное превью узлов маршрута ---
+# Каждый узел несёт стабильный "seed". И бой, и тултип-превью катят выбор биома и
+# типа элитки через эти общие функции от одного сида → превью совпадает с боем
+# by construction (бой делегирует сюда, тултип зовёт то же самое заранее).
+const NODE_SEED_SALT_BIOME := 0x9E3779B1
+const NODE_SEED_SALT_ELITE := 0x85EBCA77
+
+func fallback_node_seed(route_node: Dictionary) -> int:
+	# Старые сейвы без поля "seed": детерминированный сид от позиции/типа узла.
+	var row := int(route_node.get("row", 0))
+	var branch := int(route_node.get("branch", 0))
+	var type_hash := int(str(route_node.get("type", "battle")).hash())
+	return ((row * 73856093) ^ (branch * 19349663) ^ type_hash) & 0x7FFFFFFF
+
+func node_aspect_rng(node_seed: int, salt: int) -> RandomNumberGenerator:
+	var generator := RandomNumberGenerator.new()
+	generator.seed = (int(node_seed) ^ int(salt)) & 0x7FFFFFFFFFFFFFFF
+	return generator
+
+func node_background_path(node_type: String, is_boss_fight: bool, node_seed: int) -> String:
+	var key := "boss" if is_boss_fight else str(node_type)
+	var options: Array = ARENA_BACKGROUND_OPTIONS.get(key, ARENA_BACKGROUND_OPTIONS["default"])
+	if options.is_empty():
+		options = ARENA_BACKGROUND_OPTIONS["default"]
+	var generator := node_aspect_rng(node_seed, NODE_SEED_SALT_BIOME)
+	return str(options[generator.randi_range(0, options.size() - 1)])
+
+func elite_scene_options() -> Array:
+	var scenes := [elite_armored_scene, elite_stalker_scene, elite_poisoned_scene, elite_commander_scene]
+	var available := []
+	for scene in scenes:
+		if scene != null:
+			available.append(scene)
+	return available
+
+func node_elite_scene(node_seed: int) -> PackedScene:
+	var available := elite_scene_options()
+	if available.is_empty():
+		return null
+	var generator := node_aspect_rng(node_seed, NODE_SEED_SALT_ELITE)
+	return available[generator.randi_range(0, available.size() - 1)] as PackedScene
+
+
+func act_progress_label() -> String:
+	return "Акт %d/%d" % [clampi(current_act, 1, ACT_COUNT), ACT_COUNT]
+
+
+func advance_to_next_act() -> bool:
+	if current_act >= ACT_COUNT:
+		return false
+	current_act += 1
+	route_stage = 0
+	route_nodes = route._generate_route()
+	route_selected_indices.clear()
+	current_route_choice = ""
+	current_node_type = ""
+	current_combat_type = "battle"
+	current_boss_id = "rift_warden"
+	secret_boss_active = false
+	current_node_seed = 0
+	pending_event_combat.clear()
+	level_up_return_to_map = false
+	level_up_return_to_event = false
+	shop_reentry_pending = false
+	shop_reentry_route_stage = -1
+	shop_reentry_branch_index = -1
+	current_shop_items.clear()
+	current_shop_purchased.clear()
+	current_shop_node_key = ""
+	save_run_autosave("act_transition")
+	return true
+
+
 func _apply_audio_settings() -> void:
 	var audio := get_node_or_null("/root/AudioManager")
 	if audio != null and audio.has_method("apply_volume_settings"):
@@ -596,12 +860,84 @@ func _load_meta_progression() -> void:
 	berserk_ascension_unlocked = ascension_level_for("berserk") >= 1
 
 
+func record_codex_discovery(category: String, content_id: String) -> void:
+	var id := content_id.strip_edges()
+	if id == "":
+		return
+	if meta_state.is_empty():
+		meta_state = META_PROGRESSION.load_state()
+	if META_PROGRESSION.is_codex_discovered(meta_state, category, id):
+		return
+	meta_state = META_PROGRESSION.record_codex_discovery(meta_state, category, id)
+	META_PROGRESSION.save_state(meta_state)
+
+
+func record_codex_artifact_discovery(reward: Dictionary) -> void:
+	if str(reward.get("kind", "")) != "artifact":
+		return
+	record_codex_discovery("artifacts", str(reward.get("id", "")))
+
+
+func record_codex_enemy_discovery(enemy: Node) -> void:
+	if enemy == null:
+		return
+	var content_id := ""
+	var category := "monsters"
+	if enemy.is_in_group("bosses"):
+		category = "bosses"
+		content_id = str(enemy.get_meta("boss_id", current_boss_id))
+	elif enemy.has_meta("mini_elite_kind"):
+		content_id = str(enemy.get_meta("mini_elite_kind"))
+	else:
+		var enemy_name := ""
+		if enemy.get("enemy_type_name") != null:
+			enemy_name = str(enemy.get("enemy_type_name"))
+		content_id = str(CODEX_ENEMY_NAME_TO_ID.get(enemy_name, ""))
+	record_codex_discovery(category, content_id)
+
+
 func ascension_level_for(character_id: String) -> int:
 	return META_PROGRESSION.ascension_level(meta_state, character_id)
 
 
+func secret_encounter_pending() -> bool:
+	if current_act < ACT_COUNT:
+		return false
+	return META_PROGRESSION.secret_encounter_unlocked_for_level(selected_ascension_level)
+
+
+func resolve_act3_boss_id(base_boss_id: String) -> String:
+	secret_boss_active = false
+	return base_boss_id
+
+
+func should_start_secret_boss_after_act3() -> bool:
+	if secret_boss_active:
+		return false
+	return current_act >= ACT_COUNT and secret_encounter_pending()
+
+
+func start_secret_boss_encounter() -> void:
+	secret_boss_active = true
+	current_boss_id = META_PROGRESSION.SECRET_BOSS_ID
+	current_node_type = "boss"
+	current_combat_type = "boss"
+	save_run_autosave("secret_boss")
+	combat._start_combat(true, "boss")
+
+
 func record_boss_victory() -> void:
-	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level)
+	# SCRUM-620: контекст забега для челленджей класса — какое оружие и был ли магазин.
+	# used_shop=false только если за ВЕСЬ забег не куплено ни одного предмета.
+	var run_context := {
+		"weapon_id": selected_weapon_id,
+		"used_shop": run_used_shop,
+	}
+	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level, run_context)
+	# SCRUM-619: если это был секретный бой Акта 3 — разовая мета-награда (идемпотентно).
+	if secret_boss_active:
+		meta_state = META_PROGRESSION.record_secret_boss_victory(meta_state)
+		secret_boss_active = false
 	META_PROGRESSION.save_state(meta_state)
 	meta_points = int(meta_state.get("meta_points", 0))
 	berserk_ascension_unlocked = ascension_level_for("berserk") >= 1
@@ -652,6 +988,18 @@ func apply_ascension_bonuses(player: Node) -> void:
 	var class_mods: Dictionary = META_PROGRESSION.class_modifiers(meta_state, selected_character_id)
 	for class_key in class_mods:
 		skill_mods[class_key] = class_mods[class_key]
+	# SCRUM-620: бонусы выполненных челленджей класса — те же class_*-ключи,
+	# складываем ПОВЕРХ прогрессии (доли суммируются, эффект 1.0+sum). Вклад челленджей
+	# уже клампнут на +5%/ключ в class_challenge_modifiers (анти-крип).
+	var challenge_mods: Dictionary = META_PROGRESSION.class_challenge_modifiers(meta_state, selected_character_id)
+	for challenge_key in challenge_mods:
+		skill_mods[challenge_key] = float(skill_mods.get(challenge_key, 0.0)) + float(challenge_mods[challenge_key])
+	# SCRUM-618: стартовый боон забега — мелкие mods в том же ключевом словаре (damage_mult,
+	# *_flat и т.п.). Складываем с накопленными (множители суммируются как доли, эффект 1.0+sum;
+	# плоские — сложением), как и древо/класс. "" = без боона (тождественность).
+	var boon_mods: Dictionary = PROGRESSION_DATA.start_boon_mods(selected_start_boon_id)
+	for boon_key in boon_mods:
+		skill_mods[boon_key] = float(skill_mods.get(boon_key, 0.0)) + float(boon_mods[boon_key])
 	if player.has_method("apply_meta_skill_modifiers"):
 		player.apply_meta_skill_modifiers(skill_mods)
 	var start_gold := int(round(float(skill_mods.get("start_gold_flat", 0.0))))
@@ -690,6 +1038,12 @@ func _input(event: InputEvent) -> void:
 
 	if _handle_debug_combat_move_input(event):
 		return
+
+	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("open_level_up"):
+		if pending_level_ups > 0 and not _has_pause_reason("level_up"):
+			ui._open_pending_level_up()
+			get_viewport().set_input_as_handled()
+			return
 
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
 		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
@@ -741,6 +1095,9 @@ func _process(delta: float) -> void:
 
 	if not combat_active:
 		return
+
+	# SCRUM-502: суммарное время забега (только в активном бою, не в паузе — оба гарда выше).
+	add_run_time(delta)
 
 	if not boss_combat_active:
 		round_time_left -= delta
@@ -842,12 +1199,45 @@ func _cached_texture(path: String) -> Texture2D:
 		return null
 	if texture_cache.has(path):
 		return texture_cache[path]
-	if not ResourceLoader.exists(path):
-		texture_cache[path] = null
-		return null
-	var texture := load(path) as Texture2D
+	var texture: Texture2D = null
+	var can_load_import := not path.ends_with(".png") or _png_import_texture_ready(path)
+	if can_load_import and ResourceLoader.exists(path):
+		texture = load(path) as Texture2D
+	if texture == null and path.ends_with(".png") and FileAccess.file_exists(path):
+		var image := Image.new()
+		if image.load(path) == OK:
+			var image_texture := ImageTexture.create_from_image(image)
+			image_texture.resource_path = path
+			texture = image_texture
 	texture_cache[path] = texture
 	return texture
+
+
+func _png_import_texture_ready(path: String) -> bool:
+	var import_path := "%s.import" % path
+	if not FileAccess.file_exists(import_path):
+		return false
+	var import_file := FileAccess.open(import_path, FileAccess.READ)
+	if import_file == null:
+		return false
+	var import_text := import_file.get_as_text()
+	import_file.close()
+	var cursor := 0
+	var found_imported_texture := false
+	while true:
+		var start := import_text.find("res://.godot/imported/", cursor)
+		if start == -1:
+			break
+		var end := import_text.find(".ctex", start)
+		if end == -1:
+			break
+		end += 5
+		found_imported_texture = true
+		var imported_path := import_text.substr(start, end - start)
+		if not FileAccess.file_exists(imported_path):
+			return false
+		cursor = end
+	return found_imported_texture
 
 
 func _clear_world() -> void:
@@ -964,6 +1354,9 @@ func _show_battle_map() -> void:
 
 
 func _show_character_select() -> void:
+	# SCRUM-618: новый забег начинается без боона — выбор будет сделан в пикере после
+	# выбора оружия. Сброс защищает от переноса боона из прошлого/прерванного забега.
+	selected_start_boon_id = ""
 	ui._show_character_select()
 
 

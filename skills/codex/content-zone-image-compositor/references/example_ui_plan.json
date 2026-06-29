@@ -1,0 +1,78 @@
+{
+  "canvas": {
+    "width": 1280,
+    "height": 720
+  },
+  "policy": {
+    "min_gap": 12,
+    "allow_overlap": false
+  },
+  "content": {
+    "title": "Codex Entry",
+    "body": "A long codex description that needs a scrollable lore viewport.",
+    "close": "Close"
+  },
+  "elements": [
+    {
+      "id": "modal_frame",
+      "kind": "panel",
+      "x": 120,
+      "y": 70,
+      "w": 1040,
+      "h": 580,
+      "min_w": 720,
+      "min_h": 420
+    },
+    {
+      "id": "title_zone",
+      "kind": "text",
+      "parent": "modal_frame",
+      "content_zone": true,
+      "x": 180,
+      "y": 112,
+      "w": 720,
+      "h": 64,
+      "text_key": "title",
+      "max_font": 44,
+      "min_font": 28
+    },
+    {
+      "id": "portrait_slot",
+      "kind": "portrait",
+      "parent": "modal_frame",
+      "content_zone": true,
+      "x": 180,
+      "y": 208,
+      "w": 220,
+      "h": 260,
+      "min_w": 180,
+      "min_h": 220
+    },
+    {
+      "id": "body_scroll",
+      "kind": "scroll_area",
+      "parent": "modal_frame",
+      "content_zone": true,
+      "x": 430,
+      "y": 208,
+      "w": 590,
+      "h": 260,
+      "scroll": "auto",
+      "content_h": 520,
+      "scrollbar_w": 18
+    },
+    {
+      "id": "close_button",
+      "kind": "button",
+      "parent": "modal_frame",
+      "content_zone": true,
+      "x": 860,
+      "y": 544,
+      "w": 180,
+      "h": 56,
+      "text_key": "close",
+      "max_font": 26,
+      "min_font": 18
+    }
+  ]
+}

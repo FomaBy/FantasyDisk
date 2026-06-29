@@ -5,6 +5,29 @@ extends RefCounted
 
 var game
 
+const START_BATTLE_ONLY_ROWS := 2
+
+# SCRUM-489: координатная спека @2560×1440 — экран «Карта маршрута» (полноэкранный, скролл).
+# Все опорные значения абсолютные (main.gd): ROUTE_MAP_SCREEN_MARGIN=28, ROUTE_MAP_HEADER_HEIGHT=140,
+# MAP_NODE_SIZE=(88,88), ROUTE_MAP_PADDING=(170,72), ROUTE_STEPS_TO_BOSS=10. Из viewport
+# масштабируется только ширина canvas. Header: anchor top, offset L/R=±28, top=18, bottom=140-12=128
+# → @2K (28,18,2504,110) — band ровно под content-min хедера (title 36px + stage 18px). Scroll:
+# L/R=±28, top=140, bottom=-28 → (28,140,2504,1272) (зазор 12 до хедера). Canvas
+# (map_area VerticalRouteMap): width = max(vp.x-56-16, 1000) = 2488 @2K; высота ДИНАМИЧЕСКАЯ:
+# h = ROUTE_MAP_PADDING.y*2 + MAP_NODE_SIZE.y + 165*(row_count-1), row_count=max(route_nodes, 11)
+# → минимум 144+88+165*10 = 1882 (выше viewport — это норма для скролл-карты, не overflow).
+# Узлы 88×88 рисуются процедурно (_draw_route_nodes); ряд-gap 165, padding (170,72).
+const RM_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
+const RM_HEADER_2K := Rect2(28, 18, 2504, 110)
+const RM_HEADER_SAFE_2K := Rect2(28, 18, 2504, 110)         # PanelContainer hud-style, контент = весь header
+const RM_TITLE_2K := Rect2(28, 18, 2200, 44)               # title 36px (HBox, EXPAND_FILL)
+const RM_STAGE_LABEL_2K := Rect2(28, 62, 2200, 24)         # stage 18px под заголовком
+const RM_SCROLL_2K := Rect2(28, 140, 2504, 1272)
+const RM_CANVAS_2K := Rect2(28, 140, 2488, 1882)           # height @ row_count=11 (минимум); см. формулу выше
+const RM_NODE_2K := Rect2(0, 0, 88, 88)                    # шаблон узла маршрута
+const RM_ROW_GAP_2K := 165.0
+const RM_PADDING_2K := Vector2(170.0, 72.0)
+
 
 func _init(game_ref) -> void:
 	game = game_ref
@@ -85,7 +108,7 @@ func _show_battle_map() -> void:
 	header_row.add_child(title_box)
 
 	var title_label := Label.new()
-	title_label.text = "Карта маршрута"
+	title_label.text = "%s — карта маршрута" % game.act_progress_label()
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	title_label.add_theme_font_size_override("font_size", 36)
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
@@ -93,9 +116,10 @@ func _show_battle_map() -> void:
 	title_box.add_child(title_label)
 
 	var stage_label := Label.new()
-	stage_label.text = "Прогресс: %d/%d   Следующий бой: %ds   Выбранный путь фиксируется" % [
+	stage_label.text = "Прогресс: %d/%d   Сила маршрута: %d   Следующий бой: %ds   Выбранный путь фиксируется" % [
 		min(game.route_stage, game.route_nodes.size() - 1),
 		game.ROUTE_STEPS_TO_BOSS,
+		game.route_scaling_stage(),
 		int(game.combat._current_round_duration()),
 	]
 	stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -175,15 +199,17 @@ func _route_map_canvas_size() -> Vector2:
 
 
 func _node_pool_for_step(step_index: int) -> Array:
-	if step_index == 0:
-		return ["battle", "battle", "battle", "event"]
+	if step_index < START_BATTLE_ONLY_ROWS:
+		return ["battle"]
 	if step_index <= 2:
-		return ["battle", "battle", "battle", "event", "shop"]
+		return ["battle", "battle", "battle", "event"]
 	if step_index == game.ROUTE_STEPS_TO_BOSS - 1:
-		return ["rest", "shop", "battle", "rest", "elite_battle"]
+		return ["rest", "battle", "rest", "elite_battle"]
 	if step_index >= game.ROUTE_STEPS_TO_BOSS - 3:
-		return ["battle", "elite_battle", "elite_battle", "event", "battle", "shop"]
-	return ["battle", "battle", "battle", "shop", "rest", "event", "elite_battle"]
+		# SCRUM-608: «Опасная развилка» (hazard) в поздних рядах — риск/награда.
+		return ["battle", "elite_battle", "elite_battle", "event", "battle", "hazard"]
+	# SCRUM-608: hazard в средних рядах.
+	return ["battle", "battle", "battle", "rest", "event", "elite_battle", "hazard"]
 
 
 func _generate_route() -> Array:
@@ -199,19 +225,116 @@ func _generate_route() -> Array:
 				"name": _random_route_node_name(branch_index, node_type),
 				"row": step_index,
 				"branch": branch_index,
+				"seed": game.rng.randi(),
 			})
-		if step_index == 0:
-			var has_battle := false
-			for branch in branches:
-				if str(branch["type"]) == "battle":
-					has_battle = true
-			if not has_battle:
-				branches[0]["type"] = "battle"
-				branches[0]["name"] = _random_route_node_name(0, "battle")
 		route.append(branches)
+	_place_required_shop_nodes(route)
+	_place_central_chest_node(route)
+	_place_altar_node(route)
 	route.append([_random_boss_route_node()])
 	_assign_route_connections(route)
 	return route
+
+
+func _place_altar_node(route: Array) -> void:
+	# SCRUM-610: ровно один «Алтарь жертвы» на маршрут (постоянная сделка тело-за-силу).
+	# По образцу _place_central_chest_node: переопределяем один уже сгенерированный узел.
+	# Стартовые ряды (только бои) исключаем; не затираем обязательные shop/chest, чтобы
+	# не сломать их гарантии. Вызывается ДО _assign_route_connections — узел получает
+	# связи как обычный узел маршрута.
+	var non_boss_rows := route.size()
+	if non_boss_rows <= START_BATTLE_ONLY_ROWS:
+		return
+	# Кандидаты: внутренние ряды (после стартовых, до последнего не-босс ряда),
+	# в которых есть хотя бы одна свободная ветка (не shop/chest).
+	var candidate_rows := []
+	for row_index in range(START_BATTLE_ONLY_ROWS, non_boss_rows):
+		var row: Array = route[row_index]
+		if row.is_empty():
+			continue
+		for route_node in row:
+			var node_type := str(route_node.get("type", ""))
+			if node_type != "shop" and node_type != "chest":
+				candidate_rows.append(row_index)
+				break
+	if candidate_rows.is_empty():
+		return
+	var chosen_row_index: int = candidate_rows[game.rng.randi_range(0, candidate_rows.size() - 1)]
+	var chosen_row: Array = route[chosen_row_index]
+	# Свободные ветки в выбранном ряду (не shop/chest), затем случайная из них.
+	var free_branches := []
+	for branch_index in range(chosen_row.size()):
+		var branch_type := str((chosen_row[branch_index] as Dictionary).get("type", ""))
+		if branch_type != "shop" and branch_type != "chest":
+			free_branches.append(branch_index)
+	if free_branches.is_empty():
+		return
+	var altar_branch: int = free_branches[game.rng.randi_range(0, free_branches.size() - 1)]
+	var altar_node: Dictionary = chosen_row[altar_branch]
+	altar_node["type"] = "altar"
+	altar_node["name"] = _random_route_node_name(altar_branch, "altar")
+	altar_node["event_id"] = "sacrifice_altar"
+	chosen_row[altar_branch] = altar_node
+	route[chosen_row_index] = chosen_row
+
+
+func _place_required_shop_nodes(route: Array) -> void:
+	var non_boss_rows := route.size()
+	if non_boss_rows <= START_BATTLE_ONLY_ROWS:
+		return
+	var second_half_start: int = clampi(ceili(float(non_boss_rows) * 0.5), START_BATTLE_ONLY_ROWS, non_boss_rows - 1)
+	var first_half_start := START_BATTLE_ONLY_ROWS
+	var first_half_end := maxi(first_half_start, second_half_start - 1)
+	_place_shop_node_in_row_range(route, first_half_start, first_half_end)
+	_place_shop_node_in_row_range(route, second_half_start, non_boss_rows - 1)
+
+
+func _place_shop_node_in_row_range(route: Array, row_start: int, row_end: int) -> void:
+	var clamped_start := clampi(row_start, 0, route.size() - 1)
+	var clamped_end := clampi(row_end, clamped_start, route.size() - 1)
+	var row_index: int = game.rng.randi_range(clamped_start, clamped_end)
+	var row: Array = route[row_index]
+	if row.is_empty():
+		return
+	var branch_index: int = game.rng.randi_range(0, row.size() - 1)
+	var route_node: Dictionary = row[branch_index]
+	route_node["type"] = "shop"
+	route_node["name"] = _random_route_node_name(branch_index, "shop")
+	row[branch_index] = route_node
+	route[row_index] = row
+
+
+func _place_central_chest_node(route: Array) -> void:
+	var non_boss_rows := route.size()
+	if non_boss_rows <= START_BATTLE_ONLY_ROWS:
+		return
+	var row_index: int = clampi(int(floor(float(non_boss_rows - 1) * 0.5)), START_BATTLE_ONLY_ROWS, non_boss_rows - 1)
+	var row: Array = route[row_index]
+	if row.is_empty():
+		return
+	var branch_index := _central_chest_branch_index(row)
+	var route_node: Dictionary = row[branch_index]
+	route_node["type"] = "chest"
+	route_node["name"] = _random_route_node_name(branch_index, "chest")
+	row[branch_index] = route_node
+	route[row_index] = row
+
+
+func _central_chest_branch_index(row: Array) -> int:
+	var center_index := clampi(int(floor(float(row.size() - 1) * 0.5)), 0, maxi(row.size() - 1, 0))
+	if str((row[center_index] as Dictionary).get("type", "")) != "shop":
+		return center_index
+	var best_index := center_index
+	var best_distance := 99999
+	for index in range(row.size()):
+		var route_node: Dictionary = row[index]
+		if str(route_node.get("type", "")) == "shop":
+			continue
+		var distance := absi(index - center_index)
+		if distance < best_distance:
+			best_distance = distance
+			best_index = index
+	return best_index
 
 
 func _random_boss_route_node() -> Dictionary:
@@ -244,6 +367,7 @@ func _random_boss_route_node() -> Dictionary:
 		"boss_id": boss["boss_id"],
 		"row": game.ROUTE_STEPS_TO_BOSS,
 		"branch": 0,
+		"seed": game.rng.randi(),
 	}
 
 
@@ -315,6 +439,12 @@ func _random_route_node_name(index: int, node_type: String) -> String:
 		return "Rest %d: Moon Well" % [index + 1]
 	if node_type == "event":
 		return "Event %d: Strange Stone" % [index + 1]
+	if node_type == "hazard":
+		return "Hazard %d: Dangerous Fork" % [index + 1]
+	if node_type == "chest":
+		return "Chest %d: Relic Cache" % [index + 1]
+	if node_type == "altar":
+		return "Алтарь жертвы"
 	if node_type == "elite_battle":
 		return "Elite %d: Crowned Threat" % [index + 1]
 	if node_type == "boss":
@@ -402,26 +532,168 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 			var node_type: String = route_node["type"]
 			var definition := _map_node_definition(node_type)
 			var state := _route_node_state(step_index, branch_index)
+			var is_clickable := state == "available" or state == "shop_revisit"
 			var button = game.ui._make_button("")
 			button.name = "RouteNode_%s_%d_%d" % [node_type, step_index, branch_index]
-			button.tooltip_text = "%s\n%s" % [str(definition["name"]), str(definition["tooltip"])]
+			button.tooltip_text = _node_preview_tooltip(route_node, definition)
+			if state == "shop_revisit":
+				button.tooltip_text += "\nПосещено — можно вернуться"
 			button.custom_minimum_size = game.MAP_NODE_SIZE
 			button.size = game.MAP_NODE_SIZE
 			button.position = node_positions[step_index][branch_index]
-			button.disabled = state != "available"
+			button.disabled = not is_clickable
 			button.focus_mode = Control.FOCUS_NONE
-			button.z_index = 20 if state == "available" else 10
+			button.z_index = 20 if is_clickable else 10
 			_style_route_node_button(button, node_type, state)
 			_add_route_node_icon(button, _route_node_icon_path(route_node, definition), str(definition["icon"]))
-			if state == "completed":
+			if state == "completed" or state == "shop_revisit":
 				_add_route_node_completed_mark(button)
-			elif state == "locked":
-				button.modulate = Color(0.55, 0.58, 0.62, 0.72)
-			if state == "available":
+			else:
+				# SCRUM-616: компактный угловой бейдж-превью угрозы поверх кнопки для
+				# battle/elite_battle/chest — детерминированный хинт без наведения и без
+				# нового арта (только Label). На completed/shop_revisit не вешаем (там ✓);
+				# на locked бейдж остаётся, но гаснет вместе с modulate кнопки.
+				_add_route_node_threat_badge(button, route_node)
+				if state == "locked":
+					button.modulate = Color(0.55, 0.58, 0.62, 0.72)
+			if is_clickable:
 				button.gui_input.connect(func(event: InputEvent) -> void:
 					_handle_route_node_input(button, event, map_area.get_parent() as ScrollContainer, step_index, branch_index, route_node)
 				)
 			map_area.add_child(button)
+
+
+# --- SCRUM-499: детерминированное превью узла в тултипе ---
+
+const _BIOME_NAMES := {
+	"field_marsh": "Болото",
+	"field_dry_road": "Сухая дорога",
+	"field_stone_garden": "Каменный сад",
+	"field_meadow": "Луг",
+	"field_ruined_courtyard": "Разрушенный двор",
+	"field_misty_marsh": "Туманное болото",
+	"field_dusty_badlands": "Пыльные пустоши",
+	"field_enchanted_meadow": "Зачарованный луг",
+	"field_ashen_rift": "Пепельный разлом",
+	"field_cursed_grove": "Проклятая роща",
+}
+
+const _ENEMY_ARCHETYPES := {
+	"res://scenes/Enemy.tscn": "рядовые",
+	"res://scenes/EnemyRunner.tscn": "бегуны",
+	"res://scenes/EnemyBiter.tscn": "кусачи",
+	"res://scenes/EnemyBruiser.tscn": "крупные бронированные",
+	"res://scenes/EnemyShield.tscn": "щитоносцы",
+	"res://scenes/EnemyFlyingRunner.tscn": "летуны",
+	"res://scenes/EnemySummoner.tscn": "призыватели",
+	"res://scenes/EnemyShooter.tscn": "стрелки",
+	"res://scenes/EnemyMage.tscn": "маги",
+	"res://scenes/EnemySpitter.tscn": "плевалы",
+	"res://scenes/EnemyBoneShaman.tscn": "костяные шаманы",
+}
+
+const _ELITE_NAMES := {
+	"res://scenes/EliteArmored.tscn": "Бронированный",
+	"res://scenes/EliteStalker.tscn": "Сталкер",
+	"res://scenes/ElitePoisoned.tscn": "Отравитель",
+	"res://scenes/EliteCommander.tscn": "Командир",
+}
+
+
+func _node_preview_tooltip(route_node: Dictionary, definition: Dictionary) -> String:
+	var node_type := str(route_node.get("type", "battle"))
+	var node_seed := int(route_node.get("seed", game.fallback_node_seed(route_node)))
+	var lines := [str(definition["name"]), str(definition["tooltip"])]
+	match node_type:
+		"battle":
+			lines.append("Арена: " + _biome_display_name(game.node_background_path(node_type, false, node_seed)))
+			lines.append("Угроза: " + _wave_threat_hint(route_node, node_seed))
+		"elite_battle":
+			lines.append("Арена: " + _biome_display_name(game.node_background_path(node_type, false, node_seed)))
+			lines.append("Угроза: " + _wave_threat_hint(route_node, node_seed))
+			lines.append("Элита: " + _elite_archetype_name(game.node_elite_scene(node_seed)))
+			lines.append("Награда: гарантированный артефакт — " + _elite_artifact_tier_hint(route_node))
+		"boss":
+			lines.append("Босс: " + str(route_node.get("name", "?")))
+		"chest":
+			lines.append("Награда: выбор 1 из 3 артефактов")
+			lines.append("Вес тиров: как у трофея элитки на этой глубине")
+		"hazard":
+			# SCRUM-608: превью развилки — безопасный исход и угроза рискового боя.
+			lines.append("Безопасно: золото + лечение")
+			lines.append("Риск: бой — " + _wave_threat_hint(route_node, node_seed))
+			lines.append("Победа: +золото, +1 Сила, +урон")
+		"altar":
+			# SCRUM-610: превью сделки — без боя, цена в HP, постоянный бонус.
+			lines.append("Без боя: сделка тело-за-силу")
+			lines.append("Цена: часть макс. HP")
+			lines.append("Награда: постоянные статы/моды на забег")
+	return "\n".join(lines)
+
+
+func _biome_display_name(path: String) -> String:
+	var basename := path.get_file().get_basename()
+	if _BIOME_NAMES.has(basename):
+		return str(_BIOME_NAMES[basename])
+	return basename.trim_prefix("field_").replace("_", " ").capitalize()
+
+
+func _enemy_archetype_name(path: String) -> String:
+	return str(_ENEMY_ARCHETYPES.get(path, "враги"))
+
+
+func _elite_archetype_name(scene: PackedScene) -> String:
+	if scene == null:
+		return "элита"
+	return str(_ELITE_NAMES.get(scene.resource_path, scene.resource_path.get_file().get_basename()))
+
+
+func _node_predicted_stage(route_node: Dictionary) -> int:
+	# Глубина, на которой узел реально стартует: его ряд + смещение по акту (как route_scaling_stage).
+	return int(route_node.get("row", 0)) + (clampi(int(game.current_act), 1, int(game.ACT_COUNT)) - 1) * int(game.ACT_SCALING_STAGE_OFFSET)
+
+
+func _wave_threat_hint(route_node: Dictionary, node_seed: int) -> String:
+	var pred_stage := _node_predicted_stage(route_node)
+	# Спец-архетипы с весом как в бою (стрелки/маги/плевалы растут с глубиной); рядовые/бегуны/кусачи — фон.
+	var background_kinds := ["res://scenes/Enemy.tscn", "res://scenes/EnemyRunner.tscn", "res://scenes/EnemyBiter.tscn"]
+	var ranged_kinds := ["res://scenes/EnemyShooter.tscn", "res://scenes/EnemyMage.tscn", "res://scenes/EnemySpitter.tscn"]
+	var specials := {}
+	for path in game.ENEMY_SPAWN_WEIGHTS.keys():
+		if path in background_kinds:
+			continue
+		var weight := float(game.ENEMY_SPAWN_WEIGHTS[path])
+		if path in ranged_kinds:
+			weight *= (0.35 if pred_stage <= 0 else (1.25 if pred_stage >= 2 else 1.0))
+		specials[path] = weight
+	# Детерминированный сид-выбор «фишки» волны среди взвешенных спецов.
+	var generator: RandomNumberGenerator = game.node_aspect_rng(node_seed, 0x27D4EB2F)
+	var total := 0.0
+	for weight in specials.values():
+		total += float(weight)
+	var hint_path := "res://scenes/EnemyBruiser.tscn"
+	if total > 0.0:
+		var roll: float = generator.randf() * total
+		var cursor := 0.0
+		for path in specials.keys():
+			cursor += float(specials[path])
+			if roll <= cursor:
+				hint_path = path
+				break
+	var prefix := "лёгкая волна, " if pred_stage <= 0 else ""
+	return prefix + "в составе — " + _enemy_archetype_name(hint_path)
+
+
+func _elite_artifact_tier_hint(route_node: Dictionary) -> String:
+	var pred_stage := _node_predicted_stage(route_node)
+	# Тот же depth-weighting, что в ProgressionData.elite_artifact_choices.
+	var scale: float = game.PROGRESSION_DATA.stage_scale(pred_stage)
+	var tier3_weight := 0.22 + maxf(float(pred_stage) - 2.0, 0.0) * 0.18
+	if tier3_weight >= 0.6:
+		return "шанс эпического (тир 3)"
+	if scale >= 1.5 or pred_stage >= 3:
+		return "ориентир тир 2"
+	return "ориентир тир 1–2"
 
 
 func _handle_route_node_input(button: Button, event: InputEvent, scroll: ScrollContainer, step_index: int, branch_index: int, route_node: Dictionary) -> void:
@@ -456,6 +728,7 @@ func _activate_route_node(step_index: int, branch_index: int, route_node: Dictio
 		game.route_stage = step_index
 	game.current_route_choice = str(route_node.get("name", ""))
 	game.current_node_type = str(route_node.get("type", "battle"))
+	game.current_node_seed = int(route_node.get("seed", game.fallback_node_seed(route_node)))
 	if game.route_debug_free_pick and step_index != game.route_stage:
 		# Debug-переход: прогресс перематывается к выбранному ряду.
 		game.route_selected_indices.resize(step_index)
@@ -503,6 +776,49 @@ func _add_route_node_completed_mark(button: Button) -> void:
 	button.add_child(mark)
 
 
+# SCRUM-616: текст + цвет углового бейджа-превью угрозы для узла.
+# Возвращает пустую строку для типов без бейджа (boss/shop/event/rest/...).
+func _route_node_threat_badge(route_node: Dictionary) -> Dictionary:
+	match str(route_node.get("type", "")):
+		"elite_battle":
+			# Гарантированная элита + артефакт — «звезда».
+			return {"text": "★", "color": Color(0.98, 0.80, 0.30, 1.0)}
+		"chest":
+			# Выбор 1 из 3 артефактов.
+			return {"text": "1/3", "color": Color(0.55, 0.85, 0.95, 1.0)}
+		"battle":
+			# Буква-хинт силы волны по предсказанной глубине (детерминированно):
+			# Л — лёгкая (старт), С — средняя, Т — тяжёлая (глубокие ряды/акты).
+			var pred_stage := _node_predicted_stage(route_node)
+			if pred_stage <= 0:
+				return {"text": "Л", "color": Color(0.62, 0.86, 0.55, 1.0)}
+			if pred_stage >= 4:
+				return {"text": "Т", "color": Color(0.95, 0.55, 0.45, 1.0)}
+			return {"text": "С", "color": Color(0.92, 0.82, 0.45, 1.0)}
+	return {}
+
+
+func _add_route_node_threat_badge(button: Button, route_node: Dictionary) -> void:
+	var badge_info := _route_node_threat_badge(route_node)
+	if badge_info.is_empty():
+		return
+	var badge := Label.new()
+	badge.name = "RouteNodeThreatBadge"
+	badge.text = str(badge_info["text"])
+	badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE  # не перехватывает клик/hover узла
+	badge.add_theme_font_size_override("font_size", 17)
+	badge.add_theme_color_override("font_color", badge_info["color"])
+	# Тёмная подложка-обводка для читаемости поверх иконки.
+	badge.add_theme_color_override("font_outline_color", Color(0.05, 0.06, 0.08, 0.92))
+	badge.add_theme_constant_override("outline_size", 5)
+	badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	badge.position = Vector2(4.0, 1.0)  # верхний-левый угол, не на центральной иконке
+	badge.z_index = 30  # поверх иконки (icon z неявно 0), но не мешает тултипу кнопки
+	button.add_child(badge)
+
+
 func _route_node_icon_path(route_node: Dictionary, definition: Dictionary) -> String:
 	if str(route_node.get("type", "")) == "boss" and str(route_node.get("boss_id", "")) == "disk_devourer":
 		return str(definition.get("disk_icon_path", definition.get("icon_path", "")))
@@ -540,7 +856,7 @@ func _route_node_state(step_index: int, branch_index: int) -> String:
 		if step_index == shop_step:
 			var route_node: Dictionary = game.route_nodes[step_index][branch_index] if step_index >= 0 and step_index < game.route_nodes.size() and branch_index >= 0 and branch_index < game.route_nodes[step_index].size() else {}
 			if branch_index == shop_branch and str(route_node.get("type", "")) == "shop":
-				return "available"
+				return "shop_revisit"
 			return "locked"
 		if step_index == shop_step + 1:
 			if _route_node_connections(shop_step, shop_branch).has(branch_index):
@@ -601,7 +917,7 @@ func _open_route_node(route_node: Dictionary) -> void:
 	var node_type := str(route_node.get("type", "battle"))
 	if node_type == "shop":
 		var route_choice := str(route_node.get("name", game.current_route_choice))
-		var shop_node_key := "%d:%s:%s" % [int(game.route_stage), node_type, route_choice]
+		var shop_node_key := "%d:%d:%s:%s" % [int(game.current_act), int(game.route_stage), node_type, route_choice]
 		if game.current_shop_node_key != "" and game.current_shop_node_key != shop_node_key:
 			game.current_shop_items.clear()
 			game.current_shop_purchased.clear()
@@ -617,10 +933,29 @@ func _open_route_node(route_node: Dictionary) -> void:
 			game.ui._show_rest_screen()
 		"event":
 			game.ui._show_event_screen(route_node)
+		"hazard":
+			# SCRUM-608: «Опасная развилка» — детерминированное спец-событие
+			# sudden_fork (безопасный обход / рискованный срез). Штампуем event_id,
+			# чтобы _show_event_screen загрузил именно его, а не случайное событие.
+			var hazard_node := route_node.duplicate(true)
+			hazard_node["event_id"] = "sudden_fork"
+			game.ui._show_event_screen(hazard_node)
+		"altar":
+			# SCRUM-610: «Алтарь жертвы» — детерминированное спец-событие sacrifice_altar
+			# (сделка тело-за-силу, без боя/арта). Штампуем event_id, чтобы
+			# _show_event_screen загрузил именно его, а не случайное событие.
+			var altar_node := route_node.duplicate(true)
+			altar_node["event_id"] = "sacrifice_altar"
+			game.ui._show_event_screen(altar_node)
+		"chest":
+			game.ui._show_elite_artifact_reward(Callable(self, "_advance_route_after_noncombat"))
 		"elite_battle":
 			game.combat._start_combat(false, "elite")
 		"boss":
-			game.current_boss_id = str(route_node.get("boss_id", "rift_warden"))
+			# SCRUM-619: на финальном акте при выполненном гейте подменяется на
+			# SCRUM-541: route always starts the normal Act 3 boss; the optional
+			# secret boss is spawned only after Act 3 victory in combat_director.
+			game.current_boss_id = game.resolve_act3_boss_id(str(route_node.get("boss_id", "rift_warden")))
 			game.combat._start_combat(true, "boss")
 		_:
 			game.combat._start_combat(false, "battle")
@@ -662,7 +997,7 @@ func _style_route_node_button(button: Button, node_type: String, state: String) 
 	if state == "locked":
 		background = Color(0.08, 0.09, 0.12, 0.78)
 		border = Color(0.25, 0.28, 0.33, 0.85)
-	elif state == "completed":
+	elif state == "completed" or state == "shop_revisit":
 		background = Color(0.13, 0.16, 0.18, 0.90)
 		border = Color(0.95, 0.78, 0.32, 0.82)
 	elif state == "available":

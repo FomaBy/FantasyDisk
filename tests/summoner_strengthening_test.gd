@@ -19,6 +19,27 @@ class TestEnemy:
 		knockback_taken += vector
 
 
+class TestOwner:
+	extends Node2D
+
+	var health := 50.0
+	var max_health := 100.0
+	var drain_budget := 3.0
+	var capped_calls := 0
+	var uncapped_calls := 0
+
+	func heal_percent_capped(percent: float) -> void:
+		capped_calls += 1
+		var demand := max_health * maxf(percent, 0.0)
+		var healed := minf(demand, drain_budget)
+		drain_budget = maxf(drain_budget - healed, 0.0)
+		health = minf(max_health, health + healed)
+
+	func heal_percent(percent: float) -> void:
+		uncapped_calls += 1
+		health = minf(max_health, health + max_health * maxf(percent, 0.0))
+
+
 func _initialize() -> void:
 	var errors: Array = []
 	await _test_summon_configs(errors)
@@ -26,6 +47,7 @@ func _initialize() -> void:
 	await _test_ally_minion_profile_and_lifecycle(errors)
 	await _test_summon_group_target_distribution(errors)
 	await _test_ally_attack_splash(errors)
+	await _test_ally_support_heal_uses_capped_budget(errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -190,6 +212,43 @@ func _test_ally_attack_splash(errors: Array) -> void:
 		errors.append("Expected nearby enemy to take splash damage, got %.2f." % nearby.damage_taken)
 	if far.damage_taken > 0.01:
 		errors.append("Expected far enemy outside splash radius to stay unharmed, got %.2f." % far.damage_taken)
+
+	holder.queue_free()
+	await process_frame
+
+
+func _test_ally_support_heal_uses_capped_budget(errors: Array) -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
+	var ally := ally_scene.instantiate()
+	var owner := TestOwner.new()
+	var target := TestEnemy.new()
+	holder.add_child(owner)
+	holder.add_child(ally)
+	holder.add_child(target)
+	ally.global_position = Vector2(200, 200)
+	target.global_position = Vector2(230, 200)
+	ally.set("owner_node", owner)
+	ally.call("set_combat_profile", {
+		"damage": 1.0,
+		"attack_range": 48.0,
+		"attack_interval": 0.35,
+		"support_heal_percent": 0.25,
+		"lifetime": 10.0,
+		"max_health": 20.0,
+	})
+	await process_frame
+
+	ally.call("_try_attack", target)
+	if owner.capped_calls != 1:
+		errors.append("Expected AllyMinion support heal to call heal_percent_capped once, got %d." % owner.capped_calls)
+	if owner.uncapped_calls != 0:
+		errors.append("Expected AllyMinion support heal not to call uncapped heal_percent, got %d calls." % owner.uncapped_calls)
+	if absf(owner.health - 53.0) > 0.01:
+		errors.append("Expected AllyMinion support heal to respect capped budget (HP 53.0), got %.2f." % owner.health)
+	if absf(owner.drain_budget) > 0.01:
+		errors.append("Expected AllyMinion support heal to spend capped budget, remaining %.2f." % owner.drain_budget)
 
 	holder.queue_free()
 	await process_frame

@@ -1,0 +1,27 @@
+﻿[
+    {
+        "test":  "event_data_smoke_test.gd",
+        "exit":  0,
+        "tail":  "Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org\n\nEvent data smoke test passed (29 событий, EV-инвариант проверен на 12 событиях с парой risky+safe)."
+    },
+    {
+        "test":  "runtime_smoke_progression_economy_test.gd",
+        "exit":  0,
+        "tail":  "Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org\n\nEvent risk/reward EV invariant passed (16 events, all EV(risk) \u003e= EV(safe)).\nRuntime progression/economy smoke suite passed."
+    },
+    {
+        "test":  "live_balance_simulation_test.gd",
+        "exit":  0,
+        "tail":  "Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org\n\n[deploy] engineer/engineer_sentry_wrench: solo=30.3 5-target=35.0 ttk=3.0с\n[summon] chemist/homunculus_vial: solo=14.0 5-target=55.4 ttk=6.4с\n[dot] biologist/biologist_spore_lens: solo=19.1 5-target=137.9 ttk=4.7с\n[aoe] berserk/sword: solo=18.9 5-target=89.6 ttk=4.8с\n[single] dark_mage/dark_wand: solo=47.5 5-target=110.3 ttk=1.9с\nLive balance simulation test passed (5 архетипов покрыто, 0 мягких заметок)."
+    },
+    {
+        "test":  "global_damage_balance_smoke_test.gd",
+        "exit":  0,
+        "tail":  "Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org\n\nGlobal damage balance smoke passed (51 пар; combined ±25%, solo ±20%, CCT ±30%; худшее CCT +22% — doctor/restore_potion/20)."
+    },
+    {
+        "test":  "global_survivability_balance_smoke_test.gd",
+        "exit":  0,
+        "tail":  "Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org\n\nGlobal survivability balance smoke passed (16 строк: TTD\u003c=600с, митигация\u003c98%, бессмертие недостижимо)."
+    }
+]

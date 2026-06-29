@@ -2,6 +2,8 @@ extends Node2D
 
 const SOURCE_CANVAS_SIZE := Vector2(512.0, 512.0)
 const SOURCE_CENTER := SOURCE_CANVAS_SIZE * 0.5
+const MIN_BONE_LENGTH := 8.0
+const MAX_LEAF_BONE_LENGTH := 72.0
 
 @export var entity_id := ""
 @export var manifest_path := ""
@@ -100,7 +102,6 @@ func _build_rig() -> void:
 
 	_skeleton = Skeleton2D.new()
 	_skeleton.name = "Skeleton2D"
-	add_child(_skeleton)
 
 	var root_source := _source_point("root_pivot_source", SOURCE_CENTER)
 	var root := _spawn_bone("root", "Root", _skeleton, root_source - SOURCE_CENTER)
@@ -119,6 +120,8 @@ func _build_rig() -> void:
 	marker.position = _source_point("hand_r", _source_point("torso", root_source)) - _source_point("torso", root_source)
 	torso.add_child(marker)
 	marker.set_meta("socket_behavior", "runtime_orbit_preserved")
+	_finalize_bone_setup()
+	add_child(_skeleton)
 
 
 func _spawn_limb(side: String, torso: Bone2D, pelvis: Bone2D) -> void:
@@ -161,11 +164,64 @@ func _spawn_bone(part_name: String, node_name: String, parent: Node, position: V
 	bone.name = node_name
 	bone.position = position
 	bone.z_index = int(_z_order.get(part_name, 0))
+	bone.set_autocalculate_length_and_angle(false)
+	bone.set_length(MIN_BONE_LENGTH)
+	bone.set_bone_angle(0.0)
+	bone.set_rest(Transform2D(bone.rotation, bone.position))
 	parent.add_child(bone)
 	_bones[part_name] = bone
 	_bone_rest_positions[part_name] = bone.position
 	_bone_rest_rotations[part_name] = bone.rotation
 	return bone
+
+
+func _finalize_bone_setup() -> void:
+	for part_name in _bones.keys():
+		var key := str(part_name)
+		var bone := _bone(key)
+		if bone == null:
+			continue
+		var child_offset := _first_child_bone_offset(bone)
+		var length := _leaf_bone_length(key)
+		var angle := 0.0
+		if child_offset.length() > MIN_BONE_LENGTH:
+			length = child_offset.length()
+			angle = child_offset.angle()
+		bone.set_autocalculate_length_and_angle(false)
+		bone.set_length(maxf(length, MIN_BONE_LENGTH))
+		bone.set_bone_angle(angle)
+		bone.set_rest(Transform2D(bone.rotation, bone.position))
+		bone.set_meta("rest_det_safe", true)
+		bone.set_meta("bone_length_source", "child_offset" if child_offset.length() > MIN_BONE_LENGTH else "leaf_extent")
+
+
+func _first_child_bone_offset(bone: Bone2D) -> Vector2:
+	for child in bone.get_children():
+		var child_bone := child as Bone2D
+		if child_bone != null:
+			return child_bone.position
+	return Vector2.ZERO
+
+
+func _leaf_bone_length(part_name: String) -> float:
+	var bone := _bone(part_name)
+	if bone == null:
+		return MIN_BONE_LENGTH
+	var sprite := bone.get_node_or_null("Sprite") as Sprite2D
+	if sprite == null or sprite.texture == null:
+		return MIN_BONE_LENGTH
+	var size := sprite.texture.get_size()
+	var pivot := _local_pivot(part_name)
+	var corners := [
+		Vector2.ZERO,
+		Vector2(size.x, 0.0),
+		Vector2(0.0, size.y),
+		size,
+	]
+	var farthest := MIN_BONE_LENGTH
+	for corner in corners:
+		farthest = maxf(farthest, (corner - pivot).length())
+	return clampf(farthest * 0.35, MIN_BONE_LENGTH, MAX_LEAF_BONE_LENGTH)
 
 
 func _attach_part_sprite(part_name: String, bone: Bone2D) -> void:

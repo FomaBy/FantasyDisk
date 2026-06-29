@@ -31,7 +31,11 @@ const ALLY_MINION_SCENE := preload("res://scenes/AllyMinion.tscn")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_COLUMNS := 5
-const PLAYER_COMBAT_VISUAL_SCALE := 0.5
+const DIRECTIONAL_ANIMATION_SUFFIXES := ["east", "south_east", "south", "south_west", "west", "north_west", "north", "north_east"]
+# SCRUM-595: потолок суммарного absorb_flat от оверхил-ульты Доктора за забег,
+# как доля от max_health (раньше копился безгранично → пауэр-крип/эксплойт).
+const DOCTOR_ULT_ABSORB_CAP_FRACTION := 0.5
+const PLAYER_COMBAT_VISUAL_SCALE := 0.425  # SCRUM-518: −15% от 0.5 (тело меньше на просторной арене)
 const BASE_SPRITE_SCALE := Vector2(PLAYER_COMBAT_VISUAL_SCALE, PLAYER_COMBAT_VISUAL_SCALE)
 # Анимация атаки персонажей отключена по запросу пользователя (2026-06-15).
 const USE_ATTACK_ANIMATION := false
@@ -46,7 +50,18 @@ const CARTOON_TRIAL_TILT_DEG := 12.0
 const WEAPON_ORBIT_RADIUS := 104.0
 const WEAPON_ORBIT_VERTICAL_BIAS := -8.0
 const WEAPON_ORBIT_Z_INDEX := -8
+# SCRUM-515: держимый (orbit) спрайт оружия не показываем в бою. Скрываем ТОЛЬКО
+# рендер корня оружия (visible=false) — узел/группа player_weapons/текстура
+# WeaponVisual остаются (нужны для снарядов/ловушек/орбов через
+# class_weapon._weapon_visual_texture()). Снаряды/VFX/хазарды/саммоны парентятся
+# к current_scene (class_weapon._projectile_parent()), не к оружию, поэтому не
+# гаснут. Переинстанс при смене оружия снова применит скрытие через
+# _configure_attached_weapon_layer. Флаг (+ root-meta override для тестов/превью)
+# даёт единую точку вернуть визуал обратно вне боя/для отладки.
+const SHOW_HELD_WEAPON_VISUAL := false
 const DEBUG_MOVE_ARRIVAL_DISTANCE := 10.0
+const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
+const COMBAT_FEEDBACK_MAX_LABELS := 42
 
 const CHARACTER_CONFIGS := {
 	"berserk": {
@@ -112,6 +127,7 @@ var run_modifiers := {
 	"money_gain_multiplier": 1.0,
 	"healing_multiplier": 1.0,
 	"vampiric_heal_per_second_cap": ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT,
+	"drain_heal_per_second_cap": ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT,
 	"enemy_health_multiplier": 1.0,
 	"knockback_multiplier": 1.0,
 }
@@ -143,11 +159,24 @@ var _echo_hit_counter := 0
 var _leadership_echo_hit_counter := 0
 var _dodge_rush_tween: Tween = null
 var _low_hp_active := false
+# SCRUM-500: триггерные артефакты — латчи/кулдауны/счётчики (не часть run_modifiers,
+# поэтому сбрасываются явно в configure_character и при run-start).
+var _crit_burst_tween: Tween = null      # «Импульс Крита»: tween снятия бафа скорости
+var _lowhp_guard_used := false           # «Рубеж Стража»: латч одноразового щита за порог
+var _lowhp_guard_cooldown_left := 0.0    # перезаряд щита (раз в N сек)
+var _take_hit_pulse_cooldown_left := 0.0 # «Контр-волна»: перезаряд отталкивающей волны
+var _kill_streak_counter := 0            # «Сбор Душ»: счётчик убийств до лечения
+var _doctor_ult_absorb_total := 0.0      # SCRUM-595: суммарный absorb от ульты Доктора за забег (капится)
 var _assassin_crit_shadow_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
 var _status_aura_cooldown_left := 0.0
 var _vampiric_heal_budget := 0.0
+# SCRUM-517: per-second бюджет для DRAIN-heal оружия (drain_link/lifesteal). Раньше
+# drain лился в health без потолка/с → Доктор был бессмертен. Теперь оружие зовёт
+# apply_drain_heal(), который списывает из этого бюджета (пополняется в
+# _apply_regeneration по тому же принципу, что вампирный).
+var _drain_heal_budget := 0.0
 var ultimate_charge := 0.0
 var ultimate_max_charge := 100.0
 var _ultimate_active := false
@@ -190,6 +219,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		"money_gain_multiplier": 1.0,
 		"healing_multiplier": 1.0,
 		"vampiric_heal_per_second_cap": ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT,
+		"drain_heal_per_second_cap": ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT,
 		"enemy_health_multiplier": 1.0,
 		"knockback_multiplier": 1.0,
 	}
@@ -199,6 +229,17 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	money = 0
 	ultimate_charge = 0.0
 	_ultimate_active = false
+	# SCRUM-500: сброс триггер-латчей при смене персонажа/старте забега (run_modifiers
+	# уже пересоздан выше, флаги артефактов исчезли; здесь добиваем non-run_modifiers латчи).
+	_low_hp_active = false
+	_lowhp_guard_used = false
+	_lowhp_guard_cooldown_left = 0.0
+	_take_hit_pulse_cooldown_left = 0.0
+	_kill_streak_counter = 0
+	_doctor_ult_absorb_total = 0.0  # SCRUM-595: сброс накопленного доктор-щита при смене персонажа/старте забега
+	if _crit_burst_tween != null and _crit_burst_tween.is_valid():
+		_crit_burst_tween.kill()
+	_crit_burst_tween = null
 	_apply_stat_scaling(true)
 
 	var visual_root := _visual_root()
@@ -336,6 +377,20 @@ func _configure_attached_weapon_layer(weapon: Node) -> void:
 	if visual != null:
 		visual.z_as_relative = true
 		visual.z_index = 0
+	# SCRUM-515: скрыть держимый визуал оружия (рендер корня + WeaponVisual), не
+	# трогая узел/текстуру. Override через root-meta «show_held_weapon» (как aim_mode)
+	# позволяет тестам/превью вернуть визуал без правки кода. Механика оружия
+	# (_process/_attack/cooldown) от visible не зависит — урон/паттерн не меняются.
+	# get_tree() может быть null, если оружие цепляется до входа игрока в дерево —
+	# тогда берём дефолт-константу (override применится при следующем re-attach в дереве).
+	var show_weapon := SHOW_HELD_WEAPON_VISUAL
+	if is_inside_tree() and get_tree().root != null:
+		var tree := get_tree()
+		show_weapon = bool(tree.root.get_meta("show_held_weapon", SHOW_HELD_WEAPON_VISUAL))
+	if weapon_canvas != null:
+		weapon_canvas.visible = show_weapon
+	if visual != null:
+		visual.visible = show_weapon
 
 
 func _physics_process(_delta: float) -> void:
@@ -345,6 +400,9 @@ func _physics_process(_delta: float) -> void:
 	_knight_counter_cooldown_left = max(_knight_counter_cooldown_left - _delta, 0.0)
 	_battle_shout_cooldown_left = max(_battle_shout_cooldown_left - _delta, 0.0)
 	_status_aura_cooldown_left = max(_status_aura_cooldown_left - _delta, 0.0)
+	# SCRUM-500: триггер-кулдауны (Рубеж Стража / Контр-волна).
+	_lowhp_guard_cooldown_left = max(_lowhp_guard_cooldown_left - _delta, 0.0)
+	_take_hit_pulse_cooldown_left = max(_take_hit_pulse_cooldown_left - _delta, 0.0)
 	var direction := Vector2.ZERO
 
 	if Input.is_action_pressed("move_left"):
@@ -560,6 +618,10 @@ func take_damage(amount: float, _source := "") -> bool:
 	damaged.emit(amount)
 	_gain_ultimate_charge(final_damage * float(_ultimate_config().get("taken_charge_rate", 1.0)))
 	_trigger_thorn_reflect(final_damage)
+	# SCRUM-500 (on_take_hit): «Контр-волна» — шанс выпустить отталкивающую волну.
+	_trigger_take_hit_pulse(final_damage)
+	# SCRUM-500 (on_low_hp): «Рубеж Стража» — одноразовый щит при падении ниже порога.
+	_trigger_lowhp_guard()
 
 	# Capstone «Вторая жизнь» (мета-древо, Стойкость): раз за забег смертельный удар
 	# оставляет 1 HP и даёт 2с неуязвимости. Использование — run-persistent через snapshot.
@@ -651,10 +713,83 @@ func _trigger_dodge_rush() -> void:
 	)
 
 
-func _update_low_hp_state() -> void:
-	if float(run_modifiers.get("low_hp_damage_bonus", 0.0)) <= 0.0:
+# SCRUM-500 (on_crit): «Импульс Крита» — короткий бафф скорости движения по криту.
+# Эталон — _trigger_dodge_rush: флаг *_active + tween на снятие + пересчёт скейла.
+# crit_speed_burst (доля) консумится в derived_parameters как dodge_rush.
+func _trigger_crit_speed_burst() -> void:
+	if float(run_modifiers.get("crit_speed_burst", 0.0)) <= 0.0:
 		return
-	var active := health < max_health * 0.3
+	run_modifiers["crit_speed_burst_active"] = 1.0
+	_apply_stat_scaling(false, max_health)
+	if _crit_burst_tween != null and _crit_burst_tween.is_valid():
+		_crit_burst_tween.kill()
+	_crit_burst_tween = create_tween()
+	_crit_burst_tween.tween_interval(1.8)
+	_crit_burst_tween.tween_callback(func() -> void:
+		run_modifiers["crit_speed_burst_active"] = 0.0
+		_apply_stat_scaling(false, max_health)
+	)
+
+
+# SCRUM-500 (on_low_hp): «Рубеж Стража» — одноразовый (на порог) щит при падении ниже 30% HP:
+# нокбэк-волна + краткая неуязвимость. Латч _lowhp_guard_used + перезаряд, перевооружение
+# при подъёме HP выше порога (в _update_low_hp_state).
+func _trigger_lowhp_guard() -> void:
+	if float(run_modifiers.get("lowhp_guard", 0.0)) <= 0.0:
+		return
+	if _lowhp_guard_used or _lowhp_guard_cooldown_left > 0.0:
+		return
+	if max_health <= 0.0 or health <= 0.0 or health >= max_health * 0.3:
+		return
+	_lowhp_guard_used = true
+	_lowhp_guard_cooldown_left = 18.0
+	_damage_invulnerability_left = maxf(_damage_invulnerability_left, 1.5)
+	_play_sfx("dodge")
+	if is_inside_tree():
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 210.0, Color(0.55, 0.85, 1.0, 0.55), false)
+		# Нокбэк-волна: отталкивает врагов рядом (через их take_knockback при наличии).
+		for enemy in get_tree().get_nodes_in_group("enemies"):
+			var enemy_node := enemy as Node2D
+			if enemy_node == null or not is_instance_valid(enemy_node):
+				continue
+			if global_position.distance_squared_to(enemy_node.global_position) <= 230.0 * 230.0:
+				if enemy_node.has_method("apply_knockback"):
+					enemy_node.apply_knockback((enemy_node.global_position - global_position).normalized() * 240.0)
+
+
+# SCRUM-500 (on_take_hit): «Контр-волна» — шанс по получению удара выпустить отталкивающую
+# волну, бьющую врагов рядом частью полученного урона. Шанс + перезаряд против runaway.
+func _trigger_take_hit_pulse(received_damage: float) -> void:
+	if float(run_modifiers.get("take_hit_pulse_chance", 0.0)) <= 0.0 or received_damage <= 0.0:
+		return
+	if _take_hit_pulse_cooldown_left > 0.0 or not is_inside_tree():
+		return
+	if randf() >= clampf(float(run_modifiers.get("take_hit_pulse_chance", 0.0)), 0.0, 1.0):
+		return
+	_take_hit_pulse_cooldown_left = 3.0
+	var pulse_damage := received_damage * 0.9
+	AttackVfx.ring_pulse(_vfx_parent(), global_position, 180.0, Color(1.0, 0.8, 0.4, 0.45), true)
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		if global_position.distance_squared_to(enemy_node.global_position) <= 190.0 * 190.0:
+			if enemy_node.has_method("take_damage"):
+				enemy_node.take_damage(pulse_damage)
+			if enemy_node.has_method("apply_knockback"):
+				enemy_node.apply_knockback((enemy_node.global_position - global_position).normalized() * 180.0)
+
+
+func _update_low_hp_state() -> void:
+	# SCRUM-500: low_hp_active нужен не только «Кровавому Рубежу» (low_hp_damage_bonus),
+	# но и «Второму Дыханию» (lowhp_regen_bonus). Трекаем порог, если есть любой low-HP флаг.
+	var has_low_hp_artifact := float(run_modifiers.get("low_hp_damage_bonus", 0.0)) > 0.0 \
+		or float(run_modifiers.get("lowhp_regen_bonus", 0.0)) > 0.0 \
+		or float(run_modifiers.get("lowhp_guard", 0.0)) > 0.0
+	var active := has_low_hp_artifact and health < max_health * 0.3
+	# Перевооружаем одноразовый щит «Рубеж Стража», когда HP поднялось выше порога.
+	if not active and max_health > 0.0 and health >= max_health * 0.3:
+		_lowhp_guard_used = false
 	if active == _low_hp_active:
 		return
 	_low_hp_active = active
@@ -748,14 +883,24 @@ func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 func _apply_regeneration(delta: float) -> void:
 	var vampiric_cap := ProgressionData.effective_vampiric_cap(float(run_modifiers.get("vampiric_heal_per_second_cap", ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT)))
 	_vampiric_heal_budget = minf(_vampiric_heal_budget + vampiric_cap * delta, vampiric_cap)
+	# SCRUM-517: пополняем drain-бюджет до его per-second потолка (отдельно от регена,
+	# т.к. sustain Доктора — это drain, а не пассивный реген; бюджет нужен даже при regen=0).
+	var drain_cap := _effective_drain_heal_cap()
+	_drain_heal_budget = minf(_drain_heal_budget + drain_cap * delta, drain_cap)
 	var regeneration := float(derived_parameters.get("regeneration", 0.0))
+	# SCRUM-500 (on_low_hp): «Второе Дыхание» — усиленный реген, пока HP ниже порога.
+	if _low_hp_active:
+		regeneration += float(run_modifiers.get("lowhp_regen_bonus", 0.0))
 	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
 		return
 	health = minf(health + regeneration * float(run_modifiers.get("healing_multiplier", 1.0)) * delta, max_health)
 
 
-func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
+func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false) -> void:
 	_gain_ultimate_charge(maxf(dealt_damage, 0.0) * float(_ultimate_config().get("damage_charge_rate", 0.03)))
+	# SCRUM-500 (on_crit): «Импульс Крита» — короткий бафф скорости движения по криту.
+	if was_crit:
+		_trigger_crit_speed_burst()
 	# Вампиризм теперь sustain, а не бессмертие: малая доля урона + per-second cap.
 	var vampiric_chance := float(derived_parameters.get("vampiric_chance", 0.0))
 	if vampiric_chance > 0.0 and dealt_damage > 0.0 and _vampiric_heal_budget > 0.0 and randf() < vampiric_chance:
@@ -769,6 +914,31 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0) -> void:
 	_trigger_class_status_effects(enemy)
 	_trigger_berserk_ultimate_echo(enemy)
 	_on_weapon_hit_echo(enemy)
+
+
+# SCRUM-517: единая точка DRAIN-heal оружия (drain_link/lifesteal). Раньше
+# class_weapon._heal_owner_from_damage писал лечение прямо в health БЕЗ потолка/с,
+# из-за чего Доктор (restore_potion/plague_syringe) в толпе хилился на сотни HP/с
+# (DoT-стак × число целей) и становился бессмертным. Теперь лечение списывается из
+# per-second бюджета — drain остаётся сильнейшим в игре детерминированным sustain
+# (потолок выше вампирного), но конечен: при достаточном входящем DPS HP убывает.
+# Возвращает фактически вылеченное (для combat-feedback на стороне оружия).
+func apply_drain_heal(amount: float) -> float:
+	if amount <= 0.0 or health <= 0.0 or _drain_heal_budget <= 0.0:
+		return 0.0
+	var allowed := minf(amount, _drain_heal_budget)
+	var before := health
+	health = minf(health + allowed * float(run_modifiers.get("healing_multiplier", 1.0)), max_health)
+	var healed := health - before
+	# Списываем из бюджета по «сырому» allowed (до healing_multiplier и до клампа об
+	# max_health), чтобы стоять у полного HP не позволяло копить и сливать бюджет залпом.
+	_drain_heal_budget = maxf(_drain_heal_budget - allowed, 0.0)
+	return healed
+
+
+func _effective_drain_heal_cap() -> float:
+	var raw_cap := float(run_modifiers.get("drain_heal_per_second_cap", ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT))
+	return clampf(raw_cap, 0.0, ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_HARD)
 
 
 func _ultimate_config() -> Dictionary:
@@ -1069,12 +1239,25 @@ func _activate_doctor_ultimate(config: Dictionary, multiplier: float) -> void:
 	for enemy in _enemies_in_radius(global_position, radius):
 		_apply_ultimate_damage(enemy, damage_amount)
 		healed += damage_amount * 0.45
+	# SCRUM-594: ульта Доктора — единственный хил, не уважавший healing_multiplier;
+	# артефакты/мета на +лечение её не усиливали, хотя усиливают все прочие хилы.
+	# Множим хил ОДИН раз и используем и для health, и для overflow→absorb.
+	healed *= float(run_modifiers.get("healing_multiplier", 1.0))
 	var before := health
 	health = minf(max_health, health + healed)
 	var overflow := maxf((before + healed) - max_health, 0.0)
 	if overflow > 0.0:
-		run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + overflow * 0.08
-		_apply_stat_scaling(false, max_health)
+		# SCRUM-595: раньше каждый оверхил-каст НАВСЕГДА добавлял absorb_flat и
+		# никогда не снимал — за забег щит копился безгранично (эксплойт/пауэр-крип;
+		# робо-ульта свой absorb возвращает, доктор только add). Идентичность Доктора
+		# (overheal → постоянный щит) сохраняем, но КАПИМ суммарный доктор-вклад
+		# потолком, привязанным к max_health, чтобы рост был ограничен.
+		var cap := max_health * DOCTOR_ULT_ABSORB_CAP_FRACTION
+		var gain := minf(overflow * 0.08, maxf(cap - _doctor_ult_absorb_total, 0.0))
+		if gain > 0.0:
+			_doctor_ult_absorb_total += gain
+			run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + gain
+			_apply_stat_scaling(false, max_health)
 
 
 func _activate_chemist_ultimate(config: Dictionary, multiplier: float) -> void:
@@ -1129,6 +1312,43 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 	enemy.take_damage(final_amount)
 
 
+func show_combat_feedback_number(amount: float, kind := "heal") -> void:
+	if amount <= 0.0 or not _combat_feedback_enabled() or not is_inside_tree():
+		return
+	if get_tree().get_nodes_in_group(COMBAT_FEEDBACK_LABEL_GROUP).size() >= COMBAT_FEEDBACK_MAX_LABELS:
+		return
+	var parent := _vfx_parent()
+	if parent == null:
+		return
+	var holder := Node2D.new()
+	holder.z_index = 3000
+	holder.global_position = global_position + Vector2(randf_range(-14.0, 14.0), -62.0 + randf_range(-4.0, 4.0))
+	parent.add_child(holder)
+	var label := Label.new()
+	label.name = "CombatHealNumber"
+	label.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
+	label.text = "+%d" % int(round(amount))
+	label.modulate = Color(0.36, 1.0, 0.55, 1.0) if kind == "heal" else Color(1.0, 1.0, 1.0, 1.0)
+	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_color_override("font_outline_color", Color(0.02, 0.04, 0.02, 0.92))
+	label.add_theme_constant_override("outline_size", 5)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.position = Vector2(-36.0, -16.0)
+	label.custom_minimum_size = Vector2(72.0, 0.0)
+	holder.add_child(label)
+	var tween := holder.create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(holder, "global_position", holder.global_position + Vector2(0.0, -44.0), 0.62).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.42).set_delay(0.20)
+	tween.chain().tween_callback(holder.queue_free)
+
+
+func _combat_feedback_enabled() -> bool:
+	if not is_inside_tree():
+		return false
+	return bool(get_tree().root.get_meta("combat_feedback", true))
+
+
 func _vfx_parent() -> Node:
 	var scene := get_tree().current_scene
 	if scene is Node2D:
@@ -1166,10 +1386,17 @@ func _trigger_universal_dot(enemy: Node2D) -> void:
 	var dot_tween := create_tween()
 	for tick_index in range(2):
 		dot_tween.tween_interval(1.0 / dot_speed)
-		dot_tween.tween_callback(func() -> void:
-			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
-				enemy.take_damage(tick_damage)
-		)
+		# SCRUM-551: bound-метод вместо лямбды с захватом локалов `enemy`/`tick_damage`.
+		# Захват в lambda-callable интермиттентно «освобождался» под быстрым create/free
+		# игрока и врагов в balance-CSV (ERROR: Lambda capture at index 1 was freed,
+		# gdscript_lambda_callable.cpp:110) и валил прогон. Callable.bind держит self
+		# (живёт пока жив tween, привязанный к ноде игрока) + value-args; гвард внутри метода.
+		dot_tween.tween_callback(Callable(self, "_apply_dot_tick").bind(enemy, tick_damage))
+
+
+func _apply_dot_tick(enemy: Node2D, tick_damage: float) -> void:
+	if is_instance_valid(enemy) and enemy.has_method("take_damage"):
+		enemy.take_damage(tick_damage)
 
 
 func _trigger_class_status_effects(enemy: Node2D) -> void:
@@ -1305,6 +1532,31 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 			other_node.take_damage(blast_damage)
 
 
+# SCRUM-500 (on_kill): диспетчер триггеров убийства. Вызывается combat_director из
+# _on_enemy_died. Взрыв «Цепная Искра» (шанс) + лечение-стак «Сбор Душ» (каждое N-е).
+# Шанс/счётчик — анти-runaway: взрыв не рекурсивно усиливается, урон одноразовый.
+func on_enemy_killed(enemy: Node2D) -> void:
+	# «Цепная Искра»: шанс взрыва по области у трупа.
+	var explosion_chance := clampf(float(run_modifiers.get("kill_explosion_chance", 0.0)), 0.0, 1.0)
+	if explosion_chance > 0.0 and enemy != null and is_instance_valid(enemy) and is_inside_tree() and randf() < explosion_chance:
+		var blast_position := enemy.global_position
+		var blast_damage := float(derived_parameters.get("damage", 10.0)) * 0.7
+		var scene := get_tree().current_scene
+		if scene == null:
+			scene = get_tree().root
+		AttackVfx.orb_burst(scene, blast_position, 150.0, Color(1.0, 0.55, 0.20, 0.55))
+		for other_node in TARGET_QUERY.in_radius(self, blast_position, 150.0):
+			if other_node != enemy and other_node.has_method("take_damage"):
+				other_node.take_damage(blast_damage)
+	# «Сбор Душ»: каждое N-е убийство лечит процент max HP.
+	var streak_every := int(run_modifiers.get("kill_streak_heal_every", 0.0))
+	if streak_every > 0:
+		_kill_streak_counter += 1
+		if _kill_streak_counter >= streak_every:
+			_kill_streak_counter = 0
+			heal_percent(0.03)
+
+
 func gain_xp(amount: int) -> void:
 	xp += maxi(1, int(round(float(amount) * float(run_modifiers.get("xp_gain_multiplier", 1.0)))))
 	while xp >= xp_to_next:
@@ -1315,7 +1567,13 @@ func gain_xp(amount: int) -> void:
 
 
 func gain_money(amount: int) -> void:
-	money += maxi(1, int(round(float(amount) * float(run_modifiers.get("money_gain_multiplier", 1.0)))))
+	var gained := maxi(1, int(round(float(amount) * float(run_modifiers.get("money_gain_multiplier", 1.0)))))
+	money += gained
+	# SCRUM-502: учёт собранного за забег золота для экрана итогов. Main = current_scene.
+	if is_inside_tree():
+		var game_node := get_tree().current_scene
+		if game_node != null and game_node.has_method("add_run_gold_collected"):
+			game_node.add_run_gold_collected(gained)
 
 
 func spend_money(amount: int) -> bool:
@@ -1330,6 +1588,22 @@ func heal_percent(percent: float) -> void:
 	health = min(max_health, health + max_health * percent * float(run_modifiers.get("healing_multiplier", 1.0)))
 	if health > before + 0.01:
 		_show_heal_vfx()
+		show_combat_feedback_number(health - before, "heal")
+
+
+# SCRUM-603: БОЕВОЕ лечение-от-атаки (heal_percent_on_attack/melee_heal_percent_on_hit/
+# summon_support_heal_percent) обязано уважать тот же per-second бюджет, что и drain
+# (SCRUM-517), иначе на толпе суммарное лечение/с обходит cap и появляется второй
+# «бессмертный» класс (priest/biologist/engineer/bone_saw). Конвертируем percent в
+# абсолют (×max_health) и списываем из ЕДИНОГО drain-heal бюджета. VFX/цифра — только
+# когда реально вылечили. Out-of-combat heal_percent (награды/левелап) НЕ трогаем.
+func heal_percent_capped(percent: float) -> void:
+	if percent <= 0.0:
+		return
+	var healed := apply_drain_heal(max_health * percent)
+	if healed > 0.01:
+		_show_heal_vfx()
+		show_combat_feedback_number(healed, "heal")
 
 
 func _show_heal_vfx() -> void:
@@ -1491,15 +1765,17 @@ func _update_movement_animation(delta: float) -> void:
 		_movement_offset = Vector2(0.0, sin(_animation_time) * 3.0)
 		_movement_rotation = clamp(velocity.x / max(speed, 1.0), -1.0, 1.0) * 0.12
 		_movement_scale_delta = Vector2(sin(_animation_time) * 0.025, -sin(_animation_time) * 0.018)
-		if not body_action_locked and body.animation != "walk":
-			body.play("walk")
+		var move_animation := _body_directional_animation_name(body, "walk", _facing_direction)
+		if not body_action_locked and body.animation != move_animation:
+			body.play(move_animation)
 		_update_sprite_facing(_facing_direction)
 	else:
 		_movement_offset = _movement_offset.lerp(Vector2.ZERO, 10.0 * delta)
 		_movement_rotation = lerpf(_movement_rotation, 0.0, 10.0 * delta)
 		_movement_scale_delta = _movement_scale_delta.lerp(Vector2.ZERO, 10.0 * delta)
-		if not body_action_locked and body.animation != "idle":
-			body.play("idle")
+		var idle_animation := _body_directional_animation_name(body, "idle", _facing_direction)
+		if not body_action_locked and body.animation != idle_animation:
+			body.play(idle_animation)
 
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("update_animation"):
@@ -1514,8 +1790,48 @@ func _update_sprite_facing(direction: Vector2) -> void:
 	var body := _animated_sprite()
 	if body == null:
 		return
+	if _is_directional_body_animation(str(body.animation)):
+		body.flip_h = false
+		return
 	if abs(direction.x) > 0.05:
 		body.flip_h = direction.x < 0.0
+
+
+func _body_directional_animation_name(body: AnimatedSprite2D, base_name: String, direction: Vector2) -> String:
+	if body == null or body.sprite_frames == null:
+		return base_name
+	var suffix := _directional_animation_suffix(direction)
+	var directional_name := "%s_%s" % [base_name, suffix]
+	if body.sprite_frames.has_animation(directional_name):
+		return directional_name
+	if base_name == "walk":
+		var move_name := "move_%s" % suffix
+		if body.sprite_frames.has_animation(move_name):
+			return move_name
+	elif base_name == "move":
+		var walk_name := "walk_%s" % suffix
+		if body.sprite_frames.has_animation(walk_name):
+			return walk_name
+	if body.sprite_frames.has_animation(base_name):
+		return base_name
+	return str(body.animation)
+
+
+func _directional_animation_suffix(direction: Vector2) -> String:
+	if direction.length_squared() <= 0.001:
+		return "south"
+	var sector_count := DIRECTIONAL_ANIMATION_SUFFIXES.size()
+	var sector_size := TAU / float(sector_count)
+	var index := int(floor((direction.angle() + sector_size * 0.5) / sector_size))
+	index = posmod(index, sector_count)
+	return str(DIRECTIONAL_ANIMATION_SUFFIXES[index])
+
+
+func _is_directional_body_animation(animation_name: String) -> bool:
+	for suffix in DIRECTIONAL_ANIMATION_SUFFIXES:
+		if animation_name.ends_with("_%s" % suffix):
+			return true
+	return false
 
 
 func _apply_sprite_transform() -> void:

@@ -1,0 +1,4 @@
+interface:
+  display_name: "FantasyDisk Class Balance Director"
+  short_description: "Balance class weapon trios as full kits"
+  default_prompt: "Use $fantasydisk-class-balance-director to rebalance FantasyDisk classes by three-weapon kit totals, solo/AoE/defensive axes, and mechanic-first fixes."

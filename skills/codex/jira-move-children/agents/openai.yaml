@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jira Move Children"
+  short_description: "Move Jira child tickets between parents"
+  default_prompt: "Use $jira-move-children to move all child Jira tickets from one parent issue to another after preparing a dry-run and requesting confirmation."

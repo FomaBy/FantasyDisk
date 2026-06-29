@@ -13,6 +13,7 @@ const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 @export var inner_width := 54.0
 @export var outer_width := 300.0
 @export var aoe_radius := 190.0
+@export var max_aoe_radius := 0.0
 @export var sweep_degrees := 70.0
 @export var windup_time := 0.06
 @export var swing_time := 0.14
@@ -31,6 +32,8 @@ var _last_direction := Vector2.RIGHT
 var _swinging := false
 var _hit_targets := []
 var _swing_tween: Tween = null
+var _swing_timing_tween: Tween = null
+var _last_attack_crit := false
 
 
 func _ready() -> void:
@@ -49,6 +52,7 @@ func configure_weapon(config: Dictionary) -> void:
 	inner_width = float(config.get("inner_width", inner_width))
 	outer_width = float(config.get("outer_width", outer_width))
 	aoe_radius = float(config.get("aoe_radius", aoe_radius))
+	max_aoe_radius = float(config.get("max_aoe_radius", max_aoe_radius))
 	sweep_degrees = float(config.get("sweep_degrees", sweep_degrees))
 	windup_time = float(config.get("windup_time", windup_time))
 	swing_time = float(config.get("swing_time", swing_time))
@@ -101,19 +105,38 @@ func _start_swing(immediate_damage := false) -> void:
 		return
 
 	# Tween на оружии замораживается паузой, чтобы окно урона не тикало в level-up/Escape.
-	var swing_timing_tween := create_tween()
-	swing_timing_tween.tween_interval(windup_time)
-	swing_timing_tween.tween_callback(func() -> void:
+	# SCRUM-551: храним ссылку и гасим прошлый таймер-твин — иначе при force-free оружия
+	# (mass-free между замерами в character_balance_csv.gd) висящий swing-таймер дёргал
+	# _finish_swing/lambda на уже освобождённом узле → нативный SIGABRT (freed object/lambda),
+	# из-за чего balance-CSV падал на berserk-строках и не собирался.
+	if _swing_timing_tween != null and _swing_timing_tween.is_valid():
+		_swing_timing_tween.kill()
+	_swing_timing_tween = create_tween()
+	_swing_timing_tween.tween_interval(windup_time)
+	_swing_timing_tween.tween_callback(func() -> void:
 		if is_instance_valid(owner_node):
 			_damage_window(owner_node, _last_direction)
 	)
-	swing_timing_tween.tween_interval(swing_time + recover_time)
-	swing_timing_tween.tween_callback(_finish_swing)
+	_swing_timing_tween.tween_interval(swing_time + recover_time)
+	_swing_timing_tween.tween_callback(_finish_swing)
 
 
 func _finish_swing() -> void:
+	if is_queued_for_deletion():
+		return
 	_swinging = false
 	_hit_targets.clear()
+
+
+func _exit_tree() -> void:
+	# Оружие покидает дерево (смена оружия ИЛИ каскадный force-free игрока) —
+	# гасим оба твина, чтобы их отложенные колбэки не сработали по freed-self.
+	if _swing_tween != null and _swing_tween.is_valid():
+		_swing_tween.kill()
+	if _swing_timing_tween != null and _swing_timing_tween.is_valid():
+		_swing_timing_tween.kill()
+	_swing_tween = null
+	_swing_timing_tween = null
 
 
 func _animate_weapon(direction: Vector2) -> void:
@@ -173,14 +196,16 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 		if enemy_node.has_method("take_damage"):
 			_hit_targets.append(enemy_node)
 			var dealt := _rolled_damage(owner_node)
-			enemy_node.take_damage(dealt)
+			_call_take_damage(enemy_node, dealt, {"critical": _last_attack_crit, "damage_type": "physical"})
 			if owner_node.has_method("on_weapon_hit"):
-				owner_node.on_weapon_hit(enemy_node, dealt)
+				owner_node.on_weapon_hit(enemy_node, dealt, _last_attack_crit)  # SCRUM-500: прокидываем крит-флаг
 			_apply_unique_melee_hit_effects(owner_node, enemy_node, attack_direction, dealt)
 
 
 func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2, amount: float) -> void:
 	if enemy_node == null or not is_instance_valid(enemy_node):
+		return
+	if owner_node == null or not is_instance_valid(owner_node):  # SCRUM-631: owner_node мог быть освобождён между _damage_window и колбэком
 		return
 	var distance := owner_node.global_position.distance_to(enemy_node.global_position)
 	if melee_close_bonus_radius > 0.0 and melee_close_damage_multiplier > 1.0 and distance <= melee_close_bonus_radius:
@@ -227,7 +252,8 @@ func _find_closest_enemy(owner_node: Node2D, range_limit := -1.0) -> Node2D:
 
 func _is_enemy_inside_attack(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2) -> bool:
 	if attack_shape == "circle":
-		return owner_node.global_position.distance_squared_to(enemy_node.global_position) <= aoe_radius * aoe_radius
+		var radius := _effective_circle_radius()
+		return owner_node.global_position.distance_squared_to(enemy_node.global_position) <= radius * radius
 	if attack_shape == "sweep":
 		return _is_enemy_inside_sweep(owner_node, enemy_node, attack_direction)
 	# "strip" — прямоугольная полоса: frustum с равными inner/outer width.
@@ -261,6 +287,21 @@ func _is_enemy_inside_frustum(owner_node: Node2D, enemy_node: Node2D, attack_dir
 	return side_distance <= half_width + 0.001
 
 
+func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
+	if _take_damage_accepts_feedback(enemy):
+		enemy.call("take_damage", amount, feedback)
+	else:
+		enemy.call("take_damage", amount)
+
+
+func _take_damage_accepts_feedback(enemy: Node) -> bool:
+	for method in enemy.get_method_list():
+		if str(method.get("name", "")) == "take_damage":
+			var args: Array = method.get("args", [])
+			return args.size() >= 2
+	return false
+
+
 func _rolled_damage(owner_node: Node2D) -> float:
 	var raw_parameters = owner_node.get("derived_parameters")
 	if not (raw_parameters is Dictionary):
@@ -268,8 +309,10 @@ func _rolled_damage(owner_node: Node2D) -> float:
 
 	var parameters: Dictionary = raw_parameters
 	var result := damage
+	_last_attack_crit = false
 	if randf() < float(parameters.get("crit_chance", 0.0)):
 		result *= float(parameters.get("crit_damage_multiplier", 1.0))
+		_last_attack_crit = true
 	return result
 
 
@@ -296,7 +339,7 @@ func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> vo
 	var radius := maxf(aoe_radius, inner_width * 1.45)
 	if attack_shape == "circle":
 		center = owner_node.global_position
-		radius = maxf(aoe_radius, 96.0)
+		radius = maxf(_effective_circle_radius(), 96.0)
 	elif attack_shape == "strip":
 		center = owner_node.global_position + direction * ((start_distance + attack_range) * 0.5)
 		radius = maxf(inner_width * 2.0, 96.0)
@@ -361,7 +404,13 @@ func _show_circle_area(owner_node: Node2D) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		scene = get_tree().root
-	AttackVfx.hammer_slam(scene, owner_node.global_position, aoe_radius, visual_color)
+	AttackVfx.hammer_slam(scene, owner_node.global_position, _effective_circle_radius(), visual_color)
+
+
+func _effective_circle_radius() -> float:
+	if max_aoe_radius > 0.0:
+		return minf(aoe_radius, max_aoe_radius)
+	return aoe_radius
 
 
 func _owner_node() -> CharacterBody2D:
@@ -382,6 +431,8 @@ func _capture_base_values() -> void:
 		set_meta("base_attack_range", attack_range)
 	if not has_meta("base_aoe_radius"):
 		set_meta("base_aoe_radius", aoe_radius)
+	if not has_meta("base_max_aoe_radius"):
+		set_meta("base_max_aoe_radius", max_aoe_radius)
 	if not has_meta("base_inner_width"):
 		set_meta("base_inner_width", inner_width)
 	if not has_meta("base_outer_width"):

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game Asset Art Director"
+  short_description: "Create Godot-ready dark fantasy PNG assets"
+  default_prompt: "Use $fantasydisk-asset-generator to create a Godot-ready dark fantasy PNG asset with safe content notes."

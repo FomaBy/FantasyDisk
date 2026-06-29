@@ -1,0 +1,4 @@
+interface:
+  display_name: "FantasyDisk Built-in Images"
+  short_description: "Generate FantasyDisk art without API keys"
+  default_prompt: "Use $fantasydisk-builtin-image-generator to create FantasyDisk art without OpenAI API keys."

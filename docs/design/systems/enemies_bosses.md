@@ -93,3 +93,36 @@ legacy cleanup scope.
 `tests/runtime_smoke_test.gd` и `tests/runtime_smoke_boss_elite_test.gd`
 проверяют elite scenes, attack phases, boss pool, spawn bounds, wave pacing,
 mini/card elite/boss scale order и базовые combat flows.
+
+## SCRUM-541 Secret Ascension Boss
+
+`secret_ascension_boss` is a post-Act-3 backend/balance boss, not part of the
+normal boss node rotation. The route map still starts the ordinary Act 3 boss;
+after that boss is defeated, `CombatDirector` starts the secret encounter only
+when the run was launched at the maximum available Ascension level.
+
+Current scene: `scenes/BossSecretAscension.tscn`. SCRUM-539 delivered the
+Design source pack and static/VFX candidates in
+`docs/design/references/bosses/secret_ascension_boss/`,
+`assets/sprites/bosses/secret_ascension_boss.png`, and
+`assets/sprites/effects/secret_ascension_boss_*_telegraph.png`. Animator should
+prefer a full-frame path; Back-end can use the static plus VFX candidate only as
+an interim. Mechanics are implemented in `scripts/boss.gd` under
+`boss_behavior = "secret_ascension_boss"`:
+
+- `SecretBossSectorRing`: large telegraphed ring/sector pressure with safe gaps.
+- delayed rift eruption clusters around the player.
+- phase 2 at 50% HP adds immediate sector pressure plus riftling adds; phase 3
+  begins below 25% HP.
+
+Balance benchmark for Act 3 max Ascension L5, route scaling stage 18:
+estimated HP is about `47.6k`. L20 optimum class-kit 1-target DPS range from
+`205.39` to `391.83`, producing estimated TTK `231.8s` to `121.5s`
+(`179.8s` at median `264.77` DPS). L20 random average DPS range
+`85.07` to `137.09`, producing estimated TTK `559.6s` to `347.3s`.
+
+SCRUM-539 art handoff notes: source/runtime candidate is `1024x1024` RGBA,
+alpha bbox `[180, 42, 843, 984]`, recommended pivot `(512, 960)`, and visual
+radius about `390px` on the 1024 source. Telegraph warning colors should stay
+violet/gold/crimson/bone-white, readable over dark floors, with no pure-neon
+fills or opaque noisy plates.

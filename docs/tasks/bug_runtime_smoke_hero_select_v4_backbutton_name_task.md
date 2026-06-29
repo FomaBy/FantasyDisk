@@ -104,9 +104,10 @@ longer blocking runtime smoke.
 
 ## QA-Вердикт (2026-06-23)
 
-Статус: BLOCKED (фикс не закоммичен — committed HEAD красный)
+Статус: PASSED (follow-up commit recorded; PM closed 2026-06-27)
 
-Фикс **верифицирован зелёным на рабочем дереве**, но **НЕ закоммичен**:
+Исторический блокер 2026-06-23: фикс был **верифицирован зелёным на рабочем
+дереве**, но на тот момент **НЕ был закоммичен**:
 
 - `tests/runtime_smoke_test.gd` показан `git status` как `M` (unstaged).
 - На committed HEAD тест всё ещё ищет только `HeroSelectBackButton`
@@ -122,10 +123,8 @@ longer blocking runtime smoke.
 Прогон на рабочем дереве: `tests/runtime_smoke_test.gd` → EXIT=0, «Runtime smoke
 test passed.» (лог `build/qa/qa_session_20260623/runtime_smoke.log`).
 
-**Не закрываю** — остаётся в «Контроль качества». Для перевода в «Готово»
-Back-end должен закоммитить `tests/runtime_smoke_test.gd` (изолированно), после
-чего QA перепроверит чистый HEAD зелёным. Заявление «Done in Back-end thread»
-неточно: правка в рабочем дереве не дошла до коммита.
+Исторический вывод QA 2026-06-23 был «не закрывать» до изолированного коммита.
+Этот блокер снят follow-up commit `d59f80a9`, записанным ниже.
 
 ## Dispatcher Sync (2026-06-23)
 
@@ -135,5 +134,11 @@ Back-end follow-up completed after the QA block:
   contains the isolated `tests/runtime_smoke_test.gd` fix.
 - Back-end reran `runtime_smoke_test.gd` successfully after the commit.
 
-Task remains in «Контроль качества» until QA rechecks clean HEAD and records the
-final verdict.
+Task no longer remains in «Контроль качества»: Jira moved to `Готово` during
+the 2026-06-27 Sprint 0.1.6 cleanup after the follow-up commit was recorded.
+
+## PM Closure (2026-06-27)
+
+SCRUM-479 закрыт в Jira по cleanup-директиве для `Спринт 0.1.6`.
+Follow-up commit `d59f80a9` уже записан выше как изолированный clean-HEAD фикс,
+поэтому тикет больше не должен оставаться в «Контроль качества».

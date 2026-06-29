@@ -1,10 +1,15 @@
 extends RefCounted
 
-# Персистентная метапрогрессия: meta points и уровни возвышения (1-10)
+# Персистентная метапрогрессия: meta points и уровни возвышения (1-5)
 # на персонажа. Сохранение через ConfigFile в user://.
 
 const DEFAULT_SAVE_PATH := "user://fantasydisk_meta.cfg"
-const MAX_ASCENSION_LEVEL := 10
+const CODEX_DATA := preload("res://scripts/codex_data.gd")
+# SCRUM-516: лестница возвышений сжата 10→5 (короче и острее). Единый кап и для
+# дорожки сложности (ASCENSION_MODIFIERS), и для наградной лестницы
+# (ASCENSION_LEVELS). Старые сейвы с ascension>5 молча клампятся в [0..5] через
+# load_state/ascension_level/selectable_max — без краша.
+const MAX_ASCENSION_LEVEL := 5
 const SECTION := "meta"
 
 # Общее древо умений (SCRUM-150), 4 независимые ветви; внутри ветви узлы
@@ -57,6 +62,16 @@ const SKILL_TREE := [
 	{"id": "endure_capstone", "branch": "endure", "tier": 10, "cost": 2, "title": "Вторая жизнь", "desc": "Раз за забег смертельный удар оставляет 1 HP и даёт 2с неуязвимости.", "effects": {"death_save": 1.0}},
 ]
 
+# Secret boss endcap (SCRUM-541): after the normal Act 3 boss, only when the run
+# was launched at the maximum available Ascension level. Old SCRUM-619 low-damage
+# and key-artifact branches are kept as retired constants for save/content
+# compatibility, but they no longer unlock the fight.
+const SECRET_ENCOUNTER_MIN_ASCENSION := MAX_ASCENSION_LEVEL
+const SECRET_ENCOUNTER_MAX_DAMAGE_TAKEN := 60.0
+const SECRET_ENCOUNTER_ARTIFACT_KEY := "rift_key"
+const SECRET_ENCOUNTER_REWARD_META_POINTS := 3
+const SECRET_BOSS_ID := "secret_ascension_boss"
+
 const SKILL_BRANCHES := ["wealth", "lore", "might", "endure"]
 const SKILL_BRANCH_TITLES := {
 	"wealth": "Путь Богатства",
@@ -78,6 +93,28 @@ const CLASS_PROGRESSION := [
 	{"wins": 9, "title": "Мастерство класса", "desc": "Урон этого класса ещё +5%; +3% HP.", "effects": {"class_damage_mult": 0.05, "class_max_health_mult": 0.03}},
 ]
 
+# SCRUM-620: челленджи класса за РАЗНООБРАЗИЕ забега. Стимулируют менять оружие/
+# тактику внутри класса (а не фармить один билд), расширяя CLASS_PROGRESSION без UI.
+# Выполняется один раз на класс (дедуп в class_challenges_done), бонус — те же
+# class_*-ключи, что и прогрессия (player.gd мапит их в *_multiplier). Суммарный
+# вклад челленджей держим в пределах +5% на ключ (анти-пауэр-крип).
+#   condition_metric — какое поле class_challenge_progress оценивать:
+#     "weapon_diversity" — число РАЗНЫХ weapon_id побед >= threshold;
+#     "best_ascension"   — лучшее возвышение победы >= threshold;
+#     "no_shop_wins"     — число побед БЕЗ покупок в магазине >= threshold.
+# Жёсткий потолок суммарного вклада челленджей на один class_*-ключ (анти-крип).
+const CLASS_CHALLENGE_MAX_BONUS := 0.05
+const CODEX_DISCOVERY_CATEGORIES := {
+	"monsters": "discovered_monsters",
+	"bosses": "discovered_bosses",
+	"artifacts": "discovered_artifacts",
+}
+const CLASS_CHALLENGES := [
+	{"id": "weapon_master", "title": "Мастер арсенала", "desc": "Победы 3 разными оружиями этого класса: +3% урона.", "condition_metric": "weapon_diversity", "threshold": 3, "effects": {"class_damage_mult": 0.03}},
+	{"id": "peak_climber", "title": "Покоритель вершин", "desc": "Победа на возвышении 3+: +3% максимума HP.", "condition_metric": "best_ascension", "threshold": 3, "effects": {"class_max_health_mult": 0.03}},
+	{"id": "lone_wolf", "title": "Без посредников", "desc": "Победа без покупок в магазине: +3% скорости атаки.", "condition_metric": "no_shop_wins", "threshold": 1, "effects": {"class_attack_speed_mult": 0.03}},
+]
+
 
 static func default_state() -> Dictionary:
 	return {
@@ -86,6 +123,20 @@ static func default_state() -> Dictionary:
 		"skill_points": 0,
 		"skill_nodes": [],
 		"class_boss_wins": {},
+		# SCRUM-619: одноразовый флаг победы над секретным боссом конца Акта 3.
+		"secret_boss_defeated": false,
+		# SCRUM-617: id разблокированных персистентных ачивок забега.
+		"achievements": [],
+		# SCRUM-620: накопленные метрики челленджей класса {char:{weapons:[],
+		# best_ascension:int, no_shop_wins:int}} и выполненные {char:[challenge_id]}.
+		"class_challenge_progress": {},
+		"class_challenges_done": {},
+		# SCRUM-621: persistent Codex unlock/discovery tracking. Monsters include
+		# standard, elite and mini-elite Codex entries; bosses and artifacts are
+		# tracked separately so future Codex filters can unlock per category.
+		"discovered_monsters": [],
+		"discovered_bosses": [],
+		"discovered_artifacts": [],
 	}
 
 
@@ -115,6 +166,57 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 		for character_id in raw_class_wins.keys():
 			class_wins[str(character_id)] = maxi(int(raw_class_wins[character_id]), 0)
 	state["class_boss_wins"] = class_wins
+	state["secret_boss_defeated"] = bool(config.get_value(SECTION, "secret_boss_defeated", false))
+	# SCRUM-617: разблокированные ачивки (массив строк-id; нормализуем к строкам и дедупим).
+	var raw_achievements = config.get_value(SECTION, "achievements", [])
+	var achievements := []
+	if raw_achievements is Array:
+		for achievement_id in raw_achievements:
+			var sid := str(achievement_id)
+			if not achievements.has(sid):
+				achievements.append(sid)
+	state["achievements"] = achievements
+	# SCRUM-620: челленджи класса — метрики и выполненные (нормализуем по классам).
+	var raw_cc_progress = config.get_value(SECTION, "class_challenge_progress", {})
+	var cc_progress := {}
+	if raw_cc_progress is Dictionary:
+		for char_id in raw_cc_progress.keys():
+			var p = raw_cc_progress[char_id]
+			if not (p is Dictionary):
+				continue
+			var weapons := []
+			var raw_weapons = p.get("weapons", [])
+			if raw_weapons is Array:
+				for w in raw_weapons:
+					var ws := str(w)
+					if ws != "" and not weapons.has(ws):
+						weapons.append(ws)
+			cc_progress[str(char_id)] = {
+				"weapons": weapons,
+				"best_ascension": clampi(int(p.get("best_ascension", 0)), 0, MAX_ASCENSION_LEVEL),
+				"no_shop_wins": maxi(int(p.get("no_shop_wins", 0)), 0),
+			}
+	state["class_challenge_progress"] = cc_progress
+	var raw_cc_done = config.get_value(SECTION, "class_challenges_done", {})
+	var cc_done := {}
+	var valid_challenge_ids := {}
+	for challenge in CLASS_CHALLENGES:
+		valid_challenge_ids[str(challenge.get("id", ""))] = true
+	if raw_cc_done is Dictionary:
+		for char_id in raw_cc_done.keys():
+			var raw_list = raw_cc_done[char_id]
+			if not (raw_list is Array):
+				continue
+			var done := []
+			for cid in raw_list:
+				var cs := str(cid)
+				if valid_challenge_ids.has(cs) and not done.has(cs):
+					done.append(cs)
+			cc_done[str(char_id)] = done
+	state["class_challenges_done"] = cc_done
+	for category in CODEX_DISCOVERY_CATEGORIES.keys():
+		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
+		state[save_key] = _normalized_id_list(config.get_value(SECTION, save_key, []), category)
 	return state
 
 
@@ -125,7 +227,80 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 	config.set_value(SECTION, "skill_points", int(state.get("skill_points", 0)))
 	config.set_value(SECTION, "skill_nodes", state.get("skill_nodes", []))
 	config.set_value(SECTION, "class_boss_wins", state.get("class_boss_wins", {}))
+	config.set_value(SECTION, "secret_boss_defeated", bool(state.get("secret_boss_defeated", false)))
+	config.set_value(SECTION, "achievements", state.get("achievements", []))
+	# SCRUM-620: метрики и выполненные челленджи класса.
+	config.set_value(SECTION, "class_challenge_progress", state.get("class_challenge_progress", {}))
+	config.set_value(SECTION, "class_challenges_done", state.get("class_challenges_done", {}))
+	for category in CODEX_DISCOVERY_CATEGORIES.keys():
+		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
+		config.set_value(SECTION, save_key, _normalized_id_list(state.get(save_key, []), category))
 	config.save(save_path)
+
+
+static func _normalized_id_list(raw, category := "") -> Array:
+	var result := []
+	if not (raw is Array):
+		return result
+	for value in raw:
+		var id := str(value).strip_edges()
+		if id != "" and (category == "" or _is_valid_codex_discovery_id(category, id)) and not result.has(id):
+			result.append(id)
+	return result
+
+
+static func _canonical_codex_ids(category: String) -> Dictionary:
+	var ids := {}
+	match category:
+		"monsters":
+			for entry in CODEX_DATA.monsters():
+				if str(entry.get("kind", "")) != "boss":
+					ids[str(entry.get("id", ""))] = true
+		"bosses":
+			for entry in CODEX_DATA.monsters():
+				if str(entry.get("kind", "")) == "boss":
+					ids[str(entry.get("id", ""))] = true
+		"artifacts":
+			for entry in CODEX_DATA.artifacts():
+				ids[str(entry.get("id", ""))] = true
+	return ids
+
+
+static func _is_valid_codex_discovery_id(category: String, content_id: String) -> bool:
+	return _canonical_codex_ids(category).has(content_id)
+
+
+static func _discovery_save_key(category: String) -> String:
+	return str(CODEX_DISCOVERY_CATEGORIES.get(category, ""))
+
+
+static func discovered_ids(state: Dictionary, category: String) -> Array:
+	var save_key := _discovery_save_key(category)
+	if save_key == "":
+		return []
+	return _normalized_id_list(state.get(save_key, []), category)
+
+
+static func is_codex_discovered(state: Dictionary, category: String, content_id: String) -> bool:
+	return discovered_ids(state, category).has(content_id)
+
+
+static func record_codex_discovery(state: Dictionary, category: String, content_id: String) -> Dictionary:
+	var save_key := _discovery_save_key(category)
+	var id := content_id.strip_edges()
+	if save_key == "" or id == "" or not _is_valid_codex_discovery_id(category, id):
+		return state
+	var ids := _normalized_id_list(state.get(save_key, []), category)
+	if not ids.has(id):
+		ids.append(id)
+	state[save_key] = ids
+	return state
+
+
+static func record_codex_discoveries(state: Dictionary, category: String, content_ids: Array) -> Dictionary:
+	for content_id in content_ids:
+		state = record_codex_discovery(state, category, str(content_id))
+	return state
 
 
 static func ascension_level(state: Dictionary, character_id: String) -> int:
@@ -135,7 +310,7 @@ static func ascension_level(state: Dictionary, character_id: String) -> int:
 	return clampi(int(levels.get(character_id, 0)), 0, MAX_ASCENSION_LEVEL)
 
 
-static func record_boss_victory(state: Dictionary, character_id: String, run_level := -1) -> Dictionary:
+static func record_boss_victory(state: Dictionary, character_id: String, run_level := -1, run_context := {}) -> Dictionary:
 	var levels = state.get("ascension_levels", {})
 	if not (levels is Dictionary):
 		levels = {}
@@ -161,12 +336,142 @@ static func record_boss_victory(state: Dictionary, character_id: String, run_lev
 		class_wins = {}
 	class_wins[character_id] = maxi(int(class_wins.get(character_id, 0)), 0) + 1
 	state["class_boss_wins"] = class_wins
+	# SCRUM-620: челленджи класса за разнообразие — копим метрики из run_context и
+	# отмечаем выполненные пороги (одноразово). run_context опционален (старые вызовы
+	# с 3 аргументами не трекают — backward-compatible).
+	state = _record_class_challenge_progress(state, character_id, run_level, run_context)
 	return state
 
 
+# SCRUM-620: обновить метрики челленджей класса и отметить достигнутые пороги.
+# run_context: {"weapon_id": String, "used_shop": bool}. Чистая мутация state.
+static func _record_class_challenge_progress(state: Dictionary, character_id: String, run_level: int, run_context: Dictionary) -> Dictionary:
+	if character_id == "":
+		return state
+	var all_progress = state.get("class_challenge_progress", {})
+	if not (all_progress is Dictionary):
+		all_progress = {}
+	var prog = all_progress.get(character_id, {})
+	if not (prog is Dictionary):
+		prog = {}
+	var weapons = prog.get("weapons", [])
+	if not (weapons is Array):
+		weapons = []
+	var weapon_id := str(run_context.get("weapon_id", ""))
+	if weapon_id != "" and not weapons.has(weapon_id):
+		weapons.append(weapon_id)
+	prog["weapons"] = weapons
+	# Лучшее возвышение победы (run_level<0 = неизвестно/легаси, не засчитываем).
+	var best_ascension := int(prog.get("best_ascension", 0))
+	if run_level >= 0:
+		best_ascension = maxi(best_ascension, run_level)
+	prog["best_ascension"] = best_ascension
+	# Победы без покупок в магазине (явный сигнал used_shop=false).
+	var no_shop_wins := int(prog.get("no_shop_wins", 0))
+	if run_context.has("used_shop") and not bool(run_context.get("used_shop")):
+		no_shop_wins += 1
+	prog["no_shop_wins"] = no_shop_wins
+	all_progress[character_id] = prog
+	state["class_challenge_progress"] = all_progress
+	# Отметить достигнутые пороги (дедуп).
+	var all_done = state.get("class_challenges_done", {})
+	if not (all_done is Dictionary):
+		all_done = {}
+	var done = all_done.get(character_id, [])
+	if not (done is Array):
+		done = []
+	for challenge in CLASS_CHALLENGES:
+		var cid := str(challenge.get("id", ""))
+		if cid == "" or done.has(cid):
+			continue
+		if _class_challenge_met(challenge, prog):
+			done.append(cid)
+	all_done[character_id] = done
+	state["class_challenges_done"] = all_done
+	return state
+
+
+# Достигнут ли порог челленджа по накопленным метрикам класса.
+static func _class_challenge_met(challenge: Dictionary, prog: Dictionary) -> bool:
+	var metric := str(challenge.get("condition_metric", ""))
+	var threshold := int(challenge.get("threshold", 0))
+	match metric:
+		"weapon_diversity":
+			var weapons = prog.get("weapons", [])
+			return (weapons is Array) and (weapons as Array).size() >= threshold
+		"best_ascension":
+			return int(prog.get("best_ascension", 0)) >= threshold
+		"no_shop_wins":
+			return int(prog.get("no_shop_wins", 0)) >= threshold
+		_:
+			return false
+
+
 static func selectable_max(state: Dictionary, character_id: String) -> int:
-	# Можно выбрать 0..(пройдено+1), но не выше 10.
+	# Можно выбрать 0..(пройдено+1), но не выше 5 (MAX_ASCENSION_LEVEL).
 	return clampi(ascension_level(state, character_id) + 1, 0, MAX_ASCENSION_LEVEL)
+
+
+# --- Секретный бой конца Акта 3 (SCRUM-619) ---
+
+static func secret_boss_defeated(state: Dictionary) -> bool:
+	return bool(state.get("secret_boss_defeated", false))
+
+
+# Максимальный достигнутый уровень возвышения среди ВСЕХ классов (для гейта, когда
+# конкретный класс забега неизвестен/не передан).
+static func _max_ascension_any(state: Dictionary) -> int:
+	var levels = state.get("ascension_levels", {})
+	if not (levels is Dictionary):
+		return 0
+	var best := 0
+	for character_id in levels.keys():
+		best = maxi(best, clampi(int(levels[character_id]), 0, MAX_ASCENSION_LEVEL))
+	return best
+
+
+# Гейт разблокировки секретного боя. Чистая функция (без сайд-эффектов).
+# Условие: возвышение >= SECRET_ENCOUNTER_MIN_ASCENSION  И
+#   (low-damage-boss: получено урона за забег <= порога  ИЛИ  есть артефакт-ключ).
+# character_id опционален: если задан — берём возвышение этого класса; иначе —
+# максимум по всем классам (любой класс на нужном возвышении открывает контент).
+static func secret_encounter_unlocked_for_level(run_level: int) -> bool:
+	return clampi(run_level, 0, MAX_ASCENSION_LEVEL) >= MAX_ASCENSION_LEVEL
+
+
+static func secret_encounter_unlocked(state: Dictionary, run_metrics: Dictionary, character_id := "") -> bool:
+	var selected_level := int(run_metrics.get("selected_ascension_level", -1))
+	if selected_level >= 0:
+		return secret_encounter_unlocked_for_level(selected_level)
+	var asc := ascension_level(state, character_id) if character_id != "" else _max_ascension_any(state)
+	return secret_encounter_unlocked_for_level(asc)
+
+
+# SCRUM-623: live run/player артефакты хранятся как СЛОВАРИ {id, title}
+# (player.gd, combat_director.gd, main.gd run_metrics.artifacts), а тесты/контент
+# могут передавать просто строки-id. Матчим ключ в ОБОИХ форматах (по dict["id"]
+# или по самой строке), иначе artifact-ветка гейта не срабатывает в живой игре.
+static func _artifacts_contain_key(raw_artifacts, key: String) -> bool:
+	if not (raw_artifacts is Array):
+		return false
+	for entry in raw_artifacts:
+		if entry is Dictionary:
+			if str(entry.get("id", "")) == key:
+				return true
+		elif str(entry) == key:
+			return true
+	return false
+
+
+# Разовая фиксация победы над секретным боссом + награда meta_points. Идемпотентна:
+# повторный вызов на уже взятом флаге НЕ начисляет очки второй раз. Мутирует state
+# (как record_boss_victory) и возвращает его.
+static func record_secret_boss_victory(state: Dictionary) -> Dictionary:
+	if secret_boss_defeated(state):
+		return state
+	state["secret_boss_defeated"] = true
+	state["meta_points"] = int(state.get("meta_points", 0)) + SECRET_ENCOUNTER_REWARD_META_POINTS
+	return state
 
 
 # --- Древо умений (SCRUM-150) ---
@@ -323,4 +628,46 @@ static func class_modifiers(state: Dictionary, character_id: String) -> Dictiona
 	for tier in class_unlocked_tiers(state, character_id):
 		for key in (tier.get("effects", {}) as Dictionary).keys():
 			mods[key] = float(mods.get(key, 0.0)) + float(tier["effects"][key])
+	return mods
+
+
+# SCRUM-620: id выполненных челленджей класса (для UI/тестов; дедуп гарантирован
+# при записи). Всегда массив строк.
+static func class_challenges_done(state: Dictionary, character_id: String) -> Array:
+	var all_done = state.get("class_challenges_done", {})
+	if not (all_done is Dictionary):
+		return []
+	var done = all_done.get(character_id, [])
+	return done if done is Array else []
+
+
+# SCRUM-620: накопленные метрики челленджей класса (для UI прогресса). Нормализованный
+# словарь {weapons:[], best_ascension:int, no_shop_wins:int}.
+static func class_challenge_progress_for(state: Dictionary, character_id: String) -> Dictionary:
+	var all_progress = state.get("class_challenge_progress", {})
+	var prog = all_progress.get(character_id, {}) if all_progress is Dictionary else {}
+	if not (prog is Dictionary):
+		prog = {}
+	var weapons = prog.get("weapons", [])
+	return {
+		"weapons": weapons if weapons is Array else [],
+		"best_ascension": int(prog.get("best_ascension", 0)),
+		"no_shop_wins": int(prog.get("no_shop_wins", 0)),
+	}
+
+
+# SCRUM-620: суммарные модификаторы выполненных челленджей класса. Те же class_*-
+# ключи, что и прогрессия (мерджатся в apply_ascension_bonuses). Суммарный вклад на
+# ключ КЛАМПИТСЯ на +5% — жёсткий потолок против пауэр-крипа.
+static func class_challenge_modifiers(state: Dictionary, character_id: String) -> Dictionary:
+	var done := class_challenges_done(state, character_id)
+	var mods := {}
+	for challenge in CLASS_CHALLENGES:
+		var cid := str(challenge.get("id", ""))
+		if not done.has(cid):
+			continue
+		for key in (challenge.get("effects", {}) as Dictionary).keys():
+			mods[key] = float(mods.get(key, 0.0)) + float(challenge["effects"][key])
+	for key in mods.keys():
+		mods[key] = minf(float(mods[key]), CLASS_CHALLENGE_MAX_BONUS)
 	return mods

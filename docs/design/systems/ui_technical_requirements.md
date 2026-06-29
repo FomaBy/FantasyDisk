@@ -99,7 +99,8 @@ State alpha для compact fallback controls:
 | Pause main panel | `40, 40, 40, 40` | `24, 24, 24, 24` |
 | Pause stat group | `34, 30, 34, 34` | `14, 12, 14, 14` |
 | Pause stat chip/basic row | `20, 12, 20, 14` | `8, 4-6, 8, 4-6` |
-| Pause stat tooltip | `34, 30, 34, 34` | `18, 16, 18, 16` |
+| Pause stat tooltip (legacy ornate) | `34, 30, 34, 34` | `18, 16, 18, 16` |
+| Pause stat tooltip 2K (SCRUM-593 live) | `32, 32, 32, 32` | `44, 42, 44, 42` |
 
 Fallback texture style, если PNG не найден: background `alpha=0.94`, border `alpha=0.85`, border width `2`, radius `8`.
 
@@ -120,6 +121,23 @@ Fallback texture style, если PNG не найден: background `alpha=0.94`,
 - Screen backdrop: full-cover `TextureRect`; fallback color allowed only if asset absent.
 - Shade: `alpha=0.44`.
 - Страница должна расширяться по ширине, но контент с длинным списком обязан уходить в vertical scroll.
+
+## Settings
+
+- Settings uses exactly three custom tabs: `Экран`, `Звук`, `Управление`.
+  Built-in `TabContainer` headers stay hidden; `SettingsTabButton_0..2` must stay
+  inside the switcher safe rects and `SettingsTabButton_3` must not exist.
+- Screen dropdowns stage pending values only. `SettingsApplyButton` commits
+  monitor/resolution/window-mode changes through `_apply_video_settings()`;
+  `SettingsRevertButton` discards staged values. Both buttons are `240 x 72` and
+  disabled when no screen changes are pending.
+- Sound sliders are compact `420 x 42` controls, not full-width rails. They keep
+  a visible dark track, gold filled track, keyboard focus, `0..100` range and
+  step `2`.
+- `ControlsScroll` remains vertical-only with `follow_focus=true`; reset
+  bindings remains inside the scrollable controls content.
+- `SettingsBackButton` stays outside the tab content panel at `280 x 64`, inside
+  the modal safe zone and below `SettingsContentPanel`.
 
 ## Hero Select
 
@@ -386,7 +404,10 @@ For any implementation change touching UI, run the relevant checks:
 
 - Headless smoke:
   `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
-- UI no-overlap matrix test for viewport regressions.
+- UI no-overlap matrix test for viewport regressions. SCRUM-483 makes it the
+  UI render gate for 1920x1080, 2560x1440 and 3840x2160: text controls must fit
+  their allocated rect/content parent, peer controls must not overlap, and exact
+  frame TextureRect assets must not use raw `STRETCH_SCALE`.
 - Dark fantasy UI theme/import validation for RGBA, alpha, missing imports and frame assets.
 - Shop/HUD/hero select targeted tests when those screens change.
 - Manual screenshot review at `1280x720` and `2560x1440` for any new screen or major layout change.

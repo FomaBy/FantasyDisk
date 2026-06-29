@@ -5,6 +5,54 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [0.1.7] — 2026-06-29
+
+### Release Highlights
+- FantasyDisk 0.1.7: крупный визуальный шаг вперёд — новый pixel-art Codex,
+  более читаемый Level Up с предпросмотром эффектов, эпичный логотип в главном
+  меню, аккуратный боевой HUD, обновлённые 2K-экраны и первые 8-направленные
+  PixelLab-анимации Берсерка.
+- Главное: Level Up теперь объясняет, что именно изменится у выбранного
+  улучшения, Codex стал похож на тёмно-фэнтезийный справочник, а экран выбора
+  героя оживляет Берсерка направленной анимацией.
+- Сборка дополнительно очищена от документации, референсов, тестов, build- и
+  release-папок через export filters; релизные файлы остаются только с нужными
+  runtime-ресурсами.
+
+### Added
+- PixelLab Berserk runtime integration: `berserk_spriteframes.tres` now uses
+  8-direction pixel-art movement from the PixelLab `Berserk` character (6-frame
+  looping walk/move rows per direction), player movement selects the matching
+  row by velocity, and Hero Select v4 animates the Berserk portrait clockwise
+  through those directional rows.
+- Berserk v2 dark-fantasy dragon Design source pack (SCRUM-531): generated a new
+  brutal painterly D&D dragonslayer berserker source via `gpt-image-2`,
+  alpha-cleaned it to true RGBA, normalized a `512x512` cell (pivot `256,470`,
+  visible height `408 px`), assembled the idle/walk×5 source-sheet handoff
+  (`2848x1168`, 48px gutters, attack row excluded), dark-bg + game-scale contact
+  previews and an alpha/size/pivot QA report. Source under
+  `docs/design/references/berserk_v2/`, candidate exports under
+  `assets/sprites/characters/berserk_v2/`, with `berserk_v2_design_handoff.md`
+  for the Animator (SCRUM-532). Visually distinct from the current
+  cartoon-anchor; empty fists, no weapon baked in. No runtime, balance or
+  animation logic changed.
+- Combat feedback layer (SCRUM-497): enemy hits now show short-lived floating
+  damage numbers, red hit outline/flash, distinct critical `!` markers and
+  green player healing numbers, with a persisted Settings toggle and active
+  label/effect caps for dense AoE.
+- UI render verifier gate (SCRUM-483): expanded `tests/ui_no_overlap_matrix_test.gd`
+  to cover 1920x1080, 2560x1440 and 3840x2160 headless screen passes, text
+  allocation overflow, parent content containment, peer-control overlap and
+  exact UI frame TextureRect no-stretch checks. The test writes dedicated QA
+  evidence to `build/qa/scrum483_ui_render_verifier/ui_render_verifier_matrix.md`
+  and remains part of the standalone focused smoke set. The new gate also
+  tightened Level Up reward-card spacing/font sizing so wrapped reward
+  descriptions fit the existing layout.
 - Bright minimalist full-game UI Design anchor (SCRUM-478): generated the
   OpenAI source package under
   `docs/design/references/minimalist_full_ui_redesign/`, alpha-cleaned the
@@ -107,6 +155,34 @@
   smoke, UI no-overlap matrix and full runtime smoke pass.
 
 ### Changed
+- Berserk hammer live DPS cap (SCRUM-503): reduced only the hammer upgrade
+  runaway by changing `upgrade_aoe_exponent` from `1.8` to `1.25` and
+  `upgrade_damage_exponent` from `1.45` to `1.15`. Base lvl1 hammer stays
+  unchanged, while regenerated `build/character_balance_dps.csv` now reports
+  `berserk/hammer` lvl20 optimum at 2925.81 DPS on 1 target and 61199.86 DPS
+  on 20 targets, down from ~7636 / ~184k. The current class-best 20-target
+  median gate is 74785.73, with max 68574.57.
+- Random event EV rebalance (SCRUM-494 / carry-over SCRUM-476): свёл каждую
+  опцию каждого из 12 событий `scripts/event_data.gd` к явной таблице
+  risk/cost → reward с EV (см. «Random Events EV» в
+  `docs/design/systems/progression_balance.md`). Рискованные/платные опции
+  теперь дают заметно более ценный апсайд (статы, артефакты, run-long моды),
+  безопасные — скромную гарантию. Ключевые правки: `full_rest` больше не даёт
+  бесплатно полный хил + Выносливость (убрана Выносливость, штраф следующему
+  бою 1.20→1.25); `defile`/`duel` (elite) получили честные `post_combat`-награды
+  и работающие денежные множители; `goblin_lottery`/`well`-исходы выровнены
+  (дешевле вход, «хлам» 3→8 зол, провалы дают консолацию); проверочные опции
+  получили мелкие добивки. Денежные множители event-боёв теперь применяются и
+  к elite-ветке (`combat_director._grant_combat_completion_rewards`) — раньше
+  они молча игнорировались, делая тултипы defile/duel неправдой. Экономика
+  сверена против `stage_scaled_cost`/`COST_BY_TIER`/`DROP_CLASS_MULTIPLIERS`;
+  `event_data_smoke_test.gd`, runtime/economy и балансные смоуки зелёные.
+  Восстановлен фактический штраф `full_rest` (1.10→1.25) в `event_data.gd` после
+  regression и согласован EV-инвариант SCRUM-508: чисто-штрафная ветка без боевой
+  добычи (`hot_spring/full_rest`) больше не классифицируется как «рисковая» в
+  `tools/route_economy_xp_model.gd` — это безопасный хил с побочкой, а не выбор
+  «риск ради апсайда», поэтому safe-only событие `hot_spring` исключено из
+  инварианта risk>=safe (16 событий-пар, все зелёные).
 - Settings and Attribute Shop short-viewport fit (SCRUM-471): fixed the
   1152x648 no-overlap matrix failures by allowing the Settings v2 content panel
   to compress only on short modals and using compact Attribute Shop offer/action

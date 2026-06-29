@@ -18,6 +18,13 @@ const CLASS_BUDGET_PROFILES := BalanceData.CLASS_BUDGET_PROFILES
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := BalanceData.CLASS_LEVEL_STAT_GROWTH_SCALARS
 const BALANCE_BASE_SOLO_DPS := BalanceData.BALANCE_BASE_SOLO_DPS
 const BALANCE_BASE_AOE_DPS := BalanceData.BALANCE_BASE_AOE_DPS
+const COMFORT_WEIGHTS := BalanceData.COMFORT_WEIGHTS
+const COMFORT_WEIGHT_OVERRIDES := BalanceData.COMFORT_WEIGHT_OVERRIDES
+const COMFORT_BAND_TOLERANCE := BalanceData.COMFORT_BAND_TOLERANCE
+const COMFORT_DEFAULT_WEIGHT := BalanceData.COMFORT_DEFAULT_WEIGHT
+const COMFORT_BAND_SLICES := BalanceData.COMFORT_BAND_SLICES
+const COMFORT_BAND_SLICE_WEIGHTS := BalanceData.COMFORT_BAND_SLICE_WEIGHTS
+const COMFORT_BAND_SLICE_OVERRIDES := BalanceData.COMFORT_BAND_SLICE_OVERRIDES
 const BALANCE_WINDOW_SECONDS := BalanceData.BALANCE_WINDOW_SECONDS
 const CROWD_CLEAR_TARGET_COUNTS := BalanceData.CROWD_CLEAR_TARGET_COUNTS
 const CROWD_CLEAR_ENEMY_HP := BalanceData.CROWD_CLEAR_ENEMY_HP
@@ -43,6 +50,10 @@ const CRIT_DAMAGE_BASE_MULTIPLIER := BalanceData.CRIT_DAMAGE_BASE_MULTIPLIER
 const CRIT_DAMAGE_AGILITY_SCALE := BalanceData.CRIT_DAMAGE_AGILITY_SCALE
 const CRIT_DAMAGE_FLAT_EFFECTIVENESS := BalanceData.CRIT_DAMAGE_FLAT_EFFECTIVENESS
 const CRIT_DAMAGE_CAP := BalanceData.CRIT_DAMAGE_CAP
+const RUN_DAMAGE_MULT_SOFTCAP := BalanceData.RUN_DAMAGE_MULT_SOFTCAP
+const RUN_DAMAGE_MULT_KNEE := BalanceData.RUN_DAMAGE_MULT_KNEE
+const RUN_ATTACK_SPEED_MULT_SOFTCAP := BalanceData.RUN_ATTACK_SPEED_MULT_SOFTCAP
+const RUN_ATTACK_SPEED_MULT_KNEE := BalanceData.RUN_ATTACK_SPEED_MULT_KNEE
 const WEAPON_ARCHETYPE_BY_MODE := BalanceData.WEAPON_ARCHETYPE_BY_MODE
 const ATTRIBUTE_WEAPON_SYNERGY_MAP := BalanceData.ATTRIBUTE_WEAPON_SYNERGY_MAP
 const STAGE_SCALE_BASE := BalanceData.STAGE_SCALE_BASE
@@ -78,6 +89,7 @@ const ContentData := preload("res://scripts/progression_data_content.gd")
 const STAT_REWARDS := ContentData.STAT_REWARDS
 const ARTIFACTS := ContentData.ARTIFACTS
 const LEVEL_UP_REWARDS := ContentData.LEVEL_UP_REWARDS
+const START_BOONS := ContentData.START_BOONS  # SCRUM-618: стартовые бооны забега
 
 const AscensionData := preload("res://scripts/progression_data_ascension.gd")
 const ASCENSION_MODIFIERS := AscensionData.ASCENSION_MODIFIERS
@@ -102,6 +114,29 @@ static func artifact_definition(artifact_id: String) -> Dictionary:
 		if str(item.get("id", "")) == artifact_id:
 			return item
 	return {}
+
+
+# --- Стартовые бооны забега (SCRUM-618) ---
+
+static func start_boons() -> Array:
+	return START_BOONS
+
+
+static func start_boon_definition(boon_id: String) -> Dictionary:
+	for boon in START_BOONS:
+		if str(boon.get("id", "")) == boon_id:
+			return boon
+	return {}
+
+
+# Mods выбранного боона (пустой dict, если боон не выбран/неизвестен — тождественность).
+static func start_boon_mods(boon_id: String) -> Dictionary:
+	if boon_id == "":
+		return {}
+	var boon := start_boon_definition(boon_id)
+	if boon.is_empty():
+		return {}
+	return (boon.get("mods", {}) as Dictionary).duplicate(true)
 
 
 static func damage_parameter_for(character_id: String) -> String:
@@ -241,6 +276,21 @@ static func _diminishing_percent(raw_value: float, cap: float, curve: float) -> 
 	return clampf(softened, 0.0, cap)
 
 
+# SCRUM-503: diminishing returns на ЗАБЕГОВЫЙ боевой множитель. Сжимает ТОЛЬКО
+# избыток множителя над 1.0 по кривой excess/(1+excess*knee), клампит избыток к
+# (softcap-1.0) и возвращает 1.0 + сжатый_избыток. Тождественно при multiplier
+# <= 1.0 (excess<=0 → возвращает сам множитель): при пустых run_modifiers
+# (estimate_weapon_budget) и на базе lvl1 cap нейтрален, поэтому формульные гейты
+# и стартовые числа не меняются — нерф строго «сверху базы». Понижение множителя
+# (<1.0, напр. замедление атаки оружием) проходит без сжатия.
+static func _soft_capped_run_multiplier(multiplier: float, softcap: float, knee: float) -> float:
+	if multiplier <= 1.0:
+		return multiplier
+	var excess := multiplier - 1.0
+	var softened := excess / (1.0 + excess * knee)
+	return 1.0 + clampf(softened, 0.0, maxf(softcap - 1.0, 0.0))
+
+
 static func effective_defense(raw_defense: float) -> float:
 	return _diminishing_percent(raw_defense, SURVIVABILITY_DEFENSE_CAP, SURVIVABILITY_DEFENSE_DIMINISH)
 
@@ -250,7 +300,7 @@ static func effective_dodge(raw_dodge: float) -> float:
 
 
 static func effective_absorb(endurance: float, flat_absorb: float) -> float:
-	var base_absorb := maxf(endurance, 0.0) * 0.16
+	var base_absorb := maxf(endurance, 0.0) * 0.145  # SCRUM-526: 0.16→0.145, поджать базовый absorb стойкости (танк остаётся крепче fragile)
 	var positive_flat := maxf(flat_absorb, 0.0)
 	var negative_flat := minf(flat_absorb, 0.0)
 	var softened_flat := positive_flat / (1.0 + positive_flat * SURVIVABILITY_ABSORB_FLAT_DIMINISH)
@@ -260,7 +310,7 @@ static func effective_absorb(endurance: float, flat_absorb: float) -> float:
 static func effective_regeneration(knowledge: float, flat_regeneration: float) -> float:
 	var positive_flat := maxf(flat_regeneration, 0.0) * SURVIVABILITY_REGEN_FLAT_MULTIPLIER
 	var negative_flat := minf(flat_regeneration, 0.0)
-	var regen_base := maxf(0.0, 0.22 + positive_flat + negative_flat)
+	var regen_base := maxf(0.0, 0.16 + positive_flat + negative_flat)  # SCRUM-526: база реген 0.22→0.16
 	var knowledge_scale := 0.45 + maxf(knowledge, 0.0) / 12.0
 	return regen_base * knowledge_scale
 
@@ -286,24 +336,9 @@ static func effective_crit_damage_multiplier(agility: float, flat_bonus: float) 
 	return clampf(multiplier, 1.0, CRIT_DAMAGE_CAP)
 
 
-static func _archetype_damage_multiplier(archetype: String, strength: float, agility: float, intelligence: float, perception: float, energy: float, knowledge: float, endurance: float, leadership: float) -> float:
-	var bonus := 0.0
-	match archetype:
-		"melee":
-			bonus = strength * 0.004 + endurance * 0.003 + agility * 0.002
-		"projectile":
-			bonus = perception * 0.004 + agility * 0.003 + strength * 0.002
-		"beam":
-			bonus = intelligence * 0.004 + energy * 0.003 + perception * 0.002
-		"aoe":
-			bonus = perception * 0.004 + intelligence * 0.003 + knowledge * 0.002
-		"summon":
-			bonus = leadership * 0.004 + knowledge * 0.003 + intelligence * 0.002
-		"aura":
-			bonus = leadership * 0.004 + energy * 0.003 + perception * 0.002
-		_:
-			bonus = perception * 0.002 + agility * 0.002
-	return 1.0 + bonus
+# SCRUM-524: архетип-множитель урона удалён. Он зависел от ВСЕХ атрибутов и
+# одинаково домножал все типы урона, из-за чего прокачка одного атрибута протекала
+# в чужие типы. Классовый баланс по DPS теперь полностью держит budget_tuning_for.
 
 
 static func base_stats(character_id: String) -> Dictionary:
@@ -430,6 +465,45 @@ static func weapon_ids(character_id: String) -> Array:
 
 static func class_budget_profile(character_id: String) -> Dictionary:
 	return CLASS_BUDGET_PROFILES.get(character_id, CLASS_BUDGET_PROFILES["berserk"]).duplicate(true)
+
+
+# SCRUM-544: comfort-вес класса/оружия — относительный потолок внутри ±20%-полосы.
+# Per-weapon override > class weight > дефолт. Чем выше — тем больше «сырого» DPS
+# классу позволено (плата за вовлечённость игрока).
+static func comfort_weight(character_id: String, weapon_id := "") -> float:
+	if weapon_id != "":
+		var key := "%s/%s" % [character_id, weapon_id]
+		if COMFORT_WEIGHT_OVERRIDES.has(key):
+			return float(COMFORT_WEIGHT_OVERRIDES[key])
+	return float(COMFORT_WEIGHTS.get(character_id, COMFORT_DEFAULT_WEIGHT))
+
+
+# Comfort-нормированный DPS: measured / comfort_weight. Для проверки полосы все
+# классы/оружия сравниваются в этой нормированной шкале.
+static func comfort_normalized_dps(character_id: String, weapon_id: String, measured_dps: float) -> float:
+	return measured_dps / maxf(comfort_weight(character_id, weapon_id), 0.001)
+
+
+# SCRUM-544: per-slice comfort-вес для CSV-полосы (ось вовлечённости зависит от
+# числа целей). Per-weapon override > class slice-вес > плоский comfort_weight.
+# slice ∈ COMFORT_BAND_SLICES ("ideal_1"/"ideal_5"/"ideal_20").
+static func comfort_slice_weight(character_id: String, weapon_id: String, slice: String) -> float:
+	var override_key := "%s/%s" % [character_id, weapon_id]
+	if COMFORT_BAND_SLICE_OVERRIDES.has(override_key):
+		var ov: Dictionary = COMFORT_BAND_SLICE_OVERRIDES[override_key]
+		if ov.has(slice):
+			return float(ov[slice])
+	if COMFORT_BAND_SLICE_WEIGHTS.has(character_id):
+		var cw: Dictionary = COMFORT_BAND_SLICE_WEIGHTS[character_id]
+		if cw.has(slice):
+			return float(cw[slice])
+	# Фоллбэк на плоский вес, если срез не задан в таблице.
+	return comfort_weight(character_id, weapon_id)
+
+
+# Per-slice comfort-нормированный DPS: measured / comfort_slice_weight.
+static func comfort_slice_normalized_dps(character_id: String, weapon_id: String, slice: String, measured_dps: float) -> float:
+	return measured_dps / maxf(comfort_slice_weight(character_id, weapon_id, slice), 0.001)
 
 
 static func budget_tuning_for(character_id: String, weapon_config: Dictionary) -> Dictionary:
@@ -743,8 +817,11 @@ static func _budget_summon_role_damage_factor(config: Dictionary, params: Dictio
 	var knowledge := float(stats.get("knowledge", 0.0)) if stats is Dictionary else 0.0
 	var intelligence := float(stats.get("intelligence", 0.0)) if stats is Dictionary else 0.0
 	var energy := float(stats.get("energy", 0.0)) if stats is Dictionary else 0.0
-	var leadership_damage := 1.0 + minf(leadership * 0.020, 0.42)
-	var attribute_damage := 1.0 + minf(summon_amount * 0.014 + knowledge * 0.004 + intelligence * 0.003 + energy * 0.003, 0.34)
+	# SCRUM-546: Лидерство — главный драйвер силы саммонов. Коэффициент и потолок
+	# подняты (0.020/0.42 → 0.060/1.15), чтобы прокачка саммонера ощутимо усиливала
+	# питомцев. Зеркалит summoner_weapon._summon_profile (тот же runtime-расчёт).
+	var leadership_damage := 1.0 + minf(leadership * 0.060, 1.15)
+	var attribute_damage := 1.0 + minf(summon_amount * 0.016 + knowledge * 0.004 + intelligence * 0.004 + energy * 0.003, 0.40)
 	return float(config.get("summon_role_damage_multiplier", 1.0)) * leadership_damage * attribute_damage
 
 
@@ -832,13 +909,21 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# не трогая пассивы оружия и стартовые значения.
 	var upgrade_damage_exponent := float(weapon_config.get("upgrade_damage_exponent", 1.0))
 	var upgrade_aoe_exponent := float(weapon_config.get("upgrade_aoe_exponent", 1.0))
-	var damage_multiplier := pow(float(run_modifiers.get("damage_multiplier", 1.0)), upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
+	# SCRUM-503: diminishing returns на ЗАБЕГОВУЮ часть боевых множителей (до экспоненты
+	# апгрейда и до пассивов оружия) — гасит мультипликативный runaway идеального билда.
+	# Тождественно при множителе 1.0 (пустые run_modifiers формульного гейта) → база и
+	# формульные коридоры не меняются. Пассивы оружия (passive_mods) НЕ капятся — это база.
+	var run_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
+	var run_attack_speed_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("attack_speed_multiplier", 1.0)), RUN_ATTACK_SPEED_MULT_SOFTCAP, RUN_ATTACK_SPEED_MULT_KNEE)
+	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
 	# «Кровавый Рубеж» (tier 3): бонус урона активен, пока HP ниже порога (low_hp_active ставит player).
 	damage_multiplier *= 1.0 + float(run_modifiers.get("low_hp_damage_bonus", 0.0)) * float(run_modifiers.get("low_hp_active", 0.0))
-	var attack_speed_multiplier := float(run_modifiers.get("attack_speed_multiplier", 1.0)) * float(passive_mods.get("attack_speed_multiplier", 1.0))
+	var attack_speed_multiplier := run_attack_speed_multiplier * float(passive_mods.get("attack_speed_multiplier", 1.0))
 	var move_speed_multiplier := float(run_modifiers.get("move_speed_multiplier", 1.0)) * float(passive_mods.get("move_speed_multiplier", 1.0))
 	# «Призрачный Шаг» (tier 3): рывок скорости после уворота (dodge_rush_active ставит player).
 	move_speed_multiplier *= 1.0 + float(run_modifiers.get("dodge_rush_bonus", 0.0)) * float(run_modifiers.get("dodge_rush_active", 0.0))
+	# SCRUM-500 «Импульс Крита»: короткий рывок скорости по криту (crit_speed_burst_active ставит player).
+	move_speed_multiplier *= 1.0 + float(run_modifiers.get("crit_speed_burst", 0.0)) * float(run_modifiers.get("crit_speed_burst_active", 0.0))
 	var max_health_multiplier := float(run_modifiers.get("max_health_multiplier", 1.0)) * float(passive_mods.get("max_health_multiplier", 1.0))
 	var range_multiplier := float(run_modifiers.get("range_multiplier", 1.0)) * float(passive_mods.get("range_multiplier", 1.0))
 	var aoe_radius_multiplier := pow(float(run_modifiers.get("aoe_radius_multiplier", 1.0)), upgrade_aoe_exponent) * float(passive_mods.get("aoe_radius_multiplier", 1.0))
@@ -851,25 +936,36 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var projectile_speed_flat := float(run_modifiers.get("projectile_speed_flat", 0.0)) + float(passive_mods.get("projectile_speed_flat", 0.0))
 	var aura_radius_flat := float(run_modifiers.get("aura_radius_flat", 0.0)) + float(passive_mods.get("aura_radius_flat", 0.0))
 	var buff_power_flat := float(run_modifiers.get("buff_power_flat", 0.0)) + float(passive_mods.get("buff_power_flat", 0.0))
-	var dot_damage_flat := float(run_modifiers.get("dot_damage_flat", 0.0)) + float(passive_mods.get("dot_damage_flat", 0.0))
-	var dot_speed_flat := float(run_modifiers.get("dot_speed_flat", 0.0)) + float(passive_mods.get("dot_speed_flat", 0.0))
+	var run_dot_damage_flat := minf(maxf(float(run_modifiers.get("dot_damage_flat", 0.0)), 0.0), 12.0) + minf(float(run_modifiers.get("dot_damage_flat", 0.0)), 0.0)
+	var run_dot_speed_flat := minf(maxf(float(run_modifiers.get("dot_speed_flat", 0.0)), 0.0), 1.0) + minf(float(run_modifiers.get("dot_speed_flat", 0.0)), 0.0)
+	var dot_damage_flat := run_dot_damage_flat + float(passive_mods.get("dot_damage_flat", 0.0))
+	var dot_speed_flat := run_dot_speed_flat + float(passive_mods.get("dot_speed_flat", 0.0))
 	var crit_chance_flat := (float(run_modifiers.get("crit_chance_flat", 0.0)) + float(passive_mods.get("crit_chance_flat", 0.0))) * CRIT_FLAT_EFFECTIVENESS
 	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + float(passive_mods.get("crit_damage_flat", 0.0))
 	if passive_mods.has("crit_damage_multiplier"):
 		crit_damage_flat += float(passive_mods.get("crit_damage_multiplier", 1.0)) - 1.0
-	var archetype := weapon_archetype(weapon_config)
-	var archetype_damage_multiplier := _archetype_damage_multiplier(archetype, strength, agility, intelligence, perception, energy, knowledge, endurance, leadership)
+	# SCRUM-524: урон каждого ТИПА масштабируется ТОЛЬКО от своего атрибута.
+	# Изоляция по типам урона — жёсткий инвариант: прокачка атрибута типа X меняет
+	# урон ТОЛЬКО типа X и НИКАК не влияет на остальные типы (см. систему типов
+	# урона SCRUM-523 и гейт tests/damage_type_isolation_test.gd). Поэтому здесь
+	# НЕТ «splash»-вкладов чужих атрибутов и НЕТ архетип-множителя: он зависел от
+	# ВСЕХ атрибутов и одинаково домножал все три типа, протекая между ними.
+	# Владельцы атрибутов по типам: сила→физический, интеллект→магический,
+	# восприятие+энергия→звуковой, знание→периодический (DoT). damage_flat и
+	# dot_damage_flat — забеговые/пассивные модификаторы (не атрибуты), поэтому
+	# общий вклад в типы инвариант изоляции не нарушает (тест проверяет атрибуты).
+	# Баланс по DPS добирается классовым budget-множителем (budget_tuning_for).
 	var universal_damage_flat := float(run_modifiers.get("damage_flat", 0.0))
-	var physical_base := 15.0 * strength / 10.0 + intelligence * 0.18 + perception * 0.10 + energy * 0.12 + knowledge * 0.09 + endurance * 0.08 + leadership * 0.10
-	var magic_base := 14.0 * intelligence / 10.0 + energy * 0.65 + strength * 0.16 + agility * 0.08 + perception * 0.12 + knowledge * 0.14 + endurance * 0.06 + leadership * 0.10
-	var sound_base := 12.0 * (perception + energy) / 12.0 + leadership * 0.45 + strength * 0.08 + agility * 0.08 + intelligence * 0.09 + knowledge * 0.10 + endurance * 0.05
+	var physical_base := 15.0 * strength / 10.0
+	var magic_base := 14.0 * intelligence / 10.0
+	var sound_base := perception + energy
 	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
-	var universal_dot_base := 4.0 + knowledge * 0.65 + intelligence * 0.18 + strength * 0.12 + perception * 0.10 + energy * 0.10 + leadership * 0.10 + dot_damage_flat
+	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat
 
 	return {
-		"damage": physical_base * weapon_damage_multiplier * damage_multiplier * archetype_damage_multiplier + universal_damage_flat,
-		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier * archetype_damage_multiplier + universal_damage_flat,
-		"sound_wave_damage": sound_base * weapon_damage_multiplier * damage_multiplier * archetype_damage_multiplier + universal_damage_flat,
+		"damage": physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
+		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
+		"sound_wave_damage": sound_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
 		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
 		"crit_chance": effective_crit_chance(0.04 + agility * 0.0075 + crit_chance_flat),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
@@ -880,13 +976,17 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + perception * 2.5 + intelligence * 0.35 + endurance * 0.25 + leadership * 0.35) * range_multiplier,
 		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + perception * 3.5 + intelligence * 0.45 + knowledge * 0.35 + leadership * 0.30) * aoe_radius_multiplier,
 		"pickup_radius": 105.0 + perception * 7.0 + pickup_radius_flat,
-		"dot_damage": max(1.0, universal_dot_base * damage_multiplier),
+		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier),
 		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010 + dot_speed_flat),
 		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + energy * 4.0 + knowledge * 2.0 + projectile_speed_flat,
 		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + perception * 0.80 + energy * 0.65 + knowledge * 0.45 + aura_radius_flat) * aoe_radius_multiplier,
 		"buff_power": 1.0 + leadership * 0.025 + knowledge * 0.006 + energy * 0.004 + buff_power_flat,
 		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier,
 		"summon_amount": leadership + knowledge * 0.18 + intelligence * 0.12 + energy * 0.10,
+		# SCRUM-546: профильное (growth-масштабированное) Лидерство как драйвер силы
+		# саммонов — читается runtime deploy/sentry-пайплайном (class_weapon
+		# ._summon_role_damage_factor) и саммон-профилем (summoner_weapon).
+		"leadership": leadership,
 		# Подключение полного набора атрибутов (аудит 2026-06-11):
 		"absorb": effective_absorb(endurance, absorb_flat),
 		"regeneration": effective_regeneration(knowledge, regeneration_flat),

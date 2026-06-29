@@ -1,0 +1,303 @@
+{
+  "jira": "SCRUM-657",
+  "source_files": [
+    "scripts/ui_screens.gd",
+    "scripts/ui/ui_theme_paths.gd",
+    "scenes/**/*.tscn",
+    "docs/design/**/*.md",
+    "docs/tasks/**/*.md"
+  ],
+  "total_action_text_buttons_accepted": 40,
+  "unique_runtime_display_sizes_accepted": 13,
+  "accepted_groups": [
+    {
+      "id": "main_menu_380x104",
+      "size": [
+        380,
+        104
+      ],
+      "count": 6,
+      "examples": [
+        "MainMenuStartButton",
+        "MainMenuSettingsButton",
+        "MainMenuPatchNotesButton",
+        "MainMenuExitButton"
+      ],
+      "screens": [
+        "Main menu"
+      ],
+      "source_style": "minimal_metal_buttons/main_menu; current runtime _make_button + MAIN_MENU_ACTION_BUTTON_WIDTH",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "standard_420x104",
+      "size": [
+        420,
+        104
+      ],
+      "count": 5,
+      "examples": [
+        "AttributeRerollButton",
+        "AttributeSkipButton",
+        "VictoryNewRunButton",
+        "DeathRetryButton",
+        "SettingsResetAudioButton base contract"
+      ],
+      "screens": [
+        "Attribute shop",
+        "Victory/death result",
+        "Settings audio"
+      ],
+      "source_style": "minimal_metal_buttons/standard; STANDARD_ACTION_BUTTON_WIDTH",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "wide_440x104",
+      "size": [
+        440,
+        104
+      ],
+      "count": 1,
+      "examples": [
+        "SettingsResetBindingsButton"
+      ],
+      "screens": [
+        "Settings controls"
+      ],
+      "source_style": "minimal_metal_buttons/reset_bindings/rebind-like wide action",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "back_260x104",
+      "size": [
+        260,
+        104
+      ],
+      "count": 2,
+      "examples": [
+        "SkillTreeBackButton",
+        "PatchNotesBackButton"
+      ],
+      "screens": [
+        "Skill tree",
+        "Patch notes"
+      ],
+      "source_style": "minimal_metal_buttons/back_m/back_l depending runtime resolver",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "quit_220x72",
+      "size": [
+        220,
+        72
+      ],
+      "count": 2,
+      "examples": [
+        "QuitConfirmExitButton",
+        "QuitConfirmCancelButton"
+      ],
+      "screens": [
+        "Quit confirmation"
+      ],
+      "source_style": "minimal_metal_buttons/pause; fixed modal action",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "continue_240x72",
+      "size": [
+        240,
+        72
+      ],
+      "count": 2,
+      "examples": [
+        "ContinueRunButton",
+        "ContinueRunNewGameButton"
+      ],
+      "screens": [
+        "Continue run dialog"
+      ],
+      "source_style": "overhaul_2k cr_btn slot + action theme",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "later_260x72",
+      "size": [
+        260,
+        72
+      ],
+      "count": 1,
+      "examples": [
+        "LevelUpLaterButton"
+      ],
+      "screens": [
+        "Level-up overlay"
+      ],
+      "source_style": "minimal/overhaul action button from level-up metrics",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "settings_back_280x64",
+      "size": [
+        280,
+        64
+      ],
+      "count": 1,
+      "examples": [
+        "SettingsBackButton"
+      ],
+      "screens": [
+        "Settings"
+      ],
+      "source_style": "minimal_metal_buttons/back/pause hybrid, explicit 280x64",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "feedback_260x64",
+      "size": [
+        260,
+        64
+      ],
+      "count": 1,
+      "examples": [
+        "FeedbackSendButton"
+      ],
+      "screens": [
+        "Feedback overlay"
+      ],
+      "source_style": "standard action with explicit feedback size",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "feedback_cancel_220x64",
+      "size": [
+        220,
+        64
+      ],
+      "count": 1,
+      "examples": [
+        "FeedbackCancelButton"
+      ],
+      "screens": [
+        "Feedback overlay"
+      ],
+      "source_style": "standard action with explicit feedback size",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "pause_280x60",
+      "size": [
+        280,
+        60
+      ],
+      "count": 5,
+      "examples": [
+        "RunPauseContinueButton",
+        "RunPauseDossierButton",
+        "RunPauseSettingsButton",
+        "RunPauseEndRunButton",
+        "RunPauseMainMenuButton"
+      ],
+      "screens": [
+        "Pause menu"
+      ],
+      "source_style": "overhaul_2k pm_btn / minimal_metal pause",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "event_back_380x54",
+      "size": [
+        380,
+        54
+      ],
+      "count": 1,
+      "examples": [
+        "EventBackButton"
+      ],
+      "screens": [
+        "Event screen"
+      ],
+      "source_style": "overhaul_2k event back short action",
+      "decision": "accepted exact-size family"
+    },
+    {
+      "id": "rebind_420x62",
+      "size": [
+        420,
+        62
+      ],
+      "count": 12,
+      "examples": [
+        "Settings control rebind buttons",
+        "OptionButton-like controls",
+        "key binding rows"
+      ],
+      "screens": [
+        "Settings controls"
+      ],
+      "source_style": "minimal_metal_buttons/rebind, documented in menus_ui/visual_style_assets",
+      "decision": "accepted exact-size family"
+    }
+  ],
+  "excluded_groups": [
+    {
+      "group": "Hero carousel thumbnails / TextureButton slots",
+      "count": "dynamic 9 slots",
+      "reason": "icon/portrait card hit areas; not text buttons; child labels are adjacent/inside carousel content and use authored HS4 frame contract"
+    },
+    {
+      "group": "Weapon select cards",
+      "count": "3 cards",
+      "reason": "active SCRUM-562 overlap; cards intentionally use card/text-field styling, not action button kit"
+    },
+    {
+      "group": "Shop item buttons",
+      "count": "4 wall slots",
+      "reason": "icon/product hit areas on shop backdrop; no text label on button body"
+    },
+    {
+      "group": "Reward, elite artifact, level-up reward, event, attribute offer cards",
+      "count": "multiple 3-card groups",
+      "reason": "full-card information choices with child labels; excluded from text-button kit to avoid squeezing paragraphs into button frames"
+    },
+    {
+      "group": "Progression nodes / skill tree circular buttons",
+      "count": "dynamic",
+      "reason": "circular node frames; text belongs outside/tooltip, not a rectangular action button"
+    },
+    {
+      "group": "Combat LevelUpPlusButton / UpgradeFabButton / ascension +/- / carousel arrows",
+      "count": "small controls",
+      "reason": "icon/symbol-only controls; need icon/square/FAB family, not text-button family"
+    },
+    {
+      "group": "Glossary term underline buttons",
+      "count": "dynamic",
+      "reason": "inline text affordances; visual state is underline/tooltip, not framed text button"
+    }
+  ],
+  "runtime_assets_dir": "assets/sprites/ui/frames/text_buttons_unique",
+  "reference_source": "docs/design/references/ui_text_buttons_unique_size_redraw/scrum657_text_button_family_reference.png",
+  "metadata": "docs/design/references/ui_text_buttons_unique_size_redraw/button_family_metadata.json",
+  "alpha_audit": "docs/design/references/ui_text_buttons_unique_size_redraw/alpha_audit.json",
+  "contact_sheets": [
+    "docs/design/previews/scrum_text_buttons_unique_size_dark_contact.png",
+    "docs/design/previews/scrum_text_buttons_unique_size_light_contact.png"
+  ],
+  "safe_zone_rule": "Use content_margins_px from button_family_metadata.json. Runtime labels/icons must stay inside content_rect_xywh; bevels, claws, scale caps, ruby pins and focus glows are forbidden ornament zones.",
+  "implementation_fit_policy": "Before assigning a button asset at runtime, measure the localized label. The rendered text must fit inside content_rect_xywh between the decorative end shutters/caps. Use width = max(audited_width, text_width + left_content_margin + right_content_margin + 24px reserve). If the result exceeds an audited exact size, use/generate the next wider exact-size variant rather than letting text overlap claws, bevels, ruby pins, or scale caps.",
+  "text_fit_report": "docs/design/references/ui_text_buttons_unique_size_redraw/button_text_fit_report.json",
+  "optional_expanded_variants": [
+    {
+      "id": "reset_bindings_long_560x104",
+      "reason": "Long settings reset labels such as Сбросить управление по умолчанию must remain between shutters."
+    },
+    {
+      "id": "continue_run_long_420x72",
+      "reason": "Long continue-run labels such as Продолжить забег must remain between shutters."
+    }
+  ],
+  "runtime_assets_count": 75,
+  "reference_source_dir": "docs/design/references/ui_text_buttons_unique_size_redraw/per_size_sources",
+  "source_generation_policy": "Each final size group has its own OpenAI-generated source PNG; final exact PNGs are not reused from one stretched master.",
+  "side_cap_policy": "Left/right decorative shutters/caps are fixed-size ornaments per button height and must not be horizontally scaled; only the center rail may stretch/shrink."
+}

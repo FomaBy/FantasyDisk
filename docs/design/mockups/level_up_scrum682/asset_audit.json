@@ -1,0 +1,177 @@
+{
+  "status": "PASS",
+  "issues": [],
+  "assets": {
+    "panel": {
+      "path": "assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_panel.png",
+      "size": [
+        1720,
+        1040
+      ],
+      "texture_margins": [
+        64,
+        84,
+        64,
+        72
+      ],
+      "content_margins": [
+        92,
+        110,
+        92,
+        96
+      ]
+    },
+    "card": {
+      "path": "assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card.png",
+      "size": [
+        470,
+        560
+      ],
+      "texture_margins": [
+        42,
+        54,
+        42,
+        50
+      ],
+      "content_margins": [
+        58,
+        70,
+        58,
+        64
+      ]
+    },
+    "card_hover": {
+      "path": "assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card_hover.png",
+      "size": [
+        470,
+        560
+      ],
+      "texture_margins": [
+        42,
+        54,
+        42,
+        50
+      ],
+      "content_margins": [
+        58,
+        70,
+        58,
+        64
+      ]
+    },
+    "card_selected": {
+      "path": "assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card_selected.png",
+      "size": [
+        470,
+        560
+      ],
+      "texture_margins": [
+        46,
+        58,
+        46,
+        54
+      ],
+      "content_margins": [
+        62,
+        74,
+        62,
+        68
+      ]
+    },
+    "portrait": {
+      "path": "assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_portrait.png",
+      "size": [
+        320,
+        320
+      ],
+      "texture_margins": [
+        34,
+        34,
+        34,
+        34
+      ],
+      "content_margins": [
+        44,
+        44,
+        44,
+        44
+      ]
+    },
+    "effect_preview": {
+      "path": "assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_effect_preview.png",
+      "size": [
+        330,
+        64
+      ],
+      "texture_margins": [
+        22,
+        18,
+        22,
+        18
+      ],
+      "content_margins": [
+        32,
+        22,
+        32,
+        22
+      ]
+    },
+    "later_button": {
+      "path": "assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png",
+      "size": [
+        300,
+        82
+      ],
+      "texture_margins": [
+        36,
+        22,
+        36,
+        22
+      ],
+      "content_margins": [
+        54,
+        28,
+        54,
+        28
+      ]
+    },
+    "later_button_hover": {
+      "path": "assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_hover.png",
+      "size": [
+        300,
+        82
+      ],
+      "texture_margins": [
+        36,
+        22,
+        36,
+        22
+      ],
+      "content_margins": [
+        54,
+        28,
+        54,
+        28
+      ]
+    },
+    "later_button_pressed": {
+      "path": "assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_pressed.png",
+      "size": [
+        300,
+        82
+      ],
+      "texture_margins": [
+        36,
+        22,
+        36,
+        22
+      ],
+      "content_margins": [
+        54,
+        28,
+        54,
+        28
+      ]
+    }
+  }
+}

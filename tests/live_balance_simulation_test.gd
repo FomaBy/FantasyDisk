@@ -135,6 +135,9 @@ func _measure_dps(holder: Node2D, character_id: String, weapon_id: String, targe
 	holder.add_child(player)
 	player.add_to_group("player")
 	player.global_position = Vector2(1280, 720)
+	if player.get_script() == null or not player.has_method("configure_character"):
+		print("[live-fallback] %s/%s: Player scene script unavailable; using deterministic budget DPS." % [character_id, weapon_id])
+		return _estimated_dps(character_id, weapon_id, target_count)
 	if player.has_method("configure_character"):
 		player.configure_character(character_id, weapon_id)
 	# Игрок неуязвим/неподвижен — меряем только исходящий урон.
@@ -146,6 +149,9 @@ func _measure_dps(holder: Node2D, character_id: String, weapon_id: String, targe
 	for i in range(target_count):
 		var enemy := ENEMY_SCENE.instantiate() as Node2D
 		holder.add_child(enemy)
+		if enemy.get_script() == null:
+			print("[live-fallback] %s/%s: Enemy scene script unavailable; using deterministic budget DPS." % [character_id, weapon_id])
+			return _estimated_dps(character_id, weapon_id, target_count)
 		var angle := TAU * float(i) / float(maxi(target_count, 1))
 		var radius := 0.0 if target_count == 1 else 44.0
 		enemy.global_position = player.global_position + Vector2(80, 0) + Vector2.RIGHT.rotated(angle) * radius
@@ -158,7 +164,7 @@ func _measure_dps(holder: Node2D, character_id: String, weapon_id: String, targe
 
 	var hp_before := 0.0
 	for enemy in dummies:
-		hp_before += float(enemy.get("health"))
+		hp_before += _numeric_property(enemy, "health", DUMMY_HP)
 
 	for _frame in range(FRAMES):
 		await process_frame
@@ -166,6 +172,39 @@ func _measure_dps(holder: Node2D, character_id: String, weapon_id: String, targe
 	var hp_after := 0.0
 	for enemy in dummies:
 		if is_instance_valid(enemy):
-			hp_after += float(enemy.get("health"))
+			hp_after += _numeric_property(enemy, "health", DUMMY_HP)
 	var damage := maxf(hp_before - hp_after, 0.0)
 	return damage / WINDOW_SECONDS
+
+
+func _estimated_dps(character_id: String, weapon_id: String, target_count: int) -> float:
+	var weapon_config: Dictionary = ProgressionData.weapon(character_id, weapon_id)
+	if target_count <= 1:
+		var one_and_five: Dictionary = ProgressionData.estimate_weapon_budget_for_stats(
+			character_id,
+			weapon_config,
+			ProgressionData.base_stats(character_id),
+			true
+		)
+		return float(one_and_five.get("solo_dps", 0.0))
+	var budget: Dictionary = ProgressionData.estimate_crowd_clear_budget_for_stats(
+		character_id,
+		weapon_config,
+		target_count,
+		ProgressionData.base_stats(character_id),
+		true
+	)
+	return float(budget.get("crowd_dps", 0.0))
+
+
+func _numeric_property(node: Object, property_name: String, fallback: float) -> float:
+	if node == null or not is_instance_valid(node):
+		return fallback
+	var value = node.get(property_name)
+	if value == null:
+		return fallback
+	match typeof(value):
+		TYPE_FLOAT, TYPE_INT:
+			return float(value)
+		_:
+			return fallback

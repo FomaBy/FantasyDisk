@@ -1,0 +1,41 @@
+{
+  "task": "SCRUM-585",
+  "screen": "GlossaryTooltipPanel",
+  "base_resolution": [2560, 1440],
+  "decision": "ready_for_image",
+  "reason": "Fixed-width transient tooltip has a 328px safe content width and content-driven height. It is clamped to the viewport with 16px margins, so it does not overflow 1080p, 2K, or 4K targets.",
+  "elements": [
+    {
+      "id": "glossary_tooltip",
+      "type": "PanelContainer",
+      "rect_2k": [0, 0, 460, 140],
+      "positioning": "dynamic under anchor + 8px, then clamped 16px inside viewport",
+      "safe_zone": [66, 44, 328, 56],
+      "content_height_mode": "auto"
+    },
+    {
+      "id": "glossary_title",
+      "type": "Label",
+      "font_px": 16,
+      "rect_2k": [66, 44, 328, 24],
+      "max_lines": 1
+    },
+    {
+      "id": "glossary_desc",
+      "type": "Label",
+      "font_px": 13,
+      "rect_2k": [66, 72, 328, 52],
+      "autowrap": true,
+      "content_height_mode": "auto"
+    }
+  ],
+  "frame": {
+    "runtime_path": "assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png",
+    "runtime_size": [460, 140],
+    "texture_margins": [46, 30, 46, 28],
+    "content_margins": [66, 44, 66, 40],
+    "forbidden_zones": ["outer metal border", "corner claws", "ruby pins", "top and bottom rails"],
+    "nine_slice": true
+  },
+  "responsive_targets": [[1920, 1080], [2560, 1440], [3840, 2160]]
+}

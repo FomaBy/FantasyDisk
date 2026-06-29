@@ -2,27 +2,27 @@ extends RefCounted
 
 # SCRUM-198: ascension difficulty and per-class ascension reward data. ProgressionData remains the facade.
 
+# SCRUM-516: лестница возвышений сжата с 10 до 5 ступеней, монстерский пресс
+# заметно усилен. Прежние 10 «тонких» шагов свёрнуты в 5 «толстых», каждый из
+# которых — ощутимый скачок угрозы. Все прежние рычаги сложности сохранены
+# (enemy_hp/damage, price, spawn, elite, reward, healing, round_duration, boss*,
+# player_max_hp, first_wave, mini_elite), но эскалация монстров круче: кумулятив
+# enemy_hp_mult на новом L5 = 1.80 (было 1.32 на L10), enemy_damage_mult = 1.66
+# (было 1.28). Кривая остаётся монотонной (гейт ascension_curve_balance_test):
+# обычные монстры держат пресс на верхах, mini_elite-«горб» вводится на L3 (пик)
+# и спадает к L5 (≤ половины пика). Капстоун-усложнения (boss_extra_phase,
+# player_max_hp_mult, first_wave_boost) — на верхних ступенях L4–L5.
 const ASCENSION_MODIFIERS := [
-	{"id": "asc_hardened_foes", "level": 1, "title": "Закалённые враги", "description": "Монстры: +20% HP и +14% урона.",
-		"mods": {"enemy_hp_mult": 1.20, "enemy_damage_mult": 1.14}},
-	{"id": "asc_greedy_merchants", "level": 2, "title": "Жадные торговцы", "description": "Все цены (магазин, докачка, reroll): +25%.",
-		"mods": {"price_mult": 1.25}},
-	{"id": "asc_swift_horde", "level": 3, "title": "Быстрая орда", "description": "Волны спавнятся чаще, плотность +26%.",
-		"mods": {"spawn_count_mult": 1.26, "spawn_cooldown_mult": 0.80}},
-	{"id": "asc_fierce_elites", "level": 4, "title": "Свирепые элитки", "description": "Элитки: +20% HP, боевая фаза открывается сразу.",
-		"mods": {"elite_hp_mult": 1.20, "elite_instant_phase": 1.0}},
-	{"id": "asc_scarce_spoils", "level": 5, "title": "Скудные трофеи", "description": "Золото и опыт с боёв: -20%.",
-		"mods": {"reward_mult": 0.80}},
-	{"id": "asc_thinned_flesh", "level": 6, "title": "Истончённая плоть", "description": "Всё лечение (зелья, регенерация, вампиризм, drain): -30%.",
-		"mods": {"healing_mult": 0.70}},
-	{"id": "asc_abyssal_echo", "level": 7, "title": "Эхо бездны", "description": "В обычных волнах изредка появляется мини-элитка со свитой.",
-		"mods": {"mini_elite_chance": 0.14}},
-	{"id": "asc_long_watch", "level": 8, "title": "Длинная вахта", "description": "Таймер боя +25%; обычные монстры крепче (+10% HP).",
-		"mods": {"round_duration_mult": 1.25, "enemy_hp_mult": 1.10}},
-	{"id": "asc_warden_wrath", "level": 9, "title": "Гнев стража", "description": "Босс: +1 опасная фаза, +20% HP, телеграфы короче; мини-элиток заметно меньше.",
-		"mods": {"boss_hp_mult": 1.20, "boss_extra_phase": 1.0, "boss_telegraph_mult": 0.75, "mini_elite_chance": -0.06}},
-	{"id": "asc_edge_of_madness", "level": 10, "title": "Грань безумия", "description": "Игрок: -20% макс. HP; стартовая волна усилена; пресс смещён на монстров (+12% урона), мини-элиток ещё меньше.",
-		"mods": {"player_max_hp_mult": 0.80, "first_wave_boost": 1.0, "enemy_damage_mult": 1.12, "mini_elite_chance": -0.05}},
+	{"id": "asc_hardened_foes", "level": 1, "title": "Закалённые враги", "description": "Монстры: +25% HP и +18% урона. Все цены (магазин, докачка, reroll): +25%.",
+		"mods": {"enemy_hp_mult": 1.25, "enemy_damage_mult": 1.18, "price_mult": 1.25}},
+	{"id": "asc_swift_horde", "level": 2, "title": "Быстрая орда", "description": "Волны спавнятся чаще и плотнее (+30%); монстры ещё крепче (+15% HP, +10% урона).",
+		"mods": {"enemy_hp_mult": 1.15, "enemy_damage_mult": 1.10, "spawn_count_mult": 1.30, "spawn_cooldown_mult": 0.78}},
+	{"id": "asc_fierce_elites", "level": 3, "title": "Свирепые элитки", "description": "Элитки: +25% HP, боевая фаза сразу. В волнах появляются мини-элитки со свитой. Монстры +12% HP. Золото и опыт: -20%.",
+		"mods": {"enemy_hp_mult": 1.12, "elite_hp_mult": 1.25, "elite_instant_phase": 1.0, "mini_elite_chance": 0.16, "reward_mult": 0.80}},
+	{"id": "asc_long_watch", "level": 4, "title": "Истончённая вахта", "description": "Таймер боя +25%; всё лечение -32%; монстры +12% HP и +12% урона; мини-элиток меньше.",
+		"mods": {"enemy_hp_mult": 1.12, "enemy_damage_mult": 1.12, "healing_mult": 0.68, "round_duration_mult": 1.25, "mini_elite_chance": -0.05}},
+	{"id": "asc_edge_of_madness", "level": 5, "title": "Грань безумия", "description": "Босс: +1 опасная фаза, +30% HP, телеграфы короче. Игрок: -20% макс. HP; стартовая волна усилена; монстры +14% урона; мини-элиток заметно меньше.",
+		"mods": {"enemy_damage_mult": 1.14, "boss_hp_mult": 1.30, "boss_extra_phase": 1.0, "boss_telegraph_mult": 0.72, "player_max_hp_mult": 0.80, "first_wave_boost": 1.0, "mini_elite_chance": -0.08}},
 ]
 
 const ASCENSION_DIFFICULTY_DEFAULTS := {
@@ -45,11 +45,6 @@ const ASCENSION_LEVELS := {
 		{"id": "berserk_asc_3", "title": "Боевой ритм", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "berserk_asc_4", "title": "Железная воля", "mods": {"defense_flat": 0.02}},
 		{"id": "berserk_asc_5", "title": "Ярость предков", "mods": {"damage_multiplier": 1.07}},
-		{"id": "berserk_asc_6", "title": "Несокрушимость", "mods": {"max_health_flat": 12.0}},
-		{"id": "berserk_asc_7", "title": "Хищный глаз", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "berserk_asc_8", "title": "Вихрь стали", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "berserk_asc_9", "title": "Каменная кожа", "mods": {"defense_flat": 0.03}},
-		{"id": "berserk_asc_10", "title": "Аватар войны", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
 	],
 	"soldier": [
 		{"id": "soldier_asc_1", "title": "Строевая Выучка", "mods": {"damage_multiplier": 1.05}},
@@ -57,11 +52,6 @@ const ASCENSION_LEVELS := {
 		{"id": "soldier_asc_3", "title": "Быстрая Перезарядка", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "soldier_asc_4", "title": "Окопная Привычка", "mods": {"defense_flat": 0.02}},
 		{"id": "soldier_asc_5", "title": "Пороховая Дисциплина", "mods": {"damage_multiplier": 1.07}},
-		{"id": "soldier_asc_6", "title": "Марш-Бросок", "mods": {"max_health_flat": 12.0}},
-		{"id": "soldier_asc_7", "title": "Верный Прицел", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "soldier_asc_8", "title": "Команда Залпа", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "soldier_asc_9", "title": "Держать Линию", "mods": {"defense_flat": 0.03}},
-		{"id": "soldier_asc_10", "title": "Капитан Разлома", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
 	],
 	"thief": [
 		{"id": "thief_asc_1", "title": "Легкие Пальцы", "mods": {"damage_multiplier": 1.05}},
@@ -69,11 +59,6 @@ const ASCENSION_LEVELS := {
 		{"id": "thief_asc_3", "title": "Быстрая Рука", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "thief_asc_4", "title": "Уход в Тень", "mods": {"dodge_flat": 0.02}},
 		{"id": "thief_asc_5", "title": "Сорванный Кошель", "mods": {"money_gain_multiplier": 1.06}},
-		{"id": "thief_asc_6", "title": "Тайный Карман", "mods": {"max_health_flat": 11.0}},
-		{"id": "thief_asc_7", "title": "Прицельный Рикошет", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "thief_asc_8", "title": "Дымный Выход", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "thief_asc_9", "title": "Ни Следа", "mods": {"dodge_flat": 0.03}},
-		{"id": "thief_asc_10", "title": "Король Карманов", "mods": {"damage_multiplier": 1.10, "money_gain_multiplier": 1.08}},
 	],
 	"elementalist": [
 		{"id": "elementalist_asc_1", "title": "Искра Первостихии", "mods": {"damage_multiplier": 1.05}},
@@ -81,11 +66,6 @@ const ASCENSION_LEVELS := {
 		{"id": "elementalist_asc_3", "title": "Быстрый Поток", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "elementalist_asc_4", "title": "Широкая Мандала", "mods": {"aoe_radius_multiplier": 1.05}},
 		{"id": "elementalist_asc_5", "title": "Раскаленное Ядро", "mods": {"damage_multiplier": 1.07}},
-		{"id": "elementalist_asc_6", "title": "Хрустальный Щит", "mods": {"max_health_flat": 10.0}},
-		{"id": "elementalist_asc_7", "title": "Дальняя Призма", "mods": {"range_multiplier": 1.06}},
-		{"id": "elementalist_asc_8", "title": "Четверной Круг", "mods": {"aoe_radius_multiplier": 1.06}},
-		{"id": "elementalist_asc_9", "title": "Живая Молния", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "elementalist_asc_10", "title": "Архонт Стихий", "mods": {"damage_multiplier": 1.10, "aoe_radius_multiplier": 1.06}},
 	],
 	"sniper": [
 		{"id": "sniper_asc_1", "title": "Холодная Мушка", "mods": {"damage_multiplier": 1.05}},
@@ -93,11 +73,6 @@ const ASCENSION_LEVELS := {
 		{"id": "sniper_asc_3", "title": "Сухой Спуск", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "sniper_asc_4", "title": "Дальний Глаз", "mods": {"range_multiplier": 1.05}},
 		{"id": "sniper_asc_5", "title": "Бронебойный Заряд", "mods": {"damage_multiplier": 1.07}},
-		{"id": "sniper_asc_6", "title": "Низкая Позиция", "mods": {"defense_flat": 0.02}},
-		{"id": "sniper_asc_7", "title": "Точный Расчет", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "sniper_asc_8", "title": "Быстрая Перезарядка", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "sniper_asc_9", "title": "Сквозной Прицел", "mods": {"crit_damage_multiplier": 1.06}},
-		{"id": "sniper_asc_10", "title": "Мастер Одного Выстрела", "mods": {"damage_multiplier": 1.10, "range_multiplier": 1.06}},
 	],
 	"priest": [
 		{"id": "priest_asc_1", "title": "Тихая Литания", "mods": {"damage_multiplier": 1.04}},
@@ -105,11 +80,6 @@ const ASCENSION_LEVELS := {
 		{"id": "priest_asc_3", "title": "Быстрая Молитва", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "priest_asc_4", "title": "Широкий Круг", "mods": {"aoe_radius_multiplier": 1.05}},
 		{"id": "priest_asc_5", "title": "Священная Формула", "mods": {"damage_multiplier": 1.06}},
-		{"id": "priest_asc_6", "title": "Обет Стойкости", "mods": {"defense_flat": 0.025}},
-		{"id": "priest_asc_7", "title": "Дальний Хор", "mods": {"range_multiplier": 1.05}},
-		{"id": "priest_asc_8", "title": "Благодатный Ритм", "mods": {"regeneration_flat": 0.28}},
-		{"id": "priest_asc_9", "title": "Звон Защиты", "mods": {"aoe_radius_multiplier": 1.06}},
-		{"id": "priest_asc_10", "title": "Пастырь Разлома", "mods": {"damage_multiplier": 1.09, "max_health_flat": 12.0}},
 	],
 	"biologist": [
 		{"id": "biologist_asc_1", "title": "Чистая Культура", "mods": {"damage_multiplier": 1.04}},
@@ -117,11 +87,6 @@ const ASCENSION_LEVELS := {
 		{"id": "biologist_asc_3", "title": "Быстрый Анализ", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "biologist_asc_4", "title": "Широкий Посев", "mods": {"aoe_radius_multiplier": 1.05}},
 		{"id": "biologist_asc_5", "title": "Сильный Реагент", "mods": {"damage_multiplier": 1.07}},
-		{"id": "biologist_asc_6", "title": "Стерильный Костюм", "mods": {"defense_flat": 0.02}},
-		{"id": "biologist_asc_7", "title": "Дальняя Проба", "mods": {"range_multiplier": 1.05}},
-		{"id": "biologist_asc_8", "title": "Живой Катализ", "mods": {"dot_damage_flat": 2.0}},
-		{"id": "biologist_asc_9", "title": "Быстрая Митоза", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "biologist_asc_10", "title": "Архив Генома", "mods": {"damage_multiplier": 1.09, "aoe_radius_multiplier": 1.06}},
 	],
 	"robot": [
 		{"id": "robot_asc_1", "title": "Смазанные Шестерни", "mods": {"attack_speed_multiplier": 1.04}},
@@ -129,11 +94,6 @@ const ASCENSION_LEVELS := {
 		{"id": "robot_asc_3", "title": "Магнитная Обмотка", "mods": {"aoe_radius_multiplier": 1.04}},
 		{"id": "robot_asc_4", "title": "Усиленный Сервопривод", "mods": {"damage_multiplier": 1.05}},
 		{"id": "robot_asc_5", "title": "Пластинчатая Броня", "mods": {"defense_flat": 0.025}},
-		{"id": "robot_asc_6", "title": "Стабильный Реактор", "mods": {"regeneration_flat": 0.22}},
-		{"id": "robot_asc_7", "title": "Дальний Захват", "mods": {"range_multiplier": 1.05}},
-		{"id": "robot_asc_8", "title": "Искровой Контур", "mods": {"dot_damage_flat": 2.0}},
-		{"id": "robot_asc_9", "title": "Амортизаторы", "mods": {"move_speed_multiplier": 1.04}},
-		{"id": "robot_asc_10", "title": "Неостановимый Протокол", "mods": {"damage_multiplier": 1.08, "max_health_flat": 14.0}},
 	],
 	"engineer": [
 		{"id": "engineer_asc_1", "title": "Быстрая Сборка", "mods": {"attack_speed_multiplier": 1.04}},
@@ -141,11 +101,6 @@ const ASCENSION_LEVELS := {
 		{"id": "engineer_asc_3", "title": "Дополнительный Модуль", "mods": {"summon_bonus": 1.0}},
 		{"id": "engineer_asc_4", "title": "Точная Разметка", "mods": {"range_multiplier": 1.05}},
 		{"id": "engineer_asc_5", "title": "Усиленный Привод", "mods": {"damage_multiplier": 1.06}},
-		{"id": "engineer_asc_6", "title": "Ремонтный Контур", "mods": {"regeneration_flat": 0.24}},
-		{"id": "engineer_asc_7", "title": "Широкая Сетка", "mods": {"aoe_radius_multiplier": 1.05}},
-		{"id": "engineer_asc_8", "title": "Искровые Контакты", "mods": {"dot_damage_flat": 2.0}},
-		{"id": "engineer_asc_9", "title": "Полевой Инструмент", "mods": {"defense_flat": 0.02}},
-		{"id": "engineer_asc_10", "title": "Главный Механик Разлома", "mods": {"damage_multiplier": 1.08, "summon_bonus": 1.0}},
 	],
 	"dark_mage": [
 		{"id": "dark_mage_asc_1", "title": "Темный фокус", "mods": {"damage_multiplier": 1.05}},
@@ -153,11 +108,6 @@ const ASCENSION_LEVELS := {
 		{"id": "dark_mage_asc_3", "title": "Расширение разлома", "mods": {"aoe_radius_multiplier": 1.05}},
 		{"id": "dark_mage_asc_4", "title": "Скороговорка заклятий", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "dark_mage_asc_5", "title": "Глубинная магия", "mods": {"damage_multiplier": 1.07}},
-		{"id": "dark_mage_asc_6", "title": "Щит из тени", "mods": {"defense_flat": 0.03}},
-		{"id": "dark_mage_asc_7", "title": "Дальний взор", "mods": {"range_multiplier": 1.06}},
-		{"id": "dark_mage_asc_8", "title": "Резонанс проклятий", "mods": {"aoe_radius_multiplier": 1.06}},
-		{"id": "dark_mage_asc_9", "title": "Жизнь из праха", "mods": {"max_health_flat": 10.0}},
-		{"id": "dark_mage_asc_10", "title": "Владыка разлома", "mods": {"damage_multiplier": 1.10, "aoe_radius_multiplier": 1.06}},
 	],
 	"guitarist": [
 		{"id": "guitarist_asc_1", "title": "Чистый звук", "mods": {"damage_multiplier": 1.05}},
@@ -165,11 +115,6 @@ const ASCENSION_LEVELS := {
 		{"id": "guitarist_asc_3", "title": "Широкий резонанс", "mods": {"aoe_radius_multiplier": 1.05}},
 		{"id": "guitarist_asc_4", "title": "Быстрый перебор", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "guitarist_asc_5", "title": "Мощный рифф", "mods": {"damage_multiplier": 1.07}},
-		{"id": "guitarist_asc_6", "title": "Ударная волна", "mods": {"knockback_multiplier": 1.08}},
-		{"id": "guitarist_asc_7", "title": "Лёгкая походка", "mods": {"move_speed_multiplier": 1.04}},
-		{"id": "guitarist_asc_8", "title": "Глубокий бас", "mods": {"aoe_radius_multiplier": 1.06}},
-		{"id": "guitarist_asc_9", "title": "Кураж толпы", "mods": {"max_health_flat": 11.0}},
-		{"id": "guitarist_asc_10", "title": "Легенда сцены", "mods": {"damage_multiplier": 1.10, "knockback_multiplier": 1.10}},
 	],
 	"assassin": [
 		{"id": "assassin_asc_1", "title": "Первая Кровь", "mods": {"damage_multiplier": 1.05}},
@@ -177,11 +122,6 @@ const ASCENSION_LEVELS := {
 		{"id": "assassin_asc_3", "title": "Острие Ночи", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "assassin_asc_4", "title": "Холодный Расчет", "mods": {"defense_flat": 0.02}},
 		{"id": "assassin_asc_5", "title": "Двойной Росчерк", "mods": {"damage_multiplier": 1.07}},
-		{"id": "assassin_asc_6", "title": "Тень Клинка", "mods": {"max_health_flat": 12.0}},
-		{"id": "assassin_asc_7", "title": "Хватка Ужаса", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "assassin_asc_8", "title": "Безупречный Срез", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "assassin_asc_9", "title": "Глаз Бури", "mods": {"defense_flat": 0.03}},
-		{"id": "assassin_asc_10", "title": "Властелин Теней", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
 	],
 	"ranger": [
 		{"id": "ranger_asc_1", "title": "Верный Прицел", "mods": {"damage_multiplier": 1.05}},
@@ -189,11 +129,6 @@ const ASCENSION_LEVELS := {
 		{"id": "ranger_asc_3", "title": "Лунная Тетива", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "ranger_asc_4", "title": "Зоркость", "mods": {"defense_flat": 0.02}},
 		{"id": "ranger_asc_5", "title": "Тяжелый Болт", "mods": {"damage_multiplier": 1.07}},
-		{"id": "ranger_asc_6", "title": "Ветер Чащи", "mods": {"max_health_flat": 12.0}},
-		{"id": "ranger_asc_7", "title": "Хищный Расчет", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "ranger_asc_8", "title": "Серебряный След", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "ranger_asc_9", "title": "Сердце Леса", "mods": {"defense_flat": 0.03}},
-		{"id": "ranger_asc_10", "title": "Лунный Страж", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
 	],
 	"doctor": [
 		{"id": "doctor_asc_1", "title": "Полевые Швы", "mods": {"damage_multiplier": 1.05}},
@@ -201,11 +136,6 @@ const ASCENSION_LEVELS := {
 		{"id": "doctor_asc_3", "title": "Чистые Руки", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "doctor_asc_4", "title": "Горький Тоник", "mods": {"defense_flat": 0.02}},
 		{"id": "doctor_asc_5", "title": "Вторая Доза", "mods": {"damage_multiplier": 1.07}},
-		{"id": "doctor_asc_6", "title": "Стальные Нервы", "mods": {"max_health_flat": 12.0}},
-		{"id": "doctor_asc_7", "title": "Эликсир Стойкости", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "doctor_asc_8", "title": "Точная Инъекция", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "doctor_asc_9", "title": "Клятва Жизни", "mods": {"defense_flat": 0.03}},
-		{"id": "doctor_asc_10", "title": "Архилекарь", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
 	],
 	"chemist": [
 		{"id": "chemist_asc_1", "title": "Едкая Смесь", "mods": {"damage_multiplier": 1.05}},
@@ -213,11 +143,6 @@ const ASCENSION_LEVELS := {
 		{"id": "chemist_asc_3", "title": "Летучий Реагент", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "chemist_asc_4", "title": "Кислотный След", "mods": {"defense_flat": 0.02}},
 		{"id": "chemist_asc_5", "title": "Нестабильный Состав", "mods": {"damage_multiplier": 1.07}},
-		{"id": "chemist_asc_6", "title": "Пары Гнили", "mods": {"max_health_flat": 12.0}},
-		{"id": "chemist_asc_7", "title": "Катализатор", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "chemist_asc_8", "title": "Цепная Реакция", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "chemist_asc_9", "title": "Формула Распада", "mods": {"defense_flat": 0.03}},
-		{"id": "chemist_asc_10", "title": "Алхимия Конца", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
 	],
 	"knight": [
 		{"id": "knight_asc_1", "title": "Крепкий Щит", "mods": {"damage_multiplier": 1.05}},
@@ -225,11 +150,6 @@ const ASCENSION_LEVELS := {
 		{"id": "knight_asc_3", "title": "Несгибаемость", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "knight_asc_4", "title": "Клятва Стали", "mods": {"defense_flat": 0.02}},
 		{"id": "knight_asc_5", "title": "Башня", "mods": {"damage_multiplier": 1.07}},
-		{"id": "knight_asc_6", "title": "Сталь и Кровь", "mods": {"max_health_flat": 12.0}},
-		{"id": "knight_asc_7", "title": "Бастион", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "knight_asc_8", "title": "Железная Воля", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "knight_asc_9", "title": "Страж Рубежа", "mods": {"defense_flat": 0.03}},
-		{"id": "knight_asc_10", "title": "Паладин Разлома", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
 	],
 	"druid": [
 		{"id": "druid_asc_1", "title": "Зов Чащи", "mods": {"damage_multiplier": 1.05}},
@@ -237,10 +157,5 @@ const ASCENSION_LEVELS := {
 		{"id": "druid_asc_3", "title": "Дикий Союз", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "druid_asc_4", "title": "Корни Силы", "mods": {"defense_flat": 0.02}},
 		{"id": "druid_asc_5", "title": "Стая", "mods": {"damage_multiplier": 1.07}},
-		{"id": "druid_asc_6", "title": "Шепот Леса", "mods": {"max_health_flat": 12.0}},
-		{"id": "druid_asc_7", "title": "Когти и Клыки", "mods": {"crit_chance_flat": 0.03}},
-		{"id": "druid_asc_8", "title": "Вожак", "mods": {"attack_speed_multiplier": 1.05}},
-		{"id": "druid_asc_9", "title": "Сердце Чащи", "mods": {"defense_flat": 0.03}},
-		{"id": "druid_asc_10", "title": "Аватар Природы", "mods": {"damage_multiplier": 1.10, "max_health_flat": 14.0}},
 	],
 }

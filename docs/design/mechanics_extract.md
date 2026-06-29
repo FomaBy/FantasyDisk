@@ -112,7 +112,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Магический урон | `magic_damage` | Урон Темного мага |
 | Урон звуковой волны | `sound_wave_damage` | Урон Гитариста |
 | Скорость атаки | `attack_speed` | Уменьшает интервалы атак: итоговый интервал = `base_fire_interval / attack_speed`, минимум 0.18с |
-| Возвышение | `ascension_level` | Метапрогрессия 1-10 на персонажа; кумулятивные модификаторы из `ASCENSION_LEVELS` применяются при старте забега |
+| Возвышение | `ascension_level` | Метапрогрессия 1-5 на персонажа; кумулятивные модификаторы из `ASCENSION_LEVELS` применяются при старте забега |
 | Шанс крита | `crit_chance` | Вероятность критического удара |
 | Множитель крита | `crit_damage_multiplier` | Сила критического удара |
 | Скорость движения | `move_speed` | Скорость игрока |
@@ -136,7 +136,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | --- | --- | --- | --- | --- |
 | Берсерк | Двуручный меч | `sword` | `frustum` | Усеченный замах 90°, радиус 600, base width 150, outer width 1200, interval 0.58, damage x1.15 |
 | Берсерк | Двуручный топор | `axe` | `sweep` | Дуга 140 градусов радиуса 320, damage x0.85 |
-| Берсерк | Двуручный молот | `hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.8 (AoE) / 1.45 (damage) — слабый старт, мощный потолок |
+| Берсерк | Двуручный молот | `hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.25 (AoE) / 1.15 (damage), фактическая круговая зона capped at 145 px — сильный ближний AoE без экранного AFK-радиуса |
 | Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 быстрых выстрела по линии: первая цель получает полный урон, соседи в коридоре получают reduced suppression damage |
 | Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф зоны, короткая задержка фитиля, взрыв с falloff урона к краю |
 | Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Оборонительный forward brace: враг получает один укол за стойку и knockback |
@@ -562,9 +562,29 @@ Escape открывает крупное меню характеристик:
 - **Магазин**: базовые цены уже включают pass x3.5 (пример: `shop_damage` 12 -> 42), а актуальная экономика 0.1.4 дополнительно применяет `ECONOMY_PRICE_MULTIPLIER = 1.10` внутри `stage_scaled_cost()`. Фактическая цена `shop_damage` на stage 0 — 47 золота. Артефакты в магазине стоят по тиру: Tier 1 — 30, Tier 2 — 55, Tier 3 — 95 (`COST_BY_TIER`) до stage/economy scaling.
 - **Редкость**: вес появления в наградах/магазине по тиру — 1.0 / 0.45 / 0.12 (`TIER_WEIGHTS`, weighted-выбор без возврата).
 - **Окно докачки после боя**: +1 к характеристике за `18 + 6 * route_stage` золота, затем `stage_scaled_cost`; reroll пары предложений за `6 + 2 * route_stage`, затем `stage_scaled_cost`, максимум 2 раза за окно; «Пропустить» — бесплатно.
-- **Дроп 0.1.4**: rewards назначаются по `DROP_CLASS_MULTIPLIERS`: ordinary < complex < heavy < mini_elite < elite < boss. Жирные цели дают около x1.75 XP / x1.85 золота относительно базы; мини-элитки x3.6 / x3.8; элитки x8 / x8.5; босс получает fixed reward, умноженный на `stage_scale`. Ожидаемая покупательная способность по balance harness: +10.6%, XP: +7.1%, то есть темп прокачки остается в допуске. Route-level модель SCRUM-188 (`build/route_economy_xp_model.md`) показывает 8-9 level-up на representative routes и healthy/high shop affordability, поэтому дополнительный разгон XP до +10-15% пока не применяется.
+- **Дроп 0.1.4 (откалибровано SCRUM-507)**: rewards назначаются по `DROP_CLASS_MULTIPLIERS`: ordinary < complex < heavy < mini_elite < elite < boss. Сложные цели дают x1.3 XP / x1.6 золота, жирные (bruiser/shield) около x1.75 XP / x2.2 золота относительно базы; мини-элитки x3.6 / x3.8; элитки x8 / x8.5; босс получает fixed reward `money 43.0`, умноженный на `stage_scale`. SCRUM-507 снизил boss-money 92→43 и поднял complex/heavy золото (1.35→1.6 / 1.85→2.2), чтобы доля boss-дропа в доходе маршрута упала с ~64% до ≤50%, а ранние/средние бои перестали обесцениваться («дожить до босса»). Route-level модель SCRUM-188 (`build/route_economy_xp_model.md`) после калибровки: affordable offers в коридоре ±25% по трём маршрутам (5.7/6.5/6.9), покупательная способность high/high/healthy, доля boss-золота 47/40/49%, XP-темп сохранён (20/25/20 level-up с учётом XP-кривой SCRUM-527).
 - **XP-кривая 0.1.4**: следующий уровень считается через `ceil(current_requirement * 1.42 + 3)` вместо прежнего `ceil(req * 1.35 + 2)`, чтобы усиленный дроп сложных целей не разгонял количество level-up сверх цели.
 - **Сила артефактов**: tier 1 усилен x2.5 от прежних значений (например +2 к стату -> +5, +20% урона -> +50%); даунсайды НЕ усилены. Tier 2 — двойные эффекты (усилены так же). Tier 3 (6 шт.) — билдообразующие механики: `echo_blast_every`, `extra_projectile`, `low_hp_damage_bonus`, `kill_heal_percent`, `thorn_reflect_multiplier`, `dodge_rush_bonus` (реализованы в player/class_weapon/combat_director/derived_parameters).
+- **Триггерные (активные) артефакты (SCRUM-500)**: под-класс предметов с полями `active: true` +
+  `trigger` (`on_low_hp`/`on_kill`/`on_crit`/`on_room_clear`/`on_take_hit`) + эффект-флаг в `mods`
+  (суммируемый скаляр, НЕ `_multiplier`; раскладывается `_apply_reward_mods` как обычно). Это
+  «специи» поверх `run_modifiers` — баланс-нейтральны (лечение/щит/мув-бафф/ситуативный бурст, без
+  постоянного +damage), survivability/DPS-гейты не сдвигаются. Шанс/кулдаун обязательны для
+  `on_kill`/`on_crit`/`on_take_hit` (анти-runaway). Флаги: `lowhp_guard`, `kill_explosion_chance`,
+  `crit_speed_burst`, `room_clear_heal_percent`, `take_hit_pulse_chance`, `kill_streak_heal_every`,
+  `lowhp_regen_bonus`. Runtime-анкеры: `player.take_damage` (on_take_hit/on_low_hp),
+  `player.on_weapon_hit(enemy,dmg,was_crit)` (on_crit), `combat_director._on_enemy_died` →
+  `player.on_enemy_killed` (on_kill), `combat_director._end_combat(victory)` (on_room_clear).
+  Временные `*_active`-флаги (`dodge_rush_active`/`low_hp_active`/`crit_speed_burst_active`)
+  обнуляются в `_store_player_snapshot`, чтобы бафф не «застывал» между узлами; латчи/кулдауны
+  (`_lowhp_guard_used` и т.п.) сбрасываются в `configure_character`. Пометка «⚡ Активный» вшита в
+  `description` (карточка не правилась). Покрытие: `tests/runtime_smoke_triggered_artifacts_test.gd`.
+- **SCRUM-606 active artifacts**: `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`
+  add tier-2/cost55 variants on existing hooks with `room_clear_heal_percent`, `kill_heal_percent`,
+  `kill_explosion_chance`, `take_hit_pulse_chance`, and `crit_speed_burst`.
+- **SCRUM-609 curse relics**: `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`
+  are tier-2/cost55 passive trade-off artifacts using supported mod keys only:
+  crit/max HP, money/healing, damage/move speed, range/AoE, and defense/attack speed.
 - **class_affinity**: с 2026-06-12 это тематика/исходная фантазия артефакта, а не запрет. `affinity_mods` применяются любому классу через class interpretation text; UI больше не показывает «Не работает»/«Работает вполсилы», а объясняет, как текущий класс использует эффект.
 
 
@@ -818,9 +838,9 @@ Integrated systems: `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary e
 AoE/DoT/саммоны — зачистка волны; точные замеры — плейтест.
 
 
-### Возвышения 2.0 — Лестница Усложнений (2026-06-12)
+### Возвышения 2.1 — Лестница Усложнений (SCRUM-516, 2026-06-28)
 
-10 кумулятивных модификаторов в `ProgressionData.ASCENSION_MODIFIERS`; `ascension_difficulty_mods(level)` сворачивает 1..N в словарь (множители перемножаются, флаги — max). Нейтраль = `ASCENSION_DIFFICULTY_DEFAULTS` (уровень 0). Применение:
+5 кумулятивных модификаторов в `ProgressionData.ASCENSION_MODIFIERS`; `ascension_difficulty_mods(level)` сворачивает 1..N в словарь (множители перемножаются, флаги — max). SCRUM-516 сжал прежние 10 тонких шагов в 5 более плотных: кумулятивно L5 даёт `enemy_hp_mult = 1.80` и `enemy_damage_mult = 1.66`. Нейтраль = `ASCENSION_DIFFICULTY_DEFAULTS` (уровень 0). Применение:
 - enemy_hp_mult/enemy_damage_mult → `combat_director._scale_enemy_for_current_wave`;
 - elite_hp_mult + elite_instant_phase (meta) → `_scale_elite_enemy`; boss_hp_mult/boss_extra_phase/boss_telegraph_mult (meta) → `_scale_boss_for_run`, читаются в `boss.gd` (4-я фаза при extra_phase, `_ascension_telegraph` укорачивает зоны);
 - spawn_count_mult/spawn_cooldown_mult + first_wave_boost → `_spawn_enemy_wave`/`_next_spawn_cooldown`;
@@ -828,7 +848,7 @@ AoE/DoT/саммоны — зачистка волны; точные замер�
 - price_mult → цены магазина (при генерации) и докачки (`_ascension_price`);
 - reward_mult/healing_mult/player_max_hp_mult сворачиваются в `run_modifiers` игрока в `main.apply_ascension_bonuses` (на старте забега).
 
-Прогресс: `meta_progression.record_boss_victory(state, char, run_level)` повышает уровень только если `run_level >= completed`; `selectable_max = completed + 1` (cap 10). Наградный трек меты — старые per-class `ASCENSION_LEVELS`, применяются за пройденные уровни постоянно. Выбор уровня — селектор в hero select (клампится к `ascension_selectable_max` героя при пике), HUD-индикатор римской цифрой у таймера, кодекс-раздел «Возвышения».
+Прогресс: `meta_progression.record_boss_victory(state, char, run_level)` повышает уровень только если `run_level >= completed`; `selectable_max = completed + 1` (cap 5). Наградный трек меты — per-class `ASCENSION_LEVELS` по 5 уровней, применяются за пройденные уровни постоянно. Выбор уровня — селектор в hero select (клампится к `ascension_selectable_max` героя при пике), HUD-индикатор римской цифрой у таймера, кодекс-раздел «Возвышения».
 
 ### Мета-древо умений (SCRUM-150)
 

@@ -1,6 +1,6 @@
 # Animation
 
-Обновлено: 2026-06-14
+Обновлено: 2026-06-29
 
 Animator ownership описан в `docs/process/agent_role_boundaries_and_handoffs.md`. Back-end должен не полировать motion, а предоставлять стабильные states/API.
 
@@ -11,14 +11,13 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - Source PNG остаются меню/fallback-изображениями.
 - `scripts/sliced_rig_manifest.gd` хранит данные нарезки.
 - Read-only audit SCRUM-173 (2026-06-13) зафиксировал матрицу покрытия в `docs/design/reviews/animation_rig_audit_2026_06.md`: базовый rig/state слой широкий, но 0.1.4 follow-up нужен для legacy player weapon-action hooks, enemy archetype assertions, hit/death coverage, weapon timing/VFX sync и Design-ready parts для новых боссов/мини-элиток.
-- Directive 2026-06-14: future production animation must follow
-  `fantasydisk-animation-director`: every playable character, monster, summon,
-  elite, and boss needs 5+ movement frames and 5+ primary attack frames. Elites
-  and bosses must use smooth full-frame sprite sheets for production animation,
-  not cutout slicing of static sprites, and need multiple skill/phase attack
-  patterns. Audit `docs/design/reviews/animation_full_frame_pipeline_audit_2026_06.md`
-  / SCRUM-350 tracks current compliance and created Design/Back-end handoffs
-  SCRUM-352 and SCRUM-351.
+- Directive 2026-06-29: future character animation integration must follow
+  `fantasydisk-pixellab-animation-integrator`. Use PixelLab-authored idle/move
+  packs as the source of truth, import 8 directions, normalize transparent
+  full-frame runtime PNGs, rebuild SpriteFrames, wire directional movement/idle,
+  and animate playable-character Hero Select previews with clockwise direction
+  rotation. Historical full-frame audits remain valid as evidence, but the old
+  rig/sprite-sheet animation-director skill is retired.
 - SCRUM-351 added `scripts/full_frame_animation_registry.gd`: a Back-end
   SpriteFrames lookup/state adapter for `hero`, `enemy`, `ally`, `elite`, and
   `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse
@@ -132,6 +131,46 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `docs/design/backups/scrum461_berserk_cartoon_pre_anim/`. QA artifacts live
   under `build/qa/scrum461_berserk_cartoon_anim/`; attack animation remains
   intentionally absent by SCRUM-461 scope.
+- SCRUM-532 (2026-06-28) produces the Berserk v2 dark-fantasy animation asset
+  pack from the accepted SCRUM-531 source without wiring it into live runtime.
+  Candidate assets live under `assets/sprites/characters/berserk_v2/`:
+  `move`/`walk` has 5 looping `512x512` frames at 9 fps, and
+  `attack_primary` has 6 non-looping empty-fist/body-strike frames at 12 fps.
+  The safe-gutter sheet is
+  `assets/sprites/characters/berserk_v2/berserk_v2_anim_sheet.png` with `48 px`
+  outer padding/gutters and pivot `(256,470)`. QA artifacts and manifest live
+  under `build/qa/scrum532_berserk_v2_anim/`; the animation manifest validator
+  passes. Live `assets/sprites/characters/berserk_spriteframes.tres`,
+  `scripts/player.gd`, and `tests/animation_smoke_test.gd` remain unchanged by
+  scope, so runtime still uses the SCRUM-461 idle/walk/move-only Berserk until a
+  separate wiring task.
+- 2026-06-29 PixelLab Berserk wiring replaces the live Berserk runtime
+  `assets/sprites/characters/berserk_spriteframes.tres` with 8-direction
+  pixel-art movement. Source downloads are stored under
+  `assets/sprites/characters/pixellab/berserk/` (`112x112` source frames plus
+  `manifest.json`), while runtime frames are nearest-neighbor padded to a
+  `512x512` canvas under `assets/sprites/characters/full_frame/berserk_pixellab/`.
+  The SpriteFrames resource exposes `idle_<direction>` one-frame fallbacks and
+  `move_<direction>` / `walk_<direction>` 6-frame looping rows for `south`,
+  `south_east`, `east`, `north_east`, `north`, `north_west`, `west`, and
+  `south_west`, plus generic `idle` / `move` / `walk` fallbacks. `Player`
+  resolves the movement vector into the matching 8-way row and disables
+  horizontal `flip_h` for directional rows. Body attack rows remain absent by
+  current combat-visual scope.
+- SCRUM-540 (2026-06-28) produces the Secret Ascension Boss full-frame animation
+  pack from the accepted SCRUM-539 source. Candidate assets live under
+  `assets/sprites/bosses/full_frame/secret_ascension_boss/` with a 512x512
+  canvas, pivot `(256,480)`, 48px sheet gutters, and stable bottom-center
+  framing. The SpriteFrames resource is
+  `assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres`
+  and exposes 6f looping `idle`/`move`, 6f `attack_primary` plus
+  `attack_primary_windup`/`attack_primary_release`, four cast pairs
+  (`skill_ring`/`attack_ring`, `skill_cone`/`attack_cone`,
+  `skill_beam`/`attack_beam`, `skill_rupture`/`attack_rupture`), `hit`, and
+  `death`. QA artifacts and manifest live under
+  `build/qa/scrum540_secret_ascension_boss_anim/`; manifest, alpha/slicing,
+  Godot import, and focused SpriteFrames smoke pass. Back-end runtime encounter
+  wiring remains separate from this Animator pack.
 - SCRUM-473 (2026-06-17) replaces the temporary cartoon-trial legacy rig for
   Dark Mage and Knight with real cartoon2 full-frame SpriteFrames. Runtime
   resources `assets/sprites/characters/dark_mage_spriteframes.tres` and
@@ -409,11 +448,12 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 
 ## Summon / Ally Motion
 
-- SCRUM-353 (2026-06-14) validated all mobile summon creatures through
-  `fantasydisk-animation-director`: `druid_beast`, `druid_pack_spirit`,
-  `homunculus`, and `leadership_echo` use full-frame SpriteFrames on the
-  existing runtime paths. Each has `move` 8f/12fps loop and runtime `attack`
-  6f/14fps non-loop, recorded as `attack_primary` in the skill manifest.
+- SCRUM-353 (2026-06-14) validated all mobile summon creatures through the
+  now-retired legacy full-frame animation validator: `druid_beast`,
+  `druid_pack_spirit`, `homunculus`, and `leadership_echo` use full-frame
+  SpriteFrames on the existing runtime paths. Each has `move` 8f/12fps loop and
+  runtime `attack` 6f/14fps non-loop, recorded as `attack_primary` in the legacy
+  manifest.
 - SCRUM-370 adds ally `death` rows to those same SpriteFrames paths:
   6 frames at 10fps, non-loop, with static `ally_*.png` fallback unchanged.
 - SCRUM-399 (2026-06-14) replaced the visual source and runtime PNG frame

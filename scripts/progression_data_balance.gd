@@ -8,33 +8,157 @@ const CLASS_BUDGET_PROFILES := {
 	"thief": {"profile": "balanced", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.00},
 	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.10},
 	"sniper": {"profile": "solo", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.15, "aoe_target": 0.80},
-	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 1.00, "aoe_target": 1.05},
+	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 1.03, "aoe_target": 1.05},
 	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.92, "aoe_target": 1.18},
-	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 1.00, "aoe_target": 1.05},
+	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 1.07, "aoe_target": 1.05},
 	"engineer": {"profile": "balanced", "survival": "steady", "damage_budget": 0.96, "solo_target": 0.98, "aoe_target": 1.12},
 	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.84, "aoe_target": 1.30},
-	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 0.84, "aoe_target": 1.30},
+	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.30},
 	"assassin": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
 	"ranger": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
 	"doctor": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
 	"chemist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.84, "aoe_target": 1.30},
-	"knight": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
+	"knight": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.05, "aoe_target": 1.00},
 	"druid": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
+}
+
+# SCRUM-544: comfort-band модель. Целевая ±20%-полоса DPS НЕ плоская: позиция
+# класса внутри полосы определяется требуемым уровнем вовлечённости игрока.
+# Чем AFK-комфортнее класс (большой авто-радиус, самонаведение, нулевой аим,
+# «поставил и фармит») — тем НИЖЕ его потолок в полосе. Чем больше требуется
+# скилла/аима/позиционирования (ручная одиночная цель, мили-вход под удар) —
+# тем ВЫШЕ потолок (награда за вовлечённость).
+#
+# comfort_weight — относительный потолок класса внутри полосы (множитель к
+# базовому таргету полосы). Нормировка для проверки полосы:
+#   comfort_normalized_dps = measured_dps / comfort_weight[class]
+# После нормировки потолок/пол полосы должны сойтись в ±20% от медианы по всем
+# классам в каждом срезе (1t/5t/20t).
+#
+# SCRUM-601: веса ОТКАЛИБРОВАНЫ как band-эквалайзер против детерминированной
+# аналитической метрики crowd_dps (ProgressionData.estimate_crowd_clear_budget_for_stats
+# на base_stats, срезы 1/5/20 целей). Раньше вес = engagement-профиль (ручной аим →
+# высокий, AFK-призыв → низкий), но solo/aoe_target классов калибровались НЕЗАВИСИМО,
+# поэтому «сырой» crowd_dps (~100..205) шёл ВРАЗРЕЗ с engagement-весом, и кросс-класс
+# вылетал из полосы (3.8x разброс). Так как solo/aoe_target трогать нельзя (держат
+# внутриклассовый budget), comfort_weight — единственный рычаг: вес ≈ class_mean_raw /
+# median_all_raw, чтобы comfort_normalized сошёлся в ±20% (факт ~±6%). Гейт:
+# tests/comfort_band_cross_class_gate.gd. Вес влияет ТОЛЬКО на band-измерение, не на
+# геймплей. Внутриклассовый порядок (engagement) теперь несёт raw budget, не вес.
+# Будущее выравнивание engagement↔raw — через solo/aoe_target (отдельный тикет).
+# Per-weapon переопределения (COMFORT_WEIGHT_OVERRIDES) — для оружий, чей «сырой»
+# crowd_dps заметно отличается от среднего по классу (призыв/устройство у соло-класса
+# или наоборот): вес = weapon_raw / median_all_raw.
+const COMFORT_WEIGHTS := {
+	"berserk": 0.98,
+	"soldier": 1.01,
+	"thief": 1.11,
+	"elementalist": 1.22,
+	"sniper": 0.78,
+	"priest": 1.00,
+	"biologist": 1.33,
+	"robot": 0.93,
+	"engineer": 1.17,
+	"dark_mage": 1.50,
+	"guitarist": 1.36,
+	"assassin": 0.79,
+	"ranger": 0.81,
+	"doctor": 0.79,
+	"chemist": 1.55,
+	"knight": 0.83,
+	"druid": 1.04,
+}
+
+# Per-weapon comfort переопределения: ключ "<class>/<weapon_id>". Используется,
+# когда конкретное оружие требует иной вовлечённости, чем класс в среднем
+# (одиночный луч/проджектайл у AoE-класса — выше; авто-призыв у соло-класса — ниже).
+const COMFORT_WEIGHT_OVERRIDES := {
+	"druid/summon_amulet": 0.96,
+	"druid/raven_totem": 0.96,
+	"engineer/engineer_sentry_wrench": 1.03,  # SCRUM-546: ключ = реальный weapon_id (был engineer/sentry_wrench — не матчился)
+	"engineer/engineer_repair_drone": 1.03,
+	"chemist/homunculus_vial": 1.43,
+	"guitarist/sound_amp": 1.25,
+}
+
+# Допуск полосы: comfort-нормированный DPS каждого оружия должен лежать в
+# [1 - tol, 1 + tol] от медианы нормированных значений среза.
+const COMFORT_BAND_TOLERANCE := 0.20
+const COMFORT_DEFAULT_WEIGHT := 1.00
+
+# SCRUM-544: comfort-полоса НЕ ПЛОСКАЯ и НЕ ОДНОМЕРНАЯ — позиция класса внутри
+# ±20% определяется осью вовлечённости, а ось РАЗНАЯ для числа целей. На 1 цели
+# (дуэль, ручной аим/позиционирование) single-target классы (sniper/assassin/
+# ranger) законно несут более высокий потолок; AoE/crowd классы (dark_mage/
+# chemist/biologist/guitarist) — наоборот, высокий потолок на рое (5/20 целей),
+# а на одиночной цели сидят ниже. Один скаляр на класс это выразить НЕ может
+# (тот же класс высок на 1t и нормален на 20t), поэтому comfort-вес для CSV-полосы
+# задан per-slice. Это и есть «позиция определяется требуемой вовлечённостью».
+#
+# Веса откалиброваны по данным: для каждого среза (ideal_1/ideal_5/ideal_20)
+# вес класса = медиана(raw_dps оружий класса) / медиана(raw_dps всех оружий среза)
+# на lvl20-оптимуме (build/character_balance_dps.csv). После нормировки
+# comfort_slice_normalized = raw / slice_weight сходится в ±20% медианы среза.
+# Веса влияют ТОЛЬКО на band-измерение CSV (tools/character_balance_csv.gd),
+# НЕ на геймплей и НЕ на аналитический гейт comfort_band_cross_class_gate.gd
+# (тот по-прежнему использует плоский COMFORT_WEIGHTS на base_stats).
+const COMFORT_BAND_SLICES := ["ideal_1", "ideal_5", "ideal_20"]
+const COMFORT_BAND_SLICE_WEIGHTS := {
+	"assassin": {"ideal_1": 1.647, "ideal_5": 0.900, "ideal_20": 0.858},
+	"berserk": {"ideal_1": 1.137, "ideal_5": 1.153, "ideal_20": 1.099},
+	"biologist": {"ideal_1": 1.031, "ideal_5": 1.334, "ideal_20": 1.312},
+	"chemist": {"ideal_1": 0.994, "ideal_5": 1.509, "ideal_20": 1.527},
+	"dark_mage": {"ideal_1": 0.927, "ideal_5": 1.457, "ideal_20": 1.389},
+	"doctor": {"ideal_1": 0.495, "ideal_5": 0.519, "ideal_20": 0.459},
+	"druid": {"ideal_1": 0.859, "ideal_5": 0.871, "ideal_20": 0.843},
+	"elementalist": {"ideal_1": 1.020, "ideal_5": 1.132, "ideal_20": 1.144},
+	"engineer": {"ideal_1": 0.960, "ideal_5": 1.114, "ideal_20": 1.048},
+	"guitarist": {"ideal_1": 1.041, "ideal_5": 1.374, "ideal_20": 1.404},
+	"knight": {"ideal_1": 0.957, "ideal_5": 0.925, "ideal_20": 0.882},
+	"priest": {"ideal_1": 1.001, "ideal_5": 1.030, "ideal_20": 1.052},
+	"ranger": {"ideal_1": 1.465, "ideal_5": 0.792, "ideal_20": 0.763},
+	"robot": {"ideal_1": 1.004, "ideal_5": 0.999, "ideal_20": 0.973},
+	"sniper": {"ideal_1": 1.170, "ideal_5": 0.818, "ideal_20": 0.795},
+	"soldier": {"ideal_1": 0.982, "ideal_5": 0.995, "ideal_20": 0.970},
+	"thief": {"ideal_1": 0.989, "ideal_5": 1.000, "ideal_20": 0.973},
+}
+
+# Per-weapon per-slice переопределения для оружий, чей «сырой» DPS заметно
+# отличается от класса в данном срезе (утилита/DoT/мили-хил/призыв у не-профильного
+# класса). Ключ "<class>/<weapon>" → {slice: weight}. Частичный набор срезов
+# допустим (отсутствующий срез падает на class-вес). Вес = weapon_raw / slice_median.
+const COMFORT_BAND_SLICE_OVERRIDES := {
+	"assassin/venom_wire": {"ideal_1": 0.442, "ideal_5": 0.242, "ideal_20": 0.230},
+	"berserk/sword": {"ideal_1": 0.732, "ideal_5": 0.743, "ideal_20": 0.708},
+	"biologist/biologist_spore_lens": {"ideal_1": 0.753, "ideal_5": 1.113},
+	"chemist/homunculus_vial": {"ideal_1": 0.546, "ideal_5": 0.857, "ideal_20": 0.801},
+	"dark_mage/cursed_skull": {"ideal_1": 0.736, "ideal_5": 1.197, "ideal_20": 1.164},
+	"doctor/bone_saw": {"ideal_1": 0.317, "ideal_5": 0.322, "ideal_20": 0.307},
+	"doctor/restore_potion": {"ideal_1": 1.491, "ideal_5": 1.493, "ideal_20": 1.320},
+	"druid/raven_totem": {"ideal_1": 1.025, "ideal_5": 1.131, "ideal_20": 1.056},
+	"engineer/engineer_sentry_wrench": {"ideal_1": 0.733, "ideal_5": 0.909, "ideal_20": 0.849},
+	"guitarist/sound_amp": {"ideal_20": 1.142},
 }
 
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
 	"soldier": {"strength": 0.95, "agility": 0.95},
 	"elementalist": {"agility": 0.92, "intelligence": 0.92},
-	"priest": {"agility": 0.88, "intelligence": 0.88},
-	"robot": {"strength": 0.78, "agility": 0.78},
-	"engineer": {"strength": 0.90, "agility": 0.90},
+	"priest": {"agility": 0.95, "intelligence": 0.95},
+	# SCRUM-504/SCRUM-506: two-sided balance pass. Priest/robot/knight get enough
+	# lvl20 stat growth to leave the solo bottom pack without breaching class-kit
+	# corridors; guitarist keeps its AoE identity but uses a fair solo_target;
+	# assassin loses the excessive lvl20 growth tail that drove solo spread.
+	"robot": {"strength": 0.88, "agility": 0.88},
+	"engineer": {"strength": 0.72, "agility": 0.72, "leadership": 0.80},
 	"dark_mage": {"agility": 0.84, "intelligence": 0.84},
-	"guitarist": {"energy": 1.90},
-	"assassin": {"strength": 2.05, "agility": 2.05},
+	"guitarist": {"energy": 1.68},
+	"assassin": {"strength": 1.668, "agility": 1.668},
 	"doctor": {"agility": 1.10, "intelligence": 1.80},
-	"chemist": {"agility": 1.60, "intelligence": 1.60},
-	"knight": {"strength": 0.66, "agility": 0.66},
-	"druid": {"energy": 1.85},
+	"chemist": {"agility": 1.70, "intelligence": 1.70},
+	"knight": {"strength": 0.801, "agility": 0.801},
+	"druid": {"energy": 1.70, "perception": 0.55, "leadership": 0.70},
+	"berserk": {"strength": 1.18, "agility": 1.10},
+	"thief": {"strength": 0.86, "agility": 0.86},
 }
 
 const BALANCE_BASE_SOLO_DPS := 48.0
@@ -52,15 +176,34 @@ const SURVIVABILITY_DEFENSE_CAP := 0.62
 const SURVIVABILITY_DEFENSE_DIMINISH := 0.55
 const SURVIVABILITY_DODGE_CAP := 0.55
 const SURVIVABILITY_DODGE_DIMINISH := 1.15
-const SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION := 0.35
-const SURVIVABILITY_ABSORB_FLAT_DIMINISH := 0.08
-const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := 0.45
-const VAMPIRIC_CHANCE_CAP := 0.22
-const VAMPIRIC_DAMAGE_HEAL_RATIO := 0.035
-const VAMPIRIC_BASE_HEAL_MULTIPLIER := 0.55
-const VAMPIRIC_HEAL_CAP_DEFAULT := 1.4
-const VAMPIRIC_HEAL_CAP_HARD := 2.6
-const WEAPON_DRAIN_HEAL_MULTIPLIER := 0.45
+# SCRUM-526: нерф защитной оси (absorb/regen/vampiric). Защитные механики были
+# супер-имбовыми — «закопаться в выживаемость» доминировало над уроном. Ослаблены
+# измеримо, чтобы выживаемость была полезной, но не доминирующей стратегией.
+# До→после: absorb min-fraction 0.35→0.42 (больше доля удара всегда проходит),
+# flat-diminish 0.08→0.11 (быстрее насыщение стака), regen-flat-mult 0.45→0.35.
+const SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION := 0.42
+const SURVIVABILITY_ABSORB_FLAT_DIMINISH := 0.11
+const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := 0.35
+# SCRUM-526: оба канала вампиризма ослаблены. Стат-вампиризм: chance-cap 0.22→0.20,
+# damage-heal-ratio 0.035→0.025, base-heal-mult 0.55→0.48, per-second капы 1.4→1.1 и
+# 2.6→2.0. Оружейный drain: множитель 0.45→0.35.
+const VAMPIRIC_CHANCE_CAP := 0.20
+const VAMPIRIC_DAMAGE_HEAL_RATIO := 0.025
+const VAMPIRIC_BASE_HEAL_MULTIPLIER := 0.48
+const VAMPIRIC_HEAL_CAP_DEFAULT := 1.1
+const VAMPIRIC_HEAL_CAP_HARD := 2.0
+const WEAPON_DRAIN_HEAL_MULTIPLIER := 0.35
+# SCRUM-517: per-second потолок DRAIN-heal (drain_link/lifesteal оружия). Раньше
+# _heal_owner_from_damage лил лечение прямо в health БЕЗ потолка/с, поэтому Доктор
+# с restore_potion/plague_syringe в плотной толпе хилился на сотни HP/с (DoT-стак
+# чумы × число целей) и был бессмертен. Теперь drain списывается из общего бюджета
+# по тому же принципу, что вампиризм (player._drain_heal_budget), но с собственным,
+# более высоким лимитом — drain детерминирован и составляет идентичность Доктора
+# как sustain-класса, поэтому больше вампирного (1.1/с), но конечен: при достаточном
+# входящем DPS чистый HP убывает. DEFAULT 7.0/с держит Доктора в верхе tank-коридора,
+# HARD 11.0/с — потолок для run-модификаторов (healing_multiplier и т.п.).
+const DRAIN_HEAL_PER_SECOND_CAP_DEFAULT := 7.0
+const DRAIN_HEAL_PER_SECOND_CAP_HARD := 11.0
 const CRIT_CHANCE_CAP := 0.55
 const CRIT_CHANCE_DIMINISH := 0.45
 const CRIT_FLAT_EFFECTIVENESS := 0.75
@@ -68,6 +211,27 @@ const CRIT_DAMAGE_BASE_MULTIPLIER := 1.30
 const CRIT_DAMAGE_AGILITY_SCALE := 0.055
 const CRIT_DAMAGE_FLAT_EFFECTIVENESS := 0.75
 const CRIT_DAMAGE_CAP := 2.75
+
+# SCRUM-503: soft-cap (diminishing returns) на ЗАБЕГОВЫЕ боевые множители.
+# Живой замер (build/character_balance_dps.csv) вскрывал runaway: «идеальный» билд
+# к lvl20 застаканивает run_modifiers.damage_multiplier до ~31x (!) — это и есть
+# мультипликативный runaway. У Берсерка/молота он домножается на melee-sweep по 20
+# целям → пик 184356 DPS на 20t (×78 от слабейшего класса) и 7636 на 1t. Частичный
+# фикс (упрощение upgrade_*_exponent молота, коммит 1e74202b) уронил до 60451/2520,
+# но это всё ещё 5.4x медианы — Берсерк остаётся аутлаером. Формульный гейт это НЕ
+# ловит: estimate_weapon_budget гоняет derived_parameters с ПУСТЫМИ run_modifiers →
+# множитель = 1.0. Поэтому cap применяется ТОЛЬКО к забеговой части множителя и
+# ТОЖДЕСТВЕН при значении 1.0: сжимаем лишь превышение над 1.0 по образцу
+# _diminishing_percent → capped = 1.0 + clampf(excess/(1+excess*KNEE), 0, CAP-1).
+# Инвариант: softcap(1.0) == 1.0 → база lvl1 и формульные коридоры не меняются.
+# Значения подобраны по живой матрице: при raw damage_mult≈31 эти knee/cap сжимают
+# его до ~16.8, что роняет berserk/hammer 20t 60451→~26k (≤2.5x медианы ~28k) и 1t
+# 2520→~1.1k, оставляя класс сильным AoE верхней половины (не аутлаером и не слабым).
+# Ранний/средний билд (damage_mult 3..6x) почти не задет — DR кусает только хвост.
+const RUN_DAMAGE_MULT_SOFTCAP := 12.0   # жёсткий потолок забегового damage_multiplier
+const RUN_DAMAGE_MULT_KNEE := 0.03      # кривизна диминишинга (асимптота избытка = 1/knee)
+const RUN_ATTACK_SPEED_MULT_SOFTCAP := 1.70  # потолок забегового attack_speed_multiplier
+const RUN_ATTACK_SPEED_MULT_KNEE := 0.50
 
 const WEAPON_ARCHETYPE_BY_MODE := {
 	"frustum": "melee",
@@ -181,17 +345,30 @@ const STAGE_SCALE_LINEAR := 0.075
 
 const ECONOMY_PRICE_MULTIPLIER := 1.10
 
-const XP_CURVE_MULTIPLIER := 1.42
+# SCRUM-527: XP-кривая перекалибрована — к боссу 1-го акта средний забег ~20 lvl
+# (было ~8-9). Множитель резко снижен (1.42→1.038): рост требуемого опыта плавный,
+# почти линейный (req ~5→10→20→30→44 к lvl20, макс. скачок ~3), без крутого
+# геометрического разгона. Подтверждено tools/route_economy_xp_model.gd.
+const XP_CURVE_MULTIPLIER := 1.038
 
-const XP_CURVE_FLAT := 3.0
+const XP_CURVE_FLAT := 0.8
 
 const DROP_CLASS_MULTIPLIERS := {
 	"ordinary": {"xp": 1.0, "money": 1.0, "money_chance": 0.75},
-	"complex": {"xp": 1.3, "money": 1.35, "money_chance": 0.85},
-	"heavy": {"xp": 1.75, "money": 1.85, "money_chance": 0.95},
+	# SCRUM-507: complex 1.35→1.6, heavy 1.85→2.2 — перенос веса экономики с boss-дропа на
+	# ранние/средние бои. Поднимает не-boss доход маршрута (~+12%), удерживая покупательную
+	# способность ≥'healthy' после среза boss-money и опуская долю boss-золота ≤50%.
+	"complex": {"xp": 1.3, "money": 1.6, "money_chance": 0.85},
+	"heavy": {"xp": 1.75, "money": 2.2, "money_chance": 0.95},
 	"mini_elite": {"xp": 3.6, "money": 3.8, "money_chance": 1.0},
 	"elite": {"xp": 8.0, "money": 8.5, "money_chance": 1.0},
-	"boss": {"xp": 24.0, "money": 92.0, "money_chance": 1.0},
+	# SCRUM-507: boss-money 92→43. Boss-дроп доминировал в экономике маршрута
+	# (≈64% всего золота: 442/684 balanced, 594/956 combat, 512/768 shop), обесценивая
+	# ранние/средние награды («дожить до босса»). Снижение (в паре с подъёмом complex/heavy)
+	# опускает долю boss-золота до ~47-49% дохода (запас под порогом 50%), возвращая вес
+	# ранним тратам. Boss остаётся самым жирным денежным дропом (43 ≫ elite 8.5 — инвариант
+	# boss.money>elite.money). XP-ветка (xp 24.0) не тронута — темп level-ups сохраняется.
+	"boss": {"xp": 24.0, "money": 43.0, "money_chance": 1.0},
 }
 
 const COST_BY_TIER := {1: 30, 2: 55, 3: 95}

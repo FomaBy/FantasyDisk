@@ -179,6 +179,65 @@ SCRUM-164 adds Engineer gameplay with canonical Design assets ready: `assets/spr
 
 ## Global UI Kit
 
+SCRUM-666 adds the Design-source combat HUD 2K package:
+`docs/design/mockups/scrum666_combat_hud_2k/spec.md`,
+`docs/design/references/scrum666_combat_hud_2k/combat_hud_2k_mockup_base.png`,
+and safe-zone previews `docs/design/previews/scrum666_combat_hud_2k_*`. The
+visual target is compact combat instrumentation: blackened iron, worn leather,
+small brass/ruby accents and calm dark interiors. It is essential-only by
+contract: HP, XP, money, ULT, timer, ascension/elevation and one bottom-right
+level-up plus button. Use the validated plan/layout files for frame-safe
+content zones; do not place runtime text/icons on generated ornament. The
+QA-red geometry revision keeps all accepted zones inside visible dark interiors
+and separates the level-up plus/count zones, replacing the earlier mechanically
+valid but visually unsafe rail positions.
+SCRUM-671 makes that clean contract live in runtime using existing generated
+HUD/theme assets mapped into the SCRUM-666 safe zones. The combat HUD is now
+essential-only: no artifact row, character stat strip, duplicate FAB or extra
+combat panel belongs in the in-run overlay.
+
+SCRUM-586 adds the Design-source package for the 2K stat tooltip frame used by
+`StatTooltipPanel` / `_make_custom_tooltip` in `scripts/pause_stats_menu.gd`;
+SCRUM-593 makes it live in runtime.
+The OpenAI source lives at
+`docs/design/references/scrum586_stat_tooltip/stat_tooltip_frame_source.png`,
+the spec at `docs/design/mockups/scrum586_stat_tooltip/spec.md`, and the
+runtime asset at
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png`
+(`430x288` RGBA, texture margins `32/32/32/32`, content margins
+`44/42/44/42`). Runtime registers it as `stat_tooltip` in
+`UIThemePaths.OVERHAUL_2K_FRAME_*`, and the tooltip label uses the documented
+`342 px` safe width.
+
+SCRUM-588 adds `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png`,
+the level-up toast frame. It is a generated transparent RGBA `480x300` asset
+with texture margins `58/48/58/48` and content margins `70/112/70/112`. It must
+remain textless: runtime `LevelUpToast` draws only a small sparkle/ring inside
+the empty safe zone, while `LevelUpEffect` remains the single source of the
+visible `Level Up` badge.
+
+SCRUM-574 adds the live Codex v2 2K frame family under
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_*.png`. Slots are
+`codex_main`, `codex_nav`, `codex_list`, `codex_detail`, `codex_entry_card`,
+`codex_tab_btn` and `codex_back_btn`, all registered in
+`scripts/ui/ui_theme_paths.gd` and generated through
+`tools/build_ui_2k_frame_kit.py --all`. Source/mockup evidence lives at
+`docs/design/references/scrum574_codex_2k/codex_2k_mockup.png`; the layout and
+content-margin contract lives at `docs/design/mockups/scrum574_codex_2k/spec.md`.
+The older `assets/sprites/ui/frames/codex/` package remains a historical Codex
+component kit, while runtime `CodexScreen` now uses the slot-exact 2K family for
+its shell, panels, entry cards, tabs and compact back button.
+
+SCRUM-584 adds the live rebind-conflict 2K frame pair under
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png` and
+`ui_frame_2k_rc_btn.png`. Slots are `rc_panel` and `rc_btn`, registered in
+`scripts/ui/ui_theme_paths.gd` and generated through
+`tools/build_ui_2k_frame_kit.py --all`. The accepted textless OpenAI style
+reference is
+`docs/design/references/scrum584_rebind_conflict_2k/rebind_conflict_2k_mockup_reference_v2.png`;
+the exact content-zone contract lives at
+`docs/design/mockups/scrum584_rebind_conflict_2k/spec.md`.
+
 SCRUM-273 superseded the SCRUM-147 button-only Parchment & Wax Seal kit with the
 historical **Red & Gold Dragon button kit** from
 `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`. Live
@@ -465,8 +524,11 @@ Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_but
 
 State language:
 
-- all visible action Button styleboxes use the Minimal Metal kit unless a control is
-  intentionally a card/hit-area rather than an action button;
+- all normal text/action Button styleboxes use the SCRUM-657
+  `text_buttons_unique` kit unless a control is intentionally a card, slot,
+  icon-only hit area, portrait, stepper, route node or other non-text exception;
+- SCRUM-450 Minimal Metal button textures remain available for compact/icon-like
+  exceptions and historical metadata checks;
 - hover/focus: neutral bright metal read, no yellow baked glow;
 - pressed: darker center and slightly lower-contrast metal read;
 - disabled: desaturated, dimmed version of the same button type.
@@ -477,6 +539,22 @@ tint semantics. Use metadata in
 `docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json`
 for content zones; labels/icons must stay inside each `content_rect_xywh` and
 never overlap side caps, rubies, bevels or back-arrow ornaments.
+
+SCRUM-657 adds a text-button audit/redraw package for the unique runtime
+text-button sizes: source and audit files live in
+`docs/design/references/ui_text_buttons_unique_size_redraw/`, runtime candidates
+live in `assets/sprites/ui/frames/text_buttons_unique/`, and preview sheets live
+at `docs/design/previews/scrum_text_buttons_unique_size_dark_contact.png` and
+`docs/design/previews/scrum_text_buttons_unique_size_light_contact.png`. These
+PNGs have no baked text. Each final size group has its own OpenAI source PNG,
+so the package is a per-size redraw rather than a single stretched master.
+SCRUM-669 makes these assets live for normal text/action buttons via the global
+runtime resolver and the pause dossier's local helper. Localized labels must fit
+inside the central content zone between the decorative end shutters/caps; if
+measured text exceeds the safe width, increase the button width or use an
+expanded variant instead of shrinking text onto ornament. Left/right caps are
+fixed-size ornaments and must not be scaled horizontally; only the center rail
+may stretch.
 
 Runtime button sizing (SCRUM-263/SCRUM-264):
 
@@ -499,8 +577,8 @@ Runtime frame sizing (SCRUM-274):
   stretching one generic frame everywhere;
 - HUD and timer panels use their dedicated horizontal frame assets;
 - Escape stats uses `pause_main`, `pause_stat_group`, `pause_stat_chip` and
-  `pause_stat_tooltip` frames; its buttons use the SCRUM-450 minimal-metal
-  `pause` button.
+  `pause_stat_tooltip` frames; its normal text buttons use the SCRUM-657
+  `pause_280x60` generated state kit.
 - Hero Select uses the SCRUM-281 `ui_frame_hero_select_*` kit with custom
   `HERO_SELECT_FRAME_MARGINS` and `HERO_SELECT_FRAME_CONTENT` in
   `scripts/ui_screens.gd`; the bottom thumbnail strip uses compressed thumbnail
@@ -608,6 +686,16 @@ Review previews:
 - `docs/design/previews/new_bosses_mini_elites_contact.png`;
 - `docs/design/previews/new_bosses_mini_elites_scale_preview.png`.
 
+SCRUM-539 adds the optional final-ascension secret boss source pack. The boss is
+a large dragon-disk rift titan, intentionally distinct from `rift_warden`,
+`disk_devourer`, `bone_archon`, `brood_mother`, and `ashen_colossus`. Source and
+runtime candidates live under
+`docs/design/references/bosses/secret_ascension_boss/`,
+`assets/sprites/bosses/secret_ascension_boss.png`, and
+`assets/sprites/effects/secret_ascension_boss_*_telegraph.png`; preview sheets:
+`docs/design/previews/scrum539_secret_ascension_boss_contact.png` and
+`docs/design/previews/scrum539_secret_ascension_boss_scale_preview.png`.
+
 ## Combat VFX Assets
 
 Attack VFX sprites live in `assets/sprites/effects/` and are transparent PNGs intended for tinted `Sprite2D`/tween-based effects, not raw Godot primitive circles. On 2026-06-12 the first weapon VFX polish block replaced the visible persistent pool placeholders with raster fantasy effects:
@@ -627,8 +715,15 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
 ## Screen And Map Backgrounds
 
 - `assets/backgrounds/route_map_backdrop.png` - 2560x1440 eerie neutral route map background. It should stay darker and calmer than combat arenas, with low-contrast fog in the central route column and heavier silhouettes pushed to the edges.
+- SCRUM-563 adds the route-map 2K UI Director mockup/source package:
+  `docs/design/references/scrum563_route_map_2k/route_map_2k_mockup.png` with
+  safe-zone previews in `docs/design/previews/scrum563_route_map_2k_*` and the
+  exact geometry/spec in `docs/design/mockups/scrum563_route_map_2k/`. This is
+  the visual source for future route-map 2K frame/runtime wiring; it contains no
+  baked runtime text and preserves empty interiors for header, HUD, tooltip,
+  route nodes/lines and FAB content.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
-- `assets/backgrounds/main_menu_epic_battle_v2.png` is the active start-screen art. SCRUM-316 replaced the previous SCRUM-158 battle scene with a smoother D&D/dark fantasy composition: three new bosses and two heroes fight center-right/lower-right, while the left third stays calmer for the vertical menu buttons and the top-center stays readable for the title.
+- `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen art. SCRUM-560 refreshed the 2560x1440 D&D/dark fantasy composition: the left column stays calm for the six runtime menu buttons, the top-center stays readable for the title, and the battle detail sits center-right/lower-right. The runtime background contains no baked UI text/buttons/frames.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
   `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through
   `fantasydisk-asset-generator` and normalized for gameplay readability:

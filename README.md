@@ -3,13 +3,25 @@
 2D top-down loot-action рогалик на **Godot 4 (GDScript)**: играбельные классы,
 процедурные забеги, события, прокачка, кодекс.
 
+## 🚀 Онбординг (1 строка)
+Любой агент/человек после клонирования выполняет одну команду — она подключает все
+скиллы проекта и печатает стартовый протокол:
+```bash
+bash scripts/onboard.sh
+```
+Дальше: AI-агенты автоматически видят мастер-скилл **`fantasydisk-onboarding`**
+(в `.claude/skills/`), люди читают [`docs/process/ai_agent_memorandum.md`](docs/process/ai_agent_memorandum.md).
+**Правило №1:** все задачи создаются в и берутся из **Jira** (проект SCRUM) —
+`docs/tasks/*.md` и `docs/process/task_board.md` лишь зеркала/кэш. Ветки: `main`=релиз,
+`dev`=работа (default), теги `vX.Y.Z`=версии.
+
 ## Требования
-- **Godot 4.6.3** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
+- **Godot 4.7** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
 - **Git** — для клонирования и работы с GitHub.
 
 ## Запуск
 1. Клонировать репозиторий (см. GitHub-инструкцию).
-2. Открыть `project.godot` в Godot 4.6.3.
+2. Открыть `project.godot` в Godot 4.7.
 3. Нажать ▶ (F5) — откроется главное меню.
 
 ## Ветки
@@ -25,9 +37,12 @@ macOS:
 ```
 Windows (путь под свою установку Godot):
 ```powershell
-& "C:\Godot\Godot_v4.6.3-stable_win64.exe" --headless --path . --script res://tests/runtime_smoke_test.gd
+& "C:\Godot\Godot_v4.7-stable_win64.exe" --headless --path . --script res://tests/runtime_smoke_test.gd
 ```
 Другие наборы: `animation_smoke_test.gd`, `attack_vfx_smoke_test.gd`, `meta_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`.
+`ui_no_overlap_matrix_test.gd` является UI render gate: открывает экраны headless
+на 1080p/2K/4K, ловит overflow текста, overlap контролов и некорректный stretch
+точноразмерных UI frame TextureRect.
 
 ## Локальные секреты (НЕ в git — создать на каждой машине)
 Эти файлы в `.gitignore`; нужны только для фидбека/релиза, на саму игру не влияют:

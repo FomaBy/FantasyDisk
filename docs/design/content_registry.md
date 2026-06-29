@@ -63,7 +63,7 @@
 
 | ID | Игровое имя | Роль | Источник | Ассет | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd` | `assets/sprites/characters/berserk_unarmed.png`, `assets/sprites/characters/berserk_v3_sprite.png`, `assets/sprites/characters/berserk_sheet.png`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано; SCRUM-442 v3 single-sprite candidate ready, not live runtime |
+| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/berserk_spriteframes.tres`, `assets/sprites/characters/full_frame/berserk_pixellab/`, `assets/sprites/characters/pixellab/berserk/`, legacy `assets/sprites/characters/full_frame/berserk/`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано; live runtime uses PixelLab 8-direction pixel-art move/walk rows (6f each) and directional idle fallbacks; legacy art remains fallback/history |
 | `soldier` | Солдат | Тактический физический класс: залпы, гранаты и удержание линии | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/soldier.png`, `assets/sprites/characters/cutout/soldier_*.png` | Реализовано |
 | `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/thief_sheet.png`, `assets/sprites/characters/thief_spriteframes.tres`, `assets/sprites/characters/full_frame/thief/`, `assets/sprites/characters/cutout/thief_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/thief/` | Реализовано; SCRUM-435 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/elementalist_sheet.png`, `assets/sprites/characters/elementalist_spriteframes.tres`, `assets/sprites/characters/full_frame/elementalist/`, `assets/sprites/characters/cutout/elementalist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/elementalist/` | Реализовано; SCRUM-427 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
@@ -132,6 +132,22 @@ with v2 `idle` / `walk` / `move` loops in
 `assets/sprites/characters/v2/berserk/berserk_v2_anim_sheet.png`; previous live
 frames are backed up under `docs/design/backups/scrum420_berserk_v2_pre_anim/`.
 Attack animation remains absent by SCRUM-420 scope.
+
+SCRUM-531 adds a new dark-fantasy / D&D dragon Berserk v2 Design-source pack
+under `docs/design/references/berserk_v2/` (note: a different folder from the
+SCRUM-420 `characters_v2/berserk/`): raw `gpt-image-2` source, alpha-clean RGBA
+source, normalized `512x512` idle cell (pivot `256,470`, visible height
+`408 px`), `2848x1168` idle/walk×5 placeholder source-sheet handoff (48px
+gutters, attack row excluded), and an alpha/size/pivot QA report under
+`build/qa/scrum531_berserk_v2/`. Asset-side candidate exports live under
+`assets/sprites/characters/berserk_v2/`; Animator handoff is
+`docs/design/references/berserk_v2/berserk_v2_design_handoff.md`. The new look is
+a brutal painterly dragonslayer (dragon-skull pauldron, horns, scale armor, fur
+cloak, oxblood/charcoal palette), intentionally distinct from the live
+cartoon-anchor; hands are empty with no weapon baked. This is Design-source only
+and is NOT the live runtime — the live Berserk still renders the SCRUM-461
+cartoon-anchor SpriteFrames. Animation is the follow-up Animator ticket
+SCRUM-532.
 
 SCRUM-461 replaces the live Berserk full-frame runtime resource with the
 accepted SCRUM-456 cartoon/anime anchor: `assets/sprites/characters/berserk_spriteframes.tres`
@@ -317,7 +333,7 @@ runtime `assets/sprites/characters/berserk_spriteframes.tres` с отдельн�
 | `cast` | Animation state | Маги, summoner, elites, bosses | Ритуальная поза рук / подготовка способности | Реализовано |
 | `hit` | Animation state | Игрок, враги, элитки, боссы | Короткий hit flash и pose interruption | Реализовано |
 | `death` | Animation state | Игрок, враги, элитки, боссы | Clean fallback перед удалением сущности | Реализовано |
-| `directional_pose` | Motion layer | Игрок, враги, элитки, боссы | Head/full-art offset для движения вверх, вниз и вбок | Реализовано |
+| `directional_pose` | Motion layer | Игрок, враги, элитки, боссы | Head/full-art offset для движения вверх, вниз и вбок; Berserk additionally selects explicit 8-direction full-frame rows by movement vector | Реализовано |
 | `soft_turn` | Transition layer | Игрок, враги, элитки, боссы | Короткий turn squash при смене horizontal facing | Реализовано |
 | `foot_lift` | Motion layer | Наземные игроки и враги | Alternating foot lift / weight shift против скольжения | Реализовано |
 | `wing_flap` | Motion layer | `winged_spark` и будущие flying-существа | Зеркальный flap вместо walking legs | Реализовано |
@@ -425,7 +441,7 @@ SCRUM-258 unique weapon VFX pass 2026-06-14: добавлены 51 dedicated `25
 
 SCRUM-337 attack VFX source regeneration 2026-06-14: весь активный runtime-пак эффектов атак пересобран через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) и deterministic sheet-cut pipeline `tools/build_scrum337_attack_vfx_from_sources.py`. Заменены на месте 83 `assets/sprites/effects/*.png` и 2 `assets/sprites/projectiles/*.png`; имена, размеры, alpha/RGBA и runtime-пути сохранены. Source sheets/manifest: `docs/design/references/attack_vfx_realistic_dark_fantasy/`; QA previews: `docs/design/previews/scrum337_attack_vfx_core_contact.png`, `docs/design/previews/scrum337_attack_vfx_weapon_contact.png`. Gameplay timing, damage, targeting, formulas и Back-end runtime logic не менялись.
 
-Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (53 шт., 256x256). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references: `docs/design/references/icons/artifacts/artifact_<id>_source.png`; manifest: `docs/design/references/icons/artifacts/artifact_icons_scrum340_manifest.json`; QA previews: `docs/design/previews/artifact_icons_scrum340_contact.png` и `docs/design/previews/artifact_icons_scrum340_40px_readability.png`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
+Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (70 шт., 256x256; SCRUM-606/609 добавили 10 dedicated icons для новых artifact IDs). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references для SCRUM-606/609 лежат в `docs/design/references/icons/artifacts/<id>/`; QA evidence: `docs/design/previews/artifact_icons_606_609_contact.png` и `docs/design/reports/artifact_icons_606_609_qa.md`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
 
@@ -622,6 +638,11 @@ Back-end source-specific integration complete in SCRUM-157: runtime selectors pr
 Зарегистрированы задачей «Кодекс» 2026-06-11. Это ссылочные имена: задачи и обсуждения
 ссылаются на них. Источник данных кодекса: `scripts/codex_data.gd::MONSTERS`.
 
+SCRUM-621 unlock tracking stores canonical Codex entry IDs, not ability IDs:
+standard, elite and mini-elite monsters go to `discovered_monsters`, boss IDs go
+to `discovered_bosses`, and artifact IDs from `ProgressionData.ARTIFACTS` go to
+`discovered_artifacts` in `MetaProgression`.
+
 | ID умения | Игровое имя | Носитель | Что делает |
 | --- | --- | --- | --- |
 | `ragged_lunge` | Рваный Выпад | Рубака Разлома | Контактный удар с замахом (windup) |
@@ -666,6 +687,7 @@ Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 ви
 | `bone_archon` | Костяной Архонт | `scenes/BossBoneArchon.tscn` | Финальный босс-некромант | `assets/sprites/bosses/boss_bone_archon.png`; full-frame `assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_*.png` + `bone_archon_death_row.png` | Волны скелетов (summon), веер черепов (volley), костяная стена (волна зон с проходом). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_skull_volley`, `skill_bone_prison` + `attack_*` aliases | Реализовано |
 | `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png`; full-frame `assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_*.png` + `brood_mother_death_row.png` | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_brood_spawn`, `skill_web_zone` + `attack_*` aliases | Реализовано |
 | `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png`; full-frame `assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_*.png` + `ashen_colossus_death_row.png` | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_molten_slam`, `skill_armor_pulse` + `attack_*` aliases | Реализовано |
+| `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | Design source/runtime candidate `assets/sprites/bosses/secret_ascension_boss.png`; source pack `docs/design/references/bosses/secret_ascension_boss/`; telegraphs `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | SCRUM-539 Design source pack done; animation/runtime integration handoff pending |
 
 SCRUM-352/SCRUM-394 Design source для full-frame rows хранится как
 `assets/sprites/{enemies,elites,bosses}/full_frame/<entity_id>_full_frame_sheet.png`
@@ -695,6 +717,7 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `elite_battle` | Бой с элиткой | Сложный бой с элитным врагом | `assets/sprites/map_icons/map_elite_skull_bones.png` | Реализовано |
 | `shop` | Магазин | Покупка нескольких предметов | `assets/sprites/map_icons/map_shop_tent.png` | Реализовано |
 | `event` | Событие | Выбор с наградой/риском | `assets/sprites/map_icons/map_event_question.png` | Реализовано |
+| `chest` | Сундук | Mid-route special node: выбор 1 из 3 артефактов, затем возврат на карту | `assets/sprites/map_icons/map_chest_artifact.png` | Реализовано (SCRUM-537; icon SCRUM-536) |
 | `rest` | Костер | Лечение или защитный бонус | `assets/sprites/map_icons/map_rest_campfire.png` | Реализовано |
 | `boss` | Босс | Финальный бой акта | `map_boss_rift_warden.png` / `map_boss_disk_devourer.png` | Реализовано |
 
@@ -716,6 +739,22 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `heroes_graveyard` | Кладбище героев | hidden risk, artifact/combat, rest | Грабеж могилы или почтение павшим | Реализовано |
 | `fallen_star` | Падшая звезда | Energy, HP cost, check Intelligence | Сильный ресурсный апгрейд с ожогом | Реализовано |
 | `training_dummies` | Тренировочные манекены | check Agility/Strength, stat+mods | Испытания скорости и силы | Реализовано |
+| `warden_gate_trial` | Врата Хранителя | class-reactive checks Endurance/Intelligence/Leadership | Архетипная развилка: танк/маг/призыватель открывают свою створку | Реализовано |
+| `abandoned_forge` | Заброшенная кузница | class-reactive checks Endurance/Intelligence, money | Профильная заготовка под танка/мага или сбор лома | Реализовано |
+| `merchant_caravan` | Торговый караван | цена, artifact, rest, check Perception | Лавка артефакта/тоника или торг за сдачу | Реализовано |
+| `whispering_grove` | Шепчущая роща | rest, check Knowledge, hidden risk combat | Источник, шёпот-чек или потревоженные стражи | Реализовано |
+| `collapsing_mineshaft` | Обвалившаяся шахта | HP cost, artifact/money/combat random, check Endurance | Разбор завала вслепую или укрепление балок | Реализовано |
+| `sudden_fork` | Опасная развилка | safe money/heal, risk combat, check Perception | Hazard-узел: безопасный обход или рискованный срез | Реализовано |
+| `crystal_geode_vault` | Кристальная жеода | safe money/heal, risk combat+artifact, check Strength | Сбор с краю или прорыв к ядру за артефактом | Реализовано |
+| `starlit_observatory` | Звёздная обсерватория | stat/money, check Knowledge+artifact, цена+xp | Запись знаний, чек линзы или настройка зеркал | Реализовано |
+| `sunken_caravan` | Затонувший караван | safe money, risk combat+artifact, check Perception | Снять с поверхности или нырнуть за сундуком | Реализовано |
+| `war_drums_camp` | Покинутый лагерь воинов | rest/money, risk elite combat, цена attack-баффы | Паёк, призыв элитки барабанами или заточка | Реализовано |
+| `twin_offering_shrine` | Святилище двойного подношения | money/xp, цена artifact, HP-жертва random | Монетка, золотое или кровавое подношение | Реализовано |
+| `oracle_crossroads` | Перекрёсток оракула | class-reactive checks Endurance/Intelligence/Leadership | Архетипные тропы тела/разума/воли с профильным бонусом | Реализовано |
+| `runed_menhir` | Рунный менгир | class-reactive checks Strength/Knowledge, цена heal | Силовой раскол берсерка vs чтение рун учёного | Реализовано |
+| `gilded_gambler` | Позолоченный шулер | цена hidden risk artifact/money/combat, check Perception | Ставка вслепую или раскус шулера | Реализовано |
+| `tidewater_grotto` | Приливный грот | rest+heal mod, risk combat+artifact, check Agility | Целебная заводь, рейд в грот или ловля отлива | Реализовано |
+| `wandering_emberwisp` | Блуждающий огонёк | HP cost money/artifact/combat random, check Intelligence | Погоня за огоньком или приручение искры | Реализовано |
 
 ## UI Иконки Характеристик
 
@@ -864,6 +903,7 @@ preview: `docs/design/previews/scrum451_minimal_metal_rollout_contact.png`.
 | `ui_btn_minimal_metal_main_menu` | `assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_main_menu*.png` | SCRUM-450 Design-ready main-menu button family, `380x104` RGBA, 5 states, content rect `[62,32,256,40]`; not live until Back-end integration |
 | `ui_btn_minimal_metal_back_s_m_l` | `assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_back_*.png` | SCRUM-450 Design-ready back/action variants S/M/L, 5 states each; see metadata for exact content rects; not live until Back-end integration |
 | `ui_btn_minimal_metal_compact` | `assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_fab*.png`, `ui_btn_minimal_metal_utility*.png`, `ui_btn_minimal_metal_pause*.png`, `ui_btn_minimal_metal_rebind*.png` | SCRUM-450 Design-ready compact/slim button families, 5 states each; fixed or 9-slice per metadata; not live until Back-end integration |
+| `ui_btn_text_unique_scrum657` | `assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_<group>_<state>.png` | SCRUM-657 Design-ready text-button audit/redraw package, 15 size groups including 2 expanded long-label variants, 5 states each, transparent PNG, no baked text; source/audit/fit reports live in `docs/design/references/ui_text_buttons_unique_size_redraw/`, with one OpenAI source PNG per size in `per_size_sources/`. Runtime labels must fit inside `content_rect_xywh` between decorative end shutters/caps; increase width when localized text does not fit. Left/right caps are fixed-size ornaments and must not be scaled horizontally; only the center rail may stretch. |
 | `ui_frame_settings_tab_switcher_3slot` | `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png` | SCRUM-391 Design-ready Settings tab switcher candidate, `1280x256` RGBA, exactly 3 slots; safe rects `[160,88,270,82]`, `[506,88,270,82]`, `[852,88,270,82]`; runtime activation handed off to `backend_settings_menu_unified_restyle_integration_task.md` |
 | `ui_frame_settings_v2_main_modal` | `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` | SCRUM-439 Design-ready Settings v2 modal candidate, `1536x1024` RGBA; texture margins `96/118/96/96`, content margins `144/192/144/128`; not live until Back-end integration |
 | `ui_frame_settings_v2_tab_switcher_3slot` | `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png` | SCRUM-439 Design-ready Settings v2 switcher candidate, `1280x256` RGBA, exactly 3 slots; safe rects `[150,78,275,92]`, `[502,78,275,92]`, `[854,78,275,92]`; not live until Back-end integration |
@@ -877,8 +917,10 @@ preview: `docs/design/previews/scrum451_minimal_metal_rollout_contact.png`.
 | `ui_hud_bar_fill_*` | `assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png`, `_xp.png`, `_ult.png`, `_gold.png` | SCRUM-390 painterly resource fill textures, `512x32` RGBA, optional Back-end use for HP/XP/ULT/gold bars |
 | `ui_frame_pause_end_modal` | `assets/sprites/ui/frames/pause_end/ui_frame_pause_end_modal.png` | SCRUM-330 Design-ready pause/victory/death modal frame, `1280x1024` RGBA transparent. Source safe rect `[170,180,940,670]`, content margins `[170,180,170,174]`; use proportional whole-image frame or verified 9-slice only; runtime content must not overlap dragon heads, side columns, gems, bottom crest or metal border. Metadata: `docs/design/references/ui_overhaul_pause_end/scrum330_pause_end_metadata.json`; Back-end integration handoff: `backend_pause_end_ui_overhaul_integration_task.md` |
 | `ui_result_crest_victory_defeat` | `assets/sprites/ui/result_crests/ui_crest_victory.png`, `assets/sprites/ui/result_crests/ui_crest_defeat.png` | SCRUM-330 result-screen decorative crests accepted for victory/death headers; decorative only in this pass, not content containers |
-| `ui_frame_codex_*` | `assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png`, `_section_panel.png`, `_entry_card.png`, `_entry_card_hover.png`, `_portrait_slot.png`, `_tooltip.png`, `_tab.png`, `_tab_hover.png`, `_tab_pressed.png`, `_tab_disabled.png` | SCRUM-345 Design-ready Codex texture kit generated through `fantasydisk-asset-generator`; metadata and safe-zones in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`; SCRUM-438 reuses these paths as component frames for the live Codex v2 runtime rebuild |
-| `ui_codex_v2_mockup_spec` | `docs/design/mockups/scrum438_codex_v2/spec.md`, `codex_v2_mockup_1920x1080.png`, `codex_v2_layout_metadata.json` | SCRUM-438 Design/runtime contract for the full Codex window rebuild; not a runtime texture atlas; live implementation uses Control layout/frames and preserves recorded safe zones |
+| `ui_frame_codex_*` | `assets/sprites/ui/frames/codex/ui_frame_codex_main_panel.png`, `_section_panel.png`, `_entry_card.png`, `_entry_card_hover.png`, `_portrait_slot.png`, `_tooltip.png`, `_tab.png`, `_tab_hover.png`, `_tab_pressed.png`, `_tab_disabled.png` | SCRUM-345 Design-ready historical Codex texture kit generated through `fantasydisk-asset-generator`; metadata and safe-zones in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`; superseded for live Codex shell/list/detail/cards/tabs by SCRUM-574 2K frames, but still retained as reference/component history |
+| `ui_frame_2k_codex_*` | `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_main.png`, `_nav.png`, `_list.png`, `_detail.png`, `_entry_card.png`, `_tab_btn.png`, `_back_btn.png` | SCRUM-574 live Codex v2 2K frame family generated by `tools/build_ui_2k_frame_kit.py`; source/mockup at `docs/design/references/scrum574_codex_2k/codex_2k_mockup.png`, contract at `docs/design/mockups/scrum574_codex_2k/spec.md`; runtime uses these exact slots for `CodexMainPanel`, `CodexNavPanel`, `CodexContent`, `CodexDetailPanel`, `CodexEntryCard`, `CodexTab_*` and `CodexBackButton` |
+| `ui_frame_2k_rc_*` | `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png`, `ui_frame_2k_rc_btn.png` | SCRUM-584 live rebind-conflict dialog frame pair generated by `tools/build_ui_2k_frame_kit.py`; accepted textless OpenAI mockup at `docs/design/references/scrum584_rebind_conflict_2k/rebind_conflict_2k_mockup_reference_v2.png`, safe-zone preview at `docs/design/previews/scrum584_rebind_conflict_2k_safe_zones.png`, contract at `docs/design/mockups/scrum584_rebind_conflict_2k/spec.md`; runtime uses these slots for `RebindConflictPanel`, `RebindConflictRetryButton`, and `RebindConflictBackButton` |
+| `ui_codex_v2_mockup_spec` | `docs/design/mockups/scrum438_codex_v2/spec.md`, `codex_v2_mockup_1920x1080.png`, `codex_v2_layout_metadata.json`; SCRUM-574 addendum `docs/design/mockups/scrum574_codex_2k/spec.md` | SCRUM-438 Design/runtime contract for the full Codex window rebuild; SCRUM-574 keeps the Control layout and replaces the live shell/list/detail/cards/tabs/back material with slot-exact 2K frames |
 | `ui_frame_ornate_global_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_global_panel.png` | Live global/menu/event/codex panel frame |
 | `ui_frame_ornate_level_panel` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_level_panel.png` | Live level-up/reward main panel |
 | `ui_frame_ornate_card_frame` | `assets/sprites/ui/frames/ornate/ui_frame_ornate_card_frame.png` | Live list/card frame |
@@ -945,7 +987,7 @@ Contextual UI direction 2026-06-12 is superseded by SCRUM-147. SCRUM-418 confirm
 | --- | --- | --- | --- |
 | `arena_2k_combat` | Боевая Арена 2K | Generated by `scripts/main.gd` | Прямоугольная арена 2560x1440 с камерой zoom 1.12 |
 | `main_menu_epic_battle` | Эпичный бой стартового экрана | `build/qa/scrum418/removed_assets_backup/assets/backgrounds/main_menu_epic_battle.png` | Legacy фон главного меню, удален из runtime `assets/` SCRUM-418 и сохранен как QA backup вне shipping scope |
-| `main_menu_epic_battle_v2` | Новый эпичный бой стартового экрана | `assets/backgrounds/main_menu_epic_battle_v2.png` | Active SCRUM-316 фон главного меню: 3 новых босса + 2 героя, smooth D&D dark fantasy composition, left/top UI-safe zones |
+| `main_menu_epic_battle_v3` | Эпичный бой стартового экрана | `assets/backgrounds/main_menu_epic_battle_v3.png` | Active SCRUM-560 фон главного меню: 2560x1440 D&D dark fantasy composition without baked UI, left button-safe column, readable title-safe top area |
 | `ui_backdrop_system_cathedral` | System/Codex/Settings backdrop | `assets/backgrounds/ui/ui_backdrop_system_cathedral.png` | Active for `system`, `settings`, `codex`, `hero_select`, `weapon_select`, `pause_stats`, `meta_tree`, `campfire` |
 | `ui_backdrop_merchant_archive` | Shop backdrop | `assets/backgrounds/ui/ui_backdrop_merchant_archive.png` | Active for `shop` |
 | `ui_backdrop_arcane_lab` | Level-up/Magic/Meta backdrop | `assets/backgrounds/ui/ui_backdrop_arcane_lab.png` | Active for `event`, `upgrade`, `level_up`, `meta_progression` |
@@ -1108,12 +1150,22 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | `burning_shard` | Горящий осколок | +20% AoE radius, -20% healing |
 | `golden_route_mark` | Золотая метка пути | +15% XP gain и money gain |
 | `glass_edge` | Стеклянная кромка | +20% crit damage, -8 max HP |
+| `sacrifice_seal` | Печать жертвы | +30% crit chance, -22% max HP |
+| `hungry_amulet` | Голодный амулет | +85% money gain, -35% healing |
+| `berserk_totem` | Тотем берсерка | +60% damage, -20% move speed |
+| `focus_lens` | Линза фокуса | +70% range, -25% AoE radius |
+| `stone_hide` | Каменная шкура | +40% defense, -25% attack speed |
+| `field_kit` | Полевой набор | Active on room clear: heal 5% max HP |
+| `vital_siphon` | Живой сифон | Active on kill: heal 1% max HP |
+| `powder_charge` | Пороховой заряд | Active on kill: 10% corpse explosion chance |
+| `bulwark_echo` | Эхо бастиона | Active on hit: 16% pulse chance |
+| `duelist_spur` | Шпора дуэлянта | Active on crit: +22% move speed burst |
 
 ## Тиры Артефактов
 
 Поле `tier` (1-3) есть у всех артефактов в `ProgressionData.ARTIFACTS` — третья арт-итерация рисует иконки «круче = сильнее» по этому полю. Поле `class_affinity` задает классовую привязку (пустой список = универсальный).
 
-- **Tier 2 (редкие, 16 шт.)**: `heavy_totem`, `blood_sigil`, `void_ink`, `echo_pick`, `cracked_shield`, `heavy_grip`, `warriors_rage`, `ash_page`, `ink_candle`, `bass_cable`, `cursed_crown`, `fragile_heart`, `greedy_purse`, `burning_shard`, `golden_route_mark`, `glass_edge`.
+- **Tier 2 (редкие, 26 шт.)**: `heavy_totem`, `blood_sigil`, `void_ink`, `echo_pick`, `cracked_shield`, `heavy_grip`, `warriors_rage`, `ash_page`, `ink_candle`, `bass_cable`, `cursed_crown`, `fragile_heart`, `greedy_purse`, `burning_shard`, `golden_route_mark`, `glass_edge`, `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`, `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`.
 - **Tier 3 (легендарные, билдообразующие)**:
 
 | ID | Игровое имя | Механика |
@@ -1128,6 +1180,30 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 - `leech_fang` (Клык Пиявки) — Tier 2: +25% шанса вампиризма, +2 к силе вампиризма (источник vampiric-атрибутов).
 - Остальные артефакты — Tier 1 (эффекты усилены x2.5 от прежних).
 - Иконки всех tier-3 артефактов (`echo_core`, `split_core`, `blood_pact`, `leech_heart`, `thorn_pact`, `phantom_step`) пересозданы как уникальные SCRUM-340 magic-item PNG; временные копии больше не используются.
+
+### Триггерные (активные) артефакты — под-класс `active` (SCRUM-500)
+
+Новый под-класс предметов: запись несёт `active: true` + поле `trigger` (семантика игрового
+события) + эффект-флаг в `mods`. Это контент-слой поверх `run_modifiers` — «специи», а не новый
+DPS-множитель (survivability/DPS-гейты не сдвигаются). Пометка «⚡ Активный» вшита в `description`
+(data-driven, карточка `ui_screens.gd` не правилась). Автоподхват в `reward_pool`/`shop_items`/
+`elite_artifact_choices` фактом добавления в `ARTIFACTS`. Иконки — placeholder-копии существующих
+(см. follow-up на бэспоук-арт через `fantasydisk-item-icon-generator`).
+
+| ID | Игровое имя | Триггер | Эффект | Тир |
+| --- | --- | --- | --- | --- |
+| `guardian_bulwark` | Рубеж Стража | `on_low_hp` | Впервые ниже 30% HP: нокбэк-волна + 1.5с неуязвимости (кд 18с) | 2 |
+| `chain_spark` | Цепная Искра | `on_kill` | 14% шанс взрыва по области у трупа (70% урона) | 2 |
+| `crit_impulse` | Импульс Крита | `on_crit` | Крит → +35% скорости движения на 1.8с | 2 |
+| `breather_totem` | Передышка | `on_room_clear` | Победа в бою → лечит 8% max HP | 2 |
+| `counterwave_sigil` | Контр-волна | `on_take_hit` | 22% шанс отталкивающей волны (90% полученного урона, кд 3с) | 2 |
+| `soul_harvest` | Сбор Душ | `on_kill` | Каждое 6-е убийство лечит 3% max HP (стак сбрасывается между боями) | 3 |
+| `second_wind` | Второе Дыхание | `on_low_hp` | Пока HP ниже 30% — +5 к регенерации | 2 |
+
+Runtime-анкеры: `on_take_hit`/`on_low_hp` → `player.take_damage` (+`_trigger_take_hit_pulse`/
+`_trigger_lowhp_guard`); `on_crit` → `player.on_weapon_hit(enemy, dmg, was_crit)` →
+`_trigger_crit_speed_burst`; `on_kill` → `combat_director._on_enemy_died` → `player.on_enemy_killed`;
+`on_room_clear` → `combat_director._end_combat(victory)` ветка победы (до снапшота).
 
 ## Возвышения (Усложнения)
 
@@ -1176,13 +1252,31 @@ Runtime asset IDs/paths must be assigned by the Back-end handoff after slicing
 or importing final exact-size PNGs. Until then, existing live UI registries stay
 authoritative for runtime.
 
+## SCRUM-666 Combat HUD 2K Source Package
+
+This is a Design-source package for a future clean combat HUD integration, not
+live runtime content yet.
+
+| Group | ID / naming | Canonical folder / file | Status |
+| --- | --- | --- | --- |
+| Combat HUD 2K spec | `scrum666_combat_hud_2k_spec` | `docs/design/mockups/scrum666_combat_hud_2k/spec.md` | Design-source review |
+| Combat HUD 2K plan | `scrum666_combat_hud_2k_ui_plan` | `docs/design/mockups/scrum666_combat_hud_2k/ui_plan.json` | Authoritative QA-red revised geometry: content zones inside generated dark interiors |
+| Combat HUD 2K layout | `scrum666_combat_hud_2k_layout` | `docs/design/mockups/scrum666_combat_hud_2k/layout.json` | Authoritative content zones; level plus/count zones separated |
+| Combat HUD 2K visual audit | `scrum666_combat_hud_2k_visual_frame_zone_audit` | `docs/design/mockups/scrum666_combat_hud_2k/visual_frame_zone_audit.md` | Human QA-red note for clean interior placement |
+| Combat HUD 2K OpenAI mockup | `scrum666_combat_hud_2k_mockup_base` | `docs/design/references/scrum666_combat_hud_2k/combat_hud_2k_mockup_base.png` | Visual source only |
+| Combat HUD 2K safe-zone previews | `scrum666_combat_hud_2k_previews` | `docs/design/previews/scrum666_combat_hud_2k_*` | QA evidence; accepted overlay demonstrates zones avoid rails/ornament |
+
+Runtime asset IDs/paths must be assigned by a Back-end integration task after
+slot-exact slicing or redraw. Until then, existing live combat HUD registries
+remain authoritative.
+
 ## Иконки Артефактов, Shop UI И Курсор
 
 Каноническая спецификация и полный mapping `artifact_id -> icon_path`, `shop_item_id -> icon_path`: `docs/design/artifact_shop_cursor_visual_kit.md`.
 
 | Группа | ID / naming | Каноническая папка / файл | Статус |
 | --- | --- | --- | --- |
-| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 53 шт., 256x256 RGBA, transparent realistic epic D&D/tabletop fantasy raster magic items; QA preview `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (realistic D&D raster redraw 2026-06-12) |
+| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 70 шт., 256x256 RGBA, transparent realistic epic D&D/tabletop fantasy raster magic items; QA preview `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`, SCRUM-606/609 contact `docs/design/previews/artifact_icons_606_609_contact.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (realistic D&D raster redraw 2026-06-12; SCRUM-606/609 icon integration 2026-06-28) |
 | Shop-only item icons | `shop_<shop_item_id>.png` для всех `ProgressionData.SHOP_ITEMS` | `assets/sprites/ui/icons/shop/` | Реализовано |
 | Shop slot normal | `ui_shop_artifact_slot_frame` | `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png` | Реализовано |
 | Shop slot hover | `ui_shop_artifact_slot_hover` | `assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png` | Реализовано |
@@ -1255,3 +1349,9 @@ Shop-only icons имеют прозрачный фон, размер `128x128`, 
 - Новое оружие получает `id`, игровое имя, класс, форму атаки, параметры урона, сцену, ассет и описание геймплейной роли.
 
 Если новая сущность участвует в случайном выборе, ее нужно добавить в этот реестр в той же задаче.
+
+## SCRUM-541 Secret Boss Registry Addendum
+
+| ID | Game name | Current scene | Role | Asset | Patterns | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | SCRUM-539 Design source pack: `assets/sprites/bosses/secret_ascension_boss.png`, `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | Backend implemented; final animation/runtime wiring pending |

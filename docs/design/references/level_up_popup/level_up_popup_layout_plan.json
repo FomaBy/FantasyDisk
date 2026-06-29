@@ -1,0 +1,38 @@
+{
+  "canvas": {
+    "width": 512,
+    "height": 256
+  },
+  "policy": {
+    "min_gap": 12,
+    "allow_overlap": false
+  },
+  "content": {
+    "label": "Level Up"
+  },
+  "elements": [
+    {
+      "id": "badge_outer",
+      "kind": "panel",
+      "x": 24,
+      "y": 32,
+      "w": 464,
+      "h": 192,
+      "min_w": 384,
+      "min_h": 144
+    },
+    {
+      "id": "label_zone",
+      "kind": "text",
+      "parent": "badge_outer",
+      "content_zone": true,
+      "x": 92,
+      "y": 83,
+      "w": 328,
+      "h": 88,
+      "text_key": "label",
+      "max_font": 72,
+      "min_font": 42
+    }
+  ]
+}

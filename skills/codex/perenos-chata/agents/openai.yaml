@@ -1,0 +1,4 @@
+interface:
+  display_name: "Перенос чата"
+  short_description: "Суммаризирует чат и продолжает его в новом"
+  default_prompt: "Use $perenos-chata to перенести этот чат в новый с кратким Markdown-контекстом."

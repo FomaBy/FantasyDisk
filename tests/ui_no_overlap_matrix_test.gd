@@ -1,15 +1,57 @@
 extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
-const VIEWPORT_SIZES := [Vector2i(1152, 648), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
+const VIEWPORT_SIZES := [
+	Vector2i(1152, 648),
+	Vector2i(1280, 720),
+	Vector2i(1600, 900),
+	Vector2i(1920, 1080),
+	Vector2i(2560, 1440),
+	Vector2i(3840, 2160),
+]
+const SCRUM483_GATE_SIZES := [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160)]
+const TEXT_OVERFLOW_TOLERANCE := 6.0
+const UI_FRAME_TEXTURE_PREFIX := "res://assets/sprites/ui/frames/"
 const MINIMAL_CARD_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
 const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
+const CR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_panel.png"
+const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png"
+const RC_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png"
+const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png"
+# SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
+const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
+const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
+const LEVEL_UP_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_panel.png"
+const LEVEL_UP_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card.png"
+const LEVEL_UP_CARD_HOVER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card_hover.png"
+const LEVEL_UP_CARD_SELECTED_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card_selected.png"
+const LEVEL_UP_EFFECT_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_effect_preview.png"
+const LEVEL_UP_LATER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
+const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
+const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
+const CODEX_MAIN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_main.png"
+const CODEX_NAV_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_nav.png"
+const CODEX_LIST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_list.png"
+const CODEX_DETAIL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_detail.png"
+const CODEX_ENTRY_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_entry_card.png"
+const CODEX_TAB_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_tab_btn.png"
+const CODEX_BACK_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_back_btn.png"
+const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
+const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
+const VBN_FRAME_2K_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_vbn_frame.png"
+const CHUD_RESOURCE_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png"
+const CHUD_TIMER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
+const CHUD_FIELD_FRAME_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
+const CHUD_ASCENSION_FRAME_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 
 
 func _initialize() -> void:
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# UI No-Overlap Matrix")
+	dump_lines.append("")
+	dump_lines.append("SCRUM-483 render verifier gates: 1920x1080, 2560x1440, 3840x2160.")
+	dump_lines.append("Checks: viewport fit, peer overlap, text allocation overflow, parent content containment, and exact-frame TextureRect stretch mode.")
 	dump_lines.append("")
 	var errors := []
 	for viewport_size in VIEWPORT_SIZES:
@@ -17,9 +59,17 @@ func _initialize() -> void:
 			"MainMenuStartButton", "MainMenuSettingsButton", "MainMenuSkillTreeButton",
 			"MainMenuPatchNotesButton", "MainMenuCodexButton", "MainMenuExitButton",
 		], dump_lines, errors)
+		await _check_screen(viewport_size, "continue_run_dialog", Callable(self, "_open_continue_run_dialog"), [
+			"ContinueRunPanel", "ContinueRunButton", "ContinueRunNewGameButton",
+		], dump_lines, errors)
 		await _check_screen(viewport_size, "settings", Callable(self, "_open_settings"), [
 			"SettingsTabSwitcher", "SettingsContentPanel",
-			"SettingsResolutionOption", "SettingsWindowModeOption", "SettingsBackButton",
+			"SettingsResolutionOption", "SettingsWindowModeOption",
+			"SettingsApplyButton", "SettingsRevertButton", "SettingsBackButton",
+		], dump_lines, errors)
+		await _check_screen(viewport_size, "rebind_conflict", Callable(self, "_open_rebind_conflict"), [
+			"RebindConflictPanel", "RebindConflictTitle", "RebindConflictMessage",
+			"RebindConflictRetryButton", "RebindConflictBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
 			"CodexBackButton", "CodexTabs", "CodexContent", "CodexDetailPanel",
@@ -29,7 +79,7 @@ func _initialize() -> void:
 			"SkillTreeBranches",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
-			"PatchNotesBackButton",
+			"PatchNotesPanel", "PatchNotesBackButton",
 		], dump_lines, errors, false)
 		await _check_screen(viewport_size, "level_up", Callable(self, "_open_level_up"), [
 			"LevelUpPanel", "LevelUpHeroHeader", "LevelUpRewardButton0",
@@ -48,9 +98,11 @@ func _initialize() -> void:
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "victory", Callable(self, "_open_victory"), [
 			"PauseEndModalPanel_victory", "ResultCrest", "VictoryNewRunButton",
+			"RunSummaryOutcome", "RunSummaryStat_kills", "RunSummaryStat_time",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "death", Callable(self, "_open_death"), [
 			"PauseEndModalPanel_death", "ResultCrest", "DeathRetryButton",
+			"RunSummaryOutcome", "RunSummaryStat_kills", "RunSummaryStat_time",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "battle_reward", Callable(self, "_open_battle_reward"), [
 			"BattleRewardButton0", "BattleRewardButton1", "BattleRewardButton2",
@@ -67,7 +119,7 @@ func _initialize() -> void:
 			"AttributeRerollButton", "AttributeSkipButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "rest_economy", Callable(self, "_open_rest"), [
-			"RestHealButton", "RestGuardButton",
+			"RestHealButton", "RestGuardButton", "RestBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "upgrade_economy", Callable(self, "_open_upgrade"), [
 			"UpgradeChoiceButton0", "UpgradeChoiceButton1", "UpgradeChoiceButton2",
@@ -75,6 +127,34 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "event_economy", Callable(self, "_open_event"), [
 			"EventChoiceButton0", "EventChoiceButton1", "EventChoiceButton2", "EventBackButton",
 		], dump_lines, errors, false)
+		# SCRUM-671: боевой HUD — clean essential-only set from SCRUM-666:
+		# HP/XP/money/ULT, timer, ascension/elevation and bottom-right level-up plus only.
+		await _check_screen(viewport_size, "combat_hud", Callable(self, "_open_combat_hud"), [
+			"RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "LevelUpPlusButton",
+		], dump_lines, errors)
+		# SCRUM-487: баннер появления босса — ширина из CTB_*_2K (фикс легаси 1280=720p),
+		# текст центрируется по 2K-базе и помещается в рамку. Транзиентный — один контрол.
+		await _check_screen(viewport_size, "combat_title_banner", Callable(self, "_open_combat_title_banner"), [
+			"CombatIntroBanner",
+		], dump_lines, errors, false)
+		await _check_screen(viewport_size, "victory_banner", Callable(self, "_open_victory_banner"), [
+			"VictoryBannerFrame",
+		], dump_lines, errors, false)
+		# SCRUM-588: transient level-up toast uses an isolated @2K frame and keeps sparkle content inside
+		# the documented safe zone; the world-space badge remains the only text/icon callout.
+		await _check_screen(viewport_size, "level_up_toast", Callable(self, "_open_level_up_toast"), [
+			"LevelUpToastFrame",
+		], dump_lines, errors, false)
+		# SCRUM-489: блок «Результаты/Старт» — экран выбора оружия (economy-панель WS_*_2K):
+		# карточки оружия не пересекаются, текст в рамках, рамка не на STRETCH_SCALE.
+		await _check_screen(viewport_size, "weapon_select", Callable(self, "_open_weapon_select"), [
+			"WeaponOption_sword", "WeaponOption_axe", "WeaponOption_hammer",
+		], dump_lines, errors)
+		# SCRUM-489: карта маршрута (полноэкранный скролл RM_*_2K) — хедер/скролл/canvas не
+		# наслаиваются; canvas выше viewport — это норма (скролл), viewport-fit не требуется.
+		await _check_screen(viewport_size, "route_map", Callable(self, "_open_route_map"), [
+			"RouteMapHeader", "RouteMapScroll", "VerticalRouteMap",
+		], dump_lines, errors)
 
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
@@ -137,6 +217,26 @@ func _initialize() -> void:
 	if scrum470_file != null:
 		scrum470_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["hero_select"])))
 		scrum470_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum483_ui_render_verifier" % qa_dir)
+	var scrum483_file := FileAccess.open("%s/scrum483_ui_render_verifier/ui_render_verifier_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum483_file != null:
+		scrum483_file.store_string("\n".join(_filter_dump_viewport_sections(dump_lines, SCRUM483_GATE_SIZES)))
+		scrum483_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum487" % qa_dir)
+	var scrum487_file := FileAccess.open("%s/scrum487/combat_block_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum487_file != null:
+		scrum487_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["combat_hud", "combat_title_banner", "level_up", "battle_reward", "elite_reward", "event_economy"])))
+		scrum487_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum683" % qa_dir)
+	var scrum683_file := FileAccess.open("%s/scrum683/level_up_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum683_file != null:
+		scrum683_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["level_up"])))
+		scrum683_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum489" % qa_dir)
+	var scrum489_file := FileAccess.open("%s/scrum489/results_block_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum489_file != null:
+		scrum489_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["victory", "death", "hero_select", "weapon_select", "route_map"])))
+		scrum489_file.close()
 
 	if not errors.is_empty():
 		for error in errors:
@@ -180,6 +280,8 @@ func _check_screen(viewport_size: Vector2i, screen_id: String, open_callable: Ca
 	var overlap := _first_peer_overlap(controls, 2.0)
 	if not overlap.is_empty():
 		errors.append("%s: %s" % [context, overlap])
+	_append_text_overflow_errors(main, context, errors, dump_lines)
+	_append_texture_stretch_errors(main, context, errors, dump_lines)
 	var screen_error := _screen_specific_assertions(main, screen_id, context)
 	if screen_error != "":
 		errors.append(screen_error)
@@ -191,8 +293,26 @@ func _open_main_menu(main: Node) -> void:
 	main.ui._show_main_menu()
 
 
+func _open_continue_run_dialog(main: Node) -> void:
+	main.RUN_AUTOSAVE.save_run({
+		"selected_character_id": "berserk",
+		"current_act": 1,
+		"route_stage": 2,
+		"run_player_snapshot": {
+			"money": 240,
+			"level": 5,
+		},
+	})
+	main.ui._show_continue_run_dialog()
+	main.RUN_AUTOSAVE.clear_run()
+
+
 func _open_settings(main: Node) -> void:
 	main.call("_show_settings_menu")
+
+
+func _open_rebind_conflict(main: Node) -> void:
+	main.ui._show_rebind_conflict("move_up", KEY_W, "move_down")
 
 
 func _open_codex(main: Node) -> void:
@@ -211,7 +331,11 @@ func _open_level_up(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
 	main.set("selected_weapon_id", "sword")
 	main.set("pending_level_ups", 1)
-	main.set("level_up_offer", [])
+	main.set("level_up_offer", [
+		{"id": "matrix_stat_strength", "title": "Сила +1", "description": "Редкий рост основной характеристики: +1 к параметру «Сила».", "kind": "stat", "stats": {"strength": 1.0}, "rare": true},
+		{"id": "matrix_damage", "title": "+Урон", "description": "+15% к урону.", "kind": "upgrade", "mods": {"damage_multiplier": 1.15}},
+		{"id": "matrix_aoe", "title": "+Радиус области", "description": "+15% к конусам и радиусам атак.", "kind": "upgrade", "mods": {"aoe_radius_multiplier": 1.15, "range_multiplier": 1.08}},
+	])
 	main.ui._show_level_up_screen(false)
 
 
@@ -236,11 +360,23 @@ func _open_hero_select(main: Node) -> void:
 
 func _open_victory(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
+	main.set("run_metrics", _sample_run_metrics("Повержен финальный босс: Лорд Бездны"))
 	main.ui._show_victory_screen()
 
 
 func _open_death(main: Node) -> void:
+	main.set("run_metrics", _sample_run_metrics("Пал в бою на этапе маршрута 6"))
 	main.ui._show_death_screen("Тестовое поражение.")
+
+
+func _sample_run_metrics(outcome: String) -> Dictionary:
+	# SCRUM-502: непустые метрики, чтобы строки сводки рендерились на всех разрешениях.
+	return {
+		"kills": 137, "boss_kills": 1, "damage_dealt": 48213.0, "damage_taken": 6042.0,
+		"gold_collected": 1840, "time_seconds": 742.0, "route_stage_reached": 5,
+		"final_level": 12, "artifacts": [{"title": "Сердце Пиявки"}, {"title": "Шип Бездны"}],
+		"outcome_reason": outcome, "last_boss_name": "Лорд Бездны",
+	}
 
 
 func _open_battle_reward(main: Node) -> void:
@@ -293,8 +429,52 @@ func _open_event(main: Node) -> void:
 	})
 
 
+func _open_combat_hud(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.set("selected_ascension_level", 1)
+	main.set("pending_level_ups", 1)
+	main.call("_start_combat")
+	main.ui._update_level_up_button()
+
+
+func _open_combat_title_banner(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.call("_start_combat")
+	main.ui._show_combat_title_banner("Лорд Бездны", Color(1.0, 0.4, 0.3, 1.0), true)
+
+
+func _open_victory_banner(main: Node) -> void:
+	main.ui._show_victory_banner(Callable())
+
+
+func _open_level_up_toast(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.call("_start_combat")
+	main.set("pending_level_ups", 1)
+	main.ui._show_level_up_toast()
+
+
+func _open_weapon_select(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.ui._show_weapon_select()
+
+
+func _open_route_map(main: Node) -> void:
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", "sword")
+	main.set("route_stage", 0)
+	main.set("route_nodes", main.route._generate_route())
+	main.route._show_battle_map()
+
+
 func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
-	if ["attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"].has(screen_id):
+	# SCRUM-565/568: Событие и Докача переехали на overhaul_2k card-рамку (evt_card),
+	# поэтому общий minimal-metal card-контракт к ним больше не применяется (проверка
+	# evt_card-рамки — в их match-ветках ниже).
+	if ["rest_economy", "upgrade_economy"].has(screen_id):
 		for node in main.find_children("*", "Button", true, false):
 			var card := node as Button
 			if card == null or str(card.get_meta("economy_frame_kind", "")) != "choice_card":
@@ -303,36 +483,333 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if card_error != "":
 				return card_error
 	match screen_id:
+		"combat_hud":
+			if main.find_child("CharacterStatsHud", true, false) != null:
+				return "%s: SCRUM-671 essential-only HUD must not show CharacterStatsHud." % context
+			if main.find_child("ArtifactHudRow", true, false) != null:
+				return "%s: SCRUM-671 essential-only HUD must not show ArtifactHudRow." % context
+			var resource := main.find_child("RunResourceHud", true, false) as PanelContainer
+			if resource == null or _stylebox_texture_path(resource.get_theme_stylebox("panel")) != CHUD_RESOURCE_2K_FRAME_PATH:
+				return "%s: expected RunResourceHud to use chud_resource_panel @2K frame." % context
+			for card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
+				var card := main.find_child(card_name, true, false) as PanelContainer
+				if card == null or not card.visible or not card.get_global_rect().has_area():
+					return "%s: expected visible %s metric card." % [context, card_name]
+				if _stylebox_texture_path(card.get_theme_stylebox("panel")) != CHUD_FIELD_FRAME_PATH:
+					return "%s: expected %s to use minimal-metal field frame." % [context, card_name]
+				var card_zone: Rect2 = card.get_meta("scrum666_content_zone", Rect2()) as Rect2
+				if not card_zone.has_area() or not card_zone.grow(1.0).encloses(card.get_global_rect()):
+					return "%s: expected %s to occupy SCRUM-666 metric zone %s, got %s." % [context, card_name, str(card_zone), str(card.get_global_rect())]
+			var timer_panel := main.find_child("CombatTimerPanel", true, false) as PanelContainer
+			if timer_panel == null or _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != CHUD_TIMER_2K_FRAME_PATH:
+				return "%s: expected CombatTimerPanel to use chud_timer @2K frame." % context
+			var timer_label := main.find_child("CombatTimerLabel", true, false) as Label
+			var timer_zone: Rect2 = timer_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2
+			if timer_label == null or not timer_zone.has_area() or not timer_zone.grow(1.0).encloses(timer_label.get_global_rect()):
+				return "%s: expected CombatTimerLabel to stay inside SCRUM-666 timer zone %s." % [context, str(timer_zone)]
+			var ascension := main.find_child("AscensionHudBadge", true, false) as PanelContainer
+			if ascension == null or _stylebox_texture_path(ascension.get_theme_stylebox("panel")) != CHUD_ASCENSION_FRAME_PATH:
+				return "%s: expected AscensionHudBadge to use the live compact ascension frame." % context
+			var ascension_label := ascension.find_child("AscensionHudLabel", true, false) as Label
+			var ascension_zone: Rect2 = ascension.get_meta("scrum666_content_zone", Rect2()) as Rect2
+			if ascension_label == null or not ascension_zone.has_area() or not ascension_zone.grow(1.0).encloses(ascension_label.get_global_rect()):
+				return "%s: expected ascension label to stay inside SCRUM-666 ascension zone %s." % [context, str(ascension_zone)]
+			var plus := main.find_child("LevelUpPlusButton", true, false) as Button
+			if plus == null or plus.text != "+":
+				return "%s: expected bottom-right LevelUpPlusButton." % context
+			var plus_zone: Rect2 = plus.get_meta("scrum666_content_zone", Rect2()) as Rect2
+			if not plus_zone.has_area() or not plus_zone.grow(1.0).encloses(plus.get_global_rect()):
+				return "%s: expected LevelUpPlusButton to occupy SCRUM-666 plus zone %s, got %s." % [context, str(plus_zone), str(plus.get_global_rect())]
+			var badge_panel := plus.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
+			var badge_zone: Rect2 = badge_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2 if badge_panel != null else Rect2()
+			var badge_label := plus.find_child("LevelUpPlusBadge", true, false) as Label
+			if badge_panel == null or badge_label == null or not badge_zone.has_area() or not badge_zone.grow(1.0).encloses(badge_label.get_global_rect()):
+				return "%s: expected LevelUpPlusBadge label to stay inside SCRUM-666 count zone %s." % [context, str(badge_zone)]
+		"continue_run_dialog":
+			var continue_panel := main.find_child("ContinueRunPanel", true, false) as PanelContainer
+			if continue_panel == null or not continue_panel.visible or not continue_panel.get_global_rect().has_area():
+				return "%s: expected visible ContinueRunPanel." % context
+			if _stylebox_texture_path(continue_panel.get_theme_stylebox("panel")) != CR_PANEL_2K_FRAME_PATH:
+				return "%s: expected ContinueRunPanel to use cr_panel @2K frame." % context
+			if str(continue_panel.get_meta("continue_run_slot", "")) != "cr_panel":
+				return "%s: expected ContinueRunPanel slot metadata to be cr_panel." % context
+			if Vector4(continue_panel.get_meta("continue_run_content_margins", Vector4.ZERO)) != Vector4(58, 72, 58, 66):
+				return "%s: expected ContinueRunPanel strict SCRUM-582 content margins." % context
+			if (continue_panel.get_meta("continue_run_content_rect", Rect2()) as Rect2) != Rect2(58, 72, 564, 242):
+				return "%s: expected ContinueRunPanel safe rect to match CR_SAFE_2K." % context
+			for button_name in ["ContinueRunButton", "ContinueRunNewGameButton"]:
+				var cr_button := main.find_child(button_name, true, false) as Button
+				if cr_button == null:
+					return "%s: expected %s in ContinueRunPanel." % [context, button_name]
+				if _stylebox_texture_path(cr_button.get_theme_stylebox("normal")) != CR_BTN_2K_FRAME_PATH:
+					return "%s: expected %s to use cr_btn @2K frame." % [context, button_name]
+		"rebind_conflict":
+			var rebind_panel := main.find_child("RebindConflictPanel", true, false) as Control
+			if rebind_panel == null or not rebind_panel.visible or not rebind_panel.get_global_rect().has_area():
+				return "%s: expected visible RebindConflictPanel." % context
+			if _stylebox_texture_path(rebind_panel.get_theme_stylebox("panel")) != RC_PANEL_2K_FRAME_PATH:
+				return "%s: expected RebindConflictPanel to use rc_panel @2K frame." % context
+			if str(rebind_panel.get_meta("rebind_conflict_stage", "")) != "openai_mockup_ready_runtime_rc_assets":
+				return "%s: expected RebindConflictPanel to expose completed SCRUM-584 stage metadata." % context
+			if Vector4(rebind_panel.get_meta("rebind_conflict_content_margins", Vector4.ZERO)) != Vector4(58, 72, 58, 66):
+				return "%s: expected RebindConflictPanel strict SCRUM-584 content margins." % context
+			var rebind_safe: Rect2 = rebind_panel.get_meta("rebind_conflict_content_rect", Rect2()) as Rect2
+			if rebind_safe != Rect2(58, 72, 564, 242):
+				return "%s: expected RebindConflictPanel safe rect to match RC_SAFE_2K." % context
+			var scaled_rebind_safe := _scaled_source_rect(rebind_panel.get_global_rect(), Vector2(680, 380), rebind_safe).grow(1.0)
+			for child_name in ["RebindConflictTitle", "RebindConflictMessage", "RebindConflictRetryButton", "RebindConflictBackButton"]:
+				var child := main.find_child(child_name, true, false) as Control
+				if child == null or not child.visible or not child.get_global_rect().has_area():
+					return "%s: expected visible %s." % [context, child_name]
+				if not scaled_rebind_safe.encloses(child.get_global_rect()):
+					return "%s: expected %s to stay inside scaled rebind conflict safe rect %s." % [context, child_name, str(scaled_rebind_safe)]
+			for button_name in ["RebindConflictRetryButton", "RebindConflictBackButton"]:
+				var rebind_button := main.find_child(button_name, true, false) as Button
+				if rebind_button == null:
+					return "%s: expected %s button." % [context, button_name]
+				if _stylebox_texture_path(rebind_button.get_theme_stylebox("normal")) != RC_BTN_2K_FRAME_PATH:
+					return "%s: expected %s to use rc_btn @2K button frame." % [context, button_name]
+		"codex":
+			var expected_panels := {
+				"CodexMainPanel": CODEX_MAIN_2K_FRAME_PATH,
+				"CodexNavPanel": CODEX_NAV_2K_FRAME_PATH,
+				"CodexContent": CODEX_LIST_2K_FRAME_PATH,
+				"CodexDetailPanel": CODEX_DETAIL_2K_FRAME_PATH,
+			}
+			for node_name in expected_panels.keys():
+				var panel := main.find_child(str(node_name), true, false) as Control
+				if panel == null or not panel.get_global_rect().has_area():
+					return "%s: expected visible %s." % [context, node_name]
+				if _stylebox_texture_path(panel.get_theme_stylebox("panel")) != str(expected_panels[node_name]):
+					return "%s: expected %s to use its Codex @2K frame." % [context, node_name]
+			var entry_card := main.find_child("CodexEntryCard", true, false) as Control
+			if entry_card == null or _stylebox_texture_path(entry_card.get_theme_stylebox("normal")) != CODEX_ENTRY_CARD_2K_FRAME_PATH:
+				return "%s: expected CodexEntryCard to use codex_entry_card @2K frame." % context
+			var tab_button := main.find_child("CodexTab_characters", true, false) as Button
+			if tab_button == null or _stylebox_texture_path(tab_button.get_theme_stylebox("normal")) != CODEX_TAB_BTN_2K_FRAME_PATH:
+				return "%s: expected CodexTab_characters to use codex_tab_btn @2K frame." % context
+			var back_button := main.find_child("CodexBackButton", true, false) as Button
+			if back_button == null or _stylebox_texture_path(back_button.get_theme_stylebox("normal")) != CODEX_BACK_BTN_2K_FRAME_PATH:
+				return "%s: expected CodexBackButton to use codex_back_btn @2K frame." % context
 		"attribute_shop_economy":
 			var panel := main.find_child("AttributeShopPanel", true, false) as Control
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button
 			if panel == null or not panel.get_global_rect().has_area():
 				return "%s: expected visible AttributeShopPanel." % context
+			# SCRUM-568: панель докачи рисуется собственной attr_panel @2K-рамкой.
+			if _stylebox_texture_path(panel.get_theme_stylebox("panel")) != ATTR_PANEL_2K_FRAME_PATH:
+				return "%s: expected AttributeShopPanel to use attr_panel @2K frame." % context
 			if skip_button == null or skip_button.disabled:
 				return "%s: expected AttributeSkipButton to remain reachable and enabled." % context
 			for node in main.find_children("AttributeOffer_*", "Button", true, false):
 				var offer := node as Button
 				if offer == null:
 					continue
+				# SCRUM-568: карточки опций используют evt_card @2K-рамку (normal+hover).
+				if _stylebox_texture_path(offer.get_theme_stylebox("normal")) != EVT_CARD_2K_FRAME_PATH:
+					return "%s: expected %s normal StyleBox to use evt_card @2K frame." % [context, offer.name]
+				if _stylebox_texture_path(offer.get_theme_stylebox("hover")) != EVT_CARD_2K_FRAME_PATH:
+					return "%s: expected %s hover StyleBox to use evt_card @2K frame." % [context, offer.name]
 				if not offer.disabled:
 					return "%s: expected zero-money attribute offers to be disabled." % context
 				if not offer.tooltip_text.contains("Недостаточно золота"):
 					return "%s: expected disabled attribute offer tooltip to explain insufficient gold." % context
+		"rest_economy":
+			var rest_panel := main.find_child("MenuPanel_campfire", true, false) as Control
+			if rest_panel == null or not rest_panel.visible or not rest_panel.get_global_rect().has_area():
+				return "%s: expected visible Rest panel instead of an empty campfire shell." % context
+			if rest_panel.find_child("UpgradeFabButton", true, false) != null:
+				return "%s: Rest panel must not contain UpgradeFabButton; it hides title/body/choices in screenshots." % context
+			var rest_content := main.find_child("RestContent", true, false) as Control
+			if rest_content == null or not rest_content.visible or not rest_content.get_global_rect().has_area():
+				return "%s: expected visible RestContent inside the campfire panel." % context
+			var rest_panel_rect := rest_panel.get_global_rect().grow(-4.0)
+			if not rest_panel_rect.encloses(rest_content.get_global_rect()):
+				return "%s: expected RestContent to stay inside the campfire panel, got %s." % [context, str(rest_content.get_global_rect())]
+			for label_name in ["RestTitle", "RestSubtitle"]:
+				var label := main.find_child(label_name, true, false) as Label
+				if label == null or not label.visible or label.text.strip_edges() == "" or not label.get_global_rect().has_area():
+					return "%s: expected visible non-empty %s." % [context, label_name]
+			for card_name in ["RestHealButton", "RestGuardButton"]:
+				var card := main.find_child(card_name, true, false) as Button
+				if card == null or not card.visible or card.text.strip_edges() != "":
+					return "%s: expected visible textless economy card %s." % [context, card_name]
+				var card_error := _economy_choice_card_contract_error(card, context)
+				if card_error != "":
+					return card_error
+			var rest_back := main.find_child("RestBackButton", true, false) as Button
+			if rest_back == null or not rest_back.visible or rest_back.text.strip_edges() == "" or not rest_back.get_global_rect().has_area():
+				return "%s: expected visible non-empty RestBackButton." % context
+		"patch_notes":
+			# SCRUM-576: панель «Что нового» рисуется собственной pn_panel @2K-рамкой,
+			# контент держится в её content-зоне (хедер + скролл версий не на орнаменте).
+			var pn_panel := main.find_child("PatchNotesPanel", true, false) as Control
+			if pn_panel == null or not pn_panel.get_global_rect().has_area():
+				return "%s: expected visible PatchNotesPanel." % context
+			if _stylebox_texture_path(pn_panel.get_theme_stylebox("panel")) != PN_PANEL_2K_FRAME_PATH:
+				return "%s: expected PatchNotesPanel to use pn_panel @2K frame." % context
+		"level_up":
+			var level_panel := main.find_child("LevelUpPanel", true, false) as Control
+			if level_panel == null or not level_panel.visible or not level_panel.get_global_rect().has_area():
+				return "%s: expected visible LevelUpPanel." % context
+			if _stylebox_texture_path(level_panel.get_theme_stylebox("panel")) != LEVEL_UP_PANEL_2K_FRAME_PATH:
+				return "%s: expected LevelUpPanel to use level_up_panel @2K frame." % context
+			if str(level_panel.get_meta("level_up_slot", "")) != "level_up_panel":
+				return "%s: expected LevelUpPanel slot metadata to be level_up_panel." % context
+			var level_safe: Rect2 = level_panel.get_meta("level_up_content_rect", Rect2()) as Rect2
+			if not level_safe.has_area():
+				return "%s: expected LevelUpPanel to expose content safe rect metadata." % context
+			var scaled_level_safe := _scaled_source_rect(level_panel.get_global_rect(), Vector2(1720, 1040), level_safe).grow(1.0)
+			for child_name in ["LevelUpHeroHeader", "LevelUpTitle", "LevelUpSubtitle", "LevelUpRewardsRow", "LevelUpLaterButton"]:
+				var child := main.find_child(child_name, true, false) as Control
+				if child == null or not child.visible or not child.get_global_rect().has_area():
+					return "%s: expected visible %s." % [context, child_name]
+				if not scaled_level_safe.encloses(child.get_global_rect()):
+					return "%s: expected %s to stay inside LevelUpPanel safe rect %s." % [context, child_name, str(scaled_level_safe)]
+			var later_button := main.find_child("LevelUpLaterButton", true, false) as Button
+			if later_button == null or _stylebox_texture_path(later_button.get_theme_stylebox("normal")) != LEVEL_UP_LATER_2K_FRAME_PATH:
+				return "%s: expected LevelUpLaterButton to use SCRUM-682 later button art." % context
+			for node in main.find_children("LevelUpRewardButton*", "Button", true, false):
+				var reward_button := node as Button
+				if reward_button == null:
+					continue
+				var normal_path := _stylebox_texture_path(reward_button.get_theme_stylebox("normal"))
+				if normal_path != LEVEL_UP_CARD_2K_FRAME_PATH and normal_path != LEVEL_UP_CARD_SELECTED_2K_FRAME_PATH:
+					return "%s: expected %s to use SCRUM-682 level-up card frame, got %s." % [context, reward_button.name, normal_path]
+				if _stylebox_texture_path(reward_button.get_theme_stylebox("hover")) != LEVEL_UP_CARD_HOVER_2K_FRAME_PATH:
+					return "%s: expected %s hover StyleBox to use SCRUM-682 hover card." % [context, reward_button.name]
+				if str(reward_button.get_meta("level_up_card_slot", "")) != "level_up_card":
+					return "%s: expected %s slot metadata to be level_up_card." % [context, reward_button.name]
+				var card_safe: Rect2 = reward_button.get_meta("level_up_card_content_rect", Rect2()) as Rect2
+				if not card_safe.has_area():
+					return "%s: expected %s to expose content safe rect." % [context, reward_button.name]
+				var scaled_card_safe := _scaled_source_rect(reward_button.get_global_rect(), reward_button.custom_minimum_size, card_safe).grow(1.0)
+				var content := reward_button.find_child("LevelUpRewardContent", true, false) as Control
+				if content == null or not scaled_card_safe.encloses(content.get_global_rect()):
+					return "%s: expected %s content to stay inside card safe rect %s." % [context, reward_button.name, str(scaled_card_safe)]
+				for child_name in ["LevelUpRewardDescription", "LevelUpRewardEffectPreview", "LevelUpRewardEffectText"]:
+					var child := reward_button.find_child(child_name, true, false) as Control
+					if child == null or not child.visible or not child.get_global_rect().has_area():
+						return "%s: expected visible %s inside %s." % [context, child_name, reward_button.name]
+					if not scaled_card_safe.encloses(child.get_global_rect()):
+						return "%s: expected %s to stay inside scaled card safe rect %s." % [context, child_name, str(scaled_card_safe)]
+				var effect_panel := reward_button.find_child("LevelUpRewardEffectPreview", true, false) as PanelContainer
+				if effect_panel == null or _stylebox_texture_path(effect_panel.get_theme_stylebox("panel")) != LEVEL_UP_EFFECT_2K_FRAME_PATH:
+					return "%s: expected %s effect preview field to use SCRUM-682 effect frame." % [context, reward_button.name]
+				var effect_text := reward_button.find_child("LevelUpRewardEffectText", true, false) as Label
+				if effect_text == null or not effect_text.text.contains("->"):
+					return "%s: expected %s visible effect preview to contain before/after delta, got %s." % [context, reward_button.name, effect_text.text if effect_text != null else ""]
 		"event_economy":
+			# SCRUM-565: панель события рисуется собственной evt_panel @2K-рамкой.
+			var event_panel := main.find_child("MenuPanel_event", true, false) as Control
+			if event_panel == null or not event_panel.visible or not event_panel.get_global_rect().has_area():
+				return "%s: expected visible event panel instead of an empty event shell." % context
+			if _stylebox_texture_path(event_panel.get_theme_stylebox("panel")) != EVT_PANEL_2K_FRAME_PATH:
+				return "%s: expected event MenuPanel to use evt_panel @2K frame." % context
+			if main.find_child("UpgradeFabButton", true, false) != null:
+				return "%s: event screen must not render the disabled UpgradeFabButton inside MenuPanel_event." % context
+			var event_safe := _scaled_source_rect(event_panel.get_global_rect(), Vector2(1720, 780), Rect2(58, 72, 1604, 642)).grow(1.0)
+			var event_content := main.find_child("EventContent", true, false) as Control
+			if event_content == null or not event_content.visible or not event_content.get_global_rect().has_area():
+				return "%s: expected visible EventContent inside the event panel." % context
+			if not event_safe.encloses(event_content.get_global_rect()):
+				return "%s: expected EventContent to stay inside evt_panel safe rect %s, got %s." % [context, str(event_safe), str(event_content.get_global_rect())]
+			var event_title := main.find_child("EventTitle", true, false) as Label
+			var event_story := main.find_child("EventStory", true, false) as Label
+			for label in [event_title, event_story]:
+				if label == null or not label.visible or label.text.strip_edges() == "" or not label.get_global_rect().has_area():
+					return "%s: expected event title/story labels to be visible and non-empty." % context
+				if not event_safe.encloses(label.get_global_rect()):
+					return "%s: expected %s to stay inside evt_panel safe rect %s." % [context, label.name, str(event_safe)]
+			var visible_event_choices := 0
 			for node in main.find_children("EventChoiceButton*", "Button", true, false):
 				var event_button := node as Button
 				if event_button == null:
 					continue
+				if event_button.visible and event_button.get_global_rect().has_area():
+					visible_event_choices += 1
+				# SCRUM-565: карточки выбора используют evt_card @2K-рамку (normal+hover).
+				if _stylebox_texture_path(event_button.get_theme_stylebox("normal")) != EVT_CARD_2K_FRAME_PATH:
+					return "%s: expected %s normal StyleBox to use evt_card @2K frame." % [context, event_button.name]
+				if _stylebox_texture_path(event_button.get_theme_stylebox("hover")) != EVT_CARD_2K_FRAME_PATH:
+					return "%s: expected %s hover StyleBox to use evt_card @2K frame." % [context, event_button.name]
 				if event_button.tooltip_text.contains("Риск: Риск:"):
 					return "%s: expected event option text to avoid duplicated risk prefix." % context
+				if not event_safe.encloses(event_button.get_global_rect()):
+					return "%s: expected %s to stay inside evt_panel safe rect %s." % [context, event_button.name, str(event_safe)]
 				var desc := event_button.find_child("%sDescription" % event_button.name, true, false) as Label
 				if desc != null and not event_button.get_global_rect().grow(1.0).encloses(desc.get_global_rect()):
 					return "%s: event description %s escapes its card safe content rect." % [context, desc.name]
+			if visible_event_choices < 2:
+				return "%s: expected at least two visible event choices, got %d." % [context, visible_event_choices]
+			var event_back := main.find_child("EventBackButton", true, false) as Button
+			if event_back == null or not event_back.visible or event_back.text.strip_edges() == "" or not event_back.get_global_rect().has_area():
+				return "%s: expected visible non-empty EventBackButton." % context
+			if not event_safe.encloses(event_back.get_global_rect()):
+				return "%s: expected EventBackButton to stay inside evt_panel safe rect %s." % [context, str(event_safe)]
+		"level_up_toast":
+			var toast_frame := main.find_child("LevelUpToastFrame", true, false) as PanelContainer
+			if toast_frame == null or not toast_frame.visible or not toast_frame.get_global_rect().has_area():
+				return "%s: expected visible LevelUpToastFrame." % context
+			if _stylebox_texture_path(toast_frame.get_theme_stylebox("panel")) != LUT_TOAST_2K_FRAME_PATH:
+				return "%s: expected LevelUpToastFrame to use lut_toast @2K frame." % context
+			if Vector4(toast_frame.get_meta("toast_content_margins", Vector4.ZERO)) != Vector4(70, 112, 70, 112):
+				return "%s: expected LevelUpToastFrame to expose strict SCRUM-588 content margins." % context
+			var safe_rect: Rect2 = toast_frame.get_meta("toast_content_rect", Rect2()) as Rect2
+			if not safe_rect.has_area():
+				return "%s: expected LevelUpToastFrame to expose content safe rect metadata." % context
+			var toast := main.find_child("LevelUpToast", true, false)
+			if toast == null:
+				return "%s: expected LevelUpToast node." % context
+			if not toast.find_children("*", "Label", true, false).is_empty():
+				return "%s: expected LevelUpToast to remain textless." % context
+			for node in toast.get_children():
+				var sprite := node as Sprite2D
+				if sprite != null and not safe_rect.grow(4.0).has_point(sprite.position):
+					return "%s: toast sparkle %s starts outside safe rect %s." % [context, sprite.name, str(safe_rect)]
+		"combat_title_banner":
+			var banner := main.find_child("CombatIntroBanner", true, false) as PanelContainer
+			if banner == null or not banner.visible or not banner.get_global_rect().has_area():
+				return "%s: expected visible CombatIntroBanner frame." % context
+			if _stylebox_texture_path(banner.get_theme_stylebox("panel")) != CTB_BIG_2K_FRAME_PATH:
+				return "%s: expected CombatIntroBanner to use ctb_big @2K frame." % context
+			if str(banner.get_meta("combat_title_slot", "")) != "ctb_big":
+				return "%s: expected CombatIntroBanner slot metadata to be ctb_big." % context
+			if Vector4(banner.get_meta("combat_title_content_margins", Vector4.ZERO)) != Vector4(86, 10, 86, 10):
+				return "%s: expected CombatIntroBanner strict SCRUM-589 content margins." % context
+			var banner_safe: Rect2 = banner.get_meta("combat_title_content_rect", Rect2()) as Rect2
+			if banner_safe != Rect2(86, 10, 2188, 70):
+				return "%s: expected CombatIntroBanner safe rect to match CTB_BIG_2K content zone." % context
+			var banner_label := banner.find_child("CombatIntroBannerLabel", true, false) as Label
+			if banner_label == null or banner_label.text.strip_edges() == "":
+				return "%s: expected CombatIntroBannerLabel runtime text inside the frame." % context
+			var scaled_safe := _scaled_source_rect(banner.get_global_rect(), Vector2(2360, 90), banner_safe).grow(1.0)
+			if not scaled_safe.encloses(banner_label.get_global_rect()):
+				return "%s: expected CombatIntroBannerLabel to stay inside scaled safe rect %s." % [context, str(scaled_safe)]
+		"victory_banner":
+			var frame := main.find_child("VictoryBannerFrame", true, false) as PanelContainer
+			if frame == null or not frame.visible or not frame.get_global_rect().has_area():
+				return "%s: expected visible VictoryBannerFrame." % context
+			if _stylebox_texture_path(frame.get_theme_stylebox("panel")) != VBN_FRAME_2K_PATH:
+				return "%s: expected VictoryBannerFrame to use vbn_frame @2K asset." % context
+			if str(frame.get_meta("victory_banner_slot", "")) != "vbn_frame":
+				return "%s: expected VictoryBannerFrame slot metadata to be vbn_frame." % context
+			if Vector4(frame.get_meta("victory_banner_content_margins", Vector4.ZERO)) != Vector4(112, 52, 112, 52):
+				return "%s: expected VictoryBannerFrame strict SCRUM-590 content margins." % context
+			var frame_safe: Rect2 = frame.get_meta("victory_banner_content_rect", Rect2()) as Rect2
+			if frame_safe != Rect2(112, 52, 1216, 136):
+				return "%s: expected VictoryBannerFrame safe rect to match VBN_FRAME_2K content zone." % context
+			var victory_label := frame.find_child("VictoryBannerLabel", true, false) as Label
+			if victory_label == null or victory_label.text.strip_edges() == "":
+				return "%s: expected VictoryBannerLabel runtime text inside the frame." % context
+			var scaled_victory_safe := _scaled_source_rect(frame.get_global_rect(), Vector2(1440, 240), frame_safe).grow(1.0)
+			if not scaled_victory_safe.encloses(victory_label.get_global_rect()):
+				return "%s: expected VictoryBannerLabel to stay inside scaled safe rect %s." % [context, str(scaled_victory_safe)]
 	return ""
 
 
 func _requires_viewport_fit(screen_id: String) -> bool:
-	return screen_id in ["level_up", "attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy"]
+	return screen_id in ["level_up", "attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy", "combat_hud"]
 
 
 func _economy_choice_card_contract_error(card: Button, context: String) -> String:
@@ -375,17 +852,140 @@ func _first_peer_overlap(controls: Array, tolerance_px: float) -> String:
 		var first := controls[first_index] as Control
 		if first == null:
 			continue
-		var first_rect := _rect_with_tolerance(first.get_global_rect(), tolerance_px)
+		var first_rect := _rect_with_tolerance(_effective_rect(first), tolerance_px)
 		for second_index in range(first_index + 1, controls.size()):
 			var second := controls[second_index] as Control
 			if second == null:
 				continue
 			if _is_ancestor(first, second) or _is_ancestor(second, first):
 				continue
-			var second_rect := _rect_with_tolerance(second.get_global_rect(), tolerance_px)
+			var second_rect := _rect_with_tolerance(_effective_rect(second), tolerance_px)
 			if first_rect.intersects(second_rect):
-				return "%s %s intersects %s %s" % [first.name, first.get_global_rect(), second.name, second.get_global_rect()]
+				return "%s %s intersects %s %s" % [first.name, _effective_rect(first), second.name, _effective_rect(second)]
 	return ""
+
+
+# SCRUM-489: контрол внутри ScrollContainer визуально обрезается клип-прямоугольником скролла.
+# Для проверки наслоений берём ВИДИМУЮ часть (пересечение с rect ближайшего ScrollContainer),
+# иначе авто-центрированный длинный canvas карты маршрута (глоб. rect уходит выше вьюпорта)
+# даёт ложное пересечение с хедером. Для контролов без скролл-предка — это no-op.
+func _effective_rect(control: Control) -> Rect2:
+	var rect := control.get_global_rect()
+	var ancestor := control.get_parent()
+	while ancestor != null:
+		if ancestor is ScrollContainer:
+			rect = rect.intersection((ancestor as ScrollContainer).get_global_rect())
+			break
+		ancestor = ancestor.get_parent()
+	return rect
+
+
+func _append_text_overflow_errors(root_node: Node, context: String, errors: Array, dump_lines: PackedStringArray) -> void:
+	var text_controls := _visible_text_controls(root_node)
+	if text_controls.is_empty():
+		return
+	var checked_count := 0
+	for control in text_controls:
+		var text_control := control as Control
+		if text_control == null:
+			continue
+		var error := _text_control_contract_error(text_control, context)
+		if error != "":
+			errors.append(error)
+		checked_count += 1
+	dump_lines.append("- text controls checked: `%d`" % checked_count)
+
+
+func _visible_text_controls(root_node: Node) -> Array:
+	var results := []
+	for node in root_node.find_children("*", "Control", true, false):
+		var control := node as Control
+		if control == null or not control.is_visible_in_tree():
+			continue
+		if not control.get_global_rect().has_area():
+			continue
+		if _control_text(control).strip_edges() == "":
+			continue
+		if control is Label or control is Button or control is RichTextLabel:
+			results.append(control)
+	return results
+
+
+func _control_text(control: Control) -> String:
+	if control is Label:
+		return str((control as Label).text)
+	if control is Button:
+		return str((control as Button).text)
+	if control is RichTextLabel:
+		return str((control as RichTextLabel).text)
+	return ""
+
+
+func _text_control_contract_error(control: Control, context: String) -> String:
+	var rect := control.get_global_rect()
+	var parent_control := control.get_parent() as Control
+	if parent_control != null and parent_control.is_visible_in_tree() and parent_control.get_global_rect().has_area():
+		var parent_rect := parent_control.get_global_rect().grow(TEXT_OVERFLOW_TOLERANCE)
+		if not parent_rect.encloses(rect):
+			return "%s: text control %s rect %s escapes parent content rect %s." % [context, control.name, str(rect), str(parent_control.get_global_rect())]
+
+	var needed := _text_control_needed_size(control)
+	if needed.y > rect.size.y + TEXT_OVERFLOW_TOLERANCE:
+		return "%s: text control %s needs height %.1f but has %.1f." % [context, control.name, needed.y, rect.size.y]
+	if not _text_control_wraps(control) and needed.x > rect.size.x + TEXT_OVERFLOW_TOLERANCE:
+		return "%s: text control %s needs width %.1f but has %.1f." % [context, control.name, needed.x, rect.size.x]
+	return ""
+
+
+func _text_control_needed_size(control: Control) -> Vector2:
+	if control is Button:
+		var button := control as Button
+		var font := button.get_theme_font("font")
+		var font_size := button.get_theme_font_size("font_size")
+		if font != null:
+			var text_size := font.get_string_size(button.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size)
+			return text_size + Vector2(8.0, 8.0)
+		return Vector2.ZERO
+	if control is RichTextLabel:
+		var rich := control as RichTextLabel
+		return Vector2(maxf(rich.get_content_width(), rich.get_combined_minimum_size().x), maxf(rich.get_content_height(), rich.get_combined_minimum_size().y))
+	return control.get_combined_minimum_size()
+
+
+func _text_control_wraps(control: Control) -> bool:
+	if control is Label:
+		return (control as Label).autowrap_mode != TextServer.AUTOWRAP_OFF
+	if control is RichTextLabel:
+		return bool((control as RichTextLabel).fit_content)
+	return false
+
+
+func _append_texture_stretch_errors(root_node: Node, context: String, errors: Array, dump_lines: PackedStringArray) -> void:
+	var checked_count := 0
+	for node in root_node.find_children("*", "TextureRect", true, false):
+		var texture_rect := node as TextureRect
+		if texture_rect == null or not texture_rect.is_visible_in_tree():
+			continue
+		var texture := texture_rect.texture
+		if texture == null:
+			continue
+		var path := texture.resource_path
+		if not _is_exact_frame_texture_path(path):
+			continue
+		checked_count += 1
+		if texture_rect.stretch_mode == TextureRect.STRETCH_SCALE:
+			errors.append("%s: exact UI frame TextureRect %s uses STRETCH_SCALE for %s." % [context, texture_rect.name, path])
+	dump_lines.append("- exact frame TextureRects checked: `%d`" % checked_count)
+
+
+func _is_exact_frame_texture_path(path: String) -> bool:
+	if not path.begins_with(UI_FRAME_TEXTURE_PREFIX):
+		return false
+	# Decorative dividers are intentionally line-scaled; they are not content
+	# containers and do not carry the no-stretch frame contract.
+	if path.get_file().contains("divider"):
+		return false
+	return true
 
 
 func _is_ancestor(parent: Control, child: Control) -> bool:
@@ -431,6 +1031,25 @@ func _filter_dump_sections(lines: PackedStringArray, markers: Array) -> PackedSt
 			keep = false
 			for marker in markers:
 				if line.contains(str(marker)):
+					keep = true
+					break
+		if keep:
+			filtered.append(line)
+	return filtered
+
+
+func _filter_dump_viewport_sections(lines: PackedStringArray, viewport_sizes: Array) -> PackedStringArray:
+	var filtered := PackedStringArray()
+	filtered.append("# SCRUM-483 UI Render Verifier Matrix")
+	filtered.append("")
+	filtered.append("Gate sizes: 1920x1080, 2560x1440, 3840x2160.")
+	filtered.append("")
+	var keep := false
+	for line in lines:
+		if line.begins_with("## "):
+			keep = false
+			for viewport_size in viewport_sizes:
+				if line.contains(str(viewport_size)):
 					keep = true
 					break
 		if keep:
