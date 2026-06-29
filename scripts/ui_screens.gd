@@ -755,7 +755,7 @@ func _show_continue_run_dialog() -> void:
 	# SCRUM-677: стилизованный лого-заголовок вместо плоского жёлтого текста.
 	var title_label := TextureRect.new()
 	title_label.name = "ContinueRunTitle"
-	title_label.custom_minimum_size = Vector2(0.0, 96.0)
+	title_label.custom_minimum_size = Vector2(0.0, 72.0)
 	title_label.size_flags_horizontal = Control.SIZE_FILL
 	title_label.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	title_label.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

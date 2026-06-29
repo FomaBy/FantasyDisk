@@ -1,11 +1,27 @@
 # Task: SCRUM-677 — Заголовок окна «Продолжить забег?» в стилистике игры
 
-Статус: QA FAILED (2026-06-29, bug SCRUM-681)
+Статус: done (re-submit в QA 2026-06-29 после фикса SCRUM-681)
 Контур: Claude
 Owner: design+backend
 Jira: SCRUM-677
 Спринт: 0.1.7 (133)
 Locked paths: scripts/ui_screens.gd (`_show_continue_run_dialog`), assets/sprites/ui/ (опц. лого)
+
+## Re-fix (2026-06-29, Claude/design) — закрытие блокеров SCRUM-681
+
+Причина фейла: `TextureRect`-заголовку был задан `custom_minimum_size.y = 96`, что
+раздуло min-size VBox и `ContinueRunPanel` до 680×391 (вместо фикс. 680×380),
+кнопки вышли за `CR_SAFE_2K` (низ 855 > 844 на 11px).
+
+Фикс:
+1. `custom_minimum_size.y` 96 → **72**. Headless-замер реальных rect (autosave seeded):
+   `ContinueRunPanel` ровно **680×380** (== CR_PANEL_2K), `ContinueRunTitle` 998,608 564×72,
+   `ContinueRunSubtitle` 998,696 564×49, `ContinueRunButtons` 998,761 564×76 → низ **837 ≤ 844**.
+   Всё внутри CR_SAFE_2K. Лого читается (~322px ширина при aspect 4.47).
+2. `tools/build_continue_run_title_logo.py --check-only` теперь read-only (не пишет,
+   exit 0/1 по наличию ассета); ассет не регенерируется (md5 без изменений).
+
+Гейты: `runtime_smoke_ui_test` PASS, `ui_no_overlap_matrix_test` PASS.
 
 ## Выполнено (2026-06-29, Claude/design)
 

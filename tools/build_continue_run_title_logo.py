@@ -13,6 +13,7 @@ Target: transparent PNG ~760x170, alpha_min == 0 (asserted).
 """
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -137,7 +138,7 @@ def draw_title() -> Image.Image:
 
 
 def main() -> None:
-    OUT.mkdir(parents=True, exist_ok=True)
+    check_only = "--check-only" in sys.argv[1:]
     logo = draw_title()
     final = downsample(logo)
 
@@ -146,6 +147,14 @@ def main() -> None:
     assert alpha_min == 0, f"expected transparent background (alpha_min==0), got {alpha_min}"
     assert alpha_max > 0, "image is fully transparent"
 
+    if check_only:
+        target = OUT / ASSET_NAME
+        ok = target.exists()
+        print(f"[check-only] no write. target={target} exists={ok} "
+              f"size={final.size} mode={final.mode} alpha_min={alpha_min} alpha_max={alpha_max}")
+        sys.exit(0 if ok else 1)
+
+    OUT.mkdir(parents=True, exist_ok=True)
     final.save(OUT / ASSET_NAME)
     print(OUT / ASSET_NAME)
     print(f"size={final.size} mode={final.mode} alpha_min={alpha_min} alpha_max={alpha_max}")
