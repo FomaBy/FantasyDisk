@@ -152,3 +152,14 @@ Status 2026-06-29: implemented, pushed, and ready for QA on branch
 - Disk cleanup: generated `.import` / `.uid` sidecars from this worktree were
   removed/restored; `.godot/` cache is transient and must be removed before
   final handoff/push report.
+
+## QA-Вердикт
+Статус: PASSED
+
+Проверено в чистом worktree от origin/dev (commits 6619b579 + aac518b4, оба is-ancestor origin/dev).
+Интеграция: 682-ассеты (level_up_scrum682/*) + 525-хелперы (_attribute_influence_text /
+_attribute_upgrade_preview_lines / STAT_DERIVED_PREVIEW) + formula-driven effect-preview
+(LevelUpRewardEffectPreview, derived_parameters before/after) реализованы, имена узлов сохранены.
+Гейты: runtime_smoke_ui_test PASS; ui_no_overlap_matrix_test — 0 level_up-ошибок (12 codex-фейлов
+= посторонний SCRUM-684); runtime_smoke_test — level-up ассерты прошли, стоп на чужом codex back-button
+(SCRUM-438/684, line 6957), не на 683. Matrix-дамп: level_up contained @1152/1280/1600/1920/2560/3840.
