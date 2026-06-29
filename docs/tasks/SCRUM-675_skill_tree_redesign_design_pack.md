@@ -65,3 +65,20 @@ QA: claude-qa-scrum675
 - Генератор tools/build_scrum675_skill_tree_frames.py — локальный (PIL, без сети),
   py_compile OK.
 - Готово к интеграции SCRUM-676.
+
+## QA-Вердикт reverify (2026-06-29)
+
+Статус: PASSED
+QA: qa-claude-monitor + subagent
+
+Проверено:
+- `docs/design/mockups/scrum675_skill_tree_2k/` содержит `mockup_composite.png`,
+  `debug_overlay.png`, `layout.json`, `ui_plan.json`, `visual_frame_zone_audit.md`.
+- `layout.json` и `ui_plan.json` парсятся.
+- `visual_frame_zone_audit.md` GREEN.
+- `assets/sprites/ui/skill_tree/` содержит 12 PNG и 12 matching `.png.import`.
+- Все 12 PNG — RGBA, corner alpha = 0.
+- `python3 -m py_compile tools/build_scrum675_skill_tree_frames.py` PASS.
+
+Риски: интеграция в runtime не проверялась намеренно, это scope SCRUM-676.
+Disk cleanup: none created; `tools/__pycache__` absent.
