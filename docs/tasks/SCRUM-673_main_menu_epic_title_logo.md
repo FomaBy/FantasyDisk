@@ -1,6 +1,6 @@
 # Design+Backend Task: SCRUM-673 — Эпический лого-тайтл главного меню
 
-Статус: Контроль качества (re-submit 2026-06-29 после фикса SCRUM-680)
+Статус: done (re-submit в QA 2026-06-29 после фикса SCRUM-680)
 Контур: Claude
 Owner: design+backend
 Jira: SCRUM-673

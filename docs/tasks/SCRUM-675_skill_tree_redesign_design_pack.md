@@ -1,6 +1,6 @@
 # Design Task: SCRUM-675 — Дерево умений, полный редизайн (дизайн-пакет)
 
-Статус: Контроль качества (design-pack готов 2026-06-29)
+Статус: done (design-pack в QA 2026-06-29)
 Контур: Claude (design)
 Owner: design
 Jira: SCRUM-675 (blocks SCRUM-676)
