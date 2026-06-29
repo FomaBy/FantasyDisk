@@ -1,6 +1,6 @@
 # Design+Backend Task: SCRUM-673 — Эпический лого-тайтл главного меню
 
-Статус: todo
+Статус: QA FAILED (2026-06-29, bug SCRUM-680)
 Контур: Claude
 Owner: design+backend
 Jira: SCRUM-673
@@ -63,3 +63,22 @@ Dungeons & Dragons и общей стилистике нашей игры (тё�
 - `scripts/ui_screens.gd`
 - `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (+ `.import`, `.uid`)
 - `tools/build_main_menu_title_logo.py`
+
+## QA-Вердикт (2026-06-29)
+
+Статус: FAILED
+Проверено:
+- `origin/dev` актуален; executor commit observed: `13451fb7`.
+- `assets/sprites/ui/main_menu_title.png` exists, RGBA 720x300, transparent corners.
+- `tools/generate_main_menu_title.py --check-only` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` PASS.
+
+Блокеры:
+- Runtime node name is `MainMenuTitleLogo`, but acceptance requires preserving `MainMenuTitleLabel`.
+- Independent QA geometry check found the logo rect (`x=56..616`, `y=48..281`) overlaps main-menu buttons on 1152x648-style layout; existing matrix tests do not cover title-vs-menu overlap.
+- Runtime loads `res://assets/sprites/ui/main_menu_title.png`, while the spec requires `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` with sidecars.
+- Generator present is `tools/generate_main_menu_title.py`, while the spec requires `tools/build_main_menu_title_logo.py`.
+
+Баги: `SCRUM-680`.
+Disk cleanup: none created.
