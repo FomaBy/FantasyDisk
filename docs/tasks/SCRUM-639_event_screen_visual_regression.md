@@ -1,6 +1,6 @@
 # SCRUM-639 - Event Screen Visual Regression
 
-Статус: review
+Статус: done
 Контур: Codex
 Owner: Codex backend/UI fix worker
 Thread/Worker: codex-backend-fix-scrum639-event-screen
@@ -47,5 +47,5 @@ as the lone arrow over an otherwise empty gray interior.
 - `tests/design_review_screenshot_capture_test.gd` fails under `--headless`
   because the dummy renderer returns null viewport textures. The same script was
   run without `--headless` in this macOS checkout and produced the fixed PNGs.
-- Disk cleanup: pending until commit/push, then remove `.godot/` and generated
-  import/cache sidecars from this disposable clone.
+- Disk cleanup: removed generated `.import`/`.uid` sidecars and `.godot/`
+  import cache from `/Users/sergeyfomin/Documents/FantasyDisk-SCRUM-639`.

@@ -2892,5 +2892,10 @@
   "key": "SCRUM-671",
   "status": "Контроль качества",
   "desc_hash": "593065eaac2a899c0c7b3764c05e5b09"
+ },
+ "SCRUM-639_event_screen_visual_regression.md": {
+  "key": "SCRUM-639",
+  "status": "Контроль качества",
+  "desc_hash": "796f631627e71dde61c8120390979f38"
  }
 }
