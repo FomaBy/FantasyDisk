@@ -323,6 +323,25 @@ const PROGRESSION_CLASS_PANEL_CONTENT := Vector4(104.0, 42.0, 42.0, 42.0)
 const PROGRESSION_POINTS_BADGE_CONTENT := Vector4(20.0, 18.0, 20.0, 28.0)
 const PROGRESSION_TOOLTIP_MARGINS := Vector4(58.0, 58.0, 76.0, 76.0)
 const PROGRESSION_TOOLTIP_CONTENT := Vector4(84.0, 78.0, 112.0, 100.0)
+# SCRUM-676: ассеты переделанной раскладки древа умений (дизайн-пак SCRUM-675).
+# Используются на НОВЫХ элементах (классовый dropdown + попап, поп-ап очков, рамки
+# путей) — стилбоксы тест-привязанных панелей остаются на progression/*-фреймах.
+const SKILL_TREE_FRAME_DIR := "res://assets/sprites/ui/skill_tree/"
+const SKILL_TREE_CLASS_SELECT_PATH := SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_class_select.png"
+const SKILL_TREE_CLASS_POPUP_PATH := SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_class_popup.png"
+const SKILL_TREE_POINTS_BTN_PATH := SKILL_TREE_FRAME_DIR + "ui_btn_skill_points.png"
+const SKILL_TREE_PATH_FRAMES := {
+	"wealth": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_wealth.png",
+	"lore": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_lore.png",
+	"might": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_might.png",
+	"endure": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_endure.png",
+}
+const SKILL_TREE_CLASS_SELECT_MARGINS := Vector4(40.0, 32.0, 40.0, 32.0)
+const SKILL_TREE_CLASS_SELECT_CONTENT := Vector4(28.0, 18.0, 28.0, 18.0)
+const SKILL_TREE_CLASS_POPUP_MARGINS := Vector4(72.0, 78.0, 72.0, 78.0)
+const SKILL_TREE_CLASS_POPUP_CONTENT := Vector4(54.0, 56.0, 54.0, 56.0)
+const SKILL_TREE_PATH_FRAME_MARGINS := Vector4(40.0, 56.0, 40.0, 60.0)
+const SKILL_TREE_PATH_FRAME_CONTENT := Vector4(16.0, 18.0, 16.0, 18.0)
 const CODEX_FRAME_DIR := "res://assets/sprites/ui/frames/codex/"
 const CODEX_MAIN_PANEL_PATH := MINIMAL_MODAL_PATH
 const CODEX_SECTION_PANEL_PATH := MINIMAL_PANEL_PATH
@@ -349,23 +368,74 @@ const CODEX_TOOLTIP_CONTENT := Vector4(68.0, 46.0, 68.0, 41.0)
 const CODEX_TAB_MARGINS := Vector4(42.0, 20.0, 42.0, 20.0)
 const CODEX_TAB_CONTENT := Vector4(24.0, 14.0, 24.0, 14.0)
 const CODEX_V2_BASE_SIZE := Vector2(1920.0, 1080.0)
+# SCRUM-684: поля вокруг всей кодекс-композиции, чтобы рамка не клипалась краем экрана.
+const CODEX_V2_SCREEN_INSET := Vector2(28.0, 30.0)
 const CODEX_V2_OUTER_FRAME_RECT := Rect2(24.0, 20.0, 1872.0, 1040.0)
-const CODEX_V2_HEADER_TITLE_SAFE := Rect2(112.0, 74.0, 1120.0, 64.0)
-const CODEX_V2_BACK_BUTTON_SAFE := Rect2(1684.0, 60.0, 126.0, 96.0)
+# SCRUM-684: заголовок и кнопку «назад» опускаем в тёмно-багровую безопасную
+# зону main_shell, ниже верхней руной-полосы и угловых золотых кронштейнов.
+const CODEX_V2_HEADER_TITLE_SAFE := Rect2(196.0, 116.0, 1040.0, 60.0)
+const CODEX_V2_BACK_BUTTON_SAFE := Rect2(1636.0, 104.0, 168.0, 84.0)
 const CODEX_V2_NAV_PANEL_RECT := Rect2(72.0, 170.0, 304.0, 872.0)
 const CODEX_V2_NAV_SAFE := Rect2(88.0, 198.0, 258.0, 720.0)
 const CODEX_V2_LIST_PANEL_RECT := Rect2(388.0, 170.0, 835.0, 872.0)
 const CODEX_V2_DETAIL_PANEL_RECT := Rect2(1242.0, 170.0, 606.0, 872.0)
 const CODEX_V2_PORTRAIT_SAFE := Rect2(1396.0, 226.0, 320.0, 300.0)
 const CODEX_V2_CHIP_ROW_SAFE := Rect2(1298.0, 548.0, 486.0, 80.0)
-const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(722.0, 110.0)
-const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(36.0, 26.0, 40.0, 24.0)
+const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(722.0, 132.0)
+const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(48.0, 26.0, 52.0, 24.0)
 const CODEX_V2_MAIN_PANEL_MARGINS := Vector4(48.0, 44.0, 72.0, 38.0)
 const CODEX_V2_MAIN_PANEL_CONTENT := Vector4(72.0, 64.0, 72.0, 36.0)
 const CODEX_V2_NAV_PANEL_CONTENT := Vector4(16.0, 28.0, 30.0, 124.0)
 const CODEX_V2_LIST_PANEL_CONTENT := Vector4(36.0, 34.0, 63.0, 42.0)
 const CODEX_V2_DETAIL_PANEL_CONTENT := Vector4(48.0, 44.0, 44.0, 48.0)
 const CODEX_V2_TOOLTIP_CONTENT := Vector4(20.0, 28.0, 18.0, 34.0)
+# SCRUM-684: Dark Fantasy pixel-art кодекс (Pixel Lab). Рамки нарисованы в
+# малом нативном размере, поэтому НЕ масштабируем texture-margins по display
+# (это бы пересекало 9-slice). Фиксированные margins измерены прямо в исходных
+# PNG: ширина орнамента в пикселях источника. content = texture + воздух, чтобы
+# текст/иконки никогда не садились на орнаментную рамку (frame safe-area rule).
+const CODEX_PL_FRAME_DIR := "res://assets/sprites/ui/frames/codex_pl/"
+# fit/ — копии рамок, обрезанные по непрозрачному bbox (орнамент заполняет холст,
+# без прозрачных полей), чтобы 9-slice и content-margins ложились корректно.
+const CODEX_PL_FIT_DIR := CODEX_PL_FRAME_DIR + "fit/"
+const CODEX_PL_MAIN_PATH := CODEX_PL_FIT_DIR + "codex_pl_main_shell.png"
+const CODEX_PL_NAV_PATH := CODEX_PL_FIT_DIR + "codex_pl_nav_panel.png"
+const CODEX_PL_LIST_PATH := CODEX_PL_FIT_DIR + "codex_pl_grid_panel.png"
+const CODEX_PL_DETAIL_PATH := CODEX_PL_FIT_DIR + "codex_pl_detail_panel.png"
+const CODEX_PL_ENTRY_CARD_PATH := CODEX_PL_FIT_DIR + "codex_pl_entry_card.png"
+const CODEX_PL_CATEGORY_BUTTON_PATH := CODEX_PL_FIT_DIR + "codex_pl_category_button.png"
+const CODEX_PL_BACK_BUTTON_PATH := CODEX_PL_FIT_DIR + "codex_pl_back_button.png"
+# texture-margins (9-slice corner zones), измерены в обрезанных fit-PNG
+const CODEX_PL_MAIN_TEX := Vector4(68.0, 50.0, 64.0, 50.0)
+const CODEX_PL_NAV_TEX := Vector4(40.0, 100.0, 40.0, 102.0)
+const CODEX_PL_LIST_TEX := Vector4(52.0, 74.0, 54.0, 50.0)
+const CODEX_PL_DETAIL_TEX := Vector4(58.0, 50.0, 58.0, 50.0)
+const CODEX_PL_ENTRY_CARD_TEX := Vector4(18.0, 14.0, 18.0, 12.0)
+const CODEX_PL_CATEGORY_BUTTON_TEX := Vector4(50.0, 18.0, 18.0, 17.0)
+const CODEX_PL_BACK_BUTTON_TEX := Vector4(10.0, 18.0, 20.0, 18.0)
+# content-margins (display px) — куда ложится контент, с воздухом от орнамента
+const CODEX_PL_MAIN_CONTENT := Vector4(96.0, 78.0, 96.0, 64.0)
+const CODEX_PL_NAV_CONTENT := Vector4(40.0, 130.0, 40.0, 132.0)
+const CODEX_PL_LIST_CONTENT := Vector4(74.0, 96.0, 76.0, 64.0)
+const CODEX_PL_DETAIL_CONTENT := Vector4(78.0, 70.0, 76.0, 66.0)
+const CODEX_PL_ENTRY_CARD_CONTENT := Vector4(34.0, 26.0, 34.0, 22.0)
+const CODEX_PL_CATEGORY_BUTTON_CONTENT := Vector4(96.0, 30.0, 40.0, 30.0)
+const CODEX_PL_BACK_BUTTON_CONTENT := Vector4(28.0, 30.0, 38.0, 30.0)
+# SCRUM-684: текст карточек-строк сидит на пергаменте → тёмные тона, не свет-на-свет.
+const CODEX_PL_CARD_TITLE_COLOR := Color(0.28, 0.13, 0.06, 1.0)
+const CODEX_PL_CARD_BODY_COLOR := Color(0.34, 0.24, 0.15, 1.0)
+const CODEX_PL_CARD_ACCENT_COLOR := Color(0.20, 0.34, 0.14, 1.0)
+# Текст в detail-панели поверх рунического пергамента → тёмно-коричневый.
+const CODEX_PL_DETAIL_TITLE_COLOR := Color(0.30, 0.12, 0.05, 1.0)
+const CODEX_PL_DETAIL_BODY_COLOR := Color(0.20, 0.13, 0.07, 1.0)
+const CODEX_PL_ICONS := {
+	"characters": CODEX_PL_FRAME_DIR + "codex_pl_icon_characters.png",
+	"monsters": CODEX_PL_FRAME_DIR + "codex_pl_icon_monsters.png",
+	"artifacts": CODEX_PL_FRAME_DIR + "codex_pl_icon_artifacts.png",
+	"stats": CODEX_PL_FRAME_DIR + "codex_pl_icon_stats.png",
+	"glossary": CODEX_PL_FRAME_DIR + "codex_pl_icon_glossary.png",
+	"ascensions": CODEX_PL_FRAME_DIR + "codex_pl_icon_ascensions.png",
+}
 const REWARD_FRAME_DIR := "res://assets/sprites/ui/frames/rewards/"
 const REWARD_CARD_PATH := MINIMAL_CARD_PATH
 const REWARD_CARD_HOVER_PATH := MINIMAL_CARD_PATH
@@ -1860,6 +1930,19 @@ func _show_skill_tree_screen() -> void:
 	points_badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	header.add_child(points_badge)
 	points_badge.add_child(points_label)
+	# SCRUM-676: отдельная кнопка-«?» объяснения очков (поп-ап появляется по клику).
+	var points_help_button := Button.new()
+	points_help_button.name = "SkillTreePointsInfoButton"
+	points_help_button.text = "?"
+	points_help_button.custom_minimum_size = Vector2(64.0, 64.0)
+	points_help_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	points_help_button.focus_mode = Control.FOCUS_ALL
+	points_help_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	points_help_button.tooltip_text = "Как работают очки умений"
+	points_help_button.add_theme_font_size_override("font_size", 28)
+	points_help_button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.52, 1.0))
+	_apply_skill_tree_text_button_theme(points_help_button, _skill_tree_points_button_style)
+	header.add_child(points_help_button)
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "SkillTreeBackButton"
 	_set_action_button_size(back_button, 260.0)
@@ -1891,29 +1974,48 @@ func _show_skill_tree_screen() -> void:
 	var class_margin := MarginContainer.new()
 	class_panel.add_child(class_margin)
 	var class_box := VBoxContainer.new()
-	class_box.add_theme_constant_override("separation", 5)
+	class_box.add_theme_constant_override("separation", 8)
 	class_margin.add_child(class_box)
 	var class_header := Label.new()
 	class_header.name = "SkillTreeClassHeader"
-	class_header.text = "Классы"
+	class_header.text = "Класс"
 	class_header.add_theme_font_size_override("font_size", 18)
 	class_header.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
 	class_box.add_child(class_header)
+	# SCRUM-676: вместо постоянного Label-списка — селектор класса (dropdown) +
+	# попап с применёнными бонусами. Источник данных — class_unlocked_tiers.
+	var class_id := str(game.selected_character_id)
+	var class_config: Dictionary = game.PROGRESSION_DATA.character_config(class_id)
+	var class_title := str(class_config.get("title", class_id))
+	var class_selector := OptionButton.new()
+	class_selector.name = "SkillTreeClassSelector"
+	class_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	class_selector.focus_mode = Control.FOCUS_ALL
+	class_selector.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	class_selector.add_theme_font_size_override("font_size", 17)
+	class_selector.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62, 1.0))
+	class_selector.add_item("«%s»" % class_title)
+	class_selector.add_theme_stylebox_override("normal", _skill_tree_class_select_style())
+	class_selector.add_theme_stylebox_override("hover", _skill_tree_class_select_style(Color(1.06, 1.04, 0.92, 1.0)))
+	class_selector.add_theme_stylebox_override("pressed", _skill_tree_class_select_style(Color(0.90, 0.88, 0.80, 1.0)))
+	class_selector.add_theme_stylebox_override("focus", _skill_tree_class_select_style(Color(1.10, 1.06, 0.94, 1.0)))
+	class_box.add_child(class_selector)
 	var class_progress := Label.new()
 	class_progress.name = "SkillTreeClassProgress"
 	class_progress.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	class_progress.add_theme_font_size_override("font_size", 15)
 	class_progress.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 0.95))
 	class_box.add_child(class_progress)
-	var class_bonus_list := Label.new()
-	class_bonus_list.name = "SkillTreeClassBonusList"
-	class_bonus_list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	class_bonus_list.add_theme_font_size_override("font_size", 13)
-	class_bonus_list.add_theme_color_override("font_color", Color(0.78, 0.94, 0.82, 0.95))
-	class_box.add_child(class_bonus_list)
-	var class_id := str(game.selected_character_id)
-	var class_config: Dictionary = game.PROGRESSION_DATA.character_config(class_id)
-	var class_title := str(class_config.get("title", class_id))
+	var class_bonus_button := Button.new()
+	class_bonus_button.name = "SkillTreeClassBonusButton"
+	class_bonus_button.text = "Показать бонусы класса"
+	class_bonus_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	class_bonus_button.focus_mode = Control.FOCUS_ALL
+	class_bonus_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	class_bonus_button.add_theme_font_size_override("font_size", 15)
+	class_bonus_button.add_theme_color_override("font_color", Color(0.86, 1.0, 0.90, 1.0))
+	_apply_skill_tree_text_button_theme(class_bonus_button, _skill_tree_class_select_style)
+	class_box.add_child(class_bonus_button)
 	var class_wins: int = game.META_PROGRESSION.class_boss_wins(game.meta_state, class_id)
 	var class_unlocked: int = game.META_PROGRESSION.class_level(game.meta_state, class_id)
 	var class_next: Dictionary = game.META_PROGRESSION.class_next_threshold(game.meta_state, class_id)
@@ -1923,14 +2025,26 @@ func _show_skill_tree_screen() -> void:
 	else:
 		class_text += " Следующий бонус — на %d победах: %s (%s)." % [int(class_next.get("wins", 0)), str(class_next.get("title", "")), str(class_next.get("desc", ""))]
 	class_progress.text = class_text
+	# Текст применённых бонусов класса (рендерится внутри попапа).
 	var unlocked_tiers: Array = game.META_PROGRESSION.class_unlocked_tiers(game.meta_state, class_id)
+	var class_bonus_text := ""
 	if unlocked_tiers.is_empty():
-		class_bonus_list.text = "Открытых классовых бонусов пока нет. Победи босса этим героем, чтобы начать его личную ветку."
+		class_bonus_text = "Открытых классовых бонусов пока нет. Победи босса этим героем, чтобы начать его личную ветку."
 	else:
 		var bonus_lines := PackedStringArray()
 		for tier in unlocked_tiers:
 			bonus_lines.append("%s: %s" % [str(tier.get("title", "")), str(tier.get("desc", ""))])
-		class_bonus_list.text = "\n".join(bonus_lines)
+		class_bonus_text = "\n".join(bonus_lines)
+	# Попап применённых бонусов класса (скрыт по умолчанию, не влияет на overlap-проверки).
+	var class_popup := _make_skill_tree_popup(root, "SkillTreeClassBonusPopup", "Бонусы класса «%s»" % class_title, class_bonus_text, _skill_tree_class_popup_style())
+	class_bonus_button.pressed.connect(func() -> void:
+		class_popup.visible = not class_popup.visible
+	)
+	# Попап-объяснение очков умений.
+	var points_popup := _make_skill_tree_popup(root, "SkillTreePointsInfoPopup", "Очки умений", "Очки умений зарабатываются за победы над боссами. Тратьте их на узлы веток: каждый следующий узел требует открытого предыдущего. Покупки сохраняются между забегами.", _skill_tree_class_popup_style())
+	points_help_button.pressed.connect(func() -> void:
+		points_popup.visible = not points_popup.visible
+	)
 
 	var scroll := ScrollContainer.new()
 	scroll.name = "SkillTreeBranchScroll"
@@ -1982,22 +2096,32 @@ func _show_skill_tree_screen() -> void:
 		var branch_id: String = str(branch)
 		var branch_panel := PanelContainer.new()
 		branch_panel.name = "SkillTreeBranchPanel_%s" % branch_id
-		branch_panel.custom_minimum_size = Vector2(164.0, 430.0)
+		# SCRUM-676: компактнее по ширине (футпринт уменьшен 164→132), сохраняем
+		# тест-привязанную progression-рамку на самой панели.
+		branch_panel.custom_minimum_size = Vector2(132.0, 412.0)
 		branch_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		branch_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		branch_panel.add_theme_stylebox_override("panel", _progression_branch_panel_style())
 		branches_row.add_child(branch_panel)
+		# SCRUM-676: каждый путь в собственной рамке из дизайн-пака SCRUM-675.
+		var path_frame := PanelContainer.new()
+		path_frame.name = "SkillTreePathFrame_%s" % branch_id
+		path_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		path_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		path_frame.add_theme_stylebox_override("panel", _skill_tree_path_frame_style(branch_id))
+		branch_panel.add_child(path_frame)
 		var col := VBoxContainer.new()
 		col.name = "SkillTreeBranchContent_%s" % branch_id
 		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		col.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		col.add_theme_constant_override("separation", 6)
-		branch_panel.add_child(col)
+		path_frame.add_child(col)
 		var branch_title := Label.new()
 		branch_title.text = str(game.META_PROGRESSION.SKILL_BRANCH_TITLES.get(branch_id, branch_id))
 		branch_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		branch_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		branch_title.add_theme_font_size_override("font_size", 17)
+		# SCRUM-676: заголовок пути крупнее для читаемости.
+		branch_title.add_theme_font_size_override("font_size", 20)
 		branch_title.add_theme_color_override("font_color", Color(0.96, 0.88, 0.54, 1.0))
 		col.add_child(branch_title)
 		for node in game.META_PROGRESSION.branch_nodes(branch_id):
@@ -2033,7 +2157,8 @@ func _show_skill_tree_screen() -> void:
 			node_title.text = str(node_data["title"])
 			node_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			node_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			node_title.add_theme_font_size_override("font_size", 12)
+			# SCRUM-676: подписи узлов крупнее для читаемости (12→14 / 10→12).
+			node_title.add_theme_font_size_override("font_size", 14)
 			node_title.add_theme_color_override("font_color", Color(0.82, 0.84, 0.90, 0.95))
 			node_box.add_child(node_title)
 			var node_desc := Label.new()
@@ -2041,7 +2166,7 @@ func _show_skill_tree_screen() -> void:
 			node_desc.text = str(node_data["desc"])
 			node_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			node_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			node_desc.add_theme_font_size_override("font_size", 10)
+			node_desc.add_theme_font_size_override("font_size", 12)
 			node_desc.add_theme_color_override("font_color", Color(0.70, 0.74, 0.80, 0.9))
 			node_box.add_child(node_desc)
 			nb.set_meta("title_label", node_title)
@@ -2140,6 +2265,10 @@ func _show_codex_screen() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
 
+	# SCRUM-684: весь кодекс — pixel-art; nearest наследуется на все панели/
+	# карточки/иконки/фон, чтобы апскейл вьюпорта был хрустящим без блюра.
+	root.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+
 	_add_screen_background(root, "codex")
 
 	var main_panel := PanelContainer.new()
@@ -2158,7 +2287,7 @@ func _show_codex_screen() -> void:
 
 	var back_button := _make_compact_button("←")
 	back_button.name = "CodexBackButton"
-	_apply_overhaul_2k_button_theme(back_button, "codex_back_btn", CODEX_V2_BACK_BUTTON_SAFE.size)
+	_apply_codex_pl_button_theme(back_button, CODEX_PL_BACK_BUTTON_PATH, CODEX_PL_BACK_BUTTON_TEX, CODEX_PL_BACK_BUTTON_CONTENT)
 	back_button.tooltip_text = "Назад в меню"
 	back_button.add_theme_font_size_override("font_size", 28)
 	back_button.pressed.connect(_show_main_menu)
@@ -2207,6 +2336,7 @@ func _show_codex_screen() -> void:
 		tab_button.add_theme_font_size_override("font_size", 15)
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		tabs_row.add_child(tab_button)
+		_codex_pl_add_category_emblem(tab_button, section_id)
 
 	_codex_v2_apply_layout(layout_entries)
 	_codex_v2_apply_tab_metrics(tabs_row)
@@ -2311,14 +2441,31 @@ func _codex_portrait(row: HBoxContainer, sprite_path: String, size: Vector2) -> 
 	return texture
 
 
+# SCRUM-684: лёгкая parchment-inset подложка для портрета/иконки в строке-
+# карточке кодекса. БЕЗ чёрного MINIMAL_FIELD-бокса — тонкая тёмно-коричневая
+# рамка с малой непрозрачностью, чтобы эмблема читалась, но не пробивала пергамент.
+func _codex_pl_entry_icon_slot_style() -> StyleBox:
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color(0.24, 0.16, 0.10, 0.30)
+	box.border_color = Color(0.42, 0.30, 0.16, 0.70)
+	box.set_border_width_all(2)
+	box.set_corner_radius_all(6)
+	box.set_content_margin_all(3.0)
+	return box
+
+
 func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, node_name := "CodexPortraitSlot") -> void:
 	var slot := PanelContainer.new()
 	slot.name = node_name
 	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var slot_padding := Vector2(16.0, 16.0) * _codex_v2_scale()
+	# Слот в карточке-строке: фикс-квадрат, по вертикали ужимается и центрируется,
+	# чтобы НИКОГДА не превышать высоту пергамента карточки (не торчал сверху/снизу).
+	var slot_padding := Vector2(8.0, 8.0) * _codex_v2_scale()
 	slot.custom_minimum_size = size + slot_padding
 	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	slot.add_theme_stylebox_override("panel", _codex_portrait_slot_style())
+	slot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	slot.add_theme_stylebox_override("panel", _codex_pl_entry_icon_slot_style())
+	_codex_pl_make_nearest(slot)
 	row.add_child(slot)
 	var portrait := TextureRect.new()
 	portrait.name = "%sTexture" % node_name
@@ -2329,6 +2476,7 @@ func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, nod
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED if node_name == "CodexPortraitSlot" else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.texture = texture
+	_codex_pl_make_nearest(portrait)
 	slot.add_child(portrait)
 
 
@@ -2348,7 +2496,10 @@ func _codex_v2_scale(viewport_size := Vector2.ZERO) -> float:
 	var size := viewport_size
 	if size == Vector2.ZERO:
 		size = game.get_viewport().get_visible_rect().size if game != null and game.get_viewport() != null else CODEX_V2_BASE_SIZE
-	return minf(size.x / CODEX_V2_BASE_SIZE.x, size.y / CODEX_V2_BASE_SIZE.y)
+	# SCRUM-684: вписываем 1920×1080-композицию в инсет-область вьюпорта (поля со
+	# всех сторон), чтобы орнамент рамки main_shell не упирался в край экрана.
+	var avail := size - CODEX_V2_SCREEN_INSET * 2.0
+	return minf(avail.x / CODEX_V2_BASE_SIZE.x, avail.y / CODEX_V2_BASE_SIZE.y)
 
 
 func _codex_v2_scaled_margins(margins: Vector4, viewport_size := Vector2.ZERO) -> Vector4:
@@ -2397,8 +2548,8 @@ func _codex_v2_apply_tab_metrics(tabs_row: VBoxContainer) -> void:
 	if tabs_row == null:
 		return
 	var scale := _codex_v2_scale()
-	var tab_size := Vector2(250.0, 86.0) * scale
-	var separation: int = maxi(8, int(round(12.0 * scale)))
+	var tab_size := Vector2(258.0, 92.0) * scale
+	var separation: int = maxi(8, int(round(14.0 * scale)))
 	tabs_row.add_theme_constant_override("separation", separation)
 	for child in tabs_row.get_children():
 		var button := child as Button
@@ -2406,7 +2557,41 @@ func _codex_v2_apply_tab_metrics(tabs_row: VBoxContainer) -> void:
 			continue
 		button.custom_minimum_size = tab_size
 		button.add_theme_font_size_override("font_size", 13 if scale < 0.8 else 15)
-		_apply_overhaul_2k_button_theme(button, "codex_tab_btn", tab_size)
+		# Полоса слева под эмблему: ruby-rivet (≈левый tex-margin) + сама эмблема.
+		# content-margins масштабируем под размер плитки (display px); левый margin
+		# уводит подпись правее эмблемы, остальные кладут текст в parchment-зону.
+		var px := tab_size.x / 470.0
+		var rivet_end := CODEX_PL_CATEGORY_BUTTON_TEX.x * px
+		var emblem := clampf(tab_size.y * 0.50, 40.0, 52.0)
+		var btn_content := Vector4(rivet_end + emblem + 12.0 * scale, 26.0 * px, 30.0 * px, 26.0 * px)
+		_apply_codex_pl_button_theme(button, CODEX_PL_CATEGORY_BUTTON_PATH, CODEX_PL_CATEGORY_BUTTON_TEX, btn_content)
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		_codex_pl_layout_category_emblem(button, tab_size, rivet_end, emblem)
+
+
+# SCRUM-684: эмблема категории (golden helm / dragon skull / …) в безопасной
+# зоне плитки, левее подписи; не заходит на ruby-rivet и орнамент рамки.
+func _codex_pl_add_category_emblem(button: Button, section_id: String) -> void:
+	if button == null or not CODEX_PL_ICONS.has(section_id):
+		return
+	var icon := TextureRect.new()
+	icon.name = "CodexCategoryEmblem"
+	icon.texture = game._cached_texture(str(CODEX_PL_ICONS[section_id]))
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_codex_pl_make_nearest(icon)
+	button.add_child(icon)
+
+
+func _codex_pl_layout_category_emblem(button: Button, tab_size: Vector2, rivet_end: float, emblem: float) -> void:
+	var icon := button.get_node_or_null("CodexCategoryEmblem") as TextureRect
+	if icon == null:
+		return
+	# Эмблема сразу после ruby-rivet, по центру по вертикали; подпись её не перекрывает
+	# (левый content-margin кнопки = rivet_end + emblem + воздух).
+	icon.size = Vector2(emblem, emblem)
+	icon.position = Vector2(rivet_end + 6.0, (tab_size.y - emblem) * 0.5)
 
 
 func _codex_section_title(section_id: String) -> String:
@@ -2458,7 +2643,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 22 if _codex_v2_scale() < 0.8 else 28)
-	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
+	title.add_theme_color_override("font_color", CODEX_PL_DETAIL_TITLE_COLOR)
 	box.add_child(title)
 
 	var texture := detail_data.get("texture", null) as Texture2D
@@ -2495,7 +2680,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 			chip.text = str(chip_text)
 			chip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			chip.add_theme_font_size_override("font_size", 12 if _codex_v2_scale() < 0.8 else 14)
-			chip.add_theme_color_override("font_color", Color(0.82, 0.88, 1.0, 1.0))
+			chip.add_theme_color_override("font_color", Color(0.42, 0.20, 0.10, 1.0))
 			chip_row.add_child(chip)
 
 	var term_id := str(detail_data.get("term_id", ""))
@@ -2517,7 +2702,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	text_scroll.add_child(text_box)
 	var lines: Array = detail_data.get("body_lines", [])
 	for line in lines:
-		_codex_label(text_box, str(line), 13 if _codex_v2_scale() < 0.8 else 15, Color(0.92, 0.89, 0.80, 1.0))
+		_codex_label(text_box, str(line), 13 if _codex_v2_scale() < 0.8 else 15, CODEX_PL_DETAIL_BODY_COLOR)
 
 
 func _make_glossary_term_button(term_id: String, popup_context := false) -> Button:
@@ -2655,14 +2840,15 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			"chips": ["Герой", str(character.get("id", ""))],
 			"body_lines": body_lines,
 		})
-		_codex_portrait(row, str(character["sprite"]), Vector2(62, 62) * _codex_v2_scale())
+		_codex_portrait(row, str(character["sprite"]), Vector2(58, 58) * _codex_v2_scale())
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		text_box.add_theme_constant_override("separation", 4)
 		row.add_child(text_box)
-		_codex_label(text_box, str(character["title"]), 18, Color(0.96, 0.88, 0.40, 1.0))
-		_codex_label(text_box, str(character["playstyle"]), 13, Color(0.94, 0.90, 0.81, 1.0))
-		_codex_label(text_box, "Сильное: %s" % character["strengths"], 12, Color(0.62, 0.88, 0.58, 1.0))
+		_codex_label(text_box, str(character["title"]), 18, CODEX_PL_CARD_TITLE_COLOR)
+		_codex_label(text_box, str(character["playstyle"]), 13, CODEX_PL_CARD_BODY_COLOR)
+		_codex_label(text_box, "Сильное: %s" % character["strengths"], 12, CODEX_PL_CARD_ACCENT_COLOR)
 
 
 func _build_codex_monsters(list: VBoxContainer) -> void:
@@ -2685,13 +2871,14 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 				"chips": [str(kind_titles[kind]), str(monster["id"])],
 				"body_lines": body_lines,
 			})
-			_codex_portrait(row, str(monster["sprite"]), Vector2(62, 62) * _codex_v2_scale())
+			_codex_portrait(row, str(monster["sprite"]), Vector2(58, 58) * _codex_v2_scale())
 			var text_box := VBoxContainer.new()
 			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			text_box.add_theme_constant_override("separation", 3)
 			row.add_child(text_box)
-			_codex_label(text_box, "%s   (%s)" % [monster["title"], monster["id"]], 17, Color(0.96, 0.88, 0.40, 1.0))
-			_codex_label(text_box, str(monster["behavior"]), 12, Color(0.94, 0.90, 0.81, 1.0))
+			_codex_label(text_box, "%s   (%s)" % [monster["title"], monster["id"]], 17, CODEX_PL_CARD_TITLE_COLOR)
+			_codex_label(text_box, str(monster["behavior"]), 12, CODEX_PL_CARD_BODY_COLOR)
 
 
 func _build_codex_artifacts(list: VBoxContainer) -> void:
@@ -2715,12 +2902,13 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 			"chips": [_artifact_tier_text(artifact_definition), str(artifact["id"])],
 			"body_lines": body_lines,
 		})
-		_codex_icon_slot(row, icon_texture, Vector2(54, 54) * _codex_v2_scale(), "CodexArtifactIconSlot")
+		_codex_icon_slot(row, icon_texture, Vector2(52, 52) * _codex_v2_scale(), "CodexArtifactIconSlot")
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(text_box)
-		_codex_label(text_box, "%s   [%s]" % [artifact["title"], _artifact_tier_text(artifact_definition)], 15, Color(0.96, 0.88, 0.40, 1.0))
-		_codex_label(text_box, str(artifact["description"]), 12, Color(0.92, 0.88, 0.79, 1.0))
+		_codex_label(text_box, "%s   [%s]" % [artifact["title"], _artifact_tier_text(artifact_definition)], 15, CODEX_PL_CARD_TITLE_COLOR)
+		_codex_label(text_box, str(artifact["description"]), 12, CODEX_PL_CARD_BODY_COLOR)
 
 
 func _build_codex_ascensions(list: VBoxContainer) -> void:
@@ -2734,9 +2922,10 @@ func _build_codex_ascensions(list: VBoxContainer) -> void:
 		})
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(text_box)
-		_codex_label(text_box, "%d. %s" % [entry["level"], entry["title"]], 18, Color(1.0, 0.74, 0.30, 1.0))
-		_codex_label(text_box, str(entry["description"]), 13, Color(0.93, 0.89, 0.80, 1.0))
+		_codex_label(text_box, "%d. %s" % [entry["level"], entry["title"]], 18, CODEX_PL_CARD_TITLE_COLOR)
+		_codex_label(text_box, str(entry["description"]), 13, CODEX_PL_CARD_BODY_COLOR)
 
 
 func _build_codex_stats(list: VBoxContainer) -> void:
@@ -6971,7 +7160,9 @@ func _add_screen_background(root: Control, screen_background_id: String) -> void
 	var shade := ColorRect.new()
 	shade.name = "ScreenBackgroundReadableShade"
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.0, 0.0, 0.0, 0.44)
+	# SCRUM-684: кодекс рисуется поверх детального гримуар-разворота — гасим фон
+	# сильнее, чтобы орнаментные панели читались как передний план.
+	shade.color = Color(0.02, 0.015, 0.03, 0.62) if screen_background_id == "codex" else Color(0.0, 0.0, 0.0, 0.44)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
@@ -7793,6 +7984,20 @@ func _overhaul_2k_frame_style(slot: String, display_size: Vector2, tint := Color
 	return _global_texture_style(str(OVERHAUL_2K_FRAME_PATHS[slot]), texture_margins, tint, content_margins, false)
 
 
+# SCRUM-684: Фикс-margins styling для Dark Fantasy pixel-art кодекса. Без
+# масштабирования по display_size — texture_margins берутся РОВНО в пикселях
+# источника, иначе 9-slice пересекает орнамент малых текстур.
+func _codex_pl_frame_style(path: String, tex_margins: Vector4, content: Vector4, tint := Color.WHITE) -> StyleBox:
+	return _global_texture_style(path, tex_margins, tint, content, false)
+
+
+# Pixel-art рамки/иконки кодекса масштабируются вьюпортом — рендерим nearest,
+# чтобы не было блюра (дефолт проекта = linear).
+func _codex_pl_make_nearest(node: CanvasItem) -> void:
+	if node != null:
+		node.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+
+
 func _overhaul_2k_content_margins(slot: String, display_size: Vector2) -> Vector4:
 	if not OVERHAUL_2K_FRAME_SOURCE_SIZE.has(slot):
 		return Vector4.ZERO
@@ -7815,6 +8020,22 @@ func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size:
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+# SCRUM-684: Dark Fantasy кодекс — кнопки (категория-плитка / назад) на фикс-
+# margins pixel-art рамках, с теми же state-tint'ами что у overhaul-кнопок.
+func _apply_codex_pl_button_theme(button: Button, path: String, tex_margins: Vector4, content: Vector4) -> void:
+	button.add_theme_stylebox_override("normal", _codex_pl_frame_style(path, tex_margins, content))
+	button.add_theme_stylebox_override("hover", _codex_pl_frame_style(path, tex_margins, content, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("focus", _codex_pl_frame_style(path, tex_margins, content, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("pressed", _codex_pl_frame_style(path, tex_margins, content, Color(0.90, 0.84, 0.76, 1.0)))
+	button.add_theme_stylebox_override("disabled", _codex_pl_frame_style(path, tex_margins, content, Color(0.58, 0.58, 0.58, 0.82)))
+	button.add_theme_color_override("font_color", Color(0.98, 0.92, 0.72, 1.0))
+	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+	_codex_pl_make_nearest(button)
 
 
 func _economy_panel_style() -> StyleBox:
@@ -8183,19 +8404,19 @@ func _codex_main_panel_style() -> StyleBox:
 
 
 func _codex_v2_main_panel_style() -> StyleBox:
-	return _overhaul_2k_frame_style("codex_main", CODEX_V2_OUTER_FRAME_RECT.size)
+	return _codex_pl_frame_style(CODEX_PL_MAIN_PATH, CODEX_PL_MAIN_TEX, CODEX_PL_MAIN_CONTENT)
 
 
 func _codex_v2_nav_panel_style() -> StyleBox:
-	return _overhaul_2k_frame_style("codex_nav", CODEX_V2_NAV_PANEL_RECT.size)
+	return _codex_pl_frame_style(CODEX_PL_NAV_PATH, CODEX_PL_NAV_TEX, CODEX_PL_NAV_CONTENT)
 
 
 func _codex_v2_list_panel_style() -> StyleBox:
-	return _overhaul_2k_frame_style("codex_list", CODEX_V2_LIST_PANEL_RECT.size)
+	return _codex_pl_frame_style(CODEX_PL_LIST_PATH, CODEX_PL_LIST_TEX, CODEX_PL_LIST_CONTENT)
 
 
 func _codex_v2_detail_panel_style() -> StyleBox:
-	return _overhaul_2k_frame_style("codex_detail", CODEX_V2_DETAIL_PANEL_RECT.size)
+	return _codex_pl_frame_style(CODEX_PL_DETAIL_PATH, CODEX_PL_DETAIL_TEX, CODEX_PL_DETAIL_CONTENT)
 
 
 func _codex_section_panel_style() -> StyleBox:
@@ -8204,7 +8425,7 @@ func _codex_section_panel_style() -> StyleBox:
 
 func _codex_entry_card_style(hovered := false) -> StyleBox:
 	var tint := BUTTON_NEUTRAL_HOVER_TINT if hovered else Color.WHITE
-	return _overhaul_2k_frame_style("codex_entry_card", CODEX_V2_ENTRY_CARD_SOURCE_SIZE, tint)
+	return _codex_pl_frame_style(CODEX_PL_ENTRY_CARD_PATH, CODEX_PL_ENTRY_CARD_TEX, CODEX_PL_ENTRY_CARD_CONTENT, tint)
 
 
 func _codex_portrait_slot_style() -> StyleBox:
@@ -8233,6 +8454,77 @@ func _progression_points_badge_style() -> StyleBox:
 
 func _progression_tooltip_style() -> StyleBox:
 	return _global_texture_style(PROGRESSION_TOOLTIP_PATH, PROGRESSION_TOOLTIP_MARGINS, Color.WHITE, PROGRESSION_TOOLTIP_CONTENT)
+
+
+# SCRUM-676: стили переделанной раскладки (ассеты SCRUM-675).
+func _skill_tree_class_select_style(tint := Color.WHITE) -> StyleBox:
+	return _global_texture_style(SKILL_TREE_CLASS_SELECT_PATH, SKILL_TREE_CLASS_SELECT_MARGINS, tint, SKILL_TREE_CLASS_SELECT_CONTENT)
+
+
+func _skill_tree_class_popup_style() -> StyleBox:
+	return _global_texture_style(SKILL_TREE_CLASS_POPUP_PATH, SKILL_TREE_CLASS_POPUP_MARGINS, Color.WHITE, SKILL_TREE_CLASS_POPUP_CONTENT)
+
+
+func _skill_tree_points_button_style(tint := Color.WHITE) -> StyleBox:
+	return _global_texture_style(SKILL_TREE_POINTS_BTN_PATH, SKILL_TREE_CLASS_SELECT_MARGINS, tint, SKILL_TREE_CLASS_SELECT_CONTENT)
+
+
+func _skill_tree_path_frame_style(branch_id: String) -> StyleBox:
+	var path := str(SKILL_TREE_PATH_FRAMES.get(branch_id, SKILL_TREE_PATH_FRAMES.get("might")))
+	return _global_texture_style(path, SKILL_TREE_PATH_FRAME_MARGINS, Color.WHITE, SKILL_TREE_PATH_FRAME_CONTENT)
+
+
+func _make_skill_tree_popup(parent: Control, popup_name: String, title: String, body: String, style: StyleBox) -> PanelContainer:
+	# SCRUM-676: переиспользуемый попап древа умений (классовые бонусы / объяснение
+	# очков). Скрыт по умолчанию — не участвует в overlap/visible-проверках QA.
+	var popup := PanelContainer.new()
+	popup.name = popup_name
+	popup.visible = false
+	popup.custom_minimum_size = Vector2(560.0, 240.0)
+	popup.set_anchors_preset(Control.PRESET_CENTER)
+	popup.add_theme_stylebox_override("panel", style)
+	popup.mouse_filter = Control.MOUSE_FILTER_STOP
+	parent.add_child(popup)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 12)
+	popup.add_child(col)
+	var heading := Label.new()
+	heading.name = "%sTitle" % popup_name
+	heading.text = title
+	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	heading.add_theme_font_size_override("font_size", 22)
+	heading.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	col.add_child(heading)
+	var text := Label.new()
+	text.name = "%sBody" % popup_name
+	text.text = body
+	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	text.add_theme_font_size_override("font_size", 16)
+	text.add_theme_color_override("font_color", Color(0.86, 0.94, 0.84, 0.96))
+	col.add_child(text)
+	var close_button := Button.new()
+	close_button.name = "%sClose" % popup_name
+	close_button.text = "Закрыть"
+	close_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	close_button.focus_mode = Control.FOCUS_ALL
+	close_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	close_button.add_theme_font_size_override("font_size", 15)
+	close_button.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62, 1.0))
+	_apply_skill_tree_text_button_theme(close_button, _skill_tree_class_select_style)
+	close_button.pressed.connect(func() -> void:
+		popup.visible = false
+	)
+	col.add_child(close_button)
+	return popup
+
+
+func _apply_skill_tree_text_button_theme(button: Button, style_fn: Callable) -> void:
+	button.add_theme_stylebox_override("normal", style_fn.call(Color.WHITE))
+	button.add_theme_stylebox_override("hover", style_fn.call(Color(1.06, 1.04, 0.92, 1.0)))
+	button.add_theme_stylebox_override("pressed", style_fn.call(Color(0.90, 0.88, 0.80, 1.0)))
+	button.add_theme_stylebox_override("focus", style_fn.call(Color(1.10, 1.06, 0.94, 1.0)))
+	button.add_theme_stylebox_override("disabled", style_fn.call(Color(0.70, 0.72, 0.78, 0.82)))
 
 
 func _progression_node_style(status: String, focused := false) -> StyleBox:

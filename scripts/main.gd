@@ -79,7 +79,7 @@ const MAIN_MENU_BACKGROUND := "res://assets/backgrounds/main_menu_epic_battle_v3
 const SCREEN_BACKGROUND_PATHS := {
 	"system": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"settings": "res://assets/backgrounds/ui/ui_backdrop_settings.png",
-	"codex": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+	"codex": "res://assets/sprites/ui/frames/codex_pl/codex_pl_backdrop.png",
 	"hero_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"weapon_select": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
 	"pause_stats": "res://assets/backgrounds/ui/ui_backdrop_system_cathedral.png",

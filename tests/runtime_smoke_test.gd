@@ -50,13 +50,15 @@ const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_
 const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
 # SCRUM-578: экран «Смерть» — per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820).
 const RESULT_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_result_panel.png"
-const CODEX_MAIN_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_main.png"
-const CODEX_NAV_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_nav.png"
-const CODEX_LIST_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_list.png"
-const CODEX_DETAIL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_detail.png"
-const CODEX_ENTRY_CARD_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_entry_card.png"
-const CODEX_TAB_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_tab_btn.png"
-const CODEX_BACK_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_back_btn.png"
+# SCRUM-684: Dark Fantasy pixel-art кодекс (Pixel Lab); рамки берутся из
+# codex_pl/fit/ (обрезанные по орнаменту 9-slice копии).
+const CODEX_MAIN_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_main_shell.png"
+const CODEX_NAV_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_nav_panel.png"
+const CODEX_LIST_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_grid_panel.png"
+const CODEX_DETAIL_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_detail_panel.png"
+const CODEX_ENTRY_CARD_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_entry_card.png"
+const CODEX_TAB_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_category_button.png"
+const CODEX_BACK_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_back_button.png"
 const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
 const REWARD_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
 const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
@@ -6983,7 +6985,11 @@ func _visible_texture_button_count(parent: Node) -> int:
 
 func _codex_v2_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
 	var base_size := Vector2(1920.0, 1080.0)
-	var scale := minf(viewport_size.x / base_size.x, viewport_size.y / base_size.y)
+	# SCRUM-684: композиция вписана в инсет-область вьюпорта (поля со всех сторон),
+	# чтобы рамка не клипалась краем экрана — повторяем тот же инсет, что в коде.
+	var screen_inset := Vector2(28.0, 30.0)
+	var avail := viewport_size - screen_inset * 2.0
+	var scale := minf(avail.x / base_size.x, avail.y / base_size.y)
 	var offset := (viewport_size - base_size * scale) * 0.5
 	return Rect2(offset + base_rect.position * scale, base_rect.size * scale)
 
@@ -7135,7 +7141,6 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		"CodexNavPanel": CODEX_NAV_TEXTURE_2K,
 		"CodexContent": CODEX_LIST_TEXTURE_2K,
 		"CodexDetailPanel": CODEX_DETAIL_TEXTURE_2K,
-		"CodexPortraitSlot": MINIMAL_FIELD_TEXTURE,
 		"CodexDetailPortraitSlot": MINIMAL_FIELD_TEXTURE,
 	}
 	for node_name in expected_codex_textures.keys():
@@ -7146,6 +7151,13 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		var actual_path := _stylebox_texture_path(panel.get_theme_stylebox("panel"))
 		if actual_path != str(expected_codex_textures[node_name]):
 			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
+			return
+	# SCRUM-684: строковый портрет-слот больше НЕ чёрный MINIMAL_FIELD-бокс —
+	# это лёгкая parchment-inset StyleBoxFlat-подложка (без texture-стиля).
+	if default_portrait != null:
+		var slot_style := default_portrait.get_theme_stylebox("panel")
+		if not (slot_style is StyleBoxFlat):
+			_fail("Expected SCRUM-684 Codex entry portrait slot to use a parchment inset StyleBoxFlat, not a dark field texture.")
 			return
 	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != CODEX_ENTRY_CARD_TEXTURE_2K:
 		_fail("Expected SCRUM-574 Codex list cards to use the Codex @2K entry card frame.")
@@ -7627,6 +7639,8 @@ func _expected_weapon_sprite_path(weapon_id: String) -> String:
 
 
 func _expected_character_portrait_path(character_id: String) -> String:
+	# Портрет берётся из данных персонажа (sprite_path), а не из жёсткого пути —
+	# полное-кадровые портреты живут в разных подкаталогах (…/<id>_pixellab/…).
 	var config: Dictionary = ProgressionData.character_config(character_id)
 	var path := str(config.get("sprite_path", config.get("sprite", "")))
 	if path != "":
