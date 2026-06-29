@@ -2897,5 +2897,10 @@
   "key": "SCRUM-639",
   "status": "Контроль качества",
   "desc_hash": "796f631627e71dde61c8120390979f38"
+ },
+ "SCRUM-672_ui_visual_release_gate.md": {
+  "key": "SCRUM-672",
+  "status": "Контроль качества",
+  "desc_hash": "722e510aa4eaf692bb0561052935822f"
  }
 }
