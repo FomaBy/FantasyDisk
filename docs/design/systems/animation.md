@@ -189,7 +189,17 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   Animation smoke passes; full runtime smoke is currently blocked by an
   unrelated Hero Select v3 back-button UI assertion. The bundled manifest
   validator still reports the expected missing `attack_primary` rows because it
-  does not yet understand `attack_required=false`.
+  predates the SCRUM-473 no-attack scope.
+- 2026-06-29 PixelLab pass promotes Dark Mage Hero Select/runtime portrait to
+  PixelLab v3 static 8-direction rotations from character
+  `59825867-7d36-44fd-8ed9-83ae2c98272f`. Source rotations live under
+  `assets/sprites/characters/pixellab/dark_mage/`; normalized 512x512 runtime
+  frames live under `assets/sprites/characters/full_frame/dark_mage_pixellab/`.
+  `assets/sprites/characters/dark_mage_spriteframes.tres` now exposes
+  one-frame `idle`, `move`, `walk`, plus `idle/move/walk_<direction>` rows for
+  all 8 directions so Hero Select rotates clockwise like Berserk. This pass did
+  not request PixelLab movement animations; true multi-frame walk/move remains a
+  future Animator/PixelLab follow-up.
 - SCRUM-475 (2026-06-19) delivers the Design-source blocker for the next
   Skeleton2D/Bone2D source gate: Dark Mage and Knight now have transparent
   skeleton-source packages under

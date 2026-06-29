@@ -1,0 +1,39 @@
+{
+  "character_id": "dark_mage",
+  "pixellab_character_id": "59825867-7d36-44fd-8ed9-83ae2c98272f",
+  "generated_at": "2026-06-29",
+  "mode": "v3",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "source_files": {
+    "south": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south.png",
+    "south-east": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south-east.png",
+    "east": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_east.png",
+    "north-east": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north-east.png",
+    "north": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north.png",
+    "north-west": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north-west.png",
+    "west": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_west.png",
+    "south-west": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south-west.png"
+  },
+  "runtime_files": {
+    "south": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png",
+    "south-east": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south-east.png",
+    "east": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_east.png",
+    "north-east": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_north-east.png",
+    "north": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_north.png",
+    "north-west": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_north-west.png",
+    "west": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_west.png",
+    "south-west": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south-west.png"
+  },
+  "notes": "PixelLab create_character static 8-direction rotations; no animation frames requested. Runtime move/walk rows are one-frame aliases for Hero Select clockwise preview until a future animation pass."
+}

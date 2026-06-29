@@ -211,7 +211,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Области поражения, лучи и проклятия.",
 		"strengths": "площадь, периодический урон, пробивание.",
 		"weaknesses": "хрупкий.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png",
 	},
 	"guitarist": {
 		"id": "guitarist",

@@ -5,6 +5,12 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- PixelLab Dark Mage static 8-direction character rotations: generated a new
+  v3 PixelLab character (`59825867-7d36-44fd-8ed9-83ae2c98272f`), stored source
+  rotations under `assets/sprites/characters/pixellab/dark_mage/`, normalized
+  runtime frames under `assets/sprites/characters/full_frame/dark_mage_pixellab/`,
+  and rebuilt `dark_mage_spriteframes.tres` with one-frame directional
+  idle/move/walk rows so Hero Select rotates the Dark Mage portrait clockwise.
 
 ### Changed
 

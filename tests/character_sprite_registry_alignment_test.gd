@@ -3,7 +3,7 @@ extends SceneTree
 const ProgressionData := preload("res://scripts/progression_data.gd")
 
 const EXPECTED_SPRITES := {
-	"berserk": "res://assets/sprites/characters/full_frame/berserk/berserk_idle_00.png",
+	"berserk": "res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south.png",
 	"soldier": "res://assets/sprites/characters/full_frame/soldier/soldier_idle_00.png",
 	"thief": "res://assets/sprites/characters/full_frame/thief/thief_idle_00.png",
 	"elementalist": "res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_00.png",
@@ -12,7 +12,7 @@ const EXPECTED_SPRITES := {
 	"biologist": "res://assets/sprites/characters/full_frame/biologist/biologist_idle_00.png",
 	"robot": "res://assets/sprites/characters/full_frame/robot/robot_idle_00.png",
 	"engineer": "res://assets/sprites/characters/full_frame/engineer/engineer_idle_00.png",
-	"dark_mage": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_00.png",
+	"dark_mage": "res://assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png",
 	"guitarist": "res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_00.png",
 	"assassin": "res://assets/sprites/characters/full_frame/assassin/assassin_idle_00.png",
 	"ranger": "res://assets/sprites/characters/full_frame/ranger/ranger_idle_00.png",
@@ -40,7 +40,10 @@ func _initialize() -> void:
 			errors.append("%s sprite_path mismatch: got %s, expected %s." % [character_id, actual, expected])
 		if actual.is_empty() or not ResourceLoader.exists(actual):
 			errors.append("%s sprite_path does not exist: %s." % [character_id, actual])
-		if not actual.contains("/full_frame/%s/" % character_id) or not actual.ends_with("_idle_00.png"):
+		if character_id == "berserk" or character_id == "dark_mage":
+			if not actual.contains("/full_frame/%s_pixellab/" % character_id) or not actual.ends_with("_idle_south.png"):
+				errors.append("%s sprite_path must point to the PixelLab south idle portrait, got %s." % [character_id, actual])
+		elif not actual.contains("/full_frame/%s/" % character_id) or not actual.ends_with("_idle_00.png"):
 			errors.append("%s sprite_path must point to the cleaned full-frame idle portrait, got %s." % [character_id, actual])
 		dump_lines.append("- `%s`: `%s`" % [character_id, actual])
 	for character_id in EXPECTED_SPRITES.keys():
