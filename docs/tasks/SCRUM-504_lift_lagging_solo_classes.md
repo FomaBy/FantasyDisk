@@ -146,3 +146,20 @@ Validation:
 - **knight (1063, 0.72×) и biologist (973, 0.66×)** тоже проваливают 0.75×-гейт, хотя knight не в списке тикета. Если после правки целевой четвёрки spread всё ещё >2.0× или новое «дно» — это knight — рассмотреть лёгкий подъём и его (knight не в заголовке, но в духе задачи; согласовать объём с PM, не раздувать без нужды).
 - **Связанные тикеты**: SCRUM-503 (P0 cap берсерк-хаммера, уже в HEAD) — этот тикет P1-продолжение того же балансового прохода. Эпик балансового аудита классов.
 - **Изоляция типов урона (SCRUM-524)**: правки идут через профили/скейлеры и per-weapon multiplier — НЕ через cross-attribute splash. Инвариант «атрибут типа X меняет только урон типа X» держится тестом `damage_type_isolation_test.gd`; не вводить новых межтиповых вкладов.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-06-29 (claude-qa-504, clean worktree от origin/dev 13451fb7)
+
+Influence: cdb2909a + ac7116c3 в origin/dev (подтверждено merge-base --is-ancestor).
+
+Gates (чистый worktree, --import, один Godot): class_damage_table_3variants_test PASS,
+global_damage_balance_smoke_test PASS (51 пара, худшее CCT +22%), comfort_band_cross_class_gate PASS,
+damage_type_isolation_test PASS, weapon_tuning_application_test PASS (51/51, runtime-субчек НЕ скипнут),
+summon_weapon_crowd_floor_test PASS 3/3.
+
+Acceptance (Python поверх live character_balance_dps.csv, median best lvl20_ideal_1t=274.63, floor 205.97):
+guitarist 278.69 (1.01x), robot 268.68 (0.98x), priest 269.21 (0.98x), druid 274.22 (1.00x) — все ≥ floor,
+вне нижней четвёрки (dark_mage/knight/engineer/soldier). Spread excl berserk = 1.980x ≤ 2.0x. AoE-профиль не просел.
+
+Повторное всплытие в QA — board-sync revert из-за отсутствия этого блока, не регресс. Закрывать прямым API-transition.
