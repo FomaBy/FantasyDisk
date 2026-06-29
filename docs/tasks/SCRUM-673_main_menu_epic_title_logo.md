@@ -83,19 +83,14 @@ Dungeons & Dragons и общей стилистике нашей игры (тё�
 
 ## QA-Вердикт (2026-06-29)
 
-Статус: FAILED
-Проверено:
-- `origin/dev` актуален; executor commit observed: `13451fb7`.
-- `assets/sprites/ui/main_menu_title.png` exists, RGBA 720x300, transparent corners.
-- `tools/generate_main_menu_title.py --check-only` PASS.
-- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` PASS.
-- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` PASS.
-
-Блокеры:
-- Runtime node name is `MainMenuTitleLogo`, but acceptance requires preserving `MainMenuTitleLabel`.
-- Independent QA geometry check found the logo rect (`x=56..616`, `y=48..281`) overlaps main-menu buttons on 1152x648-style layout; existing matrix tests do not cover title-vs-menu overlap.
-- Runtime loads `res://assets/sprites/ui/main_menu_title.png`, while the spec requires `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` with sidecars.
-- Generator present is `tools/generate_main_menu_title.py`, while the spec requires `tools/build_main_menu_title_logo.py`.
-
-Баги: `SCRUM-680`.
-Disk cleanup: none created.
+Статус: PASSED
+Проверено (origin/dev @ a7124daa; коммиты 13451fb7 → 91b7d4ce):
+- Блокер 1: узел `MainMenuTitleLabel` восстановлен как TextureRect (ui_screens.gd:445-446).
+- Блокер 2: ассет `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (720x300, +.import, uid://cpht5yhj88htw) в origin/dev; старый `assets/sprites/ui/main_menu_title.png` (+.import) удалён; код грузит новый путь (ui_screens.gd:457).
+- Блокер 3: генератор переименован в `tools/build_main_menu_title_logo.py`; старого `tools/generate_main_menu_title.py` нет.
+- Блокер 4: лого не перекрывает ни одну из 6 кнопок (тест title-vs-каждая кнопка).
+Гейты (fdengine, чистый worktree от origin/dev, после --import):
+- tests/main_menu_title_no_overlap_test.gd PASS (6 buttons clear).
+- tests/ui_no_overlap_matrix_test.gd PASS.
+- tests/runtime_smoke_ui_test.gd PASS.
+Влито в origin/dev: да. Блокеры SCRUM-680 закрыты. Disk cleanup: worktree удалён.
