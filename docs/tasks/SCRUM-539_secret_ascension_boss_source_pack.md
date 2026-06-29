@@ -1,6 +1,6 @@
 # SCRUM-539 Secret Ascension Boss Source Pack
 
-Status: done
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 Contour: Codex
 Owner: Design/Codex
 Thread: SCRUM-539 worktree delivery

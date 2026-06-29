@@ -1,7 +1,7 @@
 # SCRUM-494: EV-ребаланс наград событий: таблица risk/cost -> reward
 
 Jira: SCRUM-494 · Роль: backend (balance) · Контур: claude · Приоритет: P1 · foma · Эпик: SCRUM-476 (carry-over)
-Статус: Готово (QA PASSED 2026-06-27)
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 > QA-Вердикт: **PASSED** (2026-06-27). Прогнаны headless (Godot 4.6.3):
 > runtime_smoke / event_data_smoke (12 событий) / progression_economy /

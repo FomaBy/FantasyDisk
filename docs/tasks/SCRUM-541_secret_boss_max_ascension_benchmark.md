@@ -1,6 +1,6 @@
 # SCRUM-541 Secret Boss: max Ascension Act 3 follow-up
 
-Статус: Готово (QA PASS 2026-06-28; SCRUM-656 blocker reverified).
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 Owner: backend-loop-rawls-peer. Locked paths:
 `scripts/meta_progression.gd`, `scripts/main.gd`, `scripts/combat_director.gd`,

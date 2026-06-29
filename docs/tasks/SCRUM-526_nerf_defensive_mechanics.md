@@ -1,7 +1,7 @@
 # SCRUM-526: Нерф защитных механик: вампиризм / реген / абсорб (имба)
 
 Jira: SCRUM-526 · Роль: backend · Контур: claude · Приоритет: P1 · foma · Эпик: SCRUM-522 (Ребаланс боёвки и прогрессии)
-Статус: Готово (QA PASSED, dev 8ebe4d20; QA 2026-06-27)
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## QA-Вердикт: PASSED
 

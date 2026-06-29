@@ -1,6 +1,6 @@
 # SCRUM-587 - Input UX: Space opens level-up and is rebindable
 
-Status: Контроль качества
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 Owner: backend_scrum541_codex_20260628195911
 Role/lane: backend / codex
 

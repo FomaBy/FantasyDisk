@@ -1,6 +1,6 @@
 # SCRUM-665: Feedback Webhook In Player Builds
 
-Статус: review
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 Контур: Codex
 Owner: Backend/Codex
 Thread: backend_665_restart_codex

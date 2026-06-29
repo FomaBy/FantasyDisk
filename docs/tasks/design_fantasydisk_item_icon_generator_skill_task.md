@@ -1,10 +1,10 @@
 # SCRUM-514 — Codex skill: генератор артефактов, иконок характеристик/атрибутов и оружия
 
-- Jira: SCRUM-514
+Jira: SCRUM-514
 - Sprint: Спринт 0.1.7
 - Role: Design main / Codex
 - Owner/thread: 019eabf1-6d54-7561-8af9-ce25cdf483a9
-- Статус: done
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 - Контур: Codex
 - Locked paths:
   - `skills/codex/fantasydisk-item-icon-generator/`

@@ -6,6 +6,7 @@ Owner: Design / Codex
 Thread: SCRUM-539 worktree delivery
 Locked paths: docs/design/references/bosses/secret_ascension_boss/, assets/sprites/bosses/secret_ascension_boss*, assets/sprites/effects/secret_ascension_boss_*_telegraph.png, docs/design/previews/scrum539_secret_ascension_boss_*.png
 Jira: SCRUM-539
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## Result
 

@@ -1,6 +1,6 @@
 # SCRUM-560 - UI-редизайн: Главное меню (@2K)
 
-Статус: review
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 Owner: design-codex-auto-2
 Jira: https://fantasydisk.atlassian.net/browse/SCRUM-560
 Контур: Codex

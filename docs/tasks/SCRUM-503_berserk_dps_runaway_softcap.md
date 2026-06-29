@@ -1,7 +1,7 @@
 # SCRUM-503: Срезать runaway-множители Берсерка по живой матрице DPS (hammer-аутлаер 78x)
 
 Jira: SCRUM-503 · Роль: backend (balance) · Контур: codex · Приоритет: P0 · foma · Эпик: —
-Статус: review / готово к QA (2026-06-28 — backend continuation закрыл live pool DoT blocker SCRUM-533; см. результат ниже)
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## Что и зачем
 

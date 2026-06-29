@@ -1,7 +1,7 @@
 # SCRUM-514: Codex skill — генератор артефактов, иконок характеристик/атрибутов и оружия
 
 Jira: SCRUM-514 · Роль: Design main / Codex · Контур: design-main · Приоритет: P1 · foma · Эпик: SCRUM-216
-Статус: К выполнению (Задача) — QA: failed (2 бага, см. SCRUM-543)
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## Что и зачем
 

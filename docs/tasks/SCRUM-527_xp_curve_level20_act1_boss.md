@@ -1,7 +1,7 @@
 # SCRUM-527: Кривая опыта: ~20 lvl к боссу 1-го акта
 
 Jira: SCRUM-527 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: SCRUM-522
-Статус: Готово
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## QA 2026-06-28
 

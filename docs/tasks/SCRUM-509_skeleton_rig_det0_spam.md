@@ -1,7 +1,7 @@
 # SCRUM-509: Skeletal rig: устранить спам ERROR "det == 0" (affine_invert) при сборке рига
 
 Jira: SCRUM-509 · Роль: animator · Контур: codex · Приоритет: P1 · foma · Эпик: —
-Статус: Готово (QA PASSED 2026-06-27)
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## Что и зачем
 

@@ -1,6 +1,6 @@
 # SCRUM-540 Secret Ascension Boss Animation Pack
 
-Status: review
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 Contour: Codex
 Owner: Animator/Codex
 Thread: anim-loop-1

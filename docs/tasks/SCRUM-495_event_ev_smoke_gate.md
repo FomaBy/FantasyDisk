@@ -1,7 +1,7 @@
 # SCRUM-495: Балансный смоук-гейт на EV/ценность исходов событий
 
 Jira: SCRUM-495 · Роль: QA · Контур: claude · Приоритет: P2 · foma · Эпик: SCRUM-476 (carry-over)
-Статус: К выполнению
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## Что и зачем
 

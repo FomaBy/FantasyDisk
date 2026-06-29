@@ -2560,37 +2560,37 @@
  },
  "SCRUM-520_level_up_badge_popup.md": {
   "key": "SCRUM-520",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "f4ad3646a783e82aa98cfca0492cbd7f"
  },
  "SCRUM-509_skeleton_rig_det0_spam.md": {
   "key": "SCRUM-509",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "48b90eda65e97233b88211270445e17a"
  },
  "SCRUM-536_map_chest_artifact_icon.md": {
   "key": "SCRUM-536",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "ea5549ca682e8c4f78858f6702554175"
  },
  "SCRUM-537_route_map_chest_artifact_node.md": {
   "key": "SCRUM-537",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "d5d26c0b5b3df30672c4608a41bc64a6"
  },
  "SCRUM-524_damage_attribute_type_isolation.md": {
   "key": "SCRUM-524",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "a4d1832f581ac500eed9cfac0ed7941e"
  },
  "SCRUM-530_event_option_select_repro_fix.md": {
   "key": "SCRUM-530",
-  "status": "??????",
-  "desc_hash": "0b3a805bb61d4ddfe08de8b1bde11012"
+  "status": "Готово",
+  "desc_hash": "49eefea1eede3f41aa442895d867a0ea"
  },
  "SCRUM-526_nerf_defensive_mechanics.md": {
   "key": "SCRUM-526",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "fdf3345b871ca421535093cc729b2908"
  },
  "SCRUM-517_doctor_drain_regen_softcap.md": {
@@ -2600,27 +2600,27 @@
  },
  "SCRUM-523_typed_damage_color_coding.md": {
   "key": "SCRUM-523",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "5e086abb4245b381c911580e03a28404"
  },
  "SCRUM-538_acts_2_3_route_maps_bosses.md": {
   "key": "SCRUM-538",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "70a4bc282b28154d3ac90ff4f0aced4e"
  },
  "SCRUM-489_results_block_2k_coords.md": {
   "key": "SCRUM-489",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "aa73e445bec6b7d90efe71315299b0a5"
  },
  "SCRUM-545_berserk_hammer_radius_nerf.md": {
   "key": "SCRUM-545",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "9de5172752edc4313d68c6a7298a79d3"
  },
  "SCRUM-585_glossary_tooltip_redesign.md": {
   "key": "SCRUM-585",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "4256c8a113f7a067806131c0997e9a54"
  },
  "bug_scrum619_secret_encounter_artifact_key_unlock_task.md": {
@@ -2630,27 +2630,27 @@
  },
  "SCRUM-521_low_hp_red_vignette.md": {
   "key": "SCRUM-521",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "6964c18b445d870220e21de727085b9c"
  },
  "SCRUM-504_lift_lagging_solo_classes.md": {
   "key": "SCRUM-504",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "07a69dd6c54e7911d9ec226c4dfd2506"
  },
  "SCRUM-506_random_build_spread_compression.md": {
   "key": "SCRUM-506",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "8a7729dcd6bf59d8ecf1e2dc4d45f4f6"
  },
  "SCRUM-606_triggered_artifacts_existing_hooks.md": {
   "key": "SCRUM-606",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "87a3081c46d99bec54e1899a8e3a946c"
  },
  "SCRUM-609_curse_relic_tradeoff_artifacts.md": {
   "key": "SCRUM-609",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "c4ba7625186111e16f5476ada0041a6e"
  },
  "design_scrum586_stat_tooltip_2k_redesign_task.md": {
@@ -2660,23 +2660,23 @@
  },
  "SCRUM-588_levelup_toast_2k_redesign.md": {
   "key": "SCRUM-588",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "951334138b86f90b7f7fa1d1f494eba6"
  },
  "SCRUM-486_menu_nav_2k_asset_integration.md": {
   "key": "SCRUM-486",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "8da2b372234a07da31d6ddc2570ee50d"
  },
  "SCRUM-485_drawing_script_2k_coord_assets.md": {
   "key": "SCRUM-485",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "590a4641907ba3b06a1ca182b06fd1e3"
  },
  "SCRUM-509_anim_worker_a_reverify_2026-06-28.md": {
   "key": "SCRUM-509",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
-  "desc_hash": "edef7f9c2139ef86a268e6a65f605549"
+  "status": "Готово",
+  "desc_hash": "317d0a2e992c714714cb3c8ecbd3af1c"
  },
  "design_scrum571_reward_ui_2k_mockup_task.md": {
   "key": "SCRUM-571",
@@ -2690,7 +2690,7 @@
  },
  "SCRUM-528_elite_reward_only_on_kill.md": {
   "key": "SCRUM-528",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "70693595f4d9f5ae78af2cd2c9ea2dd3"
  },
  "SCRUM-590_victory_banner_2k_frame.md": {
@@ -2705,27 +2705,27 @@
  },
  "SCRUM-583_feedback_form_2k_task.md": {
   "key": "SCRUM-583",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "cc6b9433b005d6610527d19f16bd1d55"
  },
  "SCRUM-572_elite_artifact_reward_2k_design.md": {
   "key": "SCRUM-572",
-  "status": "РљРѕРЅС‚СЂРѕР»СЊ РєР°С‡РµСЃС‚РІР°",
+  "status": "Готово",
   "desc_hash": "fade7a34639ab0983f07f8a9ad3ffdc1"
  },
  "SCRUM-487_combat_block_2k_coords.md": {
   "key": "SCRUM-487",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "c406137bfc46a4f1424cba6417366678"
  },
  "SCRUM-541_secret_boss_max_ascension_benchmark.md": {
   "key": "SCRUM-541",
-  "status": "Контроль качества",
-  "desc_hash": "79a0586a022cf71493263434f7333bbc"
+  "status": "Готово",
+  "desc_hash": "46b68b037fc81e6bc11f3d91160941c8"
  },
  "SCRUM-488_progression_block_coords_2k.md": {
   "key": "SCRUM-488",
-  "status": "??????",
+  "status": "Готово",
   "desc_hash": "fe0bcf32a0e5c6396c2c2fe61e0ccd14"
  },
  "SCRUM-574_codex_2k_redesign.md": {
@@ -2735,68 +2735,68 @@
  },
  "SCRUM-498_offscreen_threat_indicators.md": {
   "key": "SCRUM-498",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "e79dc3892693f5cac3c437d4476ee5ee"
  },
  "SCRUM-629_event_screen_empty_panel.md": {
   "key": "SCRUM-629",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "3846ac71cb187677093a9f1b4bdf2ca5"
  },
  "SCRUM-499_route_node_preview.md": {
   "key": "SCRUM-499",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "89c7dd99978d1f05ca78fb37e3a99eab"
  },
  "SCRUM-500_triggered_artifacts.md": {
   "key": "SCRUM-500",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "9a791612e39395e3ac02081da31a6f3d"
  },
  "SCRUM-505_revive_summon_weapons.md": {
   "key": "SCRUM-505",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "7b6ea3aed683ae4e56f1f98283e7233a"
  },
  "SCRUM-508_event_risk_reward_ev_invariant.md": {
   "key": "SCRUM-508",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "abb0416857044abab54899d094c7bcbb"
  },
  "SCRUM-492_hero_select_v4_remove_dead_v3_code.md": {
   "key": "SCRUM-492",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "80e9f7de4b09a46aead0c1bad90006d0"
  },
  "SCRUM-493_dossier_weapon_row_stat_icons_bars.md": {
   "key": "SCRUM-493",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "0d8ccc0a2ae8197851d04442cd9e4eb5"
  },
  "SCRUM-501_expand_random_events_class_reactive.md": {
   "key": "SCRUM-501",
-  "status": "??????",
-  "desc_hash": "c00dc7ef75513a7aac22d166f4cf3f85"
+  "status": "Готово",
+  "desc_hash": "472cb65f8d31fee2b0cdb45b8fd04a7f"
  },
  "SCRUM-529_shop_node_completed_mark_with_return.md": {
   "key": "SCRUM-529",
-  "status": "???????? ????????",
+  "status": "Готово",
   "desc_hash": "75c03e1d5abfc5fb5af0da76c75494da"
  },
  "SCRUM-526_xp_money_curve_levelup_shop_frequency.md": {
   "key": "SCRUM-526",
-  "status": "??????",
+  "status": "Готово",
   "desc_hash": "86fd43a6bcf1c2cbe1c96bbe131a785c"
  },
  "SCRUM-527_xp_curve_level20_act1_boss.md": {
   "key": "SCRUM-527",
-  "status": "??????",
+  "status": "Готово",
   "desc_hash": "d684f771b2a076e6e96e5967fadb21cd"
  },
  "SCRUM-525_attribute_tooltip_influence_and_levelup_preview.md": {
   "key": "SCRUM-525",
-  "status": "??????",
-  "desc_hash": "09bee8a2941356266ea57e19caf9ca2a"
+  "status": "Готово",
+  "desc_hash": "1efb184279f8d10bf902de88900b4f65"
  },
  "SCRUM-515_hide_combat_weapon_visual.md": {
   "key": "SCRUM-515",
@@ -2815,8 +2815,8 @@
  },
  "SCRUM-587_input_level_up_space_rebind.md": {
   "key": "SCRUM-587",
-  "status": "Контроль качества",
-  "desc_hash": "ceac0df597ab3f66b4a73203e2cdbbe2"
+  "status": "Готово",
+  "desc_hash": "0e6242aac5a1d3c5c8a5347033fb15c9"
  },
  "design_text_buttons_unique_size_redraw_task.md": {
   "key": "SCRUM-657",
@@ -2902,5 +2902,140 @@
   "key": "SCRUM-672",
   "status": "Готово",
   "desc_hash": "bd213cbb50ffa682aac13443c45ac3b8"
+ },
+ "SCRUM-491_hero_select_v4_qa_acceptance.md": {
+  "key": "SCRUM-491",
+  "status": "Готово",
+  "desc_hash": "049975ae2b98215d3b8b7a24d0abddce"
+ },
+ "SCRUM-494_event_ev_rebalance.md": {
+  "key": "SCRUM-494",
+  "status": "Готово",
+  "desc_hash": "ca0b74fb09292613d919584ac0313e6e"
+ },
+ "SCRUM-495_event_ev_smoke_gate.md": {
+  "key": "SCRUM-495",
+  "status": "Готово",
+  "desc_hash": "014a9da8c2240938b95c5cbefd3640d9"
+ },
+ "SCRUM-496_skeleton_rig_mage_knight_runtime.md": {
+  "key": "SCRUM-496",
+  "status": "К выполнению",
+  "desc_hash": "b5b0d3e0ee1b52673de12e62a68f1dcd"
+ },
+ "SCRUM-502_run_summary_screen.md": {
+  "key": "SCRUM-502",
+  "status": "Готово",
+  "desc_hash": "003173d057966c928d4d124c27a5cd11"
+ },
+ "SCRUM-503_berserk_dps_runaway_softcap.md": {
+  "key": "SCRUM-503",
+  "status": "Готово",
+  "desc_hash": "ee5556ad71a2f88c311567c649e06fe0"
+ },
+ "SCRUM-507_calibrate_route_economy.md": {
+  "key": "SCRUM-507",
+  "status": "Готово",
+  "desc_hash": "6c182fa1a2b5fcaa511efffd3627c4e6"
+ },
+ "SCRUM-510_rig_det_regression_guard.md": {
+  "key": "SCRUM-510",
+  "status": "Готово",
+  "desc_hash": "45319066e75c8539c9881072f30fd25d"
+ },
+ "SCRUM-511_levelup_on_event_returns_to_event.md": {
+  "key": "SCRUM-511",
+  "status": "Готово",
+  "desc_hash": "6469fdf4a65079cae5eb0f104cbd0b05"
+ },
+ "SCRUM-513_skeleton_rig_into_repo.md": {
+  "key": "SCRUM-513",
+  "status": "Готово",
+  "desc_hash": "adf04ce425f40d0ea641e6a36a65f8f3"
+ },
+ "SCRUM-514_item_icon_generator_skill.md": {
+  "key": "SCRUM-514",
+  "status": "Готово",
+  "desc_hash": "ca7f241ea748f2138aeaff8c5f281e1b"
+ },
+ "SCRUM-516_ascension_5_steps_stronger_monsters.md": {
+  "key": "SCRUM-516",
+  "status": "Готово",
+  "desc_hash": "0b3a805bb61d4ddfe08de8b1bde11012"
+ },
+ "SCRUM-519_level_up_popup_badge.md": {
+  "key": "SCRUM-519",
+  "status": "Готово",
+  "desc_hash": "9569ee99ee5825469961e4fcf5c25ce0"
+ },
+ "SCRUM-531_berserk_v2_visual_redesign_source_pack.md": {
+  "key": "SCRUM-531",
+  "status": "Готово",
+  "desc_hash": "c09325952d3194394486e9671fba2f77"
+ },
+ "SCRUM-532_berserk_v2_move_attack_anim_pack.md": {
+  "key": "SCRUM-532",
+  "status": "К выполнению",
+  "desc_hash": "31e32729e7ced1a74cfe421b40e45fdf"
+ },
+ "SCRUM-539_secret_ascension_boss_source_pack.md": {
+  "key": "SCRUM-539",
+  "status": "Готово",
+  "desc_hash": "28d2e85eedcbf819193186e9e3e3488d"
+ },
+ "SCRUM-540_secret_ascension_boss_animation_pack.md": {
+  "key": "SCRUM-540",
+  "status": "Готово",
+  "desc_hash": "0bfb34098528eb62c1a6799c68d4d23a"
+ },
+ "SCRUM-553_puddle_ground_zlayer.md": {
+  "key": "SCRUM-553",
+  "status": "Готово",
+  "desc_hash": "035c8d6236ea208a3f898a2e7631bcb2"
+ },
+ "SCRUM-560_main_menu_2k_redesign.md": {
+  "key": "SCRUM-560",
+  "status": "Готово",
+  "desc_hash": "4d3f9a95cfd9ec39b276be7d9c6337ab"
+ },
+ "SCRUM-562_weapon_select_ui_2k.md": {
+  "key": "SCRUM-562",
+  "status": "Готово",
+  "desc_hash": "86ae54244a805a4de4d3ec062d36b888"
+ },
+ "SCRUM-635_jira_board_sync_safe_scope.md": {
+  "key": "SCRUM-635",
+  "status": "Готово",
+  "desc_hash": "fa62db2549b112f19d6400bdf0619183"
+ },
+ "SCRUM-665_feedback_webhook_player_builds.md": {
+  "key": "SCRUM-665",
+  "status": "Готово",
+  "desc_hash": "e3af11cd2d4d64390e7460c3f1b55d26"
+ },
+ "SCRUM-669_text_buttons_integration.md": {
+  "key": "SCRUM-669",
+  "status": "Готово",
+  "desc_hash": "a99dba3258cfea2f6424c5132512f5cf"
+ },
+ "SCRUM-673_main_menu_epic_title_logo.md": {
+  "key": "SCRUM-673",
+  "status": "К выполнению",
+  "desc_hash": "25305954879651f148b69e3584c04832"
+ },
+ "SCRUM-675_skill_tree_redesign_design_pack.md": {
+  "key": "SCRUM-675",
+  "status": "К выполнению",
+  "desc_hash": "671f3c0c37f7866988ed4e7c5408395b"
+ },
+ "SCRUM-676_skill_tree_relayout_backend.md": {
+  "key": "SCRUM-676",
+  "status": "К выполнению",
+  "desc_hash": "8268721667dab44cfb2e26f2e53fb00e"
+ },
+ "SCRUM-677_continue_run_title_restyle.md": {
+  "key": "SCRUM-677",
+  "status": null,
+  "desc_hash": null
  }
 }

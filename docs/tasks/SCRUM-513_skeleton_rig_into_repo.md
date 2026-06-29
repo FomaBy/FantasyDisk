@@ -1,7 +1,7 @@
 # SCRUM-513: Tech-debt: вынести скелетный риг из незакоммиченного рабочего дерева в репозиторий
 
 Jira: SCRUM-513 · Роль: backend · Контур: claude · Приоритет: P2 · foma · Эпик: —
-Статус: Контроль качества (re-verified — claude-sub-1, 2026-06-28)
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## Ре-верификация (claude-sub-1, 2026-06-28)
 

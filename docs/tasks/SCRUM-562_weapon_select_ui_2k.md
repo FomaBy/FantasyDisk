@@ -1,6 +1,6 @@
 # SCRUM-562 - Weapon Select UI @2K
 
-Status: done, ready for QA
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 Owner: Codex Design / design_562_codex562_201933
 Branch: codex/scrum-562-ui-texture-load
 Jira: SCRUM-562

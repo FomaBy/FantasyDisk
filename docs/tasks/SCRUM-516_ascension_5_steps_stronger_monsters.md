@@ -1,7 +1,7 @@
 # SCRUM-516: Возвышения: сократить до 5 ступеней и усилить рост монстров
 
 Jira: SCRUM-516 · Роль: backend · Контур: codex · Приоритет: P1 · foma · Эпик: SCRUM-214
-Статус: Готово (QA PASSED 2026-06-28; коммит 6fa31c72 на dev; follow-up c9951fad). Реализовано: ASCENSION_MODIFIERS 10→5 (монстры злее, кумулятив enemy_hp на L5=1.80), ASCENSION_LEVELS по 5 на класс, MAX_ASCENSION_LEVEL=5, ui /5, тесты под 5. Follow-up 2026-06-28: обновлены оставшиеся smoke/assert формулировки и дизайн-доки под cap 5. Evidence on current dev: `ascension_curve_balance_test`, `meta_progression_smoke_test`, `meta_points_per_ascension_test`, `meta_skill_tree_smoke_test`, `runtime_smoke_progression_economy_test`, `codex_data_smoke_test`, `rewards_data_integrity_test`, `progression_data_api_surface_test` passed on Godot 4.7 headless. Full `runtime_smoke_test` passed before latest UI/menu rebase, then fails on current dev in `_test_run_autosave_continue_prompt` (`Expected New Game choice to clear existing autosave`), outside SCRUM-516 ascension scope.
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## QA 2026-06-28
 

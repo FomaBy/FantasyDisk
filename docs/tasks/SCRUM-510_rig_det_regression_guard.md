@@ -1,7 +1,7 @@
 # SCRUM-510: Smoke: регресс-гард на нулевой рендер-спам (det==0 / bone-length warnings)
 
 Jira: SCRUM-510 · Роль: qa · Контур: claude · Приоритет: P2 · foma · Эпик: —
-Статус: К выполнению
+Статус: done (QA PASSED; PM sprint audit restored Jira Готово 2026-06-29)
 
 ## Что и зачем
 
