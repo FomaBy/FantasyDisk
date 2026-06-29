@@ -220,13 +220,14 @@ Project practices:
   карточки, рамки, панели или подложки поверх красивого layout, если пользователь
   явно не запросил новый дизайн-проход.
 - **Анимации персонажей/монстров/элиток/боссов — через скилл
-  `fantasydisk-animation-director`**
-  (Codex skill, `~/.codex/skills/fantasydisk-animation-director/`). Минимум для
-  каждой анимированной сущности: движение `move/walk` 5+ кадров и основная атака
-  `attack_primary` 5+ кадров. Для элиток и боссов обязательны плавные
-  full-frame sprite-sheet анимации без production cutout-разрезания статичного
-  спрайта, плюс отдельные attack-паттерны под разные skill/phase. Animator
-  валидирует manifest bundled-скриптом skill и прогоняет animation smoke.
+  `fantasydisk-pixellab-animation-integrator`**
+  (Codex skill, `~/.codex/skills/fantasydisk-pixellab-animation-integrator/`).
+  Основной путь: брать готовые idle/move анимации из PixelLab по tag/name,
+  импортировать 8 направлений, нормализовать full-frame PNG, собрать
+  `SpriteFrames`, подключить direction-aware movement/idle и animated Hero Select
+  preview. Минимум для каждой анимированной сущности: движение `move/walk` 5+
+  кадров; для playable character preview — clockwise 8-direction rotation на
+  экране выбора. Animator прогоняет focused animation/Hero Select smoke tests.
 - **Баланс классов и оружия — через скилл
   `fantasydisk-class-balance-director`**
   (Codex skill, `~/.codex/skills/fantasydisk-class-balance-director/`). Каждый

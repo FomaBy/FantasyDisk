@@ -1,0 +1,4 @@
+interface:
+  display_name: "FantasyDisk PixelLab Animation Integrator"
+  short_description: "Integrate PixelLab character animations into FantasyDisk."
+  default_prompt: "Use $fantasydisk-pixellab-animation-integrator to fetch PixelLab idle and movement animations, normalize frames, wire Godot SpriteFrames, directional movement, and Hero Select rotating previews for FantasyDisk characters."

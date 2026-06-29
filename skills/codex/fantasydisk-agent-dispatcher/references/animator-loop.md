@@ -5,7 +5,7 @@
 
 НЕ работай в грязном D:\FantasyDisk checkout. Создай чистый git worktree от свежего origin/dev в D:\FantasyDisk_agents\anim_loop_<id>. На каждый тикет: git fetch/pull --rebase origin dev, `PYTHONIOENCODING=utf-8`, `$env:OPENAI_API_KEY=[Environment]::GetEnvironmentVariable('OPENAI_API_KEY','User')`.
 
-Перед animation задачами прочитай skill `fantasydisk-animation-director`; для assets/sprites читай `fantasydisk-asset-generator` при необходимости. Минимум для анимированной сущности: move/walk 5+ кадров и attack_primary 5+ кадров, manifests/pivots/smoke tests where applicable.
+Перед animation задачами прочитай skill `fantasydisk-pixellab-animation-integrator`; для assets/sprites читай `fantasydisk-asset-generator` при необходимости. Основной путь: взять готовый PixelLab idle/move pack, импортировать 8 направлений, собрать SpriteFrames, подключить directional movement/idle и Hero Select preview. Минимум для анимированной сущности: move/walk 5+ кадров; attack/phase подключай только если они есть в PixelLab pack или явно указаны в задаче.
 
 Цикл:
 1) Claim-first: `python tools\jira_next_task.py --role animator --lane codex --allow-unlabeled-lane --claim --worker <worker-id> --json`. Если нет animator/codex, можно взять свободную физически выполнимую animation/asset task из current sprint, но не конфликтуй с active owner/locked paths.

@@ -313,11 +313,13 @@ Animator отвечает за:
 - animation smoke tests;
 - совместимость animation с pause/game state;
 - handoff требований к ассетам, если текущие спрайты нельзя анимировать красиво.
-- применение skill `~/.codex/skills/fantasydisk-animation-director/` для всех
-  задач по персонажам, монстрам, элиткам и боссам: минимум `move/walk` 5+ кадров
-  и `attack_primary` 5+ кадров; для элиток/боссов — full-frame sprite-sheet без
-  production cutout-разрезания статичного спрайта и отдельные attack-паттерны
-  под разные skill/phase.
+- применение skill `~/.codex/skills/fantasydisk-pixellab-animation-integrator/`
+  для задач по персонажам, монстрам, элиткам и боссам: брать готовые PixelLab
+  idle/move packs, импортировать 8 направлений, собирать full-frame runtime PNG
+  и `SpriteFrames`, подключать directional movement/idle и Hero Select animated
+  preview для playable characters. Минимум `move/walk` 5+ кадров; дополнительные
+  attack/phase анимации подключать только когда они есть в PixelLab pack или
+  явно указаны в задаче.
 
 Animator не должен самостоятельно делать:
 

@@ -11,14 +11,13 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - Source PNG остаются меню/fallback-изображениями.
 - `scripts/sliced_rig_manifest.gd` хранит данные нарезки.
 - Read-only audit SCRUM-173 (2026-06-13) зафиксировал матрицу покрытия в `docs/design/reviews/animation_rig_audit_2026_06.md`: базовый rig/state слой широкий, но 0.1.4 follow-up нужен для legacy player weapon-action hooks, enemy archetype assertions, hit/death coverage, weapon timing/VFX sync и Design-ready parts для новых боссов/мини-элиток.
-- Directive 2026-06-14: future production animation must follow
-  `fantasydisk-animation-director`: every playable character, monster, summon,
-  elite, and boss needs 5+ movement frames and 5+ primary attack frames. Elites
-  and bosses must use smooth full-frame sprite sheets for production animation,
-  not cutout slicing of static sprites, and need multiple skill/phase attack
-  patterns. Audit `docs/design/reviews/animation_full_frame_pipeline_audit_2026_06.md`
-  / SCRUM-350 tracks current compliance and created Design/Back-end handoffs
-  SCRUM-352 and SCRUM-351.
+- Directive 2026-06-29: future character animation integration must follow
+  `fantasydisk-pixellab-animation-integrator`. Use PixelLab-authored idle/move
+  packs as the source of truth, import 8 directions, normalize transparent
+  full-frame runtime PNGs, rebuild SpriteFrames, wire directional movement/idle,
+  and animate playable-character Hero Select previews with clockwise direction
+  rotation. Historical full-frame audits remain valid as evidence, but the old
+  rig/sprite-sheet animation-director skill is retired.
 - SCRUM-351 added `scripts/full_frame_animation_registry.gd`: a Back-end
   SpriteFrames lookup/state adapter for `hero`, `enemy`, `ally`, `elite`, and
   `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse
@@ -449,11 +448,12 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 
 ## Summon / Ally Motion
 
-- SCRUM-353 (2026-06-14) validated all mobile summon creatures through
-  `fantasydisk-animation-director`: `druid_beast`, `druid_pack_spirit`,
-  `homunculus`, and `leadership_echo` use full-frame SpriteFrames on the
-  existing runtime paths. Each has `move` 8f/12fps loop and runtime `attack`
-  6f/14fps non-loop, recorded as `attack_primary` in the skill manifest.
+- SCRUM-353 (2026-06-14) validated all mobile summon creatures through the
+  now-retired legacy full-frame animation validator: `druid_beast`,
+  `druid_pack_spirit`, `homunculus`, and `leadership_echo` use full-frame
+  SpriteFrames on the existing runtime paths. Each has `move` 8f/12fps loop and
+  runtime `attack` 6f/14fps non-loop, recorded as `attack_primary` in the legacy
+  manifest.
 - SCRUM-370 adds ally `death` rows to those same SpriteFrames paths:
   6 frames at 10fps, non-loop, with static `ally_*.png` fallback unchanged.
 - SCRUM-399 (2026-06-14) replaced the visual source and runtime PNG frame

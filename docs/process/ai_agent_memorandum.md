@@ -400,7 +400,7 @@ dispatcher can remove it after the process exits.
 | UI screens, HUD, menus, frames, responsive layout | `fantasydisk-ui-director` |
 | Raster assets, sprites, icons, frames, buttons, VFX PNG | `fantasydisk-asset-generator` |
 | Posters, infographics, report images, or UI elements/mockups with fixed text/content zones over AI art | `content-zone-image-compositor` |
-| Character/enemy/boss animation, SpriteFrames, rigs | `fantasydisk-animation-director` |
+| Character/enemy/boss PixelLab animation import, directional SpriteFrames, Hero Select preview | `fantasydisk-pixellab-animation-integrator` |
 | Class/weapon balance | `fantasydisk-class-balance-director` |
 | Release build/publish | `fantasydisk-release-director` |
 | GitHub PR publishing | `github:yeet` or local GitHub workflow |
