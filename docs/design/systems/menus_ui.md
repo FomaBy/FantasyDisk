@@ -61,6 +61,13 @@ Event scroll no longer follows focus on open, so focusing the first choice
 cannot auto-scroll title/story/options out of the initial viewport. The UI
 no-overlap matrix now fails if the event panel, title/story, or at least two
 choices are missing, empty, clipped, or outside the event frame.
+SCRUM-639 fixes the follow-up visual regression from the release gate: Event no
+longer creates the disabled `UpgradeFabButton` inside `MenuPanel_event`. That
+extra child made the `PanelContainer` lay out a lone upgrade arrow over an empty
+gray interior in screenshots, hiding title/story/choices/back even though basic
+rect checks still passed. The matrix now explicitly forbids `UpgradeFabButton`
+on Event and requires `EventContent`, title, story, choices and back to remain
+inside the scaled `evt_panel` content safe rect.
 
 SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
 Attribute Shop uses compact `320x240` offer cards plus shorter bottom action

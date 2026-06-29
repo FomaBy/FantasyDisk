@@ -5017,7 +5017,8 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		event_root.name = "EventScreen"
 	_create_menu_run_hud()
 	# На событии докачка недоступна: повторный вход перегенерировал бы выборы события.
-	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, Callable(), false)
+	# Не добавляем disabled-FAB внутрь MenuPanel_event: PanelContainer раскладывает всех
+	# детей как контент панели, и лишняя кнопка ломает видимость title/story/choices.
 	var event_choices: Array = event_definition.get("choices", _random_event_choices())
 	# Защита от тупика: пустой/битый набор выборов не должен оставлять серый экран без
 	# опций. Подставляем процедурные выборы, чтобы экран всегда был кликабельным.

@@ -648,13 +648,21 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected visible event panel instead of an empty event shell." % context
 			if _stylebox_texture_path(event_panel.get_theme_stylebox("panel")) != EVT_PANEL_2K_FRAME_PATH:
 				return "%s: expected event MenuPanel to use evt_panel @2K frame." % context
+			if main.find_child("UpgradeFabButton", true, false) != null:
+				return "%s: event screen must not render the disabled UpgradeFabButton inside MenuPanel_event." % context
+			var event_safe := _scaled_source_rect(event_panel.get_global_rect(), Vector2(1720, 780), Rect2(58, 72, 1604, 642)).grow(1.0)
+			var event_content := main.find_child("EventContent", true, false) as Control
+			if event_content == null or not event_content.visible or not event_content.get_global_rect().has_area():
+				return "%s: expected visible EventContent inside the event panel." % context
+			if not event_safe.encloses(event_content.get_global_rect()):
+				return "%s: expected EventContent to stay inside evt_panel safe rect %s, got %s." % [context, str(event_safe), str(event_content.get_global_rect())]
 			var event_title := main.find_child("EventTitle", true, false) as Label
 			var event_story := main.find_child("EventStory", true, false) as Label
 			for label in [event_title, event_story]:
 				if label == null or not label.visible or label.text.strip_edges() == "" or not label.get_global_rect().has_area():
 					return "%s: expected event title/story labels to be visible and non-empty." % context
-				if not event_panel.get_global_rect().grow(1.0).encloses(label.get_global_rect()):
-					return "%s: expected %s to stay inside the event panel safe layout." % [context, label.name]
+				if not event_safe.encloses(label.get_global_rect()):
+					return "%s: expected %s to stay inside evt_panel safe rect %s." % [context, label.name, str(event_safe)]
 			var visible_event_choices := 0
 			for node in main.find_children("EventChoiceButton*", "Button", true, false):
 				var event_button := node as Button
@@ -669,13 +677,18 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected %s hover StyleBox to use evt_card @2K frame." % [context, event_button.name]
 				if event_button.tooltip_text.contains("Риск: Риск:"):
 					return "%s: expected event option text to avoid duplicated risk prefix." % context
-				if not event_panel.get_global_rect().grow(1.0).encloses(event_button.get_global_rect()):
-					return "%s: expected %s to stay inside the event panel instead of being clipped away." % [context, event_button.name]
+				if not event_safe.encloses(event_button.get_global_rect()):
+					return "%s: expected %s to stay inside evt_panel safe rect %s." % [context, event_button.name, str(event_safe)]
 				var desc := event_button.find_child("%sDescription" % event_button.name, true, false) as Label
 				if desc != null and not event_button.get_global_rect().grow(1.0).encloses(desc.get_global_rect()):
 					return "%s: event description %s escapes its card safe content rect." % [context, desc.name]
 			if visible_event_choices < 2:
 				return "%s: expected at least two visible event choices, got %d." % [context, visible_event_choices]
+			var event_back := main.find_child("EventBackButton", true, false) as Button
+			if event_back == null or not event_back.visible or event_back.text.strip_edges() == "" or not event_back.get_global_rect().has_area():
+				return "%s: expected visible non-empty EventBackButton." % context
+			if not event_safe.encloses(event_back.get_global_rect()):
+				return "%s: expected EventBackButton to stay inside evt_panel safe rect %s." % [context, str(event_safe)]
 		"level_up_toast":
 			var toast_frame := main.find_child("LevelUpToastFrame", true, false) as PanelContainer
 			if toast_frame == null or not toast_frame.visible or not toast_frame.get_global_rect().has_area():
