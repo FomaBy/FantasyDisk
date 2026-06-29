@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-06-15 (0.1.6 dev snapshot)
+Обновлено: 2026-06-29 (0.1.7 release snapshot)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -22,10 +22,10 @@ Domain docs для подробностей по областям:
 
 - Движок: Godot 4.
 - Жанр: 2D top-down loot-action survival roguelite с RPG-билдкрафтом.
-- Текущий sprint target: `0.1.6` на ветке `dev`; release `v0.1.5` уже выпущен,
-  feature block 0.1.5 снят. Основное активное арт-направление 0.1.6 начинается с
-  bright+epic character redraw v2 anchor (SCRUM-422) перед пер-классовыми
-  redraw-задачами.
+- Текущий релизный snapshot: `0.1.7` на ветке `dev`; release `v0.1.6` уже выпущен
+  и влит в `main`. В 0.1.7 главный акцент — runtime/UI-polish, 2K-экранные
+  обновления, Codex/Level Up/HUD улучшения, PixelLab-анимации и стабилизация
+  пользовательских сборок.
 - Основная рабочая платформа: macOS. Релизные платформы: macOS (dmg) и Windows (x86_64 exe c embed_pck + NSIS-инсталлер).
 - Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
 - Основная сцена: `scenes/Main.tscn`.

@@ -2,7 +2,27 @@
 
 Формат: [Keep a Changelog](https://keepachangelog.com/), версии: [SemVer](https://semver.org/) (0.MINOR.PATCH до релиза 1.0).
 
-## [Unreleased] — ветка dev (цель: 0.1.7)
+## [Unreleased] — ветка dev
+
+### Added
+
+### Changed
+
+### Fixed
+
+## [0.1.7] — 2026-06-29
+
+### Release Highlights
+- FantasyDisk 0.1.7: крупный визуальный шаг вперёд — новый pixel-art Codex,
+  более читаемый Level Up с предпросмотром эффектов, эпичный логотип в главном
+  меню, аккуратный боевой HUD, обновлённые 2K-экраны и первые 8-направленные
+  PixelLab-анимации Берсерка.
+- Главное: Level Up теперь объясняет, что именно изменится у выбранного
+  улучшения, Codex стал похож на тёмно-фэнтезийный справочник, а экран выбора
+  героя оживляет Берсерка направленной анимацией.
+- Сборка дополнительно очищена от документации, референсов, тестов, build- и
+  release-папок через export filters; релизные файлы остаются только с нужными
+  runtime-ресурсами.
 
 ### Added
 - PixelLab Berserk runtime integration: `berserk_spriteframes.tres` now uses
