@@ -2,9 +2,9 @@
 
 Статус: done
 Контур: Codex
-Owner: Codex visual QA recheck
-Thread/Worker: codex-worker-visualqa-recheck-scrum672
-Locked paths: read-only UI visual verification; QA evidence only
+Owner: Codex backend/UI fix worker
+Thread/Worker: codex-backend-fix-scrum672-rest-screen
+Locked paths: scripts/ui_screens.gd; tests/ui_no_overlap_matrix_test.gd; docs/design/systems/menus_ui.md; docs/tasks/SCRUM-672_ui_visual_release_gate.md
 Jira: SCRUM-672
 
 ## Recheck Context
@@ -59,3 +59,46 @@ the Rest screen now reproduces the same blank-panel/up-arrow-only class of
 visual regression across all captured viewports.
 
 Production/runtime fixes: none.
+
+## QA-Red Fix (2026-06-29)
+
+Статус: fixed, ready for QA visual gate rerun.
+
+Root cause:
+
+- Rest used `_create_upgrade_fab(box.get_parent().get_parent()...)`, which passed
+  `MenuPanel_campfire` instead of the screen root. `PanelContainer` then laid out
+  `UpgradeFabButton` as panel content, reproducing the same blank-panel /
+  up-arrow-only symptom class that SCRUM-639 fixed for Event.
+
+Fix:
+
+- `scripts/ui_screens.gd::_show_rest_screen()` now names the Rest content/title/
+  subtitle for QA assertions, keeps the Rest scroll at top, moves the
+  `UpgradeFabButton` to the screen root outside `MenuPanel_campfire`, and adds a
+  visible `RestBackButton`.
+- `tests/ui_no_overlap_matrix_test.gd` now requires Rest title/subtitle, two
+  economy choice cards, Back, visible `RestContent`, and explicitly fails if
+  `UpgradeFabButton` appears inside the Rest panel.
+- `docs/design/systems/menus_ui.md` records the SCRUM-672 Rest fix contract.
+
+Verification:
+
+- `python3 tools/build_ui_2k_frame_kit.py --verify` - PASS
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` - PASS
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` - PASS
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/dark_fantasy_ui_theme_test.gd` - PASS
+- `python3 tools/godot_gate.py --path . --script res://tests/design_review_screenshot_capture_test.gd` - PASS screenshots written, with Godot exit leak/resource warnings only
+
+Screenshot evidence:
+
+- `/Users/sergeyfomin/Documents/FantasyDisk-SCRUM-672-rest-fix/build/qa/design_review/rest_1280x720.png`
+- `/Users/sergeyfomin/Documents/FantasyDisk-SCRUM-672-rest-fix/build/qa/design_review/rest_1920x1080.png`
+- `/Users/sergeyfomin/Documents/FantasyDisk-SCRUM-672-rest-fix/build/qa/design_review/rest_2560x1440.png`
+
+Result:
+
+- Rest now shows title/body, two visible action cards, Back, and the attribute
+  upgrade FAB outside the panel at bottom-right. Event screenshots remain
+  unaffected by this scoped fix. Broad SCRUM-672 release-gate rerun remains QA
+  owned.

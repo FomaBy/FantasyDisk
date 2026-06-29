@@ -114,7 +114,7 @@ func _initialize() -> void:
 			"AttributeRerollButton", "AttributeSkipButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "rest_economy", Callable(self, "_open_rest"), [
-			"RestHealButton", "RestGuardButton",
+			"RestHealButton", "RestGuardButton", "RestBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "upgrade_economy", Callable(self, "_open_upgrade"), [
 			"UpgradeChoiceButton0", "UpgradeChoiceButton1", "UpgradeChoiceButton2",
@@ -600,6 +600,32 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected zero-money attribute offers to be disabled." % context
 				if not offer.tooltip_text.contains("Недостаточно золота"):
 					return "%s: expected disabled attribute offer tooltip to explain insufficient gold." % context
+		"rest_economy":
+			var rest_panel := main.find_child("MenuPanel_campfire", true, false) as Control
+			if rest_panel == null or not rest_panel.visible or not rest_panel.get_global_rect().has_area():
+				return "%s: expected visible Rest panel instead of an empty campfire shell." % context
+			if rest_panel.find_child("UpgradeFabButton", true, false) != null:
+				return "%s: Rest panel must not contain UpgradeFabButton; it hides title/body/choices in screenshots." % context
+			var rest_content := main.find_child("RestContent", true, false) as Control
+			if rest_content == null or not rest_content.visible or not rest_content.get_global_rect().has_area():
+				return "%s: expected visible RestContent inside the campfire panel." % context
+			var rest_panel_rect := rest_panel.get_global_rect().grow(-4.0)
+			if not rest_panel_rect.encloses(rest_content.get_global_rect()):
+				return "%s: expected RestContent to stay inside the campfire panel, got %s." % [context, str(rest_content.get_global_rect())]
+			for label_name in ["RestTitle", "RestSubtitle"]:
+				var label := main.find_child(label_name, true, false) as Label
+				if label == null or not label.visible or label.text.strip_edges() == "" or not label.get_global_rect().has_area():
+					return "%s: expected visible non-empty %s." % [context, label_name]
+			for card_name in ["RestHealButton", "RestGuardButton"]:
+				var card := main.find_child(card_name, true, false) as Button
+				if card == null or not card.visible or card.text.strip_edges() != "":
+					return "%s: expected visible textless economy card %s." % [context, card_name]
+				var card_error := _economy_choice_card_contract_error(card, context)
+				if card_error != "":
+					return card_error
+			var rest_back := main.find_child("RestBackButton", true, false) as Button
+			if rest_back == null or not rest_back.visible or rest_back.text.strip_edges() == "" or not rest_back.get_global_rect().has_area():
+				return "%s: expected visible non-empty RestBackButton." % context
 		"patch_notes":
 			# SCRUM-576: панель «Что нового» рисуется собственной pn_panel @2K-рамкой,
 			# контент держится в её content-зоне (хедер + скролл версий не на орнаменте).

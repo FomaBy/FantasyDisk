@@ -68,6 +68,12 @@ gray interior in screenshots, hiding title/story/choices/back even though basic
 rect checks still passed. The matrix now explicitly forbids `UpgradeFabButton`
 on Event and requires `EventContent`, title, story, choices and back to remain
 inside the scaled `evt_panel` content safe rect.
+SCRUM-672 applies the same release-gate lesson to Rest: `_show_rest_screen()`
+must keep `UpgradeFabButton` on the screen root, never inside
+`MenuPanel_campfire`, so the campfire panel continues to show `RestContent`,
+`RestTitle`, `RestSubtitle`, the two rest choice cards and `RestBackButton`.
+The UI matrix now fails if Rest regresses to a blank panel/up-arrow-only shell or
+if the Rest content disappears from the campfire panel.
 
 SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
 Attribute Shop uses compact `320x240` offer cards plus shorter bottom action

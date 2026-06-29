@@ -4953,10 +4953,24 @@ func _shop_texture_style(path: String, margin: Vector2) -> StyleBoxTexture:
 
 func _show_rest_screen() -> void:
 	var box := _create_menu_box("Костер", "Восстановись или подготовься перед следующим боем.", "campfire")
+	box.name = "RestContent"
+	var scroll := box.get_parent() as ScrollContainer
+	if scroll != null:
+		scroll.follow_focus = false
+		scroll.scroll_vertical = 0
+	var rest_title := box.find_child("MenuTitle_campfire", false, false) as Label
+	if rest_title != null:
+		rest_title.name = "RestTitle"
+	var rest_subtitle := box.find_child("MenuSubtitle_campfire", false, false) as Label
+	if rest_subtitle != null:
+		rest_subtitle.name = "RestSubtitle"
 	_create_menu_run_hud()
 	# Escape = уйти от костра без бонуса (последовательно с пропуском магазина).
 	game.ui_escape_action = game.route._advance_route_after_noncombat
-	_create_upgrade_fab(box.get_parent().get_parent() if box.get_parent() != null else box, _show_rest_screen)
+	var rest_panel := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
+	var rest_root := rest_panel.get_parent() as Control if rest_panel != null and rest_panel.get_parent() != null else null
+	if rest_root != null:
+		_create_upgrade_fab(rest_root, _show_rest_screen)
 	var rest_card_size := _economy_choice_display_size(2)
 	var choices := _make_economy_choice_row("RestChoiceRow", rest_card_size, 2)
 	box.add_child(choices)
@@ -4973,6 +4987,13 @@ func _show_rest_screen() -> void:
 		_apply_reward_to_run({"title": "Защитная стойка", "description": "+6% к защите.", "mods": {"defense_flat": 0.06}})
 		game.route._advance_route_after_noncombat()
 	)
+	var back_button := _make_button("Назад")
+	back_button.name = "RestBackButton"
+	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_set_action_button_size(back_button, 380.0, 54.0)
+	back_button.tooltip_text = "Вернуться на карту без отдыха."
+	back_button.pressed.connect(game.route._advance_route_after_noncombat)
+	box.add_child(back_button)
 
 
 func _show_upgrade_screen() -> void:
