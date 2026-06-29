@@ -153,3 +153,17 @@ QA verdict:
 - SCRUM-672 Rest regression: visually verified fixed.
 - Final SCRUM-672 visual release gate: PASSED.
 - Production/runtime changes by QA worker: none.
+
+## QA-Вердикт (2026-06-29)
+
+Статус: PASSED
+
+Проверено: `build_ui_2k_frame_kit.py --verify`, `runtime_smoke_ui_test.gd`,
+`ui_no_overlap_matrix_test.gd`, `dark_fantasy_ui_theme_test.gd`, and
+`design_review_screenshot_capture_test.gd`.
+
+Краевые случаи: Event and Rest reviewed at 1280x720, 1920x1080, and
+2560x1440; representative 23-surface UI matrix reviewed across all three
+viewports; global frame/content-zone rule checked against captured screenshots.
+
+Баги: нет.
