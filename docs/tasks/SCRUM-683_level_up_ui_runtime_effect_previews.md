@@ -1,7 +1,7 @@
 # SCRUM-683 - Level Up UI Runtime: readable cards with effective change previews
 
 Jira: SCRUM-683
-Статус: review
+Статус: done
 Role: Back-end / UI runtime
 Контур: Codex
 Owner: Back-end / UI runtime Codex
@@ -129,7 +129,7 @@ Design handoff request instead of inventing a new visual pass in Back-end.
 
 ## Result / QA Evidence
 
-Status 2026-06-29: implemented and ready for QA on branch
+Status 2026-06-29: implemented, pushed, and ready for QA on branch
 `codex/scrum-683-level-up-runtime`.
 
 - Commit: recorded in Jira/final report after rebase/amend.
