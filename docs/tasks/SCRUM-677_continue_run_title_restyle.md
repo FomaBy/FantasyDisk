@@ -1,6 +1,6 @@
 # Task: SCRUM-677 — Заголовок окна «Продолжить забег?» в стилистике игры
 
-Статус: done (в QA 2026-06-29)
+Статус: QA FAILED (2026-06-29, bug SCRUM-681)
 Контур: Claude
 Owner: design+backend
 Jira: SCRUM-677
@@ -47,3 +47,26 @@ Locked paths: scripts/ui_screens.gd (`_show_continue_run_dialog`), assets/sprite
 
 - scripts/ui_screens.gd
 - (опц.) assets/sprites/ui/... + сайдкары
+
+## QA-Вердикт (2026-06-29)
+
+Статус: FAILED
+Проверено:
+- `origin/dev` актуален; executor commit observed: `d7d31cdf`.
+- `ContinueRunTitle` сохранён и стал `TextureRect`.
+- Texture path: `res://assets/sprites/ui/menu_title/continue_run_title.png`.
+- Asset exists: PNG RGBA 760x170, transparent alpha present; `.import` sidecar exists.
+- `tools/build_continue_run_title_logo.py` exists.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` PASS.
+
+Блокеры:
+- Continue-run dialog content-zone regression: `ContinueRunPanel` lays out as `680x391`, not expected `CR_PANEL_2K` `680x380`.
+- `ContinueRunButtons` exits `CR_SAFE_2K` by 11 px: button bottom `855`, safe bottom `844`.
+- No direct title/subtitle/button overlap, but the hard frame content-zone rule is violated.
+
+Риск:
+- `tools/build_continue_run_title_logo.py --check-only` is ignored and regenerates output instead of doing a read-only check.
+
+Баги: `SCRUM-681`.
+Disk cleanup: no disposable checkout; subagent removed `/tmp` QA files.

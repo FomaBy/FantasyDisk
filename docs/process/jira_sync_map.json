@@ -3035,7 +3035,12 @@
  },
  "SCRUM-677_continue_run_title_restyle.md": {
   "key": "SCRUM-677",
-  "status": null,
-  "desc_hash": null
+  "status": "К выполнению",
+  "desc_hash": "cc5c28fbb6645544caf2a6f67592b8f0"
+ },
+ "bug_scrum677_continue_run_title_safe_zone_task.md": {
+  "key": "SCRUM-681",
+  "status": "К выполнению",
+  "desc_hash": "afca9e61b13a4ddb9c607a3fe7750b37"
  }
 }
