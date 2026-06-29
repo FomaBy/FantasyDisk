@@ -1,6 +1,6 @@
 # SCRUM-684 — Полный редизайн экрана Кодекса (Dark Fantasy, пиксель-арт через Pixel Lab)
 
-Статус: in progress
+Статус: done
 Lane: claude
 Labels: foma, design, claude
 
@@ -36,4 +36,22 @@ Pixel Lab MCP.
 
 ## Files
 - `scripts/ui_screens.gd` (codex-экран) — lane: claude
-- `assets/sprites/ui/**` (новые пиксель-арт ассеты)
+- `scripts/main.gd` (codex-задник)
+- `assets/sprites/ui/frames/codex_pl/**` (новые пиксель-арт ассеты)
+- `tests/runtime_smoke_test.gd` (codex frame-path ассерты)
+
+## QA-Вердикт
+Статус: PASSED
+
+- Все 16 ассетов сгенерированы через Pixel Lab MCP, скачаны в
+  `assets/sprites/ui/frames/codex_pl/` с `.import` сайдкарами (21 PNG / 21 import,
+  включая обрезанные 9-slice копии в `fit/`).
+- Интеграция: задник, фикс-margin 9-slice фреймы, nearest-фильтр, эмблемы разделов
+  в nav, тёмный текст на пергаменте, screen-inset (фрейм не обрезается).
+- `tests/runtime_smoke_ui_test.gd` (полный сьют, вкл. `_test_codex_screen`):
+  «Runtime UI smoke suite passed.» (прогнан на финальном дереве).
+- Визуальная верификация GPU-скриншотов (characters/monsters/artifacts): орнамент
+  не клиппится, контент в безопасной зоне, читабельно, единый Dark Fantasy стиль.
+- `project.godot` (случайное удаление `window/stretch/aspect="keep"`) откатан —
+  глобальная регрессия предотвращена.
+- Коммит `f5064705`, влит в origin/dev (HEAD — предок origin/dev).
