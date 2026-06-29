@@ -1,6 +1,6 @@
 # Animation
 
-Обновлено: 2026-06-14
+Обновлено: 2026-06-29
 
 Animator ownership описан в `docs/process/agent_role_boundaries_and_handoffs.md`. Back-end должен не полировать motion, а предоставлять стабильные states/API.
 
@@ -145,6 +145,19 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `scripts/player.gd`, and `tests/animation_smoke_test.gd` remain unchanged by
   scope, so runtime still uses the SCRUM-461 idle/walk/move-only Berserk until a
   separate wiring task.
+- 2026-06-29 PixelLab Berserk wiring replaces the live Berserk runtime
+  `assets/sprites/characters/berserk_spriteframes.tres` with 8-direction
+  pixel-art movement. Source downloads are stored under
+  `assets/sprites/characters/pixellab/berserk/` (`112x112` source frames plus
+  `manifest.json`), while runtime frames are nearest-neighbor padded to a
+  `512x512` canvas under `assets/sprites/characters/full_frame/berserk_pixellab/`.
+  The SpriteFrames resource exposes `idle_<direction>` one-frame fallbacks and
+  `move_<direction>` / `walk_<direction>` 6-frame looping rows for `south`,
+  `south_east`, `east`, `north_east`, `north`, `north_west`, `west`, and
+  `south_west`, plus generic `idle` / `move` / `walk` fallbacks. `Player`
+  resolves the movement vector into the matching 8-way row and disables
+  horizontal `flip_h` for directional rows. Body attack rows remain absent by
+  current combat-visual scope.
 - SCRUM-540 (2026-06-28) produces the Secret Ascension Boss full-frame animation
   pack from the accepted SCRUM-539 source. Candidate assets live under
   `assets/sprites/bosses/full_frame/secret_ascension_boss/` with a 512x512

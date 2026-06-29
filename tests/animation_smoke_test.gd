@@ -176,21 +176,41 @@ func _test_player_animation() -> void:
 	if body.sprite_frames == null:
 		_fail("Expected Berserk player SpriteFrames to load.")
 	if body.sprite_frames.resource_path != "res://assets/sprites/characters/berserk_spriteframes.tres":
-		_fail("Expected Berserk to use the accepted SCRUM-461 cartoon/anime SpriteFrames resource.")
+		_fail("Expected Berserk to use the accepted PixelLab directional SpriteFrames resource.")
 	if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
-		_fail("Expected Berserk SCRUM-461 cartoon/anime SpriteFrames to expose idle/walk/move animations.")
+		_fail("Expected Berserk PixelLab SpriteFrames to expose idle/walk/move fallback animations.")
 	if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
-		_fail("Expected Berserk SCRUM-461 cartoon/anime SpriteFrames to omit attack animations by task scope.")
-	if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:
-		_fail("Expected Berserk SCRUM-461 cartoon/anime SpriteFrames to expose 5 idle/walk/move frames.")
+		_fail("Expected Berserk PixelLab SpriteFrames to omit attack animations by task scope.")
+	var berserk_directions := ["south", "south_east", "east", "north_east", "north", "north_west", "west", "south_west"]
+	for direction_name in berserk_directions:
+		if not body.sprite_frames.has_animation("idle_%s" % direction_name):
+			_fail("Expected Berserk PixelLab SpriteFrames to expose idle_%s." % direction_name)
+		if not body.sprite_frames.has_animation("walk_%s" % direction_name) or not body.sprite_frames.has_animation("move_%s" % direction_name):
+			_fail("Expected Berserk PixelLab SpriteFrames to expose walk/move_%s." % direction_name)
+			return
+		if body.sprite_frames.get_frame_count("walk_%s" % direction_name) != 6 or body.sprite_frames.get_frame_count("move_%s" % direction_name) != 6:
+			_fail("Expected Berserk PixelLab walk/move_%s to expose 6 frames." % direction_name)
+			return
+	if body.sprite_frames.get_frame_count("idle") != 1 or body.sprite_frames.get_frame_count("walk") != 6 or body.sprite_frames.get_frame_count("move") != 6:
+		_fail("Expected Berserk PixelLab fallback idle/walk/move frame counts to be 1/6/6.")
 	if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or not body.sprite_frames.get_animation_loop("move"):
-		_fail("Expected Berserk SCRUM-461 cartoon/anime idle/walk/move animations to loop.")
+		_fail("Expected Berserk PixelLab idle/walk/move animations to loop.")
 	player.call("play_action_animation", "attack", Vector2.RIGHT)
 	var last_event := player.get("last_weapon_animation_event") as Dictionary
 	if str(last_event.get("action_id", "")) != "attack":
 		_fail("Expected player action playback to emit an attack weapon animation event.")
 	player.set("velocity", Vector2(100, 0))
 	player.call("_update_movement_animation", 0.01)
+	if body.animation != &"walk_east":
+		_fail("Expected rightward Berserk movement to play walk_east, got %s." % str(body.animation))
+	player.set("velocity", Vector2(0, -100))
+	player.call("_update_movement_animation", 0.01)
+	if body.animation != &"walk_north":
+		_fail("Expected upward Berserk movement to play walk_north, got %s." % str(body.animation))
+	player.set("velocity", Vector2(-100, 100))
+	player.call("_update_movement_animation", 0.01)
+	if body.animation != &"walk_south_west":
+		_fail("Expected diagonal Berserk movement to play walk_south_west, got %s." % str(body.animation))
 	if body.animation == "attack" or body.animation == "attack_primary":
 		_fail("Expected player body attack SpriteFrames to stay disabled while weapon/rig action events run.")
 	player.call("_update_movement_animation", 1.0)
@@ -302,7 +322,7 @@ func _test_player_animation() -> void:
 		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "dark_mage" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "thief":
 			var v2_label := "SCRUM-420"
 			if sheet_character_id == "berserk":
-				v2_label = "SCRUM-461"
+				v2_label = "PixelLab directional"
 			if sheet_character_id == "assassin":
 				v2_label = "SCRUM-419"
 			elif sheet_character_id == "dark_mage":
@@ -319,6 +339,15 @@ func _test_player_animation() -> void:
 				_fail("Expected %s %s v2 SpriteFrames to expose idle/walk/move frames." % [sheet_character_id, v2_label])
 			if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
 				_fail("Expected %s %s v2 accepted SpriteFrames to omit attack animations." % [sheet_character_id, v2_label])
+			if sheet_character_id == "berserk":
+				for direction_name in ["south", "south_east", "east", "north_east", "north", "north_west", "west", "south_west"]:
+					if not body.sprite_frames.has_animation("walk_%s" % direction_name) or body.sprite_frames.get_frame_count("walk_%s" % direction_name) != 6:
+						_fail("Expected Berserk PixelLab directional SpriteFrames to expose 6-frame walk_%s." % direction_name)
+						return
+				if body.sprite_frames.get_frame_count("idle") != 1 or body.sprite_frames.get_frame_count("walk") != 6 or body.sprite_frames.get_frame_count("move") != 6:
+					_fail("Expected Berserk PixelLab fallback idle/walk/move frame counts to be 1/6/6.")
+					return
+				continue
 			if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:
 				_fail("Expected %s %s v2 accepted SpriteFrames to expose 5 idle/walk/move frames." % [sheet_character_id, v2_label])
 			if not body.sprite_frames.get_animation_loop("idle") or not body.sprite_frames.get_animation_loop("walk") or not body.sprite_frames.get_animation_loop("move"):

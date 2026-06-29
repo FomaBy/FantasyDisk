@@ -446,6 +446,20 @@ with pivot `[256,470]`, idle at 7fps and walk/move at 9fps. Previous live frames
 are backed up under `docs/design/backups/scrum461_berserk_cartoon_pre_anim/`.
 Attack animation remains intentionally absent for this cartoon/anime anchor.
 
+2026-06-29 PixelLab Berserk integration replaces the live Berserk runtime
+SpriteFrames with explicit 8-direction pixel-art movement. PixelLab source
+frames and metadata are stored under `assets/sprites/characters/pixellab/berserk/`
+(`112x112` source), normalized runtime frames under
+`assets/sprites/characters/full_frame/berserk_pixellab/` (`512x512`
+nearest-neighbor canvas), and
+`assets/sprites/characters/berserk_spriteframes.tres` now exposes
+`idle_<direction>` plus 6-frame looping `move_<direction>` / `walk_<direction>`
+for south/east/north/west and diagonals. `scripts/player.gd` resolves velocity
+into the matching row instead of horizontally flipping one generic walk row.
+Hero Select v4 keeps `HS4Portrait`, but for Berserk it cycles the same
+directional walk rows clockwise in the portrait safe zone. Body attack animation
+remains disabled/absent by current weapon-owned combat visual scope.
+
 SCRUM-442 подготовил узкий Berserk v3 single-sprite candidate после отмены
 широкого character v2 подхода: новый чуть более мультяшный unarmed barbarian
 source в `docs/design/references/characters_v3/berserk/`, normalized game

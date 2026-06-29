@@ -178,6 +178,12 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   selected thumbnail state. The arrows remain inside the existing carousel
   content zone; no frame art or safe-zone geometry changes are part of this
   behavior.
+- 2026-06-29: `HS4Portrait` can render an animated class preview when the
+  selected character exposes directional SpriteFrames. Berserk uses the new
+  PixelLab `walk_<direction>` rows and cycles `south -> south_west -> west ->
+  north_west -> north -> north_east -> east -> south_east` so the preview turns
+  clockwise while staying inside the existing portrait content zone. Other
+  characters keep the static `sprite_path` portrait fallback.
 - SCRUM-664 fixes HS4 keyboard/gamepad focus for the same screen: the visible
   carousel hero slots are focusable, the selected visible slot receives default
   focus, carousel arrows/slots/Ascension/Choose/Back have explicit directional

@@ -7627,6 +7627,10 @@ func _expected_weapon_sprite_path(weapon_id: String) -> String:
 
 
 func _expected_character_portrait_path(character_id: String) -> String:
+	var config: Dictionary = ProgressionData.character_config(character_id)
+	var path := str(config.get("sprite_path", config.get("sprite", "")))
+	if path != "":
+		return path
 	return "res://assets/sprites/characters/full_frame/%s/%s_idle_00.png" % [character_id, character_id]
 
 

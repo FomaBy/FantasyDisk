@@ -80,6 +80,7 @@ const SHOP_INLINE_ICON_TOP := ShopUIConstants.SHOP_INLINE_ICON_TOP
 const SHOP_CURSOR_VARIANTS := ShopUIConstants.SHOP_CURSOR_VARIANTS
 const HERO_RADAR_STATS := HeroSelectConstants.HERO_RADAR_STATS
 const HERO_CLASS_COLORS := HeroSelectConstants.HERO_CLASS_COLORS
+const HERO_SELECT_PREVIEW_CLOCKWISE_DIRECTIONS := ["south", "south_west", "west", "north_west", "north", "north_east", "east", "south_east"]
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const STANDARD_ACTION_BUTTON_WIDTH := 420.0
 const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
@@ -903,6 +904,63 @@ func _hs4_make_overlay_button(text: String, font_size: int) -> Button:
 	return button
 
 
+func _hero_select_preview_sprite_frames(character_id: String) -> SpriteFrames:
+	var frames_path := "res://assets/sprites/characters/%s_spriteframes.tres" % character_id
+	if not ResourceLoader.exists(frames_path):
+		return null
+	var frames := load(frames_path) as SpriteFrames
+	if frames == null:
+		return null
+	for direction in HERO_SELECT_PREVIEW_CLOCKWISE_DIRECTIONS:
+		if frames.has_animation("move_%s" % direction) or frames.has_animation("walk_%s" % direction):
+			return frames
+	return null
+
+
+func _set_hero_select_portrait_preview(portrait: TextureRect, character_id: String, config: Dictionary, preview_state: Dictionary) -> void:
+	var frames := _hero_select_preview_sprite_frames(character_id)
+	if frames == null:
+		preview_state["character_id"] = ""
+		preview_state["sprite_frames"] = null
+		portrait.texture = game._cached_texture(str(config.get("sprite_path", config.get("sprite", ""))))
+		return
+	preview_state["character_id"] = character_id
+	preview_state["sprite_frames"] = frames
+	preview_state["direction_index"] = 0
+	preview_state["frame_index"] = 0
+	_advance_hero_select_portrait_preview(portrait, preview_state)
+
+
+func _advance_hero_select_portrait_preview(portrait: TextureRect, preview_state: Dictionary) -> void:
+	if portrait == null or not is_instance_valid(portrait):
+		return
+	var frames := preview_state.get("sprite_frames", null) as SpriteFrames
+	if frames == null:
+		return
+	var direction_index := int(preview_state.get("direction_index", 0))
+	var frame_index := int(preview_state.get("frame_index", 0))
+	var directions := HERO_SELECT_PREVIEW_CLOCKWISE_DIRECTIONS
+	for attempt in range(directions.size()):
+		var direction := str(directions[posmod(direction_index + attempt, directions.size())])
+		var animation_name := "move_%s" % direction
+		if not frames.has_animation(animation_name):
+			animation_name = "walk_%s" % direction
+		if not frames.has_animation(animation_name):
+			continue
+		var frame_count := maxi(frames.get_frame_count(animation_name), 1)
+		frame_index = posmod(frame_index, frame_count)
+		portrait.texture = frames.get_frame_texture(animation_name, frame_index)
+		frame_index += 1
+		if frame_index >= frame_count:
+			frame_index = 0
+			direction_index = posmod(direction_index + attempt + 1, directions.size())
+		else:
+			direction_index = posmod(direction_index + attempt, directions.size())
+		preview_state["direction_index"] = direction_index
+		preview_state["frame_index"] = frame_index
+		return
+
+
 func _build_character_select_v4() -> void:
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -968,6 +1026,20 @@ func _build_character_select_v4() -> void:
 	portrait.size = Vector2(left_w - portrait_safe.x - portrait_safe.z, mid_h - portrait_safe.y - portrait_safe.w)
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_panel.add_child(portrait)
+	var portrait_preview_state := {
+		"character_id": "",
+		"sprite_frames": null,
+		"direction_index": 0,
+		"frame_index": 0,
+	}
+	var portrait_preview_timer := Timer.new()
+	portrait_preview_timer.name = "HS4PortraitPreviewTimer"
+	portrait_preview_timer.wait_time = 0.10
+	portrait_preview_timer.autostart = true
+	root.add_child(portrait_preview_timer)
+	portrait_preview_timer.timeout.connect(func() -> void:
+		_advance_hero_select_portrait_preview(portrait, portrait_preview_state)
+	)
 
 	var dossier_panel := Panel.new()
 	dossier_panel.position = Vector2(mx + left_w + gap, mid_y)
@@ -1246,7 +1318,7 @@ func _build_character_select_v4() -> void:
 		var cid: String = game.selected_character_id
 		var config: Dictionary = game.PROGRESSION_DATA.character_config(cid)
 		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(cid)
-		portrait.texture = game._cached_texture(str(config.get("sprite_path", config.get("sprite", ""))))
+		_set_hero_select_portrait_preview(portrait, cid, config, portrait_preview_state)
 		name_label.text = str(config.get("title", cid))
 		desc_label.text = str(config.get("description", ""))
 		weapon_label.text = "Оружие: %s" % _hero_weapon_names(cid)

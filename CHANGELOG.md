@@ -5,6 +5,11 @@
 ## [Unreleased] — ветка dev (цель: 0.1.7)
 
 ### Added
+- PixelLab Berserk runtime integration: `berserk_spriteframes.tres` now uses
+  8-direction pixel-art movement from the PixelLab `Berserk` character (6-frame
+  looping walk/move rows per direction), player movement selects the matching
+  row by velocity, and Hero Select v4 animates the Berserk portrait clockwise
+  through those directional rows.
 - Berserk v2 dark-fantasy dragon Design source pack (SCRUM-531): generated a new
   brutal painterly D&D dragonslayer berserker source via `gpt-image-2`,
   alpha-cleaned it to true RGBA, normalized a `512x512` cell (pivot `256,470`,

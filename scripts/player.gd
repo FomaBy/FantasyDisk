@@ -31,6 +31,7 @@ const ALLY_MINION_SCENE := preload("res://scenes/AllyMinion.tscn")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_COLUMNS := 5
+const DIRECTIONAL_ANIMATION_SUFFIXES := ["east", "south_east", "south", "south_west", "west", "north_west", "north", "north_east"]
 # SCRUM-595: потолок суммарного absorb_flat от оверхил-ульты Доктора за забег,
 # как доля от max_health (раньше копился безгранично → пауэр-крип/эксплойт).
 const DOCTOR_ULT_ABSORB_CAP_FRACTION := 0.5
@@ -1764,15 +1765,17 @@ func _update_movement_animation(delta: float) -> void:
 		_movement_offset = Vector2(0.0, sin(_animation_time) * 3.0)
 		_movement_rotation = clamp(velocity.x / max(speed, 1.0), -1.0, 1.0) * 0.12
 		_movement_scale_delta = Vector2(sin(_animation_time) * 0.025, -sin(_animation_time) * 0.018)
-		if not body_action_locked and body.animation != "walk":
-			body.play("walk")
+		var move_animation := _body_directional_animation_name(body, "walk", _facing_direction)
+		if not body_action_locked and body.animation != move_animation:
+			body.play(move_animation)
 		_update_sprite_facing(_facing_direction)
 	else:
 		_movement_offset = _movement_offset.lerp(Vector2.ZERO, 10.0 * delta)
 		_movement_rotation = lerpf(_movement_rotation, 0.0, 10.0 * delta)
 		_movement_scale_delta = _movement_scale_delta.lerp(Vector2.ZERO, 10.0 * delta)
-		if not body_action_locked and body.animation != "idle":
-			body.play("idle")
+		var idle_animation := _body_directional_animation_name(body, "idle", _facing_direction)
+		if not body_action_locked and body.animation != idle_animation:
+			body.play(idle_animation)
 
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("update_animation"):
@@ -1787,8 +1790,48 @@ func _update_sprite_facing(direction: Vector2) -> void:
 	var body := _animated_sprite()
 	if body == null:
 		return
+	if _is_directional_body_animation(str(body.animation)):
+		body.flip_h = false
+		return
 	if abs(direction.x) > 0.05:
 		body.flip_h = direction.x < 0.0
+
+
+func _body_directional_animation_name(body: AnimatedSprite2D, base_name: String, direction: Vector2) -> String:
+	if body == null or body.sprite_frames == null:
+		return base_name
+	var suffix := _directional_animation_suffix(direction)
+	var directional_name := "%s_%s" % [base_name, suffix]
+	if body.sprite_frames.has_animation(directional_name):
+		return directional_name
+	if base_name == "walk":
+		var move_name := "move_%s" % suffix
+		if body.sprite_frames.has_animation(move_name):
+			return move_name
+	elif base_name == "move":
+		var walk_name := "walk_%s" % suffix
+		if body.sprite_frames.has_animation(walk_name):
+			return walk_name
+	if body.sprite_frames.has_animation(base_name):
+		return base_name
+	return str(body.animation)
+
+
+func _directional_animation_suffix(direction: Vector2) -> String:
+	if direction.length_squared() <= 0.001:
+		return "south"
+	var sector_count := DIRECTIONAL_ANIMATION_SUFFIXES.size()
+	var sector_size := TAU / float(sector_count)
+	var index := int(floor((direction.angle() + sector_size * 0.5) / sector_size))
+	index = posmod(index, sector_count)
+	return str(DIRECTIONAL_ANIMATION_SUFFIXES[index])
+
+
+func _is_directional_body_animation(animation_name: String) -> bool:
+	for suffix in DIRECTIONAL_ANIMATION_SUFFIXES:
+		if animation_name.ends_with("_%s" % suffix):
+			return true
+	return false
 
 
 func _apply_sprite_transform() -> void:
