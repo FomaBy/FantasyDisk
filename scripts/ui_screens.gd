@@ -998,9 +998,17 @@ func _hero_select_preview_sprite_frames(character_id: String) -> SpriteFrames:
 	if frames == null:
 		return null
 	for direction in HERO_SELECT_PREVIEW_CLOCKWISE_DIRECTIONS:
-		if frames.has_animation("move_%s" % direction) or frames.has_animation("walk_%s" % direction):
+		if not _hero_select_direction_animation_name(frames, direction).is_empty():
 			return frames
 	return null
+
+
+func _hero_select_direction_animation_name(frames: SpriteFrames, direction: String) -> String:
+	for prefix in ["idle", "move", "walk"]:
+		var animation_name := "%s_%s" % [prefix, direction]
+		if frames.has_animation(animation_name):
+			return animation_name
+	return ""
 
 
 func _set_hero_select_portrait_preview(portrait: TextureRect, character_id: String, config: Dictionary, preview_state: Dictionary) -> void:
@@ -1028,10 +1036,8 @@ func _advance_hero_select_portrait_preview(portrait: TextureRect, preview_state:
 	var directions := HERO_SELECT_PREVIEW_CLOCKWISE_DIRECTIONS
 	for attempt in range(directions.size()):
 		var direction := str(directions[posmod(direction_index + attempt, directions.size())])
-		var animation_name := "move_%s" % direction
-		if not frames.has_animation(animation_name):
-			animation_name = "walk_%s" % direction
-		if not frames.has_animation(animation_name):
+		var animation_name := _hero_select_direction_animation_name(frames, direction)
+		if animation_name.is_empty():
 			continue
 		var frame_count := maxi(frames.get_frame_count(animation_name), 1)
 		frame_index = posmod(frame_index, frame_count)
