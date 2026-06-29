@@ -2,9 +2,9 @@
 
 Статус: done
 Контур: Codex
-Owner: Codex backend/UI fix worker
-Thread/Worker: codex-backend-fix-scrum672-rest-screen
-Locked paths: scripts/ui_screens.gd; tests/ui_no_overlap_matrix_test.gd; docs/design/systems/menus_ui.md; docs/tasks/SCRUM-672_ui_visual_release_gate.md
+Owner: Codex visual QA recheck worker
+Thread/Worker: codex-worker-visualqa-final-scrum672
+Locked paths: docs/tasks/SCRUM-672_ui_visual_release_gate.md; read-only UI surface screenshots under build/qa/
 Jira: SCRUM-672
 
 ## Recheck Context
@@ -102,3 +102,54 @@ Result:
   upgrade FAB outside the panel at bottom-right. Event screenshots remain
   unaffected by this scoped fix. Broad SCRUM-672 release-gate rerun remains QA
   owned.
+
+## Final Visual Gate Recheck (2026-06-29)
+
+Статус: PASSED
+
+Tested checkout:
+
+- Worktree: `/tmp/FantasyDisk-QA-SCRUM-672`
+- Branch: `codex/scrum-672-visualqa-final`
+- HEAD: `d06455be fix(SCRUM-672): restore rest screen content`
+- Confirmed history includes `893afba6 fix(SCRUM-639): restore event screen content`
+  and visible SCRUM-666/668/669/670/671 completion/fix commits.
+
+Commands:
+
+- `python3 tools/build_ui_2k_frame_kit.py --verify` - PASS
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` - PASS
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` - PASS
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/dark_fantasy_ui_theme_test.gd` - PASS
+- `python3 tools/godot_gate.py --path . --script res://tests/design_review_screenshot_capture_test.gd` - PASS screenshots written
+
+Screenshot evidence:
+
+- Manifest: `build/qa/design_review/manifest.md`
+- Event triptych: `build/qa/scrum672_visual_final_recheck/scrum672_event_triptych.jpg`
+- Rest triptych: `build/qa/scrum672_visual_final_recheck/scrum672_rest_triptych.jpg`
+- Full contact sheets:
+  `build/qa/scrum672_visual_final_recheck/scrum672_1280x720_contact_sheet.jpg`,
+  `build/qa/scrum672_visual_final_recheck/scrum672_1920x1080_contact_sheet.jpg`,
+  `build/qa/scrum672_visual_final_recheck/scrum672_2560x1440_contact_sheet.jpg`
+
+Visual gate matrix:
+
+| Surface | Viewports | Evidence | Verdict | Notes |
+| --- | --- | --- | --- | --- |
+| Event | 1280x720, 1920x1080, 2560x1440 | `build/qa/design_review/event_*.png`; event triptych | PASS | SCRUM-639 regression remains fixed: Event title, story, three choices, and Back button are visible; no blank-panel/up-arrow-only regression. |
+| Rest | 1280x720, 1920x1080, 2560x1440 | `build/qa/design_review/rest_*.png`; rest triptych | PASS | SCRUM-672 Rest fix is verified: Rest title/body, two action cards, Back button, and bottom-right upgrade FAB are visible; no blank-panel/up-arrow-only regression. |
+| Main menu, quit, settings display/audio/controls | 1280x720, 1920x1080, 2560x1440 | full contact sheets | PASS | Menus are populated and readable; controls stay inside panel interiors. |
+| Hero select, weapon select, codex, codex tooltip | 1280x720, 1920x1080, 2560x1440 | full contact sheets | PASS | Dense UI remains populated; no release-blocking overlap or frame ornament coverage observed. |
+| Battle reward, elite reward | 1280x720, 1920x1080, 2560x1440 | `build/qa/design_review/*reward_*.png` | PASS / exception | Intentional SCRUM-668/SCRUM-670 exception preserved: runtime keeps SCRUM-338 reward-card kit. |
+| Level-up, shop, attribute shop, upgrade | 1280x720, 1920x1080, 2560x1440 | full contact sheets | PASS | Titles/actions/cards render; content remains in dark/empty interior zones. |
+| Pause, pause stats, victory, death, combat HUD, feedback | 1280x720, 1920x1080, 2560x1440 | full contact sheets | PASS | Representative gameplay and modal surfaces render without a new release-gate blocker. |
+| Normal text/action buttons | Representative screenshots and theme gate | `build/qa/design_review/*.png`; `dark_fantasy_ui_theme_test.log` | PASS / exception | Text-button rollout holds for normal actions; icon-only/card/slot/portrait/stepper/route-node/weapon/reward controls remain documented exceptions. |
+| Global frame/content-zone rule | All captured representative UI surfaces | screenshots + no-overlap/theme gates | PASS | No content/text/icons observed over decorative frame ornament/borders outside preserved SCRUM-668 exceptions. |
+
+QA verdict:
+
+- SCRUM-639 Event regression: visually verified fixed.
+- SCRUM-672 Rest regression: visually verified fixed.
+- Final SCRUM-672 visual release gate: PASSED.
+- Production/runtime changes by QA worker: none.
