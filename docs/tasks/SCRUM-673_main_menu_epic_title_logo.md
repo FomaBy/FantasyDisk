@@ -1,11 +1,28 @@
 # Design+Backend Task: SCRUM-673 — Эпический лого-тайтл главного меню
 
-Статус: QA FAILED (2026-06-29, bug SCRUM-680)
+Статус: Контроль качества (re-submit 2026-06-29 после фикса SCRUM-680)
 Контур: Claude
 Owner: design+backend
 Jira: SCRUM-673
 Спринт: 0.1.7 (133)
 Locked paths: scripts/ui_screens.gd (`_show_main_menu`), assets/sprites/ui/menu_title/**, tools/build_main_menu_title_logo.py
+
+## Re-fix (2026-06-29, Claude/design) — закрытие блокеров SCRUM-680
+
+Все 4 блокера QA устранены:
+1. **Имя ноды** восстановлено `MainMenuTitleLabel` (TextureRect) — тесты завязаны
+   на имя (`ui_screens.gd:446`).
+2. **Путь ассета** приведён к спеке: `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png`
+   (+`.import`, `uid://cpht5yhj88htw`). Старый `assets/sprites/ui/main_menu_title.png` удалён.
+3. **Генератор** переименован в `tools/build_main_menu_title_logo.py`.
+4. **Перекрытие**: headless-замер реальных rect — лого `y=56..323`, первая кнопка
+   `MainMenuStartButton` с `y=383` (зазор 60px); все 6 кнопок чисто. Прошлый фейл
+   опирался на bounding-rect полноразмерного контейнера `MainMenuActions`
+   (anchor 0..1440), а не rect'ы кнопок — ложный позитив. Добавлен постоянный тест
+   `tests/main_menu_title_no_overlap_test.gd` (title-vs-каждая кнопка).
+
+Гейты (godot_gate, 2K viewport): `main_menu_title_no_overlap_test` PASS (6 buttons
+clear), `ui_no_overlap_matrix_test` PASS, `runtime_smoke_ui_test` PASS.
 
 ## Что и зачем
 

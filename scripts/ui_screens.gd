@@ -443,18 +443,18 @@ func _show_main_menu() -> void:
 	root.add_child(global_shade)
 
 	var title_logo := TextureRect.new()
-	title_logo.name = "MainMenuTitleLogo"
+	title_logo.name = "MainMenuTitleLabel"
 	title_logo.anchor_left = 0.0
 	title_logo.anchor_top = 0.0
 	title_logo.anchor_right = 0.0
 	title_logo.anchor_bottom = 0.0
-	title_logo.offset_left = 56.0
-	title_logo.offset_top = 48.0
-	title_logo.offset_right = 616.0
-	title_logo.offset_bottom = 281.0
+	title_logo.offset_left = 72.0
+	title_logo.offset_top = 56.0
+	title_logo.offset_right = 712.0
+	title_logo.offset_bottom = 323.0
 	title_logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	title_logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
-	title_logo.texture = game._cached_texture("res://assets/sprites/ui/main_menu_title.png")
+	title_logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	title_logo.texture = game._cached_texture("res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png")
 	title_logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(title_logo)
 

@@ -1,7 +1,7 @@
 """Generate FantasyDisk main-menu title wordmark.
 
 Output:
-- assets/sprites/ui/main_menu_title.png
+- assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png
 
 Horizontal wordmark "Fantasy Disk": purple/gold rift-disk emblem on the left,
 golden Luminari title text to the right, soft glow, transparent background.
@@ -18,7 +18,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "assets" / "sprites" / "ui"
+OUT = ROOT / "assets" / "sprites" / "ui" / "menu_title"
+ASSET_NAME = "main_menu_title_fantasy_disk.png"
 
 FONT_TITLE = Path("/System/Library/Fonts/Supplemental/Luminari.ttf")
 FONT_BACKUP = Path("/System/Library/Fonts/Supplemental/Copperplate.ttc")
@@ -203,8 +204,8 @@ def main() -> None:
     logo.alpha_composite(draw_title(text_x, cy))
 
     final = downsample(logo)
-    final.save(OUT / "main_menu_title.png")
-    print(OUT / "main_menu_title.png")
+    final.save(OUT / ASSET_NAME)
+    print(OUT / ASSET_NAME)
     print(f"size={final.size} mode={final.mode}")
 
 

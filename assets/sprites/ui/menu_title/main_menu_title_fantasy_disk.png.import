@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://r8iofdqhyhgt"
-path="res://.godot/imported/main_menu_title.png-a6f3afc57ce104f26511792807283830.ctex"
+uid="uid://cpht5yhj88htw"
+path="res://.godot/imported/main_menu_title_fantasy_disk.png-1325bd5df90938575642f13d752c4034.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/main_menu_title.png"
-dest_files=["res://.godot/imported/main_menu_title.png-a6f3afc57ce104f26511792807283830.ctex"]
+source_file="res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png"
+dest_files=["res://.godot/imported/main_menu_title_fantasy_disk.png-1325bd5df90938575642f13d752c4034.ctex"]
 
 [params]
 
