@@ -48,3 +48,20 @@ Locked paths: docs/design/mockups/scrum675_skill_tree_2k/**, docs/design/referen
 - docs/design/mockups/scrum675_skill_tree_2k/**
 - assets/sprites/ui/skill_tree/** (+ сайдкары)
 - tools/build_scrum675_skill_tree_frames.py
+
+## QA-Вердикт
+
+Статус: PASSED
+
+Дата: 2026-06-29
+QA: claude-qa-scrum675
+Коммит: 6463f234 (влит в origin/dev)
+
+- Все deliverables на месте в origin/dev: 12 PNG-ассетов (main/4 path/class_select/
+  class_popup/btn_points/badge_points/3 node_state) + 12 валидных .import-сайдкаров с uid.
+- Все ассеты RGBA, прозрачный фон (угловые alpha=0).
+- Мокап @2560×1440 (mockup_composite + debug_overlay + layout.json + ui_plan.json),
+  zone-audit GREEN (9/9 зон clear of ornament, safe-area соблюдён).
+- Генератор tools/build_scrum675_skill_tree_frames.py — локальный (PIL, без сети),
+  py_compile OK.
+- Готово к интеграции SCRUM-676.
