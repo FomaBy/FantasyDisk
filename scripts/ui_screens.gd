@@ -5,6 +5,7 @@ extends RefCounted
 
 var game
 var settings_return_origin := "main_menu"
+var settings_video_pending := {}
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
@@ -101,6 +102,7 @@ const SETTINGS_V2_MAIN_CONTENT_MARGINS := Vector4(72.0, 92.0, 72.0, 84.0)
 const SETTINGS_TAB_SWITCHER_FRAME_PATH := SETTINGS_V2_TAB_SWITCHER_PATH
 const SETTINGS_TAB_SWITCHER_BASE_SIZE := Vector2(616.0, 286.0)
 const SETTINGS_TAB_SWITCHER_CONTENT := Vector4(58.0, 52.0, 58.0, 48.0)
+const SETTINGS_APPLY_BUTTON_SIZE := Vector2(240.0, 72.0)
 const COMBAT_HUD_FRAME_DIR := "res://assets/sprites/ui/frames/combat_hud/"
 const COMBAT_HUD_FILL_DIR := "res://assets/sprites/ui/hud/combat_hud/"
 const COMBAT_HUD_RESOURCE_PANEL_PATH := MINIMAL_HUD_STRIP_PATH
@@ -2789,8 +2791,65 @@ func _settings_resolution_entries(usable_logical: Vector2i) -> Array[Dictionary]
 	return entries
 
 
+func _current_video_settings() -> Dictionary:
+	return {
+		"screen_index": int(game.selected_screen_index),
+		"resolution_index": int(game.selected_resolution_index),
+		"window_mode_index": int(game.selected_window_mode_index),
+	}
+
+
+func _ensure_settings_video_pending() -> void:
+	if settings_video_pending.is_empty():
+		settings_video_pending = _current_video_settings()
+
+
+func _settings_video_dirty() -> bool:
+	_ensure_settings_video_pending()
+	var current := _current_video_settings()
+	for key in ["screen_index", "resolution_index", "window_mode_index"]:
+		if int(settings_video_pending.get(key, current[key])) != int(current[key]):
+			return true
+	return false
+
+
+func _pending_screen_index(screen_count: int) -> int:
+	_ensure_settings_video_pending()
+	return clampi(int(settings_video_pending.get("screen_index", game.selected_screen_index)), 0, maxi(screen_count - 1, 0))
+
+
+func _clamp_pending_resolution_for_screen(screen_index: int) -> void:
+	_ensure_settings_video_pending()
+	var resolution_index := clampi(int(settings_video_pending.get("resolution_index", game.selected_resolution_index)), 0, game.RESOLUTION_OPTIONS.size() - 1)
+	if DisplayServer.get_name() == "headless":
+		settings_video_pending["resolution_index"] = resolution_index
+		return
+	var screen_full := DisplayServer.screen_get_size(screen_index)
+	var screen_scale := DisplayServer.screen_get_scale(screen_index)
+	var resolution: Vector2i = game.RESOLUTION_OPTIONS[resolution_index]
+	if not DisplayResolution.resolution_fits(resolution, screen_full, screen_scale):
+		resolution_index = DisplayResolution.default_resolution_index(screen_full, screen_scale)
+	settings_video_pending["resolution_index"] = clampi(resolution_index, 0, game.RESOLUTION_OPTIONS.size() - 1)
+
+
+func _apply_pending_video_settings() -> void:
+	_ensure_settings_video_pending()
+	game.selected_screen_index = int(settings_video_pending.get("screen_index", game.selected_screen_index))
+	game.selected_resolution_index = int(settings_video_pending.get("resolution_index", game.selected_resolution_index))
+	game.selected_window_mode_index = int(settings_video_pending.get("window_mode_index", game.selected_window_mode_index))
+	_apply_video_settings()
+	settings_video_pending = _current_video_settings()
+	_show_settings_menu(settings_return_origin)
+
+
+func _revert_pending_video_settings() -> void:
+	settings_video_pending = _current_video_settings()
+	_show_settings_menu(settings_return_origin)
+
+
 func _show_settings_menu(requested_return_origin := "") -> void:
 	settings_return_origin = _resolve_settings_return_origin(str(requested_return_origin))
+	_ensure_settings_video_pending()
 	game._clear_ui()
 
 	game.ui_layer = CanvasLayer.new()
@@ -2865,9 +2924,11 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var screen_tab := _make_settings_tab("Экран")
 	var screen_box := screen_tab.get_child(0) as VBoxContainer
+	screen_box.add_theme_constant_override("separation", 8)
 	tabs.add_child(screen_tab)
 
 	var screen_count := DisplayServer.get_screen_count()
+	var pending_screen := _pending_screen_index(screen_count)
 	if screen_count > 1:
 		var screen_options := OptionButton.new()
 		screen_options.name = "SettingsScreenOption"
@@ -2877,10 +2938,10 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		for screen_index in range(screen_count):
 			var size := DisplayServer.screen_get_size(screen_index)
 			screen_options.add_item("Экран %d (%dx%d)" % [screen_index + 1, size.x, size.y])
-		screen_options.selected = clampi(game.selected_screen_index, 0, screen_count - 1)
+		screen_options.selected = pending_screen
 		screen_options.item_selected.connect(func(index: int) -> void:
-			game.selected_screen_index = index
-			_apply_video_settings()
+			settings_video_pending["screen_index"] = index
+			_clamp_pending_resolution_for_screen(index)
 			_show_settings_menu()
 		)
 		_add_settings_control_row(screen_box, "Монитор", screen_options)
@@ -2894,7 +2955,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var screen_full_size := Vector2i(99999, 99999)
 	var screen_scale := 1.0
 	if DisplayServer.get_name() != "headless":
-		var res_screen := clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))
+		var res_screen := pending_screen
 		usable_size = DisplayServer.screen_get_usable_rect(res_screen).size
 		screen_full_size = DisplayServer.screen_get_size(res_screen)
 		screen_scale = DisplayServer.screen_get_scale(res_screen)
@@ -2909,10 +2970,10 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		# Физпиксели (× Retina scale) сохраняют корректность Mac/HiDPI (SCRUM-441).
 		if not DisplayResolution.resolution_fits(resolution, screen_full_size, screen_scale):
 			resolution_options.set_item_disabled(option_index, true)
-	resolution_options.selected = clampi(game.selected_resolution_index, 0, resolution_entries.size() - 1)
+	resolution_options.selected = clampi(int(settings_video_pending.get("resolution_index", game.selected_resolution_index)), 0, resolution_entries.size() - 1)
 	resolution_options.item_selected.connect(func(index: int) -> void:
-		game.selected_resolution_index = index
-		_apply_video_settings()
+		settings_video_pending["resolution_index"] = index
+		_show_settings_menu()
 	)
 	_add_settings_control_row(screen_box, "Разрешение", resolution_options)
 
@@ -2923,19 +2984,12 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	_apply_compact_button_theme(mode_options)
 	for mode_name in game.WINDOW_MODE_OPTIONS:
 		mode_options.add_item(mode_name)
-	mode_options.selected = game.selected_window_mode_index
+	mode_options.selected = clampi(int(settings_video_pending.get("window_mode_index", game.selected_window_mode_index)), 0, game.WINDOW_MODE_OPTIONS.size() - 1)
 	mode_options.item_selected.connect(func(index: int) -> void:
-		game.selected_window_mode_index = index
-		_apply_video_settings()
+		settings_video_pending["window_mode_index"] = index
+		_show_settings_menu()
 	)
 	_add_settings_control_row(screen_box, "Режим окна", mode_options)
-
-	var screen_hint := Label.new()
-	screen_hint.text = "Оконные разрешения ограничены 2560x1440 и 1920x1080; 2K выбирается по умолчанию, если помещается."
-	screen_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	screen_hint.add_theme_font_size_override("font_size", 14)
-	screen_hint.add_theme_color_override("font_color", Color(0.70, 0.76, 0.82, 1.0))
-	screen_box.add_child(screen_hint)
 
 	var shake_row := HBoxContainer.new()
 	shake_row.name = "ScreenShakeRow"
@@ -2956,6 +3010,17 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		game.save_game_settings()
 	)
 	shake_row.add_child(shake_toggle)
+
+	var pending_label := Label.new()
+	pending_label.name = "SettingsPendingLabel"
+	pending_label.text = "Есть непримененные изменения." if _settings_video_dirty() else "Экранные настройки применены."
+	pending_label.custom_minimum_size = Vector2(420, 30)
+	pending_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pending_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	pending_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	pending_label.add_theme_font_size_override("font_size", 14)
+	pending_label.add_theme_color_override("font_color", Color(0.96, 0.80, 0.42, 1.0) if _settings_video_dirty() else Color(0.68, 0.76, 0.82, 1.0))
+	screen_box.add_child(pending_label)
 
 	var audio_tab := _make_settings_tab("Звук")
 	var audio_box := audio_tab.get_child(0) as VBoxContainer
@@ -3080,16 +3145,33 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var settings_back := func() -> void:
 		_return_from_settings()
+	var action_row := HBoxContainer.new()
+	action_row.name = "SettingsBottomActions"
+	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	action_row.add_theme_constant_override("separation", 12)
+	var action_row_size := Vector2(784.0, SETTINGS_APPLY_BUTTON_SIZE.y)
+	_apply_control_rect(action_row, Rect2(
+		Vector2(roundf((modal_rect.size.x - action_row_size.x) * 0.5), roundf(modal_rect.size.y - action_row_size.y - maxf(28.0, modal_rect.size.y * 0.055))),
+		action_row_size
+	))
+	modal.add_child(action_row)
+	var apply_button := _make_button("Применить")
+	apply_button.name = "SettingsApplyButton"
+	_set_action_button_size(apply_button, SETTINGS_APPLY_BUTTON_SIZE.x, SETTINGS_APPLY_BUTTON_SIZE.y)
+	apply_button.disabled = not _settings_video_dirty()
+	apply_button.pressed.connect(_apply_pending_video_settings)
+	action_row.add_child(apply_button)
+	var revert_button := _make_button("Отменить")
+	revert_button.name = "SettingsRevertButton"
+	_set_action_button_size(revert_button, SETTINGS_APPLY_BUTTON_SIZE.x, SETTINGS_APPLY_BUTTON_SIZE.y)
+	revert_button.disabled = not _settings_video_dirty()
+	revert_button.pressed.connect(_revert_pending_video_settings)
+	action_row.add_child(revert_button)
 	var back_button := _make_button("Назад")
 	back_button.name = "SettingsBackButton"
 	_set_action_button_size(back_button, 280.0, 64.0)
 	back_button.pressed.connect(settings_back)
-	var back_size := back_button.custom_minimum_size
-	_apply_control_rect(back_button, Rect2(
-		Vector2(roundf((modal_rect.size.x - back_size.x) * 0.5), roundf(modal_rect.size.y - back_size.y - maxf(28.0, modal_rect.size.y * 0.055))),
-		back_size
-	))
-	modal.add_child(back_button)
+	action_row.add_child(back_button)
 	game.ui_escape_action = settings_back
 
 
@@ -3116,6 +3198,7 @@ func _is_run_settings_context() -> bool:
 func _return_from_settings() -> void:
 	var return_origin := settings_return_origin
 	settings_return_origin = SETTINGS_RETURN_MAIN_MENU
+	settings_video_pending.clear()
 	if return_origin == SETTINGS_RETURN_RUN_PAUSE:
 		game.pending_rebind_action = ""
 		game.ui_escape_action = Callable()
@@ -3278,8 +3361,8 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	slider.min_value = 0.0
 	slider.max_value = 100.0
 	slider.step = 2.0
-	slider.custom_minimum_size = Vector2(560, 48)
-	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.custom_minimum_size = Vector2(420, 42)
+	slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	slider.focus_mode = Control.FOCUS_ALL
 	_style_slider(slider)
 	slider.value = float(game.audio_settings.get(volume_key, 1.0)) * 100.0

@@ -122,6 +122,23 @@ Fallback texture style, если PNG не найден: background `alpha=0.94`,
 - Shade: `alpha=0.44`.
 - Страница должна расширяться по ширине, но контент с длинным списком обязан уходить в vertical scroll.
 
+## Settings
+
+- Settings uses exactly three custom tabs: `Экран`, `Звук`, `Управление`.
+  Built-in `TabContainer` headers stay hidden; `SettingsTabButton_0..2` must stay
+  inside the switcher safe rects and `SettingsTabButton_3` must not exist.
+- Screen dropdowns stage pending values only. `SettingsApplyButton` commits
+  monitor/resolution/window-mode changes through `_apply_video_settings()`;
+  `SettingsRevertButton` discards staged values. Both buttons are `240 x 72` and
+  disabled when no screen changes are pending.
+- Sound sliders are compact `420 x 42` controls, not full-width rails. They keep
+  a visible dark track, gold filled track, keyboard focus, `0..100` range and
+  step `2`.
+- `ControlsScroll` remains vertical-only with `follow_focus=true`; reset
+  bindings remains inside the scrollable controls content.
+- `SettingsBackButton` stays outside the tab content panel at `280 x 64`, inside
+  the modal safe zone and below `SettingsContentPanel`.
+
 ## Hero Select
 
 | Элемент | Требование |

@@ -60,7 +60,8 @@ func _initialize() -> void:
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "settings", Callable(self, "_open_settings"), [
 			"SettingsTabSwitcher", "SettingsContentPanel",
-			"SettingsResolutionOption", "SettingsWindowModeOption", "SettingsBackButton",
+			"SettingsResolutionOption", "SettingsWindowModeOption",
+			"SettingsApplyButton", "SettingsRevertButton", "SettingsBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "rebind_conflict", Callable(self, "_open_rebind_conflict"), [
 			"RebindConflictPanel", "RebindConflictTitle", "RebindConflictMessage",

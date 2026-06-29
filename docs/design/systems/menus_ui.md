@@ -75,6 +75,19 @@ must keep `UpgradeFabButton` on the screen root, never inside
 The UI matrix now fails if Rest regresses to a blank panel/up-arrow-only shell or
 if the Rest content disappears from the campfire panel.
 
+SCRUM-674 rebuilds the live Settings apply flow inside the existing dark-fantasy
+frame contract. The screen still has exactly three custom tabs: `Экран`, `Звук`
+and `Управление`, with built-in `TabContainer` headers hidden and
+`SettingsTabButton_0..2` inside the switcher safe rects. Screen settings
+(`SettingsScreenOption`, `SettingsResolutionOption`, `SettingsWindowModeOption`)
+now stage values in a pending buffer and do not call `_apply_video_settings()`
+until `SettingsApplyButton` is pressed; `SettingsRevertButton` discards the
+pending buffer. `ScreenShakeToggle`, sound controls and controls/rebind settings
+remain immediate-apply. Sound sliders are compact `420x42` rows with the same
+dark track/gold fill/focus behavior, so they no longer stretch across the whole
+content panel. Mockup/spec: `docs/design/mockups/scrum674_settings_ui/spec.md`;
+OpenAI reference: `docs/design/references/scrum674_settings_ui/settings_apply_flow_mockup.png`.
+
 SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
 Attribute Shop uses compact `320x240` offer cards plus shorter bottom action
 buttons only below 660px viewport height, while Settings permits a compressed

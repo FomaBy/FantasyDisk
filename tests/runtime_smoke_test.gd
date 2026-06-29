@@ -5816,6 +5816,72 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		var settings_switcher_image := main.get_viewport().get_texture().get_image()
 		if settings_switcher_image != null:
 			settings_switcher_image.save_png("%s/settings_v2_runtime.png" % settings_switcher_qa_dir)
+	var resolution_option := main.find_child("SettingsResolutionOption", true, false) as OptionButton
+	var apply_button := main.find_child("SettingsApplyButton", true, false) as Button
+	var revert_button := main.find_child("SettingsRevertButton", true, false) as Button
+	var pending_label := main.find_child("SettingsPendingLabel", true, false) as Label
+	if resolution_option == null or apply_button == null or revert_button == null or pending_label == null:
+		_fail("Expected screen settings to expose pending Apply/Revert controls.")
+		return
+	if not apply_button.disabled or not revert_button.disabled:
+		_fail("Expected screen Apply/Revert buttons to start disabled when no screen changes are pending.")
+		return
+	var original_resolution := int(main.get("selected_resolution_index"))
+	var target_resolution := 1 if original_resolution == 0 else 0
+	resolution_option.item_selected.emit(target_resolution)
+	await process_frame
+	await process_frame
+	if int(main.get("selected_resolution_index")) != original_resolution:
+		_fail("Expected resolution dropdown to stage pending value without applying immediately.")
+		return
+	apply_button = main.find_child("SettingsApplyButton", true, false) as Button
+	if apply_button == null or apply_button.disabled:
+		_fail("Expected screen Apply button to enable after a pending resolution change.")
+		return
+	apply_button.pressed.emit()
+	await process_frame
+	await process_frame
+	if int(main.get("selected_resolution_index")) != target_resolution:
+		_fail("Expected screen Apply button to commit the pending resolution change.")
+		return
+	resolution_option = main.find_child("SettingsResolutionOption", true, false) as OptionButton
+	if resolution_option == null:
+		_fail("Expected SettingsResolutionOption after applying screen settings.")
+		return
+	resolution_option.item_selected.emit(original_resolution)
+	await process_frame
+	await process_frame
+	revert_button = main.find_child("SettingsRevertButton", true, false) as Button
+	if revert_button == null or revert_button.disabled:
+		_fail("Expected screen Revert button to enable after staging a second resolution change.")
+		return
+	revert_button.pressed.emit()
+	await process_frame
+	await process_frame
+	if int(main.get("selected_resolution_index")) != target_resolution:
+		_fail("Expected screen Revert button to discard pending resolution changes.")
+		return
+	resolution_option = main.find_child("SettingsResolutionOption", true, false) as OptionButton
+	if resolution_option == null:
+		_fail("Expected SettingsResolutionOption after reverting screen settings.")
+		return
+	resolution_option.item_selected.emit(original_resolution)
+	await process_frame
+	await process_frame
+	apply_button = main.find_child("SettingsApplyButton", true, false) as Button
+	if apply_button == null:
+		_fail("Expected SettingsApplyButton while restoring original resolution.")
+		return
+	apply_button.pressed.emit()
+	await process_frame
+	await process_frame
+	if int(main.get("selected_resolution_index")) != original_resolution:
+		_fail("Expected screen Apply button to restore the original resolution for later smoke checks.")
+		return
+	tabs = main.find_child("SettingsTabs", true, false) as TabContainer
+	if tabs == null:
+		_fail("Expected SettingsTabs after screen pending apply flow.")
+		return
 	var controls_scroll := main.find_child("ControlsScroll", true, false) as ScrollContainer
 	if controls_scroll == null:
 		_fail("Expected controls settings tab to wrap bindings in ControlsScroll.")
@@ -5899,8 +5965,8 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if slider == null or not slider.visible or slider.max_value != 100.0:
 			_fail("Expected visible 0-100 settings slider for %s." % slider_id)
 			return
-		if not bool(slider.size_flags_horizontal & Control.SIZE_EXPAND_FILL):
-			_fail("Expected %s slider to expand across the audio tab." % slider_id)
+		if slider.custom_minimum_size.x > 460.0 or slider.custom_minimum_size.y > 46.0:
+			_fail("Expected %s slider to use the shorter SCRUM-674 compact sound row size." % slider_id)
 			return
 		var track := slider.get_theme_stylebox("slider")
 		var fill := slider.get_theme_stylebox("grabber_area")

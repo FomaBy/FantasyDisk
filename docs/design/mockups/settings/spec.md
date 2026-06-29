@@ -3,6 +3,25 @@
 Эпик SCRUM-481 (UI Overhaul). Экран `_show_settings_menu` (`scripts/ui_screens.gd`),
 нода `SettingsContentPanel` (корень `SettingsV2Root`). Стиль: D&D + Dark Fantasy Dragon.
 
+## SCRUM-674 — Settings tabs, compact controls and pending Apply flow
+
+SCRUM-674 keeps the SCRUM-575/SCRUM-439 dark fantasy Settings frame contract but
+changes the Screen tab semantics:
+
+- `SettingsScreenOption`, `SettingsResolutionOption` and
+  `SettingsWindowModeOption` write into a runtime pending buffer.
+- `_apply_video_settings()` is called only by `SettingsApplyButton`.
+- `SettingsRevertButton` clears staged screen changes without touching persisted
+  settings.
+- `SettingsApplyButton` and `SettingsRevertButton` are `240×72`, disabled when
+  the pending buffer matches current settings, and placed in the modal bottom
+  action row next to `SettingsBackButton`.
+- Sound sliders are compact `420×42` rows with the same visible dark track,
+  gold fill and keyboard focus.
+
+OpenAI mockup/spec package:
+`docs/design/mockups/scrum674_settings_ui/spec.md`.
+
 ## ЭТАП 1 — Раскладка / метрики @2560×1440 (база)
 
 Экран — V2-модалка с вкладками (TabContainer, tabs скрыты, переключение через
