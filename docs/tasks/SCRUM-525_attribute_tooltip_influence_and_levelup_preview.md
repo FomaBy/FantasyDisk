@@ -5,7 +5,7 @@ Jira: SCRUM-525 · Роль: backend · Контур: claude · Приорите
 
 ## QA-Вердикт: PASSED
 
-Статус: done
+Статус: PASSED
 
 Re-verified 2026-06-28 by Codex QA-loop `qa_492_20260628190455` after Jira status drift back to `Контроль качества`: SCRUM-525 anchors remain present in `scripts/ui_screens.gd` (`_attribute_influence_text`, `_attribute_upgrade_preview_lines`, tooltip blocks on `AttributeOffer_*`, level-up preview helpers). Godot 4.7 headless: `tests/ui_no_overlap_matrix_test.gd` PASS, `tests/runtime_smoke_ui_test.gd` PASS, `tests/stat_formulas_smoke_test.gd` PASS; full `tests/runtime_smoke_test.gd` had already passed on the same HEAD in this QA loop. Jira returned to `Готово`.
 
@@ -250,7 +250,7 @@ runtime_smoke_ui_test, stat_formulas_smoke_test (35/8/27).
   `tests/ui_no_overlap_matrix_test.gd`, `tests/runtime_smoke_ui_test.gd`, `tests/runtime_smoke_test.gd`,
   и при желании `tests/stat_formulas_smoke_test.gd` (формулы) — все должны быть зелёными.
 ## QA-Вердикт (2026-06-28, Codex QA refresh)
-Статус: done
+Статус: PASSED
 Проверено на текущем `origin/dev` после SCRUM-493 sync:
 - Jira live: SCRUM-525 был в `Контроль качества`; QA claim: `codex-qa-525-after-493`.
 - `_refresh_attribute_shop` добавляет tooltip-блоки `Влияет на:` и `Предпросмотр при +1`, disabled-ветка `Недостаточно золота` сохранена.
