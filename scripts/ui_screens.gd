@@ -752,12 +752,15 @@ func _show_continue_run_dialog() -> void:
 	box.add_theme_constant_override("separation", 16)
 	panel.add_child(box)
 
-	var title_label := Label.new()
+	# SCRUM-677: стилизованный лого-заголовок вместо плоского жёлтого текста.
+	var title_label := TextureRect.new()
 	title_label.name = "ContinueRunTitle"
-	title_label.text = "Продолжить забег?"
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 34)
-	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	title_label.custom_minimum_size = Vector2(0.0, 96.0)
+	title_label.size_flags_horizontal = Control.SIZE_FILL
+	title_label.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	title_label.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_label.texture = game._cached_texture("res://assets/sprites/ui/menu_title/continue_run_title.png")
 	box.add_child(title_label)
 
 	var character_id := str(autosave_state.get("selected_character_id", "berserk"))

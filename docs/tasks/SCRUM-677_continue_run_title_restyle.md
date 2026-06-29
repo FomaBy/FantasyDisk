@@ -1,11 +1,21 @@
 # Task: SCRUM-677 — Заголовок окна «Продолжить забег?» в стилистике игры
 
-Статус: todo
+Статус: done (в QA 2026-06-29)
 Контур: Claude
 Owner: design+backend
 Jira: SCRUM-677
 Спринт: 0.1.7 (133)
 Locked paths: scripts/ui_screens.gd (`_show_continue_run_dialog`), assets/sprites/ui/ (опц. лого)
+
+## Выполнено (2026-06-29, Claude/design)
+
+- Лого-заголовок `assets/sprites/ui/menu_title/continue_run_title.png` (760×170,
+  RGBA, прозрачный, uid встроен) — Luminari, золотой градиент + обводка + тень +
+  флойриш, стиль-семья с лого главного меню. Генератор
+  `tools/build_continue_run_title_logo.py`.
+- `_show_continue_run_dialog`: `Label` → `TextureRect`, имя узла `ContinueRunTitle`
+  сохранено; subtitle/кнопки/panel/dim/логика не тронуты.
+- Гейт: `runtime_smoke_ui_test` PASS.
 
 ## Что и зачем
 
