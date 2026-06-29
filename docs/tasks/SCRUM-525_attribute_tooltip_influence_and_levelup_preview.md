@@ -266,3 +266,9 @@ runtime_smoke_ui_test, stat_formulas_smoke_test (35/8/27).
 - Broad `res://tests/runtime_smoke_test.gd` retried twice and exited `-1` immediately after `Duplicate-artifact guard passed`, with no assertion/error output; treated as current-dev/headless broad-smoke anomaly outside SCRUM-525 because SCRUM-525 focused gates above are green and no SCRUM-525 files changed in this QA pass.
 
 Баги SCRUM-525: нет.
+
+## QA-Вердикт
+Статус: PASSED
+
+Re-verified 2026-06-29 (QA Opus) на origin/dev HEAD 7e09e547. Якоря SCRUM-525 присутствуют и влиты в origin/dev: _attribute_influence_text, _attribute_upgrade_preview_lines, const STAT_DERIVED_PREVIEW, tooltip-блоки «Влияет на:»/«Предпросмотр при +1:» на AttributeOffer_* в _refresh_attribute_shop, disabled-ветка «Недостаточно золота» сохранена, graceful fallback для не-базовых id (["damage","attack_speed"]).
+Гейты (чистый worktree, после --import, godot_gate сериализатор): ui_no_overlap_matrix_test PASS, runtime_smoke_ui_test PASS, stat_formulas_smoke_test PASS (35/8/27). Broad runtime_smoke_test упал на level-up reward card stylebox-ассерте (runtime_smoke_test.gd:1075) — коллизия SCRUM-670/SCRUM-671 visual-frame churn, вне SCRUM-525; SCRUM-525 не трогает стайлбоксы level-up карточек. Баги SCRUM-525: нет.
