@@ -22,8 +22,12 @@ const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_uniqu
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
 const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
-const LEVEL_UP_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_level_up_panel.png"
-const LEVEL_UP_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_level_up_card.png"
+const LEVEL_UP_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_panel.png"
+const LEVEL_UP_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card.png"
+const LEVEL_UP_CARD_HOVER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card_hover.png"
+const LEVEL_UP_CARD_SELECTED_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card_selected.png"
+const LEVEL_UP_EFFECT_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_effect_preview.png"
+const LEVEL_UP_LATER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
 const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
 const CODEX_MAIN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_main.png"
@@ -223,6 +227,11 @@ func _initialize() -> void:
 	if scrum487_file != null:
 		scrum487_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["combat_hud", "combat_title_banner", "level_up", "battle_reward", "elite_reward", "event_economy"])))
 		scrum487_file.close()
+	DirAccess.make_dir_recursive_absolute("%s/scrum683" % qa_dir)
+	var scrum683_file := FileAccess.open("%s/scrum683/level_up_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
+	if scrum683_file != null:
+		scrum683_file.store_string("\n".join(_filter_dump_sections(dump_lines, ["level_up"])))
+		scrum683_file.close()
 	DirAccess.make_dir_recursive_absolute("%s/scrum489" % qa_dir)
 	var scrum489_file := FileAccess.open("%s/scrum489/results_block_no_overlap_matrix.md" % qa_dir, FileAccess.WRITE)
 	if scrum489_file != null:
@@ -322,7 +331,11 @@ func _open_level_up(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
 	main.set("selected_weapon_id", "sword")
 	main.set("pending_level_ups", 1)
-	main.set("level_up_offer", [])
+	main.set("level_up_offer", [
+		{"id": "matrix_stat_strength", "title": "Сила +1", "description": "Редкий рост основной характеристики: +1 к параметру «Сила».", "kind": "stat", "stats": {"strength": 1.0}, "rare": true},
+		{"id": "matrix_damage", "title": "+Урон", "description": "+15% к урону.", "kind": "upgrade", "mods": {"damage_multiplier": 1.15}},
+		{"id": "matrix_aoe", "title": "+Радиус области", "description": "+15% к конусам и радиусам атак.", "kind": "upgrade", "mods": {"aoe_radius_multiplier": 1.15, "range_multiplier": 1.08}},
+	])
 	main.ui._show_level_up_screen(false)
 
 
@@ -646,19 +659,25 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var level_safe: Rect2 = level_panel.get_meta("level_up_content_rect", Rect2()) as Rect2
 			if not level_safe.has_area():
 				return "%s: expected LevelUpPanel to expose content safe rect metadata." % context
-			var scaled_level_safe := _scaled_source_rect(level_panel.get_global_rect(), Vector2(1040, 600), level_safe).grow(1.0)
+			var scaled_level_safe := _scaled_source_rect(level_panel.get_global_rect(), Vector2(1720, 1040), level_safe).grow(1.0)
 			for child_name in ["LevelUpHeroHeader", "LevelUpTitle", "LevelUpSubtitle", "LevelUpRewardsRow", "LevelUpLaterButton"]:
 				var child := main.find_child(child_name, true, false) as Control
 				if child == null or not child.visible or not child.get_global_rect().has_area():
 					return "%s: expected visible %s." % [context, child_name]
 				if not scaled_level_safe.encloses(child.get_global_rect()):
 					return "%s: expected %s to stay inside LevelUpPanel safe rect %s." % [context, child_name, str(scaled_level_safe)]
+			var later_button := main.find_child("LevelUpLaterButton", true, false) as Button
+			if later_button == null or _stylebox_texture_path(later_button.get_theme_stylebox("normal")) != LEVEL_UP_LATER_2K_FRAME_PATH:
+				return "%s: expected LevelUpLaterButton to use SCRUM-682 later button art." % context
 			for node in main.find_children("LevelUpRewardButton*", "Button", true, false):
 				var reward_button := node as Button
 				if reward_button == null:
 					continue
-				if _stylebox_texture_path(reward_button.get_theme_stylebox("normal")) != LEVEL_UP_CARD_2K_FRAME_PATH:
-					return "%s: expected %s to use level_up_card @2K frame." % [context, reward_button.name]
+				var normal_path := _stylebox_texture_path(reward_button.get_theme_stylebox("normal"))
+				if normal_path != LEVEL_UP_CARD_2K_FRAME_PATH and normal_path != LEVEL_UP_CARD_SELECTED_2K_FRAME_PATH:
+					return "%s: expected %s to use SCRUM-682 level-up card frame, got %s." % [context, reward_button.name, normal_path]
+				if _stylebox_texture_path(reward_button.get_theme_stylebox("hover")) != LEVEL_UP_CARD_HOVER_2K_FRAME_PATH:
+					return "%s: expected %s hover StyleBox to use SCRUM-682 hover card." % [context, reward_button.name]
 				if str(reward_button.get_meta("level_up_card_slot", "")) != "level_up_card":
 					return "%s: expected %s slot metadata to be level_up_card." % [context, reward_button.name]
 				var card_safe: Rect2 = reward_button.get_meta("level_up_card_content_rect", Rect2()) as Rect2
@@ -668,6 +687,18 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				var content := reward_button.find_child("LevelUpRewardContent", true, false) as Control
 				if content == null or not scaled_card_safe.encloses(content.get_global_rect()):
 					return "%s: expected %s content to stay inside card safe rect %s." % [context, reward_button.name, str(scaled_card_safe)]
+				for child_name in ["LevelUpRewardDescription", "LevelUpRewardEffectPreview", "LevelUpRewardEffectText"]:
+					var child := reward_button.find_child(child_name, true, false) as Control
+					if child == null or not child.visible or not child.get_global_rect().has_area():
+						return "%s: expected visible %s inside %s." % [context, child_name, reward_button.name]
+					if not scaled_card_safe.encloses(child.get_global_rect()):
+						return "%s: expected %s to stay inside scaled card safe rect %s." % [context, child_name, str(scaled_card_safe)]
+				var effect_panel := reward_button.find_child("LevelUpRewardEffectPreview", true, false) as PanelContainer
+				if effect_panel == null or _stylebox_texture_path(effect_panel.get_theme_stylebox("panel")) != LEVEL_UP_EFFECT_2K_FRAME_PATH:
+					return "%s: expected %s effect preview field to use SCRUM-682 effect frame." % [context, reward_button.name]
+				var effect_text := reward_button.find_child("LevelUpRewardEffectText", true, false) as Label
+				if effect_text == null or not effect_text.text.contains("->"):
+					return "%s: expected %s visible effect preview to contain before/after delta, got %s." % [context, reward_button.name, effect_text.text if effect_text != null else ""]
 		"event_economy":
 			# SCRUM-565: панель события рисуется собственной evt_panel @2K-рамкой.
 			var event_panel := main.find_child("MenuPanel_event", true, false) as Control

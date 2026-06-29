@@ -94,6 +94,13 @@ UI обязан показывать эти интерпретации текс�
 - Rewards меняют производные параметры сразу.
 - Level-up UI использует icon mapping через `UIIconRegistry`.
 - Level-up pool включает прямые карточки для основных derived parameters: crit, dodge, range, DoT, projectile speed, aura, buff, summon, absorb, regeneration, vampirism и ultimate scaling.
+- SCRUM-683 выводит видимый effect-preview прямо на reward card, а не только в
+  tooltip. Для базовых характеристик preview строится от текущего snapshot
+  статов и `STAT_DERIVED_PREVIEW` / `ProgressionData.derived_parameters()`;
+  для direct modifier rewards runtime применяет модификаторы к копии активных
+  modifiers и сравнивает before/after derived parameters активного героя и
+  оружия. Поэтому числа в карточке берутся из текущих формул баланса и не
+  дублируются hardcoded UI-текстом.
 
 ## Artifacts
 

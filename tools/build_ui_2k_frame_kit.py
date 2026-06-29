@@ -67,11 +67,10 @@ SLOTS = [
     # переиспользуют base card-арт под hover) — отдельный идентичный PNG не нужен.
     {"slug": "evt_panel", "file": "ui_screens", "const": "EVT_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 780},
     {"slug": "evt_card", "file": "ui_screens", "const": "EVT_CARD_2K", "kind": "frame", "margin_key": "card", "w": 480, "h": 340},
-    # SCRUM-670 consumes the accepted SCRUM-570 Level-Up 2K spec. This task owns
-    # the non-button modal/card frames; the Later action remains on SCRUM-669's
-    # generated text-button kit.
-    {"slug": "level_up_panel", "file": "ui_screens", "const": "LU_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1040, "h": 600},
-    {"slug": "level_up_card", "file": "ui_screens", "const": "LU_CARD_2K", "kind": "frame", "margin_key": "card", "w": 238, "h": 210},
+    # SCRUM-683: Level-Up moved to the dedicated SCRUM-682 frame family under
+    # assets/sprites/ui/frames/level_up_scrum682/. This overhaul_2k generator no
+    # longer owns level_up_panel/card; runtime and tests verify those paths
+    # directly.
     # SCRUM-573 (Улучшение): per-слот @2K-рамка панели улучшения (economy-panel "upgrade").
     # Карточки выбора переиспользуют общий economy-choice-арт (как остальные economy-экраны).
     {"slug": "upgrade_panel", "file": "ui_screens", "const": "UPGRADE_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 730},

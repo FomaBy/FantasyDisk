@@ -376,8 +376,25 @@ accepted content zones into generated dark interiors and out of rail/ornament
 positions; level-up plus and pending-count zones are separate and
 non-overlapping at 2560x1440.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
-- Level-up reward options remain full-card clickable Buttons for input/focus and now use SCRUM-670 generated 2K runtime frames from the SCRUM-570 source package: `level_up_panel` (`1040x600`) for the overlay and `level_up_card` (`238x210`) for all three reward choices. The screen still presents exactly 3 variants and the `Позже` deferral button. SCRUM-465 keeps the overlay viewport-aware for short 720p layouts, while SCRUM-670 records source-space safe rect metadata and keeps hero header, title, subtitle, card content, and deferral button inside the generated-frame interiors. The UI no-overlap matrix covers `LevelUpPanel`, `LevelUpHeroHeader`, all three reward cards and `LevelUpLaterButton`; QA evidence lives under `build/qa/ui_no_overlap_matrix.md`.
-- SCRUM-570 is the live 2K level-up overlay source package. Source geometry and planning gate files live under `docs/design/mockups/scrum570_levelup_2k_redesign/`, the OpenAI source mockups under `docs/design/references/scrum570_levelup_2k_redesign/`, and previews under `docs/design/previews/scrum570_levelup_2k_*`. Runtime wiring follows `ui_plan.json` / `spec.md` rather than slicing the mockup directly.
+- Level-up reward options remain full-card clickable Buttons for input/focus and
+  now use the larger SCRUM-682 runtime frame family from
+  `assets/sprites/ui/frames/level_up_scrum682/`: `ui_frame_lu682_panel.png`
+  (`1720x1040`), `ui_frame_lu682_card.png` (`470x560`), hover/selected card
+  states, portrait frame, effect-preview field, and dedicated `Позже` button
+  states. The screen still presents exactly 3 variants and preserves deferred
+  choice through `level_up_offer`.
+- SCRUM-683 is the live runtime wiring for the SCRUM-682 Level Up package.
+  Source geometry lives under `docs/design/mockups/level_up_scrum682/spec.md`,
+  and runtime scales it from 2560x1440 while keeping hero header, portrait,
+  title, subtitle, three cards, card content, and `Позже` inside frame content
+  zones. The runtime raises the `Позже` button slightly inside the panel safe
+  area because the source handoff button y-position exceeded the declared
+  content bottom. Card interiors show a large icon, readable title, short
+  description, and framed visible effect preview; tooltip text is overflow only,
+  not the primary explanation. The UI no-overlap matrix covers
+  `LevelUpPanel`, `LevelUpHeroHeader`, all three reward cards,
+  `LevelUpRewardEffectPreview`, and `LevelUpLaterButton`; focused SCRUM-683 QA
+  evidence writes `build/qa/scrum683/level_up_no_overlap_matrix.md`.
 - SCRUM-571 adds the Design-source 2K ordinary reward mockup/spec package for the post-battle reward selection screen. Source geometry and safe-zone files live under `docs/design/mockups/scrum571_reward_2k/`, the OpenAI base layer under `docs/design/references/scrum571_reward_2k/reward_ordinary_2k_base.png`, and previews under `docs/design/previews/scrum571_reward_2k_*.png`. As of SCRUM-670 this package has no isolated alpha runtime frames, so runtime intentionally keeps the SCRUM-338 reward-card kit instead of slicing the full-screen mockup.
 - SCRUM-572 adds the Design-source 2K elite artifact reward mockup/spec package for the elite victory artifact-choice screen. Source geometry and safe-zone files live under `docs/design/mockups/scrum572_elite_artifact_reward_2k/`, the OpenAI base layer under `docs/design/references/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_base.png`, and previews under `docs/design/previews/scrum572_elite_artifact_reward_2k_*.png`. As of SCRUM-670 this package has no isolated alpha runtime frames, so runtime intentionally keeps the SCRUM-338 elite reward-card kit instead of slicing the full-screen mockup.
 - SCRUM-404 wires the dedicated SCRUM-338 reward-card frame kit for battle rewards and elite artifact rewards: `assets/sprites/ui/frames/rewards/ui_frame_reward_card.png`, `_hover.png`, `ui_frame_reward_elite_artifact_card.png` and `_hover.png`. Runtime uses the metadata in `docs/design/references/rewards/reward_frames_scrum338_metadata.json`, keeps title, icon, description, artifact tier labels and `Получить`/choice content inside the safe content fields, and preserves whole-card click/focus without placing UI content on red gems, top crests, side metal or bottom ornaments. Runtime smoke writes SCRUM-338 card rect dumps to `build/qa/scrum338/`.

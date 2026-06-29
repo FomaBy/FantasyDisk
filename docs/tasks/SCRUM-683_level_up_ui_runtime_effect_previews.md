@@ -1,11 +1,11 @@
 # SCRUM-683 - Level Up UI Runtime: readable cards with effective change previews
 
 Jira: SCRUM-683
-Статус: new
+Статус: review
 Role: Back-end / UI runtime
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Back-end / UI runtime Codex
+Thread: codex-main-scrum-683 + subagents Lorentz/Franklin/Kant
 Priority: P1
 Labels: backend, codex, fantasydisk, level-up, ui
 
@@ -104,3 +104,51 @@ Design handoff request instead of inventing a new visual pass in Back-end.
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+## Implementation Notes
+
+- Runtime now uses the SCRUM-682 Level Up frame family from
+  `assets/sprites/ui/frames/level_up_scrum682/` for the modal, reward cards,
+  portrait frame, effect-preview field, and `Позже` button states.
+- `_show_level_up_screen()` lays out the modal in scaled 2K coordinates from the
+  SCRUM-682 handoff and keeps hero header, portrait, title, subtitle, cards, and
+  the later button inside the panel safe rect. The later button is raised inside
+  the runtime safe area because the original handoff placed it too low for the
+  declared panel content zone.
+- Reward cards remain full-card clickable buttons, but their visible content is
+  an explicit safe-zone layout: large icon, one-line title, short description,
+  and framed `LevelUpRewardEffectPreview`.
+- Effect previews are formula-driven. Base-stat rewards reuse active stat
+  snapshots and derived preview helpers; direct modifier rewards compute
+  before/after `ProgressionData.derived_parameters()` from active stats,
+  active modifiers, active hero, and active weapon. Tooltip/detail behavior stays
+  as overflow/backstop.
+- `tests/ui_no_overlap_matrix_test.gd` now seeds deterministic Level Up rewards,
+  verifies SCRUM-682 texture paths, checks card safe-zone containment, and writes
+  `build/qa/scrum683/level_up_no_overlap_matrix.md`.
+
+## Result / QA Evidence
+
+Status 2026-06-29: implemented and ready for QA on branch
+`codex/scrum-683-level-up-runtime`.
+
+- Commit: recorded in Jira/final report after rebase/amend.
+- Evidence: `build/qa/scrum683/level_up_no_overlap_matrix.md` contains Level Up
+  sections for 1152x648, 1280x720, 1600x900, 1920x1080, 2560x1440, and
+  3840x2160.
+- Passed: `git diff --check -- ...`.
+- Passed: `python3 tools/build_ui_2k_frame_kit.py --verify`.
+- Passed before rebase: `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`.
+- Passed before rebase: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`.
+- After rebase to `origin/dev@afc7d892`, broad UI matrix and UI smoke are blocked
+  by upstream SCRUM-684/PixelLab/Codex issues outside SCRUM-683 scope:
+  `CodexBackButton`/`CodexMainPanel` assertions and missing
+  `assets/sprites/characters/full_frame/berserk_pixellab/*` resource imports.
+  The SCRUM-683 Level Up matrix dump is still produced and shows Level Up
+  controls contained across all required viewport sizes.
+- Full `runtime_smoke_test.gd` before rebase passed SCRUM-683 assertions, then
+  stopped on unrelated existing weapon-orbit assertion
+  `Expected SCRUM-455 right attack weapon socket...`.
+- Disk cleanup: generated `.import` / `.uid` sidecars from this worktree were
+  removed/restored; `.godot/` cache is transient and must be removed before
+  final handoff/push report.

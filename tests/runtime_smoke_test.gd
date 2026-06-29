@@ -42,6 +42,9 @@ const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
+const LEVEL_UP_LATER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
+const LEVEL_UP_LATER_HOVER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_hover.png"
+const LEVEL_UP_LATER_PRESSED_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_pressed.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
 # SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
@@ -1073,13 +1076,18 @@ func _initialize() -> void:
 			push_error("Expected level-up reward cards to be styled as clickable text-field panels.")
 			quit(1)
 			return
-		if reward_button.get_theme_stylebox("normal") is StyleBoxTexture or reward_button.get_theme_stylebox("hover") is StyleBoxTexture:
-			push_error("Expected level-up reward cards to avoid heavy reward button frame textures.")
+		if not (reward_button.get_theme_stylebox("normal") is StyleBoxTexture) or not (reward_button.get_theme_stylebox("hover") is StyleBoxTexture):
+			push_error("Expected level-up reward cards to use SCRUM-682 frame textures.")
 			quit(1)
 			return
 		var description_label := reward_button.find_child("LevelUpRewardDescription", true, false) as Label
 		if description_label == null or description_label.text.strip_edges() == "":
 			push_error("Expected level-up reward cards to expose readable description text.")
+			quit(1)
+			return
+		var effect_label := reward_button.find_child("LevelUpRewardEffectText", true, false) as Label
+		if effect_label == null or effect_label.text.strip_edges() == "" or not effect_label.text.contains("->"):
+			push_error("Expected level-up reward cards to expose visible effective before/after previews.")
 			quit(1)
 			return
 
@@ -1135,8 +1143,8 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var defer_rect := defer_button.get_global_rect()
-	if defer_rect.size.x < 250.0 or defer_rect.size.y < 70.0 or not _button_uses_text_button_unique_id(defer_button, "later_260x72"):
-		push_error("Expected level-up Later button to use SCRUM-657 later_260x72 frame, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
+	if defer_rect.size.x < 300.0 or defer_rect.size.y < 82.0 or not _button_uses_level_up_later_style(defer_button):
+		push_error("Expected level-up Later button to use SCRUM-682 later-button art, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
 		quit(1)
 		return
 	defer_button.pressed.emit()
@@ -3172,6 +3180,28 @@ func _button_uses_text_button_unique_id(button: Button, button_id: String) -> bo
 		"focus": "%s_focus.png" % expected_prefix,
 		"pressed": "%s_pressed.png" % expected_prefix,
 		"disabled": "%s_disabled.png" % expected_prefix,
+	}
+	for state in expected.keys():
+		var style := button.get_theme_stylebox(state)
+		if not (style is StyleBoxTexture):
+			return false
+		var texture := (style as StyleBoxTexture).texture
+		if texture == null or texture.resource_path != str(expected[state]):
+			return false
+	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
+		return false
+	return true
+
+
+func _button_uses_level_up_later_style(button: Button) -> bool:
+	if button == null:
+		return false
+	var expected := {
+		"normal": LEVEL_UP_LATER_TEXTURE,
+		"hover": LEVEL_UP_LATER_HOVER_TEXTURE,
+		"focus": LEVEL_UP_LATER_HOVER_TEXTURE,
+		"pressed": LEVEL_UP_LATER_PRESSED_TEXTURE,
+		"disabled": LEVEL_UP_LATER_TEXTURE,
 	}
 	for state in expected.keys():
 		var style := button.get_theme_stylebox(state)
@@ -5538,7 +5568,7 @@ func _test_settings_persistence_and_audio() -> void:
 		_fail("Expected legacy master_volume=0 without explicit intent to migrate back to 100%.")
 		return
 	var saved := {
-		"resolution_index": 2, "window_mode_index": 1, "screen_index": 1,
+		"resolution_index": 1, "window_mode_index": 1, "screen_index": 1,
 		"master_volume": 0.85, "music_volume": 0.4, "sfx_volume": 0.65,
 		"music_enabled": false, "sfx_enabled": true, "aim_mode": "cursor",
 		"debug_mode": true,

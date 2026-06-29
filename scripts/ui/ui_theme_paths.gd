@@ -73,6 +73,18 @@ const MINIMAL_METAL_FRAME_SAFE_RECTS := {
 # modal/tooltip из MINIMAL_METAL_FRAME_TEXTURE_MARGINS; button: main_menu/standard/pause
 # из MINIMAL_METAL_BUTTON_MARGINS) — единый источник, anti-drift сверяется в --verify.
 const OVERHAUL_2K_FRAME_DIR := "res://assets/sprites/ui/frames/overhaul_2k/"
+const LEVEL_UP_SCRUM682_FRAME_DIR := "res://assets/sprites/ui/frames/level_up_scrum682/"
+const LEVEL_UP_SCRUM682_FRAME_PATHS := {
+	"panel": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_frame_lu682_panel.png",
+	"card": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_frame_lu682_card.png",
+	"card_hover": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_frame_lu682_card_hover.png",
+	"card_selected": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_frame_lu682_card_selected.png",
+	"portrait": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_frame_lu682_portrait.png",
+	"effect_preview": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_frame_lu682_effect_preview.png",
+	"later_button": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_btn_lu682_later.png",
+	"later_button_hover": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_btn_lu682_later_hover.png",
+	"later_button_pressed": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_btn_lu682_later_pressed.png",
+}
 const OVERHAUL_2K_FRAME_PATHS := {
 	"qc_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_qc_panel.png",
 	"cr_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_cr_panel.png",
@@ -85,8 +97,8 @@ const OVERHAUL_2K_FRAME_PATHS := {
 	"stat_tooltip": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_stat_tooltip.png",
 	"evt_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_evt_panel.png",
 	"evt_card": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_evt_card.png",
-	"level_up_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_level_up_panel.png",
-	"level_up_card": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_level_up_card.png",
+	"level_up_panel": LEVEL_UP_SCRUM682_FRAME_PATHS["panel"],
+	"level_up_card": LEVEL_UP_SCRUM682_FRAME_PATHS["card"],
 	"upgrade_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_upgrade_panel.png",
 	"ws_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_ws_panel.png",
 	"ws_card": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_ws_card.png",
@@ -136,8 +148,8 @@ const OVERHAUL_2K_FRAME_SOURCE_SIZE := {
 	"stat_tooltip": Vector2(430, 288),
 	"evt_panel": Vector2(1720, 780),
 	"evt_card": Vector2(480, 340),
-	"level_up_panel": Vector2(1040, 600),
-	"level_up_card": Vector2(238, 210),
+	"level_up_panel": Vector2(1720, 1040),
+	"level_up_card": Vector2(470, 560),
 	"upgrade_panel": Vector2(1720, 730),
 	"ws_panel": Vector2(1720, 1060),
 	"ws_card": Vector2(1564, 190),
@@ -189,8 +201,8 @@ const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := {
 	"stat_tooltip": Vector4(32, 32, 32, 32),
 	"evt_panel": Vector4(38, 52, 38, 48),
 	"evt_card": Vector4(32, 42, 32, 40),
-	"level_up_panel": Vector4(38, 52, 38, 48),
-	"level_up_card": Vector4(28, 32, 28, 30),
+	"level_up_panel": Vector4(64, 84, 64, 72),
+	"level_up_card": Vector4(42, 54, 42, 50),
 	"upgrade_panel": Vector4(38, 52, 38, 48),
 	"ws_panel": Vector4(38, 52, 38, 48),
 	"ws_card": Vector4(32, 42, 32, 40),
@@ -242,8 +254,8 @@ const OVERHAUL_2K_FRAME_CONTENT := {
 	"stat_tooltip": Vector4(44, 42, 44, 42),
 	"evt_panel": Vector4(58, 72, 58, 66),
 	"evt_card": Vector4(46, 58, 46, 54),
-	"level_up_panel": Vector4(58, 72, 58, 66),
-	"level_up_card": Vector4(40, 44, 40, 42),
+	"level_up_panel": Vector4(92, 110, 92, 96),
+	"level_up_card": Vector4(58, 70, 58, 64),
 	"upgrade_panel": Vector4(58, 72, 58, 66),
 	"ws_panel": Vector4(78, 96, 78, 66),
 	"ws_card": Vector4(48, 35, 48, 32),
