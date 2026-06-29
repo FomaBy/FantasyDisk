@@ -1,0 +1,14 @@
+{
+  "decision": "ready_for_image",
+  "checks": [
+    "base layout uses 2560x1440 and leaves 92px+ modal content margins",
+    "three reward cards are 470x560 with separate icon/title/description/effect-preview zones",
+    "later button remains inside panel content and has a dedicated 192x26 text safe zone",
+    "content margins are larger than texture margins for every generated frame"
+  ],
+  "responsive": {
+    "1280x720": "scale 0.5; panel 860x520 at 210,102; cards 235x280; card text must use short copy/tooltip for overflow",
+    "1920x1080": "scale 0.75; panel 1290x780; cards 352x420; all primary zones remain readable",
+    "2560x1440": "base layout; full description plus effect preview copy fits without border overlap"
+  }
+}
