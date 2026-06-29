@@ -182,8 +182,9 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   selected character exposes directional SpriteFrames. Berserk uses the new
   PixelLab `walk_<direction>` rows and cycles `south -> south_west -> west ->
   north_west -> north -> north_east -> east -> south_east` so the preview turns
-  clockwise while staying inside the existing portrait content zone. Other
-  characters keep the static `sprite_path` portrait fallback.
+  clockwise while staying inside the existing portrait content zone. Dark Mage
+  and Guitarist use one-frame PixelLab rotation aliases until future movement
+  passes. Other characters keep the static `sprite_path` portrait fallback.
 - SCRUM-664 fixes HS4 keyboard/gamepad focus for the same screen: the visible
   carousel hero slots are focusable, the selected visible slot receives default
   focus, carousel arrows/slots/Ascension/Choose/Back have explicit directional

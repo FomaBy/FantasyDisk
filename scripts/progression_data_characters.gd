@@ -219,7 +219,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Ритм, волны и контроль.",
 		"strengths": "отталкивание, области поражения, темп.",
 		"weaknesses": "слабее по боссам.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south.png",
 	},
 	"assassin": {
 		"id": "assassin", "title": "Ассасин",

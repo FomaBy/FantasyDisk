@@ -771,13 +771,17 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: звуковые волны, импульсы, ауры, отталкивание.
 - Базовое здоровье: 60.
 - Базовая скорость: 268.
-- Спрайт: `assets/sprites/characters/guitarist.png`, runtime animation sheet
+- Спрайт: live `assets/sprites/characters/guitarist_spriteframes.tres` now uses
+  PixelLab source rotations under `assets/sprites/characters/pixellab/guitarist/`
+  and normalized runtime frames under
+  `assets/sprites/characters/full_frame/guitarist_pixellab/`. `move_*` and
+  `walk_*` are one-frame aliases of the 8 directional rotations so Hero Select
+  cycles the portrait clockwise like Berserk, normalized to the same apparent
+  height. Legacy `assets/sprites/characters/guitarist.png`, runtime sheet
   `assets/sprites/characters/guitarist_sheet.png`,
-  `assets/sprites/characters/guitarist_spriteframes.tres`, per-frame runtime
-  PNGs in `assets/sprites/characters/full_frame/guitarist/`, cutout-части
-  `assets/sprites/characters/cutout/guitarist_*.png`. SCRUM-429 v2 live
-  SpriteFrames expose `idle` / `walk` / `move` 5f loops only; attack remains
-  absent by task scope while weapon/socket gameplay visuals stay unchanged.
+  `assets/sprites/characters/full_frame/guitarist/`, and cutout-части
+  `assets/sprites/characters/cutout/guitarist_*.png` remain history/fallback
+  until a future PixelLab movement animation pass.
 
 Базовые характеристики:
 
@@ -796,7 +800,7 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 
 Foundation новых классов уже включен в выбор персонажа, выбор оружия, кодекс, формулы характеристик, ascension и smoke tests. Design visual set для первых 9 персонажей и полного набора оружия 9 классов готов: новые герои art-approved, все 27 weapon PNG существуют по каноническим путям; gameplay/backend-сцены подключают matching weapon PNG без documented visual fallback. SCRUM-168 добавил 10-й Back-end-класс `soldier` и довел набор до 30 weapon variants; canonical Soldier character/weapon PNG и cutout rig/motion подключены. SCRUM-169 добавил 11-й Back-end-класс `thief` и довел набор до 33 weapon variants; canonical Thief character/weapon PNG и cutout rig/motion подключены. SCRUM-163 добавил 12-й Back-end-класс `elementalist` и довел набор до 36 weapon variants; canonical Elementalist character/weapon PNG и cutout rig/motion подключены. SCRUM-167 добавил 13-й Back-end-класс `sniper` и довел набор до 39 weapon variants; canonical Sniper character/weapon PNG и cutout rig/motion подключены. SCRUM-165 добавил 14-й Back-end-класс `priest` и довел набор до 42 weapon variants; canonical Priest character/weapon PNG и cutout rig/motion подключены. SCRUM-162 добавил 15-й Back-end-класс `biologist` и довел набор до 45 weapon variants; canonical Biologist character/weapon PNG и cutout rig/motion подключены. SCRUM-166 добавил 16-й Back-end-класс `robot` и довел набор до 48 weapon variants; canonical Robot character/weapon PNG и cutout rig/motion подключены. SCRUM-164 добавил финальный 17-й Back-end-класс `engineer` и довел набор до 51 weapon variant; canonical Engineer character/weapon PNG и cutout rig/motion подключены. Weapon art v2 pass 2026-06-12 дополнительно перерисовал оружие Рыцаря, заменил базовый `knight.png` на unarmed sprite без встроенного копья/щита, пересобрал `knight_*` cutouts и уменьшил `WeaponVisual.scale` у крупных оружий.
 
-SCRUM-416 перевел runtime `sprite_path` всех 17 классов с legacy static PNG на принятые SCRUM-412-cleaned full-frame idle кадры `assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`. Hero Select large portrait, carousel thumbnails, Codex character portrait and level-up portrait now share this canonical source instead of old `assets/sprites/characters/<class>.png` art; focused registry/runtime smokes assert the actual texture paths and write QA dumps under `build/qa/scrum416/`.
+SCRUM-416 перевел runtime `sprite_path` большинства классов с legacy static PNG на принятые SCRUM-412-cleaned full-frame idle кадры `assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`. PixelLab-направленные классы (`berserk`, `dark_mage`, `guitarist`) use `<class>_pixellab/<class>_idle_south.png` as their canonical portrait source. Hero Select large portrait, carousel thumbnails, Codex character portrait and level-up portrait now share this canonical source instead of old `assets/sprites/characters/<class>.png` art; focused registry/runtime smokes assert the actual texture paths and write QA dumps under `build/qa/scrum416/`.
 
 SCRUM-297 добавил принятый unarmed animation source sheet для `thief`: `assets/sprites/characters/thief_sheet.png` (`384x384`, 5 idle / 5 walk / 5 attack_primary) с alpha-clean и 32px-gutter references под `docs/design/references/characters/thief/`, contact preview `docs/design/previews/scrum297_thief_sheet_contact.png` и Design QA artifacts under `build/qa/scrum297_thief/`. Параллельный Animator pass уже подключил `assets/sprites/characters/thief_spriteframes.tres` и per-frame PNGs under `assets/sprites/characters/full_frame/thief/`; Designer 2 не менял SpriteFrames/runtime wiring.
 

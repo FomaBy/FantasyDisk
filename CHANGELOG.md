@@ -5,6 +5,13 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- PixelLab Guitarist static 8-direction character rotations: pulled existing
+  PixelLab character `d327e6c2-a3fb-44b3-b02a-965a0ce52e7b`, stored source
+  rotations under `assets/sprites/characters/pixellab/guitarist/`, normalized
+  runtime frames under `assets/sprites/characters/full_frame/guitarist_pixellab/`,
+  and rebuilt `guitarist_spriteframes.tres` with one-frame directional
+  idle/move/walk rows so Hero Select rotates the Guitarist portrait clockwise
+  at Berserk-scale height.
 - PixelLab Dark Mage static 8-direction character rotations: generated a new
   v3 PixelLab character (`59825867-7d36-44fd-8ed9-83ae2c98272f`), stored source
   rotations under `assets/sprites/characters/pixellab/dark_mage/`, normalized
