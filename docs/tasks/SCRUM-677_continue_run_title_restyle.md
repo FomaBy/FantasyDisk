@@ -1,6 +1,6 @@
 # Task: SCRUM-677 — Заголовок окна «Продолжить забег?» в стилистике игры
 
-Статус: done (re-submit в QA 2026-06-29 после фикса SCRUM-681)
+Статус: done (QA PASSED 2026-06-29)
 Контур: Claude
 Owner: design+backend
 Jira: SCRUM-677
@@ -86,3 +86,20 @@ Locked paths: scripts/ui_screens.gd (`_show_continue_run_dialog`), assets/sprite
 
 Баги: `SCRUM-681`.
 Disk cleanup: no disposable checkout; subagent removed `/tmp` QA files.
+
+## QA-Вердикт reverify (2026-06-29)
+
+Статус: PASSED
+QA: qa-claude-monitor + subagent
+
+Проверено:
+- `ContinueRunTitle` остался `TextureRect`, имя и texture path сохранены.
+- `custom_minimum_size.y = 72`; `ContinueRunPanel` снова `680x380`.
+- `tools/build_continue_run_title_logo.py --check-only` read-only: exit 0,
+  asset md5 unchanged (`330dd419ee284ca4a668781fbf4435dc`).
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` PASS.
+- Matrix @2560x1440: panel `940,530 680x380`; buttons bottom `761+76=837 <= 844`.
+
+Риски: в worktree есть unrelated dirty/untracked WIP; ignored.
+Disk cleanup: none created; only ignored `build/qa` matrix refreshed by test harness.

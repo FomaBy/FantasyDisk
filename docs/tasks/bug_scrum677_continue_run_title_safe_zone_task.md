@@ -1,6 +1,6 @@
 # BUG: SCRUM-677 continue-run title breaks safe zone
 
-Статус: new
+Статус: done (QA PASSED 2026-06-29)
 Jira: SCRUM-681
 Приоритет: high
 Роль: Design / Back-end
@@ -33,3 +33,16 @@ Additional tooling risk:
 Executor commit observed: `d7d31cdf`.
 Positive gates: `runtime_smoke_ui_test.gd` PASS, `ui_no_overlap_matrix_test.gd` PASS.
 Disk cleanup: no disposable checkout; subagent removed `/tmp` QA files.
+
+## QA-Вердикт reverify (2026-06-29)
+
+Статус: PASSED
+
+SCRUM-677 re-fix closes this bug:
+- `ContinueRunPanel` is `680x380`.
+- `ContinueRunButtons` bottom is `837`, inside safe bottom `844`.
+- `tools/build_continue_run_title_logo.py --check-only` is read-only.
+- `runtime_smoke_ui_test.gd` PASS.
+- `ui_no_overlap_matrix_test.gd` PASS.
+
+Disk cleanup: none created.
