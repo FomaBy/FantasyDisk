@@ -3080,8 +3080,8 @@
  },
  "skill_tree_v2_ui_redesign_task.md": {
   "key": "SCRUM-698",
-  "status": "К выполнению",
-  "desc_hash": "d1c7a57edc18cec49ab3a67191d98c78"
+  "status": "Контроль качества",
+  "desc_hash": "29b1276b1d8b78687d74c2e598e25594"
  },
  "qa_skill_tree_v2_verification_task.md": {
   "key": "SCRUM-699",
