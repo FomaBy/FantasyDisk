@@ -51,3 +51,11 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smo
 ## Process Notes
 
 Before starting, Claude must sync `dev`, check dirty tree and verify no active owner overlaps the locked paths. Do not touch unrelated WIP. After completion: Jira -> local mirror -> checks -> intentional commit -> push.
+
+## QA-Вердикт
+Статус: PASSED (claude-qa, 2026-06-30)
+
+- Интеграция: 943d89ac влито в origin/dev (git merge-base --is-ancestor -> YES).
+- scripts/main.gd: мёртвые обёртки set_game_paused/set_gameplay_paused/is_gameplay_paused + поле _quit_requested удалены; живой game_quit_requested meta на месте; tests/main_state_pause_lifecycle_test.gd присутствует.
+- Гейты (изолир. worktree от origin/dev, fdengine-семафор): main_state_pause_lifecycle_test -> passed; runtime_smoke_test -> passed (RC=0).
+- Поведение игрока сохранено. Acceptance выполнен.
