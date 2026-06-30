@@ -3087,5 +3087,10 @@
   "key": "SCRUM-699",
   "status": "К выполнению",
   "desc_hash": "3cf4234c56c4232a8d7819931f65c5cd"
+ },
+ "qa_ui_1080_scale_visual_task.md": {
+  "key": "SCRUM-700",
+  "status": "К выполнению",
+  "desc_hash": "728154465df6c9dbc9f4bf9528929e95"
  }
 }
