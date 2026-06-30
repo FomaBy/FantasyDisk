@@ -1,0 +1,46 @@
+{
+  "task": "SCRUM-686",
+  "title": "Hero Select PixelLab-first rebuild",
+  "source_pipeline": "PixelLab (UI frames) + live 512x512 PixelLab character frames",
+  "base_resolution": {"width": 2560, "height": 1440},
+  "responsive_targets": ["2560x1440", "1920x1080", "1536x864"],
+  "global_scale_rule": "All rects below are authored at 2560x1440. For other 16:9 targets multiply every x/y/w/h by target_width/2560 (1920->0.75, 1536->0.60). Frame ornament must never be covered by content.",
+  "frames": {
+    "background":      {"asset": "assets/sprites/ui/frames/hero_select_pixellab/background.png",      "pos": [0, 0],       "size": [2560, 1440]},
+    "frame_title":     {"asset": "assets/sprites/ui/frames/hero_select_pixellab/frame_title.png",      "pos": [360, 28],    "size": [1840, 184],  "interior": [120, 42, 1600, 96],   "content_rect": [480, 70, 1600, 96]},
+    "button_back":     {"asset": "assets/sprites/ui/frames/hero_select_pixellab/button_back.png",      "pos": [48, 48],     "size": [460, 148],   "interior": [70, 38, 320, 72],     "content_rect": [118, 86, 320, 72]},
+    "frame_portrait":  {"asset": "assets/sprites/ui/frames/hero_select_pixellab/frame_portrait.png",   "pos": [90, 240],    "size": [600, 820],   "interior": [72, 94, 456, 620],    "content_rect": [162, 334, 456, 620]},
+    "frame_dossier":   {"asset": "assets/sprites/ui/frames/hero_select_pixellab/frame_dossier.png",    "pos": [770, 240],   "size": [980, 820],   "interior": [92, 84, 796, 640],    "content_rect": [862, 324, 796, 640]},
+    "frame_radar":     {"asset": "assets/sprites/ui/frames/hero_select_pixellab/frame_radar.png",      "pos": [1762, 240],  "size": [780, 520],   "interior": [98, 57, 584, 406],    "content_rect": [1860, 297, 584, 406]},
+    "frame_ascension": {"asset": "assets/sprites/ui/frames/hero_select_pixellab/frame_ascension.png",  "pos": [1762, 790],  "size": [780, 270],   "interior": [74, 50, 632, 183],    "content_rect": [1836, 840, 632, 183]},
+    "button_choose":   {"asset": "assets/sprites/ui/frames/hero_select_pixellab/button_choose.png",    "pos": [1004, 838],  "size": [512, 118],   "interior": [70, 34, 372, 50],     "content_rect": [1074, 872, 372, 50]},
+    "frame_carousel":  {"asset": "assets/sprites/ui/frames/hero_select_pixellab/frame_carousel.png",   "pos": [64, 1086],   "size": [2432, 330],  "interior": [110, 61, 2212, 220],  "content_rect": [174, 1147, 2212, 220]}
+  },
+  "buttons": {
+    "carousel_left":  {"asset": "assets/sprites/ui/frames/hero_select_pixellab/button_carousel_left.png",  "pos": [174, 1169],  "size": [132, 176]},
+    "carousel_right": {"asset": "assets/sprites/ui/frames/hero_select_pixellab/button_carousel_right.png", "pos": [2254, 1169], "size": [132, 176]},
+    "asc_minus":      {"asset": "assets/sprites/ui/frames/hero_select_pixellab/button_asc_minus.png",      "pos": [1836, 920],  "size": [132, 92]},
+    "asc_plus":       {"asset": "assets/sprites/ui/frames/hero_select_pixellab/button_asc_plus.png",       "pos": [2336, 920],  "size": [132, 92]}
+  },
+  "carousel_slots": {
+    "frame_hero_slot_asset": "assets/sprites/ui/frames/hero_select_pixellab/frame_hero_slot.png",
+    "slot_size": [196, 220],
+    "slot_interior": [18, 18, 160, 160],
+    "track_rect": [330, 1147, 1924, 220],
+    "visible_slots": 9,
+    "note": "Arrows occupy the left/right caps; hero slot strip lives between them. Center slot enlarged for the selected hero."
+  },
+  "portrait_sprite_rule": {
+    "source_canvas": [512, 512],
+    "display_box": [162, 334, 456, 620],
+    "scale": 2.45,
+    "feet_anchor_normalized": [0.50, 0.94],
+    "feet_anchor_px": [390, 916],
+    "alignment": "Crop the source to its non-transparent bbox, scale uniformly by `scale`, then place so the visible bbox bottom-center (feet) lands on feet_anchor_px and is horizontally centered.",
+    "headroom_guarantee": "scale 2.45 maps the tallest measured visible sprite (Berserk south, 216px) to 529px (85% of the 620px box height), leaving >=53px headroom; no class clips top or sides.",
+    "demonstration": {
+      "berserk_idle_south": {"visible_bbox": [184, 152, 332, 368], "visible_size": [148, 216], "display_rect": [208, 388, 363, 529]},
+      "dark_mage_idle_south": {"visible_bbox": [174, 202, 334, 376], "visible_size": [160, 174], "display_rect": [194, 491, 392, 426]}
+    }
+  }
+}
