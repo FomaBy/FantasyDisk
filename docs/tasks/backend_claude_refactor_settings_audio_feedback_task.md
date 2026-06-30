@@ -53,3 +53,25 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/feedback_we
 ## Process Notes
 
 Before starting, Claude must sync `dev`, check dirty tree and verify no active owner overlaps the locked paths. Do not touch unrelated WIP. After completion: Jira -> local mirror -> checks -> intentional commit -> push.
+
+## QA-Вердикт
+Статус: PASSED
+
+Проверял claude-qa (2026-06-30) на чистом изолир. worktree от origin/dev HEAD, fdengine slots=1. Коммиты `8dc264c1` (гейт+доки) + `6fb435ac` (mirror) — ancestor origin/dev подтверждён.
+
+Scope: коммит test-only + docs (feedback_webhook_config_test.gd +18, аудит-доки feedback_reporting/persistence/audio +49). Gameplay-код НЕ тронут.
+
+Безопасность (независимо проверено на origin/dev):
+- Реальный `feedback_webhook.cfg` НЕ трекается (`git ls-files` чист); `.gitignore` явно гасит `feedback_webhook.cfg` + `*.cfg` с исключением `!*.cfg.example`.
+- `git grep` по `discord(app).com/api/webhooks/[0-9]{5,}` в трекнутом — реальных id нет (только фикстуры/плейсхолдеры).
+- Новый гейт структурно закрепляет контракт: LOCAL_ROOT/CONFIG_PATH под `user://`, BUNDLED_CONFIG_PATH под `res://`, `_report_body()` НЕ содержит подстроку вебхука (но сохраняет текст игрока) → регрессия пути падает в гейте, а не утекает в исходник.
+
+Гейты (fdengine slots=1, все pass):
+- `game_settings_smoke_test` → passed (дефолты/round-trip/клэмп/SCRUM-172 recovery).
+- `display_resolution_test` → passed.
+- `audio_manager_smoke_test` → passed (шины Music/SFX, 6 sfx + 3 music, apply_volume_settings immediate-apply).
+- `feedback_webhook_config_test` → passed (расширенный контракт хранения/no-leak).
+- `feedback_retry_policy_test` → passed (timeout=25с, attempts=3, backoff, Retry-After).
+- `feedback_upload_size_test` → PASS (PNG→JPG 240 КБ, multipart 240 КБ).
+
+→ PASSED.
