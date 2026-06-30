@@ -1,9 +1,24 @@
 # Back-end Handoff: Secret Ascension Boss Runtime Art
 
 Status: handoff note
+Статус: done
 Parent Jira: SCRUM-539
-Owner: unassigned
+Owner: Backend / Claude
+Thread/Worker: claude-backend
 Locked paths for future runtime work: scripts/progression_data*.gd, scripts/boss.gd, scripts/combat_director.gd, scenes/*Secret*Boss*.tscn, tests/secret_encounter_test.gd, tests/runtime_smoke_boss_elite_test.gd
+
+## Результат (SCRUM-702, commit 27c4dcd3)
+
+Подключена доставленная full-frame анимация секретного босса
+(`secret_ascension_boss_spriteframes.tres`, 16 состояний) вместо плейсхолдера
+disk_devourer — через node-meta `full_frame_spriteframes_path/scale(0.86)/position(0,-98)/
+source_faces_left` на `scenes/BossSecretAscension.tscn` (meta-fallback в
+`enemy.gd::configure_entity_visual`; секретный босс намеренно вне стандартного registry).
+Регресс-гейт `_test_secret_boss_uses_full_frame` в `tests/runtime_smoke_boss_elite_test.gd`.
+Гейты зелёные: runtime_smoke_boss_elite, secret_encounter_test, secret_boss_animation_pack_smoke,
+runtime_smoke_test. ОСТАЁТСЯ (нужна визуальная сверка, вне инкремента): наземные
+телеграф-PNG (ring/cone/beam/rupture) — направленная ротация/выравнивание под геометрию
+урона (fairness-critical); статик-фолбэк .tscn (не показывается при живом full-frame).
 
 ## Context
 
