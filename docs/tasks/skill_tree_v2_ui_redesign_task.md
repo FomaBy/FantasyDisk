@@ -1,10 +1,10 @@
 # Skill Tree v2 — Перерисовка экрана «Древо умений» (PoE-стиль, граф узлов) — UI
 
-Статус: new
+Статус: done
 Роль: Back-end
 Контур: Claude
 Lane: claude
-Owner: unassigned
+Owner: claude-backend
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: User request (PM)
@@ -90,6 +90,32 @@ allocate/reset API). Начинать после влития его API в orig
 - `scripts/main.gd` — задник экрана, навигация (если нужно).
 - `assets/sprites/ui/skill_tree/**` — новые ассеты из art-пака (+ `.import`).
 - `tests/runtime_smoke_test.gd`, `tests/ui_no_overlap_matrix_test.gd` — frame-path/overlap ассерты под новый экран.
+
+## Реализация (claude-backend, 2026-06-30)
+
+Экран `_show_skill_tree_screen()` (`scripts/ui_screens.gd`) переписан с нуля под графовую
+модель PoE-стиля, потребляя API SCRUM-696 (`META_PROGRESSION`):
+- **Холст-граф** `SkillTreeCanvas` (clip_contents) с миром `SkillTreeWorld`: панорамирование
+  drag'ом ЛКМ по пустому месту, зум колесом (вокруг курсора) и кнопками «+/−» (вокруг центра),
+  диапазон 0.28…1.3, default 0.5.
+- **Узлы** — `TextureButton` (`SkillNode_<id>`) по `pos`; арт по `kind` (minor/notable/keystone)
+  и статусу (`locked|available|purchased`) из `node_status()`; entry-узлы — `class_entry_marker`
+  с тинтом статуса; `STRETCH_KEEP_ASPECT_CENTERED` (без stretch). Тултип = title/desc/цена.
+- **Рёбра** рисуются процедурными линиями (`draw_line`) между соседями `adj`; подсвечены, если
+  соединяют выделенные/доступные (спрайт-коннектор НЕ растягивается под длину ребра).
+- **Интеракция**: клик по available → `allocate_node()` + `save_state()` + refresh состояний,
+  счётчиков и подсветки рёбер; locked некликабельны (disabled). «Сбросить дерево» (`reset_skill_tree`)
+  с подтверждающим попапом.
+- **Шапка**: «Древо умений», бейдж `SkillTreePointsBadge` («Ур. N / Метаочки / X / 100»),
+  инфо-«?» с объяснением экономики, «Назад в меню» (260, frame-safe).
+- **Точки входа классов**: `SkillTreeClassSelector` (все 17 классов) — выбор центрирует камеру на
+  узле-входе и подсвечивает его маркером фокуса; дерево общее.
+- Новые ассеты арт-пака SCRUM-697 привязаны (главная рамка/бейдж/фон/маркер/узлы) с `.import`.
+
+Гейты (Godot 4.7, headless через `godot_gate.py`): `meta_skill_tree_smoke_test`,
+`runtime_smoke_test`, `ui_no_overlap_matrix_test` — все зелёные. Тесты обновлены под новый каркас
+(graph-canvas вместо branch-columns; узлы — BaseButton/TextureButton). Доказательства «no-stretch»:
+`docs/qa/scrum698_skill_tree_v2_no_stretch_evidence.md`.
 
 ## QA-Вердикт
 

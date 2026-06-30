@@ -541,7 +541,8 @@ func _test_skill_tree_screen() -> void:
 	if main.find_child("SkillTreeScreen", true, false) == null:
 		_fail("Expected skill tree screen to open.")
 		return
-	var node_buttons: Array = main.find_children("SkillNode_*", "Button", true, false)
+	# SCRUM-698: графовые узлы рендерятся как TextureButton (BaseButton) с арт-ассетами.
+	var node_buttons: Array = main.find_children("SkillNode_*", "BaseButton", true, false)
 	if node_buttons.size() != Meta.SKILL_TREE.size():
 		_fail("Expected %d skill node buttons, got %d." % [Meta.SKILL_TREE.size(), node_buttons.size()])
 		return
@@ -549,9 +550,9 @@ func _test_skill_tree_screen() -> void:
 		_fail("Expected a skill points counter.")
 		return
 
-	# Купить tier-1 узел ветви (доступен) — очки тратятся, узел становится куплен.
+	# Купить узел-точку входа класса (всегда доступен) — очки тратятся, узел куплен.
 	var first_id: String = str(Meta.branch_nodes("might")[0]["id"])
-	var first_btn := main.find_child("SkillNode_%s" % first_id, true, false) as Button
+	var first_btn := main.find_child("SkillNode_%s" % first_id, true, false) as BaseButton
 	if first_btn == null or first_btn.disabled:
 		_fail("Expected tier-1 node '%s' to be enabled/available." % first_id)
 		return

@@ -360,6 +360,43 @@ const SKILL_TREE_CLASS_POPUP_MARGINS := Vector4(72.0, 78.0, 72.0, 78.0)
 const SKILL_TREE_CLASS_POPUP_CONTENT := Vector4(54.0, 56.0, 54.0, 56.0)
 const SKILL_TREE_PATH_FRAME_MARGINS := Vector4(40.0, 56.0, 40.0, 60.0)
 const SKILL_TREE_PATH_FRAME_CONTENT := Vector4(16.0, 18.0, 16.0, 18.0)
+# SCRUM-698: ассеты графового древа умней (арт-пак SCRUM-697). Узлы/коннекторы/фон/
+# маркер входа/бейдж рендерятся в нативном/пропорциональном размере (без stretch по оси).
+const SKILL_TREE_MAIN_FRAME_PATH := SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_main.png"
+const SKILL_TREE_POINTS_BADGE_PATH := SKILL_TREE_FRAME_DIR + "ui_badge_skill_points.png"
+const SKILL_TREE_BG_CANVAS_PATH := SKILL_TREE_FRAME_DIR + "bg_canvas.png"
+const SKILL_TREE_ENTRY_MARKER_PATH := SKILL_TREE_FRAME_DIR + "class_entry_marker.png"
+const SKILL_TREE_MAIN_FRAME_MARGINS := Vector4(120.0, 110.0, 120.0, 110.0)
+const SKILL_TREE_MAIN_FRAME_CONTENT := Vector4(132.0, 116.0, 132.0, 112.0)
+const SKILL_TREE_POINTS_BADGE_CONTENT := Vector4(22.0, 16.0, 22.0, 18.0)
+const SKILL_TREE_NODE_ART := {
+	"minor": {
+		"available": SKILL_TREE_FRAME_DIR + "node_state_available.png",
+		"locked": SKILL_TREE_FRAME_DIR + "node_state_locked.png",
+		"purchased": SKILL_TREE_FRAME_DIR + "node_state_purchased.png",
+	},
+	"notable": {
+		"available": SKILL_TREE_FRAME_DIR + "node_notable_available.png",
+		"locked": SKILL_TREE_FRAME_DIR + "node_notable_locked.png",
+		"purchased": SKILL_TREE_FRAME_DIR + "node_notable_allocated.png",
+	},
+	"keystone": {
+		"available": SKILL_TREE_FRAME_DIR + "node_keystone_available.png",
+		"locked": SKILL_TREE_FRAME_DIR + "node_keystone_locked.png",
+		"purchased": SKILL_TREE_FRAME_DIR + "node_keystone_allocated.png",
+	},
+	"entry": {
+		"available": SKILL_TREE_FRAME_DIR + "class_entry_marker.png",
+		"locked": SKILL_TREE_FRAME_DIR + "class_entry_marker.png",
+		"purchased": SKILL_TREE_FRAME_DIR + "class_entry_marker.png",
+	},
+}
+const SKILL_TREE_NODE_DISPLAY := {"minor": 72.0, "notable": 98.0, "keystone": 126.0, "entry": 104.0}
+const SKILL_TREE_WORLD_ORIGIN := Vector2(1120.0, 1080.0)
+const SKILL_TREE_WORLD_SIZE := Vector2(2240.0, 2160.0)
+const SKILL_TREE_DEFAULT_ZOOM := 0.5
+const SKILL_TREE_MIN_ZOOM := 0.28
+const SKILL_TREE_MAX_ZOOM := 1.3
 const CODEX_FRAME_DIR := "res://assets/sprites/ui/frames/codex/"
 const CODEX_MAIN_PANEL_PATH := MINIMAL_MODAL_PATH
 const CODEX_SECTION_PANEL_PATH := MINIMAL_PANEL_PATH
@@ -2097,9 +2134,11 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 
 
 func _show_skill_tree_screen() -> void:
-	# SCRUM-150 ч.3: общий экран древа умений из главного меню. Данные/логика —
-	# META_PROGRESSION (data-driven), сохранение узлов в user://. Применение
-	# эффектов к забегу — player.apply_meta_skill_modifiers (ч.2a) + старт-вайринг (ч.2b).
+	# SCRUM-698: графовое древо умений в стиле Path of Exile. Один общий граф узлов
+	# (data-driven из META_PROGRESSION, SCRUM-696): узлы по `pos`, рёбра по `adj`,
+	# трата метаочков через allocate_node(), глобальный уровень = число купленных
+	# узлов. Холст панорамируется и масштабируется; точка входа выбранного класса
+	# центрируется. Старые 4 линейные ветки заменены полностью.
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -2109,29 +2148,28 @@ func _show_skill_tree_screen() -> void:
 	root.name = "SkillTreeScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
-	# SCRUM-569: выделенный тематичный бэкдроп «святилище умений» (дракон-колонны +
-	# руны-созвездие веток, тёмный центр под панели) вместо общего codex-собора.
 	_add_screen_background(root, "skill_tree")
 
 	var main_panel := PanelContainer.new()
 	main_panel.name = "SkillTreeMainPanel"
 	main_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	main_panel.offset_left = 48.0
-	main_panel.offset_top = 26.0
-	main_panel.offset_right = -48.0
-	main_panel.offset_bottom = -26.0
-	main_panel.add_theme_stylebox_override("panel", _progression_main_panel_style())
+	main_panel.offset_left = 40.0
+	main_panel.offset_top = 24.0
+	main_panel.offset_right = -40.0
+	main_panel.offset_bottom = -24.0
+	main_panel.add_theme_stylebox_override("panel", _skill_tree_main_panel_style())
 	root.add_child(main_panel)
 
 	var layout := VBoxContainer.new()
 	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
-	layout.offset_left = 136.0
-	layout.offset_top = 118.0
-	layout.offset_right = -136.0
-	layout.offset_bottom = -108.0
+	layout.offset_left = 142.0
+	layout.offset_top = 120.0
+	layout.offset_right = -142.0
+	layout.offset_bottom = -112.0
 	layout.add_theme_constant_override("separation", 10)
 	root.add_child(layout)
 
+	# --- Шапка ---
 	var header := HBoxContainer.new()
 	header.add_theme_constant_override("separation", 18)
 	layout.add_child(header)
@@ -2143,30 +2181,29 @@ func _show_skill_tree_screen() -> void:
 	header.add_child(title)
 	var points_label := Label.new()
 	points_label.name = "SkillTreePointsLabel"
-	points_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	points_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	points_label.add_theme_font_size_override("font_size", _readable_font_size(22))
-	points_label.add_theme_color_override("font_color", Color(1.0, 0.84, 0.34, 1.0))
+	points_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	points_label.add_theme_font_size_override("font_size", _readable_font_size(15))
+	points_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.36, 1.0))
 	var points_badge := PanelContainer.new()
 	points_badge.name = "SkillTreePointsBadge"
-	points_badge.custom_minimum_size = Vector2(132.0, 96.0)
-	points_badge.add_theme_stylebox_override("panel", _progression_points_badge_style())
+	points_badge.custom_minimum_size = Vector2(170.0, 120.0)
+	points_badge.add_theme_stylebox_override("panel", _skill_tree_points_badge_style())
 	points_badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	header.add_child(points_badge)
 	points_badge.add_child(points_label)
-	# SCRUM-676: отдельная кнопка-«?» объяснения очков (поп-ап появляется по клику).
-	var points_help_button := Button.new()
-	points_help_button.name = "SkillTreePointsInfoButton"
-	points_help_button.text = "?"
-	points_help_button.custom_minimum_size = Vector2(64.0, 64.0)
-	points_help_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	points_help_button.focus_mode = Control.FOCUS_ALL
-	points_help_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	points_help_button.tooltip_text = "Как работают очки умений"
-	points_help_button.add_theme_font_size_override("font_size", _readable_font_size(28))
-	points_help_button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.52, 1.0))
-	_apply_skill_tree_text_button_theme(points_help_button, _skill_tree_points_button_style)
-	header.add_child(points_help_button)
+	var info_button := Button.new()
+	info_button.name = "SkillTreePointsInfoButton"
+	info_button.text = "?"
+	info_button.custom_minimum_size = Vector2(64.0, 64.0)
+	info_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	info_button.focus_mode = Control.FOCUS_ALL
+	info_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	info_button.tooltip_text = "Как работает древо умений"
+	info_button.add_theme_font_size_override("font_size", _readable_font_size(28))
+	info_button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.52, 1.0))
+	_apply_skill_tree_text_button_theme(info_button, _skill_tree_points_button_style)
+	header.add_child(info_button)
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "SkillTreeBackButton"
 	_set_action_button_size(back_button, 260.0)
@@ -2174,23 +2211,16 @@ func _show_skill_tree_screen() -> void:
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
 
-	var hint := Label.new()
-	hint.name = "SkillTreeHint"
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", _readable_font_size(14))
-	hint.add_theme_color_override("font_color", Color(0.80, 0.86, 0.92, 0.9))
-	layout.add_child(hint)
-
+	# --- Тело: левая панель класса/управления + графовый холст ---
 	var body := HBoxContainer.new()
 	body.name = "SkillTreeBody"
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 18)
 	layout.add_child(body)
 
-	# SCRUM-360: прогресс ПО КЛАССУ (выбранный класс) — реиграбельность за классы.
 	var class_panel := PanelContainer.new()
 	class_panel.name = "SkillTreeClassPanel"
-	class_panel.custom_minimum_size = Vector2(330.0, 210.0)
+	class_panel.custom_minimum_size = Vector2(322.0, 240.0)
 	class_panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	class_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	class_panel.add_theme_stylebox_override("panel", _progression_class_panel_style())
@@ -2198,205 +2228,313 @@ func _show_skill_tree_screen() -> void:
 	var class_margin := MarginContainer.new()
 	class_panel.add_child(class_margin)
 	var class_box := VBoxContainer.new()
-	class_box.add_theme_constant_override("separation", 8)
+	class_box.add_theme_constant_override("separation", 10)
 	class_margin.add_child(class_box)
 	var class_header := Label.new()
 	class_header.name = "SkillTreeClassHeader"
-	class_header.text = "Класс"
+	class_header.text = "Точка входа"
 	class_header.add_theme_font_size_override("font_size", _readable_font_size(18))
 	class_header.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
 	class_box.add_child(class_header)
-	# SCRUM-676: вместо постоянного Label-списка — селектор класса (dropdown) +
-	# попап с применёнными бонусами. Источник данных — class_unlocked_tiers.
-	var class_id := str(game.selected_character_id)
-	var class_config: Dictionary = game.PROGRESSION_DATA.character_config(class_id)
-	var class_title := str(class_config.get("title", class_id))
 	var class_selector := OptionButton.new()
 	class_selector.name = "SkillTreeClassSelector"
 	class_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	class_selector.focus_mode = Control.FOCUS_ALL
 	class_selector.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	class_selector.add_theme_font_size_override("font_size", _readable_font_size(17))
+	class_selector.add_theme_font_size_override("font_size", _readable_font_size(16))
 	class_selector.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62, 1.0))
-	class_selector.add_item("«%s»" % class_title)
 	class_selector.add_theme_stylebox_override("normal", _skill_tree_class_select_style())
 	class_selector.add_theme_stylebox_override("hover", _skill_tree_class_select_style(Color(1.06, 1.04, 0.92, 1.0)))
 	class_selector.add_theme_stylebox_override("pressed", _skill_tree_class_select_style(Color(0.90, 0.88, 0.80, 1.0)))
 	class_selector.add_theme_stylebox_override("focus", _skill_tree_class_select_style(Color(1.10, 1.06, 0.94, 1.0)))
 	class_box.add_child(class_selector)
-	var class_progress := Label.new()
-	class_progress.name = "SkillTreeClassProgress"
-	class_progress.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	class_progress.add_theme_font_size_override("font_size", _readable_font_size(15))
-	class_progress.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 0.95))
-	class_box.add_child(class_progress)
-	var class_bonus_button := Button.new()
-	class_bonus_button.name = "SkillTreeClassBonusButton"
-	class_bonus_button.text = "Показать бонусы класса"
-	class_bonus_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	class_bonus_button.focus_mode = Control.FOCUS_ALL
-	class_bonus_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	class_bonus_button.add_theme_font_size_override("font_size", _readable_font_size(15))
-	class_bonus_button.add_theme_color_override("font_color", Color(0.86, 1.0, 0.90, 1.0))
-	_apply_skill_tree_text_button_theme(class_bonus_button, _skill_tree_class_select_style)
-	class_box.add_child(class_bonus_button)
-	var class_wins: int = game.META_PROGRESSION.class_boss_wins(game.meta_state, class_id)
-	var class_unlocked: int = game.META_PROGRESSION.class_level(game.meta_state, class_id)
-	var class_next: Dictionary = game.META_PROGRESSION.class_next_threshold(game.meta_state, class_id)
-	var class_text := "«%s»: %d побед над боссами, открыто бонусов: %d/%d." % [class_title, class_wins, class_unlocked, game.META_PROGRESSION.class_progression().size()]
-	if class_next.is_empty():
-		class_text += " Все бонусы класса открыты."
-	else:
-		class_text += " Следующий бонус — на %d победах: %s (%s)." % [int(class_next.get("wins", 0)), str(class_next.get("title", "")), str(class_next.get("desc", ""))]
-	class_progress.text = class_text
-	# Текст применённых бонусов класса (рендерится внутри попапа).
-	var unlocked_tiers: Array = game.META_PROGRESSION.class_unlocked_tiers(game.meta_state, class_id)
-	var class_bonus_text := ""
-	if unlocked_tiers.is_empty():
-		class_bonus_text = "Открытых классовых бонусов пока нет. Победи босса этим героем, чтобы начать его личную ветку."
-	else:
-		var bonus_lines := PackedStringArray()
-		for tier in unlocked_tiers:
-			bonus_lines.append("%s: %s" % [str(tier.get("title", "")), str(tier.get("desc", ""))])
-		class_bonus_text = "\n".join(bonus_lines)
-	# Попап применённых бонусов класса (скрыт по умолчанию, не влияет на overlap-проверки).
-	var class_popup := _make_skill_tree_popup(root, "SkillTreeClassBonusPopup", "Бонусы класса «%s»" % class_title, class_bonus_text, _skill_tree_class_popup_style())
-	class_bonus_button.pressed.connect(func() -> void:
-		class_popup.visible = not class_popup.visible
-	)
-	# Попап-объяснение очков умений.
-	var points_popup := _make_skill_tree_popup(root, "SkillTreePointsInfoPopup", "Очки умений", "Очки умений зарабатываются за победы над боссами. Тратьте их на узлы веток: каждый следующий узел требует открытого предыдущего. Покупки сохраняются между забегами.", _skill_tree_class_popup_style())
-	points_help_button.pressed.connect(func() -> void:
-		points_popup.visible = not points_popup.visible
+	var focus_hint := Label.new()
+	focus_hint.name = "SkillTreeFocusHint"
+	focus_hint.text = "Дерево общее. Выбор класса наводит камеру на его точку входа."
+	focus_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	focus_hint.add_theme_font_size_override("font_size", _readable_font_size(13))
+	focus_hint.add_theme_color_override("font_color", Color(0.84, 0.90, 0.98, 0.92))
+	class_box.add_child(focus_hint)
+	var zoom_row := HBoxContainer.new()
+	zoom_row.add_theme_constant_override("separation", 10)
+	class_box.add_child(zoom_row)
+	var zoom_out_button := _make_compact_button("−")
+	zoom_out_button.name = "SkillTreeZoomOutButton"
+	zoom_out_button.tooltip_text = "Отдалить"
+	zoom_row.add_child(zoom_out_button)
+	var zoom_in_button := _make_compact_button("+")
+	zoom_in_button.name = "SkillTreeZoomInButton"
+	zoom_in_button.tooltip_text = "Приблизить"
+	zoom_row.add_child(zoom_in_button)
+	var reset_button := _make_button("Сбросить дерево")
+	reset_button.name = "SkillTreeResetButton"
+	_set_action_button_size(reset_button, 290.0)
+	reset_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	class_box.add_child(reset_button)
+
+	# --- Графовый холст (пан/зум) ---
+	var canvas := Control.new()
+	canvas.name = "SkillTreeCanvas"
+	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	canvas.clip_contents = true
+	canvas.mouse_filter = Control.MOUSE_FILTER_STOP
+	body.add_child(canvas)
+
+	var bg := TextureRect.new()
+	bg.name = "SkillTreeCanvasBackdrop"
+	bg.texture = game._cached_texture(SKILL_TREE_BG_CANVAS_PATH)
+	bg.stretch_mode = TextureRect.STRETCH_TILE
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bg.modulate = Color(0.86, 0.90, 1.0, 0.92)
+	canvas.add_child(bg)
+
+	var world := Control.new()
+	world.name = "SkillTreeWorld"
+	world.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	world.size = SKILL_TREE_WORLD_SIZE
+	world.scale = Vector2(SKILL_TREE_DEFAULT_ZOOM, SKILL_TREE_DEFAULT_ZOOM)
+	canvas.add_child(world)
+
+	# Предрасчёт мировых позиций узлов и список рёбер (дедуп по id).
+	var node_pos_map := {}
+	for node in game.META_PROGRESSION.node_list():
+		node_pos_map[str(node["id"])] = SKILL_TREE_WORLD_ORIGIN + (node["pos"] as Vector2)
+	var edges: Array = []
+	for node in game.META_PROGRESSION.node_list():
+		var a_id := str(node["id"])
+		for raw_neighbor in node.get("adj", []):
+			var b_id := str(raw_neighbor)
+			if a_id < b_id and node_pos_map.has(b_id):
+				edges.append([a_id, b_id])
+
+	var edge_layer := Control.new()
+	edge_layer.name = "SkillTreeEdges"
+	edge_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	edge_layer.position = Vector2.ZERO
+	edge_layer.size = SKILL_TREE_WORLD_SIZE
+	world.add_child(edge_layer)
+	edge_layer.draw.connect(func() -> void:
+		for e in edges:
+			var pa: Vector2 = node_pos_map[e[0]]
+			var pb: Vector2 = node_pos_map[e[1]]
+			var pur_a: bool = game.META_PROGRESSION.is_node_purchased(game.meta_state, e[0])
+			var pur_b: bool = game.META_PROGRESSION.is_node_purchased(game.meta_state, e[1])
+			var col := Color(0.30, 0.35, 0.44, 0.55)
+			var width := 3.0
+			if pur_a and pur_b:
+				col = Color(1.0, 0.82, 0.36, 0.95)
+				width = 6.0
+			elif pur_a or pur_b:
+				col = Color(0.86, 0.72, 0.34, 0.82)
+				width = 4.5
+			edge_layer.draw_line(pa, pb, col, width, true)
 	)
 
-	var scroll := ScrollContainer.new()
-	scroll.name = "SkillTreeBranchScroll"
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	body.add_child(scroll)
-	var branches_row := HBoxContainer.new()
-	branches_row.name = "SkillTreeBranches"
-	branches_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	branches_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	branches_row.add_theme_constant_override("separation", 14)
-	scroll.add_child(branches_row)
+	# Маркер фокуса текущего класса (свечение под точкой входа).
+	var focus_marker := TextureRect.new()
+	focus_marker.name = "SkillTreeFocusMarker"
+	focus_marker.texture = game._cached_texture(SKILL_TREE_ENTRY_MARKER_PATH)
+	focus_marker.ignore_texture_size = true
+	focus_marker.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	focus_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	focus_marker.modulate = Color(1.0, 0.84, 0.38, 0.5)
+	var focus_marker_size := 158.0
+	focus_marker.size = Vector2(focus_marker_size, focus_marker_size)
+	world.add_child(focus_marker)
 
-	var node_buttons: Array[Button] = []
+	# --- Узлы графа ---
+	var node_buttons: Array[TextureButton] = []
+	for node in game.META_PROGRESSION.node_list():
+		var node_data: Dictionary = node
+		var node_id := str(node_data["id"])
+		var kind := str(node_data.get("kind", "minor"))
+		var disp: float = float(SKILL_TREE_NODE_DISPLAY.get(kind, 72.0))
+		var nb := TextureButton.new()
+		nb.name = "SkillNode_%s" % node_id
+		nb.ignore_texture_size = true
+		nb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		nb.custom_minimum_size = Vector2(disp, disp)
+		nb.size = Vector2(disp, disp)
+		nb.position = node_pos_map[node_id] - Vector2(disp, disp) * 0.5
+		nb.focus_mode = Control.FOCUS_ALL
+		nb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		nb.tooltip_text = "%s\n%s\nЦена: %d метаочк." % [str(node_data["title"]), str(node_data["desc"]), int(node_data["cost"])]
+		nb.set_meta("node_id", node_id)
+		nb.set_meta("kind", kind)
+		world.add_child(nb)
+		node_buttons.append(nb)
+
+	# --- Состояние камеры (пан/зум) ---
+	var view_state := {"zoom": float(SKILL_TREE_DEFAULT_ZOOM), "dragging": false}
+	var apply_zoom := func(target_zoom: float, focus: Vector2) -> void:
+		var new_zoom := clampf(target_zoom, SKILL_TREE_MIN_ZOOM, SKILL_TREE_MAX_ZOOM)
+		var old_zoom: float = view_state["zoom"]
+		if is_equal_approx(new_zoom, old_zoom):
+			return
+		world.position = focus - (focus - world.position) * (new_zoom / old_zoom)
+		world.scale = Vector2(new_zoom, new_zoom)
+		view_state["zoom"] = new_zoom
+	var center_on := func(node_pos: Vector2) -> void:
+		var vp := canvas.size
+		if vp.x < 4.0 or vp.y < 4.0:
+			return
+		var z: float = view_state["zoom"]
+		world.position = vp * 0.5 - (SKILL_TREE_WORLD_ORIGIN + node_pos) * z
+	canvas.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton:
+			var mb := event as InputEventMouseButton
+			if mb.button_index == MOUSE_BUTTON_WHEEL_UP and mb.pressed:
+				apply_zoom.call(view_state["zoom"] * 1.12, mb.position)
+			elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN and mb.pressed:
+				apply_zoom.call(view_state["zoom"] / 1.12, mb.position)
+			elif mb.button_index == MOUSE_BUTTON_LEFT:
+				view_state["dragging"] = mb.pressed
+		elif event is InputEventMouseMotion and bool(view_state["dragging"]):
+			world.position += (event as InputEventMouseMotion).relative
+	)
+	zoom_in_button.pressed.connect(func() -> void:
+		apply_zoom.call(view_state["zoom"] * 1.2, canvas.size * 0.5)
+	)
+	zoom_out_button.pressed.connect(func() -> void:
+		apply_zoom.call(view_state["zoom"] / 1.2, canvas.size * 0.5)
+	)
+
+	# --- Селектор класса (точки входа) ---
+	var entry_map: Dictionary = game.META_PROGRESSION.entry_map()
+	var class_ids: Array = entry_map.keys()
+	class_ids.sort()
+	var selected_class := str(game.selected_character_id)
+	var selected_index := 0
+	for i in range(class_ids.size()):
+		var cid := str(class_ids[i])
+		var cfg: Dictionary = game.PROGRESSION_DATA.character_config(cid)
+		class_selector.add_item(str(cfg.get("title", cid)))
+		class_selector.set_item_metadata(class_selector.item_count - 1, cid)
+		if cid == selected_class:
+			selected_index = class_selector.item_count - 1
+	if class_selector.item_count > 0:
+		class_selector.select(selected_index)
+	var focus_class := func(cid: String) -> void:
+		var entry_id := str(entry_map.get(cid, ""))
+		if entry_id == "" or not node_pos_map.has(entry_id):
+			return
+		var entry_pos: Vector2 = node_pos_map[entry_id]
+		focus_marker.position = entry_pos - Vector2(focus_marker_size, focus_marker_size) * 0.5
+		var entry_node: Dictionary = game.META_PROGRESSION.node_by_id(entry_id)
+		center_on.call(entry_node["pos"] as Vector2)
+	class_selector.item_selected.connect(func(idx: int) -> void:
+		focus_class.call(str(class_selector.get_item_metadata(idx)))
+	)
+
+	# --- Подтверждение сброса дерева ---
+	var reset_popup := PanelContainer.new()
+	reset_popup.name = "SkillTreeResetPopup"
+	reset_popup.visible = false
+	reset_popup.custom_minimum_size = Vector2(520.0, 220.0)
+	reset_popup.set_anchors_preset(Control.PRESET_CENTER)
+	reset_popup.add_theme_stylebox_override("panel", _skill_tree_class_popup_style())
+	reset_popup.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.add_child(reset_popup)
+	var reset_box := VBoxContainer.new()
+	reset_box.add_theme_constant_override("separation", 14)
+	reset_popup.add_child(reset_box)
+	var reset_text := Label.new()
+	reset_text.name = "SkillTreeResetPopupBody"
+	reset_text.text = "Сбросить всё древо умений? Все купленные узлы вернутся, метаочки освободятся."
+	reset_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	reset_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	reset_text.add_theme_font_size_override("font_size", _readable_font_size(17))
+	reset_text.add_theme_color_override("font_color", Color(0.92, 0.94, 0.86, 0.96))
+	reset_box.add_child(reset_text)
+	var reset_actions := HBoxContainer.new()
+	reset_actions.alignment = BoxContainer.ALIGNMENT_END
+	reset_actions.add_theme_constant_override("separation", 14)
+	reset_box.add_child(reset_actions)
+	var reset_cancel := Button.new()
+	reset_cancel.name = "SkillTreeResetCancelButton"
+	reset_cancel.text = "Отмена"
+	reset_cancel.focus_mode = Control.FOCUS_ALL
+	reset_cancel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	reset_cancel.add_theme_font_size_override("font_size", _readable_font_size(15))
+	reset_cancel.add_theme_color_override("font_color", Color(0.92, 0.94, 0.86, 1.0))
+	_apply_skill_tree_text_button_theme(reset_cancel, _skill_tree_class_select_style)
+	reset_actions.add_child(reset_cancel)
+	var reset_confirm := Button.new()
+	reset_confirm.name = "SkillTreeResetConfirmButton"
+	reset_confirm.text = "Сбросить"
+	reset_confirm.focus_mode = Control.FOCUS_ALL
+	reset_confirm.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	reset_confirm.add_theme_font_size_override("font_size", _readable_font_size(15))
+	reset_confirm.add_theme_color_override("font_color", Color(1.0, 0.74, 0.62, 1.0))
+	_apply_skill_tree_text_button_theme(reset_confirm, _skill_tree_class_select_style)
+	reset_actions.add_child(reset_confirm)
+
+	# --- Поп-ап объяснения экономики метаочков ---
+	var info_popup := _make_skill_tree_popup(root, "SkillTreePointsInfoPopup", "Древо умений", "Метаочки начисляются за возвышения (ascension), максимум 100. Каждый узел стоит метаочки и открывается только рядом с уже выделенным узлом или с точки входа класса. Глобальный уровень персонажа равен числу выделенных узлов. Дерево общее для всех классов — у каждого своя точка входа. Кнопкой «Сбросить дерево» можно вернуть все метаочки.", _skill_tree_class_popup_style())
+	info_button.pressed.connect(func() -> void:
+		info_popup.visible = not info_popup.visible
+	)
+
+	# --- Обновление состояний ---
 	var refresh := func() -> void:
-		var pts: int = game.META_PROGRESSION.skill_points(game.meta_state)
-		points_label.text = "Очки умений: %d" % pts
-		var bought: int = game.META_PROGRESSION.purchased_nodes(game.meta_state).size()
-		hint.text = "Очки умений зарабатываются за победы над боссами. Открывай узлы по ветвям — следующий требует предыдущий." if (pts == 0 and bought == 0) else ""
+		var available: int = game.META_PROGRESSION.available_meta_points(game.meta_state)
+		var level: int = game.META_PROGRESSION.global_level(game.meta_state)
+		points_label.text = "Ур. %d\nМетаочки\n%d / %d" % [level, available, game.META_PROGRESSION.META_POINTS_CAP]
+		reset_button.disabled = level <= 0
 		for nb in node_buttons:
-			var node_id: String = str(nb.get_meta("node_id"))
-			var status: String = game.META_PROGRESSION.node_status(game.meta_state, node_id)
+			var nid := str(nb.get_meta("node_id"))
+			var kind := str(nb.get_meta("kind"))
+			var status: String = game.META_PROGRESSION.node_status(game.meta_state, nid)
 			nb.disabled = status != "available"
-			_apply_progression_node_button_theme(nb, status)
-			var title_label := nb.get_meta("title_label") as Label
-			var desc_label := nb.get_meta("desc_label") as Label
-			match status:
-				"purchased":
-					nb.modulate = Color(0.62, 1.0, 0.66, 1.0)
-					if title_label != null:
-						title_label.add_theme_color_override("font_color", Color(0.62, 1.0, 0.66, 1.0))
-					if desc_label != null:
-						desc_label.add_theme_color_override("font_color", Color(0.78, 0.94, 0.82, 0.95))
-				"available":
-					nb.modulate = Color(1.0, 0.92, 0.6, 1.0)
-					if title_label != null:
-						title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.40, 1.0))
-					if desc_label != null:
-						desc_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78, 1.0))
-				_:
-					nb.modulate = Color(0.62, 0.64, 0.70, 0.7)
-					if title_label != null:
-						title_label.add_theme_color_override("font_color", Color(0.70, 0.72, 0.78, 0.9))
-					if desc_label != null:
-						desc_label.add_theme_color_override("font_color", Color(0.60, 0.64, 0.70, 0.82))
+			var tex := _skill_tree_node_texture(kind, status)
+			nb.texture_normal = tex
+			nb.texture_hover = tex
+			nb.texture_pressed = tex
+			nb.texture_disabled = tex
+			if kind == "entry":
+				match status:
+					"purchased":
+						nb.modulate = Color(0.60, 1.0, 0.66, 1.0)
+					"available":
+						nb.modulate = Color(1.0, 0.90, 0.50, 1.0)
+					_:
+						nb.modulate = Color(0.70, 0.72, 0.78, 0.82)
+			else:
+				nb.modulate = Color(0.72, 0.74, 0.80, 0.85) if status == "locked" else Color(1.0, 1.0, 1.0, 1.0)
+		edge_layer.queue_redraw()
 
-	for branch in game.META_PROGRESSION.SKILL_BRANCHES:
-		var branch_id: String = str(branch)
-		var branch_panel := PanelContainer.new()
-		branch_panel.name = "SkillTreeBranchPanel_%s" % branch_id
-		# SCRUM-676: компактнее по ширине (футпринт уменьшен 164→132), сохраняем
-		# тест-привязанную progression-рамку на самой панели.
-		branch_panel.custom_minimum_size = Vector2(132.0, 412.0)
-		branch_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		branch_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		branch_panel.add_theme_stylebox_override("panel", _progression_branch_panel_style())
-		branches_row.add_child(branch_panel)
-		# SCRUM-676: каждый путь в собственной рамке из дизайн-пака SCRUM-675.
-		var path_frame := PanelContainer.new()
-		path_frame.name = "SkillTreePathFrame_%s" % branch_id
-		path_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		path_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		path_frame.add_theme_stylebox_override("panel", _skill_tree_path_frame_style(branch_id))
-		branch_panel.add_child(path_frame)
-		var col := VBoxContainer.new()
-		col.name = "SkillTreeBranchContent_%s" % branch_id
-		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		col.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		col.add_theme_constant_override("separation", 6)
-		path_frame.add_child(col)
-		var branch_title := Label.new()
-		branch_title.text = str(game.META_PROGRESSION.SKILL_BRANCH_TITLES.get(branch_id, branch_id))
-		branch_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		branch_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		# SCRUM-676: заголовок пути крупнее для читаемости.
-		branch_title.add_theme_font_size_override("font_size", _readable_font_size(20))
-		branch_title.add_theme_color_override("font_color", Color(0.96, 0.88, 0.54, 1.0))
-		col.add_child(branch_title)
-		for node in game.META_PROGRESSION.branch_nodes(branch_id):
-			var node_data: Dictionary = node
-			var node_id: String = str(node_data["id"])
-			var node_box := VBoxContainer.new()
-			node_box.name = "SkillNodeBlock_%s" % node_id
-			node_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			node_box.add_theme_constant_override("separation", 2)
-			col.add_child(node_box)
-			var nb := Button.new()
-			nb.name = "SkillNode_%s" % node_id
-			nb.text = str(int(node_data["cost"]))
-			nb.tooltip_text = "%s\n%s" % [str(node_data["title"]), str(node_data["desc"])]
-			nb.custom_minimum_size = Vector2(74.0, 74.0)
-			nb.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-			nb.focus_mode = Control.FOCUS_ALL
-			nb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-			nb.add_theme_font_size_override("font_size", _readable_font_size(20))
-			nb.add_theme_color_override("font_color", Color(1.0, 0.92, 0.58, 1.0))
-			nb.add_theme_color_override("font_disabled_color", Color(0.70, 0.72, 0.78, 0.82))
-			_apply_progression_node_button_theme(nb, "locked")
-			nb.set_meta("node_id", node_id)
-			nb.pressed.connect(func() -> void:
-				game.meta_state = game.META_PROGRESSION.buy_skill_node(game.meta_state, node_id)
-				game.META_PROGRESSION.save_state(game.meta_state)
-				refresh.call()
-			)
-			node_buttons.append(nb)
-			node_box.add_child(nb)
-			var node_title := Label.new()
-			node_title.name = "SkillNodeTitle_%s" % node_id
-			node_title.text = str(node_data["title"])
-			node_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			node_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			# SCRUM-676: подписи узлов крупнее для читаемости (12→14 / 10→12).
-			node_title.add_theme_font_size_override("font_size", _readable_font_size(14))
-			node_title.add_theme_color_override("font_color", Color(0.82, 0.84, 0.90, 0.95))
-			node_box.add_child(node_title)
-			var node_desc := Label.new()
-			node_desc.name = "SkillNodeDesc_%s" % node_id
-			node_desc.text = str(node_data["desc"])
-			node_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			node_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			node_desc.add_theme_font_size_override("font_size", _readable_font_size(12))
-			node_desc.add_theme_color_override("font_color", Color(0.70, 0.74, 0.80, 0.9))
-			node_box.add_child(node_desc)
-			nb.set_meta("title_label", node_title)
-			nb.set_meta("desc_label", node_desc)
+	for nb in node_buttons:
+		var nid := str(nb.get_meta("node_id"))
+		nb.pressed.connect(func() -> void:
+			game.meta_state = game.META_PROGRESSION.allocate_node(game.meta_state, nid)
+			game.META_PROGRESSION.save_state(game.meta_state)
+			refresh.call()
+		)
+
+	reset_button.pressed.connect(func() -> void:
+		reset_popup.visible = true
+	)
+	reset_cancel.pressed.connect(func() -> void:
+		reset_popup.visible = false
+	)
+	reset_confirm.pressed.connect(func() -> void:
+		game.meta_state = game.META_PROGRESSION.reset_skill_tree(game.meta_state)
+		game.META_PROGRESSION.save_state(game.meta_state)
+		reset_popup.visible = false
+		refresh.call()
+	)
 
 	refresh.call()
+	# Центрируем камеру на точке входа выбранного класса после первичной раскладки.
+	if class_selector.item_count > 0:
+		focus_class.call(str(class_selector.get_item_metadata(class_selector.selected)))
+	# Холст получает реальный размер после первой раскладки — пере-центрируемся тогда.
+	canvas.resized.connect(func() -> void:
+		if class_selector.item_count > 0:
+			focus_class.call(str(class_selector.get_item_metadata(class_selector.selected)))
+	)
 	if not node_buttons.is_empty():
 		node_buttons[0].grab_focus()
 
@@ -8872,6 +9010,21 @@ func _skill_tree_points_button_style(tint := Color.WHITE) -> StyleBox:
 func _skill_tree_path_frame_style(branch_id: String) -> StyleBox:
 	var path := str(SKILL_TREE_PATH_FRAMES.get(branch_id, SKILL_TREE_PATH_FRAMES.get("might")))
 	return _global_texture_style(path, SKILL_TREE_PATH_FRAME_MARGINS, Color.WHITE, SKILL_TREE_PATH_FRAME_CONTENT)
+
+
+# SCRUM-698: стили графового древа умений (арт-пак SCRUM-697).
+func _skill_tree_main_panel_style() -> StyleBox:
+	return _global_texture_style(SKILL_TREE_MAIN_FRAME_PATH, SKILL_TREE_MAIN_FRAME_MARGINS, Color.WHITE, SKILL_TREE_MAIN_FRAME_CONTENT)
+
+
+func _skill_tree_points_badge_style() -> StyleBox:
+	return _global_texture_style(SKILL_TREE_POINTS_BADGE_PATH, Vector4(28.0, 24.0, 28.0, 24.0), Color.WHITE, SKILL_TREE_POINTS_BADGE_CONTENT)
+
+
+func _skill_tree_node_texture(kind: String, status: String) -> Texture2D:
+	var by_kind: Dictionary = SKILL_TREE_NODE_ART.get(kind, SKILL_TREE_NODE_ART["minor"])
+	var path := str(by_kind.get(status, by_kind.get("locked")))
+	return game._cached_texture(path)
 
 
 func _make_skill_tree_popup(parent: Control, popup_name: String, title: String, body: String, style: StyleBox) -> PanelContainer:

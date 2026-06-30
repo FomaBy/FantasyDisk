@@ -7340,55 +7340,62 @@ func _assert_skill_tree_progression_kit_at_size(main_scene: PackedScene, viewpor
 	await process_frame
 	await process_frame
 
+	# SCRUM-698: древо умений переехало на графовую модель (PoE-стиль). Проверяем
+	# новый каркас: главная рамка/бейдж/панель класса/холст-граф + узлы-кнопки.
 	var context := "skill_tree %s" % str(viewport_size)
 	var screen := skill_main.find_child("SkillTreeScreen", true, false) as Control
 	var main_panel := skill_main.find_child("SkillTreeMainPanel", true, false) as PanelContainer
 	var points_badge := skill_main.find_child("SkillTreePointsBadge", true, false) as PanelContainer
 	var class_panel := skill_main.find_child("SkillTreeClassPanel", true, false) as PanelContainer
-	var branches := skill_main.find_child("SkillTreeBranches", true, false) as Control
-	var branch_panel := skill_main.find_child("SkillTreeBranchPanel_*", true, false) as PanelContainer
-	var node_button := skill_main.find_child("SkillNode_*", true, false) as Button
-	var node_title := skill_main.find_child("SkillNodeTitle_*", true, false) as Label
-	var node_desc := skill_main.find_child("SkillNodeDesc_*", true, false) as Label
-	if screen == null or main_panel == null or points_badge == null or class_panel == null or branches == null or branch_panel == null or node_button == null or node_title == null or node_desc == null:
-		_fail("Expected SCRUM-331 skill tree controls to exist at %s." % context)
+	var canvas := skill_main.find_child("SkillTreeCanvas", true, false) as Control
+	var class_selector := skill_main.find_child("SkillTreeClassSelector", true, false) as OptionButton
+	var reset_button := skill_main.find_child("SkillTreeResetButton", true, false) as Button
+	var node_button := skill_main.find_child("SkillNode_*", true, false) as TextureButton
+	if screen == null or main_panel == null or points_badge == null or class_panel == null or canvas == null or class_selector == null or reset_button == null or node_button == null:
+		_fail("Expected SCRUM-698 skill tree controls to exist at %s." % context)
 		return
 
 	var expected_panel_textures := {
-		"SkillTreeMainPanel": "res://assets/sprites/ui/frames/progression/ui_frame_progression_main_panel.png",
-		"SkillTreePointsBadge": "res://assets/sprites/ui/frames/progression/ui_frame_progression_points_badge.png",
-		"SkillTreeClassPanel": "res://assets/sprites/ui/frames/progression/ui_frame_progression_class_panel.png",
-		"SkillTreeBranchPanel": "res://assets/sprites/ui/frames/progression/ui_frame_progression_branch_panel.png",
+		"SkillTreeMainPanel": "res://assets/sprites/ui/skill_tree/ui_frame_skill_tree_main.png",
+		"SkillTreePointsBadge": "res://assets/sprites/ui/skill_tree/ui_badge_skill_points.png",
 	}
 	var actual_panel_textures := {
 		"SkillTreeMainPanel": _stylebox_texture_path(main_panel.get_theme_stylebox("panel")),
 		"SkillTreePointsBadge": _stylebox_texture_path(points_badge.get_theme_stylebox("panel")),
-		"SkillTreeClassPanel": _stylebox_texture_path(class_panel.get_theme_stylebox("panel")),
-		"SkillTreeBranchPanel": _stylebox_texture_path(branch_panel.get_theme_stylebox("panel")),
 	}
 	for node_name in expected_panel_textures.keys():
 		if str(actual_panel_textures[node_name]) != str(expected_panel_textures[node_name]):
 			_fail("Expected %s to use `%s`, got `%s` at %s." % [node_name, expected_panel_textures[node_name], actual_panel_textures[node_name], context])
 			return
 
-	var node_texture_path := _stylebox_texture_path(node_button.get_theme_stylebox("normal"))
-	if not node_texture_path.begins_with("res://assets/sprites/ui/frames/progression/ui_frame_progression_node_"):
-		_fail("Expected skill node to use SCRUM-331 circular node frame, got `%s` at %s." % [node_texture_path, context])
+	# Узел рисуется арт-ассетом графа (нативный размер, пропорциональный масштаб без stretch).
+	var node_texture := node_button.texture_normal
+	var node_texture_path := node_texture.resource_path if node_texture != null else ""
+	if not node_texture_path.begins_with("res://assets/sprites/ui/skill_tree/"):
+		_fail("Expected skill node to use SCRUM-697 graph node art, got `%s` at %s." % [node_texture_path, context])
 		return
-	if node_button.text.length() > 3 or node_button.text.contains("\n"):
-		_fail("Expected circular skill node to contain only short cost text, got `%s` at %s." % [node_button.text, context])
+	if node_button.stretch_mode != TextureButton.STRETCH_KEEP_ASPECT_CENTERED:
+		_fail("Expected skill node art to keep aspect (no stretch) at %s." % context)
 		return
-	if node_title.get_global_rect().intersects(node_button.get_global_rect()) or node_desc.get_global_rect().intersects(node_button.get_global_rect()):
-		_fail("Expected skill node title/description labels to stay outside the circular node frame at %s." % context)
+	if class_selector.item_count <= 0:
+		_fail("Expected class entry selector to be populated at %s." % context)
 		return
-	if class_panel.get_global_rect().intersects(branches.get_global_rect()):
-		_fail("Expected class panel and branch grid not to overlap at %s." % context)
+	if class_panel.get_global_rect().intersects(canvas.get_global_rect()):
+		_fail("Expected class panel and graph canvas not to overlap at %s." % context)
+		return
+	if not canvas.clip_contents:
+		_fail("Expected graph canvas to clip its pannable content at %s." % context)
 		return
 
 	dump_lines.append("## %s" % context)
-	for control in [main_panel, points_badge, class_panel, branches, branch_panel, node_button, node_title, node_desc]:
+	for control in [main_panel, points_badge, class_panel, canvas, reset_button, node_button]:
 		var ctrl := control as Control
-		dump_lines.append("- `%s`: `%s` texture `%s`" % [ctrl.name, str(ctrl.get_global_rect()), _progression_dump_texture(ctrl)])
+		var tex_path := ""
+		if ctrl is TextureButton and (ctrl as TextureButton).texture_normal != null:
+			tex_path = (ctrl as TextureButton).texture_normal.resource_path
+		else:
+			tex_path = _progression_dump_texture(ctrl)
+		dump_lines.append("- `%s`: `%s` texture `%s`" % [ctrl.name, str(ctrl.get_global_rect()), tex_path])
 	viewport.queue_free()
 	await process_frame
 

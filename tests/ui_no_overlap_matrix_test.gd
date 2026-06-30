@@ -79,7 +79,7 @@ func _initialize() -> void:
 		], dump_lines, errors, false)
 		await _check_screen(viewport_size, "skill_tree", Callable(self, "_open_skill_tree"), [
 			"SkillTreeBackButton", "SkillTreePointsBadge", "SkillTreeClassPanel",
-			"SkillTreeBranches",
+			"SkillTreeCanvas",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
 			"PatchNotesPanel", "PatchNotesBackButton",
