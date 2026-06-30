@@ -74,3 +74,25 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/enemy_damag
 Sync `dev`, проверить отсутствие активных владельцев на locked paths (изоляция
 от damage/survivability пассов). Гейты по одному. После: Jira -> mirror ->
 intentional commit (явный git add своих файлов) -> push.
+
+## QA-Вердикт
+
+Статус: PASSED
+Дата: 2026-06-30 | QA: claude-qa | HEAD: origin/dev | Godot 4.7 (godot_gate)
+
+Evidence-driven no-op принят: ось комфорт/pacing здорова в пределах locked paths,
+безопасного тюнинг-кандидата нет; форсить правки = риск регрессии соседних гейтов
+(прямой AC «не ломать damage/survivability»). Per-weapon crowd-clear-лаггеры (+20–22%)
+корректно отложены в damage-пасс SCRUM-782 (вне comfort locked paths).
+
+Гейты (все PASS на HEAD, семафор):
+- comfort_band_cross_class_gate: spread 1.13x, 0 нарушений (срезы 1/5/20t).
+- ascension_curve_balance_test: монотонна до L5 (hp×1.80), пик L3=0.16→спад L5=0.03 — без стен.
+- enemy_damage_spread_gate: TTD-floor 0.48с, fragile ≥1.5× окна реакции (0/4/8/10) — без ваншотов.
+- live_balance_simulation_test: 5 архетипов, 0 мягких заметок.
+
+Acceptance:
+- Гейты зелёные, разброс комфорта узок (1.13x — сужать нечего). ✓
+- Кривая без провалов/стен. ✓ Enemy spread в пределах, без ваншотов. ✓
+- Темп наград/прогресса описан/обоснован (progression_balance.md §Comfort/Pacing re-eval). ✓
+- Соседние гейты не регрессировали: commits df471125+c11bc81c трогают только docs/ (scripts/tests НЕ изменены). ✓
