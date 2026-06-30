@@ -49,3 +49,9 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smo
 ## Hard UI Rule
 
 Content may never overlap decorative frame texture/ornament. Runtime constants must preserve documented content margins and safe zones.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+claude-qa, изолир. worktree от origin/dev (коммит 101f101b — ancestor). Test-only: git stat — добавлен только tests/ui_theme_paths_existence_test.gd; дифф прод-кода пуст (ui/, ui_icon_registry, pause_stats_menu, ui_screens — НЕ тронуты), нулевой риск. Новый тест исчерпывающе проверяет существование путей всех активных коллекций (OVERHAUL_2K ~60, LEVEL_UP_SCRUM682, RED_GOLD_BUTTON, UNIFIED_*, GLOBAL_*) через ResourceLoader.exists + anti-drift (source-size+9-slice margin). Гейты RC=0: ui_theme_paths_existence(NEW), ui_icon_registry_smoke(50), dark_fantasy_ui_theme, runtime_smoke_ui. → PASSED.
