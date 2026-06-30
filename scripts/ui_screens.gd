@@ -88,6 +88,8 @@ const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
 const MAIN_MENU_ACTION_BUTTON_WIDTH := 380.0
 const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
 const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
+const READABILITY_FONT_SCALE_MIN := 1.32
+const READABILITY_FONT_SCALE_TARGET := 1.45
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
@@ -198,7 +200,7 @@ const LU_HERO_PORTRAIT_RECT := Rect2(118.0, 40.0, 100.0, 100.0)
 const LU_TITLE_RECT := Rect2(292.0, 30.0, 880.0, 60.0)
 const LU_SUBTITLE_RECT := Rect2(292.0, 100.0, 920.0, 44.0)
 const LU_REWARDS_ROW_RECT := Rect2(63.0, 175.0, 1410.0, 560.0)
-const LU_LATER_BUTTON_RECT := Rect2(618.0, 736.0, 300.0, 82.0)
+const LU_LATER_BUTTON_RECT := Rect2(618.0, 736.0, 300.0, 76.0)
 const LU_CARD_CONTENT_RECT := Rect2(58.0, 70.0, 354.0, 426.0)
 const LU_CARD_ICON_RECT := Rect2(97.0, 21.0, 160.0, 160.0)
 const LU_CARD_TITLE_RECT := Rect2(12.0, 201.0, 330.0, 46.0)
@@ -604,7 +606,7 @@ func _show_main_menu() -> void:
 	version_label.offset_right = -16.0
 	version_label.offset_bottom = -10.0
 	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	version_label.add_theme_font_size_override("font_size", 13)
+	version_label.add_theme_font_size_override("font_size", _readable_font_size(13))
 	version_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.72, 0.85))
 	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(version_label)
@@ -708,7 +710,7 @@ func _show_quit_confirmation_dialog() -> void:
 	title_label.name = "QuitConfirmationTitle"
 	title_label.text = "Выйти из игры?"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 34)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(34))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -717,7 +719,7 @@ func _show_quit_confirmation_dialog() -> void:
 	subtitle_label.text = "Несохраненный забег будет завершен. Продолжить выход?"
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", 16)
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
 	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(subtitle_label)
 
@@ -871,7 +873,7 @@ func _show_continue_run_dialog() -> void:
 	subtitle_label.text = "%s · акт %d/%d · этап %d · уровень %d · золото %d\nМожно вернуться на карту или начать новый забег." % [character_title, current_act, game.ACT_COUNT, route_stage, level, money]
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", 16)
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
 	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(subtitle_label)
 
@@ -1105,7 +1107,7 @@ func _hs4_make_overlay_button(text: String, font_size: int) -> Button:
 	button.add_theme_stylebox_override("focus", _hs4_overlay_style(Color(0.32, 0.18, 0.04, 0.18), Color(1.0, 0.86, 0.42, 0.95), 2))
 	button.add_theme_stylebox_override("pressed", _hs4_overlay_style(Color(0.05, 0.025, 0.015, 0.28), Color(0.86, 0.62, 0.22, 0.9), 1))
 	button.add_theme_stylebox_override("disabled", _hs4_overlay_style(Color(0.02, 0.02, 0.02, 0.12)))
-	button.add_theme_font_size_override("font_size", font_size)
+	button.add_theme_font_size_override("font_size", _readable_font_size(font_size, 0, 44))
 	button.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.96, 0.72, 1.0))
 	button.add_theme_color_override("font_focus_color", Color(1.0, 0.96, 0.72, 1.0))
@@ -1224,7 +1226,7 @@ func _build_character_select_v4() -> void:
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.position = Vector2(title_safe.x, title_safe.y)
 	title.size = Vector2(title_frame.size.x - title_safe.x - title_safe.z, title_frame.size.y - title_safe.y - title_safe.w)
-	title.add_theme_font_size_override("font_size", maxi(20, int(round(72.0 * layout_scale))))
+	title.add_theme_font_size_override("font_size", _readable_font_size(maxi(20, int(round(72.0 * layout_scale))), 0, 112))
 	title.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_frame.add_child(title)
@@ -1235,7 +1237,7 @@ func _build_character_select_v4() -> void:
 	back_button.position = back_button_rect.position
 	_set_action_button_size(back_button, back_button_rect.size.x, back_button_rect.size.y)
 	_apply_hs4_pixellab_button_theme(back_button, "back", back_button_rect.size)
-	back_button.add_theme_font_size_override("font_size", maxi(14, int(round(30.0 * layout_scale))))
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(14, int(round(30.0 * layout_scale))), 0, 44))
 	root.add_child(back_button)
 	back_button.pressed.connect(_show_main_menu)
 
@@ -1290,14 +1292,14 @@ func _build_character_select_v4() -> void:
 
 	var name_label := Label.new()
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", maxi(18, int(round(52.0 * layout_scale))))
+	name_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(52.0 * layout_scale))), 0, 78))
 	name_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
 	dossier.add_child(name_label)
 
 	var desc_label := Label.new()
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	desc_label.add_theme_font_size_override("font_size", maxi(11, int(round(28.0 * layout_scale))))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(28.0 * layout_scale))), 0, 42))
 	desc_label.add_theme_color_override("font_color", Color(0.86, 0.89, 0.96, 1.0))
 	dossier.add_child(desc_label)
 
@@ -1309,7 +1311,7 @@ func _build_character_select_v4() -> void:
 	weapon_label.max_lines_visible = 1
 	weapon_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	weapon_label.add_theme_font_size_override("font_size", maxi(11, int(round(27.0 * layout_scale))))
+	weapon_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(27.0 * layout_scale))), 0, 42))
 	weapon_label.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 1.0))
 	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier.add_child(weapon_label)
@@ -1324,7 +1326,7 @@ func _build_character_select_v4() -> void:
 	var stat_value_labels := {}
 	var stat_bars := {}
 	var stat_icon_px := maxi(18, int(round(34.0 * layout_scale)))
-	var stat_font_px := maxi(11, int(round(26.0 * layout_scale)))
+	var stat_font_px := _readable_font_size(maxi(11, int(round(26.0 * layout_scale))), 0, 38)
 	var stat_name_min_w := maxf(float(dossier.size.x) * 0.28, 84.0 * layout_scale)
 	var stat_value_min_w := maxf(float(dossier.size.x) * 0.08, 32.0 * layout_scale)
 	var stat_bar_min_h := maxi(8, int(round(20.0 * layout_scale)))
@@ -1398,7 +1400,7 @@ func _build_character_select_v4() -> void:
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	asc_label.custom_minimum_size = Vector2(0.0, maxf(28.0, 42.0 * layout_scale))
-	asc_label.add_theme_font_size_override("font_size", maxi(13, int(round(34.0 * layout_scale))))
+	asc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(13, int(round(34.0 * layout_scale))), 0, 48))
 	asc_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.5, 1.0))
 	ascension_content.add_child(asc_label)
 
@@ -1411,14 +1413,14 @@ func _build_character_select_v4() -> void:
 	var asc_button_size := _hs4_pixellab_display_size("asc_minus", vp)
 	_set_action_button_size(asc_minus, asc_button_size.x, asc_button_size.y)
 	_apply_hs4_pixellab_button_theme(asc_minus, "asc_minus", asc_minus.custom_minimum_size)
-	asc_minus.add_theme_font_size_override("font_size", maxi(18, int(round(34.0 * layout_scale))))
+	asc_minus.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(34.0 * layout_scale))), 0, 52))
 	asc_box.add_child(asc_minus)
 	var asc_stepper_label := Label.new()
 	asc_stepper_label.text = "Возвышение"
 	asc_stepper_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_stepper_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	asc_stepper_label.custom_minimum_size = Vector2(maxf(120.0, 330.0 * layout_scale), asc_button_size.y)
-	asc_stepper_label.add_theme_font_size_override("font_size", maxi(13, int(round(30.0 * layout_scale))))
+	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(13, int(round(30.0 * layout_scale))), 0, 44))
 	asc_stepper_label.add_theme_color_override("font_color", Color(0.92, 0.84, 0.66, 1.0))
 	asc_box.add_child(asc_stepper_label)
 	var asc_plus := _make_button("+")
@@ -1426,7 +1428,7 @@ func _build_character_select_v4() -> void:
 	var asc_plus_size := _hs4_pixellab_display_size("asc_plus", vp)
 	_set_action_button_size(asc_plus, asc_plus_size.x, asc_plus_size.y)
 	_apply_hs4_pixellab_button_theme(asc_plus, "asc_plus", asc_plus.custom_minimum_size)
-	asc_plus.add_theme_font_size_override("font_size", maxi(18, int(round(34.0 * layout_scale))))
+	asc_plus.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(34.0 * layout_scale))), 0, 52))
 	asc_box.add_child(asc_plus)
 
 	var asc_mods := Label.new()
@@ -1434,7 +1436,7 @@ func _build_character_select_v4() -> void:
 	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	asc_mods.max_lines_visible = 2
 	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_mods.add_theme_font_size_override("font_size", maxi(10, int(round(22.0 * layout_scale))))
+	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(22.0 * layout_scale))), 0, 32))
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
 	ascension_content.add_child(asc_mods)
 
@@ -1444,7 +1446,7 @@ func _build_character_select_v4() -> void:
 	select_button.position = select_button_rect.position
 	_set_action_button_size(select_button, select_button_rect.size.x, select_button_rect.size.y)
 	_apply_hs4_pixellab_button_theme(select_button, "choose", select_button.custom_minimum_size)
-	select_button.add_theme_font_size_override("font_size", maxi(15, int(round(34.0 * layout_scale))))
+	select_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(15, int(round(34.0 * layout_scale))), 0, 52))
 	root.add_child(select_button)
 
 	var radar_panel := Panel.new()
@@ -1490,7 +1492,7 @@ func _build_character_select_v4() -> void:
 	left_arrow.name = "HS4CarouselPrevButton"
 	_set_action_button_size(left_arrow, arrow_size.x, arrow_size.y)
 	_apply_hs4_pixellab_button_theme(left_arrow, "carousel_left", left_arrow.custom_minimum_size)
-	left_arrow.add_theme_font_size_override("font_size", maxi(18, int(round(42.0 * layout_scale))))
+	left_arrow.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(42.0 * layout_scale))), 0, 60))
 	left_arrow.position = Vector2(0.0, arrow_y)
 	carousel.add_child(left_arrow)
 	var right_arrow := _make_button("►")
@@ -1498,7 +1500,7 @@ func _build_character_select_v4() -> void:
 	var right_arrow_size: Vector2 = _hs4_pixellab_display_size("carousel_right", vp)
 	_set_action_button_size(right_arrow, right_arrow_size.x, right_arrow_size.y)
 	_apply_hs4_pixellab_button_theme(right_arrow, "carousel_right", right_arrow.custom_minimum_size)
-	right_arrow.add_theme_font_size_override("font_size", maxi(18, int(round(42.0 * layout_scale))))
+	right_arrow.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(42.0 * layout_scale))), 0, 60))
 	right_arrow.position = Vector2(carousel_w - right_arrow_size.x, arrow_y)
 	carousel.add_child(right_arrow)
 
@@ -1834,7 +1836,7 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 90)
+	label.add_theme_font_size_override("font_size", _readable_font_size(90))
 	label.add_theme_color_override("font_color", Color(0.98, 0.84, 0.30, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.10, 0.05, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 8)
@@ -1930,14 +1932,14 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	var title := Label.new()
 	title.text = "Докачка"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_font_size_override("font_size", _readable_font_size(34))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
 	var money_label := Label.new()
 	money_label.name = "AttributeShopMoney"
 	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	money_label.add_theme_font_size_override("font_size", 18)
+	money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
 	money_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.30, 1.0))
 	box.add_child(money_label)
 
@@ -2081,7 +2083,7 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 	fab.offset_top = -88.0
 	fab.offset_right = -24.0
 	fab.offset_bottom = -24.0
-	fab.add_theme_font_size_override("font_size", 30)
+	fab.add_theme_font_size_override("font_size", _readable_font_size(30))
 	_apply_compact_button_theme(fab)
 	fab.tooltip_text = "Докачка характеристик за золото"
 	if not allow_attribute_shop:
@@ -2136,14 +2138,14 @@ func _show_skill_tree_screen() -> void:
 	var title := Label.new()
 	title.text = "Древо умений"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_font_size_override("font_size", _readable_font_size(38))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	header.add_child(title)
 	var points_label := Label.new()
 	points_label.name = "SkillTreePointsLabel"
 	points_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	points_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	points_label.add_theme_font_size_override("font_size", 22)
+	points_label.add_theme_font_size_override("font_size", _readable_font_size(22))
 	points_label.add_theme_color_override("font_color", Color(1.0, 0.84, 0.34, 1.0))
 	var points_badge := PanelContainer.new()
 	points_badge.name = "SkillTreePointsBadge"
@@ -2161,7 +2163,7 @@ func _show_skill_tree_screen() -> void:
 	points_help_button.focus_mode = Control.FOCUS_ALL
 	points_help_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	points_help_button.tooltip_text = "Как работают очки умений"
-	points_help_button.add_theme_font_size_override("font_size", 28)
+	points_help_button.add_theme_font_size_override("font_size", _readable_font_size(28))
 	points_help_button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.52, 1.0))
 	_apply_skill_tree_text_button_theme(points_help_button, _skill_tree_points_button_style)
 	header.add_child(points_help_button)
@@ -2175,7 +2177,7 @@ func _show_skill_tree_screen() -> void:
 	var hint := Label.new()
 	hint.name = "SkillTreeHint"
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", 14)
+	hint.add_theme_font_size_override("font_size", _readable_font_size(14))
 	hint.add_theme_color_override("font_color", Color(0.80, 0.86, 0.92, 0.9))
 	layout.add_child(hint)
 
@@ -2201,7 +2203,7 @@ func _show_skill_tree_screen() -> void:
 	var class_header := Label.new()
 	class_header.name = "SkillTreeClassHeader"
 	class_header.text = "Класс"
-	class_header.add_theme_font_size_override("font_size", 18)
+	class_header.add_theme_font_size_override("font_size", _readable_font_size(18))
 	class_header.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
 	class_box.add_child(class_header)
 	# SCRUM-676: вместо постоянного Label-списка — селектор класса (dropdown) +
@@ -2214,7 +2216,7 @@ func _show_skill_tree_screen() -> void:
 	class_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	class_selector.focus_mode = Control.FOCUS_ALL
 	class_selector.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	class_selector.add_theme_font_size_override("font_size", 17)
+	class_selector.add_theme_font_size_override("font_size", _readable_font_size(17))
 	class_selector.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62, 1.0))
 	class_selector.add_item("«%s»" % class_title)
 	class_selector.add_theme_stylebox_override("normal", _skill_tree_class_select_style())
@@ -2225,7 +2227,7 @@ func _show_skill_tree_screen() -> void:
 	var class_progress := Label.new()
 	class_progress.name = "SkillTreeClassProgress"
 	class_progress.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	class_progress.add_theme_font_size_override("font_size", 15)
+	class_progress.add_theme_font_size_override("font_size", _readable_font_size(15))
 	class_progress.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 0.95))
 	class_box.add_child(class_progress)
 	var class_bonus_button := Button.new()
@@ -2234,7 +2236,7 @@ func _show_skill_tree_screen() -> void:
 	class_bonus_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	class_bonus_button.focus_mode = Control.FOCUS_ALL
 	class_bonus_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	class_bonus_button.add_theme_font_size_override("font_size", 15)
+	class_bonus_button.add_theme_font_size_override("font_size", _readable_font_size(15))
 	class_bonus_button.add_theme_color_override("font_color", Color(0.86, 1.0, 0.90, 1.0))
 	_apply_skill_tree_text_button_theme(class_bonus_button, _skill_tree_class_select_style)
 	class_box.add_child(class_bonus_button)
@@ -2343,7 +2345,7 @@ func _show_skill_tree_screen() -> void:
 		branch_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		branch_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		# SCRUM-676: заголовок пути крупнее для читаемости.
-		branch_title.add_theme_font_size_override("font_size", 20)
+		branch_title.add_theme_font_size_override("font_size", _readable_font_size(20))
 		branch_title.add_theme_color_override("font_color", Color(0.96, 0.88, 0.54, 1.0))
 		col.add_child(branch_title)
 		for node in game.META_PROGRESSION.branch_nodes(branch_id):
@@ -2362,7 +2364,7 @@ func _show_skill_tree_screen() -> void:
 			nb.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 			nb.focus_mode = Control.FOCUS_ALL
 			nb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-			nb.add_theme_font_size_override("font_size", 20)
+			nb.add_theme_font_size_override("font_size", _readable_font_size(20))
 			nb.add_theme_color_override("font_color", Color(1.0, 0.92, 0.58, 1.0))
 			nb.add_theme_color_override("font_disabled_color", Color(0.70, 0.72, 0.78, 0.82))
 			_apply_progression_node_button_theme(nb, "locked")
@@ -2380,7 +2382,7 @@ func _show_skill_tree_screen() -> void:
 			node_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			node_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			# SCRUM-676: подписи узлов крупнее для читаемости (12→14 / 10→12).
-			node_title.add_theme_font_size_override("font_size", 14)
+			node_title.add_theme_font_size_override("font_size", _readable_font_size(14))
 			node_title.add_theme_color_override("font_color", Color(0.82, 0.84, 0.90, 0.95))
 			node_box.add_child(node_title)
 			var node_desc := Label.new()
@@ -2388,7 +2390,7 @@ func _show_skill_tree_screen() -> void:
 			node_desc.text = str(node_data["desc"])
 			node_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			node_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			node_desc.add_theme_font_size_override("font_size", 12)
+			node_desc.add_theme_font_size_override("font_size", _readable_font_size(12))
 			node_desc.add_theme_color_override("font_color", Color(0.70, 0.74, 0.80, 0.9))
 			node_box.add_child(node_desc)
 			nb.set_meta("title_label", node_title)
@@ -2439,7 +2441,7 @@ func _show_patch_notes_screen() -> void:
 	var title := Label.new()
 	title.text = "Что нового"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_font_size_override("font_size", _readable_font_size(38))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	header.add_child(title)
 	var back_button := _make_button("Назад в меню")
@@ -2464,14 +2466,14 @@ func _show_patch_notes_screen() -> void:
 		var version_label := Label.new()
 		version_label.name = "PatchNotesVersion_%s" % str(entry_data.get("version", "")).replace(".", "_")
 		version_label.text = "Версия %s  (%s)" % [str(entry_data.get("version", "")), str(entry_data.get("date", ""))]
-		version_label.add_theme_font_size_override("font_size", 24)
+		version_label.add_theme_font_size_override("font_size", _readable_font_size(24))
 		version_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
 		content.add_child(version_label)
 		for line in (entry_data.get("highlights", []) as Array):
 			var bullet := Label.new()
 			bullet.text = "•  %s" % str(line)
 			bullet.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			bullet.add_theme_font_size_override("font_size", 16)
+			bullet.add_theme_font_size_override("font_size", _readable_font_size(16))
 			bullet.add_theme_color_override("font_color", Color(0.90, 0.93, 0.98, 1.0))
 			content.add_child(bullet)
 
@@ -2503,7 +2505,7 @@ func _show_codex_screen() -> void:
 	title.name = "CodexHeaderTitle"
 	title.text = "Кодекс · Персонажи"
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_font_size_override("font_size", _readable_font_size(38))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	root.add_child(title)
 
@@ -2511,7 +2513,7 @@ func _show_codex_screen() -> void:
 	back_button.name = "CodexBackButton"
 	_apply_codex_pl_button_theme(back_button, CODEX_PL_BACK_BUTTON_PATH, CODEX_PL_BACK_BUTTON_TEX, CODEX_PL_BACK_BUTTON_CONTENT)
 	back_button.tooltip_text = "Назад в меню"
-	back_button.add_theme_font_size_override("font_size", 28)
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(28))
 	back_button.pressed.connect(_show_main_menu)
 	root.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -2555,7 +2557,7 @@ func _show_codex_screen() -> void:
 		var tab_button := _make_button(str(section["title"]))
 		tab_button.name = "CodexTab_%s" % section_id
 		tab_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		tab_button.add_theme_font_size_override("font_size", 15)
+		tab_button.add_theme_font_size_override("font_size", _readable_font_size(15))
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		tabs_row.add_child(tab_button)
 		_codex_pl_add_category_emblem(tab_button, section_id)
@@ -2710,7 +2712,7 @@ func _codex_label(parent: Control, text: String, font_size: int, color: Color) -
 	label.text = text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_font_size_override("font_size", _readable_font_size(font_size, 0, 44))
 	label.add_theme_color_override("font_color", color)
 	parent.add_child(label)
 	return label
@@ -2780,7 +2782,7 @@ func _codex_v2_apply_tab_metrics(tabs_row: VBoxContainer) -> void:
 		if button == null:
 			continue
 		button.custom_minimum_size = tab_size
-		button.add_theme_font_size_override("font_size", 13 if scale < 0.8 else 15)
+		button.add_theme_font_size_override("font_size", _readable_font_size(13 if scale < 0.8 else 15, 0, 16))
 		# Полоса слева под эмблему: ruby-rivet (≈левый tex-margin) + сама эмблема.
 		# content-margins масштабируем под размер плитки (display px); левый margin
 		# уводит подпись правее эмблемы, остальные кладут текст в parchment-зону.
@@ -2810,7 +2812,7 @@ func _codex_v2_apply_back_button_metrics(button: Button) -> void:
 		CODEX_PL_BACK_BUTTON_CONTENT.z * scale,
 		v_margin)
 	_apply_codex_pl_button_theme(button, CODEX_PL_BACK_BUTTON_PATH, CODEX_PL_BACK_BUTTON_TEX, content)
-	button.add_theme_font_size_override("font_size", int(round(clampf(height * 0.34, 11.0, 34.0))))
+	button.add_theme_font_size_override("font_size", _readable_font_size(int(round(clampf(height * 0.34, 11.0, 34.0))), 0, 44))
 
 
 # SCRUM-684: эмблема категории (golden helm / dragon skull / …) в безопасной
@@ -2886,7 +2888,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	title.text = str(detail_data.get("title", ""))
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 22 if _codex_v2_scale() < 0.8 else 28)
+	title.add_theme_font_size_override("font_size", _readable_font_size(22 if _codex_v2_scale() < 0.8 else 28, 0, 36))
 	title.add_theme_color_override("font_color", CODEX_PL_DETAIL_TITLE_COLOR)
 	box.add_child(title)
 
@@ -2923,7 +2925,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 			var chip := Label.new()
 			chip.text = str(chip_text)
 			chip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			chip.add_theme_font_size_override("font_size", 12 if _codex_v2_scale() < 0.8 else 14)
+			chip.add_theme_font_size_override("font_size", _readable_font_size(12 if _codex_v2_scale() < 0.8 else 14, 0, 20))
 			chip.add_theme_color_override("font_color", Color(0.42, 0.20, 0.10, 1.0))
 			chip_row.add_child(chip)
 
@@ -2958,7 +2960,7 @@ func _make_glossary_term_button(term_id: String, popup_context := false) -> Butt
 	button.focus_mode = Control.FOCUS_NONE
 	button.mouse_filter = Control.MOUSE_FILTER_STOP
 	button.tooltip_text = "" if popup_context else _glossary_tooltip_text(term_id)
-	button.add_theme_font_size_override("font_size", 14)
+	button.add_theme_font_size_override("font_size", _readable_font_size(14))
 	button.add_theme_color_override("font_color", Color(0.92, 0.82, 0.54, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.62, 1.0))
 	button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
@@ -3034,13 +3036,13 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	tooltip.add_child(box)
 	var title := Label.new()
 	title.text = str(definition.get("name", term_id))
-	title.add_theme_font_size_override("font_size", GT_TITLE_FONT_SIZE)
+	title.add_theme_font_size_override("font_size", _readable_font_size(GT_TITLE_FONT_SIZE))
 	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.48, 1.0))
 	box.add_child(title)
 	var desc := Label.new()
 	desc.text = str(definition.get("desc", ""))
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", GT_DESC_FONT_SIZE)
+	desc.add_theme_font_size_override("font_size", _readable_font_size(GT_DESC_FONT_SIZE))
 	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.80, 1.0))
 	box.add_child(desc)
 	game.ui_layer.add_child(tooltip)
@@ -3387,7 +3389,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	title.text = "Настройки"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_font_size_override("font_size", _readable_font_size(34))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	_apply_control_rect(title, _settings_v2_scaled_modal_rect(Rect2(144.0, 94.0, 1248.0, 48.0), modal_rect.size))
 	modal.add_child(title)
@@ -3398,7 +3400,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
-	tabs.add_theme_font_size_override("font_size", 17)
+	tabs.add_theme_font_size_override("font_size", _readable_font_size(17))
 	tabs.add_theme_color_override("font_selected_color", Color(0.98, 0.90, 0.50, 1.0))
 	tabs.add_theme_color_override("font_unselected_color", Color(0.73, 0.78, 0.84, 1.0))
 
@@ -3523,7 +3525,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	pending_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	pending_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	pending_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	pending_label.add_theme_font_size_override("font_size", 14)
+	pending_label.add_theme_font_size_override("font_size", _readable_font_size(14))
 	pending_label.add_theme_color_override("font_color", Color(0.96, 0.80, 0.42, 1.0) if _settings_video_dirty() else Color(0.68, 0.76, 0.82, 1.0))
 	screen_box.add_child(pending_label)
 
@@ -3635,7 +3637,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var hint_label := Label.new()
 	hint_label.text = "Клик по биндингу, затем нажми клавишу. Esc отменяет."
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	hint_label.add_theme_font_size_override("font_size", 14)
+	hint_label.add_theme_font_size_override("font_size", _readable_font_size(14))
 	hint_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.82, 1.0))
 	controls_box.add_child(hint_label)
 
@@ -3758,7 +3760,7 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 		button.offset_top = roundf(safe_rect.position.y)
 		button.offset_right = roundf(tab_left + tab_width)
 		button.offset_bottom = roundf(safe_rect.position.y + safe_rect.size.y)
-		button.add_theme_font_size_override("font_size", 12)
+		button.add_theme_font_size_override("font_size", _readable_font_size(12))
 		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
 		var target_tab := tab_index
 		button.pressed.connect(func() -> void:
@@ -3994,7 +3996,7 @@ func _build_run_pause_menu() -> void:
 	title.name = "RunPauseMenuTitle"
 	title.text = "Пауза"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 44)
+	title.add_theme_font_size_override("font_size", _readable_font_size(44))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
@@ -4002,7 +4004,7 @@ func _build_run_pause_menu() -> void:
 	subtitle.name = "RunPauseMenuSubtitle"
 	subtitle.text = "Забег поставлен на паузу"
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 16)
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
 	subtitle.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
 	box.add_child(subtitle)
 
@@ -4217,7 +4219,7 @@ func _add_character_button(box: Container, character_id: String, info_labels: Di
 	var asc_unlocked: int = game.ascension_level_for(character_id)
 	asc_badge.text = ("Возвышение %d" % asc_unlocked) if asc_unlocked > 0 else "Возвышение 0"
 	asc_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_badge.add_theme_font_size_override("font_size", 11)
+	asc_badge.add_theme_font_size_override("font_size", _readable_font_size(11))
 	asc_badge.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 0.9))
 	asc_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(asc_badge)
@@ -4226,7 +4228,7 @@ func _add_character_button(box: Container, character_id: String, info_labels: Di
 	title_label.name = "CharacterTitle_%s" % character_id
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 20)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(20))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
 	title_label.clip_text = true
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -4250,7 +4252,7 @@ func _add_character_button(box: Container, character_id: String, info_labels: Di
 		ascension_label.name = "CharacterAscension_%s" % character_id
 		ascension_label.text = "Возвышение: %d/%d" % [ascension_level, game.META_PROGRESSION.MAX_ASCENSION_LEVEL]  # SCRUM-516: динамический кап (5) вместо хардкода /10
 		ascension_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		ascension_label.add_theme_font_size_override("font_size", 11)
+		ascension_label.add_theme_font_size_override("font_size", _readable_font_size(11))
 		ascension_label.add_theme_color_override("font_color", Color(0.78, 0.58, 1.0, 1.0))
 		ascension_label.clip_text = true
 		ascension_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -4261,7 +4263,7 @@ func _hero_card_line(text: String, font_size: int, color: Color) -> Label:
 	var label := Label.new()
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_font_size_override("font_size", _readable_font_size(font_size, 0, 44))
 	label.add_theme_color_override("font_color", color)
 	label.clip_text = true
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -4382,7 +4384,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	var title_label := Label.new()
 	title_label.name = "WeaponSelectTitle_%s" % weapon_id
 	title_label.text = str(config.get("title", weapon_id))
-	title_label.add_theme_font_size_override("font_size", 28)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(28))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
@@ -4391,7 +4393,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	desc_label.name = "WeaponSelectDescription_%s" % weapon_id
 	desc_label.text = str(config.get("description", ""))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 20)
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(20))
 	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
@@ -4406,7 +4408,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 		float(config.get("aoe_radius", 0.0)),
 		float(config.get("fire_interval", 0.0)),
 	]
-	stats_label.add_theme_font_size_override("font_size", 18)
+	stats_label.add_theme_font_size_override("font_size", _readable_font_size(18))
 	stats_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
 	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(stats_label)
@@ -4479,7 +4481,7 @@ func _make_start_boon_card(boon: Dictionary) -> Button:
 	var title_label := Label.new()
 	title_label.name = "StartBoonTitle_%s" % boon_id
 	title_label.text = str(boon.get("title", boon_id))
-	title_label.add_theme_font_size_override("font_size", 21)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(21))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
@@ -4488,7 +4490,7 @@ func _make_start_boon_card(boon: Dictionary) -> Button:
 	desc_label.name = "StartBoonDescription_%s" % boon_id
 	desc_label.text = str(boon.get("description", ""))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 14)
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(14))
 	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
@@ -4692,7 +4694,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	title.name = "EliteArtifactRewardTitle"
 	title.text = "Трофей элитки"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 52)
+	title.add_theme_font_size_override("font_size", _readable_font_size(52, 0, 52))
 	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.38, 1.0))
 	box.add_child(title)
 
@@ -4700,7 +4702,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	subtitle.name = "EliteArtifactRewardSubtitle"
 	subtitle.text = "Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 20)
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 0, 20))
 	subtitle.add_theme_color_override("font_color", Color(0.86, 0.90, 0.98, 1.0))
 	box.add_child(subtitle)
 
@@ -4789,7 +4791,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	title_label.clip_text = true
 	title_label.max_lines_visible = 1
 	_level_up_place_card_child(title_label, LU_CARD_TITLE_RECT, card_scale)
-	title_label.add_theme_font_size_override("font_size", maxi(7, int(roundf(18.0 * card_scale.y))))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(7, int(roundf(18.0 * card_scale.y))), 0, 26))
 	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(1.0, 0.91, 0.58, 1.0))
 	content.add_child(title_label)
 
@@ -4802,7 +4804,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	description_label.clip_text = true
 	description_label.max_lines_visible = 2
 	_level_up_place_card_child(description_label, LU_CARD_DESCRIPTION_RECT, card_scale)
-	description_label.add_theme_font_size_override("font_size", maxi(6, int(roundf(12.0 * card_scale.y))))
+	description_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 18))
 	description_label.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
 	content.add_child(description_label)
 
@@ -4822,7 +4824,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	effect_label.clip_text = true
 	effect_label.max_lines_visible = 1
-	effect_label.add_theme_font_size_override("font_size", maxi(6, int(roundf(12.0 * card_scale.y))))
+	effect_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 18))
 	effect_label.add_theme_color_override("font_color", Color(0.84, 0.97, 1.0, 1.0))
 	effect_panel.add_child(effect_label)
 	return button
@@ -4843,13 +4845,13 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 
 	var content := _add_reward_card_content_container(button, false)
 	content.name = "BattleRewardCardContent"
-	content.add_theme_constant_override("separation", 7)
+	content.add_theme_constant_override("separation", 5)
 
 	var icon_row := HBoxContainer.new()
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(64, 64)))
+	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(40, 40)))
 
 	var title_label := Label.new()
 	title_label.name = "BattleRewardTitle"
@@ -4857,7 +4859,9 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	title_label.text = str(reward.get("title", "Награда"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 17)
+	title_label.max_lines_visible = 2
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 22))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.91, 0.58, 1.0))
 	content.add_child(title_label)
 
@@ -4867,7 +4871,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	preview_label.text = _level_up_reward_preview(reward)
 	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	preview_label.add_theme_font_size_override("font_size", 14)
+	preview_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 16))
 	preview_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1.0))
 	content.add_child(preview_label)
 
@@ -4877,13 +4881,15 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	description_label.text = str(reward.get("description", ""))
 	description_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description_label.add_theme_font_size_override("font_size", 12)
+	description_label.max_lines_visible = 2
+	description_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	description_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 14))
 	description_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
 	content.add_child(description_label)
 
 	var spacer := Control.new()
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	spacer.custom_minimum_size = Vector2(0.0, 4.0)
+	spacer.custom_minimum_size = Vector2(0.0, 0.0)
 	content.add_child(spacer)
 
 	var action_label := Label.new()
@@ -4891,7 +4897,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	action_label.text = "Получить"
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", 15)
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 16))
 	action_label.add_theme_color_override("font_color", Color(1.0, 0.90, 0.64, 1.0))
 	action_label.add_theme_color_override("font_outline_color", Color(0.13, 0.04, 0.035, 0.92))
 	action_label.add_theme_constant_override("outline_size", 2)
@@ -4917,20 +4923,22 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 
 	var content := _add_reward_card_content_container(button, true)
 	content.name = "EliteArtifactRewardContent"
-	content.add_theme_constant_override("separation", 6)
+	content.add_theme_constant_override("separation", 3)
 
 	var icon_row := HBoxContainer.new()
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(112, 112)))
+	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(52, 52)))
 
 	var title_label := Label.new()
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text = str(reward.get("title", "Артефакт"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 18)
+	title_label.max_lines_visible = 2
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 22))
 	title_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(title_label)
 
@@ -4939,7 +4947,9 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	tier_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tier_label.text = _artifact_tier_text(reward)
 	tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tier_label.add_theme_font_size_override("font_size", 13)
+	tier_label.max_lines_visible = 1
+	tier_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	tier_label.add_theme_font_size_override("font_size", _readable_font_size(13, 0, 16))
 	tier_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(tier_label)
 
@@ -4949,7 +4959,9 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	effect_label.text = str(reward.get("description", ""))
 	effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	effect_label.add_theme_font_size_override("font_size", 12)
+	effect_label.max_lines_visible = 2
+	effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	effect_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 15))
 	effect_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
 	content.add_child(effect_label)
 
@@ -4961,7 +4973,9 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 		interp_label.text = interpretation
 		interp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		interp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		interp_label.add_theme_font_size_override("font_size", 11)
+		interp_label.max_lines_visible = 1
+		interp_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		interp_label.add_theme_font_size_override("font_size", _readable_font_size(11, 0, 14))
 		interp_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
 		content.add_child(interp_label)
 
@@ -5044,14 +5058,14 @@ func _show_shop_screen() -> void:
 	var title := Label.new()
 	title.text = "Магазин"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 42)
+	title.add_theme_font_size_override("font_size", _readable_font_size(42))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_box.add_child(title)
 
 	var subtitle := Label.new()
 	subtitle.text = "Выбери предмет. Описание появляется при наведении."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 16)
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
 	subtitle.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
 	title_box.add_child(subtitle)
 
@@ -5130,7 +5144,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 			note_label.name = "ShopAffinityNote"
 			note_label.text = "!"
 			note_label.tooltip_text = str(affinity_note["text"])
-			note_label.add_theme_font_size_override("font_size", 22)
+			note_label.add_theme_font_size_override("font_size", _readable_font_size(22))
 			note_label.add_theme_color_override("font_color", affinity_note["color"])
 			note_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 			note_label.offset_left = -26.0
@@ -5232,7 +5246,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	caption.offset_top = SHOP_INLINE_CAPTION_TOP
 	caption.offset_right = (SHOP_INLINE_CAPTION_SIZE.x - 16.0) * 0.5
 	caption.offset_bottom = SHOP_INLINE_CAPTION_TOP + SHOP_INLINE_CAPTION_SIZE.y
-	caption.add_theme_font_size_override("font_size", 13)
+	caption.add_theme_font_size_override("font_size", _readable_font_size(13))
 	caption.add_theme_color_override("font_color", Color(0.30, 0.20, 0.10, 1.0) if affordable else Color(0.42, 0.36, 0.30, 0.86))
 	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(caption)
@@ -5272,7 +5286,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	price_label.text = "%d" % cost
 	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	price_label.add_theme_font_size_override("font_size", 18)
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(18))
 	price_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
 	price_row.add_child(price_label)
 
@@ -5310,7 +5324,7 @@ func _add_shop_empty_hook(button: Button) -> void:
 	label.text = "снято"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_font_size_override("font_size", _readable_font_size(13))
 	label.add_theme_color_override("font_color", Color(0.40, 0.30, 0.20, 0.78))
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hook.add_child(label)
@@ -5328,7 +5342,7 @@ func _add_shop_state_overlay(button: Button, text: String) -> void:
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 17)
+	label.add_theme_font_size_override("font_size", _readable_font_size(17))
 	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	overlay.add_child(label)
 
@@ -5806,7 +5820,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		outcome_label.text = outcome
 		outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		outcome_label.add_theme_font_size_override("font_size", 17)
+		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(17))
 		outcome_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
 		outcome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(outcome_label)
@@ -5836,7 +5850,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
 		name_label.text = "%s:" % str(row[1])
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		name_label.add_theme_font_size_override("font_size", 16)
+		name_label.add_theme_font_size_override("font_size", _readable_font_size(16))
 		name_label.add_theme_color_override("font_color", Color(0.82, 0.86, 0.94, 0.92))
 		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(name_label)
@@ -5844,7 +5858,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		value_label.name = "RunSummaryStat_%s" % str(row[0])
 		value_label.text = str(row[2])
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		value_label.add_theme_font_size_override("font_size", 16)
+		value_label.add_theme_font_size_override("font_size", _readable_font_size(16))
 		value_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.78, 1.0))
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
@@ -5861,7 +5875,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		artifacts_label.text = ", ".join(names)
 		artifacts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		artifacts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		artifacts_label.add_theme_font_size_override("font_size", 14)
+		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(14))
 		artifacts_label.add_theme_color_override("font_color", Color(0.86, 0.82, 0.96, 0.95))
 		artifacts_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(artifacts_label)
@@ -6329,7 +6343,7 @@ func _show_combat_title_banner(title: String, color: Color, big := false) -> voi
 	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 54 if big else 34)
+	label.add_theme_font_size_override("font_size", _readable_font_size(54 if big else 34, 0, 54 if big else 36))
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.03, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 6 if big else 4)
@@ -6367,7 +6381,7 @@ func _update_level_up_button() -> void:
 		game.level_up_button.anchor_top = 1.0
 		game.level_up_button.anchor_bottom = 1.0
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
-		game.level_up_button.add_theme_font_size_override("font_size", 34)
+		game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(34))
 		_apply_fantasy_button_theme(game.level_up_button)
 		game.level_up_button.pressed.connect(_open_pending_level_up)
 		level_button_parent.add_child(game.level_up_button)
@@ -6386,7 +6400,7 @@ func _update_level_up_button() -> void:
 		badge.name = "LevelUpPlusBadge"
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		badge.add_theme_font_size_override("font_size", 16)
+		badge.add_theme_font_size_override("font_size", _readable_font_size(16))
 		badge.add_theme_color_override("font_color", Color(0.08, 0.05, 0.02, 1.0))
 		badge_panel.add_child(badge)
 
@@ -6405,7 +6419,7 @@ func _update_level_up_button() -> void:
 	game.level_up_button.set_meta("scrum666_frame_rect", _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_FRAME_2K, scale))
 	game.level_up_button.set_meta("scrum666_content_zone", plus_rect)
 	game.level_up_button.clip_text = true
-	game.level_up_button.add_theme_font_size_override("font_size", maxi(18, int(roundf(24.0 * scale))))
+	game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(roundf(24.0 * scale))), 0, 34))
 	_apply_fantasy_button_theme(game.level_up_button)
 
 	var badge_panel := game.level_up_button.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
@@ -6421,7 +6435,7 @@ func _update_level_up_button() -> void:
 	var badge_label := game.level_up_button.find_child("LevelUpPlusBadge", true, false) as Label
 	if badge_label != null:
 		badge_label.text = str(game.pending_level_ups)
-		badge_label.add_theme_font_size_override("font_size", maxi(9, int(roundf(14.0 * scale))))
+		badge_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(roundf(14.0 * scale))), 0, 22))
 
 
 func _level_up_affinity_suffix(reward: Dictionary) -> String:
@@ -6960,7 +6974,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	title_label.text = "Клавиша занята"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 36)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(36, 0, 40))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	panel.add_child(title_label)
 	title_label.position = RC_TITLE_2K.position - RC_PANEL_2K.position
@@ -6973,7 +6987,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	message_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	message_label.clip_text = true
-	message_label.add_theme_font_size_override("font_size", 18)
+	message_label.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 24))
 	message_label.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
 	panel.add_child(message_label)
 	message_label.position = RC_MESSAGE_2K.position - RC_PANEL_2K.position
@@ -6983,7 +6997,8 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	retry_button.name = "RebindConflictRetryButton"
 	_set_action_button_size(retry_button, RC_BTN_RETRY_2K.size.x, RC_BTN_RETRY_2K.size.y)
 	_apply_overhaul_2k_button_theme(retry_button, "rc_btn", RC_BTN_RETRY_2K.size)
-	retry_button.add_theme_font_size_override("font_size", 18)
+	retry_button.clip_text = true
+	retry_button.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 18))
 	retry_button.pressed.connect(func() -> void:
 		_begin_rebind(target_action)
 	)
@@ -6994,7 +7009,8 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	back_button.name = "RebindConflictBackButton"
 	_set_action_button_size(back_button, RC_BTN_BACK_2K.size.x, RC_BTN_BACK_2K.size.y)
 	_apply_overhaul_2k_button_theme(back_button, "rc_btn", RC_BTN_BACK_2K.size)
-	back_button.add_theme_font_size_override("font_size", 18)
+	back_button.clip_text = true
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 18))
 	back_button.pressed.connect(func() -> void:
 		game.pending_rebind_action = ""
 		_show_settings_menu()
@@ -7180,7 +7196,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	var title := Label.new()
 	title.text = "Отправить фидбек"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 32)
+	title.add_theme_font_size_override("font_size", _readable_font_size(32))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
@@ -7203,7 +7219,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	hint.text = "Опиши баг или впечатление. Скриншот ниже уже снят до открытия формы."
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", 16)
+	hint.add_theme_font_size_override("font_size", _readable_font_size(16))
 	hint.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
 	scroll_body.add_child(hint)
 
@@ -7213,7 +7229,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_edit.placeholder_text = "Что случилось? Где ты был в игре? Что ожидал увидеть?"
 	text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
-	text_edit.add_theme_font_size_override("font_size", 17)
+	text_edit.add_theme_font_size_override("font_size", _readable_font_size(17))
 	text_edit.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84, 1.0))
 	text_edit.add_theme_color_override("font_placeholder_color", Color(0.66, 0.64, 0.58, 1.0))
 	scroll_body.add_child(text_edit)
@@ -7239,7 +7255,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	status.text = "Отправка происходит только после нажатия «Отправить»."
 	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status.add_theme_font_size_override("font_size", 14)
+	status.add_theme_font_size_override("font_size", _readable_font_size(14))
 	status.add_theme_color_override("font_color", Color(0.74, 0.82, 0.88, 1.0))
 	box.add_child(status)
 
@@ -7400,7 +7416,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_label.add_theme_font_size_override("font_size", 34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42, 0, 60))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -7410,7 +7426,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	subtitle_label.add_theme_font_size_override("font_size", 15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17)
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17, 0, 24))
 	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	box.add_child(subtitle_label)
 
@@ -7635,7 +7651,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	title_label.size = layout.get("title_size", Vector2(440.0, 30.0))
 	title_label.scale = layout.get("title_scale", Vector2(1.18, 1.18))
 	title_label.modulate.a = 0.0
-	title_label.add_theme_font_size_override("font_size", int(layout.get("title_font", 50)))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("title_font", 50)), 0, 72))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.30, 1.0))
 	box.add_child(title_label)
 
@@ -7647,7 +7663,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.position = layout.get("subtitle_position", Vector2.ZERO)
 	subtitle_label.size = layout.get("subtitle_size", Vector2(460.0, 22.0))
-	subtitle_label.add_theme_font_size_override("font_size", int(layout.get("subtitle_font", 17)))
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("subtitle_font", 17)), 0, 26))
 	subtitle_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
 	box.add_child(subtitle_label)
 
@@ -7780,6 +7796,23 @@ func _make_button(text: String) -> Button:
 	return button
 
 
+func _readability_font_scale() -> float:
+	var viewport_height := 864.0
+	if game != null and game.get_viewport() != null:
+		viewport_height = game.get_viewport().get_visible_rect().size.y
+	var t := clampf((viewport_height - 648.0) / 216.0, 0.0, 1.0)
+	return lerpf(READABILITY_FONT_SCALE_MIN, READABILITY_FONT_SCALE_TARGET, t)
+
+
+func _readable_font_size(base_size: int, min_size := 0, max_size := 96) -> int:
+	var scaled := int(roundf(float(base_size) * _readability_font_scale()))
+	if min_size > 0:
+		scaled = maxi(scaled, min_size)
+	if max_size > 0:
+		scaled = mini(scaled, max_size)
+	return scaled
+
+
 func _add_text_action_block(parent: Control, title: String, description: String, action_text := "Выбрать", button_name := "") -> Button:
 	var block := VBoxContainer.new()
 	block.name = "%sBlock" % button_name if button_name != "" else "TextActionBlock"
@@ -7800,7 +7833,7 @@ func _add_text_action_block(parent: Control, title: String, description: String,
 	var title_label := Label.new()
 	title_label.text = title
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 17)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(17))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	text_box.add_child(title_label)
 
@@ -7808,7 +7841,7 @@ func _add_text_action_block(parent: Control, title: String, description: String,
 		var desc_label := Label.new()
 		desc_label.text = description
 		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc_label.add_theme_font_size_override("font_size", 13)
+		desc_label.add_theme_font_size_override("font_size", _readable_font_size(13))
 		desc_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.76, 1.0))
 		text_box.add_child(desc_label)
 
@@ -7826,7 +7859,7 @@ func _make_compact_button(text: String) -> Button:
 	button.text = text
 	button.custom_minimum_size = COMPACT_UTILITY_BUTTON_SIZE
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_size_override("font_size", 18)
+	button.add_theme_font_size_override("font_size", _readable_font_size(18))
 	_apply_compact_button_theme(button)
 	return button
 
@@ -7844,7 +7877,7 @@ func _set_action_button_size(button: Button, width := STANDARD_ACTION_BUTTON_WID
 
 func _style_button_control(button: Button) -> void:
 	_apply_fantasy_button_theme(button)
-	button.add_theme_font_size_override("font_size", 16)
+	button.add_theme_font_size_override("font_size", _readable_font_size(16))
 
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
@@ -8152,7 +8185,7 @@ func _make_section_label(text: String) -> Label:
 	var label := Label.new()
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 18)
+	label.add_theme_font_size_override("font_size", _readable_font_size(18))
 	label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	return label
 
@@ -8431,14 +8464,14 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 	if title_label != null:
 		title_label.name = "EventTitle"
 		title_label.custom_minimum_size = Vector2(content_size.x, 38.0 if compact else 52.0)
-		title_label.add_theme_font_size_override("font_size", 30 if compact else 36)
+		title_label.add_theme_font_size_override("font_size", _readable_font_size(30 if compact else 36, 0, 48))
 	var story_label := box.find_child("MenuSubtitle_event", false, false) as Label
 	if story_label != null:
 		story_label.name = "EventStory"
 		story_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		story_label.custom_minimum_size = Vector2(content_size.x, 58.0 if compact else 92.0)
 		story_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		story_label.add_theme_font_size_override("font_size", 14 if compact else 17)
+		story_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact else 17, 0, 24))
 
 
 # SCRUM-573: Улучшение @2K. Панель экрана улучшения — per-слот overhaul_2k-рамка
@@ -8511,7 +8544,7 @@ func _apply_level_up_later_button_theme(button: Button, display_size: Vector2) -
 	button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.60, 1.0))
 	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_font_size_override("font_size", maxi(10, int(roundf(22.0 * display_size.y / LU_LATER_BUTTON_2K.size.y))))
+	button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(roundf(22.0 * display_size.y / LU_LATER_BUTTON_2K.size.y))), 0, 22))
 	var label_safe := Rect2(Vector2(54.0, 28.0), Vector2(192.0, 26.0))
 	button.set_meta("level_up_later_content_rect", label_safe)
 
@@ -8647,7 +8680,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 14 if compact_attribute else 17)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact_attribute else 17, 0, 24))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(title_label)
@@ -8659,7 +8692,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	desc_label.add_theme_font_size_override("font_size", 11 if compact_attribute else 13)
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact_attribute else 13, 0, 20))
 	desc_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.76, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(desc_label)
@@ -8668,7 +8701,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	action_label.name = "%sAction" % button.name
 	action_label.text = action_text
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", 12 if compact_attribute else 15)
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact_attribute else 15, 0, 14))
 	action_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(action_label)
@@ -8863,7 +8896,7 @@ func _make_skill_tree_popup(parent: Control, popup_name: String, title: String, 
 	heading.name = "%sTitle" % popup_name
 	heading.text = title
 	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	heading.add_theme_font_size_override("font_size", 22)
+	heading.add_theme_font_size_override("font_size", _readable_font_size(22))
 	heading.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	col.add_child(heading)
 	var text := Label.new()
@@ -8871,7 +8904,7 @@ func _make_skill_tree_popup(parent: Control, popup_name: String, title: String, 
 	text.text = body
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	text.add_theme_font_size_override("font_size", 16)
+	text.add_theme_font_size_override("font_size", _readable_font_size(16))
 	text.add_theme_color_override("font_color", Color(0.86, 0.94, 0.84, 0.96))
 	col.add_child(text)
 	var close_button := Button.new()
@@ -8880,7 +8913,7 @@ func _make_skill_tree_popup(parent: Control, popup_name: String, title: String, 
 	close_button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	close_button.focus_mode = Control.FOCUS_ALL
 	close_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	close_button.add_theme_font_size_override("font_size", 15)
+	close_button.add_theme_font_size_override("font_size", _readable_font_size(15))
 	close_button.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62, 1.0))
 	_apply_skill_tree_text_button_theme(close_button, _skill_tree_class_select_style)
 	close_button.pressed.connect(func() -> void:
@@ -9091,7 +9124,7 @@ func _create_combat_timer_panel(root: Control) -> void:
 		asc_text.text = ROMAN_NUMERALS[clampi(game.selected_ascension_level, 0, game.META_PROGRESSION.MAX_ASCENSION_LEVEL)]  # SCRUM-622: клампить по динамическому капу (5), не хардкод 10
 		asc_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		asc_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		asc_text.add_theme_font_size_override("font_size", 24)
+		asc_text.add_theme_font_size_override("font_size", _readable_font_size(24))
 		asc_text.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 1.0))
 		asc_badge.add_child(asc_text)
 
@@ -9112,7 +9145,7 @@ func _create_combat_timer_panel(root: Control) -> void:
 	label.name = "CombatTimerLabel"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 30)
+	label.add_theme_font_size_override("font_size", _readable_font_size(30))
 	label.add_theme_color_override("font_color", Color(0.96, 0.92, 0.74, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	label.add_theme_constant_override("outline_size", 4)
@@ -9217,17 +9250,21 @@ func _apply_chud_card_content_scale(card: PanelContainer, scale: float) -> void:
 		var box := node as BoxContainer
 		if box != null:
 			box.add_theme_constant_override("separation", 1)
-	var icon_size := maxf(10.0, roundf(22.0 * scale))
+	var compact_ramp := clampf((scale - 0.50) / 0.25, 0.0, 1.0)
+	var icon_base := lerpf(22.0, 30.0, compact_ramp)
+	var label_base := lerpf(14.0, 19.0, compact_ramp)
+	var bar_base := lerpf(6.0, 8.0, compact_ramp)
+	var icon_size := maxf(10.0, roundf(icon_base * scale))
 	for node in card.find_children("*", "TextureRect", true, false):
 		var icon := node as TextureRect
 		if icon != null:
 			icon.custom_minimum_size = Vector2(icon_size, icon_size)
-	var label_size := maxi(8, int(roundf(14.0 * scale)))
+	var label_size := maxi(8, int(roundf(label_base * scale)))
 	for node in card.find_children("*", "Label", true, false):
 		var label := node as Label
 		if label != null:
 			label.add_theme_font_size_override("font_size", label_size)
-	var bar_height := maxf(3.0, roundf(6.0 * scale))
+	var bar_height := maxf(3.0, roundf(bar_base * scale))
 	for node in card.find_children("*", "ProgressBar", true, false):
 		var bar := node as ProgressBar
 		if bar != null:
@@ -9257,7 +9294,7 @@ func _layout_combat_hud(root: Control) -> void:
 		timer_panel.set_meta("scrum666_content_zone", _scrum666_scaled_rect(SCRUM666_CHUD_TIMER_ZONE_2K, scale))
 		timer_panel.add_theme_stylebox_override("panel", _timer_panel_style(bool(game.timer_label != null and game.timer_label.get_meta("alarm_active", false)), timer_rect.size, timer_content))
 		if game.timer_label != null:
-			game.timer_label.add_theme_font_size_override("font_size", maxi(16, int(roundf(34.0 * scale))))
+			game.timer_label.add_theme_font_size_override("font_size", maxi(18, int(roundf(40.0 * scale))))
 
 	var asc_badge := root.find_child("AscensionHudBadge", true, false) as PanelContainer
 	if asc_badge != null:
@@ -9267,6 +9304,9 @@ func _layout_combat_hud(root: Control) -> void:
 		asc_badge.set_meta("scrum666_content_margins", asc_content)
 		asc_badge.set_meta("scrum666_content_zone", _scrum666_scaled_rect(SCRUM666_CHUD_ASCENSION_ZONE_2K, scale))
 		asc_badge.add_theme_stylebox_override("panel", _ascension_badge_style(asc_rect.size, asc_content))
+		var asc_label := asc_badge.find_child("AscensionHudLabel", true, false) as Label
+		if asc_label != null:
+			asc_label.add_theme_font_size_override("font_size", maxi(12, int(roundf(28.0 * scale))))
 
 
 func _refresh_artifact_hud_row() -> void:
@@ -9516,7 +9556,7 @@ func _create_menu_run_hud() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
-	_create_resource_hud_panel(root, Vector2(18, 16))
+	_create_resource_hud_panel(root, Vector2(18, 10))
 	_update_hud()
 	_update_level_up_button()
 
@@ -9622,7 +9662,7 @@ func _make_character_stat_chip(entry: Dictionary) -> Control:
 	value.clip_text = true
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	value.add_theme_font_size_override("font_size", 15)
+	value.add_theme_font_size_override("font_size", _readable_font_size(15))
 	value.add_theme_color_override("font_color", _hud_stat_value_color(entry))
 	line.add_child(value)
 	return chip
@@ -9659,7 +9699,7 @@ func _add_hud_resource_card(parent: Control, icon_id: String, label_text: String
 
 	var value_label := Label.new()
 	value_label.name = "Hud%sLabel" % label_text
-	value_label.add_theme_font_size_override("font_size", 14)
+	value_label.add_theme_font_size_override("font_size", _readable_font_size(14))
 	value_label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
 	value_box.add_child(value_label)
 	if icon_id == "hp":
@@ -9701,7 +9741,7 @@ func _add_hud_money_card(parent: Control) -> void:
 	game.money_label = Label.new()
 	game.money_label.name = "HudMoneyLabel"
 	game.money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	game.money_label.add_theme_font_size_override("font_size", 18)
+	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
 	game.money_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
 	line.add_child(game.money_label)
 

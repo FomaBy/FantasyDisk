@@ -167,6 +167,11 @@ const ICON_COLORS := {
 	"money": Color(1.0, 0.78, 0.22, 1.0),
 }
 
+const READABILITY_SMALL_ICON_LIMIT := 72.0
+const READABILITY_MEDIUM_ICON_LIMIT := 100.0
+const READABILITY_SMALL_ICON_SCALE := 1.45
+const READABILITY_MEDIUM_ICON_SCALE := 1.20
+
 static var _texture_cache := {}
 
 
@@ -194,12 +199,13 @@ static func texture_for(icon_id: String) -> Texture2D:
 
 
 static func make_icon(icon_id: String, size: Vector2 = Vector2(42, 42)) -> Control:
+	var display_size := _readable_icon_size(size)
 	var texture := texture_for(icon_id)
 	if texture != null:
 		var texture_rect := TextureRect.new()
 		texture_rect.name = "UIIcon_%s" % icon_id
 		texture_rect.texture = texture
-		texture_rect.custom_minimum_size = size
+		texture_rect.custom_minimum_size = display_size
 		texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -207,7 +213,7 @@ static func make_icon(icon_id: String, size: Vector2 = Vector2(42, 42)) -> Contr
 
 	var panel := PanelContainer.new()
 	panel.name = "UIIcon_%s" % icon_id
-	panel.custom_minimum_size = size
+	panel.custom_minimum_size = display_size
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_theme_stylebox_override("panel", _fallback_style(icon_id))
 
@@ -215,10 +221,21 @@ static func make_icon(icon_id: String, size: Vector2 = Vector2(42, 42)) -> Contr
 	label.text = str(ICON_ABBREVIATIONS.get(icon_id, icon_id.substr(0, min(3, icon_id.length())).to_upper()))
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 13 if size.x >= 38.0 else 10)
+	label.add_theme_font_size_override("font_size", 18 if display_size.x >= 55.0 else 14)
 	label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
 	panel.add_child(label)
 	return panel
+
+
+static func _readable_icon_size(size: Vector2) -> Vector2:
+	var max_dim := maxf(size.x, size.y)
+	if max_dim <= 0.0:
+		return size
+	if max_dim <= READABILITY_SMALL_ICON_LIMIT:
+		return Vector2(roundf(size.x * READABILITY_SMALL_ICON_SCALE), roundf(size.y * READABILITY_SMALL_ICON_SCALE))
+	if max_dim <= READABILITY_MEDIUM_ICON_LIMIT:
+		return Vector2(roundf(size.x * READABILITY_MEDIUM_ICON_SCALE), roundf(size.y * READABILITY_MEDIUM_ICON_SCALE))
+	return size
 
 
 static func _fallback_style(icon_id: String) -> StyleBoxFlat:

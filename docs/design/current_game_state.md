@@ -1588,6 +1588,16 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
 ## Документация Будущих Изменений
 
+## SCRUM-692 UI Readability State
+
+Runtime player-facing UI now has a readability scale pass: common font overrides
+grow by roughly 40-50% where frame content zones allow it, with tighter caps on
+small safe-zone controls. Common runtime icons from `UIIconRegistry` also scale
+up for small/medium requests, while reward cards and compact HUD areas use
+fit-sized requests so content remains inside decorative frames. Verified target
+sizes include `1536x864`, `1920x1080`, and `2560x1440` via the UI no-overlap
+matrix; screenshot evidence is under `build/qa/design_review/`.
+
 Начиная с 2026-06-10, все будущие задачи должны обновлять документацию вместе с изменениями:
 
 - новая механика, экран, маршрут, пауза или UX: обновить этот файл и `docs/design/fantasydisk_design_brief.md`;

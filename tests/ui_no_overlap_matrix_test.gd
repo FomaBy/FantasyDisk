@@ -4,6 +4,7 @@ const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const VIEWPORT_SIZES := [
 	Vector2i(1152, 648),
 	Vector2i(1280, 720),
+	Vector2i(1536, 864),
 	Vector2i(1600, 900),
 	Vector2i(1920, 1080),
 	Vector2i(2560, 1440),

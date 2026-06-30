@@ -4,6 +4,30 @@
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
+## SCRUM-692 Runtime Readability Pass
+
+SCRUM-692 increases runtime UI readability without changing gameplay, economy,
+progression, save data, or generated art. `scripts/ui_screens.gd` now routes
+player-facing font overrides through a viewport-aware scale: about `1.32x` on
+short `648p` layouts and `1.45x` at `864p+`, with per-screen caps where a larger
+font would leave a frame content zone. Tight safe-zone exceptions include Codex
+tabs, rebind conflict actions, combat title banner, Level Up later button,
+economy-card action labels, reward cards, and compact combat HUD labels.
+
+`scripts/ui_icon_registry.gd` scales common icon requests up by `1.45x` through
+`72px` and `1.20x` through `100px`; larger authored icons stay at source size.
+Screens with narrow card safe-zones request smaller fit icons instead of
+allowing content to cover frame ornament. Menu HUD is shifted slightly upward on
+720p screens so the enlarged HUD strip does not overlap shop headers.
+
+Acceptance coverage: `tests/ui_no_overlap_matrix_test.gd` includes `1536x864`,
+`1920x1080`, and `2560x1440`; required smoke tests are
+`runtime_smoke_ui_test.gd`, `runtime_smoke_test.gd`, and
+`ui_icon_registry_smoke_test.gd`. Screenshot evidence is written by
+`tests/design_review_screenshot_capture_test.gd` to
+`build/qa/design_review/` for Hero Select, Level Up, Shop, Codex, Settings, and
+Combat HUD at `1280x720`, `1920x1080`, and `2560x1440`.
+
 ## Shop UI
 
 Магазин должен ощущаться частью shop background, а не отдельным default modal window. Предметы располагаются в центральной свободной зоне canonical backdrop `assets/backgrounds/ui/ui_backdrop_merchant_archive.png`.
