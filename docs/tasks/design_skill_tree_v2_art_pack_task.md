@@ -174,6 +174,21 @@ Labels: foma, design, claude
 коллизии single-instance (правило scheduled-run-vs-live-editor-collision); `.import` написаны по
 проверенному texture-шаблону (Godot до-импортит локально, uid стабильны).
 
+## QA-Вердикт (recheck, 2026-06-30)
+
+Статус: PASSED
+
+Проверено read-only на `dev`/`origin/dev` после коммита `e95700da`:
+- `bg_canvas.png` и `node_keystone_allocated/available/locked.png` больше не opaque: углы alpha=0,
+  прозрачность `bg_canvas=28.64%`, keystone `55.60% / 47.63% / 43.99%`;
+- PNG + `.import` пары валидны: 28 PNG, 28 `.import`, missing/invalid/extra = 0;
+- native-size spec заполнена: source size, aspect, 1080p target `x0.75`, allowed scaling mode;
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASS
+  на основном QA-прогоне; независимый subagent подтвердил asset-specific checks, дефектов SCRUM-697
+  не нашёл.
+
+Вердикт: PASSED. Disk cleanup: QA worktree `/tmp/FantasyDisk-QA-SCRUM-697-ShstFW` будет удалён после push.
+
 ## QA-Вердикт
 
 Статус: FAILED (2026-06-30)
