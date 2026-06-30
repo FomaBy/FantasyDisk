@@ -1,7 +1,7 @@
 # Refactor Wave: ui_screens Runtime-Only Monolith Audit
 
 Jira: SCRUM-716
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / UI runtime quality
 Контур: Claude
@@ -48,3 +48,42 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/dark_fantas
 ## Hard UI Rule
 
 Content may never overlap decorative frame texture/ornament. Text, icons, buttons, cards and interactive controls must stay inside the real inner content zones. If a UI visual/layout change is needed, stop this task and create a proper UI-director handoff.
+
+## Результат (Claude backend, 2026-06-30)
+
+Ветка/коммит: `dev` @ `be3e2af7` (origin/dev, ancestor подтверждён).
+
+### Runtime UI-аудит (записан)
+- `ui_screens.gd` — крупнейший runtime-файл (был 10077 строк, 383 функции).
+  В целом ХОРОШО факторизован: общие theme/style-хелперы вынесены
+  (`_apply_fantasy_button_theme`, `_button_state_style`, `_character_card_style`),
+  кнопки/карточки строятся через них, дин-диспетчеризации по строке-имени нет
+  (только локальные Callable-переменные). Визуальных багов/оверлапов нет
+  (no-overlap/theme gates зелёные на baseline).
+- **Concrete-находка: мёртвый код.** 36 приватных функций имеют НОЛЬ ссылок по
+  всему репозиторию (.gd/.tscn/.tres/.godot) — осиротевшие builder'ы прошлых
+  редизайнов (HUD: `_create_artifact_hud_row`/`_create_character_stats_hud`;
+  hero-select hs4/pixellab: `_hs4_place`/`_hs4_pixellab_rect`/...; codex/progression
+  style-хелперы; `_make_section_label`, `_format_artifact_list`, `_ornate_frame_style`
+  и т.д.).
+
+### Изменения (locked path, без визуала/геометрии — per Hard UI Rule)
+- `scripts/ui_screens.gd` — удалены ровно эти 36 leaf-dead функций (−460 строк,
+  0 добавлений). Подтверждено: (1) два независимых прохода анализа ссылок,
+  (2) отсутствие динамического `call("_name")`, (3) функции не ссылаются друг на
+  друга → ни каскада новых поломок, ни висячих ссылок. Поведение/арт/раскладка/
+  рамки не тронуты — удалён только недостижимый код.
+
+### Проверки (semaphore, GODOT_BIN=fdengine, slots=1) — все RC=0 (после удаления)
+- `tests/runtime_smoke_ui_test.gd` → passed.
+- `tests/ui_no_overlap_matrix_test.gd` → passed (контент не залезает на рамку).
+- `tests/dark_fantasy_ui_theme_test.gd` → passed.
+- `tests/runtime_smoke_test.gd` → passed.
+
+### Заметка для будущих волн (не в этом тикете)
+Удаление leaf-dead могло осиротить ВТОРОЙ слой хелперов (вызывавшихся только из
+удалённых). Повторный dead-scan на следующей UI-волне добьёт каскад — не делал
+здесь, чтобы держать диф контролируемым и низкорисковым на hot-файле.
+
+Disk cleanup: рабочий worktree `/private/tmp/fsd_wt_scrum716` удалён после пуша;
+бэкап `/tmp/ui_screens_backup.gd` — временный, можно удалить.
