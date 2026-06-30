@@ -3133,4 +3133,25 @@
   "status": null,
   "desc_hash": null
  }
+,
+ "codex_design_character_redraw_pixellab_berserk_240_250_task.md": {
+  "key": "SCRUM-703",
+  "status": "К выполнению",
+  "desc_hash": "ef2f2a43591dc8aa588c164608f0fa21"
+ },
+ "codex_design_character_redraw_pixellab_dark_mage_240_250_task.md": {
+  "key": "SCRUM-704",
+  "status": "К выполнению",
+  "desc_hash": "df2ad5461fa00c7d9742e6aa7bf16579"
+ },
+ "codex_design_character_redraw_pixellab_doctor_240_250_task.md": {
+  "key": "SCRUM-705",
+  "status": "К выполнению",
+  "desc_hash": "18392b4b3a471cf459bf732a5a02cac1"
+ },
+ "codex_design_character_redraw_pixellab_guitarist_240_250_task.md": {
+  "key": "SCRUM-706",
+  "status": "К выполнению",
+  "desc_hash": "58d4f39f96d413e41296850f2e2f7ce4"
+ }
 }
