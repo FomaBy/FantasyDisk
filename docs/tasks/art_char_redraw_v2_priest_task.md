@@ -140,3 +140,29 @@ SpriteFrames, Godot import/runtime hookup и animation/runtime smoke. Jira
 возвращена в `К выполнению`; Design claim снят, stale `В работе` owner не
 оставлен. Для очереди это должно идти как Animator/Codex follow-up, а не как
 новая Design/Codex генерация.
+
+## Blocker Refresh — Codex Design 2026-06-30
+
+SCRUM-431 был повторно claim-first взят `codex-design-board-watcher` после PM
+readiness/unhold. Текущая Jira readiness уже требует не acceptance старого
+Designer 2 source handoff, а обязательный PixelLab character generation +
+8-direction idle/move source pack для `priest`.
+
+Повторная проверка показала, что PixelLab MCP bridge виден через локальный
+Codex config и отдаёт `tools/list` (`49` tools, включая `list_characters`,
+`create_character`, `animate_character`), но реальный вызов
+`list_characters(tags="priest")` возвращает:
+
+`401: Missing Authorization header. Please configure your MCP client with 'Authorization: Bearer YOUR_API_TOKEN'`.
+
+Дополнительное evidence: `mcp-remote` stderr указывает, что custom header
+настроен как `Authorization: ${AUTH_HEADER}`, но environment variable
+`AUTH_HEADER` не задана. Без валидного PixelLab auth нельзя получить или создать
+обязательный PixelLab source/motion pack для `priest`, а активные skills
+запрещают fallback на legacy OpenAI/manual assets без явного Jira override.
+
+Задача возвращена в Jira `К выполнению` с labels `blocked` и
+`pixellab-blocked`; stale `В работе` owner не оставлен. Unblock: передать Codex
+runtime переменную `AUTH_HEADER` с валидным `Bearer ...` для PixelLab MCP либо
+добавить явный Jira override на non-PixelLab path / повторное использование
+старого Design-source handoff.
