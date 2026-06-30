@@ -50,3 +50,19 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/route_chest
 ## Process Notes
 
 Before starting, Claude must sync `dev`, check dirty tree and verify no active owner overlaps the locked paths. Do not touch unrelated WIP. After completion: Jira -> local mirror -> checks -> intentional commit -> push.
+
+## QA-Вердикт
+Статус: PASSED
+
+Проверял claude-qa (2026-06-30) на чистом изолированном worktree от origin/dev HEAD, fdengine-семафор slots=1 (анти-OOM на фоне живого флота). Коммит SCRUM-718 `5df51bdb` — ancestor origin/dev подтверждён.
+
+Scope review: коммит **test-only** (только `tests/route_generation_reachability_test.gd` + .uid, 98 строк) — `route_map_screen.gd` / `run_autosave.gd` / node rewards НЕ тронуты → нулевой риск. Новый тест: на 24 свежих маршрутах валидирует структуру (N рядов активностей + boss-ряд), forward-рёбра в диапазоне следующего ряда (нет тупиков/out-of-range) и BFS-достижимость каждого узла от ряда 0 + достижимость босса — ловит регрессию связей с риском софт-лока. Использует публичный API (`main._generate_route`, `main.ROUTE_STEPS_TO_BOSS`).
+
+Гейты (все RC=0):
+- `res://tests/route_generation_reachability_test.gd` → passed (24 routes, 10 rows + boss).
+- `res://tests/run_autosave_persistence_test.gd` → passed (round-trip/atomic/corrupt/version/clear).
+- `res://tests/route_node_preview_test.gd` → PASSED.
+- `res://tests/route_node_threat_badge_test.gd` → PASSED (19 badges; battle/chest/elite_battle).
+- `res://tests/route_chest_artifact_test.gd` → PASSED.
+
+→ PASSED.
