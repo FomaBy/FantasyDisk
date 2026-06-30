@@ -1,7 +1,7 @@
 # Refactor Wave: UI Theme Paths, Icons And Pause Stats Helpers
 
 Jira: SCRUM-717
-Статус: new
+Статус: done
 Приоритет: P2
 Роль: Back-end / UI runtime quality
 Контур: Claude
