@@ -240,7 +240,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Лечение через урон.",
 		"strengths": "восстановление, яд, стабильность.",
 		"weaknesses": "низкий взрывной урон.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/doctor/doctor_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/doctor_pixellab/doctor_idle_south.png",
 	},
 	"chemist": {
 		"id": "chemist", "title": "Химик",

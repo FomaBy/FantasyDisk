@@ -5,6 +5,15 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-425: PixelLab Doctor 8-direction character with directional movement.
+  Generated v3 PixelLab plague-doctor character
+  (`c3d5ea3d-3b70-4154-b3c4-420d386f550a`), stored source rotations + walk frames
+  under `assets/sprites/characters/pixellab/doctor/`, normalized transparent
+  `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/doctor_pixellab/`, and rebuilt
+  `doctor_spriteframes.tres` with `idle_<direction>` plus 6-frame looping
+  `move_<direction>` / `walk_<direction>` for all 8 directions. Doctor now moves
+  with directional walk in-game and rotates clockwise in Hero Select.
 - PixelLab Guitarist static 8-direction character rotations: pulled existing
   PixelLab character `d327e6c2-a3fb-44b3-b02a-965a0ce52e7b`, stored source
   rotations under `assets/sprites/characters/pixellab/guitarist/`, normalized

@@ -465,6 +465,22 @@ Hero Select v4 keeps `HS4Portrait`, but for Berserk it cycles the same
 directional walk rows clockwise in the portrait safe zone. Body attack animation
 remains disabled/absent by current weapon-owned combat visual scope.
 
+2026-06-30 SCRUM-425 PixelLab Doctor integration replaces the legacy Doctor
+full-frame art with an 8-direction PixelLab plague-doctor pack (hooded cream/teal
+robe, brown leather bird-beak mask, vials). PixelLab character
+`c3d5ea3d-3b70-4154-b3c4-420d386f550a` (v3, `88x88` source) source frames and
+`manifest.json` are stored under `assets/sprites/characters/pixellab/doctor/`,
+normalized transparent `512x512` runtime frames under
+`assets/sprites/characters/full_frame/doctor_pixellab/`, and
+`assets/sprites/characters/doctor_spriteframes.tres` now exposes `idle_<direction>`
+plus 6-frame looping `move_<direction>` / `walk_<direction>` for all 8 directions
+(`walking-6-frames` template). `scripts/progression_data_characters.gd` doctor
+`sprite_path` points at `full_frame/doctor_pixellab/doctor_idle_south.png`; the
+generic `scripts/player.gd` directional resolver and `scripts/ui_screens.gd` Hero
+Select clockwise rotation pick up the directional rows automatically. Legacy
+`assets/sprites/characters/full_frame/doctor/` and `doctor.png` remain
+history/fallback.
+
 SCRUM-442 подготовил узкий Berserk v3 single-sprite candidate после отмены
 широкого character v2 подхода: новый чуть более мультяшный unarmed barbarian
 source в `docs/design/references/characters_v3/berserk/`, normalized game

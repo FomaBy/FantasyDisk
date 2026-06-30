@@ -13,6 +13,7 @@ func _initialize() -> void:
 		await _assert_layout_at_size(viewport_size)
 	await _assert_directional_preview("berserk")
 	await _assert_directional_preview("dark_mage")
+	await _assert_directional_preview("doctor")
 	print("Hero Select PixelLab layout smoke test passed.")
 	quit(0)
 
