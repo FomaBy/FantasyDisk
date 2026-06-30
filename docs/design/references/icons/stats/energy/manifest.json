@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "stats",
+  "id": "energy",
+  "runtime_target": "stat_energy.png",
+  "source_image": "energy_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: an amber mana core orb wrapped by tiny dragon lightning, radiant stamina power.",
+  "created_at": "2026-06-30T08:36:46.459077+00:00",
+  "alpha_clean_image": "energy_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/stats/stat_energy.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "db8816cc0c8711128f1817615d8d58af86040f104da5779f8d46e44a7537241b",
+  "alpha_nonzero_pixels": 18887,
+  "content_bbox": [
+    51,
+    36,
+    205,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:15.361001+00:00"
+}

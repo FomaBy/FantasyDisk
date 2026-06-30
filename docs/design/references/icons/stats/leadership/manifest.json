@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "stats",
+  "id": "leadership",
+  "runtime_target": "stat_leadership.png",
+  "source_image": "leadership_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a golden dragon-banner crown over crossed command batons, noble command aura.",
+  "created_at": "2026-06-30T08:36:46.460081+00:00",
+  "alpha_clean_image": "leadership_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/stats/stat_leadership.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "ac8228cf157b01e22d1fc1ae68a7bbf6f7e1b640fb80dc7c9c646858571b681c",
+  "alpha_nonzero_pixels": 15552,
+  "content_bbox": [
+    54,
+    36,
+    202,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:17.089696+00:00"
+}

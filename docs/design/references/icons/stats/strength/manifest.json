@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "stats",
+  "id": "strength",
+  "runtime_target": "stat_strength.png",
+  "source_image": "strength_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a heavy cracked crimson gauntlet gripping a small dragon-scale iron weight, physical might, warm red metal glow.",
+  "created_at": "2026-06-30T08:36:46.457864+00:00",
+  "alpha_clean_image": "strength_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/stats/stat_strength.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "b77065cb0b60a6023cfa1081da83c209fe4115edfbc4d0f14d3b4e3ad8d36491",
+  "alpha_nonzero_pixels": 16750,
+  "content_bbox": [
+    62,
+    36,
+    194,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:12.870671+00:00"
+}

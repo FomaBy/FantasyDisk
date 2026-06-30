@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "dot_speed",
+  "runtime_target": "attr_dot_speed.png",
+  "source_image": "dot_speed_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a tiny hourglass filled with green venom sparks and fast ticking particles, damage tick speed.",
+  "created_at": "2026-06-30T08:36:46.465590+00:00",
+  "alpha_clean_image": "dot_speed_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_dot_speed.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "519fbea85a9f5a6b99d04009d65e8bb5c1c930d6d02e2d6703676c72bf8be548",
+  "alpha_nonzero_pixels": 11933,
+  "content_bbox": [
+    69,
+    36,
+    187,
+    219
+  ],
+  "postprocessed_at": "2026-06-30T09:11:29.549353+00:00"
+}

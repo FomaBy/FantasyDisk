@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "regeneration",
+  "runtime_target": "attr_regeneration.png",
+  "source_image": "regeneration_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: green healing leaves spiraling around a small life crystal, steady recovery over time.",
+  "created_at": "2026-06-30T08:36:46.464348+00:00",
+  "alpha_clean_image": "regeneration_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_regeneration.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "86073297cf999212c2e7bd0d9daef64ea0617d1a831cc9c7cc7ae98bead00e57",
+  "alpha_nonzero_pixels": 17932,
+  "content_bbox": [
+    59,
+    36,
+    196,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:27.041932+00:00"
+}
