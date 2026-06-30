@@ -1,6 +1,6 @@
 # UX: Escape в забеге открывает доску персонажа с левым меню
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Back-end (UI)
 Контур: Codex
@@ -85,3 +85,10 @@ Locked paths: scripts/main.gd; scripts/ui_screens.gd; scripts/pause_stats_menu.g
 
 Disk cleanup: none created; existing main-checkout `.godot/` cache and unrelated
 pre-existing `.import` sidecars were left untouched.
+
+## QA-Вердикт: PASSED
+2026-06-30, claude-qa. Проверено на чистом origin/dev (worktree @ 23d820f5, фикс a2351bb5 — merge-base подтверждён).
+- runtime_smoke_ui_test.gd — PASS
+- ui_no_overlap_matrix_test.gd — PASS
+- runtime_smoke_test.gd — PASS
+Active-run Esc открывает доску персонажа (PauseStatsMenuRoot) с левыми контролами, без старого RunPauseMenuRoot; пауза/таймер/позиция игрока/run state сохранены; Settings↔Back и Resume корректны; safe-zone OK; docs обновлены. Jira → Готово.
