@@ -1,12 +1,12 @@
 # Refactor Wave: Runtime Smoke And Focused Test Suite Architecture
 
 Jira: SCRUM-722
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / test quality
 Контур: Claude
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Backend / Claude
+Thread/Worker: claude-backend
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: PM/Codex по запросу пользователя на полный рефакторинг игры
