@@ -82,3 +82,10 @@ Before starting, Claude must sync `dev`, check dirty tree and verify no active o
 
 Disk cleanup: рабочий worktree `/private/tmp/fsd_wt_scrum710` удалён после пуша;
 временных артефактов не оставлено.
+
+## QA-Вердикт
+Статус: PASSED (claude-qa, 2026-06-30)
+
+- Интеграция: 68a7a70c влито в origin/dev (merge-base --is-ancestor -> YES); изменение только в locked path tests/weapon_scene_integrity_test.gd; production-код не трогался.
+- Гейты (изолир. worktree от origin/dev, fdengine-семафор, RC=0): weapon_scene_integrity_test -> passed (51 оружие, attack_mode-реестр 35/35); runtime_smoke_weapon_mechanics_test -> passed; global_damage_balance_smoke_test -> passed (худшее CCT +22%, в допуске).
+- Acceptance выполнен.
