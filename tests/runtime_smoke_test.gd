@@ -50,6 +50,8 @@ const LEVEL_UP_LATER_HOVER_TEXTURE := "res://assets/sprites/ui/frames/level_up_s
 const LEVEL_UP_LATER_PRESSED_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_pressed.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
+# SCRUM-792 (supersedes SCRUM-448 for Settings v3): PixelLab 9-slice фрейм-семья настроек.
+const SETTINGS_V3_TAB_SWITCHER_TEXTURE := "res://assets/sprites/ui/frames/settings_v3/ui_frame_settings_v3_tab_switcher.png"
 # SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
 # нарисованы 1:1 под слот (CHUD_*_2K) build_ui_2k_frame_kit.py → резкий орнамент.
 const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png"
@@ -5381,8 +5383,8 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		_fail("Expected settings screen to use the SettingsTabSwitcher frame panel.")
 		return
 	var tab_switcher_frame_path := _stylebox_texture_path(tab_switcher_frame.get_theme_stylebox("panel"))
-	if tab_switcher_frame_path != MINIMAL_FIELD_TEXTURE:
-		_fail("Expected settings screen to use the SCRUM-448 minimal field switcher texture, got %s." % tab_switcher_frame_path)
+	if tab_switcher_frame_path != SETTINGS_V3_TAB_SWITCHER_TEXTURE:
+		_fail("Expected settings screen to use the SCRUM-792 v3 tab switcher texture, got %s." % tab_switcher_frame_path)
 		return
 	var switcher_rect := tab_switcher.get_global_rect()
 	var base_size := Vector2(616.0, 286.0)

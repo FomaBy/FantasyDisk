@@ -95,14 +95,48 @@ const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
 const SETTINGS_RETURN_MAIN_MENU := "main_menu"
 const SETTINGS_RETURN_RUN_PAUSE := "run_pause"
+# SCRUM-792: Settings v3 — runtime-врезка PixelLab 9-slice фрейм-семьи (handoff SCRUM-694).
+# Production = только PixelLab-ассеты (не OpenAI mockups). Геометрия live-рамок НЕ меняется
+# (layout.json validated): source-margins пересчитаны так, что display-rects байт-в-байт
+# совпадают со старой minimal-семьёй (см. _settings_v2_content_panel_rect / margins helper).
+const SETTINGS_V3_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v3/"
+const SETTINGS_V3_MAIN_MODAL_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_main_modal.png"
+const SETTINGS_V3_TAB_SWITCHER_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_tab_switcher.png"
+const SETTINGS_V3_CONTENT_PANEL_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_content_panel.png"
+const SETTINGS_V3_FIELD_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_inset_field.png"
+const SETTINGS_V3_BUTTON_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_action_button.png"
+# 9-slice source-px margins: corner-cell вмещает угловой орнамент (gem+metal), чтобы он не
+# растягивался; центр — плоская тёмная зона (tile). Замерено на доставленном арте.
+const SETTINGS_V3_MAIN_SOURCE_SIZE := Vector2(640.0, 384.0)
+const SETTINGS_V3_MAIN_TEXTURE_MARGINS := Vector4(150.0, 110.0, 150.0, 110.0)
+const SETTINGS_V3_CONTENT_SOURCE_SIZE := Vector2(688.0, 246.0)
+const SETTINGS_V3_CONTENT_TEXTURE_MARGINS := Vector4(140.0, 80.0, 140.0, 78.0)
+const SETTINGS_V3_TAB_SWITCHER_SOURCE_SIZE := Vector2(688.0, 192.0)
+const SETTINGS_V3_TAB_SWITCHER_TEXTURE_MARGINS := Vector4(96.0, 70.0, 96.0, 70.0)
+# Inset-field / action-button рендерятся на мелких контролах (≤72px высотой) — фиксированные
+# display-px margins (не масштабируются от source, иначе 9-slice > высоты контрола).
+const SETTINGS_V3_FIELD_BTN_MARGINS := Vector4(26.0, 20.0, 26.0, 20.0)
+const SETTINGS_V3_FIELD_BTN_CONTENT := Vector4(20.0, 10.0, 20.0, 10.0)
+const SETTINGS_V3_ACTION_BTN_MARGINS := Vector4(30.0, 22.0, 30.0, 22.0)
+const SETTINGS_V3_ACTION_BTN_CONTENT := Vector4(22.0, 12.0, 22.0, 12.0)
+# Per-state тинты для одного базового 9-slice (нет отдельных текстур состояний — handoff).
+const SETTINGS_V3_BTN_STATE_TINTS := {
+	"normal": Color(1.0, 1.0, 1.0, 1.0),
+	"hover": Color(1.16, 1.16, 1.16, 1.0),
+	"pressed": Color(0.86, 0.86, 0.86, 1.0),
+	"focus": Color(1.20, 1.20, 1.20, 1.0),
+	"disabled": Color(0.55, 0.55, 0.58, 0.78),
+}
 const SETTINGS_V2_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v2/"
-const SETTINGS_V2_MAIN_MODAL_PATH := MINIMAL_MODAL_PATH
-const SETTINGS_V2_TAB_SWITCHER_PATH := MINIMAL_FIELD_PATH
-const SETTINGS_V2_SECTION_PANEL_PATH := MINIMAL_PANEL_PATH
-const SETTINGS_V2_CONTROL_ROW_PATH := MINIMAL_FIELD_PATH
-const SETTINGS_V2_MAIN_SOURCE_SIZE := Vector2(986.0, 900.0)
-const SETTINGS_V2_MAIN_TEXTURE_MARGINS := Vector4(46.0, 62.0, 46.0, 58.0)
-const SETTINGS_V2_MAIN_CONTENT_MARGINS := Vector4(72.0, 92.0, 72.0, 84.0)
+const SETTINGS_V2_MAIN_MODAL_PATH := SETTINGS_V3_MAIN_MODAL_PATH
+const SETTINGS_V2_TAB_SWITCHER_PATH := SETTINGS_V3_TAB_SWITCHER_PATH
+const SETTINGS_V2_SECTION_PANEL_PATH := SETTINGS_V3_CONTENT_PANEL_PATH
+const SETTINGS_V2_CONTROL_ROW_PATH := SETTINGS_V3_FIELD_PATH
+const SETTINGS_V2_MAIN_SOURCE_SIZE := SETTINGS_V3_MAIN_SOURCE_SIZE
+# Display-rects сохранены: старое (986x900, margins 72/92) давало content-inset 136px@1080;
+# новое (640x384, margins 47/39) даёт тот же 136-137px (проверено против layout.json).
+const SETTINGS_V2_MAIN_TEXTURE_MARGINS := SETTINGS_V3_MAIN_TEXTURE_MARGINS
+const SETTINGS_V2_MAIN_CONTENT_MARGINS := Vector4(47.0, 39.0, 47.0, 36.0)
 const SETTINGS_TAB_SWITCHER_FRAME_PATH := SETTINGS_V2_TAB_SWITCHER_PATH
 const SETTINGS_TAB_SWITCHER_BASE_SIZE := Vector2(616.0, 286.0)
 const SETTINGS_TAB_SWITCHER_CONTENT := Vector4(58.0, 52.0, 58.0, 48.0)
@@ -3357,8 +3391,11 @@ func _settings_v2_main_modal_style(display_size: Vector2) -> StyleBox:
 	return _global_texture_style(SETTINGS_V2_MAIN_MODAL_PATH, texture_margins, Color.WHITE, content_margins, true)
 
 
-func _settings_v2_content_panel_style() -> StyleBox:
-	return _minimal_frame_style("panel", Color(1.0, 1.0, 1.0, 0.96))
+func _settings_v2_content_panel_style(display_size := Vector2.ZERO) -> StyleBox:
+	# SCRUM-792: v3 PixelLab content-panel 9-slice (был minimal "panel").
+	var size := display_size if display_size.x > 0.0 and display_size.y > 0.0 else SETTINGS_V3_CONTENT_SOURCE_SIZE
+	var margins := _scaled_frame_margins_xy(SETTINGS_V3_CONTENT_SOURCE_SIZE, size, SETTINGS_V3_CONTENT_TEXTURE_MARGINS)
+	return _global_texture_style(SETTINGS_V3_CONTENT_PANEL_PATH, margins, Color(1.0, 1.0, 1.0, 0.98), Vector4.ZERO, true)
 
 
 func _settings_resolution_entries(usable_logical: Vector2i) -> Array[Dictionary]:
@@ -3488,7 +3525,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var content_panel := Panel.new()
 	content_panel.name = "SettingsContentPanel"
 	var content_panel_rect := _settings_v2_content_panel_rect(modal_rect.size)
-	content_panel.add_theme_stylebox_override("panel", _settings_v2_content_panel_style())
+	content_panel.add_theme_stylebox_override("panel", _settings_v2_content_panel_style(content_panel_rect.size))
 	content_panel.clip_contents = true
 	_apply_control_rect(content_panel, content_panel_rect)
 	modal.add_child(content_panel)
@@ -3802,7 +3839,9 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 	var art := Panel.new()
 	art.name = "SettingsTabSwitcherFrame"
 	art.set_anchors_preset(Control.PRESET_FULL_RECT)
-	art.add_theme_stylebox_override("panel", _minimal_frame_style("field"))
+	# SCRUM-792: v3 PixelLab tab-switcher 9-slice (был minimal "field").
+	var switcher_margins := _scaled_frame_margins_xy(SETTINGS_V3_TAB_SWITCHER_SOURCE_SIZE, actual_display_size, SETTINGS_V3_TAB_SWITCHER_TEXTURE_MARGINS)
+	art.add_theme_stylebox_override("panel", _global_texture_style(SETTINGS_V3_TAB_SWITCHER_PATH, switcher_margins, Color.WHITE, Vector4.ZERO, true))
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	switcher.add_child(art)
 
@@ -7856,7 +7895,27 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 	return "back_s"
 
 
+func _settings_v3_button_style(button: Button, state: String) -> StyleBox:
+	# SCRUM-792: маршрутизируем v3 inset_field / action_button 9-slice на settings-узлы
+	# по ТОЧНОМУ имени (zero-leak на другие экраны). Один базовый 9-slice + per-state тинт
+	# (handoff: отдельные текстуры состояний не нужны).
+	if button == null:
+		return null
+	var n := button.name
+	var is_field := n in ["SettingsScreenOption", "SettingsResolutionOption", "SettingsWindowModeOption", "SettingsAimModeOption"] or n.begins_with("BindingButton_")
+	var is_action := n in ["SettingsApplyButton", "SettingsRevertButton", "SettingsBackButton", "SettingsResetAudioButton", "SettingsResetBindingsButton"]
+	if not is_field and not is_action:
+		return null
+	var tint: Color = SETTINGS_V3_BTN_STATE_TINTS.get(state, SETTINGS_V3_BTN_STATE_TINTS["normal"])
+	if is_field:
+		return _global_texture_style(SETTINGS_V3_FIELD_PATH, SETTINGS_V3_FIELD_BTN_MARGINS, tint, SETTINGS_V3_FIELD_BTN_CONTENT, false)
+	return _global_texture_style(SETTINGS_V3_BUTTON_PATH, SETTINGS_V3_ACTION_BTN_MARGINS, tint, SETTINGS_V3_ACTION_BTN_CONTENT, false)
+
+
 func _button_state_style(button: Button, _role: String, state: String, tint := Color.WHITE) -> StyleBox:
+	var settings_v3_style := _settings_v3_button_style(button, state)
+	if settings_v3_style != null:
+		return settings_v3_style
 	var button_type := _button_asset_type(button)
 	if button_type == "combat_level_up_plus":
 		var plus_state := state
@@ -9614,4 +9673,3 @@ func _update_combat_timer(timer_seconds: int) -> void:
 		tween.tween_property(game.timer_label, "scale", Vector2(1.12, 1.12), 0.16).set_trans(Tween.TRANS_QUAD)
 		tween.tween_property(game.timer_label, "scale", Vector2.ONE, 0.32).set_trans(Tween.TRANS_QUAD)
 		game.timer_label.pivot_offset = game.timer_label.size * 0.5
-
