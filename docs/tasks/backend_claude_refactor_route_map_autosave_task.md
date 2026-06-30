@@ -1,7 +1,7 @@
 # Refactor Wave: Route Map, Node Rewards And Autosave Checkpoints
 
 Jira: SCRUM-718
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / route quality
 Контур: Claude
