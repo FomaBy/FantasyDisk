@@ -1,42 +1,28 @@
 ---
 name: fantasydisk-builtin-image-generator
-description: Generate or revise FantasyDisk game art using Codex/ChatGPT built-in image generation instead of the project OpenAI API pipeline. Use when the user explicitly asks to create images without API keys, without OPENAI_API_KEY, through built-in Images, or wants quick concept/reference art for backgrounds, sprites, icons, UI frames, mockups, or dark fantasy assets before formal API-backed integration.
+description: Deprecated FantasyDisk image-generation fallback. Use only to redirect old requests that mention Codex/ChatGPT built-in Images, no API key, image_gen, or the former non-PixelLab workflow. New FantasyDisk characters, objects, UI frames, HUD elements, icons, sprites, mockups, and production assets must be generated through PixelLab MCP via $fantasydisk-asset-generator instead.
 ---
 
 # FantasyDisk Built-in Image Generator
 
-Use this skill when FantasyDisk art should be created with the built-in image generation tool rather than `tools/artgen/generate_asset.py` or the OpenAI API key based pipeline.
+Do not use this skill to create new FantasyDisk production art. It exists only to catch old prompts that ask for built-in image generation and redirect them to the current PixelLab MCP workflow.
 
 ## Core Rules
 
-- Use the `image_gen` tool directly for generation or image edits when it is available.
-- Do not require or check `OPENAI_API_KEY` for this workflow.
-- Keep the FantasyDisk style: dark fantasy, D&D-like, dragon/metal/stone motifs where relevant, readable silhouettes, game-ready composition.
-- Do not bake text, UI labels, numbers, logos, or gameplay copy into generated art unless the user explicitly asks for text.
-- Treat built-in generated images as quick concept/reference art unless the output is saved into the repo, reviewed, and wired into Godot.
-- If a Jira/task requires "OpenAI API", `tools/artgen/generate_asset.py`, or reproducible API generation, say that this built-in workflow is a separate non-API fallback and update the task wording before using it.
+- For FantasyDisk characters, objects, UI frames, HUD, icons, sprites, mockups, and production assets, use `$fantasydisk-asset-generator` and PixelLab MCP.
+- Do not call `image_gen` for in-repository FantasyDisk asset creation unless the active user request explicitly says to bypass PixelLab for a one-off non-production concept.
+- If a task requests the old built-in or OpenAI flow, update/record the task decision: PixelLab MCP is now mandatory. If PixelLab is unavailable, block or hand off instead of generating elsewhere.
+- Never promote built-in generated art to `assets/...` for FantasyDisk runtime unless the user explicitly overrides the PixelLab rule in that task and Jira records the exception.
 
 ## Workflow
 
-1. Pull the project before starting if working inside `D:\FantasyDisk`.
-2. Identify the asset type and target:
-   - backgrounds: `assets/backgrounds/`
-   - UI frames/buttons: `assets/sprites/ui/frames/`
-   - icons: `assets/sprites/icons/` or the established project icon folder
-   - character/source references: `docs/design/references/<pack>/`
-   - previews/contact sheets: `docs/design/previews/`
-3. Generate a prompt that includes:
-   - FantasyDisk dark fantasy style
-   - target aspect ratio and approximate size
-   - "no text, no labels, no watermark"
-   - safe zones for UI if the asset is a menu/background
-   - transparent/background expectations when relevant
-4. Call `image_gen` with the final prompt.
-5. If the tool returns a local file or downloadable result, save/copy it into the appropriate reference path first. Promote to `assets/...` only after it is accepted for runtime.
-6. For runtime integration, update the Godot path or script constant, run the relevant smoke/UI check, then commit and push.
-7. Record the prompt, output path, and verification result in Jira or the local task file.
+1. Read the active request/task and identify the asset type.
+2. If it is FantasyDisk production or repository-bound art, switch to `$fantasydisk-asset-generator` and use PixelLab MCP.
+3. If the user explicitly asks for a non-production built-in concept despite the PixelLab rule, state in the task notes that it is not a production asset and must not be promoted to runtime without a PixelLab pass.
 
 ## Prompt Patterns
+
+Legacy examples below are prompt references only. Convert them into PixelLab prompts/specs before production use.
 
 Main menu background:
 
@@ -65,4 +51,4 @@ For every accepted asset, capture:
 - intended runtime path;
 - Godot import status;
 - screenshot or smoke/UI check result;
-- whether this is built-in non-API generation or the reproducible API pipeline.
+- whether this is PixelLab MCP production output or an explicitly approved non-production built-in exception.

@@ -1,4 +1,4 @@
 interface:
   display_name: "FantasyDisk Built-in Images"
-  short_description: "Generate FantasyDisk art without API keys"
-  default_prompt: "Use $fantasydisk-builtin-image-generator to create FantasyDisk art without OpenAI API keys."
+  short_description: "Deprecated; redirect art to PixelLab"
+  default_prompt: "Use $fantasydisk-builtin-image-generator only to redirect old built-in image requests to PixelLab MCP via $fantasydisk-asset-generator, or to record an explicit non-production exception."

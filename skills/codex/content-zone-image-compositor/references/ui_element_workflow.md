@@ -2,7 +2,7 @@
 
 Use this reference when creating game UI elements, HUD panels, menus, cards,
 popups, inventory frames, stats panels, tooltips, or report/poster interfaces
-that will receive text or live content after image generation.
+that will receive text or live content after PixelLab MCP image generation.
 
 ## 1. Content Inventory
 
@@ -21,7 +21,7 @@ tabs, paging, collapsible details, scroll area, or separate screens.
 
 ## 2. Geometry First
 
-Create `ui_plan.json` or `layout.json` before image generation. Every visible
+Create `ui_plan.json` or `layout.json` before PixelLab generation. Every visible
 content surface must have an exact rectangle:
 
 - outer component rect: decorative frame, panel, button, slot, scroll viewport;
@@ -69,8 +69,8 @@ Default style for FantasyDisk UI assets:
 - restrained detail density: rich borders but calm content interiors;
 - no loud neon, no clutter, no overdecorated noise, no text-like runes.
 
-The image model should create the frame/component art, not the final content.
-Prompt for empty interiors and explicit coordinate obedience.
+PixelLab MCP should create the frame/component art, not the final content.
+Prompt/spec for empty interiors and explicit coordinate obedience.
 
 ## 5. Prompt Pattern
 
@@ -94,8 +94,8 @@ ember glow, premium D&D dark fantasy. Epic, strict, not loud, not cluttered.
 
 - Planning report says `decision: ready_for_image`.
 - Guide overlay shows all content zones before generation.
-- Generated base image has no text or pseudo-text.
-- Generated base image leaves every content rectangle calm and readable.
+- PixelLab-generated base image has no text or pseudo-text.
+- PixelLab-generated base image leaves every content rectangle calm and readable.
 - Final content is inserted only by renderer/compositor.
 - No new frames, panels, cards, or opaque patches are added after generation.
 - Final debug overlay confirms text/icons sit inside the declared zones.

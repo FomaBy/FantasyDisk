@@ -1,4 +1,4 @@
 interface:
   display_name: "Game Asset Art Director"
-  short_description: "Create Godot-ready dark fantasy PNG assets"
-  default_prompt: "Use $fantasydisk-asset-generator to create a Godot-ready dark fantasy PNG asset with safe content notes."
+  short_description: "Create PixelLab MCP FantasyDisk assets"
+  default_prompt: "Use $fantasydisk-asset-generator to create a Godot-ready FantasyDisk asset through PixelLab MCP with source paths, safe content notes, and QA evidence."

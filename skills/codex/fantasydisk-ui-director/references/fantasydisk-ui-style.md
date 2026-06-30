@@ -42,7 +42,7 @@ Use the current FantasyDisk button style as baseline:
 - no runtime text on border ornaments;
 - icon-only buttons still need a clear internal icon safe zone.
 
-When asking OpenAI Images API for buttons, request a consistent button family and state sheet, not isolated unrelated buttons.
+When asking PixelLab MCP for buttons, request a consistent button family and state sheet, not isolated unrelated buttons.
 
 ## Frames And Panels
 
@@ -57,7 +57,7 @@ Every frame asset must declare:
 
 Thin frames are preferred for dense screens. If a decorative frame is visually thick, expand the asset or shrink the content area instead of letting content overlap the ornament.
 
-## OpenAI Generation Notes
+## PixelLab Generation Notes
 
 For mockups, ask for:
 

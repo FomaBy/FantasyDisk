@@ -25,12 +25,12 @@ docs/design/mockups/<task_or_screen_slug>/
 
 The package must contain:
 
-- OpenAI-API-generated full-page mockup PNG;
+- PixelLab MCP generated full-page mockup PNG or frame/layout layer;
 - markdown spec using `references/mockup-spec.md`;
 - optional annotated PNG with safe zones and element IDs;
 - generated reference assets, if the mockup uses new frames/buttons/icons.
 
-Use `$fantasydisk-asset-generator` or its script to generate the mockup through OpenAI Images API. If the task needs exact geometry, use a prompt that asks for clean orthographic UI layout, no perspective, no baked labels unless explicitly required, transparent/empty content areas where runtime text will go, and clear internal safe zones.
+Use `$fantasydisk-asset-generator` to generate the mockup/art layer through PixelLab MCP. If the task needs exact geometry, use a prompt/spec that asks for clean orthographic UI layout, no perspective, no baked labels unless explicitly required, transparent/empty content areas where runtime text will go, and clear internal safe zones.
 
 After generation, show the mockup in chat:
 
@@ -38,7 +38,7 @@ After generation, show the mockup in chat:
 ![mockup](/absolute/path/to/mockup.png)
 ```
 
-Do this whenever the file exists. If generation fails because the API is unavailable, block the task rather than substituting a manual/mock image pipeline.
+Do this whenever the file exists. If PixelLab MCP generation/export is unavailable, block the task rather than substituting a manual, OpenAI Images, built-in, or other image pipeline.
 
 ## 3. Spec The Geometry
 
@@ -57,11 +57,12 @@ The spec is the contract. Implementation follows it. If an implementer discovers
 
 ## 4. Asset Generation
 
-Generate new UI assets through `$fantasydisk-asset-generator`.
+Generate new UI assets through `$fantasydisk-asset-generator`, which must use PixelLab MCP for new production art.
 
 Required asset notes:
 
 - source prompt;
+- PixelLab source ID/tag/name;
 - output path;
 - size;
 - transparent background or postprocessing plan;

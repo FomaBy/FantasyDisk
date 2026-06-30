@@ -1,6 +1,6 @@
 ---
 name: fantasydisk-item-icon-generator
-description: Use this skill when generating, revising, or specifying FantasyDisk artifact icons, stat or attribute icons, weapon icons, or item-icon source packs that need canonical IDs, transparent PNG output, D&D + Dark Fantasy Dragon style, small-size readability, and QA evidence.
+description: Use this skill when generating, revising, or specifying FantasyDisk artifact icons, stat or attribute icons, weapon icons, or item-icon source packs that need canonical IDs, PixelLab MCP source generation, transparent PNG output, D&D + Dark Fantasy Dragon style, small-size readability, and QA evidence.
 ---
 
 # FantasyDisk Item Icon Generator
@@ -9,9 +9,9 @@ Use this skill for focused item-icon work after the repository instructions in `
 
 ## Scope
 
-- In scope: icon art direction, OpenAI Images prompt design, transparent source PNGs, exact naming, source/reference storage, contact sheets, alpha/readability QA, and local/Jira handoff notes.
+- In scope: icon art direction, PixelLab MCP prompt/spec design, transparent source PNGs, exact naming, source/reference storage, contact sheets, alpha/readability QA, and local/Jira handoff notes.
 - Out of scope: gameplay, balance, runtime integration, UI layout code, animation rigs, and mass production packs unless the Jira issue explicitly asks for them.
-- Do not use old manual or non-OpenAI generation flows. Reuse the current asset pipeline from `$fantasydisk-asset-generator`.
+- Do not use OpenAI Images, built-in image generation, old manual generation, or non-PixelLab flows for new icons. Reuse the current PixelLab MCP asset workflow from `$fantasydisk-asset-generator`.
 
 ## Required Inputs
 
@@ -24,6 +24,7 @@ Before generating or specifying icons, record these inputs in the task notes:
 - `final_path`: exact runtime path from the asset matrix below.
 - `source_dir`: exact source/reference folder under `docs/design/references/icons/`.
 - `style_notes`: material, silhouette, class/stat association, palette constraints, and any must-avoid motifs.
+- `pixellab_source`: PixelLab asset/project ID or planned tag/name once generated.
 - `qa_evidence`: preview/contact-sheet path and alpha/readability report path.
 
 ## Asset Matrix
@@ -45,28 +46,18 @@ The stat routes intentionally match `scripts/ui_icon_registry.gd`: base stats lo
 
 1. Confirm ownership in Jira and locked paths before creating files.
 2. Validate canonical IDs against `docs/design/content_registry.md` and any live data table used by the issue. For stats, verify basic IDs against `scripts/stat_formulas.gd::BASE_STAT_ORDER` and derived IDs against `scripts/stat_formulas.gd::DERIVED_STAT_ORDER` / `scripts/ui_icon_registry.gd`.
-3. Build one prompt per icon using the prompt template below, preserving the category and ID in local notes.
-4. Generate through the OpenAI Images pipeline from `$fantasydisk-asset-generator`, saving source PNGs under the source/reference folder first.
+3. Build one PixelLab prompt/spec per icon using the template below, preserving the category and ID in local notes.
+4. Generate, revise, or fetch icons through PixelLab MCP from `$fantasydisk-asset-generator`, saving source PNGs under the source/reference folder first.
 5. Crop/resize only to the requested square size, keeping transparent padding and the full subject visible.
 6. Export final PNGs to the runtime path with the exact matrix naming.
 7. Produce a contact sheet at runtime scale and a QA report covering alpha, cropping, readability, and naming.
 8. Update the Jira issue and local mirror with generated paths, evidence paths, and any handoff needed for integration.
 
-Use a project-local `tools/artgen/generate_asset.py` only when that script exists in the current checkout. In the current FantasyDisk repo mirror, the canonical available generator is the bundled `$fantasydisk-asset-generator` script. Example bundled command, adjusted for the exact source path and size:
-
-```bash
-python3 ~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py \
-  --prompt "<prompt from this skill>" \
-  --output docs/design/references/icons/<category>/<canonical_id>/<canonical_id>_source.png \
-  --size 1024x1024 \
-  --quality high
-```
-
-Keep the same OpenAI Images API workflow and do not fall back to legacy generators. Generate a large reference, normally `1024x1024` or another valid gpt-image-2 size, then crop/pad/downscale to the target runtime size. If the generator output is not alpha-ready, postprocess alpha before exporting the final runtime PNG.
+If PixelLab MCP cannot be reached, block or hand off the task. Do not use `generate_asset.py`, `image_gen`, or any OpenAI Images fallback for new icon creation unless the user explicitly overrides the rule in the active task.
 
 ## Prompt Template
 
-Use one concise image prompt per icon:
+Use one concise PixelLab prompt/spec per icon:
 
 ```text
 D&D + Dark Fantasy Dragon game icon, transparent background, isolated <asset_category> for FantasyDisk.
@@ -123,6 +114,7 @@ Every icon task must finish with a local mirror/Jira note that lists:
 
 - the claimed Jira key, role/lane, owner, and locked paths;
 - every canonical ID and category validated, including the source used for validation;
+- PixelLab source IDs/tags/names and prompt/spec notes;
 - final runtime paths, source/reference paths, prompt notes, contact sheets, and alpha/readability reports;
 - any IDs skipped or blocked, with a precise reason and follow-up Jira issue if needed;
-- confirmation that no legacy generator was used and that no production pack was generated unless Jira explicitly requested it.
+- confirmation that PixelLab MCP was used and that no legacy/OpenAI/built-in generator was used unless Jira explicitly recorded the exception.

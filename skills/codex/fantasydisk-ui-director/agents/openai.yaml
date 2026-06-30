@@ -1,4 +1,4 @@
 interface:
   display_name: "FantasyDisk UI Director"
-  short_description: "Mockup-first dark fantasy UI workflow"
-  default_prompt: "Use $fantasydisk-ui-director to generate an OpenAI-API UI mockup first, show the preview, then implement the FantasyDisk screen from the mockup with strict frame safe zones."
+  short_description: "PixelLab-first dark fantasy UI workflow"
+  default_prompt: "Use $fantasydisk-ui-director to generate a PixelLab MCP UI mockup/art layer first, show the preview, then implement the FantasyDisk screen from the mockup with strict frame safe zones."
