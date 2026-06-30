@@ -108,29 +108,7 @@ var aim_mode := "nearest"
 var last_weapon_animation_event: Dictionary = {}
 var equipped_weapon: Node = null
 var stats := {}
-var run_modifiers := {
-	"damage_multiplier": 1.0,
-	"attack_speed_multiplier": 1.0,
-	"range_multiplier": 1.0,
-	"aoe_radius_multiplier": 1.0,
-	"move_speed_multiplier": 1.0,
-	"max_health_multiplier": 1.0,
-	"summon_bonus": 0.0,
-	"damage_flat": 0.0,
-	"max_health_flat": 0.0,
-	"pickup_radius_flat": 0.0,
-	"defense_flat": 0.0,
-	"crit_chance_flat": 0.0,
-	"crit_damage_flat": 0.0,
-	"dodge_flat": 0.0,
-	"xp_gain_multiplier": 1.0,
-	"money_gain_multiplier": 1.0,
-	"healing_multiplier": 1.0,
-	"vampiric_heal_per_second_cap": ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT,
-	"drain_heal_per_second_cap": ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT,
-	"enemy_health_multiplier": 1.0,
-	"knockback_multiplier": 1.0,
-}
+var run_modifiers := _default_run_modifiers()
 var artifacts := []
 var derived_parameters := {}
 var xp := 0
@@ -185,22 +163,11 @@ var _debug_move_target_active := false
 var _debug_move_target := Vector2.ZERO
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_PAUSABLE
-	_ensure_default_input_actions()
-	if stats.is_empty():
-		configure_character(character_id)
-
-
-func configure_character(new_character_id: String, new_weapon_id := "") -> void:
-	character_id = new_character_id
-	weapon_id = ""
-	weapon_config = {}
-	var config: Dictionary = CHARACTER_CONFIGS.get(character_id, CHARACTER_CONFIGS["berserk"])
-
-	stats = PROGRESSION_DATA.base_stats(character_id)
-	artifacts.clear()
-	run_modifiers = {
+# SCRUM-709: единый источник дефолтных run_modifiers. Раньше тот же 22-ключевой
+# литерал дублировался дословно в инициализаторе var и в configure_character — при
+# добавлении ключа в одно место второе тихо отставало (drift-баг по модификаторам).
+static func _default_run_modifiers() -> Dictionary:
+	return {
 		"damage_multiplier": 1.0,
 		"attack_speed_multiplier": 1.0,
 		"range_multiplier": 1.0,
@@ -223,6 +190,24 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		"enemy_health_multiplier": 1.0,
 		"knockback_multiplier": 1.0,
 	}
+
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_PAUSABLE
+	_ensure_default_input_actions()
+	if stats.is_empty():
+		configure_character(character_id)
+
+
+func configure_character(new_character_id: String, new_weapon_id := "") -> void:
+	character_id = new_character_id
+	weapon_id = ""
+	weapon_config = {}
+	var config: Dictionary = CHARACTER_CONFIGS.get(character_id, CHARACTER_CONFIGS["berserk"])
+
+	stats = PROGRESSION_DATA.base_stats(character_id)
+	artifacts.clear()
+	run_modifiers = _default_run_modifiers()
 	xp = 0
 	xp_to_next = 5
 	level = 1
