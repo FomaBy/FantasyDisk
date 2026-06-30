@@ -104,3 +104,10 @@ Locked paths: scripts/route_map_screen.gd; scripts/main.gd (route-консты R
   ROUTE_STEPS_TO_BOSS, иначе при 8 рядах пулы съедут.
 - Не сломать детерминизм seed'ов нодов и `route_selected_indices`.
 - main.gd dirty на старте — точечные правки.
+
+## QA-Вердикт
+Статус: PASSED · QA: claude-qa · Дата: 2026-06-30
+Проверено на HEAD origin/dev (commit 898413e8, ancestor подтверждён). ROUTE_STEPS_TO_BOSS=8;
+_node_pool_for_step переписан от boss_row без магических чисел. Гейты зелёные:
+route_generation_reachability (24 routes, 8 rows + boss), route_chest_artifact, runtime_smoke (3×).
+advance_to_next_act/ACT_COUNT=3, should_start_secret_boss_after_act3 верифицированы. Все AC выполнены.

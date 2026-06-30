@@ -108,3 +108,10 @@ Locked paths: scripts/route_map_screen.gd (chest placement); scripts/main.gd (ro
 - НЕ параллелить по времени с combat-волной (main.gd общий).
 - Открытие сундука переиспользует `_show_elite_artifact_reward` — не дублировать UI.
 - main.gd dirty на старте — точечные правки.
+
+## QA-Вердикт
+Статус: PASSED · QA: claude-qa · Дата: 2026-06-30
+Проверено на HEAD origin/dev (commit bf6932ea, ancestor подтверждён). CHEST_LINE_ROWS=1;
+_place_chest_line_rows+_fill_row_with_chests (детерминированно, исключает шоп/стартовые ряды).
+Непропускаемость структурная. Гейт route_chest_artifact PASSED (полные chest-ряды, шопы=2,
+1 артефакт на линию), runtime_smoke PASSED. Алтарь/шоп не затёрты. Все AC выполнены.
