@@ -48,3 +48,18 @@ rg -n "0.1.7|0.1.8|TODO|устарел|deprecated" docs/design docs/process | he
 ## Process Notes
 
 Run this after the relevant refactor implementation results exist. If no implementation tasks are done yet, leave the Jira issue in `К выполнению` and do not claim it early.
+
+## QA-Вердикт
+Статус: PASSED
+
+QA claim claude-qa 2026-06-30 — приёмка на origin/dev HEAD (commits a83e7efc reconcile + b067a532 mirror).
+
+Сверено с фактическим кодом dev (константы/реестры/гейты):
+- Бой-таймеры (SCRUM-785): main.gd BASE=60/STEP=3/MAX=90/ELITE_BOSS=300; mult не применяется к элитке/боссу — как в combat.md/current_game_state/mechanics_extract.
+- Спавн (SCRUM-784): base_spawn_count=4, base_active_cap=20→max 36, паузы 0.8–1.4, spawn_cooldown=0.1 — как в combat.md.
+- Роутер (SCRUM-607/719): гейты mini_elite_roster_spawn (10) + codex_data_smoke (30) PASS; новые id в codex_data.gd + progression_data_enemies.gd.
+- Docs-only: diff = 4 файла docs/design/*.md, 0 правок кода. Stale «30+3/макс 60/босс до смерти» снят.
+
+Открытый UX-вопрос (боссовый HUD опускает таймер) зафиксирован в current_game_state.md, заскоплен вне таска — бэклог-кандидат, не блокер.
+
+→ PASSED.
