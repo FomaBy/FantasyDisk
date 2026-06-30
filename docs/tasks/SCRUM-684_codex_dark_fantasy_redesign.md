@@ -71,3 +71,14 @@ QA-reopen вскрыл регрессию общего UI-гейта `ui_no_over
 - `ui_no_overlap_matrix_test.gd` зелёный: «UI no-overlap matrix test passed.»
   (codex no-overlap + frame-asserts на всех 6 разрешениях).
 - Коммит `4372692c`, влит в origin/dev.
+
+## QA-Вердикт (reopen fix, 2026-06-30)
+Статус: PASSED
+
+Проверено на `dev == origin/dev` после коммитов `4372692c` и `82352f1c`.
+- `tests/ui_no_overlap_matrix_test.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — PASS.
+
+Подтверждено: `CodexBackButton` больше не пересекает `CodexDetailPanel`,
+`CodexMainPanel` проверяется на актуальный `codex_pl/fit` frame. Дефектов не
+найдено. Disk cleanup: none created; чужой untracked WIP не трогался.

@@ -3047,5 +3047,10 @@
   "key": "SCRUM-683",
   "status": "Контроль качества",
   "desc_hash": "df51dc564fd63f2329114b833f42d997"
+ },
+ "SCRUM-684_codex_dark_fantasy_redesign.md": {
+  "key": "SCRUM-684",
+  "status": "Готово",
+  "desc_hash": "47b7bb7d86fff14fa6e7abaf143bb98f"
  }
 }
