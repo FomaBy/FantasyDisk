@@ -1,6 +1,6 @@
 # Skill Tree v2 — Верификация дерева умений (экономика, связность, экран, миграция) — QA
 
-Статус: blocked
+Статус: new
 Роль: QA
 Контур: Claude
 Lane: claude
@@ -10,7 +10,10 @@ Owner: unassigned
 Автор: User request (PM)
 Jira: SCRUM-699
 Labels: foma, qa, claude
-Связано: SCRUM-696 (data), SCRUM-698 (ui), SCRUM-697 (art)
+Связано: SCRUM-696 (data ✓done), SCRUM-698 (ui), SCRUM-697 (art ✓done)
+
+> Unblocked 2026-06-30 (по запросу PM). Данные/арт (696/697) сданы. Финальный прогон
+> запускать после влития UI SCRUM-698 в origin/dev — проверять live-статус 698 перед судом.
 
 ## Контекст
 

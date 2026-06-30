@@ -1,6 +1,6 @@
 # Skill Tree v2 — Перерисовка экрана «Древо умений» (PoE-стиль, граф узлов) — UI
 
-Статус: blocked
+Статус: new
 Роль: Back-end
 Контур: Claude
 Lane: claude
@@ -10,9 +10,13 @@ Owner: unassigned
 Автор: User request (PM)
 Jira: SCRUM-698
 Labels: foma, backend, claude
-Связано: SCRUM-696 (data/economy), SCRUM-697 (art), SCRUM-699 (qa)
+Связано: SCRUM-696 (data/economy ✓done), SCRUM-697 (art ✓done), SCRUM-699 (qa)
 
 ## Контекст
+
+> Unblocked 2026-06-30: зависимости SCRUM-696 (данные/экономика) и SCRUM-697 (арт-пак)
+> сданы (done, в origin/dev). Задача готова к разбору.
+
 
 Полная перерисовка (с нуля) экрана меню «Древо умений» под новое общее дерево умений в стиле
 Path of Exile 1/2: граф взаимосвязанных узлов со связями-рёбрами, прокачка от точки входа класса

@@ -3081,12 +3081,12 @@
  "skill_tree_v2_ui_redesign_task.md": {
   "key": "SCRUM-698",
   "status": "К выполнению",
-  "desc_hash": "e445ff6ae1d7b8ab730aac02a5b406cd"
+  "desc_hash": "d1c7a57edc18cec49ab3a67191d98c78"
  },
  "qa_skill_tree_v2_verification_task.md": {
   "key": "SCRUM-699",
   "status": "К выполнению",
-  "desc_hash": "3cf4234c56c4232a8d7819931f65c5cd"
+  "desc_hash": "6b5ea3f665cf920fe3c7e23dfa5c3f11"
  },
  "qa_ui_1080_scale_visual_task.md": {
   "key": "SCRUM-700",
