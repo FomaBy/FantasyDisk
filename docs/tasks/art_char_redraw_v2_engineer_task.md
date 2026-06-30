@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Инженер» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -91,3 +91,21 @@ Strict PNG QA по provisional outputs: `white=0`, `neutral=0`, `pale=0`,
 **не считались accepted source handoff** на момент отмены; после снятия hold
 следующий Design/Animator worker должен переоценить эти provisional artifacts
 перед использованием.
+
+## Blocker — Codex Design 2026-06-30
+
+SCRUM-428 был claim-first взят `codex-design-board-watcher`, но производство или
+acceptance Engineer v2 source заблокированы текущей доступностью PixelLab MCP.
+Активный `fantasydisk-asset-generator` требует PixelLab MCP для новых production
+ассетов и запрещает fallback на legacy `generate_asset.py`, OpenAI/image_gen или
+ручную дорисовку без явного Jira override. `tool_search pixellab` вернул 0
+доступных tools.
+
+В репозитории уже есть provisional Engineer v2 artifacts, но этот же task mirror
+помечает их как не принятый source handoff после отмены 2026-06-15; принимать
+или продвигать их в production без PixelLab означало бы обойти активный skill.
+Задача возвращена в Jira `К выполнению` с labels `blocked` и
+`pixellab-blocked`. Unblock: подключить PixelLab MCP для Codex или явно создать
+Jira override на acceptance существующих provisional artifacts / non-PixelLab
+пайплайн, затем requeue Design/Codex или разделить Design source acceptance и
+Animator integration.
