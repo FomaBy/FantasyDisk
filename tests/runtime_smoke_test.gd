@@ -6967,7 +6967,7 @@ func _assert_codex_v2_back_button_safe(button: Button, checked: Array) -> bool:
 		_fail("Expected codex v2 back button to exist.")
 		return false
 	var rect := button.get_global_rect()
-	var expected := _codex_v2_expected_rect(Rect2(1636, 104, 168, 84), button.get_viewport_rect().size)
+	var expected := _codex_v2_expected_rect(Rect2(1636, 100, 168, 66), button.get_viewport_rect().size)
 	if rect.position.distance_to(expected.position) > 2.0 or rect.size.distance_to(expected.size) > 2.0:
 		_fail("Expected codex v2 compact back button to sit inside SCRUM-684 safe rect %s, got %s." % [str(expected), str(rect)])
 		return false

@@ -390,7 +390,11 @@ const CODEX_V2_OUTER_FRAME_RECT := Rect2(24.0, 20.0, 1872.0, 1040.0)
 # SCRUM-684: заголовок и кнопку «назад» опускаем в тёмно-багровую безопасную
 # зону main_shell, ниже верхней руной-полосы и угловых золотых кронштейнов.
 const CODEX_V2_HEADER_TITLE_SAFE := Rect2(196.0, 116.0, 1040.0, 60.0)
-const CODEX_V2_BACK_BUTTON_SAFE := Rect2(1636.0, 104.0, 168.0, 84.0)
+# SCRUM-684 fix: компактная кнопка «Назад» поднята/ужата так, чтобы её нижняя
+# кромка (base y 100→166) не залезала на верх CodexDetailPanel (base y 170) ни на
+# одном разрешении (ui_no_overlap_matrix). top=100 ещё внутри safe-зоны главной
+# рамки (content-top = frame 20 + margin 78 ≈ 98).
+const CODEX_V2_BACK_BUTTON_SAFE := Rect2(1636.0, 100.0, 168.0, 66.0)
 const CODEX_V2_NAV_PANEL_RECT := Rect2(72.0, 170.0, 304.0, 872.0)
 const CODEX_V2_NAV_SAFE := Rect2(88.0, 198.0, 258.0, 720.0)
 const CODEX_V2_LIST_PANEL_RECT := Rect2(388.0, 170.0, 835.0, 872.0)
@@ -2362,9 +2366,11 @@ func _show_codex_screen() -> void:
 
 	_codex_v2_apply_layout(layout_entries)
 	_codex_v2_apply_tab_metrics(tabs_row)
+	_codex_v2_apply_back_button_metrics(back_button)
 	root.resized.connect(func() -> void:
 		_codex_v2_apply_layout(layout_entries)
 		_codex_v2_apply_tab_metrics(tabs_row)
+		_codex_v2_apply_back_button_metrics(back_button)
 	)
 
 	_show_codex_section(content, "characters")
@@ -2589,6 +2595,26 @@ func _codex_v2_apply_tab_metrics(tabs_row: VBoxContainer) -> void:
 		_apply_codex_pl_button_theme(button, CODEX_PL_CATEGORY_BUTTON_PATH, CODEX_PL_CATEGORY_BUTTON_TEX, btn_content)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_codex_pl_layout_category_emblem(button, tab_size, rivet_end, emblem)
+
+
+# SCRUM-684 fix: компактная кнопка «Назад» масштабирует content-margins и шрифт под
+# свою (168×84-в-base) display-высоту. Без этого фикс-margins (60px) + шрифт 28
+# давали intrinsic-min ≈99px, и на малых разрешениях кнопка раздувалась ниже своего
+# layout-rect и налезала на CodexDetailPanel (ui_no_overlap_matrix_test, все res).
+# Пропорциональные margins/font держат intrinsic-min < layout-высоты на всех scale.
+func _codex_v2_apply_back_button_metrics(button: Button) -> void:
+	if button == null:
+		return
+	var scale := _codex_v2_scale()
+	var height := CODEX_V2_BACK_BUTTON_SAFE.size.y * scale
+	var v_margin := maxf(6.0, height * 0.13)
+	var content := Vector4(
+		CODEX_PL_BACK_BUTTON_CONTENT.x * scale,
+		v_margin,
+		CODEX_PL_BACK_BUTTON_CONTENT.z * scale,
+		v_margin)
+	_apply_codex_pl_button_theme(button, CODEX_PL_BACK_BUTTON_PATH, CODEX_PL_BACK_BUTTON_TEX, content)
+	button.add_theme_font_size_override("font_size", int(round(clampf(height * 0.34, 11.0, 34.0))))
 
 
 # SCRUM-684: эмблема категории (golden helm / dragon skull / …) в безопасной
