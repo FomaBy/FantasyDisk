@@ -1,7 +1,7 @@
 # Refactor Wave: Melee, Summons And Deployable Lifecycle Cleanup
 
 Jira: SCRUM-711
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / combat quality
 Контур: Claude
