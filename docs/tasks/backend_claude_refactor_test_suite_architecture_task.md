@@ -50,3 +50,20 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smo
 ## Process Notes
 
 This task touches shared test files and should not run in parallel with another task actively editing `tests/runtime_smoke_test.gd`.
+
+## QA-Вердикт
+Статус: PASSED
+
+Проверял claude-qa (2026-06-30) на чистом изолированном worktree от origin/dev HEAD, fdengine slots=1. Коммиты SCRUM-722 `077fdabe` (рефактор) + `9852549c` (mirror) — ancestor origin/dev подтверждён.
+
+Scope review: рефактор-коммит трогает только `tests/runtime_smoke_test.gd` (−801/+450) + `docs/design/systems/technical_architecture.md` (+31, аудит). Gameplay-скрипты НЕ тронуты. `_fail(message, evidence_path)` поведенчески идентичен прежнему триплету `push_error;quit(1);return` (push_error+quit(1) на провале) + детерминированный артефакт `build/qa/runtime_smoke_last_failure.md`, который пишется ТОЛЬКО при провале (зелёный прогон не задевает) → нулевой риск на success-path.
+
+Гейты (fdengine slots=1, все pass):
+- `runtime_smoke_test.gd` (умбрелла) → "Duplicate-artifact guard passed (9819 files) / Runtime smoke test passed.", RC=0, peak mem 1.24 GB.
+- focus-сьюты: `runtime_smoke_ui_test`, `runtime_smoke_combat_test`, `runtime_smoke_weapon_mechanics_test`, `runtime_smoke_boss_elite_test` → все passed.
+- `runtime_smoke_progression_economy_test` → passed **×2** (детерминизм-фикс `_test_ascension_difficulty_ladder` устраняет флак, вскрытый ускорением спавн-пауз SCRUM-784; EV-инвариант 16 событий OK).
+- `python3 tests/test_jira_board_sync.py` → Ran 4 tests OK.
+
+Прим.: умбрелла, запущенная ЧЕРЕЗ `tools/godot_gate.py`, периодически отдаёт RC 247 (SIGKILL обёртки flock-семафора) сразу после dup-guard — это артефакт QA-обёртки, НЕ теста: прямой запуск `fdengine` даёт RC=0 + "Runtime smoke test passed.", 0 signals received, peak 1.24 GB (без OOM). Контроль: pre-722 версия файла в том же worktree ведёт себя идентично → SCRUM-722 регрессию НЕ вносит.
+
+→ PASSED.
