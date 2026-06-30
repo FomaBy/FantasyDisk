@@ -246,6 +246,10 @@ func _begin_death_lifecycle() -> void:
 		_death_tween.tween_interval(_full_frame_death_duration())
 		_death_tween.tween_callback(_finish_death_lifecycle)
 		return
+	# Нет полнокадровой death-анимации (обычные ally без "death"): всё равно гасим
+	# рантайм до queue_free, иначе мёртвый ally остаётся в группе "allies" и ещё кадр
+	# двигается/бьёт до фактического удаления. Делаем деактивацию единой для обоих путей.
+	_disable_dead_ally_runtime()
 	queue_free()
 
 
