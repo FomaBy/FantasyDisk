@@ -75,3 +75,24 @@ tools.
 `К выполнению` с labels `blocked` и `pixellab-blocked`. Unblock: подключить
 PixelLab MCP для Codex или явно создать Jira override на non-PixelLab пайплайн,
 затем requeue Design/Codex или разделить Design source и Animator integration.
+
+## Blocker Refresh — Codex Design 2026-06-30
+
+SCRUM-430 был повторно claim-first взят `codex-design-board-watcher` после PM
+readiness/unhold. Повторная проверка показала, что PixelLab MCP bridge теперь
+виден через локальный Codex config и отдаёт `tools/list` (`49` tools, включая
+`list_characters`, `create_character`, `animate_character`), но реальный вызов
+`list_characters(tags="knight")` возвращает:
+
+`401: Missing Authorization header. Please configure your MCP client with 'Authorization: Bearer YOUR_API_TOKEN'`.
+
+Дополнительное evidence: `mcp-remote` stderr указывает, что custom header
+настроен как `Authorization: ${AUTH_HEADER}`, но environment variable
+`AUTH_HEADER` не задана. Без валидного PixelLab auth нельзя получить или создать
+обязательный PixelLab source/motion pack для `knight`, а активные skills
+запрещают fallback на legacy OpenAI/manual assets без явного Jira override.
+
+Задача снова возвращена в Jira `К выполнению` с labels `blocked` и
+`pixellab-blocked`. Unblock: передать Codex runtime переменную `AUTH_HEADER`
+с валидным `Bearer ...` для PixelLab MCP либо добавить явный Jira override на
+non-PixelLab path.
