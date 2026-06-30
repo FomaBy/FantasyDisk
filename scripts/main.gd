@@ -478,7 +478,6 @@ var audio_settings := {
 var input_bindings := {}
 var aim_mode := "nearest"
 var debug_mode_enabled := false
-var _quit_requested := false
 
 
 func _init() -> void:
@@ -507,7 +506,6 @@ func _notification(what: int) -> void:
 
 
 func request_game_quit() -> void:
-	_quit_requested = true
 	set_meta("game_quit_requested", true)
 	if bool(get_meta("suppress_game_quit", false)):
 		return
@@ -1118,17 +1116,6 @@ func _process(delta: float) -> void:
 		combat._end_combat(true)
 
 
-func set_game_paused(reason: String, should_pause: bool) -> void:
-	if should_pause:
-		push_pause(reason)
-	else:
-		pop_pause(reason)
-
-
-func set_gameplay_paused(should_pause: bool, reason := "") -> void:
-	set_game_paused(reason, should_pause)
-
-
 func push_pause(reason: String) -> void:
 	if reason == "":
 		return
@@ -1144,10 +1131,6 @@ func pop_pause(reason: String) -> void:
 
 	pause_reasons.erase(reason)
 	get_tree().paused = not pause_reasons.is_empty()
-
-
-func is_gameplay_paused() -> bool:
-	return _is_gameplay_paused()
 
 
 func _is_gameplay_paused() -> bool:
