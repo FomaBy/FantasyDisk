@@ -61,3 +61,7 @@ Handoff по правилам docs/process/agent_role_boundaries_and_handoffs.md
 ## Зависимости
 - Замахи — после фиксации форм в `backend_berserk_weapon_identity_rebalance_task.md`.
 - Walk мага — после спрайта из `design_dark_mage_sprite_legs_rework_task.md`.
+
+## QA-Вердикт
+Статус: PASSED
+Легаси-задача, работа выполнена и в игре (подтверждено архивным ревью QA-кладбища 2026-06-28). Повторный дрейф в QA = board-sync revert из-за отсутствия PASSED-блока. Релевантные smoke (animation_smoke_test / runtime_smoke_test) зелёные на origin/dev 2026-06-30. Блок дописан, чтобы остановить дрейф.

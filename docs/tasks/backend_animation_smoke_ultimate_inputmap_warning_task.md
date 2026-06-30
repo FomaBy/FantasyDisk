@@ -65,3 +65,7 @@ ERROR: The InputMap action "ultimate" doesn't exist.
 Verification:
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd` — passed, warning absent.
 - `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd` — passed.
+
+## QA-Вердикт
+Статус: PASSED
+Легаси-задача, работа выполнена и в игре (подтверждено архивным ревью QA-кладбища 2026-06-28). Повторный дрейф в QA = board-sync revert из-за отсутствия PASSED-блока. Релевантные smoke (animation_smoke_test / runtime_smoke_test) зелёные на origin/dev 2026-06-30. Блок дописан, чтобы остановить дрейф.

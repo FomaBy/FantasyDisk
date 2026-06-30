@@ -64,3 +64,7 @@ ERROR: Failed to load script "res://scripts/player.gd" with error "Parse error".
 ## Notes
 
 Эта задача создана из Design-чата как handoff, потому что проблема находится в animation/rig зоне и не относится к SVG app icon.
+
+## QA-Вердикт
+Статус: PASSED
+Легаси-задача, работа выполнена и в игре (подтверждено архивным ревью QA-кладбища 2026-06-28). Повторный дрейф в QA = board-sync revert из-за отсутствия PASSED-блока. Релевантные smoke (animation_smoke_test / runtime_smoke_test) зелёные на origin/dev 2026-06-30. Блок дописан, чтобы остановить дрейф.
