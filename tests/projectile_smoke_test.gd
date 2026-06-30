@@ -59,17 +59,28 @@ func _initialize() -> void:
 		errors.append("lifetime не убывает на delta")
 	p3.free()
 
-	# --- _is_outside_arena ---
+	# --- _is_outside_arena (границы выводим из констант снаряда, чтобы тест не
+	#     устаревал при ребалансе арены — SCRUM-712: точка справа была захардкожена
+	#     под старый 2560 и стала ВНУТРИ арены после бампа ARENA_SIZE до 4096 ×1.6). ---
+	var arena: Vector2 = Projectile.ARENA_SIZE
+	var margin: float = float(Projectile.CLEANUP_MARGIN)
+	var center := arena * 0.5
 	var p4: Area2D = Projectile.new()
-	p4.global_position = Vector2(1280, 720)
+	p4.global_position = center
 	if bool(p4.call("_is_outside_arena")):
 		errors.append("_is_outside_arena: центр арены посчитан снаружи")
-	p4.global_position = Vector2(-300, 720)  # x < -CLEANUP_MARGIN(180)
+	p4.global_position = Vector2(-(margin + 120.0), center.y)  # x < -CLEANUP_MARGIN
 	if not bool(p4.call("_is_outside_arena")):
 		errors.append("_is_outside_arena: точка слева за полем не посчитана снаружи")
-	p4.global_position = Vector2(2560 + 300, 720)
+	p4.global_position = Vector2(arena.x + margin + 120.0, center.y)  # x > ARENA_SIZE.x + margin
 	if not bool(p4.call("_is_outside_arena")):
 		errors.append("_is_outside_arena: точка справа за полем не посчитана снаружи")
+	p4.global_position = Vector2(center.x, -(margin + 120.0))  # y < -CLEANUP_MARGIN
+	if not bool(p4.call("_is_outside_arena")):
+		errors.append("_is_outside_arena: точка сверху за полем не посчитана снаружи")
+	p4.global_position = Vector2(center.x, arena.y + margin + 120.0)  # y > ARENA_SIZE.y + margin
+	if not bool(p4.call("_is_outside_arena")):
+		errors.append("_is_outside_arena: точка снизу за полем не посчитана снаружи")
 	p4.free()
 
 	# --- коллизия: урон только врагам ---
@@ -102,7 +113,25 @@ func _initialize() -> void:
 	await process_frame
 	if is_instance_valid(p6):
 		errors.append("despawn: снаряд не освобождён после истечения lifetime")
+
+	# --- despawn по вылету за арену (в дереве): не-истёкший lifetime, но позиция
+	#     за CLEANUP_MARGIN -> queue_free (защита от «залётных» снарядов-утечек). ---
+	var p7: Area2D = Projectile.new()
+	var holder2 := Node2D.new()
+	root.add_child(holder2)
+	await process_frame
+	holder2.add_child(p7)
+	await process_frame
+	p7.setup(center, center + Vector2(100, 0), 5.0)
+	p7.set("lifetime", 9.0)  # lifetime НЕ истёк — освобождение должно быть от вылета
+	p7.global_position = Vector2(arena.x + margin + 400.0, center.y)
+	p7.call("_physics_process", 0.016)
+	await process_frame
+	if is_instance_valid(p7):
+		errors.append("despawn: снаряд не освобождён после вылета за арену (lifetime ещё жив)")
+
 	holder.queue_free()
+	holder2.queue_free()
 	await process_frame
 
 	if not errors.is_empty():
@@ -111,5 +140,5 @@ func _initialize() -> void:
 		push_error("Projectile smoke test: %d ошибок." % errors.size())
 		quit(1)
 		return
-	print("Projectile smoke test passed (setup/движение/lifetime/arena/коллизия/despawn).")
+	print("Projectile smoke test passed (setup/движение/lifetime/arena XY±/коллизия/despawn lifetime+вылет).")
 	quit(0)
