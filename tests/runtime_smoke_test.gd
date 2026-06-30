@@ -1437,7 +1437,9 @@ func _initialize() -> void:
 		push_error("Expected the attribute purchase to spend money.")
 		quit(1)
 		return
-	var expected_round_duration := (30.0 + float(main.get("route_stage")) * 3.0) * float((main.call("ascension_difficulty") as Dictionary).get("round_duration_mult", 1.0))
+	# SCRUM-785: обычный бой = 60с база (+3/стадию до max), с учётом Возвышения.
+	var base_round := minf(float(main.BASE_ROUND_DURATION) + float(main.get("route_stage")) * float(main.ROUND_DURATION_STEP), float(main.ROUND_DURATION_MAX))
+	var expected_round_duration := base_round * float((main.call("ascension_difficulty") as Dictionary).get("round_duration_mult", 1.0))
 	if abs(float(main.call("_current_round_duration")) - expected_round_duration) > 0.01:
 		push_error("Expected next round duration to include stage and ascension scaling.")
 		quit(1)

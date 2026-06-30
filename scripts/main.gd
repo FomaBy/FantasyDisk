@@ -20,9 +20,11 @@ extends Node2D
 @export var elite_commander_scene: PackedScene
 @export var pickup_scene: PackedScene
 
-const BASE_ROUND_DURATION := 30.0
+const BASE_ROUND_DURATION := 60.0
 const ROUND_DURATION_STEP := 3.0
-const ROUND_DURATION_MAX := 60.0
+const ROUND_DURATION_MAX := 90.0
+# SCRUM-785: элитка и босс — таймер «убей или проиграл» на 5 минут.
+const ELITE_BOSS_ROUND_DURATION := 300.0
 const ROUTE_STEPS_TO_BOSS := 10
 const ACT_COUNT := 3
 const ACT_SCALING_STAGE_OFFSET := 4
@@ -211,21 +213,21 @@ const SPAWN_EDGE_PADDING := 72.0
 const SPAWN_PLAYER_SAFE_RADIUS := 420.0  # SCRUM-518: чуть шире на просторной арене (4096×2304) для комфорта старта
 const SMALL_PACK_CHANCE := 0.22
 const WAVE_SETTINGS := {
-	"base_spawn_count": 2,
+	"base_spawn_count": 4,
 	"spawn_count_per_stage": 1,
 	"spawn_count_per_wave_step": 1,
 	"wave_step_size": 3,
-	"normal_spawn_limit": 5,
+	"normal_spawn_limit": 8,
 	"elite_spawn_limit": 3,
 	"boss_spawn_limit": 3,
-	"base_active_cap": 14,
+	"base_active_cap": 20,
 	"active_cap_per_stage": 5,
 	"active_cap_per_wave_step": 2,
 	"elite_active_cap": 12,
 	"boss_active_cap": 12,
-	"max_active_cap": 30,
-	"spawn_pause_min": 1.35,
-	"spawn_pause_max": 2.15,
+	"max_active_cap": 36,
+	"spawn_pause_min": 0.8,
+	"spawn_pause_max": 1.4,
 	"boss_spawn_pause_min": 2.0,
 	"boss_spawn_pause_max": 3.2,
 }
@@ -1097,8 +1099,8 @@ func _process(delta: float) -> void:
 	# SCRUM-502: суммарное время забега (только в активном бою, не в паузе — оба гарда выше).
 	add_run_time(delta)
 
-	if not boss_combat_active:
-		round_time_left -= delta
+	# SCRUM-785: таймер тикает во ВСЕХ боях, включая боссовый (5-минутный «убей или проиграл»).
+	round_time_left -= delta
 	spawn_cooldown -= delta
 
 	if spawn_cooldown <= 0.0:
@@ -1110,9 +1112,23 @@ func _process(delta: float) -> void:
 	combat._update_pickups(delta)
 	ui._update_hud()
 
-	if boss_combat_active and get_tree().get_nodes_in_group("bosses").is_empty():
-		combat._end_combat(true)
-	elif not boss_combat_active and round_time_left <= 0.0:
+	# SCRUM-785: условия победы/поражения по типу боя.
+	var timer_expired := round_time_left <= 0.0
+	if boss_combat_active:
+		# Босс: убит — мгновенная победа; таймер вышел с живым боссом — поражение.
+		if get_tree().get_nodes_in_group("bosses").is_empty():
+			combat._end_combat(true)
+		elif timer_expired:
+			combat._end_combat(false)
+	elif current_combat_type == "elite":
+		# Элитка: убита — победа (награда гейтится _elite_defeated в _end_combat);
+		# таймер вышел с живой элиткой — поражение.
+		if combat.is_elite_defeated():
+			combat._end_combat(true)
+		elif timer_expired:
+			combat._end_combat(false)
+	elif timer_expired:
+		# Обычный бой: выжил до конца таймера = победа.
 		combat._end_combat(true)
 
 

@@ -19,6 +19,11 @@ func _init(game_ref) -> void:
 	game = game_ref
 
 
+# SCRUM-785: достоверный сигнал «элитка убита в этом бою» (для win-by-kill в _process).
+func is_elite_defeated() -> bool:
+	return _elite_defeated
+
+
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game.reset_run_ascension()
 	# Босс-бой — тёмная струнная вариация; обычный бой — минстрельский эмбиент.
@@ -27,13 +32,15 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game._clear_world()
 	_setup_arena_world(is_boss_fight)
 
-	game.round_time_left = _current_round_duration()
-	game.spawn_cooldown = 0.0
-	game.spawn_wave_index = 0
-	game.active_spawn_edges.clear()
 	game.combat_active = true
 	game.boss_combat_active = is_boss_fight
 	game.current_combat_type = "boss" if is_boss_fight else combat_type
+	# SCRUM-785: длительность зависит от типа боя — выставляем после current_combat_type.
+	game.round_time_left = _current_round_duration()
+	# SCRUM-784: первая волна выходит почти мгновенно (наполняем экран в первую секунду).
+	game.spawn_cooldown = 0.1
+	game.spawn_wave_index = 0
+	game.active_spawn_edges.clear()
 	_elite_defeated = false  # SCRUM-528: чистый старт — без протечки из прошлого узла
 	game.ui._create_hud()
 
@@ -120,10 +127,11 @@ func _end_combat(victory: bool) -> void:
 
 	var was_boss_fight = game.boss_combat_active
 	var was_elite_fight := str(game.current_combat_type) == "elite"
-	# SCRUM-528: артефакт-награда элитного узла — только если элитка реально убита.
-	# Победа по таймеру с живой элиткой (round_time_left <= 0) даёт обычный
-	# победный флоу без артефакта. Снимаем значение здесь (до закрытия баннера),
-	# чтобы замыкание не зависело от последующей мутации поля.
+	# SCRUM-528/785: артефакт-награда элитного узла — только если элитка реально убита.
+	# С SCRUM-785 элитный бой завершается победой ТОЛЬКО при убийстве элитки
+	# (таймаут с живой элиткой = поражение), поэтому victory в элитке всегда влечёт
+	# награду. Флаг оставляем как двойную защиту. Снимаем значение здесь (до закрытия
+	# баннера), чтобы замыкание не зависело от последующей мутации поля.
 	var grant_elite_reward := was_elite_fight and _elite_defeated
 	var event_combat: Dictionary = game.pending_event_combat.duplicate(true)
 	game.combat_active = false
@@ -181,10 +189,17 @@ func _end_combat(victory: bool) -> void:
 	else:
 		# SCRUM-502: смерть — снять метрики-финалы из обновлённого снапшота + причину исхода.
 		game.capture_run_metrics_finals(game.run_player_snapshot)
+		# SCRUM-785: поражение по таймауту (5 минут вышли, элитка/босс ещё живы).
+		var timed_out: bool = float(game.round_time_left) <= 0.0
 		if str(game.run_metrics.get("outcome_reason", "")) == "":
 			if was_boss_fight:
 				var killer_boss := str(game.run_metrics.get("last_boss_name", "босс"))
-				game.run_metrics["outcome_reason"] = "Пал в бою с боссом: %s" % killer_boss
+				if timed_out:
+					game.run_metrics["outcome_reason"] = "Не успел убить босса за 5 минут: %s" % killer_boss
+				else:
+					game.run_metrics["outcome_reason"] = "Пал в бою с боссом: %s" % killer_boss
+			elif was_elite_fight and timed_out:
+				game.run_metrics["outcome_reason"] = "Не успел убить элиту за 5 минут"
 			else:
 				game.run_metrics["outcome_reason"] = "Пал в бою на этапе маршрута %d" % (game.route_stage + 1)
 		game.ui._show_death_screen()
@@ -416,9 +431,20 @@ func _next_spawn_cooldown() -> float:
 
 func _choose_wave_spawn_edges() -> void:
 	game.active_spawn_edges.clear()
-	var edge_count := 1
-	if game.boss_combat_active or game.current_combat_type == "elite" or game.route_scaling_stage() >= 2 or game.spawn_wave_index >= 4:
+	# SCRUM-784: ощущение окружения с первой секунды — минимум 2 края всегда.
+	var edge_count := 2
+	if game.boss_combat_active:
+		# Босс: оставляем как было (давление минионов не раздуваем — отдельный контур).
 		edge_count = 2
+	elif game.current_combat_type == "elite":
+		edge_count = 3 if game.spawn_wave_index >= 3 else 2
+	else:
+		# Обычный бой: до 3 краёв со 2-й стадии / поздних волн, до 4 на высоких стадиях.
+		if game.route_scaling_stage() >= 4 or game.spawn_wave_index >= 8:
+			edge_count = 4
+		elif game.route_scaling_stage() >= 2 or game.spawn_wave_index >= 4:
+			edge_count = 3
+	edge_count = mini(edge_count, 4)
 	var first_edge = game.rng.randi_range(0, 3)
 	game.active_spawn_edges.append(first_edge)
 	while game.active_spawn_edges.size() < edge_count:
@@ -1010,6 +1036,12 @@ func _restore_player_snapshot(player: Node) -> void:
 
 
 func _current_round_duration() -> float:
+	# SCRUM-785: элитка/босс — фиксированный 5-минутный «убей или проиграл» таймер.
+	# round_duration_mult (Возвышение) к нему НЕ применяем: окно убийства должно быть
+	# стабильным и предсказуемым (300с), а не сжиматься на высоких Возвышениях.
+	if game.boss_combat_active or game.current_combat_type == "elite":
+		return game.ELITE_BOSS_ROUND_DURATION
+	# Обычный бой: первый = 60с, далее +3/стадию до ROUND_DURATION_MAX, с учётом Возвышения.
 	var base: float = minf(game.BASE_ROUND_DURATION + game.route_scaling_stage() * game.ROUND_DURATION_STEP, game.ROUND_DURATION_MAX)
 	return base * float(game.ascension_difficulty()["round_duration_mult"])
 
