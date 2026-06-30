@@ -125,3 +125,16 @@ Acceptance (Design-source scope):
 Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
 2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-433
 снова `new` / `К выполнению`.
+
+## Codex Design Claim Audit / Release — 2026-06-30
+
+`codex-design-board-watcher` claim-first взял SCRUM-433 и проверил mirror/Jira
+историю. Новую Design-генерацию начинать нельзя и не нужно: Design-source scope
+уже записан выше как PASSED by Designer 2, accepted source paths и QA evidence
+присутствуют в репозитории.
+
+Оставшаяся работа — Animator/runtime integration: реальные idle/move кадры,
+SpriteFrames, Godot import/runtime hookup и animation/runtime smoke. Jira
+возвращена в `К выполнению`; Design claim снят, stale `В работе` owner не
+оставлен. Для очереди это должно идти как Animator/Codex follow-up, а не как
+новая Design/Codex генерация.
