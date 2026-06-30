@@ -49,3 +49,18 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smo
 ## Process Notes
 
 Before starting, Claude must sync `dev`, check dirty tree and verify no active owner overlaps the locked paths. Do not touch unrelated WIP. After completion: Jira -> local mirror -> checks -> intentional commit -> push.
+
+## QA-Вердикт
+Статус: PASSED
+
+Проверял claude-qa (2026-06-30) на чистом изолированном worktree от origin/dev HEAD (68a7a70c; коммит SCRUM-709 f60d4a15 — ancestor подтверждён), fdengine-семафор slots=1 (анти-OOM на фоне живого флота).
+
+Code review (`scripts/player.gd`): 22-ключевой дефолтный `run_modifiers` вынесен в единый `static _default_run_modifiers()`; оба пути (var-инициализатор и `configure_character`) вызывают его. Вынесенный литерал байт-идентичен прежним двум → behavior-neutral дедуп, drift-хазард устранён. Баланс/идентичность классов не тронуты.
+
+Гейты (все RC=0):
+- `res://tests/player_configure_reset_test.gd` → Player configure-reset test passed.
+- `res://tests/weapon_integrity_test.gd` → passed (17 classes, 51 weapons).
+- `res://tests/runtime_smoke_weapon_mechanics_test.gd` → Runtime weapon mechanics smoke suite passed.
+- `res://tests/runtime_smoke_test.gd` → Runtime smoke test passed (9795 files, dup-artifact guard OK).
+
+Acceptance: derived stats / equip / cleanup-on-swap покрыты новым тестом (var-init == configure == единый источник; транзиентный ключ сбрасывается при свапе; artifacts/level/xp/money/ult-charge/equipped_weapon обнуляются). → PASSED.
