@@ -1,11 +1,11 @@
 # BALANCE: Единая матрица релевантности атрибутов (attribute_relevance) — 2 основных / 8 второстепенных / 7 необязательных классов на каждый атрибут
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end (Balance)
 Контур: Claude
-Owner: unassigned
-Thread/Worker: n/a
+Owner: claude-backend
+Thread/Worker: claude-backend
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: User request
@@ -198,3 +198,47 @@ intelligence / perception / energy / knowledge / endurance / leadership) чер�
 - docs/design/systems/balance.md
 - docs/design/current_game_state.md
 - CHANGELOG.md
+
+## Результат реализации (claude-backend, 2026-06-30, коммит 50680940)
+
+Реализовано прямой матрицей релевантности (без консолидации до 17 — полный набор
+из 24 каноничных атрибутов сохранён; per-attribute правило 2/8/7 выполнено при N=24,
+per-class выходит ~2-3 primary / 10-12 secondary / 9-12 optional; решение задокументировано
+в `progression_balance.md`).
+
+Что сделано по AC:
+- **Канон-реестр** `CharacterData.ATTRIBUTE_REGISTRY` (24 атрибута: id/name/icon/value_type) —
+  единый источник правды; `LEVEL_UP_REWARDS` ссылается на attr из реестра. Реэкспорт в
+  `ProgressionData`.
+- **Матрица** `CharacterData.ATTRIBUTE_RELEVANCE` (24×17, primary/secondary/optional). Жёсткий
+  инвариант **2 primary / 8 secondary / 7 optional на атрибут** — проверяется
+  `tests/attribute_relevance_test.gd` (data-тест валит сборку при любом нарушении: счётчики,
+  разбиение всех 17 классов, отсутствие пересечений, реестр↔матрица↔награды).
+- **Осмысленность** (спот-чек): берсерк — damage/knockback/vampiric_amount; снайпер —
+  crit_chance/crit_damage/range; жрец — defense/aura_radius/buff_power; рыцарь —
+  max_health/defense/absorb; друид — aura_radius/summon_amount/regeneration.
+- **Численные описания**: убраны «+0.18 силы поддержки» → «+18% к силе аур/кличей»,
+  «+4 flat absorption» → «+4 к поглощению (каждый удар слабее на 4)», «+1.3 regeneration base»
+  → «+1.3 HP/сек», англо-тайтлы переведены. Карточка по-прежнему рисует before→after через
+  `_level_up_reward_preview` (живые числа текущего билда).
+- **Тексты согласованы**: glossary дополнен каноничными терминами атрибутов; codex_data.gd
+  деривит тексты из progression/stat_formulas (не дублирует строки) — правок не требовал.
+- **Правило наград**: `ProgressionData.weighted_level_up_selection` (делегируется из
+  `ui_screens._random_level_up_rewards`) — ≤1 optional и ≥1 primary/secondary в наборе из 3;
+  rare main-stat слот и capstone «Озарение» не-optional. Подтверждено тестом на 200 сэмплов ×
+  17 классов.
+- **Веса от матрицы**: `attribute_relevance_weight` primary 1.4 > secondary 0.7 >> optional 0.4
+  (optional держится > 0.3). Магнитуды специально занижены относительно первой версии
+  (2.4/1.0/0.4), которая раздула «идеальный» билд химика и пробила pool_dot-потолок (72070 >
+  70000); на 1.4/0.7/0.4 pool_dot вернулся к 52596/53388 ≤ 70000. `ATTRIBUTE_PRIORITIES`
+  (8 базовых) оставлен для редкого main-stat слота и pause-stats tooltips.
+
+Зелёные гейты (через `tools/godot_gate.py`, одиночный Godot):
+- `tests/attribute_relevance_test.gd` — PASS (24×17, инвариант 2/8/7 + правило наград).
+- `tests/runtime_smoke_test.gd` — PASS (включая level_up_reward_weight assertions).
+- `tests/runtime_smoke_ui_test.gd` — PASS.
+- `tests/pool_dot_runaway_gate.gd` — PASS (acid 52596, blast 53388 ≤ 70000).
+- `tests/berserk_dps_runaway_gate.gd` — PASS (20t=2179 ≤ 3600, 1t=428 ≤ 650).
+
+Примечание: `docs/design/systems/balance.md` из спеки фактически называется
+`docs/design/systems/progression_balance.md` — обновлён он.
