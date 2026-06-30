@@ -76,3 +76,31 @@ v2 source, который можно было бы честно принять �
 `pixellab-blocked`. Unblock: подключить PixelLab MCP для Codex или явно создать
 Jira override на non-PixelLab пайплайн, затем requeue Design/Codex или разделить
 Design source и Animator integration.
+
+## Blocker Refresh — Codex Design 2026-06-30
+
+SCRUM-434 снова был выдан Jira-pull после PM readiness/unhold. Текущий Jira
+definition of ready требует mandatory PixelLab character generation for
+`soldier` plus 8-direction idle/move source pack; старый legacy Soldier PNG/cutout
+набор не покрывает этот acceptance scope.
+
+Codex Design проверил live PixelLab доступ перед генерацией:
+- direct Codex tool discovery для `pixellab` вернул 0 exposed tools;
+- локальный PixelLab MCP bridge из Codex config стартует, `initialize` успешен;
+- `tools/list` возвращает 49 tools, включая `create_character`,
+  `create_character_state`, `animate_character`, `get_character`,
+  `list_characters`;
+- реальный вызов `list_characters(tags="soldier", limit=5)` возвращает
+  `401: Missing Authorization header`;
+- stderr bridge указывает на отсутствующий `AUTH_HEADER`.
+
+По активным `fantasydisk-asset-generator` и
+`fantasydisk-pixellab-animation-integrator` fallback на legacy
+`generate_asset.py`, OpenAI/image_gen, ручную дорисовку или не-PixelLab source
+запрещён без явного Jira override. Поэтому source/runtime ассеты не создавались,
+Godot smoke не запускался: runtime/assets/code не изменялись. Jira возвращена в
+`К выполнению` с labels `blocked` + `pixellab-blocked`; claim не удерживается.
+
+Unblock: настроить PixelLab MCP auth для Codex (`AUTH_HEADER="Bearer ..."` или
+эквивалентный безопасный секрет в окружении) либо добавить в Jira явный override
+на non-PixelLab/reuse pipeline с обновлёнными acceptance criteria.
