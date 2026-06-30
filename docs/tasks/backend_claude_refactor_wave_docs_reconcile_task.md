@@ -1,12 +1,12 @@
 # Refactor Wave: Documentation Reconcile After Code Cleanup Batch
 
 Jira: SCRUM-724
-Статус: new
+Статус: done
 Приоритет: P2
 Роль: Back-end / documentation quality
 Контур: Claude
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Backend / Claude
+Thread/Worker: claude-backend
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: PM/Codex по запросу пользователя на полный рефакторинг игры
