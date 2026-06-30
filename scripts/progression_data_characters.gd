@@ -111,7 +111,9 @@ const BASE_STATS := {
 		"perception": 5.0,
 		"energy": 7.0,
 		"knowledge": 6.0,
-		"endurance": 2.0,
+		"endurance": 3.0,  # SCRUM-783: 2.0→3.0 — поднять пол выживаемости (EHP ~34.6→~50,
+		# уровень aoe-стекла elementalist/chemist). Остаётся самым хрупким aoe-классом, но
+		# не умирает от одного касания. survival-tier/damage-таргеты НЕ затронуты (отдельный label).
 		"leadership": 5.0,
 	},
 	"guitarist": {

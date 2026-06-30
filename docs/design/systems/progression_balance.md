@@ -69,6 +69,34 @@ Tuning notes (наследие 504/506):
 - Endurance / Выносливость;
 - Leadership / Лидерство.
 
+### Survivability re-eval (SCRUM-783, 2026-06-30)
+
+Дочерний survivability-пасс волны пересмотра баланса (по `balance_reeval_2026_06.md`).
+Аудит зафиксировал EHP-разброс **5.9x** (floor dark_mage 34.6, ceiling knight 203/
+robot 185) — dark_mage умирал почти от одного касания (0.39x медианы ~88).
+
+Правка (только survivability-параметр, `progression_data_characters.gd::BASE_STATS`):
+- **dark_mage `endurance` 2.0 → 3.0**: EHP **34.6 → 50.4** (before→after, замер
+  `balance_harness`), теперь на уровне aoe-стекла elementalist 50.8 / chemist 51.2.
+  Остаётся самым хрупким aoe-классом (по-прежнему «glass cannon», 224 DPS 5T), но не
+  one-touch-truп. survival-tier «fragile» и damage-таргеты НЕ затронуты (это отдельный
+  hardcoded label в `CLASS_BUDGET_PROFILES`, не производное от endurance).
+
+Итог: EHP-spread **5.9x → 4.03x** (50.4 .. 203.3); dark_mage floor 0.39x → 0.57x медианы.
+
+**Танк-потолок (knight 203 / robot 185) ОСТАВЛЕН без правки — осознанно:** пробный
+trim endurance 10→9 нарушал damage-коридор `class_damage_table` (lvl20-optimum
+relative_score 1.103/1.105 > 1.10) — survivability-стат связан с damage-метрикой
+(срезо-зависимость, тот же класс блокеров 504/505/506/544). Танки при 185–203 EHP не
+«бессмертны» (survivability-гейт: TTD ≤ 600с, митигация < 98%), потолок — их роль.
+Trim танк-потолка отложен в совместный damage+survivability пасс с ре-деривацией
+коридора (нельзя сделать изолированно в этом тикете без поломки соседнего гейта).
+
+Гейты (все PASS): global_survivability_balance_smoke, survivability_scenario (формула
+EHP == боевой take_damage), comfort_band_cross_class (spread 1.13x — НЕ ухудшен),
+contact_damage_softcap, class_damage_table_3variants (коридор восстановлен),
+global_damage_balance_smoke, runtime_smoke_test.
+
 ## Derived Parameters
 
 Активные derived parameters:
