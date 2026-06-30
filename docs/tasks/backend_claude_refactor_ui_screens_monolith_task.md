@@ -87,3 +87,9 @@ Content may never overlap decorative frame texture/ornament. Text, icons, button
 
 Disk cleanup: рабочий worktree `/private/tmp/fsd_wt_scrum716` удалён после пуша;
 бэкап `/tmp/ui_screens_backup.gd` — временный, можно удалить.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+claude-qa, изолир. worktree от origin/dev (be3e2af7+923face6 — ancestor). Независимая верификация dead-code: имена всех 36 удалённых функций из диффа прогнаны grep по scripts/scenes/tests (вкл. call("_name") и .tscn) → 0 выживших ссылок. Импорт после удаления RC=0 (нет parse/SCRIPT ERROR). Поведение/раскладка/рамки не тронуты (только недостижимый код). Гейты RC=0: runtime_smoke_ui, ui_no_overlap_matrix, dark_fantasy_ui_theme, runtime_smoke. → PASSED.
