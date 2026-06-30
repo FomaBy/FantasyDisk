@@ -14,7 +14,43 @@ Final regenerated `build/character_balance_dps.csv` evidence:
 - Random-build best spreads are stable: `lvl20_random_1t` 1.620x and `lvl20_random_20t` 2.193x.
 - `summon_weapon_crowd_floor_test.gd` now uses deterministic budget estimates for the three summon/deploy floor checks: druid amulet 129.8/621.7, chemist homunculus 194.2/611.6, engineer sentry 139.7/648.5 (lvl1/lvl20 ideal 20t).
 
-Tuning notes:
+### Damage re-eval (SCRUM-782, 2026-06-30)
+
+Дочерний damage-пасс волны пересмотра баланса (по `balance_reeval_2026_06.md`).
+Свежий замер подтвердил: **damage-ось всё ещё удовлетворяет всем AC SCRUM-782 на
+тюнинге SCRUM-504/506** — дополнительные правки баланс-значений НЕ вносились
+(нет out-of-band метрики, и они риск-регрессивны на срезо-зависимом разбросе).
+
+AC-проверка (все выполнены тюнингом 504/506, см. числа выше):
+- best-weapon `lvl20_ideal_1t` spread без berserk = **1.980x ≤ 2.0x** (min
+  dark_mage/dark_wand 249.78, max assassin/chakrams 494.65). На пределе band, но в нём.
+- Целевые классы выше 0.75x пола, вне нижней четвёрки (guitarist 278.69, priest
+  269.21, robot 268.68, druid 274.22).
+- random-build spreads не ухудшены (`lvl20_random_1t` 1.620x, `lvl20_random_20t` 2.193x).
+- summon/deploy floor стабилен — свежий `summon_weapon_crowd_floor_test` дал те же
+  числа: druid/summon_amulet 129.8/621.7, chemist/homunculus_vial 194.2/611.6,
+  engineer/sentry 139.7/648.5 (lvl1/lvl20 ideal 20t).
+
+Свежие гейты (tools/godot_gate.py, Godot 4.7) — все PASS: global_damage_balance_smoke
+(combined ±25%, solo ±20%, worst CCT doctor/restore_potion/20 +22%),
+class_damage_table_3variants (lvl20-optimum в коридоре 0.90–1.10 → кросс-классовый
+spread ≈1.22x), summon_weapon_crowd_floor, berserk_dps_runaway (20t=2194≤3600,
+1t=484≤650). character_balance_csv НЕ гонялся (SIGABRT-флейк; 1.980x — из
+committed-evidence 504/506).
+
+**Известная структурная хрупкость (НЕ AC SCRUM-782, отложена):** budget-tuning
+форсирует output к таргету, поэтому ~16/51 пар уперты в budget-cap 2.800 (сырьё
+слишком слабое, нет запаса вниз), а summon/DoT-over-hitters душатся до mult 0.28–0.62
+(druid/summon_amulet raw +2344%, chemist/homunculus +719%). Это **идентичностная**, а
+не output-spread проблема — output-ось уже в band. Безопасный путь (для будущего
+пасса с рабочим арбитром): output-нейтральный подъём сырья cap-pinned оружия +
+смягчение over-hitter-формул тиков/призывов, с проверкой ре-нормировки в Python и
+полно-билдового CSV. Текущий CSV-арбитр (`character_balance_csv.gd`) SIGABRT-нестабилен
+под нагрузкой и не верифицирует срезо-зависимые выбросы — поэтому форс-ретюн здесь
+повторил бы блокер SCRUM-504/505/506/544 (PM-решение). Без верифицируемого арбитра
+правки не вносятся.
+
+Tuning notes (наследие 504/506):
 - `guitarist` keeps AoE/control identity but uses a fairer solo target.
 - `priest`, `robot`, and `knight` receive moderate solo/lvl20 growth support without breaching the class-kit 0.90..1.10 corridor.
 - `assassin` retains solo-class identity but loses the excessive lvl20 growth tail that was driving the non-berserk solo spread.
