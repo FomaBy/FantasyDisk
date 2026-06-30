@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Солдат» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: blocked
+Статус: new
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -104,3 +104,16 @@ Godot smoke не запускался: runtime/assets/code не изменяли
 Unblock: настроить PixelLab MCP auth для Codex (`AUTH_HEADER="Bearer ..."` или
 эквивалентный безопасный секрет в окружении) либо добавить в Jira явный override
 на non-PixelLab/reuse pipeline с обновлёнными acceptance criteria.
+
+## Unblocked — PixelLab MCP 2026-06-30
+
+PM/Codex cleanup rechecked PixelLab after the Codex config fix. The local
+`mcp-remote` bridge now starts with the Codex bundled `node` in `PATH`,
+`initialize` succeeds against `PixelLab MCP Server 0.2.0`, and authenticated
+`get_balance` returns the active subscription/generation balance. The previous
+`401 Missing Authorization header` / missing `AUTH_HEADER` blocker is stale.
+
+Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-434 remains
+`К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
+Already-open Codex threads may still need restart/new thread tool discovery to
+expose PixelLab tools. Disk cleanup: none created.

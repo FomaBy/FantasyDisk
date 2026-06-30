@@ -166,3 +166,16 @@ Codex config и отдаёт `tools/list` (`49` tools, включая `list_char
 runtime переменную `AUTH_HEADER` с валидным `Bearer ...` для PixelLab MCP либо
 добавить явный Jira override на non-PixelLab path / повторное использование
 старого Design-source handoff.
+
+## Unblocked — PixelLab MCP 2026-06-30
+
+PM/Codex cleanup rechecked PixelLab after the Codex config fix. The local
+`mcp-remote` bridge now starts with the Codex bundled `node` in `PATH`,
+`initialize` succeeds against `PixelLab MCP Server 0.2.0`, and authenticated
+`get_balance` returns the active subscription/generation balance. The previous
+`401 Missing Authorization header` / missing `AUTH_HEADER` blocker is stale.
+
+Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-431 remains
+`К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
+Already-open Codex threads may still need restart/new thread tool discovery to
+expose PixelLab tools. Disk cleanup: none created.
