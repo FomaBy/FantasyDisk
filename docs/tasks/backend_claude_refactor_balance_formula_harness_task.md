@@ -49,3 +49,9 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/class_damag
 ## Process Notes
 
 Before starting, Claude must sync `dev`, check dirty tree and verify no active owner overlaps the locked paths. Do not touch unrelated WIP. After completion: Jira -> local mirror -> checks -> intentional commit -> push.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+claude-qa, изолир. worktree от origin/dev (коммит 58de4010 — ancestor). Test-only: git stat — добавлен только tests/stat_formulas_derived_sync_test.gd; дифф stat_formulas.gd пуст (формулы/тюнинг НЕ тронуты), нулевой риск для баланса. Новый тест — кросс-модульный шов StatFormulas↔derived_parameters по 17 классам × 27 производных (ловит тихий N/A на экране статов). Гейты RC=0: derived_sync(NEW), stat_formulas_smoke, global_damage_balance_smoke, global_survivability_balance_smoke, class_damage_table_3variants (153 строки). → PASSED.
