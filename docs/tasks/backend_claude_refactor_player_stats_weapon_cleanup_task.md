@@ -1,7 +1,7 @@
 # Refactor Wave: Player Stats, Damage, Equip And Weapon Cleanup
 
 Jira: SCRUM-709
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / player quality
 Контур: Claude
