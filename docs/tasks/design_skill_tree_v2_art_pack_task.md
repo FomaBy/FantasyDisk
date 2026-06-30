@@ -1,6 +1,6 @@
 # Skill Tree v2 — Арт-пак дерева умений (PoE-стиль, пиксель-арт через Pixel Lab) — Design
 
-Статус: done
+Статус: new
 Роль: Design
 Контур: Claude
 Lane: claude
@@ -153,4 +153,21 @@ Labels: foma, design, claude
 
 ## QA-Вердикт
 
-(заполняется QA после сдачи)
+Статус: FAILED (2026-06-30)
+
+Проверено read-only на `dev`/`origin/dev` после коммита `178f7bfb`:
+- набор файлов `assets/sprites/ui/skill_tree/` присутствует, PNG + `.import` пары на месте;
+- `.import` sidecars валидны для texture import (`compress/mode=0`, `mipmaps/generate=false`);
+- документированные размеры совпадают с фактическими PNG;
+- `tests/runtime_smoke_ui_test.gd` — PASS (ассеты пока не интегрированы).
+
+Блокер к приёмке:
+- `assets/sprites/ui/skill_tree/bg_canvas.png` полностью opaque (`transparent=0.00%`), содержит
+  baked checkerboard border вместо прозрачного фона.
+- `assets/sprites/ui/skill_tree/node_keystone_allocated.png`,
+  `node_keystone_available.png`, `node_keystone_locked.png` полностью opaque, углы alpha=255:
+  round keystone nodes будут рендериться серыми квадратами.
+- Native-size spec неполная: не указан 1080p target size / scale factor / aspect ratio для каждого
+  ассета, как требует правило размеров UI-ассетов.
+
+Вердикт: FAILED, вернуть в работу. Disk cleanup: none created; чужой untracked WIP не трогался.
