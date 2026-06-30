@@ -91,3 +91,18 @@ Locked paths: scripts/combat_director.gd; scripts/main.gd (WAVE_SETTINGS бло�
 - Не спавнить врагов в player safe radius (420px) — сохранить проверку.
 - Файл main.gd на старте уже dirty (рабочее состояние dev) — делать точечные правки,
   не затирать чужие хунки.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-06-30 · QA: claude-qa
+
+Проверено на HEAD origin/dev (commit 36b05c66):
+- `WAVE_SETTINGS` (scripts/main.gd): base_spawn_count 2→4, normal_spawn_limit 5→8,
+  base_active_cap 14→20, max_active_cap 30→36, spawn_pause 1.35/2.15→0.8/1.4 — соответствует спеке.
+- `_start_combat` (combat_director.gd): стартовый spawn_cooldown=0.1 → первая волна почти мгновенно.
+- `_choose_wave_spawn_edges`: минимум 2 края всегда, элитка 2-3, обычный бой до 3-4 на поздних
+  стадиях/волнах; player safe radius (420px) и edge padding сохранены — нет спавна в лицо/за краем.
+- Боссовый контур плотности существенно не изменён (edge_count=2, отдельные boss-параметры).
+- Caps жёстко ограничены (max 36) → runaway невозможен.
+- Гейты зелёные (один инстанс Godot): runtime_smoke_test PASS, runtime_smoke_combat_test PASS,
+  runtime_smoke_boss_elite_test PASS, boss_elite_ttk_gate PASS.

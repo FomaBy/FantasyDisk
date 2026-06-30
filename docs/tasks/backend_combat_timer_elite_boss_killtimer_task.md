@@ -98,3 +98,22 @@ Locked paths: scripts/main.gd (_process win/lose + round-duration консты);
 - Ascension `round_duration_mult`: решить, применять ли к 300с (рекомендуется не
   уменьшать ниже разумного; зафиксировать решение в отчёте).
 - main.gd на старте dirty — точечные правки, не затирать чужие хунки.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-06-30 · QA: claude-qa
+
+Проверено на HEAD origin/dev (commit 36b05c66):
+- Консты (main.gd): BASE_ROUND_DURATION 30→60, ROUND_DURATION_MAX 60→90,
+  ELITE_BOSS_ROUND_DURATION=300 — обычный бой 60с база (+3/стадию до 90).
+- `_current_round_duration` (combat_director.gd): elite/boss → фикс 300с БЕЗ round_duration_mult
+  (стабильное окно убийства); обычный — base*mult.
+- `_process` (main.gd): таймер тикает во ВСЕХ боях; босс — убит→победа / таймаут→поражение;
+  элитка — is_elite_defeated()→победа / таймаут→поражение; обычный — таймаут→победа.
+- `_end_combat`: ветка поражения по таймауту даёт outcome_reason («Не успел убить босса/элиту
+  за 5 минут») + штатный death screen + capture_run_metrics_finals.
+- Награда-артефакт элитки гейтится `_elite_defeated` (двойная защита).
+- TTK-баланс: boss_elite_ttk_gate показывает elite TTK ~2.5-4.2с, boss ~4.6-9.7с (ускоренная
+  модель) — глубоко внутри 300с-окна, ложных поражений по таймеру в нормальной игре нет.
+- Гейты зелёные (один инстанс Godot): runtime_smoke_test PASS, runtime_smoke_combat_test PASS,
+  runtime_smoke_boss_elite_test PASS, boss_elite_ttk_gate PASS.
