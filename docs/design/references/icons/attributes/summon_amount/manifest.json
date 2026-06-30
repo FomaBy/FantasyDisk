@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "summon_amount",
+  "runtime_target": "attr_summon_amount.png",
+  "source_image": "summon_amount_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: three tiny spectral minion wisps emerging from a summoner seal, summon count.",
+  "created_at": "2026-06-30T08:36:46.463721+00:00",
+  "alpha_clean_image": "summon_amount_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_summon_amount.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "7be7ac4b098f829fa95fec642420e826af64341ad2a9106480d92f1c38b2c1ae",
+  "alpha_nonzero_pixels": 15827,
+  "content_bbox": [
+    56,
+    37,
+    199,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:25.274225+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "aura_radius",
+  "runtime_target": "attr_aura_radius.png",
+  "source_image": "aura_radius_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a blue protective aura halo expanding around a small standing sigil, aura radius.",
+  "created_at": "2026-06-30T08:36:46.466153+00:00",
+  "alpha_clean_image": "aura_radius_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_aura_radius.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "411834aeaf13407bb0a521313bf9fd5b5b79c81a6c8840d0cb7493bdb7c1e206",
+  "alpha_nonzero_pixels": 25027,
+  "content_bbox": [
+    36,
+    36,
+    219,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:30.676955+00:00"
+}

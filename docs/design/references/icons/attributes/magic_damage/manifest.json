@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "magic_damage",
+  "runtime_target": "attr_magic_damage.png",
+  "source_image": "magic_damage_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a violet arcane firebolt gem exploding into magical shards, spell damage.",
+  "created_at": "2026-06-30T08:36:46.461137+00:00",
+  "alpha_clean_image": "magic_damage_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_magic_damage.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "42acb03a7693d4f5013c22bce01d890b493a22805a4b48a54402b64fc0e3e223",
+  "alpha_nonzero_pixels": 15690,
+  "content_bbox": [
+    44,
+    36,
+    212,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:18.356294+00:00"
+}

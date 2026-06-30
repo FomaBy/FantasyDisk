@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "projectile_speed",
+  "runtime_target": "attr_projectile_speed.png",
+  "source_image": "projectile_speed_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a bright arrow comet with blue flame trail crossing diagonally, projectile velocity.",
+  "created_at": "2026-06-30T08:36:46.466775+00:00",
+  "alpha_clean_image": "projectile_speed_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_projectile_speed.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "440891d8df82e8345080ae2e4aa72e94981f883b196326429ae49570565e6352",
+  "alpha_nonzero_pixels": 9649,
+  "content_bbox": [
+    45,
+    36,
+    211,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:32.612305+00:00"
+}

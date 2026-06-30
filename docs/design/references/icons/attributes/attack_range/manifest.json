@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "attack_range",
+  "runtime_target": "attr_attack_range.png",
+  "source_image": "attack_range_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a bow sight line stretching from an arrowhead to a distant glowing mark, attack reach.",
+  "created_at": "2026-06-30T08:36:46.463923+00:00",
+  "alpha_clean_image": "attack_range_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_attack_range.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "876a56808bb382a48c3ccfda0061c4303a44963fd0e45c5644a7515f3d0643d5",
+  "alpha_nonzero_pixels": 23863,
+  "content_bbox": [
+    36,
+    37,
+    220,
+    218
+  ],
+  "postprocessed_at": "2026-06-30T09:11:25.822105+00:00"
+}

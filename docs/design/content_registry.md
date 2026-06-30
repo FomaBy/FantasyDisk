@@ -790,17 +790,24 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `move_speed` | Скорость движения | `assets/sprites/ui/icons/derived/attr_move_speed.png` |
 | `dodge` | Уворот | `assets/sprites/ui/icons/derived/attr_dodge.png` |
 | `defense` | Защита | `assets/sprites/ui/icons/derived/attr_defense.png` |
+| `absorb` | Поглощение | `assets/sprites/ui/icons/derived/attr_absorb.png` |
 | `health_point` | Максимальное здоровье | `assets/sprites/ui/icons/derived/attr_health_point.png` |
+| `knockback_distance` | Дистанция отталкивания | `assets/sprites/ui/icons/derived/attr_knockback_distance.png` |
+| `summon_amount` | Количество призывов | `assets/sprites/ui/icons/derived/attr_summon_amount.png` |
 | `attack_range` | Дальность атаки | `assets/sprites/ui/icons/derived/attr_attack_range.png` |
-| `aoe_radius` | Радиус AoE | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
-| `pickup_radius` | Радиус подбора | `assets/sprites/ui/icons/derived/attr_pickup_radius.png` |
+| `range_multiplier` | Множитель дальности | `assets/sprites/ui/icons/derived/attr_range_multiplier.png` |
+| `regeneration` | Регенерация | `assets/sprites/ui/icons/derived/attr_regeneration.png` |
+| `vampiric_amount` | Вампиризм | `assets/sprites/ui/icons/derived/attr_vampiric_amount.png` |
+| `vampiric_chance` | Шанс вампиризма | `assets/sprites/ui/icons/derived/attr_vampiric_chance.png` |
 | `dot_damage` | Урон DoT | `assets/sprites/ui/icons/derived/attr_dot_damage.png` |
 | `dot_speed` | Скорость тиков DoT | `assets/sprites/ui/icons/derived/attr_dot_speed.png` |
-| `projectile_speed` | Скорость снарядов | `assets/sprites/ui/icons/derived/attr_projectile_speed.png` |
+| `aoe_radius` | Радиус AoE | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
 | `aura_radius` | Радиус ауры | `assets/sprites/ui/icons/derived/attr_aura_radius.png` |
 | `buff_power` | Сила баффов | `assets/sprites/ui/icons/derived/attr_buff_power.png` |
 | `knockback_power` | Сила отталкивания | `assets/sprites/ui/icons/derived/attr_knockback_power.png` |
-| `summon_amount` | Количество призывов | `assets/sprites/ui/icons/derived/attr_summon_amount.png` |
+| `projectile_speed` | Скорость снарядов | `assets/sprites/ui/icons/derived/attr_projectile_speed.png` |
+| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` |
+| `pickup_radius` | Радиус подбора | `assets/sprites/ui/icons/derived/attr_pickup_radius.png` |
 
 ### HUD Ресурсы
 
@@ -809,7 +816,7 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `hp` | HP | `assets/sprites/ui/hud/hud_hp.png` |
 | `xp` | Опыт | `assets/sprites/ui/hud/hud_xp.png` |
 | `money` | Деньги | `assets/sprites/ui/hud/hud_money.png` |
-| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_buff_power.png` fallback via `UIIconRegistry` |
+| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` via `UIIconRegistry` |
 
 `scripts/ui_icon_registry.gd` кэширует загруженные Texture2D по пути; новые UI места должны брать иконки через registry, а не делать отдельный `load()`.
 
@@ -1055,7 +1062,7 @@ SCRUM-269 read-only asset/image cleanup audit 2026-06-14: отчет `docs/desig
 | Группа | ID | Каноническая папка | Статус |
 | --- | --- | --- | --- |
 | Базовые характеристики | `strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership` | `assets/sprites/ui/icons/stats/` | Реализовано |
-| Производные параметры | `damage`, `magic_damage`, `sound_wave_damage`, `attack_speed`, `crit_chance`, `crit_damage_multiplier`, `move_speed`, `dodge`, `defense`, `health_point`, `attack_range`, `aoe_radius`, `pickup_radius`, `dot_damage`, `dot_speed`, `projectile_speed`, `aura_radius`, `buff_power`, `knockback_power`, `summon_amount` | `assets/sprites/ui/icons/derived/` | Реализовано |
+| Производные параметры | `damage`, `magic_damage`, `sound_wave_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
 | HUD ресурсы | `hp`, `xp`, `money` | `assets/sprites/ui/hud/` | Реализовано |
 
 Escape stats menu, level-up reward cards и combat HUD должны брать иконки только через этот registry. Финальный PNG asset pack реализован; code-native fallback не является целевым визуальным состоянием.

@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "pickup_radius",
+  "runtime_target": "attr_pickup_radius.png",
+  "source_image": "pickup_radius_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a magnetized satchel attracting gold coins and tiny gems in circular orbit, pickup radius.",
+  "created_at": "2026-06-30T08:36:46.467170+00:00",
+  "alpha_clean_image": "pickup_radius_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_pickup_radius.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "fdc686f514850de7610d2f331513f43fbb911c32b9f475e1b8ad9709d39e8d3c",
+  "alpha_nonzero_pixels": 17405,
+  "content_bbox": [
+    36,
+    42,
+    220,
+    213
+  ],
+  "postprocessed_at": "2026-06-30T09:11:33.760372+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "vampiric_amount",
+  "runtime_target": "attr_vampiric_amount.png",
+  "source_image": "vampiric_amount_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a dark amulet pulling crimson-violet life essence into a silver heart gem, life-drain amount, not gore.",
+  "created_at": "2026-06-30T08:36:46.464557+00:00",
+  "alpha_clean_image": "vampiric_amount_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_vampiric_amount.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "a90a17ae82e8a84c2cde90865cf8870ee3291a0739bd39788bde555ce00e3a68",
+  "alpha_nonzero_pixels": 15465,
+  "content_bbox": [
+    59,
+    36,
+    197,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:27.610117+00:00"
+}
