@@ -51,3 +51,21 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/character_s
 ## Process Notes
 
 Before starting, Claude must sync `dev`, check dirty tree and verify no active owner overlaps the locked paths. Do not touch unrelated WIP. After completion: Jira -> local mirror -> checks -> intentional commit -> push.
+
+## QA-Вердикт
+Статус: PASSED
+
+Проверял claude-qa (2026-06-30) на чистом изолир. worktree от origin/dev HEAD, fdengine slots=1. Коммиты `923bd3f6` (гейт+док) + `3adb5298` (mirror) — ancestor origin/dev подтверждён.
+
+Scope: коммит test-only + doc (`full_frame_registry_integrity_test.gd` +71 +uid, `animation.md` +23). Анимация-рантайм/арт/клипы НЕ тронуты.
+
+Code review нового гейта: итерирует ВСЕ записи `FULL_FRAME_SPRITEFRAMES`, грузит через тот же рантайм-путь `sprite_frames_for` (ловит битый/пустой .tres, который `ResourceLoader.exists` пропустит), проверяет SpriteFrames + ≥1 анимацию + типы полей (scale/position=Vector2, source_faces_left=bool), вакуум-гард (<20 записей → fail) и контракт безопасного фолбэка (незарегистр. id → null без краша). Прямо закрывает найденный пробел (протухший путь молча → null, потеря визуала без улики) и AC (missing resources fail safely WITH evidence).
+
+Гейты (fdengine slots=1, все pass):
+- `full_frame_registry_integrity_test` → passed (**30 записей**, все грузятся с ≥1 анимацией; 0 missing).
+- `animation_smoke_test` → passed.
+- `sliced_rig_manifest_smoke_test` → passed (34 рига, 17 персонажей).
+- `skeletal_rig_rest_det_smoke_test` → passed (40 bones, 2 rigs).
+- `character_sprite_registry_alignment_test` → passed (17 персонажей).
+
+→ PASSED.
