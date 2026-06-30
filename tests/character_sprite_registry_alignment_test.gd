@@ -19,7 +19,7 @@ const EXPECTED_SPRITES := {
 	"doctor": "res://assets/sprites/characters/full_frame/doctor_pixellab/doctor_idle_south.png",
 	"chemist": "res://assets/sprites/characters/full_frame/chemist/chemist_idle_00.png",
 	"knight": "res://assets/sprites/characters/full_frame/knight/knight_idle_00.png",
-	"druid": "res://assets/sprites/characters/full_frame/druid/druid_idle_00.png",
+	"druid": "res://assets/sprites/characters/full_frame/druid_pixellab/druid_idle_south.png",
 }
 
 
@@ -40,7 +40,7 @@ func _initialize() -> void:
 			errors.append("%s sprite_path mismatch: got %s, expected %s." % [character_id, actual, expected])
 		if actual.is_empty() or not ResourceLoader.exists(actual):
 			errors.append("%s sprite_path does not exist: %s." % [character_id, actual])
-		if character_id == "berserk" or character_id == "dark_mage" or character_id == "doctor" or character_id == "guitarist" or character_id == "priest":
+		if character_id == "berserk" or character_id == "dark_mage" or character_id == "doctor" or character_id == "druid" or character_id == "guitarist" or character_id == "priest":
 			if not actual.contains("/full_frame/%s_pixellab/" % character_id) or not actual.ends_with("_idle_south.png"):
 				errors.append("%s sprite_path must point to the PixelLab south idle portrait, got %s." % [character_id, actual])
 		elif not actual.contains("/full_frame/%s/" % character_id) or not actual.ends_with("_idle_00.png"):

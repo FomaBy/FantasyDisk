@@ -1,0 +1,107 @@
+{
+  "source_dir": "assets/sprites/characters/pixellab/druid",
+  "runtime_dir": "assets/sprites/characters/full_frame/druid_pixellab",
+  "directions": {
+    "south": {
+      "idle_source": "assets/sprites/characters/pixellab/druid/druid_idle_south.png",
+      "idle_runtime": "assets/sprites/characters/full_frame/druid_pixellab/druid_idle_south.png",
+      "move_frames": [
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south_00.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south_01.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south_02.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south_03.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south_04.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south_05.png"
+      ]
+    },
+    "south-east": {
+      "idle_source": "assets/sprites/characters/pixellab/druid/druid_idle_south-east.png",
+      "idle_runtime": "assets/sprites/characters/full_frame/druid_pixellab/druid_idle_south-east.png",
+      "move_frames": [
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-east_00.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-east_01.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-east_02.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-east_03.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-east_04.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-east_05.png"
+      ]
+    },
+    "east": {
+      "idle_source": "assets/sprites/characters/pixellab/druid/druid_idle_east.png",
+      "idle_runtime": "assets/sprites/characters/full_frame/druid_pixellab/druid_idle_east.png",
+      "move_frames": [
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_east_00.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_east_01.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_east_02.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_east_03.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_east_04.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_east_05.png"
+      ]
+    },
+    "north-east": {
+      "idle_source": "assets/sprites/characters/pixellab/druid/druid_idle_north-east.png",
+      "idle_runtime": "assets/sprites/characters/full_frame/druid_pixellab/druid_idle_north-east.png",
+      "move_frames": [
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-east_00.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-east_01.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-east_02.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-east_03.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-east_04.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-east_05.png"
+      ]
+    },
+    "north": {
+      "idle_source": "assets/sprites/characters/pixellab/druid/druid_idle_north.png",
+      "idle_runtime": "assets/sprites/characters/full_frame/druid_pixellab/druid_idle_north.png",
+      "move_frames": [
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north_00.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north_01.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north_02.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north_03.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north_04.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north_05.png"
+      ]
+    },
+    "north-west": {
+      "idle_source": "assets/sprites/characters/pixellab/druid/druid_idle_north-west.png",
+      "idle_runtime": "assets/sprites/characters/full_frame/druid_pixellab/druid_idle_north-west.png",
+      "move_frames": [
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-west_00.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-west_01.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-west_02.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-west_03.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-west_04.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_north-west_05.png"
+      ]
+    },
+    "west": {
+      "idle_source": "assets/sprites/characters/pixellab/druid/druid_idle_west.png",
+      "idle_runtime": "assets/sprites/characters/full_frame/druid_pixellab/druid_idle_west.png",
+      "move_frames": [
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_west_00.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_west_01.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_west_02.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_west_03.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_west_04.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_west_05.png"
+      ]
+    },
+    "south-west": {
+      "idle_source": "assets/sprites/characters/pixellab/druid/druid_idle_south-west.png",
+      "idle_runtime": "assets/sprites/characters/full_frame/druid_pixellab/druid_idle_south-west.png",
+      "move_frames": [
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-west_00.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-west_01.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-west_02.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-west_03.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-west_04.png",
+        "assets/sprites/characters/full_frame/druid_pixellab/druid_move_south-west_05.png"
+      ]
+    }
+  },
+  "totals": {
+    "source_png_count": 56,
+    "runtime_png_count": 56,
+    "errors": []
+  }
+}

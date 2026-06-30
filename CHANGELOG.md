@@ -5,6 +5,13 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-426: PixelLab Druid 8-direction character pack with static idle
+  rotations and six-frame `walking-6-frames` movement rows for all directions.
+  Source PNGs and manifest live under `assets/sprites/characters/pixellab/druid/`,
+  normalized `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/druid_pixellab/`, and
+  `druid_spriteframes.tres` now exposes directional idle/move/walk rows for
+  combat and Hero Select preview rotation.
 - SCRUM-705: PixelLab Doctor full redraw at the new 240-250 px runtime scale.
   Generated a fresh PixelLab plague-doctor source character
   (`3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`), replaced the live source pack under
