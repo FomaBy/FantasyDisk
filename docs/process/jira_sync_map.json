@@ -3052,5 +3052,10 @@
   "key": "SCRUM-684",
   "status": "Готово",
   "desc_hash": "47b7bb7d86fff14fa6e7abaf143bb98f"
+ },
+ "backend_esc_character_board_left_menu_task.md": {
+  "key": "SCRUM-693",
+  "status": "К выполнению",
+  "desc_hash": "fa63a91ef7d8baa577010a651ecd16d0"
  }
 }
