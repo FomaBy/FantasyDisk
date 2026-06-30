@@ -1,11 +1,12 @@
 extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
-const FRAME_DIR := "res://assets/sprites/ui/frames/hero_select_pixellab/"
 const VIEWPORTS := [
 	Vector2i(1280, 720),
 	Vector2i(2560, 1440),
 ]
+const PREVIEW_SIZE := 250.0
+const SLOT_SIZE := 150.0
 
 
 func _initialize() -> void:
@@ -14,7 +15,7 @@ func _initialize() -> void:
 	await _assert_directional_preview("berserk")
 	await _assert_directional_preview("dark_mage")
 	await _assert_directional_preview("doctor")
-	print("Hero Select PixelLab layout smoke test passed.")
+	print("Hero Select minimal black layout smoke test passed.")
 	quit(0)
 
 
@@ -32,51 +33,70 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	await process_frame
 	await process_frame
 
-	_assert_texture_rect_path(main, "HS4PixelLabBackground", FRAME_DIR + "background.png")
-	_assert_panel_path(main, "HS4TitleFrame", FRAME_DIR + "frame_title.png")
-	_assert_panel_path(main, "HS4PortraitFrame", FRAME_DIR + "frame_portrait.png")
-	_assert_panel_path(main, "HS4DossierFrame", FRAME_DIR + "frame_dossier.png")
-	_assert_panel_path(main, "HS4RadarFrame", FRAME_DIR + "frame_radar.png")
-	_assert_panel_path(main, "HS4AscensionFrame", FRAME_DIR + "frame_ascension.png")
-	_assert_panel_path(main, "HS4CarouselFrame", FRAME_DIR + "frame_carousel.png")
-	_assert_button_path(main, "HS4BackButton", FRAME_DIR + "button_back.png")
-	_assert_button_path(main, "HS4ChooseButton", FRAME_DIR + "button_choose.png")
-	_assert_button_path(main, "AscensionMinusButton", FRAME_DIR + "button_asc_minus.png")
-	_assert_button_path(main, "AscensionPlusButton", FRAME_DIR + "button_asc_plus.png")
-	_assert_button_path(main, "HS4CarouselPrevButton", FRAME_DIR + "button_carousel_left.png")
-	_assert_button_path(main, "HS4CarouselNextButton", FRAME_DIR + "button_carousel_right.png")
+	var bg := main.find_child("HS4BlackBackground", true, false) as ColorRect
+	if bg == null or bg.color != Color.BLACK:
+		_fail("Expected Hero Select to use a pure black background at %s." % str(viewport_size))
+		return
+	if main.find_child("HS4Radar", true, false) != null or main.find_child("HS4RadarFrame", true, false) != null:
+		_fail("Hero Select must not render the old stat radar/windrose at %s." % str(viewport_size))
+		return
+	if main.find_child("HS4PixelLabBackground", true, false) != null:
+		_fail("Hero Select must not render the old PixelLab background at %s." % str(viewport_size))
+		return
+
+	var portrait := main.find_child("HS4Portrait", true, false) as TextureRect
+	if portrait == null or portrait.texture == null:
+		_fail("Expected HS4Portrait texture at %s." % str(viewport_size))
+		return
+	if not _size_close(portrait.get_global_rect().size, Vector2(PREVIEW_SIZE, PREVIEW_SIZE), 1.0):
+		_fail("Expected HS4Portrait to be 250x250 at %s, got %s." % [str(viewport_size), str(portrait.get_global_rect().size)])
+		return
+
+	var ascension := main.find_child("HS4AscensionFrame", true, false) as Control
+	var choose := main.find_child("HS4ChooseButton", true, false) as Button
+	var asc_mods := main.find_child("AscensionModsLabel", true, false) as Label
+	if ascension == null or choose == null or asc_mods == null or asc_mods.text.strip_edges() == "":
+		_fail("Expected visible ascension chooser with description at %s." % str(viewport_size))
+		return
+
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		var stat_button := main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
+		if stat_button == null or stat_button.tooltip_text.strip_edges() == "" or not stat_button.tooltip_text.contains("Влияет на"):
+			_fail("Expected hover tooltip for base stat %s at %s." % [stat_id, str(viewport_size)])
+			return
 
 	var carousel := main.find_child("HS4Carousel", true, false) as Control
 	if carousel == null:
 		_fail("Expected HS4Carousel at %s." % str(viewport_size))
 		return
+	var expected_slots := clampi(int(floor((carousel.get_global_rect().size.x - 108.0) / (SLOT_SIZE + 8.0))), 3, main.PROGRESSION_DATA.character_ids().size())
 	var visible_slots := []
 	for child in carousel.get_children():
-		var slot := child as TextureButton
-		if slot == null or not slot.visible:
+		var slot := child as Button
+		if slot == null or not slot.visible or not slot.name.begins_with("HS4CarouselSlot_"):
 			continue
-		if slot.texture_normal == null or slot.texture_normal.resource_path != FRAME_DIR + "frame_hero_slot.png":
-			_fail("Expected framed PixelLab hero slot at %s, got %s." % [str(viewport_size), slot.texture_normal.resource_path if slot.texture_normal != null else "<null>"])
+		if not _size_close(slot.get_global_rect().size, Vector2(SLOT_SIZE, SLOT_SIZE), 1.0):
+			_fail("Expected 150x150 carousel slot at %s, got %s." % [str(viewport_size), str(slot.get_global_rect().size)])
 			return
-		var portrait := slot.find_child("HS4CarouselPortrait_*", false, false) as TextureRect
-		if portrait == null or portrait.texture == null:
-			_fail("Expected carousel slot portrait child inside %s at %s." % [slot.name, str(viewport_size)])
+		var slot_portrait := slot.find_child("HS4CarouselPortrait_*", false, false) as TextureRect
+		if slot_portrait == null or slot_portrait.texture == null:
+			_fail("Expected carousel portrait child inside %s at %s." % [slot.name, str(viewport_size)])
 			return
-		if not slot.get_global_rect().encloses(portrait.get_global_rect()):
-			_fail("Expected carousel portrait to stay inside slot frame at %s." % str(viewport_size))
+		if not slot.get_global_rect().encloses(slot_portrait.get_global_rect()):
+			_fail("Expected carousel portrait to stay inside 150x150 slot at %s." % str(viewport_size))
 			return
 		visible_slots.append(slot)
-	if visible_slots.size() != 9:
-		_fail("Expected 9 visible Hero Select slots at %s, got %d." % [str(viewport_size), visible_slots.size()])
+	if visible_slots.size() != expected_slots:
+		_fail("Expected %d visible carousel slots at %s, got %d." % [expected_slots, str(viewport_size), visible_slots.size()])
 		return
 
-	var portrait_rect := (main.find_child("HS4Portrait", true, false) as Control).get_global_rect()
-	var radar_rect := (main.find_child("HS4Radar", true, false) as Control).get_global_rect()
-	var asc_rect := (main.find_child("HS4AscensionFrame", true, false) as Control).get_global_rect()
+	var portrait_rect := portrait.get_global_rect()
+	var dossier_rect := (main.find_child("HS4DossierFrame", true, false) as Control).get_global_rect()
+	var asc_rect := ascension.get_global_rect()
 	var carousel_rect := carousel.get_global_rect()
-	for pair in [[portrait_rect, radar_rect], [portrait_rect, carousel_rect], [radar_rect, asc_rect], [asc_rect, carousel_rect]]:
+	for pair in [[portrait_rect, dossier_rect], [dossier_rect, asc_rect], [portrait_rect, carousel_rect], [asc_rect, carousel_rect]]:
 		if (pair[0] as Rect2).grow(-2.0).intersects((pair[1] as Rect2).grow(-2.0)):
-			_fail("Expected major Hero Select PixelLab zones not to overlap at %s." % str(viewport_size))
+			_fail("Expected major Hero Select zones not to overlap at %s." % str(viewport_size))
 			return
 
 	main.queue_free()
@@ -109,30 +129,8 @@ func _assert_directional_preview(character_id: String) -> void:
 	await process_frame
 
 
-func _assert_texture_rect_path(main: Node, node_name: String, expected_path: String) -> void:
-	var rect := main.find_child(node_name, true, false) as TextureRect
-	if rect == null or rect.texture == null or rect.texture.resource_path != expected_path:
-		_fail("Expected %s to use %s." % [node_name, expected_path])
-
-
-func _assert_panel_path(main: Node, node_name: String, expected_path: String) -> void:
-	var panel := main.find_child(node_name, true, false) as Panel
-	if panel == null:
-		_fail("Expected panel %s." % node_name)
-		return
-	var style := panel.get_theme_stylebox("panel") as StyleBoxTexture
-	if style == null or style.texture == null or style.texture.resource_path != expected_path:
-		_fail("Expected %s to use %s." % [node_name, expected_path])
-
-
-func _assert_button_path(main: Node, node_name: String, expected_path: String) -> void:
-	var button := main.find_child(node_name, true, false) as Button
-	if button == null:
-		_fail("Expected button %s." % node_name)
-		return
-	var style := button.get_theme_stylebox("normal") as StyleBoxTexture
-	if style == null or style.texture == null or style.texture.resource_path != expected_path:
-		_fail("Expected %s to use %s." % [node_name, expected_path])
+func _size_close(actual: Vector2, expected: Vector2, tolerance: float) -> bool:
+	return absf(actual.x - expected.x) <= tolerance and absf(actual.y - expected.y) <= tolerance
 
 
 func _fail(message: String) -> void:

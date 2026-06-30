@@ -26,6 +26,9 @@ const HERO_SELECT_V4_DOSSIER := Rect2(0.288, 0.138, 0.362, 0.555)
 const HERO_SELECT_V4_RADAR := Rect2(0.715, 0.175, 0.230, 0.320)
 const HERO_SELECT_V4_CAROUSEL := Rect2(0.020, 0.735, 0.960, 0.215)
 const HERO_SELECT_V4_VISIBLE_SLOTS := 9
+const HERO_SELECT_MINIMAL_PREVIEW_SIZE := 250.0
+const HERO_SELECT_MINIMAL_SLOT_SIZE := 150.0
+const HERO_SELECT_MINIMAL_MIN_SLOTS := 3
 const HERO_SELECT_DOSSIER_SOURCE_SIZE := Vector2(1120.0, 1140.0)
 const HERO_SELECT_DOSSIER_SAFE_MARGINS := Vector4(126.0, 160.0, 126.0, 172.0)
 const HERO_SELECT_THUMBNAIL_SOURCE_SIZE := Vector2(1536.0, 255.0)
@@ -367,9 +370,14 @@ func _initialize() -> void:
 		push_error("Expected character select to use a fullscreen hero select root.")
 		quit(1)
 		return
-	# Выбор героя v4 native layout (SCRUM-470): live panels over the canonical hero_select backdrop.
-	if not _has_screen_background(main, "hero_select"):
-		push_error("Expected hero select v4 to use the canonical hero_select screen backdrop.")
+	# User redesign 2026-06-30: minimal black Hero Select with dossier, ascension chooser, and 150px carousel slots.
+	var v4_black_bg := main.find_child("HS4BlackBackground", true, false) as ColorRect
+	if v4_black_bg == null or v4_black_bg.color != Color.BLACK:
+		push_error("Expected hero select to use a pure black background.")
+		quit(1)
+		return
+	if _has_screen_background(main, "hero_select") or main.find_child("HS4PixelLabBackground", true, false) != null:
+		push_error("Expected minimal hero select to remove the old PixelLab hero_select backdrop.")
 		quit(1)
 		return
 	var v4_portrait := main.find_child("HS4Portrait", true, false) as TextureRect
@@ -377,14 +385,25 @@ func _initialize() -> void:
 		push_error("Expected hero select v4 to show the selected hero portrait.")
 		quit(1)
 		return
-	var v4_radar := main.find_child("HS4Radar", true, false) as Control
-	if v4_radar == null:
-		push_error("Expected hero select v4 to build a stat radar.")
+	var portrait_rect := v4_portrait.get_global_rect()
+	if absf(portrait_rect.size.x - HERO_SELECT_MINIMAL_PREVIEW_SIZE) > 1.0 or absf(portrait_rect.size.y - HERO_SELECT_MINIMAL_PREVIEW_SIZE) > 1.0:
+		push_error("Expected hero select portrait to stay 250x250, got %s." % str(portrait_rect))
+		quit(1)
+		return
+	if main.find_child("HS4Radar", true, false) != null:
+		push_error("Expected minimal hero select to remove the old stat radar.")
+		quit(1)
+		return
+	var v4_dossier := main.find_child("HS4DossierFrame", true, false) as Control
+	var v4_ascension := main.find_child("HS4AscensionFrame", true, false) as Control
+	if v4_dossier == null or v4_ascension == null:
+		push_error("Expected hero select to expose dossier and ascension panels.")
 		quit(1)
 		return
 	var v4_carousel := main.find_child("HS4Carousel", true, false) as Control
-	if v4_carousel == null or _visible_texture_button_count(v4_carousel) < HERO_SELECT_V4_VISIBLE_SLOTS:
-		push_error("Expected hero select v4 to expose a scrollable carousel with slots and arrows.")
+	var v4_slots: Array = _visible_hero_carousel_slot_buttons(v4_carousel) if v4_carousel != null else []
+	if v4_carousel == null or v4_slots.size() < HERO_SELECT_MINIMAL_MIN_SLOTS:
+		push_error("Expected hero select to expose a scrollable carousel with visible 150px slots.")
 		quit(1)
 		return
 	var v4_choose := main.find_child("HS4ChooseButton", true, false) as Button
@@ -6384,9 +6403,9 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	if int(delta_main.get("selected_ascension_level")) != delta_main.call("ascension_selectable_max", "berserk"):
 		_fail("Expected hero select to default ascension to the selected class selectable max.")
 		return
-	var asc_label := delta_main.find_child("AscensionLevelLabel", true, false) as Label
-	if asc_label == null or (not asc_label.text.contains("3 / 3") and not asc_label.text.contains("3/3")):
-		_fail("Expected hero select ascension label to reflect selectable max 3/3, got: %s" % (asc_label.text if asc_label != null else "<missing>"))
+	var asc_value_label := delta_main.find_child("HS4AscensionValue", true, false) as Label
+	if asc_value_label == null or (not asc_value_label.text.contains("3 / 3") and not asc_value_label.text.contains("3/3")):
+		_fail("Expected hero select ascension value to reflect selectable max 3/3, got: %s" % (asc_value_label.text if asc_value_label != null else "<missing>"))
 		return
 	var asc_mods_label := delta_main.find_child("AscensionModsLabel", true, false) as Label
 	if asc_mods_label == null:
@@ -6421,15 +6440,12 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	var next_hero_button: Button = null
 	for carousel_child in hero_carousel.get_children():
 		var carousel_nav_button := carousel_child as Button
-		if carousel_nav_button != null and carousel_nav_button.text == "►":
+		if carousel_nav_button != null and carousel_nav_button.name == "HS4CarouselNextButton":
 			next_hero_button = carousel_nav_button
 			break
 	var selected_dark_mage := false
 	for _page in range(ProgressionData.character_ids().size()):
-		for carousel_child in hero_carousel.get_children():
-			var hero_slot := carousel_child as TextureButton
-			if hero_slot == null or not hero_slot.visible:
-				continue
+		for hero_slot in _visible_hero_carousel_slot_buttons(hero_carousel):
 			hero_slot.pressed.emit()
 			await process_frame
 			if str(delta_main.get("selected_character_id")) == "dark_mage":
@@ -6753,11 +6769,10 @@ func _test_escape_navigation(main_scene: PackedScene) -> void:
 	if focus_owner == null or not str(focus_owner.name).begins_with("HS4CarouselSlot_"):
 		_fail("Expected hero select v4 to focus a visible hero carousel slot by default, got %s." % (str(focus_owner.name) if focus_owner != null else "<null>"))
 		return
-	var carousel_slot: TextureButton = null
-	for slot_child in v4_carousel.get_children():
-		if slot_child is TextureButton and (slot_child as TextureButton).visible:
-			carousel_slot = slot_child as TextureButton
-			break
+	var carousel_slot: Button = null
+	var carousel_slots := _visible_hero_carousel_slot_buttons(v4_carousel)
+	if not carousel_slots.is_empty():
+		carousel_slot = carousel_slots[0] as Button
 	if carousel_slot == null:
 		_fail("Expected hero select v4 carousel to expose clickable hero slots.")
 		return
@@ -6990,6 +7005,17 @@ func _visible_texture_button_count(parent: Node) -> int:
 		if texture_button != null and texture_button.visible and texture_button.get_global_rect().has_area():
 			count += 1
 	return count
+
+
+func _visible_hero_carousel_slot_buttons(parent: Node) -> Array:
+	var buttons: Array = []
+	if parent == null:
+		return buttons
+	for child in parent.get_children():
+		var button := child as Button
+		if button != null and button.visible and str(button.name).begins_with("HS4CarouselSlot") and button.get_global_rect().has_area():
+			buttons.append(button)
+	return buttons
 
 
 func _codex_v2_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
@@ -7823,13 +7849,13 @@ func _write_scrum437_attribute_offer_dump(panel: Control, offers: Container) -> 
 
 func _test_hero_select_radar_no_overlap_layouts(main_scene: PackedScene) -> void:
 	var dump_lines := PackedStringArray()
-	dump_lines.append("# Hero Select Radar Rect Dump")
+	dump_lines.append("# Hero Select Minimal Black Rect Dump")
 	dump_lines.append("")
 	for viewport_size in [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(2560, 1440)]:
 		await _assert_hero_select_radar_layout_at_size(main_scene, viewport_size, dump_lines)
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
-	var file := FileAccess.open("%s/hero_select_radar_rects.md" % qa_dir, FileAccess.WRITE)
+	var file := FileAccess.open("%s/hero_select_minimal_rects.md" % qa_dir, FileAccess.WRITE)
 	if file != null:
 		file.store_string("\n".join(dump_lines))
 		file.close()
@@ -7857,9 +7883,13 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 
 	var context := "hero select %s" % str(viewport_size)
 	var hero_screen := hero_main.find_child("HeroSelectScreen", true, false) as Control
+	var black_bg := hero_main.find_child("HS4BlackBackground", true, false) as ColorRect
 	var radar := hero_main.find_child("HS4Radar", true, false) as Control
 	var radar_title := hero_main.find_child("HeroStatRadarTitle", true, false) as Control
 	var large_portrait := hero_main.find_child("HS4Portrait", true, false) as TextureRect
+	var dossier_panel := hero_main.find_child("HS4DossierFrame", true, false) as Control
+	var ascension_panel := hero_main.find_child("HS4AscensionFrame", true, false) as Control
+	var stats_grid := hero_main.find_child("HS4StatsGrid", true, false) as GridContainer
 	var asc_label := hero_main.find_child("AscensionLevelLabel", true, false) as Control
 	var asc_mods := hero_main.find_child("AscensionModsLabel", true, false) as Control
 	var choose_button := hero_main.find_child("HS4ChooseButton", true, false) as Control
@@ -7867,46 +7897,50 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var back_button := hero_main.find_child("HS4BackButton", true, false) as Control
 	if back_button == null:
 		back_button = hero_main.find_child("HeroSelectBackButton", true, false) as Control
-	if hero_screen == null or radar == null or large_portrait == null or asc_label == null or asc_mods == null or choose_button == null or thumbnail_strip == null or back_button == null:
-		_fail("Expected native hero select v4 portrait/radar/ascension/carousel/back nodes at %s." % context)
+	if hero_screen == null or black_bg == null or large_portrait == null or dossier_panel == null or ascension_panel == null or stats_grid == null or asc_label == null or asc_mods == null or choose_button == null or thumbnail_strip == null or back_button == null:
+		_fail("Expected minimal hero select portrait/dossier/ascension/carousel/back nodes at %s." % context)
+		return
+	if black_bg.color != Color.BLACK:
+		_fail("Expected minimal hero select to use pure black background at %s." % context)
+		return
+	if radar != null:
+		_fail("Expected minimal hero select to remove the old stat radar at %s." % context)
 		return
 	if radar_title != null:
 		_fail("Expected hero stat radar title to be removed at %s." % context)
 		return
-	if not _has_screen_background(hero_main, "hero_select"):
-		_fail("Expected native hero select v4 to use the hero_select backdrop at %s." % context)
+	if _has_screen_background(hero_main, "hero_select") or hero_main.find_child("HS4PixelLabBackground", true, false) != null:
+		_fail("Expected minimal hero select to remove the old hero_select backdrop at %s." % context)
 		return
 	var screen_rect := hero_screen.get_global_rect()
-	var radar_rect := radar.get_global_rect()
+	var dossier_rect := dossier_panel.get_global_rect()
+	var ascension_rect := ascension_panel.get_global_rect()
 	var portrait_image_rect := large_portrait.get_global_rect()
 	var thumbnail_rect := thumbnail_strip.get_global_rect()
 	dump_lines.append("## %s" % context)
 	dump_lines.append("- `HeroSelectScreen`: `%s`" % str(screen_rect))
 	dump_lines.append("- `%s`: `%s`" % [back_button.name, str(back_button.get_global_rect())])
 	dump_lines.append("- `HS4Portrait`: `%s`" % str(portrait_image_rect))
+	dump_lines.append("- `HS4DossierFrame`: `%s`" % str(dossier_rect))
+	dump_lines.append("- `HS4AscensionFrame`: `%s`" % str(ascension_rect))
 	dump_lines.append("- `AscensionLevelLabel`: `%s`" % str(asc_label.get_global_rect()))
 	dump_lines.append("- `AscensionModsLabel`: `%s`" % str(asc_mods.get_global_rect()))
 	dump_lines.append("- `HS4ChooseButton`: `%s`" % str(choose_button.get_global_rect()))
-	dump_lines.append("- `HS4Radar`: `%s`" % str(radar_rect))
 	dump_lines.append("- `HS4Carousel`: `%s`" % str(thumbnail_rect))
-	var thumbnail_buttons := []
-	for child in thumbnail_strip.get_children():
-		var thumb := child as TextureButton
-		if thumb != null and thumb.visible:
-			thumbnail_buttons.append(thumb)
-	if thumbnail_buttons.size() != HERO_SELECT_V4_VISIBLE_SLOTS:
-		_fail("Expected %d visible hero thumbnail buttons at %s, got %d." % [HERO_SELECT_V4_VISIBLE_SLOTS, context, thumbnail_buttons.size()])
+	var thumbnail_buttons := _visible_hero_carousel_slot_buttons(thumbnail_strip)
+	if thumbnail_buttons.size() < HERO_SELECT_MINIMAL_MIN_SLOTS:
+		_fail("Expected at least %d visible hero carousel slots at %s, got %d." % [HERO_SELECT_MINIMAL_MIN_SLOTS, context, thumbnail_buttons.size()])
 		return
 	var first_thumb := thumbnail_buttons[0] as Control
 	var first_thumb_rect := first_thumb.get_global_rect()
 	dump_lines.append("- `HeroThumbnailSample`: min=`%s`, rect=`%s`" % [str(first_thumb.custom_minimum_size), str(first_thumb_rect)])
 	var viewport_rect := Rect2(Vector2.ZERO, Vector2(viewport_size)).grow(1.0)
-	for control in [back_button, large_portrait, radar, thumbnail_strip, choose_button, asc_label, asc_mods]:
+	for control in [back_button, large_portrait, dossier_panel, ascension_panel, thumbnail_strip, choose_button, asc_label, asc_mods]:
 		var rect := (control as Control).get_global_rect()
 		if not viewport_rect.encloses(rect):
 			_fail("Expected native hero select v4 control %s to stay on-screen at %s, got %s." % [(control as Control).name, context, rect])
 			return
-	var major_controls: Array = [large_portrait, radar, thumbnail_strip, choose_button]
+	var major_controls: Array = [large_portrait, dossier_panel, ascension_panel, thumbnail_strip]
 	for i in range(major_controls.size()):
 		for j in range(i + 1, major_controls.size()):
 			var a := (major_controls[i] as Control)
@@ -7914,11 +7948,13 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 			if a.get_global_rect().grow(-2.0).intersects(b.get_global_rect().grow(-2.0)):
 				_fail("Expected native hero select v4 controls not to overlap at %s: %s %s intersects %s %s." % [context, a.name, a.get_global_rect(), b.name, b.get_global_rect()])
 				return
-	var min_expected_thumb_width := 42.0
-	if viewport_size.x >= 1600:
-		min_expected_thumb_width = 60.0
-	if viewport_size.x >= 2560:
-		min_expected_thumb_width = 86.0
+	if absf(portrait_image_rect.size.x - HERO_SELECT_MINIMAL_PREVIEW_SIZE) > 1.0 or absf(portrait_image_rect.size.y - HERO_SELECT_MINIMAL_PREVIEW_SIZE) > 1.0:
+		_fail("Expected selected hero portrait to stay 250x250 at %s, got %s." % [context, portrait_image_rect])
+		return
+	if absf(first_thumb_rect.size.x - HERO_SELECT_MINIMAL_SLOT_SIZE) > 1.0 or absf(first_thumb_rect.size.y - HERO_SELECT_MINIMAL_SLOT_SIZE) > 1.0:
+		_fail("Expected hero carousel slots to stay 150x150 at %s, got %s." % [context, first_thumb_rect])
+		return
+	var min_expected_thumb_width := 110.0
 	var first_thumb_visual := first_thumb.find_child("HS4CarouselPortrait_*", false, false) as Control
 	var first_thumb_visual_rect := first_thumb_visual.get_global_rect() if first_thumb_visual != null else first_thumb_rect
 	var thumb_square_tolerance := maxf(8.0, maxf(first_thumb_visual_rect.size.x, first_thumb_visual_rect.size.y) * 0.10)
@@ -7930,9 +7966,6 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 		if not _rect_contains_with_tolerance(thumbnail_rect, thumb_rect, 1.5):
 			_fail("Expected hero thumbnail %s to stay inside carousel content-zone at %s, got thumb %s content %s." % [(thumb as Control).name, context, thumb_rect, thumbnail_rect])
 			return
-	if HeroStatRadarScript.HERO_RADAR_RADIUS_FACTOR < 0.36:
-		_fail("Expected hero radar polygon radius factor to stay enlarged at %s." % context)
-		return
 
 	viewport.queue_free()
 	await process_frame

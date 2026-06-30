@@ -152,7 +152,7 @@ SCRUM-586/SCRUM-593 make the dedicated 2K stat tooltip live for
 width. Spec and previews live under `docs/design/mockups/scrum586_stat_tooltip/`
 and `docs/design/previews/scrum586_stat_tooltip_*`.
 
-Hero select v3 keeps the hero portrait on the left, dossier/details in the main
+Historical Hero select v3 kept the hero portrait on the left, dossier/details in the main
 right-side information area, and `HeroSelectRadarPanel` as a separate floating
 top-right widget. The radar is intentionally offset below the header/wax-seal
 buttons to keep the 1280x720, 1600x900 and 2560x1440 no-overlap smoke stable.
@@ -162,12 +162,13 @@ focused `scripts/ui/*` modules and are exposed through the existing
 `scripts/ui_screens.gd` facade.
 
 SCRUM-447 made Hero Select v3 live from the accepted SCRUM-446 Design-source
-package. `_show_character_select()` now builds a centered proportional
+package, but the 2026-06-30 black minimal redesign supersedes it for the active
+runtime. The historical v3 path built a centered proportional
 `1536x864` canvas from `docs/design/references/hero_select_v3/zones.json`,
 `zones_normalized.json` and `frames_spec.json`, using
 `assets/sprites/ui/frames/hero_select_v3/background.png`,
 `frame_preview.png`, `frame_dossier.png`, square `frame_radar.png` and
-`frame_carousel.png`. Runtime content stays inside each documented content rect:
+`frame_carousel.png`. Runtime content stayed inside each documented content rect:
 large portrait in preview, name/description/traits/weapons/ascension/select in
 dossier, `HeroStatRadar` inside a square radar frame, and image-only hero
 thumbnails inside the carousel. SCRUM-416 portrait routing, SCRUM-417 covered
@@ -224,6 +225,8 @@ dedicated OpenAI-generated dark-metal tooltip frame with content margins
 SCRUM-281 добавил отдельный Hero Select frame kit из `docs/design/references/herouiframe/`: `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_{portrait,dossier,radar,thumbnail_strip,thumbnail,asc_button,asc_label,asc_mods}.png`. SCRUM-320 заменил только bottom `thumbnail_strip` на Carusel reference frame из `docs/design/references/carusel/`: live PNG `ui_frame_hero_select_thumbnail_strip.png` теперь 1536x255 RGBA, старый SCRUM-281 strip лежит в `build/cleanup_backup_hero_select_carousel_2026_06_14/`, pipeline `tools/build_hero_select_carousel_frame.py`, preview `docs/design/previews/hero_select_carousel_frame_contact.png`. В runtime эта нижняя рамка не 9-slice и не растягивается по одной оси: она рисуется цельным `TextureRect` в пропорциональном контейнере (`1024x170` at 720p, `1536x255` at 1080p, `2048x340` at 1440p). SCRUM-342 увеличил читаемость миниатюр без нарушения frame-rule; SCRUM-355 затем пересобрал live dossier + thumbnail strip более тонкими/спокойными вариантами через `tools/build_hero_select_thin_frames.py`, preview `docs/design/previews/hero_select_thin_frames_content_zones.png`, QA/handoff `build/qa/scrum355/hero_select_thin_frames_qa.md`, backup `build/qa/scrum355/hero_select_pre_scrum355_frame_assets.zip`. SCRUM-354 подключил строгие Design safe margins в runtime: dossier `Vector4(126, 160, 126, 172)` и thumbnail strip `Vector4(132, 62, 132, 62)`, причём карусельные отступы масштабируются от source `1536x255`, а не от 720p display `1024x170`. Фактические QA rects теперь показывают dossier content `299x280` и thumbnail row `848x88` внутри strict safe zones на 1280x720 с 2px tolerance для дробного масштабирования и 22px gap между frame’ами; 1600x900 и 2560x1440 также проходят safe-zone/no-overlap assertions. SCRUM-321 принял live `ui_frame_hero_select_portrait.png` как production heroframe-style ассет и перевел левую рамку портрета на такой же принцип: `HeroSelectPortraitPanel` сохраняет левую треть master layout, но внутренний `HeroSelectPortraitFrame` рисуется цельным `TextureRect` и масштабируется пропорционально (`249x394` / `423x669` / `596x944` на 720p/1080p/1440p). Портрет героя лежит только в content-zone с base margins `Vector4(128, 230, 128, 330)`; нижний самоцвет, верхний гребень и боковой металл остаются свободны. SCRUM-323 пересобрал live `ui_frame_hero_select_dossier.png` из DescriptionHS reference pack как `1120x1140` RGBA, pipeline `tools/build_hero_select_dossier_frame.py`, backup в `build/cleanup_backup_hero_select_dossier_2026_06_14/`, preview `docs/design/previews/hero_select_dossier_frame_content_zone.png`. В runtime центральное досье больше не `StyleBox`: `HeroSelectDossierPanel` центрирует цельный `HeroSelectDossierFrame` (`387x394`, `581x591`, `774x788` на 720p/1080p/1440p), а текст, Возвышение и кнопка лежат в `HeroSelectDossierContent` внутри strict zones. SCRUM-322 заменил live `ui_frame_hero_select_radar.png` на windrose compass frame из `docs/design/references/windrose/`: production PNG `1024x1024` RGBA, pipeline `tools/build_hero_select_windrose_frame.py`, backup в `build/cleanup_backup_hero_select_windrose_2026_06_14/`, preview `docs/design/previews/hero_select_windrose_radar_content_zone.png`. В runtime floating `HeroSelectRadarPanel` теперь квадратный whole-image layer (`390x390`, `585x585`, `780x780` на 720p/1080p/1440p). SCRUM-347 убрал старый `HeroStatRadarTitle`, центрировал `HeroStatRadar` в compass field и увеличил radius factor полигона `0.30 -> 0.36`; подписи подтянуты ближе, чтобы оставаться внутри safe frame. Остальные Hero Select frame assets подключены только в `HeroSelectScreen` через локальные `HERO_SELECT_FRAME_*` dictionaries, потому что требуют своих safe-area margins. QA screenshots/rect dump: `build/qa/scrum281/hero_select_1280x720.png`, `hero_select_1920x1080.png`, `hero_select_2560x1440.png`, `hero_select_capture_rects.md`; SCRUM-320 копии: `build/qa/scrum320/hero_select_carousel_*.png`; SCRUM-321 rect dump: `build/qa/scrum321/hero_select_portrait_rects.md`; SCRUM-323 rect dump: `build/qa/scrum323/hero_select_dossier_rects.md`; SCRUM-355 rect dump: `build/qa/scrum355/hero_select_thin_frames_runtime_rects.md`; SCRUM-354/SCRUM-322/SCRUM-347/SCRUM-342 rect dump lives at `build/qa/hero_select_radar_rects.md`.
 
 SCRUM-356 подключил unified Hero Select frame в runtime: `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_unified_panel.png` (`1536x1024` RGBA) теперь рисуется цельным proportional `TextureRect` как `HeroSelectUnifiedFrame` и объединяет portrait + description + bottom controls без 9-slice/one-axis stretch. `HeroSelectPortraitPanel`, `HeroSelectDossierPanel`, `AscensionSelectorRow` и `HeroSelectChooseButton` размещаются только в source-space safe zones из `docs/design/references/hero_select_unified_panel/scrum356_unified_panel_metadata.json`: portrait `Rect2(130,145,420,560)`, description `Rect2(610,145,786,500)`, bottom controls `Rect2(570,705,660,178)`. `AscensionMinusButton`/`AscensionPlusButton` используют compact `ui_frame_hero_select_asc_button_small.png`; на 720p delta-строка Возвышения скрывается, чтобы controls не заходили на орнамент, а на больших окнах остается внутри bottom safe-zone. Radar остается отдельным floating top-right `HeroSelectRadarPanel`, carousel — отдельным bottom strip.
+
+2026-06-30 direct user redesign supersedes the active Hero Select frame/radar runtime described in the historical SCRUM-281/SCRUM-356 notes above. The current `HeroSelectScreen` is a black minimal layout built by `_build_character_select_v4()`: left `HS4Portrait` fixed at `250x250`, center dossier/stat tooltip column, right ascension description/selector, and bottom `150x150` character carousel. The old Hero Select frame assets remain historical/reference assets only for this screen.
 
 SCRUM-263/264 остаются правилом размеров: стандартные action-кнопки 104px высотой через `_make_button()` и `_set_action_button_size()`, main menu использует 380x104, wide action capped до 560px, pause menu 280x60, rebind/dropdown-style controls 420x62, compact utility 54x42 и FAB 50x50. Text-heavy choices используют паттерн «инфо-рамка над + короткая стандартная кнопка под». Route nodes, shop item hit areas, hero thumbnails, reward/weapon cards остаются карточками/hit areas без heavy action button frame. SCRUM-281 добавляет локальное исключение: `HeroSelectChooseButton` использует compact `hero_confirm` 260x72, чтобы screen-specific herouiframe layout оставался внутри 1280x720. Runtime smoke пишет фактический dump размеров в `build/qa/scrum450_minimal_metal_buttons/minimal_metal_button_sizes.md`.
 
@@ -1155,28 +1158,21 @@ SCRUM-654 tightened the combat level-up callout: the world-space `LevelUpEffect`
 
 - Escape = назад на меню/предзабеговых экранах через единый стек: главное меню -> игровой диалог подтверждения выхода, настройки/кодекс/выбор персонажа -> меню; выбор оружия -> выбор персонажа. Кнопка «Выйти из игры» в главном меню открывает тот же `QuitConfirmationDialog`; реальный quit вызывается только по «Выйти», а «Отмена» в фокусе по умолчанию. В активном бою Escape сразу открывает досье/доску персонажа с левыми run-controls (Продолжить, Настройки, Завершить забег, Главное меню), ставит gameplay на паузу и не показывает старое standalone pause menu поверх или вместо доски. Повторный Escape или «Продолжить» закрывают overlay и возвращают в тот же run state без изменения таймера, позиции, предметов и прогресса. На route map, в магазине, level-up, докачке атрибутов, событии и награде элитки сохраняется существующая pause-overlay семантика поверх текущего экрана без reroll/сброса; событие по-прежнему требует выбора действия, если skip не разрешен.
 - `P` открывает фидбек/bug-report overlay поверх текущего экрана через отдельный top-level `FeedbackOverlayLayer`, не очищая текущий UI и не сбрасывая состояние магазина/карты/level-up. Escape внутри overlay закрывает только форму фидбека, а ввод текста остается в `FeedbackTextEdit`.
-- Экран выбора героя — fullscreen `HeroSelectScreen`: SCRUM-687 makes the live
-  runtime use the PixelLab rebuild parts kit in
-  `assets/sprites/ui/frames/hero_select_pixellab/`. `_show_character_select()`
-  scales the accepted `2560x1440` source-space layout uniformly for
-  `1280x720`, `1920x1080`, `2560x1440` and 4K: textless background, title
-  frame, Back button, large portrait frame, dossier frame, separate stat radar
-  frame, separate ascension frame, Choose button and bottom carousel frame.
-  Runtime labels, bars, buttons, `HeroStatRadar`, carousel slots and portraits
-  sit only inside the documented content rects; the frame ornament remains
-  unobscured. The runtime nudges the carousel frame `35 px` lower in
-  source-space than the first preview guide so the Choose button and carousel
-  content band never touch at 16:9 matrix sizes. Carousel slots now draw the
-  PixelLab `frame_hero_slot.png` with a child portrait inside its safe zone
-  instead of placing raw thumbnails directly on the rail. Berserk, Dark Mage and
-  Guitarist keep directional Hero Select preview rotation from their actual
-  `512x512` PixelLab SpriteFrame textures; other heroes keep the static
-  `sprite_path` fallback. Select, Back/Escape, ascension stepper and carousel
-  focus/interaction behavior are preserved.
-  Focused coverage: `tests/hero_select_pixellab_layout_test.gd` plus the
-  existing Berserk/Dark Mage/Guitarist Hero Select preview smokes,
-  `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd` and the umbrella
-  runtime smoke.
+- Экран выбора героя — fullscreen `HeroSelectScreen`: активный runtime
+  (редизайн пользователя 2026-06-30) убирает все декоративные UI-рамки,
+  PixelLab backdrop, title frame и compass/radar. Экран строится на
+  `HS4BlackBackground`: слева фиксированный `HS4Portrait` `250x250` с
+  направленной preview-rotation для Berserk/Dark Mage/Guitarist и static
+  `sprite_path` fallback для остальных; по центру `HS4DossierFrame` с описанием,
+  сильными/слабыми сторонами, оружием, class identity и восемью основными
+  характеристиками как hoverable stat buttons; справа `HS4AscensionFrame` с
+  описанием Возвышения, выбором уровня `-`/`+` и кнопкой `HS4ChooseButton`;
+  снизу `HS4Carousel` с `150x150` слотами, сколько помещается в ширину, и
+  кнопками-стрелками cyclic scroll. Select, Back/Escape, ascension stepper,
+  default focus and carousel interaction behavior are preserved.
+  Focused coverage: `tests/hero_select_pixellab_layout_test.gd` (now asserts the
+  minimal black layout), existing Berserk/Dark Mage/Guitarist Hero Select preview
+  smokes, `runtime_smoke_ui_test.gd`, and `ui_no_overlap_matrix_test.gd`.
 - Размеры изображений: кодекс — персонажи 216px with covered scaling (SCRUM-417), монстры 150px, артефакты 96px; HUD-артефакты 48px; пауза-артефакты 56px; иконки магазина 112px внутри frameless hit area 164x186.
 - Фон маршрутной карты: если существует `assets/backgrounds/route_map_backdrop.png`, он подключается с cover-растяжением и затемнением 0.62 для читаемости узлов; иначе — прежний однотонный фон (graceful fallback до выхода арта).
 
@@ -1254,7 +1250,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | --- | --- |
 | Главное меню | Эпичный battle-art фон и левая колонка из шести стандартных action-кнопок: начать новую игру, настройки, древо умений, что нового, кодекс, выйти из игры |
 | Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
-| Выбор персонажа | Fullscreen v3: большой портрет слева без дубля имени, справа единая информ-панель с досье слева от радара характеристик, адаптивная лента героев снизу только картинками |
+| Выбор персонажа | Fullscreen minimal black: слева 250x250 rotating selected hero preview, центр — досье/сильные и слабые стороны/основные характеристики с tooltip, справа — описание и выбор Возвышения, снизу — 150x150 carousel slots with arrow scrolling |
 | Выбор оружия | Три оружия выбранного класса как легкие кликабельные карточки: спрайт оружия слева, название/описание, русские статы «Дальность/Радиус/Перезарядка»; тяжелая button texture frame не используется |
 | Карта маршрута | Вертикальная карта с иконками и tooltip |
 | Боевой HUD | SCRUM-390 ресурсная панель: HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |

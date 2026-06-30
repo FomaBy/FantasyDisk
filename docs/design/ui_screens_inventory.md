@@ -25,7 +25,7 @@
 | # | Экран | Корневая нода | Вход | Файл |
 |---|---|---|---|---|
 | 1 | Главное меню | `MainMenuScreen` | `_show_main_menu` | ui_screens.gd:291 |
-| 2 | Выбор героя (портрет/радар/досье) | `HeroSelectScreen` | `_show_character_select` → `_build_character_select_v4` | ui_screens.gd:969 / 704 |
+| 2 | Выбор героя (black minimal portrait/dossier/ascension/carousel) | `HeroSelectScreen` | `_show_character_select` → `_build_character_select_v4` | ui_screens.gd:969 / 704 |
 | 3 | Выбор оружия | — | `_show_weapon_select` | ui_screens.gd:3803 |
 | 4 | Карта маршрута | `RouteMapScreen` | `_show_battle_map` | main.gd:962 |
 | 5 | Бой / HUD (таймер, статы, дамаг-флэш) | `CombatTimerPanel`, `DerivedStatsPanel`, `DamageFlashOverlay` | in-run | ui_screens.gd |
@@ -448,23 +448,21 @@ clamp 820). Контент в ScrollContainer→VBox (center, sep 12): crest→t
 | Кнопка «Новый забег» (победа) | `VS_BTN_NEWRUN_2K` | 1070 | 948 | 420 | 104 |
 | Кнопка «Начать заново» (смерть) | `DS_BTN_RETRY_2K` | 1070 | 948 | 420 | 104 |
 
-### 3. Выбор героя v4 — `_build_character_select_v4` · `HS4_*_2K`
-Полноэкранный: заголовок + «Назад», портрет / досье / радар (3 колонки) + карусель снизу.
-**Важно:** билдер считает раскладку множителями vp.x/vp.y, НЕ долями `HS4_*` (SCRUM-470).
-`HS4_*_2K` отражают реальную раскладку @2K; старые доли оставлены для mockup-валидации.
+### 3. Выбор героя minimal black — `_build_character_select_v4` · `HS4*`
+Полноэкранный black screen: `HS4BlackBackground`, маленькая кнопка Back, слева
+выбранный герой, центр досье/характеристики, справа Возвышение, снизу карусель.
+Старые `HS4_*_2K` frame/radar constants are historical and are not active.
 
-| Слот | const | x | y | w | h |
-|---|---|---:|---:|---:|---:|
-| Заголовок «Выбор героя» (58px) | `HS4_TITLE_2K` | 56 | 40 | 2448 | 122 |
-| Кнопка «Назад» | `HS4_BACK_2K` | 56 | 74 | 218 | 54 |
-| Портрет-панель (фрейм) | `HS4_PORTRAIT_FRAME_2K` | 56 | 179 | 661 | 959 |
-| Портрет (safe) | `HS4_PORTRAIT_SAFE_2K` | 114 | 251 | 545 | 821 |
-| Досье-панель | `HS4_DOSSIER_2K` | 753 | 179 | 1091 | 959 |
-| Радар-панель | `HS4_RADAR_2K` | 1880 | 179 | 624 | 959 |
-| Карусель-панель | `HS4_CAROUSEL_2K` | 56 | 1155 | 2448 | 245 |
-| Кнопка «Выбрать» (шаблон) | `HS4_CHOOSE_BTN_2K` | — | — | 512 | 89 |
-| Кнопки ±возвышения (шаблон) | `HS4_ASC_BTN_2K` | — | — | 102 | 72 |
-| Слот карусели (первый; шаг X=248) | `HS4_CAROUSEL_SLOT_2K` | 237 | 1230 | 101 | 101 |
+| Слот | Runtime node / rule |
+|---|---|
+| Фон | `HS4BlackBackground`, pure black, full viewport |
+| Back | `HS4BackButton`, compact top-left utility button |
+| Портрет выбранного героя | `HS4Portrait` inside `HS4PortraitFrame`, fixed `250x250`; directional SpriteFrames rotate when available |
+| Досье | `HS4DossierFrame`, center column with name, description, strengths, weaknesses, weapon list, class identity |
+| Характеристики | `HS4StatsGrid`, 8 `HS4Stat_<stat_id>` buttons; each has tooltip with dependent attributes |
+| Возвышение | `HS4AscensionFrame`, right column with description, `AscensionMinusButton`, `AscensionPlusButton`, `HS4ChooseButton` |
+| Карусель | `HS4CarouselFrame` / `HS4Carousel`, bottom band; slots are `150x150` `HS4CarouselSlot_*` buttons |
+| Прокрутка карусели | `HS4CarouselPrevButton` / `HS4CarouselNextButton`; visible slot count is computed from available width |
 
 ### 4. Выбор оружия — `_show_weapon_select` · `WS_*_2K`
 SCRUM-562 live 2K pass: Weapon Select now has a dedicated frame contract instead of the old generic `1120x660` economy panel. Runtime uses `WS_PANEL_2K = Rect2(420,190,1720,1060)`, `WS_SAFE_2K = Rect2(498,286,1564,898)`, `WS_CARD_2K = Rect2(498,446,1564,190)` with step `218`, and `WS_BTN_BACK_2K = Rect2(1140,1120,280,60)`. The `ws_panel`, `ws_card`, and `ws_btn_back` assets are generated in `assets/sprites/ui/frames/overhaul_2k/`; content margins keep all title/card/button text and weapon sprites inside the empty frame interiors. The start-boon picker keeps the old shared `weapon_select` panel, and SCRUM-563 route-map layout is not part of this scope.
