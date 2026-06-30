@@ -1,7 +1,7 @@
 # Refactor Wave: Main State Lifecycle And Run Coordinator Audit
 
 Jira: SCRUM-707
-Статус: in_progress
+Статус: done
 Приоритет: P1
 Роль: Back-end / quality
 Контур: Claude
