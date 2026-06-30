@@ -1,7 +1,7 @@
 # Refactor Wave: Boss And Elite Runtime Patterns Audit
 
 Jira: SCRUM-713
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / boss quality
 Контур: Claude
@@ -49,3 +49,38 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/boss_elite_
 ## Process Notes
 
 Before starting, Claude must sync `dev`, check dirty tree and verify no active owner overlaps the locked paths. Do not touch unrelated WIP. After completion: Jira -> local mirror -> checks -> intentional commit -> push.
+
+## Результат (Claude backend, 2026-06-30)
+
+Ветка/коммит: `dev` @ `4cfb99c9` (origin/dev, ancestor подтверждён).
+
+### Boss/elite pattern-аудит (записан)
+- **Death/victory-сигналинг:** `boss.gd::take_damage` делегирует урон/смерть в
+  `enemy.gd` через `super()` — единый источник `died`-сигнала, boss не
+  переопределяет смерть → double-fire невозможен.
+- **Summon-кап:** `_summon_riftlings` спавнит ровно `riftling_summon_count(phase,
+  active)`, которая top-up'ит до `MAX_SUMMONED_RIFTLINGS=8` (учитывая живых) —
+  исчерпывающе покрыта `boss_summon_cap_test` (SCRUM-596).
+- **Фаза:** `_update_boss_phase` монотонна (возвращалась при `next<=boss_phase`),
+  enrage one-shot (guard `_enraged`). Cleanup призывов — группа `summoned_enemies`,
+  hazards — `enemy_hazards` (реапятся `game._clear_world`).
+- **Concrete-багов нет → идентичность/тюнинг боссов сохранены** (per AC).
+
+### Изменения (locked path, поведение идентично)
+- `scripts/boss.gd` — пороговая логика фаз вынесена в чистую static
+  `phase_for_ratio(behavior, ratio, current_phase, has_extra_phase)`.
+  `maxi(next, current)` делает прежнюю монотонность явной и тестируемой;
+  `_update_boss_phase` теперь зовёт хелпер (side-effects фаз не тронуты).
+- `tests/boss_phase_progression_test.gd` (+`.uid`) — фокус-тест контракта фаз:
+  пороги обычный (0.66/0.33) vs секретный (0.50/0.25), семантика границ `<=`,
+  extra-фаза 4 только при `ratio<=0.15`, монотонность при росте HP.
+
+### Проверки (semaphore, GODOT_BIN=fdengine, slots=1) — все RC=0
+- `tests/boss_phase_progression_test.gd` → passed (NEW).
+- `tests/runtime_smoke_boss_elite_test.gd` → passed.
+- `tests/boss_summon_cap_test.gd` → passed.
+- `tests/mini_elite_roster_spawn_test.gd` → passed (10 видов, +4 новых, tint).
+- `tests/boss_elite_ttk_gate.gd` → passed (boss TTK >= 1.35x elite, стадии 0..10).
+
+Disk cleanup: рабочий worktree `/private/tmp/fsd_wt_scrum713` удалён после пуша;
+временных артефактов не оставлено.
