@@ -1,12 +1,12 @@
 # Balance Re-Evaluation: Measurement & Findings (Survivability / Damage / Comfort)
 
 Jira: SCRUM-780
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / balance
 Контур: Claude
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Backend / Claude
+Thread/Worker: claude-backend
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: PM по запросу пользователя «пересмотреть баланс персонажей: выживаемость, урон, комфорт игры»
