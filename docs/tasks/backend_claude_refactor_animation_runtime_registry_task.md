@@ -1,12 +1,12 @@
 # Refactor Wave: Animation Runtime Registry And Rig Loading Audit
 
 Jira: SCRUM-721
-Статус: new
+Статус: done
 Приоритет: P2
 Роль: Back-end / animation runtime quality
 Контур: Claude
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Backend / Claude
+Thread/Worker: claude-backend
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: PM/Codex по запросу пользователя на полный рефакторинг игры
