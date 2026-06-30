@@ -693,13 +693,14 @@ func _ascension_telegraph(base: float) -> float:
 	return base * float(get_meta("ascension_telegraph_mult", 1.0))
 
 
-func _update_boss_phase() -> void:
-	if max_health <= 0.0:
-		return
-	var ratio := health / max_health
-	var has_extra_phase := bool(get_meta("ascension_extra_phase", false))
+# SCRUM-713: чистая (без self/SceneTree) функция порога фаз — вынесена из
+# _update_boss_phase, чтобы контракт «секретный/обычный пороги + монотонность»
+# покрывался фокус-тестом (boss_phase_progression_test). Возвращает фазу 1..4;
+# maxi с current_phase делает монотонность явной (HP может скакнуть вверх от
+# лечения — фаза при этом не откатывается).
+static func phase_for_ratio(behavior: String, ratio: float, current_phase: int, has_extra_phase: bool) -> int:
 	var next_phase := 1
-	if boss_behavior == "secret_ascension_boss":
+	if behavior == "secret_ascension_boss":
 		if has_extra_phase and ratio <= 0.15:
 			next_phase = 4
 		elif ratio <= 0.25:
@@ -713,6 +714,15 @@ func _update_boss_phase() -> void:
 			next_phase = 3
 		elif ratio <= 0.66:
 			next_phase = 2
+	return maxi(next_phase, current_phase)
+
+
+func _update_boss_phase() -> void:
+	if max_health <= 0.0:
+		return
+	var ratio := health / max_health
+	var has_extra_phase := bool(get_meta("ascension_extra_phase", false))
+	var next_phase := phase_for_ratio(boss_behavior, ratio, boss_phase, has_extra_phase)
 	if next_phase <= boss_phase:
 		return
 
