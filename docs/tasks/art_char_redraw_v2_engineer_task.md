@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Инженер» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: cancelled
+Статус: new
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -11,6 +11,12 @@ Jira: SCRUM-428
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## PM Unhold / Current Queue State (2026-06-30)
+
+Пользователь снял `user-hold` с задач в `К выполнению`: SCRUM-428 снова доступна
+для автономного Jira-pull/dispatch. Историческая отмена 2026-06-15 ниже
+сохранена как контекст, но больше не блокирует старт.
 
 ## Контекст
 Пер-персонажная задача инициативы «Перерисовка персонажей v2» (0.1.6) — класс **Инженер** (`engineer`).
@@ -63,8 +69,10 @@ SpriteFrames, runtime integration, AnimationPlayer/AnimationTree, animation
 smoke, gameplay logic, balance, or attack frames. Animator starts only after the
 Engineer source handoff is accepted. Keep reasoning High/no low.
 
-## ОТМЕНЕНО 2026-06-15 (пользователь)
-Широкий редизайн персонажей v2 отменён — пользователю не нравится подход. Работаем по одному классу заново (старт — Берсерк, отдельная задача).
+## Историческая отмена 2026-06-15 (перекрыта 2026-06-30)
+Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
+2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-428
+снова `new` / `К выполнению`.
 
 ## Designer 2 Conflict Audit (2026-06-15)
 
@@ -80,4 +88,6 @@ Engineer source handoff is accepted. Keep reasoning High/no low.
 `build/qa/scrum428_engineer_v2/`.
 Strict PNG QA по provisional outputs: `white=0`, `neutral=0`, `pale=0`,
 `edge=0`. Эти файлы оставлены на месте для dispatcher/PM reconciliation, но
-**не считаются accepted source handoff** из-за текущего `cancelled` статуса.
+**не считались accepted source handoff** на момент отмены; после снятия hold
+следующий Design/Animator worker должен переоценить эти provisional artifacts
+перед использованием.
