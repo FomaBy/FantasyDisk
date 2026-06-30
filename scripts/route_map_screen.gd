@@ -9,12 +9,12 @@ const START_BATTLE_ONLY_ROWS := 2
 
 # SCRUM-489: координатная спека @2560×1440 — экран «Карта маршрута» (полноэкранный, скролл).
 # Все опорные значения абсолютные (main.gd): ROUTE_MAP_SCREEN_MARGIN=28, ROUTE_MAP_HEADER_HEIGHT=140,
-# MAP_NODE_SIZE=(88,88), ROUTE_MAP_PADDING=(170,72), ROUTE_STEPS_TO_BOSS=10. Из viewport
+# MAP_NODE_SIZE=(88,88), ROUTE_MAP_PADDING=(170,72), ROUTE_STEPS_TO_BOSS=8 (SCRUM-786). Из viewport
 # масштабируется только ширина canvas. Header: anchor top, offset L/R=±28, top=18, bottom=140-12=128
 # → @2K (28,18,2504,110) — band ровно под content-min хедера (title 36px + stage 18px). Scroll:
 # L/R=±28, top=140, bottom=-28 → (28,140,2504,1272) (зазор 12 до хедера). Canvas
 # (map_area VerticalRouteMap): width = max(vp.x-56-16, 1000) = 2488 @2K; высота ДИНАМИЧЕСКАЯ:
-# h = ROUTE_MAP_PADDING.y*2 + MAP_NODE_SIZE.y + 165*(row_count-1), row_count=max(route_nodes, 11)
+# h = ROUTE_MAP_PADDING.y*2 + MAP_NODE_SIZE.y + 165*(row_count-1), row_count=max(route_nodes, ROUTE_STEPS_TO_BOSS+1)
 # → минимум 144+88+165*10 = 1882 (выше viewport — это норма для скролл-карты, не overflow).
 # Узлы 88×88 рисуются процедурно (_draw_route_nodes); ряд-gap 165, padding (170,72).
 const RM_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
@@ -199,16 +199,23 @@ func _route_map_canvas_size() -> Vector2:
 
 
 func _node_pool_for_step(step_index: int) -> Array:
+	# SCRUM-786: диапазоны рядов вычисляются от ROUTE_STEPS_TO_BOSS (8 нодов до босса),
+	# а не магическими числами, чтобы пулы не «съезжали» при смене длины маршрута.
+	var boss_row: int = game.ROUTE_STEPS_TO_BOSS  # ряд босса; не-боссовые ряды = 0..boss_row-1
+	# Стартовые ряды — только бои (мягкий заход в акт).
 	if step_index < START_BATTLE_ONLY_ROWS:
 		return ["battle"]
-	if step_index <= 2:
+	# Первый ряд после стартовых — бои + редкое событие.
+	if step_index < START_BATTLE_ONLY_ROWS + 1:
 		return ["battle", "battle", "battle", "event"]
-	if step_index == game.ROUTE_STEPS_TO_BOSS - 1:
+	# Предбоссовый ряд — без перегруза (отдых/элитка перед боссом).
+	if step_index == boss_row - 1:
 		return ["rest", "battle", "rest", "elite_battle"]
-	if step_index >= game.ROUTE_STEPS_TO_BOSS - 3:
-		# SCRUM-608: «Опасная развилка» (hazard) в поздних рядах — риск/награда.
+	# Поздние ряды (последняя треть до босса) — риск/награда: элитки + hazard.
+	# SCRUM-608: «Опасная развилка» (hazard) в поздних рядах.
+	if step_index >= boss_row - 3:
 		return ["battle", "elite_battle", "elite_battle", "event", "battle", "hazard"]
-	# SCRUM-608: hazard в средних рядах.
+	# Средние ряды. SCRUM-608: hazard в средних рядах.
 	return ["battle", "battle", "battle", "rest", "event", "elite_battle", "hazard"]
 
 

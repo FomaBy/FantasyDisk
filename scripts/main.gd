@@ -25,7 +25,7 @@ const ROUND_DURATION_STEP := 3.0
 const ROUND_DURATION_MAX := 90.0
 # SCRUM-785: элитка и босс — таймер «убей или проиграл» на 5 минут.
 const ELITE_BOSS_ROUND_DURATION := 300.0
-const ROUTE_STEPS_TO_BOSS := 10
+const ROUTE_STEPS_TO_BOSS := 8
 const ACT_COUNT := 3
 const ACT_SCALING_STAGE_OFFSET := 4
 const MIN_BRANCHES_PER_STEP := 2

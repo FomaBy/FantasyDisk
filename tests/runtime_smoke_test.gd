@@ -2,7 +2,7 @@ extends SceneTree
 
 const EXPECTED_ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: lock-step с ARENA_SIZE (×1.6)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
-const EXPECTED_ROUTE_STEPS_TO_BOSS := 10
+const EXPECTED_ROUTE_STEPS_TO_BOSS := 8  # SCRUM-786: 8 нодов до босса (было 10)
 const EXPECTED_ACT_COUNT := 3
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
@@ -132,9 +132,9 @@ func _initialize() -> void:
 	# Тексты кнопок не ассертим списком: «Что нового» несёт бейдж-маркер; проверка по именам выше.
 
 	var route_nodes: Array = main.get("route_nodes")
-	# 10 рядов активностей + финальный ряд босса.
-	if route_nodes.size() != 11:
-		_fail("Expected the vertical route to have 10 activity rows plus a boss row.")
+	# ROUTE_STEPS_TO_BOSS рядов активностей + финальный ряд босса (SCRUM-786: 8+1).
+	if route_nodes.size() != EXPECTED_ROUTE_STEPS_TO_BOSS + 1:
+		_fail("Expected the vertical route to have %d activity rows plus a boss row." % EXPECTED_ROUTE_STEPS_TO_BOSS)
 		return
 	if str(route_nodes[route_nodes.size() - 1][0].get("type", "")) != "boss":
 		_fail("Expected the last vertical route row to be boss-only.")
@@ -221,8 +221,12 @@ func _initialize() -> void:
 	if route_map == null:
 		_fail("Expected route map scroll area to contain the map canvas.")
 		return
-	if route_map.custom_minimum_size.y < 1700.0:
-		_fail("Expected route map canvas to be tall enough for 10 activity rows plus the boss row.")
+	# Высота canvas (route_map_screen.gd): ROUTE_MAP_PADDING.y*2(144) + MAP_NODE_SIZE.y(88)
+	# + row_gap(165)*(row_count-1), row_count = ROUTE_STEPS_TO_BOSS+1. SCRUM-786: завязано на
+	# число нодов, иначе при 8 рядах порог 1700 даёт ложный fail (фактическая высота ~1552).
+	var expected_min_canvas_height := 144.0 + 88.0 + 165.0 * float(EXPECTED_ROUTE_STEPS_TO_BOSS)
+	if route_map.custom_minimum_size.y < expected_min_canvas_height - 1.0:
+		_fail("Expected route map canvas to be tall enough for %d activity rows plus the boss row." % EXPECTED_ROUTE_STEPS_TO_BOSS)
 		return
 	if route_map.custom_minimum_size.x < 900.0 or route_map.custom_minimum_size.x > route_scroll.size.x + 1.0:
 		_fail("Expected route map canvas width to fit the screen without horizontal scrolling.")
