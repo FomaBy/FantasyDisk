@@ -1,0 +1,158 @@
+{
+  "background": {
+    "target": [
+      2560,
+      1440
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/background.png"
+  },
+  "button_back": {
+    "target": [
+      460,
+      148
+    ],
+    "raw_size": [
+      1696,
+      640
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/button_back.png"
+  },
+  "frame_title": {
+    "target": [
+      1840,
+      184
+    ],
+    "raw_size": [
+      1776,
+      592
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/frame_title.png"
+  },
+  "frame_portrait": {
+    "target": [
+      600,
+      820
+    ],
+    "raw_size": [
+      1024,
+      1408
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/frame_portrait.png"
+  },
+  "frame_dossier": {
+    "target": [
+      980,
+      820
+    ],
+    "raw_size": [
+      1280,
+      1024
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/frame_dossier.png"
+  },
+  "frame_radar": {
+    "target": [
+      780,
+      520
+    ],
+    "raw_size": [
+      1200,
+      896
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/frame_radar.png"
+  },
+  "frame_ascension": {
+    "target": [
+      780,
+      270
+    ],
+    "raw_size": [
+      1776,
+      592
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/frame_ascension.png"
+  },
+  "button_asc_stepper": {
+    "target": [
+      132,
+      92
+    ],
+    "raw_size": [
+      1472,
+      736
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/button_asc_stepper.png"
+  },
+  "button_choose": {
+    "target": [
+      512,
+      118
+    ],
+    "raw_size": [
+      1472,
+      736
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/button_choose.png"
+  },
+  "frame_carousel": {
+    "target": [
+      2432,
+      330
+    ],
+    "raw_size": [
+      2448,
+      816
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/frame_carousel.png"
+  },
+  "button_carousel_arrow": {
+    "target": [
+      132,
+      176
+    ],
+    "raw_size": [
+      1024,
+      1024
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/button_carousel_arrow.png"
+  },
+  "frame_hero_slot": {
+    "target": [
+      196,
+      220
+    ],
+    "raw_size": [
+      1024,
+      1024
+    ],
+    "output": "docs/design/references/hero_select_parts/processed/frame_hero_slot.png"
+  },
+  "button_asc_minus": {
+    "target": [
+      132,
+      92
+    ],
+    "source": "button_asc_stepper"
+  },
+  "button_asc_plus": {
+    "target": [
+      132,
+      92
+    ],
+    "source": "button_asc_stepper"
+  },
+  "button_carousel_left": {
+    "target": [
+      132,
+      176
+    ],
+    "source": "button_carousel_arrow"
+  },
+  "button_carousel_right": {
+    "target": [
+      132,
+      176
+    ],
+    "source": "button_carousel_arrow"
+  }
+}
