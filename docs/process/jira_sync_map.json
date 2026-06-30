@@ -3057,5 +3057,10 @@
   "key": "SCRUM-693",
   "status": "К выполнению",
   "desc_hash": "fa63a91ef7d8baa577010a651ecd16d0"
+ },
+ "design_settings_v3_full_pixellab_redraw_task.md": {
+  "key": "SCRUM-694",
+  "status": "К выполнению",
+  "desc_hash": "8cbab5436962517d809d49fee0f34e0d"
  }
 }

@@ -1,6 +1,6 @@
 # Task Board — FantasyDisk (живой дашборд)
 
-Обновлено: 2026-06-27
+Обновлено: 2026-06-30
 Ведёт: PM/dispatcher как локальный dashboard/cache. С 2026-06-27 Jira проект
 `SCRUM` является authoritative task queue/status/owner source. Эта доска
 показывает активную работу, review/QA gates и важные recent rows только для
@@ -15,14 +15,14 @@ metadata: `Контур: Codex|Claude|OtherAI`, `Owner`, `Thread/Worker`, `Locke
 (задачи от пользователя/PM/dispatcher для AI-автоматики); остальные issues
 запускаются вручную явным поручением пользователя конкретному агенту.
 
-## Спринт 0.1.7 — активная разработка
+## Спринт 0.1.8 — активная разработка
 
 `Спринт 0.1.6` (id 100) закрыт в Jira 2026-06-27 (66/66 готово); `v0.1.6` влита в
-`main`. Активен **`Спринт 0.1.7`** (id 133, 2026-06-27 → 2026-06-29, ~2 дня); версия
-на `dev` поднята до `0.1.7`. Задачи 0.1.7 создаются и берутся из Jira (проект SCRUM),
+`main`. Активен **`Спринт 0.1.8`** (id 166, 2026-06-29 → 2026-07-01, ~2 дня);
+Jira version `0.1.8` создана 2026-06-30 для sprint/release sync. Задачи 0.1.8 создаются и берутся из Jira (проект SCRUM),
 доска — локальный кэш. Перед следующим релизом PM может включить freeze.
 
-**Кандидаты на перенос в 0.1.7** (закрыты в 0.1.6 административно, без реализации —
+**Кандидаты на перенос в 0.1.8** (закрыты в 0.1.6 административно, без реализации —
 вернуть только новым Jira issue, если ещё нужны): SCRUM-470 (выбор героя v4),
 SCRUM-474 (скелетная анимация, был USER HOLD), SCRUM-476 (ребаланс наград событий),
 SCRUM-480 (рантайм-интеграция минимал-UI).
@@ -64,6 +64,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [design_settings_v3_full_pixellab_redraw_task.md](../tasks/design_settings_v3_full_pixellab_redraw_task.md) | Designer (Codex) → Back-end (UI) | new | Jira: SCRUM-694. Контур: Codex; Owner: unassigned; Locked paths: `scripts/ui_screens.gd`, `assets/sprites/ui/frames/settings_v3/`, `assets/backgrounds/ui/`, settings v3 mockup/reference/preview docs. Full Settings v3 redraw pipeline: inventory all current Settings text/elements, layout/size/safe-zone plan first, OpenAI reference mockups for all 3 tabs, PixelLab final production UI/background/assets, then runtime integration or Back-end handoff. |
 | [SCRUM-683_level_up_ui_runtime_effect_previews.md](../tasks/SCRUM-683_level_up_ui_runtime_effect_previews.md) | Back-end (UI runtime, Codex) | done (ready for QA / Контроль качества) | Jira: SCRUM-683. Codex result on branch `codex/scrum-683-level-up-runtime`: runtime integrates SCRUM-682 larger Level Up package, visible card descriptions and formula-driven effect previews/deltas inside safe zones. Targeted Level Up no-overlap/UI smoke passed before rebase; after rebase broad UI smokes are blocked by upstream SCRUM-684/PixelLab/Codex resource/assertion issues outside SCRUM-683. Evidence: `build/qa/scrum683/level_up_no_overlap_matrix.md`. |
 | [design_level_up_popup_badge_task.md](../tasks/design_level_up_popup_badge_task.md) | Designer 2 (Codex) → Back-end (UI) | done (QA PASSED → Готово) | Jira: SCRUM-519. Designer 2 done: delivered transparent 512×256 `Level Up` popup badge at `assets/sprites/effects/level_up_popup_badge.png`; alpha audit PASS (`edge_alpha_max=0`, no white/green matte), layout/text-zone reports and contact sheet under `docs/design/references/level_up_popup/` + `docs/design/previews/`. SCRUM-520 handoff commented/unblocked for runtime display. **QA 2026-06-27 PASSED**: независимый PIL-аудит (512×256 RGBA, edge alpha=0, padding 66/12/65/10, green_spill=0, white_matte=1 highlight px), читаемость @224×112/160×80 на 3 фонах, green-gate smoke OK, handoff полон; пустая нижняя зона принята как резерв под номер уровня. → Готово. |
 | [design_minimalist_full_ui_redesign_exact_size_anchor_task.md](../tasks/design_minimalist_full_ui_redesign_exact_size_anchor_task.md) | Design (Codex) → Back-end → self-QA | done | Jira: SCRUM-478. Closed in Jira by PM cleanup directive 2026-06-27. Design-source package and automatic self-QA are accepted for 0.1.6 closure; linked runtime handoff SCRUM-480 is also closed administratively. |
