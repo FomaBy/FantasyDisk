@@ -31,6 +31,24 @@ func _init() -> void:
 	_check(missing_msg.length() <= 90, "missing message should fit status label: %s" % missing_msg)
 	_check(invalid_msg.length() <= 90, "invalid message should fit status label: %s" % invalid_msg)
 
+	# SCRUM-720: контракт хранения фидбека. Локальный фолбэк и пользовательский конфиг
+	# ОБЯЗАНЫ жить в user:// (вне репозитория) — иначе отчёты (текст игрока + скриншоты)
+	# и URL-конфиг утекут в исходное дерево. Bundled-конфиг — read-only res:// (его
+	# release-сборка генерирует из секрета). Гейтим префиксы, чтобы регрессия пути
+	# (напр. LOCAL_ROOT → "res://feedback") падала здесь, а не в проде.
+	_check(Reporter.LOCAL_ROOT.begins_with("user://"),
+		"feedback local fallback root must stay under user:// (got %s)" % Reporter.LOCAL_ROOT)
+	_check(Reporter.CONFIG_PATH.begins_with("user://"),
+		"feedback user config must stay under user:// (got %s)" % Reporter.CONFIG_PATH)
+	_check(Reporter.BUNDLED_CONFIG_PATH.begins_with("res://"),
+		"bundled webhook config must be a read-only res:// resource (got %s)" % Reporter.BUNDLED_CONFIG_PATH)
+	# Локальный отчёт-тело строится только из текста+метаданных игрока и НЕ должно нести
+	# подстроку вебхука (структурная гарантия: reporter не инжектит секрет в фолбэк).
+	var sample_body := Reporter._report_body("краш на боссе", {"версия": "0.1.8", "класс": "berserk"})
+	_check(not ("discord.com/api/webhooks" in sample_body) and not ("discordapp.com/api/webhooks" in sample_body),
+		"local report body must never embed a webhook URL")
+	_check("краш на боссе" in sample_body, "local report body must keep the player's description")
+
 	if _errors.is_empty():
 		print("Feedback webhook config test passed.")
 		quit(0)
