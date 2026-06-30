@@ -53,7 +53,10 @@ The stat routes intentionally match `scripts/ui_icon_registry.gd`: base stats lo
 7. Produce a contact sheet at runtime scale and a QA report covering alpha, cropping, readability, and naming.
 8. Update the Jira issue and local mirror with generated paths, evidence paths, and any handoff needed for integration.
 
-If PixelLab MCP cannot be reached, block or hand off the task. Do not use `generate_asset.py`, `image_gen`, or any OpenAI Images fallback for new icon creation unless the user explicitly overrides the rule in the active task.
+If PixelLab MCP cannot be reached, read `../pixellab_mcp_auth.md` and run the
+config-based smoke before blocking or handing off the task. Do not use
+`generate_asset.py`, `image_gen`, or any OpenAI Images fallback for new icon
+creation unless the user explicitly overrides the rule in the active task.
 
 ## Prompt Template
 

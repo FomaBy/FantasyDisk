@@ -12,8 +12,9 @@ You are helping build a Godot dark fantasy D&D-style game.
 For every new FantasyDisk character, object, prop, sprite, UI frame, HUD element, icon, button, mockup art layer, or production-ready PNG, use PixelLab through MCP as the source generation/editing tool.
 
 - First try exposed PixelLab MCP tools in the chat. If tools are not visible, use tool discovery for `pixellab`.
-- If the PixelLab MCP server is configured locally but not exposed as direct tools, call it through the configured MCP bridge without printing tokens, headers, or secrets.
-- If PixelLab MCP cannot be reached, mark the task blocked or create the correct handoff. Do not silently fall back to OpenAI Images, `image_gen`, hand drawing, old random generators, or the legacy `generate_asset.py` pipeline.
+- If the PixelLab MCP server is configured locally but not exposed as direct tools, read `../pixellab_mcp_auth.md`, then call it through the configured MCP bridge without printing tokens, headers, or secrets.
+- If PixelLab MCP appears unavailable, read `../pixellab_mcp_auth.md` and run the config-based smoke before marking Jira blocked. Do not treat stale tool discovery or missing ambient `AUTH_HEADER` as proof of broken auth.
+- If the post-fix MCP smoke truly fails, mark the task blocked or create the correct handoff. Do not silently fall back to OpenAI Images, `image_gen`, hand drawing, old random generators, or the legacy `generate_asset.py` pipeline.
 - Record the PixelLab source asset/project ID, tag/name, export IDs when available, prompt/spec, exported source paths, runtime paths, and QA evidence in the task/Jira result.
 
 Always produce assets with:

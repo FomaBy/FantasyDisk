@@ -10,6 +10,7 @@ Do not use this skill to create new FantasyDisk production art. It exists only t
 ## Core Rules
 
 - For FantasyDisk characters, objects, UI frames, HUD, icons, sprites, mockups, and production assets, use `$fantasydisk-asset-generator` and PixelLab MCP.
+- If PixelLab appears unavailable, read `../pixellab_mcp_auth.md` through the production skill path and run the config-based smoke before treating it as a blocker. Do not use this deprecated fallback because of stale MCP discovery in an already-open thread.
 - Do not call `image_gen` for in-repository FantasyDisk asset creation unless the active user request explicitly says to bypass PixelLab for a one-off non-production concept.
 - If a task requests the old built-in or OpenAI flow, update/record the task decision: PixelLab MCP is now mandatory. If PixelLab is unavailable, block or hand off instead of generating elsewhere.
 - Never promote built-in generated art to `assets/...` for FantasyDisk runtime unless the user explicitly overrides the PixelLab rule in that task and Jira records the exception.

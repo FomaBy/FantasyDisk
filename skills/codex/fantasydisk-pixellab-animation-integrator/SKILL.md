@@ -35,7 +35,12 @@ Create, fetch, and apply PixelLab character/creature packs to FantasyDisk charac
 
 ## PixelLab Access
 
-Use PixelLab MCP tools when available in the chat. If the MCP tools are not exposed but the local Codex config already defines the PixelLab MCP server, it is acceptable to call the configured MCP bridge locally for JSON-RPC calls. Never print or commit the bearer token, Authorization header, or raw config containing secrets. If direct image URLs return 403, retry downloads with a browser-like `User-Agent`.
+Use PixelLab MCP tools when available in the chat. If the MCP tools are not exposed but the local Codex config already defines the PixelLab MCP server, read `../pixellab_mcp_auth.md` and call the configured MCP bridge locally for JSON-RPC calls. Never print or commit the bearer token, Authorization header, or raw config containing secrets. If direct image URLs return 403, retry downloads with a browser-like `User-Agent`.
+
+Before marking a character/animation task blocked by PixelLab auth, read
+`../pixellab_mcp_auth.md` and run the config-based smoke there. Stale tool
+discovery in an already-open thread or a missing ambient shell `AUTH_HEADER` is
+not enough evidence for `blocked` / `pixellab-blocked`.
 
 Keep PixelLab source and runtime assets separate:
 

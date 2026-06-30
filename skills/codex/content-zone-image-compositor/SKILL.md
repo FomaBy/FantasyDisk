@@ -51,7 +51,10 @@ Style: strict, brutal and epic dark fantasy; dragon-forged metal, black stone, w
 
 For FantasyDisk UI/report work, also apply the global frame rule: content belongs only in the empty inner area of a frame, never on the ornament.
 
-If PixelLab MCP is unavailable, block or hand off the task. Do not use OpenAI Images, built-in image generation, old manual art, or legacy asset scripts as a fallback for FantasyDisk UI/HUD/frame generation.
+If PixelLab MCP is unavailable, read `../pixellab_mcp_auth.md` and run the
+config-based smoke before blocking or handing off the task. Do not use OpenAI
+Images, built-in image generation, old manual art, or legacy asset scripts as a
+fallback for FantasyDisk UI/HUD/frame generation.
 
 ## Planning Gate
 
