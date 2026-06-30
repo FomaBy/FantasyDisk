@@ -242,3 +242,23 @@ per-class выходит ~2-3 primary / 10-12 secondary / 9-12 optional; реш�
 
 Примечание: `docs/design/systems/balance.md` из спеки фактически называется
 `docs/design/systems/progression_balance.md` — обновлён он.
+
+## QA-Вердикт: PASSED
+
+QA claude-qa 2026-06-30, HEAD origin/dev @50680940.
+
+Все AC подтверждены. Data-валидатор `tests/attribute_relevance_test.gd` PASS
+(инвариант 2 primary / 8 secondary / 7 optional на атрибут, реестр↔матрица↔награды,
+порядок весов, правило показа ≤1 optional / ≥1 primary-secondary по всем 17 классам).
+Осмысленность раскладки спот-проверена (берсерк damage/knockback, снайпер crit/range,
+жрец defense/aura, рыцарь max_health/defense, друид aura/summon).
+
+Зелёные гейты (godot_gate.py, одиночный Godot 4.7):
+- attribute_relevance_test.gd — PASS
+- runtime_smoke_test.gd — PASS
+- runtime_smoke_ui_test.gd — PASS
+- pool_dot_runaway_gate.gd — PASS (acid 52394, blast 57536 ≤ 70000)
+- berserk_dps_runaway_gate.gd — PASS (20t=2253 ≤ 3600, 1t=484 ≤ 650)
+
+Мелкий нит (не блокирует): progression_balance.md ~строка 91 цитирует устаревшие
+веса 2.4/1.0/0.4 — фактически 1.4/0.7/0.4; поправить при следующем касании файла.
