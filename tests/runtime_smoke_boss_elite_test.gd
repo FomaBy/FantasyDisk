@@ -24,6 +24,7 @@ func _initialize() -> void:
 	await _test_new_boss_roster(main_scene)
 	await _test_secret_boss_after_act3_flow(main_scene)
 	await _test_secret_boss_uses_full_frame()
+	_test_hazard_telegraph_texture_param()
 	await _test_victory_flow(main)
 
 	main.queue_free()
@@ -67,3 +68,33 @@ func _test_secret_boss_uses_full_frame() -> void:
 		return
 	boss.queue_free()
 	await process_frame
+
+
+# SCRUM-790: HazardVfx.telegraph texture-параметр. Переданная текстура попадает в zone-
+# Sprite2D; без неё (null, путь остальных боссов) — процедурный круг. Гейтит и фичу
+# (доставленный PNG секретного босса), и регресс-безопасность (null = прежнее поведение).
+func _test_hazard_telegraph_texture_param() -> void:
+	var HazardVfxScript := load("res://scripts/hazard_vfx.gd")
+	var ring_tex := load("res://assets/sprites/effects/secret_ascension_boss_ring_telegraph.png") as Texture2D
+	if ring_tex == null:
+		_fail("Secret boss ring telegraph PNG must load.")
+		return
+	var host_custom := Node2D.new()
+	root.add_child(host_custom)
+	var tele_custom: Node2D = HazardVfxScript.telegraph(host_custom, 120.0, Color.WHITE, 0.4, ring_tex)
+	var zone_custom := tele_custom.get_child(0) as Sprite2D
+	if zone_custom == null or zone_custom.texture != ring_tex:
+		_fail("HazardVfx.telegraph must use the supplied delivered texture on the zone sprite.")
+		host_custom.queue_free()
+		return
+	host_custom.queue_free()
+	# Регресс: без текстуры процедурный круг сохраняется (не null, не доставленный PNG).
+	var host_default := Node2D.new()
+	root.add_child(host_default)
+	var tele_default: Node2D = HazardVfxScript.telegraph(host_default, 120.0, Color.WHITE, 0.4)
+	var zone_default := tele_default.get_child(0) as Sprite2D
+	if zone_default == null or zone_default.texture == null or zone_default.texture == ring_tex:
+		_fail("HazardVfx.telegraph without texture must keep the procedural zone texture (regression).")
+		host_default.queue_free()
+		return
+	host_default.queue_free()

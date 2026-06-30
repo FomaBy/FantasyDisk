@@ -1,5 +1,13 @@
 extends "res://scripts/enemy.gd"
 
+# SCRUM-790: доставленные radial telegraph-PNG секретного босса (Animator-pack SCRUM-539).
+# Используются ТОЛЬКО для secret_ascension_boss и ТОЛЬКО на круговых зонах (radius-based),
+# с которыми их радиальная геометрия совпадает. Направленные cone/beam PNG НЕ
+# подключены: у босса нет cone/beam-зон урона (все зоны круговые), их использование
+# исказило бы реальную геометрию (fairness). См. коммент в _spawn_secret_sector_ring.
+const SECRET_RING_TELEGRAPH := preload("res://assets/sprites/effects/secret_ascension_boss_ring_telegraph.png")
+const SECRET_RUPTURE_TELEGRAPH := preload("res://assets/sprites/effects/secret_ascension_boss_rupture_telegraph.png")
+
 @export var boss_behavior := ""
 # Русский титул для баннера появления (enemy_type_name остаётся системным).
 @export var boss_display_name := ""
@@ -246,7 +254,10 @@ func _spawn_secret_sector_ring(center: Vector2) -> void:
 	var radius := _safe_radius(250.0 + float(boss_phase - 1) * 34.0)
 	var color := Color(0.78, 0.24, 1.0, 1.0)
 	var windup := _ascension_telegraph(0.78)
-	HazardVfx.telegraph(marker, radius, color, windup)
+	# SCRUM-790: доставленный radial ring-PNG вместо процедурного круга (зона круговая —
+	# геометрия совпадает, ротация не нужна). Только секретный босс.
+	var ring_tex: Texture2D = SECRET_RING_TELEGRAPH if boss_behavior == "secret_ascension_boss" else null
+	HazardVfx.telegraph(marker, radius, color, windup, ring_tex)
 	var marker_ref: WeakRef = weakref(marker)
 	var tween := marker.create_tween()
 	tween.tween_interval(windup)
@@ -505,7 +516,11 @@ func _spawn_rift_zone(target_position: Vector2, play_visual := true) -> void:
 	var radius := _safe_radius(92.0 + float(boss_phase - 1) * 16.0)
 	var zone_color := Color(0.64, 0.34, 1.0, 1.0)
 	var zone_telegraph := _ascension_telegraph(0.65)
-	HazardVfx.telegraph(zone, radius, zone_color, zone_telegraph)
+	# SCRUM-790: доставленный radial rupture-PNG для наземной круговой зоны секретного
+	# босса (geometry-match). _spawn_rift_zone — общая для боссов, поэтому гейтим по
+	# boss_behavior: остальные боссы получают null = прежний процедурный круг (без регресса).
+	var rupture_tex: Texture2D = SECRET_RUPTURE_TELEGRAPH if boss_behavior == "secret_ascension_boss" else null
+	HazardVfx.telegraph(zone, radius, zone_color, zone_telegraph, rupture_tex)
 	var zone_ref: WeakRef = weakref(zone)
 	var zone_tween := zone.create_tween()
 	zone_tween.tween_interval(zone_telegraph)

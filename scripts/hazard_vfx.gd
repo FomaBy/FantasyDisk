@@ -96,14 +96,19 @@ static func _additive(texture: Texture2D, color: Color) -> Sprite2D:
 ## Warning circle that grows in and pulses while the attack winds up.
 ## Added as a child of `parent` (the hazard node), so it inherits position and
 ## is freed when the hazard frees itself. Returns the telegraph node.
-static func telegraph(parent: Node2D, radius: float, color: Color, windup: float) -> Node2D:
+static func telegraph(parent: Node2D, radius: float, color: Color, windup: float, texture: Texture2D = null) -> Node2D:
+	# SCRUM-790: опциональный `texture` — доставленный telegraph-PNG поверх процедурного
+	# круга. null (по умолчанию) = прежнее поведение (регресс-безопасно для всех зон).
+	# Передавать ТОЛЬКО радиальные/симметричные PNG (ring/rupture): zone — круговая
+	# (radius + distance_to), так что направленные формы (cone/beam) исказили бы
+	# геометрию урона. Текстура центрируется и масштабируется по radius как круг.
 	var holder := Node2D.new()
 	holder.name = "HazardTelegraph"
 	holder.z_index = -1
 	parent.add_child(holder)
 
 	var zone := Sprite2D.new()
-	zone.texture = _zone_texture(parent)
+	zone.texture = texture if texture != null else _zone_texture(parent)
 	zone.modulate = Color(color.r, color.g, color.b, 0.0)
 	var target_scale: float = radius / _texture_radius(zone.texture)
 	zone.scale = Vector2.ONE * target_scale * 0.7
