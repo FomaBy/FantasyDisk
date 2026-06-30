@@ -84,3 +84,23 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/berserk_dps
 процессов опасен при живом флоте — сперва ps-проверить чужой worktree). После:
 Jira -> local mirror -> intentional commit -> push. Эта задача — гейт для
 дочерних: survivability / damage / comfort пассов.
+
+## QA-Вердикт
+
+Статус: PASSED
+Дата: 2026-06-30 | QA: claude-qa | HEAD: origin/dev | Godot 4.7 (godot_gate)
+
+Read-only замер/отчёт — приёмка структуры и точности, без правок баланса/тестов.
+- Отчёт docs/design/reviews/balance_reeval_2026_06.md: 3 секции (выживаемость/урон/
+  комфорт) + сводная таблица выбросов (before-числа + целевые band'ы) + приоритизированный
+  backlog для 3 дочерних пассов. Все acceptance-пункты покрыты. ✓
+- Классы вне band явно отмечены: dark_mage (EHP 34.6, 0.39x), knight/robot (2.0–2.3x),
+  cap-pinned damage-пары (mult 2.800), summon/DoT over-hitters (mult 0.28–0.62),
+  comfort-лаггеры crowd-clear +20–22%. ✓
+- Acceptance #5 (никаких правок баланс-значений/тестов): commits 63e004bd+947834c5 трогают
+  только docs/ (180 строк отчёта + 3 строки mirror в task md); scripts/ и tests/ НЕ изменены. ✓
+- Дочерние таски существуют: backend_balance_reeval_{survivability,damage,comfort_pacing}_*_task.md. ✓
+
+Гейты (sanity на HEAD, семафор): comfort_band_cross_class_gate (spread 1.13x, 0 нарушений
+на срезах 1/5/20 — совпадает с отчётом), global_survivability_balance_smoke (16 строк,
+TTD≤600с) — оба PASS. Измерительный инструмент зелёный, выводы отчёта обоснованы.
