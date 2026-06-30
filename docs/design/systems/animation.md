@@ -80,6 +80,29 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   SpriteFrames, frame counts, states, timings and gameplay behavior were not
   changed.
 
+### Runtime registry/loader audit (SCRUM-721)
+
+Audit of the animation **runtime** loaders only (no art/motion/clip changes):
+
+- **Safe fallback is intentional.** `sprite_frames_for`/`configure_entity_visual`
+  guard every load with `ResourceLoader.exists` and a null/`SpriteFrames`-cast check,
+  returning `null` so the entity keeps its static body. A registry entry is optional —
+  a missing one is a valid no-op, not an error.
+- **But a registered path must be valid.** A stale/typo'd `frames` path used to drop
+  an entity's visual silently (null fallback, no evidence). Evidence now comes at
+  test-time: `tests/full_frame_registry_integrity_test.gd` iterates **every**
+  `FULL_FRAME_SPRITEFRAMES` entry (30) and asserts the resource exists, loads via the
+  same `sprite_frames_for` path, is a `SpriteFrames` with ≥1 animation, and has
+  `Vector2 scale/position` + `bool source_faces_left`. Prior coverage
+  (`animation_smoke_test`) only exercised hardcoded entity lists, so a typo on a new
+  entry could slip through; the integrity gate closes that.
+- Runtime stays log-quiet on purpose (no per-spawn `push_warning` spam) — the CI gate
+  is the evidence channel for stale registry paths.
+- `sliced_rig_manifest`, `skeleton_player_rig_2d`, `cutout_rig_2d` resource/manifest
+  loading reviewed and left as-is (covered by `sliced_rig_manifest_smoke_test` /
+  `skeletal_rig_rest_det_smoke_test`; manifests preload part textures, smoke gates the
+  string `source` path + `attack_part`/`torso` coverage).
+
 ## Player Motion
 
 - SCRUM-456 defines the new cartoon/anime playable-character restyle source
