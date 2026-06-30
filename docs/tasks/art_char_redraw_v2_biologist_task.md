@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Биолог» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -126,3 +126,31 @@ Acceptance (Design-source scope):
 Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
 2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-421
 снова `new` / `К выполнению`.
+
+## PM Readiness Update — PixelLab 2026-06-30
+
+PM/Jira повторно открыл SCRUM-421 для Design/Codex: Biologist должен быть
+пересобран через PixelLab по актуальному runtime-пайплайну, аналогично Dark Mage
+PixelLab Hero Select/runtime примеру (SCRUM-685). Обязательный scope: PixelLab
+character source/fetch для `biologist`, 8-direction idle poses, 8-direction
+move/walk animation, transparent normalized 512x512 runtime pack under
+`assets/sprites/characters/full_frame/biologist_pixellab/`, source manifest under
+`assets/sprites/characters/pixellab/biologist/`, `biologist_spriteframes.tres`,
+runtime/Hero Select integration, docs and focused smokes. Non-PixelLab fallback
+is not allowed unless Jira explicitly records an override.
+
+## Blocker — Codex Design 2026-06-30
+
+`codex-design-board-watcher` claim-first взял SCRUM-421 after PM readiness and
+checked PixelLab availability. Exposed PixelLab tools are not available through
+Codex `tool_search`. The local `mcp_servers.pixellab` bridge initializes and
+returns the PixelLab tool list, but actual tool calls fail with `401 Missing
+Authorization header`; no token/secret was printed.
+
+Because `fantasydisk-asset-generator` and
+`fantasydisk-pixellab-animation-integrator` both require PixelLab for this
+production character source/animation scope and forbid legacy/OpenAI/manual
+fallback, no asset/runtime integration was started. Jira was returned to
+`К выполнению` with labels `blocked` and `pixellab-blocked`. Unblock: configure
+PixelLab MCP Authorization for Codex Desktop `mcp-remote`, then requeue
+SCRUM-421 for Design/Codex.
