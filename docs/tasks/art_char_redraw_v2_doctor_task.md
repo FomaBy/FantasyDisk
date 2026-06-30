@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Доктор» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -60,3 +60,12 @@ docs/design/content_registry.md (doctor), current_game_state.
 Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
 2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-425
 снова `new` / `К выполнению`.
+
+## QA-Вердикт: PASSED
+Статус: done
+QA claude-qa 2026-06-30, верифицировано на origin/dev HEAD 1ca8f1d7.
+- Source pixellab/doctor/: 8 idle + 48 move (8 dirs x 6f) + manifest (PixelLab c3d5ea3d + 8 anim IDs).
+- Runtime full_frame/doctor_pixellab/: 56 PNG, все 512x512, прозрачные (углы alpha=0, ~95% transp, без matte/каймы).
+- doctor_spriteframes.tres: 27 анимаций idle/move/walk + 8 направлений каждой; attack отсутствует.
+- sprite_path -> doctor_pixellab/doctor_idle_south.png; legacy сохранён как fallback; docs+CHANGELOG обновлены.
+- Смоуки PASS: runtime_smoke, animation_smoke, hero_select_pixellab_layout, character_sprite_registry_alignment (17 chars).
