@@ -1,7 +1,7 @@
 # Refactor Wave: Progression Data Facade And Domain API Contracts
 
 Jira: SCRUM-714
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / data quality
 Контур: Claude
