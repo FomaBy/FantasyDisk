@@ -1,7 +1,7 @@
 # Таймеры боя: обычный 1 минута, Элитка/Босс — 5 минут «убей или проиграл»
 
 Версия: 0.1.8 · Роль: backend · Контур: Claude · Приоритет: P1 · foma · Эпик: Бой, враги, боссы, события
-Статус: in_progress · Спринт: 0.1.8
+Статус: done · Спринт: 0.1.8
 Jira: SCRUM-785
 Owner: Backend / Claude
 Locked paths: scripts/main.gd (_process win/lose + round-duration консты); scripts/combat_director.gd (_start_combat/_end_combat/elite/boss)
