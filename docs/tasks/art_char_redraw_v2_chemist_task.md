@@ -72,3 +72,30 @@ were not exposed in this Codex session, and the locally configured
 `initialize/tools/list` handshake in two attempts. No character files were
 generated or modified. Jira labels `blocked` and `pixellab-blocked` were added,
 and the issue was returned to `К выполнению` to avoid a stale `В работе` owner.
+
+## PM Readiness Update — PixelLab 2026-06-30
+
+PM/Jira повторно открыл SCRUM-423 для Design/Codex: Chemist должен быть
+пересобран через PixelLab по актуальному runtime-пайплайну, аналогично Dark Mage
+PixelLab Hero Select/runtime примеру (SCRUM-685). Обязательный scope: PixelLab
+character source/fetch для `chemist`, 8-direction idle poses, 8-direction
+move/walk animation, transparent normalized 512x512 runtime pack under
+`assets/sprites/characters/full_frame/chemist_pixellab/`, source manifest under
+`assets/sprites/characters/pixellab/chemist/`, `chemist_spriteframes.tres`,
+runtime/Hero Select integration, docs and focused smokes. Non-PixelLab fallback
+is not allowed unless Jira explicitly records an override.
+
+## Blocker Update — Codex Design 2026-06-30
+
+`codex-design-board-watcher` claim-first взял SCRUM-423 after PM readiness and
+rechecked PixelLab availability. The local `mcp_servers.pixellab` bridge now
+initializes and returns the PixelLab tool list (`49` tools), but actual tool
+calls fail with `401 Missing Authorization header`; no token/secret was printed.
+
+Because `fantasydisk-asset-generator` and
+`fantasydisk-pixellab-animation-integrator` both require PixelLab for this
+production character source/animation scope and forbid legacy/OpenAI/manual
+fallback, no asset/runtime integration was started. Jira was returned to
+`К выполнению` with labels `blocked` and `pixellab-blocked`. Unblock: configure
+PixelLab MCP Authorization for Codex Desktop `mcp-remote`, then requeue
+SCRUM-423 for Design/Codex.
