@@ -128,17 +128,17 @@ func _end_combat(victory: bool) -> void:
 	var event_combat: Dictionary = game.pending_event_combat.duplicate(true)
 	game.combat_active = false
 	game.boss_combat_active = false
-	if victory and game.current_player != null and is_instance_valid(game.current_player):
-		# SCRUM-500 (on_room_clear): «Передышка» — лечение по завершении боя (до снапшота).
-		var room_clear_heal := float((game.current_player.get("run_modifiers") as Dictionary).get("room_clear_heal_percent", 0.0))
-		if room_clear_heal > 0.0 and game.current_player.has_method("heal_percent"):
-			game.current_player.heal_percent(room_clear_heal)
-		if not was_boss_fight:
-			_grant_combat_completion_rewards(event_combat)
-		_store_player_snapshot(game.current_player)
-	elif not victory and game.current_player != null and is_instance_valid(game.current_player):
-		# SCRUM-502: на смерти снять актуальные данные игрока (level/money/artifacts) ДО
-		# _clear_world/queue_free — иначе run_player_snapshot был бы от прошлого узла.
+	if game.current_player != null and is_instance_valid(game.current_player):
+		if victory:
+			# SCRUM-500 (on_room_clear): «Передышка» — лечение по завершении боя (до снапшота).
+			var room_clear_heal := float((game.current_player.get("run_modifiers") as Dictionary).get("room_clear_heal_percent", 0.0))
+			if room_clear_heal > 0.0 and game.current_player.has_method("heal_percent"):
+				game.current_player.heal_percent(room_clear_heal)
+			if not was_boss_fight:
+				_grant_combat_completion_rewards(event_combat)
+		# SCRUM-502: снять актуальные данные игрока (level/money/artifacts) ДО
+		# _clear_world/queue_free — иначе run_player_snapshot был бы от прошлого узла
+		# (на смерти особенно критично: иначе снапшот остался бы от предыдущего узла).
 		_store_player_snapshot(game.current_player)
 	game._clear_world()
 	game._clear_hud()
@@ -342,7 +342,11 @@ func _apply_mini_elite_kind(elite: Node2D, kind: Dictionary) -> void:
 
 
 func _spawn_enemy_wave() -> void:
-	var remaining_slots = _active_enemy_cap() - game.get_tree().get_nodes_in_group("enemies").size()
+	# Активный кап врагов инвариантен в пределах одной волны (зависит от
+	# route_scaling_stage/spawn_wave_index/типа боя — они тут не меняются),
+	# поэтому считаем один раз и переиспользуем в горячем цикле спавна пачек.
+	var active_cap := _active_enemy_cap()
+	var remaining_slots = active_cap - game.get_tree().get_nodes_in_group("enemies").size()
 	if remaining_slots <= 0:
 		return
 
@@ -381,7 +385,7 @@ func _spawn_enemy_wave() -> void:
 			pack_count = mini(game.rng.randi_range(3, 4), remaining_slots)
 
 		for pack_index in range(pack_count):
-			if game.get_tree().get_nodes_in_group("enemies").size() >= _active_enemy_cap():
+			if game.get_tree().get_nodes_in_group("enemies").size() >= active_cap:
 				return
 			var offset := Vector2.ZERO
 			if pack_count > 1:

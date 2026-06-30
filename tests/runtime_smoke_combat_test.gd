@@ -145,6 +145,33 @@ func _initialize() -> void:
 		_fail("Expected enemy projectile to damage player in combat smoke.")
 		return
 
+	# SCRUM-708: спавн-кап волны — инвариант. CombatDirector кэширует _active_enemy_cap()
+	# один раз на волну; проверяем, что число врагов в группе никогда не превышает кап
+	# даже после нескольких подряд волн (включая small-pack спавны).
+	for stray in main.get_tree().get_nodes_in_group("enemies"):
+		if is_instance_valid(stray):
+			stray.queue_free()
+	await process_frame
+	var combat_director = main.get("combat")
+	if combat_director == null:
+		_fail("SCRUM-708: expected CombatDirector to be reachable via main.combat.")
+		return
+	main.set("spawn_wave_index", 0)
+	var wave_cap := int(main.call("_active_enemy_cap"))
+	for wave_iteration in range(4):
+		combat_director.call("_spawn_enemy_wave")
+		await process_frame
+		var live_enemies := int(main.get_tree().get_nodes_in_group("enemies").size())
+		if live_enemies > wave_cap:
+			_fail("SCRUM-708: spawn wave exceeded the active enemy cap (%d > %d)." % [live_enemies, wave_cap])
+			return
+		main.set("spawn_wave_index", int(main.get("spawn_wave_index")) + 1)
+		wave_cap = int(main.call("_active_enemy_cap"))
+	for stray in main.get_tree().get_nodes_in_group("enemies"):
+		if is_instance_valid(stray):
+			stray.queue_free()
+	await process_frame
+
 	await _test_death_flow(main_scene)
 	await _test_hud_no_overlap_layouts(main_scene)
 
