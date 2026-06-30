@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Друид» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -60,3 +60,15 @@ docs/design/content_registry.md (druid), current_game_state.
 Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
 2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-426
 снова `new` / `К выполнению`.
+
+## Blocker — Codex Design 2026-06-30
+
+Jira-pull claim by `codex-design-board-watcher` confirmed SCRUM-426 is eligible
+again, but production work is blocked before asset creation: current
+`fantasydisk-asset-generator` requires PixelLab MCP for new character art and
+forbids legacy OpenAI/`generate_asset.py`/`image_gen` fallback. PixelLab tools
+were not exposed in this Codex session; the same configured local
+`mcp_servers.pixellab` bridge was tested immediately before on SCRUM-423 and
+did not complete MCP `initialize/tools/list` handshake. No character files were
+generated or modified. Jira labels `blocked` and `pixellab-blocked` were added,
+and the issue was returned to `К выполнению` to avoid a stale `В работе` owner.
