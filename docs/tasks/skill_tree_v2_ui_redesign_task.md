@@ -40,6 +40,13 @@ allocate/reset API). Начинать после влития его API в orig
   палитра, рамки. Контент строго в безопасной зоне фрейма (frame-content-safe-area-rule).
 - Высокое разрешение (вьюпорт 2560x1440), читабельность на 1152…3840.
 
+## Обязательное правило размеров UI-ассетов
+
+- Runtime UI не должен исправлять размер generated art через растягивание или сжатие по одной оси.
+- Подключать только такие ассеты из SCRUM-697, которые сгенерированы в правильном target aspect/size: предпочтительно отдельные sizes/spec для `2560x1440` и `1920x1080`; допустимый fallback — нативный 2K (`2560x1440`) source package с только пропорциональным downscale до 1080p.
+- Запрещены `STRETCH_SCALE`/custom sizing режимы, которые деформируют фон, рамки, узлы, кнопки, бейджи, иконки, орнамент или коннекторы. Whole-image frames/backgrounds scale proportionally; 9-slice/tileable assets may adapt only in flat centers while corners/borders/ornaments/content margins stay native/proportional.
+- UI layout/test evidence must record each generated asset's source size, display size at 1080p and 2K, scale factor, aspect ratio and PASS/FAIL for "no stretch/squash".
+
 ## Требования
 
 1. Снести старый `_show_skill_tree_screen()` (4 линейные ветки) и собрать заново под графовую модель.
@@ -70,6 +77,7 @@ allocate/reset API). Начинать после влития его API в orig
 - [ ] Шапка: глобальный уровень + метаочки «X / 100» + инфо + Назад; «Сбросить дерево» работает.
 - [ ] Селектор класса центрирует/подсвечивает разные точки входа; дерево общее.
 - [ ] Новые арт-ассеты привязаны (с `.import`), контент в безопасной зоне, единый стиль.
+- [ ] Generated UI assets render at native/proportional sizes for `1920x1080` and `2560x1440`; no element is stretched/squeezed to fit its slot.
 - [ ] Общие UI-гейты зелёные (`ui_no_overlap_matrix_test`, `runtime_smoke_test`) на всех разрешениях.
 
 ## Files

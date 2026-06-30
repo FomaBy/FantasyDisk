@@ -44,6 +44,7 @@ Labels: foma, qa, claude
 - [ ] Клик по доступному узлу выделяет (трата метаочка), счётчики/сейв обновляются; reset работает.
 - [ ] Селектор класса центрирует/подсвечивает разные точки входа.
 - [ ] Арт-ассеты привязаны (с `.import`), контент в безопасной зоне, единый стиль.
+- [ ] Generated UI assets are not stretched/squeezed: verify native `2560x1440` and `1920x1080` sizes where provided, or a native 2K source downscaled only proportionally to 1080p. Check source/display aspect ratios, 9-slice margins, frame ornaments, node frames, connectors, buttons and badges.
 - [ ] Общие UI-гейты зелёные: `ui_no_overlap_matrix_test`, `runtime_smoke_test` на 1152…3840.
 
 ## Прогон

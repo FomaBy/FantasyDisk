@@ -55,6 +55,14 @@ Project rule: финальные runtime UI assets создаются через
 - Optional background: if the existing settings backdrop does not match the new menu, generate a matching PixelLab background or overlay layer, preserving readability and not fighting the modal.
 - Global frame rule is hard acceptance: no text, buttons, tabs, focus rings, dropdown labels, slider handles, icons, scrollbars or click zones may overlap frame ornaments/borders/gems/dragon motifs.
 
+## Hard Rule: Native-Size UI Assets
+
+- The Settings UI must not rely on non-uniform stretching, squashing, or "fit by stretch" for generated interface elements.
+- Generate every final PixelLab UI element in its actual target aspect and size for the supported layouts: preferred `2560x1440` and `1920x1080`; acceptable fallback is one native `2560x1440` / 2K source package that is only downscaled proportionally to 1080p.
+- Any 1080p output derived from 2K must preserve the same aspect ratio and content-zone proportions; no one-axis scaling, no widened/narrowed buttons, no distorted frame ornaments.
+- For repeated/control assets (buttons, tabs, dropdowns, sliders, toggles, scrollbars), generate exact-size families/states for their intended runtime slots. If 9-slice/tiled centers are used, only the flat/tileable center may adapt; corners, borders, icons and ornaments must remain native/proportional and have documented texture/content margins.
+- `ui_plan.json`, `layout.json`, manifests and QA evidence must record source size, 1080p target size or scale factor, aspect ratio, allowed scaling mode, and a PASS note that no generated UI asset is stretched or squeezed.
+
 ## Files / Assets / IDs
 
 - Runtime: `scripts/ui_screens.gd`, maybe shared UI helpers only if needed.
@@ -72,6 +80,7 @@ Project rule: финальные runtime UI assets создаются через
 - [ ] `ui_plan.json`/`layout.json` and safe-zone guide/report exist before image generation; report decision is `ready_for_image`.
 - [ ] Three OpenAI-generated reference mockups exist for `Экран`, `Звук`, `Управление`, using the approved geometry and with empty content zones.
 - [ ] PixelLab final source/final UI assets exist for every Settings visual element, plus background if needed; manifest records PixelLab IDs/tags/export paths and no secrets.
+- [ ] Generated UI assets are native-size for `2560x1440` and `1920x1080`, or are native `2560x1440` assets downscaled only proportionally to 1080p; QA evidence confirms no one-axis stretch/squash.
 - [ ] Runtime or handoff uses only PixelLab final assets for production, not the OpenAI mockup images.
 - [ ] All production art is textless where runtime text is expected; transparent PNG/9-slice/content margins are documented.
 - [ ] Runtime integration, if included, preserves Settings behavior: tabs, pending video apply/revert, audio persistence, toggles, controls scroll, key rebind flow, main/pause return origin.
