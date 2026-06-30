@@ -119,4 +119,31 @@ allocate/reset API). Начинать после влития его API в orig
 
 ## QA-Вердикт
 
-(заполняется QA после сдачи)
+Статус: PASSED
+
+QA (claude-qa, 2026-06-30, HEAD origin/dev = dd3bdaa8):
+
+Гейты (Godot 4.7 headless, godot_gate semaphore, fdengine):
+- `meta_skill_tree_smoke_test` — PASS (экран открывается, узлы-кнопки, покупка/трата метаочка, сейв).
+- `runtime_smoke_test` — PASS (exit 0; duplicate-artifact guard 11251 files, skill-tree kit).
+- `ui_no_overlap_matrix_test` — PASS (3 прогона: 1 flaky-FAIL на НЕ относящемся к задаче экране
+  `upgrade_economy` @1600×900 под нагрузкой живого Godot-редактора → 2 чистых PASS подряд;
+  секция `skill_tree` зелёная во всех прогонах).
+
+Код (scripts/ui_screens.gd `_show_skill_tree_screen`, meta_progression API) сверен с acceptance:
+- Граф-холст `SkillTreeCanvas`/`SkillTreeWorld`: пан drag ЛКМ, зум колесом (вокруг курсора)
+  и кнопками +/− (вокруг центра), равномерный `world.scale = Vector2(z,z)` 0.28…1.3.
+- Узлы `TextureButton` по `pos`, арт по `kind`/`node_status()` (locked|available|purchased),
+  `STRETCH_KEEP_ASPECT_CENTERED` (без axis-stretch); тултип title/desc/цена.
+- Рёбра — `draw_line` по `adj` (подсветка по статусу), спрайт-коннектор НЕ растягивается.
+- Клик available → `allocate_node()`+`save_state()`+refresh; locked disabled; «Сбросить дерево»
+  → `reset_skill_tree()` с подтверждающим попапом.
+- Шапка: бейдж «Ур. N / Метаочки / X / 100» (`META_POINTS_CAP`), инфо-«?» попап, frame-safe «Назад».
+- Селектор класса (17) центрирует/подсвечивает точку входа; дерево общее.
+- Ассеты art-пака привязаны с `.import` (assets/sprites/ui/skill_tree/**), bg `STRETCH_TILE`.
+
+No-stretch evidence: docs/qa/scrum698_skill_tree_v2_no_stretch_evidence.md — сверено, KEEP_ASPECT.
+
+Замечание (НЕ блокер SCRUM-698): `upgrade_economy` @1600×900 даёт редкий flaky-overflow
+`UpgradeChoiceButton0Description` под конкурентной нагрузкой; не воспроизводится в изоляции
+(2/3 PASS), к этой задаче не относится (dd3bdaa8 не трогал upgrade_economy).
