@@ -1,0 +1,41 @@
+{
+  "jira": "SCRUM-690",
+  "asset_category": "artifact",
+  "canonical_id": "guardian_bulwark",
+  "display_name": "Rubezh Strazha",
+  "target_size": "256x256",
+  "final_path": "assets/sprites/ui/icons/artifacts/artifact_guardian_bulwark.png",
+  "source_png": "docs/design/references/icons/artifacts/guardian_bulwark/guardian_bulwark_source_openai.png",
+  "alpha_clean_source": "docs/design/references/icons/artifacts/guardian_bulwark/guardian_bulwark_source_openai_alpha_clean.png",
+  "prompt_notes": "docs/design/references/icons/artifacts/guardian_bulwark/prompt_notes.md",
+  "generator": "OpenAI Images API (explicit SCRUM-690 override)",
+  "model": "gpt-image-2",
+  "quality": "high",
+  "source_request_size": "1024x1024",
+  "style_notes": "low HP guard: cracked obsidian shield, golden-blue knockback ward wave",
+  "prompt": "D&D + Dark Fantasy Dragon game artifact icon for FantasyDisk. Centered isolated magical item on true transparent background. No text, no letters, no numbers, no runic readable glyph letters, no frame, no UI panel, no square matte, no watermark, no background scene. 256x256 final use, strong readable silhouette at 32px, 40px, and 64px, 10-18 percent transparent padding around the subject, high contrast materials, painterly dark fantasy lighting, clean alpha edges.\nCanonical id: guardian_bulwark. Player-facing concept: Rubezh Strazha. Visual motif: low HP guard: cracked obsidian shield, golden-blue knockback ward wave.",
+  "qa": {
+    "source_bbox": [
+      49,
+      74,
+      980,
+      943
+    ],
+    "final_bbox": [
+      28,
+      34,
+      228,
+      221
+    ],
+    "margins_px": [
+      28,
+      34,
+      28,
+      35
+    ],
+    "scale": 0.21482277121374865
+  },
+  "old_sha256": "b99728e6baf23ee24e771be7bb37897c4f2baf01ec00e2ddf8656bb10c88ae5d",
+  "new_sha256": "58bd3af4083b31af8f6d8a307699ba1dfd923eefdf48ebdeccaa6603379a47de",
+  "average_hash": "00183c7e7e6e0000"
+}

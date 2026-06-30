@@ -1,0 +1,41 @@
+{
+  "jira": "SCRUM-690",
+  "asset_category": "artifact",
+  "canonical_id": "crit_impulse",
+  "display_name": "Impuls Krita",
+  "target_size": "256x256",
+  "final_path": "assets/sprites/ui/icons/artifacts/artifact_crit_impulse.png",
+  "source_png": "docs/design/references/icons/artifacts/crit_impulse/crit_impulse_source_openai.png",
+  "alpha_clean_source": "docs/design/references/icons/artifacts/crit_impulse/crit_impulse_source_openai_alpha_clean.png",
+  "prompt_notes": "docs/design/references/icons/artifacts/crit_impulse/prompt_notes.md",
+  "generator": "OpenAI Images API (explicit SCRUM-690 override)",
+  "model": "gpt-image-2",
+  "quality": "high",
+  "source_request_size": "1024x1024",
+  "style_notes": "critical hit movement burst: crimson-gold impulse shard and dash trail",
+  "prompt": "D&D + Dark Fantasy Dragon game artifact icon for FantasyDisk. Centered isolated magical item on true transparent background. No text, no letters, no numbers, no runic readable glyph letters, no frame, no UI panel, no square matte, no watermark, no background scene. 256x256 final use, strong readable silhouette at 32px, 40px, and 64px, 10-18 percent transparent padding around the subject, high contrast materials, painterly dark fantasy lighting, clean alpha edges.\nCanonical id: crit_impulse. Player-facing concept: Impuls Krita. Visual motif: critical hit movement burst: crimson-gold impulse shard and dash trail.",
+  "qa": {
+    "source_bbox": [
+      160,
+      119,
+      897,
+      918
+    ],
+    "final_bbox": [
+      36,
+      28,
+      220,
+      228
+    ],
+    "margins_px": [
+      36,
+      28,
+      36,
+      28
+    ],
+    "scale": 0.2503128911138924
+  },
+  "old_sha256": "d1bbf8eb703583913ef9f7234a04ff18ce9c6bb1eda7dcc0890ebd3209b8d630",
+  "new_sha256": "5ae9ec7b97d0dee7daa054e6a7a62c1357e157ecef8051165ee2d808b17a0513",
+  "average_hash": "000c1c3e3c7c7000"
+}

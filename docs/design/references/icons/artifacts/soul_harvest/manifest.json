@@ -1,0 +1,41 @@
+{
+  "jira": "SCRUM-690",
+  "asset_category": "artifact",
+  "canonical_id": "soul_harvest",
+  "display_name": "Sbor Dush",
+  "target_size": "256x256",
+  "final_path": "assets/sprites/ui/icons/artifacts/artifact_soul_harvest.png",
+  "source_png": "docs/design/references/icons/artifacts/soul_harvest/soul_harvest_source_openai.png",
+  "alpha_clean_source": "docs/design/references/icons/artifacts/soul_harvest/soul_harvest_source_openai_alpha_clean.png",
+  "prompt_notes": "docs/design/references/icons/artifacts/soul_harvest/prompt_notes.md",
+  "generator": "OpenAI Images API (explicit SCRUM-690 override)",
+  "model": "gpt-image-2",
+  "quality": "high",
+  "source_request_size": "1024x1024",
+  "style_notes": "kill-streak heal: black sickle soul lantern with violet ghost flame",
+  "prompt": "D&D + Dark Fantasy Dragon game artifact icon for FantasyDisk. Centered isolated magical item on true transparent background. No text, no letters, no numbers, no runic readable glyph letters, no frame, no UI panel, no square matte, no watermark, no background scene. 256x256 final use, strong readable silhouette at 32px, 40px, and 64px, 10-18 percent transparent padding around the subject, high contrast materials, painterly dark fantasy lighting, clean alpha edges.\nCanonical id: soul_harvest. Player-facing concept: Sbor Dush. Visual motif: kill-streak heal: black sickle soul lantern with violet ghost flame.",
+  "qa": {
+    "source_bbox": [
+      215,
+      95,
+      782,
+      923
+    ],
+    "final_bbox": [
+      59,
+      28,
+      196,
+      228
+    ],
+    "margins_px": [
+      59,
+      28,
+      60,
+      28
+    ],
+    "scale": 0.24154589371980675
+  },
+  "old_sha256": "d8a781add5f56291508062b8810fc45dff3bdb71f9eb2b8fb587dca35fb635a5",
+  "new_sha256": "028f1207322e0abc24614560228178b0fe383021973895a7318d69f615bbb38a",
+  "average_hash": "00383c7c3c1c0800"
+}
