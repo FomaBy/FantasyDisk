@@ -79,3 +79,10 @@ World cleanup (`game._clear_world`) — вне locked paths (живёт в main.
 
 Disk cleanup: рабочий worktree `/private/tmp/fsd_wt_scrum708` удалён после пуша;
 временных артефактов не оставлено.
+
+## QA-Вердикт
+Статус: PASSED (claude-qa, 2026-06-30)
+
+- Интеграция: c9d91534 влито в origin/dev (merge-base --is-ancestor -> YES); изменения только в locked paths; баланс/контракты SCRUM-500/502 сохранены.
+- Гейты (изолир. worktree от origin/dev, fdengine-семафор, RC=0): runtime_smoke_combat_test -> combat suite passed; runtime_smoke_progression_economy_test -> EV-инвариант + suite passed; runtime_smoke_test -> passed.
+- Behavior-neutral cleanup + focused cap-invariant тест. Acceptance выполнен.
