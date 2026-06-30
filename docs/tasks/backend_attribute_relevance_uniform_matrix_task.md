@@ -244,6 +244,7 @@ per-class выходит ~2-3 primary / 10-12 secondary / 9-12 optional; реш�
 `docs/design/systems/progression_balance.md` — обновлён он.
 
 ## QA-Вердикт: PASSED
+Статус: PASSED
 
 QA claude-qa 2026-06-30, HEAD origin/dev @50680940.
 
