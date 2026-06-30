@@ -236,7 +236,7 @@ func _generate_route() -> Array:
 			})
 		route.append(branches)
 	_place_required_shop_nodes(route)
-	_place_central_chest_node(route)
+	_place_chest_line_rows(route)
 	_place_altar_node(route)
 	route.append([_random_boss_route_node()])
 	_assign_route_connections(route)
@@ -245,7 +245,7 @@ func _generate_route() -> Array:
 
 func _place_altar_node(route: Array) -> void:
 	# SCRUM-610: ровно один «Алтарь жертвы» на маршрут (постоянная сделка тело-за-силу).
-	# По образцу _place_central_chest_node: переопределяем один уже сгенерированный узел.
+	# Переопределяем один уже сгенерированный узел (как chest/shop placement).
 	# Стартовые ряды (только бои) исключаем; не затираем обязательные shop/chest, чтобы
 	# не сломать их гарантии. Вызывается ДО _assign_route_connections — узел получает
 	# связи как обычный узел маршрута.
@@ -311,37 +311,55 @@ func _place_shop_node_in_row_range(route: Array, row_start: int, row_end: int) -
 	route[row_index] = row
 
 
-func _place_central_chest_node(route: Array) -> void:
+func _place_chest_line_rows(route: Array) -> void:
+	# SCRUM-787: вместо одиночного сундука — целые «линии» сундуков (ряд, где КАЖДАЯ ветка
+	# = chest). Игрок проходит маршрут по одному ряду за раз (выбирает ровно одну ветку),
+	# поэтому full-chest ряд непропускаем: какой бы путь ни выбрал — попадёт на сундук и
+	# получит выбор 1-из-3 артефактов. С одного ряда — ровно 1 сундук (по выбранной ветке).
+	# Вызывается ПОСЛЕ _place_required_shop_nodes — кандидаты исключают шоп-ряды, чтобы не
+	# затереть гарантированный шоп. _place_altar_node идёт после нас и сам избегает
+	# full-chest ряда (ему нужна свободная не-shop/не-chest ветка). Детерминированно (без rng).
 	var non_boss_rows := route.size()
 	if non_boss_rows <= START_BATTLE_ONLY_ROWS:
 		return
-	var row_index: int = clampi(int(floor(float(non_boss_rows - 1) * 0.5)), START_BATTLE_ONLY_ROWS, non_boss_rows - 1)
-	var row: Array = route[row_index]
-	if row.is_empty():
-		return
-	var branch_index := _central_chest_branch_index(row)
-	var route_node: Dictionary = row[branch_index]
-	route_node["type"] = "chest"
-	route_node["name"] = _random_route_node_name(branch_index, "chest")
-	row[branch_index] = route_node
-	route[row_index] = row
-
-
-func _central_chest_branch_index(row: Array) -> int:
-	var center_index := clampi(int(floor(float(row.size() - 1) * 0.5)), 0, maxi(row.size() - 1, 0))
-	if str((row[center_index] as Dictionary).get("type", "")) != "shop":
-		return center_index
-	var best_index := center_index
-	var best_distance := 99999
-	for index in range(row.size()):
-		var route_node: Dictionary = row[index]
-		if str(route_node.get("type", "")) == "shop":
+	var line_count: int = maxi(1, int(game.CHEST_LINE_ROWS))
+	# Кандидаты: внутренние ряды (после стартовых battle-only), не содержащие шоп.
+	var candidate_rows := []
+	for row_index in range(START_BATTLE_ONLY_ROWS, non_boss_rows):
+		var row: Array = route[row_index]
+		if row.is_empty():
 			continue
-		var distance := absi(index - center_index)
-		if distance < best_distance:
-			best_distance = distance
-			best_index = index
-	return best_index
+		var has_shop := false
+		for route_node in row:
+			if str((route_node as Dictionary).get("type", "")) == "shop":
+				has_shop = true
+				break
+		if not has_shop:
+			candidate_rows.append(row_index)
+	if candidate_rows.is_empty():
+		return
+	# Приоритет: ближе к середине акта (детерминированно; при равенстве — меньший индекс).
+	var midpoint: int = clampi(int(floor(float(non_boss_rows - 1) * 0.5)), START_BATTLE_ONLY_ROWS, non_boss_rows - 1)
+	candidate_rows.sort_custom(func(a, b):
+		var da := absi(int(a) - midpoint)
+		var db := absi(int(b) - midpoint)
+		if da == db:
+			return int(a) < int(b)
+		return da < db)
+	var rows_to_fill: int = mini(line_count, candidate_rows.size())
+	for i in range(rows_to_fill):
+		_fill_row_with_chests(route, candidate_rows[i])
+
+
+func _fill_row_with_chests(route: Array, row_index: int) -> void:
+	var row: Array = route[row_index]
+	for branch_index in range(row.size()):
+		var route_node: Dictionary = row[branch_index]
+		route_node["type"] = "chest"
+		route_node["name"] = _random_route_node_name(branch_index, "chest")
+		route_node.erase("event_id")  # на случай если ветка была событием/алтарём
+		row[branch_index] = route_node
+	route[row_index] = row
 
 
 func _random_boss_route_node() -> Dictionary:

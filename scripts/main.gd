@@ -26,6 +26,10 @@ const ROUND_DURATION_MAX := 90.0
 # SCRUM-785: элитка и босс — таймер «убей или проиграл» на 5 минут.
 const ELITE_BOSS_ROUND_DURATION := 300.0
 const ROUTE_STEPS_TO_BOSS := 8
+# SCRUM-787: сундуки оформлены целыми «линиями» (ряд, где КАЖДАЯ ветка = chest), чтобы
+# игрок не мог их пропустить (любой путь проходит через ряд). 1 линия в середине акта;
+# можно поднять до 2 (ранняя + поздняя).
+const CHEST_LINE_ROWS := 1
 const ACT_COUNT := 3
 const ACT_SCALING_STAGE_OFFSET := 4
 const MIN_BRANCHES_PER_STEP := 2
