@@ -3062,5 +3062,10 @@
   "key": "SCRUM-694",
   "status": "К выполнению",
   "desc_hash": "8cbab5436962517d809d49fee0f34e0d"
+ },
+ "backend_attribute_relevance_uniform_matrix_task.md": {
+  "key": "SCRUM-695",
+  "status": "К выполнению",
+  "desc_hash": "2c6389bb43d78bcb03c1718d6af27812"
  }
 }
