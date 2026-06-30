@@ -87,6 +87,7 @@ Disk cleanup: none created; existing main-checkout `.godot/` cache and unrelated
 pre-existing `.import` sidecars were left untouched.
 
 ## QA-Вердикт: PASSED
+Статус: PASSED
 2026-06-30, claude-qa. Проверено на чистом origin/dev (worktree @ 23d820f5, фикс a2351bb5 — merge-base подтверждён).
 - runtime_smoke_ui_test.gd — PASS
 - ui_no_overlap_matrix_test.gd — PASS
