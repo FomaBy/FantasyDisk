@@ -1055,13 +1055,6 @@ func _hs4_scaled_rect(zone: Rect2, canvas_size: Vector2) -> Rect2:
 	)
 
 
-func _hs4_place(ctrl: Control, parent: Control, canvas_size: Vector2, zone: Rect2) -> void:
-	var rect := _hs4_scaled_rect(zone, canvas_size)
-	ctrl.position = rect.position
-	ctrl.size = rect.size
-	parent.add_child(ctrl)
-
-
 func _hs4_pixellab_scale(viewport_size: Vector2) -> float:
 	return minf(viewport_size.x / HS4_DESIGN_BASE_2K.x, viewport_size.y / HS4_DESIGN_BASE_2K.y)
 
@@ -1071,22 +1064,6 @@ func _hs4_pixellab_origin(viewport_size: Vector2, scale: float) -> Vector2:
 		roundf((viewport_size.x - HS4_DESIGN_BASE_2K.x * scale) * 0.5),
 		roundf((viewport_size.y - HS4_DESIGN_BASE_2K.y * scale) * 0.5)
 	)
-
-
-func _hs4_pixellab_rect(slot: String, viewport_size: Vector2) -> Rect2:
-	var scale := _hs4_pixellab_scale(viewport_size)
-	var origin := _hs4_pixellab_origin(viewport_size, scale)
-	var source_rect: Rect2 = HS4_PIXELLAB_LAYOUT_2K.get(slot, Rect2())
-	return Rect2(
-		origin + Vector2(roundf(source_rect.position.x * scale), roundf(source_rect.position.y * scale)),
-		Vector2(roundf(source_rect.size.x * scale), roundf(source_rect.size.y * scale))
-	)
-
-
-func _hs4_pixellab_display_size(slot: String, viewport_size: Vector2) -> Vector2:
-	var scale := _hs4_pixellab_scale(viewport_size)
-	var source_size: Vector2 = HS4_PIXELLAB_SOURCE_SIZE.get(slot, Vector2.ZERO)
-	return Vector2(roundf(source_size.x * scale), roundf(source_size.y * scale))
 
 
 func _hs4_pixellab_content_margins(slot: String, display_size: Vector2) -> Vector4:
@@ -1111,19 +1088,6 @@ func _hs4_pixellab_style(slot: String, display_size: Vector2, tint := Color.WHIT
 	return _global_texture_style(str(HS4_PIXELLAB_PATHS[slot]), margins, tint, margins, false)
 
 
-func _apply_hs4_pixellab_button_theme(button: Button, slot: String, display_size: Vector2) -> void:
-	button.add_theme_stylebox_override("normal", _hs4_pixellab_style(slot, display_size))
-	button.add_theme_stylebox_override("hover", _hs4_pixellab_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("focus", _hs4_pixellab_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _hs4_pixellab_style(slot, display_size, Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("disabled", _hs4_pixellab_style(slot, display_size, Color(0.58, 0.58, 0.58, 0.82)))
-	button.add_theme_color_override("font_color", Color(0.98, 0.92, 0.72, 1.0))
-	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
-	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
-
-
 func _hs4_overlay_style(fill: Color, border: Color = Color(0, 0, 0, 0), border_width := 0) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = fill
@@ -1135,24 +1099,6 @@ func _hs4_overlay_style(fill: Color, border: Color = Color(0, 0, 0, 0), border_w
 	style.content_margin_right = 4
 	style.content_margin_bottom = 3
 	return style
-
-
-func _hs4_make_overlay_button(text: String, font_size: int) -> Button:
-	var button := Button.new()
-	button.text = text
-	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	button.add_theme_stylebox_override("normal", _hs4_overlay_style(Color(0.02, 0.015, 0.01, 0.04)))
-	button.add_theme_stylebox_override("hover", _hs4_overlay_style(Color(0.32, 0.18, 0.04, 0.16), Color(0.98, 0.76, 0.34, 0.8), 1))
-	button.add_theme_stylebox_override("focus", _hs4_overlay_style(Color(0.32, 0.18, 0.04, 0.18), Color(1.0, 0.86, 0.42, 0.95), 2))
-	button.add_theme_stylebox_override("pressed", _hs4_overlay_style(Color(0.05, 0.025, 0.015, 0.28), Color(0.86, 0.62, 0.22, 0.9), 1))
-	button.add_theme_stylebox_override("disabled", _hs4_overlay_style(Color(0.02, 0.02, 0.02, 0.12)))
-	button.add_theme_font_size_override("font_size", _readable_font_size(font_size, 0, 44))
-	button.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.96, 0.72, 1.0))
-	button.add_theme_color_override("font_focus_color", Color(1.0, 0.96, 0.72, 1.0))
-	button.add_theme_color_override("font_pressed_color", Color(0.9, 1.0, 0.96, 1.0))
-	return button
 
 
 func _hero_select_preview_sprite_frames(character_id: String) -> SpriteFrames:
@@ -1749,25 +1695,6 @@ func _show_character_select() -> void:
 
 	# Экран выбора героя строит v4-билдер (SCRUM-470). Мёртвая v3-вёрстка удалена (SCRUM-492).
 	_build_character_select_v4()
-
-
-func _place_control_in_rect(control: Control, rect: Rect2) -> void:
-	if control == null:
-		return
-	control.position = rect.position
-	control.size = rect.size
-	control.custom_minimum_size = rect.size
-
-
-func _hero_radar_global_maxima() -> Dictionary:
-	var maxima := {}
-	for stat_id in HERO_RADAR_STATS:
-		maxima[stat_id] = 1.0
-	for character_id in game.PROGRESSION_DATA.character_ids():
-		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(str(character_id))
-		for stat_id in HERO_RADAR_STATS:
-			maxima[stat_id] = max(float(maxima.get(stat_id, 1.0)), float(stats.get(stat_id, 0.0)))
-	return maxima
 
 
 func _hero_weapon_names(character_id: String) -> String:
@@ -4317,108 +4244,6 @@ func _end_current_run_by_player() -> void:
 	_show_death_screen("Забег завершен игроком.")
 
 
-func _add_character_button(box: Container, character_id: String, info_labels: Dictionary) -> void:
-	var config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
-	var stats: Dictionary = game.PROGRESSION_DATA.base_stats(character_id)
-	var title := str(config.get("title", character_id))
-	var description := str(config.get("description", ""))
-	var strengths := str(config.get("strengths", ""))
-	var weaknesses := str(config.get("weaknesses", ""))
-	var stats_text: String = game.PROGRESSION_DATA.display_stats(stats)
-	# Вся карточка — одна кнопка: клик в любом месте, hover подсвечивает рамку.
-	var card := Button.new()
-	card.name = "CharacterCard_%s" % character_id
-	card.custom_minimum_size = Vector2(300, 150)
-	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	card.clip_contents = true
-	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	card.tooltip_text = "%s\n%s\nСильные: %s\nСлабые: %s\n%s" % [title, description, strengths, weaknesses, stats_text]
-	card.add_theme_stylebox_override("normal", _character_card_style())
-	card.add_theme_stylebox_override("hover", _card_hover_style())
-	card.add_theme_stylebox_override("pressed", _card_hover_style())
-	card.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	card.mouse_entered.connect(func() -> void:
-		_update_hero_select_info(info_labels, title, description, strengths, weaknesses, stats_text)
-	)
-	card.pressed.connect(func() -> void:
-		game.selected_character_id = character_id
-		# Уровень возвышения клампится к открытому максимуму этого героя.
-		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(character_id))
-		_show_weapon_select()
-	)
-	box.add_child(card)
-
-	var margin := MarginContainer.new()
-	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_top", 8)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_bottom", 8)
-	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_child(margin)
-
-	var column := VBoxContainer.new()
-	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_theme_constant_override("separation", 3)
-	margin.add_child(column)
-
-	var portrait := TextureRect.new()
-	portrait.name = "CharacterPortrait_%s" % character_id
-	portrait.texture = game._cached_texture(str(config.get("sprite_path", "")))
-	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait.custom_minimum_size = Vector2(0, 96)
-	portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	column.add_child(portrait)
-
-	var asc_badge := Label.new()
-	asc_badge.name = "CharacterAscension_%s" % character_id
-	var asc_unlocked: int = game.ascension_level_for(character_id)
-	asc_badge.text = ("Возвышение %d" % asc_unlocked) if asc_unlocked > 0 else "Возвышение 0"
-	asc_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_badge.add_theme_font_size_override("font_size", _readable_font_size(11))
-	asc_badge.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 0.9))
-	asc_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_child(asc_badge)
-
-	var title_label := Label.new()
-	title_label.name = "CharacterTitle_%s" % character_id
-	title_label.text = title
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(20))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
-	title_label.clip_text = true
-	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_child(title_label)
-
-	var style_line := _hero_card_line(description, 13, Color(0.94, 0.90, 0.81, 1.0))
-	style_line.name = "CharacterStyle_%s" % character_id
-	column.add_child(style_line)
-
-	var strengths_line := _hero_card_line("Сильные: %s" % strengths, 12, Color(0.70, 0.95, 0.78, 1.0))
-	strengths_line.name = "CharacterStrengths_%s" % character_id
-	column.add_child(strengths_line)
-
-	var weaknesses_line := _hero_card_line("Слабые: %s" % weaknesses, 12, Color(0.95, 0.72, 0.70, 1.0))
-	weaknesses_line.name = "CharacterWeaknesses_%s" % character_id
-	column.add_child(weaknesses_line)
-
-	var ascension_level = game.ascension_level_for(character_id)
-	if ascension_level > 0:
-		var ascension_label := Label.new()
-		ascension_label.name = "CharacterAscension_%s" % character_id
-		ascension_label.text = "Возвышение: %d/%d" % [ascension_level, game.META_PROGRESSION.MAX_ASCENSION_LEVEL]  # SCRUM-516: динамический кап (5) вместо хардкода /10
-		ascension_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		ascension_label.add_theme_font_size_override("font_size", _readable_font_size(11))
-		ascension_label.add_theme_color_override("font_color", Color(0.78, 0.58, 1.0, 1.0))
-		ascension_label.clip_text = true
-		ascension_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		column.add_child(ascension_label)
-
-
 func _hero_card_line(text: String, font_size: int, color: Color) -> Label:
 	var label := Label.new()
 	label.text = text
@@ -5142,14 +4967,6 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	return button
 
 
-func _resume_combat_after_level_up() -> void:
-	game.pop_pause("level_up")
-	game._clear_ui()
-	if game.combat_active:
-		_create_hud()
-		_update_hud()
-
-
 func _current_shop_node_key() -> String:
 	var act := int(game.current_act)
 	var stage := int(game.route_stage)
@@ -5591,27 +5408,6 @@ func _shop_item_fallback_icon_id(item: Dictionary) -> String:
 	if modifiers.has("damage_multiplier"):
 		return "damage"
 	return "artifact"
-
-
-func _shop_slot_style(is_hovered: bool) -> StyleBox:
-	var texture_path := SHOP_SLOT_HOVER_PATH if is_hovered else SHOP_SLOT_FRAME_PATH
-	var texture_style := _shop_texture_style(texture_path, Vector2(24, 24))
-	if texture_style != null:
-		return texture_style
-
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.060, 0.105, 0.110, 0.72) if is_hovered else Color(0.035, 0.055, 0.070, 0.58)
-	style.border_color = Color(0.60, 0.98, 0.92, 0.96) if is_hovered else Color(0.96, 0.75, 0.26, 0.72)
-	style.set_border_width_all(2 if is_hovered else 1)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 10
-	style.content_margin_top = 10
-	style.content_margin_right = 10
-	style.content_margin_bottom = 10
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.42)
-	style.shadow_size = 12 if is_hovered else 6
-	style.shadow_offset = Vector2(0.0, 4.0)
-	return style
 
 
 func _shop_wall_button_style(is_hovered: bool) -> StyleBox:
@@ -6141,14 +5937,6 @@ func _random_event_choices() -> Array:
 	return choices
 
 
-func _event_choice_button_text(event_choice: Dictionary) -> String:
-	return "%s\n%s%s" % [
-		str(event_choice.get("title", "Выбор")),
-		"",
-		_event_choice_description_text(event_choice),
-	]
-
-
 func _event_choice_description_text(event_choice: Dictionary) -> String:
 	return _event_choice_risk_description(str(event_choice.get("description", "")), bool(event_choice.get("risk", false)))
 
@@ -6578,12 +6366,6 @@ func _update_level_up_button() -> void:
 	if badge_label != null:
 		badge_label.text = str(game.pending_level_ups)
 		badge_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(roundf(14.0 * scale))), 0, 22))
-
-
-func _level_up_affinity_suffix(reward: Dictionary) -> String:
-	if str(reward.get("kind", "")) != "artifact":
-		return ""
-	return _artifact_affinity_suffix(reward)
 
 
 func _format_level_up_reward_text(reward: Dictionary) -> String:
@@ -7922,12 +7704,6 @@ func _start_level_up_burst_intro(sparkle_root: Node) -> void:
 			tween.tween_property(rect, "color:a", 0.0, 0.28)
 
 
-func _level_up_badge_text() -> String:
-	if game.current_player != null and is_instance_valid(game.current_player):
-		return "УРОВЕНЬ %d" % int(game.current_player.get("level"))
-	return "НОВЫЙ УРОВЕНЬ"
-
-
 func _make_button(text: String) -> Button:
 	var button := Button.new()
 	button.text = text
@@ -7953,47 +7729,6 @@ func _readable_font_size(base_size: int, min_size := 0, max_size := 96) -> int:
 	if max_size > 0:
 		scaled = mini(scaled, max_size)
 	return scaled
-
-
-func _add_text_action_block(parent: Control, title: String, description: String, action_text := "Выбрать", button_name := "") -> Button:
-	var block := VBoxContainer.new()
-	block.name = "%sBlock" % button_name if button_name != "" else "TextActionBlock"
-	block.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	block.add_theme_constant_override("separation", 8)
-	parent.add_child(block)
-
-	var frame := PanelContainer.new()
-	frame.name = "%sInfoFrame" % button_name if button_name != "" else "TextActionInfoFrame"
-	frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	frame.add_theme_stylebox_override("panel", _character_card_style())
-	block.add_child(frame)
-
-	var text_box := VBoxContainer.new()
-	text_box.add_theme_constant_override("separation", 3)
-	frame.add_child(text_box)
-
-	var title_label := Label.new()
-	title_label.text = title
-	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(17))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
-	text_box.add_child(title_label)
-
-	if description.strip_edges() != "":
-		var desc_label := Label.new()
-		desc_label.text = description
-		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc_label.add_theme_font_size_override("font_size", _readable_font_size(13))
-		desc_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.76, 1.0))
-		text_box.add_child(desc_label)
-
-	var button := _make_button(action_text)
-	if button_name != "":
-		button.name = button_name
-	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(button, STANDARD_ACTION_BUTTON_WIDTH)
-	block.add_child(button)
-	return button
 
 
 func _make_compact_button(text: String) -> Button:
@@ -8034,18 +7769,6 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
-
-
-func _apply_static_level_up_return_button_theme(button: Button) -> void:
-	var style := _level_up_return_button_style()
-	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
-		button.add_theme_stylebox_override(state, style)
-	button.add_theme_color_override("font_color", Color(1.0, 0.92, 0.58, 1.0))
-	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_pressed_color", Color(1.0, 0.92, 0.58, 1.0))
-	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_disabled_color", Color(0.78, 0.70, 0.48, 1.0))
-	button.modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 
 func _level_up_return_button_style() -> StyleBoxFlat:
@@ -8242,45 +7965,6 @@ func _apply_compact_button_theme(button: Button) -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
-func _compact_button_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.07, 0.075, 0.085, 0.78)
-	style.border_color = Color(0.58, 0.48, 0.28, 0.86)
-	if hovered:
-		style.bg_color = Color(0.12, 0.10, 0.075, 0.92)
-		style.border_color = Color(0.92, 0.72, 0.32, 1.0)
-	if pressed:
-		style.bg_color = Color(0.055, 0.060, 0.070, 0.96)
-	if disabled:
-		style.bg_color = Color(0.04, 0.045, 0.055, 0.58)
-		style.border_color = Color(0.24, 0.24, 0.25, 0.72)
-	style.set_corner_radius_all(8)
-	style.set_border_width_all(1)
-	style.content_margin_left = 8
-	style.content_margin_top = 6
-	style.content_margin_right = 8
-	style.content_margin_bottom = 6
-	return style
-
-
-func _hero_select_compact_choice_style(hovered := false, pressed := false) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.058, 0.064, 0.075, 0.80)
-	style.border_color = Color(0.56, 0.50, 0.36, 0.82)
-	if hovered:
-		style.bg_color = Color(0.080, 0.084, 0.090, 0.92)
-		style.border_color = Color(0.78, 0.72, 0.58, 0.96)
-	if pressed:
-		style.bg_color = Color(0.045, 0.050, 0.058, 0.96)
-	style.set_corner_radius_all(7)
-	style.set_border_width_all(1)
-	style.content_margin_left = 6
-	style.content_margin_top = 2
-	style.content_margin_right = 6
-	style.content_margin_bottom = 2
-	return style
-
-
 func _weapon_card_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.055, 0.060, 0.074, 0.82)
@@ -8323,15 +8007,6 @@ func _level_up_text_field_style(hovered := false, rare := false, pressed := fals
 	return style
 
 
-func _make_section_label(text: String) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
-	return label
-
-
 func _panel_style() -> StyleBox:
 	return _minimal_frame_style("panel")
 
@@ -8362,21 +8037,6 @@ func _level_up_effect_preview_style(display_size: Vector2) -> StyleBox:
 		Vector4(22.0, 18.0, 22.0, 18.0),
 		Vector4(32.0, 22.0, 32.0, 22.0)
 	)
-
-
-func _level_up_hero_style() -> StyleBox:
-	var style := _level_up_text_field_style(false, false)
-	style.bg_color = Color(0.045, 0.070, 0.085, 0.88)
-	style.border_color = Color(0.38, 0.80, 0.92, 0.82)
-	style.content_margin_left = 6
-	style.content_margin_top = 6
-	style.content_margin_right = 6
-	style.content_margin_bottom = 6
-	return style
-
-
-func _hero_portrait_style() -> StyleBox:
-	return _minimal_frame_style("card", Color(1.06, 0.98, 0.82, 1.0))
 
 
 func _card_hover_style() -> StyleBox:
@@ -8945,10 +8605,6 @@ func _add_reward_card_content_container(button: Button, elite := false) -> VBoxC
 	return content
 
 
-func _codex_main_panel_style() -> StyleBox:
-	return _global_texture_style(CODEX_MAIN_PANEL_PATH, CODEX_MAIN_PANEL_MARGINS, Color.WHITE, CODEX_MAIN_PANEL_CONTENT, true)
-
-
 func _codex_v2_main_panel_style() -> StyleBox:
 	return _codex_pl_frame_style(CODEX_PL_MAIN_PATH, CODEX_PL_MAIN_TEX, CODEX_PL_MAIN_CONTENT)
 
@@ -8965,10 +8621,6 @@ func _codex_v2_detail_panel_style() -> StyleBox:
 	return _codex_pl_frame_style(CODEX_PL_DETAIL_PATH, CODEX_PL_DETAIL_TEX, CODEX_PL_DETAIL_CONTENT)
 
 
-func _codex_section_panel_style() -> StyleBox:
-	return _global_texture_style(CODEX_SECTION_PANEL_PATH, CODEX_SECTION_PANEL_MARGINS, Color.WHITE, CODEX_SECTION_PANEL_CONTENT, true)
-
-
 func _codex_entry_card_style(hovered := false) -> StyleBox:
 	var tint := BUTTON_NEUTRAL_HOVER_TINT if hovered else Color.WHITE
 	return _codex_pl_frame_style(CODEX_PL_ENTRY_CARD_PATH, CODEX_PL_ENTRY_CARD_TEX, CODEX_PL_ENTRY_CARD_CONTENT, tint)
@@ -8978,31 +8630,10 @@ func _codex_portrait_slot_style() -> StyleBox:
 	return _global_texture_style(CODEX_PORTRAIT_SLOT_PATH, CODEX_PORTRAIT_SLOT_MARGINS, Color.WHITE, CODEX_PORTRAIT_SLOT_CONTENT, true)
 
 
-func _codex_tooltip_style() -> StyleBox:
-	return _global_texture_style(CODEX_TOOLTIP_PATH, CODEX_TOOLTIP_MARGINS, Color.WHITE, CODEX_TOOLTIP_CONTENT, true)
-
-
-func _progression_main_panel_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_MAIN_PANEL_PATH, PROGRESSION_MAIN_PANEL_MARGINS, Color.WHITE, PROGRESSION_MAIN_PANEL_CONTENT)
-
-
-func _progression_branch_panel_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_BRANCH_PANEL_PATH, PROGRESSION_BRANCH_PANEL_MARGINS, Color.WHITE, PROGRESSION_BRANCH_PANEL_CONTENT)
-
-
 func _progression_class_panel_style() -> StyleBox:
 	return _global_texture_style(PROGRESSION_CLASS_PANEL_PATH, PROGRESSION_CLASS_PANEL_MARGINS, Color.WHITE, PROGRESSION_CLASS_PANEL_CONTENT)
 
 
-func _progression_points_badge_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_POINTS_BADGE_PATH, Vector4.ZERO, Color.WHITE, PROGRESSION_POINTS_BADGE_CONTENT)
-
-
-func _progression_tooltip_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_TOOLTIP_PATH, PROGRESSION_TOOLTIP_MARGINS, Color.WHITE, PROGRESSION_TOOLTIP_CONTENT)
-
-
-# SCRUM-676: стили переделанной раскладки (ассеты SCRUM-675).
 func _skill_tree_class_select_style(tint := Color.WHITE) -> StyleBox:
 	return _global_texture_style(SKILL_TREE_CLASS_SELECT_PATH, SKILL_TREE_CLASS_SELECT_MARGINS, tint, SKILL_TREE_CLASS_SELECT_CONTENT)
 
@@ -9015,12 +8646,6 @@ func _skill_tree_points_button_style(tint := Color.WHITE) -> StyleBox:
 	return _global_texture_style(SKILL_TREE_POINTS_BTN_PATH, SKILL_TREE_CLASS_SELECT_MARGINS, tint, SKILL_TREE_CLASS_SELECT_CONTENT)
 
 
-func _skill_tree_path_frame_style(branch_id: String) -> StyleBox:
-	var path := str(SKILL_TREE_PATH_FRAMES.get(branch_id, SKILL_TREE_PATH_FRAMES.get("might")))
-	return _global_texture_style(path, SKILL_TREE_PATH_FRAME_MARGINS, Color.WHITE, SKILL_TREE_PATH_FRAME_CONTENT)
-
-
-# SCRUM-698: стили графового древа умений (арт-пак SCRUM-697).
 func _skill_tree_main_panel_style() -> StyleBox:
 	return _global_texture_style(SKILL_TREE_MAIN_FRAME_PATH, SKILL_TREE_MAIN_FRAME_MARGINS, Color.WHITE, SKILL_TREE_MAIN_FRAME_CONTENT)
 
@@ -9098,14 +8723,6 @@ func _progression_node_style(status: String, focused := false) -> StyleBox:
 	return _global_texture_style(str(PROGRESSION_NODE_TEXTURES[texture_id]), Vector4.ZERO, tint, Vector4(18.0, 18.0, 18.0, 18.0))
 
 
-func _apply_progression_node_button_theme(button: Button, status: String) -> void:
-	button.add_theme_stylebox_override("normal", _progression_node_style(status))
-	button.add_theme_stylebox_override("hover", _progression_node_style(status, true))
-	button.add_theme_stylebox_override("pressed", _progression_node_style(status, true))
-	button.add_theme_stylebox_override("focus", _progression_node_style(status, true))
-	button.add_theme_stylebox_override("disabled", _progression_node_style(status))
-
-
 func _hero_select_clear_button_style(hovered := false) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(1.0, 0.86, 0.42, 0.08) if hovered else Color(0.0, 0.0, 0.0, 0.0)
@@ -9116,27 +8733,6 @@ func _hero_select_clear_button_style(hovered := false) -> StyleBoxFlat:
 	style.content_margin_top = 8
 	style.content_margin_right = 10
 	style.content_margin_bottom = 8
-	return style
-
-
-func _apply_hero_select_clear_button_theme(button: Button) -> void:
-	button.add_theme_stylebox_override("normal", _hero_select_clear_button_style(false))
-	button.add_theme_stylebox_override("hover", _hero_select_clear_button_style(true))
-	button.add_theme_stylebox_override("pressed", _hero_select_clear_button_style(true))
-	button.add_theme_stylebox_override("focus", _hero_select_clear_button_style(true))
-	button.add_theme_stylebox_override("disabled", _hero_select_clear_button_style(false))
-
-
-func _hero_select_text_backplate_style(alpha := 0.68) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.025, 0.026, 0.024, alpha)
-	style.border_color = Color(0.75, 0.55, 0.22, 0.18)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(4)
-	style.content_margin_left = 8
-	style.content_margin_top = 4
-	style.content_margin_right = 8
-	style.content_margin_bottom = 4
 	return style
 
 
@@ -9194,18 +8790,6 @@ func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, 
 	style.content_margin_right = content.z
 	style.content_margin_bottom = content.w
 	return style
-
-
-func _unified_frame_style(frame_type: String, tint := Color.WHITE, center_fill := true) -> StyleBox:
-	var content: Vector4 = UNIFIED_FRAME_CONTENT.get(frame_type, UNIFIED_FRAME_CONTENT.get("global_panel", Vector4(24, 24, 24, 24)))
-	var path := UNIFIED_MASTER_FILL_FRAME_PATH if center_fill else GLOBAL_PANEL_FRAME_PATH
-	return _global_texture_style(path, UNIFIED_FRAME_TEXTURE_MARGINS, tint, content, true)
-
-
-func _ornate_frame_style(path: String, frame_type: String, tint := Color.WHITE) -> StyleBox:
-	var margins: Vector4 = ORNATE_FRAME_MARGINS.get(frame_type, Vector4(30, 30, 30, 30))
-	var content: Vector4 = ORNATE_FRAME_CONTENT.get(frame_type, Vector4(12, 12, 12, 12))
-	return _global_texture_style(path, margins, tint, content)
 
 
 func _style_slider(slider: HSlider) -> void:
@@ -9323,19 +8907,6 @@ func _timer_panel_style(alarm: bool, display_size := Vector2(288.0, 96.0), conte
 func _ascension_badge_style(display_size := Vector2(128.0, 128.0), content_margins := Vector4(10, 10, 10, 10)) -> StyleBox:
 	var texture_margins := _scaled_frame_margins_xy(Vector2(128.0, 128.0), display_size, Vector4(6, 8, 6, 8))
 	return _global_texture_style(COMBAT_HUD_ASCENSION_BADGE_PATH, texture_margins, Color.WHITE, content_margins, true)
-
-
-func _create_artifact_hud_row(root: Control) -> void:
-	var row := HFlowContainer.new()
-	row.name = "ArtifactHudRow"
-	row.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	row.position = Vector2(0, 16)
-	row.custom_minimum_size = Vector2(402, 104)
-	row.alignment = FlowContainer.ALIGNMENT_END
-	row.add_theme_constant_override("h_separation", 6)
-	row.add_theme_constant_override("v_separation", 6)
-	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(row)
 
 
 func _scrum666_hud_scale_for_size(viewport_size: Vector2) -> float:
@@ -9747,25 +9318,6 @@ func _create_resource_hud_panel(parent: Control, position: Vector2, combat_layou
 	game.ultimate_bar = _add_hud_resource_card(content, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
 
 
-func _create_character_stats_hud(parent: Control, position: Vector2) -> void:
-	var panel := PanelContainer.new()
-	panel.name = "CharacterStatsHud"
-	panel.position = position
-	panel.custom_minimum_size = Vector2(690, 58)
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel", _character_stats_hud_style())
-	parent.add_child(panel)
-
-	var row := HBoxContainer.new()
-	row.name = "CharacterStatsHudRow"
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 8)
-	panel.add_child(row)
-
-	for entry in _compact_character_stat_entries():
-		row.add_child(_make_character_stat_chip(entry))
-
-
 func _compact_character_stat_entries(limit := 4) -> Array:
 	var entries: Array = []
 	var character_id := str(game.selected_character_id)
@@ -10063,15 +9615,3 @@ func _update_combat_timer(timer_seconds: int) -> void:
 		tween.tween_property(game.timer_label, "scale", Vector2.ONE, 0.32).set_trans(Tween.TRANS_QUAD)
 		game.timer_label.pivot_offset = game.timer_label.size * 0.5
 
-
-func _format_artifact_list(artifacts: Array) -> String:
-	if artifacts.is_empty():
-		return "Artifacts\nNone"
-
-	var visible_artifacts := []
-	for index in range(min(artifacts.size(), 6)):
-		var entry = artifacts[index]
-		visible_artifacts.append(str(entry.get("title", "")) if entry is Dictionary else str(entry))
-	if artifacts.size() > visible_artifacts.size():
-		visible_artifacts.append("+%d more" % (artifacts.size() - visible_artifacts.size()))
-	return "Artifacts\n%s" % "\n".join(visible_artifacts)
