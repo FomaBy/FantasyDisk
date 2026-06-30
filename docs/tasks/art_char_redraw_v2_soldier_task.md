@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Солдат» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -60,3 +60,19 @@ docs/design/content_registry.md (soldier), current_game_state.
 Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
 2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-434
 снова `new` / `К выполнению`.
+
+## Blocker — Codex Design 2026-06-30
+
+SCRUM-434 был claim-first взят `codex-design-board-watcher`, но производство
+Soldier v2 source заблокировано доступностью PixelLab MCP. Активный
+`fantasydisk-asset-generator` требует PixelLab MCP для новых production ассетов
+и запрещает fallback на legacy `generate_asset.py`, OpenAI/image_gen или ручную
+дорисовку без явного Jira override. `tool_search pixellab` вернул 0 доступных
+tools.
+
+В task mirror и ожидаемых source/runtime папках нет accepted/provisional Soldier
+v2 source, который можно было бы честно принять или продвинуть без новой
+генерации. Задача возвращена в Jira `К выполнению` с labels `blocked` и
+`pixellab-blocked`. Unblock: подключить PixelLab MCP для Codex или явно создать
+Jira override на non-PixelLab пайплайн, затем requeue Design/Codex или разделить
+Design source и Animator integration.
