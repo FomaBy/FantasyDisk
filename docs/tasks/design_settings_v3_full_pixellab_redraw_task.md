@@ -189,3 +189,12 @@ screenshots at 1080p/2K, and the sub-192px micro-controls (checkbox on/off, slid
 handle, scrollbar grabber — below PixelLab's 192px floor; speced in handoff).
 QA: validate the design package + geometry; the runtime/screenshot ACs belong to
 the linked Back-end integration follow-up.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-06-30
+QA: claude-qa
+
+Принят дизайн-пакет Settings v3 (design-scope), commit bb6b5517 на origin/dev (merge-base ancestor OK, все PNG с .import). Проверено: inventory.md (3 страницы); layout.json — base 2560x1440, responsive 720/1080/2K/4K, 9-slice policy, fit_gate=ready_for_image, rects = живым 2K-константам; 3 OpenAI textless mockups 1536x1024 (визуально: текста нет, пустые content-зоны); 5 PixelLab RGBA 9-slice фреймов (native-size, alpha-clean углы a=0, без запечённого фона, textless); manifest.json без секретов + backend_handoff.md. Green-gate: runtime_smoke_test → exit 0 ('Runtime smoke test passed', dup-guard 11690 файлов), ui_screens.gd не менялся.
+
+Integration-ACs (#5 sub-192px микро-контролы, #9 runtime-врезка, #10 3-tab no-overlap скриншоты) вынесены в Back-end follow-up SCRUM-792 (sprint 0.1.8). Задача допускает 'runtime integration ИЛИ Back-end handoff' — Designer выбрал handoff, дизайн-deliverable полон.
