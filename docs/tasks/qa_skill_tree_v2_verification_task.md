@@ -1,6 +1,6 @@
 # Skill Tree v2 — Верификация дерева умений (экономика, связность, экран, миграция) — QA
 
-Статус: new
+Статус: done
 Роль: QA
 Контур: Claude
 Lane: claude
@@ -68,4 +68,23 @@ Labels: foma, qa, claude
 
 ## QA-Вердикт
 
-(заполняется по итогам прогона)
+Статус: PASSED
+
+Проверено на `dev == origin/dev` (HEAD `945823ff`), все три деливерабла влиты в origin/dev:
+- SCRUM-696 (данные/экономика/миграция) — feat влит, компонентный QA PASS (`021ad6b1`).
+- SCRUM-697 (арт-пак) — ассеты влиты, QA PASS (`6a9fe5fb`).
+- SCRUM-698 (UI-экран, граф PoE) — `dd3bdaa8`, компонентный QA PASS (`d1b89d80`).
+
+Интеграционный прогон (Godot 4.7 headless, сериализатор `tools/godot_gate.py` со
+fdengine-семафором `FSD_GODOT_SLOTS=1`, под нагрузкой живого флота) — все зелёные:
+- `tests/meta_skill_tree_smoke_test.gd` — «Meta skill tree smoke test passed.»
+  (формула начисления 0→1/1→1/2→2/3→3/4→4/5→5, cap 100, связность выделения, точки входа
+  классов, миграция старого сейва, бюджет дерева).
+- `tests/runtime_smoke_test.gd` — «Runtime smoke test passed.» (+ duplicate-artifact guard,
+  11252 файла; экран открывается, frame-paths валидны).
+- `tests/ui_no_overlap_matrix_test.gd` — «UI no-overlap matrix test passed.» (нет перекрытий,
+  безопасная зона фрейма на всех разрешениях).
+
+Дефектов не найдено. Фича «Древо умений v2» (общее PoE-дерево, метаочки за возвышения,
+точки входа классов, глобальный уровень) принята целиком. Disk cleanup: ничего не создано;
+чужой untracked WIP/flot-worktree не трогались (blanket pkill не применялся).

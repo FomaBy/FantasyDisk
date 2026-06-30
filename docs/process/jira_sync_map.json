@@ -291,107 +291,107 @@
  },
  "bug_ascension_elite_instant_phase_dead_task.md": {
   "key": "SCRUM-59",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "733b28397001b66c5ef05c0d8e8674b5"
  },
  "bug_ascension_mini_elite_chance_dead_task.md": {
   "key": "SCRUM-60",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "5f144253140718de7fb23b2e0b9d830a"
  },
  "bug_ascension_selector_not_clamped_task.md": {
   "key": "SCRUM-61",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "3e80d27a8267460f72f7fcc987c05089"
  },
  "bug_boss_phase_hazard_naked_circle_task.md": {
   "key": "SCRUM-62",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "52d4dad5ba1df758a83a917bbb2c30e4"
  },
  "bug_cleanup_artifact_iteration_previews_left_in_assets_task.md": {
   "key": "SCRUM-63",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "565d7cb40af2b81d13990b5f1a2ba1cf"
  },
  "codex_design_artifact_icons_dark_fantasy_task.md": {
   "key": "SCRUM-64",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "3fd09b60faf1c9667f4f5238198a48ea"
  },
  "codex_design_artifact_icons_per_item_regen_task.md": {
   "key": "SCRUM-65",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "2647d638b99f1a9567cb696b05ea1f00"
  },
  "codex_design_artifact_icons_reference_dark_artifacts_redraw_task.md": {
   "key": "SCRUM-66",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "13e821c156ed0f6918ffe0e986a40201"
  },
  "codex_design_artifact_icons_rpg_item_style_task.md": {
   "key": "SCRUM-67",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "e123d979aaf7dde6c458e8e5f607b7eb"
  },
  "codex_design_contextual_ui_frame_kits_generation_task.md": {
   "key": "SCRUM-117",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "2e6348d3ad026f65b7a2c977a41c9f9c"
  },
  "codex_design_effects_sprites_dnd_restyle_task.md": {
   "key": "SCRUM-69",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "f885fd9ec1107830706cd3e5a0e28f03"
  },
  "codex_design_new_classes_art_task.md": {
   "key": "SCRUM-70",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "20444352ef34463486158b8258f5a581"
  },
  "codex_design_new_classes_restyle_to_starter_style_task.md": {
   "key": "SCRUM-71",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "be103ae80706aa5dbe85d2d186b9a71d"
  },
  "codex_design_route_map_background_task.md": {
   "key": "SCRUM-72",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "8c4221f96e7934f7fa4a71c058228e36"
  },
  "design_all_classes_three_weapons_visual_upgrade_task.md": {
   "key": "SCRUM-73",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "9aeebdaf18ba98b6a09e65b0ecbafdce"
  },
  "design_arena_backgrounds_2k_dnd_expansion_task.md": {
   "key": "SCRUM-74",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "18e5d14e25de9cabda625e3813d79d7b"
  },
  "design_arena_backgrounds_2k_native_task.md": {
   "key": "SCRUM-75",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "eaba31d8b3be66b9fc3eb537391f1a27"
  },
  "design_artifact_icons_fantasy_restyle_task.md": {
   "key": "SCRUM-76",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "d250615e6ab047a5735ea6ad28df6414"
  },
  "design_artifact_icons_final_redesign_task.md": {
   "key": "SCRUM-77",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "0ad9fc3d5ed0e40efed3ea0174d875ac"
  },
  "design_artifact_icons_realistic_dnd_reference_redraw_task.md": {
   "key": "SCRUM-78",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "50ab24c407d4fc34bb5b461b11e4a90c"
  },
  "design_artifact_icons_shop_cursor_task.md": {
   "key": "SCRUM-79",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "0da6a06970fddfbc5293802ffc9b15ac"
  },
  "design_cartoon_character_style_fix_task.md": {
@@ -591,12 +591,12 @@
  },
  "bug_hero_select_carousel_radar_name_layout_task.md": {
   "key": "SCRUM-140",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "8686e20c5d853ab1db62bc7cd778d4c7"
  },
  "bug_elite_reward_window_offcenter_task.md": {
   "key": "SCRUM-144",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "4e87c65aa835fac5d0e9ef6f53f50039"
  },
  "qa_review_bug_hero_select_carousel_radar_name_layout_task.md": {
@@ -606,7 +606,7 @@
  },
  "bug_boss_fight_timer_panel_visible_task.md": {
   "key": "SCRUM-145",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "f654a7452e90c2d34d531529d9b3ddbb"
  },
  "backend_escape_pause_character_overview_anywhere_task.md": {
@@ -691,7 +691,7 @@
  },
  "bug_hud_elements_overlap_task.md": {
   "key": "SCRUM-161",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "a3d9235f83f781e715fe02444b8ea57f"
  },
  "backend_add_character_biologist_task.md": {
@@ -701,7 +701,7 @@
  },
  "codex_design_biologist_art_task.md": {
   "key": "SCRUM-162",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "0e780bf67a2d583cb79ed0905356394b"
  },
  "animation_biologist_rig_motion_task.md": {
@@ -716,7 +716,7 @@
  },
  "codex_design_elementalist_art_task.md": {
   "key": "SCRUM-163",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "0cdf127574d37b4b80359b3cb326f63d"
  },
  "animation_elementalist_rig_motion_task.md": {
@@ -731,7 +731,7 @@
  },
  "codex_design_engineer_art_task.md": {
   "key": "SCRUM-164",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "561ddaa39ad7310e7478469a97c778a8"
  },
  "animation_engineer_rig_motion_task.md": {
@@ -746,7 +746,7 @@
  },
  "codex_design_priest_art_task.md": {
   "key": "SCRUM-165",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "2f201d725ead94f2e0f3fd6166ba3574"
  },
  "animation_priest_rig_motion_task.md": {
@@ -766,7 +766,7 @@
  },
  "codex_design_robot_art_task.md": {
   "key": "SCRUM-166",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "5841f58d1ce6b1d690bb2e773a1705a3"
  },
  "animation_robot_rig_motion_task.md": {
@@ -786,7 +786,7 @@
  },
  "codex_design_sniper_art_task.md": {
   "key": "SCRUM-167",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "5dca26487920d294bce75c9999ec07d4"
  },
  "animation_sniper_rig_motion_task.md": {
@@ -801,7 +801,7 @@
  },
  "codex_design_soldier_art_task.md": {
   "key": "SCRUM-168",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "b63c4740b1acc4b7c9cbd8f4f9c67870"
  },
  "animation_soldier_rig_motion_task.md": {
@@ -816,7 +816,7 @@
  },
  "codex_design_thief_art_task.md": {
   "key": "SCRUM-169",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "cbbc12614685162908ac83b1c14169db"
  },
  "animation_thief_rig_motion_task.md": {
@@ -831,12 +831,12 @@
  },
  "bug_head_broken_uncommitted_drop_economy_task.md": {
   "key": "SCRUM-171",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "1ea93eb752a76cf18f30ebae83e6b552"
  },
  "bug_audio_silent_master_volume_zero_persisted_task.md": {
   "key": "SCRUM-172",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "4b52f137d66aaf915ff8398550b53969"
  },
  "audit_animation_rig_coverage.md": {
@@ -866,22 +866,22 @@
  },
  "codex_design_new_bosses_mini_elites_redraw_task.md": {
   "key": "SCRUM-180",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Контроль качества",
   "desc_hash": "e91f8f1c49731841bc251662f20b28e1"
  },
  "codex_design_vfx_sprite_polish_task.md": {
   "key": "SCRUM-181",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "5d0d03ade5dbce5de58b68471999d1c9"
  },
  "codex_design_ui_icon_style_unification_task.md": {
   "key": "SCRUM-182",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "19ca210adc22519ce128813c4f2de3fe"
  },
  "codex_design_legacy_sprite_cleanup_spec_task.md": {
   "key": "SCRUM-183",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "49acfbcec77b1f8dfcb7b050075e70af"
  },
  "audit_test_coverage_quality.md": {
@@ -996,7 +996,7 @@
  },
  "design_animation_ready_boss_mini_elite_parts_handoff_task.md": {
   "key": "SCRUM-204",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "5d1b08ccf283702858edf129008295d7"
  },
  "backend_menu_anywhere_back_buttons_task.md": {
@@ -1006,12 +1006,12 @@
  },
  "bug_hero_select_radar_overlaps_frame_task.md": {
   "key": "SCRUM-206",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "bf72c922f939414b006ac1e664409248"
  },
  "bug_shop_rebuy_exploit_reopen_task.md": {
   "key": "SCRUM-207",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "3ea7b541c821043237954881b14ee544"
  },
  "backend_animation_weapon_timing_event_hooks_task.md": {
@@ -1031,7 +1031,7 @@
  },
  "bug_shop_items_center_screen_task.md": {
   "key": "SCRUM-211",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "913e81391ab490aa7425c641bb8e6c94"
  },
  "backend_ui_dark_fantasy_theme_integration_task.md": {
@@ -1041,7 +1041,7 @@
  },
  "codex_design_cursor_clawed_fire_task.md": {
   "key": "SCRUM-223",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "902ef7b29112628aa3a2d722bc38cfa0"
  },
  "backend_hero_select_description_left_of_radar_task.md": {
@@ -1066,7 +1066,7 @@
  },
  "bug_flaky_melee_targeting_hammer_aoe_cache_task.md": {
   "key": "SCRUM-228",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "ce387dd46767cd3362569dafb1debdd2"
  },
  "design_codex_interface_leather_gold_panels_restyle_task.md": {
@@ -1081,7 +1081,7 @@
  },
  "bug_hero_select_radar_out_of_frame_description_left_task.md": {
   "key": "SCRUM-231",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "c5ef447604d5df7535b33e9618f4ec51"
  },
  "animation_unique_attacks_all_classes_015_task.md": {
@@ -1141,7 +1141,7 @@
  },
  "bug_umbrella_runtime_smoke_intermittent_failure_task.md": {
   "key": "SCRUM-257",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "49af3e4eb2f4d6a8e3a07d63f9a43110"
  },
  "design_codex_unique_weapons_vfx_all_classes_015_task.md": {
@@ -1181,32 +1181,32 @@
  },
  "cleanup_audit_code_deadcode_duplication_warnings_task.md": {
   "key": "SCRUM-267",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "c2077ba49451b8ef2cff12ffe4a4c422"
  },
  "cleanup_audit_docs_full_update_task.md": {
   "key": "SCRUM-268",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "19b876ba25a3a14d06c3b4c1024993ac"
  },
  "cleanup_audit_unused_sprites_images_task.md": {
   "key": "SCRUM-269",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "e11f8e2807b0095a7a8686cee3630a25"
  },
  "cleanup_remove_duplicate_artifact_files_task.md": {
   "key": "SCRUM-270",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "4d54bf258174a17f0d0204f50c375596"
  },
  "cleanup_remove_orphan_import_sidecars_task.md": {
   "key": "SCRUM-271",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "670b155de896cefb392f61ab3cb963c8"
  },
  "bug_flaky_melee_unique_mechanics_arc_followup_task.md": {
   "key": "SCRUM-272",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "e8897f26eb60845899dff3193c20fc2a"
  },
  "design_codex_apply_red_gold_button_kit_task.md": {
@@ -1221,22 +1221,22 @@
  },
  "bug_settings_controls_tab_overflow_scroll_task.md": {
   "key": "SCRUM-275",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "b27c1509c2e6e65e7a25f00dd25f6995"
  },
  "bug_hero_select_description_overlaps_frame_task.md": {
   "key": "SCRUM-276",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "5ef126ccd8e83d89fab686b2128d608f"
  },
  "bug_all_characters_weapon_integrity_audit_task.md": {
   "key": "SCRUM-277",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "75963a4f87ffcdda039b2b3fa3c560e3"
  },
  "bug_combat_level_up_button_reposition_opaque_task.md": {
   "key": "SCRUM-278",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "2fa21df69db30bca9643d3695d96b09b"
  },
  "backend_druid_wolf_summon_animation_integrate_task.md": {
@@ -1346,7 +1346,7 @@
  },
  "bug_button_hover_remove_yellow_glow_task.md": {
   "key": "SCRUM-318",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "2a1c4e39b32bc4a1d745323120aaa793"
  },
  "backend_quit_confirmation_dialog_and_escape_task.md": {
@@ -1441,7 +1441,7 @@
  },
  "design_attack_vfx_full_asset_regeneration_skill_task.md": {
   "key": "SCRUM-337",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "01de01a22cde0fde5688691fd0f334ab"
  },
  "design_reward_screens_redesign_per_reward_frames_task.md": {
@@ -1471,12 +1471,12 @@
  },
  "bug_back_button_cropped_use_bigger_frame_task.md": {
   "key": "SCRUM-343",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "c7f98e496f266b7bd6ac07b84f716b6e"
  },
  "bug_quit_dialog_buttons_vertical_shrink_task.md": {
   "key": "SCRUM-344",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "582a81454545d6889bc5f4b17e795801"
  },
  "design_codex_new_textures_no_overlap_task.md": {
@@ -1526,7 +1526,7 @@
  },
  "bug_hero_select_description_carousel_overlap_layout_task.md": {
   "key": "SCRUM-354",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "32c4ca475b0f091e1953479832e29165"
  },
  "design_hero_select_thinner_frames_no_overlap_task.md": {
@@ -1626,7 +1626,7 @@
  },
  "bug_feedback_webhook_image_attachment_missing_task.md": {
   "key": "SCRUM-374",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "781f7db6a0fad1152421240e6b3f96d0"
  },
  "backend_debug_mode_click_to_move_player_task.md": {
@@ -1771,12 +1771,12 @@
  },
  "bug_victory_flow_runtime_smoke_text_missing_task.md": {
   "key": "SCRUM-385",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "1536f94e809d74cd5af7fd692f7cb533"
  },
  "bug_runtime_smoke_victory_text_race_after_death_animation_task.md": {
   "key": "SCRUM-386",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "2da3d9ee09bbbe062b2e67e867a66447"
  },
  "design_integrate_generated_unified_master_frame_2_task.md": {
@@ -1826,7 +1826,7 @@
  },
  "design_animation_source_sheets_safe_gutters_task.md": {
   "key": "SCRUM-394",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "a8a1255d9c42525e591d5697a2b6a14e"
  },
  "design_integrate_generated_backgrounds_3_task.md": {
@@ -1946,7 +1946,7 @@
  },
  "bug_backup_import_uid_duplicates_cleanup_task.md": {
   "key": "SCRUM-405",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "c1e88e64ea836c7780ffe31d64d727d3"
  },
  "backend_ui_overhaul_shop_economy_integration_task.md": {
@@ -1971,42 +1971,42 @@
  },
  "bug_runtime_smoke_assassin_crit_shadow_vfx_flaky_task.md": {
   "key": "SCRUM-410",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "c3fe9a70c217f81e21027a45c510ece9"
  },
  "bug_player_fullframe_anim_hidden_behind_cutout_rig_task.md": {
   "key": "SCRUM-411",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "9593251dbd41b7d4b31b669128c1b437"
  },
  "bug_character_frames_white_background_not_transparent_task.md": {
   "key": "SCRUM-412",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "f756cbb6f27b1ace45ffc36e658c578a"
  },
  "bug_attribute_shop_overflow_and_unclickable_options_task.md": {
   "key": "SCRUM-413",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "33c9d14232aaeefe4732d3d5d8e852cb"
  },
  "bug_elite_boss_health_bar_offscreen_too_high_task.md": {
   "key": "SCRUM-414",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "58880b6c076408402aca1f1343d1def2"
  },
  "bug_event_option_text_overflow_double_risk_task.md": {
   "key": "SCRUM-415",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "e22198594449fe6f3dd452b868baec36"
  },
  "bug_new_character_art_not_shown_heroselect_codex_task.md": {
   "key": "SCRUM-416",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "c66d33c7fdeee668c8ac4df9fa626435"
  },
  "bug_character_sprites_increase_size_task.md": {
   "key": "SCRUM-417",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "2ce3f2d6119e0f0f4591e017f76a5dcf"
  },
  "animation_boss_full_frame_batch_integration_task 2.md": {
@@ -2240,7 +2240,7 @@
  },
  "cleanup_assets_dedup_size_reduction_task.md": {
   "key": "SCRUM-418",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "2a2822b2a6b0539832962b3c4104ede4"
  },
  "art_char_redraw_v2_assassin_task.md": {
@@ -2335,7 +2335,7 @@
  },
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
   "key": "SCRUM-437",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "0818b666600022a00ceb5cc005def454"
  },
  "design_codex_rebuild_from_scratch_mockup_task.md": {
@@ -2350,27 +2350,27 @@
  },
  "bug_mass_duplicate_space2_files_cleanup_task.md": {
   "key": "SCRUM-440",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "2a3df315c38fa5e2834bbaa24066dd0d"
  },
  "bug_settings_resolution_not_working_mac_hidpi_task.md": {
   "key": "SCRUM-441",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "656e819dbc6d2737bc7558496c2f1c27"
  },
  "design_berserk_sprite_v3_cartoonish_transparent_task.md": {
   "key": "SCRUM-442",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "592196fb4709cbf29040a2b5ad0ebe1c"
  },
  "bug_player_death_does_not_end_combat_task.md": {
   "key": "SCRUM-443",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "77de4e1cc63d366c3919616ff6e92fcd"
  },
  "bug_runtime_smoke_death_flow_death_save_fragility_task.md": {
   "key": "SCRUM-444",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "261acc98dfbd3babf2dde06c909b1d8f"
  },
  "design_integrate_generated_hero_select_mockup_task.md": {
@@ -2450,7 +2450,7 @@
  },
  "bug_feedback_overflow_send_error_task.md": {
   "key": "SCRUM-460",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "c8f7aba01623df58d819b50a51941a54"
  },
  "animation_chars_cartoon_anime_berserk_anchor_task.md": {
@@ -2470,27 +2470,27 @@
  },
  "bug_economy_screens_opaque_matte_washes_content_task.md": {
   "key": "SCRUM-464",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "bf75a12aa3c775291209b0fb0d144947"
  },
  "bug_levelup_screen_overflows_bottom_at_720p_task.md": {
   "key": "SCRUM-465",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "265548c50ed2dd93b08229b2644981bc"
  },
  "bug_minimal_metal_frames_internal_lines_cross_content_task.md": {
   "key": "SCRUM-466",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "9642cc50edfb96ccd8738b7bc8a9721c"
  },
  "bug_attribute_shop_action_buttons_overflow_720p_task.md": {
   "key": "SCRUM-467",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "88c678dc4f6523659d1ab8a3a61a15d0"
  },
  "bug_settings_v2_title_collides_tab_switcher_task.md": {
   "key": "SCRUM-468",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "2f1c71a886fa2e02ccd11e41e5f3a15a"
  },
  "backend_class_balance_relative_score_optimum_normalize_task.md": {
@@ -2505,7 +2505,7 @@
  },
  "bug_settings_attribute_shop_overflow_overlap_1152x648_task.md": {
   "key": "SCRUM-471",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "0a332a7aadca3035b1578ebe7e5f7684"
  },
  "backend_cartoon_trial_dark_mage_knight_integration_task.md": {
@@ -2535,7 +2535,7 @@
  },
  "bug_event_screen_grey_unclickable_task.md": {
   "key": "SCRUM-477",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "3e8e5646876aa86957012a3fea14a3ca"
  },
  "design_minimalist_full_ui_redesign_exact_size_anchor_task.md": {
@@ -2545,7 +2545,7 @@
  },
  "bug_runtime_smoke_hero_select_v4_backbutton_name_task.md": {
   "key": "SCRUM-479",
-  "status": "Р“РѕС‚РѕРІРѕ",
+  "status": "Готово",
   "desc_hash": "c888347362509bacd09b7c00ef98c198"
  },
  "backend_minimalist_full_ui_redesign_runtime_handoff_task.md": {
@@ -2625,7 +2625,7 @@
  },
  "bug_scrum619_secret_encounter_artifact_key_unlock_task.md": {
   "key": "SCRUM-623",
-  "status": "Рљ РІС‹РїРѕР»РЅРµРЅРёСЋ",
+  "status": "К выполнению",
   "desc_hash": "70824cff19f50c53aea62934a1a0d767"
  },
  "SCRUM-521_low_hp_red_vignette.md": {
@@ -3070,7 +3070,7 @@
  },
  "codex_skill_tree_v2_data_model_economy_task.md": {
   "key": "SCRUM-696",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "0fa1a9544b88cff0e4afe98f2041dffd"
  },
  "design_skill_tree_v2_art_pack_task.md": {
@@ -3085,8 +3085,8 @@
  },
  "qa_skill_tree_v2_verification_task.md": {
   "key": "SCRUM-699",
-  "status": "К выполнению",
-  "desc_hash": "6b5ea3f665cf920fe3c7e23dfa5c3f11"
+  "status": "Готово",
+  "desc_hash": "5c8a21a9561ec66aa82ff307d2f6630c"
  },
  "qa_ui_1080_scale_visual_task.md": {
   "key": "SCRUM-700",
@@ -3120,6 +3120,16 @@
  },
  "bug_SCRUM-502_dealt_damage_never_collected_task.md": {
   "key": "SCRUM-502",
+  "status": "К выполнению",
+  "desc_hash": "efe52e7344e930e648a05f7aa166b069"
+ },
+ "bug_scrum673_main_menu_logo_spec_mismatch_task.md": {
+  "key": "SCRUM-680",
+  "status": "К выполнению",
+  "desc_hash": "49019707186e51566fa095d658402038"
+ },
+ "design_berserk_v2_visual_redesign_task.md": {
+  "key": "SCRUM-531",
   "status": null,
   "desc_hash": null
  }
