@@ -90,3 +90,9 @@ Before starting, Claude must sync `dev`, check dirty tree and verify no active o
 
 Disk cleanup: рабочий worktree `/private/tmp/fsd_wt_scrum712` удалён после пуша;
 временных артефактов не оставлено.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+claude-qa, изолир. worktree от origin/dev (коммиты f304a801+b757e67a — ancestor). Аудит-онли по 5 locked code-файлам подтверждён (git stat: production-код не менялся). Тест-фикс projectile_smoke (устаревшая граница арены 2560→выводится из ARENA_SIZE/CLEANUP_MARGIN, +Y-ось, +despawn-по-вылету) корректен и усиливает тест. Гейты RC=0: projectile_smoke, enemy_projectile_smoke, hazard_vfx_smoke, enemy_content_integrity (10 мини-элиток/10 энкаунтеров). → PASSED.
