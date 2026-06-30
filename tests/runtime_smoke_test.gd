@@ -7933,9 +7933,11 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 		min_expected_thumb_width = 60.0
 	if viewport_size.x >= 2560:
 		min_expected_thumb_width = 86.0
-	var thumb_square_tolerance := maxf(8.0, maxf(first_thumb_rect.size.x, first_thumb_rect.size.y) * 0.10)
-	if first_thumb_rect.size.x < min_expected_thumb_width or first_thumb_rect.size.y < min_expected_thumb_width or absf(first_thumb_rect.size.x - first_thumb_rect.size.y) > thumb_square_tolerance:
-		_fail("Expected large roughly square hero thumbnails at %s, got rect %s min %s tolerance %.2f." % [context, first_thumb_rect, first_thumb.custom_minimum_size, thumb_square_tolerance])
+	var first_thumb_visual := first_thumb.find_child("HS4CarouselPortrait_*", false, false) as Control
+	var first_thumb_visual_rect := first_thumb_visual.get_global_rect() if first_thumb_visual != null else first_thumb_rect
+	var thumb_square_tolerance := maxf(8.0, maxf(first_thumb_visual_rect.size.x, first_thumb_visual_rect.size.y) * 0.10)
+	if first_thumb_visual_rect.size.x < min_expected_thumb_width or first_thumb_visual_rect.size.y < min_expected_thumb_width or absf(first_thumb_visual_rect.size.x - first_thumb_visual_rect.size.y) > thumb_square_tolerance:
+		_fail("Expected large roughly square hero thumbnail portraits at %s, got visual rect %s slot rect %s min %s tolerance %.2f." % [context, first_thumb_visual_rect, first_thumb_rect, first_thumb.custom_minimum_size, thumb_square_tolerance])
 		return
 	for thumb in thumbnail_buttons:
 		var thumb_rect := (thumb as Control).get_global_rect()

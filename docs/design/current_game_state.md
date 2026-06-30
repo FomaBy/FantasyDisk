@@ -175,6 +175,11 @@ portrait scaling, ascension controls, Select, Back/Escape and focus behavior are
 preserved. QA evidence lives under `build/qa/scrum446_hero_select_v3/`, including
 the `1536x864` mockup-vs-runtime screenshot comparison, rect dump and no-overlap
 matrix.
+SCRUM-687 supersedes that v3 runtime art/layout with the live PixelLab parts kit
+under `assets/sprites/ui/frames/hero_select_pixellab/`: the screen now scales a
+`2560x1440` source-space composition with separate portrait, dossier, radar,
+ascension and carousel frames while preserving the same interaction contract and
+directional PixelLab preview rotation.
 
 Основной UI button pass SCRUM-273 заменил SCRUM-147 Parchment & Wax Seal на Red & Gold Dragon kit из `docs/design/references/Buttons/button_kit_red_gold_dragon_sheet.png`; SCRUM-462 затем promoted SCRUM-450 Minimal Metal, а SCRUM-669 promoted SCRUM-657 generated text buttons as the live normal text/action button kit. Live normal text-button textures now live in `assets/sprites/ui/frames/text_buttons_unique/` with exact-size families (`main_menu_380x104`, `standard_420x104`, `wide_440x104`, `back_260x104`, `quit_220x72`, `continue_240x72`, `later_260x72`, `settings_back_280x64`, `feedback_260x64`, `feedback_cancel_220x64`, `pause_280x60`, `event_back_380x54`, `rebind_420x62`, plus long-label variants) and five states (`normal/hover/focus/pressed/disabled`). Metadata/source: `docs/design/references/ui_text_buttons_unique_size_redraw/button_family_metadata.json`; SCRUM-450 Minimal Metal remains available for compact/icon-like exceptions and historical metadata validation; old Red & Gold backup for the earlier promotion pass: `build/qa/scrum450_minimal_metal_buttons/red_gold_button_backup/`; old parchment/wax button backup: `build/cleanup_backup_red_gold_buttons_2026_06_14/`.
 
@@ -1134,7 +1139,28 @@ SCRUM-654 tightened the combat level-up callout: the world-space `LevelUpEffect`
 
 - Escape = назад на меню/предзабеговых экранах через единый стек: главное меню -> игровой диалог подтверждения выхода, настройки/кодекс/выбор персонажа -> меню; выбор оружия -> выбор персонажа. Кнопка «Выйти из игры» в главном меню открывает тот же `QuitConfirmationDialog`; реальный quit вызывается только по «Выйти», а «Отмена» в фокусе по умолчанию. В активном забеге Escape открывает единое меню паузы поверх текущего состояния: бой, route map, магазин, level-up, докачка атрибутов, событие, награда элитки. Повторный Escape закрывает меню и оставляет подлежащий экран без reroll/сброса; досье персонажа открывается отдельной кнопкой «Досье персонажа» внутри pause menu. Событие по-прежнему требует выбора действия; если skip не разрешен, кнопка «Назад» на событии видна, но disabled и объясняет это в tooltip.
 - `P` открывает фидбек/bug-report overlay поверх текущего экрана через отдельный top-level `FeedbackOverlayLayer`, не очищая текущий UI и не сбрасывая состояние магазина/карты/level-up. Escape внутри overlay закрывает только форму фидбека, а ввод текста остается в `FeedbackTextEdit`.
-- Экран выбора героя — fullscreen `HeroSelectScreen`: SCRUM-447 является live runtime layout из принятого SCRUM-446 Hero Select v3 package. `_show_character_select()` строит centered proportional `1536x864` `HeroSelectCanvas` по `docs/design/references/hero_select_v3/zones.json`, `zones_normalized.json` и `frames_spec.json`, использует runtime frames `assets/sprites/ui/frames/hero_select_v3/background.png`, `frame_preview.png`, `frame_dossier.png`, square `frame_radar.png` и `frame_carousel.png`, и больше не базируется на v2 layout assumptions. `HeroSelectRadarPanel` / `HeroStatRadar` сохранены как существующий SCRUM-322/SCRUM-347 compass-rose contract, но размещены внутри square v3 radar content rect without non-uniform stretch. SCRUM-416 uses the accepted cleaned full-frame idle frame as the static portrait source for both the large portrait and carousel thumbnails across all 17 classes; SCRUM-417 covered portrait scaling remains inside the SCRUM-447 preview content zone. Runtime smoke проверяет v3 texture loading, proportional aspect, containment всех Hero Select content rects, preserved radar placement, carousel safe-zone, SCRUM-416 portrait texture paths, SCRUM-417 covered portrait scaling and no-overlap on responsive sizes; QA evidence: `build/qa/scrum446_hero_select_v3/hero_select_v3_runtime_rects.md`, `hero_select_v3_no_overlap_matrix.md`, and `hero_select_v3_mockup_vs_runtime_1536x864.png`. Все кнопки игры используют pointer-курсор.
+- Экран выбора героя — fullscreen `HeroSelectScreen`: SCRUM-687 makes the live
+  runtime use the PixelLab rebuild parts kit in
+  `assets/sprites/ui/frames/hero_select_pixellab/`. `_show_character_select()`
+  scales the accepted `2560x1440` source-space layout uniformly for
+  `1280x720`, `1920x1080`, `2560x1440` and 4K: textless background, title
+  frame, Back button, large portrait frame, dossier frame, separate stat radar
+  frame, separate ascension frame, Choose button and bottom carousel frame.
+  Runtime labels, bars, buttons, `HeroStatRadar`, carousel slots and portraits
+  sit only inside the documented content rects; the frame ornament remains
+  unobscured. The runtime nudges the carousel frame `35 px` lower in
+  source-space than the first preview guide so the Choose button and carousel
+  content band never touch at 16:9 matrix sizes. Carousel slots now draw the
+  PixelLab `frame_hero_slot.png` with a child portrait inside its safe zone
+  instead of placing raw thumbnails directly on the rail. Berserk, Dark Mage and
+  Guitarist keep directional Hero Select preview rotation from their actual
+  `512x512` PixelLab SpriteFrame textures; other heroes keep the static
+  `sprite_path` fallback. Select, Back/Escape, ascension stepper and carousel
+  focus/interaction behavior are preserved.
+  Focused coverage: `tests/hero_select_pixellab_layout_test.gd` plus the
+  existing Berserk/Dark Mage/Guitarist Hero Select preview smokes,
+  `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd` and the umbrella
+  runtime smoke.
 - Размеры изображений: кодекс — персонажи 216px with covered scaling (SCRUM-417), монстры 150px, артефакты 96px; HUD-артефакты 48px; пауза-артефакты 56px; иконки магазина 112px внутри frameless hit area 164x186.
 - Фон маршрутной карты: если существует `assets/backgrounds/route_map_backdrop.png`, он подключается с cover-растяжением и затемнением 0.62 для читаемости узлов; иначе — прежний однотонный фон (graceful fallback до выхода арта).
 

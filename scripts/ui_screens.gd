@@ -947,6 +947,63 @@ const HS4_ASC_BTN_2K := Rect2(0, 0, 102, 72)                 # шаблон ±-�
 # Карусель SCRUM-561: content-zone comes from hs4_carousel_panel; thumbnails stay square inside the safe band.
 const HS4_CAROUSEL_SLOT_2K := Rect2(237, 1230, 101, 101)     # square slot inside hud-strip content safe area
 const HS4_CAROUSEL_SLOT_STEP_2K := 248.0
+const HS4_PIXELLAB_DIR := "res://assets/sprites/ui/frames/hero_select_pixellab/"
+const HS4_PIXELLAB_PATHS := {
+	"background": HS4_PIXELLAB_DIR + "background.png",
+	"back": HS4_PIXELLAB_DIR + "button_back.png",
+	"title": HS4_PIXELLAB_DIR + "frame_title.png",
+	"portrait": HS4_PIXELLAB_DIR + "frame_portrait.png",
+	"dossier": HS4_PIXELLAB_DIR + "frame_dossier.png",
+	"radar": HS4_PIXELLAB_DIR + "frame_radar.png",
+	"ascension": HS4_PIXELLAB_DIR + "frame_ascension.png",
+	"asc_minus": HS4_PIXELLAB_DIR + "button_asc_minus.png",
+	"asc_plus": HS4_PIXELLAB_DIR + "button_asc_plus.png",
+	"choose": HS4_PIXELLAB_DIR + "button_choose.png",
+	"carousel": HS4_PIXELLAB_DIR + "frame_carousel.png",
+	"carousel_left": HS4_PIXELLAB_DIR + "button_carousel_left.png",
+	"carousel_right": HS4_PIXELLAB_DIR + "button_carousel_right.png",
+	"hero_slot": HS4_PIXELLAB_DIR + "frame_hero_slot.png",
+}
+const HS4_PIXELLAB_SOURCE_SIZE := {
+	"back": Vector2(460, 148),
+	"title": Vector2(1840, 184),
+	"portrait": Vector2(600, 820),
+	"dossier": Vector2(980, 820),
+	"radar": Vector2(780, 520),
+	"ascension": Vector2(780, 270),
+	"asc_minus": Vector2(132, 92),
+	"asc_plus": Vector2(132, 92),
+	"choose": Vector2(512, 118),
+	"carousel": Vector2(2432, 330),
+	"carousel_left": Vector2(132, 176),
+	"carousel_right": Vector2(132, 176),
+	"hero_slot": Vector2(196, 220),
+}
+const HS4_PIXELLAB_CONTENT_RECT := {
+	"back": Rect2(70, 38, 320, 72),
+	"title": Rect2(120, 42, 1600, 96),
+	"portrait": Rect2(72, 94, 456, 620),
+	"dossier": Rect2(92, 84, 796, 640),
+	"radar": Rect2(98, 57, 584, 406),
+	"ascension": Rect2(74, 50, 632, 183),
+	"asc_minus": Rect2(32, 22, 68, 48),
+	"asc_plus": Rect2(32, 22, 68, 48),
+	"choose": Rect2(70, 34, 372, 50),
+	"carousel": Rect2(110, 61, 2212, 220),
+	"carousel_left": Rect2(36, 42, 60, 92),
+	"carousel_right": Rect2(36, 42, 60, 92),
+	"hero_slot": Rect2(18, 18, 160, 160),
+}
+const HS4_PIXELLAB_LAYOUT_2K := {
+	"back": Rect2(100, 86, 460, 148),
+	"title": Rect2(240, 6, 1840, 184),
+	"portrait": Rect2(64, 178, 600, 820),
+	"dossier": Rect2(720, 178, 980, 820),
+	"radar": Rect2(1716, 178, 780, 520),
+	"ascension": Rect2(1714, 728, 780, 270),
+	"choose": Rect2(1012, 998, 512, 118),
+	"carousel": Rect2(64, 1080, 2432, 330),
+}
 
 
 func _hs4_scaled_rect(zone: Rect2, canvas_size: Vector2) -> Rect2:
@@ -961,6 +1018,68 @@ func _hs4_place(ctrl: Control, parent: Control, canvas_size: Vector2, zone: Rect
 	ctrl.position = rect.position
 	ctrl.size = rect.size
 	parent.add_child(ctrl)
+
+
+func _hs4_pixellab_scale(viewport_size: Vector2) -> float:
+	return minf(viewport_size.x / HS4_DESIGN_BASE_2K.x, viewport_size.y / HS4_DESIGN_BASE_2K.y)
+
+
+func _hs4_pixellab_origin(viewport_size: Vector2, scale: float) -> Vector2:
+	return Vector2(
+		roundf((viewport_size.x - HS4_DESIGN_BASE_2K.x * scale) * 0.5),
+		roundf((viewport_size.y - HS4_DESIGN_BASE_2K.y * scale) * 0.5)
+	)
+
+
+func _hs4_pixellab_rect(slot: String, viewport_size: Vector2) -> Rect2:
+	var scale := _hs4_pixellab_scale(viewport_size)
+	var origin := _hs4_pixellab_origin(viewport_size, scale)
+	var source_rect: Rect2 = HS4_PIXELLAB_LAYOUT_2K.get(slot, Rect2())
+	return Rect2(
+		origin + Vector2(roundf(source_rect.position.x * scale), roundf(source_rect.position.y * scale)),
+		Vector2(roundf(source_rect.size.x * scale), roundf(source_rect.size.y * scale))
+	)
+
+
+func _hs4_pixellab_display_size(slot: String, viewport_size: Vector2) -> Vector2:
+	var scale := _hs4_pixellab_scale(viewport_size)
+	var source_size: Vector2 = HS4_PIXELLAB_SOURCE_SIZE.get(slot, Vector2.ZERO)
+	return Vector2(roundf(source_size.x * scale), roundf(source_size.y * scale))
+
+
+func _hs4_pixellab_content_margins(slot: String, display_size: Vector2) -> Vector4:
+	if not HS4_PIXELLAB_SOURCE_SIZE.has(slot) or not HS4_PIXELLAB_CONTENT_RECT.has(slot):
+		return Vector4.ZERO
+	var source_size: Vector2 = HS4_PIXELLAB_SOURCE_SIZE[slot]
+	var content_rect: Rect2 = HS4_PIXELLAB_CONTENT_RECT[slot]
+	var scale_x := display_size.x / maxf(source_size.x, 1.0)
+	var scale_y := display_size.y / maxf(source_size.y, 1.0)
+	return Vector4(
+		roundf(content_rect.position.x * scale_x),
+		roundf(content_rect.position.y * scale_y),
+		roundf((source_size.x - content_rect.position.x - content_rect.size.x) * scale_x),
+		roundf((source_size.y - content_rect.position.y - content_rect.size.y) * scale_y)
+	)
+
+
+func _hs4_pixellab_style(slot: String, display_size: Vector2, tint := Color.WHITE) -> StyleBox:
+	if not HS4_PIXELLAB_PATHS.has(slot):
+		return _minimal_metal_frame_style("panel", tint)
+	var margins := _hs4_pixellab_content_margins(slot, display_size)
+	return _global_texture_style(str(HS4_PIXELLAB_PATHS[slot]), margins, tint, margins, false)
+
+
+func _apply_hs4_pixellab_button_theme(button: Button, slot: String, display_size: Vector2) -> void:
+	button.add_theme_stylebox_override("normal", _hs4_pixellab_style(slot, display_size))
+	button.add_theme_stylebox_override("hover", _hs4_pixellab_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("focus", _hs4_pixellab_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
+	button.add_theme_stylebox_override("pressed", _hs4_pixellab_style(slot, display_size, Color(0.90, 0.84, 0.76, 1.0)))
+	button.add_theme_stylebox_override("disabled", _hs4_pixellab_style(slot, display_size, Color(0.58, 0.58, 0.58, 0.82)))
+	button.add_theme_color_override("font_color", Color(0.98, 0.92, 0.72, 1.0))
+	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
 func _hs4_overlay_style(fill: Color, border: Color = Color(0, 0, 0, 0), border_width := 0) -> StyleBoxFlat:
@@ -1072,54 +1191,70 @@ func _build_character_select_v4() -> void:
 	var vp: Vector2 = root.get_viewport_rect().size
 	if vp.x <= 0.0 or vp.y <= 0.0:
 		vp = Vector2(1600.0, 900.0)
-	var mx: float = round(vp.x * 0.022)
-	var my: float = round(vp.y * 0.028)
-	var top_h: float = round(vp.y * 0.085)
-	var car_h: float = round(vp.y * 0.17)
-	var gap: float = round(vp.x * 0.014)
-	var content_w: float = vp.x - mx * 2.0
-	var mid_y: float = my + top_h + round(vp.y * 0.012)
-	var car_y: float = vp.y - my - car_h
-	var mid_h: float = car_y - mid_y - round(vp.y * 0.012)
-	var left_w: float = round(content_w * 0.27)
-	var right_w: float = round(content_w * 0.255)
-	var center_w: float = content_w - left_w - right_w - gap * 2.0
-	var pad: float = round(vp.y * 0.02)
+	var layout_scale := _hs4_pixellab_scale(vp)
 
+	var pixel_background := TextureRect.new()
+	pixel_background.name = "HS4PixelLabBackground"
+	pixel_background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	pixel_background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pixel_background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	pixel_background.texture = game._cached_texture(str(HS4_PIXELLAB_PATHS["background"]))
+	pixel_background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(pixel_background)
+
+	var readable_shade := ColorRect.new()
+	readable_shade.name = "HS4PixelLabReadableShade"
+	readable_shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	readable_shade.color = Color(0.0, 0.0, 0.0, 0.16)
+	readable_shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(readable_shade)
+
+	var title_frame := Panel.new()
+	title_frame.name = "HS4TitleFrame"
+	var title_frame_rect := _hs4_pixellab_rect("title", vp)
+	title_frame.position = title_frame_rect.position
+	title_frame.size = title_frame_rect.size
+	title_frame.add_theme_stylebox_override("panel", _hs4_pixellab_style("title", title_frame.size))
+	title_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(title_frame)
+	var title_safe := _hs4_pixellab_content_margins("title", title_frame.size)
 	var title := Label.new()
 	title.text = "Выбор героя"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.position = Vector2(mx, my)
-	title.size = Vector2(content_w, top_h)
-	title.add_theme_font_size_override("font_size", maxi(20, int(round(vp.y * 0.04))))
+	title.position = Vector2(title_safe.x, title_safe.y)
+	title.size = Vector2(title_frame.size.x - title_safe.x - title_safe.z, title_frame.size.y - title_safe.y - title_safe.w)
+	title.add_theme_font_size_override("font_size", maxi(20, int(round(72.0 * layout_scale))))
 	title.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(title)
+	title_frame.add_child(title)
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HS4BackButton"
-	var back_button_size := Vector2(maxf(132.0, round(vp.x * 0.085)), clampf(round(top_h * 0.72), 44.0, 54.0))
-	back_button.custom_minimum_size = back_button_size
-	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
-		back_button.add_theme_stylebox_override(state, _compact_button_style(state == "hover" or state == "focus", state == "pressed", state == "disabled"))
-	back_button.position = Vector2(mx, my + round((top_h - back_button_size.y) * 0.5))
+	var back_button_rect := _hs4_pixellab_rect("back", vp)
+	back_button.position = back_button_rect.position
+	_set_action_button_size(back_button, back_button_rect.size.x, back_button_rect.size.y)
+	_apply_hs4_pixellab_button_theme(back_button, "back", back_button_rect.size)
+	back_button.add_theme_font_size_override("font_size", maxi(14, int(round(30.0 * layout_scale))))
 	root.add_child(back_button)
 	back_button.pressed.connect(_show_main_menu)
 
 	var portrait_panel := Panel.new()
-	portrait_panel.position = Vector2(mx, mid_y)
-	portrait_panel.size = Vector2(left_w, mid_h)
-	portrait_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_portrait_panel", portrait_panel.size))
+	portrait_panel.name = "HS4PortraitFrame"
+	var portrait_rect := _hs4_pixellab_rect("portrait", vp)
+	portrait_panel.position = portrait_rect.position
+	portrait_panel.size = portrait_rect.size
+	portrait_panel.add_theme_stylebox_override("panel", _hs4_pixellab_style("portrait", portrait_panel.size))
 	portrait_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(portrait_panel)
-	var portrait_safe := _overhaul_2k_content_margins("hs4_portrait_panel", portrait_panel.size)
+	var portrait_safe := _hs4_pixellab_content_margins("portrait", portrait_panel.size)
 	var portrait := TextureRect.new()
 	portrait.name = "HS4Portrait"
+	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.position = Vector2(portrait_safe.x, portrait_safe.y)
-	portrait.size = Vector2(left_w - portrait_safe.x - portrait_safe.z, mid_h - portrait_safe.y - portrait_safe.w)
+	portrait.size = Vector2(portrait_panel.size.x - portrait_safe.x - portrait_safe.z, portrait_panel.size.y - portrait_safe.y - portrait_safe.w)
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_panel.add_child(portrait)
 	var portrait_preview_state := {
@@ -1138,29 +1273,31 @@ func _build_character_select_v4() -> void:
 	)
 
 	var dossier_panel := Panel.new()
-	dossier_panel.position = Vector2(mx + left_w + gap, mid_y)
-	dossier_panel.size = Vector2(center_w, mid_h)
-	dossier_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_dossier_panel", dossier_panel.size))
+	dossier_panel.name = "HS4DossierFrame"
+	var dossier_rect := _hs4_pixellab_rect("dossier", vp)
+	dossier_panel.position = dossier_rect.position
+	dossier_panel.size = dossier_rect.size
+	dossier_panel.add_theme_stylebox_override("panel", _hs4_pixellab_style("dossier", dossier_panel.size))
 	dossier_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(dossier_panel)
-	var dossier_safe := _overhaul_2k_content_margins("hs4_dossier_panel", dossier_panel.size)
+	var dossier_safe := _hs4_pixellab_content_margins("dossier", dossier_panel.size)
 	var dossier := VBoxContainer.new()
 	dossier.position = Vector2(dossier_safe.x, dossier_safe.y)
-	dossier.size = Vector2(center_w - dossier_safe.x - dossier_safe.z, mid_h - dossier_safe.y - dossier_safe.w)
-	dossier.add_theme_constant_override("separation", maxi(4, int(round(vp.y * 0.012))))
+	dossier.size = Vector2(dossier_panel.size.x - dossier_safe.x - dossier_safe.z, dossier_panel.size.y - dossier_safe.y - dossier_safe.w)
+	dossier.add_theme_constant_override("separation", maxi(4, int(round(16.0 * layout_scale))))
 	dossier.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_panel.add_child(dossier)
 
 	var name_label := Label.new()
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", maxi(18, int(round(vp.y * 0.035))))
+	name_label.add_theme_font_size_override("font_size", maxi(18, int(round(52.0 * layout_scale))))
 	name_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
 	dossier.add_child(name_label)
 
 	var desc_label := Label.new()
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	desc_label.add_theme_font_size_override("font_size", maxi(11, int(round(vp.y * 0.019))))
+	desc_label.add_theme_font_size_override("font_size", maxi(11, int(round(28.0 * layout_scale))))
 	desc_label.add_theme_color_override("font_color", Color(0.86, 0.89, 0.96, 1.0))
 	dossier.add_child(desc_label)
 
@@ -1172,7 +1309,7 @@ func _build_character_select_v4() -> void:
 	weapon_label.max_lines_visible = 1
 	weapon_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	weapon_label.add_theme_font_size_override("font_size", maxi(11, int(round(vp.y * 0.019))))
+	weapon_label.add_theme_font_size_override("font_size", maxi(11, int(round(27.0 * layout_scale))))
 	weapon_label.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 1.0))
 	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier.add_child(weapon_label)
@@ -1186,11 +1323,11 @@ func _build_character_select_v4() -> void:
 	dossier.add_child(stats_box)
 	var stat_value_labels := {}
 	var stat_bars := {}
-	var stat_icon_px := maxi(18, int(round(vp.y * 0.028)))
-	var stat_font_px := maxi(11, int(round(vp.y * 0.019)))
-	var stat_name_min_w := maxf(float(center_w) * 0.30, 96.0)
-	var stat_value_min_w := maxf(float(center_w) * 0.10, 36.0)
-	var stat_bar_min_h := maxi(8, int(round(vp.y * 0.016)))
+	var stat_icon_px := maxi(18, int(round(34.0 * layout_scale)))
+	var stat_font_px := maxi(11, int(round(26.0 * layout_scale)))
+	var stat_name_min_w := maxf(float(dossier.size.x) * 0.28, 84.0 * layout_scale)
+	var stat_value_min_w := maxf(float(dossier.size.x) * 0.08, 32.0 * layout_scale)
+	var stat_bar_min_h := maxi(8, int(round(20.0 * layout_scale)))
 	for sid in HS4_DOSSIER_STATS:
 		var srow := HBoxContainer.new()
 		srow.name = "HS4StatRow_%s" % sid
@@ -1240,27 +1377,56 @@ func _build_character_select_v4() -> void:
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier.add_child(spacer)
 
-	var asc_box := HBoxContainer.new()
-	asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	asc_box.add_theme_constant_override("separation", maxi(8, int(round(vp.x * 0.01))))
-	dossier.add_child(asc_box)
-	var asc_minus := _make_button("−")
-	asc_minus.name = "AscensionMinusButton"
-	_set_action_button_size(asc_minus, vp.x * 0.04, vp.y * 0.05)
-	_apply_overhaul_2k_button_theme(asc_minus, "hs4_asc_btn", asc_minus.custom_minimum_size)
-	asc_box.add_child(asc_minus)
+	var ascension_panel := Panel.new()
+	ascension_panel.name = "HS4AscensionFrame"
+	var ascension_rect := _hs4_pixellab_rect("ascension", vp)
+	ascension_panel.position = ascension_rect.position
+	ascension_panel.size = ascension_rect.size
+	ascension_panel.add_theme_stylebox_override("panel", _hs4_pixellab_style("ascension", ascension_panel.size))
+	ascension_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(ascension_panel)
+	var ascension_safe := _hs4_pixellab_content_margins("ascension", ascension_panel.size)
+	var ascension_content := VBoxContainer.new()
+	ascension_content.position = Vector2(ascension_safe.x, ascension_safe.y)
+	ascension_content.size = Vector2(ascension_panel.size.x - ascension_safe.x - ascension_safe.z, ascension_panel.size.y - ascension_safe.y - ascension_safe.w)
+	ascension_content.add_theme_constant_override("separation", maxi(3, int(round(10.0 * layout_scale))))
+	ascension_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ascension_panel.add_child(ascension_content)
+
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_label.custom_minimum_size = Vector2(vp.x * 0.13, 0.0)
-	asc_label.add_theme_font_size_override("font_size", maxi(13, int(round(vp.y * 0.022))))
+	asc_label.custom_minimum_size = Vector2(0.0, maxf(28.0, 42.0 * layout_scale))
+	asc_label.add_theme_font_size_override("font_size", maxi(13, int(round(34.0 * layout_scale))))
 	asc_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.5, 1.0))
-	asc_box.add_child(asc_label)
+	ascension_content.add_child(asc_label)
+
+	var asc_box := HBoxContainer.new()
+	asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	asc_box.add_theme_constant_override("separation", maxi(8, int(round(22.0 * layout_scale))))
+	ascension_content.add_child(asc_box)
+	var asc_minus := _make_button("−")
+	asc_minus.name = "AscensionMinusButton"
+	var asc_button_size := _hs4_pixellab_display_size("asc_minus", vp)
+	_set_action_button_size(asc_minus, asc_button_size.x, asc_button_size.y)
+	_apply_hs4_pixellab_button_theme(asc_minus, "asc_minus", asc_minus.custom_minimum_size)
+	asc_minus.add_theme_font_size_override("font_size", maxi(18, int(round(34.0 * layout_scale))))
+	asc_box.add_child(asc_minus)
+	var asc_stepper_label := Label.new()
+	asc_stepper_label.text = "Возвышение"
+	asc_stepper_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	asc_stepper_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	asc_stepper_label.custom_minimum_size = Vector2(maxf(120.0, 330.0 * layout_scale), asc_button_size.y)
+	asc_stepper_label.add_theme_font_size_override("font_size", maxi(13, int(round(30.0 * layout_scale))))
+	asc_stepper_label.add_theme_color_override("font_color", Color(0.92, 0.84, 0.66, 1.0))
+	asc_box.add_child(asc_stepper_label)
 	var asc_plus := _make_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	_set_action_button_size(asc_plus, vp.x * 0.04, vp.y * 0.05)
-	_apply_overhaul_2k_button_theme(asc_plus, "hs4_asc_btn", asc_plus.custom_minimum_size)
+	var asc_plus_size := _hs4_pixellab_display_size("asc_plus", vp)
+	_set_action_button_size(asc_plus, asc_plus_size.x, asc_plus_size.y)
+	_apply_hs4_pixellab_button_theme(asc_plus, "asc_plus", asc_plus.custom_minimum_size)
+	asc_plus.add_theme_font_size_override("font_size", maxi(18, int(round(34.0 * layout_scale))))
 	asc_box.add_child(asc_plus)
 
 	var asc_mods := Label.new()
@@ -1268,63 +1434,72 @@ func _build_character_select_v4() -> void:
 	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	asc_mods.max_lines_visible = 2
 	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_mods.add_theme_font_size_override("font_size", maxi(10, int(round(vp.y * 0.017))))
+	asc_mods.add_theme_font_size_override("font_size", maxi(10, int(round(22.0 * layout_scale))))
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	dossier.add_child(asc_mods)
+	ascension_content.add_child(asc_mods)
 
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HS4ChooseButton"
-	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(select_button, vp.x * 0.2, vp.y * 0.062)
-	_apply_overhaul_2k_button_theme(select_button, "hs4_choose_btn", select_button.custom_minimum_size)
-	dossier.add_child(select_button)
+	var select_button_rect := _hs4_pixellab_rect("choose", vp)
+	select_button.position = select_button_rect.position
+	_set_action_button_size(select_button, select_button_rect.size.x, select_button_rect.size.y)
+	_apply_hs4_pixellab_button_theme(select_button, "choose", select_button.custom_minimum_size)
+	select_button.add_theme_font_size_override("font_size", maxi(15, int(round(34.0 * layout_scale))))
+	root.add_child(select_button)
 
 	var radar_panel := Panel.new()
-	radar_panel.position = Vector2(mx + left_w + gap + center_w + gap, mid_y)
-	radar_panel.size = Vector2(right_w, mid_h)
-	radar_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_radar_panel", radar_panel.size))
+	radar_panel.name = "HS4RadarFrame"
+	var radar_rect := _hs4_pixellab_rect("radar", vp)
+	radar_panel.position = radar_rect.position
+	radar_panel.size = radar_rect.size
+	radar_panel.add_theme_stylebox_override("panel", _hs4_pixellab_style("radar", radar_panel.size))
 	radar_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(radar_panel)
-	var radar_safe := _overhaul_2k_content_margins("hs4_radar_panel", radar_panel.size)
+	var radar_safe := _hs4_pixellab_content_margins("radar", radar_panel.size)
 	var radar := HeroStatRadar.new()
 	radar.name = "HS4Radar"
 	radar.position = Vector2(radar_safe.x, radar_safe.y)
-	radar.size = Vector2(right_w - radar_safe.x - radar_safe.z, mid_h - radar_safe.y - radar_safe.w)
+	radar.size = Vector2(radar_panel.size.x - radar_safe.x - radar_safe.z, radar_panel.size.y - radar_safe.y - radar_safe.w)
 	radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	radar_panel.add_child(radar)
 
 	var carousel_panel := Panel.new()
-	carousel_panel.position = Vector2(mx, car_y)
-	carousel_panel.size = Vector2(content_w, car_h)
-	carousel_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_carousel_panel", carousel_panel.size))
+	carousel_panel.name = "HS4CarouselFrame"
+	var carousel_rect := _hs4_pixellab_rect("carousel", vp)
+	carousel_panel.position = carousel_rect.position
+	carousel_panel.size = carousel_rect.size
+	carousel_panel.add_theme_stylebox_override("panel", _hs4_pixellab_style("carousel", carousel_panel.size))
 	carousel_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(carousel_panel)
-	var carousel_safe := _overhaul_2k_content_margins("hs4_carousel_panel", carousel_panel.size)
+	var carousel_safe := _hs4_pixellab_content_margins("carousel", carousel_panel.size)
 	var carousel := Control.new()
 	carousel.name = "HS4Carousel"
 	carousel.position = Vector2(carousel_safe.x, carousel_safe.y)
-	carousel.size = Vector2(content_w - carousel_safe.x - carousel_safe.z, car_h - carousel_safe.y - carousel_safe.w)
+	carousel.size = Vector2(carousel_panel.size.x - carousel_safe.x - carousel_safe.z, carousel_panel.size.y - carousel_safe.y - carousel_safe.w)
 	carousel.mouse_filter = Control.MOUSE_FILTER_PASS
 	carousel_panel.add_child(carousel)
 	var carousel_w: float = carousel.size.x
 	var carousel_h: float = carousel.size.y
-	var cpad: float = round(carousel_h * 0.1)
-	var arrow_w: float = round(carousel_h * 0.5)
-	var slot_h: float = carousel_h - cpad * 2.0
-	var slot_w: float = slot_h
-	var slot_gap: float = maxf(0.0, (carousel_w - arrow_w * 2.0 - cpad * 2.0 - slot_w * float(HS4_CAROUSEL_SLOTS)) / float(maxi(1, HS4_CAROUSEL_SLOTS - 1)))
+	var arrow_size: Vector2 = _hs4_pixellab_display_size("carousel_left", vp)
+	var slot_size: Vector2 = _hs4_pixellab_display_size("hero_slot", vp)
+	var slot_gap: float = maxf(0.0, (carousel_w - arrow_size.x * 2.0 - slot_size.x * float(HS4_CAROUSEL_SLOTS)) / float(maxi(1, HS4_CAROUSEL_SLOTS - 1)))
+	var slot_y: float = round((carousel_h - slot_size.y) * 0.5)
+	var arrow_y: float = round((carousel_h - arrow_size.y) * 0.5)
 
 	var left_arrow := _make_button("◄")
 	left_arrow.name = "HS4CarouselPrevButton"
-	_set_action_button_size(left_arrow, arrow_w, slot_h * 0.8)
-	_apply_overhaul_2k_button_theme(left_arrow, "hs4_asc_btn", left_arrow.custom_minimum_size)
-	left_arrow.position = Vector2(cpad, round((carousel_h - slot_h * 0.8) * 0.5))
+	_set_action_button_size(left_arrow, arrow_size.x, arrow_size.y)
+	_apply_hs4_pixellab_button_theme(left_arrow, "carousel_left", left_arrow.custom_minimum_size)
+	left_arrow.add_theme_font_size_override("font_size", maxi(18, int(round(42.0 * layout_scale))))
+	left_arrow.position = Vector2(0.0, arrow_y)
 	carousel.add_child(left_arrow)
 	var right_arrow := _make_button("►")
 	right_arrow.name = "HS4CarouselNextButton"
-	_set_action_button_size(right_arrow, arrow_w, slot_h * 0.8)
-	_apply_overhaul_2k_button_theme(right_arrow, "hs4_asc_btn", right_arrow.custom_minimum_size)
-	right_arrow.position = Vector2(carousel_w - cpad - arrow_w, round((carousel_h - slot_h * 0.8) * 0.5))
+	var right_arrow_size: Vector2 = _hs4_pixellab_display_size("carousel_right", vp)
+	_set_action_button_size(right_arrow, right_arrow_size.x, right_arrow_size.y)
+	_apply_hs4_pixellab_button_theme(right_arrow, "carousel_right", right_arrow.custom_minimum_size)
+	right_arrow.add_theme_font_size_override("font_size", maxi(18, int(round(42.0 * layout_scale))))
+	right_arrow.position = Vector2(carousel_w - right_arrow_size.x, arrow_y)
 	carousel.add_child(right_arrow)
 
 	var roster: Array = game.PROGRESSION_DATA.character_ids()
@@ -1334,17 +1509,35 @@ func _build_character_select_v4() -> void:
 		game.selected_character_id = str(roster[0])
 
 	var slot_buttons: Array = []
+	var slot_portraits: Array = []
+	var slot_frame_texture: Texture2D = game._cached_texture(str(HS4_PIXELLAB_PATHS["hero_slot"]))
+	var slot_content_margins: Vector4 = _hs4_pixellab_content_margins("hero_slot", slot_size)
 	for i in range(HS4_CAROUSEL_SLOTS):
 		var slot := TextureButton.new()
 		slot.name = "HS4CarouselSlot_%02d" % i
 		slot.focus_mode = Control.FOCUS_ALL
 		slot.ignore_texture_size = true
-		slot.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		slot.stretch_mode = TextureButton.STRETCH_SCALE
+		slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		slot.texture_normal = slot_frame_texture
+		slot.texture_hover = slot_frame_texture
+		slot.texture_pressed = slot_frame_texture
+		slot.texture_focused = slot_frame_texture
 		slot.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		slot.position = Vector2(cpad + arrow_w + i * (slot_w + slot_gap), cpad)
-		slot.size = Vector2(slot_w, slot_h)
+		slot.position = Vector2(arrow_size.x + slot_gap + i * (slot_size.x + slot_gap), slot_y)
+		slot.size = slot_size
+		var slot_portrait := TextureRect.new()
+		slot_portrait.name = "HS4CarouselPortrait_%02d" % i
+		slot_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		slot_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		slot_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		slot_portrait.position = Vector2(slot_content_margins.x, slot_content_margins.y)
+		slot_portrait.size = Vector2(slot_size.x - slot_content_margins.x - slot_content_margins.z, slot_size.y - slot_content_margins.y - slot_content_margins.w)
+		slot_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(slot_portrait)
 		carousel.add_child(slot)
 		slot_buttons.append(slot)
+		slot_portraits.append(slot_portrait)
 
 	var state := {"offset": 0}
 	var sel0: int = roster.find(game.selected_character_id)
@@ -1436,14 +1629,17 @@ func _build_character_select_v4() -> void:
 		for i in range(HS4_CAROUSEL_SLOTS):
 			var idx: int = off + i
 			var slot: TextureButton = slot_buttons[i]
+			var slot_portrait := slot_portraits[i] as TextureRect
 			if idx < roster.size():
 				var rid: String = str(roster[idx])
 				var rconf: Dictionary = game.PROGRESSION_DATA.character_config(rid)
-				slot.texture_normal = game._cached_texture(str(rconf.get("sprite_path", rconf.get("sprite", ""))))
+				slot_portrait.texture = game._cached_texture(str(rconf.get("sprite_path", rconf.get("sprite", ""))))
 				slot.visible = true
-				slot.modulate = Color(1.0, 1.0, 1.0, 1.0) if rid == cid else Color(0.5, 0.52, 0.58, 0.78)
+				slot.self_modulate = Color(1.12, 1.06, 0.88, 1.0) if rid == cid else Color(0.66, 0.66, 0.72, 0.82)
+				slot_portrait.modulate = Color(1.0, 1.0, 1.0, 1.0) if rid == cid else Color(0.58, 0.60, 0.68, 0.78)
 			else:
 				slot.visible = false
+				slot_portrait.texture = null
 		refresh_focus_graph.call(false)
 
 	var select_hero := func(cid: String) -> void:
