@@ -50,3 +50,21 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/content_reg
 ## Process Notes
 
 Before starting, Claude must sync `dev`, check dirty tree and verify no active owner overlaps the locked paths. Do not touch unrelated WIP. After completion: Jira -> local mirror -> checks -> intentional commit -> push.
+
+## QA-Вердикт
+Статус: PASSED
+
+QA claim claude-qa 2026-06-30 — приёмка на origin/dev HEAD (commits 2f184974 audit + f3fdc2a2 mirror).
+
+- Аудит ссылочной целостности записан → docs/design/content_registry.md §SCRUM-723.
+- Broken references: 0 (нечего фиксить/филить). Asset deletion: НЕ выполнялось (0 deletions в diff).
+- Версия консистентна: project.godot config/version=0.1.7 и все поля export_presets.cfg=0.1.7, без дрейфа.
+- Гейт усилен: asset_reference_integrity сканирует .tres в assets/ (ловит битую SpriteFrames→atlas ссылку).
+
+Гейты (godot_gate.py, fdengine slots=1, Godot 4.7) — все PASS:
+- `asset_reference_integrity_test` → passed (184 файла, 1746 уникальных res://-ссылок).
+- `weapon_scene_integrity_test` → passed (51 оружие, scene_path резолвятся, 35/35 attack-режимов).
+- `content_registry_consistency_test` → passed (0 allowlisted).
+- `runtime_smoke_test` → passed (11647 файлов, dup-guard ok).
+
+→ PASSED.
