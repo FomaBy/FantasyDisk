@@ -112,6 +112,21 @@ dark track/gold fill/focus behavior, so they no longer stretch across the whole
 content panel. Mockup/spec: `docs/design/mockups/scrum674_settings_ui/spec.md`;
 OpenAI reference: `docs/design/references/scrum674_settings_ui/settings_apply_flow_mockup.png`.
 
+SCRUM-694 delivers the Settings **v3** full redraw design package: a from-scratch
+premium dark-fantasy frame family (PixelLab) replacing the shared minimal-metal
+styleboxes for every Settings surface. Pipeline: live inventory →
+`docs/design/references/settings_v3_full_redraw/layout.json` (responsive geometry,
+fit gate `ready_for_image`, validated against the live 2K constants) → three
+textless OpenAI mockups (`docs/design/mockups/settings_v3_full_redraw/`, reference
+only) → five PixelLab final 9-slice frames in
+`assets/sprites/ui/frames/settings_v3/`: main modal (dragon-wing crest + red-gem
+corners), tab switcher (3 slots), content panel, inset field (dropdowns/rebind),
+action button. Native-size sources, transparent, textless, alpha-clean; modal
+native 2048×1232 (covers 2K+4K), proportional 1536×924 at 1080p (no one-axis
+stretch — only tiled 9-slice centers adapt). Runtime swap is a Back-end follow-up
+per `docs/design/references/settings_v3_full_redraw/backend_handoff.md` (exact
+paths, texture margins, node IDs, tests); v2/minimal-metal stays live until then.
+
 SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
 Attribute Shop uses compact `320x240` offer cards plus shorter bottom action
 buttons only below 660px viewport height, while Settings permits a compressed

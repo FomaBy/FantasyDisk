@@ -5,6 +5,20 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-694: Settings v3 full redraw — Designer pipeline package (inventory →
+  geometry → OpenAI mockups → PixelLab final 9-slice family). Live Settings
+  inventory + responsive `layout.json` (fit gate `ready_for_image`, geometry
+  validated against the 2K runtime constants at 1280×720/1920×1080/2560×1440/
+  3840×2160). Three textless OpenAI reference mockups
+  (`docs/design/mockups/settings_v3_full_redraw/`, reference only). Five PixelLab
+  final 9-slice production frames under `assets/sprites/ui/frames/settings_v3/`
+  (main modal frame with dragon crest + red-gem corners, tab switcher, content
+  panel, inset field/dropdown, action button) — native-size sources, transparent,
+  textless, alpha-clean. Manifest + Back-end integration handoff with exact paths,
+  rects, texture margins, node IDs and tests
+  (`docs/design/references/settings_v3_full_redraw/`). Runtime wiring of the new
+  frames is a tracked Back-end follow-up per the handoff; this drop is the design
+  asset/spec package, no `ui_screens.gd` behaviour change.
 - SCRUM-425: PixelLab Doctor 8-direction character with directional movement.
   Generated v3 PixelLab plague-doctor character
   (`c3d5ea3d-3b70-4154-b3c4-420d386f550a`), stored source rotations + walk frames

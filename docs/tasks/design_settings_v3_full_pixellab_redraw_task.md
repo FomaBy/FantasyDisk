@@ -1,11 +1,11 @@
 # ART/UX: Настройки v3 — полный PixelLab redraw всех 3 страниц после OpenAI mockup
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: claude-designer
+Thread: claude-designer (scheduled run 2026-06-30)
 Locked paths: scripts/ui_screens.gd, assets/sprites/ui/frames/settings_v3/, assets/backgrounds/ui/, docs/design/mockups/settings_v3_full_redraw/, docs/design/references/settings_v3_full_redraw/, docs/design/previews/settings_v3_full_redraw/, docs/design/systems/menus_ui.md, docs/design/current_game_state.md, docs/design/ui_screens_inventory.md
 Версия: 0.1.8
 Создано: 2026-06-30
@@ -134,3 +134,58 @@ Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-694 remains
 `К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
 Already-open Codex threads may still need restart/new thread tool discovery to
 expose PixelLab tools. Disk cleanup: none created.
+
+## Evidence — claude-designer 2026-06-30 (design package delivered)
+
+Claimed claim-first by `claude-designer` (scheduled Designer run) — local PixelLab
+MCP works for this worker (the prior Codex `AUTH_HEADER` blocker did not apply).
+Executed the user's exact pipeline: inventory → geometry → OpenAI mockups →
+PixelLab final. Owner/Thread/Lane: claude-designer / scheduled run / design.
+Locked assets: `assets/sprites/ui/frames/settings_v3/`, `docs/design/{mockups,
+references,previews}/settings_v3_full_redraw/`. Next verification step: Back-end
+runtime swap per handoff + screenshots.
+
+**Stage 1 — Inventory.** Full element/node/text/state inventory from
+`scripts/ui_screens.gd::_show_settings_menu()` and helpers →
+`docs/design/references/settings_v3_full_redraw/inventory.md`. Covers all 3 pages
+(Экран/Звук/Управление), containers, control rows, dropdowns, toggles, sliders,
+rebind rows, bottom actions, pending/apply/revert/return-origin behaviour.
+
+**Stage 2 — Geometry + fit gate.** Reproduced the live geometry math in
+`build/qa/settings_v3_full_redraw/gen_layout.py` →
+`docs/design/references/settings_v3_full_redraw/layout.json`. Responsive matrix
+1280×720 / 1920×1080 / 2560×1440 / 3840×2160; rects/margins/safe-zones per
+viewport. Computed rects match the live 2K constants exactly (modal 2048×1232,
+switcher local 474,212,1100,220, content panel 174,466,1700,610). Fit gate =
+**`ready_for_image`** (title above switcher, switcher above content, content above
+action row, safe width ≥ widest control 560; no failures).
+
+**Stage 3 — OpenAI mockups (reference only).** Three textless 1536×1024 mockups
+in `docs/design/mockups/settings_v3_full_redraw/` (`mockup_screen`, `mockup_sound`,
+`mockup_controls`) — approved geometry, empty content zones, NOT production art.
+
+**Stage 4 — PixelLab final 9-slice family** (textless, transparent, alpha-clean,
+corners α=0 verified) in `assets/sprites/ui/frames/settings_v3/`:
+`ui_frame_settings_v3_main_modal` (640×384, dragon-wing crest + 4 red-gem corners +
+gold filigree), `_tab_switcher` (688×192, 3 slots), `_content_panel` (688×246),
+`_inset_field` (640×192, dropdowns/rebind), `_action_button` (512×192). PixelLab
+IDs + export/scale matrix in `manifest.json`. Native-size policy: frames ship as
+9-slice (native corners/ornaments + tiled center only — no one-axis stretch);
+modal native 2048×1232 covers 2K+4K, proportional 1536×924 @1080p.
+
+**Stage 5 — Manifest + Back-end handoff.**
+`docs/design/references/settings_v3_full_redraw/manifest.json` (PixelLab IDs,
+sizes, scale modes, export paths, no secrets) and `backend_handoff.md` (exact
+constant wiring points near ui_screens.gd:96-109, texture margins, node IDs, and
+required tests). Previews mirrored to `docs/design/previews/settings_v3_full_redraw/`.
+
+**Green-gate.** `tests/runtime_smoke_test.gd` via `tools/godot_gate.py`
+(serialized, single slot) → exit 0, duplicate-artifact guard passed (11689 files),
+no errors. No `ui_screens.gd` behaviour change in this drop (assets imported only).
+
+**Explicitly deferred to Back-end follow-up** (per task step 6 handoff path; NOT
+done here): runtime swap of the v3 frames into `ui_screens.gd`, all-3-tab no-overlap
+screenshots at 1080p/2K, and the sub-192px micro-controls (checkbox on/off, slider
+handle, scrollbar grabber — below PixelLab's 192px floor; speced in handoff).
+QA: validate the design package + geometry; the runtime/screenshot ACs belong to
+the linked Back-end integration follow-up.
