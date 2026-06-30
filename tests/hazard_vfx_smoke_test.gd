@@ -25,6 +25,24 @@ func _initialize() -> void:
 		push_error("HazardVfx.telegraph must use textured sprites, not bare primitives.")
 		quit(1)
 
+	# SCRUM-791: directional telegraph spawns a rotated textured sprite + self-cleans.
+	var dir_tex := preload("res://assets/sprites/effects/secret_ascension_boss_cone_telegraph.png")
+	var dir_tele := HazardVfxScript.directional_telegraph(host, dir_tex, Vector2(77.0, 281.0), 1.0, 0.7, color, 0.6)
+	if dir_tele == null or not is_instance_valid(dir_tele):
+		push_error("HazardVfx.directional_telegraph must return a live node.")
+		quit(1)
+	if not is_equal_approx(dir_tele.rotation, 0.7):
+		push_error("HazardVfx.directional_telegraph must rotate the telegraph to the attack angle.")
+		quit(1)
+	var dir_has_sprite := false
+	for child in dir_tele.get_children():
+		if child is Sprite2D and (child as Sprite2D).texture != null:
+			dir_has_sprite = true
+	if not dir_has_sprite:
+		push_error("HazardVfx.directional_telegraph must use textured sprites.")
+		quit(1)
+	HazardVfxScript.directional_detonate(dir_tele, color)
+
 	HazardVfxScript.detonate(host, 92.0, color)
 	HazardVfxScript.detonate(host, 72.0, Color(0.55, 0.95, 0.30, 1.0), "poison")
 	# poison burst must drop a pool sprite

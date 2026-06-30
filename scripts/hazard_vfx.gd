@@ -132,6 +132,53 @@ static func telegraph(parent: Node2D, radius: float, color: Color, windup: float
 	return holder
 
 
+## SCRUM-791: directional telegraph for cone-sector / beam-lane damage zones.
+## The texture's canonical orientation is +X (apex/mouth at the `anchor` texture-
+## pixel, shape extends toward +X). The sprite is pivoted so `anchor` sits at the
+## parent origin and the holder is rotated by `angle`, so the art points along the
+## real attack direction. FAIRNESS CONTRACT: the caller MUST pass the SAME `angle`
+## (and a damage length/half-extent derived from the SAME `scale_factor`) it uses
+## for the damage test — orientation of the PNG then equals the geometry of the
+## damage zone. Added as a child of `parent`; freed when the hazard frees itself.
+static func directional_telegraph(parent: Node2D, texture: Texture2D, anchor: Vector2, scale_factor: float, angle: float, color: Color, windup: float) -> Node2D:
+	var holder := Node2D.new()
+	holder.name = "HazardDirTelegraph"
+	holder.z_index = -1
+	holder.rotation = angle
+	parent.add_child(holder)
+
+	var zone := Sprite2D.new()
+	zone.name = "DirZone"
+	zone.texture = texture
+	zone.centered = false
+	zone.offset = -anchor  # anchor pixel sits at the holder origin (rotation pivot)
+	zone.scale = Vector2.ONE * scale_factor
+	zone.modulate = Color(color.r, color.g, color.b, 0.0)
+	holder.add_child(zone)
+
+	# fade in over the first part of the windup, then pulse for urgency
+	var grow := holder.create_tween()
+	grow.tween_property(zone, "modulate:a", 0.5, minf(windup * 0.4, 0.25))
+	var pulse := holder.create_tween()
+	pulse.set_loops()
+	pulse.tween_property(zone, "modulate:a", 0.82, 0.30).set_delay(minf(windup * 0.4, 0.25)).set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(zone, "modulate:a", 0.42, 0.30).set_trans(Tween.TRANS_SINE)
+	return holder
+
+
+## SCRUM-791: damage-moment flash for a directional telegraph (built by
+## directional_telegraph). Brightens the zone sprite then fades it out.
+static func directional_detonate(holder: Node2D, color: Color) -> void:
+	if not is_instance_valid(holder) or not holder.is_inside_tree():
+		return
+	var zone := holder.get_node_or_null("DirZone") as Sprite2D
+	if zone == null:
+		return
+	var tween := zone.create_tween()
+	tween.tween_property(zone, "modulate", Color(color.r, color.g, color.b, 0.95), 0.06)
+	tween.tween_property(zone, "modulate:a", 0.0, 0.32).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+
 ## Detonation burst at the damage moment: expanding shockwave ring + flash, and
 ## for poison zones a lingering bubbling pool. `kind` in {"", "poison"}.
 static func detonate(parent: Node2D, radius: float, color: Color, kind := "") -> void:
