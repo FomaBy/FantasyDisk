@@ -288,6 +288,37 @@ event-множители) + `post_combat`.
 
 - Кнопка «Что нового» + бейдж в меню; данные — `scripts/patch_notes_data.gd`, последняя виденная версия — `last_seen_version` в `game_settings`.
 
+### Контракт codex-открытий (SCRUM-719 аудит)
+
+Кодекс открывается рантаймом при убийстве врага: `Main.record_codex_enemy_discovery`
+выводит `content_id` и `category`, далее `MetaProgression.record_codex_discovery`
+записывает его в мета-сейв. **Критично:** id, не входящий в канонический набор
+(`MetaProgression._canonical_codex_ids` ← `CodexData.monsters()`), молча
+отбрасывается — открытие теряется без ошибки. Источники id рантайма:
+
+- обычные враги/элитки → `Main.CODEX_ENEMY_NAME_TO_ID[enemy_type_name]` (категория `monsters`);
+- мини-элитки → meta `mini_elite_kind` = `ProgressionData.mini_elite_kinds()[].id` (категория `monsters`);
+- боссы → meta `boss_id` (категория `bosses`); одноимённые записи в `CODEX_ENEMY_NAME_TO_ID`
+  для боссов **вестигиальны** (босс в группе `bosses` уходит в boss-ветку и до name-map не доходит).
+
+**Аудит-находки 0.1.8:**
+
+- *Исправлено:* 4 мини-элитки Возвышения из SCRUM-607 (`mini_siege_rammer`,
+  `mini_swarm_sniper`, `mini_plague_berserker`, `mini_void_phantom`) были добавлены в
+  геймплей (`progression_data_enemies.gd::MINI_ELITE_KINDS`, анимации, roster-тест), но
+  **не зеркалированы в `codex_data.gd`** — их убийство молча не открывало кодекс.
+  Добавлены canonical-записи (player-facing RU title/desc — зеркало `MINI_ELITE_KINDS`).
+  Кодекс монстров: 26 → 30.
+- *Filed (не исправлено намеренно):* секретный босс `secret_ascension_boss`
+  (`MetaProgression.SECRET_BOSS_ID`) выставляет meta `boss_id` и при убийстве зовёт
+  `record_codex_discovery('bosses', ...)`, но codex-записи у него нет → открытие теряется.
+  Показывать ли секретного босса в кодексе — player-facing/дизайн-решение, поэтому
+  оставлено как находка, а не правка. Контракт-тест закрепляет текущую реальность и
+  «покраснеет», если разрыв осознанно закроют.
+- Регрессия-гейт: `tests/codex_discovery_contract_test.gd` — end-to-end сверяет, что
+  каждый рантайм-источник id реально записывается метой, и что нет «мёртвых»
+  codex-монстров без рантайм-пути открытия (двусторонняя сверка).
+
 ## Balance Validation
 
 - Формульный харнесс: `tools/balance_harness.gd` → `build/balance_report.md` (бюджеты классов `CLASS_BUDGET_PROFILES`).

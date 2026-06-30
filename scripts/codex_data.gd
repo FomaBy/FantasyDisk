@@ -244,6 +244,38 @@ const MONSTERS := [
 			{"id": "shadow_blink", "title": "Теневой Скачок", "description": "Метка тени показывает точку выхода — сместись до удара."},
 		],
 	},
+	{
+		"id": "mini_siege_rammer", "title": "Осадный Таран", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/iron_bastion.png",
+		"behavior": "Свита Возвышения. Бронированный таран: самый толстый из мини и тяжёлая ударная волна, но медлителен.",
+		"abilities": [
+			{"id": "ram_quake", "title": "Таранный Удар", "description": "Тяжёлая кольцевая ударная волна с телеграфом-кругом — выйди из круга до удара."},
+		],
+	},
+	{
+		"id": "mini_swarm_sniper", "title": "Роевой Снайпер", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/shard_marshal.png",
+		"behavior": "Свита Возвышения. Хрупкий дальнобой роя: бьёт точным залпом издали, но падает от пары ударов.",
+		"abilities": [
+			{"id": "swarm_volley", "title": "Точный Залп", "description": "Дальний веер снарядов по герою — разорви линию выстрела движением вбок."},
+		],
+	},
+	{
+		"id": "mini_plague_berserker", "title": "Чумной Берсерк", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/plague_prophet.png",
+		"behavior": "Свита Возвышения. Бешеный носитель чумы: напористо лезет вплотную и заливает ядом по площади.",
+		"abilities": [
+			{"id": "plague_charge", "title": "Чумной Натиск", "description": "Рвётся в упор и оставляет ядовитые лужи — не давай зажать себя в зелёном."},
+		],
+	},
+	{
+		"id": "mini_void_phantom", "title": "Фантом Бездны", "kind": "mini_elite",
+		"sprite": "res://assets/sprites/elites/night_stalker.png",
+		"behavior": "Свита Возвышения. Стремительный фантом: молниеносные блинк-удары, но тает под фокусом.",
+		"abilities": [
+			{"id": "void_blink", "title": "Скачок Бездны", "description": "Серия мгновенных переносов в упор; фокусируй — здоровья у него мало."},
+		],
+	},
 ]
 
 const CHARACTER_PLAYSTYLE := {

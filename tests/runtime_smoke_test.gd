@@ -6897,15 +6897,20 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	# Полнота данных кодекса.
 	var codex_data := load("res://scripts/codex_data.gd")
 	var monsters: Array = codex_data.monsters()
-	if monsters.size() != 26:
-		_fail("Expected codex to list all 26 monsters (11 standard + 4 elites + 6 mini-elites + 5 bosses), got %d." % monsters.size())
+	# SCRUM-719: число мини-элиток в кодексе ПРИВЯЗАНО к геймплейному ростеру
+	# ProgressionData.mini_elite_kinds() — иначе добавленный вид (как четвёрка SCRUM-607)
+	# молча не открывается в кодексе. 11 обычных + 4 элитки + N мини + 5 боссов.
+	var expected_mini := ProgressionData.mini_elite_kinds().size()
+	var expected_monster_total := 11 + 4 + expected_mini + 5
+	if monsters.size() != expected_monster_total:
+		_fail("Expected codex to list all %d monsters (11 standard + 4 elites + %d mini-elites + 5 bosses), got %d." % [expected_monster_total, expected_mini, monsters.size()])
 		return
 	var codex_mini_count := 0
 	for monster_entry in monsters:
 		if str((monster_entry as Dictionary).get("kind", "")) == "mini_elite":
 			codex_mini_count += 1
-	if codex_mini_count != 6:
-		_fail("Expected 6 mini-elite codex entries, got %d." % codex_mini_count)
+	if codex_mini_count != expected_mini:
+		_fail("Expected %d mini-elite codex entries (== ProgressionData.mini_elite_kinds), got %d." % [expected_mini, codex_mini_count])
 		return
 	for monster in monsters:
 		var abilities: Array = monster.get("abilities", [])
