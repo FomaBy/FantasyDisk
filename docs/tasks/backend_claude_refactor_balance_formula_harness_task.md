@@ -1,7 +1,7 @@
 # Refactor Wave: Stat Formulas And Balance Harness Reliability
 
 Jira: SCRUM-715
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / balance quality
 Контур: Claude
