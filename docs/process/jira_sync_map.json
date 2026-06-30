@@ -3181,181 +3181,256 @@
  "animation_weapon_attack_acid_flask_claude_task.md": {
   "key": "SCRUM-727",
   "status": "К выполнению",
-  "desc_hash": "46c69a1658cd9c3a5800b040f940e798"
+  "desc_hash": "6ba95826adc716d1ad832631c163e59d"
  },
  "animation_weapon_attack_axe_codex_task.md": {
   "key": "SCRUM-728",
   "status": "К выполнению",
-  "desc_hash": "0ef07b20730def6394cac802b003655a"
+  "desc_hash": "2c2202d282b1892683fc8a566efcc8dd"
  },
  "animation_weapon_attack_bass_guitar_claude_task.md": {
   "key": "SCRUM-729",
   "status": "К выполнению",
-  "desc_hash": "1146a804f991b3acd59f95c668212289"
+  "desc_hash": "d9865268f4e5b8241753b5f6479da574"
  },
  "animation_weapon_attack_biologist_sample_injector_codex_task.md": {
   "key": "SCRUM-730",
   "status": "К выполнению",
-  "desc_hash": "b9162a86b40fe575cba2de2b7619baac"
+  "desc_hash": "88698195f7cd410b7aba84c73fd1283c"
  },
  "animation_weapon_attack_biologist_spore_lens_codex_task.md": {
   "key": "SCRUM-731",
   "status": "К выполнению",
-  "desc_hash": "a436a3742e87fbb40322aa4a29792a74"
+  "desc_hash": "f6f74d3aa6af2d78a390da08135e778a"
  },
  "animation_weapon_attack_biologist_symbiote_seed_codex_task.md": {
   "key": "SCRUM-732",
   "status": "К выполнению",
-  "desc_hash": "f14af9d18623e948e024f3f5ebe3da4b"
+  "desc_hash": "8b10bd1cca1177ecdcee9c0e7b6aa279"
  },
  "animation_weapon_attack_blast_powder_claude_task.md": {
   "key": "SCRUM-733",
   "status": "К выполнению",
-  "desc_hash": "925d44a2c346850f1a6d562aa1bac732"
+  "desc_hash": "4fe18d60439c0823eb8730e64ca4faae"
  },
  "animation_weapon_attack_bone_saw_claude_task.md": {
   "key": "SCRUM-734",
   "status": "К выполнению",
-  "desc_hash": "9faf5cf2cbf77d661bb33ec6b44d744c"
+  "desc_hash": "44c19eb5970942e2434a95746523d4b6"
  },
  "animation_weapon_attack_briar_staff_claude_task.md": {
   "key": "SCRUM-735",
   "status": "К выполнению",
-  "desc_hash": "2d876e2ad70b06f27b89510656904dbf"
+  "desc_hash": "f7338a557427e96db4c9a8c286e5d8dc"
  },
  "animation_weapon_attack_chakrams_claude_task.md": {
   "key": "SCRUM-736",
   "status": "К выполнению",
-  "desc_hash": "44c9a992187b55227343c58c641c9a5e"
+  "desc_hash": "a35d86fc38a7ed78c9756fca0bf284b3"
  },
  "animation_weapon_attack_cursed_skull_claude_task.md": {
   "key": "SCRUM-737",
   "status": "К выполнению",
-  "desc_hash": "f2724a346aaa888878b61f3998cdd4dc"
+  "desc_hash": "e8dd8940076ff4f3374139f5a924e98b"
  },
  "animation_weapon_attack_dark_book_claude_task.md": {
   "key": "SCRUM-738",
   "status": "К выполнению",
-  "desc_hash": "7771789e862cff3f9134861206e235fe"
+  "desc_hash": "7ce4053f6aa431d930c10e3fb3edc1bb"
  },
  "animation_weapon_attack_dark_wand_claude_task.md": {
   "key": "SCRUM-739",
   "status": "К выполнению",
-  "desc_hash": "36c1c915099e169bdfbcc83e0ac5b980"
+  "desc_hash": "72ebf50a816bb863c4a7eb1bb1ef2c9e"
  },
  "animation_weapon_attack_electric_guitar_claude_task.md": {
   "key": "SCRUM-740",
   "status": "К выполнению",
-  "desc_hash": "4c74519af01e05f6e53a56aa9d2e6fbc"
+  "desc_hash": "c3305fb8e7bf2bb5e49689e1412cdafe"
  },
  "animation_weapon_attack_elementalist_meteor_core_codex_task.md": {
   "key": "SCRUM-741",
   "status": "К выполнению",
-  "desc_hash": "236022ff0be79309004e1bf234d68d3a"
+  "desc_hash": "a9d9c1d631c5eaef685bc4175c5ec4ed"
  },
  "animation_weapon_attack_elementalist_orb_ring_codex_task.md": {
   "key": "SCRUM-742",
   "status": "К выполнению",
-  "desc_hash": "daec2a5940079b36869f287d503cf570"
+  "desc_hash": "024b3ddc9003e298856bfd3e315d877c"
  },
  "animation_weapon_attack_elementalist_prism_focus_codex_task.md": {
   "key": "SCRUM-743",
   "status": "К выполнению",
-  "desc_hash": "545b4fcb6ec9bc8af598ecf282cfe6ca"
+  "desc_hash": "84abce7bbeb239e0addbb2fea19c4a6c"
  },
  "animation_weapon_attack_engineer_pressure_mines_codex_task.md": {
   "key": "SCRUM-744",
   "status": "К выполнению",
-  "desc_hash": "d9549150904cce9c1cea7285763e4469"
+  "desc_hash": "f3cbc39fcedda9b0b92d2e430572866b"
  },
  "animation_weapon_attack_engineer_repair_drone_codex_task.md": {
   "key": "SCRUM-745",
   "status": "К выполнению",
-  "desc_hash": "3e86f0eafe8937899afd5a5e3f9a9ebe"
+  "desc_hash": "523b6fb47f65e15100cd0ccea2ef5d24"
  },
  "animation_weapon_attack_engineer_sentry_wrench_codex_task.md": {
   "key": "SCRUM-746",
   "status": "К выполнению",
-  "desc_hash": "fba97be57e34fc9f010b02f9981dadb1"
+  "desc_hash": "a4d80974d0082d2bfb182eab628612c9"
  },
  "animation_weapon_attack_hammer_codex_task.md": {
   "key": "SCRUM-747",
   "status": "К выполнению",
-  "desc_hash": "c4d2803e0b68fc0317888cb61b117293"
+  "desc_hash": "4699a557f3f01ff4a4dc02fc6ec47081"
  },
  "animation_weapon_attack_holy_flail_claude_task.md": {
   "key": "SCRUM-748",
   "status": "К выполнению",
-  "desc_hash": "38b9b30f4233dc48446fd054df116862"
+  "desc_hash": "0a7c65f8f6e7af1584358e468e664ef0"
  },
  "animation_weapon_attack_homunculus_vial_claude_task.md": {
   "key": "SCRUM-749",
   "status": "К выполнению",
-  "desc_hash": "7896e36718e94c122f7b7ae4c3800c87"
+  "desc_hash": "71af253cb2f3c4c299b7e7ce3acfca84"
  },
  "animation_weapon_attack_hunter_trap_claude_task.md": {
   "key": "SCRUM-750",
   "status": "К выполнению",
-  "desc_hash": "04a48cd70e7035e6600e42552d326000"
+  "desc_hash": "b80b6003e7ee9b7990720c31ff6eaa82"
  },
  "animation_weapon_attack_long_spear_claude_task.md": {
   "key": "SCRUM-751",
   "status": "К выполнению",
-  "desc_hash": "ec12ca92248a35c8341bdc5ce42ff202"
+  "desc_hash": "7b769bdb5cf38cdc0e438be850a16ef7"
  },
  "animation_weapon_attack_moon_crossbow_claude_task.md": {
   "key": "SCRUM-752",
   "status": "К выполнению",
-  "desc_hash": "23704bd4d85ee591beb700c9adf29da5"
+  "desc_hash": "6c31bad2639d80af575bc14ffd54050a"
  },
  "animation_weapon_attack_plague_syringe_claude_task.md": {
   "key": "SCRUM-753",
   "status": "К выполнению",
-  "desc_hash": "27f9b2c1d8887d9377b7b9b827ca7205"
+  "desc_hash": "aadc21e5576441a9f06b24d88234e24a"
  },
  "animation_weapon_attack_priest_censer_codex_task.md": {
   "key": "SCRUM-754",
   "status": "К выполнению",
-  "desc_hash": "965915bda6c451497c5bc9d93aa66bff"
+  "desc_hash": "99943ab85e42d8b5ed7bea0f353098ac"
  },
  "animation_weapon_attack_priest_chime_codex_task.md": {
   "key": "SCRUM-755",
   "status": "К выполнению",
-  "desc_hash": "1ffcb6e1f511402a02c96c2ad07dbd55"
+  "desc_hash": "cf962cf25a09654cdef8049949fb9e38"
  },
  "animation_weapon_attack_priest_reliquary_codex_task.md": {
   "key": "SCRUM-756",
   "status": "К выполнению",
-  "desc_hash": "5552db720364f4ed7e0af1a90bc46e6b"
+  "desc_hash": "055ea538d71db8757a683cd0e1b90ac5"
  },
  "animation_weapon_attack_raven_totem_claude_task.md": {
   "key": "SCRUM-757",
   "status": "К выполнению",
-  "desc_hash": "3f4c97a048519e3174993180b38f31a3"
+  "desc_hash": "25889ebcc4de2fbfddd71c7522ac9df0"
  },
  "animation_weapon_attack_restore_potion_claude_task.md": {
   "key": "SCRUM-758",
   "status": "К выполнению",
-  "desc_hash": "ae10c55382c68cffa1f5fe4aa2e30521"
+  "desc_hash": "46f5fad74255ecdec0d1b46bc75e7ae0"
  },
  "animation_weapon_attack_robot_hydraulic_press_codex_task.md": {
   "key": "SCRUM-759",
   "status": "К выполнению",
-  "desc_hash": "0ae6db7dc516b18fc324cf261f655520"
+  "desc_hash": "3b60e87e09cf69960ea95f9d0aa5b2e8"
  },
  "animation_weapon_attack_robot_magnetic_anchor_codex_task.md": {
   "key": "SCRUM-760",
   "status": "К выполнению",
-  "desc_hash": "367ba970d24a279b0977a24749181f9c"
+  "desc_hash": "ed206d894b979e8b5109cec3b817a049"
  },
  "animation_weapon_attack_robot_reactor_core_codex_task.md": {
   "key": "SCRUM-761",
   "status": "К выполнению",
-  "desc_hash": "66edbfc42922f006a87110bf3f31a140"
+  "desc_hash": "547c9bff3f56aac01e6f03bd01a6172c"
  },
  "animation_weapon_attack_shadow_daggers_claude_task.md": {
   "key": "SCRUM-762",
   "status": "К выполнению",
-  "desc_hash": "ea0203b341721a453edb6ac0dd90514c"
+  "desc_hash": "df876687fb6398ca20a645bd0c28837d"
+ },
+ "animation_weapon_attack_sniper_deadeye_rifle_codex_task.md": {
+  "key": "SCRUM-763",
+  "status": "К выполнению",
+  "desc_hash": "d83a321a877adcec6d791da852807530"
+ },
+ "animation_weapon_attack_sniper_shatter_rounds_codex_task.md": {
+  "key": "SCRUM-764",
+  "status": "К выполнению",
+  "desc_hash": "3563423f1722ae9ce416bc999dafa16d"
+ },
+ "animation_weapon_attack_sniper_spotter_scope_codex_task.md": {
+  "key": "SCRUM-765",
+  "status": "К выполнению",
+  "desc_hash": "f22748ab0b7b13177a777aff08b8fb0f"
+ },
+ "animation_weapon_attack_soldier_bayonet_codex_task.md": {
+  "key": "SCRUM-766",
+  "status": "К выполнению",
+  "desc_hash": "d2bd40d170227ad7d22a649ca89e66fb"
+ },
+ "animation_weapon_attack_soldier_grenade_codex_task.md": {
+  "key": "SCRUM-767",
+  "status": "К выполнению",
+  "desc_hash": "037d80da37d0bf0e0484e3c3d331e98b"
+ },
+ "animation_weapon_attack_soldier_rifle_codex_task.md": {
+  "key": "SCRUM-768",
+  "status": "К выполнению",
+  "desc_hash": "86332834530917f3897d6963ed59db03"
+ },
+ "animation_weapon_attack_sound_amp_claude_task.md": {
+  "key": "SCRUM-769",
+  "status": "К выполнению",
+  "desc_hash": "6198a62411ac96ab9ec2dc3e62a18ac7"
+ },
+ "animation_weapon_attack_storm_longbow_claude_task.md": {
+  "key": "SCRUM-770",
+  "status": "К выполнению",
+  "desc_hash": "e02677e0b6e150ca9dcd243f5726b3f1"
+ },
+ "animation_weapon_attack_summon_amulet_claude_task.md": {
+  "key": "SCRUM-771",
+  "status": "К выполнению",
+  "desc_hash": "e00af9b34cbee4e252de5638b51a626c"
+ },
+ "animation_weapon_attack_sword_codex_task.md": {
+  "key": "SCRUM-772",
+  "status": "К выполнению",
+  "desc_hash": "6bfb80d9a29f7019daf4585f21fd1272"
+ },
+ "animation_weapon_attack_thief_coin_pouch_codex_task.md": {
+  "key": "SCRUM-773",
+  "status": "К выполнению",
+  "desc_hash": "c6917f93a30be655bf2a61a2d07b1080"
+ },
+ "animation_weapon_attack_thief_shadow_cloak_codex_task.md": {
+  "key": "SCRUM-774",
+  "status": "К выполнению",
+  "desc_hash": "fde333ab3742dbfa55bdad7f93a48e5e"
+ },
+ "animation_weapon_attack_thief_smoke_bomb_codex_task.md": {
+  "key": "SCRUM-775",
+  "status": "К выполнению",
+  "desc_hash": "763239b716b3b0428688107c50ec8985"
+ },
+ "animation_weapon_attack_tower_shield_claude_task.md": {
+  "key": "SCRUM-776",
+  "status": "К выполнению",
+  "desc_hash": "45b6c15c3d9112cbcf4cd4345ae0a104"
+ },
+ "animation_weapon_attack_venom_wire_claude_task.md": {
+  "key": "SCRUM-777",
+  "status": "К выполнению",
+  "desc_hash": "254e551f6b23416934614973a8e7c0d6"
  }
 }
