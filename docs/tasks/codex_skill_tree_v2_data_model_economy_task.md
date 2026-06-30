@@ -155,8 +155,17 @@ UI-перерисовка экрана — отдельный таск (`skill_t
   origin/dev (НЕ оставлять на codex/-ветке), см. правило codex-strand.
 
 ## QA-Вердикт
+Статус: PASSED
 
-(заполняется QA после сдачи)
+QA claude-qa, 2026-06-30. Проверено на HEAD origin/dev (dd43b63e — ancestor origin/dev, не strand).
+
+Тесты (godot_gate flock-семафор, Godot 4.7) — все ЗЕЛЁНЫЕ:
+- `res://tests/meta_skill_tree_smoke_test.gd` — граф/adj без висящих id, точки входа всех 17 классов уникальны+валидны, статусы locked/available/purchased по связности, persist, миграция-респек + пересчёт метаочков, полный бюджет дерева.
+- `res://tests/meta_points_per_ascension_test.gd` — формула 0..5 = 1/1/2/3/4/5, без фарма повторов, endcap +5 на L5 = 16/класс, общий cap=100, class_boss_wins независим.
+- `res://tests/meta_progression_smoke_test.gd` — PASS.
+- `res://tests/runtime_smoke_test.gd` — PASS (без регрессий).
+
+Все Acceptance Criteria подтверждены в `scripts/meta_progression.gd` (85 узлов/5 keystone, CLASS_ENTRY_NODES для всех классов, экономика+cap, правила выделения, allocate/reset/skill_modifiers, миграция schema v2, публичный API для SCRUM-698).
 
 ## Результат (2026-06-30, backend Codex)
 
