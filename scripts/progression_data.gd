@@ -12,6 +12,8 @@ const CLASS_INTERPRETATIONS := CharacterData.CLASS_INTERPRETATIONS
 const CLASS_MECHANIC_IDENTITIES := CharacterData.CLASS_MECHANIC_IDENTITIES
 const ATTRIBUTE_PRIORITIES := CharacterData.ATTRIBUTE_PRIORITIES
 const ATTRIBUTE_PRIORITY_REASONS := CharacterData.ATTRIBUTE_PRIORITY_REASONS
+const ATTRIBUTE_REGISTRY := CharacterData.ATTRIBUTE_REGISTRY  # SCRUM-695: канон-реестр атрибутов
+const ATTRIBUTE_RELEVANCE := CharacterData.ATTRIBUTE_RELEVANCE  # SCRUM-695: матрица 2/8/7
 
 const BalanceData := preload("res://scripts/progression_data_balance.gd")
 const CLASS_BUDGET_PROFILES := BalanceData.CLASS_BUDGET_PROFILES
@@ -235,27 +237,90 @@ static func attribute_priority_weight(character_id: String, stat_id: String) -> 
 	return maxf(0.35, (0.35 + stat_value / 10.0) * priority_bonus)
 
 
+# SCRUM-695: уровень релевантности атрибута для класса напрямую из матрицы
+# (primary/secondary/optional). Источник правды — CharacterData.ATTRIBUTE_RELEVANCE.
+static func attribute_relevance(attr_id: String, character_id: String) -> String:
+	var row: Dictionary = ATTRIBUTE_RELEVANCE.get(attr_id, {})
+	if (row.get("primary", []) as Array).has(character_id):
+		return "primary"
+	if (row.get("secondary", []) as Array).has(character_id):
+		return "secondary"
+	return "optional"
+
+
+# SCRUM-695: вес выбора level-up-награды от релевантности (primary > secondary >> optional).
+# optional держим выше нуля, чтобы небазовые атрибуты оставались доступны (контракт теста).
+# Магнитуды подобраны близко к старому per-stat взвешиванию для сильных DPS-карт, чтобы
+# «идеальный» билд не раздувался выше balance-потолков (pool_dot/berserk runaway-гейты).
+static func attribute_relevance_weight(attr_id: String, character_id: String) -> float:
+	match attribute_relevance(attr_id, character_id):
+		"primary":
+			return 1.4
+		"secondary":
+			return 0.7
+		_:
+			return 0.4
+
+
 static func reward_attribute_dependency(reward: Dictionary) -> String:
+	# SCRUM-695: каноничный attr-id из реестра (LEVEL_UP_REWARDS теперь его несут).
+	var attr := str(reward.get("attr", ""))
+	if attr != "":
+		return attr
+	# Базовые stat-награды (Сила/Ловкость…) остаются на старом 8-стат пути.
 	var stat_keys := (reward.get("stats", {}) as Dictionary).keys()
 	if not stat_keys.is_empty():
 		return str(stat_keys[0])
+	# Фолбэк для синтетических наград без поля attr: вывести attr-id из ключа mods.
 	var mods: Dictionary = reward.get("mods", {})
 	for key in mods.keys():
 		match str(key):
-			"damage_multiplier", "knockback_multiplier":
-				return "strength"
-			"attack_speed_multiplier", "move_speed_multiplier", "crit_chance_flat", "crit_damage_flat", "dodge_flat", "projectile_speed_flat":
-				return "agility"
-			"aoe_radius_multiplier", "pickup_radius_flat", "range_multiplier", "aura_radius_flat":
-				return "perception"
-			"defense_flat", "max_health_flat", "max_health_multiplier", "absorb_flat":
-				return "endurance"
-			"dot_damage_flat", "dot_speed_flat", "regeneration_flat":
-				return "knowledge"
-			"ultimate_flat", "vampiric_amount_flat", "vampiric_chance_flat":
-				return "energy"
-			"buff_power_flat", "summon_bonus":
-				return "leadership"
+			"damage_multiplier":
+				return "damage"
+			"attack_speed_multiplier":
+				return "attack_speed"
+			"max_health_flat", "max_health_multiplier":
+				return "max_health"
+			"move_speed_multiplier":
+				return "move_speed"
+			"aoe_radius_multiplier":
+				return "aoe_radius"
+			"pickup_radius_flat":
+				return "pickup_radius"
+			"defense_flat":
+				return "defense"
+			"knockback_multiplier":
+				return "knockback"
+			"crit_chance_flat":
+				return "crit_chance"
+			"crit_damage_flat":
+				return "crit_damage"
+			"dodge_flat":
+				return "dodge"
+			"range_multiplier":
+				return "range"
+			"dot_damage_flat":
+				return "dot_damage"
+			"dot_speed_flat":
+				return "dot_speed"
+			"projectile_speed_flat":
+				return "projectile_speed"
+			"aura_radius_flat":
+				return "aura_radius"
+			"buff_power_flat":
+				return "buff_power"
+			"summon_bonus":
+				return "summon_amount"
+			"absorb_flat":
+				return "absorb"
+			"regeneration_flat":
+				return "regeneration"
+			"vampiric_amount_flat":
+				return "vampiric_amount"
+			"vampiric_chance_flat":
+				return "vampiric_chance"
+			"ultimate_flat":
+				return "ultimate_power"
 	return ""
 
 
@@ -263,7 +328,85 @@ static func level_up_reward_weight(reward: Dictionary, character_id: String) -> 
 	var dependency := reward_attribute_dependency(reward)
 	if dependency == "":
 		return float(reward.get("weight", 1.0))
+	# Каноничные атрибуты — через матрицу релевантности (SCRUM-695).
+	if ATTRIBUTE_RELEVANCE.has(dependency):
+		return maxf(0.4, float(reward.get("weight", 1.0)) * attribute_relevance_weight(dependency, character_id))
+	# Базовые stat-награды — старый 8-стат путь.
 	return maxf(0.25, float(reward.get("weight", 1.0)) * attribute_priority_weight(character_id, dependency))
+
+
+# SCRUM-695: для текущего класса награда «необязательна» (optional), если она несёт
+# каноничный attr и тот в матрице optional. Базовые stat-награды и award без attr —
+# не optional (всегда усиливают билд).
+static func reward_is_optional(reward: Dictionary, character_id: String) -> bool:
+	var attr := str(reward.get("attr", ""))
+	if attr == "" or not ATTRIBUTE_RELEVANCE.has(attr):
+		return false
+	return attribute_relevance(attr, character_id) == "optional"
+
+
+# SCRUM-695: взвешенный индекс выбора из пула (детерминированно через переданный rng).
+static func weighted_level_up_index(pool: Array, character_id: String, rng: RandomNumberGenerator) -> int:
+	if pool.size() <= 1:
+		return 0
+	var total := 0.0
+	var weights := []
+	for reward in pool:
+		var weight: float = level_up_reward_weight(reward, character_id)
+		weights.append(weight)
+		total += weight
+	if total <= 0.0:
+		return rng.randi_range(0, pool.size() - 1)
+	var roll: float = rng.randf() * total
+	for index in range(pool.size()):
+		roll -= float(weights[index])
+		if roll <= 0.0:
+			return index
+	return pool.size() - 1
+
+
+# SCRUM-695: ЕДИНАЯ (тестируемая) выборка level-up-наград с правилом релевантности:
+# не более 1 optional-атрибута на показ и минимум 1 primary/secondary (или основная
+# характеристика). prefill — уже выбранные награды (например capstone «Озарение»);
+# они учитываются в балансе optional/non-optional. Пулы не мутируются (работаем на копиях).
+static func weighted_level_up_selection(regular_pool: Array, stat_pool: Array, count: int, character_id: String, rng: RandomNumberGenerator, rare_slot_chance := 0.05, prefill := []) -> Array:
+	var rewards: Array = prefill.duplicate()
+	var reg: Array = regular_pool.duplicate()
+	var stat: Array = stat_pool.duplicate()
+	var optional_count := 0
+	var non_optional_count := 0
+	for reward in rewards:
+		if reward_is_optional(reward, character_id):
+			optional_count += 1
+		else:
+			non_optional_count += 1
+	while rewards.size() < count and (not reg.is_empty() or not stat.is_empty()):
+		var want_rare: bool = not stat.is_empty() and rng.randf() < rare_slot_chance
+		if want_rare or reg.is_empty():
+			var s_index: int = weighted_level_up_index(stat, character_id, rng)
+			rewards.append(stat[s_index])
+			stat.remove_at(s_index)
+			non_optional_count += 1
+			continue
+		var slots_left: int = count - rewards.size()
+		var allow_optional: bool = optional_count < 1
+		var need_non_optional: bool = non_optional_count == 0 and slots_left <= 1
+		var candidates: Array = []
+		for reward in reg:
+			var rel: String = attribute_relevance(str(reward.get("attr", "")), character_id)
+			if rel == "optional" and (not allow_optional or need_non_optional):
+				continue
+			candidates.append(reward)
+		if candidates.is_empty():
+			candidates = reg
+		var picked: Dictionary = candidates[weighted_level_up_index(candidates, character_id, rng)]
+		reg.erase(picked)
+		rewards.append(picked)
+		if reward_is_optional(picked, character_id):
+			optional_count += 1
+		else:
+			non_optional_count += 1
+	return rewards
 
 
 static func ultimate_config(character_id: String) -> Dictionary:

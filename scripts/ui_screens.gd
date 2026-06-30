@@ -6160,9 +6160,13 @@ const MAIN_STAT_SLOT_CHANCE := 0.05
 func _random_level_up_rewards(count: int) -> Array:
 	# Микс: улучшения оружия/класса/вторичных атрибутов + РЕДКО (~5% на слот)
 	# основная характеристика. Набор уникален и фиксируется на уровень.
+	# SCRUM-695: правило релевантности — в одном показе НЕ БОЛЕЕ 1 атрибута,
+	# который для текущего класса `optional`, и ВСЕГДА минимум 1 primary/secondary
+	# (никогда набор только из необязательных). Основные характеристики (rare-слот)
+	# и capstone «Озарение» считаются не-optional и правилу не противоречат.
 	var regular_pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
 	var stat_pool: Array = game.PROGRESSION_DATA.main_stat_level_up_rewards(game.selected_character_id)
-	var rewards := []
+	var prefill: Array = []
 	# Capstone «Озарение» (ветвь Знаний мета-древа, SCRUM-150): ПЕРВОЕ повышение
 	# в забеге гарантированно даёт основную характеристику. Гейт по level<=2
 	# (run-persistent через снапшот) — срабатывает один раз за забег.
@@ -6171,34 +6175,12 @@ func _random_level_up_rewards(count: int) -> Array:
 			and game.current_player != null and is_instance_valid(game.current_player) \
 			and int(game.current_player.get("level")) <= 2:
 		var forced_index: int = game.rng.randi_range(0, stat_pool.size() - 1)
-		rewards.append(stat_pool[forced_index])
+		prefill.append(stat_pool[forced_index])
 		stat_pool.remove_at(forced_index)
-	while rewards.size() < count and (not regular_pool.is_empty() or not stat_pool.is_empty()):
-		var want_rare: bool = not stat_pool.is_empty() and float(game.rng.randf()) < MAIN_STAT_SLOT_CHANCE
-		var source: Array = stat_pool if (want_rare or regular_pool.is_empty()) else regular_pool
-		var index: int = _weighted_level_up_index(source)
-		rewards.append(source[index])
-		source.remove_at(index)
-	return rewards
-
-
-func _weighted_level_up_index(source: Array) -> int:
-	if source.size() <= 1:
-		return 0
-	var total := 0.0
-	var weights := []
-	for reward in source:
-		var weight: float = game.PROGRESSION_DATA.level_up_reward_weight(reward, game.selected_character_id)
-		weights.append(weight)
-		total += weight
-	if total <= 0.0:
-		return game.rng.randi_range(0, source.size() - 1)
-	var roll: float = game.rng.randf() * total
-	for index in range(source.size()):
-		roll -= float(weights[index])
-		if roll <= 0.0:
-			return index
-	return source.size() - 1
+	# SCRUM-695: правило релевантности (≤1 optional, ≥1 primary/secondary) и взвешивание
+	# по матрице вынесены в тестируемую ProgressionData.weighted_level_up_selection.
+	return game.PROGRESSION_DATA.weighted_level_up_selection(
+		regular_pool, stat_pool, count, game.selected_character_id, game.rng, MAIN_STAT_SLOT_CHANCE, prefill)
 
 
 func _random_shop_items(count: int) -> Array:

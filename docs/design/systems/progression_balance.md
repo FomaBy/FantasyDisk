@@ -68,6 +68,36 @@ Tuning notes:
 
 UI обязан показывать эти интерпретации текстом в level-up cards, attribute-upgrade tooltips, artifact notes, shop/HUD/pause tooltips и кодексе. Старые пометки «Не работает на текущем классе» и «Работает вполсилы» больше не используются.
 
+### Attribute Relevance Matrix (SCRUM-695)
+
+Для прокачиваемых боевых атрибутов level-up введён ПРЯМОЙ источник правды
+вместо косвенного расчёта через 8 базовых характеристик:
+
+- `CharacterData.ATTRIBUTE_REGISTRY` — каноничный реестр 24 атрибутов
+  (`id`, `name`, `icon`-папка, `value_type`). На него ссылается каждый
+  `LEVEL_UP_REWARDS` через поле `attr`; иконки атрибутов лежат в
+  `docs/design/references/icons/attributes/<icon>/`.
+- `CharacterData.ATTRIBUTE_RELEVANCE` — матрица (атрибут × 17 классов) со
+  значениями `primary`/`secondary`/`optional`. **Жёсткий инвариант по каждому
+  атрибуту: ровно 2 primary, 8 secondary, 7 optional** (2+8+7=17), проверяется
+  `tests/attribute_relevance_test.gd` — любое нарушение валит data-гейт.
+  `optional` выводится как «все остальные классы». При 24 атрибутах per-class
+  выходит ~2-3 primary / 10-12 secondary / 9-12 optional (идеально ровный
+  per-class расклад достижим только при N, кратном 17; здесь сознательно
+  сохранён полный набор атрибутов вместо консолидации до 17, чтобы не убирать
+  игровые варианты прокачки — per-attribute правило 2/8/7 выполнено при любом N).
+- `attribute_relevance(attr, class)` и `attribute_relevance_weight(attr, class)`
+  читают матрицу напрямую; `level_up_reward_weight` весит награды от
+  релевантности (primary 2.4 > secondary 1.0 >> optional 0.4, optional держится
+  выше 0.3, чтобы атрибут не выпадал из пула). `ATTRIBUTE_PRIORITIES` (8 базовых
+  характеристик) остаётся для редкого main-stat слота и pause-stats tooltips.
+- Правило показа набора (`ProgressionData.weighted_level_up_selection`,
+  делегируется из `ui_screens._random_level_up_rewards`): в одном показе из 3
+  вариантов **не более 1** `optional`-атрибута и **всегда минимум 1**
+  primary/secondary; набор никогда не состоит только из необязательных. Редкий
+  main-stat слот (`MAIN_STAT_SLOT_CHANCE`) и capstone «Озарение» считаются
+  не-optional и правилу не противоречат.
+
 ## XP, Money And Pickups
 
 - Враги могут дропать XP и money pickups.

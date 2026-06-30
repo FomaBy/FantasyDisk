@@ -20,6 +20,20 @@
   idle/move/walk rows so Hero Select rotates the Dark Mage portrait clockwise.
 
 ### Changed
+- SCRUM-695: rebuilt level-up attribute relevance as a direct attribute×class
+  matrix instead of routing 24 combat attributes through 8 base stats. Added a
+  canonical attribute registry (single source of truth: id/name/icon/value-type)
+  in `progression_data_characters.gd`, and an `ATTRIBUTE_RELEVANCE` matrix with a
+  hard per-attribute invariant of exactly 2 primary / 8 secondary / 7 optional
+  classes (validated by `tests/attribute_relevance_test.gd`). Level-up reward
+  weighting now reads relevance directly (primary > secondary >> optional). The
+  3-option level-up offer enforces a relevance rule: at most 1 attribute that is
+  `optional` for the current class, and always at least 1 primary/secondary (no
+  all-optional offers); the rare main-stat slot and the «Озарение» capstone are
+  unchanged. Reworded the previously abstract reward descriptions/titles
+  («+0.18 силы поддержки», «+4 flat absorption», English titles) into clear
+  Russian numeric units, consistent with the glossary; on-card before→after
+  numbers continue to show the concrete effect for the current build.
 
 ### Fixed
 - SCRUM-693: in active combat, Escape now opens the character board / pause
