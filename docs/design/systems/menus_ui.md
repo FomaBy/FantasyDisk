@@ -580,6 +580,14 @@ remain decorative header art and 720p result actions use smaller crest/button
 sizes so labels and click/focus zones stay off the border ornaments. QA dump:
 `build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
 
+SCRUM-693 changes the active-combat Escape entry point: when no other run screen
+is covering gameplay, Escape opens the pause dossier / character board directly
+and uses its left run-control column as the available pause actions. The old
+standalone `RunPauseMenuRoot` is still available for noncombat overlays such as
+route/shop/event/level-up/reward contexts, but it must not appear over or instead
+of the character board for clean active gameplay. Resume, Settings Back, and
+repeated Escape preserve the same run state and pause-stack semantics.
+
 ## Feedback Overlay
 
 `P` opens `FeedbackOverlayLayer`, a separate top-level overlay that does not call
@@ -612,8 +620,8 @@ button rects against the scaled safe rects:
 
 SCRUM-626 fixes Settings return-origin tracking. Settings opened from the main
 menu returns to the main menu on Back/Escape, while Settings opened from the
-in-run pause/dossier flow returns to the run pause menu and preserves the active
-run state instead of rebuilding the start screen.
+in-run pause/dossier flow returns to the appropriate run pause surface and
+preserves the active run state instead of rebuilding the start screen.
 
 | Slot | Safe Rect |
 | --- | --- |

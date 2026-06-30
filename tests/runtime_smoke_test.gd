@@ -1238,38 +1238,17 @@ func _initialize() -> void:
 		push_error("Expected Esc to pause active combat.")
 		quit(1)
 		return
-	if main.find_child("RunPauseMenuRoot", true, false) == null:
-		push_error("Expected Esc to open the unified run pause menu.")
+	if main.find_child("PauseStatsMenuRoot", true, false) == null:
+		push_error("Expected Esc in active combat to open the character board.")
 		quit(1)
 		return
-	var run_pause_panel := main.find_child("RunPauseMenuPanel", true, false) as PanelContainer
-	if run_pause_panel == null or _stylebox_texture_path(run_pause_panel.get_theme_stylebox("panel")) != RUN_PAUSE_PANEL_TEXTURE_2K:
-		push_error("Expected run pause menu to use the SCRUM-486 @2K pm_panel frame.")
+	if main.find_child("RunPauseMenuRoot", true, false) != null:
+		push_error("Expected active-combat Esc not to show the old standalone pause menu.")
 		quit(1)
 		return
-	# SCRUM-669: all 5 run-pause text actions use the generated pause_280x60 state kit.
-	for pause_btn_name in ["RunPauseContinueButton", "RunPauseDossierButton", "RunPauseSettingsButton", "RunPauseEndRunButton", "RunPauseMainMenuButton"]:
-		var pause_btn := main.find_child(pause_btn_name, true, false) as Button
-		if pause_btn == null or not _button_uses_text_button_unique_id(pause_btn, "pause_280x60"):
-			push_error("Expected %s to use the SCRUM-657 pause_280x60 text-button state kit." % pause_btn_name)
-			quit(1)
-			return
-	var pause_rect := run_pause_panel.get_global_rect()
-	var viewport_rect := main.get_viewport().get_visible_rect()
-	if pause_rect.position.x > viewport_rect.size.x * 0.12 or pause_rect.position.y > viewport_rect.size.y * 0.12:
-		push_error("Expected run pause menu to be anchored in the upper-left gameplay area, got %s." % str(pause_rect))
-		quit(1)
-		return
-	var pause_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
-	if pause_dossier_button == null:
-		push_error("Expected run pause menu to provide a character dossier button.")
-		quit(1)
-		return
-	pause_dossier_button.pressed.emit()
-	await process_frame
 	var pause_menu: Node = main.get("pause_stats_menu")
 	if pause_menu == null or not is_instance_valid(pause_menu):
-		push_error("Expected dossier button to open pause stats menu.")
+		push_error("Expected active-combat Esc to attach the pause stats character board.")
 		quit(1)
 		return
 	var run_controls := pause_menu.find_child("RunControls", true, false) as VBoxContainer

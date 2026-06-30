@@ -1,11 +1,11 @@
 # UX: Escape в забеге открывает доску персонажа с левым меню
 
-Статус: new
+Статус: review
 Приоритет: medium
 Роль: Back-end (UI)
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Back-end Codex
+Thread/Worker: backend-board-watcher-20260630T105412Z
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: User request via Codex
@@ -48,19 +48,40 @@ Locked paths: scripts/main.gd; scripts/ui_screens.gd; scripts/pause_stats_menu.g
 
 ## Acceptance Criteria
 
-- [ ] В активном забеге `Esc` открывает доску персонажа + левое меню, а не старое
+- [x] В активном забеге `Esc` открывает доску персонажа + левое меню, а не старое
       отдельное меню паузы.
-- [ ] Действия левого меню остаются доступны и работают как до изменения.
-- [ ] Пока overlay открыт, gameplay надёжно paused; закрытие возвращает в тот же
+- [x] Действия левого меню остаются доступны и работают как до изменения.
+- [x] Пока overlay открыт, gameplay надёжно paused; закрытие возвращает в тот же
       run state без потери/изменения данных персонажа.
-- [ ] Повторный `Esc`, back/resume и focus navigation не создают дубли модалок,
+- [x] Повторный `Esc`, back/resume и focus navigation не создают дубли модалок,
       невидимых click-blockers или застреваний фокуса.
-- [ ] Все существующие `Esc`/back flows вне активного забега сохраняют текущую
+- [x] Все существующие `Esc`/back flows вне активного забега сохраняют текущую
       семантику.
-- [ ] No-overlap/safe-zone проверка подтверждает, что контент не лежит на
+- [x] No-overlap/safe-zone проверка подтверждает, что контент не лежит на
       орнаменте рамок на поддерживаемых разрешениях.
-- [ ] Добавлена или обновлена focused smoke-проверка для active-run `Esc` flow.
-- [ ] Пройдены `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd` и
+- [x] Добавлена или обновлена focused smoke-проверка для active-run `Esc` flow.
+- [x] Пройдены `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd` и
       `runtime_smoke_test.gd` через `tools/godot_gate.py` или одиночный Godot run.
-- [ ] Обновлены `CHANGELOG.md`, `docs/design/current_game_state.md` и
+- [x] Обновлены `CHANGELOG.md`, `docs/design/current_game_state.md` и
       `docs/design/systems/menus_ui.md`.
+
+## Результат
+
+2026-06-30, Back-end Codex (`backend-board-watcher-20260630T105412Z`):
+
+- Active combat `Esc` now opens `PauseStatsMenuRoot` / character board directly
+  via `scripts/ui_screens.gd`, while `RunPauseMenuRoot` remains reserved for
+  noncombat run overlays such as level-up, shop, event and route contexts.
+- Resume, repeated `Esc`, and Settings -> Back return to the same paused run
+  surface without changing combat state, timer, player node/position, route
+  stage or selected build.
+- Focused and umbrella smokes updated to assert that active-run `Esc` does not
+  show the old standalone pause menu and that no-overlap safe zones still pass.
+
+Проверки:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Disk cleanup: none created; existing main-checkout `.godot/` cache and unrelated
+pre-existing `.import` sidecars were left untouched.

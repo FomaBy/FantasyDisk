@@ -89,8 +89,8 @@ func _initialize() -> void:
 			"LevelUpRewardButton1", "LevelUpRewardButton2", "LevelUpLaterButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_menu", Callable(self, "_open_pause_menu"), [
-			"RunPauseMenuPanel", "RunPauseContinueButton", "RunPauseDossierButton",
-			"RunPauseSettingsButton", "RunPauseEndRunButton", "RunPauseMainMenuButton",
+			"EscapeStatsPanelFrame", "PauseControlButtons", "BaseStatsList",
+			"DerivedStatsGroups",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_stats", Callable(self, "_open_pause_stats"), [
 			"EscapeStatsPanelFrame", "PauseControlButtons", "BaseStatsList",

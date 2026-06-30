@@ -3929,7 +3929,10 @@ func _show_pause_menu(force := false) -> void:
 	game.pause_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.pause_overlay_layer)
 	game.pause_stats_menu = null
-	_build_run_pause_menu()
+	if _should_open_pause_dossier_first():
+		_show_pause_dossier_menu()
+	else:
+		_build_run_pause_menu()
 
 
 # SCRUM-484: координатная спека @2560×1440 — пауза в забеге (модалка).
@@ -4077,6 +4080,17 @@ func _show_pause_dossier_menu() -> void:
 
 func _is_run_pause_overlay_open() -> bool:
 	return game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer)
+
+
+func _should_open_pause_dossier_first() -> bool:
+	if not game.combat_active:
+		return false
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return true
+	for screen_name in ["LevelUpOverlay", "ShopScreen", "AttributeShopScreen", "EliteArtifactRewardScreen", "EventScreen", "RouteMapScreen"]:
+		if game.ui_layer.find_child(screen_name, true, false) != null:
+			return false
+	return true
 
 
 func _can_open_pause_dossier() -> bool:

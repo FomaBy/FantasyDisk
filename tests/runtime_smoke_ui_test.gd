@@ -74,18 +74,35 @@ func _test_settings_return_origins(main_scene: PackedScene) -> void:
 	var run_main := main_scene.instantiate()
 	root.add_child(run_main)
 	await process_frame
-	run_main.set("combat_active", true)
+	run_main.set("selected_character_id", "berserk")
+	run_main.set("selected_weapon_id", "sword")
 	run_main.set("route_stage", 2)
-	run_main.ui._show_pause_menu()
+	run_main.call("_start_combat")
+	var time_before_escape := float(run_main.get("round_time_left"))
+	var player_before_escape: Node2D = run_main.get("current_player") as Node2D
+	var player_position_before_escape := player_before_escape.global_position if player_before_escape != null else Vector2.ZERO
+	var escape_event := InputEventKey.new()
+	escape_event.keycode = KEY_ESCAPE
+	escape_event.pressed = true
+	run_main.call("_input", escape_event)
 	await process_frame
-	var settings_button := run_main.find_child("RunPauseSettingsButton", true, false) as Button
+	if run_main.find_child("PauseStatsMenuRoot", true, false) == null:
+		_fail("Expected active-run Escape to open the character board immediately.")
+		return
+	if run_main.find_child("RunPauseMenuRoot", true, false) != null:
+		_fail("Expected active-run Escape not to show the old standalone pause menu.")
+		return
+	if not bool(run_main.get_tree().paused):
+		_fail("Expected active-run character board to pause gameplay.")
+		return
+	var settings_button := run_main.find_child("PauseSettingsButton", true, false) as Button
 	if settings_button == null:
-		_fail("Expected run pause menu to expose Settings.")
+		_fail("Expected active-run character board left controls to expose Settings.")
 		return
 	settings_button.emit_signal("pressed")
 	await process_frame
 	if run_main.find_child("SettingsV2Root", true, false) == null:
-		_fail("Expected run pause Settings button to open Settings.")
+		_fail("Expected character-board Settings button to open Settings.")
 		return
 	var run_back := run_main.find_child("SettingsBackButton", true, false) as Button
 	if run_back == null:
@@ -93,14 +110,33 @@ func _test_settings_return_origins(main_scene: PackedScene) -> void:
 		return
 	run_back.emit_signal("pressed")
 	await process_frame
-	if run_main.find_child("RunPauseMenuRoot", true, false) == null:
-		_fail("Expected Settings opened from run pause to return to the run pause menu.")
+	if run_main.find_child("PauseStatsMenuRoot", true, false) == null:
+		_fail("Expected Settings opened from active run to return to the character board.")
+		return
+	if run_main.find_child("RunPauseMenuRoot", true, false) != null:
+		_fail("Expected Settings return in active run not to restore the old standalone pause menu.")
 		return
 	if run_main.find_child("MainMenuActions", true, false) != null:
 		_fail("Expected run-origin Settings return not to navigate to the main menu.")
 		return
 	if not bool(run_main.get("combat_active")) or int(run_main.get("route_stage")) != 2:
 		_fail("Expected run-origin Settings return to preserve active run state.")
+		return
+	if abs(float(run_main.get("round_time_left")) - time_before_escape) > 0.001:
+		_fail("Expected active-run character board to freeze the combat timer.")
+		return
+	var resume_button := run_main.find_child("PauseResumeButton", true, false) as Button
+	if resume_button == null:
+		_fail("Expected active-run character board to expose Resume.")
+		return
+	resume_button.emit_signal("pressed")
+	await process_frame
+	if bool(run_main.get_tree().paused) or run_main.find_child("PauseStatsMenuRoot", true, false) != null:
+		_fail("Expected Resume to close the character board and resume gameplay.")
+		return
+	var player_after_resume: Node2D = run_main.get("current_player") as Node2D
+	if player_after_resume == null or player_after_resume.global_position.distance_to(player_position_before_escape) > 0.01:
+		_fail("Expected active-run Escape flow not to move or replace the player.")
 		return
 	run_main.queue_free()
 	await process_frame

@@ -22,6 +22,9 @@
 ### Changed
 
 ### Fixed
+- SCRUM-693: in active combat, Escape now opens the character board / pause
+  dossier immediately with the left run controls, pauses gameplay, and resumes
+  via Resume or repeated Escape without showing the old standalone pause menu.
 
 ## [0.1.7] — 2026-06-29
 
