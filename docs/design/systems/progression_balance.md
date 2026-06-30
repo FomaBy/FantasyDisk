@@ -117,6 +117,36 @@ UI обязан показывать эти интерпретации текс�
   state and player snapshot. Continue restores Act 2/3 map checkpoints with the
   same build state.
 
+## Comfort/Pacing re-eval (SCRUM-781)
+
+Дочерний пасс волны пересмотра баланса по оси **комфорт/pacing**, по выводам
+`docs/design/reviews/balance_reeval_2026_06.md`. Итог замера: ось **здорова в
+пределах locked paths этой задачи** (волны/спавн/темп, кривая ascension, drop-
+экономика) — тюнинг-значения НЕ менялись, чтобы не регрессировать соседние гейты.
+
+Свидетельства (все зелёные):
+- `comfort_band_cross_class_gate`: spread **1.13x** на срезах 1/5/20t, 0 нарушений
+  ±20% медианы (153 замера) — кросс-классовый комфорт-DPS уже очень узкий.
+- `ascension_curve_balance_test`: кривая монотонна до L5 (hp×1.80), mini-elite-«горб»
+  пик L3=0.16 → спад L5=0.03 — без провисаний и стен.
+- `enemy_damage_spread_gate`: TTD-floor 0.48с, fragile TTD ≥ 1.5× окна реакции на
+  стадиях 0/4/8/10, наклон сжат — недизайненных ваншотов нет.
+- `live_balance_simulation_test`: 5 архетипов, 0 мягких заметок.
+
+Темп наград/прогресса (level-up + drop-экономика) подтверждён здоровым и НЕ
+инфлирован: 24 level-up-карты (data-driven, выбор 1 из 3), START_BOONS в пределах
++10% боевой силы (`start_boons_test`), shop/артефакты с трейд-офф-модами.
+
+Wave-density-комфорт («динамичный бой с первой секунды») доставлен отдельно в
+SCRUM-784 (WAVE_SETTINGS/`_choose_wave_spawn_edges` в main.gd/combat_director.gd —
+другой контур, вне locked paths этой задачи).
+
+**Отложено в damage-пасс (вне scope комфорта):** 4 crowd-clear-лаггера +20–22% на
+20-врагах (doctor/restore_potion, druid/summon_amulet, druid/raven_totem,
+chemist/homunculus_vial) — это **per-weapon** свойство (растекание/задержка
+призыва), а не pacing/curve/economy; правится в damage-пассе (`class_weapon`/
+weapon-числа), а не здесь, чтобы не пересекать damage-числа.
+
 ## Level-Up
 
 - При достижении XP открывается выбор 1 из 3 reward cards.
