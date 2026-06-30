@@ -3067,5 +3067,25 @@
   "key": "SCRUM-695",
   "status": "К выполнению",
   "desc_hash": "2c6389bb43d78bcb03c1718d6af27812"
+ },
+ "codex_skill_tree_v2_data_model_economy_task.md": {
+  "key": "SCRUM-696",
+  "status": "К выполнению",
+  "desc_hash": "93c9b7427d1608182dbf9bf7d2afe4ca"
+ },
+ "design_skill_tree_v2_art_pack_task.md": {
+  "key": "SCRUM-697",
+  "status": "К выполнению",
+  "desc_hash": "e1cd5fdf8eef5f90a71cec0973f29c30"
+ },
+ "skill_tree_v2_ui_redesign_task.md": {
+  "key": "SCRUM-698",
+  "status": "К выполнению",
+  "desc_hash": "e445ff6ae1d7b8ab730aac02a5b406cd"
+ },
+ "qa_skill_tree_v2_verification_task.md": {
+  "key": "SCRUM-699",
+  "status": "К выполнению",
+  "desc_hash": "3cf4234c56c4232a8d7819931f65c5cd"
  }
 }
