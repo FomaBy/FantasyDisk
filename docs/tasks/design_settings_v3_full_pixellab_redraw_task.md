@@ -1,6 +1,6 @@
 # ART/UX: Настройки v3 — полный PixelLab redraw всех 3 страниц после OpenAI mockup
 
-Статус: new
+Статус: blocked
 Приоритет: high
 Роль: Designer (Codex) → Back-end (UI)
 Контур: Codex
@@ -91,3 +91,33 @@ Project rule: финальные runtime UI assets создаются через
 ## Notes For Dispatcher
 
 This is a new full Settings v3 redesign request, not a duplicate reopen of SCRUM-439/575/674. Those tickets are closed and describe previous Settings v2/2K passes. This task requires a stricter staged pipeline and new PixelLab production redraw of every Settings visual element.
+
+## Blocker — Codex Design 2026-06-30
+
+SCRUM-694 был claim-first взят `codex-design-board-watcher` из Jira current
+sprint. Перед mockup/asset генерацией проверены обязательные UI skills:
+`fantasydisk-ui-director`, `fantasydisk-asset-generator` и
+`content-zone-image-compositor`. Для этой задачи PixelLab MCP обязателен не
+только для production assets, но и для FantasyDisk UI mockup/art layer; OpenAI
+mockup в Jira разрешён только как промежуточный reference stage, но не как
+fallback вместо PixelLab final package.
+
+Live PixelLab check:
+- direct Codex tool discovery для `pixellab` вернул 0 exposed tools;
+- локальный PixelLab MCP bridge из Codex config стартует, `initialize` успешен;
+- `tools/list` возвращает 49 tools, включая `create_ui_asset`,
+  `get_ui_asset`, `list_ui_assets`;
+- реальный UI endpoint check `list_ui_assets(limit=5)` возвращает
+  `401: Missing Authorization header`;
+- stderr bridge указывает на отсутствующий `AUTH_HEADER`.
+
+Из-за этого нельзя создать обязательные PixelLab source/final assets для
+Settings v3 и нельзя честно выполнить acceptance criteria. Runtime файлы,
+layout/mockup assets и docs implementation sections не менялись; Godot smoke не
+запускался, потому что runtime/code/assets не изменялись. Jira возвращена в
+`К выполнению` с labels `blocked` + `pixellab-blocked`; stale `В работе` claim не
+удерживается.
+
+Unblock: настроить PixelLab MCP auth для Codex (`AUTH_HEADER="Bearer ..."` или
+эквивалентный безопасный секрет в окружении) либо добавить явный Jira override
+на non-PixelLab production pipeline с обновлёнными acceptance criteria.
