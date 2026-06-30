@@ -1,11 +1,11 @@
 # Skill Tree v2 — Дерево умений в стиле PoE: данные, экономика метаочков, миграция (БЭК)
 
-Статус: new
+Статус: done
 Роль: Back-end
 Контур: Codex
 Исполнитель: Codex
 Lane: codex
-Owner: unassigned
+Owner: backend-board-watcher-20260630T111412Z
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: User request (PM)
@@ -157,3 +157,20 @@ UI-перерисовка экрана — отдельный таск (`skill_t
 ## QA-Вердикт
 
 (заполняется QA после сдачи)
+
+## Результат (2026-06-30, backend Codex)
+
+SCRUM-696 backend foundation implemented in `scripts/meta_progression.gd`.
+
+- Replaced the old linear backend model with Skill Tree v2 graph data: 85 nodes, 5 keystones, full-tree cost `100`, node fields `id/branch/tier/cost/kind/title/desc/effects/pos/adj`, symmetric undirected adjacency, and `CLASS_ENTRY_NODES` for every playable class id in `ProgressionDataCharacters.CHARACTER_CONFIGS`.
+- Meta point economy is now deterministic from first clears: ascension clear `0..5` awards `1,1,2,3,4,5`, repeats do not farm, and total earned points clamp at `META_POINTS_CAP = 100`. Ascension level unlock behavior remains capped at `MAX_ASCENSION_LEVEL = 5`; first clear of selectable ascension 5 grants the endcap +5 once without increasing the stored ascension level above 5.
+- Public UI/API surface: `node_list()`, `entry_map()`, `node_status(state, node_id)`, `allocate_node(state, node_id)`, `reset_skill_tree(state)`, `earned_meta_points`, `available_meta_points`, `allocated_meta_points`, `global_level`, `skill_tree_total_cost`. Compatibility wrappers remain: `buy_skill_node()` delegates to allocation; `skill_points()` returns available meta points for the current UI.
+- Save migration: schema `skill_tree_schema = 2`; old saves without v2 schema safely respec `skill_nodes`, reconstruct `meta_point_awards` from `ascension_levels`, and ignore legacy `skill_points` farm values. Existing codex/class challenge/class progression save fields are preserved.
+- Docs updated: `docs/design/mechanics_extract.md` and `docs/design/current_game_state.md`.
+
+Verification:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_skill_tree_smoke_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_points_per_ascension_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_progression_smoke_test.gd` — PASS.
+
+Disk cleanup: none created.

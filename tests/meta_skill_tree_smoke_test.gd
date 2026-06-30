@@ -1,10 +1,11 @@
 extends SceneTree
 
-# SCRUM-150 ч.1 (file-изолированный): data-целостность древа умений, покупка с
-# последовательной разблокировкой, сохранение/загрузка, балансовый потолок силы.
+# SCRUM-696: data-целостность PoE-like графа умений, экономика метаочков,
+# миграция старого линейного дерева, сохранение/загрузка, балансовый потолок силы.
 # Отдельный файл — runtime_smoke_test.gd занят параллельным воркером (анти-коллизия).
 
 const Meta := preload("res://scripts/meta_progression.gd")
+const CharacterData := preload("res://scripts/progression_data_characters.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 
@@ -14,6 +15,8 @@ func _initialize() -> void:
 	_test_branch_sequential_unlock()
 	_test_purchase_and_points()
 	_test_save_load_roundtrip()
+	_test_meta_point_formula_and_cap()
+	_test_save_migration_from_linear_tree()
 	_test_full_tree_power_cap()
 	await _test_player_application()
 	await _test_skill_tree_screen()
@@ -53,9 +56,9 @@ func _test_run_start_application() -> void:
 	main.call("apply_ascension_bonuses", player)
 	await process_frame
 
-	# Старт-золото: два узла по +30.
-	if int(player.get("money")) < 60:
-		_fail("Expected start-gold nodes to grant +60 gold at run start (got %d)." % int(player.get("money")))
+	# Старт-золото v2: два малых узла по +15.
+	if int(player.get("money")) < 30:
+		_fail("Expected start-gold nodes to grant +30 gold at run start (got %d)." % int(player.get("money")))
 		return
 	# Боевой модификатор урона применён.
 	if float((player.get("run_modifiers") as Dictionary).get("damage_multiplier", 1.0)) <= dmg_before:
@@ -322,7 +325,7 @@ func _test_victory_shows_skill_points() -> void:
 	root.add_child(main)
 	await process_frame
 	var state: Dictionary = main.get("meta_state")
-	state["skill_points"] = 3
+	state["meta_point_awards"] = {"berserk": [0, 1, 2]}
 	main.set("meta_state", state)
 	main.ui._show_victory_screen()
 	await process_frame
@@ -345,100 +348,180 @@ func _fail(msg: String) -> void:
 
 func _test_tree_data_integrity() -> void:
 	var total := Meta.skill_tree_total_cost()
-	if total < 40 or total > 50:
-		_fail("Expected skill tree budget 40-50, got %d." % total)
+	if total < 90 or total > Meta.META_POINTS_CAP:
+		_fail("Expected skill tree budget near cap 100, got %d." % total)
 		return
-	# 4 ветви, последовательные tier 1..N без дыр, уникальные id, описания не пусты.
+	if Meta.SKILL_TREE.size() < 60 or Meta.SKILL_TREE.size() > 90:
+		_fail("Expected compact PoE-like graph to have 60-90 nodes, got %d." % Meta.SKILL_TREE.size())
+		return
 	var ids := {}
-	for branch in Meta.SKILL_BRANCHES:
-		var nodes: Array = Meta.branch_nodes(branch)
-		if nodes.is_empty():
-			_fail("Expected branch '%s' to have nodes." % branch)
+	var keystones := 0
+	for node in Meta.SKILL_TREE:
+		var node_data: Dictionary = node
+		var node_id := str(node_data.get("id", ""))
+		if node_id == "" or ids.has(node_id):
+			_fail("Duplicate or empty skill node id '%s'." % node_id)
 			return
-		for i in range(nodes.size()):
-			var node: Dictionary = nodes[i]
-			if int(node["tier"]) != i + 1:
-				_fail("Expected branch '%s' tiers to be contiguous 1..N (acyclic)." % branch)
+		ids[node_id] = true
+		if not node_data.has("pos") or not (node_data.get("pos") is Vector2):
+			_fail("Node '%s' missing Vector2 pos." % node_id)
+			return
+		if not (node_data.get("adj", []) is Array):
+			_fail("Node '%s' missing adjacency list." % node_id)
+			return
+		if str(node_data.get("kind", "")) == "keystone":
+			keystones += 1
+		if str(node_data.get("desc", "")) == "" or str(node_data.get("title", "")) == "":
+			_fail("Node '%s' missing RU title/desc." % node_id)
+			return
+		if str(node_data["desc"]).contains("_mult") or str(node_data["desc"]).contains("_flat"):
+			_fail("Node '%s' desc leaks internal token." % node_id)
+			return
+	for node in Meta.SKILL_TREE:
+		var node_data: Dictionary = node
+		var from_id := str(node_data["id"])
+		for neighbor_id in node_data.get("adj", []):
+			var neighbor := Meta.node_by_id(str(neighbor_id))
+			if neighbor.is_empty():
+				_fail("Node '%s' has dangling neighbor '%s'." % [from_id, str(neighbor_id)])
 				return
-			if ids.has(str(node["id"])):
-				_fail("Duplicate skill node id '%s'." % str(node["id"]))
+			if not (neighbor.get("adj", []) as Array).has(from_id):
+				_fail("Edge '%s' -> '%s' is not symmetric." % [from_id, str(neighbor_id)])
 				return
-			ids[str(node["id"])] = true
-			if str(node.get("desc", "")) == "" or str(node.get("title", "")) == "":
-				_fail("Node '%s' missing RU title/desc." % str(node["id"]))
-				return
-			# Описание без сырых внутренних ID (урок SCRUM-148).
-			if str(node["desc"]).contains("_mult") or str(node["desc"]).contains("_flat"):
-				_fail("Node '%s' desc leaks internal token." % str(node["id"]))
-				return
+	if keystones < 3 or keystones > 6:
+		_fail("Expected 3-6 keystones, got %d." % keystones)
+		return
+	var entry_ids := {}
+	for class_id in CharacterData.CHARACTER_CONFIGS.keys():
+		var cid := str(class_id)
+		if not Meta.CLASS_ENTRY_NODES.has(cid):
+			_fail("Missing class entry node for '%s'." % cid)
+			return
+		var entry_id := str(Meta.CLASS_ENTRY_NODES[cid])
+		if entry_ids.has(entry_id):
+			_fail("Duplicate class entry node '%s'." % entry_id)
+			return
+		entry_ids[entry_id] = true
+		if Meta.node_by_id(entry_id).is_empty():
+			_fail("Class entry node '%s' is not in SKILL_TREE." % entry_id)
+			return
 
 
 func _test_branch_sequential_unlock() -> void:
 	var state: Dictionary = Meta.default_state()
-	state["skill_points"] = 99
-	var wealth: Array = Meta.branch_nodes("wealth")
-	var t1: String = str(wealth[0]["id"])
-	var t2: String = str(wealth[1]["id"])
-	# tier 1 доступен, tier 2 — заперт, пока не куплен tier 1.
-	if Meta.node_status(state, t1) != "available":
-		_fail("Expected tier 1 to be available with points.")
+	state["meta_point_awards"] = {"berserk": [0, 1, 2, 3]}
+	var entry_id := str(Meta.CLASS_ENTRY_NODES["berserk"])
+	if Meta.node_status(state, entry_id) != "available":
+		_fail("Expected a class entry node to be available as graph root.")
 		return
-	if Meta.node_status(state, t2) != "locked":
-		_fail("Expected tier 2 to be locked before tier 1.")
+	var entry := Meta.node_by_id(entry_id)
+	var neighbor_id := str((entry.get("adj", []) as Array)[0])
+	var far_id := "core_keystone"
+	if Meta.node_status(state, neighbor_id) != "locked":
+		_fail("Expected entry neighbor to stay locked until entry is allocated.")
 		return
-	Meta.buy_skill_node(state, t1)
-	if Meta.node_status(state, t2) != "available":
-		_fail("Expected tier 2 to unlock after buying tier 1.")
+	if Meta.node_status(state, far_id) != "locked":
+		_fail("Expected distant graph node to be locked before connecting path.")
 		return
-	# Нельзя купить заранее запертый узел (через 2 tier).
-	var t3: String = str(wealth[2]["id"])
-	if Meta.can_buy_node(state, t3):
-		_fail("Expected tier 3 to remain unbuyable before tier 2.")
+	Meta.allocate_node(state, entry_id)
+	if Meta.node_status(state, neighbor_id) != "available":
+		_fail("Expected neighbor to unlock after allocating adjacent entry.")
+		return
+	if Meta.node_status(state, far_id) != "locked":
+		_fail("Expected distant node to remain locked without adjacency.")
 		return
 
 
 func _test_purchase_and_points() -> void:
 	var state: Dictionary = Meta.default_state()
-	state["skill_points"] = 1
-	var first: String = str(Meta.branch_nodes("might")[0]["id"])
-	Meta.buy_skill_node(state, first)
+	state["meta_point_awards"] = {"berserk": [0]}
+	var first: String = str(Meta.CLASS_ENTRY_NODES["berserk"])
+	var before := Meta.available_meta_points(state)
+	Meta.allocate_node(state, first)
 	if not Meta.is_node_purchased(state, first):
-		_fail("Expected node to be purchased.")
+		_fail("Expected entry node to be allocated.")
 		return
-	if Meta.skill_points(state) != 0:
-		_fail("Expected purchase to spend the point.")
+	if Meta.available_meta_points(state) != before - int(Meta.node_by_id(first)["cost"]):
+		_fail("Expected allocation to spend available meta points.")
 		return
-	# Без очков следующий узел недоступен, даже если разблокирован по tier.
-	var second: String = str(Meta.branch_nodes("might")[1]["id"])
+	var second: String = str((Meta.node_by_id(first).get("adj", []) as Array)[0])
 	if Meta.can_buy_node(state, second):
-		_fail("Expected no-points node to be unbuyable.")
+		_fail("Expected no-points neighbor to be unbuyable.")
 		return
-	# Победа над боссом начисляет очко умений.
-	Meta.record_boss_victory(state, "berserk", 0)
-	if Meta.skill_points(state) != 1:
-		_fail("Expected a boss victory to grant 1 skill point.")
+	Meta.record_boss_victory(state, "berserk", 1)
+	if Meta.available_meta_points(state) != 1:
+		_fail("Expected first clear of ascension 1 to grant one more available meta point.")
 		return
 
 
 func _test_save_load_roundtrip() -> void:
 	var path := "user://test_meta_skilltree.cfg"
 	var state: Dictionary = Meta.default_state()
-	state["skill_points"] = 10
-	# Купить первые два узла стойкости.
-	var e: Array = Meta.branch_nodes("endure")
-	Meta.buy_skill_node(state, str(e[0]["id"]))
-	Meta.buy_skill_node(state, str(e[1]["id"]))
+	state["meta_point_awards"] = {"berserk": [0, 1, 2]}
+	var entry_id := str(Meta.CLASS_ENTRY_NODES["berserk"])
+	Meta.allocate_node(state, entry_id)
+	var next_id := str((Meta.node_by_id(entry_id).get("adj", []) as Array)[0])
+	Meta.allocate_node(state, next_id)
 	Meta.save_state(state, path)
 	var loaded: Dictionary = Meta.load_state(path)
 	if Meta.purchased_nodes(loaded).size() != 2:
-		_fail("Expected 2 purchased nodes after load.")
+		_fail("Expected 2 allocated nodes after load.")
 		return
-	if Meta.skill_points(loaded) != 8:
-		_fail("Expected skill_points to persist (got %d)." % Meta.skill_points(loaded))
+	if Meta.earned_meta_points(loaded) != 4:
+		_fail("Expected earned meta points to persist from ascension awards.")
 		return
-	if not Meta.is_node_purchased(loaded, str(e[0]["id"])):
-		_fail("Expected purchased node to persist by id.")
+	if Meta.available_meta_points(loaded) != 2:
+		_fail("Expected available meta points to persist through derived economy.")
 		return
+	if not Meta.is_node_purchased(loaded, entry_id):
+		_fail("Expected allocated node to persist by id.")
+		return
+
+
+func _test_meta_point_formula_and_cap() -> void:
+	var state: Dictionary = Meta.default_state()
+	var expected := [1, 2, 4, 7, 11, 16]
+	for level in range(0, Meta.MAX_ASCENSION_LEVEL + 1):
+		state = Meta.record_boss_victory(state, "berserk", level)
+		if Meta.earned_meta_points(state) != int(expected[level]):
+			_fail("Expected earned meta points after ascension %d to be %d, got %d." % [level, int(expected[level]), Meta.earned_meta_points(state)])
+			return
+		var repeat_before := Meta.earned_meta_points(state)
+		state = Meta.record_boss_victory(state, "berserk", level)
+		if Meta.earned_meta_points(state) != repeat_before:
+			_fail("Expected repeat clear at ascension %d not to farm meta points." % level)
+			return
+	var cap_state: Dictionary = Meta.default_state()
+	for class_id in Meta.CLASS_ENTRY_NODES.keys():
+		for level in range(0, Meta.MAX_ASCENSION_LEVEL + 1):
+			cap_state = Meta.record_boss_victory(cap_state, str(class_id), level)
+	if Meta.earned_meta_points(cap_state) != Meta.META_POINTS_CAP:
+		_fail("Expected earned meta points to clamp at cap %d, got %d." % [Meta.META_POINTS_CAP, Meta.earned_meta_points(cap_state)])
+		return
+
+
+func _test_save_migration_from_linear_tree() -> void:
+	var path := "user://test_meta_skilltree_migration.cfg"
+	var cfg := ConfigFile.new()
+	cfg.set_value("meta", "meta_points", 999)
+	cfg.set_value("meta", "skill_points", 999)
+	cfg.set_value("meta", "ascension_levels", {"berserk": 3, "dark_mage": 5})
+	cfg.set_value("meta", "skill_nodes", ["wealth_gold_1", "endure_capstone", "old_missing_node"])
+	cfg.save(path)
+	var loaded := Meta.load_state(path)
+	if not Meta.purchased_nodes(loaded).is_empty():
+		_fail("Expected old linear skill nodes to be respecced during schema migration.")
+		return
+	if Meta.earned_meta_points(loaded) != 15:
+		_fail("Expected migrated meta points from ascension levels to be 15, got %d." % Meta.earned_meta_points(loaded))
+		return
+	if Meta.available_meta_points(loaded) != 15:
+		_fail("Expected migrated available meta points to match earned points after reset.")
+		return
+
+
+func _removed_old_linear_tests_marker() -> void:
+	pass
 
 
 func _test_skill_tree_screen() -> void:
@@ -449,7 +532,7 @@ func _test_skill_tree_screen() -> void:
 	await process_frame
 	# Дать очки в текущем мета-состоянии.
 	var state: Dictionary = main.get("meta_state")
-	state["skill_points"] = 5
+	state["meta_point_awards"] = {"berserk": [0, 1, 2, 3]}
 	state["skill_nodes"] = []
 	main.set("meta_state", state)
 

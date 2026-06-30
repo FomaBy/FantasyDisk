@@ -11,56 +11,40 @@ const CODEX_DATA := preload("res://scripts/codex_data.gd")
 # load_state/ascension_level/selectable_max — без краша.
 const MAX_ASCENSION_LEVEL := 5
 const SECTION := "meta"
+const TREE_SCHEMA_VERSION := 2
+const META_POINTS_CAP := 100
+const META_POINT_REWARDS_BY_ASCENSION := [1, 1, 2, 3, 4, 5]
+const SKILL_BRANCHES := ["core", "might", "wealth", "lore", "endure"]
+const SKILL_BRANCH_TITLES := {
+	"core": "Сердце Диска",
+	"might": "Клинок и темп",
+	"wealth": "Трофеи и ремесло",
+	"lore": "Знание и выбор",
+	"endure": "Стойкость и защита",
+}
+const CLASS_ENTRY_NODES := {
+	"berserk": "entry_berserk",
+	"soldier": "entry_soldier",
+	"thief": "entry_thief",
+	"elementalist": "entry_elementalist",
+	"sniper": "entry_sniper",
+	"priest": "entry_priest",
+	"biologist": "entry_biologist",
+	"robot": "entry_robot",
+	"engineer": "entry_engineer",
+	"dark_mage": "entry_dark_mage",
+	"guitarist": "entry_guitarist",
+	"assassin": "entry_assassin",
+	"ranger": "entry_ranger",
+	"doctor": "entry_doctor",
+	"chemist": "entry_chemist",
+	"knight": "entry_knight",
+	"druid": "entry_druid",
+}
 
-# Общее древо умений (SCRUM-150), 4 независимые ветви; внутри ветви узлы
-# открываются последовательно (tier N+1 требует все узлы tier N этой ветви).
-# Бюджет полной прокачки — сумма cost (валидируется тестом, 40-50). Эффекты —
-# плоский dict модификаторов, применяемый на старте забега (инкремент 2).
-# Описания — по-русски, человеческим языком (урок SCRUM-148), без внутренних ID.
-const SKILL_TREE := [
-	# --- Путь Богатства (экономика) ---
-	{"id": "wealth_gold_1", "branch": "wealth", "tier": 1, "cost": 1, "title": "Звон монет I", "desc": "Враги роняют на 6% больше золота.", "effects": {"money_gain_mult": 0.06}},
-	{"id": "wealth_gold_2", "branch": "wealth", "tier": 2, "cost": 1, "title": "Звон монет II", "desc": "Ещё +6% золота с боёв.", "effects": {"money_gain_mult": 0.06}},
-	{"id": "wealth_gold_3", "branch": "wealth", "tier": 3, "cost": 1, "title": "Звон монет III", "desc": "Ещё +6% золота с боёв.", "effects": {"money_gain_mult": 0.06}},
-	{"id": "wealth_shop_1", "branch": "wealth", "tier": 4, "cost": 1, "title": "Торг I", "desc": "Цены в лавке ниже на 4%.", "effects": {"shop_price_mult": -0.04}},
-	{"id": "wealth_shop_2", "branch": "wealth", "tier": 5, "cost": 1, "title": "Торг II", "desc": "Цены в лавке ниже ещё на 4%.", "effects": {"shop_price_mult": -0.04}},
-	{"id": "wealth_start_1", "branch": "wealth", "tier": 6, "cost": 1, "title": "Кошель в дорогу I", "desc": "Забег начинается с +30 золота.", "effects": {"start_gold_flat": 30.0}},
-	{"id": "wealth_start_2", "branch": "wealth", "tier": 7, "cost": 1, "title": "Кошель в дорогу II", "desc": "Забег начинается ещё с +30 золота.", "effects": {"start_gold_flat": 30.0}},
-	{"id": "wealth_attr_1", "branch": "wealth", "tier": 8, "cost": 1, "title": "Скромный наставник I", "desc": "Докачка атрибутов за золото дешевле на 6%.", "effects": {"attr_cost_mult": -0.06}},
-	{"id": "wealth_attr_2", "branch": "wealth", "tier": 9, "cost": 1, "title": "Скромный наставник II", "desc": "Докачка атрибутов дешевле ещё на 6%.", "effects": {"attr_cost_mult": -0.06}},
-	{"id": "wealth_capstone", "branch": "wealth", "tier": 10, "cost": 2, "title": "Связи в гильдии", "desc": "В каждой лавке гарантированно есть редкий товар.", "effects": {"guaranteed_rare_shop": 1.0}},
-	# --- Путь Знаний (опыт и выборы) ---
-	{"id": "lore_xp_1", "branch": "lore", "tier": 1, "cost": 1, "title": "Прилежание I", "desc": "Опыт за бои +6%.", "effects": {"xp_gain_mult": 0.06}},
-	{"id": "lore_xp_2", "branch": "lore", "tier": 2, "cost": 1, "title": "Прилежание II", "desc": "Опыт за бои ещё +6%.", "effects": {"xp_gain_mult": 0.06}},
-	{"id": "lore_xp_3", "branch": "lore", "tier": 3, "cost": 1, "title": "Прилежание III", "desc": "Опыт за бои ещё +6%.", "effects": {"xp_gain_mult": 0.06}},
-	{"id": "lore_reroll_1", "branch": "lore", "tier": 4, "cost": 1, "title": "Сомнение", "desc": "Раз за уровень можно пересобрать набор повышения.", "effects": {"levelup_rerolls": 1.0}},
-	{"id": "lore_reroll_2", "branch": "lore", "tier": 5, "cost": 1, "title": "Второе сомнение", "desc": "Ещё один пересбор набора повышения за забег.", "effects": {"levelup_rerolls": 1.0}},
-	{"id": "lore_attr_1", "branch": "lore", "tier": 6, "cost": 1, "title": "Широкий кругозор", "desc": "В окне докачки атрибутов на 1 вариант больше.", "effects": {"attr_extra_options": 1.0}},
-	{"id": "lore_attr_2", "branch": "lore", "tier": 7, "cost": 1, "title": "Эрудиция", "desc": "Ещё +1 вариант в окне докачки атрибутов.", "effects": {"attr_extra_options": 1.0}},
-	{"id": "lore_capstone", "branch": "lore", "tier": 8, "cost": 2, "title": "Озарение", "desc": "Первое повышение в забеге гарантированно даёт основную характеристику.", "effects": {"first_levelup_rare": 1.0}},
-	# --- Путь Мощи (атака) ---
-	{"id": "might_dmg_1", "branch": "might", "tier": 1, "cost": 1, "title": "Точёный край I", "desc": "Урон +2%.", "effects": {"damage_mult": 0.02}},
-	{"id": "might_dmg_2", "branch": "might", "tier": 2, "cost": 1, "title": "Точёный край II", "desc": "Урон ещё +2%.", "effects": {"damage_mult": 0.02}},
-	{"id": "might_dmg_3", "branch": "might", "tier": 3, "cost": 1, "title": "Точёный край III", "desc": "Урон ещё +2%.", "effects": {"damage_mult": 0.02}},
-	{"id": "might_as_1", "branch": "might", "tier": 4, "cost": 1, "title": "Быстрая рука I", "desc": "Скорость атаки +2%.", "effects": {"attack_speed_mult": 0.02}},
-	{"id": "might_as_2", "branch": "might", "tier": 5, "cost": 1, "title": "Быстрая рука II", "desc": "Скорость атаки ещё +2%.", "effects": {"attack_speed_mult": 0.02}},
-	{"id": "might_ult_1", "branch": "might", "tier": 6, "cost": 1, "title": "Внутренний жар I", "desc": "Ультимейт заряжается на 6% быстрее.", "effects": {"ult_charge_mult": 0.06}},
-	{"id": "might_ult_2", "branch": "might", "tier": 7, "cost": 1, "title": "Внутренний жар II", "desc": "Ультимейт заряжается ещё на 6% быстрее.", "effects": {"ult_charge_mult": 0.06}},
-	{"id": "might_slayer_1", "branch": "might", "tier": 8, "cost": 1, "title": "Охотник на сильных I", "desc": "Урон по элиткам и боссам +4%.", "effects": {"elite_boss_damage_mult": 0.04}},
-	{"id": "might_slayer_2", "branch": "might", "tier": 9, "cost": 1, "title": "Охотник на сильных II", "desc": "Урон по элиткам и боссам ещё +4%.", "effects": {"elite_boss_damage_mult": 0.04}},
-	{"id": "might_capstone", "branch": "might", "tier": 10, "cost": 2, "title": "Боевой раж", "desc": "Ультимейт начинает забег заряженным наполовину.", "effects": {"ult_start_charge": 0.5}},
-	# --- Путь Стойкости (выживание) ---
-	{"id": "endure_hp_1", "branch": "endure", "tier": 1, "cost": 1, "title": "Крепкое тело I", "desc": "Максимум здоровья +2%.", "effects": {"max_health_mult": 0.02}},
-	{"id": "endure_hp_2", "branch": "endure", "tier": 2, "cost": 1, "title": "Крепкое тело II", "desc": "Максимум здоровья ещё +2%.", "effects": {"max_health_mult": 0.02}},
-	{"id": "endure_hp_3", "branch": "endure", "tier": 3, "cost": 1, "title": "Крепкое тело III", "desc": "Максимум здоровья ещё +2%.", "effects": {"max_health_mult": 0.02}},
-	{"id": "endure_regen_1", "branch": "endure", "tier": 4, "cost": 1, "title": "Второе дыхание I", "desc": "Восстановление здоровья +0.4/с.", "effects": {"regeneration_flat": 0.4}},
-	{"id": "endure_regen_2", "branch": "endure", "tier": 5, "cost": 1, "title": "Второе дыхание II", "desc": "Восстановление здоровья ещё +0.4/с.", "effects": {"regeneration_flat": 0.4}},
-	{"id": "endure_armor_1", "branch": "endure", "tier": 6, "cost": 1, "title": "Закалка I", "desc": "Снижение урона +1.5%.", "effects": {"defense_flat": 0.015}},
-	{"id": "endure_armor_2", "branch": "endure", "tier": 7, "cost": 1, "title": "Закалка II", "desc": "Снижение урона ещё +1.5%.", "effects": {"defense_flat": 0.015}},
-	{"id": "endure_dodge_1", "branch": "endure", "tier": 8, "cost": 1, "title": "Лёгкость I", "desc": "Шанс уклонения +1%.", "effects": {"dodge_flat": 0.01}},
-	{"id": "endure_dodge_2", "branch": "endure", "tier": 9, "cost": 1, "title": "Лёгкость II", "desc": "Шанс уклонения ещё +1%.", "effects": {"dodge_flat": 0.01}},
-	{"id": "endure_capstone", "branch": "endure", "tier": 10, "cost": 2, "title": "Вторая жизнь", "desc": "Раз за забег смертельный удар оставляет 1 HP и даёт 2с неуязвимости.", "effects": {"death_save": 1.0}},
-]
+# SCRUM-696: PoE-like shared passive graph. Nodes keep branch/tier for the
+# existing temporary UI, while allocation is graph-based through `adj`.
+static var SKILL_TREE: Array = _build_skill_tree()
 
 # Secret boss endcap (SCRUM-541): after the normal Act 3 boss, only when the run
 # was launched at the maximum available Ascension level. Old SCRUM-619 low-damage
@@ -71,14 +55,6 @@ const SECRET_ENCOUNTER_MAX_DAMAGE_TAKEN := 60.0
 const SECRET_ENCOUNTER_ARTIFACT_KEY := "rift_key"
 const SECRET_ENCOUNTER_REWARD_META_POINTS := 3
 const SECRET_BOSS_ID := "secret_ascension_boss"
-
-const SKILL_BRANCHES := ["wealth", "lore", "might", "endure"]
-const SKILL_BRANCH_TITLES := {
-	"wealth": "Путь Богатства",
-	"lore": "Путь Знаний",
-	"might": "Путь Мощи",
-	"endure": "Путь Стойкости",
-}
 
 # Прогрессия ПО КЛАССАМ (SCRUM-360): стимул отыгрывать каждый класс. Прогресс
 # копится за победы над боссами ЭТИМ классом (class_boss_wins per character).
@@ -116,9 +92,186 @@ const CLASS_CHALLENGES := [
 ]
 
 
+static func _add_skill_node(nodes: Array, index: Dictionary, id: String, branch: String, tier: int, cost: int, kind: String, title: String, desc: String, effects: Dictionary, pos: Vector2) -> void:
+	var node := {
+		"id": id,
+		"branch": branch,
+		"tier": tier,
+		"cost": cost,
+		"kind": kind,
+		"title": title,
+		"desc": desc,
+		"effects": effects,
+		"pos": pos,
+		"adj": [],
+	}
+	nodes.append(node)
+	index[id] = node
+
+
+static func _connect_skill_nodes(index: Dictionary, a: String, b: String) -> void:
+	if not index.has(a) or not index.has(b) or a == b:
+		return
+	var adj_a: Array = index[a]["adj"]
+	var adj_b: Array = index[b]["adj"]
+	if not adj_a.has(b):
+		adj_a.append(b)
+	if not adj_b.has(a):
+		adj_b.append(a)
+
+
+static func _entry_effects(branch: String) -> Dictionary:
+	match branch:
+		"might":
+			return {"damage_mult": 0.003}
+		"wealth":
+			return {"money_gain_mult": 0.006}
+		"lore":
+			return {"xp_gain_mult": 0.006}
+		"endure":
+			return {"max_health_mult": 0.003}
+		_:
+			return {}
+
+
+static func _satellite_effects(branch: String, index: int) -> Dictionary:
+	match branch:
+		"might":
+			return {"attack_speed_mult": 0.003} if index == 1 else {"elite_boss_damage_mult": 0.004}
+		"wealth":
+			return {"shop_price_mult": -0.003} if index == 1 else {"start_gold_flat": 5.0}
+		"lore":
+			return {"xp_gain_mult": 0.006} if index == 1 else {"ult_charge_mult": 0.010}
+		"endure":
+			return {"regeneration_flat": 0.05} if index == 1 else {"defense_flat": 0.003}
+		_:
+			return {}
+
+
+static func _build_skill_tree() -> Array:
+	var nodes := []
+	var index := {}
+	_add_skill_node(nodes, index, "core_origin", "core", 1, 1, "minor", "Искра Пути", "Открывает центральные связи дерева.", {}, Vector2(0, 0))
+	_add_skill_node(nodes, index, "core_balance", "core", 2, 1, "minor", "Ровная стойка", "Немного повышает золото и опыт за бой.", {"money_gain_mult": 0.004, "xp_gain_mult": 0.004}, Vector2(0, -90))
+	_add_skill_node(nodes, index, "core_mastery", "core", 3, 2, "notable", "Память Диска", "Боевые награды и обучение становятся чуть щедрее.", {"money_gain_mult": 0.008, "xp_gain_mult": 0.008}, Vector2(0, -180))
+	_add_skill_node(nodes, index, "core_crossroads", "core", 4, 2, "notable", "Перекрёсток героев", "Небольшой универсальный запас здоровья и темпа.", {"max_health_mult": 0.004, "attack_speed_mult": 0.003}, Vector2(0, 90))
+	_add_skill_node(nodes, index, "core_keystone", "core", 5, 3, "keystone", "Сердце Реликта", "Забег начинается увереннее: немного золота и стойкости.", {"start_gold_flat": 10.0, "max_health_mult": 0.004}, Vector2(0, 180))
+	_connect_skill_nodes(index, "core_origin", "core_balance")
+	_connect_skill_nodes(index, "core_balance", "core_mastery")
+	_connect_skill_nodes(index, "core_origin", "core_crossroads")
+	_connect_skill_nodes(index, "core_crossroads", "core_keystone")
+
+	var branch_specs := {
+		"might": {
+			"anchor": "might_slayer_1",
+			"nodes": [
+				["core_might_gate", 1, 1, "minor", "Врата клинка", "Путь к атакующим узлам.", {}, Vector2(160, 0)],
+				["might_dmg_1", 2, 1, "minor", "Точёный край I", "Урон немного выше.", {"damage_mult": 0.005}, Vector2(260, -55)],
+				["might_dmg_2", 3, 1, "minor", "Точёный край II", "Ещё немного урона.", {"damage_mult": 0.005}, Vector2(360, -95)],
+				["might_as_1", 4, 1, "minor", "Быстрая рука", "Скорость атаки немного выше.", {"attack_speed_mult": 0.005}, Vector2(460, -70)],
+				["might_ult_1", 5, 1, "minor", "Внутренний жар", "Ультимейт заряжается быстрее.", {"ult_charge_mult": 0.025}, Vector2(555, -30)],
+				["might_slayer_1", 6, 1, "notable", "Охотник на сильных", "Урон по элиткам и боссам выше.", {"elite_boss_damage_mult": 0.010}, Vector2(650, 5)],
+				["might_capstone", 7, 3, "keystone", "Боевой раж", "Ультимейт начинает забег заряженным наполовину.", {"ult_start_charge": 0.5}, Vector2(760, 45)],
+			],
+		},
+		"wealth": {
+			"anchor": "wealth_attr_2",
+			"nodes": [
+				["core_wealth_gate", 1, 1, "minor", "Врата трофеев", "Путь к экономическим узлам.", {}, Vector2(-160, 0)],
+				["wealth_gold_1", 2, 1, "minor", "Звон монет", "Враги роняют немного больше золота.", {"money_gain_mult": 0.012}, Vector2(-260, -55)],
+				["wealth_shop_1", 3, 1, "minor", "Торг I", "Цены в лавке чуть ниже.", {"shop_price_mult": -0.010}, Vector2(-360, -95)],
+				["wealth_shop_2", 4, 1, "minor", "Торг II", "Цены в лавке ещё чуть ниже.", {"shop_price_mult": -0.010}, Vector2(-460, -70)],
+				["wealth_start_1", 5, 1, "minor", "Кошель в дорогу I", "Забег начинается с небольшим запасом золота.", {"start_gold_flat": 15.0}, Vector2(-555, -30)],
+				["wealth_start_2", 6, 1, "minor", "Кошель в дорогу II", "Стартовый запас золота ещё выше.", {"start_gold_flat": 15.0}, Vector2(-640, 10)],
+				["wealth_attr_1", 7, 1, "minor", "Скромный наставник I", "Докачка атрибутов за золото дешевле.", {"attr_cost_mult": -0.012}, Vector2(-720, 55)],
+				["wealth_attr_2", 8, 1, "notable", "Скромный наставник II", "Докачка атрибутов дешевле ещё немного.", {"attr_cost_mult": -0.012}, Vector2(-800, 100)],
+				["wealth_capstone", 9, 3, "keystone", "Связи в гильдии", "В каждой лавке гарантированно есть редкий товар.", {"guaranteed_rare_shop": 1.0}, Vector2(-890, 150)],
+			],
+		},
+		"lore": {
+			"anchor": "lore_attr_2",
+			"nodes": [
+				["core_lore_gate", 1, 1, "minor", "Врата знания", "Путь к узлам опыта и выбора.", {}, Vector2(0, -260)],
+				["lore_xp_1", 2, 1, "minor", "Прилежание I", "Опыт за бои немного выше.", {"xp_gain_mult": 0.012}, Vector2(-70, -350)],
+				["lore_xp_2", 3, 1, "minor", "Прилежание II", "Опыт за бои ещё немного выше.", {"xp_gain_mult": 0.012}, Vector2(-125, -445)],
+				["lore_reroll_1", 4, 1, "notable", "Сомнение", "Раз за уровень можно пересобрать набор повышения.", {"levelup_rerolls": 1.0}, Vector2(-70, -545)],
+				["lore_reroll_2", 5, 1, "notable", "Второе сомнение", "Ещё один пересбор набора повышения за забег.", {"levelup_rerolls": 1.0}, Vector2(20, -625)],
+				["lore_attr_1", 6, 1, "minor", "Широкий кругозор", "В окне докачки атрибутов на один вариант больше.", {"attr_extra_options": 1.0}, Vector2(110, -705)],
+				["lore_attr_2", 7, 1, "notable", "Эрудиция", "Ещё один вариант в окне докачки атрибутов.", {"attr_extra_options": 1.0}, Vector2(200, -785)],
+				["lore_capstone", 8, 3, "keystone", "Озарение", "Первое повышение в забеге гарантированно даёт основную характеристику.", {"first_levelup_rare": 1.0}, Vector2(290, -865)],
+			],
+		},
+		"endure": {
+			"anchor": "endure_dodge_2",
+			"nodes": [
+				["core_endure_gate", 1, 1, "minor", "Врата бастиона", "Путь к защитным узлам.", {}, Vector2(0, 260)],
+				["endure_hp_1", 2, 1, "minor", "Крепкое тело I", "Максимум здоровья немного выше.", {"max_health_mult": 0.005}, Vector2(-70, 350)],
+				["endure_hp_2", 3, 1, "minor", "Крепкое тело II", "Максимум здоровья ещё немного выше.", {"max_health_mult": 0.005}, Vector2(-125, 445)],
+				["endure_regen_1", 4, 1, "minor", "Второе дыхание", "Восстановление здоровья чуть выше.", {"regeneration_flat": 0.10}, Vector2(-70, 545)],
+				["endure_armor_1", 5, 1, "minor", "Закалка", "Снижение урона чуть выше.", {"defense_flat": 0.004}, Vector2(20, 625)],
+				["endure_dodge_1", 6, 1, "minor", "Лёгкость I", "Шанс уклонения немного выше.", {"dodge_flat": 0.003}, Vector2(110, 705)],
+				["endure_dodge_2", 7, 1, "notable", "Лёгкость II", "Шанс уклонения ещё немного выше.", {"dodge_flat": 0.003}, Vector2(200, 785)],
+				["endure_capstone", 8, 3, "keystone", "Вторая жизнь", "Раз за забег смертельный удар оставляет героя на ногах.", {"death_save": 1.0}, Vector2(290, 865)],
+			],
+		},
+	}
+	for branch in branch_specs.keys():
+		var spec: Dictionary = branch_specs[branch]
+		var previous := "core_origin"
+		for raw_node in spec["nodes"]:
+			var r: Array = raw_node
+			_add_skill_node(nodes, index, str(r[0]), branch, int(r[1]), int(r[2]), str(r[3]), str(r[4]), str(r[5]), r[6], r[7])
+			_connect_skill_nodes(index, previous, str(r[0]))
+			previous = str(r[0])
+	_connect_skill_nodes(index, "core_might_gate", "core_wealth_gate")
+	_connect_skill_nodes(index, "core_lore_gate", "core_endure_gate")
+	_connect_skill_nodes(index, "might_dmg_2", "lore_xp_1")
+	_connect_skill_nodes(index, "wealth_gold_1", "endure_hp_1")
+
+	var class_defs := [
+		["berserk", "might", "Ярость берсерка", Vector2(820, -170)],
+		["soldier", "might", "Тактический строй", Vector2(870, -70)],
+		["sniper", "might", "Прицел снайпера", Vector2(870, 40)],
+		["assassin", "might", "Тень ассасина", Vector2(830, 150)],
+		["ranger", "might", "След рейнджера", Vector2(745, 235)],
+		["thief", "wealth", "Хватка вора", Vector2(-920, -125)],
+		["guitarist", "wealth", "Сценический контракт", Vector2(-960, -15)],
+		["engineer", "wealth", "Мастерская инженера", Vector2(-930, 95)],
+		["chemist", "wealth", "Алхимический обмен", Vector2(-850, 210)],
+		["dark_mage", "lore", "Тёмная формула", Vector2(-210, -860)],
+		["elementalist", "lore", "Стихийная схема", Vector2(-70, -940)],
+		["priest", "lore", "Священная печать", Vector2(80, -950)],
+		["biologist", "lore", "Живая гипотеза", Vector2(235, -925)],
+		["doctor", "lore", "Полевой трактат", Vector2(380, -845)],
+		["robot", "endure", "Бронеконтур робота", Vector2(-170, 885)],
+		["knight", "endure", "Клятва рыцаря", Vector2(10, 965)],
+		["druid", "endure", "Корни друида", Vector2(210, 910)],
+	]
+	for raw_class in class_defs:
+		var c: Array = raw_class
+		var class_id := str(c[0])
+		var branch := str(c[1])
+		var entry_id := str(CLASS_ENTRY_NODES[class_id])
+		var pos: Vector2 = c[3]
+		_add_skill_node(nodes, index, entry_id, branch, 0, 1, "entry", str(c[2]), "Стартовая точка класса в общем дереве.", _entry_effects(branch), pos)
+		_connect_skill_nodes(index, entry_id, str(branch_specs[branch]["anchor"]))
+		var sat_a := "boost_%s_a" % class_id
+		var sat_b := "boost_%s_b" % class_id
+		_add_skill_node(nodes, index, sat_a, branch, 20, 1, "minor", "Отзвук пути", "Малый бонус рядом со стартовой точкой класса.", _satellite_effects(branch, 1), pos + Vector2(58, -44))
+		_add_skill_node(nodes, index, sat_b, branch, 21, 1, "minor", "Укреплённый путь", "Ещё один малый бонус рядом со стартовой точкой класса.", _satellite_effects(branch, 2), pos + Vector2(92, 38))
+		_connect_skill_nodes(index, entry_id, sat_a)
+		_connect_skill_nodes(index, sat_a, sat_b)
+
+	for node in nodes:
+		(node["adj"] as Array).sort()
+	return nodes
+
+
 static func default_state() -> Dictionary:
 	return {
 		"meta_points": 0,
+		"meta_point_awards": {},
+		"skill_tree_schema": TREE_SCHEMA_VERSION,
 		"ascension_levels": {},
 		"skill_points": 0,
 		"skill_nodes": [],
@@ -145,17 +298,22 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 	var config := ConfigFile.new()
 	if config.load(save_path) != OK:
 		return state
-	state["meta_points"] = int(config.get_value(SECTION, "meta_points", 0))
+	var schema := int(config.get_value(SECTION, "skill_tree_schema", 0))
 	var raw_levels = config.get_value(SECTION, "ascension_levels", {})
 	var levels := {}
 	if raw_levels is Dictionary:
 		for character_id in raw_levels.keys():
 			levels[str(character_id)] = clampi(int(raw_levels[character_id]), 0, MAX_ASCENSION_LEVEL)
 	state["ascension_levels"] = levels
-	state["skill_points"] = maxi(int(config.get_value(SECTION, "skill_points", 0)), 0)
+	var raw_awards = config.get_value(SECTION, "meta_point_awards", {})
+	var awards := _normalized_meta_point_awards(raw_awards)
+	if schema < TREE_SCHEMA_VERSION or awards.is_empty():
+		awards = _meta_point_awards_from_ascension_levels(levels)
+	state["meta_point_awards"] = awards
+	state["skill_tree_schema"] = TREE_SCHEMA_VERSION
 	var raw_nodes = config.get_value(SECTION, "skill_nodes", [])
 	var nodes := []
-	if raw_nodes is Array:
+	if schema == TREE_SCHEMA_VERSION and raw_nodes is Array:
 		for node_id in raw_nodes:
 			if node_by_id(str(node_id)).size() > 0 and not nodes.has(str(node_id)):
 				nodes.append(str(node_id))
@@ -217,15 +375,19 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 	for category in CODEX_DISCOVERY_CATEGORIES.keys():
 		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
 		state[save_key] = _normalized_id_list(config.get_value(SECTION, save_key, []), category)
+	_sync_meta_economy_fields(state)
 	return state
 
 
 static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> void:
+	_sync_meta_economy_fields(state)
 	var config := ConfigFile.new()
-	config.set_value(SECTION, "meta_points", int(state.get("meta_points", 0)))
+	config.set_value(SECTION, "skill_tree_schema", TREE_SCHEMA_VERSION)
+	config.set_value(SECTION, "meta_points", earned_meta_points(state))
+	config.set_value(SECTION, "meta_point_awards", _normalized_meta_point_awards(state.get("meta_point_awards", {})))
 	config.set_value(SECTION, "ascension_levels", state.get("ascension_levels", {}))
-	config.set_value(SECTION, "skill_points", int(state.get("skill_points", 0)))
-	config.set_value(SECTION, "skill_nodes", state.get("skill_nodes", []))
+	config.set_value(SECTION, "skill_points", available_meta_points(state))
+	config.set_value(SECTION, "skill_nodes", purchased_nodes(state))
 	config.set_value(SECTION, "class_boss_wins", state.get("class_boss_wins", {}))
 	config.set_value(SECTION, "secret_boss_defeated", bool(state.get("secret_boss_defeated", false)))
 	config.set_value(SECTION, "achievements", state.get("achievements", []))
@@ -236,6 +398,54 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
 		config.set_value(SECTION, save_key, _normalized_id_list(state.get(save_key, []), category))
 	config.save(save_path)
+
+
+static func _normalized_meta_point_awards(raw) -> Dictionary:
+	var result := {}
+	if not (raw is Dictionary):
+		return result
+	for character_id in raw.keys():
+		var levels := []
+		var raw_levels = raw[character_id]
+		if raw_levels is Array:
+			for value in raw_levels:
+				var level := clampi(int(value), 0, MAX_ASCENSION_LEVEL)
+				if not levels.has(level):
+					levels.append(level)
+		elif raw_levels is Dictionary:
+			for key in raw_levels.keys():
+				if bool(raw_levels[key]):
+					var level := clampi(int(key), 0, MAX_ASCENSION_LEVEL)
+					if not levels.has(level):
+						levels.append(level)
+		levels.sort()
+		if not levels.is_empty():
+			result[str(character_id)] = levels
+	return result
+
+
+static func _meta_point_awards_from_ascension_levels(levels: Dictionary) -> Dictionary:
+	var awards := {}
+	for character_id in levels.keys():
+		var completed := clampi(int(levels[character_id]), 0, MAX_ASCENSION_LEVEL)
+		var list := []
+		for run_level in range(completed):
+			list.append(run_level)
+		if not list.is_empty():
+			awards[str(character_id)] = list
+	return awards
+
+
+static func _meta_point_reward_for_ascension(run_level: int) -> int:
+	var level := clampi(run_level, 0, MAX_ASCENSION_LEVEL)
+	return int(META_POINT_REWARDS_BY_ASCENSION[level])
+
+
+static func _sync_meta_economy_fields(state: Dictionary) -> void:
+	state["skill_tree_schema"] = TREE_SCHEMA_VERSION
+	state["meta_point_awards"] = _normalized_meta_point_awards(state.get("meta_point_awards", {}))
+	state["meta_points"] = earned_meta_points(state)
+	state["skill_points"] = available_meta_points(state)
 
 
 static func _normalized_id_list(raw, category := "") -> Array:
@@ -315,21 +525,24 @@ static func record_boss_victory(state: Dictionary, character_id: String, run_lev
 	if not (levels is Dictionary):
 		levels = {}
 	var completed := clampi(int(levels.get(character_id, 0)), 0, MAX_ASCENSION_LEVEL)
+	var cleared_level := clampi(run_level if run_level >= 0 else completed, 0, MAX_ASCENSION_LEVEL)
+	var awards := _normalized_meta_point_awards(state.get("meta_point_awards", {}))
+	if awards.is_empty():
+		awards = _meta_point_awards_from_ascension_levels(levels)
+	var class_awards = awards.get(character_id, [])
+	if not (class_awards is Array):
+		class_awards = []
+	if not class_awards.has(cleared_level) and earned_meta_points(state) < META_POINTS_CAP:
+		class_awards.append(cleared_level)
+		class_awards.sort()
+		awards[character_id] = class_awards
+		state["meta_point_awards"] = awards
 	# Разблокировка следующего уровня — только если забег прошёл на текущем максимуме
 	# (или выше). run_level < 0 = старое поведение (для совместимости).
-	var unlocked_new_ascension := false
 	if run_level < 0 or run_level >= completed:
-		if completed < MAX_ASCENSION_LEVEL:
-			unlocked_new_ascension = true
 		completed = clampi(completed + 1, 0, MAX_ASCENSION_LEVEL)
 	levels[character_id] = completed
 	state["ascension_levels"] = levels
-	# Очки меты/умений — ТОЛЬКО за НОВОЕ возвышение (любым классом), без фарма
-	# повторных боссов на уже пройденном уровне. На максимуме (10) повторы не дают
-	# очко. class_boss_wins (прогрессия класса) копится отдельно за каждую победу.
-	if unlocked_new_ascension:
-		state["meta_points"] = int(state.get("meta_points", 0)) + 1
-		state["skill_points"] = int(state.get("skill_points", 0)) + 1
 	# Прогрессия по классам (SCRUM-360): победа над боссом этим классом копит его прогресс.
 	var class_wins = state.get("class_boss_wins", {})
 	if not (class_wins is Dictionary):
@@ -340,6 +553,7 @@ static func record_boss_victory(state: Dictionary, character_id: String, run_lev
 	# отмечаем выполненные пороги (одноразово). run_context опционален (старые вызовы
 	# с 3 аргументами не трекают — backward-compatible).
 	state = _record_class_challenge_progress(state, character_id, run_level, run_context)
+	_sync_meta_economy_fields(state)
 	return state
 
 
@@ -470,11 +684,11 @@ static func record_secret_boss_victory(state: Dictionary) -> Dictionary:
 	if secret_boss_defeated(state):
 		return state
 	state["secret_boss_defeated"] = true
-	state["meta_points"] = int(state.get("meta_points", 0)) + SECRET_ENCOUNTER_REWARD_META_POINTS
+	_sync_meta_economy_fields(state)
 	return state
 
 
-# --- Древо умений (SCRUM-150) ---
+# --- Древо умений v2 (SCRUM-696) ---
 
 static func node_by_id(node_id: String) -> Dictionary:
 	for node in SKILL_TREE:
@@ -484,13 +698,20 @@ static func node_by_id(node_id: String) -> Dictionary:
 
 
 static func branch_nodes(branch: String) -> Array:
-	# Узлы ветви по возрастанию tier (последовательная разблокировка).
 	var nodes := []
 	for node in SKILL_TREE:
 		if str(node["branch"]) == branch:
 			nodes.append(node)
-	nodes.sort_custom(func(a, b): return int(a["tier"]) < int(b["tier"]))
+	nodes.sort_custom(func(a, b): return int(a["tier"]) < int(b["tier"]) if int(a["tier"]) != int(b["tier"]) else str(a["id"]) < str(b["id"]))
 	return nodes
+
+
+static func node_list() -> Array:
+	return SKILL_TREE.duplicate(true)
+
+
+static func entry_map() -> Dictionary:
+	return CLASS_ENTRY_NODES.duplicate(true)
 
 
 static func skill_tree_total_cost() -> int:
@@ -502,56 +723,102 @@ static func skill_tree_total_cost() -> int:
 
 static func purchased_nodes(state: Dictionary) -> Array:
 	var raw = state.get("skill_nodes", [])
-	return raw if raw is Array else []
+	var nodes := []
+	if not (raw is Array):
+		return nodes
+	for node_id in raw:
+		var id := str(node_id)
+		if node_by_id(id).size() > 0 and not nodes.has(id):
+			nodes.append(id)
+	return nodes
 
 
 static func is_node_purchased(state: Dictionary, node_id: String) -> bool:
 	return purchased_nodes(state).has(node_id)
 
 
+static func allocated_meta_points(state: Dictionary) -> int:
+	var total := 0
+	for node_id in purchased_nodes(state):
+		var node := node_by_id(str(node_id))
+		if not node.is_empty():
+			total += int(node.get("cost", 1))
+	return total
+
+
+static func earned_meta_points(state: Dictionary) -> int:
+	var awards := _normalized_meta_point_awards(state.get("meta_point_awards", {}))
+	if awards.is_empty():
+		var levels = state.get("ascension_levels", {})
+		if levels is Dictionary:
+			awards = _meta_point_awards_from_ascension_levels(levels)
+	var total := 0
+	for character_id in awards.keys():
+		for run_level in awards[character_id]:
+			total += _meta_point_reward_for_ascension(int(run_level))
+	if secret_boss_defeated(state):
+		total += SECRET_ENCOUNTER_REWARD_META_POINTS
+	return clampi(total, 0, META_POINTS_CAP)
+
+
+static func available_meta_points(state: Dictionary) -> int:
+	return maxi(earned_meta_points(state) - allocated_meta_points(state), 0)
+
+
+static func global_level(state: Dictionary) -> int:
+	return purchased_nodes(state).size()
+
+
 static func skill_points(state: Dictionary) -> int:
-	return maxi(int(state.get("skill_points", 0)), 0)
+	# Backward-compatible facade for the current UI: available meta points.
+	return available_meta_points(state)
 
 
 static func node_status(state: Dictionary, node_id: String) -> String:
-	# "purchased" | "available" | "locked". Доступен, если предыдущий tier ветви
-	# куплен (tier 1 — всегда) и хватает очков.
 	var node := node_by_id(node_id)
 	if node.is_empty():
 		return "locked"
 	if is_node_purchased(state, node_id):
 		return "purchased"
-	if not _prerequisites_met(state, node):
+	if not _node_connectivity_available(state, node_id):
 		return "locked"
-	return "available" if skill_points(state) >= int(node["cost"]) else "locked"
+	return "available" if available_meta_points(state) >= int(node["cost"]) else "locked"
 
 
-static func _prerequisites_met(state: Dictionary, node: Dictionary) -> bool:
-	var tier := int(node["tier"])
-	if tier <= 1:
+static func _node_connectivity_available(state: Dictionary, node_id: String) -> bool:
+	if CLASS_ENTRY_NODES.values().has(node_id):
 		return true
-	# Требуются ВСЕ узлы предыдущего tier этой ветви (их по одному на tier здесь).
-	for other in SKILL_TREE:
-		if str(other["branch"]) == str(node["branch"]) and int(other["tier"]) == tier - 1:
-			if not is_node_purchased(state, str(other["id"])):
-				return false
-	return true
+	var node := node_by_id(node_id)
+	if node.is_empty():
+		return false
+	var purchased := purchased_nodes(state)
+	for neighbor_id in node.get("adj", []):
+		if purchased.has(str(neighbor_id)):
+			return true
+	return false
 
 
 static func can_buy_node(state: Dictionary, node_id: String) -> bool:
 	return node_status(state, node_id) == "available"
 
 
-static func buy_skill_node(state: Dictionary, node_id: String) -> Dictionary:
-	# Покупает узел, если доступен и хватает очков. Возвращает обновлённое состояние
-	# (мутирует переданный dict — как остальные функции этого модуля).
+static func allocate_node(state: Dictionary, node_id: String) -> Dictionary:
 	if not can_buy_node(state, node_id):
 		return state
-	var node := node_by_id(node_id)
 	var nodes := purchased_nodes(state).duplicate()
 	nodes.append(node_id)
 	state["skill_nodes"] = nodes
-	state["skill_points"] = skill_points(state) - int(node["cost"])
+	_sync_meta_economy_fields(state)
+	return state
+
+
+static func buy_skill_node(state: Dictionary, node_id: String) -> Dictionary:
+	return allocate_node(state, node_id)
+
+
+static func reset_skill_tree(state: Dictionary) -> Dictionary:
+	state["skill_nodes"] = []
+	_sync_meta_economy_fields(state)
 	return state
 
 

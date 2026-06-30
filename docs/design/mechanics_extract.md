@@ -850,9 +850,11 @@ AoE/DoT/саммоны — зачистка волны; точные замер�
 
 Прогресс: `meta_progression.record_boss_victory(state, char, run_level)` повышает уровень только если `run_level >= completed`; `selectable_max = completed + 1` (cap 5). Наградный трек меты — per-class `ASCENSION_LEVELS` по 5 уровней, применяются за пройденные уровни постоянно. Выбор уровня — селектор в hero select (клампится к `ascension_selectable_max` героя при пике), HUD-индикатор римской цифрой у таймера, кодекс-раздел «Возвышения».
 
-### Мета-древо умений (SCRUM-150)
+### Мета-древо умений (SCRUM-696)
 
-Общее для всех персонажей древо в `meta_progression.gd` (`SKILL_TREE`, data-driven). 4 независимые ветви по 10 узлов, последовательная разблокировка (tier N+1 требует tier N той же ветви), бюджет полной прокачки **42 очка** (диапазон 40-50). Валюта — `skill_points`, начисляются вместе с `meta_points` за победу над боссом (одна экономика); сохранение `skill_points`+`skill_nodes` в `user://`. Полная прокачка ≤ **~+30% эффективной силы** (`estimated_power_multiplier`).
+Общее для всех персонажей древо в `meta_progression.gd` (`SKILL_TREE`, data-driven) теперь является графом в стиле Path of Exile: у каждого узла есть `pos`, `kind`, `cost`, `effects` и неориентированные связи `adj`. Размер v2 — 85 узлов, 5 keystone, суммарный бюджет полной прокачки **100 метаочков** (`META_POINTS_CAP`). У каждого playable class id есть уникальная стартовая точка в `CLASS_ENTRY_NODES`; стартовые class entry nodes можно выделять сразу, остальные узлы открываются только как соседи уже выделенных узлов. «Глобальный уровень» = количество выделенных узлов (`global_level`), а доступный бюджет = `earned_meta_points(state) - allocated_meta_points(state)`.
+
+Экономика метаочков: первый clear уровня возвышения 0..5 каждым классом даёт **1, 1, 2, 3, 4, 5** метаочков соответственно; повторы того же уровня не фармятся, общий cap заработка = 100. `skill_points` оставлен как compatibility facade для текущего UI и возвращает доступные метаочки. Save schema v2 хранит `meta_point_awards` и `skill_nodes`; старые linear-tree saves без schema получают безопасный respec: старые node ids сбрасываются, метаочки пересчитываются из `ascension_levels`.
 
 Ветви и эффекты (`skill_modifiers(state)` — множители суммируются как `1.0+Σ`, флаги — max):
 - **Богатство**: `money_gain_mult` (+опыт золота), `shop_price_mult` (скидка магазина), `start_gold_flat`, `attr_cost_mult` (удешевление докачки), capstone `guaranteed_rare_shop`.
@@ -860,7 +862,9 @@ AoE/DoT/саммоны — зачистка волны; точные замер�
 - **Мощь**: `damage_mult`, `attack_speed_mult`, `ult_charge_mult`, `elite_boss_damage_mult`, capstone `ult_start_charge` (0.5).
 - **Стойкость**: `max_health_mult`, `regeneration_flat`, `defense_flat`, `dodge_flat`, capstone `death_save`.
 
-Применение (по мере освобождения файлов, сериализуется):
+Публичный API для UI/QA: `node_list()`, `entry_map()`, `node_status(state, node_id)`, `allocate_node(state, node_id)` / compatibility `buy_skill_node`, `reset_skill_tree(state)`, `earned_meta_points`, `available_meta_points`, `allocated_meta_points`, `global_level`, `skill_tree_total_cost`.
+
+Применение:
 - Боевое подмножество → `player.apply_meta_skill_modifiers(mods)` в `run_modifiers` + предзаряд ульты (ч.2a).
 - Эконом-флаги в UI: `shop_price_mult` → `_random_shop_items`, `attr_cost_mult` → `_ascension_price`, `attr_extra_options` → `_random_attribute_pair` (ч.5-7).
 - Экран древа — пункт «Древо умений» в главном меню (`_show_skill_tree_screen`, состояния узлов/покупка/счётчик, ч.3); «+очко умений» на экране победы (ч.4).
