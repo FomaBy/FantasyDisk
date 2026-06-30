@@ -1,7 +1,7 @@
 # Refactor Wave: Enemy, Projectile And Hazard Runtime Cleanup
 
 Jira: SCRUM-712
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end / enemy quality
 Контур: Claude
@@ -53,3 +53,40 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/enemy_conte
 ## Process Notes
 
 Before starting, Claude must sync `dev`, check dirty tree and verify no active owner overlaps the locked paths. Do not touch unrelated WIP. After completion: Jira -> local mirror -> checks -> intentional commit -> push.
+
+## Результат (Claude backend, 2026-06-30)
+
+Ветка/коммит: `dev` @ `f304a801` (origin/dev, ancestor подтверждён).
+
+### Lifecycle-аудит (5 locked-файлов, записан)
+- **Ресурсы:** `enemy.gd`, `enemy_projectile.gd`, `projectile.gd`, `hazard_vfx.gd`,
+  `enemy_health_bar.gd` — ВСЁ через `preload` (compile-time const). `load()` в
+  хот-путях НЕТ → AC «resource loading in hot paths removed/justified» выполнен.
+- **Хот-путь:** `enemy.gd::_physics_process` без поко-кадровых аллокаций
+  (нет `.new()`/`create_tween`/`get_nodes_in_group`/`instantiate`).
+- **Cleanup надёжен:** снаряды self-free по lifetime/вылету (`_is_outside_arena`)
+  и по попаданию; трейл — child снаряда (гибнет вместе). Impact-VFX
+  (`EnemyProjectileImpactVfx`) — прямой child сцены, реапается двойным контуром
+  `game._clear_world` (по группам + `for child in get_children()`-свип). Эффекты
+  оружия — группа `player_weapon_effects`. Stale-нод после очистки не остаётся.
+- **HP-бар/фидбек:** структура корректна для обычных/суммон/масштабированных
+  врагов (покрыто `enemy_projectile_smoke`/`enemy_content_integrity`).
+
+### Concrete-баг (в ТЕСТЕ, не в коде снаряда) — найден и исправлен
+- `tests/projectile_smoke_test.gd` был **RED на origin/dev**: проверка правой
+  границы арены захардкожена под старый `ARENA_SIZE.x = 2560`; после бампа до
+  4096 (SCRUM-518 ×1.6) тестовая точка (2860) попала ВНУТРЬ арены →
+  `_is_outside_arena` честно вернул false → ассерт падал (RC=1).
+- Фикс: границы выводим из `Projectile.ARENA_SIZE`/`CLEANUP_MARGIN` (не устареет
+  при будущем ребалансе). Добавлено покрытие **Y-оси** (верх/низ) и **despawn по
+  вылету** за арену при НЕ-истёкшем lifetime (раньше despawn проверялся только по
+  истечению lifetime). Код снаряда не менялся — он был корректен.
+
+### Проверки (semaphore, GODOT_BIN=fdengine, slots=1) — все RC=0
+- `tests/projectile_smoke_test.gd` → passed (XY±/despawn lifetime+вылет) [был RED].
+- `tests/enemy_projectile_smoke_test.gd` → passed.
+- `tests/hazard_vfx_smoke_test.gd` → passed.
+- `tests/enemy_content_integrity_test.gd` → passed (10 мини-элиток, 10 энкаунтеров).
+
+Disk cleanup: рабочий worktree `/private/tmp/fsd_wt_scrum712` удалён после пуша;
+временных артефактов не оставлено.
