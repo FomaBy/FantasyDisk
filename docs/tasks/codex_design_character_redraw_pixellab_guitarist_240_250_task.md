@@ -107,3 +107,13 @@ download/extract files under `/tmp/fantasydisk_scrum706_guitarist_pixellab_704fd
 also removed the temporary `/tmp/fantasydisk_doctor_pixellab_download.zip` used
 to inspect PixelLab package layout. Worktree retained for branch/Jira closeout;
 non-task dirty files are excluded from the task commit.
+
+## QA-Вердикт: PASSED
+Статус: PASSED
+Проверено claude-qa на HEAD origin/dev (арт-коммит ad81961c = ancestor; фикс блокера SCRUM-795 = d59f1e35).
+- Контракт высоты ВЫПОЛНЕН: guitarist_pixellab все 56 кадров h=245 px (idle_south 211×245), PNG 512×512, angles alpha=0. Старый below-contract пак (225px) заменён.
+- guitarist_spriteframes.tres: 56 refs на guitarist_pixellab, 0 stale.
+- Блокер SCRUM-795 (test regression, walk_<dir> 6 кадров vs тест ждал 1) ИСПРАВЛЕН (Готово, commit d59f1e35): hero_select_guitarist_pixellab_preview_test → PASS.
+- runtime_smoke_test → PASS (exit 0, 12641 файлов) после Godot --import.
+- Non-blocking note (не дефект SCRUM-706): guitarist idle_south alpha-bottom=400 px против family-стандарта 480 (berserk/dark_mage/doctor/priest). Пре-существующая характеристика (старый пак был bottom=369, редроу улучшил до 400); full_frame рендер без ground-shadow reference, визуально не критично. Кандидат на будущую baseline-нормировку full_frame pixellab паков.
+Блок добавлен в .md, чтобы board_sync не реверт-ил PASSED-тикет.
