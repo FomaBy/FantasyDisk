@@ -205,7 +205,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Мастерская устройств, дронов и минных сеток.",
 		"strengths": "устройства, зона контроля, поддержка.",
 		"weaknesses": "нужно заранее ставить позицию.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/engineer/engineer_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/engineer_pixellab/engineer_idle_south.png",
 	},
 	"dark_mage": {
 		"id": "dark_mage",

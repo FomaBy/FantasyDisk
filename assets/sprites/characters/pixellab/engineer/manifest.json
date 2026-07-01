@@ -1,0 +1,61 @@
+{
+  "source": "PixelLab MCP",
+  "task": "SCRUM-428",
+  "character_id": "engineer",
+  "pixellab_character_id": "c5bd9766-e7de-4316-ace6-e687c951e621",
+  "pixellab_name": "FantasyDisk Engineer PixelLab SCRUM-428 2026-06-30",
+  "generated_at": "2026-07-01",
+  "mode": "v3 character + walking-6-frames template",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "source_size": [248, 248],
+  "runtime_canvas": [512, 512],
+  "runtime_scale": 2,
+  "runtime_bottom_padding": 16,
+  "move_frame_count": 6,
+  "clockwise_preview_order": [
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east",
+    "east",
+    "south-east"
+  ],
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "animations": {
+    "idle": "8-direction static PixelLab rotation frames",
+    "move": "walking-6-frames template, 6 frames per direction, all 8 directions",
+    "walk": "runtime alias of move rows"
+  },
+  "pixellab_animation_ids": {
+    "south": "13880ced-0b7b-426d-a152-42e302a6fc35",
+    "south-east": "175bad4d-3b6b-48a7-9b69-24e4731edf34",
+    "east": "5ff16701-49e9-4be6-8e05-06baebc7a8d4",
+    "north-east": "f753a001-97b4-49c5-ab28-da4548b0fff5",
+    "north": "81ec5a8b-9b8b-467f-89f3-48faba2aa3ca",
+    "north-west": "bd8e59f9-a452-4670-b569-bd5fbde49cf5",
+    "west": "db4290f3-95a4-463d-9ad2-bc16ddf5ef52",
+    "south-west": "f5223579-3a18-482c-ad86-eac0f00f019e"
+  },
+  "source_files": {
+    "idle": "assets/sprites/characters/pixellab/engineer/engineer_idle_<direction>.png",
+    "move": "assets/sprites/characters/pixellab/engineer/engineer_move_<direction>_<00-05>.png"
+  },
+  "runtime_dir": "assets/sprites/characters/full_frame/engineer_pixellab/",
+  "spriteframes": "assets/sprites/characters/engineer_spriteframes.tres",
+  "qa_report": "docs/design/previews/scrum428_engineer_pixellab_bbox_report.json",
+  "preview_contact_sheet": "docs/design/previews/scrum428_engineer_pixellab_contact.png",
+  "backup": "docs/design/backups/scrum428_engineer_pixellab_pre_runtime/",
+  "notes": "Existing PixelLab Engineer source was reused as required by SCRUM-428. Runtime PNGs are transparent 512x512, centered X, bottom-aligned, and expose no attack/body weapon rows by scope."
+}

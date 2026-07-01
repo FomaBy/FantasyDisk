@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Инженер» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -8,8 +8,8 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-428
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Codex Animator
+Thread/Worker: codex-animator-auto
 Locked paths: `assets/sprites/characters/pixellab/engineer/`, `assets/sprites/characters/full_frame/engineer_pixellab/`, `assets/sprites/characters/engineer_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
@@ -159,3 +159,30 @@ Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-428 remains
 `К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
 Already-open Codex threads may still need restart/new thread tool discovery to
 expose PixelLab tools. Disk cleanup: none created.
+
+## Result — Codex Animator 2026-07-01
+
+SCRUM-428 reused the existing PixelLab character
+`c5bd9766-e7de-4316-ace6-e687c951e621` (`FantasyDisk Engineer PixelLab
+SCRUM-428 2026-06-30`) and promoted Engineer to the live PixelLab directional
+runtime path.
+
+Implemented:
+- Source PixelLab rotations and all 8 `walking-6-frames` move rows stored under
+  `assets/sprites/characters/pixellab/engineer/` with `manifest.json`.
+- Runtime frames normalized to transparent `512x512` canvases under
+  `assets/sprites/characters/full_frame/engineer_pixellab/`.
+- `assets/sprites/characters/engineer_spriteframes.tres` rebuilt with generic
+  `idle`/`move`/`walk` fallbacks plus `idle_<direction>`,
+  `move_<direction>`, and `walk_<direction>` for all 8 directions.
+- `scripts/progression_data_characters.gd` now routes Engineer portrait/runtime
+  UI to `engineer_idle_south.png`; Hero Select preview uses the existing
+  directional rotation path.
+- Legacy pre-runtime SpriteFrames/full-frame files backed up under
+  `docs/design/backups/scrum428_engineer_pixellab_pre_runtime/`.
+- QA evidence: `docs/design/previews/scrum428_engineer_pixellab_contact.png`
+  and `docs/design/previews/scrum428_engineer_pixellab_bbox_report.json`
+  (`56` runtime frames, alpha bbox height range `226..250` px).
+
+Attack/body weapon rows remain absent by scope; Engineer weapons stay separate
+runtime visuals. Disk cleanup: none created beyond committed evidence/assets.

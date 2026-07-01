@@ -5,6 +5,14 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-428: PixelLab Engineer runtime pack is now live. Reused existing
+  PixelLab character `c5bd9766-e7de-4316-ace6-e687c951e621`, stored source
+  rotations and 6-frame `walking-6-frames` rows under
+  `assets/sprites/characters/pixellab/engineer/`, normalized transparent
+  `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/engineer_pixellab/`, rebuilt
+  `engineer_spriteframes.tres` with directional idle/move/walk rows, and routed
+  Engineer portraits/Hero Select preview to `engineer_idle_south.png`.
 - SCRUM-426: PixelLab Druid 8-direction character pack with static idle
   rotations and six-frame `walking-6-frames` movement rows for all directions.
   Source PNGs and manifest live under `assets/sprites/characters/pixellab/druid/`,

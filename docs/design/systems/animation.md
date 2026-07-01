@@ -203,6 +203,17 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
   fallbacks use the south row, Hero Select rotates through the same directional
   frames, and body attack rows remain absent by weapon-owned combat scope.
+- SCRUM-428 (2026-07-01) applies the PixelLab directional runtime path to
+  Engineer using existing source character
+  `c5bd9766-e7de-4316-ace6-e687c951e621`. Source rotations and
+  `walking-6-frames` rows live under
+  `assets/sprites/characters/pixellab/engineer/`; normalized runtime frames live
+  under `assets/sprites/characters/full_frame/engineer_pixellab/`, and
+  `assets/sprites/characters/engineer_spriteframes.tres` exposes static
+  `idle_<direction>` poses plus 6-frame `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
+  fallbacks use the south row, Hero Select rotates through the same directional
+  frames, and body attack rows remain absent by weapon-owned combat scope.
 - SCRUM-540 (2026-06-28) produces the Secret Ascension Boss full-frame animation
   pack from the accepted SCRUM-539 source. Candidate assets live under
   `assets/sprites/bosses/full_frame/secret_ascension_boss/` with a 512x512
