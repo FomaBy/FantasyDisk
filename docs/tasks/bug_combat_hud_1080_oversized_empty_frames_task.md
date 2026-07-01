@@ -1,6 +1,6 @@
 # SCRUM-778: BUG SCRUM-700 - combat HUD is oversized and mostly empty at 1920x1080
 
-Статус: review
+Статус: done
 Приоритет: P1
 Роль: Back-end / runtime UI
 Контур: Codex

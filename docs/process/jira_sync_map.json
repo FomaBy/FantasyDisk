@@ -3550,8 +3550,8 @@
  },
  "bug_combat_hud_1080_oversized_empty_frames_task.md": {
   "key": "SCRUM-778",
-  "status": "К выполнению",
-  "desc_hash": "9ea3287dd26681677ece41886f6bf302"
+  "status": "Контроль качества",
+  "desc_hash": "55c738a11fb984aeb8aafbe5ec3cacaf"
  },
  "animation_scrum779_boss_pixellab_promotion_handoff_task.md": {
   "key": "SCRUM-793",
