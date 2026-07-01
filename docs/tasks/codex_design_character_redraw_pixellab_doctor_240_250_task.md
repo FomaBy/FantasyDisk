@@ -1,6 +1,6 @@
 # ART/ANIM PixelLab: «Доктор» — full redraw в размере 240-250 px
 
-Статус: review
+Статус: new
 Приоритет: high
 Роль: Design main (Codex) → Animator (Codex)
 Версия: 0.1.8

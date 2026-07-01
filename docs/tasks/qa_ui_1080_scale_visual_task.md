@@ -5,13 +5,57 @@
 Роль: QA / visual QA
 Контур: Codex
 Executor: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: QA/Codex coordinator
+Thread/Worker: codex-hud-redesign-subagents-2026-06-30
 Locked paths: read-only UI screens; `docs/tasks/qa_ui_1080_scale_visual_task.md`; QA evidence under `build/qa/scrum700_1080_ui_scale/`; follow-up bugs may lock specific UI files separately
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: PM/Codex по запросу пользователя
 Jira: SCRUM-700
+
+## Progress Log
+
+- 2026-06-30 — Claimed in Jira by `codex-hud-redesign-subagents-2026-06-30`.
+  Scope is QA/visual evidence only: read-only UI screens, this task mirror, and
+  `build/qa/scrum700_1080_ui_scale/`. Started through subagents for HUD runtime
+  inventory, 1080p capture/evidence, and Jira/task consistency checks.
+- 2026-06-30 — Subagent 1080p focused capture created fresh evidence under
+  `build/qa/scrum700_1080_ui_scale/`. Main menu is a hard FAIL and maps to the
+  existing bug `SCRUM-680`; combat HUD is a visual scale/empty-frame WARN and
+  follow-up bug `SCRUM-778` was created for Back-end UI tuning.
+
+## Evidence Start — 2026-06-30
+
+Fresh 1920x1080 evidence:
+
+- Summary: `build/qa/scrum700_1080_ui_scale/qa_observations.md`
+- Rect dump: `build/qa/scrum700_1080_ui_scale/priority_rects_1920x1080.md`
+- Preliminary verdicts: `build/qa/scrum700_1080_ui_scale/preliminary_verdicts.md`
+- Main menu screenshot:
+  `build/qa/scrum700_1080_ui_scale/screenshots/main_menu_1920x1080.png`
+- Combat HUD screenshot:
+  `build/qa/scrum700_1080_ui_scale/screenshots/combat_hud_1920x1080.png`
+
+Findings:
+
+- Main menu 1920x1080: FAIL. `MainMenuTitleLabel` ends at `y=323`, while
+  `MainMenuStartButton` starts at `y=203` and `MainMenuSettingsButton` starts at
+  `y=317`; nearest vertical gap is `-120 px`. Existing Jira bug `SCRUM-680`
+  was updated with this evidence instead of creating a duplicate.
+- Combat HUD 1920x1080: geometry PASS, visual WARN/bug. Priority panels occupy
+  `14.32%` of viewport area and top HUD band reaches `26.20%` of viewport
+  height; the resource/timer/ascension frames are very wide/tall and mostly
+  empty. Follow-up Jira bug `SCRUM-778` created.
+
+Subagent status:
+
+- Runtime inventory: completed.
+- 1080p focused capture: completed for priority screens.
+- Jira/local consistency audit: completed; `jira_sync_map.json` may need final
+  scoped sync because it still had stale status for SCRUM-700 at audit time.
+
+Disk cleanup: none outside intentional ignored evidence under
+`build/qa/scrum700_1080_ui_scale/`.
 
 ## Контекст
 

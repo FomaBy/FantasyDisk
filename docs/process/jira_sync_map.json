@@ -2975,8 +2975,8 @@
  },
  "SCRUM-532_berserk_v2_move_attack_anim_pack.md": {
   "key": "SCRUM-532",
-  "status": "К выполнению",
-  "desc_hash": "31e32729e7ced1a74cfe421b40e45fdf"
+  "status": "Готово",
+  "desc_hash": "ab229e45aeedfa285da1ef354af14490"
  },
  "SCRUM-539_secret_ascension_boss_source_pack.md": {
   "key": "SCRUM-539",
@@ -3091,7 +3091,7 @@
  "qa_ui_1080_scale_visual_task.md": {
   "key": "SCRUM-700",
   "status": "К выполнению",
-  "desc_hash": "728154465df6c9dbc9f4bf9528929e95"
+  "desc_hash": "892cd6067db0294210edbb5835ef800c"
  },
  "SCRUM-678_codex_glossary_ui_design.md": {
   "key": "SCRUM-678",
@@ -3126,7 +3126,7 @@
  "bug_scrum673_main_menu_logo_spec_mismatch_task.md": {
   "key": "SCRUM-680",
   "status": "К выполнению",
-  "desc_hash": "49019707186e51566fa095d658402038"
+  "desc_hash": "e7868aaa33c0aa060ae9731e453c75e0"
  },
  "design_berserk_v2_visual_redesign_task.md": {
   "key": "SCRUM-531",
@@ -3135,22 +3135,22 @@
  },
  "codex_design_character_redraw_pixellab_berserk_240_250_task.md": {
   "key": "SCRUM-703",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "06596412876d285920713faa7aa95faf"
  },
  "codex_design_character_redraw_pixellab_dark_mage_240_250_task.md": {
   "key": "SCRUM-704",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "9ba85ab268b9864a1faeee8e115f4682"
  },
  "codex_design_character_redraw_pixellab_doctor_240_250_task.md": {
   "key": "SCRUM-705",
-  "status": "В работе",
-  "desc_hash": "c99b2abab7ee49db88c74615b6973793"
+  "status": "К выполнению",
+  "desc_hash": "4129f7cb150ff2c9e36b383df30e40d5"
  },
  "codex_design_character_redraw_pixellab_guitarist_240_250_task.md": {
   "key": "SCRUM-706",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "f0d269adff5fa3bc66d472dc6c2b9660"
  },
  "codex_redesign_openai_mockup_pixel_ui_resolution_task.md": {
