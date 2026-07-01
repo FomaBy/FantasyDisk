@@ -67,3 +67,25 @@ helper and active task rules, no hand-drawn or non-OpenAI substitute was created
 Generated/runtime files: none.
 Tests: not run; blocked before asset generation.
 Disk cleanup: none created.
+
+## Result 2026-07-01 — Blocked Retry
+
+Worker: `codex-animator-auto`
+Issue: SCRUM-732
+
+Retried the mandated OpenAI Images override through the repository helper after
+claiming the Jira issue:
+
+```bash
+python3 skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py --no-task --quality high --size 1024x1024 --output docs/design/references/weapon_attack_animations/biologist_symbiote_seed/biologist_symbiote_seed_openai_source.png --prompt "<symbiote seed web VFX prompt>"
+```
+
+The helper failed before writing a source PNG because OpenAI returned
+`billing_hard_limit_reached` (`Billing hard limit has been reached`). Per the
+task override and helper rules, no PixelLab, hand-drawn, or non-OpenAI substitute
+was created.
+
+Generated/runtime files: none.
+Tests: not run; blocked before asset generation.
+Disk cleanup: removed the empty retry-only evidence directory; no other transient
+artifacts created.
