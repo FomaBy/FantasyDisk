@@ -3360,8 +3360,8 @@
  },
  "animation_weapon_attack_sniper_deadeye_rifle_codex_task.md": {
   "key": "SCRUM-763",
-  "status": "К выполнению",
-  "desc_hash": "71a322b05f55205617f9e9d6d01b7ae1"
+  "status": "Контроль качества",
+  "desc_hash": "8a405b40f7739ad3814636f7dbb45fa3"
  },
  "animation_weapon_attack_sniper_shatter_rounds_codex_task.md": {
   "key": "SCRUM-764",
