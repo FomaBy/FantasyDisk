@@ -1,6 +1,6 @@
 # ART/ANIM PixelLab: «Доктор» — full redraw в размере 240-250 px
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Design main (Codex) → Animator (Codex)
 Версия: 0.1.8
@@ -76,8 +76,17 @@ Tests before Jira QA:
 - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
 - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
 
-Jira target state: `Контроль качества` after branch push with commit/test
-evidence.
+Jira final state: `Готово` after QA PASSED on origin/dev.
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED — claude-qa verified the Doctor redraw on origin/dev after the
+branch content was integrated. The visible alpha bbox is in the 240-250 px
+contract, the runtime PNGs are transparent 512x512 frames, and
+`doctor_spriteframes.tres` points at the new PixelLab runtime pack.
+
+Jira was synchronized to `Готово` by dispatcher cleanup on 2026-07-01 because
+the live Jira comments already contained the QA PASSED verdict.
 
 ## Disk cleanup
 Executor final report must include `Disk cleanup:` per repo policy. Planned:
