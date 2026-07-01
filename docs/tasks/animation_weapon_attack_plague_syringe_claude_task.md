@@ -70,3 +70,17 @@ range/aoe/knockback/lifesteal/summon-лимиты и shared runtime logic не �
 Тесты (`tools/godot_gate.py`, GODOT_BIN=fdengine, slots=1):
 - `unique_weapon_vfx_assets_test.gd` — passed (51 plates).
 - `attack_vfx_smoke_test.gd` — passed.
+
+
+## QA-Вердикт
+
+Статус: PASSED
+
+QA claude-qa 2026-07-01. Проверено на HEAD origin/dev (commit 2c01f970 влит в dev; local == origin/dev, рабочее дерево чисто по assets/sprites/effects).
+
+- `assets/sprites/effects/vfx_weapon_plague_syringe.png`: 256x256 RGBA, все 4 угла alpha=0, 0% полностью непрозрачных пикселей (весь слой полупрозрачный), видимое покрытие ~24.0%, median saturation 28 → без запечённого нейтрального/checkerboard фона; центр остаётся readable. `.import` сайдкар закоммичен, размеры сохранены (reimport не требуется).
+- Визуал (SCRUM-753): зелёный токсичный спиральный вихрь спор (плети/облако заражения). Уникально читается как своё оружие, отличим от 10 соседних VFX (pairwise avg-hash — 0 near-dup пар из 55).
+- Тесты через `tools/godot_gate.py` (семафор, GODOT_BIN=fdengine slots=1): `unique_weapon_vfx_assets_test.gd` PASS (51 plates), `attack_vfx_smoke_test.gd` PASS.
+- Коммит 2c01f970 затронул только PNG/`.import`/docs — .gd/.tscn/шейдеры/баланс не менялись, shared runtime не изменён.
+
+QA-блок добавлен, чтобы board_sync не откатывал тикет из «Готово».
