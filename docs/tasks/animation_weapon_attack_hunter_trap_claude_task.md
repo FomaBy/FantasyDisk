@@ -48,3 +48,18 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `hunter_trap` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+QA claude-qa 2026-07-01. Проверено на HEAD origin/dev (commit 6dc43827 влит; local файл байт-в-байт == origin/dev).
+
+- `assets/sprites/effects/vfx_weapon_hunter_trap.png`: 256x256, углы прозрачны, 50% полностью прозрачно, видимое покрытие 46.1%, median saturation 87 (насыщенный, low-sat<15 всего 4.3%, high-sat>60 = 63.7% → без запечённого нейтрального фона).
+- Визуал: стальной капкан, захлопывающийся кольцом зубьев, + яркий electric-blue shockwave наружу (knockback-радиус, роль «deploy trap: burst + knockback»), разлетающиеся debris-чанки, blue-gem акценты, молнии, светящаяся paw-эмблема в центре. Уникально читается как Охотничий капкан, зона (burst+knockback) видна, отличим от соседних VFX.
+- Тесты через `tools/godot_gate.py` (семафор): `unique_weapon_vfx_assets_test.gd` PASS (51 plates, включает hunter_trap), `attack_vfx_smoke_test.gd` PASS, `runtime_smoke_test.gd` PASS.
+- Геймплейные параметры/shared runtime не изменены.
+
+Замечание (не блокер): покрытие плотнее среднего по батчу (46% vs ~13-33%) из-за радиального burst; кадр остаётся 50% прозрачным, эффект кратковременный (attack flash), автоматический VFX-гейт (unique_weapon_vfx_assets_test) принимает alpha/coverage. Центр занят вспышкой захлопывания капкана — суть эффекта.
+
+QA-блок добавлен, чтобы board_sync не откатывал тикет из «Готово».
