@@ -338,6 +338,16 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   6-frame looping `move_<direction>` / `walk_<direction>` rows for `south`,
   `south_east`, `east`, `north_east`, `north`, `north_west`, `west`, and
   `south_west`; weapon/instrument visuals remain separate weapon effects.
+- SCRUM-797 supersedes the SCRUM-706 Guitarist empty-hands live body by direct
+  user request. PixelLab source `d278e753-9885-4550-82ff-81ee3bef297d` is now
+  accepted for live runtime because its held-guitar silhouette is more readable
+  and characterful. The runtime contract is unchanged: 8 idle directions,
+  6-frame `walking-6-frames` movement rows, transparent `512x512` runtime PNGs,
+  every visible alpha bbox normalized to `245 px`, and the same
+  `idle`/`move`/`walk` plus directional rows consumed by player movement and
+  Hero Select preview rotation. The previous SCRUM-706 pack is backed up under
+  `docs/design/backups/scrum797_guitarist_instrument_pack_pre_swap/`; SCRUM-797
+  evidence lives under `docs/design/previews/scrum797_guitarist_instrument_pack_*`.
 - SCRUM-435 adds the Thief v2 Design-source handoff under
   `docs/design/references/characters_v2/thief/` and promotes the accepted
   source into the live runtime resource

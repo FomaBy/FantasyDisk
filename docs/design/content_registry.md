@@ -73,7 +73,7 @@
 | `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
 | `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer.png`; `assets/sprites/characters/cutout/engineer_*.png` | Реализовано |
 | `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage_pixellab/`, `assets/sprites/characters/pixellab/dark_mage/`, legacy `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/cartoon2/dark_mage/dark_mage_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source/runtime assets under `assets/sprites/characters/v2/dark_mage/`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/dark_mage/skeleton_source_manifest.json` | Реализовано; SCRUM-704 live Hero Select/runtime SpriteFrames use a new PixelLab v3 8-direction 240-250px full redraw with 6-frame directional move/walk rows and empty hands; legacy SCRUM-473 cartoon2 and skeleton assets remain history/fallback |
-| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist_pixellab/`, `assets/sprites/characters/pixellab/guitarist/`, legacy `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/cutout/guitarist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/guitarist/` | Реализовано; SCRUM-706 live Hero Select/runtime SpriteFrames use new PixelLab source `704fd67b-da81-4804-acd2-07e75fefd9de` with 8 idle directions and 6-frame directional `move`/`walk`, normalized to 245 px visible height on `512x512` runtime frames; base body has empty hands/no baked instrument, legacy SCRUM-429 v2 full-frame assets remain history/fallback |
+| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist_pixellab/`, `assets/sprites/characters/pixellab/guitarist/`, legacy `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/cutout/guitarist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/guitarist/` | Реализовано; SCRUM-797 live Hero Select/runtime SpriteFrames use PixelLab source `d278e753-9885-4550-82ff-81ee3bef297d` with a held-guitar silhouette by direct user override, 8 idle directions and 6-frame directional `move`/`walk`, normalized to 245 px visible height on `512x512` runtime frames; legacy SCRUM-706 empty-hands pack and SCRUM-429 v2 full-frame assets remain history/fallback |
 | `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/assassin/` | Реализовано; SCRUM-419 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor_spriteframes.tres`, `assets/sprites/characters/full_frame/doctor_pixellab/`, `assets/sprites/characters/pixellab/doctor/`, legacy `assets/sprites/characters/full_frame/doctor/`, `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано; SCRUM-705 live Hero Select/runtime SpriteFrames use fresh PixelLab v3 full redraw (`3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`) with 8-direction idle + 6-frame directional move/walk, normalized to 244 px visible height in `512x512`; empty hands, no baked potion/syringe/saw; legacy full-frame art and SCRUM-425 pack remain history/fallback |
@@ -241,18 +241,18 @@ live frames are backed up under
 `docs/design/backups/scrum429_guitarist_v2_pre_anim/`. Attack animation remains
 absent by SCRUM-429 scope; animation/runtime smokes PASS.
 
-SCRUM-706 replaces the live Guitarist PixelLab static placeholder with a new
-PixelLab-only empty-hands production pack. Accepted source
-`704fd67b-da81-4804-acd2-07e75fefd9de` completed at `248x248`; rejected
-sources are `f41e1d57-f720-4ae1-a739-8873d935163b` (failed/listed `128x128`)
-and `d278e753-9885-4550-82ff-81ee3bef297d` (`240x240` but baked a held
-instrument). Live source rotations and six-frame movement are stored under
-`assets/sprites/characters/pixellab/guitarist/`, normalized runtime frames under
-`assets/sprites/characters/full_frame/guitarist_pixellab/` keep every visible
-alpha bbox at `245 px` height, and
-`assets/sprites/characters/guitarist_spriteframes.tres` exposes `idle`,
-`move`, `walk`, plus directional `idle/move/walk_<direction>` rows for all
-eight directions.
+SCRUM-706 first replaced the live Guitarist PixelLab static placeholder with an
+empty-hands production pack. SCRUM-797 then applies a direct user override:
+PixelLab source `d278e753-9885-4550-82ff-81ee3bef297d` is now the live
+Guitarist body because its held-guitar silhouette reads stronger and cooler in
+Hero Select/combat. Live source rotations and six-frame movement are stored
+under `assets/sprites/characters/pixellab/guitarist/`, normalized runtime frames
+under `assets/sprites/characters/full_frame/guitarist_pixellab/` keep every
+visible alpha bbox at `245 px` height, and
+`assets/sprites/characters/guitarist_spriteframes.tres` exposes `idle`, `move`,
+`walk`, plus directional `idle/move/walk_<direction>` rows for all eight
+directions. The previous SCRUM-706 empty-hands pack is backed up under
+`docs/design/backups/scrum797_guitarist_instrument_pack_pre_swap/`.
 
 SCRUM-435 adds the Thief v2 Design-source handoff under
 `docs/design/references/characters_v2/thief/` and promotes the accepted source

@@ -1,15 +1,16 @@
 {
   "source": "PixelLab MCP",
   "character_id": "guitarist",
-  "pixellab_character_id": "704fd67b-da81-4804-acd2-07e75fefd9de",
-  "pixellab_name": "FantasyDisk SCRUM-706 Sonic Bard empty palms 240",
+  "pixellab_character_id": "d278e753-9885-4550-82ff-81ee3bef297d",
+  "pixellab_name": "FantasyDisk SCRUM-706 Guitarist 240 empty hands",
   "generated_at": "2026-07-01",
-  "mode": "v3",
+  "task": "SCRUM-797",
+  "mode": "instrument_variant_user_override",
   "body_type": "humanoid",
   "view": "low top-down",
   "completed_size": [
-    248,
-    248
+    240,
+    240
   ],
   "runtime_canvas": [
     512,
@@ -197,22 +198,12 @@
     }
   },
   "spriteframes": "assets/sprites/characters/guitarist_spriteframes.tres",
-  "bbox_report": "docs/design/previews/scrum706_guitarist_pixellab_bbox_report.json",
-  "preview_contact_sheet": "docs/design/previews/scrum706_guitarist_pixellab_contact.png",
+  "bbox_report": "docs/design/previews/scrum797_guitarist_instrument_pack_bbox_report.json",
+  "preview_contact_sheet": "docs/design/previews/scrum797_guitarist_instrument_pack_contact.png",
   "preview_gifs": [
-    "docs/design/previews/scrum706_guitarist_pixellab_walk_south.gif",
-    "docs/design/previews/scrum706_guitarist_pixellab_walk_east.gif"
+    "docs/design/previews/scrum797_guitarist_instrument_pack_walk_south.gif",
+    "docs/design/previews/scrum797_guitarist_instrument_pack_walk_east.gif"
   ],
-  "accepted_source_notes": "Production source accepted because completed size is 248x248 and south preview shows open empty hands with no baked guitar/bass/amp/mic/held prop.",
-  "rejected_sources": [
-    {
-      "pixellab_character_id": "f41e1d57-f720-4ae1-a739-8873d935163b",
-      "reason": "Listed as 8dir 128x128 before generation failed; rejected for SCRUM-706 size contract."
-    },
-    {
-      "pixellab_character_id": "d278e753-9885-4550-82ff-81ee3bef297d",
-      "reason": "Completed 240x240 but preview baked a held instrument; rejected for empty-hands rule."
-    }
-  ],
-  "notes": "New PixelLab-only SCRUM-706 production pack. Weapon/instrument visuals remain separate weapon effects; base body art is empty-handed."
+  "accepted_source_notes": "Direct user override accepted the stronger held-guitar silhouette as the new live Guitarist body, superseding SCRUM-706 empty-hands preference for this character only.",
+  "source_url_note": "Downloaded from get_character rotation and walking-6-frames frame URLs because PixelLab package download remained locked by a duplicate pending south job after all required frame URLs were available."
 }

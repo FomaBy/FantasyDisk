@@ -3582,5 +3582,15 @@
   "key": "SCRUM-787",
   "status": "Готово",
   "desc_hash": "bef39e180ec1699d886eabbf89b7e2ae"
+ },
+ "animation_guitarist_replace_with_pixellab_instrument_pack_task.md": {
+  "key": "SCRUM-797",
+  "status": "Контроль качества",
+  "desc_hash": "b7b339d25e4bdad5b4d3e275a82043b6"
+ },
+ "bug_boss_combat_timer_hud_not_shown_task.md": {
+  "key": "SCRUM-799",
+  "status": "К выполнению",
+  "desc_hash": "083aee28b48c25566bff9f39d3a9a434"
  }
 }

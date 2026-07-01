@@ -30,6 +30,17 @@ SCRUM-726 (Skill Tree FINAL) и пачка SCRUM-727…776 (50× attack-VFX redr
 всем проставлен label `foma`. В беклоге остались только эпики (212–221, 481, 522) и
 контейнер SCRUM-179 (Quality Pass). Спринт 0.1.8 = 122 задачи.
 
+**Пачка геймплей-динамики 2026-06-30 (PM, foma, lane=claude):** созданы по запросу
+пользователя. К моменту сверки весь код уже приземлился на dev автономным флотом и
+QA-пройден (стартовая разведка читала старый tip dev; за сессию dev подтянулся вперёд).
+| Jira | Задача | Коммит на dev | Статус |
+| --- | --- | --- | --- |
+| SCRUM-784 | Плотность/число/места спавна — динамика с 1-й секунды | 36b05c66 | Готово |
+| SCRUM-785 | Таймеры: обычный 60с; элитка/босс 300с «убей или проиграл» | 36b05c66 | Готово |
+| SCRUM-786 | 8 нодов до босса + босс/акт; секретный босс в конце 3 акта | 898413e8 | Готово (QA a8080475) |
+| SCRUM-787 | Сундуки-линии: ряд нодов-сундуков, непропускаемый | bf6932ea | Готово (QA a8080475) |
+| SCRUM-799 | БАГ: HUD-таймер босса не виден (UX-хвост 785) | — | К выполнению (ui_screens hot, коорд. с SCRUM-778) |
+
 **Кандидаты на перенос в 0.1.8** (закрыты в 0.1.6 административно, без реализации —
 вернуть только новым Jira issue, если ещё нужны): SCRUM-470 (выбор героя v4),
 SCRUM-474 (скелетная анимация, был USER HOLD), SCRUM-476 (ребаланс наград событий),
@@ -72,6 +83,7 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [SCRUM-798_hero_select_large_preview_attributes_carousel.md](../tasks/SCRUM-798_hero_select_large_preview_attributes_carousel.md) | Back-end (UI runtime, Codex) | new | Jira: SCRUM-798. Контур: Codex; Owner: unassigned; labels `foma`,`backend`,`codex`,`hero-select`,`p1`. Direct user redesign 2026-07-01: make Hero Select character preview 2-3x larger, place ascension + start under preview, put large right-side character dossier with Line Bars/tooltips and primary/secondary/additional attribute guidance, double bottom carousel portraits/arrows. Supersedes old SCRUM-688/796 PixelLab-framed acceptance as-is. Locked paths: `scripts/ui_screens.gd`, `scripts/ui/hero_select_constants.gd`, focused Hero Select tests/UI smokes, `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`, `build/qa/scrum798/`. |
 | [codex_design_character_redraw_pixellab_berserk_240_250_task.md](../tasks/codex_design_character_redraw_pixellab_berserk_240_250_task.md) | Design main (Codex) → Animator (Codex) | done | Jira: SCRUM-703 → Контроль качества. Контур: Codex; Owner: Codex Design main + Animator; Thread/Worker: `codex-scrum-703-berserk-240`; Branch/worktree: `codex/scrum-703-berserk-pixellab-240` at `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-703-berserk-240`; Result: new PixelLab v3 unarmed Berserk `8486ce45-f749-4c63-9a6d-f0477d619c2d`, 8-dir idle + 8-dir move/walk, all runtime bboxes `245 px` high, focused smokes PASS, old pack backed up. |
 | [codex_design_character_redraw_pixellab_dark_mage_240_250_task.md](../tasks/codex_design_character_redraw_pixellab_dark_mage_240_250_task.md) | Design main (Codex) → Animator (Codex) | new | Jira: SCRUM-704. Контур: Codex; Owner: unassigned; Locked paths: `assets/sprites/characters/pixellab/dark_mage/`, `assets/sprites/characters/full_frame/dark_mage_pixellab/`, `assets/sprites/characters/dark_mage_spriteframes.tres`, character registry/docs. Full PixelLab redraw copied from Biologist/Chemist pipeline with strict visible alpha bbox target `240-250 x 240-250 px`; no baked book/skull/wand. |
 | [codex_design_character_redraw_pixellab_doctor_240_250_task.md](../tasks/codex_design_character_redraw_pixellab_doctor_240_250_task.md) | Design main (Codex) → Animator (Codex) | done | Jira: SCRUM-705. QA PASSED; Jira `Готово`. Контур: Codex; Doctor PixelLab redraw integrated on `origin/dev`, visible alpha bbox in `240-250 px` contract, transparent `512x512` runtime pack and `doctor_spriteframes.tres` verified. |
