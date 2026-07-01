@@ -48,3 +48,16 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `holy_flail` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+QA claude-qa 2026-07-01. Проверено на HEAD origin/dev (asset влит в dev; local файл байт-в-байт совпадает с origin/dev).
+
+- `assets/sprites/effects/vfx_weapon_holy_flail.png`: 256x256, углы прозрачны, 65% полностью прозрачно, видимое покрытие 31.2% (полное кольцо — ожидаемо шире точечных VFX), median saturation 54 → полупрозрачный, центр кольца пуст (игрок виден), HUD/world не перекрыт.
+- Визуал: полный 360° золотой замах (divine light-trail, шипованный шар + цепь по кольцу, gold star/cross glints, divine flash-burst) — уникально читается как Освящённый кистень, роль «circular heavy swing + counter» видна. Персонаж/паладин в центр НЕ запечён (правило «no characters» соблюдено). Alpha/readability ок на тёмном и светлом фоне.
+- Тесты через `tools/godot_gate.py` (семафор, live-editor рядом): `unique_weapon_vfx_assets_test.gd` PASS (51 plates, включает holy_flail), `attack_vfx_smoke_test.gd` PASS, `runtime_smoke_test.gd` PASS.
+- Геймплейные параметры/shared runtime не изменены.
+
+QA-блок добавлен, чтобы board_sync не откатывал тикет из «Готово» в «Контроль качества».
