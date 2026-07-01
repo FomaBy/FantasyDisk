@@ -1,6 +1,6 @@
 # Animation: Штык-стойка (soldier_bayonet) attack VFX redraw
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex

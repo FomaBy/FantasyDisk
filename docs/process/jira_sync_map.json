@@ -3375,8 +3375,8 @@
  },
  "animation_weapon_attack_soldier_bayonet_codex_task.md": {
   "key": "SCRUM-766",
-  "status": "К выполнению",
-  "desc_hash": "e53fb87019e766de096da23219f7bc86"
+  "status": "Контроль качества",
+  "desc_hash": "9645f8885753248e7d929a3336274c21"
  },
  "animation_weapon_attack_soldier_grenade_codex_task.md": {
   "key": "SCRUM-767",
