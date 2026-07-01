@@ -68,3 +68,13 @@ Locked paths: scripts/ui_screens.gd (_create_combat_timer_panel)
 - Связано с [[backend_combat_timer_elite_boss_killtimer_task]] (SCRUM-785) — это
   UX-хвост той задачи (логика поражения уже на dev и QA-passed).
 - Правки делать точечными; коммит явными путями при active churn.
+
+## QA-Вердикт: PASSED
+
+Проверено 2026-07-01 claude-qa на origin/dev @ 8010db18 (ancestor origin/dev, не стрэнд).
+- Ранний выход `if game.boss_combat_active: return` в `_create_combat_timer_panel` снят — `CombatTimerPanel`/`timer_label` создаются для босса/элитки как в обычном бою (scripts/ui_screens.gd:9120+).
+- `_update_hud` кормит таймер во всех боях (`if game.combat_active: round_time_left`), а `_current_round_duration()` возвращает 300с для boss/elite (SCRUM-785).
+- Формат M:SS: `"%d:%02d"` → 300с = «5:00»; alarm ≤5с (красный + пульс) — работает.
+- Обычный бой (60с) не затронут — общий HUD-smoke зелёный.
+- Smoke: `_test_boss_hud_shows_timer` (стартует `_start_combat(true)`, ассертит панель+timer_label созданы и текст «5:00»); runtime_smoke_test PASSED через godot_gate (FSD_GODOT_SLOTS=1).
+Статус: PASSED
