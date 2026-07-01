@@ -1646,11 +1646,11 @@ promotion.
 - Метаочки начисляются за первый clear каждого уровня возвышения 0..5 каждым классом по формуле **1/1/2/3/4/5**, без фарма повторов; общий cap заработанных метаочков = `META_POINTS_CAP=100`. Выбранный персонаж открывает следующий selectable уровень возвышения до cap 5.
 - За каждую победу выбранный персонаж также получает +1 `class_boss_wins`. Общие пороги классовой прогрессии 1/2/4/6/9 побед дают бонусы только этому классу: class damage, class max HP и class attack speed. Эти `class_*` модификаторы применяются на старте забега только к `selected_character_id`, поэтому прогресс Берсерка не усиливает Солдата и наоборот.
 - Бонусы уровней кумулятивны: уровень N включает все бонусы уровней 1..N. Таблицы уровней доступны через `ProgressionData.ASCENSION_LEVELS` и хранятся в `scripts/progression_data_ascension.gd`; канонические ID в `docs/design/content_registry.md`.
-- Древо умений v2 (`SKILL_TREE`) — общее графовое дерево: 85 узлов, `pos/adj/kind/cost/effects`, 5 keystone, полный бюджет 100. Каждый playable class id имеет уникальный стартовый узел в `CLASS_ENTRY_NODES`; можно выделить class entry node или соседей уже выделенных узлов. `skill_points` теперь compatibility facade текущего UI и равен доступным метаочкам; `global_level` = количество выделенных узлов.
+- Древо умений schema 3 (`SKILL_TREE`, SCRUM-726) — общее графовое дерево в стиле Path of Exile: 107 узлов, 8 атрибутных лепестков, 17 class pods, 21 keystone (4 нейтральных + 17 классовых), полный бюджет 183 при cap 100. Атрибутные узлы (`*_flat`) добавляются к базовым stat героя до derived formulas, а узлы с `class_affinity` применяются только через `skill_modifiers_for_class(meta_state, selected_character_id)`. Каждый playable class id имеет уникальный стартовый узел в `CLASS_ENTRY_NODES`; можно выделить class entry node или соседей уже выделенных узлов. `skill_points` теперь compatibility facade текущего UI и равен доступным метаочкам; `global_level` = количество выделенных узлов. Канон: `docs/design/systems/skill_tree.md`.
 - Сохранение через `scripts/meta_progression.gd` в `user://fantasydisk_meta.cfg` (ConfigFile).
 - Бонусы применяются к игроку при старте первого боя забега (`apply_ascension_bonuses` в `scripts/main.gd`).
 - Карточка выбора персонажа показывает «Возвышение: N/5», экран победы показывает прогресс возвышения выбранного героя.
-- Smoke tests: `tests/meta_progression_smoke_test.gd`, `tests/meta_points_per_ascension_test.gd`, `tests/meta_skill_tree_smoke_test.gd`.
+- Smoke tests: `tests/meta_progression_smoke_test.gd`, `tests/meta_points_per_ascension_test.gd`, `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`.
 
 ## Боевые Правила После Bugfix-Пакета 2026-06-10
 

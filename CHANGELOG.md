@@ -104,6 +104,12 @@
   portrait path points to the PixelLab south idle frame.
 
 ### Changed
+- SCRUM-726: finalized the PoE-like meta skill tree schema 3 with 8 attribute
+  petals and 17 class signature pods. Skill tree effects now split
+  account-wide bonuses from `class_affinity` bonuses through
+  `skill_modifiers_for_class`, attribute nodes add `*_flat` stats before
+  derived class formulas, and every playable hero has a unique class keystone
+  while the 100 meta-point cap stays unchanged.
 - SCRUM-695: rebuilt level-up attribute relevance as a direct attribute×class
   matrix instead of routing 24 combat attributes through 8 base stats. Added a
   canonical attribute registry (single source of truth: id/name/icon/value-type)

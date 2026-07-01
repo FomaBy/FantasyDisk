@@ -1,6 +1,6 @@
 # Skill Tree FINAL — древо умений в стиле PoE с РАЗНЫМИ усилениями для разных героев
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Design main + Back-end (Codex)
 Контур: Codex
@@ -9,8 +9,8 @@ Lane: codex
 Создано: 2026-06-30
 Автор: PM (запрос пользователя)
 Jira: SCRUM-726
-Owner: unassigned
-Thread/Worker: n/a
+Owner: codex-backend-scrum726-skill-tree-final
+Thread/Worker: codex-backend-scrum726-skill-tree-final
 Labels: foma, p1, codex, backend, design-main, skill-tree, meta-progression, redesign
 Locked paths: `scripts/meta_progression.gd`, `scripts/skill_tree_data.gd` (новый, если выносить дерево),
 `scripts/player.gd` (только секция применения run/attr-модификаторов), `scripts/main.gd`
@@ -335,3 +335,47 @@ aura_radius, buff_power, projectile_speed, ultimate_multiplier, pickup_radius.`
   правило codex-strand); закоммитить с сайдкарами (`.uid`/`.import`); `git merge-base --is-ancestor
   <commit> origin/dev` должен проходить.
 - Финальный отчёт исполнителя обязан содержать раздел `Disk cleanup:` по политике репо.
+
+## 8. Result / Отчёт исполнителя
+
+Статус: реализовано, готово к QA после commit/push.
+
+Owner/worker: `codex-backend-scrum726-skill-tree-final`.
+Branch: `codex/scrum-726-skill-tree-final` from `origin/dev`.
+Commit: будет указан в финальном Jira-комментарии после green-gate, commit и push.
+
+Результат:
+- Древо умений поднято до schema 3: общий PoE-like граф на 107 узлов с ядром, 8 атрибутными лепестками и 17 class pods.
+- Добавлены account-wide атрибутные `*_flat` узлы; `Player.apply_meta_skill_modifiers()` применяет их к базовым stats до derived formulas.
+- Добавлены `class_affinity`-сигнатуры и `skill_modifiers_for_class(state, character_id)`; старт забега в `main.gd` теперь применяет class-aware skill modifiers.
+- У каждого из 17 героев есть уникальный `sig_<class>_keystone`; чужие class pod эффекты не применяются к активному герою.
+- Экономика сохранена: `META_POINTS_CAP = 100`, награды `[1, 1, 2, 3, 4, 5]`, полный бюджет дерева 183 метаочка, `skill_tree_total_cost_capped()` возвращает cap-aware 100.
+- Миграция schema 2 -> 3 делает безопасный full respec старых skill node ids и сохраняет прочую meta-state структуру.
+
+Changed files:
+- `scripts/meta_progression.gd`
+- `scripts/player.gd`
+- `scripts/main.gd`
+- `tests/meta_skill_tree_smoke_test.gd`
+- `tests/skill_tree_per_hero_test.gd`
+- `tests/skill_tree_per_hero_test.gd.uid`
+- `docs/design/systems/skill_tree.md`
+- `docs/design/mechanics_extract.md`
+- `docs/design/current_game_state.md`
+- `docs/design/systems/progression_balance.md`
+- `CHANGELOG.md`
+- `docs/tasks/codex_skill_tree_final_per_hero_enhancements_task.md`
+
+Tests:
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_skill_tree_smoke_test.gd`
+  (`Meta skill tree smoke test passed.`)
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/skill_tree_per_hero_test.gd`
+  (`Skill tree per-hero test passed.`)
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+  (`Runtime smoke test passed.`)
+
+Balance note:
+- SCRUM-726 changes meta-progression structure and class-specific run modifier plumbing, not weapon trio configs. Class balance harnesses were not broadened in this task; focused tests prove graph/economy/class-affinity behavior, and follow-up balance playtests should inspect high-investment class pods near the 100-point cap.
+
+Disk cleanup:
+- Removed task-created `.godot/` import cache (~1.2 GB after test imports). No `.import` churn left in git status. Dedicated worktree kept as pushed QA handoff path: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-726-skill-tree-final`.

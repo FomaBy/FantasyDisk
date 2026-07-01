@@ -184,6 +184,8 @@ static func _default_run_modifiers() -> Dictionary:
 		"dodge_flat": 0.0,
 		"xp_gain_multiplier": 1.0,
 		"money_gain_multiplier": 1.0,
+		"ult_charge_multiplier": 1.0,
+		"elite_boss_damage_multiplier": 1.0,
 		"healing_multiplier": 1.0,
 		"vampiric_heal_per_second_cap": ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT,
 		"drain_heal_per_second_cap": ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT,
@@ -824,7 +826,12 @@ func _apply_reward_mods(mods: Dictionary) -> void:
 const META_SKILL_MULT_MAP := {
 	"damage_mult": "damage_multiplier",
 	"attack_speed_mult": "attack_speed_multiplier",
+	"move_speed_mult": "move_speed_multiplier",
 	"max_health_mult": "max_health_multiplier",
+	"range_mult": "range_multiplier",
+	"aoe_radius_mult": "aoe_radius_multiplier",
+	"aura_radius_mult": "aoe_radius_multiplier",
+	"knockback_mult": "knockback_multiplier",
 	"xp_gain_mult": "xp_gain_multiplier",
 	"money_gain_mult": "money_gain_multiplier",
 	"ult_charge_mult": "ult_charge_multiplier",
@@ -839,11 +846,37 @@ const META_SKILL_FLAT_MAP := {
 	"defense_flat": "defense_flat",
 	"dodge_flat": "dodge_flat",
 	"regeneration_flat": "regeneration_flat",
+	"crit_chance_flat": "crit_chance_flat",
+	"crit_damage_flat": "crit_damage_flat",
+	"dot_damage_flat": "dot_damage_flat",
+	"dot_speed_flat": "dot_speed_flat",
+	"aura_radius_flat": "aura_radius_flat",
+	"buff_power_flat": "buff_power_flat",
+	"vampiric_chance_flat": "vampiric_chance_flat",
+	"vampiric_amount_flat": "vampiric_amount_flat",
+	"summon_bonus": "summon_bonus",
+	"ultimate_flat": "ultimate_flat",
+	"low_hp_damage_bonus": "low_hp_damage_bonus",
+	"lowhp_regen_bonus": "lowhp_regen_bonus",
+}
+const META_SKILL_ATTRIBUTE_FLAT_MAP := {
+	"strength_flat": "strength",
+	"agility_flat": "agility",
+	"intelligence_flat": "intelligence",
+	"perception_flat": "perception",
+	"energy_flat": "energy",
+	"knowledge_flat": "knowledge",
+	"endurance_flat": "endurance",
+	"leadership_flat": "leadership",
 }
 
 
 func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 	var old_max_health := max_health
+	for key in META_SKILL_ATTRIBUTE_FLAT_MAP:
+		if mods.has(key):
+			var stat_key: String = META_SKILL_ATTRIBUTE_FLAT_MAP[key]
+			stats[stat_key] = float(stats.get(stat_key, 0.0)) + float(mods[key])
 	for key in META_SKILL_MULT_MAP:
 		if mods.has(key):
 			var run_key: String = META_SKILL_MULT_MAP[key]
@@ -933,7 +966,7 @@ func _ultimate_config() -> Dictionary:
 func _gain_ultimate_charge(amount: float) -> void:
 	if amount <= 0.0 or _ultimate_active:
 		return
-	var energy_scale := 1.0 + float(stats.get("energy", 0.0)) * 0.025
+	var energy_scale := (1.0 + float(stats.get("energy", 0.0)) * 0.025) * float(run_modifiers.get("ult_charge_multiplier", 1.0))
 	ultimate_charge = clampf(ultimate_charge + amount * energy_scale, 0.0, ultimate_max_charge)
 
 
