@@ -7,7 +7,22 @@
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-428
+Контур: Codex
+Owner: unassigned
+Thread/Worker: n/a
+Locked paths: `assets/sprites/characters/pixellab/engineer/`, `assets/sprites/characters/full_frame/engineer_pixellab/`, `assets/sprites/characters/engineer_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
+
+## PM/Codex Reactivation — PixelLab Final Runtime Pass (2026-07-01)
+
+Директива пользователя 2026-07-01: не все игровые персонажи находятся в новой
+PixelLab-графике. SCRUM-428 переиспользуется как актуальный ticket для
+`engineer` вместо создания дубля.
+
+Актуальный scope: Codex Design main через `fantasydisk-pixellab-animation-integrator`
+должен прежде всего переиспользовать уже созданный PixelLab character
+`c5bd9766-e7de-4316-ace6-e687c951e621` (`FantasyDisk Engineer PixelLab
+SCRUM-428 2026-06-30`) и довести live runtime pack до текущего `dev`.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
