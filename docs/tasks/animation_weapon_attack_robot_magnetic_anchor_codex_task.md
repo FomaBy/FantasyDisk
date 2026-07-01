@@ -1,12 +1,12 @@
 # Animation: Магнитный Якорь (robot_magnetic_anchor) attack VFX redraw
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Animator/Codex codex-vfx-auto-11-20260701
+Thread: codex-vfx-auto-11-20260701
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
@@ -57,3 +57,51 @@ so Jira was unblocked by switching this attack-VFX task to the mandatory
 PixelLab MCP / `fantasydisk-asset-generator` production path. Future workers must
 record the PixelLab object/job id, source/runtime paths, static alpha/readability
 evidence, Godot smoke results, and `Disk cleanup:` in the final result.
+
+## Codex Start — 2026-07-01
+
+Claimed via Jira-pull by `codex-vfx-auto-11-20260701` on branch
+`codex/SCRUM-760-robot-magnetic-anchor-vfx` from synced `origin/dev`
+(`42faa829`). Locked paths stay limited to the `robot_magnetic_anchor` VFX
+runtime PNG, PixelLab source/evidence folder, contact preview, this mirror, and
+Jira sync metadata if changed. Next verification: PixelLab source generation,
+static alpha/readability report, then `unique_weapon_vfx_assets_test.gd` and
+`attack_vfx_smoke_test.gd` through `tools/godot_gate.py`.
+
+## Результат — 2026-07-01
+
+Result: done / ready for QA.
+
+- Runtime VFX updated: `assets/sprites/effects/vfx_weapon_robot_magnetic_anchor.png`.
+- PixelLab MCP source: `80184364-0712-4722-85f0-2dbcdcbe1363`
+  (`create_map_object`, `256x256`, high top-down).
+- Source/evidence:
+  `docs/design/references/weapon_attack_animations/robot_magnetic_anchor/`.
+- Preview:
+  `docs/design/previews/weapon_attack_animations/robot_magnetic_anchor_contact.png`.
+- Static alpha/readability:
+  `static_alpha_readability_report.json` -> `pass`; runtime `256x256 RGBA`,
+  alpha extrema `[0, 162]`, transparent corners, center 64x64 mean alpha `79.77`,
+  no edge alpha pixels.
+- Visual intent: cyan magnetic pull ring with inward field structure and a
+  low-opacity ghost of the canonical Magnetic Anchor weapon silhouette under
+  the PixelLab field.
+- Scope: no gameplay, balance, targeting, cooldown, scene, shared script, broad
+  design doc, `.import`, `.uid`, or `.godot` changes kept.
+
+Tests:
+
+- `python3 -m json.tool docs/design/references/weapon_attack_animations/robot_magnetic_anchor/manifest.json`
+  — PASS.
+- `python3 -m json.tool docs/design/references/weapon_attack_animations/robot_magnetic_anchor/static_alpha_readability_report.json`
+  — PASS.
+- PNG static check — PASS (`runtime/source` are `256x256 RGBA`; runtime corners
+  are transparent).
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd`
+  — PASS (`Unique weapon VFX assets smoke passed: 51 plates.`).
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd`
+  — PASS (`Attack VFX smoke test passed.`).
+
+Disk cleanup: removed task-created `.godot/` import cache and `build/qa/scrum457`;
+removed generated `.import` sidecars from task-specific source/preview paths;
+none kept or committed.
