@@ -63,7 +63,15 @@ the live boss node rotation. Current boss redraw candidates, the special
 live under `assets/sprites/bosses/pixellab_candidates/` with source manifest
 `docs/design/references/bosses/pixellab_roster_redraw_2026_06/manifest.json`.
 OpenAI image generation was used only for new-boss concept references; PixelLab
-MCP produced the production sprite candidates.
+MCP produced the production sprite candidates. SCRUM-793 promotes only the
+accepted current-boss PixelLab candidates into live full-frame rows:
+`disk_devourer` source `81b491db-7240-4513-bad5-263b7f81539d` and
+`brood_mother` source `99d1c48c-ab86-4025-80b0-5a0ccb3d2edf`. Existing
+SpriteFrames resources, visual state names, frame counts and gameplay callbacks
+are preserved. `secret_ascension_boss`, single-view `bloodthorn_lion`,
+`rift_warden`, `bone_archon`, `ashen_colossus`, `skeletal_dragon` and 8-dir
+`bloodthorn_lion` remain source-only/revise-needed follow-up material.
+Promotion QA evidence lives in `build/qa/scrum793_boss_pixellab_promotion/`.
 
 **SCRUM-794 — `bloodthorn_lion` runtime integration.** Back-end promoted the
 `bloodthorn_lion` new-boss candidate to a live-runtime boss: single-view

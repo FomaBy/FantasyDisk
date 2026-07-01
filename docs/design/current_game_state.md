@@ -1583,9 +1583,9 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 | Босс | ID | Сцена | Спрайт | Паттерны |
 | --- | --- | --- | --- | --- |
 | Rift Warden | `rift_warden` | `scenes/BossWarden.tscn` | `boss_rift_warden.png` | Залпы, зоны разлома, призыв, щит, увороты, gravity well |
-| Disk Devourer | `disk_devourer` | `scenes/BossDiskDevourer.tscn` | `boss_disk_devourer.png` | Рывок, slam AoE, radial burst, vampiric bite, enrage |
+| Disk Devourer | `disk_devourer` | `scenes/BossDiskDevourer.tscn` | `boss_disk_devourer.png`; SCRUM-793 PixelLab full-frame rows | Рывок, slam AoE, radial burst, vampiric bite, enrage |
 | Bone Archon | `bone_archon` | `scenes/BossBoneArchon.tscn` | `boss_bone_archon.png` | Скелеты, веер черепов, bone prison/wall с проходом |
-| Brood Mother | `brood_mother` | `scenes/BossBroodMother.tscn` | `boss_brood_mother.png` | Выводок, web slow zones, дополнительный web pressure, phase-3 lunge |
+| Brood Mother | `brood_mother` | `scenes/BossBroodMother.tscn` | `boss_brood_mother.png`; SCRUM-793 PixelLab full-frame rows | Выводок, web slow zones, дополнительный web pressure, phase-3 lunge |
 | Ashen Colossus | `ashen_colossus` | `scenes/BossAshenColossus.tscn` | `boss_ashen_colossus.png` | Slam-волны, ember fields, molten armor pulse, enrage |
 | Костяной Дракон | `skeletal_dragon` | TBD | Design-source candidate `assets/sprites/bosses/pixellab_candidates/skeletal_dragon/skeletal_dragon_pixellab_alpha.png` | Planned flying skeletal boss; gameplay, scene and balance not implemented |
 | Шипастый Кровавый Лев | `bloodthorn_lion` | TBD | Design-source candidates under `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion*/` | Planned fast blood-thorn predator; gameplay, scene and balance not implemented |
@@ -1601,11 +1601,16 @@ MCP создал sprite candidates для current roster, `secret_ascension_boss
 новых IDs. Пакет лежит в
 `docs/design/references/bosses/pixellab_roster_redraw_2026_06/`, candidate
 PNGs — в `assets/sprites/bosses/pixellab_candidates/`, previews — в
-`docs/design/previews/boss_pixellab_roster_redraw_2026_06_*`. Эти ассеты пока
-не подключены к live scenes/SpriteFrames: лучшие first-pass candidates —
-`disk_devourer`, `brood_mother`, `secret_ascension_boss` и single-view
-`bloodthorn_lion`; остальные требуют второго visual pass перед runtime
-promotion.
+`docs/design/previews/boss_pixellab_roster_redraw_2026_06_*`. SCRUM-793
+(2026-07-02) promoted only the accepted current-boss candidates:
+`disk_devourer` PixelLab source `81b491db-7240-4513-bad5-263b7f81539d` and
+`brood_mother` source `99d1c48c-ab86-4025-80b0-5a0ccb3d2edf` now populate the
+existing live full-frame runtime rows while preserving SpriteFrames state names,
+frame counts and boss gameplay callbacks. `secret_ascension_boss`, single-view
+`bloodthorn_lion`, `rift_warden`, `bone_archon`, `ashen_colossus`,
+`skeletal_dragon` and 8-dir `bloodthorn_lion` remain source-only or
+revise-needed follow-up material. QA evidence:
+`build/qa/scrum793_boss_pixellab_promotion/`.
 
 ## Спавн И Волны
 

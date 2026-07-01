@@ -1,11 +1,21 @@
 # Animation Task: SCRUM-779 Boss PixelLab Candidate Promotion
 
-Статус: new
+Статус: review
 Контур: Codex
-Owner: unassigned
-Thread: n/a
-Locked paths: assets/sprites/bosses/pixellab_candidates/; assets/sprites/bosses/full_frame/; assets/sprites/bosses/*spriteframes.tres; docs/design/references/bosses/pixellab_roster_redraw_2026_06/; docs/design/previews/boss_pixellab_roster_redraw_2026_06*
+Owner: Animator / codex-animator-auto
+Thread: fantasydisk-codex-animator-agent
+Locked paths: assets/sprites/bosses/pixellab_candidates/; assets/sprites/bosses/full_frame/; assets/sprites/bosses/*spriteframes.tres; docs/design/references/bosses/pixellab_roster_redraw_2026_06/; docs/design/previews/boss_pixellab_roster_redraw_2026_06*; build/qa/scrum793*; docs/design/content_registry.md; docs/design/current_game_state.md; docs/design/systems/enemies_bosses.md
 Jira: SCRUM-793
+
+## Claim / Start
+
+2026-07-02: Claimed via Jira-pull by Codex Animator worker
+`fantasydisk-codex-animator-agent / codex-animator-auto`.
+Worktree: `/Users/sergeyfomin/.codex/worktrees/849d/AI Agent`, detached at
+`origin/dev` after `git fetch origin --prune` and fast-forward to `origin/dev`.
+Next verification step: promote only accepted SCRUM-779 PixelLab boss candidates,
+generate alpha/pivot/contact evidence, then run focused animation/full-frame
+registry smokes through `tools/godot_gate.py`.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил in-scope work. Follow
@@ -51,3 +61,41 @@ Revise-needed candidates:
 - `docs/design/content_registry.md`, `docs/design/current_game_state.md` and
   `docs/design/systems/enemies_bosses.md` clearly state live versus source-only
   status.
+
+## Result
+
+2026-07-02: Implemented the accepted-candidate promotion only.
+
+- Promoted `disk_devourer` PixelLab source
+  `81b491db-7240-4513-bad5-263b7f81539d` into the existing live full-frame rows
+  under `assets/sprites/bosses/full_frame/disk_devourer/`.
+- Promoted `brood_mother` PixelLab source
+  `99d1c48c-ab86-4025-80b0-5a0ccb3d2edf` into the existing live full-frame rows
+  under `assets/sprites/bosses/full_frame/brood_mother/`.
+- Preserved existing SpriteFrames resources, state names, frame counts, speeds
+  and boss gameplay callbacks; no boss scene, route rotation, damage, timing or
+  balance logic changed.
+- Kept `rift_warden`, `bone_archon`, `ashen_colossus`, `skeletal_dragon`,
+  `bloodthorn_lion_8dir`, `secret_ascension_boss` and single-view
+  `bloodthorn_lion` source-only/revise-needed for separate follow-up.
+- Updated live docs: `CHANGELOG.md`, `docs/design/content_registry.md`,
+  `docs/design/current_game_state.md`,
+  `docs/design/systems/enemies_bosses.md` and
+  `docs/design/systems/animation.md`.
+
+Validation:
+
+- Visual contact QA: PASS —
+  `build/qa/scrum793_boss_pixellab_promotion/scrum793_boss_pixellab_promotion_contact.png`.
+- Alpha/pivot report: PASS —
+  `build/qa/scrum793_boss_pixellab_promotion/alpha_pivot_report.json`.
+- SpriteFrames file contract: PASS —
+  `build/qa/scrum793_boss_pixellab_promotion/spriteframes_file_contract.json`
+  confirms expected states and existing texture paths for both promoted bosses.
+- Godot focused smoke: BLOCKED in this disposable worktree. Command
+  `python3 tools/godot_gate.py --headless --path . --script res://tests/full_frame_registry_integrity_test.gd`
+  reached `[ DONE ] first_scan_filesystem`, then produced no further output for
+  about 60 seconds; interrupted before the smoke script executed. Evidence:
+  `build/qa/scrum793_boss_pixellab_promotion/godot_import_blocker.md`.
+
+Disk cleanup: removed `.godot` and Python `__pycache__` created by this run.

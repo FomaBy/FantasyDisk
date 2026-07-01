@@ -5,6 +5,13 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-793: promoted accepted SCRUM-779 PixelLab boss candidates into live
+  full-frame runtime rows for `disk_devourer`
+  (`81b491db-7240-4513-bad5-263b7f81539d`) and `brood_mother`
+  (`99d1c48c-ab86-4025-80b0-5a0ccb3d2edf`). Existing SpriteFrames resources,
+  state names, frame counts, speeds and gameplay callbacks were preserved; the
+  remaining SCRUM-779 boss candidates stay source-only/revise-needed. QA
+  evidence lives under `build/qa/scrum793_boss_pixellab_promotion/`.
 - SCRUM-803: PixelLab Assassin runtime pack is now live on dev. Generated
   accepted empty-open-hands source character
   `ec73da27-b704-4336-9275-74c8e3e578df`, rejected/deleted candidate

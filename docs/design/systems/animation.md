@@ -606,6 +606,14 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
 - SCRUM-371 (2026-06-14) добавил тот же production full-frame contract для `shard_marshal`: `move`, `attack`/`attack_primary`, `skill_shard_fan`, `skill_command_pulse` и matching `attack_*` aliases; backend phase `shard_marshal:shard_fan:*` визуально резолвится в `skill_shard_fan`.
 - SCRUM-376 (2026-06-14) подключил full-frame contract для всех mini-elites через SCRUM-372 `mini_elite_kind` visual-id hook: `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`. У каждого есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и matching `attack_*` aliases; missing mini-specific frames fallback'аются на base `elite_behavior`. SCRUM-370 добавил каждому `death` 6f one-shot.
 - SCRUM-377 (2026-06-14) подключил full-frame contract для боссов `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`: `move`, `attack`/`attack_primary`, две 6f `skill_*` строки и matching `attack_*` aliases. SCRUM-378 добавил Back-end visual-only hooks: boss callbacks запрашивают matching `skill_*` state через `FullFrameAnimationRegistry`, а damage/VFX timing/targeting/cooldowns остаются прежними. SCRUM-370 добавил `death` 6f one-shot rows для всех 5 boss SpriteFrames.
+- SCRUM-793 (2026-07-02) promotes accepted SCRUM-779 PixelLab single-view boss
+  candidates into the existing live full-frame rows for `disk_devourer`
+  (`81b491db-7240-4513-bad5-263b7f81539d`) and `brood_mother`
+  (`99d1c48c-ab86-4025-80b0-5a0ccb3d2edf`). SpriteFrames paths, state names,
+  frame counts, speeds and boss gameplay callbacks are unchanged; `rift_warden`,
+  `bone_archon`, `ashen_colossus`, `secret_ascension_boss`, `skeletal_dragon`
+  and `bloodthorn_lion` candidates remain source-only/revise-needed follow-ups.
+  Evidence: `build/qa/scrum793_boss_pixellab_promotion/`.
 - SCRUM-372 (2026-06-14) добавил visual-only hook для мини-элиток: если elite instance имеет meta `mini_elite_kind` и `FullFrameAnimationRegistry.sprite_frames_for("elite", mini_elite_kind)` существует, runtime выбирает именно этот full-frame visual ID. Если SpriteFrames для mini-kind еще нет, сохраняется прежний fallback на `elite_behavior` route-элитки.
 
 ## Summon / Ally Motion
