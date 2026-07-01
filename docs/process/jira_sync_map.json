@@ -3370,8 +3370,8 @@
  },
  "animation_weapon_attack_sniper_spotter_scope_codex_task.md": {
   "key": "SCRUM-765",
-  "status": "К выполнению",
-  "desc_hash": "851cdfe4d534d2ba18c2b5234da03fdc"
+  "status": "Контроль качества",
+  "desc_hash": "74f3a28d75895da83d3ddabedcbc3960"
  },
  "animation_weapon_attack_soldier_bayonet_codex_task.md": {
   "key": "SCRUM-766",
