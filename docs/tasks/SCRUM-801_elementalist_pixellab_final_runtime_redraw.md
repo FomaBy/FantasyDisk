@@ -7,8 +7,8 @@
 Создано: 2026-07-01
 Jira: SCRUM-801
 Контур: Codex
-Owner: Codex character serial integration worker
-Thread/Worker: codex-character-serial-integration-20260701
+Owner: unassigned
+Thread/Worker: n/a
 Locked paths: `assets/sprites/characters/pixellab/elementalist/`, `assets/sprites/characters/full_frame/elementalist_pixellab/`, `assets/sprites/characters/elementalist_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
 
 ## Context / Problem
@@ -61,3 +61,34 @@ Tests/evidence:
 - Restored source-branch QA evidence under `build/qa/scrum801_elementalist_pixellab/`.
 
 Disk cleanup: none created by this integration run; no `.godot/`, Python cache, or temp download directory was created here. Imported QA evidence is intentionally kept.
+
+## Gate Rerun / Environment Blocker — 2026-07-01
+
+Thread/Worker: `codex-character-gate-rerun-20260701`.
+Branch: `codex/character-pixellab-serial-integration-20260701` @ `a97e3eb9`.
+
+Static validation PASS for the combined Soldier/Thief/Elementalist/Robot scope:
+56 source PNGs, 56 runtime PNGs, manifests, 56 SpriteFrames texture refs,
+canonical `*_idle_south.png` `sprite_path` values, and no task-owned
+`.import`/`.uid` sidecars. Evidence:
+`build/qa/character_gate_rerun_20260701/static_pack_validation.json`.
+
+Godot gates are still environment-blocked, not product-failed. The worker
+queued `res://tests/animation_smoke_test.gd` through `tools/godot_gate.py` twice:
+first with default slots, then with `FSD_GODOT_SLOTS=6`, both with
+`FSD_GODOT_MAXWAIT=86400` so the command would not fall through and bypass the
+semaphore. Both attempts stayed queued and were interrupted before Godot
+launched; `animation_smoke_test.log` remained empty. Final snapshot
+`build/qa/character_gate_rerun_20260701/semaphore_blocker_snapshot.txt` shows all
+six observed semaphore slots held by unrelated Godot/gate jobs
+(`unique_weapon_vfx_assets_test.gd`, attack VFX, ranger pack/import). Required
+gates still not completed: `animation_smoke_test.gd`,
+`hero_select_pixellab_layout_test.gd`,
+`character_sprite_registry_alignment_test.gd`, and `runtime_smoke_test.gd`.
+
+No real Soldier/Thief/Elementalist/Robot defect was observed. Do not regenerate
+art or re-integrate unless a future gate reports a concrete product failure.
+Jira is released from active ownership until the semaphore clears.
+Disk cleanup: no `.godot/` or user-data cache was created by this worker; only
+the committed `build/qa/character_gate_rerun_20260701/` evidence files were
+created.
