@@ -1,6 +1,6 @@
 # Animation: Ключ Часового (engineer_sentry_wrench) attack VFX redraw
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
@@ -63,7 +63,7 @@ evidence, Godot smoke results, and `Disk cleanup:` in the final result.
 
 ## Результат — 2026-07-01
 
-Статус: review / ready for QA after task-specific commit.
+Статус: done / ready for QA after task-specific commit.
 
 Сделано:
 - `assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png` заменён на новый `256x256` RGBA attack-signature VFX для `engineer_sentry_wrench`.
