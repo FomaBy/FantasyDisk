@@ -1,9 +1,9 @@
 # SCRUM-798 - Hero Select: крупное превью, атрибуты и увеличенная карусель
 
-Статус: new
+Статус: done
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Back-end/Codex
+Thread: codex-backend-scrum798-dev-integration
 Locked paths: `scripts/ui_screens.gd`, `scripts/ui/hero_select_constants.gd`, focused Hero Select tests/UI smoke/no-overlap tests as needed, `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`, `build/qa/scrum798/`, Hero Select screen
 Версия: 0.1.8
 Приоритет: P1
@@ -113,3 +113,11 @@ PixelLab-framed Hero Select как есть: текущая цель - сдел�
 3. После результата: update Jira first, локальный mirror, commit и push только
    task-owned files.
 
+## Result 2026-07-01
+- Реализация SCRUM-798 из `origin/codex/scrum-798-hero-select-layout`
+  интегрирована в `origin/dev` merge-коммитом `85019376`.
+- Проверено: `389fd151` и `b34dd949` являются предками `origin/dev`
+  (`git merge-base --is-ancestor` exit 0 для обоих).
+- Прогоны через `tools/godot_gate.py`: `hero_select_scrum798_capture_test.gd`,
+  `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`,
+  `runtime_smoke_test.gd` - PASS.

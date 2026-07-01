@@ -3245,8 +3245,8 @@
  },
  "animation_weapon_attack_electric_guitar_claude_task.md": {
   "key": "SCRUM-740",
-  "status": "К выполнению",
-  "desc_hash": "c3305fb8e7bf2bb5e49689e1412cdafe"
+  "status": "Контроль качества",
+  "desc_hash": "2795c6955857c2b9b48e81c279352eaf"
  },
  "animation_weapon_attack_elementalist_meteor_core_codex_task.md": {
   "key": "SCRUM-741",
@@ -3285,13 +3285,13 @@
  },
  "animation_weapon_attack_holy_flail_claude_task.md": {
   "key": "SCRUM-748",
-  "status": "К выполнению",
-  "desc_hash": "0a7c65f8f6e7af1584358e468e664ef0"
+  "status": "Контроль качества",
+  "desc_hash": "def6ce2223de4c7e2a9a7ef5d0ddc07d"
  },
  "animation_weapon_attack_homunculus_vial_claude_task.md": {
   "key": "SCRUM-749",
-  "status": "К выполнению",
-  "desc_hash": "71af253cb2f3c4c299b7e7ce3acfca84"
+  "status": "Контроль качества",
+  "desc_hash": "a4637a3e809dde1cd9747a06f9af83b7"
  },
  "animation_weapon_attack_hunter_trap_claude_task.md": {
   "key": "SCRUM-750",
@@ -3591,6 +3591,11 @@
  "bug_boss_combat_timer_hud_not_shown_task.md": {
   "key": "SCRUM-799",
   "status": "К выполнению",
-  "desc_hash": "083aee28b48c25566bff9f39d3a9a434"
+  "desc_hash": "f5b9e43006560150c02f3225f071aabd"
+ },
+ "SCRUM-798_hero_select_large_preview_attributes_carousel.md": {
+  "key": "SCRUM-798",
+  "status": "Контроль качества",
+  "desc_hash": "56a66c4105c8281286d95cc2d61b712b"
  }
 }
