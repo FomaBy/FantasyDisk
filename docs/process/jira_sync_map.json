@@ -3365,8 +3365,8 @@
  },
  "animation_weapon_attack_sniper_shatter_rounds_codex_task.md": {
   "key": "SCRUM-764",
-  "status": "К выполнению",
-  "desc_hash": "21d1b222641e32b1e62348c6214565be"
+  "status": "Контроль качества",
+  "desc_hash": "b26d2c99df6ba5d2fa504d20e14b665f"
  },
  "animation_weapon_attack_sniper_spotter_scope_codex_task.md": {
   "key": "SCRUM-765",
