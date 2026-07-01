@@ -1,12 +1,15 @@
 # Animation: Двуручный молот (hammer) attack VFX redraw
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
 Контур: Codex
 Owner: unassigned
 Thread: n/a
+Branch/worktree: detached dev at `/Users/sergeyfomin/.codex/worktrees/f057/AI Agent`
+Blocked: OpenAI Images API billing hard limit still reached during repo helper generation on 2026-07-01; Jira returned to `К выполнению` with `blocked` label until billing/quota is restored or PM changes the generation pipeline.
+Next verification: after unblock, generate OpenAI source via repo helper, postprocess to 256x256 transparent runtime VFX, then run unique weapon VFX and attack VFX smokes.
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
@@ -48,3 +51,30 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `hammer` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## Blocker Retry / 2026-07-01
+
+Result: blocked / released from active worker.
+
+User explicitly requested `SCRUM-747`. Codex removed the temporary `blocked`
+label, claimed the issue as `codex-design-auto`, and retried the task-mandated
+OpenAI helper in worktree
+`/Users/sergeyfomin/.codex/worktrees/f057/AI Agent`:
+
+```bash
+python3 skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py --prompt "<hammer circular shockwave VFX prompt>" --output docs/design/references/weapon_attack_animations/hammer/hammer_openai_source.png --size 1024x1024 --quality high --no-task
+```
+
+The helper failed before writing a source PNG:
+
+```text
+OpenAI billing/quota problem: billing_hard_limit_reached / Billing hard limit has been reached.
+```
+
+Per the task override and `fantasydisk-asset-generator` skill, no PixelLab,
+manual drawing, or alternate image-generation fallback was used. Jira `SCRUM-747`
+was returned to `К выполнению`, labelled `blocked`, and commented with the exact
+blocker.
+
+Tests: not run; blocked before asset generation.
+Disk cleanup: none created.
