@@ -1,0 +1,53 @@
+{
+  "issue": "SCRUM-730",
+  "weapon_id": "biologist_sample_injector",
+  "weapon_name_ru": "Инъектор Образцов",
+  "pipeline_override": "OpenAI Images via repo helper, not PixelLab, per active task user override",
+  "model": "gpt-image-2",
+  "quality": "high",
+  "generated_source": {
+    "path": "docs/design/references/weapon_attack_animations/biologist_sample_injector/biologist_sample_injector_openai_source.png",
+    "size": [1024, 1024],
+    "mode": "RGB",
+    "note": "OpenAI returned baked checkerboard transparency; kept as source evidence."
+  },
+  "cleaned_source": {
+    "path": "docs/design/references/weapon_attack_animations/biologist_sample_injector/biologist_sample_injector_openai_source_alpha_clean.png",
+    "size": [1024, 1024],
+    "mode": "RGBA",
+    "alpha_mean": 3.1,
+    "nonzero_alpha_pixels": 74578,
+    "max_alpha": 210,
+    "bbox": [196, 145, 955, 701]
+  },
+  "runtime_asset": {
+    "path": "assets/sprites/effects/vfx_weapon_biologist_sample_injector.png",
+    "size": [256, 256],
+    "mode": "RGBA",
+    "alpha_mean": 12.69,
+    "nonzero_alpha_pixels": 11106,
+    "nonzero_alpha_mean": 74.89,
+    "max_alpha": 220,
+    "bbox": [52, 36, 245, 220],
+    "opaque_pixels_alpha_250_plus": 0
+  },
+  "preview": {
+    "path": "docs/design/previews/weapon_attack_animations/biologist_sample_injector_contact.png",
+    "size": [1536, 768],
+    "checks": [
+      "source and alpha-clean comparison",
+      "runtime texture on dark combat background",
+      "runtime texture on light battlefield background",
+      "actual-size and reduced-size readability swatches"
+    ]
+  },
+  "visual_elements": [
+    "precise sample dart / injection line",
+    "two biochemical analysis echoes near target tissue",
+    "semi-transparent ghost silhouette of the actual sample injector weapon",
+    "teal/violet biochemistry accents",
+    "transparent readable center and corners"
+  ],
+  "runtime_api_changed": false,
+  "notes": "Mechanics, damage, cooldowns, targeting, attack shape, and shared VFX API are unchanged."
+}
