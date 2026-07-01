@@ -1,12 +1,12 @@
 # Animation: Двуручный меч (sword) attack VFX redraw
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Animator/VFX Codex
+Thread: fantasydisk-codex-scrum-772-agent
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
@@ -22,7 +22,10 @@ Locked paths: assets/sprites/effects/vfx_weapon_sword.png, docs/design/reference
 
 ## Обязательный пайплайн генерации
 
-User override 2026-06-30: для этой задачи использовать OpenAI image generation, а не PixelLab. Генерировать через репозиторный helper `skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py` / `gpt-image-2` с `--quality high`, фиксируя override в result/evidence.
+Superseded: исходный OpenAI Images override 2026-06-30 был отменён
+dispatcher unblock 2026-07-01 ниже, потому что OpenAI Images оставался
+заблокирован `billing_hard_limit_reached`. Активный production path для этой
+задачи: PixelLab MCP через `fantasydisk-asset-generator`.
 
 Source PNG и prompt notes сохранить в `docs/design/references/weapon_attack_animations/sword/`. Accepted runtime PNG обновлять только по пути `assets/sprites/effects/vfx_weapon_sword.png`, если не создан отдельный backend/runtime handoff.
 
@@ -37,13 +40,13 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 
 ## Acceptance Criteria
 
-- [ ] `assets/sprites/effects/vfx_weapon_sword.png` обновлен или подтверждён как accepted с новым OpenAI source/evidence.
-- [ ] Source, prompt notes/manifest и preview/contact sheet сохранены в task-specific paths.
-- [ ] Attack VFX уникально отражает **Двуручный меч**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
-- [ ] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
-- [ ] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
-- [ ] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; если менялись animation/runtime hooks — также `animation_smoke_test.gd` и `runtime_smoke_test.gd` через `tools/godot_gate.py`.
-- [ ] Обновлены `docs/design/content_registry.md` или `docs/design/current_game_state.md`, если runtime path/contract/evidence изменились.
+- [x] `assets/sprites/effects/vfx_weapon_sword.png` обновлен с новым PixelLab source/evidence.
+- [x] Source, prompt notes/manifest и preview/contact sheet сохранены в task-specific paths.
+- [x] Attack VFX уникально отражает **Двуручный меч**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
+- [x] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
+- [x] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
+- [x] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; animation/runtime hooks не менялись, поэтому `animation_smoke_test.gd` и `runtime_smoke_test.gd` не требовались.
+- [x] Broad docs не обновлялись: runtime path/contract не изменились, evidence сохранён в task mirror + manifest.
 
 ## QA Notes
 
@@ -57,3 +60,52 @@ so Jira was unblocked by switching this attack-VFX task to the mandatory
 PixelLab MCP / `fantasydisk-asset-generator` production path. Future workers must
 record the PixelLab object/job id, source/runtime paths, static alpha/readability
 evidence, Godot smoke results, and `Disk cleanup:` in the final result.
+
+## Claim — Codex worker (2026-07-01)
+
+Owner: Animator/VFX Codex  
+Thread/Worker: `fantasydisk-codex-scrum-772-agent`  
+Branch/worktree: `codex/SCRUM-772-sword-vfx` at
+`/Users/sergeyfomin/.codex/worktrees/9161/AI Agent`  
+Locked paths: `assets/sprites/effects/vfx_weapon_sword.png`,
+`docs/design/references/weapon_attack_animations/sword/`,
+`docs/design/previews/weapon_attack_animations/sword_contact.png`, this task
+mirror. `scenes/TwoHandedSword.tscn` and
+`assets/sprites/weapons/two_handed_sword.png` are read/reference only unless
+integration proves required.  
+Next verification: PixelLab source/runtime PNG, static alpha/readability checks,
+then `unique_weapon_vfx_assets_test.gd` and `attack_vfx_smoke_test.gd` through
+`tools/godot_gate.py`.
+
+## Результат (2026-07-01)
+
+Статус: done → Jira `Контроль качества` после commit/push.
+
+- Runtime: `assets/sprites/effects/vfx_weapon_sword.png` обновлён, 256x256 RGBA,
+  corners alpha=0, max alpha=170, fully opaque pixels=0, visible coverage
+  alpha>12 = 24.22%, transparent pixels = 63.53%.
+- PixelLab MCP used:
+  - selected source object `35b2c714-97cc-4e65-978d-dbb8b0b8241e`;
+  - rejected source object `ede25074-3e87-4e18-b535-740d2e0b4d3a` because it
+    had a baked square/border field.
+- Source/evidence:
+  - `docs/design/references/weapon_attack_animations/sword/manifest.json`;
+  - `docs/design/references/weapon_attack_animations/sword/pixellab_source_object_35b2c714.png`;
+  - `docs/design/references/weapon_attack_animations/sword/pixellab_source_object_35b2c714_alpha_cutout.png`;
+  - `docs/design/references/weapon_attack_animations/sword/vfx_weapon_sword_pixellab_composite_256.png`;
+  - `docs/design/previews/weapon_attack_animations/sword_contact.png`.
+- Visual result: old bright magenta crescent replaced with a calmer steel/gold
+  two-handed sword cleave. The final plate uses the PixelLab sword silhouette
+  plus a transparent 90-degree frustum support layer to show the sword's
+  direction/reach while staying semi-transparent.
+- Mechanics/runtime: no scene, script, damage, cooldown, targeting, radius,
+  knockback, balance, or shared runtime logic changed.
+- Tests:
+  - `GODOT_BIN=/private/tmp/fsd_godot_sem/bin/fdengine FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd` — PASS, 51 plates.
+  - `GODOT_BIN=/private/tmp/fsd_godot_sem/bin/fdengine FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd` — PASS.
+  - Note: the gate's fresh import pre-step hung in this disposable worktree
+    because Godot import did not write `.ctex` files after the first scan; I used
+    a temporary asset-only `.godot/imported` cache copied from the main checkout
+    for smoke execution, then removed it.
+- Disk cleanup: removed temporary `.godot`, ignored `build/qa/scrum772`, and
+  temporary `docs/design/references/chars_cartoon/.gdignore`; none left.
