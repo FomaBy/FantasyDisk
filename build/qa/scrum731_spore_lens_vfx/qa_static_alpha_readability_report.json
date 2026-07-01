@@ -1,0 +1,63 @@
+{
+  "issue": "SCRUM-731",
+  "qa_worker": "codex-qa-scrum731-vfx-20260701",
+  "runtime_metrics": {
+    "path": "assets/sprites/effects/vfx_weapon_biologist_spore_lens.png",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox_alpha": [
+      13,
+      16,
+      244,
+      242
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.5542,
+    "max_alpha": 170,
+    "mean_alpha_all_pixels": 78.75,
+    "mean_alpha_visible_pixels": 142.07,
+    "center_64_mean_alpha": 88.99,
+    "center_64_max_alpha": 149,
+    "outer_ring_52_108_mean_alpha": 141.56
+  },
+  "source_metrics": {
+    "path": "docs/design/references/weapon_attack_animations/biologist_spore_lens/biologist_spore_lens_pixellab_source.png",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox_alpha": [
+      13,
+      16,
+      244,
+      242
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.514,
+    "max_alpha": 205,
+    "mean_alpha_all_pixels": 95.68,
+    "mean_alpha_visible_pixels": 186.13,
+    "center_64_mean_alpha": 93.07,
+    "center_64_max_alpha": 174,
+    "outer_ring_52_108_mean_alpha": 175.97
+  },
+  "checks": {
+    "runtime_exists": true,
+    "source_exists": true,
+    "weapon_reference_exists": true,
+    "runtime_256_rgba": true,
+    "runtime_alpha_cap_ok": true,
+    "center_readability_ok": true,
+    "rings_readable_vs_center": true,
+    "not_empty": true,
+    "not_full_canvas_opaque": true
+  },
+  "decision": "pass",
+  "notes": [
+    "Independent QA metrics; implementation static_alpha_readability_report.json was not reused for these values.",
+    "Center and alpha-cap thresholds are intentionally conservative for combat readability.",
+    "Visual inspection still required for weapon silhouette/theme; this report only covers static alpha/readability."
+  ]
+}

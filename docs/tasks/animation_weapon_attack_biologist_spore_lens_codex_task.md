@@ -49,7 +49,7 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 - [x] Attack VFX уникально отражает **Споровая Линза**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
 - [x] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
 - [x] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
-- [ ] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; если менялись animation/runtime hooks — также `animation_smoke_test.gd` и `runtime_smoke_test.gd` через `tools/godot_gate.py`.
+- [x] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; animation/runtime hooks не менялись, поэтому `animation_smoke_test.gd` и `runtime_smoke_test.gd` не требовались.
 - [x] Обновлены task evidence/manifest; `docs/design/content_registry.md` и `docs/design/current_game_state.md` не менялись, потому что runtime path/contract не изменились.
 
 ## QA Notes
@@ -165,3 +165,26 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_
 
 Disk cleanup: removed transient `.godot/` import cache created by the interrupted
 smoke attempt; no extra clone/worktree was created.
+
+## QA-Вердикт (2026-07-01)
+
+Статус: PASSED
+
+Проверено:
+- Jira `SCRUM-731` live status was `Контроль качества`; QA ownership heartbeats posted for `codex-qa-scrum731-vfx-20260701`.
+- Implementation commit under test: `42faa829` on `origin/dev`.
+- Commit scope clean: only the task-specific runtime VFX PNG, PixelLab source/evidence/preview, Jira sync map, and task mirror changed; no `.import`, `.uid`, `.godot`, cache, secret, token, or unrelated paths were part of the result commit.
+- Runtime/source paths verified: `assets/sprites/effects/vfx_weapon_biologist_spore_lens.png`, source PNGs, `manifest.json`, `prompt_notes.md`, and `docs/design/previews/weapon_attack_animations/biologist_spore_lens_contact.png`.
+- Visual QA: runtime/contact sheet reads as a distinct spore-lens bloom with concentric spore rings and faint weapon silhouette; center remains readable/transparent on checker, dark, and light backgrounds.
+- Independent static alpha/readability: `build/qa/scrum731_spore_lens_vfx/qa_static_alpha_readability_report.json` -> PASS; runtime `256x256` RGBA, `max_alpha=170`, `center_64_mean_alpha=88.99`, `outer_ring_52_108_mean_alpha=141.56`.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd` -> PASS (`Unique weapon VFX assets smoke passed: 51 plates.`). A first cold-import attempt exited `143` after completing the heavy import phase, then the warm-cache rerun passed.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd` -> PASS (`Attack VFX smoke test passed.`).
+
+Краевые случаи:
+- Verified transparent `256x256` runtime PNG is not empty and not a full-canvas opaque disk.
+- Verified center alpha stays below the conservative readability threshold while outer rings remain stronger than the center.
+- Verified task did not change damage, cooldown, targeting, attack range, AoE radius, scenes, shared runtime hooks, or other weapon VFX.
+
+Баги: нет.
+
+Disk cleanup: removed transient `.godot/` import cache (~1.3G), restored 119 generated tracked `.import` sidecar modifications, removed 207 untracked generated `.import` sidecars, removed unrelated `build/qa/scrum457/`, and removed the oversized cold-import log. Kept only concise SCRUM-731 QA evidence logs/reports.
