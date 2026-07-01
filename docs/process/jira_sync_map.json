@@ -3180,12 +3180,12 @@
  },
  "animation_weapon_attack_acid_flask_claude_task.md": {
   "key": "SCRUM-727",
-  "status": "К выполнению",
-  "desc_hash": "6ba95826adc716d1ad832631c163e59d"
+  "status": "Контроль качества",
+  "desc_hash": "e3afb10fab0154b25af70137e5aeb36d"
  },
  "animation_weapon_attack_axe_codex_task.md": {
   "key": "SCRUM-728",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "4a47ac5b534cb20573a4003302f54f88"
  },
  "animation_weapon_attack_bass_guitar_claude_task.md": {
