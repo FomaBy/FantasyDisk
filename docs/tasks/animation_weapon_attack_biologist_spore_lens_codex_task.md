@@ -1,12 +1,15 @@
 # Animation: Споровая Линза (biologist_spore_lens) attack VFX redraw
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
 Контур: Codex
 Owner: unassigned
 Thread: n/a
+Branch/worktree: detached dev at `/Users/sergeyfomin/.codex/worktrees/720e/AI Agent`
+Blocked: OpenAI Images API billing hard limit reached during repo helper generation on 2026-07-01; Jira returned to `К выполнению` with `blocked` label until billing/quota is restored or PM changes the generation pipeline.
+Next verification: after unblock, generate OpenAI source via repo helper, postprocess to 256x256 transparent runtime VFX, then run unique weapon VFX and attack VFX smokes.
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
@@ -48,3 +51,23 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `biologist_spore_lens` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## Blocker / 2026-07-01
+
+Result: blocked / released from active worker.
+
+Generation command attempted through the task-mandated OpenAI helper:
+
+```bash
+python3 skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py --prompt "<biologist_spore_lens spore bloom VFX prompt>" --output docs/design/references/weapon_attack_animations/biologist_spore_lens/biologist_spore_lens_openai_source.png --size 1024x1024 --quality high --no-task
+```
+
+The helper failed before writing a source PNG:
+
+```text
+OpenAI billing/quota problem: billing_hard_limit_reached / Billing hard limit has been reached.
+```
+
+Per the active task override and `fantasydisk-asset-generator` skill, no PixelLab/manual fallback was used. Jira `SCRUM-731` was returned to `К выполнению`, labelled `blocked`, and commented with the exact blocker.
+
+Disk cleanup: none created.
