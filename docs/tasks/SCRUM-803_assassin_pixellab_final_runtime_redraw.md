@@ -7,8 +7,8 @@
 Создано: 2026-07-01
 Jira: SCRUM-803
 Контур: Codex
-Owner: Animator/Codex
-Thread/Worker: codex-animator-auto
+Owner: unassigned
+Thread/Worker: n/a
 Locked paths: `assets/sprites/characters/pixellab/assassin/`, `assets/sprites/characters/full_frame/assassin_pixellab/`, `assets/sprites/characters/assassin_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
 
 Dispatch: Jira-pull claimed by Animator/Codex (`codex-animator-auto`) 2026-07-01.
@@ -79,3 +79,32 @@ run the required focused smokes:
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+
+## QA-Вердикт (2026-07-02)
+
+Статус: FAILED
+
+Проверено:
+- origin/dev `90b77eb2`, worktree `/Users/sergeyfomin/.codex/worktrees/36b8/AI Agent`.
+- Static PixelLab contract for `assassin`: PASS for 56 source PNGs, 56 runtime
+  PNGs, source `manifest.json`, runtime `512x512` RGBA frames, resolved
+  `assassin_spriteframes.tres` refs, generic and 8-direction idle/move/walk
+  rows, and canonical `assassin_idle_south.png` `sprite_path`.
+- FAIL: task-owned sidecars are committed under the PixelLab pack directories:
+  56 `.import` files in `assets/sprites/characters/pixellab/assassin/` and 56
+  `.import` files in `assets/sprites/characters/full_frame/assassin_pixellab/`.
+  Acceptance for the combined QA batch requires no task-owned `.import`/`.uid`
+  sidecars.
+- BLOCKED environment evidence: first required Godot gate,
+  `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`,
+  started the headless import, but after 5:48 `.godot/imported` still had 0
+  files and `.godot/` contained only `.gdignore` plus
+  `global_script_class_cache.cfg`; the worker interrupted its own gate with exit
+  130 and confirmed no Godot/Godot gate process remained.
+
+Баги: no separate bug issue created; SCRUM-803 itself is returned to
+`К выполнению` for a focused fix: remove the 112 tracked Assassin PixelLab
+`.import` sidecars, keep the PNG/source/runtime contract unchanged, then rerun
+the required Godot gates from origin/dev.
+
+Disk cleanup: removed this worker's `.godot/` cache after recording evidence.
