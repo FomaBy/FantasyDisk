@@ -746,7 +746,7 @@ SCRUM-193 cleanup 2026-06-13: старые `*_placeholder.png` для Assassin/C
 
 SCRUM-269 cleanup audit 2026-06-14: read-only asset/image аудит завершен в `docs/design/reviews/cleanup_assets_audit_2026_06.md`. Игровой арт защищен от удаления: weapon signature VFX и weapon select sprites грузятся динамически по `weapon_id`, новые boss/mini-elite source sprites остаются pending-live art, UI/cutout/icon families остаются dynamic assets. Единственная cleanup-находка — orphan ` 2.png.import` sidecars после duplicate cleanup — вынесена в SCRUM-271.
 
-Текущие character sprites сделаны в стиле референса пользователя: Берсерк имеет бороду, плетеные волосы, массивное тело, мех, ремни, металлические браслеты, плечо со шипами, красную боевую разметку и skull-belt без встроенного оружия; Темный маг имеет капюшон, маску, мантию, черепа, кристаллы и фиолетовые spell-orbs; Гитарист имеет сине-золотой сценический костюм, музыкальные значки, ремни, перчатки и медиаторный амулет без встроенной гитары.
+Текущие character sprites сделаны в стиле референса пользователя: Берсерк имеет бороду, плетеные волосы, массивное тело, мех, ремни, металлические браслеты, плечо со шипами, красную боевую разметку и skull-belt без встроенного оружия; Темный маг имеет капюшон, маску, мантию, черепа, кристаллы и фиолетовые spell-orbs; Гитарист теперь использует SCRUM-706 PixelLab-образ звукового мага/сценического контроллера с капюшоном, янтарно-золотыми и магента sonic accents, шарфом/плащом и открытыми пустыми руками без встроенной гитары, баса, усилителя или микрофона.
 
 Стандартные монстры, элитки и боссы также используют polished cartoon fantasy full-art sprites в стиле последнего референса пользователя: темное фэнтези, выразительные силуэты, сильные черные контуры, объемная покраска и читаемые archetype-shapes. В бою их видимая фигура тоже собирается `scripts/cutout_rig_2d.gd` из нарезанных кусков того же арта (`assets/sprites/enemies|elites|bosses/cutout/`): конечности, оружие (арбалет), щиты, крылья, хвост и вихрь босса — отдельные анимируемые части. Старые placeholder rig-parts удалены. Нельзя возвращать монстров к generic placeholder-спрайтам или видимым квадратным заглушкам частей тела.
 
@@ -846,16 +846,18 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Базовое здоровье: 60.
 - Базовая скорость: 268.
 - Спрайт: live `assets/sprites/characters/guitarist_spriteframes.tres` now uses
-  PixelLab source rotations under `assets/sprites/characters/pixellab/guitarist/`
-  and normalized runtime frames under
-  `assets/sprites/characters/full_frame/guitarist_pixellab/`. `move_*` and
-  `walk_*` are one-frame aliases of the 8 directional rotations so Hero Select
-  cycles the portrait clockwise like Berserk, normalized to the same apparent
-  height. Legacy `assets/sprites/characters/guitarist.png`, runtime sheet
+  SCRUM-706 PixelLab source `704fd67b-da81-4804-acd2-07e75fefd9de` under
+  `assets/sprites/characters/pixellab/guitarist/` and normalized runtime frames
+  under `assets/sprites/characters/full_frame/guitarist_pixellab/`. The new
+  empty-hands base body has 8 idle directions and 6-frame directional
+  `move_*` / `walk_*` loops; every runtime frame remains `512x512` transparent
+  and normalizes the visible alpha bbox to `245 px` height. Rejected source
+  attempts are recorded in
+  `docs/design/previews/scrum706_guitarist_pixellab_bbox_report.json`.
+  Legacy `assets/sprites/characters/guitarist.png`, runtime sheet
   `assets/sprites/characters/guitarist_sheet.png`,
   `assets/sprites/characters/full_frame/guitarist/`, and cutout-части
-  `assets/sprites/characters/cutout/guitarist_*.png` remain history/fallback
-  until a future PixelLab movement animation pass.
+  `assets/sprites/characters/cutout/guitarist_*.png` remain history/fallback.
 
 Базовые характеристики:
 

@@ -295,6 +295,21 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   pass. The bundled manifest validator was run and records the expected
   `missing attack_primary animation` failure because SCRUM-429 explicitly
   excludes attack animation.
+- SCRUM-706 replaces the live Guitarist placeholder with a new PixelLab-only
+  empty-hands source `704fd67b-da81-4804-acd2-07e75fefd9de`. The rejected
+  candidates are `f41e1d57-f720-4ae1-a739-8873d935163b`
+  (failed/listed `128x128`) and `d278e753-9885-4550-82ff-81ee3bef297d`
+  (`240x240` but baked a held instrument). Source rotations and six-frame
+  `walking-6-frames` movement live under
+  `assets/sprites/characters/pixellab/guitarist/`; normalized transparent
+  runtime frames live under
+  `assets/sprites/characters/full_frame/guitarist_pixellab/`, centered on a
+  `512x512` canvas with every visible alpha bbox at `245 px` height. The live
+  `assets/sprites/characters/guitarist_spriteframes.tres` exposes generic
+  `idle` / `move` / `walk` fallbacks, `idle_<direction>` one-frame rows, and
+  6-frame looping `move_<direction>` / `walk_<direction>` rows for `south`,
+  `south_east`, `east`, `north_east`, `north`, `north_west`, `west`, and
+  `south_west`; weapon/instrument visuals remain separate weapon effects.
 - SCRUM-435 adds the Thief v2 Design-source handoff under
   `docs/design/references/characters_v2/thief/` and promotes the accepted
   source into the live runtime resource

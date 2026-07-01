@@ -1,0 +1,273 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south.png" id="1_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south_00.png" id="2_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_walk_south_00.png" id="3_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south-east.png" id="4_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-east_00.png" id="5_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_walk_south-east_00.png" id="6_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_east.png" id="7_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_east_00.png" id="8_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_walk_east_00.png" id="9_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_north-east.png" id="10_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-east_00.png" id="11_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_walk_north-east_00.png" id="12_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_north.png" id="13_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north_00.png" id="14_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_walk_north_00.png" id="15_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_north-west.png" id="16_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-west_00.png" id="17_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_walk_north-west_00.png" id="18_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_west.png" id="19_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_west_00.png" id="20_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_walk_west_00.png" id="21_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south-west.png" id="22_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-west_00.png" id="23_pixellab_gtr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_walk_south-west_00.png" id="24_pixellab_gtr"]
+
+[resource]
+animations = [
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_pixellab_gtr")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pixellab_gtr")
+}],
+"loop": true,
+"name": &"move",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_pixellab_gtr")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_pixellab_gtr")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_pixellab_gtr")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_pixellab_gtr")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_pixellab_gtr")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_pixellab_gtr")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_pixellab_gtr")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("19_pixellab_gtr")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("22_pixellab_gtr")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pixellab_gtr")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_pixellab_gtr")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_pixellab_gtr")
+}],
+"loop": true,
+"name": &"move_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_pixellab_gtr")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_pixellab_gtr")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_pixellab_gtr")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20_pixellab_gtr")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_pixellab_gtr")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_pixellab_gtr")
+}],
+"loop": true,
+"name": &"walk_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_pixellab_gtr")
+}],
+"loop": true,
+"name": &"walk_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_pixellab_gtr")
+}],
+"loop": true,
+"name": &"walk_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_pixellab_gtr")
+}],
+"loop": true,
+"name": &"walk_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_pixellab_gtr")
+}],
+"loop": true,
+"name": &"walk_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("18_pixellab_gtr")
+}],
+"loop": true,
+"name": &"walk_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_pixellab_gtr")
+}],
+"loop": true,
+"name": &"walk_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("24_pixellab_gtr")
+}],
+"loop": true,
+"name": &"walk_south_west",
+"speed": 1.0
+}
+]

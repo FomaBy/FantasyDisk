@@ -63,13 +63,16 @@
   `doctor_spriteframes.tres` with `idle_<direction>` plus 6-frame looping
   `move_<direction>` / `walk_<direction>` for all 8 directions. Doctor now moves
   with directional walk in-game and rotates clockwise in Hero Select.
-- PixelLab Guitarist static 8-direction character rotations: pulled existing
-  PixelLab character `d327e6c2-a3fb-44b3-b02a-965a0ce52e7b`, stored source
-  rotations under `assets/sprites/characters/pixellab/guitarist/`, normalized
-  runtime frames under `assets/sprites/characters/full_frame/guitarist_pixellab/`,
-  and rebuilt `guitarist_spriteframes.tres` with one-frame directional
-  idle/move/walk rows so Hero Select rotates the Guitarist portrait clockwise
-  at Berserk-scale height.
+- SCRUM-706: PixelLab Guitarist full redraw at the 240-250 px scale. Generated
+  accepted source `704fd67b-da81-4804-acd2-07e75fefd9de`, rejected one failed
+  128x128 candidate and one 240x240 baked-instrument candidate, stored new
+  empty-hands source rotations + walk frames under
+  `assets/sprites/characters/pixellab/guitarist/`, normalized transparent
+  `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/guitarist_pixellab/` with 245 px
+  visible alpha height on every frame, and rebuilt `guitarist_spriteframes.tres`
+  with `idle_<direction>` plus 6-frame looping `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions.
 - SCRUM-704: PixelLab Dark Mage full redraw at readable 240-250px scale.
   Generated new v3 PixelLab character
   (`9bb0eca8-5afe-49d4-8e56-7115a45efdcc`), stored 8-direction idle source and
