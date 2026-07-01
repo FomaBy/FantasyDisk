@@ -1,6 +1,6 @@
 # Animation: Плащ Захода (thief_shadow_cloak) attack VFX redraw
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
