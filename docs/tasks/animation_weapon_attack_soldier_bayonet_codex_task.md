@@ -77,3 +77,13 @@ Tests:
 - `python3 -m json.tool docs/design/references/weapon_attack_animations/soldier_bayonet/static_alpha_readability_report.json` — PASS.
 - `FSD_GODOT_MAXWAIT=10 python3 tools/godot_gate.py --headless --user-data-dir /tmp/fantasydisk-godot-scrum766-unique --path . --script res://tests/unique_weapon_vfx_assets_test.gd` — PASS (`51 plates`). The gate anti-deadlock path launched after the shared semaphore was saturated by unrelated long imports.
 - `FSD_GODOT_MAXWAIT=10 python3 tools/godot_gate.py --headless --user-data-dir /tmp/fantasydisk-godot-scrum766-attack --path . --script res://tests/attack_vfx_smoke_test.gd` — PASS. The gate anti-deadlock path launched after the shared semaphore was saturated by unrelated long imports.
+
+Git:
+
+- Branch: `codex/SCRUM-766-soldier-bayonet-vfx`.
+- Implementation commit after rebase: `d3756b5f`.
+
+Disk cleanup:
+
+- Removed temporary `.godot` import cache copied only for local smoke validation.
+- Removed task-specific Godot user-data dirs `/tmp/fantasydisk-godot-scrum766-*`.
