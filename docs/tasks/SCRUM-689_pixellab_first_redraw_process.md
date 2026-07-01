@@ -45,4 +45,6 @@ task only; no gameplay, runtime, asset, or animation file changes.
 - Text validation script checked required PixelLab-first/content-zone/exception
   wording in all changed docs — passed.
 
-Disk cleanup: pending final worktree removal after push/Jira update.
+Disk cleanup: remove disposable worktree
+`/Users/sergeyfomin/.codex/worktrees/scrum-689-pixellab-process` after final
+push/Jira update; no `.godot`, generated assets or task temp caches were created.
