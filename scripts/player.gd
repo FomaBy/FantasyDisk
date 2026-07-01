@@ -1977,8 +1977,6 @@ func _configure_skeletal_player_rig(skeleton_scene: PackedScene) -> void:
 
 func _character_skeleton_rig_scene(class_id: String) -> PackedScene:
 	match class_id:
-		"dark_mage":
-			return DARK_MAGE_SKELETON_RIG_SCENE
 		"knight":
 			return KNIGHT_SKELETON_RIG_SCENE
 	return null

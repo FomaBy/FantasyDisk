@@ -1,6 +1,6 @@
 # ART/ANIM PixelLab: «Темный маг» — full redraw в размере 240-250 px
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Design main (Codex) → Animator (Codex)
 Версия: 0.1.8
@@ -8,10 +8,12 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-704
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Codex Design+Animator
+Thread/Worker: codex-scrum-704-dark-mage-240
+Branch: codex/scrum-704-dark-mage-pixellab-240
+Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-704-dark-mage-240`
 Labels: foma, p1, design-main, pixellab, character-art, redesign, animation-source
-Locked paths: `assets/sprites/characters/pixellab/dark_mage/`, `assets/sprites/characters/full_frame/dark_mage_pixellab/`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `scripts/progression_data_characters.gd`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/animation.md`, `docs/tasks/codex_design_character_redraw_pixellab_dark_mage_240_250_task.md`, `CHANGELOG.md`
+Locked paths: `assets/sprites/characters/pixellab/dark_mage/`, `assets/sprites/characters/full_frame/dark_mage_pixellab/`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `scripts/progression_data_characters.gd`, `scripts/player.gd`, `tests/animation_smoke_test.gd`, `tests/hero_select_dark_mage_pixellab_preview_test.gd`, `tests/dark_mage_pixellab_pack_test.gd`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/animation.md`, `docs/tasks/codex_design_character_redraw_pixellab_dark_mage_240_250_task.md`, `CHANGELOG.md`
 Связано: SCRUM-424, SCRUM-421, SCRUM-423, SCRUM-685
 
 ## Контекст
@@ -46,3 +48,48 @@ Locked paths: `assets/sprites/characters/pixellab/dark_mage/`, `assets/sprites/c
 
 ## Disk cleanup
 Executor final report must include `Disk cleanup:` per repo policy.
+
+## Result — Codex Design+Animator (2026-07-01)
+
+Done.
+
+- PixelLab-only source: generated new v3 character
+  `9bb0eca8-5afe-49d4-8e56-7115a45efdcc`
+  (`FantasyDisk SCRUM-704 Dark Mage 240 empty hands`) and queued
+  `walking-6-frames` for all 8 directions. No OpenAI/image_gen/manual fallback
+  used.
+- Source package: `assets/sprites/characters/pixellab/dark_mage/` now contains
+  8 idle rotations, 48 PixelLab move frames, `.import` sidecars and
+  `manifest.json`.
+- Runtime package: `assets/sprites/characters/full_frame/dark_mage_pixellab/`
+  now contains normalized transparent `512x512` runtime frames. Bbox-fit from
+  the new PixelLab source targets 246px visible height, centered X,
+  bottom-aligned.
+- SpriteFrames/runtime: rebuilt `assets/sprites/characters/dark_mage_spriteframes.tres`
+  with `idle`, `move`, `walk`, `idle_<direction>`, `move_<direction>`,
+  `walk_<direction>`; move/walk are 6f loops for all 8 directions. `Player`
+  no longer gives Dark Mage the historical skeleton-rig priority, so combat
+  uses the new full-frame PixelLab pack.
+- Size QA: `build/qa/scrum704_dark_mage_pixellab/alpha_bbox_report.json`
+  reports runtime visible heights `245..247 px`; primary south idle is
+  `230x246 px`; all runtime images are `512x512`.
+- Visual QA: `docs/design/previews/scrum704_dark_mage_pixellab_contact.png` and
+  `docs/design/previews/scrum704_dark_mage_pixellab_south_walk.gif`. Contact
+  sheet review: empty hands with purple casting glow; no baked
+  book/skull/wand/staff/orb/held prop.
+- Backup: previous static PixelLab Dark Mage pack copied without `.import`
+  sidecars to `docs/design/backups/scrum704_dark_mage_pixellab_pre_redraw/`.
+- Docs updated: `CHANGELOG.md`, `docs/design/content_registry.md`,
+  `docs/design/current_game_state.md`, `docs/design/systems/animation.md`.
+
+Tests:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/dark_mage_pixellab_pack_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_dark_mage_pixellab_preview_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Disk cleanup: removed `.godot/` import cache (~1.3 GB) and
+`build/tmp_scrum704_pixellab_download/`; kept committed QA evidence under
+`build/qa/scrum704_dark_mage_pixellab/`. Worktree kept for pushed branch/QA.

@@ -508,6 +508,21 @@ directional resolver and Hero Select clockwise rotation pick up the directional
 rows automatically. Legacy `assets/sprites/characters/full_frame/priest/`,
 `priest.png` and cutout pieces remain history/fallback.
 
+2026-06-30 SCRUM-704 PixelLab Dark Mage full redraw replaces the previous static
+PixelLab rotation pass with a new readable-scale void caster body pack. PixelLab
+character `9bb0eca8-5afe-49d4-8e56-7115a45efdcc` (v3, `248x248` source) keeps
+empty hands with no baked book/skull/wand/staff/orb/held prop. Source idle
+rotations and `walking-6-frames` movement frames live under
+`assets/sprites/characters/pixellab/dark_mage/`, normalized transparent
+`512x512` runtime frames live under
+`assets/sprites/characters/full_frame/dark_mage_pixellab/`, and
+`assets/sprites/characters/dark_mage_spriteframes.tres` exposes
+`idle_<direction>` plus 6-frame looping `move_<direction>` /
+`walk_<direction>` rows for all 8 directions. `scripts/player.gd` now routes
+Dark Mage through the full-frame PixelLab SpriteFrames path instead of the
+historical skeleton rig priority; the skeleton source package remains
+documentation/regression history.
+
 SCRUM-442 подготовил узкий Berserk v3 single-sprite candidate после отмены
 широкого character v2 подхода: новый чуть более мультяшный unarmed barbarian
 source в `docs/design/references/characters_v3/berserk/`, normalized game
@@ -795,12 +810,17 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Роль: магический урон, AoE, лучи, DoT.
 - Базовое здоровье: 42.
 - Базовая скорость: 250.
-- Спрайт: `assets/sprites/characters/dark_mage.png`, historical 0.1.5 source
-  sheet `assets/sprites/characters/dark_mage_sheet.png`, live 0.1.6 cartoon2 runtime
-  `assets/sprites/characters/dark_mage_spriteframes.tres` with `idle` / `walk`
-  / `move` frames under `assets/sprites/characters/full_frame/dark_mage/`,
-  safe-gutter sheet `assets/sprites/characters/cartoon2/dark_mage/dark_mage_cartoon2_anim_sheet.png`,
-  cutout-части `assets/sprites/characters/cutout/dark_mage_*.png`.
+- Спрайт: live `assets/sprites/characters/dark_mage_spriteframes.tres` now uses
+  SCRUM-704 PixelLab source under
+  `assets/sprites/characters/pixellab/dark_mage/` and normalized runtime frames
+  under `assets/sprites/characters/full_frame/dark_mage_pixellab/`. It exposes
+  8-direction idle plus 6-frame directional `move_*` / `walk_*` rows for runtime
+  movement and Hero Select clockwise preview. Legacy `assets/sprites/characters/dark_mage.png`,
+  historical 0.1.5 source sheet `assets/sprites/characters/dark_mage_sheet.png`,
+  cartoon2 runtime `assets/sprites/characters/full_frame/dark_mage/`, safe-gutter
+  sheet `assets/sprites/characters/cartoon2/dark_mage/dark_mage_cartoon2_anim_sheet.png`,
+  and cutout-части `assets/sprites/characters/cutout/dark_mage_*.png` remain
+  history/fallback.
 
 Базовые характеристики:
 

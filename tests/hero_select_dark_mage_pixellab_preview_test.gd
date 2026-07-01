@@ -11,8 +11,8 @@ func _initialize() -> void:
 		if not frames.has_animation(animation_name):
 			_fail("Expected Dark Mage preview to expose %s." % animation_name)
 			return
-		if frames.get_frame_count(animation_name) != 1:
-			_fail("Expected %s to contain 1 PixelLab rotation frame." % animation_name)
+		if frames.get_frame_count(animation_name) != 6:
+			_fail("Expected %s to contain 6 PixelLab walking frames." % animation_name)
 			return
 
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene

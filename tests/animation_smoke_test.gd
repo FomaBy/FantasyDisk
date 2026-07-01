@@ -312,7 +312,7 @@ func _test_player_animation() -> void:
 		rig = player.get_node("VisualRoot/RigRoot") as Node2D
 		if body.sprite_frames == null or body.sprite_frames.resource_path != str(accepted_character_spriteframes[sheet_character_id]):
 			_fail("Expected %s to use its accepted SpriteFrames resource." % sheet_character_id)
-		if sheet_character_id == "dark_mage" or sheet_character_id == "knight":
+		if sheet_character_id == "knight":
 			if body.visible or rig.visible:
 				_fail("Expected %s to hide full-frame Body and legacy cutout RigRoot while the skeletal rig is live." % sheet_character_id)
 			_assert_skeletal_player_rig(player, sheet_character_id)
@@ -373,11 +373,11 @@ func _test_player_animation() -> void:
 				continue
 			if sheet_character_id == "dark_mage":
 				for direction_name in ["south", "south_east", "east", "north_east", "north", "north_west", "west", "south_west"]:
-					if not body.sprite_frames.has_animation("walk_%s" % direction_name) or body.sprite_frames.get_frame_count("walk_%s" % direction_name) != 1:
-						_fail("Expected Dark Mage PixelLab directional SpriteFrames to expose 1-frame walk_%s." % direction_name)
+					if not body.sprite_frames.has_animation("walk_%s" % direction_name) or body.sprite_frames.get_frame_count("walk_%s" % direction_name) != 6:
+						_fail("Expected Dark Mage PixelLab directional SpriteFrames to expose 6-frame walk_%s." % direction_name)
 						return
-				if body.sprite_frames.get_frame_count("idle") != 1 or body.sprite_frames.get_frame_count("walk") != 1 or body.sprite_frames.get_frame_count("move") != 1:
-					_fail("Expected Dark Mage PixelLab fallback idle/walk/move frame counts to be 1/1/1.")
+				if body.sprite_frames.get_frame_count("idle") != 1 or body.sprite_frames.get_frame_count("walk") != 6 or body.sprite_frames.get_frame_count("move") != 6:
+					_fail("Expected Dark Mage PixelLab fallback idle/walk/move frame counts to be 1/6/6.")
 					return
 				continue
 			if sheet_character_id == "guitarist":

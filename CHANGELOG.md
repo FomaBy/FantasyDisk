@@ -62,12 +62,15 @@
   and rebuilt `guitarist_spriteframes.tres` with one-frame directional
   idle/move/walk rows so Hero Select rotates the Guitarist portrait clockwise
   at Berserk-scale height.
-- PixelLab Dark Mage static 8-direction character rotations: generated a new
-  v3 PixelLab character (`59825867-7d36-44fd-8ed9-83ae2c98272f`), stored source
-  rotations under `assets/sprites/characters/pixellab/dark_mage/`, normalized
-  runtime frames under `assets/sprites/characters/full_frame/dark_mage_pixellab/`,
-  and rebuilt `dark_mage_spriteframes.tres` with one-frame directional
-  idle/move/walk rows so Hero Select rotates the Dark Mage portrait clockwise.
+- SCRUM-704: PixelLab Dark Mage full redraw at readable 240-250px scale.
+  Generated new v3 PixelLab character
+  (`9bb0eca8-5afe-49d4-8e56-7115a45efdcc`), stored 8-direction idle source and
+  `walking-6-frames` source under `assets/sprites/characters/pixellab/dark_mage/`,
+  normalized transparent `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/dark_mage_pixellab/`, and rebuilt
+  `dark_mage_spriteframes.tres` with `idle_<direction>` plus 6-frame looping
+  `move_<direction>` / `walk_<direction>` for all 8 directions. Dark Mage hands
+  stay empty; book/skull/wand/orb remain separate weapon assets.
 
 ### Changed
 - SCRUM-695: rebuilt level-up attribute relevance as a direct attribute×class
