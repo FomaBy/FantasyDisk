@@ -523,6 +523,19 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var plus_zone: Rect2 = plus.get_meta("scrum666_content_zone", Rect2()) as Rect2
 			if not plus_zone.has_area() or not plus_zone.grow(1.0).encloses(plus.get_global_rect()):
 				return "%s: expected LevelUpPlusButton to occupy SCRUM-666 plus zone %s, got %s." % [context, str(plus_zone), str(plus.get_global_rect())]
+			if context.contains("(1920, 1080)"):
+				var viewport_rect := main.get_viewport().get_visible_rect()
+				var top_band_bottom := maxf(
+					maxf(resource.get_global_rect().end.y, timer_panel.get_global_rect().end.y),
+					ascension.get_global_rect().end.y
+				)
+				var top_band_ratio := top_band_bottom / maxf(1.0, viewport_rect.size.y)
+				if top_band_ratio > 0.18:
+					return "%s: expected compact 1080p combat HUD top band <= 18%% viewport height, got %.2f%%." % [context, top_band_ratio * 100.0]
+				var plus_frame: Rect2 = plus.get_meta("scrum666_frame_rect", Rect2()) as Rect2
+				var plus_footprint_ratio := (plus_frame.size.x * plus_frame.size.y) / maxf(1.0, viewport_rect.size.x * viewport_rect.size.y)
+				if plus_footprint_ratio > 0.035:
+					return "%s: expected compact 1080p pending-level footprint <= 3.5%% viewport area, got %.2f%%." % [context, plus_footprint_ratio * 100.0]
 			var badge_panel := plus.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
 			var badge_zone: Rect2 = badge_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2 if badge_panel != null else Rect2()
 			var badge_label := plus.find_child("LevelUpPlusBadge", true, false) as Label

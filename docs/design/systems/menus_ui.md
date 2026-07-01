@@ -413,6 +413,17 @@ button. Source and geometry live under
 accepted content zones into generated dark interiors and out of rail/ornament
 positions; level-up plus and pending-count zones are separate and
 non-overlapping at 2560x1440.
+
+SCRUM-778 compacts the same accepted SCRUM-666/SCRUM-671 runtime HUD geometry
+without generating new art or changing the essential-only content set. At
+1920x1080 the resource strip is now `938x111`, the timer panel `233x108`, the
+ascension badge `123x123`, and the pending level-up button `66x78`; the top HUD
+band bottoms at `162 px` (`15.0%` of viewport height) instead of the SCRUM-700
+reported `26.2%`. The 1080p no-overlap matrix now gates combat HUD footprint:
+top band must stay at or below `18%` of viewport height, and pending-level frame
+footprint at or below `3.5%` of viewport area. Runtime content still uses the
+same frame-safe metadata zones and may not overlap decorative rails, bevels,
+rims, or badges.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
 - Level-up reward options remain full-card clickable Buttons for input/focus and
   now use the larger SCRUM-682 runtime frame family from
