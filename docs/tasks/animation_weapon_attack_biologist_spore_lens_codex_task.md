@@ -7,8 +7,8 @@
 Контур: Codex
 Owner: unassigned
 Thread: n/a
-Branch/worktree: detached dev at `/Users/sergeyfomin/.codex/worktrees/720e/AI Agent`
-Blocked: OpenAI Images API billing hard limit reached during repo helper generation on 2026-07-01; Jira returned to `К выполнению` with `blocked` label until billing/quota is restored or PM changes the generation pipeline.
+Branch/worktree: detached dev at `/Users/sergeyfomin/.codex/worktrees/f057/AI Agent`
+Blocked: OpenAI Images API billing hard limit still reached during repo helper generation on 2026-07-01; Jira returned to `К выполнению` with `blocked` label until billing/quota is restored or PM changes the generation pipeline.
 Next verification: after unblock, generate OpenAI source via repo helper, postprocess to 256x256 transparent runtime VFX, then run unique weapon VFX and attack VFX smokes.
 Версия: 0.1.8
 Создано: 2026-06-30
@@ -69,5 +69,37 @@ OpenAI billing/quota problem: billing_hard_limit_reached / Billing hard limit ha
 ```
 
 Per the active task override and `fantasydisk-asset-generator` skill, no PixelLab/manual fallback was used. Jira `SCRUM-731` was returned to `К выполнению`, labelled `blocked`, and commented with the exact blocker.
+
+Disk cleanup: none created.
+
+## Unblocked / 2026-07-01
+
+User removed hold/blockers and asked to continue. Jira `SCRUM-731` was claimed by
+`codex-design-auto` for Animator/Codex work. Locked paths remain limited to the
+task-specific VFX runtime asset, OpenAI source/evidence folder, contact preview,
+and read-only weapon/scene references listed above.
+
+## Blocker Retry / 2026-07-01
+
+Result: blocked / released from active worker.
+
+After user unhold, Codex retried the required OpenAI helper in worktree
+`/Users/sergeyfomin/.codex/worktrees/f057/AI Agent`:
+
+```bash
+python3 skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py --prompt "<biologist_spore_lens spore bloom VFX prompt>" --output docs/design/references/weapon_attack_animations/biologist_spore_lens/biologist_spore_lens_openai_source.png --size 1024x1024 --quality high --no-task
+```
+
+The helper failed before writing a source PNG:
+
+```text
+OpenAI billing/quota problem: billing_hard_limit_reached / Billing hard limit has been reached.
+```
+
+Per the task override and `fantasydisk-asset-generator` skill, no PixelLab/manual
+fallback was used. Jira `SCRUM-731` was returned to `К выполнению`, labelled
+`blocked`, and commented with the exact blocker. The same verified blocker was
+also recorded on the current-sprint `openai-images` attack VFX tasks so they are
+not claimed until billing/quota is fixed or PM changes the generation pipeline.
 
 Disk cleanup: none created.
