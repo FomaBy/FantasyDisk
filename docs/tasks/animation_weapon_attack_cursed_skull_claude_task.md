@@ -48,3 +48,9 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `cursed_skull` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-01
+QA: claude-qa
+Проверено на HEAD origin/dev (commit dc341ed8). Runtime PNG 256×256 RGBA, border alpha=0 (нет запечённого фона), полупрозрачный (mean alpha 47), интерьер readable; слабый нейтральный край трейла минимален (2.7%), скрыт аддитивным рендером. Визуал уникально читается как Проклятый череп: S-образный homing curse-bolt, костяной череп в зелёном некро-пламени + фиолетовый curse-fire, splash на ведущем конце. Readability на dark/light/gray подтверждена, HUD не перекрывается. Баланс/homing/DoT/splash/shared runtime не тронуты. Smoke: unique_weapon_vfx_assets_test PASS (51 plates), attack_vfx_smoke_test PASS.
