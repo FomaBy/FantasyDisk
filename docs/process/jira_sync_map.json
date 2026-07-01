@@ -3240,13 +3240,13 @@
  },
  "animation_weapon_attack_dark_wand_claude_task.md": {
   "key": "SCRUM-739",
-  "status": "Контроль качества",
-  "desc_hash": "8bcd92a0564fe67dc8a9719a54986431"
+  "status": "Готово",
+  "desc_hash": "d8dbec0358edfa6f16747d1c5993916d"
  },
  "animation_weapon_attack_electric_guitar_claude_task.md": {
   "key": "SCRUM-740",
-  "status": "Контроль качества",
-  "desc_hash": "2795c6955857c2b9b48e81c279352eaf"
+  "status": "Готово",
+  "desc_hash": "44a8c36eb3684da4b43e7ea1733a3592"
  },
  "animation_weapon_attack_elementalist_meteor_core_codex_task.md": {
   "key": "SCRUM-741",
@@ -3285,18 +3285,18 @@
  },
  "animation_weapon_attack_holy_flail_claude_task.md": {
   "key": "SCRUM-748",
-  "status": "Контроль качества",
-  "desc_hash": "def6ce2223de4c7e2a9a7ef5d0ddc07d"
+  "status": "Готово",
+  "desc_hash": "239c97e2852ba7a2014e8bca67caa755"
  },
  "animation_weapon_attack_homunculus_vial_claude_task.md": {
   "key": "SCRUM-749",
-  "status": "Контроль качества",
-  "desc_hash": "a4637a3e809dde1cd9747a06f9af83b7"
+  "status": "Готово",
+  "desc_hash": "fd56f79cd5d25715156d579ac2cbcece"
  },
  "animation_weapon_attack_hunter_trap_claude_task.md": {
   "key": "SCRUM-750",
-  "status": "К выполнению",
-  "desc_hash": "b80b6003e7ee9b7990720c31ff6eaa82"
+  "status": "Готово",
+  "desc_hash": "edc5bcd00ee116082d10781e15617464"
  },
  "animation_weapon_attack_long_spear_claude_task.md": {
   "key": "SCRUM-751",
@@ -3590,12 +3590,12 @@
  },
  "bug_boss_combat_timer_hud_not_shown_task.md": {
   "key": "SCRUM-799",
-  "status": "К выполнению",
-  "desc_hash": "f5b9e43006560150c02f3225f071aabd"
+  "status": "Контроль качества",
+  "desc_hash": "feb1608bbd3fad7bf652ae967c4eba4e"
  },
  "SCRUM-798_hero_select_large_preview_attributes_carousel.md": {
   "key": "SCRUM-798",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "56a66c4105c8281286d95cc2d61b712b"
  }
 }
