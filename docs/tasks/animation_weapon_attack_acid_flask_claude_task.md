@@ -48,3 +48,10 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `acid_flask` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-01
+QA: claude-qa
+
+Проверено на origin/dev. Redraw влит коммитом 1de67612 (vfx_weapon_acid_flask.png + evidence). PNG 256x256 RGBA: уникальный кислотный AoE-пул с ghost колбы/skull-charm по центру. Рантайм (attack_vfx.gd) рендерит plate аддитивно (BLEND_MODE_ADD, modulate cap 0.68) — не перекрывает игрока, спокойная полупрозрачность. Геймплей/shared runtime не менялись. Тесты PASS: unique_weapon_vfx_assets_test.gd (51 plates), attack_vfx_smoke_test.gd.
