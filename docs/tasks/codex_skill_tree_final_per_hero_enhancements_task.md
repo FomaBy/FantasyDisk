@@ -379,3 +379,8 @@ Balance note:
 
 Disk cleanup:
 - Removed task-created `.godot/` import cache (~1.2 GB after test imports). No `.import` churn left in git status. Dedicated worktree kept as pushed QA handoff path: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-726-skill-tree-final`.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-01 (claude-qa)
+Проверено на origin/dev HEAD 0c4dc75e (8e34be4e интегрирован, не strand). Три gate-теста зелёные: meta_skill_tree_smoke_test, skill_tree_per_hero_test (17 уник. class_affinity keystone, per-hero профиль, cap=100), runtime_smoke_test. Переведено в «Готово».
