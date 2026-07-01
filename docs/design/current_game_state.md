@@ -1117,6 +1117,8 @@ SCRUM-337 production art refresh: все перечисленные texture path
 
 SCRUM-728 (2026-07-01) заменил только `assets/sprites/effects/vfx_weapon_axe.png`: weapon signature топора теперь читается как широкая 140-градусная cleave-дуга с полупрозрачным ghost-силуэтом двуручного топора. OpenAI Images override зафиксирован в `docs/design/references/weapon_attack_animations/axe/`, preview/readability sheet: `docs/design/previews/weapon_attack_animations/axe_contact.png`. Runtime API, damage, cooldowns, targeting, радиус/угол удара и shared gameplay hooks не менялись.
 
+SCRUM-756 (2026-07-01) заменил только `assets/sprites/effects/vfx_weapon_priest_reliquary.png`: weapon signature Светлого Реликвария теперь читается как золотой sanctify-seal с полупрозрачным ghost-силуэтом референсного реликвария внутри зоны. PixelLab MCP evidence: `docs/design/references/weapon_attack_animations/priest_reliquary/manifest.json`; preview/readability sheet: `docs/design/previews/weapon_attack_animations/priest_reliquary_contact.png`. Runtime API, damage, cooldowns, targeting, радиус sanctify-взрыва, лечение и shared gameplay hooks не менялись.
+
 ## Характеристики
 
 Базовые характеристики:

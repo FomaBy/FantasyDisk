@@ -1,0 +1,52 @@
+{
+  "issue": "SCRUM-756",
+  "asset": "priest_reliquary attack VFX",
+  "weapon_id": "priest_reliquary",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_priest_reliquary.png",
+  "source_files": [
+    "priest_reliquary_pixellab_source_raw.png",
+    "priest_reliquary_pixellab_source.png"
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/priest_reliquary_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "selected_object_id": "722346d1-554d-4ecd-8970-b2a6e154b543",
+    "selected_download_url": "https://api.pixellab.ai/mcp/map-objects/722346d1-554d-4ecd-8970-b2a6e154b543/download",
+    "created": "2026-07-01 18:02",
+    "size": "256x256px",
+    "view": "high top-down",
+    "background": "transparent metadata; downloaded PNG required flat preview background cleanup",
+    "mode": "basic"
+  },
+  "override_rationale": "Direct user directive on 2026-07-01 superseded stale OpenAI Images-only task wording and made PixelLab MCP through fantasydisk-asset-generator the production path. No OpenAI Images, image_gen, or manual drawing pipeline was used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab source PNG to the task reference folder.",
+      "Created alpha-clean PixelLab source PNG by removing the flat gray preview fill.",
+      "Softened the center alpha so combat actors, projectiles, pickups and HP bars remain readable.",
+      "Composited the canonical priest_reliquary weapon PNG as a low-opacity golden ghost silhouette inside the sanctify seal.",
+      "Capped final runtime alpha at 170 and exported a 256x256 RGBA PNG to the existing runtime path.",
+      "Generated a static alpha/readability report and contact sheet over checker, dark and light backgrounds."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        17,
+        18,
+        239,
+        238
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.5837,
+      "max_alpha": 170,
+      "mean_alpha_all_pixels": 77.95,
+      "mean_alpha_visible_pixels": 133.53,
+      "center_64_mean_alpha": 88.78,
+      "center_64_max_alpha": 106,
+      "outer_ring_mean_alpha": 113.93
+    }
+  }
+}
