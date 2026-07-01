@@ -48,3 +48,8 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `dark_book` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+Статус: PASSED
+
+QA (claude-qa) 2026-07-01: приёмка dark_book attack VFX на HEAD origin/dev (коммит 7d77415a). Runtime PNG 256x256 RGBA полупрозрачный (72% прозрачных краёв), эффект — открытая книга-том кастует два расходящихся arcane-болта с двумя rune-circle AoE-бёрстами (роль «два AoE-снаряда»), teal-cyan глифы, ghost книги по центру, уникально. Diff: только PNG+docs+task.md, shared scripts/баланс не трогались. .import UID сохранён, scratch-кэшей нет. Тесты: unique_weapon_vfx_assets_test.gd PASS (51 plates), attack_vfx_smoke_test.gd PASS.
