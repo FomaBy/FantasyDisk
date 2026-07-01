@@ -1,12 +1,12 @@
 # SCRUM-700: QA 1080p UI scale pass for HUD and menus
 
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: QA / visual QA
 Контур: Codex
 Executor: Codex
 Owner: QA/Codex coordinator
-Thread/Worker: codex-hud-redesign-subagents-2026-06-30
+Thread/Worker: codex-qa-scrum700-finish-20260701 / codex-qa-claude-monitor
 Locked paths: read-only UI screens; `docs/tasks/qa_ui_1080_scale_visual_task.md`; QA evidence under `build/qa/scrum700_1080_ui_scale/`; follow-up bugs may lock specific UI files separately
 Версия: 0.1.8
 Создано: 2026-06-30
@@ -23,6 +23,9 @@ Jira: SCRUM-700
   `build/qa/scrum700_1080_ui_scale/`. Main menu is a hard FAIL and maps to the
   existing bug `SCRUM-680`; combat HUD is a visual scale/empty-frame WARN and
   follow-up bug `SCRUM-778` was created for Back-end UI tuning.
+- 2026-07-01 — QA continuation finalized the pass on `origin/dev` and confirmed
+  the two user-reported issues are covered by Jira bugs `SCRUM-680` and
+  `SCRUM-778`. No runtime/UI fixes were made in this QA task.
 
 ## Evidence Start — 2026-06-30
 
@@ -56,6 +59,49 @@ Subagent status:
 
 Disk cleanup: none outside intentional ignored evidence under
 `build/qa/scrum700_1080_ui_scale/`.
+
+## QA-Вердикт (2026-07-01)
+
+Статус: PASSED (QA pass complete; product/UI findings filed separately)
+
+Проверено:
+
+- Evidence folder restored and reviewed:
+  `build/qa/scrum700_1080_ui_scale/`.
+- 1920x1080 screenshots present for: main menu, settings, hero select, weapon
+  select, codex, level-up, shop, event, pause/stats, victory, death and combat
+  HUD.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+  — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+  — PASS.
+
+Findings:
+
+- Main/start menu 1920x1080 — FAIL as product finding: title/logo overlaps menu
+  controls (`MainMenuTitleLabel` bottom `y=323`, start button top `y=203`,
+  nearest vertical gap `-120 px`). Covered by existing bug `SCRUM-680`.
+- Combat HUD 1920x1080 — geometry PASS but visual scale FAIL/WARN as product
+  finding: priority panels occupy `14.32%` of the viewport and the top HUD band
+  reaches `26.20%`; resource/timer/ascension frames are very wide/tall and
+  mostly empty. Covered by bug `SCRUM-778`.
+- Other captured screens in the focused pass did not introduce additional
+  blocker bugs in this QA task; any future screen-specific issue should be filed
+  as a separate Jira bug with screenshot evidence.
+
+Bugs:
+
+- `SCRUM-680` — main menu/logo overlap at 1920x1080.
+- `SCRUM-778` — combat HUD oversized / mostly empty at 1920x1080.
+
+Branch/commit:
+
+- QA mirror/evidence commit: pending at time of writing.
+
+Disk cleanup:
+
+- Disposable QA worktree and `.godot` cache removed after commit/push; evidence
+  intentionally kept under `build/qa/scrum700_1080_ui_scale/`.
 
 ## Контекст
 
