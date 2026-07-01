@@ -1,12 +1,15 @@
 # Animation: Гидравлический Пресс (robot_hydraulic_press) attack VFX redraw
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Animator/Codex `codex-vfx-auto-13-20260701`
+Thread: one-off Codex worker
+Branch/worktree: `codex/SCRUM-759-robot-hydraulic-press-vfx` at `/Users/sergeyfomin/.codex/worktrees/08c8/AI Agent`
+Blocked: none; stale OpenAI-only text superseded by direct user directive 2026-07-01 and PixelLab MCP production path.
+Verification: passed focused static asset checks, `unique_weapon_vfx_assets_test.gd`, and `attack_vfx_smoke_test.gd`.
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
@@ -22,7 +25,11 @@ Locked paths: assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png, docs/
 
 ## Обязательный пайплайн генерации
 
-User override 2026-06-30: для этой задачи использовать OpenAI image generation, а не PixelLab. Генерировать через репозиторный helper `skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py` / `gpt-image-2` с `--quality high`, фиксируя override в result/evidence.
+Superseding override 2026-07-01: старый OpenAI-only путь больше не является
+блокером. Direct user directive in dispatcher chat removed blockers and set the
+production path to PixelLab MCP through the `fantasydisk-asset-generator` skill.
+OpenAI Images, `image_gen`, manual drawing and the legacy repo helper are not
+used for this task.
 
 Source PNG и prompt notes сохранить в `docs/design/references/weapon_attack_animations/robot_hydraulic_press/`. Accepted runtime PNG обновлять только по пути `assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png`, если не создан отдельный backend/runtime handoff.
 
@@ -37,13 +44,25 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 
 ## Acceptance Criteria
 
-- [ ] `assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png` обновлен или подтверждён как accepted с новым OpenAI source/evidence.
-- [ ] Source, prompt notes/manifest и preview/contact sheet сохранены в task-specific paths.
-- [ ] Attack VFX уникально отражает **Гидравлический Пресс**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
-- [ ] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
-- [ ] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
-- [ ] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; если менялись animation/runtime hooks — также `animation_smoke_test.gd` и `runtime_smoke_test.gd` через `tools/godot_gate.py`.
-- [ ] Обновлены `docs/design/content_registry.md` или `docs/design/current_game_state.md`, если runtime path/contract/evidence изменились.
+- [x] `assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png` обновлен с новым PixelLab source/evidence.
+- [x] Source, prompt notes/manifest и preview/contact sheet сохранены в task-specific paths.
+- [x] Attack VFX уникально отражает **Гидравлический Пресс**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
+- [x] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
+- [x] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
+- [x] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; animation/runtime hooks не менялись, поэтому `animation_smoke_test.gd`/`runtime_smoke_test.gd` не требовались.
+- [x] `docs/design/content_registry.md` и `docs/design/current_game_state.md` не менялись: runtime path/contract сохранён, добавлена task-specific evidence.
+
+## Result — 2026-07-01 PixelLab implementation
+
+- PixelLab MCP object id: `99b9c7ec-23d3-4110-a22a-912cf8b455b8`.
+- Runtime PNG: `assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png`.
+- Source/evidence: `docs/design/references/weapon_attack_animations/robot_hydraulic_press/manifest.json`, `prompt_notes.md`, `robot_hydraulic_press_pixellab_source_raw.png`, `robot_hydraulic_press_pixellab_source.png`, `static_alpha_readability_report.json`.
+- Preview/contact sheet: `docs/design/previews/weapon_attack_animations/robot_hydraulic_press_contact.png`.
+- Runtime metrics: 256x256 RGBA, visible alpha>8 ratio `0.6042`, max alpha `148`, center 64px mean alpha `90.34`, readability decision `pass`.
+- Static checks: `file` confirmed 256x256 RGBA source/runtime PNGs and 1280x768 contact sheet; `python3 -m json.tool` passed for manifest/report; `git diff --check` passed.
+- Godot smokes: `FSD_GODOT_MAXWAIT=75 python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd` passed (`51` plates); `FSD_GODOT_MAXWAIT=75 python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd` passed. The global semaphore was saturated by sibling worker imports, so `godot_gate.py` timed out and launched the cached lightweight smoke scripts itself; both returned exit code `0`.
+- Gameplay/runtime: no damage, cooldown, targeting, range, knockback, balance, scene, shared runtime script, or other weapon VFX changes.
+- Disk cleanup: removed temporary `.godot` cache copied for smoke verification; no `.godot/`, `.import`, `.uid`, source scratch cache, or disposable checkout left for this task.
 
 ## QA Notes
 
