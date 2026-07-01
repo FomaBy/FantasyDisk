@@ -47,7 +47,7 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 - [x] Attack VFX уникально отражает **Светлый Реликварий**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
 - [x] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
 - [x] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
-- [ ] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; если менялись animation/runtime hooks — также `animation_smoke_test.gd` и `runtime_smoke_test.gd` через `tools/godot_gate.py`.
+- [x] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; если менялись animation/runtime hooks — также `animation_smoke_test.gd` и `runtime_smoke_test.gd` через `tools/godot_gate.py`.
 - [x] Обновлены `docs/design/content_registry.md` и `docs/design/current_game_state.md` для targeted VFX redraw evidence/contract.
 
 ## QA Notes
@@ -101,3 +101,38 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_
 ```
 
 Disk cleanup: none created; this worker did not acquire a Godot slot and did not create `.godot/` in this worktree.
+
+## QA-Вердикт: PASSED / 2026-07-01
+
+Статус: PASSED
+
+QA worker: `codex-qa-scrum756-vfx-20260701`, Lane: Codex.
+
+Scope verified:
+- Jira SCRUM-756 implementation result and pushed commit `39fca93cd7ff04139ed6032bcefdf157ba8261dd` inspected.
+- Runtime PNG: `assets/sprites/effects/vfx_weapon_priest_reliquary.png`.
+- PixelLab/source evidence: `docs/design/references/weapon_attack_animations/priest_reliquary/`.
+- Preview/contact sheet: `docs/design/previews/weapon_attack_animations/priest_reliquary_contact.png`.
+- Result scope contains no `.import`, `.uid`, `.godot`, cache, temp, log, secret, or unrelated files.
+
+Static PNG/readability checks:
+- Runtime PNG is `256 x 256` RGBA, non-interlaced.
+- Runtime bbox: `[17, 18, 239, 238]`.
+- `max_alpha=170`, `visible_ratio_alpha_gt_8=0.5837`, `mean_alpha_all_pixels=77.95`, `mean_alpha_visible_pixels=133.53`, `center_64_mean_alpha=88.78`, `outer_32_border_mean_alpha=21.49`.
+- Visual preview reads as a golden-white sanctify seal with a transparent center and low-opacity Светлый Реликварий ghost silhouette on checker, dark, and light backgrounds.
+
+Godot gate verification:
+
+```bash
+FSD_GODOT_SLOTS=6 python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+# PASSED: Unique weapon VFX assets smoke passed: 51 plates.
+
+FSD_GODOT_SLOTS=6 python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd
+# PASSED: Attack VFX smoke test passed.
+```
+
+No gameplay/runtime hooks changed in SCRUM-756, so broader runtime/animation smoke was not required. Cold Godot import emitted existing duplicate UID warnings from reference folders, but both requested gated tests exited successfully.
+
+Bugs: none.
+
+Disk cleanup: removed `.godot/` transient import cache, restored/removed generated `.import` sidecars from the QA cold import, and removed `build/qa/scrum457/` transient smoke output. Current Codex worktree retained for the QA mirror commit/push.
