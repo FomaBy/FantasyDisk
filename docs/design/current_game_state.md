@@ -475,21 +475,25 @@ empty-handed. Previous live frames are backed up under
 attack animation remains disabled/absent by current weapon-owned combat visual
 scope.
 
-2026-06-30 SCRUM-425 PixelLab Doctor integration replaces the legacy Doctor
-full-frame art with an 8-direction PixelLab plague-doctor pack (hooded cream/teal
-robe, brown leather bird-beak mask, vials). PixelLab character
-`c3d5ea3d-3b70-4154-b3c4-420d386f550a` (v3, `88x88` source) source frames and
-`manifest.json` are stored under `assets/sprites/characters/pixellab/doctor/`,
-normalized transparent `512x512` runtime frames under
-`assets/sprites/characters/full_frame/doctor_pixellab/`, and
-`assets/sprites/characters/doctor_spriteframes.tres` now exposes `idle_<direction>`
-plus 6-frame looping `move_<direction>` / `walk_<direction>` for all 8 directions
-(`walking-6-frames` template). `scripts/progression_data_characters.gd` doctor
-`sprite_path` points at `full_frame/doctor_pixellab/doctor_idle_south.png`; the
-generic `scripts/player.gd` directional resolver and `scripts/ui_screens.gd` Hero
-Select clockwise rotation pick up the directional rows automatically. Legacy
-`assets/sprites/characters/full_frame/doctor/` and `doctor.png` remain
-history/fallback.
+2026-07-01 SCRUM-705 supersedes the SCRUM-425 Doctor art pack with a fresh
+PixelLab plague-doctor full redraw at the 240-250 px runtime scale. PixelLab
+character `3e0a2b30-308e-48a8-a5a6-bb28a5038ca9` (v3, `252x252` source canvas)
+source idle/move frames and `manifest.json` are stored under
+`assets/sprites/characters/pixellab/doctor/`, then normalized into transparent
+`512x512` runtime frames under
+`assets/sprites/characters/full_frame/doctor_pixellab/`. All 8 idle directions
+and 6-frame looping `move_<direction>` / `walk_<direction>` rows keep a 244 px
+visible alpha height, verified by
+`docs/design/previews/scrum705_doctor_pixellab_240_bbox_report.md`; the contact
+sheet is `docs/design/previews/scrum705_doctor_pixellab_240_contact.png`. The
+base body has empty hands with no baked potion, syringe, saw or held prop, so
+those stay weapon-owned visuals. `scripts/progression_data_characters.gd` doctor
+`sprite_path` still points at `full_frame/doctor_pixellab/doctor_idle_south.png`;
+the generic `scripts/player.gd` directional resolver and `scripts/ui_screens.gd`
+Hero Select clockwise rotation pick up the directional rows automatically.
+Legacy SCRUM-425 and older full-frame assets remain only as backup/history under
+`docs/design/backups/scrum705_doctor_pixellab_240_pre_redraw/`,
+`assets/sprites/characters/full_frame/doctor/`, and `doctor.png`.
 
 2026-06-30 SCRUM-431 PixelLab Priest integration replaces the legacy Priest
 full-frame art with an 8-direction PixelLab holy support-caster pack (white-gold

@@ -5,6 +5,14 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-705: PixelLab Doctor full redraw at the new 240-250 px runtime scale.
+  Generated a fresh PixelLab plague-doctor source character
+  (`3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`), replaced the live source pack under
+  `assets/sprites/characters/pixellab/doctor/`, normalized all idle and
+  6-frame move/walk directions into transparent `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/doctor_pixellab/`, and kept empty hands
+  so potion/syringe/saw remain weapon-owned visuals. The committed alpha-bbox
+  QA report confirms all 56 runtime frames at 244 px visible height.
 - SCRUM-779: PixelLab-first boss roster redraw source package and two new boss
   concepts. OpenAI image generation produced reference-only concept art for
   `skeletal_dragon` and `bloodthorn_lion`; PixelLab MCP produced transparent

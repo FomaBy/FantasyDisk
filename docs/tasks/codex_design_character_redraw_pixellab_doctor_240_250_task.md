@@ -1,6 +1,6 @@
 # ART/ANIM PixelLab: «Доктор» — full redraw в размере 240-250 px
 
-Статус: new
+Статус: review
 Приоритет: high
 Роль: Design main (Codex) → Animator (Codex)
 Версия: 0.1.8
@@ -8,11 +8,19 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-705
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Codex Design/Animator
+Thread/Worker: codex-scrum705-doctor-pixellab-240
 Labels: foma, p1, design-main, pixellab, character-art, redesign, animation-source
 Locked paths: `assets/sprites/characters/pixellab/doctor/`, `assets/sprites/characters/full_frame/doctor_pixellab/`, `assets/sprites/characters/doctor_spriteframes.tres`, `scripts/progression_data_characters.gd`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/animation.md`, `docs/tasks/codex_design_character_redraw_pixellab_doctor_240_250_task.md`, `CHANGELOG.md`
 Связано: SCRUM-425, SCRUM-421, SCRUM-423, SCRUM-685
+
+## Claim / Ownership
+
+2026-06-30 Codex claimed SCRUM-705 in Jira as `codex-scrum705-doctor-pixellab-240`.
+Branch/worktree: `codex/scrum-705-doctor-pixellab-240` at
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-705-doctor-240`.
+Next verification: PixelLab-only redraw, alpha-bbox 240-250 px report, focused
+animation/Hero Select smokes through `tools/godot_gate.py`.
 
 ## Контекст
 Пользователь добавил Доктора к пакету полной переделки MVP-персонажей. SCRUM-425 уже доставил прежний PixelLab pass, но новый запрос требует отдельный replacement/follow-up с тем же актуальным пайплайном, что Биолог/Химик, и новым размерным контрактом: персонаж должен быть в размере примерно `240-250 x 240-250 px`, как остальные новые readable персонажи.
@@ -39,10 +47,38 @@ Locked paths: `assets/sprites/characters/pixellab/doctor/`, `assets/sprites/char
 7. Прогнать focused animation/registry/Hero Select checks and runtime smoke through `tools/godot_gate.py`.
 
 ## Acceptance Criteria
-- [ ] `doctor` полностью перерисован заново в PixelLab, без baked potion/syringe/saw/held prop.
-- [ ] Runtime pack has 8 idle directions and 8-direction move/walk, transparent `512x512`, alpha bbox report confirms target `240-250 px` size.
-- [ ] `doctor_spriteframes.tres` and Hero Select/runtime use the new pack; old visual scale is not visible in game.
-- [ ] Docs, manifest, previews/contact sheet/GIFs, alpha-bbox QA report and smokes are attached.
+- [x] `doctor` полностью перерисован заново в PixelLab, без baked potion/syringe/saw/held prop.
+- [x] Runtime pack has 8 idle directions and 8-direction move/walk, transparent `512x512`, alpha bbox report confirms target `240-250 px` size.
+- [x] `doctor_spriteframes.tres` and Hero Select/runtime use the new pack; old visual scale is not visible in game.
+- [x] Docs, manifest, previews/contact sheet/GIFs, alpha-bbox QA report and smokes are attached.
+
+## Result
+
+2026-07-01 Codex delivered the PixelLab-only Doctor redraw:
+
+- PixelLab character source: `3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`.
+- Source pack: `assets/sprites/characters/pixellab/doctor/`.
+- Runtime pack: `assets/sprites/characters/full_frame/doctor_pixellab/`.
+- Runtime contract: 56 transparent `512x512` PNG frames, all normalized to
+  244 px visible alpha height; primary south idle bbox is `150x244`.
+- Evidence: `docs/design/previews/scrum705_doctor_pixellab_240_bbox_report.md`
+  and `docs/design/previews/scrum705_doctor_pixellab_240_contact.png`.
+- Integration: existing `doctor_spriteframes.tres`, `sprite_path`, generic
+  directional resolver, and Hero Select clockwise rows use the replaced runtime
+  pack; no new gameplay/code hook was needed.
+- Backup: previous live source/runtime pack copied to
+  `docs/design/backups/scrum705_doctor_pixellab_240_pre_redraw/`.
+
+Tests before Jira QA:
+
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Jira target state: `Контроль качества` after branch push with commit/test
+evidence.
 
 ## Disk cleanup
-Executor final report must include `Disk cleanup:` per repo policy.
+Executor final report must include `Disk cleanup:` per repo policy. Planned:
+remove task worktree after pushed result and Jira QA handoff.
