@@ -9,8 +9,8 @@
 Jira: SCRUM-426
 Контур: Codex
 Owner: Design/Codex
-Thread/Worker: codex-design-scrum-426-druid-pixellab
-Locked paths: `assets/sprites/characters/pixellab/druid/`, `assets/sprites/characters/full_frame/druid_pixellab/`, `assets/sprites/characters/druid_spriteframes.tres`, `scripts/progression_data_characters.gd`, `tests/animation_smoke_test.gd`, `tests/character_sprite_registry_alignment_test.gd`, `docs/tasks/art_char_redraw_v2_druid_task.md`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/animation.md`, `CHANGELOG.md`, `build/qa/scrum426_druid_pixellab/`
+Thread/Worker: codex-design-druid-rescue-20260701
+Locked paths: `assets/sprites/characters/pixellab/druid/`, `assets/sprites/characters/full_frame/druid_pixellab/`, `assets/sprites/characters/druid_spriteframes.tres`, `scripts/progression_data_characters.gd`, `tests/animation_smoke_test.gd`, `tests/character_sprite_registry_alignment_test.gd`, `tests/hero_select_pixellab_layout_test.gd`, `docs/tasks/art_char_redraw_v2_druid_task.md`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/animation.md`, `CHANGELOG.md`, `build/qa/scrum426_druid_pixellab/`
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
 ## Autonomy / Approval
@@ -150,3 +150,36 @@ Checks:
 
 Disk cleanup: removed `.godot`; no `__pycache__` found; removed ignored QA
 `.png.import` sidecars from `build/qa/scrum426_druid_pixellab/`.
+
+## Rescue Result — Codex Design 2026-07-01
+
+Fresh dispatcher claim `codex-design-druid-rescue-20260701` rescued the previous
+stranded SCRUM-426 result by replaying the Druid PixelLab pack onto a dedicated
+worktree from `origin/dev`, then merging the latest `origin/dev` before
+verification. The stale/wrong-lane Claude claims are ignored per Jira dispatcher
+comment 2026-07-01.
+
+- Branch/worktree: `codex/scrum-426-druid-rescue` at
+  `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-426-druid-rescue`.
+- PixelLab character: `4078113b-fece-4087-a035-9ed3714a6514`
+  (`FantasyDisk SCRUM-426 druid`).
+- Source/runtime pack remains PixelLab-only: 56 source PNGs under
+  `assets/sprites/characters/pixellab/druid/`, 56 normalized transparent
+  `512x512` runtime PNGs under
+  `assets/sprites/characters/full_frame/druid_pixellab/`, manifest included.
+- `druid_spriteframes.tres` exposes generic `idle`/`move`/`walk` plus all
+  8-direction `idle_*`, `move_*`, and `walk_*` rows; body attack rows remain
+  absent by weapon-owned visual scope.
+- Druid `sprite_path` points to
+  `res://assets/sprites/characters/full_frame/druid_pixellab/druid_idle_south.png`.
+- Rescue merge preserved newer `origin/dev` PixelLab Doctor/Priest/Guitarist/
+  Dark Mage docs and tests while adding Druid to the current directional roster.
+
+Checks:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd` — passed (`17 characters`).
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd` — passed.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd` — passed.
+
+Disk cleanup: pending final cleanup after Jira sync/commit/push; `.godot` import
+cache was created by the focused Godot smokes and must be removed before final
+report.
