@@ -3,10 +3,12 @@ extends SceneTree
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const VIEWPORTS := [
 	Vector2i(1280, 720),
+	Vector2i(1536, 864),
+	Vector2i(1920, 1080),
 	Vector2i(2560, 1440),
 ]
-const PREVIEW_SIZE := 250.0
-const SLOT_SIZE := 150.0
+const PREVIEW_MIN_SIZE := 320.0
+const SLOT_MIN_SIZE := 180.0
 
 
 func _initialize() -> void:
@@ -51,8 +53,8 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	if portrait == null or portrait.texture == null:
 		_fail("Expected HS4Portrait texture at %s." % str(viewport_size))
 		return
-	if not _size_close(portrait.get_global_rect().size, Vector2(PREVIEW_SIZE, PREVIEW_SIZE), 1.0):
-		_fail("Expected HS4Portrait to be 250x250 at %s, got %s." % [str(viewport_size), str(portrait.get_global_rect().size)])
+	if portrait.get_global_rect().size.x < PREVIEW_MIN_SIZE or portrait.get_global_rect().size.y < PREVIEW_MIN_SIZE:
+		_fail("Expected HS4Portrait to use enlarged SCRUM-798 footprint at %s, got %s." % [str(viewport_size), str(portrait.get_global_rect().size)])
 		return
 
 	var ascension := main.find_child("HS4AscensionFrame", true, false) as Control
@@ -64,22 +66,27 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 
 	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
 		var stat_button := main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
-		if stat_button == null or stat_button.tooltip_text.strip_edges() == "" or not stat_button.tooltip_text.contains("Влияет на"):
-			_fail("Expected hover tooltip for base stat %s at %s." % [stat_id, str(viewport_size)])
+		var stat_bar := main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
+		if stat_button == null or stat_bar == null or stat_button.tooltip_text.strip_edges() == "" or not stat_button.tooltip_text.contains("Формула:") or not stat_button.tooltip_text.contains("Интерпретация класса:"):
+			_fail("Expected line bar + rich hover tooltip for base stat %s at %s." % [stat_id, str(viewport_size)])
+			return
+	for relevance in ["primary", "secondary", "optional"]:
+		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
+		if guidance == null or guidance.text.strip_edges() == "":
+			_fail("Expected data-driven build guidance section %s at %s." % [relevance, str(viewport_size)])
 			return
 
 	var carousel := main.find_child("HS4Carousel", true, false) as Control
 	if carousel == null:
 		_fail("Expected HS4Carousel at %s." % str(viewport_size))
 		return
-	var expected_slots := clampi(int(floor((carousel.get_global_rect().size.x - 108.0) / (SLOT_SIZE + 8.0))), 3, main.PROGRESSION_DATA.character_ids().size())
 	var visible_slots := []
 	for child in carousel.get_children():
 		var slot := child as Button
 		if slot == null or not slot.visible or not slot.name.begins_with("HS4CarouselSlot_"):
 			continue
-		if not _size_close(slot.get_global_rect().size, Vector2(SLOT_SIZE, SLOT_SIZE), 1.0):
-			_fail("Expected 150x150 carousel slot at %s, got %s." % [str(viewport_size), str(slot.get_global_rect().size)])
+		if slot.get_global_rect().size.x < SLOT_MIN_SIZE or slot.get_global_rect().size.y < SLOT_MIN_SIZE:
+			_fail("Expected enlarged carousel slot at %s, got %s." % [str(viewport_size), str(slot.get_global_rect().size)])
 			return
 		var slot_portrait := slot.find_child("HS4CarouselPortrait_*", false, false) as TextureRect
 		if slot_portrait == null or slot_portrait.texture == null:
@@ -89,8 +96,8 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 			_fail("Expected carousel portrait to stay inside 150x150 slot at %s." % str(viewport_size))
 			return
 		visible_slots.append(slot)
-	if visible_slots.size() != expected_slots:
-		_fail("Expected %d visible carousel slots at %s, got %d." % [expected_slots, str(viewport_size), visible_slots.size()])
+	if visible_slots.size() < 3:
+		_fail("Expected at least 3 visible enlarged carousel slots at %s, got %d." % [str(viewport_size), visible_slots.size()])
 		return
 
 	var portrait_rect := portrait.get_global_rect()

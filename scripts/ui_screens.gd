@@ -1001,9 +1001,15 @@ const HS4_RADAR := Rect2(0.715, 0.175, 0.230, 0.320)
 const HS4_CAROUSEL := Rect2(0.020, 0.735, 0.960, 0.215)
 const HS4_CAROUSEL_SLOTS := 9
 const HS4_DOSSIER_STATS := ["strength", "agility", "intelligence", "endurance", "perception"]
-const HS4_MINIMAL_PREVIEW_SIZE := 250.0
-const HS4_MINIMAL_SLOT_SIZE := 150.0
-const HS4_MINIMAL_BASE_STATS := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+const HS4_MINIMAL_PREVIEW_SIZE := 560.0
+const HS4_MINIMAL_SLOT_SIZE := 280.0
+const HS4_MINIMAL_BASE_STATS := HeroSelectConstants.HERO_BASE_STATS
+const HS4_MINIMAL_PREVIEW_MIN_SIZE := 320.0
+const HS4_MINIMAL_PREVIEW_MAX_SIZE := 620.0
+const HS4_MINIMAL_SLOT_MIN_SIZE := 184.0
+const HS4_MINIMAL_SLOT_MAX_SIZE := 304.0
+const HS4_MINIMAL_ASCENSION_MIN_HEIGHT := 84.0
+const HS4_MINIMAL_ASCENSION_MAX_HEIGHT := 138.0
 
 # SCRUM-489: координатная спека @2560×1440 — экран «Выбор героя v4» (полноэкранный).
 # ВАЖНО: билдер _build_character_select_v4 НЕ использует нормализованные доли HS4_* (выше,
@@ -1248,6 +1254,68 @@ func _hs4_ascension_text(level: int) -> String:
 	return "\n".join(lines)
 
 
+func _hs4_attribute_display_name(attr_id: String) -> String:
+	for entry in game.PROGRESSION_DATA.ATTRIBUTE_REGISTRY:
+		var item := entry as Dictionary
+		if str(item.get("id", "")) == attr_id:
+			return str(item.get("name", attr_id))
+	return str(game.PROGRESSION_DATA.STAT_NAMES.get(attr_id, attr_id))
+
+
+func _hs4_attribute_guidance_groups(character_id: String) -> Dictionary:
+	var groups := {
+		"primary": [],
+		"secondary": [],
+		"optional": [],
+	}
+	for entry in game.PROGRESSION_DATA.ATTRIBUTE_REGISTRY:
+		var item := entry as Dictionary
+		var attr_id := str(item.get("id", ""))
+		if attr_id == "":
+			continue
+		var relevance := str(game.PROGRESSION_DATA.attribute_relevance(attr_id, character_id))
+		if not groups.has(relevance):
+			relevance = "optional"
+		(groups[relevance] as Array).append(_hs4_attribute_display_name(attr_id))
+	return groups
+
+
+func _hs4_join_guidance_names(names: Array, max_items := 8) -> String:
+	if names.is_empty():
+		return "Нет."
+	var shown := PackedStringArray()
+	for i in range(mini(names.size(), max_items)):
+		shown.append(str(names[i]))
+	if names.size() > max_items:
+		shown.append("+%d" % (names.size() - max_items))
+	return ", ".join(shown)
+
+
+func _hs4_stat_fill_color(stat_id: String) -> Color:
+	var base := Color(0.92, 0.70, 0.28, 0.95)
+	if HERO_CLASS_COLORS.has(game.selected_character_id):
+		base = HERO_CLASS_COLORS[game.selected_character_id]
+	match stat_id:
+		"strength":
+			return Color(1.0, 0.34, 0.22, 0.95).lerp(base, 0.25)
+		"agility":
+			return Color(0.96, 0.76, 0.28, 0.95).lerp(base, 0.25)
+		"intelligence":
+			return Color(0.62, 0.42, 1.0, 0.95).lerp(base, 0.25)
+		"perception":
+			return Color(0.44, 0.72, 1.0, 0.95).lerp(base, 0.25)
+		"energy":
+			return Color(0.24, 0.88, 1.0, 0.95).lerp(base, 0.25)
+		"knowledge":
+			return Color(0.52, 0.92, 0.54, 0.95).lerp(base, 0.25)
+		"endurance":
+			return Color(0.92, 0.52, 0.32, 0.95).lerp(base, 0.25)
+		"leadership":
+			return Color(1.0, 0.86, 0.42, 0.95).lerp(base, 0.25)
+		_:
+			return base
+
+
 func _build_character_select_v4() -> void:
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -1271,24 +1339,32 @@ func _build_character_select_v4() -> void:
 	black_background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(black_background)
 
-	var margin_x := clampf(vp.x * 0.05, 32.0, 80.0)
-	var top_y := clampf(vp.y * 0.105, 52.0, 96.0)
-	var bottom_margin := clampf(vp.y * 0.04, 18.0, 44.0)
-	var carousel_h := HS4_MINIMAL_SLOT_SIZE + 26.0
-	var carousel_y := maxf(top_y + HS4_MINIMAL_PREVIEW_SIZE + 34.0, vp.y - bottom_margin - carousel_h)
-	var top_h := maxf(HS4_MINIMAL_PREVIEW_SIZE, carousel_y - top_y - 28.0)
-	var portrait_size := minf(HS4_MINIMAL_PREVIEW_SIZE, top_h)
-	var gap := clampf(vp.x * 0.03, 34.0, 64.0)
-	var right_w := clampf(vp.x * 0.235, 280.0, 440.0)
+	var margin_x := clampf(vp.x * 0.035, 28.0, 76.0)
+	var top_y := clampf(vp.y * 0.052, 30.0, 70.0)
+	var bottom_margin := clampf(vp.y * 0.024, 16.0, 34.0)
+	var gap := clampf(vp.x * 0.026, 26.0, 58.0)
+	var carousel_slot_size := clampf(vp.y * 0.26, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
+	var carousel_h := carousel_slot_size + clampf(vp.y * 0.025, 18.0, 32.0)
+	var carousel_y := vp.y - bottom_margin - carousel_h
+	var top_h := maxf(360.0, carousel_y - top_y - clampf(vp.y * 0.018, 12.0, 24.0))
+	var ascension_h := clampf(vp.y * 0.12, HS4_MINIMAL_ASCENSION_MIN_HEIGHT, HS4_MINIMAL_ASCENSION_MAX_HEIGHT)
+	var ascension_gap := clampf(vp.y * 0.012, 8.0, 12.0)
+	var ascension_reserved_h := 148.0
+	if vp.y < 720.0:
+		ascension_reserved_h = 88.0
+	elif vp.y < 1000.0:
+		ascension_reserved_h = 136.0
+	var left_w := clampf(vp.x * 0.33, 370.0, 660.0)
+	var preview_floor := 300.0 if vp.y < 720.0 else HS4_MINIMAL_PREVIEW_MIN_SIZE
+	var portrait_size := clampf(minf(left_w, top_h - ascension_reserved_h - ascension_gap), preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE)
 	var left_x := margin_x
-	var center_x := left_x + portrait_size + gap
-	var right_x := vp.x - margin_x - right_w
-	var center_w := maxf(260.0, right_x - center_x - gap)
+	var dossier_x := left_x + left_w + gap
+	var dossier_w := maxf(420.0, vp.x - margin_x - dossier_x)
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HS4BackButton"
 	back_button.position = Vector2(margin_x, maxf(12.0, top_y - 50.0))
-	_set_action_button_size(back_button, 118.0, 40.0)
+	_set_action_button_size(back_button, 124.0, 44.0)
 	_apply_hs4_minimal_button_theme(back_button)
 	back_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(14.0 * layout_scale))), 0, 24))
 	root.add_child(back_button)
@@ -1296,7 +1372,7 @@ func _build_character_select_v4() -> void:
 
 	var portrait_panel := Control.new()
 	portrait_panel.name = "HS4PortraitFrame"
-	portrait_panel.position = Vector2(left_x, top_y)
+	portrait_panel.position = Vector2(left_x + maxf(0.0, (left_w - portrait_size) * 0.5), top_y)
 	portrait_panel.size = Vector2(portrait_size, portrait_size)
 	portrait_panel.custom_minimum_size = portrait_panel.size
 	portrait_panel.clip_contents = true
@@ -1325,105 +1401,193 @@ func _build_character_select_v4() -> void:
 		_advance_hero_select_portrait_preview(portrait, portrait_preview_state)
 	)
 
-	var dossier_panel := VBoxContainer.new()
+	var dossier_panel := PanelContainer.new()
 	dossier_panel.name = "HS4DossierFrame"
-	dossier_panel.position = Vector2(center_x, top_y)
-	dossier_panel.size = Vector2(center_w, top_h)
-	dossier_panel.add_theme_constant_override("separation", maxi(4, int(round(7.0 * layout_scale))))
-	dossier_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dossier_panel.position = Vector2(dossier_x, top_y)
+	dossier_panel.size = Vector2(dossier_w, top_h)
+	dossier_panel.add_theme_stylebox_override("panel", _hs4_minimal_style(Color(0.018, 0.018, 0.022, 0.72), Color(0.34, 0.28, 0.18, 0.64), 1, 4))
+	dossier_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(dossier_panel)
+
+	var dossier_margin := MarginContainer.new()
+	dossier_margin.name = "HS4DossierContentSafe"
+	dossier_margin.add_theme_constant_override("margin_left", maxi(14, int(round(20.0 * layout_scale))))
+	dossier_margin.add_theme_constant_override("margin_top", maxi(12, int(round(16.0 * layout_scale))))
+	dossier_margin.add_theme_constant_override("margin_right", maxi(14, int(round(20.0 * layout_scale))))
+	dossier_margin.add_theme_constant_override("margin_bottom", maxi(12, int(round(16.0 * layout_scale))))
+	dossier_panel.add_child(dossier_margin)
+
+	var dossier_scroll := ScrollContainer.new()
+	dossier_scroll.name = "HS4DossierScroll"
+	dossier_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	dossier_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	dossier_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dossier_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dossier_margin.add_child(dossier_scroll)
+
+	var dossier_content := VBoxContainer.new()
+	dossier_content.name = "HS4DossierContent"
+	dossier_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dossier_content.add_theme_constant_override("separation", maxi(5, int(round(8.0 * layout_scale))))
+	dossier_scroll.add_child(dossier_content)
 
 	var name_label := Label.new()
 	name_label.name = "HS4NameLabel"
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(28.0 * layout_scale))), 0, 42))
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	name_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(20, int(round(30.0 * layout_scale))), 0, 44))
 	name_label.add_theme_color_override("font_color", Color(0.98, 0.88, 0.56, 1.0))
-	dossier_panel.add_child(name_label)
+	dossier_content.add_child(name_label)
 
 	var desc_label := Label.new()
 	desc_label.name = "HS4Description"
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	desc_label.max_lines_visible = 2
+	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	desc_label.max_lines_visible = 3
 	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(16.0 * layout_scale))), 0, 24))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(16.0 * layout_scale))), 0, 24))
 	desc_label.add_theme_color_override("font_color", Color(0.86, 0.89, 0.96, 1.0))
-	dossier_panel.add_child(desc_label)
+	dossier_content.add_child(desc_label)
 
 	var strengths_label := Label.new()
 	strengths_label.name = "HS4Strengths"
 	strengths_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	strengths_label.max_lines_visible = 1
+	strengths_label.max_lines_visible = 2
 	strengths_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	strengths_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
 	strengths_label.add_theme_color_override("font_color", Color(0.78, 0.94, 0.74, 1.0))
-	dossier_panel.add_child(strengths_label)
+	dossier_content.add_child(strengths_label)
 
 	var weaknesses_label := Label.new()
 	weaknesses_label.name = "HS4Weaknesses"
 	weaknesses_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weaknesses_label.max_lines_visible = 1
+	weaknesses_label.max_lines_visible = 2
 	weaknesses_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	weaknesses_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
 	weaknesses_label.add_theme_color_override("font_color", Color(0.95, 0.62, 0.58, 1.0))
-	dossier_panel.add_child(weaknesses_label)
+	dossier_content.add_child(weaknesses_label)
 
 	var weapon_label := Label.new()
 	weapon_label.name = "HS4Weapon"
 	weapon_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weapon_label.max_lines_visible = 1
+	weapon_label.max_lines_visible = 2
 	weapon_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	weapon_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
 	weapon_label.add_theme_color_override("font_color", Color(0.84, 0.90, 1.0, 0.96))
 	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dossier_panel.add_child(weapon_label)
+	dossier_content.add_child(weapon_label)
 
 	var identity_label := Label.new()
 	identity_label.name = "HS4Identity"
 	identity_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	identity_label.max_lines_visible = 2
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	identity_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
 	identity_label.add_theme_color_override("font_color", Color(0.72, 0.76, 0.84, 1.0))
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dossier_panel.add_child(identity_label)
+	dossier_content.add_child(identity_label)
 
 	var stats_title := Label.new()
 	stats_title.name = "HS4StatsTitle"
 	stats_title.text = "Основные характеристики"
-	stats_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stats_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	stats_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
 	stats_title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.52, 1.0))
-	dossier_panel.add_child(stats_title)
+	dossier_content.add_child(stats_title)
 
 	var stats_grid := GridContainer.new()
 	stats_grid.name = "HS4StatsGrid"
 	stats_grid.columns = 2
 	stats_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stats_grid.add_theme_constant_override("h_separation", maxi(8, int(round(12.0 * layout_scale))))
-	stats_grid.add_theme_constant_override("v_separation", maxi(4, int(round(6.0 * layout_scale))))
-	dossier_panel.add_child(stats_grid)
+	stats_grid.add_theme_constant_override("v_separation", maxi(5, int(round(7.0 * layout_scale))))
+	dossier_content.add_child(stats_grid)
 	var stat_buttons := {}
-	var stat_button_w := maxf(112.0, (center_w - 12.0) * 0.5)
-	var stat_button_h := maxf(30.0, roundf(32.0 * layout_scale))
+	var stat_fill_nodes := {}
+	var stat_value_labels := {}
+	var stat_button_w := maxf(180.0, (dossier_w - 64.0) * 0.5)
+	var stat_button_h := maxf(38.0, roundf(42.0 * layout_scale))
 	for sid in HS4_MINIMAL_BASE_STATS:
 		var stat_button := Button.new()
 		stat_button.name = "HS4Stat_%s" % sid
 		stat_button.custom_minimum_size = Vector2(stat_button_w, stat_button_h)
 		stat_button.mouse_default_cursor_shape = Control.CURSOR_HELP
 		stat_button.focus_mode = Control.FOCUS_ALL
-		stat_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
+		stat_button.text = ""
+		stat_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(12.0 * layout_scale))), 0, 18))
 		_apply_hs4_minimal_button_theme(stat_button)
+		var stat_row := HBoxContainer.new()
+		stat_row.name = "HS4StatLine_%s" % sid
+		stat_row.set_anchors_preset(Control.PRESET_FULL_RECT)
+		stat_row.offset_left = 8.0
+		stat_row.offset_right = -8.0
+		stat_row.offset_top = 5.0
+		stat_row.offset_bottom = -5.0
+		stat_row.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
+		stat_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stat_button.add_child(stat_row)
+		var stat_name := Label.new()
+		stat_name.name = "HS4StatName_%s" % sid
+		stat_name.custom_minimum_size = Vector2(maxf(72.0, 92.0 * layout_scale), 0.0)
+		stat_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		stat_name.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
+		stat_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		stat_name.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
+		stat_name.add_theme_color_override("font_color", Color(0.88, 0.84, 0.74, 1.0))
+		stat_row.add_child(stat_name)
+		var bar_bg := ColorRect.new()
+		bar_bg.name = "HS4StatBar_%s" % sid
+		bar_bg.custom_minimum_size = Vector2(maxf(72.0, 126.0 * layout_scale), maxf(10.0, 12.0 * layout_scale))
+		bar_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		bar_bg.color = Color(0.09, 0.085, 0.075, 0.92)
+		bar_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stat_row.add_child(bar_bg)
+		var bar_fill := ColorRect.new()
+		bar_fill.name = "HS4StatBarFill_%s" % sid
+		bar_fill.set_anchors_preset(Control.PRESET_FULL_RECT)
+		bar_fill.anchor_right = 0.5
+		bar_fill.color = _hs4_stat_fill_color(sid)
+		bar_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		bar_bg.add_child(bar_fill)
+		var stat_value := Label.new()
+		stat_value.name = "HS4StatValue_%s" % sid
+		stat_value.custom_minimum_size = Vector2(maxf(22.0, 28.0 * layout_scale), 0.0)
+		stat_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		stat_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		stat_value.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
+		stat_value.add_theme_color_override("font_color", Color(0.96, 0.90, 0.70, 1.0))
+		stat_row.add_child(stat_value)
 		stats_grid.add_child(stat_button)
 		stat_buttons[sid] = stat_button
+		stat_fill_nodes[sid] = bar_fill
+		stat_value_labels[sid] = stat_value
+
+	var guidance_title := Label.new()
+	guidance_title.name = "HS4BuildGuidanceTitle"
+	guidance_title.text = "Подсказки билда"
+	guidance_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	guidance_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
+	guidance_title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.52, 1.0))
+	dossier_content.add_child(guidance_title)
+
+	var guidance_labels := {}
+	for relevance in HeroSelectConstants.HERO_BUILD_RELEVANCE_ORDER:
+		var guide_label := Label.new()
+		guide_label.name = "HS4BuildGuidance_%s" % relevance
+		guide_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		guide_label.max_lines_visible = 2 if relevance != "optional" else 1
+		guide_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		guide_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
+		guide_label.add_theme_color_override("font_color", Color(0.78, 0.82, 0.90, 1.0))
+		dossier_content.add_child(guide_label)
+		guidance_labels[relevance] = guide_label
 
 	var ascension_panel := VBoxContainer.new()
 	ascension_panel.name = "HS4AscensionFrame"
-	ascension_panel.position = Vector2(right_x, top_y)
-	ascension_panel.size = Vector2(right_w, top_h)
-	ascension_panel.add_theme_constant_override("separation", maxi(5, int(round(8.0 * layout_scale))))
+	ascension_panel.position = Vector2(portrait_panel.position.x, portrait_panel.position.y + portrait_size + ascension_gap)
+	ascension_panel.size = Vector2(portrait_size, ascension_h)
+	ascension_panel.add_theme_constant_override("separation", maxi(3, int(round(5.0 * layout_scale))))
 	ascension_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(ascension_panel)
 
@@ -1431,65 +1595,72 @@ func _build_character_select_v4() -> void:
 	asc_label.name = "AscensionLevelLabel"
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_label.custom_minimum_size = Vector2(0.0, maxf(28.0, 38.0 * layout_scale))
-	asc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(13, int(round(24.0 * layout_scale))), 0, 34))
+	asc_label.custom_minimum_size = Vector2(0.0, maxf(20.0, 26.0 * layout_scale))
+	asc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(17.0 * layout_scale))), 0, 26))
 	asc_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.5, 1.0))
+	asc_label.visible = vp.y >= 900.0
 	ascension_panel.add_child(asc_label)
 
 	var asc_intro := Label.new()
 	asc_intro.name = "HS4AscensionIntro"
 	asc_intro.text = "Возвышение усложняет забег и открывает мета-прогресс персонажа после победы над боссом."
 	asc_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	asc_intro.max_lines_visible = 3
+	asc_intro.max_lines_visible = 1
+	asc_intro.visible = false
 	asc_intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(14.0 * layout_scale))), 0, 21))
+	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
 	asc_intro.add_theme_color_override("font_color", Color(0.78, 0.80, 0.86, 1.0))
 	ascension_panel.add_child(asc_intro)
 
+	var asc_action_row := HBoxContainer.new()
+	asc_action_row.name = "HS4AscensionActionRow"
+	asc_action_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	asc_action_row.add_theme_constant_override("separation", maxi(6, int(round(9.0 * layout_scale))))
+	ascension_panel.add_child(asc_action_row)
 	var asc_box := HBoxContainer.new()
 	asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	asc_box.add_theme_constant_override("separation", maxi(8, int(round(12.0 * layout_scale))))
-	ascension_panel.add_child(asc_box)
+	asc_box.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
+	asc_action_row.add_child(asc_box)
 	var asc_minus := _make_button("−")
 	asc_minus.name = "AscensionMinusButton"
-	var asc_button_size := Vector2(54.0, 48.0)
+	var asc_button_size := Vector2(maxf(46.0, 52.0 * layout_scale), maxf(40.0, 46.0 * layout_scale))
 	_set_action_button_size(asc_minus, asc_button_size.x, asc_button_size.y)
 	_apply_hs4_minimal_button_theme(asc_minus)
-	asc_minus.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(24.0 * layout_scale))), 0, 36))
+	asc_minus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
 	asc_box.add_child(asc_minus)
 	var asc_stepper_label := Label.new()
 	asc_stepper_label.name = "HS4AscensionValue"
 	asc_stepper_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_stepper_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_stepper_label.custom_minimum_size = Vector2(maxf(110.0, 150.0 * layout_scale), asc_button_size.y)
-	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(13, int(round(18.0 * layout_scale))), 0, 28))
+	asc_stepper_label.custom_minimum_size = Vector2(maxf(76.0, 92.0 * layout_scale), asc_button_size.y)
+	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
 	asc_stepper_label.add_theme_color_override("font_color", Color(0.92, 0.84, 0.66, 1.0))
 	asc_box.add_child(asc_stepper_label)
 	var asc_plus := _make_button("+")
 	asc_plus.name = "AscensionPlusButton"
 	_set_action_button_size(asc_plus, asc_button_size.x, asc_button_size.y)
 	_apply_hs4_minimal_button_theme(asc_plus)
-	asc_plus.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(24.0 * layout_scale))), 0, 36))
+	asc_plus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
 	asc_box.add_child(asc_plus)
-
-	var asc_mods := Label.new()
-	asc_mods.name = "AscensionModsLabel"
-	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	asc_mods.max_lines_visible = 7
-	asc_mods.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	asc_mods.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
-	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	ascension_panel.add_child(asc_mods)
 
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HS4ChooseButton"
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(select_button, minf(260.0, right_w), 52.0)
+	_set_action_button_size(select_button, maxf(124.0, minf(190.0, portrait_size * 0.34)), asc_button_size.y)
 	_apply_hs4_minimal_button_theme(select_button, true)
-	select_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(13, int(round(18.0 * layout_scale))), 0, 28))
-	ascension_panel.add_child(select_button)
+	select_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
+	asc_action_row.add_child(select_button)
+
+	var asc_mods := Label.new()
+	asc_mods.name = "AscensionModsLabel"
+	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	asc_mods.max_lines_visible = 1 if vp.y < 1200.0 else 2
+	asc_mods.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	asc_mods.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
+	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
+	ascension_panel.add_child(asc_mods)
 
 	var carousel_panel := Control.new()
 	carousel_panel.name = "HS4CarouselFrame"
@@ -1505,12 +1676,12 @@ func _build_character_select_v4() -> void:
 	carousel_panel.add_child(carousel)
 	var carousel_w: float = carousel.size.x
 	var carousel_area_h: float = carousel.size.y
-	var arrow_size := Vector2(54.0, HS4_MINIMAL_SLOT_SIZE)
-	var slot_size := Vector2(HS4_MINIMAL_SLOT_SIZE, HS4_MINIMAL_SLOT_SIZE)
+	var arrow_size := Vector2(maxf(64.0, carousel_slot_size * 0.30), carousel_slot_size)
+	var slot_size := Vector2(carousel_slot_size, carousel_slot_size)
 	var roster: Array = game.PROGRESSION_DATA.character_ids()
 	if roster.is_empty():
 		return
-	var visible_slot_count := clampi(int(floor((carousel_w - arrow_size.x * 2.0) / (HS4_MINIMAL_SLOT_SIZE + 8.0))), 3, roster.size())
+	var visible_slot_count := clampi(int(floor((carousel_w - arrow_size.x * 2.0) / (carousel_slot_size + 12.0))), 3, roster.size())
 	var slot_gap: float = maxf(8.0, (carousel_w - arrow_size.x * 2.0 - slot_size.x * float(visible_slot_count)) / float(visible_slot_count + 1))
 	var slot_y: float = round((carousel_area_h - slot_size.y) * 0.5)
 	var arrow_y: float = round((carousel_area_h - arrow_size.y) * 0.5)
@@ -1641,8 +1812,23 @@ func _build_character_select_v4() -> void:
 		for sid in HS4_MINIMAL_BASE_STATS:
 			var sval := float(stats.get(sid, 0.0))
 			var stat_button := stat_buttons[sid] as Button
-			stat_button.text = "%s: %d" % [str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid)), int(round(sval))]
+			stat_button.text = ""
 			stat_button.tooltip_text = _hs4_stat_tooltip(sid, sval, cid)
+			var stat_fill := stat_fill_nodes[sid] as ColorRect
+			stat_fill.anchor_right = clampf(sval / 10.0, 0.04, 1.0)
+			stat_fill.color = _hs4_stat_fill_color(sid)
+			var stat_value := stat_value_labels[sid] as Label
+			stat_value.text = str(int(round(sval)))
+		var guidance_groups := _hs4_attribute_guidance_groups(cid)
+		for relevance in HeroSelectConstants.HERO_BUILD_RELEVANCE_ORDER:
+			var guide_label := guidance_labels[relevance] as Label
+			var title := str(HeroSelectConstants.HERO_BUILD_RELEVANCE_TITLES.get(relevance, relevance))
+			var names: Array = guidance_groups.get(relevance, [])
+			guide_label.text = "%s: %s" % [title, _hs4_join_guidance_names(names, 8 if relevance != "optional" else 6)]
+			var tooltip_names := PackedStringArray()
+			for name in names:
+				tooltip_names.append(str(name))
+			guide_label.tooltip_text = "%s\n%s" % [title, ", ".join(tooltip_names)]
 		var maxl: int = game.ascension_selectable_max(cid)
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, maxl)
 		asc_label.text = "Возвышение"
