@@ -70,3 +70,11 @@ Next verification: use PixelLab MCP only, create/fetch new unarmed Berserk 8-dir
 
 ## Disk cleanup
 Removed task-generated transient cache/temp data: `.godot/`, `/tmp/scrum703_berserk_pixellab`, and Python `__pycache__` directories. Kept the task worktree for commit/push and Jira QA traceability.
+
+## QA-Вердикт: PASSED
+Статус: PASSED
+Проверено claude-qa на HEAD origin/dev (арт-коммит dff43b36 = ancestor origin/dev).
+- Контракт размера ВЫПОЛНЕН: berserk_pixellab idle_south alpha bbox = 217×245 px (высота 245 в диапазоне 240-250), PNG 512×512, bottom-aligned. Старый 216px пак заменён.
+- `berserk_spriteframes.tres`: 56 refs на berserk_pixellab, 0 stale-ссылок на старый пак; полный 8-dir idle/move/walk. Старый масштаб в игре не виден (acceptance выполнен).
+- Смоуки зелёные (godot_gate): runtime_smoke, animation_smoke, character_sprite_registry_alignment.
+Блок добавлен в .md, чтобы board_sync не реверт-ил PASSED-тикет обратно в QC (см. Статус: done без QA-блока).
